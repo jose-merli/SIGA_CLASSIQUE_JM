@@ -1106,54 +1106,261 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 									</td>
 									</tr>
 								</c:when>
-								
-								
-								
 					
 					<c:when test="${designa.permitidoJustificar==false}">
+					<c:choose>
+						<c:when test="${empty designa.actuaciones}">
 							<td align="center" rowspan="${designa.rowSpan}" colspan="3">
-							<c:choose>
-								<c:when test="${designa.tipoResolucionDesigna=='NO_FAVORABLE'}">
-									<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaNoFavorable" />
-							
-							</c:when>
-							<c:when test="${designa.tipoResolucionDesigna=='PTE_CAJG'}">
-									<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaPteCAJG" />
-							
-							</c:when>
-							<c:when test="${designa.tipoResolucionDesigna=='SIN_RESOLUCION'}">
-								<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaSinResolucion" />
-							
-							</c:when>
-							<c:when test="${designa.tipoResolucionDesigna=='SIN_EJG'}">
-								<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaSinEjg" />
-							
-							</c:when>
-							</c:choose>
-							</td>
-							<td rowspan="${designa.rowSpan}"><input type="checkbox"
-								disabled="disabled" /></td>
-							<td rowspan="${designa.rowSpan}">
-							
-									&nbsp;
-							</td>
-							<td rowspan="${designa.rowSpan}">
-									&nbsp;
-								</td>
-							<td><c:choose>
-								<c:when test="${designa.baja=='1'}">
-									<input type="checkbox" disabled="disabled" checked="checked" />
+								<c:choose>
+									<c:when test="${designa.tipoResolucionDesigna=='NO_FAVORABLE'}">
+										<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaNoFavorable" />
+								
 								</c:when>
-								<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true}">
-									<input type="checkbox" disabled="disabled" />
+								<c:when test="${designa.tipoResolucionDesigna=='PTE_CAJG'}">
+										<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaPteCAJG" />
+								
+								</c:when>
+								<c:when test="${designa.tipoResolucionDesigna=='SIN_RESOLUCION'}">
+									<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaSinResolucion" />
+								
+								</c:when>
+								<c:when test="${designa.tipoResolucionDesigna=='SIN_EJG'}">
+									<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaSinEjg" />
+								
+								</c:when>
+								</c:choose>
+								</td>
+								<td rowspan="${designa.rowSpan}"><input type="checkbox"
+									disabled="disabled" /></td>
+								<td rowspan="${designa.rowSpan}">
+								
+										&nbsp;
+								</td>
+								<td rowspan="${designa.rowSpan}">
+										&nbsp;
+									</td>
+								<td><c:choose>
+									<c:when test="${designa.baja=='1'}">
+										<input type="checkbox" disabled="disabled" checked="checked" />
+									</c:when>
+									<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true}">
+										<input type="checkbox" disabled="disabled" />
+									</c:when>
+									<c:otherwise>
+										<input name="checkBaja" id="baja_${status.count}"
+											 type="checkbox" />
+									</c:otherwise>
+								</c:choose></td>
+							</tr>
+						</c:when>
+						<c:otherwise>
+							<td align="center" colspan="3">
+								<c:choose>
+									<c:when test="${designa.tipoResolucionDesigna=='NO_FAVORABLE'}">
+										<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaNoFavorable" />
+								
+								</c:when>
+								<c:when test="${designa.tipoResolucionDesigna=='PTE_CAJG'}">
+										<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaPteCAJG" />
+								
+								</c:when>
+								<c:when test="${designa.tipoResolucionDesigna=='SIN_RESOLUCION'}">
+									<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaSinResolucion" />
+								
+								</c:when>
+								<c:when test="${designa.tipoResolucionDesigna=='SIN_EJG'}">
+									<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaSinEjg" />
+								
+								</c:when>
+								</c:choose>
+								</td>
+								
+							<td ><input type="checkbox"
+									disabled="disabled" /></td>
+								<td >
+								
+										&nbsp;
+								</td>
+								<td rowspan="${designa.rowSpan}">
+										&nbsp;
+									</td>
+								<td rowspan="${designa.rowSpan}"><c:choose>
+									<c:when test="${designa.baja=='1'}">
+										<input type="checkbox" disabled="disabled" checked="checked" />
+									</c:when>
+									<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true}">
+										<input type="checkbox" disabled="disabled" />
+									</c:when>
+									<c:otherwise>
+										<input name="checkBaja" id="baja_${status.count}"
+											 type="checkbox" />
+									</c:otherwise>
+								</c:choose></td>
+							</tr>
+							<c:choose>
+								<c:when test="${status.count%2==0}">
+									<tr class="filaTablaPar">
 								</c:when>
 								<c:otherwise>
-									<input name="checkBaja" id="baja_${status.count}"
-										 type="checkbox" />
+									<tr class="filaTablaImpar">
 								</c:otherwise>
-							</c:choose></td>
-				</tr>
+							</c:choose>
+							<c:forEach items="${designa.actuaciones}" var="actuacionesMap"
+											varStatus="estadoMapActuaciones">
+								<c:set var="listActuaciones" scope="page"
+									value="${actuacionesMap.value}" />
+								<c:forEach var="actuacion" items="${listActuaciones}"
+									varStatus="estadoListActuaciones">
+									<c:choose>
+										<c:when
+											test="${estadoListActuaciones.first&&estadoMapActuaciones.first}">
+											<c:choose>
+												<c:when
+													test="${actuacion.categoria!=null && actuacion.categoria!=''}">
+													<td title="${actuacion.descripcionProcedimiento}"><c:out
+														value="${actuacion.categoria}" /></td>
+												</c:when>
+												<c:when
+													test="${actuacion.categoria!=null && actuacion.categoria==''}">
+													<td title="${actuacion.descripcionProcedimiento}">&nbsp;</td>
+												</c:when>
+												<c:otherwise>
+													<td>&nbsp;</td>
+												</c:otherwise>
+											</c:choose>
+											<td>
+												<table>
+													<tr>
+														<td style="text-align: left;  font-size: 13px;">
+															<c:out value="${actuacion.numero}" />
+														</td>
+														<td></td>
+													</tr>
+												</table>	
+											</td>
+											<td>
+													<c:out value="${actuacion.descripcion}" />
+												
+											</td>
+											
+											<td title="<siga:Idioma	key='gratuita.informeJustificacionMasiva.informacion.validacion'/>">
+											<c:choose>
+												<c:when test="${actuacion.validada=='1'}">
+													<input type="checkbox" disabled="disabled"	checked="checked" />
+												</c:when>
+												<c:otherwise>
+													<c:choose>
+														<c:when test="${designa.baja=='1'}">
+															<input type="checkbox" disabled="disabled" />
+														</c:when>
+														<c:otherwise>
+															<c:choose>
+																<c:when
+																	test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
+																	<input name="checkValidacion"
+																		id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
+																		type="checkbox" onclick="onCheckValidacion(this);" disabled="disabled"/>
+																</c:when>
+																<c:otherwise>
+																	<input name="checkValidacion"
+																		id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}"
+																		type="checkbox" onclick="onCheckValidacion(this);" disabled="disabled"/>
+																</c:otherwise>
+															</c:choose>
+														</c:otherwise>
+													</c:choose>
+												</c:otherwise>
+											</c:choose></td>
+											<td>
+													&nbsp;
+											</td>
+											
+											</tr>
+										</c:when>
+										<c:otherwise>
+												<c:choose>
+													<c:when test="${status.count%2==0}">
+														<tr class="filaTablaPar">
+													</c:when>
+													<c:otherwise>
+														<tr class="filaTablaImpar">
+													</c:otherwise>
+												</c:choose>
+												<c:choose>
+													<c:when
+														test="${actuacion.categoria!=null && actuacion.categoria!=''}">
+														<td title="${actuacion.descripcionProcedimiento}">
+														<c:out value="${actuacion.categoria}" /></td>
+													</c:when>
+													<c:when
+													test="${actuacion.categoria!=null && actuacion.categoria==''}">
+													<td title="${actuacion.descripcionProcedimiento}">&nbsp;</td>
+												</c:when>
+													<c:otherwise>
+														<td>&nbsp;</td>
+													</c:otherwise>
+												</c:choose>
+	
+												<td>
+													
+													<table>
+													<tr>
+													
+														<td style="text-align: left;  font-size: 13px;">
+															<c:out value="${actuacion.numero}" /></td>
+															<td>
+																
+															</td>
+														
+													</tr>
+												</table>
+													</td>
+												<td>
+														<c:out value="${actuacion.descripcion}" />
+												</td>
+												<td title="<siga:Idioma	key='gratuita.informeJustificacionMasiva.informacion.validacion'/>"><c:choose>
+													<c:when test="${actuacion.validada=='1'}">
+														<input type="checkbox" disabled="disabled"
+															checked="checked" />
+													</c:when>
+													<c:otherwise>
+														<c:choose>
+															<c:when test="${designa.baja=='1'}">
+																<input type="checkbox" disabled="disabled" />
+															</c:when>
+															<c:otherwise>
+																<c:choose>
+																	<c:when
+																		test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
+																		<input name="checkValidacion"
+																			id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
+																			type="checkbox" onclick="onCheckValidacion(this);" disabled="disabled"/>
+																	</c:when>
+																	<c:otherwise>
+																		<input name="checkValidacion"
+																			id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}"
+																			type="checkbox" onclick="onCheckValidacion(this);" disabled="disabled"/>
+																	</c:otherwise>
+																</c:choose>
+															</c:otherwise>
+														</c:choose>
+													</c:otherwise>
+												</c:choose></td>
+												<td>
+													&nbsp;
+												</td>
+											</tr>
+										</c:otherwise>
+									</c:choose>
+								</c:forEach>
+							</c:forEach>
+						</c:otherwise>
+					</c:choose>
+						
 				</c:when>
+				
+				
+				
 				<c:otherwise>
 					
 					

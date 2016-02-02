@@ -291,41 +291,16 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		
 	}
 	
-private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designasList,InformeJustificacionMasivaForm formulario,Hashtable codigosHashtable,String longitudNumEjg,boolean isInforme) throws ClsExceptions{
+	
+	
+	private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designasList,InformeJustificacionMasivaForm formulario,Hashtable codigosHashtable,String longitudNumEjg,boolean isInforme) throws ClsExceptions{
 		
 		int contador = 0;
 		ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		StringBuffer sqlDesignas = new StringBuffer();
-		sqlDesignas.append(" SELECT * from (");
-		sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaFavorable, formulario, isInforme, codigosHashtable,longitudNumEjg));
-		String codIncluirEjgNoFavorable = formulario.getIncluirEjgNoFavorable();
-		String codIncluirEjgSinResolucion = formulario.getIncluirEjgSinResolucion();
-		String codIncluirSinEJG = formulario.getIncluirSinEJG();
-		String codIncluirEjgPteCAJG = formulario.getIncluirEjgPteCAJG();
-		//cunado no estan activas las restricciones sacamos todo. Entonces la union se pone siempre que no estesn activas las restricciones
-		// o cuando la restriccion nos lo diga
-		if(!formulario.isActivarRestriccionesFicha() || (codIncluirEjgPteCAJG!=null && !codIncluirEjgPteCAJG.equals(ClsConstants.DB_FALSE))){
-			sqlDesignas.append(" UNION ");
-			sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaPteCAJG, formulario, isInforme, codigosHashtable,longitudNumEjg));
-		}
 		
-		if(!formulario.isActivarRestriccionesFicha() || (codIncluirEjgNoFavorable!=null && !codIncluirEjgNoFavorable.equals(ClsConstants.DB_FALSE))){
-			sqlDesignas.append(" UNION ");
-			sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaNoFavorable, formulario, isInforme, codigosHashtable,longitudNumEjg));
-		}
-		if(!formulario.isActivarRestriccionesFicha() ||(codIncluirEjgSinResolucion!=null && !codIncluirEjgSinResolucion.equals(ClsConstants.DB_FALSE))){
-			sqlDesignas.append(" UNION ");
-			sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaSinResolucion, formulario, isInforme, codigosHashtable,longitudNumEjg));
-			
-		}
-		if(!formulario.isActivarRestriccionesFicha() ||(codIncluirSinEJG!=null && !codIncluirSinEJG.equals(ClsConstants.DB_FALSE))){
-			sqlDesignas.append(" UNION ");
-			sqlDesignas.append(getQueryBaseDesignasPendientesJustificacion(this.resolucionDesignaSinEjg, formulario, isInforme, codigosHashtable,longitudNumEjg));
-			
-		}
+		sqlDesignas.append(getQueryBaseJustificacion(this.resolucionDesignaFavorable, formulario, isInforme, codigosHashtable,longitudNumEjg));
 		
-		
-		sqlDesignas.append(" ) ALLDESIGNAS");
 		if(designasList!=null && designasList.size()>0){
             sqlDesignas.append(" WHERE (ALLDESIGNAS.IDINSTITUCION,ALLDESIGNAS.ANIO,ALLDESIGNAS.IDTURNO,ALLDESIGNAS.NUMERO) IN ( ");
 			for(DesignaForm designa:designasList){
@@ -353,7 +328,6 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 		return sqlDesignas.toString();
 		
 	}
-	
 	
 	
 	
@@ -768,9 +742,35 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 				)){
 					
 					designaForm.setPermitidoJustificar(true);
-					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes);
+					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes,false);
 					designaForm.setRowSpan();
 					
+					if(!isMostrarJustificacionesPtes){
+						designaFormList.add(designaForm);
+					}else if(designaForm.getIdJuzgado()==null || designaForm.getIdJuzgado().equals("")){
+						designaFormList.add(designaForm);
+					}else if(designaForm.getIdProcedimiento()==null || designaForm.getIdProcedimiento().equals("")){
+						designaFormList.add(designaForm);
+					}
+					else if((designaForm.getActuaciones()!=null && !designaForm.getActuaciones().isEmpty()) ||
+							(designaForm.getAcreditaciones()!=null && designaForm.getAcreditaciones().size()>0)){
+						designaFormList.add(designaForm);
+					}
+				}else if((!formulario.getFichaColegial()) || (tipoResolucionDesigna.equals(this.resolucionDesignaFavorable)||
+						(tipoResolucionDesigna.equals(this.resolucionDesignaPteCAJG)&&formulario.getIncluirEjgPteCAJG()!=null&&formulario.getIncluirEjgPteCAJG().equals("1"))
+						||
+						(tipoResolucionDesigna.equals(this.resolucionDesignaNoFavorable)&&formulario.getIncluirEjgNoFavorable()!=null&&formulario.getIncluirEjgNoFavorable().equals("1"))
+						||
+						(tipoResolucionDesigna.equals(this.resolucionDesignaSinEjg)&&formulario.getIncluirSinEJG()!=null&&formulario.getIncluirSinEJG().equals("1"))
+						||
+						(tipoResolucionDesigna.equals(this.resolucionDesignaSinResolucion)&&formulario.getIncluirEjgSinResolucion()!=null&&formulario.getIncluirEjgSinResolucion().equals("1"))
+				)){
+					
+					designaForm.setPermitidoJustificar(false);
+					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes,true);
+					designaForm.setRowSpan();
+					if(designaForm.getActuaciones()!=null && !designaForm.getActuaciones().isEmpty())
+						designaForm.addRowSpan();
 					if(!isMostrarJustificacionesPtes){
 						designaFormList.add(designaForm);
 					}else if(designaForm.getIdJuzgado()==null || designaForm.getIdJuzgado().equals("")){
@@ -933,8 +933,35 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 				)){
 					
 					designaForm.setPermitidoJustificar(true);
-					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes);
+					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes,false);
 					designaForm.setRowSpan();
+					
+					if(!isMostrarJustificacionesPtes){
+						designaFormList.add(designaForm);
+					}else if(designaForm.getIdJuzgado()==null || designaForm.getIdJuzgado().equals("")){
+						designaFormList.add(designaForm);
+					}else if(designaForm.getIdProcedimiento()==null || designaForm.getIdProcedimiento().equals("")){
+						designaFormList.add(designaForm);
+					}
+					else if((designaForm.getActuaciones()!=null && designaForm.getActuaciones().size()>0) ||
+							(designaForm.getAcreditaciones()!=null && designaForm.getAcreditaciones().size()>0)){
+						designaFormList.add(designaForm);
+					}
+				}else if((!formulario.getFichaColegial()) ||( tipoResolucionDesigna.equals(this.resolucionDesignaFavorable)||
+						(tipoResolucionDesigna.equals(this.resolucionDesignaPteCAJG)&&formulario.getIncluirEjgPteCAJG()!=null&&formulario.getIncluirEjgPteCAJG().equals("1"))
+						||
+						(tipoResolucionDesigna.equals(this.resolucionDesignaNoFavorable)&&formulario.getIncluirEjgNoFavorable()!=null&&formulario.getIncluirEjgNoFavorable().equals("1"))
+						||
+						(tipoResolucionDesigna.equals(this.resolucionDesignaSinEjg)&&formulario.getIncluirSinEJG()!=null&&formulario.getIncluirSinEJG().equals("1"))
+						||
+						(tipoResolucionDesigna.equals(this.resolucionDesignaSinResolucion)&&formulario.getIncluirEjgSinResolucion()!=null&&formulario.getIncluirEjgSinResolucion().equals("1"))
+				)){
+					
+					designaForm.setPermitidoJustificar(false);
+					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes,true);
+					designaForm.setRowSpan();
+					if(designaForm.getActuaciones()!=null && !designaForm.getActuaciones().isEmpty())
+						designaForm.addRowSpan();
 					
 					if(!isMostrarJustificacionesPtes){
 						designaFormList.add(designaForm);
@@ -1173,127 +1200,108 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 		
 	}
 	
+	
 	private String getQueryBaseJustificacion(String tipoResolucionDesigna,InformeJustificacionMasivaForm formulario, boolean isInforme,Hashtable codigos,String longitudNumEjg){
 		StringBuffer extra = new StringBuffer("");
 		
 		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
-		
-		
 	    int contador=codigos.size();
+		StringBuilder sql = new StringBuilder();
+		sql.append(" ");
+		sql.append(" SELECT DECODE(ALLDESIGNAS.NUM_TIPO_RESOLUCION_DESIGNA,1,'FAVORABLE', 2,'NO_FAVORABLE', 3,'PTE_CAJG', 4, 'SIN_RESOLUCION','SIN_EJG') AS TIPO_RESOLUCION_DESIGNA, ");
+		sql.append(" ALLDESIGNAS.* ");
 
-		StringBuffer sql = new StringBuffer("");
+		sql.append(" FROM ( ");
 		
 		
-		sql.append("( SELECT '");
-		sql.append(tipoResolucionDesigna);
-		sql.append("' TIPO_RESOLUCION_DESIGNA,");
-		sql.append(" TO_CHAR(D.FECHAENTRADA,'dd/mm/yyyy') FECHADESIGNA, ");
-		sql.append(" TO_CHAR(D.FECHAENTRADA,'yyyy_mm_dd') FECHAORDEN, ");
+//		Estos campos solo los muestra cuanto no hay que mostrar justificaciones pendientes
+//		sql.append(" ,SELECT F_SIGA_GETEJG_DESIGNA(D.IDINSTITUCION, D.IDTURNO, D.ANIO, D.NUMERO,5) AS EXPEDIENTES ");
+//		sql.append(" ,D.ANIO || '/' || D.CODIGO AS CODIGODESIGNA , D.RESUMENASUNTO,   DL.FECHARENUNCIA ");
+//		sql.append(" ,D.NUMPROCEDIMIENTO AS ASUNTO ");
+//		sql.append(" ,F_SIGA_GETDEFENDIDOSDESIGNA(D.IDINSTITUCION, D.ANIO, D.IDTURNO, D.NUMERO, 0) AS CLIENTE ");
 		
-		if(!isMostrarJustificacionesPtes){
-			sql.append("D.ANIO || '/' || D.CODIGO CODIGODESIGNA,");
-			sql.append(" F_SIGA_GETEJG_DESIGNA(:");
-			contador++;
-			codigos.put(new Integer(contador),formulario.getIdInstitucion());
-			sql.append(contador);
-			sql.append(",d.idturno,d.anio,d.numero,");
-			sql.append(Integer.parseInt(longitudNumEjg));
-			sql.append(") AS EXPEDIENTES, ");
-			sql.append(" D.NUMPROCEDIMIENTO ASUNTO, ");
-			sql.append(" f_siga_getdefendidosdesigna(:");
-			contador++;
-			codigos.put(new Integer(contador),formulario.getIdInstitucion());
-			sql.append(contador);
-			sql.append(",d.anio,d.idturno,d.numero,0) AS CLIENTE, ");
-			
-			sql.append(" D.RESUMENASUNTO RESUMENASUNTO, ");
-			sql.append(" DL.FECHARENUNCIA, ");
-		}//else{
-			
-		
-			
-		//}
-		sql.append(" D.IDINSTITUCION IDINSTITUCION, ");
-		sql.append(" D.IDTURNO IDTURNO, ");
-		sql.append(" D.ANIO ANIO, ");
-		sql.append(" D.NUMERO NUMERO, ");
+		sql.append(" SELECT TO_CHAR(D.FECHAENTRADA, 'dd/mm/yyyy') AS FECHADESIGNA, ");
+		sql.append(" TO_CHAR(D.FECHAENTRADA, 'yyyy_mm_dd') AS FECHAORDEN, ");
 		sql.append(" D.ART27 ART27, ");
+		sql.append("D.ANIO || '/' || D.CODIGO CODIGODESIGNA,");
+		sql.append(" F_SIGA_GETEJG_DESIGNA(:");
+		contador++;
+		codigos.put(new Integer(contador),formulario.getIdInstitucion());
+		sql.append(contador);
+		sql.append(",d.idturno,d.anio,d.numero,");
+		sql.append(Integer.parseInt(longitudNumEjg));
+		sql.append(") AS EXPEDIENTES, ");
+		sql.append(" D.NUMPROCEDIMIENTO ASUNTO, ");
+		sql.append(" f_siga_getdefendidosdesigna(:");
+		contador++;
+		codigos.put(new Integer(contador),formulario.getIdInstitucion());
+		sql.append(contador);
+		sql.append(",d.anio,d.idturno,d.numero,0) AS CLIENTE, ");
 		
-		sql.append(" D.IDJUZGADO IDJUZGADO, ");
-		sql.append(" D.IDINSTITUCION_JUZG IDINSTITUCION_JUZG, ");
-		sql.append(" D.ESTADO ESTADO, ");
-		sql.append(" D.IDPROCEDIMIENTO IDPROCEDIMIENTO, ");
-		sql.append(" D.FECHAENTRADA, D.CODIGO, D.SUFIJO, ");
-		sql.append(" DL.IDPERSONA ");
+		sql.append(" D.RESUMENASUNTO RESUMENASUNTO, ");
+		sql.append(" DL.FECHARENUNCIA, ");
 		
 		
-		sql.append(" , (SELECT COUNT(*) FROM SCS_DESIGNASLETRADO SDL ");
-		sql.append(" WHERE D.IDINSTITUCION = SDL.IDINSTITUCION ");
-		sql.append(" AND D.ANIO = SDL.ANIO ");
-		sql.append(" AND D.NUMERO = SDL.NUMERO ");
-		sql.append(" AND D.IDTURNO = SDL.IDTURNO) CAMBIOLETRADO ");
-
+		sql.append(" D.IDINSTITUCION, D.IDTURNO, D.ANIO, D.NUMERO,  D.CODIGO, ");
+		sql.append(" D.IDJUZGADO, D.IDINSTITUCION_JUZG, D.ESTADO, D.SUFIJO, D.FECHAENTRADA, ");
+		sql.append(" DL.IDPERSONA, D.IDPROCEDIMIENTO, ");
+		sql.append(" (SELECT COUNT(*) FROM SCS_DESIGNASLETRADO SDL  WHERE D.IDINSTITUCION = SDL.IDINSTITUCION  AND D.ANIO = SDL.ANIO  AND D.NUMERO = SDL.NUMERO AND D.IDTURNO = SDL.IDTURNO) AS CAMBIOLETRADO, ");
+	               
+		sql.append(" (SELECT MIN(CASE  WHEN (EJG.FECHARESOLUCIONCAJG IS NOT NULL AND ");
+		sql.append(" ((EJG.IDTIPORATIFICACIONEJG IN (3,  6, 7) AND ");
+		sql.append(" EJG.IDTIPORESOLAUTO IS NOT NULL AND ");
+		sql.append(" EJG.IDTIPORESOLAUTO IN (1)) OR ");
+		sql.append(" (EJG.IDTIPORATIFICACIONEJG IN ");
+		sql.append(" (1, 2, 8, 9, 10, 11) AND ");
+		sql.append(" (EJG.IDTIPORESOLAUTO IS NULL OR ");
+		sql.append(" EJG.IDTIPORESOLAUTO NOT IN (3))))) THEN 1 "); 
+	                           
+		sql.append(" WHEN (EJG.FECHARESOLUCIONCAJG IS NOT NULL AND ");
+		sql.append(" ((EJG.IDTIPORATIFICACIONEJG IN ");
+		sql.append(" (1, 2, 8, 9, 10, 11, 0) AND ");
+		sql.append(" EJG.IDTIPORESOLAUTO IS NOT NULL AND ");
+		sql.append(" EJG.IDTIPORESOLAUTO IN (3)) OR ");
+		sql.append(" (EJG.IDTIPORATIFICACIONEJG IN (3,  6, 7) AND ");
+		sql.append(" (EJG.IDTIPORESOLAUTO IS NULL OR ");
+		sql.append(" EJG.IDTIPORESOLAUTO NOT IN (1))))) THEN 2 "); 
+	                           
+		sql.append(" WHEN (EJG.FECHARESOLUCIONCAJG IS NOT NULL AND ");
+		sql.append(" EJG.IDTIPORATIFICACIONEJG IN (4)) THEN  3 "); 
+	                           
+		sql.append(" ELSE   4        END) ");
+	                
+		sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+		sql.append(" WHERE EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
+		sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
+		sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
 		
-		
+		sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO ");
+		sql.append(" AND D.IDINSTITUCION = EJGDES.IDINSTITUCION ");
+		sql.append(" AND D.IDTURNO = EJGDES.IDTURNO ");
+		sql.append(" AND D.ANIO = EJGDES.ANIODESIGNA ");
+		sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA) AS NUM_TIPO_RESOLUCION_DESIGNA ");
+	        
 		sql.append(" FROM SCS_DESIGNA D, SCS_DESIGNASLETRADO DL ");
-		
-		sql.append(getQueryEjgs(tipoResolucionDesigna));
-		
+	        
 		sql.append(" WHERE D.IDINSTITUCION = DL.IDINSTITUCION ");
 		sql.append(" AND D.ANIO = DL.ANIO ");
 		sql.append(" AND D.NUMERO = DL.NUMERO ");
 		sql.append(" AND D.IDTURNO = DL.IDTURNO ");
-		sql.append(" AND DL.IDINSTITUCION = :");
+		
+		sql.append(" AND D.IDINSTITUCION = :");
 
 		contador++;
 		codigos.put(new Integer(contador),formulario.getIdInstitucion());
 		sql.append(contador);
-		//sql.append("    and d.codigo in ('00164') ");
-		
-		//sql.append("    and d.codigo in ('00157','00158','00211','00212') ");
-		
-		if(tipoResolucionDesigna.equals(this.resolucionDesignaFavorable) ||
-				tipoResolucionDesigna.equals(this.resolucionDesignaPteCAJG) ||
-				tipoResolucionDesigna.equals(this.resolucionDesignaNoFavorable)){
-				sql.append(" AND D.IDINSTITUCION = EJGS.IDINSTITUCION ");
-				sql.append(" AND D.IDTURNO = EJGS.IDTURNO ");
-				sql.append(" AND D.ANIO = EJGS.ANIODESIGNA ");
-				sql.append("  AND D.NUMERO = EJGS.NUMERODESIGNA ");
-		}
-		
-		if(formulario.getIdPersona()!=null && !formulario.getIdPersona().equalsIgnoreCase("")){
-			sql.append(" and DL.IDPERSONA = :");
-			contador++;
-			codigos.put(new Integer(contador),formulario.getIdPersona());
-			sql.append(contador);
-		}
-		if (formulario.getAnio() != null && !formulario.getAnio().equals("")) {
-			sql.append(" and D.ANIO = :");	
-			contador++;
-			codigos.put(new Integer(contador),formulario.getAnio());
-			sql.append(contador);
-		}
 
-		sql.append(getQueryWhereResolucion(tipoResolucionDesigna));
-		
-		if(isMostrarJustificacionesPtes)
-			sql.append(" AND D.ESTADO NOT IN ('A','F') ");
-		
-		if(formulario.getEstado()!=null && !formulario.getEstado().equals("")){
-			sql.append(" AND D.ESTADO =:");
-			contador++;
-			codigos.put(new Integer(contador),formulario.getEstado());
-			sql.append(contador);
-			
-		}
 		if(formulario.getActuacionesPendientes()!=null && !formulario.getActuacionesPendientes().equals("")){
 			if (formulario.getActuacionesPendientes()!= null && !formulario.getActuacionesPendientes().equalsIgnoreCase("")) {
 				if(formulario.getActuacionesPendientes().equalsIgnoreCase("SINACTUACIONES")){
-					sql.append(" and F_SIGA_ACTUACIONESDESIG(D.idinstitucion,D.idturno,D.anio,D.numero) is null");
+					sql.append(" AND F_SIGA_ACTUACIONESDESIG(D.IDINSTITUCION,D.IDTURNO,D.ANIO,D.NUMERO) IS NULL ");
 				}else{
 					contador++;
 				    codigos.put(new Integer(contador),formulario.getActuacionesPendientes().toUpperCase());
-				    sql.append(" and upper(F_SIGA_ACTUACIONESDESIG(D.idinstitucion,D.idturno,D.anio,D.numero))=upper(:");
+				    sql.append(" AND UPPER(F_SIGA_ACTUACIONESDESIG(D.IDINSTITUCION,D.IDTURNO,D.ANIO,D.NUMERO))=UPPER(:");
 				    sql.append(contador);
 				    sql.append(")");
 				}
@@ -1326,14 +1334,14 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 		}
 		
 		if (formulario.getFechaDesde() != null && !formulario.getFechaDesde().equals("")) {
-			sql.append(" and trunc(d.fechaentrada) >= :");
+			sql.append(" AND TRUNC(D.FECHAENTRADA) >= :");
 			
 			contador++;
 			codigos.put(new Integer(contador),formulario.getFechaDesde());
 			sql.append(contador);
 			 
 		}else{
-			sql.append(" and trunc(d.fechaentrada) > :");
+			sql.append(" AND TRUNC(D.FECHAENTRADA) > :");
 			
 			contador++;
 			codigos.put(new Integer(contador),"01/01/1950");
@@ -1342,7 +1350,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 		}
 		
 		if (formulario.getFechaHasta() != null && !formulario.getFechaHasta().equals("")) {
-			sql.append(" and trunc(d.fechaentrada) <=:");
+			sql.append(" AND TRUNC(D.FECHAENTRADA) <=:");
 			
 			contador++;
 			codigos.put(new Integer(contador),formulario.getFechaHasta());
@@ -1357,12 +1365,12 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 				&& (formulario.getInteresadoNombre() != null && !formulario.getInteresadoNombre().equalsIgnoreCase(""))){
 			
 			
-			sql.append(" and UPPER(");
+			sql.append(" AND UPPER(");
 			sql.append("f_siga_getdefendidosdesigna(:");
 			contador++;
 			codigos.put(new Integer(contador),formulario.getIdInstitucion());
 			sql.append(contador);
-			sql.append(",d.anio,d.idturno,d.numero,1) ");
+			sql.append(",D.anio,D.idturno,D.numero,1) ");
 			sql.append(") like ");
 			contador++;
 			StringBuffer aux = new StringBuffer();
@@ -1407,31 +1415,52 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 		    
 			sql.append(":"+contador);
 		}
-		sql.append(")");
+		
+		
+		if(formulario.getIdPersona()!=null && !formulario.getIdPersona().equalsIgnoreCase("")){
+			sql.append(" AND DL.IDPERSONA = :");
+			contador++;
+			codigos.put(new Integer(contador),formulario.getIdPersona());
+			sql.append(contador);
+		}
+		if (formulario.getAnio() != null && !formulario.getAnio().equals("")) {
+			sql.append(" AND D.ANIO = :");	
+			contador++;
+			codigos.put(new Integer(contador),formulario.getAnio());
+			sql.append(contador);
+		}
+		if(isMostrarJustificacionesPtes)
+			sql.append(" AND D.ESTADO NOT IN ('A','F') ");
+		
+		if(formulario.getEstado()!=null && !formulario.getEstado().equals("")){
+			sql.append(" AND D.ESTADO =:");
+			contador++;
+			codigos.put(new Integer(contador),formulario.getEstado());
+			sql.append(contador);
+			
+		}
+		
+		sql.append(" ) ALLDESIGNAS ");
+
 		return sql.toString();
 		
 	}
+	
+	
+	
+	
+	
 	private String getQueryJustificacion(InformeJustificacionMasivaForm formulario, boolean isInforme,Hashtable codigos,String longitudNumEjg)throws ClsExceptions{
 		
 		StringBuffer extra = new StringBuffer("");
 		
 		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
-		
-		
 	    int contador=0;
-
-		StringBuffer sql = new StringBuffer("");
+	    StringBuffer sql = new StringBuffer("");
 		
 	    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		//ReadProperties rp3 = new ReadProperties("SIGA.properties");
-		
 		GenParametrosAdm paramAdm = new GenParametrosAdm (usrbean);
-		
-		
-		
-		
-		
-		sql.append(" SELECT * from (");
 		sql.append(getQueryBaseJustificacion(this.resolucionDesignaFavorable, formulario, isInforme, codigos,longitudNumEjg));
 		String codIncluirEjgNoFavorable = formulario.getIncluirEjgNoFavorable();
 		String codIncluirEjgSinResolucion = formulario.getIncluirEjgSinResolucion();
@@ -1439,29 +1468,33 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 		String codIncluirEjgPteCAJG = formulario.getIncluirEjgPteCAJG();
 		//cunado no estan activas las restricciones sacamos todo. Entonces la union se pone siempre que no estesn activas las restricciones
 		// o cuando la restriccion nos lo diga
+		
+		//WHERE DATOS.NUM_TIPO_RESOLUCION_DESIGNA IN (1,2,3,4) or DATOS.NUM_TIPO_RESOLUCION_DESIGNA is null
+		StringBuilder tiposResolucionBuilder = new StringBuilder();
+		tiposResolucionBuilder.append(" WHERE (ALLDESIGNAS.NUM_TIPO_RESOLUCION_DESIGNA IN (1");
+		
+
+		
 		if(!formulario.isActivarRestriccionesFicha() || (codIncluirEjgPteCAJG!=null && !codIncluirEjgPteCAJG.equals(ClsConstants.DB_FALSE))){
-			sql.append(" UNION ");
-			sql.append(getQueryBaseJustificacion(this.resolucionDesignaPteCAJG, formulario, isInforme, codigos,longitudNumEjg));
+			tiposResolucionBuilder.append(",3");
+			
 		}
 		if(!formulario.isActivarRestriccionesFicha() || (codIncluirEjgNoFavorable!=null && !codIncluirEjgNoFavorable.equals(ClsConstants.DB_FALSE))){
-			sql.append(" UNION ");
-			sql.append(getQueryBaseJustificacion(this.resolucionDesignaNoFavorable, formulario, isInforme, codigos,longitudNumEjg));
+			tiposResolucionBuilder.append(",2");
 		}
 		if(!formulario.isActivarRestriccionesFicha() ||(codIncluirEjgSinResolucion!=null && !codIncluirEjgSinResolucion.equals(ClsConstants.DB_FALSE))){
-			sql.append(" UNION ");
-			sql.append(getQueryBaseJustificacion(this.resolucionDesignaSinResolucion, formulario, isInforme, codigos,longitudNumEjg));
+			tiposResolucionBuilder.append(",4");
 			
 		}
+		tiposResolucionBuilder.append(")");
 		if(!formulario.isActivarRestriccionesFicha() ||(codIncluirSinEJG!=null && !codIncluirSinEJG.equals(ClsConstants.DB_FALSE))){
-			sql.append(" UNION ");
-			sql.append(getQueryBaseJustificacion(this.resolucionDesignaSinEjg, formulario, isInforme, codigos,longitudNumEjg));
+			tiposResolucionBuilder.append(" OR ALLDESIGNAS.NUM_TIPO_RESOLUCION_DESIGNA is null ");
 			
 		}
-		
-		
-		sql.append(" ) ALLDESIGNAS");
+		tiposResolucionBuilder.append(")");
+		sql.append(tiposResolucionBuilder);
 		if(isMostrarJustificacionesPtes){
-			sql.append(" WHERE (NOT EXISTS ");
+			sql.append(" AND (NOT EXISTS ");
 			sql.append(" (SELECT * ");
 			sql.append(" FROM SCS_ACTUACIONDESIGNA ACT ");
 			sql.append(" WHERE ACT.IDINSTITUCION = ALLDESIGNAS.IDINSTITUCION ");
@@ -1503,10 +1536,14 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			
 		}
 		if(!isMostrarJustificacionesPtes &&!isInforme)
-			sql.append(" ORDER BY FECHAENTRADA DESC ,IDINSTITUCION, ANIO, CODIGO, SUFIJO ");
+			sql.append(" ORDER BY ALLDESIGNAS.FECHAENTRADA DESC,        ALLDESIGNAS.IDINSTITUCION,      ALLDESIGNAS.ANIO,          ALLDESIGNAS.CODIGO,          ALLDESIGNAS.SUFIJO ");
 		return sql.toString();
 		
 	}
+	
+	
+	
+	
 	
 	/**
 	 * Recupera la fecha de renuncia del primer letrado de la designa

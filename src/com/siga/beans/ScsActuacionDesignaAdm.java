@@ -623,7 +623,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		
 		}
 
-		public void setActuacionesDesignas(DesignaForm designa, boolean isMostrarJustificacionesPtes)  throws ClsExceptions, SIGAException 
+		public void setActuacionesDesignas(DesignaForm designa, boolean isMostrarJustificacionesPtes, boolean isSoloLectura)  throws ClsExceptions, SIGAException 
 	{
 	    Hashtable<Integer,String> codigos = new Hashtable<Integer,String>();
 	    int contador=0;
@@ -738,10 +738,13 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				
 				
 				List<AcreditacionForm> acreditacionesPendientesList = null;
-				if(designa.getEstado().equals("V")||designa.getEstado().equals(""))
+				if(isSoloLectura)
+					acreditacionesPendientesList = new ArrayList<AcreditacionForm>();
+				else if((designa.getEstado().equals("V")||designa.getEstado().equals("")) && !isSoloLectura)
 					acreditacionesPendientesList = getAcreditacionesPendientes(designa.getIdInstitucion(), idProcedimiento,null,(designa.getActuacionRestriccionesActiva()!=null && designa.getActuacionRestriccionesActiva().equals(ClsConstants.DB_TRUE)),actuacionesProcedimientoList);
 				else
 					acreditacionesPendientesList = new ArrayList<AcreditacionForm>();
+					
 				
 				//Hacemos esto para el rowspan de la jsp
 				

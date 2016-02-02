@@ -86,6 +86,9 @@ public class DesignaForm extends MasterForm
 		
 		return rowSpan;
 	}
+	public void addRowSpan() {
+		rowSpan = rowSpan+=1;	
+	}
 	
 	public void setRowSpan() {
 		
