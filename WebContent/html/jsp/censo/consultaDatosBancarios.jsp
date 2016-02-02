@@ -43,7 +43,7 @@
 	String nombre = (String) request.getAttribute("nombrePersona");
 	String numero = (String) request.getAttribute("numero");
 	String idPersona = String.valueOf((Long) request.getAttribute("idPersona"));
-	Vector vDatos = (Vector) request.getAttribute("vDatos");
+	Vector<Hashtable<String, Object>> vDatos = (Vector<Hashtable<String, Object>>) request.getAttribute("vDatos");
 	String estadoColegial = (String) request.getAttribute("estadoColegial");
 	String DB_TRUE = ClsConstants.DB_TRUE;
 	String DB_FALSE = ClsConstants.DB_FALSE;	
@@ -183,7 +183,7 @@
 			int i = 0;
 
 			while (en.hasMoreElements()) {
-				Hashtable htData = (Hashtable) en.nextElement();
+				Hashtable<String, Object> htData = (Hashtable<String, Object>) en.nextElement();
 				if (htData == null)
 					continue;
 				String accionBanco = "";

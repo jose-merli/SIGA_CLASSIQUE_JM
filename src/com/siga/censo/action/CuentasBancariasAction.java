@@ -154,8 +154,6 @@ public class CuentasBancariasAction extends MasterAction{
 			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request),user,idInstitucionPersona.intValue(),idPersona.longValue());
 			CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));				
 	
-			Vector v=null;
-			Vector vCliente=null;
 			String nombre = null;
 			String numero = "";
 			String estadoColegial="";
@@ -169,7 +167,7 @@ public class CuentasBancariasAction extends MasterAction{
 			if(nombre!=""){
 				String sWhere = " where " + CenClienteBean.C_IDINSTITUCION + "=" + idInstitucion;
 				sWhere += " and " + CenClienteBean.C_IDPERSONA + "=" + idPersona;
-				vCliente = clienteAdm.select(sWhere);
+				Vector vCliente = clienteAdm.select(sWhere);
 				if(vCliente.size()>0){
 					numero = clienteAdm.obtenerNumero(idPersona,idInstitucionPersona);			
 					v = clienteAdm.getCuentasBancarias(idPersona,idInstitucionPersona);	
@@ -183,13 +181,13 @@ public class CuentasBancariasAction extends MasterAction{
 			
 			boolean bIncluirRegistrosConBajaLogica = UtilidadesString.stringToBoolean(((CuentasBancariasForm)formulario).getIncluirRegistrosConBajaLogica());
 			request.setAttribute("bIncluirRegistrosConBajaLogica", "" + bIncluirRegistrosConBajaLogica);
-			v = clienteAdm.getCuentasBancarias(idPersona,idInstitucionPersona, bIncluirRegistrosConBajaLogica);
+			Vector<Hashtable<String, Object>> vCuentas = clienteAdm.getCuentasBancarias(idPersona,idInstitucionPersona, bIncluirRegistrosConBajaLogica);
 			request.setAttribute("idPersona", idPersona);
 			request.setAttribute("idInstitucion", idInstitucionPersona);
 			request.setAttribute("accion", accion);
 			request.setAttribute("nombrePersona", nombre);
 			request.setAttribute("numero", numero);
-			request.setAttribute("vDatos", v);
+			request.setAttribute("vDatos", vCuentas);
 			request.setAttribute("estadoColegial", estadoColegial);
 		}
 		catch (Exception e) {
@@ -365,7 +363,7 @@ public class CuentasBancariasAction extends MasterAction{
 				throw new SIGAException (cuentasAdm.getError());
 			}
 			
-			Integer iResult = cuentasAdm.revisionesCuentas(beanCuentas, this.getUserName(request), this.getUserBean(request),true);
+			cuentasAdm.revisionesCuentas(beanCuentas, this.getUserName(request), this.getUserBean(request),true);
 
 			t.commit();
 			
