@@ -97,7 +97,7 @@ public class SIGAAuthAction extends Action
 	        	request.setAttribute("versionSiga", (version == null ? "" : version));
 	        }catch (Exception e){
 	        	request.setAttribute("versionSiga", "");
-	        	ClsLogging.writeFileLogError("Error al obtener la versión de SIGA desplegada.", e, 1);
+	        	ClsLogging.writeFileLog("Error al obtener la versión de SIGA desplegada.", 1);
 	        }
 		return mapping.findForward(result);
 	}
