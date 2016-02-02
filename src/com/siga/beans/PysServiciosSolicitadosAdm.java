@@ -703,88 +703,16 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 			consulta.append(" ) AS FORMAPAGO, ");
 									
 			// Concepto
-			consulta.append(" ( ");
-			consulta.append("SELECT ");
 			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
 			consulta.append(".");
 			consulta.append(PysServiciosInstitucionBean.C_DESCRIPCION); 
-			consulta.append(" FROM ");
-			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA); 
-			consulta.append(" WHERE ");
-			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysServiciosInstitucionBean.C_IDINSTITUCION);
-			consulta.append(" = ");
-			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION); 
-			consulta.append(" AND ");
-			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysServiciosInstitucionBean.C_IDTIPOSERVICIOS);
-			consulta.append(" = ");
-			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
-			consulta.append(" AND ");
-			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysServiciosInstitucionBean.C_IDSERVICIO);
-			consulta.append(" = ");
-			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIO);
-			consulta.append(" AND ");
-			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION);
-			consulta.append(" = ");
-			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
-			consulta.append(" ) AS CONCEPTO, ");
+			consulta.append(" AS CONCEPTO, ");
 									
 			// Solicitar Baja
-			consulta.append(" ( ");
-			consulta.append("SELECT ");
 			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
 			consulta.append(".");
 			consulta.append(PysServiciosInstitucionBean.C_SOLICITARBAJA); 
-			consulta.append(" FROM ");
-			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
-			consulta.append(" WHERE ");
-			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysServiciosInstitucionBean.C_IDINSTITUCION);
-			consulta.append(" = ");
-			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION); 
-			consulta.append(" AND ");
-			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysServiciosInstitucionBean.C_IDTIPOSERVICIOS);
-			consulta.append(" = ");
-			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
-			consulta.append(" AND ");
-			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysServiciosInstitucionBean.C_IDSERVICIO);
-			consulta.append(" = ");
-			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIO);
-			consulta.append(" AND ");
-			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION);
-			consulta.append(" = ");
-			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
-			consulta.append(".");
-			consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
-			consulta.append(" ) AS SOLICITARBAJA, ");
+			consulta.append(" AS SOLICITARBAJA, ");
 
 			// Cuenta
 			consulta.append(" NVL( ");
@@ -826,6 +754,8 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
 			consulta.append(", ");
 			consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
+			consulta.append(", ");
+			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
 			
 			consulta.append(" WHERE ");
 			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
@@ -848,8 +778,40 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 			consulta.append(" = ");
 			consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
 			consulta.append(".");
-			consulta.append(PysPeticionCompraSuscripcionBean.C_IDINSTITUCION);	
-			
+			consulta.append(PysPeticionCompraSuscripcionBean.C_IDINSTITUCION);
+			consulta.append(" AND ");
+			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosInstitucionBean.C_IDINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDINSTITUCION); 
+			consulta.append(" AND ");
+			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosInstitucionBean.C_IDTIPOSERVICIOS);
+			consulta.append(" = ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDTIPOSERVICIOS);
+			consulta.append(" AND ");
+			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosInstitucionBean.C_IDSERVICIO);
+			consulta.append(" = ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIO);
+			consulta.append(" AND ");
+			consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION);
+			consulta.append(" = ");
+			consulta.append(PysServiciosSolicitadosBean.T_NOMBRETABLA);
+			consulta.append(".");
+			consulta.append(PysServiciosSolicitadosBean.C_IDSERVICIOSINSTITUCION);
+
 			if (idPeticion != null) {
 				consulta.append(" AND ");
 				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
@@ -960,7 +922,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 				}
 			}
 			
-			if (isSolicitudBaja){
+			if (isSolicitudBaja) {
 				consulta.append(" AND "); // Debe tener la peticion de suscripcion procesada (como tiene tipoPeticion ya comprueba que es una peticion de alta)
 				consulta.append(PysPeticionCompraSuscripcionBean.T_NOMBRETABLA);
 				consulta.append(".");
@@ -976,6 +938,11 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 				consulta.append("',' ");
 				consulta.append(ClsConstants.PRODUCTO_BAJA);
 				consulta.append("')");
+				consulta.append(" AND ");
+				consulta.append(PysServiciosInstitucionBean.T_NOMBRETABLA);
+				consulta.append(".");
+				consulta.append(PysServiciosInstitucionBean.C_AUTOMATICO);
+				consulta.append(" = '0' "); // Solo se pueden anular los servicios manuales 
 			}
 			
 			consulta.append(" ORDER BY ");
