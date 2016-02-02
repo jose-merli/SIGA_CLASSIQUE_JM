@@ -489,7 +489,7 @@ if(usr.isComision()){
 					
 				</td>				
 				<td colspan="5">
-				<siga:Select id="idInstitucionComision" queryParamId="idInstitucion" params="<%=paramsInstitucionComision%>"  queryId="getInstitucionesComision" selectedIds="<%=idInstitucionSelected %>" childrenIds="idTipoEJGColegio,juzgado,calidad,identificador"/>
+				<siga:Select id="idInstitucionComision" queryParamId="idInstitucion" params="<%=paramsInstitucionComision%>"  queryId="getInstitucionesComision" selectedIds="<%=idInstitucionSelected %>" childrenIds="idTipoEJGColegio,juzgado,calidad,identificador,idTipoDictamenEJG"/>
 				</td>
 			</tr>			
 		<%}else{%>
