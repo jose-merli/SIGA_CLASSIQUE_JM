@@ -88,6 +88,7 @@ public class TransformBeanToForm {
 //		Identificador  Nombre  Fecha de creación  Fecha programada  Estado  Tipo envío  		
 		DefinirEnviosForm formulario = new DefinirEnviosForm();
 		SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+		SimpleDateFormat sdfLong = new SimpleDateFormat(ClsConstants.DATE_FORMAT_LONG_SPANISH);
 		
 		if(salida.getIdenvio() != null){
 			formulario.setIdEnvio(salida.getIdenvio().toString());
@@ -101,7 +102,7 @@ public class TransformBeanToForm {
 			formulario.setFecha(sdf.format(salida.getFecha()));
 		}
 		if(salida.getFechaprogramada() != null){
-			formulario.setFechaProgramada(sdf.format(salida.getFechaprogramada()));
+			formulario.setFechaProgramada(sdfLong.format(salida.getFechaprogramada()));
 		}
 		if(salida.getIdestado() != null){
 			formulario.setIdEstado(salida.getIdestado().toString());

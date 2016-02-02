@@ -1590,6 +1590,8 @@ public class EnvioInformesGenericos extends MasterReport {
 
 					} else if (String.valueOf(tipoDestinatario).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO)) {
 						añadir = tipoDestinatarioEnvio.equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO);
+					} else if (String.valueOf(tipoDestinatario).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPROCURADOR)) {
+						añadir = tipoDestinatarioEnvio.equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR);
 					} else if (String.valueOf(tipoDestinatario).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSCONTRARIOSJG)) {
 						añadir = tipoDestinatarioEnvio.equalsIgnoreCase(EnvDestinatariosBean.TIPODESTINATARIO_SCSCONTRARIOSJG);
 					}
@@ -3838,6 +3840,14 @@ public class EnvioInformesGenericos extends MasterReport {
 					htPersonas.put(idPersonaJG, EnvDestinatariosBean.TIPODESTINATARIO_SCSCONTRARIOSJG);
 				}
 			}
+			if(ht.get("idJuzgado")!=null &&!((String)ht.get("idJuzgado")).equals("")){
+				String idJuzgado = (String) ht.get("idJuzgado");
+				htPersonas.put(idJuzgado, EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO);
+			}
+			if(ht.get("idProcurador")!=null &&!((String)ht.get("idProcurador")).equals("")){
+				String idProcurador = (String) ht.get("idProcurador");
+				htPersonas.put(idProcurador, EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR);
+			}
 
 		}
 
@@ -5595,23 +5605,35 @@ public class EnvioInformesGenericos extends MasterReport {
 				// Este netodo nos debe devolver un vector de hashtable con las
 				// personas de las designaciones relacionadas
 				Vector personasDesignasEjg = designaAdm.getPersonasDesignadasEjg(new Integer(idInstitucion), new Integer(idTipoEJG), new Integer(anio), new Integer(numero));
-				solicitantesEjg = unidadFamiliarEJGAdm.getSolicitantesEjg(new Integer(idInstitucion), new Integer(idTipoEJG), new Integer(anio), new Integer(numero));
-
-				Vector<ScsContrariosEJGBean> contrariosEjg = scsContrariosEJGAdm.getPersonasContrariosEjg(new Integer(idInstitucion), new Integer(idTipoEJG), new Integer(anio), new Integer(numero));
-
-				if (solicitantesEjg != null)
-					ht.put("solicitantesEjg", solicitantesEjg);
 				if (personasDesignasEjg != null)
 					ht.put("personasDesignasEjg", personasDesignasEjg);
-
-				Long idJuzgado = ejgAdm.getIdJuzgadoEjg(idInstitucion, anio, numero, idTipoEJG);
-				if (idJuzgado != null && !idJuzgado.equals(""))
-					ht.put("idJuzgado", idJuzgado.toString());
+				solicitantesEjg = unidadFamiliarEJGAdm.getSolicitantesEjg(new Integer(idInstitucion), new Integer(idTipoEJG), new Integer(anio), new Integer(numero));
+				if (solicitantesEjg != null)
+					ht.put("solicitantesEjg", solicitantesEjg);
+				Vector<ScsContrariosEJGBean> contrariosEjg = scsContrariosEJGAdm.getPersonasContrariosEjg(new Integer(idInstitucion), new Integer(idTipoEJG), new Integer(anio), new Integer(numero));
 				if (contrariosEjg != null)
 					ht.put("contrariosEjg", contrariosEjg);
+				
+				
+				
+				Hashtable datosEJgHashtable = ejgAdm.getJuzgadoProcuradorEjg(idInstitucion, anio, numero, idTipoEJG);
+				String idJuzgado = null;
+				String idProcurador = null;
+				if(datosEJgHashtable!=null){
+					idJuzgado =  datosEJgHashtable.get("JUZGADO")!=null?(String)datosEJgHashtable.get("JUZGADO"):null; 
+					if (idJuzgado!= null && !idJuzgado.equals(""))
+						ht.put("idJuzgado", (String)datosEJgHashtable.get("JUZGADO"));
+					idProcurador =  datosEJgHashtable.get("IDPROCURADOR")!=null?(String)datosEJgHashtable.get("IDPROCURADOR"):null;
+					if (idProcurador!= null && !idProcurador.equals(""))
+						ht.put("idProcurador", idProcurador);
+					
+				}
+				
 
+				
+				
 				if (personasDesignasEjg == null || personasDesignasEjg.size() == 0 && (solicitantesEjg == null || solicitantesEjg.size() == 0) 
-						&& (idJuzgado == null || idJuzgado.equals("")) && (contrariosEjg == null || contrariosEjg.size() == 0))
+						&& (idJuzgado == null || idJuzgado.equals("")) && (contrariosEjg == null || contrariosEjg.size() == 0) && idProcurador==null)
 					iteCampos.remove();
 			}
 		}
@@ -6180,6 +6202,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		Vector<AdmInformeBean> informesVector = null;
 		boolean isASolicitantes = false;
 		boolean isAJuzgado = false;
+		boolean isAProcurador = false;
 		boolean isAContrario = false;
 		if (isDestinatarioUnico && enviosHashtable.size() == 1) {
 
@@ -6205,6 +6228,10 @@ public class EnvioInformesGenericos extends MasterReport {
 							isAJuzgado = true;
 							break;
 						}
+						if (String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPROCURADOR)) {
+							isAProcurador = true;
+							break;
+						}
 
 						if (String.valueOf(tipoDestinatario[k]).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSCONTRARIOSJG)) {
 							isAContrario = true;
@@ -6220,7 +6247,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		}
 
-		if (isDestinatarioUnico && enviosHashtable.size() == 1 && !isASolicitantes && !isAJuzgado && !isAContrario) {
+		if (isDestinatarioUnico && enviosHashtable.size() == 1 && !isASolicitantes && !isAJuzgado && !isAContrario && !isAProcurador) {
 			List<ScsEjg> ejgs = new ArrayList<ScsEjg>();
 			Vector vDocumentos = new Vector();
 			for (int i = 0; i < datosInformeVector.size(); i++) {
@@ -6326,6 +6353,7 @@ public class EnvioInformesGenericos extends MasterReport {
 					Vector vContrariosEjg = (Vector) ht.get("contrariosEjg");
 
 					String idJuzgado = (String) ht.get("idJuzgado");
+					String idProcurador = (String) ht.get("idProcurador");
 					idInstitucion = (String) ht.get("idinstitucion");
 					idTipoInforme = (String) ht.get("idTipoInforme");
 					String idTipoEjg = "";
@@ -6487,7 +6515,30 @@ public class EnvioInformesGenericos extends MasterReport {
 										lDestinatarios.add(destProgramInformes);
 										lDestPersonas.add(EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO + idJuzgado);
 									}
-								} else if (String.valueOf(tiposDestinatario).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSCONTRARIOSJG) && vContrariosEjg != null) {
+								}else if (String.valueOf(tiposDestinatario).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPROCURADOR)) {
+
+									if (idProcurador == null)
+										continue;
+
+									destProgramInformes = new EnvDestProgramInformesBean();
+									destProgramInformes.setIdProgram(programInformes.getIdProgram());
+									destProgramInformes.setIdEnvio(programInformes.getIdEnvio());
+									destProgramInformes.setIdInstitucion(programInformes.getIdInstitucion());
+									destProgramInformes.setIdPersona(new Long(idProcurador));
+									destProgramInformes.setIdInstitucionPersona(new Integer(idInstitucion));
+									destProgramInformes.setTipoDestinatario(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR);
+
+									if (!lPersonas.contains(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR + idProcurador)) {
+										destProgramInformesAdm.insert(destProgramInformes);
+										countEnvios++;
+										lPersonas.add(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR + idProcurador);
+									}
+
+									if (!lDestPersonas.contains(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR + idProcurador)) {
+										lDestinatarios.add(destProgramInformes);
+										lDestPersonas.add(EnvDestinatariosBean.TIPODESTINATARIO_SCSPROCURADOR + idProcurador);
+									}
+								}  else if (String.valueOf(tiposDestinatario).equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSCONTRARIOSJG) && vContrariosEjg != null) {
 									for (int jta = 0; jta < vContrariosEjg.size(); jta++) {
 										Hashtable htContrario = (Hashtable) vContrariosEjg.get(jta);
 										String idPersonaJG = (String) htContrario.get(ScsContrariosEJGBean.C_IDPERSONA);

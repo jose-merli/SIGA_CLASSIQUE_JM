@@ -2191,7 +2191,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" pro.ncolegiado as PROCURADOR_DJ_NCOLEGIADO, ");
 			sql.append(" pro.telefono1 as PROCURADOR_DJ_TELEFONO1, ");
 			sql.append(" pro.telefono2 as PROCURADOR_DJ_TELEFONO2, ");
-			sql.append(" pro.Domicilio AS PROCURADOR_DOMICILIO_D_J, ");			
+			sql.append(" pro.Domicilio AS PROCURADOR_DOMICILIO_D_J, ");		
+			sql.append(" pro.EMAIL AS PROCURADOR_EMAIL, ");
+			
 			sql.append(" pro.Codigopostal AS PROCURADOR_CODIGOPOSTAL_D_J, ");
 			sql.append(" (Select Provincia.Nombre ");
 			sql.append("  From Cen_Provincias Provincia ");
@@ -4495,33 +4497,63 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 									}
 									
 									clone.putAll(registroDefendido);
-									clone.put("NOMBRE_DEST", (String) clone.get("JUZGADO"));
-									clone.put("NOMBRE_DEST_MAYUS", ((String) clone.get("JUZGADO")).toUpperCase());
-									clone.put("APELLIDO1_DEST", "");
-									clone.put("APELLIDO1_DEST_MAYUS","");
-									clone.put("APELLIDO2_DEST","");
-									clone.put("APELLIDO2_DEST_MAYUS", "");
+									if (tipoDestinatarioInforme.equals(AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO) ) {
 									
-									clone.put("SEXO_DEST","");
-									clone.put("O_A_DEST", "");
-									clone.put("EL_LA_DEST", "");
-									clone.put("NIFCIF_DEST", "");
-									clone.put("IDDIRECCION_DEST", "");
-									clone.put("DOMICILIO_DEST", (String) clone.get("DIR_JUZGADO"));
-									clone.put("CODIGOPOSTAL_DEST", (String) clone.get("CP_JUZGADO"));
-									clone.put("TELEFONO1_DEST", (String) clone.get("TELEFONO1_JUZGADO"));
-									clone.put("TELEFONO2_DEST", "");
-									clone.put("MOVIL_DEST", (String) clone.get("MOVIL_JUZGADO"));
-									clone.put("FAX1_DEST", (String) clone.get("FAX1_JUZGADO"));
-									registro.put("FAX2_DEST", "");
-									registro.put("NOMBRE_PAIS_DEST", "");
-									registro.put("TRATAMIENTO_DEST","");
-									clone.put("CORREOELECTRONICO_DEST", (String) clone.get("EMAIL_JUZGADO"));
-									clone.put("PAGINAWEB_DEST", "");
-									clone.put("POBLACIONEXTRANJERA_DEST","");
-									clone.put("NOMBRE_POBLACION_DEST", (String) clone.get("POBLACION_JUZGADO"));
-									clone.put("NOMBRE_PROVINCIA_DEST", "");
-									
+										clone.put("NOMBRE_DEST", (String) clone.get("JUZGADO"));
+										clone.put("NOMBRE_DEST_MAYUS", ((String) clone.get("JUZGADO")).toUpperCase());
+										clone.put("APELLIDO1_DEST", "");
+										clone.put("APELLIDO1_DEST_MAYUS","");
+										clone.put("APELLIDO2_DEST","");
+										clone.put("APELLIDO2_DEST_MAYUS", "");
+										
+										clone.put("SEXO_DEST","");
+										clone.put("O_A_DEST", "");
+										clone.put("EL_LA_DEST", "");
+										clone.put("NIFCIF_DEST", "");
+										clone.put("IDDIRECCION_DEST", "");
+										clone.put("DOMICILIO_DEST", (String) clone.get("DIR_JUZGADO"));
+										clone.put("CODIGOPOSTAL_DEST", (String) clone.get("CP_JUZGADO"));
+										clone.put("TELEFONO1_DEST", (String) clone.get("TELEFONO1_JUZGADO"));
+										clone.put("TELEFONO2_DEST", "");
+										clone.put("MOVIL_DEST", (String) clone.get("MOVIL_JUZGADO"));
+										clone.put("FAX1_DEST", (String) clone.get("FAX1_JUZGADO"));
+										clone.put("FAX2_DEST", "");
+										clone.put("NOMBRE_PAIS_DEST", "");
+										clone.put("TRATAMIENTO_DEST","");
+										clone.put("CORREOELECTRONICO_DEST", (String) clone.get("EMAIL_JUZGADO"));
+										clone.put("PAGINAWEB_DEST", "");
+										clone.put("POBLACIONEXTRANJERA_DEST","");
+										clone.put("NOMBRE_POBLACION_DEST", (String) clone.get("POBLACION_JUZGADO"));
+										clone.put("NOMBRE_PROVINCIA_DEST", "");
+									}else{//Es procurador
+										clone.put("NOMBRE_DEST", (String) clone.get("PROCURADOR_DEFENSA_JURIDICA"));
+										clone.put("NOMBRE_DEST_MAYUS", ((String) clone.get("PROCURADOR_DEFENSA_JURIDICA")).toUpperCase());
+										clone.put("APELLIDO1_DEST", "");
+										clone.put("APELLIDO1_DEST_MAYUS","");
+										clone.put("APELLIDO2_DEST","");
+										clone.put("APELLIDO2_DEST_MAYUS", "");
+										
+										clone.put("SEXO_DEST","");
+										clone.put("O_A_DEST", "");
+										clone.put("EL_LA_DEST", "");
+										clone.put("NIFCIF_DEST", "");
+										clone.put("IDDIRECCION_DEST", "");
+										clone.put("DOMICILIO_DEST", (String) clone.get("PROCURADOR_DOMICILIO_D_J"));
+										clone.put("CODIGOPOSTAL_DEST", (String) clone.get("PROCURADOR_CODIGOPOSTAL_D_J"));
+										clone.put("TELEFONO1_DEST", (String) clone.get("PROCURADOR_DJ_TELEFONO1"));
+										clone.put("TELEFONO2_DEST", "");
+										clone.put("MOVIL_DEST", "");
+										clone.put("FAX1_DEST", "");
+										clone.put("FAX2_DEST", "");
+										clone.put("NOMBRE_PAIS_DEST", "");
+										clone.put("TRATAMIENTO_DEST","");
+										clone.put("CORREOELECTRONICO_DEST",""+(clone.get("PROCURADOR_EMAIL")!=null?clone.get("PROCURADOR_EMAIL"):""));
+										clone.put("PAGINAWEB_DEST", "");
+										clone.put("POBLACIONEXTRANJERA_DEST","");
+										clone.put("NOMBRE_POBLACION_DEST", (String) clone.get("PROCURADOR_POBLACION_D_J"));
+										clone.put("NOMBRE_PROVINCIA_DEST",(String) clone.get("PROCURADOR_PROVINCIA_D_J") );
+										
+									}
 									String idRepresentanteJg = (String) registroDefendido.get("IDREPRESENTANTEJG");
 									if (idRepresentanteJg!=null && !idRepresentanteJg.equals("")) {
 										Hashtable representanteLegalDefendido = scsPersonaJGAdm.getDatosPersonaJG(idRepresentanteJg, (String)registroDefendido.get("IDINSTITUCION"));
@@ -4539,38 +4571,70 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 						
 						if (isAcontrarios) {
 							this.actualizarDefendidos(idInstitucion, tipoEjg, anioEjg, numeroEjg, idPersonaJG, vDefendidos, idioma, idiomainforme, registro);
-
-							registro.put("NOMBRE_DEST", (String) registro.get("JUZGADO"));
-							registro.put("NOMBRE_DEST_MAYUS", ((String) registro.get("JUZGADO")).toUpperCase());
-
-							registro.put("APELLIDO1_DEST", "");
-							registro.put("APELLIDO1_DEST_MAYUS","");
-
-							registro.put("APELLIDO2_DEST","");
-							registro.put("APELLIDO2_DEST_MAYUS", "");
-
-							registro.put("SEXO_DEST","");
-							registro.put("O_A_DEST", "");
-							registro.put("EL_LA_DEST", "");
-
-							registro.put("NIFCIF_DEST", "");
-							registro.put("IDDIRECCION_DEST", "");
-
-							registro.put("DOMICILIO_DEST", (String) registro.get("DIR_JUZGADO"));
-							registro.put("CODIGOPOSTAL_DEST", (String) registro.get("CP_JUZGADO"));
-							registro.put("TELEFONO1_DEST", (String) registro.get("TELEFONO1_JUZGADO"));
-							registro.put("TELEFONO2_DEST", "");
-							registro.put("MOVIL_DEST", (String) registro.get("MOVIL_JUZGADO"));
-							registro.put("FAX1_DEST", (String) registro.get("FAX1_JUZGADO"));
-							registro.put("FAX2_DEST", "");
-							registro.put("NOMBRE_PAIS_DEST", "");
-							registro.put("TRATAMIENTO_DEST","");
-
-							registro.put("CORREOELECTRONICO_DEST", (String) registro.get("EMAIL_JUZGADO"));
-							registro.put("PAGINAWEB_DEST", "");
-							registro.put("POBLACIONEXTRANJERA_DEST","");
-							registro.put("NOMBRE_POBLACION_DEST", (String) registro.get("POBLACION_JUZGADO"));
-							registro.put("NOMBRE_PROVINCIA_DEST", "");
+							if(registro.get("JUZGADO")==null)
+								registro = this.getregistrodatosEjg(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, idPersonaJG, registro, false);
+							
+							
+							if (tipoDestinatarioInforme.equals(AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO) ) {
+								registro.put("NOMBRE_DEST", (String) registro.get("JUZGADO"));
+								registro.put("NOMBRE_DEST_MAYUS", ((String) registro.get("JUZGADO")).toUpperCase());
+	
+								registro.put("APELLIDO1_DEST", "");
+								registro.put("APELLIDO1_DEST_MAYUS","");
+	
+								registro.put("APELLIDO2_DEST","");
+								registro.put("APELLIDO2_DEST_MAYUS", "");
+	
+								registro.put("SEXO_DEST","");
+								registro.put("O_A_DEST", "");
+								registro.put("EL_LA_DEST", "");
+	
+								registro.put("NIFCIF_DEST", "");
+								registro.put("IDDIRECCION_DEST", "");
+	
+								registro.put("DOMICILIO_DEST", (String) registro.get("DIR_JUZGADO"));
+								registro.put("CODIGOPOSTAL_DEST", (String) registro.get("CP_JUZGADO"));
+								registro.put("TELEFONO1_DEST", (String) registro.get("TELEFONO1_JUZGADO"));
+								registro.put("TELEFONO2_DEST", "");
+								registro.put("MOVIL_DEST", (String) registro.get("MOVIL_JUZGADO"));
+								registro.put("FAX1_DEST", (String) registro.get("FAX1_JUZGADO"));
+								registro.put("FAX2_DEST", "");
+								registro.put("NOMBRE_PAIS_DEST", "");
+								registro.put("TRATAMIENTO_DEST","");
+	
+								registro.put("CORREOELECTRONICO_DEST", (String) registro.get("EMAIL_JUZGADO"));
+								registro.put("PAGINAWEB_DEST", "");
+								registro.put("POBLACIONEXTRANJERA_DEST","");
+								registro.put("NOMBRE_POBLACION_DEST", (String) registro.get("POBLACION_JUZGADO"));
+								registro.put("NOMBRE_PROVINCIA_DEST", "");
+							}else{
+								registro.put("NOMBRE_DEST", (String) registro.get("PROCURADOR_DEFENSA_JURIDICA"));
+								registro.put("NOMBRE_DEST_MAYUS", ((String) registro.get("PROCURADOR_DEFENSA_JURIDICA")).toUpperCase());
+								registro.put("APELLIDO1_DEST", "");
+								registro.put("APELLIDO1_DEST_MAYUS","");
+								registro.put("APELLIDO2_DEST","");
+								registro.put("APELLIDO2_DEST_MAYUS", "");
+								
+								registro.put("SEXO_DEST","");
+								registro.put("O_A_DEST", "");
+								registro.put("EL_LA_DEST", "");
+								registro.put("NIFCIF_DEST", "");
+								registro.put("IDDIRECCION_DEST", "");
+								registro.put("DOMICILIO_DEST", (String) registro.get("PROCURADOR_DOMICILIO_D_J"));
+								registro.put("CODIGOPOSTAL_DEST", (String) registro.get("PROCURADOR_CODIGOPOSTAL_D_J"));
+								registro.put("TELEFONO1_DEST", (String) registro.get("PROCURADOR_DJ_TELEFONO1"));
+								registro.put("TELEFONO2_DEST", "");
+								registro.put("MOVIL_DEST", "");
+								registro.put("FAX1_DEST", "");
+								registro.put("FAX2_DEST", "");
+								registro.put("NOMBRE_PAIS_DEST", "");
+								registro.put("TRATAMIENTO_DEST","");
+								registro.put("CORREOELECTRONICO_DEST",""+(registro.get("PROCURADOR_EMAIL")!=null?registro.get("PROCURADOR_EMAIL"):""));
+								registro.put("PAGINAWEB_DEST", "");
+								registro.put("POBLACIONEXTRANJERA_DEST","");
+								registro.put("NOMBRE_POBLACION_DEST", (String) registro.get("PROCURADOR_POBLACION_D_J"));
+								registro.put("NOMBRE_PROVINCIA_DEST",(String) registro.get("PROCURADOR_PROVINCIA_D_J") );
+							}
 
 							if (contrariosEjgVector!=null && contrariosEjgVector.size()>0) {
 								for (int k = 0; k < contrariosEjgVector.size(); k++) {
@@ -4591,6 +4655,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 
 					} else {
 						this.actualizarDefendidos(idInstitucion, tipoEjg, anioEjg, numeroEjg, idPersonaJG, vDefendidos, idioma, idiomainforme, registro);
+						if(registro.get("JUZGADO")==null)
+							registro = this.getregistrodatosEjg(idInstitucion, tipoEjg, anioEjg, numeroEjg, idioma, idPersonaJG, registro, false);
 						
 						if (contrariosEjgVector!=null && contrariosEjgVector.size()>0) {
 							registro.put("contrarios", contrariosEjgVector);
@@ -4622,39 +4688,68 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 						registro.put("PROVINCIA_CONTRARIO", "");
 						registro.put("O_A_CONTRARIO", "");
 						registro.put("NIF_CONTRARIO", "");
+
 						registro.put("TELEFONO1_CONTRARIO", "");
-
-						registro.put("NOMBRE_DEST", (String) registro.get("JUZGADO"));
-						registro.put("NOMBRE_DEST_MAYUS", ((String) registro.get("JUZGADO")).toUpperCase());
-
-						registro.put("APELLIDO1_DEST", "");
-						registro.put("APELLIDO1_DEST_MAYUS","");
-
-						registro.put("APELLIDO2_DEST","");
-						registro.put("APELLIDO2_DEST_MAYUS", "");
-
-						registro.put("SEXO_DEST","");
-						registro.put("O_A_DEST", "");
-						registro.put("EL_LA_DEST", "");
-
-						registro.put("NIFCIF_DEST", "");
-						registro.put("IDDIRECCION_DEST", "");
-
-						registro.put("DOMICILIO_DEST", (String) registro.get("DIR_JUZGADO"));
-						registro.put("CODIGOPOSTAL_DEST", (String) registro.get("CP_JUZGADO"));
-						registro.put("TELEFONO1_DEST", (String) registro.get("TELEFONO1_JUZGADO"));
-						registro.put("TELEFONO2_DEST", "");
-						registro.put("MOVIL_DEST", (String) registro.get("MOVIL_JUZGADO"));
-						registro.put("FAX1_DEST", (String) registro.get("FAX1_JUZGADO"));
-						registro.put("FAX2_DEST", "");
-						registro.put("NOMBRE_PAIS_DEST", "");
-						registro.put("TRATAMIENTO_DEST","");
-
-						registro.put("CORREOELECTRONICO_DEST", (String) registro.get("EMAIL_JUZGADO"));
-						registro.put("PAGINAWEB_DEST", "");
-						registro.put("POBLACIONEXTRANJERA_DEST","");
-						registro.put("NOMBRE_POBLACION_DEST", (String) registro.get("POBLACION_JUZGADO"));
-						registro.put("NOMBRE_PROVINCIA_DEST", "");
+						if (tipoDestinatarioInforme.equals(AdmInformeBean.TIPODESTINATARIO_SCSJUZGADO) ) {
+							registro.put("NOMBRE_DEST", (String) registro.get("JUZGADO"));
+							registro.put("NOMBRE_DEST_MAYUS", ((String) registro.get("JUZGADO")).toUpperCase());
+	
+							registro.put("APELLIDO1_DEST", "");
+							registro.put("APELLIDO1_DEST_MAYUS","");
+	
+							registro.put("APELLIDO2_DEST","");
+							registro.put("APELLIDO2_DEST_MAYUS", "");
+	
+							registro.put("SEXO_DEST","");
+							registro.put("O_A_DEST", "");
+							registro.put("EL_LA_DEST", "");
+	
+							registro.put("NIFCIF_DEST", "");
+							registro.put("IDDIRECCION_DEST", "");
+	
+							registro.put("DOMICILIO_DEST", (String) registro.get("DIR_JUZGADO"));
+							registro.put("CODIGOPOSTAL_DEST", (String) registro.get("CP_JUZGADO"));
+							registro.put("TELEFONO1_DEST", (String) registro.get("TELEFONO1_JUZGADO"));
+							registro.put("TELEFONO2_DEST", "");
+							registro.put("MOVIL_DEST", (String) registro.get("MOVIL_JUZGADO"));
+							registro.put("FAX1_DEST", (String) registro.get("FAX1_JUZGADO"));
+							registro.put("FAX2_DEST", "");
+							registro.put("NOMBRE_PAIS_DEST", "");
+							registro.put("TRATAMIENTO_DEST","");
+	
+							registro.put("CORREOELECTRONICO_DEST", (String) registro.get("EMAIL_JUZGADO"));
+							registro.put("PAGINAWEB_DEST", "");
+							registro.put("POBLACIONEXTRANJERA_DEST","");
+							registro.put("NOMBRE_POBLACION_DEST", (String) registro.get("POBLACION_JUZGADO"));
+							registro.put("NOMBRE_PROVINCIA_DEST", "");
+						}else{
+							registro.put("NOMBRE_DEST", (String) registro.get("PROCURADOR_DEFENSA_JURIDICA"));
+							registro.put("NOMBRE_DEST_MAYUS", ((String) registro.get("PROCURADOR_DEFENSA_JURIDICA")).toUpperCase());
+							registro.put("APELLIDO1_DEST", "");
+							registro.put("APELLIDO1_DEST_MAYUS","");
+							registro.put("APELLIDO2_DEST","");
+							registro.put("APELLIDO2_DEST_MAYUS", "");
+							
+							registro.put("SEXO_DEST","");
+							registro.put("O_A_DEST", "");
+							registro.put("EL_LA_DEST", "");
+							registro.put("NIFCIF_DEST", "");
+							registro.put("IDDIRECCION_DEST", "");
+							registro.put("DOMICILIO_DEST", (String) registro.get("PROCURADOR_DOMICILIO_D_J"));
+							registro.put("CODIGOPOSTAL_DEST", (String) registro.get("PROCURADOR_CODIGOPOSTAL_D_J"));
+							registro.put("TELEFONO1_DEST", (String) registro.get("PROCURADOR_DJ_TELEFONO1"));
+							registro.put("TELEFONO2_DEST", "");
+							registro.put("MOVIL_DEST", "");
+							registro.put("FAX1_DEST", "");
+							registro.put("FAX2_DEST", "");
+							registro.put("NOMBRE_PAIS_DEST", "");
+							registro.put("TRATAMIENTO_DEST","");
+							registro.put("CORREOELECTRONICO_DEST",""+(registro.get("PROCURADOR_EMAIL")!=null?registro.get("PROCURADOR_EMAIL"):""));
+							registro.put("PAGINAWEB_DEST", "");
+							registro.put("POBLACIONEXTRANJERA_DEST","");
+							registro.put("NOMBRE_POBLACION_DEST", (String) registro.get("PROCURADOR_POBLACION_D_J"));
+							registro.put("NOMBRE_PROVINCIA_DEST",(String) registro.get("PROCURADOR_PROVINCIA_D_J") );
+						}
 
 						if (generarInformeSinDireccion || (registro.get("DOMICILIO_DEST")!=null && !((String)registro.get("DOMICILIO_DEST")).equals(""))) {
 							vSalida.add(registro);
@@ -5522,7 +5617,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			String domiciliodj= "";
 			String provincia= "";
 			String poblacion= "";
-			String codigopostalprocuradorejg="";	
+			String codigopostalprocuradorejg="";
+			String email = "";
 			for (int l = 0; l < vprocuradorDjEjg.size(); l++) {
 				registroprocuradorDJ = (Hashtable) vprocuradorDjEjg.get(l);	
 				procuradordj = (String)registroprocuradorDJ.get("PROCURADOR_DEFENSA_JURIDICA");
@@ -5533,6 +5629,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				provincia= (String)registroprocuradorDJ.get("PROCURADOR_PROVINCIA_D_J");
 				poblacion= (String)registroprocuradorDJ.get("PROCURADOR_POBLACION_D_J");
 				codigopostalprocuradorejg= (String)registroprocuradorDJ.get("PROCURADOR_CODIGOPOSTAL_D_J");	
+				email = (String)registroprocuradorDJ.get("PROCURADOR_EMAIL");
 					
 				if (procuradordj!=null && !procuradordj.trim().equalsIgnoreCase("")) {						
 					registro.put("PROCURADOR_DEFENSA_JURIDICA",procuradordj);
@@ -5574,6 +5671,11 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					registro.put("PROCURADOR_POBLACION_D_J", poblacion);
 				else
 					UtilidadesHash.set(registro, "PROCURADOR_POBLACION_D_J", "");
+				
+				if (email!=null && !email.trim().equalsIgnoreCase(""))
+					registro.put("PROCURADOR_EMAIL", email);
+				else
+					UtilidadesHash.set(registro, "PROCURADOR_EMAIL", "");
 				
 				UtilidadesHash.set(registro,"PROCURADOR_DJ_COL_NOMBRE", registroprocuradorDJ.get("COLPROCURADORES_NOMBRE")!=null?UtilidadesHash.getString(registroprocuradorDJ,"COLPROCURADORES_NOMBRE" ):"");
 				UtilidadesHash.set(registro,"PROCURADOR_DJ_COL_DIRECCION", registroprocuradorDJ.get("COLPROCURADORES_DIRECCION")!=null?UtilidadesHash.getString(registroprocuradorDJ,"COLPROCURADORES_DIRECCION" ):"");
@@ -6054,12 +6156,13 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		return registro;		
 	}
 	
-	public Long getIdJuzgadoEjg(String institucion, String anio, String numero, String idTipoEJG) throws ClsExceptions,SIGAException {
-		Long idJuzgado = null;
+	public Hashtable getJuzgadoProcuradorEjg(String institucion, String anio, String numero, String idTipoEJG) throws ClsExceptions,SIGAException {
+		Hashtable htRegistro = null;
 		try {
 			
 			StringBuffer sql = new StringBuffer();
 			sql.append(" select e.juzgado  ");
+			sql.append(" , e.IDPROCURADOR  ");
 			sql.append(" from SCS_EJG e  ");
  
 			sql.append(" WHERE e.idinstitucion = ");
@@ -6072,17 +6175,17 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" and e.IDTIPOEJG = ");
 			sql.append(idTipoEJG);
 			RowsContainer rc = new RowsContainer(); 
+			
 			if (rc.find(sql.toString())) {
 				Row fila = (Row) rc.get(0);
-				if(fila.getString("JUZGADO") != null && !fila.getString("JUZGADO").equals("")){
-					idJuzgado = Long.parseLong((String)fila.getString("JUZGADO"));
-				}
+				htRegistro = fila.getRow();
+				
 			} 
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion sobre el idjuzgado de un ejg.");
 		}
-		return idJuzgado;                        
+		return htRegistro;                        
 	}
 
 	/** Funcion insert (MasterBean bean)
