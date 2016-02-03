@@ -162,7 +162,7 @@
 				elems = new FilaExtElement[2];	
 				//Boton cambiar solo aparece si estamos en Editar, y el pl vale 5:
 				
-				if (numActuacionesValidadas==0 && !esModificable.equals("0") && (pl!=null && pl.equals("5"))) {
+				if (numActuacionesValidadas==0 && !esModificable.equals("0") && pl!=null && (pl.equals("5") || pl.equals("3"))) {
 					elems[0]=new FilaExtElement("cambiar","cambiar","general.boton.permutar", SIGAConstants.ACCESS_FULL);	
 				}	
 				if (numActuacionesValidadas==0 && !esModificable.equals("0") && pl!=null && !pl.equals("6"))
@@ -232,8 +232,8 @@
 		    var idturno = 'oculto' + fila + '_' + 2;
 		    var idguardia = 'oculto' + fila + '_' + 3;
 		    var idpersona = 'oculto' + fila + '_' + 6;		    
-		    var fechainicio = 'oculto' + fila + '_' + 7;
-		    var fechafin = 'oculto' + fila + '_' + 9;
+		    //var fechainicio = 'oculto' + fila + '_' + 7;
+		    //var fechafin = 'oculto' + fila + '_' + 9;
 			var fechainicioPermuta = 'oculto' + fila + '_' + 10;
 		    var fechafinPermuta = 'oculto' + fila + '_' + 11;
 		
@@ -241,6 +241,7 @@
 			document.forms[0].idTurno.value = document.getElementById(idturno).value;
 			document.forms[0].idGuardia.value = document.getElementById(idguardia).value;
 			document.forms[0].idPersona.value = document.getElementById(idpersona).value;
+			document.forms[0].idCalendarioGuardias.value = document.getElementById(idcalendario).value;
 			document.forms[0].fechaInicio.value = document.getElementById(fechainicioPermuta).value;
 			document.forms[0].fechaFin.value = document.getElementById(fechafinPermuta).value;
 		}
