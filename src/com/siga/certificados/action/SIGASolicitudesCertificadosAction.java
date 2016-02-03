@@ -3069,42 +3069,40 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		response.getWriter().write(json.toString()); 		
 	}
 	
-	public static HashMap<String, Object > obtenerPathBD(GenParametrosAdm admParametros, String idInstitucion, String  idSolicitud) throws ClsExceptions{
-		  
-		HashMap<String, Object > valoresRetornados = new HashMap<String, Object>();
-		
-		   String sRutaDB = admParametros.getValor(idInstitucion, "CER" ,"PATH_CERTIFICADOS", "");
-	        if (sRutaDB==null || sRutaDB.equals(""))
-	        {
-	            throw new ClsExceptions("No se ha encontrado el parámetro PATH_CERTIFICADOS en la BD");
-	        }
-	        valoresRetornados.put("sRutaDB", sRutaDB);
-	       
-	        String sRutaPlantillas = admParametros.getValor(idInstitucion, "CER" ,"PATH_PLANTILLAS", "");
-	        if (sRutaPlantillas==null || sRutaPlantillas.equals(""))
-	        {
-	            throw new ClsExceptions("No se ha encontrado el parámetro PATH_PLANTILLAS en la BD");
-	        }
-	        valoresRetornados.put("sRutaPlantillas", sRutaPlantillas);
-	        
-	        sRutaPlantillas += File.separator + idInstitucion;
+	public static HashMap<String, Object> obtenerPathBD(GenParametrosAdm admParametros, String idInstitucion, String idSolicitud) throws ClsExceptions {
 
-	        String sAux = idInstitucion + "_" + idSolicitud;
-	        
-	        sRutaDB += File.separator + "tmp";
-	        
-	        File fDirTemp = new File(sRutaDB);
-	        fDirTemp.mkdirs();
+		HashMap<String, Object> valoresRetornados = new HashMap<String, Object>();
 
-	        File fOut = new File(fDirTemp.getPath() + File.separator + sAux + "_" + System.currentTimeMillis() + ".pdf");
-	        valoresRetornados.put("fOut", fOut);
-	        File fIn = new File(fOut.getPath() + ".tmp");
-	        valoresRetornados.put("fIn", fIn);
-	        
-	        fOut.deleteOnExit();
-	        fIn.deleteOnExit();
-	        
-	        return valoresRetornados;
+		String sRutaDB = admParametros.getValor(idInstitucion, "CER", "PATH_CERTIFICADOS", "");
+		if (sRutaDB == null || sRutaDB.equals("")) {
+			throw new ClsExceptions("No se ha encontrado el parámetro PATH_CERTIFICADOS en la BD");
+		}
+		valoresRetornados.put("sRutaDB", sRutaDB);
+
+		String sRutaPlantillas = admParametros.getValor(idInstitucion, "CER", "PATH_PLANTILLAS", "");
+		if (sRutaPlantillas == null || sRutaPlantillas.equals("")) {
+			throw new ClsExceptions("No se ha encontrado el parámetro PATH_PLANTILLAS en la BD");
+		}
+
+		sRutaPlantillas += File.separator + idInstitucion;
+		valoresRetornados.put("sRutaPlantillas", sRutaPlantillas);
+
+		String sAux = idInstitucion + "_" + idSolicitud;
+
+		sRutaDB += File.separator + "tmp";
+
+		File fDirTemp = new File(sRutaDB);
+		fDirTemp.mkdirs();
+
+		File fOut = new File(fDirTemp.getPath() + File.separator + sAux + "_" + System.currentTimeMillis() + ".pdf");
+		valoresRetornados.put("fOut", fOut);
+		File fIn = new File(fOut.getPath() + ".tmp");
+		valoresRetornados.put("fIn", fIn);
+
+		fOut.deleteOnExit();
+		fIn.deleteOnExit();
+
+		return valoresRetornados;
 	}
 	
 	public static synchronized void obtenerContadorYAprobar ( CerSolicitudCertificadosAdm admSolicitud, CerSolicitudCertificadosBean beanSolicitud, 
