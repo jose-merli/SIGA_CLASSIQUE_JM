@@ -1040,12 +1040,12 @@
 	
 	 	<target depends="zip" name="enviar_zip_entrega">
 	    	<echo>Copiando el fichero de entrega en H:...</echo>
-	    		<copy todir="${destino.fichero.entrega}/${entorno.Despliegue}/${date.anio}/${date.entrega} - ${version}">
+	    		<copy todir="${destino.fichero.entrega}/${entorno.Despliegue}/${date.anio}/${date.entrega} - ${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}">
 	    			<fileset dir="${dist}">
 	    			    <include name="${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}.zip"/>
 	    			</fileset>
 	    		</copy>
 
-			<echo message="Zip (${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}.zip) enviado a la dirección ${destino.fichero.entrega}/${entorno.Despliegue}/${date.anio}/${date.entrega} - ${version}." />
+			<echo message="Zip (${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}.zip) enviado a la dirección ${destino.fichero.entrega}/${entorno.Despliegue}/${date.anio}/${date.entrega} - ${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}." />
 	    </target>   
 </project>
