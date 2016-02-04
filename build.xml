@@ -20,6 +20,8 @@
 	<tstamp>
 		<format property="date.execution" pattern="yyyyMMddHHmm" locale="es,ES"/>
 		<format property="date.execution.visible" pattern="dd/MM HH:mm" locale="es,ES"/>
+		<format property="date.anio" pattern="yyyy" locale="es,ES"/>
+		<format property="date.entrega" pattern="yyyy-MM-dd" locale="es,ES"/>
 	</tstamp>
 		
 	<property name="nombre.Fichero.Despliegue" value="${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}_${date.execution}" />
@@ -35,7 +37,7 @@
 	<!-- ************************************************* PROPIEDADES ************************************************ -->
 	<property name="eclipseLocal.workspace.home" 	value="C:/eclipse/workspace"/>
 	<property name="home.local"  			value="../SIGA92"/>
-	<property name="home.desa"  			value="${eclipseLocal.workspace.home}/entregas/${nombre.Fichero.Despliegue}/SIGA"/>
+	<property name="home.desa"  			value="${eclipseLocal.workspace.home}/entregas/${nombre.Fichero.Despliegue}"/>
 	
 	<property name="src.local"    			value="${home.local}/src"/>	
 	<property name="ant.local"    			value="${home.local}/ant"/>	
@@ -47,19 +49,23 @@
 	<property name="properties.local"		value="${webinf.local}/properties"/>
 	<property name="tlds.local"   			value="${webinf.local}/tlds"/>
 
-	<property name="conf.desa"				value="${home.desa}/conf"/>
-	<property name="ant.desa"				value="${home.desa}/ant"/>
-	<property name="bin.desa"				value="${home.desa}/bin"/>
-	<property name="etc.desa"				value="${home.desa}/etc"/>
-	<property name="html.desa"				value="${home.desa}/html"/>
-	<property name="libweb.desa"			value="${home.desa}/lib-web"/>
-	<property name="src.desa"				value="${home.desa}/src"/>
+	<property name="conf.desa"				value="${home.desa}/SIGA/conf"/>
+	<property name="ant.desa"				value="${home.desa}/SIGA/ant"/>
+	<property name="bin.desa"				value="${home.desa}/SIGA/bin"/>
+	<property name="etc.desa"				value="${home.desa}/SIGA/etc"/>
+	<property name="html.desa"				value="${home.desa}/SIGA/html"/>
+	<property name="libweb.desa"			value="${home.desa}/SIGA/lib-web"/>
+	<property name="src.desa"				value="${home.desa}/SIGA/src"/>
 	<property name="iis.desa"				value="${etc.desa}/iis"/>
 	
 	<property name="services.home.entrega"			value="../SIGAServices"/>
 	<property name="src.java.services"		value="${services.home.entrega}/src/main/java"/>
 	<property name="src.resources.services"	value="${services.home.entrega}/src/main/resources"/>
 
+    <!-- Dirección donde se deja el fichero .zip de la entrega -->
+	<property name="destino.fichero.entrega" 	value="H:/3.- Desarrollo/Proyecto SIGA/X-Entrega Proyecto/" />
+	<property name="dist" 				value="C:/tmp/datosSIGA"/>
+	
 	<!-- ***************************************************************************************************** -->
 	
 	<property name="bea.weblogic.jar" 		value="C:/oracle/Middleware/wlserver_12.1/server/lib/weblogic.jar"/>
@@ -1019,5 +1025,27 @@
 			<antcall target="E07.ActualizacionLib" />
 			<antcall target="E08.ActualizacionHtml" />
 			<antcall target="E09.ActualizacionElementosFrontEnd" />
-		</target> 
+			<antcall target="enviar_zip_entrega" />
+		</target>
+
+		<target name="cleanDIST">
+		     <delete dir="${dist}"/>
+		</target>
+				
+		<target depends="cleanDIST" name="zip">
+			<echo>Generando zip de despliegue de SIGA...</echo>
+			  <zip destfile="${dist}/${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}.zip" basedir="${home.desa}"/>
+			<echo>Zip generado.</echo>
+		</target>
+	
+	 	<target depends="zip" name="enviar_zip_entrega">
+	    	<echo>Copiando el fichero de entrega en H:...</echo>
+	    		<copy todir="${destino.fichero.entrega}/${entorno}/${date.anio}/${date.entrega} - ${version}">
+	    			<fileset dir="${dist}">
+	    			    <include name="${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}.zip"/>
+	    			</fileset>
+	    		</copy>
+
+			<echo message="Zip (${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}.zip) enviado a la dirección ${destino.fichero.entrega}/${entorno}/${date.anio}/${date.entrega} - ${version}." />
+	    </target>   
 </project>
