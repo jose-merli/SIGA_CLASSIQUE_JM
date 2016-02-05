@@ -546,9 +546,15 @@
 	}	
 
 	function accionVolver(){		
-		document.forms[0].action="./CEN_SolicitudesIncorporacion.do";	
-		document.forms[0].target="mainWorkArea";
-		document.forms[0].submit();
+		var rec = "<%=modoAnterior%>";
+		
+		if(rec != "INSERTAR"){
+			document.forms[0].action="./CEN_SolicitudesIncorporacion.do";	
+			document.forms[0].target="mainWorkArea";
+			document.forms[0].submit();
+		}else{
+			window.location = "<html:rewrite page='/html/jsp/censo/SolicitudIncorporacionValidacion.jsp'/>";
+		}
 	}
 	
 	function refrescarLocal(){
@@ -1586,6 +1592,11 @@
 	
 	function fitInside(contName,objName,margin){
 		altura = window.parent.jQuery(contName).height();
+		//NOTA: R1509_0010 04/02/2016:La altura cuando es "nueva incorporación" llega a null es necesario darle valor porque sino sale en blanco la página
+		if(altura == null)
+		{
+			altura = jQuery(window).height();
+		}
 		jQuery(objName).height(altura-margin);
 	}
 	
