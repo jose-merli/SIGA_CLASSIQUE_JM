@@ -765,7 +765,10 @@
         <path refid="Web App Libraries.libraryclasspath"/>
         <path refid="WebLogic System Libraries.libraryclasspath"/>
     </path>
-    <target name="init">
+	
+	<taskdef resource="net/sf/antcontrib/antlib.xml"/>
+    
+	<target name="init">
         <mkdir dir="WebContent/WEB-INF/classes"/>
         <copy includeemptydirs="false" todir="WebContent/WEB-INF/classes">
             <fileset dir="src">
@@ -1040,12 +1043,20 @@
 	
 	 	<target depends="zip" name="enviar_zip_entrega">
 	    	<echo>Copiando el fichero de entrega en H:...</echo>
-	    		<copy todir="${destino.fichero.entrega}/${entorno.Despliegue}/${date.anio}/${date.entrega} - ${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}">
-	    			<fileset dir="${dist}">
-	    			    <include name="${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}.zip"/>
-	    			</fileset>
-	    		</copy>
-
-			<echo message="Zip (${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}.zip) enviado a la dirección ${destino.fichero.entrega}/${entorno.Despliegue}/${date.anio}/${date.entrega} - ${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}." />
+			<if>
+		    	<available filepath="${destino.fichero.entrega}/${entorno.Despliegue}/${date.anio}/${date.entrega} - ${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}" file="${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}.zip"/>
+		    	<then>
+		      		<echo level="error" message="ERROR: Ya existe una entrega en la caperta destino (${destino.fichero.entrega}/${entorno.Despliegue}/${date.anio}/${date.entrega} - ${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}) con la misma versión, deberá eliminarla o cambiar la versión de entrega." />
+		      		<fail message="ERROR: Ya existe una entrega en la caperta destino (${destino.fichero.entrega}/${entorno.Despliegue}/${date.anio}/${date.entrega} - ${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}) con la misma versión, deberá eliminarla o cambiar la versión de entrega." />
+		      	</then>
+		    	<else>
+		    		<copy todir="${destino.fichero.entrega}/${entorno.Despliegue}/${date.anio}/${date.entrega} - ${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}">
+		    			<fileset dir="${dist}">
+		    			    <include name="${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}.zip"/>
+		    			</fileset>
+		    		</copy>
+		    		<echo message="Zip (${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}.zip) enviado a la dirección ${destino.fichero.entrega}/${entorno.Despliegue}/${date.anio}/${date.entrega} - ${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}." />
+				</else>
+	      	</if> 					
 	    </target>   
 </project>
