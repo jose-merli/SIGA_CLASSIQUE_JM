@@ -75,9 +75,13 @@ public class HistoricoAction extends MasterAction {
 				idInstitucionPersona=request.getSession().getAttribute("IDINSTITUCIONPERSONA").toString();
 				
 			}else{
-				// Obtengo el identificador de persona, la accion y el identificador de institucion del cliente
-				idPersona = new Long(request.getParameter("idPersona").toString());
-				idInstitucionPersona = Integer.valueOf(request.getParameter("idInstitucion")).toString();
+				try{
+					// Obtengo el identificador de persona, la accion y el identificador de institucion del cliente
+					idPersona = new Long(request.getParameter("idPersona").toString());
+					idInstitucionPersona = Integer.valueOf(request.getParameter("idInstitucion")).toString();
+				}catch (NumberFormatException e){
+					//La persona no está creada aún
+				}
 				
 			}
 			
