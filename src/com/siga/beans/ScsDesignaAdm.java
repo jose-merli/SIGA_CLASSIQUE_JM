@@ -3215,7 +3215,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					" Scs_actuaciondesigna.observaciones OBSERVACIONES_UA, " +
 					" to_char(Scs_actuaciondesigna.Fechajustificacion,'dd-mm-yyyy') FECHA_JUSTIF_UA, " +
 					" Scs_actuaciondesigna.observacionesjustificacion OBSERVACIONES_JUSTIF_UA, " +
-					" decode(anioprocedimiento,null,numeroprocedimiento,numeroprocedimiento||'/'||anioprocedimiento) NUMEROPROCEDIMIENTO_UA "+
+					" Scs_actuaciondesigna.NUMEROPROCEDIMIENTO NUMEROPROCEDIMIENTO_UA " +
 					" from scs_actuaciondesigna " +
 					" WHERE scs_actuaciondesigna.IDINSTITUCION = :1 " +
 					" AND scs_actuaciondesigna.idturno = :2 " +

@@ -221,7 +221,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sql.append(") AS EXPEDIENTES, ");
 		sql.append(" TO_CHAR(D.FECHAENTRADA,'dd/mm/yyyy') FECHADESIGNA, ");
 		sql.append(" TO_CHAR(D.FECHAENTRADA,'yyyy_mm_dd') FECHAORDEN, ");
-		sql.append(" DECODE(D.ANIOPROCEDIMIENTO,NULL,D.NUMPROCEDIMIENTO,D.NUMPROCEDIMIENTO||'/'||D.ANIOPROCEDIMIENTO) ASUNTO, ");
+		sql.append(" D.NUMPROCEDIMIENTO ASUNTO, ");
 		sql.append(" D.ART27 ART27, ");
 		sql.append(" f_siga_getdefendidosdesigna(:");
 		contador++;
@@ -1199,8 +1199,7 @@ private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designa
 			sql.append(",d.idturno,d.anio,d.numero,");
 			sql.append(Integer.parseInt(longitudNumEjg));
 			sql.append(") AS EXPEDIENTES, ");
-			
-			sql.append(" DECODE(D.ANIOPROCEDIMIENTO,NULL,D.NUMPROCEDIMIENTO,D.NUMPROCEDIMIENTO||'/'||D.ANIOPROCEDIMIENTO) ASUNTO, ");
+			sql.append(" D.NUMPROCEDIMIENTO ASUNTO, ");
 			sql.append(" f_siga_getdefendidosdesigna(:");
 			contador++;
 			codigos.put(new Integer(contador),formulario.getIdInstitucion());

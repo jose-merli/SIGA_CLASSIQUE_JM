@@ -61,7 +61,6 @@ public class ScsActuacionDesignaBean extends MasterBean{
 	static public final String  C_NUMEROPROCEDIMIENTO      	  = "NUMEROPROCEDIMIENTO";
 	static public final String  C_NIG     	  				  = "NIG";
 	static public final String  C_ID_MOTIVO_CAMBIO			  = "ID_MOTIVO_CAMBIO";
-	static public final String  C_ANIOPROCEDIMIENTO      	  = "ANIOPROCEDIMIENTO";
 	
 	
 	/*
@@ -97,7 +96,6 @@ public class ScsActuacionDesignaBean extends MasterBean{
 	private String   talonario;
     private String   talon;
     private String   numeroProcedimiento;
-    private String   anioProcedimiento;
     private String   nig;
     private Integer  idMotivoCambio;
 	
@@ -480,20 +478,6 @@ public class ScsActuacionDesignaBean extends MasterBean{
 
 	protected void setIdMotivoCambio(Integer idMotivoCambio) {
 		this.idMotivoCambio = idMotivoCambio;
-	}
-
-	/**
-	 * @return the anioProcedimiento
-	 */
-	public String getAnioProcedimiento() {
-		return anioProcedimiento;
-	}
-
-	/**
-	 * @param anioProcedimiento the anioProcedimiento to set
-	 */
-	public void setAnioProcedimiento(String anioProcedimiento) {
-		this.anioProcedimiento = anioProcedimiento;
 	}
 	
 }

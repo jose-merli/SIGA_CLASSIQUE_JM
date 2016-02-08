@@ -124,7 +124,6 @@ public class MaestroDesignasAction extends MasterAction {
 		MaestroDesignasForm miform = (MaestroDesignasForm)formulario;
 		String idtipoencalidad="";
 		String idInstitucion = null;
-		GenParametrosAdm admParametros = new GenParametrosAdm(usr);
 		try {
 			turno = new ScsTurnoAdm(this.getUserBean(request));
 			guardia = new ScsGuardiasTurnoAdm(this.getUserBean(request));
@@ -156,11 +155,13 @@ public class MaestroDesignasAction extends MasterAction {
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(idInstitucion));
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			
-		
+			//TEMPORAL!!!
+			GenParametrosAdm admParametros = new GenParametrosAdm(usr);		
 			String ejisActivo = admParametros.getValor(idInstitucion, "ECOM", "EJIS_ACTIVO", "0");
 			request.setAttribute("EJIS_ACTIVO", ejisActivo);			
 			
-			String filtrarModulos = admParametros.getValor(idInstitucion,"SCS","FILTRAR_MODULOS_PORFECHA_DESIGNACION", "");
+			GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
+			String filtrarModulos = adm.getValor(idInstitucion,"SCS","FILTRAR_MODULOS_PORFECHA_DESIGNACION", "");
 			request.setAttribute("filtrarModulos", filtrarModulos);
 			
 			
@@ -240,7 +241,8 @@ public class MaestroDesignasAction extends MasterAction {
 			designaEjg.setNumerodesigna(beanDesigna.getNumero());
 			designaEjg.setIdinstitucion(beanDesigna.getIdInstitucion().shortValue());
 			designaEjg.setIdturno(beanDesigna.getIdTurno());
-			String longitudEJG = admParametros.getValor (usr.getLocation (), "SCS", "LONGITUD_CODEJG", "5");
+			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+			String longitudEJG = paramAdm.getValor (usr.getLocation (), "SCS", "LONGITUD_CODEJG", "5");
 			designaEjg.setLongitudNumEjg(Short.valueOf(longitudEJG));
 			
 		
@@ -1067,12 +1069,8 @@ public class MaestroDesignasAction extends MasterAction {
 		}
 		miform.setJuzgados(alJuzgados);
 		miform.setModulos(new ArrayList<ScsProcedimientosBean>());
+		
 		miform.setFormulario(beanDesigna);
-		
-		GenParametrosAdm admParametros = new GenParametrosAdm(usr);		
-		String ejisActivo = admParametros.getValor(usr.getLocation(), "ECOM", "EJIS_ACTIVO", "0");
-		request.setAttribute("EJIS_ACTIVO", ejisActivo);
-		
 
 		return "actualizarDesigna";
 	}
