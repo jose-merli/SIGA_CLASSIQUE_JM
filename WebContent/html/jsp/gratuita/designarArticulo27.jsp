@@ -918,8 +918,10 @@
 				}
 			}
 			
-		}else{			
+		}else{	
+			
 			if(datosGeneralesForm.idPersona.value != null && datosGeneralesForm.idPersona.value != ""){ //EXISTE LA PERSONA
+				sub();
 				if(document.busquedaCensoModalForm.multiple.value != null && document.busquedaCensoModalForm.multiple.value != "S"){ //UNICO REGISTRO
 					ponerIconoIdentPersona(true);
 					formatearDocumento();
@@ -991,7 +993,10 @@
 				}else{ //SE ABRE VENTANA MODAL AL SER BUSQUEDA MULTIPLE
 					limpiarDireccion();
 					buscarDesignados ();
-				}				
+				}		
+			
+				fin();
+			
 			}else{ //NO EXISTE LA PERSONA
 				//sexo
 				obtenerTratamientos("0","");
@@ -1028,6 +1033,7 @@
 			//Reseteamos el texto de alerta
 			document.busquedaCensoModalForm.textoAlerta.value="";
 		}
+		
 	}
 
 	function ponerIconoIdentPersona (encontrado){
