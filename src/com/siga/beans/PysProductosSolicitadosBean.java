@@ -19,7 +19,7 @@ public class PysProductosSolicitadosBean extends MasterBean{
 	 */
 	private static final long serialVersionUID = 2799696358932831005L;
 	/* Variables */
-	private Integer idInstitucion, idInstitucionOrigen, idInstitucionColegiacion, idTipoProducto, idCuenta, idFormaPago, cantidad, idTipoEnvios, metodoSolicitud, orden;
+	private Integer idInstitucion, idInstitucionOrigen, idInstitucionColegiacion, idTipoProducto, idCuenta, idFormaPago, cantidad, idTipoEnvios, metodoSolicitud, orden, aceptaCesionMutualidad;
 	private Long 	idProducto, idProductoInstitucion, idPeticion, idPersona, idDireccion;
 	private String 	aceptado,noFacturable, fechaSolicitud;	
 	private Double 	valor;
@@ -49,6 +49,7 @@ public class PysProductosSolicitadosBean extends MasterBean{
 	static public final String C_NOFACTURABLE			= "NOFACTURABLE";
 	static public final String C_FECHASOLICITUD			= "FECHARECEPCIONSOLICITUD";
 	static public final String C_METODOSOLICITUD		= "METODORECEPCIONSOLICITUD";
+	static public final String C_ACEPTACESIONMUTUALIDAD = "ACEPTACESIONMUTUALIDAD";
 	static public final String C_ORDEN					= "ORDEN";
 	
 	// Metodos SET	
@@ -93,5 +94,12 @@ public class PysProductosSolicitadosBean extends MasterBean{
 	public String getFechaSolicitud()		{return this.fechaSolicitud;}	
 	public Integer getMetodoSolicitud()		{return this.metodoSolicitud;}
 	public Integer getIdInstitucionColegiacion() {return idInstitucionColegiacion;}
-	public Integer getOrden() {return orden;}	
+	public Integer getOrden() {return orden;}
+	public Integer getAceptaCesionMutualidad() {
+		return aceptaCesionMutualidad;
+	}
+	public void setAceptaCesionMutualidad(Integer aceptaCesionMutualidad) {
+		this.aceptaCesionMutualidad = aceptaCesionMutualidad;
+	}	
+	
 }

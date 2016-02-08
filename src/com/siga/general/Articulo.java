@@ -62,6 +62,7 @@ public class Articulo
 	private Long idDireccion;
 	private Long idPeticion;
 	private Integer metodoSolicitud;
+	private Integer aceptaCesionMut;
 	private String fechaSolicitud;
 	
 	//Fecha Efectiva Compra
@@ -485,6 +486,14 @@ public class Articulo
 
 	public void setDescripcionPrecio(String descripcionPrecio) {
 		this.descripcionPrecio = descripcionPrecio;
+	}
+
+	public Integer getAceptaCesionMut() {
+		return aceptaCesionMut;
+	}
+
+	public void setAceptaCesionMut(Integer aceptaCesionMut) {
+		this.aceptaCesionMut = aceptaCesionMut;
 	}
 	
 	
