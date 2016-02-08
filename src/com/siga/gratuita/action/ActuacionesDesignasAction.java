@@ -523,6 +523,10 @@ public class ActuacionesDesignasAction extends MasterAction {
 		    
 		   	int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
+			
+			String ejisActivo = adm.getValor(idInstitucion, "ECOM", "EJIS_ACTIVO", "0");
+			request.setAttribute("EJIS_ACTIVO", ejisActivo);
+			
 			request.setAttribute("hashDesigna",hashDesigna);
 			request.setAttribute("hashActuacionActual",hashActuacion);
 			ses.setAttribute("hashActuacionAntigua",actuacionAntigua);
@@ -693,9 +697,12 @@ public class ActuacionesDesignasAction extends MasterAction {
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 			GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
 			String filtrarModulos = adm.getValor((String)designaActual.get("IDINSTITUCION"),"SCS","FILTRAR_MODULOS_PORFECHA_DESIGNACION", "");
+			String ejisActivo = adm.getValor((String)designaActual.get("IDINSTITUCION"), "ECOM", "EJIS_ACTIVO", "0");
 			
+			request.setAttribute("EJIS_ACTIVO", ejisActivo);
 			request.setAttribute("filtrarModulos", filtrarModulos);
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
+			
 			request.setAttribute("hashDesigna",designaActual);
 			request.setAttribute("MODO_ANTERIOR","NUEVO");
 		} catch(Exception e){
@@ -863,6 +870,13 @@ public class ActuacionesDesignasAction extends MasterAction {
 			}else{
 				hash.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, "");
 			}
+			String anioProcedimiento= miform.getAnioProcedimiento();
+			if (anioProcedimiento!=null && !anioProcedimiento.equals("")){
+					hash.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, anioProcedimiento);
+			}else{
+				hash.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, "");
+			}
+			
 			
 			// Obtengo el idJuzgado y la idInstitucion del Juzgado:
 			Long idJuzgado=null;
@@ -1108,7 +1122,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 							ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO,			ScsActuacionDesignaBean.C_IDPRETENSION,
 		    				ScsActuacionDesignaBean.C_TALONARIO,					ScsActuacionDesignaBean.C_TALON,
 		    				ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO,			ScsActuacionDesignaBean.C_NIG,
-		    				ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO};
+		    				ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO,ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO};
 		
 		ScsActuacionDesignaAdm actuacionDesignaAdm = new ScsActuacionDesignaAdm(this.getUserBean(request));
 		boolean ok = false;
@@ -1203,6 +1217,13 @@ public class ActuacionesDesignasAction extends MasterAction {
 			}else{
 				actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, "");
 			}
+			String anioProcedimiento= miform.getAnioProcedimiento();
+			if (anioProcedimiento!=null && !anioProcedimiento.equals("")){
+				actuacionModificada.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, anioProcedimiento);
+			}else{
+				actuacionModificada.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, "");
+			}
+			
 			
 			String nig= miform.getNig();
 			if (nig!=null && !nig.equals("")){
