@@ -33,6 +33,7 @@ public class ActuacionDesignaForm extends MasterForm
 	private String descripcionFacturacion;
 	private String permitirEditarActuacion;
 	private String numeroProcedimiento;
+	private String anioProcedimiento;
 	
 	private boolean documentoJustificacion;
 	
@@ -154,6 +155,18 @@ public class ActuacionDesignaForm extends MasterForm
 	}
 	public void setNumeroProcedimiento(String numeroProcedimiento) {
 		this.numeroProcedimiento = numeroProcedimiento;
+	}
+	/**
+	 * @return the anioProcedimiento
+	 */
+	public String getAnioProcedimiento() {
+		return anioProcedimiento;
+	}
+	/**
+	 * @param anioProcedimiento the anioProcedimiento to set
+	 */
+	public void setAnioProcedimiento(String anioProcedimiento) {
+		this.anioProcedimiento = anioProcedimiento;
 	}
 	
 	

@@ -608,9 +608,38 @@
 						</td>
 						<td>
 							<% if (!modoAnterior.equalsIgnoreCase("VER")) { %> 
-								<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100px" maxlength="<%=maxLenghtProc%>" styleClass="box" value="<%=numeroProcedimiento%>"/> 
+							
+								<c:choose>
+									<c:when	test="${EJIS_ACTIVO=='1'}">
+									
+										<html:text
+											name="ActuacionesDesignasForm" property="numeroProcedimiento"
+											size="7" maxlength="7" styleClass="box" value="<%=numeroProcedimiento%>" />/<html:text
+											name="ActuacionesDesignasForm" property="anioProcedimiento"
+											size="4" maxlength="4" styleClass="box" />
+	
+									</c:when>
+									<c:otherwise>
+										<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100px" maxlength="<%=maxLenghtProc%>" styleClass="box" value="<%=numeroProcedimiento%>"/>
+									</c:otherwise>
+								</c:choose>
+							
+							
+								 
 							<% } else { %> 
-								<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100px" maxlength="<%=maxLenghtProc%>" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true"/> 
+								<c:choose>
+									<c:when	test="${EJIS_ACTIVO=='1'}">
+									
+									<c:out value="<%=numeroProcedimiento%>"/>/<c:out value="${ActuacionesDesignasForm.anioProcedimiento}"/>
+										
+	
+									</c:when>
+									<c:otherwise>
+									<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100px" maxlength="<%=maxLenghtProc%>" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true"/>
+									</c:otherwise>
+								</c:choose>
+								
+								 
 							<% } %>
 						</td>
 									
