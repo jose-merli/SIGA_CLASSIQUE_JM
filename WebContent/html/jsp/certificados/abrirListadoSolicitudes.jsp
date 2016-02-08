@@ -120,9 +120,11 @@
 		}
 		function seleccionarTodos(pagina) {
 			document.forms[0].seleccionarTodos.value = pagina;
-			buscar('buscarPor');				
+			SolicitudesCertificadosForm.modo.value="buscarInicioSeleccionarTodos";
+			SolicitudesCertificadosForm.target="resultado";
+			SolicitudesCertificadosForm.submit();		
 		}		
-		function buscarPaginador() {       	
+		function buscarPaginador() {      
 			document.forms[1].target="resultado";
 			document.forms[1].modo.value = "buscar";
 			document.forms[1].submit();				

@@ -123,14 +123,15 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	            } else if (accion.equalsIgnoreCase("editarDescarga")) {
 	            	request.setAttribute("descarga", "1");
 	                mapDestino = editar(mapping, miForm, request, response);		                
-	                      
-	            } else if (accion.equalsIgnoreCase("buscarInicio")) {
+	            } else if (accion.equalsIgnoreCase("buscarInicio") || accion.equalsIgnoreCase("buscarInicioSeleccionarTodos")) {
 					SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) miForm;
 					form.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
+					if(accion.equalsIgnoreCase("buscarInicio")){
+						form.setSeleccionarTodos("");
+					}
 					request.getSession().removeAttribute("DATAPAGINADOR");
 					mapDestino = buscar(mapping, form, request, response);
-					
-	            } else if (accion.equalsIgnoreCase("aprobarYGenerarVariosCertificados")) {
+	            }else if (accion.equalsIgnoreCase("aprobarYGenerarVariosCertificados")) {
 	                mapDestino = aprobarYGenerarVariosCertificados(mapping, miForm, request, response);
 	                
 	            } else if (accion.equalsIgnoreCase("generarPDF")) {
