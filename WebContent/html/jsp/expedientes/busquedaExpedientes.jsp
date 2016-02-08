@@ -16,7 +16,7 @@
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.atos.utils.*,com.siga.expedientes.form.BusquedaExpedientesForm,java.util.*,com.siga.Utilidades.UtilidadesString"%>
+<%@ page import="com.atos.utils.*,com.siga.expedientes.form.BusquedaExpedientesForm,java.util.*,com.siga.Utilidades.UtilidadesString,com.siga.Utilidades.UtilidadesBDAdm"%>
 
 <!-- JSP -->
 <%
@@ -81,6 +81,8 @@
 	String[] paramPro = {"",userBean.getLocation()};
 	String[] paramPretension = { userBean.getLocation(), "-1" };
 	String txtbuscar = UtilidadesString.getMensajeIdioma(userBean, "general.search");
+	
+	String anio = UtilidadesBDAdm.getYearBD("");
 %>
 
 	<!-- HEAD -->
@@ -210,7 +212,7 @@
 						<siga:Idioma key="expedientes.auditoria.literal.nexpediente" />
 					</td>
 					<td>
-						<html:text name="busquedaExpedientesForm" property="anioExpediente" style="width:40px;" maxlength="4" styleClass="box" />
+						<html:text name="busquedaExpedientesForm" property="anioExpediente" style="width:40px;" maxlength="4" styleClass="box" value="<%=anio%>" />
 						&nbsp;/&nbsp;
 						<html:text name="busquedaExpedientesForm" property="numeroExpediente" style="width:60px;" maxlength="6" styleClass="box" />
 					</td>
