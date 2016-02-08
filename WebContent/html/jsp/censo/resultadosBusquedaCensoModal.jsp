@@ -251,8 +251,10 @@
 					// calculo de campos
 					String apellidos = UtilidadesString.mostrarDatoJSP(registro.get("APELLIDO1"));
 					String apellido2 ="";
-					if(registro.get("APELLIDO2")!=null)
+					if(registro.get("APELLIDO2")!=null){
 						 apellido2 = UtilidadesString.mostrarDatoJSP(registro.get("APELLIDO2"));
+						 apellidos += " " + apellido2;
+					}
 					String nombre = UtilidadesString.mostrarDatoJSP(registro.get("NOMBRE"));
 					String nif = UtilidadesString.mostrarDatoJSP(registro.get("NUM_DOC"));
 					String idTipoIdentificacion = UtilidadesString.mostrarDatoJSP(registro.get("IDTIPOIDENTIFICACION"));
