@@ -55,7 +55,7 @@
 	String fechaSolicitudDesde = "";
 	String fechaSolicitudHasta = "";	
 	String checkCobrado = "", checkDescardado = "";
-	if ((request.getParameter("buscar") != null && request.getParameter("buscar").equalsIgnoreCase("true")) || (request.getAttribute("volver") != null && ((String)request.getAttribute("volver")).equalsIgnoreCase("volver"))) {
+	if ((request.getParameter("buscar") != null && request.getParameter("buscar").equalsIgnoreCase("true"))  || (request.getParameter("buscarAntiguo") != null && request.getParameter("buscarAntiguo").equalsIgnoreCase("true")) || (request.getAttribute("volver") != null && ((String)request.getAttribute("volver")).equalsIgnoreCase("volver"))) {
 		if (formulario != null) {
 			if (formulario.getFechaDesde() != null)
 				fechaDesde = formulario.getFechaDesde();
@@ -350,7 +350,7 @@
 			
 			<% } %>
 			
-			<% if ((request.getParameter("buscar") != null && request.getParameter("buscar").equalsIgnoreCase("true")) || (request.getAttribute("volver") != null && ((String)request.getAttribute("volver")).equalsIgnoreCase("volver"))) { %>
+			<% if ((request.getParameter("buscar") != null && request.getParameter("buscar").equalsIgnoreCase("true")) || (request.getParameter("buscarAntiguo") != null && request.getParameter("buscarAntiguo").equalsIgnoreCase("true")) || (request.getAttribute("volver") != null && ((String)request.getAttribute("volver")).equalsIgnoreCase("volver"))) { %>
 			   	buscar();
 			<% } %>		 
 

@@ -262,6 +262,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			}
 			
 			request.setAttribute("SolicitudesCertificadosForm", form);
+			request.getSession().removeAttribute("DATABACKUP");
 			
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.certificados" }, e, null);
