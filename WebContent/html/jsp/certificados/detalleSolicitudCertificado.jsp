@@ -892,11 +892,11 @@
 							<%}%>							
 						</td>
 					</tr>
-										
-					<%if(pintarCheckMutualidad){ %>
+						
+					<%if(pintarCheckMutualidad){ %>					
 						<tr>
 							<td class="labelText" colspan="8">
-							<div style="float:left"><input type=checkbox name="aceptaCesionMutualidad" <%=aceptaCesion %> <%=deshabilitaMutualidad%>/></div>&nbsp;
+							<div style="float:left"><input type=checkbox name="aceptaCesionMutualidadCheck" <%=aceptaCesion %> <%=deshabilitaMutualidad%> onclick="checkMutualidad()"/></div>&nbsp;
 							<siga:Idioma key="certificados.solicitudes.literal.textoConformidad" /></td>					
 						</tr>
 					<% } %>
