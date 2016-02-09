@@ -48,6 +48,10 @@ public class HistoricoForm extends MasterForm{
 	public void setMotivo(String mot){
 		datos.put(CenHistoricoBean.C_MOTIVO,mot);
 	}
+	
+	public void setObservaciones(String obervaciones){
+		datos.put(CenHistoricoBean.C_OBSERVACIONES, obervaciones);
+	}
 
 	public void setFechaEntrada(String fechaE){
 		datos.put(CenHistoricoBean.C_FECHAENTRADA,fechaE);
@@ -80,6 +84,10 @@ public class HistoricoForm extends MasterForm{
 	
 	public String getMotivo(){
 		return (String)datos.get(CenHistoricoBean.C_MOTIVO);
+	}
+	
+	public String getObservaciones(){
+		return (String)datos.get(CenHistoricoBean.C_OBSERVACIONES);
 	}
 
 	public String getFechaEntrada(){

@@ -38,8 +38,7 @@ import com.siga.general.SIGAException;
 * Clase que gestiona la tabla CenHistorico de la BBDD
 * 
 */
-public class CenHistoricoAdm extends MasterBeanAdministrador 
-{
+public class CenHistoricoAdm extends MasterBeanAdministrador {
 	
 	public static final int  ACCION_INSERT = 1,
 							 ACCION_UPDATE = 2,
@@ -67,6 +66,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 							CenHistoricoBean.C_MOTIVO,
 							CenHistoricoBean.C_IDTIPOCAMBIO,
 							CenHistoricoBean.C_DESCRIPCION,
+							CenHistoricoBean.C_OBSERVACIONES,
 							CenHistoricoBean.C_FECHAMODIFICACION,
 							CenHistoricoBean.C_USUMODIFICACION};
 		return campos;
@@ -94,9 +94,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
 	protected MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
-
 		CenHistoricoBean bean = null;
-		
 		try {
 			bean = new CenHistoricoBean();
 			bean.setIdPersona (UtilidadesHash.getLong(hash,CenHistoricoBean.C_IDPERSONA));			
@@ -106,14 +104,16 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 			bean.setFechaEfectiva (UtilidadesHash.getString(hash,CenHistoricoBean.C_FECHAEFECTIVA));
 			bean.setMotivo (UtilidadesHash.getString(hash,CenHistoricoBean.C_MOTIVO));
 			bean.setIdTipoCambio (UtilidadesHash.getInteger(hash,CenHistoricoBean.C_IDTIPOCAMBIO));			
-			bean.setDescripcion(UtilidadesHash.getString(hash,CenHistoricoBean.C_DESCRIPCION));			
+			bean.setDescripcion(UtilidadesHash.getString(hash,CenHistoricoBean.C_DESCRIPCION));	
+			bean.setObservaciones(UtilidadesHash.getString(hash,CenHistoricoBean.C_OBSERVACIONES));
 			bean.setFechaMod(UtilidadesHash.getString(hash,CenHistoricoBean.C_FECHAMODIFICACION));
-			bean.setUsuMod(UtilidadesHash.getInteger(hash,CenHistoricoBean.C_USUMODIFICACION));			
-		}
-		catch (Exception e) { 
+			bean.setUsuMod(UtilidadesHash.getInteger(hash,CenHistoricoBean.C_USUMODIFICACION));
+			
+		} catch (Exception e) { 
 			bean = null;	
 			throw new ClsExceptions (e, "Error al construir el bean a partir del hashTable");
 		}
+		
 		return bean;
 	}
 
@@ -124,9 +124,9 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */	
 	protected Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions {
-		Hashtable htData = null;
+		Hashtable<String,Object> htData = null;
 		try {
-			htData = new Hashtable();
+			htData = new Hashtable<String,Object>();
 			CenHistoricoBean b = (CenHistoricoBean) bean;
 			UtilidadesHash.set(htData,CenHistoricoBean.C_IDPERSONA,b.getIdPersona ());
 			UtilidadesHash.set(htData,CenHistoricoBean.C_IDINSTITUCION,b.getIdInstitucion ());
@@ -137,13 +137,15 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData,CenHistoricoBean.C_MOTIVO,b.getMotivo());
 			UtilidadesHash.set(htData,CenHistoricoBean.C_IDTIPOCAMBIO ,b.getIdTipoCambio());
 			UtilidadesHash.set(htData,CenHistoricoBean.C_DESCRIPCION,b.getDescripcion());
+			UtilidadesHash.set(htData,CenHistoricoBean.C_OBSERVACIONES,b.getObservaciones());
 			UtilidadesHash.set(htData,CenHistoricoBean.C_FECHAMODIFICACION,b.getFechaMod());
 			UtilidadesHash.set(htData,CenHistoricoBean.C_USUMODIFICACION,b.getUsuMod());
-		}
-		catch (Exception e) {
+			
+		} catch (Exception e) {
 			htData = null;
 			throw new ClsExceptions (e, "Error al crear el hashTable a partir del bean");
 		}
+		
 		return htData;	
 	}
 
@@ -153,36 +155,31 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	 * @return  Integer - Valor del historico  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */	
-	public Integer getNuevoID (Hashtable entrada) throws ClsExceptions, SIGAException 
-	{
-		RowsContainer rc = null;
-		
-		try { rc = new RowsContainer(); }
-		catch(Exception e) { e.printStackTrace(); }
-		
+	public Integer getNuevoID (Hashtable<String,Object> entrada) throws ClsExceptions, SIGAException {
 		try {		
-
-			String sql;
-			sql ="SELECT (MAX(IDHISTORICO) + 1) AS IDHISTORICO FROM " + nombreTabla +
-				" WHERE IDPERSONA =" + (String)entrada.get("IDPERSONA") +
-				" AND IDINSTITUCION =" + (String)entrada.get("IDINSTITUCION");
+			RowsContainer rc = new RowsContainer();
+			
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT NVL(MAX(IDHISTORICO), 0) + 1 AS IDHISTORICO FROM ");
+			sql.append(nombreTabla);
+			sql.append(" WHERE IDPERSONA = ");
+			sql.append(entrada.get("IDPERSONA"));
+			sql.append(" AND IDINSTITUCION = ");
+			sql.append(entrada.get("IDINSTITUCION"));
 		
-			if (rc.findForUpdate(sql)) {
+			if (rc.findForUpdate(sql.toString())) {
 				Row fila = (Row) rc.get(0);
-				Hashtable prueba = fila.getRow();			
+				Hashtable<String,Object> prueba = fila.getRow();			
 				if (prueba.get("IDHISTORICO").equals("")) {
 					return new Integer(1);
-				}
-				else return UtilidadesHash.getInteger(prueba, "IDHISTORICO");								
+				} else 
+					return UtilidadesHash.getInteger(prueba, "IDHISTORICO");								
 			}
-		}	
-//		catch (SIGAException e) {
-//			throw e;
-//		}
-
-		catch (ClsExceptions e) {		
+			
+		} catch (ClsExceptions e) {		
 			throw new ClsExceptions (e, "Error al ejecutar el 'prepararInsert' en B.D.");		
 		}
+		
 		return null;
 	}
 
@@ -192,88 +189,38 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	 * @return  Integer - valor del historico  
 	 * @exception  ClsExceptions En cualquier caso de error
 	 */	
-	public Integer getNuevoID (CenHistoricoBean bean) throws ClsExceptions,SIGAException {
+	public Integer getNuevoID (CenHistoricoBean bean) throws ClsExceptions, SIGAException {
 		try {		
-			Hashtable hash = beanToHashTable (bean);
+			Hashtable<String,Object> hash = beanToHashTable (bean);
 			Integer idHistorico = getNuevoID(hash);
 			return idHistorico;
-		}
-		catch (SIGAException e) {
+			
+		} catch (SIGAException e) {
 			throw e;
-		}
-		catch (ClsExceptions e) {		
+			
+		} catch (ClsExceptions e) {		
 			throw new ClsExceptions (e, "Error al ejecutar el 'prepararInsert(bean)' en B.D.");		
 		}
 	}
 
-	
 	/** 
 	 * Adecua los formatos de las fechas para la insercion en BBDD. <br/>
 	 * @param  entrada - tabla hash con los valores del formulario 
 	 * @return  Hashtable - Tabla ya preparada  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */	
-	public Hashtable prepararFormatosFechas (Hashtable entrada)throws ClsExceptions,SIGAException 
-	{
-		String fechaEntrada,fechaEfectiva;
-		String sql;
-		RowsContainer rc = null;
-		int contador = 0;
-				
+	public Hashtable<String,Object> prepararFormatosFechas (Hashtable<String,Object> entrada)throws ClsExceptions, SIGAException {
 		try {		
-			fechaEntrada=GstDate.getApplicationFormatDate("",(String)entrada.get("FECHAENTRADA"));
-			fechaEfectiva=GstDate.getApplicationFormatDate("",(String)entrada.get("FECHAEFECTIVA"));
+			String fechaEntrada = GstDate.getApplicationFormatDate("",(String)entrada.get("FECHAENTRADA"));
+			String fechaEfectiva = GstDate.getApplicationFormatDate("",(String)entrada.get("FECHAEFECTIVA"));
 			entrada.put("FECHAENTRADA",fechaEntrada);
 			entrada.put("FECHAEFECTIVA",fechaEfectiva);			
 		}
-//		catch (SIGAException e) {
-//			throw e;
-//		}
 		catch (ClsExceptions e) {		
 			throw new ClsExceptions (e, "Error al adecuar los formatos delas fechas.");		
 		}
 		return entrada;
 	}
-	
-	/** 
-	 * Adecua los formatos para la insercion en BBDD. <br/>
-	 * @param  entrada - tabla hash con los valores del formulario 
-	 * @return  Hashtable - Tabla ya preparada  
-	 * @exception  ClsExceptions  En cualquier caso de error
-	 */	
-	public Hashtable prepararFormatos (Hashtable entrada)throws ClsExceptions,SIGAException
-	{
-		String fechaEntrada,fechaEfectiva;
-		String idPersona,idInstitucion,idTipoCambio;		
-		String sql;
-		RowsContainer rc = null;
-		int contador = 0;
-				
-		try {		
-			fechaEntrada=GstDate.getApplicationFormatDate("",(String)entrada.get("FECHAENTRADA"));
-			fechaEfectiva=GstDate.getApplicationFormatDate("",(String)entrada.get("FECHAEFECTIVA"));
-			entrada.put("FECHAENTRADA",fechaEntrada);
-			entrada.put("FECHAEFECTIVA",fechaEfectiva);			
-//			idPersona=((Long)entrada.get("IDPERSONA")).toString();
-//			idInstitucion=((Integer)entrada.get("IDINSTITUCION")).toString();			
-//			idTipoCambio=((Integer)entrada.get("IDTIPOCAMBIO")).toString();			
-//			idPersona=((String)entrada.get("IDPERSONA"));
-//			idInstitucion=((String)entrada.get("IDINSTITUCION"));			
-//			idTipoCambio=((String)entrada.get("IDTIPOCAMBIO"));			
-//			entrada.put("IDPERSONA",idPersona);
-//			entrada.put("IDINSTITUCION",idInstitucion);			
-//			entrada.put("IDTIPOCAMBIO",idTipoCambio);			
-		}	
-//		catch (SIGAException e) {
-//			throw e;
-//		}
-		catch (ClsExceptions e) {		
-			throw new ClsExceptions (e, "Error al adecuar los formatos.");		
-		}
-		
-		return entrada;
-	}	
-	
 	
 	/** 
 	 * Recoge informacion de la tabla a partir de cierta informacion del historial<br/>
@@ -286,8 +233,8 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	 * @return  Vector - Filas de la tabla seleccionadas  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */	
-	public Vector getHistorico(String idPersona, String idInstitucion, String tipoCambio, String fechaInicio, String fechaFin, String motivo) throws ClsExceptions,SIGAException {
-		   Vector datos=new Vector();
+	public Vector<Row> getHistorico(String idPersona, String idInstitucion, String tipoCambio, String fechaInicio, String fechaFin, String motivo) throws ClsExceptions,SIGAException {
+		   Vector<Row> datos = new Vector<Row>();
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
 	            String sql ="SELECT " +
@@ -296,8 +243,9 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	            			CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_IDHISTORICO + "," +
 	            			CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_FECHAENTRADA + "," +
 	            			CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_FECHAEFECTIVA + "," +
-	            			CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_MOTIVO + "," +
+	            			CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_MOTIVO + "," +	            			
 	            			UtilidadesMultidioma.getCampoMultidioma(CenTipoCambioBean.T_NOMBRETABLA + "." + CenTipoCambioBean.C_DESCRIPCION, this.usrbean.getLanguage()) + "," +
+	            			CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_OBSERVACIONES + "," +
 	            			CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_USUMODIFICACION + 
 							" FROM " + 
 							CenHistoricoBean.T_NOMBRETABLA +", "+ CenTipoCambioBean.T_NOMBRETABLA + 
@@ -328,20 +276,6 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 					sql += " AND " + GstDate.dateBetweenDesdeAndHasta(CenHistoricoBean.T_NOMBRETABLA +"."+ CenHistoricoBean.C_FECHAEFECTIVA,auxFechaInicio,auxFechaFin);
 				}
 				
-				/* RGG cambio de funcion para fechas desde hasta
-				if (!fechaInicio.trim().equals("")){								 
-					sql +=" AND " +
-						  CenHistoricoBean.T_NOMBRETABLA +"."+ CenHistoricoBean.C_FECHAEFECTIVA + ">= TO_DATE ('" + fechaInicio + "', 'DD/MM/YYYY')";
-				}							
-
-				if (!fechaFin.trim().equals("")){								 
-					sql +=" AND (" +
-					  	  CenHistoricoBean.T_NOMBRETABLA +"."+ CenHistoricoBean.C_FECHAEFECTIVA + "<= TO_DATE ('" + fechaFin + "', 'DD/MM/YYYY')" +									 
-						  " OR " +
-						  GstDate.dateBetween0and24h(CenHistoricoBean.C_FECHAEFECTIVA,fechaFin)+")";					
-				}							
-				*/
-				
 				sql += " ORDER BY " + CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_FECHAENTRADA + " DESC, " + CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_IDTIPOCAMBIO ; 										
 							
 	            if (rc.find(sql)) {
@@ -350,11 +284,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	                  datos.add(fila);
 	               }
 	            }
-	       }
-//			catch (SIGAException e) {
-//				throw e;
-//			}
-	       catch (Exception e) {
+	       } catch (Exception e) {
 	       	throw new ClsExceptions (e, "Error al obtener productos del historial");
 	       }
 	       return datos;                        
@@ -380,6 +310,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	            			CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_FECHAEFECTIVA + "," +
 	            			CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_MOTIVO + "," +
 	            			CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_DESCRIPCION  + "," +
+	            			CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_OBSERVACIONES + "," +
 	            			CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_IDTIPOCAMBIO + ", " +
 	            			" (SELECT " + AdmUsuariosBean.T_NOMBRETABLA + "." + AdmUsuariosBean.C_DESCRIPCION + " FROM " + AdmUsuariosBean.T_NOMBRETABLA +
 	            			" WHERE "+ AdmUsuariosBean.T_NOMBRETABLA + "." + AdmUsuariosBean.C_IDUSUARIO + " = " + CenHistoricoBean.T_NOMBRETABLA  + "." + CenHistoricoBean.C_USUMODIFICACION+
@@ -400,15 +331,11 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	               }
 	            } 
 	       }
-//			catch (SIGAException e) {
-//				throw e;
-//			}
 	       catch (Exception e) {
 	       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada del historial.");
 	       }
 	       return datos;                        
 	    }
-
 
 	/** 
 	 *  Funcion que inserta un registro en Cen_Historico
@@ -416,21 +343,17 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	 * @param  usuario - UsrBean en ejecucion	 
 	 * @return  Boolean - Resultado de la operacion   
 	 */	
-	public boolean insertarRegistroHistorico(CenHistoricoBean registro, UsrBean usuario)throws ClsExceptions,SIGAException
-	{
+	public boolean insertarRegistroHistorico(CenHistoricoBean registro, UsrBean usuario)throws ClsExceptions, SIGAException {
 		try{ 
-			Hashtable hash=null;
-			hash=this.beanToHashTable(registro);
+			Hashtable<String,Object> hash = this.beanToHashTable(registro);
 			// Adecuo formatos
-			this.prepararFormatos(hash);
+			this.prepararFormatosFechas(hash);
 
 			// Inserto en CEN_HISTORICO 
 			return this.insert(hash); 			
-		}	
-		catch (SIGAException e) {
+		} catch (SIGAException e) {
 			throw e;
-		}
-		catch (Exception ee){
+		} catch (Exception ee){
 			throw new ClsExceptions(ee,"Ha fallado el proceso de insercion en el historico");				
 		}
 	}	
@@ -440,22 +363,18 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	 *  @return true si todo va bien OK, false si hay algun error 
 	 * */
 	public boolean insert(Hashtable hash) throws ClsExceptions{
-		try
-		{
+		try {
 			if(UtilidadesHash.getInteger(hash, CenHistoricoBean.C_IDHISTORICO)==null)
 				UtilidadesHash.set(hash, CenHistoricoBean.C_IDHISTORICO, getNuevoID(hash));
 			return super.insert(hash);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new ClsExceptions(e, "Error al realizar el 'insert' en B.D");
 		}
 	}
 	
 	public Paginador getAuditoriaUsuariosConPaginador (Integer idInstitucion, AuditoriaUsuariosForm datos) throws ClsExceptions,SIGAException 
 	{
-	   Vector out = new Vector();
        try {
-            RowsContainer rc = new RowsContainer(); 
             String sql =" SELECT " + CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_IDPERSONA  + "," +
 									 CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_USUMODIFICACION + ", " +
 									 AdmUsuariosBean.T_NOMBRETABLA + "." + AdmUsuariosBean.C_DESCRIPCION + " AS NOMBRE_USUARIO, " + 
@@ -465,6 +384,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 			            			 CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_FECHAEFECTIVA + "," +
 			            			 CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_MOTIVO + "," +
 			            			 CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_IDTIPOCAMBIO + ", " +
+			            			 CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_OBSERVACIONES + "," +
 			            			 CenTipoCambioBean.T_NOMBRETABLA + "." + CenTipoCambioBean.C_DESCRIPCION + " AS DESCRIPCION_TIPO_ACCESO" + 
 								 
 						 " FROM " + CenHistoricoBean.T_NOMBRETABLA + ", " + AdmUsuariosBean.T_NOMBRETABLA + ", " + CenTipoCambioBean.T_NOMBRETABLA +
@@ -514,9 +434,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 	
 	public Vector getAuditoriaUsuarios (String idInstitucion, String idPersona, String idHistorico) throws ClsExceptions,SIGAException 
 	{
-	   Vector out = new Vector();
        try {
-            RowsContainer rc = new RowsContainer(); 
             String sql =" SELECT " + CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_IDPERSONA  + "," +
 									 CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_USUMODIFICACION + ", " +
 									 AdmUsuariosBean.T_NOMBRETABLA + "." + AdmUsuariosBean.C_DESCRIPCION + " AS NOMBRE_USUARIO, " + 
@@ -527,6 +445,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador
 			            			 CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_MOTIVO + "," +
 			            			 CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_IDTIPOCAMBIO + ", " +
 			            			 CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_DESCRIPCION + ", " +
+			            			 CenHistoricoBean.T_NOMBRETABLA + "." + CenHistoricoBean.C_OBSERVACIONES + "," +
 			            			 UtilidadesMultidioma.getCampoMultidiomaSimple(CenTipoCambioBean.T_NOMBRETABLA + "." + CenTipoCambioBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS DESCRIPCION_TIPO_ACCESO" + 
 								 
 						 " FROM " + CenHistoricoBean.T_NOMBRETABLA + ", " + AdmUsuariosBean.T_NOMBRETABLA + ", " + CenTipoCambioBean.T_NOMBRETABLA +

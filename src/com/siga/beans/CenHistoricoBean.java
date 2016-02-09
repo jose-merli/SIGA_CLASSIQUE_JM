@@ -15,23 +15,17 @@ import java.util.Hashtable;
 
 public class CenHistoricoBean extends MasterBean{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -7269646040586442300L;
 	/* Variables */
 	private Long idPersona;
 	private Integer idInstitucion;
 	private Integer idInstitucionCargo;	
-
-
-
-
 	private Integer idHistorico;	
 	private String 	fechaEntrada;
 	private String 	fechaEfectiva;
 	private String 	motivo;
 	private String 	descripcion;
+	private String observaciones;
 	private Integer idTipoCambio;	
 	
 	/* Nombre tabla */
@@ -46,7 +40,8 @@ public class CenHistoricoBean extends MasterBean{
 	static public final String C_FECHAEFECTIVA	= "FECHAEFECTIVA";
 	static public final String C_MOTIVO			= "MOTIVO";
 	static public final String C_IDTIPOCAMBIO	= "IDTIPOCAMBIO";		
-	static public final String C_DESCRIPCION	= "DESCRIPCION";		
+	static public final String C_DESCRIPCION	= "DESCRIPCION";
+	static public final String C_OBSERVACIONES	= "OBSERVACIONES";
 
 	// Metodos SET
 	public void setIdPersona (Long id) 	{ this.idPersona = id; }
@@ -71,21 +66,13 @@ public class CenHistoricoBean extends MasterBean{
 	public Integer getIdInstitucionCargo() {
 		return this.idInstitucionCargo;
 	}
-	/**
-	 * @return Returns the descripcion.
-	 */
-	public String getDescripcion() {
-		return descripcion;
-	}
-	/**
-	 * @param descripcion The descripcion to set.
-	 */
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
+
+	public String getDescripcion() {return this.descripcion;}
+	public void setDescripcion(String _descripcion) {this.descripcion = _descripcion;}
+	public String getObservaciones() {return this.observaciones;}
+	public void setObservaciones(String _observaciones) {this.observaciones = _observaciones;}
 	
-	public void  setHash(Hashtable beanHist){
-		
+	public void  setHash(Hashtable beanHist){		
 		setIdPersona ((Long)beanHist.get(C_IDPERSONA));
 		setIdInstitucion((Integer)beanHist.get(C_IDINSTITUCION)); 
 		setIdHistorico ((Integer)beanHist.get(C_IDHISTORICO));
@@ -94,6 +81,7 @@ public class CenHistoricoBean extends MasterBean{
 		setMotivo ((String)beanHist.get(C_MOTIVO));
 		setIdTipoCambio ((Integer)beanHist.get(C_IDTIPOCAMBIO));
 		setIdInstitucionCargo((Integer)beanHist.get(C_IDINSTITUCIONCARGO));
-		
+		setDescripcion((String)beanHist.get(C_DESCRIPCION));
+		setObservaciones((String)beanHist.get(C_OBSERVACIONES));
 	}
 }

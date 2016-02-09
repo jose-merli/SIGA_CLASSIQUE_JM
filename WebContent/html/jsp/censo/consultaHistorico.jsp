@@ -89,56 +89,53 @@
 
 		<!-- Formulario de la lista de detalle multiregistro -->
 		<html:form action="/CEN_Historico.do" method="POST" style="display:none" target="mainPestanas" styleId="HistoricoForm">
-
-		<!-- Campo obligatorio -->
-		<html:hidden styleId = "modo" property = "modo" value = ""/>
-		<html:hidden property = "jsonVolver" />
+			<!-- Campo obligatorio -->
+			<html:hidden styleId = "modo" property = "modo" value = ""/>
+			<html:hidden property = "jsonVolver" />
 			<!-- RGG: cambio a formularios ligeros -->
 		</html:form>
 		
 		<!-- INICIO: LISTA DE VALORES -->
-		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
-			 de cabeceras fijas -->
-
-		
-			<siga:Table 
-		  	      name="tablaDatos"
-				  border="1"
-				  columnNames="censo.consultaHistorico.literal.tipo,censo.consultaHistorico.literal.fechaEntrada,censo.consultaHistorico.literal.fechaEfectiva,censo.consultaHistorico.literal.motivo,"
-				  columnSizes="30,12,12,40,6"
-				  modal="">
-				<%
-		    	 if (request.getAttribute("container") == null || ((Vector)request.getAttribute("container")).size() < 1 ){
-				%>
-			 		<tr class="notFound">
+		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista de cabeceras fijas -->
+		<siga:Table 
+			name="tablaDatos"
+			border="1"
+			columnNames="censo.consultaHistorico.literal.tipo,censo.consultaHistorico.literal.fechaEntrada,censo.consultaHistorico.literal.fechaEfectiva,censo.consultaHistorico.literal.motivo,"
+			columnSizes="27,12,12,40,9"
+			modal="">
+<%
+			if (request.getAttribute("container") == null || ((Vector)request.getAttribute("container")).size() < 1 ){
+%>
+		 		<tr class="notFound">
 	   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
 				</tr> 		
-				<%
-	    		 }	    
-		    	 else { 
-		    		Enumeration en = ((Vector)request.getAttribute("container")).elements();
-					int recordNumber=1;
-					String botonesMostrados="C";	
-					while (en.hasMoreElements())
-					{
-	            		Row row = (Row) en.nextElement(); %>
+<%
+    		 } else { 
+		    	Enumeration en = ((Vector)request.getAttribute("container")).elements();
+				int recordNumber = 1;				
+					
+				while (en.hasMoreElements()) {
+	           		Row row = (Row) en.nextElement();
+	
+					// Evaluacion de los iconos a mostrar
+					String modoFila=accion;
+					String botonesMostrados = "C,E";
+					/*String sUsuarioAutomatico = Integer.toString(ClsConstants.USUMODIFICACION_AUTOMATICO);
+					String sUsuario = row.getString(CenHistoricoBean.C_USUMODIFICACION);					
+					if (sUsuario.equals(sUsuarioAutomatico)){ 
+						modoFila="ver";
+						botonesMostrados = "C";
+					}*/
+%>
 	            		
-						<%	
-							// Evaluacion de los iconos a mostrar
-							String modoFila=accion;
-							if(row.getString(CenHistoricoBean.C_USUMODIFICACION).equalsIgnoreCase(Integer.toString(ClsConstants.USUMODIFICACION_AUTOMATICO))){ 
-								modoFila="ver";
-							}
-						%>
-	            		
-						<siga:FilaConIconos
-							  fila='<%=String.valueOf(recordNumber)%>'
-							  botones='<%=botonesMostrados%>'
-							  modo='<%=modoFila%>'
-							  visibleBorrado='no'
-							  visibleEdicion='no'
-							  pintarEspacio="no"
-							  clase="listaNonEdit">
+					<siga:FilaConIconos
+						fila='<%=String.valueOf(recordNumber)%>'
+						botones='<%=botonesMostrados%>'
+						modo='<%=modoFila%>'
+						visibleBorrado='no'
+						visibleEdicion='no'
+						pintarEspacio="no"
+						clase="listaNonEdit">
 							<td>
 								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_1" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=row.getString(CenHistoricoBean.C_IDPERSONA)%>">
 								<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString(CenHistoricoBean.C_IDINSTITUCION)%>">
