@@ -1035,6 +1035,8 @@
 			document.busquedaCensoModalForm.textoAlerta.value="";
 		}
 		
+		fin();
+		
 	}
 
 	function ponerIconoIdentPersona (encontrado){
