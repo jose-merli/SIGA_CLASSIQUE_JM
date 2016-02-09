@@ -142,7 +142,7 @@
 		function accionNuevo()  {	
 			sub();
 			document.forms[0].modo.value="nuevo";
-			document.forms[0].target="mainWorkArea";
+			document.forms[0].target="<%=targetVentana%>";
 			document.forms[0].submit();	
 		}		
 	</script>
@@ -154,13 +154,14 @@
 	<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista  de cabeceras fijas -->
 	
 	<!-- Formulario de la lista de detalle multiregistro -->
-	<html:form action="/CEN_SancionesLetrado.do?noReset=true" target="<%=targetVentana %>" method="POST" style="display:none">
+	<html:form action="/CEN_SancionesLetrado.do?noReset=true" target="<%=targetVentana%>" method="POST" style="display:none">
 		<html:hidden styleId = "modo"  property = "modo" value = "" />
 		<html:hidden styleId = "formulario"  property = "formulario" value = "" />
 		<html:hidden styleId = "hiddenFrame"  property = "hiddenFrame"  value = "1"/>
 		<input type="hidden" id= "pestanaColegiacion" name= "pestanaColegiacion"  value = "<%=pestanaColegiacion %>">
 		<input type="hidden" id= "personaColegiacion" name= "personaColegiacion" value = "<%=personaColegiacion %>">
 		<input type="hidden" id= "institucionColegiacion" name= "institucionColegiacion"  value = "<%=institucionColegiacion %>">
+		<input type="hidden" id= "accionCenso" name= "accionCenso" value = "<%=accion %>">
 		<html:hidden styleId="registrosSeleccionados"  property="registrosSeleccionados" />
 		<html:hidden styleId="datosPaginador"  property="datosPaginador" />
 		<html:hidden styleId="seleccionarTodos"  property="seleccionarTodos" />
@@ -183,7 +184,7 @@
 	String nombresCol = "";
 	//Es consejo
 	if(	(Integer.parseInt(idinstitucionActual) == 2000) || (Integer.parseInt(idinstitucionActual) >= 3000)){
-		tamanosCol="8,24,8,6,6,8,8,10,10,12";
+		tamanosCol="12,23,8,6,6,8,8,10,7,12";
 		nombresCol+="censo.busquedaSancionesLetrado.literal.colegio,";
 		nombresCol+="censo.busquedaSancionesLetrado.literal.ncolegiado,censo.busquedaSancionesLetrado.literal.tipoSancion,";
 		nombresCol+="censo.BusquedaSancionesLetrado.literal.refCGAE,censo.BusquedaSancionesLetrado.literal.refColegio2,gratuita.BusquedaSancionesLetrado.literal.fechaInicio,";
@@ -192,7 +193,7 @@
 	}
 	//Es colegiado
 	else{
-		tamanosCol="8,26,12,6,8,8,10,10,12";
+		tamanosCol="12,25,12,6,8,8,10,7,12";
 		nombresCol+="censo.busquedaSancionesLetrado.literal.colegio,";
 		nombresCol+="censo.busquedaSancionesLetrado.literal.ncolegiado,censo.busquedaSancionesLetrado.literal.tipoSancion,";
 		nombresCol+="censo.BusquedaSancionesLetrado.literal.refColegio2,gratuita.BusquedaSancionesLetrado.literal.fechaInicio,";

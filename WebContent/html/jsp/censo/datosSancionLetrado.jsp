@@ -44,6 +44,7 @@
 	String readonly = "false";  // para el combo
 	boolean breadonly = false;  // para lo que no es combo
 	String modo = (String)request.getAttribute("accion");	
+	String accionVueltaFicha = (String)request.getAttribute("accionCenso");
 	// caso de accion
 	if (formulario.getModo().equals("Ver")) {
 		// caso de consulta
@@ -69,10 +70,14 @@
 	
 	if (registro==null) registro = new Hashtable();	
 	
+	 String targetVentana = "mainWorkArea";
+	
 	// miro si estamos en la pestaña de datos de colegiacion
 	String pestanaColegiacion = (String) request.getAttribute("pestanaColegiacion");
 	if (pestanaColegiacion==null) {
 		pestanaColegiacion = "0";
+	} else {
+	 	targetVentana = "mainPestanas";
 	}
 	String personaColegiacion = (String) request.getAttribute("personaColegiacion");
 	if (personaColegiacion==null) {
@@ -80,7 +85,7 @@
 	}
 	String institucionColegiacion = (String) request.getAttribute("institucionColegiacion");
 	if (institucionColegiacion==null) {
-		institucionColegiacion = "";
+		institucionColegiacion = (String)registro.get("IDINSTITUCION");
 	}
 	
 	String nombrePersona="";
@@ -157,9 +162,8 @@
 	<script language="JavaScript">
 		function accionVolver(){ 	
 			<% if (pestanaColegiacion!=null && pestanaColegiacion.equals("1")) { %>
-				document.busquedaClientesForm.action = "/SIGA/CEN_BusquedaClientes.do" + "?noReset=true&buscar=true";
-				document.busquedaClientesForm.modo.value="abrirConParametros";
-				document.busquedaClientesForm.submit();			
+				document.DatosColegiacionForm.modo.value="abrir";
+				document.DatosColegiacionForm.submit();			
 			<% } else { %>
 				document.SancionesLetradoForm.modo.value="abrirVolver";
 				document.SancionesLetradoForm.target="mainWorkArea";
@@ -169,7 +173,7 @@
 		
 		function refrescarLocal(){
 			sub();
-			document.SancionesLetradoForm.target="mainWorkArea";
+			document.SancionesLetradoForm.target="<%=targetVentana%>";
 			document.SancionesLetradoForm.modo.value = "editar";
 			document.SancionesLetradoForm.submit();
 			fin();
@@ -308,7 +312,7 @@
 			<html:hidden  name="SancionesLetradoForm" property="modo"/>
 			<html:hidden  name="SancionesLetradoForm" property="idSancion" value="<%=idSancion %>"/>
 			<html:hidden  name="SancionesLetradoForm" property="idInstitucionAlta" value="<%=idInstitucionAlta %>"/>
-
+			<input type="hidden" id="pestanaColegiacion"  name="pestanaColegiacion" value = "<%=pestanaColegiacion%>"/>
 		<tr>				
 			<td>
 
@@ -541,6 +545,13 @@
 		<input type="hidden" name="clientes"	value="1">
 		<input type="hidden" name="busquedaSancion" value="1">
 	</html:form>
+	
+	<html:form action="/CEN_DatosColegiacion.do" method="POST" >
+		<html:hidden name="DatosColegiacionForm" property="modo" />
+		<input type="hidden" id="accion"  name="accion" value = "<%=accionVueltaFicha%>"/>
+		<input type="hidden" id="idPersona"  name="idPersona" value = "<%=idPersona%>"/>
+		<input type="hidden" id="idInstitucion"  name="idInstitucion" value = "<%=institucionColegiacion%>"/>
+	</html:form>	
 	
 	<html:form  action="/CEN_BusquedaClientes.do" method="POST" target="mainWorkArea">
 		<html:hidden  name="busquedaClientesForm" property="modo"/>
