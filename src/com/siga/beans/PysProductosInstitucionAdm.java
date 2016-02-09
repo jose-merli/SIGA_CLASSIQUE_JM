@@ -766,13 +766,15 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 					articulo.setIdDireccion(beanDir.getIdDireccion());
 				}
 			}
+			
 			// jbd 17/02/2010 inc-6361
 			articulo.setMetodoSolicitud((metodoSolicitud.trim().equals(""))?null:new Integer(metodoSolicitud));
-			articulo.setAceptaCesionMut((aceptaCesionMutualidad.trim().equals(""))?null:new Integer(aceptaCesionMutualidad));
 			articulo.setFechaSolicitud(fechaSolicitud);
-			//articulo.getNoFacturable()
-			productosAdm.insertProducto(articulo, idPeticion, (idInstitucionPresentador.trim().equals(""))?null:new Integer(idInstitucionPresentador),(idInstitucionColegiacion.trim().equals(""))?null:new Integer(idInstitucionColegiacion), idPersona);
+			if(aceptaCesionMutualidad != null) {
+				articulo.setAceptaCesionMut((aceptaCesionMutualidad.trim().equals(""))?null:new Integer(aceptaCesionMutualidad));
+			}			
 
+			productosAdm.insertProducto(articulo, idPeticion, (idInstitucionPresentador.trim().equals(""))?null:new Integer(idInstitucionPresentador),(idInstitucionColegiacion.trim().equals(""))?null:new Integer(idInstitucionColegiacion), idPersona);
 			return articulo;
 			
         } catch (SIGAException e) {
