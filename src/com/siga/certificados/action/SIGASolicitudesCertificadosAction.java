@@ -131,7 +131,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 					}
 					request.getSession().removeAttribute("DATAPAGINADOR");
 					mapDestino = buscar(mapping, form, request, response);
-	            }else if (accion.equalsIgnoreCase("aprobarYGenerarVariosCertificados")) {
+					
+	            } else if (accion.equalsIgnoreCase("aprobarYGenerarVariosCertificados")) {
 	                mapDestino = aprobarYGenerarVariosCertificados(mapping, miForm, request, response);
 	                
 	            } else if (accion.equalsIgnoreCase("generarPDF")) {
@@ -2010,7 +2011,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				bean.setIdPersona_Des(Long.valueOf(form.getIdPersonaSolicitante()));
 			}
 
-			if (form.getAceptaCesionMutualidad().equalsIgnoreCase("on")) {
+			if (form.getAceptaCesionMutualidad().equalsIgnoreCase("1")) {
 				bean.setAceptaCesionMutualidad("1");
 			} else {
 				bean.setAceptaCesionMutualidad("");

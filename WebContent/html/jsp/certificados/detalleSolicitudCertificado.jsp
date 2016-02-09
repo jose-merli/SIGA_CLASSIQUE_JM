@@ -87,7 +87,7 @@
 	String sIdCompra = "";
 	boolean isSolicitudColegio = false;
 	String[] parametros = null;
-	String aceptaCesion = "";
+	String aceptaCesion = "", aceptMut = "";
 	ArrayList aMetodoSol = new ArrayList();
 	String fechaSolicitud = "", idInstitucionSolicitud ="";
 	ArrayList tipoCertSel =new ArrayList();
@@ -104,6 +104,7 @@
 		isSolicitudColegio = beanSolicitud.getIdInstitucion_Sol().intValue()!=2000 && !String.valueOf(beanSolicitud.getIdInstitucion_Sol()).substring(0,2).equals("30");		
 		parametros = new String[]{beanSolicitud.getIdInstitucion_Sol().toString(),beanSolicitud.getIdInstitucion_Sol().toString()};
 		aceptaCesion = beanSolicitud.getAceptaCesionMutualidad().equals("1")?"checked":"";
+		aceptMut = beanSolicitud.getAceptaCesionMutualidad();
 		aMetodoSol.add(beanSolicitud.getMetodoSolicitud());
 		fechaSolicitud = beanSolicitud.getFechaSolicitud();
 		idInstitucionSolicitud = beanSolicitud.getIdInstitucion_Sol().toString();
@@ -521,7 +522,7 @@
 				DummyForm.metodoSolicitud.value = SolicitudesCertificadosForm.metodoSolicitud.value;
 				DummyForm.fechaSolicitud.value = SolicitudesCertificadosForm.fechaSolicitud.value;
 				DummyForm.idInstitucionColegiacion.value =SolicitudesCertificadosForm.idInstitucionColegiacion.value;
-				if(SolicitudesCertificadosForm.aceptaCesionMutualidad.checked){
+				if(SolicitudesCertificadosForm.aceptaCesionMutualidadCheck.checked){
 					DummyForm.aceptaCesionMutualidad.value = "1";
 				} else {
 					DummyForm.aceptaCesionMutualidad.value = "0";
@@ -688,6 +689,15 @@
 			}
 		}
 		
+		function checkMutualidad () 
+		{
+			if(SolicitudesCertificadosForm.aceptaCesionMutualidadCheck.checked){
+				SolicitudesCertificadosForm.aceptaCesionMutualidad.value = "1";
+			} else {
+				SolicitudesCertificadosForm.aceptaCesionMutualidad.value = "0";
+			}
+		}		
+		
 		function revisarCheck() {
 			<% if (!modo.equals("nuevo")){%> 
 				if (SolicitudesCertificadosForm.idInstitucionDestino)
@@ -782,6 +792,7 @@
 		<html:hidden property="idsTemp" value="<%=idsTemp%>"/>
 		<html:hidden property="idSerieSeleccionada" styleId="idSerieSeleccionada" />
 		<input type="hidden" id="idPeticion" name="idPeticion" value="<%=idPeticion%>">	
+		<html:hidden property="aceptaCesionMutualidad" value="<%=aceptMut%>" />
 		<tr>
 			<td><siga:ConjCampos leyenda="certificados.solicitudes.ventanaEdicion.datosSolicitud">
 				<table class="tablaCampos" align="center">
