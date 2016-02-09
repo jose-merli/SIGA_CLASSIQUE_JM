@@ -868,18 +868,18 @@ public class DatosGeneralesAction extends MasterAction {
 			String idInstitucion = miForm.getIdInstitucion();
 			String idPersona = miForm.getIdPersona();
 			String numIdentificacion = miForm.getNumIdentificacion();
-			
+			boolean bDatosGeneralesEditables = ((String) request.getParameter("bDatosGeneralesEditables")).equals("true") ? true : false;
 			
 			// Si es colegiado ya NO se podrá guardar 'Otros' como tipo de identificacion
 			if (miForm.getCliente().equalsIgnoreCase("No Colegiado")) {
 				if (numIdentificacion == null || numIdentificacion.equals("")) {
 					String numIdent = (String) getIdenHistorico(mapping, miForm, request, response, 1, usr.getLocation());
 					miForm.setNumIdentificacion(numIdent);
-					miForm.setTipoIdentificacion("50");
+					miForm.setTipoIdentificacion(String.valueOf(ClsConstants.TIPO_IDENTIFICACION_OTRO));
 				}
 				
 			} else {
-				if (("" + miForm.getTipoIdentificacion()).equals("50")) {
+				if (miForm.getTipoIdentificacion().equals(String.valueOf(ClsConstants.TIPO_IDENTIFICACION_OTRO)) && bDatosGeneralesEditables) {
 					throw new SIGAException("messages.error.datosGenerales.tipoiden.otros");
 				}
 			}

@@ -975,6 +975,8 @@
 			<html:hidden property="actionModal" value=""/>
 			<html:hidden property="tipo" value="<%=sTipo%>"/>
 			<html:hidden name="datosGeneralesForm" property = "continuarAprobacion" value = ""/>
+			<input type="hidden" name="bDatosGeneralesEditables"  id="bDatosGeneralesEditables"  value="<%=bDatosGeneralesEditables%>"/>
+			
 	<tr>
 		<!-- FILA 1: FOTO -->
 		<td rowspan="3" valign="top" style="width:200px">
@@ -1519,31 +1521,35 @@
 		function validarFormulario() {
 			if (validateDatosGeneralesForm(document.forms[0])) {
 				var rc = true;
-				var tipoIden = document.datosGeneralesForm.tipoIdentificacion.value;
 				
-				if (tipoIden == <%=tipoIdenNIF%>) {
-					rc = validarNIFCIF(tipoIden, document.datosGeneralesForm.numIdentificacion.value);
-					if (rc == false) {
-						alert("<siga:Idioma key='messages.nif.comprobacion.digitos.error'/>");
-					}
+				<% if (bDatosGeneralesEditables) { %>
+					var tipoIden = document.datosGeneralesForm.tipoIdentificacion.value;
 					
-				} else if (tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") {
-					rc = validaNIE(document.datosGeneralesForm.numIdentificacion.value);
-					
-				} else if (tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_PASAPORTE%>" && document.forms[0].numIdentificacion.value=="") {
-					alert('<siga:Idioma key="messages.pasaporte.comprobacion.error"/>');
-					rc = false;
-					
-				} else if (tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>" && document.forms[0].numIdentificacion.value=="") {	
-					alert('<siga:Idioma key="messages.otro.comprobacion.error"/>');
-					rc = false;
-					
-				} else if (document.forms[0].tipoIdentificacion.value== "" && document.forms[0].numIdentificacion.value=="") {
-					if (document.forms[0].cliente.valyue== "Letrado" || document.forms[0].cliente.value=="Ejerciente") {
-						alert('<siga:Idioma key="messages.tipoIdenNumIden.comprobacion.error"/>');
+					if (tipoIden == <%=tipoIdenNIF%>) {
+						rc = validarNIFCIF(tipoIden, document.datosGeneralesForm.numIdentificacion.value);
+						if (rc == false) {
+							alert("<siga:Idioma key='messages.nif.comprobacion.digitos.error'/>");
+						}
+						
+					} else if (tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") {
+						rc = validaNIE(document.datosGeneralesForm.numIdentificacion.value);
+						
+					} else if (tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_PASAPORTE%>" && document.forms[0].numIdentificacion.value=="") {
+						alert('<siga:Idioma key="messages.pasaporte.comprobacion.error"/>');
 						rc = false;
+						
+					} else if (tipoIden == "<%=ClsConstants.TIPO_IDENTIFICACION_OTRO%>" && document.forms[0].numIdentificacion.value=="") {	
+						alert('<siga:Idioma key="messages.otro.comprobacion.error"/>');
+						rc = false;
+						
+					} else if (document.forms[0].tipoIdentificacion.value== "" && document.forms[0].numIdentificacion.value=="") {
+						if (document.forms[0].cliente.valyue== "Letrado" || document.forms[0].cliente.value=="Ejerciente") {
+							alert('<siga:Idioma key="messages.tipoIdenNumIden.comprobacion.error"/>');
+							rc = false;
+						}
 					}
-				}
+				
+				<% } %>
 				
 				if (rc) {					
 					if (!comprobarFechaNacimiento(jQuery("#fechaNacimiento").val())) {
