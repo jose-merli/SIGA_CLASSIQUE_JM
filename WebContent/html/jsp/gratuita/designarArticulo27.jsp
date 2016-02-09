@@ -887,6 +887,7 @@
 	}
 
 	function preAccionBusquedaNIF(){
+		sub();
 		limpiarDireccion();
 	}
 	
@@ -1787,7 +1788,7 @@
 
 	//Asociada al boton Guardar
 	function accionGuardar() {	
-
+		sub();
 		if (validarFormulario()) {
 				if (validarDireccion()) {
 					document.busquedaCensoModalForm.numeroColegiado.value    =document.datosGeneralesForm.nColegiado.value;
