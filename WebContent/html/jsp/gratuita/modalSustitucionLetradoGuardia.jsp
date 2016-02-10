@@ -119,14 +119,14 @@
 								<siga:Idioma key="gratuita.modalSustitucionLetrado.literal.turno"/>:			
 							</td>
 							<td>
-								<input type="text" name="turno" id="turno" maxlength="20" class="boxConsulta" value="<%=turno%>" readOnly style="width:220px">
+								<input type="text" name="turno" id="turno" maxlength="20" class="boxConsulta" value="<%=turno%>" readOnly style="width:200px">
 							</td>		
 							
 							<td class="labelText">
 								<siga:Idioma key="gratuita.modalSustitucionLetrado.literal.guardia"/>:								
 							</td>
 							<td >
-								<input type="text" name="guardia" id="guardia" maxlength="20" class="boxConsulta" value="<%=guardia%>" readOnly  style="width:220px">
+								<input type="text" name="guardia" id="guardia" maxlength="20" class="boxConsulta" value="<%=guardia%>" readOnly  style="width:200px">
 							</td>	
 						</tr>
 						
@@ -202,7 +202,7 @@
 								<td>
 									<html:textarea name="PermutasForm" property="comenSustitucion" styleId="comenSustitucion"									
 										onkeydown="cuenta(this,250)" onchange="cuenta(this,250)" 
-										style="overflow-y:auto; overflow-x:hidden; width:580px; height:50px; resize:none;" 
+										style="overflow-y:auto; overflow-x:hidden; width:450px; height:50px; resize:none;" 
 										styleClass="box" readonly="false" ></html:textarea>
 								</td>					
 							</tr>
@@ -223,7 +223,7 @@
 								<td>
 									<html:textarea name="DefinirGuardiasTurnosForm" property="comenSustitucion" styleId="comenSustitucion" 
 										onkeydown="cuenta(this,250)" onchange="cuenta(this,250)" 
-										style="overflow-y:auto; overflow-x:hidden; width:580px; height:50px; resize:none;"
+										style="overflow-y:auto; overflow-x:hidden; width:450px; height:50px; resize:none;"
 										styleClass="box" readonly="false" ></html:textarea>
 								</td>					
 							</tr>
