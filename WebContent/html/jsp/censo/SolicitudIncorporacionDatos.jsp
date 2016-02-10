@@ -403,74 +403,7 @@
 		}
 		return true;	
 	}
-	
-	function obtenerLetra(){
-		if (generarLetra()) {
-			var tipoIdentificacion = document.getElementById("tipoIdentificacion").value;
-			if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")
-				alert("<siga:Idioma key='messages.nifcif.comprobacion.correcto'/>");
-			else
-				if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")
-					alert("<siga:Idioma key='messages.nie.comprobacion.correcto'/>");
-		}
-
-	}
-
-	function generarLetra(){
-		var numId = document.getElementById("NIFCIF").value;
-		var tipoIdentificacion = document.getElementById("tipoIdentificacion").value;
-	  	var letra='TRWAGMYFPDXBNJZSQVHLCKET';
-		if(numId.length==0) {
-			return false;		
-		}
-		if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
-			if(numId.length==8){
-				if(isNumero(numId)==true){
-				 	numero = numId;
-				 	numero = numero % 23;
-				 	letra=letra.substring(numero,numero+1);
-				 	document.getElementById("NIFCIF").value = numId+letra;
-				}
-				else
-					return validaNumeroIdentificacion(tipoIdentificacion, numId);					
-			} 
-			else
-				return validaNumeroIdentificacion(tipoIdentificacion, numId);
-		} 
-		else
-			if((tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") ){
-				if(numId.length==8){
-					var dnie = document.getElementById("NIFCIF").value;
-					letIni = numId.substring(0,1);
-					primeraLetra = letIni;
-					if  (letIni.toUpperCase()=='Y')
-			 			letIni = '1';
-			 		else {
-			 			if  (letIni.toUpperCase()=='Z')
-			 				letIni = '2';
-			 			else
-			 				letIni = '0';
-			 		}
-			 
-					num = letIni+numId.substring(1,8);
-					if(primeraLetra.match('[X|Y|Z]') && isNumero(num)){
-						var posicion = num % 23;
-						letras='TRWAGMYFPDXBNJZSQVHLCKET';
-						var letra=letras.substring(posicion,posicion+1);
-						numero = dnie + letra;
-						document.getElementById("NIFCIF").value = numero;
-					} 
-					else 
-						return validaNumeroIdentificacion(tipoIdentificacion, numId);					
-				} 
-				else
-					return validaNumeroIdentificacion(tipoIdentificacion, numId);
-			}
-						
-		// Caso1: Se han realizado las modificaciones necesarias sin encontrar errores 
-		// Caso2: no es nif ni nie no hay generacion de letra	
-		return true;
-	}	
+//NOTA: 10/02/2016 -- R1509_0009 -- Eliminamos la generación de la letra
 
 	function validaNumeroIdentificacion(){
 		var errorNIE = false;
@@ -1869,9 +1802,9 @@
 							</script>
 							
 							<html:text property="NIFCIF" styleClass="box" size="25" maxlength="20" value="<%=datosPersonales.getNumeroIdentificador() %>"/>
-							<span id="idButtonNif" style="display:none; margin:0;padding:0" >
+							<!--  <span id="idButtonNif" style="display:none; margin:0;padding:0" >
 								<img src="<html:rewrite page='/html/imagenes/comprobar.gif'/>" border="0" onclick="obtenerLetra();" style="cursor:hand" height="20px">
-							</span>
+							</span> -->
 						</td>
 						
 					<%}%>
