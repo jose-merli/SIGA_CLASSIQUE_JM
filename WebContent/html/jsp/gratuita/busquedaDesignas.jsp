@@ -29,8 +29,6 @@
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
 	
 	boolean esComisionMultiple = usr.getInstitucionesComision()!=null &&usr.getInstitucionesComision().length>1;
-	
-	
 
 	String nColegiado =  request.getAttribute("nColegiado")==null?"":(String)request.getAttribute("nColegiado");
 	String nombreUserBean =  request.getAttribute("nombreUserBean")==null?"":(String)request.getAttribute("nombreUserBean");
@@ -206,7 +204,9 @@
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.anyo"/> / <siga:Idioma key="gratuita.busquedaSOJ.literal.codigo"/>
 		</td>
 		<td>	
-			<html:text name="BuscarDesignasForm" property="anio" style="width:40px" maxlength="4" styleClass="box" value="<%=anio%>"/> / <html:text name="BuscarDesignasForm" property="codigo" style="width:50px" maxlength="10" styleClass="box" value="<%=codigo%>"/> 
+			<html:text name="BuscarDesignasForm" property="anio" styleId="anio" style="width:40px" maxlength="4" styleClass="box" value="<%=anio%>"/>
+			/
+			<html:text name="BuscarDesignasForm" property="codigo" styleId="codigo" style="width:50px" maxlength="10" styleClass="box" value="<%=codigo%>"/> 
 		</td>
 		<td class="labelText">
 			&nbsp;
@@ -250,7 +250,7 @@
 			<siga:Idioma key="gratuita.editarDesigna.literal.estado"/>
 		</td>
 		<td >	
-			<Select name="estado" class="boxCombo">
+			<Select id="estado" name="estado" class="boxCombo">
 			<%if(estado!=null && !estado.equals("")){%>
 				<%if(estado.equals("V")){%>			
 					<option value=''   ></option>
@@ -282,7 +282,7 @@
 			<siga:Idioma key="gratuita.busquedaDesignas.literal.actuacionesValidadas"/>
 		</td>
 		<td>	
-			<Select name="actuacionesPendientes" class="boxCombo">
+			<Select id="actuacionesPendientes" name="actuacionesPendientes" class="boxCombo">
 				<option value='' selected></option>
 				<%if((actuacionesPendientes!=null)&&(actuacionesPendientes.equalsIgnoreCase("No"))){%>		
 						<option value='No' selected><siga:Idioma key="general.no"/></option>
@@ -305,7 +305,7 @@
 			<siga:Idioma key="gratuita.busquedaDesignas.literal.mostrarArt27"/>
 		</td>
 		<td>	
-			<Select name="mostrarArt27" class="boxCombo">
+			<Select id="mostrarArt27" name="mostrarArt27" class="boxCombo">
 				<option value='N'> <siga:Idioma key="general.no"/></option>
 				<option value='S'> <siga:Idioma key="general.yes"/></option>
 				<option value='T' selected> <siga:Idioma key="general.todas"/></option>
@@ -345,19 +345,19 @@
 					<siga:Idioma key="informes.cartaAsistencia.procedimiento"/>
 				</td>
 				<td class="labelText" >
-					<html:text name="BuscarDesignasForm" property="procedimiento" size="17" maxlength="100" styleClass="box"  value="<%=procedimiento%>"></html:text>
+					<html:text name="BuscarDesignasForm" property="procedimiento" styleId="procedimiento" size="17" maxlength="100" styleClass="box"  value="<%=procedimiento%>"></html:text>
 				</td>
 				<td class="labelText">	
 					<siga:Idioma key="informes.cartaAsistencia.asunto"/>
 				</td>	
 				<td class="labelText">
-					<html:text name="BuscarDesignasForm" property="asunto" size="15" maxlength="100" styleClass="box"  value="<%=asunto%>"></html:text>
+					<html:text name="BuscarDesignasForm" property="asunto" styleId="asunto" size="15" maxlength="100" styleClass="box"  value="<%=asunto%>"></html:text>
 				</td>
 				<td class="labelText">	
 					<siga:Idioma key="gratuita.mantAsistencias.literal.NIG"/>
 				</td>	
 				<td class="labelText" >
-					<html:text name="BuscarDesignasForm" property="nig2" styleId = "nig2" styleClass="box" style="size:19;width:200px" value="<%=nig%>"></html:text>
+					<html:text name="BuscarDesignasForm" property="nig2" styleId="nig2" styleClass="box" style="size:19;width:200px" value="<%=nig%>"></html:text>
 				</td>
 		</tr>
 		</table>
@@ -400,25 +400,25 @@
 			<siga:Idioma key="expedientes.auditoria.literal.nif"/>
 		</td>	
 		<td>
-			<html:text name="BuscarDesignasForm" property="nif" size="10" maxlength="10" styleClass="box" value="<%=nif%>"></html:text>
+			<html:text name="BuscarDesignasForm" property="nif" styleId="nif" size="10" maxlength="10" styleClass="box" value="<%=nif%>"></html:text>
 		</td>
 		<td class="labelText">
 			<siga:Idioma key="expedientes.auditoria.literal.nombre"/>
 		</td>
 		<td>	
-			<html:text name="BuscarDesignasForm" property="nombre" size="15" maxlength="100" styleClass="box" value="<%=nombre%>" ></html:text>
+			<html:text name="BuscarDesignasForm" property="nombre" styleId="nombre" size="15" maxlength="100" styleClass="box" value="<%=nombre%>" ></html:text>
 		</td>	
 		<td class="labelText">
 			<siga:Idioma key="expedientes.auditoria.literal.primerapellido"/>
 		</td>
 		<td >	
-			<html:text name="BuscarDesignasForm" property="apellido1" size="15" maxlength="100" styleClass="box" value="<%=apellido1%>" ></html:text>
+			<html:text name="BuscarDesignasForm" property="apellido1" styleId="apellido1" size="15" maxlength="100" styleClass="box" value="<%=apellido1%>" ></html:text>
 		</td>	
 		<td class="labelText">	
 			<siga:Idioma key="expedientes.auditoria.literal.segundoapellido"/>
 		</td>
 		<td>
-			<html:text name="BuscarDesignasForm" property="apellido2" size="15" maxlength="100" styleClass="box" value="<%=apellido2%>" ></html:text>
+			<html:text name="BuscarDesignasForm" property="apellido2" styleId="apellido2" size="15" maxlength="100" styleClass="box" value="<%=apellido2%>" ></html:text>
 		</td>
 	</tr>
 	</table>
@@ -515,13 +515,6 @@
 				//}
 		}			
 		
-		//<!-- Funcion asociada a boton limpiar -->
-		function limpiar() 
-		{		
-			document.forms[0].reset();
-			document.forms[0].ncolegiado.value="";
-		}
-		
 		//<!-- Funcion asociada a boton Nuevo -->
 		function nuevo() 
 		{		
@@ -567,6 +560,44 @@
 			document.RecuperarConsultasForm.submit();
 			
 		}
+		
+		function limpiar() {
+			if (jQuery("#idInstitucionComision").exists()) {
+				jQuery("#idInstitucionComision").val("");
+			}
+			
+			jQuery("#anio").val(""); // anio
+			jQuery("#codigo").val(""); // codigo
+			jQuery("#fechaAperturaInicio").val(""); // fechaAperturaInicio
+			jQuery("#fechaAperturaFin").val(""); // fechaAperturaFin
+			
+			jQuery("#idTurno").val(""); // idTurno
+			jQuery("#tipoDesigna").val(""); // tipoDesigna
+			
+			jQuery("#estado").val(""); // estado
+			jQuery("#actuacionesPendientes").val(""); // actuacionesPendientes
+			jQuery("#mostrarArt27").val(""); // mostrarArt27
+			
+			limpiarPersona();	
+			
+			jQuery("#calidad").val(""); // calidad			
+			jQuery("#juzgado_searchBox").val(""); // juzgado
+			jQuery("#juzgado").val(""); // juzgado
+			
+			jQuery("#procedimiento").val(""); // procedimiento
+			jQuery("#asunto").val(""); // asunto
+			jQuery("#nig2").val(""); // nig2
+			
+			jQuery("#modulo").val(""); // modulo
+			jQuery("#acreditacion").val(""); // acreditacion
+			jQuery("#juzgadoActu_searchBox").val(""); // juzgadoActu
+			jQuery("#juzgadoActu").val(""); // juzgadoActu
+			
+			jQuery("#nif").val(""); // nif
+			jQuery("#nombre").val(""); // nombre
+			jQuery("#apellido1").val(""); // apellido1
+			jQuery("#apellido2").val(""); // apellido2
+	}		
 </script>
 <!--<input type="button" name="descarga" value="Descargar Factura Rectificativa" onclick="generaInformeGenericoSimple();" class="button">-->
 
@@ -577,9 +608,9 @@
 
 	<!-- INICIO: BOTONES BUSQUEDA -->	
 	<%if(usr.isLetrado()){%>	
-		<siga:ConjBotonesBusqueda botones="C,B,IJ"  titulo="gratuita.busquedaDesignas.literal.titulo"/>
+		<siga:ConjBotonesBusqueda botones="C,L,B,IJ"  titulo="gratuita.busquedaDesignas.literal.titulo"/>
 	<%}else{%>
-		<siga:ConjBotonesBusqueda botones="C,B,N,IJ, CON"  titulo="gratuita.busquedaDesignas.literal.titulo"/>
+		<siga:ConjBotonesBusqueda botones="C,L,B,N,IJ, CON"  titulo="gratuita.busquedaDesignas.literal.titulo"/>
 		<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 		<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
 			<html:hidden property="idModulo" value="<%=ConModuloBean.IDMODULO_SJCS %>"/>
