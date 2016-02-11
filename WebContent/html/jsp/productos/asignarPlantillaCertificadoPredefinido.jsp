@@ -170,8 +170,7 @@
 					</td>
 					<td><siga:ComboBD nombre="metodoSolicitud"
 							tipo="comboMetodoSolicitud" obligatorio="false"
-							parametro="<%=parametro%>" elementoSel="<%=aMetodoSol%>"
-							clase="boxCombo" /></td>
+							elementoSel="<%=aMetodoSol%>" clase="boxCombo" /></td>							
 				</tr>
 			</table>
 		</form>
