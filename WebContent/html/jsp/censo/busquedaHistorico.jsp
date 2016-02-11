@@ -42,6 +42,8 @@
 	String numero=(String)request.getAttribute("NUMERO"); // Obtengo el numero de colegiado de la persona
 	String estadoColegial=(String)request.getAttribute("ESTADOCOLEGIAL"); // Obtengo el estado colegial de la persona
 	String idInstitucion=(String)request.getSession().getAttribute("IDINSTITUCIONPERSONA"); // Obtengo el identificador de la institucion	
+	
+	Vector<Hashtable<String, Object>> vTiposAuditoria = (Vector<Hashtable<String, Object>>)request.getAttribute("vTiposAuditoria"); // Obtengo la lista de tipos de cambio para las auditorias
 
 	// Institucion del usuario de la aplicacion
 	String idInstUsuario=(String)request.getAttribute("IDINSTITUCION"); // Obtengo el identificador de la institucion
@@ -79,13 +81,10 @@
 
 
 	<!-- HEAD -->
-	
-
-		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-		
+		<link rel="stylesheet" type="text/css" href="<html:rewrite page='/html/dropdownchecklist/smoothness-1.8.13/jquery-ui-1.8.13.custom.css'/>">
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>		
 		
 		<!-- Incluido jquery en siga.js -->
-		
 		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 		
 
@@ -116,7 +115,7 @@
  	
 	</head>
 
-	<body onLoad="ajusteAltoBotones('resultado'); inicio();" class="tablaCentralCampos">
+	<body onLoad="ajusteAltoBotones('resultado');" class="tablaCentralCampos">
 
 		<!-- ******* INFORMACION GENERAL CLIENTE ****** -->
 
@@ -151,15 +150,28 @@
 				<html:hidden property = "modo" value = ""/>
 				<html:hidden property = "actionModal" value=""/>
 				<html:hidden property = "jsonVolver" />
-				
+				<html:hidden property = "idsTipoCambio" />
 				
 				<tr>				
 					<td class="labelText">
 						<siga:Idioma key="censo.consultaHistorico.literal.tipo"/>
 					</td>				
 					<td>
-						<siga:ComboBD nombre = "cmbCambioHistorico" tipo="cmbCambioHistorico" clase="boxCombo" obligatorio="false" ancho="150"/>
+						<select id="listaIdTipoCambio" multiple="multiple" styleClass="boxCombo" style="width:150px;display: none;">
+							<option value=""><siga:Idioma key="censo.consultaHistorico.literal.tipo.todasNinguna"/></option>
+<% 
+							for (int i = 0; i < vTiposAuditoria.size(); i++) {
+								Hashtable<String, Object> hTipoAuditoria = (Hashtable<String, Object>)vTiposAuditoria.get(i);
+								String sIdTipoAuditoria = (String) hTipoAuditoria.get("ID");
+								String sDescripcionTipoAuditoria = (String) hTipoAuditoria.get("DESCRIPCION");
+%>
+								<option value="<%=sIdTipoAuditoria%>"><%=sDescripcionTipoAuditoria%></option>
+<%
+							} 
+%>	
+						</select>
 					</td>
+					
 					<td class="labelText">
 						<siga:Idioma key="censo.consultaHistorico.literal.motivo"/>
 						
@@ -200,79 +212,98 @@
 
 		<!-- FIN: BOTONES BUSQUEDA -->
 	
-		<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
-		<script language="JavaScript">
-			<!-- Funcion asociada a boton buscar -->
-			function buscar() 
-			{		
-				sub();
-				if (compararFecha (document.forms[0].fechaInicio, document.forms[0].fechaFin) == 1) {
-					var mensaje='<siga:Idioma key="messages.fechas.rangoFechas"/>';
-					alert(mensaje);
-					fin();
-					return false;
-				}else{
-					document.forms[0].modo.value='buscarPor';
-					document.forms[0].target='resultado';				
-					document.forms[0].submit();
-				}	
-			}
-
-			<!-- Funcion asociada a boton busqueda avanzada -->
-			function buscarAvanzada() 
-			{		
-	
-			}
-		
-			<!-- Funcion asociada a boton busqueda simple -->
-			function buscarSimple() 
-			{		
-	
-			}
-		
-			<!-- Funcion asociada a boton limpiar -->
-			function limpiar() 
-			{		
-				document.forms[0].modo.value='abrirAvanzada';
-				document.forms[0].target='';			
-				document.forms[0].submit();	
-			}
-			
-			<!-- Funcion asociada a boton Nuevo -->
-			function nuevo() 
-			{		
-				document.forms[0].modo.value = "nuevo";
-				document.forms[0].target= "_self";
-				document.forms[0].submit();
-				fin();
-			}
-			
-		</script>
-		<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
-
-			<!-- INICIO: IFRAME LISTA RESULTADOS -->
-			<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
-							id="resultado"
-							name="resultado" 
-							scrolling="no"
-							frameborder="0"
-							marginheight="0"
-							marginwidth="0"				 
-							class="frameGeneral">
-			</iframe>
-			<!-- FIN: IFRAME LISTA RESULTADOS -->
-
-			<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
-
-
-
-	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
+		<!-- INICIO: IFRAME LISTA RESULTADOS -->
+		<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
+						id="resultado"
+						name="resultado" 
+						scrolling="no"
+						frameborder="0"
+						marginheight="0"
+						marginwidth="0"				 
+						class="frameGeneral">
+		</iframe>
+		<!-- FIN: IFRAME LISTA RESULTADOS -->
 	
      <!-- BOTONES -->
 	 <siga:ConjBotonesAccion botones="<%=botonesAccion%>"   modo="<%=accion%>" clase="botonesDetalle"/>		
 
 	<!-- SCRIPTS BOTONES -->
 	<script language="JavaScript">
+		jQuery.noConflict();
+		jQuery(document).ready(function() {
+	        jQueryTop("#listaIdTipoCambio", window.document).dropdownchecklist({
+	        	width:150,
+	        	maxDropHeight:150, 
+	        	firstItemChecksAll:true,
+	        	zIndex:99,
+	        	icon:{placement:'right', toOpen:'ui-icon-triangle-1-s', toClose:'ui-icon-triangle-1-s'}
+			});
+	        
+	        if (document.forms[0].jsonVolver.value!='') {
+		        var jSonVolverObject =  jQuery.parseJSON(document.forms[0].jsonVolver.value);
+				if (jSonVolverObject.nombreFormulario == 'HistoricoForm') {
+					
+					var listaIdsTipoCambio = jSonVolverObject.listaIdTipoCambio;
+					var arrayIdsTipoCambio = listaIdsTipoCambio.split(",");
+					
+					for (var i=0; i<arrayIdsTipoCambio.length; i++) {
+						jQuery("#listaIdTipoCambio option[value='" + arrayIdsTipoCambio[i] + "']").attr("selected", "selected");
+					}
+					jQueryTop("#listaIdTipoCambio", window.document).dropdownchecklist("refresh");
+					
+					document.forms['HistoricoForm'].fechaInicio.value = jSonVolverObject.fechaInicio;
+					document.forms['HistoricoForm'].fechaFin.value = jSonVolverObject.fechaFin;
+					document.forms['HistoricoForm'].motivo.value = jSonVolverObject.motivo;
+					buscar();
+				}
+	        }
+	  	});		
+		
+		// Funcion asociada a boton buscar
+		function buscar() {		
+			sub();
+			if (compararFecha (document.forms[0].fechaInicio, document.forms[0].fechaFin) == 1) {
+				var mensaje='<siga:Idioma key="messages.fechas.rangoFechas"/>';
+				alert(mensaje);
+				fin();
+				return false;
+			} else {
+				var listaIdTipoCambio = jQuery("#listaIdTipoCambio").val();
+				if (listaIdTipoCambio) {
+					if (listaIdTipoCambio.toString().substring(0,1)==',') {
+						listaIdTipoCambio = listaIdTipoCambio.toString().substring(1);
+					}
+					document.forms[0].idsTipoCambio.value = listaIdTipoCambio;
+				} else {
+					document.forms[0].idsTipoCambio.value = "";
+				}
+				
+				document.forms[0].modo.value='buscarPor';
+				document.forms[0].target='resultado';				
+				document.forms[0].submit();
+			}	
+		}
+	
+		// Funcion asociada a boton busqueda avanzada
+		function buscarAvanzada() { }
+	
+		// Funcion asociada a boton busqueda simple
+		function buscarSimple() { }
+	
+		// Funcion asociada a boton limpiar
+		function limpiar() {		
+			document.forms[0].modo.value='abrirAvanzada';
+			document.forms[0].target='';			
+			document.forms[0].submit();	
+		}
+		
+		// Funcion asociada a boton Nuevo
+		function nuevo() {		
+			document.forms[0].modo.value = "nuevo";
+			document.forms[0].target= "_self";
+			document.forms[0].submit();
+			fin();
+		}	
 
 		function accionNuevo() 
 		{		
@@ -285,22 +316,6 @@
 		function refrescarLocal() {
 			buscar();
 		}
-		function inicio() {
-			if(document.forms[0].jsonVolver.value!=''){
-				var jSonVolverObject =  jQuery.parseJSON(document.forms[0].jsonVolver.value);
-				if(jSonVolverObject.nombreFormulario == 'HistoricoForm'){
-					document.forms['HistoricoForm'].cmbCambioHistorico.value =  jSonVolverObject.idTipoCambio;
-					document.forms['HistoricoForm'].fechaInicio.value = jSonVolverObject.fechaInicio;
-					document.forms['HistoricoForm'].fechaFin.value = jSonVolverObject.fechaFin;
-					document.forms['HistoricoForm'].motivo.value = jSonVolverObject.motivo;
-					buscar();
-					
-				}
-			
-			}
-		}
-		
-				
 	</script>
 
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->

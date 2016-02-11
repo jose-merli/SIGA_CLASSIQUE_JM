@@ -107,6 +107,10 @@ public class HistoricoAction extends MasterAction {
 			estadoColegial = clienteAdm.getEstadoColegial(String.valueOf(idPersona), String.valueOf(idInstitucionPersona));
 			//////////////////////
 			
+			// Obtengo la lista de tipos de cambio para las auditorias
+			CenTipoCambioAdm adminTC = new CenTipoCambioAdm(this.getUserBean(request));
+			Vector<Hashtable<String, Object>> vTiposAuditoria = adminTC.obtenerDescripcionesAuditoria();
+			
 			// Paso de parametros empleando request
 			request.setAttribute("IDPERSONA", idPersona);
 			request.setAttribute("IDINSTITUCION", idInstitucion);
@@ -114,6 +118,7 @@ public class HistoricoAction extends MasterAction {
 			request.setAttribute("NOMBRE", nombre);
 			request.setAttribute("NUMERO", numero);
 			request.setAttribute("ESTADOCOLEGIAL", estadoColegial);
+			request.setAttribute("vTiposAuditoria", vTiposAuditoria);
 				
 			// idPersona, accion e idInstitucionPersona los guardo en session porque me interesa 
 			// acceder a ellos en varios lugares
@@ -203,8 +208,8 @@ public class HistoricoAction extends MasterAction {
 			Vector infoTipoCambio = new Vector();
 
 			HistoricoForm form = (HistoricoForm) formulario;
-			CenHistoricoAdm admin=new CenHistoricoAdm(this.getUserBean(request));
-			CenTipoCambioAdm adminTC=new CenTipoCambioAdm(this.getUserBean(request));
+			CenHistoricoAdm admin = new CenHistoricoAdm(this.getUserBean(request));
+			CenTipoCambioAdm adminTC = new CenTipoCambioAdm(this.getUserBean(request));
 			Object remitente=(Object)"modificar";
 			request.setAttribute("modelo",remitente);
 		
@@ -480,17 +485,19 @@ public class HistoricoAction extends MasterAction {
 		
 			// Manejadores para el formulario y el acceso a las BBDDs
 			HistoricoForm form = (HistoricoForm) formulario;
+			String sIdsTipoCambio =  form.getIdsTipoCambio();
+			
 			CenHistoricoAdm admin=new CenHistoricoAdm(this.getUserBean(request));
 			Map<String, String> clavesJsonMap = new HashMap<String, String>();
 			clavesJsonMap.put("nombreFormulario", "HistoricoForm");
 			clavesJsonMap.put("fechaInicio", form.getFechaInicio());
 			clavesJsonMap.put("fechaFin", form.getFechaFin());
 			clavesJsonMap.put("motivo", form.getMotivo());
-			clavesJsonMap.put("idTipoCambio", form.getCmbCambioHistorico());
+			clavesJsonMap.put("listaIdTipoCambio", sIdsTipoCambio);
 			String jsonVolver = UtilidadesString.createJsonString(clavesJsonMap);
 			form.setJsonVolver(jsonVolver);
 			// Obtengo las entradas del historico para la busqueda indicada en el formulario
-			vect=admin.getHistorico(idPersona,idInstitucion,form.getCmbCambioHistorico(),form.getFechaInicio(),form.getFechaFin(),form.getMotivo());
+			vect=admin.getHistorico(idPersona,idInstitucion,sIdsTipoCambio,form.getFechaInicio(),form.getFechaFin(),form.getMotivo());
 
 			// Paso la busqueda como parametro en el request 
 			request.setAttribute("container", vect);

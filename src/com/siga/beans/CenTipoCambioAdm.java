@@ -132,7 +132,45 @@ public class CenTipoCambioAdm extends MasterBeanAdministrador {
 	       }
 	       return datos;                        
 	    }
+	
+	/**
+	 * Obtengo la lista de tipos de cambio para las auditorias
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector<Hashtable<String, Object>> obtenerDescripcionesAuditoria()
+			throws ClsExceptions {
+		Vector<Hashtable<String, Object>> datos = new Vector<Hashtable<String, Object>>();
+		try {
+			RowsContainer rc = new RowsContainer();
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT ");
+			sql.append(CenTipoCambioBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenTipoCambioBean.C_IDTIPOCAMBIO);
+			sql.append(" AS ID, ");
+			sql.append(UtilidadesMultidioma.getCampoMultidioma(CenTipoCambioBean.T_NOMBRETABLA + "." + CenTipoCambioBean.C_DESCRIPCION, this.usrbean.getLanguage()));
+			sql.append(" FROM ");
+			sql.append(CenTipoCambioBean.T_NOMBRETABLA);
+			sql.append(" WHERE ");
+			sql.append(CenTipoCambioBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CenTipoCambioBean.C_IDTIPOCAMBIO);
+			sql.append(" NOT IN (101,102,103,104,105,106) ORDER BY 2");
 
+			if (rc.find(sql.toString())) {
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					datos.add(fila.getRow());
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e,
+					"Error al obtener la descripcion sobre una entrada de la tabla TIPOCAMBIO.");
+		}
+		return datos;
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.siga.beans.MasterBeanAdministrador#getOrdenCampos()
 	 */

@@ -258,7 +258,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador {
 							
 				if (!tipoCambio.trim().equals("")){								 
 					sql +=" AND " +
-						  CenHistoricoBean.T_NOMBRETABLA +"."+ CenHistoricoBean.C_IDTIPOCAMBIO + "=" + tipoCambio;									 
+						  CenHistoricoBean.T_NOMBRETABLA +"."+ CenHistoricoBean.C_IDTIPOCAMBIO + " IN (" + tipoCambio + ") ";									 
 				}
 				if (motivo!=null &&  !motivo.trim().equals("")){								 
 					sql +=" AND LOWER(" +
