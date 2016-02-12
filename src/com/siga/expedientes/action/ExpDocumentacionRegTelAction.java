@@ -46,7 +46,7 @@ public class ExpDocumentacionRegTelAction extends DocumentacionRegTelAction {
         try{
         	
         	request.getSession().removeAttribute("DATAPAGINADOR");
-        	request.getSession().removeAttribute("DATABACKUP");
+        	request.getSession().removeAttribute("DATABACKUP_REGTEL");
         	
 	        ExpDocumentacionForm form = (ExpDocumentacionForm)formulario;
 	        
@@ -126,7 +126,7 @@ public class ExpDocumentacionRegTelAction extends DocumentacionRegTelAction {
 			}
 	        	        	        
 			request.setAttribute("IDENTIFICADORDS", expExpedienteBean.getIdentificadorDS());
-			request.getSession().setAttribute("DATABACKUP", hash);
+			request.getSession().setAttribute("DATABACKUP_REGTEL", hash);
 						
 			request.getSession().removeAttribute("MIGAS_DS");						
 			
@@ -143,7 +143,7 @@ public class ExpDocumentacionRegTelAction extends DocumentacionRegTelAction {
 
 	@Override
 	protected String createCollection(MasterForm formulario, HttpServletRequest request) throws Exception {		
-		Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP");
+		Hashtable hash = (Hashtable) request.getSession().getAttribute("DATABACKUP_REGTEL");
 		String idDS = null;
 		
 		ExpExpedienteAdm expAdm = new ExpExpedienteAdm(this.getUserBean(request));
@@ -166,7 +166,7 @@ public class ExpDocumentacionRegTelAction extends DocumentacionRegTelAction {
 			}
         }
 		
-		request.getSession().removeAttribute("DATABACKUP");
+		request.getSession().removeAttribute("DATABACKUP_REGTEL");
 		return idDS;
 	}
 }
