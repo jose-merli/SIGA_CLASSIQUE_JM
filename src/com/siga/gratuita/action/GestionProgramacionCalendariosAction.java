@@ -325,12 +325,20 @@ public class GestionProgramacionCalendariosAction extends MasterAction {
 	
 	protected String inicioProgramacion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		UsrBean usrBean = this.getUserBean(request);
-		BusinessManager bm = getBusinessManager();
-		ProgrCalendariosForm form = (ProgrCalendariosForm) formulario;
+		BusinessManager bm = getBusinessManager();		
 		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
 		List<ConjuntoGuardiasForm> ConjuntoGuardiasForms = programacionCalendariosService.getConjuntosGuardia(usrBean.getLocation(), usrBean, true);
-		request.setAttribute("ConjuntoGuardiasForms", ConjuntoGuardiasForms);
+		request.setAttribute("ConjuntoGuardiasForms", ConjuntoGuardiasForms);		
+		
+		List<ScsTurnoBean> alTurnos = programacionCalendariosService.getTurnos(usrBean.getLocation(), usrBean);
+		if (alTurnos == null)
+			alTurnos = new ArrayList<ScsTurnoBean>();
+		
+		ProgrCalendariosForm form = (ProgrCalendariosForm) formulario;
 		form.clear();
+		form.setTurnos(alTurnos);
+		form.setGuardias(new ArrayList<ScsGuardiasTurnoBean>());
+		request.setAttribute("calendarioForms", new ArrayList<DefinirCalendarioGuardiaForm>());
 
 		return "inicio";
 	}
@@ -355,20 +363,26 @@ public class GestionProgramacionCalendariosAction extends MasterAction {
 	}
 
 	private void getAjaxGuardias(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException, Exception {
-		DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm) formulario;
-		UsrBean usrBean = this.getUserBean(request);
-		// Sacamos las guardias si hay algo selccionado en el turno
-		BusinessManager bm = getBusinessManager();
-		ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
+		String sIdTurnoCalendario = "";
+		if (formulario instanceof ProgrCalendariosForm)
+			sIdTurnoCalendario = ((ProgrCalendariosForm) formulario).getIdTurnoCalendario();
+		
+		else if (formulario instanceof DefinirCalendarioGuardiaForm)
+			sIdTurnoCalendario = ((DefinirCalendarioGuardiaForm) formulario).getIdTurnoCalendario();
 
 		List<ScsGuardiasTurnoBean> alGuardias = null;
-		if (miForm.getIdTurnoCalendario() != null && !miForm.getIdTurnoCalendario().equals("-1") && !miForm.getIdTurnoCalendario().equals("")) {
-			alGuardias = programacionCalendariosService.getGuardiasTurnos(new Integer(miForm.getIdTurnoCalendario()), new Integer(usrBean.getLocation()), true, usrBean);
+		if (sIdTurnoCalendario!= null && !sIdTurnoCalendario.equals("-1") && !sIdTurnoCalendario.equals("")) {
+			UsrBean usrBean = this.getUserBean(request);
+			// Sacamos las guardias si hay algo selccionado en el turno
+			BusinessManager bm = getBusinessManager();
+			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
+			alGuardias = programacionCalendariosService.getGuardiasTurnos(new Integer(sIdTurnoCalendario), new Integer(usrBean.getLocation()), true, usrBean);
 		}
+		
 		if (alGuardias == null) {
 			alGuardias = new ArrayList<ScsGuardiasTurnoBean>();
-
 		}
+		
 		respuestaAjax(new AjaxCollectionXmlBuilder<ScsGuardiasTurnoBean>(), alGuardias, response);
 	}
 
@@ -552,7 +566,7 @@ public class GestionProgramacionCalendariosAction extends MasterAction {
 			BusinessManager bm = getBusinessManager();
 			ProgramacionCalendariosService programacionCalendariosService = (ProgramacionCalendariosService) bm.getService(ProgramacionCalendariosService.class);
 			ProgrCalendariosForm progrCalendariosForm = (ProgrCalendariosForm) formulario;
-			ScsProgCalendariosBean progCalendariosBean = programacionCalendariosService.getProgrCalendario(progrCalendariosForm, usrBean);
+			programacionCalendariosService.getProgrCalendario(progrCalendariosForm, usrBean);
 			progrCalendariosForm.setIdInstitucion(usrBean.getLocation());
 
 		} catch (Exception e) {
