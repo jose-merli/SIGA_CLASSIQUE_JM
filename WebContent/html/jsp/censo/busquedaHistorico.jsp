@@ -157,7 +157,7 @@
 						<siga:Idioma key="censo.consultaHistorico.literal.tipo"/>
 					</td>				
 					<td>
-						<select id="listaIdTipoCambio" multiple="multiple" styleClass="boxCombo" style="width:150px;display: none;">
+						<select id="listaIdTipoCambio" multiple="multiple" styleClass="boxCombo" style="width:220px;display: none;">
 							<option value=""><siga:Idioma key="censo.consultaHistorico.literal.tipo.todasNinguna"/></option>
 <% 
 							for (int i = 0; i < vTiposAuditoria.size(); i++) {
@@ -172,31 +172,16 @@
 						</select>
 					</td>
 					
-					<td class="labelText">
-						<siga:Idioma key="censo.consultaHistorico.literal.motivo"/>
-						
-					</td>				
-					<td>
-						<html:text property="motivo" size="20" maxlength="50" styleClass="box" value = "" />
-					</td>
+					<td class="labelText"><siga:Idioma key="censo.consultaHistorico.literal.motivo"/></td>				
+					<td><html:text property="motivo" size="20" maxlength="50" styleClass="box" value = "" /></td>
 					
-					<td class="labelText">
-						<siga:Idioma key="censo.busquedaHistorico.literal.fechaEfectivaInicio"/>
-					</td>					
-					<td>
-									<siga:Fecha nombreCampo="fechaInicio"/>
-					</td>					
-					<td class="labelText">
-						<siga:Idioma key="censo.busquedaHistorico.literal.fechaEfectivaFin"/>					
-					</td>					
-					<td>
-									<siga:Fecha nombreCampo="fechaFin"/>
-					</div>
-					</td>
+					<td class="labelText" nowrap><siga:Idioma key="censo.busquedaHistorico.literal.fechaEfectivaInicio"/></td>					
+					<td><siga:Fecha nombreCampo="fechaInicio"/></td>
+										
+					<td class="labelText"><siga:Idioma key='general.literal.hasta'/></td>					
+					<td><siga:Fecha nombreCampo="fechaFin"/></td>
 				</tr>
-
 			</html:form>
-	
 		</table>
 		<!-- FIN: CAMPOS DE BUSQUEDA-->
 
@@ -232,7 +217,7 @@
 		jQuery.noConflict();
 		jQuery(document).ready(function() {
 	        jQueryTop("#listaIdTipoCambio", window.document).dropdownchecklist({
-	        	width:150,
+	        	width:220,
 	        	maxDropHeight:150, 
 	        	firstItemChecksAll:true,
 	        	zIndex:99,
