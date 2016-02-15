@@ -272,7 +272,7 @@
 	<html:hidden property="idInstitucion" />
 	<html:hidden property="idTipoInforme" value="JUSDE"/>
 	<html:hidden property="enviar" value="1"/>
-	<html:hidden property="descargar"/>
+	<html:hidden property="descargar" value="1"/>
 	<html:hidden property="datosInforme"/>
 	<html:hidden property="modo" value = "preSeleccionInformes"/>
 	<input type='hidden' name='actionModal'>

@@ -926,7 +926,9 @@ public class DatosFacturacionAction extends MasterAction {
 			} else {
 				UtilidadesHash.set(registro, "DESCRIPCIONESTADOCOMPRA", UtilidadesString.getMensajeIdioma(usrBean, "estados.compra.pendiente"));
 			}
-			
+			if(sAceptado != null && !"".equalsIgnoreCase(sAceptado) && sAceptado.equalsIgnoreCase("D")){
+				UtilidadesHash.set(registro, "DESCRIPCIONESTADOCOMPRA", UtilidadesString.getMensajeIdioma(usrBean, "estados.compra.denegado"));
+			}
 			String estadoProducto = UtilidadesProductosServicios.getEstadoProductoServicio(sAceptado);
 			String descripcionEstadoProducto = UtilidadesString.getMensajeIdioma(usrBean, estadoProducto);
 			UtilidadesHash.set(registro, "DESCRIPCIONESTADOPRODUCTO", descripcionEstadoProducto);

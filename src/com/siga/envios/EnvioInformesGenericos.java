@@ -1842,6 +1842,15 @@ public class EnvioInformesGenericos extends MasterReport {
 
 						idPersonaReal = (String) datoReal.get("IDPERSONA_DEST");
 						idDireccionReal = (String) datoReal.get("IDDIRECCION_DEST");
+						
+						if(idPersonaReal!=null){
+							HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
+							helperInformesAdm.setIdiomaInforme(idInstitucion, idPersonaReal, AdmInformeBean.TIPODESTINATARIO_CENPERSONA, datosInforme, usrBean);
+							idioma = (String) datosInforme.get("idioma");
+							idiomaExt = (String) datosInforme.get("idiomaExt");
+						}
+						
+						
 						// datosInforme.put("IDDIRECCION_DEST", idDireccionReal);
 
 						datoReal.put("idTipoInforme", "EXP");

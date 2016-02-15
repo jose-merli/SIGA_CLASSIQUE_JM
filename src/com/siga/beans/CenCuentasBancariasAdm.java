@@ -165,30 +165,36 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 		return campos;
 	}
 	
-	
-	protected String getTablasCuentas(){		
-		String campos = CenComponentesBean.T_NOMBRETABLA 
-		+ " RIGHT JOIN "+ 
-		CenCuentasBancariasBean.T_NOMBRETABLA +
-		 " ON "+
-		 	CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_IDINSTITUCION + "=" +
-		 	CenCuentasBancariasBean.T_NOMBRETABLA +"."+ CenCuentasBancariasBean.C_IDINSTITUCION + " AND " +
-		 	CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_IDPERSONA + "=" +			 	
-			CenCuentasBancariasBean.T_NOMBRETABLA +"."+ CenCuentasBancariasBean.C_IDPERSONA;		 		
-
-/* RGG 17-02-2005 cambio los LEFT JOIN por COMAS para 
- *  el tratamiento de visibilidad de campos (NO APLICADO)
- * 		
-		String campos = CenComponentesBean.T_NOMBRETABLA 
-		+ " (+) , "+ 
-		CenCuentasBancariasBean.T_NOMBRETABLA +
-		 " WHERE "+
-		 	CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_IDINSTITUCION + "=" +
-		 	CenCuentasBancariasBean.T_NOMBRETABLA +"."+ CenCuentasBancariasBean.C_IDINSTITUCION + " AND " +
-		 	CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_IDPERSONA + "=" +			 	
-			CenCuentasBancariasBean.T_NOMBRETABLA +"."+ CenCuentasBancariasBean.C_IDPERSONA;		 		
-*/
-		return campos;
+	protected String getTablasCuentas() {		
+		StringBuffer tablas = new StringBuffer();
+		tablas.append(CenComponentesBean.T_NOMBRETABLA); 
+		tablas.append(" RIGHT JOIN "); 
+		tablas.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+		tablas.append(" ON ");
+		tablas.append(CenComponentesBean.T_NOMBRETABLA);
+		tablas.append(".");
+		tablas.append(CenComponentesBean.C_IDINSTITUCION);
+		tablas.append(" = ");
+		tablas.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+		tablas.append(".");
+		tablas.append(CenCuentasBancariasBean.C_IDINSTITUCION);
+		tablas.append(" AND ");		
+		tablas.append(CenComponentesBean.T_NOMBRETABLA);
+		tablas.append(".");
+		tablas.append(CenComponentesBean.C_IDPERSONA);
+		tablas.append(" = ");			 	
+		tablas.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+		tablas.append(".");
+		tablas.append(CenCuentasBancariasBean.C_IDPERSONA);
+		tablas.append(" AND ");		
+		tablas.append(CenComponentesBean.T_NOMBRETABLA);
+		tablas.append(".");
+		tablas.append(CenComponentesBean.C_IDCUENTA);
+		tablas.append(" = ");			 	
+		tablas.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+		tablas.append(".");
+		tablas.append(CenCuentasBancariasBean.C_IDCUENTA);	
+		return tablas.toString();
 	}
 	
 	protected String[] getOrdenCuentas(){
@@ -204,49 +210,93 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 	 * @param idPersona, es el identificador de la persona de al que vamos a obtener los datos. 
 	 * @param idInstitucion, es el identificador de la institucion de la persona de al que vamos a obtener los datos. 
 	 */	
-	public Vector selectCuentas(Long idPersona, Integer idInstitucion, boolean bIncluirRegistrosConBajaLogica) throws ClsExceptions, SIGAException{
-		Vector v = null;
-		try{			
-			RowsContainer rc = null;
-			String where = " WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + idPersona +
-							" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + idInstitucion;
-			if(!bIncluirRegistrosConBajaLogica) {
-				where += " AND (" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA + " IS NULL " +
-								 " 	OR " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA + " > SYSDATE) ";
+	public Vector<Hashtable<String, Object>> selectCuentas(Long idPersona, Integer idInstitucion, boolean bIncluirRegistrosConBajaLogica) throws ClsExceptions {
+		Vector<Hashtable<String, Object>> vCuentas = null;
+		try {			
+			StringBuffer where = new StringBuffer();
+			where.append(" WHERE ");
+			where.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			where.append(".");
+			where.append(CenCuentasBancariasBean.C_IDPERSONA);
+			where.append(" = ");
+			where.append(idPersona);
+			where.append(" AND ");
+			where.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+			where.append(".");
+			where.append(CenCuentasBancariasBean.C_IDINSTITUCION);
+			where.append(" = ");
+			where.append(idInstitucion);
+			
+			if (!bIncluirRegistrosConBajaLogica) {
+				where.append(" AND (");
+				where.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+				where.append("." + CenCuentasBancariasBean.C_FECHABAJA);
+				where.append(" IS NULL OR ");
+				where.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+				where.append(".");
+				where.append(CenCuentasBancariasBean.C_FECHABAJA);
+				where.append(" > SYSDATE) ");
 			}
 			
-			String where2 = " WHERE " + CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_CEN_CLIENTE_IDPERSONA + " = " + idPersona +
-							" AND " + CenComponentesBean.T_NOMBRETABLA + "." + CenComponentesBean.C_CEN_CLIENTE_IDINSTITUCION + " = " + idInstitucion;
-				where2+= " AND CEN_COMPONENTES.FECHABAJA IS NULL ";
-			if(!bIncluirRegistrosConBajaLogica) {
-				where2 += " AND (" + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA + " IS NULL " +
-								 " 	OR " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_FECHABAJA + " > SYSDATE) ";
+			StringBuffer where2 = new StringBuffer();
+			where2.append(" WHERE ");
+			where2.append(CenComponentesBean.T_NOMBRETABLA);
+			where2.append(".");
+			where2.append(CenComponentesBean.C_CEN_CLIENTE_IDPERSONA);
+			where2.append(" = ");
+			where2.append(idPersona);
+			where2.append(" AND ");
+			where2.append(CenComponentesBean.T_NOMBRETABLA);
+			where2.append(".");
+			where2.append(CenComponentesBean.C_CEN_CLIENTE_IDINSTITUCION);
+			where2.append(" = ");
+			where2.append(idInstitucion);
+			where2.append(" AND ");
+			where2.append(CenComponentesBean.T_NOMBRETABLA);
+			where2.append(".");
+			where2.append(CenComponentesBean.C_FECHABAJA);
+			where2.append(" IS NULL ");
+			where2.append(" AND ");
+			where2.append(CenComponentesBean.T_NOMBRETABLA);
+			where2.append(".");
+			where2.append(CenComponentesBean.C_SOCIEDAD);
+			where2.append(" = '1' ");
+			
+			if (!bIncluirRegistrosConBajaLogica) {
+				where2.append(" AND (");
+				where2.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+				where2.append("." + CenCuentasBancariasBean.C_FECHABAJA);
+				where2.append(" IS NULL OR ");
+				where2.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+				where2.append(".");
+				where2.append(CenCuentasBancariasBean.C_FECHABAJA);
+				where2.append(" > SYSDATE) ");
 			}
 			
-			rc = new RowsContainer(); 
-			String sql = UtilidadesBDAdm.sqlSelect(CenCuentasBancariasBean.T_NOMBRETABLA, this.getCamposCuentas());
-			sql += where;			
-			sql += " UNION ";
-			sql += UtilidadesBDAdm.sqlSelect(this.getTablasCuentas(), this.getCamposCuentas());			
-			sql += where2;
-			sql += UtilidadesBDAdm.sqlOrderBy(this.getOrdenCuentas());			
- 			
-			// RGG cambio visibilidad
-			rc = this.find(sql);
+			StringBuffer sql = new StringBuffer();
+			sql.append(UtilidadesBDAdm.sqlSelect(CenCuentasBancariasBean.T_NOMBRETABLA, this.getCamposCuentas()));
+			sql.append(where);
+			sql.append(" UNION ");
+			sql.append(UtilidadesBDAdm.sqlSelect(this.getTablasCuentas(), this.getCamposCuentas()));
+			sql.append(where2);
+			sql.append(UtilidadesBDAdm.sqlOrderBy(this.getOrdenCuentas()));
+			
+			RowsContainer rc = this.find(sql.toString());
 			if (rc!=null) {
- 				v = new Vector();
-				for (int i = 0; i < rc.size(); i++)	{
+				vCuentas = new Vector();
+				for (int i=0; i<rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable)fila.getRow(); 
-					if (registro != null) 
-						v.add(registro);
+					Hashtable<String, Object> htFila = fila.getRow();
+					if (htFila != null) 
+						vCuentas.add(htFila);
 				}
 			}
+			
+		} catch(Exception e) {			
+			throw new ClsExceptions (e, "Error al ejecutar selectCuentas");
 		}
-		catch(Exception e){			
-			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
-		}
-		return v;
+		
+		return vCuentas;
 	}
 	
 	/**

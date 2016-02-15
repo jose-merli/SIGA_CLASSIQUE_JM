@@ -682,14 +682,26 @@ public class Plantilla {
 			}
 			
 			if (etiqueta.equalsIgnoreCase("POBLACION_ETIQUETA")){
-				if(datos.getIdPoblacion()==null||datos.getIdPoblacion().equals("")){
-					resultado="";								
-				} else {						
-					CenPoblacionesAdm poblacionesAdm = new CenPoblacionesAdm(usr);
-					String descripcionPoblacion = poblacionesAdm.getDescripcion(datos.getIdPoblacion());
-					resultado=descripcionPoblacion;
-				}		
-			}			
+				String sIdPais = datos.getIdPais();				
+				
+				if (sIdPais==null || sIdPais.equals("") || sIdPais.equals(ClsConstants.ID_PAIS_ESPANA)) {
+					String idPoblacion = datos.getIdPoblacion();
+					if (idPoblacion==null || idPoblacion.equals("")){
+						resultado = "";
+					} else {
+						CenPoblacionesAdm poblacionesAdm = new CenPoblacionesAdm(usr);
+						String descripcionPoblacion = poblacionesAdm.getDescripcion(idPoblacion);
+						resultado = descripcionPoblacion;
+					}
+				} else {
+					String sPoblacionExtranjera = datos.getPoblacionExtranjera();
+					if (sPoblacionExtranjera!=null && !sPoblacionExtranjera.equals("")) {
+						resultado = sPoblacionExtranjera;
+					} else {
+						resultado = "";
+					}
+				}
+			}
 			
 			if (etiqueta.equalsIgnoreCase("PROVINCIA_ETIQUETA")){
 				if (datos.getIdProvincia()==null||datos.getIdProvincia().equals("")){

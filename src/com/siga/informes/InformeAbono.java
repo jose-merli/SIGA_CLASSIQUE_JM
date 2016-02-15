@@ -108,6 +108,10 @@ public class InformeAbono extends MasterReport {
 		
 	}
 	
+	protected String reemplazarDatos(HttpServletRequest request, String plantillaFO, String idFacturaDemonio) throws ClsExceptions{
+		return reemplazarDatos(request, plantillaFO);
+	}	
+	
 	protected String reemplazarDatos(HttpServletRequest request, String plantillaFO) throws ClsExceptions{
 		Hashtable htDatos= new Hashtable();
 		String idAbono =  (String)request.getAttribute("IDABONO_INFORME");
@@ -117,8 +121,6 @@ public class InformeAbono extends MasterReport {
 		
 		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
 		return reemplazarDatos(usr, plantillaFO, htDatos);
-		
-		
 	}
 
 	/**

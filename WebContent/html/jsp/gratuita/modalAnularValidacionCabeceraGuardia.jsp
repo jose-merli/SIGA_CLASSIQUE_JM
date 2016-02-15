@@ -68,24 +68,19 @@
 		<html:hidden property = "idPersona"				styleId = "idPersona" />
 			
 		<!-- INICIO: CAMPOS DEL REGISTRO -->
-		<table class="tablaCentralCamposPeque" align="center" border="0">
-		<tr>
-			<td>
-				<siga:ConjCampos leyenda="gratuita.modalConsulta_DefinirCalendarioGuardia.literal.motivosSolicitud">
-					<table class="tablaCampos" align="left" border="0" width="100%">
-						<tr>
-							<td class="labelText">
-				 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos"/> 			
-							</td>
-							<td >
-								<html:textarea name="DefinirCalendarioGuardiaForm" property="comenAnulacion" styleId="comenAnulacion" onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)" cols="50" rows="12" style="width:350"  styleClass="box" readonly="false" ></html:textarea>
-							</td>	
-						</tr>
-					</table>
-				</siga:ConjCampos>	
-			</td>		
-		  </tr>								
-		</table>	
+		<siga:ConjCampos leyenda="gratuita.modalConsulta_DefinirCalendarioGuardia.literal.motivosSolicitud">
+			<table class="tablaCampos" align="center" border="0" cellspacing="0">
+				<tr>
+					<td class="labelText">
+		 				<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.motivos"/> 			
+					</td>
+					<td>
+						<html:textarea name="DefinirCalendarioGuardiaForm" property="comenAnulacion" styleId="comenAnulacion" onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)" 
+						 styleClass="box" cols="50" rows="12" style="overflow-y:auto; overflow-x:hidden; width:400px; height:200px; resize:none;" readonly="false" ></html:textarea>
+					</td>	
+				</tr>
+			</table>
+		</siga:ConjCampos>	
 	</html:form>			
 	
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->

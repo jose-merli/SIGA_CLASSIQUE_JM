@@ -82,6 +82,12 @@ public class ActuacionesDesignasAction extends MasterAction {
 					request.setAttribute("modoJustificacion","editarJustificacion");
 				request.setAttribute("validarActuacion",actuacionesDesignasForm.getActuacionValidada());
 				miForm.setModo("editar");
+			}else if(accion!=null && accion.equalsIgnoreCase("editarJustificacionFicha")){
+				request.getSession().removeAttribute("designaActual");
+				ActuacionesDesignasForm actuacionesDesignasForm = (ActuacionesDesignasForm)formulario;
+				request.setAttribute("modoJustificacion","editarJustificacion");
+				request.setAttribute("validarActuacion",actuacionesDesignasForm.getActuacionValidada());
+				miForm.setModo("editar");
 			}else if(accion!=null && accion.equalsIgnoreCase("consultarJustificacion")){
 				request.getSession().removeAttribute("designaActual");
 				miForm.setModo("ver");

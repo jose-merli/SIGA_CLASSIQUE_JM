@@ -65,7 +65,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 							ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO,			ScsActuacionDesignaBean.C_IDPRETENSION,
 		    				ScsActuacionDesignaBean.C_TALONARIO,					ScsActuacionDesignaBean.C_TALON,
 		    				ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO,			ScsActuacionDesignaBean.C_NIG,
-		    				ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO};
+		    				ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO,ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO};
 		return campos;
 	}
 	/** Funcion getClavesBean ()
@@ -121,6 +121,8 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		    bean.setNumeroProcedimiento(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO));
 		    bean.setNig(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_NIG));
 		    bean.setIdMotivoCambio(UtilidadesHash.getInteger(hash, ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO));
+		    bean.setAnioProcedimiento(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO));
+		    
 		}
 		catch(Exception e){
 			bean = null;
@@ -174,6 +176,8 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO,b.getNumeroProcedimiento());
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_NIG,b.getNig());
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO, String.valueOf(b.getIdMotivoCambio()));
+			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, String.valueOf(b.getAnioProcedimiento()));
+			
 		}
 		catch (Exception e){
 			hash = null;
@@ -561,7 +565,9 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 									" col.ncolegiado ncolegiado, "+
 									" act."+ScsActuacionDesignaBean.C_TALONARIO+
 									" ,act."+ScsActuacionDesignaBean.C_TALON+		
+									
 									" ,act."+ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO+
+									" ,act."+ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO+
 									" ,act."+ScsActuacionDesignaBean.C_NIG+
 									",(select "+FcsFacturacionJGBean.C_NOMBRE+"||' ('||TO_CHAR("+FcsFacturacionJGBean.C_FECHADESDE+",'DD/MM/YYYY')||'-'||TO_CHAR("+FcsFacturacionJGBean.C_FECHAHASTA+",'DD/MM/YYYY')||')'"+
 									" from "+FcsFacturacionJGBean.T_NOMBRETABLA+
@@ -602,7 +608,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 							    " Numeroasunto,Acuerdoextrajudicial,Anulacion,Idprocedimiento,Lugar,Observacionesjustificacion, "+
 							    " Observaciones,Fechajustificacion,Facturado,Pagado,Idfacturacion,Validada,Idjuzgado,Idinstitucion_Juzg, "+
 							    " Idcomisaria,Idinstitucion_Comis,Idprision,Idinstitucion_Pris,Idacreditacion,Idinstitucion_Proc, "+
-							    " Idpersonacolegiado,Idpretension,Talonario,Talon,NUMEROPROCEDIMIENTO "+
+							    " Idpersonacolegiado,Idpretension,Talonario,Talon,NUMEROPROCEDIMIENTO,ANIOPROCEDIMIENTO "+
 								" From Scs_Actuaciondesigna " +
 								" WHERE IDINSTITUCION =  "+ entrada.get("IDINSTITUCION")+
 								" and IDTURNO = "+entrada.get("IDTURNO")+
@@ -623,14 +629,14 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		
 		}
 
-		public void setActuacionesDesignas(DesignaForm designa, boolean isMostrarJustificacionesPtes)  throws ClsExceptions, SIGAException 
+		public void setActuacionesDesignas(DesignaForm designa, boolean isMostrarJustificacionesPtes, boolean isSoloLectura)  throws ClsExceptions, SIGAException 
 	{
 	    Hashtable<Integer,String> codigos = new Hashtable<Integer,String>();
 	    int contador=0;
 		StringBuffer sql = new StringBuffer();
 		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION ACREDITACION,AC.IDTIPOACREDITACION,ACP.PORCENTAJE, TAC.DESCRIPCION TIPO, ");
 		sql.append(" PRO.NOMBRE PROCEDIMIENTO,PRO.CODIGO CATEGORIA, PRO.IDJURISDICCION,PRO.COMPLEMENTO,PRO.PERMITIRANIADIRLETRADO,ACT.NUMEROASUNTO,ACT.IDPROCEDIMIENTO,ACT.IDJUZGADO,");
-		sql.append(" TO_CHAR(ACT.FECHAJUSTIFICACION,'dd/mm/yyyy') FECHAJUSTIFICACION,ACT.VALIDADA,ACT.IDFACTURACION,ACT.NUMEROPROCEDIMIENTO ");
+		sql.append(" TO_CHAR(ACT.FECHAJUSTIFICACION,'dd/mm/yyyy') FECHAJUSTIFICACION,ACT.VALIDADA,ACT.IDFACTURACION,ACT.NUMEROPROCEDIMIENTO,ACT.ANIOPROCEDIMIENTO ");
 		sql.append(" ,(SELECT NOMBRE || ' (' || FECHADESDE || '-' || FECHAHASTA || ')' ");
 		sql.append(" FROM FCS_FACTURACIONJG FJG ");
 		sql.append(" WHERE FJG.IDINSTITUCION = ACT.IDINSTITUCION ");
@@ -704,10 +710,19 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				actuacionDesigna.setDescripcionFacturacion((String)registro.get("DESCRIPCIONFACTURACION"));
 				actuacionDesigna.setPermitirEditarActuacion((String)registro.get("PERMITIRANIADIRLETRADO"));
 				actuacionDesigna.setNumeroProcedimiento((String)registro.get("NUMEROPROCEDIMIENTO"));
+				actuacionDesigna.setAnioProcedimiento((String)registro.get("ANIOPROCEDIMIENTO"));
+				
+				
 				actuacionDesigna.setDocumentoJustificacion(registro.get("DOCJUSTIFICACION")!=null && ((String)registro.get("DOCJUSTIFICACION")).equals(AppConstants.DB_TRUE));
 				
 				if(actuacionDesigna.getNumeroProcedimiento()!=null && !actuacionDesigna.getNumeroProcedimiento().equals("")){
+					
 					asuntoDesigna.append(actuacionDesigna.getNumeroProcedimiento());
+					if(actuacionDesigna.getAnioProcedimiento()!=null && !actuacionDesigna.getAnioProcedimiento().equals("")){
+						asuntoDesigna.append("/");
+						asuntoDesigna.append(actuacionDesigna.getAnioProcedimiento());
+						
+					}
 					asuntoDesigna.append(" ");
 				}
 				
@@ -738,10 +753,11 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				
 				
 				List<AcreditacionForm> acreditacionesPendientesList = null;
-				if(designa.getEstado().equals("V")||designa.getEstado().equals(""))
+				if((designa.getEstado().equals("V")||designa.getEstado().equals("")))
 					acreditacionesPendientesList = getAcreditacionesPendientes(designa.getIdInstitucion(), idProcedimiento,null,(designa.getActuacionRestriccionesActiva()!=null && designa.getActuacionRestriccionesActiva().equals(ClsConstants.DB_TRUE)),actuacionesProcedimientoList);
 				else
 					acreditacionesPendientesList = new ArrayList<AcreditacionForm>();
+					
 				
 				//Hacemos esto para el rowspan de la jsp
 				
@@ -753,11 +769,16 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 						if(isPteValidar&&!isAgunaActuacionPte)
 							isAgunaActuacionPte = true;
 					}
+					
 				}else{
 					isAgunaActuacionPte = true;
-					AcreditacionForm primeraAcreditacion = acreditacionesPendientesList.get(0);
-					primeraAcreditacion.setRowSpan(acreditacionesPendientesList.size());
-					tmAcreditaciones.put(idProcedimiento, acreditacionesPendientesList);
+					if(isSoloLectura)
+						acreditacionesPendientesList = new ArrayList<AcreditacionForm>();
+					else{
+						AcreditacionForm primeraAcreditacion = acreditacionesPendientesList.get(0);
+						primeraAcreditacion.setRowSpan(acreditacionesPendientesList.size());
+						tmAcreditaciones.put(idProcedimiento, acreditacionesPendientesList);
+					}
 				}
 				
 			}
@@ -768,7 +789,9 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 			if(designa.getIdProcedimiento()!=null && !designa.getIdProcedimiento().equals("") && designa.getIdJuzgado()!=null && !designa.getIdJuzgado().equals("") ){
 				
 				List<AcreditacionForm> acreditacionesPendientesList = null;
-				if(designa.getEstado().equals("V")||designa.getEstado().equals(""))
+				if(isSoloLectura)
+					acreditacionesPendientesList = new ArrayList<AcreditacionForm>();
+				else if(designa.getEstado().equals("V")||designa.getEstado().equals("")&& !isSoloLectura)
 					acreditacionesPendientesList = getAcreditacionesPendientes(designa.getIdInstitucion(), designa.getIdProcedimiento(),designa.getIdJuzgado(),(designa.getActuacionRestriccionesActiva()!=null && designa.getActuacionRestriccionesActiva().equals(ClsConstants.DB_TRUE)), null);
 				else
 					acreditacionesPendientesList = new ArrayList<AcreditacionForm>();

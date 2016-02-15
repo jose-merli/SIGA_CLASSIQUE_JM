@@ -278,21 +278,23 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	 * @param idPersona, es el identificador de la persona de al que vamos a obtener los datos. 
 	 * @param idInstitucion, es el identificador de la institucion de la persona de al que vamos a obtener los datos. 
 	 */	
-	public Vector getCuentasBancarias(Long idPersona, Integer idInstitucion, boolean bIncluirRegistrosConBajaLogica) throws ClsExceptions, SIGAException{
+	public Vector<Hashtable<String, Object>> getCuentasBancarias(Long idPersona, Integer idInstitucion, boolean bIncluirRegistrosConBajaLogica) throws ClsExceptions {
 		//Vector vector = new Vector();
-		Vector vector = null;
-		try{
+		Vector<Hashtable<String, Object>> vector = null;
+		
+		try {
 			CenCuentasBancariasAdm cuentasAdm = null; 
 			if (this.usrbean!=null) {
 				cuentasAdm = new CenCuentasBancariasAdm(this.usuModificacion,this.usrbean,this.idInstitucionCliente,this.idPersonaCliente);
 			} else {
 				cuentasAdm = new CenCuentasBancariasAdm(this.usrbean);
 			} 
-			vector=cuentasAdm.selectCuentas(idPersona,idInstitucion, bIncluirRegistrosConBajaLogica);
-		}
-		catch(Exception e) {
+			vector = cuentasAdm.selectCuentas(idPersona,idInstitucion, bIncluirRegistrosConBajaLogica);
+			
+		} catch(Exception e) {
 			throw new ClsExceptions (e, "Error al obtener Cuentas Bancarias");
 		}
+		
 		return vector;
 	}
 	

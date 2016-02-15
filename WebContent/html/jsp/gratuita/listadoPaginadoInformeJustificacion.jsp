@@ -117,7 +117,7 @@ function accionNuevaActuacion(anio,idTurno,numero,idInstitucion,validarActuacion
 			
 }
 
-function accionEditarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion,validarActuaciones) 
+function accionEditarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion,validarActuaciones,fichaColegial) 
 {	
 	var accion = document.ActuacionesDesignasForm.action;
 	if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true')
@@ -127,7 +127,10 @@ function accionEditarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion
 	document.ActuacionesDesignasForm.numero.value = numero;
 	document.ActuacionesDesignasForm.nactuacion.value = numeroActuacion;
 	document.ActuacionesDesignasForm.actuacionValidada.value = validarActuaciones;
-	document.ActuacionesDesignasForm.modo.value = "editarJustificacion";
+	if(fichaColegial && fichaColegial=='true')
+		document.ActuacionesDesignasForm.modo.value = "editarJustificacionFicha";
+	else
+		document.ActuacionesDesignasForm.modo.value = "editarJustificacion";
 	
 	var resultado=ventaModalGeneral(document.ActuacionesDesignasForm.name,"G");
 	if(resultado=='MODIFICADO') 
@@ -1272,7 +1275,13 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 												</c:otherwise>
 											</c:choose></td>
 											<td>
-													&nbsp;
+													<img id="iconoboton_consultar1"
+																src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>"
+																style="cursor: hand;" alt="Consultar" name="consultar_1"
+																border="0"
+																onClick="accionConsultarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero});"
+																onMouseOut="MM_swapImgRestore()"
+																onMouseOver="MM_swapImage('consultar_1','','<html:rewrite page='/html/imagenes/bconsultar_on.gif'/>',1)">
 											</td>
 											
 											</tr>
@@ -1347,7 +1356,13 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 													</c:otherwise>
 												</c:choose></td>
 												<td>
-													&nbsp;
+													<img id="iconoboton_consultar1"
+																src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>"
+																style="cursor: hand;" alt="Consultar" name="consultar_1"
+																border="0"
+																onClick="accionConsultarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero});"
+																onMouseOut="MM_swapImgRestore()"
+																onMouseOver="MM_swapImage('consultar_1','','<html:rewrite page='/html/imagenes/bconsultar_on.gif'/>',1)">
 												</td>
 											</tr>
 										</c:otherwise>
@@ -1773,17 +1788,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 													<td><c:choose>
 													
 														<c:when
-															test="${permitirBotones==true && designa.estado!=null && designa.estado=='V'&& InformeJustificacionMasivaForm.fichaColegial==true}">
-															<img id="iconoboton_consultar1"
-																src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>"
-																style="cursor: hand;" alt="Consultar" name="consultar_1"
-																border="0"
-																onClick="accionConsultarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero});"
-																onMouseOut="MM_swapImgRestore()"
-																onMouseOver="MM_swapImage('consultar_1','','<html:rewrite page='/html/imagenes/bconsultar_on.gif'/>',1)">
-														</c:when>
-														<c:when
-															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V'&& InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='S' || (actuacion.idFacturacion!=null&&actuacion.idFacturacion!=''))}">
+															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V')&&(designa.cambioLetrado=='S' || (actuacion.idFacturacion!=null&&actuacion.idFacturacion!='') || (actuacion.validada=='1' && InformeJustificacionMasivaForm.fichaColegial==true) )}">
 															<img id="iconoboton_consultar1"
 																src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>"
 																style="cursor: hand;" alt="Consultar" name="consultar_1"
@@ -1793,13 +1798,17 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																onMouseOver="MM_swapImage('consultar_1','','<html:rewrite page='/html/imagenes/bconsultar_on.gif'/>',1)">
 														</c:when>
 													
+														
+														
+														
+														
 														<c:when
-															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V'&& InformeJustificacionMasivaForm.fichaColegial==false)}">
+															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V')}">
 															<img id="iconoboton_editar1"
 																src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>"
 																style="cursor: hand;" alt="Editar" name="editar_1"
 																border="0"
-																onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}');" 
+																onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}','${InformeJustificacionMasivaForm.fichaColegial }');" 
 																onMouseOut="MM_swapImgRestore()"
 																onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
 														</c:when>
@@ -1952,18 +1961,9 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 														</c:choose></td>
 														<td><c:choose>
 														
+														
 														<c:when
-															test="${permitirBotones==true && designa.estado!=null && designa.estado=='V'&& InformeJustificacionMasivaForm.fichaColegial==true}">
-															<img id="iconoboton_consultar1"
-																src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>"
-																style="cursor: hand;" alt="Consultar" name="consultar_1"
-																border="0"
-																onClick="accionConsultarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero});"
-																onMouseOut="MM_swapImgRestore()"
-																onMouseOver="MM_swapImage('consultar_1','','<html:rewrite page='/html/imagenes/bconsultar_on.gif'/>',1)">
-														</c:when>
-														<c:when
-															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V'&& InformeJustificacionMasivaForm.fichaColegial==false)&&(designa.cambioLetrado=='S' || (actuacion.idFacturacion!=null&&actuacion.idFacturacion!=''))}">
+															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V')&&(designa.cambioLetrado=='S' || (actuacion.idFacturacion!=null&&actuacion.idFacturacion!='')||(actuacion.validada=='1' && InformeJustificacionMasivaForm.fichaColegial==true) )}">
 															<img id="iconoboton_consultar1"
 																src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>"
 																style="cursor: hand;" alt="Consultar" name="consultar_1"
@@ -1974,12 +1974,12 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 														</c:when>
 													
 														<c:when
-															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V'&& InformeJustificacionMasivaForm.fichaColegial==false)}">
+															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V')}">
 															<img id="iconoboton_editar1"
 																src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>"
 																style="cursor: hand;" alt="Editar" name="editar_1"
 																border="0"
-																onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}');" 
+																onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}','${InformeJustificacionMasivaForm.fichaColegial }');" 
 																onMouseOut="MM_swapImgRestore()"
 																onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
 														</c:when>

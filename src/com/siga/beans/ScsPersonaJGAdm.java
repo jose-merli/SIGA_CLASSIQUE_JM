@@ -1031,6 +1031,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
   		sqlBuffer.append("NVL(PER.NOMBRE, '') NOMBRE_PJG, ");
   		sqlBuffer.append("NVL(PER.APELLIDO1, '') APELLIDO1_PJG, ");
   		sqlBuffer.append("NVL(PER.APELLIDO2, '') APELLIDO2_PJG, ");
+  		sqlBuffer.append("NVL(VIA.CODIGOEJIS, '') DOMI_IDVIA_PJG, ");
   		sqlBuffer.append("NVL2(VIA.IDTIPOVIA, F_SIGA_GETRECURSO(VIA.DESCRIPCION, "+ this.usrbean.getLanguage()+"), '') DOMI_VIA_PJG, ");
   		sqlBuffer.append("NVL2(PER.DIRECCION, ' ' || PER.DIRECCION, '') DOMI_DIRECCION_PJG, ");
   		sqlBuffer.append("NVL2(PER.NUMERODIR, ' ' || PER.NUMERODIR, '') DOMI_NUMERO_PJG, ");

@@ -44,6 +44,7 @@
 	String anulacion = "", observaciones = "", fechaJustificacion ="", observacionesJustificacion ="", modo="";
 	String idPersona=null;
 	String numeroProcedimiento="";
+	String anioProcedimiento="";
 	String nig="";
 	String maxLenghtProc = "20";
 	
@@ -206,6 +207,8 @@
 	
 			actuacionValidada = (String) hashActuacion.get("ACTUACIONVALIDADA");
 			numeroProcedimiento = (String) hashActuacion.get("NUMEROPROCEDIMIENTO");
+			anioProcedimiento = (String) hashActuacion.get("ANIOPROCEDIMIENTO");
+			
 			nig = (String) hashActuacion.get("NIG");
 		}
 		
@@ -239,6 +242,7 @@
 	    	nombreProcedimiento = (String)hashDesigna.get("NOMBREPROCEDIMIENTO");
         }
 	    numeroProcedimiento = (String) hashDesigna.get("NUMPROCEDIMIENTO");
+	    anioProcedimiento = (String) hashDesigna.get("ANIOPROCEDIMIENTO");
 	    nig = (String) hashDesigna.get("NIG");
 	    if(validarActuacion!=null)
 	    	actuacionValidada = validarActuacion!=null&&validarActuacion.equals("S")?"0":"1";
@@ -571,7 +575,9 @@
 						</td>
 						
 						<td>
-						<% if (modoAnterior==null || modoAnterior.equalsIgnoreCase("ver")) { %> <siga:Fecha nombreCampo="fechaActuacion"  disabled="true" valorInicial="<%=fechaActuacion%>" ></siga:Fecha> <%}else{%>
+						<% if (modoAnterior==null || modoAnterior.equalsIgnoreCase("ver")) { %> 
+							<siga:Fecha nombreCampo="fechaActuacion"  disabled="true" valorInicial="<%=fechaActuacion%>" ></siga:Fecha> 
+						<%}else{%>
 							<siga:Fecha nombreCampo="fechaActuacion"   valorInicial="<%=fechaActuacion%>" ></siga:Fecha> 
 						<%} %>							
 							
@@ -615,8 +621,8 @@
 										<html:text
 											name="ActuacionesDesignasForm" property="numeroProcedimiento"
 											size="7" maxlength="7" styleClass="box" value="<%=numeroProcedimiento%>" />/<html:text
-											name="ActuacionesDesignasForm" property="anioProcedimiento"
-											size="4" maxlength="4" styleClass="box" />
+											name="ActuacionesDesignasForm" property="anioProcedimiento" 
+											size="4" maxlength="4" styleClass="box" value="<%=anioProcedimiento%>" />
 	
 									</c:when>
 									<c:otherwise>
@@ -629,10 +635,7 @@
 							<% } else { %> 
 								<c:choose>
 									<c:when	test="${EJIS_ACTIVO=='1'}">
-									
-									<c:out value="<%=numeroProcedimiento%>"/>/<c:out value="${ActuacionesDesignasForm.anioProcedimiento}"/>
-										
-	
+											<c:out value="<%=numeroProcedimiento%>"/>/<c:out value="${ActuacionesDesignasForm.anioProcedimiento}"/>
 									</c:when>
 									<c:otherwise>
 									<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100px" maxlength="<%=maxLenghtProc%>" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true"/>

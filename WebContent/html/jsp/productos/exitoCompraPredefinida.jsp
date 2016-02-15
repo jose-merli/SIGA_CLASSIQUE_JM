@@ -58,7 +58,7 @@
 </script>
 </head>
 <body onload="reloadPage()"></body>
-<html:form action="/CER_GestionSolicitudes.do?buscar=true" target="mainWorkArea" >
+<html:form action="/CER_GestionSolicitudes.do?buscarAntiguo=true" target="mainWorkArea" >
 	<html:hidden property = "modo" value = "abrir"/>
 	<html:hidden property = "idSolicitud" value = "<%=idPeticionProducto%>"/>
 	<html:hidden property = "idInstitucion" value = "<%=idInstitucion%>"/>

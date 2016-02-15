@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-
-
-
-
 <html>
 <head>
 <!-- actualizarDesigna.jsp -->

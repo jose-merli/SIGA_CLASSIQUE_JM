@@ -55,7 +55,7 @@
 	String fechaSolicitudDesde = "";
 	String fechaSolicitudHasta = "";	
 	String checkCobrado = "", checkDescardado = "";
-	if ((request.getParameter("buscar") != null && request.getParameter("buscar").equalsIgnoreCase("true")) || (request.getAttribute("volver") != null && ((String)request.getAttribute("volver")).equalsIgnoreCase("volver"))) {
+	if ((request.getParameter("buscar") != null && request.getParameter("buscar").equalsIgnoreCase("true"))  || (request.getParameter("buscarAntiguo") != null && request.getParameter("buscarAntiguo").equalsIgnoreCase("true")) || (request.getAttribute("volver") != null && ((String)request.getAttribute("volver")).equalsIgnoreCase("volver"))) {
 		if (formulario != null) {
 			if (formulario.getFechaDesde() != null)
 				fechaDesde = formulario.getFechaDesde();
@@ -120,9 +120,11 @@
 		}
 		function seleccionarTodos(pagina) {
 			document.forms[0].seleccionarTodos.value = pagina;
-			buscar('buscarPor');				
+			SolicitudesCertificadosForm.modo.value="buscarInicioSeleccionarTodos";
+			SolicitudesCertificadosForm.target="resultado";
+			SolicitudesCertificadosForm.submit();		
 		}		
-		function buscarPaginador() {       	
+		function buscarPaginador() {      
 			document.forms[1].target="resultado";
 			document.forms[1].modo.value = "buscar";
 			document.forms[1].submit();				
@@ -350,7 +352,7 @@
 			
 			<% } %>
 			
-			<% if ((request.getParameter("buscar") != null && request.getParameter("buscar").equalsIgnoreCase("true")) || (request.getAttribute("volver") != null && ((String)request.getAttribute("volver")).equalsIgnoreCase("volver"))) { %>
+			<% if ((request.getParameter("buscar") != null && request.getParameter("buscar").equalsIgnoreCase("true")) || (request.getParameter("buscarAntiguo") != null && request.getParameter("buscarAntiguo").equalsIgnoreCase("true")) || (request.getAttribute("volver") != null && ((String)request.getAttribute("volver")).equalsIgnoreCase("volver"))) { %>
 			   	buscar();
 			<% } %>		 
 

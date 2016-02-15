@@ -218,6 +218,7 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHARESOLUCION+",  " +
 			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAIMPOSICION+",  " +
 			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_REFCGAE+",  " +
+			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_REFCOLEGIO+",  " +
 			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_FECHAARCHIVADA+", " +
 			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_IDSANCIONORIGEN+",  " +
 			" " +CenSancionBean.T_NOMBRETABLA+"."+CenSancionBean.C_IDSANCIONORIGEN+",  " +
@@ -241,7 +242,9 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 			sql += " OR (nvl (" + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_CHKARCHIVADA+",0)=1";
 			sql += " AND "+ CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAARCHIVADA+" IS NOT NULL";
 			sql += " AND "+ CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAARCHIVADA+" > sysdate))";
-			//sql += " AND " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_CHKARCHIVADA+ "=0";
+			
+			// ORDEN
+			sql += " ORDER BY " + CenSancionBean.T_NOMBRETABLA +"."+ CenSancionBean.C_FECHAINICIO+ " DESC ";
             
 			
             rc = this.find(sql);

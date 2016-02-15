@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.services.scs.EjgResolucionService;
 import org.redabogacia.sigaservices.app.services.scs.EjgService;
 import org.redabogacia.sigaservices.app.vo.scs.EjgResolucionVo;
@@ -157,6 +158,9 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 //			nuevos.put("FECHAMODIFICACION", "sysdate");
 			request.getSession().setAttribute("DATABACKUP",nuevos);
 			
+		}catch (BusinessException e) {
+			return errorRefresco(e.getMessage(),new ClsExceptions(e.getMessage()), request);
+//			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, null); 
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, null); 
 		}

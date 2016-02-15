@@ -905,7 +905,7 @@ public class CompraPredefinidaAction extends MasterAction {
 			String idBoton=request.getParameter("idBoton");
 			String metodoSolicitud=request.getParameter("metodoSolicitud");
 			String fechaSolicitud=request.getParameter("fechaSolicitud");
-
+			String aceptaCesionMutualidad=request.getParameter("aceptaCesionMutualidad");
 			//String idPlantilla=request.getParameter("idPlantilla");
 
 			PysProductosInstitucionAdm admPI = new PysProductosInstitucionAdm(this.getUserBean(request));
@@ -988,7 +988,7 @@ public class CompraPredefinidaAction extends MasterAction {
 			tx.begin();
 			
 			// proceso de compra de certificado
-			Articulo a = admPI.realizarCompraPredefinida(new Integer(idInstitucionX),idInstitucionPresentadorX,new Integer(idTipoProducto),new Long(idProducto), new Long(idProductoInstitucion), new Long(idPersonaX),formaPago ,tipoEnvio,false, fechaSolicitud, metodoSolicitud,idInstitucionColegiacionX);
+			Articulo a = admPI.realizarCompraPredefinida(new Integer(idInstitucionX),idInstitucionPresentadorX,new Integer(idTipoProducto),new Long(idProducto), new Long(idProductoInstitucion), new Long(idPersonaX),formaPago ,tipoEnvio,false, fechaSolicitud, metodoSolicitud,idInstitucionColegiacionX,aceptaCesionMutualidad);
 
 			// Insertamos el certificado (esto antes lo hacia un trigger)
 		    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
@@ -1124,6 +1124,7 @@ public class CompraPredefinidaAction extends MasterAction {
 			
 			String idBoton=request.getParameter("idBoton");
 			String metodoSolicitud=request.getParameter("metodoSolicitud");
+			String aceptaCesionMutualidad=request.getParameter("aceptaCesionMutualidad");
 			String fechaSolicitud=request.getParameter("fechaSolicitud");
 			String idProductoCertificado=request.getParameter("idProductoCertificado");
 
@@ -1215,7 +1216,7 @@ public class CompraPredefinidaAction extends MasterAction {
 			tx.begin();
 			
 			// proceso de compra de certificado
-			Articulo a = admPI.realizarCompraPredefinida(new Integer(idInstitucionX),idInstitucionPresentadorX,new Integer(idTipoProducto),new Long(idProducto), new Long(idProductoInstitucion), new Long(idPersonaX),formaPago ,tipoEnvio,false, fechaSolicitud, metodoSolicitud,idInstitucionColegiacionX);
+			Articulo a = admPI.realizarCompraPredefinida(new Integer(idInstitucionX),idInstitucionPresentadorX,new Integer(idTipoProducto),new Long(idProducto), new Long(idProductoInstitucion), new Long(idPersonaX),formaPago ,tipoEnvio,false, fechaSolicitud, metodoSolicitud,idInstitucionColegiacionX,aceptaCesionMutualidad);
 
 			// Insertamos el certificado (esto antes lo hacia un trigger)
 		    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
@@ -1266,6 +1267,7 @@ public class CompraPredefinidaAction extends MasterAction {
 			String idBoton=request.getParameter("idBoton");
 			String idProductoCertificado = request.getParameter("idProductoCertificado");
 			String metodoSolicitud=request.getParameter("metodoSolicitud");
+			String aceptaCesionMutualidad=request.getParameter("aceptaCesionMutualidad");
 			String fechaSolicitud=request.getParameter("fechaSolicitud");
 
 			//El idProductoCertificado es el id del combo. En combo.properties esta configurado de esta manera
@@ -1323,7 +1325,7 @@ public class CompraPredefinidaAction extends MasterAction {
 			// proceso de compra de certificado
 			PysProductosInstitucionAdm admProductos = new PysProductosInstitucionAdm(this.getUserBean(request));
 			
-			Articulo a = admProductos.realizarCompraPredefinida(new Integer(idInstitucionX),idInstitucionX,new Integer(idTipoProducto),new Long(idProducto), new Long(idProductoInstitucion), new Long(idPersonaX),formaPago ,tipoEnvio,true, fechaSolicitud, metodoSolicitud,idInstitucionX);
+			Articulo a = admProductos.realizarCompraPredefinida(new Integer(idInstitucionX),idInstitucionX,new Integer(idTipoProducto),new Long(idProducto), new Long(idProductoInstitucion), new Long(idPersonaX),formaPago ,tipoEnvio,true, fechaSolicitud, metodoSolicitud,idInstitucionX,aceptaCesionMutualidad);
 
 			// Insertamos el certificado (esto antes lo hacia un trigger)
 		    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));	    

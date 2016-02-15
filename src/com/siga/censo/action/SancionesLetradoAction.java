@@ -401,6 +401,8 @@ public class SancionesLetradoAction extends MasterAction
 			request.removeAttribute("DATABACKUP");
 			request.getSession().setAttribute("DATABACKUP", hash);
 			request.setAttribute("accion", "modificar");
+			String pestCenso = (String) request.getParameter("pestanaColegiacion");
+			request.setAttribute("pestanaColegiacion", pestCenso);	
 			salida = this.exito("messages.updated.success",request);
 			
 	   } catch (Exception e) {
@@ -550,12 +552,14 @@ public class SancionesLetradoAction extends MasterAction
 			
 			tx.commit();			
 			request.getSession().setAttribute("DATABACKUP",hash);
+			String pestCenso = (String) request.getParameter("pestanaColegiacion");
+			request.setAttribute("pestanaColegiacion", pestCenso);	
 			
 	   } catch (Exception e) {
 	   		throwExcp("messages.general.error",new String[] {"modulo.censo"},e,tx);
    	   }
 		
-	   return exito("messages.inserted.success", request);
+	   return exitoRefresco("messages.inserted.success", request);
 	}
 	
 	/**
@@ -779,6 +783,8 @@ public class SancionesLetradoAction extends MasterAction
 				String tienepermisoArchivo= this.getTienePermisoArchivacion(mapping, request);	
 				String pestCenso = (String) request.getParameter("pestanaColegiacion");
 				request.setAttribute("pestanaColegiacion", pestCenso);
+				String accionCenso = (String) request.getParameter("accionCenso");
+				request.setAttribute("accionCenso", accionCenso);				
 				request.setAttribute("tienepermiso",tienepermisoArchivo);
 				request.setAttribute("modo", "Ver");
 				request.setAttribute("registro",hash);

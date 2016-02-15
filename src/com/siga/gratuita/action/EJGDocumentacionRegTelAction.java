@@ -38,7 +38,7 @@ public class EJGDocumentacionRegTelAction extends DocumentacionRegTelAction {
 		
 		request.getSession().removeAttribute("DATAPAGINADOR");
 
-		request.getSession().removeAttribute("DATABACKUP");
+		request.getSession().removeAttribute("DATABACKUP_REGTEL");
 
 		Vector v = new Vector();
 		Hashtable miHash = new Hashtable();
@@ -78,7 +78,7 @@ public class EJGDocumentacionRegTelAction extends DocumentacionRegTelAction {
 //				throw new SIGAException("expedientes.docushare.error.faltaColeccion");				
 //			}
 			
-			request.getSession().setAttribute("DATABACKUP", admEJG.beanToHashTable((ScsEJGBean) v.get(0)));
+			request.getSession().setAttribute("DATABACKUP_REGTEL", admEJG.beanToHashTable((ScsEJGBean) v.get(0)));
 			
 			request.setAttribute("IDENTIFICADORDS", scsEJGBean.getIdentificadorDS());
 			
@@ -100,7 +100,7 @@ public class EJGDocumentacionRegTelAction extends DocumentacionRegTelAction {
 
 	@Override
 	protected String createCollection(MasterForm formulario, HttpServletRequest request) throws SIGAServiceException, ClsExceptions {
-		Hashtable hashtable = (Hashtable)request.getSession().getAttribute("DATABACKUP");
+		Hashtable hashtable = (Hashtable)request.getSession().getAttribute("DATABACKUP_REGTEL");
 		
 		String title = DocuShareHelper.getTitleEJG(hashtable.get(ScsEJGBean.C_ANIO).toString(), hashtable.get(ScsEJGBean.C_NUMEJG).toString());
 		short idInstitucion = Short.valueOf((String)hashtable.get(ScsEJGBean.C_IDINSTITUCION));

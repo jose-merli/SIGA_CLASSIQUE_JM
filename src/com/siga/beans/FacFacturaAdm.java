@@ -1485,13 +1485,21 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    // FILTRO CLIENTE ESTADOCOLEGIAL
 		    String estadoColegial = form.getCmbEstadoColegial();
 		    if (estadoColegial!=null && !estadoColegial.equalsIgnoreCase("")) {
-			    sql.append(" AND ");
-			    sql.append(estadoColegial);
-			    sql.append(" = F_SIGA_GETTIPOCLIENTE(C.");
-			    sql.append(CenClienteBean.C_IDPERSONA);
-			    sql.append(", C.");
-			    sql.append(CenClienteBean.C_IDINSTITUCION);
-			    sql.append(", SYSDATE) AND NOT EXISTS (SELECT 1 FROM ");
+				sql.append(" AND F_SIGA_GETTIPOCLIENTE(C.");
+				sql.append(CenClienteBean.C_IDPERSONA);
+				sql.append(", C.");
+				sql.append(CenClienteBean.C_IDINSTITUCION);
+				sql.append(", SYSDATE) ");
+				
+			    if(estadoColegial.equals("1020")){
+			    	/** El estado colegial alta coge los estados ejerciente (10) y no ejercientes (20) **/
+					sql.append(" IN (10,20) ");
+			    } else {
+					sql.append(" = ");
+					sql.append(estadoColegial);
+			    }
+			    
+			    sql.append(" AND NOT EXISTS (SELECT 1 FROM ");
 			    sql.append(CenNoColegiadoBean.T_NOMBRETABLA);
 			    sql.append(" NC WHERE NC.");
 			    sql.append(CenNoColegiadoBean.C_IDINSTITUCION);

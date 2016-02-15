@@ -63,6 +63,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 				PysProductosSolicitadosBean.C_NOFACTURABLE,
 				PysProductosSolicitadosBean.C_USUMODIFICACION,
 				PysProductosSolicitadosBean.C_METODOSOLICITUD,
+				PysProductosSolicitadosBean.C_ACEPTACESIONMUTUALIDAD,
 				PysProductosSolicitadosBean.C_FECHASOLICITUD,
 				PysProductosSolicitadosBean.C_ORDEN};
 		return campos;
@@ -115,6 +116,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 			bean.setIdDireccion(UtilidadesHash.getLong(hash,PysProductosSolicitadosBean.C_IDDIRECCION));
 			bean.setFechaMod(UtilidadesHash.getString(hash,PysProductosSolicitadosBean.C_FECHAMODIFICACION));
 			bean.setMetodoSolicitud(UtilidadesHash.getInteger(hash,PysProductosSolicitadosBean.C_METODOSOLICITUD));
+			bean.setAceptaCesionMutualidad(UtilidadesHash.getInteger(hash,PysProductosSolicitadosBean.C_ACEPTACESIONMUTUALIDAD));
 			bean.setFechaSolicitud(UtilidadesHash.getString(hash,PysProductosSolicitadosBean.C_FECHASOLICITUD));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,PysProductosSolicitadosBean.C_USUMODIFICACION));
 			bean.setNoFacturable(UtilidadesHash.getString(hash,PysProductosSolicitadosBean.C_NOFACTURABLE));
@@ -155,6 +157,7 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_IDDIRECCION, b.getIdDireccion());
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_METODOSOLICITUD, b.getMetodoSolicitud());
+			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_ACEPTACESIONMUTUALIDAD, b.getAceptaCesionMutualidad());
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_FECHASOLICITUD, b.getFechaSolicitud());
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_USUMODIFICACION, b.getUsuMod());
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_NOFACTURABLE, b.getNoFacturable());
@@ -1475,6 +1478,12 @@ public class PysProductosSolicitadosAdm extends MasterBeanAdministrador {
 		}else{
 			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_METODOSOLICITUD, "");
 		}
+		
+		if(a.getAceptaCesionMut()!=null){
+			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_ACEPTACESIONMUTUALIDAD, a.getAceptaCesionMut());
+		}else{
+			UtilidadesHash.set(hash, PysProductosSolicitadosBean.C_ACEPTACESIONMUTUALIDAD, "");
+		}		
 	
 		try {
 			if(adm.insert(hash)){

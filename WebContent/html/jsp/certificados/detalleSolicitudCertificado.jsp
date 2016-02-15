@@ -87,7 +87,7 @@
 	String sIdCompra = "";
 	boolean isSolicitudColegio = false;
 	String[] parametros = null;
-	String aceptaCesion = "";
+	String aceptaCesion = "", aceptMut = "";
 	ArrayList aMetodoSol = new ArrayList();
 	String fechaSolicitud = "", idInstitucionSolicitud ="";
 	ArrayList tipoCertSel =new ArrayList();
@@ -104,6 +104,7 @@
 		isSolicitudColegio = beanSolicitud.getIdInstitucion_Sol().intValue()!=2000 && !String.valueOf(beanSolicitud.getIdInstitucion_Sol()).substring(0,2).equals("30");		
 		parametros = new String[]{beanSolicitud.getIdInstitucion_Sol().toString(),beanSolicitud.getIdInstitucion_Sol().toString()};
 		aceptaCesion = beanSolicitud.getAceptaCesionMutualidad().equals("1")?"checked":"";
+		aceptMut = beanSolicitud.getAceptaCesionMutualidad();
 		aMetodoSol.add(beanSolicitud.getMetodoSolicitud());
 		fechaSolicitud = beanSolicitud.getFechaSolicitud();
 		idInstitucionSolicitud = beanSolicitud.getIdInstitucion_Sol().toString();
@@ -199,14 +200,12 @@
 			deshabilitaCobro = "disabled";
 		
 	} else if (idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR)) {
-		stLectura="true";
 		tipoBox="boxConsulta";
 		deshabilitaDescarga = "disabled";
 		deshabilitaCobro = "disabled";
 		deshabilitaMutualidad = "disabled";
 	
 	} else if (idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)) {
-		stLectura="true";
 		tipoBox="boxConsulta";
 		deshabilitaDescarga = "disabled";
 		deshabilitaCobro = "disabled";
@@ -523,6 +522,11 @@
 				DummyForm.metodoSolicitud.value = SolicitudesCertificadosForm.metodoSolicitud.value;
 				DummyForm.fechaSolicitud.value = SolicitudesCertificadosForm.fechaSolicitud.value;
 				DummyForm.idInstitucionColegiacion.value =SolicitudesCertificadosForm.idInstitucionColegiacion.value;
+				if(SolicitudesCertificadosForm.aceptaCesionMutualidadCheck.checked){
+					DummyForm.aceptaCesionMutualidad.value = "1";
+				} else {
+					DummyForm.aceptaCesionMutualidad.value = "0";
+				}
 				DummyForm.modo.value="modificar";
 				DummyForm.submit();
 						  
@@ -621,6 +625,8 @@
 					jQuery("#td_3").hide();
 					jQuery("#td_4").hide();
 					jQuery("#td_5").hide();
+					jQuery("#td_gcob1").show();
+					jQuery("#td_gcob2").show();					
 					
 					<% if(idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO)) { %>
 						jQuery("#siguienteEstado").val("Finalizado");
@@ -638,6 +644,8 @@
 				jQuery("#td_5").show();
 				jQuery("#fechaCobro").addClass("box").removeClass("boxConsulta");	
 				jQuery("#fechaCobro-datepicker-trigger").show();
+				jQuery("#td_gcob1").hide();
+				jQuery("#td_gcob2").hide();					
 				SolicitudesCertificadosForm.fechaCobro.value="<%=UtilidadesBDAdm.getFechaBD("")%>";
 				
 				<% if(idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO)) { %>
@@ -680,6 +688,15 @@
 				SolicitudesCertificadosForm.fechaEntregaInfo.value="";
 			}
 		}
+		
+		function checkMutualidad () 
+		{
+			if(SolicitudesCertificadosForm.aceptaCesionMutualidadCheck.checked){
+				SolicitudesCertificadosForm.aceptaCesionMutualidad.value = "1";
+			} else {
+				SolicitudesCertificadosForm.aceptaCesionMutualidad.value = "0";
+			}
+		}		
 		
 		function revisarCheck() {
 			<% if (!modo.equals("nuevo")){%> 
@@ -752,22 +769,15 @@
 <!-- FIN: SCRIPTS BOTONES -->
 </head>
 
-<body onLoad="ajusteAlto('camposRegistro');revisarCheck();descargarPDF();">
+<body onLoad="ajusteAlto('submitArea');revisarCheck();descargarPDF();">
 
-<table class="tablaTitulo" cellspacing="0">
-	<tr>
-		<td id="titulo" class="titulosPeq"><siga:Idioma
-			key="certificados.solicitudes.ventanaEdicion.titulo" /></td>
-	</tr>
-</table>
-	
-<% if (modo.equals("nuevo") || !isSolicitudColegio){%> 
-	<div id="camposRegistro">
-<% } else {%> 
-	<div id="camposRegistro"  style="overflow-x:hidden; overflow-y:auto">
-<% } %> 
-	
-<table class="tablaCentralCamposGrande" align="center" >
+	<table class="tablaTitulo" cellspacing="0">
+		<tr>
+			<td id="titulo" class="titulosPeq"><siga:Idioma
+				key="certificados.solicitudes.ventanaEdicion.titulo" /></td>
+		</tr>
+	</table>
+		
 	<html:form action="/CER_GestionSolicitudes.do" method="POST" target="submitArea">
 		<html:hidden property="modo" value="" />
 		<html:hidden property="idInstitucion" styleId="idInstitucion" value="<%=idInstitucion%>" />
@@ -782,6 +792,7 @@
 		<html:hidden property="idsTemp" value="<%=idsTemp%>"/>
 		<html:hidden property="idSerieSeleccionada" styleId="idSerieSeleccionada" />
 		<input type="hidden" id="idPeticion" name="idPeticion" value="<%=idPeticion%>">	
+		<html:hidden property="aceptaCesionMutualidad" value="<%=aceptMut%>" />
 		<tr>
 			<td><siga:ConjCampos leyenda="certificados.solicitudes.ventanaEdicion.datosSolicitud">
 				<table class="tablaCampos" align="center">
@@ -881,11 +892,11 @@
 							<%}%>							
 						</td>
 					</tr>
-										
-					<%if(pintarCheckMutualidad){ %>
+						
+					<%if(pintarCheckMutualidad){ %>					
 						<tr>
 							<td class="labelText" colspan="8">
-							<div style="float:left"><input type=checkbox name="aceptaCesionMutualidad" <%=aceptaCesion %> <%=deshabilitaMutualidad%>/></div>&nbsp;
+							<div style="float:left"><input type=checkbox name="aceptaCesionMutualidadCheck" <%=aceptaCesion %> <%=deshabilitaMutualidad%> onclick="checkMutualidad()"/></div>&nbsp;
 							<siga:Idioma key="certificados.solicitudes.literal.textoConformidad" /></td>					
 						</tr>
 					<% } %>
@@ -967,17 +978,33 @@
 									</html:text> 
 								<%}%>
 							</td>	
+
+							<td class="labelText">
+								<siga:Idioma key="certificados.solicitudes.ventanaEdicion.incluirDeudas" />
+							</td>
+							<td>
+								<html:checkbox property="incluirDeudas" disabled="<%=!modoEditar%>"/>
+							</td>
+
+							<td class="labelText">
+								<siga:Idioma key="certificados.solicitudes.ventanaEdicion.incluirSanciones" />
+							</td>
+
+							<td>
+								<html:checkbox property="incluirSanciones" disabled="<%=!modoEditar%>"/>
+							</td>
 						</tr>
 						
-						<tr>
-							<td width="25%">&nbsp;</td>
-							<td width="25">&nbsp;</td>
-							<td class="labelText"><siga:Idioma key="certificados.solicitudes.ventanaEdicion.textoSanciones" /></td>
-							<td class="labelText"><siga:Idioma key="certificados.solicitudes.ventanaEdicion.comentario" /></td>
-						</tr>
-						
-						<tr>
-							<%if(isSolicitudColegio){ %>
+						<%if(isSolicitudColegio){ %>
+							
+							<tr>
+								<td width="25%">&nbsp;</td>
+								<td width="25">&nbsp;</td>
+								<td class="labelText"><siga:Idioma key="certificados.solicitudes.ventanaEdicion.textoSanciones" /></td>
+								<td class="labelText"><siga:Idioma key="certificados.solicitudes.ventanaEdicion.comentario" /></td>
+							</tr>
+							
+							<tr>							
 								<td><siga:ConjCampos leyenda="certificados.solicitudes.ventanaEdicion.estadosColegiales">
 									<table class="tablaCampos" align="center" border="0" cellspacing="0">
 										<tr>
@@ -1019,96 +1046,78 @@
 								</siga:ConjCampos></td>
 								
 								<td>&nbsp;</td>
-							<% } else { %> 
-								<td colspan="2">&nbsp;</td>
-							<% } %>
+
+								<td rowspan="2">
+									<%	if (modificarSolicitud.equals("1")) { %> 
+										<html:textarea property="textoSanciones" value="" styleClass="box"
+										onKeyDown="cuenta(this,3500)" cols="100" rows="7" style="width:350px" 
+										value="<%=sanciones%>" readonly="false" /> 
+									
+									<%	} else { %> 
+									 	<html:textarea	property="textoSanciones" value="" styleClass="boxConsulta"
+										onKeyDown="cuenta(this,3500)" cols="100" rows="7" style="width:350px" 
+										value="<%=sanciones%>" readonly="true" /> <%
+									 	}
+									 %>
+								</td>
 							
-							
-							<td rowspan="2">
-								<%	if (modificarSolicitud.equals("1")) { %> 
-									<html:textarea property="textoSanciones" value="" styleClass="box"
-									onKeyDown="cuenta(this,3500)" cols="100" rows="7" style="width:350px" 
-									value="<%=sanciones%>" readonly="false" /> 
-								
-								<%	} else { %> 
-								 	<html:textarea	property="textoSanciones" value="" styleClass="boxConsulta"
-									onKeyDown="cuenta(this,3500)" cols="100" rows="7" style="width:350px" 
-									value="<%=sanciones%>" readonly="true" /> <%
+								<td rowspan="2">
+								<%
+									if (modificarSolicitud.equals("1")) {
+								%> <html:textarea
+									property="comentario" value="" styleClass="box" style="width:350px" 
+									onKeyDown="cuenta(this,4000)" cols="100" rows="7"
+									value="<%=beanSolicitud.getComentario()%>" readonly="false" /> <%
+								 	} else {
+								 %>
+									<html:textarea property="comentario" value="" style="width:350px" 
+									styleClass="boxConsulta" onKeyDown="cuenta(this,4000)" cols="100"
+									rows="7" value="<%=beanSolicitud.getComentario()%>"
+									readonly="true" /> <%
 								 	}
 								 %>
-							</td>
-							
-							<td rowspan="2">
-							<%
-								if (modificarSolicitud.equals("1")) {
-							%> <html:textarea
-								property="comentario" value="" styleClass="box" style="width:350px" 
-								onKeyDown="cuenta(this,4000)" cols="100" rows="7"
-								value="<%=beanSolicitud.getComentario()%>" readonly="false" /> <%
-							 	} else {
-							 %>
-								<html:textarea property="comentario" value="" style="width:350px" 
-								styleClass="boxConsulta" onKeyDown="cuenta(this,4000)" cols="100"
-								rows="7" value="<%=beanSolicitud.getComentario()%>"
-								readonly="true" /> <%
-							 	}
-							 %>
-							</td>
-	
-						</tr>
-	
-						<%if(!isSolicitudColegio){ %>
-						<tr>
+								</td>
+		
+							</tr>
 						
+						<% } else { %> 
 						
-							<td class="tdBotones">
-							<%	
-								if (modificarSolicitud.equals("1")) {
-							%> <input type="button"
-								alt="<siga:Idioma key="certificados.solicitudes.literal.copiarSanciones"/>"
-								id="enviarSel" onclick="return copiarSanciones();"
-								name="idButton" class="button"
-								value="<siga:Idioma key="certificados.solicitudes.literal.copiarSanciones"/>">
-							<%
-								} else {
-							%> &nbsp; <%
-							 	}
-							 %>
-							</td>
-							<td>&nbsp;</td>
+							<tr>
+								<td class="labelText" colspan="5"><siga:Idioma key="certificados.solicitudes.ventanaEdicion.textoSanciones" /></td>
+								<td class="labelText"><siga:Idioma key="certificados.solicitudes.ventanaEdicion.comentario" /></td>
+							</tr>						
 	
-	
-						</tr>
+							<tr>
+								<td colspan="5">
+									<%	if (modificarSolicitud.equals("1")) { %> 
+										<html:textarea property="textoSanciones" value="" styleClass="box"
+										onKeyDown="cuenta(this,3500)" cols="100" rows="4" style="width:700px" 
+										value="<%=sanciones%>" readonly="false" /> 
+									
+									<%	} else { %> 
+									 	<html:textarea	property="textoSanciones" value="" styleClass="boxConsulta"
+										onKeyDown="cuenta(this,3500)" cols="100" rows="4" style="width:700px" 
+										value="<%=sanciones%>" readonly="true" /> <%
+									 	}
+									 %>
+								</td>			
+												
+								<td>
+								<% if (modificarSolicitud.equals("1")) {%> 
+									<html:textarea
+									property="comentario" value="" styleClass="box" style="width:250px" 
+									onKeyDown="cuenta(this,4000)" cols="100" rows="4"
+									value="<%=beanSolicitud.getComentario()%>" readonly="false" /> 
+								
+								<% } else { %>
+									<html:textarea property="comentario" value="" style="width:250px" 
+									styleClass="boxConsulta" onKeyDown="cuenta(this,4000)" cols="100"
+									rows="4" value="<%=beanSolicitud.getComentario()%>"
+									readonly="true" /> 
+								<% } %>
+								</td>
+							</tr>
 						<%}%>
-						<tr>
-							<td colspan="4">&nbsp;</td>
-						</tr>
-						<tr>
-	
-							<td>
-							<table>
-								<tr>
-									<td class="labelText">
-									<siga:Idioma key="certificados.solicitudes.ventanaEdicion.incluirDeudas" />
-									</td>
-									<td><html:checkbox property="incluirDeudas" disabled="<%=!modoEditar%>"/></td>
-								</tr>
-							</table>
-							</td>
-							<td>&nbsp;</td>
-							<td>
-							<table>
-								<tr>
-	
-									<td class="labelText">
-										<siga:Idioma key="certificados.solicitudes.ventanaEdicion.incluirSanciones" />
-									</td>
-									<td><html:checkbox property="incluirSanciones" disabled="<%=!modoEditar%>"/></td>
-								</tr>
-							</table>
-							</td>
-							<td></td>
-						</tr>
 					</table>
 				</siga:ConjCampos>
 				
@@ -1149,6 +1158,16 @@
 											jQuery("#td_3").hide();
 											jQuery("#td_4").hide();
 											jQuery("#td_5").hide();
+											jQuery("#td_gcob1").show();
+											jQuery("#td_gcob2").show();												
+										} else{
+											jQuery("#td_1").show();
+											jQuery("#td_2").show();
+											jQuery("#td_3").show();
+											jQuery("#td_4").show();
+											jQuery("#td_5").show();
+											jQuery("#td_gcob1").hide();
+											jQuery("#td_gcob2").hide();												
 										}
 									});
 								</script>	
@@ -1188,17 +1207,16 @@
 				           				return false;
 									});
 							</script>							
-						</tr>
-						
-						<tr>
-							<td class="labelText">
+
+
+							<td class="labelText" id="td_gcob1">
 							<%if (tipoCertificado!=null && tipoCertificado.equals("C")) {%> 
 								<siga:Idioma key="certificados.solicitudes.literal.facturableA" /> 
 							<%} else {%> 
 								<siga:Idioma key="certificados.solicitudes.literal.colegioDestino" /> 
 							<%}%>
 							</td>
-							<td>
+							<td id="td_gcob2">
 								<%if (!modificarSolicitud.equals("1") || (idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)))
 									sReadOnly = "true";
 								  %>
@@ -1303,11 +1321,8 @@
 			<%}%>
 			</td>							
 		</tr>
+		
 	</html:form>
-
-	
-</table>
-</div>
 
 <siga:ConjBotonesAccion botones="<%=botones%>" ordenar="false"/>
 
@@ -1335,6 +1350,7 @@
 		<input type="hidden" name="metodoSolicitud" value="${SolicitudesCertificadosForm.metodoSolicitud}">
 		<input type="hidden" name="fechaSolicitud" value="${SolicitudesCertificadosForm.fechaSolicitud}">
 		<input type="hidden" name="idInstitucionColegiacion" value="${SolicitudesCertificadosForm.idInstitucionColegiacion}">
+		<input type="hidden" name="aceptaCesionMutualidad" value="${SolicitudesCertificadosForm.aceptaCesionMutualidad}">
 	</html:form>	
 
 <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display: none"></iframe>
