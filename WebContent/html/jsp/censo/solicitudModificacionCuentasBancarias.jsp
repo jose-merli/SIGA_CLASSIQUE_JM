@@ -84,7 +84,9 @@
 		function accionGuardarCerrar() {	
 			sub();	
 			if (!document.cuentasBancariasSolicForm.cuentaAbono.checked && !document.cuentasBancariasSolicForm.cuentaCargo.checked && !document.cuentasBancariasSolicForm.abonoSJCS.checked)  {
-				var mensaje = "<siga:Idioma key='censo.datosCuentaBancaria.literal.tipoCuentaObligatoria'/>";
+				var mensaje = "<siga:Idioma key='errors.required' arg0='censo.tipoCuenta.abono'/>";
+				mensaje += " o <siga:Idioma key='censo.tipoCuenta.cargo'/>";
+				mensaje += " o <siga:Idioma key='censo.datosCuentaBancaria.literal.abonoSJCS'/>" + '\n';
 				alert (mensaje);
 				fin();
 			 	return false;

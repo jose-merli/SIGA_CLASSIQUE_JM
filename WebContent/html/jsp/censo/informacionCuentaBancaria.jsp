@@ -184,7 +184,9 @@ VERSIONES: -->
 			// Validamos los errores ///////////
 			sub();
 			if (!document.all.cuentasBancariasForm.cuentaAbono.checked && !document.all.cuentasBancariasForm.cuentaCargo.checked && !document.all.cuentasBancariasForm.abonoSJCS.checked) {
-				var mensaje = "<siga:Idioma key='censo.datosCuentaBancaria.literal.tipoCuentaObligatoria'/>";
+				var mensaje = "<siga:Idioma key='errors.required' arg0='censo.tipoCuenta.abono'/>";
+				mensaje += " o <siga:Idioma key='censo.tipoCuenta.cargo'/>";
+				mensaje += " o <siga:Idioma key='censo.datosCuentaBancaria.literal.abonoSJCS'/>" + '\n';
 				alert(mensaje);
 				fin();
 			    return false;

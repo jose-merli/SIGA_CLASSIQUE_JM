@@ -25,8 +25,3 @@ MODIFY ABONOCARGO VARCHAR2(1) DEFAULT 'C' NULL;
 
 ALTER TABLE CEN_SOLICMODICUENTAS
 MODIFY ABONOCARGO VARCHAR2(1) DEFAULT 'C' NULL;
-
-update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Tipo de cuenta Obligatorio, revise los tipos de cuenta seleccionados: No ha seleccionado ningún tipo de cuenta, ni el tipo SJCS' where idrecurso='censo.datosCuentaBancaria.literal.tipoCuentaObligatoria' and idlenguaje='1';
-update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Tipo de cuenta Obligatorio, revise los tipos de cuenta seleccionados: No ha seleccionado ningún tipo de cuenta, ni el tipo SJCS#GL' where idrecurso='censo.datosCuentaBancaria.literal.tipoCuentaObligatoria' and idlenguaje='4';
-update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Tipo de cuenta Obligatorio, revise los tipos de cuenta seleccionados: No ha seleccionado ningún tipo de cuenta, ni el tipo SJCS#CA' where idrecurso='censo.datosCuentaBancaria.literal.tipoCuentaObligatoria' and idlenguaje='2';
-update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Tipo de cuenta Obligatorio, revise los tipos de cuenta seleccionados: No ha seleccionado ningún tipo de cuenta, ni el tipo SJCS#EU' where idrecurso='censo.datosCuentaBancaria.literal.tipoCuentaObligatoria' and idlenguaje='3';
