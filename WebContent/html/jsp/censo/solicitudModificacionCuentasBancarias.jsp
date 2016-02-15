@@ -2,6 +2,7 @@
 <html>
 <head>
 <!--solicitudModificacionCuentasBancarias.jsp -->
+
 <!-- EJEMPLO DE VENTANA DENTRO DE VENTANA MODAL MEDIANA -->
 <!-- Contiene la zona de campos del registro y la zona de botones de acciones sobre el registro 
 	 VERSIONES:
@@ -82,11 +83,11 @@
 		// Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() {	
 			sub();	
-			if(!(document.cuentasBancariasSolicForm.cuentaAbono.checked) && !(document.cuentasBancariasSolicForm.cuentaCargo.checked))  {
-  				var mensaje = "<siga:Idioma key="censo.datosCuentaBancaria.literal.tipoCuenta"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
-					alert (mensaje);
-					fin();
-				 	return false;
+			if (!document.cuentasBancariasSolicForm.cuentaAbono.checked && !document.cuentasBancariasSolicForm.cuentaCargo.checked && !document.cuentasBancariasSolicForm.abonoSJCS.checked)  {
+				var mensaje = "<siga:Idioma key='censo.datosCuentaBancaria.literal.tipoCuentaObligatoria'/>";
+				alert (mensaje);
+				fin();
+			 	return false;
 			}
 			
 			if (validateCuentasBancariasSolicForm(document.cuentasBancariasSolicForm)){
@@ -121,15 +122,22 @@
 		function rellenarCampos(){
 			// Obtenemos el valor para los check Tipo de Cuenta.
 			abonoCargo="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_ABONOCARGO))%>";				
-			if(abonoCargo =="<%=ClsConstants.TIPO_CUENTA_ABONO%>"){	
-				document.all.cuentasBancariasSolicForm.cuentaAbono.checked=true;			
+
+			if (abonoCargo=="<%=ClsConstants.TIPO_CUENTA_ABONO%>") {	
+				document.all.cuentasBancariasSolicForm.cuentaAbono.checked=true;
 				document.all.cuentasBancariasSolicForm.cuentaCargo.checked=false;
-			}else if(abonoCargo =="<%=ClsConstants.TIPO_CUENTA_CARGO%>"){	
+				
+			} else if (abonoCargo=="<%=ClsConstants.TIPO_CUENTA_CARGO%>") {	
+				document.all.cuentasBancariasSolicForm.cuentaAbono.checked=false;
 				document.all.cuentasBancariasSolicForm.cuentaCargo.checked=true;
-				document.all.cuentasBancariasSolicForm.cuentaAbono.checked=false;	
-			}else{		
+				
+			} else if (abonoCargo=="<%=ClsConstants.TIPO_CUENTA_ABONO_CARGO%>") {	
 				document.all.cuentasBancariasSolicForm.cuentaAbono.checked=true;
 				document.all.cuentasBancariasSolicForm.cuentaCargo.checked=true;
+			
+			} else {	
+				document.all.cuentasBancariasSolicForm.cuentaAbono.checked=false;
+				document.all.cuentasBancariasSolicForm.cuentaCargo.checked=false;
 			}	
 			
 			// Obtenemos los valores para el check abonoSJCS.
@@ -240,17 +248,6 @@
 	    		document.getElementById("BIC").value = document.getElementById("BIC").value + 'X';
 		}
 	}
-	
-	function validaAbonoSJCS() {
-		if (document.all.cuentasBancariasSolicForm.abonoSJCS.checked) {
-			if (!document.all.cuentasBancariasSolicForm.cuentaAbono.checked) {
-				var mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.cuentaSJCS"/>";
-				alert (mensaje);
-				return false;
-			}
-		}
-	}	
-		
 	</script>	
 </head>
 
@@ -315,13 +312,13 @@
 										<table>
 											<tr>					
 												<td class="labelText"><siga:Idioma key="censo.tipoCuenta.abono"/></td>												
-												<td><html:checkbox name="cuentasBancariasSolicForm" property="cuentaAbono" onchange="validaAbonoSJCS()"/></td>
+												<td><html:checkbox name="cuentasBancariasSolicForm" property="cuentaAbono"/></td>
 												
 												<td class="labelText"><siga:Idioma key="censo.tipoCuenta.cargo"/></td>												
 												<td><html:checkbox name="cuentasBancariasSolicForm" property="cuentaCargo"/></td>
 																								
 												<td class="labelText"><siga:Idioma key="censo.datosCuentaBancaria.literal.abonoSJCS"/></td>
-												<td><html:checkbox name="cuentasBancariasSolicForm" property="abonoSJCS" onchange="validaAbonoSJCS()" /></td>
+												<td><html:checkbox name="cuentasBancariasSolicForm" property="abonoSJCS"/></td>
 											</tr>
 										</table>						
 									</td>

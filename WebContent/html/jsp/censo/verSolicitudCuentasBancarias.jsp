@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- verSolicitudCuentasBancarias.jsp -->
+
 <!-- 
 	 Permite mostrar las solicitudes de modificacion de cuentas bancarias
 	 VERSIONES:
@@ -205,26 +206,40 @@
 											<siga:Idioma key="censo.datosCuentaBancaria.literal.tipoCuenta"/>&nbsp;
 										</td>	
 										<td class="labelTextNormal">
-											<% if (String.valueOf(original.get(CenCuentasBancariasBean.C_ABONOCARGO)).equalsIgnoreCase("A")){%>
+<% 
+											String sAbonoCargoOriginal = String.valueOf(original.get(CenCuentasBancariasBean.C_ABONOCARGO));
+											if (sAbonoCargoOriginal.equalsIgnoreCase(ClsConstants.TIPO_CUENTA_ABONO)) {
+%>
 					   							<siga:Idioma key="censo.tipoCuenta.abono"/>
-						   					<% } else { %>
-						   						<% if (String.valueOf(original.get(CenCuentasBancariasBean.C_ABONOCARGO)).equalsIgnoreCase("C")){ %>
-						   							<siga:Idioma key="censo.tipoCuenta.cargo"/>
-						   						<% } else { %>
-						   							<siga:Idioma key="censo.tipoCuenta.abonoCargo"/>
-						   						<% } %>	
-						   					<% } %>						   					
+<% 
+											} else if (sAbonoCargoOriginal.equalsIgnoreCase(ClsConstants.TIPO_CUENTA_CARGO)) { 
+%>
+						   						<siga:Idioma key="censo.tipoCuenta.cargo"/>
+<% 
+											} else if (sAbonoCargoOriginal.equalsIgnoreCase(ClsConstants.TIPO_CUENTA_ABONO_CARGO)) { 
+%>
+												<siga:Idioma key="censo.tipoCuenta.abonoCargo"/>
+<% 
+											} 
+%>							   					
 						   					<br>
 						   					<div class="labelTextRojo">
-												<% if (modificada.getString(CenSolicModiCuentasBean.C_ABONOCARGO).equalsIgnoreCase("A")){%>
-						   							<siga:Idioma key="censo.tipoCuenta.abono"/>
-							   					<% } else { %>
-							   						<% if (modificada.getString(CenSolicModiCuentasBean.C_ABONOCARGO).equalsIgnoreCase("C")){ %>
-							   							<siga:Idioma key="censo.tipoCuenta.cargo"/>
-							   						<% } else { %>
-							   							<siga:Idioma key="censo.tipoCuenta.abonoCargo"/>
-							   						<% } %>	
-							   					<% } %>
+<% 
+												String sAbonoCargoModificada = modificada.getString(CenSolicModiCuentasBean.C_ABONOCARGO);
+												if (sAbonoCargoModificada.equalsIgnoreCase(ClsConstants.TIPO_CUENTA_ABONO)) {
+%>
+					   								<siga:Idioma key="censo.tipoCuenta.abono"/>
+<% 
+												} else if (sAbonoCargoModificada.equalsIgnoreCase(ClsConstants.TIPO_CUENTA_CARGO)) { 
+%>
+						   							<siga:Idioma key="censo.tipoCuenta.cargo"/>
+<% 
+												} else if (sAbonoCargoModificada.equalsIgnoreCase(ClsConstants.TIPO_CUENTA_ABONO_CARGO)) { 
+%>
+													<siga:Idioma key="censo.tipoCuenta.abonoCargo"/>
+<% 
+												} 
+%>	
 							   				</div>
 										</td>		
 															

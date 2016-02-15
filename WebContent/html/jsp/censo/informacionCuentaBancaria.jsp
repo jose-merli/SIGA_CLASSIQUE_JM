@@ -183,8 +183,8 @@ VERSIONES: -->
 		function guardar(modo){
 			// Validamos los errores ///////////
 			sub();
-			if ((!document.all.cuentasBancariasForm.cuentaAbono.checked) && (!document.all.cuentasBancariasForm.cuentaCargo.checked)) {
-				var mensaje = "<siga:Idioma key="censo.datosCuentaBancaria.literal.tipoCuentaObligatoria"/>";
+			if (!document.all.cuentasBancariasForm.cuentaAbono.checked && !document.all.cuentasBancariasForm.cuentaCargo.checked && !document.all.cuentasBancariasForm.abonoSJCS.checked) {
+				var mensaje = "<siga:Idioma key='censo.datosCuentaBancaria.literal.tipoCuentaObligatoria'/>";
 				alert(mensaje);
 				fin();
 			    return false;
@@ -249,13 +249,21 @@ VERSIONES: -->
 				// Obtenemos el valor para los check Tipo de Cuenta.
 				var abonoCargo = "";
 				abonoCargo="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_ABONOCARGO))%>";				
-				if(abonoCargo =="<%=ClsConstants.TIPO_CUENTA_ABONO%>"){	
+				if (abonoCargo=="<%=ClsConstants.TIPO_CUENTA_ABONO%>") {	
 					document.all.cuentasBancariasForm.cuentaAbono.checked=true;
-				}else if(abonoCargo =="<%=ClsConstants.TIPO_CUENTA_CARGO%>"){	
+					document.all.cuentasBancariasForm.cuentaCargo.checked=false;
+					
+				} else if (abonoCargo=="<%=ClsConstants.TIPO_CUENTA_CARGO%>") {	
+					document.all.cuentasBancariasForm.cuentaAbono.checked=false;
 					document.all.cuentasBancariasForm.cuentaCargo.checked=true;
-				}else{
+					
+				} else if (abonoCargo=="<%=ClsConstants.TIPO_CUENTA_ABONO_CARGO%>") {	
 					document.all.cuentasBancariasForm.cuentaAbono.checked=true;
 					document.all.cuentasBancariasForm.cuentaCargo.checked=true;
+				
+				} else {	
+					document.all.cuentasBancariasForm.cuentaAbono.checked=false;
+					document.all.cuentasBancariasForm.cuentaCargo.checked=false;
 				}
 			
 				// Obtenemos los valores para el check sociedad.
@@ -269,16 +277,6 @@ VERSIONES: -->
 			  	document.all.cuentasBancariasForm.abonoSJCS.checked=true;	
 			  }
 			<%}%>
-		}
-		
-		function validaAbonoSJCS() {
-			if (document.all.cuentasBancariasForm.abonoSJCS.checked) {
-				if (!document.all.cuentasBancariasForm.cuentaAbono.checked) {
-					var mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.cuentaSJCS"/>";
-					alert (mensaje);
-					return false;
-				}
-			}
 		}
 		
 		var mensajeGeneralError='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usr, "messages.general.error"))%>';
@@ -478,13 +476,13 @@ VERSIONES: -->
 									<table>
 										<tr>					
 											<td class="labelText">
-												<siga:Idioma key="censo.tipoCuenta.abono"/><html:checkbox name="cuentasBancariasForm" property="cuentaAbono" disabled="<%=desactivado%>" onchange="validaAbonoSJCS()"/>
+												<siga:Idioma key="censo.tipoCuenta.abono"/><html:checkbox name="cuentasBancariasForm" property="cuentaAbono" disabled="<%=desactivado%>"/>
 											</td>
 											<td class="labelText">
 												<siga:Idioma key="censo.tipoCuenta.cargo"/><html:checkbox name="cuentasBancariasForm" property="cuentaCargo" disabled="<%=desactivado%>"/>
 											</td>												
 											<td class="labelText">
-												<siga:Idioma key="censo.datosCuentaBancaria.literal.abonoSJCS"/><html:checkbox name="cuentasBancariasForm" property="abonoSJCS" disabled="<%=desactivado%>" onchange="validaAbonoSJCS()" />
+												<siga:Idioma key="censo.datosCuentaBancaria.literal.abonoSJCS"/><html:checkbox name="cuentasBancariasForm" property="abonoSJCS" disabled="<%=desactivado%>"/>
 											</td>
 										</tr>
 									</table>						

@@ -257,16 +257,6 @@
 			});
 		}
 	}
-	
-	function validaAbonoSJCS(){
-		if (document.SolicitudIncorporacionForm.abonoSJCS.checked) {
-			if (!document.SolicitudIncorporacionForm.cuentaAbono.checked) {
-				var mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.cuentaSJCS"/>";
-				alert (mensaje);
-				return false;
-			}
-		}
-	}
 
 	function datosValidos(){
 		var errores = "";
@@ -338,6 +328,10 @@
 			
 			//Se quita la mascara al guardar 
 			document.SolicitudIncorporacionForm.IBAN.value = formateaMask(document.getElementById("IBAN").value);		
+			
+			if (!document.SolicitudIncorporacionForm.cuentaAbono.checked && !document.SolicitudIncorporacionForm.cuentaCargo.checked && !document.SolicitudIncorporacionForm.abonoSJCS.checked) {
+				errores += "<siga:Idioma key='censo.datosCuentaBancaria.literal.tipoCuentaObligatoria'/>" + '\n';
+			}
 			
 			iban = document.SolicitudIncorporacionForm.IBAN.value;
 			bic = document.SolicitudIncorporacionForm.BIC.value;
@@ -2116,7 +2110,7 @@
 									<siga:Idioma key='censo.tipoCuenta.abono'/>
 								</td>									
 								<td>
-									<html:checkbox property="cuentaAbono" disabled="<%=readonly%>" onClick="validaAbonoSJCS()"/>
+									<html:checkbox property="cuentaAbono" disabled="<%=readonly%>"/>
 								</td>
 								
 								<td style="width:20px">&nbsp;</td>
@@ -2125,7 +2119,7 @@
 									<siga:Idioma key='censo.datosCuentaBancaria.literal.abonoSJCS'/>
 								</td>									
 								<td>
-									<html:checkbox property="abonoSJCS" disabled="<%=readonly%>" onClick="validaAbonoSJCS()" />
+									<html:checkbox property="abonoSJCS" disabled="<%=readonly%>"/>
 								</td>
 							</tr>
 						</table>
