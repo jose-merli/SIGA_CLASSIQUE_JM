@@ -271,7 +271,7 @@
 		</div>
 		<div id="img2" style="position: absolute; top: 1px;"><img id="logoSIGA" align="top"src="<%=app%>/html/imagenes/logoSIGA.png"></div>
 	
-		<div style="position: absolute; left: 180px; top: 48px; z-index: 5;">
+		<div style="position: absolute; left: 180px; top: 48px; z-index: 0;">
 			<table border=0 cellspacing=0 cellpadding=0>
 				<tr>
 				<td width="300px">
