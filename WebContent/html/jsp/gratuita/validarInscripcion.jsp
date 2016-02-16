@@ -25,12 +25,11 @@
 	<title><siga:Idioma key="gratuita.altaTurnos.literal.title" /></title>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 
-		
+	<script src="<html:rewrite page="/html/js/jquery.js"/>" type="text/javascript"></script>
+	<script src="<html:rewrite page="/html/js/jquery.custom.js"/>" type="text/javascript"></script>		
 	<script src="<html:rewrite page="/html/js/SIGA.js?v=${sessionScope.VERSIONJS}"/>" type="text/javascript"></script>
 	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
 	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>" type="text/javascript"></script>
-	<script src="<html:rewrite page="/html/js/jquery.js"/>" type="text/javascript"></script>
-	<script src="<html:rewrite page="/html/js/jquery.custom.js"/>" type="text/javascript"></script>	
 
 	<script type="text/javascript">	
 	
