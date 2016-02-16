@@ -485,7 +485,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
         V_PROCEDIMIENTO CONSTANT VARCHAR2(40) := 'ALTA_SERVICIO_PERSONA';
         V_TEXTOERROR VARCHAR2(4000) := NULL;
         
-    BEGIN                                                       
+    BEGIN
         V_TEXTOERROR := V_PROCEDIMIENTO || ': 1 - Consulto si el servicio esta activo a dia de hoy';
         SELECT COUNT(*)
             INTO V_CONTADOR
@@ -495,12 +495,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
             AND IDSERVICIO = P_IDSERVICIO
             AND IDSERVICIOSINSTITUCION = P_IDSERVICIOSINSTITUCION
             AND IDPERSONA = P_IDPERSONA            
-            AND TRUNC(FECHASUSCRIPCION) <= TRUNC(SYSDATE)
+            --AND TRUNC(FECHASUSCRIPCION) <= TRUNC(SYSDATE)
             AND (FECHABAJA IS NULL OR (TRUNC(FECHABAJA) >= TRUNC(SYSDATE) AND TRUNC(FECHABAJA) >= TRUNC(FECHASUSCRIPCION))); -- Busca suscripciones sin baja logica o con baja logica mayor o igual que hoy
-                    
+                        
         -- Compruebo que no tiene suscripciones activas hoy, y por tanto hay que suscribirlo    
         IF (V_CONTADOR = 0) THEN
-                
+                    
             BEGIN
                 V_TEXTOERROR := V_PROCEDIMIENTO || ': 2 - Consulto si el servicio acepta la forma de pago por domiciliacion bancaria';
                 SELECT IDFORMAPAGO 
@@ -512,12 +512,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
                     AND IDSERVICIOSINSTITUCION = P_IDSERVICIOSINSTITUCION
                     AND IDFORMAPAGO = 20 -- DOMICILIACIONBANCARIA
                     AND ROWNUM = 1;
-                            
+                                
                 EXCEPTION
                     WHEN NO_DATA_FOUND THEN
                         V_FORMAPAGO20 := NULL;
             END;
-                        
+                            
             BEGIN
                 V_TEXTOERROR := V_PROCEDIMIENTO || ': 3 - Consulto una forma de pago del servicio que no sea por domiciliacion bancaria';
                 SELECT IDFORMAPAGO 
@@ -533,18 +533,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
                    ORDER BY DECODE(IDFORMAPAGO, 30, 1, IDFORMAPAGO) -- METALICOOEFECTIVO EN PRIMER LUGAR
                )
                 WHERE ROWNUM = 1;
-                                              
+                                                  
                 EXCEPTION
                     WHEN NO_DATA_FOUND THEN
                         V_FORMAPAGONO20 := NULL;
             END;        
-                        
+                            
             IF (V_FORMAPAGO20 IS NULL AND V_FORMAPAGONO20 IS NULL) THEN
                 -- JPT: Se pone Metalico para el caso de un servicio sin definir las formas de pago
                 -- JPT: Hay que suscribirle como sea y por tanto se pone el pago en metalico
                 V_FORMAPAGONO20 := 30; -- METALICOOEFECTIVO  
             END IF;     
-        
+            
             -- JPT: Consulto si tiene una cuenta bancaria de cargo activa, cuando el servicio tiene la forma de pago por domiciliacion bancaria            
             IF (V_FORMAPAGO20 IS NOT NULL) THEN
                 V_TEXTOERROR := V_PROCEDIMIENTO || ': 4 - Consulto si la persona tiene una cuenta de cargo activa';
@@ -560,11 +560,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
                     ORDER BY FECHAMODIFICACION DESC
                 )
                 WHERE ROWNUM = 1;       
-                                                    
+                                                        
             ELSE                                    
                 V_IDCUENTA := NULL;
             END IF;      
-                
+                    
             -- Controlo que si el servicio solo acepta DOMICILIACIONBANCARIA, debe terner cuenta bancaria de cargos activa
             IF (V_FORMAPAGO20 IS NOT NULL AND V_FORMAPAGONO20 IS NULL AND V_IDCUENTA IS NULL) THEN
                    -- JPT: Se pone Metalico para el caso de un servicio solo por domiciliacion de cuenta bancaria y sin cuenta bancaria activa de la persona
@@ -572,13 +572,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
                    V_FORMAPAGO20 := NULL;
                    V_FORMAPAGONO20 := 30; -- METALICOOEFECTIVO  
             END IF;                     
-                        
+                            
             V_TEXTOERROR := V_PROCEDIMIENTO || ': 5 - Obtiene un nuevo identificador de peticion de la institucion';
             SELECT NVL(MAX(IDPETICION), 0) + 1
                 INTO V_IDPETICION
             FROM PYS_PETICIONCOMPRASUSCRIPCION
             WHERE IDINSTITUCION = P_IDINSTITUCION;           
-                        
+                            
             V_TEXTOERROR := V_PROCEDIMIENTO || ': 6 - Inserta la peticion de la suscripcion';
             INSERT INTO PYS_PETICIONCOMPRASUSCRIPCION(
                 IDINSTITUCION,
@@ -600,19 +600,19 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
                 '1' || LPAD(P_IDINSTITUCION, 4, 0) || LPAD(P_IDPERSONA, 10, 0) || F_TO_MILISEGUNDOS(SYSDATE),
                 SYSDATE,
                 P_USUMODIFICACION);
-                    
+                        
             V_TEXTOERROR := V_PROCEDIMIENTO || ': 7 - Calcula la forma de pago';            
             -- Compruebo si acepta la forma de pago por domiciliacion bancaria y tiene una cuenta bancaria activa
             IF (V_FORMAPAGO20 IS NOT NULL AND V_IDCUENTA IS NOT NULL) THEN
                 V_FORMAPAGO := V_FORMAPAGO20; -- DOMICILIACIONBANCARIA    
-                                    
+                                        
             ELSIF (V_FORMAPAGONO20 IS NULL) THEN
                 V_FORMAPAGO := 30; -- METALICOOEFECTIVO
-                                    
+                                        
             ELSE                                        
                 V_FORMAPAGO := V_FORMAPAGONO20;
             END IF;                                                                    
-                                    
+                                        
             V_TEXTOERROR := V_PROCEDIMIENTO || ': 8 - Inserta la solicitud del servicio';
             INSERT INTO PYS_SERVICIOSSOLICITADOS(
                 IDINSTITUCION,
@@ -640,7 +640,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
                 V_IDCUENTA,
                 SYSDATE,
                 P_USUMODIFICACION);    
-                                                                        
+                                                                            
             V_TEXTOERROR := V_PROCEDIMIENTO || ': 9 - Obtiene un nuevo identificador de suscripcion';
             SELECT NVL(MAX(IDSUSCRIPCION), 0) + 1
                 INTO V_IDSUSCRIPCION
@@ -649,7 +649,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
                 AND IDTIPOSERVICIOS = P_IDTIPOSERVICIOS
                 AND IDSERVICIO = P_IDSERVICIO
                 AND IDSERVICIOSINSTITUCION = P_IDSERVICIOSINSTITUCION;
-                                    
+                                        
             V_TEXTOERROR := V_PROCEDIMIENTO || ': 10 - Inserta la suscripcion al servicio';
             INSERT INTO PYS_SUSCRIPCION (
                 IDINSTITUCION,
@@ -681,7 +681,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
                 V_IDCUENTA,
                 SYSDATE,
                 P_USUMODIFICACION);         
-        END IF;            
+        END IF;                        
             
         V_TEXTOERROR := V_PROCEDIMIENTO || ': 11 - Finaliza el proceso correctamente';
         P_CODRETORNO := '0';
@@ -914,7 +914,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
                 DESCRIPCION
             FROM PYS_SERVICIOSINSTITUCION
             WHERE IDINSTITUCION = VC_IDINSTITUCION
-                AND AUTOMATICO = '1';
+                AND AUTOMATICO = '1'
+                AND FECHABAJA IS NULL;
 
         V_FECHAPROCESO DATE;
         V_CRITERIOS PYS_SERVICIOSINSTITUCION.CRITERIOS%TYPE;
@@ -1378,7 +1379,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
         FROM CEN_CUENTASBANCARIAS CUENTASBANCARIAS
         WHERE CUENTASBANCARIAS.IDINSTITUCION = p_Idinstitucion
             AND CUENTASBANCARIAS.IDPERSONA = p_Idpersona
-            AND CUENTASBANCARIAS.ABONOCARGO IN ('A', 'T')
+            --AND CUENTASBANCARIAS.ABONOCARGO IN ('A', 'T') -- Ya no tienen que ser cuentas SJCS de abono
             AND CUENTASBANCARIAS.FECHABAJA IS NULL
             AND CUENTASBANCARIAS.ABONOSJCS = 1;
 
@@ -1394,7 +1395,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
                     FROM CEN_CUENTASBANCARIAS CUENTASBANCARIAS
                     WHERE CUENTASBANCARIAS.IDINSTITUCION = p_Idinstitucion
                         AND CUENTASBANCARIAS.IDPERSONA = p_Idpersona
-                        AND CUENTASBANCARIAS.ABONOCARGO IN ('A', 'T')
+                        --AND CUENTASBANCARIAS.ABONOCARGO IN ('A', 'T') -- Ya no tienen que ser cuentas SJCS de abono
                         AND CUENTASBANCARIAS.FECHABAJA IS NULL
                         AND CUENTASBANCARIAS.ABONOSJCS = 1
                     ORDER BY CUENTASBANCARIAS.FECHAMODIFICACION DESC
@@ -1864,7 +1865,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
             SELECT *
             FROM PYS_SERVICIOSINSTITUCION
             WHERE IDINSTITUCION = VC_IDINSTITUCION
-                AND AUTOMATICO = '1';
+                AND AUTOMATICO = '1'
+                AND FECHABAJA IS NULL;
 
     BEGIN
         V_TEXTOERROR := V_PROCEDIMIENTO || ': 1 - NVL de fecha efectiva';
