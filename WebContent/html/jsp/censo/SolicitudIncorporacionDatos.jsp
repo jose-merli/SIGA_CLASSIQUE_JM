@@ -327,13 +327,7 @@
 			}
 			
 			//Se quita la mascara al guardar 
-			document.SolicitudIncorporacionForm.IBAN.value = formateaMask(document.getElementById("IBAN").value);		
-			
-			if (!document.SolicitudIncorporacionForm.cuentaAbono.checked && !document.SolicitudIncorporacionForm.cuentaCargo.checked && !document.SolicitudIncorporacionForm.abonoSJCS.checked) {
-				errores += "<siga:Idioma key='errors.required' arg0='censo.tipoCuenta.cargo'/>";
-				errores += " o <siga:Idioma key='censo.tipoCuenta.abono'/>";
-				errores += " o <siga:Idioma key='censo.datosCuentaBancaria.literal.abonoSJCS'/>" + '\n';
-			}
+			document.SolicitudIncorporacionForm.IBAN.value = formateaMask(document.getElementById("IBAN").value);					
 			
 			iban = document.SolicitudIncorporacionForm.IBAN.value;
 			bic = document.SolicitudIncorporacionForm.BIC.value;
@@ -345,6 +339,12 @@
 					fin();
 					return false;
 				} 			
+				
+				if (!document.SolicitudIncorporacionForm.cuentaAbono.checked && !document.SolicitudIncorporacionForm.cuentaCargo.checked && !document.SolicitudIncorporacionForm.abonoSJCS.checked) {
+					errores += "<siga:Idioma key='errors.required' arg0='censo.tipoCuenta.cargo'/>";
+					errores += " o <siga:Idioma key='censo.tipoCuenta.abono'/>";
+					errores += " o <siga:Idioma key='censo.datosCuentaBancaria.literal.abonoSJCS'/>" + '\n';
+				}
 			}
 			
 			if (errores != ""){
