@@ -448,10 +448,9 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		Hashtable htCodigos = new Hashtable();
 		int keyContador = 0;
 		StringBuilder stringBuilder = new StringBuilder();
-		if (isImpugando != null)
-			stringBuilder.append(" SELECT * FROM ( ");
+		stringBuilder.append("SELECT ROWNUM AS NACUERDO,TODO.* FROM ( ");
 
-		stringBuilder.append(" SELECT ROWNUM AS NACUERDO,  DATOS.*, ");
+		stringBuilder.append(" SELECT DATOS.*, ");
 		stringBuilder.append(" F_SIGA_GETRECURSO(RES.DESCRIPCION, ");
 		stringBuilder.append(this.usrbean.getLanguage());
 		stringBuilder.append(") AS RESOLUCION, ");
@@ -573,14 +572,21 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		stringBuilder.append(" AND FUN.IDFUNDAMENTO(+) = DATOS.IDFUNDAMENTOJURIDICO ");
 		stringBuilder.append(" AND FUN.IDINSTITUCION(+) = DATOS.IDINSTITUCION ");
 		stringBuilder.append(" ORDER BY ANIO ASC, NUMEJG ASC ");
+		
+		
+	
 
 		if (isImpugando != null) {
 			if (isImpugando)
-				stringBuilder.append(") WHERE ISIMPUGNADO = 1 ");
+				stringBuilder.append(") TODO WHERE ISIMPUGNADO = 1 ");
 			else
-				stringBuilder.append(") WHERE ISIMPUGNADO = 0 ");
+				stringBuilder.append(") TODO WHERE ISIMPUGNADO = 0 ");
 
+		}else{
+			stringBuilder.append(" ) TODO ");
+			
 		}
+		
 
 		try {
 
