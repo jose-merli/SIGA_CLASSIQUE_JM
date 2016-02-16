@@ -27,3 +27,8 @@ ALTER TABLE CEN_SOLICMODICUENTAS
 MODIFY ABONOCARGO VARCHAR2(1) DEFAULT 'C' NULL;
 
 Modificado PKG_SERVICIOS_AUTOMATICOS;
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.documentacionDesigna.observaciones', 'Observaciones', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.documentacionDesigna.observaciones', 'Observaciones#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.documentacionDesigna.observaciones', 'Observaciones#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.documentacionDesigna.observaciones', 'Observaciones#EU', 0, '3', sysdate, 0, '19');

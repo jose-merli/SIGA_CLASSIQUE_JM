@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- listadoDocumentacionDesigna.jsp -->
+
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
@@ -83,47 +84,43 @@
 		<html:hidden styleId="idTurno" property = "idTurno"/>
 	</html:form>	
 		
-		<table class="tablaTitulo" cellspacing="0">
+	<table class="tablaTitulo" cellspacing="0">
 		<tr>
 			<td id="titulo" class="titulitosDatos">
-	
-				<%
-					    String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "";
-						ScsDesignaAdm adm = new ScsDesignaAdm (usr);
-						Hashtable hTitulo = adm.getTituloPantallaDesigna(usr.getLocation(), anio, numero,idTurno);
+<%
+			    String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "";
+				ScsDesignaAdm adm = new ScsDesignaAdm (usr);
+				Hashtable hTitulo = adm.getTituloPantallaDesigna(usr.getLocation(), anio, numero,idTurno);
 
-						if (hTitulo != null) {
-							t_nombre    = (String)hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
-							t_apellido1 = (String)hTitulo.get(ScsPersonaJGBean.C_APELLIDO1);
-							t_apellido2 = (String)hTitulo.get(ScsPersonaJGBean.C_APELLIDO2);
-							t_anio      = (String)hTitulo.get(ScsDesignaBean.C_ANIO);
-							t_numero    = (String)hTitulo.get(ScsDesignaBean.C_CODIGO);
-							
-						}
+				if (hTitulo != null) {
+					t_nombre    = (String)hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
+					t_apellido1 = (String)hTitulo.get(ScsPersonaJGBean.C_APELLIDO1);
+					t_apellido2 = (String)hTitulo.get(ScsPersonaJGBean.C_APELLIDO2);
+					t_anio      = (String)hTitulo.get(ScsDesignaBean.C_ANIO);
+					t_numero    = (String)hTitulo.get(ScsDesignaBean.C_CODIGO);
 					
-					%>
-					<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
-					- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
+				}
+			
+%>
+				<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
+				- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
 			</td>
 		</tr>
-		</table>
+	</table>
 
-		<siga:Table 		   
-		   name="listadoDocumentacion"
-		   border="1"
-		   columnNames="gratuita.documentacionAsistencia.fechaentrada,sjcs.ejg.documentacion.tipoDocumentacion,gratuita.documentacionDesigna.actuacion"
-		   columnSizes="10,40,40,10"
-		   modal="M">
-		   
-  	<% if (obj != null && obj.size()>0){
+	<siga:Table 		   
+		name="listadoDocumentacion"
+		border="1"
+		columnNames="gratuita.documentacionAsistencia.fechaentrada,sjcs.ejg.documentacion.tipoDocumentacion,gratuita.documentacionDesigna.actuacion,gratuita.documentacionDesigna.observaciones,"
+		columnSizes="10,20,30,30,10"
+		modal="M">
+<% 
+		if (obj!=null && obj.size()>0) {
 	    	int recordNumber=1;
 	    	while (recordNumber-1 < obj.size())	{	
-	    		
 	    		DocumentacionDesignaVo fila = (DocumentacionDesignaVo) obj.get(recordNumber-1);
-														
-			%>				
-				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botonesFila%>" clase="listaNonEdit" >
-					
+%>				
+				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botonesFila%>" clase="listaNonEdit">
 					<td>
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.getIddocumentaciondes()%>">
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=fila.getIdtipodocumento()%>">
@@ -131,19 +128,19 @@
 					</td>					
 					<td><%=fila.getNombreTipoDoc()%></td>
 					<td><%=fila.getDescripcionActuacion()%>&nbsp;</td>
-					
+					<td><%=fila.getObservaciones()%>&nbsp;</td>
 				</siga:FilaConIconos>		
-		<% recordNumber++;		   
-		} %>
-	<%
-	}else {
-	%>
-	 	<tr class="notFound">
-		   	<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-		</tr>
-	<%
-	}
-	%>
+<% 
+				recordNumber++;		   
+			}
+		} else {
+%>
+	 		<tr class="notFound">
+		   		<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+			</tr>
+<%
+		}
+%>
 	</siga:Table>	
 
 
