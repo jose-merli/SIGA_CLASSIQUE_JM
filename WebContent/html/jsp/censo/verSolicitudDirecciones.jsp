@@ -74,7 +74,7 @@
 		if (!String.valueOf(original.get("IDPAIS")).equals(ClsConstants.ID_PAIS_ESPANA)){
 			poblacionOriginal=String.valueOf(original.get("POBLACIONEXTRANJERA"));
 		}	
-		if (!modificada.getString("IDPAIS").equals(ClsConstants.ID_PAIS_ESPANA)){
+		if (!modificada.getString("IDPAIS").equals(ClsConstants.ID_PAIS_ESPANA) && !modificada.getString("IDPAIS").equals("")){
 			poblacionModificado=modificada.getString("POBLACIONEXTRANJERA");
 		}	
 	}
