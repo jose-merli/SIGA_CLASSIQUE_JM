@@ -85,10 +85,15 @@ public class ActuacionesDesignasAction extends MasterAction {
 			}else if(accion!=null && accion.equalsIgnoreCase("editarJustificacionFicha")){
 				request.getSession().removeAttribute("designaActual");
 				ActuacionesDesignasForm actuacionesDesignasForm = (ActuacionesDesignasForm)formulario;
-				request.setAttribute("modoJustificacion","editarJustificacion");
+				request.setAttribute("modoJustificacion","editarJustificacionFicha");
 				request.setAttribute("validarActuacion",actuacionesDesignasForm.getActuacionValidada());
 				miForm.setModo("editar");
-			}else if(accion!=null && accion.equalsIgnoreCase("consultarJustificacion")){
+			}else if(accion!=null && accion.equalsIgnoreCase("modificarJustificacionFicha")){
+				miForm = (MasterForm) formulario;
+				return mapping.findForward(modificarJustificacionFicha(mapping, miForm, request, response));
+			}
+			
+			else if(accion!=null && accion.equalsIgnoreCase("consultarJustificacion")){
 				request.getSession().removeAttribute("designaActual");
 				miForm.setModo("ver");
 			}else if(accion!=null && accion.equalsIgnoreCase("nuevoJustificacion")){
@@ -1388,6 +1393,80 @@ public class ActuacionesDesignasAction extends MasterAction {
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		}
 		return forward;		
+	}
+	
+	protected String modificarJustificacionFicha(ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
+
+		HttpSession ses = request.getSession();
+		UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
+		ActuacionesDesignasForm miform = (ActuacionesDesignasForm) formulario;
+		Hashtable actuacionModificada = (Hashtable) miform.getDatos();
+		actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROASUNTO, miform.getNactuacion());
+		
+		String clavesActuaciones[] = { ScsActuacionDesignaBean.C_IDINSTITUCION, ScsActuacionDesignaBean.C_IDTURNO, ScsActuacionDesignaBean.C_ANIO, ScsActuacionDesignaBean.C_NUMERO, ScsActuacionAsistenciaBean.C_NUMEROASUNTO };
+		String campos[] = { ScsActuacionDesignaBean.C_FECHAMODIFICACION, ScsActuacionDesignaBean.C_USUMODIFICACION, ScsActuacionDesignaBean.C_FECHA, ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, ScsActuacionDesignaBean.C_NIG, ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO };
+
+		ScsActuacionDesignaAdm actuacionDesignaAdm = new ScsActuacionDesignaAdm(this.getUserBean(request));
+		String forward = null;
+		
+		try {
+			ScsDesignaAdm designaAdm = new ScsDesignaAdm(this.getUserBean(request));
+			//Accedemos a la designa para comprobar que la fecha de actuacion sea mayor o igual que la fecha de la designa
+			Vector designaVector = designaAdm.selectByPK(actuacionModificada);
+			SimpleDateFormat formatBBDD = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+			SimpleDateFormat formatJSP = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+			Date dActuacion = formatJSP.parse(miform.getFechaActuacion());
+			if ((designaVector != null) && (designaVector.size() == 1)) {
+				ScsDesignaBean designaBean = (ScsDesignaBean) designaVector.get(0);
+				Date dDesgina = formatBBDD.parse(designaBean.getFechaEntrada());
+				if (dActuacion.compareTo(dDesgina) < 0) {
+					return exito("messages.error.acreditacionFechaNoValida", request);
+				}
+			}
+			//Accedemos a la actuacion para comprobar que la fecha de actuacion sea anterior o igual que la fecha de justificacion
+			Vector actuacionDesignaVector = actuacionDesignaAdm.selectByPK(actuacionModificada);
+			if ((actuacionDesignaVector != null) && (actuacionDesignaVector.size() == 1)) {
+				ScsActuacionDesignaBean actuacionDesignaBean = (ScsActuacionDesignaBean) actuacionDesignaVector.get(0);
+				Date fechaJustificacion = formatBBDD.parse(actuacionDesignaBean.getFechaJustificacion());
+				if (dActuacion.compareTo(fechaJustificacion) > 0) {
+					return exito("messages.error.acreditacionFechaNoValida", request);
+				}
+				
+			}
+			//Seteamos la fecha
+			actuacionModificada.put(ScsActuacionDesignaBean.C_FECHA, GstDate.getApplicationFormatDate("", (String) actuacionModificada.get("FECHAACTUACION")));
+			actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCION, (String) usr.getLocation());
+
+			String numeroProcedimiento = miform.getNumeroProcedimiento();
+			if (numeroProcedimiento != null && !numeroProcedimiento.equals("")) {
+				actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, numeroProcedimiento);
+			} else {
+				actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, "");
+			}
+			String anioProcedimiento = miform.getAnioProcedimiento();
+			if (anioProcedimiento != null && !anioProcedimiento.equals("")) {
+				actuacionModificada.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, anioProcedimiento);
+			} else {
+				actuacionModificada.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, "");
+			}
+
+			String nig = miform.getNig();
+			if (nig != null && !nig.equals("")) {
+				actuacionModificada.put(ScsActuacionDesignaBean.C_NIG, nig);
+			} else {
+				actuacionModificada.put(ScsActuacionDesignaBean.C_NIG, "");
+			}
+			
+			
+			actuacionDesignaAdm.updateDirect(actuacionModificada, clavesActuaciones, campos);
+			forward = exitoModal("messages.updated.success", request);
+
+
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
+		}
+		return forward;
 	}
 
 	/** 

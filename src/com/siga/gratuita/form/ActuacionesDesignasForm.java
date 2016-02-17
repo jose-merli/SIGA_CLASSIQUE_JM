@@ -51,6 +51,8 @@ public class ActuacionesDesignasForm extends MasterForm {
 	protected String anioProcedimiento;
 	
 	private boolean fichaColegial = false;
+	protected String idInstitucion="IDINSTITUCION";
+	
 	public boolean getFichaColegial() {
 		return fichaColegial;
 	}
@@ -516,6 +518,12 @@ public class ActuacionesDesignasForm extends MasterForm {
 	 */
 	public void setAnioProcedimiento(String anioProcedimiento) {
 		this.anioProcedimiento = anioProcedimiento;
+	}
+	public String getIdInstitucion() {
+		return UtilidadesHash.getString(this.datos, this.idInstitucion);
+	}
+	public void setIdInstitucion(String idInstitucion) {
+		this.datos.put(this.idInstitucion, idInstitucion);
 	}	
 
 }
