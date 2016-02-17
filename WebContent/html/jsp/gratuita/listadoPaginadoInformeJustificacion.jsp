@@ -830,7 +830,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		<td align='center' width="8%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.fechaSalida" /></td>
 		<td align='center' width="8%"><siga:Idioma
-			key="gratuita.informeJustificacionMasiva.literal.asunto" /></td>
+			key="gratuita.informeJustificacionMasiva.literal.numeroProcedimiento" /></td>
 		<td align='center' width="15%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.cliente" /></td>
 		<td align='center' width="4%"><siga:Idioma
