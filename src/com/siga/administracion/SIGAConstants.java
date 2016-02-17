@@ -20,6 +20,7 @@ public interface SIGAConstants
 	public static final String PATH_LOGO="SIGA_LOGO";
 	public static final String STYLESHEET_PATH="directorios.carpeta.css";
 	public static final String ID_ANALYTICS="administracion.entorno.analytics";
+	public static final String PARAMETRO_ENTORNO = "ENTORNO";
 
 	/**
 	 * Para referenciar el path del logotipo de la institucion entre los atributos de sesión.
