@@ -94,7 +94,8 @@
 			<html:hidden property = "modo" value = ""/>
 			<html:hidden property = "idProcedimiento" value = "<%=idProc%>"/>				
 			<html:hidden property = "idAcreditacion" value = ""/>
-			<html:hidden property = "porcentaje" value = ""/>				
+			<html:hidden property = "porcentaje" value = ""/>	
+			<html:hidden property = "nigNumProcedimiento" value = ""/>			
 			<html:hidden property = "refresco" value = ""/>
 
 			<tr>				
@@ -291,6 +292,7 @@
 			if (resultado != null && (resultado[0]== 1)) {
 				document.forms[0].idAcreditacion.value = resultado[1];
 				document.forms[0].porcentaje.value = resultado[2];
+				document.forms[0].nigNumProcedimiento.value = resultado[3];
 				document.forms[0].modo.value = "insertarAcreditacion";
 				document.forms[0].submit();
 			}

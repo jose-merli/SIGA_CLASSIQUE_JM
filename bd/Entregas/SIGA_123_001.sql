@@ -32,3 +32,23 @@ Modificado PKG_SERVICIOS_AUTOMATICOS;
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.documentacionDesigna.observaciones', 'Observaciones#GL', 0, '4', sysdate, 0, '19');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.documentacionDesigna.observaciones', 'Observaciones#CA', 0, '2', sysdate, 0, '19');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.documentacionDesigna.observaciones', 'Observaciones#EU', 0, '3', sysdate, 0, '19');
+ 
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.informeJustificacionMasiva.literal.numeroProcedimiento', 'Nº Proc.', 0, '1', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.informeJustificacionMasiva.literal.numeroProcedimiento', 'Nº Proc.#GL', 0, '4', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.informeJustificacionMasiva.literal.numeroProcedimiento', 'Nº Proc.#CA', 0, '2', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.informeJustificacionMasiva.literal.numeroProcedimiento', 'Nº Proc.#EU', 0, '3', sysdate, 0, '22');
+
+
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.procedimientos.acreditacion.literal.nigNumeroProcedimiento', 'NIG/Nº Procedimiento', 0, '1', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.procedimientos.acreditacion.literal.nigNumeroProcedimiento', 'NIG/Nº Procedimiento#GL', 0, '4', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.procedimientos.acreditacion.literal.nigNumeroProcedimiento', 'NIG/Nº Procedimiento#CA', 0, '2', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.procedimientos.acreditacion.literal.nigNumeroProcedimiento', 'NIG/Nº Procedimiento#EU', 0, '3', sysdate, 0, '22');
+
+
+ALTER TABLE scs_acreditacionprocedimiento ADD (
+    NIG_NUMPROCEDIMIENTO NUMBER DEFAULT 0 NOT NULL
+);
+
+COMMENT ON COLUMN scs_acreditacionprocedimiento.NIG_NUMPROCEDIMIENTO IS '0: No está seleccionado el check NIG/Nº Procedimiento de la acreditación; 1:Si está seleccionado el check NIG/Nº Procedimiento de la acreditación';

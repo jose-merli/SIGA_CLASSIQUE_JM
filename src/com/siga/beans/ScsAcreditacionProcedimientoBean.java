@@ -20,7 +20,7 @@ public class ScsAcreditacionProcedimientoBean extends MasterBean {
 	private static final long serialVersionUID = -1626927180430121686L;
 	/* Variables */	
 	private String 	idProcedimiento;
-	private Integer idInstitucion, idAcreditacion, porcentaje;
+	private Integer idInstitucion, idAcreditacion, porcentaje, nigNumeroProcedimiento;
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "SCS_ACREDITACIONPROCEDIMIENTO";
@@ -30,6 +30,7 @@ public class ScsAcreditacionProcedimientoBean extends MasterBean {
 	static public final String C_IDPROCEDIMIENTO	= "IDPROCEDIMIENTO";
 	static public final String C_IDACREDITACION		= "IDACREDITACION";
 	static public final String C_PORCENTAJE			= "PORCENTAJE";
+	static public final String C_NIG_NUMPROCEDIMIENTO = "NIG_NUMPROCEDIMIENTO";
 
 	
 	/**
@@ -79,5 +80,12 @@ public class ScsAcreditacionProcedimientoBean extends MasterBean {
 	 */
 	public void setPorcentaje(Integer porcentaje) {
 		this.porcentaje = porcentaje;
+	}
+	
+	public Integer getNigNumeroProcedimiento() {
+		return nigNumeroProcedimiento;
+	}
+	public void setNigNumeroProcedimiento(Integer nigNumeroProcedimiento) {
+		this.nigNumeroProcedimiento = nigNumeroProcedimiento;
 	}
 }

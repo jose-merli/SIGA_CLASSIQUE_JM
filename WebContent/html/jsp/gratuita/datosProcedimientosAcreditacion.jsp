@@ -63,7 +63,6 @@
 		
 		<!-- Asociada al boton GuardarCerrar -->
 		function accionGuardarCerrar() {
-
 			if (document.forms[0].acreditacion.value == "") {
 				var mensaje = "<siga:Idioma key="gratuita.procedimientos.acreditacion.literal.acreditacion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
 				alert (mensaje);
@@ -84,6 +83,13 @@
 				alert (mensaje);
 				return;
 			}
+			
+			//Comprobamos si esta checkeado
+			if(document.getElementById('nigNumeroProcedimientoCheck').checked){
+				document.forms[0].nigNumProcedimiento.value = 1;
+			}else{
+				document.forms[0].nigNumProcedimiento.value = 0;
+			}
 	
 	
 	<% if (modo.equalsIgnoreCase("editar")) { %>
@@ -94,11 +100,11 @@
 //			window.top.close();
 //			return;
 	<% } else { %>
-	
 			var datos = new Array();
 			datos[0] = 1;
 			datos[1] = document.forms[0].acreditacion.value;
 			datos[2] = porcentaje;
+			datos[3] =  document.forms[0].nigNumProcedimiento.value;
 			window.top.returnValue = datos;
 			window.top.close();
 		<% } %>
@@ -128,6 +134,7 @@
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property = "idAcreditacion" value = ""/>
 		<html:hidden property = "porcentaje" value = ""/>
+		<html:hidden property = "nigNumProcedimiento" value = ""/>
 		<fieldset>
 		<table  class="tablaCentralCamposPeque" align="center">			
 			<tr>				
@@ -163,6 +170,24 @@
 											}
 %>
 							<input type="text" name="porcentajeTexto" size="10" maxlength="3" value="<%=porcentajeValor.intValue()%>" class="box"> <font class="labelText">%</font></td>
+						</tr>
+						<tr>
+							<td class="labelText"><siga:Idioma key="gratuita.procedimientos.acreditacion.literal.nigNumeroProcedimiento"/></td>
+							<td>
+								<%		Integer checkValor = new Integer(0);
+											if (modo.equalsIgnoreCase("editar")) {
+												if (bean != null){
+													checkValor = bean.getNigNumeroProcedimiento();
+													if(checkValor == 1){ %>
+														<input type="checkbox" id ="nigNumeroProcedimientoCheck" name="nigNumeroProcedimientoCkeck" checked="checked" />
+												<% 	}else{ %>
+														<input type="checkbox" id ="nigNumeroProcedimientoCheck" name="nigNumeroProcedimientoCkeck" />
+												<% 	}
+												}
+											}else{%>
+												<input type="checkbox" id ="nigNumeroProcedimientoCheck" name="nigNumeroProcedimientoCkeck" />
+											<%} %>
+							</td>
 						</tr>
 					</table>
 				</td>
