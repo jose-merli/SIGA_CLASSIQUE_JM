@@ -872,7 +872,7 @@
 	 		<wldeploy action="start" 
 		  		verbose="true" 
 	      		debug="true"
-	      		name="${redeploy.name}" 
+	 			name="${redeploy.name}" 
 	      		user="${wldesarrollo.deploy.user}" 
 	      		password="${wldesarrollo.deploy.password}"
 	      		targets="${redeploy.targets}"  	 		
@@ -883,7 +883,7 @@
 			
 		<target name="crearFicheroVersion">	 
 			<echo message="Creamos el fichero para la version ${nombre.Fichero.Despliegue}"/>
-			<echo file="${web.inf.deploy.home}/classes/version${redeploy.name}.properties">version:${entorno.Despliegue.visible}_${version.Despliegue}_${subVersion.Despliegue} (${date.execution.visible})</echo>
+			<echo file="${web.inf.deploy.home}/classes/version${redeploy.name}.properties">version:${version.Despliegue}_${subVersion.Despliegue} (${date.execution.visible})</echo>
 		</target>
 	
 	<target name="E01.CrearEstructuraAplicacion">
@@ -976,7 +976,7 @@
 				</fileset>
 			</copy>	
 			<echo message="Se crea el fichero de la versión desplegado dentro de ${src.desa}}" />
-			<echo file="${src.desa}/version${redeploy.name}.properties">version:${entorno.Despliegue.visible}_${version.Despliegue}_${subVersion.Despliegue} (${date.execution.visible})</echo>
+			<echo file="${src.desa}/version${redeploy.name}.properties">version:${version.Despliegue}_${subVersion.Despliegue}</echo>
 		</target>
 
 		<target name="E07.ActualizacionLib">		
