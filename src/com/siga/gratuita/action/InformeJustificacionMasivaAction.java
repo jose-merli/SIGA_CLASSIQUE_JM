@@ -647,16 +647,16 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			HttpServletRequest request, HttpServletResponse response)
 			throws ClsExceptions, SIGAException {
 		
-		InformeJustificacionMasivaForm f = (InformeJustificacionMasivaForm) formulario;
+		InformeJustificacionMasivaForm fInformeJustificacion = (InformeJustificacionMasivaForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
 		ScsDesignasLetradoAdm admDesignas = new ScsDesignasLetradoAdm(usrBean);
-		f.setIdInstitucion(usrBean.getLocation());
+		fInformeJustificacion.setIdInstitucion(usrBean.getLocation());
 		GenParametrosAdm paramAdm = new GenParametrosAdm (usrBean);
-		if(f.getFichaColegial()){
-			f.setActivarRestriccionesFicha(true);
+		if (fInformeJustificacion.getFichaColegial()){
+			fInformeJustificacion.setActivarRestriccionesFicha(true);
 			request.setAttribute("CAMBIAR_COLOR",false);
 		}else{
-			f.setAnio(null);
+			fInformeJustificacion.setAnio(null);
 			String cambiarColorEjgs = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_DESTACAR_EJG_NO_FAVORABLES, "");
 			
 			request.setAttribute("CAMBIAR_COLOR", (cambiarColorEjgs!=null && cambiarColorEjgs.equalsIgnoreCase(ClsConstants.DB_TRUE)));
@@ -716,7 +716,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 					for (int i = 0; i < datos.size(); i++) {
 						Row designaRow = (Row)datos.get(i);
 						Hashtable designaHashtable = (Hashtable) designaRow.getRow();
-						List<DesignaForm> designaList = admDesignas.getDesignaList(f, designaHashtable,null, false);
+						List<DesignaForm> designaList = admDesignas.getDesignaList(fInformeJustificacion, designaHashtable,null, false);
 						
 						designaFormList.addAll(designaList);
 					}
@@ -743,22 +743,22 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 				//Haria falta meter los parametros en con ClsConstants
 				String cod_Fact_ja_2005 = paramAdm.getValor (usrBean.getLocation (), "SCS", ClsConstants.GEN_PARAM_FACT_JA_2005, "");
 				boolean	aplicarAcreditacionesAnterior2005 = (cod_Fact_ja_2005!=null && cod_Fact_ja_2005.equalsIgnoreCase(ClsConstants.DB_TRUE));
-				f.setAplicarAcreditacionesAnterior2005(aplicarAcreditacionesAnterior2005);
+				fInformeJustificacion.setAplicarAcreditacionesAnterior2005(aplicarAcreditacionesAnterior2005);
 				
 				String mensajeResponsabilidadJustificacionLetrado = paramAdm.getValor (usrBean.getLocation (), "SCS", ClsConstants.GEN_PARAM_MENSAJE_RESPONSABILIDAD_LETRADO, "");
-				f.setMensajeResponsabilidadJustificacionLetrado(mensajeResponsabilidadJustificacionLetrado);
+				fInformeJustificacion.setMensajeResponsabilidadJustificacionLetrado(mensajeResponsabilidadJustificacionLetrado);
 				
 				String codIncluirEjgNoFavorable = paramAdm.getValor (usrBean.getLocation (), "SCS", ClsConstants.GEN_PARAM_INCLUIR_EJG_NOFAVORABLE, "");
 				String codIncluirSinEjg = paramAdm.getValor (usrBean.getLocation (), "SCS", ClsConstants.GEN_PARAM_INCLUIR_SIN_EJG, "");
 				String codIncluirEjgSinResolucion = paramAdm.getValor (usrBean.getLocation (), "SCS", ClsConstants.GEN_PARAM_INCLUIR_EJG_SIN_RESOLUCION, "");
 				String codIncluirEjgPteCAJG = paramAdm.getValor (usrBean.getLocation (), "SCS", ClsConstants.GEN_PARAM_INCLUIR_EJG_PTECAJG, "");
-				f.setIncluirEjgPteCAJG(codIncluirEjgPteCAJG);
-				f.setIncluirSinEJG(codIncluirSinEjg);
-				f.setIncluirEjgNoFavorable(codIncluirEjgNoFavorable);
-				f.setIncluirEjgSinResolucion(codIncluirEjgSinResolucion);
+				fInformeJustificacion.setIncluirEjgPteCAJG(codIncluirEjgPteCAJG);
+				fInformeJustificacion.setIncluirSinEJG(codIncluirSinEjg);
+				fInformeJustificacion.setIncluirEjgNoFavorable(codIncluirEjgNoFavorable);
+				fInformeJustificacion.setIncluirEjgSinResolucion(codIncluirEjgSinResolucion);
 				
 				String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
-				 PaginadorBind paginador = admDesignas.getDesignasJustificacionPaginador(f,longitudNumEjg,false);
+				 PaginadorBind paginador = admDesignas.getDesignasJustificacionPaginador(fInformeJustificacion,longitudNumEjg,false);
 				
 				
 				if (paginador!=null&& paginador.getNumeroTotalRegistros()>0){
@@ -770,7 +770,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 					for (int i = 0; i < datos.size(); i++) {
 						Row designaRow = (Row)datos.get(i);
 						Hashtable designaHashtable = (Hashtable) designaRow.getRow();
-						List<DesignaForm> designaList = admDesignas.getDesignaList(f, designaHashtable,null, false);
+						List<DesignaForm> designaList = admDesignas.getDesignaList(fInformeJustificacion, designaHashtable,null, false);
 						
 						designaFormList.addAll(designaList);
 					}
@@ -800,21 +800,21 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
 		
-		request.setAttribute("letrado", f.getIdPersona());
+		request.setAttribute("letrado", fInformeJustificacion.getIdPersona());
 
-		if (f.getMostrarTodas() != null && !f.getMostrarTodas().equals("")) {
-			request.setAttribute("mostrarTodas", f.getMostrarTodas());
+		if (fInformeJustificacion.getMostrarTodas() != null && !fInformeJustificacion.getMostrarTodas().equals("")) {
+			request.setAttribute("mostrarTodas", fInformeJustificacion.getMostrarTodas());
 		}
-		if (f.getFechaDesde() != null && !f.getFechaDesde().equals("")) {
-			request.setAttribute("fechaDesde", f.getFechaDesde());
+		if (fInformeJustificacion.getFechaDesde() != null && !fInformeJustificacion.getFechaDesde().equals("")) {
+			request.setAttribute("fechaDesde", fInformeJustificacion.getFechaDesde());
 		}
-		if (f.getFechaHasta() != null && !f.getFechaHasta().equals("")) {
-			request.setAttribute("fechaHasta", f.getFechaHasta());
+		if (fInformeJustificacion.getFechaHasta() != null && !fInformeJustificacion.getFechaHasta().equals("")) {
+			request.setAttribute("fechaHasta", fInformeJustificacion.getFechaHasta());
 		}
 		//metemos al formulario la fecha de hoy por defecto
-		if(f.getFecha()==null || f.getFecha().equalsIgnoreCase("")){
+		if (fInformeJustificacion.getFecha()==null || fInformeJustificacion.getFecha().equalsIgnoreCase("")){
 			String fecha = GstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request)); 
-			f.setFecha(fecha);
+			fInformeJustificacion.setFecha(fecha);
 		}
 		String informeUnico = ClsConstants.DB_TRUE;
 		

@@ -21,22 +21,16 @@
 
 <!-- IMPORTS -->
 
-
 	<!-- HEAD -->
-	
-	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
-	
 	<!-- Incluido jquery en siga.js -->
-	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	<script
-		src="<html:rewrite page="/html/jsp/general/validacionSIGA.jsp"/>"
-		type="text/javascript"></script>	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page="/html/jsp/general/validacionSIGA.jsp"/>"></script>	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js'/>"></script>   
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
-
 </head>
 
 <body onLoad="inicio();">
@@ -48,7 +42,6 @@
 		<html:hidden property="idPersona" />
 		<html:hidden property="mostrarTodas" />
 		<html:hidden property="activarRestriccionesFicha" />
-
 		<html:hidden property="fichaColegial" />
 
 		<c:choose>
@@ -201,36 +194,64 @@
 						leyenda="gratuita.busquedaDesignas.literal.datosDesigna">
 						<table>
 							<tr>
-								<td width="20%"></td>
-								<td width="18%"></td>
-								<td width="5%"></td>
-								<td width="18%"></td>
-								<td width="5%"></td>
-								<td width="10"></td>
-								<td width="5%"></td>
-								<td width="14%"></td>
-							</tr>
-							<tr>
-								<td class="labelText"><siga:Idioma
-										key="gratuita.informeJustificacionMasiva.literal.fechaSalida" />&nbsp;<siga:Idioma
-										key="general.literal.desde" /></td>
-								<td>
+								<td class="labelText" nowrap>
+									<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.fechaSalida"/>&nbsp;<siga:Idioma key="general.literal.desde"/></td>
+								<td nowrap>
 									<siga:Fecha  nombreCampo= "fechaDesde"/>
 								</td>
-								<td class="labelText"><siga:Idioma
-										key="general.literal.hasta" /></td>
-								<td>
+								
+								<td class="labelText" nowrap>
+									<siga:Idioma key="general.literal.hasta" />
+								</td>								
+								<td nowrap>
 									<siga:Fecha  nombreCampo= "fechaHasta"/>
 								</td>
-								<td class="labelText"><siga:Idioma
-										key="expedientes.auditoria.literal.nombre" /></td>
-								<td><html:text property="interesadoNombre" size="15"
-										maxlength="100" styleClass="box"></html:text></td>
-								<td class="labelText"><siga:Idioma
-										key="gratuita.informeJustificacionMasiva.literal.apellidos" />
+								
+								<td class="labelText" nowrap>
+									<siga:Idioma key="expedientes.auditoria.literal.nombre"/>
 								</td>
-								<td><html:text property="interesadoApellidos" size="30"
-										maxlength="100" styleClass="box"></html:text></td>
+								<td>
+									<html:text property="interesadoNombre" size="15" maxlength="100" styleClass="box"/>
+								</td>
+								
+								<td class="labelText" nowrap>
+									<siga:Idioma key="gratuita.informeJustificacionMasiva.literal.apellidos"/>
+								</td>
+								<td>
+									<html:text property="interesadoApellidos" size="30" maxlength="100" styleClass="box"/>
+								</td>
+							</tr>
+							
+							<tr>
+								<td class="labelText" nowrap>
+									<siga:Idioma key="gratuita.busquedaSOJ.literal.anyo"/>/<siga:Idioma key="gratuita.busquedaSOJ.literal.codigo"/>
+								</td>
+								<td>	
+									<html:text name="InformeJustificacionMasivaForm" property="anioDesgina" styleId="anioDesgina" style="width:40px" maxlength="4" styleClass="box"/>
+									&nbsp;/&nbsp;
+									<html:text name="InformeJustificacionMasivaForm" property="codigoDesigna" styleId="codigoDesigna" style="width:50px" maxlength="10" styleClass="box"/> 
+								</td>
+							</tr>
+						</table>
+					</siga:ConjCampos>
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+					<siga:ConjCampos desplegable="true" oculto="true"
+						postFunction="ajustarDivListadoResultados();"
+						leyenda="gratuita.busquedaEJG.literal.EJG">
+						<table>
+							<tr>
+								<td class="labelText" nowrap>
+									<siga:Idioma key="gratuita.busquedaEJG.literal.anyo" />/<siga:Idioma key="gratuita.busquedaEJG.literal.codigo" />
+								</td>
+								<td>	
+									<html:text name="InformeJustificacionMasivaForm" property="anioEJG" styleId="anioEJG" style="width:40px" maxlength="4" styleClass="box"/>
+									&nbsp;/&nbsp;
+									<html:text name="InformeJustificacionMasivaForm" property="codigoEJG" styleId="codigoEJG" style="width:90px" maxlength="13" styleClass="box"/> 
+								</td>
 							</tr>
 						</table>
 					</siga:ConjCampos>
@@ -334,17 +355,60 @@
 					return false;
 				}
 			}
-			
 				
+			var anioDesgina = jQuery("#anioDesgina").val();
+			if (!isNumero(anioDesgina)){
+				alert("<siga:Idioma key='errors.integer' arg0='gratuita.busquedaSOJ.literal.anyo'/>");
+				fin();
+				return false;
+			}		
+			
+			var codigoDesigna = jQuery("#codigoDesigna").val();
+			if (codigoDesigna!="" && codigoDesigna!="*") {
+				var codigoDesignas = codigoDesigna.split(',');			
+				if (codigoDesignas.length<2){
+					codigoDesignas = codigoDesigna.split('-');
+				}	
+				for (var i = 0; i < codigoDesignas.length; i++) {
+					if (codigoDesignas[i]=="" || !isNumero(codigoDesignas[i])) {
+						alert("<siga:Idioma key='errors.invalid' arg0='gratuita.busquedaSOJ.literal.codigo'/>");
+						fin();
+						return false;
+					}
+				}
+			}
+			
+			var anioEJG = jQuery("#anioEJG").val();
+			if (!isNumero(anioEJG)){
+				alert("<siga:Idioma key='errors.integer' arg0='gratuita.busquedaEJG.literal.anyo'/>");
+				fin();
+				return false;
+			}
+			
+			var codigoEJG = jQuery("#codigoEJG").val();
+			if (codigoEJG!="" && codigoEJG!="*") {
+				var codigoEJGs = codigoEJG.split(',');			
+				if (codigoEJGs.length<2){
+					codigoEJGs = codigoEJG.split('-');
+				}	
+				for (var i = 0; i < codigoEJGs.length; i++) {
+					if (codigoEJGs[i]=="" || !isNumero(codigoEJGs[i])) {
+						alert("<siga:Idioma key='errors.invalid' arg0='gratuita.busquedaEJG.literal.codigo'/>");
+						fin();
+						return false;
+					}
+				}
+			}
+			
 			if (document.InformeJustificacionMasivaForm.idPersona.value) {
 				document.InformeJustificacionMasivaForm.modo.value = "buscarInit";
 				// document.InformeJustificacionMasivaForm.modo.value = "buscar";
 				document.InformeJustificacionMasivaForm.submit();
-			}else{
+			} else {
 				alert ("<siga:Idioma key="gratuita.informeJustificacionMasiva.mensaje.aviso.letradoRequerido"/>");
 				fin();
 				return false;			
-			}
+			}			
 		}
 	</script>
 </body>

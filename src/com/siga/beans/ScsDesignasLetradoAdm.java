@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
@@ -16,6 +15,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -198,105 +198,8 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		}
 		return paginador;                        
 	}
-	private String getQueryBaseDesignasPendientesJustificacion(String tipoResolucionDesigna,InformeJustificacionMasivaForm formulario, 
-			boolean isInforme,Hashtable codigos, String longitudNumEjg ){
-		
-		
-	    int contador=codigos.size();
-
-		StringBuffer sql = new StringBuffer("");
-		
-	    
-		
-		sql.append("( SELECT '");
-		sql.append(tipoResolucionDesigna);
-		sql.append("' TIPO_RESOLUCION_DESIGNA,");
-		sql.append(" D.ANIO || '/' || D.CODIGO CODIGODESIGNA, ");
-		sql.append(" F_SIGA_GETEJG_DESIGNA(:");
-		contador++;
-		codigos.put(new Integer(contador),formulario.getIdInstitucion());
-		sql.append(contador);
-		sql.append(",d.idturno,d.anio,d.numero,");
-		sql.append(Integer.parseInt(longitudNumEjg));
-		sql.append(") AS EXPEDIENTES, ");
-		sql.append(" TO_CHAR(D.FECHAENTRADA,'dd/mm/yyyy') FECHADESIGNA, ");
-		sql.append(" TO_CHAR(D.FECHAENTRADA,'yyyy_mm_dd') FECHAORDEN, ");
-		sql.append(" DECODE(D.ANIOPROCEDIMIENTO,NULL,D.NUMPROCEDIMIENTO,D.NUMPROCEDIMIENTO||'/'||D.ANIOPROCEDIMIENTO) ASUNTO, ");
-		sql.append(" D.ART27 ART27, ");
-		sql.append(" f_siga_getdefendidosdesigna(:");
-		contador++;
-		codigos.put(new Integer(contador),formulario.getIdInstitucion());
-		sql.append(contador);
-		sql.append(",d.anio,d.idturno,d.numero,0) AS CLIENTE, ");
-		sql.append(" D.IDINSTITUCION IDINSTITUCION, ");
-		sql.append(" D.IDTURNO IDTURNO, ");
-		sql.append(" D.ANIO ANIO, ");
-		sql.append(" D.NUMERO NUMERO, ");
-		sql.append(" D.CODIGO CODIGO, ");
-		sql.append(" D.IDJUZGADO IDJUZGADO, ");
-		sql.append(" D.IDINSTITUCION_JUZG IDINSTITUCION_JUZG, ");
-		sql.append(" D.ESTADO ESTADO, ");
-		sql.append(" D.SUFIJO, ");
-		sql.append(" D.FECHAENTRADA, ");
-		sql.append(" D.RESUMENASUNTO RESUMENASUNTO, ");
-		sql.append(" DL.IDPERSONA, ");
-		sql.append(" DL.FECHARENUNCIA, ");
-		sql.append(" D.IDPROCEDIMIENTO IDPROCEDIMIENTO ");
-		sql.append(" , (SELECT COUNT(*) FROM SCS_DESIGNASLETRADO SDL ");
-		sql.append(" WHERE D.IDINSTITUCION = SDL.IDINSTITUCION ");
-		sql.append(" AND D.ANIO = SDL.ANIO ");
-		sql.append(" AND D.NUMERO = SDL.NUMERO ");
-		sql.append(" AND D.IDTURNO = SDL.IDTURNO) CAMBIOLETRADO ");
-		
-		
-		
-		
-		
-		
-		sql.append(" FROM SCS_DESIGNA D, SCS_DESIGNASLETRADO DL ");
-		
-		sql.append(getQueryEjgs(tipoResolucionDesigna));
-		
-		sql.append(" WHERE D.IDINSTITUCION = DL.IDINSTITUCION ");
-		sql.append(" AND D.ANIO = DL.ANIO ");
-		sql.append(" AND D.NUMERO = DL.NUMERO ");
-		sql.append(" AND D.IDTURNO = DL.IDTURNO ");
-		sql.append(" AND DL.IDINSTITUCION = :");
-		
-		contador++;
-		codigos.put(new Integer(contador),formulario.getIdInstitucion());
-		sql.append(contador);
-		
-		if(tipoResolucionDesigna.equals(this.resolucionDesignaFavorable) ||
-				tipoResolucionDesigna.equals(this.resolucionDesignaPteCAJG) ||
-				tipoResolucionDesigna.equals(this.resolucionDesignaNoFavorable)){
-				sql.append(" AND D.IDINSTITUCION = EJGS.IDINSTITUCION ");
-				sql.append(" AND D.IDTURNO = EJGS.IDTURNO ");
-				sql.append(" AND D.ANIO = EJGS.ANIODESIGNA ");
-				sql.append("  AND D.NUMERO = EJGS.NUMERODESIGNA ");
-		}
-		
-		if(formulario.getIdPersona()!=null && !formulario.getIdPersona().equalsIgnoreCase("")){
-			sql.append(" and DL.IDPERSONA = :");
-			contador++;
-			codigos.put(new Integer(contador),formulario.getIdPersona());
-			sql.append(contador);
-		}
-		
-		sql.append(getQueryWhereResolucion(tipoResolucionDesigna));
-		
-		
-		sql.append(")");
-		return sql.toString();
-		
-	}
-	
-	
 	
 	private String getQueryDesignasPendientesJustificacion(List<DesignaForm> designasList,InformeJustificacionMasivaForm formulario,Hashtable codigosHashtable,String longitudNumEjg,boolean isInforme) throws ClsExceptions{
-		
-		int contador = 0;
-		ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		StringBuffer sqlDesignas = new StringBuffer();
 		
 		sqlDesignas.append(getQueryBaseJustificacion( formulario, isInforme, codigosHashtable,longitudNumEjg));
@@ -389,16 +292,10 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 	{	 
 		
 		Hashtable htPersona = new Hashtable();
-		//Vector vSalida = null;
 		HelperInformesAdm helperInformes = new HelperInformesAdm();
-		Hashtable htAcumuladorJuzgados = new Hashtable();
-		Hashtable htAcumuladorProcedimientos = new Hashtable();
-		Hashtable htAcumuladorTurnos = new Hashtable();
-		Hashtable htAcumuladorActuaciones = new Hashtable();
 		TreeMap tmDesignas = null;
 		
 		try {
-			//vSalida = new Vector();	
 			ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: INICIO Consultas Justificacion",10);
 			Acumulador acumula = new Acumulador();
 			Vector vDesigna = getDesignasLetradoJustificacion(formulario,acumula,longitudNumEjg,isInforme);
@@ -412,7 +309,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				String codigoDesigna = (String)registro.get("CODIGO");
 				String anioDesigna = (String)registro.get("ANIO");
 				String idTurno  = (String)registro.get("IDTURNO");
-				String idProcedimiento  = (String)registro.get("IDPROCEDIMIENTO");
+				//String idProcedimiento  = (String)registro.get("IDPROCEDIMIENTO");
 				String fechaOrden  = (String)registro.get("FECHAORDEN");
 				String keyTreeMap = fechaOrden+anioDesigna+codigoDesigna+idTurno+numeroDesigna;
 				if(!htPersona.containsKey(idPersona)){
@@ -625,18 +522,12 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 	
 	public List<DesignaForm> getDesignasJustificacion(InformeJustificacionMasivaForm formulario,Acumulador acumula,String longitudNumEjg,boolean isInforme) throws ClsExceptions  
 	{	 
-		
-		Hashtable htPersona = new Hashtable();
 		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
 		
-		
-		
-		//Vector vSalida = null;
 		HelperInformesAdm helperInformes = new HelperInformesAdm();
 		Hashtable htAcumuladorJuzgados = acumula.getAcumuladorJuzgadosHashtable();
 		Hashtable htAcumuladorProcedimientos = acumula.getAcumuladorProcedimientosHashtable();
 		Hashtable htAcumuladorTurnos = acumula.getAcumuladorTurnosHashtable();
-		TreeMap tmDesignas = null;
 		List<Hashtable> designaList = null;
 		List<DesignaForm> designaFormList = null;
 		ScsActuacionDesignaAdm admActuacionDesignaAdm = new ScsActuacionDesignaAdm(usrbean);
@@ -995,7 +886,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 	private List<Hashtable> getDesignas(InformeJustificacionMasivaForm formulario,String longitudNumEjg,boolean isInforme)  throws ClsExceptions, SIGAException 
 	{
 	    Hashtable codigos = new Hashtable();
-		String sql = getQueryJustificacion(formulario,isInforme, codigos,longitudNumEjg);
+		String sql = this.getQueryJustificacion(formulario, isInforme, codigos, longitudNumEjg);
 	
 		return (Vector<Hashtable>)this.selectGenericoBind(sql, codigos);
 	}
@@ -1210,9 +1101,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sql.append(" ");
 		sql.append(" SELECT DECODE(ALLDESIGNAS.NUM_TIPO_RESOLUCION_DESIGNA,1,'FAVORABLE', 2,'NO_FAVORABLE', 3,'PTE_CAJG', 4, 'SIN_RESOLUCION','SIN_EJG') AS TIPO_RESOLUCION_DESIGNA, ");
 		sql.append(" ALLDESIGNAS.* ");
-
 		sql.append(" FROM ( ");
-		
 		
 //		Estos campos solo los muestra cuanto no hay que mostrar justificaciones pendientes
 //		sql.append(" ,SELECT F_SIGA_GETEJG_DESIGNA(D.IDINSTITUCION, D.IDTURNO, D.ANIO, D.NUMERO,5) AS EXPEDIENTES ");
@@ -1222,8 +1111,9 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		
 		sql.append(" SELECT TO_CHAR(D.FECHAENTRADA, 'dd/mm/yyyy') AS FECHADESIGNA, ");
 		sql.append(" TO_CHAR(D.FECHAENTRADA, 'yyyy_mm_dd') AS FECHAORDEN, ");
-		sql.append(" D.ART27 ART27, ");
-		sql.append("D.ANIO || '/' || D.CODIGO CODIGODESIGNA,");
+		sql.append(" D.ART27 AS ART27, ");
+		sql.append(" D.ANIO || '/' || D.CODIGO AS CODIGODESIGNA,");
+		
 		sql.append(" F_SIGA_GETEJG_DESIGNA(:");
 		contador++;
 		codigos.put(new Integer(contador),formulario.getIdInstitucion());
@@ -1231,7 +1121,8 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sql.append(",d.idturno,d.anio,d.numero,");
 		sql.append(Integer.parseInt(longitudNumEjg));
 		sql.append(") AS EXPEDIENTES, ");
-		sql.append(" DECODE(D.ANIOPROCEDIMIENTO,NULL,D.NUMPROCEDIMIENTO,D.NUMPROCEDIMIENTO||'/'||D.ANIOPROCEDIMIENTO) ASUNTO, ");
+		
+		sql.append(" DECODE(D.ANIOPROCEDIMIENTO,NULL,D.NUMPROCEDIMIENTO,D.NUMPROCEDIMIENTO||'/'||D.ANIOPROCEDIMIENTO) AS ASUNTO, ");
 		
 		sql.append(" f_siga_getdefendidosdesigna(:");
 		contador++;
@@ -1239,50 +1130,58 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sql.append(contador);
 		sql.append(",d.anio,d.idturno,d.numero,0) AS CLIENTE, ");
 		
-		sql.append(" D.RESUMENASUNTO RESUMENASUNTO, ");
+		sql.append(" D.RESUMENASUNTO AS RESUMENASUNTO, ");
 		sql.append(" DL.FECHARENUNCIA, ");
+		sql.append(" D.IDINSTITUCION, ");
+		sql.append(" D.IDTURNO, ");
+		sql.append(" D.ANIO, ");
+		sql.append(" D.NUMERO, ");
+		sql.append(" D.CODIGO, ");
+		sql.append(" D.IDJUZGADO, ");
+		sql.append(" D.IDINSTITUCION_JUZG, ");
+		sql.append(" D.ESTADO, ");
+		sql.append(" D.SUFIJO, ");
+		sql.append(" D.FECHAENTRADA, ");
+		sql.append(" DL.IDPERSONA, ");
+		sql.append(" D.IDPROCEDIMIENTO, ");
 		
-		
-		sql.append(" D.IDINSTITUCION, D.IDTURNO, D.ANIO, D.NUMERO,  D.CODIGO, ");
-		sql.append(" D.IDJUZGADO, D.IDINSTITUCION_JUZG, D.ESTADO, D.SUFIJO, D.FECHAENTRADA, ");
-		sql.append(" DL.IDPERSONA, D.IDPROCEDIMIENTO, ");
-		sql.append(" (SELECT COUNT(*) FROM SCS_DESIGNASLETRADO SDL  WHERE D.IDINSTITUCION = SDL.IDINSTITUCION  AND D.ANIO = SDL.ANIO  AND D.NUMERO = SDL.NUMERO AND D.IDTURNO = SDL.IDTURNO) AS CAMBIOLETRADO, ");
+		sql.append(" (SELECT COUNT(*) FROM SCS_DESIGNASLETRADO SDL WHERE D.IDINSTITUCION = SDL.IDINSTITUCION AND D.ANIO = SDL.ANIO AND D.NUMERO = SDL.NUMERO AND D.IDTURNO = SDL.IDTURNO) AS CAMBIOLETRADO, ");
 	               
-		sql.append(" (SELECT MIN(CASE  WHEN (EJG.FECHARESOLUCIONCAJG IS NOT NULL AND ");
-		sql.append(" ((EJG.IDTIPORATIFICACIONEJG IN (3,  6, 7) AND ");
-		sql.append(" EJG.IDTIPORESOLAUTO IS NOT NULL AND ");
-		sql.append(" EJG.IDTIPORESOLAUTO IN (1)) OR ");
-		sql.append(" (EJG.IDTIPORATIFICACIONEJG IN ");
-		sql.append(" (1, 2, 8, 9, 10, 11) AND ");
-		sql.append(" (EJG.IDTIPORESOLAUTO IS NULL OR ");
-		sql.append(" EJG.IDTIPORESOLAUTO NOT IN (3))))) THEN 1 "); 
+		sql.append(" (SELECT MIN(CASE WHEN (EJG.FECHARESOLUCIONCAJG IS NOT NULL ");
+		sql.append(" AND ((EJG.IDTIPORATIFICACIONEJG IN (3,6,7) ");
+		sql.append(" AND EJG.IDTIPORESOLAUTO IS NOT NULL ");
+		sql.append(" AND EJG.IDTIPORESOLAUTO IN (1)) ");
+		sql.append(" OR (EJG.IDTIPORATIFICACIONEJG IN (1,2,8,9,10,11) ");
+		sql.append(" AND (EJG.IDTIPORESOLAUTO IS NULL ");
+		sql.append(" OR EJG.IDTIPORESOLAUTO NOT IN (3))))) THEN 1 "); 
 	                           
-		sql.append(" WHEN (EJG.FECHARESOLUCIONCAJG IS NOT NULL AND ");
-		sql.append(" ((EJG.IDTIPORATIFICACIONEJG IN ");
-		sql.append(" (1, 2, 8, 9, 10, 11, 0) AND ");
-		sql.append(" EJG.IDTIPORESOLAUTO IS NOT NULL AND ");
-		sql.append(" EJG.IDTIPORESOLAUTO IN (3)) OR ");
-		sql.append(" (EJG.IDTIPORATIFICACIONEJG IN (3,  6, 7) AND ");
-		sql.append(" (EJG.IDTIPORESOLAUTO IS NULL OR ");
-		sql.append(" EJG.IDTIPORESOLAUTO NOT IN (1))))) THEN 2 "); 
+		sql.append(" WHEN (EJG.FECHARESOLUCIONCAJG IS NOT NULL ");
+		sql.append(" AND ((EJG.IDTIPORATIFICACIONEJG IN (1,2,8,9,10,11,0) ");
+		sql.append(" AND EJG.IDTIPORESOLAUTO IS NOT NULL ");
+		sql.append(" AND EJG.IDTIPORESOLAUTO IN (3)) ");
+		sql.append(" OR (EJG.IDTIPORATIFICACIONEJG IN (3,6,7) ");
+		sql.append(" AND (EJG.IDTIPORESOLAUTO IS NULL ");
+		sql.append(" OR EJG.IDTIPORESOLAUTO NOT IN (1))))) THEN 2 "); 
 	                           
-		sql.append(" WHEN (EJG.FECHARESOLUCIONCAJG IS NOT NULL AND ");
-		sql.append(" EJG.IDTIPORATIFICACIONEJG IN (4)) THEN  3 "); 
+		sql.append(" WHEN (EJG.FECHARESOLUCIONCAJG IS NOT NULL ");
+		sql.append(" AND EJG.IDTIPORATIFICACIONEJG IN (4)) THEN  3 "); 
 	                           
-		sql.append(" ELSE   4        END) ");
+		sql.append(" ELSE 4 END) ");
 	                
-		sql.append(" FROM SCS_EJG EJG, SCS_EJGDESIGNA EJGDES ");
+		sql.append(" FROM SCS_EJG EJG, ");
+		sql.append(" SCS_EJGDESIGNA EJGDES ");
+		
 		sql.append(" WHERE EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
 		sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
 		sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
-		
 		sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO ");
 		sql.append(" AND D.IDINSTITUCION = EJGDES.IDINSTITUCION ");
 		sql.append(" AND D.IDTURNO = EJGDES.IDTURNO ");
 		sql.append(" AND D.ANIO = EJGDES.ANIODESIGNA ");
 		sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA) AS NUM_TIPO_RESOLUCION_DESIGNA ");
 	        
-		sql.append(" FROM SCS_DESIGNA D, SCS_DESIGNASLETRADO DL ");
+		sql.append(" FROM SCS_DESIGNA D, ");
+		sql.append(" SCS_DESIGNASLETRADO DL ");
 	        
 		sql.append(" WHERE D.IDINSTITUCION = DL.IDINSTITUCION ");
 		sql.append(" AND D.ANIO = DL.ANIO ");
@@ -1290,10 +1189,87 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sql.append(" AND D.IDTURNO = DL.IDTURNO ");
 		
 		sql.append(" AND D.IDINSTITUCION = :");
-
 		contador++;
 		codigos.put(new Integer(contador),formulario.getIdInstitucion());
 		sql.append(contador);
+		
+		String sAnioDesigna = formulario.getAnioDesgina();
+		if (sAnioDesigna!=null && !sAnioDesigna.trim().equals("")) {
+			sql.append(" AND D.ANIO = :");
+			contador++;
+			codigos.put(new Integer(contador), formulario.getAnioDesgina().trim());
+			sql.append(contador);
+		}
+		
+		String sCodigoDesigna = formulario.getCodigoDesigna();
+		if (sCodigoDesigna!=null) {
+			sCodigoDesigna = sCodigoDesigna.trim();
+			if (!sCodigoDesigna.equals("")) {
+				sql.append(" AND ");
+				contador++;
+				if (ComodinBusquedas.hasComodin(sCodigoDesigna)) {
+					sql.append(ComodinBusquedas.prepararSentenciaCompletaBind(sCodigoDesigna, "D.CODIGO", contador, codigos));
+				
+				} else if (ComodinBusquedas.hasComa(sCodigoDesigna) || ComodinBusquedas.hasGuion(sCodigoDesigna)) {
+					ComodinBusquedas comodinBusquedas = new ComodinBusquedas();
+					sql.append(comodinBusquedas.prepararSentenciaCompletaEJGBind(sCodigoDesigna, "D.CODIGO", contador, codigos));
+					contador =  codigos.size();
+					
+				} else {
+					codigos.put(new Integer(contador), sCodigoDesigna);
+					sql.append(" LTRIM(D.CODIGO, '0')  = LTRIM(:");
+					sql.append(contador);
+					sql.append(", '0') ");
+				}
+			}
+		}	
+		
+		String sAnioEJG = formulario.getAnioEJG();
+		String sCodigoEJG = formulario.getCodigoEJG();
+		if ((sAnioEJG!=null && !sAnioEJG.trim().equals("")) || (sCodigoEJG!=null && !sCodigoEJG.trim().equals(""))) {
+			sql.append(" AND EXISTS ( ");
+			sql.append(" SELECT 1 ");
+			sql.append(" FROM SCS_EJG EJG, ");
+			sql.append(" SCS_EJGDESIGNA EJGDES ");
+			sql.append(" WHERE EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ");
+			sql.append(" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ");
+			sql.append(" AND EJGDES.ANIOEJG = EJG.ANIO ");
+			sql.append(" AND EJGDES.NUMEROEJG = EJG.NUMERO ");
+			sql.append(" AND D.IDINSTITUCION = EJGDES.IDINSTITUCION ");
+			sql.append(" AND D.IDTURNO = EJGDES.IDTURNO ");
+			sql.append(" AND D.ANIO = EJGDES.ANIODESIGNA ");
+			sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA ");
+			
+			if (sAnioEJG!=null && !sAnioEJG.trim().equals("")) {
+				sql.append(" AND EJG.ANIO = :");
+				contador++;
+				codigos.put(new Integer(contador), sAnioEJG.trim());
+				sql.append(contador);
+			}
+			
+			if (sCodigoEJG!=null) {
+				sCodigoEJG = sCodigoEJG.trim();
+				if (!sCodigoEJG.equals("")) {
+					sql.append(" AND ");
+					contador++;
+					if (ComodinBusquedas.hasComodin(sCodigoEJG)) {
+						sql.append(ComodinBusquedas.prepararSentenciaCompletaBind(sCodigoEJG, "EJG.NUMEJG", contador, codigos));
+					
+					} else if (ComodinBusquedas.hasComa(sCodigoEJG) || ComodinBusquedas.hasGuion(sCodigoEJG)) {
+						ComodinBusquedas comodinBusquedas = new ComodinBusquedas();
+						sql.append(comodinBusquedas.prepararSentenciaCompletaEJGBind(sCodigoEJG, "EJG.NUMEJG", contador, codigos));
+						contador =  codigos.size();
+						
+					} else {
+						codigos.put(new Integer(contador), sCodigoEJG);
+						sql.append(" LTRIM(EJG.NUMEJG, '0')  = LTRIM(:");
+						sql.append(contador);
+						sql.append(", '0') ");
+					}
+				}
+			}			
+			sql.append(" ) ");
+		}
 
 		if(formulario.getActuacionesPendientes()!=null && !formulario.getActuacionesPendientes().equals("")){
 			if (formulario.getActuacionesPendientes()!= null && !formulario.getActuacionesPendientes().equalsIgnoreCase("")) {
@@ -1447,22 +1423,15 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		
 	}
 	
-	
-	
-	
-	
 	private String getQueryJustificacion(InformeJustificacionMasivaForm formulario, boolean isInforme,Hashtable codigos,String longitudNumEjg)throws ClsExceptions{
-		
 		StringBuffer extra = new StringBuffer("");
-		
 		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
 	    int contador=0;
 	    StringBuffer sql = new StringBuffer("");
 		
-	    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		//ReadProperties rp3 = new ReadProperties("SIGA.properties");
+	    ReadProperties rp3 = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		GenParametrosAdm paramAdm = new GenParametrosAdm (usrbean);
-		sql.append(getQueryBaseJustificacion( formulario, isInforme, codigos,longitudNumEjg));
+		sql.append(this.getQueryBaseJustificacion(formulario, isInforme, codigos, longitudNumEjg));
 		String codIncluirEjgNoFavorable = formulario.getIncluirEjgNoFavorable();
 		String codIncluirEjgSinResolucion = formulario.getIncluirEjgSinResolucion();
 		String codIncluirSinEJG = formulario.getIncluirSinEJG();
@@ -1473,28 +1442,24 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		//WHERE DATOS.NUM_TIPO_RESOLUCION_DESIGNA IN (1,2,3,4) or DATOS.NUM_TIPO_RESOLUCION_DESIGNA is null
 		StringBuilder tiposResolucionBuilder = new StringBuilder();
 		tiposResolucionBuilder.append(" WHERE (ALLDESIGNAS.NUM_TIPO_RESOLUCION_DESIGNA IN (1");
-		
-
-		
-		if(!formulario.isActivarRestriccionesFicha() || (codIncluirEjgPteCAJG!=null && !codIncluirEjgPteCAJG.equals(ClsConstants.DB_FALSE))){
+		if (!formulario.isActivarRestriccionesFicha() || (codIncluirEjgPteCAJG!=null && !codIncluirEjgPteCAJG.equals(ClsConstants.DB_FALSE))) {
 			tiposResolucionBuilder.append(",3");
-			
-		}
-		if(!formulario.isActivarRestriccionesFicha() || (codIncluirEjgNoFavorable!=null && !codIncluirEjgNoFavorable.equals(ClsConstants.DB_FALSE))){
+		}		
+		if (!formulario.isActivarRestriccionesFicha() || (codIncluirEjgNoFavorable!=null && !codIncluirEjgNoFavorable.equals(ClsConstants.DB_FALSE))) {
 			tiposResolucionBuilder.append(",2");
 		}
-		if(!formulario.isActivarRestriccionesFicha() ||(codIncluirEjgSinResolucion!=null && !codIncluirEjgSinResolucion.equals(ClsConstants.DB_FALSE))){
+		if (!formulario.isActivarRestriccionesFicha() || (codIncluirEjgSinResolucion!=null && !codIncluirEjgSinResolucion.equals(ClsConstants.DB_FALSE))){
 			tiposResolucionBuilder.append(",4");
-			
 		}
 		tiposResolucionBuilder.append(")");
-		if(!formulario.isActivarRestriccionesFicha() ||(codIncluirSinEJG!=null && !codIncluirSinEJG.equals(ClsConstants.DB_FALSE))){
+		
+		if (!formulario.isActivarRestriccionesFicha() ||(codIncluirSinEJG!=null && !codIncluirSinEJG.equals(ClsConstants.DB_FALSE))){
 			tiposResolucionBuilder.append(" OR ALLDESIGNAS.NUM_TIPO_RESOLUCION_DESIGNA is null ");
-			
 		}
+		
 		tiposResolucionBuilder.append(")");
 		sql.append(tiposResolucionBuilder);
-		if(isMostrarJustificacionesPtes){
+		if (isMostrarJustificacionesPtes) {
 			sql.append(" AND (NOT EXISTS ");
 			sql.append(" (SELECT * ");
 			sql.append(" FROM SCS_ACTUACIONDESIGNA ACT ");
@@ -1502,10 +1467,8 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 			sql.append(" AND ACT.IDTURNO = ALLDESIGNAS.IDTURNO ");
 			sql.append(" AND ACT.ANIO = ALLDESIGNAS.ANIO ");
 			sql.append(" AND ACT.NUMERO = ALLDESIGNAS.NUMERO) OR ");
-	                    
 			sql.append(" (SELECT COUNT(*) ");
 //	  --NUMERO DE ACREDITACIONES 
-
 			sql.append(" FROM SCS_ACREDITACIONPROCEDIMIENTO ACP ");
 //	  --DE LOS PROCEDIMIENTOS DE TODAS LAS ACTUACIONES DE LA DESIGNACION
 			sql.append(" WHERE EXISTS (SELECT * ");
@@ -1525,26 +1488,16 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 			sql.append(" AND ACT.NUMERO = ALLDESIGNAS.NUMERO ");
 			sql.append(" AND ACT.IDINSTITUCION_PROC = ACP.IDINSTITUCION ");
 			sql.append(" AND ACT.IDPROCEDIMIENTO = ACP.IDPROCEDIMIENTO ");
-
 			sql.append(" AND ACT.IDACREDITACION = ACP.IDACREDITACION ");
 			sql.append(" AND ACT.VALIDADA = '1'))>0 ");
-	                    
 			sql.append(" ) ");
-	 
-
-			
-			
-			
 		}
-		if(!isMostrarJustificacionesPtes &&!isInforme)
-			sql.append(" ORDER BY ALLDESIGNAS.FECHAENTRADA DESC,        ALLDESIGNAS.IDINSTITUCION,      ALLDESIGNAS.ANIO,          ALLDESIGNAS.CODIGO,          ALLDESIGNAS.SUFIJO ");
-		return sql.toString();
 		
+		if (!isMostrarJustificacionesPtes && !isInforme)
+			sql.append(" ORDER BY ALLDESIGNAS.FECHAENTRADA DESC,        ALLDESIGNAS.IDINSTITUCION,      ALLDESIGNAS.ANIO,          ALLDESIGNAS.CODIGO,          ALLDESIGNAS.SUFIJO ");
+		
+		return sql.toString();
 	}
-	
-	
-	
-	
 	
 	/**
 	 * Recupera la fecha de renuncia del primer letrado de la designa

@@ -46,7 +46,10 @@ public class InformeJustificacionMasivaForm extends MasterForm
 	private String mensajeResponsabilidadJustificacionLetrado;
 	private String docResolucion;
 	private String accion;
-	
+	private String anioDesgina;
+	private String anioEJG;
+	private String codigoDesigna;
+	private String codigoEJG;
 	
 	public String getMensajeResponsabilidadJustificacionLetrado() {
 		return mensajeResponsabilidadJustificacionLetrado;
@@ -273,5 +276,28 @@ public class InformeJustificacionMasivaForm extends MasterForm
 	public void setAccion (String accion) { 
  			this.accion = accion;
  	}
-	
+	public String getAnioDesgina() {
+		return anioDesgina;
+	}
+	public void setAnioDesgina(String anioDesgina) {
+		this.anioDesgina = anioDesgina;
+	}
+	public String getAnioEJG() {
+		return anioEJG;
+	}
+	public void setAnioEJG(String anioEJG) {
+		this.anioEJG = anioEJG;
+	}
+	public String getCodigoDesigna() {
+		return codigoDesigna;
+	}
+	public void setCodigoDesigna(String codigoDesigna) {
+		this.codigoDesigna = codigoDesigna;
+	}
+	public String getCodigoEJG() {
+		return codigoEJG;
+	}
+	public void setCodigoEJG(String codigoEJG) {
+		this.codigoEJG = codigoEJG;
+	}
 }
