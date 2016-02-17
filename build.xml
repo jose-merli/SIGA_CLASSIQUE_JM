@@ -884,6 +884,7 @@
 		<target name="crearFicheroVersion">	 
 			<echo message="Creamos el fichero para la version ${nombre.Fichero.Despliegue}"/>
 			<echo file="${web.inf.deploy.home}/classes/version${redeploy.name}.properties">version:${version.Despliegue}_${subVersion.Despliegue} (${date.execution.visible})</echo>
+			<echo file="${web.inf.deploy.home}/classes/version${redeploy.name}.properties" append="true">proyecto:${redeploy.name}</echo>
 		</target>
 	
 	<target name="E01.CrearEstructuraAplicacion">
@@ -977,6 +978,7 @@
 			</copy>	
 			<echo message="Se crea el fichero de la versión desplegado dentro de ${src.desa}}" />
 			<echo file="${src.desa}/version${redeploy.name}.properties">version:${version.Despliegue}_${subVersion.Despliegue}</echo>
+			<echo file="${src.desa}/version${redeploy.name}.properties" append="true">proyecto:${redeploy.name}</echo>
 		</target>
 
 		<target name="E07.ActualizacionLib">		
