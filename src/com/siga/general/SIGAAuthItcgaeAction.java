@@ -269,8 +269,14 @@ public class SIGAAuthItcgaeAction extends Action
          */
         
         try{
+        	GenParametrosAdm paramAdm = new GenParametrosAdm((UsrBean)ses.getAttribute("USRBEAN"));
+        	String entornoDespliegue = paramAdm.getValor("0", "ADM", SIGAConstants.PARAMETRO_ENTORNO, "");
+        	
         	ResourceBundle rb = ResourceBundle.getBundle("versionSIGA");
         	String version = rb.getString("version");
+        	
+        	version = (version == null ? (entornoDespliegue) : (entornoDespliegue + "_" + version));
+   
         	request.setAttribute("versionSiga", (version == null ? "" : version));
         }catch (Exception e){
         	request.setAttribute("versionSiga", "");
