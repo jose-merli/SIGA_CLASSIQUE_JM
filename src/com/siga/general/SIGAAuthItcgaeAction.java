@@ -3,7 +3,6 @@ package com.siga.general;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -262,28 +261,8 @@ public class SIGAAuthItcgaeAction extends Action
 		
 		result="topMenu";
 		ses.setAttribute(SIGAConstants.MENU_POSITION_REF, SIGAConstants.MENU_TOP);
-		
-		 /*
-         * Obtenemos la versión de SIGA.
-         * A partir de ahora con despliegues desde Jenkins este dato se almacena en ficheros .properties.
-         */
         
-        try{
-        	GenParametrosAdm paramAdm = new GenParametrosAdm((UsrBean)ses.getAttribute("USRBEAN"));
-        	        	
-        	ResourceBundle rb = ResourceBundle.getBundle("versionSIGA");
-        	String version = rb.getString("version");
-        	String proyecto = rb.getString("proyecto");
-        	
-        	String entornoDespliegue = (proyecto == null ? "SIGA" : proyecto) + "_" + paramAdm.getValor("0", "ADM", SIGAConstants.PARAMETRO_ENTORNO, "");
-        	
-        	version = (version == null ? (entornoDespliegue) : (entornoDespliegue + "_" + version));
-   
-        	request.setAttribute("versionSiga", (version == null ? "" : version));
-        }catch (Exception e){
-        	request.setAttribute("versionSiga", "");
-        	//ClsLogging.writeFileLog("Error al obtener la versión de SIGA desplegada.", 1);
-        }
+		SIGAAuthAction.getVersionActualApp(request);
 		
 		return mapping.findForward(result);
 
