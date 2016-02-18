@@ -140,7 +140,7 @@ function accionEditarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion
 function accionBorrarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion,validarActuaciones,fichaColegial) 
 {	
 	
-	if (confirm('¿Está seguro de que desea eliminar el registro?')){
+	if (confirm('<siga:Idioma key="messages.deleteConfirmation"/>')){
 		var accion = document.ActuacionesDesignasForm.action;
 		if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true')
 			document.ActuacionesDesignasForm.action = accion.replace('JGR_ActuacionesDesigna','JGR_ActuacionDesignaLetrado');
@@ -1807,7 +1807,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 													<td><c:choose>
 													
 														<c:when
-															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V')&&(designa.cambioLetrado=='S' || (actuacion.idFacturacion!=null&&actuacion.idFacturacion!='') || (actuacion.validada=='1' && InformeJustificacionMasivaForm.fichaColegial==true) )}">
+															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V')&&(designa.cambioLetrado=='S' || (actuacion.idFacturacion!=null&&actuacion.idFacturacion!='')  )}">
 															<img id="iconoboton_consultar1"
 																src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>"
 																style="cursor: hand;" alt="Consultar" name="consultar_1"
@@ -1985,7 +1985,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 														
 														
 														<c:when
-															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V')&&(designa.cambioLetrado=='S' || (actuacion.idFacturacion!=null&&actuacion.idFacturacion!='')||(actuacion.validada=='1' && InformeJustificacionMasivaForm.fichaColegial==true) )}">
+															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V')&&(designa.cambioLetrado=='S' || (actuacion.idFacturacion!=null&&actuacion.idFacturacion!='') )}">
 															<img id="iconoboton_consultar1"
 																src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>"
 																style="cursor: hand;" alt="Consultar" name="consultar_1"
