@@ -52,7 +52,7 @@
 	DefinirEJGForm f = (DefinirEJGForm)request.getAttribute("DefinirEJGForm");	
 	
 	String anio = "", numero = "", idTipoEJG = "", observaciones = "";
-	Hashtable miHash = (Hashtable) ses.getAttribute("DATABACKUP");
+	Hashtable miHash = (Hashtable) ses.getAttribute("DATABACKUP_REGTEL");
 	
 	anio = miHash.get("ANIO").toString();
 	numero = miHash.get("NUMERO").toString();
