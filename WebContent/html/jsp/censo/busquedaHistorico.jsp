@@ -157,7 +157,7 @@
 						<siga:Idioma key="censo.consultaHistorico.literal.tipo"/>
 					</td>				
 					<td>
-						<select id="listaIdTipoCambio" multiple="multiple" styleClass="boxCombo" style="width:220px;display: none;">
+						<select id="listaIdTipoCambio" multiple="multiple" styleClass="boxCombo" style="width:250px;display: none;">
 							<option value=""><siga:Idioma key="censo.consultaHistorico.literal.tipo.todasNinguna"/></option>
 <% 
 							for (int i = 0; i < vTiposAuditoria.size(); i++) {
@@ -217,8 +217,8 @@
 		jQuery.noConflict();
 		jQuery(document).ready(function() {
 	        jQueryTop("#listaIdTipoCambio", window.document).dropdownchecklist({
-	        	width:220,
-	        	maxDropHeight:150, 
+	        	width:250,
+	        	maxDropHeight:250, 
 	        	firstItemChecksAll:true,
 	        	zIndex:99,
 	        	icon:{placement:'right', toOpen:'ui-icon-triangle-1-s', toClose:'ui-icon-triangle-1-s'}

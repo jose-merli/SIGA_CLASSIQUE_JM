@@ -152,11 +152,7 @@ public class CenTipoCambioAdm extends MasterBeanAdministrador {
 			sql.append(UtilidadesMultidioma.getCampoMultidioma(CenTipoCambioBean.T_NOMBRETABLA + "." + CenTipoCambioBean.C_DESCRIPCION, this.usrbean.getLanguage()));
 			sql.append(" FROM ");
 			sql.append(CenTipoCambioBean.T_NOMBRETABLA);
-			sql.append(" WHERE ");
-			sql.append(CenTipoCambioBean.T_NOMBRETABLA);
-			sql.append(".");
-			sql.append(CenTipoCambioBean.C_IDTIPOCAMBIO);
-			sql.append(" NOT IN (101,102,103,104,105,106) ORDER BY 2");
+			sql.append(" ORDER BY 2");
 
 			if (rc.find(sql.toString())) {
 				for (int i = 0; i < rc.size(); i++) {
