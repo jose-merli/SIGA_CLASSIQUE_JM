@@ -107,6 +107,11 @@
 		<!-- Formulario de la lista de detalle multiregistro -->
 		<html:form action="/JGR_ActuacionesDesigna.do" method="post" target="submitArea"  style="display:none">
 			<html:hidden property = "modo"  styleId = "modo"  value = ""/>
+			<html:hidden property = "idTurno" value= "<%=idTurno%>"/>
+			<html:hidden property = "idInstitucion" value="<%=idInstitucion%>"/>
+			<html:hidden property = "anio" value="<%=anio%>" />	
+			<html:hidden property = "numero" value="<%=numero%>" />
+			<html:hidden property = "nactuacion"  />
 		</html:form>
 			<!-- Campo obligatorio -->
 			<siga:Table 

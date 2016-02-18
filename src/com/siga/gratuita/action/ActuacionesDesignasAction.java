@@ -1483,19 +1483,22 @@ public class ActuacionesDesignasAction extends MasterAction {
 		HttpSession ses = request.getSession();
 		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
 		ActuacionesDesignasForm miform = (ActuacionesDesignasForm)formulario;
-		UserTransaction tx = null;
+		Hashtable actuacionModificada = (Hashtable) miform.getDatos();
+		
 		Vector visibles = miform.getDatosTablaOcultos(0);
 		Hashtable designaActual = (Hashtable)ses.getAttribute("designaActual");
 		boolean ok = false;
 		try {
 			Hashtable aBorrar = new Hashtable();
 			aBorrar.put("IDINSTITUCION",usr.getLocation());
-			aBorrar.put("IDTURNO",(String)designaActual.get("IDTURNO"));
-			aBorrar.put("ANIO",(String)designaActual.get("ANIO"));
-			aBorrar.put("NUMERO",(String)designaActual.get("NUMERO"));
-			aBorrar.put("NUMEROASUNTO",(String)visibles.get(1));
+			aBorrar.put("IDTURNO",miform.getIdturno());
+			aBorrar.put("ANIO",miform.getAnio());
+			aBorrar.put("NUMERO",miform.getNumero());
+			if(visibles!=null && visibles.get(1)!=null)
+				aBorrar.put("NUMEROASUNTO",(String)visibles.get(1));
+			else
+				aBorrar.put("NUMEROASUNTO",miform.getNactuacion());
 
-			tx = usr.getTransaction();
 			
 		    ScsActuacionDesignaAdm actuacionDesignaAdm = new ScsActuacionDesignaAdm (this.getUserBean(request));
 
@@ -1515,24 +1518,50 @@ public class ActuacionesDesignasAction extends MasterAction {
 			        int actInicio = actuaciones.getNumeroActuacionesDeTipo(ClsConstants.ESTADO_ACREDITACION_INICIO, "" + beanActuacionDesigna.getNumero(), "" + usr.getLocation(), "" + beanActuacionDesigna.getIdTurno(), "" + beanActuacionDesigna.getAnio(), beanActuacionDesigna.getIdProcedimiento(), "" + beanActuacionDesigna.getIdInstitucionProcedimiento());
 			        int actFinal  = actuaciones.getNumeroActuacionesDeTipo(ClsConstants.ESTADO_ACREDITACION_FINAL,  "" + beanActuacionDesigna.getNumero(), "" + usr.getLocation(), "" + beanActuacionDesigna.getIdTurno(), "" + beanActuacionDesigna.getAnio(), beanActuacionDesigna.getIdProcedimiento(), "" + beanActuacionDesigna.getIdInstitucionProcedimiento());
 			        if (actInicio <= actFinal) {
-			            return exito("messages.error.acreditacionBorrar",request);
+			        	if(visibles!=null)
+			        		return exito("messages.error.acreditacionBorrar",request);
+			        	else{
+			        		request.setAttribute("sinrefresco","");
+			        		request.setAttribute("mensaje","messages.error.acreditacionBorrar");
+			        		return "exito";
+//			        		return exitoRefresco("messages.error.acreditacionBorrar", request);
+			        	}
+			        		
 			        }
 
 			        int actRegularizacion  = actuaciones.getNumeroActuacionesDeTipo(ClsConstants.ESTADO_ACREDITACION_REGULARIZACION,  "" + beanActuacionDesigna.getNumero(), "" + usr.getLocation(), "" + beanActuacionDesigna.getIdTurno(), "" + beanActuacionDesigna.getAnio(), beanActuacionDesigna.getIdProcedimiento(), "" + beanActuacionDesigna.getIdInstitucionProcedimiento());
 			        if (actInicio <= actRegularizacion) {
-			            return exito("messages.error.acreditacionRegularizacionBorrar",request);
+			        	if(visibles!=null)
+			        		return exito("messages.error.acreditacionRegularizacionBorrar",request);
+			        	else{
+			        		request.setAttribute("sinrefresco","");
+			        		request.setAttribute("mensaje","messages.error.acreditacionRegularizacionBorrar");
+			        		return "exito";
+//			        		return exitoRefresco("messages.error.acreditacionRegularizacionBorrar", request);
+			        	}
 			        }
 			    }
 			}
-			tx.begin();
 		    ok = actuacionDesignaAdm.delete(aBorrar);
-		    tx.commit();
 		}
 		catch(Exception e){
-			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
+			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, null); 
 		}
-		if (ok) return exitoRefresco("messages.deleted.success",request);
-		else return exito("messages.deleted.error",request);
+		//si visibles es distinto de null es quese esta borrabndo desde el mantenimineto de actuaciones, si no desde el informe de justificacion
+		if(visibles!=null){
+			if (ok) return exitoRefresco("messages.deleted.success",request);
+			else return exito("messages.deleted.error",request);
+		}else{
+			if(ok){
+				request.setAttribute("mensaje","messages.deleted.success");
+//				request.setAttribute("sinrefresco","");
+				return "exito";
+			}else{
+				request.setAttribute("mensaje","messages.deleted.error");
+//				request.setAttribute("sinrefresco","");
+				return "exito";
+			}
+		}
 	}
 
 	// Comprueba si una acreditacion cumple estas condiciones sobre su tipo (1=Inicial / 2=Final / 3=Completa):

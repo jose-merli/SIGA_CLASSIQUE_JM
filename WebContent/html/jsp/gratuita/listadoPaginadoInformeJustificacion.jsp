@@ -137,6 +137,25 @@ function accionEditarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion
 		parent.buscar();
 			
 }
+function accionBorrarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion,validarActuaciones,fichaColegial) 
+{	
+	
+	if (confirm('¿Está seguro de que desea eliminar el registro?')){
+		var accion = document.ActuacionesDesignasForm.action;
+		if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true')
+			document.ActuacionesDesignasForm.action = accion.replace('JGR_ActuacionesDesigna','JGR_ActuacionDesignaLetrado');
+		document.ActuacionesDesignasForm.target = "submitArea";
+		document.ActuacionesDesignasForm.anio.value = anio;
+		document.ActuacionesDesignasForm.idTurno.value = idTurno;
+		document.ActuacionesDesignasForm.numero.value = numero;
+		document.ActuacionesDesignasForm.nactuacion.value = numeroActuacion;
+		document.ActuacionesDesignasForm.modo.value = "BORRAR";
+		document.ActuacionesDesignasForm.submit();
+
+	}
+			
+}
+
 function accionConsultarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion) 
 {	
 	var accion = document.ActuacionesDesignasForm.action;
@@ -823,11 +842,11 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 	<tr class='tableTitle'>
 		<td align='center' width="8%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.designa" /></td>
-		<td align='center' width="8%"><siga:Idioma
+		<td align='center' width="7%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.ejg" /></td>
 		<td align='center' width="12%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.juzgado" /></td>
-		<td align='center' width="8%"><siga:Idioma
+		<td align='center' width="7%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.fechaSalida" /></td>
 		<td align='center' width="8%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.numeroProcedimiento" /></td>
@@ -840,7 +859,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		<td align='center' width="15%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.acreditaciones" /></td>
 		<td align='center' width="3%">V</td>
-		<td align='center' width="3%">&nbsp;</td>
+		<td align='center' width="5%">&nbsp;</td>
 		<td align='center' width="3%">&nbsp;</td>
 		<td align='center' width="4%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.baja" /></td>
@@ -855,16 +874,16 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 	style='table-layout: fixed'>
 	<tr>
 		<td width="8%"></td>
-		<td width="8%"></td>
+		<td width="7%"></td>
 		<td width="12%"></td>
-		<td width="8%"></td>
+		<td width="7%"></td>
 		<td width="8%"></td>
 		<td width="15%"></td>
 		<td width="4%"></td>
 		<td width="4%"></td>
 		<td width="15%"></td>
 		<td width="3%"></td>
-		<td width="3%"></td>
+		<td width="5%"></td>
 		<td width="3%"></td>
 		<td width="4%"></td>
 	</tr>
@@ -1797,10 +1816,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																onMouseOut="MM_swapImgRestore()"
 																onMouseOver="MM_swapImage('consultar_1','','<html:rewrite page='/html/imagenes/bconsultar_on.gif'/>',1)">
 														</c:when>
-													
-														
-														
-														
 														
 														<c:when
 															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V')}">
@@ -1811,6 +1826,13 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}','${InformeJustificacionMasivaForm.fichaColegial }');" 
 																onMouseOut="MM_swapImgRestore()"
 																onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
+															<img id="iconoboton_borrar1"
+																src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>"
+																style="cursor: hand;" alt="Borrar" name="borrar_1"
+																border="0"
+																onClick="accionBorrarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}','${InformeJustificacionMasivaForm.fichaColegial }');" 
+																onMouseOut="MM_swapImgRestore()"
+																onMouseOver="MM_swapImage('borrar_1','','<html:rewrite page='/html/imagenes/bborrar_on.gif'/>',1)">
 														</c:when>
 														<c:otherwise>
 															&nbsp;
@@ -1982,6 +2004,13 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}','${InformeJustificacionMasivaForm.fichaColegial }');" 
 																onMouseOut="MM_swapImgRestore()"
 																onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
+															<img id="iconoboton_borrar1"
+																src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>"
+																style="cursor: hand;" alt="Borrar" name="borrar_1"
+																border="0"
+																onClick="accionBorrarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}','${InformeJustificacionMasivaForm.fichaColegial }');" 
+																onMouseOut="MM_swapImgRestore()"
+																onMouseOver="MM_swapImage('borrar_1','','<html:rewrite page='/html/imagenes/bborrar_on.gif'/>',1)">
 														</c:when>
 															<c:otherwise>
 																			&nbsp;
