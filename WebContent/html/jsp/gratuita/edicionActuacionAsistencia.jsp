@@ -440,9 +440,18 @@
 				</tr>
 				
 				<tr>
-					<td class="labelText">
-						<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.comisaria" />
-					</td>
+					<c:choose>
+						<c:when test="${tipoPcajg=='9'}">
+							<td class="labelText">
+								<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.comisaria" />(*)
+							</td>
+						</c:when>
+						<c:otherwise>
+							<td class="labelText">
+								<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.comisaria" />
+							</td>
+						</c:otherwise>
+					</c:choose>
 					<td>
 						<input type="text" id="codComisaria" class="box" size="8" style="margin-top: 2px;" maxlength="10" onBlur="obtenerComisaria();" />
 					</td>
@@ -460,9 +469,18 @@
 				</tr>
 				
 				<tr>
-					<td class="labelText">
-						<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado" />
-					</td>
+					<c:choose>
+						<c:when test="${tipoPcajg=='9'}">
+							<td class="labelText">
+								<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado" />(*)
+							</td>
+						</c:when>
+						<c:otherwise>
+							<td class="labelText">
+								<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado" />
+							</td>
+						</c:otherwise>
+					</c:choose>
 					<td>
 						<input type="text" id="codJuzgado" class="box" size="8" style="margin-top: 2px;" maxlength="10" onBlur="obtenerJuzgado();" />
 					</td>					
@@ -861,7 +879,12 @@
 				fin();
 				return false;
 			}
-			
+			if(document.getElementById("tipoPcajg").value=='9' &&  document.getElementById("idComisaria").value== "" && document.getElementById("idJuzgado").value== ""){
+				msg = "<siga:Idioma key='errors.required' arg0='gratuita.mantActuacion.literal.comisariaJuzgados'/>";
+				alert(msg);
+				fin();
+				return false;
+			}
 			var nigAux = document.getElementById("nig").value;
 			nigAux = formateaNig(nigAux);
 			if(!validarNig(nigAux)){	

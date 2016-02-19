@@ -52,3 +52,15 @@ ALTER TABLE scs_acreditacionprocedimiento ADD (
 );
 
 COMMENT ON COLUMN scs_acreditacionprocedimiento.NIG_NUMPROCEDIMIENTO IS '0: No está seleccionado el check NIG/Nº Procedimiento de la acreditación; 1:Si está seleccionado el check NIG/Nº Procedimiento de la acreditación';
+
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.volantesExpres.literal.sexo', 'Sexo', 0, '1', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.volantesExpres.literal.sexo', 'Sexo#GL', 0, '4', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.volantesExpres.literal.sexo', 'Sexo#CA', 0, '2', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.volantesExpres.literal.sexo', 'Sexo#EU', 0, '3', sysdate, 0, '22');
+
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.mantActuacion.literal.comisariaJuzgados', 'Comisaría o Juzgado', 0, '1', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.mantActuacion.literal.comisariaJuzgados', 'Comisaría o Juzgado#GL', 0, '4', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.mantActuacion.literal.comisariaJuzgados', 'Comisaría o Juzgado#CA', 0, '2', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.mantActuacion.literal.comisariaJuzgados', 'Comisaría o Juzgado#EU', 0, '3', sysdate, 0, '22');
