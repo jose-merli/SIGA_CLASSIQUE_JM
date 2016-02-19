@@ -395,6 +395,15 @@
 				datos += 'apellido2='+apellido2;
 				datos += ',';
 				
+				if (!jQuery("#comboSexo_"+i).is(':disabled') && document.getElementById("tipoPcajg").value=="9"){
+					sexo =jQuery("#comboSexo_"+i).val();
+					datos += 'sexo='+sexo;
+					datos += ',';
+				}else{
+					datos += 'sexo=';
+					datos += ',';
+				}
+				
 				
 	
 	             diligencia = document.getElementById("diligencia_" + i).value;
@@ -442,6 +451,7 @@
 					ejgTipo ="";
 				datos += 'ejgTipo='+ejgTipo;
 				datos += "%%%";
+				
 				
 			}
 			return datos;
@@ -495,15 +505,26 @@
 				td = tr.insertCell(2); 
 				td.setAttribute("width", "36%");
 				td.className = "";
-				td.innerHTML ='<table><tr><td><input type="text" id="dni_' + numFila + '" class="box" style="width:70px;margin-top:2px;margin-rigth:1px;" value="" maxlength="20" onBlur="obtenerPersona(' + numFila + ');" /></td><td>-</td> ' +
-				                 '<td><input type="text" id="nombre_' + numFila + '" class="box" style="width:70px;margin-top:2px;margin-rigth:1px;" value="" maxlength="80"/></td>' + 
-				                 '<td><input type="text" id="apellido1_' + numFila + '" class="box" style="width:70px;margin-top:2px;margin-rigth:1px;" value="" maxlength="80"/></td>' +
-				                 '<td><input type="text" id="apellido2_' + numFila + '" class="box" style="width:70px;margin-top:2px;" value="" maxlength="80"/></td>' +
-				                 '<td><img id="info_existe_' + numFila + '" src="/SIGA/html/imagenes/nuevo.gif" alt="<siga:Idioma key="gratuita.volantesExpres.mensaje.esNuevaPersonaJG"/>"/></td>'+
-				                 '<td><input type="hidden" id="idPersona_' + numFila + '" class="box" value=""/></td>' +
-				                 '</tr></table>'
-				                 ;
-			
+				var filaDinamica= '<table><tr><td><input type="text" id="dni_' + numFila + '" class="box" style="width:70px;margin-top:2px;margin-rigth:1px;" value="" maxlength="20" onBlur="obtenerPersona(' + numFila + ');" /></td><td>-</td> ' +
+						                '<td><input type="text" id="nombre_' + numFila + '" class="box" style="width:70px;margin-top:2px;margin-rigth:1px;" value="" maxlength="80"/></td>' + 
+						                '<td><input type="text" id="apellido1_' + numFila + '" class="box" style="width:70px;margin-top:2px;margin-rigth:1px;" value="" maxlength="80"/></td>' +
+						                '<td><input type="text" id="apellido2_' + numFila + '" class="box" style="width:70px;margin-top:2px;" value="" maxlength="80"/></td>';
+				if (document.VolantesExpressForm.tipoPcajg.value =="9"){
+						filaDinamica =filaDinamica + '<td><select id="comboSexo_' + numFila + '" styleClass="box" name="comboSexo_'+numFila+'"><option value="" selected ="selected">--Sexo</option>'+
+																								  '<option value="H"><siga:Idioma key="censo.sexo.hombre"/></option>'+
+																								  '<option value="M"><siga:Idioma key="censo.sexo.mujer"/></option>'+
+																								  '<option value="N"><siga:Idioma key="censo.sexo.nc"/></option>'+
+																								  
+																								  '</select></td>';
+	            }
+				
+				
+				filaDinamica = filaDinamica + '<td><img id="info_existe_' + numFila + '" src="/SIGA/html/imagenes/nuevo.gif" alt="<siga:Idioma key="gratuita.volantesExpres.mensaje.esNuevaPersonaJG"/>"/></td>'+
+                '<td><input type="hidden" id="idPersona_' + numFila + '" class="box" value=""/></td>' +
+                '</tr></table>'
+                ;		                
+				td.innerHTML = filaDinamica;
+				        
 				// numero diligencia (num diligencia / anio)
 				td = tr.insertCell(3); 
 				td.setAttribute("width", "8%");
@@ -643,6 +664,12 @@
 					return false;
 				}
 			 }
+			
+			if(document.getElementById("tipoPcajg").value=="9" && jQuery("#comboSexo_"+fila).val() == ""){
+					campo = "<siga:Idioma key='gratuita.volantesExpres.literal.sexo'/>";
+					alert ("'"+ campo + "' " + obligatorio);
+					return false;
+				}
 	
 			return isValidado;
 		}
@@ -1143,6 +1170,10 @@
 			document.getElementById("nombre_" + fila).value = resultado[3];
 			document.getElementById("apellido1_" + fila).value = resultado[4];
 			document.getElementById("apellido2_" + fila).value = resultado[5];
+			if(resultado[19] != null && resultado[19] != ""){
+				document.getElementById("comboSexo_" + fila).value = resultado[19];
+				jQuery("#comboSexo_" + fila).prop("disabled", true);
+			}
 			
 			document.getElementById("idPersona_" + fila).value = resultado[1];
 			ponerIconoIdentPersona (fila, true);
@@ -1152,6 +1183,8 @@
 			document.getElementById("nombre_" + fila).value = "";
 			document.getElementById("apellido1_" + fila).value = "";
 			document.getElementById("apellido2_" + fila).value = "";
+			jQuery("#comboSexo_"+fila+ " option:eq('')").prop('selected', true)
+			jQuery("#comboSexo_" + fila).prop("disabled", false);
 			ponerIconoIdentPersona (fila, false);
 		}
 	} //traspasoDatos ()

@@ -1130,6 +1130,20 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			throw new SIGAException ( "Error al consultar datos en B.D.getIdiomaPersonaInforme");
 		}
 	}
+	//necesario para los colegios Andaluces 18/02/2016 que deben de tener el sexo del asistido
+	public void updateSexo (Integer idInstitucion, Integer idPersona, String sexo) throws ClsExceptions{
+		
+		StringBuffer sql = null;
+		
+		sql = new StringBuffer();
+		
+		sql.append("update " + ScsPersonaJGBean.T_NOMBRETABLA+ " set ");
+		sql.append(ScsPersonaJGBean.C_SEXO+ " = '"+sexo+"'"); 
+		sql.append(" where " + ScsPersonaJGBean.C_IDINSTITUCION + " = " + idInstitucion);
+		sql.append(" and " + ScsPersonaJGBean.C_IDPERSONA + " = " +idPersona );
+		this.updateSQL(sql.toString());
+		
+	}
 	
 	
 }

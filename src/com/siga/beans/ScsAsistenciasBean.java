@@ -63,6 +63,7 @@ public class ScsAsistenciasBean extends MasterBean{
 	private String asistidoNombre;
 	private String asistidoApellido1;
 	private String asistidoApellido2;
+	private String sexo;      // necesario para los colegios Andaluces 18/02/2016
 	private Integer idDelito;
 	private String ejgNumEjg;
 	private String	fechaGuardia;
@@ -121,6 +122,7 @@ public class ScsAsistenciasBean extends MasterBean{
 	static public final String  C_IDPRETENSION   		= 	"IDPRETENSION";
 	static public final String	C_FECHASOLICITUD       	=	"FECHASOLICITUD";
 	static public final String	C_IDORIGENASISTENCIA       	=	"IDORIGENASISTENCIA";
+	static public final String	C_SEXO       	=	"SEXO";
 	
 	static public final String	C_IDPERSONA_REPRESENTANTE	=	"IDPERSONA_REPRESENTANTE";
 
@@ -282,6 +284,12 @@ public class ScsAsistenciasBean extends MasterBean{
 	}
 	public void setAsistidoApellido1(String asistidoApellido1) {
 		this.asistidoApellido1 = asistidoApellido1;
+	}
+	public String getSexo() {
+		return sexo;
+	}
+	public void setSexo(String sexo) {
+		this.sexo = sexo;
 	}
 	public String getAsistidoApellido2() {
 		return asistidoApellido2;
