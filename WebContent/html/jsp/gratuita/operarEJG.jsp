@@ -486,6 +486,8 @@
 		<html:hidden property = "idGuardiaEJG" value = "<%=IDGUARDIA%>"/>	
 		<html:hidden property = "tipoLetrado" value = "M"/>	<!-- En insertar.jsp está tambien por defecto puesto tipoLetrado='M'-->
 		<!-- html:hidden property = "fechaAperturaEJG" value = "<%=FECHAAPERTURA%>"/-->
+		<html:hidden property = "idProcurador" value="<%=idProcurador%>"/>
+		<html:hidden property = "idInstitucionProcurador" value="<%=idInstitucionProcurador%>"/>
 	
 		<table>
 			<tr>				
