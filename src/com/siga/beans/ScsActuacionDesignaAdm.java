@@ -136,7 +136,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 	 *  @return hashtable con la información del bean
 	 * 
 	 */
-	protected Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions {
+	public Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions {
 		Hashtable hash = null;
 		try{
 			hash = new Hashtable();
@@ -160,22 +160,22 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 			}else{
 				UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_OBSERVACIONES,b.getObservaciones());
 			}
-			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDJUZGADO, String.valueOf(b.getIdJuzgado()));
-			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO, String.valueOf(b.getIdInstitucionJuzgado()));
-			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDCOMISARIA, String.valueOf(b.getIdComisaria()));
-			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDINSTITUCIONCOMISARIA, String.valueOf(b.getIdInstitucionComisaria()));
-			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDPRISION, String.valueOf(b.getIdPrision()));
-			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION, String.valueOf(b.getIdInstitucionPrision()));
-			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO, String.valueOf(b.getIdInstitucionProcedimiento()));
+			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDJUZGADO, b.getIdJuzgado()!=null?String.valueOf(b.getIdJuzgado()):"");
+			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO, b.getIdInstitucionJuzgado()!=null?String.valueOf(b.getIdInstitucionJuzgado()):"");
+			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDCOMISARIA, b.getIdComisaria()!=null?String.valueOf(b.getIdComisaria()):"");
+			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDINSTITUCIONCOMISARIA, b.getIdInstitucionComisaria()!=null?String.valueOf(b.getIdInstitucionComisaria()):"");
+			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDPRISION, b.getIdPrision()!=null?String.valueOf(b.getIdPrision()):"");
+			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION, b.getIdInstitucionPrision()!=null?String.valueOf(b.getIdInstitucionPrision()):"");
+			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO, b.getIdInstitucionProcedimiento()!=null?String.valueOf(b.getIdInstitucionProcedimiento()):"");
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDACREDITACION, String.valueOf(b.getIdAcreditacion()));
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO, String.valueOf(b.getIdPersonaColegiado()));
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_VALIDADA, b.getValidada());
-			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDPRETENSION, String.valueOf(b.getIdPretension()));
+			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_IDPRETENSION, b.getIdPretension()!=null?String.valueOf(b.getIdPretension()):"");
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_TALONARIO,b.getTalonario());
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_TALON,b.getTalon());
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO,b.getNumeroProcedimiento());
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_NIG,b.getNig());
-			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO, String.valueOf(b.getIdMotivoCambio()));
+			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO, b.getIdMotivoCambio()!=null?String.valueOf(b.getIdMotivoCambio()):"");
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, String.valueOf(b.getAnioProcedimiento()));
 			
 		}

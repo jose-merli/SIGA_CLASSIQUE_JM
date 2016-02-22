@@ -2,6 +2,7 @@ package com.siga.gratuita.action;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -28,6 +29,8 @@ import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenHistoricoAdm;
+import com.siga.beans.CenHistoricoBean;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.FcsFacturacionJGBean;
 import com.siga.beans.GenParametrosAdm;
@@ -37,6 +40,7 @@ import com.siga.beans.ScsAcreditacionProcedimientoBean;
 import com.siga.beans.ScsActuacionAsistenciaBean;
 import com.siga.beans.ScsActuacionDesignaAdm;
 import com.siga.beans.ScsActuacionDesignaBean;
+import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsDesignaBean;
 import com.siga.beans.ScsDesignasLetradoAdm;
@@ -133,7 +137,6 @@ public class ActuacionesDesignasAction extends MasterAction {
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, 
 			HttpServletResponse response) throws ClsExceptions, SIGAException
 	{
-		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN"); 
 		HttpSession ses = request.getSession();
 		Vector resultado = new Vector();
 		boolean esFichaColegial = false;
@@ -301,7 +304,6 @@ public class ActuacionesDesignasAction extends MasterAction {
 				if ((String)request.getParameter("IDTURNO")!=null)
 					ses.setAttribute("designaActual",designaActual);
 				request.setAttribute("modo",(String)request.getParameter("modo"));
-				String modo=(String)request.getParameter("modo");
 			}
 			
 			// CONSULTAMOS LA DESIGNA PARA VER SI ESTA ANULADA Y SI ES ASI NO MOSTRAR EL BOTÓN NUEVO PARA AÑADIR ACTUACIONES
@@ -582,7 +584,6 @@ public class ActuacionesDesignasAction extends MasterAction {
 		ScsDesignaAdm designaAdm = new ScsDesignaAdm (this.getUserBean(request));
 		ScsEJGAdm ejgAdm = new ScsEJGAdm (this.getUserBean(request));
 		Hashtable designaActual = new Hashtable();
-		ScsActuacionDesignaBean actuacionActual = new ScsActuacionDesignaBean();
 		Hashtable hash = null;
 		String consultaDesigna = null;
 		Hashtable hashEJG = new Hashtable();
@@ -1399,6 +1400,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 
 		HttpSession ses = request.getSession();
 		UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
+		UserTransaction tx =usr.getTransaction();
 		ActuacionesDesignasForm miform = (ActuacionesDesignasForm) formulario;
 		Hashtable actuacionModificada = (Hashtable) miform.getDatos();
 		actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROASUNTO, miform.getNactuacion());
@@ -1416,8 +1418,9 @@ public class ActuacionesDesignasAction extends MasterAction {
 			SimpleDateFormat formatBBDD = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
 			SimpleDateFormat formatJSP = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 			Date dActuacion = formatJSP.parse(miform.getFechaActuacion());
+			ScsDesignaBean designaBean = null;
 			if ((designaVector != null) && (designaVector.size() == 1)) {
-				ScsDesignaBean designaBean = (ScsDesignaBean) designaVector.get(0);
+				designaBean = (ScsDesignaBean) designaVector.get(0);
 				Date dDesgina = formatBBDD.parse(designaBean.getFechaEntrada());
 				if (dActuacion.compareTo(dDesgina) < 0) {
 					return exito("messages.error.acreditacionFechaNoValida", request);
@@ -1425,8 +1428,9 @@ public class ActuacionesDesignasAction extends MasterAction {
 			}
 			//Accedemos a la actuacion para comprobar que la fecha de actuacion sea anterior o igual que la fecha de justificacion
 			Vector actuacionDesignaVector = actuacionDesignaAdm.selectByPK(actuacionModificada);
+			ScsActuacionDesignaBean actuacionDesignaBean = null;
 			if ((actuacionDesignaVector != null) && (actuacionDesignaVector.size() == 1)) {
-				ScsActuacionDesignaBean actuacionDesignaBean = (ScsActuacionDesignaBean) actuacionDesignaVector.get(0);
+				actuacionDesignaBean = (ScsActuacionDesignaBean) actuacionDesignaVector.get(0);
 				Date fechaJustificacion = formatBBDD.parse(actuacionDesignaBean.getFechaJustificacion());
 				if (dActuacion.compareTo(fechaJustificacion) > 0) {
 					return exito("messages.error.acreditacionFechaNoValida", request);
@@ -1457,14 +1461,52 @@ public class ActuacionesDesignasAction extends MasterAction {
 				actuacionModificada.put(ScsActuacionDesignaBean.C_NIG, "");
 			}
 			
-			
+			tx.begin();
 			actuacionDesignaAdm.updateDirect(actuacionModificada, clavesActuaciones, campos);
+			
+
+			CenHistoricoAdm cenHistoricoAdm = new CenHistoricoAdm(usr);
+			Hashtable historicoHashtable = new Hashtable();
+
+			StringBuffer motivo = new StringBuffer();
+			motivo.append(UtilidadesString.getMensajeIdioma(usr, "gratuita.busquedaDesignas.literal.designa"));
+			motivo.append(" ");
+			motivo.append(designaBean.getAnio());
+			motivo.append("/");
+			motivo.append(designaBean.getCodigo());
+			historicoHashtable.put(CenHistoricoBean.C_MOTIVO, motivo.toString());
+
+			Hashtable actuacionDesignaOriginalHashtable = new Hashtable();
+			
+			actuacionDesignaOriginalHashtable = actuacionDesignaAdm.beanToHashTable(actuacionDesignaBean);
+			List<String> clavesList = new ArrayList<String>();
+			clavesList.add(ScsActuacionDesignaBean.C_NIG);
+			clavesList.add(ScsActuacionDesignaBean.C_FECHA);
+			clavesList.add(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO);
+			if(actuacionDesignaBean.getAnioProcedimiento()!=null && !actuacionDesignaBean.getAnioProcedimiento().equals(""))
+				clavesList.add(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO);
+			
+			//Seteamos la fecha como date oara
+//			actuacionModificada.put(ScsActuacionDesignaBean.C_FECHA, GstDate.convertirFecha( (String) actuacionModificada.get("FECHAACTUACION")));
+			String[] clavesStrings = new String[clavesList.size()];
+			clavesList.toArray(clavesStrings);
+			try {
+				ScsAsistenciasAdm scsAsistenciaAdm = new ScsAsistenciasAdm(usr);
+				// COMO NO ESTAMOS EN TRANSACCION CON LO DE ARRIBA , SI FALLA LA INSERCION DEL HISTORICO BORRAMOS LA ACTUACION
+				boolean isInsertado = cenHistoricoAdm.auditoriaColegiados(actuacionDesignaBean.getIdPersonaColegiado(), motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_DESIGNACIONMODIFICAACTUACION, actuacionModificada, actuacionDesignaOriginalHashtable, clavesStrings, getListCamposOcultarHistorico(), null, CenHistoricoAdm.ACCION_UPDATE, usr.getLanguage(), false);
+				if (!isInsertado)
+					throw new Exception();
+			} catch (Exception e) {
+//				actuacionDesignaAdm.delete(actuacionDesignaOriginalHashtable);
+				throw new SIGAException("Error al insertar en histórico");
+			}
+			tx.commit();
 			forward = exitoModal("messages.updated.success", request);
 
 
 			
 		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, tx);
 		}
 		return forward;
 	}
@@ -1484,7 +1526,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
 		ActuacionesDesignasForm miform = (ActuacionesDesignasForm)formulario;
 		Hashtable actuacionModificada = (Hashtable) miform.getDatos();
-		
+		UserTransaction tx =usr.getTransaction();
 		Vector visibles = miform.getDatosTablaOcultos(0);
 		Hashtable designaActual = (Hashtable)ses.getAttribute("designaActual");
 		boolean ok = false;
@@ -1502,50 +1544,86 @@ public class ActuacionesDesignasAction extends MasterAction {
 			
 		    ScsActuacionDesignaAdm actuacionDesignaAdm = new ScsActuacionDesignaAdm (this.getUserBean(request));
 
-		    {
-		        // comprobamos si vamos a dejar mas de fin que de inicio
-				Vector v = actuacionDesignaAdm.select(aBorrar);
-				ScsActuacionDesignaBean beanActuacionDesigna = (ScsActuacionDesignaBean)v.get(0);
-	
-				ScsAcreditacionAdm acreditacionAdm = new ScsAcreditacionAdm(this.getUserBean(request));
-				String where = " WHERE " + ScsAcreditacionBean.C_IDACREDITACION + " = " + beanActuacionDesigna.getIdAcreditacion();
-				Vector vAcreditaciones = acreditacionAdm.select(where);
-				ScsAcreditacionBean beanAcreditaciones = (ScsAcreditacionBean)vAcreditaciones.get(0);
-			    
-			    // comprobamos si hay mas de inicio que de fin
-			    if(beanAcreditaciones.getIdTipoAcreditacion().intValue() == ClsConstants.ESTADO_ACREDITACION_INICIO){
-			        ScsActuacionDesignaAdm actuaciones = new ScsActuacionDesignaAdm (this.getUserBean(request));
-			        int actInicio = actuaciones.getNumeroActuacionesDeTipo(ClsConstants.ESTADO_ACREDITACION_INICIO, "" + beanActuacionDesigna.getNumero(), "" + usr.getLocation(), "" + beanActuacionDesigna.getIdTurno(), "" + beanActuacionDesigna.getAnio(), beanActuacionDesigna.getIdProcedimiento(), "" + beanActuacionDesigna.getIdInstitucionProcedimiento());
-			        int actFinal  = actuaciones.getNumeroActuacionesDeTipo(ClsConstants.ESTADO_ACREDITACION_FINAL,  "" + beanActuacionDesigna.getNumero(), "" + usr.getLocation(), "" + beanActuacionDesigna.getIdTurno(), "" + beanActuacionDesigna.getAnio(), beanActuacionDesigna.getIdProcedimiento(), "" + beanActuacionDesigna.getIdInstitucionProcedimiento());
-			        if (actInicio <= actFinal) {
-			        	if(visibles!=null)
-			        		return exito("messages.error.acreditacionBorrar",request);
-			        	else{
-			        		request.setAttribute("sinrefresco","");
-			        		request.setAttribute("mensaje","messages.error.acreditacionBorrar");
-			        		return "exito";
-//			        		return exitoRefresco("messages.error.acreditacionBorrar", request);
-			        	}
-			        		
-			        }
+	        // comprobamos si vamos a dejar mas de fin que de inicio
+			Vector v = actuacionDesignaAdm.select(aBorrar);
+			ScsActuacionDesignaBean beanActuacionDesigna = (ScsActuacionDesignaBean)v.get(0);
 
-			        int actRegularizacion  = actuaciones.getNumeroActuacionesDeTipo(ClsConstants.ESTADO_ACREDITACION_REGULARIZACION,  "" + beanActuacionDesigna.getNumero(), "" + usr.getLocation(), "" + beanActuacionDesigna.getIdTurno(), "" + beanActuacionDesigna.getAnio(), beanActuacionDesigna.getIdProcedimiento(), "" + beanActuacionDesigna.getIdInstitucionProcedimiento());
-			        if (actInicio <= actRegularizacion) {
-			        	if(visibles!=null)
-			        		return exito("messages.error.acreditacionRegularizacionBorrar",request);
-			        	else{
-			        		request.setAttribute("sinrefresco","");
-			        		request.setAttribute("mensaje","messages.error.acreditacionRegularizacionBorrar");
-			        		return "exito";
+			ScsAcreditacionAdm acreditacionAdm = new ScsAcreditacionAdm(this.getUserBean(request));
+			String where = " WHERE " + ScsAcreditacionBean.C_IDACREDITACION + " = " + beanActuacionDesigna.getIdAcreditacion();
+			Vector vAcreditaciones = acreditacionAdm.select(where);
+			ScsAcreditacionBean beanAcreditaciones = (ScsAcreditacionBean)vAcreditaciones.get(0);
+		    
+		    // comprobamos si hay mas de inicio que de fin
+		    if(beanAcreditaciones.getIdTipoAcreditacion().intValue() == ClsConstants.ESTADO_ACREDITACION_INICIO){
+		        ScsActuacionDesignaAdm actuaciones = new ScsActuacionDesignaAdm (this.getUserBean(request));
+		        int actInicio = actuaciones.getNumeroActuacionesDeTipo(ClsConstants.ESTADO_ACREDITACION_INICIO, "" + beanActuacionDesigna.getNumero(), "" + usr.getLocation(), "" + beanActuacionDesigna.getIdTurno(), "" + beanActuacionDesigna.getAnio(), beanActuacionDesigna.getIdProcedimiento(), "" + beanActuacionDesigna.getIdInstitucionProcedimiento());
+		        int actFinal  = actuaciones.getNumeroActuacionesDeTipo(ClsConstants.ESTADO_ACREDITACION_FINAL,  "" + beanActuacionDesigna.getNumero(), "" + usr.getLocation(), "" + beanActuacionDesigna.getIdTurno(), "" + beanActuacionDesigna.getAnio(), beanActuacionDesigna.getIdProcedimiento(), "" + beanActuacionDesigna.getIdInstitucionProcedimiento());
+		        if (actInicio <= actFinal) {
+		        	if(visibles!=null)
+		        		return exito("messages.error.acreditacionBorrar",request);
+		        	else{
+		        		request.setAttribute("sinrefresco","");
+		        		request.setAttribute("mensaje","messages.error.acreditacionBorrar");
+		        		return "exito";
+//			        		return exitoRefresco("messages.error.acreditacionBorrar", request);
+		        	}
+		        		
+		        }
+
+		        int actRegularizacion  = actuaciones.getNumeroActuacionesDeTipo(ClsConstants.ESTADO_ACREDITACION_REGULARIZACION,  "" + beanActuacionDesigna.getNumero(), "" + usr.getLocation(), "" + beanActuacionDesigna.getIdTurno(), "" + beanActuacionDesigna.getAnio(), beanActuacionDesigna.getIdProcedimiento(), "" + beanActuacionDesigna.getIdInstitucionProcedimiento());
+		        if (actInicio <= actRegularizacion) {
+		        	if(visibles!=null)
+		        		return exito("messages.error.acreditacionRegularizacionBorrar",request);
+		        	else{
+		        		request.setAttribute("sinrefresco","");
+		        		request.setAttribute("mensaje","messages.error.acreditacionRegularizacionBorrar");
+		        		return "exito";
 //			        		return exitoRefresco("messages.error.acreditacionRegularizacionBorrar", request);
-			        	}
-			        }
-			    }
-			}
+		        	}
+		        }
+		    }
+		    
+		    tx.begin();
 		    ok = actuacionDesignaAdm.delete(aBorrar);
+		    String action = (String) request.getServletPath();
+		    boolean esFichaColegial = action.equalsIgnoreCase("/JGR_ActuacionDesignaLetrado.do");
+		    if (esFichaColegial) {
+
+				CenHistoricoAdm cenHistoricoAdm = new CenHistoricoAdm(usr);
+				Hashtable historicoHashtable = new Hashtable();
+
+				StringBuffer motivo = new StringBuffer();
+				motivo.append(UtilidadesString.getMensajeIdioma(usr, "gratuita.busquedaDesignas.literal.designa"));
+				motivo.append(" ");
+				motivo.append(beanActuacionDesigna.getAnio());
+				motivo.append("/");
+				motivo.append(beanActuacionDesigna.getNumero());
+				motivo.append(". Actuación ");
+				motivo.append(beanActuacionDesigna.getNumeroAsunto());
+				motivo.append(". Registro Eliminado ");
+				historicoHashtable.put(CenHistoricoBean.C_MOTIVO, motivo.toString());
+
+				List<String> clavesList = new ArrayList<String>();
+				clavesList.addAll(Arrays.asList(actuacionDesignaAdm.getCamposBean()));
+
+				String[] clavesStrings = new String[clavesList.size()];
+				clavesList.toArray(clavesStrings);
+
+				try {
+					boolean isInsertado = cenHistoricoAdm.auditoriaColegiados(beanActuacionDesigna.getIdPersonaColegiado(), motivo.toString(), ClsConstants.TIPO_CAMBIO_HISTORICO_DESIGNACIONDELETEACTUACION, actuacionDesignaAdm.beanToHashTable(beanActuacionDesigna), null, clavesStrings, null, null, CenHistoricoAdm.ACCION_DELETE, usr.getLanguage(), false);
+
+					if (!isInsertado)
+						throw new Exception();
+				} catch (Exception e) {
+					throw new SIGAException("Error al insertar en histórico");
+				}
+
+			}
+		    tx.commit();
+		    
 		}
 		catch(Exception e){
-			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, null); 
+			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		}
 		//si visibles es distinto de null es quese esta borrabndo desde el mantenimineto de actuaciones, si no desde el informe de justificacion
 		if(visibles!=null){

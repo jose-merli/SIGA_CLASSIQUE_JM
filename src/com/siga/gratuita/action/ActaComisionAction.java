@@ -620,7 +620,7 @@ public class ActaComisionAction extends MasterAction{
 				
 				if(expedientesRepetidosEnActasAbiertas!=null){
 					StringBuilder descr = new StringBuilder();
-					descr.append("Los siguientes expedientes estan asociados a actas otros abiertos:");
+					descr.append("Los siguientes expedientes estan asociados a otros actas abiertos:");
 					descr.append("\n");
 					descr.append(expedientesRepetidosEnActasAbiertas);
 					descr.append("La fecha de resolución del acta no será modificada hasta que no finalice esos actas o saque los expedientes de los actas abiertos.");

@@ -1305,7 +1305,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador {
 		Iterator ite = objectHashtable.keySet().iterator();
 		while (ite.hasNext()) {
 			String key = (String) ite.next();
-			if (!ocultarClaveList.contains(key)) {
+			if (ocultarClaveList==null || !ocultarClaveList.contains(key)) {
 				descripcion.append("  - ");
 				if (cambiarNombreSalidaHashtable != null && cambiarNombreSalidaHashtable.containsKey(key))
 					descripcion.append(UtilidadesString.getPrimeraMayuscula(cambiarNombreSalidaHashtable.get(key)));

@@ -597,7 +597,7 @@
 							<siga:Idioma key="gratuita.modalActuacionesDesigna.literal.anulacion"/>
 							&nbsp;
 							
-							<% if (!modoAnterior.equalsIgnoreCase("VER") &&(modoJustificacion!=null && !modoJustificacion.equals("editarJustificacionFicha"))) { 
+							<% if (!modoAnterior.equalsIgnoreCase("VER") && (modoJustificacion==null || !modoJustificacion.equals("editarJustificacionFicha"))) { 
 									if(!fechaAnulacion.equals("")) {
 							%>
 										<INPUT NAME="anulacion" TYPE=CHECKBOX <%if((anulacion!=null)&&(anulacion).equalsIgnoreCase("1")){%>checked<%}%> disabled>
