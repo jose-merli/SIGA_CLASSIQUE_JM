@@ -57,22 +57,27 @@
 		}
 		function mostrarTrabajosPendientes() {
 			sub();
-			jQuery.ajax({
-	            type: "POST",
-	            url: "/SIGA/JGR_SolicitarBajaTurno.do?modo=trabajosSJCSPendientes",
-	            data:jQuery('form').serialize(),
-	            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-	            success: function(json){
-	            	jQuery('#divListadoTrabajosSJCSPendientes').html(json);
-					fin();
-	            },
-	            error: function(e){
-					fin();
-	                alert('Error de comunicación',"error");
-	            }
-	        });
-			
+			var fecha = jQuery("#fechaCheck").val();
+			if (validarFechaRegExp(fecha)) {
+				jQuery.ajax({
+		            type: "POST",
+		            url: "/SIGA/JGR_SolicitarBajaTurno.do?modo=trabajosSJCSPendientes",
+		            data:jQuery('form').serialize(),
+		            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+		            success: function(json){
+		            	jQuery('#divListadoTrabajosSJCSPendientes').html(json);
+						fin();
+		            },
+		            error: function(e){
+						fin();
+		                alert('Error de comunicación',"error");
+		            }
+		        });
+			} else {
+				fin();			
+			}
 		}
+		
 		function postFunctionFechaValidacion() {
 			mostrarTrabajosSJCSPendientes();
 		} 
