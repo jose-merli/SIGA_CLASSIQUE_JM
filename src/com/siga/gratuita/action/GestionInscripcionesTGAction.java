@@ -1289,7 +1289,10 @@ public class GestionInscripcionesTGAction extends MasterAction {
 					
 					// crea la inscripcion
 					InscripcionTurno inscripcion = new InscripcionTurno(new ScsInscripcionTurnoBean());
-					inscripcion.solicitarAlta(miForm, usr);									
+					inscripcion.solicitarAlta(miForm, usr);		
+					
+					// I1602_0376 + R1602_0084: Solo se debe insertar la retencion una vez
+					miForm.setIdRetencion(null);
 					
 				} catch (Exception e) {
 					existenErrores = true;
