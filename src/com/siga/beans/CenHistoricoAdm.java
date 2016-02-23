@@ -211,14 +211,22 @@ public class CenHistoricoAdm extends MasterBeanAdministrador {
 	 */	
 	public Hashtable<String,Object> prepararFormatosFechas (Hashtable<String,Object> entrada)throws ClsExceptions, SIGAException {
 		try {		
-			String fechaEntrada = GstDate.getApplicationFormatDate("",(String)entrada.get("FECHAENTRADA"));
-			String fechaEfectiva = GstDate.getApplicationFormatDate("",(String)entrada.get("FECHAEFECTIVA"));
-			entrada.put("FECHAENTRADA",fechaEntrada);
-			entrada.put("FECHAEFECTIVA",fechaEfectiva);			
+			String fechaEntrada = (String)entrada.get("FECHAENTRADA");			
+			if (fechaEntrada!=null && fechaEntrada.length()==10) {
+				fechaEntrada = GstDate.getApplicationFormatDate("",fechaEntrada);
+				entrada.put("FECHAENTRADA", fechaEntrada);
+			}			
+			
+			String fechaEfectiva = (String)entrada.get("FECHAEFECTIVA");			
+			if (fechaEfectiva!=null && fechaEfectiva.length()==10) {
+				fechaEfectiva = GstDate.getApplicationFormatDate("",fechaEfectiva);
+				entrada.put("FECHAEFECTIVA", fechaEfectiva);
+			}			
+			
+		} catch (ClsExceptions e) {		
+			throw new ClsExceptions (e, "Error al adecuar los formatos de las fechas.");		
 		}
-		catch (ClsExceptions e) {		
-			throw new ClsExceptions (e, "Error al adecuar los formatos delas fechas.");		
-		}
+		
 		return entrada;
 	}
 	

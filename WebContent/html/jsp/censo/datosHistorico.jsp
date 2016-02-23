@@ -195,7 +195,8 @@
 											} else { 
 												String fecha = GstDate.getFormatedDateMedium(userBean.getLanguage(),row.getString(CenHistoricoBean.C_FECHAENTRADA));
 %>
-											 	<siga:Fecha nombreCampo="fechaEntrada" valorInicial="<%=fecha%>" posicionX="150" posicionY="50" disabled="true" readOnly="true"/>
+											 	<siga:Fecha nombreCampo="fechaEntradaRO" valorInicial="<%=fecha%>" posicionX="150" posicionY="50" disabled="true" readOnly="true"/>
+											 	<html:hidden property="fechaEntrada" styleId="fechaEntrada" value="<%=row.getString(CenHistoricoBean.C_FECHAENTRADA)%>" />
 <% 
 											} 
 %>															
@@ -215,7 +216,8 @@
 											} else { 
 												String fecha = GstDate.getFormatedDateMedium(userBean.getLanguage(),row.getString(CenHistoricoBean.C_FECHAEFECTIVA));
 %>
-			  									<siga:Fecha nombreCampo="fechaEfectiva" valorInicial="<%=fecha%>" posicionX="150" posicionY="50" disabled="true" readOnly="true"/>
+			  									<siga:Fecha nombreCampo="fechaEfectivaRO" valorInicial="<%=fecha%>" posicionX="150" posicionY="50" disabled="true" readOnly="true"/>
+			  									<html:hidden property="fechaEfectiva" styleId="fechaEfectiva" value="<%=row.getString(CenHistoricoBean.C_FECHAEFECTIVA)%>" />
 <% 
 											} 
 %>																							
