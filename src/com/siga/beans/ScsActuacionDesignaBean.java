@@ -62,6 +62,9 @@ public class ScsActuacionDesignaBean extends MasterBean{
 	static public final String  C_NIG     	  				  = "NIG";
 	static public final String  C_ID_MOTIVO_CAMBIO			  = "ID_MOTIVO_CAMBIO";
 	static public final String  C_ANIOPROCEDIMIENTO      	  = "ANIOPROCEDIMIENTO";
+	static public final String  C_FECHACREACION			      = "FECHACREACION";
+	static public final String  C_USUCREACION         	      = "USUCREACION";
+	
 	
 	
 	/*

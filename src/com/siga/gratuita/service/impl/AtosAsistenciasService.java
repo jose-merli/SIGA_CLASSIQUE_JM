@@ -226,6 +226,8 @@ public class AtosAsistenciasService extends JtaBusinessServiceTemplate
 		ScsCabeceraGuardiasAdm cabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm(usrBean);
 		cabeceraGuardiasAdm.actualizarValidacionCabecera(actuacionAsistenciaForm.getIdInstitucion(),actuacionAsistenciaForm.getAnio(),actuacionAsistenciaForm.getNumero(),UtilidadesString.stringToBoolean(actuacionAsistenciaForm.getValidada()));
 		
+		actuaAsistenciaBean.setFechaCreacion("SYSDATE");
+		actuaAsistenciaBean.setUsuCreacion(Integer.valueOf(usrBean.getUserName()));
 		actuacionAsistenciaAdm.insert(actuaAsistenciaBean);
 		
 			

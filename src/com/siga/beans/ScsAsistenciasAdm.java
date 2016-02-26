@@ -1951,6 +1951,8 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 			}
 			
 			if (isInsertar){
+				act.setFechaCreacion("SYSDATE");
+				act.setUsuCreacion(Integer.valueOf(volantesExpressVo.getUsrBean().getUserName()));
 				actAdm.insert(act);
 			}
 			else {

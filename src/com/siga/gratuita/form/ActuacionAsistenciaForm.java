@@ -68,8 +68,12 @@ public class ActuacionAsistenciaForm extends MasterForm
 	  List<ValueKeyVO> tipoCosteFijoActuaciones;
 	  String idCosteFijoActuacion;
 	  List<ScsComisariaBean> comisarias;
-	   List<ScsJuzgadoBean> juzgados;	  
-	   List<ScsPrisionBean> prisiones;
+	  List<ScsJuzgadoBean> juzgados;	  
+	  List<ScsPrisionBean> prisiones;
+	  Integer usuCreacion;
+	  String fechaCreacion;
+	  
+	  
 	private String modoPestanha=null;
 		private String nig;
 	
@@ -242,7 +246,20 @@ public class ActuacionAsistenciaForm extends MasterForm
 	}
 	public void setFechaJustificacion(String fechaJustificacion) {
 		this.fechaJustificacion = fechaJustificacion;
+	}	
+	public Integer getUsuCreacion() {
+		return usuCreacion;
 	}
+	public void setUsuCreacion(Integer usuCreacion) {
+		this.usuCreacion = usuCreacion;
+	}
+	public String getFechaCreacion() {
+		return fechaCreacion;
+	}
+	public void setFechaCreacion(String fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+	
 	public ScsActuacionAsistenciaBean getActuacionAsistenciaVO() {
 		ScsActuacionAsistenciaBean	actuacionAsistenciaBean  = new ScsActuacionAsistenciaBean();
 		
@@ -303,7 +320,16 @@ public class ActuacionAsistenciaForm extends MasterForm
 				} catch (ClsExceptions e1) {}
 			}
 			
-			
+			if(fechaCreacion!=null&& !fechaCreacion.equals("")){
+				try {
+					if(!fechaCreacion.equalsIgnoreCase("sysdate"))
+						actuacionAsistenciaBean.setFechaCreacion(GstDate.getApplicationFormatDate("", fechaCreacion) );
+					else
+						actuacionAsistenciaBean.setFechaCreacion(fechaCreacion);
+				} catch (ClsExceptions e1) {}
+			}
+			if(usuCreacion!=null && !usuCreacion.equals(""))
+				actuacionAsistenciaBean.setUsuCreacion(new Integer(usuCreacion));
 			actuacionAsistenciaBean.setDescripcionBreve(descripcionBreve);
 			actuacionAsistenciaBean.setLugar(lugar);
 			actuacionAsistenciaBean.setNumeroAsunto(numeroAsunto);

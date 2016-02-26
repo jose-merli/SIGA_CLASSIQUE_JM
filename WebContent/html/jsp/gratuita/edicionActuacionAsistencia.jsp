@@ -236,6 +236,8 @@
 		<html:hidden property="comisariaAsistencia" styleId="comisariaAsistencia" value="${ActuacionAsistenciaFormEdicion.comisariaAsistencia}" />
 		<html:hidden property="juzgadoAsistencia" styleId="juzgadoAsistencia" value="${ActuacionAsistenciaFormEdicion.juzgadoAsistencia}" />
 		<html:hidden property="tipoPcajg" styleId="tipoPcajg" value="${ActuacionAsistenciaFormEdicion.tipoPcajg}" />
+		<html:hidden property="usuCreacion" styleId="usuCreacion" value="${ActuacionAsistenciaFormEdicion.usuCreacion}" />
+		<html:hidden property="fechaCreacion" name="date" styleId="fechaCreacion" value="${ActuacionAsistenciaFormEdicion.fechaCreacion}" />
 		<input type="hidden" name="validarJustificaciones" id="validarJustificaciones" value="${asistencia.validarJustificaciones}" />
 		<input type="hidden" id="isLetrado" name="isLetrado" value="${usrBean.letrado}" />
 		<html:hidden property="idTipoAsistencia" styleId="idTipoAsistencia" value="${ActuacionAsistenciaFormEdicion.idTipoAsistencia}" />

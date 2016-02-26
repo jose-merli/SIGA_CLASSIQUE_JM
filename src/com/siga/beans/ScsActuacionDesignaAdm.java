@@ -51,6 +51,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		String[] campos = {	ScsActuacionDesignaBean.C_IDINSTITUCION,				ScsActuacionDesignaBean.C_IDTURNO,
 							ScsActuacionDesignaBean.C_ANIO,							ScsActuacionDesignaBean.C_NUMERO,
 							ScsActuacionDesignaBean.C_FECHAMODIFICACION,			ScsActuacionDesignaBean.C_USUMODIFICACION,
+							ScsActuacionDesignaBean.C_FECHACREACION,                ScsActuacionDesignaBean.C_USUCREACION,
 							ScsActuacionDesignaBean.C_FECHA,						ScsActuacionDesignaBean.C_NUMEROASUNTO,
 							ScsActuacionDesignaBean.C_ACUERDOEXTRAJUDICIAL,			ScsActuacionDesignaBean.C_ANULACION,
 							ScsActuacionDesignaBean.C_IDPROCEDIMIENTO,				ScsActuacionDesignaBean.C_LUGAR,

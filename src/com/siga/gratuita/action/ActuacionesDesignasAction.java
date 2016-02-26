@@ -785,6 +785,8 @@ public class ActuacionesDesignasAction extends MasterAction {
 			Hashtable hash = prepararInsert (miform.getDatos());
 			hash.put(ScsActuacionAsistenciaBean.C_FECHAMODIFICACION,"SYSDATE");
 			hash.put(ScsActuacionAsistenciaBean.C_USUMODIFICACION,usr.getUserName());
+			hash.put(ScsActuacionAsistenciaBean.C_FECHACREACION,"SYSDATE");
+			hash.put(ScsActuacionAsistenciaBean.C_USUCREACION,usr.getUserName());
 			hash.put(ScsActuacionAsistenciaBean.C_IDINSTITUCION,(String)usr.getLocation());
 			
 			
@@ -1585,44 +1587,44 @@ public class ActuacionesDesignasAction extends MasterAction {
 			
 		    ScsActuacionDesignaAdm actuacionDesignaAdm = new ScsActuacionDesignaAdm (this.getUserBean(request));
 
-	        // comprobamos si vamos a dejar mas de fin que de inicio
-			Vector v = actuacionDesignaAdm.select(aBorrar);
-			ScsActuacionDesignaBean beanActuacionDesigna = (ScsActuacionDesignaBean)v.get(0);
-
-			ScsAcreditacionAdm acreditacionAdm = new ScsAcreditacionAdm(this.getUserBean(request));
-			String where = " WHERE " + ScsAcreditacionBean.C_IDACREDITACION + " = " + beanActuacionDesigna.getIdAcreditacion();
-			Vector vAcreditaciones = acreditacionAdm.select(where);
-			ScsAcreditacionBean beanAcreditaciones = (ScsAcreditacionBean)vAcreditaciones.get(0);
-		    
-		    // comprobamos si hay mas de inicio que de fin
-		    if(beanAcreditaciones.getIdTipoAcreditacion().intValue() == ClsConstants.ESTADO_ACREDITACION_INICIO){
-		        ScsActuacionDesignaAdm actuaciones = new ScsActuacionDesignaAdm (this.getUserBean(request));
-		        int actInicio = actuaciones.getNumeroActuacionesDeTipo(ClsConstants.ESTADO_ACREDITACION_INICIO, "" + beanActuacionDesigna.getNumero(), "" + usr.getLocation(), "" + beanActuacionDesigna.getIdTurno(), "" + beanActuacionDesigna.getAnio(), beanActuacionDesigna.getIdProcedimiento(), "" + beanActuacionDesigna.getIdInstitucionProcedimiento());
-		        int actFinal  = actuaciones.getNumeroActuacionesDeTipo(ClsConstants.ESTADO_ACREDITACION_FINAL,  "" + beanActuacionDesigna.getNumero(), "" + usr.getLocation(), "" + beanActuacionDesigna.getIdTurno(), "" + beanActuacionDesigna.getAnio(), beanActuacionDesigna.getIdProcedimiento(), "" + beanActuacionDesigna.getIdInstitucionProcedimiento());
-		        if (actInicio <= actFinal) {
-		        	if(visibles!=null)
-		        		return exito("messages.error.acreditacionBorrar",request);
-		        	else{
-		        		request.setAttribute("sinrefresco","");
-		        		request.setAttribute("mensaje","messages.error.acreditacionBorrar");
-		        		return "exito";
+		        // comprobamos si vamos a dejar mas de fin que de inicio
+				Vector v = actuacionDesignaAdm.select(aBorrar);
+				ScsActuacionDesignaBean beanActuacionDesigna = (ScsActuacionDesignaBean)v.get(0);
+	
+				ScsAcreditacionAdm acreditacionAdm = new ScsAcreditacionAdm(this.getUserBean(request));
+				String where = " WHERE " + ScsAcreditacionBean.C_IDACREDITACION + " = " + beanActuacionDesigna.getIdAcreditacion();
+				Vector vAcreditaciones = acreditacionAdm.select(where);
+				ScsAcreditacionBean beanAcreditaciones = (ScsAcreditacionBean)vAcreditaciones.get(0);
+			    
+			    // comprobamos si hay mas de inicio que de fin
+			    if(beanAcreditaciones.getIdTipoAcreditacion().intValue() == ClsConstants.ESTADO_ACREDITACION_INICIO){
+			        ScsActuacionDesignaAdm actuaciones = new ScsActuacionDesignaAdm (this.getUserBean(request));
+			        int actInicio = actuaciones.getNumeroActuacionesDeTipo(ClsConstants.ESTADO_ACREDITACION_INICIO, "" + beanActuacionDesigna.getNumero(), "" + usr.getLocation(), "" + beanActuacionDesigna.getIdTurno(), "" + beanActuacionDesigna.getAnio(), beanActuacionDesigna.getIdProcedimiento(), "" + beanActuacionDesigna.getIdInstitucionProcedimiento());
+			        int actFinal  = actuaciones.getNumeroActuacionesDeTipo(ClsConstants.ESTADO_ACREDITACION_FINAL,  "" + beanActuacionDesigna.getNumero(), "" + usr.getLocation(), "" + beanActuacionDesigna.getIdTurno(), "" + beanActuacionDesigna.getAnio(), beanActuacionDesigna.getIdProcedimiento(), "" + beanActuacionDesigna.getIdInstitucionProcedimiento());
+			        if (actInicio <= actFinal) {
+			        	if(visibles!=null)
+			        		return exito("messages.error.acreditacionBorrar",request);
+			        	else{
+			        		request.setAttribute("sinrefresco","");
+			        		request.setAttribute("mensaje","messages.error.acreditacionBorrar");
+			        		return "exito";
 //			        		return exitoRefresco("messages.error.acreditacionBorrar", request);
-		        	}
-		        		
-		        }
+			        	}
+			        		
+			        }
 
-		        int actRegularizacion  = actuaciones.getNumeroActuacionesDeTipo(ClsConstants.ESTADO_ACREDITACION_REGULARIZACION,  "" + beanActuacionDesigna.getNumero(), "" + usr.getLocation(), "" + beanActuacionDesigna.getIdTurno(), "" + beanActuacionDesigna.getAnio(), beanActuacionDesigna.getIdProcedimiento(), "" + beanActuacionDesigna.getIdInstitucionProcedimiento());
-		        if (actInicio <= actRegularizacion) {
-		        	if(visibles!=null)
-		        		return exito("messages.error.acreditacionRegularizacionBorrar",request);
-		        	else{
-		        		request.setAttribute("sinrefresco","");
-		        		request.setAttribute("mensaje","messages.error.acreditacionRegularizacionBorrar");
-		        		return "exito";
+			        int actRegularizacion  = actuaciones.getNumeroActuacionesDeTipo(ClsConstants.ESTADO_ACREDITACION_REGULARIZACION,  "" + beanActuacionDesigna.getNumero(), "" + usr.getLocation(), "" + beanActuacionDesigna.getIdTurno(), "" + beanActuacionDesigna.getAnio(), beanActuacionDesigna.getIdProcedimiento(), "" + beanActuacionDesigna.getIdInstitucionProcedimiento());
+			        if (actInicio <= actRegularizacion) {
+			        	if(visibles!=null)
+			        		return exito("messages.error.acreditacionRegularizacionBorrar",request);
+			        	else{
+			        		request.setAttribute("sinrefresco","");
+			        		request.setAttribute("mensaje","messages.error.acreditacionRegularizacionBorrar");
+			        		return "exito";
 //			        		return exitoRefresco("messages.error.acreditacionRegularizacionBorrar", request);
-		        	}
-		        }
-		    }
+			        	}
+			        }
+			    }
 		    
 		    tx.begin();
 		    ok = actuacionDesignaAdm.delete(aBorrar);
