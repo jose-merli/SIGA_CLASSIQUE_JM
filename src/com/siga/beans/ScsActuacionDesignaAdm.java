@@ -552,7 +552,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 									",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION+
 									",act."+ScsActuacionDesignaBean.C_IDPROCEDIMIENTO+
 									",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO+
-									",act."+ScsActuacionDesignaBean.C_IDACREDITACION+
+									",act."+ScsActuacionDesignaBean.C_IDACREDITACION+"||','||ap.nig_numprocedimiento IDACREDITACION"+
 									",act."+ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO+
 									",pro.nombre nombreprocedimiento, pro.idprocedimiento idprocedimiento"+
 									",acred."+ScsAcreditacionBean.C_DESCRIPCION+" AS NOMBREACREDITACION "+
@@ -574,6 +574,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 								    " where "+FcsFacturacionJGBean.C_IDINSTITUCION+" = "+entrada.get("IDINSTITUCION")+
 								    "   and "+FcsFacturacionJGBean.T_NOMBRETABLA+"."+FcsFacturacionJGBean.C_IDFACTURACION+" = act."+ScsActuacionDesignaBean.C_IDFACTURACION+") nombrefacturacion"+
 									" FROM SCS_ACTUACIONDESIGNA act, scs_procedimientos pro , scs_turno tur, scs_acreditacion acred, scs_juzgado juzgado, cen_colegiado col, cen_persona per"+
+								    " ,scs_acreditacionprocedimiento ap "+
 									" WHERE act.IDINSTITUCION =  "+  entrada.get("IDINSTITUCION")+
 									" and act.IDTURNO = "+ entrada.get("IDTURNO")+
 									" and act.ANIO = "+entrada.get("ANIO")+
@@ -588,7 +589,10 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 									" and act."+ScsActuacionDesignaBean.C_IDJUZGADO+"=juzgado."+ScsJuzgadoBean.C_IDJUZGADO +
 									" and act.idpersonacolegiado = per.idpersona" +    
 									" and col.idpersona = per.idpersona" +
-									" and col.idinstitucion = act.idinstitucion";
+									" and col.idinstitucion = act.idinstitucion "+
+									" and ap.idinstitucion(+) = act.idinstitucion "+ 
+									" and ap.idacreditacion(+) = act.idacreditacion "+ 
+									" and ap.idprocedimiento(+) = act.idprocedimiento ";
 	
 		try {	
 			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");

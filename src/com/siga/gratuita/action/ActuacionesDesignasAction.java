@@ -18,6 +18,8 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONObject;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.ScsTiporesolauto;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
@@ -36,6 +38,7 @@ import com.siga.beans.FcsFacturacionJGBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsAcreditacionAdm;
 import com.siga.beans.ScsAcreditacionBean;
+import com.siga.beans.ScsAcreditacionProcedimientoAdm;
 import com.siga.beans.ScsAcreditacionProcedimientoBean;
 import com.siga.beans.ScsActuacionAsistenciaBean;
 import com.siga.beans.ScsActuacionDesignaAdm;
@@ -784,40 +787,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			hash.put(ScsActuacionAsistenciaBean.C_USUMODIFICACION,usr.getUserName());
 			hash.put(ScsActuacionAsistenciaBean.C_IDINSTITUCION,(String)usr.getLocation());
 			
-			String nig= miform.getNig();
-			if (nig!=null && !nig.equals("")){
-				hash.put(ScsActuacionDesignaBean.C_NIG, nig);
-			}else{
-				hash.put(ScsActuacionDesignaBean.C_NIG, "");
-			}				
 			
-		    // Comprobamos si la fecha de la actuacion es posterior a la de la designa
-	        SimpleDateFormat sd2 = new SimpleDateFormat (ClsConstants.DATE_FORMAT_SHORT_SPANISH);
-	        Date dActuacion = sd2.parse(miform.getFechaActuacion());			            ;
-	        ScsDesignaBean sdb = null;
-	        try {
-			    ScsDesignaAdm designaAdm = new ScsDesignaAdm (this.getUserBean(request));
-			    Vector vD = designaAdm.selectByPK(hash);
-			    if ((vD != null) && (vD.size() == 1)) {
-			        SimpleDateFormat sd = new SimpleDateFormat (ClsConstants.DATE_FORMAT_JAVA);
-			        sdb = (ScsDesignaBean)vD.get(0);
-			        hash.put("scsDesignaBean",sdb);
-			        Date dDesgina = sd.parse(sdb.getFechaEntrada());
-			        
-			        if (dActuacion.compareTo(dDesgina) < 0) {
-			            return exito("messages.error.acreditacionFechaNoValida",request);			            
-			        }
-			        
-			        //Se rellena el NIG si no estuviera completo en datos generales
-			        if(sdb.getNIG() == null || sdb.getNIG().equals("")){     				
-			        	if (nig!=null && !nig.equals("")){
-			        		sdb.setNIG(nig);
-			        		designaAdm.updateDirect(sdb);
-			        	}
-			        }
-			    }
-		    }			    
-	        catch (Exception e) { }
 
 			// Obtengo el idPrision y la idInstitucion del Prision:
 			Long idPrision=null;
@@ -876,18 +846,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			}else{
 				hash.put(ScsActuacionDesignaBean.C_TALON, "");
 			}
-			String numeroProcedimiento= miform.getNumeroProcedimiento();
-			if (numeroProcedimiento!=null && !numeroProcedimiento.equals("")){
-					hash.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, numeroProcedimiento);
-			}else{
-				hash.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, "");
-			}
-			String anioProcedimiento= miform.getAnioProcedimiento();
-			if (anioProcedimiento!=null && !anioProcedimiento.equals("")){
-					hash.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, anioProcedimiento);
-			}else{
-				hash.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, "");
-			}
+			
 			
 			
 			// Obtengo el idJuzgado y la idInstitucion del Juzgado:
@@ -938,12 +897,14 @@ public class ActuacionesDesignasAction extends MasterAction {
 			}
 			
 			// Obtengo el idAcreditacion y la idInstitucion del Acreditacion:
-			Integer idAcreditacion;
-			idAcreditacion = null;					
+			Integer idAcreditacion = null;					
 			String acreditacion = miform.getAcreditacion();
+			boolean isObligatorioNigNumProcedimiento = false;
 			if (acreditacion!=null && !acreditacion.equals("")){
-				idAcreditacion = new Integer(acreditacion);				
-				hash.put(ScsActuacionDesignaBean.C_IDACREDITACION, idAcreditacion);	
+				String[] acreditacionStrings = acreditacion.split(",");
+				idAcreditacion = new Integer(acreditacionStrings[0]);	
+				isObligatorioNigNumProcedimiento = acreditacionStrings.length>1 && acreditacionStrings[1].equals("1");
+				hash.put(ScsActuacionDesignaBean.C_IDACREDITACION, idAcreditacion);
 //				if(usr.isLetrado()){
 					fksActuacionHashtable = new Hashtable<String, Object>();
 					fksActuacionHashtable.put("TABLA_FK", ScsAcreditacionBean.T_NOMBRETABLA);
@@ -955,8 +916,65 @@ public class ActuacionesDesignasAction extends MasterAction {
 //				}
 			} else {
 				hash.put(ScsActuacionDesignaBean.C_IDACREDITACION, "");				
-			}		
-
+			}
+			String numeroProcedimiento= miform.getNumeroProcedimiento();
+			if (numeroProcedimiento!=null && !numeroProcedimiento.equals("")){
+				hash.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, numeroProcedimiento);
+			}else{
+				if(isObligatorioNigNumProcedimiento){
+					return exito(UtilidadesString.getMensajeIdioma(usr, "errors.required",new String[]{"gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento"}),request);
+				}
+				hash.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, "");
+			}
+			String anioProcedimiento= miform.getAnioProcedimiento();
+			if (anioProcedimiento!=null && !anioProcedimiento.equals("")){
+					hash.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, anioProcedimiento);
+			}else{
+				if(isObligatorioNigNumProcedimiento){
+					return exito(UtilidadesString.getMensajeIdioma(usr, "errors.required",new String[]{"gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento"}),request);
+				}
+				hash.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, "");
+			}
+			String nig= miform.getNig();
+			if (nig!=null && !nig.equals("")){
+				hash.put(ScsActuacionDesignaBean.C_NIG, nig);
+			}else{
+				if(isObligatorioNigNumProcedimiento){
+					return exito(UtilidadesString.getMensajeIdioma(usr, "errors.required",new String[]{"gratuita.mantAsistencias.literal.NIG"}),request);
+				}
+				hash.put(ScsActuacionDesignaBean.C_NIG, "");
+			}				
+			
+		    // Comprobamos si la fecha de la actuacion es posterior a la de la designa
+	        SimpleDateFormat sd2 = new SimpleDateFormat (ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+	        Date dActuacion = sd2.parse(miform.getFechaActuacion());			            ;
+	        ScsDesignaBean sdb = null;
+	        try {
+			    ScsDesignaAdm designaAdm = new ScsDesignaAdm (this.getUserBean(request));
+			    Vector vD = designaAdm.selectByPK(hash);
+			    if ((vD != null) && (vD.size() == 1)) {
+			        SimpleDateFormat sd = new SimpleDateFormat (ClsConstants.DATE_FORMAT_JAVA);
+			        sdb = (ScsDesignaBean)vD.get(0);
+			        hash.put("scsDesignaBean",sdb);
+			        Date dDesgina = sd.parse(sdb.getFechaEntrada());
+			        
+			        if (dActuacion.compareTo(dDesgina) < 0) {
+			            return exito("messages.error.acreditacionFechaNoValida",request);			            
+			        }
+			        
+			        //Se rellena el NIG si no estuviera completo en datos generales
+			        if(sdb.getNIG() == null || sdb.getNIG().equals("")){     				
+			        	if (nig!=null && !nig.equals("")){
+			        		sdb.setNIG(nig);
+			        		designaAdm.updateDirect(sdb);
+			        	}
+			        }
+			    }
+		    }			    
+	        catch (Exception e) { }
+			
+			
+			
 			if (miform.getActuacionValidada() != null) {
 				if (UtilidadesString.stringToBoolean(miform.getActuacionValidada())) 
 					hash.put(ScsActuacionDesignaBean.C_VALIDADA, "1");
@@ -1140,32 +1158,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 		boolean ok = false;
 		String forward = null;
 		
-		try {
-			ScsDesignaBean sdb = null;
-	        try {
-			    ScsDesignaAdm designaAdm = new ScsDesignaAdm (this.getUserBean(request));
-			    Vector vD = designaAdm.selectByPK(actuacionAntigua);
-			    if ((vD != null) && (vD.size() == 1)) {
-			        SimpleDateFormat sd = new SimpleDateFormat (ClsConstants.DATE_FORMAT_JAVA);
-			        sdb = (ScsDesignaBean)vD.get(0);
-			        Date dDesgina = sd.parse(sdb.getFechaEntrada());
-			        
-			        SimpleDateFormat sd2 = new SimpleDateFormat (ClsConstants.DATE_FORMAT_SHORT_SPANISH);
-			        Date dActuacion = sd2.parse(miform.getFechaActuacion());			            ;
-		        
-			        if (dActuacion.compareTo(dDesgina) < 0) {
-			            return exito("messages.error.acreditacionFechaNoValida",request);			            
-			        }
-			        if(sdb.getNIG() == null || sdb.getNIG().equals("")){     				
-			        	if (miform.getNig()!=null && !miform.getNig().equals("")){
-			        		sdb.setNIG(miform.getNig());
-			        		designaAdm.updateDirect(sdb);
-			        	}
-			        }
-			        
-		        }
-		    }			    
-	        catch (Exception e) { }
+		
 
 			usr = (UsrBean)ses.getAttribute("USRBEAN");
 			tx = usr.getTransaction();
@@ -1223,26 +1216,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 				actuacionModificada.put(ScsActuacionDesignaBean.C_TALON, "");
 				
 			}
-			String numeroProcedimiento= miform.getNumeroProcedimiento();
-			if (numeroProcedimiento!=null && !numeroProcedimiento.equals("")){
-				actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, numeroProcedimiento);
-			}else{
-				actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, "");
-			}
-			String anioProcedimiento= miform.getAnioProcedimiento();
-			if (anioProcedimiento!=null && !anioProcedimiento.equals("")){
-				actuacionModificada.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, anioProcedimiento);
-			}else{
-				actuacionModificada.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, "");
-			}
 			
-			
-			String nig= miform.getNig();
-			if (nig!=null && !nig.equals("")){
-				actuacionModificada.put(ScsActuacionDesignaBean.C_NIG, nig);
-			}else{
-				actuacionModificada.put(ScsActuacionDesignaBean.C_NIG, "");
-			}			
 			
 			String idMotivoCambio = miform.getIdMotivoCambio();
 			if (idMotivoCambio!=null && !idMotivoCambio.trim().equals("")){
@@ -1283,12 +1257,77 @@ public class ActuacionesDesignasAction extends MasterAction {
 			// Obtengo el idAcreditacion y la idInstitucion del Acreditacion:
 			Integer idAcreditacion = null;					
 			String acreditacion = miform.getAcreditacion();
+			boolean isObligatorioNigNumProcedimiento = false; 
 			if (acreditacion!=null && !acreditacion.equals("")){
-				idAcreditacion = new Integer(acreditacion);				
+				//Ahora en el combo de acreditacion viene separado por , la obligatoriedad de nigcif que esta en la tabla scs_acreditacionprocedimiento 
+				String[] acreditacionStrings = acreditacion.split(",");
+				idAcreditacion = new Integer(acreditacionStrings[0]);	
+				isObligatorioNigNumProcedimiento = acreditacionStrings.length>1 && acreditacionStrings[1].equals("1");
 				actuacionModificada.put(ScsActuacionDesignaBean.C_IDACREDITACION, idAcreditacion);				
 			} else {
 				actuacionModificada.put(ScsActuacionDesignaBean.C_IDACREDITACION, "");				
 			}
+			
+			String numeroProcedimiento= miform.getNumeroProcedimiento();
+			if (numeroProcedimiento!=null && !numeroProcedimiento.equals("")){
+				actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, numeroProcedimiento);
+			}else{
+				if(isObligatorioNigNumProcedimiento){
+					return exito(UtilidadesString.getMensajeIdioma(usr, "errors.required",new String[]{"gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento"}),request);
+				}
+				actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, "");
+			}
+			String anioProcedimiento= miform.getAnioProcedimiento();
+			if (anioProcedimiento!=null && !anioProcedimiento.equals("")){
+				actuacionModificada.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, anioProcedimiento);
+			}else{
+				if(isObligatorioNigNumProcedimiento){
+					return exito(UtilidadesString.getMensajeIdioma(usr, "errors.required",new String[]{"gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento"}),request);
+				}
+				actuacionModificada.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, "");
+			}
+			
+			
+			String nig= miform.getNig();
+			if (nig!=null && !nig.equals("")){
+				actuacionModificada.put(ScsActuacionDesignaBean.C_NIG, nig);
+			}else{
+				if(isObligatorioNigNumProcedimiento){
+					return exito(UtilidadesString.getMensajeIdioma(usr, "errors.required",new String[]{"gratuita.mantAsistencias.literal.NIG"}),request);
+				}
+				actuacionModificada.put(ScsActuacionDesignaBean.C_NIG, "");
+			}
+			try {
+				ScsDesignaAdm designaAdm = new ScsDesignaAdm (this.getUserBean(request));
+				ScsDesignaBean sdb = null;
+		        try {
+				    
+				    Vector vD = designaAdm.selectByPK(actuacionAntigua);
+				    if ((vD != null) && (vD.size() == 1)) {
+				        SimpleDateFormat sd = new SimpleDateFormat (ClsConstants.DATE_FORMAT_JAVA);
+				        sdb = (ScsDesignaBean)vD.get(0);
+				        Date dDesgina = sd.parse(sdb.getFechaEntrada());
+				        
+				        SimpleDateFormat sd2 = new SimpleDateFormat (ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+				        Date dActuacion = sd2.parse(miform.getFechaActuacion());			            ;
+			        
+				        if (dActuacion.compareTo(dDesgina) < 0) {
+				            return exito("messages.error.acreditacionFechaNoValida",request);			            
+				        }
+				        
+				        
+			        }
+			    }			    
+		        catch (Exception e) { }
+			
+			if(sdb.getNIG() == null || sdb.getNIG().equals("")){     				
+	        	if (miform.getNig()!=null && !miform.getNig().equals("")){
+	        		sdb.setNIG(miform.getNig());
+	        		designaAdm.updateDirect(sdb);
+	        	}
+	        }
+			
+			
 
 			if (miform.getActuacionValidada() != null) {
 				if (UtilidadesString.stringToBoolean(miform.getActuacionValidada())) 
@@ -1431,9 +1470,11 @@ public class ActuacionesDesignasAction extends MasterAction {
 			ScsActuacionDesignaBean actuacionDesignaBean = null;
 			if ((actuacionDesignaVector != null) && (actuacionDesignaVector.size() == 1)) {
 				actuacionDesignaBean = (ScsActuacionDesignaBean) actuacionDesignaVector.get(0);
-				Date fechaJustificacion = formatBBDD.parse(actuacionDesignaBean.getFechaJustificacion());
-				if (dActuacion.compareTo(fechaJustificacion) > 0) {
-					return exito("messages.error.acreditacionFechaNoValida", request);
+				if(actuacionDesignaBean.getFechaJustificacion()!=null && !actuacionDesignaBean.getFechaJustificacion().equals("") ){
+					Date fechaJustificacion = formatBBDD.parse(actuacionDesignaBean.getFechaJustificacion());
+					if (dActuacion.compareTo(fechaJustificacion) > 0) {
+						return exito("messages.error.acreditacionFechaNoValida", request);
+					}
 				}
 				
 			}
@@ -1810,4 +1851,6 @@ public class ActuacionesDesignasAction extends MasterAction {
 				
 		
      }
+     
+     
 }

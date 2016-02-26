@@ -293,15 +293,10 @@
 	
 	String asterisco = "&nbsp;(*)";
 	
-	boolean obligatorioNumeroProcedimiento = false;
-	boolean obligatorioProcedimiento = false;
-	boolean validaNumeroProcedimiento = false;
+	//si es el colegio de Alcala validaremos el procedimiento y el numero de procedimiento
+	boolean isColegioAlcala = pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA;
 	
-	if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) {
-		obligatorioNumeroProcedimiento = true;
-		obligatorioProcedimiento = true;
-		validaNumeroProcedimiento = true;
-	}
+
 	
 	ArrayList vTipoResolAuto = new ArrayList();
 	if (hashDesigna.containsKey(ScsEJGBean.C_IDTIPORESOLAUTO)&& hashDesigna.get(ScsEJGBean.C_IDTIPORESOLAUTO) != "")
@@ -337,8 +332,33 @@
 	
 	<!-- fin validaciones struct -->
 
-	<script language="JavaScript">
+	<script type="text/javascript" >
 	
+	
+	function cambiarAcreditacion() {
+		<%if(!isColegioAlcala){%>
+			acreditacionString = document.getElementById("acreditacion").value
+			acreditacionStrings = acreditacionString.split(',');
+
+			if(acreditacionStrings.length>1 && acreditacionStrings[1]=='1'){
+				jQuery("#labelNumProc").attr('style','display: block');
+				jQuery("#labelNig").attr('style','display: block');
+			 }else{
+				 jQuery("#labelNumProc").attr('style','display: none');
+				 jQuery("#labelNig").attr('style','display: none');
+			 } 
+		<%}else{%>
+			acreditacionString = document.getElementById("acreditacion").value
+			acreditacionStrings = acreditacionString.split(',');
+	
+			if(acreditacionStrings.length>1 && acreditacionStrings[1]=='1'){
+				jQuery("#labelNig").attr('style','display: block');
+			 }else{
+				 jQuery("#labelNig").attr('style','display: none');
+			 }
+		<%}%>
+		
+	}	
 		//Selecciona el valor del combo -->
 		function rellenarCombos() {
 			<% if (modoAnterior!=null && !modoAnterior.equalsIgnoreCase("VER")) { %>
@@ -423,6 +443,9 @@
 			}
 		}		
 		
+		
+		
+		
 		jQuery(function($){
 			var defaultValue = jQuery("#nig").val();
 			if(defaultValue.length > 19){
@@ -471,7 +494,7 @@
 	</script>		
 </head>
 
-<body onload="rellenarCombos()">
+<body onload="rellenarCombos(); cambiarAcreditacion();">
 
 
 <!-- TITULO -->
@@ -504,6 +527,7 @@
 	<html:hidden property = "anio" value="<%=anio%>" />	
 	<html:hidden property = "numero" value="<%=numero%>" />
 	<html:hidden property = "nactuacion" value="<%=nactuacion%>" />
+
 	
 		
 		
@@ -614,7 +638,12 @@
 					
 					<tr>			
 						<td class="labelText" nowrap>
-							<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento" /><%=(obligatorioNumeroProcedimiento?asterisco:"")%>
+							<table>
+							<tr>
+							<td><siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento" /></td><%=(isColegioAlcala?"<td>"+asterisco+"</td>":"<td id='labelNumProc' style='display:block'>(*)</td>")%>	
+							</tr> 
+							</table>
+							
 						</td>
 						<td>
 							<% if (!modoAnterior.equalsIgnoreCase("VER")) { %> 
@@ -666,13 +695,17 @@
 					
 					<tr>
 						<td class="labelText" nowrap>
-							<siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
+							<table>
+								<tr>
+								<td><siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/></td><td id='labelNig' style='display:block'>(*)</td>
+								</tr>
+							</table>
 						</td>				
 						<td > 
 							<% if (!modoAnterior.equalsIgnoreCase("VER")) { %> 
-								<html:text name="ActuacionesDesignasForm" property="nig" styleId="nig" value="<%=nig%>" styleClass="<%=estiloCombo%>" style="size:19;width:200px"/>
+								<html:text name="ActuacionesDesignasForm" property="nig" styleId="nig" value="<%=nig%>" styleClass="box" style="size:19;width:200px"/>
 							<%}else{%>
-								<html:text name="ActuacionesDesignasForm" property="nig" styleId="nig" value="<%=nig%>" styleClass="boxConsulta" style="size:19;width:200px"/>
+								<html:text name="ActuacionesDesignasForm" property="nig" styleId="nig" value="<%=nig%>" styleClass="boxConsulta" readonly="true" style="size:19;width:200px"/>
 							<%}%>						
 						</td>
 									
@@ -705,14 +738,14 @@
 						</td>			
 						<td  colspan="4">
 							<%if (modoJustificacion!=null && modoJustificacion.equals("nuevoJustificacion")){%>
-								<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>" />
+								<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>" accion="parent.cambiarAcreditacion();"/>
 							<%}else if (modoAnterior.equalsIgnoreCase("VER")||(modoJustificacion!=null && modoJustificacion.equals("editarJustificacionFicha"))) { %>
 								<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="true"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>" />	
 							<% } else { 
 								if (esLetrado){%>
-									<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>" />
+									<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>"  accion="parent.cambiarAcreditacion();" />
 								<%} else {%>	
-									<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>" />
+									<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>"  accion="parent.cambiarAcreditacion();"/>
 								<%}
 							}%>
 						</td>
@@ -738,7 +771,7 @@
 					
 					<tr>
 						<td class="labelText" nowrap>
-							<siga:Idioma key="gratuita.actuacionesDesigna.literal.pretensiones"/><%=(obligatorioProcedimiento?asterisco:"")%>
+							<siga:Idioma key="gratuita.actuacionesDesigna.literal.pretensiones"/><%=(isColegioAlcala?asterisco:"")%>
 						</td>
 						<td colspan="4">
 						<%if (modoJustificacion!=null && modoJustificacion.equals("editarJustificacionFicha")){%>
@@ -1048,16 +1081,23 @@
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesAsistencia.literal.fechaActuacion'/>"+ '\n';
 					
 				}	
-			
-			
-				if (<%=obligatorioNumeroProcedimiento%> && document.forms[0].numeroProcedimiento.value=='') {
+				if ((<%=isColegioAlcala%> ||  jQuery("#labelNumProc").css('display')=='block') && document.forms[0].numeroProcedimiento.value=='') {
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento'/>"+ '\n';
-				}		
-				if(<%=validaNumeroProcedimiento%> && !validaProcedimiento(document.forms[0].numeroProcedimiento.value)) {
+				}
+				if((<%=isColegioAlcala%> || jQuery("#labelNumProc").css('display')=='block') && document.forms[0].numeroProcedimiento.value!='' &&  document.forms[0].anioProcedimiento &&  document.forms[0].anioProcedimiento.value==""){
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento'/>"+ '\n';
+					
+				}
+						
+				if(<%=isColegioAlcala%> && !validaProcedimiento(document.forms[0].numeroProcedimiento.value)) {
 					error += "<siga:Idioma key='gratuita.procedimientos.numero.formato'/>"+ '\n';
 				}
 				var nigAux = document.getElementById("nig").value;
 				nigAux = formateaNig(nigAux);
+				
+				if (jQuery("#labelNig").css('display')=='block' && nigAux=='') {
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.mantAsistencias.literal.NIG'/>"+ '\n';
+				}
 				if(!validarNig(nigAux)){	
 					error += "<siga:Idioma key='gratuita.nig.formato'/>"+ '\n';
 				}
@@ -1069,68 +1109,61 @@
 				}
 				
 			<%}else{%>
+				error = '';
 				if (validateActuacionesDesignasForm(document.ActuacionesDesignasForm)) {
 					
-					
 					fecha = document.getElementById("fechaJustificacion");
-					
-					if (<%=obligatorioNumeroProcedimiento%> && document.forms[0].numeroProcedimiento.value=='') {
-						alert('<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento"/> <siga:Idioma key="messages.campoObligatorio.error" />');
-						fin();
-						return false;
-					}		
-					if(<%=validaNumeroProcedimiento%> && !validaProcedimiento(document.forms[0].numeroProcedimiento.value)) {
-						alert('<siga:Idioma key='gratuita.procedimientos.numero.formato'/>');
-						fin();
-						return false;
+					if ((<%=isColegioAlcala%> || jQuery("#labelNumProc").css('display')=='block' ) && document.forms[0].numeroProcedimiento.value=='') {
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento'/>"+ '\n';
 					}
-						
+					if((<%=isColegioAlcala%> || jQuery("#labelNumProc").css('display')=='block' )&& document.forms[0].numeroProcedimiento.value!='' && document.forms[0].anioProcedimiento &&  document.forms[0].anioProcedimiento.value==""){
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento'/>"+ '\n';
+					}
+					
+					if(<%=isColegioAlcala%>  && !validaProcedimiento(document.forms[0].numeroProcedimiento.value)) {
+						error += "<siga:Idioma key='gratuita.procedimientos.numero.formato'/>"+ '\n';
+					}
 					if (document.forms[0].juzgado.value=='') {
-						alert('<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/> <siga:Idioma key="messages.campoObligatorio.error" />');
-						fin();
-						return false;	
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.mantenimientoTablasMaestra.literal.juzgado'/>"+ '\n';
 					}
 					if (document.forms[0].procedimiento.value=='') {
-						
-						alert('<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo"/> <siga:Idioma key="messages.campoObligatorio.error" />');
-						fin();
-						return false;	
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.modulo'/>"+ '\n';
+							
 					}
 					if (document.forms[0].acreditacion.value=='') {
-						alert('<siga:Idioma key="gratuita.procedimientos.literal.acreditacion"/> <siga:Idioma key="messages.campoObligatorio.error" />');
-						fin();
-						return false;
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.procedimientos.literal.acreditacion'/>"+ '\n';
 					}	
 	
-					if (<%=obligatorioProcedimiento%> && document.forms[0].pretension.value=='') {
-						alert('<siga:Idioma key="gratuita.actuacionesDesigna.literal.pretensiones"/> <siga:Idioma key="messages.campoObligatorio.error" />');
-						fin();
-						return false;
+					if (<%=isColegioAlcala%> && document.forms[0].pretension.value=='') {
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.pretensiones'/>"+ '\n';
 					}
-					<%if (pcajgActivo == CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) {%>					
+					<%if (isColegioAlcala) {%>					
 						if (document.forms[0].idMotivoCambio.value=='') {
 																			
-							if ('<%=(idJuzgadoDesigna + "," + juzgadoInstitucionDesigna)%>' != document.forms[0].juzgado.value) {							
-								alert('<siga:Idioma key="messages.gratuita.actuacionesDesigna.distintoJuzgado"/>');
-								fin();
-								return false;
+							if ('<%=(idJuzgadoDesigna + "," + juzgadoInstitucionDesigna)%>' != document.forms[0].juzgado.value) {
+								error += "<siga:Idioma key='messages.gratuita.actuacionesDesigna.distintoJuzgado' />"+ '\n';
 							}
-							if ('<%=(idPretensionDesigna!=null?idPretensionDesigna:"")%>' != document.forms[0].pretension.value) {							
-								alert('<siga:Idioma key="messages.gratuita.actuacionesDesigna.distintoProcedimiento"/>');
-								fin();
-								return false;
+							if ('<%=(idPretensionDesigna!=null?idPretensionDesigna:"")%>' != document.forms[0].pretension.value) {
+								error += "<siga:Idioma key='messages.gratuita.actuacionesDesigna.distintoProcedimiento' />"+ '\n';
 							}
 						}
 					<%}%>
 					var nigAux = document.getElementById("nig").value;
 					nigAux = formateaNig(nigAux);
+					if (jQuery("#labelNig").css('display')=='block' && nigAux=='') {
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.mantAsistencias.literal.NIG'/>"+ '\n';
+					}
+					
 					if(!validarNig(nigAux)){	
-						alert("<siga:Idioma key='gratuita.nig.formato'/>");
-						fin();
-						return false;
+						error += "<siga:Idioma key='gratuita.nig.formato'/>"+ '\n';
 							
 					}
 					document.forms[0].nig.value = nigAux;
+					if (error!=''){
+						fin();
+						alert(error);
+						return false;
+					}
 				}else{
 					fin();
 					return false;
@@ -1189,6 +1222,7 @@
 			var objRegExp  = /^([0-9]+\/[0-9]{4})?$/;
 			return objRegExp.test(strValue);
 		}
+		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 
