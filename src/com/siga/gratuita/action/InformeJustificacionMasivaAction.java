@@ -351,6 +351,13 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 	//					UtilidadesHash.set(hashActuacion,
 	//							ScsActuacionDesignaBean.C_USUMODIFICACION,
 	//							new Long(this.getUserBean(request).getIdPersona()));
+							
+						UtilidadesHash.set(hashActuacion,
+									ScsActuacionDesignaBean.C_FECHACREACION,
+									"sysdate");
+						UtilidadesHash.set(hashActuacion,
+									ScsActuacionDesignaBean.C_USUCREACION,
+									new Long(this.getUserBean(request).getUserName()));
 	
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_IDPROCEDIMIENTO,
