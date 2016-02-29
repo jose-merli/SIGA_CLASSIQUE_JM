@@ -701,6 +701,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		String activarInformesOficioLetrado = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_ACTIVAR_INFORMES_OFICIO_LETRADO, "0");
 		boolean isinformesOficioLetradoActivo = informeBeans!=null && informeBeans.size()>0 && activarInformesOficioLetrado!=null && activarInformesOficioLetrado.equals(ClsConstants.DB_TRUE);
 		
+		String justificacionModificaAct = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_JUSTIFICACION_EDITAR_ACT_FICHA, ClsConstants.DB_FALSE);
+		boolean isPermitidoEditarActFicha = justificacionModificaAct!=null && justificacionModificaAct.equals(ClsConstants.DB_TRUE);
 		
 		
 		try {
@@ -723,7 +725,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 					for (int i = 0; i < datos.size(); i++) {
 						Row designaRow = (Row)datos.get(i);
 						Hashtable designaHashtable = (Hashtable) designaRow.getRow();
-						List<DesignaForm> designaList = admDesignas.getDesignaList(fInformeJustificacion, designaHashtable,null, false);
+						List<DesignaForm> designaList = admDesignas.getDesignaList(fInformeJustificacion, designaHashtable,null, false,isPermitidoEditarActFicha);
 						
 						designaFormList.addAll(designaList);
 					}
@@ -765,7 +767,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 				fInformeJustificacion.setIncluirEjgSinResolucion(codIncluirEjgSinResolucion);
 				
 				String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
-				 PaginadorBind paginador = admDesignas.getDesignasJustificacionPaginador(fInformeJustificacion,longitudNumEjg,false);
+				 PaginadorBind paginador = admDesignas.getDesignasJustificacionPaginador(fInformeJustificacion,longitudNumEjg,false,isPermitidoEditarActFicha);
 				
 				
 				if (paginador!=null&& paginador.getNumeroTotalRegistros()>0){
@@ -777,7 +779,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 					for (int i = 0; i < datos.size(); i++) {
 						Row designaRow = (Row)datos.get(i);
 						Hashtable designaHashtable = (Hashtable) designaRow.getRow();
-						List<DesignaForm> designaList = admDesignas.getDesignaList(fInformeJustificacion, designaHashtable,null, false);
+						List<DesignaForm> designaList = admDesignas.getDesignaList(fInformeJustificacion, designaHashtable,null, false,isPermitidoEditarActFicha);
 						
 						designaFormList.addAll(designaList);
 					}

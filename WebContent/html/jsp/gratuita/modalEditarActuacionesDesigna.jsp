@@ -359,14 +359,8 @@
 		<%}%>
 		
 	}	
-		//Selecciona el valor del combo -->
-		function rellenarCombos() {
-			<% if (modoAnterior!=null && !modoAnterior.equalsIgnoreCase("VER")) { %>
-				document.getElementById("juzgado").onchange();
-			<% } %>
-			return;
-			;
-		}
+		
+		
 		
 		var bJuzgado=false;
 		// Funcion que obtiene el juzgado buscando por codigo externo	
@@ -494,7 +488,7 @@
 	</script>		
 </head>
 
-<body onload="rellenarCombos(); cambiarAcreditacion();">
+<body onload="cambiarAcreditacion();">
 
 
 <!-- TITULO -->
@@ -1222,7 +1216,10 @@
 			var objRegExp  = /^([0-9]+\/[0-9]{4})?$/;
 			return objRegExp.test(strValue);
 		}
-		
+		<% if (modoAnterior!=null && !modoAnterior.equalsIgnoreCase("VER")) { %>
+			if(document.getElementById("juzgado") && document.getElementById("juzgado").onchange)
+				document.getElementById("juzgado").onchange();
+		<% } %>
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 

@@ -1807,7 +1807,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 													<td><c:choose>
 													
 														<c:when
-															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V')&&(designa.cambioLetrado=='S' || (actuacion.idFacturacion!=null&&actuacion.idFacturacion!='')  )}">
+															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V') && (designa.cambioLetrado=='S' || (actuacion.idFacturacion!=null&&actuacion.idFacturacion!='')||(actuacion.permitirEditActuacionLetrado=='0' && InformeJustificacionMasivaForm.fichaColegial==true ) )}">
 															<img id="iconoboton_consultar1"
 																src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>"
 																style="cursor: hand;" alt="Consultar" name="consultar_1"
@@ -1985,7 +1985,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 														
 														
 														<c:when
-															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V')&&(designa.cambioLetrado=='S' || (actuacion.idFacturacion!=null&&actuacion.idFacturacion!='') )}">
+															test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V')&&(designa.cambioLetrado=='S' || (actuacion.idFacturacion!=null&&actuacion.idFacturacion!='') ||(actuacion.permitirEditActuacionLetrado=='0' && InformeJustificacionMasivaForm.fichaColegial==true ) )}">
 															<img id="iconoboton_consultar1"
 																src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>"
 																style="cursor: hand;" alt="Consultar" name="consultar_1"

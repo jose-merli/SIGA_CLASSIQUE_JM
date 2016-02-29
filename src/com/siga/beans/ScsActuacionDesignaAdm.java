@@ -634,11 +634,11 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		
 		}
 
-		public void setActuacionesDesignas(DesignaForm designa, boolean isMostrarJustificacionesPtes, boolean isSoloLectura)  throws ClsExceptions, SIGAException 
+		public void setActuacionesDesignas(DesignaForm designa, boolean isMostrarJustificacionesPtes, boolean isSoloLectura, boolean idPermitirEditarLetrado)  throws ClsExceptions, SIGAException 
 	{
 	    Hashtable<Integer,String> codigos = new Hashtable<Integer,String>();
 	    int contador=0;
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION ACREDITACION,AC.IDTIPOACREDITACION,ACP.PORCENTAJE, TAC.DESCRIPCION TIPO, ");
 		sql.append(" PRO.NOMBRE PROCEDIMIENTO,PRO.CODIGO CATEGORIA, PRO.IDJURISDICCION,PRO.COMPLEMENTO,PRO.PERMITIRANIADIRLETRADO,ACT.NUMEROASUNTO,ACT.IDPROCEDIMIENTO,ACT.IDJUZGADO,");
 		sql.append(" TO_CHAR(ACT.FECHAJUSTIFICACION,'dd/mm/yyyy') FECHAJUSTIFICACION,ACT.VALIDADA,ACT.IDFACTURACION,ACT.NUMEROPROCEDIMIENTO,ACT.ANIOPROCEDIMIENTO ");
@@ -648,6 +648,17 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" AND FJG.IDFACTURACION = ACT.IDFACTURACION) AS ");
 		sql.append(" DESCRIPCIONFACTURACION ");
 		sql.append(" ,ACT.DOCJUSTIFICACION ");
+		if(idPermitirEditarLetrado){
+			sql.append(" ,DECODE(NVL(ACT.VALIDADA,0),1,0, DECODE( ACT.IDPERSONACOLEGIADO, ");
+			sql.append(" (SELECT P.IDPERSONA ");
+			sql.append(" FROM ADM_USUARIOS U,CEN_PERSONA P ");
+			sql.append(" WHERE U.NIF = P.NIFCIF ");
+			sql.append(" AND U.IDINSTITUCION = ACT.IDINSTITUCION ");
+			sql.append(" AND U.IDUSUARIO = ACT.USUMODIFICACION),1,0 )      ) PERMITIREDITARLETRADO ");
+		}else{
+			sql.append(" ,0 PERMITIREDITARLETRADO ");
+		}
+		
 		
 		
 		sql.append(" FROM SCS_ACTUACIONDESIGNA          ACT, ");
@@ -713,7 +724,8 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				actuacionDesigna.setIdJurisdiccion((String)registro.get("IDJURISDICCION"));
 				actuacionDesigna.setIdFacturacion((String)registro.get("IDFACTURACION"));
 				actuacionDesigna.setDescripcionFacturacion((String)registro.get("DESCRIPCIONFACTURACION"));
-				actuacionDesigna.setPermitirEditarActuacion((String)registro.get("PERMITIRANIADIRLETRADO"));
+				
+				actuacionDesigna.setPermitirEditActuacionLetrado((String)registro.get("PERMITIREDITARLETRADO"));
 				actuacionDesigna.setNumeroProcedimiento((String)registro.get("NUMEROPROCEDIMIENTO"));
 				actuacionDesigna.setAnioProcedimiento((String)registro.get("ANIOPROCEDIMIENTO"));
 				

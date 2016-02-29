@@ -94,4 +94,11 @@ values ('3400108', 'Designación. Eliminación de Actuaciones#EU', '3', sysdate, 0
 insert into GEN_RECURSOS_CATALOGOS (IDRECURSO, DESCRIPCION, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDINSTITUCION, NOMBRETABLA, CAMPOTABLA, IDRECURSOALIAS)
 values ('3400108', 'Designación. Eliminación de Actuaciones#GL', '4', sysdate, 0, null, 'CEN_TIPOCAMBIO', 'DESCRIPCION', 'cen_tipocambio.descripcion.0.108');
 
+INSERT INTO GEN_PARAMETROS (MODULO,PARAMETRO,VALOR,FECHAMODIFICACION,USUMODIFICACION,IDINSTITUCION,IDRECURSO)
+VALUES ('SCS','JUSTIFICACION_EDITAR_ACT_FICHA','0',SYSDATE,0,0,'scs.parametro.scs.justificacionEditarActFicha');
+  
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.scs.justificacionEditarActFicha', 'Permitir modificar y borrar actuaciones de designación en la ficha colegial(1:Si, 0:No)', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.scs.justificacionEditarActFicha', 'Permitir modificar y borrar actuaciones de designación en la ficha colegial(1:Si, 0:No)#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.scs.justificacionEditarActFicha', 'Permitir modificar y borrar actuaciones de designación en la ficha colegial(1:Si, 0:No)#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.scs.justificacionEditarActFicha', 'Permitir modificar y borrar actuaciones de designación en la ficha colegial(1:Si, 0:No)#EU', 0, '3', sysdate, 0, '19');
 

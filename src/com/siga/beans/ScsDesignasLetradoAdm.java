@@ -180,11 +180,11 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	private PaginadorBind getDesignasPendientesJustificacionPaginador(InformeJustificacionMasivaForm formulario,String longitudNumEjg,boolean isInforme)throws ClsExceptions,SIGAException {
+	private PaginadorBind getDesignasPendientesJustificacionPaginador(InformeJustificacionMasivaForm formulario,String longitudNumEjg,boolean isInforme,boolean isPermitidoEditarActFicha)throws ClsExceptions,SIGAException {
 		PaginadorBind paginador=null;
 		try {
 			Acumulador acumula = new Acumulador();
-			List<DesignaForm> designasList = getDesignasJustificacion(formulario,acumula,longitudNumEjg,isInforme);
+			List<DesignaForm> designasList = getDesignasJustificacion(formulario,acumula,longitudNumEjg,isInforme,isPermitidoEditarActFicha);
 			
 			if(designasList!=null && designasList.size()>0){
 				Hashtable codigosHashtable = new Hashtable();
@@ -248,11 +248,11 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		return paginador;                        
 	}
 	
-	public PaginadorBind getDesignasJustificacionPaginador(InformeJustificacionMasivaForm formulario,String longitudNumEjg,boolean isInforme) throws ClsExceptions, SIGAException{
+	public PaginadorBind getDesignasJustificacionPaginador(InformeJustificacionMasivaForm formulario,String longitudNumEjg,boolean isInforme,boolean isPermitidoEditarActFicha) throws ClsExceptions, SIGAException{
 		PaginadorBind paginador=null;
 		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
 		if(isMostrarJustificacionesPtes){
-			paginador = getDesignasPendientesJustificacionPaginador(formulario,longitudNumEjg, isInforme);
+			paginador = getDesignasPendientesJustificacionPaginador(formulario,longitudNumEjg, isInforme,isPermitidoEditarActFicha);
 		}else{
 			paginador = getTodasDesignasJustificacionPaginador(formulario, longitudNumEjg, isInforme);
 		}
@@ -260,14 +260,14 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 	}	
 	
 	
-	private Vector getDesignasLetradoJustificacion (InformeJustificacionMasivaForm formulario,Acumulador	acumula,String longitudNumEjg,boolean isInforme)  throws ClsExceptions, SIGAException 
+	private Vector getDesignasLetradoJustificacion (InformeJustificacionMasivaForm formulario,Acumulador	acumula,String longitudNumEjg,boolean isInforme,boolean isPermitidoEditarActFicha)  throws ClsExceptions, SIGAException 
 	{
 		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
 		
 		if(isMostrarJustificacionesPtes){
 			
 			
-			List<DesignaForm> designasList = getDesignasJustificacion(formulario,acumula,longitudNumEjg,isInforme);
+			List<DesignaForm> designasList = getDesignasJustificacion(formulario,acumula,longitudNumEjg,isInforme,isPermitidoEditarActFicha);
 			
 			if(designasList!=null && designasList.size()>0){
 				Hashtable codigosHashtable = new Hashtable();
@@ -288,7 +288,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 	
 	
 	
-	public Hashtable getPersonasSalidaInformeJustificacion(InformeJustificacionMasivaForm formulario,String longitudNumEjg,boolean isInforme) throws ClsExceptions  
+	public Hashtable getPersonasSalidaInformeJustificacion(InformeJustificacionMasivaForm formulario,String longitudNumEjg,boolean isInforme,boolean isPermitidoEditarActFicha) throws ClsExceptions  
 	{	 
 		
 		Hashtable htPersona = new Hashtable();
@@ -298,7 +298,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		try {
 			ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: INICIO Consultas Justificacion",10);
 			Acumulador acumula = new Acumulador();
-			Vector vDesigna = getDesignasLetradoJustificacion(formulario,acumula,longitudNumEjg,isInforme);
+			Vector vDesigna = getDesignasLetradoJustificacion(formulario,acumula,longitudNumEjg,isInforme,isPermitidoEditarActFicha);
 			
 			for (int j = 0; j < vDesigna.size(); j++) {
 				
@@ -331,7 +331,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 						registro.put("PROVINCIA_LETRADO",(String)primerRegistroPersona.get("PROVINCIA_LETRADO"));
 					}
 				}
-				List<DesignaForm> designaList = getDesignaList(formulario, registro, acumula, isInforme);
+				List<DesignaForm> designaList = getDesignaList(formulario, registro, acumula, isInforme,isPermitidoEditarActFicha);
 				registro.put("designaList", designaList);
 				tmDesignas.put(keyTreeMap, registro);
 				htPersona.put(idPersona,tmDesignas);
@@ -520,7 +520,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 
 	}
 	
-	public List<DesignaForm> getDesignasJustificacion(InformeJustificacionMasivaForm formulario,Acumulador acumula,String longitudNumEjg,boolean isInforme) throws ClsExceptions  
+	public List<DesignaForm> getDesignasJustificacion(InformeJustificacionMasivaForm formulario,Acumulador acumula,String longitudNumEjg,boolean isInforme,boolean isPermitidoEditarActFicha) throws ClsExceptions  
 	{	 
 		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
 		
@@ -532,6 +532,8 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		List<DesignaForm> designaFormList = null;
 		ScsActuacionDesignaAdm admActuacionDesignaAdm = new ScsActuacionDesignaAdm(usrbean);
 		String idPersona = formulario.getIdPersona();
+		
+		
 		
 		try {
 			//Sacamos todas las designa con los filtros.  Mas adelante miraremos que, dependiendo de las actuaciones que tenga y de la peticion, se necesitan sacar las que esten pendientes de justificar o todas.
@@ -633,7 +635,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				)){
 					
 					designaForm.setPermitidoJustificar(true);
-					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes,false);
+					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes,false,isPermitidoEditarActFicha);
 					designaForm.setRowSpan();
 					
 					if(!isMostrarJustificacionesPtes){
@@ -658,7 +660,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				)){
 					
 					designaForm.setPermitidoJustificar(false);
-					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes,true);
+					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes,true,isPermitidoEditarActFicha);
 					designaForm.setRowSpan();
 					if(designaForm.getActuaciones()!=null && !designaForm.getActuaciones().isEmpty())
 						designaForm.addRowSpan();
@@ -693,7 +695,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	public List<DesignaForm> getDesignaList(InformeJustificacionMasivaForm formulario,Hashtable designaHashtable,Acumulador acumula,boolean isInforme) throws ClsExceptions  
+	public List<DesignaForm> getDesignaList(InformeJustificacionMasivaForm formulario,Hashtable designaHashtable,Acumulador acumula,boolean isInforme,boolean isPermitidoEditarActFicha) throws ClsExceptions  
 	{	 
 		
 		Hashtable htPersona = new Hashtable();
@@ -824,7 +826,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				)){
 					
 					designaForm.setPermitidoJustificar(true);
-					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes,false);
+					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes,false,isPermitidoEditarActFicha);
 					designaForm.setRowSpan();
 					
 					if(!isMostrarJustificacionesPtes){
@@ -849,7 +851,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				)){
 					
 					designaForm.setPermitidoJustificar(false);
-					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes,true);
+					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes,true,isPermitidoEditarActFicha);
 					designaForm.setRowSpan();
 					if(designaForm.getActuaciones()!=null && !designaForm.getActuaciones().isEmpty())
 						designaForm.addRowSpan();
