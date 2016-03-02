@@ -656,6 +656,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
     /* P_NUMEROLINEA - IN OUT - Identificador del numero de la linea de la factura - NUMBER */
     /* P_PRIMERALINEAFACTURA - IN OUT - Estamos insertando la primera linea de la factura - VARCHAR2(1) */
     /* P_IDFACTURACIONSUSCRIPCION - IN OUT - Identificador la facturacion suscripcion - NUMBER */
+    /* P_FACTURACIONPROPORCIONAL - IN OUT - Indica si es una facturacion proporcional */
     /* P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)   */
     /*      En caso de error devuelve el codigo de error Oracle correspondiente. */
     /* P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400) */
@@ -685,6 +686,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
         P_NUMEROLINEA IN OUT NUMBER,
         P_PRIMERALINEAFACTURA IN OUT VARCHAR2,
         P_IDFACTURACIONSUSCRIPCION IN OUT NUMBER,
+        P_FACTURACIONPROPORCIONAL IN OUT VARCHAR2,
         P_CODRETORNO OUT VARCHAR2,
         P_DATOSERROR OUT VARCHAR2)
     IS
@@ -929,8 +931,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                         V_PERIODO := V_PERIODOFIN;
                         V_DESCRIPCIONPRECIO := V_DESCRIPCIONPRECIOFIN;
                         V_VALOR_TIPOIVA := V_VALOR_TIPOIVA_FIN;
-                        V_FECHAINICIALPERIODO := V_FECHA;
-                        V_FECHAFINALPERIODO := V_FECHAFIN;
+                        V_FECHAINICIALPERIODO := V_FECHA;                              
+                        IF (P_FACTURACIONPROPORCIONAL='1') THEN
+                            V_FECHAFINALPERIODO := P_FECHAFINALPERIODO;
+                        ELSE
+                            V_FECHAFINALPERIODO := V_FECHAFIN;                                                        
+                        END IF;                            
                         P_NUMEROLINEA := P_NUMEROLINEA + 1;
                         P_IDFACTURACIONSUSCRIPCION := P_IDFACTURACIONSUSCRIPCION + 1;
                     END IF;
@@ -1162,7 +1168,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                     SUSCRIP.FECHABAJAFACTURACION,
                     SUSCRIP.IDFORMAPAGO AS IDFORMAPAGO_LINEA,
                     SERVICIO.DESCRIPCION,
-                    SERVICIO.FACTURACIONPONDERADA,
+                    SERVICIO.FACTURACIONPONDERADA AS FACTURACIONPROPORCIONAL,
                     SUBSTR(PER.NIFCIF, 1, 9) AS DEUDOR_ID,
                     PER.NOMBRE || ' ' ||PER.APELLIDOS1 || ' ' ||  PER.APELLIDOS2 AS DEUDOR_NOMBRE,                    
                     PSS.ORDEN,                                        
@@ -1498,7 +1504,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                         RAISE E_ERROR;
                     END IF;
 
-                    IF (V_FacturacionServicios.FACTURACIONPONDERADA='1') THEN
+                    IF (V_FacturacionServicios.FACTURACIONPROPORCIONAL='1') THEN
                         /* Si la fecha de inicio del periodo es anterior a la fecha de suscripcion, consideramos como fecha de inicio del periodo la fecha de suscripcion. */
                         V_DATOSERROR := 'CARGATABLASMEMORIA(Servicios): Obtencion de la fecha inicial del periodo';
                         IF (V_FECHAINICIALPERIODO < V_FacturacionServicios.FECHASUSCRIPCION) THEN
@@ -1553,6 +1559,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                                 V_NUMEROLINEA, -- IN OUT
                                 V_PRIMERALINEAFACTURA, -- IN OUT
                                 V_IDFACTURACIONSUSCRIPCION, -- IN OUT
+                                V_FacturacionServicios.FACTURACIONPROPORCIONAL, -- IN OUT
                                 V_CODRETORNO, -- OUT
                                 V_DATOSERROR); -- OUT
                             IF V_CODRETORNO <> TO_CHAR(0) THEN
@@ -1587,6 +1594,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                             V_NUMEROLINEA, -- IN OUT
                             V_PRIMERALINEAFACTURA, -- IN OUT
                             V_IDFACTURACIONSUSCRIPCION, -- IN OUT
+                            V_FacturacionServicios.FACTURACIONPROPORCIONAL, -- IN OUT
                             V_CODRETORNO, -- OUT
                             V_DATOSERROR); -- OUT
                         IF V_CODRETORNO <> TO_CHAR(0) THEN
@@ -1617,6 +1625,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                             V_NUMEROLINEA, -- IN OUT
                             V_PRIMERALINEAFACTURA, -- IN OUT
                             V_IDFACTURACIONSUSCRIPCION, -- IN OUT
+                            V_FacturacionServicios.FACTURACIONPROPORCIONAL, -- IN OUT
                             V_CODRETORNO, -- OUT
                             V_DATOSERROR); -- OUT
                         IF V_CODRETORNO <> TO_CHAR(0) THEN
