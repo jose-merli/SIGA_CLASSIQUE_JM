@@ -2319,14 +2319,14 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			    if(beanSolicitud.getFechaCobro() != null && !"".equalsIgnoreCase(beanSolicitud.getFechaCobro())){
 			    	  htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);	
 			    }else{
-			    htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+			    		htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
 			    }
 			    
 			    tx.begin();
 			    if (admSolicitud.update(htNew, htOld)) {
 			    	//Si viene vacio quiere decir que estamos llamando a este método desde el demonio
 			    	if(request != null){
-			        request.setAttribute("mensaje", "messages.updated.success");
+			    		request.setAttribute("mensaje", "messages.updated.success");
 			    	}else{
 			    		ClsLogging.writeFileLog("-- SE HA FINALIZADO CON EXITO --",4);
 			    	}
@@ -2647,7 +2647,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	   String idSerieSeleccionada = (String) formSolicitudesCertificados.getIdSerieSeleccionada();
 	   UsrBean usr = this.getUserBean(request);
 	   String[] claves = {CerSolicitudCertificadosBean.C_IDINSTITUCION, CerSolicitudCertificadosBean.C_IDSOLICITUD};
-  	   String[] campos = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
+	   String[] campos = {CerSolicitudCertificadosBean.C_FECHAESTADO,CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
   	   Facturacion facturacion = new Facturacion(usr);
   	   CerSolicitudCertificadosService  cerSolicitudCertificadosService = (CerSolicitudCertificadosService) BusinessManager.getInstance().getService(CerSolicitudCertificadosService.class);
 	   List <CerSolicitudcertificados> listaCerSolicitudcertificados = new ArrayList<CerSolicitudcertificados>();
@@ -2694,6 +2694,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 										
 									    	facturacion.facturacionRapidaProductosCertificados((informacionDeUnCertificado[1].split("="))[1], null, idSerieSeleccionada, (informacionDeUnCertificado[0].split("="))[1], request);
 									    	//Pasamos a facturado
+									    	htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
 									    	htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
 									    	admSolicitud.updateDirect(htNew, claves, campos );
 								    	
@@ -2704,8 +2705,9 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 												log.flush();
 								    		
 											contadorError++;
+											String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
 								    		htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
-								    		admSolicitud.updateDirect(htNew, claves, campos );
+								    		admSolicitud.updateDirect(htNew, claves, camposAux );
 								    	}catch(ClsExceptions e){
 								    		log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), e.getMsg()});
 									    	  /** Escribiendo fichero de log **/
@@ -2713,8 +2715,9 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 												log.flush();
 								    		
 											contadorError++;
+											String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
 								    		htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
-								    		admSolicitud.updateDirect(htNew, claves, campos );
+								    		admSolicitud.updateDirect(htNew, claves, camposAux );
 								    	}
 								   }else{
 									   CerEstadoSoliCertifiAdm estAdm = new CerEstadoSoliCertifiAdm(usr);

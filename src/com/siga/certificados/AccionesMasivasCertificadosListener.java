@@ -300,7 +300,7 @@ public class AccionesMasivasCertificadosListener extends SIGAListenerPorMinutosA
 					String.valueOf(cerSolicitudcertificados.getIdinstitucion()),"1");
 		 try{
 				 String[] claves = {CerSolicitudCertificadosBean.C_IDINSTITUCION, CerSolicitudCertificadosBean.C_IDSOLICITUD};
-			  	 String[] campos = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
+				 String[] campos = {CerSolicitudCertificadosBean.C_FECHAESTADO,CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
 			  	 CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(usr);
 					
 				
@@ -328,22 +328,25 @@ public class AccionesMasivasCertificadosListener extends SIGAListenerPorMinutosA
 					 try{
 						 facturacion.facturacionRapidaProductosCertificados(String.valueOf(cerSolicitudcertificados.getIdinstitucion()), null, idSerieFacturacionSeleccionada,String.valueOf(cerSolicitudcertificados.getIdsolicitud()), request);
 						//Pasamos a facturado
-					    	htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+						  	htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");	
+						  	htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
 					    	admSolicitud.updateDirect(htNew, claves, campos );
 					 }catch(SIGAException e){
 				    		log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),((SIGAException) e).getLiteral(usr.getLanguage())});
 					    	  /** Escribiendo fichero de log **/
 							if (log != null)
 								log.flush();
+							String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
 				    		htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
-				    		admSolicitud.updateDirect(htNew, claves, campos );
+				    		admSolicitud.updateDirect(htNew, claves, camposAux );
 			    	}catch(ClsExceptions e){
 			    		log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), e.getMsg()});
 				    	  /** Escribiendo fichero de log **/
 						if (log != null)
 							log.flush();
+						String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
 			    		htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
-			    		admSolicitud.updateDirect(htNew, claves, campos );
+			    		admSolicitud.updateDirect(htNew, claves, camposAux );
 			    	}
 					 
 				 }else{
