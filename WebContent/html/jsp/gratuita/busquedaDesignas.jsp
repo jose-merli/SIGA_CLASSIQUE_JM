@@ -36,7 +36,7 @@
 	Hashtable datos = (Hashtable)request.getSession().getAttribute("DATOSFORMULARIO");
 	String anio="", codigo="", fechaAperturaInicio="", fechaAperturaFin="", idTurno ="", tipoDesigna="", sufijo="";
 	String nif="", nombre="", apellido1="", apellido2="", nombreMostrado="";
-	String estado="",calidad="",procedimiento="",asunto="",actuacionesPendientes="", nig="";
+	String estado="",calidad="",procedimiento="",asunto="",actuacionesPendientes="", nig="", fechaJustificacionDesde="", fechaJustificacionHasta="",origen="";
 	ArrayList juzgadoSel   = new ArrayList();
 	ArrayList juzgado   = new ArrayList();
 	ArrayList juzgadoActu   = new ArrayList();
@@ -63,10 +63,13 @@
 			sufijo=(String)datos.get("SUFIJO");
 			fechaAperturaInicio=(String)datos.get("FECHAENTRADAINICIO");
 			fechaAperturaFin=(String)datos.get("FECHAENTRADAFIN");
+			fechaJustificacionDesde=(String)datos.get("FECHAJUSTIFICACIONDESDE");
+			fechaJustificacionHasta=(String)datos.get("FECHAJUSTIFICACIONHASTA");
 			idTurno =(String)datos.get("IDTURNO");
 			tipoDesigna=(String)datos.get("IDTIPODESIGNACOLEGIO");
 			actuacionesPendientes=(String)datos.get("ACTUACIONES_PENDIENTES");
 			estado =(String)datos.get("ESTADO");
+			origen = (String)datos.get("ORIGEN");
 			calidad =(String)datos.get("CALIDAD");		
 			juzgado.add((String)datos.get("JUZGADO"));
 			procedimiento =(String)datos.get("PROCEDIMIENTO");						
@@ -389,6 +392,43 @@
 				<siga:Select id="juzgadoActu" queryId="getJuzgados" selectedIds="<%=juzgadoActu%>" width="680" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="10" />
 			</td>
 		</tr>
+		<tr>
+			<td class="labelText">
+					<siga:Idioma key="gratuita.busquedaDesignas.literal.origenActuaciones"/>			
+				</td>
+				<td class="labelText" >	
+					<Select name="origen" id="origen" class="boxCombo" >
+						<%if(origen!=null && !origen.equals("")){%>
+							<%if(origen.equals("ICA")){%>	
+								<option value=''></option>
+								<option value='ICA'  selected="selected"><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegioSIGA"/></option>
+								<option value='C' ><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegiadoSIGA"/></option>		
+							<%} %>	
+							<%if(origen.equals("C")){%>	
+								<option value=''></option>
+								<option value='ICA'><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegioSIGA"/></option>
+								<option value='C' selected="selected"><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegiadoSIGA"/></option>		
+							<%} %>	
+						<%}else{ %>
+							<option value='' selected="selected"></option>
+							<option value='ICA' ><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegioSIGA"/></option>
+							<option value='C' ><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegiadoSIGA"/></option>	
+						<%} %>
+									
+					</Select>
+				</td>
+		</tr>
+		<tr >
+			
+			<td class="labelText"><siga:Idioma key="gratuita.busquedaDesignas.literal.fechaJustificacion.desde" /></td>
+			<td class="labelText" >
+				<siga:Fecha nombreCampo="fechaJustificacionDesde" valorInicial="<%=fechaJustificacionDesde%>" /> 
+				<siga:Idioma key="gratuita.busquedaDesignas.literal.fechaJustificacion.hasta" />
+				<siga:Fecha nombreCampo="fechaJustificacionHasta" valorInicial="<%=fechaJustificacionHasta%>" campoCargarFechaDesde="fechaJustificacionDesde"/> 
+			</td>
+					
+			
+		</tr>
 		
 		</table>
 	</siga:ConjCampos>
@@ -494,6 +534,24 @@
 			}else{
 				setFocusFormularios();
 			}
+			if((validarFecha(document.forms[0].fechaJustificacionDesde.value))&&
+					   (validarFecha(document.forms[0].fechaJustificacionHasta.value))){
+						sub();
+							if (isNaN(document.forms[0].anio.value)) {
+								fin();
+								alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
+								return false;
+							}
+							document.forms[0].target="resultado";
+							if(modo)
+								document.forms[0].modo.value = modo;
+							else
+								document.forms[0].modo.value = "buscarInicio";
+							
+							document.forms[0].submit();
+					}else{
+						setFocusFormularios();
+					}
 			jQuery("#nig2").keyup();
 		}
 			function seleccionarTodos(pagina) 
@@ -571,10 +629,14 @@
 			jQuery("#fechaAperturaInicio").val(""); // fechaAperturaInicio
 			jQuery("#fechaAperturaFin").val(""); // fechaAperturaFin
 			
+			jQuery("#fechaJustificacionDesde").val(""); // fechaJustificacionDesde
+			jQuery("#fechaJustificacionHasta").val(""); // fechaJustificacionHasta
+			
 			jQuery("#idTurno").val(""); // idTurno
 			jQuery("#tipoDesigna").val(""); // tipoDesigna
 			
 			jQuery("#estado").val(""); // estado
+			jQuery("#origen").val(""); // origen
 			jQuery("#actuacionesPendientes").val(""); // actuacionesPendientes
 			jQuery("#mostrarArt27").val(""); // mostrarArt27
 			

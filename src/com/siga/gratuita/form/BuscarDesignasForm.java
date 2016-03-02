@@ -13,7 +13,6 @@ import com.siga.general.MasterForm;
  */
 
 
-
 public class BuscarDesignasForm extends MasterForm {
 	/**
 	 * 
@@ -103,6 +102,12 @@ public class BuscarDesignasForm extends MasterForm {
 	}
 	public String getEstado	()	{
 		return UtilidadesHash.getString(datos,"ESTADO");
+	}
+	public void setOrigen	(String a)	{
+		UtilidadesHash.set(datos, "ORIGEN", a);
+	}
+	public String getOrigen	()	{
+		return UtilidadesHash.getString(datos,"ORIGEN");
 	}
 	public void setAnioEjg	(String a)	{
 		UtilidadesHash.set(datos, "ANIO_EJG", a);
@@ -262,6 +267,26 @@ public class BuscarDesignasForm extends MasterForm {
 	 */
 	public void setFechaAperturaFin	(String fechaAperturaFin)	{
 		this.datos.put("FECHAENTRADAFIN", fechaAperturaFin);
+	}
+	
+	/**
+	 * Almacena en la Hashtable el campo de fecha Justificacion desde introducida en el formulario 
+	 * 
+	 * @param Fecha Fustificacion desde
+	 * @return void 
+	 */
+	public void setFechaJustificacionDesde	(String fechaJustificacionDesde)	{
+		this.datos.put("FECHAJUSTIFICACIONDESDE", fechaJustificacionDesde);
+	}
+	
+	/**
+	 * Almacena en la Hashtable el campo de fecha Justificacion Hasta introducida en el formulario 
+	 * 
+	 * @param Fecha Justificacion Hasta 
+	 * @return void 
+	 */
+	public void setFechaJustificacionHasta	(String fechaJustificacionHasta)	{
+		this.datos.put("FECHAJUSTIFICACIONHASTA", fechaJustificacionHasta);
 	}
 	
 	/**
@@ -435,6 +460,26 @@ public class BuscarDesignasForm extends MasterForm {
 	 */
 	public String getFechaAperturaFin	()	{
 		return (String)this.datos.get("FECHAENTRADAFIN");
+	}
+	
+	/**
+	 * Recupera de la Hashtable el campo de fecha Justificacion Desde introducida en el formulario 
+	 * 
+	 * @param Fecha Justificacion Desde
+	 * @return  
+	 */
+	public String getFechaJustificacionDesde()	{
+		return (String)this.datos.get("FECHAJUSTIFICACIONDESDE");
+	}
+	
+	/**
+	 * Recupera de la Hashtable el campo de fecha Justificacion Hasta introducida en el formulario 
+	 * 
+	 * @param Fecha Justificacion Hasta
+	 * @return  
+	 */
+	public String getFechaJustificacionHasta()	{
+		return (String)this.datos.get("FECHAJUSTIFICACIONHASTA");
 	}
 	
 	/**
