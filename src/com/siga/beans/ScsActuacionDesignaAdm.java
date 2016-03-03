@@ -649,15 +649,27 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" DESCRIPCIONFACTURACION ");
 		sql.append(" ,ACT.DOCJUSTIFICACION ");
 		if(idPermitirEditarLetrado){
-			sql.append(" ,DECODE(NVL(ACT.VALIDADA,0),1,0, DECODE( ACT.IDPERSONACOLEGIADO, ");
+			sql.append(" ,DECODE(ACT.IDPERSONACOLEGIADO, ");
 			sql.append(" (SELECT P.IDPERSONA ");
-			sql.append(" FROM ADM_USUARIOS U,CEN_PERSONA P ");
+			sql.append(" FROM ADM_USUARIOS U, CEN_PERSONA P ");
 			sql.append(" WHERE U.NIF = P.NIFCIF ");
 			sql.append(" AND U.IDINSTITUCION = ACT.IDINSTITUCION ");
-			sql.append(" AND U.IDUSUARIO = ACT.USUMODIFICACION),1,0 )      ) PERMITIREDITARLETRADO ");
+			sql.append(" AND U.IDUSUARIO = ACT.USUCREACION), ");
+		              
+			sql.append(" DECODE(NVL(ACT.VALIDADA, 0),  1,  0, ");
+			sql.append(" DECODE(ACT.IDPERSONACOLEGIADO, ");
+			sql.append(" (SELECT P.IDPERSONA ");
+			sql.append(" FROM ADM_USUARIOS U, CEN_PERSONA P ");
+			sql.append(" WHERE U.NIF = P.NIFCIF ");
+			sql.append(" AND U.IDINSTITUCION = ACT.IDINSTITUCION ");
+			sql.append(" AND U.IDUSUARIO = ACT.USUMODIFICACION), ");
+			sql.append(" 1, ");
+			sql.append(" 0)), ");
+			sql.append(" 0) PERMITIREDITARLETRADO ");
 		}else{
 			sql.append(" ,0 PERMITIREDITARLETRADO ");
 		}
+		
 		
 		
 		
