@@ -2452,8 +2452,19 @@ public class DefinirEnviosAction extends MasterAction {
 							    			}
 							    			}
 							      			
-							      			Documento certificado = new Documento(fichero,nombreColegiado+ fichero.getName());
-											documentosList.add(certificado);
+							    			Documento factura = new Documento(fichero,nombreColegiado+ fichero.getName());
+							      			//Comprobamos que la factura no esté añadida ya. Caso en que dos certificados pertenezca a la misma facturación con que salga una vez sería suficiente.
+							      			Iterator<Documento> iteratorFicheros = documentosList.iterator();
+											Boolean encontrado = Boolean.FALSE;
+											Documento documento = null;
+											while (iteratorFicheros.hasNext() && !encontrado) {
+												documento = (Documento) iteratorFicheros.next();
+												if(factura.getDescripcion().equalsIgnoreCase(documento.getDescripcion())){
+													encontrado=Boolean.TRUE;
+												}
+											}
+							      			if(!encontrado)
+							      				documentosList.add(factura);
 							         }
 									
 								}

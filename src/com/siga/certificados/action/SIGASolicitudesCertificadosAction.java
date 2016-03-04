@@ -71,6 +71,8 @@ import com.siga.beans.CerPlantillasBean;
 import com.siga.beans.CerSolicitudCertificadosAdm;
 import com.siga.beans.CerSolicitudCertificadosBean;
 import com.siga.beans.CerSolicitudCertificadosTextoBean;
+import com.siga.beans.FacFacturaAdm;
+import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacSerieFacturacionAdm;
 import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.beans.GenParametrosAdm;
@@ -2649,6 +2651,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	   String[] claves = {CerSolicitudCertificadosBean.C_IDINSTITUCION, CerSolicitudCertificadosBean.C_IDSOLICITUD};
 	   String[] campos = {CerSolicitudCertificadosBean.C_FECHAESTADO,CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
   	   Facturacion facturacion = new Facturacion(usr);
+  	   FacFacturaAdm admFactura = new FacFacturaAdm(usr);
   	   CerSolicitudCertificadosService  cerSolicitudCertificadosService = (CerSolicitudCertificadosService) BusinessManager.getInstance().getService(CerSolicitudCertificadosService.class);
 	   List <CerSolicitudcertificados> listaCerSolicitudcertificados = new ArrayList<CerSolicitudcertificados>();
 	   LogFileWriter log = null;
@@ -2689,14 +2692,46 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 							    		String.valueOf(beanSolicitud.getIdEstadoSolicitudCertificado()).equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FACTURANDO)){
 								    	//Si es pendiente de facturar pasamos el estado a facturando.
 								    	try{
+								    		//Si es pendiente de facturar pasamos el estado a facturando.
 									    	htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FACTURANDO); 
 									    	admSolicitud.updateDirect(htNew, claves, campos );
-										
-									    	facturacion.facturacionRapidaProductosCertificados((informacionDeUnCertificado[1].split("="))[1], null, idSerieSeleccionada, (informacionDeUnCertificado[0].split("="))[1], request);
-									    	//Pasamos a facturado
-									    	htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
-									    	htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
-									    	admSolicitud.updateDirect(htNew, claves, campos );
+									    	// Obtiene las facturas de una solicitud de certificado
+								    		 Vector<Hashtable<String,Object>> vFacturas = admFactura.obtenerFacturasFacturacionRapida((informacionDeUnCertificado[1].split("="))[1], null, (informacionDeUnCertificado[0].split("="))[1]);	
+								    		 if (vFacturas==null ||  vFacturas.size()==0) { // No esta facturado 
+										    	facturacion.facturacionRapidaProductosCertificados((informacionDeUnCertificado[1].split("="))[1], null, idSerieSeleccionada, (informacionDeUnCertificado[0].split("="))[1], request);
+										    	//Pasamos a facturado
+										    	htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
+										    	htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+										    	admSolicitud.updateDirect(htNew, claves, campos );
+								    		 }else{
+								    			 //Está facturado, se comprueba si la factura está en revisión o no
+									    			// Obtengo los datos de la factura
+										        	Hashtable<String,Object> hFactura = vFacturas.get(0);
+										        	String estadoFacturacion=UtilidadesHash.getString(hFactura, FacFacturaBean.C_ESTADO);
+										        	if(estadoFacturacion != null && !"".equalsIgnoreCase(estadoFacturacion)){
+										        		if(Integer.parseInt(estadoFacturacion) != 7){
+										        			//Pasamos a finalizado, la factura está confirmada
+													    	htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
+													    	htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+													    	admSolicitud.updateDirect(htNew, claves, campos );
+										        		}else{
+										        			//La factura está en revisión introducimos mensaje 
+										        			log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), "El certificado ya está facturado, pero la factura está En revisión. "+
+										        						"Si quiere continuar con la facturación rápida de este certificado, hay que eliminar previamente la facturación de Certificados " +
+										        						"NO confirmada en Facturación > Mantenimiento Facturación."});
+										        			  /** Escribiendo fichero de log **/
+															if (log != null)
+																log.flush();
+															
+															contadorError++;
+															String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
+												    		htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
+												    		admSolicitud.updateDirect(htNew, claves, camposAux );
+										        		}
+										        		
+										        	}
+									    			
+									    		 }
 								    	
 								    	}catch(SIGAException e){
 								    		log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),((SIGAException) e).getLiteral(usr.getLanguage())});
@@ -2850,7 +2885,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 		UsrBean usr = this.getUserBean(request);
 		CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(usr);
 		String[] claves = { CerSolicitudCertificadosBean.C_IDINSTITUCION, CerSolicitudCertificadosBean.C_IDSOLICITUD };
-		String[] campos = { CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO };
+		String[] campos = {CerSolicitudCertificadosBean.C_FECHAESTADO,CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
 
 		try {
 
@@ -2885,15 +2920,50 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			htNew = beanSolicitud.getOriginalHash();
 			try {
 				Facturacion facturacion = new Facturacion(usr);
-				facturacion.facturacionRapidaProductosCertificados(idInstitucion, null, idSerieSeleccionada, idSolicitudCertificado, request);
-				request.setAttribute("mensaje", "messages.updated.success");
-				request.setAttribute("borrarFichero", "false");		
-				// Pasamos a facturado
-				htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
-				admSolicitud.updateDirect(htNew, claves, campos);
+				FacFacturaAdm admFactura = new FacFacturaAdm(usr);
+				Vector<Hashtable<String,Object>> vFacturas = admFactura.obtenerFacturasFacturacionRapida(idInstitucion, null, idSolicitudCertificado);	
+				 if (vFacturas==null ||  vFacturas.size()==0) { // No esta facturado 
+					facturacion.facturacionRapidaProductosCertificados(idInstitucion, null, idSerieSeleccionada, idSolicitudCertificado, request);
+					request.setAttribute("mensaje", "messages.updated.success");
+					request.setAttribute("borrarFichero", "false");		
+					// Pasamos a facturado
+					htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
+			    	htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+			    	admSolicitud.updateDirect(htNew, claves, campos );
+				 }else{
+						//Está facturado, se comprueba si la factura está en revisión o no
+			    			// Obtengo los datos de la factura
+				        	Hashtable<String,Object> hFactura = vFacturas.get(0);
+				        	String estadoFacturacion=UtilidadesHash.getString(hFactura, FacFacturaBean.C_ESTADO);
+				        	if(estadoFacturacion != null && !"".equalsIgnoreCase(estadoFacturacion)){
+				        		if(Integer.parseInt(estadoFacturacion) != 7){
+				        			//Pasamos a finalizado, la factura está confirmada
+				        			//Import! volvemos a llamar al método facturacionRapidaProductosCertificados, al existir factura este método sólo descargará la factura.
+				        			facturacion.facturacionRapidaProductosCertificados(idInstitucion, null, idSerieSeleccionada, idSolicitudCertificado, request); 
+				        			request.setAttribute("mensaje", "messages.updated.success");
+									request.setAttribute("borrarFichero", "false");		
+							    	htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
+							    	htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+							    	admSolicitud.updateDirect(htNew, claves, campos );
+				        		}else{
+				        			//La factura está en revisión introducimos mensaje 
+									String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
+						    		htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
+						    		admSolicitud.updateDirect(htNew, claves, camposAux );
+						    		String tipoAlert ="error";   
+									request.setAttribute("estiloMensaje",tipoAlert);	
+								     request.setAttribute("mensaje","El certificado ya está facturado, pero la factura está En revisión. "+
+				        						"Si quiere continuar con la facturación rápida de este certificado, hay que eliminar previamente la facturación de Certificados " +
+				        						"NO confirmada en Facturación > Mantenimiento Facturación.");
+						    		
+				        		}
+				        		
+				        	}
+					 }
 			} catch (Exception e) {
+				String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
 				htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
-				admSolicitud.updateDirect(htNew, claves, campos);
+				admSolicitud.updateDirect(htNew, claves, camposAux);
 				throw new SIGAException("Error en la facturación");
 			}
 
