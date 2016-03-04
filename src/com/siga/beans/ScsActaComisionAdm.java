@@ -183,7 +183,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		sql.append(anio);
 		sql.append(" and numeroacta like '%"); 
 		sql.append(sufijo); 
-		sql.append("%'");
+		sql.append("'");
 				
 		RowsContainer rc = new RowsContainer();
 		if (rc.find(sql.toString())) {
