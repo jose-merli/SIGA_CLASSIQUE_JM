@@ -1147,3 +1147,6 @@ Update Gen_Recursos   Set Descripcion = 'Origen / Presentación#GL' Where Idlengu
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacion.facturas.datosGenerales.regenerarFactura', '¿Desea regenerar la factura?#GL', 0, '4', sysdate, 0, '19');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacion.facturas.datosGenerales.regenerarFactura', '¿Desea regenerar la factura?#CA', 0, '2', sysdate, 0, '19');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacion.facturas.datosGenerales.regenerarFactura', '¿Desea regenerar la factura?#EU', 0, '3', sysdate, 0, '19');
+ 
+Modificado PKG_SERVICIOS_AUTOMATICOS;
+Modificado PKG_SIGA_FACTURACION;
