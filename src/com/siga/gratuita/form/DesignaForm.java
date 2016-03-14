@@ -50,6 +50,10 @@ public class DesignaForm extends MasterForm
 	private String cambioLetrado;
 	private String articulo27;
 	boolean permitidoJustificar = false;
+	boolean acreditacionCompleta = false;
+	private String nig;
+	private String numProcedimiento;
+	private String anioProcedimiento;
 	String tipoResolucionDesigna;
 	
 	private int numEjgResueltosFavorables; 
@@ -306,6 +310,38 @@ public class DesignaForm extends MasterForm
 
 	public void setArticulo27(String articulo27) {
 		this.articulo27 = articulo27;
+	}
+
+	public boolean isAcreditacionCompleta() {
+		return acreditacionCompleta;
+	}
+
+	public void setAcreditacionCompleta(boolean acreditacionCompleta) {
+		this.acreditacionCompleta = acreditacionCompleta;
+	}
+
+	public String getNig() {
+		return nig;
+	}
+
+	public String getNumProcedimiento() {
+		return numProcedimiento;
+	}
+
+	public void setNig(String nig) {
+		this.nig = nig;
+	}
+
+	public void setNumProcedimiento(String numProcedimiento) {
+		this.numProcedimiento = numProcedimiento;
+	}
+
+	public String getAnioProcedimiento() {
+		return anioProcedimiento;
+	}
+
+	public void setAnioProcedimiento(String anioProcedimiento) {
+		this.anioProcedimiento = anioProcedimiento;
 	}
 
 	

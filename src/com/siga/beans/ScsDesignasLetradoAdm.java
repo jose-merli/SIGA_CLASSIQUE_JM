@@ -543,46 +543,46 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 			Iterator iteDesignas = designaList.iterator();
 			
 			while (iteDesignas.hasNext()) {
-				Hashtable registro =  (Hashtable) iteDesignas.next();
+				Hashtable designaHashtable =  (Hashtable) iteDesignas.next();
 				designaForm = new DesignaForm();
-				String tipoResolucionDesigna  =UtilidadesHash.getString(registro, "TIPO_RESOLUCION_DESIGNA") ;
+				String tipoResolucionDesigna  =UtilidadesHash.getString(designaHashtable, "TIPO_RESOLUCION_DESIGNA") ;
 				designaForm.setTipoResolucionDesigna(tipoResolucionDesigna);
 				
-				idPersona = (String)registro.get("IDPERSONA");
-				String idProcedimiento  = (String)registro.get("IDPROCEDIMIENTO");
+				idPersona = (String)designaHashtable.get("IDPERSONA");
+				String idProcedimiento  = (String)designaHashtable.get("IDPROCEDIMIENTO");
 				designaForm.setIdPersona(idPersona);
-				designaForm.setNumero((String)registro.get("NUMERO"));
-				designaForm.setAnio((String)registro.get("ANIO"));
+				designaForm.setNumero((String)designaHashtable.get("NUMERO"));
+				designaForm.setAnio((String)designaHashtable.get("ANIO"));
 				designaForm.setIdInstitucion(formulario.getIdInstitucion());
-				designaForm.setIdTurno((String)registro.get("IDTURNO"));
+				designaForm.setIdTurno((String)designaHashtable.get("IDTURNO"));
 
-				designaForm.setCodigoDesigna((String)registro.get("CODIGODESIGNA"));
+				designaForm.setCodigoDesigna((String)designaHashtable.get("CODIGODESIGNA"));
 //				List ejgList = getExpedientes((String)registro.get("EXPEDIENTES"));
 //				designaForm.setExpedientes(ejgList);
 //				designaForm.setEjgs((String)registro.get("EXPEDIENTES"));
-				designaForm.setFecha((String)registro.get("FECHADESIGNA"));
-				designaForm.setAsunto((String)registro.get("ASUNTO"));
-				designaForm.setClientes((String)registro.get("CLIENTE"));
+				designaForm.setFecha((String)designaHashtable.get("FECHADESIGNA"));
+				designaForm.setAsunto((String)designaHashtable.get("ASUNTO"));
+				designaForm.setClientes((String)designaHashtable.get("CLIENTE"));
 				
 
-				String estado = (String)registro.get("ESTADO");
+				String estado = (String)designaHashtable.get("ESTADO");
 				designaForm.setEstado(estado);
 				designaForm.setBaja(estado!=null&&(estado.equals("F")||estado.equals("A"))?"1":"0");
 				
 				
 				Vector vTurno = geTurno(designaForm.getIdInstitucion().toString(), 
 						designaForm.getIdTurno(),htAcumuladorTurnos,helperInformes);
-				helperInformes.completarHashSalida(registro,vTurno);
+				helperInformes.completarHashSalida(designaHashtable,vTurno);
 				
 				//El turno es quiene tiene si se validan las justificaciones
-				String validarJustificaciones = (String)registro.get("VALIDARJUSTIFICACIONES");
+				String validarJustificaciones = (String)designaHashtable.get("VALIDARJUSTIFICACIONES");
 				designaForm.setActuacionValidarJustificaciones(validarJustificaciones!=null?validarJustificaciones:"S");
-				designaForm.setActuacionRestriccionesActiva((String)registro.get("ACTIVARRETRICCIONACREDIT"));
-				designaForm.setActuacionPermitidaLetrado((String)registro.get("LETRADOACTUACIONES"));
-				String cambioLetrado = (String)registro.get("CAMBIOLETRADO");
+				designaForm.setActuacionRestriccionesActiva((String)designaHashtable.get("ACTIVARRETRICCIONACREDIT"));
+				designaForm.setActuacionPermitidaLetrado((String)designaHashtable.get("LETRADOACTUACIONES"));
+				String cambioLetrado = (String)designaHashtable.get("CAMBIOLETRADO");
 				designaForm.setCambioLetrado(cambioLetrado!=null&&Integer.parseInt(cambioLetrado)>1?"S":"N");
 				
-				designaForm.setArticulo27(registro.get("ART27")!=null && ((String)registro.get("ART27")).equals("1")?"S":"N");
+				designaForm.setArticulo27(designaHashtable.get("ART27")!=null && ((String)designaHashtable.get("ART27")).equals("1")?"S":"N");
 				
 				
 				designaForm.setIdProcedimiento(idProcedimiento);
@@ -590,37 +590,41 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				if(idProcedimiento!=null && !idProcedimiento.equalsIgnoreCase("")){
 					Vector vProcedimiento = getProcedimiento(formulario.getIdInstitucion(), 
 							idProcedimiento,htAcumuladorProcedimientos,helperInformes);
-					helperInformes.completarHashSalida(registro,vProcedimiento);
+					helperInformes.completarHashSalida(designaHashtable,vProcedimiento);
 				}else{
-					registro.put("PROCEDIMIENTO","");
-					registro.put("CATEGORIA","");
-					registro.put("IDJURISDICCION","");
+					designaHashtable.put("PROCEDIMIENTO","");
+					designaHashtable.put("CATEGORIA","");
+					designaHashtable.put("IDJURISDICCION","");
 					
 				}
-				designaForm.setDescripcionProcedimiento((String)registro.get("PROCEDIMIENTO"));
-				designaForm.setCategoria((String)registro.get("CATEGORIA"));
-				designaForm.setIdJurisdiccion((String)registro.get("IDJURISDICCION"));
+				designaForm.setDescripcionProcedimiento((String)designaHashtable.get("PROCEDIMIENTO"));
+				designaForm.setCategoria((String)designaHashtable.get("CATEGORIA"));
+				designaForm.setIdJurisdiccion((String)designaHashtable.get("IDJURISDICCION"));
 				
-				String idJuzgado = (String)registro.get(ScsDesignaBean.C_IDJUZGADO);
-				String idInstitucionJuzgado  = (String)registro.get("IDINSTITUCION_JUZG");
+				String idJuzgado = (String)designaHashtable.get(ScsDesignaBean.C_IDJUZGADO);
+				String idInstitucionJuzgado  = (String)designaHashtable.get("IDINSTITUCION_JUZG");
 				if(idJuzgado!=null && !idJuzgado.equalsIgnoreCase("")){
 					designaForm.setIdJuzgado(idJuzgado);
 					Vector vJuzgado = getJuzgado(idInstitucionJuzgado.toString(),idJuzgado,htAcumuladorJuzgados, helperInformes);
-					helperInformes.completarHashSalida(registro,vJuzgado);
-					String descJuzgado = (String)registro.get("JUZGADO"); 
-					registro.put("DESC_JUZGADO",descJuzgado);
+					helperInformes.completarHashSalida(designaHashtable,vJuzgado);
+					String descJuzgado = (String)designaHashtable.get("JUZGADO"); 
+					designaHashtable.put("DESC_JUZGADO",descJuzgado);
 					if(isInforme)
-						registro.put("IDJUZGADO",descJuzgado);
+						designaHashtable.put("IDJUZGADO",descJuzgado);
 				}else{
-					registro.put("DESC_JUZGADO","");
-					registro.put("IDJUZGADO","");
+					designaHashtable.put("DESC_JUZGADO","");
+					designaHashtable.put("IDJUZGADO","");
 					
 				}
-				designaForm.setJuzgado((String)registro.get("DESC_JUZGADO"));
+				designaForm.setJuzgado((String)designaHashtable.get("DESC_JUZGADO"));
 				
 				//seteamos las actuaciones de las designas
-				designaForm.setMultiplesComplementos((String)registro.get("COMPLEMENTO"));
-				
+				String numProcedimiento = (String)designaHashtable.get(ScsDesignaBean.C_NUMPROCEDIMIENTO);
+				designaForm.setNumProcedimiento(numProcedimiento!=null?numProcedimiento:"");
+				String anioProcedimiento = (String)designaHashtable.get(ScsDesignaBean.C_ANIOPROCEDIMIENTO);
+				designaForm.setAnioProcedimiento(anioProcedimiento!=null?anioProcedimiento:"");
+				String nig = (String)designaHashtable.get(ScsDesignaBean.C_NIG);
+				designaForm.setNig(nig!=null?nig:"");
 				
 				//si no estan activos los parametros se pone siempre permitido justificar
 				
@@ -635,6 +639,8 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				)){
 					
 					designaForm.setPermitidoJustificar(true);
+					designaForm.setAcreditacionCompleta(designaHashtable.get(ScsDesignaBean.C_NIG)!=null && !((String)designaHashtable.get(ScsDesignaBean.C_NIG)).equals("") && designaHashtable.get(ScsDesignaBean.C_NUMPROCEDIMIENTO)!=null && !((String)designaHashtable.get(ScsDesignaBean.C_NUMPROCEDIMIENTO)).equals(""));
+					
 					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes,false,isPermitidoEditarActFicha);
 					designaForm.setRowSpan();
 					
@@ -807,10 +813,15 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				
 				//seteamos las actuaciones de las designas
 				designaForm.setMultiplesComplementos((String)designaHashtable.get("COMPLEMENTO"));
-				//designaForm.setPermitirAniadirProcedALetrado((String)designaHashtable.get("PERMITIRANIADIRLETRADO"));
-				
-				
 
+				String numProcedimiento = (String)designaHashtable.get(ScsDesignaBean.C_NUMPROCEDIMIENTO);
+				designaForm.setNumProcedimiento(numProcedimiento!=null?numProcedimiento:"");
+				String anioProcedimiento = (String)designaHashtable.get(ScsDesignaBean.C_ANIOPROCEDIMIENTO);
+				designaForm.setAnioProcedimiento(anioProcedimiento!=null?anioProcedimiento:"");
+				String nig = (String)designaHashtable.get(ScsDesignaBean.C_NIG);
+				designaForm.setNig(nig!=null?nig:"");
+				
+				
 				
 				
 
@@ -826,6 +837,8 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				)){
 					
 					designaForm.setPermitidoJustificar(true);
+					designaForm.setAcreditacionCompleta(designaHashtable.get(ScsDesignaBean.C_NIG)!=null && !((String)designaHashtable.get(ScsDesignaBean.C_NIG)).equals("") && designaHashtable.get(ScsDesignaBean.C_NUMPROCEDIMIENTO)!=null && !((String)designaHashtable.get(ScsDesignaBean.C_NUMPROCEDIMIENTO)).equals(""));
+					
 					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes,false,isPermitidoEditarActFicha);
 					designaForm.setRowSpan();
 					
@@ -1146,6 +1159,9 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sql.append(" D.FECHAENTRADA, ");
 		sql.append(" DL.IDPERSONA, ");
 		sql.append(" D.IDPROCEDIMIENTO, ");
+		sql.append(" D.NUMPROCEDIMIENTO, ");
+		sql.append(" D.ANIOPROCEDIMIENTO, ");
+		sql.append(" D.NIG, ");
 		
 		sql.append(" (SELECT COUNT(*) FROM SCS_DESIGNASLETRADO SDL WHERE D.IDINSTITUCION = SDL.IDINSTITUCION AND D.ANIO = SDL.ANIO AND D.NUMERO = SDL.NUMERO AND D.IDTURNO = SDL.IDTURNO) AS CAMBIOLETRADO, ");
 	               

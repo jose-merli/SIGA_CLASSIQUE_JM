@@ -662,7 +662,7 @@
 							<% } else { %> 
 								<c:choose>
 									<c:when	test="${EJIS_ACTIVO=='1'}">
-											<c:out value="<%=numeroProcedimiento%>"/>/<c:out value="${ActuacionesDesignasForm.anioProcedimiento}"/>
+											<c:out value="<%=numeroProcedimiento%>"/>/<c:out value="<%=anioProcedimiento%>"/>
 									</c:when>
 									<c:otherwise>
 									<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100px" maxlength="<%=maxLenghtProc%>" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true"/>

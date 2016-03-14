@@ -289,6 +289,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 				for (int i = 0; i < arrayDatosJustificacion.length; i++) {
 					String rowJustificacion = arrayDatosJustificacion[i];
 					String[] arrayRowsJustificacion = rowJustificacion.split(",");
+					int numDatosJustif =  arrayRowsJustificacion.length;
 					String anio  =  arrayRowsJustificacion[0];
 					String numero  =  arrayRowsJustificacion[1]; 
 					String idInstitucion  =  arrayRowsJustificacion[2];
@@ -310,6 +311,21 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						if(!designasList.contains(pkDesigna))
 							designasList.add(pkDesigna);
 					}
+					String fechaActuacion = null;
+					String numProcActuacion = null;
+					String anioProcActuacion = null;
+					String nigActuacion = null;
+					if(numDatosJustif>=14)
+						fechaActuacion   =  arrayRowsJustificacion[13];
+					if(numDatosJustif>=15)
+						numProcActuacion   =  arrayRowsJustificacion[14];
+					if(numDatosJustif>=16)
+						anioProcActuacion   =  arrayRowsJustificacion[15];
+					if(numDatosJustif>=17)
+						nigActuacion   =  arrayRowsJustificacion[16];
+					
+					
+					
 					
 					
 					//si la actuacion es x es que es nueva, sino es modificacion(justificacion, validacion o baja)
@@ -336,21 +352,13 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO,
 								idInstitucion);
-//						if(user.isLetrado()){
-							fksActuacionHashtable = new Hashtable<String, Object>();
-							fksActuacionHashtable.put("TABLA_FK", ScsJuzgadoBean.T_NOMBRETABLA);
-							fksActuacionHashtable.put("SALIDA_FK", ScsJuzgadoBean.C_NOMBRE);
-							fksActuacionHashtable.put(ScsJuzgadoBean.C_IDINSTITUCION, idInstitucion);
-							fksActuacionHashtable.put(ScsJuzgadoBean.C_IDJUZGADO, idJuzgado);
-							fksActuacionMap.put(ScsActuacionDesignaBean.C_IDJUZGADO,fksActuacionHashtable);
-//						}
-						
-	//					UtilidadesHash.set(hashActuacion,
-	//							ScsActuacionDesignaBean.C_FECHAMODIFICACION,
-	//					"sysdate");
-	//					UtilidadesHash.set(hashActuacion,
-	//							ScsActuacionDesignaBean.C_USUMODIFICACION,
-	//							new Long(this.getUserBean(request).getIdPersona()));
+						fksActuacionHashtable = new Hashtable<String, Object>();
+						fksActuacionHashtable.put("TABLA_FK", ScsJuzgadoBean.T_NOMBRETABLA);
+						fksActuacionHashtable.put("SALIDA_FK", ScsJuzgadoBean.C_NOMBRE);
+						fksActuacionHashtable.put(ScsJuzgadoBean.C_IDINSTITUCION, idInstitucion);
+						fksActuacionHashtable.put(ScsJuzgadoBean.C_IDJUZGADO, idJuzgado);
+						fksActuacionMap.put(ScsActuacionDesignaBean.C_IDJUZGADO,fksActuacionHashtable);
+
 							
 						UtilidadesHash.set(hashActuacion,
 									ScsActuacionDesignaBean.C_FECHACREACION,
@@ -366,17 +374,13 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 								hashActuacion,
 								ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO,
 								idInstitucion);
-						
-//						if(user.isLetrado()){
-							fksActuacionHashtable = new Hashtable<String, Object>();
-							fksActuacionHashtable.put("TABLA_FK", ScsProcedimientosBean.T_NOMBRETABLA);
-							fksActuacionHashtable.put("SALIDA_FK", ScsProcedimientosBean.C_NOMBRE);
-							fksActuacionHashtable.put(ScsProcedimientosBean.C_IDPROCEDIMIENTO, idProcedimiento);
-							fksActuacionHashtable.put(ScsProcedimientosBean.C_IDINSTITUCION, idInstitucion);
-							
-							
-							fksActuacionMap.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO,fksActuacionHashtable);
-//						}
+					
+						fksActuacionHashtable = new Hashtable<String, Object>();
+						fksActuacionHashtable.put("TABLA_FK", ScsProcedimientosBean.T_NOMBRETABLA);
+						fksActuacionHashtable.put("SALIDA_FK", ScsProcedimientosBean.C_NOMBRE);
+						fksActuacionHashtable.put(ScsProcedimientosBean.C_IDPROCEDIMIENTO, idProcedimiento);
+						fksActuacionHashtable.put(ScsProcedimientosBean.C_IDINSTITUCION, idInstitucion);
+						fksActuacionMap.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO,fksActuacionHashtable);
 	
 						UtilidadesHash.set(
 								hashActuacion,
@@ -393,18 +397,17 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_IDACREDITACION,
 								idAcreditacion);
-//						if(user.isLetrado()){
-							fksActuacionHashtable = new Hashtable<String, Object>();
-							fksActuacionHashtable.put("TABLA_FK", ScsAcreditacionBean.T_NOMBRETABLA);
-							fksActuacionHashtable.put("SALIDA_FK", ScsAcreditacionBean.C_DESCRIPCION);
-							fksActuacionHashtable.put(ScsAcreditacionBean.C_IDACREDITACION, idAcreditacion);
+						fksActuacionHashtable = new Hashtable<String, Object>();
+						fksActuacionHashtable.put("TABLA_FK", ScsAcreditacionBean.T_NOMBRETABLA);
+						fksActuacionHashtable.put("SALIDA_FK", ScsAcreditacionBean.C_DESCRIPCION);
+						fksActuacionHashtable.put(ScsAcreditacionBean.C_IDACREDITACION, idAcreditacion);
+						fksActuacionMap.put(ScsActuacionDesignaBean.C_IDACREDITACION,fksActuacionHashtable);
 							
-							
-							fksActuacionMap.put(ScsActuacionDesignaBean.C_IDACREDITACION,fksActuacionHashtable);
-//						}
-						UtilidadesHash.set(hashActuacion,
-								ScsActuacionDesignaBean.C_FECHA,
-								GstDate.getApplicationFormatDate("", fechaJustificacion));
+						
+						if(fechaActuacion!=null && !fechaActuacion.equals(""))
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_FECHA, GstDate.getApplicationFormatDate("", fechaActuacion));
+						else
+							UtilidadesHash.set(hashActuacion,ScsActuacionDesignaBean.C_FECHA,GstDate.getApplicationFormatDate("", fechaJustificacion));
 					
 						UtilidadesHash.set(hashActuacion,
 							ScsActuacionDesignaBean.C_OBSERVACIONES,
@@ -452,21 +455,26 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 							scsDesignaHashtable.put(pkDesignacion.toString(), designaBean);
 						}
 						ScsDesignaBean scsDesignaBean = scsDesignaHashtable.get(pkDesignacion.toString());
-						UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_NIG, scsDesignaBean.getNIG()!=null?scsDesignaBean.getNIG():"");
+						if(nigActuacion!=null && !nigActuacion.equals(""))
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_NIG, nigActuacion);
+						else
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_NIG, scsDesignaBean.getNIG()!=null?scsDesignaBean.getNIG():"");
 						
-						UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, scsDesignaBean.getNumProcedimiento()!=null?scsDesignaBean.getNumProcedimiento():"");
-						UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, scsDesignaBean.getAnioProcedimiento()!=null?scsDesignaBean.getAnioProcedimiento().toString():"");
+						if(numProcActuacion!=null && !numProcActuacion.equals(""))
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, numProcActuacion);
+						else
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, scsDesignaBean.getNumProcedimiento()!=null?scsDesignaBean.getNumProcedimiento():"");
+						if(anioProcActuacion!=null && !anioProcActuacion.equals(""))
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, anioProcActuacion);
+						else
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, scsDesignaBean.getAnioProcedimiento()!=null?scsDesignaBean.getAnioProcedimiento().toString():"");
 						
 						UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_IDPRETENSION, scsDesignaBean.getIdPretension()!=null?scsDesignaBean.getIdPretension().toString():"");
 						
-//						if(user.isLetrado()){
 							List<String> ocultarClaveList = getListCamposOcultarHistorico();
 							hashActuacion.put("fks", fksActuacionMap);							hashActuacion.put("scsDesignaBean", scsDesignaBean);
 							actuacionDesginaAdm.insertHistorico(new Long(idPersona), hashActuacion,ocultarClaveList,ClsConstants.TIPO_CAMBIO_HISTORICO_DESIGNACIONJUSTIFICACION);
-//						}
-//						else
-//							actuacionDesginaAdm.insert(hashActuacion);
-//						
+						
 					}else{
 						List<String> camposList = new ArrayList<String>();
 						UtilidadesHash.set(hashActuacion,
@@ -704,6 +712,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		String justificacionModificaAct = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_JUSTIFICACION_EDITAR_ACT_FICHA, ClsConstants.DB_FALSE);
 		boolean isPermitidoEditarActFicha = justificacionModificaAct!=null && justificacionModificaAct.equals(ClsConstants.DB_TRUE);
 		
+		String ejisActivo = paramAdm.getValor(usrBean.getLocation (), "ECOM", "EJIS_ACTIVO", "0");
+		request.setAttribute("EJIS_ACTIVO", ejisActivo);
 		
 		try {
 			HashMap databackup=getPaginador(request, paginadorPenstania);

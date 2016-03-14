@@ -1,4 +1,5 @@
-<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
 <html>
 <head>
 <!--listadoPaginadoInformeJustificacion.jsp -->
@@ -24,17 +25,30 @@
 <!-- HEAD -->
 
 <title><siga:Idioma key="gratuita.altaTurnos.literal.title" /></title>
+
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"/>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"/>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.9.1.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>" ></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>
 	
-	<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
+  	<link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">
+	
+<style type="text/css">
+	.ui-dialog-titlebar-close {
+		  visibility: hidden;
+	}
+</style>
 
 <script>
 
+jQuery.noConflict();
 function informeGenerico(){
 	datos = "";
 	var mostrarTodas = document.InformeJustificacionMasivaForm.mostrarTodas.value;
@@ -200,6 +214,7 @@ function accionGuardar (isLetrado)
 			
 			var cadenaAcreditacion=checkAcreditacion.id;
 			var idsAcreditacion = cadenaAcreditacion.split("_");
+			
 			//el 0 es acre_
 			var index = idsAcreditacion[1];
 			var numActuacion = idsAcreditacion[2];
@@ -210,6 +225,7 @@ function accionGuardar (isLetrado)
 			var justificado = idsAcreditacion[7];
 			var idJurisdiccion = idsAcreditacion[8];
 			var idsValidacion =  cadenaAcreditacion.split("acre_");
+			
 			//el 0 es vacio
 			var elementoValidacion = 'vali_'+idsValidacion[1]; 
 			var validado = document.getElementById(elementoValidacion).checked;
@@ -219,6 +235,19 @@ function accionGuardar (isLetrado)
 			var numero = document.getElementById("numero_"+index).value;
 			var fechaDesigna = document.getElementById("fechaDesigna_"+index).value;
 			var actuacionRestriccionesActiva = document.getElementById("actuacionRestriccionesActiva_"+index).value;
+			var datosInsertables = "";
+			//Si la acreditacion esta lista para insertar metemos los datos en la cadena
+			if(jQuery("#insertar_"+idsValidacion[1])&&jQuery("#insertar_"+idsValidacion[1]).val()=='1'){
+				if(jQuery("#fechaact_"+idsValidacion[1]))
+					datosInsertables += ","+jQuery("#fechaact_"+idsValidacion[1]).val();
+				if(jQuery("#numprocact_"+idsValidacion[1]))
+					datosInsertables += ","+jQuery("#numprocact_"+idsValidacion[1]).val();
+				if(jQuery("#anioprocact_"+idsValidacion[1]))
+					datosInsertables += ","+jQuery("#anioprocact_"+idsValidacion[1]).val();
+				if(jQuery("#nigact_"+idsValidacion[1]))
+					datosInsertables += ","+jQuery("#nigact_"+idsValidacion[1]).val();
+				
+			
 			datosJustificacion = datosJustificacion + anio + "," + 
 								numero + "," + 
 								idInstitucion + "," + 
@@ -231,7 +260,10 @@ function accionGuardar (isLetrado)
 								idJurisdiccion + "," +
 								fechaDesigna + "," +
 								validado + "," +
-								actuacionRestriccionesActiva + "#";
+								actuacionRestriccionesActiva +
+								datosInsertables + "#";
+								
+			}
 		}
 	}
 	//Ahora miramos los check Validacion que a estuvieran acreditados anteriormente
@@ -340,10 +372,11 @@ function onCheckValidacion(elementoPulsado){
 	//Si no existe el elemento es porque la acreditacion esta dada de alta pte de validar
 	//y no hay que hacer nada con las acreditaciones ya que se hizo en el momento de darla de alta
 	if(document.getElementById(idAcreditacion)){
-	
+		
 		if(elementoPulsado.checked){
-			
-			document.getElementById(idAcreditacion).checked = 'checked';
+			if(document.getElementById(idAcreditacion).checked=='true'){
+				document.getElementById(idAcreditacion).checked = 'checked';
+			}
 			if(actuacionRestriccionesActiva=='1'){
 				if(!onCheckAcreditacion(document.getElementById(idAcreditacion))){
 					elementoPulsado.checked='';
@@ -417,20 +450,29 @@ function preFunction(pagina){
 function postFunction(page){
 }
 
+
+
+
 function onCheckAcreditacion(elementoPulsado){
+	
+	
 	var cadenaAcreditacion = elementoPulsado.id;
-	var idValidacion = 'vali_'+cadenaAcreditacion.split("acre_")[1];
+	var codigosAcreditacion = cadenaAcreditacion.split("acre_")[1]
+	var idValidacion = 'vali_'+codigosAcreditacion;
 	var idsAcreditacion = cadenaAcreditacion.split("_");
 	var index = idsAcreditacion[1];
 	
 	//Si se despulsa el check de acreditacion se despulsa el de validacion
 	var actuacionValidarJustificaciones = document.getElementById("actuacionValidarJustificaciones_"+index).value;
+	
+	
+	objImgDivActuacion =  jQuery('#img_'+codigosAcreditacion);
+	
 	if(!elementoPulsado.checked){
 		document.getElementById(idValidacion).checked = '';
 	}else{
 		//Si se pulsa el check de acreditacion y ademas la designa tiene validar actuaciones a no, se pulsa tambien el check 
 		// de validacion(ya que al no ser necesario validar las actuaciones quedaran validadas en la insercion)
-		
 		if(actuacionValidarJustificaciones=='N'||document.InformeJustificacionMasivaForm.fichaColegial.value=='false'){
 			document.getElementById(idValidacion).checked = 'checked';
 		}
@@ -438,8 +480,16 @@ function onCheckAcreditacion(elementoPulsado){
 	}
 	// CASO USO TURNO SIN ACTIVAR RESTRICCIONES DE ACREDITACION
 	var actuacionRestriccionesActiva = document.getElementById("actuacionRestriccionesActiva_"+index).value;
-	if(actuacionRestriccionesActiva=='0')
+	if(actuacionRestriccionesActiva=='0'){
+		
+		if(!elementoPulsado.checked){
+			muestraIconosActuacion(objImgDivActuacion,false);
+		}else{
+			//Si se pulsa el check de acreditacion mostramos el icono para ver si se necesaitan completar datos
+			muestraIconosActuacion(objImgDivActuacion,true);
+		}
 		return false;
+	}
 	
 	// CASO DE USO CON ACTUACION SIN COMPLEMENTOS
 	//no se da el caso
@@ -526,7 +576,12 @@ function onCheckAcreditacion(elementoPulsado){
 				alert('<siga:Idioma key="gratuita.informeJustificacionMasiva.aviso.acreditacionFinSinIncicio"/>');
 				elementoPulsado.checked = "";
 				document.getElementById(idValidacion).checked ="";
-				
+				if(!elementoPulsado.checked){
+					muestraIconosActuacion(objImgDivActuacion,false);
+				}else{
+					//Si se pulsa el check de acreditacion mostramos el icono para ver si se necesaitan completar datos
+					muestraIconosActuacion(objImgDivActuacion,true);
+				}
 				return false;
 			}
 		}
@@ -554,6 +609,14 @@ function onCheckAcreditacion(elementoPulsado){
 				elementoPulsado.checked = "true";
 				if(actuacionValidarJustificaciones=='N')
 					document.getElementById(idValidacion).checked ="true";
+				
+				if(!elementoPulsado.checked){
+					muestraIconosActuacion(objImgDivActuacion,false);
+				}else{
+					//Si se pulsa el check de acreditacion mostramos el icono para ver si se necesaitan completar datos
+					muestraIconosActuacion(objImgDivActuacion,true);
+				}
+				
 				return false;
 			}
 		}
@@ -615,6 +678,13 @@ function onCheckAcreditacion(elementoPulsado){
 			}
 		}
 	}
+	if(!elementoPulsado.checked){
+		muestraIconosActuacion(objImgDivActuacion,false);
+	}else{
+		//Si se pulsa el check de acreditacion mostramos el icono para ver si se necesaitan completar datos
+		muestraIconosActuacion(objImgDivActuacion,true);
+	}
+
 	return true;
 }
 
@@ -754,10 +824,12 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 	
 }
 
+
+
 </script>
 </head>
 
-<body onload="inicio();ajustarCabeceraTabla();ajusteDivListado();">
+<body onload="inicio();ajustarCabeceraTabla();ajusteDivListado();ajustarAltoResultados();">
 
 
 
@@ -809,8 +881,10 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 	<html:hidden property="incluirEjgPteCAJG" />
 	<html:hidden property="activarRestriccionesFicha" />
 	
-	<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD">
-	<input type="hidden" name="actionModal" value="">
+	<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD"/>
+	<input type="hidden" name="actionModal" value=""/>
+	<bean:define id="EJIS_ACTIVO" name="EJIS_ACTIVO" scope="request"/>
+	<input type="hidden" id="EJIS_ACTIVO" value="${EJIS_ACTIVO}"/>
 
 	<c:choose>
 		<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true}">
@@ -835,7 +909,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 	</c:choose>
 
 </html:form>
-
+<div>
 
 <table id='listadoInformeJustificacionCab' style="width:100%;table-layout: fixed;"  border='1' 
 	cellspacing='0' cellpadding='0'>
@@ -866,6 +940,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 
 	</tr>
 </table>
+</div>
 <!-- 2. Pintamos el contenido de la tabla -->
 <div id='listadoInformeJustificacionDiv'
 	style='height:400; width: 100%; overflow-y: auto'>
@@ -933,6 +1008,17 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 					value="${designa.actuacionValidarJustificaciones}">
 				<input type="hidden" id="fechaDesigna_${status.count}"
 					value="${designa.fecha}">
+				
+				<input type="hidden" id="nigDesigna_${status.count}"
+					value="${designa.nig}">
+				
+				<input type="hidden" id="numProcedimientoDesigna_${status.count}"
+					value="${designa.numProcedimiento}">
+				<input type="hidden" id="anioProcedimientoDesigna_${status.count}"
+					value="${designa.anioProcedimiento}">
+				
+				<input type="hidden" id="acreditacionCompleta_${status.count}"
+					value="${designa.acreditacionCompleta}">
 				<c:set var="disabledPorCambioLetrado" value="" />
 				<c:if
 					test="${designa.cambioLetrado=='S'}">
@@ -1507,10 +1593,11 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 											<td rowspan="${designa.rowSpan}">&nbsp;</td>
 										</c:otherwise>
 									</c:choose>
-									<td rowspan="${designa.rowSpan}">&nbsp;</td>
+									
 
 									<c:choose>
 										<c:when test="${empty designa.acreditaciones}">
+											<td rowspan="${designa.rowSpan}">Ñ</td>
 											<td align="center" rowspan="${designa.rowSpan}">Modulo
 											sin acreditaciones</td>
 											<td><input type="checkbox" disabled="disabled" /></td>
@@ -1549,6 +1636,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 											</tr>
 										</c:when>
 										<c:otherwise>
+											
 											<input type="hidden"
 												id="multiplesComplementos_${status.count}"
 												value="${designa.multiplesComplementos}">
@@ -1558,7 +1646,9 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 													value="${acreditacionesMap.value}" />
 												<c:choose>
 													<c:when test="${empty listAcreditaciones}">
-														<td align="center" rowspan="${designa.rowSpan}"><c:choose>
+													<td rowspan="${designa.rowSpan}">Ñ</td>
+														<td align="center" rowspan="${designa.rowSpan}">
+														<c:choose>
 															<c:when test="${designa.baja=='1'}">
 																<siga:Idioma
 																	key="gratuita.informeJustificacionMasiva.literal.designaSinActuaciones" />
@@ -1607,18 +1697,22 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 														<c:forEach var="acreditacion"
 															items="${listAcreditaciones}"
 															varStatus="estadoAcreditacion">
+															
 															<c:choose>
 																<c:when test="${estadoAcreditacion.first}">
+																	<td height="24px">
+																		<div align="center"  class="imgActuacionCompleta" id="img_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}" >&nbsp;</div>
+																	</td>
 																	<td><input name="checkAcreditacion"
-																		id="acre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
+																		id="acre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}"
 																		onclick="onCheckAcreditacion(this);"
 																		 type="checkbox" /><c:out
 																		value="${acreditacion.descripcion}" /> <input
 																		name="${status.count}_${acreditacion.idProcedimiento}_checkAcreditacion"
-																		id="checkacre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
+																		id="checkacre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}"
 																		type="hidden" /></td>
 																	<td title="<siga:Idioma	key='gratuita.informeJustificacionMasiva.informacion.validacion'/>"><input name="checkValidacion"
-																		id="vali_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
+																		id="vali_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}"
 																		type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/></td>
 																	<td rowspan="${designa.rowSpan}"><c:choose>
 																		<c:when
@@ -1663,16 +1757,20 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																				<tr class="filaTablaImpar">
 																			</c:otherwise>
 																		</c:choose>
+																		<td height="24px">
+																			<div align="center" class="imgActuacionCompleta" id="img_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}" >&nbsp;</div>
+																		</td>
+																		
 																		<td><input name="checkAcreditacion"
-																			id="acre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
+																			id="acre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}"
 																			onclick="onCheckAcreditacion(this);"
 																			 type="checkbox" /><c:out
 																			value="${acreditacion.descripcion}" /> <input
 																			name="${status.count}_${acreditacion.idProcedimiento}_checkAcreditacion"
-																			id="checkacre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
+																			id="checkacre_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}"
 																			type="hidden" /></td>
 																		<td title="<siga:Idioma	key='gratuita.informeJustificacionMasiva.informacion.validacion'/>"><input name="chechValidacion"
-																			id="vali_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}"
+																			id="vali_${status.count}_x_${acreditacion.idTipo}_${acreditacion.id}_${acreditacion.idProcedimiento}_${acreditacion.idJuzgado}_0_${designa.idJurisdiccion}_nigNumProc_${acreditacion.nigNumProcedimiento}"
 																			type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/></td>
 																	</tr>
 																</c:otherwise>
@@ -2038,17 +2136,19 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 													</c:otherwise>
 												</c:choose>
 													<td>&nbsp;</td>
-													<td>&nbsp;</td>
+													<td height="24px">
+															<div align="center"  class="imgActuacionCompleta" id="img_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}_nigNumProc_${acreditacionPte.nigNumProcedimiento}" >&nbsp;</div>
+													</td>
 													<td><input name="checkAcreditacion"
-														id="acre_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}"
+														id="acre_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}_nigNumProc_${acreditacionPte.nigNumProcedimiento}"
 														onclick="onCheckAcreditacion(this);"
 														 type="checkbox" /><c:out
 														value="${acreditacionPte.descripcion}" /> <input
 														name="${status.count}_${acreditacionPte.idProcedimiento}_checkAcreditacion"
-														id="checkacre_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}"
+														id="checkacre_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}_nigNumProc_${acreditacionPte.nigNumProcedimiento}"
 														type="hidden" /></td>
 													<td title="<siga:Idioma	key='gratuita.informeJustificacionMasiva.informacion.validacion'/>"><input name="checkValidacion"
-														id="vali_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}"
+														id="vali_${status.count}_x_${acreditacionPte.idTipo}_${acreditacionPte.id}_${acreditacionPte.idProcedimiento}_${acreditacionPte.idJuzgado}_0_${acreditacionPte.idJurisdiccion}_nigNumProc_${acreditacionPte.nigNumProcedimiento}"
 														type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/>
 													</td>
 
@@ -2073,8 +2173,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 	</c:choose>
 </table>
 
-
-
 </div>
 <siga:Paginador totalRegistros="${totalRegistros}"
 	registrosPorPagina="${registrosPorPagina}"
@@ -2085,6 +2183,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 	preFunction="preFunction" />
 
 
+<div>
 
 <c:choose>
 <c:when test="${permitirBotones==true && not empty designaFormList}">
@@ -2130,6 +2229,38 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 
 </c:otherwise>
 </c:choose>
+</div>
+
+<div id="dialogo"  title='<bean:message key="gratuita.actuacionesDesigna.literal.titulo"/>' style="display:none">
+<div>&nbsp;</div>
+	<div>
+	  	
+	  		<input type="hidden" id="dialogNigNumProcRequired"  />
+			<div  class="labelText">
+				<label for="dialogFechaActuacion"  style="width:160px;float:left;color: black" ><siga:Idioma key="gratuita.actuacionesAsistencia.literal.fechaActuacion"/><label>(*)</label></label>
+					<siga:Fecha nombreCampo="dialogFechaActuacion" valorInicial="sysdate" anchoTextField="11"/>
+			</div>
+			<div class="labelText">
+		
+	   			<label for="dialogNumProc"  style="width:160px;float:left;color: black"><siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento" /><label id="asteriscoNumProc"></label></label>
+	   			<c:choose>
+	   				<c:when test="${EJIS_ACTIVO=='1'}">
+	   					<input type="text" id="dialogNumProc" maxlength="7" size="7" /><label>/</label><input type="text" id="dialogAnioProc" maxlength="4" size="4" />
+	   				</c:when>
+	   				<c:otherwise>
+	   				<input type="text" id="dialogNumProc" maxlength="20" size="20" />
+	   				</c:otherwise>
+	   			</c:choose>
+	  			</div>
+			<div class="labelText">
+	   			<label for="dialogNig"   style="width:160px;float:left;color: black"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/><label id="asteriscoNig"></label></label>
+	   			<input type="text" id="dialogNig"  size="25" maxlength="19" />
+	  			</div>
+		
+	</div>
+</div>
+
+
 
 <html:form action="/JGR_ActuacionesDesigna" method="post"
 	target="mainWorkArea" style="display:none">
@@ -2197,8 +2328,219 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 	src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
 	style="display: none"></iframe>
 <!-- FIN: SUBMIT AREA -->
-<script>
-	ajustarAltoResultados();
+<script type="text/javascript">
+	
+	jQuery("#dialogNig").mask("AAAAA AA A AAAA AAAAAAA");
+	jQuery("#dialogNig").keyup();	
+	
+	function accionEditarPreActuacion(imgDivActuacion,mostrarDatosDesigna){
+
+		var objImgDivActuacion = jQuery(imgDivActuacion).parent('div');
+		openDialog(objImgDivActuacion,mostrarDatosDesigna);
+		
+	}
+	
+	
+	function muestraIconosActuacion(objImgDivActuacion,mostrarIcono){
+		if(mostrarIcono==true){
+			cadenaAcreditacion = objImgDivActuacion.attr("id").split("img_")[1]
+			countDesigna = cadenaAcreditacion.split("_x_")[0];
+			nigNumProcRequired = cadenaAcreditacion.split("_nigNumProc_")[1];
+			isAcreditacionCompleta =  document.getElementById("acreditacionCompleta_"+countDesigna).value;
+			var formularioActuacionPte = '<input type="hidden" id="fechaact_';
+			formularioActuacionPte +=cadenaAcreditacion;
+			formularioActuacionPte += '"/>';
+			formularioActuacionPte += '<input type="hidden" id="numprocact_';
+			formularioActuacionPte +=cadenaAcreditacion;
+			formularioActuacionPte += '"/>';
+			formularioActuacionPte += '<input type="hidden" id="anioprocact_';
+			formularioActuacionPte +=cadenaAcreditacion;
+			formularioActuacionPte += '"/>';
+			formularioActuacionPte += '<input type="hidden" id="nigact_';
+			formularioActuacionPte +=cadenaAcreditacion;
+			formularioActuacionPte += '"/>';
+			formularioActuacionPte += '<input type="hidden" id="nigNumProcRequired_';
+			formularioActuacionPte +=cadenaAcreditacion;
+			formularioActuacionPte += '" value ="';
+			formularioActuacionPte +=nigNumProcRequired;
+			formularioActuacionPte += '"/>';
+			
+			if(nigNumProcRequired=='1' && isAcreditacionCompleta=='false'){
+				formularioActuacionPte += '<input type="hidden" id="insertar_';
+				formularioActuacionPte +=cadenaAcreditacion;
+				formularioActuacionPte += '" value="0" />';
+				objImgDivActuacion.html(formularioActuacionPte);
+				muestraIconoActuacionIncompleta(objImgDivActuacion);
+				
+			}else{
+				formularioActuacionPte += '<input type="hidden" id="insertar_';
+				formularioActuacionPte +=cadenaAcreditacion;
+				formularioActuacionPte += '" value="1" />';
+				jQuery(objImgDivActuacion).html(formularioActuacionPte);
+				muestraIconoActuacionCompleta(objImgDivActuacion);
+				
+			}
+			
+		}else{
+			objImgDivActuacion.html('&nbsp;');
+			
+		}
+		
+	}
+	
+	function muestraIconoActuacionCompleta(objImgDivActuacion){
+		objImgDivActuacion.prepend('<img src="<html:rewrite page=\\'/html/imagenes/bmodificarInfoCompleta.png\\'/>"	style="cursor: hand;" alt="Informacion Completa" name="modificarInfoCompleta"	border="0" onClick="accionEditarPreActuacion(this,true);"   />')
+	}
+	function muestraIconoActuacionIncompleta(objImgDivActuacion){
+		objImgDivActuacion.prepend('<img src="<html:rewrite page=\\'/html/imagenes/bincidencia_on.gif\\'/>" 	style="cursor: hand;" alt="Informacion Incompleta" name="modificarInfoIncompleta"	border="0"  onClick="accionEditarPreActuacion(this,false);"   />')
+	}
+	
+	function openDialog(objImgDivActuacion,mostrarDatosDesigna){
+		
+
+		cadenaAcreditacion = objImgDivActuacion.attr("id").split("img_")[1]
+		
+		valFechaActuacion = jQuery("#fechaact_"+cadenaAcreditacion).val();
+		valNumProc = jQuery("#numprocact_"+cadenaAcreditacion).val();
+		valAnioProc = jQuery("#anioprocact_"+cadenaAcreditacion).val();
+		valNig = jQuery("#nigact_"+cadenaAcreditacion).val();
+		valNigNumProcRequired = jQuery("#nigNumProcRequired_"+cadenaAcreditacion).val();
+		
+
+		if(valFechaActuacion && valFechaActuacion!=''){
+			jQuery("#dialogo").dialog("open");
+			jQuery("#dialogFechaActuacion").val(valFechaActuacion);
+			jQuery("#dialogNumProc").val(valNumProc);
+			jQuery("#dialogAnioProc").val(valAnioProc);
+			jQuery("#dialogNig").val(valNig);
+			jQuery("#dialogNigNumProcRequired").val(valNigNumProcRequired);
+			
+		}else{
+			jQuery("#dialogo").dialog(
+				{
+					height: 350,
+				   	width: 525,
+					modal: true,
+					resizable: false,
+					
+					buttons: {
+					    	  "Guardar": { id: 'Guardar', text: '<siga:Idioma key="general.boton.guardar"/>', click: function(){ accionInsercion(objImgDivActuacion); }},
+					          "Cerrar": { id: 'Cerrar', text: '<siga:Idioma key="general.boton.close"/>', click: function(){closeDialog("dialogo");}}
+					}
+				}
+			);
+			jQuery("#dialogNigNumProcRequired").val(valNigNumProcRequired);
+			
+			if(valNigNumProcRequired=='1'){
+				jQuery("#asteriscoNumProc").text("(*)");
+				jQuery("#asteriscoNig").text("(*)");
+				
+			}else{
+				jQuery("#asteriscoNumProc").text("");
+				jQuery("#asteriscoNig").text("");
+				
+			}
+			jQuery(".ui-widget-overlay").css("opacity","0");
+			
+			var hoy = new Date();
+			var hoyformateada = hoy.getDate()+"/"+(hoy.getMonth()+1)+"/"+hoy.getFullYear();
+
+			
+			
+			jQuery("#dialogFechaActuacion").val(getFormattedDate(new Date()));
+			 if(mostrarDatosDesigna=true){
+				countDesigna = cadenaAcreditacion.split("_x_")[0];
+				valNumProcDesigna = jQuery("#numProcedimientoDesigna_"+countDesigna).val();
+				valAnioProcDesigna = jQuery("#anioProcedimientoDesigna_"+countDesigna).val();
+				valNigDesigna = jQuery("#nigDesigna_"+countDesigna).val();
+				jQuery("#dialogNumProc").val(valNumProcDesigna);
+				jQuery("#dialogAnioProc").val(valAnioProcDesigna);
+				jQuery("#dialogNig").val(valNigDesigna);
+				//jQuery("#dialogFechaActuacion").val("");
+			}
+		}
+	}
+	function getFormattedDate(date) {
+		  var year = date.getFullYear();
+		  var month = (1 + date.getMonth()).toString();
+		  month = month.length > 1 ? month : '0' + month;
+		  var day = date.getDate().toString();
+		  day = day.length > 1 ? day : '0' + day;
+		  return day + '/'+ month + '/' + year;
+		}
+	function accionInsercion(objImgDivActuacion){
+		
+		valFechaActuacion = jQuery('#dialogFechaActuacion').val();
+		valNumProc = jQuery('#dialogNumProc').val();
+		valAnioProc = jQuery('#dialogAnioProc').val();
+		valNig = jQuery('#dialogNig').val();
+		valNigNumProcRequired = jQuery("#dialogNigNumProcRequired").val();
+		
+		
+		cadenaAcreditacion = objImgDivActuacion.attr("id").split("img_")[1]
+		var indexDesigna = cadenaAcreditacion.split("_x_")[0];
+		var fechaDesigna = document.getElementById("fechaDesigna_"+indexDesigna).value;
+		var fechaJustificacion = document.getElementById("fecha").value;
+		
+		
+		error = '';
+		if( valFechaActuacion==''){
+			error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesAsistencia.literal.fechaActuacion'/>"+ '\n';
+			
+		}
+		if(compararFecha(valFechaActuacion,fechaDesigna) ==2){
+			error += "<siga:Idioma key='messages.error.acreditacionFechaNoValida' />"+ '\n';
+		}
+		if(compararFecha(fechaJustificacion,valFechaActuacion) ==2){
+			error += "<siga:Idioma key='messages.justificacion.fehaActMayorJust' />"+ '\n';
+		}
+		if(valNigNumProcRequired=='1'){
+			if (valNumProc=='') {
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento'/>"+ '\n';
+			}
+			if(valNumProc!='' &&  valAnioProc &&  valAnioProc==""){
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento'/>"+ '\n';
+				
+			}
+			valNig = formateaNig(valNig);
+			if (valNig=='') {
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.mantAsistencias.literal.NIG'/>"+ '\n';
+			}
+			if(!validarNig(valNig)){	
+				error += "<siga:Idioma key='gratuita.nig.formato'/>"+ '\n';
+			}
+		}
+		//var fechaDesigna = document.getElementById("fechaDesigna_"+index).value;
+		
+		
+		
+		
+		if (error!=''){
+			fin();
+			alert(error);
+			return false;
+		}
+		
+		
+		
+		jQuery("#fechaact_"+cadenaAcreditacion).val(valFechaActuacion);
+		jQuery("#numprocact_"+cadenaAcreditacion).val(valNumProc);
+		jQuery("#anioprocact_"+cadenaAcreditacion).val(valAnioProc);
+		jQuery("#nigact_"+cadenaAcreditacion).val(valNig);
+		jQuery("#nigNumProcRequired_"+cadenaAcreditacion).val(valNigNumProcRequired);
+		jQuery("#insertar_"+cadenaAcreditacion).val("1");
+
+		muestraIconoActuacionCompleta(objImgDivActuacion);
+		closeDialog('dialogo'); //Los dialogos los cierra el refrescar local
+
+	
+	}
+	function closeDialog(dialogo){
+		jQuery("#"+dialogo).dialog("close"); 
+	}
+	
+	
+	
 </script>
 </body>
 

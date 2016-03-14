@@ -648,6 +648,8 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" AND FJG.IDFACTURACION = ACT.IDFACTURACION) AS ");
 		sql.append(" DESCRIPCIONFACTURACION ");
 		sql.append(" ,ACT.DOCJUSTIFICACION ");
+		sql.append(" ,ACP.NIG_NUMPROCEDIMIENTO ");
+		
 		if(idPermitirEditarLetrado){
 			sql.append(" ,DECODE(ACT.IDPERSONACOLEGIADO, ");
 			sql.append(" (SELECT P.IDPERSONA ");
@@ -762,6 +764,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				acreditacion.setPorcentaje((String)registro.get("PORCENTAJE"));
 				acreditacion.setIdTipo((String)registro.get("IDTIPOACREDITACION"));
 				acreditacion.setIdProcedimiento(idProcedimiento);
+				acreditacion.setNigNumProcedimiento(registro.get("NIG_NUMPROCEDIMIENTO")!=null?(String)registro.get("NIG_NUMPROCEDIMIENTO"):"0");
 				
 				actuacionesList.add(actuacionDesigna);
 				tmActuaciones.put(idProcedimiento, actuacionesList);
@@ -953,7 +956,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 	    int contador=0;
 		StringBuffer sql = new StringBuffer();
 
-		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION,TAC.IDTIPOACREDITACION,ACPRO.PORCENTAJE,PRO.IDJURISDICCION ");
+		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION,TAC.IDTIPOACREDITACION,ACPRO.PORCENTAJE,PRO.IDJURISDICCION,ACPRO.NIG_NUMPROCEDIMIENTO ");
 		sql.append(" FROM SCS_ACREDITACIONPROCEDIMIENTO ACPRO, ");
 		sql.append(" SCS_PROCEDIMIENTOS            PRO, ");
 		sql.append(" SCS_ACREDITACION              AC, ");
@@ -1073,6 +1076,8 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 			acreditacionForm.setPorcentaje((String)registro.get("PORCENTAJE"));
 			acreditacionForm.setId((String)registro.get("IDACREDITACION"));
 			acreditacionForm.setIdJurisdiccion((String)registro.get("IDJURISDICCION"));
+			acreditacionForm.setNigNumProcedimiento((String)registro.get("NIG_NUMPROCEDIMIENTO"));
+			
 			acreditacionForm.setIdJuzgado(idJuzgado);
 			acreditacionForm.setIdProcedimiento(idProcedimiento);
 			acreditacionesPtesList.add(acreditacionForm);
