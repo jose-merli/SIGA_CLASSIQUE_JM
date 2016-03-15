@@ -795,18 +795,71 @@ function downloadInformesOficio(idInstitucion,anio,idTurno,numero) {
 }		
 function accionDescargaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion) 
 {	
-	
-	document.forms['DefinirDocumentacionDesignaForm'].anio.value = anio;
-	document.forms['DefinirDocumentacionDesignaForm'].idTurno.value = idTurno;
-	document.forms['DefinirDocumentacionDesignaForm'].numero.value = numero;
-	document.forms['DefinirDocumentacionDesignaForm'].idActuacion.value = numeroActuacion;
-	document.forms['DefinirDocumentacionDesignaForm'].idInstitucion.value = idInstitucion;
-	document.forms['DefinirDocumentacionDesignaForm'].modo.value = "downloadFicheros";
-	document.forms['DefinirDocumentacionDesignaForm'].target = "submitArea";
-	document.forms['DefinirDocumentacionDesignaForm'].submit();
 
+		   jQuery.ajax({ 
+				type: "POST",
+				url: "/SIGA/JGR_DocumentacionDesigna.do?modo=getAjaxObtenerListadoDocumentacion",				
+				data: "anio="+anio+"&idTurno="+idTurno+"&numero="+numero+"&idInstitucion="+idInstitucion+"&numeroActuacion="+numeroActuacion,
+				dataType: "json",
+				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+				success: function(json){	
+					// Recupera el identificador de la serie de facturacion
+					jQuery("#tablaDocumentacion tr").remove();
+					jQuery("#tablaDocumentacion").append("<tr><td WIDTH='25%' align='center'><strong>Nombre</strong></td><td WIDTH='30%' align='center'><strong>Descripcion de la actuación</strong></td>"+
+											"<td WIDTH='10%' align='center'><strong>Fecha</strong></td><td WIDTH='30%' align='center'><strong>Observaciones</strong></td><td WIDTH='5%'>&nbsp;</td>");	
+					jQuery("#tablaDocumentacion").append(json.aOptionsListadoDocumentacion);	
+					jQuery("#tablaDocumentacion").append("</table>");	
+						
+						jQuery("#divDescargaDocumentacion").dialog(
+								{
+									height: 300,
+									width: 1000,
+									height: 'auto',
+									modal: true,
+									position:['middle',20],
+									resizable: false,
+									buttons: {
+										"Cerrar": function() {
+											jQuery(this).dialog("close");
+										}
+									}
+								}
+							);
+							jQuery(".ui-widget-overlay").css("opacity","0");
+													
+						
+																	
+				}
+			});		
 	
 }
+
+function downloadFichero(idInstitucion,idFichero)
+{
+	document.forms['DefinirDocumentacionDesignaForm'].idFichero.value = idFichero;
+	
+	document.forms['DefinirDocumentacionDesignaForm'].idInstitucion.value = idInstitucion;
+	
+	document.forms['DefinirDocumentacionDesignaForm'].modo.value = "descargarFichero";
+	document.forms['DefinirDocumentacionDesignaForm'].submit();
+}
+
+function borrarFicheroFichaColegial(idInstitucion,idFichero,idDocumentacion)
+{
+	
+	if(confirm('<siga:Idioma key="messages.deleteConfirmation"/>')){
+		document.forms['DefinirDocumentacionDesignaForm'].idFichero.value = idFichero;
+		document.forms['DefinirDocumentacionDesignaForm'].idInstitucion.value = idInstitucion;
+		document.forms['DefinirDocumentacionDesignaForm'].idDocumentacion.value = idDocumentacion;
+		
+		document.forms['DefinirDocumentacionDesignaForm'].target="submitArea";
+		document.forms['DefinirDocumentacionDesignaForm'].modo.value = "borrarFicheroFichaColegial";
+		document.forms['DefinirDocumentacionDesignaForm'].submit();
+	}
+}
+
+
+
 function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion) 
 {	
 	
@@ -853,6 +906,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 <c:if	test="${cambiarColor==true}">
 	<c:set var="colorEJG" value="color:red;" />
 </c:if>
+
 
 <html:form action="${path}" method="post" target="submitArea">
 	<html:hidden property="modo" value="justificar" />
@@ -924,18 +978,18 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 			key="gratuita.informeJustificacionMasiva.literal.fechaSalida" /></td>
 		<td align='center' width="8%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.numeroProcedimiento" /></td>
-		<td align='center' width="15%"><siga:Idioma
+		<td align='center' width="14%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.cliente" /></td>
-		<td align='center' width="4%"><siga:Idioma
+		<td align='center' width="3%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.categoria" /></td>
-		<td align='center' width="4%"><siga:Idioma
+		<td align='center' width="6%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.numeroActuacion" /></td>
-		<td align='center' width="15%"><siga:Idioma
+		<td align='center' width="14%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.acreditaciones" /></td>
 		<td align='center' width="3%">V</td>
 		<td align='center' width="5%">&nbsp;</td>
 		<td align='center' width="3%">&nbsp;</td>
-		<td align='center' width="4%"><siga:Idioma
+		<td align='center' width="3%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.baja" /></td>
 
 	</tr>
@@ -953,14 +1007,14 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		<td width="12%"></td>
 		<td width="7%"></td>
 		<td width="8%"></td>
-		<td width="15%"></td>
-		<td width="4%"></td>
-		<td width="4%"></td>
-		<td width="15%"></td>
+		<td width="14%"></td>
+		<td width="3%"></td>
+		<td width="6%"></td>
+		<td width="14%"></td>
 		<td width="3%"></td>
 		<td width="5%"></td>
 		<td width="3%"></td>
-		<td width="4%"></td>
+		<td width="3%"></td>
 	</tr>
 	<bean:define id="permitirBotones" name="permitirBotones"
 		scope="request"></bean:define>
@@ -1809,37 +1863,42 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 													<td>
 														<table>
 															<tr>
-															
-															
-															
 															<c:choose>
 																<c:when test="${actuacion.documentoJustificacion&&subidaJustificacionesActiva}">
-																<td style="text-align: left;  font-size: 13px;">
-																<c:out value="${actuacion.numero}" /></td>
-																<td>
-																<img id="iconoboton_download1" 
-																		src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor:pointer;" 
-																		alt="Descargar" name="iconoFila" title="Descargar" border="0" 
-																		onClick="accionDescargaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})" 
-																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
-																
-																</td>
+																	<td style="text-align: left;  font-size: 13px;">
+																	<c:out value="${actuacion.numero}" /></td>
+																	<c:if test="${empty actuacion.idFacturacion}">
+																		<td>
+																			<img id="iconoboton_nuevaDocuemntacion" 
+																			src="/SIGA/html/imagenes/bupload.gif" style="cursor:pointer;" 
+																			alt="Nueva Documentacion" name="iconoFila" title="Nueva Documentacion" border="0" 
+																			onClick="accionNuevaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})" 
+																			onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/bupload.gif',1)">
+																		</td>	
+																	</c:if>
+																	<td>
+																	<img id="iconoboton_download1" 
+																			src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor:pointer;" 
+																			alt="Descargar" name="iconoFila" title="Descargar" border="0" 
+																			onClick="accionDescargaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})" 
+																			onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
 																	
-																
+																	</td>
+											
 																</c:when>
-																
-																
-																
+		
 																<c:when test="${!actuacion.documentoJustificacion&&subidaJustificacionesActiva}">
 																	<td style="text-align: left;  font-size: 13px;">
 																	<c:out value="${actuacion.numero}" /></td>
-																	<td>
-																		<img id="iconoboton_nuevaDocuemntacion" 
-																		src="/SIGA/html/imagenes/bupload.gif" style="cursor:pointer;" 
-																		alt="Nueva Documentacion" name="iconoFila" title="Nueva Documentacion" border="0" 
-																		onClick="accionNuevaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})" 
-																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/bupload.gif',1)">
-																	</td>
+																	<c:if test="${empty actuacion.idFacturacion}">
+																		<td>
+																			<img id="iconoboton_nuevaDocuemntacion" 
+																			src="/SIGA/html/imagenes/bupload.gif" style="cursor:pointer;" 
+																			alt="Nueva Documentacion" name="iconoFila" title="Nueva Documentacion" border="0" 
+																			onClick="accionNuevaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})" 
+																			onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/bupload.gif',1)">
+																		</td>
+																	</c:if>
 																</c:when>
 																<c:otherwise>
 																<td style="text-align: left;  font-size: 13px;">
@@ -1997,6 +2056,16 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																<c:when test="${actuacion.documentoJustificacion&&subidaJustificacionesActiva}">
 																<td style="text-align: left;  font-size: 13px;">
 																<c:out value="${actuacion.numero}" /></td>
+																<td style="text-align: left;  font-size: 13px;">
+																<c:if test="${empty actuacion.idFacturacion}">
+																	<td>
+																		<img id="iconoboton_nuevaDocuemntacion" 
+																			src="/SIGA/html/imagenes/bupload.gif" style="cursor:pointer;" 
+																			alt="Nueva Documentacion" name="iconoFila" title="Nueva Documentacion" border="0" 
+																			onClick="accionNuevaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})" 
+																			onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/bupload.gif',1)">
+																	</td>	
+																</c:if>
 																<td>
 																<img id="iconoboton_download1" 
 																		src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor:pointer;" 
@@ -2005,19 +2074,21 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
 																
 																</td>
-																	
+																
 																
 																</c:when>
 																<c:when test="${!actuacion.documentoJustificacion&&subidaJustificacionesActiva}">
 																	<td style="text-align: left;  font-size: 13px;">
 																	<c:out value="${actuacion.numero}" /></td>
-																	<td>
-																		<img id="iconoboton_nuevaDocuemntacion" 
-																		src="/SIGA/html/imagenes/bupload.gif" style="cursor:pointer;" 
-																		alt="Nueva Documentacion" name="iconoFila" title="Nueva Documentacion" border="0" 
-																		onClick="accionNuevaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})" 
-																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/bupload.gif',1)">
-																	</td>
+																	<c:if test="${empty actuacion.idFacturacion}">
+																		<td>
+																			<img id="iconoboton_nuevaDocuemntacion" 
+																			src="/SIGA/html/imagenes/bupload.gif" style="cursor:pointer;" 
+																			alt="Nueva Documentacion" name="iconoFila" title="Nueva Documentacion" border="0" 
+																			onClick="accionNuevaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})" 
+																			onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/bupload.gif',1)">
+																		</td>
+																	</c:if>
 																	</c:when>
 																<c:otherwise>
 																<td style="text-align: left;  font-size: 13px;">
@@ -2261,7 +2332,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 </div>
 
 
-
 <html:form action="/JGR_ActuacionesDesigna" method="post"
 	target="mainWorkArea" style="display:none">
 	<html:hidden property="modo" />
@@ -2322,6 +2392,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 	<html:hidden styleId="numero" property = "numero"/>
 	<html:hidden styleId="idTurno" property = "idTurno"/>
 	<html:hidden styleId="idActuacion" property = "idActuacion"/>
+	<html:hidden styleId="idFichero" property = "idFichero"/>
+	<html:hidden styleId="idDocumentacion" property = "idDocumentacion"/>
 	<input type="hidden" name="actionModal" value="">
 </html:form>	
 <iframe name="submitArea"
@@ -2542,6 +2614,9 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 	
 	
 </script>
+<div id="divDescargaDocumentacion" title="Justificación de actuaciones" style="display:none">
+		<table id='tablaDocumentacion' style='width:100%;table-layout: fixed;'  border='1' align='center' cellspacing='0' cellpadding='0'>	
+</div>
 </body>
 
 </html>
