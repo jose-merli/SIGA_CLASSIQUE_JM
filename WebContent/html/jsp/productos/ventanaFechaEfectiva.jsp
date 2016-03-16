@@ -77,7 +77,7 @@
 			<tr><td>&nbsp;</td></tr>
 				
 			<tr>				
-				<td class="labelText">
+				<td class="labelText" style="width: 30%">
 					<siga:Idioma key="pys.mantenimientoServicios.literal.fecha"/>&nbsp;(*)
 			    </td>
 				<td>		
