@@ -44,6 +44,10 @@
 	.ui-dialog-titlebar-close {
 		  visibility: hidden;
 	}
+	td{
+		padding-top: .3em;
+		height: 27px;
+	}
 </style>
 
 <script>
@@ -972,10 +976,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 			key="gratuita.informeJustificacionMasiva.literal.designa" /></td>
 		<td align='center' width="8%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.ejg" /></td>
-		<td align='center' width="13%"><siga:Idioma
+		<td align='center' width="17%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.juzgado" /></td>
-		<td align='center' width="8%"><siga:Idioma
-			key="gratuita.informeJustificacionMasiva.literal.fechaSalida" /></td>
 		<td align='center' width="8%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.numeroProcedimiento" /></td>
 		<td align='center' width="14%"><siga:Idioma
@@ -984,7 +986,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 			key="gratuita.informeJustificacionMasiva.literal.categoria" /></td>
 		<td align='center' width="4%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.numeroActuacion" /></td>
-		<td align='center' width="11%"><siga:Idioma
+		<td align='center' width="15%"><siga:Idioma
 			key="gratuita.informeJustificacionMasiva.literal.acreditaciones" /></td>
 		<td align='center' width="3%">V</td>
 		<td align='center' width="3%">&nbsp;</td>
@@ -1000,17 +1002,16 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 	style='height:400; width: 100%; overflow-y: auto; overflow-x:hidden '>
 	
 <table id='listadoInformeJustificacion' border='1' align='center' 
-	width='100%' cellspacing='0' cellpadding='0' style='table-layout: fixed; border-spacing: 0px;border-style: solid;'>
-	<tr>
+	width='100%' cellspacing='0' cellpadding='0' style='table-layout: fixed; border-style: solid;'>
+	<tr style="display:none;">
 		<td width="8%"></td>
 		<td width="8%"></td>
-		<td width="13%"></td>
-		<td width="8%"></td>
+		<td width="17%"></td>
 		<td width="8%"></td>
 		<td width="14%"></td>
 		<td width="4%"></td>
 		<td width="4%"></td>
-		<td width="11%"></td>
+		<td width="15%"></td>
 		<td width="3%"></td>
 		<td width="3%"></td>
 		<td width="3%"></td>
@@ -1101,7 +1102,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 				
 				
 				
-					<td rowspan="${designa.rowSpan}">
+					<td rowspan="${designa.rowSpan}" class="trAmpliado">
 						<c:choose>            
 							<c:when test="${informesOficioLetradoActivo==true}">
 								<a href='#' onclick="downloadInformesOficio('${designa.idInstitucion}','${designa.anio}','${designa.idTurno}','${designa.numero}')"><c:out value="${designa.codigoDesigna}" /></a>
@@ -1111,7 +1112,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 								value="${designa.codigoDesigna}" />
 								</c:otherwise>
 						</c:choose>
-			
+						(<c:out value="${designa.fecha}"/>)
 						
 						</td>
 						
@@ -1197,8 +1198,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 							&nbsp;
 						</c:otherwise>
 					</c:choose></td>
-					<td rowspan="${designa.rowSpan}"><c:out
-						value="${designa.fecha}" /></td>
 					<td rowspan="${designa.rowSpan}"><c:choose>
 						<c:when test="${designa.asunto!=null && designa.asunto!=''}">
 							<c:out value="${designa.asunto}"></c:out>
