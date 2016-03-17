@@ -421,7 +421,7 @@
 							<siga:Idioma key="gratuita.busquedaAsistencias.literal.guardia" />&nbsp;(*)
 						</td>
 						<td>
-							<siga:Select queryId="getGuardiasConColegGuardia" id="idGuardia"  parentQueryParamIds="idturno" queryParamId="idGuardia" params="${paramsGuardiasDeTurno}" selectedIds="${idGuardiaSelected}" required="true" width="300" childrenIds="idPersona" cssClass="${estiloSelect}" disabled="${disabledSelect}"/>
+							<siga:Select queryId="getGuardiasConColegGuardia"  id="idGuardia"  parentQueryParamIds="idturno" queryParamId="idGuardia" params="${paramsGuardiasDeTurno}" selectedIds="${idGuardiaSelected}" required="true" width="300" childrenIds="idPersona"  cssClass="${estiloSelect}" disabled="${disabledSelect}"/>
 						</td>
 					</tr>
 
@@ -430,7 +430,7 @@
 							<siga:Idioma key="gratuita.volantesExpres.literal.letradosGuardia" />(*)&nbsp;
 						</td>
 						<td colspan = "3" >
-							<siga:Select queryId="getColegiadosGuardia" id="idPersona" parentQueryParamIds="idGuardia" width="350" params="${parametrosComboColegiadosGuardia}" selectedIds="${idColegiadoGuardiaSelected}" required="true" cssClass="${estiloSelect}" disabled="${disabledSelect}"/>
+							<siga:Select queryId="getColegiadosGuardia" id="idPersona" parentQueryParamIds="idGuardia" onLoadCallback="onChangeGuardia()"  width="350" params="${parametrosComboColegiadosGuardia}" selectedIds="${idColegiadoGuardiaSelected}" required="true" cssClass="${estiloSelect}" disabled="${disabledSelect}"/>
 						</td>
 					</tr>
 
@@ -858,16 +858,33 @@
 			document.forms['SolicitudAceptadaCentralitaForm'].target = 'mainPestanas';
 	 	document.forms['SolicitudAceptadaCentralitaForm'].submit();
 	}
-	
-	
+	function onChangeGuardia() {
+		if(jQuery("#idGuardia").val()!=''){
+			var idpersonaaniadircombo = jQuery("#idColegiadoGuardiaSeleccionado").val();
+			isContenido = false;
+			jQuery("#idPersona option").each(function(){
+				if((jQuery(this).val() === idpersonaaniadircombo )){
+					isContenido = true;
+				}
+			});
+			if(isContenido==false){
+				nombreColegiadoGuardiaSeleccionado = '<siga:Idioma key="gratuita.literal.letrado.refuerzo"/>'+' '+jQuery("#nombreColegiadoGuardiaSeleccionado").val();
+				jQuery("#idPersona").append(jQuery('<option>', {
+				    value: idpersonaaniadircombo,
+				    text: nombreColegiadoGuardiaSeleccionado,
+				    selected:true
+				}));
+				
+			}
+			jQuery('#idPersona > option[value='+idpersonaaniadircombo+']').attr('selected', 'selected');
+		}
+	}
 	function inicio() {
 		if(document.getElementById("mensajeSuccess") && document.getElementById("mensajeSuccess").value!=''){
 			alert(document.getElementById("mensajeSuccess").value,'success');
 		}
 		idpersonaseleccionadacombo = jQuery("#idPersona").val();
 		idpersonaaniadircombo = jQuery("#idColegiadoGuardiaSeleccionado").val();
-		
-		
 		if(idpersonaseleccionadacombo!=idpersonaaniadircombo){
 			nombreColegiadoGuardiaSeleccionado = '<siga:Idioma key="gratuita.literal.letrado.refuerzo"/>'+' '+jQuery("#nombreColegiadoGuardiaSeleccionado").val();
 			jQuery("#idPersona").append(jQuery('<option>', {
@@ -881,12 +898,7 @@
 	}	
 	
 </script>
-	 	
-	
 	<!-- FIN: BOTONES BUSQUEDA -->
-	
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" 	style="display: none" />
-
-	
 </body>
 </html>
