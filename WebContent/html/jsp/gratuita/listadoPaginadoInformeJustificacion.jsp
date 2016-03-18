@@ -2407,48 +2407,50 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 	
 	
 	function muestraIconosActuacion(objImgDivActuacion,mostrarIcono){
-		if(mostrarIcono==true){
-			cadenaAcreditacion = objImgDivActuacion.attr("id").split("img_")[1]
-			countDesigna = cadenaAcreditacion.split("_x_")[0];
-			nigNumProcRequired = cadenaAcreditacion.split("_nigNumProc_")[1];
-			isAcreditacionCompleta =  document.getElementById("acreditacionCompleta_"+countDesigna).value;
-			var formularioActuacionPte = '<input type="hidden" id="fechaact_';
-			formularioActuacionPte +=cadenaAcreditacion;
-			formularioActuacionPte += '"/>';
-			formularioActuacionPte += '<input type="hidden" id="numprocact_';
-			formularioActuacionPte +=cadenaAcreditacion;
-			formularioActuacionPte += '"/>';
-			formularioActuacionPte += '<input type="hidden" id="anioprocact_';
-			formularioActuacionPte +=cadenaAcreditacion;
-			formularioActuacionPte += '"/>';
-			formularioActuacionPte += '<input type="hidden" id="nigact_';
-			formularioActuacionPte +=cadenaAcreditacion;
-			formularioActuacionPte += '"/>';
-			formularioActuacionPte += '<input type="hidden" id="nigNumProcRequired_';
-			formularioActuacionPte +=cadenaAcreditacion;
-			formularioActuacionPte += '" value ="';
-			formularioActuacionPte +=nigNumProcRequired;
-			formularioActuacionPte += '"/>';
-			
-			if(nigNumProcRequired=='1' && isAcreditacionCompleta=='false'){
-				formularioActuacionPte += '<input type="hidden" id="insertar_';
+		if(objImgDivActuacion && objImgDivActuacion.attr("id")){
+			if(mostrarIcono==true){
+				cadenaAcreditacion = objImgDivActuacion.attr("id").split("img_")[1];
+				countDesigna = cadenaAcreditacion.split("_x_")[0];
+				nigNumProcRequired = cadenaAcreditacion.split("_nigNumProc_")[1];
+				isAcreditacionCompleta =  document.getElementById("acreditacionCompleta_"+countDesigna).value;
+				var formularioActuacionPte = '<input type="hidden" id="fechaact_';
 				formularioActuacionPte +=cadenaAcreditacion;
-				formularioActuacionPte += '" value="0" />';
-				objImgDivActuacion.html(formularioActuacionPte);
-				muestraIconoActuacionIncompleta(objImgDivActuacion);
+				formularioActuacionPte += '"/>';
+				formularioActuacionPte += '<input type="hidden" id="numprocact_';
+				formularioActuacionPte +=cadenaAcreditacion;
+				formularioActuacionPte += '"/>';
+				formularioActuacionPte += '<input type="hidden" id="anioprocact_';
+				formularioActuacionPte +=cadenaAcreditacion;
+				formularioActuacionPte += '"/>';
+				formularioActuacionPte += '<input type="hidden" id="nigact_';
+				formularioActuacionPte +=cadenaAcreditacion;
+				formularioActuacionPte += '"/>';
+				formularioActuacionPte += '<input type="hidden" id="nigNumProcRequired_';
+				formularioActuacionPte +=cadenaAcreditacion;
+				formularioActuacionPte += '" value ="';
+				formularioActuacionPte +=nigNumProcRequired;
+				formularioActuacionPte += '"/>';
+				
+				if(nigNumProcRequired=='1' && isAcreditacionCompleta=='false'){
+					formularioActuacionPte += '<input type="hidden" id="insertar_';
+					formularioActuacionPte +=cadenaAcreditacion;
+					formularioActuacionPte += '" value="0" />';
+					objImgDivActuacion.html(formularioActuacionPte);
+					muestraIconoActuacionIncompleta(objImgDivActuacion);
+					
+				}else{
+					formularioActuacionPte += '<input type="hidden" id="insertar_';
+					formularioActuacionPte +=cadenaAcreditacion;
+					formularioActuacionPte += '" value="1" />';
+					jQuery(objImgDivActuacion).html(formularioActuacionPte);
+					muestraIconoActuacionCompleta(objImgDivActuacion);
+					
+				}
 				
 			}else{
-				formularioActuacionPte += '<input type="hidden" id="insertar_';
-				formularioActuacionPte +=cadenaAcreditacion;
-				formularioActuacionPte += '" value="1" />';
-				jQuery(objImgDivActuacion).html(formularioActuacionPte);
-				muestraIconoActuacionCompleta(objImgDivActuacion);
+				objImgDivActuacion.html('&nbsp;');
 				
 			}
-			
-		}else{
-			objImgDivActuacion.html('&nbsp;');
-			
 		}
 		
 	}
