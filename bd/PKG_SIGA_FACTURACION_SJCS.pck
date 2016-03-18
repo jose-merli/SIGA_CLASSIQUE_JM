@@ -1950,7 +1950,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         ' and (Ac.Anulacion is null or Ac.Anulacion=0)' ||  --no anuladas
         ' and Ac.Fechajustificacion is not null' || --justificadas
         ' and trunc(Ac.Fechajustificacion) between ''@P_FECHAINIFACT@'' and ''@P_FECHAFINFACT@''' ||
-        ' and Ac.Validada=1' || -- en fecha
+        ' and Ac.Validada = ''1''' || -- en fecha
         ' and pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(A.Fechahora,''@P_DIASAPLICABLES@'')=1' ||
         ' and Ac.diadespues=''N'''; -- no del día después.
 
@@ -2060,10 +2060,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         ' and pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(A.Fechahora,''@P_DIASAPLICABLES@'')=1' ||
         ' and Ac.diadespues=''N''';
 
-    c_obtener_actuacionesnuevasUG varchar2(4000) := ' select Ac.idinstitucion,' ||
+    c_obtener_actuacionesnuevasUG varchar2(4000) := 'select Ac.idinstitucion,' ||
         ' Ac.anio,' ||
         ' Ac.numero,' ||
-        ' Ac.idactuacion, ' ||
+        ' Ac.idactuacion,' ||
         ' 0 facturado,' ||
         ' nvl(pkg_siga_facturacion_sjcs.func_costefijo(Ac.idinstitucion,A.IDTURNO,A.IDGUARDIA,Ac.anio,Ac.numero,Ac.idactuacion,TRUNC(A.FECHAHORA), NULL),0) costefijo' ||
         ' from Scs_Asistencia A, scs_actuacionasistencia Ac' ||
@@ -2083,9 +2083,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         '  and fac.numero = Ac.numero' ||
         '  and fac.idactuacion = Ac.idactuacion)' ||
         ' and (Ac.Anulacion is null or Ac.Anulacion=''0'')' ||
-        ' and Ac.Fechajustificacion is not null ' ||
+        ' and Ac.Fechajustificacion is not null' ||
         ' and trunc(Ac.Fechajustificacion) between ''@P_FECHAINIFACT@'' and ''@P_FECHAFINFACT@''' ||
-        ' and Ac.Validada=''1''' ||
+        ' and Ac.Validada = ''1''' ||
         ' and pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(A.Fechahora,''@P_DIASAPLICABLES@'')=1' ||
         ' and Ac.diadespues=''N''';
 
@@ -2121,7 +2121,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         ' Ac.idactuacion,' ||
         ' 0 facturado,' ||
         ' nvl(pkg_siga_facturacion_sjcs.func_costefijo(Ac.idinstitucion,A.IDTURNO,A.IDGUARDIA,Ac.anio,Ac.numero,Ac.idactuacion,TRUNC(A.FECHAHORA), NULL),0) costefijo' ||
-        ' from Scs_Asistencia A, scs_actuacionasistencia Ac ' ||
+        ' from Scs_Asistencia A, scs_actuacionasistencia Ac' ||
         ' where A.Idinstitucion=@P_IDINSTITUCION@' ||
         ' and A.Idturno=@P_IDTURNO@' ||
         ' and A.Idguardia=@P_IDGUARDIA@' ||
@@ -2138,15 +2138,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         '  and fac.numero = Ac.numero' ||
         '  and fac.idactuacion = Ac.idactuacion)' ||
         ' and (Ac.Anulacion is null or Ac.Anulacion=''0'')' ||
-        ' and Ac.Fechajustificacion is not null ' ||
+        ' and Ac.Fechajustificacion is not null' ||
         ' and trunc(Ac.Fechajustificacion) between ''@P_FECHAINIFACT@'' and ''@P_FECHAFINFACT@''' ||
-        ' and Ac.Validada=1' ||
+        ' and Ac.Validada = ''1''' ||
         ' and Ac.diadespues=''N''' ||
         ' and pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(A.Fechahora,''@P_DIASAPLICABLES@'')=1' ||
         ' and A.idtipoasistenciacolegio=@P_IDTIPOASIST@';
 
      /*Cursores que utilizaremos para cargar la matriz de memoria m_apunte_as de UG cuando facturamos por asistencia y no aplicamos tipos*/
-    c_obtener_asistenciasUG varchar2(4000) := ' select idinstitucion, anio, numero, NVL(Scs_Asistencia.Facturado, ''0'') facturado' ||
+    c_obtener_asistenciasUG varchar2(4000) := 'select idinstitucion, anio, numero, NVL(Scs_Asistencia.Facturado, ''0'') facturado' ||
         ' from Scs_Asistencia' ||
         ' where Scs_Asistencia.Idinstitucion=@P_IDINSTITUCION@' ||
         ' and Scs_Asistencia.Idturno=@P_IDTURNO@' ||
@@ -2368,7 +2368,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 and (Ac.Anulacion is null or Ac.Anulacion = '0')
                 and Ac.Fechajustificacion is not null
                 and trunc(Ac.Fechajustificacion) between trunc(V_DATOS_FACTURACION.FECHADESDE) and trunc(V_DATOS_FACTURACION.FECHAHASTA)
-                and Ac.Validada = 1
+                and Ac.Validada = '1'
                 and Ac.diadespues = 'N'
                 and FUN_ESDIAAPLICABLE(A.Fechahora, V_DIASAPLICABLES) = 1)
             ORDER BY TIPOACTUACION;
@@ -2469,7 +2469,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             and (Ac.Anulacion is null or Ac.Anulacion = '0')
             and Ac.Fechajustificacion is not null 
             and trunc(Ac.Fechajustificacion) between trunc(V_DATOS_FACTURACION.FECHADESDE) and trunc(V_DATOS_FACTURACION.FECHAHASTA) 
-            and Ac.Validada = 1
+            and Ac.Validada = '1'
             and Ac.diadespues = 'S' -- DIAS FUERA DE GUARDIA
         ORDER BY FECHA;
 
@@ -2496,7 +2496,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             and (Ac.Anulacion is null or Ac.Anulacion = '0')
             and Ac.Fechajustificacion is not null
             and trunc(Ac.Fechajustificacion) between trunc(V_DATOS_FACTURACION.FECHADESDE) and trunc(V_DATOS_FACTURACION.FECHAHASTA) 
-            and Ac.Validada = 1
+            and Ac.Validada = '1'
             and Ac.diadespues = 'S'
             and Ac.fecha = V_FECHA
         ORDER BY TIPOACTUACION;
@@ -2590,7 +2590,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     AND ACT.NUMERO = ASI.NUMERO -- Relacion SCS_ASISTENCIA => SCS_ACTUACIONASISTENCIA
                     AND NVL(ACT.ANULACION, '0') = '0' -- Actuacion sin anular
                     AND TRUNC(ACT.FECHAJUSTIFICACION) BETWEEN V_FECHAFACTURACIONINICIO AND V_FECHAFACTURACIONFIN -- Actuacion justificada dentro del periodo de facturacion
-                    AND ACT.VALIDADA='1' -- Actuacion validada
+                    AND ACT.VALIDADA = '1' -- Actuacion validada
                     AND ACT.DIADESPUES='N' -- No es dia despues
                     AND NOT EXISTS ( -- Actuacion sin facturar
                         SELECT 1
@@ -2631,8 +2631,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             AND ACT.NUMERO = V_NUMERO -- Utiliza el indice de la PK
             AND NVL(ACT.ANULACION, '0') = '0' -- Actuacion sin anular
             AND TRUNC(ACT.FECHAJUSTIFICACION) BETWEEN V_FECHAFACTURACIONINICIO AND V_FECHAFACTURACIONFIN -- Actuacion justificada dentro del periodo de facturacion
-            AND ACT.VALIDADA='1' -- Actuacion validada
-            AND ACT.DIADESPUES='N' -- No es dia despues
+            AND ACT.VALIDADA = '1' -- Actuacion validada
+            AND ACT.DIADESPUES = 'N' -- No es dia despues
             AND NOT EXISTS ( -- Actuacion sin facturar
                 SELECT 1
                 FROM FCS_FACT_ACTUACIONASISTENCIA FAC_ACT
@@ -2957,7 +2957,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         -- Si obtiene un idFacturacion, hay que obtener el tipo de actuacion del historico
         IF (V_IDFACTURACION IS NOT NULL) THEN
             BEGIN
-                SELECT HTACT.IMPORTE,  HTACT.IMPORTEMAXIMO
+                SELECT HTACT.IMPORTE, HTACT.IMPORTEMAXIMO
                     INTO V_IMPORTE, V_IMPORTEMAXIMO
                 FROM FCS_HISTORICO_TIPOACTUACION HTACT
                 WHERE  HTACT.IDINSTITUCION = P_IDINSTITUCION
@@ -2975,7 +2975,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             
         -- Si no obtenemos un idFacturacion o no tenia historico, hay que obtener el tipo de actuacion actual
         IF (V_IDFACTURACION IS NULL OR V_TIENEHISTORICO = FALSE) THEN
-            SELECT TACT.IMPORTE,  TACT.IMPORTEMAXIMO
+            SELECT TACT.IMPORTE, TACT.IMPORTEMAXIMO
                 INTO V_IMPORTE, V_IMPORTEMAXIMO
             FROM SCS_TIPOACTUACION TACT
             WHERE TACT.IDINSTITUCION = P_IDINSTITUCION
@@ -3015,7 +3015,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
     PROCEDURE PROC_CARGA_CONFIG_GUARDIA(
         P_IDINSTITUCION IN NUMBER,
         P_IDTURNO IN NUMBER,
-        P_IDGUARDIA IN NUMBER,        
+        P_IDGUARDIA IN NUMBER,
         P_CONFIGGUARDIAACTUAL IN CONFIG_GUARDIA,
         P_IDFACTURACION IN NUMBER, -- DEBE TENER SIEMPRE VALOR
         P_CODRETORNO OUT VARCHAR2,
@@ -3824,7 +3824,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
            AND (trunc(SCS_ACTUACIONDESIGNA.FECHAJUSTIFICACION) BETWEEN
                trunc(P_FECHADESDE) AND trunc(P_FECHAHASTA))
            AND NVL(SCS_ACTUACIONDESIGNA.FACTURADO, 0) <> 1
-           AND NVL(SCS_ACTUACIONDESIGNA.VALIDADA, 0) = 1
+           AND NVL(SCS_ACTUACIONDESIGNA.VALIDADA, '0') = '1'
            AND (SCS_ACTUACIONDESIGNA.ANULACION is null or
                SCS_ACTUACIONDESIGNA.ANULACION = '0')
            AND SCS_ACTUACIONDESIGNA.IDPERSONACOLEGIADO IS NOT NULL;
@@ -4243,7 +4243,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 P_IDINSTITUCION,
                 P_IDFACTURACION,
                 NULL,
-                NULL,                
+                NULL,
                 0,
                 V_GRUPOSFACTURACION.IDGRUPOFACTURACION,
                 C_IMPORTE_GUARDIA_INACTIVA,
@@ -4308,7 +4308,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                         PROC_CARGA_CONFIG_GUARDIA(
                             P_IDINSTITUCION,
                             V_TURNO.IDTURNO,
-                            V_GUARDIASTURNO.IDGUARDIA,        
+                            V_GUARDIASTURNO.IDGUARDIA,
                             V_CONFIGGUARDIAACTUAL,
                             M_CG_FACTURABLE(I).IDFACTURACION,
                             V_CODRETORNO2,
@@ -4579,7 +4579,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                         PROC_CARGA_CONFIG_GUARDIA(
                             P_IDINSTITUCION,
                             V_TURNO.IDTURNO,
-                            V_GUARDIASTURNO.IDGUARDIA,        
+                            V_GUARDIASTURNO.IDGUARDIA,
                             V_CONFIGGUARDIAACTUAL,
                             M_CG_FACTURABLE(I).IDFACTURACION,
                             V_CODRETORNO2,
@@ -8855,7 +8855,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
              Acttotgua As Acttotgua,
              Acttotfue As Acttotfue,
              Decode(Max(Modulo),
-                    'P7',  '32',
+                    'P7', '32',
                     'P16', 'P16',
                     'P29', '32a',
                     'P44', Case
@@ -8870,7 +8870,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                               Else
                                '31a'
                             End,
-                    'V4',  '40c',
+                    'V4', '40c',
                     'V16', Case
                               When Sum(Actfacgua) < 4 Then
                                '40ba'
@@ -8944,8 +8944,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                               1 As Ordapunte,
                               'G. ' || f_siga_getrecurso_etiqueta('fcs.ficheroFacturacion.tipoApunte.' ||
                               Decode(Cgu.Fecha_Fin - Cgu.Fechainicio + 1,
-                                     1,  'dia',
-                                     7,  'semana',
+                                     1, 'dia',
+                                     7, 'semana',
                                      13, 'quincena',
                                      14, 'quincena',
                                      15, 'quincena',
@@ -9523,88 +9523,87 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
             -- Actualizamos el RECORD de Configuracion de Guardias
             CASE (V_IDHITO.IDHITO)
-                WHEN 1 THEN
+                WHEN 1 THEN -- GAs
                    V_CONFIG_GUARDIA.GUARDIA := PKG_SIGA_CONSTANTES.DB_TRUE_N;
                    V_CONFIG_GUARDIA.IMPORTEGUARDIA := V_IDHITO.PRECIO;
                    V_CONFIG_GUARDIA.DIASPAGAGUARDIA := V_IDHITO.DIASAPLICABLES;
                    V_CONFIG_GUARDIA.AGRUPARPAGAGUARDIA := V_IDHITO.AGRUPAR;
 
-                WHEN 2 THEN
+                WHEN 2 THEN -- GDAs
                    V_CONFIG_GUARDIA.DOBLAASISTENCIA := PKG_SIGA_CONSTANTES.DB_TRUE_N;
                    V_CONFIG_GUARDIA.IMPORTEGUARDIADOBLADA := V_IDHITO.PRECIO;
 
-                WHEN 3 THEN
+                WHEN 3 THEN -- AsMax
                    b_asi := true;
                    V_CONFIG_GUARDIA.IMPORTEMAXASISTENCIA := V_IDHITO.PRECIO;
 
-                WHEN 4 THEN
+                WHEN 4 THEN -- GDAc
                    V_CONFIG_GUARDIA.DOBLAACTUACION := PKG_SIGA_CONSTANTES.DB_TRUE_N;
                    V_CONFIG_GUARDIA.IMPORTEGUARDIADOBLADA := V_IDHITO.PRECIO;
 
-                WHEN 5 THEN
+                WHEN 5 THEN -- As
                    V_CONFIG_GUARDIA.ASISTENCIA := PKG_SIGA_CONSTANTES.DB_TRUE_N;
                    V_CONFIG_GUARDIA.IMPORTEASISTENCIA := V_IDHITO.PRECIO;
                    V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA := V_IDHITO.DIASAPLICABLES;
                    V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA := V_IDHITO.AGRUPAR;
 
-                WHEN 6 THEN
+                WHEN 6 THEN -- AcFGMax
                    b_actfg := true;
                    V_CONFIG_GUARDIA.IMPORTEMAXACTUACIONFG := V_IDHITO.PRECIO;
 
-                WHEN 7 THEN
+                WHEN 7 THEN -- Ac
                    V_CONFIG_GUARDIA.ACTUACION := PKG_SIGA_CONSTANTES.DB_TRUE_N;
                    V_CONFIG_GUARDIA.IMPORTEACTUACION := V_IDHITO.PRECIO;
                    V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA := V_IDHITO.DIASAPLICABLES;
                    V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA := V_IDHITO.AGRUPAR;
 
-                WHEN 8 THEN
+                WHEN 8 THEN -- AcMax
                    b_act := true;
                    V_CONFIG_GUARDIA.IMPORTEMAXACTUACION := V_IDHITO.PRECIO;
 
-                WHEN 9 THEN
+                WHEN 9 THEN -- AcFG
                    V_CONFIG_GUARDIA.ACTUACIONFG := PKG_SIGA_CONSTANTES.DB_TRUE_N;
                    V_CONFIG_GUARDIA.IMPORTEACTUACIONFG := V_IDHITO.PRECIO;
 
-                WHEN 10 THEN
+                WHEN 10 THEN -- AsMin
                    V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA := V_IDHITO.PRECIO;
 
-                WHEN 12 THEN
+                WHEN 12 THEN -- SOJ
                    V_CONFIG_GUARDIA.IMPORTESOJ := V_IDHITO.PRECIO;
 
-                WHEN 13 THEN
+                WHEN 13 THEN -- EJG
                    V_CONFIG_GUARDIA.IMPORTEEJG := V_IDHITO.PRECIO;
 
-               WHEN 19 THEN
+               WHEN 19 THEN -- AcMin
                    V_CONFIG_GUARDIA.IMPORTEMINACTUACION := V_IDHITO.PRECIO;
 
-                WHEN 20 THEN
+                WHEN 20 THEN -- AsTp
                    V_CONFIG_GUARDIA.TIPOASISTENCIA := PKG_SIGA_CONSTANTES.DB_TRUE_N;
                    V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA := V_IDHITO.DIASAPLICABLES;
                    V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA := V_IDHITO.AGRUPAR;
 
-                WHEN 22 THEN
+                WHEN 22 THEN -- AcTp
                    V_CONFIG_GUARDIA.TIPOACTUACION := PKG_SIGA_CONSTANTES.DB_TRUE_N;
                    V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA := V_IDHITO.DIASAPLICABLES;
                    V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA := V_IDHITO.AGRUPAR;
 
-                WHEN 23 THEN
+                WHEN 23 THEN -- AcTpMax
                    b_actTpMax := true;
                    V_CONFIG_GUARDIA.TIPOACTUACION := PKG_SIGA_CONSTANTES.DB_TRUE_N;
                    V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA := V_IDHITO.DIASAPLICABLES;
                    V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA := V_IDHITO.AGRUPAR;
 
-               WHEN 25 THEN
+               WHEN 25 THEN -- AcFGTp
                    V_CONFIG_GUARDIA.TIPOACTUACIONFG := PKG_SIGA_CONSTANTES.DB_TRUE_N;
 
-                WHEN 44 THEN
+                WHEN 44 THEN -- GAc
                    V_CONFIG_GUARDIA.DIASPAGAGUARDIA := V_IDHITO.DIASAPLICABLES;
                    V_CONFIG_GUARDIA.AGRUPARPAGAGUARDIA := V_IDHITO.AGRUPAR;
 
-                WHEN 45 THEN
+                WHEN 45 THEN -- NDAs
                    V_CONFIG_GUARDIA.NUMASISTENCIASDOBLA := V_IDHITO.PRECIO;
 
-                WHEN 46 THEN
-                   --(NDAc)
+                WHEN 46 THEN -- NDAc
                    V_CONFIG_GUARDIA.NUMACTUACIONESDOBLA := V_IDHITO.PRECIO;
                    
                 ELSE
@@ -10556,8 +10555,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 AND NVL(ANULACION,0) = 0 -- no anuladas
                 AND FECHAJUSTIFICACION IS NOT NULL
                 AND TRUNC(FECHAJUSTIFICACION) BETWEEN V_DATOS_FACTURACION.FECHADESDE AND V_DATOS_FACTURACION.FECHAHASTA
-                AND DIADESPUES='N' -- No es dia despues (fuera de guardia)
-                AND VALIDADA='1'
+                AND DIADESPUES = 'N' -- No es dia despues (fuera de guardia)
+                AND VALIDADA = '1'
                 AND ROWNUM=1;
 
             EXCEPTION
@@ -12510,7 +12509,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     importeTipoAsistencia := NVL(NVL(V_ASISTENCIAS_UG.importe, V_CONFIG_GUARDIA.IMPORTEASISTENCIA), 0);                    
 
                     -- Obtenemos el importe maximo de la asistencia
-                    importeTipoAsistMax := NVL(NVL(V_ASISTENCIAS_UG.importemax, V_CONFIG_GUARDIA.IMPORTEMAXASISTENCIA), 0);
+                    importeTipoAsistMax := NVL(V_ASISTENCIAS_UG.importemax, 0);
 
                     -- Compruebo que no ha facturado la asistencia
                     IF (V_ASISTENCIAS_UG.FACTURADO IS NULL OR V_ASISTENCIAS_UG.FACTURADO = PKG_SIGA_CONSTANTES.DB_FALSE_A) THEN
@@ -13311,7 +13310,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 AND (ACT.ANULACION IS NULL OR ACT.ANULACION = '0')
                 AND ACT.FECHAJUSTIFICACION IS NOT NULL 
                 AND TRUNC(ACT.FECHAJUSTIFICACION) BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA) 
-                AND ACT.VALIDADA = 1
+                AND ACT.VALIDADA = '1'
                 AND ACT.DIADESPUES = 'N'
                 AND FUN_ESDIAAPLICABLE(ASI.FECHAHORA, V_DIASAPLICABLES) = 1)
             ORDER BY IDTIPOACTUACION, FECHA;
@@ -13816,7 +13815,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 AND ASI.NUMERO = V_NUMERO
                 AND ACT.FECHAJUSTIFICACION IS NOT NULL 
                 AND TRUNC(ACT.FECHAJUSTIFICACION) BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA) 
-                AND ACT.VALIDADA = 1
+                AND ACT.VALIDADA = '1'
                 AND ACT.DIADESPUES = 'N'
                 AND FUN_ESDIAAPLICABLE(ASI.FECHAHORA, V_DIASAPLICABLES) = 1)
             ORDER BY IDTIPOACTUACION, FECHA;        
@@ -13929,10 +13928,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                         MFACTURABLE.IDFACTURACION) LOOP
 
                         -- Obtenemos el importe de la asistencia, en el caso de que fuera nulo el importe de la asistencia seria el de la Guardia
-                        importeTipoActuacion := NVL(NVL(NVL(V_ACTUACIONES_UG.IMPORTE, V_CONFIG_GUARDIA.IMPORTETIPOACTUACION), V_CONFIG_GUARDIA.IMPORTEACTUACION), 0);
+                        importeTipoActuacion := NVL(NVL(V_ACTUACIONES_UG.IMPORTE, V_CONFIG_GUARDIA.IMPORTEACTUACION), 0);
 
                         -- El importe del Tipo solo se puede calcular en la propia asistencia
-                        importeTipoActMax := NVL(NVL(V_ACTUACIONES_UG.IMPORTEMAX, V_CONFIG_GUARDIA.IMPORTEMAXACTUACION), 0);
+                        importeTipoActMax := NVL(V_ACTUACIONES_UG.IMPORTEMAX, 0);
 
                         -- Comenzando el apunte en la matriz de memoria: M_APUNTE_AC
                         if (V_ACTUACIONES_UG.facturado <> pkg_siga_constantes.DB_TRUE_A) then
@@ -14365,7 +14364,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             ACT.FECHAJUSTIFICACION,
             '0' AS FACTURADA,
             0 AS IMPFACTURADA,
-            NVL(FUNC_COSTEFIJO(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA,  ACT.ANIO, ACT.NUMERO, ACT.IDACTUACION, TRUNC(ACT.FECHA), V_IDFACTURACION), 0) AS IMPCOSTESFIJOS -- Los datos de Fuera de Guardia se calculan con la fecha de la actuacion
+            NVL(FUNC_COSTEFIJO(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.ANIO, ACT.NUMERO, ACT.IDACTUACION, TRUNC(ACT.FECHA), V_IDFACTURACION), 0) AS IMPCOSTESFIJOS -- Los datos de Fuera de Guardia se calculan con la fecha de la actuacion
         FROM SCS_ASISTENCIA ASI, 
             SCS_ACTUACIONASISTENCIA ACT
         WHERE ASI.IDINSTITUCION = P_IDINSTITUCION
@@ -14746,7 +14745,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 AND (ACT.ANULACION IS NULL OR ACT.ANULACION = '0')
                 AND ACT.FECHAJUSTIFICACION IS NOT NULL 
                 AND TRUNC(ACT.FECHAJUSTIFICACION) BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA) 
-                AND ACT.VALIDADA = 1
+                AND ACT.VALIDADA = '1'
                 AND ACT.DIADESPUES = 'S'
                 AND ACT.FECHA = V_FECHA
                 AND ACT.IDTIPOACTUACION = V_IDTIPOACT)
