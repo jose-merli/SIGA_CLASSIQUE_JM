@@ -816,9 +816,8 @@ function accionDescargaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,
 						
 						jQuery("#divDescargaDocumentacion").dialog(
 								{
-									height: 300,
 									width: 1000,
-									height: 'auto',
+									height: '300',
 									modal: true,
 									position:['middle',20],
 									resizable: false,
