@@ -144,6 +144,8 @@
 				<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_2' id='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=idturno%>' />
 				<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_3' id='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=idguardia%>' />
 				<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_4' id='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idinstitucion%>' />
+				<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_5' id='oculto<%=String.valueOf(recordNumber)%>_5' value='<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%>' />
+				<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_6' id='oculto<%=String.valueOf(recordNumber)%>_6' value='<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%>' />
 				<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicio)%></td>
 				<td align="center"><%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin)%></td>
 				<td align="center"><%=generado%></td>

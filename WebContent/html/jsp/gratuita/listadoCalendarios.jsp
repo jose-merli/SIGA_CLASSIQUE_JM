@@ -97,6 +97,8 @@
 		  					<input type="hidden" id="idTurno_${status.count}" value ="${calendariosForm.idTurno}">
 		  					<input type="hidden" id="idGuardia_${status.count}" value ="${calendariosForm.idGuardia}">
 		  					<input type="hidden" id="idCalendarioGuardias_${status.count}" value ="${calendariosForm.idCalendarioGuardias}">
+		  					<input type="hidden" id="fechaInicio_${status.count}" value ="${calendariosForm.fechaInicio}">
+		  					<input type="hidden" id="fechaFin_${status.count}" value ="${calendariosForm.fechaFin}">
 			  			
 			  				<c:choose>
 			  					<c:when test="${calendariosForm.observaciones!=''}">

@@ -866,21 +866,39 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				String idGuardia = "";
 				String idCalendarioGuardias = "";
 				
+				String fechaInicio="";
+				String fechaFin="";
+				
 				if(miForm.getAccion()!=null && miForm.getAccion().equals("borrarDesdeProgramacion")){
 					idCalendarioGuardias = miForm.getIdCalendarioGuardias();
 					idTurno = miForm.getIdTurno();
 					idGuardia = miForm.getIdGuardia();
 					idInstitucion = usr.getLocation();
+					fechaInicio= GstDate.getFormatedDateShort(usr.getLanguage(),miForm.getFechaInicio());
+					fechaFin=GstDate.getFormatedDateShort(usr.getLanguage(),miForm.getFechaFin());
 				}else{
 					idInstitucion = (String)ocultos.get(3);
 					idTurno = (String)ocultos.get(1);
 					idGuardia = (String)ocultos.get(2);
 					idCalendarioGuardias = (String)ocultos.get(0);
+					fechaInicio = (String)ocultos.get(4);
+					fechaFin = (String)ocultos.get(5);
 				}
 				CalendarioSJCS calendarioSJCS = new CalendarioSJCS();
 				calendarioSJCS.inicializaParaBorrarCalendarios(new Integer(idInstitucion),new Integer( idTurno),new Integer( idGuardia),new Integer( idCalendarioGuardias), usr);
 				try {
 					calendarioSJCS.borrarCalendario();
+					//Borramos fichero si existe
+					String sFicheroLog=null;
+					ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+					sFicheroLog = rp.returnProperty("sjcs.directorioFisicoGeneracionCalendarios") + File.separator
+							+ idInstitucion + File.separator
+							+ calendarioSJCS.getNombreFicheroLogCalendario(new Integer(idTurno), new Integer(idGuardia),new Integer( idCalendarioGuardias), fechaInicio, fechaFin)
+							+ ".log.xls";
+					File fichero = new File(sFicheroLog);
+					if(fichero != null && fichero.exists()){
+						fichero.delete();
+					}
 					forward = exitoRefresco("messages.deleted.success", request);
 				} catch (SIGAException e) {
 					forward = exito(e.getLiteral(), request);
