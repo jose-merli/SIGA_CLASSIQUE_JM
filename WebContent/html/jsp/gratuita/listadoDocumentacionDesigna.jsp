@@ -128,7 +128,12 @@
 					</td>					
 					<td><%=fila.getNombreTipoDoc()%></td>
 					<td><%=fila.getDescripcionActuacion()%>&nbsp;</td>
-					<td><%=fila.getObservaciones()%>&nbsp;</td>
+					<% if(fila.getObservaciones() != null && !"".equalsIgnoreCase(fila.getObservaciones())){ %>
+						<td><%=fila.getObservaciones()%>&nbsp;</td>
+					<% }else{ %>
+						<td>&nbsp;</td>
+					<% } %>
+					
 				</siga:FilaConIconos>		
 <% 
 				recordNumber++;		   

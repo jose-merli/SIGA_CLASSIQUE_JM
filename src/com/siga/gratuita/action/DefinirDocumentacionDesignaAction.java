@@ -599,8 +599,13 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 				ficheroVo.setIdinstitucion(DocumentacionAuxiliar.getIdinstitucion());
 				ficheroVo = ficherosService.getFichero(ficheroVo);  
 		    	composicionTablaFicheros +="<tr><td>"+DocumentacionAuxiliar.getNombreTipoDoc()+"</td><td>"+DocumentacionAuxiliar.getDescripcionActuacion()+"</td><td>"+
-				formateo.format(DocumentacionAuxiliar.getFechaentrada())+
-				 "</td><td>"+DocumentacionAuxiliar.getObservaciones()+"</td>";
+				formateo.format(DocumentacionAuxiliar.getFechaentrada())+"</td>";
+	    		if(DocumentacionAuxiliar.getObservaciones() != null && !"".equalsIgnoreCase(DocumentacionAuxiliar.getObservaciones())){
+	    			composicionTablaFicheros +="<td>"+DocumentacionAuxiliar.getObservaciones()+"</td>";
+	    		}else{
+	    			composicionTablaFicheros +="<td>&nbsp;</td>";
+	    		}
+				
 		 		if(UtilidadesHash.getString(actuacion, "IDFACTURACION").isEmpty() && (usr.getUserName().equalsIgnoreCase(String.valueOf(ficheroVo.getUsumodificacion())))){
 		 			composicionTablaFicheros +="<td ><img id='iconoboton_borrar1' src='/SIGA/html/imagenes/bborrar_off.gif' style='cursor:pointer;'  name='borrar_1' border='0' " +
 			 		"onClick='return borrarFicheroFichaColegial("+DocumentacionAuxiliar.getIdinstitucion()+","+DocumentacionAuxiliar.getIdfichero()+","+DocumentacionAuxiliar.getIddocumentaciondes()+");' onMouseOut='MM_swapImgRestore()' onMouseOver='MM_swapImage('borrar_1','','/SIGA/html/imagenes/bborrar_on.gif',1)'>";
