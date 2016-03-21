@@ -4290,18 +4290,21 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				StringBuffer sql = new StringBuffer();
 				sql.append("SELECT DISTINCT F_SIGA_GETIDLETRADO_DESIGNA(EJGD.IDINSTITUCION, EJGD.IDTURNO, EJGD.ANIODESIGNA, EJGD.NUMERODESIGNA) AS IDPERSONA ");
 				sql.append("FROM SCS_EJGDESIGNA EJGD ");
-				sql.append("WHERE EJGD.IDINSTITUCION = ");
+				sql.append(", SCS_DESIGNA D ");
+				sql.append("WHERE ");
+				sql.append("EJGD.IDINSTITUCION = D.IDINSTITUCION "); 
+				sql.append("AND EJGD.ANIODESIGNA  = D.ANIO ");
+				sql.append("AND EJGD.IDTURNO =  D.IDTURNO ");
+				sql.append("AND EJGD.NUMERODESIGNA = D.NUMERO ");
+				sql.append("AND D.ESTADO<>'A' ");
+				sql.append("AND  EJGD.IDINSTITUCION = ");
 				sql.append(idInstitucion);
-				sql.append("AND EJGD.IDTIPOEJG = ");
+				sql.append(" AND EJGD.IDTIPOEJG = ");
 				sql.append(idTipoEJG);
-				sql.append("AND EJGD.ANIOEJG =  ");
+				sql.append(" AND EJGD.ANIOEJG =  ");
 				sql.append(anio);
-				sql.append("AND EJGD.NUMEROEJG =  ");
+				sql.append(" AND EJGD.NUMEROEJG =  ");
 				sql.append(numero);
-
-
-				
-				
 				
 				RowsContainer rc = new RowsContainer(); 
 				if (rc.find(sql.toString())) {

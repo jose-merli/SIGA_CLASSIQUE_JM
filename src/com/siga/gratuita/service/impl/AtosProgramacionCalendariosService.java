@@ -392,6 +392,18 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 		for (ScsCalendarioGuardiasBean calendarioGuardiasBean : calendarioGuardiasBeans) {
 			calendarioSJCS.inicializaParaBorrarCalendarios(calendarioGuardiasBean.getIdInstitucion(), calendarioGuardiasBean.getIdTurno(), calendarioGuardiasBean.getIdGuardia(), calendarioGuardiasBean.getIdCalendarioGuardias(), usrBean);
 			calendarioSJCS.borrarCalendario();
+			//Borramos fichero si existe
+			String sFicheroLog=null;
+			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			sFicheroLog = rp.returnProperty("sjcs.directorioFisicoGeneracionCalendarios") + File.separator
+					+ calendarioGuardiasBean.getIdInstitucion() + File.separator
+					+ calendarioSJCS.getNombreFicheroLogCalendario(new Integer(calendarioGuardiasBean.getIdTurno()), new Integer(calendarioGuardiasBean.getIdGuardia()),
+							new Integer( calendarioGuardiasBean.getIdCalendarioGuardias()), GstDate.getFormatedDateShort(usrBean.getLanguage(),calendarioGuardiasBean.getFechaInicio()), GstDate.getFormatedDateShort(usrBean.getLanguage(),calendarioGuardiasBean.getFechaFin()))
+					+ ".log.xls";
+			File fichero = new File(sFicheroLog);
+			if(fichero != null && fichero.exists()){
+				fichero.delete();
+			}
 			
 		}
 		ScsHcoConfProgrCalendariosAdm hcoConfProgrCalendariosAdm = new ScsHcoConfProgrCalendariosAdm(usrBean);

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import="java.util.ArrayList"%>
 <html>
 <head>
 <!-- actualizarDesigna.jsp -->

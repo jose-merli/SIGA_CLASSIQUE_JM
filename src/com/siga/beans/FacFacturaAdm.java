@@ -3136,6 +3136,10 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	    	sql.append(".");
 	    	sql.append(FacFacturaBean.C_IDPROGRAMACION);
 	    	sql.append(", ");
+	    	sql.append(FacFacturaBean.T_NOMBRETABLA);
+	    	sql.append(".");
+	    	sql.append(FacFacturaBean.C_ESTADO);
+	    	sql.append(", ");
 	    	sql.append(PysCompraBean.T_NOMBRETABLA);
 	    	sql.append(".");
 	    	sql.append(PysCompraBean.C_IDPETICION);

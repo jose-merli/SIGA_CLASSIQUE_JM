@@ -496,7 +496,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
             AND IDSERVICIO = P_IDSERVICIO
             AND IDSERVICIOSINSTITUCION = P_IDSERVICIOSINSTITUCION
             AND IDPERSONA = P_IDPERSONA            
-            --AND TRUNC(FECHASUSCRIPCION) <= TRUNC(SYSDATE)  -- JPT: Se comento esta linea para no dar de alta suscripciones cuando estaba suscrito en el futuro
+            --AND TRUNC(FECHASUSCRIPCION) <= TRUNC(SYSDATE) -- JPT: Se comento esta linea para no dar de alta suscripciones cuando estaba suscrito en el futuro
             AND (FECHABAJA IS NULL OR (TRUNC(FECHABAJA) >= TRUNC(SYSDATE) AND TRUNC(FECHABAJA) >= TRUNC(FECHASUSCRIPCION))); -- Busca suscripciones sin baja logica o con baja logica mayor o igual que hoy
                         
         -- Compruebo que no tiene suscripciones activas hoy, y por tanto hay que suscribirlo    

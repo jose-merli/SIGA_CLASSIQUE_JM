@@ -571,10 +571,11 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 		consulta.append(" AND pc." + FcsPagoColegiadoBean.C_IDPAGOSJG + "=:" + contador);	
 		switch (caseMorosos) {
 			case 0:
-				consulta.append(" and exists (SELECT 1         FROM FAC_FACTURA       F where f.idpersona = pc.IDPERORIGEN and f.idinstitucion = pc.idinstitucion AND F.NUMEROFACTURA > '0'     AND F.IMPTOTALPORPAGAR > 0 ) ");
+				// ESTADOS = 1:Pagado; 2:PendienteCaja; 4:Devuelta; 5:PendienteBanco; 7:EnRevision; 8:Anulada
+				consulta.append(" and exists (SELECT 1 FROM FAC_FACTURA F where f.idpersona = pc.IDPERORIGEN and f.idinstitucion = pc.idinstitucion AND F.NUMEROFACTURA > '0' AND F.IMPTOTALPORPAGAR > 0 AND F.ESTADO IN (2,4,5)) "); 
 				break;
 			case 1:
-				consulta.append(" and not exists (SELECT 1         FROM FAC_FACTURA       F where f.idpersona = pc.IDPERORIGEN and f.idinstitucion = pc.idinstitucion AND F.NUMEROFACTURA > '0'     AND F.IMPTOTALPORPAGAR > 0 ) ");
+				consulta.append(" and not exists (SELECT 1 FROM FAC_FACTURA F where f.idpersona = pc.IDPERORIGEN and f.idinstitucion = pc.idinstitucion AND F.NUMEROFACTURA > '0' AND F.IMPTOTALPORPAGAR > 0 AND F.ESTADO IN (2,4,5)) ");
 				break;
 			default:
 				break;

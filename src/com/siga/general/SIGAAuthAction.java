@@ -13,6 +13,8 @@ import org.apache.struts.action.*;
 
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
+import com.siga.beans.GenParametrosAdm;
+import com.siga.censo.ws.action.EdicionColegiadoAction;
 
 public class SIGAAuthAction extends Action
 {
@@ -86,19 +88,34 @@ public class SIGAAuthAction extends Action
 	            
 	        }
 	        
-	        /*
-	         * Obtenemos la versión de SIGA.
-	         * A partir de ahora con despliegues desde Jenkins este dato se almacena en ficheros .properties.
-	         */
-	        
-	        try{
-	        	ResourceBundle rb = ResourceBundle.getBundle("versionSIGA");
-	        	String version = rb.getString("version");
-	        	request.setAttribute("versionSiga", (version == null ? "" : version));
-	        }catch (Exception e){
-	        	request.setAttribute("versionSiga", "");
-	        //	ClsLogging.writeFileLog("Error al obtener la versión de SIGA desplegada.", 1);
-	        }
+	        getVersionActualApp(request);
 		return mapping.findForward(result);
 	}
+	
+	/**
+	 * Obtenemos la versión de SIGA. 
+	 * A partir de ahora con despliegues desde Jenkins este dato se almacena en ficheros .properties.
+	 */
+	public static void getVersionActualApp(HttpServletRequest request)
+	{
+		try {
+			
+			GenParametrosAdm paramAdm = new GenParametrosAdm((UsrBean)request.getSession().getAttribute(ClsConstants.USERBEAN));
+
+			ResourceBundle rb = ResourceBundle.getBundle("versionSIGA");
+			String version = rb.getString("version");
+			String proyecto = rb.getString("proyecto");
+
+			String entornoDespliegue = (proyecto == null ? "SIGA" : proyecto) + "_"
+					+ paramAdm.getValor("0", "ADM", SIGAConstants.PARAMETRO_ENTORNO, "");
+
+			version = (version == null ? (entornoDespliegue) : (entornoDespliegue + "_" + version));
+
+			request.setAttribute("versionSiga", (version == null ? "" : version));
+		} catch (Exception e) {
+			request.setAttribute("versionSiga", "");
+			// ClsLogging.writeFileLog("Error al obtener la versión de SIGA desplegada.", 1);
+		}
+	}
+
 }

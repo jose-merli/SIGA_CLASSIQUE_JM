@@ -86,11 +86,15 @@
 			var idTurno = document.getElementById("idTurno_"+fila).value;
 			var idGuardia = document.getElementById("idGuardia_"+fila).value;
 			var idCalendarioGuardias = document.getElementById("idCalendarioGuardias_"+fila).value;
+			var fechaInicio =  document.getElementById("fechaInicio_"+fila).value;
+			var fechaFin =  document.getElementById("fechaFin_"+fila).value;
 			
 			
 			document.CalendarioGuardiasForm.idTurno.value = idTurno;
 			document.CalendarioGuardiasForm.idGuardia.value = idGuardia;
 			document.CalendarioGuardiasForm.idCalendarioGuardias.value = idCalendarioGuardias;
+			document.CalendarioGuardiasForm.fechaInicio.value = fechaInicio;
+			document.CalendarioGuardiasForm.fechaFin.value = fechaFin;
 			document.CalendarioGuardiasForm.accion.value = 'borrarDesdeProgramacion';
 			
 			document.CalendarioGuardiasForm.modo.value="Borrar";
@@ -210,6 +214,8 @@
 		<html:hidden property = "idTurno" value = ""/>
 		<html:hidden property = "idGuardia" value = ""/>
 		<html:hidden property = "idCalendarioGuardias" value = ""/>
+		<html:hidden property = "fechaInicio" value = ""/>
+		<html:hidden property = "fechaFin" value = ""/>
 		<html:hidden property = "accion" value = ""/>
 		<html:hidden property = "modoPestanha" value = ""/>
 		<input type="hidden" name="actionModal" value="">

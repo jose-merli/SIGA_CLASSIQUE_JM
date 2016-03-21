@@ -275,8 +275,16 @@ public class SIGATemporalAccessAction extends Action
          */
         
         try{
+        	GenParametrosAdm paramAdm = new GenParametrosAdm((UsrBean)ses.getAttribute("USRBEAN"));
+        	
         	ResourceBundle rb = ResourceBundle.getBundle("versionSIGA");
         	String version = rb.getString("version");
+        	String proyecto = rb.getString("proyecto");
+        	
+        	String entornoDespliegue = (proyecto == null ? "SIGA" : proyecto) + "_" + paramAdm.getValor("0", "ADM", SIGAConstants.PARAMETRO_ENTORNO, "");
+        	
+        	version = (version == null ? (entornoDespliegue) : (entornoDespliegue + "_" + version));
+   
         	request.setAttribute("versionSiga", (version == null ? "" : version));
         }catch (Exception e){
         	request.setAttribute("versionSiga", "");

@@ -978,19 +978,16 @@
 									</html:text> 
 								<%}%>
 							</td>	
-
+							
+							<td>&nbsp;</td>
+							
 							<td class="labelText">
-								<siga:Idioma key="certificados.solicitudes.ventanaEdicion.incluirDeudas" />
-							</td>
-							<td>
+								<siga:Idioma key="certificados.solicitudes.ventanaEdicion.incluirDeudas" />&nbsp;&nbsp;
 								<html:checkbox property="incluirDeudas" disabled="<%=!modoEditar%>"/>
 							</td>
 
 							<td class="labelText">
-								<siga:Idioma key="certificados.solicitudes.ventanaEdicion.incluirSanciones" />
-							</td>
-
-							<td>
+								<siga:Idioma key="certificados.solicitudes.ventanaEdicion.incluirSanciones" />&nbsp;&nbsp;
 								<html:checkbox property="incluirSanciones" disabled="<%=!modoEditar%>"/>
 							</td>
 						</tr>
@@ -1005,45 +1002,47 @@
 							</tr>
 							
 							<tr>							
-								<td><siga:ConjCampos leyenda="certificados.solicitudes.ventanaEdicion.estadosColegiales">
-									<table class="tablaCampos" align="center" border="0" cellspacing="0">
-										<tr>
-											<td class="labelText"><siga:Idioma key="certificados.solicitudes.ventanaEdicion.incluirLiteratura" />
-											<html:checkbox property="incluirLiteratura" disabled="<%=!modoEditar%>"/></td>
-											<td></td>
-										</tr>
-										<tr>
-											<td class="tdBotones">
-											<% if (modificarSolicitud.equals("1")) { %> 
-											<input type="button" width="200"
-												alt="<siga:Idioma key="certificados.solicitudes.literal.copiarHistorico"/>"
-												id="enviarSel" onclick="return copiarHistorico();"
-												name="idButton" class="button"
-												value="<siga:Idioma key="certificados.solicitudes.literal.copiarHistorico"/>">
-											<%} else { %> 
-											&nbsp; 
-											<% } %>
-											</td>
-										</tr>
-										<tr>
-											<td class="tdBotones">
-											<%
-												if (modificarSolicitud.equals("1")) {
-											%> <input type="button"
-												alt="<siga:Idioma key="certificados.solicitudes.literal.historicoObservaciones"/>"
-												id="enviarSel" onclick="return historicoObservaciones();"
-												name="idButton" class="button" width="100"
-												value="<siga:Idioma key="certificados.solicitudes.literal.CopiarHistObserv"/>">
-											<%
-												} else {
-											%> &nbsp; <%
-											 	}
-											 %>
-											</td>
-		
-										</tr>
-									</table>
-								</siga:ConjCampos></td>
+								<td>
+									<siga:ConjCampos leyenda="certificados.solicitudes.ventanaEdicion.estadosColegiales">
+										<table class="tablaCampos" align="center" border="0" cellspacing="0">
+											<tr>
+												<td class="labelText"><siga:Idioma key="certificados.solicitudes.ventanaEdicion.incluirLiteratura" />
+												<html:checkbox property="incluirLiteratura" disabled="<%=!modoEditar%>"/></td>
+												<td></td>
+											</tr>
+											<tr>
+												<td class="tdBotones">
+												<% if (modificarSolicitud.equals("1")) { %> 
+												<input type="button" width="200"
+													alt="<siga:Idioma key="certificados.solicitudes.literal.copiarHistorico"/>"
+													id="enviarSel" onclick="return copiarHistorico();"
+													name="idButton" class="button"
+													value="<siga:Idioma key="certificados.solicitudes.literal.copiarHistorico"/>">
+												<%} else { %> 
+												&nbsp; 
+												<% } %>
+												</td>
+											</tr>
+											<tr>
+												<td class="tdBotones">
+												<%
+													if (modificarSolicitud.equals("1")) {
+												%> <input type="button"
+													alt="<siga:Idioma key="certificados.solicitudes.literal.historicoObservaciones"/>"
+													id="enviarSel" onclick="return historicoObservaciones();"
+													name="idButton" class="button" width="100"
+													value="<siga:Idioma key="certificados.solicitudes.literal.CopiarHistObserv"/>">
+												<%
+													} else {
+												%> &nbsp; <%
+												 	}
+												 %>
+												</td>
+			
+											</tr>
+										</table>
+									</siga:ConjCampos>
+								</td>
 								
 								<td>&nbsp;</td>
 
@@ -1083,12 +1082,12 @@
 						<% } else { %> 
 						
 							<tr>
-								<td class="labelText" colspan="5"><siga:Idioma key="certificados.solicitudes.ventanaEdicion.textoSanciones" /></td>
+								<td class="labelText" colspan="4"><siga:Idioma key="certificados.solicitudes.ventanaEdicion.textoSanciones" /></td>
 								<td class="labelText"><siga:Idioma key="certificados.solicitudes.ventanaEdicion.comentario" /></td>
 							</tr>						
 	
 							<tr>
-								<td colspan="5">
+								<td colspan="4">
 									<%	if (modificarSolicitud.equals("1")) { %> 
 										<html:textarea property="textoSanciones" value="" styleClass="box"
 										onKeyDown="cuenta(this,3500)" cols="100" rows="4" style="width:700px" 
@@ -1117,6 +1116,7 @@
 								<% } %>
 								</td>
 							</tr>
+						<%}%>
 						<%}%>
 					</table>
 				</siga:ConjCampos>

@@ -176,6 +176,13 @@
 				error = true;
 				errores += "<siga:Idioma key='errors.required' arg0='sjcs.actas.numeroActa'/>"+ '\n';
 			
+			}else{
+					var numeroActa = document.ActaComisionForm.numActa.value;
+					if(isNumero(numeroActa)==false){
+						error = true;
+						errores += "<siga:Idioma key='errors.integer' arg0='sjcs.actas.numeroActa'/>"+ '\n';
+					}
+				
 			}
 			
 			if(document.ActaComisionForm.horaIni.value!=""){
@@ -220,7 +227,8 @@
 				}	
 			}					
 			if(error){
-				alert(error);
+				alert(errores);
+				fin();
 			}else{
 				document.ActaComisionForm.modo.value="insertar";
 				document.ActaComisionForm.submit();
