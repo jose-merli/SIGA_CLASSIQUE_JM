@@ -435,8 +435,6 @@ CREATE OR REPLACE package body PKG_SIGA_REGULARIZACION_SJCS is
             V_EJG.IDTURNO,
             V_EJG.IDGUARDIA,
             HITO_EJG,
-            NULL,
-            NULL,
             V_CODRETORNO2,
             V_DATOSERROR2);
                                         
@@ -606,8 +604,6 @@ CREATE OR REPLACE package body PKG_SIGA_REGULARIZACION_SJCS is
             V_SOJ.IDTURNO,
             V_SOJ.IDGUARDIA,
             HITO_SOJ,
-            NULL,
-            NULL,
             V_CODRETORNO2,
             V_DATOSERROR2);
 

@@ -3029,10 +3029,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 RAISE E_ERROR2;
             END IF;                
                                 
-            IF (P_IDFACTURACION =  V_CONFIG_GUARDIA.IDFACTURACION) THEN
-                P_DATOSERROR := 'PROC_CARGA_CONFIG_GUARDIA: No ha cambiado el IDFACTURACION y por lo tanto, tenemos V_CONFIG_GUARDIA configurado correctamente';
-                                
-            ELSIF (P_IDFACTURACION = P_CONFIGGUARDIAACTUAL.IDFACTURACION) THEN -- JPT: Es una cabecera de guardia, configurado con la guardia actual
+            IF (P_IDFACTURACION = P_CONFIGGUARDIAACTUAL.IDFACTURACION) THEN 
+                -- JPT: Es una cabecera de guardia, configurado con la guardia actual
+                -- Adri: Se trata de una guardia que se factura en el periodo actual de la facturacion y por tanto, se coge la configuracion del periodo actual, nada de historico.
                     V_CONFIG_GUARDIA := P_CONFIGGUARDIAACTUAL; 
                                     
             ELSE -- JPT: Como es una cabecera de guardia ya facturada, hay que obtener la configuracion de la primera facturacion de esa cabecera de guardia
@@ -4068,8 +4067,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 V_TURNO.IDTURNO,
                 V_GUARDIASTURNO.IDGUARDIA,
                 HITO_EJG,
-                NULL,
-                NULL,
                 V_CODRETORNO2,
                 V_DATOSERROR2);
 
@@ -4238,13 +4235,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         FOR V_GRUPOSFACTURACION IN C_GRUPOSFACTURACION(P_IDINSTITUCION, P_IDFACTURACION) LOOP
         
             -- JPT: Guarda el historico de la configuracion de todas las guardias del grupo de facturacion para esa facturacion (FCS_HISTORICO_HITOFACT de SCS_HITOFACTURABLEGUARDIA)      
-            V_DATOSERROR2:= 'PROC_FCS_FACTURAR_GUARDIAS: Llamada a PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTORICO_HITOFACT';
-            PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTORICO_HITOFACT(
+            V_DATOSERROR2:= 'PROC_FCS_FACTURAR_GUARDIAS: Llamada a PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTO_HITOFACT_GUA';
+            PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTO_HITOFACT_GUA(
                 P_IDINSTITUCION,
                 P_IDFACTURACION,
-                NULL,
-                NULL,
-                0,
                 V_GRUPOSFACTURACION.IDGRUPOFACTURACION,
                 C_IMPORTE_GUARDIA_INACTIVA,
                 V_CODRETORNO2,
@@ -4303,19 +4297,23 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     V_DATOSERROR2 := 'PROC_FCS_FACTURAR_GUARDIAS: Recorremos MATRIZ M_CG_FACTURABLE(1..IND_CG_FACTURABLE)';
                     FOR I IN 1 .. IND_CG_FACTURABLE LOOP
                     
-                        -- JPT: Procedimiento para catalanes que carga V_CONFIG_GUARDIA 
-                        V_DATOSERROR2 := 'PROC_FCS_FACTURAR_GUARDIAS: Invocamos PROC_CARGA_CONFIG_GUARDIA';
-                        PROC_CARGA_CONFIG_GUARDIA(
-                            P_IDINSTITUCION,
-                            V_TURNO.IDTURNO,
-                            V_GUARDIASTURNO.IDGUARDIA,
-                            V_CONFIGGUARDIAACTUAL,
-                            M_CG_FACTURABLE(I).IDFACTURACION,
-                            V_CODRETORNO2,
-                            V_DATOSERROR2);
-                        IF (V_CODRETORNO2 <> '0') THEN
-                            RAISE E_ERROR2;
-                        END IF;                                                         
+                        -- Si ha cambiado la facturacion, tenemos que volver a configurar V_CONFIG_GUARDIA
+                        IF (M_CG_FACTURABLE(I).IDFACTURACION <> V_CONFIG_GUARDIA.IDFACTURACION) THEN 
+                        
+                            -- JPT: Procedimiento para catalanes que carga V_CONFIG_GUARDIA 
+                            V_DATOSERROR2 := 'PROC_FCS_FACTURAR_GUARDIAS: Invocamos PROC_CARGA_CONFIG_GUARDIA';
+                            PROC_CARGA_CONFIG_GUARDIA(
+                                P_IDINSTITUCION,
+                                V_TURNO.IDTURNO,
+                                V_GUARDIASTURNO.IDGUARDIA,
+                                V_CONFIGGUARDIAACTUAL,
+                                M_CG_FACTURABLE(I).IDFACTURACION,
+                                V_CODRETORNO2,
+                                V_DATOSERROR2);
+                            IF (V_CODRETORNO2 <> '0') THEN
+                                RAISE E_ERROR2;
+                            END IF;
+                        END IF;                                                                                     
 
                         -- INICIALMENTE SOLO PARA EL COLEGIO DE CANTABRIA (2016)
                         V_ESFACTURACIONCONTROLADA := FALSE;
@@ -4574,19 +4572,23 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     V_DATOSERROR2 := 'PROC_FCS_FACTURAR_GUARDIAS: Recorremos MATRIZ M_CG_FACTURABLE(1..IND_CG_FACTURABLE)';
                     FOR I IN IND_CG_FACTURABLEFG .. IND_CG_FACTURABLE LOOP
                     
-                        -- JPT: Procedimiento para catalanes que carga V_CONFIG_GUARDIA 
-                        V_DATOSERROR2 := 'PROC_FCS_FACTURAR_GUARDIAS: Invocamos PROC_CARGA_CONFIG_GUARDIA';
-                        PROC_CARGA_CONFIG_GUARDIA(
-                            P_IDINSTITUCION,
-                            V_TURNO.IDTURNO,
-                            V_GUARDIASTURNO.IDGUARDIA,
-                            V_CONFIGGUARDIAACTUAL,
-                            M_CG_FACTURABLE(I).IDFACTURACION,
-                            V_CODRETORNO2,
-                            V_DATOSERROR2);
-                        IF (V_CODRETORNO2 <> '0') THEN
-                            RAISE E_ERROR2;
-                        END IF;                          
+                        -- Si ha cambiado la facturacion, tenemos que volver a configurar V_CONFIG_GUARDIA
+                        IF (M_CG_FACTURABLE(I).IDFACTURACION <> V_CONFIG_GUARDIA.IDFACTURACION) THEN 
+
+                            -- JPT: Procedimiento para catalanes que carga V_CONFIG_GUARDIA 
+                            V_DATOSERROR2 := 'PROC_FCS_FACTURAR_GUARDIAS: Invocamos PROC_CARGA_CONFIG_GUARDIA';
+                            PROC_CARGA_CONFIG_GUARDIA(
+                                P_IDINSTITUCION,
+                                V_TURNO.IDTURNO,
+                                V_GUARDIASTURNO.IDGUARDIA,
+                                V_CONFIGGUARDIAACTUAL,
+                                M_CG_FACTURABLE(I).IDFACTURACION,
+                                V_CODRETORNO2,
+                                V_DATOSERROR2);
+                            IF (V_CODRETORNO2 <> '0') THEN
+                                RAISE E_ERROR2;
+                            END IF;
+                        END IF;                                                      
 
                         IF (V_CONFIG_GUARDIA.ACTUACIONFG = PKG_SIGA_CONSTANTES.DB_TRUE_N) THEN
                             V_DATOSERROR2 := 'Facturacion por Actuacion Fuera de Guardia';
@@ -4780,8 +4782,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 V_TURNO.IDTURNO,
                 V_GUARDIASTURNO.IDGUARDIA,
                 HITO_SOJ,
-                NULL,
-                NULL,
                 V_CODRETORNO2,
                 V_DATOSERROR2);
 

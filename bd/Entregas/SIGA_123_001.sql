@@ -124,8 +124,5 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.justificacion.fehaActMayorJust', 'La fecha de justificación no puede ser anterior a la fecha de la actuación#CA', 0, '2', sysdate, 0, '19');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.justificacion.fehaActMayorJust', 'La fecha de justificación no puede ser anterior a la fecha de la actuación#EU', 0, '3', sysdate, 0, '19');
  
-
-
-Modificado PKG_SIGA_REGULARIZACION_SJCS
 Modificado PKG_SIGA_FCS_HISTORICO
 Modificado PKG_SIGA_FACTURACION_SJCS
