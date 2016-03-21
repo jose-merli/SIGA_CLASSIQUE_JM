@@ -793,7 +793,6 @@ public class GestionarFacturaPagosAction extends MasterAction {
 	if(fichero==null || fichero.exists()){
 		throw new SIGAException("messages.general.error.ficheroNoExiste"); 
 	} else {
-		fichero.createNewFile();
 		FileOutputStream out = new FileOutputStream(rutaServidor);
 		libro.write(out);
 		out.close();
