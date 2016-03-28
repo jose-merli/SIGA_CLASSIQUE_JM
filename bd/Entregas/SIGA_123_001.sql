@@ -144,3 +144,5 @@ Modificado PKG_SIGA_FACTURACION_SJCS
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('literal.informacion.completa', 'Completa#EU', 0, '3', sysdate, 0, '19');
 
 
+-- Ejecutado en Integracion por Adrian el 28/03/2016 14:00
+ 
