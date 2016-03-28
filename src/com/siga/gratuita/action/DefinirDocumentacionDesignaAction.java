@@ -1,8 +1,10 @@
 package com.siga.gratuita.action;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -13,14 +15,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+import org.redabogacia.sigaservices.app.services.gen.FicherosService;
 import org.redabogacia.sigaservices.app.services.scs.DocumentacionDesignaService;
+import org.redabogacia.sigaservices.app.vo.gen.FicheroVo;
 import org.redabogacia.sigaservices.app.vo.scs.DocumentacionDesignaVo;
 
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.ScsActuacionDesignaAdm;
+import com.siga.beans.ScsDesignaBean;
 import com.siga.comun.VoUiService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -59,6 +66,13 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 						mapDestino = downloadFicheros(mapping, miForm, request, response);
 					}else if(accion!=null && accion.equalsIgnoreCase("borrarfichero")){ 
 						mapDestino = borrarFichero(mapping, miForm, request, response);
+					}else if(accion!=null && accion.equalsIgnoreCase("descargarFichero")){ 
+						mapDestino = descargarFichero(mapping, miForm, request, response);
+					}else if(accion!=null && accion.equalsIgnoreCase("borrarFicheroFichaColegial")){ 
+						mapDestino = borrarFicheroFichaColegial(mapping, miForm, request, response);
+					}else if(accion!=null && accion.equalsIgnoreCase("getAjaxObtenerListadoDocumentacion")){ 
+						getAjaxObtenerListadoDocumentacion(request, response);
+						return null;			
 					}else{
 						return super.executeInternal(mapping,formulario,request,response);
 					}
@@ -376,7 +390,48 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 
 		return exitoRefresco("messages.deleted.success", request);
 	}
+	/**
+	 * Rellena un hash con los valores recogidos del formulario y los borra de
+	 * la base de datos.
+	 * 
+	 * @param mapping
+	 *            Mapeador de las acciones. De tipo ActionMapping.
+	 * @param formulario
+	 *            del que se recoge la información. De tipo MasterForm.
+	 * @param request
+	 *            Información de sesión. De tipo HttpServletRequest
+	 * @param response
+	 *            De tipo HttpServletResponse
+	 * 
+	 * @return String que indicará la siguiente acción a llevar a cabo.
+	 */
+	protected String borrarFicheroFichaColegial(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		
+		try {
+			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			
+			DefinirDocumentacionDesignaForm definirDocumentacionDesignaForm = (DefinirDocumentacionDesignaForm) formulario;
+			definirDocumentacionDesignaForm.setIdInstitucion(usr.getLocation());
+		
+			BusinessManager bm = getBusinessManager();
+			DocumentacionDesignaService documentacionService = (DocumentacionDesignaService) bm.getService(DocumentacionDesignaService.class);
+			VoUiService<DefinirDocumentacionDesignaForm, DocumentacionDesignaVo> voService = new DocumentacionDesignaVoService();
+			DocumentacionDesignaVo objectVo = voService.getForm2Vo(definirDocumentacionDesignaForm);
+			objectVo.setUsumodificacion(Integer.parseInt(usr.getUserName()));
+			
+			documentacionService.delete(objectVo);	
+			if(objectVo.getIdfichero()!=null){
+				documentacionService.deleteFile(objectVo);
+			}
+			
 
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
+		}
+
+		return exitoRefresco("messages.deleted.success", request);
+	}
+	
 	
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		
@@ -490,9 +545,128 @@ public class DefinirDocumentacionDesignaAction extends MasterAction {
 			throwExcp("messages.general.error", new String[] { "modulo.gratuita"}, e, null);
 		}
 
+		return forward;	
+	}
+	
+	/**
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	protected void getAjaxObtenerListadoDocumentacion (HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		 String composicionTablaFicheros ="";
+		 JSONObject json = new JSONObject();
+		 UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");	
+		 SimpleDateFormat formateo = new SimpleDateFormat("dd/MM/yyyy");
+		
+		 BusinessManager bm = getBusinessManager();
+		 DocumentacionDesignaService documentacionService = (DocumentacionDesignaService) bm.getService(DocumentacionDesignaService.class);
+		 FicherosService ficherosService = (FicherosService)getBusinessManager().getService(FicherosService.class);
+		
+		 Map<String, Object> map = new HashMap<String, Object>();
+		 map.put("idinstitucion",  request.getParameter("idInstitucion"));
+		 map.put("numero", request.getParameter("numero"));
+		 map.put("anio", request.getParameter("anio"));
+		 map.put("idturno", request.getParameter("idTurno"));
+		 map.put("idactuacion", request.getParameter("numeroActuacion"));
+		 map.put("idLenguaje", usr.getLanguage());
+		 
+		
+		//Obtenemos los datos de la designa
+		 
+		ScsActuacionDesignaAdm designaAdm = new ScsActuacionDesignaAdm (this.getUserBean(request));	 
+	   //Mostrar Las Actuaciones.
+		Hashtable hashDatosDesigna= new Hashtable();			
+		UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_IDINSTITUCION, request.getParameter("idInstitucion"));
+		UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_ANIO, request.getParameter("anio"));
+		UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_NUMERO, request.getParameter("numero"));
+		UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_IDTURNO, request.getParameter("idTurno"));
+		UtilidadesHash.set(hashDatosDesigna,"VISIBLE",request.getParameter("numeroActuacion"));		
+		
+		Hashtable actuacion =(Hashtable)(designaAdm.getDesignaActuaciones(hashDatosDesigna, request)).get(0);
+		 
+		List<DocumentacionDesignaVo> listaDocumentacion = documentacionService.getList(map);
+		FicheroVo ficheroVo;
+		 
+		 if(listaDocumentacion != null && listaDocumentacion.size()>0){
+			 for (int i = 0; i < listaDocumentacion.size(); i++)	{
+				DocumentacionDesignaVo DocumentacionAuxiliar = (DocumentacionDesignaVo) listaDocumentacion.get(i);
+				//Obtenemos el fichero, para obtener el usuarioModificacion de gen_fichero que es el que necesitamos.
+				ficheroVo = new FicheroVo();
+				ficheroVo.setIdfichero(DocumentacionAuxiliar.getIdfichero());
+				ficheroVo.setIdinstitucion(DocumentacionAuxiliar.getIdinstitucion());
+				ficheroVo = ficherosService.getFichero(ficheroVo);  
+		    	composicionTablaFicheros +="<tr><td>"+DocumentacionAuxiliar.getNombreTipoDoc()+"</td><td>"+DocumentacionAuxiliar.getDescripcionActuacion()+"</td><td>"+
+				formateo.format(DocumentacionAuxiliar.getFechaentrada())+"</td>";
+	    		if(DocumentacionAuxiliar.getObservaciones() != null && !"".equalsIgnoreCase(DocumentacionAuxiliar.getObservaciones())){
+	    			composicionTablaFicheros +="<td>"+DocumentacionAuxiliar.getObservaciones()+"</td>";
+	    		}else{
+	    			composicionTablaFicheros +="<td>&nbsp;</td>";
+	    		}
+				
+		 		if(UtilidadesHash.getString(actuacion, "IDFACTURACION").isEmpty() && (usr.getUserName().equalsIgnoreCase(String.valueOf(ficheroVo.getUsumodificacion())))){
+		 			composicionTablaFicheros +="<td ><img id='iconoboton_borrar1' src='/SIGA/html/imagenes/bborrar_off.gif' style='cursor:pointer;'  name='borrar_1' border='0' " +
+			 		"onClick='return borrarFicheroFichaColegial("+DocumentacionAuxiliar.getIdinstitucion()+","+DocumentacionAuxiliar.getIdfichero()+","+DocumentacionAuxiliar.getIddocumentaciondes()+");' onMouseOut='MM_swapImgRestore()' onMouseOver='MM_swapImage('borrar_1','','/SIGA/html/imagenes/bborrar_on.gif',1)'>";
+		 		}else{
+		 			composicionTablaFicheros +="<td ><img id='iconoboton_borrar2' src='/SIGA/html/imagenes/bborrar_disable.gif' style='cursor:pointer;' name='borrar_2' border='0'>";
+		 		}
+		 		composicionTablaFicheros +="<img id='iconoboton_download1' src='/SIGA/html/imagenes/bdownload_off.gif' style='cursor:pointer;' " +
+		 		"name='iconoFila' border='0' onClick='return downloadFichero("+DocumentacionAuxiliar.getIdinstitucion()+","+DocumentacionAuxiliar.getIdfichero()+");' " +
+		 		"onMouseOut='MM_swapImgRestore()' onMouseOver='MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)'>" +
+		 		"</td></tr>";
+		 		
+		    	
+		    	
+		    	
+			
+		   }
+			// Devuelvo la lista de series de facturacion
+		    	ArrayList<String> aOptionsListadoDocumentacion = new ArrayList<String>();
+		    	aOptionsListadoDocumentacion.add(composicionTablaFicheros);
+		    	json.put("aOptionsListadoDocumentacion", aOptionsListadoDocumentacion);
+		    	
+		    	// json.
+				response.setContentType("text/x-json;charset=UTF-8");
+				response.setHeader("Cache-Control", "no-cache");
+				response.setHeader("Content-Type", "application/json");
+			    response.setHeader("X-JSON", json.toString());
+				response.getWriter().write(json.toString()); 	
+	     }
+	}
+	protected String descargarFichero(ActionMapping mapping,	MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String forward = "descargaFichero";
+		
+		try {			
+			//Para obtener el fichero, primero obtengo el objeto FicheroVo a partir del idFichero y idInstitución, una vez se tenga la información del fichero se obtiene un objeto File con la información.
+			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			BusinessManager bm = getBusinessManager();
+			DefinirDocumentacionDesignaForm definirDocumentacionDesignaForm = (DefinirDocumentacionDesignaForm) formulario;
+			FicherosService ficherosService = (FicherosService)getBusinessManager().getService(FicherosService.class);
+			DocumentacionDesignaService documentacionService = (DocumentacionDesignaService) bm.getService(DocumentacionDesignaService.class);
+			FicheroVo ficheroVo = new FicheroVo();
+			ficheroVo.setIdfichero(Long.parseLong(definirDocumentacionDesignaForm.getIdFichero()));
+			ficheroVo.setIdinstitucion(Short.parseShort(definirDocumentacionDesignaForm.getIdInstitucion()));
+			ficheroVo = ficherosService.getFichero(ficheroVo);
+		
+			DocumentacionDesignaVo objectVo = new DocumentacionDesignaVo();
+			objectVo.setUsumodificacion(Integer.parseInt(usr.getUserName()));
+			objectVo.setDirectorioArchivo(ficheroVo.getDirectorio());
+			objectVo.setNombreArchivo(ficheroVo.getNombre());
+			File file = documentacionService.getFile(objectVo);
+			request.setAttribute("nombreFichero", file.getName());
+			request.setAttribute("rutaFichero", file.getPath());
+			request.setAttribute("accion", "");
+			
+
+		}catch (BusinessException e) {
+			throwExcp(e.getMessage(), e,null);
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita"}, e, null);
+		}
+
 		return forward;
-		
-		
 		
 		
 	}

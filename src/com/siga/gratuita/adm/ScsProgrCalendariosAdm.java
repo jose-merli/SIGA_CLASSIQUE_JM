@@ -127,47 +127,63 @@ public class ScsProgrCalendariosAdm extends MasterBeanAdministrador{
 		sql.append(contador);
 		codigosHashtable.put(new Integer(contador),progrCalendariosForm.getIdInstitucion());
 		
-		if(progrCalendariosForm.getIdConjuntoGuardia()!=null && !progrCalendariosForm.getIdConjuntoGuardia().equals("")){
+		if (progrCalendariosForm.getIdConjuntoGuardia()!=null && !progrCalendariosForm.getIdConjuntoGuardia().equals("")) {
 			sql.append(" AND PC.IDCONJUNTOGUARDIA = :");
 			contador++;
 			sql.append(contador);
 			codigosHashtable.put(new Integer(contador),progrCalendariosForm.getIdConjuntoGuardia());
-			
 		}
-		if(progrCalendariosForm.getEstado()!=null && !progrCalendariosForm.getEstado().equals("")){
+		
+		if (progrCalendariosForm.getEstado()!=null && !progrCalendariosForm.getEstado().equals("")) {
 			sql.append(" AND PC.ESTADO = :");
 			contador++;
 			sql.append(contador);
 			codigosHashtable.put(new Integer(contador),progrCalendariosForm.getEstado());
-			
 		}
-		if(progrCalendariosForm.getFechaProgrDesde()!=null && !progrCalendariosForm.getFechaProgrDesde().equals("")){
+		
+		if (progrCalendariosForm.getFechaProgrDesde()!=null && !progrCalendariosForm.getFechaProgrDesde().equals("")) {
 			sql.append(" AND PC.FECHAPROGRAMACION >= :");
 			contador++;
 			sql.append(contador);
 			codigosHashtable.put(new Integer(contador),progrCalendariosForm.getFechaProgrDesde());
-			
 		}
-		if(progrCalendariosForm.getFechaProgrHasta()!=null && !progrCalendariosForm.getFechaProgrHasta().equals("")){
+		
+		if (progrCalendariosForm.getFechaProgrHasta()!=null && !progrCalendariosForm.getFechaProgrHasta().equals("")) {
 			sql.append(" AND PC.FECHAPROGRAMACION <= :");
 			contador++;
 			sql.append(contador);
 			codigosHashtable.put(new Integer(contador),progrCalendariosForm.getFechaProgrHasta());
-			
 		}
-		if(progrCalendariosForm.getFechaCalInicio()!=null && !progrCalendariosForm.getFechaCalInicio().equals("")){
+		
+		if (progrCalendariosForm.getFechaCalInicio()!=null && !progrCalendariosForm.getFechaCalInicio().equals("")) {
 			sql.append(" AND PC.FECHACALINICIO >= :");
 			contador++;
 			sql.append(contador);
 			codigosHashtable.put(new Integer(contador),progrCalendariosForm.getFechaCalInicio());
-			
 		}
-		if(progrCalendariosForm.getFechaCalFin()!=null && !progrCalendariosForm.getFechaCalFin().equals("")){
+		
+		if (progrCalendariosForm.getFechaCalFin()!=null && !progrCalendariosForm.getFechaCalFin().equals("")) {
 			sql.append(" AND PC.FECHACALFIN <= :");
 			contador++;
 			sql.append(contador);
 			codigosHashtable.put(new Integer(contador),progrCalendariosForm.getFechaCalFin());
+		}
+		
+		if (progrCalendariosForm.getIdTurnoCalendario()!=null && !progrCalendariosForm.getIdTurnoCalendario().equals("") && !progrCalendariosForm.getIdTurnoCalendario().equals("-1")) {
+			sql.append(" AND EXISTS (SELECT 1 FROM SCS_HCO_CONF_PROG_CALENDARIOS HPC WHERE HPC.IDINSTITUCION = PC.IDINSTITUCION AND HPC.IDPROGCALENDARIO = PC.IDPROGCALENDARIO ");
+			sql.append(" AND HPC.IDTURNO = :");
+			contador++;
+			sql.append(contador);
+			codigosHashtable.put(new Integer(contador),progrCalendariosForm.getIdTurnoCalendario());
 			
+			if (progrCalendariosForm.getIdGuardiaCalendario()!=null && !progrCalendariosForm.getIdGuardiaCalendario().equals("") && !progrCalendariosForm.getIdGuardiaCalendario().equals("-1")) {
+				sql.append(" AND HPC.IDGUARDIA = :");
+				contador++;
+				sql.append(contador);
+				codigosHashtable.put(new Integer(contador),progrCalendariosForm.getIdGuardiaCalendario());
+			}
+			
+			sql.append(" ) ");
 		}
 		
 		sql.append(" ORDER BY PC.FECHAPROGRAMACION ");

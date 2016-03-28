@@ -1192,7 +1192,7 @@
 										<siga:Idioma key="censo.datosDireccion.literal.pais2" />&nbsp;
 									</td>
 									<td class="ocultar" width="180px" id="paisConAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.pais2" />&nbsp;
+										<siga:Idioma key="censo.datosDireccion.literal.pais2" />&nbsp;(*)
 									</td>
 									<td>
 										<%

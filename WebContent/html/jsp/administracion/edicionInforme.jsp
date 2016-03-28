@@ -485,7 +485,7 @@
 					<html:option value="X"><siga:Idioma key="administracion.informes.destinatarios.contrarios"/></html:option>							
 				</html:select>	
 			</div>
-			
+			<div>
 			<div class="colIzq col220px labelText">
 				<siga:Idioma key="administracion.informes.literal.solicitantes"/> (*)
 			</div>
@@ -495,6 +495,9 @@
 					<html:option value="N"><siga:Idioma key="general.no"/></html:option>
 				</html:select>	
 			</div>
+			</div>
+			
+			<div>
 			
 			<div class="colIzq col220px labelText">
 				<siga:Idioma key="administracion.informes.literal.desdoblarcontrarios"/> (*)
@@ -504,6 +507,7 @@
 					<html:option value="S"><siga:Idioma key="general.yes"/></html:option>
 					<html:option value="N"><siga:Idioma key="general.no"/></html:option>
 				</html:select>	
+			</div>
 			</div>
 		</div>
 			

@@ -20,6 +20,7 @@ public class MantenimientoProcedimientosForm extends MasterForm {
 	private String idJurisdiccion =		ScsProcedimientosBean.C_IDJURISDICCION;
 	private String idAcreditacion =		"IDACREDITACION";
 	private String porcentaje =			"PORCENTAJE";
+	private String nigNumProcedimiento = "NIGNUMPROCEDIMIENTO";
 	private String codigo =				"CODIGO";
 	private String codigoBusqueda =				"CODIGOBUSQUEDA";
 	private String complemento = 		ScsProcedimientosBean.C_COMPLEMENTO;
@@ -59,6 +60,18 @@ public class MantenimientoProcedimientosForm extends MasterForm {
 	 */
 	public void setPorcentaje(Integer _porcentaje) {
 		UtilidadesHash.set (this.datos, this.porcentaje,_porcentaje);
+	}
+	/**
+	 * @return Returns the idJurisdiccion.
+	 */
+	public Integer getNigNumProcedimiento() {
+		return UtilidadesHash.getInteger(this.datos, nigNumProcedimiento);
+	}
+	/**
+	 * @param idJurisdiccion The idJurisdiccion to set.
+	 */
+	public void setNigNumProcedimiento(Integer _nigNumProcedimiento) {
+		UtilidadesHash.set (this.datos, this.nigNumProcedimiento,_nigNumProcedimiento);
 	}
 	/**
 	 * @return Returns the idJurisdiccion.

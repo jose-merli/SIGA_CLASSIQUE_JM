@@ -113,7 +113,9 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
 							ScsActuacionAsistenciaBean.C_IDINSTITUCIONPRISION,
 							ScsActuacionAsistenciaBean.C_IDTIPOACTUACION,
 							ScsActuacionAsistenciaBean.C_NIG,
-							ScsActuacionAsistenciaBean.C_IDTIPOASISTENCIA
+							ScsActuacionAsistenciaBean.C_IDTIPOASISTENCIA,
+							ScsActuacionAsistenciaBean.C_FECHACREACION,
+							ScsActuacionAsistenciaBean.C_USUCREACION
 							};
 		return campos;
 	}
@@ -160,6 +162,8 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
 			bean.setIdInstitucionComisaria(UtilidadesHash.getLong(hash,ScsActuacionAsistenciaBean.C_IDINSTITUCIONCOMISARIA));
 			bean.setFechaMod(UtilidadesHash.getString (hash,ScsActuacionAsistenciaBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsActuacionAsistenciaBean.C_USUMODIFICACION));
+			bean.setFechaCreacion(UtilidadesHash.getString (hash,ScsActuacionAsistenciaBean.C_FECHACREACION));
+			bean.setUsuCreacion(UtilidadesHash.getInteger(hash,ScsActuacionAsistenciaBean.C_USUCREACION));
 			bean.setIdPrision(UtilidadesHash.getInteger(hash,ScsActuacionAsistenciaBean.C_IDPRISION));
 			bean.setIdInstitucionPrision(UtilidadesHash.getLong(hash,ScsActuacionAsistenciaBean.C_IDINSTITUCIONPRISION));
 			bean.setIdTipoActuacion(UtilidadesHash.getInteger(hash,ScsActuacionAsistenciaBean.C_IDTIPOACTUACION));
@@ -214,6 +218,8 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_USUMODIFICACION	  		  , b.getUsuMod());
 			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_FECHAMODIFICACION		  , b.getFechaMod());
 			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_NIG						  , b.getNIG());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_USUCREACION				  , b.getUsuCreacion());
+			UtilidadesHash.set(htData, ScsActuacionAsistenciaBean.C_FECHACREACION			  , b.getFechaCreacion());
 		}
 		catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR EL BEAN A HASHTABLE");

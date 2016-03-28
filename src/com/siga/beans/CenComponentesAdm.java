@@ -270,19 +270,35 @@ public class CenComponentesAdm extends MasterBeanAdministrador {
 		return v;
 	}
 
-	public List<ValueKeyVO> getCuentas(String idPersona, String idInstitucion)  throws ClsExceptions, SIGAException{
-		Vector v = null;
-		RowsContainer rc = null;
-		CenComponentesBean cuentas= new CenComponentesBean();
+	/**
+	 * Se ha quitado "AND (C.ABONOCARGO = 'A' OR C.ABONOCARGO = 'T')", ya que el campo ABONOCARGO ya no tiene relacion con ABONOSJCS
+	 * @param idPersona
+	 * @param idInstitucion
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	public List<ValueKeyVO> getCuentas(String idPersona, String idInstitucion) throws ClsExceptions, SIGAException {
 		List<ValueKeyVO> valueKeyVOs = null;
-		try{
-			rc = new RowsContainer(); 
-			String cuentasSJCSSociedad = "select C.IDCUENTA || '*' || C.IDPERSONA AS ID, substr(B.NOMBRE, 0, 25) || ' ' || 'nº ' || C.IBAN as DESCRIPCION   " +
-			"from cen_cuentasbancarias C, cen_bancos B, CEN_COMPONENTES A  where C.cbo_codigo = B.codigo AND C.IDPERSONA = A.Idpersona " +
-			"AND A.IDPERSONA = "+idPersona+"  AND C.IDINSTITUCION = "+idInstitucion+"  AND (C.ABONOCARGO = 'A' OR C.ABONOCARGO = 'T')  " +
-			"AND C.ABONOSJCS = 1   and c.fechabaja IS NULL    ORDER BY SOCIEDAD desc, A.IDCUENTA desc, DESCRIPCION";
+		try {
+			RowsContainer rc = new RowsContainer(); 
+			StringBuilder cuentasSJCSSociedad = new StringBuilder();
+			cuentasSJCSSociedad.append("SELECT C.IDCUENTA || '*' || C.IDPERSONA AS ID, ");
+			cuentasSJCSSociedad.append(" substr(B.NOMBRE, 0, 25) || ' ' || 'nº ' || C.IBAN as DESCRIPCION ");
+			cuentasSJCSSociedad.append(" FROM cen_cuentasbancarias C, ");
+			cuentasSJCSSociedad.append(" cen_bancos B, ");
+			cuentasSJCSSociedad.append(" CEN_COMPONENTES A ");
+			cuentasSJCSSociedad.append(" WHERE C.cbo_codigo = B.codigo ");
+			cuentasSJCSSociedad.append(" AND C.IDPERSONA = A.Idpersona ");
+			cuentasSJCSSociedad.append(" AND A.IDPERSONA = ");
+			cuentasSJCSSociedad.append(idPersona);
+			cuentasSJCSSociedad.append(" AND C.IDINSTITUCION = ");
+			cuentasSJCSSociedad.append(idInstitucion);
+			cuentasSJCSSociedad.append(" AND C.ABONOSJCS = '1' ");
+			cuentasSJCSSociedad.append(" AND c.fechabaja IS NULL ");
+			cuentasSJCSSociedad.append(" ORDER BY SOCIEDAD desc, A.IDCUENTA desc, DESCRIPCION ");
 
-			if (rc.query(cuentasSJCSSociedad)) {
+			if (rc.query(cuentasSJCSSociedad.toString())) {
 
 				for (int i = 0; i < rc.size(); i++)	{
 					valueKeyVOs = new ArrayList<ValueKeyVO>();
@@ -302,41 +318,56 @@ public class CenComponentesAdm extends MasterBeanAdministrador {
 					}
 				}
 			}
-		}
-		catch(ClsExceptions e){
+			
+		} catch(ClsExceptions e){
 			throw new ClsExceptions (e, "Error en selectComponentes");
 		}
+		
 		return valueKeyVOs;
 	}
-	public String getPersonaSociedad (String idPersona, String idInstitucion)throws ClsExceptions, SIGAException 
-	{
-		RowsContainer rc = null;
-		
-		try { rc = new RowsContainer(); }
-		catch(Exception e) { e.printStackTrace(); }
-		
-		try {		
-			String sJCSSociedades = "select a.IDPERSONA  AS ID,  P.NOMBRE || ' ' || P.APELLIDOS1 as DESCRIPCION  " +
-			"from cen_cuentasbancarias C,  cen_bancos B, cen_persona p, CEN_COMPONENTES A   where  p.IDPERSONA = A.Idpersona  " +
-			"AND A.CEN_CLIENTE_IDPERSONA = "+idPersona+" AND A.IDINSTITUCION = "+idInstitucion+"    AND C.cbo_codigo = B.codigo    " +
-			"AND C.IDPERSONA = A.Idpersona    AND (C.ABONOCARGO = 'A' OR C.ABONOCARGO = 'T')     AND C.ABONOSJCS = 1     " +
-			"and c.fechabaja IS NULL ORDER BY DESCRIPCION";
+	
+	/**
+	 * Se ha quitado "AND (C.ABONOCARGO = 'A' OR C.ABONOCARGO = 'T')", ya que el campo ABONOCARGO ya no tiene relacion con ABONOSJCS
+	 * @param idPersona
+	 * @param idInstitucion
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public String getPersonaSociedad (String idPersona, String idInstitucion) throws ClsExceptions {
+		try {	
+			RowsContainer rc = new RowsContainer();
+			StringBuilder sJCSSociedades = new StringBuilder();
+			sJCSSociedades.append("SELECT a.IDPERSONA  AS ID, ");
+			sJCSSociedades.append(" P.NOMBRE || ' ' || P.APELLIDOS1 as DESCRIPCION ");
+			sJCSSociedades.append(" FROM cen_cuentasbancarias C, ");
+			sJCSSociedades.append(" cen_bancos B, ");
+			sJCSSociedades.append(" cen_persona p, ");
+			sJCSSociedades.append(" CEN_COMPONENTES A ");
+			sJCSSociedades.append(" WHERE p.IDPERSONA = A.Idpersona ");
+			sJCSSociedades.append(" AND A.CEN_CLIENTE_IDPERSONA = ");
+			sJCSSociedades.append(idPersona);
+			sJCSSociedades.append(" AND A.IDINSTITUCION = ");
+			sJCSSociedades.append(idInstitucion);
+			sJCSSociedades.append(" AND C.cbo_codigo = B.codigo ");
+			sJCSSociedades.append(" AND C.IDPERSONA = A.Idpersona ");
+			sJCSSociedades.append(" AND C.ABONOSJCS = '1' ");
+			sJCSSociedades.append(" AND c.fechabaja IS NULL ");
+			sJCSSociedades.append(" ORDER BY DESCRIPCION ");
 			
-			if (rc.query(sJCSSociedades)) {
+			if (rc.query(sJCSSociedades.toString())) {
 				Row fila = (Row) rc.get(0);
 				Hashtable prueba = fila.getRow();
 				String idPerSociedad = UtilidadesHash.getString(prueba, "ID");
 	
 				 return idPerSociedad;								
 			}
-		}	
-		catch (Exception e) {		
+			
+		} catch (Exception e) {		
 			throw new ClsExceptions (e, "Error al ejecutar el 'getPersonaSociedad' en B.D.");		
 		}
+		
 		return null;
 	}	
-
-
 
 	/**
 	 * Devuelve un Hastable con los datos de la direccion del cliente pasado como parámetro.

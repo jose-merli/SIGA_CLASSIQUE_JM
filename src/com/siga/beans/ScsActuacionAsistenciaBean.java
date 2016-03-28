@@ -33,6 +33,9 @@ public class ScsActuacionAsistenciaBean extends MasterBean {
 	private Long idInstitucionJuzgado, idInstitucionComisaria, idInstitucionPrision;
 	private Long numero, idActuacion;
 	private String NIG;
+	
+	private Integer usuCreacion;
+	private String fechaCreacion;
 
 	ActuacionAsistenciaForm actuacionAsistenciaForm;
 	
@@ -51,6 +54,8 @@ public class ScsActuacionAsistenciaBean extends MasterBean {
 	static public final String 	C_FECHAMODIFICACION="FECHAMODIFICACION";
 	static public final String 	C_USUMODIFICACION="USUMODIFICACION";
 	static public final String 	C_FECHAJUSTIFICACION="FECHAJUSTIFICACION";
+	static public final String 	C_USUCREACION="USUCREACION";
+	static public final String 	C_FECHACREACION="FECHACREACION";
 	static public final String 	C_DESCRIPCIONBREVE="DESCRIPCIONBREVE"; 
 	static public final String 	C_LUGAR="LUGAR";    
 	static public final String 	C_NUMEROASUNTO="NUMEROASUNTO";
@@ -264,7 +269,18 @@ public class ScsActuacionAsistenciaBean extends MasterBean {
 			actuacionAsistenciaForm.setFechaJustificacion("");
 			
 		}
-
+		if(fechaCreacion!=null && !fechaCreacion.equals("")){
+			try {
+				actuacionAsistenciaForm.setFechaCreacion(GstDate.getFormatedDateLong("", fechaCreacion));
+			} catch (ClsExceptions e) {
+				e.printStackTrace();
+			}
+		}else{
+			actuacionAsistenciaForm.setFechaCreacion("");
+			
+		}
+		if(usuCreacion!=null && !usuCreacion.equals(""))
+			actuacionAsistenciaForm.setUsuCreacion(usuCreacion);
 		if(descripcionBreve!=null)
 			actuacionAsistenciaForm.setDescripcionBreve(descripcionBreve);
 		if(lugar!=null)
@@ -318,7 +334,17 @@ public class ScsActuacionAsistenciaBean extends MasterBean {
 	public void setNIG(String nIG) {
 		NIG = nIG;
 	}
-	
-	
+	public String getFechaCreacion() {
+		return fechaCreacion;
+	}
+	public void setFechaCreacion(String fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+	public Integer getUsuCreacion() {
+		return usuCreacion;
+	}
+	public void setUsuCreacion(Integer usuCreacion) {
+		this.usuCreacion = usuCreacion;
+	}
 
 }

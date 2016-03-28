@@ -4,11 +4,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.siga.administracion.SIGAConstants;
+import com.siga.beans.ScsGuardiasTurnoBean;
+import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterForm;
 import com.siga.gratuita.beans.ScsProgCalendariosBean;
 import com.siga.tlds.FilaExtElement;
@@ -32,8 +35,11 @@ public class ProgrCalendariosForm extends MasterForm {
 	private String fechaProgramacion;
 	private String 	horaProgramacion;
 	private String minutoProgramacion;
-	ConjuntoGuardiasForm conjuntoGuardias;
-	
+	private ConjuntoGuardiasForm conjuntoGuardias;
+	private String idTurnoCalendario;
+	private String idGuardiaCalendario;
+	private List<ScsTurnoBean> turnos;
+	private List<ScsGuardiasTurnoBean> guardias;
 	private String fechaCalInicio;
 	private String fechaCalFin;
 	private FilaExtElement[] elementosFila;
@@ -47,8 +53,6 @@ public class ProgrCalendariosForm extends MasterForm {
 	public void setIdInstitucion(String idInstitucion) {
 		this.idInstitucion = idInstitucion;
 	}
-	
-	
 	
 	public String getEstado() {
 		return estado;
@@ -140,7 +144,6 @@ public class ProgrCalendariosForm extends MasterForm {
 	public void setConjuntoGuardias(ConjuntoGuardiasForm conjuntoGuardias) {
 		this.conjuntoGuardias = conjuntoGuardias;
 	}
-	
 	
 //	static public final Short estadoProgramado = new Short("0"); 
 //	static public final Short estadoProcesando = new Short("1");
@@ -234,6 +237,32 @@ public class ProgrCalendariosForm extends MasterForm {
 	public void setIdConjuntoGuardia(String idConjuntoGuardia) {
 		this.idConjuntoGuardia = idConjuntoGuardia;
 	}
+	
+	public List<ScsTurnoBean> getTurnos() {
+		return turnos;
+	}
+	public void setTurnos(List<ScsTurnoBean> turnos) {
+		this.turnos = turnos;
+	}
+	public List<ScsGuardiasTurnoBean> getGuardias() {
+		return guardias;
+	}
+	public void setGuardias(List<ScsGuardiasTurnoBean> guardias) {
+		this.guardias = guardias;
+	}
+	public String getIdTurnoCalendario() {
+		return idTurnoCalendario;
+	}
+	public void setIdTurnoCalendario(String idTurnoCalendario) {
+		this.idTurnoCalendario = idTurnoCalendario;
+	}
+	public String getIdGuardiaCalendario() {
+		return idGuardiaCalendario;
+	}
+	public void setIdGuardiaCalendario(String idGuardiaCalendario) {
+		this.idGuardiaCalendario = idGuardiaCalendario;
+	}	
+	
 	public void clear() {
 		fechaProgrDesde="";
 		fechaProgrHasta="";
@@ -241,10 +270,7 @@ public class ProgrCalendariosForm extends MasterForm {
 		fechaCalFin="";
 		idConjuntoGuardia="";
 		estado="";
-		
+		idTurnoCalendario="";
+		idGuardiaCalendario="";
 	}
-
-	
-	
-	
 }

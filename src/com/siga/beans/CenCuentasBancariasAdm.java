@@ -1158,27 +1158,33 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 		return datos;
 	}
 	
-	public Vector getCuentaCorrienteSJCS (String idInstitucion, String idPersona)throws ClsExceptions{
-		RowsContainer rc = null;		
-		Vector datos=new Vector();
-		
+	/**
+	 * Se ha cambiado "( cuen.abonosjcs = 1 OR (cuen.abonosjcs = 0 AND cuen.abonocargo IN ('A', 'T')))" por "cuen.abonosjcs = '1'"", ya que el campo ABONOCARGO ya no tiene relacion con ABONOSJCS
+	 * @param idInstitucion
+	 * @param idPersona
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector getCuentaCorrienteSJCS (String idInstitucion, String idPersona) throws ClsExceptions {
+		Vector datos = new Vector();
 		try { 
-			rc = new RowsContainer(); 
-			String sql = "";
+			RowsContainer rc = new RowsContainer(); 
+			StringBuilder sql = new StringBuilder();
 			                      
-            sql = "SELECT ' nº ' || cuen.iban as CUENTABANCARIA_SJCS, "
-            	+ " ' nº ' || cuen.iban as CUENTABANCARIA_SJCS_ABIERTA "	
-            	+ " FROM cen_cuentasbancarias cuen"
-            	+ " WHERE ( cuen.abonosjcs = 1 OR (cuen.abonosjcs = 0 AND cuen.abonocargo IN ('A', 'T')))"
-            	+ " AND cuen.idinstitucion = " + idInstitucion
-            	+ " AND cuen.idpersona = " + idPersona
-            	+ " AND (cuen.FECHABAJA is null or cuen.fechabaja > sysdate)"
-            	+ " order by abonosjcs desc, fechamodificacion desc";       
+            sql.append("SELECT ' nº ' || cuen.iban as CUENTABANCARIA_SJCS, ");
+            sql.append(" ' nº ' || cuen.iban as CUENTABANCARIA_SJCS_ABIERTA ");	
+            sql.append(" FROM cen_cuentasbancarias cuen ");
+            sql.append(" WHERE cuen.abonosjcs = '1' ");
+            sql.append(" AND cuen.idinstitucion = ");
+            sql.append(idInstitucion);
+            sql.append(" AND cuen.idpersona = ");
+            sql.append(idPersona);
+            sql.append(" AND (cuen.FECHABAJA is null or cuen.fechabaja > sysdate) ");
+            sql.append(" ORDER BYy abonosjcs desc, fechamodificacion desc ");       
             
          // RGG cambio visibilidad
-			rc = this.find(sql);
-			if (rc!=null) 
-			{ 				
+			rc = this.find(sql.toString());
+			if (rc!=null) { 				
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
 					Hashtable registro = (Hashtable)fila.getRow(); 
@@ -1186,9 +1192,11 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 						datos.add(registro);
 				}
 			}
+			
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al recuperar los datos de getCuentaCorrienteSJCS()");
-		}		
+		}	
+		
 		return datos;
 	}	
 	

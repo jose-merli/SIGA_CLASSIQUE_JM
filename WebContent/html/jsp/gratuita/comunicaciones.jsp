@@ -114,16 +114,16 @@
 				  	envios.definir.literal.fechacreacion,
 				  	envios.definir.literal.fechaprogramada,
 				  	envios.definir.literal.estado,
-				  	envios.definir.literal.tipoenvio," />
-	<c:set var="columnSizes" value="10,28,10,10,12,12,18" />
+				  	envios.definir.literal.tipoenvio" />
+	<c:set var="columnSizes" value="10,28,10,10,12,12" />
 	<c:if test="${PERMISOENVIOS=='1'}">
 		<c:set var="columnNames" value="envios.definir.literal.identificador, 
 			envios.definir.literal.nombre,
 		  	envios.definir.literal.fechacreacion,
 		  	envios.definir.literal.fechaprogramada,
 		  	envios.definir.literal.estado,
-		  	envios.definir.literal.tipoenvio" />
-		<c:set var="columnSizes" value="10,28,10,10,12,12" />
+		  	envios.definir.literal.tipoenvio," />
+		<c:set var="columnSizes" value="10,28,10,10,12,12,18" />
 	</c:if>
 	<siga:Table	
 			name="comunicacionesSalida"

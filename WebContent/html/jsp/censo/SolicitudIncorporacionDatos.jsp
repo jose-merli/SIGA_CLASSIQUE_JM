@@ -257,16 +257,6 @@
 			});
 		}
 	}
-	
-	function validaAbonoSJCS(){
-		if (document.SolicitudIncorporacionForm.abonoSJCS.checked) {
-			if (!document.SolicitudIncorporacionForm.cuentaAbono.checked) {
-				var mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.cuentaSJCS"/>";
-				alert (mensaje);
-				return false;
-			}
-		}
-	}
 
 	function datosValidos(){
 		var errores = "";
@@ -337,7 +327,7 @@
 			}
 			
 			//Se quita la mascara al guardar 
-			document.SolicitudIncorporacionForm.IBAN.value = formateaMask(document.getElementById("IBAN").value);		
+			document.SolicitudIncorporacionForm.IBAN.value = formateaMask(document.getElementById("IBAN").value);					
 			
 			iban = document.SolicitudIncorporacionForm.IBAN.value;
 			bic = document.SolicitudIncorporacionForm.BIC.value;
@@ -349,6 +339,12 @@
 					fin();
 					return false;
 				} 			
+				
+				if (!document.SolicitudIncorporacionForm.cuentaAbono.checked && !document.SolicitudIncorporacionForm.cuentaCargo.checked && !document.SolicitudIncorporacionForm.abonoSJCS.checked) {
+					errores += "<siga:Idioma key='errors.required' arg0='censo.tipoCuenta.cargo'/>";
+					errores += " o <siga:Idioma key='censo.tipoCuenta.abono'/>";
+					errores += " o <siga:Idioma key='censo.datosCuentaBancaria.literal.abonoSJCS'/>" + '\n';
+				}
 			}
 			
 			if (errores != ""){
@@ -403,74 +399,7 @@
 		}
 		return true;	
 	}
-	
-	function obtenerLetra(){
-		if (generarLetra()) {
-			var tipoIdentificacion = document.getElementById("tipoIdentificacion").value;
-			if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")
-				alert("<siga:Idioma key='messages.nifcif.comprobacion.correcto'/>");
-			else
-				if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")
-					alert("<siga:Idioma key='messages.nie.comprobacion.correcto'/>");
-		}
-
-	}
-
-	function generarLetra(){
-		var numId = document.getElementById("NIFCIF").value;
-		var tipoIdentificacion = document.getElementById("tipoIdentificacion").value;
-	  	var letra='TRWAGMYFPDXBNJZSQVHLCKET';
-		if(numId.length==0) {
-			return false;		
-		}
-		if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
-			if(numId.length==8){
-				if(isNumero(numId)==true){
-				 	numero = numId;
-				 	numero = numero % 23;
-				 	letra=letra.substring(numero,numero+1);
-				 	document.getElementById("NIFCIF").value = numId+letra;
-				}
-				else
-					return validaNumeroIdentificacion(tipoIdentificacion, numId);					
-			} 
-			else
-				return validaNumeroIdentificacion(tipoIdentificacion, numId);
-		} 
-		else
-			if((tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") ){
-				if(numId.length==8){
-					var dnie = document.getElementById("NIFCIF").value;
-					letIni = numId.substring(0,1);
-					primeraLetra = letIni;
-					if  (letIni.toUpperCase()=='Y')
-			 			letIni = '1';
-			 		else {
-			 			if  (letIni.toUpperCase()=='Z')
-			 				letIni = '2';
-			 			else
-			 				letIni = '0';
-			 		}
-			 
-					num = letIni+numId.substring(1,8);
-					if(primeraLetra.match('[X|Y|Z]') && isNumero(num)){
-						var posicion = num % 23;
-						letras='TRWAGMYFPDXBNJZSQVHLCKET';
-						var letra=letras.substring(posicion,posicion+1);
-						numero = dnie + letra;
-						document.getElementById("NIFCIF").value = numero;
-					} 
-					else 
-						return validaNumeroIdentificacion(tipoIdentificacion, numId);					
-				} 
-				else
-					return validaNumeroIdentificacion(tipoIdentificacion, numId);
-			}
-						
-		// Caso1: Se han realizado las modificaciones necesarias sin encontrar errores 
-		// Caso2: no es nif ni nie no hay generacion de letra	
-		return true;
-	}	
+//NOTA: 10/02/2016 -- R1509_0009 -- Eliminamos la generación de la letra
 
 	function validaNumeroIdentificacion(){
 		var errorNIE = false;
@@ -546,9 +475,15 @@
 	}	
 
 	function accionVolver(){		
-		document.forms[0].action="./CEN_SolicitudesIncorporacion.do";	
-		document.forms[0].target="mainWorkArea";
-		document.forms[0].submit();
+		var rec = "<%=modoAnterior%>";
+		
+		if(rec != "INSERTAR"){
+			document.forms[0].action="./CEN_SolicitudesIncorporacion.do";	
+			document.forms[0].target="mainWorkArea";
+			document.forms[0].submit();
+		}else{
+			window.location = "<html:rewrite page='/html/jsp/censo/SolicitudIncorporacionValidacion.jsp'/>";
+		}
 	}
 	
 	function refrescarLocal(){
@@ -1586,6 +1521,11 @@
 	
 	function fitInside(contName,objName,margin){
 		altura = window.parent.jQuery(contName).height();
+		//NOTA: R1509_0010 04/02/2016:La altura cuando es "nueva incorporación" llega a null es necesario darle valor porque sino sale en blanco la página
+		if(altura == null)
+		{
+			altura = jQuery(window).height();
+		}
 		jQuery(objName).height(altura-margin);
 	}
 	
@@ -1858,9 +1798,9 @@
 							</script>
 							
 							<html:text property="NIFCIF" styleClass="box" size="25" maxlength="20" value="<%=datosPersonales.getNumeroIdentificador() %>"/>
-							<span id="idButtonNif" style="display:none; margin:0;padding:0" >
+							<!--  <span id="idButtonNif" style="display:none; margin:0;padding:0" >
 								<img src="<html:rewrite page='/html/imagenes/comprobar.gif'/>" border="0" onclick="obtenerLetra();" style="cursor:hand" height="20px">
-							</span>
+							</span> -->
 						</td>
 						
 					<%}%>
@@ -2172,7 +2112,7 @@
 									<siga:Idioma key='censo.tipoCuenta.abono'/>
 								</td>									
 								<td>
-									<html:checkbox property="cuentaAbono" disabled="<%=readonly%>" onClick="validaAbonoSJCS()"/>
+									<html:checkbox property="cuentaAbono" disabled="<%=readonly%>"/>
 								</td>
 								
 								<td style="width:20px">&nbsp;</td>
@@ -2181,7 +2121,7 @@
 									<siga:Idioma key='censo.datosCuentaBancaria.literal.abonoSJCS'/>
 								</td>									
 								<td>
-									<html:checkbox property="abonoSJCS" disabled="<%=readonly%>" onClick="validaAbonoSJCS()" />
+									<html:checkbox property="abonoSJCS" disabled="<%=readonly%>"/>
 								</td>
 							</tr>
 						</table>

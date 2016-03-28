@@ -29,6 +29,9 @@ public class HistoricoForm extends MasterForm{
 	
 	// Formulario Busqueda Historico y Datos Historico	
 	
+	public void setIdsTipoCambio(String v){
+		datos.put(CenHistoricoBean.C_IDTIPOCAMBIO ,v);
+	}
 	public void setCmbCambioHistorico(String v){
 		datos.put(CenHistoricoBean.C_IDTIPOCAMBIO ,v);
 	}
@@ -48,6 +51,10 @@ public class HistoricoForm extends MasterForm{
 	public void setMotivo(String mot){
 		datos.put(CenHistoricoBean.C_MOTIVO,mot);
 	}
+	
+	public void setObservaciones(String obervaciones){
+		datos.put(CenHistoricoBean.C_OBSERVACIONES, obervaciones);
+	}
 
 	public void setFechaEntrada(String fechaE){
 		datos.put(CenHistoricoBean.C_FECHAENTRADA,fechaE);
@@ -62,6 +69,9 @@ public class HistoricoForm extends MasterForm{
 	
 	// Formulario Busqueda Historico y Datos Historico
 	
+	public String getIdsTipoCambio(){
+		return (String)datos.get(CenHistoricoBean.C_IDTIPOCAMBIO);
+	}
 	public String getCmbCambioHistorico(){
 		return (String)datos.get(CenHistoricoBean.C_IDTIPOCAMBIO);
 	}
@@ -80,6 +90,10 @@ public class HistoricoForm extends MasterForm{
 	
 	public String getMotivo(){
 		return (String)datos.get(CenHistoricoBean.C_MOTIVO);
+	}
+	
+	public String getObservaciones(){
+		return (String)datos.get(CenHistoricoBean.C_OBSERVACIONES);
 	}
 
 	public String getFechaEntrada(){

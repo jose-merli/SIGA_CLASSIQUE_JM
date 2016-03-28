@@ -35,7 +35,6 @@ import com.siga.beans.CenHistoricoAdm;
 import com.siga.beans.CenHistoricoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenTipoCambioAdm;
-import com.siga.beans.PysFormaPagoBean;
 import com.siga.censo.form.HistoricoForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -66,7 +65,6 @@ public class HistoricoAction extends MasterAction {
 			// Obtengo el UserBean y el identificador de la institucion
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
 			String accion = (String)request.getParameter("accion");
-			HistoricoForm form = (HistoricoForm) formulario;
 			
 			//Estamos volviendo del botón volver de editar/consulta/nuevo registro de auditoría
 			if(accion==null){
@@ -75,9 +73,13 @@ public class HistoricoAction extends MasterAction {
 				idInstitucionPersona=request.getSession().getAttribute("IDINSTITUCIONPERSONA").toString();
 				
 			}else{
-				// Obtengo el identificador de persona, la accion y el identificador de institucion del cliente
-				idPersona = new Long(request.getParameter("idPersona").toString());
-				idInstitucionPersona = Integer.valueOf(request.getParameter("idInstitucion")).toString();
+				try{
+					// Obtengo el identificador de persona, la accion y el identificador de institucion del cliente
+					idPersona = new Long(request.getParameter("idPersona").toString());
+					idInstitucionPersona = Integer.valueOf(request.getParameter("idInstitucion")).toString();
+				}catch (NumberFormatException e){
+					//La persona no está creada aún
+				}
 				
 			}
 			
@@ -89,7 +91,6 @@ public class HistoricoAction extends MasterAction {
 			}
 			
 			String idInstitucion=user.getLocation();
-			Integer idInst=new Integer(idInstitucion);
 			// Obtengo manejadores para accesos a las BBDDs (cuidado con ls identificadores de usuario)
 			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
 			CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));			
@@ -106,6 +107,10 @@ public class HistoricoAction extends MasterAction {
 			estadoColegial = clienteAdm.getEstadoColegial(String.valueOf(idPersona), String.valueOf(idInstitucionPersona));
 			//////////////////////
 			
+			// Obtengo la lista de tipos de cambio para las auditorias
+			CenTipoCambioAdm adminTC = new CenTipoCambioAdm(this.getUserBean(request));
+			Vector<Hashtable<String, Object>> vTiposAuditoria = adminTC.obtenerDescripcionesAuditoria();
+			
 			// Paso de parametros empleando request
 			request.setAttribute("IDPERSONA", idPersona);
 			request.setAttribute("IDINSTITUCION", idInstitucion);
@@ -113,6 +118,7 @@ public class HistoricoAction extends MasterAction {
 			request.setAttribute("NOMBRE", nombre);
 			request.setAttribute("NUMERO", numero);
 			request.setAttribute("ESTADOCOLEGIAL", estadoColegial);
+			request.setAttribute("vTiposAuditoria", vTiposAuditoria);
 				
 			// idPersona, accion e idInstitucionPersona los guardo en session porque me interesa 
 			// acceder a ellos en varios lugares
@@ -142,16 +148,14 @@ public class HistoricoAction extends MasterAction {
 			// Obtengo el UserBean y el identificador de la institucion
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
 			String idInstitucion=user.getLocation();
-			Integer idInst=new Integer(idInstitucion);
 	
 			// Obtengo el identificador de persona y la accion (para pruebas tambien el identificador institucion)
 			Long idPersona = (Long)request.getSession().getAttribute("idPersona");
 			String accion = (String)request.getSession().getAttribute("accion");
-			Integer idInstPers = new Integer(request.getParameter("idInstitucion"));
 			String idInstitucionPersona = Integer.valueOf(request.getParameter("idInstitucion")).toString();			
 		
 			// Obtengo manejadores para accesos a las BBDDs
-			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
+//			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
 			CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));			
 
 			nombre = personaAdm.obtenerNombreApellidos(String.valueOf(idPersona));
@@ -196,35 +200,44 @@ public class HistoricoAction extends MasterAction {
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
-		String result="";
+		String result="editar";
 
 		try {
-			Vector ocultos=new Vector();
-			Vector infoEntrada=new Vector();		
+			Vector ocultos = new Vector();
+			Vector infoEntrada = new Vector();	
+			Vector infoTipoCambio = new Vector();
 
-			result="editar";
 			HistoricoForm form = (HistoricoForm) formulario;
-			CenHistoricoAdm admin=new CenHistoricoAdm(this.getUserBean(request));
+			CenHistoricoAdm admin = new CenHistoricoAdm(this.getUserBean(request));
+			CenTipoCambioAdm adminTC = new CenTipoCambioAdm(this.getUserBean(request));
 			Object remitente=(Object)"modificar";
 			request.setAttribute("modelo",remitente);
 		
 			// Mostrar valores del formulario en MantenimientoProductos (posible traslado a editar o abrir avanzado)
-			ocultos = (Vector)form.getDatosTablaOcultos(0);	
+			ocultos = form.getDatosTablaOcultos(0);	
 			if(ocultos!=null)
 				infoEntrada=admin.obtenerEntradaHistorico((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2));
 			//Si estamos refrescando tras insertar
 			else{
-				Hashtable hash=(Hashtable) request.getSession().getAttribute("hashInsert");
+				Hashtable hash = (Hashtable) request.getSession().getAttribute("hashInsert");
 				infoEntrada=admin.obtenerEntradaHistorico(hash.get("IDPERSONA").toString(),hash.get("IDINSTITUCION").toString(),hash.get("IDHISTORICO").toString());
 				request.getSession().removeAttribute("hashInsert");
 			}
+			
+			// Obtengo el id de TipoCambio
+			Row fila = (Row)infoEntrada.firstElement();
+			String tCambio=fila.getString(CenHistoricoBean.C_IDTIPOCAMBIO);
+			
+			// Obtengo la informacion sobre el tipo de cambio a mostrar
+			infoTipoCambio = adminTC.obtenerDescripcion(tCambio);	
+			
 			// Paso valores originales del registro al session para tratar siempre copn los mismos valores
 			// y no los de posibles modificaciones
 			request.getSession().setAttribute("DATABACKUP", infoEntrada);
 			
 			// Paso valores para dar valores iniciales al formulario			
 			request.setAttribute("container", infoEntrada);
+			request.setAttribute("container_desc", infoTipoCambio);
 		} 
 		catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null); 
@@ -239,10 +252,6 @@ public class HistoricoAction extends MasterAction {
 		String result="ver";
 
 		try{
-			Vector ocultos=new Vector();
-			Vector infoEntrada=new Vector();
-			Vector infoTipoCambio=new Vector();		
-
 			HistoricoForm form = (HistoricoForm) formulario;
 			CenHistoricoAdm admin=new CenHistoricoAdm(this.getUserBean(request));
 			CenTipoCambioAdm adminTC=new CenTipoCambioAdm(this.getUserBean(request));		
@@ -250,15 +259,16 @@ public class HistoricoAction extends MasterAction {
 			request.setAttribute("modelo",remitente);
 		
 			// Mostrar valores del formulario en MantenimientoProductos (posible traslado a editar o abrir avanzado)
-			ocultos = (Vector)form.getDatosTablaOcultos(0);		
+			Vector ocultos = form.getDatosTablaOcultos(0);		
 					
 			// Obtengo la informacion sobre la entrada del historico
-			infoEntrada=admin.obtenerEntradaHistorico((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2));
+			Vector infoEntrada=admin.obtenerEntradaHistorico((String)ocultos.get(0),(String)ocultos.get(1),(String)ocultos.get(2));
 			// Obtengo el id de TipoCambio
 			Row fila = (Row)infoEntrada.firstElement();
 			String tCambio=fila.getString(CenHistoricoBean.C_IDTIPOCAMBIO);
+			
 			// Obtengo la informacion sobre el tipo de cambio a mostrar
-			infoTipoCambio=adminTC.obtenerDescripcion(tCambio);			
+			Vector infoTipoCambio = adminTC.obtenerDescripcion(tCambio);			
 			
 			// Paso valores originales del registro al session para tratar siempre copn los mismos valores
 			// y no los de posibles modificaciones
@@ -287,7 +297,6 @@ public class HistoricoAction extends MasterAction {
 
 		String result="nuevo";
 		try{						
-			PysFormaPagoBean bean=new PysFormaPagoBean ();
 			Object remitente=(Object)"insertar";
 			request.setAttribute("modelo",remitente);									 
 		} 
@@ -318,8 +327,6 @@ public class HistoricoAction extends MasterAction {
 			CenHistoricoAdm admin=new CenHistoricoAdm(this.getUserBean(request));
 			// Comienzo control de transacciones
 			tx = usr.getTransaction();
-			// Obtengo los datos del formulario
-			HistoricoForm miForm = (HistoricoForm)formulario;
 			// Cargo la tabla hash con los valores del formulario para insertar en CEN_HISTORICO
 			Hashtable hash = formulario.getDatos();
 			// Obtengo el identificador del cliente y de la institucion
@@ -337,6 +344,7 @@ public class HistoricoAction extends MasterAction {
 			bean.setFechaEntrada((String)hash.get("FECHAENTRADA"));
 			bean.setFechaEfectiva((String)hash.get("FECHAEFECTIVA"));
 			bean.setMotivo((String)hash.get("MOTIVO"));
+			bean.setObservaciones((String)hash.get("OBSERVACIONES"));
 			Integer tipoCambio=new Integer ((String)hash.get("IDTIPOCAMBIO"));			
 			bean.setIdTipoCambio(tipoCambio);
 			bean.setIdHistorico(admin.getNuevoID(hash));
@@ -377,19 +385,11 @@ public class HistoricoAction extends MasterAction {
 			Enumeration filaOriginal; 		
 			Row registroOriginal=null;
 			
-			// Creacion de las hash para insertar las diferentes formas de pago de Internet	y Secretaria
-			Hashtable hashAux = new Hashtable();
-			Vector vectorAux = new Vector();
-			Vector vectorFP = new Vector();
-			Vector camposOcultos = new Vector();		
-
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			CenHistoricoAdm admin=new CenHistoricoAdm(this.getUserBean(request));
 			// Comienzo control de transacciones
 			tx = usr.getTransaction(); 			
-			// Obtengo los datos del formulario
-			HistoricoForm miForm = (HistoricoForm)formulario;
 			// Obtengo las diferentes formas de pago "modificadas"
 			// Cargo la tabla hash con los valores del formulario para insertar en CEN_HISTORICO
 			Hashtable hash = formulario.getDatos();			
@@ -416,7 +416,7 @@ public class HistoricoAction extends MasterAction {
 				hashOriginal.put("FECHAENTRADA",registroOriginal.getString(CenHistoricoBean.C_FECHAENTRADA));
 				hashOriginal.put("FECHAEFECTIVA",registroOriginal.getString(CenHistoricoBean.C_FECHAEFECTIVA));
 				hashOriginal.put("MOTIVO",registroOriginal.getString(CenHistoricoBean.C_MOTIVO));								              									
-				hashOriginal.put("IDTIPOCAMBIO",registroOriginal.getString(CenHistoricoBean.C_IDTIPOCAMBIO));
+				hashOriginal.put("OBSERVACIONES",registroOriginal.getString(CenHistoricoBean.C_OBSERVACIONES));
 			}
 
 			// Doy el valor correcto a IDHISTORICO
@@ -481,22 +481,23 @@ public class HistoricoAction extends MasterAction {
 
 			// Obtengo idPersona e idInstitucion
 			String idPersona = ((Long)request.getSession().getAttribute("IDPERSONA")).toString();		
-			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");		
 			String idInstitucion = (String) request.getSession().getAttribute("IDINSTITUCIONPERSONA");
 		
 			// Manejadores para el formulario y el acceso a las BBDDs
 			HistoricoForm form = (HistoricoForm) formulario;
+			String sIdsTipoCambio =  form.getIdsTipoCambio();
+			
 			CenHistoricoAdm admin=new CenHistoricoAdm(this.getUserBean(request));
 			Map<String, String> clavesJsonMap = new HashMap<String, String>();
 			clavesJsonMap.put("nombreFormulario", "HistoricoForm");
 			clavesJsonMap.put("fechaInicio", form.getFechaInicio());
 			clavesJsonMap.put("fechaFin", form.getFechaFin());
 			clavesJsonMap.put("motivo", form.getMotivo());
-			clavesJsonMap.put("idTipoCambio", form.getCmbCambioHistorico());
+			clavesJsonMap.put("listaIdTipoCambio", sIdsTipoCambio);
 			String jsonVolver = UtilidadesString.createJsonString(clavesJsonMap);
 			form.setJsonVolver(jsonVolver);
 			// Obtengo las entradas del historico para la busqueda indicada en el formulario
-			vect=admin.getHistorico(idPersona,idInstitucion,form.getCmbCambioHistorico(),form.getFechaInicio(),form.getFechaFin(),form.getMotivo());
+			vect=admin.getHistorico(idPersona,idInstitucion,sIdsTipoCambio,form.getFechaInicio(),form.getFechaFin(),form.getMotivo());
 
 			// Paso la busqueda como parametro en el request 
 			request.setAttribute("container", vect);

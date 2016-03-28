@@ -48,8 +48,11 @@ public class ActuacionesDesignasForm extends MasterForm {
 	protected String nig = "NIG";
 	private String idMotivoCambio = "IDMOTIVOCAMBIO";
 	private List<ScsEJGBean> ejgs;  	
+	protected String anioProcedimiento;
 	
 	private boolean fichaColegial = false;
+	protected String idInstitucion="IDINSTITUCION";
+	
 	public boolean getFichaColegial() {
 		return fichaColegial;
 	}
@@ -503,6 +506,24 @@ public class ActuacionesDesignasForm extends MasterForm {
 	}
 	public void setEjgs(List<ScsEJGBean> ejgs) {
 		this.ejgs = ejgs;
+	}
+	/**
+	 * @return the anioProcedimiento
+	 */
+	public String getAnioProcedimiento() {
+		return anioProcedimiento;
+	}
+	/**
+	 * @param anioProcedimiento the anioProcedimiento to set
+	 */
+	public void setAnioProcedimiento(String anioProcedimiento) {
+		this.anioProcedimiento = anioProcedimiento;
+	}
+	public String getIdInstitucion() {
+		return UtilidadesHash.getString(this.datos, this.idInstitucion);
+	}
+	public void setIdInstitucion(String idInstitucion) {
+		this.datos.put(this.idInstitucion, idInstitucion);
 	}	
 
 }

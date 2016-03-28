@@ -1121,135 +1121,140 @@ public class CalendarioSJCS
 			// obteniendo numero de letrados necesarios para cada periodo
 			numeroLetradosGuardia = this.beanGuardiasTurno.getNumeroLetradosGuardia().intValue();
 			log.addLog(new String[] {"Letrados por dia", Integer.toString(numeroLetradosGuardia)});
-
-			// Si hay guardias vinculadas, hay que mirar dos periodos a la vez, 
-			// por lo que se comienza con uno ya en memoria
-			int inicial;
-			primerPeriodo = (ArrayList<String>) this.arrayPeriodosDiasGuardiaSJCS.get(0);
-			segundoPeriodo = null;
-			if (this.calendariosVinculados == null)
-				inicial = 0;
-			else {
-				log.addLog(new String[] {"Guardias vinculadas", this.calendariosVinculados.toString()});
-				inicial = 1;
-			}
-			
-			// Para cada dia o conjunto de dias:
-			for (int i = inicial; i < this.arrayPeriodosDiasGuardiaSJCS.size(); i++) {
-				posicion = INI_POSICION;
-				// obteniendo conjunto de dias
-				// Nota: cada periodo es un arraylist de fechas (String en formato de fecha corto DD/MM/YYYY)
-				if (this.calendariosVinculados == null) {
-					diasGuardia = (ArrayList<String>) this.arrayPeriodosDiasGuardiaSJCS.get(i);
-				} // Si hay guardias vinculadas, hay que mirar dos periodos a la vez
+			if(numeroLetradosGuardia>0){
+	
+				// Si hay guardias vinculadas, hay que mirar dos periodos a la vez, 
+				// por lo que se comienza con uno ya en memoria
+				int inicial;
+				primerPeriodo = (ArrayList<String>) this.arrayPeriodosDiasGuardiaSJCS.get(0);
+				segundoPeriodo = null;
+				if (this.calendariosVinculados == null)
+					inicial = 0;
 				else {
-					segundoPeriodo = (ArrayList<String>) this.arrayPeriodosDiasGuardiaSJCS.get(i);
-					diasGuardia = new ArrayList<String>();
-					diasGuardia.addAll(primerPeriodo);
-					diasGuardia.addAll(segundoPeriodo);
+					log.addLog(new String[] {"Guardias vinculadas", this.calendariosVinculados.toString()});
+					inicial = 1;
 				}
-				log.addLog(new String[] {" ", " "});
-				log.addLog(new String[] {"Dias", diasGuardia.toString()});
-
-				// obteniendo cola de letrados
-				punteroListaLetrados = new Puntero();
-				alLetradosOrdenados = InscripcionGuardia.getColaGuardia(idInstitucion, idTurno, idGuardia,
-						(String) diasGuardia.get(0), (String) diasGuardia.get(diasGuardia.size() - 1), usrBean);
-				log.addLog(new String[] {"Cola", alLetradosOrdenados.toString()});
-
-				if (alLetradosOrdenados == null || alLetradosOrdenados.size() == 0)
-					throw new SIGAException("No existe cola de letrados de guardia");
-
-				// obteniendo las compensaciones. Se obtienen dentro de este
-				// bucle, ya que si hay incompatibilidades se añade una compensacion
-				alCompensaciones = scAdm.getCompensaciones(this.idInstitucion, this.idTurno, this.idGuardia,(String) diasGuardia.get(0));
-				log.addLog(new String[] {"Compensaciones", alCompensaciones.toString()});
-				log.addLog(new String[] {"Saltos", hmPersonasConSaltos.toString()});
-
-				// Para cada plaza que hay que ocupar en dia/conjunto de dias:
-				int letradosInsertados = 0;
-				for (int k = 0; k < numeroLetradosGuardia; k++) {
-					// obteniendo el letrado a asignar.
-					// ATENCION: este metodo es el nucleo del proceso
-					LetradoInscripcion letradoGuardia = getSiguienteLetrado(alCompensaciones, alLetradosOrdenados,
-							punteroListaLetrados, diasGuardia, hmPersonasConSaltos, hmBajasTemporales);
-
-					// guardando la asignacion de guardia si se encontro letrado
-					// hay que hacerlo aqui para no repetir letrado el mismo dia
-					if (letradoGuardia != null) {
-						log.addLog(new String[] {"Letrado seleccionado", letradoGuardia.toString()});
-						
-						alLetradosInsertar = new ArrayList<LetradoInscripcion>();
-						letradoGuardia.setPeriodoGuardias(diasGuardia);
-						LetradoInscripcion letradoGuardiaClone = (LetradoInscripcion) letradoGuardia.clone();
-						letradoGuardiaClone.setPosicion(posicion);
-						posicion++;
-						alLetradosInsertar.add(letradoGuardiaClone);
-						this.arrayPeriodosLetradosSJCS.add(alLetradosInsertar);
-						
-						// guardando las guardias en BD
-						if (this.calendariosVinculados == null) {
-							this.almacenarAsignacionGuardia(this.idCalendarioGuardias, alLetradosInsertar, diasGuardia, lDiasASeparar,
-									UtilidadesString.getMensajeIdioma(this.usrBean,
-											"gratuita.literal.comentario.sustitucion"));
-						}
-						else {
-							// guardando la principal
-							this.almacenarAsignacionGuardia(this.idCalendarioGuardias, alLetradosInsertar, primerPeriodo, lDiasASeparar,
-									UtilidadesString.getMensajeIdioma(this.usrBean,
-											"gratuita.literal.comentario.sustitucion"));
-
-							// guardando para cada una de las vinculadas
-							for (ScsCalendarioGuardiasBean calendario : this.calendariosVinculados) {
-								// modificando la guardia y calendario en el que se insertaran las guardias
-								for (LetradoInscripcion lg : alLetradosInsertar) {
-									lg.setIdInstitucion(calendario.getIdInstitucion());
-									lg.setIdTurno(calendario.getIdTurno());
-									lg.setIdGuardia(calendario.getIdGuardia());
-								}
-								
-								// guardando en BD
-								this.almacenarAsignacionGuardia(calendario.getIdCalendarioGuardias(), alLetradosInsertar, segundoPeriodo, lDiasASeparar,
+				
+				// Para cada dia o conjunto de dias:
+				for (int i = inicial; i < this.arrayPeriodosDiasGuardiaSJCS.size(); i++) {
+					posicion = INI_POSICION;
+					// obteniendo conjunto de dias
+					// Nota: cada periodo es un arraylist de fechas (String en formato de fecha corto DD/MM/YYYY)
+					if (this.calendariosVinculados == null) {
+						diasGuardia = (ArrayList<String>) this.arrayPeriodosDiasGuardiaSJCS.get(i);
+					} // Si hay guardias vinculadas, hay que mirar dos periodos a la vez
+					else {
+						segundoPeriodo = (ArrayList<String>) this.arrayPeriodosDiasGuardiaSJCS.get(i);
+						diasGuardia = new ArrayList<String>();
+						diasGuardia.addAll(primerPeriodo);
+						diasGuardia.addAll(segundoPeriodo);
+					}
+					log.addLog(new String[] {" ", " "});
+					log.addLog(new String[] {"Dias", diasGuardia.toString()});
+	
+					// obteniendo cola de letrados
+					punteroListaLetrados = new Puntero();
+					alLetradosOrdenados = InscripcionGuardia.getColaGuardia(idInstitucion, idTurno, idGuardia,
+							(String) diasGuardia.get(0), (String) diasGuardia.get(diasGuardia.size() - 1), usrBean);
+					log.addLog(new String[] {"Cola", alLetradosOrdenados.toString()});
+	
+					if (alLetradosOrdenados == null || alLetradosOrdenados.size() == 0)
+						throw new SIGAException("No existe cola de letrados de guardia");
+	
+					// obteniendo las compensaciones. Se obtienen dentro de este
+					// bucle, ya que si hay incompatibilidades se añade una compensacion
+					alCompensaciones = scAdm.getCompensaciones(this.idInstitucion, this.idTurno, this.idGuardia,(String) diasGuardia.get(0));
+					log.addLog(new String[] {"Compensaciones", alCompensaciones.toString()});
+					log.addLog(new String[] {"Saltos", hmPersonasConSaltos.toString()});
+	
+					// Para cada plaza que hay que ocupar en dia/conjunto de dias:
+					int letradosInsertados = 0;
+					for (int k = 0; k < numeroLetradosGuardia; k++) {
+						// obteniendo el letrado a asignar.
+						// ATENCION: este metodo es el nucleo del proceso
+						LetradoInscripcion letradoGuardia = getSiguienteLetrado(alCompensaciones, alLetradosOrdenados,
+								punteroListaLetrados, diasGuardia, hmPersonasConSaltos, hmBajasTemporales);
+	
+						// guardando la asignacion de guardia si se encontro letrado
+						// hay que hacerlo aqui para no repetir letrado el mismo dia
+						if (letradoGuardia != null) {
+							log.addLog(new String[] {"Letrado seleccionado", letradoGuardia.toString()});
+							
+							alLetradosInsertar = new ArrayList<LetradoInscripcion>();
+							letradoGuardia.setPeriodoGuardias(diasGuardia);
+							LetradoInscripcion letradoGuardiaClone = (LetradoInscripcion) letradoGuardia.clone();
+							letradoGuardiaClone.setPosicion(posicion);
+							posicion++;
+							alLetradosInsertar.add(letradoGuardiaClone);
+							this.arrayPeriodosLetradosSJCS.add(alLetradosInsertar);
+							
+							// guardando las guardias en BD
+							if (this.calendariosVinculados == null) {
+								this.almacenarAsignacionGuardia(this.idCalendarioGuardias, alLetradosInsertar, diasGuardia, lDiasASeparar,
 										UtilidadesString.getMensajeIdioma(this.usrBean,
 												"gratuita.literal.comentario.sustitucion"));
 							}
+							else {
+								// guardando la principal
+								this.almacenarAsignacionGuardia(this.idCalendarioGuardias, alLetradosInsertar, primerPeriodo, lDiasASeparar,
+										UtilidadesString.getMensajeIdioma(this.usrBean,
+												"gratuita.literal.comentario.sustitucion"));
+	
+								// guardando para cada una de las vinculadas
+								for (ScsCalendarioGuardiasBean calendario : this.calendariosVinculados) {
+									// modificando la guardia y calendario en el que se insertaran las guardias
+									for (LetradoInscripcion lg : alLetradosInsertar) {
+										lg.setIdInstitucion(calendario.getIdInstitucion());
+										lg.setIdTurno(calendario.getIdTurno());
+										lg.setIdGuardia(calendario.getIdGuardia());
+									}
+									
+									// guardando en BD
+									this.almacenarAsignacionGuardia(calendario.getIdCalendarioGuardias(), alLetradosInsertar, segundoPeriodo, lDiasASeparar,
+											UtilidadesString.getMensajeIdioma(this.usrBean,
+													"gratuita.literal.comentario.sustitucion"));
+								}
+							}
+							
+							letradosInsertados++;
+						} else {
+							log.addLog(new String[] {"FIN generacion", UtilidadesString.getMensajeIdioma(this.usrBean,
+									"gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes")});
+							throw new SIGAException(
+									"gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes");
 						}
-						
-						letradosInsertados++;
-					} else {
+					} // FIN Para cada plaza que hay que ocupar en dia/conjunto de dias
+	
+					// controlando que se insertaron tantos letrados como hacian falta
+					if (letradosInsertados != numeroLetradosGuardia) {
 						log.addLog(new String[] {"FIN generacion", UtilidadesString.getMensajeIdioma(this.usrBean,
 								"gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes")});
 						throw new SIGAException(
 								"gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes");
 					}
-				} // FIN Para cada plaza que hay que ocupar en dia/conjunto de dias
-
-				// controlando que se insertaron tantos letrados como hacian falta
-				if (letradosInsertados != numeroLetradosGuardia) {
-					log.addLog(new String[] {"FIN generacion", UtilidadesString.getMensajeIdioma(this.usrBean,
-							"gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes")});
-					throw new SIGAException(
-							"gratuita.modalRegistro_DefinirCalendarioGuardia.literal.errorLetradosSuficientes");
-				}
-
-				// actualizando el ultimo letrado en la guardia solo si no es de la lista de compensaciones
-				int punteroUltimo = 0;
-				if (punteroListaLetrados.getValor() == 0)
-					punteroUltimo = alLetradosOrdenados.size() - 1;
-				else
-					punteroUltimo = punteroListaLetrados.getValor() - 1;
-
-				unLetrado = alLetradosOrdenados.get(punteroUltimo);
-				if (unLetrado.getSaltoCompensacion() == null)
-					guardiaAdm.cambiarUltimoCola(unLetrado.getIdInstitucion(), unLetrado.getIdTurno(), 
-							unLetrado.getIdGuardia(), unLetrado.getIdPersona(), 
-							unLetrado.getInscripcionGuardia().getFechaSuscripcion(),unLetrado.getIdGrupoGuardiaColegiado());
-				
-				// avanzando el puntero de dia en el caso de guardias vinculadas
-				if (this.calendariosVinculados != null)
-					primerPeriodo = segundoPeriodo;
-			} // FIN Para cada dia o conjunto de dias
-
+	
+					// actualizando el ultimo letrado en la guardia solo si no es de la lista de compensaciones
+					int punteroUltimo = 0;
+					if (punteroListaLetrados.getValor() == 0)
+						punteroUltimo = alLetradosOrdenados.size() - 1;
+					else
+						punteroUltimo = punteroListaLetrados.getValor() - 1;
+	
+					unLetrado = alLetradosOrdenados.get(punteroUltimo);
+					if (unLetrado.getSaltoCompensacion() == null)
+						guardiaAdm.cambiarUltimoCola(unLetrado.getIdInstitucion(), unLetrado.getIdTurno(), 
+								unLetrado.getIdGuardia(), unLetrado.getIdPersona(), 
+								unLetrado.getInscripcionGuardia().getFechaSuscripcion(),unLetrado.getIdGrupoGuardiaColegiado());
+					
+					// avanzando el puntero de dia en el caso de guardias vinculadas
+					if (this.calendariosVinculados != null)
+						primerPeriodo = segundoPeriodo;
+				} // FIN Para cada dia o conjunto de dias
+			}else{
+				log.addLog(new String[] {"Cabecera de guardia generada correctamente"});
+			}
+			
+			
 		} catch (SIGAException e) {
 			throw e;
 		} catch (Exception e) {

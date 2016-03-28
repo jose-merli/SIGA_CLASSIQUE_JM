@@ -29,8 +29,6 @@
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
 	
 	boolean esComisionMultiple = usr.getInstitucionesComision()!=null &&usr.getInstitucionesComision().length>1;
-	
-	
 
 	String nColegiado =  request.getAttribute("nColegiado")==null?"":(String)request.getAttribute("nColegiado");
 	String nombreUserBean =  request.getAttribute("nombreUserBean")==null?"":(String)request.getAttribute("nombreUserBean");
@@ -38,7 +36,7 @@
 	Hashtable datos = (Hashtable)request.getSession().getAttribute("DATOSFORMULARIO");
 	String anio="", codigo="", fechaAperturaInicio="", fechaAperturaFin="", idTurno ="", tipoDesigna="", sufijo="";
 	String nif="", nombre="", apellido1="", apellido2="", nombreMostrado="";
-	String estado="",calidad="",procedimiento="",asunto="",actuacionesPendientes="", nig="";
+	String estado="",calidad="",procedimiento="",asunto="",actuacionesPendientes="", nig="", fechaJustificacionDesde="", fechaJustificacionHasta="",origen="";
 	ArrayList juzgadoSel   = new ArrayList();
 	ArrayList juzgado   = new ArrayList();
 	ArrayList juzgadoActu   = new ArrayList();
@@ -65,10 +63,13 @@
 			sufijo=(String)datos.get("SUFIJO");
 			fechaAperturaInicio=(String)datos.get("FECHAENTRADAINICIO");
 			fechaAperturaFin=(String)datos.get("FECHAENTRADAFIN");
+			fechaJustificacionDesde=(String)datos.get("FECHAJUSTIFICACIONDESDE");
+			fechaJustificacionHasta=(String)datos.get("FECHAJUSTIFICACIONHASTA");
 			idTurno =(String)datos.get("IDTURNO");
 			tipoDesigna=(String)datos.get("IDTIPODESIGNACOLEGIO");
 			actuacionesPendientes=(String)datos.get("ACTUACIONES_PENDIENTES");
 			estado =(String)datos.get("ESTADO");
+			origen = (String)datos.get("ORIGEN");
 			calidad =(String)datos.get("CALIDAD");		
 			juzgado.add((String)datos.get("JUZGADO"));
 			procedimiento =(String)datos.get("PROCEDIMIENTO");						
@@ -206,7 +207,9 @@
 			<siga:Idioma key="gratuita.busquedaSOJ.literal.anyo"/> / <siga:Idioma key="gratuita.busquedaSOJ.literal.codigo"/>
 		</td>
 		<td>	
-			<html:text name="BuscarDesignasForm" property="anio" style="width:40px" maxlength="4" styleClass="box" value="<%=anio%>"/> / <html:text name="BuscarDesignasForm" property="codigo" style="width:50px" maxlength="10" styleClass="box" value="<%=codigo%>"/> 
+			<html:text name="BuscarDesignasForm" property="anio" styleId="anio" style="width:40px" maxlength="4" styleClass="box" value="<%=anio%>"/>
+			/
+			<html:text name="BuscarDesignasForm" property="codigo" styleId="codigo" style="width:50px" maxlength="10" styleClass="box" value="<%=codigo%>"/> 
 		</td>
 		<td class="labelText">
 			&nbsp;
@@ -250,7 +253,7 @@
 			<siga:Idioma key="gratuita.editarDesigna.literal.estado"/>
 		</td>
 		<td >	
-			<Select name="estado" class="boxCombo">
+			<Select id="estado" name="estado" class="boxCombo">
 			<%if(estado!=null && !estado.equals("")){%>
 				<%if(estado.equals("V")){%>			
 					<option value=''   ></option>
@@ -282,7 +285,7 @@
 			<siga:Idioma key="gratuita.busquedaDesignas.literal.actuacionesValidadas"/>
 		</td>
 		<td>	
-			<Select name="actuacionesPendientes" class="boxCombo">
+			<Select id="actuacionesPendientes" name="actuacionesPendientes" class="boxCombo">
 				<option value='' selected></option>
 				<%if((actuacionesPendientes!=null)&&(actuacionesPendientes.equalsIgnoreCase("No"))){%>		
 						<option value='No' selected><siga:Idioma key="general.no"/></option>
@@ -305,7 +308,7 @@
 			<siga:Idioma key="gratuita.busquedaDesignas.literal.mostrarArt27"/>
 		</td>
 		<td>	
-			<Select name="mostrarArt27" class="boxCombo">
+			<Select id="mostrarArt27" name="mostrarArt27" class="boxCombo">
 				<option value='N'> <siga:Idioma key="general.no"/></option>
 				<option value='S'> <siga:Idioma key="general.yes"/></option>
 				<option value='T' selected> <siga:Idioma key="general.todas"/></option>
@@ -345,19 +348,19 @@
 					<siga:Idioma key="informes.cartaAsistencia.procedimiento"/>
 				</td>
 				<td class="labelText" >
-					<html:text name="BuscarDesignasForm" property="procedimiento" size="17" maxlength="100" styleClass="box"  value="<%=procedimiento%>"></html:text>
+					<html:text name="BuscarDesignasForm" property="procedimiento" styleId="procedimiento" size="17" maxlength="100" styleClass="box"  value="<%=procedimiento%>"></html:text>
 				</td>
 				<td class="labelText">	
 					<siga:Idioma key="informes.cartaAsistencia.asunto"/>
 				</td>	
 				<td class="labelText">
-					<html:text name="BuscarDesignasForm" property="asunto" size="15" maxlength="100" styleClass="box"  value="<%=asunto%>"></html:text>
+					<html:text name="BuscarDesignasForm" property="asunto" styleId="asunto" size="15" maxlength="100" styleClass="box"  value="<%=asunto%>"></html:text>
 				</td>
 				<td class="labelText">	
 					<siga:Idioma key="gratuita.mantAsistencias.literal.NIG"/>
 				</td>	
 				<td class="labelText" >
-					<html:text name="BuscarDesignasForm" property="nig2" styleId = "nig2" styleClass="box" style="size:19;width:200px" value="<%=nig%>"></html:text>
+					<html:text name="BuscarDesignasForm" property="nig2" styleId="nig2" styleClass="box" style="size:19;width:200px" value="<%=nig%>"></html:text>
 				</td>
 		</tr>
 		</table>
@@ -389,6 +392,43 @@
 				<siga:Select id="juzgadoActu" queryId="getJuzgados" selectedIds="<%=juzgadoActu%>" width="680" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="10" />
 			</td>
 		</tr>
+		<tr>
+			<td class="labelText">
+					<siga:Idioma key="gratuita.busquedaDesignas.literal.origenActuaciones"/>			
+				</td>
+				<td class="labelText" >	
+					<Select name="origen" id="origen" class="boxCombo" >
+						<%if(origen!=null && !origen.equals("")){%>
+							<%if(origen.equals("ICA")){%>	
+								<option value=''></option>
+								<option value='ICA'  selected="selected"><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegioSIGA"/></option>
+								<option value='C' ><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegiadoSIGA"/></option>		
+							<%} %>	
+							<%if(origen.equals("C")){%>	
+								<option value=''></option>
+								<option value='ICA'><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegioSIGA"/></option>
+								<option value='C' selected="selected"><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegiadoSIGA"/></option>		
+							<%} %>	
+						<%}else{ %>
+							<option value='' selected="selected"></option>
+							<option value='ICA' ><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegioSIGA"/></option>
+							<option value='C' ><siga:Idioma key="gratuita.busquedaAsistencias.origen.colegiadoSIGA"/></option>	
+						<%} %>
+									
+					</Select>
+				</td>
+		</tr>
+		<tr >
+			
+			<td class="labelText"><siga:Idioma key="gratuita.busquedaDesignas.literal.fechaJustificacion.desde" /></td>
+			<td class="labelText" >
+				<siga:Fecha nombreCampo="fechaJustificacionDesde" valorInicial="<%=fechaJustificacionDesde%>" /> 
+				<siga:Idioma key="gratuita.busquedaDesignas.literal.fechaJustificacion.hasta" />
+				<siga:Fecha nombreCampo="fechaJustificacionHasta" valorInicial="<%=fechaJustificacionHasta%>" campoCargarFechaDesde="fechaJustificacionDesde"/> 
+			</td>
+					
+			
+		</tr>
 		
 		</table>
 	</siga:ConjCampos>
@@ -400,25 +440,25 @@
 			<siga:Idioma key="expedientes.auditoria.literal.nif"/>
 		</td>	
 		<td>
-			<html:text name="BuscarDesignasForm" property="nif" size="10" maxlength="10" styleClass="box" value="<%=nif%>"></html:text>
+			<html:text name="BuscarDesignasForm" property="nif" styleId="nif" size="10" maxlength="10" styleClass="box" value="<%=nif%>"></html:text>
 		</td>
 		<td class="labelText">
 			<siga:Idioma key="expedientes.auditoria.literal.nombre"/>
 		</td>
 		<td>	
-			<html:text name="BuscarDesignasForm" property="nombre" size="15" maxlength="100" styleClass="box" value="<%=nombre%>" ></html:text>
+			<html:text name="BuscarDesignasForm" property="nombre" styleId="nombre" size="15" maxlength="100" styleClass="box" value="<%=nombre%>" ></html:text>
 		</td>	
 		<td class="labelText">
 			<siga:Idioma key="expedientes.auditoria.literal.primerapellido"/>
 		</td>
 		<td >	
-			<html:text name="BuscarDesignasForm" property="apellido1" size="15" maxlength="100" styleClass="box" value="<%=apellido1%>" ></html:text>
+			<html:text name="BuscarDesignasForm" property="apellido1" styleId="apellido1" size="15" maxlength="100" styleClass="box" value="<%=apellido1%>" ></html:text>
 		</td>	
 		<td class="labelText">	
 			<siga:Idioma key="expedientes.auditoria.literal.segundoapellido"/>
 		</td>
 		<td>
-			<html:text name="BuscarDesignasForm" property="apellido2" size="15" maxlength="100" styleClass="box" value="<%=apellido2%>" ></html:text>
+			<html:text name="BuscarDesignasForm" property="apellido2" styleId="apellido2" size="15" maxlength="100" styleClass="box" value="<%=apellido2%>" ></html:text>
 		</td>
 	</tr>
 	</table>
@@ -494,6 +534,24 @@
 			}else{
 				setFocusFormularios();
 			}
+			if((validarFecha(document.forms[0].fechaJustificacionDesde.value))&&
+					   (validarFecha(document.forms[0].fechaJustificacionHasta.value))){
+						sub();
+							if (isNaN(document.forms[0].anio.value)) {
+								fin();
+								alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
+								return false;
+							}
+							document.forms[0].target="resultado";
+							if(modo)
+								document.forms[0].modo.value = modo;
+							else
+								document.forms[0].modo.value = "buscarInicio";
+							
+							document.forms[0].submit();
+					}else{
+						setFocusFormularios();
+					}
 			jQuery("#nig2").keyup();
 		}
 			function seleccionarTodos(pagina) 
@@ -514,13 +572,6 @@
 					document.forms[0].submit();
 				//}
 		}			
-		
-		//<!-- Funcion asociada a boton limpiar -->
-		function limpiar() 
-		{		
-			document.forms[0].reset();
-			document.forms[0].ncolegiado.value="";
-		}
 		
 		//<!-- Funcion asociada a boton Nuevo -->
 		function nuevo() 
@@ -567,6 +618,48 @@
 			document.RecuperarConsultasForm.submit();
 			
 		}
+		
+		function limpiar() {
+			if (jQuery("#idInstitucionComision").exists()) {
+				jQuery("#idInstitucionComision").val("");
+			}
+			
+			jQuery("#anio").val(""); // anio
+			jQuery("#codigo").val(""); // codigo
+			jQuery("#fechaAperturaInicio").val(""); // fechaAperturaInicio
+			jQuery("#fechaAperturaFin").val(""); // fechaAperturaFin
+			
+			jQuery("#fechaJustificacionDesde").val(""); // fechaJustificacionDesde
+			jQuery("#fechaJustificacionHasta").val(""); // fechaJustificacionHasta
+			
+			jQuery("#idTurno").val(""); // idTurno
+			jQuery("#tipoDesigna").val(""); // tipoDesigna
+			
+			jQuery("#estado").val(""); // estado
+			jQuery("#origen").val(""); // origen
+			jQuery("#actuacionesPendientes").val(""); // actuacionesPendientes
+			jQuery("#mostrarArt27").val(""); // mostrarArt27
+			
+			limpiarPersona();	
+			
+			jQuery("#calidad").val(""); // calidad			
+			jQuery("#juzgado_searchBox").val(""); // juzgado
+			jQuery("#juzgado").val(""); // juzgado
+			
+			jQuery("#procedimiento").val(""); // procedimiento
+			jQuery("#asunto").val(""); // asunto
+			jQuery("#nig2").val(""); // nig2
+			
+			jQuery("#modulo").val(""); // modulo
+			jQuery("#acreditacion").val(""); // acreditacion
+			jQuery("#juzgadoActu_searchBox").val(""); // juzgadoActu
+			jQuery("#juzgadoActu").val(""); // juzgadoActu
+			
+			jQuery("#nif").val(""); // nif
+			jQuery("#nombre").val(""); // nombre
+			jQuery("#apellido1").val(""); // apellido1
+			jQuery("#apellido2").val(""); // apellido2
+	}		
 </script>
 <!--<input type="button" name="descarga" value="Descargar Factura Rectificativa" onclick="generaInformeGenericoSimple();" class="button">-->
 
@@ -577,9 +670,9 @@
 
 	<!-- INICIO: BOTONES BUSQUEDA -->	
 	<%if(usr.isLetrado()){%>	
-		<siga:ConjBotonesBusqueda botones="C,B,IJ"  titulo="gratuita.busquedaDesignas.literal.titulo"/>
+		<siga:ConjBotonesBusqueda botones="C,L,B,IJ"  titulo="gratuita.busquedaDesignas.literal.titulo"/>
 	<%}else{%>
-		<siga:ConjBotonesBusqueda botones="C,B,N,IJ, CON"  titulo="gratuita.busquedaDesignas.literal.titulo"/>
+		<siga:ConjBotonesBusqueda botones="C,L,B,N,IJ, CON"  titulo="gratuita.busquedaDesignas.literal.titulo"/>
 		<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 		<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
 			<html:hidden property="idModulo" value="<%=ConModuloBean.IDMODULO_SJCS %>"/>

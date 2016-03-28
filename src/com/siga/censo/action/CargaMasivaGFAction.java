@@ -234,7 +234,8 @@ public class CargaMasivaGFAction extends MasterAction {
 		Hashtable<String, Object> datosHashtable = new Hashtable<String, Object>();
 		datosHashtable.put(CargaMasivaDatosGFVo.COLEGIADONUMERO, "nnnnnn");
 		datosHashtable.put(CargaMasivaDatosGFVo.PERSONANIF, "nnnnnnnna");
-		datosHashtable.put(CargaMasivaDatosGFVo.C_IDGRUPO, "nnn");
+		datosHashtable.put(CargaMasivaDatosGFVo.C_IDGRUPO, "nnnn");
+		datosHashtable.put(CargaMasivaDatosGFVo.GENERAL, "1/0");
 		datosHashtable.put(CargaMasivaDatosGFVo.ACCION, "A/B");
 		datosVector.add(datosHashtable);
 
@@ -242,6 +243,7 @@ public class CargaMasivaGFAction extends MasterAction {
 		datosHashtable.put(CargaMasivaDatosGFVo.COLEGIADONUMERO, "Opcional. Si nulo nif/cif requerido");
 		datosHashtable.put(CargaMasivaDatosGFVo.PERSONANIF, "Opcional. Si nulo colegiadonumero requerido");
 		datosHashtable.put(CargaMasivaDatosGFVo.C_IDGRUPO, "Requerido");
+		datosHashtable.put(CargaMasivaDatosGFVo.GENERAL, "Requerido. 1 si es general, 0 si es propio del ICA");
 		datosHashtable.put(CargaMasivaDatosGFVo.ACCION, "Requerido");
 		datosVector.add(datosHashtable);
 

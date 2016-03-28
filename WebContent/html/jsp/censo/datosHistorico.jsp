@@ -2,6 +2,7 @@
 <html>
 <head>
 <!-- datosHistorico.jsp -->
+
 <!-- 
 	 Permite mostrar/editar las entradas del historial
 	 VERSIONES:
@@ -43,27 +44,27 @@
 	String nombre=(String)request.getSession().getAttribute("NOMBRE"); // Obtengo el nombre completo de la persona
 	String numero=(String)request.getSession().getAttribute("NUMERO"); // Obtengo el numero de colegiado de la persona		
 
-	ArrayList vSel = new ArrayList(); // 
+	ArrayList vSel = new ArrayList(); //
     Row row = new Row(); // 
     Row row_cons = new Row(); // 
 
 	// Obtener informacion para rellenar en caso de modificacion o consulta
-	if ((remitente.equalsIgnoreCase("modificar"))||(remitente.equalsIgnoreCase("consulta"))){
+	if (remitente.equalsIgnoreCase("modificar") || remitente.equalsIgnoreCase("consulta")) {
 		// Informacion sobre registro CEN_HISTORICO
 		Enumeration def = ((Vector)request.getAttribute("container")).elements();
 		// Tiene que existir y solo uno además, sino no es posible modificacion o consulta
 		if (def.hasMoreElements()){
-			row = (Row) def.nextElement(); 			              	
-			vSel.add(row.getString(CenHistoricoBean.C_IDTIPOCAMBIO));				              	
+			row = (Row) def.nextElement(); 		
+			vSel.add(row.getString(CenHistoricoBean.C_IDTIPOCAMBIO));
 		}  	
-		if (remitente.equalsIgnoreCase("consulta")){
-			Enumeration def_cons = ((Vector)request.getAttribute("container_desc")).elements();
-			// Tiene que existir y solo uno además, sino no es posible modificacion o consulta
-			if (def_cons.hasMoreElements()){
-				row_cons = (Row) def_cons.nextElement(); 			              	
-			}  			
-		}
+
+		Enumeration def_cons = ((Vector)request.getAttribute("container_desc")).elements();
+		// Tiene que existir y solo uno además, sino no es posible modificacion o consulta
+		if (def_cons.hasMoreElements()){
+			row_cons = (Row) def_cons.nextElement(); 			              	
+		}  			
 	}			
+    
 	String	botones="V,G,R";
 
 	String nombreUsuMod = "";
@@ -85,17 +86,12 @@
 	catch (Exception e) {}
 %>	
 
-
-<!-- HEAD -->
-	
-
-			<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
+	<!-- HEAD -->
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
-		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>			
+	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>			
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
@@ -144,16 +140,13 @@
 			<table  class="tablaCentralCamposMedia"  align="center">
 
 				<html:form action="/CEN_Historico.do" method="POST" >
-					<html:hidden property = "modo" value = "<%=remitente%>"/>
-					<html:hidden property = "jsonVolver" />
+					<html:hidden property="modo" value="<%=remitente%>"/>
+					<html:hidden property="jsonVolver" />
 					
 					<tr>				
 						<td>
-						<siga:ConjCampos leyenda="censo.consultaHistorico.cabecera">
-
-							<table class="tablaCampos" align="center"  border="0">
-	
-								<!-- FILA -->
+							<siga:ConjCampos leyenda="censo.consultaHistorico.cabecera">
+								<table class="tablaCampos" align="center"  border="0">
 									<tr>				
 										<td class="labelText">
 											<siga:Idioma key="censo.consultaHistorico.literal.nombreUsu"/>
@@ -162,47 +155,51 @@
 											<%=nombreUsuMod%>
 										</td>	
 									</tr>	
-								<!-- FILA -->
+
 									<tr>				
 										<td class="labelText">
 											<siga:Idioma key="censo.consultaHistorico.literal.tipo"/>&nbsp;(*)
 										</td>				
 										<td colspan="2">
-											<% if (remitente.equalsIgnoreCase("insertar")){%>
-												<siga:ComboBD nombre = "cmbCambioHistorico" tipo="cmbCambioHistoricoNoAutomatico" clase="boxCombo" obligatorio="true"/>
-											<% } else { %>
-												 <% if (remitente.equalsIgnoreCase("modificar")){ %>
-													<% if (vSel.isEmpty()){int i=0;%>
-														<siga:ComboBD nombre = "cmbCambioHistorico" tipo="cmbCambioHistorico" clase="boxConsulta" elementoSel="<%=i%>" obligatorio="true" readOnly="true"/>
-													<% } else {%>
-														<siga:ComboBD nombre = "cmbCambioHistorico" tipo="cmbCambioHistorico"  clase="boxConsulta" ancho="500" elementoSel="<%=vSel%>" obligatorio="true" readOnly="true"/>
-													<% } %>											
-												 <% } else{ %>	
-													<html:text property="tipoCambioDesc" size="75" styleClass="boxConsulta" value="<%=row_cons.getString(CenTipoCambioBean.C_DESCRIPCION)%>" readOnly="true"></html:text>
-												 <% } %>
-											<% } %>								
+<% 
+											if (remitente.equalsIgnoreCase("insertar")) {
+%>
+												<siga:ComboBD nombre="cmbCambioHistorico" tipo="cmbCambioHistoricoNoAutomatico" clase="boxCombo" obligatorio="true"/>
+<% 
+											} else {
+												if (vSel.isEmpty()){
+													int i=0;
+%>
+													<siga:ComboBD nombre="cmbCambioHistorico" tipo="cmbCambioHistorico" clase="boxConsulta" ancho="500" elementoSel="<%=i%>" obligatorio="true" readOnly="true"/>
+<% 
+												} else {
+%>
+													<siga:ComboBD nombre="cmbCambioHistorico" tipo="cmbCambioHistorico" clase="boxConsulta" ancho="500" elementoSel="<%=vSel%>" obligatorio="true" readOnly="true"/>
+<% 
+												}
+											} 
+%>								
 										</td>	
 									</tr>	
 									
-								<!-- FILA -->
 									<tr>														
 										<td class="labelText" width="25%">
 											<siga:Idioma key="censo.consultaHistorico.literal.fechaEntrada"/>&nbsp;(*)
 										</td>
 										<td width="25%">							
-											<% if (remitente.equalsIgnoreCase("insertar")){ %>
-												<siga:Fecha  nombreCampo= "fechaEntrada"  posicionX="150" posicionY="50"/>
-											<% } else { %>
-					  							<% if (remitente.equalsIgnoreCase("modificar")){ %>
-			  										<% String fecha=GstDate.getFormatedDateMedium(userBean.getLanguage(),row.getString(CenHistoricoBean.C_FECHAENTRADA)); %>
-			  										<siga:Fecha  nombreCampo= "fechaEntrada" valorInicial="<%=fecha%>"  posicionX="150" posicionY="50"/>
-			  															
-						  					 	<% } else { %>
-											 		<% String fecha=GstDate.getFormatedDateMedium(userBean.getLanguage(),row.getString(CenHistoricoBean.C_FECHAENTRADA));%>
-											 		<%=fecha %>	
-													
-											 	<% } %>				  					 
-							  				<% } %>														
+<% 
+											if (remitente.equalsIgnoreCase("insertar")) { 
+%>
+												<siga:Fecha nombreCampo="fechaEntrada"  posicionX="150" posicionY="50"/>
+<% 
+											} else { 
+												String fecha = GstDate.getFormatedDateMedium(userBean.getLanguage(),row.getString(CenHistoricoBean.C_FECHAENTRADA));
+%>
+											 	<siga:Fecha nombreCampo="fechaEntradaRO" valorInicial="<%=fecha%>" posicionX="150" posicionY="50" disabled="true" readOnly="true"/>
+											 	<html:hidden property="fechaEntrada" styleId="fechaEntrada" value="<%=row.getString(CenHistoricoBean.C_FECHAENTRADA)%>" />
+<% 
+											} 
+%>															
 										</td>
 									</tr>														
 									<tr>														
@@ -210,61 +207,95 @@
 											<siga:Idioma key="censo.consultaHistorico.literal.fechaEfectiva"/>&nbsp;(*)
 										</td>
 										<td width="25%">							
-											<% if (remitente.equalsIgnoreCase("insertar")){%>
-												<siga:Fecha  nombreCampo= "fechaEfectiva"  posicionX="150" posicionY="50"/>
+<% 
+											if (remitente.equalsIgnoreCase("insertar")) {
+%>
+												<siga:Fecha nombreCampo= "fechaEfectiva"  posicionX="150" posicionY="50"/>
 																		
-						  					<% } else { %>
-			  									<% if (remitente.equalsIgnoreCase("modificar")){ %>
-			  										<% String fecha=GstDate.getFormatedDateMedium(userBean.getLanguage(),row.getString(CenHistoricoBean.C_FECHAEFECTIVA));%>
-			  										<siga:Fecha  nombreCampo= "fechaEfectiva" valorInicial="<%=fecha%>"  posicionX="150" posicionY="50"/>
-			  																
-				  							 	<% }else{ %>
-									 				<% String fecha=GstDate.getFormatedDateMedium(userBean.getLanguage(),row.getString(CenHistoricoBean.C_FECHAEFECTIVA));%>	
-													<%=fecha %>	
-												 <% } %>				  					 				  					 
-				  							<% } %>														
+<% 
+											} else { 
+												String fecha = GstDate.getFormatedDateMedium(userBean.getLanguage(),row.getString(CenHistoricoBean.C_FECHAEFECTIVA));
+%>
+			  									<siga:Fecha nombreCampo="fechaEfectivaRO" valorInicial="<%=fecha%>" posicionX="150" posicionY="50" disabled="true" readOnly="true"/>
+			  									<html:hidden property="fechaEfectiva" styleId="fechaEfectiva" value="<%=row.getString(CenHistoricoBean.C_FECHAEFECTIVA)%>" />
+<% 
+											} 
+%>																							
 										</td>
 									</tr>					
-									<!-- FILA -->
+
 									<tr>				
 										<td class="labelText">
 											<siga:Idioma key="censo.consultaHistorico.literal.motivo"/>&nbsp;(*)
 										</td>				
-										<td colspan="2">	
-										
-										<% if (remitente.equalsIgnoreCase("insertar")){ %>
+										<td colspan="2">											
+<% 
+											String sMotivo = "";
+											if (row.getString(CenHistoricoBean.C_MOTIVO)!=null) {
+												sMotivo = row.getString(CenHistoricoBean.C_MOTIVO);
+											}
+												
+											if (remitente.equalsIgnoreCase("insertar") || (remitente.equalsIgnoreCase("modificar") && sMotivo.equals(""))) { 
+%>
  												<html:textarea property="motivo"
  													onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
  													style="overflow-y:auto; overflow-x:hidden; width:500px; height:50px; resize:none;" 
  												 	styleClass="box"></html:textarea> 
-										<% } else { %>
-					  						<% if (remitente.equalsIgnoreCase("modificar")){%>
-			  						        	<html:textarea property="motivo"
-													onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"  
-													style="overflow-y:auto; overflow-x:hidden; width:500px; height:50px; resize:none;"
-													styleClass="box" value="<%=row.getString(CenHistoricoBean.C_MOTIVO)%>"></html:textarea> 
-			  							 	<% } else{ %>
+<% 
+											} else { 
+%>
   				  							   	<html:textarea property="motivo"
   				  							   		style="overflow-y:auto; overflow-x:hidden; width:500px; height:50px; resize:none;" 
-   				  							 	   	styleClass="boxConsulta" value="<%=row.getString(CenHistoricoBean.C_MOTIVO)%>" readOnly="true" ></html:textarea> 
-												<% } %>				  					 				  					 				  					 
-							  	    	<% } %>				
-																						
+   				  							 	   	styleClass="boxConsulta" value="<%=row.getString(CenHistoricoBean.C_MOTIVO)%>" readOnly="true"></html:textarea> 
+<% 
+											} 
+%>									
 						  				</td>
 									</tr>
+<% 
+									if (!remitente.equalsIgnoreCase("insertar") && row.getString(CenHistoricoBean.C_DESCRIPCION)!=null && row.getString(CenHistoricoBean.C_DESCRIPCION)!="") { 
+%>									
+										<tr>
+											<td class="labelText">
+												<siga:Idioma key="censo.consultaHistorico.literal.descripcion"/>
+											</td>
+											<td colspan="2">								
+												<textArea 
+													style="overflow-y:auto; overflow-x:hidden; width:500px; height:300px; resize:none;"
+													class="boxConsulta" readonly=""><%=row.getString(CenHistoricoBean.C_DESCRIPCION)%></textarea>
+											</td>											
+										</tr>
+<%
+									} 
+%>										
+									
 									<tr>
-										<% if ((!remitente.equalsIgnoreCase("insertar"))&&(row.getString(CenHistoricoBean.C_DESCRIPCION) != null)&&(row.getString(CenHistoricoBean.C_DESCRIPCION) != "")){ %>
 										<td class="labelText">
-											<siga:Idioma key="censo.consultaHistorico.literal.descripcion"/>
+											<siga:Idioma key="censo.consultaHistorico.literal.observaciones"/>
 										</td>
 										<td colspan="2">								
-											<textArea 
-												onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)"
-												style="overflow-y:auto; overflow-x:hidden; width:500px; height:390px; resize:none;"
-												class="boxConsulta"  readonly=""><% if(row.getString(CenHistoricoBean.C_DESCRIPCION) != null) out.print(row.getString(CenHistoricoBean.C_DESCRIPCION));%></textarea>
+<% 
+											String sObervaciones = "";
+											if (row.getString(CenHistoricoBean.C_OBSERVACIONES)!=null) {
+												sObervaciones = row.getString(CenHistoricoBean.C_OBSERVACIONES);
+											}
+											if (remitente.equalsIgnoreCase("insertar") || remitente.equalsIgnoreCase("modificar")) { 
+%>
+												<html:textarea property="observaciones"
+													onKeyDown="cuenta(this,1000)" onChange="cuenta(this,1000)"  
+													style="overflow-y:auto; overflow-x:hidden; width:500px; height:100px; resize:none;"
+													styleClass="box" value="<%=sObervaciones%>"></html:textarea>
+<% 
+											} else { 
+%>
+												<html:textarea property="observaciones"
+													style="overflow-y:auto; overflow-x:hidden; width:500px; height:100px; resize:none;"
+													styleClass="boxConsulta" readOnly="true" value="<%=sObervaciones%>"></html:textarea>
+<% 
+											} 
+%>
 										</td>
-										<% } %>		
-									</tr>
+									</tr>									
 								</table>
 							</siga:ConjCampos>
 						</td>

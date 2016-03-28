@@ -503,6 +503,7 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 			bean.setIdInstitucion(this.getIDInstitucion(request));
 			bean.setIdProcedimiento(miform.getIdProcedimiento());
 			bean.setPorcentaje(miform.getPorcentaje());
+			bean.setNigNumeroProcedimiento(miform.getNigNumProcedimiento());
 			ScsAcreditacionProcedimientoAdm adm = new ScsAcreditacionProcedimientoAdm (this.getUserBean(request));
 			
 			if (adm.insert(bean)) {
@@ -572,6 +573,7 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 			if ((v != null) && (v.size() > 0)) {
 				bean = (ScsAcreditacionProcedimientoBean) v.get(0);
 				bean.setPorcentaje(miform.getPorcentaje());
+				bean.setNigNumeroProcedimiento(miform.getNigNumProcedimiento());
 			
 				ScsAcreditacionProcedimientoAdm adm = new ScsAcreditacionProcedimientoAdm(this.getUserBean(request));			
 				if (!adm.update(bean)) {

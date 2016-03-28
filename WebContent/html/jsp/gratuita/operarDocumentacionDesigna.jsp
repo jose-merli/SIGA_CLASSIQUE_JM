@@ -109,7 +109,8 @@
 
 	<tr>
 		<td class="labelText">
-			Observaciones<c:out value="${ClsConstants.ACCESS_FULL}"></c:out>
+			<siga:Idioma key='gratuita.documentacionDesigna.observaciones'/>
+			<c:out value="${ClsConstants.ACCESS_FULL}"></c:out>
 		</td>
 		<td colspan="2">
 			<c:choose>

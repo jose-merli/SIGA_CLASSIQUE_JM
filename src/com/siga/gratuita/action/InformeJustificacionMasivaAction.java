@@ -289,6 +289,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 				for (int i = 0; i < arrayDatosJustificacion.length; i++) {
 					String rowJustificacion = arrayDatosJustificacion[i];
 					String[] arrayRowsJustificacion = rowJustificacion.split(",");
+					int numDatosJustif =  arrayRowsJustificacion.length;
 					String anio  =  arrayRowsJustificacion[0];
 					String numero  =  arrayRowsJustificacion[1]; 
 					String idInstitucion  =  arrayRowsJustificacion[2];
@@ -310,6 +311,21 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						if(!designasList.contains(pkDesigna))
 							designasList.add(pkDesigna);
 					}
+					String fechaActuacion = null;
+					String numProcActuacion = null;
+					String anioProcActuacion = null;
+					String nigActuacion = null;
+					if(numDatosJustif>=14)
+						fechaActuacion   =  arrayRowsJustificacion[13];
+					if(numDatosJustif>=15)
+						numProcActuacion   =  arrayRowsJustificacion[14];
+					if(numDatosJustif>=16)
+						anioProcActuacion   =  arrayRowsJustificacion[15];
+					if(numDatosJustif>=17)
+						nigActuacion   =  arrayRowsJustificacion[16];
+					
+					
+					
 					
 					
 					//si la actuacion es x es que es nueva, sino es modificacion(justificacion, validacion o baja)
@@ -336,21 +352,20 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO,
 								idInstitucion);
-//						if(user.isLetrado()){
-							fksActuacionHashtable = new Hashtable<String, Object>();
-							fksActuacionHashtable.put("TABLA_FK", ScsJuzgadoBean.T_NOMBRETABLA);
-							fksActuacionHashtable.put("SALIDA_FK", ScsJuzgadoBean.C_NOMBRE);
-							fksActuacionHashtable.put(ScsJuzgadoBean.C_IDINSTITUCION, idInstitucion);
-							fksActuacionHashtable.put(ScsJuzgadoBean.C_IDJUZGADO, idJuzgado);
-							fksActuacionMap.put(ScsActuacionDesignaBean.C_IDJUZGADO,fksActuacionHashtable);
-//						}
-						
-	//					UtilidadesHash.set(hashActuacion,
-	//							ScsActuacionDesignaBean.C_FECHAMODIFICACION,
-	//					"sysdate");
-	//					UtilidadesHash.set(hashActuacion,
-	//							ScsActuacionDesignaBean.C_USUMODIFICACION,
-	//							new Long(this.getUserBean(request).getIdPersona()));
+						fksActuacionHashtable = new Hashtable<String, Object>();
+						fksActuacionHashtable.put("TABLA_FK", ScsJuzgadoBean.T_NOMBRETABLA);
+						fksActuacionHashtable.put("SALIDA_FK", ScsJuzgadoBean.C_NOMBRE);
+						fksActuacionHashtable.put(ScsJuzgadoBean.C_IDINSTITUCION, idInstitucion);
+						fksActuacionHashtable.put(ScsJuzgadoBean.C_IDJUZGADO, idJuzgado);
+						fksActuacionMap.put(ScsActuacionDesignaBean.C_IDJUZGADO,fksActuacionHashtable);
+
+							
+						UtilidadesHash.set(hashActuacion,
+									ScsActuacionDesignaBean.C_FECHACREACION,
+									"sysdate");
+						UtilidadesHash.set(hashActuacion,
+									ScsActuacionDesignaBean.C_USUCREACION,
+									new Long(this.getUserBean(request).getUserName()));
 	
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_IDPROCEDIMIENTO,
@@ -359,17 +374,13 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 								hashActuacion,
 								ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO,
 								idInstitucion);
-						
-//						if(user.isLetrado()){
-							fksActuacionHashtable = new Hashtable<String, Object>();
-							fksActuacionHashtable.put("TABLA_FK", ScsProcedimientosBean.T_NOMBRETABLA);
-							fksActuacionHashtable.put("SALIDA_FK", ScsProcedimientosBean.C_NOMBRE);
-							fksActuacionHashtable.put(ScsProcedimientosBean.C_IDPROCEDIMIENTO, idProcedimiento);
-							fksActuacionHashtable.put(ScsProcedimientosBean.C_IDINSTITUCION, idInstitucion);
-							
-							
-							fksActuacionMap.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO,fksActuacionHashtable);
-//						}
+					
+						fksActuacionHashtable = new Hashtable<String, Object>();
+						fksActuacionHashtable.put("TABLA_FK", ScsProcedimientosBean.T_NOMBRETABLA);
+						fksActuacionHashtable.put("SALIDA_FK", ScsProcedimientosBean.C_NOMBRE);
+						fksActuacionHashtable.put(ScsProcedimientosBean.C_IDPROCEDIMIENTO, idProcedimiento);
+						fksActuacionHashtable.put(ScsProcedimientosBean.C_IDINSTITUCION, idInstitucion);
+						fksActuacionMap.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO,fksActuacionHashtable);
 	
 						UtilidadesHash.set(
 								hashActuacion,
@@ -386,18 +397,17 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_IDACREDITACION,
 								idAcreditacion);
-//						if(user.isLetrado()){
-							fksActuacionHashtable = new Hashtable<String, Object>();
-							fksActuacionHashtable.put("TABLA_FK", ScsAcreditacionBean.T_NOMBRETABLA);
-							fksActuacionHashtable.put("SALIDA_FK", ScsAcreditacionBean.C_DESCRIPCION);
-							fksActuacionHashtable.put(ScsAcreditacionBean.C_IDACREDITACION, idAcreditacion);
+						fksActuacionHashtable = new Hashtable<String, Object>();
+						fksActuacionHashtable.put("TABLA_FK", ScsAcreditacionBean.T_NOMBRETABLA);
+						fksActuacionHashtable.put("SALIDA_FK", ScsAcreditacionBean.C_DESCRIPCION);
+						fksActuacionHashtable.put(ScsAcreditacionBean.C_IDACREDITACION, idAcreditacion);
+						fksActuacionMap.put(ScsActuacionDesignaBean.C_IDACREDITACION,fksActuacionHashtable);
 							
-							
-							fksActuacionMap.put(ScsActuacionDesignaBean.C_IDACREDITACION,fksActuacionHashtable);
-//						}
-						UtilidadesHash.set(hashActuacion,
-								ScsActuacionDesignaBean.C_FECHA,
-								GstDate.getApplicationFormatDate("", fechaJustificacion));
+						
+						if(fechaActuacion!=null && !fechaActuacion.equals(""))
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_FECHA, GstDate.getApplicationFormatDate("", fechaActuacion));
+						else
+							UtilidadesHash.set(hashActuacion,ScsActuacionDesignaBean.C_FECHA,GstDate.getApplicationFormatDate("", fechaJustificacion));
 					
 						UtilidadesHash.set(hashActuacion,
 							ScsActuacionDesignaBean.C_OBSERVACIONES,
@@ -445,16 +455,26 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 							scsDesignaHashtable.put(pkDesignacion.toString(), designaBean);
 						}
 						ScsDesignaBean scsDesignaBean = scsDesignaHashtable.get(pkDesignacion.toString());
-						UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_NIG, scsDesignaBean.getNIG()!=null?scsDesignaBean.getNIG():"");
+						if(nigActuacion!=null && !nigActuacion.equals(""))
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_NIG, nigActuacion);
+						else
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_NIG, scsDesignaBean.getNIG()!=null?scsDesignaBean.getNIG():"");
 						
-//						if(user.isLetrado()){
+						if(numProcActuacion!=null && !numProcActuacion.equals(""))
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, numProcActuacion);
+						else
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, scsDesignaBean.getNumProcedimiento()!=null?scsDesignaBean.getNumProcedimiento():"");
+						if(anioProcActuacion!=null && !anioProcActuacion.equals(""))
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, anioProcActuacion);
+						else
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, scsDesignaBean.getAnioProcedimiento()!=null?scsDesignaBean.getAnioProcedimiento().toString():"");
+						
+						UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_IDPRETENSION, scsDesignaBean.getIdPretension()!=null?scsDesignaBean.getIdPretension().toString():"");
+						
 							List<String> ocultarClaveList = getListCamposOcultarHistorico();
 							hashActuacion.put("fks", fksActuacionMap);							hashActuacion.put("scsDesignaBean", scsDesignaBean);
 							actuacionDesginaAdm.insertHistorico(new Long(idPersona), hashActuacion,ocultarClaveList,ClsConstants.TIPO_CAMBIO_HISTORICO_DESIGNACIONJUSTIFICACION);
-//						}
-//						else
-//							actuacionDesginaAdm.insert(hashActuacion);
-//						
+						
 					}else{
 						List<String> camposList = new ArrayList<String>();
 						UtilidadesHash.set(hashActuacion,
@@ -642,16 +662,16 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			HttpServletRequest request, HttpServletResponse response)
 			throws ClsExceptions, SIGAException {
 		
-		InformeJustificacionMasivaForm f = (InformeJustificacionMasivaForm) formulario;
+		InformeJustificacionMasivaForm fInformeJustificacion = (InformeJustificacionMasivaForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
 		ScsDesignasLetradoAdm admDesignas = new ScsDesignasLetradoAdm(usrBean);
-		f.setIdInstitucion(usrBean.getLocation());
+		fInformeJustificacion.setIdInstitucion(usrBean.getLocation());
 		GenParametrosAdm paramAdm = new GenParametrosAdm (usrBean);
-		if(f.getFichaColegial()){
-			f.setActivarRestriccionesFicha(true);
+		if (fInformeJustificacion.getFichaColegial()){
+			fInformeJustificacion.setActivarRestriccionesFicha(true);
 			request.setAttribute("CAMBIAR_COLOR",false);
 		}else{
-			f.setAnio(null);
+			fInformeJustificacion.setAnio(null);
 			String cambiarColorEjgs = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_DESTACAR_EJG_NO_FAVORABLES, "");
 			
 			request.setAttribute("CAMBIAR_COLOR", (cambiarColorEjgs!=null && cambiarColorEjgs.equalsIgnoreCase(ClsConstants.DB_TRUE)));
@@ -689,7 +709,11 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		String activarInformesOficioLetrado = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_ACTIVAR_INFORMES_OFICIO_LETRADO, "0");
 		boolean isinformesOficioLetradoActivo = informeBeans!=null && informeBeans.size()>0 && activarInformesOficioLetrado!=null && activarInformesOficioLetrado.equals(ClsConstants.DB_TRUE);
 		
+		String justificacionModificaAct = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_JUSTIFICACION_EDITAR_ACT_FICHA, ClsConstants.DB_FALSE);
+		boolean isPermitidoEditarActFicha = justificacionModificaAct!=null && justificacionModificaAct.equals(ClsConstants.DB_TRUE);
 		
+		String ejisActivo = paramAdm.getValor(usrBean.getLocation (), "ECOM", "EJIS_ACTIVO", "0");
+		request.setAttribute("EJIS_ACTIVO", ejisActivo);
 		
 		try {
 			HashMap databackup=getPaginador(request, paginadorPenstania);
@@ -711,7 +735,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 					for (int i = 0; i < datos.size(); i++) {
 						Row designaRow = (Row)datos.get(i);
 						Hashtable designaHashtable = (Hashtable) designaRow.getRow();
-						List<DesignaForm> designaList = admDesignas.getDesignaList(f, designaHashtable,null, false);
+						List<DesignaForm> designaList = admDesignas.getDesignaList(fInformeJustificacion, designaHashtable,null, false,isPermitidoEditarActFicha);
 						
 						designaFormList.addAll(designaList);
 					}
@@ -738,22 +762,22 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 				//Haria falta meter los parametros en con ClsConstants
 				String cod_Fact_ja_2005 = paramAdm.getValor (usrBean.getLocation (), "SCS", ClsConstants.GEN_PARAM_FACT_JA_2005, "");
 				boolean	aplicarAcreditacionesAnterior2005 = (cod_Fact_ja_2005!=null && cod_Fact_ja_2005.equalsIgnoreCase(ClsConstants.DB_TRUE));
-				f.setAplicarAcreditacionesAnterior2005(aplicarAcreditacionesAnterior2005);
+				fInformeJustificacion.setAplicarAcreditacionesAnterior2005(aplicarAcreditacionesAnterior2005);
 				
 				String mensajeResponsabilidadJustificacionLetrado = paramAdm.getValor (usrBean.getLocation (), "SCS", ClsConstants.GEN_PARAM_MENSAJE_RESPONSABILIDAD_LETRADO, "");
-				f.setMensajeResponsabilidadJustificacionLetrado(mensajeResponsabilidadJustificacionLetrado);
+				fInformeJustificacion.setMensajeResponsabilidadJustificacionLetrado(mensajeResponsabilidadJustificacionLetrado);
 				
 				String codIncluirEjgNoFavorable = paramAdm.getValor (usrBean.getLocation (), "SCS", ClsConstants.GEN_PARAM_INCLUIR_EJG_NOFAVORABLE, "");
 				String codIncluirSinEjg = paramAdm.getValor (usrBean.getLocation (), "SCS", ClsConstants.GEN_PARAM_INCLUIR_SIN_EJG, "");
 				String codIncluirEjgSinResolucion = paramAdm.getValor (usrBean.getLocation (), "SCS", ClsConstants.GEN_PARAM_INCLUIR_EJG_SIN_RESOLUCION, "");
 				String codIncluirEjgPteCAJG = paramAdm.getValor (usrBean.getLocation (), "SCS", ClsConstants.GEN_PARAM_INCLUIR_EJG_PTECAJG, "");
-				f.setIncluirEjgPteCAJG(codIncluirEjgPteCAJG);
-				f.setIncluirSinEJG(codIncluirSinEjg);
-				f.setIncluirEjgNoFavorable(codIncluirEjgNoFavorable);
-				f.setIncluirEjgSinResolucion(codIncluirEjgSinResolucion);
+				fInformeJustificacion.setIncluirEjgPteCAJG(codIncluirEjgPteCAJG);
+				fInformeJustificacion.setIncluirSinEJG(codIncluirSinEjg);
+				fInformeJustificacion.setIncluirEjgNoFavorable(codIncluirEjgNoFavorable);
+				fInformeJustificacion.setIncluirEjgSinResolucion(codIncluirEjgSinResolucion);
 				
 				String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
-				 PaginadorBind paginador = admDesignas.getDesignasJustificacionPaginador(f,longitudNumEjg,false);
+				 PaginadorBind paginador = admDesignas.getDesignasJustificacionPaginador(fInformeJustificacion,longitudNumEjg,false,isPermitidoEditarActFicha);
 				
 				
 				if (paginador!=null&& paginador.getNumeroTotalRegistros()>0){
@@ -765,7 +789,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 					for (int i = 0; i < datos.size(); i++) {
 						Row designaRow = (Row)datos.get(i);
 						Hashtable designaHashtable = (Hashtable) designaRow.getRow();
-						List<DesignaForm> designaList = admDesignas.getDesignaList(f, designaHashtable,null, false);
+						List<DesignaForm> designaList = admDesignas.getDesignaList(fInformeJustificacion, designaHashtable,null, false,isPermitidoEditarActFicha);
 						
 						designaFormList.addAll(designaList);
 					}
@@ -795,21 +819,21 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		} 
 		
-		request.setAttribute("letrado", f.getIdPersona());
+		request.setAttribute("letrado", fInformeJustificacion.getIdPersona());
 
-		if (f.getMostrarTodas() != null && !f.getMostrarTodas().equals("")) {
-			request.setAttribute("mostrarTodas", f.getMostrarTodas());
+		if (fInformeJustificacion.getMostrarTodas() != null && !fInformeJustificacion.getMostrarTodas().equals("")) {
+			request.setAttribute("mostrarTodas", fInformeJustificacion.getMostrarTodas());
 		}
-		if (f.getFechaDesde() != null && !f.getFechaDesde().equals("")) {
-			request.setAttribute("fechaDesde", f.getFechaDesde());
+		if (fInformeJustificacion.getFechaDesde() != null && !fInformeJustificacion.getFechaDesde().equals("")) {
+			request.setAttribute("fechaDesde", fInformeJustificacion.getFechaDesde());
 		}
-		if (f.getFechaHasta() != null && !f.getFechaHasta().equals("")) {
-			request.setAttribute("fechaHasta", f.getFechaHasta());
+		if (fInformeJustificacion.getFechaHasta() != null && !fInformeJustificacion.getFechaHasta().equals("")) {
+			request.setAttribute("fechaHasta", fInformeJustificacion.getFechaHasta());
 		}
 		//metemos al formulario la fecha de hoy por defecto
-		if(f.getFecha()==null || f.getFecha().equalsIgnoreCase("")){
+		if (fInformeJustificacion.getFecha()==null || fInformeJustificacion.getFecha().equalsIgnoreCase("")){
 			String fecha = GstDate.parseDateToString(new Date(),"dd/MM/yyyy", this.getLocale(request)); 
-			f.setFecha(fecha);
+			fInformeJustificacion.setFecha(fecha);
 		}
 		String informeUnico = ClsConstants.DB_TRUE;
 		

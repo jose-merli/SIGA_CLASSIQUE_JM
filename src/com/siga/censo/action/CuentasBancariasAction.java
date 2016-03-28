@@ -507,7 +507,11 @@ public class CuentasBancariasAction extends MasterAction{
 				beanCuentas.setAbonoSJCS(ClsConstants.DB_TRUE);			
 			else
 				beanCuentas.setAbonoSJCS(ClsConstants.DB_FALSE);
-			beanCuentas.setAbonoCargo(this.validarTipoCuenta(miForm.getCuentaAbono(), miForm.getCuentaCargo()));
+			String sAbonoCargo = this.validarTipoCuenta(miForm.getCuentaAbono(), miForm.getCuentaCargo());
+			if (sAbonoCargo==null) {
+				sAbonoCargo = "NULL";
+			}
+			beanCuentas.setAbonoCargo(sAbonoCargo);
 			beanCuentas.setIban(miForm.getIBAN());
 			beanCuentas.setCbo_Codigo(miForm.getCbo_Codigo());
 			beanCuentas.setCodigoSucursal(miForm.getCodigoSucursal());

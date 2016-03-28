@@ -236,6 +236,8 @@
 		<html:hidden property="comisariaAsistencia" styleId="comisariaAsistencia" value="${ActuacionAsistenciaFormEdicion.comisariaAsistencia}" />
 		<html:hidden property="juzgadoAsistencia" styleId="juzgadoAsistencia" value="${ActuacionAsistenciaFormEdicion.juzgadoAsistencia}" />
 		<html:hidden property="tipoPcajg" styleId="tipoPcajg" value="${ActuacionAsistenciaFormEdicion.tipoPcajg}" />
+		<html:hidden property="usuCreacion" styleId="usuCreacion" value="${ActuacionAsistenciaFormEdicion.usuCreacion}" />
+		<html:hidden property="fechaCreacion" name="date" styleId="fechaCreacion" value="${ActuacionAsistenciaFormEdicion.fechaCreacion}" />
 		<input type="hidden" name="validarJustificaciones" id="validarJustificaciones" value="${asistencia.validarJustificaciones}" />
 		<input type="hidden" id="isLetrado" name="isLetrado" value="${usrBean.letrado}" />
 		<html:hidden property="idTipoAsistencia" styleId="idTipoAsistencia" value="${ActuacionAsistenciaFormEdicion.idTipoAsistencia}" />
@@ -440,9 +442,18 @@
 				</tr>
 				
 				<tr>
-					<td class="labelText">
-						<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.comisaria" />
-					</td>
+					<c:choose>
+						<c:when test="${tipoPcajg=='9'}">
+							<td class="labelText">
+								<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.comisaria" />(*)
+							</td>
+						</c:when>
+						<c:otherwise>
+							<td class="labelText">
+								<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.comisaria" />
+							</td>
+						</c:otherwise>
+					</c:choose>
 					<td>
 						<input type="text" id="codComisaria" class="box" size="8" style="margin-top: 2px;" maxlength="10" onBlur="obtenerComisaria();" />
 					</td>
@@ -460,9 +471,18 @@
 				</tr>
 				
 				<tr>
-					<td class="labelText">
-						<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado" />
-					</td>
+					<c:choose>
+						<c:when test="${tipoPcajg=='9'}">
+							<td class="labelText">
+								<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado" />(*)
+							</td>
+						</c:when>
+						<c:otherwise>
+							<td class="labelText">
+								<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado" />
+							</td>
+						</c:otherwise>
+					</c:choose>
 					<td>
 						<input type="text" id="codJuzgado" class="box" size="8" style="margin-top: 2px;" maxlength="10" onBlur="obtenerJuzgado();" />
 					</td>					
@@ -861,7 +881,12 @@
 				fin();
 				return false;
 			}
-			
+			if(document.getElementById("tipoPcajg").value=='9' &&  document.getElementById("idComisaria").value== "" && document.getElementById("idJuzgado").value== ""){
+				msg = "<siga:Idioma key='errors.required' arg0='gratuita.mantActuacion.literal.comisariaJuzgados'/>";
+				alert(msg);
+				fin();
+				return false;
+			}
 			var nigAux = document.getElementById("nig").value;
 			nigAux = formateaNig(nigAux);
 			if(!validarNig(nigAux)){	

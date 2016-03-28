@@ -413,24 +413,15 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 				//-Apellido1 con Apellido2
 			 // Solo se hace la comprobacion si el usuario decide continuar
 				if (continuar==null || continuar.equals("")){	
-				if ( ( ComodinBusquedas.sustituirVocales(nombrePersona).equals(ComodinBusquedas.sustituirVocales(nombre.toUpperCase())) && ComodinBusquedas.sustituirVocales(apellido1Persona).equals(ComodinBusquedas.sustituirVocales(apellido1.toUpperCase())) ) || 
-					 ( ComodinBusquedas.sustituirVocales(nombrePersona).equals(ComodinBusquedas.sustituirVocales(nombre.toUpperCase())) && ComodinBusquedas.sustituirVocales(apellido2Persona).equals(ComodinBusquedas.sustituirVocales(apellido2.toUpperCase())) ) ||
-					 ( ComodinBusquedas.sustituirVocales(apellido1Persona).equals(ComodinBusquedas.sustituirVocales(apellido1.toUpperCase())) && ComodinBusquedas.sustituirVocales(apellido2Persona).equals(ComodinBusquedas.sustituirVocales((""+apellido2).toUpperCase())) ) 
-					) { 
 					/**Signifia que es la misma persona y que hay datos**/
 					perBean.setExisteDatos(true);
-					// No hacemos nada (es el mismo y los devolvemos				
-				} else {								
-					throw new SIGAException(UtilidadesString.getMensajeIdioma(this.getLenguaje(), "messages.censo.nifcifExiste4", new String[]{nifcif}));
-				}
+				
 			}
 		
 		}
 			return perBean;
 		}
-		catch (SIGAException e) {
-			throw e;
-		}
+		
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al comprobar existencia de NIF/CIF");
 		}

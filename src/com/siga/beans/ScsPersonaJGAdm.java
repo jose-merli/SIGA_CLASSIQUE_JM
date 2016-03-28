@@ -1031,6 +1031,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
   		sqlBuffer.append("NVL(PER.NOMBRE, '') NOMBRE_PJG, ");
   		sqlBuffer.append("NVL(PER.APELLIDO1, '') APELLIDO1_PJG, ");
   		sqlBuffer.append("NVL(PER.APELLIDO2, '') APELLIDO2_PJG, ");
+  		sqlBuffer.append("NVL(VIA.CODIGOEJIS, '') DOMI_IDVIA_PJG, ");
   		sqlBuffer.append("NVL2(VIA.IDTIPOVIA, F_SIGA_GETRECURSO(VIA.DESCRIPCION, "+ this.usrbean.getLanguage()+"), '') DOMI_VIA_PJG, ");
   		sqlBuffer.append("NVL2(PER.DIRECCION, ' ' || PER.DIRECCION, '') DOMI_DIRECCION_PJG, ");
   		sqlBuffer.append("NVL2(PER.NUMERODIR, ' ' || PER.NUMERODIR, '') DOMI_NUMERO_PJG, ");
@@ -1128,6 +1129,20 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 		catch (Exception e) {
 			throw new SIGAException ( "Error al consultar datos en B.D.getIdiomaPersonaInforme");
 		}
+	}
+	//necesario para los colegios Andaluces 18/02/2016 que deben de tener el sexo del asistido
+	public void updateSexo (Integer idInstitucion, Integer idPersona, String sexo) throws ClsExceptions{
+		
+		StringBuffer sql = null;
+		
+		sql = new StringBuffer();
+		
+		sql.append("update " + ScsPersonaJGBean.T_NOMBRETABLA+ " set ");
+		sql.append(ScsPersonaJGBean.C_SEXO+ " = '"+sexo+"'"); 
+		sql.append(" where " + ScsPersonaJGBean.C_IDINSTITUCION + " = " + idInstitucion);
+		sql.append(" and " + ScsPersonaJGBean.C_IDPERSONA + " = " +idPersona );
+		this.updateSQL(sql.toString());
+		
 	}
 	
 	

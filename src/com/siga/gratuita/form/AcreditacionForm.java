@@ -23,6 +23,7 @@ public class AcreditacionForm extends MasterForm
 	private String idJuzgado;
 	private String idProcedimiento;
 	private String idJurisdiccion;
+	private String nigNumProcedimiento;
 	
 	
 	private int rowSpan;
@@ -92,6 +93,12 @@ public class AcreditacionForm extends MasterForm
 	}
 	public void setIdJurisdiccion(String idJurisdiccion) {
 		this.idJurisdiccion = idJurisdiccion;
+	}
+	public String getNigNumProcedimiento() {
+		return nigNumProcedimiento;
+	}
+	public void setNigNumProcedimiento(String nigNumProcedimiento) {
+		this.nigNumProcedimiento = nigNumProcedimiento;
 	}
 	
 	

@@ -220,6 +220,9 @@
 		
 	} else if (pcajgActivo == 7) {
 		obligatorioMinusvalia = true;
+	}else if ((pcajgActivo == 9) && ((conceptoE.equals(PersonaJGAction.ASISTENCIA_ASISTIDO) || conceptoE.equals(PersonaJGAction.EJG) 
+			||  conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) || conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)))) {
+		obligatorioSexo = true;
 	}
 
 	ArrayList calidadSel = new ArrayList();
@@ -2863,6 +2866,11 @@
 							if (<%=obligatorioRegimenConyuge%> && document.forms[0].regimenConyugal.value=="")
 							    error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.regimenConyugal'/>"+ '\n';
 						}
+						if(<%=pcajgActivo == 9%>){
+							if (<%=obligatorioSexo%> && document.forms[0].sexo.value==""){
+								error += "<siga:Idioma key='errors.required' arg0='Sexo'/>"+ '\n';
+							}	
+						}	
 						
 						if(error!=""){
 							alert(error);
@@ -2925,7 +2933,7 @@
 				fin();
 				return false;
 			}
-						
+				
 			if (document.forms[0].tipoDir.value == '' || document.forms[0].tipoDir.value == null){
 				document.forms[0].tipoDir.value = 'COMUNICA';
 			}			
@@ -3026,6 +3034,11 @@
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.operarInteresado.literal.ingresos'/>"+ '\n';
 					if (<%=obligatorioFechaNac%> && document.forms[0].fechaNac.value=="" && document.forms[0].parentesco.value!="<%=ClsConstants.TIPO_CONYUGE%>")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.fechaNac'/>"+ '\n';
+					if(<%=pcajgActivo == 9%>){
+						if (<%=obligatorioSexo%> && document.forms[0].sexo.value==""){
+							error += "<siga:Idioma key='errors.required' arg0='Sexo'/>"+ '\n';
+						}	
+					}	
 					if(error!=""){
 						alert(error);
 						fin();
@@ -3067,7 +3080,7 @@
 		}
 		//Asociada al boton Guardar -->
 		function accionGuardar()	{
-
+		
 	 		document.PersonaJGForm.existeDomicilio.value = "S";
 			
 	 		if (!validaTelefonos()){
@@ -3169,7 +3182,7 @@
 
 		//Asociada al boton Guardar -->
 		function accionGuardar()	{	
-
+		
 			document.PersonaJGForm.existeDomicilio.value = "S";
 			
  			if (!validaTelefonos()){
@@ -3195,6 +3208,13 @@
 				fin();
 				return false;
 			}
+			if(<%=pcajgActivo == 9%>){
+				if (<%=obligatorioSexo%> && document.forms[0].sexo.value==""){
+					alert("<siga:Idioma key='errors.required' arg0='Sexo'/>");	
+					fin();
+					return false;
+				}	
+			}	
 				
 			if (document.forms[0].tipoDir.value == '' || document.forms[0].tipoDir.value == null){
 				document.forms[0].tipoDir.value = 'COMUNICA';
@@ -3707,8 +3727,12 @@ function accionGuardarCerrar()	{
 	if(<%=pcajgActivo == 4%>){
 		if (<%=obligatorioSexo%> && document.forms[0].sexo.value=="0")
 			error += "<siga:Idioma key='errors.required' arg0='Sexo'/>"+ '\n';								
-	}	    
-	    
+	}	
+	if(<%=pcajgActivo == 9%>){
+		if (<%=obligatorioSexo%> && document.forms[0].sexo.value==""){
+				error += "<siga:Idioma key='errors.required' arg0='Sexo'/>"+ '\n';	
+		}	
+	}	
 	if(error!=""){
 	  alert(error);
 	  fin();

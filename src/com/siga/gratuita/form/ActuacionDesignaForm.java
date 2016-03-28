@@ -31,8 +31,9 @@ public class ActuacionDesignaForm extends MasterForm
 	private String descripcionProcedimiento;
 	private String idFacturacion;
 	private String descripcionFacturacion;
-	private String permitirEditarActuacion;
+	private String permitirEditActuacionLetrado;
 	private String numeroProcedimiento;
+	private String anioProcedimiento;
 	
 	private boolean documentoJustificacion;
 	
@@ -143,18 +144,33 @@ public class ActuacionDesignaForm extends MasterForm
 	public void setDescripcionFacturacion(String descripcionFacturacion) {
 		this.descripcionFacturacion = descripcionFacturacion;
 	}
-	public String getPermitirEditarActuacion() {
-		return permitirEditarActuacion;
-	}
-	public void setPermitirEditarActuacion(String permitirEditarActuacion) {
-		this.permitirEditarActuacion = permitirEditarActuacion;
-	}
+	
 	public String getNumeroProcedimiento() {
 		return numeroProcedimiento;
 	}
 	public void setNumeroProcedimiento(String numeroProcedimiento) {
 		this.numeroProcedimiento = numeroProcedimiento;
 	}
+	/**
+	 * @return the anioProcedimiento
+	 */
+	public String getAnioProcedimiento() {
+		return anioProcedimiento;
+	}
+	/**
+	 * @param anioProcedimiento the anioProcedimiento to set
+	 */
+	public void setAnioProcedimiento(String anioProcedimiento) {
+		this.anioProcedimiento = anioProcedimiento;
+	}
+	public String getPermitirEditActuacionLetrado() {
+		return permitirEditActuacionLetrado;
+	}
+	
+	public void setPermitirEditActuacionLetrado(String permitirEditActuacionLetrado) {
+		this.permitirEditActuacionLetrado = permitirEditActuacionLetrado;
+	}
+	
 	
 	
 	

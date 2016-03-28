@@ -226,6 +226,8 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			VoUiService<CuentasBancariasForm, CuentaBancariaVo> voService = new CuentaBancariaVoService();
 			CuentaBancariaVo cuentaBancariaVo =cuentasBancariasService.getCuentaBancaria(voService.getForm2Vo(cuentasBancariasForm));
 			cuentasBancariasForm = voService.getVo2Form(cuentaBancariaVo);
+			
+			cuentaBancariaVo.setBaja("1"); // De esta forma solo obtiene las series de facturacion activas
 			request.setAttribute("seriesFacturacion", cuentasBancariasService.getSeriesCuentaBancaria(cuentaBancariaVo));
 			cuentasBancariasForm.setIBAN(UtilidadesString.mostrarIBANConAsteriscos(cuentaBancariaVo.getIban()));
 			cuentasBancariasForm.setCuentaBanco(UtilidadesString.mostrarNumeroCuentaConAsteriscos(cuentaBancariaVo.getNumerocuenta()));
@@ -276,6 +278,8 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			cuentasBancariasForm.setIBAN(cuentaBancariaVo.getIban());
 			cuentasBancariasForm.setModo("modificar");
 			cuentasBancariasForm.setUso(Uso);
+			
+			cuentaBancariaVo.setBaja("1"); // De esta forma solo obtiene las series de facturacion activas
 			request.setAttribute("seriesFacturacion", cuentasBancariasService.getSeriesCuentaBancaria(cuentaBancariaVo));
 			request.setAttribute("CuentasBancariasForm", cuentasBancariasForm);
 			
@@ -306,11 +310,7 @@ public class GestionCuentasBancariasAction extends MasterAction {
 		return "editar";
 	}
 	
-	protected String borrar (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException 
-			{
+	protected String borrar (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 
 		CuentasBancariasForm cuentasBancariasForm = (CuentasBancariasForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
@@ -325,13 +325,13 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			cuentaBancariaVo = bts.getCuentaBancaria(cuentaBancariaVo);
 			cuentaBancariaVo.setUsumodificacion(new Integer(usrBean.getUserName()));
 			
+			cuentaBancariaVo.setBaja(null); // De esta forma obtiene las series de facturacion activas y de baja
 			//Se comprueba si la cuenta bancaria tiene alguna serie asignada, si tiene no se permite eliminar 
 			List<SeriesCuentaBancariaVo> series = bts.getSeriesCuentaBancaria(cuentaBancariaVo);
 			
 			//Si no existe ninguna serie relacionada
 			if(!series.isEmpty())
 				throw new SIGAException(UtilidadesString.getMensajeIdioma(usrBean,"facturacion.message.error.cuenta.serie.relacionada"));
-			
 			
 			//Se comprueba si la cuenta tiene relacionado algún Pago SJCS pendiente de cerrar o cerrado y que no se ha generado el fichero de transferecia bancaria todavía
 			if(bts.getPagosSJCSPendientesActuaciones(cuentasBancariasForm.getIdInstitucion(),cuentasBancariasForm.getIdCuentaBancaria())>0)		
@@ -342,14 +342,12 @@ public class GestionCuentasBancariasAction extends MasterAction {
 			request.removeAttribute("sinrefresco");
 			request.setAttribute("mensaje","messages.deleted.success");
 			forward = "exito";
-		
 
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
 		}
 		return forward;
 	}
-
 	
 	protected String insertar (ActionMapping mapping, 		
 			MasterForm formulario, 

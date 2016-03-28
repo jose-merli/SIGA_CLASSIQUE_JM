@@ -815,7 +815,7 @@ protected String insertar (ActionMapping mapping,
 			bean.setIdProvincia((String)request.getParameter("provincia"));
 			bean.setIdPoblacion((String)request.getParameter("poblacion"));
 			bean.setPoblacionExtranjera((String)request.getParameter("poblacionExt"));
-			if (!bean.getIdPais().equals(ClsConstants.ID_PAIS_ESPANA)) {
+			if (!bean.getIdPais().equals(ClsConstants.ID_PAIS_ESPANA) && !bean.getIdPais().equals("")) {
 				bean.setIdProvincia("");
 				bean.setIdPoblacion("");
 			}

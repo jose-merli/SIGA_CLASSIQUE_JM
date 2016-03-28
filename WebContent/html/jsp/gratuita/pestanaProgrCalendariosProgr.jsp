@@ -157,8 +157,26 @@
 				<td width="35%"></td>
 			</tr>
 			
+			<tr>
+				<td class="labelText"><siga:Idioma key="gratuita.calendarios.programacion.turno" /></td>
+				<td>
+					<html:select styleId="turnos" styleClass="boxCombo" style="width:320px;" property="idTurnoCalendario">
+						<bean:define id="turnos" name="DefinirCalendarioGuardiaForm" property="turnos" type="java.util.Collection" />
+						<html:optionsCollection name="turnos" value="idTurno" label="nombre" />
+					</html:select>
+				</td>
+				
+				<td class="labelText"><siga:Idioma key="gratuita.calendarios.programacion.guardia" /></td>
+				<td>
+					<html:select styleId="guardias" styleClass="boxCombo" style="width:320px;" property="idGuardiaCalendario" >
+						<bean:define id="guardias" name="DefinirCalendarioGuardiaForm" property="guardias" type="java.util.Collection" />
+						<html:optionsCollection name="guardias" value="idGuardia" label="nombre" />
+					</html:select>
+				</td>
+			</tr>			
+			
 			<tr>				
-				<td class="labelText">
+				<td class="labelText" nowrap>
 					<siga:Idioma key='gratuita.calendarios.programacion.fechaProgramada'/>
 					&nbsp;
 					<siga:Idioma key='general.literal.desde'/>
@@ -224,6 +242,12 @@
 		<table id='progrCalendarios' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
 		</table>
 	</div>	
+	
+	<ajax:select
+		baseUrl="/SIGA${path}.do?modo=getAjaxGuardias"
+		source="turnos" 
+		target="guardias" 
+		parameters="idTurnoCalendario={idTurnoCalendario}"/>	
 
 	<ajax:htmlContent
 		baseUrl="/SIGA/JGR_ProgrCalendariosProgr.do?modo=getAjaxBusquedaProgrCalendarios"
@@ -231,7 +255,7 @@
 		target="divProgrCalendarios"
 		preFunction="preAccionBuscarProgrCalendarios"
 		postFunction="postAccionBuscarProgrCalendarios"
-		parameters="idConjuntoGuardia={idConjuntoGuardia},fechaProgrDesde={fechaProgrDesde},fechaProgrHasta={fechaProgrHasta},fechaCalInicio={fechaCalInicio},fechaCalFin={fechaCalFin},estado={estado}"/>
+		parameters="idTurnoCalendario={idTurnoCalendario},idGuardiaCalendario={idGuardiaCalendario},idConjuntoGuardia={idConjuntoGuardia},fechaProgrDesde={fechaProgrDesde},fechaProgrHasta={fechaProgrHasta},fechaCalInicio={fechaCalInicio},fechaCalFin={fechaCalFin},estado={estado}"/>
 
 	<!-- FIN: CAMPOS DE BUSQUEDA-->
 	<!-- Formularios auxiliares -->

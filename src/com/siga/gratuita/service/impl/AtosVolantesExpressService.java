@@ -212,6 +212,9 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 							value = UtilidadesString.replaceAllIgnoreCase(value,  "¬","=");
 							asistencia.setAsistidoApellido2(value);
 						}
+					}else if(key.equals("sexo")){
+						if(value!=null)
+							asistencia.setSexo(value);	
 					}
 					else if(key.equals("diligencia")){
 						if(value!=null){

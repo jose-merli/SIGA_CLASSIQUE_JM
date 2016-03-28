@@ -1615,13 +1615,14 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		
 			
 			String camposOrigen[] = this.getCamposBean();
-			String campos[] = new String [camposOrigen.length+6];
+			String campos[] = new String [camposOrigen.length+7];
 			campos[this.getCamposBean().length]   = "TO_CHAR(" + ScsAsistenciasBean.C_FECHAHORA + ", 'hh24') HORA";
 			campos[this.getCamposBean().length+1] = "TO_CHAR(" + ScsAsistenciasBean.C_FECHAHORA + ", 'mi') MINUTO";
 			campos[this.getCamposBean().length+2] = ScsPersonaJGBean.C_NOMBRE;
 			campos[this.getCamposBean().length+3] = ScsPersonaJGBean.C_APELLIDO1;
 			campos[this.getCamposBean().length+4] = ScsPersonaJGBean.C_APELLIDO2;
 			campos[this.getCamposBean().length+5] = ScsPersonaJGBean.C_NIF;
+			campos[this.getCamposBean().length+6] = ScsPersonaJGBean.C_SEXO;      //Añadimos la recuperación del SEXO necesario para los colegios Andaluces 18/02/2016 
 			
 			String truncFechaGuardia = GstDate.getFormatedDateShort("", volanteExpres.getFechaGuardia());
 			for (int i = 0; i < camposOrigen.length; campos[i] = ScsAsistenciasBean.T_NOMBRETABLA + "." + camposOrigen[i], i++);
@@ -1775,6 +1776,7 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 	            		asistenciaBean.setAsistidoNombre((String)htFila.get("NOMBRE"));
 	            		asistenciaBean.setAsistidoApellido1((String)htFila.get("APELLIDO1"));
 	            		asistenciaBean.setAsistidoApellido2((String)htFila.get("APELLIDO2"));
+	            		asistenciaBean.setSexo((String)htFila.get("SEXO"));
 	            		asistenciaBean.setObservaciones((String)htFila.get("OBSERVACIONES"));
 	            		asistenciaBean.setDelitosImputados((String)htFila.get("DELITOSIMPUTADOS"));
 	            		Vector vDelitos = delitoAsisAdm.getDelitosAsitencia(asistenciaBean.getIdInstitucion()
@@ -1840,6 +1842,7 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 				p.setIdInstitucion(new Integer(asistencia.getIdInstitucion()));
 				p.setNif(asistencia.getAsistidoNif());
 				p.setNombre(asistencia.getAsistidoNombre());
+				p.setSexo(asistencia.getSexo());    //Añadimos el sexo
 				p.setTipo(ClsConstants.TIPO_PERSONA_FISICA); 						// persona fisica
 				//Comento esto. Esta validacion es correcta. si se quiere identificar el tipo de identificacion
 				//dado un numero
@@ -1850,6 +1853,12 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 				personaAdm.prepararInsert(p);
 				personaAdm.insert(p);
 				asistencia.setIdPersonaJG(p.getIdPersona());
+			}else{
+				//Si no es nueva habrá que modificar el sexo si nos viene necesario para los colegios Andaluces 18/02/2016 
+				if(asistencia.getSexo() != null && !"".equalsIgnoreCase(asistencia.getSexo())){
+					ScsPersonaJGAdm personaAdm = new ScsPersonaJGAdm (volantesExpressVo.getUsrBean());
+					personaAdm.updateSexo(asistencia.getIdInstitucion(),asistencia.getIdPersonaJG(),asistencia.getSexo());
+				}
 			}
 			
 			boolean isAsistenciaModificada = false;
@@ -1942,6 +1951,8 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 			}
 			
 			if (isInsertar){
+				act.setFechaCreacion("SYSDATE");
+				act.setUsuCreacion(Integer.valueOf(volantesExpressVo.getUsrBean().getUserName()));
 				actAdm.insert(act);
 			}
 			else {

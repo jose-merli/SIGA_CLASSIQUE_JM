@@ -1321,8 +1321,11 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			boolean tiene_asunto=UtilidadesHash.getString(miHash,"ASUNTOACTUACION") != null && !UtilidadesHash.getString(miHash,"ASUNTOACTUACION").equalsIgnoreCase("");
 			boolean tiene_acreditacion=UtilidadesHash.getString(miHash,"ACREDITACION") != null && !UtilidadesHash.getString(miHash,"ACREDITACION").equalsIgnoreCase("");
 			boolean tiene_modulo=UtilidadesHash.getString(miHash,"MODULO") != null && !UtilidadesHash.getString(miHash,"MODULO").equalsIgnoreCase("");
+			boolean tiene_fechaJustificacionDesde=UtilidadesHash.getString(miHash,"FECHAJUSTIFICACIONDESDE") != null && !UtilidadesHash.getString(miHash,"FECHAJUSTIFICACIONDESDE").equalsIgnoreCase("");
+			boolean tiene_fechaJustificacionHasta=UtilidadesHash.getString(miHash,"FECHAJUSTIFICACIONHASTA") != null && !UtilidadesHash.getString(miHash,"FECHAJUSTIFICACIONHASTA").equalsIgnoreCase("");
+			boolean tiene_origen=UtilidadesHash.getString(miHash,"ORIGEN") != null && !UtilidadesHash.getString(miHash,"ORIGEN").equalsIgnoreCase("");
 			
-			if (tiene_juzg||tiene_asunto||tiene_acreditacion||tiene_modulo){
+			if (tiene_juzg||tiene_asunto||tiene_acreditacion||tiene_modulo||tiene_fechaJustificacionDesde||tiene_fechaJustificacionHasta || tiene_origen){
 				consulta+=	", scs_actuaciondesigna act ";
 			}
 			
@@ -1488,6 +1491,21 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				
 				consulta +=" and " + vCondicion.get(1);
 			}
+			if ((miHash.containsKey("FECHAJUSTIFICACIONDESDE") && !UtilidadesHash.getString(miHash,"FECHAJUSTIFICACIONDESDE").equalsIgnoreCase(""))
+					||
+					(miHash.containsKey("FECHAJUSTIFICACIONHASTA")&& !UtilidadesHash.getString(miHash,"FECHAJUSTIFICACIONHASTA").equalsIgnoreCase(""))
+					){
+					
+					Vector vCondicion=GstDate.dateBetweenDesdeAndHastaBind("act.fechaJustificacion",
+		                    GstDate.getApplicationFormatDate("",(String)UtilidadesHash.getString(miHash,"FECHAJUSTIFICACIONDESDE").trim()),
+							  GstDate.getApplicationFormatDate("",(String)UtilidadesHash.getString(miHash,"FECHAJUSTIFICACIONHASTA").trim()),
+							  contador,
+							  codigosBind);
+					
+					contador=new Integer(vCondicion.get(0).toString()).intValue();
+					
+					consulta +=" and " + vCondicion.get(1);
+				}
 			if((UtilidadesHash.getString(miHash,"IDTIPODESIGNACOLEGIO") != null)&&(!UtilidadesHash.getString(miHash,"IDTIPODESIGNACOLEGIO").equalsIgnoreCase(""))){
 				contador++;
 				codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"IDTIPODESIGNACOLEGIO").trim());
@@ -1529,7 +1547,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 				}
 			}
 			
-			if (tiene_juzg||tiene_asunto||tiene_acreditacion||tiene_modulo){
+			if (tiene_juzg||tiene_asunto||tiene_acreditacion||tiene_modulo||tiene_fechaJustificacionDesde||tiene_fechaJustificacionHasta || tiene_origen){
 				consulta+=	" and des.idinstitucion = act.idinstitucion"+
 									" and des.idturno = act.idturno"+
 									" and des.anio = act.anio"+
@@ -1554,6 +1572,22 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					contador++;
 					codigosBind.put(new Integer(contador),(String)UtilidadesHash.getString(miHash,"MODULO").trim());
 					consulta += " AND act.idprocedimiento = :" + contador;
+				}
+				if (tiene_origen) {
+					
+					consulta +=	 " AND act.IDFACTURACION IS NULL ";
+							if(UtilidadesHash.getString(miHash,"ORIGEN").equalsIgnoreCase("ICA")){
+								consulta +=" AND act.USUCREACION <> ";
+							}else{
+								consulta +=" AND act.USUCREACION = ";
+							}
+							consulta += "  (SELECT U.IDUSUARIO "+
+									     "    FROM CEN_PERSONA P,  ADM_USUARIOS U "+
+									     "    WHERE      "+
+									     "       U.NIF = P.NIFCIF "+
+									     "       AND U.IDINSTITUCION = act.IDINSTITUCION "+
+									     "       AND P.IDPERSONA = act.IDPERSONACOLEGIADO) ";
+				
 				}
 			}
 
@@ -3215,7 +3249,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					" Scs_actuaciondesigna.observaciones OBSERVACIONES_UA, " +
 					" to_char(Scs_actuaciondesigna.Fechajustificacion,'dd-mm-yyyy') FECHA_JUSTIF_UA, " +
 					" Scs_actuaciondesigna.observacionesjustificacion OBSERVACIONES_JUSTIF_UA, " +
-					" Scs_actuaciondesigna.NUMEROPROCEDIMIENTO NUMEROPROCEDIMIENTO_UA " +
+					" decode(anioprocedimiento,null,numeroprocedimiento,numeroprocedimiento||'/'||anioprocedimiento) NUMEROPROCEDIMIENTO_UA "+
 					" from scs_actuaciondesigna " +
 					" WHERE scs_actuaciondesigna.IDINSTITUCION = :1 " +
 					" AND scs_actuaciondesigna.idturno = :2 " +

@@ -36,6 +36,7 @@ public class ScsAcreditacionProcedimientoAdm extends MasterBeanAdministrador {
 							ScsAcreditacionProcedimientoBean.C_IDINSTITUCION,
 							ScsAcreditacionProcedimientoBean.C_IDPROCEDIMIENTO,
 							ScsAcreditacionProcedimientoBean.C_PORCENTAJE,
+							ScsAcreditacionProcedimientoBean.C_NIG_NUMPROCEDIMIENTO,
 							ScsAcreditacionProcedimientoBean.C_USUMODIFICACION};
 		return campos;
 	}
@@ -69,6 +70,7 @@ public class ScsAcreditacionProcedimientoAdm extends MasterBeanAdministrador {
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_IDINSTITUCION));
 			bean.setIdProcedimiento(UtilidadesHash.getString(hash, ScsAcreditacionProcedimientoBean.C_IDPROCEDIMIENTO));
 			bean.setPorcentaje(UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_PORCENTAJE));
+			bean.setNigNumeroProcedimiento(UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_NIG_NUMPROCEDIMIENTO));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_USUMODIFICACION));
 		}
 		catch(Exception e){
@@ -91,6 +93,7 @@ public class ScsAcreditacionProcedimientoAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsAcreditacionProcedimientoBean.C_IDINSTITUCION, b.getIdInstitucion());
 			UtilidadesHash.set(hash, ScsAcreditacionProcedimientoBean.C_IDPROCEDIMIENTO, b.getIdProcedimiento());
 			UtilidadesHash.set(hash, ScsAcreditacionProcedimientoBean.C_PORCENTAJE, b.getPorcentaje());
+			UtilidadesHash.set(hash, ScsAcreditacionProcedimientoBean.C_NIG_NUMPROCEDIMIENTO, b.getNigNumeroProcedimiento());
 			UtilidadesHash.set(hash, ScsAcreditacionProcedimientoBean.C_USUMODIFICACION, b.getUsuMod());
 		}
 		catch (Exception e){

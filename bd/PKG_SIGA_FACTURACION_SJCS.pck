@@ -1,4 +1,4 @@
-create or replace package PKG_SIGA_FACTURACION_SJCS is
+CREATE OR REPLACE package PKG_SIGA_FACTURACION_SJCS is
 
   -- Public variable declarations
 
@@ -112,7 +112,8 @@ create or replace package PKG_SIGA_FACTURACION_SJCS is
     AGRUPARPAGAGUARDIA    SCS_HITOFACTURABLEGUARDIA.AGRUPAR%TYPE,
     AGRUPARNOPAGAGUARDIA  SCS_HITOFACTURABLEGUARDIA.AGRUPAR%TYPE,
     NUMHITOS NUMBER,
-    LISTAHITOS TAB_HITOS,
+    LISTAHITOS TAB_HITOS,    
+    IDFACTURACION FCS_HISTORICO_HITOFACT.IDFACTURACION%TYPE,
     --INI: Cambio facturacion guardias inactivas catalanes de VG --
     CONSEJOINSTITUCION    CEN_INSTITUCION.CEN_INST_IDINSTITUCION%TYPE,
     ESGUARDIAVG           SCS_GUARDIASTURNO.IDTIPOGUARDIA%TYPE);
@@ -128,9 +129,10 @@ create or replace package PKG_SIGA_FACTURACION_SJCS is
     FECHAINICIO          SCS_CABECERAGUARDIAS.FECHAINICIO%TYPE,
     FECHAFIN             SCS_CABECERAGUARDIAS.FECHA_FIN%TYPE,
     FACTURADO            SCS_GUARDIASCOLEGIADO.FACTURADO%TYPE,
+    IDFACTURACION FCS_HISTORICO_HITOFACT.IDFACTURACION%TYPE,
+    FECHAACT SCS_ACTUACIONASISTENCIA.FECHA%TYPE,    
     IMPORTEFACTURADO     NUMBER,
     IMPORTEFACTURADOASIS NUMBER,
-    MOTIVOULTIMO         FCS_FACT_GUARDIASCOLEGIADO.MOTIVO%TYPE,
     --INI: Cambio para Asistencias que derivan en Designacion
     TIENE_ASISTQUEDERIVAN NUMBER);
     --FIN: Cambio para Asistencias que derivan en Designacion
@@ -742,28 +744,32 @@ create or replace package PKG_SIGA_FACTURACION_SJCS is
   PROCEDURE PROC_FCS_INI_CONFIG_GUARDIA(P_CODRETORNO    OUT VARCHAR2,
                                         P_DATOSERROR    OUT VARCHAR2);
 
-  /****************************************************************************************************************/
-  /* Nombre:        PROC_FCS_CARGA_CONFIG_GUARDIA                                                                           */
-  /* Descripcion:   Este procedimiento se encarga de inicializar la matriz de configuracion de guardias
-  /*                                                                                                         */
-  /* Parametros            IN/OUT   Descripcion                                                    Tipo de Datos  */
-  /* -------------------   ------   ------------------------------------------------------------   -------------  */
-  /* P_IDINSTITUCION       IN       Identificador de la Institucion                                NUMBER         */
-  /* P_IDTURNO             IN       Identificador del turno                                        NUMBER
-  /* P_IDGUARDIA           IN       Identificador de la guardia                                    NUMBER         */
-  /*                                                                                                  */
-  /* Version:        1.0                                                                               */
-  /* Fecha Creacion: 20/04/2006                                                                                   */
-  /* Autor:         Pilar Duran Mu?oz                                                                         */
-  /* Fecha Modificacion Autor Modificacion                Descripcion Modificacion                                */
-  /* ------------------ --------------------------------- ------------------------------------------------------- */
+    /****************************************************************************************************************
+        Nombre: PROC_FCS_CARGA_CONFIG_GUARDIA
+        Descripcion: Este procedimiento se encarga de inicializar la matriz de configuracion de guardias
 
-  /****************************************************************************************************************/
-  PROCEDURE PROC_FCS_CARGA_CONFIG_GUARDIA(P_IDINSTITUCION IN NUMBER,
-                                          P_IDTURNO       IN NUMBER,
-                                          P_IDGUARDIA     IN NUMBER,
-                                          P_CODRETORNO    OUT VARCHAR2,
-                                          P_DATOSERROR    OUT VARCHAR2);
+        Parametros:
+        - P_IDINSTITUCION - IN - Identificador de la Institucion - NUMBER
+        - P_IDTURNO - IN - Identificador del turno - NUMBER
+        - P_IDGUARDIA- IN - Identificador de la guardia - NUMBER
+        - P_IDFACTURACION - IN - Identificador de la facturacion - NUMBER
+        - P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)
+            En caso de error devuelve el codigo de error Oracle correspondiente.
+        - P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400)
+            En caso de error devuelve el mensaje de error Oracle correspondiente.
+
+        Versiones:            
+            - 1.0 - Fecha Creacion: 20/04/2006  - Autor: Pilar Duran Munoz
+            - 2.0 - Fecha Modificacion: 26/02/2016  - Autor: Jorge Paez Trivino
+                Cambios realizados para facturacion de colegios catalanes, de cabeceras de guardias facturadas, con la configuracion de la primera facturacion
+    /****************************************************************************************************************/
+    PROCEDURE PROC_FCS_CARGA_CONFIG_GUARDIA (
+        P_IDINSTITUCION IN NUMBER,
+        P_IDTURNO IN NUMBER,
+        P_IDGUARDIA IN NUMBER,
+        P_IDFACTURACION IN FCS_FACT_APUNTE.IDFACTURACION%TYPE,
+        P_CODRETORNO OUT VARCHAR2,
+        P_DATOSERROR OUT VARCHAR2);
 
   /****************************************************************************************************************/
   /* Nombre:        FUNC_IMPORTEFACTURADO_CG                                                                      */
@@ -790,7 +796,7 @@ create or replace package PKG_SIGA_FACTURACION_SJCS is
                                     P_IDGUARDIA            NUMBER,
                                     P_IDPERSONA            NUMBER,
                                     P_FECHAINICIO          DATE)
-    return VARCHAR2;
+    return NUMBER;
 
   /****************************************************************************************************************/
   /* Nombre:        FUNC_IMPORTEFACTURADO_ASIS_CG                                                                      */
@@ -817,7 +823,7 @@ create or replace package PKG_SIGA_FACTURACION_SJCS is
                                     P_IDGUARDIA            NUMBER,
                                     P_IDPERSONA            NUMBER,
                                     P_FECHAINICIO          DATE)
-    return VARCHAR2;
+    return NUMBER;
 
   /****************************************************************************************************************/
   /* Nombre:        PROC_CARGAR_CABECERA_GUARDIAS                                                                           */
@@ -961,39 +967,6 @@ create or replace package PKG_SIGA_FACTURACION_SJCS is
                                   P_IDPERSONA     NUMBER,
                                   P_FECHAINICIO   DATE,
                                   P_FECHAFIN      DATE) return number;
-  /*
-   *  Funciones que calculan los numeros de actuaciones y asistencias
-   * para la exportacion del fichero de guardias en PROC_FCS_EXPORTAR_GUARDIAS
-   *
-   *  Si se pasa P_FECHAINICIO nulo, solo buscara en el dia exacto P_FECHAFIN
-   *
-   * FIN
-   */
-
-  /****************************************************************************************************************/
-  /* Nombre:        FUNC_MOTIVOULTIMO                                                                             */
-  /* Descripcion:   Funcion que calcula el Motivo Ultimo facturado a una CG: se coge el primer registro           */
-  /*                                                                                                         */
-  /* Parametros            IN/OUT   Descripcion                                                    Tipo de Datos  */
-  /* -------------------   ------   ------------------------------------------------------------   -------------  */
-  /* P_IDINSTITUCION          IN     identificador de la institucion                                  NUMBER,
-  /* P_IDTURNO                IN     identificador del turno                                          NUMBER,
-  /* P_IDGUARDIA              IN     identificador de la guardia                                      NUMBER,
-  /* P_IDPERSONA              IN     identificador de la persona                                      NUMBER,
-  /* P_FECHAINICIO            IN     FECHA INICIO de la cabecera de Guardia                           DATE,
-  /*                                                                                                  */
-  /* Version:        1.0                                                                               */
-  /* Fecha Creacion: 21/04/2006                                                                                   */
-  /* Autor:         Pilar Duran Mu?oz                                                                         */
-  /* Fecha Modificacion Autor Modificacion                Descripcion Modificacion                                */
-  /* ------------------ --------------------------------- ------------------------------------------------------- */
-
-  /****************************************************************************************************************/
-  FUNCTION FUNC_MOTIVOULTIMO(P_IDINSTITUCION       NUMBER,
-                             P_IDTURNO             NUMBER,
-                             P_IDGUARDIA           NUMBER,
-                             P_IDPERSONA           NUMBER,
-                             P_FECHAINICIO         DATE) return VARCHAR2;
 
     /****************************************************************************************************************/
     /* Nombre: FUNC_EXISTE_ACTUACION_JUSTIF */
@@ -1010,30 +983,6 @@ create or replace package PKG_SIGA_FACTURACION_SJCS is
         P_IDINSTITUCION NUMBER,
         P_ANIO NUMBER,
         P_NUMERO NUMBER) RETURN NUMBER;
-
-  /****************************************************************************************************************/
-  /* Nombre:        FUNC_COSTEFIJO                                                                                */
-  /* Descripcion:   Funcion que nos devuelve el coste fijo para realizar el apunte
-  /*                en las matrices de memoria de actuaciones, CG y UG                                            */
-  /*                                                                                                         */
-  /* Parametros            IN/OUT   Descripcion                                                    Tipo de Datos  */
-  /* -------------------   ------   ------------------------------------------------------------   -------------  */
-  /* P_IDINSTITUCION        IN     identificador de la institucion                                  NUMBER,
-  /* P_ANIO                 IN     a?o                                                              NUMBER,
-  /* P_NUMERO               IN     numero                                                           NUMBER,
-  /* P_IDACTUACION          IN     identificador de la actuacion                                    NUMBER,
-  /*                                                                                                  */
-  /* Version:        1.0                                                                               */
-  /* Fecha Creacion: 24/04/2006                                                                                   */
-  /* Autor:         Pilar Duran Mu?oz                                                                         */
-  /* Fecha Modificacion Autor Modificacion                Descripcion Modificacion                                */
-  /* ------------------ --------------------------------- ------------------------------------------------------- */
-
-  /****************************************************************************************************************/
-  FUNCTION FUNC_COSTEFIJO(P_IDINSTITUCION NUMBER,
-                          P_ANIO          NUMBER,
-                          P_NUMERO        NUMBER,
-                          P_IDACTUACION   NUMBER) return number;
 
   /****************************************************************************************************************/
   /* Nombre:        PROC_CARGA_M_APUNTE_AC                                                                           */
@@ -1306,46 +1255,6 @@ create or replace package PKG_SIGA_FACTURACION_SJCS is
                                        P_DATOSERROR           OUT VARCHAR2);
 
   /****************************************************************************************************************/
-  /* Nombre:        FUNC_CALCULAR_IMPORTEASIST                                                                                */
-  /* Descripcion:   Funcion que nos el importe por tipo de asistencia
-  /*                                                                                                         */
-  /* Parametros            IN/OUT   Descripcion                                                    Tipo de Datos  */
-  /* -------------------   ------   ------------------------------------------------------------   -------------  */
-  /* P_IDINSTITUCION        IN     identificador de la institucion                                  NUMBER,
-  /* P_IDTIPOASISTENCIA     IN     identificador del tipo de asistencia
-  /*                                                                                                  */
-  /* Version:        1.0                                                                               */
-  /* Fecha Creacion: 27/04/2006                                                                                   */
-  /* Autor:         Pilar Duran Mu?oz                                                                         */
-  /* Fecha Modificacion Autor Modificacion                Descripcion Modificacion                                */
-  /* ------------------ --------------------------------- ------------------------------------------------------- */
-
-  /****************************************************************************************************************/
-  FUNCTION FUNC_CALCULAR_IMPORTEASIST(P_IDINSTITUCION    NUMBER,
-                                      P_IDTIPOASISTENCIA NUMBER)
-    return number;
-
-  /****************************************************************************************************************/
-  /* Nombre:        FUNC_CALCULAR_IMPORTEMAXASIST                                                                                */
-  /* Descripcion:   Funcion que nos devuelve el importe maximo por tipo de asistencia
-  /*                                                                                                         */
-  /* Parametros            IN/OUT   Descripcion                                                    Tipo de Datos  */
-  /* -------------------   ------   ------------------------------------------------------------   -------------  */
-  /* P_IDINSTITUCION        IN     identificador de la institucion                                  NUMBER,
-  /* P_IDTIPOASISTENCIA     IN     identificador del tipo de asistencia
-  /*                                                                                                  */
-  /* Version:        1.0                                                                               */
-  /* Fecha Creacion: 27/04/2006                                                                                   */
-  /* Autor:         Pilar Duran Mu?oz                                                                         */
-  /* Fecha Modificacion Autor Modificacion                Descripcion Modificacion                                */
-  /* ------------------ --------------------------------- ------------------------------------------------------- */
-
-  /****************************************************************************************************************/
-  FUNCTION FUNC_CALCULAR_IMPORTEMAXASIST(P_IDINSTITUCION    NUMBER,
-                                         P_IDTIPOASISTENCIA NUMBER)
-    return number;
-
-  /****************************************************************************************************************/
   /* Nombre:        PROC_FACT_ACT_NOAPLICATIPO                                                                           */
   /* Descripcion:   Este procedimiento se encarga de cargar las tablas de memoria cuando facturamos por Actuaciones
   /*                y no aplica tipos de actuacion.
@@ -1446,47 +1355,6 @@ create or replace package PKG_SIGA_FACTURACION_SJCS is
                                      P_DATOSERROR           OUT VARCHAR2);
 
   /****************************************************************************************************************/
-  /* Nombre:        FUNC_CALCULAR_IMPORTEACT                                                                               */
-  /* Descripcion:   Funcion que nos el importe por tipo de actuacion
-  /*                                                                                                         */
-  /* Parametros            IN/OUT   Descripcion                                                    Tipo de Datos  */
-  /* -------------------   ------   ------------------------------------------------------------   -------------  */
-  /* P_IDINSTITUCION        IN     identificador de la institucion                                  NUMBER,
-  /* P_IDTIPOASISTENCIA     IN     identificador del tipo de asistencia
-  /*                                                                                                  */
-  /* Version:        1.0                                                                               */
-  /* Fecha Creacion: 27/04/2006                                                                                   */
-  /* Autor:         Pilar Duran Mu?oz                                                                         */
-  /* Fecha Modificacion Autor Modificacion                Descripcion Modificacion                                */
-  /* ------------------ --------------------------------- ------------------------------------------------------- */
-
-  /****************************************************************************************************************/
-  FUNCTION FUNC_CALCULAR_IMPORTEACT(P_IDINSTITUCION    NUMBER,
-                                    P_IDTIPOASISTENCIA NUMBER,
-                                    P_IDTIPOACTUACION  NUMBER) return number;
-
-  /****************************************************************************************************************/
-  /* Nombre:        FUNC_CALCULAR_IMPORTEMAXACT                                                                                */
-  /* Descripcion:   Funcion que nos devuelve el importe maximo por tipo de actuacion
-  /*                                                                                                         */
-  /* Parametros            IN/OUT   Descripcion                                                    Tipo de Datos  */
-  /* -------------------   ------   ------------------------------------------------------------   -------------  */
-  /* P_IDINSTITUCION        IN     identificador de la institucion                                  NUMBER,
-  /* P_IDTIPOASISTENCIA     IN     identificador del tipo de asistencia
-  /*                                                                                                  */
-  /* Version:        1.0                                                                               */
-  /* Fecha Creacion: 27/04/2006                                                                                   */
-  /* Autor:         Pilar Duran Mu?oz                                                                         */
-  /* Fecha Modificacion Autor Modificacion                Descripcion Modificacion                                */
-  /* ------------------ --------------------------------- ------------------------------------------------------- */
-
-  /****************************************************************************************************************/
-  FUNCTION FUNC_CALCULAR_IMPORTEMAXACT(P_IDINSTITUCION    NUMBER,
-                                       P_IDTIPOASISTENCIA NUMBER,
-                                       P_IDTIPOACTUACION  NUMBER)
-    return number;
-
-  /****************************************************************************************************************/
   /* Nombre:        PROC_FACT_ACTFG_NOAPLICATIPO                                                                           */
   /* Descripcion:   Este procedimiento se encarga de cargar las tablas de memoria cuando facturamos por Actuaciones
   /*                fuera de guardia y no aplica tipos de actuacion.
@@ -1508,9 +1376,10 @@ create or replace package PKG_SIGA_FACTURACION_SJCS is
 
   /****************************************************************************************************************/
 
-  PROCEDURE PROC_FACT_ACTFG_NOAPLICATIPO(indiceMatrizFacturable in number,
-                                         P_CODRETORNO           OUT VARCHAR2,
-                                         P_DATOSERROR           OUT VARCHAR2);
+    PROCEDURE PROC_FACT_ACTFG_NOAPLICATIPO(
+        indiceMatrizFacturable IN NUMBER,
+        P_CODRETORNO OUT VARCHAR2,
+        P_DATOSERROR OUT VARCHAR2);
 
   /****************************************************************************************************************/
   /* Nombre:        PROC_FACT_ACTFG_APLICATIPO                                                                           */
@@ -1798,90 +1667,183 @@ create or replace package PKG_SIGA_FACTURACION_SJCS is
   /* Fecha Modificacion   Autor Modificacion                  Descripcion Modificacion                            */
   /* ------------------   ---------------------------------   --------------------------------------------------- */
   /****************************************************************************************************************/
-PROCEDURE PROC_FCS_MARCAR_FACTURADOS(idInstitucion IN VARCHAR2,
-                                                       idFacturacion in VARCHAR2,
-                                                                                                   codigoRetorno OUT VARCHAR2,
-                                                       error OUT VARCHAR2);
+PROCEDURE PROC_FCS_MARCAR_FACTURADOS(
+    idInstitucion IN VARCHAR2,
+    idFacturacion in VARCHAR2,
+    codigoRetorno OUT VARCHAR2,
+    error OUT VARCHAR2);
+                                                               
+  /****************************************************************************************************************
+    Nombre: FUNC_OBTENER_IDFACTURACION
+    Descripcion: Funcion que busca el IDFACTURACION de una cabecera de guardia (incluye regularizaciones)
 
-  /****************************************************************************************************************/
-  /* Nombre:   PROC_FCS_ACT_APUNTES_ERRONEOS                                                                      */
-  /* Descripcion:  Actualiza los apuntes de facturacion de tipo GAs ó GAc que tienen en la misma facturacion un   */
-  /*               apunte de tipo xxxFG y ademas tiene un precio que no coincide con el estipulado en el hito     */
-    /*               asociado. La actualización consiste en eliminar el precio.                                     */
-  /*                                                                                                              */
-  /* Parametros            IN/OUT   Descripcion                                                    Tipo de Datos  */
-  /* -------------------   ------   ------------------------------------------------------------   -------------  */
-  /* IDINSTITUCION         IN       Identificador de la Institucion                                NUMBER         */
-  /* IDFACTURACION         IN       Identificador de la Facturacion                                NUMBER         */
-  /* codigoRetorno         OUT      Devuelve 0 en caso de que la ejecucion haya sido OK.           VARCHAR2(10)   */
-  /*                                En caso de error devuelve el codigo de error Oracle                           */
-  /*                                correspondiente.                                                              */
-  /* error                 OUT      Devuelve null en caso de que la ejecucion haya sido OK.        VARCHAR2(200)  */
-  /*                                En caso de error devuelve el mensaje de error Oracle                          */
-  /*                                correspondiente.                                                              */
-  /*                                                                                                              */
-  /* Version:        1.0                                                                                          */
-  /* Fecha Creacion: 19/01/2010                                                                                   */
-  /* Autor:          Salvador Madrid-Salvador                                                                           */
-  /* Fecha Modificacion   Autor Modificacion                  Descripcion Modificacion                            */
-  /* ------------------   ---------------------------------   --------------------------------------------------- */
-  /****************************************************************************************************************/
-  PROCEDURE PROC_FCS_ACT_APUNTES_ERRONEOS(pidInstitucion IN varchar2,
-                                          pidFacturacion in VARCHAR2,
-                                                                                                           codigoRetorno OUT VARCHAR2,
-                                                               error OUT VARCHAR2);
+    Parametros (IN/OUT - Descripcion -Tipo de Datos)
+    - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER
+    - P_IDTURNO - IN - Identificador del turno - NUMBER
+    - P_IDGUARDIA - IN - Identificador de la guardia - NUMBER    
+    - P_FECHA - IN - Fecha donde buscar la facturacion - DATE
+
+    Versiones (Fecha - Autor - Datos):
+    - 1.0 - 02/03/2016 - Jorge Paez Trivino - Adaptacion a los colegios catalanes (R1602_0089)
+  ****************************************************************************************************************/    
+    FUNCTION FUNC_OBTENER_IDFACTURACION(
+        P_IDINSTITUCION IN FCS_HISTORICO_HITOFACT.IDINSTITUCION%TYPE,
+        P_IDTURNO IN FCS_HISTORICO_HITOFACT.IDTURNO%TYPE,
+        P_IDGUARDIA IN FCS_HISTORICO_HITOFACT.IDGUARDIA%TYPE,
+        P_FECHA IN FCS_FACTURACIONJG.FECHADESDE%TYPE) RETURN NUMBER;
+        
+  /****************************************************************************************************************
+    Nombre: PROC_CARGAR_CABGUARDIASFG
+    Descripcion: Procedimiento que obtiene las cabeceras de guardia de actuaciones fuera de guardia
+
+    Parametros (IN/OUT - Descripcion -Tipo de Datos)
+    - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER
+    - P_IDTURNO - IN - Identificador del turno - NUMBER
+    - P_IDGUARDIA - IN - Identificador de la guardia - NUMBER
+    - P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)
+        En caso de error devuelve el codigo de error Oracle correspondiente.
+    - P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400)
+        En caso de error devuelve el mensaje de error Oracle correspondiente.    
+
+    Versiones (Fecha - Autor - Datos):
+    - 1.0 - 02/03/2016 - Jorge Paez Trivino - Adaptacion a los colegios catalanes (R1602_0089)
+  ****************************************************************************************************************/  
+    PROCEDURE PROC_CARGAR_CABGUARDIASFG(
+        P_IDINSTITUCION IN NUMBER,
+        P_IDTURNO IN NUMBER,
+        P_IDGUARDIA IN NUMBER,
+        P_CODRETORNO OUT VARCHAR2,
+        P_DATOSERROR OUT VARCHAR2);     
+        
+  /****************************************************************************************************************
+    Nombre: FUNC_COSTEFIJO
+    Descripcion: Funcion que nos devuelve el coste fijo de una actuacion
+
+    Parametros (IN/OUT - Descripcion -Tipo de Datos)
+    - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER
+    - P_IDTURNO - IN - Identificador del turno - NUMBER
+    - P_IDGUARDIA - IN - Identificador de la guardia - NUMBER    
+    - P_ANIO - IN - Ano de la actuacion - NUMBER
+    - P_NUMERO - IN - Numero de la actuacion - NUMBER
+    - P_IDACTUACION - IN - Identificador del tipo de actuacion - NUMBER
+    - P_FECHA - IN - Fecha de la asistencia o actuacion fuera de guardia - DATE
+    - P_IDFACTURACION - IN - Identificador de la facturacion - NUMBER
+
+    Versiones (Fecha - Autor - Datos):
+    - 1.0 - 24/04/2006 - Pilar Duran Munoz
+    - 2.0 - 02/03/2016 - Jorge Paez Trivino - Adaptacion a los colegios catalanes (R1602_0089)
+  ****************************************************************************************************************/
+    FUNCTION FUNC_COSTEFIJO(
+        P_IDINSTITUCION IN SCS_ACTUACIONASISTENCIA.IDINSTITUCION%TYPE,
+        P_IDTURNO IN SCS_ASISTENCIA.IDTURNO%TYPE,
+        P_IDGUARDIA IN SCS_ASISTENCIA.IDGUARDIA%TYPE,
+        P_ANIO IN SCS_ACTUACIONASISTENCIA.ANIO%TYPE,
+        P_NUMERO IN SCS_ACTUACIONASISTENCIA.NUMERO%TYPE,
+        P_IDACTUACION IN SCS_ACTUACIONASISTENCIA.IDACTUACION%TYPE,
+        P_FECHA IN SCS_ASISTENCIA.FECHAHORA%TYPE,
+        P_IDFACTURACION IN FCS_HISTO_TIPOACTCOSTEFIJO.IDFACTURACION%TYPE) RETURN NUMBER;
+        
+  /****************************************************************************************************************
+    Nombre: FUNC_CALCULAR_IMPORTEASIST
+    Descripcion: Funcion que nos devuelve el importe de un tipo de asistencia
+
+    Parametros (IN/OUT - Descripcion -Tipo de Datos)
+    - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER
+    - P_IDTURNO - IN - Identificador del turno - NUMBER
+    - P_IDGUARDIA - IN - Identificador de la guardia - NUMBER    
+    - P_IDTIPOASISTENCIA - IN - Identificador del tipo de asistencia - NUMBER
+    - P_FECHA - IN - Fecha de la asistencia - DATE
+    - P_IDFACTURACION - IN - Identificador de la facturacion - NUMBER
+    - P_TIPO - IN - 0:IMPORTE; 1:IMPORTEMAXIMO; - NUMBER
+
+    Versiones (Fecha - Autor - Datos):
+    - 1.0 - 27/04/2006 - Pilar Duran Munoz
+    - 2.0 - 02/03/2016 - Jorge Paez Trivino - Adaptacion a los colegios catalanes (R1602_0089)
+  ****************************************************************************************************************/
+    FUNCTION FUNC_CALCULAR_IMPORTEASIST(
+        P_IDINSTITUCION IN SCS_ASISTENCIA.IDINSTITUCION%TYPE,
+        P_IDTURNO IN SCS_ASISTENCIA.IDTURNO%TYPE,
+        P_IDGUARDIA IN SCS_ASISTENCIA.IDGUARDIA%TYPE,
+        P_IDTIPOASISTENCIA IN SCS_ASISTENCIA.IDTIPOASISTENCIACOLEGIO%TYPE,
+        P_FECHA IN SCS_ASISTENCIA.FECHAHORA%TYPE,
+        P_IDFACTURACION IN FCS_HISTORICO_TIPOASISTCOLEGIO.IDFACTURACION%TYPE,
+        P_TIPO IN NUMBER) RETURN NUMBER;
+        
+  /****************************************************************************************************************
+    Nombre: FUNC_CALCULAR_IMPORTEACT
+    Descripcion: Funcion que nos devuelve el importe de un tipo de actuacion
+
+    Parametros (IN/OUT - Descripcion -Tipo de Datos)
+    - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER
+    - P_IDTURNO - IN - Identificador del turno - NUMBER
+    - P_IDGUARDIA - IN - Identificador de la guardia - NUMBER       
+    - P_IDTIPOASISTENCIA - IN - Identificador del tipo de asistencia - NUMBER
+    - P_IDTIPOACTUACION - IN - Identificador del tipo de actuacion - NUMBER
+    - P_FECHA - IN - Fecha de la asistencia o actuacion fuera de guardia - DATE
+    - P_IDFACTURACION - IN - Identificador de la facturacion - NUMBER
+    - P_TIPO - IN - 0:IMPORTE; 1:IMPORTEMAXIMO; - NUMBER
+
+    Versiones (Fecha - Autor - Datos):
+    - 1.0 - 27/04/2006 - Pilar Duran Munoz
+    - 2.0 - 02/03/2016 - Jorge Paez Trivino - Adaptacion a los colegios catalanes (R1602_0089)
+  ****************************************************************************************************************/
+    FUNCTION FUNC_CALCULAR_IMPORTEACT(
+        P_IDINSTITUCION IN SCS_ACTUACIONASISTENCIA.IDINSTITUCION%TYPE,
+        P_IDTURNO IN SCS_ASISTENCIA.IDTURNO%TYPE,
+        P_IDGUARDIA IN SCS_ASISTENCIA.IDGUARDIA%TYPE,
+        P_IDTIPOASISTENCIA IN SCS_ACTUACIONASISTENCIA.IDTIPOASISTENCIA%TYPE,
+        P_IDTIPOACTUACION IN SCS_ACTUACIONASISTENCIA.IDTIPOACTUACION%TYPE,
+        P_FECHA IN SCS_ASISTENCIA.FECHAHORA%TYPE,
+        P_IDFACTURACION IN FCS_HISTORICO_TIPOACTUACION.IDFACTURACION%TYPE,
+        P_TIPO IN NUMBER) RETURN NUMBER;        
+                                                                      
 END PKG_SIGA_FACTURACION_SJCS;
- 
 /
 CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
-  -- Public variable declarations
+    -- Public variable declarations
     C_FACTURACION_CONTROLADA CONSTANT BOOLEAN := TRUE; -- CONSTANTE PARA ACTIVAR LA FACTURACION CONTROLADA
+    HITO_SOJ CONSTANT NUMBER := 12;
+    HITO_EJG CONSTANT NUMBER := 13;    
 
-  V_CODRETORNO2 VARCHAR2(10) := TO_CHAR(0); /* Codigo de error Oracle */
-  V_DATOSERROR2 VARCHAR2(4000) := NULL; /* Mensaje de error Oracle */
-  V_COSTEFIJO   NUMBER := 0;
+    V_CODRETORNO2 VARCHAR2(10) := TO_CHAR(0); /* Codigo de error Oracle */
+    V_DATOSERROR2 VARCHAR2(4000) := NULL; /* Mensaje de error Oracle */
+    V_COSTEFIJO NUMBER := 0;    
+    V_IDINSTITUCION NUMBER;
+    V_IDFACTURACION NUMBER;
+    V_ANIO NUMBER;
+    V_NUMERO NUMBER;
+    V_IDACTUACION NUMBER;
+    V_IDTURNO NUMBER;
+    V_IDGUARDIA NUMBER;
+    V_IDPERSONA NUMBER;
+    V_FECHAINICIO_CG DATE;
+    V_FECHAFIN_CG DATE;
+    V_FECHA DATE;
+    TOTAL_FACTURACION NUMBER := 0;
 
-  /* Declaracion de excepciones */
-  -- ERROR GENERAL
-  E_ERROR2 EXCEPTION;
-  -- ERROR CONTROLADO EN LA FUNCION DE CALCULAR PRECIO
-  E_ERROR3 EXCEPTION;
-  -- E_ERROR  EXCEPTION;
+    /* Declaracion de excepciones */
+    -- ERROR GENERAL
+    E_ERROR2 EXCEPTION;
+    -- ERROR CONTROLADO EN LA FUNCION DE CALCULAR PRECIO
+    E_ERROR3 EXCEPTION;
+    -- E_ERROR  EXCEPTION;
 
-  -- ERRORES CONTROLADOS DE LA FUNCION BORRAR FACTURACION
-  E_ERROR_BF_1 EXCEPTION;
-  E_ERROR_BF_2 EXCEPTION;
-  E_ERROR_BF_3 EXCEPTION;
-  E_ERROR_BF_4 EXCEPTION;
-  E_ERROR_BF_5 EXCEPTION;
-  E_ERROR_BF_6 EXCEPTION;
-  E_ERROR_BF_7 EXCEPTION;
-
-  --Constantes
-  HITO_EJG constant number := 13;
-  HITO_SOJ constant number := 12;
-  V_IDINSTITUCION number;
-  V_IDFACTURACION number;
-  V_ANIO          NUMBER;
-  V_NUMERO        NUMBER;
-  V_IDACTUACION   NUMBER;
-
-  V_IDTURNO              NUMBER;
-  V_IDGUARDIA            NUMBER;
-  V_IDPERSONA            NUMBER;
-  V_FECHAINICIO_CG       DATE;
-  V_FECHAFIN_CG          DATE;
-  V_FECHA                DATE;
-  TOTAL_FACTURACION      NUMBER := 0;
-
-  --INI: Cambio facturacion guardias inactivas catalanes de VG --
-  C_CATALAN Cen_Institucion.Cen_Inst_Idinstitucion%Type := 3001;
-  C_IMPORTE_GUARDIA_INACTIVA Scs_Hitofacturableguardia.Preciohito%Type := 61.16;
-  --FIN: Cambio facturacion guardias inactivas catalanes de VG --
+    -- ERRORES CONTROLADOS DE LA FUNCION BORRAR FACTURACION
+    E_ERROR_BF_1 EXCEPTION;
+    E_ERROR_BF_2 EXCEPTION;
+    E_ERROR_BF_3 EXCEPTION;
+    E_ERROR_BF_4 EXCEPTION;
+    E_ERROR_BF_5 EXCEPTION;
+    E_ERROR_BF_6 EXCEPTION;
+    E_ERROR_BF_7 EXCEPTION;
+      
+    --INI: Cambio facturacion guardias inactivas catalanes de VG --
+    C_CATALAN CEN_INSTITUCION.CEN_INST_IDINSTITUCION%TYPE := 3001;
+    C_IMPORTE_GUARDIA_INACTIVA SCS_HITOFACTURABLEGUARDIA.PRECIOHITO%TYPE := 61.16;
+    --FIN: Cambio facturacion guardias inactivas catalanes de VG --
 
   -- declaracion de cursores para la facturacion de guardias
-
     -- Cursor para cargar el RECORD de Facturacion
     CURSOR C_FACTURACION(V_IDINSTITUCION NUMBER, V_IDFACTURACION NUMBER) is
         SELECT IDINSTITUCION,
@@ -1914,1327 +1876,630 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         FROM SCS_GUARDIASTURNO
         WHERE IDINSTITUCION = V_IDINSTITUCION
             AND IDTURNO = V_IDTURNO;
-  --AND scs_guardiasturno.idguardiasustitucion IS NULL  -- DCG para no facturar las guardias de sustitucion
-  --AND scs_guardiasturno.idturnosustitucion IS NULL;   -- DCG
+            --AND scs_guardiasturno.idguardiasustitucion IS NULL  -- DCG para no facturar las guardias de sustitucion
+            --AND scs_guardiasturno.idturnosustitucion IS NULL;   -- DCG              
+                  
+    c_importeFacturado_CG varchar2(4000) := 'select sum(nvl(precioaplicado,0)) v_importeTotalCG' ||
+        ' from fcs_fact_apunte' ||
+        ' where fcs_fact_apunte.idinstitucion=@P_IDINSTITUCION@' ||
+        ' and fcs_fact_apunte.idturno=@P_IDTURNO@' ||
+        ' and fcs_fact_apunte.idguardia=@P_IDGUARDIA@' ||
+        ' and fcs_fact_apunte.idpersona=@P_IDPERSONA@' ||
+        ' and trunc(fcs_fact_apunte.fechainicio)=''@P_FECHAINICIO@''' ||
+        --' and fcs_fact_apunte.motivo like ''G%''' || => JPT (18-06-2015): Si quitas este comentario no funciona PROC_FACT_ASIST_APLICATIPO (V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA = '1')
+        ' and fcs_fact_apunte.idtipoapunte<>''FG''';
 
-    -- Cursor para obtener el idHito y el precio
-    CURSOR C_IDHITO(V_IDINSTITUCION NUMBER, V_IDTURNO NUMBER, V_IDGUARDIA NUMBER) IS
-        SELECT IDHITO,
-            NVL(PRECIOHITO, 0) PRECIO,
-            DIASAPLICABLES,
-            AGRUPAR
-        FROM SCS_HITOFACTURABLEGUARDIA
-        WHERE IDINSTITUCION = V_IDINSTITUCION
-            AND IDTURNO = V_IDTURNO
-            AND IDGUARDIA = V_IDGUARDIA
-        ORDER BY IDHITO;
+    c_importeFacturado_asis_CG varchar2(4000) := 'select sum(nvl(precioaplicado,0)) v_importeTotalCG' ||
+        ' from fcs_fact_apunte' ||
+        ' where fcs_fact_apunte.idinstitucion=@P_IDINSTITUCION@' ||
+        ' and fcs_fact_apunte.idturno=@P_IDTURNO@' ||
+        ' and fcs_fact_apunte.idguardia=@P_IDGUARDIA@' ||
+        ' and fcs_fact_apunte.idpersona=@P_IDPERSONA@' ||
+        ' and trunc(fcs_fact_apunte.fechainicio)=''@P_FECHAINICIO@''' ||
+        ' and fcs_fact_apunte.motivo not like ''G%''' ||
+        ' and fcs_fact_apunte.idtipoapunte<>''FG''';
 
-  -- Cursor utilizado para cargar la matriz de cabecera de guardia
-    CURSOR CABECERA_GUARDIAS(V_IDINSTITUCION NUMBER, V_IDTURNO number, V_IDGUARDIA NUMBER) IS
-        SELECT IDINSTITUCION,
-               IDTURNO,
-               IDGUARDIA,
-               IDPERSONA,
-               FECHAINICIO,
-               FECHA_FIN,
-               MAX(FACTURADO) AS FACTURADO,
-               SUM(IMPORTEFACTURADO_CG) AS IMPORTEFACTURADO_CG,
-               SUM(IMPORTEFACTURADO_ASIS_CG) AS IMPORTEFACTURADO_ASIS_CG,
-               SUM(MOTIVOULTIMO) AS MOTIVOULTIMO
-        FROM (
-            --CG REALIZADAS EN EL RANGO DEL CICLO DE FACTURACION
-            SELECT IDINSTITUCION,
-                   IDTURNO,
-                   IDGUARDIA,
-                   IDPERSONA,
-                   FECHAINICIO,
-                   FECHA_FIN,
-                   FACTURADO,
-                   NVL(FUNC_IMPORTEFACTURADO_CG(IDINSTITUCION, IDTURNO, IDGUARDIA, IDPERSONA, FECHAINICIO), 0) AS IMPORTEFACTURADO_CG,
-                   NVL(FUNC_IMPORTEFACTURADO_ASIS_CG(IDINSTITUCION, IDTURNO, IDGUARDIA, IDPERSONA, FECHAINICIO), 0) AS IMPORTEFACTURADO_ASIS_CG,
-                   FUNC_MOTIVOULTIMO(IDINSTITUCION, IDTURNO, IDGUARDIA, IDPERSONA, FECHAINICIO) AS MOTIVOULTIMO
-            FROM SCS_CABECERAGUARDIAS CG --seleccion de cabeceras de guardia
-            WHERE IDINSTITUCION = V_IDINSTITUCION
-                AND IDTURNO = V_IDTURNO
-                AND IDGUARDIA = V_IDGUARDIA --de esta guardia
-                AND NVL(VALIDADO, '0') = '1' --que esten validadas
-                AND ( --que comiencen dentro de los limites de la facturacion
-                    TRUNC(NVL(FECHAVALIDACION, FECHAINICIO))
-                    BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE)
-                    AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA)
-                )
+    c_asistenciasfacturadas_CG varchar2(4000) := 'select count(*)' ||
+        ' from Scs_Asistencia' ||
+        ' where Scs_Asistencia.Idinstitucion=@P_IDINSTITUCION@' ||
+        ' and Scs_Asistencia.Idturno=@P_IDTURNO@' ||
+        ' and Scs_Asistencia.Idguardia=@P_IDGUARDIA@' ||
+        ' and Scs_Asistencia.Idpersonacolegiado=@P_IDPERSONA@' ||
+        ' and trunc(Scs_Asistencia.Fechahora) between ''@P_FECHAINICIO@'' AND ''@P_FECHAFIN@''' ||
+        ' and pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(Scs_Asistencia.Fechahora,''@P_DIASAPLICABLES@'')=1' ||
+        ' and Scs_Asistencia.Facturado=''1'' ';
 
-                  --AAG: siguiente linea eliminada: este campo funciona mal.
-                  --Hay que buscar para eliminar en todos los demas sitios
-                  --and (facturado is null or facturado = '0')
-                AND NOT EXISTS ( --y que no esten facturadas
-                    SELECT 1
-                    FROM FCS_FACT_APUNTE FAC_CG
-                    WHERE CG.IDINSTITUCION = FAC_CG.IDINSTITUCION
-                    AND CG.IDTURNO = FAC_CG.IDTURNO
-                    AND CG.IDGUARDIA = FAC_CG.IDGUARDIA
-                    AND CG.IDPERSONA = FAC_CG.IDPERSONA
-                    AND CG.FECHAINICIO = FAC_CG.FECHAINICIO
-                )
+    c_actuacionesfacturadas_CG varchar2(4000) := 'select count(*)' ||
+        ' from Scs_Asistencia A, scs_actuacionasistencia Ac' ||
+        ' where A.Idinstitucion=@P_IDINSTITUCION@' ||
+        ' and A.Idturno=@P_IDTURNO@' ||
+        ' and A.Idguardia=@P_IDGUARDIA@' ||
+        ' and A.Idpersonacolegiado=@P_IDPERSONA@' ||
+        ' and trunc(A.Fechahora) between ''@P_FECHAINICIO@'' AND ''@P_FECHAFIN@''' ||
+        ' and A.IDINSTITUCION=Ac.Idinstitucion' ||
+        ' and A.Anio=Ac.Anio' ||
+        ' and A.Numero=Ac.Numero' ||
+        --' and  Ac.Facturado=''1''' || -- se elimina y se cambia por lo de abajo.
+        ' and exists(select 1' ||
+        '  from FCS_FACT_ACTUACIONASISTENCIA FAC' ||
+        '  where fac.idinstitucion = Ac.idinstitucion' ||
+        '  and fac.anio = Ac.anio' ||
+        '  and fac.numero = Ac.numero' ||
+        '  and fac.idactuacion = Ac.idactuacion)' ||
+        ' and pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(A.Fechahora,''@P_DIASAPLICABLES@'')=1' ||
+        ' and Ac.diadespues=''N''';
 
-            UNION
+    c_Actuacionesnuevas_CG varchar2(4000) := 'select count(*)' ||
+        ' from Scs_Asistencia A, scs_actuacionasistencia Ac' ||
+        ' where A.Idinstitucion=@P_IDINSTITUCION@' ||
+        ' and A.Idturno=@P_IDTURNO@' ||
+        ' and A.Idguardia=@P_IDGUARDIA@' ||
+        ' and A.Idpersonacolegiado=@P_IDPERSONA@' ||
+        ' and trunc(A.Fechahora) between ''@P_FECHAINICIO@'' AND ''@P_FECHAFIN@''' ||
+        ' and A.IDINSTITUCION=Ac.Idinstitucion' ||
+        ' and A.Anio=Ac.Anio' ||
+        ' and A.Numero=Ac.Numero' ||
+        --' and (Ac.Facturado is null or Ac.Facturado = ''0'')' || -- no facturadas
+        -- se elimina y se cambia por lo de abajo
+        ' and not exists(select 1' ||
+        '  from FCS_FACT_ACTUACIONASISTENCIA FAC' ||
+        '  where fac.idinstitucion = Ac.idinstitucion' ||
+        '  and fac.anio = Ac.anio' ||
+        '  and fac.numero = Ac.numero' ||
+        '  and fac.idactuacion = Ac.idactuacion)' ||
+        ' and (Ac.Anulacion is null or Ac.Anulacion=0)' ||  --no anuladas
+        ' and Ac.Fechajustificacion is not null' || --justificadas
+        ' and trunc(Ac.Fechajustificacion) between ''@P_FECHAINIFACT@'' and ''@P_FECHAFINFACT@''' ||
+        ' and Ac.Validada = ''1''' || -- en fecha
+        ' and pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(A.Fechahora,''@P_DIASAPLICABLES@'')=1' ||
+        ' and Ac.diadespues=''N'''; -- no del día después.
 
-            -- CG con actuaciones justificadas en el rango del ciclo de facturacion
-            SELECT IDINSTITUCION,
-                   IDTURNO,
-                   IDGUARDIA,
-                   IDPERSONA,
-                   FECHAINICIO,
-                   FECHA_FIN,
-                   FACTURADO,
-                   NVL(FUNC_IMPORTEFACTURADO_CG(IDINSTITUCION, IDTURNO, IDGUARDIA, IDPERSONA, FECHAINICIO), 0) AS IMPORTEFACTURADO_CG,
-                   NVL(FUNC_IMPORTEFACTURADO_ASIS_CG(IDINSTITUCION, IDTURNO, IDGUARDIA, IDPERSONA, FECHAINICIO), 0) AS IMPORTEFACTURADO_ASIS_CG,
-                   FUNC_MOTIVOULTIMO(IDINSTITUCION, IDTURNO, IDGUARDIA, IDPERSONA, FECHAINICIO) AS MOTIVOULTIMO
-            FROM SCS_CABECERAGUARDIAS CG --seleccion de cabeceras de guardia
-            WHERE IDINSTITUCION = V_IDINSTITUCION
-                AND IDTURNO = V_IDTURNO
-                AND IDGUARDIA = V_IDGUARDIA --de esta guardia
-                AND NVL(VALIDADO, '0') = '1' --que esten validadas
-                AND EXISTS ( --que tengan al menos una actuacion...
-                    SELECT 1
-                    FROM SCS_GUARDIASCOLEGIADO UG,
-                        SCS_ASISTENCIA A,
-                        SCS_ACTUACIONASISTENCIA AC
-                    WHERE CG.IDINSTITUCION = UG.IDINSTITUCION
-                       AND CG.IDTURNO = UG.IDTURNO
-                       AND CG.IDGUARDIA = UG.IDGUARDIA
-                       AND CG.FECHAINICIO = UG.FECHAINICIO
-                       AND CG.IDPERSONA = UG.IDPERSONA
-                       AND UG.IDINSTITUCION = A.IDINSTITUCION
-                       AND UG.IDTURNO = A.IDTURNO
-                       AND UG.IDGUARDIA = A.IDGUARDIA
-                       AND UG.IDPERSONA = A.IDPERSONACOLEGIADO
-                       AND UG.FECHAFIN = TRUNC(A.FECHAHORA)
-                       AND A.IDINSTITUCION = AC.IDINSTITUCION
-                       AND A.ANIO = AC.ANIO
-                       AND A.NUMERO = AC.NUMERO
-                          --AAG: siguiente linea eliminada: en vez de esto, es mas eficiente unir con SCS_GUARDIASCOLEGIADO porque se igualan campos exactos
-                          --and trunc(a.fechahora) between trunc(cg.fechainicio) and trunc(cg.fecha_fin)
-                        AND NVL(AC.ANULACION, '0') = '0' -- que no este anulada
-                        AND TRUNC(AC.FECHAJUSTIFICACION) -- cuya fecha de justificacion este dentro de la facturacion
-                            BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE)
-                            AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA)
+    /*Cursores que utilizaremos para cargar la matriz de memoria m_apunte_as de CG*/
+    c_obtener_asistenciasFact varchar2(4000) := 'select idinstitucion, anio, numero,1 facturado' ||
+        ' from Scs_Asistencia' ||
+        ' where Scs_Asistencia.Idinstitucion=@P_IDINSTITUCION@' ||
+        ' and Scs_Asistencia.Idturno=@P_IDTURNO@' ||
+        ' and Scs_Asistencia.Idguardia=@P_IDGUARDIA@' ||
+        ' and Scs_Asistencia.Idpersonacolegiado=@P_IDPERSONA@' ||
+        ' and trunc(Scs_Asistencia.Fechahora) between ''@P_FECHAINICIO@'' AND ''@P_FECHAFIN@''' ||
+        ' and pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(Scs_Asistencia.Fechahora,''@P_DIASAPLICABLES@'')=1' ||
+        ' and Scs_Asistencia.Facturado=''1'''; -- facturadas
 
-                          --AAG: siguiente linea eliminada:
-                          -- no se esta usando bien este campo. Hay que revisar
-                          --and nvl(ac.facturado, '0') = '0'
-                        AND NOT EXISTS ( --y que no esten facturadas
-                            SELECT 1
-                            FROM FCS_FACT_ACTUACIONASISTENCIA FAC
-                            WHERE FAC.IDINSTITUCION = AC.IDINSTITUCION
-                                AND FAC.ANIO = AC.ANIO
-                                AND FAC.NUMERO = AC.NUMERO
-                                AND FAC.IDACTUACION = AC.IDACTUACION)
-                        )
-                )
-            GROUP BY IDINSTITUCION,
-                  IDTURNO,
-                  IDGUARDIA,
-                  IDPERSONA,
-                  FECHAINICIO,
-                  FECHA_FIN;
+    c_obtener_asistenciasnuevas varchar2(4000) := 'select idinstitucion, anio, numero, 0 facturado' ||
+        ' from Scs_Asistencia' ||
+        ' where Scs_Asistencia.Idinstitucion=@P_IDINSTITUCION@' ||
+        ' and Scs_Asistencia.Idturno=@P_IDTURNO@' ||
+        ' and Scs_Asistencia.Idguardia=@P_IDGUARDIA@' ||
+        ' and Scs_Asistencia.Idpersonacolegiado=@P_IDPERSONA@' ||
+        ' and trunc(Scs_Asistencia.Fechahora) between ''@P_FECHAINICIO@'' AND ''@P_FECHAFIN@''' ||
+        ' and Scs_Asistencia.Fechaanulacion is null' || --no anulada
+        ' and (Scs_Asistencia.Facturado is null or Scs_Asistencia.Facturado<>''1'')' || -- no facturadas
+        ' and pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(Scs_Asistencia.Fechahora,''@P_DIASAPLICABLES@'')=1' ||
+        ' and pkg_siga_facturacion_sjcs.FUNC_EXISTE_ACTUACION_JUSTIF(Scs_Asistencia.Idinstitucion,Scs_Asistencia.ANIO,Scs_Asistencia.NUMERO)>0'; -- con actuaciones justificadas.
 
-  /**Obtenemos el coste fijo para las tablas de memoria de apunte**/
-  CURSOR COSTE_FIJO(V_IDINSTITUCION number, V_ANIO number, V_NUMERO number, V_IDACTUACION number) IS
-    SELECT SUM(CO.IMPORTE) v_costefijo
-      FROM Scs_Actuacionasistencia     A,
-           SCS_ACTUACIONASISTCOSTEFIJO AC,
-           SCS_TIPOACTUACIONCOSTEFIJO  CO
-     WHERE A.IDINSTITUCION = AC.IDINSTITUCION
-       AND A.ANIO = AC.ANIO
-       AND A.Numero = AC.Numero
-       AND A.IDACTUACION = AC.IDACTUACION
-       AND CO.IDINSTITUCION = AC.IDINSTITUCION
-       AND CO.IDTIPOASISTENCIA = AC.IDTIPOASISTENCIA
-       AND CO.IDTIPOACTUACION = AC.IDTIPOACTUACION
-       AND CO.IDCOSTEFIJO = AC.IDCOSTEFIJO
-       AND A.IDINSTITUCION = V_IDINSTITUCION
-       AND A.ANIO = V_ANIO
-       AND A.NUMERO = V_NUMERO
-       AND A.IDACTUACION = V_IDACTUACION;
+    /*Cursores que utilizaremos para cargar la matriz de memoria m_apunte_ac de CG*/
+    c_obtener_actuacionesFact varchar2(4000) := 'select ac.idinstitucion,' ||
+        ' ac.anio,' ||
+        ' ac.numero,' ||
+        ' ac.idactuacion,' ||
+        ' 1 facturado,' ||
+        ' nvl(pkg_siga_facturacion_sjcs.func_costefijo(ac.idinstitucion,A.IDTURNO,A.IDGUARDIA,ac.anio,ac.numero,ac.idactuacion,TRUNC(A.FECHAHORA), NULL),0) costefijo' ||
+        ' from SCS_ASISTENCIA A, SCS_ACTUACIONASISTENCIA AC' ||
+        ' where a.idinstitucion = ac.idinstitucion' ||
+        ' and a.anio = ac.anio' ||
+        ' and a.numero = ac.numero' ||
+        ' and a.idinstitucion = @P_IDINSTITUCION@' ||
+        ' and a.idturno = @P_IDTURNO@' ||
+        ' and a.idguardia = @P_IDGUARDIA@' ||
+        ' and a.idpersonacolegiado = @P_IDPERSONA@' ||
+        ' and trunc(a.fechahora) between ''@P_FECHAINICIO@'' and ''@P_FECHAFIN@''' ||
+        ' and upper(ac.diadespues) = ''N''' ||
+         -- Siguiente linea eliminada porque no funciona bien. Revisar si se puede eliminar el check tambien de otros sitios'
+        --'      and nvl(ac.facturado, ''0'') = ''1''
+        ' and exists(select 1' ||
+        '  from FCS_FACT_ACTUACIONASISTENCIA FAC' ||
+        '  where fac.idinstitucion = ac.idinstitucion' ||
+        '  and fac.anio = ac.anio' ||
+        '  and fac.numero = ac.numero' ||
+        '  and fac.idactuacion = ac.idactuacion)' ||
+        ' and pkg_siga_facturacion_sjcs.fun_esdiaaplicable(a.fechahora,''@P_DIASAPLICABLES@'') = 1';
 
-  c_importeFacturado_CG varchar2(4000) := 'select sum(nvl(precioaplicado,0)) v_importeTotalCG' ||
-                                          ' from fcs_fact_apunte' ||
-                                          '  where fcs_fact_apunte.idinstitucion=@P_IDINSTITUCION@' ||
-                                          '  and fcs_fact_apunte.idturno=@P_IDTURNO@' ||
-                                          '  and fcs_fact_apunte.idguardia=@P_IDGUARDIA@' ||
-                                          '  and fcs_fact_apunte.idpersona=@P_IDPERSONA@' ||
-                                          '  and trunc(fcs_fact_apunte.fechainicio)=''@P_FECHAINICIO@''' ||
-                                          --'  and fcs_fact_apunte.motivo like ''G%''' || => JPT (18-06-2015): Si quitas este comentario no funciona PROC_FACT_ASIST_APLICATIPO (V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA = '1')
-                                          '  and fcs_fact_apunte.idtipoapunte<>''FG''';
+    c_obtener_actuacionesnuevas varchar2(4000) := 'select ac.idinstitucion,' ||
+        ' ac.anio,' ||
+        ' ac.numero,' ||
+        ' ac.idactuacion,' ||
+        ' 0 facturado,' ||
+        ' nvl(pkg_siga_facturacion_sjcs.func_costefijo(ac.idinstitucion,A.IDTURNO,A.IDGUARDIA,ac.anio,ac.numero,ac.idactuacion,TRUNC(A.FECHAHORA), NULL),0) costefijo' ||
+        ' from SCS_ASISTENCIA A, SCS_ACTUACIONASISTENCIA AC' ||
+        ' where a.idinstitucion = ac.idinstitucion' ||
+        ' and a.anio = ac.anio' ||
+        ' and a.numero = ac.numero' ||
+        ' and a.idinstitucion = @P_IDINSTITUCION@' ||
+        ' and a.idturno = @P_IDTURNO@' ||
+        ' and a.idguardia = @P_IDGUARDIA@' ||
+        ' and a.idpersonacolegiado = @P_IDPERSONA@' ||
+        ' and trunc(a.fechahora) between ''@P_FECHAINICIO@'' and ''@P_FECHAFIN@''' ||
+        ' and upper(ac.diadespues) = ''N''' ||
+        -- Siguiente linea eliminada porque no funciona bien. Revisar si se puede eliminar el check tambien de otros sitios
+        --'  and nvl(ac.facturado, ''0'') = ''0''
+        ' and not exists(select 1' ||
+        '  from FCS_FACT_ACTUACIONASISTENCIA FAC' ||
+        '  where fac.idinstitucion = ac.idinstitucion' ||
+        '  and fac.anio = ac.anio' ||
+        '  and fac.numero = ac.numero' ||
+        '  and fac.idactuacion = ac.idactuacion)' ||
+        ' and nvl(ac.anulacion, ''0'') = ''0''' ||
+        ' and ac.fechajustificacion is not null' ||
+        ' and trunc(ac.fechajustificacion) between ''@P_FECHAINIFACT@'' and ''@P_FECHAFINFACT@''' ||
+        ' and ac.validada = ''1''' ||
+        ' and pkg_siga_facturacion_sjcs.fun_esdiaaplicable(a.fechahora,''@P_DIASAPLICABLES@'') = 1';
 
-  c_importeFacturado_asis_CG varchar2(4000) := 'select sum(nvl(precioaplicado,0)) v_importeTotalCG' ||
-                                          ' from fcs_fact_apunte' ||
-                                          '  where fcs_fact_apunte.idinstitucion=@P_IDINSTITUCION@' ||
-                                          '  and fcs_fact_apunte.idturno=@P_IDTURNO@' ||
-                                          '  and fcs_fact_apunte.idguardia=@P_IDGUARDIA@' ||
-                                          '  and fcs_fact_apunte.idpersona=@P_IDPERSONA@' ||
-                                          '  and trunc(fcs_fact_apunte.fechainicio)=''@P_FECHAINICIO@''' ||
-                                          '  and fcs_fact_apunte.motivo not like ''G%''' ||
-                                          '  and fcs_fact_apunte.idtipoapunte<>''FG''';
+    /*Cursores que utilizaremos para cargar la matriz de memoria m_apunte_ac de UG*/
+    c_obtener_actuacionesFactUG varchar2(4000) := 'select Ac.idinstitucion,' ||
+        ' Ac.anio,' ||
+        ' Ac.numero,' ||
+        ' Ac.idactuacion,' ||
+        ' 1 facturado,' ||
+        ' nvl(pkg_siga_facturacion_sjcs.func_costefijo(Ac.idinstitucion,A.IDTURNO,A.IDGUARDIA,Ac.anio,Ac.numero,Ac.idactuacion,TRUNC(A.FECHAHORA), NULL),0) costefijo' ||
+        ' from Scs_Asistencia A, scs_actuacionasistencia Ac' ||
+        ' where A.Idinstitucion=@P_IDINSTITUCION@' ||
+        ' and A.Idturno=@P_IDTURNO@' ||
+        ' and A.Idguardia=@P_IDGUARDIA@' ||
+        ' and A.Idpersonacolegiado=@P_IDPERSONA@' ||
+        ' and trunc(A.Fechahora) =''@P_FECHAFIN@''' ||
+        ' and A.IDINSTITUCION=Ac.Idinstitucion' ||
+        ' and A.Anio=Ac.Anio' ||
+        ' and A.Numero=Ac.Numero' ||
+        --' and Ac.Facturado=''1''' ||
+        ' and exists(select 1' ||
+        '  from FCS_FACT_ACTUACIONASISTENCIA FAC' ||
+        '  where fac.idinstitucion = Ac.idinstitucion' ||
+        '  and fac.anio = Ac.anio' ||
+        '  and fac.numero = Ac.numero' ||
+        '  and fac.idactuacion = Ac.idactuacion)' ||
+        ' and pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(A.Fechahora,''@P_DIASAPLICABLES@'')=1' ||
+        ' and Ac.diadespues=''N''';
 
-  c_asistenciasfacturadas_CG varchar2(4000) := 'select count(*) ' ||
-                                               ' from Scs_Asistencia' ||
-                                               ' where Scs_Asistencia.Idinstitucion=@P_IDINSTITUCION@' ||
-                                               ' and  Scs_Asistencia.Idturno=@P_IDTURNO@' ||
-                                               ' and  Scs_Asistencia.Idguardia=@P_IDGUARDIA@' ||
-                                               ' and  Scs_Asistencia.Idpersonacolegiado=@P_IDPERSONA@' ||
-                                               ' and  trunc(Scs_Asistencia.Fechahora) between ''@P_FECHAINICIO@'' AND ''@P_FECHAFIN@''' ||
-                                               '   and  pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(Scs_Asistencia.Fechahora,''@P_DIASAPLICABLES@'')=1 ' ||
-                                               ' and  Scs_Asistencia.Facturado=''1'' ';
+    c_obtener_actuacionesnuevasUG varchar2(4000) := 'select Ac.idinstitucion,' ||
+        ' Ac.anio,' ||
+        ' Ac.numero,' ||
+        ' Ac.idactuacion,' ||
+        ' 0 facturado,' ||
+        ' nvl(pkg_siga_facturacion_sjcs.func_costefijo(Ac.idinstitucion,A.IDTURNO,A.IDGUARDIA,Ac.anio,Ac.numero,Ac.idactuacion,TRUNC(A.FECHAHORA), NULL),0) costefijo' ||
+        ' from Scs_Asistencia A, scs_actuacionasistencia Ac' ||
+        ' where A.Idinstitucion=@P_IDINSTITUCION@' ||
+        ' and A.Idturno=@P_IDTURNO@' ||
+        ' and A.Idguardia=@P_IDGUARDIA@' ||
+        ' and A.Idpersonacolegiado=@P_IDPERSONA@' ||
+        ' and trunc(A.Fechahora) =''@P_FECHAFIN@''' ||
+        ' and A.IDINSTITUCION=Ac.Idinstitucion' ||
+        ' and A.Anio=Ac.Anio' ||
+        ' and A.Numero=Ac.Numero' ||
+        --' and (Ac.Facturado is null or Ac.Facturado = ''0'')' ||
+        ' and not exists(select 1' ||
+        '  from FCS_FACT_ACTUACIONASISTENCIA FAC' ||
+        '  where fac.idinstitucion = Ac.idinstitucion' ||
+        '  and fac.anio = Ac.anio' ||
+        '  and fac.numero = Ac.numero' ||
+        '  and fac.idactuacion = Ac.idactuacion)' ||
+        ' and (Ac.Anulacion is null or Ac.Anulacion=''0'')' ||
+        ' and Ac.Fechajustificacion is not null' ||
+        ' and trunc(Ac.Fechajustificacion) between ''@P_FECHAINIFACT@'' and ''@P_FECHAFINFACT@''' ||
+        ' and Ac.Validada = ''1''' ||
+        ' and pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(A.Fechahora,''@P_DIASAPLICABLES@'')=1' ||
+        ' and Ac.diadespues=''N''';
 
-  c_actuacionesfacturadas_CG varchar2(4000) := ' select count(*)' ||
-                                               '  from Scs_Asistencia A, scs_actuacionasistencia Ac' ||
-                                               '  where A.Idinstitucion=@P_IDINSTITUCION@' ||
-                                               '  and  A.Idturno=@P_IDTURNO@' ||
-                                               '  and  A.Idguardia=@P_IDGUARDIA@' ||
-                                               '  and  A.Idpersonacolegiado=@P_IDPERSONA@' ||
-                                               '  and  trunc(A.Fechahora) between ''@P_FECHAINICIO@'' AND ''@P_FECHAFIN@''' ||
-                                               '  and  A.IDINSTITUCION=Ac.Idinstitucion' ||
-                                               '  and  A.Anio=Ac.Anio' ||
-                                               '  and  A.Numero=Ac.Numero' ||
-                                               --'  and  Ac.Facturado=''1''' || -- se elimina y se cambia por lo de abajo.
-                                                '   and exists ' ||
-                                                ' (select *' ||
-                                                '          from FCS_FACT_ACTUACIONASISTENCIA FAC' ||
-                                                '         where fac.idinstitucion = Ac.idinstitucion' ||
-                                                '           and fac.anio = Ac.anio' ||
-                                                '           and fac.numero = Ac.numero' ||
-                                                '           and fac.idactuacion = Ac.idactuacion)' ||
+    c_obtener_actFactTipoUG varchar2(4000) := 'select Ac.idinstitucion,' ||
+        ' Ac.anio,' ||
+        ' Ac.numero,' ||
+        ' Ac.idactuacion,' ||
+        ' 1 facturado,' ||
+        ' nvl(pkg_siga_facturacion_sjcs.func_costefijo(Ac.idinstitucion,A.IDTURNO,A.IDGUARDIA,Ac.anio,Ac.numero,Ac.idactuacion,TRUNC(A.FECHAHORA), NULL),0) costefijo' ||
+        ' from Scs_Asistencia A, scs_actuacionasistencia Ac' ||
+        ' where A.Idinstitucion=@P_IDINSTITUCION@' ||
+        ' and A.Idturno=@P_IDTURNO@' ||
+        ' and A.Idguardia=@P_IDGUARDIA@' ||
+        ' and A.Idpersonacolegiado=@P_IDPERSONA@' ||
+        ' and trunc(A.Fechahora) =''@P_FECHAFIN@''' ||
+        ' and A.IDINSTITUCION=Ac.Idinstitucion' ||
+        ' and A.Anio=Ac.Anio' ||
+        ' and A.Numero=Ac.Numero' ||
+        --'  and  Ac.Facturado=''1''' ||
+        ' and exists(select 1' ||
+        '  from FCS_FACT_ACTUACIONASISTENCIA FAC' ||
+        '  where fac.idinstitucion = Ac.idinstitucion' ||
+        '  and fac.anio = Ac.anio' ||
+        '  and fac.numero = Ac.numero' ||
+        '  and fac.idactuacion = Ac.idactuacion)' ||
+        ' and Ac.diadespues=''N''' ||
+        ' and pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(A.Fechahora,''@P_DIASAPLICABLES@'')=1' ||
+        ' and A.idtipoasistenciacolegio=@P_IDTIPOASIST@';
 
-                                               ' and  pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(A.Fechahora,''@P_DIASAPLICABLES@'')=1 ' ||
-                                               '  and  Ac.diadespues=''N''';
+    c_obtener_actnuevasTipoUG varchar2(4000) := 'select Ac.idinstitucion,' ||
+        ' Ac.anio,' ||
+        ' Ac.numero,' ||
+        ' Ac.idactuacion,' ||
+        ' 0 facturado,' ||
+        ' nvl(pkg_siga_facturacion_sjcs.func_costefijo(Ac.idinstitucion,A.IDTURNO,A.IDGUARDIA,Ac.anio,Ac.numero,Ac.idactuacion,TRUNC(A.FECHAHORA), NULL),0) costefijo' ||
+        ' from Scs_Asistencia A, scs_actuacionasistencia Ac' ||
+        ' where A.Idinstitucion=@P_IDINSTITUCION@' ||
+        ' and A.Idturno=@P_IDTURNO@' ||
+        ' and A.Idguardia=@P_IDGUARDIA@' ||
+        ' and A.Idpersonacolegiado=@P_IDPERSONA@' ||
+        ' and trunc(A.Fechahora) =''@P_FECHAFIN@''' ||
+        ' and A.IDINSTITUCION=Ac.Idinstitucion' ||
+        ' and A.Anio=Ac.Anio' ||
+        ' and A.Numero=Ac.Numero' ||
+        --' and (Ac.Facturado is null or Ac.Facturado = ''0'')' ||
+        ' and not exists(select 1' ||
+        '  from FCS_FACT_ACTUACIONASISTENCIA FAC' ||
+        '  where fac.idinstitucion = Ac.idinstitucion' ||
+        '  and fac.anio = Ac.anio' ||
+        '  and fac.numero = Ac.numero' ||
+        '  and fac.idactuacion = Ac.idactuacion)' ||
+        ' and (Ac.Anulacion is null or Ac.Anulacion=''0'')' ||
+        ' and Ac.Fechajustificacion is not null' ||
+        ' and trunc(Ac.Fechajustificacion) between ''@P_FECHAINIFACT@'' and ''@P_FECHAFINFACT@''' ||
+        ' and Ac.Validada = ''1''' ||
+        ' and Ac.diadespues=''N''' ||
+        ' and pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(A.Fechahora,''@P_DIASAPLICABLES@'')=1' ||
+        ' and A.idtipoasistenciacolegio=@P_IDTIPOASIST@';
 
-  c_Actuacionesnuevas_CG varchar2(4000) := ' select count(*)' ||
-                                           ' from Scs_Asistencia A, scs_actuacionasistencia Ac ' ||
-                                           ' where A.Idinstitucion=@P_IDINSTITUCION@' ||
-                                           '  and  A.Idturno=@P_IDTURNO@' ||
-                                           '  and  A.Idguardia=@P_IDGUARDIA@' ||
-                                           '  and  A.Idpersonacolegiado=@P_IDPERSONA@' ||
-                                           '  and  trunc(A.Fechahora) between ''@P_FECHAINICIO@'' AND ''@P_FECHAFIN@''' ||
-                                           '  and  A.IDINSTITUCION=Ac.Idinstitucion' ||
-                                           '   and  A.Anio=Ac.Anio' ||
-                                           '   and  A.Numero=Ac.Numero' ||
-                                           --'   and  (Ac.Facturado is null or Ac.Facturado = ''0'')' || -- no facturadas
-                                           -- se elimina y se cambia por lo de abajo
-                                            '   and not exists ' ||
-                                                ' (select *' ||
-                                                '          from FCS_FACT_ACTUACIONASISTENCIA FAC' ||
-                                                '         where fac.idinstitucion = Ac.idinstitucion' ||
-                                                '           and fac.anio = Ac.anio' ||
-                                                '           and fac.numero = Ac.numero' ||
-                                                '           and fac.idactuacion = Ac.idactuacion)' ||
+     /*Cursores que utilizaremos para cargar la matriz de memoria m_apunte_as de UG cuando facturamos por asistencia y no aplicamos tipos*/
+    c_obtener_asistenciasUG varchar2(4000) := 'select idinstitucion, anio, numero, NVL(Scs_Asistencia.Facturado, ''0'') facturado' ||
+        ' from Scs_Asistencia' ||
+        ' where Scs_Asistencia.Idinstitucion=@P_IDINSTITUCION@' ||
+        ' and Scs_Asistencia.Idturno=@P_IDTURNO@' ||
+        ' and Scs_Asistencia.Idguardia=@P_IDGUARDIA@' ||
+        ' and Scs_Asistencia.Idpersonacolegiado=@P_IDPERSONA@' ||
+        ' and trunc(Scs_Asistencia.Fechahora) =''@P_FECHAFIN@''' ||
+        ' and (Scs_Asistencia.Facturado=''1'' OR (NVL(Scs_Asistencia.Facturado, ''0'')=''0'' AND Scs_Asistencia.Fechaanulacion is null))' ||
+        ' and pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(Scs_Asistencia.Fechahora,''@P_DIASAPLICABLES@'')=1' ||
+        ' and pkg_siga_facturacion_sjcs.FUNC_EXISTE_ACTUACION_JUSTIF(Scs_Asistencia.Idinstitucion,Scs_Asistencia.ANIO,Scs_Asistencia.NUMERO)>0';
 
-                                           '   and  (Ac.Anulacion is null or Ac.Anulacion=0)' ||  --no anuladas
-                                           '   and  (Ac.Fechajustificacion is not null ' || --justificadas
-                                           '   and trunc(Ac.Fechajustificacion) between ''@P_FECHAINIFACT@'' and ''@P_FECHAFINFACT@'' and  Ac.Validada=1)' || -- en fecha
-                                           ' and  pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(A.Fechahora,''@P_DIASAPLICABLES@'')=1 ' ||
-                                           '   and  Ac.diadespues=''N'''; -- no del día después.
-
-  /*Cursores que utilizaremos para cargar la matriz de memoria m_apunte_as de CG*/
-
-  c_obtener_asistenciasFact varchar2(4000) := ' select idinstitucion, anio, numero,1 facturado' ||
-                                              ' from Scs_Asistencia' ||
-                                              ' where Scs_Asistencia.Idinstitucion=@P_IDINSTITUCION@' ||
-                                              ' and  Scs_Asistencia.Idturno=@P_IDTURNO@' ||
-                                              ' and  Scs_Asistencia.Idguardia=@P_IDGUARDIA@' ||
-                                              ' and  Scs_Asistencia.Idpersonacolegiado=@P_IDPERSONA@' ||
-                                              ' and  trunc(Scs_Asistencia.Fechahora) between ''@P_FECHAINICIO@'' AND ''@P_FECHAFIN@''' ||
-                                              ' and  pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(Scs_Asistencia.Fechahora,''@P_DIASAPLICABLES@'')=1 ' ||
-                                              ' and  Scs_Asistencia.Facturado=''1'''; -- facturadas
-
-  c_obtener_asistenciasnuevas varchar2(4000) := ' select idinstitucion, anio, numero, 0 facturado' ||
-                                                ' from Scs_Asistencia' ||
-                                                ' where Scs_Asistencia.Idinstitucion=@P_IDINSTITUCION@' ||
-                                                '   and  Scs_Asistencia.Idturno=@P_IDTURNO@' ||
-                                                '   and  Scs_Asistencia.Idguardia=@P_IDGUARDIA@' ||
-                                                '   and  Scs_Asistencia.Idpersonacolegiado=@P_IDPERSONA@' ||
-                                                '   and  trunc(Scs_Asistencia.Fechahora) between ''@P_FECHAINICIO@'' AND ''@P_FECHAFIN@''' ||
-                                                '   and  Scs_Asistencia.Fechaanulacion is null' || --no anulada
-                                                '   and  (Scs_Asistencia.Facturado is null or Scs_Asistencia.Facturado<>''1'')' || -- no facturadas
-                                                '   and  pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(Scs_Asistencia.Fechahora,''@P_DIASAPLICABLES@'')=1 ' ||
-                                                '   and  pkg_siga_facturacion_sjcs.FUNC_EXISTE_ACTUACION_JUSTIF(Scs_Asistencia.Idinstitucion,Scs_Asistencia.ANIO,Scs_Asistencia.NUMERO)>0'; -- con actuaciones justificadas.
-
-  /***************************************************************************/
-
-  /*Cursores que utilizaremos para cargar la matriz de memoria m_apunte_ac de CG*/
-  c_obtener_actuacionesFact varchar2(4000) := '' ||
-    'select ac.idinstitucion,' ||
-    '       ac.anio,' ||
-    '       ac.numero,' ||
-    '       ac.idactuacion,' ||
-    '       1 facturado,' ||
-    '       nvl(pkg_siga_facturacion_sjcs.func_costefijo(ac.idinstitucion,' ||
-    '                                                    ac.anio,' ||
-    '                                                    ac.numero,' ||
-    '                                                    ac.idactuacion),' ||
-    '           0) costefijo' ||
-    '  from SCS_ASISTENCIA A, SCS_ACTUACIONASISTENCIA AC' ||
-    ' where a.idinstitucion = ac.idinstitucion' ||
-    '   and a.anio = ac.anio' ||
-    '   and a.numero = ac.numero' ||
-    '      ' ||
-    '   and a.idinstitucion = @P_IDINSTITUCION@' ||
-    '   and a.idturno = @P_IDTURNO@' ||
-    '   and a.idguardia = @P_IDGUARDIA@' ||
-    '   and a.idpersonacolegiado = @P_IDPERSONA@' ||
-    '   and trunc(a.fechahora) between ''@P_FECHAINICIO@'' and ''@P_FECHAFIN@''' ||
-    '   and upper(ac.diadespues) = upper(''n'')' ||
-    '      ' ||
-    '      /* Siguiente linea eliminada porque no funciona bien. ' ||
-    '         Revisar si se puede eliminar el check tambien de otros sitios' ||
-    '      and nvl(ac.facturado, ''0'') = ''1''*/' ||
-    '   and exists' ||
-    ' (select *' ||
-    '          from FCS_FACT_ACTUACIONASISTENCIA FAC' ||
-    '         where fac.idinstitucion = ac.idinstitucion' ||
-    '           and fac.anio = ac.anio' ||
-    '           and fac.numero = ac.numero' ||
-    '           and fac.idactuacion = ac.idactuacion)' ||
-    '      ' ||
-    '   and pkg_siga_facturacion_sjcs.fun_esdiaaplicable(a.fechahora,' ||
-    '                                                    ''@P_DIASAPLICABLES@'') = 1';
-
-  c_obtener_actuacionesnuevas varchar2(4000) := '' ||
-    'select ac.idinstitucion,' ||
-    '       ac.anio,' ||
-    '       ac.numero,' ||
-    '       ac.idactuacion,' ||
-    '       0 facturado,' ||
-    '       nvl(pkg_siga_facturacion_sjcs.func_costefijo(ac.idinstitucion,' ||
-    '                                                    ac.anio,' ||
-    '                                                    ac.numero,' ||
-    '                                                    ac.idactuacion),' ||
-    '           0) costefijo' ||
-    '  from SCS_ASISTENCIA A, SCS_ACTUACIONASISTENCIA AC' ||
-    ' where a.idinstitucion = ac.idinstitucion' ||
-    '   and a.anio = ac.anio' ||
-    '   and a.numero = ac.numero' ||
-    '      ' ||
-    '   and a.idinstitucion = @P_IDINSTITUCION@' ||
-    '   and a.idturno = @P_IDTURNO@' ||
-    '   and a.idguardia = @P_IDGUARDIA@' ||
-    '   and a.idpersonacolegiado = @P_IDPERSONA@' ||
-    '   and trunc(a.fechahora) between ''@P_FECHAINICIO@'' and ''@P_FECHAFIN@''' ||
-    '   and upper(ac.diadespues) = upper(''n'')' ||
-    '      ' ||
-    '      /* Siguiente linea eliminada porque no funciona bien. ' ||
-    '         Revisar si se puede eliminar el check tambien de otros sitios' ||
-    '      and nvl(ac.facturado, ''0'') = ''0''*/' ||
-    '   and not exists' ||
-    ' (select *' ||
-    '          from FCS_FACT_ACTUACIONASISTENCIA FAC' ||
-    '         where fac.idinstitucion = ac.idinstitucion' ||
-    '           and fac.anio = ac.anio' ||
-    '           and fac.numero = ac.numero' ||
-    '           and fac.idactuacion = ac.idactuacion)' ||
-    '      ' ||
-    '   and nvl(ac.anulacion, ''0'') = ''0''' ||
-    '   and (ac.fechajustificacion is not null and' ||
-    '       trunc(ac.fechajustificacion) between ''@P_FECHAINIFACT@'' and ''@P_FECHAFINFACT@'' and' ||
-    '       ac.validada = ''1'')' ||
-    '      ' ||
-    '   and pkg_siga_facturacion_sjcs.fun_esdiaaplicable(a.fechahora,' ||
-    '                                                    ''@P_DIASAPLICABLES@'') = 1';
-
-  /************************************************************/
-
-  /*Cursores que utilizaremos para cargar la matriz de memoria m_apunte_ac de UG*/
-  c_obtener_actuacionesFactUG varchar2(4000) := '  select Ac.idinstitucion, Ac.anio, Ac.numero, Ac.idactuacion, 1 facturado,nvl(pkg_siga_facturacion_sjcs.func_costefijo(Ac.idinstitucion,Ac.anio,Ac.numero,Ac.idactuacion),0) costefijo' ||
-                                                '  from Scs_Asistencia A, scs_actuacionasistencia Ac' ||
-                                                '  where A.Idinstitucion=@P_IDINSTITUCION@' ||
-                                                '  and  A.Idturno=@P_IDTURNO@' ||
-                                                '  and  A.Idguardia=@P_IDGUARDIA@' ||
-                                                '  and  A.Idpersonacolegiado=@P_IDPERSONA@' ||
-                                                '  and  trunc(A.Fechahora) =''@P_FECHAFIN@''' ||
-                                                '  and  A.IDINSTITUCION=Ac.Idinstitucion' ||
-                                                '  and  A.Anio=Ac.Anio' ||
-                                                '  and  A.Numero=Ac.Numero' ||
-                                                --'  and  Ac.Facturado=''1''' ||
-                                                 '   and exists ' ||
-                                                ' (select *' ||
-                                                '          from FCS_FACT_ACTUACIONASISTENCIA FAC' ||
-                                                '         where fac.idinstitucion = Ac.idinstitucion' ||
-                                                '           and fac.anio = Ac.anio' ||
-                                                '           and fac.numero = Ac.numero' ||
-                                                '           and fac.idactuacion = Ac.idactuacion)' ||
-
-                                                '  and  pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(A.Fechahora,''@P_DIASAPLICABLES@'')=1 ' ||
-                                                '  and  Ac.diadespues=''N''';
-
-  c_obtener_actuacionesnuevasUG varchar2(4000) := ' select Ac.idinstitucion, Ac.anio, Ac.numero,Ac.idactuacion, 0 facturado,nvl(pkg_siga_facturacion_sjcs.func_costefijo(Ac.idinstitucion,Ac.anio,Ac.numero,Ac.idactuacion),0) costefijo' ||
-                                                  ' from Scs_Asistencia A, scs_actuacionasistencia Ac ' ||
-                                                  ' where A.Idinstitucion=@P_IDINSTITUCION@' ||
-                                                  '  and  A.Idturno=@P_IDTURNO@' ||
-                                                  '  and  A.Idguardia=@P_IDGUARDIA@' ||
-                                                  '  and  A.Idpersonacolegiado=@P_IDPERSONA@' ||
-                                                  '  and  trunc(A.Fechahora) =''@P_FECHAFIN@''' ||
-                                                  '  and  A.IDINSTITUCION=Ac.Idinstitucion' ||
-                                                  '   and  A.Anio=Ac.Anio' ||
-                                                  '   and  A.Numero=Ac.Numero' ||
-                                                  --'   and  (Ac.Facturado is null or Ac.Facturado = ''0'')' ||
-                                                   '   and not exists ' ||
-                                                    ' (select *' ||
-                                                    '          from FCS_FACT_ACTUACIONASISTENCIA FAC' ||
-                                                    '         where fac.idinstitucion = Ac.idinstitucion' ||
-                                                    '           and fac.anio = Ac.anio' ||
-                                                    '           and fac.numero = Ac.numero' ||
-                                                    '           and fac.idactuacion = Ac.idactuacion)' ||
-
-                                                  '   and  (Ac.Anulacion is null or Ac.Anulacion=''0'')' ||
-                                                  '   and  (Ac.Fechajustificacion is not null ' ||
-                                                  '   and trunc(Ac.Fechajustificacion) between ''@P_FECHAINIFACT@'' and ''@P_FECHAFINFACT@'' and  Ac.Validada=''1'')' ||
-                                                  '   and  pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(A.Fechahora,''@P_DIASAPLICABLES@'')=1 ' ||
-                                                  '   and  Ac.diadespues=''N''';
-
-  c_obtener_actFactTipoUG varchar2(4000) := '  select Ac.idinstitucion, Ac.anio, Ac.numero, Ac.idactuacion, 1 facturado,nvl(pkg_siga_facturacion_sjcs.func_costefijo(Ac.idinstitucion,Ac.anio,Ac.numero,Ac.idactuacion),0) costefijo' ||
-                                            '  from Scs_Asistencia A, scs_actuacionasistencia Ac' ||
-                                            '  where A.Idinstitucion=@P_IDINSTITUCION@' ||
-                                            '  and  A.Idturno=@P_IDTURNO@' ||
-                                            '  and  A.Idguardia=@P_IDGUARDIA@' ||
-                                            '  and  A.Idpersonacolegiado=@P_IDPERSONA@' ||
-                                            '  and  trunc(A.Fechahora) =''@P_FECHAFIN@''' ||
-                                            '  and  A.IDINSTITUCION=Ac.Idinstitucion' ||
-                                            '  and  A.Anio=Ac.Anio' ||
-                                            '  and  A.Numero=Ac.Numero' ||
-                                            --'  and  Ac.Facturado=''1''' ||
-                                             '   and exists ' ||
-                                                    ' (select *' ||
-                                                    '          from FCS_FACT_ACTUACIONASISTENCIA FAC' ||
-                                                    '         where fac.idinstitucion = Ac.idinstitucion' ||
-                                                    '           and fac.anio = Ac.anio' ||
-                                                    '           and fac.numero = Ac.numero' ||
-                                                    '           and fac.idactuacion = Ac.idactuacion)' ||
-
-                                            '  and  Ac.diadespues=''N''' ||
-                                            '  and  pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(A.Fechahora,''@P_DIASAPLICABLES@'')=1 ' ||
-                                            '  and  A.idtipoasistenciacolegio=@P_IDTIPOASIST@';
-
-  c_obtener_actnuevasTipoUG varchar2(4000) := ' select Ac.idinstitucion, Ac.anio, Ac.numero,Ac.idactuacion, 0 facturado,nvl(pkg_siga_facturacion_sjcs.func_costefijo(Ac.idinstitucion,Ac.anio,Ac.numero,Ac.idactuacion),0) costefijo' ||
-                                              ' from Scs_Asistencia A, scs_actuacionasistencia Ac ' ||
-                                              ' where A.Idinstitucion=@P_IDINSTITUCION@' ||
-                                              '  and  A.Idturno=@P_IDTURNO@' ||
-                                              '  and  A.Idguardia=@P_IDGUARDIA@' ||
-                                              '  and  A.Idpersonacolegiado=@P_IDPERSONA@' ||
-                                              '  and  trunc(A.Fechahora) =''@P_FECHAFIN@''' ||
-                                              '  and  A.IDINSTITUCION=Ac.Idinstitucion' ||
-                                              '   and  A.Anio=Ac.Anio' ||
-                                              '   and  A.Numero=Ac.Numero' ||
-                                              --'   and  (Ac.Facturado is null or Ac.Facturado = ''0'')' ||
-                                               '   and not exists ' ||
-                                                    ' (select *' ||
-                                                    '          from FCS_FACT_ACTUACIONASISTENCIA FAC' ||
-                                                    '         where fac.idinstitucion = Ac.idinstitucion' ||
-                                                    '           and fac.anio = Ac.anio' ||
-                                                    '           and fac.numero = Ac.numero' ||
-                                                    '           and fac.idactuacion = Ac.idactuacion)' ||
-                                              '   and  (Ac.Anulacion is null or Ac.Anulacion=''0'')' ||
-                                              '   and  (Ac.Fechajustificacion is not null ' ||
-                                              '   and trunc(Ac.Fechajustificacion) between ''@P_FECHAINIFACT@'' and ''@P_FECHAFINFACT@'' and  Ac.Validada=1)' ||
-                                              '   and  Ac.diadespues=''N''' ||
-                                              '  and  pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(A.Fechahora,''@P_DIASAPLICABLES@'')=1 ' ||
-                                              '  and  A.idtipoasistenciacolegio=@P_IDTIPOASIST@';
-
-  /************************************************************/
-
-  /*Cursores que utilizaremos para cargar la matriz de memoria m_apunte_as de UG cuando facturamos por
-  asistencia y no aplicamos tipos*/
-
-  c_obtener_asistenciasUG varchar2(4000) := ' select idinstitucion, anio, numero, NVL(Scs_Asistencia.Facturado, ''0'') facturado' ||
-                                                ' from Scs_Asistencia' ||
-                                                ' where Scs_Asistencia.Idinstitucion=@P_IDINSTITUCION@' ||
-                                                ' and Scs_Asistencia.Idturno=@P_IDTURNO@' ||
-                                                ' and Scs_Asistencia.Idguardia=@P_IDGUARDIA@' ||
-                                                ' and Scs_Asistencia.Idpersonacolegiado=@P_IDPERSONA@' ||
-                                                ' and trunc(Scs_Asistencia.Fechahora) =''@P_FECHAFIN@''' ||
-                                                ' and (Scs_Asistencia.Facturado=''1'' OR (NVL(Scs_Asistencia.Facturado, ''0'')=''0'' AND Scs_Asistencia.Fechaanulacion is null))' ||
-                                                ' and pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(Scs_Asistencia.Fechahora,''@P_DIASAPLICABLES@'')=1' ||
-                                                ' and pkg_siga_facturacion_sjcs.FUNC_EXISTE_ACTUACION_JUSTIF(Scs_Asistencia.Idinstitucion,Scs_Asistencia.ANIO,Scs_Asistencia.NUMERO)>0';
-
-  /***************************************************************************/
-
-  --Obtenemos las unidades de guardia realizadas en la Cabecera de Guardia ordenadas por fecha_fin
-  -- buscando solo los apuntes que NO son TP ni FG
-  CURSOR UNIDADES_GUARDIA(V_IDINSTITUCION number,
-                          V_IDTURNO number,
-                          V_IDGUARDIA number,
-                          V_IDPERSONA number,
-                          V_FECHAINICIO date,
-                          V_DIASAPLICABLES varchar2) IS
-    Select Gc.Idinstitucion,
-           Gc.Idturno,
-           Gc.Idguardia,
-           Gc.Idpersona,
-           Gc.Fechainicio,
-           Gc.Fechafin,
-           Gc.Facturado,
-           Sum(Nvl(Fgc.Precioaplicado, 0)) Importefacturado,
-           --INI: Cambio para Asistencias que derivan en Designacion
-           f_Tiene_Asist_Derivadas(Gc.Idinstitucion,
-                                   Gc.Idturno,
-                                   Gc.Idguardia,
-                                   Gc.Idpersona,
-                                   Trunc(Gc.Fechafin),
-                                   Trunc(Gc.Fechafin),
-                                   v_Datos_Facturacion.Fechadesde,
-                                   v_Datos_Facturacion.Fechahasta) As Tiene_Asistquederivan
-    --FIN: Cambio para Asistencias que derivan en Designacion
-      From Scs_Guardiascolegiado Gc,
-           (Select *
-              From Fcs_Fact_Guardiascolegiado Fgc2
-             Where Upper(Fgc2.Motivo) Not Like '%TP%' -- ignorando los apuntes de tipo
-               And Upper(Fgc2.Motivo) Not Like '%FG%' -- ignorando los apuntes de FG
+    /***************************************************************************/
+    --Obtenemos las unidades de guardia realizadas en la Cabecera de Guardia ordenadas por fecha_fin buscando solo los apuntes que NO son TP ni FG
+    CURSOR UNIDADES_GUARDIA(V_IDINSTITUCION NUMBER, V_IDTURNO NUMBER, V_IDGUARDIA NUMBER, V_IDPERSONA NUMBER, V_FECHAINICIO DATE, V_DIASAPLICABLES VARCHAR2) IS
+        Select Gc.Idinstitucion,
+            Gc.Idturno,
+            Gc.Idguardia,
+            Gc.Idpersona,
+            Gc.Fechainicio,
+            Gc.Fechafin,
+            Gc.Facturado,
+            Sum(Nvl(Fgc.Precioaplicado, 0)) Importefacturado,
+            --INI: Cambio para Asistencias que derivan en Designacion
+            f_Tiene_Asist_Derivadas(Gc.Idinstitucion, Gc.Idturno, Gc.Idguardia, Gc.Idpersona, Trunc(Gc.Fechafin), Trunc(Gc.Fechafin), v_Datos_Facturacion.Fechadesde, v_Datos_Facturacion.Fechahasta) As Tiene_Asistquederivan
+            --FIN: Cambio para Asistencias que derivan en Designacion
+        From Scs_Guardiascolegiado Gc,
+            (
+                Select *
+                From Fcs_Fact_Guardiascolegiado Fgc2
+                Where Upper(Fgc2.Motivo) Not Like '%TP%' -- ignorando los apuntes de tipo
+                    And Upper(Fgc2.Motivo) Not Like '%FG%' -- ignorando los apuntes de FG
             ) Fgc
-     Where Gc.Idinstitucion = Fgc.Idinstitucion(+)
-       And Gc.Idturno = Fgc.Idturno(+)
-       And Gc.Idguardia = Fgc.Idguardia(+)
-       And Gc.Idpersona = Fgc.Idpersona(+)
-       And Gc.Fechainicio = Fgc.Fechainicio(+)
-       And Gc.Fechafin = Fgc.Fechafin(+)
-       And Gc.Idinstitucion = v_Idinstitucion
-       And Gc.Idturno = v_Idturno
-       And Gc.Idguardia = v_Idguardia
-       And Gc.Idpersona = v_Idpersona
-       And Trunc(Gc.Fechainicio) = v_Fechainicio
-       And Fun_Esdiaaplicable(Gc.Fechafin, v_Diasaplicables) = 1
-     Group By Gc.Idinstitucion,
-              Gc.Idturno,
-              Gc.Idguardia,
-              Gc.Idpersona,
-              Gc.Fechainicio,
-              Gc.Fechafin,
-              Gc.Facturado
-     Order By Gc.Fechafin;
+        Where Gc.Idinstitucion = Fgc.Idinstitucion(+)
+            And Gc.Idturno = Fgc.Idturno(+)
+            And Gc.Idguardia = Fgc.Idguardia(+)
+            And Gc.Idpersona = Fgc.Idpersona(+)
+            And Gc.Fechainicio = Fgc.Fechainicio(+)
+            And Gc.Fechafin = Fgc.Fechafin(+)
+            And Gc.Idinstitucion = v_Idinstitucion
+            And Gc.Idturno = v_Idturno
+            And Gc.Idguardia = v_Idguardia
+            And Gc.Idpersona = v_Idpersona
+            And Trunc(Gc.Fechainicio) = v_Fechainicio
+            And Fun_Esdiaaplicable(Gc.Fechafin, v_Diasaplicables) = 1
+        Group By Gc.Idinstitucion,
+            Gc.Idturno,
+            Gc.Idguardia,
+            Gc.Idpersona,
+            Gc.Fechainicio,
+            Gc.Fechafin,
+            Gc.Facturado
+        Order By Gc.Fechafin;
 
-  --Obtenemos las unidades de guardia realizadas en la Cabecera de Guardia ordenadas por fecha_fin
-  -- buscando solo los apuntes que son TP
-  CURSOR UNIDADES_GUARDIA_TP(V_IDINSTITUCION number,
-                          V_IDTURNO number,
-                          V_IDGUARDIA number,
-                          V_IDPERSONA number,
-                          V_FECHAINICIO date,
-                          V_DIASAPLICABLES varchar2) IS
-    Select Gc.Idinstitucion,
-           Gc.Idturno,
-           Gc.Idguardia,
-           Gc.Idpersona,
-           Gc.Fechainicio,
-           Gc.Fechafin,
-           Gc.Facturado,
-           -- RGG cambio max(NVL(fgc.precioaplicado, 0)) IMPORTEFACTURADO,
-           Sum(Nvl(Fgc.Precioaplicado, 0)) Importefacturado,
-           --INI: Cambio para Asistencias que derivan en Designacion
-           f_Tiene_Asist_Derivadas(Gc.Idinstitucion,
-                                   Gc.Idturno,
-                                   Gc.Idguardia,
-                                   Gc.Idpersona,
-                                   Trunc(Gc.Fechafin),
-                                   Trunc(Gc.Fechafin),
-                                   v_Datos_Facturacion.Fechadesde,
-                                   v_Datos_Facturacion.Fechahasta) As Tiene_Asistquederivan
-    --FIN: Cambio para Asistencias que derivan en Designacion
-      From Scs_Guardiascolegiado Gc,
-           (Select *
-              From Fcs_Fact_Guardiascolegiado Fgc2
-            --           where upper(fgc2.motivo) like '%TP%' -- solo los apuntes de tipo
-             Where Upper(Fgc2.Motivo) Not Like '%TP%' -- solo los apuntes de día
+    --Obtenemos las unidades de guardia realizadas en la Cabecera de Guardia ordenadas por fecha_fin buscando solo los apuntes que son TP
+    CURSOR UNIDADES_GUARDIA_TP(V_IDINSTITUCION NUMBER, V_IDTURNO NUMBER, V_IDGUARDIA NUMBER, V_IDPERSONA NUMBER, V_FECHAINICIO DATE, V_DIASAPLICABLES VARCHAR2) IS
+        Select Gc.Idinstitucion,
+            Gc.Idturno,
+            Gc.Idguardia,
+            Gc.Idpersona,
+            Gc.Fechainicio,
+            Gc.Fechafin,
+            Gc.Facturado,
+            -- RGG cambio max(NVL(fgc.precioaplicado, 0)) IMPORTEFACTURADO,
+            Sum(Nvl(Fgc.Precioaplicado, 0)) Importefacturado,
+            --INI: Cambio para Asistencias que derivan en Designacion
+            f_Tiene_Asist_Derivadas(Gc.Idinstitucion, Gc.Idturno, Gc.Idguardia, Gc.Idpersona, Trunc(Gc.Fechafin), Trunc(Gc.Fechafin), v_Datos_Facturacion.Fechadesde, v_Datos_Facturacion.Fechahasta) As Tiene_Asistquederivan
+            --FIN: Cambio para Asistencias que derivan en Designacion
+        From Scs_Guardiascolegiado Gc,
+            (
+                Select *
+                From Fcs_Fact_Guardiascolegiado Fgc2
+                --           where upper(fgc2.motivo) like '%TP%' -- solo los apuntes de tipo
+                Where Upper(Fgc2.Motivo) Not Like '%TP%' -- solo los apuntes de día
             ) Fgc
+        Where Gc.Idinstitucion = Fgc.Idinstitucion(+)
+            And Gc.Idturno = Fgc.Idturno(+)
+            And Gc.Idguardia = Fgc.Idguardia(+)
+            And Gc.Idpersona = Fgc.Idpersona(+)
+            And Gc.Fechainicio = Fgc.Fechainicio(+)
+            And Gc.Fechafin = Fgc.Fechafin(+)
+            And Gc.Idinstitucion = v_Idinstitucion
+            And Gc.Idturno = v_Idturno
+            And Gc.Idguardia = v_Idguardia
+            And Gc.Idpersona = v_Idpersona
+            And Trunc(Gc.Fechainicio) = v_Fechainicio
+            And Fun_Esdiaaplicable(Gc.Fechafin, v_Diasaplicables) = 1
+        Group By Gc.Idinstitucion,
+            Gc.Idturno,
+            Gc.Idguardia,
+            Gc.Idpersona,
+            Gc.Fechainicio,
+            Gc.Fechafin,
+            Gc.Facturado
+        Order By Gc.Fechafin;
 
-     Where Gc.Idinstitucion = Fgc.Idinstitucion(+)
-       And Gc.Idturno = Fgc.Idturno(+)
-       And Gc.Idguardia = Fgc.Idguardia(+)
-       And Gc.Idpersona = Fgc.Idpersona(+)
-       And Gc.Fechainicio = Fgc.Fechainicio(+)
-       And Gc.Fechafin = Fgc.Fechafin(+)
-       And Gc.Idinstitucion = v_Idinstitucion
-       And Gc.Idturno = v_Idturno
-       And Gc.Idguardia = v_Idguardia
-       And Gc.Idpersona = v_Idpersona
-       And Trunc(Gc.Fechainicio) = v_Fechainicio
-       And Fun_Esdiaaplicable(Gc.Fechafin, v_Diasaplicables) = 1
-     Group By Gc.Idinstitucion,
-              Gc.Idturno,
-              Gc.Idguardia,
-              Gc.Idpersona,
-              Gc.Fechainicio,
-              Gc.Fechafin,
-              Gc.Facturado
-     Order By Gc.Fechafin;
+    -- Obtenemos los distintos tipos de asistencias
+    CURSOR C_TIPOASISTENCIAS_UG(V_IDINSTITUCION number, V_IDTURNO number, V_IDGUARDIA number, V_IDPERSONA number, V_FECHAINICIO date, V_FECHAFIN date, V_DIASAPLICABLES varchar2) IS (
+        select distinct idtipoasistenciacolegio tipoasist
+        from Scs_Asistencia
+        where Scs_Asistencia.Idinstitucion = V_IDINSTITUCION
+            and Scs_Asistencia.Idturno = V_IDTURNO
+            and Scs_Asistencia.Idguardia = V_IDGUARDIA
+            and Scs_Asistencia.Idpersonacolegiado = V_IDPERSONA
+            and trunc(Scs_Asistencia.Fechahora) = V_FECHAFIN
+            and Scs_Asistencia.Facturado = '1'
+            and FUN_ESDIAAPLICABLE(Scs_Asistencia.Fechahora, V_DIASAPLICABLES) = 1
+        UNION
+        select distinct idtipoasistenciacolegio tipoasist
+        from Scs_Asistencia
+        where Scs_Asistencia.Idinstitucion = V_IDINSTITUCION
+            and Scs_Asistencia.Idturno = V_IDTURNO
+            and Scs_Asistencia.Idguardia = V_IDGUARDIA
+            and Scs_Asistencia.Idpersonacolegiado = V_IDPERSONA
+            and trunc(Scs_Asistencia.Fechahora) = V_FECHAFIN
+            and Scs_Asistencia.Fechaanulacion is null --no anulada
+            and (Scs_Asistencia.Facturado is null or Scs_Asistencia.Facturado = '0')
+            and FUNC_EXISTE_ACTUACION_JUSTIF(Scs_Asistencia.Idinstitucion, Scs_Asistencia.ANIO, Scs_Asistencia.NUMERO) > 0
+            and FUN_ESDIAAPLICABLE(Scs_Asistencia.Fechahora, V_DIASAPLICABLES) = 1)
+        order by tipoasist;
 
-  -- Obtenemos los distintos tipos de asistencias
-  CURSOR C_TIPOASISTENCIAS_UG(V_IDINSTITUCION number, V_IDTURNO number, V_IDGUARDIA number, V_IDPERSONA number, V_FECHAINICIO date, V_FECHAFIN date, V_DIASAPLICABLES varchar2) IS(
-    select distinct idtipoasistenciacolegio tipoasist
-      from Scs_Asistencia
-     where Scs_Asistencia.Idinstitucion = V_IDINSTITUCION
-       and Scs_Asistencia.Idturno = V_IDTURNO
-       and Scs_Asistencia.Idguardia = V_IDGUARDIA
-       and Scs_Asistencia.Idpersonacolegiado = V_IDPERSONA
-       and trunc(Scs_Asistencia.Fechahora) = V_FECHAFIN
-       and Scs_Asistencia.Facturado = '1'
-       and FUN_ESDIAAPLICABLE(Scs_Asistencia.Fechahora, V_DIASAPLICABLES) = 1
-    UNION
-    select distinct idtipoasistenciacolegio tipoasist
-      from Scs_Asistencia
-     where Scs_Asistencia.Idinstitucion = V_IDINSTITUCION
-       and Scs_Asistencia.Idturno = V_IDTURNO
-       and Scs_Asistencia.Idguardia = V_IDGUARDIA
-       and Scs_Asistencia.Idpersonacolegiado = V_IDPERSONA
-       and trunc(Scs_Asistencia.Fechahora) = V_FECHAFIN
-       and Scs_Asistencia.Fechaanulacion is null --no anulada
-       and (Scs_Asistencia.Facturado is null or Scs_Asistencia.Facturado = '0')
-       and FUNC_EXISTE_ACTUACION_JUSTIF(Scs_Asistencia.Idinstitucion, Scs_Asistencia.ANIO, Scs_Asistencia.NUMERO) > 0
-       and FUN_ESDIAAPLICABLE(Scs_Asistencia.Fechahora, V_DIASAPLICABLES) = 1)
-     order by tipoasist;
-
-  -- Obtenemos las asistencias realizadas y justificadas anteriormente a la fecha fin del ciclo de facturacion ordenadas por fecha de realizacion (Este cursor se utiliza para la facturacion por asistencias )
-  CURSOR C_ASISTENCIAS_UG(V_IDINSTITUCION number, V_IDTURNO number, V_IDGUARDIA number, V_IDPERSONA number, V_FECHAINICIO date, V_FECHAFIN date, V_DIASAPLICABLES varchar2) IS(
-    SELECT A.IDTIPOASISTENCIACOLEGIO TIPOASIST,
-            A.FECHAHORA,
-            A.IDINSTITUCION,
-            A.ANIO,
-            A.NUMERO,
-            1 FACTURADO,
-            FUNC_CALCULAR_IMPORTEASIST(A.IDINSTITUCION, A.IDTIPOASISTENCIACOLEGIO) IMPORTE,
-            FUNC_CALCULAR_IMPORTEMAXASIST(A.IDINSTITUCION, A.IDTIPOASISTENCIACOLEGIO) IMPORTEMAX,
+    -- Obtenemos las asistencias realizadas y justificadas anteriormente a la fecha fin del ciclo de facturacion ordenadas por fecha de realizacion (Este cursor se utiliza para la facturacion por asistencias)
+    CURSOR C_ASISTENCIAS_UG (V_IDINSTITUCION NUMBER, V_IDTURNO NUMBER, V_IDGUARDIA NUMBER, V_IDPERSONA NUMBER, V_FECHAINICIO DATE, V_FECHAFIN DATE, V_DIASAPLICABLES VARCHAR2) IS (
+        SELECT ASI.IDTIPOASISTENCIACOLEGIO,
+            ASI.FECHAHORA,
+            ASI.IDINSTITUCION,
+            ASI.ANIO,
+            ASI.NUMERO,
+            1 AS FACTURADO,
             ( -- COMPRUEBO SI TIENE ACTUACIONES SIN FACTURAR
                 SELECT COUNT(*)
-                FROM SCS_ACTUACIONASISTENCIA AA
-                WHERE AA.IDINSTITUCION = A.IDINSTITUCION
-                    AND AA.ANIO = A.ANIO
-                    AND AA.NUMERO = A.NUMERO
+                FROM SCS_ACTUACIONASISTENCIA ACT
+                WHERE ACT.IDINSTITUCION = ASI.IDINSTITUCION
+                    AND ACT.ANIO = ASI.ANIO
+                    AND ACT.NUMERO = ASI.NUMERO
                     AND NOT EXISTS (
-                        SELECT *
+                        SELECT 1
                         FROM FCS_FACT_ACTUACIONASISTENCIA FAC
-                        WHERE FAC.IDINSTITUCION = AA.IDINSTITUCION
-                        AND FAC.ANIO = AA.ANIO
-                        AND FAC.NUMERO = AA.NUMERO
-                        AND FAC.IDACTUACION = AA.IDACTUACION
+                        WHERE FAC.IDINSTITUCION = ACT.IDINSTITUCION
+                        AND FAC.ANIO = ACT.ANIO
+                        AND FAC.NUMERO = ACT.NUMERO
+                        AND FAC.IDACTUACION = ACT.IDACTUACION
                     )
-            ) NUMACTNOFAC
-      FROM SCS_ASISTENCIA A
-     WHERE A.IDINSTITUCION = V_IDINSTITUCION
-       AND A.IDTURNO = V_IDTURNO
-       AND A.IDGUARDIA = V_IDGUARDIA
-       AND A.IDPERSONACOLEGIADO = V_IDPERSONA
-       AND TRUNC(A.FECHAHORA) = V_FECHAFIN
-       AND A.FACTURADO = '1'
-       AND FUN_ESDIAAPLICABLE(A.FECHAHORA, V_DIASAPLICABLES) = 1
-    UNION
-    SELECT A.IDTIPOASISTENCIACOLEGIO TIPOASIST,
-           A.FECHAHORA,
-           A.IDINSTITUCION,
-           A.ANIO,
-           A.NUMERO,
-           0 FACTURADO,
-           FUNC_CALCULAR_IMPORTEASIST(A.IDINSTITUCION, A.IDTIPOASISTENCIACOLEGIO) IMPORTE,
-           FUNC_CALCULAR_IMPORTEMAXASIST(A.IDINSTITUCION, A.IDTIPOASISTENCIACOLEGIO) IMPORTEMAX,
+            ) AS NUMACTNOFAC
+        FROM SCS_ASISTENCIA ASI
+        WHERE ASI.IDINSTITUCION = V_IDINSTITUCION
+            AND ASI.IDTURNO = V_IDTURNO
+            AND ASI.IDGUARDIA = V_IDGUARDIA
+            AND ASI.IDPERSONACOLEGIADO = V_IDPERSONA
+            AND TRUNC(ASI.FECHAHORA) = V_FECHAFIN
+            AND ASI.FACTURADO = '1'
+            AND FUN_ESDIAAPLICABLE(ASI.FECHAHORA, V_DIASAPLICABLES) = 1
+        UNION
+        SELECT ASI.IDTIPOASISTENCIACOLEGIO,
+           ASI.FECHAHORA,
+           ASI.IDINSTITUCION,
+           ASI.ANIO,
+           ASI.NUMERO,
+           0 AS FACTURADO,
             ( -- COMPRUEBO SI TIENE ACTUACIONES SIN FACTURAR
                 SELECT COUNT(*)
-                FROM SCS_ACTUACIONASISTENCIA AA
-                WHERE AA.IDINSTITUCION = A.IDINSTITUCION
-                    AND AA.ANIO = A.ANIO
-                    AND AA.NUMERO = A.NUMERO
+                FROM SCS_ACTUACIONASISTENCIA ACT
+                WHERE ACT.IDINSTITUCION = ASI.IDINSTITUCION
+                    AND ACT.ANIO = ASI.ANIO
+                    AND ACT.NUMERO = ASI.NUMERO
                     AND NOT EXISTS (
-                        SELECT *
+                        SELECT 1
                         FROM FCS_FACT_ACTUACIONASISTENCIA FAC
-                        WHERE FAC.IDINSTITUCION = AA.IDINSTITUCION
-                        AND FAC.ANIO = AA.ANIO
-                        AND FAC.NUMERO = AA.NUMERO
-                        AND FAC.IDACTUACION = AA.IDACTUACION
+                        WHERE FAC.IDINSTITUCION = ACT.IDINSTITUCION
+                        AND FAC.ANIO = ACT.ANIO
+                        AND FAC.NUMERO = ACT.NUMERO
+                        AND FAC.IDACTUACION = ACT.IDACTUACION
                     )
-            ) NUMACTNOFAC
-      FROM SCS_ASISTENCIA A
-     WHERE A.IDINSTITUCION = V_IDINSTITUCION
-       AND A.IDTURNO = V_IDTURNO
-       AND A.IDGUARDIA = V_IDGUARDIA
-       AND A.IDPERSONACOLEGIADO = V_IDPERSONA
-       AND TRUNC(A.FECHAHORA) = V_FECHAFIN
-       AND A.FECHAANULACION IS NULL --no anulada
-       AND (A.FACTURADO IS NULL OR A.FACTURADO = '0')
-       AND FUNC_EXISTE_ACTUACION_JUSTIF(A.IDINSTITUCION, A.ANIO, A.NUMERO) > 0
-       AND FUN_ESDIAAPLICABLE(A.FECHAHORA, V_DIASAPLICABLES) = 1)
-     order by tipoasist, fechahora;
+            ) AS NUMACTNOFAC
+        FROM SCS_ASISTENCIA ASI
+        WHERE ASI.IDINSTITUCION = V_IDINSTITUCION
+            AND ASI.IDTURNO = V_IDTURNO
+            AND ASI.IDGUARDIA = V_IDGUARDIA
+            AND ASI.IDPERSONACOLEGIADO = V_IDPERSONA
+            AND TRUNC(ASI.FECHAHORA) = V_FECHAFIN
+            AND ASI.FECHAANULACION IS NULL --no anulada
+            AND (ASI.FACTURADO IS NULL OR ASI.FACTURADO = '0')
+            AND FUNC_EXISTE_ACTUACION_JUSTIF(ASI.IDINSTITUCION, ASI.ANIO, ASI.NUMERO) > 0
+            AND FUN_ESDIAAPLICABLE(ASI.FECHAHORA, V_DIASAPLICABLES) = 1)
+        ORDER BY IDTIPOASISTENCIACOLEGIO, FECHAHORA;
 
-  -- Obtenemos las asistencias realizadas y justificadas anteriormente a la fecha fin del ciclo de facturacion
-  -- para cada idtipocolegiado
-  -- ordenadas por fecha de realizacion (Este cursor se utiliza para la facturacion por asistencias )
-  CURSOR C_ASISTENCIASTIPO_UG(V_IDINSTITUCION number, V_IDTURNO number, V_IDGUARDIA number, V_IDPERSONA number, V_FECHAINICIO date, V_FECHAFIN date, V_IDTIPOASISTCOLEG NUMBER, V_DIASAPLICABLES varchar2) IS(
-    select idtipoasistenciacolegio tipoasist,
-           fechahora,
-           Idinstitucion,
-           anio,
-           numero,
-           1 facturado,
-           FUNC_CALCULAR_IMPORTEASIST(V_IDINSTITUCION,
-                                                                Scs_Asistencia.Idtipoasistenciacolegio) importe,
-           FUNC_CALCULAR_IMPORTEMAXASIST(V_IDINSTITUCION,
-                                         Scs_Asistencia.Idtipoasistenciacolegio) importemax
-      from Scs_Asistencia
-     where Scs_Asistencia.Idinstitucion = V_IDINSTITUCION
-       and Scs_Asistencia.Idturno = V_IDTURNO
-       and Scs_Asistencia.Idguardia = V_IDGUARDIA
-       and Scs_Asistencia.Idpersonacolegiado = V_IDPERSONA
-       and trunc(Scs_Asistencia.Fechahora) = V_FECHAFIN
-       and Scs_Asistencia.Facturado = '1'
-       and FUN_ESDIAAPLICABLE(Scs_Asistencia.Fechahora,
-                                                        V_DIASAPLICABLES) = 1
-       and Scs_Asistencia.Idtipoasistenciacolegio = V_IDTIPOASISTCOLEG
-    UNION
-    select idtipoasistenciacolegio tipoasist,
-           fechahora,
-           idinstitucion,
-           anio,
-           numero,
-           0 facturado,
-           FUNC_CALCULAR_IMPORTEASIST(V_IDINSTITUCION, Scs_Asistencia.Idtipoasistenciacolegio) importe,
-           FUNC_CALCULAR_IMPORTEMAXASIST(V_IDINSTITUCION, Scs_Asistencia.Idtipoasistenciacolegio) importemax
-      from Scs_Asistencia
-     where Scs_Asistencia.Idinstitucion = V_IDINSTITUCION
-       and Scs_Asistencia.Idturno = V_IDTURNO
-       and Scs_Asistencia.Idguardia = V_IDGUARDIA
-       and Scs_Asistencia.Idpersonacolegiado = V_IDPERSONA
-       and trunc(Scs_Asistencia.Fechahora) = V_FECHAFIN
-       and (Scs_Asistencia.Facturado is null or Scs_Asistencia.Facturado = '0')
-       and Scs_Asistencia.Idtipoasistenciacolegio = V_IDTIPOASISTCOLEG
-       and FUNC_EXISTE_ACTUACION_JUSTIF(Scs_Asistencia.Idinstitucion, Scs_Asistencia.ANIO, Scs_Asistencia.NUMERO) > 0
-       and FUN_ESDIAAPLICABLE(Scs_Asistencia.Fechahora, V_DIASAPLICABLES) = 1)
-     order by tipoasist, fechahora;
+    -- Obtenemos los distintos tipos de actuaciones
+    CURSOR C_TIPOACTUACIONES_UG(V_IDINSTITUCION number, V_IDTURNO number, V_IDGUARDIA number, V_IDPERSONA number, V_FECHAFIN date, V_DIASAPLICABLES varchar2) IS(
+        select AC.IDTIPOACTUACION TIPOACTUACION
+        from Scs_Asistencia A, scs_actuacionasistencia Ac
+        where A.Idinstitucion = V_IDINSTITUCION
+            and A.Idturno = V_IDTURNO
+            and A.Idguardia = V_IDGUARDIA
+            and A.Idpersonacolegiado = V_IDPERSONA
+            and A.Fechahora = V_FECHAFIN
+            and A.IDINSTITUCION = Ac.Idinstitucion
+            and A.Anio = Ac.Anio
+            and A.Numero = Ac.Numero
+            and Ac.Facturado = '1'
+            and Ac.diadespues = 'N'
+            and FUN_ESDIAAPLICABLE(A.Fechahora, V_DIASAPLICABLES) = 1
+        UNION
+        select AC.IDTIPOACTUACION TIPOACTUACION
+        from Scs_Asistencia A, scs_actuacionasistencia Ac
+        where A.Idinstitucion = V_IDINSTITUCION
+            and A.Idturno = V_IDTURNO
+            and A.Idguardia = V_IDGUARDIA
+            and A.Idpersonacolegiado = V_IDPERSONA
+            and A.Fechahora = V_FECHAFIN
+            and A.IDINSTITUCION = Ac.Idinstitucion
+            and A.Anio = Ac.Anio
+            and A.Numero = Ac.Numero
+            --and (Ac.Facturado is null or Ac.Facturado = '0')
+            and not exists( 
+                select 1
+                from FCS_FACT_ACTUACIONASISTENCIA FAC
+                where fac.idinstitucion = Ac.idinstitucion
+                and fac.anio = Ac.anio
+                and fac.numero = Ac.numero
+                and fac.idactuacion = Ac.idactuacion)
+                and (Ac.Anulacion is null or Ac.Anulacion = '0')
+                and Ac.Fechajustificacion is not null
+                and trunc(Ac.Fechajustificacion) between trunc(V_DATOS_FACTURACION.FECHADESDE) and trunc(V_DATOS_FACTURACION.FECHAHASTA)
+                and Ac.Validada = '1'
+                and Ac.diadespues = 'N'
+                and FUN_ESDIAAPLICABLE(A.Fechahora, V_DIASAPLICABLES) = 1)
+            ORDER BY TIPOACTUACION;
 
-  -- Obtenemos los distintos tipos de actuaciones
-  CURSOR C_TIPOACTUACIONES_UG(V_IDINSTITUCION number, V_IDTURNO number, V_IDGUARDIA number, V_IDPERSONA number, V_FECHAFIN date, V_DIASAPLICABLES varchar2) IS(
-    select AC.IDTIPOACTUACION TIPOACTUACION
-      from Scs_Asistencia A, scs_actuacionasistencia Ac
-     where A.Idinstitucion = V_IDINSTITUCION
-       and A.Idturno = V_IDTURNO
-       and A.Idguardia = V_IDGUARDIA
-       and A.Idpersonacolegiado = V_IDPERSONA
-       and A.Fechahora = V_FECHAFIN
-       and A.IDINSTITUCION = Ac.Idinstitucion
-       and A.Anio = Ac.Anio
-       and A.Numero = Ac.Numero
-       and Ac.Facturado = '1'
-       and Ac.diadespues = 'N'
-       and FUN_ESDIAAPLICABLE(A.Fechahora,
-                                                        V_DIASAPLICABLES) = 1
+    -- CURSORES PARA ACFG (no aplica tipos)
+    cursor C_GUARDIAS_ACFG (
+        P_IDINSTITUCION SCS_CABECERAGUARDIAS.IDINSTITUCION%TYPE,
+        P_IDTURNO SCS_CABECERAGUARDIAS.IDTURNO%TYPE,
+        P_IDGUARDIA SCS_CABECERAGUARDIAS.IDGUARDIA%TYPE,
+        P_FECHAINICIO SCS_CABECERAGUARDIAS.FECHAINICIO%TYPE,
+        P_IDPERSONA SCS_CABECERAGUARDIAS.IDPERSONA%TYPE) IS (
+        select guacol.idinstitucion as IDINSTITUCION,
+            guacol.idturno as IDTURNO,
+            guacol.idguardia as IDGUARDIA,
+            guacol.idpersona as IDPERSONA,
+            guacol.fechainicio as FECHAINICIO,
+            guacol.fechafin as FECHAFIN
+        from SCS_GUARDIASCOLEGIADO GUACOL
+        where guacol.idinstitucion = P_IDINSTITUCION
+            and guacol.idturno = P_IDTURNO
+            and guacol.idguardia = P_IDGUARDIA
+            and guacol.fechainicio = P_FECHAINICIO
+            and guacol.idpersona = P_IDPERSONA
+            and exists(
+                select 1
+                from SCS_ASISTENCIA ASI, SCS_ACTUACIONASISTENCIA ACTASI
+                where asi.idinstitucion = actasi.idinstitucion
+                    and asi.anio = actasi.anio
+                    and asi.numero = actasi.numero
+                    and guacol.idinstitucion = asi.idinstitucion
+                    and guacol.idturno = asi.idturno
+                    and guacol.idguardia = asi.idguardia
+                    and guacol.fechafin = trunc(asi.fechahora)
+                    and guacol.idpersona = asi.idpersonacolegiado
+                    and actasi.fechajustificacion between trunc(V_DATOS_FACTURACION.FECHADESDE) and trunc(V_DATOS_FACTURACION.FECHAHASTA)
+                    and nvl(actasi.anulacion, '0') = '0'
+                    and actasi.diadespues = 'S'
+                    and not exists(
+                        select 1
+                        from FCS_FACT_ACTUACIONASISTENCIA FACTASI
+                        where actasi.idinstitucion = factasi.idinstitucion
+                            and actasi.anio = factasi.anio
+                            and actasi.numero = factasi.numero
+                            and actasi.idactuacion = factasi.idactuacion)));
 
-    UNION
-    select AC.IDTIPOACTUACION TIPOACTUACION
-      from Scs_Asistencia A, scs_actuacionasistencia Ac
-     where A.Idinstitucion = V_IDINSTITUCION
-       and A.Idturno = V_IDTURNO
-       and A.Idguardia = V_IDGUARDIA
-       and A.Idpersonacolegiado = V_IDPERSONA
-       and A.Fechahora = V_FECHAFIN
-       and A.IDINSTITUCION = Ac.Idinstitucion
-       and A.Anio = Ac.Anio
-       and A.Numero = Ac.Numero
-       --and (Ac.Facturado is null or Ac.Facturado = '0')
-       and not exists
-       (select *
-       from FCS_FACT_ACTUACIONASISTENCIA FAC
-       where fac.idinstitucion = Ac.idinstitucion
-       and fac.anio = Ac.anio
-       and fac.numero = Ac.numero
-       and fac.idactuacion = Ac.idactuacion)
+    CURSOR C_ASISTENCIAS_ACFG (
+        P_IDINSTITUCION SCS_GUARDIASCOLEGIADO.IDINSTITUCION%TYPE,
+        P_IDTURNO SCS_GUARDIASCOLEGIADO.IDTURNO%TYPE,
+        P_IDGUARDIA SCS_GUARDIASCOLEGIADO.IDGUARDIA%TYPE,
+        P_FECHAFIN SCS_GUARDIASCOLEGIADO.FECHAFIN%TYPE,
+        P_IDPERSONA SCS_GUARDIASCOLEGIADO.IDPERSONA%TYPE) IS (
+        select asi.idinstitucion as IDINSTITUCION,
+            asi.anio as ANIO,
+            asi.numero as NUMERO
+        from SCS_ASISTENCIA ASI
+        where asi.idinstitucion = P_IDINSTITUCION
+            and asi.idturno = P_IDTURNO
+            and asi.idguardia = P_IDGUARDIA
+            and trunc(asi.fechahora) = P_FECHAFIN
+            and asi.idpersonacolegiado = P_IDPERSONA
+            and exists(
+                select 1
+                from SCS_ACTUACIONASISTENCIA ACTASI
+                where asi.idinstitucion = actasi.idinstitucion
+                    and asi.anio = actasi.anio
+                    and asi.numero = actasi.numero
+                    and actasi.fechajustificacion between trunc(V_DATOS_FACTURACION.FECHADESDE) and trunc(V_DATOS_FACTURACION.FECHAHASTA)
+                    and nvl(actasi.anulacion, '0') = '0'
+                    and actasi.diadespues = 'S' -- solo las del día después.
+                    and not exists( -- solo las NO FACTURADAS
+                        select 1
+                        from FCS_FACT_ACTUACIONASISTENCIA FACTASI
+                        where actasi.idinstitucion = factasi.idinstitucion
+                            and actasi.anio = factasi.anio
+                            and actasi.numero = factasi.numero
+                            and actasi.idactuacion = factasi.idactuacion)));
 
-       and (Ac.Anulacion is null or Ac.Anulacion = '0')
-       and (Ac.Fechajustificacion is not null and
-           trunc(Ac.Fechajustificacion) between
-           trunc(V_DATOS_FACTURACION.FECHADESDE) and
-           trunc(V_DATOS_FACTURACION.FECHAHASTA) and
-           Ac.Validada = 1)
-       and Ac.diadespues = 'N'
-       and FUN_ESDIAAPLICABLE(A.Fechahora,
-                                                        V_DIASAPLICABLES) = 1)
-     ORDER BY TIPOACTUACION;
+    -- Obtenemos los diferentes dias que se efectuan las actuaciones fuera de guardia y justificadas en el ciclo de facturacion y agrupadas por Tipo Actuacion y ordenadas por fecha de realizacin
+    CURSOR C_DIAS_FG(V_IDINSTITUCION number, V_IDTURNO number, V_IDGUARDIA number, V_IDPERSONA number, V_FECHAINICIO_CG date, V_FECHAFIN_CG date) IS
+        select Distinct Ac.fecha FECHA, '0' as facturado
+        from Scs_Asistencia A, scs_actuacionasistencia Ac
+        where A.Idinstitucion = V_IDINSTITUCION
+            and A.Idturno = V_IDTURNO
+            and A.Idguardia = V_IDGUARDIA
+            and A.Idpersonacolegiado = V_IDPERSONA
+            and trunc(A.Fechahora) BETWEEN trunc(V_FECHAINICIO_CG) AND trunc(V_FECHAFIN_CG)
+            and A.IDINSTITUCION = Ac.Idinstitucion
+            and A.Anio = Ac.Anio
+            and A.Numero = Ac.Numero
+            --and (Ac.Facturado is null or Ac.Facturado = '0')
+            and not exists(
+                select 1
+                from FCS_FACT_ACTUACIONASISTENCIA FAC
+                where fac.idinstitucion = Ac.idinstitucion
+                and fac.anio = Ac.anio
+                and fac.numero = Ac.numero
+                and fac.idactuacion = Ac.idactuacion)
+            and (Ac.Anulacion is null or Ac.Anulacion = '0')
+            and Ac.Fechajustificacion is not null 
+            and trunc(Ac.Fechajustificacion) between trunc(V_DATOS_FACTURACION.FECHADESDE) and trunc(V_DATOS_FACTURACION.FECHAHASTA) 
+            and Ac.Validada = '1'
+            and Ac.diadespues = 'S' -- DIAS FUERA DE GUARDIA
+        ORDER BY FECHA;
 
-  -- Obtenemos las actuaciones realizadas y justificadas anteriormente a la fecha fin del ciclo de facturacion
-  -- ordenadas por fecha de realizacion (Este cursor se utiliza para la facturacion por actuaciones)
-  CURSOR C_ACTUACIONES_UG(V_IDINSTITUCION number, V_IDTURNO number, V_IDGUARDIA number, V_IDPERSONA number, V_FECHAFIN date, V_DIASAPLICABLES varchar2) IS(
-    Select Ac.Idtipoactuacion Tipoactuacion,
-           Ac.Idfacturacion idfacturacion,
-           Ac.Fecha,
-           Ac.Idinstitucion,
-           Ac.Anio,
-           Ac.Numero,
-           Ac.Idactuacion,
-           1 Facturado,
-           Nvl(Func_Costefijo(Ac.Idinstitucion,
-                              Ac.Anio,
-                              Ac.Numero,
-                              Ac.Idactuacion),
-               0) Costefijo,
-           Func_Calcular_Importeact(Ac.Idinstitucion,
-                                    Ac.Idtipoasistencia,
-                                    Ac.Idtipoactuacion) Importe,
-           Func_Calcular_Importemaxact(Ac.Idinstitucion,
-                                       Ac.Idtipoasistencia,
-                                       Ac.Idtipoactuacion) Importemax,
-           --INI: Cambio para Asistencias que derivan en Designacion
-           f_Es_Asistencia_Derivada(a.Idinstitucion,
-                                    a.Anio,
-                                    a.Numero,
-                                    v_Datos_Facturacion.Fechadesde,
-                                    v_Datos_Facturacion.Fechahasta) As Deriva,
-           f_Es_Tipo_Derivacion(Ac.Idinstitucion,
-                                Ac.Anio,
-                                Ac.Numero,
-                                Ac.Idactuacion) As Esjudicial
-    --FIN: Cambio para Asistencias que derivan en Designacion
-      From Scs_Asistencia a, Scs_Actuacionasistencia Ac
-     Where a.Idinstitucion = v_Idinstitucion
-       And a.Idturno = v_Idturno
-       And a.Idguardia = v_Idguardia
-       And a.Idpersonacolegiado = v_Idpersona
-       And Trunc(a.Fechahora) = v_Fechafin
-       And a.Idinstitucion = Ac.Idinstitucion
-       And a.Anio = Ac.Anio
-       And a.Numero = Ac.Numero
-          --and Ac.Facturado = '1'
-       And Exists
-     (Select *
-              From Fcs_Fact_Actuacionasistencia Fac
-             Where Fac.Idinstitucion = Ac.Idinstitucion
-               And Fac.Anio = Ac.Anio
-               And Fac.Numero = Ac.Numero
-               And Fac.Idactuacion = Ac.Idactuacion)
-
-       And Ac.Diadespues = 'N'
-       And Fun_Esdiaaplicable(a.Fechahora, v_Diasaplicables) = 1
-
-    Union
-
-    Select Ac.Idtipoactuacion Tipoactuacion,
-           Ac.Idfacturacion idfacturacion,
-           Ac.Fecha,
-           Ac.Idinstitucion,
-           Ac.Anio,
-           Ac.Numero,
-           Ac.Idactuacion,
-           0 Facturado,
-           Nvl(Func_Costefijo(Ac.Idinstitucion,
-                              Ac.Anio,
-                              Ac.Numero,
-                              Ac.Idactuacion),
-               0) Costefijo,
-           Func_Calcular_Importeact(Ac.Idinstitucion,
-                                    Ac.Idtipoasistencia,
-                                    Ac.Idtipoactuacion) Importe,
-           Func_Calcular_Importemaxact(Ac.Idinstitucion,
-                                       Ac.Idtipoasistencia,
-                                       Ac.Idtipoactuacion) Importemax,
-           --INI: Cambio para Asistencias que derivan en Designacion
-           f_Es_Asistencia_Derivada(a.Idinstitucion,
-                                    a.Anio,
-                                    a.Numero,
-                                    v_Datos_Facturacion.Fechadesde,
-                                    v_Datos_Facturacion.Fechahasta) As Deriva,
-           f_Es_Tipo_Derivacion(Ac.Idinstitucion,
-                                Ac.Anio,
-                                Ac.Numero,
-                                Ac.Idactuacion) As Esjudicial
-    --FIN: Cambio para Asistencias que derivan en Designacion
-      From Scs_Asistencia a, Scs_Actuacionasistencia Ac
-     Where a.Idinstitucion = v_Idinstitucion
-       And a.Idturno = v_Idturno
-       And a.Idguardia = v_Idguardia
-       And a.Idpersonacolegiado = v_Idpersona
-       And Trunc(a.Fechahora) = v_Fechafin
-       And a.Idinstitucion = Ac.Idinstitucion
-       And a.Anio = Ac.Anio
-       And a.Numero = Ac.Numero
-          --and (Ac.Facturado is null or Ac.Facturado = '0')
-       And Not Exists
-     (Select *
-              From Fcs_Fact_Actuacionasistencia Fac
-             Where Fac.Idinstitucion = Ac.Idinstitucion
-               And Fac.Anio = Ac.Anio
-               And Fac.Numero = Ac.Numero
-               And Fac.Idactuacion = Ac.Idactuacion)
-       And (Ac.Anulacion Is Null Or Ac.Anulacion = '0')
-       And (Ac.Fechajustificacion Is Not Null And
-           Trunc(Ac.Fechajustificacion) Between
-           Trunc(v_Datos_Facturacion.Fechadesde) And
-           Trunc(v_Datos_Facturacion.Fechahasta) And
-           Ac.Validada = 1)
-       And Ac.Diadespues = 'N'
-       And Fun_Esdiaaplicable(a.Fechahora, v_Diasaplicables) = 1)
-
-     Order By Tipoactuacion, Fecha;
-
-  -- Obtenemos las actuaciones realizadas y justificadas anteriormente a la fecha fin del ciclo de facturacion
-  -- para cada idtipoactuacion
-  -- ordenadas por fecha de realizacion (Este cursor se utiliza para la facturacion por actuaciones)
-  CURSOR C_ACTUACIONESTIPO_UG(V_IDINSTITUCION number, V_IDTURNO number, V_IDGUARDIA number, V_IDPERSONA number, V_FECHAFIN date, V_IDTIPOACTUACION NUMBER, V_ANIO NUMBER, V_NUMERO NUMBER, V_DIASAPLICABLES varchar2) IS(
-    select AC.IDTIPOACTUACION TIPOACTUACION,
-           ac.fecha,
-           Ac.idinstitucion,
-           Ac.anio,
-           Ac.numero,
-           Ac.idactuacion,
-           1 facturado,
-           nvl(func_costefijo(Ac.idinstitucion,
-                                                        Ac.anio,
-                                                        Ac.numero,
-                                                        Ac.idactuacion),
-               0) costefijo,
-           FUNC_CALCULAR_IMPORTEACT(V_IDINSTITUCION,
-                                                              AC.Idtipoasistencia,
-                                                              AC.idtipoactuacion) importe,
-           FUNC_CALCULAR_IMPORTEMAXACT(V_IDINSTITUCION,
-                                                                 AC.Idtipoasistencia,
-                                                                 AC.idtipoactuacion) importemax
-      from Scs_Asistencia A, scs_actuacionasistencia Ac
-     where A.Idinstitucion = V_IDINSTITUCION
-       and A.Idturno = V_IDTURNO
-       and A.Idguardia = V_IDGUARDIA
-       and A.Idpersonacolegiado = V_IDPERSONA
-       and trunc(A.Fechahora) = V_FECHAFIN
-       and A.IDINSTITUCION = Ac.Idinstitucion
-       and A.Anio = Ac.Anio
-       and A.Numero = Ac.Numero
-       --and Ac.Facturado = '1'
-       and exists
-       (select *
-       from FCS_FACT_ACTUACIONASISTENCIA FAC
-       where fac.idinstitucion = Ac.idinstitucion
-       and fac.anio = Ac.anio
-       and fac.numero = Ac.numero
-       and fac.idactuacion = Ac.idactuacion)
-
-       and Ac.idtipoactuacion = V_IDTIPOACTUACION
-       and a.anio = V_ANIO
-       and a.numero = V_NUMERO
-       and FUN_ESDIAAPLICABLE(A.Fechahora,
-                                                        V_DIASAPLICABLES) = 1
-
-    UNION
-    select AC.IDTIPOACTUACION TIPOACTUACION,
-           ac.fecha,
-           Ac.idinstitucion,
-           Ac.anio,
-           Ac.numero,
-           Ac.idactuacion,
-           0 facturado,
-           nvl(func_costefijo(Ac.idinstitucion,
-                                                        Ac.anio,
-                                                        Ac.numero,
-                                                        Ac.idactuacion),
-               0) costefijo,
-           FUNC_CALCULAR_IMPORTEACT(V_IDINSTITUCION,
-                                                              AC.Idtipoasistencia,
-                                                              AC.idtipoactuacion) importe,
-           FUNC_CALCULAR_IMPORTEMAXACT(V_IDINSTITUCION,
-                                                                 AC.Idtipoasistencia,
-                                                                 AC.idtipoactuacion) importemax
-      from Scs_Asistencia A, scs_actuacionasistencia Ac
-     where A.Idinstitucion = V_IDINSTITUCION
-       and A.Idturno = V_IDTURNO
-       and A.Idguardia = V_IDGUARDIA
-       and A.Idpersonacolegiado = V_IDPERSONA
-       and trunc(A.Fechahora) = V_FECHAFIN
-       and A.IDINSTITUCION = Ac.Idinstitucion
-       and A.Anio = Ac.Anio
-       and A.Numero = Ac.Numero
-       --and (Ac.Facturado is null or Ac.Facturado = '0')
-       and not exists
-       (select *
-       from FCS_FACT_ACTUACIONASISTENCIA FAC
-       where fac.idinstitucion = Ac.idinstitucion
-       and fac.anio = Ac.anio
-       and fac.numero = Ac.numero
-       and fac.idactuacion = Ac.idactuacion)
-
-       and (Ac.Anulacion is null or Ac.Anulacion = '0')
-       and Ac.idtipoactuacion = V_IDTIPOACTUACION
-       and a.anio = V_ANIO
-       and a.numero = V_NUMERO
-       and (Ac.Fechajustificacion is not null and
-           trunc(Ac.Fechajustificacion) between
-           trunc(V_DATOS_FACTURACION.FECHADESDE) and
-           trunc(V_DATOS_FACTURACION.FECHAHASTA) and
-           Ac.Validada = 1)
-       and Ac.diadespues = 'N'
-       and FUN_ESDIAAPLICABLE(A.Fechahora,
-                                                        V_DIASAPLICABLES) = 1)
-     ORDER BY TIPOACTUACION, fecha;
-
-  --
-  -- CURSORES PARA ACFG (no aplica tipos)
-  --
-  cursor C_GUARDIAS_ACFG (P_IDINSTITUCION SCS_CABECERAGUARDIAS.IDINSTITUCION%type,
-                          P_IDTURNO SCS_CABECERAGUARDIAS.IDTURNO%type,
-                          P_IDGUARDIA SCS_CABECERAGUARDIAS.IDGUARDIA%type,
-                          P_FECHAINICIO SCS_CABECERAGUARDIAS.FECHAINICIO%type,
-                          P_IDPERSONA SCS_CABECERAGUARDIAS.IDPERSONA%type) is (
-    select guacol.idinstitucion as IDINSTITUCION,
-           guacol.idturno as IDTURNO,
-           guacol.idguardia as IDGUARDIA,
-           guacol.idpersona as IDPERSONA,
-           guacol.fechainicio as FECHAINICIO,
-           guacol.fechafin as FECHAFIN
-      from SCS_GUARDIASCOLEGIADO GUACOL
-     where guacol.idinstitucion = P_IDINSTITUCION
-       and guacol.idturno = P_IDTURNO
-       and guacol.idguardia = P_IDGUARDIA
-       and guacol.fechainicio = P_FECHAINICIO
-       and guacol.idpersona = P_IDPERSONA
-
-       and exists
-     (select *
-              from SCS_ASISTENCIA ASI, SCS_ACTUACIONASISTENCIA ACTASI
-             where asi.idinstitucion = actasi.idinstitucion
-               and asi.anio = actasi.anio
-               and asi.numero = actasi.numero
-
-               and guacol.idinstitucion = asi.idinstitucion
-               and guacol.idturno = asi.idturno
-               and guacol.idguardia = asi.idguardia
-               and guacol.fechafin = trunc(asi.fechahora)
-               and guacol.idpersona = asi.idpersonacolegiado
-
-               and actasi.fechajustificacion between
-                   trunc(V_DATOS_FACTURACION.FECHADESDE) and
-                   trunc(V_DATOS_FACTURACION.FECHAHASTA)
-               and nvl(actasi.anulacion, '0') = '0'
-               and actasi.diadespues = 'S'
-               and not exists
-             (select *
-                      from FCS_FACT_ACTUACIONASISTENCIA FACTASI
-                     where actasi.idinstitucion = factasi.idinstitucion
-                       and actasi.anio = factasi.anio
-                       and actasi.numero = factasi.numero
-                       and actasi.idactuacion = factasi.idactuacion)));
-
-  cursor C_ASISTENCIAS_ACFG (P_IDINSTITUCION SCS_GUARDIASCOLEGIADO.IDINSTITUCION%type,
-                             P_IDTURNO SCS_GUARDIASCOLEGIADO.IDTURNO%type,
-                             P_IDGUARDIA SCS_GUARDIASCOLEGIADO.IDGUARDIA%type,
-                             P_FECHAFIN SCS_GUARDIASCOLEGIADO.FECHAFIN%type,
-                             P_IDPERSONA SCS_GUARDIASCOLEGIADO.IDPERSONA%type) is (
-    select asi.idinstitucion as IDINSTITUCION,
-           asi.anio          as ANIO,
-           asi.numero        as NUMERO
-      from SCS_ASISTENCIA ASI
-     where asi.idinstitucion = P_IDINSTITUCION
-       and asi.idturno = P_IDTURNO
-       and asi.idguardia = P_IDGUARDIA
-       and trunc(asi.fechahora) = P_FECHAFIN
-       and asi.idpersonacolegiado = P_IDPERSONA
-
-       and exists
-     (select *
-              from SCS_ACTUACIONASISTENCIA ACTASI
-             where asi.idinstitucion = actasi.idinstitucion
-               and asi.anio = actasi.anio
-               and asi.numero = actasi.numero
-
-               and actasi.fechajustificacion between
-                   trunc(V_DATOS_FACTURACION.FECHADESDE) and
-                   trunc(V_DATOS_FACTURACION.FECHAHASTA)
-               and nvl(actasi.anulacion, '0') = '0'
-               and actasi.diadespues = 'S' -- solo las del día después.
-               and not exists -- solo las NO FACTURADAS
-             (select *
-                      from FCS_FACT_ACTUACIONASISTENCIA FACTASI
-                     where actasi.idinstitucion = factasi.idinstitucion
-                       and actasi.anio = factasi.anio
-                       and actasi.numero = factasi.numero
-                       and actasi.idactuacion = factasi.idactuacion)));
-
-  cursor C_ACTUACIONES_ACFG (P_IDINSTITUCION SCS_ASISTENCIA.IDINSTITUCION%type,
-                             P_ANIO SCS_ASISTENCIA.ANIO%type,
-                             P_NUMERO SCS_ASISTENCIA.NUMERO%type) is (
-    select actasi.idinstitucion,
-           actasi.anio,
-           actasi.numero,
-           actasi.idactuacion,
-           asi.fechahora,
-           actasi.fecha,
-           actasi.fechajustificacion,
-           '0' as FACTURADA,
-           0 as IMPFACTURADA,
-           nvl(FUNC_COSTEFIJO(actasi.idinstitucion,
-                                                        actasi.anio,
-                                                        actasi.numero,
-                                                        actasi.idactuacion),
-               0) as IMPCOSTESFIJOS
-      from SCS_ASISTENCIA ASI, SCS_ACTUACIONASISTENCIA ACTASI
-     where asi.idinstitucion = P_IDINSTITUCION
-       and actasi.anio = P_ANIO
-       and actasi.numero = P_NUMERO
-
-       and asi.idinstitucion = actasi.idinstitucion
-       and asi.anio = actasi.anio
-       and asi.numero = actasi.numero
-
-       and actasi.fechajustificacion between
-           trunc(V_DATOS_FACTURACION.FECHADESDE) and
-           trunc(V_DATOS_FACTURACION.FECHAHASTA)
-       and nvl(actasi.anulacion, '0') = '0'
-       and actasi.diadespues = 'S' -- solo las del día después
-       and not exists -- solo las NO FACTURADAS
-     (select *
-              from FCS_FACT_ACTUACIONASISTENCIA FACTASI
-             where actasi.idinstitucion = factasi.idinstitucion
-               and actasi.anio = factasi.anio
-               and actasi.numero = factasi.numero
-               and actasi.idactuacion = factasi.idactuacion)
-
-    UNION
-
-    select actasi.idinstitucion,
-           actasi.anio,
-           actasi.numero,
-           actasi.idactuacion,
-           asi.fechahora,
-           actasi.fecha,
-           actasi.fechajustificacion,
-           '1' as FACTURADA,
-           sum(factasi.precioaplicado) as IMPFACTURADA,
-           sum(factasi.preciocostesfijos) as IMPCOSTESFIJOS
-      from SCS_ASISTENCIA               ASI,
-           SCS_ACTUACIONASISTENCIA      ACTASI,
-           FCS_FACT_ACTUACIONASISTENCIA FACTASI -- solo las facturadas
-     where asi.idinstitucion = P_IDINSTITUCION
-       and actasi.anio = P_ANIO
-       and actasi.numero = P_NUMERO
-
-       and asi.idinstitucion = actasi.idinstitucion
-       and asi.anio = actasi.anio
-       and asi.numero = actasi.numero
-       and actasi.idinstitucion = factasi.idinstitucion
-       and actasi.anio = factasi.anio
-       and actasi.numero = factasi.numero
-       and actasi.idactuacion = factasi.idactuacion
-
-       and nvl(actasi.anulacion, '0') = '0'
-       and actasi.diadespues = 'S' -- solo las del día después
-
-     group by actasi.idinstitucion,
-              actasi.anio,
-              actasi.numero,
-              actasi.idactuacion,
-              asi.fechahora,
-              actasi.fecha,
-              actasi.fechajustificacion);
-
-  -- Obtenemos los diferentes dias que se efectuan las actuaciones fuera de guardia y justificadas en el ciclo de facturacion
-  -- y agrupadas por Tipo Actuacion y ordenadas por fecha de realizacin
-  CURSOR C_DIAS_FG(V_IDINSTITUCION number, V_IDTURNO number, V_IDGUARDIA number, V_IDPERSONA number, V_FECHAINICIO_CG date, V_FECHAFIN_CG date) IS
-  -- RGG 19/06/2008      (select Ac.fecha FECHA, Ac.IDTIPOACTUACION TIPOACTUACION,Ac.facturado
-  (
-    -- RGG minicambio, también conocido como PLAN B:
-    -- evitamos los días de actuaciones ya facturadas.
-/*    select Ac.fecha FECHA, '1' as facturado
-
-
-      from Scs_Asistencia A, scs_actuacionasistencia Ac
-     where A.Idinstitucion = V_IDINSTITUCION
-       and A.Idturno = V_IDTURNO
-       and A.Idguardia = V_IDGUARDIA
-       and A.Idpersonacolegiado = V_IDPERSONA
-       and trunc(A.Fechahora) BETWEEN trunc(V_FECHAINICIO_CG) AND trunc(V_FECHAFIN_CG)
-       and A.IDINSTITUCION = Ac.Idinstitucion
-       and A.Anio = Ac.Anio
-       and A.Numero = Ac.Numero
-      --and Ac.Facturado = '1'
-       and exists
-       (select *
-       from FCS_FACT_ACTUACIONASISTENCIA FAC
-       where fac.idinstitucion = Ac.idinstitucion
-       and fac.anio = Ac.anio
-       and fac.numero = Ac.numero
-       and fac.idactuacion = Ac.idactuacion)
-
-       and Ac.diadespues = 'S' -- DIAS FUERA DE GUARDIA
-
-    UNION
-*/
-    -- RGG 19/06/2008       select  Ac.fecha FECHA,Ac.IDTIPOACTUACION TIPOACTUACION,ac.facturado
-    select Distinct Ac.fecha FECHA, '0' as facturado
-      from Scs_Asistencia A, scs_actuacionasistencia Ac
-     where A.Idinstitucion = V_IDINSTITUCION
-       and A.Idturno = V_IDTURNO
-       and A.Idguardia = V_IDGUARDIA
-       and A.Idpersonacolegiado = V_IDPERSONA
-       and trunc(A.Fechahora) BETWEEN trunc(V_FECHAINICIO_CG) AND trunc(V_FECHAFIN_CG)
-       and A.IDINSTITUCION = Ac.Idinstitucion
-       and A.Anio = Ac.Anio
-       and A.Numero = Ac.Numero
-       --and (Ac.Facturado is null or Ac.Facturado = '0')
-       and not exists
-       (select *
-       from FCS_FACT_ACTUACIONASISTENCIA FAC
-       where fac.idinstitucion = Ac.idinstitucion
-       and fac.anio = Ac.anio
-       and fac.numero = Ac.numero
-       and fac.idactuacion = Ac.idactuacion)
-
-       and (Ac.Anulacion is null or Ac.Anulacion = '0')
-       and (Ac.Fechajustificacion is not null and
-           trunc(Ac.Fechajustificacion) between
-           trunc(V_DATOS_FACTURACION.FECHADESDE) and
-           trunc(V_DATOS_FACTURACION.FECHAHASTA) and
-           Ac.Validada = 1)
-       and Ac.diadespues = 'S' -- DIAS FUERA DE GUARDIA
-
-     )
-    -- RGG 19/06/2008      ORDER BY TIPOACTUACION, FECHA;
-     ORDER BY FECHA;
-
-  -- Obtenemos los distintos tipos de actuaciones
-  CURSOR C_TIPOACTUACIONES_FG(V_IDINSTITUCION number, V_IDTURNO number, V_IDGUARDIA number, V_IDPERSONA number, V_FECHAINICIO_CG date, V_FECHAFIN_CG date, V_FECHA DATE) IS(
-    -- RGG minicambio: se eliminan los posibles tipos que no tienen actuaciones no facturadas.
-/*    select distinct AC.IDTIPOACTUACION TIPOACTUACION
-      from Scs_Asistencia A, scs_actuacionasistencia Ac
-     where A.Idinstitucion = V_IDINSTITUCION
-       and A.Idturno = V_IDTURNO
-       and A.Idguardia = V_IDGUARDIA
-       and A.Idpersonacolegiado = V_IDPERSONA
-       and trunc(A.Fechahora) BETWEEN trunc(V_FECHAINICIO_CG) AND trunc(V_FECHAFIN_CG)
-       and A.IDINSTITUCION = Ac.Idinstitucion
-       and A.Anio = Ac.Anio
-       and A.Numero = Ac.Numero
-       --and Ac.Facturado = '1'
-       and exists
-       (select *
-       from FCS_FACT_ACTUACIONASISTENCIA FAC
-       where fac.idinstitucion = Ac.idinstitucion
-       and fac.anio = Ac.anio
-       and fac.numero = Ac.numero
-       and fac.idactuacion = Ac.idactuacion)
-
-       and Ac.diadespues = 'S'
-       and Ac.fecha = V_FECHA
-
-    UNION
-*/
-    select distinct AC.IDTIPOACTUACION TIPOACTUACION
-      from Scs_Asistencia A, scs_actuacionasistencia Ac
-     where A.Idinstitucion = V_IDINSTITUCION
-       and A.Idturno = V_IDTURNO
-       and A.Idguardia = V_IDGUARDIA
-       and A.Idpersonacolegiado = V_IDPERSONA
-       and trunc(A.Fechahora) BETWEEN trunc(V_FECHAINICIO_CG) AND trunc(V_FECHAFIN_CG)
-       and A.IDINSTITUCION = Ac.Idinstitucion
-       and A.Anio = Ac.Anio
-       and A.Numero = Ac.Numero
-       --and (Ac.Facturado is null or Ac.Facturado = '0')
-       and not exists
-       (select *
-       from FCS_FACT_ACTUACIONASISTENCIA FAC
-       where fac.idinstitucion = Ac.idinstitucion
-       and fac.anio = Ac.anio
-       and fac.numero = Ac.numero
-       and fac.idactuacion = Ac.idactuacion)
-
-       and (Ac.Anulacion is null or Ac.Anulacion = '0')
-       and (Ac.Fechajustificacion is not null and
-           trunc(Ac.Fechajustificacion) between
-           trunc(V_DATOS_FACTURACION.FECHADESDE) and
-           trunc(V_DATOS_FACTURACION.FECHAHASTA) and
-           Ac.Validada = 1)
-       and Ac.diadespues = 'S'
-       and Ac.fecha = V_FECHA)
-     ORDER BY TIPOACTUACION;
-
-  -- Obtenemos las actuaciones realizadas y justificadas anteriormente a la fecha fin del ciclo de facturacion
-  -- fuera de la guardia y agrupadas por Tipo Actuacion y realizadas en Dia
-  CURSOR C_ACTUACIONESTIPO_FG(V_IDINSTITUCION number, V_IDTURNO number, V_IDGUARDIA number, V_IDPERSONA number, V_FECHAINICIO_CG date, V_FECHAFIN_CG date, V_FECHA DATE, V_IDTIPOACT NUMBER) IS(
-    select AC.IDTIPOACTUACION TIPOACTUACION,
-           ac.fecha,
-           Ac.idinstitucion,
-           Ac.anio,
-           Ac.numero,
-           Ac.idactuacion,
-           1 facturado,
-           nvl(func_costefijo(Ac.idinstitucion,
-                                                        Ac.anio,
-                                                        Ac.numero,
-                                                        Ac.idactuacion),
-               0) costefijo,
-           FUNC_CALCULAR_IMPORTEACT(V_IDINSTITUCION,
-                                                              AC.Idtipoasistencia,
-                                                              AC.idtipoactuacion) importe,
-           FUNC_CALCULAR_IMPORTEMAXACT(V_IDINSTITUCION,
-                                                                 AC.Idtipoasistencia,
-                                                                 AC.idtipoactuacion) importemax
-      from Scs_Asistencia A, scs_actuacionasistencia Ac
-     where A.Idinstitucion = V_IDINSTITUCION
-       and A.Idturno = V_IDTURNO
-       and A.Idguardia = V_IDGUARDIA
-       and A.Idpersonacolegiado = V_IDPERSONA
-       and trunc(A.Fechahora) BETWEEN trunc(V_FECHAINICIO_CG) AND trunc(V_FECHAFIN_CG)
-       and A.IDINSTITUCION = Ac.Idinstitucion
-       and A.Anio = Ac.Anio
-       and A.Numero = Ac.Numero
-       --and Ac.Facturado = '1'
-       and exists
-       (select *
-       from FCS_FACT_ACTUACIONASISTENCIA FAC
-       where fac.idinstitucion = Ac.idinstitucion
-       and fac.anio = Ac.anio
-       and fac.numero = Ac.numero
-       and fac.idactuacion = Ac.idactuacion)
-
-       and Ac.diadespues = 'S'
-       and Ac.fecha = V_FECHA
-       and Ac.idtipoactuacion = V_IDTIPOACT
-
-    UNION
-    select AC.IDTIPOACTUACION TIPOACTUACION,
-           ac.fecha,
-           Ac.idinstitucion,
-           Ac.anio,
-           Ac.numero,
-           Ac.idactuacion,
-           0 facturado,
-           nvl(func_costefijo(Ac.idinstitucion,
-                                                        Ac.anio,
-                                                        Ac.numero,
-                                                        Ac.idactuacion),
-               0) costefijo,
-           FUNC_CALCULAR_IMPORTEACT(V_IDINSTITUCION,
-                                                              AC.Idtipoasistencia,
-                                                              AC.idtipoactuacion) importe,
-           FUNC_CALCULAR_IMPORTEMAXACT(V_IDINSTITUCION,
-                                                                 AC.Idtipoasistencia,
-                                                                 AC.idtipoactuacion) importemax
-      from Scs_Asistencia A, scs_actuacionasistencia Ac
-     where A.Idinstitucion = V_IDINSTITUCION
-       and A.Idturno = V_IDTURNO
-       and A.Idguardia = V_IDGUARDIA
-       and A.Idpersonacolegiado = V_IDPERSONA
-       and trunc(A.Fechahora) BETWEEN trunc(V_FECHAINICIO_CG) AND trunc(V_FECHAFIN_CG)
-       and A.IDINSTITUCION = Ac.Idinstitucion
-       and A.Anio = Ac.Anio
-       and A.Numero = Ac.Numero
-       --and (Ac.Facturado is null or Ac.Facturado = '0')
-       and not exists
-       (select *
-       from FCS_FACT_ACTUACIONASISTENCIA FAC
-       where fac.idinstitucion = Ac.idinstitucion
-       and fac.anio = Ac.anio
-       and fac.numero = Ac.numero
-       and fac.idactuacion = Ac.idactuacion)
-
-       and (Ac.Anulacion is null or Ac.Anulacion = '0')
-       and (Ac.Fechajustificacion is not null and
-           trunc(Ac.Fechajustificacion) between
-           trunc(V_DATOS_FACTURACION.FECHADESDE) and
-           trunc(V_DATOS_FACTURACION.FECHAHASTA) and
-           Ac.Validada = 1)
-       and Ac.diadespues = 'S'
-       and Ac.fecha = V_FECHA
-       and Ac.idtipoactuacion = V_IDTIPOACT)
-     ORDER BY TIPOACTUACION, fecha;
-
-  -- Function and procedure implementations
+    -- Obtenemos los distintos tipos de actuaciones
+    CURSOR C_TIPOACTUACIONES_FG(V_IDINSTITUCION number, V_IDTURNO number, V_IDGUARDIA number, V_IDPERSONA number, V_FECHAINICIO_CG date, V_FECHAFIN_CG date, V_FECHA DATE) IS
+        select distinct AC.IDTIPOACTUACION TIPOACTUACION
+        from Scs_Asistencia A, scs_actuacionasistencia Ac
+        where A.Idinstitucion = V_IDINSTITUCION
+            and A.Idturno = V_IDTURNO
+            and A.Idguardia = V_IDGUARDIA
+            and A.Idpersonacolegiado = V_IDPERSONA
+            and trunc(A.Fechahora) BETWEEN trunc(V_FECHAINICIO_CG) AND trunc(V_FECHAFIN_CG)
+            and A.IDINSTITUCION = Ac.Idinstitucion
+            and A.Anio = Ac.Anio
+            and A.Numero = Ac.Numero
+            --and (Ac.Facturado is null or Ac.Facturado = '0')
+            and not exists(
+                select 1
+                from FCS_FACT_ACTUACIONASISTENCIA FAC
+                where fac.idinstitucion = Ac.idinstitucion
+                    and fac.anio = Ac.anio
+                    and fac.numero = Ac.numero
+                    and fac.idactuacion = Ac.idactuacion)
+            and (Ac.Anulacion is null or Ac.Anulacion = '0')
+            and Ac.Fechajustificacion is not null
+            and trunc(Ac.Fechajustificacion) between trunc(V_DATOS_FACTURACION.FECHADESDE) and trunc(V_DATOS_FACTURACION.FECHAHASTA) 
+            and Ac.Validada = '1'
+            and Ac.diadespues = 'S'
+            and Ac.fecha = V_FECHA
+        ORDER BY TIPOACTUACION;
 
   /**********************************************************
   * JPT - INICIO - CODIGO PARA LA FACTURACION CONTROLADA EN CANTABRIA *
@@ -3297,43 +2562,43 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         V_DIASAPLICABLES VARCHAR2,
         V_APLICATIPOS NUMBER
     ) IS
-        SELECT A.IDINSTITUCION,
-            A.ANIO,
-            A.NUMERO,
-            A.IDTIPOASISTENCIACOLEGIO,
+        SELECT ASI.IDINSTITUCION,
+            ASI.ANIO,
+            ASI.NUMERO,
+            ASI.IDTIPOASISTENCIACOLEGIO,
             ( -- Compruebo si la asistencia esta facturada
                 SELECT COUNT(*)
-                FROM FCS_FACT_ASISTENCIA FA
-                WHERE FA.IDINSTITUCION = A.IDINSTITUCION -- Relacion FCS_FACT_ASISTENCIA => SCS_ASISTENCIA
-                    AND FA.ANIO = A.ANIO -- Relacion FCS_FACT_ASISTENCIA => SCS_ASISTENCIA
-                    AND FA.NUMERO = A.NUMERO -- Relacion FCS_FACT_ASISTENCIA => SCS_ASISTENCIA
+                FROM FCS_FACT_ASISTENCIA FAC_ASI
+                WHERE FAC_ASI.IDINSTITUCION = ASI.IDINSTITUCION -- Relacion FCS_FACT_ASISTENCIA => SCS_ASISTENCIA
+                    AND FAC_ASI.ANIO = ASI.ANIO -- Relacion FCS_FACT_ASISTENCIA => SCS_ASISTENCIA
+                    AND FAC_ASI.NUMERO = ASI.NUMERO -- Relacion FCS_FACT_ASISTENCIA => SCS_ASISTENCIA
             ) AS NUMASIFAC,
-            DECODE(V_APLICATIPOS, 0, NULL, FUNC_CALCULAR_IMPORTEASIST(A.IDINSTITUCION, A.IDTIPOASISTENCIACOLEGIO)) AS IMPORTETIPO -- Obtiene el importe del tipo de la asistencia, en el caso de aplicar tipos
-          FROM SCS_ASISTENCIA A
-         WHERE A.IDINSTITUCION = V_IDINSTITUCION -- Utiliza indice SI_FK_ASISTENCIA_GUARDIASTURNO
-            AND A.IDTURNO = V_IDTURNO -- Utiliza indice SI_FK_ASISTENCIA_GUARDIASTURNO
-            AND A.IDGUARDIA = V_IDGUARDIA -- Utiliza indice SI_FK_ASISTENCIA_GUARDIASTURNO
-            AND A.IDPERSONACOLEGIADO = V_IDPERSONA
-            AND TRUNC(A.FECHAHORA) = V_FECHADIA -- La asistencia se realiza en el dia de la guardia
-            AND FUN_ESDIAAPLICABLE(A.FECHAHORA, V_DIASAPLICABLES) = 1 -- La asistencia se realiza en un dia aplicable en los indicados de la configuracion de la guardia (LMXJVSD)
-            AND A.FECHAANULACION IS NULL -- Asistencia no anulada
+            DECODE(V_APLICATIPOS, 0, NULL, FUNC_CALCULAR_IMPORTEASIST(ASI.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ASI.IDTIPOASISTENCIACOLEGIO, V_FECHADIA, NULL,0)) AS IMPORTETIPO -- Obtiene el importe del tipo de la asistencia, en el caso de aplicar tipos
+          FROM SCS_ASISTENCIA ASI
+         WHERE ASI.IDINSTITUCION = V_IDINSTITUCION -- Utiliza indice SI_FK_ASISTENCIA_GUARDIASTURNO
+            AND ASI.IDTURNO = V_IDTURNO -- Utiliza indice SI_FK_ASISTENCIA_GUARDIASTURNO
+            AND ASI.IDGUARDIA = V_IDGUARDIA -- Utiliza indice SI_FK_ASISTENCIA_GUARDIASTURNO
+            AND ASI.IDPERSONACOLEGIADO = V_IDPERSONA
+            AND TRUNC(ASI.FECHAHORA) = V_FECHADIA -- La asistencia se realiza en el dia de la guardia
+            AND FUN_ESDIAAPLICABLE(ASI.FECHAHORA, V_DIASAPLICABLES) = 1 -- La asistencia se realiza en un dia aplicable en los indicados de la configuracion de la guardia (LMXJVSD)
+            AND ASI.FECHAANULACION IS NULL -- Asistencia no anulada
             AND EXISTS ( -- Tiene almenos una actuacion, sin facturar, justificada dentro del periodo de facturacion
                 SELECT 1
-                FROM SCS_ACTUACIONASISTENCIA AA
-                WHERE AA.IDINSTITUCION = A.IDINSTITUCION -- Relacion SCS_ASISTENCIA => SCS_ACTUACIONASISTENCIA
-                    AND AA.ANIO = A.ANIO -- Relacion SCS_ASISTENCIA => SCS_ACTUACIONASISTENCIA
-                    AND AA.NUMERO = A.NUMERO -- Relacion SCS_ASISTENCIA => SCS_ACTUACIONASISTENCIA
-                    AND NVL(AA.ANULACION, '0') = '0' -- Actuacion sin anular
-                    AND TRUNC(AA.FECHAJUSTIFICACION) BETWEEN V_FECHAFACTURACIONINICIO AND V_FECHAFACTURACIONFIN -- Actuacion justificada dentro del periodo de facturacion
-                    AND AA.VALIDADA='1' -- Actuacion validada
-                    AND AA.DIADESPUES='N' -- No es dia despues
+                FROM SCS_ACTUACIONASISTENCIA ACT
+                WHERE ACT.IDINSTITUCION = ASI.IDINSTITUCION -- Relacion SCS_ASISTENCIA => SCS_ACTUACIONASISTENCIA
+                    AND ACT.ANIO = ASI.ANIO -- Relacion SCS_ASISTENCIA => SCS_ACTUACIONASISTENCIA
+                    AND ACT.NUMERO = ASI.NUMERO -- Relacion SCS_ASISTENCIA => SCS_ACTUACIONASISTENCIA
+                    AND NVL(ACT.ANULACION, '0') = '0' -- Actuacion sin anular
+                    AND TRUNC(ACT.FECHAJUSTIFICACION) BETWEEN V_FECHAFACTURACIONINICIO AND V_FECHAFACTURACIONFIN -- Actuacion justificada dentro del periodo de facturacion
+                    AND ACT.VALIDADA = '1' -- Actuacion validada
+                    AND ACT.DIADESPUES='N' -- No es dia despues
                     AND NOT EXISTS ( -- Actuacion sin facturar
                         SELECT 1
-                        FROM FCS_FACT_ACTUACIONASISTENCIA FAA
-                        WHERE FAA.IDINSTITUCION = AA.IDINSTITUCION -- Relacion SCS_ACTUACIONASISTENCIA => FCS_FACT_ACTUACIONASISTENCIA
-                            AND FAA.ANIO = AA.ANIO -- Relacion SCS_ACTUACIONASISTENCIA => FCS_FACT_ACTUACIONASISTENCIA
-                            AND FAA.NUMERO = AA.NUMERO -- Relacion SCS_ACTUACIONASISTENCIA => FCS_FACT_ACTUACIONASISTENCIA
-                            AND FAA.IDACTUACION = AA.IDACTUACION -- Relacion SCS_ACTUACIONASISTENCIA => FCS_FACT_ACTUACIONASISTENCIA
+                        FROM FCS_FACT_ACTUACIONASISTENCIA FAC_ACT
+                        WHERE FAC_ACT.IDINSTITUCION = ACT.IDINSTITUCION -- Relacion SCS_ACTUACIONASISTENCIA => FCS_FACT_ACTUACIONASISTENCIA
+                            AND FAC_ACT.ANIO = ACT.ANIO -- Relacion SCS_ACTUACIONASISTENCIA => FCS_FACT_ACTUACIONASISTENCIA
+                            AND FAC_ACT.NUMERO = ACT.NUMERO -- Relacion SCS_ACTUACIONASISTENCIA => FCS_FACT_ACTUACIONASISTENCIA
+                            AND FAC_ACT.IDACTUACION = ACT.IDACTUACION -- Relacion SCS_ACTUACIONASISTENCIA => FCS_FACT_ACTUACIONASISTENCIA
                     )
             )
          ORDER BY IDTIPOASISTENCIACOLEGIO, FECHAHORA;
@@ -3352,27 +2617,449 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         V_FECHAFACTURACIONINICIO DATE,
         V_FECHAFACTURACIONFIN DATE
     ) IS
-        SELECT AA.IDINSTITUCION,
-            AA.ANIO,
-            AA.NUMERO,
-            AA.IDACTUACION,
-            NVL(FUNC_COSTEFIJO(AA.IDINSTITUCION, AA.ANIO, AA.NUMERO, AA.IDACTUACION), 0) AS COSTEFIJO
-        FROM SCS_ACTUACIONASISTENCIA AA
-        WHERE AA.IDINSTITUCION = V_IDINSTITUCION -- Utiliza el indice de la PK
-            AND AA.ANIO = V_ANIO -- Utiliza el indice de la PK
-            AND AA.NUMERO = V_NUMERO -- Utiliza el indice de la PK
-            AND NVL(AA.ANULACION, '0') = '0' -- Actuacion sin anular
-            AND TRUNC(AA.FECHAJUSTIFICACION) BETWEEN V_FECHAFACTURACIONINICIO AND V_FECHAFACTURACIONFIN -- Actuacion justificada dentro del periodo de facturacion
-            AND AA.VALIDADA='1' -- Actuacion validada
-            AND AA.DIADESPUES='N' -- No es dia despues
+        SELECT ACT.IDINSTITUCION,
+            ACT.ANIO,
+            ACT.NUMERO,
+            ACT.IDACTUACION,
+            NVL(FUNC_COSTEFIJO(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.ANIO, ACT.NUMERO, ACT.IDACTUACION, TRUNC(ASI.FECHAHORA), NULL), 0) AS COSTEFIJO
+        FROM SCS_ACTUACIONASISTENCIA ACT, SCS_ASISTENCIA ASI
+        WHERE ASI.IDINSTITUCION = ACT.IDINSTITUCION
+            AND ASI.ANIO = ACT.ANIO
+            AND ASI.NUMERO = ACT.NUMERO
+            AND ACT.IDINSTITUCION = V_IDINSTITUCION -- Utiliza el indice de la PK
+            AND ACT.ANIO = V_ANIO -- Utiliza el indice de la PK
+            AND ACT.NUMERO = V_NUMERO -- Utiliza el indice de la PK
+            AND NVL(ACT.ANULACION, '0') = '0' -- Actuacion sin anular
+            AND TRUNC(ACT.FECHAJUSTIFICACION) BETWEEN V_FECHAFACTURACIONINICIO AND V_FECHAFACTURACIONFIN -- Actuacion justificada dentro del periodo de facturacion
+            AND ACT.VALIDADA = '1' -- Actuacion validada
+            AND ACT.DIADESPUES = 'N' -- No es dia despues
             AND NOT EXISTS ( -- Actuacion sin facturar
                 SELECT 1
-                FROM FCS_FACT_ACTUACIONASISTENCIA FAA
-                WHERE FAA.IDINSTITUCION = AA.IDINSTITUCION -- Relacion SCS_ACTUACIONASISTENCIA => FCS_FACT_ACTUACIONASISTENCIA
-                    AND FAA.ANIO = AA.ANIO -- Relacion SCS_ACTUACIONASISTENCIA => FCS_FACT_ACTUACIONASISTENCIA
-                    AND FAA.NUMERO = AA.NUMERO -- Relacion SCS_ACTUACIONASISTENCIA => FCS_FACT_ACTUACIONASISTENCIA
-                    AND FAA.IDACTUACION = AA.IDACTUACION -- Relacion SCS_ACTUACIONASISTENCIA => FCS_FACT_ACTUACIONASISTENCIA
-            );
+                FROM FCS_FACT_ACTUACIONASISTENCIA FAC_ACT
+                WHERE FAC_ACT.IDINSTITUCION = ACT.IDINSTITUCION -- Relacion SCS_ACTUACIONASISTENCIA => FCS_FACT_ACTUACIONASISTENCIA
+                    AND FAC_ACT.ANIO = ACT.ANIO -- Relacion SCS_ACTUACIONASISTENCIA => FCS_FACT_ACTUACIONASISTENCIA
+                    AND FAC_ACT.NUMERO = ACT.NUMERO -- Relacion SCS_ACTUACIONASISTENCIA => FCS_FACT_ACTUACIONASISTENCIA
+                    AND FAC_ACT.IDACTUACION = ACT.IDACTUACION -- Relacion SCS_ACTUACIONASISTENCIA => FCS_FACT_ACTUACIONASISTENCIA
+            );            
+            
+  /****************************************************************************************************************
+    Nombre: FUNC_ES_COLEGIO_CATALAN
+    Descripcion: Funcion que nos indica si es un colegio catalan
+
+    Parametros (IN/OUT - Descripcion -Tipo de Datos)
+    - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER
+
+    Versiones (Fecha - Autor - Datos):
+    - 1.0 - 02/03/2016 - Jorge Paez Trivino - Adaptacion a los colegios catalanes (R1602_0089)
+  ****************************************************************************************************************/            
+    FUNCTION FUNC_ES_COLEGIO_CATALAN (P_IDINSTITUCION IN CEN_INSTITUCION.IDINSTITUCION%TYPE) RETURN BOOLEAN IS
+        V_CONSEJO CEN_INSTITUCION.CEN_INST_IDINSTITUCION%TYPE;
+    BEGIN
+    
+        IF (V_CONFIG_GUARDIA.CONSEJOINSTITUCION = C_CATALAN) THEN
+            RETURN TRUE;
+        END IF;                            
+    
+        SELECT CEN_INST_IDINSTITUCION
+            INTO V_CONSEJO
+        FROM CEN_INSTITUCION
+        WHERE IDINSTITUCION = P_IDINSTITUCION;
+        
+        IF (V_CONSEJO = C_CATALAN) THEN
+            RETURN TRUE;
+        ELSE
+            RETURN FALSE;
+        END IF;                        
+            
+        EXCEPTION
+            WHEN OTHERS THEN
+                RETURN FALSE;
+    END FUNC_ES_COLEGIO_CATALAN;
+    
+  /****************************************************************************************************************
+    Nombre: FUNC_OBTENER_IDFACTURACION
+    Descripcion: Funcion que busca el IDFACTURACION de una cabecera de guardia (incluye regularizaciones)
+
+    Parametros (IN/OUT - Descripcion -Tipo de Datos)
+    - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER
+    - P_IDTURNO - IN - Identificador del turno - NUMBER
+    - P_IDGUARDIA - IN - Identificador de la guardia - NUMBER
+    - P_FECHA - IN - Fecha donde buscar la facturacion - DATE
+
+    Versiones (Fecha - Autor - Datos):
+    - 1.0 - 02/03/2016 - Jorge Paez Trivino - Adaptacion a los colegios catalanes (R1602_0089)
+  ****************************************************************************************************************/    
+    FUNCTION FUNC_OBTENER_IDFACTURACION(
+        P_IDINSTITUCION IN FCS_HISTORICO_HITOFACT.IDINSTITUCION%TYPE,
+        P_IDTURNO IN FCS_HISTORICO_HITOFACT.IDTURNO%TYPE,
+        P_IDGUARDIA IN FCS_HISTORICO_HITOFACT.IDGUARDIA%TYPE,
+        P_FECHA IN FCS_FACTURACIONJG.FECHADESDE%TYPE) RETURN NUMBER IS
+    
+        V_IDFACTURACION FCS_FACT_APUNTE.IDFACTURACION%TYPE := NULL;
+  
+    BEGIN    
+        -- Comprueba si es un colegio catalan
+        IF (FUNC_ES_COLEGIO_CATALAN(P_IDINSTITUCION) = TRUE) THEN        
+            BEGIN
+                -- JPT:  Obtiene el mayor de los IDFACTURACION que se han regularizado
+                SELECT MAX(FAC.IDFACTURACION) 
+                    INTO V_IDFACTURACION
+                FROM  FCS_HISTORICO_HITOFACT HIST,
+                    FCS_FACT_GRUPOFACT_HITO GF,
+                    FCS_FACTURACIONJG FAC
+                WHERE HIST.IDINSTITUCION = P_IDINSTITUCION
+                    AND HIST.IDTURNO = P_IDTURNO
+                    AND HIST.IDGUARDIA = P_IDGUARDIA
+                    AND GF.IDINSTITUCION = HIST.IDINSTITUCION
+                    AND GF.IDFACTURACION = HIST.IDFACTURACION
+                    AND GF.IDHITOGENERAL = PKG_SIGA_CONSTANTES.HITO_GENERAL_GUARDIA
+                    AND FAC.IDINSTITUCION = HIST.IDINSTITUCION
+                    AND FAC.IDFACTURACION = HIST.IDFACTURACION
+                    AND P_FECHA BETWEEN FAC.FECHADESDE AND FAC.FECHAHASTA        
+                    AND FAC.REGULARIZACION = 1; -- JPT: Indica que es una facturacion de regularizacion                    
+                EXCEPTION
+                  WHEN OTHERS THEN
+                    V_IDFACTURACION := NULL;
+            END;
+
+            IF (V_IDFACTURACION IS NULL) THEN
+                BEGIN
+                    /* JPT: En caso de no haber regularizaciones, obtiene el IDFACTURACION inicial 
+                        - Puede no tener FCS_FACT_APUNTE, si se hizo una facturacion sin las cabeceras de guardias validadas ... y luego se validaron y se pusieron en una facturacion futura*/
+                    SELECT MIN(FAC.IDFACTURACION) 
+                        INTO V_IDFACTURACION
+                    FROM FCS_HISTORICO_HITOFACT HIST,
+                        FCS_FACT_GRUPOFACT_HITO GF,
+                        FCS_FACTURACIONJG FAC
+                    WHERE HIST.IDINSTITUCION = P_IDINSTITUCION
+                        AND HIST.IDTURNO = P_IDTURNO
+                        AND HIST.IDGUARDIA = P_IDGUARDIA
+                        AND GF.IDINSTITUCION = HIST.IDINSTITUCION
+                        AND GF.IDFACTURACION = HIST.IDFACTURACION
+                        AND GF.IDHITOGENERAL = PKG_SIGA_CONSTANTES.HITO_GENERAL_GUARDIA
+                        AND FAC.IDINSTITUCION = HIST.IDINSTITUCION
+                        AND FAC.IDFACTURACION = HIST.IDFACTURACION
+                        AND P_FECHA BETWEEN FAC.FECHADESDE AND FAC.FECHAHASTA;               
+                    EXCEPTION
+                      WHEN OTHERS THEN
+                        V_IDFACTURACION := NULL;
+                END;
+            END IF;
+        END IF;
+        
+        RETURN V_IDFACTURACION;
+
+        EXCEPTION
+            WHEN OTHERS THEN
+                RETURN NULL;
+    END FUNC_OBTENER_IDFACTURACION; 
+    
+  /****************************************************************************************************************
+    Nombre: FUNC_COSTEFIJO
+    Descripcion: Funcion que nos devuelve el coste fijo de una actuacion
+
+    Parametros (IN/OUT - Descripcion -Tipo de Datos)
+    - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER
+    - P_IDTURNO - IN - Identificador del turno - NUMBER
+    - P_IDGUARDIA - IN - Identificador de la guardia - NUMBER    
+    - P_ANIO - IN - Ano de la actuacion - NUMBER
+    - P_NUMERO - IN - Numero de la actuacion - NUMBER
+    - P_IDACTUACION - IN - Identificador del tipo de actuacion - NUMBER
+    - P_FECHA - IN - Fecha de la asistencia o actuacion fuera de guardia - DATE
+    - P_IDFACTURACION - IN - Identificador de la facturacion - NUMBER
+
+    Versiones (Fecha - Autor - Datos):
+    - 1.0 - 24/04/2006 - Pilar Duran Munoz
+    - 2.0 - 02/03/2016 - Jorge Paez Trivino - Adaptacion a los colegios catalanes (R1602_0089)
+  ****************************************************************************************************************/
+    FUNCTION FUNC_COSTEFIJO(
+        P_IDINSTITUCION IN SCS_ACTUACIONASISTENCIA.IDINSTITUCION%TYPE,
+        P_IDTURNO IN SCS_ASISTENCIA.IDTURNO%TYPE,
+        P_IDGUARDIA IN SCS_ASISTENCIA.IDGUARDIA%TYPE,
+        P_ANIO IN SCS_ACTUACIONASISTENCIA.ANIO%TYPE,
+        P_NUMERO IN SCS_ACTUACIONASISTENCIA.NUMERO%TYPE,
+        P_IDACTUACION IN SCS_ACTUACIONASISTENCIA.IDACTUACION%TYPE,
+        P_FECHA IN SCS_ASISTENCIA.FECHAHORA%TYPE,
+        P_IDFACTURACION IN FCS_HISTO_TIPOACTCOSTEFIJO.IDFACTURACION%TYPE) RETURN NUMBER IS
+    
+        V_IDFACTURACION FCS_HISTO_TIPOACTCOSTEFIJO.IDFACTURACION%TYPE := P_IDFACTURACION;
+        V_COSTEFIJO FCS_HISTO_TIPOACTCOSTEFIJO.IMPORTE%TYPE := NULL;
+        V_TIENEHISTORICO BOOLEAN := FALSE;
+  
+    BEGIN    
+        IF (P_IDFACTURACION IS NULL) THEN
+            -- Busca si tiene un IDFACTURACION previo (incluye tratamiento de regularizaciones)
+            V_IDFACTURACION :=  FUNC_OBTENER_IDFACTURACION(P_IDINSTITUCION, P_IDTURNO, P_IDGUARDIA, P_FECHA);
+        END IF;            
+    
+        -- Si obtiene un idFacturacion, hay que obtener el coste fijo del tipo de actuacion del historico
+        IF (V_IDFACTURACION IS NOT NULL) THEN
+            BEGIN
+                SELECT HTACT.IMPORTE 
+                    INTO V_COSTEFIJO
+                FROM SCS_ACTUACIONASISTCOSTEFIJO ACTCF,
+                    FCS_HISTO_TIPOACTCOSTEFIJO  HTACT
+                WHERE HTACT.IDINSTITUCION = ACTCF.IDINSTITUCION
+                    AND HTACT.IDTIPOASISTENCIA = ACTCF.IDTIPOASISTENCIA
+                    AND HTACT.IDTIPOACTUACION = ACTCF.IDTIPOACTUACION
+                    AND HTACT.IDCOSTEFIJO = ACTCF.IDCOSTEFIJO
+                    AND HTACT.IDFACTURACION = V_IDFACTURACION
+                    AND ACTCF.IDINSTITUCION = P_IDINSTITUCION
+                    AND ACTCF.ANIO = P_ANIO
+                    AND ACTCF.NUMERO = P_NUMERO
+                    AND ACTCF.IDACTUACION = P_IDACTUACION;
+                    
+                    V_TIENEHISTORICO := TRUE;                    
+                    
+                EXCEPTION
+                    WHEN OTHERS THEN
+                        V_TIENEHISTORICO := FALSE;
+            END;                    
+        END IF;
+            
+        -- Si no obtenemos un idFacturacion o no tenia historico, hay que obtener el coste fijo del tipo de actuacion actual
+        IF (V_IDFACTURACION IS NULL OR V_TIENEHISTORICO = FALSE) THEN
+            SELECT TACT.IMPORTE 
+                INTO V_COSTEFIJO
+            FROM SCS_ACTUACIONASISTCOSTEFIJO ACTCF,
+                SCS_TIPOACTUACIONCOSTEFIJO  TACT
+            WHERE TACT.IDINSTITUCION = ACTCF.IDINSTITUCION
+                AND TACT.IDTIPOASISTENCIA = ACTCF.IDTIPOASISTENCIA
+                AND TACT.IDTIPOACTUACION = ACTCF.IDTIPOACTUACION
+                AND TACT.IDCOSTEFIJO = ACTCF.IDCOSTEFIJO
+                AND ACTCF.IDINSTITUCION = P_IDINSTITUCION
+                AND ACTCF.ANIO = P_ANIO
+                AND ACTCF.NUMERO = P_NUMERO
+                AND ACTCF.IDACTUACION = P_IDACTUACION;                               
+        END IF;                
+            
+        RETURN V_COSTEFIJO;            
+
+        EXCEPTION
+            WHEN OTHERS THEN
+                RETURN 0;
+    END FUNC_COSTEFIJO;    
+    
+  /****************************************************************************************************************
+    Nombre: FUNC_CALCULAR_IMPORTEASIST
+    Descripcion: Funcion que nos devuelve el importe de un tipo de asistencia
+
+    Parametros (IN/OUT - Descripcion -Tipo de Datos)
+    - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER
+    - P_IDTURNO - IN - Identificador del turno - NUMBER
+    - P_IDGUARDIA - IN - Identificador de la guardia - NUMBER    
+    - P_IDTIPOASISTENCIA - IN - Identificador del tipo de asistencia - NUMBER
+    - P_FECHA - IN - Fecha de la asistencia - DATE
+    - P_IDFACTURACION - IN - Identificador de la facturacion - NUMBER
+    - P_TIPO - IN - 0:IMPORTE; 1:IMPORTEMAXIMO; - NUMBER
+
+    Versiones (Fecha - Autor - Datos):
+    - 1.0 - 27/04/2006 - Pilar Duran Munoz
+    - 2.0 - 02/03/2016 - Jorge Paez Trivino - Adaptacion a los colegios catalanes (R1602_0089)
+  ****************************************************************************************************************/
+    FUNCTION FUNC_CALCULAR_IMPORTEASIST(
+        P_IDINSTITUCION IN SCS_ASISTENCIA.IDINSTITUCION%TYPE,
+        P_IDTURNO IN SCS_ASISTENCIA.IDTURNO%TYPE,
+        P_IDGUARDIA IN SCS_ASISTENCIA.IDGUARDIA%TYPE,
+        P_IDTIPOASISTENCIA IN SCS_ASISTENCIA.IDTIPOASISTENCIACOLEGIO%TYPE,
+        P_FECHA IN SCS_ASISTENCIA.FECHAHORA%TYPE,
+        P_IDFACTURACION IN FCS_HISTORICO_TIPOASISTCOLEGIO.IDFACTURACION%TYPE,
+        P_TIPO IN NUMBER) RETURN NUMBER IS
+    
+        V_IDFACTURACION FCS_HISTORICO_TIPOASISTCOLEGIO.IDFACTURACION%TYPE := P_IDFACTURACION;
+        V_IMPORTE FCS_HISTORICO_TIPOASISTCOLEGIO.IMPORTE%TYPE := NULL;
+        V_IMPORTEMAXIMO FCS_HISTORICO_TIPOASISTCOLEGIO.IMPORTEMAXIMO%TYPE := NULL;
+        V_TIENEHISTORICO BOOLEAN := FALSE;
+  
+    BEGIN
+        IF (P_IDFACTURACION IS NULL) THEN
+            -- Busca si tiene un IDFACTURACION previo (incluye tratamiento de regularizaciones)
+            V_IDFACTURACION :=  FUNC_OBTENER_IDFACTURACION(P_IDINSTITUCION, P_IDTURNO, P_IDGUARDIA, P_FECHA);
+        END IF;
+            
+        -- Si obtiene un idFacturacion, hay que obtener el tipo de asistencia del historico
+        IF (V_IDFACTURACION IS NOT NULL) THEN
+            BEGIN
+                SELECT HTASI.IMPORTE, HTASI.IMPORTEMAXIMO
+                    INTO V_IMPORTE, V_IMPORTEMAXIMO
+                FROM FCS_HISTORICO_TIPOASISTCOLEGIO HTASI
+                WHERE HTASI.IDINSTITUCION = P_IDINSTITUCION
+                    AND HTASI.IDTIPOASISTENCIACOLEGIO = P_IDTIPOASISTENCIA
+                    AND HTASI.IDFACTURACION = V_IDFACTURACION;
+                    
+                    V_TIENEHISTORICO := TRUE;                    
+                    
+                EXCEPTION
+                    WHEN OTHERS THEN
+                        V_TIENEHISTORICO := FALSE;
+            END;
+        END IF;
+            
+        -- Si no obtenemos un idFacturacion o no tenia historico, hay que obtener el tipo de asistencia actual
+        IF (V_IDFACTURACION IS NULL OR V_TIENEHISTORICO = FALSE) THEN
+            SELECT TASI.IMPORTE, TASI.IMPORTEMAXIMO
+                INTO V_IMPORTE, V_IMPORTEMAXIMO
+            FROM SCS_TIPOASISTENCIACOLEGIO TASI
+            WHERE TASI.IDINSTITUCION = P_IDINSTITUCION
+                AND TASI.IDTIPOASISTENCIACOLEGIO = P_IDTIPOASISTENCIA;                    
+        END IF;                
+            
+        IF (P_TIPO = 0) THEN
+            RETURN V_IMPORTE;
+        ELSE
+            RETURN V_IMPORTEMAXIMO;
+        END IF;
+
+        EXCEPTION
+            WHEN OTHERS THEN
+                RETURN NULL;
+    END FUNC_CALCULAR_IMPORTEASIST;
+
+  /****************************************************************************************************************
+    Nombre: FUNC_CALCULAR_IMPORTEACT
+    Descripcion: Funcion que nos devuelve el importe de un tipo de actuacion
+
+    Parametros (IN/OUT - Descripcion -Tipo de Datos)
+    - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER
+    - P_IDTURNO - IN - Identificador del turno - NUMBER
+    - P_IDGUARDIA - IN - Identificador de la guardia - NUMBER       
+    - P_IDTIPOASISTENCIA - IN - Identificador del tipo de asistencia - NUMBER
+    - P_IDTIPOACTUACION - IN - Identificador del tipo de actuacion - NUMBER
+    - P_FECHA - IN - Fecha de la asistencia o actuacion fuera de guardia - DATE
+    - P_IDFACTURACION - IN - Identificador de la facturacion - NUMBER
+    - P_TIPO - IN - 0:IMPORTE; 1:IMPORTEMAXIMO; - NUMBER
+
+    Versiones (Fecha - Autor - Datos):
+    - 1.0 - 27/04/2006 - Pilar Duran Munoz
+    - 2.0 - 02/03/2016 - Jorge Paez Trivino - Adaptacion a los colegios catalanes (R1602_0089)
+  ****************************************************************************************************************/
+    FUNCTION FUNC_CALCULAR_IMPORTEACT(
+        P_IDINSTITUCION IN SCS_ACTUACIONASISTENCIA.IDINSTITUCION%TYPE,
+        P_IDTURNO IN SCS_ASISTENCIA.IDTURNO%TYPE,
+        P_IDGUARDIA IN SCS_ASISTENCIA.IDGUARDIA%TYPE,
+        P_IDTIPOASISTENCIA IN SCS_ACTUACIONASISTENCIA.IDTIPOASISTENCIA%TYPE,
+        P_IDTIPOACTUACION IN SCS_ACTUACIONASISTENCIA.IDTIPOACTUACION%TYPE,
+        P_FECHA IN SCS_ASISTENCIA.FECHAHORA%TYPE,
+        P_IDFACTURACION IN FCS_HISTORICO_TIPOACTUACION.IDFACTURACION%TYPE,
+        P_TIPO IN NUMBER) RETURN NUMBER IS
+    
+        V_IDFACTURACION FCS_HISTORICO_TIPOACTUACION.IDFACTURACION%TYPE := P_IDFACTURACION;
+        V_IMPORTE FCS_HISTORICO_TIPOACTUACION.IMPORTE%TYPE := NULL;
+        V_IMPORTEMAXIMO FCS_HISTORICO_TIPOACTUACION.IMPORTEMAXIMO%TYPE := NULL;
+        V_TIENEHISTORICO BOOLEAN := FALSE;
+  
+    BEGIN
+        IF (P_IDFACTURACION IS NULL) THEN
+            -- Busca si tiene un IDFACTURACION previo (incluye tratamiento de regularizaciones)
+            V_IDFACTURACION :=  FUNC_OBTENER_IDFACTURACION(P_IDINSTITUCION, P_IDTURNO, P_IDGUARDIA, P_FECHA);
+        END IF;
+    
+        -- Si obtiene un idFacturacion, hay que obtener el tipo de actuacion del historico
+        IF (V_IDFACTURACION IS NOT NULL) THEN
+            BEGIN
+                SELECT HTACT.IMPORTE, HTACT.IMPORTEMAXIMO
+                    INTO V_IMPORTE, V_IMPORTEMAXIMO
+                FROM FCS_HISTORICO_TIPOACTUACION HTACT
+                WHERE  HTACT.IDINSTITUCION = P_IDINSTITUCION
+                    AND HTACT.IDTIPOASISTENCIA = P_IDTIPOASISTENCIA
+                    AND HTACT.IDTIPOACTUACION = P_IDTIPOACTUACION
+                    AND HTACT.IDFACTURACION = V_IDFACTURACION;
+                    
+                    V_TIENEHISTORICO := TRUE;                    
+                    
+                EXCEPTION
+                    WHEN OTHERS THEN
+                        V_TIENEHISTORICO := FALSE;
+            END;                                
+        END IF;
+            
+        -- Si no obtenemos un idFacturacion o no tenia historico, hay que obtener el tipo de actuacion actual
+        IF (V_IDFACTURACION IS NULL OR V_TIENEHISTORICO = FALSE) THEN
+            SELECT TACT.IMPORTE, TACT.IMPORTEMAXIMO
+                INTO V_IMPORTE, V_IMPORTEMAXIMO
+            FROM SCS_TIPOACTUACION TACT
+            WHERE TACT.IDINSTITUCION = P_IDINSTITUCION
+                AND TACT.IDTIPOASISTENCIA = P_IDTIPOASISTENCIA
+                AND TACT.IDTIPOACTUACION = P_IDTIPOACTUACION;
+        END IF;                
+            
+        IF (P_TIPO = 0) THEN
+            RETURN V_IMPORTE;
+        ELSE
+            RETURN V_IMPORTEMAXIMO;
+        END IF;            
+
+        EXCEPTION
+            WHEN OTHERS THEN
+                RETURN NULL;
+    END FUNC_CALCULAR_IMPORTEACT;    
+                    
+  /****************************************************************************************************************
+    Nombre: PROC_CARGA_CONFIG_GUARDIA
+    Descripcion: Procedimiento para catalanes que carga V_CONFIG_GUARDIA 
+
+    Parametros (IN/OUT - Descripcion -Tipo de Datos)
+    - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER
+    - P_IDTURNO - IN - Identificador del turno - NUMBER
+    - P_IDGUARDIA - IN - Identificador de la guardia - NUMBER
+    - P_CONFIGGUARDIAACTUAL - IN - RECORD que contiene la configuracion actual de la guardia - CONFIG_GUARDIA
+    - P_IDFACTURACION - IN - Identificador de la facturacion de la que se quiere obtener la configuracion - NUMBER
+    - P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)
+        En caso de error devuelve el codigo de error Oracle correspondiente.
+    - P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400)
+        En caso de error devuelve el mensaje de error Oracle correspondiente.    
+
+    Versiones (Fecha - Autor - Datos):
+    - 1.0 - 02/03/2016 - Jorge Paez Trivino - Adaptacion a los colegios catalanes (R1602_0089)
+  ****************************************************************************************************************/        
+    PROCEDURE PROC_CARGA_CONFIG_GUARDIA(
+        P_IDINSTITUCION IN NUMBER,
+        P_IDTURNO IN NUMBER,
+        P_IDGUARDIA IN NUMBER,
+        P_CONFIGGUARDIAACTUAL IN CONFIG_GUARDIA,
+        P_IDFACTURACION IN NUMBER, -- DEBE TENER SIEMPRE VALOR
+        P_CODRETORNO OUT VARCHAR2,
+        P_DATOSERROR OUT VARCHAR2) IS
+        
+    BEGIN             
+        IF (FUNC_ES_COLEGIO_CATALAN(P_IDINSTITUCION) = TRUE) THEN   
+        
+            IF (P_IDFACTURACION IS NULL OR V_CONFIG_GUARDIA.IDFACTURACION IS NULL OR P_CONFIGGUARDIAACTUAL.IDFACTURACION IS NULL) THEN
+                P_DATOSERROR := 'PROC_CARGA_CONFIG_GUARDIA: No se encuentra el valor de IDFACTURACION';
+                RAISE E_ERROR2;
+            END IF;                
+                                
+            IF (P_IDFACTURACION = P_CONFIGGUARDIAACTUAL.IDFACTURACION) THEN 
+                -- JPT: Es una cabecera de guardia, configurado con la guardia actual
+                -- Adri: Se trata de una guardia que se factura en el periodo actual de la facturacion y por tanto, se coge la configuracion del periodo actual, nada de historico.
+                    V_CONFIG_GUARDIA := P_CONFIGGUARDIAACTUAL; 
+                                    
+            ELSE -- JPT: Como es una cabecera de guardia ya facturada, hay que obtener la configuracion de la primera facturacion de esa cabecera de guardia
+                /* JPT: Cargamos el RECORD de la Configuracion de Guardia FACTURADA (V_CONFIG_GUARDIA)
+                    - Obtiene los hitos de la facturacion (tabla FCS_HISTORICO_HITOFACT) y carga los datos en V_CONFIG_GUARDIA
+                    - Para los catalanes hay que consultar SCS_GUARDIASTURNO.ESGUARDIAVG para la facturacion por guardias*/
+                P_DATOSERROR:= 'PROC_FCS_FACTURAR_GUARDIAS: Llamada a PROC_FCS_CARGA_CONFIG_GUARDIA';
+                PROC_FCS_CARGA_CONFIG_GUARDIA(
+                    P_IDINSTITUCION,
+                    P_IDTURNO,
+                    P_IDGUARDIA,
+                    P_IDFACTURACION,
+                    P_CODRETORNO,
+                    P_DATOSERROR);            
+                IF (P_CODRETORNO <> '0') THEN
+                    RAISE E_ERROR2;
+                END IF;
+            END IF;
+        END IF;
+        
+        P_DATOSERROR := 'PROC_FCS_FACTURAR_GUARDIAS: Ha finalizado correctamente';
+        P_CODRETORNO := TO_CHAR(0);
+
+        EXCEPTION
+            WHEN OTHERS THEN
+                P_CODRETORNO := TO_CHAR(SQLCODE);
+                P_DATOSERROR := P_DATOSERROR || ' ' || SQLERRM;        
+    END PROC_CARGA_CONFIG_GUARDIA;        
 
     /****************************************************************************************************************/
     /* Nombre: PROC_FAC_AS_CONTROLADO */
@@ -4041,343 +3728,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
   * JPT - FIN - CODIGO PARA LA FACTURACION CONTROLADA EN CANTABRIA *
   ********************************************************/
 
-    /****************************************************************************************************************/
-    /* Nombre: PROC_FACT_ASIST_CONTROLADO */
-    /* Descripcion: Funcion que realiza la facturacion SJCS de guardias configuradas con una facturacion con asistencias */
-    /* */
-    /* P_DIASGUARDIA - IN - Dias de la semana aplicables a la guardia - VARCHAR(7) */
-    /* P_IMPORTEASISTENCIA - IN - Importe de la asistencia - NUMBER */
-    /* P_IMPORTEMINASISTENCIA - IN - Importe minimo de la unidad de guardia - NUMBER */
-    /* P_IMPORTEMAXASISTENCIA - IN - Importe maximo de la unidad de guardia - NUMBER */
-    /* P_FECHAFACTURACIONDESDE - IN - Fecha inicial de la facturadion - DATE */
-    /* P_FECHAFACTURACIONHASTA - IN - Fecha final de la facturadion - DATE */
-    /* P_REG_CG_FACTURABLE - IN - Registro de las cabeceras de guardia - MATRICE_CG_FACTURABLE */
-    /* P_MOTIVO_AS - IN - Indica el motivo As o AsTp */
-    /* P_MOTIVO_ASMAS - IN - Indica el motivo As+ o AsTp+ */
-    /* P_APLICATIPOS - IN - 0:NoAplicaTipos; 1:AplicaTipos */
-    /* P_AGRUPARNOPAGAGUARDIA - IN - 0:AgrupaUG; 1:NoAgrupaUG */
-    /* P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)   */
-    /*      En caso de error devuelve el codigo de error Oracle correspondiente. */
-    /* P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400) */
-    /*      En caso de error devuelve el mensaje de error Oracle correspondiente. */
-    /* */
-    /* Version: 1.0 - Fecha Creacion: 16/10/2014 - Autor: Jorge Paez Trivino */
-    /* Version: - Fecha Modificacion: - Autor: */
-  /****************************************************************************************************************/
-    PROCEDURE  PROC_FACT_ASIST_CONTROLADO (
-        P_DIASGUARDIA IN SCS_HITOFACTURABLEGUARDIA.DIASAPLICABLES%TYPE, -- V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA
-        P_IMPORTEASISTENCIA IN NUMBER, -- V_CONFIG_GUARDIA.IMPORTEASISTENCIA
-        P_IMPORTEMINASISTENCIA IN NUMBER, -- V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA
-        P_IMPORTEMAXASISTENCIA IN NUMBER, -- V_CONFIG_GUARDIA.IMPORTEMAXASISTENCIA
-        P_FECHAFACTURACIONDESDE IN DATE, -- V_DATOS_FACTURACION.FECHADESDE
-        P_FECHAFACTURACIONHASTA IN DATE, -- V_DATOS_FACTURACION.FECHAHASTA
-        P_REG_CG_FACTURABLE IN MATRICE_CG_FACTURABLE,
-        P_MOTIVO_AS IN NUMBER, -- 5 o 20
-        P_MOTIVO_ASMAS IN NUMBER, -- 27 o 28
-        P_APLICATIPOS IN NUMBER, -- 0 o 1
-        P_AGRUPARNOPAGAGUARDIA IN VARCHAR2, -- V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA
-        P_CODRETORNO OUT VARCHAR2,
-        P_DATOSERROR OUT VARCHAR2
-    ) IS
-
-        c_TrazaInicial constant VARCHAR2(30) := 'PROC_FACT_ASIST_CONTROLADO: ';
-        v_contadorUG NUMBER := 0;
-        v_costeFijoTotalActuacionesUG NUMBER;
-        v_costeFijoTotalActuacionesCG NUMBER := 0;
-        v_facturadoCG NUMBER;
-        v_importeAsistencia NUMBER;
-        v_importeAsistUGSinFacturar NUMBER;
-        v_importeAsistUGFacturado NUMBER;
-        v_importeFacturadoCG NUMBER;
-        v_importeFacturadoUG NUMBER := 0;
-        v_importeTotalUG NUMBER := 0;
-        v_tieneNuevaFacturacionUG BOOLEAN;
-
-    BEGIN
-        IND_UG := 0;
-        IND_AS := 0;
-        IND_AC := 0;
-
-        V_DATOSERROR2 := c_TrazaInicial || 'Bucle de unidades de guardia';
-        FOR V_UNIDAD_GUARDIA IN UNIDADES_GUARDIA_CONTROLADO(
-            P_REG_CG_FACTURABLE.IDINSTITUCION,
-            P_REG_CG_FACTURABLE.IDTURNO,
-            P_REG_CG_FACTURABLE.IDGUARDIA,
-            P_REG_CG_FACTURABLE.IDPERSONA,
-            P_REG_CG_FACTURABLE.FECHAINICIO,
-            P_DIASGUARDIA
-        ) LOOP
-
-            V_DATOSERROR2 := c_TrazaInicial || 'Inicializa variables de unidades de guardia';
-            v_contadorUG := v_contadorUG + 1;
-            v_importeAsistUGSinFacturar := 0;
-            v_costeFijoTotalActuacionesUG := 0;
-            v_tieneNuevaFacturacionUG := FALSE;
-
-            /* Este cursor devuelve todas las asistencias que cumplen las siguientes condiciones:
-                - No esta anulada
-                - Se realiza en el dia de la guardia
-                - Se realiza en un dia aplicable de los indicados en la configuracion de la guardia (LMXJVSD)
-                - Tiene almenos una actuacion, sin facturar, justificada dentro del periodo de facturacion
-            */
-            V_DATOSERROR2 := c_TrazaInicial || 'Bucle de unidades de asistencias';
-            FOR V_ASISTENCIA IN C_ASISTENCIAS_UG_CONTROLADO(
-                V_UNIDAD_GUARDIA.IDINSTITUCION,
-                V_UNIDAD_GUARDIA.IDTURNO,
-                V_UNIDAD_GUARDIA.IDGUARDIA,
-                V_UNIDAD_GUARDIA.IDPERSONA,
-                V_UNIDAD_GUARDIA.FECHAFIN,
-                P_FECHAFACTURACIONDESDE,
-                P_FECHAFACTURACIONHASTA,
-                P_DIASGUARDIA,
-                P_APLICATIPOS
-            ) LOOP
-
-                IF (V_ASISTENCIA.NUMASIFAC = 0) THEN -- Asistencia sin facturar, que tiene almenos una actuacion (sin facturar y justificada dentro del periodo de facturacion)
-                    V_DATOSERROR2 := c_TrazaInicial || 'Guarda la asistencia con importe';
-                    v_tieneNuevaFacturacionUG := TRUE;
-                    IND_AS := IND_AS + 1;
-                    M_APUNTE_AS(IND_AS).IDINSTITUCION := V_ASISTENCIA.IDINSTITUCION;
-                    M_APUNTE_AS(IND_AS).ANIO := V_ASISTENCIA.ANIO;
-                    M_APUNTE_AS(IND_AS).NUMERO := V_ASISTENCIA.NUMERO;
-                    M_APUNTE_AS(IND_AS).FACTURADO := 0; -- Sin facturar
-                    M_APUNTE_AS(IND_AS).CONTADOR := v_contadorUG;
-                    M_APUNTE_AS(IND_AS).MOTIVO := P_MOTIVO_AS; -- As o AsTp
-
-                    /*
-                        Calculo del importe de la asistencia
-                        1. Intenta obtener el importe del tipo de asistencia
-                        2. En caso de no tener importe el tipo de asistencia, pone el importe de la asistencia
-                        3. En caso de no tener ningun importe, caso muy raro, el valor es cero.
-                    */
-                    v_importeAsistencia := V_ASISTENCIA.IMPORTETIPO;
-                    v_importeAsistencia := NVL(v_importeAsistencia, P_IMPORTEASISTENCIA);
-                    v_importeAsistencia := NVL(v_importeAsistencia, 0);
-                    M_APUNTE_AS(IND_AS).IMPORTE := v_importeAsistencia;
-
-                    V_DATOSERROR2 := c_TrazaInicial || 'Acumula los importes de las asistencias sin facturar';
-                    v_importeAsistUGSinFacturar := v_importeAsistUGSinFacturar + v_importeAsistencia;
-
-                ELSE -- Asistencia ya facturada, que tiene almenos una actuacion (sin facturar y justificada dentro del periodo de facturacion)
-                    V_DATOSERROR2 := c_TrazaInicial || 'Guarda la asistencia sin importe';
-                    v_tieneNuevaFacturacionUG := TRUE;
-                    IND_AS := IND_AS + 1;
-                    M_APUNTE_AS(IND_AS).IDINSTITUCION := V_ASISTENCIA.IDINSTITUCION;
-                    M_APUNTE_AS(IND_AS).ANIO := V_ASISTENCIA.ANIO;
-                    M_APUNTE_AS(IND_AS).NUMERO := V_ASISTENCIA.NUMERO;
-                    M_APUNTE_AS(IND_AS).FACTURADO := 1; -- Facturada
-                    M_APUNTE_AS(IND_AS).CONTADOR := v_contadorUG;
-                    M_APUNTE_AS(IND_AS).MOTIVO := P_MOTIVO_ASMAS; -- As+ o AsTp+
-                    M_APUNTE_AS(IND_AS).IMPORTE := 0; -- Hay que poner la asistencia, ya que tiene una actuacion
-                END IF;
-
-                /* Este cursor devuelve todas las actuaciones que cumplen las siguientes condiciones:
-                    - Sin anular
-                    - Justificada dentro del periodo de facturacion
-                    - Validada
-                    - Sin facturar
-                */
-                V_DATOSERROR2 := c_TrazaInicial || 'Bucle de actuaciones sin facturar';
-                FOR V_ACTUACION IN C_ACTUACIONES_ASIS_CONTROLADO(
-                    V_ASISTENCIA.IDINSTITUCION,
-                    V_ASISTENCIA.ANIO,
-                    V_ASISTENCIA.NUMERO,
-                    P_FECHAFACTURACIONDESDE,
-                    P_FECHAFACTURACIONHASTA
-                ) LOOP
-                    V_DATOSERROR2 := c_TrazaInicial || 'Guarda la actuacion sin importe';
-                    IND_AC := IND_AC + 1;
-                    M_APUNTE_AC(IND_AC).IDINSTITUCION := V_ACTUACION.IDINSTITUCION;
-                    M_APUNTE_AC(IND_AC).ANIO := V_ACTUACION.ANIO;
-                    M_APUNTE_AC(IND_AC).NUMERO := V_ACTUACION.NUMERO;
-                    M_APUNTE_AC(IND_AC).IDACTUACION := V_ACTUACION.IDACTUACION;
-                    M_APUNTE_AC(IND_AC).FACTURADO := 0; -- Sin facturar
-                    M_APUNTE_AC(IND_AC).MOTIVO := P_MOTIVO_AS; -- As o AsTp
-                    M_APUNTE_AC(IND_AC).IMPORTE := 0;
-                    M_APUNTE_AC(IND_AC).CONTADOR := v_contadorUG;
-                    M_APUNTE_AC(IND_AC).COSTEFIJO := V_ACTUACION.COSTEFIJO;
-
-                    V_DATOSERROR2 := c_TrazaInicial || 'Acumula los costes fijos de las actuaciones sin facturar';
-                    v_costeFijoTotalActuacionesUG := v_costeFijoTotalActuacionesUG + V_ACTUACION.COSTEFIJO;
-                    v_costeFijoTotalActuacionesCG := v_costeFijoTotalActuacionesCG + V_ACTUACION.COSTEFIJO;
-                END LOOP; -- Fin actuaciones
-            END LOOP; -- Fin asistencias
-
-            -- Si no se ha facturado o se ha facturado algo nuevo dentro de la unidad de guardia
-            IF (V_UNIDAD_GUARDIA.FACTURADO = 0 OR v_tieneNuevaFacturacionUG) THEN
-
-                V_DATOSERROR2 := c_TrazaInicial || 'Guarda la unidad de guardia';
-                IND_UG := IND_UG + 1;
-                M_APUNTE_UG(IND_UG).IDINSTITUCION := V_UNIDAD_GUARDIA.IDINSTITUCION;
-                M_APUNTE_UG(IND_UG).IDTURNO := V_UNIDAD_GUARDIA.IDTURNO;
-                M_APUNTE_UG(IND_UG).IDGUARDIA := V_UNIDAD_GUARDIA.IDGUARDIA;
-                M_APUNTE_UG(IND_UG).IDPERSONA := V_UNIDAD_GUARDIA.IDPERSONA;
-                M_APUNTE_UG(IND_UG).FECHAINICIO := V_UNIDAD_GUARDIA.FECHAINICIO;
-                M_APUNTE_UG(IND_UG).FECHAFIN := V_UNIDAD_GUARDIA.FECHAFIN;
-                M_APUNTE_UG(IND_UG).FACTURADO := V_UNIDAD_GUARDIA.FACTURADO;
-                M_APUNTE_UG(IND_UG).COSTEFIJO := v_costeFijoTotalActuacionesUG;
-                M_APUNTE_UG(IND_UG).CONTADOR := v_contadorUG;
-
-                IF (P_AGRUPARNOPAGAGUARDIA = '0') THEN -- Agrupa UG
-                    IF (V_UNIDAD_GUARDIA.FACTURADO = 0) THEN -- UG sin facturar
-                        IF (P_IMPORTEMAXASISTENCIA IS NOT NULL AND P_IMPORTEMAXASISTENCIA > 0.0 AND v_importeAsistUGSinFacturar > P_IMPORTEMAXASISTENCIA) THEN
-                            M_APUNTE_UG(IND_UG).MOTIVO := 3; --AsMax;
-                            M_APUNTE_UG(IND_UG).IMPORTE := P_IMPORTEMAXASISTENCIA;
-
-                        ELSIF (P_IMPORTEMINASISTENCIA IS NOT NULL AND P_IMPORTEMINASISTENCIA > 0.0 AND v_importeAsistUGSinFacturar < P_IMPORTEMINASISTENCIA) THEN
-                            M_APUNTE_UG(IND_UG).MOTIVO := 10; -- AsMin
-                            M_APUNTE_UG(IND_UG).IMPORTE := P_IMPORTEMINASISTENCIA;
-
-                        ELSE
-                            M_APUNTE_UG(IND_UG).MOTIVO := P_MOTIVO_AS; -- As o AsTp
-                            M_APUNTE_UG(IND_UG).IMPORTE := v_importeAsistUGSinFacturar;
-                        END IF;
-
-                    ELSE -- UG facturarada
-                        V_DATOSERROR2 := c_TrazaInicial || 'Obtengo el importe de las asistencias facturadas de la unidad de guardia';
-                        SELECT NVL(SUM(FA.PRECIOAPLICADO), 0)
-                            INTO v_importeAsistUGFacturado
-                        FROM FCS_FACT_ASISTENCIA FA,
-                            SCS_ASISTENCIA A
-                        WHERE FA.IDINSTITUCION = A.IDINSTITUCION -- Relacion FCS_FACT_ASISTENCIA => SCS_ASISTENCIA
-                            AND FA.ANIO = A.ANIO -- Relacion FCS_FACT_ASISTENCIA => SCS_ASISTENCIA
-                            AND FA.NUMERO = A.NUMERO -- Relacion FCS_FACT_ASISTENCIA => SCS_ASISTENCIA
-                            AND A.IDINSTITUCION = V_UNIDAD_GUARDIA.IDINSTITUCION -- Utiliza indice SI_FK_ASISTENCIA_GUARDIASTURNO
-                            AND A.IDTURNO = V_UNIDAD_GUARDIA.IDTURNO -- Utiliza indice SI_FK_ASISTENCIA_GUARDIASTURNO
-                            AND A.IDGUARDIA = V_UNIDAD_GUARDIA.IDGUARDIA -- Utiliza indice SI_FK_ASISTENCIA_GUARDIASTURNO
-                            AND A.IDPERSONACOLEGIADO = V_UNIDAD_GUARDIA.IDPERSONA
-                            AND TRUNC(A.FECHAHORA) = V_UNIDAD_GUARDIA.FECHAFIN -- La asistencia se realiza en el dia de la guardia
-                            AND FUN_ESDIAAPLICABLE(A.FECHAHORA, P_DIASGUARDIA) = 1 -- La asistencia se realiza en un dia aplicable en los indicados de la configuracion de la guardia (LMXJVSD)
-                            AND A.FECHAANULACION IS NULL; -- Asistencia no anulada
-
-                        IF (P_IMPORTEMAXASISTENCIA IS NOT NULL AND P_IMPORTEMAXASISTENCIA > 0.0 AND v_importeAsistUGFacturado + v_importeAsistUGSinFacturar > P_IMPORTEMAXASISTENCIA) THEN
-                            M_APUNTE_UG(IND_UG).MOTIVO := 17; --AsMax+;
-                            M_APUNTE_UG(IND_UG).IMPORTE := P_IMPORTEMAXASISTENCIA - V_UNIDAD_GUARDIA.PRECIOAPLICADO;
-
-                        ELSIF (P_IMPORTEMINASISTENCIA IS NOT NULL AND P_IMPORTEMINASISTENCIA > 0.0 AND v_importeAsistUGFacturado + v_importeAsistUGSinFacturar < P_IMPORTEMINASISTENCIA) THEN
-                            M_APUNTE_UG(IND_UG).MOTIVO := 33; -- AsMin+
-                            M_APUNTE_UG(IND_UG).IMPORTE := P_IMPORTEMINASISTENCIA - V_UNIDAD_GUARDIA.PRECIOAPLICADO;
-
-                        ELSE
-                            M_APUNTE_UG(IND_UG).MOTIVO := P_MOTIVO_ASMAS; -- As+ o AsTp+
-                            M_APUNTE_UG(IND_UG).IMPORTE := v_importeAsistUGSinFacturar + v_importeAsistUGFacturado - V_UNIDAD_GUARDIA.PRECIOAPLICADO;
-                        END IF;
-                    END IF;
-
-                ELSE -- No agrupa UG
-                    IF (v_importeAsistUGSinFacturar>0) THEN -- UG facturado
-                        M_APUNTE_UG(IND_UG).MOTIVO := P_MOTIVO_ASMAS; -- As+ o AsTp+
-                    ELSE -- UG no facturado
-                        M_APUNTE_UG(IND_UG).MOTIVO := P_MOTIVO_AS; -- As o AsTp
-                    END IF;
-
-                    M_APUNTE_UG(IND_UG).IMPORTE := v_importeAsistUGSinFacturar;
-                END IF;
-
-                -- Compruebo que el importe sea positivo
-                IF (M_APUNTE_UG(IND_UG).IMPORTE < 0) THEN
-                    M_APUNTE_UG(IND_UG).IMPORTE := 0;
-                END IF;
-
-                v_importeTotalUG := v_importeTotalUG + M_APUNTE_UG(IND_UG).IMPORTE;
-            END IF;
-
-            -- Si la unidad de guardia esta facturada sumo los importes
-            IF (V_UNIDAD_GUARDIA.FACTURADO = 1) THEN
-                v_importeFacturadoUG := v_importeFacturadoUG + V_UNIDAD_GUARDIA.PRECIOAPLICADO;
-            END IF;
-        END LOOP; -- Fin unidades de guardia
-
-        IF (IND_UG > 0) THEN -- Si ha insertado la unidad de guardia, se inserta la cabecera de guardia
-            V_DATOSERROR2 := c_TrazaInicial || 'Guarda la cabecera de guardia';
-            IND_CG := 1; -- Por cada recorrido de la matriz de cabecera facturable solo hay un registro en la matriz de apunte de CG por eso el indice siempre sera 1.
-            M_APUNTE_CG(IND_CG).IDINSTITUCION := P_REG_CG_FACTURABLE.IDINSTITUCION;
-            M_APUNTE_CG(IND_CG).IDTURNO := P_REG_CG_FACTURABLE.IDTURNO;
-            M_APUNTE_CG(IND_CG).IDGUARDIA := P_REG_CG_FACTURABLE.IDGUARDIA;
-            M_APUNTE_CG(IND_CG).IDPERSONA := P_REG_CG_FACTURABLE.IDPERSONA;
-            M_APUNTE_CG(IND_CG).FECHAINICIO := P_REG_CG_FACTURABLE.FECHAINICIO;
-            M_APUNTE_CG(IND_CG).FECHAFIN := P_REG_CG_FACTURABLE.FECHAFIN;
-            M_APUNTE_CG(IND_CG).COSTEFIJO := v_costeFijoTotalActuacionesCG;
-            M_APUNTE_CG(IND_CG).CONTADOR := 1;
-
-            IF (P_AGRUPARNOPAGAGUARDIA = '1') THEN
-                M_APUNTE_CG(IND_CG).IDTIPOAPUNTE := 'CG-';
-            ELSE
-                M_APUNTE_CG(IND_CG).IDTIPOAPUNTE := 'CG+';
-            END IF;
-
-            V_DATOSERROR2 := c_TrazaInicial || 'Obtengo si la cabecera de guardia esta facturada y la suma de los importes aplicados';
-            SELECT COUNT(*), SUM(NVL(PRECIOAPLICADO,0))
-                INTO v_facturadoCG, v_importeFacturadoCG
-            FROM FCS_FACT_APUNTE
-            WHERE IDINSTITUCION = P_REG_CG_FACTURABLE.IDINSTITUCION
-                AND IDTURNO = P_REG_CG_FACTURABLE.IDTURNO
-                AND IDGUARDIA = P_REG_CG_FACTURABLE.IDGUARDIA
-                AND IDPERSONA = P_REG_CG_FACTURABLE.IDPERSONA
-                AND FECHAINICIO = P_REG_CG_FACTURABLE.FECHAINICIO;
-
-            M_APUNTE_CG(IND_CG).FACTURADO := v_facturadoCG;
-
-            IF (v_importeTotalUG = 0) THEN -- Se ha facturado unidades de guardia con todas las asistencias facturadas y alguna nueva actuacion
-                M_APUNTE_CG(IND_CG).motivo := 11; --AsNoDev
-                M_APUNTE_CG(IND_CG).importe := 0;
-
-            ELSE -- Tiene alguna asistencia sin facturar
-                IF (P_AGRUPARNOPAGAGUARDIA = '0') THEN -- Agrupa CG
-                    M_APUNTE_CG(IND_CG).IMPORTE := v_importeTotalUG;
-
-                    IF (v_facturadoCG>0) THEN
-                        M_APUNTE_CG(IND_CG).MOTIVO := P_MOTIVO_ASMAS; -- As+ o AsTp+
-                    ELSE
-                        M_APUNTE_CG(IND_CG).MOTIVO := P_MOTIVO_AS; -- As o AsTp
-                    END IF;
-
-                ELSE -- No agrupa CG (v_importeTotalUG es la suma de los importes de las asistencias sin facturar de sus unidades de guardia)
-                    IF (v_facturadoCG = 0) THEN -- Cabecera de guardia sin facturar
-                        IF (P_IMPORTEMAXASISTENCIA IS NOT NULL AND P_IMPORTEMAXASISTENCIA > 0.0 AND v_importeTotalUG > P_IMPORTEMAXASISTENCIA) THEN
-                            M_APUNTE_CG(IND_CG).MOTIVO := 3; --AsMax;
-                            M_APUNTE_CG(IND_CG).IMPORTE := P_IMPORTEMAXASISTENCIA;
-
-                        ELSIF (P_IMPORTEMINASISTENCIA IS NOT NULL AND P_IMPORTEMINASISTENCIA > 0.0 AND v_importeTotalUG < P_IMPORTEMINASISTENCIA) THEN
-                            M_APUNTE_CG(IND_CG).MOTIVO := 10; -- AsMin
-                            M_APUNTE_CG(IND_CG).IMPORTE := P_IMPORTEMINASISTENCIA;
-
-                        ELSE
-                            M_APUNTE_CG(IND_CG).MOTIVO := P_MOTIVO_AS; -- As o AsTp
-                            M_APUNTE_CG(IND_CG).IMPORTE := v_importeTotalUG;
-                        END IF;
-
-                    ELSE -- Cabecera de guardia facturada
-                        IF (P_IMPORTEMAXASISTENCIA IS NOT NULL AND P_IMPORTEMAXASISTENCIA > 0.0 AND v_importeFacturadoUG + v_importeTotalUG > P_IMPORTEMAXASISTENCIA) THEN
-                            M_APUNTE_CG(IND_CG).MOTIVO := 17; --AsMax+;
-                            M_APUNTE_CG(IND_CG).IMPORTE := P_IMPORTEMAXASISTENCIA - v_importeFacturadoCG;
-
-                        ELSIF (P_IMPORTEMINASISTENCIA IS NOT NULL AND P_IMPORTEMINASISTENCIA > 0.0 AND v_importeFacturadoUG + v_importeTotalUG < P_IMPORTEMINASISTENCIA) THEN
-                            M_APUNTE_CG(IND_CG).MOTIVO := 33; -- AsMin+
-                            M_APUNTE_CG(IND_CG).IMPORTE := P_IMPORTEMINASISTENCIA - v_importeFacturadoCG;
-
-                        ELSE
-                            M_APUNTE_CG(IND_CG).MOTIVO := P_MOTIVO_ASMAS; -- As+ o AsTp+
-                            M_APUNTE_CG(IND_CG).IMPORTE := v_importeTotalUG + v_importeFacturadoUG - v_importeFacturadoCG;
-                        END IF;
-                    END IF;
-                END IF;
-            END IF;
-
-            IF (M_APUNTE_CG(IND_CG).IMPORTE < 0) THEN
-                M_APUNTE_CG(IND_CG).IMPORTE := 0;
-            END IF;
-        END IF;
-
-        P_DATOSERROR := c_TrazaInicial || 'Ha finalizado correctamente';
-        P_CODRETORNO := TO_CHAR(0);
-
-        EXCEPTION
-            WHEN OTHERS THEN
-                P_CODRETORNO := TO_CHAR(SQLCODE);
-                P_DATOSERROR := P_DATOSERROR || ' ' || V_DATOSERROR2 || ' ' || SQLERRM;
-    END  PROC_FACT_ASIST_CONTROLADO;
-
   /****************************************************************************************************************/
   /* Nombre:   PROC_FCS_FACTURAR_TURNOS_OFI                                                                       */
   /* Descripcion:
@@ -4473,7 +3823,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
            AND (trunc(SCS_ACTUACIONDESIGNA.FECHAJUSTIFICACION) BETWEEN
                trunc(P_FECHADESDE) AND trunc(P_FECHAHASTA))
            AND NVL(SCS_ACTUACIONDESIGNA.FACTURADO, 0) <> 1
-           AND NVL(SCS_ACTUACIONDESIGNA.VALIDADA, 0) = 1
+           AND NVL(SCS_ACTUACIONDESIGNA.VALIDADA, '0') = '1'
            AND (SCS_ACTUACIONDESIGNA.ANULACION is null or
                SCS_ACTUACIONDESIGNA.ANULACION = '0')
            AND SCS_ACTUACIONDESIGNA.IDPERSONACOLEGIADO IS NOT NULL;
@@ -4710,14 +4060,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
           FOR V_GUARDIASTURNO IN C_GUARDIASTURNO(V_TURNO.IDTURNO) LOOP
 
             --Guardamos el historico de los hitos de la facturacion
-          V_DATOSERROR2 := 'Antes de ejecutar el historico de los hitos';
-          PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTORICO_HITOFACT(P_IDINSTITUCION,
-                                          P_IDFACTURACION,
-                                          V_TURNO.IDTURNO,
-                                          V_GUARDIASTURNO.IDGUARDIA,
-                                          HITO_EJG,
-                                          V_CODRETORNO2,
-                                          V_DATOSERROR2);
+            V_DATOSERROR2 := 'Antes de ejecutar el historico de los hitos';
+            PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTORICO_HITOFACT(
+                P_IDINSTITUCION,
+                P_IDFACTURACION,
+                V_TURNO.IDTURNO,
+                V_GUARDIASTURNO.IDGUARDIA,
+                HITO_EJG,
+                V_CODRETORNO2,
+                V_DATOSERROR2);
 
             -- Obtenemos el precio del EJG
             begin
@@ -4849,60 +4200,120 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         P_DATOSERROR OUT VARCHAR2) IS
 
         V_ESFACTURACIONCONTROLADA BOOLEAN;
+        V_CONFIGGUARDIAACTUAL CONFIG_GUARDIA;
+        IND_CG_FACTURABLEFG NUMBER;
 
     BEGIN
         TOTAL_FACTURACION := 0;
-        V_DATOSERROR2:= 'PROC_FCS_CARGA_FACTURACION';
-        PROC_FCS_CARGA_FACTURACION(P_IDINSTITUCION, P_IDFACTURACION, V_CODRETORNO2, V_DATOSERROR2);
+        -- JPT: Obtiene los datos de la facturacion (tabla FCS_FACTURACIONJG) y carga los datos en V_DATOS_FACTURACION
+        V_DATOSERROR2:= 'PROC_FCS_FACTURAR_GUARDIAS: Llamada a PROC_FCS_CARGA_FACTURACION';
+        PROC_FCS_CARGA_FACTURACION(
+            P_IDINSTITUCION, 
+            P_IDFACTURACION, 
+            V_CODRETORNO2, 
+            V_DATOSERROR2);
+        IF (V_CODRETORNO2 <> '0') THEN
+            RAISE E_ERROR2;
+        END IF;            
 
-        -- Se almacenan los historicos a nivel de institucion
-        V_DATOSERROR2:= 'PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTORICOS_GUARDIAS';
-        PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTORICOS_GUARDIAS(P_IDINSTITUCION, P_IDFACTURACION, V_CODRETORNO2, V_DATOSERROR2);
+        /* JPT: Se almacenan los historicos a nivel de institucion   
+            - FCS_HISTORICO_TIPOASISTCOLEGIO de SCS_TIPOASISTENCIACOLEGIO
+            - FCS_HISTORICO_TIPOACTUACION de SCS_TIPOACTUACION
+            - FCS_HISTO_TIPOACTCOSTEFIJO de SCS_TIPOACTUACIONCOSTEFIJO */
+        V_DATOSERROR2:= 'PROC_FCS_FACTURAR_GUARDIAS: Llamada a PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTORICOS_GUARDIAS';
+        PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTORICOS_GUARDIAS(
+            P_IDINSTITUCION, 
+            P_IDFACTURACION, 
+            V_CODRETORNO2, 
+            V_DATOSERROR2);
+        IF (V_CODRETORNO2 <> '0') THEN
+            RAISE E_ERROR2;
+        END IF;
 
-        -- Llamada a los cursores de facturacion de guardias
-        -- Grupos Facturacion
+        -- JPT: Obtiene los grupos de la facturacion (tabla FCS_FACT_GRUPOFACT_HITO)
+        V_DATOSERROR2 := 'PROC_FCS_FACTURAR_GUARDIAS: Cursor C_GRUPOSFACTURACION';
         FOR V_GRUPOSFACTURACION IN C_GRUPOSFACTURACION(P_IDINSTITUCION, P_IDFACTURACION) LOOP
+        
+            -- JPT: Guarda el historico de la configuracion de todas las guardias del grupo de facturacion para esa facturacion (FCS_HISTORICO_HITOFACT de SCS_HITOFACTURABLEGUARDIA)      
+            V_DATOSERROR2:= 'PROC_FCS_FACTURAR_GUARDIAS: Llamada a PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTO_HITOFACT_GUA';
+            PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTO_HITOFACT_GUA(
+                P_IDINSTITUCION,
+                P_IDFACTURACION,
+                V_GRUPOSFACTURACION.IDGRUPOFACTURACION,
+                C_IMPORTE_GUARDIA_INACTIVA,
+                V_CODRETORNO2,
+                V_DATOSERROR2);       
+            IF (V_CODRETORNO2 <> '0') THEN
+                RAISE E_ERROR2;
+            END IF;                  
 
-            -- Turnos
-            V_DATOSERROR2 := 'Antes de ejecutar turnos';
+            -- JPT: Obtiene los turnos asociados al grupo de facturacion (tabla SCS_TURNO)
+            V_DATOSERROR2 := 'PROC_FCS_FACTURAR_GUARDIAS: Cursor C_TURNO';
             FOR V_TURNO IN C_TURNO(P_IDINSTITUCION, V_GRUPOSFACTURACION.IDGRUPOFACTURACION) LOOP
 
-                -- Guardias
-                V_DATOSERROR2 := 'Antes de ejecutar Guardias Turnos';
+                -- JPT: Obtiene las guardias asociadas al turno (tabla SCS_GUARDIASTURNO)
+                V_DATOSERROR2 := 'PROC_FCS_FACTURAR_GUARDIAS: Cursor C_GUARDIASTURNO';
                 FOR V_GUARDIASTURNO IN C_GUARDIASTURNO(P_IDINSTITUCION, V_TURNO.IDTURNO) LOOP
 
-                    --Guardamos el historico de los hitos de la facturacion
-                    V_DATOSERROR2 := 'Antes de ejecutar el historico de los hitos';
-                    PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTORICO_HITOFACT(
-                        P_IDINSTITUCION,
-                        P_IDFACTURACION,
-                        V_TURNO.IDTURNO,
-                        V_GUARDIASTURNO.IDGUARDIA,
-                        0,
-                        V_CODRETORNO2,
-                        V_DATOSERROR2);
-
-                    --Cargamos el RECORD de Configuracion de Guardia
-                    V_DATOSERROR2 := 'Antes de ejecutar la carga de configuracion de Guardia';
+                    /* JPT: Cargamos el RECORD de la Configuracion de Guardia ACTUAL (V_CONFIG_GUARDIA)
+                        - Obtiene los hitos de la facturacion (tabla FCS_HISTORICO_HITOFACT) y carga los datos en V_CONFIG_GUARDIA
+                        - Para los catalanes hay que consultar SCS_GUARDIASTURNO.ESGUARDIAVG para la facturacion por guardias*/
+                    V_DATOSERROR2:= 'PROC_FCS_FACTURAR_GUARDIAS: Llamada a PROC_FCS_CARGA_CONFIG_GUARDIA';
                     PROC_FCS_CARGA_CONFIG_GUARDIA(
                         P_IDINSTITUCION,
                         V_TURNO.IDTURNO,
                         V_GUARDIASTURNO.IDGUARDIA,
+                        P_IDFACTURACION, -- Obtenemos la configuracion de la guardia actual y la asociadamos a la facturacion actual
                         V_CODRETORNO2,
                         V_DATOSERROR2);
+                    IF (V_CODRETORNO2 <> '0') THEN
+                        RAISE E_ERROR2;
+                    END IF;
+                                              
+                    -- JPT: Guardo una copia del RECORD de la Configuracion de Guardia ACTUAL (cambio facturacion guardias facturadas a precio facturado) 
+                    IF (FUNC_ES_COLEGIO_CATALAN(P_IDINSTITUCION) = TRUE) THEN   
+                        V_CONFIGGUARDIAACTUAL := V_CONFIG_GUARDIA;
+                    END IF;                        
 
-                    --Cargamos la matriz de Cabecera de Guardias a facturar.
-                    V_DATOSERROR2 := 'Antes de ejecutar la carga de la matriz de cabecera de Guardias';
+                    /* JPT: Cargamos la MATRIZ de la Cabecera de Guardias a facturar [M_CG_FACTURABLE(++IND_CG_FACTURABLE)]
+                        - Obtiene las cabeceras de guardia validadas dentro del periodo de la facturacion y sin facturar 
+                            (tabla SCS_CABECERAGUARDIAS + FCS_FACT_APUNTE ), 
+                            y carga los datos en M_CG_FACTURABLE(++IND_CG_FACTURABLE)
+                        - Obtiene las cabeceras de guardia validadas, que tengan por lo menos una actuacion que no sea fuera de guardia sin anular, justificada dentro del periodo de la facturacion y sin facturar 
+                            (tabla SCS_CABECERAGUARDIAS + SCS_GUARDIASCOLEGIADO + SCS_ASISTENCIA +SCS_ACTUACIONASISTENCIA +FCS_FACT_ACTUACIONASISTENCIA), 
+                            y carga los datos en M_CG_FACTURABLE(++IND_CG_FACTURABLE)*/
+                    V_DATOSERROR2:= 'PROC_FCS_FACTURAR_GUARDIAS: Llamada a PROC_CARGAR_CABECERA_GUARDIAS';
                     PROC_CARGAR_CABECERA_GUARDIAS(
                         P_IDINSTITUCION,
                         V_TURNO.IDTURNO,
                         V_GUARDIASTURNO.IDGUARDIA,
                         V_CODRETORNO2,
                         V_DATOSERROR2);
+                    IF (V_CODRETORNO2 <> '0') THEN
+                        RAISE E_ERROR2;
+                    END IF;
 
-                    /* COMENZAMOS LA FACTURACION */
-                    V_DATOSERROR2 := 'Para cada CG hacemos el apunte en la matriz de CG';
+                    -- JPT: Recorremos MATRIZ M_CG_FACTURABLE(1..IND_CG_FACTURABLE)
+                    V_DATOSERROR2 := 'PROC_FCS_FACTURAR_GUARDIAS: Recorremos MATRIZ M_CG_FACTURABLE(1..IND_CG_FACTURABLE)';
                     FOR I IN 1 .. IND_CG_FACTURABLE LOOP
+                    
+                        -- Si ha cambiado la facturacion, tenemos que volver a configurar V_CONFIG_GUARDIA
+                        IF (M_CG_FACTURABLE(I).IDFACTURACION <> V_CONFIG_GUARDIA.IDFACTURACION) THEN 
+                        
+                            -- JPT: Procedimiento para catalanes que carga V_CONFIG_GUARDIA 
+                            V_DATOSERROR2 := 'PROC_FCS_FACTURAR_GUARDIAS: Invocamos PROC_CARGA_CONFIG_GUARDIA';
+                            PROC_CARGA_CONFIG_GUARDIA(
+                                P_IDINSTITUCION,
+                                V_TURNO.IDTURNO,
+                                V_GUARDIASTURNO.IDGUARDIA,
+                                V_CONFIGGUARDIAACTUAL,
+                                M_CG_FACTURABLE(I).IDFACTURACION,
+                                V_CODRETORNO2,
+                                V_DATOSERROR2);
+                            IF (V_CODRETORNO2 <> '0') THEN
+                                RAISE E_ERROR2;
+                            END IF;
+                        END IF;                                                                                     
 
                         -- INICIALMENTE SOLO PARA EL COLEGIO DE CANTABRIA (2016)
                         V_ESFACTURACIONCONTROLADA := FALSE;
@@ -5052,81 +4463,57 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                     V_DATOSERROR2 := 'Facturacion por Guardias doblando actuaciones';
                                     PROC_FACT_GUARDIA_DOBLAACT(I, V_CODRETORNO2, V_DATOSERROR2);
                                 END IF;
-                            END IF;
-
-                            -- Apuntamos en base de datos los datos almacenados en las matrices de apuntes
-                            IF (V_CODRETORNO2 = '0') THEN
-
-                                -- Llamamos al procedimiento que realiza los apuntes en bb.dd y
-                                -- borra las matrices de memoria para la siguiente cabecera de guardia
+                                IF (V_CODRETORNO2 <> '0') THEN
+                                    RAISE E_ERROR2;
+                                END IF;       
+                                                     
+                                -- Llamamos al procedimiento que realiza los apuntes en bb.dd y borra las matrices de memoria para la siguiente cabecera de guardia
                                 V_DATOSERROR2 := 'Apuntes en bb.dd y borrado de las matrices de memoria';
                                 PROC_FACT_DESC_MATR_GUARDIA(
                                     P_IDINSTITUCION,
                                     P_IDFACTURACION,
                                     P_USUMODIFICACION,
                                     V_CODRETORNO,
-                                    V_DATOSERROR);
+                                    V_DATOSERROR);                                
                                 IF (V_CODRETORNO <> '0') THEN
                                     V_DATOSERROR2 := V_DATOSERROR2 || ': ' || V_DATOSERROR;
                                     RAISE E_ERROR2;
-                                END IF;
-
-                            ELSE
-                                RAISE E_ERROR2;
+                                END IF;                  
                             END IF;
 
-                            --ELSIF (V_CONFIG_GUARDIA.ASISTENCIA=pkg_siga_constantes.DB_TRUE_N) THEN --Si no se factura por Guardia (B2)
+                            -- Si se factura por asistencias
                             IF (V_CONFIG_GUARDIA.ASISTENCIA = PKG_SIGA_CONSTANTES.DB_TRUE_N) THEN
 
                                 --Si no se factura por Guardia (B2)
                                 V_DATOSERROR2 := 'Facturacion por Asistencias';
                                 -- Si se factura por Asistencia (A1 y B2) y no aplica tipos de Asistencia
                                 IF (V_CONFIG_GUARDIA.TIPOASISTENCIA = PKG_SIGA_CONSTANTES.DB_FALSE_N) THEN
-
                                     V_DATOSERROR2 := 'Facturacion por Asistencias sin aplicar tipos';
                                     PROC_FACT_ASIST_NOAPLICATIPO(I, V_CODRETORNO2, V_DATOSERROR2);
-
-                                    /*PROC_FACT_ASIST_CONTROLADO (
-                                        V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA,
-                                        V_CONFIG_GUARDIA.IMPORTEASISTENCIA,
-                                        V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA,
-                                        V_CONFIG_GUARDIA.IMPORTEMAXASISTENCIA,
-                                        V_DATOS_FACTURACION.FECHADESDE,
-                                        V_DATOS_FACTURACION.FECHAHASTA,
-                                        M_CG_FACTURABLE(I),
-                                        5,
-                                        27,
-                                       0,
-                                        V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA ,
-                                        V_CODRETORNO2,
-                                        V_DATOSERROR2
-                                    );*/
 
                                 --Si se factura por Asistencia (A1 y B2) y aplica tipos de Asistencia
                                 ELSIF (V_CONFIG_GUARDIA.TIPOASISTENCIA = PKG_SIGA_CONSTANTES.DB_TRUE_N) THEN
                                     V_DATOSERROR2 := 'Facturacion por Asistencias aplicando tipos';
                                     PROC_FACT_ASIST_APLICATIPO(I, V_CODRETORNO2, V_DATOSERROR2);
-
-                                    /*PROC_FACT_ASIST_CONTROLADO (
-                                        V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA,
-                                        V_CONFIG_GUARDIA.IMPORTEASISTENCIA,
-                                        V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA,
-                                        V_CONFIG_GUARDIA.IMPORTEMAXASISTENCIA,
-                                        V_DATOS_FACTURACION.FECHADESDE,
-                                        V_DATOS_FACTURACION.FECHAHASTA,
-                                        M_CG_FACTURABLE(I),
-                                        20,
-                                        28,
-                                       1,
-                                        V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA ,
-                                        V_CODRETORNO2,
-                                        V_DATOSERROR2
-                                    );*/
                                 END IF;
-                            END IF;
-
-                            --ELSIF  (V_CONFIG_GUARDIA.ACTUACION=pkg_siga_constantes.DB_TRUE_N) THEN--Si no se factura por Guardia (B2)
-                            IF (V_CONFIG_GUARDIA.ACTUACION = PKG_SIGA_CONSTANTES.DB_TRUE_N) THEN
+                                IF (V_CODRETORNO2 <> '0') THEN
+                                    RAISE E_ERROR2;
+                                END IF;       
+                                                     
+                                -- Llamamos al procedimiento que realiza los apuntes en bb.dd y borra las matrices de memoria para la siguiente cabecera de guardia
+                                V_DATOSERROR2 := 'Apuntes en bb.dd y borrado de las matrices de memoria';
+                                PROC_FACT_DESC_MATR_GUARDIA(
+                                    P_IDINSTITUCION,
+                                    P_IDFACTURACION,
+                                    P_USUMODIFICACION,
+                                    V_CODRETORNO,
+                                    V_DATOSERROR);                                
+                                IF (V_CODRETORNO <> '0') THEN
+                                    V_DATOSERROR2 := V_DATOSERROR2 || ': ' || V_DATOSERROR;
+                                    RAISE E_ERROR2;
+                                END IF;                          
+                            
+                            ELSIF (V_CONFIG_GUARDIA.ACTUACION = PKG_SIGA_CONSTANTES.DB_TRUE_N) THEN                            
 
                                 --Si no se factura por Guardia (B2)
                                 V_DATOSERROR2 := 'Facturacion por Actuacion';
@@ -5140,81 +4527,101 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                     V_DATOSERROR2 := 'Facturacion por Actuacion aplicando tipos';
                                     PROC_FACT_ACT_APLICATIPO(I, V_CODRETORNO2, V_DATOSERROR2);
                                 END IF;
-                            END IF;
-
-                            -- Apuntamos en base de datos los datos almacenados en las matrices de apuntes
-                            IF (V_CODRETORNO2 = '0') THEN
-                                -- Llamamos al procedimiento que realiza los apuntes en bb.dd y
-                                -- borra las matrices de memoria para la siguiente cabecera de guardia
+                                IF (V_CODRETORNO2 <> '0') THEN
+                                    RAISE E_ERROR2;
+                                END IF;         
+                                                   
+                                -- Llamamos al procedimiento que realiza los apuntes en bb.dd y borra las matrices de memoria para la siguiente cabecera de guardia
                                 V_DATOSERROR2 := 'Apuntes en bb.dd y borrado de las matrices de memoria';
                                 PROC_FACT_DESC_MATR_GUARDIA(
                                     P_IDINSTITUCION,
                                     P_IDFACTURACION,
                                     P_USUMODIFICACION,
                                     V_CODRETORNO,
-                                    V_DATOSERROR);
+                                    V_DATOSERROR);                                
                                 IF (V_CODRETORNO <> '0') THEN
                                     V_DATOSERROR2 := V_DATOSERROR2 || ': ' || V_DATOSERROR;
                                     RAISE E_ERROR2;
                                 END IF;
-
-                            ELSE
-                                RAISE E_ERROR2;
-                            END IF;
-
-
-                            IF (V_CONFIG_GUARDIA.ACTUACIONFG = PKG_SIGA_CONSTANTES.DB_TRUE_N) THEN
-                                V_DATOSERROR2 := 'Facturacion por Actuacion Fuera de Guardia';
-                                -- Si se factuara por Actuacion fuera de Guardia (C)
-                                IF (V_CONFIG_GUARDIA.TIPOACTUACIONFG = PKG_SIGA_CONSTANTES.DB_FALSE_N) THEN
-                                    V_DATOSERROR2 := 'Facturacion por Actuacion Fuera de Guardia sin aplicar tipos';
-                                    PROC_FACT_ACTFG_NOAPLICATIPO(I, V_CODRETORNO2, V_DATOSERROR2);
-
-                                ELSIF (V_CONFIG_GUARDIA.TIPOACTUACIONFG = PKG_SIGA_CONSTANTES.DB_TRUE_N) THEN
-                                    V_DATOSERROR2 := 'Facturacion por Actuacion Fuera de Guardia aplicando tipos';
-                                    PROC_FACT_ACTFG_APLICATIPO(I, V_CODRETORNO2, V_DATOSERROR2);
-                                END IF;
-                            END IF;
-
-                            /** Realizar apuntes en bb.dd y borrado de matrices de memoria**/
-                            -- Apuntamos en base de datos las actuaciones FG
-                            IF (V_CODRETORNO2 = '0') THEN
-                                -- Llamamos al procedimiento que realiza los apuntes en bb.dd y
-                                -- borra las matrices de memoria para la siguiente cabecera de guardia
-                                V_DATOSERROR2 := 'Apuntes en bb.dd y borrado de las matrices de memoria';
-                                PROC_FACT_DESC_MATR_GUARDIA(
-                                    P_IDINSTITUCION,
-                                    P_IDFACTURACION,
-                                    P_USUMODIFICACION,
-                                    V_CODRETORNO,
-                                    V_DATOSERROR);
-                                IF (V_CODRETORNO <> '0') THEN
-                                    V_DATOSERROR2 := V_DATOSERROR2 || ': ' || V_DATOSERROR;
-                                    RAISE E_ERROR2;
-                                END IF;
-
-                            ELSE
-                                RAISE E_ERROR2;
                             END IF;
                         END IF;
-                    END LOOP;
-                END LOOP; --Fin IDGUARDIA
-            END LOOP; -- Fin IDTURNO
-        END LOOP; -- Fin IDGRUPOFACTURACION
+                    END LOOP; -- JPT: MATRIZ - M_CG_FACTURABLE(1..IND_CG_FACTURABLE)
+                    
+                    /******************* Tratamiento de FUERAS DE GUARDIA *******************/
+                    IND_CG_FACTURABLEFG := IND_CG_FACTURABLE + 1;
+                    IF (FUNC_ES_COLEGIO_CATALAN(P_IDINSTITUCION) = TRUE) THEN   
+                        V_CONFIG_GUARDIA := V_CONFIGGUARDIAACTUAL; -- Carga por defecto la guardia actual
+                    END IF;     
+                                        
+                    /* JPT: Cargamos la MATRIZ de la Cabecera de Guardias a facturar [M_CG_FACTURABLE(++IND_CG_FACTURABLE)]
+                        - Obtiene las cabeceras de guardia validadas, que tengan por lo menos una actuacion fuera de guardia sin anular, justificada dentro del periodo de la facturacion y sin facturar 
+                            (tabla SCS_CABECERAGUARDIAS + SCS_GUARDIASCOLEGIADO + SCS_ASISTENCIA + SCS_ACTUACIONASISTENCIA + FCS_FACT_ACTUACIONASISTENCIA), 
+                            y carga los datos en M_CG_FACTURABLE(++IND_CG_FACTURABLE)*/
+                    V_DATOSERROR2:= 'PROC_FCS_FACTURAR_GUARDIAS: Llamada a PROC_CARGAR_CABGUARDIASFG';
+                    PROC_CARGAR_CABGUARDIASFG(
+                        P_IDINSTITUCION,
+                        V_TURNO.IDTURNO,
+                        V_GUARDIASTURNO.IDGUARDIA,
+                        V_CODRETORNO2,
+                        V_DATOSERROR2);
+                    IF (V_CODRETORNO2 <> '0') THEN
+                        RAISE E_ERROR2;
+                    END IF;                        
+                    
+                    -- JPT: Recorremos MATRIZ M_CG_FACTURABLE(1..IND_CG_FACTURABLE)
+                    V_DATOSERROR2 := 'PROC_FCS_FACTURAR_GUARDIAS: Recorremos MATRIZ M_CG_FACTURABLE(1..IND_CG_FACTURABLE)';
+                    FOR I IN IND_CG_FACTURABLEFG .. IND_CG_FACTURABLE LOOP
+                    
+                        -- Si ha cambiado la facturacion, tenemos que volver a configurar V_CONFIG_GUARDIA
+                        IF (M_CG_FACTURABLE(I).IDFACTURACION <> V_CONFIG_GUARDIA.IDFACTURACION) THEN 
 
-        -- Parche para los cambios de precios de los catalanes
-        PROC_FCS_ACT_APUNTES_ERRONEOS(P_IDINSTITUCION, P_IDFACTURACION, V_CODRETORNO, V_DATOSERROR);
-        /*
-        --Correccion de los apuntes con importes diferente del estipulado en los hitos (GAs y GAc) debido a
-        --restas de facturaciones anteriores cuando existe un apunte de tipo FG
-        V_DATOSERROR2 := 'Actualización de apuntes con precio erroneo.';
-        --No funciona si se paga por dias y el precio de la doblada es menor que el doble de simple
-        PROC_FCS_ACT_APUNTES_ERRONEOS(P_IDINSTITUCION, P_IDFACTURACION, V_CODRETORNO, V_DATOSERROR);
-        IF (V_CODRETORNO <> '0') THEN
-            V_DATOSERROR2 := V_DATOSERROR2 || ': ' || V_DATOSERROR;
-            RAISE E_ERROR2;
-        END IF;
-        */        
+                            -- JPT: Procedimiento para catalanes que carga V_CONFIG_GUARDIA 
+                            V_DATOSERROR2 := 'PROC_FCS_FACTURAR_GUARDIAS: Invocamos PROC_CARGA_CONFIG_GUARDIA';
+                            PROC_CARGA_CONFIG_GUARDIA(
+                                P_IDINSTITUCION,
+                                V_TURNO.IDTURNO,
+                                V_GUARDIASTURNO.IDGUARDIA,
+                                V_CONFIGGUARDIAACTUAL,
+                                M_CG_FACTURABLE(I).IDFACTURACION,
+                                V_CODRETORNO2,
+                                V_DATOSERROR2);
+                            IF (V_CODRETORNO2 <> '0') THEN
+                                RAISE E_ERROR2;
+                            END IF;
+                        END IF;                                                      
+
+                        IF (V_CONFIG_GUARDIA.ACTUACIONFG = PKG_SIGA_CONSTANTES.DB_TRUE_N) THEN
+                            V_DATOSERROR2 := 'Facturacion por Actuacion Fuera de Guardia';
+                            -- Si se factuara por Actuacion fuera de Guardia (C)
+                            IF (V_CONFIG_GUARDIA.TIPOACTUACIONFG = PKG_SIGA_CONSTANTES.DB_FALSE_N) THEN
+                                V_DATOSERROR2 := 'Facturacion por Actuacion Fuera de Guardia sin aplicar tipos';
+                                PROC_FACT_ACTFG_NOAPLICATIPO(I, V_CODRETORNO2, V_DATOSERROR2);
+
+                            ELSIF (V_CONFIG_GUARDIA.TIPOACTUACIONFG = PKG_SIGA_CONSTANTES.DB_TRUE_N) THEN
+                                V_DATOSERROR2 := 'Facturacion por Actuacion Fuera de Guardia aplicando tipos';
+                                PROC_FACT_ACTFG_APLICATIPO(I, V_CODRETORNO2, V_DATOSERROR2);
+                            END IF;                            
+                            IF (V_CODRETORNO2 <> '0') THEN
+                                RAISE E_ERROR2;
+                            END IF;                   
+                                     
+                            -- Llamamos al procedimiento que realiza los apuntes en bb.dd y borra las matrices de memoria para la siguiente cabecera de guardia
+                            V_DATOSERROR2 := 'Apuntes en bb.dd y borrado de las matrices de memoria';
+                            PROC_FACT_DESC_MATR_GUARDIA(
+                                P_IDINSTITUCION,
+                                P_IDFACTURACION,
+                                P_USUMODIFICACION,
+                                V_CODRETORNO,
+                                V_DATOSERROR);                                
+                            IF (V_CODRETORNO <> '0') THEN
+                                V_DATOSERROR2 := V_DATOSERROR2 || ': ' || V_DATOSERROR;
+                                RAISE E_ERROR2;
+                            END IF;
+                        END IF;                                                                 
+                    END LOOP; -- JPT: MATRIZ - M_CG_FACTURABLE(IND_CG_FACTURABLEFG..IND_CG_FACTURABLE)                    
+                END LOOP; -- JPT: CURSOR - V_GUARDIASTURNO IN C_GUARDIASTURNO
+            END LOOP; -- JPT: CURSOR - V_TURNO IN C_TURNO
+        END LOOP; -- JPT: CURSOR - V_GRUPOSFACTURACION IN C_GRUPOSFACTURACION
 
         BEGIN
             IF TOTAL_FACTURACION IS NULL THEN
@@ -5368,14 +4775,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
           FOR V_GUARDIASTURNO IN C_GUARDIASTURNO(V_TURNO.IDTURNO) LOOP
 
             --Guardamos el historico de los hitos de la facturacion
-          V_DATOSERROR2 := 'Antes de ejecutar el historico de los hitos';
-          PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTORICO_HITOFACT(P_IDINSTITUCION,
-                                          P_IDFACTURACION,
-                                          V_TURNO.IDTURNO,
-                                          V_GUARDIASTURNO.IDGUARDIA,
-                                          HITO_SOJ,
-                                          V_CODRETORNO2,
-                                          V_DATOSERROR2);
+            V_DATOSERROR2 := 'Antes de ejecutar el historico de los hitos';
+            PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTORICO_HITOFACT(
+                P_IDINSTITUCION,
+                P_IDFACTURACION,
+                V_TURNO.IDTURNO,
+                V_GUARDIASTURNO.IDGUARDIA,
+                HITO_SOJ,
+                V_CODRETORNO2,
+                V_DATOSERROR2);
 
             -- Obtenemos el precio del EJG
             begin
@@ -9447,7 +8855,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
              Acttotgua As Acttotgua,
              Acttotfue As Acttotfue,
              Decode(Max(Modulo),
-                    'P7',  '32',
+                    'P7', '32',
                     'P16', 'P16',
                     'P29', '32a',
                     'P44', Case
@@ -9462,7 +8870,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                               Else
                                '31a'
                             End,
-                    'V4',  '40c',
+                    'V4', '40c',
                     'V16', Case
                               When Sum(Actfacgua) < 4 Then
                                '40ba'
@@ -9536,8 +8944,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                               1 As Ordapunte,
                               'G. ' || f_siga_getrecurso_etiqueta('fcs.ficheroFacturacion.tipoApunte.' ||
                               Decode(Cgu.Fecha_Fin - Cgu.Fechainicio + 1,
-                                     1,  'dia',
-                                     7,  'semana',
+                                     1, 'dia',
+                                     7, 'semana',
                                      13, 'quincena',
                                      14, 'quincena',
                                      15, 'quincena',
@@ -10000,15 +9408,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
   /* ------------------ --------------------------------- ------------------------------------------------------- */
 
   /****************************************************************************************************************/
-    PROCEDURE PROC_FCS_INI_CONFIG_GUARDIA(
-        P_CODRETORNO    OUT VARCHAR2,
-        P_DATOSERROR    OUT VARCHAR2) IS
+    PROCEDURE PROC_FCS_INI_CONFIG_GUARDIA (
+        P_CODRETORNO OUT VARCHAR2,
+        P_DATOSERROR OUT VARCHAR2) IS
 
     BEGIN
-
-        --FOR IDHITO IN C_IDHITO(P_IDINSTITUCION,P_IDTURNO,P_IDGUARDIA)  LOOP
-        /* Actualizo el contador de la matriz */
-
         /* Inicializamos los datos de la matriz de configuracion de Guardias*/
         V_CONFIG_GUARDIA.GUARDIA := PKG_SIGA_CONSTANTES.DB_FALSE_N;
         V_CONFIG_GUARDIA.IMPORTEGUARDIA := 0;
@@ -10040,8 +9444,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         V_CONFIG_GUARDIA.NUMHITOS := 0;
         V_CONFIG_GUARDIA.LISTAHITOS.DELETE;
 
-        --  END LOOP;
-
         --Actualizo para saber que el procedimiento ha finalizado correctamente:
         P_DATOSERROR := 'PROCEDURE PROC_FCS_INI_CONFIG_GUARDIA: ha finalizado correctamente.';
         P_CODRETORNO := TO_CHAR(0);
@@ -10052,29 +9454,55 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 P_DATOSERROR := P_DATOSERROR || ' ' || SQLERRM;
     END PROC_FCS_INI_CONFIG_GUARDIA;
 
-  /****************************************************************************************************************/
-  /* Nombre:        PROC_FCS_CARGA_CONFIG_GUARDIA                                                                           */
-  /* Descripcion:   Este procedimiento se encarga de inicializar la matriz de configuracion de guardias
-  /*                                                                                                         */
-  /* Parametros            IN/OUT   Descripcion                                                    Tipo de Datos  */
-  /* -------------------   ------   ------------------------------------------------------------   -------------  */
-  /* P_IDINSTITUCION       IN       Identificador de la Institucion                                NUMBER         */
-  /* P_IDTURNO             IN       Identificador del turno                                        NUMBER
-  /* P_IDGUARDIA           IN       Identificador de la guardia                                    NUMBER         */
-  /*                                                                                                  */
-  /* Version:        1.0                                                                               */
-  /* Fecha Creacion: 20/04/2006                                                                                   */
-  /* Autor:         Pilar Duran Mu?oz                                                                         */
-  /* Fecha Modificacion Autor Modificacion                Descripcion Modificacion                                */
-  /* ------------------ --------------------------------- ------------------------------------------------------- */
+    /****************************************************************************************************************
+        Nombre: PROC_FCS_CARGA_CONFIG_GUARDIA
+        Descripcion: Este procedimiento se encarga de inicializar la matriz de configuracion de guardias
 
-  /****************************************************************************************************************/
-    PROCEDURE PROC_FCS_CARGA_CONFIG_GUARDIA(
+        Parametros:
+        - P_IDINSTITUCION - IN - Identificador de la Institucion - NUMBER
+        - P_IDTURNO - IN - Identificador del turno - NUMBER
+        - P_IDGUARDIA- IN - Identificador de la guardia - NUMBER
+        - P_IDFACTURACION - IN - Identificador de la facturacion - NUMBER
+        - P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)
+            En caso de error devuelve el codigo de error Oracle correspondiente.
+        - P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400)
+            En caso de error devuelve el mensaje de error Oracle correspondiente.
+
+        Versiones:            
+            - 1.0 - Fecha Creacion: 20/04/2006  - Autor: Pilar Duran Munoz
+            - 2.0 - Fecha Modificacion: 26/02/2016  - Autor: Jorge Paez Trivino
+                Cambios realizados para facturacion de colegios catalanes, de cabeceras de guardias facturadas, con la configuracion de la primera facturacion
+    /****************************************************************************************************************/
+    PROCEDURE PROC_FCS_CARGA_CONFIG_GUARDIA (
         P_IDINSTITUCION IN NUMBER,
-        P_IDTURNO       IN NUMBER,
-        P_IDGUARDIA     IN NUMBER,
-        P_CODRETORNO    OUT VARCHAR2,
-        P_DATOSERROR    OUT VARCHAR2) IS
+        P_IDTURNO IN NUMBER,
+        P_IDGUARDIA IN NUMBER,
+        P_IDFACTURACION IN FCS_FACT_APUNTE.IDFACTURACION%TYPE,
+        P_CODRETORNO OUT VARCHAR2,
+        P_DATOSERROR OUT VARCHAR2) IS
+        
+        -- Cursor para obtener el idHito y el precio
+        CURSOR C_IDHITO(V_IDINSTITUCION NUMBER, V_IDTURNO NUMBER, V_IDGUARDIA NUMBER, V_IDFACTURACION NUMBER) IS
+            SELECT HFG.IDHITO,
+                NVL(HFG.PRECIOHITO, 0) AS PRECIO,
+                HFG.DIASAPLICABLES,
+                HFG.AGRUPAR
+            FROM SCS_HITOFACTURABLEGUARDIA HFG
+            WHERE HFG.IDINSTITUCION = V_IDINSTITUCION
+                AND HFG.IDTURNO = V_IDTURNO
+                AND HFG.IDGUARDIA = V_IDGUARDIA
+                AND V_IDFACTURACION IS NULL
+            UNION            
+            SELECT HHTG.IDHITO,
+                NVL(HHTG.PRECIOHITO, 0) AS PRECIO,
+                HHTG.DIASAPLICABLES,
+                HHTG.AGRUPAR
+            FROM FCS_HISTORICO_HITOFACT HHTG
+            WHERE HHTG.IDINSTITUCION = V_IDINSTITUCION
+                AND HHTG.IDTURNO = V_IDTURNO
+                AND HHTG.IDGUARDIA = V_IDGUARDIA
+                AND HHTG.IDFACTURACION = V_IDFACTURACION                     
+        ORDER BY IDHITO;
 
         -- RGG 02/03/2007 INC_2870
         b_actfg boolean := false;
@@ -10088,96 +9516,98 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         PROC_FCS_INI_CONFIG_GUARDIA(P_CODRETORNO, P_DATOSERROR);
 
         -- Para cada Hito
-        FOR V_IDHITO IN C_IDHITO(P_IDINSTITUCION, P_IDTURNO, P_IDGUARDIA) LOOP
+        FOR V_IDHITO IN C_IDHITO(P_IDINSTITUCION, P_IDTURNO, P_IDGUARDIA, P_IDFACTURACION) LOOP
 
             V_CONFIG_GUARDIA.NUMHITOS := V_CONFIG_GUARDIA.NUMHITOS + 1;
             V_CONFIG_GUARDIA.LISTAHITOS(V_CONFIG_GUARDIA.NUMHITOS) := V_IDHITO.IDHITO;
 
             -- Actualizamos el RECORD de Configuracion de Guardias
             CASE (V_IDHITO.IDHITO)
-                WHEN 1 THEN
+                WHEN 1 THEN -- GAs
                    V_CONFIG_GUARDIA.GUARDIA := PKG_SIGA_CONSTANTES.DB_TRUE_N;
                    V_CONFIG_GUARDIA.IMPORTEGUARDIA := V_IDHITO.PRECIO;
                    V_CONFIG_GUARDIA.DIASPAGAGUARDIA := V_IDHITO.DIASAPLICABLES;
                    V_CONFIG_GUARDIA.AGRUPARPAGAGUARDIA := V_IDHITO.AGRUPAR;
 
-                WHEN 2 THEN
+                WHEN 2 THEN -- GDAs
                    V_CONFIG_GUARDIA.DOBLAASISTENCIA := PKG_SIGA_CONSTANTES.DB_TRUE_N;
                    V_CONFIG_GUARDIA.IMPORTEGUARDIADOBLADA := V_IDHITO.PRECIO;
 
-                WHEN 3 THEN
+                WHEN 3 THEN -- AsMax
                    b_asi := true;
                    V_CONFIG_GUARDIA.IMPORTEMAXASISTENCIA := V_IDHITO.PRECIO;
 
-                WHEN 4 THEN
+                WHEN 4 THEN -- GDAc
                    V_CONFIG_GUARDIA.DOBLAACTUACION := PKG_SIGA_CONSTANTES.DB_TRUE_N;
                    V_CONFIG_GUARDIA.IMPORTEGUARDIADOBLADA := V_IDHITO.PRECIO;
 
-                WHEN 5 THEN
+                WHEN 5 THEN -- As
                    V_CONFIG_GUARDIA.ASISTENCIA := PKG_SIGA_CONSTANTES.DB_TRUE_N;
                    V_CONFIG_GUARDIA.IMPORTEASISTENCIA := V_IDHITO.PRECIO;
                    V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA := V_IDHITO.DIASAPLICABLES;
                    V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA := V_IDHITO.AGRUPAR;
 
-                WHEN 6 THEN
+                WHEN 6 THEN -- AcFGMax
                    b_actfg := true;
                    V_CONFIG_GUARDIA.IMPORTEMAXACTUACIONFG := V_IDHITO.PRECIO;
 
-                WHEN 7 THEN
+                WHEN 7 THEN -- Ac
                    V_CONFIG_GUARDIA.ACTUACION := PKG_SIGA_CONSTANTES.DB_TRUE_N;
                    V_CONFIG_GUARDIA.IMPORTEACTUACION := V_IDHITO.PRECIO;
                    V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA := V_IDHITO.DIASAPLICABLES;
                    V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA := V_IDHITO.AGRUPAR;
 
-                WHEN 8 THEN
+                WHEN 8 THEN -- AcMax
                    b_act := true;
                    V_CONFIG_GUARDIA.IMPORTEMAXACTUACION := V_IDHITO.PRECIO;
 
-                WHEN 9 THEN
+                WHEN 9 THEN -- AcFG
                    V_CONFIG_GUARDIA.ACTUACIONFG := PKG_SIGA_CONSTANTES.DB_TRUE_N;
                    V_CONFIG_GUARDIA.IMPORTEACTUACIONFG := V_IDHITO.PRECIO;
 
-                WHEN 10 THEN
+                WHEN 10 THEN -- AsMin
                    V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA := V_IDHITO.PRECIO;
 
-                WHEN 12 THEN
+                WHEN 12 THEN -- SOJ
                    V_CONFIG_GUARDIA.IMPORTESOJ := V_IDHITO.PRECIO;
 
-                WHEN 13 THEN
+                WHEN 13 THEN -- EJG
                    V_CONFIG_GUARDIA.IMPORTEEJG := V_IDHITO.PRECIO;
 
-               WHEN 19 THEN
+               WHEN 19 THEN -- AcMin
                    V_CONFIG_GUARDIA.IMPORTEMINACTUACION := V_IDHITO.PRECIO;
 
-                WHEN 20 THEN
+                WHEN 20 THEN -- AsTp
                    V_CONFIG_GUARDIA.TIPOASISTENCIA := PKG_SIGA_CONSTANTES.DB_TRUE_N;
                    V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA := V_IDHITO.DIASAPLICABLES;
                    V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA := V_IDHITO.AGRUPAR;
 
-                WHEN 22 THEN
+                WHEN 22 THEN -- AcTp
                    V_CONFIG_GUARDIA.TIPOACTUACION := PKG_SIGA_CONSTANTES.DB_TRUE_N;
                    V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA := V_IDHITO.DIASAPLICABLES;
                    V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA := V_IDHITO.AGRUPAR;
 
-                WHEN 23 THEN
+                WHEN 23 THEN -- AcTpMax
                    b_actTpMax := true;
                    V_CONFIG_GUARDIA.TIPOACTUACION := PKG_SIGA_CONSTANTES.DB_TRUE_N;
                    V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA := V_IDHITO.DIASAPLICABLES;
                    V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA := V_IDHITO.AGRUPAR;
 
-               WHEN 25 THEN
+               WHEN 25 THEN -- AcFGTp
                    V_CONFIG_GUARDIA.TIPOACTUACIONFG := PKG_SIGA_CONSTANTES.DB_TRUE_N;
 
-                WHEN 44 THEN
+                WHEN 44 THEN -- GAc
                    V_CONFIG_GUARDIA.DIASPAGAGUARDIA := V_IDHITO.DIASAPLICABLES;
                    V_CONFIG_GUARDIA.AGRUPARPAGAGUARDIA := V_IDHITO.AGRUPAR;
 
-                WHEN 45 THEN
+                WHEN 45 THEN -- NDAs
                    V_CONFIG_GUARDIA.NUMASISTENCIASDOBLA := V_IDHITO.PRECIO;
 
-                WHEN 46 THEN
-                   --(NDAc)
+                WHEN 46 THEN -- NDAc
                    V_CONFIG_GUARDIA.NUMACTUACIONESDOBLA := V_IDHITO.PRECIO;
+                   
+                ELSE
+                    P_DATOSERROR := 'No recupera el hito';                                       
             END CASE;
         END LOOP; -- Fin C_IDHITO
 
@@ -10213,6 +9643,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 And idturno = P_IDTURNO
                 And idguardia = P_IDGUARDIA;
         --FIN: Cambio facturacion guardias inactivas catalanes de VG --
+        
+        -- JPT: Indico que esta configuracion corresponde a un facturacion
+        V_CONFIG_GUARDIA.IDFACTURACION := P_IDFACTURACION;
 
         --Actualizo para saber que el procedimiento ha finalizado correctamente:
         P_DATOSERROR := 'PROCEDURE PROC_FCS_CARGA_CONFIG_GUARDIA: ha finalizado correctamente.';
@@ -10251,6 +9684,101 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         P_IDGUARDIA     IN NUMBER,
         P_CODRETORNO    OUT VARCHAR2,
         P_DATOSERROR    OUT VARCHAR2) IS
+        
+        -- Cursor utilizado para cargar la matriz de cabecera de guardia
+        CURSOR CABECERA_GUARDIAS(V_IDINSTITUCION NUMBER, V_IDTURNO number, V_IDGUARDIA NUMBER) IS
+            SELECT IDINSTITUCION,
+                   IDTURNO,
+                   IDGUARDIA,
+                   IDPERSONA,
+                   FECHAINICIO,
+                   FECHA_FIN,
+                   MAX(FACTURADO) AS FACTURADO,
+                   MAX(IDFACTURACION) AS IDFACTURACION,
+                   SUM(IMPORTEFACTURADO_CG) AS IMPORTEFACTURADO_CG,
+                   SUM(IMPORTEFACTURADO_ASIS_CG) AS IMPORTEFACTURADO_ASIS_CG
+            FROM (
+                --CG REALIZADAS EN EL RANGO DEL CICLO DE FACTURACION
+                SELECT IDINSTITUCION,
+                       IDTURNO,
+                       IDGUARDIA,
+                       IDPERSONA,
+                       FECHAINICIO,
+                       FECHA_FIN,
+                       FACTURADO,
+                       -- JPT: Puede tener IDFACTURACION aunque no haya facturado (porque quiero obtener la facturacion de la fecha de la cabecera de guardias)
+                       FUNC_OBTENER_IDFACTURACION(IDINSTITUCION, IDTURNO, IDGUARDIA, FECHAINICIO) AS IDFACTURACION,
+                       0 AS IMPORTEFACTURADO_CG,
+                       0 AS IMPORTEFACTURADO_ASIS_CG
+                FROM SCS_CABECERAGUARDIAS CG
+                WHERE IDINSTITUCION = V_IDINSTITUCION
+                    AND IDTURNO = V_IDTURNO
+                    AND IDGUARDIA = V_IDGUARDIA 
+                    AND NVL(VALIDADO, '0') = '1' -- validadas
+                    AND TRUNC(NVL(FECHAVALIDACION, FECHAINICIO)) BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA) -- dentro del rango de fechas de la facturacion
+                    AND NOT EXISTS ( -- sin facturar
+                        SELECT 1
+                        FROM FCS_FACT_APUNTE FAC_CG
+                        WHERE CG.IDINSTITUCION = FAC_CG.IDINSTITUCION
+                        AND CG.IDTURNO = FAC_CG.IDTURNO
+                        AND CG.IDGUARDIA = FAC_CG.IDGUARDIA
+                        AND CG.IDPERSONA = FAC_CG.IDPERSONA
+                        AND CG.FECHAINICIO = FAC_CG.FECHAINICIO
+                    )
+                UNION
+                -- CG con actuaciones (que no son de fuera de guardia) justificadas en el rango del ciclo de facturacion
+                SELECT IDINSTITUCION,
+                       IDTURNO,
+                       IDGUARDIA,
+                       IDPERSONA,
+                       FECHAINICIO,
+                       FECHA_FIN,
+                       FACTURADO, 
+                       FUNC_OBTENER_IDFACTURACION(IDINSTITUCION, IDTURNO, IDGUARDIA, FECHAINICIO) AS IDFACTURACION,
+                       NVL(FUNC_IMPORTEFACTURADO_CG(IDINSTITUCION, IDTURNO, IDGUARDIA, IDPERSONA, FECHAINICIO), 0) AS IMPORTEFACTURADO_CG,
+                       NVL(FUNC_IMPORTEFACTURADO_ASIS_CG(IDINSTITUCION, IDTURNO, IDGUARDIA, IDPERSONA, FECHAINICIO), 0) AS IMPORTEFACTURADO_ASIS_CG
+                FROM SCS_CABECERAGUARDIAS CG
+                WHERE IDINSTITUCION = V_IDINSTITUCION
+                    AND IDTURNO = V_IDTURNO
+                    AND IDGUARDIA = V_IDGUARDIA
+                    AND NVL(VALIDADO, '0') = '1' -- validadas
+                    AND EXISTS ( -- JPT: que tengan al menos una actuacion que no sea fuera de guardia...
+                        SELECT 1
+                        FROM SCS_GUARDIASCOLEGIADO UG,
+                            SCS_ASISTENCIA ASI,
+                            SCS_ACTUACIONASISTENCIA ACT
+                        WHERE CG.IDINSTITUCION = UG.IDINSTITUCION
+                           AND CG.IDTURNO = UG.IDTURNO
+                           AND CG.IDGUARDIA = UG.IDGUARDIA
+                           AND CG.FECHAINICIO = UG.FECHAINICIO
+                           AND CG.IDPERSONA = UG.IDPERSONA
+                           AND UG.IDINSTITUCION = ASI.IDINSTITUCION
+                           AND UG.IDTURNO = ASI.IDTURNO
+                           AND UG.IDGUARDIA = ASI.IDGUARDIA
+                           AND UG.IDPERSONA = ASI.IDPERSONACOLEGIADO
+                           AND UG.FECHAFIN = TRUNC(ASI.FECHAHORA)
+                           AND ASI.IDINSTITUCION = ACT.IDINSTITUCION
+                           AND ASI.ANIO = ACT.ANIO
+                           AND ASI.NUMERO = ACT.NUMERO
+                            AND NVL(ACT.ANULACION, '0') = '0' -- NO anulada
+                            AND TRUNC(ACT.FECHAJUSTIFICACION)  BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA) -- con fecha de justificacion en el rango de fechas de la facturacion
+                            AND ACT.DIADESPUES = 'N' -- actuacion que NO es del dia despues (NO es fuera de guardia)
+                            AND NOT EXISTS ( -- sin facturar
+                                SELECT 1
+                                FROM FCS_FACT_ACTUACIONASISTENCIA FAC
+                                WHERE FAC.IDINSTITUCION = ACT.IDINSTITUCION
+                                    AND FAC.ANIO = ACT.ANIO
+                                    AND FAC.NUMERO = ACT.NUMERO
+                                    AND FAC.IDACTUACION = ACT.IDACTUACION)
+                            )
+                    )
+                GROUP BY IDINSTITUCION,
+                      IDTURNO,
+                      IDGUARDIA,
+                      IDPERSONA,
+                      FECHAINICIO,
+                      FECHA_FIN
+              ORDER BY IDFACTURACION DESC; -- JPT: Se ordena DESC para que salgan primero los IDFACTURACION con valor NULL
 
     BEGIN
         --Inicializamos la matriz de cabecera de guardias
@@ -10263,30 +9791,124 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             M_CG_FACTURABLE(IND_CG_FACTURABLE).IDINSTITUCION := P_IDINSTITUCION;
             M_CG_FACTURABLE(IND_CG_FACTURABLE).IDTURNO := P_IDTURNO;
             M_CG_FACTURABLE(IND_CG_FACTURABLE).IDGUARDIA := P_IDGUARDIA;
-            M_CG_FACTURABLE(IND_CG_FACTURABLE).IDPERSONA := v_cabeceraguardias.IDPERSONA;
-            M_CG_FACTURABLE(IND_CG_FACTURABLE).FECHAINICIO := v_cabeceraguardias.FECHAINICIO;
-            M_CG_FACTURABLE(IND_CG_FACTURABLE).FECHAFIN := v_cabeceraguardias.FECHA_FIN;
-            M_CG_FACTURABLE(IND_CG_FACTURABLE).FACTURADO := v_cabeceraguardias.FACTURADO;
-            M_CG_FACTURABLE(IND_CG_FACTURABLE).IMPORTEFACTURADO := v_cabeceraguardias.IMPORTEFACTURADO_CG;
-            M_CG_FACTURABLE(IND_CG_FACTURABLE).IMPORTEFACTURADOASIS := v_cabeceraguardias.IMPORTEFACTURADO_ASIS_CG;
-            M_CG_FACTURABLE(IND_CG_FACTURABLE).MOTIVOULTIMO := v_cabeceraguardias.MOTIVOULTIMO;
+            M_CG_FACTURABLE(IND_CG_FACTURABLE).IDPERSONA := V_CABECERAGUARDIAS.IDPERSONA;
+            M_CG_FACTURABLE(IND_CG_FACTURABLE).FECHAINICIO := V_CABECERAGUARDIAS.FECHAINICIO;
+            M_CG_FACTURABLE(IND_CG_FACTURABLE).FECHAFIN := V_CABECERAGUARDIAS.FECHA_FIN;
+            M_CG_FACTURABLE(IND_CG_FACTURABLE).FACTURADO := V_CABECERAGUARDIAS.FACTURADO;
+            M_CG_FACTURABLE(IND_CG_FACTURABLE).IDFACTURACION := NVL(V_CABECERAGUARDIAS.IDFACTURACION, V_CONFIG_GUARDIA.IDFACTURACION); -- JPT: Si hay alguno nulo, le pongo el IDFACTURACION actual
+            M_CG_FACTURABLE(IND_CG_FACTURABLE).IMPORTEFACTURADO := V_CABECERAGUARDIAS.IMPORTEFACTURADO_CG;
+            M_CG_FACTURABLE(IND_CG_FACTURABLE).IMPORTEFACTURADOASIS := V_CABECERAGUARDIAS.IMPORTEFACTURADO_ASIS_CG;
 
             --INI: Cambio para Asistencias que derivan en Designacion
                 M_CG_FACTURABLE(IND_CG_FACTURABLE).TIENE_ASISTQUEDERIVAN := F_TIENE_ASIST_DERIVADAS(
                     P_IDINSTITUCION,
                     P_IDTURNO,
                     P_IDGUARDIA,
-                    v_cabeceraguardias.IDPERSONA,
-                    trunc(v_cabeceraguardias.FECHAINICIO),
-                    trunc(v_cabeceraguardias.FECHA_FIN),
+                    V_CABECERAGUARDIAS.IDPERSONA,
+                    TRUNC(V_CABECERAGUARDIAS.FECHAINICIO),
+                    TRUNC(V_CABECERAGUARDIAS.FECHA_FIN),
                     V_DATOS_FACTURACION.FECHADESDE,
                     V_DATOS_FACTURACION.FECHAHASTA);
-            --FIN: Cambio para Asistencias que derivan en Designacion
+            --FIN: Cambio para Asistencias que derivan en Designacion            
         END LOOP;
 
         P_DATOSERROR := 'PROCEDURE PROC_CARGAR_CABECERA_GUARDIAS: ha finalizado correctamente.';
         P_CODRETORNO := TO_CHAR(0);
-  END PROC_CARGAR_CABECERA_GUARDIAS;
+  END PROC_CARGAR_CABECERA_GUARDIAS;  
+  
+  /****************************************************************************************************************
+    Nombre: PROC_CARGAR_CABGUARDIASFG
+    Descripcion: Procedimiento que obtiene las cabeceras de guardia de actuaciones fuera de guardia
+
+    Parametros (IN/OUT - Descripcion -Tipo de Datos)
+    - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER
+    - P_IDTURNO - IN - Identificador del turno - NUMBER
+    - P_IDGUARDIA - IN - Identificador de la guardia - NUMBER
+    - P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)
+        En caso de error devuelve el codigo de error Oracle correspondiente.
+    - P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400)
+        En caso de error devuelve el mensaje de error Oracle correspondiente.    
+
+    Versiones (Fecha - Autor - Datos):
+    - 1.0 - 02/03/2016 - Jorge Paez Trivino - Adaptacion a los colegios catalanes (R1602_0089)
+  ****************************************************************************************************************/  
+    PROCEDURE PROC_CARGAR_CABGUARDIASFG(
+        P_IDINSTITUCION IN NUMBER,
+        P_IDTURNO IN NUMBER,
+        P_IDGUARDIA IN NUMBER,
+        P_CODRETORNO OUT VARCHAR2,
+        P_DATOSERROR OUT VARCHAR2) IS
+        
+        -- Cursor utilizado para cargar la matriz de cabecera de guardia (de las actuaciones Fuera de Guardia)
+        CURSOR CABECERA_GUARDIASFG(V_IDINSTITUCION NUMBER, V_IDTURNO number, V_IDGUARDIA NUMBER) IS
+            -- CG con actuaciones validadas y de fuera de guardia, justificadas en el rango de fechas de la facturacion
+            SELECT CG.IDINSTITUCION,
+                   CG.IDTURNO,
+                   CG.IDGUARDIA,
+                   CG.IDPERSONA,
+                   CG.FECHAINICIO,
+                   CG.FECHA_FIN,
+                   ACT.FECHA,
+                   MAX(CG.FACTURADO) AS FACTURADO, 
+                   FUNC_OBTENER_IDFACTURACION(CG.IDINSTITUCION, CG.IDTURNO, CG.IDGUARDIA, ACT.FECHA) AS IDFACTURACION
+            FROM SCS_CABECERAGUARDIAS CG, 
+                SCS_GUARDIASCOLEGIADO UG,
+                SCS_ASISTENCIA ASI,
+                SCS_ACTUACIONASISTENCIA ACT
+            WHERE CG.IDINSTITUCION = V_IDINSTITUCION
+                AND CG.IDTURNO = V_IDTURNO
+                AND CG.IDGUARDIA = V_IDGUARDIA
+                AND NVL(CG.VALIDADO, '0') = '1' -- validadas
+                AND CG.IDINSTITUCION = UG.IDINSTITUCION
+                AND CG.IDTURNO = UG.IDTURNO
+                AND CG.IDGUARDIA = UG.IDGUARDIA
+                AND CG.FECHAINICIO = UG.FECHAINICIO
+                AND CG.IDPERSONA = UG.IDPERSONA
+                AND UG.IDINSTITUCION = ASI.IDINSTITUCION
+                AND UG.IDTURNO = ASI.IDTURNO
+                AND UG.IDGUARDIA = ASI.IDGUARDIA
+                AND UG.IDPERSONA = ASI.IDPERSONACOLEGIADO
+                AND UG.FECHAFIN = TRUNC(ASI.FECHAHORA)
+                AND ASI.IDINSTITUCION = ACT.IDINSTITUCION
+                AND ASI.ANIO = ACT.ANIO
+                AND ASI.NUMERO = ACT.NUMERO
+                AND NVL(ACT.ANULACION, '0') = '0' -- NO anulada
+                AND TRUNC(ACT.FECHAJUSTIFICACION) BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA) -- con fecha de justificacion en el rango de fechas de la facturacion
+                AND ACT.DIADESPUES = 'S' -- actuacion del dia despues (fuera de guardia)             
+                AND NOT EXISTS ( -- sin facturar
+                    SELECT 1
+                    FROM FCS_FACT_ACTUACIONASISTENCIA FAC
+                    WHERE FAC.IDINSTITUCION = ACT.IDINSTITUCION
+                        AND FAC.ANIO = ACT.ANIO
+                        AND FAC.NUMERO = ACT.NUMERO
+                        AND FAC.IDACTUACION = ACT.IDACTUACION)
+            GROUP BY CG.IDINSTITUCION,
+                  CG.IDTURNO,
+                  CG.IDGUARDIA,
+                  CG.IDPERSONA,
+                  CG.FECHAINICIO,
+                  CG.FECHA_FIN,
+                  ACT.FECHA
+            ORDER BY IDFACTURACION DESC; -- JPT: Se ordena DESC para que salgan primero los IDFACTURACION con valor NULL        
+
+    BEGIN
+        -- Cargamos en memoria la matriz de cabecera de guardias m_CG_facturables
+        FOR V_CABECERAGUARDIAS IN CABECERA_GUARDIASFG(P_IDINSTITUCION, P_IDTURNO, P_IDGUARDIA) loop
+            IND_CG_FACTURABLE := IND_CG_FACTURABLE + 1;
+            M_CG_FACTURABLE(IND_CG_FACTURABLE).IDINSTITUCION := P_IDINSTITUCION;
+            M_CG_FACTURABLE(IND_CG_FACTURABLE).IDTURNO := P_IDTURNO;
+            M_CG_FACTURABLE(IND_CG_FACTURABLE).IDGUARDIA := P_IDGUARDIA;
+            M_CG_FACTURABLE(IND_CG_FACTURABLE).IDPERSONA := v_cabeceraguardias.IDPERSONA;
+            M_CG_FACTURABLE(IND_CG_FACTURABLE).FECHAINICIO := v_cabeceraguardias.FECHAINICIO;
+            M_CG_FACTURABLE(IND_CG_FACTURABLE).FECHAFIN := V_CABECERAGUARDIAS.FECHA_FIN;
+            M_CG_FACTURABLE(IND_CG_FACTURABLE).FACTURADO := v_cabeceraguardias.FACTURADO;
+            M_CG_FACTURABLE(IND_CG_FACTURABLE).FECHAACT := V_CABECERAGUARDIAS.FECHA; -- JPT: Necesito guardar la fecha de la actuacion porque ahora agrupamos por ese campo
+            M_CG_FACTURABLE(IND_CG_FACTURABLE).IDFACTURACION := NVL(V_CABECERAGUARDIAS.IDFACTURACION, V_CONFIG_GUARDIA.IDFACTURACION); -- JPT: Si hay alguno nulo, le pongo el IDFACTURACION actual
+        END LOOP;
+
+        P_DATOSERROR := 'PROC_CARGAR_CABGUARDIASFG: Ha finalizado correctamente.';
+        P_CODRETORNO := TO_CHAR(0);
+  END PROC_CARGAR_CABGUARDIASFG;  
 
   /****************************************************************************************************************/
   /* Nombre:        FUNC_IMPORTEFACTURADO_CG                                                                      */
@@ -10313,7 +9935,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                     P_IDGUARDIA            NUMBER,
                                     P_IDPERSONA            NUMBER,
                                     P_FECHAINICIO          DATE)
-    return VARCHAR2 is
+    return NUMBER is
     importeTotalCG         number;
     V_CURSOR               INTEGER; /* Cursor donde se ejecuta la sentencia SQL */
     V_DUMMY                INTEGER;
@@ -10406,7 +10028,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                     P_IDGUARDIA            NUMBER,
                                     P_IDPERSONA            NUMBER,
                                     P_FECHAINICIO          DATE)
-    return VARCHAR2 is
+    return NUMBER is
     importeTotalCG         number;
     V_CURSOR               INTEGER; /* Cursor donde se ejecuta la sentencia SQL */
     V_DUMMY                INTEGER;
@@ -10904,72 +10526,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
     return valor;
   end FUNC_NUM_ASIST_TOTALES;
-  /*
-   *  Funciones que calculan los numeros de actuaciones y asistencias
-   * para la exportacion del fichero de guardias en PROC_FCS_EXPORTAR_GUARDIAS
-   *
-   *  Si se pasa P_FECHAINICIO nulo, solo buscara en el dia exacto P_FECHAFIN
-   *
-   * FIN
-   */
-
-  /****************************************************************************************************************/
-  /* Nombre:        FUNC_MOTIVOULTIMO                                                                             */
-  /* Descripcion:   Funcion que calcula el Motivo Ultimo facturado a una CG: se coge el primer registro           */
-  /*                                                                                                         */
-  /* Parametros            IN/OUT   Descripcion                                                    Tipo de Datos  */
-  /* -------------------   ------   ------------------------------------------------------------   -------------  */
-  /* P_IDINSTITUCION          IN     identificador de la institucion                                  NUMBER,
-  /* P_IDTURNO                IN     identificador del turno                                          NUMBER,
-  /* P_IDGUARDIA              IN     identificador de la guardia                                      NUMBER,
-  /* P_IDPERSONA              IN     identificador de la persona                                      NUMBER,
-  /* P_FECHAINICIO            IN     FECHA INICIO de la cabecera de Guardia                           DATE,
-  /*                                                                                                  */
-  /* Version:        1.0                                                                               */
-  /* Fecha Creacion: 21/04/2006                                                                                   */
-  /* Autor:         Pilar Duran Mu?oz                                                                         */
-  /* Fecha Modificacion Autor Modificacion                Descripcion Modificacion                                */
-  /* ------------------ --------------------------------- ------------------------------------------------------- */
-
-  /****************************************************************************************************************/
-  FUNCTION FUNC_MOTIVOULTIMO(P_IDINSTITUCION       NUMBER,
-                             P_IDTURNO             NUMBER,
-                             P_IDGUARDIA           NUMBER,
-                             P_IDPERSONA           NUMBER,
-                             P_FECHAINICIO         DATE) return VARCHAR2 is
-    v_motivo fcs_fact_apunte.motivo%type;
-  begin
-
-    begin
-      -- Calculamos el motivo ultimo facturado a una CG: cogemos el primer registro
-      select fcs_fact_apunte.idhito
-        into v_motivo
-        from fcs_fact_apunte
-       where fcs_fact_apunte.idinstitucion = P_IDINSTITUCION
-         and fcs_fact_apunte.Idturno = P_IDTURNO
-         and fcs_fact_apunte.Idguardia = P_IDGUARDIA
-         and fcs_fact_apunte.idpersona = P_IDPERSONA
-         and fcs_fact_apunte.fechainicio = P_FECHAINICIO
-         and fcs_fact_apunte.idtipoapunte <> 'FG'
-         and fcs_fact_apunte.idfacturacion <>
-             V_DATOS_FACTURACION.IDFACTURACION
-            --facturaciones que no sean ni regularizaciones ni previsiones
-         and fcs_fact_apunte.idfacturacion not in
-             (select Fcs_Facturacionjg.Idfacturacion
-                from Fcs_Facturacionjg
-               where Fcs_Facturacionjg.Idinstitucion = P_IDINSTITUCION
-                 and Fcs_Facturacionjg.Regularizacion = 1
-                  or Fcs_Facturacionjg.Prevision = 1)
-         and rownum = 1
-       order by fcs_fact_apunte.Idfacturacion desc;
-
-    exception
-      when others then
-        v_motivo := null;
-    end;
-    return v_motivo;
-
-  end FUNC_MOTIVOULTIMO;
 
     /****************************************************************************************************************/
     /* Nombre: FUNC_EXISTE_ACTUACION_JUSTIF */
@@ -11000,8 +10556,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 AND NVL(ANULACION,0) = 0 -- no anuladas
                 AND FECHAJUSTIFICACION IS NOT NULL
                 AND TRUNC(FECHAJUSTIFICACION) BETWEEN V_DATOS_FACTURACION.FECHADESDE AND V_DATOS_FACTURACION.FECHAHASTA
-                AND DIADESPUES='N' -- No es dia despues (fuera de guardia)
-                AND VALIDADA='1'
+                AND DIADESPUES = 'N' -- No es dia despues (fuera de guardia)
+                AND VALIDADA = '1'
                 AND ROWNUM=1;
 
             EXCEPTION
@@ -11010,186 +10566,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         END;
 
         RETURN v_actuacion_justificada;
-  END FUNC_EXISTE_ACTUACION_JUSTIF;
-
-  /****************************************************************************************************************/
-  /* Nombre:        FUNC_COSTEFIJO                                                                                */
-  /* Descripcion:   Funcion que nos devuelve el coste fijo para realizar el apunte
-  /*                en las matrices de memoria de actuaciones, CG y UG                                            */
-  /*                                                                                                         */
-  /* Parametros            IN/OUT   Descripcion                                                    Tipo de Datos  */
-  /* -------------------   ------   ------------------------------------------------------------   -------------  */
-  /* P_IDINSTITUCION        IN     identificador de la institucion                                  NUMBER,
-  /* P_ANIO                 IN     a?o                                                              NUMBER,
-  /* P_NUMERO               IN     numero                                                           NUMBER,
-  /* P_IDACTUACION          IN     identificador de la actuacion                                    NUMBER,
-  /*                                                                                                  */
-  /* Version:        1.0                                                                               */
-  /* Fecha Creacion: 24/04/2006                                                                                   */
-  /* Autor:         Pilar Duran Mu?oz                                                                         */
-  /* Fecha Modificacion Autor Modificacion                Descripcion Modificacion                                */
-  /* ------------------ --------------------------------- ------------------------------------------------------- */
-
-  /****************************************************************************************************************/
-  FUNCTION FUNC_COSTEFIJO(P_IDINSTITUCION NUMBER,
-                          P_ANIO          NUMBER,
-                          P_NUMERO        NUMBER,
-                          P_IDACTUACION   NUMBER) return number is
-    v_costefijo number := 0;
-  begin
-    for reg_costefijo in COSTE_FIJO(P_IDINSTITUCION,
-                                    P_ANIO,
-                                    P_NUMERO,
-                                    P_IDACTUACION) loop
-      v_costefijo := reg_costefijo.v_costefijo;
-    end loop;
-
-    return v_costefijo;
-
-  end FUNC_COSTEFIJO;
-
-  /****************************************************************************************************************/
-  /* Nombre:        FUNC_CALCULAR_IMPORTEASIST                                                                                */
-  /* Descripcion:   Funcion que nos devuelve el importe por asistencia                                           */
-  /*                                                                                                         */
-  /* Parametros            IN/OUT   Descripcion                                                    Tipo de Datos  */
-  /* -------------------   ------   ------------------------------------------------------------   -------------  */
-  /* P_IDINSTITUCION        IN     identificador de la institucion                                  NUMBER,
-  /* P_IDTIPOASISTENCIA     IN     identificador del tipo de asistencia
-  /*                                                                                                  */
-  /* Version:        1.0                                                                               */
-  /* Fecha Creacion: 27/04/2006                                                                                   */
-  /* Autor:         Pilar Duran Mu?oz                                                                         */
-  /* Fecha Modificacion Autor Modificacion                Descripcion Modificacion                                */
-  /* ------------------ --------------------------------- ------------------------------------------------------- */
-
-  /****************************************************************************************************************/
-    FUNCTION FUNC_CALCULAR_IMPORTEASIST(P_IDINSTITUCION NUMBER, P_IDTIPOASISTENCIA NUMBER) RETURN NUMBER IS
-        v_importe number;
-    BEGIN
-        BEGIN
-            SELECT IMPORTE
-                INTO v_importe
-            FROM SCS_TIPOASISTENCIACOLEGIO
-            WHERE IDINSTITUCION = P_IDINSTITUCION
-                AND IDTIPOASISTENCIACOLEGIO = P_IDTIPOASISTENCIA;
-
-        EXCEPTION
-            WHEN OTHERS THEN
-                V_IMPORTE := '';
-        END;
-
-        RETURN v_importe;
-    END FUNC_CALCULAR_IMPORTEASIST;
-
-  /****************************************************************************************************************/
-  /* Nombre:        FUNC_CALCULAR_IMPORTEMAXASIST                                                                                */
-  /* Descripcion:   Funcion que nos devuelve el importe maximo por asistencias                                          */
-  /*                                                                                                         */
-  /* Parametros            IN/OUT   Descripcion                                                    Tipo de Datos  */
-  /* -------------------   ------   ------------------------------------------------------------   -------------  */
-  /* P_IDINSTITUCION        IN     identificador de la institucion                                  NUMBER,
-  /* P_IDTIPOASISTENCIA     IN     identificador del tipo de asistencia
-  /*                                                                                                  */
-  /* Version:        1.0                                                                               */
-  /* Fecha Creacion: 27/04/2006                                                                                   */
-  /* Autor:         Pilar Duran Mu?oz                                                                         */
-  /* Fecha Modificacion Autor Modificacion                Descripcion Modificacion                                */
-  /* ------------------ --------------------------------- ------------------------------------------------------- */
-
-  /****************************************************************************************************************/
-  FUNCTION FUNC_CALCULAR_IMPORTEMAXASIST(P_IDINSTITUCION    NUMBER,
-                                         P_IDTIPOASISTENCIA NUMBER)
-    return number is
-    v_importemax number;
-  begin
-    begin
-      select scs_tipoasistenciacolegio.importemaximo
-        into v_importemax
-        from scs_tipoasistenciacolegio
-       where scs_tipoasistenciacolegio.idinstitucion = P_IDINSTITUCION
-         and scs_tipoasistenciacolegio.idtipoasistenciacolegio =
-             P_IDTIPOASISTENCIA;
-
-    exception
-      when others then
-        v_importemax := '';
-    end;
-    return v_importemax;
-  end;
-
-  /****************************************************************************************************************/
-  /* Nombre:        FUNC_CALCULAR_IMPORTEACT                                                                                */
-  /* Descripcion:   Funcion que nos devuelve el importe por actuacion                                            */
-  /*                                                                                                         */
-  /* Parametros            IN/OUT   Descripcion                                                    Tipo de Datos  */
-  /* -------------------   ------   ------------------------------------------------------------   -------------  */
-  /* P_IDINSTITUCION        IN     identificador de la institucion                                  NUMBER,
-  /* P_IDTIPOASISTENCIA     IN     identificador del tipo de asistencia
-  /*                                                                                                  */
-  /* Version:        1.0                                                                               */
-  /* Fecha Creacion: 27/04/2006                                                                                   */
-  /* Autor:         Pilar Duran Mu?oz                                                                         */
-  /* Fecha Modificacion Autor Modificacion                Descripcion Modificacion                                */
-  /* ------------------ --------------------------------- ------------------------------------------------------- */
-
-  /****************************************************************************************************************/
-  FUNCTION FUNC_CALCULAR_IMPORTEACT(P_IDINSTITUCION    NUMBER,
-                                    P_IDTIPOASISTENCIA NUMBER,
-                                    P_IDTIPOACTUACION  NUMBER) return number is
-    v_importe number;
-  begin
-    begin
-      select importe
-        into v_importe
-        from scs_tipoactuacion
-       where scs_tipoactuacion.idinstitucion = P_IDINSTITUCION
-         and scs_tipoactuacion.idtipoasistencia = P_IDTIPOASISTENCIA
-         and scs_tipoactuacion.idtipoactuacion = P_IDTIPOACTUACION;
-
-    exception
-      when others then
-        v_importe := '';
-    end;
-    return v_importe;
-  end;
-
-  /****************************************************************************************************************/
-  /* Nombre:        FUNC_CALCULAR_IMPORTEMAXACT                                                                                */
-  /* Descripcion:   Funcion que nos devuelve el importe maximo por actuacion                                           */
-  /*                                                                                                         */
-  /* Parametros            IN/OUT   Descripcion                                                    Tipo de Datos  */
-  /* -------------------   ------   ------------------------------------------------------------   -------------  */
-  /* P_IDINSTITUCION        IN     identificador de la institucion                                  NUMBER,
-  /* P_IDTIPOASISTENCIA     IN     identificador del tipo de asistencia
-  /*                                                                                                  */
-  /* Version:        1.0                                                                               */
-  /* Fecha Creacion: 27/04/2006                                                                                   */
-  /* Autor:         Pilar Duran Mu?oz                                                                         */
-  /* Fecha Modificacion Autor Modificacion                Descripcion Modificacion                                */
-  /* ------------------ --------------------------------- ------------------------------------------------------- */
-
-  /****************************************************************************************************************/
-  FUNCTION FUNC_CALCULAR_IMPORTEMAXACT(P_IDINSTITUCION    NUMBER,
-                                       P_IDTIPOASISTENCIA NUMBER,
-                                       P_IDTIPOACTUACION  NUMBER)
-    return number is
-    v_importemax number;
-  begin
-    begin
-      select scs_tipoactuacion.importemaximo
-        into v_importemax
-        from scs_tipoactuacion
-       where scs_tipoactuacion.idinstitucion = P_IDINSTITUCION
-         and scs_tipoactuacion.idtipoasistencia = P_IDTIPOASISTENCIA
-         and scs_tipoactuacion.idtipoactuacion = P_IDTIPOACTUACION;
-
-    exception
-      when others then
-        v_importemax := '';
-    end;
-    return v_importemax;
-  end;
+  END FUNC_EXISTE_ACTUACION_JUSTIF;    
 
   /****************************************************************************************************************/
   /* Nombre:        PROC_CARGA_M_APUNTE_AS                                                                           */
@@ -13010,6 +12387,46 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         indiceMatrizFacturable IN NUMBER,
         P_CODRETORNO OUT VARCHAR2,
         P_DATOSERROR OUT VARCHAR2) IS
+        
+    -- Obtenemos las asistencias realizadas y justificadas anteriormente a la fecha fin del ciclo de facturacion para cada idtipocolegiado ordenadas por fecha de realizacion (Este cursor se utiliza para la facturacion por asistencias)
+    CURSOR C_ASISTENCIASTIPO_UG (V_IDINSTITUCION NUMBER, V_IDTURNO NUMBER, V_IDGUARDIA NUMBER, V_IDPERSONA NUMBER, V_FECHAFIN DATE, V_IDTIPOASISTCOLEG NUMBER, V_DIASAPLICABLES VARCHAR2, V_IDFACTURACION NUMBER) IS (
+        SELECT ASI.IDTIPOASISTENCIACOLEGIO,
+           ASI.FECHAHORA,
+           ASI.IDINSTITUCION,
+           ASI.ANIO,
+           ASI.NUMERO,
+           1 AS FACTURADO,
+           FUNC_CALCULAR_IMPORTEASIST(ASI.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ASI.IDTIPOASISTENCIACOLEGIO, V_FECHAFIN, V_IDFACTURACION, 0) AS IMPORTE,
+           FUNC_CALCULAR_IMPORTEASIST(ASI.IDINSTITUCION, ASI.IDTURNO, ASi.IDGUARDIA, ASI.IDTIPOASISTENCIACOLEGIO, V_FECHAFIN, V_IDFACTURACION, 1) AS IMPORTEMAX
+        FROM SCS_ASISTENCIA ASI
+        WHERE ASI.IDINSTITUCION = V_IDINSTITUCION
+            AND ASI.IDTURNO = V_IDTURNO
+            AND ASI.IDGUARDIA = V_IDGUARDIA
+            AND ASI.IDPERSONACOLEGIADO = V_IDPERSONA
+            AND TRUNC(ASI.FECHAHORA) = V_FECHAFIN
+            AND ASI.FACTURADO = '1'
+            AND FUN_ESDIAAPLICABLE(ASI.FECHAHORA, V_DIASAPLICABLES) = 1
+            AND ASI.IDTIPOASISTENCIACOLEGIO = V_IDTIPOASISTCOLEG
+        UNION
+        SELECT ASI.IDTIPOASISTENCIACOLEGIO,
+           ASI.FECHAHORA,
+           ASI.IDINSTITUCION,
+           ASI.ANIO,
+           ASI.NUMERO,
+           0 AS FACTURADO,
+           FUNC_CALCULAR_IMPORTEASIST(ASI.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ASI.IDTIPOASISTENCIACOLEGIO, V_FECHAFIN, V_IDFACTURACION, 0) AS IMPORTE,
+           FUNC_CALCULAR_IMPORTEASIST(ASI.IDINSTITUCION, ASI.IDTURNO, ASi.IDGUARDIA, ASI.IDTIPOASISTENCIACOLEGIO, V_FECHAFIN, V_IDFACTURACION, 1) AS IMPORTEMAX
+        FROM SCS_ASISTENCIA ASI
+        WHERE ASI.IDINSTITUCION = V_IDINSTITUCION
+            AND ASI.IDTURNO = V_IDTURNO
+            AND ASI.IDGUARDIA = V_IDGUARDIA
+            AND ASI.IDPERSONACOLEGIADO = V_IDPERSONA
+            AND TRUNC(ASI.FECHAHORA) = V_FECHAFIN
+            AND (ASI.FACTURADO IS NULL OR ASI.FACTURADO = '0')
+            AND ASI.IDTIPOASISTENCIACOLEGIO = V_IDTIPOASISTCOLEG
+            AND FUNC_EXISTE_ACTUACION_JUSTIF(ASI.IDINSTITUCION, ASI.ANIO, ASI.NUMERO) > 0
+            AND FUN_ESDIAAPLICABLE(ASI.FECHAHORA, V_DIASAPLICABLES) = 1)
+        ORDER BY IDTIPOASISTENCIACOLEGIO, FECHAHORA;        
 
         -- Contadores para los apuntes
         contador NUMBER;
@@ -13073,7 +12490,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA) LOOP
                 
                 -- Inicializo variables
-                costeFijoUG := 0;
                 totalImporteAsFact := 0;
                 totalImporteAsNuevas := 0;
 
@@ -13085,13 +12501,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     V_UNIDADES_GUARDIA.IDTURNO,
                     V_UNIDADES_GUARDIA.IDGUARDIA,
                     V_UNIDADES_GUARDIA.IDPERSONA,
-                    V_UNIDADES_GUARDIA.FECHAINICIO,
                     V_UNIDADES_GUARDIA.FECHAFIN,
                     V_TIPOASISTENCIAS_UG.tipoasist,
-                    V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA) LOOP
+                    V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA,
+                    M_CG_FACTURABLE(indiceMatrizFacturable).IDFACTURACION) LOOP
 
                     -- Obtenemos el importe de la asistencia, o bien de la guardia
-                    importeTipoAsistencia := NVL(NVL(V_ASISTENCIAS_UG.importe, V_CONFIG_GUARDIA.IMPORTEASISTENCIA), 0);
+                    importeTipoAsistencia := NVL(NVL(V_ASISTENCIAS_UG.importe, V_CONFIG_GUARDIA.IMPORTEASISTENCIA), 0);                    
 
                     -- Obtenemos el importe maximo de la asistencia
                     importeTipoAsistMax := NVL(V_ASISTENCIAS_UG.importemax, 0);
@@ -13828,6 +13244,77 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         Indicematrizfacturable Number,
         p_Codretorno Out Varchar2,
         p_Datoserror Out Varchar2) Is
+        
+        -- Obtenemos las actuaciones realizadas y justificadas anteriormente a la fecha fin del ciclo de facturacion ordenadas por fecha de realizacion (Este cursor se utiliza para la facturacion por actuaciones)
+        CURSOR C_ACTUACIONES_UG(V_IDINSTITUCION NUMBER, V_IDTURNO NUMBER, V_IDGUARDIA NUMBER, V_IDPERSONA NUMBER, V_FECHAFIN DATE, V_DIASAPLICABLES VARCHAR2, V_IDFACTURACION NUMBER) IS (
+            SELECT ACT.IDTIPOACTUACION,
+                ACT.FECHA,
+                ACT.IDINSTITUCION,
+                ACT.ANIO,
+                ACT.NUMERO,
+                ACT.IDACTUACION,
+                1 AS FACTURADO,
+                NVL(FUNC_COSTEFIJO(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.ANIO, ACT.NUMERO, ACT.IDACTUACION, V_FECHAFIN, V_IDFACTURACION), 0) AS COSTEFIJO,
+                --INI: Cambio para Asistencias que derivan en Designacion
+                F_ES_ASISTENCIA_DERIVADA(ASI.IDINSTITUCION, ASI.ANIO, ASI.NUMERO, V_DATOS_FACTURACION.FECHADESDE, V_DATOS_FACTURACION.FECHAHASTA) AS DERIVA,
+                F_ES_TIPO_DERIVACION(ACT.IDINSTITUCION, ACT.ANIO, ACT.NUMERO, ACT.IDACTUACION) AS ESJUDICIAL
+                --FIN: Cambio para Asistencias que derivan en Designacion
+            FROM SCS_ASISTENCIA ASI, 
+                SCS_ACTUACIONASISTENCIA ACT
+            WHERE ASI.IDINSTITUCION = V_IDINSTITUCION
+                AND ASI.IDTURNO = V_IDTURNO
+                AND ASI.IDGUARDIA = V_IDGUARDIA
+                AND ASI.IDPERSONACOLEGIADO = V_IDPERSONA
+                AND TRUNC(ASI.FECHAHORA) = V_FECHAFIN
+                AND ASI.IDINSTITUCION = ACT.IDINSTITUCION
+                AND ASI.ANIO = ACT.ANIO
+                AND ASI.NUMERO = ACT.NUMERO            
+                AND EXISTS ( --and ACT.Facturado = '1'
+                    SELECT 1
+                    FROM FCS_FACT_ACTUACIONASISTENCIA FAC_ACT
+                    WHERE FAC_ACT.IDINSTITUCION = ACT.IDINSTITUCION
+                    AND FAC_ACT.ANIO = ACT.ANIO
+                    AND FAC_ACT.NUMERO = ACT.NUMERO
+                    AND FAC_ACT.IDACTUACION = ACT.IDACTUACION)
+                AND ACT.DIADESPUES = 'N'
+                AND FUN_ESDIAAPLICABLE(ASI.FECHAHORA, V_DIASAPLICABLES) = 1
+            UNION
+            SELECT ACT.IDTIPOACTUACION,
+                ACT.FECHA,
+                ACT.IDINSTITUCION,
+                ACT.ANIO,
+                ACT.NUMERO,
+                ACT.IDACTUACION,
+                0 AS FACTURADO,
+                NVL(FUNC_COSTEFIJO(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.ANIO, ACT.NUMERO, ACT.IDACTUACION, V_FECHAFIN, V_IDFACTURACION), 0) AS COSTEFIJO,
+                --INI: Cambio para Asistencias que derivan en Designacion
+                F_ES_ASISTENCIA_DERIVADA(ASI.IDINSTITUCION, ASI.ANIO, ASI.NUMERO, V_DATOS_FACTURACION.FECHADESDE, V_DATOS_FACTURACION.FECHAHASTA) AS DERIVA,
+                F_ES_TIPO_DERIVACION(ACT.IDINSTITUCION, ACT.ANIO, ACT.NUMERO, ACT.IDACTUACION) AS ESJUDICIAL
+                --FIN: Cambio para Asistencias que derivan en Designacion
+            FROM SCS_ASISTENCIA ASI, 
+                SCS_ACTUACIONASISTENCIA ACT
+            WHERE ASI.IDINSTITUCION = V_IDINSTITUCION
+                AND ASI.IDTURNO = V_IDTURNO
+                AND ASI.IDGUARDIA = V_IDGUARDIA
+                AND ASI.IDPERSONACOLEGIADO = V_IDPERSONA
+                AND TRUNC(ASI.FECHAHORA) = V_FECHAFIN
+                AND ASI.IDINSTITUCION = ACT.IDINSTITUCION
+                AND ASI.ANIO = ACT.ANIO
+                AND ASI.NUMERO = ACT.NUMERO          
+                AND NOT EXISTS ( --and (ACT.Facturado is null or ACT.Facturado = '0')
+                    SELECT  1
+                    FROM FCS_FACT_ACTUACIONASISTENCIA FAC_ACT
+                    WHERE FAC_ACT.IDINSTITUCION = ACT.IDINSTITUCION
+                        AND FAC_ACT.ANIO = ACT.ANIO
+                        AND FAC_ACT.NUMERO = ACT.NUMERO
+                        AND FAC_ACT.IDACTUACION = ACT.IDACTUACION)
+                AND (ACT.ANULACION IS NULL OR ACT.ANULACION = '0')
+                AND ACT.FECHAJUSTIFICACION IS NOT NULL 
+                AND TRUNC(ACT.FECHAJUSTIFICACION) BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA) 
+                AND ACT.VALIDADA = '1'
+                AND ACT.DIADESPUES = 'N'
+                AND FUN_ESDIAAPLICABLE(ASI.FECHAHORA, V_DIASAPLICABLES) = 1)
+            ORDER BY IDTIPOACTUACION, FECHA;
 
         --Constantes de Hitos
         Cons_Mot_Act CONSTANT NUMBER := 7;
@@ -13874,7 +13361,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         v_mensaje VARCHAR2(4000);
 
     Begin
-
         p_Datoserror := 'Antes de valores conf';
 
         --obteniendo valores de configuracion de la guardia
@@ -13927,7 +13413,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 r_Dia.Idguardia,
                 r_Dia.Idpersona,
                 r_Dia.Fechafin,
-                V_CONFIG_GUARDIA.Diasnopagaguardia) Loop
+                V_CONFIG_GUARDIA.Diasnopagaguardia,
+                m_Cg_Facturable(Indicematrizfacturable).IDFACTURACION) Loop
 
                 v_mensaje := r_Dia.Idinstitucion || ', ' ||
                     r_Dia.Idturno || ', ' ||
@@ -14060,7 +13547,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             Mot_Dia := Cons_Mot_Act;
             Fac_Dia := r_Dia.Importefacturado;
                 
-            p_Datoserror := 'Antes de calcular dia';            
+            p_Datoserror := 'Antes de calcular dia';                  
 
             IF (Conf_SeAgrupaPorCabecera <> '1') THEN -- Aplican maximos y minimos por dia
                 IF (Fac_Dia <= 0.0) THEN -- Unidad de guardia sin facturar
@@ -14261,6 +13748,78 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         indiceMatrizFacturable number,
         P_CODRETORNO OUT VARCHAR2,
         P_DATOSERROR OUT VARCHAR2) IS
+        
+        -- Obtenemos las actuaciones realizadas y justificadas anteriormente a la fecha fin del ciclo de facturacion para cada idtipoactuacion ordenadas por fecha de realizacion (Este cursor se utiliza para la facturacion por actuaciones)
+        CURSOR C_ACTUACIONESTIPO_UG(V_IDINSTITUCION NUMBER, V_IDTURNO NUMBER, V_IDGUARDIA NUMBER, V_IDPERSONA NUMBER, V_FECHAFIN DATE, V_IDTIPOACTUACION NUMBER, V_ANIO NUMBER, V_NUMERO NUMBER, V_DIASAPLICABLES VARCHAR2, V_IDFACTURACION NUMBER) IS(
+            SELECT ACT.IDTIPOACTUACION,
+                ACT.FECHA,
+                ACT.IDINSTITUCION,
+                ACT.ANIO,
+                ACT.NUMERO,
+                ACT.IDACTUACION,
+                1 AS FACTURADO,
+                NVL(FUNC_COSTEFIJO(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.ANIO, ACT.NUMERO, ACT.IDACTUACION, V_FECHAFIN, V_IDFACTURACION), 0) AS COSTEFIJO,
+                FUNC_CALCULAR_IMPORTEACT(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.IDTIPOASISTENCIA, ACT.IDTIPOACTUACION, V_FECHAFIN, V_IDFACTURACION, 0) AS IMPORTE,
+                FUNC_CALCULAR_IMPORTEACT(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.IDTIPOASISTENCIA, ACT.IDTIPOACTUACION, V_FECHAFIN, V_IDFACTURACION, 1) AS IMPORTEMAX
+            FROM SCS_ASISTENCIA ASI, 
+                SCS_ACTUACIONASISTENCIA ACT
+            WHERE ASI.IDINSTITUCION = V_IDINSTITUCION
+                AND ASI.IDTURNO = V_IDTURNO
+                AND ASI.IDGUARDIA = V_IDGUARDIA
+                AND ASI.IDPERSONACOLEGIADO = V_IDPERSONA
+                AND TRUNC(ASI.FECHAHORA) = V_FECHAFIN
+                AND ASI.IDINSTITUCION = ACT.IDINSTITUCION
+                AND ASI.ANIO = ACT.ANIO
+                AND ASI.NUMERO = ACT.NUMERO                
+                AND EXISTS ( --and ACT.Facturado = '1'
+                    SELECT 1
+                    FROM FCS_FACT_ACTUACIONASISTENCIA FAC_ACT
+                    WHERE FAC_ACT.IDINSTITUCION = ACT.IDINSTITUCION
+                        AND FAC_ACT.ANIO = ACT.ANIO
+                        AND FAC_ACT.NUMERO = ACT.NUMERO
+                        AND FAC_ACT.IDACTUACION = ACT.IDACTUACION)
+                AND ACT.IDTIPOACTUACION = V_IDTIPOACTUACION
+                AND ASI.ANIO = V_ANIO
+                AND ASI.NUMERO = V_NUMERO
+                AND FUN_ESDIAAPLICABLE(ASI.FECHAHORA, V_DIASAPLICABLES) = 1
+            UNION
+            SELECT ACT.IDTIPOACTUACION,
+                ACT.FECHA,
+                ACT.IDINSTITUCION,
+                ACT.ANIO,
+                ACT.NUMERO,
+                ACT.IDACTUACION,
+                0 AS FACTURADO,
+                NVL(FUNC_COSTEFIJO(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.ANIO, ACT.NUMERO, ACT.IDACTUACION, V_FECHAFIN, V_IDFACTURACION), 0) AS COSTEFIJO,
+                FUNC_CALCULAR_IMPORTEACT(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.IDTIPOASISTENCIA, ACT.IDTIPOACTUACION, V_FECHAFIN, V_IDFACTURACION, 0) AS IMPORTE,
+                FUNC_CALCULAR_IMPORTEACT(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.IDTIPOASISTENCIA, ACT.IDTIPOACTUACION, V_FECHAFIN, V_IDFACTURACION, 1) AS IMPORTEMAX
+            FROM SCS_ASISTENCIA ASI, 
+                SCS_ACTUACIONASISTENCIA ACT
+            WHERE ASI.IDINSTITUCION = V_IDINSTITUCION
+                AND ASI.IDTURNO = V_IDTURNO
+                AND ASI.IDGUARDIA = V_IDGUARDIA
+                AND ASI.IDPERSONACOLEGIADO = V_IDPERSONA
+                AND TRUNC(ASI.FECHAHORA) = V_FECHAFIN
+                AND ASI.IDINSTITUCION = ACT.IDINSTITUCION
+                AND ASI.ANIO = ACT.ANIO
+                AND ASI.NUMERO = ACT.NUMERO                
+                AND NOT EXISTS( --and (ACT.Facturado is null or ACT.Facturado = '0')
+                    SELECT 1
+                    FROM FCS_FACT_ACTUACIONASISTENCIA FAC_ACT
+                    WHERE FAC_ACT.IDINSTITUCION = ACT.IDINSTITUCION
+                        AND FAC_ACT.ANIO = ACT.ANIO
+                        AND FAC_ACT.NUMERO = ACT.NUMERO
+                        AND FAC_ACT.IDACTUACION = ACT.IDACTUACION)
+                AND (ACT.ANULACION IS NULL OR ACT.ANULACION = '0')
+                AND ACT.IDTIPOACTUACION = V_IDTIPOACTUACION
+                AND ASI.ANIO = V_ANIO
+                AND ASI.NUMERO = V_NUMERO
+                AND ACT.FECHAJUSTIFICACION IS NOT NULL 
+                AND TRUNC(ACT.FECHAJUSTIFICACION) BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA) 
+                AND ACT.VALIDADA = '1'
+                AND ACT.DIADESPUES = 'N'
+                AND FUN_ESDIAAPLICABLE(ASI.FECHAHORA, V_DIASAPLICABLES) = 1)
+            ORDER BY IDTIPOACTUACION, FECHA;        
 
         -- Matriz de donde se extrae la configuracion de la guardia
         MFACTURABLE MATRICE_CG_FACTURABLE;
@@ -14366,13 +13925,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                         V_TIPOACTUACIONES_UG.tipoactuacion,
                         V_ASISTENCIAS_UG.anio,
                         V_ASISTENCIAS_UG.numero,
-                        V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA) LOOP
+                        V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA,
+                        MFACTURABLE.IDFACTURACION) LOOP
 
                         -- Obtenemos el importe de la asistencia, en el caso de que fuera nulo el importe de la asistencia seria el de la Guardia
-                        importeTipoActuacion := NVL(V_ACTUACIONES_UG.importe, NVL(V_CONFIG_GUARDIA.IMPORTEACTUACION, 0));
+                        importeTipoActuacion := NVL(NVL(V_ACTUACIONES_UG.IMPORTE, V_CONFIG_GUARDIA.IMPORTEACTUACION), 0);
 
                         -- El importe del Tipo solo se puede calcular en la propia asistencia
-                        importeTipoActMax := NVL(V_ACTUACIONES_UG.importemax, 0);
+                        importeTipoActMax := NVL(V_ACTUACIONES_UG.IMPORTEMAX, 0);
 
                         -- Comenzando el apunte en la matriz de memoria: M_APUNTE_AC
                         if (V_ACTUACIONES_UG.facturado <> pkg_siga_constantes.DB_TRUE_A) then
@@ -14437,7 +13997,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 M_APUNTE_UG(IND_UG).FECHAFIN := V_UNIDADES_GUARDIA.FECHAFIN;
                 M_APUNTE_UG(IND_UG).FACTURADO := V_UNIDADES_GUARDIA.FACTURADO;
                 M_APUNTE_UG(IND_UG).CONTADOR := CONTADOR;
-                M_APUNTE_UG(IND_UG).COSTEFIJO := COSTEFIJOUG;
+                M_APUNTE_UG(IND_UG).COSTEFIJO := COSTEFIJOUG;               
 
                 -- Acumulador de Tipos
                 if (importeTipoActMax is not null
@@ -14770,9 +14330,94 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
     end if;
   END PROC_APLICA_MAXIMOS;
 
-  PROCEDURE PROC_FACT_ACTFG_NOAPLICATIPO(indiceMatrizFacturable number,
-                                         P_CODRETORNO           OUT VARCHAR2,
-                                         P_DATOSERROR           OUT VARCHAR2) IS
+  /****************************************************************************************************************/
+  /* Nombre:        PROC_FACT_ACTFG_NOAPLICATIPO                                                                           */
+  /* Descripcion:   Este procedimiento se encarga de cargar las tablas de memoria cuando facturamos por Actuaciones
+  /*                fuera de guardia y no aplica tipos de actuacion.
+  /*                                                                                                         */
+  /* Parametros            IN/OUT   Descripcion                                                    Tipo de Datos  */
+  /* -------------------   ------   ------------------------------------------------------------   -------------  */
+  /* P_CODRETORNO          OUT      Devuelve 0 en caso de que la ejecucion haya sido OK.           VARCHAR2(10)   */
+  /*                                En caso de error devuelve el codigo de error Oracle                           */
+  /*                                correspondiente.                                                              */
+  /* P_DATOSERROR          OUT      Devuelve null en caso de que la ejecucion haya sido OK.        VARCHAR2(200)  */
+  /*                                En caso de error devuelve el mensaje de error Oracle                          */
+  /*                                correspondiente.
+  /*                                                                                                  */
+  /* Version:        1.0                                                                               */
+  /* Fecha Creacion: 25/04/2006                                                                                   */
+  /* Autor:         Pilar Duran Mu?oz                                                                         */
+  /* Fecha Modificacion Autor Modificacion                Descripcion Modificacion                                */
+  /* ------------------ --------------------------------- ------------------------------------------------------- */
+  /****************************************************************************************************************/
+    PROCEDURE PROC_FACT_ACTFG_NOAPLICATIPO(
+        indiceMatrizFacturable IN NUMBER,
+        P_CODRETORNO OUT VARCHAR2,
+        P_DATOSERROR OUT VARCHAR2) IS
+        
+    CURSOR C_ACTUACIONES_ACFG (P_IDINSTITUCION SCS_ASISTENCIA.IDINSTITUCION%TYPE, P_ANIO SCS_ASISTENCIA.ANIO%TYPE, P_NUMERO SCS_ASISTENCIA.NUMERO%TYPE, V_IDFACTURACION NUMBER) IS (
+        SELECT ACT.IDINSTITUCION,
+            ACT.ANIO,
+            ACT.NUMERO,
+            ACT.IDACTUACION,
+            ASI.FECHAHORA,
+            ACT.FECHA,
+            ACT.FECHAJUSTIFICACION,
+            '0' AS FACTURADA,
+            0 AS IMPFACTURADA,
+            NVL(FUNC_COSTEFIJO(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.ANIO, ACT.NUMERO, ACT.IDACTUACION, TRUNC(ACT.FECHA), V_IDFACTURACION), 0) AS IMPCOSTESFIJOS -- Los datos de Fuera de Guardia se calculan con la fecha de la actuacion
+        FROM SCS_ASISTENCIA ASI, 
+            SCS_ACTUACIONASISTENCIA ACT
+        WHERE ASI.IDINSTITUCION = P_IDINSTITUCION
+            AND ASI.ANIO = P_ANIO
+            AND ASI.NUMERO = P_NUMERO
+            AND ASI.IDINSTITUCION = ACT.IDINSTITUCION
+            AND ASI.ANIO = ACT.ANIO
+            AND ASI.NUMERO = ACT.NUMERO
+            AND ACT.FECHAJUSTIFICACION BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA)
+            AND NVL(ACT.ANULACION, '0') = '0'
+            AND ACT.DIADESPUES = 'S' -- solo las del día después
+            AND NOT EXISTS ( -- solo las NO FACTURADAS
+                SELECT 1
+                FROM FCS_FACT_ACTUACIONASISTENCIA FAC
+                WHERE ACT.IDINSTITUCION = FAC.IDINSTITUCION
+                    AND ACT.ANIO = FAC.ANIO
+                    AND ACT.NUMERO = FAC.NUMERO
+                    AND ACT.IDACTUACION = FAC.IDACTUACION)
+        UNION
+        SELECT ACT.IDINSTITUCION,
+           ACT.ANIO,
+           ACT.NUMERO,
+           ACT.IDACTUACION,
+           ASI.FECHAHORA,
+           ACT.FECHA,
+           ACT.FECHAJUSTIFICACION,
+           '1' AS FACTURADA,
+           SUM(FAC.PRECIOAPLICADO) AS IMPFACTURADA,
+           SUM(FAC.PRECIOCOSTESFIJOS) AS IMPCOSTESFIJOS
+        FROM SCS_ASISTENCIA ASI,
+           SCS_ACTUACIONASISTENCIA ACT,
+           FCS_FACT_ACTUACIONASISTENCIA FAC -- solo las facturadas
+        WHERE ASI.IDINSTITUCION = P_IDINSTITUCION
+            AND ASI.ANIO = P_ANIO
+            AND ASI.NUMERO = P_NUMERO
+            AND ASI.IDINSTITUCION = ACT.IDINSTITUCION
+            AND ASI.ANIO = ACT.ANIO
+            AND ASI.NUMERO = ACT.NUMERO
+            AND ACT.IDINSTITUCION = FAC.IDINSTITUCION
+            AND ACT.ANIO = FAC.ANIO
+            AND ACT.NUMERO = FAC.NUMERO
+            AND ACT.IDACTUACION = FAC.IDACTUACION
+            AND NVL(ACT.ANULACION, '0') = '0'
+            AND ACT.DIADESPUES = 'S' -- solo las del día después
+        GROUP BY ACT.IDINSTITUCION,
+              ACT.ANIO,
+              ACT.NUMERO,
+              ACT.IDACTUACION,
+              ASI.FECHAHORA,
+              ACT.FECHA,
+              ACT.FECHAJUSTIFICACION);        
+        
     --Acumuladores
     impActFacturadas_CABEC number;
     impActFacturadas_DIA   number;
@@ -14858,9 +14503,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         impCostesFijos_ASIST   := 0;
 
         --bucle de actuaciones para acumular en cada asistencia
-        for R_ACTUACION in C_ACTUACIONES_ACFG(R_ASISTENCIA.IDINSTITUCION,
-                                              R_ASISTENCIA.ANIO,
-                                              R_ASISTENCIA.NUMERO) loop
+        for R_ACTUACION in C_ACTUACIONES_ACFG(R_ASISTENCIA.IDINSTITUCION, R_ASISTENCIA.ANIO, R_ASISTENCIA.NUMERO, M_CG_FACTURABLE(indiceMatrizFacturable).IDFACTURACION) loop
 
           --obteniendo importes para la actuacion
           if R_ACTUACION.FACTURADA = 1 then
@@ -15034,12 +14677,81 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
   /* Autor:         Pilar Duran Mu?oz                                                                         */
   /* Fecha Modificacion Autor Modificacion                Descripcion Modificacion                                */
   /* ------------------ --------------------------------- ------------------------------------------------------- */
-
   /****************************************************************************************************************/
+    PROCEDURE PROC_FACT_ACTFG_APLICATIPO(
+        indiceMatrizFacturable IN NUMBER,
+        P_CODRETORNO OUT VARCHAR2,
+        P_DATOSERROR OUT VARCHAR2) IS
+                                       
+        -- Obtenemos las actuaciones realizadas y justificadas anteriormente a la fecha fin del ciclo de facturacion fuera de la guardia y agrupadas por Tipo Actuacion y realizadas en Dia
+        CURSOR C_ACTUACIONESTIPO_FG(V_IDINSTITUCION NUMBER, V_IDTURNO NUMBER, V_IDGUARDIA NUMBER, V_IDPERSONA NUMBER, V_FECHAINICIO_CG DATE, V_FECHAFIN_CG DATE, V_FECHA DATE, V_IDTIPOACT NUMBER, V_IDFACTURACION NUMBER) IS(
+            SELECT ACT.IDTIPOACTUACION,
+                ACT.FECHA,
+                ACT.IDINSTITUCION,
+                ACT.ANIO,
+                ACT.NUMERO,
+                ACT.IDACTUACION,
+                1 AS FACTURADO,
+                NVL(FUNC_COSTEFIJO(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.ANIO, ACT.NUMERO, ACT.IDACTUACION, TRUNC(ACT.FECHA), V_IDFACTURACION), 0) AS COSTEFIJO, -- Los datos de Fuera de Guardia se calculan con la fecha de la actuacion
+                FUNC_CALCULAR_IMPORTEACT(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.IDTIPOASISTENCIA, ACT.IDTIPOACTUACION, TRUNC(ACT.FECHA), V_IDFACTURACION, 0) AS IMPORTE, -- Los datos de Fuera de Guardia se calculan con la fecha de la actuacion
+                FUNC_CALCULAR_IMPORTEACT(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.IDTIPOASISTENCIA, ACT.IDTIPOACTUACION, TRUNC(ACT.FECHA), V_IDFACTURACION, 1) AS IMPORTEMAX -- Los datos de Fuera de Guardia se calculan con la fecha de la actuacion
+            FROM SCS_ASISTENCIA ASI, 
+                SCS_ACTUACIONASISTENCIA ACT
+            WHERE ASI.IDINSTITUCION = V_IDINSTITUCION
+                AND ASI.IDTURNO = V_IDTURNO
+                AND ASI.IDGUARDIA = V_IDGUARDIA
+                AND ASI.IDPERSONACOLEGIADO = V_IDPERSONA
+                AND TRUNC(ASI.FECHAHORA) BETWEEN TRUNC(V_FECHAINICIO_CG) AND TRUNC(V_FECHAFIN_CG)
+                AND ASI.IDINSTITUCION = ACT.IDINSTITUCION
+                AND ASI.ANIO = ACT.ANIO
+                AND ASI.NUMERO = ACT.NUMERO                
+                AND EXISTS ( --and ACT.Facturado = '1'
+                    SELECT 1
+                    FROM FCS_FACT_ACTUACIONASISTENCIA FAC
+                    WHERE FAC.IDINSTITUCION = ACT.IDINSTITUCION
+                        AND FAC.ANIO = ACT.ANIO
+                        AND FAC.NUMERO = ACT.NUMERO
+                        AND FAC.IDACTUACION = ACT.IDACTUACION)
+                AND ACT.DIADESPUES = 'S'
+                AND ACT.FECHA = V_FECHA
+                AND ACT.IDTIPOACTUACION = V_IDTIPOACT
+            UNION
+            SELECT ACT.IDTIPOACTUACION,
+                ACT.FECHA,
+                ACT.IDINSTITUCION,
+                ACT.ANIO,
+                ACT.NUMERO,
+                ACT.IDACTUACION,
+                0 AS FACTURADO,
+                NVL(FUNC_COSTEFIJO(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.ANIO, ACT.NUMERO, ACT.IDACTUACION, TRUNC(ACT.FECHA), V_IDFACTURACION), 0) AS COSTEFIJO, -- Los datos de Fuera de Guardia se calculan con la fecha de la actuacion
+                FUNC_CALCULAR_IMPORTEACT(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.IDTIPOASISTENCIA, ACT.IDTIPOACTUACION, TRUNC(ACT.FECHA), V_IDFACTURACION, 0) AS IMPORTE, -- Los datos de Fuera de Guardia se calculan con la fecha de la actuacion
+                FUNC_CALCULAR_IMPORTEACT(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.IDTIPOASISTENCIA, ACT.IDTIPOACTUACION, TRUNC(ACT.FECHA), V_IDFACTURACION, 1) AS IMPORTEMAX -- Los datos de Fuera de Guardia se calculan con la fecha de la actuacion
+            FROM SCS_ASISTENCIA ASI, 
+                SCS_ACTUACIONASISTENCIA ACT
+            WHERE ASI.IDINSTITUCION = V_IDINSTITUCION
+                AND ASI.IDTURNO = V_IDTURNO
+                AND ASI.IDGUARDIA = V_IDGUARDIA
+                AND ASI.IDPERSONACOLEGIADO = V_IDPERSONA
+                AND TRUNC(ASI.FECHAHORA) BETWEEN TRUNC(V_FECHAINICIO_CG) AND TRUNC(V_FECHAFIN_CG)
+                AND ASI.IDINSTITUCION = ACT.IDINSTITUCION
+                AND ASI.ANIO = ACT.ANIO
+                AND ASI.NUMERO = ACT.NUMERO                
+                AND NOT EXISTS ( --and (ACT.Facturado is null or ACT.Facturado = '0')
+                    SELECT 1
+                    FROM FCS_FACT_ACTUACIONASISTENCIA FAC
+                    WHERE FAC.IDINSTITUCION = ACT.IDINSTITUCION
+                        AND FAC.ANIO = ACT.ANIO
+                        AND FAC.NUMERO = ACT.NUMERO
+                        AND FAC.IDACTUACION = ACT.IDACTUACION)
+                AND (ACT.ANULACION IS NULL OR ACT.ANULACION = '0')
+                AND ACT.FECHAJUSTIFICACION IS NOT NULL 
+                AND TRUNC(ACT.FECHAJUSTIFICACION) BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA) 
+                AND ACT.VALIDADA = '1'
+                AND ACT.DIADESPUES = 'S'
+                AND ACT.FECHA = V_FECHA
+                AND ACT.IDTIPOACTUACION = V_IDTIPOACT)
+            ORDER BY IDTIPOACTUACION, FECHA;
 
-  PROCEDURE PROC_FACT_ACTFG_APLICATIPO(indiceMatrizFacturable number,
-                                       P_CODRETORNO           OUT VARCHAR2,
-                                       P_DATOSERROR           OUT VARCHAR2) IS
     importeActualDia          number;
     importeTotalActuacion     number;
     importeTotalActuacionCG   number;
@@ -15067,18 +14779,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
     -- comienza en 1 porque como minimo ya existe un apunte en la matriz M_APUNTE_CG por haber hecho
     -- una facturacion por guardia dobla asist,... y ahora apuntariamos otra.
     -- Para cada Dia
-    FOR V_DIAS IN C_DIAS_FG(M_CG_FACTURABLE(indiceMatrizFacturable)
-                            .idinstitucion,
-                            M_CG_FACTURABLE(indiceMatrizFacturable)
-                            .idturno,
-                            M_CG_FACTURABLE(indiceMatrizFacturable)
-                            .idguardia,
-                            M_CG_FACTURABLE(indiceMatrizFacturable)
-                            .idpersona,
-                            M_CG_FACTURABLE(indiceMatrizFacturable)
-                            .fechainicio,
-                            M_CG_FACTURABLE(indiceMatrizFacturable)
-                            .fechafin) LOOP
+    FOR V_DIAS IN C_DIAS_FG(M_CG_FACTURABLE(indiceMatrizFacturable).IDINSTITUCION,
+                            M_CG_FACTURABLE(indiceMatrizFacturable).IDTURNO,
+                            M_CG_FACTURABLE(indiceMatrizFacturable).IDGUARDIA,
+                            M_CG_FACTURABLE(indiceMatrizFacturable).IDPERSONA,
+                            M_CG_FACTURABLE(indiceMatrizFacturable).FECHAINICIO,
+                            M_CG_FACTURABLE(indiceMatrizFacturable).FECHAFIN) LOOP
 
       -- Para cada UG
       contador := contador + 1;
@@ -15090,18 +14796,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
       contarActuacionesCG   := 0;
       importeFacturadoUG    := 0;
 
-      FOR V_TIPOACTUACIONES_FG IN C_TIPOACTUACIONES_FG(M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                       .IDINSTITUCION,
-                                                       M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                       .IDTURNO,
-                                                       M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                       .IDGUARDIA,
-                                                       M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                       .IDPERSONA,
-                                                       M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                       .fechaINICIO,
-                                                       M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                       .FECHAFIN,
+      FOR V_TIPOACTUACIONES_FG IN C_TIPOACTUACIONES_FG(M_CG_FACTURABLE(indiceMatrizFacturable).IDINSTITUCION,
+                                                       M_CG_FACTURABLE(indiceMatrizFacturable).IDTURNO,
+                                                       M_CG_FACTURABLE(indiceMatrizFacturable).IDGUARDIA,
+                                                       M_CG_FACTURABLE(indiceMatrizFacturable).IDPERSONA,
+                                                       M_CG_FACTURABLE(indiceMatrizFacturable).FECHAINICIO,
+                                                       M_CG_FACTURABLE(indiceMatrizFacturable).FECHAFIN,
                                                        V_DIAS.FECHA) LOOP
 
         contadorUG                := contadorUG + 1;
@@ -15109,20 +14809,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         importeFacturadoActuacion := 0;
         contarActuaciones         := 0;
 
-        FOR V_ACTUACIONES_FG IN C_ACTUACIONESTIPO_FG(M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                     .IDINSTITUCION,
-                                                     M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                     .IDTURNO,
-                                                     M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                     .IDGUARDIA,
-                                                     M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                     .IDPERSONA,
-                                                     M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                     .fechaINICIO,
-                                                     M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                     .FECHAFIN,
+        FOR V_ACTUACIONES_FG IN C_ACTUACIONESTIPO_FG(M_CG_FACTURABLE(indiceMatrizFacturable).IDINSTITUCION,
+                                                     M_CG_FACTURABLE(indiceMatrizFacturable).IDTURNO,
+                                                     M_CG_FACTURABLE(indiceMatrizFacturable).IDGUARDIA,
+                                                     M_CG_FACTURABLE(indiceMatrizFacturable).IDPERSONA,
+                                                     M_CG_FACTURABLE(indiceMatrizFacturable).FECHAINICIO,
+                                                     M_CG_FACTURABLE(indiceMatrizFacturable).FECHAFIN,
                                                      V_DIAS.FECHA,
-                                                     V_TIPOACTUACIONES_FG.TIPOACTUACION) LOOP
+                                                     V_TIPOACTUACIONES_FG.TIPOACTUACION,
+                                                     M_CG_FACTURABLE(indiceMatrizFacturable).IDFACTURACION) LOOP
 
           contarActuaciones   := contarActuaciones + 1;
           contarActuacionesCG := contarActuacionesCG + 1;
@@ -15231,31 +14926,25 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
           -- solo se hace apunte en la UG cuando existen actuaciones
 
           IND_UG := IND_UG + 1;
-          M_APUNTE_UG(IND_UG).idinstitucion := M_CG_FACTURABLE(indiceMatrizFacturable).idinstitucion;
-          M_APUNTE_UG(IND_UG).idturno := M_CG_FACTURABLE(indiceMatrizFacturable).idturno;
-          M_APUNTE_UG(IND_UG).idguardia := M_CG_FACTURABLE(indiceMatrizFacturable).idguardia;
-          M_APUNTE_UG(IND_UG).idpersona := M_CG_FACTURABLE(indiceMatrizFacturable).idpersona;
+          M_APUNTE_UG(IND_UG).idinstitucion := M_CG_FACTURABLE(indiceMatrizFacturable).IDINSTITUCION;
+          M_APUNTE_UG(IND_UG).idturno := M_CG_FACTURABLE(indiceMatrizFacturable).IDTURNO;
+          M_APUNTE_UG(IND_UG).idguardia := M_CG_FACTURABLE(indiceMatrizFacturable).IDGUARDIA;
+          M_APUNTE_UG(IND_UG).idpersona := M_CG_FACTURABLE(indiceMatrizFacturable).IDPERSONA;
           M_APUNTE_UG(IND_UG).fechainicio := M_CG_FACTURABLE(indiceMatrizFacturable).FECHAINICIO;
           M_APUNTE_UG(IND_UG).fechafin := M_CG_FACTURABLE(indiceMatrizFacturable).FECHAFIN;
-          M_APUNTE_UG(IND_UG).facturado := M_CG_FACTURABLE(indiceMatrizFacturable).facturado;
+          M_APUNTE_UG(IND_UG).facturado := M_CG_FACTURABLE(indiceMatrizFacturable).FACTURADO;
           M_APUNTE_UG(IND_UG).contador := contadorUG;
           M_APUNTE_UG(IND_UG).costefijo := costeFijoUG;
 
           if (importeTipoActMax is not null and importeTipoActMax <> 0.0 and
              importeTotalActuacion >= importeTipoActMax) then
 
-            existe := FUNC_EXISTE_ACTFACTURADA(M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                                         .idinstitucion,
-                                                                         M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                                         .idturno,
-                                                                         M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                                         .idguardia,
-                                                                         M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                                         .idpersona,
-                                                                         M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                                         .fechainicio,
-                                                                         M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                                         .fechafin,
+            existe := FUNC_EXISTE_ACTFACTURADA(M_CG_FACTURABLE(indiceMatrizFacturable).IDINSTITUCION,
+                                                                         M_CG_FACTURABLE(indiceMatrizFacturable).IDTURNO,
+                                                                         M_CG_FACTURABLE(indiceMatrizFacturable).IDGUARDIA,
+                                                                         M_CG_FACTURABLE(indiceMatrizFacturable).IDPERSONA,
+                                                                         M_CG_FACTURABLE(indiceMatrizFacturable).FECHAINICIO,
+                                                                         M_CG_FACTURABLE(indiceMatrizFacturable).FECHAFIN,
                                                                          V_DIAS.FECHA); -- Exixten actuacions facturadas para el Dia
 
             if (existe = 1) then
@@ -15280,18 +14969,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
           else
 
-            existe := FUNC_EXISTE_ACTFACTURADA(M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                                         .idinstitucion,
-                                                                         M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                                         .idturno,
-                                                                         M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                                         .idguardia,
-                                                                         M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                                         .idpersona,
-                                                                         M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                                         .fechainicio,
-                                                                         M_CG_FACTURABLE(indiceMatrizFacturable)
-                                                                         .fechafin,
+            existe := FUNC_EXISTE_ACTFACTURADA(M_CG_FACTURABLE(indiceMatrizFacturable).IDINSTITUCION,
+                                                                         M_CG_FACTURABLE(indiceMatrizFacturable).IDTURNO,
+                                                                         M_CG_FACTURABLE(indiceMatrizFacturable).IDGUARDIA,
+                                                                         M_CG_FACTURABLE(indiceMatrizFacturable).IDPERSONA,
+                                                                         M_CG_FACTURABLE(indiceMatrizFacturable).FECHAINICIO,
+                                                                         M_CG_FACTURABLE(indiceMatrizFacturable).FECHAFIN,
                                                                          V_DIAS.FECHA); -- Exixten actuacions facturadas para el Dia
 
             if (existe = 1) then
@@ -15326,23 +15009,23 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         -- solo se hace apunte en la CG cuando existen actuaciones
 
         IND_CG := IND_CG + 1;
-        M_APUNTE_CG(IND_CG).idinstitucion := M_CG_FACTURABLE(indiceMatrizFacturable).idinstitucion;
-        M_APUNTE_CG(IND_CG).idturno := M_CG_FACTURABLE(indiceMatrizFacturable).idturno;
-        M_APUNTE_CG(IND_CG).idguardia := M_CG_FACTURABLE(indiceMatrizFacturable).idguardia;
-        M_APUNTE_CG(IND_CG).idpersona := M_CG_FACTURABLE(indiceMatrizFacturable).idpersona;
-        M_APUNTE_CG(IND_CG).fechainicio := M_CG_FACTURABLE(indiceMatrizFacturable).fechainicio;
-        M_APUNTE_CG(IND_CG).fechafin := M_CG_FACTURABLE(indiceMatrizFacturable).fechafin;
-        M_APUNTE_CG(IND_CG).facturado := M_CG_FACTURABLE(indiceMatrizFacturable).facturado;
+        M_APUNTE_CG(IND_CG).idinstitucion := M_CG_FACTURABLE(indiceMatrizFacturable).IDINSTITUCION;
+        M_APUNTE_CG(IND_CG).idturno := M_CG_FACTURABLE(indiceMatrizFacturable).IDTURNO;
+        M_APUNTE_CG(IND_CG).idguardia := M_CG_FACTURABLE(indiceMatrizFacturable).IDGUARDIA;
+        M_APUNTE_CG(IND_CG).idpersona := M_CG_FACTURABLE(indiceMatrizFacturable).IDPERSONA;
+        M_APUNTE_CG(IND_CG).fechainicio := M_CG_FACTURABLE(indiceMatrizFacturable).FECHAINICIO;
+        M_APUNTE_CG(IND_CG).fechafin := M_CG_FACTURABLE(indiceMatrizFacturable).FECHAFIN;
+        M_APUNTE_CG(IND_CG).facturado := M_CG_FACTURABLE(indiceMatrizFacturable).FACTURADO;
         M_APUNTE_CG(IND_CG).contador := 2;
         M_APUNTE_CG(IND_CG).costefijo := costeFijoCG;
         M_APUNTE_CG(IND_CG).IDTIPOAPUNTE := 'FGTp';
 
-        existe := FUNC_EXISTE_ACTFACTURADA(M_CG_FACTURABLE(indiceMatrizFacturable).idinstitucion,
-                                                                     M_CG_FACTURABLE(indiceMatrizFacturable).idturno,
-                                                                     M_CG_FACTURABLE(indiceMatrizFacturable).idguardia,
-                                                                     M_CG_FACTURABLE(indiceMatrizFacturable).idpersona,
-                                                                     M_CG_FACTURABLE(indiceMatrizFacturable).fechainicio,
-                                                                     M_CG_FACTURABLE(indiceMatrizFacturable).fechafin,
+        existe := FUNC_EXISTE_ACTFACTURADA(M_CG_FACTURABLE(indiceMatrizFacturable).IDINSTITUCION,
+                                                                     M_CG_FACTURABLE(indiceMatrizFacturable).IDTURNO,
+                                                                     M_CG_FACTURABLE(indiceMatrizFacturable).IDGUARDIA,
+                                                                     M_CG_FACTURABLE(indiceMatrizFacturable).IDPERSONA,
+                                                                     M_CG_FACTURABLE(indiceMatrizFacturable).FECHAINICIO,
+                                                                     M_CG_FACTURABLE(indiceMatrizFacturable).FECHAFIN,
                                                                      V_DIAS.FECHA); -- Exixten actuacions facturadas para el Dia
 
         if (existe = 1) then
@@ -15397,7 +15080,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
   /* Autor:         Pilar Duran Mu?oz                                                                         */
   /* Fecha Modificacion Autor Modificacion                Descripcion Modificacion                                */
   /* ------------------ --------------------------------- ------------------------------------------------------- */
-
   /****************************************************************************************************************/
   FUNCTION FUNC_EXISTE_ACTFACTURADA(P_IDINSTITUCION NUMBER,
                                     P_IDTURNO       NUMBER,
@@ -16321,128 +16003,5 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                        SQLERRM;
 
   END PROC_FCS_MARCAR_FACTURADOS;
-
-  /****************************************************************************************************************/
-  /* Nombre:   PROC_FCS_ACT_APUNTES_ERRONEOS                                                                      */
-  /* Descripcion:  Actualiza los apuntes de facturacion de tipo GAs ó GAc que tienen en la misma facturacion un   */
-  /*               apunte de tipo xxxFG y ademas tiene un precio que no coincide con el estipulado en el hito     */
-    /*               asociado. La actualización consiste en eliminar el precio.                                     */
-  /*                                                                                                              */
-  /* Parametros            IN/OUT   Descripcion                                                    Tipo de Datos  */
-  /* -------------------   ------   ------------------------------------------------------------   -------------  */
-  /* IDINSTITUCION         IN       Identificador de la Institucion                                NUMBER         */
-  /* IDFACTURACION         IN       Identificador de la Facturacion                                NUMBER         */
-  /* codigoRetorno         OUT      Devuelve 0 en caso de que la ejecucion haya sido OK.           VARCHAR2(10)   */
-  /*                                En caso de error devuelve el codigo de error Oracle                           */
-  /*                                correspondiente.                                                              */
-  /* error                 OUT      Devuelve null en caso de que la ejecucion haya sido OK.        VARCHAR2(200)  */
-  /*                                En caso de error devuelve el mensaje de error Oracle                          */
-  /*                                correspondiente.                                                              */
-  /*                                                                                                              */
-  /* Version:        1.0                                                                                          */
-  /* Fecha Creacion: 19/01/2010                                                                                   */
-  /* Autor:          Salvador Madrid-Salvador                                                                           */
-  /* Fecha Modificacion   Autor Modificacion                  Descripcion Modificacion                            */
-  /* ------------------   ---------------------------------   --------------------------------------------------- */
-  /****************************************************************************************************************/
-  PROCEDURE PROC_FCS_ACT_APUNTES_ERRONEOS(pidInstitucion IN varchar2,
-                                          pidFacturacion in VARCHAR2,
-                                          codigoRetorno OUT VARCHAR2,
-                                          error         OUT VARCHAR2) is
-    CURSOR apuntes(pIdInstitucion IN varchar2, pIdFacturacion IN VARCHAR2) IS
-      SELECT apu1.idinstitucion,
-             apu1.idfacturacion,
-             apu1.idapunte,
-             apu1.idpersona,
-             apu1.idturno,
-             apu1.idguardia,
-             apu1.fechainicio,
-             apu1.motivo,
-             apu1.idhito,
-             apu1.precioaplicado
-        FROM FCS_FACT_APUNTE APU1, scs_hitofacturableguardia hfg
-       WHERE apu1.motivo LIKE 'G%'
-         AND EXISTS
-       (SELECT *
-                FROM FCS_FACT_APUNTE APU2
-               WHERE apu2.motivo LIKE '%FG'
-                 AND apu2.idinstitucion = apu1.idinstitucion
-                 AND apu2.idfacturacion = apu1.idfacturacion
-                 AND apu2.idpersona = apu1.idpersona
-                 AND apu2.idturno = apu1.idturno
-                 AND apu2.idguardia = apu1.idguardia
-                 AND apu2.fechainicio = apu1.fechainicio)
-         AND decode(substr(apu1.motivo, 1, 2), 'GD', 4, 1) = hfg.idhito
-         AND apu1.idinstitucion = hfg.idinstitucion
-         AND apu1.idturno = hfg.idturno
-         AND apu1.idguardia = hfg.idguardia
-         AND hfg.preciohito > apu1.precioaplicado
-         AND apu1.precioaplicado > 0
-         AND apu1.idfacturacion = pIdFacturacion
-         AND apu1.idinstitucion = pIdInstitucion;
-    apuntes_rec apuntes%ROWTYPE;
-    updateSql   VARCHAR2(3000);
-    motivo      VARCHAR2(3000);
-    idHito      NUMBER(8);
-    importe_resta_preciosantiguos Number;
-  BEGIN
-    --Parche para cambio de precio de los colegios catalanes
-    Select sum(precioaplicado)
-      Into importe_resta_preciosantiguos 
-      From Fcs_Fact_Apunte
-     Where idinstitucion = pidInstitucion
-       And idfacturacion = pidFacturacion
-       And Precioaplicado > 0
-       And Precioaplicado < 10
-       And idinstitucion In (Select idinstitucion
-                               From cen_institucion
-                              Where cen_inst_idinstitucion = 3001);
-    Update Fcs_Fact_Apunte
-       Set precioaplicado = 0
-     Where idinstitucion = pidInstitucion
-       And idfacturacion = pidFacturacion
-       And Precioaplicado > 0
-       And Precioaplicado < 10
-       And idinstitucion In (Select idinstitucion
-                               From cen_institucion
-                              Where cen_inst_idinstitucion = 3001);
-    
-    If importe_resta_preciosantiguos Is Not Null Then
-      Total_Facturacion := Total_Facturacion - importe_resta_preciosantiguos;
-    End If;
-    /*
-    updateSql := 'UPDATE FCS_FACT_APUNTE apu
-                  SET motivo= :motivo, idhito= :idHito, precioaplicado=0
-                  WHERE idinstitucion= :idInstitucion
-                  AND idfacturacion= :idFacturacion
-                  AND idapunte= :idApunte
-                  AND idpersona= :idPersona
-                  AND idturno= :idTurno
-                  AND idguardia= :idGuardia
-                  AND fechainicio= :fechaInicio';
-
-    FOR apuntes_rec IN apuntes(pidInstitucion, pidFacturacion) LOOP
-      IF apuntes_rec.motivo = 'GAc' THEN
-        motivo := 'GAc- ' || apuntes_rec.precioaplicado;
-        idHito := 51;
-      ELSE
-        motivo := 'GAs- ' || apuntes_rec.precioaplicado;
-        idHito := 52;
-      END IF;
-      EXECUTE IMMEDIATE updateSql
-        USING motivo, idHito, apuntes_rec.idInstitucion, apuntes_rec.idfacturacion, apuntes_rec.idapunte, apuntes_rec.idpersona, apuntes_rec.idturno, apuntes_rec.idguardia, apuntes_rec.fechainicio;
-    END LOOP;
-
-    codigoRetorno := TO_CHAR(0);
-    error         := 'El proceso: PROC_FCS_ACT_APUNTES_ERRONEOS ha finalizado correctamente';
-
-  EXCEPTION
-    WHEN OTHERS THEN
-      ROLLBACK;
-      codigoRetorno := to_char(SQLCODE);
-      error         := 'Error en el proceso: PROC_FCS_ACT_APUNTES_ERRONEOS. ' ||
-                       SQLERRM;
-    */
-  END PROC_FCS_ACT_APUNTES_ERRONEOS;
 END PKG_SIGA_FACTURACION_SJCS;
 /

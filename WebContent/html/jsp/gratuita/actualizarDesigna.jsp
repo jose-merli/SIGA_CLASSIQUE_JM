@@ -22,19 +22,22 @@
 <%@ taglib uri="ajaxtags.tld" prefix="ajax" %>
 
 <!-- IMPORTS -->
-<%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@ page import="com.atos.utils.*"%>
+
 <%@ page import="java.util.List"%>
-<%@ page import="com.siga.gratuita.form.MaestroDesignasForm"%>
-<%@ page import="com.siga.beans.ScsEJGBean"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.atos.utils.ClsConstants"%>
+<%@page import="com.atos.utils.UsrBean"%>
+<%@page import="com.siga.beans.ScsEJGBean"%>
+<%@page import="com.siga.gratuita.form.MaestroDesignasForm"%>
+
 
 <!-- JSP -->
-<%  
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-		
-	UsrBean usrbean = (UsrBean)session.getAttribute(ClsConstants.USERBEAN);
-	
+<%
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession();
+
+	UsrBean usrbean = (UsrBean) session.getAttribute(ClsConstants.USERBEAN);
+
 	String dato[] = { (String) usrbean.getLocation() };
 %>
 
@@ -277,26 +280,44 @@
 			<siga:ConjCampos leyenda="gratuita.busquedaDesignas.literal.designa">
 				<table class="tablaCampos" align="center" cellpadding="0"
 					cellpadding="0" width="100%" border="0">
-					<tr>
-									<td  width="20%" class="labelText"><siga:Idioma
+							<tr>
+								<td width="20%" class="labelText"><siga:Idioma
 										key='gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento' /></td>
-									<td width="20%"><html:text name="MaestroDesignasForm" property="numeroProcedimiento"  maxlength="15" 
-										styleClass="box" style="width: 100" /></td>
-									<td width="10%" class="labelText" width="10%"><siga:Idioma
-										key="gratuita.mantenimientoTablasMaestra.literal.juzgado" />
-									</td>
-									<td class="labelText" width="10%">
-										<input type="text" name="codigoExtJuzgado" styleId="codigoExtJuzgado" class="box" size="8" maxlength="10" onBlur="obtenerJuzgado();"/>&nbsp;
-									</td>
-									<td width="40%">
-										<html:select styleId="juzgados" styleClass="boxCombo" style="width:445px;" property="idJuzgado">
-											<bean:define id="juzgados" name="MaestroDesignasForm" property="juzgados" type="java.util.Collection" />
-											<html:optionsCollection name="juzgados" value="idJuzgado" label="nombre" />
-										</html:select>
-									</td>
-					</tr>
+								
+							<c:choose>
+								<c:when	test="${EJIS_ACTIVO=='1'}">
+								
+									<td width="20%"><html:text
+										name="MaestroDesignasForm" property="numeroProcedimiento"
+										size="7" maxlength="7" styleClass="box" />/<html:text
+										name="MaestroDesignasForm" property="anioProcedimiento"
+										size="4" maxlength="4" styleClass="box" /></td>
 
-					<tr>
+								</c:when>
+								<c:otherwise>
+									<td width="20%"><html:text name="MaestroDesignasForm"
+										property="numeroProcedimiento" maxlength="15" styleClass="box"
+										style="width: 100" /></td>
+								</c:otherwise>
+							</c:choose>
+
+								<td width="10%" class="labelText" width="10%"><siga:Idioma
+										key="gratuita.mantenimientoTablasMaestra.literal.juzgado" />
+								</td>
+								<td class="labelText" width="10%"><input type="text"
+									name="codigoExtJuzgado" styleId="codigoExtJuzgado" class="box"
+									size="8" maxlength="10" onBlur="obtenerJuzgado();" />&nbsp;</td>
+								<td width="40%"><html:select styleId="juzgados"
+										styleClass="boxCombo" style="width:445px;"
+										property="idJuzgado">
+										<bean:define id="juzgados" name="MaestroDesignasForm"
+											property="juzgados" type="java.util.Collection" />
+										<html:optionsCollection name="juzgados" value="idJuzgado"
+											label="nombre" />
+									</html:select></td>
+							</tr>
+
+							<tr>
 						<td width="20%"  class="labelText">
 							<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo" />
 						</td>
@@ -354,11 +375,11 @@
 					<logic:notEmpty name="MaestroDesignasForm" property="ejgs">
 					<%
 						MaestroDesignasForm form = (MaestroDesignasForm) request.getAttribute("MaestroDesignasForm");
-						int i = 0;
-						List<ScsEJGBean> listadoEjgs = null;
-						if(form != null){
-							listadoEjgs = form.getEjgs();
-						}
+											int i = 0;
+											List<ScsEJGBean> listadoEjgs = null;
+											if (form != null) {
+												listadoEjgs = form.getEjgs();
+											}
 					%>
 						<logic:iterate name="MaestroDesignasForm" property="ejgs" id="ejg2" indexId="index2">
 							<div id="panel_${index2}" style="display: inline;overflow-y: auto;overflow-x: hidden;">
@@ -446,7 +467,9 @@
 								<tr><td colspan="6">   &nbsp;</td></tr>
 								
 								</table>
-							<% if(form != null){%>	
+							<%
+								if (form != null) {
+							%>	
 								<table class="tablaCampos" align="center" cellpadding="0"
 										cellpadding="0" style="width:100%;" border="0">		
 								<tr>
@@ -456,22 +479,19 @@
 										<td class="labelTextValue"  style="width:25%;">
 										<c:choose>
 											<c:when test="${ejg2.idTipoRatificacionEJG != null && ejg2.idTipoRatificacionEJG !=''}">
-													<% 
-															ArrayList selTipoRatificacion = new ArrayList();
-															ScsEJGBean ejg = (ScsEJGBean) listadoEjgs.get(i++);
-															selTipoRatificacion.add (ejg.getIdTipoRatificacionEJG() + "," + usrbean.getLocation());
-														
+													<%
+														ArrayList selTipoRatificacion = new ArrayList();
+																							ScsEJGBean ejg = (ScsEJGBean) listadoEjgs.get(i++);
+																							selTipoRatificacion.add(ejg.getIdTipoRatificacionEJG() + "," + usrbean.getLocation());
 													%>	
 												
 												<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucionTodos" ancho="200" clase="boxConsulta" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=selTipoRatificacion%>" readonly="true"/>			
 											</c:when>
 											<c:otherwise>
 												-
-												<% 
-													
-														i++;
-													
-												%>
+												<%
+												i++;
+											%>
 											</c:otherwise>
 										</c:choose>
 										</td>
@@ -492,7 +512,9 @@
 									</tr>
 									<tr><td colspan="6">   &nbsp;</td></tr>
 								</table>
-								<% }%>	
+								<%
+									}
+								%>	
 								<fieldset>
 									<legend>
 										<siga:Idioma key="pestana.justiciagratuitadesigna.defensajuridica"/>

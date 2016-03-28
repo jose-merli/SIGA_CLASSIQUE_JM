@@ -44,6 +44,7 @@
 	String anulacion = "", observaciones = "", fechaJustificacion ="", observacionesJustificacion ="", modo="";
 	String idPersona=null;
 	String numeroProcedimiento="";
+	String anioProcedimiento="";
 	String nig="";
 	String maxLenghtProc = "20";
 	
@@ -82,7 +83,7 @@
 	}
 
 	// Estilo de los combos:
-	if (modoAnterior!=null && modoAnterior.equalsIgnoreCase("VER")) {
+	if (modoAnterior!=null && modoAnterior.equalsIgnoreCase("VER")||(modoJustificacion!=null && modoJustificacion.equals("editarJustificacionFicha"))) {
 		estiloCombo = "boxConsulta";
 		readOnlyCombo = "true";
 	} else {
@@ -206,6 +207,8 @@
 	
 			actuacionValidada = (String) hashActuacion.get("ACTUACIONVALIDADA");
 			numeroProcedimiento = (String) hashActuacion.get("NUMEROPROCEDIMIENTO");
+			anioProcedimiento = (String) hashActuacion.get("ANIOPROCEDIMIENTO");
+			
 			nig = (String) hashActuacion.get("NIG");
 		}
 		
@@ -239,6 +242,7 @@
 	    	nombreProcedimiento = (String)hashDesigna.get("NOMBREPROCEDIMIENTO");
         }
 	    numeroProcedimiento = (String) hashDesigna.get("NUMPROCEDIMIENTO");
+	    anioProcedimiento = (String) hashDesigna.get("ANIOPROCEDIMIENTO");
 	    nig = (String) hashDesigna.get("NIG");
 	    if(validarActuacion!=null)
 	    	actuacionValidada = validarActuacion!=null&&validarActuacion.equals("S")?"0":"1";
@@ -289,15 +293,10 @@
 	
 	String asterisco = "&nbsp;(*)";
 	
-	boolean obligatorioNumeroProcedimiento = false;
-	boolean obligatorioProcedimiento = false;
-	boolean validaNumeroProcedimiento = false;
+	//si es el colegio de Alcala validaremos el procedimiento y el numero de procedimiento
+	boolean isColegioAlcala = pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA;
 	
-	if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) {
-		obligatorioNumeroProcedimiento = true;
-		obligatorioProcedimiento = true;
-		validaNumeroProcedimiento = true;
-	}
+
 	
 	ArrayList vTipoResolAuto = new ArrayList();
 	if (hashDesigna.containsKey(ScsEJGBean.C_IDTIPORESOLAUTO)&& hashDesigna.get(ScsEJGBean.C_IDTIPORESOLAUTO) != "")
@@ -333,16 +332,35 @@
 	
 	<!-- fin validaciones struct -->
 
-	<script language="JavaScript">
+	<script type="text/javascript" >
 	
-		//Selecciona el valor del combo -->
-		function rellenarCombos() {
-			<% if (modoAnterior!=null && !modoAnterior.equalsIgnoreCase("VER")) { %>
-				document.getElementById("juzgado").onchange();
-			<% } %>
-			return;
-			;
-		}
+	
+	function cambiarAcreditacion() {
+		<%if(!isColegioAlcala){%>
+			acreditacionString = document.getElementById("acreditacion").value
+			acreditacionStrings = acreditacionString.split(',');
+
+			if(acreditacionStrings.length>1 && acreditacionStrings[1]=='1'){
+				jQuery("#labelNumProc").attr('style','display: block');
+				jQuery("#labelNig").attr('style','display: block');
+			 }else{
+				 jQuery("#labelNumProc").attr('style','display: none');
+				 jQuery("#labelNig").attr('style','display: none');
+			 } 
+		<%}else{%>
+			acreditacionString = document.getElementById("acreditacion").value
+			acreditacionStrings = acreditacionString.split(',');
+	
+			if(acreditacionStrings.length>1 && acreditacionStrings[1]=='1'){
+				jQuery("#labelNig").attr('style','display: block');
+			 }else{
+				 jQuery("#labelNig").attr('style','display: none');
+			 }
+		<%}%>
+		
+	}	
+		
+		
 		
 		var bJuzgado=false;
 		// Funcion que obtiene el juzgado buscando por codigo externo	
@@ -419,6 +437,9 @@
 			}
 		}		
 		
+		
+		
+		
 		jQuery(function($){
 			var defaultValue = jQuery("#nig").val();
 			if(defaultValue.length > 19){
@@ -467,7 +488,7 @@
 	</script>		
 </head>
 
-<body onload="rellenarCombos()">
+<body onload="cambiarAcreditacion();">
 
 
 <!-- TITULO -->
@@ -496,8 +517,12 @@
 
 	<html:hidden property = "idPersona" value="<%=idPersona%>" />
 	<html:hidden property = "idTurno" value= "<%=idTurno%>"/>
+	<html:hidden property = "idInstitucion" value="<%=usr.getLocation()%>"/>
 	<html:hidden property = "anio" value="<%=anio%>" />	
 	<html:hidden property = "numero" value="<%=numero%>" />
+	<html:hidden property = "nactuacion" value="<%=nactuacion%>" />
+
+	
 		
 		
 <div id="mainDiv" style="overflow-y:auto;overflow-x:hidden;padding-left:5px; position: relative;">
@@ -571,7 +596,9 @@
 						</td>
 						
 						<td>
-						<% if (modoAnterior==null || modoAnterior.equalsIgnoreCase("ver")) { %> <siga:Fecha nombreCampo="fechaActuacion"  disabled="true" valorInicial="<%=fechaActuacion%>" ></siga:Fecha> <%}else{%>
+						<% if (modoAnterior==null || modoAnterior.equalsIgnoreCase("ver")) { %> 
+							<siga:Fecha nombreCampo="fechaActuacion"  disabled="true" valorInicial="<%=fechaActuacion%>" ></siga:Fecha> 
+						<%}else{%>
 							<siga:Fecha nombreCampo="fechaActuacion"   valorInicial="<%=fechaActuacion%>" ></siga:Fecha> 
 						<%} %>							
 							
@@ -587,7 +614,8 @@
 						<td class="labelText" nowrap>
 							<siga:Idioma key="gratuita.modalActuacionesDesigna.literal.anulacion"/>
 							&nbsp;
-							<% if (!modoAnterior.equalsIgnoreCase("VER")) { 
+							
+							<% if (!modoAnterior.equalsIgnoreCase("VER") && (modoJustificacion==null || !modoJustificacion.equals("editarJustificacionFicha"))) { 
 									if(!fechaAnulacion.equals("")) {
 							%>
 										<INPUT NAME="anulacion" TYPE=CHECKBOX <%if((anulacion!=null)&&(anulacion).equalsIgnoreCase("1")){%>checked<%}%> disabled>
@@ -604,13 +632,44 @@
 					
 					<tr>			
 						<td class="labelText" nowrap>
-							<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento" /><%=(obligatorioNumeroProcedimiento?asterisco:"")%>
+							<table>
+							<tr>
+							<td><siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento" /></td><%=(isColegioAlcala?"<td>"+asterisco+"</td>":"<td id='labelNumProc' style='display:block'>(*)</td>")%>	
+							</tr> 
+							</table>
+							
 						</td>
 						<td>
 							<% if (!modoAnterior.equalsIgnoreCase("VER")) { %> 
-								<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100px" maxlength="<%=maxLenghtProc%>" styleClass="box" value="<%=numeroProcedimiento%>"/> 
+							
+								<c:choose>
+									<c:when	test="${EJIS_ACTIVO=='1'}">
+									
+										<html:text
+											name="ActuacionesDesignasForm" property="numeroProcedimiento"
+											size="7" maxlength="7" styleClass="box" value="<%=numeroProcedimiento%>" />/<html:text
+											name="ActuacionesDesignasForm" property="anioProcedimiento" 
+											size="4" maxlength="4" styleClass="box" value="<%=anioProcedimiento%>" />
+	
+									</c:when>
+									<c:otherwise>
+										<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100px" maxlength="<%=maxLenghtProc%>" styleClass="box" value="<%=numeroProcedimiento%>"/>
+									</c:otherwise>
+								</c:choose>
+							
+							
+								 
 							<% } else { %> 
-								<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100px" maxlength="<%=maxLenghtProc%>" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true"/> 
+								<c:choose>
+									<c:when	test="${EJIS_ACTIVO=='1'}">
+											<c:out value="<%=numeroProcedimiento%>"/>/<c:out value="<%=anioProcedimiento%>"/>
+									</c:when>
+									<c:otherwise>
+									<html:text name="ActuacionesDesignasForm" property="numeroProcedimiento" style="width:100px" maxlength="<%=maxLenghtProc%>" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true"/>
+									</c:otherwise>
+								</c:choose>
+								
+								 
 							<% } %>
 						</td>
 									
@@ -618,7 +677,7 @@
 						 	<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>&nbsp;(*)
 					  	</td>
 					  	<td colspan="2">	 
-							<% if (esLetrado||modoAnterior.equalsIgnoreCase("VER")){%>							
+							<% if (esLetrado||modoAnterior.equalsIgnoreCase("VER")||(modoJustificacion!=null && modoJustificacion.equals("editarJustificacionFicha"))){%>							
 									<siga:ComboBD nombre="juzgado" ancho="500" tipo="<%=comboJuzgados%>"estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento"/>
 							
 							<%}else{%>
@@ -630,13 +689,17 @@
 					
 					<tr>
 						<td class="labelText" nowrap>
-							<siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/>
+							<table>
+								<tr>
+								<td><siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/></td><td id='labelNig' style='display:block'>(*)</td>
+								</tr>
+							</table>
 						</td>				
 						<td > 
 							<% if (!modoAnterior.equalsIgnoreCase("VER")) { %> 
-								<html:text name="ActuacionesDesignasForm" property="nig" styleId="nig" value="<%=nig%>" styleClass="<%=estiloCombo%>" style="size:19;width:200px"/>
+								<html:text name="ActuacionesDesignasForm" property="nig" styleId="nig" value="<%=nig%>" styleClass="box" style="size:19;width:200px"/>
 							<%}else{%>
-								<html:text name="ActuacionesDesignasForm" property="nig" styleId="nig" value="<%=nig%>" styleClass="boxConsulta" style="size:19;width:200px"/>
+								<html:text name="ActuacionesDesignasForm" property="nig" styleId="nig" value="<%=nig%>" styleClass="boxConsulta" readonly="true" style="size:19;width:200px"/>
 							<%}%>						
 						</td>
 									
@@ -653,7 +716,7 @@
 							<%if (modoJustificacion!=null && modoJustificacion.equals("nuevoJustificacion")){%>
 			                	<siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboJuzgadosJustificacion%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
 								
-							<%} else if ((esLetrado||modoAnterior.equalsIgnoreCase("VER"))){%>
+							<%} else if ((esLetrado||modoAnterior.equalsIgnoreCase("VER"))||(modoJustificacion!=null && modoJustificacion.equals("editarJustificacionFicha"))){%>
 								<html:text name="ActuacionesDesignasForm" style="width:600px" property="procedimiento1" styleClass="boxConsulta" readonly="true" value="<%=nombreProcedimiento%>"/>
 								
 							<%} else { %>				
@@ -669,14 +732,14 @@
 						</td>			
 						<td  colspan="4">
 							<%if (modoJustificacion!=null && modoJustificacion.equals("nuevoJustificacion")){%>
-								<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>" />
-							<%}else if (modoAnterior.equalsIgnoreCase("VER")) { %>
+								<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>" accion="parent.cambiarAcreditacion();"/>
+							<%}else if (modoAnterior.equalsIgnoreCase("VER")||(modoJustificacion!=null && modoJustificacion.equals("editarJustificacionFicha"))) { %>
 								<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="true"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>" />	
 							<% } else { 
 								if (esLetrado){%>
-									<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>" />
+									<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>"  accion="parent.cambiarAcreditacion();" />
 								<%} else {%>	
-									<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>" />
+									<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>"  accion="parent.cambiarAcreditacion();"/>
 								<%}
 							}%>
 						</td>
@@ -687,28 +750,39 @@
 							<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.prision"/>
 						</td>
 						<td colspan="4">
-							<siga:ComboBD  ancho="300" nombre="prision" tipo="comboPrisiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=param%>" elementoSel="<%=prisionSel%>" />
-						 
-							<font class="labelTextValor" style="vertical-align: middle;">
-								<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.prisionCompletar"/>
-							</font>
+							<%if (modoJustificacion!=null && modoJustificacion.equals("editarJustificacionFicha")){%>
+								<siga:ComboBD  ancho="300" nombre="prision" tipo="comboPrisiones"  estilo="true" clase="boxConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=param%>" elementoSel="<%=prisionSel%>" />
+							<% } else { %>
+								<siga:ComboBD  ancho="300" nombre="prision" tipo="comboPrisiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=param%>" elementoSel="<%=prisionSel%>" />
+							 
+								<font class="labelTextValor" style="vertical-align: middle;">
+									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.prisionCompletar"/>
+								</font>
+							<% }%>
+							
 						</td>
 					</tr>
 					
 					<tr>
 						<td class="labelText" nowrap>
-							<siga:Idioma key="gratuita.actuacionesDesigna.literal.pretensiones"/><%=(obligatorioProcedimiento?asterisco:"")%>
+							<siga:Idioma key="gratuita.actuacionesDesigna.literal.pretensiones"/><%=(isColegioAlcala?asterisco:"")%>
 						</td>
 						<td colspan="4">
-							<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />										 
-							<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) { %>
-								<font class="labelText">
-									<siga:Idioma key="gratuita.altaGuardia.literal.motivoCambio"/>
-								</font>
-								<siga:ComboBD  ancho="300" nombre="idMotivoCambio" tipo="cmbActuacionDesignaMotivoCambio"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramMotivoCambio%>" elementoSel="<%=motCambioSel%>" />
-							<%} else {%>
-								<html:hidden property = "idMotivoCambio" value="<%=idMotivoCambio%>"/>
-							<%}%>
+						<%if (modoJustificacion!=null && modoJustificacion.equals("editarJustificacionFicha")){%>
+								<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="boxConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />
+							<% } else { %>
+								<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />										 
+								<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) { %>
+									<font class="labelText">
+										<siga:Idioma key="gratuita.altaGuardia.literal.motivoCambio"/>
+									</font>
+									<siga:ComboBD  ancho="300" nombre="idMotivoCambio" tipo="cmbActuacionDesignaMotivoCambio"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramMotivoCambio%>" elementoSel="<%=motCambioSel%>" />
+								<%} else {%>
+									<html:hidden property = "idMotivoCambio" value="<%=idMotivoCambio%>"/>
+								<%}%>
+								
+							<% }%>
+							
 						</td>					
 					</tr>
 								
@@ -717,7 +791,7 @@
 							<siga:Idioma key="gratuita.altaGuardia.literal.observaciones"/>
 						</td>
 						<td  colspan="4">
-							<% if (!modoAnterior.equalsIgnoreCase("VER")) { %>
+							<% if (!modoAnterior.equalsIgnoreCase("VER") && (modoJustificacion==null || !modoJustificacion.equals("editarJustificacionFicha"))) { %>
 								<textarea class="box" name="observaciones"
 									onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" style="overflow:auto;width:600px;height:45px" 
 								><%=observaciones%></textarea>
@@ -735,7 +809,7 @@
 							<siga:Idioma key="gratuita.actuacionesDesigna.literal.talon"/>					     
 						</td>
 						<td  colspan="4">	
-							 <%if(!modoAnterior.equalsIgnoreCase("VER")){%>
+							 <%if(!modoAnterior.equalsIgnoreCase("VER")&& (modoJustificacion==null || !modoJustificacion.equals("editarJustificacionFicha"))){%>
 								<html:text name="ActuacionesDesignasForm" property="talonario" size="20" maxlength="20" styleClass="box" />
 								&nbsp;/&nbsp;
 					     		<html:text name="ActuacionesDesignasForm" property="talon" size="20"  maxlength="20" styleClass="box" />
@@ -756,7 +830,7 @@
 							<siga:Idioma key="gratuita.inicio_PestanaCalendarioGuardias.literal.fecha"/>
 						</td>
 						<td>	
-						<% if (modoAnterior.equalsIgnoreCase("ver") || actuacionValidada.equals("1") || deDonde.equals("/JGR_PestanaDesignas")) { %>
+						<% if (modoAnterior.equalsIgnoreCase("ver") || actuacionValidada.equals("1") || deDonde.equals("/JGR_PestanaDesignas")|| (modoJustificacion==null || modoJustificacion.equals("editarJustificacionFicha"))) { %>
 						<script type="text/javascript">
 						jQuery(function(){
 							jQuery("#fechaJustificacion").removeClass("box");
@@ -772,7 +846,7 @@
 						</td>						
 
 						<td>
-							<%if(!modoAnterior.equals("VER")&&!usr.isLetrado()&&!deDonde.equals("/JGR_PestanaDesignas")&&(facturada != null) && (!facturada.equals("1"))) {%>
+							<%if(!modoAnterior.equals("VER")&&!usr.isLetrado()&&!deDonde.equals("/JGR_PestanaDesignas")&&(facturada != null) && (!facturada.equals("1"))&& (modoJustificacion==null || !modoJustificacion.equals("editarJustificacionFicha"))) {%>
 								<input type="button" id="idButton" alt="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>" id="bValidarActuacion" onclick="validarJustificacion();" class="button" value="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>">
 							<%}%>
 						</td>
@@ -790,7 +864,7 @@
 							<siga:Idioma key="gratuita.altaGuardia.literal.observaciones"/>
 						</td>
 						<td colspan="3">
-							<% if (!modoAnterior.equalsIgnoreCase("VER") && !usr.isLetrado()) { %>
+							<% if (!modoAnterior.equalsIgnoreCase("VER") && !usr.isLetrado()&& (modoJustificacion==null || !modoJustificacion.equals("editarJustificacionFicha"))) { %>
 								<textarea class="box" name="observacionesJustificacion"
 									onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" style="overflow:auto;width:600px;height:45px"
 								><%=observacionesJustificacion%></textarea>
@@ -992,88 +1066,116 @@
 		function accionGuardarCerrar() 
 		{
 			sub();	
-			if (validateActuacionesDesignasForm(document.ActuacionesDesignasForm)) {
 			
-				// document.forms[0].actuacionValidada.value = document.forms[0].checkActuacionValidacion.checked;
-				fecha = document.getElementById("fechaJustificacion");
-				/* if(!((fecha.value == null)||(fecha.value == ""))){
-					document.forms[0].actuacionValidada.value="1";
-					document.forms[0].estadoActuacion.value='<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
-				}
-				*/
-				
-
-				if (<%=obligatorioNumeroProcedimiento%> && document.forms[0].numeroProcedimiento.value=='') {
-					alert('<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento"/> <siga:Idioma key="messages.campoObligatorio.error" />');
-					fin();
-					return false;
-				}		
-				if(<%=validaNumeroProcedimiento%> && !validaProcedimiento(document.forms[0].numeroProcedimiento.value)) {
-					alert('<siga:Idioma key='gratuita.procedimientos.numero.formato'/>');
-					fin();
-					return false;
-				}
+			
+			<%if(modoJustificacion!=null && modoJustificacion.equalsIgnoreCase("editarJustificacionFicha")){%>
+			
+				error = '';
+				if( document.forms[0].fechaActuacion.value==''){
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesAsistencia.literal.fechaActuacion'/>"+ '\n';
 					
-				if (document.forms[0].juzgado.value=='') {
-					alert('<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/> <siga:Idioma key="messages.campoObligatorio.error" />');
-					fin();
-					return false;	
+				}	
+				if ((<%=isColegioAlcala%> ||  jQuery("#labelNumProc").css('display')=='block') && document.forms[0].numeroProcedimiento.value=='') {
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento'/>"+ '\n';
 				}
-				if (document.forms[0].procedimiento.value=='') {
-					alert('<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo"/> <siga:Idioma key="messages.campoObligatorio.error" />');
-					fin();
-					return false;	
+				if((<%=isColegioAlcala%> || jQuery("#labelNumProc").css('display')=='block') && document.forms[0].numeroProcedimiento.value!='' &&  document.forms[0].anioProcedimiento &&  document.forms[0].anioProcedimiento.value==""){
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento'/>"+ '\n';
+					
 				}
-				if (document.forms[0].acreditacion.value=='') {
-					alert('<siga:Idioma key="gratuita.procedimientos.literal.acreditacion"/> <siga:Idioma key="messages.campoObligatorio.error" />');
-					fin();
-					return false;
-				}			
-
-				if (<%=obligatorioProcedimiento%> && document.forms[0].pretension.value=='') {
-					alert('<siga:Idioma key="gratuita.actuacionesDesigna.literal.pretensiones"/> <siga:Idioma key="messages.campoObligatorio.error" />');
-					fin();
-					return false;
+						
+				if(<%=isColegioAlcala%> && !validaProcedimiento(document.forms[0].numeroProcedimiento.value)) {
+					error += "<siga:Idioma key='gratuita.procedimientos.numero.formato'/>"+ '\n';
 				}
-				
-				<%if (pcajgActivo == CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) {%>					
-					if (document.forms[0].idMotivoCambio.value=='') {
-																		
-						if ('<%=(idJuzgadoDesigna + "," + juzgadoInstitucionDesigna)%>' != document.forms[0].juzgado.value) {							
-							alert('<siga:Idioma key="messages.gratuita.actuacionesDesigna.distintoJuzgado"/>');
-							fin();
-							return false;
-						}
-						if ('<%=(idPretensionDesigna!=null?idPretensionDesigna:"")%>' != document.forms[0].pretension.value) {							
-							alert('<siga:Idioma key="messages.gratuita.actuacionesDesigna.distintoProcedimiento"/>');
-							fin();
-							return false;
-						}
-					}
-				<%}%>
 				var nigAux = document.getElementById("nig").value;
 				nigAux = formateaNig(nigAux);
+				
+				if (jQuery("#labelNig").css('display')=='block' && nigAux=='') {
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.mantAsistencias.literal.NIG'/>"+ '\n';
+				}
 				if(!validarNig(nigAux)){	
-					alert("<siga:Idioma key='gratuita.nig.formato'/>");
+					error += "<siga:Idioma key='gratuita.nig.formato'/>"+ '\n';
+				}
+				document.forms[0].nig.value = nigAux;
+				if (error!=''){
+					fin();
+					alert(error);
+					return false;
+				}
+				
+			<%}else{%>
+				error = '';
+				if (validateActuacionesDesignasForm(document.ActuacionesDesignasForm)) {
+					
+					fecha = document.getElementById("fechaJustificacion");
+					if ((<%=isColegioAlcala%> || jQuery("#labelNumProc").css('display')=='block' ) && document.forms[0].numeroProcedimiento.value=='') {
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento'/>"+ '\n';
+					}
+					if((<%=isColegioAlcala%> || jQuery("#labelNumProc").css('display')=='block' )&& document.forms[0].numeroProcedimiento.value!='' && document.forms[0].anioProcedimiento &&  document.forms[0].anioProcedimiento.value==""){
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento'/>"+ '\n';
+					}
+					
+					if(<%=isColegioAlcala%>  && !validaProcedimiento(document.forms[0].numeroProcedimiento.value)) {
+						error += "<siga:Idioma key='gratuita.procedimientos.numero.formato'/>"+ '\n';
+					}
+					if (document.forms[0].juzgado.value=='') {
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.mantenimientoTablasMaestra.literal.juzgado'/>"+ '\n';
+					}
+					if (document.forms[0].procedimiento.value=='') {
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.modulo'/>"+ '\n';
+							
+					}
+					if (document.forms[0].acreditacion.value=='') {
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.procedimientos.literal.acreditacion'/>"+ '\n';
+					}	
+	
+					if (<%=isColegioAlcala%> && document.forms[0].pretension.value=='') {
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.pretensiones'/>"+ '\n';
+					}
+					<%if (isColegioAlcala) {%>					
+						if (document.forms[0].idMotivoCambio.value=='') {
+																			
+							if ('<%=(idJuzgadoDesigna + "," + juzgadoInstitucionDesigna)%>' != document.forms[0].juzgado.value) {
+								error += "<siga:Idioma key='messages.gratuita.actuacionesDesigna.distintoJuzgado' />"+ '\n';
+							}
+							if ('<%=(idPretensionDesigna!=null?idPretensionDesigna:"")%>' != document.forms[0].pretension.value) {
+								error += "<siga:Idioma key='messages.gratuita.actuacionesDesigna.distintoProcedimiento' />"+ '\n';
+							}
+						}
+					<%}%>
+					var nigAux = document.getElementById("nig").value;
+					nigAux = formateaNig(nigAux);
+					if (jQuery("#labelNig").css('display')=='block' && nigAux=='') {
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.mantAsistencias.literal.NIG'/>"+ '\n';
+					}
+					
+					if(!validarNig(nigAux)){	
+						error += "<siga:Idioma key='gratuita.nig.formato'/>"+ '\n';
+							
+					}
+					document.forms[0].nig.value = nigAux;
+					if (error!=''){
+						fin();
+						alert(error);
+						return false;
+					}
+				}else{
 					fin();
 					return false;
-						
-				}
-				document.forms[0].nig.value = nigAux; 
-									
-				<% if (modoAnterior.equalsIgnoreCase("EDITAR")) { %>
+				
+				}	
+			<%}%>
+			
+			 
+			<% if(modoJustificacion!=null && modoJustificacion.equalsIgnoreCase("editarJustificacionFicha")){  %>
+				document.forms[0].modo.value="modificarJustificacionFicha";
+			<% } else if (modoAnterior.equalsIgnoreCase("EDITAR")) {   %>
 				document.forms[0].modo.value="modificar";
-				<% } else { %>
+			<% } else { %>
 				document.forms[0].modo.value="insertar";
-				<% } %>
-				document.forms[0].submit();
+			<% } %>
+			document.forms[0].submit();
 
-			}else{
 			
-				fin();
-				return false;
-			
-			}	
 		}		
 
 		//Asociada al boton Cerrar -->
@@ -1114,6 +1216,10 @@
 			var objRegExp  = /^([0-9]+\/[0-9]{4})?$/;
 			return objRegExp.test(strValue);
 		}
+		<% if (modoAnterior!=null && !modoAnterior.equalsIgnoreCase("VER")) { %>
+			if(document.getElementById("juzgado") && document.getElementById("juzgado").onchange)
+				document.getElementById("juzgado").onchange();
+		<% } %>
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 
