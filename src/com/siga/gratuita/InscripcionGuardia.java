@@ -1018,8 +1018,6 @@ public class InscripcionGuardia {
 			// Saltos y Compensaciones
 			if(bajaSyC!=null && bajaSyC.equalsIgnoreCase("G")){
 				ScsSaltosCompensacionesAdm saladm = new ScsSaltosCompensacionesAdm(usr);
-				//ArrayList<ScsSaltosCompensacionesBean> vSaldosyCompensTurno =  (ArrayList<ScsSaltosCompensacionesBean>) admSaltosYCompensacions.getSaltosCompensaciones(this.bean.getIdInstitucion(), 
-				//this.bean.getIdTurno(),this.bean.getIdPersona(), null);
 				if(idGuardia!=null)
 					saladm.updateSaltosCompensacionesBajaTurno(idInstitucion, idTurno, idPersona, idGuardia, bajaSyC);
 			}

@@ -821,8 +821,6 @@ public class InscripcionTurno {
 					
 				//saltos y compensaciones
 				ScsSaltosCompensacionesAdm saladm = new ScsSaltosCompensacionesAdm(usr);
-				//ArrayList<ScsSaltosCompensacionesBean> vSaldosyCompensTurno =  (ArrayList<ScsSaltosCompensacionesBean>) admSaltosYCompensacions.getSaltosCompensaciones(this.bean.getIdInstitucion(), 
-				//this.bean.getIdTurno(),this.bean.getIdPersona(), null);
 				saladm.updateSaltosCompensacionesBajaTurno(
 					this.bean.getIdInstitucion(), 
 					this.bean.getIdTurno(),
@@ -1093,8 +1091,6 @@ public class InscripcionTurno {
 				
 				//saltos y compensaciones
 				ScsSaltosCompensacionesAdm saladm = new ScsSaltosCompensacionesAdm(usr);
-				//ArrayList<ScsSaltosCompensacionesBean> vSaldosyCompensTurno =  (ArrayList<ScsSaltosCompensacionesBean>) admSaltosYCompensacions.getSaltosCompensaciones(this.bean.getIdInstitucion(), 
-				//this.bean.getIdTurno(),this.bean.getIdPersona(), null);
 				saladm.updateSaltosCompensacionesBajaTurno(this.bean.getIdInstitucion(), this.bean.getIdTurno(),this.bean.getIdPersona(), null, bajaSyC);
 			}
 			

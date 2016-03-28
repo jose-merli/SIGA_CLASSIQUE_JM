@@ -481,7 +481,6 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 					designaActual.put(ScsDesignasLetradoBean.C_FECHARENUNCIASOLICITA, fRenuncia);
 					designaActual.put(ScsDesignasLetradoBean.C_IDTIPOMOTIVO, motivo);
 					if (cambioMismoDia != null && cambioMismoDia.equalsIgnoreCase("1")) {
-						ScsSaltosCompensacionesAdm saltosCompenAdm = new ScsSaltosCompensacionesAdm(usr);
 						Hashtable<String, Object> saltosCompenHash = new Hashtable<String, Object>();
 						String fecha = UtilidadesBDAdm.getFechaBD("");
 						String motivos = UtilidadesString.getMensajeIdioma(usr,
@@ -494,11 +493,11 @@ public class CambiosLetradosDesignasAction extends MasterAction {
 						saltosCompenHash.put(ScsSaltosCompensacionesBean.C_IDPERSONA, idPersonaSaliente);
 						saltosCompenHash.put(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION, ClsConstants.SALTOS);
 						saltosCompenHash.put(ScsSaltosCompensacionesBean.C_IDSALTOSTURNO,
-								saltosCompenAdm.getNuevoIdSaltosTurno(idInstitucion, idTurno));
+								saltosCompensacionesAdm.getNuevoIdSaltosTurno(idInstitucion, idTurno));
 						saltosCompenHash.put(ScsSaltosCompensacionesBean.C_FECHA, fCambio);
 						saltosCompenHash.put(ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO, fCambio);
-						if (!saltosCompenAdm.insert(saltosCompenHash))
-							throw new ClsExceptions("Error insertando salto: " + saltosCompenAdm.getError());
+						if (!saltosCompensacionesAdm.insert(saltosCompenHash))
+							throw new ClsExceptions("Error insertando salto: " + saltosCompensacionesAdm.getError());
 						if (!designaLetradoAdm.delete(designaActual))
 							throw new ClsExceptions(designaLetradoAdm.getError());
 					

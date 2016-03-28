@@ -845,95 +845,33 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 					}
 				}
 			}
-/**/	 if (miHash.get(ScsSOJBean.C_ANIO)==null){//Sólo en el caso de un EJG dado de alta desde un SOJ
-			// 5. Si se inserta una idPersonaJG (en el caso de crearse desde una Asistencia o Designa) se inserta también en UnidadFamiliar
-			if ((miHash.containsKey("IDPERSONAJG")) && (!((String)miHash.get("IDPERSONAJG")).equals(""))){
-				ScsUnidadFamiliarEJGAdm admUnidad =  new ScsUnidadFamiliarEJGAdm(this.getUserBean(request));
-				miHash.put("SOLICITANTE","1");
-				miHash.put("ENCALIDADDE","SOLICITANTE");
-				miHash.put("IDPERSONA",miHash.get("IDPERSONAJG"));
-				
-				admUnidad.insert(miHash);
+			
+			if (miHash.get(ScsSOJBean.C_ANIO)==null){//Sólo en el caso de un EJG dado de alta desde un SOJ
+				// 5. Si se inserta una idPersonaJG (en el caso de crearse desde una Asistencia o Designa) se inserta también en UnidadFamiliar
+				if ((miHash.containsKey("IDPERSONAJG")) && (!((String)miHash.get("IDPERSONAJG")).equals(""))){
+					ScsUnidadFamiliarEJGAdm admUnidad =  new ScsUnidadFamiliarEJGAdm(this.getUserBean(request));
+					miHash.put("SOLICITANTE","1");
+					miHash.put("ENCALIDADDE","SOLICITANTE");
+					miHash.put("IDPERSONA",miHash.get("IDPERSONAJG"));
+					
+					admUnidad.insert(miHash);
+				}
 			}
-		 }	
+			
 			// 7. Saltos y compensaciones
-			if (miHash.get(ScsEJGBean.C_TIPOLETRADO).toString().equalsIgnoreCase("P")) {
-			
-				String idsaltosturno = "";
-				Vector registros = new Vector();	
-	            //Consulta para ver si tiene compensaciones           
-	            String where = " WHERE " + ScsSaltosCompensacionesBean.C_IDINSTITUCION + " = " + miHash.get(ScsEJGBean.C_IDINSTITUCION) +
-							   " AND " + ScsSaltosCompensacionesBean.C_IDTURNO + " = " + miHash.get(ScsEJGBean.C_GUARDIATURNO_IDTURNO) +
-							   " AND " + ScsSaltosCompensacionesBean.C_IDGUARDIA + " = " + miHash.get(ScsEJGBean.C_GUARDIATURNO_IDGUARDIA) +
-							   " AND " + ScsSaltosCompensacionesBean.C_IDPERSONA + " = " + miHash.get(ScsEJGBean.C_IDPERSONA) +
-							   " AND " + ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION + " = 'C'" +
-							   " AND " + ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO + " IS NULL ";
-	            
-	            registros.clear();
-				ScsSaltosCompensacionesAdm admSaltosCompensaciones = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
-	            registros = admSaltosCompensaciones.selectForUpdate(where);                                                                                                                  //Si hay compensacion
-	            if (registros.size() > 0) {
-	                idsaltosturno = (((ScsSaltosCompensacionesBean)registros.get(0)).getIdSaltosTurno()).toString();	                
-	                //Anoto la fecha de cumplimiento
-	                hashTemporal.clear();
-	                hashTemporal.put(ScsSaltosCompensacionesBean.C_IDINSTITUCION,miHash.get(ScsEJGBean.C_IDINSTITUCION));
-	                hashTemporal.put(ScsSaltosCompensacionesBean.C_IDSALTOSTURNO,idsaltosturno);
-	                hashTemporal.put(ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO,miHash.get(ScsEJGBean.C_FECHAAPERTURA));
-	                String claves[] = {ScsSaltosCompensacionesBean.C_IDINSTITUCION, ScsSaltosCompensacionesBean.C_IDSALTOSTURNO};
-	                String campos[] = {ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO};
-	                //Actualizo la fecha de cumplimiento                
-	                admSaltosCompensaciones.updateDirect(hashTemporal,claves,campos);
-	            }
-			}
-			
-			
-			///////////////////////////////////////////////////////////////////////////////////////////
-			// RGG 21-03-2006 : Cambios debidos a la nueva asignacion de colegiados desde Busqueda SJCS
-			// ----------------------------------------------------------------------------------------
-			
-			//-----------------------------------------------------
-			// obtencion de valores a utilizar (MODIFICAR SEGUN ACTION)
-			String idInstitucionSJCS=usr.getLocation();
-			String idTurnoSJCS=miForm.getGuardiaTurnoIdTurno();
-			String idGuardiaSJCS=miForm.getGuardiaTurnoIdGuardia();
-			String anioSJCS=miForm.getAnio();
-			String numeroSJCS=miForm.getNumero();
-			String idPersonaSJCS=miForm.getIdPersona();
-			String origenSJCS = "general.boton.crearEJG"; 
-			//-----------------------------------------------------
-			
-			
-			// Obtención parametros de la busqueda SJCS (FIJOS, NO TOCAR)
-			String flagSalto = request.getParameter("flagSalto");
-			String flagCompensacion = request.getParameter("flagCompensacion");
-			String checkSalto = request.getParameter("checkSalto");
-			//String checkCompensacion = request.getParameter("checkCompensacion");
-			String motivoSaltoSJCS = UtilidadesString.getMensajeIdioma(usr,"gratuita.literal.insertarSaltoPor") + " " +
-			UtilidadesString.getMensajeIdioma(usr,origenSJCS);
-			//String motivoCompensacionSJCS = UtilidadesString.getMensajeIdioma(usr,"gratuita.literal.insertarCompensacionPor") + " " +
-			//UtilidadesString.getMensajeIdioma(usr,origenSJCS);
-			
-			// Aplicar cambios (COMENTAR LO QUE NO PROCEDA) Revisar que no se hace algo ya en el action. 
-			 
-			// Primero: Actualiza si ha sido automático o manual (Designaciones)0
-			//admFiltros.actualizaManualDesigna(idInstitucionSJCS,idTurnoSJCS,idPersonaSJCS,anioSJCS, numeroSJCS, flagSalto,flagCompensacion);
-			// Segundo: Tratamiento de último (Designaciones)
-			//admFiltros.tratamientoUltimo(idInstitucionSJCS,idTurnoSJCS,idPersonaSJCS,flagSalto,flagCompensacion);
-			// Tercero: Generación de salto (Designaciones y asistencias)
 			ScsSaltosCompensacionesAdm saltosCompAdm = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
-			if (checkSalto != null&&(checkSalto.equals("on") || checkSalto.equals("1")))
-			// Tercero: Generación de salto (Designaciones y asistencias)
-				saltosCompAdm.crearSaltoCompensacion(idInstitucionSJCS,idTurnoSJCS,idGuardiaSJCS,idPersonaSJCS, motivoSaltoSJCS,ClsConstants.SALTOS);
-			// Cuarto: Generación de compensación (Designaciones NO ALTAS)
-			//admFiltros.crearCompensacion(idInstitucionSJCS,idTurnoSJCS,idGuardiaSJCS,idPersonaSJCS,checkCompensacion,motivoCompensacionSJCS);
-			///////////////////////////////////////////////////////////////////////////////////////////
+			saltosCompAdm.cumplirCompensacionDesdeEjg(miHash);
+
+			String checkSalto = request.getParameter("checkSalto");
+			saltosCompAdm.crearSaltoDesdeEjg(miForm, checkSalto);
 			
 			
+			// FIN
 			tx.commit();
 			
 
-		// Añadimos parametros para las pestanhas
-//			request.getSession().setAttribute("idEJG", miHash);
+			// Añadimos parametros para las pestanhas
+			//request.getSession().setAttribute("idEJG", miHash);
 			session.setAttribute("accion","editar");
 			//request.getSession().setAttribute("modo", "editar");
 			request.setAttribute("NUMERO",miHash.get(ScsEJGBean.C_NUMERO));
@@ -942,28 +880,12 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 			request.setAttribute("ANIO",miHash.get(ScsEJGBean.C_ANIO));
 			
 			
-//			{
-//				miForm.setIdTipoEJG((String)miHash.get(ScsEJGBean.C_IDTIPOEJG));
-//				miForm.setIdInstitucion((String)miHash.get(ScsEJGBean.C_IDINSTITUCION));
-//				miForm.setAnio((String)miHash.get(ScsEJGBean.C_ANIO));
-//				miForm.setNumero((String)miHash.get(ScsEJGBean.C_NUMERO));
-//				return this.editar(mapping, miForm, request, response);
-//			}
-			
-			
-
-//			if ((miForm.getde()!=null)&&(miForm.getDesdeAsistencia().equalsIgnoreCase("si")))
-//				request.getSession().setAttribute("asistencia",(String)nuevaDesigna.get("NUMERO"));
-//			else{
-//				if((miForm.getDesdeEjg()!=null)&&(miForm.getDesdeEjg().equalsIgnoreCase("si")))
-//					request.getSession().setAttribute("ejg",(String)nuevaDesigna.get("NUMERO"));
-//			}
 		} 
 		catch (Exception e) {
 			throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
 		}
 		return exitoModal("messages.inserted.success",request);
-	}
+	} //insertar()
 
 	protected String exitoModal(String mensaje, HttpServletRequest request) 
 	{
