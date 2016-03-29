@@ -145,4 +145,16 @@ Modificado PKG_SIGA_FACTURACION_SJCS
 
 
 -- Ejecutado en Integracion por Adrian el 28/03/2016 14:00
+
+alter table scs_actuacionasistencia add USUCREACION NUMBER(5) DEFAULT 0 NOT NULL;
+alter table scs_actuacionasistencia add FECHACREACION DATE;
+Update scs_actuacionasistencia SET FECHACREACION=sysdate Where USUCREACION=0;
+alter table scs_actuacionasistencia modify FECHACREACION not null ;
+
+
+
+alter table scs_actuaciondesigna add USUCREACION NUMBER(5) NOT NULL DEFAULT (0);
+alter table scs_actuaciondesigna add FECHACREACION DATE;
+Update scs_actuaciondesigna SET FECHACREACION=sysdate Where USUCREACION=0;
+alter table scs_actuaciondesigna modify FECHACREACION not null ;
  
