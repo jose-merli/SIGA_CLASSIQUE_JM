@@ -32,6 +32,7 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGALogging;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.Paginador;
@@ -651,10 +652,14 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		Hashtable<String,Object> hash = new Hashtable<String,Object>();
 		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION,FacFacturacionProgramadaBean.C_IDPROGRAMACION,FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
 		String [] camposEnvioPdf = {FacFacturacionProgramadaBean.C_IDESTADOENVIO};
+		String [] camposEnvioPdfError = {FacFacturacionProgramadaBean.C_IDESTADOENVIO,FacFacturacionProgramadaBean.C_LOGERROR};
+		String [] camposEnvioError = {FacFacturacionProgramadaBean.C_IDESTADOPDF,FacFacturacionProgramadaBean.C_IDESTADOENVIO,FacFacturacionProgramadaBean.C_LOGERROR};
 		FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
-
+		SIGALogging log=null;
+		String nombreFichero="";
+		UsrBean userBean = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		try {
-			UsrBean userBean = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			
 			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm) formulario;
 			Vector vOcultos = form.getDatosTablaOcultos(0);
 			String idInstitucion = userBean.getLocation();
@@ -664,6 +669,16 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			hash.put(FacFacturacionProgramadaBean.C_IDINSTITUCION,idInstitucion);
 			hash.put(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,idSerieFacturacion);
 			hash.put(FacFacturacionProgramadaBean.C_IDPROGRAMACION,idProgramacion);		
+			
+			// fichero de log
+			nombreFichero = "LOG_FAC_CONFIRMACION_" + idSerieFacturacion +"_"+ idProgramacion +".log.xls"; 
+			
+		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			String pathFichero2 = p.returnProperty("facturacion.directorioFisicoLogProgramacion");
+			String sBarra2 = "";
+			if (pathFichero2.indexOf("/") > -1) sBarra2 = "/"; 
+			if (pathFichero2.indexOf("\\") > -1) sBarra2 = "\\";  
+			log = new SIGALogging(pathFichero2+sBarra2+idInstitucion+sBarra2+nombreFichero);
 			
 			FacFacturaAdm facturas = new FacFacturaAdm(userBean);
 			Vector vFacturas = facturas.getFacturasDeFacturacionProgramada(idInstitucion, idSerieFacturacion, idProgramacion);
@@ -689,12 +704,16 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			//Si hay excepcion ponemos todo a estado de error
 			UtilidadesHash.set(hash, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES); // cambio de estado PDF a FINALIZADA CON ERRRORES
 			UtilidadesHash.set(hash, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES); // cambio de estado ENVIO a FINALIZADO CON ERRRORES
-			adm.updateDirect(hash, claves, camposEnvioPdf);
+			UtilidadesHash.set(hash, FacFacturacionProgramadaBean.C_LOGERROR, nombreFichero); // cambio de estado ENVIO a FINALIZADO CON ERRRORES
+			log.writeLogFactura("ENVIO","N/A","N/A",UtilidadesString.getMensajeIdioma(userBean,"messages.facturacion.almacenar.plantillasEnvioMal"));
+			adm.updateDirect(hash, claves, camposEnvioPdfError);
 			throw e;
 		} catch (Exception e) {
 			UtilidadesHash.set(hash, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES); // cambio de estado PDF a FINALIZADA CON ERRRORES
 			UtilidadesHash.set(hash, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES); // cambio de estado ENVIO a FINALIZADO CON ERRRORES
-			adm.updateDirect(hash, claves, camposEnvioPdf);			
+			UtilidadesHash.set(hash, FacFacturacionProgramadaBean.C_LOGERROR, nombreFichero); // cambio de estado ENVIO a FINALIZADO CON ERRRORES
+			log.writeLogFactura("ENVIO","N/A","N/A",UtilidadesString.getMensajeIdioma(userBean,"messages.general.error"));
+			adm.updateDirect(hash, claves, camposEnvioError);			
 			throw new SIGAException("messages.general.error");
 		}
 		

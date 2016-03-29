@@ -847,7 +847,11 @@ public class Facturacion {
     	
     	String msjAviso = null;
 		String [] camposPDF = {FacFacturacionProgramadaBean.C_IDESTADOPDF};
+		String [] camposPDFError = {FacFacturacionProgramadaBean.C_IDESTADOPDF,FacFacturacionProgramadaBean.C_LOGERROR};
 		String [] camposEnvioPdf = {FacFacturacionProgramadaBean.C_IDESTADOENVIO,FacFacturacionProgramadaBean.C_IDESTADOPDF};
+		String [] camposEnvioPdfError = {FacFacturacionProgramadaBean.C_IDESTADOENVIO,FacFacturacionProgramadaBean.C_IDESTADOPDF,FacFacturacionProgramadaBean.C_LOGERROR};
+		
+		String nombreFichero = "LOG_FAC_CONFIRMACION_" + beanP.getIdSerieFacturacion() + "_" + beanP.getIdProgramacion() + ".log.xls"; 
     	
 		try {
 
@@ -893,11 +897,14 @@ public class Facturacion {
 					if (isGenerarEnvio) {
 						UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES); // cambio de estado PDF a FINALIZADA CON ERRRORES
 						UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES); // cambio de estado ENVIO a FINALIZADO CON ERRRORES
-						facadm.updateDirect(hashFactura, claves, camposEnvioPdf);
+						UtilidadesHash.set(hashFactura,FacFacturacionProgramadaBean.C_LOGERROR,nombreFichero);
+						facadm.updateDirect(hashFactura, claves, camposEnvioPdfError);
 					} else {
+						UtilidadesHash.set(hashFactura,FacFacturacionProgramadaBean.C_LOGERROR,nombreFichero);
 						UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES); // cambio de estado PDF a FINALIZADA CON ERRRORES
+						facadm.updateDirect(hashFactura, claves, camposPDFError);
 					}
-					facadm.updateDirect(hashFactura, claves, camposPDF);
+					
 					break;
 					
 				case 2: // ERROR EN ENVIO FACTURA
@@ -906,7 +913,8 @@ public class Facturacion {
 					if (isGenerarEnvio) {
 						UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADA); // cambio de estado PDF a FINALIZADA
 						UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES); // cambio de estado ENVIO a FINALIZADO CON ERRRORES
-						facadm.updateDirect(hashFactura, claves, camposEnvioPdf);
+						UtilidadesHash.set(hashFactura,FacFacturacionProgramadaBean.C_LOGERROR,nombreFichero);
+						facadm.updateDirect(hashFactura, claves, camposEnvioPdfError);
 					} else {
 						UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADA); // cambio de estado PDF a FINALIZADA
 						facadm.updateDirect(hashFactura, claves, camposPDF);
@@ -920,10 +928,12 @@ public class Facturacion {
 					if (isGenerarEnvio) {
 						UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES); // cambio de estado PDF a FINALIZADA CON ERRRORES
 						UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES); // cambio de estado ENVIO a FINALIZADO CON ERRRORES
-						facadm.updateDirect(hashFactura, claves, camposEnvioPdf);
+						UtilidadesHash.set(hashFactura,FacFacturacionProgramadaBean.C_LOGERROR,nombreFichero);
+						facadm.updateDirect(hashFactura, claves, camposEnvioPdfError);
 					} else {
+						UtilidadesHash.set(hashFactura,FacFacturacionProgramadaBean.C_LOGERROR,nombreFichero);
 						UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES); // cambio de estado PDF a FINALIZADA CON ERRRORES
-						facadm.updateDirect(hashFactura, claves, camposPDF);
+						facadm.updateDirect(hashFactura, claves, camposPDFError);
 					}
 		
 					ClsLogging.writeFileLog("ERROR GENERAL GENERAR/ENVIAR FACTURA. CAMBIO DE ESTADOS",10);
@@ -949,11 +959,13 @@ public class Facturacion {
 			if (isGenerarEnvio) {
 				UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES); // cambio de estado PDF a FINALIZADA CON ERRRORES
 				UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOENVIO, FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES); // cambio de estado ENVIO a FINALIZADO CON ERRRORES
-				facadm.updateDirect(hashFactura, claves, camposEnvioPdf);
+				UtilidadesHash.set(hashFactura,FacFacturacionProgramadaBean.C_LOGERROR,nombreFichero);
+				facadm.updateDirect(hashFactura, claves, camposEnvioPdfError);
 
 			} else {
 				UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOPDF, FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES); // cambio de estado PDF a FINALIZADA CON ERRRORES
-				facadm.updateDirect(hashFactura, claves, camposPDF);
+				UtilidadesHash.set(hashFactura,FacFacturacionProgramadaBean.C_LOGERROR,nombreFichero);
+				facadm.updateDirect(hashFactura, claves, camposPDFError);
 			}
 			
 			if (tx!=null)
@@ -1235,7 +1247,7 @@ public class Facturacion {
 			ClsLogging.writeFileLog("ALMACENAR >> ERROR GENERAL EN LA FUNCION ALMACENAR: "+e.getLiteral(userbean.getLanguage()),10);
 
 			// ESCRIBO EN EL LOG un mensaje general con la descripcion de la excepcion
-			log.writeLogFactura("PDF/ENVIO","N/A","N/A","message.facturacion.error.generacion.envio.factura"+e.getLiteral(userbean.getLanguage()));
+			log.writeLogFactura("PDF/ENVIO","N/A","N/A",UtilidadesString.getMensajeIdioma(userbean,"message.facturacion.error.generacion.envio.factura")+e.getLiteral(userbean.getLanguage()));
 			existeAlgunErrorEnvio = true;
 			existeAlgunErrorPdf = true;
 			
@@ -1243,7 +1255,7 @@ public class Facturacion {
 			ClsLogging.writeFileLog("ALMACENAR >> ERROR GENERAL EN LA FUNCION ALMACENAR: "+e.toString(),10);
 
 			// ESCRIBO EN EL LOG un mensaje general con la descripcion de la excepcion
-			log.writeLogFactura("PDF/ENVIO","N/A","N/A","message.facturacion.error.generacion.envio.factura"+e.toString());
+			log.writeLogFactura("PDF/ENVIO","N/A","N/A",UtilidadesString.getMensajeIdioma(userbean,"message.facturacion.error.generacion.envio.factura")+e.toString());
 			
 			existeAlgunErrorEnvio = true;
 			existeAlgunErrorPdf = true;

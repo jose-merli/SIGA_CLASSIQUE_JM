@@ -427,7 +427,7 @@
 									nombreFichero=(String)htData.get("NOMBREFICHERO");
 								}
 		
-								FilaExtElement[] elems=new FilaExtElement[5];
+								FilaExtElement[] elems=new FilaExtElement[6];
 								
 								//TODOS LOS ESTADOS
 								elems[0]=new FilaExtElement("consultar","consultarfactura",SIGAConstants.ACCESS_READ);
@@ -460,13 +460,14 @@
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA)) {
 									elems[1]=new FilaExtElement("archivar","archivar",SIGAConstants.ACCESS_READ); 				
 									elems[2]=new FilaExtElement("download","download",SIGAConstants.ACCESS_READ); 	
-									if(sCheckArchivado== null || !sCheckArchivado.equals("1")){
+									if((sCheckArchivado== null || !sCheckArchivado.equals("1")) && (htData.get("IDESTADOPDF")!= null && !((String)htData.get("IDESTADOPDF")).equals(String.valueOf(FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES.intValue())) )){
 										elems[3]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ);
 									}
 								
 									if(htData.get("IDESTADOPDF")!= null){ 
 										if(((String)htData.get("IDESTADOPDF")).equals(String.valueOf(FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES.intValue()))){
 											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nErrores PDF");
+											elems[5]=new FilaExtElement("descargaLog","descargaLog",SIGAConstants.ACCESS_READ); 
 										}else if(((String)htData.get("IDESTADOPDF")).equals(String.valueOf(FacEstadoConfirmFactBean.PDF_FINALIZADA.intValue()))){
 											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nPDF Finalizado");
 										}else if(((String)htData.get("IDESTADOPDF")).equals(String.valueOf(FacEstadoConfirmFactBean.PDF_PROCESANDO.intValue()))){
@@ -476,9 +477,10 @@
 										}
 									}
 										
-									if(htData.get("IDESTADOENVIO")!= null){
+									if(htData.get("IDESTADOENVIO")!= null && (htData.get("IDESTADOPDF")!= null && !((String)htData.get("IDESTADOPDF")).equals(String.valueOf(FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES.intValue())))){
 										if(((String)htData.get("IDESTADOENVIO")).equals(String.valueOf(FacEstadoConfirmFactBean.ENVIO_FINALIZADAERRORES.intValue()))){  
 											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nErrores Envío");
+											elems[5]=new FilaExtElement("descargaLog","descargaLog",SIGAConstants.ACCESS_READ); 
 										}else if(((String)htData.get("IDESTADOENVIO")).equals(String.valueOf(FacEstadoConfirmFactBean.ENVIO_FINALIZADA.intValue()))){
 											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nEnvio Finalizado");
 										}else if(((String)htData.get("IDESTADOENVIO")).equals(String.valueOf(FacEstadoConfirmFactBean.ENVIO_PROCESANDO.intValue()))){
