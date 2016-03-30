@@ -217,7 +217,38 @@
 		}
 		return valido;
 	}
+	function obtenerLetra(){
+		if (generarLetra()) {
+			var tipoIdentificacion = document.getElementById("tipoIdentificacion").value;
+			if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")
+				alert("<siga:Idioma key='messages.nifcif.comprobacion.correcto'/>");
+			else
+				if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")
+					alert("<siga:Idioma key='messages.nie.comprobacion.correcto'/>");
+		}
 	
+	}
+	
+	function generarLetra() {
+		var numId = document.getElementById("NIFCIF").value;
+		var tipoIdentificacion = document.getElementById("tipoIdentificacion").value;
+		if(numId.length==0) {
+			return false;		
+		}
+		if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
+				return validaNumeroIdentificacion(tipoIdentificacion, numId);
+		} 
+		else
+			if((tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") ){
+				if(numId.length==8){
+						return validaNumeroIdentificacion(tipoIdentificacion, numId);					
+				} 
+				else
+					return validaNumeroIdentificacion(tipoIdentificacion, numId);
+			}
+						
+		return true;
+	}	
 	//Asociada al boton Volver
 	function accionVolver() {		
 		window.location = "<html:rewrite page='/html/jsp/censo/SolicitudIncorporacionValidacion.jsp'/>";
@@ -1054,6 +1085,9 @@
 								});
 							</script>
 						<html:text property="NIFCIF" styleClass="box" size="25" maxlength="20" value=""/>
+						<span id="idButtonNif" style="display:none; margin:0;padding:0" >
+							<img src="<html:rewrite page='/html/imagenes/comprobar.gif'/>" border="0" onclick="obtenerLetra();" style="cursor:hand" height="20px">
+						</span>
 					</td>
 					
 				</tr>				
