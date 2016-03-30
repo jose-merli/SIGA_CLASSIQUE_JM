@@ -715,7 +715,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			GenParametrosAdm paramAdm = new GenParametrosAdm (usrBean);
 			String justificacionModificaAct = paramAdm.getValor (usrBean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_JUSTIFICACION_EDITAR_ACT_FICHA, ClsConstants.DB_FALSE);
 			boolean isPermitidoEditarActFicha = justificacionModificaAct!=null && justificacionModificaAct.equals(ClsConstants.DB_TRUE);
-			Hashtable htPersonas = admDesignas.getPersonasSalidaInformeJustificacion(informeJustificacionMasivaForm, longitudNumEjg != null ? longitudNumEjg : "5", true,isPermitidoEditarActFicha);
+			Hashtable htPersonas = admDesignas.getPersonasSalidaInformeJustificacion(informeJustificacionMasivaForm, longitudNumEjg != null ? longitudNumEjg : "5", true,isPermitidoEditarActFicha,false);
 			if (htPersonas == null || htPersonas.size() < 1) {
 				throw new SIGAException("messages.informes.ficheroVacio");
 
@@ -6763,7 +6763,7 @@ public class EnvioInformesGenericos extends MasterReport {
 					informeJustificacionMasivaForm.setIncluirEjgPteCAJG((String) datosInforme.get("incluirEjgPteCAJG"));
 					String idTipoInforme = (String) datosInforme.get("idTipoInforme");
 
-					Hashtable htPersonas = admDesignas.getPersonasSalidaInformeJustificacion(informeJustificacionMasivaForm, longitudNumEjg != null ? longitudNumEjg : "5", false,isPermitidoEditarActFicha);
+					Hashtable htPersonas = admDesignas.getPersonasSalidaInformeJustificacion(informeJustificacionMasivaForm, longitudNumEjg != null ? longitudNumEjg : "5", false,isPermitidoEditarActFicha,false);
 
 					String idioma = null;
 

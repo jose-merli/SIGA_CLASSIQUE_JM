@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.redabogacia.sigaservices.app.AppConstants;
+
 import com.siga.general.MasterForm;
 
 /**
@@ -97,6 +99,7 @@ public class DesignaForm extends MasterForm
 	public void setRowSpan() {
 		
 		rowSpan = 0;
+		
 		if((cambioLetrado==null || cambioLetrado.equals("N"))&&(articulo27==null || articulo27.equals("N")) ){
 			if(actuaciones!=null&&actuaciones.size()>0){
 				Iterator<String> itActuacion = actuaciones.keySet().iterator();
@@ -113,7 +116,9 @@ public class DesignaForm extends MasterForm
 					rowSpan += ((List<AcreditacionForm>)acreditaciones.get(codProcedimineto)).size();
 				}
 			}
+			
 		}
+		
 		
 		if(rowSpan==0)rowSpan=1;
 		

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -180,11 +181,11 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	private PaginadorBind getDesignasPendientesJustificacionPaginador(InformeJustificacionMasivaForm formulario,String longitudNumEjg,boolean isInforme,boolean isPermitidoEditarActFicha)throws ClsExceptions,SIGAException {
+	private PaginadorBind getDesignasPendientesJustificacionPaginador(InformeJustificacionMasivaForm formulario,String longitudNumEjg,boolean isInforme,boolean isPermitidoEditarActFicha, boolean isEjisActivo)throws ClsExceptions,SIGAException {
 		PaginadorBind paginador=null;
 		try {
 			Acumulador acumula = new Acumulador();
-			List<DesignaForm> designasList = getDesignasJustificacion(formulario,acumula,longitudNumEjg,isInforme,isPermitidoEditarActFicha);
+			List<DesignaForm> designasList = getDesignasJustificacion(formulario,acumula,longitudNumEjg,isInforme,isPermitidoEditarActFicha,isEjisActivo);
 			
 			if(designasList!=null && designasList.size()>0){
 				Hashtable codigosHashtable = new Hashtable();
@@ -248,11 +249,11 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		return paginador;                        
 	}
 	
-	public PaginadorBind getDesignasJustificacionPaginador(InformeJustificacionMasivaForm formulario,String longitudNumEjg,boolean isInforme,boolean isPermitidoEditarActFicha) throws ClsExceptions, SIGAException{
+	public PaginadorBind getDesignasJustificacionPaginador(InformeJustificacionMasivaForm formulario,String longitudNumEjg,boolean isInforme,boolean isPermitidoEditarActFicha, boolean isEjisActivo) throws ClsExceptions, SIGAException{
 		PaginadorBind paginador=null;
 		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
 		if(isMostrarJustificacionesPtes){
-			paginador = getDesignasPendientesJustificacionPaginador(formulario,longitudNumEjg, isInforme,isPermitidoEditarActFicha);
+			paginador = getDesignasPendientesJustificacionPaginador(formulario,longitudNumEjg, isInforme,isPermitidoEditarActFicha,isEjisActivo);
 		}else{
 			paginador = getTodasDesignasJustificacionPaginador(formulario, longitudNumEjg, isInforme);
 		}
@@ -260,14 +261,14 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 	}	
 	
 	
-	private Vector getDesignasLetradoJustificacion (InformeJustificacionMasivaForm formulario,Acumulador	acumula,String longitudNumEjg,boolean isInforme,boolean isPermitidoEditarActFicha)  throws ClsExceptions, SIGAException 
+	private Vector getDesignasLetradoJustificacion (InformeJustificacionMasivaForm formulario,Acumulador	acumula,String longitudNumEjg,boolean isInforme,boolean isPermitidoEditarActFicha, boolean isEjisActivo)  throws ClsExceptions, SIGAException 
 	{
 		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
 		
 		if(isMostrarJustificacionesPtes){
 			
 			
-			List<DesignaForm> designasList = getDesignasJustificacion(formulario,acumula,longitudNumEjg,isInforme,isPermitidoEditarActFicha);
+			List<DesignaForm> designasList = getDesignasJustificacion(formulario,acumula,longitudNumEjg,isInforme,isPermitidoEditarActFicha,isEjisActivo);
 			
 			if(designasList!=null && designasList.size()>0){
 				Hashtable codigosHashtable = new Hashtable();
@@ -288,7 +289,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 	
 	
 	
-	public Hashtable getPersonasSalidaInformeJustificacion(InformeJustificacionMasivaForm formulario,String longitudNumEjg,boolean isInforme,boolean isPermitidoEditarActFicha) throws ClsExceptions  
+	public Hashtable getPersonasSalidaInformeJustificacion(InformeJustificacionMasivaForm formulario,String longitudNumEjg,boolean isInforme,boolean isPermitidoEditarActFicha, boolean isEjisActivo) throws ClsExceptions  
 	{	 
 		
 		Hashtable htPersona = new Hashtable();
@@ -298,7 +299,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		try {
 			ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: INICIO Consultas Justificacion",10);
 			Acumulador acumula = new Acumulador();
-			Vector vDesigna = getDesignasLetradoJustificacion(formulario,acumula,longitudNumEjg,isInforme,isPermitidoEditarActFicha);
+			Vector vDesigna = getDesignasLetradoJustificacion(formulario,acumula,longitudNumEjg,isInforme,isPermitidoEditarActFicha,isEjisActivo);
 			
 			for (int j = 0; j < vDesigna.size(); j++) {
 				
@@ -331,7 +332,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 						registro.put("PROVINCIA_LETRADO",(String)primerRegistroPersona.get("PROVINCIA_LETRADO"));
 					}
 				}
-				List<DesignaForm> designaList = getDesignaList(formulario, registro, acumula, isInforme,isPermitidoEditarActFicha);
+				List<DesignaForm> designaList = getDesignaList(formulario, registro, acumula, isInforme,isPermitidoEditarActFicha,isEjisActivo);
 				registro.put("designaList", designaList);
 				tmDesignas.put(keyTreeMap, registro);
 				htPersona.put(idPersona,tmDesignas);
@@ -520,7 +521,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 
 	}
 	
-	public List<DesignaForm> getDesignasJustificacion(InformeJustificacionMasivaForm formulario,Acumulador acumula,String longitudNumEjg,boolean isInforme,boolean isPermitidoEditarActFicha) throws ClsExceptions  
+	public List<DesignaForm> getDesignasJustificacion(InformeJustificacionMasivaForm formulario,Acumulador acumula,String longitudNumEjg,boolean isInforme,boolean isPermitidoEditarActFicha, boolean isEjisActivo) throws ClsExceptions  
 	{	 
 		boolean isMostrarJustificacionesPtes = formulario.getMostrarTodas()!=null && formulario.getMostrarTodas().equals("true");
 		
@@ -639,7 +640,13 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				)){
 					
 					designaForm.setPermitidoJustificar(true);
-					designaForm.setAcreditacionCompleta(designaHashtable.get(ScsDesignaBean.C_NIG)!=null && !((String)designaHashtable.get(ScsDesignaBean.C_NIG)).equals("") && designaHashtable.get(ScsDesignaBean.C_NUMPROCEDIMIENTO)!=null && !((String)designaHashtable.get(ScsDesignaBean.C_NUMPROCEDIMIENTO)).equals(""));
+					
+					if(isEjisActivo){
+						designaForm.setAcreditacionCompleta(designaHashtable.get(ScsDesignaBean.C_NIG)!=null && !((String)designaHashtable.get(ScsDesignaBean.C_NIG)).equals("") && designaHashtable.get(ScsDesignaBean.C_NUMPROCEDIMIENTO)!=null && !((String)designaHashtable.get(ScsDesignaBean.C_NUMPROCEDIMIENTO)).equals("")&& designaHashtable.get(ScsDesignaBean.C_ANIOPROCEDIMIENTO)!=null && !((String)designaHashtable.get(ScsDesignaBean.C_ANIOPROCEDIMIENTO)).equals(""));
+						
+					}else{
+						designaForm.setAcreditacionCompleta(designaHashtable.get(ScsDesignaBean.C_NIG)!=null && !((String)designaHashtable.get(ScsDesignaBean.C_NIG)).equals("") && designaHashtable.get(ScsDesignaBean.C_NUMPROCEDIMIENTO)!=null && !((String)designaHashtable.get(ScsDesignaBean.C_NUMPROCEDIMIENTO)).equals(""));
+					}
 					
 					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes,false,isPermitidoEditarActFicha);
 					designaForm.setRowSpan();
@@ -651,9 +658,13 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 					}else if(designaForm.getIdProcedimiento()==null || designaForm.getIdProcedimiento().equals("")){
 						designaFormList.add(designaForm);
 					}
-					else if((designaForm.getActuaciones()!=null && !designaForm.getActuaciones().isEmpty()) ||
-							(designaForm.getAcreditaciones()!=null && designaForm.getAcreditaciones().size()>0)){
+					else if(designaForm.getActuaciones()!=null && designaForm.getActuaciones().size()>0) {
 						designaFormList.add(designaForm);
+						if(designaForm.getActuacionPermitidaLetrado().equals(AppConstants.DB_TRUE))
+							designaForm.addRowSpan();
+					}else if(designaForm.getAcreditaciones()!=null && designaForm.getAcreditaciones().size()>0){
+						designaFormList.add(designaForm);
+						
 					}
 				}else if((!formulario.getFichaColegial()) || (tipoResolucionDesigna.equals(this.resolucionDesignaFavorable)||
 						(tipoResolucionDesigna.equals(this.resolucionDesignaPteCAJG)&&formulario.getIncluirEjgPteCAJG()!=null&&formulario.getIncluirEjgPteCAJG().equals("1"))
@@ -701,7 +712,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	public List<DesignaForm> getDesignaList(InformeJustificacionMasivaForm formulario,Hashtable designaHashtable,Acumulador acumula,boolean isInforme,boolean isPermitidoEditarActFicha) throws ClsExceptions  
+	public List<DesignaForm> getDesignaList(InformeJustificacionMasivaForm formulario,Hashtable designaHashtable,Acumulador acumula,boolean isInforme,boolean isPermitidoEditarActFicha, boolean isEjisActivo) throws ClsExceptions  
 	{	 
 		
 		Hashtable htPersona = new Hashtable();
@@ -837,7 +848,12 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 				)){
 					
 					designaForm.setPermitidoJustificar(true);
-					designaForm.setAcreditacionCompleta(designaHashtable.get(ScsDesignaBean.C_NIG)!=null && !((String)designaHashtable.get(ScsDesignaBean.C_NIG)).equals("") && designaHashtable.get(ScsDesignaBean.C_NUMPROCEDIMIENTO)!=null && !((String)designaHashtable.get(ScsDesignaBean.C_NUMPROCEDIMIENTO)).equals(""));
+					if(isEjisActivo){
+						designaForm.setAcreditacionCompleta(designaHashtable.get(ScsDesignaBean.C_NIG)!=null && !((String)designaHashtable.get(ScsDesignaBean.C_NIG)).equals("") && designaHashtable.get(ScsDesignaBean.C_NUMPROCEDIMIENTO)!=null && !((String)designaHashtable.get(ScsDesignaBean.C_NUMPROCEDIMIENTO)).equals("")&& designaHashtable.get(ScsDesignaBean.C_ANIOPROCEDIMIENTO)!=null && !((String)designaHashtable.get(ScsDesignaBean.C_ANIOPROCEDIMIENTO)).equals(""));
+						
+					}else{
+						designaForm.setAcreditacionCompleta(designaHashtable.get(ScsDesignaBean.C_NIG)!=null && !((String)designaHashtable.get(ScsDesignaBean.C_NIG)).equals("") && designaHashtable.get(ScsDesignaBean.C_NUMPROCEDIMIENTO)!=null && !((String)designaHashtable.get(ScsDesignaBean.C_NUMPROCEDIMIENTO)).equals(""));
+					}
 					
 					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes,false,isPermitidoEditarActFicha);
 					designaForm.setRowSpan();
@@ -849,10 +865,16 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 					}else if(designaForm.getIdProcedimiento()==null || designaForm.getIdProcedimiento().equals("")){
 						designaFormList.add(designaForm);
 					}
-					else if((designaForm.getActuaciones()!=null && designaForm.getActuaciones().size()>0) ||
-							(designaForm.getAcreditaciones()!=null && designaForm.getAcreditaciones().size()>0)){
+					else if(designaForm.getActuaciones()!=null && designaForm.getActuaciones().size()>0) {
 						designaFormList.add(designaForm);
+						if(designaForm.getActuacionPermitidaLetrado().equals(AppConstants.DB_TRUE))
+							designaForm.addRowSpan();
+					}else if(designaForm.getAcreditaciones()!=null && designaForm.getAcreditaciones().size()>0){
+						designaFormList.add(designaForm);
+						
 					}
+					
+						
 				}else if((!formulario.getFichaColegial()) ||( tipoResolucionDesigna.equals(this.resolucionDesignaFavorable)||
 						(tipoResolucionDesigna.equals(this.resolucionDesignaPteCAJG)&&formulario.getIncluirEjgPteCAJG()!=null&&formulario.getIncluirEjgPteCAJG().equals("1"))
 						||

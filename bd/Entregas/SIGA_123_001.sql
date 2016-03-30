@@ -160,3 +160,9 @@ alter table scs_actuaciondesigna modify FECHACREACION not null ;
 
 -- Ejecutado en Integracion por Adrian el 30/03/2016 10:00 (las ultimas sentencias han sido cambiadas, añadiendo valor por defecto en las fechas y algo mas)
 
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.justificacion.insercionCompletas', 'Existen actuaciones que no se insertarán debido a que no se ha aportado toda la información obligatoria.¿Desea continuar?', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.justificacion.insercionCompletas', 'Existen actuaciones que no se insertarán debido a que no se ha aportado toda la información obligatoria.¿Desea continuar?#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.justificacion.insercionCompletas', 'Existen actuaciones que no se insertarán debido a que no se ha aportado toda la información obligatoria.¿Desea continuar?#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.justificacion.insercionCompletas', 'Existen actuaciones que no se insertarán debido a que no se ha aportado toda la información obligatoria.¿Desea continuar?#EU', 0, '3', sysdate, 0, '19');
+ 
+

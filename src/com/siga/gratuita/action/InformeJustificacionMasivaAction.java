@@ -16,6 +16,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -472,7 +473,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_IDPRETENSION, scsDesignaBean.getIdPretension()!=null?scsDesignaBean.getIdPretension().toString():"");
 						
 							List<String> ocultarClaveList = getListCamposOcultarHistorico();
-							hashActuacion.put("fks", fksActuacionMap);							hashActuacion.put("scsDesignaBean", scsDesignaBean);
+							hashActuacion.put("fks", fksActuacionMap);
+							hashActuacion.put("scsDesignaBean", scsDesignaBean);
 							actuacionDesginaAdm.insertHistorico(new Long(idPersona), hashActuacion,ocultarClaveList,ClsConstants.TIPO_CAMBIO_HISTORICO_DESIGNACIONJUSTIFICACION);
 						
 					}else{
@@ -735,7 +737,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 					for (int i = 0; i < datos.size(); i++) {
 						Row designaRow = (Row)datos.get(i);
 						Hashtable designaHashtable = (Hashtable) designaRow.getRow();
-						List<DesignaForm> designaList = admDesignas.getDesignaList(fInformeJustificacion, designaHashtable,null, false,isPermitidoEditarActFicha);
+						List<DesignaForm> designaList = admDesignas.getDesignaList(fInformeJustificacion, designaHashtable,null, false,isPermitidoEditarActFicha,ejisActivo.equals(AppConstants.DB_TRUE));
 						
 						designaFormList.addAll(designaList);
 					}
@@ -777,7 +779,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 				fInformeJustificacion.setIncluirEjgSinResolucion(codIncluirEjgSinResolucion);
 				
 				String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
-				 PaginadorBind paginador = admDesignas.getDesignasJustificacionPaginador(fInformeJustificacion,longitudNumEjg,false,isPermitidoEditarActFicha);
+				 PaginadorBind paginador = admDesignas.getDesignasJustificacionPaginador(fInformeJustificacion,longitudNumEjg,false,isPermitidoEditarActFicha,ejisActivo.equals(AppConstants.DB_TRUE));
 				
 				
 				if (paginador!=null&& paginador.getNumeroTotalRegistros()>0){
@@ -789,7 +791,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 					for (int i = 0; i < datos.size(); i++) {
 						Row designaRow = (Row)datos.get(i);
 						Hashtable designaHashtable = (Hashtable) designaRow.getRow();
-						List<DesignaForm> designaList = admDesignas.getDesignaList(fInformeJustificacion, designaHashtable,null, false,isPermitidoEditarActFicha);
+						List<DesignaForm> designaList = admDesignas.getDesignaList(fInformeJustificacion, designaHashtable,null, false,isPermitidoEditarActFicha,ejisActivo.equals(AppConstants.DB_TRUE));
 						
 						designaFormList.addAll(designaList);
 					}
