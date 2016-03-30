@@ -578,8 +578,9 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		if (saltoocompensacion != ' ') {
 			where.append("   AND ");
 			where.append(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION);
-			where.append("=");
+			where.append("= '");
 			where.append(saltoocompensacion);
+			where.append("'");
 		}
 		where.append("   AND ");
 		where.append(ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO);
