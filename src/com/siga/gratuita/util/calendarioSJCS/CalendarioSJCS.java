@@ -1588,7 +1588,7 @@ public class CalendarioSJCS
 			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new ClsExceptions("");
+			throw new ClsExceptions(e, e.getMessage());
 		}
 	} // calcularMatrizLetradosGuardia()
 	
