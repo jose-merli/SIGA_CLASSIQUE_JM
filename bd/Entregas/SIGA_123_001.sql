@@ -157,4 +157,6 @@ alter table scs_actuaciondesigna add USUCREACION NUMBER(5) NOT NULL DEFAULT (0);
 alter table scs_actuaciondesigna add FECHACREACION DATE;
 Update scs_actuaciondesigna SET FECHACREACION=sysdate Where USUCREACION=0;
 alter table scs_actuaciondesigna modify FECHACREACION not null ;
- 
+
+-- Ejecutado en Integracion por Adrian el 30/03/2016 10:00 (las ultimas sentencias han sido cambiadas, añadiendo valor por defecto en las fechas y algo mas)
+
