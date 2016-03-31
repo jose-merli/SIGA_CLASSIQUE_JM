@@ -61,8 +61,10 @@
 	String idTipoDirecciones = "";
 	idTipoDirecciones = (String.valueOf(htData.get("IDTIPODIRECCION")));
 	List<String> listaDirecciones = null;
+	String descripcionDirecciones = "";
 	if(idTipoDirecciones != null && !"".equalsIgnoreCase(idTipoDirecciones)){
 		listaDirecciones = new ArrayList<String>(Arrays.asList(idTipoDirecciones.split(",")));
+		descripcionDirecciones = String.valueOf(htData.get("CEN_TIPODIRECCION.DESCRIPCION"));
 	}
 	String ididPais = String.valueOf(htData.get(CenDireccionesBean.C_IDPAIS));
 	idPais.add(ididPais);
@@ -459,6 +461,14 @@
 					<siga:ConjCampos leyenda="censo.solicitudModificacion.literal.titulo">
 						<table class="tablaCampos" align="center">							
 							<!-- FILA -->
+							<tr>	
+								<td class="labelText" width="180px" id="tipoDireccion">
+										<siga:Idioma key="censo.datosDireccion.literal.tipoDireccion"/>&nbsp;
+								</td>	
+								<td>
+									<%=descripcionDirecciones%>
+								</td>		
+							</tr>
 							<tr>	
 							
 								<td class="labelText" width="180px" id="direccionSinAsterisco">
