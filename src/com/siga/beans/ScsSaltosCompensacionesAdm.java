@@ -357,14 +357,22 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 				" from "+
 				CenColegiadoBean.T_NOMBRETABLA+" C, "+
 				CenPersonaBean.T_NOMBRETABLA+" P, "+
-				"(select "+ScsSaltosCompensacionesBean.C_IDPERSONA+", count(1) NUMERO"+
-				" from "  +ScsSaltosCompensacionesBean.T_NOMBRETABLA+
-				getWhereSaltosCompensacionesNocumplidos(institucion, idTurno, idGuardia, null, soc.charAt(0));
+				"(select "+ScsSaltosCompensacionesBean.C_IDPERSONA+", count(1) NUMERO, ";
+				
+			// Los siguientes minimos se usan para ordenar en la lista de saltos/compensaciones (SCs). 
+			// el orden principal es por cantidad de saltos/compensaciones de forma descendente.
+			// Sin embargo, como ayuda, también se añade el orden por fecha y orden de creacion. Pero este orden solo será válido si cada colegiado tiene 1 unico SC. En caso contrario, el orden no se garantiza.
+			consulta += "min("+ScsSaltosCompensacionesBean.C_FECHA+") MINFECHA, min("+ScsSaltosCompensacionesBean.C_IDSALTOSTURNO+") MINSALTO";
+			
+			consulta += " from "  +ScsSaltosCompensacionesBean.T_NOMBRETABLA;
+			consulta += getWhereSaltosCompensacionesNocumplidos(institucion, idTurno, idGuardia, null, soc.charAt(0));
 			consulta +=" group by "+ScsSaltosCompensacionesBean.C_IDPERSONA+") SC"+
 			" where SC."+ScsSaltosCompensacionesBean.C_IDPERSONA+"=C."+CenColegiadoBean.C_IDPERSONA+
 			" and   SC."+ScsSaltosCompensacionesBean.C_IDPERSONA+"=P."+CenPersonaBean.C_IDPERSONA+
-			" and   C."+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+institucion+
-			" order by SC.NUMERO desc";
+			" and   C."+ScsSaltosCompensacionesBean.C_IDINSTITUCION+"="+institucion;
+			
+			// El orden principal es por cantidad. Los siguientes campos de orden son solo orientativos (ver origen arriba) 
+			consulta += " order by SC.NUMERO desc, SC.MINFECHA, SC.MINSALTO";
 						
 			vResult=this.find(consulta).getAll();
 			
