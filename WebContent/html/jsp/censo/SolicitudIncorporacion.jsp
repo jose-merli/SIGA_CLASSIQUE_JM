@@ -209,11 +209,11 @@
 		}
 		if (errorNIF){
 			valido = false;
-			alert("<siga:Idioma key='messages.nif.comprobacion.digitos.error'/>");
+			alert("<siga:Idioma key='messages.nif.comprobacion.digitos.error'/>",'error');
 		}
 		if (errorNIE){
 			valido = false;
-			alert("<siga:Idioma key='messages.nie.comprobacion.digitos.error'/>");
+			alert("<siga:Idioma key='messages.nie.comprobacion.digitos.error'/>",'error');
 		}
 		return valido;
 	}
@@ -221,10 +221,10 @@
 		if (generarLetra()) {
 			var tipoIdentificacion = document.getElementById("tipoIdentificacion").value;
 			if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>")
-				alert("<siga:Idioma key='messages.nifcif.comprobacion.correcto'/>");
+				alert("<siga:Idioma key='messages.nifcif.comprobacion.correcto'/>", 'success');
 			else
 				if(tipoIdentificacion == "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>")
-					alert("<siga:Idioma key='messages.nie.comprobacion.correcto'/>");
+					alert("<siga:Idioma key='messages.nie.comprobacion.correcto'/>", 'success');
 		}
 	
 	}
