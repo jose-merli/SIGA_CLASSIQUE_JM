@@ -815,7 +815,7 @@ function accionDescargaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,
 
 		   jQuery.ajax({ 
 				type: "POST",
-				url: "/SIGA/JGR_DocumentacionDesigna.do?modo=getAjaxObtenerListadoDocumentacion",				
+				url: "/SIGA/JGR_DocumentacionActuacionLetrado.do?modo=getAjaxObtenerListadoDocumentacion",				
 				data: "anio="+anio+"&idTurno="+idTurno+"&numero="+numero+"&idInstitucion="+idInstitucion+"&numeroActuacion="+numeroActuacion,
 				dataType: "json",
 				contentType: "application/x-www-form-urlencoded;charset=UTF-8",
