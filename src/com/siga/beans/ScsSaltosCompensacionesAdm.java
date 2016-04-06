@@ -439,7 +439,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 				sql.append("    and "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" is null");
 				if (idguardia!=null)
 					sql.append("    and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
-				if (tipoSyC.equalsIgnoreCase("G"))// && idguardia==null)
+				if (tipoSyC.equalsIgnoreCase("G") && idguardia==null)
 					sql.append("    and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+" is not null");
 				
 				updateSQL(sql.toString());
