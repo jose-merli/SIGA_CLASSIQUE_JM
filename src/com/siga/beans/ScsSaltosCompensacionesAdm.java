@@ -420,7 +420,7 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 
 	/**
 	 * Marca el cumplimiento de saltos y compensaciones ya que se ha dado de baja en el turno SRL
-	 * Si se da de baja de un turno, da de baja los saltos y compensaciones de turno.
+	 * Si se da de baja de un turno, da de baja los saltos y compensaciones del turno y de todas las guardias del turno.
 	 * Si se da de baja de una guardia, da de baja los saltos y compensacion de la guardia.
 	 */
 	
@@ -439,10 +439,8 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 				sql.append("    and "+ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO+" is null");
 				if (idguardia!=null)
 					sql.append("    and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+"="+idguardia);
-				else if (tipoSyC.equalsIgnoreCase("G"))// && idguardia==null)
+				if (tipoSyC.equalsIgnoreCase("G"))// && idguardia==null)
 					sql.append("    and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+" is not null");
-				else
-					sql.append("    and "+ScsSaltosCompensacionesBean.C_IDGUARDIA+" is null");
 				
 				updateSQL(sql.toString());
 				
