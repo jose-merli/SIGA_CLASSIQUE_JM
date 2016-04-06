@@ -1633,7 +1633,7 @@
 	<bean:define id="mostrarSolicitudAlta" name="mostrarSolicitudAlta"  scope="request" />
 	<bean:define id="motivoSolicitudAlta" name="motivoSolicitudAlta"  scope="request" />
 
-<div id="mainDiv" style="overflow-y:scroll">
+<div id="mainDiv" style="overflow-y:auto">
 
 	<html:form action="/CEN_MantenimientoSolicitudesIncorporacion.do" method="POST" target="mainWorkArea">
 		<html:hidden property="idSolicitudPlanProfesional"/>
