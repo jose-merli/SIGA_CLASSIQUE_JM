@@ -13,6 +13,8 @@
 <%@ taglib uri="struts-html.tld" prefix="html"%>
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
 
+<%@ page import="com.siga.Utilidades.UtilidadesString"%>
+
 <!-- JSP -->
 <% 
 	/** JPT - Control de fechas de presentación y cargo en ficheros SEPA **/

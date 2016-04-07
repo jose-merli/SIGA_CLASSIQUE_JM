@@ -23,6 +23,7 @@
 <%@ page import="com.siga.beans.CenPersonaAdm"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="java.util.Properties"%>
+<%@ page import="java.util.ArrayList"%>
  
 <!-- JSP -->
 <%

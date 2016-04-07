@@ -55,7 +55,7 @@
 	String enviarFacturas 	= "";
 	String idTipoPlantilla = "";
 	String generarPDF 	= "";
-	String idProgramacion 	= "";
+	String idProgramacionSF 	= "";
 	String idEstadoConfirmacion="";
 	boolean bEditableConfirmacion = true;
 	boolean bEditableGeneracion = true;
@@ -85,7 +85,7 @@
 		Hashtable hash = (Hashtable)en.nextElement();
 		
 		sDescripcion = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_DESCRIPCION);
-		idProgramacion = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_IDPROGRAMACION);
+		idProgramacionSF = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_IDPROGRAMACION);
 		LSerieFacturacion = UtilidadesHash.getLong(hash, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION);
 		sSerieFacturacionDesc = UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_NOMBREABREVIADO);
 		sFInicialProducto = com.atos.utils.GstDate.getFormatedDateShort("", UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAINICIOPRODUCTOS));
@@ -541,7 +541,7 @@
 	<html:form action="/FAC_ConfirmarFacturacion.do" method="POST" target="submitArea">
 		<!-- INICIO: CAMPOS -->
 		<html:hidden property="modo" value=""/>			
-		<html:hidden property="idProgramacion" value='<%=idProgramacion%>'/>
+		<html:hidden property="idProgramacion" value='<%=idProgramacionSF%>'/>
 		<html:hidden property="estadoConfirmacion" value='<%=idEstadoConfirmacion%>'/>
 		
 		<siga:ConjCampos leyenda="facturacion.asignacionDeConceptosFacturables.titulo">

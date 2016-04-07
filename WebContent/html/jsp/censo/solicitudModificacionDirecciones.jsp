@@ -30,6 +30,9 @@
 <%@ page import = "com.siga.beans.CenProvinciaBean"%>
 <%@ page import = "com.siga.Utilidades.UtilidadesString"%>
 <%@ page import = "com.atos.utils.*"%>
+<%@ page import = "java.util.Arrays"%>
+<%@ page import = "java.util.List"%>
+<%@ page import = "java.util.Hashtable"%>
 
 <!-- JSP -->
 <% 

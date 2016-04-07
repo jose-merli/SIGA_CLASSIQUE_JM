@@ -25,6 +25,7 @@
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="java.util.Properties"%>
+<%@ page import="org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION"%>
 
 <!-- JSP -->
 <%  

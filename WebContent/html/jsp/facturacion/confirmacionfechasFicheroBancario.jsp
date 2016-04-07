@@ -32,8 +32,6 @@
 	
 	String idSerieFacturacion = (String) request.getAttribute("idSerieFacturacion");
 	String idProgramacion = (String) request.getAttribute("idProgramacion");
-	boolean bObligatorioFechasSEPA = true; // Esta variable es necesaria para fechasFicheroBancario.jsp
-	
 %>
 
 	<!-- HEAD -->

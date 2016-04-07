@@ -37,6 +37,7 @@
 <%@ page import="com.siga.tlds.*"%>
 <%@ page import="com.atos.utils.RowsContainer"%>
 <%@ page import="com.siga.beans.CenClienteAdm"%>
+<%@ page import="java.io.File"%>
 
 <!-- JSP -->
 <bean:define id="registrosSeleccionados" name="SolicitudesCertificadosForm" property="registrosSeleccionados" type="java.util.ArrayList"/>
