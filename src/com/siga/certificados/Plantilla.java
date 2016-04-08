@@ -45,6 +45,7 @@ import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
+import com.siga.beans.CenPaisAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPoblacionesAdm;
 import com.siga.beans.CenProvinciaAdm;
@@ -643,6 +644,7 @@ public class Plantilla {
 				String nombreApellidos = ((datos.getNombre()==null)?"":(String)datos.getNombre())+" "+((datos.getApellidos1()==null)?"":(String)datos.getApellidos1())+" "+((datos.getApellidos2()==null)?"":(String)datos.getApellidos2()); 
 				resultado=nombreApellidos;
 			}
+			
 			if (etiqueta.equalsIgnoreCase("DIRECCION_ETIQUETA")){
 				if (datos.getDomicilio()==null){
 					resultado="";	
@@ -650,6 +652,7 @@ public class Plantilla {
 					resultado=(String)datos.getDomicilio();
 				}				
 			}
+			
 			if (etiqueta.equalsIgnoreCase("CP_POBLACION_ETIQUETA")){
 				if (datos.getCodigoPostal()==null||datos.getCodigoPostal().equals("")){	
 					if (datos.getIdPoblacion()==null||datos.getIdPoblacion().equals("")){
@@ -711,7 +714,17 @@ public class Plantilla {
 					String provincia = admProv.getDescripcion(datos.getIdProvincia());
 					resultado=provincia;
 				}									
-			}			
+			}
+			
+			if (etiqueta.equalsIgnoreCase("PAIS_ETIQUETA")){
+				if (datos.getIdPais()==null||datos.getIdPais().equals("")){
+					resultado="";	
+				}else{
+					CenPaisAdm admPais = new CenPaisAdm(usr);
+					String pais = admPais.getDescripcion(datos.getIdPais());
+					resultado=pais;
+				}									
+			}	
 
 			if (etiqueta.equalsIgnoreCase("TRATAMIENTO")){
 				CenClienteAdm admCliente = new CenClienteAdm(usr);
