@@ -108,7 +108,7 @@
 		<!-- FIN: TITULO Y LOCALIZACION -->
 	</head>
 
-	<body>
+	<body onload="ajusteAltoMain('camposRegistro', 0);">
 
 		<!-- TITULO -->
 		<!-- Barra de titulo actualizable desde los mantenimientos -->
@@ -127,181 +127,168 @@
 		</table>
 
 		<!-- INICIO ******* CAPA DE PRESENTACION ****** -->
-		<!-- dentro de esta capa se tienen que situar los diferentes componentes 
-			 que se van a mostrar, para que quepen dentro de la ventana.
-			 Los elementos que copieis dentro, que tengan el estilo 
-			 "tablaTitulo" se deben modificar por "tablaCentralMedia" 
-		-->
-		<div id="camposRegistro" class="posicionModalMedia" align="center">
+		<div id="camposRegistro" style='position:absolute; width:100%; overflow-y:auto'>
 
 			<!-- INICIO: CAMPOS -->
-			<!-- Zona de campos de busqueda o filtro -->
+			<html:form action="/CEN_Historico.do" method="POST" >
+				<html:hidden property="modo" value="<%=remitente%>"/>
+				<html:hidden property="jsonVolver" />
+						
+				<siga:ConjCampos leyenda="censo.consultaHistorico.cabecera">
+					<table class="tablaCampos" align="center"  border="0">
+						<tr>				
+							<td class="labelText" nowrap>
+								<siga:Idioma key="censo.consultaHistorico.literal.nombreUsu"/>
+							</td>	
+							<td class="boxConsulta">
+								<%=nombreUsuMod%>
+							</td>	
+						</tr>	
 
-			<table  class="tablaCentralCamposMedia"  align="center">
-
-				<html:form action="/CEN_Historico.do" method="POST" >
-					<html:hidden property="modo" value="<%=remitente%>"/>
-					<html:hidden property="jsonVolver" />
-					
-					<tr>				
-						<td>
-							<siga:ConjCampos leyenda="censo.consultaHistorico.cabecera">
-								<table class="tablaCampos" align="center"  border="0">
-									<tr>				
-										<td class="labelText">
-											<siga:Idioma key="censo.consultaHistorico.literal.nombreUsu"/>
-										</td>	
-										<td class="boxConsulta" colspan="3">
-											<%=nombreUsuMod%>
-										</td>	
-									</tr>	
-
-									<tr>				
-										<td class="labelText">
-											<siga:Idioma key="censo.consultaHistorico.literal.tipo"/>&nbsp;(*)
-										</td>				
-										<td colspan="2">
+						<tr>				
+							<td class="labelText" nowrap>
+								<siga:Idioma key="censo.consultaHistorico.literal.tipo"/>&nbsp;(*)
+							</td>				
+							<td>
 <% 
-											if (remitente.equalsIgnoreCase("insertar")) {
+								if (remitente.equalsIgnoreCase("insertar")) {
 %>
-												<siga:ComboBD nombre="cmbCambioHistorico" tipo="cmbCambioHistoricoNoAutomatico" clase="boxCombo" obligatorio="true"/>
+									<siga:ComboBD nombre="cmbCambioHistorico" tipo="cmbCambioHistoricoNoAutomatico" clase="boxCombo" obligatorio="true"/>
 <% 
-											} else {
-												if (vSel.isEmpty()){
-													int i=0;
+								} else {
+									if (vSel.isEmpty()){
+										int i=0;
 %>
-													<siga:ComboBD nombre="cmbCambioHistorico" tipo="cmbCambioHistorico" clase="boxConsulta" ancho="500" elementoSel="<%=i%>" obligatorio="true" readOnly="true"/>
+										<siga:ComboBD nombre="cmbCambioHistorico" tipo="cmbCambioHistorico" clase="boxConsulta" ancho="500" elementoSel="<%=i%>" obligatorio="true" readOnly="true"/>
 <% 
-												} else {
+									} else {
 %>
-													<siga:ComboBD nombre="cmbCambioHistorico" tipo="cmbCambioHistorico" clase="boxConsulta" ancho="500" elementoSel="<%=vSel%>" obligatorio="true" readOnly="true"/>
+										<siga:ComboBD nombre="cmbCambioHistorico" tipo="cmbCambioHistorico" clase="boxConsulta" ancho="500" elementoSel="<%=vSel%>" obligatorio="true" readOnly="true"/>
 <% 
-												}
-											} 
+									}
+								} 
 %>								
-										</td>	
-									</tr>	
-									
-									<tr>														
-										<td class="labelText" width="25%">
-											<siga:Idioma key="censo.consultaHistorico.literal.fechaEntrada"/>&nbsp;(*)
-										</td>
-										<td width="25%">							
+							</td>	
+						</tr>	
+						
+						<tr>														
+							<td class="labelText" nowrap>
+								<siga:Idioma key="censo.consultaHistorico.literal.fechaEntrada"/>&nbsp;(*)
+							</td>
+							<td>							
 <% 
-											if (remitente.equalsIgnoreCase("insertar")) { 
+								if (remitente.equalsIgnoreCase("insertar")) { 
 %>
-												<siga:Fecha nombreCampo="fechaEntrada"  posicionX="150" posicionY="50"/>
+									<siga:Fecha nombreCampo="fechaEntrada"  posicionX="150" posicionY="50"/>
 <% 
-											} else { 
-												String fecha = GstDate.getFormatedDateMedium(userBean.getLanguage(),row.getString(CenHistoricoBean.C_FECHAENTRADA));
+								} else { 
+									String fecha = GstDate.getFormatedDateMedium(userBean.getLanguage(),row.getString(CenHistoricoBean.C_FECHAENTRADA));
 %>
-											 	<siga:Fecha nombreCampo="fechaEntradaRO" valorInicial="<%=fecha%>" posicionX="150" posicionY="50" disabled="true" readOnly="true"/>
-											 	<html:hidden property="fechaEntrada" styleId="fechaEntrada" value="<%=row.getString(CenHistoricoBean.C_FECHAENTRADA)%>" />
+								 	<siga:Fecha nombreCampo="fechaEntradaRO" valorInicial="<%=fecha%>" posicionX="150" posicionY="50" disabled="true" readOnly="true"/>
+								 	<html:hidden property="fechaEntrada" styleId="fechaEntrada" value="<%=row.getString(CenHistoricoBean.C_FECHAENTRADA)%>" />
 <% 
-											} 
+								} 
 %>															
-										</td>
-									</tr>														
-									<tr>														
-										<td class="labelText" width="25%">
-											<siga:Idioma key="censo.consultaHistorico.literal.fechaEfectiva"/>&nbsp;(*)
-										</td>
-										<td width="25%">							
+							</td>
+						</tr>	
+																			
+						<tr>														
+							<td class="labelText" nowrap>
+								<siga:Idioma key="censo.consultaHistorico.literal.fechaEfectiva"/>&nbsp;(*)
+							</td>
+							<td>							
 <% 
-											if (remitente.equalsIgnoreCase("insertar")) {
+								if (remitente.equalsIgnoreCase("insertar")) {
 %>
-												<siga:Fecha nombreCampo= "fechaEfectiva"  posicionX="150" posicionY="50"/>
-																		
+									<siga:Fecha nombreCampo= "fechaEfectiva"  posicionX="150" posicionY="50"/>
+															
 <% 
-											} else { 
-												String fecha = GstDate.getFormatedDateMedium(userBean.getLanguage(),row.getString(CenHistoricoBean.C_FECHAEFECTIVA));
+								} else { 
+									String fecha = GstDate.getFormatedDateMedium(userBean.getLanguage(),row.getString(CenHistoricoBean.C_FECHAEFECTIVA));
 %>
-			  									<siga:Fecha nombreCampo="fechaEfectivaRO" valorInicial="<%=fecha%>" posicionX="150" posicionY="50" disabled="true" readOnly="true"/>
-			  									<html:hidden property="fechaEfectiva" styleId="fechaEfectiva" value="<%=row.getString(CenHistoricoBean.C_FECHAEFECTIVA)%>" />
+  									<siga:Fecha nombreCampo="fechaEfectivaRO" valorInicial="<%=fecha%>" posicionX="150" posicionY="50" disabled="true" readOnly="true"/>
+  									<html:hidden property="fechaEfectiva" styleId="fechaEfectiva" value="<%=row.getString(CenHistoricoBean.C_FECHAEFECTIVA)%>" />
 <% 
-											} 
+								} 
 %>																							
-										</td>
-									</tr>					
+							</td>
+						</tr>					
 
-									<tr>				
-										<td class="labelText">
-											<siga:Idioma key="censo.consultaHistorico.literal.motivo"/>&nbsp;(*)
-										</td>				
-										<td colspan="2">											
+						<tr>				
+							<td class="labelText" nowrap>
+								<siga:Idioma key="censo.consultaHistorico.literal.motivo"/>&nbsp;(*)
+							</td>				
+							<td>											
 <% 
-											String sMotivo = "";
-											if (row.getString(CenHistoricoBean.C_MOTIVO)!=null) {
-												sMotivo = row.getString(CenHistoricoBean.C_MOTIVO);
-											}
-												
-											if (remitente.equalsIgnoreCase("insertar") || (remitente.equalsIgnoreCase("modificar") && sMotivo.equals(""))) { 
-%>
- 												<html:textarea property="motivo"
- 													onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
- 													style="overflow-y:auto; overflow-x:hidden; width:500px; height:50px; resize:none;" 
- 												 	styleClass="box"></html:textarea> 
-<% 
-											} else { 
-%>
-  				  							   	<html:textarea property="motivo"
-  				  							   		style="overflow-y:auto; overflow-x:hidden; width:500px; height:50px; resize:none;" 
-   				  							 	   	styleClass="boxConsulta" value="<%=row.getString(CenHistoricoBean.C_MOTIVO)%>" readOnly="true"></html:textarea> 
-<% 
-											} 
-%>									
-						  				</td>
-									</tr>
-<% 
-									if (!remitente.equalsIgnoreCase("insertar") && row.getString(CenHistoricoBean.C_DESCRIPCION)!=null && row.getString(CenHistoricoBean.C_DESCRIPCION)!="") { 
-%>									
-										<tr>
-											<td class="labelText">
-												<siga:Idioma key="censo.consultaHistorico.literal.descripcion"/>
-											</td>
-											<td colspan="2">								
-												<textArea 
-													style="overflow-y:auto; overflow-x:hidden; width:500px; height:300px; resize:none;"
-													class="boxConsulta" readonly=""><%=row.getString(CenHistoricoBean.C_DESCRIPCION)%></textarea>
-											</td>											
-										</tr>
-<%
-									} 
-%>										
+								String sMotivo = "";
+								if (row.getString(CenHistoricoBean.C_MOTIVO)!=null) {
+									sMotivo = row.getString(CenHistoricoBean.C_MOTIVO);
+								}
 									
-									<tr>
-										<td class="labelText">
-											<siga:Idioma key="censo.consultaHistorico.literal.observaciones"/>
-										</td>
-										<td colspan="2">								
-<% 
-											String sObervaciones = "";
-											if (row.getString(CenHistoricoBean.C_OBSERVACIONES)!=null) {
-												sObervaciones = row.getString(CenHistoricoBean.C_OBSERVACIONES);
-											}
-											if (remitente.equalsIgnoreCase("insertar") || remitente.equalsIgnoreCase("modificar")) { 
+								if (remitente.equalsIgnoreCase("insertar") || (remitente.equalsIgnoreCase("modificar") && sMotivo.equals(""))) { 
 %>
-												<html:textarea property="observaciones"
-													onKeyDown="cuenta(this,1000)" onChange="cuenta(this,1000)"  
-													style="overflow-y:auto; overflow-x:hidden; width:500px; height:100px; resize:none;"
-													styleClass="box" value="<%=sObervaciones%>"></html:textarea>
+										<html:textarea property="motivo"
+											onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
+											style="overflow-y:auto; overflow-x:hidden; width:500px; height:50px; resize:none;" 
+										 	styleClass="box"></html:textarea> 
 <% 
-											} else { 
+								} else { 
 %>
-												<html:textarea property="observaciones"
-													style="overflow-y:auto; overflow-x:hidden; width:500px; height:100px; resize:none;"
-													styleClass="boxConsulta" readOnly="true" value="<%=sObervaciones%>"></html:textarea>
+			  							   	<html:textarea property="motivo"
+			  							   		style="overflow-y:auto; overflow-x:hidden; width:500px; height:50px; resize:none;" 
+				  							 	   	styleClass="boxConsulta" value="<%=row.getString(CenHistoricoBean.C_MOTIVO)%>" readOnly="true"></html:textarea> 
 <% 
-											} 
+								} 
+%>									
+			  				</td>
+						</tr>
+<% 
+						if (!remitente.equalsIgnoreCase("insertar") && row.getString(CenHistoricoBean.C_DESCRIPCION)!=null && row.getString(CenHistoricoBean.C_DESCRIPCION)!="") { 
+%>									
+							<tr>
+								<td class="labelText" nowrap>
+									<siga:Idioma key="censo.consultaHistorico.literal.descripcion"/>
+								</td>
+								<td>								
+									<textArea 
+										style="overflow-y:auto; overflow-x:hidden; width:500px; height:300px; resize:none;"
+										class="boxConsulta" readonly=""><%=row.getString(CenHistoricoBean.C_DESCRIPCION)%></textarea>
+								</td>											
+							</tr>
+<%
+						} 
+%>										
+						<tr>
+							<td class="labelText" nowrap>
+								<siga:Idioma key="censo.consultaHistorico.literal.observaciones"/>
+							</td>
+							<td>								
+<% 
+								String sObervaciones = "";
+								if (row.getString(CenHistoricoBean.C_OBSERVACIONES)!=null) {
+									sObervaciones = row.getString(CenHistoricoBean.C_OBSERVACIONES);
+								}
+								if (remitente.equalsIgnoreCase("insertar") || remitente.equalsIgnoreCase("modificar")) { 
 %>
-										</td>
-									</tr>									
-								</table>
-							</siga:ConjCampos>
-						</td>
-					</tr>
+									<html:textarea property="observaciones"
+										onKeyDown="cuenta(this,1000)" onChange="cuenta(this,1000)"  
+										style="overflow-y:auto; overflow-x:hidden; width:500px; height:100px; resize:none;"
+										styleClass="box" value="<%=sObervaciones%>"></html:textarea>
+<% 
+								} else { 
+%>
+										<html:textarea property="observaciones"
+											style="overflow-y:auto; overflow-x:hidden; width:500px; height:100px; resize:none;"
+											styleClass="boxConsulta" readOnly="true" value="<%=sObervaciones%>"></html:textarea>
+<% 
+									} 
+%>
+								</td>
+							</tr>									
+						</table>
+					</siga:ConjCampos>
 				</html:form>	
-			</table>
+			</div>
 			<!-- FIN: CAMPOS -->
 
 			<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
@@ -374,8 +361,6 @@
 			<!-- FIN: SCRIPTS BOTONES -->
 	
 			<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-
-		</div>
 		<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 			
 		<!-- INICIO: SUBMIT AREA -->
