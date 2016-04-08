@@ -52,8 +52,7 @@
 	datoTipoExp[0] = idinstitucion;
 	datoTipoExp[1] = idinstitucion;
 
-	BusquedaExpedientesForm form = (BusquedaExpedientesForm) session
-	.getAttribute("busquedaExpedientesForm");
+	BusquedaExpedientesForm form = (BusquedaExpedientesForm) session.getAttribute("busquedaExpedientesForm");
 	try {
 		
 		if (form == null) {
@@ -82,7 +81,18 @@
 	String[] paramPretension = { userBean.getLocation(), "-1" };
 	String txtbuscar = UtilidadesString.getMensajeIdioma(userBean, "general.search");
 	
-	String anio = UtilidadesBDAdm.getYearBD("");
+	String anio = "";	
+	if (ses.getAttribute("DATOSFORMULARIO") instanceof Hashtable) {
+		Hashtable<String,Object> miHash = (Hashtable<String,Object>) ses.getAttribute("DATOSFORMULARIO");
+		ses.removeAttribute("DATOSFORMULARIO");   
+		
+		if (miHash.get("AnioExpediente")!=null) {
+			anio = miHash.get("AnioExpediente").toString();
+		}
+		
+	} else {
+		anio = UtilidadesBDAdm.getYearBD("");
+	}
 %>
 
 	<!-- HEAD -->

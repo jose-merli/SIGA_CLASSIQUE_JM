@@ -24,7 +24,6 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.ExpCampoTipoExpedienteAdm;
 import com.siga.beans.ExpExpedienteAdm;
@@ -140,11 +139,14 @@ public class BusquedaExpedientesAction extends MasterAction {
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#abrir(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	protected String abrir(ActionMapping mapping,
-			MasterForm formulario, HttpServletRequest request,
-			HttpServletResponse response) throws SIGAException {
+	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		
+		String accion = formulario.getModo();
+		if (accion==null || accion.equals("")) {
+			request.getSession().removeAttribute("DATOSFORMULARIO");
+		}
 
-		try{
+		try {
 
 			//Recuperamos el nombre de la institución local
 			UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
@@ -157,7 +159,7 @@ public class BusquedaExpedientesAction extends MasterAction {
 			String buscar = request.getParameter("buscar");
 			request.setAttribute("buscar",buscar);
 
-		}catch(Exception e){
+		} catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null); 
 		}
 
@@ -188,10 +190,8 @@ public class BusquedaExpedientesAction extends MasterAction {
 		}
 		return "avanzada";
 	}
-
 	
-	protected String buscarInit(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
-	{
+	protected String buscarInit(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String forward = "resultado";
 		boolean isAvanzada = false;
 		try{
@@ -226,8 +226,6 @@ public class BusquedaExpedientesAction extends MasterAction {
 				}
 			}
 			
-			
-			
 			HashMap databackup = (HashMap) miFormulario.getDatosPaginador();
 			if (databackup!=null && databackup.get("paginador")!=null &&!isSeleccionarTodos){ 
 				Paginador paginador = (Paginador)databackup.get("paginador");
@@ -237,8 +235,6 @@ public class BusquedaExpedientesAction extends MasterAction {
 				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
 				String pagina = (String)request.getParameter("pagina");
 	
-	
-	
 				if (paginador!=null){	 
 					if (pagina!=null){
 						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
@@ -247,13 +243,8 @@ public class BusquedaExpedientesAction extends MasterAction {
 					}
 				}	
 	
-	
-	
 				databackup.put("paginador",paginador);
 				databackup.put("datos",datos);
-	
-	
-	
 	
 			}else{
 				
@@ -357,9 +348,8 @@ public class BusquedaExpedientesAction extends MasterAction {
 			ExpPermisosTiposExpedientes perm=new ExpPermisosTiposExpedientes(user);
 			request.setAttribute("permisos",perm);
 			
-			
-			
-			
+			Hashtable<String,Object> miHash = miFormulario.getDatos();
+			request.getSession().setAttribute("DATOSFORMULARIO", miHash);			
 			
 		}catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
@@ -367,10 +357,6 @@ public class BusquedaExpedientesAction extends MasterAction {
 		
 		return forward;
 	}
-
-	
-	
-	
 
 	/* (non-Javadoc)
 	 * @see com.siga.general.MasterAction#editar(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -653,10 +639,6 @@ public class BusquedaExpedientesAction extends MasterAction {
 	protected String nuevoCopia(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException{
 
 		try{
-			BusquedaExpedientesForm form = (BusquedaExpedientesForm)formulario;	
-			UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));   						
-
-			
 			ExpCampoTipoExpedienteAdm campoAdm = new ExpCampoTipoExpedienteAdm(this.getUserBean(request));
 
 
