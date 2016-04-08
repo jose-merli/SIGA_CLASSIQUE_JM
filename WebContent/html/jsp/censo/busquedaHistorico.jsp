@@ -227,6 +227,10 @@
 	        	icon:{placement:'right', toOpen:'ui-icon-triangle-1-s', toClose:'ui-icon-triangle-1-s'}
 			});
 	        
+	        jQuery('#ddcl-listaIdTipoCambio').click(function(){
+	        	jQueryTop("#ddcl-listaIdTipoCambio-ddw", window.document).show();
+	        });
+	        
 	        if (document.forms[0].jsonVolver.value!='') {
 		        var jSonVolverObject =  jQuery.parseJSON(document.forms[0].jsonVolver.value);
 				if (jSonVolverObject.nombreFormulario == 'HistoricoForm') {
@@ -265,6 +269,8 @@
 				} else {
 					document.forms[0].idsTipoCambio.value = "";
 				}
+				
+				jQueryTop("#ddcl-listaIdTipoCambio-ddw", window.document).hide();
 				
 				document.forms[0].modo.value='buscarPor';
 				document.forms[0].target='resultado';				
