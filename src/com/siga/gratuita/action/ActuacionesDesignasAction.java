@@ -932,7 +932,9 @@ public class ActuacionesDesignasAction extends MasterAction {
 			if (anioProcedimiento!=null && !anioProcedimiento.equals("")){
 					hash.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, anioProcedimiento);
 			}else{
-				if(isObligatorioNigNumProcedimiento){
+				GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+				String ejisActivo = paramAdm.getValor(usr.getLocation (), "ECOM", "EJIS_ACTIVO", "0");
+				if(isObligatorioNigNumProcedimiento && ejisActivo!=null && ejisActivo.equalsIgnoreCase(AppConstants.DB_TRUE) ){
 					return exito(UtilidadesString.getMensajeIdioma(usr, "errors.required",new String[]{"gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento"}),request);
 				}
 				hash.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, "");
@@ -1283,7 +1285,9 @@ public class ActuacionesDesignasAction extends MasterAction {
 			if (anioProcedimiento!=null && !anioProcedimiento.equals("")){
 				actuacionModificada.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, anioProcedimiento);
 			}else{
-				if(isObligatorioNigNumProcedimiento){
+				GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+				String ejisActivo = paramAdm.getValor(usr.getLocation (), "ECOM", "EJIS_ACTIVO", "0");
+				if(isObligatorioNigNumProcedimiento && ejisActivo!=null && ejisActivo.equalsIgnoreCase(AppConstants.DB_TRUE) ){
 					return exito(UtilidadesString.getMensajeIdioma(usr, "errors.required",new String[]{"gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento"}),request);
 				}
 				actuacionModificada.put(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, "");
