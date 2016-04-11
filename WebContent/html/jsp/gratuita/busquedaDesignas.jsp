@@ -34,7 +34,7 @@
 	String nombreUserBean =  request.getAttribute("nombreUserBean")==null?"":(String)request.getAttribute("nombreUserBean");
 
 	Hashtable datos = (Hashtable)request.getSession().getAttribute("DATOSFORMULARIO");
-	String anio="", codigo="", fechaAperturaInicio="", fechaAperturaFin="", idTurno ="", tipoDesigna="", sufijo="";
+	String codigo="", fechaAperturaInicio="", fechaAperturaFin="", idTurno ="", tipoDesigna="", sufijo="";
 	String nif="", nombre="", apellido1="", apellido2="", nombreMostrado="";
 	String estado="",calidad="",procedimiento="",asunto="",actuacionesPendientes="", nig="", fechaJustificacionDesde="", fechaJustificacionHasta="",origen="";
 	ArrayList juzgadoSel   = new ArrayList();
@@ -44,8 +44,9 @@
 	ArrayList modulo   = new ArrayList();
 	ArrayList idInstitucionSelected   = new ArrayList();
 	
-	anio = UtilidadesBDAdm.getYearBD("");
-		String calidadidinstitucion="";
+	String anioActual = UtilidadesBDAdm.getYearBD("");
+	String anio = anioActual;
+	String calidadidinstitucion="";
 	String idcalidad="";
 	ArrayList calidadSel = new ArrayList();
 	ArrayList idTurnoSelected = new ArrayList();
@@ -624,7 +625,7 @@
 				jQuery("#idInstitucionComision").val("");
 			}
 			
-			jQuery("#anio").val(""); // anio
+			jQuery("#anio").val("<%=anioActual%>"); // anio=Actual
 			jQuery("#codigo").val(""); // codigo
 			jQuery("#fechaAperturaInicio").val(""); // fechaAperturaInicio
 			jQuery("#fechaAperturaFin").val(""); // fechaAperturaFin
@@ -635,10 +636,10 @@
 			jQuery("#idTurno").val(""); // idTurno
 			jQuery("#tipoDesigna").val(""); // tipoDesigna
 			
-			jQuery("#estado").val(""); // estado
+			jQuery("#estado").val("V"); // estado=Activo
 			jQuery("#origen").val(""); // origen
 			jQuery("#actuacionesPendientes").val(""); // actuacionesPendientes
-			jQuery("#mostrarArt27").val(""); // mostrarArt27
+			jQuery("#mostrarArt27").val("T"); // mostrarArt27=Todas
 			
 			limpiarPersona();	
 			

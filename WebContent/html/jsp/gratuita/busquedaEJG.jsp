@@ -48,8 +48,8 @@
 	boolean permisoEejg = false;
 	boolean accesoActa = false;
 	
-	// fechaApertura=UtilidadesBDAdm.getFechaBD("");
-	String anio = UtilidadesBDAdm.getYearBD("");
+	String anioActual = UtilidadesBDAdm.getYearBD("");
+	String anio = anioActual;
 	String nColegiado = request.getAttribute("nColegiado") == null ? "" : (String) request.getAttribute("nColegiado");
 	String nombreColegiado = request.getAttribute("nombreColegiado") == null ? "" : (String) request.getAttribute("nombreColegiado");
 	String ventanaCajg = request.getParameter("ventanaCajg");
@@ -493,7 +493,7 @@ if(usr.isComision()){
 				</td>
 			</tr>			
 		<%}else{%>
-			<html:hidden property="idInstitucionComision" value="<%=idInstitucionComision %>"/>
+			<html:hidden property="idInstitucionComision" value="<%=idInstitucionComision%>"/>
 		<%}%>
 		
 			<tr>
@@ -507,7 +507,7 @@ if(usr.isComision()){
 							<td style="vertical-align:middle">
 								<html:text name="<%=formulario%>" styleId="anio" styleClass="box" property="anio"  value="<%=anio%>" style="width:40px" maxlength="4"></html:text>
 								&nbsp;/&nbsp;
-								<html:text name="<%=formulario%>" styleClass="box" property="numEJG" value="<%=numEJG%>" style="width:90px" maxlength="13"> </html:text>
+								<html:text name="<%=formulario%>" styleId="numEJG" styleClass="box" property="numEJG" value="<%=numEJG%>" style="width:90px" maxlength="13"> </html:text>
 							</td>
 						
 							<td class="labelText" style="vertical-align:middle">
@@ -535,7 +535,7 @@ if(usr.isComision()){
 					<siga:Idioma key="gratuita.busquedaSOJ.literal.creadoDesde" />
 				</td>
 				<td style="vertical-align:middle">
-					<select name="creadoDesde" class="box">
+					<select id="creadoDesde" name="creadoDesde" class="box">
 						<option value=""></option>
 						<option value="A" <%if (creadoDesde.startsWith("A")) {%> selected <%}%>>ASISTENCIA</option>
 						<option value="D" <%if (creadoDesde.startsWith("D")) {%> selected <%}%>>DESIGNA</option>
@@ -592,7 +592,7 @@ if(usr.isComision()){
 				</td>				
 				<td style="vertical-align:middle">
 					<%if(esComision){%>
-						<select id="idTipoResolucionEJG" styleClass="boxCombo" multiple="multiple" onchange="onchangeTipoResolucion();"  style="width:375px;display: none; ">
+						<select id="idTipoResolucionEJG" styleClass="boxCombo" multiple="multiple" onchange="onchangeTipoResolucion();" style="width:375px; display:none;">
 							<% for (int i = 0; i < tiposResolucion.size(); i++) {
 								ScsTiporesolucion  resolucion = (ScsTiporesolucion)tiposResolucion.get(i);
 								String seleccionado = "";
@@ -650,7 +650,7 @@ if(usr.isComision()){
 					<table border="0" cellpadding="5" cellspacing="0">
 						<tr>
 							<td style="vertical-align:middle">
-								<select name="dictaminado" class="boxCombo">
+								<select id="dictaminado" name="dictaminado" class="boxCombo">
 									<option value="S" <%if (sDictaminado.equalsIgnoreCase("S")) {%> selected <%}%>><siga:Idioma key="gratuita.busquedaSOJ.literal.si" /></option>
 									<option value="N" <%if (sDictaminado.equalsIgnoreCase("N")) {%> selected <%}%>><siga:Idioma key="gratuita.busquedaSOJ.literal.no" /></option>
 									<option value="I" <%if (sDictaminado.equalsIgnoreCase("I")) {%> selected <%}%>><siga:Idioma key="gratuita.busquedaSOJ.literal.indiferente" /></option>				
@@ -688,7 +688,7 @@ if(usr.isComision()){
 				</td>
 
 				<td style="vertical-align:middle">
-					<siga:ComboBD nombre="idPonente"  ancho="375" tipo="tipoPonenteAll" clase="boxCombo"  	  filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoPonente%>" elementoSel="<%=vPonente%>"  />
+					<siga:ComboBD nombre="idPonente" ancho="375" tipo="tipoPonenteAll" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=datoPonente%>" elementoSel="<%=vPonente%>"  />
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle" width="160px">
@@ -711,18 +711,18 @@ if(usr.isComision()){
 					<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/>&nbsp;<siga:Idioma key='gratuita.operarEJG.literal.anio'/>/<siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
 				</td>
 				<td style="vertical-align:middle">
-					<html:text name="<%=formulario%>" styleClass="box" property="anioCAJG"  style="width:40px" maxlength="4" value="<%=cajgAnio%>" />
+					<html:text name="<%=formulario%>" styleId="anioCAJG" styleClass="box" property="anioCAJG" style="width:40px" maxlength="4" value="<%=cajgAnio%>" />
 					&nbsp;/&nbsp;
-					<html:text name="<%=formulario%>" styleClass="box" property="numeroCAJG" value="<%=cajgNumero%>" size="8" maxlength="10" />
+					<html:text name="<%=formulario%>" styleId="numeroCAJG" styleClass="box" property="numeroCAJG" value="<%=cajgNumero%>" size="8" maxlength="10" />
 				</td>
 							
 				<td class="labelText" style="vertical-align:middle" width="140px">
 					<siga:Idioma key='gratuita.operarEJG.literal.acta'/>&nbsp;<siga:Idioma key='gratuita.operarEJG.literal.anio'/>/<siga:Idioma key='gratuita.busquedaEJG.literal.codigo'/>
 				</td>
 				<td colspan="3" style="vertical-align:middle">
-					<html:text name="<%=formulario%>" styleClass="box" property="anioActa"  style="width:40px" maxlength="4" value="<%=anioActa%>" />
+					<html:text name="<%=formulario%>" styleId="anioActa" styleClass="box" property="anioActa" style="width:40px" maxlength="4" value="<%=anioActa%>" />
 					&nbsp;/&nbsp;
-					<html:text name="<%=formulario%>" styleClass="box" property="numeroActa" value="<%=numActa%>" size="8" maxlength="10" />
+					<html:text name="<%=formulario%>" styleId="numeroActa" styleClass="box" property="numeroActa" value="<%=numActa%>" size="8" maxlength="10" />
 				</td>				
 			</tr>
 		</table>
@@ -802,14 +802,14 @@ if(usr.isComision()){
 					<siga:Idioma key="informes.cartaAsistencia.procedimiento" />
 				</td>
 				<td>
-					<html:text name="<%=formulario%>" property="procedimiento" size="14" maxlength="100" styleClass="box" value="<%=procedimiento%>" />
+					<html:text styleId="procedimiento" name="<%=formulario%>" property="procedimiento" size="14" maxlength="100" styleClass="box" value="<%=procedimiento%>" />
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="informes.cartaAsistencia.asunto" />
 				</td>
 				<td>
-					<html:text name="<%=formulario%>" property="asunto" size="20" maxlength="100" styleClass="box" value="<%=asunto%>" />
+					<html:text styleId="asunto" name="<%=formulario%>" property="asunto" size="20" maxlength="100" styleClass="box" value="<%=asunto%>" />
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">	
@@ -839,29 +839,30 @@ if(usr.isComision()){
 			</tr>
 			
 			<tr>
-				<td class="labelText" style="vertical-align: middle"><siga:Idioma
-						key="censo.busquedaClientes.literal.checkBusqueda" /> <html:checkbox
-					 name="<%=formulario%>" property="chkBusquedaExactaSolicitante" /></td>
+				<td class="labelText" style="vertical-align: middle">
+					<siga:Idioma key="censo.busquedaClientes.literal.checkBusqueda" /> 
+					<html:checkbox styleId="chkBusquedaExactaSolicitante" name="<%=formulario%>" property="chkBusquedaExactaSolicitante" />
+				</td>
 
 				<td class="labelText" style="vertical-align:middle">
-				<siga:Idioma key="gratuita.busquedaEJG.literal.nif" />
+					<siga:Idioma key="gratuita.busquedaEJG.literal.nif" />
 				</td>
 				<td>
-					<html:text name="<%=formulario%>" property="nif" size="10" maxlength="20" styleClass="box" value="<%=nif%>" />
+					<html:text styleId="nif" name="<%=formulario%>" property="nif" size="10" maxlength="20" styleClass="box" value="<%=nif%>" />
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.busquedaEJG.literal.nombre" /> 
 				</td>				
 				<td>
-					<html:text name="<%=formulario%>" property="nombre" size="15" maxlength="100" styleClass="box" value="<%=nombre%>" />
+					<html:text styleId="nombre" name="<%=formulario%>" property="nombre" size="15" maxlength="100" styleClass="box" value="<%=nombre%>" />
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
 					<siga:Idioma key="gratuita.busquedaAsistencias.literal.apellido1" /> 
 				</td>				
 				<td>
-					<html:text name="<%=formulario%>" property="apellido1" size="15" maxlength="100" styleClass="box" value="<%=apellido1%>" />
+					<html:text styleId="apellido1" name="<%=formulario%>" property="apellido1" size="15" maxlength="100" styleClass="box" value="<%=apellido1%>" />
 				</td>
 				
 				<td class="labelText" style="vertical-align:middle">
@@ -869,7 +870,7 @@ if(usr.isComision()){
 				</td>
 				
 				<td>
-					<html:text name="<%=formulario%>" property="apellido2" size="15" maxlength="100" styleClass="box" value="<%=apellido2%>" />
+					<html:text styleId="apellido2" name="<%=formulario%>" property="apellido2" size="15" maxlength="100" styleClass="box" value="<%=apellido2%>" />
 				</td>
 			</tr>
 		</table>
@@ -903,31 +904,31 @@ if(usr.isComision()){
 	<%if(ventanaCajg.equalsIgnoreCase("0")){%>
 		<%if(!esComision){%>
 			<%if(permisoEejg){ %>
-				<siga:ConjBotonesBusqueda botones="C,N,B,DEE, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+				<siga:ConjBotonesBusqueda botones="L,C,N,B,DEE, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 			<%}else{ %>
-				<siga:ConjBotonesBusqueda botones="C,N,B, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+				<siga:ConjBotonesBusqueda botones="L,C,N,B, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 			<%} %>
 		<%}else{ %>
 			<%if(permisoEejg){ 
 				if(accesoActa){	%>
-					<siga:ConjBotonesBusqueda botones="C,B,DEE,ES, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+					<siga:ConjBotonesBusqueda botones="L,C,B,DEE,ES, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 			
 				<%}else{%>
-					<siga:ConjBotonesBusqueda botones="C,B,DEE,ES, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+					<siga:ConjBotonesBusqueda botones="L,C,B,DEE,ES, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 			
 				<%}
 			}else{
 				if(accesoActa){	%>
-					<siga:ConjBotonesBusqueda botones="C,B,ES, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+					<siga:ConjBotonesBusqueda botones="L,C,B,ES, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 				<%}else{ %>
-				<siga:ConjBotonesBusqueda botones="C,B,ES, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+				<siga:ConjBotonesBusqueda botones="L,C,B,ES, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 				<%} %>
 			<%} 
 		}%>
 	<%}else if(ventanaCajg.equalsIgnoreCase("1")){%> <!-- Antiguo busquedaEJG_Cajg -->
-		<siga:ConjBotonesBusqueda botones="le,B, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+		<siga:ConjBotonesBusqueda botones="L,le,B, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 	<%}else if(ventanaCajg.equalsIgnoreCase("2")){%> <!-- Antiguo busquedaEJG_Listos -->
-		<siga:ConjBotonesBusqueda botones="B,ar, CON"  titulo="gratuita.BusquedaRemesas_CAJG.literal.Remesa.ExpedientesListos" />
+		<siga:ConjBotonesBusqueda botones="L,B,ar, CON"  titulo="gratuita.BusquedaRemesas_CAJG.literal.Remesa.ExpedientesListos" />
 	<%}%>
 <!-- FIN: BOTONES BUSQUEDA -->	
 	
@@ -1230,6 +1231,79 @@ if(usr.isComision()){
 			document.getElementById("chkBusquedaExactaSolicitante").checked="";
 		<% }%>
 		
+		function limpiar() {
+			if (jQuery("#idInstitucionComision").exists()) { // idInstitucionComision
+				jQuery("#idInstitucionComision").val("");
+			}
+			
+			jQuery("#anio").val("<%=anioActual%>"); // anio=Actual
+			jQuery("#numEJG").val(""); // numEJG
+			jQuery("#idTipoEJG").val(""); // idTipoEJG
+			jQuery("#idTipoEJGColegio").val(""); // idTipoEJGColegio
+
+			jQuery("#creadoDesde").val(""); // creadoDesde
+			jQuery("#fechaAperturaDesde").val(""); // fechaAperturaDesde
+			jQuery("#fechaAperturaHasta").val(""); // fechaAperturaHasta
+						
+			jQuery("#estadoEJG").val(""); // estadoEJG
+			jQuery("#fechaEstadoDesde").val(""); // fechaEstadoDesde
+			jQuery("#fechaEstadoHasta").val(""); // fechaEstadoHasta
+			
+			if (jQuery("#ddcl-idTipoResolucionEJG-ddw").exists()) { // idTipoResolucionEJG
+				var opcionIndiferente = jQuery("#ddcl-idTipoResolucionEJG-i0");
+				if (opcionIndiferente.is(':checked')) {
+					opcionIndiferente.click(); // Desmarco todas ... invoca una llamada ajax para cargar los fundamentos juridicos
+				} else {
+					opcionIndiferente.click(); // Marco todas ... invoca una llamada ajax para cargar los fundamentos juridicos
+					opcionIndiferente.click(); // Desmarco todas ... invoca una llamada ajax para cargar los fundamentos juridicos
+				}
+			}
+			if (jQuery("#idTipoRatificacionEJG").exists()) { // idTipoRatificacionEJG
+				jQuery("#idTipoRatificacionEJG").val("");
+			}			
+			jQuery("#fechaLimitePresentacionDesde").val(""); // fechaLimitePresentacionDesde
+			jQuery("#fechaLimitePresentacionHasta").val(""); // fechaLimitePresentacionHasta
+			
+			if (jQuery("#idFundamentoJuridico").exists()) { // idFundamentoJuridico
+				jQuery("#idFundamentoJuridico").val("");
+			}
+			
+			jQuery("#dictaminado").val("I"); // dictaminado=Indiferente		
+			jQuery("#idTipoDictamenEJG").val(""); // idTipoDictamenEJG
+			jQuery("#fechaDictamenDesde").val(""); // fechaDictamenDesde
+			jQuery("#fechaDictamenHasta").val(""); // fechaDictamenHasta
+			
+			jQuery("#idPonente").val(""); // idPonente
+			jQuery("#fechaPresentacionPonenteDesde").val(""); // fechaPresentacionPonenteDesde
+			jQuery("#fechaPresentacionPonenteHasta").val(""); // fechaPresentacionPonenteHasta
+			
+			jQuery("#anioCAJG").val(""); // anioCAJG
+			jQuery("#numeroCAJG").val(""); // numeroCAJG
+			jQuery("#anioActa").val(""); // anioActa
+			jQuery("#numeroActa").val(""); // numeroActa
+			
+			jQuery("#identificador").val(""); // idturno
+			jQuery("#guardiaTurnoIdGuardia").val(""); // guardiaTurnoIdGuardia			
+			
+			limpiarPersona();
+			
+			jQuery("#calidad").val(""); // calidad
+			jQuery("#idPreceptivo").val(""); // idPreceptivo
+			jQuery("#idRenuncia").val(""); // idRenuncia			
+			
+			jQuery("#juzgado_searchBox").val(""); // juzgado
+			jQuery("#juzgado").val(""); // juzgado
+			
+			jQuery("#procedimiento").val(""); // procedimiento
+			jQuery("#asunto").val(""); // asunto
+			jQuery("#nig").val(""); // nig
+			
+			jQuery("#chkBusquedaExactaSolicitante").prop('checked', true); // chkBusquedaExactaSolicitante=Checked
+			jQuery("#nif").val(""); // nif
+			jQuery("#nombre").val(""); // nombre
+			jQuery("#apellido1").val(""); // apellido1
+			jQuery("#apellido2").val(""); // apellido2
+	}				
 	</script>
 <!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 <!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
