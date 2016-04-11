@@ -215,8 +215,6 @@ function accionGuardar (isLetrado)
 			
 			var cadenaAcreditacion=checkAcreditacion.id;
 			var idsAcreditacion = cadenaAcreditacion.split("_");
-			
-			//el 0 es acre_
 			var index = idsAcreditacion[1];
 			var numActuacion = idsAcreditacion[2];
 			var idTipoAcreditacion = idsAcreditacion[3];
@@ -265,10 +263,29 @@ function accionGuardar (isLetrado)
 								datosInsertables + "#";
 								
 			}else{
-				existenActuacionesIncompletas = 'true';
+				if(justificado=='1'){
+					existenActuacionesIncompletas = 'true';
+				}else{
+					//Este es el caso de actuaciones insertadas sin fecha justificacion
+					datosJustificacion = datosJustificacion + anio + "," + 
+					numero + "," + 
+					idInstitucion + "," + 
+					idTurno + "," + 
+					idJuzgado + "," + 
+					idProcedimiento + "," + 
+					numActuacion + "," +
+					idAcreditacion + "," +
+					justificado + "," +
+					idJurisdiccion + "," +
+					fechaDesigna + "," +
+					validado + "," +
+					actuacionRestriccionesActiva +
+					datosInsertables + "#";
+				}
 			}
 		}
 	}
+	
 	//Ahora miramos los check Validacion que a estuvieran acreditados anteriormente
 	var checksValidacion = document.getElementsByName("checkValidacion");
 	for (i=0;i<checksValidacion.length;i++) {
@@ -315,6 +332,7 @@ function accionGuardar (isLetrado)
 			}
 		}
 	}
+	
 	var datosBaja = "";
 	//Ahora miramos si hay alguno que no esta en los anetriores pero que esta de baja
 	var checksBaja = document.getElementsByName("checkBaja");
@@ -1859,7 +1877,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 														<table>
 															<tr>
 															<c:choose>
-																<c:when test="${actuacion.documentoJustificacion&&subidaJustificacionesActiva}">
+																<c:when test="${actuacion.documentoJustificacion&&subidaJustificacionesActiva  && actuacion.fechaJustificacion!=null && actuacion.fechaJustificacion!=''}">
 																	<td style="text-align: left;  font-size: 13px; white-space: nowrap; vertical-align: top">
 																	<span style="vertical-align: top"><c:out value="${actuacion.numero}" /></span>
 																	<span style='align:right; word-wrap: break-word;display: inline-block; width: 60px'>
@@ -1879,7 +1897,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																	</td>
 																</c:when>
 		
-																<c:when test="${!actuacion.documentoJustificacion&&subidaJustificacionesActiva}">
+																<c:when test="${!actuacion.documentoJustificacion&&subidaJustificacionesActiva && actuacion.fechaJustificacion!=null && actuacion.fechaJustificacion!=''}">
 																	<td style="text-align: left;  font-size: 13px; white-space: nowrap; vertical-align: top">
 																	<span style="vertical-align: top"><c:out value="${actuacion.numero}" /></span>
 																	<c:if test="${empty actuacion.idFacturacion}">
@@ -2034,7 +2052,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 															<table>
 															<tr>
 															<c:choose>
-																<c:when test="${actuacion.documentoJustificacion&&subidaJustificacionesActiva}">
+																<c:when test="${actuacion.documentoJustificacion&&subidaJustificacionesActiva && actuacion.fechaJustificacion!=null && actuacion.fechaJustificacion!=''}">
 																<td style="text-align: left;  font-size: 13px;">
 																<c:out value="${actuacion.numero}" /></td>
 																<td style="text-align: left;  font-size: 13px;">
@@ -2058,7 +2076,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																
 																
 																</c:when>
-																<c:when test="${!actuacion.documentoJustificacion&&subidaJustificacionesActiva}">
+																<c:when test="${!actuacion.documentoJustificacion&&subidaJustificacionesActiva && actuacion.fechaJustificacion!=null && actuacion.fechaJustificacion!=''}">
 																	<td style="text-align: left;  font-size: 13px;">
 																	<c:out value="${actuacion.numero}" /></td>
 																	<c:if test="${empty actuacion.idFacturacion}">
