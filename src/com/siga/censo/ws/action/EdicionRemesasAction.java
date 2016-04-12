@@ -29,7 +29,6 @@ import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatosExample.Criter
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsEnvio;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.services.cen.CenWSService;
-import org.redabogacia.sigaservices.app.services.cen.ws.EcomCenColegiadoService;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.vo.EcomCenColegiadoVO;
@@ -37,7 +36,6 @@ import org.redabogacia.sigaservices.app.vo.EcomCenColegiadoVO;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.siga.Utilidades.UtilidadesBDAdm;
-import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorVector;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.censo.ws.form.EdicionColegiadoForm;
@@ -54,14 +52,6 @@ public class EdicionRemesasAction extends MasterAction {
 	public static final String DATAPAGINADOR = "DATAPAGINADOR_LISTADO_COLEGIADOS";
 	
 	private static final Logger log = Logger.getLogger(EdicionRemesasAction.class);
-	
-	private enum camposExcelEnum {
-    	NUM_COLEGIADO
-    	, NOMBRE
-    	, APELLIDO1
-    	, APELLIDO2    
-    	, ESTADO
-    }
 	
 	/** 
 	 *  Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
@@ -180,32 +170,7 @@ public class EdicionRemesasAction extends MasterAction {
 		EcomCenDatosExample ecomCenDatosExample = new EcomCenDatosExample();
 		Criteria datosCriteria = ecomCenDatosExample.createCriteria();
 		
-		if (isNotnull(form.getNumeroColegiado())) {
-			datosCriteria.andNcolegiadoUpperLike(getCampoLike(form.getNumeroColegiado().trim()));
-		}
-		//nombre
-		if (isNotnull(form.getNombre())) {
-			datosCriteria.andNombreUpperLike(getCampoLike(form.getNombre().trim()));
-		}
-		//apellido 1
-		if (isNotnull(form.getPrimerApellido())) {
-			datosCriteria.andApellido1UpperLike(getCampoLike(form.getPrimerApellido().trim()));
-		}
-		//apellido 2
-		if (isNotnull(form.getSegundoApellido())) {
-			datosCriteria.andApellido2UpperLike(getCampoLike(form.getSegundoApellido().trim()));
-		}
-		//tipo identificación
-		if (isNotnull(form.getIdTipoIdentificacion())) {
-			datosCriteria.andIdcensotipoidentificacionEqualTo(Short.valueOf(form.getIdTipoIdentificacion().trim()));
-		}
-		//identificación
-		if (isNotnull(form.getIdentificacion())) {
-			datosCriteria.andNumdocumentoUpperLike(getCampoLike(form.getIdentificacion().trim()));
-		}
-		if (isNotnull(form.getIdestadocolegiado())) {
-			datosCriteria.andIdestadocolegiadoEqualTo(Short.valueOf(form.getIdestadocolegiado()));
-		}
+		rellenaFiltroDatos(datosCriteria, form);
 		
 		String idincidencia = null;
 		if (isNotnull(form.getIdincidencia())) {
@@ -251,6 +216,40 @@ public class EdicionRemesasAction extends MasterAction {
 
 	}
 	
+	private void rellenaFiltroDatos(Criteria datosCriteria,	EdicionRemesaForm form) {
+		
+		//numero de colegiado
+		if (isNotnull(form.getNumeroColegiado())) {			
+			datosCriteria.andNcolegiadoUpperLike(getCampoLike(form.getNumeroColegiado().trim()));
+		}
+		//nombre
+		if (isNotnull(form.getNombre())) {
+			datosCriteria.andNombreUpperLike(getCampoLike(form.getNombre().trim()));
+		}
+		//apellido 1
+		if (isNotnull(form.getPrimerApellido())) {
+			datosCriteria.andApellido1UpperLike(getCampoLike(form.getPrimerApellido().trim()));
+		}
+		//apellido 2
+		if (isNotnull(form.getSegundoApellido())) {
+			datosCriteria.andApellido2UpperLike(getCampoLike(form.getSegundoApellido().trim()));
+		}
+		//tipo identificación
+		if (isNotnull(form.getIdTipoIdentificacion())) {
+			datosCriteria.andIdcensotipoidentificacionEqualTo(Short.valueOf(form.getIdTipoIdentificacion().trim()));
+		}
+		//identificación
+		if (isNotnull(form.getIdentificacion())) {
+			datosCriteria.andNumdocumentoUpperLike(getCampoLike(form.getIdentificacion().trim()));
+		}
+		//estado colegiado
+		if (isNotnull(form.getIdestadocolegiado())) {
+			datosCriteria.andIdestadocolegiadoEqualTo(Short.valueOf(form.getIdestadocolegiado()));
+		}
+		
+	}
+
+
 	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		return verEditar("ver", formulario, request);		
 	}
@@ -331,41 +330,60 @@ public class EdicionRemesasAction extends MasterAction {
 
 	protected String generaExcel(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		Vector datos = new Vector();
-		String[] cabeceras = new String[camposExcelEnum.values().length];
-        String[] campos = new String[camposExcelEnum.values().length];
+		EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm) formulario;
+		
+		String[] cabeceras = new String[]{"COLEGIO"
+		       	, "FECHA_PETICION"
+           		, "PUBLICAR_COLEGIADO"
+		       	, "N_COLEGIADO"
+		       	, "NOMBRE"
+		       	, "APELLIDO_1"
+		       	, "APELLIDO_2"
+           		, "FECHA_NACIMIENTO"
+           		, "TIPO_IDENTIFICACION"
+		       	, "NUM_DOCUMENTO"
+           		, "PUBLICAR_TELEFONO"
+           		, "TELEFONO"
+           		, "PUBLICAR_MOVIL"
+           		, "TELEFONO_MOVIL"
+           		, "PUBLICAR_FAX"
+           		, "FAX"				
+           		, "PUBLICAR_EMAIL"
+           		, "EMAIL"
+           		, "SITUACION"
+		       	, "FECHA_SITUACION"
+           		, "RESIDENTE"
+           		, "ESTADO"       
+		       	, "INCIDENCIA"
+		       	, "DETALLE_INCIDENCIA"
+           		, "FECHA_INCORPORACION"};
         
-        
-        if (request.getSession().getAttribute(DATAPAGINADOR) != null) {
-        	HashMap databackup = (HashMap) request.getSession().getAttribute(DATAPAGINADOR);
-        	
-        	
-        	for (int i = 0; i < camposExcelEnum.values().length; i++) {
-        		cabeceras[i] = camposExcelEnum.values()[i].name();
-        		campos[i] = camposExcelEnum.values()[i].name();
-        	}
-        	
-        	PaginadorVector<EdicionColegiadoForm> paginador = (PaginadorVector<EdicionColegiadoForm>) databackup.get("paginador");
-        	
-        	List<EdicionColegiadoForm> colegiados = paginador.getCache();
-        	
-        	for (EdicionColegiadoForm edciColegiadoForm : colegiados) {
-        		Hashtable<String, String> hash = new Hashtable<String, String>();
-        		hash.put(camposExcelEnum.NUM_COLEGIADO.name(), getDato(edciColegiadoForm.getNcolegiado()));
-        		hash.put(camposExcelEnum.NOMBRE.name(), getDato(edciColegiadoForm.getNombre()));
-        		hash.put(camposExcelEnum.APELLIDO1.name(), getDato(edciColegiadoForm.getApellido1()));
-        		hash.put(camposExcelEnum.APELLIDO2.name(), getDato(edciColegiadoForm.getApellido2()));
-        		hash.put(camposExcelEnum.ESTADO.name(), UtilidadesString.getMensajeIdioma(getUserBean(request), AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.getDescripcion(edciColegiadoForm.getIdestadocolegiado())));        		
-        		
-        		datos.add(hash);
-        	}
-        	
-        	String nombreFichero = request.getParameter("nombreFichero");
-        
-			request.setAttribute("campos",campos);
-			request.setAttribute("datos",datos);
-			request.setAttribute("cabeceras",cabeceras);
-			request.setAttribute("descripcion", nombreFichero);
-        }
+        CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
+		
+		EcomCenDatosExample ecomCenDatosExample = new EcomCenDatosExample();
+		Criteria datosCriteria = ecomCenDatosExample.createCriteria();
+		
+		rellenaFiltroDatos(datosCriteria, edicionRemesaForm);
+		
+		String idincidencia = null;
+		if (isNotnull(edicionRemesaForm.getIdincidencia())) {
+			idincidencia = edicionRemesaForm.getIdincidencia();
+		}
+		
+		ecomCenDatosExample.orderByApellido1();
+		ecomCenDatosExample.orderByApellido2();
+		ecomCenDatosExample.orderByNombre();
+		
+		List<Hashtable<String, Object>> listaResultados = cenWSService.getDatosExcel(edicionRemesaForm.getIdcensowsenvio(), ecomCenDatosExample, idincidencia, edicionRemesaForm.isModificado());
+    	
+    	datos.addAll(listaResultados);
+    	
+    	String nombreFichero = request.getParameter("nombreFichero");
+    
+		request.setAttribute("campos",cabeceras);
+		request.setAttribute("datos",datos);
+		request.setAttribute("cabeceras",cabeceras);
+		request.setAttribute("descripcion", nombreFichero);
 		
 		return "generaExcel";		
 	}
