@@ -423,9 +423,11 @@
 			
 			<td class="labelText"><siga:Idioma key="gratuita.busquedaDesignas.literal.fechaJustificacion.desde" /></td>
 			<td class="labelText" >
+				<siga:Idioma key="gratuita.busquedaDesignas.literal.fechaJustificacion.literalDesde" />
 				<siga:Fecha nombreCampo="fechaJustificacionDesde" valorInicial="<%=fechaJustificacionDesde%>" /> 
+				&nbsp;&nbsp;
 				<siga:Idioma key="gratuita.busquedaDesignas.literal.fechaJustificacion.hasta" />
-				<siga:Fecha nombreCampo="fechaJustificacionHasta" valorInicial="<%=fechaJustificacionHasta%>" campoCargarFechaDesde="fechaJustificacionDesde"/> 
+				<siga:Fecha nombreCampo="fechaJustificacionHasta" valorInicial="<%=fechaJustificacionHasta%>"/> 
 			</td>
 					
 			

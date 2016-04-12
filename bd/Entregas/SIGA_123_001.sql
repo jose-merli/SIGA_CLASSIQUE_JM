@@ -166,4 +166,16 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.justificacion.insercionCompletas', 'Existen actuaciones que no se insertarán debido a que no se ha aportado toda la información obligatoria.¿Desea continuar?#EU', 0, '3', sysdate, 0, '19');
 
 -- Ejecutado en Integracion por Adrian el 30/03/2016 12:30
+
+ 
+update gen_recursos set descripcion='Fecha Justificación' where idRecurso='gratuita.busquedaDesignas.literal.fechaJustificacion.desde' and idLenguaje=1
+update gen_recursos set descripcion='Fecha Justificación#CA' where idRecurso='gratuita.busquedaDesignas.literal.fechaJustificacion.desde' and idLenguaje=2
+update gen_recursos set descripcion='Fecha Justificación#EU' where idRecurso='gratuita.busquedaDesignas.literal.fechaJustificacion.desde' and idLenguaje=3
+update gen_recursos set descripcion='Fecha Justificación#GL' where idRecurso='gratuita.busquedaDesignas.literal.fechaJustificacion.desde' and idLenguaje=4
+ 
+ 
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.busquedaDesignas.literal.fechaJustificacion.literalDesde', 'Desde', 0, '1', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.busquedaDesignas.literal.fechaJustificacion.literalDesde', 'Desde#GL', 0, '4', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.busquedaDesignas.literal.fechaJustificacion.literalDesde', 'Desde#CA', 0, '2', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.busquedaDesignas.literal.fechaJustificacion.literalDesde', 'Desde#EU', 0, '3', sysdate, 0, '22');
  
