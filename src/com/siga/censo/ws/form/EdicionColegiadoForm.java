@@ -364,6 +364,10 @@ public class EdicionColegiadoForm extends MasterForm {
 						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ERROR_ALTA_PERSONA_COLEGIADO.getCodigo()
 						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ERROR_ACTUALIZACION_COLEGIADO.getCodigo()) {
 			return true;
+		} else if (idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.INICIAL_RECIBIDO.getCodigo()
+						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.LISTO_PASO2.getCodigo()
+						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.BAJA_CALCULADA.getCodigo()) {
+			return true;
 		} else {
 			return false;
 		}
