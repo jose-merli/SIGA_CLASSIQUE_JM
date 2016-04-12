@@ -54,6 +54,7 @@ public class SolicitudAceptadaCentralitaForm extends MasterForm {
 	String solicitanteFax;
 	String solicitantePoblacionExt;
 	String solicitantePais;
+	String sexo;
 	
 	String idTipoAsistenciaColegio;
 	
@@ -468,6 +469,17 @@ public class SolicitudAceptadaCentralitaForm extends MasterForm {
 	 */
 	public void setSolicitanteNombre(String solicitanteNombre) {
 		this.solicitanteNombre = solicitanteNombre;
+	}
+	
+
+
+	public String getSexo() {
+		return sexo;
+	}
+
+
+	public void setSexo(String sexo) {
+		this.sexo = sexo;
 	}
 
 
@@ -953,6 +965,8 @@ public class SolicitudAceptadaCentralitaForm extends MasterForm {
 	public void setNumAvisoCV(String numAvisoCV) {
 		this.numAvisoCV = numAvisoCV;
 	}
+
+
 	
 	
 }

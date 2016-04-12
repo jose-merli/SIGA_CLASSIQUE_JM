@@ -482,14 +482,14 @@
 			
 				// centro detencion	/ Juzgado
 				td = tr.insertCell(1); 
-				td.setAttribute("width", "25%");
+				td.setAttribute("width", "17%");
 				td.className = "";
 				//Centro detencion
 				if (document.VolantesExpressForm.lugar[0].checked && 
 				    document.VolantesExpressForm.lugar[0].value == "centro") {
 				    
 					aux = '<table><tr><td><input type="text" id="codComisaria_' + numFila + '" class="box" size="8"  style="width:20px;margin-top:2px;" maxlength="10" onBlur="obtenerComisaria(' + numFila + ');" /></td>'+ 			
-							'<td><select class="boxCombo" id="comisaria_' + numFila + '" style="width:200px;" name="comisaria_' + numFila + '" onchange="cambiarComisaria(' + numFila + ');">'+ 
+							'<td><select class="boxCombo" id="comisaria_' + numFila + '" style="width:135px;" name="comisaria_' + numFila + '" onchange="cambiarComisaria(' + numFila + ');">'+ 
 								
 							'</select></td></table></tr>';
 					td.innerHTML = aux;
@@ -497,13 +497,13 @@
 				// Juzgado
 				else {
 					aux = '<table><tr><td><input type="text" id="codJuzgado_' + numFila + '" class="box" size="8" style="width:21px;margin-top:2px;" maxlength="10" onBlur="obtenerJuzgado(' + numFila + ');"/></td> ' +
-						  '<td><select class="boxCombo" id="juzgado_' + numFila + '" style="width:200px;" name="juzgado_' + numFila + '" onchange="cambiarJuzgado(' + numFila + ');">'+ 
+						  '<td><select class="boxCombo" id="juzgado_' + numFila + '" style="width:135px;" name="juzgado_' + numFila + '" onchange="cambiarJuzgado(' + numFila + ');">'+ 
 							'</select></td></table></tr>';
 					 td.innerHTML = aux;
 				}
 				// asistido (dni - nombre apellido1 apellido2)
 				td = tr.insertCell(2); 
-				td.setAttribute("width", "36%");
+				td.setAttribute("width", "44%");
 				td.className = "";
 				var filaDinamica= '<table><tr><td><input type="text" id="dni_' + numFila + '" class="box" style="width:70px;margin-top:2px;margin-rigth:1px;" value="" maxlength="20" onBlur="obtenerPersona(' + numFila + ');" /></td><td>-</td> ' +
 						                '<td><input type="text" id="nombre_' + numFila + '" class="box" style="width:70px;margin-top:2px;margin-rigth:1px;" value="" maxlength="80"/></td>' + 
@@ -998,10 +998,10 @@
 			<td align='center' width='6%'>
 				<siga:Idioma key="gratuita.volantesExpres.literal.hora"/>
 			</td>
-			<td id='centroDetencionJuzgado' align='center' width='25%'>
+			<td id='centroDetencionJuzgado' align='center' width='17%'>
 				<siga:Idioma key="gratuita.volantesExpres.literal.centroDetencion"/>
 			</td>
-			<td align='center' width='36%'>
+			<td align='center' width='44%'>
 				<siga:Idioma key="gratuita.volantesExpres.literal.asistido"/>
 			</td>
 			<td id='diligenciaProcedimiento' align='center' width='8%'>

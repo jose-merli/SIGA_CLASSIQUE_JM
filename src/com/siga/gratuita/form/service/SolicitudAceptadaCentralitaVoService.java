@@ -135,6 +135,7 @@ public class SolicitudAceptadaCentralitaVoService implements VoUiService<Solicit
 		solicitudAceptadaCentralitaVo.setSolicitanteNombre(objectForm.getSolicitanteNombre());
 		solicitudAceptadaCentralitaVo.setSolicitanteApellido1(objectForm.getSolicitanteApellido1());
 		solicitudAceptadaCentralitaVo.setSolicitanteApellido2(objectForm.getSolicitanteApellido2());
+		solicitudAceptadaCentralitaVo.setSexo(objectForm.getSexo());
 		solicitudAceptadaCentralitaVo.setSolicitanteTipoVia(objectForm.getSolicitanteTipoVia());
 		solicitudAceptadaCentralitaVo.setSolicitanteDireccion(objectForm.getSolicitanteDireccion());
 		solicitudAceptadaCentralitaVo.setSolicitanteNumero(objectForm.getSolicitanteNumero());
@@ -256,16 +257,14 @@ public class SolicitudAceptadaCentralitaVoService implements VoUiService<Solicit
 			}
 			solicitudAceptadaCentralitaForm.setSolicitanteDescripcion(descripcionSolicitante.toString());
 			
-		}
-		
-		
-		
+		}		
 		
 		solicitudAceptadaCentralitaForm.setSolicitanteIdTipoIdentificacion(objectVo.getSolicitanteIdTipoIdentificacion());
 		solicitudAceptadaCentralitaForm.setSolicitanteNumeroIdentificacion(objectVo.getSolicitanteNumeroIdentificacion());
 		solicitudAceptadaCentralitaForm.setSolicitanteNombre(objectVo.getSolicitanteNombre());
 		solicitudAceptadaCentralitaForm.setSolicitanteApellido1(objectVo.getSolicitanteApellido1());
 		solicitudAceptadaCentralitaForm.setSolicitanteApellido2(objectVo.getSolicitanteApellido2());
+		solicitudAceptadaCentralitaForm.setSexo(objectVo.getSexo());
 		solicitudAceptadaCentralitaForm.setSolicitanteTipoVia(objectVo.getSolicitanteTipoVia());
 		solicitudAceptadaCentralitaForm.setSolicitanteDireccion(objectVo.getSolicitanteDireccion());
 		solicitudAceptadaCentralitaForm.setSolicitanteNumero(objectVo.getSolicitanteNumero());

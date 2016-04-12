@@ -1,4 +1,3 @@
-<%@page import="com.atos.utils.ClsConstants"%>
 <html>
 <head>
 <!-- editarSolicitudAceptadaCentralita.jsp -->
@@ -16,6 +15,24 @@
 <%@ taglib uri="struts-html.tld" prefix="html"%>
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="c.tld" prefix="c"%>
+
+<%@ page import="com.siga.ws.CajgConfiguracion"%>
+<%@ page import="com.atos.utils.ClsConstants"%>
+<%@ page import="com.atos.utils.UsrBean"%>
+<% 
+	
+	HttpSession ses = request.getSession();
+	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
+	
+	boolean obligatorioSexo = false;
+	String asterisco = "&nbsp;(*)&nbsp;";
+	Integer idInstitucion = new Integer(usr.getLocation());	
+	int cajgConfig = CajgConfiguracion.getTipoCAJG(idInstitucion);	
+	
+	if(cajgConfig == 9){
+		 obligatorioSexo = true;
+	}
+%>
 
 	<!-- HEAD -->
 	
@@ -118,7 +135,7 @@
 		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteCodPostal.value!="")||
 		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteCorreoElectronico.value!="")||
 		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteTelefono.value!="")||
-		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteFax.value!="")){
+		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteFax.value!="") || document.forms['SolicitudAceptadaCentralitaForm'].sexo.value !="-1"){
 			
 			if(document.forms['SolicitudAceptadaCentralitaForm'].solicitanteIdTipoIdentificacion.value==''){
 				alert("<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.tipoIdentificacion'/>");
@@ -132,6 +149,15 @@
 			}
 			
 		}
+		
+		if(<%=cajgConfig == 9%>){
+			if (<%=obligatorioSexo%> && document.forms['SolicitudAceptadaCentralitaForm'].sexo.value=="-1"){
+				alert("<siga:Idioma key='errors.required' arg0='Sexo'/>",'error');
+				fin();
+				return false;
+			}
+				
+		}	
 		
 		if(jQuery('#fichaColegial').val()=='0') 
 			document.forms['SolicitudAceptadaCentralitaForm'].target.value="submitArea";
@@ -550,6 +576,26 @@
 								<html:text property="solicitanteApellido2" maxlength="100" styleClass="box"style="width:120px" />
 						</td>
 						<td>
+						</td>
+					</tr>
+					<tr>
+						<td class="labelText">
+								<siga:Idioma key="gratuita.personaJG.literal.sexo"/>
+								<% 
+									if (obligatorioSexo) {
+								%>
+										<%=asterisco%> 
+								<%
+									}
+								%>
+						</td>
+						<td>
+							<select id="sexo" name="sexo" styleClass="boxCombo" >
+									<option value="-1"></option>
+									<option value="<%=ClsConstants.TIPO_SEXO_HOMBRE %>"><siga:Idioma key="censo.sexo.hombre"/></option>
+									<option value="<%=ClsConstants.TIPO_SEXO_MUJER %>"><siga:Idioma key="censo.sexo.mujer"/></option>
+									<option value="<%=ClsConstants.TIPO_SEXO_NC %>"><siga:Idioma key="censo.sexo.nc"/></option>
+							</select>			
 						</td>
 					</tr>
 				</table>

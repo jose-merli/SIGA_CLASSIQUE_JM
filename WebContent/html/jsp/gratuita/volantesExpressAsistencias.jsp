@@ -44,7 +44,7 @@
 						<input type="text" id="minuto_<bean:write name='index'/>" class="box" style="width:20px; margin-top:4px;text-align:center;" maxLength="2" value="<bean:write name="asistencia" property="minuto" />" onBlur="validaMinuto(this);" />
 					</td>
 				
-					<td align='center' width='25%'>				
+					<td align='center' width='17%'>				
 						<c:if test="${VolantesExpressForm.lugar == 'centro'}">
 							<table>
 								<tr>
@@ -53,7 +53,7 @@
 									</td>
 									 			
 									<td>
-										<select class="boxCombo" id="comisaria_<bean:write name='index'/>" style="width:200px; margin-top:2px;" name="comisaria_<bean:write name='index'/>" onchange="cambiarComisaria(<bean:write name='index'/>);"> 
+										<select class="boxCombo" id="comisaria_<bean:write name='index'/>" style="width:135px; margin-top:2px;" name="comisaria_<bean:write name='index'/>" onchange="cambiarComisaria(<bean:write name='index'/>);"> 
 											<bean:define id="comisarias" name="VolantesExpressForm" property="comisarias" type="java.util.List" />
 											<logic:iterate id="comisaria" name="comisarias">
 												<option value='<bean:write name="comisaria" property="idComisaria"/>' >
@@ -81,7 +81,7 @@
 									</td>
 								 			
 									<td>
-										<select class="boxCombo" id="juzgado_<bean:write name='index'/>" style="width:200px; margin-top:2px;" name="juzgado_<bean:write name='index'/>" onchange="cambiarJuzgado(<bean:write name='index'/>);"> 
+										<select class="boxCombo" id="juzgado_<bean:write name='index'/>" style="width:135px; margin-top:2px;" name="juzgado_<bean:write name='index'/>" onchange="cambiarJuzgado(<bean:write name='index'/>);"> 
 											<bean:define id="juzgados" name="VolantesExpressForm" property="juzgados" type="java.util.List" />
 											<logic:iterate id="juzgado" name="juzgados">
 												<option value='<bean:write name="juzgado" property="idJuzgado"/>' >
@@ -102,7 +102,7 @@
 						</c:if>															
 				 	</td>
 				 	
-					<td align='center' width='36%'>
+					<td align='center' width='44%'>
 						<table>
 							<tr>
 								<td><input type="text" id="dni_<bean:write name='index'/>" class="box" style="width:70px;margin-top:2px;margin-rigth:1px;" value="<bean:write name="asistencia" property="asistidoNif" />" maxlength="20" onBlur="obtenerPersona(<bean:write name='index'/>);"/></td>
