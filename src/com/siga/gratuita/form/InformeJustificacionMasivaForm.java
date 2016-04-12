@@ -224,6 +224,10 @@ public class InformeJustificacionMasivaForm extends MasterForm
 		numColegiado = null;
 		estadoColegial = null;
 		fichaColegial = false;
+		anioDesgina = null;
+		anioEJG = null;
+		codigoDesigna = null;
+		codigoEJG = null;
 
 	}
 	public String getNombreColegiado() {
