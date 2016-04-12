@@ -166,10 +166,16 @@
 	   		   				if (edicionColegiadoForm.getIdestadocolegiado()==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.INCIDENCIAS_DATOS_COLEGIADO.getCodigo()
 	   		   						|| edicionColegiadoForm.getIdestadocolegiado()==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ERROR_ALTA_COLEGIADO.getCodigo()
 	   		   						|| edicionColegiadoForm.getIdestadocolegiado()==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ERROR_ALTA_PERSONA_COLEGIADO.getCodigo()
-	   		   						|| edicionColegiadoForm.getIdestadocolegiado()==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ERROR_ACTUALIZACION_COLEGIADO.getCodigo()) {
+	   		   						|| edicionColegiadoForm.getIdestadocolegiado()==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ERROR_ACTUALIZACION_COLEGIADO.getCodigo()	   		   						   		   					
+	   		   					) {
 	   		   					
 	   		   					elems = new FilaExtElement[1];
 	   		   					elems[0]=new FilaExtElement("incidencia", "editar", "censo.ws.literal.revisarIncidencias", SIGAConstants.ACCESS_FULL);	   		   				
+	   		   				} else if (edicionColegiadoForm.getIdestadocolegiado()==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.INICIAL_RECIBIDO.getCodigo()
+	   		   						|| edicionColegiadoForm.getIdestadocolegiado()==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.LISTO_PASO2.getCodigo()
+	   		   						|| edicionColegiadoForm.getIdestadocolegiado()==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.BAJA_CALCULADA.getCodigo()) {
+	   		   					
+	   		   					botones += ",E";
 	   		   				}
 	   		   			}
 	   		   			
@@ -218,8 +224,10 @@
 			 
 			 <script type="text/javascript">
 			 
-			 	function accionGenerarExcels() {		
-					document.forms[1].submit();	
+			 	function accionGenerarExcels() {	
+			 		if (confirm('<siga:Idioma key="messages.censo.cargaperiodica.confirmExcel"/>')) {
+						document.forms[1].submit();
+			 		}
 			 	}
 			 	
 			 	
