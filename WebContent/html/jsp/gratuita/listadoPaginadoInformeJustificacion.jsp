@@ -24,7 +24,7 @@
 
 <!-- HEAD -->
 
-<title><siga:Idioma key="gratuita.altaTurnos.literal.title" /></title>
+
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
@@ -2230,7 +2230,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 											
 										</c:if>
 									</c:forEach>
-									<c:if	test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& ((designa.actuacionPermitidaLetrado=='1'&&InformeJustificacionMasivaForm.fichaColegial==true)||(designa.cambioLetrado=='N'&&InformeJustificacionMasivaForm.fichaColegial==false))}">
+									<c:if	test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& designa.actuacionPermitidaLetrado=='1'&&designa.cambioLetrado=='N'}">
 											<c:choose>
 												<c:when test="${status.count%2==0}">
 													<tr class="filaTablaPar">
