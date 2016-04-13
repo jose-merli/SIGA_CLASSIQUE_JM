@@ -181,8 +181,8 @@
 	<siga:Table 
 		name="tablaResultados"
 		border="1"
-		columnNames="gratuita.procedimientos.literal.acreditacion,gratuita.procedimientos.literal.porcentaje,"
-		columnSizes="42,42,16"
+		columnNames="gratuita.procedimientos.literal.acreditacion,gratuita.procedimientos.literal.porcentaje,gratuita.procedimientos.acreditacion.literal.nigNumeroProcedimiento,"
+		columnSizes="42,22,20,16"
 		modal="P">
 
 <%
@@ -195,6 +195,7 @@
 					Integer idAcreditacion = UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_IDACREDITACION);
 					Integer idInstitucion = UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_IDINSTITUCION);
 					String idProcedimiento = UtilidadesHash.getString(hash, ScsAcreditacionProcedimientoBean.C_IDPROCEDIMIENTO);
+					Integer nigNumeroProcedimiento = UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_NIG_NUMPROCEDIMIENTO);
 %>
 					<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' visibleConsulta="no" botones='E,B'  modo='<%=modo%>' clase="listaNonEdit">
 						<td>
@@ -205,6 +206,16 @@
 							<%=UtilidadesString.mostrarDatoJSP(acreDescripcion)%>
 						</td>
 						<td><%=acrePorcentaje.intValue()%></td>
+						<td align="center">
+							<%		
+								if(nigNumeroProcedimiento == 1){ %>
+									<input type="checkbox" id ="nigNumeroProcedimientoCheck" name="nigNumeroProcedimientoCkeck" checked="checked" disabled="disabled" />
+							<% 	}else{ %>
+									<input type="checkbox" id ="nigNumeroProcedimientoCheck" name="nigNumeroProcedimientoCkeck" disabled="disabled"/>
+							<% 	}
+							%>
+						
+						</td>
 					</siga:FilaConIconos>
 <%
 				}
