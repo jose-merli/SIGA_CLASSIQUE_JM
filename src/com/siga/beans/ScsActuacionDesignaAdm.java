@@ -496,7 +496,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		Vector salida=null;				
 		String consultaDesigna = " SELECT des.anio anio, des.numero numero, des.idturno idturno, des.idinstitucion idinstitucion,"+
 									" per.nombre nombre, per.apellidos1 apellido1, per.apellidos2 apellido2,"+
-									" col.ncolegiado ncolegiado, tur.nombre turno, des.fechaentrada fecha, des.FECHAANULACION, "+
+									" decode(col.comunitario,1, col.ncomunitario,col.ncolegiado) ncolegiado, tur.nombre turno, des.fechaentrada fecha, des.FECHAANULACION, "+
 									" tur." + ScsTurnoBean.C_VALIDARJUSTIFICACIONES + " validarJustificaciones, " +
 									" des.codigo codigo, des.idjuzgado juzgado, des.idinstitucion_juzg institucionjuzgado, des.idprocedimiento procedimiento, " +
 									" des.idjuzgado " + ScsDesignaBean.C_IDJUZGADO + ", " +
