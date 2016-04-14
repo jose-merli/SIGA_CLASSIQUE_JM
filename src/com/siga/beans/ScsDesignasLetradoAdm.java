@@ -651,12 +651,14 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes,false,isPermitidoEditarActFicha);
 					designaForm.setRowSpan();
 					
-					if(!isMostrarJustificacionesPtes){
+					 if(designaForm.getIdJuzgado()==null || designaForm.getIdJuzgado().equals("")){
 						designaFormList.add(designaForm);
-					}else if(designaForm.getIdJuzgado()==null || designaForm.getIdJuzgado().equals("")){
-						designaFormList.add(designaForm);
+						if(designaForm.getActuacionPermitidaLetrado().equals(AppConstants.DB_TRUE) && designaForm.getCambioLetrado()!=null && designaForm.getCambioLetrado().equalsIgnoreCase("N") && designaForm.getEstado()!=null && designaForm.getEstado().equalsIgnoreCase("V"))
+							designaForm.addRowSpan();
 					}else if(designaForm.getIdProcedimiento()==null || designaForm.getIdProcedimiento().equals("")){
 						designaFormList.add(designaForm);
+						if(designaForm.getActuacionPermitidaLetrado().equals(AppConstants.DB_TRUE) && designaForm.getCambioLetrado()!=null && designaForm.getCambioLetrado().equalsIgnoreCase("N") && designaForm.getEstado()!=null && designaForm.getEstado().equalsIgnoreCase("V"))
+							designaForm.addRowSpan();
 					}
 					else if(designaForm.getActuaciones()!=null && designaForm.getActuaciones().size()>0) {
 						designaFormList.add(designaForm);
@@ -858,12 +860,14 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 					admActuacionDesignaAdm.setActuacionesDesignas(designaForm,isMostrarJustificacionesPtes,false,isPermitidoEditarActFicha);
 					designaForm.setRowSpan();
 					
-					if(!isMostrarJustificacionesPtes){
+					if(designaForm.getIdJuzgado()==null || designaForm.getIdJuzgado().equals("")){
 						designaFormList.add(designaForm);
-					}else if(designaForm.getIdJuzgado()==null || designaForm.getIdJuzgado().equals("")){
-						designaFormList.add(designaForm);
+						if(designaForm.getActuacionPermitidaLetrado().equals(AppConstants.DB_TRUE) && designaForm.getCambioLetrado()!=null && designaForm.getCambioLetrado().equalsIgnoreCase("N") && designaForm.getEstado()!=null && designaForm.getEstado().equalsIgnoreCase("V"))
+							designaForm.addRowSpan();
 					}else if(designaForm.getIdProcedimiento()==null || designaForm.getIdProcedimiento().equals("")){
 						designaFormList.add(designaForm);
+						if(designaForm.getActuacionPermitidaLetrado().equals(AppConstants.DB_TRUE) && designaForm.getCambioLetrado()!=null && designaForm.getCambioLetrado().equalsIgnoreCase("N") && designaForm.getEstado()!=null && designaForm.getEstado().equalsIgnoreCase("V"))
+							designaForm.addRowSpan();
 					}
 					else if(designaForm.getActuaciones()!=null && designaForm.getActuaciones().size()>0) {
 						designaFormList.add(designaForm);

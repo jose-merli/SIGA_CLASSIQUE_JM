@@ -1257,7 +1257,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 									<td><input type="checkbox"
 										disabled="disabled" /></td>
 									<td>&nbsp;</td>
-									<td>&nbsp;</td>
+									
 									<td><c:choose>
 										<c:when test="${designa.baja=='1'}">
 											<input type="checkbox" disabled="disabled" checked="checked" />
@@ -1282,7 +1282,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 									<td><input type="checkbox"
 										disabled="disabled" /></td>
 									<td>&nbsp;</td>
-									<td>&nbsp;</td>
+									
 									<td><c:choose>
 										<c:when test="${designa.baja=='1'}">
 											<input type="checkbox" disabled="disabled" checked="checked" />
@@ -1670,7 +1670,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 
 									<c:choose>
 										<c:when test="${empty designa.acreditaciones}">
-											<td rowspan="${designa.rowSpan}">Ñ</td>
+											<td rowspan="${designa.rowSpan}">&nbsp;</td>
 											<td align="center" rowspan="${designa.rowSpan}">Modulo
 											sin acreditaciones</td>
 											<td><input type="checkbox" disabled="disabled" /></td>
@@ -1717,7 +1717,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 													value="${acreditacionesMap.value}" />
 												<c:choose>
 													<c:when test="${empty listAcreditaciones}">
-													<td rowspan="${designa.rowSpan}">Ñ</td>
+													<td rowspan="${designa.rowSpan}">&nbsp;</td>
 														<td align="center" rowspan="${designa.rowSpan}">
 														<c:choose>
 															<c:when test="${designa.baja=='1'}">
@@ -1878,6 +1878,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 															<tr>
 															<c:choose>
 																<c:when test="${actuacion.documentoJustificacion&&subidaJustificacionesActiva  && actuacion.fechaJustificacion!=null && actuacion.fechaJustificacion!=''}">
+																	
 																	<td style="text-align: left;  font-size: 13px; white-space: nowrap; vertical-align: top">
 																	<span style="vertical-align: top"><c:out value="${actuacion.numero}" /></span>
 																	<span style='align:right; word-wrap: break-word;display: inline-block; width: 60px'>
@@ -2053,27 +2054,24 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 															<tr>
 															<c:choose>
 																<c:when test="${actuacion.documentoJustificacion&&subidaJustificacionesActiva && actuacion.fechaJustificacion!=null && actuacion.fechaJustificacion!=''}">
-																<td style="text-align: left;  font-size: 13px;">
-																<c:out value="${actuacion.numero}" /></td>
-																<td style="text-align: left;  font-size: 13px;">
-																<c:if test="${empty actuacion.idFacturacion}">
-																	<td>
-																		<img id="iconoboton_nuevaDocuemntacion" 
+																<td style="text-align: left;  font-size: 13px; white-space: nowrap; vertical-align: top">
+																	<span style="vertical-align: top"><c:out value="${actuacion.numero}" /></span>
+																	<span style='align:right; word-wrap: break-word;display: inline-block; width: 60px'>
+																	<c:if test="${empty actuacion.idFacturacion}">
+																			<img id="iconoboton_nuevaDocuemntacion" 
 																			src="/SIGA/html/imagenes/bupload.gif" style="cursor:pointer;" 
 																			alt="Nueva Documentacion" name="iconoFila" title="Nueva Documentacion" border="0" 
 																			onClick="accionNuevaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})" 
-																			onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/bupload.gif',1)">
-																	</td>	
-																</c:if>
-																<td>
-																<img id="iconoboton_download1" 
+																			onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('iconoboton_nuevaDocuemntacion','','/SIGA/html/imagenes/bupload.gif',1)"><br>
+																			
+																	</c:if>
+																			<img id="iconoboton_download1" 
 																		src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor:pointer;" 
 																		alt="Descargar" name="iconoFila" title="Descargar" border="0" 
 																		onClick="accionDescargaDocumentacionActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero})" 
 																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
-																
-																</td>
-																
+																	</span>
+																	</td>
 																
 																</c:when>
 																<c:when test="${!actuacion.documentoJustificacion&&subidaJustificacionesActiva && actuacion.fechaJustificacion!=null && actuacion.fechaJustificacion!=''}">
