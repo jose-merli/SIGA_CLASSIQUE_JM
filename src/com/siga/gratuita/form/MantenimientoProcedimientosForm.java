@@ -25,17 +25,12 @@ public class MantenimientoProcedimientosForm extends MasterForm {
 	private String codigoBusqueda =				"CODIGOBUSQUEDA";
 	private String complemento = 		ScsProcedimientosBean.C_COMPLEMENTO;
 	private String vigente = 		    ScsProcedimientosBean.C_VIGENTE;
-	private String permitirAniadirLetrado;
+	private String permitirAniadirLetrado =  ScsProcedimientosBean.C_PERMITIRANIADIRLETRADO;
 	private String fechaDesdeVigor;
 	private String fechaHastaVigor;
 	
 
-	public String getPermitirAniadirLetrado() {
-		return permitirAniadirLetrado;
-	}
-	public void setPermitirAniadirLetrado(String permitirAniadirLetrado) {
-		this.permitirAniadirLetrado = permitirAniadirLetrado;
-	}
+	
 	/**
 	 * @return Returns the refresco.
 	 */
@@ -161,6 +156,14 @@ public class MantenimientoProcedimientosForm extends MasterForm {
 	public void setVigente(String valor) {
 		UtilidadesHash.set(this.datos, vigente, valor);
 	}
+	
+	public String getPermitirAniadirLetrado() {
+		return UtilidadesHash.getString(this.datos, permitirAniadirLetrado);
+	}
+	public void setPermitirAniadirLetrado(String valor) {
+		UtilidadesHash.set(this.datos, permitirAniadirLetrado, valor);
+	}
+	
 	public String getFechaDesdeVigor() {
 		return fechaDesdeVigor;
 	}
