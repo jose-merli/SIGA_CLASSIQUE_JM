@@ -88,11 +88,24 @@
 		
 		function obtenerJuzgado() { 
 		  	if (document.getElementById("codJuzgado").value!=""){
+		  		if(document.ActuacionAsistenciaFormEdicion.tipoPcajg.value == 9)  {
+					jQuery("#asteriscoComisaria").hide();
+					jQuery("#asteriscoJuzgado").show();
+				}
 				document.MantenimientoJuzgadoForm.codigoExt2.value=document.getElementById("codJuzgado").value;
 			   	document.MantenimientoJuzgadoForm.submit();			   					
 		 	}
-		 	else
+		 	else{
 		 		document.getElementById("idJuzgado").value=-1;
+		 		if(document.ActuacionAsistenciaFormEdicion.tipoPcajg.value == 9)  {
+					jQuery("#asteriscoComisaria").show();
+					if(document.getElementById("idJuzgado").value =="" && document.getElementById("idComisaria").value ==""){
+						jQuery("#asteriscoComisaria").show();			
+					}else{
+						jQuery("#asteriscoJuzgado").hide();
+					}
+				}
+		 	}
 		 	
 		 	document.getElementById("idComisaria").value="";
 			document.getElementById("codComisaria").value="";
@@ -112,10 +125,13 @@
 			}	
 		}		
 		
-		function cambioJuzgado(){			
+		function cambioJuzgado(){	
 			var comboJuzgado = document.getElementById("idJuzgado");	
-			
 			if(comboJuzgado.value!=""){
+				if(document.ActuacionAsistenciaFormEdicion.tipoPcajg.value == 9)  {
+					jQuery("#asteriscoComisaria").hide();
+					jQuery("#asteriscoJuzgado").show();
+				}
 				document.getElementById("idComisaria").value="";
 				document.getElementById("codComisaria").value="";
 			
@@ -134,17 +150,40 @@
 					}
 				});
 			}		
-			else
+			else{
 				document.getElementById("codJuzgado").value = "";
+				if(document.ActuacionAsistenciaFormEdicion.tipoPcajg.value == 9)  {
+					jQuery("#asteriscoComisaria").show();
+				
+						if(document.getElementById("idJuzgado").value =="" && document.getElementById("idComisaria").value ==""){
+							jQuery("#asteriscoJuzgado").show();			
+						}else{
+							jQuery("#asteriscoJuzgado").hide();
+						}
+				}
+			}
 		}		
 		
 		function obtenerComisaria() { 
 			if (document.getElementById("codComisaria").value!=""){
+				if(document.ActuacionAsistenciaFormEdicion.tipoPcajg.value == 9)  {
+					jQuery("#asteriscoJuzgado").hide();
+					jQuery("#asteriscoComisaria").show();
+				}
 				document.MantenimientoComisariaForm.codigoExtBusqueda.value=document.getElementById("codComisaria").value;
-				document.MantenimientoComisariaForm.submit();			
+				document.MantenimientoComisariaForm.submit();	
 			 }
-			 else
+			 else{
 					document.getElementById("idComisaria").value=-1;
+					if(document.ActuacionAsistenciaFormEdicion.tipoPcajg.value == 9)  {
+						jQuery("#asteriscoJuzgado").show();
+						if(document.getElementById("idJuzgado").value =="" && document.getElementById("idComisaria").value ==""){
+							jQuery("#asteriscoComisaria").show();			
+						}else{
+							jQuery("#asteriscoComisaria").hide();
+						}
+					}
+			 }
 					
 			document.getElementById("idJuzgado").value="";
 			document.getElementById("codJuzgado").value="";	
@@ -167,6 +206,10 @@
 		function cambioComisaria(){
 			var comboComisaria = document.getElementById("idComisaria");
 			if(comboComisaria.value!=""){
+				if(document.ActuacionAsistenciaFormEdicion.tipoPcajg.value == 9)  {
+					jQuery("#asteriscoJuzgado").hide();
+					jQuery("#asteriscoComisaria").show();
+				}
 				document.getElementById("idJuzgado").value="";
 				document.getElementById("codJuzgado").value="";			
 			
@@ -185,8 +228,17 @@
 					}
 				});
 			}
-			else
+			else{
 				document.getElementById("codComisaria").value = "";
+				if(document.ActuacionAsistenciaFormEdicion.tipoPcajg.value == 9)  {
+					jQuery("#asteriscoJuzgado").show();	
+						if(document.getElementById("idJuzgado").value =="" && document.getElementById("idComisaria").value ==""){
+							jQuery("#asteriscoComisaria").show();			
+						}else{
+							jQuery("#asteriscoComisaria").hide();
+						}
+				}
+			}
 		}	
 		jQuery(function($){
 			var defaultValue = jQuery("#nig").val();
@@ -442,18 +494,14 @@
 				</tr>
 				
 				<tr>
+					<td class="labelText">
+								<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.comisaria" />
 					<c:choose>
 						<c:when test="${tipoPcajg=='9'}">
-							<td class="labelText">
-								<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.comisaria" />(*)
-							</td>
+							<label id="asteriscoComisaria"> (*)</label>
 						</c:when>
-						<c:otherwise>
-							<td class="labelText">
-								<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.comisaria" />
-							</td>
-						</c:otherwise>
 					</c:choose>
+					</td>
 					<td>
 						<input type="text" id="codComisaria" class="box" size="8" style="margin-top: 2px;" maxlength="10" onBlur="obtenerComisaria();" />
 					</td>
@@ -471,18 +519,14 @@
 				</tr>
 				
 				<tr>
+					<td class="labelText">
+								<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado" />
 					<c:choose>
 						<c:when test="${tipoPcajg=='9'}">
-							<td class="labelText">
-								<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado" />(*)
-							</td>
+								<label id="asteriscoJuzgado"> (*)</label>
 						</c:when>
-						<c:otherwise>
-							<td class="labelText">
-								<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado" />
-							</td>
-						</c:otherwise>
 					</c:choose>
+					</td>
 					<td>
 						<input type="text" id="codJuzgado" class="box" size="8" style="margin-top: 2px;" maxlength="10" onBlur="obtenerJuzgado();" />
 					</td>					
