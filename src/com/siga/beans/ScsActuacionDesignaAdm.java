@@ -657,8 +657,8 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 			sql.append(" WHERE U.NIF = P.NIFCIF ");
 			sql.append(" AND U.IDINSTITUCION = ACT.IDINSTITUCION ");
 			sql.append(" AND U.IDUSUARIO = ACT.USUCREACION), ");
-		              
-			sql.append(" DECODE(NVL(ACT.VALIDADA, 0),  1,  0, ");
+			sql.append(" DECODE(NVL(ACT.IDFACTURACION, 0), ");
+			sql.append(" 0, ");
 			sql.append(" DECODE(ACT.IDPERSONACOLEGIADO, ");
 			sql.append(" (SELECT P.IDPERSONA ");
 			sql.append(" FROM ADM_USUARIOS U, CEN_PERSONA P ");
@@ -666,7 +666,9 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 			sql.append(" AND U.IDINSTITUCION = ACT.IDINSTITUCION ");
 			sql.append(" AND U.IDUSUARIO = ACT.USUMODIFICACION), ");
 			sql.append(" 1, ");
-			sql.append(" 0)), ");
+			sql.append(" 0), ");
+			sql.append(" 0 ");
+			sql.append(" ), ");
 			sql.append(" 0) PERMITIREDITARLETRADO ");
 		}else{
 			sql.append(" ,0 PERMITIREDITARLETRADO ");
