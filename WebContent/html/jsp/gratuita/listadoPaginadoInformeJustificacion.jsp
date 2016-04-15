@@ -2332,12 +2332,14 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 	  	
 	  		<input type="hidden" id="dialogNigNumProcRequired"  />
 			<div  class="labelText">
-				<label for="dialogFechaActuacion"  style="width:160px;float:left;color: black" ><siga:Idioma key="gratuita.actuacionesAsistencia.literal.fechaActuacion"/><label>(*)</label></label>
-					<siga:Fecha nombreCampo="dialogFechaActuacion" valorInicial="sysdate" anchoTextField="11"/>
+				<label for="dialogFechaActuacion"  style="width:170px;float:left;color: black ;" ><siga:Idioma key="gratuita.actuacionesAsistencia.literal.fechaActuacion"/><label>(*)</label></label>
+					<siga:Fecha nombreCampo="dialogFechaActuacion" valorInicial="sysdate" styleId="dialogFechaActuacion" anchoTextField="11"/>
 			</div>
+			
+			
 			<div class="labelText">
 		
-	   			<label for="dialogNumProc"  style="width:160px;float:left;color: black"><siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento" /><label id="asteriscoNumProc"></label></label>
+	   			<label for="dialogNumProc"  style="width:170px;float:left;color: black"><siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento" /><label id="asteriscoNumProc"></label></label>
 	   			<c:choose>
 	   				<c:when test="${EJIS_ACTIVO=='1'}">
 	   					<input type="text" id="dialogNumProc" maxlength="7" size="7" /><label>/</label><input type="text" id="dialogAnioProc" maxlength="4" size="4" />
@@ -2348,7 +2350,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 	   			</c:choose>
 	  			</div>
 			<div class="labelText">
-	   			<label for="dialogNig"   style="width:160px;float:left;color: black"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/><label id="asteriscoNig"></label></label>
+	   			<label for="dialogNig"   style="width:170px;float:left;color: black"><siga:Idioma key='gratuita.mantAsistencias.literal.NIG'/><label id="asteriscoNig"></label></label>
 	   			<input type="text" id="dialogNig"  size="25" maxlength="19" />
 	  			</div>
 		
@@ -2654,6 +2656,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 	function closeDialog(dialogo){
 		jQuery("#"+dialogo).dialog("close"); 
 	}
+	//jQuery('#dialogFechaActuacion').css({'background-color': 'white','border-color':'gray','text-color': 'black'});
 	
 	
 	
