@@ -5861,7 +5861,11 @@ public class EnvioInformesGenericos extends MasterReport {
 			// envio.generarEnvio(idPersonaUnica,
 			// EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,
 			// vDocumentos);
+			if(htDatosInformeFinal==null)
+				throw new SIGAException("messages.envios.error.noExisteDocumento");
 			Vector datosInformeDesigna = (Vector) htDatosInformeFinal.get("row");
+			
+			
 			ScsDesignaBean designaBean = new ScsDesignaBean();
 
 			if (datosInformeDesigna != null && datosInformeDesigna.size() > 0)
