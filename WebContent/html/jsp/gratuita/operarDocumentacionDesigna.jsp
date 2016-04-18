@@ -37,7 +37,6 @@
 	<!-- FIN: TITULO OPCIONAL DE LA TABLA -->
 
 	<!-- INICIO: CAPA DE REGISTRO CON MEDIDAS EN EL ESTILO -->
-<div id="campos" class="posicionModalPeque" align="center">
 
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 
@@ -64,12 +63,19 @@
 	<!-- Ejemplo de conjunto de campos recuadrado y con titulo -->
 	<siga:ConjCampos leyenda="pestana.justiciagratuitaejg.documentacion">
 		
-	<table class="tablaCampos" align="center" border ="0">
+	<table class="tablaCampos" align="center" border ="0" style="width:'100%'">
+	<tr>
+		<td width="30%"></td>
+		<td width="65%"></td>
+		<td width="5%"></td>
+		
+	</tr>
+	
 	<tr>
 		<td class="labelText">	
 			<siga:Idioma key='sjcs.asistencia.documentacion.asociado'/>&nbsp;(*)
 		</td>
-		<td colspan="3">
+		<td >
 			<c:choose>
 				
 				<c:when test="${DefinirDocumentacionDesignaForm.modo=='insertar' && DefinirDocumentacionDesignaForm.idActuacion==''}">
@@ -84,12 +90,13 @@
 			</c:choose>
 		
 		</td>
+		<td>&nbsp;</td>
 	</tr>	
 	<tr>
 		<td class="labelText">	
 			<siga:Idioma key='sjcs.ejg.documentacion.tipoDocumentacion'/>&nbsp;(*)
 		</td>
-		<td colspan="3">
+		<td >
 			<c:choose>
 				<c:when test="${DefinirDocumentacionDesignaForm.modo=='insertar'&& DefinirDocumentacionDesignaForm.idActuacion==''}">
 					<siga:Select id="idTipoDocumento" queryId="getTipoDocumentoDes" required="true"  width="300"   />
@@ -103,6 +110,7 @@
 			</c:choose>
 		
 		</td>
+		<td>&nbsp;</td>
 	</tr>					
 
 	
@@ -112,7 +120,7 @@
 			<siga:Idioma key='gratuita.documentacionDesigna.observaciones'/>
 			<c:out value="${ClsConstants.ACCESS_FULL}"></c:out>
 		</td>
-		<td colspan="2">
+		<td >
 			<c:choose>
 				<c:when test="${accionModo=='ver'}">
 					<html:textarea property="observaciones"  rows="6" cols="50" style="width:350" styleClass="boxConsulta" readonly="true"/>
@@ -122,10 +130,10 @@
 				</c:otherwise>
 			</c:choose>
 		</td>	
+		<td>&nbsp;</td>
 	</tr>
 	</table>
 	</siga:ConjCampos>
-</div>
 <%@ include file="/html/jsp/general/ficheros.jsp"%>
 </html:form>
 
