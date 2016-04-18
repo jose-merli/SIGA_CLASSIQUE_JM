@@ -1069,12 +1069,13 @@
 			
 			
 			<%if(modoJustificacion!=null && modoJustificacion.equalsIgnoreCase("editarJustificacionFicha")){%>
-			
 				error = '';
 				if( document.forms[0].fechaActuacion.value==''){
-					error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesAsistencia.literal.fechaActuacion'/>"+ '\n';
-					
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesAsistencia.literal.fechaActuacion'/>"+ '\n';	
 				}	
+				if(compararFecha (document.forms[0].fechaActuacion.value, document.forms[0].fecha.value)==2){
+					error += "<siga:Idioma key='messages.error.acreditacionFechaNoValida'/>"+ '\n';
+				}
 				if ((<%=isColegioAlcala%> ||  jQuery("#labelNumProc").css('display')=='block') && document.forms[0].numeroProcedimiento.value=='') {
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento'/>"+ '\n';
 				}
@@ -1104,9 +1105,14 @@
 				
 			<%}else{%>
 				error = '';
-				if (validateActuacionesDesignasForm(document.ActuacionesDesignasForm)) {
-					
 					fecha = document.getElementById("fechaJustificacion");
+					//Comparar fecha
+					if(document.forms[0].fechaActuacion.value==''){
+						error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesAsistencia.literal.fechaActuacion'/>"+ '\n';		
+					}
+					if(compararFecha (document.forms[0].fechaActuacion.value, document.forms[0].fecha.value)==2){
+						error += "<siga:Idioma key='messages.error.acreditacionFechaNoValida'/>"+ '\n';
+					}
 					if ((<%=isColegioAlcala%> || jQuery("#labelNumProc").css('display')=='block' ) && document.forms[0].numeroProcedimiento.value=='') {
 						error += "<siga:Idioma key='errors.required' arg0='gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento'/>"+ '\n';
 					}
@@ -1158,11 +1164,7 @@
 						alert(error);
 						return false;
 					}
-				}else{
-					fin();
-					return false;
 				
-				}	
 			<%}%>
 			
 			 
