@@ -419,52 +419,146 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
     
       Begin
         v_Datoserror := 'Buscar_y_Actualizar_Direccion: 1. Eligiendo direccion de tipo especial';
-        Select Idinstitucion, Iddireccion
-          Into v_Idinstitucion_Elegida, v_Iddireccion_Elegida
-        --Obteniendo direcciones
-          From (Select Dir.Idinstitucion, Dir.Iddireccion
-                --de colegiaciones...
-                  From Cen_Colegiado               Col,
-                       Cen_Datoscolegialesestado   Est,
-                       Cen_Direcciones             Dir,
-                       Cen_Direccion_Tipodireccion Tip
-                 Where Col.Idinstitucion = Est.Idinstitucion
-                   And Col.Idpersona = Est.Idpersona
-                   And Est.Fechaestado =
-                       (Select Max(Est2.Fechaestado)
-                          From Cen_Datoscolegialesestado Est2
-                         Where Est2.Idinstitucion = Est.Idinstitucion
-                           And Est2.Idpersona = Est.Idpersona
-                           And Trunc(Est2.Fechaestado) <= Sysdate)
-                   And Col.Idinstitucion = Dir.Idinstitucion
-                   And Col.Idpersona = Dir.Idpersona
-                   And Dir.Fechabaja Is Null
-                   And Dir.Idinstitucion = Tip.Idinstitucion
-                   And Dir.Idpersona = Tip.Idpersona
-                   And Dir.Iddireccion = Tip.Iddireccion
-                      
-                      --... de la persona en cuestion,
-                   And Dir.Idpersona = p_Idpersona
-                      
-                      --que sean de Tipo Especial
-                   And Tip.Idtipodireccion = p_Tipoespecial
-                      
-                      --(Si buscamos direccion para CGAE, cualquier colegio vale,
-                   And (r_Consejo.Idinstitucion = c_Idcgae Or
-                       --Si buscamos direccion para ITCGAE, cualquier colegio vale
-                       r_Consejo.Idinstitucion = c_Iditcgae Or
-                       --Si no, solo valen los colegios que pertenecen al Consejo Autonomico)
-                       Dir.Idinstitucion In
-                       (Select Idinstitucion
-                           From Cen_Institucion
-                          Where Cen_Inst_Idinstitucion = r_Consejo.Idinstitucion))
-                --ordenandolas por Actividad, Residencia, Ejercicio y finalmente por novedad
-                 Order By Decode(Est.Idestado, c_Ejerciente, 1, c_Noejerciente, 1, 2),
-                          Col.Situacionresidente Desc,
-                          Decode(Est.Idestado, c_Ejerciente, 1, 2),
-                          Dir.Fechamodificacion Desc)
-        --y se elige la primera
-         Where Rownum = 1;
+        
+        If p_Tipoespecial = c_Tipo_Censoweb Then -- Para el tipo de Censo Web:
+        
+          Select Idinstitucion, Iddireccion
+            Into v_Idinstitucion_Elegida, v_Iddireccion_Elegida
+          --Obteniendo direcciones
+            From (Select Dir.Idinstitucion, Dir.Iddireccion
+                  --de colegiaciones...
+                    From Cen_Colegiado               Col,
+                         Cen_Datoscolegialesestado   Est,
+                         Cen_Direcciones             Dir,
+                         Cen_Direccion_Tipodireccion Tip
+                   Where Col.Idinstitucion = Est.Idinstitucion
+                     And Col.Idpersona = Est.Idpersona
+                     And Est.Fechaestado =
+                         (Select Max(Est2.Fechaestado)
+                            From Cen_Datoscolegialesestado Est2
+                           Where Est2.Idinstitucion = Est.Idinstitucion
+                             And Est2.Idpersona = Est.Idpersona
+                             And Trunc(Est2.Fechaestado) <= Sysdate)
+                     And Col.Idinstitucion = Dir.Idinstitucion
+                     And Col.Idpersona = Dir.Idpersona
+                     And Dir.Fechabaja Is Null
+                     And Dir.Idinstitucion = Tip.Idinstitucion
+                     And Dir.Idpersona = Tip.Idpersona
+                     And Dir.Iddireccion = Tip.Iddireccion
+                        
+                        --... de la persona en cuestion,
+                     And Dir.Idpersona = p_Idpersona
+                        
+                        --que sean de Tipo Especial
+                     And Tip.Idtipodireccion = p_Tipoespecial
+                        
+                        --(Si buscamos direccion para CGAE, cualquier colegio vale,
+                     And (r_Consejo.Idinstitucion = c_Idcgae Or
+                         --Si buscamos direccion para ITCGAE, cualquier colegio vale
+                         r_Consejo.Idinstitucion = c_Iditcgae Or
+                         --Si no, solo valen los colegios que pertenecen al Consejo Autonomico)
+                         Dir.Idinstitucion In
+                         (Select Idinstitucion
+                             From Cen_Institucion
+                            Where Cen_Inst_Idinstitucion = r_Consejo.Idinstitucion))
+                  --ordenandolas por Actividad, Residencia, Ejercicio y finalmente por novedad
+                   Order By Decode(Est.Idestado, c_Ejerciente, 1, c_Noejerciente, 1, 2),
+                            Col.Situacionresidente Desc,
+                            Decode(Est.Idestado, c_Ejerciente, 1, 2),
+                            Dir.Fechamodificacion Desc)
+          --y se elige la primera
+           Where Rownum = 1;
+           
+        Elsif p_Tipoespecial = c_Tipo_Despachooojj Then -- Para el tipo de Despacho OOJJ:
+        
+          Select Idinstitucion, Iddireccion
+            Into v_Idinstitucion_Elegida, v_Iddireccion_Elegida
+          --Obteniendo direcciones
+            From (Select Dir.Idinstitucion, Dir.Iddireccion
+                  --de colegiaciones...
+                    From Cen_Colegiado               Col,
+                         Cen_Datoscolegialesestado   Est,
+                         Cen_Direcciones             Dir,
+                         Cen_Direccion_Tipodireccion Tip
+                   Where Col.Idinstitucion = Est.Idinstitucion
+                     And Col.Idpersona = Est.Idpersona
+                     And Est.Fechaestado =
+                         (Select Max(Est2.Fechaestado)
+                            From Cen_Datoscolegialesestado Est2
+                           Where Est2.Idinstitucion = Est.Idinstitucion
+                             And Est2.Idpersona = Est.Idpersona
+                             And Trunc(Est2.Fechaestado) <= Sysdate)
+                        --solo ejercientes
+                     And Est.Idestado = 20
+                        
+                     And Col.Idinstitucion = Dir.Idinstitucion
+                     And Col.Idpersona = Dir.Idpersona
+                     And Dir.Fechabaja Is Null
+                     And Dir.Idinstitucion = Tip.Idinstitucion
+                     And Dir.Idpersona = Tip.Idpersona
+                     And Dir.Iddireccion = Tip.Iddireccion
+                        
+                        --... de la persona en cuestion,
+                     And Dir.Idpersona = p_Idpersona
+                        
+                        --que sean de Tipo Especial
+                     And Tip.Idtipodireccion = p_Tipoespecial
+                        
+                        --(Si buscamos direccion para CGAE, cualquier colegio vale,
+                     And (r_Consejo.Idinstitucion = c_Idcgae Or
+                         --Si buscamos direccion para ITCGAE, cualquier colegio vale
+                         r_Consejo.Idinstitucion = c_Iditcgae Or
+                         --Si no, solo valen los colegios que pertenecen al Consejo Autonomico)
+                         Dir.Idinstitucion In
+                         (Select Idinstitucion
+                             From Cen_Institucion
+                            Where Cen_Inst_Idinstitucion = r_Consejo.Idinstitucion))
+                  --ordenandolas por existencia de Correo electronico, Residencia, y finalmente por novedad
+                   Order By Decode(Dir.Correoelectronico, Null, 0, 1) Desc,
+                            Col.Situacionresidente Desc,
+                            Dir.Fechamodificacion Desc)
+          --y se elige la primera
+           Where Rownum = 1;
+           
+        Else -- Para otro tipo de direccion (aunque el algoritmo no esta definido para este caso):
+        
+          Select Idinstitucion, Iddireccion
+            Into v_Idinstitucion_Elegida, v_Iddireccion_Elegida
+          --Obteniendo direcciones
+            From (Select Dir.Idinstitucion, Dir.Iddireccion
+                  --de colegiaciones...
+                    From Cen_Colegiado               Col,
+                         Cen_Direcciones             Dir,
+                         Cen_Direccion_Tipodireccion Tip
+                   Where Col.Idinstitucion = Dir.Idinstitucion
+                     And Col.Idpersona = Dir.Idpersona
+                     And Dir.Fechabaja Is Null
+                     And Dir.Idinstitucion = Tip.Idinstitucion
+                     And Dir.Idpersona = Tip.Idpersona
+                     And Dir.Iddireccion = Tip.Iddireccion
+                        
+                        --... de la persona en cuestion,
+                     And Dir.Idpersona = p_Idpersona
+                        
+                        --que sean de Tipo Especial
+                     And Tip.Idtipodireccion = p_Tipoespecial
+                        
+                        --(Si buscamos direccion para CGAE, cualquier colegio vale,
+                     And (r_Consejo.Idinstitucion = c_Idcgae Or
+                         --Si buscamos direccion para ITCGAE, cualquier colegio vale
+                         r_Consejo.Idinstitucion = c_Iditcgae Or
+                         --Si no, solo valen los colegios que pertenecen al Consejo Autonomico)
+                         Dir.Idinstitucion In
+                         (Select Idinstitucion
+                             From Cen_Institucion
+                            Where Cen_Inst_Idinstitucion = r_Consejo.Idinstitucion))
+                  --ordenandolas por novedad
+                   Order By Dir.Fechamodificacion Desc)
+          --y se elige la primera
+           Where Rownum = 1;
+           
+        End If;
+        
       Exception
         When No_Data_Found Then
           v_Idinstitucion_Elegida := Null;
@@ -538,27 +632,27 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
         
         End If;
       
-        v_Datoserror := 'Buscar_y_Actualizar_Direccion: 4. Quitando el tipo de otras direcciones del Consejo que no se actualizan';
-        Delete From Cen_Direccion_Tipodireccion Tip
-         Where Tip.Idpersona = p_Idpersona
-           And Tip.Idinstitucion = r_Consejo.Idinstitucion
-           And Tip.Idtipodireccion = p_Tipoespecial
-           And Tip.Iddireccion <> v_Iddireccion_Consejo;
-        Update Cen_Direcciones dir
-           Set Fechamodificacion = Sysdate,
-               Usumodificacion   = 0, --no se puede poner ningun usumodificacion, porque fue lanzado desde otra institucion
-               fechabaja         = Sysdate
-         Where Idpersona = p_Idpersona
-           And Idinstitucion = r_Consejo.Idinstitucion
-           And Not Exists (Select *
-                  From Cen_Direccion_Tipodireccion Tip
-                 Where Tip.Idinstitucion = Dir.Idinstitucion
-                   And Tip.Idpersona = Dir.Idpersona
-                   And Tip.Iddireccion = Dir.Iddireccion);
-        
-        Total_Borradas := Total_Borradas + Sql%Rowcount;
-      
       End If;
+    
+      v_Datoserror := 'Buscar_y_Actualizar_Direccion: 4. Quitando el tipo de otras direcciones del Consejo que no se actualizan';
+      Delete From Cen_Direccion_Tipodireccion Tip
+       Where Tip.Idpersona = p_Idpersona
+         And Tip.Idinstitucion = r_Consejo.Idinstitucion
+         And Tip.Idtipodireccion = p_Tipoespecial
+         And (v_Iddireccion_Consejo Is Null Or Tip.Iddireccion <> v_Iddireccion_Consejo);
+      Update Cen_Direcciones dir
+         Set Fechamodificacion = Sysdate,
+             Usumodificacion   = 0, --no se puede poner ningun usumodificacion, porque fue lanzado desde otra institucion
+             fechabaja         = Sysdate
+       Where Idpersona = p_Idpersona
+         And Idinstitucion = r_Consejo.Idinstitucion
+         And Not Exists (Select *
+                From Cen_Direccion_Tipodireccion Tip
+               Where Tip.Idinstitucion = Dir.Idinstitucion
+                 And Tip.Idpersona = Dir.Idpersona
+                 And Tip.Iddireccion = Dir.Iddireccion);
+      
+      Total_Borradas := Total_Borradas + Sql%Rowcount;
     
       Total := Total + 1;
     
