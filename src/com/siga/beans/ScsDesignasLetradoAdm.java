@@ -226,7 +226,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 			sqlDesignas.deleteCharAt(sqlDesignas.length()-1);
 			sqlDesignas.append(")");
 			if(!isInforme)
-				sqlDesignas.append(" ORDER BY ALLDESIGNAS.FECHAENTRADA DESC,ALLDESIGNAS.IDINSTITUCION, ALLDESIGNAS.ANIO, ALLDESIGNAS.CODIGO, ALLDESIGNAS.SUFIJO");
+				sqlDesignas.append(" ORDER BY ALLDESIGNAS.FECHAENTRADA DESC,ALLDESIGNAS.IDINSTITUCION, ALLDESIGNAS.ANIO, ALLDESIGNAS.CODIGO DESC, ALLDESIGNAS.SUFIJO");
 			
 		}
 		return sqlDesignas.toString();
@@ -1538,7 +1538,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		}
 		
 		if (!isMostrarJustificacionesPtes && !isInforme)
-			sql.append(" ORDER BY ALLDESIGNAS.FECHAENTRADA DESC,        ALLDESIGNAS.IDINSTITUCION,      ALLDESIGNAS.ANIO,          ALLDESIGNAS.CODIGO,          ALLDESIGNAS.SUFIJO ");
+			sql.append(" ORDER BY ALLDESIGNAS.FECHAENTRADA DESC,        ALLDESIGNAS.IDINSTITUCION,      ALLDESIGNAS.ANIO,          ALLDESIGNAS.CODIGO DESC,          ALLDESIGNAS.SUFIJO ");
 		
 		return sql.toString();
 	}
