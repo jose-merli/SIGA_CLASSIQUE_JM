@@ -197,3 +197,6 @@ vista actualizada V_WS_2064_PERSONA
 -- Ejecutado en Integracion por Adrian el 18/04/2016 12:30
 
 Package Pkg_Siga_Censo actualizado
+
+-- Ejecutado en Integracion por Adrian el 18/04/2016 15:30
+
