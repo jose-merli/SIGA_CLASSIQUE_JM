@@ -769,7 +769,7 @@
 <!-- FIN: SCRIPTS BOTONES -->
 </head>
 
-<body onLoad="ajusteAlto('submitArea');revisarCheck();descargarPDF();">
+<body onLoad="ajusteAltoBotones('camposRegistro');revisarCheck();descargarPDF();">
 
 	<table class="tablaTitulo" cellspacing="0">
 		<tr>
@@ -777,6 +777,9 @@
 				key="certificados.solicitudes.ventanaEdicion.titulo" /></td>
 		</tr>
 	</table>
+		
+	<div id="camposRegistro"  style="overflow-x:hidden; overflow-y:scroll">
+		
 		
 	<html:form action="/CER_GestionSolicitudes.do" method="POST" target="submitArea">
 		<html:hidden property="modo" value="" />
@@ -1322,8 +1325,9 @@
 		</tr>
 		
 	</html:form>
-
-<siga:ConjBotonesAccion botones="<%=botones%>" ordenar="false"/>
+	</div>
+	
+	<siga:ConjBotonesAccion botones="<%=botones%>" ordenar="false"/>
 
 	<!-- Formulario para la búsqueda de clientes -->
 	<html:form action="/CEN_BusquedaClientes.do" method="POST" target="mainWorkArea">
@@ -1353,5 +1357,6 @@
 	</html:form>	
 
 <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display: none"></iframe>
+
 </body>
 </html>
