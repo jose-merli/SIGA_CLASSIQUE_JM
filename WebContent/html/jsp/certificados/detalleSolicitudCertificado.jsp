@@ -981,12 +981,12 @@
 							
 							<td>&nbsp;</td>
 							
-							<td class="labelText">
+							<td class="labelText" nowrap>
 								<siga:Idioma key="certificados.solicitudes.ventanaEdicion.incluirDeudas" />&nbsp;&nbsp;
 								<html:checkbox property="incluirDeudas" disabled="<%=!modoEditar%>"/>
 							</td>
 
-							<td class="labelText">
+							<td class="labelText" nowrap>
 								<siga:Idioma key="certificados.solicitudes.ventanaEdicion.incluirSanciones" />&nbsp;&nbsp;
 								<html:checkbox property="incluirSanciones" disabled="<%=!modoEditar%>"/>
 							</td>
