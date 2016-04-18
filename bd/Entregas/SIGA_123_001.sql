@@ -193,3 +193,6 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 nueva funcion F_SIGA_GETFECHAESTADOCOLEGIAL
 
 vista actualizada V_WS_2064_PERSONA
+
+-- Ejecutado en Integracion por Adrian el 18/04/2016 12:30
+
