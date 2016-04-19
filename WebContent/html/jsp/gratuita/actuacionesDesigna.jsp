@@ -96,6 +96,7 @@ if (deDonde!=null && deDonde.equals("ficha") && usr.isLetrado()){
 					marginheight="0"
 					marginwidth="0"
 					style="margin:0"
+					scrolling="no"
 >
 
 </iframe>
