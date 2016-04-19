@@ -200,3 +200,8 @@ Package Pkg_Siga_Censo actualizado
 
 -- Ejecutado en Integracion por Adrian el 18/04/2016 15:30
 
+-- Add/modify columns 
+alter table SCS_JUZGADO add VISIBLEMOVIL NUMBER(1) default 1 not null;
+alter table Scs_Comisaria add VISIBLEMOVIL NUMBER(1) default 1 not null;
+alter table Scs_Turno add VISIBLEMOVIL NUMBER(1) default 1 not null;
+alter table Scs_Tipoasistenciacolegio add VISIBLEMOVIL NUMBER(1) default 1 not null;
