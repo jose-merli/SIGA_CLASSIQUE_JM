@@ -677,8 +677,8 @@
 						 	<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>&nbsp;(*)
 					  	</td>
 					  	<td colspan="2">	 
-							<% if (esLetrado||modoAnterior.equalsIgnoreCase("VER")||(modoJustificacion!=null && modoJustificacion.equals("editarJustificacionFicha"))){%>							
-									<siga:ComboBD nombre="juzgado" ancho="500" tipo="<%=comboJuzgados%>"estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento"/>
+							<% if (modoAnterior.equalsIgnoreCase("VER")||(modoJustificacion!=null && modoJustificacion.equals("editarJustificacionFicha"))){%>							
+									<siga:ComboBD nombre="juzgado" ancho="500" tipo="<%=comboJuzgados%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento"/>
 							
 							<%}else{%>
 								<input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerJuzgado();" />
