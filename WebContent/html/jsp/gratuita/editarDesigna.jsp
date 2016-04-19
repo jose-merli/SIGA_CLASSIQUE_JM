@@ -833,7 +833,12 @@
 										>
 											<siga:Idioma key="gratuita.designa.estado.abierto" />
 										</option>		
-																
+										<option value='A'
+											<%if((estado!=null)&&(estado.equalsIgnoreCase("A"))){%> 
+												selected
+											<%}%>
+											><siga:Idioma key="gratuita.designa.estado.anulado" />
+										</option>						
 										<option value='F'
 											<%if((estado!=null)&&(estado.equalsIgnoreCase("F"))){%> 
 												selected
@@ -842,12 +847,7 @@
 											<siga:Idioma key="gratuita.designa.estado.finalizado" />
 										</option>
 										
-										<option value='A'
-											<%if((estado!=null)&&(estado.equalsIgnoreCase("A"))){%> 
-												selected
-											<%}%>
-											><siga:Idioma key="gratuita.designa.estado.anulado" />
-										</option>
+										
 									</Select> 
 							
 								<% } else { %> 

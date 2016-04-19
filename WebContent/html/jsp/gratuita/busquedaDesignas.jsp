@@ -254,33 +254,34 @@
 			<siga:Idioma key="gratuita.editarDesigna.literal.estado"/>
 		</td>
 		<td >	
-			<Select id="estado" name="estado" class="boxCombo">
-			<%if(estado!=null && !estado.equals("")){%>
-				<%if(estado.equals("V")){%>			
-					<option value=''   ></option>
-					<option value='V' selected ><siga:Idioma key="gratuita.estadoDesignacion.activo"/></option>
-					<option value='F' ><siga:Idioma key="gratuita.estadoDesignacion.finalizado"/></option>
-					<option value='A' ><siga:Idioma key="gratuita.estadoDesignacion.anulado"/></option>
-				<%}%>
-				<%if(estado.equals("F")){%>
-					<option value='' ></option>
-					<option value='V' ><siga:Idioma key="gratuita.estadoDesignacion.activo"/></option>
-					<option value='F' selected><siga:Idioma key="gratuita.estadoDesignacion.finalizado"/></option>
-					<option value='A' ><siga:Idioma key="gratuita.estadoDesignacion.anulado"/></option>
-				<%}%>
-				<%if(estado.equals("A")){%>
-					<option value='' ></option>
-					<option value='V' ><siga:Idioma key="gratuita.estadoDesignacion.activo"/></option>
-					<option value='F' ><siga:Idioma key="gratuita.estadoDesignacion.finalizado"/></option>
-					<option value='A' selected><siga:Idioma key="gratuita.estadoDesignacion.anulado"/></option>
-				<%}%>
-			<%}else{%>	
-				<option value='' ></option>
-				<option value='V' selected><siga:Idioma key="gratuita.estadoDesignacion.activo"/></option>
-				<option value='F' ><siga:Idioma key="gratuita.estadoDesignacion.finalizado"/></option>
-				<option value='A' ><siga:Idioma key="gratuita.estadoDesignacion.anulado"/></option>
-			<%}%>
-			</Select>
+			<select name="estado" class="boxCombo">
+				<option value=''/>
+				<option value='V'
+					<%if((estado!=null)&&(estado.equalsIgnoreCase("V"))){%> 
+						selected
+					<%}%>
+				>
+					<siga:Idioma key="gratuita.designa.estado.abierto" />
+				</option>		
+				<option value='A'
+					<%if((estado!=null)&&(estado.equalsIgnoreCase("A"))){%> 
+						selected
+					<%}%>
+					><siga:Idioma key="gratuita.designa.estado.anulado" />
+				</option>						
+				<option value='F'
+					<%if((estado!=null)&&(estado.equalsIgnoreCase("F"))){%> 
+						selected
+					<%}%>
+				>
+					<siga:Idioma key="gratuita.designa.estado.finalizado" />
+				</option>
+				
+				
+			</Select> 
+
+			
+			
 		</td>
 		<td class="labelText">
 			<siga:Idioma key="gratuita.busquedaDesignas.literal.actuacionesValidadas"/>
