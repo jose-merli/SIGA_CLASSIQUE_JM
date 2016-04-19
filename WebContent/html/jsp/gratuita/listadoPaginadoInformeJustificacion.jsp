@@ -1413,15 +1413,10 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 													<td>&nbsp;</td>
 												</c:otherwise>
 											</c:choose>
-											<td>
-												<table style='table-layout: fixed; border-spacing: 0px; visibility:hidden;'>
-													<tr>
-														<td style="text-align: left;  font-size: 13px;">
+											<td style="text-align: left;  font-size: 13px;">
+												
 															<c:out value="${actuacion.numero}" />
-														</td>
-														<td></td>
-													</tr>
-												</table>	
+													
 											</td>
 											<td>
 													<c:out value="${actuacion.descripcion}" />
