@@ -563,7 +563,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 									" ,act.facturado FACTURADO "+
 									" ,act.idpersonacolegiado IDPERSONACOLEGIADO, "+
 									" per.nombre nombre, per.apellidos1 apellido1, per.apellidos2 apellido2,"+
-									" col.ncolegiado ncolegiado, "+
+								    " decode(col.comunitario, 1, col.ncomunitario, col.ncolegiado) ncolegiado, "+
 									" act."+ScsActuacionDesignaBean.C_TALONARIO+
 									" ,act."+ScsActuacionDesignaBean.C_TALON+		
 									
