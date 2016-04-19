@@ -115,12 +115,18 @@
 			if (resultado[0]==undefined) {
 				document.getElementById("idJuzgado").value=-1;
 				document.getElementById("codJuzgado").value = "";
+				if(document.ActuacionAsistenciaFormEdicion.tipoPcajg.value == 9)  {
+					jQuery("#asteriscoComisaria").show();
+				}
 			} 
 			else {
 				if(resultado && resultado.length > 0){
 					var fin = resultado[0].indexOf(',');
 					if (fin != -1) 
 						document.getElementById("idJuzgado").value=resultado[0].substring(0,fin);
+				}
+				if(document.ActuacionAsistenciaFormEdicion.tipoPcajg.value == 9)  {
+					jQuery("#asteriscoComisaria").hide();
 				}
 			}	
 		}		
@@ -193,12 +199,18 @@
 			if (resultado[0]==undefined) {
 				document.getElementById("idComisaria").value=-1;
 				document.getElementById("codComisaria").value = "";
+				if(document.ActuacionAsistenciaFormEdicion.tipoPcajg.value == 9)  {
+					jQuery("#asteriscoJuzgado").show();
+				}
 			} 
 			else {
 				if(resultado && resultado.length > 0){
 					var fin = resultado[0].indexOf(',');
 					if (fin != -1) 
 						document.getElementById("idComisaria").value=resultado[0].substring(0,fin);
+				}
+				if(document.ActuacionAsistenciaFormEdicion.tipoPcajg.value == 9)  {
+					jQuery("#asteriscoJuzgado").hide();
 				}
 			}
 		}
