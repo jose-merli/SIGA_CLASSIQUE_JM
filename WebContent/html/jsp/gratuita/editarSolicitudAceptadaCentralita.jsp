@@ -24,14 +24,10 @@
 	HttpSession ses = request.getSession();
 	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
 	
-	boolean obligatorioSexo = false;
-	String asterisco = "&nbsp;(*)&nbsp;";
 	Integer idInstitucion = new Integer(usr.getLocation());	
 	int cajgConfig = CajgConfiguracion.getTipoCAJG(idInstitucion);	
 	
-	if(cajgConfig == 9){
-		 obligatorioSexo = true;
-	}
+	
 %>
 
 	<!-- HEAD -->
@@ -135,7 +131,7 @@
 		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteCodPostal.value!="")||
 		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteCorreoElectronico.value!="")||
 		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteTelefono.value!="")||
-		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteFax.value!="") || document.forms['SolicitudAceptadaCentralitaForm'].sexo.value !="-1"){
+		  (document.forms['SolicitudAceptadaCentralitaForm'].solicitanteFax.value!="") || document.forms['SolicitudAceptadaCentralitaForm'].sexo.value !=""){
 			
 			if(document.forms['SolicitudAceptadaCentralitaForm'].solicitanteIdTipoIdentificacion.value==''){
 				alert("<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.tipoIdentificacion'/>");
@@ -149,15 +145,12 @@
 			}
 			
 		}
+		if(document.forms['SolicitudAceptadaCentralitaForm'].solicitanteIdTipoIdentificacion.value!='' && <%=cajgConfig == 9%> && document.forms['SolicitudAceptadaCentralitaForm'].sexo.value==""){
+			alert("<siga:Idioma key='errors.required' arg0='Sexo'/>");
+			fin();
+			return false;
+		}
 		
-		if(<%=cajgConfig == 9%>){
-			if (<%=obligatorioSexo%> && document.forms['SolicitudAceptadaCentralitaForm'].sexo.value=="-1"){
-				alert("<siga:Idioma key='errors.required' arg0='Sexo'/>",'error');
-				fin();
-				return false;
-			}
-				
-		}	
 		
 		if(jQuery('#fichaColegial').val()=='0') 
 			document.forms['SolicitudAceptadaCentralitaForm'].target.value="submitArea";
@@ -581,17 +574,10 @@
 					<tr>
 						<td class="labelText">
 								<siga:Idioma key="gratuita.personaJG.literal.sexo"/>
-								<% 
-									if (obligatorioSexo) {
-								%>
-										<%=asterisco%> 
-								<%
-									}
-								%>
 						</td>
 						<td>
-							<select id="sexo" name="sexo" styleClass="boxCombo" >
-									<option value="-1"></option>
+							<select id="sexo" name="sexo" class="boxCombo" >
+									<option value=""></option>
 									<option value="<%=ClsConstants.TIPO_SEXO_HOMBRE %>"><siga:Idioma key="censo.sexo.hombre"/></option>
 									<option value="<%=ClsConstants.TIPO_SEXO_MUJER %>"><siga:Idioma key="censo.sexo.mujer"/></option>
 									<option value="<%=ClsConstants.TIPO_SEXO_NC %>"><siga:Idioma key="censo.sexo.nc"/></option>

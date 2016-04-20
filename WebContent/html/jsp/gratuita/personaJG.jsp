@@ -3208,13 +3208,6 @@
 				fin();
 				return false;
 			}
-			if(<%=pcajgActivo == 9%>){
-				if (<%=obligatorioSexo%> && document.forms[0].sexo.value==""){
-					alert("<siga:Idioma key='errors.required' arg0='Sexo'/>");	
-					fin();
-					return false;
-				}	
-			}	
 				
 			if (document.forms[0].tipoDir.value == '' || document.forms[0].tipoDir.value == null){
 				document.forms[0].tipoDir.value = 'COMUNICA';
@@ -3254,6 +3247,13 @@
 					}				
 				}
 			}
+			if(<%=pcajgActivo == 9%>){
+				if (<%=obligatorioSexo%> && document.forms[0].sexo.value==""){
+					alert("<siga:Idioma key='errors.required' arg0='Sexo'/>");	
+					fin();
+					return false;
+				}	
+			}	
 		}
 		function refrescarLocal() {
 			window.location=window.location;
@@ -3728,11 +3728,7 @@ function accionGuardarCerrar()	{
 		if (<%=obligatorioSexo%> && document.forms[0].sexo.value=="0")
 			error += "<siga:Idioma key='errors.required' arg0='Sexo'/>"+ '\n';								
 	}	
-	if(<%=pcajgActivo == 9%>){
-		if (<%=obligatorioSexo%> && document.forms[0].sexo.value==""){
-				error += "<siga:Idioma key='errors.required' arg0='Sexo'/>"+ '\n';	
-		}	
-	}	
+	
 	if(error!=""){
 	  alert(error);
 	  fin();
@@ -3774,7 +3770,11 @@ function accionGuardarCerrar()	{
 			}
 		}
 	}
-
+	if(<%=pcajgActivo == 9%>){
+		if (<%=obligatorioSexo%> && document.forms[0].sexo.value==""){
+				error += "<siga:Idioma key='errors.required' arg0='Sexo'/>"+ '\n';	
+		}	
+	}	
 
 	
 }
