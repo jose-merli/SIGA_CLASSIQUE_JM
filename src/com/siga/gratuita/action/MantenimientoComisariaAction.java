@@ -170,6 +170,11 @@ public class MantenimientoComisariaAction extends MasterAction {
 				hashComisariaModificado.put(ScsComisariaBean.C_FECHABAJA,"SYSDATE");
 			else
 				hashComisariaModificado.put(ScsComisariaBean.C_FECHABAJA,"");
+			
+			if(miForm.getPonerVisibilidadMovil() != null && miForm.getPonerVisibilidadMovil().equalsIgnoreCase("S"))
+				hashComisariaModificado.put(ScsComisariaBean.C_VISIBLEMOVIL,"1");
+			else
+				hashComisariaModificado.put(ScsComisariaBean.C_VISIBLEMOVIL,"0");			
 
 			String nombreOrig=UtilidadesHash.getString(hashComisariaOriginal,ScsComisariaBean.C_NOMBRE);
 			String nombreModif=UtilidadesHash.getString(hashComisariaModificado,ScsComisariaBean.C_NOMBRE);
@@ -242,6 +247,11 @@ public class MantenimientoComisariaAction extends MasterAction {
 				beanComisaria.setFechabaja("SYSDATE");
 			else
 				beanComisaria.setFechabaja("");
+			
+			if(miForm.getPonerVisibilidadMovil() != null && miForm.getPonerVisibilidadMovil().equalsIgnoreCase("S"))
+				beanComisaria.setVisibleMovil("1");
+			else
+				beanComisaria.setVisibleMovil("0");				
 			
 			if(ScsComisariaAdm.comprobarDuplicidad(idInstitucion,idPoblacion,nombre)){
 				tx.begin();

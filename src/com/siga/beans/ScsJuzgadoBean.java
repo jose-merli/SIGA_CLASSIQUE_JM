@@ -16,7 +16,7 @@ public class ScsJuzgadoBean extends MasterBean{
 	private static final long serialVersionUID = -3795279638721762594L;
 	private Integer	idInstitucion, idJuzgado ;
 	private String	nombre=null, direccion=null, codigoPostal=null, idProvincia=null, idPoblacion=null, 
-					telefono1=null, telefono2=null, fax1=null,codProcurador="", email="", visible="", movil="";
+					telefono1=null, telefono2=null, fax1=null,codProcurador="", email="", visible="", visibleMovil="", movil="";
 	
 	private String fechabaja, isCodigoEjis;
 	
@@ -49,6 +49,7 @@ public class ScsJuzgadoBean extends MasterBean{
 	static public final String C_CODIGOEXT = "CODIGOEXT";
 	static public final String C_CODIGOEXT2 = "CODIGOEXT2";
 	static public final String C_ISCODIGOEJIS = "ISCODIGOEJIS";
+	static public final String 	C_VISIBLEMOVIL =      "VISIBLEMOVIL";
 	
 	public void setCodigoExt (String valor)
 	{
@@ -246,6 +247,12 @@ public class ScsJuzgadoBean extends MasterBean{
 	}
 	public void setIsCodigoEjis(String isCodigoEjis) {
 		this.isCodigoEjis = isCodigoEjis;
+	}
+	public String getVisibleMovil() {
+		return visibleMovil;
+	}
+	public void setVisibleMovil(String visibleMovil) {
+		this.visibleMovil = visibleMovil;
 	}	
 	
 

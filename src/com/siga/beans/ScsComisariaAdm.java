@@ -48,7 +48,7 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
 							ScsComisariaBean.C_IDPOBLACION, ScsComisariaBean.C_TELEFONO1,
 							ScsComisariaBean.C_TELEFONO2, ScsComisariaBean.C_FAX1,ScsComisariaBean.C_FECHABAJA,
 							ScsComisariaBean.C_USUMODIFICACION, ScsComisariaBean.C_FECHAMODIFICACION,
-							ScsComisariaBean.C_CODIGOEXT};
+							ScsComisariaBean.C_CODIGOEXT,ScsComisariaBean.C_VISIBLEMOVIL};
 		return campos;
 	}	
 	
@@ -87,6 +87,7 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
 			bean.setFechaMod(UtilidadesHash.getString(hash, ScsComisariaBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsComisariaBean.C_USUMODIFICACION));
 			bean.setCodigoExt(UtilidadesHash.getString(hash,ScsComisariaBean.C_CODIGOEXT));
+			bean.setVisibleMovil(UtilidadesHash.getString(hash,ScsComisariaBean.C_VISIBLEMOVIL));
 		}
 		catch(Exception e){
 			bean = null;
@@ -119,6 +120,7 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
 			hash.put(ScsComisariaBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
 			hash.put(ScsComisariaBean.C_FECHAMODIFICACION, b.getFechaMod());
 			hash.put(ScsComisariaBean.C_CODIGOEXT, b.getCodigoExt());
+			hash.put(ScsComisariaBean.C_VISIBLEMOVIL, b.getVisibleMovil());
 		}
 		catch (Exception e){
 			hash = null;
@@ -175,6 +177,7 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
 			select += " , comisaria."+ScsComisariaBean.C_TELEFONO2;
 			select += " , comisaria."+ScsComisariaBean.C_FAX1;
 			select += " , comisaria."+ScsComisariaBean.C_FECHABAJA;
+			select += " , comisaria."+ScsComisariaBean.C_VISIBLEMOVIL;
 			select += " , comisaria."+ScsComisariaBean.C_CODIGOEXT;
 			select += " , (SELECT provincia."+CenProvinciaBean.C_NOMBRE+
 					  "    FROM "+CenProvinciaBean.T_NOMBRETABLA +" provincia "+
@@ -316,6 +319,7 @@ public class ScsComisariaAdm extends MasterBeanAdministrador {
 			select += " , comisaria."+ScsComisariaBean.C_TELEFONO2;
 			select += " , comisaria."+ScsComisariaBean.C_FAX1;
 			select += " , comisaria."+ScsComisariaBean.C_FECHABAJA;
+			select += " , comisaria."+ScsComisariaBean.C_VISIBLEMOVIL;
 			select += " , comisaria."+ScsComisariaBean.C_CODIGOEXT;
 			select += " , (SELECT provincia."+CenProvinciaBean.C_NOMBRE+
 					  "    FROM "+CenProvinciaBean.T_NOMBRETABLA +" provincia "+

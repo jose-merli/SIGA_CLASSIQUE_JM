@@ -58,7 +58,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 				ScsTurnoBean.C_FECHAMODIFICACION, 		ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT,
 				ScsTurnoBean.C_LETRADOACTUACIONES,		ScsTurnoBean.C_LETRADOASISTENCIAS, 
 				ScsTurnoBean.C_CODIGOEXT,				ScsTurnoBean.C_FECHASOLICITUD_ULTIMO,
-				ScsTurnoBean.C_IDTIPOTURNO};
+				ScsTurnoBean.C_IDTIPOTURNO, ScsTurnoBean.C_VISIBLEMOVIL};
 		return campos;
 	}
 	/**
@@ -102,6 +102,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 					"turnos."+ScsTurnoBean.C_DESIGNADIRECTA+" DESIGNADIRECTA",
 					"turnos."+ScsTurnoBean.C_DESCRIPCION+" DESCRIPCION",
 					"turnos."+ScsTurnoBean.C_REQUISITOS+" REQUISITOS",
+					"turnos."+ScsTurnoBean.C_VISIBLEMOVIL+" VISIBLEMOVIL",
 					"turnos."+ScsTurnoBean.C_IDPERSONAULTIMO+" IDPERSONAULTIMO",
 					"turnos."+ScsTurnoBean.C_FECHASOLICITUD_ULTIMO+" FECHASOLICTUDULTIMO",
 					ScsOrdenacionColasBean.T_NOMBRETABLA+"."+ScsOrdenacionColasBean.C_IDORDENACIONCOLAS+" IDORDENACIONCOLAS",
@@ -200,6 +201,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 			bean.setFechaSolicitudUltimo(UtilidadesHash.getString(hash,ScsTurnoBean.C_FECHASOLICITUD_ULTIMO));
 			bean.setVisibilidad(UtilidadesHash.getString(hash,ScsTurnoBean.C_VISIBILIDAD));
 			bean.setIdTipoTurno(UtilidadesHash.getString(hash,ScsTurnoBean.C_IDTIPOTURNO));
+			bean.setVisibleMovil(UtilidadesHash.getString(hash,ScsTurnoBean.C_VISIBLEMOVIL));
 			
 		}
 		catch(Exception e){
@@ -253,6 +255,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsTurnoBean.C_LETRADOASISTENCIAS, b.getLetradoAsistencias());
 			UtilidadesHash.set(hash, ScsTurnoBean.C_CODIGOEXT, b.getCodigoExt());
 			UtilidadesHash.set(hash, ScsTurnoBean.C_FECHASOLICITUD_ULTIMO, b.getFechaSolicitudUltimo());
+			hash.put(ScsTurnoBean.C_VISIBLEMOVIL, b.getVisibleMovil());
 		}
 		catch (Exception e){
 			hash = null;
@@ -408,7 +411,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 
 	
 	public Hashtable getDatosTurno(String idInstitucion, String idTurno) {
-		String consulta =	" select turno.nombre nombre, turno.abreviatura abreviatura, turno.idarea idarea, turno.idmateria idmateria, turno.idzona idzona, "+
+		String consulta =	" select turno.nombre nombre, turno.abreviatura abreviatura, turno.idarea idarea, turno.idmateria idmateria, turno.idzona idzona, turno.visiblemovil, "+
 		" turno.idpartidapresupuestaria idpartidapresupuestaria, turno.idgrupofacturacion idgrupofacturacion, turno.guardias guardias, turno.descripcion descripcion,"+
 		" turno.requisitos requisitos, turno.idordenacioncolas idordenacioncolas,turno.visibilidad visibilidad, turno.idtipoturno, "+
 		" (SELECT f_siga_getrecurso(descripcion,"+usrbean.getLanguage()+") FROM scs_tipoturno tt WHERE turno.idtipoturno = tt.idtipoturno) TIPOTURNO, turno.idpersona_ultimo idpersona_ultimo,turno.FECHASOLICITUD_ULTIMO FECHASOLICITUD_ULTIMO, turno.idsubzona idsubzona, area.nombre area,"+

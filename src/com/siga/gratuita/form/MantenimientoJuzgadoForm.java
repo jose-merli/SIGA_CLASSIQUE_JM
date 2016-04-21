@@ -16,7 +16,7 @@ public class MantenimientoJuzgadoForm extends MasterForm {
 	 * 
 	 */
 	private static final long serialVersionUID = -8537080981044756240L;
-	private String ponerBaja;
+	private String ponerBaja, ponerVisibilidadMovil;
 	
 	// METODOS SET
 	public void setIdInstitucionJuzgado(String dato) {
@@ -166,5 +166,17 @@ public class MantenimientoJuzgadoForm extends MasterForm {
 	public void setPonerBaja(String ponerBaja) {
 		this.ponerBaja = ponerBaja;
 	}
-
+	
+	public String getPonerVisibilidadMovil() {
+		return ponerVisibilidadMovil;
+	}
+	public void setPonerVisibilidadMovil(String ponerVisibilidadMovil) {
+		this.ponerVisibilidadMovil = ponerVisibilidadMovil;
+	}
+	public String getVisibleMovil() {
+		return UtilidadesHash.getString(this.datos, ScsJuzgadoBean.C_VISIBLEMOVIL);
+	}
+	public void setVisibleMovil(String dato) {
+		UtilidadesHash.set(this.datos, ScsJuzgadoBean.C_VISIBLEMOVIL , dato);
+	}	
 }

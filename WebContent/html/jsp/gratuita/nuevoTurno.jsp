@@ -189,6 +189,14 @@
 			}
 		}
 		
+ 		function darVisibilidadMovil (o) {
+ 			if (o.checked) {
+ 				document.forms[0].ponerVisibilidadMovil.value = "S";
+			} else {
+				document.forms[0].ponerVisibilidadMovil.value = "N";
+			}
+ 		} 			
+		
 		jQuery(function(){
 			jQuery("#zona").on("change", function(){
 				mostrarPartido();
@@ -408,6 +416,10 @@
 									<input type="checkbox" name="activarActuacionesLetrado" value="1" checked >
 									<siga:Idioma key="gratuita.maestroTurnos.literal.aniadirActuacionesLetrado"/>
 								</td>
+								<td style="text-align:left" >
+									<input type="checkbox" name="ponerVisibilidadMovil" onclick="darVisibilidadMovil(this);">
+									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.visibilidadMovil"/>
+								</td>									
 							</tr>
 						</table>
 					</td>

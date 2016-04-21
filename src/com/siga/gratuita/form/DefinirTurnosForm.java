@@ -27,6 +27,7 @@ public class DefinirTurnosForm extends MasterForm {
 	public String visibilidad ="";
 	public String idTipoTurno ="";
 	public String nameBajaLogica ="";
+	private String ponerVisibilidadMovil;
 
 	String codigoExterno="";
 	
@@ -594,5 +595,14 @@ public class DefinirTurnosForm extends MasterForm {
 	
 	public String getEntradaSJCS(){
 		return (String)this.datos.get("ENTRADASJCS");
-	}	
+	}
+
+	public String getPonerVisibilidadMovil() {
+		return ponerVisibilidadMovil;
+	}
+
+	public void setPonerVisibilidadMovil(String ponerVisibilidadMovil) {
+		this.ponerVisibilidadMovil = ponerVisibilidadMovil;
+	}
+	
 }

@@ -30,7 +30,7 @@
 		boolean desactivado = true;
 		String accion = "";
 		String modo = (String)request.getAttribute("modo");	
-		String fechaBaja = "";
+		String fechaBaja = "", visibleMovil ="";
 
 			
 		ArrayList provinciaSel = new ArrayList();
@@ -50,6 +50,15 @@
 		if(fechaBaja !=null && !fechaBaja.equals("")){
 			ponerBaja = "S";
 		}
+		
+		if(formulario.getDatos().get("VISIBLEMOVIL")!=null && !((String)formulario.getDatos().get("VISIBLEMOVIL")).equals("")){
+			visibleMovil = (String)formulario.getDatos().get("VISIBLEMOVIL");
+		}		
+		String ponerVisibilidadMovil = "N";
+		if(visibleMovil !=null && visibleMovil.equals("1")){
+			ponerVisibilidadMovil = "S";
+		}
+		
 		if (modo.equalsIgnoreCase("EDITAR")) {
 			desactivado  = false;
 			estilo = "box";
@@ -136,7 +145,15 @@
 			} else {
 				MantenimientoComisariaForm.ponerBaja.value = "N";
 			}
- 		}	
+ 		}
+ 		
+ 		function darVisibilidadMovil (o) {
+ 			if (o.checked) {
+ 				MantenimientoComisariaForm.ponerVisibilidadMovil.value = "S";
+			} else {
+				MantenimientoComisariaForm.ponerVisibilidadMovil.value = "N";
+			}
+ 		} 		 		
 	</script>	
 </head>
 
@@ -256,6 +273,12 @@
 										&nbsp;&nbsp;&nbsp; Baja desde: <%=fechaBaja%>
 									<%}%>								
 								</td>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.visibilidadMovil"/>
+								</td>
+								<td class="labelTextValue">
+									<input type="checkbox" name="ponerVisibilidadMovil" style="" onclick="darVisibilidadMovil(this);" <% if (modo.equalsIgnoreCase("VER")) { %>disabled<%}%> value="<%=ponerVisibilidadMovil%>" <%if (visibleMovil !=null && visibleMovil.equals("1")) {%>checked<%}%>>
+								</td>									
 							</tr>
 							
 					</table>

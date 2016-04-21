@@ -44,6 +44,7 @@ public class ScsTurnoBean extends MasterBean{
 	private String      fechaSolicitudUltimo;
 	private String 		visibilidad;
 	private String 		idTipoTurno;
+	private String 		visibleMovil;
 	
 	ScsPartidaPresupuestariaBean partidaPresupuestaria =null;
 	ScsMateriaBean materia = null;
@@ -92,7 +93,8 @@ public class ScsTurnoBean extends MasterBean{
 	static public final String  C_CODIGOEXT    		        = "CODIGOEXT";
 	static public final String  C_FECHASOLICITUD_ULTIMO     = "FECHASOLICITUD_ULTIMO";
 	static public final String  C_VISIBILIDAD     			= "VISIBILIDAD";
-	static public final String  C_IDTIPOTURNO	    			= "IDTIPOTURNO";
+	static public final String  C_IDTIPOTURNO	    		= "IDTIPOTURNO";
+	static public final String  C_VISIBLEMOVIL 				= "VISIBLEMOVIL";
 	
 	
 	
@@ -607,5 +609,13 @@ public class ScsTurnoBean extends MasterBean{
 	public void setIdTipoTurno(String idTipoTurno) {
 		this.idTipoTurno = idTipoTurno;
 	}
-	
+
+	public String getVisibleMovil() {
+		return visibleMovil;
+	}
+
+	public void setVisibleMovil(String visibleMovil) {
+		this.visibleMovil = visibleMovil;
+	}
+
 }

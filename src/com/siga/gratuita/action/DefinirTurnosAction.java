@@ -276,6 +276,11 @@ public class DefinirTurnosAction extends MasterAction {
 				hash.put (ScsTurnoBean.C_VISIBILIDAD, ClsConstants.DB_FALSE);
 			}
 			
+			if(miform.getPonerVisibilidadMovil() != null && UtilidadesString.stringToBoolean(miform.getVisibilidad()))
+				hash.put(ScsTurnoBean.C_VISIBLEMOVIL,"1");
+			else
+				hash.put(ScsTurnoBean.C_VISIBLEMOVIL,"0");				
+			
 			if (miform.getIdTipoTurno() != null){
 				hash.put(ScsTurnoBean.C_IDTIPOTURNO, miform.getIdTipoTurno());
 			}
@@ -401,6 +406,7 @@ public class DefinirTurnosAction extends MasterAction {
 		aux.put(ScsTurnoBean.C_LETRADOACTUACIONES,(hash.get(ScsTurnoBean.C_LETRADOACTUACIONES)));
 		aux.put(ScsTurnoBean.C_LETRADOASISTENCIAS,(hash.get(ScsTurnoBean.C_LETRADOASISTENCIAS)));
 		aux.put(ScsTurnoBean.C_VISIBILIDAD,(hash.get(ScsTurnoBean.C_VISIBILIDAD)));
+		aux.put(ScsTurnoBean.C_VISIBLEMOVIL,(hash.get(ScsTurnoBean.C_VISIBLEMOVIL)));
 		aux.put(ScsTurnoBean.C_CODIGOEXT,(hash.get(ScsTurnoBean.C_CODIGOEXT)));
 		return aux;
 	}
@@ -465,6 +471,11 @@ public class DefinirTurnosAction extends MasterAction {
 			} else { 
 				hash.put (ScsTurnoBean.C_VISIBILIDAD, ClsConstants.DB_FALSE);
 			}
+			
+			if(miform.getPonerVisibilidadMovil() != null && UtilidadesString.stringToBoolean(miform.getVisibilidad()))
+				hash.put(ScsTurnoBean.C_VISIBLEMOVIL,"1");
+			else
+				hash.put(ScsTurnoBean.C_VISIBLEMOVIL,"0");				
 			
 			if (miform.getIdTipoTurno() != null){
 				hash.put(ScsTurnoBean.C_IDTIPOTURNO, miform.getIdTipoTurno());

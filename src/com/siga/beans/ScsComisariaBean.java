@@ -17,7 +17,7 @@ public class ScsComisariaBean extends MasterBean{
 	private Integer	idInstitucion, idComisaria;
 	private String	nombre=null, direccion=null, codigoPostal=null, idProvincia=null, idPoblacion=null, 
 					telefono1=null, telefono2=null, fax1=null;
-	private String codigoExt, fechabaja;
+	private String codigoExt,visibleMovil="", fechabaja;
 	
 	/* Nombre de Tabla*/
 	
@@ -39,6 +39,7 @@ public class ScsComisariaBean extends MasterBean{
 	static public final String 	C_FAX1 = 					"FAX1";
 	static public final String 	C_FECHABAJA = 				"FECHABAJA";
 	static public final String C_CODIGOEXT = "CODIGOEXT";
+	static public final String 	C_VISIBLEMOVIL =      "VISIBLEMOVIL";
 	
 	/**
 	 * @param codigoExt The codigoExt to set.
@@ -184,6 +185,14 @@ public class ScsComisariaBean extends MasterBean{
 
 	public void setFechabaja(String fechabaja) {
 		this.fechabaja = fechabaja;
+	}
+
+	public String getVisibleMovil() {
+		return visibleMovil;
+	}
+
+	public void setVisibleMovil(String visibleMovil) {
+		this.visibleMovil = visibleMovil;
 	}
 	
 	

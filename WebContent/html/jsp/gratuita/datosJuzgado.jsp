@@ -43,7 +43,7 @@
 		ArrayList provinciaSel = new ArrayList();
 		ArrayList poblacionSel = new ArrayList();
 		String parametro[] = new String[1];
-		String fechaBaja = "";
+		String fechaBaja = "", visibleMovil ="";
 		
 		//Procedimientos de este Juzgado:
 		Vector vProcedimientos = (Vector)request.getAttribute("vProcedimientos");
@@ -58,6 +58,16 @@
 			ponerBaja = "S";
 		}
 
+		
+		if(formulario.getDatos().get("VISIBLEMOVIL")!=null && !((String)formulario.getDatos().get("VISIBLEMOVIL")).equals("")){
+			visibleMovil = (String)formulario.getDatos().get("VISIBLEMOVIL");
+		}		
+		String ponerVisibilidadMovil = "N";
+		if(visibleMovil !=null && visibleMovil.equals("1")){
+			ponerVisibilidadMovil = "S";
+		}
+		
+		
 		String topBotones=null, topTabla=null;
 		String activarVisible="";
 		String deshabilitarVisible="";
@@ -212,7 +222,15 @@
 			} else {
 				MantenimientoJuzgadoForm.ponerBaja.value = "N";
 			}
- 		}		
+ 		}
+ 		
+ 		function darVisibilidadMovil (o) {
+ 			if (o.checked) {
+ 				MantenimientoJuzgadoForm.ponerVisibilidadMovil.value = "S";
+			} else {
+				MantenimientoJuzgadoForm.ponerVisibilidadMovil.value = "N";
+			}
+ 		} 		
 	</script>	
 </head>
 
@@ -359,6 +377,13 @@
 								<td class="labelText">
 									<html:text name="MantenimientoJuzgadoForm" property="codigoExt2" size="10" maxlength="10"  readonly="<%=desactivado %>" styleClass="<%=estilo%>"></html:text>
 								</td>
+								
+								<td class="labelText">
+									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.visibilidadMovil"/>
+								</td>
+								<td class="labelTextValue">
+									<input type="checkbox" name="ponerVisibilidadMovil" style="" onclick="darVisibilidadMovil(this);" <% if (modo.equalsIgnoreCase("VER")) { %>disabled<%}%> value="<%=ponerVisibilidadMovil%>" <%if (visibleMovil !=null && visibleMovil.equals("1")) {%>checked<%}%>>
+								</td>								
 							</tr>
 						</table>
 					</siga:ConjCampos>	

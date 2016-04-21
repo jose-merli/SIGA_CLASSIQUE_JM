@@ -93,6 +93,7 @@
 	String classTipo="box";
 	String classCombo="boxCombo";
 	String localiz="";
+	String visibleMovil ="";	
 	
 	if (accion.equalsIgnoreCase("Editar")){
 		siguienteAccion="modificar";
@@ -119,6 +120,14 @@
 	}
 	
 	String modoVerReadOnly = String.valueOf(accion.equalsIgnoreCase("ver"));
+	
+	if(turno.get("VISIBLEMOVIL")!=null && !((String)turno.get("VISIBLEMOVIL")).equals("")){
+		visibleMovil = (String)turno.get("VISIBLEMOVIL");
+	}		
+	String ponerVisibilidadMovil = "N";
+	if(visibleMovil !=null && visibleMovil.equals("1")){
+		ponerVisibilidadMovil = "S";
+	}	
 %>
 	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>	
@@ -285,6 +294,14 @@
 				jQuery("#partidosjudiciales").hide();
 			}
 		}
+		
+ 		function darVisibilidadMovil (o) {
+ 			if (o.checked) {
+ 				document.forms[0].ponerVisibilidadMovil.value = "S";
+			} else {
+				document.forms[0].ponerVisibilidadMovil.value = "N";
+			}
+ 		} 		
 		
 		jQuery(function(){
 			jQuery("#zona").on("change", function(){
@@ -603,6 +620,10 @@
 						<input type="checkbox" name="activarActuacionesLetrado" value="1" <% if (UtilidadesString.stringToBoolean((String)turno.get("LETRADOACTUACIONES"))) { %> checked <% } %> <%=valida2%> > 
 						<siga:Idioma key="gratuita.maestroTurnos.literal.aniadirActuacionesLetrado"/>
 					</td>
+					<td class="labelText">
+						<input type="checkbox" name="ponerVisibilidadMovil" style="" onclick="darVisibilidadMovil(this);" value="<%=ponerVisibilidadMovil%>" <%if (visibleMovil !=null && visibleMovil.equals("1")) {%>checked<%}%> <%=valida2%>>
+						<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.visibilidadMovil"/>
+					</td>						
 				</tr>				
 			</table>
 		</siga:ConjCampos>

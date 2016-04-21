@@ -15,7 +15,7 @@ public class MantenimientoComisariaForm extends MasterForm {
 	 * 
 	 */
 	private static final long serialVersionUID = 5159856413199675422L;
-	String ponerBaja;
+	String ponerBaja, ponerVisibilidadMovil;
 	
 	
 	// METODOS SET
@@ -125,5 +125,16 @@ public class MantenimientoComisariaForm extends MasterForm {
 	public void setPonerBaja(String ponerBaja) {
 		this.ponerBaja = ponerBaja;
 	}
-
+	public String getPonerVisibilidadMovil() {
+		return ponerVisibilidadMovil;
+	}
+	public void setPonerVisibilidadMovil(String ponerVisibilidadMovil) {
+		this.ponerVisibilidadMovil = ponerVisibilidadMovil;
+	}
+	public String getVisibleMovil() {
+		return UtilidadesHash.getString(this.datos, ScsComisariaBean.C_VISIBLEMOVIL);
+	}
+	public void setVisibleMovil(String dato) {
+		UtilidadesHash.set(this.datos, ScsComisariaBean.C_VISIBLEMOVIL , dato);
+	}
 }
