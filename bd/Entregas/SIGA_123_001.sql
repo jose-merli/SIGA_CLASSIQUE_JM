@@ -200,6 +200,11 @@ Package Pkg_Siga_Censo actualizado
 
 -- Ejecutado en Integracion por Adrian el 18/04/2016 15:30
 
+update gen_recursos set descripcion='La fecha de actuacion no puede ser posterior al dia de hoy' where idRecurso='messages.justificacion.fehaActMayorJust' and idLenguaje=1
+update gen_recursos set descripcion='La fecha de actuacion no puede ser posterior al dia de hoy#CA' where idRecurso='messages.justificacion.fehaActMayorJust' and idLenguaje=2
+update gen_recursos set descripcion='La fecha de actuacion no puede ser posterior al dia de hoy#EU' where idRecurso='messages.justificacion.fehaActMayorJust' and idLenguaje=3
+update gen_recursos set descripcion='La fecha de actuacion no puede ser posterior al dia de hoy#GL' where idRecurso='messages.justificacion.fehaActMayorJust' and idLenguaje=4
+
 -- Add/modify columns 
 alter table SCS_JUZGADO add VISIBLEMOVIL NUMBER(1) default 1 not null;
 alter table Scs_Comisaria add VISIBLEMOVIL NUMBER(1) default 1 not null;
