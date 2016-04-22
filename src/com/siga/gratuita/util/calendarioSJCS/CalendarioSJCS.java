@@ -1251,7 +1251,7 @@ public class CalendarioSJCS
 						primerPeriodo = segundoPeriodo;
 				} // FIN Para cada dia o conjunto de dias
 			}else{
-				log.addLog(new String[] {"Cabecera de guardia generada correctamente"});
+				log.addLog(new String[] {"Calendario sin letrados generado correctamente"});
 			}
 			
 			
