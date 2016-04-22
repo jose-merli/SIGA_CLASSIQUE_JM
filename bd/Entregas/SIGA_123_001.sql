@@ -218,3 +218,18 @@ insert into gen_parametros values ('ECOM','CENTRALITAVIRTUA_WS_IPS_CLIENTE_AGC',
 insert into gen_parametros values ('ECOM','CENTRALITAVIRTUA_WS_IPS_CLIENTE_AGC','10.60.3.71',SYSDATE,-1,2003,NULL);
 insert into gen_parametros values ('ECOM','CENTRALITAVIRTUA_WS_IPS_CLIENTE_AGC','10.60.3.71',SYSDATE,-1,2011,NULL);
 insert into gen_parametros values ('ECOM','CENTRALITAVIRTUA_WS_IPS_CLIENTE_AGC','10.60.3.71',SYSDATE,-1,2010,NULL);
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('errors.formato', 'El valor del campo {0} tiene un formato incorrecto', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('errors.formato', 'El valor del campo {0} tiene un formato incorrecto#GL', 0, '4', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('errors.formato', 'El valor del campo {0} tiene un formato incorrecto#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('errors.formato', 'El valor del campo {0} tiene un formato incorrecto#EU', 0, '3', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.busquedaSOJ.literal.anyo.designa', 'Año de la designación', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.busquedaSOJ.literal.anyo.designa', 'Año de la designación#GL', 0, '4', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.busquedaSOJ.literal.anyo.designa', 'Año de la designación#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.busquedaSOJ.literal.anyo.designa', 'Año de la designación#EU', 0, '3', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.busquedaSOJ.literal.anyo.ejg', 'Año del expediente justicia gratuita', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.busquedaSOJ.literal.anyo.ejg', 'Año del expediente justicia gratuita#GL', 0, '4', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.busquedaSOJ.literal.anyo.ejg', 'Año del expediente justicia gratuita#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.busquedaSOJ.literal.anyo.ejg', 'Año del expediente justicia gratuita#EU', 0, '3', sysdate, 0, '19');
