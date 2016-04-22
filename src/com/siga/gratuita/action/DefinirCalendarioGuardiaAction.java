@@ -187,6 +187,8 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 			hashGuardia.put (ScsGuardiasTurnoBean.C_IDGUARDIA, (String) miForm.getIdGuardiaPestanha ());
 			ScsGuardiasTurnoBean beanGuardia = (ScsGuardiasTurnoBean) (new ScsGuardiasTurnoAdm (usr).select (hashGuardia)).get (0);
 			request.setAttribute ("NOMBREGUARDIA", beanGuardia.getNombre ());
+			request.setAttribute ("numLetradosGuardia", beanGuardia.getNumeroLetradosGuardia() );
+			
 			request.setAttribute("resultado",salida);			
 			request.setAttribute("modo",miForm.getModo());
 

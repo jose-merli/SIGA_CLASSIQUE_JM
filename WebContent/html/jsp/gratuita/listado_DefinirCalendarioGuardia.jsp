@@ -39,6 +39,7 @@
 	
 	//Datos propios del jsp:	
 	Vector obj = (Vector) request.getAttribute("resultado");
+	Integer numLetradosGuardia = (Integer)request.getAttribute("numLetradosGuardia");
 	String modo = request.getAttribute("modo")==null?"":(String)request.getAttribute("modo");	
 %>
 
@@ -135,8 +136,13 @@
 					elems[0] = null;
 				}
 				
-				boolean tieneGuardias = numGuardias!=null && !numGuardias.equalsIgnoreCase("0");
-				if (tieneGuardias)generado="Si";else generado="No";
+				if(numLetradosGuardia!=null && numLetradosGuardia.intValue()==0 ){
+					boolean tieneGuardias = numGuardias!=null && !numGuardias.equalsIgnoreCase("0");
+					if (tieneGuardias)generado="Si";else generado="No Aplica";
+				}else{
+					boolean tieneGuardias = numGuardias!=null && !numGuardias.equalsIgnoreCase("0");
+					if (tieneGuardias)generado="Si";else generado="No";
+				}
 			%>
 		       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="E,C,B" elementos="<%=elems%>"  clase="listaNonEdit" modo="<%=modopestanha%>"  >
 				<td align="center">

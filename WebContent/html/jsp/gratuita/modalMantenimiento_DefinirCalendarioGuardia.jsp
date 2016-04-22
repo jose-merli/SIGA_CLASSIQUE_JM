@@ -421,16 +421,21 @@
 					class="frameGeneral">
 	</iframe>
 	<%
-	if(tieneGuardias){
+	if(num_letrados!=null && num_letrados.equalsIgnoreCase("0")){%>
+		<siga:ConjBotonesAccion botones="C"  modal="G" modo="<%=modo%>" />
+	<%}else{
 	
-	%>
-		<siga:ConjBotonesAccion botones="NL,C"  modal="G" modo="<%=modo%>" />
-	<%}else{%>
-	
-		<siga:ConjBotonesAccion  botones="GC,NL,C"  modal="G" modo="<%=modo%>" />
+		if(tieneGuardias){
 		
-	<%}%>
-	
+		%>
+			<siga:ConjBotonesAccion botones="NL,C"  modal="G" modo="<%=modo%>" />
+		<%}else{%>
+		
+			<siga:ConjBotonesAccion  botones="GC,NL,C"  modal="G" modo="<%=modo%>" />
+			
+		<%}
+	}
+	%>
 	<!-- FIN: IFRAME LISTA RESULTADOS -->
 
 <!-- FIN ******* CAPA DE PRESENTACION ****** -->
