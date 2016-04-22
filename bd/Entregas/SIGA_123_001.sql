@@ -210,3 +210,11 @@ alter table SCS_JUZGADO add VISIBLEMOVIL NUMBER(1) default 1 not null;
 alter table Scs_Comisaria add VISIBLEMOVIL NUMBER(1) default 1 not null;
 alter table Scs_Turno add VISIBLEMOVIL NUMBER(1) default 1 not null;
 alter table Scs_Tipoasistenciacolegio add VISIBLEMOVIL NUMBER(1) default 1 not null;
+
+update gen_parametros set idinstitucion = 0 where parametro = 'CENTRALITAVIRTUA_WS_IPS_CLIENTE_AGC';
+
+
+insert into gen_parametros values ('ECOM','CENTRALITAVIRTUA_WS_IPS_CLIENTE_AGC','10.60.3.71',SYSDATE,-1,2013,NULL);
+insert into gen_parametros values ('ECOM','CENTRALITAVIRTUA_WS_IPS_CLIENTE_AGC','10.60.3.71',SYSDATE,-1,2003,NULL);
+insert into gen_parametros values ('ECOM','CENTRALITAVIRTUA_WS_IPS_CLIENTE_AGC','10.60.3.71',SYSDATE,-1,2011,NULL);
+insert into gen_parametros values ('ECOM','CENTRALITAVIRTUA_WS_IPS_CLIENTE_AGC','10.60.3.71',SYSDATE,-1,2010,NULL);
