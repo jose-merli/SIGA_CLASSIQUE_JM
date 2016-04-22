@@ -233,3 +233,9 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.busquedaSOJ.literal.anyo.ejg', 'Año del expediente justicia gratuita#GL', 0, '4', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.busquedaSOJ.literal.anyo.ejg', 'Año del expediente justicia gratuita#CA', 0, '2', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.busquedaSOJ.literal.anyo.ejg', 'Año del expediente justicia gratuita#EU', 0, '3', sysdate, 0, '19');
+
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='La fecha de actuación no puede ser posterior al día de hoy' where idrecurso='messages.justificacion.fehaActMayorJust' and idlenguaje='1';
+ update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='La fecha de actuación no puede ser posterior al día de hoy#GL' where idrecurso='messages.justificacion.fehaActMayorJust' and idlenguaje='4';
+ update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='La fecha de actuación no puede ser posterior al día de hoy#CA' where idrecurso='messages.justificacion.fehaActMayorJust' and idlenguaje='2';
+ update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='La fecha de actuación no puede ser posterior al día de hoy#EU' where idrecurso='messages.justificacion.fehaActMayorJust' and idlenguaje='3';
+ 
