@@ -353,7 +353,7 @@
 					error += "<siga:Idioma key='errors.formato' arg0='gratuita.busquedaSOJ.literal.anyo.designa'/>"+ '\n';				
 				}
 			}	
-	
+			var mostrarMensajeUnaVezDesigna=false;
 			var codigoDesigna = jQuery("#codigoDesigna").val();
 			if (codigoDesigna!="" && codigoDesigna!="*") {
 				var codigoDesignas = codigoDesigna.split(',');			
@@ -361,8 +361,9 @@
 					codigoDesignas = codigoDesigna.split('-');
 				}	
 				for (var i = 0; i < codigoDesignas.length; i++) {
-					if (codigoDesignas[i]=="" || !isNumero(codigoDesignas[i])) {
+					if ((codigoDesignas[i]=="" || !isNumero(codigoDesignas[i])) && !mostrarMensajeUnaVezDesigna) {
 						error += "<siga:Idioma key='errors.invalid' arg0='gratuita.busquedaSOJ.literal.codigo'/>"+ '\n';
+						mostrarMensajeUnaVezDesigna=true;
 					}
 				}
 			}
@@ -375,7 +376,7 @@
 			}	
 			
 			
-			
+			var mostrarMensajeUnaVezEJG=false;
 			var codigoEJG = jQuery("#codigoEJG").val();
 			if (codigoEJG!="" && codigoEJG!="*") {
 				var codigoEJGs = codigoEJG.split(',');			
@@ -383,8 +384,9 @@
 					codigoEJGs = codigoEJG.split('-');
 				}	
 				for (var i = 0; i < codigoEJGs.length; i++) {
-					if (codigoEJGs[i]=="" || !isNumero(codigoEJGs[i])) {
+					if ((codigoEJGs[i]=="" || !isNumero(codigoEJGs[i])) && !mostrarMensajeUnaVezEJG) {
 						error += "<siga:Idioma key='errors.invalid' arg0='gratuita.busquedaEJG.literal.codigo'/>"+ '\n'; 
+						mostrarMensajeUnaVezEJG=true;
 					}
 				}
 			}
