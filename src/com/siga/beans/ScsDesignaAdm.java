@@ -1574,8 +1574,6 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					consulta += " AND act.idprocedimiento = :" + contador;
 				}
 				if (tiene_origen) {
-					
-					consulta +=	 " AND act.IDFACTURACION IS NULL ";
 							if(UtilidadesHash.getString(miHash,"ORIGEN").equalsIgnoreCase("ICA")){
 								consulta +=" AND act.USUCREACION <> ";
 							}else{
