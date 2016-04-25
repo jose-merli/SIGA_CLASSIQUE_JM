@@ -131,7 +131,7 @@
 								<td class="labelText">
 									<siga:Idioma key="gratuita.procedimientos.literal.importe" />&nbsp;(*)
 								</td>
-								<td class="labelText">
+								<td class="labelText" >
 									<html:text name="MantenimientoProcedimientosForm" property="importe" maxlength="11" styleClass="boxNumber" readonly="false" value="<%=UtilidadesNumero.formatoCampo(importe)%>" />&nbsp;&euro;
 								</td>
 							</tr>
@@ -205,7 +205,7 @@
 							<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_4" value="detalleAcreditacion">
 							<%=UtilidadesString.mostrarDatoJSP(acreDescripcion)%>
 						</td>
-						<td><%=acrePorcentaje.intValue()%></td>
+						<td align="right"><%=acrePorcentaje.intValue()%></td>
 						<td align="center">
 							<%		
 								if(nigNumeroProcedimiento == 1){ %>
