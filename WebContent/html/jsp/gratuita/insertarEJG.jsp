@@ -180,6 +180,13 @@
 					<siga:ConjCampos leyenda="gratuita.seleccionColegiadoJG.literal.tituloEJG"> 
 						<table class="tablaCampos" border="0" width="100%">
 							<tr>
+								<td width="25%"></td>
+								<td width="25%"></td>
+								<td width="25%"></td>
+								<td width="25%"></td>
+							</tr>
+						
+							<tr>
 								<td class="labelText" >
 									<siga:Idioma key="gratuita.busquedaEJG.literal.turno"/>&nbsp;
 								</td>
