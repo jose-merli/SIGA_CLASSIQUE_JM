@@ -3239,6 +3239,14 @@
 					
 				} else {
 					if (validatePersonaJGForm(document.forms[0]) ){
+						
+						if(<%=pcajgActivo == 9%>){
+							if (<%=obligatorioSexo%> && document.forms[0].sexo.value==""){
+								alert("<siga:Idioma key='errors.required' arg0='Sexo'/>");	
+								fin();
+								return false;
+							}	
+						}	
 						document.forms[0].submit();
 						
 					}else{
@@ -3247,17 +3255,11 @@
 					}				
 				}
 			}
-			if(<%=pcajgActivo == 9%>){
-				if (<%=obligatorioSexo%> && document.forms[0].sexo.value==""){
-					alert("<siga:Idioma key='errors.required' arg0='Sexo'/>");	
-					fin();
-					return false;
-				}	
-			}	
+			
 		}
 		function refrescarLocal() {
 			window.location=window.location;
-		}			
+		}
 <%} else if (conceptoE.equals(PersonaJGAction.ASISTENCIA_CONTRARIOS)) {%>
 
 		//Asociada al boton Cerrar -->
@@ -3728,6 +3730,11 @@ function accionGuardarCerrar()	{
 		if (<%=obligatorioSexo%> && document.forms[0].sexo.value=="0")
 			error += "<siga:Idioma key='errors.required' arg0='Sexo'/>"+ '\n';								
 	}	
+	if(<%=pcajgActivo == 9%>){
+		if (<%=obligatorioSexo%> && document.forms[0].sexo.value==""){
+				error += "<siga:Idioma key='errors.required' arg0='Sexo'/>"+ '\n';	
+		}	
+	}	
 	
 	if(error!=""){
 	  alert(error);
@@ -3762,7 +3769,7 @@ function accionGuardarCerrar()	{
 			return false;
 			
 		} else {
-			if (validatePersonaJGForm(document.forms[0]) ){						
+			if (validatePersonaJGForm(document.forms[0]) ){	
 				document.forms[0].submit();
 			}else{
 				fin();
@@ -3770,11 +3777,7 @@ function accionGuardarCerrar()	{
 			}
 		}
 	}
-	if(<%=pcajgActivo == 9%>){
-		if (<%=obligatorioSexo%> && document.forms[0].sexo.value==""){
-				error += "<siga:Idioma key='errors.required' arg0='Sexo'/>"+ '\n';	
-		}	
-	}	
+	
 
 	
 }
