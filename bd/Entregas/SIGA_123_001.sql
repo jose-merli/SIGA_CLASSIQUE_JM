@@ -244,3 +244,8 @@ update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='La fecha de actu
  - El update del parametro no funciono en Integracion porque alguien ya lo había cambiado por BD
  - La personalizacion de parametros repite la misma configuracion que el parametro generico y no tiene recurso asociado, pero el desarrollador no ha querido arreglarlo
 */
+
+insert into gen_recursos values ('gratuita.mantenimientoTablasMaestra.literal.visibilidadMovil', 'Visible Movil', 0, 1, sysdate, 0, 19);
+insert into gen_recursos values ('gratuita.mantenimientoTablasMaestra.literal.visibilidadMovil', 'Visible Movil#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos values ('gratuita.mantenimientoTablasMaestra.literal.visibilidadMovil', 'Visible Movil#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos values ('gratuita.mantenimientoTablasMaestra.literal.visibilidadMovil', 'Visible Movil#GL', 0, 4, sysdate, 0, 19);
