@@ -238,4 +238,9 @@ update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='La fecha de actu
  update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='La fecha de actuación no puede ser posterior al día de hoy#GL' where idrecurso='messages.justificacion.fehaActMayorJust' and idlenguaje='4';
  update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='La fecha de actuación no puede ser posterior al día de hoy#CA' where idrecurso='messages.justificacion.fehaActMayorJust' and idlenguaje='2';
  update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='La fecha de actuación no puede ser posterior al día de hoy#EU' where idrecurso='messages.justificacion.fehaActMayorJust' and idlenguaje='3';
- 
+
+-- Ejecutado en Integracion por Adrian el 26/04/2016 10:00
+/* Notas: 
+ - El update del parametro no funciono en Integracion porque alguien ya lo había cambiado por BD
+ - La personalizacion de parametros repite la misma configuracion que el parametro generico y no tiene recurso asociado, pero el desarrollador no ha querido arreglarlo
+*/
