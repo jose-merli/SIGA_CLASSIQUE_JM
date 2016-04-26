@@ -239,6 +239,10 @@ update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='La fecha de actu
  update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='La fecha de actuación no puede ser posterior al día de hoy#CA' where idrecurso='messages.justificacion.fehaActMayorJust' and idlenguaje='2';
  update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='La fecha de actuación no puede ser posterior al día de hoy#EU' where idrecurso='messages.justificacion.fehaActMayorJust' and idlenguaje='3';
 
+
+Actualizado Pkg_Siga_Censo
+
+
 -- Ejecutado en Integracion por Adrian el 26/04/2016 10:00
 /* Notas: 
  - El update del parametro no funciono en Integracion porque alguien ya lo había cambiado por BD
@@ -249,3 +253,5 @@ insert into gen_recursos values ('gratuita.mantenimientoTablasMaestra.literal.vi
 insert into gen_recursos values ('gratuita.mantenimientoTablasMaestra.literal.visibilidadMovil', 'Visible Movil#CA', 0, 2, sysdate, 0, 19);
 insert into gen_recursos values ('gratuita.mantenimientoTablasMaestra.literal.visibilidadMovil', 'Visible Movil#EU', 0, 3, sysdate, 0, 19);
 insert into gen_recursos values ('gratuita.mantenimientoTablasMaestra.literal.visibilidadMovil', 'Visible Movil#GL', 0, 4, sysdate, 0, 19);
+
+-- Ejecutado en Integracion por Adrian el 26/04/2016 14:00
