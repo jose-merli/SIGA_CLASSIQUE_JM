@@ -652,10 +652,12 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 					designaForm.setRowSpan();
 					
 					 if(designaForm.getIdJuzgado()==null || designaForm.getIdJuzgado().equals("")){
+						 designaForm.setPermitidoJustificar(false);
 						designaFormList.add(designaForm);
 //						if(designaForm.getActuacionPermitidaLetrado().equals(AppConstants.DB_TRUE) && designaForm.getCambioLetrado()!=null && designaForm.getCambioLetrado().equalsIgnoreCase("N") && designaForm.getEstado()!=null && designaForm.getEstado().equalsIgnoreCase("V"))
 //							designaForm.addRowSpan();
 					}else if(designaForm.getIdProcedimiento()==null || designaForm.getIdProcedimiento().equals("")){
+						designaForm.setPermitidoJustificar(false);
 						designaFormList.add(designaForm);
 //						if(designaForm.getActuacionPermitidaLetrado().equals(AppConstants.DB_TRUE) && designaForm.getCambioLetrado()!=null && designaForm.getCambioLetrado().equalsIgnoreCase("N") && designaForm.getEstado()!=null && designaForm.getEstado().equalsIgnoreCase("V"))
 //							designaForm.addRowSpan();
@@ -861,10 +863,12 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 					designaForm.setRowSpan();
 					
 					if(designaForm.getIdJuzgado()==null || designaForm.getIdJuzgado().equals("")){
+						designaForm.setPermitidoJustificar(false);
 						designaFormList.add(designaForm);
 //						if(designaForm.getActuacionPermitidaLetrado().equals(AppConstants.DB_TRUE) && designaForm.getCambioLetrado()!=null && designaForm.getCambioLetrado().equalsIgnoreCase("N") && designaForm.getEstado()!=null && designaForm.getEstado().equalsIgnoreCase("V"))
 //							designaForm.addRowSpan();
 					}else if(designaForm.getIdProcedimiento()==null || designaForm.getIdProcedimiento().equals("")){
+						designaForm.setPermitidoJustificar(false);
 						designaFormList.add(designaForm);
 //						if(designaForm.getActuacionPermitidaLetrado().equals(AppConstants.DB_TRUE) && designaForm.getCambioLetrado()!=null && designaForm.getCambioLetrado().equalsIgnoreCase("N") && designaForm.getEstado()!=null && designaForm.getEstado().equalsIgnoreCase("V"))
 //							designaForm.addRowSpan();
