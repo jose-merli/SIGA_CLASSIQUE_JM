@@ -236,7 +236,9 @@ function accionGuardar (isLetrado)
 			var actuacionRestriccionesActiva = document.getElementById("actuacionRestriccionesActiva_"+index).value;
 			var datosInsertables = "";
 			//Si la acreditacion esta lista para insertar metemos los datos en la cadena
+			
 			if(jQuery("#insertar_"+idsValidacion[1])&&jQuery("#insertar_"+idsValidacion[1]).val()=='1'){
+			
 				if(jQuery("#fechaact_"+idsValidacion[1]))
 					datosInsertables += ","+jQuery("#fechaact_"+idsValidacion[1]).val();
 				if(jQuery("#numprocact_"+idsValidacion[1]))
@@ -263,7 +265,7 @@ function accionGuardar (isLetrado)
 								datosInsertables + "#";
 								
 			}else{
-				if(justificado=='1'){
+				if(numActuacion=='x'){
 					existenActuacionesIncompletas = 'true';
 				}else{
 					//Este es el caso de actuaciones insertadas sin fecha justificacion
@@ -1343,22 +1345,33 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 						<c:otherwise>
 							<td align="center" colspan="3">
 								<c:choose>
+									<c:when test="${designa.juzgado==''}">
+										<siga:Idioma
+											key="gratuita.informeJustificacionMasiva.aviso.sinJuzgado" />
+							
+								
+									</c:when>
+									<c:when test="${designa.idProcedimiento==''}">
+										<siga:Idioma key="gratuita.informeJustificacionMasiva.aviso.sinModulo" />
+								
+									</c:when>
+								
 									<c:when test="${designa.tipoResolucionDesigna=='NO_FAVORABLE'}">
 										<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaNoFavorable" />
 								
-								</c:when>
-								<c:when test="${designa.tipoResolucionDesigna=='PTE_CAJG'}">
-										<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaPteCAJG" />
-								
-								</c:when>
-								<c:when test="${designa.tipoResolucionDesigna=='SIN_RESOLUCION'}">
-									<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaSinResolucion" />
-								
-								</c:when>
-								<c:when test="${designa.tipoResolucionDesigna=='SIN_EJG'}">
-									<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaSinEjg" />
-								
-								</c:when>
+									</c:when>
+									<c:when test="${designa.tipoResolucionDesigna=='PTE_CAJG'}">
+											<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaPteCAJG" />
+									
+									</c:when>
+									<c:when test="${designa.tipoResolucionDesigna=='SIN_RESOLUCION'}">
+										<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaSinResolucion" />
+									
+									</c:when>
+									<c:when test="${designa.tipoResolucionDesigna=='SIN_EJG'}">
+										<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaSinEjg" />
+									
+									</c:when>
 								</c:choose>
 								</td>
 								
@@ -1638,6 +1651,47 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 							</c:choose></td>
 							</tr>
 						</c:when>
+						<c:when
+							test="${designa.idProcedimiento==''&&empty designa.actuaciones}">
+							<td align="center" rowspan="${designa.rowSpan}" colspan="3">
+							<siga:Idioma
+								key="gratuita.informeJustificacionMasiva.aviso.sinModulo" />
+							</td>
+							<td rowspan="${designa.rowSpan}"><input type="checkbox"
+								disabled="disabled" /></td>
+							<td rowspan="${designa.rowSpan}"><c:choose>
+								<c:when
+									test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V' &&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.fichaColegial==false||editarDesignaLetrados=='1'))}">
+									<img id="iconoboton_editar1"
+										src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>"
+										style="cursor: hand;" alt="Editar" name="editar_1" border="0"
+										onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${designa.fecha});"
+										onMouseOut="MM_swapImgRestore()"
+										onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
+								</c:when>
+								<c:otherwise>
+											&nbsp;
+										</c:otherwise>
+							</c:choose></td>
+							
+							<td><c:choose>
+								<c:when test="${designa.baja=='1'}">
+									<input type="checkbox" disabled="disabled" checked="checked" />
+								</c:when>
+								<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true}">
+									<input type="checkbox" disabled="disabled" />
+								</c:when>
+								
+								<c:otherwise>
+									<input name="checkBaja" id="baja_${status.count}"
+										 type="checkbox" />
+								</c:otherwise>
+							</c:choose></td>
+							</tr>
+						</c:when>
+						
+						
+						
 						<c:otherwise>
 							<c:choose>
 								
