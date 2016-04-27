@@ -998,7 +998,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			ScsDesignasLetradoAdm sdla = new ScsDesignasLetradoAdm(usr);
 			Long idPersonaActuacion = sdla.obtenerColegiadoDesignadoEnFecha(sdb,miform.getFechaActuacion());
 			if (idPersonaActuacion == null)
-				return exitoModal("messages.error.designacion.sinLetradoAsignado", request); 
+				return exito("messages.error.designacion.sinLetradoAsignado", request); 
 			hash.put(ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO, idPersonaActuacion);
 			boolean cambiaLetradoDesigna = !miform.getIdPersona().equals(idPersonaActuacion.toString());
 					
