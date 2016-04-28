@@ -769,7 +769,7 @@
 <!-- FIN: SCRIPTS BOTONES -->
 </head>
 
-<body onLoad="ajusteAltoBotones('camposRegistro');revisarCheck();descargarPDF();">
+<body onLoad="ajusteAltoBotones('mainWorkArea');revisarCheck();descargarPDF();" height="100%">
 
 	<table class="tablaTitulo" cellspacing="0">
 		<tr>
@@ -778,8 +778,7 @@
 		</tr>
 	</table>
 		
-	<div id="camposRegistro"  style="overflow-x:hidden; overflow-y:scroll">
-		
+	<div id="camposRegistro" style="overflow-x:hidden; overflow-y:auto">
 		
 	<html:form action="/CER_GestionSolicitudes.do" method="POST" target="submitArea">
 		<html:hidden property="modo" value="" />
