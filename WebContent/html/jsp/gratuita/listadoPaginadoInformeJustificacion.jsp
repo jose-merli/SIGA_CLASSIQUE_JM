@@ -1147,7 +1147,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 						</td>
 						
 					<c:choose>
-						<c:when test="${InformeJustificacionMasivaForm.fichaColegial==false  && designa.tipoResolucionDesigna=='NO_FAVORABLE'}">
+						<c:when test="${ designa.tipoResolucionDesigna=='NO_FAVORABLE'}">
 							<td rowspan="${designa.rowSpan}" style="${colorEJG}" title="<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaNoFavorable" />">
 								<c:forEach items="${designa.expedientes}" var="ejgForm" varStatus="statusNoFavorable">     
 										<c:out value="${ejgForm.nombre}"/>
@@ -1158,7 +1158,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 							</td>
 						</c:when>
 					
-						<c:when test="${InformeJustificacionMasivaForm.fichaColegial==false && designa.tipoResolucionDesigna=='SIN_RESOLUCION'}">
+						<c:when test="${ designa.tipoResolucionDesigna=='SIN_RESOLUCION'}">
 							<td rowspan="${designa.rowSpan}" style="${colorEJG}" title="<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaSinResolucion" />">
 								<c:forEach items="${designa.expedientes}" var="ejgForm" varStatus="statusSinResolucion">     
 										<c:out value="${ejgForm.nombre}"/>
@@ -1170,7 +1170,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 							</td>
 						
 						</c:when>
-						<c:when test="${InformeJustificacionMasivaForm.fichaColegial==false && designa.tipoResolucionDesigna=='PTE_CAJG'}">
+						<c:when test="${designa.tipoResolucionDesigna=='PTE_CAJG'}">
 							<td rowspan="${designa.rowSpan}" style="${colorEJG}" title="<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaPteCAJG" />">
 								<c:forEach items="${designa.expedientes}" var="ejgForm" varStatus="statusPteCAJG">     
 										<c:out value="${ejgForm.nombre}"/>
@@ -1303,6 +1303,17 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 						<c:when test="${empty designa.actuaciones}">
 							<td align="center" rowspan="${designa.rowSpan}" colspan="3">
 								<c:choose>
+									<c:when test="${designa.juzgado==''}">
+											<siga:Idioma
+											key="gratuita.informeJustificacionMasiva.aviso.sinJuzgado" />
+							
+								
+									</c:when>
+									<c:when test="${designa.idProcedimiento==''}">
+										<siga:Idioma key="gratuita.informeJustificacionMasiva.aviso.sinModulo" />
+								
+									</c:when>
+								
 									<c:when test="${designa.tipoResolucionDesigna=='NO_FAVORABLE'}">
 										<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaNoFavorable" />
 								
