@@ -255,3 +255,8 @@ insert into gen_recursos values ('gratuita.mantenimientoTablasMaestra.literal.vi
 insert into gen_recursos values ('gratuita.mantenimientoTablasMaestra.literal.visibilidadMovil', 'Visible Movil#GL', 0, 4, sysdate, 0, 19);
 
 -- Ejecutado en Integracion por Adrian el 26/04/2016 14:00
+
+Actualizado Pkg_Siga_Censo
+
+-- Ejecutado en Integracion por Adrian el 28/04/2016 17:30
+
