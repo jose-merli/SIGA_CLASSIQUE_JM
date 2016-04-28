@@ -1478,9 +1478,6 @@ public class ActuacionesDesignasAction extends MasterAction {
 				actuacionDesignaBean = (ScsActuacionDesignaBean) actuacionDesignaVector.get(0);
 				if(actuacionDesignaBean.getFechaJustificacion()!=null && !actuacionDesignaBean.getFechaJustificacion().equals("") ){
 					Date fechaJustificacion = formatBBDD.parse(actuacionDesignaBean.getFechaJustificacion());
-					if (dActuacion.compareTo(fechaJustificacion) > 0) {
-						return exito("messages.error.acreditacionFechaNoValida", request);
-					}
 				}
 				
 			}

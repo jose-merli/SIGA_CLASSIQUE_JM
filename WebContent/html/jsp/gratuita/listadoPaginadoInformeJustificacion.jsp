@@ -2669,9 +2669,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		if(compararFecha(valFechaActuacion,fechaDesigna) ==2){
 			error += "<siga:Idioma key='messages.error.acreditacionFechaNoValida' />"+ '\n';
 		}
-		if(compararFecha(fechaJustificacion,valFechaActuacion) ==2){
-			error += "<siga:Idioma key='messages.justificacion.fehaActMayorJust' />"+ '\n';
-		}
 		if(valNigNumProcRequired=='1'){
 			if (valNumProc=='') {
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento'/>"+ '\n';
