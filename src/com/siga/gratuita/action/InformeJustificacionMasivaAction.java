@@ -273,6 +273,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			String clavesDesigna[] = { ScsDesignaBean.C_ANIO, ScsDesignaBean.C_NUMERO,
 					ScsDesignaBean.C_IDINSTITUCION, ScsDesignaBean.C_IDTURNO };
 			String camposDesigna[]={ScsDesignaBean.C_FECHAESTADO,ScsDesignaBean.C_ESTADO};
+			
 
 			String clavesActuacion[] = { ScsActuacionDesignaBean.C_ANIO, ScsActuacionDesignaBean.C_NUMERO,
 					ScsActuacionDesignaBean.C_IDINSTITUCION, ScsActuacionDesignaBean.C_IDTURNO ,ScsActuacionDesignaBean.C_NUMEROASUNTO};
@@ -541,6 +542,16 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						
 						
 						
+					}
+					Vector vDesignaModificada = desginaAdm.selectByPK(hashActuacion);
+					ScsDesignaBean sdb = (ScsDesignaBean)vDesignaModificada.get(0);
+			        //Se rellena el NIG si no estuviera completo en datos generales
+					if(sdb.getNIG() == null || sdb.getNIG().equals("")){     				
+						if (nigActuacion!=null && !nigActuacion.equals("")){
+							sdb.setNIG(nigActuacion);
+							String camposDesignaNig[]={ScsDesignaBean.C_NIG};
+							desginaAdm.updateDirect(sdb, clavesDesigna, camposDesignaNig);
+						}
 					}
 				}
 			}
