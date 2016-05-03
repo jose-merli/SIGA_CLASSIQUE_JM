@@ -1149,9 +1149,18 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 					<c:choose>
 						<c:when test="${ designa.tipoResolucionDesigna=='NO_FAVORABLE'}">
 							<td rowspan="${designa.rowSpan}" style="${colorEJG}" title="<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaNoFavorable" />">
-								<c:forEach items="${designa.expedientes}" var="ejgForm" varStatus="statusNoFavorable">     
-										<c:out value="${ejgForm.nombre}"/>
-										<c:if test="${!statusNoFavorable.last}">
+								<c:forEach items="${designa.expedientes}" var="ejgForm" varStatus="statusSinEjg">     
+									<c:choose>            
+										<c:when test="${ejgForm.docResolucion!=null && ejgForm.docResolucion!=''}">
+											<a href='#' onclick="downloadDocumentoResolucion('${ejgForm.docResolucion}')"><c:out value="${ejgForm.nombre}"/></a>
+										</c:when>
+										<c:when test="${resolucionLetradoActivo==true && ejgForm.idTipoRatificacionEJG!='' && ejgForm.fechaResolucionCAJG!=''}">
+											<a href='#' onclick="downloadResolucionCAJG('${ejgForm.idInstitucion}','${ejgForm.anio}','${ejgForm.idTipoEJG}','${ejgForm.numero}')"><c:out value="${ejgForm.nombre}"/></a>
+										</c:when>
+										
+										<c:otherwise><c:out value="${ejgForm.nombre}"/></c:otherwise>
+									</c:choose>
+									<c:if test="${!statusSinEjg.last}">
 										,
 										</c:if>
 								</c:forEach>
@@ -1172,9 +1181,18 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 						</c:when>
 						<c:when test="${designa.tipoResolucionDesigna=='PTE_CAJG'}">
 							<td rowspan="${designa.rowSpan}" style="${colorEJG}" title="<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaPteCAJG" />">
-								<c:forEach items="${designa.expedientes}" var="ejgForm" varStatus="statusPteCAJG">     
-										<c:out value="${ejgForm.nombre}"/>
-										<c:if test="${!statusPteCAJG.last}">
+								<c:forEach items="${designa.expedientes}" var="ejgForm" varStatus="statusSinEjg">     
+									<c:choose>            
+										<c:when test="${ejgForm.docResolucion!=null && ejgForm.docResolucion!=''}">
+											<a href='#' onclick="downloadDocumentoResolucion('${ejgForm.docResolucion}')"><c:out value="${ejgForm.nombre}"/></a>
+										</c:when>
+										<c:when test="${resolucionLetradoActivo==true && ejgForm.idTipoRatificacionEJG!='' && ejgForm.fechaResolucionCAJG!=''}">
+											<a href='#' onclick="downloadResolucionCAJG('${ejgForm.idInstitucion}','${ejgForm.anio}','${ejgForm.idTipoEJG}','${ejgForm.numero}')"><c:out value="${ejgForm.nombre}"/></a>
+										</c:when>
+										
+										<c:otherwise><c:out value="${ejgForm.nombre}"/></c:otherwise>
+									</c:choose>
+									<c:if test="${!statusSinEjg.last}">
 										,
 										</c:if>
 								</c:forEach>
@@ -1336,7 +1354,20 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 									disabled="disabled" /></td>
 								<td rowspan="${designa.rowSpan}">
 								
-										&nbsp;
+										<c:choose>
+										<c:when
+											test="${(designa.juzgado=='' || designa.idProcedimiento=='') &&   permitirBotones==true && designa.estado!=null && designa.estado=='V' &&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.fichaColegial==false||editarDesignaLetrados=='1'))}">
+											<img id="iconoboton_editar1"
+												src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>"
+												style="cursor: hand;" alt="Editar" name="editar_1" border="0"
+												onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${designa.fecha});"
+												onMouseOut="MM_swapImgRestore()"
+												onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
+										</c:when>
+										<c:otherwise>
+											&nbsp;
+										</c:otherwise>
+									</c:choose>
 								</td>
 								
 								<td><c:choose>
@@ -1390,7 +1421,20 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 									disabled="disabled" /></td>
 								<td >
 								
-										&nbsp;
+										<c:choose>
+										<c:when
+											test="${(designa.juzgado=='' || designa.idProcedimiento=='') &&   permitirBotones==true && designa.estado!=null && designa.estado=='V' &&(designa.cambioLetrado=='N'&&(InformeJustificacionMasivaForm.fichaColegial==false||editarDesignaLetrados=='1'))}">
+											<img id="iconoboton_editar1"
+												src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>"
+												style="cursor: hand;" alt="Editar" name="editar_1" border="0"
+												onClick="accionEditarDesigna(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${designa.fecha});"
+												onMouseOut="MM_swapImgRestore()"
+												onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
+										</c:when>
+										<c:otherwise>
+											&nbsp;
+										</c:otherwise>
+									</c:choose>
 								</td>
 								
 								<td rowspan="${designa.rowSpan}"><c:choose>

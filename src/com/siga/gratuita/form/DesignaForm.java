@@ -109,11 +109,13 @@ public class DesignaForm extends MasterForm
 				}
 				
 			}
-			if(acreditaciones!=null&&acreditaciones.size()>0){
-				Iterator<String> itAcreditacion = acreditaciones.keySet().iterator();
-				while (itAcreditacion.hasNext()) {
-					String codProcedimineto = (String) itAcreditacion.next();
-					rowSpan += ((List<AcreditacionForm>)acreditaciones.get(codProcedimineto)).size();
+			if(this.getIdJuzgado()!=null && !this.getIdJuzgado().equalsIgnoreCase("") && this.getIdProcedimiento()!=null && !this.getIdProcedimiento().equalsIgnoreCase("")  ){
+				if(acreditaciones!=null&&acreditaciones.size()>0){
+					Iterator<String> itAcreditacion = acreditaciones.keySet().iterator();
+					while (itAcreditacion.hasNext()) {
+						String codProcedimineto = (String) itAcreditacion.next();
+						rowSpan += ((List<AcreditacionForm>)acreditaciones.get(codProcedimineto)).size();
+					}
 				}
 			}
 			
