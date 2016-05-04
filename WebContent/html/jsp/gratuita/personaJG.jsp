@@ -3730,11 +3730,6 @@ function accionGuardarCerrar()	{
 		if (<%=obligatorioSexo%> && document.forms[0].sexo.value=="0")
 			error += "<siga:Idioma key='errors.required' arg0='Sexo'/>"+ '\n';								
 	}	
-	if(<%=pcajgActivo == 9%>){
-		if (<%=obligatorioSexo%> && document.forms[0].sexo.value==""){
-				error += "<siga:Idioma key='errors.required' arg0='Sexo'/>"+ '\n';	
-		}	
-	}	
 	
 	if(error!=""){
 	  alert(error);
@@ -3770,6 +3765,13 @@ function accionGuardarCerrar()	{
 			
 		} else {
 			if (validatePersonaJGForm(document.forms[0]) ){	
+				if(<%=pcajgActivo == 9%>){
+					if (<%=obligatorioSexo%> && document.forms[0].sexo.value==""){
+						alert("<siga:Idioma key='errors.required' arg0='Sexo'/>");	
+						fin();
+						return false;
+					}	
+				}	
 				document.forms[0].submit();
 			}else{
 				fin();
