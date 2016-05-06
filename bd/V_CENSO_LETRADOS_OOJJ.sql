@@ -1,4 +1,5 @@
-create materialized view USCGAE.V_CENSO_LETRADOS_OOJJ
+create materialized view V_CENSO_LETRADOS_OOJJ
+Tablespace TS_SIGA_CENSO
 refresh force on demand
 as
 Select Cen_Persona.Idpersona As Id_Letrado,
@@ -62,19 +63,14 @@ Select Cen_Persona.Idpersona As Id_Letrado,
            And Idtiposancion In (4, 7)
            And Nvl(Cen_Sancion.Chkrehabilitado, '0') = '0'
            And Trunc(Nvl(Cen_Sancion.Fecharehabilitado, '31/12/9999')) >= Trunc(Sysdate)
-           And Fechainicio is not null 
+           And Fechainicio is not null
            And Fechafin is not Null
            And Trunc(Sysdate) Between Trunc(Fechainicio) And Trunc(Fechafin))
-   And Cen_Cliente.Idpersona In --De momento solo enviamos Ejercientes
-       (Select d.Idpersona
-          From Cen_Datoscolegialesestado d
-         Where d.Idpersona = Cen_Persona.Idpersona
-           And d.Fechaestado = (Select Max(Fechaestado)
-                                  From Cen_Datoscolegialesestado
-                                 Where Idinstitucion = d.Idinstitucion
-                                   And Idpersona = d.Idpersona
-                                   And Trunc(Fechaestado) <= Trunc(Sysdate))
-           And d.Idestado = 20)
+   And Cen_Cliente.Idpersona In --Solo enviamos Ejercientes No inscritos
+       (Select col.Idpersona
+          From Cen_Colegiado col
+         Where col.Situacionejercicio = '1'
+           And col.Comunitario = '0')
 Union All
 Select Cen_Persona.Idpersona As Id_Letrado,
        Upper(Cen_Persona.Nombre) Nombre,
@@ -114,16 +110,11 @@ Select Cen_Persona.Idpersona As Id_Letrado,
            And Idtiposancion In (4, 7)
            And Nvl(Cen_Sancion.Chkrehabilitado, '0') = '0'
            And Trunc(Nvl(Cen_Sancion.Fecharehabilitado, '31/12/9999')) >= Trunc(Sysdate)
-           And Fechainicio is not null 
+           And Fechainicio is not null
            And Fechafin is not Null
            And Trunc(Sysdate) Between Trunc(Fechainicio) And Trunc(Fechafin))
-   And Cen_Persona.Idpersona In --De momento solo enviamos Ejercientes
-       (Select d.Idpersona
-          From Cen_Datoscolegialesestado d
-         Where d.Idpersona = Cen_Persona.Idpersona
-           And d.Fechaestado = (Select Max(Fechaestado)
-                                  From Cen_Datoscolegialesestado
-                                 Where Idinstitucion = d.Idinstitucion
-                                   And Idpersona = d.Idpersona
-                                   And Trunc(Fechaestado) <= Trunc(Sysdate))
-           And d.Idestado = 20)
+   And Cen_Cliente.Idpersona In --Solo enviamos Ejercientes No inscritos
+       (Select col.Idpersona
+          From Cen_Colegiado col
+         Where col.Situacionejercicio = '1'
+           And col.Comunitario = '0')
