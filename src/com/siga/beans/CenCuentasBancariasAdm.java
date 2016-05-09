@@ -1180,7 +1180,7 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
             sql.append(" AND cuen.idpersona = ");
             sql.append(idPersona);
             sql.append(" AND (cuen.FECHABAJA is null or cuen.fechabaja > sysdate) ");
-            sql.append(" ORDER BYy abonosjcs desc, fechamodificacion desc ");       
+            sql.append(" ORDER BY abonosjcs desc, fechamodificacion desc ");       
             
          // RGG cambio visibilidad
 			rc = this.find(sql.toString());
