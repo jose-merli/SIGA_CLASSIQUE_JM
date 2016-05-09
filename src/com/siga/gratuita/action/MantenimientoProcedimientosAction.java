@@ -19,6 +19,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
+
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.ScsAcreditacionAdm;
@@ -154,6 +155,7 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 		
 
 		//consultamos en bd el registro a editar
+		Hashtable procedimientoOld = new Hashtable();
 		ScsProcedimientosAdm procedimientoAdm = new ScsProcedimientosAdm(this.getUserBean(request));
 		ScsProcedimientosBean procedimientoBean = new ScsProcedimientosBean();
 		
@@ -196,6 +198,10 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 		
 		//construimos el hash a insertar
 		Hashtable procedimientoNuevo = new Hashtable();
+		
+		//variable para saber si el insert ha ido bien o no
+		boolean ok = false;
+		
 
 		try {
 			
@@ -226,7 +232,7 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 			else
 			    UtilidadesHash.set(procedimientoNuevo, ScsProcedimientosBean.C_COMPLEMENTO, ClsConstants.DB_FALSE);
 			
-			if (miform.getVigente()==null || miform.getVigente().equals("") || miform.getVigente().equals("1"))
+			if (miform.getVigente()!=null && miform.getVigente().equals("1"))
 			    UtilidadesHash.set(procedimientoNuevo, ScsProcedimientosBean.C_VIGENTE, ClsConstants.DB_TRUE);
 			else
 			    UtilidadesHash.set(procedimientoNuevo, ScsProcedimientosBean.C_VIGENTE, ClsConstants.DB_FALSE);
@@ -269,6 +275,8 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 		//recogemos el formulario
 		MantenimientoProcedimientosForm miform = (MantenimientoProcedimientosForm)formulario;
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+		//recogemos el idProcedimiento
+		String idProcedimiento = (String)miform.getIdProcedimiento();
 		
 		//variable para saber si el modificado ha ido bien o no
 		boolean ok = false;
@@ -285,14 +293,14 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 				throw new SIGAException("gratuita.mantenimientoTablasMaestra.mensaje.codigoExtDuplicado"); 
 			}
 
-			//String condicion = " where " + ScsProcedimientosBean.C_IDPROCEDIMIENTO + "=" + idProcedimiento + " ";
+			String condicion = " where " + ScsProcedimientosBean.C_IDPROCEDIMIENTO + "=" + idProcedimiento + " ";
 			//procedimientoBean = (ScsProcedimientosBean)((Vector)procedimientoAdm.select(condicion)).get(0);
 			
 			//procedimientoOld = (Hashtable)procedimientoBean.getOriginalHash().clone();
 			procedimientoOld = (Hashtable)request.getSession().getAttribute("DATABACKUP");
 			
 			//construimos el nuevo procedimiento
-			boolean checkVigente  = miform.getVigente()==null || miform.getVigente().equals("") || UtilidadesString.stringToBoolean(miform.getVigente());
+			boolean checkVigente  = UtilidadesString.stringToBoolean(miform.getVigente());
 			boolean checkPermitirAniadirLetrado  = UtilidadesString.stringToBoolean(miform.getPermitirAniadirLetrado());
 			Hashtable tramoNew = (Hashtable)procedimientoOld.clone();
 			tramoNew.put(ScsProcedimientosBean.C_NOMBRE, (String)miform.getNombre());
@@ -344,6 +352,7 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		
 		try {
+			MantenimientoProcedimientosForm miForm = (MantenimientoProcedimientosForm)formulario;
 			request.getSession().setAttribute("modo","nuevo");
 		}
 		catch (Exception e) {
@@ -437,6 +446,7 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 		MantenimientoProcedimientosForm miform = (MantenimientoProcedimientosForm)formulario;
 		
 		//recogemos la fila seleccionada para borrar
+		Vector visibles = (Vector)miform.getDatosTablaVisibles(0);
 		Vector ocultos = (Vector)miform.getDatosTablaOcultos(0);
 		
 		if ((ocultos != null) && (ocultos.size() > 3) && ((String)ocultos.get(3)).equalsIgnoreCase("detalleAcreditacion")) {
@@ -533,6 +543,7 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 			MantenimientoProcedimientosForm miform = (MantenimientoProcedimientosForm)formulario;
 
 			Vector ocultos = (Vector)miform.getDatosTablaOcultos(0);
+			ScsAcreditacionProcedimientoBean bean = new ScsAcreditacionProcedimientoBean ();
 			
 			Hashtable datos = new Hashtable();
 			UtilidadesHash.set (datos,ScsAcreditacionProcedimientoBean.C_IDACREDITACION, new Integer((String)ocultos.get(0)));
