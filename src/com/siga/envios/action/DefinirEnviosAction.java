@@ -1246,7 +1246,7 @@ public class DefinirEnviosAction extends MasterAction {
 				dest.setIdEnvio(Integer.valueOf(idEnvio));
 				//Generamos el envío de la solicitud de incorporacion:
 				Envio envio = new Envio(enviosBean,userBean);
-				envio.generarEnvio(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA, vDocs);
+				envio.generarEnvio(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA, vDocs,null,null);
 				
 				//mhg Se comenta la linea anterior porque en el método generarEnvio ya se esta llamando.
 				//envio.addDestinatarioIndividualDocAdjuntos(dest,null,true);
@@ -1282,7 +1282,7 @@ public class DefinirEnviosAction extends MasterAction {
 			else {
 				//Generamos el envío
 				Envio envio = new Envio(enviosBean,userBean);
-				envio.generarEnvio(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,null);
+				envio.generarEnvio(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,null,null,null);
 			}
 
 			if (!tieneDireccion) {

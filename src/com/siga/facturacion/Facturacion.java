@@ -1349,7 +1349,7 @@ public class Facturacion {
 					tx.begin();
 				
 				// Genera el envio:
-				envio.generarEnvio(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,documentos);
+				envio.generarEnvio(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA,documentos,null,null);
 				if (tx!=null)
 					tx.commit();
 				ClsLogging.writeFileLog("ALMACENAR "+idFactura+" >> ENVIO GENERADO OK",10);
