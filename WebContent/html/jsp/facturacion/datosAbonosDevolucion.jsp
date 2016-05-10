@@ -26,6 +26,7 @@
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="javax.servlet.http.*"%>
 <%@ page import="java.util.Properties"%>
+<%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <!-- JSP -->
 
 
@@ -42,6 +43,10 @@
 
     // Botones a mostrar
 	String botones = "Y,C";
+	
+	UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
+	String textoInicialMotivoAnulacion = UtilidadesString.getMensajeIdioma(user,"facturacion.altaAbonos.literal.devolucion");
+	int numCaracteresMaximoMotivoanulacion = 255 - textoInicialMotivoAnulacion.length();
 %>
 
 
@@ -161,7 +166,7 @@
 										<siga:Idioma key="facturacion.altaAbonos.literal.motivos"/>&nbsp;(*)
 									</td>
 									<td class="labelText" colspan="3">
-										<html:textarea property="motivos" onkeydown="cuenta(this,255)" onchange="cuenta(this,255)" rows="4" styleClass="box" size="100" value=""></html:textarea>
+										<html:textarea property="motivos" onkeydown="controlCaracteresMotivo(this)" onchange="controlCaracteresMotivo(this)" rows="4" styleClass="box" value=""></html:textarea>
 									</td>
 								</tr>
 							</html:form>	
@@ -240,7 +245,9 @@
 						fin();
 				}
 				
-			
+				function controlCaracteresMotivo(objThis) {
+					cuenta(objThis,<%=numCaracteresMaximoMotivoanulacion%>);
+				}			
 			</script>
 		</div>
 		<!-- FIN: IFRAME LISTA RESULTADOS -->
