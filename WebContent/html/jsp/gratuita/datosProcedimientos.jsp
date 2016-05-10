@@ -97,6 +97,7 @@
 			<html:hidden property = "porcentaje" value = ""/>	
 			<html:hidden property = "nigNumProcedimiento" value = ""/>			
 			<html:hidden property = "refresco" value = ""/>
+			<html:hidden property = "vigente" value = "<%=vigente%>"/>
 
 			<tr>				
 				<td>
