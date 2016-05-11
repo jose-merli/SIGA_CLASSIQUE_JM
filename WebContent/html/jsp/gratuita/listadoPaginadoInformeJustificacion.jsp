@@ -2332,7 +2332,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 											
 										</c:if>
 									</c:forEach>
-									<c:if	test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& designa.actuacionPermitidaLetrado=='1'&&designa.cambioLetrado=='N' && designa.idProcedimiento!=''}">
+									<c:if	test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& designa.cambioLetrado=='N' && ((designa.actuacionPermitidaLetrado=='1'&&InformeJustificacionMasivaForm.fichaColegial==true && designa.idProcedimiento!='')||(InformeJustificacionMasivaForm.fichaColegial==false)) }">
 											<c:choose>
 												<c:when test="${status.count%2==0}">
 													<tr class="filaTablaPar">
