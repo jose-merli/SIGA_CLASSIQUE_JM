@@ -371,7 +371,7 @@
 	</script>	
 </head>
 
-<body onload="refrescarLocal();calcularAltura();">
+<body onload="cargarListados();calcularAltura();">
 	
 <table class="tablaTitulo" cellspacing="0">
 
@@ -982,10 +982,12 @@
 <script language="JavaScript">
 	
 	jQuery.noConflict();
-
-	// Funcion asociada a boton buscar
+	
 	function refrescarLocal() {
-		
+		parent.pulsarId("pestana.justiciagratuita.EJG.delitos","mainPestanas"); 
+	}
+	
+	function cargarListados(){
 		document.forms[0].target = 'resultado';		
 		document.forms[0].modo.value = "buscar";
 		document.forms[0].submit();
@@ -994,9 +996,9 @@
 		document.forms[3].target = 'resultado1';		
 		document.forms[3].modo.value = "";
 		document.forms[3].submit();
-		
-		
 	}
+	
+	
 	
 		// Funcion asociada a boton Nuevo 
 		/*function accionNuevo() 
