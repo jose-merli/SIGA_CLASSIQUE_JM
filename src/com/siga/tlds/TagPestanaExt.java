@@ -194,6 +194,17 @@ public class TagPestanaExt extends TagSupport {
 			//if(elementoactivo<=elements.length){													//
 			if((elementoactivo<=elements.length)&&(elements[elementoactivo-1].mostrar)){			//
 				out.println("pulsarId(\""+elements[elementoactivo-1].name+"\",\""+target+"\");");	//
+			}else{
+				if(elements.length>0){
+					for (int i = 0; i < elements.length; i++) {
+						if(elements[i].mostrar){
+							out.println("pulsarId(\""+elements[i].name+"\",\""+target+"\");");
+							break;
+						}
+					}
+					
+				}//
+				
 			}																						//
 			//////////////////////////////////////////////////////////////////////////////////////////
 			
