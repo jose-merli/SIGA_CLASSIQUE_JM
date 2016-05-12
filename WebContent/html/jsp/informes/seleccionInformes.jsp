@@ -284,9 +284,7 @@
 				&nbsp;
 				</td>
 				<td class="tdBotones">
-				<c:if test="${InformesGenericosForm.descargar =='1'}">
-					<input type="button" alt="Descargar"  id="botonDescargar" onclick="return accionDownload();" class="button" name="idButton" value="Descargar">
-				</c:if>
+				<input type="button" alt="Descargar"  id="botonDescargar" onclick="return accionDownload();" class="button" name="idButton" value="Descargar">
 				</td>
 				<td class="tdBotones">
 				<input type="button" alt="Enviar"  id="botonEnviar" onclick="return accionEnviar();" class="button" name="idButton" value="Enviar">
@@ -304,9 +302,7 @@
 				&nbsp;
 				</td>
 				<td class="tdBotones">
-					<c:if test="${InformesGenericosForm.descargar =='1'}">
-						<input type="button" alt="Descargar"  id="botonDescargar" onclick="return accionDownload();" class="button" name="idButton" value="Descargar">
-					</c:if>
+				<input type="button" alt="Descargar"  id="botonDescargar" onclick="return accionDownload();" class="button" name="idButton" value="Descargar">
 				</td>
 				
 				<td class="tdBotones">
@@ -537,8 +533,7 @@
 				}
 			}
 		}
-		if(document.getElementById("botonDescargar"))
-	 		document.getElementById("botonDescargar").disabled = botonesDisabled;
+	 	document.getElementById("botonDescargar").disabled = botonesDisabled;
 	 	if(document.getElementById("botonEnviar"))
 	 		document.getElementById("botonEnviar").disabled = botonesDisabled;
 
