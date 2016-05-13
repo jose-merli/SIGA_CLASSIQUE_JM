@@ -360,6 +360,8 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
 		sql.append( ScsActuacionAsistenciaBean.C_IDACTUACION);
 		sql.append(", "); 
 		sql.append( ScsActuacionAsistenciaBean.C_FECHAJUSTIFICACION);
+		sql.append(", "); 
+		sql.append( ScsActuacionAsistenciaBean.C_FACTURADO);
 		sql.append(" FROM ");
 		sql.append(ScsActuacionAsistenciaBean.T_NOMBRETABLA); 
 		sql.append( "  ");
@@ -408,7 +410,7 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
             		actuacionAsistenciaBean = new ScsActuacionAsistenciaBean();
             		actuacionAsistenciaBean.setIdActuacion(new Long((String)htFila.get(ScsActuacionAsistenciaBean.C_IDACTUACION)));
             		actuacionAsistenciaBean.setFechaJustificacion((String)htFila.get(ScsActuacionAsistenciaBean.C_FECHAJUSTIFICACION));
-					
+            		actuacionAsistenciaBean.setFacturado((String)htFila.get(ScsActuacionAsistenciaBean.C_FACTURADO));
 					alActuacionesAsistencias.add(actuacionAsistenciaBean);
             	}
             }else{

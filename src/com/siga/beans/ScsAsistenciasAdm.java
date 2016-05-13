@@ -2085,6 +2085,10 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 	}
 	private boolean isAsistenciaVolanteExpressModificada(ScsAsistenciasBean asistencia,ScsAsistenciasBean asistenciaBBDD){
 		
+		//Si está facturada la asistencia no se debe de hacer update 12/05/2016
+		if(asistenciaBBDD.getFacturado() != null && asistenciaBBDD.getFacturado() == 1){
+			return false;
+		}
 		String fechaHora = asistencia.getFechaHora()==null ? "" : asistencia.getFechaHora();
 		boolean isAsistenciaModificada = !((fechaHora==null && asistenciaBBDD.getFechaHora()==null)
 		|| (fechaHora!=null && asistenciaBBDD.getFechaHora()!=null && fechaHora.trim().equalsIgnoreCase(asistenciaBBDD.getFechaHora().trim())));
@@ -2287,6 +2291,9 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		if(listActuacionesBBDD!=null&&listActuacionesBBDD.size()>1)
 				throw new SIGAException("Hay mas de una actuacion de ese tipo, no se modifica ninguna");
 		actuacionBBDD = listActuacionesBBDD.get(0);
+		if(actuacionBBDD.getFacturado() != null && actuacionBBDD.getFacturado().equalsIgnoreCase("1")){
+			return false;
+		}
 		actuacion.setIdActuacion(actuacionBBDD.getIdActuacion());
 		isActuacionModificada = !((actuacion.getFechaJustificacion()==null && actuacionBBDD.getFechaJustificacion()==null)
 				|| (actuacion.getFechaJustificacion()!=null && actuacionBBDD.getFechaJustificacion()!=null && actuacion.getFechaJustificacion().trim().equalsIgnoreCase(actuacionBBDD.getFechaJustificacion().trim())));
