@@ -75,42 +75,6 @@ public class InformesFacturasEmitidasAction extends MasterAction
 		return mapping.findForward(mapDestino);
 	}
 
-	/**
-	 * @param mapping
-	 * @param formulario
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws ClsExceptions
-	 * @throws SIGAException
-	 */
-	protected String generarInformeOld(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
-	{
-	    String salida = "";
-		try {
-			File fichero = null;
-
-			{	// FOP
-				InformeFacturasEmitidas informe = new InformeFacturasEmitidas (this.getUserBean(request));
-				fichero = informe.generarListadoFacturasEmitidasOld(request, formulario.getDatos());
-			}
-			
-			if(fichero!= null){
-				request.setAttribute("nombreFichero", fichero.getName());
-				request.setAttribute("rutaFichero", fichero.getAbsolutePath());			
-				request.setAttribute("borrarFichero", "false");			
-				request.setAttribute("generacionOK","OK");
-				salida= "descarga";
-			}
-			else{
-				return exitoModalSinRefresco("facturacion.informes.facturasEmitidas.generarInforme.error", request);
-			}
-		}
-		catch (Exception e) { 
-			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
-		}				
-		return salida;
-	}
 	protected String generarInforme(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException 
 	{
 	    String salida = "";
