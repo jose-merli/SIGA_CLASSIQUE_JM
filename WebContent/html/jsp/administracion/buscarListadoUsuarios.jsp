@@ -103,7 +103,7 @@
 			   		{
 				  		Hashtable usuario = (Hashtable)vDatos.elementAt(i);
 %>
-	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="C,E,B" clase="listaNonEdit">
+	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="C,E" clase="listaNonEdit" visibleBorrado="false">
 					<td>
 						<input type="hidden" id="oculto<%=""+(i+1)%>_1" value="<%=usuario.get("IDUSUARIO")%>">
 						<input type="hidden" id="oculto<%=""+(i+1)%>_2" value="<%=usuario.get("IDINSTITUCION")%>">
