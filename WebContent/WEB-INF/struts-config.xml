@@ -62,6 +62,8 @@
 		<form-bean name="EdicionRemesaForm" type="com.siga.censo.ws.form.EdicionRemesaForm"/>
 		<form-bean name="EdicionColegiadoForm" type="com.siga.censo.ws.form.EdicionColegiadoForm"/>
 		<form-bean name="NuevaRemesaForm" type="com.siga.censo.ws.form.NuevaRemesaForm"/>
+		<form-bean name="ConfigPerfilColegioForm" type="com.siga.censo.ws.form.ConfiguracionPerfilColegioForm"/>
+		<form-bean name="NuevaColumnaPerfilForm" type="com.siga.censo.ws.form.NuevaColumnaPerfilForm"/>		
 		
 		
 		<!-- ************************** FORMS MEDIADORES *************************
@@ -768,6 +770,14 @@
 		</action>
 		
 		<action path="/CEN_NuevaRemesa" type="com.siga.censo.ws.action.NuevaRemesaAction" name="NuevaRemesaForm" scope="request">
+		</action>
+		
+		<action path="/CEN_NuevaColumnaPerfil" type="com.siga.censo.ws.action.NuevaColumnaPerfilAction" name="NuevaColumnaPerfilForm" scope="request">
+		</action>
+		
+		<action path="/CEN_ConfigPerfilColegio" type="com.siga.censo.ws.action.ConfiguracionPerfilColegioAction" name="ConfigPerfilColegioForm" scope="request">
+			<forward name="inicio" path="/html/jsp/censo/ws/configperfilcolegio.jsp"/>
+			<forward name="resultado" path="/html/jsp/censo/ws/resultadoPerfilcolegio.jsp"/>
 		</action>
 		
 		<action path="/CEN_EdicionRemesas" type="com.siga.censo.ws.action.EdicionRemesasAction" name="EdicionRemesaForm" scope="session">			
