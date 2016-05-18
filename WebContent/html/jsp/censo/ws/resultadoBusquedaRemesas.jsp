@@ -121,7 +121,9 @@
 		   	
 			ventaModalGeneral(document.EdicionRemesaForm.name,'P');
 		}	
-		
+		function refrescarLocal(){
+			alert("refrescar local");
+		}
 	</script>
 
 	<body>		
@@ -200,10 +202,16 @@
 	   		   				elems = new FilaExtElement[0];	   		   				
 	   		   			}
 	   		   			
+	   		   			if(AppConstants.ECOM_CEN_MAESESTADOENVIO.PENDIENTE.getCodigo()==edicionRemesaForm.getIdEstadoenvio()){
+	   		   				botones =botones+ ",B";
+	   		   			}
+	   		   			
 	   		   			if (AppConstants.ECOM_CEN_MAESESTADOENVIO.ANALIZANDO.getCodigo() == edicionRemesaForm.getIdEstadoenvio()) {
 	   		   				botones = "";
 	   		   			}
-	   		   			
+		   		   		if (AppConstants.ECOM_CEN_MAESESTADOENVIO.ELIMINANDO.getCodigo() == edicionRemesaForm.getIdEstadoenvio()) {
+	   		   				botones = "";
+	   		   			}
 	   		   			
 	   		   			if(edicionRemesaForm.getTipoEnvio()!=null){
 	   		   				tipoEnvio=	AppConstants.ECOM_CEN_TIPO_ENVIO.getDescripcion(edicionRemesaForm.getTipoEnvio());

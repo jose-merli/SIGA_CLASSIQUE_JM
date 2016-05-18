@@ -124,13 +124,7 @@
 									<td>									
 										<siga:Fecha  nombreCampo= "fechaPeticionDesde" valorInicial="${BusquedaRemesasForm.fechaPeticionDesde }"/>										
 									</td>
-	
-									<td class="labelText">
-										<siga:Idioma key="censo.ws.literal.fechaPeticionHasta"/>										
-									</td>				
-									<td>
-										<siga:Fecha  nombreCampo= "fechaPeticionHasta" valorInicial="${BusquedaRemesasForm.fechaPeticionHasta }"/>
-									</td>
+								
 								</tr>
 								
 								<!-- FILA -->
@@ -219,6 +213,12 @@
 			<html:hidden property="modo" value="inicio"/>
 			<html:hidden property="accionAnterior" value="${path}"/>
 		</html:form>
+		
+		<html:form action="/CEN_ConfigPerfilColegio" method="POST" target="mainWorkArea">
+			<html:hidden property="idModulo" value="<%=ConModuloBean.IDMODULO_CENSO%>"/>
+			<html:hidden property="modo" value="ver"/>
+			<html:hidden property="accionAnterior" value="${path}"/>
+		</html:form>
 
 		<!-- FIN: CAMPOS DE BUSQUEDA-->
 	
@@ -228,7 +228,7 @@
 			 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 		-->
 		<%  
-			String botones = "N,B,CON,L";
+			String botones = "AC,N,B,CON,L";
 						 
 		%>
 
@@ -251,10 +251,37 @@
 		<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 		
 		
-	</div>	
-	
-	
-	
+	</div>
+
+	<div id="dialogoActualizaCenso" title='<bean:message key="censo.dialogo.nuevo.carga.webservice"/>' 	style="display: none">
+
+		<div class="labelTextArea">
+			<bean:message key="censo.ws.literal.aviso.carga.webservice" />
+		</div>
+		</br>
+		<siga:ConjCampos>
+
+			<html:form action="/CEN_NuevaRemesa.do?noReset=true" method="POST"	target="submitArea" styleId="idActualizaRemForm">
+				<html:hidden name="NuevaRemesaForm" property="modo" styleId="idModoAct"/>
+				<html:hidden name="NuevaRemesaForm" property="idColegioActualizar" styleId="idColActform"/>
+				<div class="labelText">
+					<label for="idColegioActualizar" style="width: 140px; float: left; color: black"><bean:message	key="censo.ws.literal.colegio" /></label>
+
+					<html:select property="idColegioActualizar" name="NuevaRemesaForm" styleId="idColAct">
+						<html:option value="">
+							<siga:Idioma key="general.combo.seleccionar" />
+						</html:option>
+						<html:optionsCollection name="BusquedaRemesasForm" 	property="institucionesWS" value="id" label="nombre"></html:optionsCollection>
+					</html:select>
+
+				</div>
+
+			</html:form>
+
+		</siga:ConjCampos>
+
+	</div>
+
 
 
 	<div id="dialogoNuevoExcel"  title='<bean:message key="censo.dialogo.nuevoExcel"/>' style="display:none">
@@ -263,21 +290,18 @@
 			</br>	
 		  	<siga:ConjCampos >
 		  	
-				  	<html:form action="/CEN_NuevaRemesa.do?noReset=true" method="POST" target="submitArea" enctype="multipart/form-data">
-							<html:hidden name="NuevaRemesaForm" property = "modo"/>
+				  	<html:form action="/CEN_NuevaRemesa.do?noReset=true" method="POST" target="submitArea" styleId="idNuevaRemForm" enctype="multipart/form-data">
+							<html:hidden name="NuevaRemesaForm" property = "modo" styleId="idModoNuevo"/>
 							<html:hidden property="seleccionarTodos" />
-				  		
+					
 							<div class="labelText">
 								<label for="idColegioInsertar"   style="width:140px;float:left;color: black"><bean:message key="censo.ws.literal.colegio"/></label>
 								
-								<html:select property="idColegioInsertar" name="NuevaRemesaForm">
+								<html:select property="idColegioInsertar" name="NuevaRemesaForm" styleId="idColegioInsertar">
 									<html:option value=""><siga:Idioma key="general.combo.seleccionar" /></html:option>
 									<html:optionsCollection name="BusquedaRemesasForm" property="instituciones" value="id" label="nombre"></html:optionsCollection>
 								</html:select>
 											
-								
-								<!--  siga:Select queryId="getCenTiposCv" id="idTipoCV" required="true" /-->
-								
 							</div>
 							
 							</br>
@@ -298,12 +322,9 @@
 					</html:form>
 					
 				</siga:ConjCampos>
-				
-				
 		
 		</div>
 	
-
 
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->
@@ -315,8 +336,17 @@
 		<script language="JavaScript">
 			jQuery.noConflict();
 			
+					
 			function refrescarLocal(){
-				closeDialog('dialogoNuevoExcel');
+				
+				if (jQuery("#dialogoNuevoExcel").is(':visible')){
+					closeDialog('dialogoNuevoExcel');
+				} 
+				
+				if(jQuery("#dialogoActualizaCenso").is(':visible')) { 
+					closeDialog('dialogoActualizaCenso');
+				}
+				
 			}
 			
 			// Funcion asociada a boton buscar
@@ -351,10 +381,31 @@
 				document.RecuperarConsultasForm.submit();				
 			}
 			
+			
+			function actualizarCenso(){
+				
+				jQuery("#dialogoActualizaCenso").dialog(
+						{
+						      height: 300,
+						      width: 600,
+						      modal: true,
+						      resizable: false,						      
+						      buttons: {
+						    	  "Actualiza": { id: 'Actualiza', text: '<siga:Idioma key="general.boton.actualizar"/>', click: function(){ lanzaActualizacion(); }},
+						          "Cerrar": { id: 'Cerrar', text: '<siga:Idioma key="general.boton.close"/>', click: function(){closeDialog("dialogoActualizaCenso");}}
+						      }
+						}
+					);
+					
+				jQuery(".ui-widget-overlay").css("opacity","0");
+				
+			}
+			
+			
+			
 			function nuevo() {
 				
-				document.forms['NuevaRemesaForm'].reset();							
-								
+				jQuery("#idNuevaRemForm")[0].reset();			
 				jQuery("#dialogoNuevoExcel").dialog(
 						{
 						      height: 300,
@@ -372,20 +423,49 @@
 			}
 			
 			
-			function accionInsercion(){
-				//sub();
-				document.forms['NuevaRemesaForm'].modo.value = "insertar";
+			function lanzaActualizacion(){
+				
+				
+				jQuery("#idModoAct").val('actualizaWS');
 				
 				error = '';
-				if(document.forms['NuevaRemesaForm'].idColegioInsertar.value==''){
+				var idcol=jQuery("#idColAct").val();
+				if(idcol==''){
 					error += "<siga:Idioma key='errors.required' arg0='censo.ws.literal.colegio'/>"+ '\n';
 					
 				}
-				if(document.forms['NuevaRemesaForm'].fechaExportacion.value==''){
+				
+				if (error!=''){
+					alert(error);
+					//fin();
+					return false;
+				} else {
+				
+					jQuery("#idColActform").val(idcol);
+					jQuery("#idActualizaRemForm").submit();	
+				}
+				
+			}
+			
+			
+			function accionInsercion(){
+				//sub();
+				jQuery("#idModoNuevo").val('insertar');
+				var idcolInsertar=jQuery("#idColegioInsertar").val();
+				var idFechaExp=jQuery("#fechaExportacion").val();
+				var idFile=jQuery("#file").val();
+				error = '';
+				
+				if(idcolInsertar==''){
+					error += "<siga:Idioma key='errors.required' arg0='censo.ws.literal.colegio'/>"+ '\n';
+					
+				}
+				
+				if(idFechaExp==''){
 					error += "<siga:Idioma key='errors.required' arg0='censo.ws.literal.fechaExportacion'/>"+ '\n';
 					
 				}
-				if(document.forms['NuevaRemesaForm'].file.value==''){
+				if(idFile==''){
 					error += "<siga:Idioma key='errors.required' arg0='censo.ws.literal.fichero'/>"+ '\n';
 					
 				}
@@ -396,17 +476,17 @@
 					return false;
 				} else {
 					
-					document.forms['NuevaRemesaForm'].submit();	
+					jQuery("#idNuevaRemForm").submit();
 				}
 				
-				
-				
 			}
-			
 			
 			function closeDialog(dialogo){
 				 jQuery("#"+dialogo).dialog("close"); 
 			}
+			
+		
+			
 			
 			
 		</script>
