@@ -55,12 +55,12 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
  values ('160','CEN','1','Y',SYSDATE,'0','Mantenimiento de cargas',null,'0','10');
 
  insert into GEN_MENU (IDMENU,ORDEN,TAGWIDTH,IDPARENT,FECHAMODIFICACION,USUMODIFICACION,URI_IMAGEN,IDRECURSO,GEN_MENU_IDMENU,IDPROCESO,IDLENGUAJE) 
- values ('160','16000','160','0',sysdate,'0',null,'menu.censo.gestionCensoWS.mantenimiento.cargas',null,'160','1');
+ values ('160','16000','180','0',sysdate,'0',null,'menu.censo.gestionCensoWS.mantenimiento.cargas',null,'160','1');
 
  insert into GEN_MENU (IDMENU,ORDEN,TAGWIDTH,IDPARENT,FECHAMODIFICACION,USUMODIFICACION,URI_IMAGEN,IDRECURSO,GEN_MENU_IDMENU,IDPROCESO,IDLENGUAJE) 
  values ('172','17200','160','160',sysdate,'0',null,'general.configp',null,'172','1');
 
- 
+UPDATE GEN_MENU SET TAGWIDTH ='160' WHERE IDMENU  = '161';
 
 UPDATE GEN_MENU SET idparent =160 WHERE IDMENU  = '161' AND IDPROCESO  = '161';
 
