@@ -36,6 +36,7 @@ public enum SearchButtonsConstants {
 	FICHERO_ABONOS ("fa","facturacion.ficheroBancarioAbonos.boton.ficheroAbonos","generarFichero()",28),
 	FICHERO_DEVOLUCIONES ("pnf","facturacion.consultaDevolucion.boton.nuevoFichero","procesarNuevoFichero()",28),
 	ACTUALIZAR_CENSO ("AC","censo.boton.actualizar","actualizarCenso()",28),
+	CONGIGURAR_PERFIL ("CONP","general.configp","configurar_perfil()",29),
 	ACTUALIZAR_CENSO_PROGRAMADO ("ACP","censo.boton.actualizarProgramdo","actualizarCensoProgramado()",28);
 	
     private final String valor;   

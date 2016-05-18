@@ -22,6 +22,7 @@ import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_MAESESTADOENVIO;
 import org.redabogacia.sigaservices.app.AppConstants.MODULO;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+import org.redabogacia.sigaservices.app.autogen.mapper.EcomCenDatosIncidenciasMapper;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenColegiado;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatos;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatosExample;
@@ -29,6 +30,7 @@ import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatosExample.Criter
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsEnvio;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.services.cen.CenWSService;
+import org.redabogacia.sigaservices.app.services.cen.EcomCenWsEnvioService;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.vo.EcomCenColegiadoVO;
@@ -92,7 +94,10 @@ public class EdicionRemesasAction extends MasterAction {
 					mapDestino = actualizarCenso(mapping, miForm, request, response);
 				} else if (accion.equalsIgnoreCase("actualizarCensoProgramado")){							
 					mapDestino = actualizarCensoProgramado(mapping, miForm, request, response);
-				} else {
+				}else if(accion.equalsIgnoreCase("borrar")){
+					mapDestino = eliminar(mapping, miForm, request, response);
+				}			
+				else {
 					return super.executeInternal(mapping,formulario,request,response);
 				}
 			}
@@ -257,6 +262,12 @@ public class EdicionRemesasAction extends MasterAction {
 	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		return verEditar("editar", formulario, request);		
 	}
+	
+	protected String eliminar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		//return verEditar("editar", formulario, request);
+		return eliminaRemesa("eliminar", formulario, request);
+	}
+	
 	
 	protected String actualizarCenso(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		actualizaCenso(formulario, null);		
@@ -480,6 +491,41 @@ public class EdicionRemesasAction extends MasterAction {
 	}
 
 
+	private String eliminaRemesa(String accion, MasterForm formulario, HttpServletRequest request){
+	
+		EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm) formulario;
+		HttpSession session = request.getSession();
+		
+		if (request.getParameter("volver") == null) {				
+			edicionRemesaForm.reset();				
+		}
+		
+		//debemos siempre borrar la paginación al editar o dar a volver 
+		//pq al volver puede que cambie el colegiado y no debe estar en memoria el antiguo
+		session.removeAttribute(DATAPAGINADOR);
+		
+		
+		// Recuperamos los datos del registro que hemos seleccionado
+		Vector ocultos = edicionRemesaForm.getDatosTablaOcultos(0);
+		
+		Hashtable miHash = new Hashtable();
+		
+		Long idcensowsenvio = null;
+		
+		if (ocultos != null && ocultos.size() > 0) {
+			idcensowsenvio = Long.valueOf(ocultos.get(0).toString());
+		} else {
+			throw new IllegalArgumentException("No se ha recibido el identificador para editar la remesa");
+		}
+				
+		CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
+		EcomCenWsEnvio ecomCenWsEnvio = cenWSService.getEcomCenWsEnvioByPk(idcensowsenvio);
+		EcomCenWsEnvioService ecomCenWsEnvioService = (EcomCenWsEnvioService) BusinessManager.getInstance().getService(EcomCenWsEnvioService.class);
+		
+		ecomCenWsEnvioService.eliminarRemesa(ecomCenWsEnvio);
+		return exitoRefresco("messages.processed.success.deleteRemesa", request);
+		
+	}
 	
 	
 

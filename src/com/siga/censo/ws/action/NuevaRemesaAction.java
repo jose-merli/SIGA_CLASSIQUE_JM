@@ -12,6 +12,9 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 import org.redabogacia.sigaservices.app.AppConstants;
@@ -20,17 +23,87 @@ import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_TIPO_ENVIO;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsEnvio;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsPagina;
 import org.redabogacia.sigaservices.app.services.cen.EcomCenWsEnvioService;
+import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
+import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.censo.ws.form.NuevaRemesaForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.ws.cen.CargaCensoWSListener;
+
+import es.satec.businessManager.BusinessManager;
 
 public class NuevaRemesaAction extends MasterAction {
+	private static final Logger log = Logger.getLogger(NuevaRemesaAction.class);
+	
+	protected ActionForward executeInternal(ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response)
+			throws SIGAException {
+
+		String mapDestino = "exception";
+		MasterForm miForm = null;
+
+		try {
+				miForm = (MasterForm) formulario;
+				if (miForm == null) {
+					return mapping.findForward(mapDestino);
+				}
+	
+				String accion = miForm.getModo();
+	
+				// La primera vez que se carga el formulario
+				// Abrir
+				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("insertar")) {
+					mapDestino = insertar(mapping, miForm, request, response);
+				
+				} else if (accion.equalsIgnoreCase("actualizaWS")) {
+					mapDestino = actualizaWS(mapping, miForm, request, response);
+				}
+			
+				if (mapDestino == null) {
+								// mapDestino = "exception";
+								if (miForm.getModal().equalsIgnoreCase("TRUE")) {
+									request.setAttribute("exceptionTarget", "parent.modal");
+								}
+	
+								throw new ClsExceptions("El ActionMapping no puede ser nulo", "", "0", "GEN00", "15");
+				}
+	
+			} catch (SIGAException es) {
+							throw es;
+			} catch (Exception e) {
+					throw new SIGAException("messages.general.error", e, new String[] { "modulo.gratuita" });
+			}
+		return mapping.findForward(mapDestino);
+	}
+	
+	
+	private String actualizaWS(ActionMapping mapping, MasterForm masterForm, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		Short idcol = 0;
+		try {
+			NuevaRemesaForm form = (NuevaRemesaForm) masterForm;
+			String idColegio=form.getIdColegioActualizar();
+			
+			if(idColegio!=null){
+				idcol=Short.valueOf(idColegio);
+			}
+			EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
+			if (ecomColaService.insertaColaCargaCenso(idcol) != 1) {
+					throw new Exception("No se ha podido insertar correctamente en la cola de carga de censo para el colegio " + idcol);
+			}
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, null);
+			log.error("Error al insertar en la cola para el colegio " + idcol, e);
+		}
+		
+		return exitoRefresco("messages.inserted.success.nuevoFicheroExcel", request);
+	}
+	
+	
 	protected synchronized String insertar(ActionMapping mapping, MasterForm masterForm, HttpServletRequest request, HttpServletResponse response)
 			throws SIGAException {
 		
@@ -64,6 +137,8 @@ public class NuevaRemesaAction extends MasterAction {
 		
 		return exitoRefresco("messages.inserted.success.nuevoFicheroExcel", request);
 	}
+	
+	
 	
 	private EcomCenWsPagina crearPagina() {
 		//guardamos la pagina que en este caso es única
