@@ -31,8 +31,7 @@ Select Cen_Persona.Idpersona As Id_Letrado,
              From Cen_Pais
             Where Cen_Direcciones.Idpais = Cen_Pais.Idpais),
            '') Pais,
-       Greatest(Cen_Persona.Fechamodificacion,
-                Cen_Direcciones.Fechamodificacion) As Fechamodificacion
+       Greatest(Cen_Persona.Fechamodificacion, Cen_Direcciones.Fechamodificacion) As Fechamodificacion
   From Cen_Persona, Cen_Direcciones, Cen_Cliente
  Where Cen_Persona.Idpersona = Cen_Cliente.Idpersona
    And Cen_Cliente.Idpersona = Cen_Direcciones.Idpersona
@@ -47,29 +46,9 @@ Select Cen_Persona.Idpersona As Id_Letrado,
            And Cen_Direcciones.Idinstitucion = Cen_Cliente.Idinstitucion
            And Cen_Direcciones.Idpersona = Cen_Cliente.Idpersona
            And Cen_Direcciones.Fechabaja Is Null)
-      -- Sin LOPD en ningun Consejo
-   And Not Exists (Select 1
-          From Cen_Cliente Consejo
-         Where Consejo.Idpersona = Cen_Cliente.Idpersona
-           And Consejo.Letrado = '1'
-           And Nvl(Consejo.Noaparecerredabogacia, '0') = '1')
-      -- Sin LOPD en ningun Colegio activo
-   And Not Exists (Select 1
-          From Cen_Colegiado Col, Cen_Cliente Cli, Cen_Datoscolegialesestado Est
-         Where Col.Idpersona = Cen_Cliente.Idpersona
-           And Col.Idpersona = Cli.Idpersona
-           And Col.Idinstitucion = Cli.Idinstitucion
-           And Col.Idpersona = Est.Idpersona
-           And Col.Idinstitucion = Est.Idinstitucion
-           And Est.Fechaestado =
-               (Select Max(Est2.Fechaestado)
-                  From Cen_Datoscolegialesestado Est2
-                 Where Col.Idpersona = Est2.Idpersona
-                   And Col.Idinstitucion = Est2.Idinstitucion
-                   And Trunc(Est2.Fechaestado) <= Trunc(Sysdate))
-           And Est.Idestado < 30
-           And Col.Comunitario = '0'
-           And Nvl(Cli.Noaparecerredabogacia, '0') = '1')
+   And '0' = (Select Max(Nvl(Cli.Noaparecerredabogacia, '0'))
+                From Cen_Cliente Cli
+               Where Cli.Idpersona = Cen_Cliente.Idpersona) -- Solo se pone direccion cuando no hay check LOPD activo
    And Cen_Cliente.Letrado = '1'
    And Cen_Cliente.Idinstitucion = 2000
    And Not Exists
@@ -126,30 +105,10 @@ Select Cen_Persona.Idpersona As Id_Letrado,
                        And Cen_Direccion_Tipodireccion.Idtipodireccion = 3
                        And Cen_Direcciones.Idinstitucion = Cen_Cliente.Idinstitucion
                        And Cen_Direcciones.Idpersona = Cen_Cliente.Idpersona
-                       And Cen_Direcciones.Fechabaja Is Null)
-      -- Con LOPD en algun Consejo
-   Or Exists (Select 1
-          From Cen_Cliente Consejo
-         Where Consejo.Idpersona = Cen_Cliente.Idpersona
-           And Consejo.Letrado = '1'
-           And Nvl(Consejo.Noaparecerredabogacia, '0') = '1')
-      -- Con LOPD en algun Colegio activo
-   Or Exists (Select 1
-          From Cen_Colegiado Col, Cen_Cliente Cli, Cen_Datoscolegialesestado Est
-         Where Col.Idpersona = Cen_Cliente.Idpersona
-           And Col.Idpersona = Cli.Idpersona
-           And Col.Idinstitucion = Cli.Idinstitucion
-           And Col.Idpersona = Est.Idpersona
-           And Col.Idinstitucion = Est.Idinstitucion
-           And Est.Fechaestado =
-               (Select Max(Est2.Fechaestado)
-                  From Cen_Datoscolegialesestado Est2
-                 Where Col.Idpersona = Est2.Idpersona
-                   And Col.Idinstitucion = Est2.Idinstitucion
-                   And Trunc(Est2.Fechaestado) <= Trunc(Sysdate))
-           And Est.Idestado < 30
-           And Col.Comunitario = '0'
-           And Nvl(Cli.Noaparecerredabogacia, '0') = '1'))
+                       And Cen_Direcciones.Fechabaja Is Null) Or
+        '1' = (Select Max(Nvl(Cli.Noaparecerredabogacia, '0'))
+                            From Cen_Cliente Cli
+                           Where Cli.Idpersona = Cen_Cliente.Idpersona)) -- Solo se pone direccion cuando no hay check LOPD activo
    And Cen_Cliente.Letrado = '1'
    And Cen_Cliente.Idinstitucion = 2000
    And Not Exists
