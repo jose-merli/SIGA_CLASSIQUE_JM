@@ -72,7 +72,10 @@ function informeGenerico(){
 	var incluirEjgPteCAJG = document.InformeJustificacionMasivaForm.incluirEjgPteCAJG.value;
 	var activarRestriccionesFicha = document.InformeJustificacionMasivaForm.activarRestriccionesFicha.value;
 	var fichaColegial = document.InformeJustificacionMasivaForm.fichaColegial.value; 
-	
+	if(idPersona==''){
+		alert("Es obligatorio el colegiado para descargar el informe de justificación.");
+		return false;
+	}
 	if(fichaColegial=='true'){
 		document.InformesGenericosForm.enviar.value ='0';
 		activarRestriccionesFicha = 'true';

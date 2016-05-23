@@ -178,6 +178,10 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			
 		}
 		if(form.getFichaColegial()){
+			if(form.getIdPersona()==null || form.getIdPersona().equalsIgnoreCase("") ){
+				ClsLogging.writeFileLogError("Se ha perdido el idPersona de formulario!!!!Lanzamos excepcion general",request,3);
+				throw new ClsExceptions("Se ha perdido el idPersona de formulario!!!!Lanzamos excepcion general");
+			}
 			
 			GenParametrosAdm paramAdm = new GenParametrosAdm (user);
 			String activarMensaje = paramAdm.getValor (user.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.ACTIVAR_MENSAJE_DOCRESOLUCION_COLEGIADO, "");
@@ -729,6 +733,10 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		request.setAttribute("EJIS_ACTIVO", ejisActivo);
 		
 		try {
+			if(fInformeJustificacion.getIdPersona()==null || fInformeJustificacion.getIdPersona().equalsIgnoreCase("") ){
+				ClsLogging.writeFileLogError("Se ha perdido el idPersona de formulario!!!!Lanzamos excepcion general",request,3);
+				throw new Exception("Se ha perdido el idPersona de formulario!!!!Lanzamos excepcion general");
+			}
 			HashMap databackup=getPaginador(request, paginadorPenstania);
 			if (databackup!=null){ 
 
