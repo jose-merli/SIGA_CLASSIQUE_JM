@@ -6282,7 +6282,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" AND EJGACTA.IDACTA = ACTA.IDACTA ");
 			sql.append(" AND EJGACTA.IDINSTITUCIONACTA = ACTA.IDINSTITUCION ");
 			sql.append(" AND EJGACTA.ANIOACTA = ACTA.ANIOACTA ");
-			sql.append(" ORDER BY FECHAREUNION_ACTA desc) ");
+			sql.append(" ORDER BY ACTA.FECHAREUNION desc) ");
 			sql.append(" WHERE ROWNUM = 1 ");
 			RowsContainer rc = new RowsContainer();
 			if (rc.find(sql.toString())) {
