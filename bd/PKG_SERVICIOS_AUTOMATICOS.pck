@@ -1,28 +1,48 @@
-create or replace package PKG_SERVICIOS_AUTOMATICOS is
+CREATE OR REPLACE package PKG_SERVICIOS_AUTOMATICOS is
 
-  /****************************************************************************************************************/
-  /* Nombre: PROCESO_BAJA_SERVICIO
-    Descripcion:
-        1. Las solicitudes de servicios pasan al estado denegado.
-        2. Las peticiones de baja de servicios se procesan
-        3. Las peticiones que no tengan algo pendiente se procesan
-        4. Las suscripciones pasan a tener la baja logica
-
+  /****************************************************************************************************************
+    Nombre: PROCESO_ALTA_CUENTA_CARGOS
+    Descripcion: Este proceso asocia las suscripciones activas con forma de pago en metalico a la nueva cuenta bancaria
+    
+    Parametros (IN/OUT - Descripcion - Tipo de Datos):
     - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER(4)
-    - P_IDTIPOSERVICIOS - IN - Identificador del tipo de servicio - NUMBER(4)
-    - P_IDSERVICIO - IN - Identificador del servicio - NUMBER(10)
-    - P_IDSERVICIOSINSTITUCION - IN - Identificador del servicio institucion - NUMBER(10)
-    - P_FECHAPROCESO - IN - Fecha en la que se va a realizar la baja del servicio - VARCHAR2(10)
-    - P_USUMODIFICACION - IN - Usuario que realiza la modificacion - NUMBER(5)
+    - P_IDPERSONA - IN - Identificador de la persona suscrita al servicio - NUMBER(10)
+    - P_IDCUENTA - IN - Identificador de la nueva cuenta bancaria - NUMBER(3)
     - P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - NUMBER(10)
         En caso de error devuelve el codigo de error Oracle correspondiente.
     - P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - NUMBER(10)
         En caso de error devuelve el mensaje de error Oracle correspondiente.
+        
+    Versiones (Fecha - Autor - Datos):
+    - 1.0 - 18/05/2016 - Jorge Paez - SIGA_124
+  ****************************************************************************************************************/         
+    PROCEDURE PROCESO_ALTA_CUENTA_CARGOS (
+        P_IDINSTITUCION IN PYS_SERVICIOSSOLICITADOS.IDINSTITUCION%TYPE,
+        P_IDPERSONA IN PYS_SERVICIOSSOLICITADOS.IDPERSONA%TYPE,
+        P_IDCUENTA IN PYS_SERVICIOSSOLICITADOS.IDCUENTA%TYPE,
+        P_USUMODIFICACION IN PYS_SERVICIOSSOLICITADOS.USUMODIFICACION%TYPE,
+        P_CODRETORNO OUT VARCHAR2,
+        P_DATOSERROR OUT VARCHAR2);
 
-    Version: 1.0 - 31/01/2006 - Pilar Duran
-    Version: 2.0 - 14/09/2015 - Jorge Paez
-        - Version SIGA_122         
-  /****************************************************************************************************************/
+    
+  /****************************************************************************************************************
+    Nombre: PROCESO_BAJA_CUENTA
+    Descripcion: Este proceso se encarga de actualizar las cosas pendientes asociadas a la cuenta de baja de una persona
+    
+    Parametros (IN/OUT - Descripcion - Tipo de Datos):
+    - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER(4)
+    - P_IDPERSONA - IN - Identificador de la persona suscrita al servicio - NUMBER(10)
+    - P_IDCUENTA - IN - Identificador de la cuenta bancaria dada de baja - NUMBER(3)
+    - P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - NUMBER(10)
+        En caso de error devuelve el codigo de error Oracle correspondiente.
+    - P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - NUMBER(10)
+        En caso de error devuelve el mensaje de error Oracle correspondiente.
+        
+    Versiones (Fecha - Autor - Datos):
+    - 1.0 - 10/03/2014 - Maria Jimenez
+    - 2.0 - 08/08/2014 - Jorge Paez - SIGA_122
+    - 3.0 - 18/05/2016 - Jorge Paez - SIGA_124
+  ****************************************************************************************************************/   
     PROCEDURE PROCESO_BAJA_SERVICIO(
         P_IDINSTITUCION IN PYS_SERVICIOSSOLICITADOS.IDINSTITUCION%TYPE,
         P_IDTIPOSERVICIOS IN PYS_SERVICIOSSOLICITADOS.IDTIPOSERVICIOS%TYPE,
@@ -89,25 +109,26 @@ create or replace package PKG_SERVICIOS_AUTOMATICOS is
         P_USUMODIFICACION IN PYS_SERVICIOSSOLICITADOS.USUMODIFICACION%TYPE,
         P_CODRETORNO OUT VARCHAR2,
         P_DATOSERROR OUT VARCHAR2);
-
     
-  /****************************************************************************************************************/
-  /* Nombre: PROCESO_ACT_CUENTA_BANCO_PEND
-    Descripcion: Este proceso se encarga de actualizar las cosas pendientes asociadas a la cuenta de baja de una persona
-
+  /****************************************************************************************************************
+    Nombre: PROCESO_REVISION_CUENTA
+    Descripcion: Este proceso se encarga de actualizar las cosas pendientes asociadas a la cuenta de la persona
+    
+    Parametros (IN/OUT - Descripcion - Tipo de Datos):
     - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER(4)
     - P_IDPERSONA - IN - Identificador de la persona suscrita al servicio - NUMBER(10)
-    - P_IDCUENTA - IN - Identificador de la cuenta bancaria dada de baja - DATE
+    - P_IDCUENTA - IN - Identificador de la cuenta bancaria dada de baja - NUMBER(3)
     - P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - NUMBER(10)
         En caso de error devuelve el codigo de error Oracle correspondiente.
     - P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - NUMBER(10)
         En caso de error devuelve el mensaje de error Oracle correspondiente.
-
-    Version: 1.0 - 10/03/2014 - Maria Jimenez     
-    Version: 2.0 - 08/08/2014 - Jorge Paez
-        - Version SIGA_122         
-  /****************************************************************************************************************/        
-    PROCEDURE PROCESO_ACT_CUENTA_BANCO_PEND (
+        
+    Versiones (Fecha - Autor - Datos):
+    - 1.0 - 10/03/2014 - Maria Jimenez
+    - 2.0 - 08/08/2014 - Jorge Paez - SIGA_122
+    - 3.0 - 18/05/2016 - Jorge Paez - SIGA_124
+  ****************************************************************************************************************/         
+    PROCEDURE PROCESO_REVISION_CUENTA (
         p_Idinstitucion IN PYS_SERVICIOSSOLICITADOS.IDINSTITUCION%TYPE,
         p_Idpersona IN PYS_SERVICIOSSOLICITADOS.IDPERSONA%TYPE,
         p_Idcuenta IN PYS_SERVICIOSSOLICITADOS.IDCUENTA%TYPE,
@@ -180,7 +201,7 @@ create or replace package PKG_SERVICIOS_AUTOMATICOS is
 
 END PKG_SERVICIOS_AUTOMATICOS;
 /
-CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
+CREATE OR REPLACE PACKAGE BODY USCGAE_DESA.PKG_SERVICIOS_AUTOMATICOS IS
 
   /****************************************************************************************************************/
   /* Nombre: PROCESO_BAJA_SERVICIO
@@ -496,7 +517,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
             AND IDSERVICIO = P_IDSERVICIO
             AND IDSERVICIOSINSTITUCION = P_IDSERVICIOSINSTITUCION
             AND IDPERSONA = P_IDPERSONA            
-            --AND TRUNC(FECHASUSCRIPCION) <= TRUNC(SYSDATE) -- JPT: Se comento esta linea para no dar de alta suscripciones cuando estaba suscrito en el futuro
+            --AND TRUNC(FECHASUSCRIPCION) <= TRUNC(SYSDATE)  -- JPT: Se comento esta linea para no dar de alta suscripciones cuando estaba suscrito en el futuro
             AND (FECHABAJA IS NULL OR (TRUNC(FECHABAJA) >= TRUNC(SYSDATE) AND TRUNC(FECHABAJA) >= TRUNC(FECHASUSCRIPCION))); -- Busca suscripciones sin baja logica o con baja logica mayor o igual que hoy
                         
         -- Compruebo que no tiene suscripciones activas hoy, y por tanto hay que suscribirlo    
@@ -1023,23 +1044,89 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
                 DBMS_SQL.CLOSE_CURSOR(V_CURSOR);
     End PROCESO_REVISION_LETRADO;
     
-  /****************************************************************************************************************/
-  /* Nombre: PROCESO_ACT_CUENTA_BANCO_PEND
-    Descripcion: Este proceso se encarga de actualizar las cosas pendientes asociadas a la cuenta de baja de una persona
-
+  /****************************************************************************************************************
+    Nombre: PROCESO_ALTA_CUENTA_CARGOS
+    Descripcion: Este proceso asocia las suscripciones activas con forma de pago en metalico a la nueva cuenta bancaria    
+    
+    Parametros (IN/OUT - Descripcion - Tipo de Datos):
     - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER(4)
     - P_IDPERSONA - IN - Identificador de la persona suscrita al servicio - NUMBER(10)
-    - P_IDCUENTA - IN - Identificador de la cuenta bancaria dada de baja - DATE
+    - P_IDCUENTA - IN - Identificador de la nueva cuenta bancaria - NUMBER(3)
     - P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - NUMBER(10)
         En caso de error devuelve el codigo de error Oracle correspondiente.
     - P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - NUMBER(10)
         En caso de error devuelve el mensaje de error Oracle correspondiente.
+        
+    Versiones (Fecha - Autor - Datos):
+    - 1.0 - 18/05/2016 - Jorge Paez - SIGA_124
+  ****************************************************************************************************************/         
+    PROCEDURE PROCESO_ALTA_CUENTA_CARGOS (
+        P_IDINSTITUCION IN PYS_SERVICIOSSOLICITADOS.IDINSTITUCION%TYPE,
+        P_IDPERSONA IN PYS_SERVICIOSSOLICITADOS.IDPERSONA%TYPE,
+        P_IDCUENTA IN PYS_SERVICIOSSOLICITADOS.IDCUENTA%TYPE,
+        P_USUMODIFICACION IN PYS_SERVICIOSSOLICITADOS.USUMODIFICACION%TYPE,
+        P_CODRETORNO OUT VARCHAR2,
+        P_DATOSERROR OUT VARCHAR2) IS
 
-    Version: 1.0 - 10/03/2014 - Maria Jimenez     
-    Version: 2.0 - 08/08/2014 - Jorge Paez
-        - Version SIGA_122         
-  /****************************************************************************************************************/         
-    PROCEDURE PROCESO_ACT_CUENTA_BANCO_PEND (
+        v_numCuentas NUMBER;
+        V_PROCEDIMIENTO CONSTANT VARCHAR2(40) := 'PROCESO_ALTA_CUENTA_CARGOS';
+        V_TEXTOERROR VARCHAR2(4000) := NULL;
+
+    BEGIN
+        V_TEXTOERROR := V_PROCEDIMIENTO || ': 1 - Actualiza las sucripciones activas en metalico';
+        UPDATE PYS_SUSCRIPCION SUSCRIPCION
+        SET SUSCRIPCION.IDCUENTA = p_Idcuenta,
+            SUSCRIPCION.IDFORMAPAGO = 20, -- DomiciliacionBancaria
+            SUSCRIPCION.USUMODIFICACION = p_Usumodificacion,
+            SUSCRIPCION.FECHAMODIFICACION = SYSDATE
+        WHERE SUSCRIPCION.IDINSTITUCION = p_Idinstitucion
+            AND SUSCRIPCION.IDPERSONA = p_Idpersona
+            AND SUSCRIPCION.IDFORMAPAGO = 30 -- Metalico
+            AND SUSCRIPCION.FECHABAJA IS NULL
+            AND EXISTS (
+                SELECT 1
+                FROM PYS_SERVICIOSSOLICITADOS SERVICIOSSOLICITADOS,
+                    PYS_PETICIONCOMPRASUSCRIPCION PETICIONCOMPRASUSCRIPCION
+                WHERE SERVICIOSSOLICITADOS.IDINSTITUCION = SUSCRIPCION.IDINSTITUCION
+                    AND SERVICIOSSOLICITADOS.IDTIPOSERVICIOS = SUSCRIPCION.IDTIPOSERVICIOS
+                    AND SERVICIOSSOLICITADOS.IDSERVICIO = SUSCRIPCION.IDSERVICIO
+                    AND SERVICIOSSOLICITADOS.IDSERVICIOSINSTITUCION = SUSCRIPCION.IDSERVICIOSINSTITUCION
+                    AND SERVICIOSSOLICITADOS.IDPETICION = SUSCRIPCION.IDPETICION
+                    AND PETICIONCOMPRASUSCRIPCION.IDINSTITUCION = SERVICIOSSOLICITADOS.IDINSTITUCION
+                    AND PETICIONCOMPRASUSCRIPCION.IDPETICION = SERVICIOSSOLICITADOS.IDPETICION
+                    AND PETICIONCOMPRASUSCRIPCION.TIPOPETICION = 'A'
+                    AND SERVICIOSSOLICITADOS.ACEPTADO IN ('A', 'P', 'B') -- Aceptado, Pendiente o Baja
+            );                          
+
+        V_TEXTOERROR := V_PROCEDIMIENTO || ': 2-  Finaliza el proceso correctamente';
+        P_CODRETORNO := '0';
+        P_DATOSERROR := V_TEXTOERROR;   
+
+        EXCEPTION
+            WHEN OTHERS THEN
+                P_CODRETORNO := TO_CHAR(SQLCODE);
+                P_DATOSERROR := SQLERRM || ' - ' || V_TEXTOERROR;
+    END PROCESO_ALTA_CUENTA_CARGOS;    
+    
+  /****************************************************************************************************************
+    Nombre: PROCESO_REVISION_CUENTA
+    Descripcion: Este proceso se encarga de actualizar las cosas pendientes asociadas a la cuenta de la persona
+    
+    Parametros (IN/OUT - Descripcion - Tipo de Datos):
+    - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER(4)
+    - P_IDPERSONA - IN - Identificador de la persona suscrita al servicio - NUMBER(10)
+    - P_IDCUENTA - IN - Identificador de la cuenta bancaria dada de baja - NUMBER(3)
+    - P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - NUMBER(10)
+        En caso de error devuelve el codigo de error Oracle correspondiente.
+    - P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - NUMBER(10)
+        En caso de error devuelve el mensaje de error Oracle correspondiente.
+        
+    Versiones (Fecha - Autor - Datos):
+    - 1.0 - 10/03/2014 - Maria Jimenez
+    - 2.0 - 08/08/2014 - Jorge Paez - SIGA_122
+    - 3.0 - 18/05/2016 - Jorge Paez - SIGA_124
+  ****************************************************************************************************************/         
+    PROCEDURE PROCESO_REVISION_CUENTA (
         P_IDINSTITUCION IN PYS_SERVICIOSSOLICITADOS.IDINSTITUCION%TYPE,
         P_IDPERSONA IN PYS_SERVICIOSSOLICITADOS.IDPERSONA%TYPE,
         P_IDCUENTA IN PYS_SERVICIOSSOLICITADOS.IDCUENTA%TYPE,
@@ -1049,7 +1136,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
 
         v_numCuentas NUMBER;
         v_idCuentaFinal CEN_CUENTASBANCARIAS.IDCUENTA%TYPE;
-        V_PROCEDIMIENTO CONSTANT VARCHAR2(40) := 'PROCESO_ACT_CUENTA_BANCO_PEND';
+        V_PROCEDIMIENTO CONSTANT VARCHAR2(40) := 'PROCESO_BAJA_CUENTA';
         V_TEXTOERROR VARCHAR2(4000) := NULL;
 
     BEGIN
@@ -1105,84 +1192,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
                     AND PETICIONCOMPRASUSCRIPCION.TIPOPETICION = 'A'
                     AND SERVICIOSSOLICITADOS.ACEPTADO IN ('A', 'P', 'B') -- Aceptado, Pendiente o Baja
             );
-            /* JPT: Las suscripciones hay que actualizarlas siempre, ya que aunque tengan factura pagada, hay que cambiarlas para la factura posterior
-            AND (
-                NOT EXISTS (
-                    SELECT 1
-                    FROM FAC_FACTURACIONSUSCRIPCION FACTURACIONSUSCRIPCION
-                    WHERE FACTURACIONSUSCRIPCION.IDINSTITUCION = SUSCRIPCION.IDINSTITUCION
-                        AND FACTURACIONSUSCRIPCION.IDTIPOSERVICIOS = SUSCRIPCION.IDTIPOSERVICIOS
-                        AND FACTURACIONSUSCRIPCION.IDSERVICIO = SUSCRIPCION.IDSERVICIO
-                        AND FACTURACIONSUSCRIPCION.IDSERVICIOSINSTITUCION = SUSCRIPCION.IDSERVICIOSINSTITUCION
-                        AND FACTURACIONSUSCRIPCION.IDSUSCRIPCION = SUSCRIPCION.IDSUSCRIPCION
-                ) OR EXISTS (
-                    SELECT 1
-                    FROM FAC_FACTURACIONSUSCRIPCION FACTURACIONSUSCRIPCION,
-                        FAC_FACTURA FACTURA
-                    WHERE FACTURACIONSUSCRIPCION.IDINSTITUCION = SUSCRIPCION.IDINSTITUCION
-                        AND FACTURACIONSUSCRIPCION.IDTIPOSERVICIOS = SUSCRIPCION.IDTIPOSERVICIOS
-                        AND FACTURACIONSUSCRIPCION.IDSERVICIO = SUSCRIPCION.IDSERVICIO
-                        AND FACTURACIONSUSCRIPCION.IDSERVICIOSINSTITUCION = SUSCRIPCION.IDSERVICIOSINSTITUCION
-                        AND FACTURACIONSUSCRIPCION.IDSUSCRIPCION = SUSCRIPCION.IDSUSCRIPCION
-                        AND FACTURA.IDINSTITUCION = FACTURACIONSUSCRIPCION.IDINSTITUCION
-                        AND FACTURA.IDFACTURA = FACTURACIONSUSCRIPCION.IDFACTURA -- JPT: Si la factura tiene comisiones es que ya se ha facturado
-                        AND FACTURA.ESTADO IN (5, 7)
-                )
-            );*/
 
-        /* No vamos a modificar el servicio solicitado, para mantener sus datos iniciales, solo PYS_SUSCRIPCION
-        V_TEXTOERROR := V_PROCEDIMIENTO || ': 4 - Actualiza los servicios solicitados';
-        UPDATE PYS_SERVICIOSSOLICITADOS SERVICIOSSOLICITADOS
-        SET SERVICIOSSOLICITADOS.IDCUENTA = v_idCuentaFinal,
-            SERVICIOSSOLICITADOS.IDFORMAPAGO = DECODE(v_idCuentaFinal, NULL, 30, 20),
-            SERVICIOSSOLICITADOS.USUMODIFICACION = p_Usumodificacion,
-            SERVICIOSSOLICITADOS.FECHAMODIFICACION = SYSDATE
-        WHERE SERVICIOSSOLICITADOS.IDINSTITUCION = p_Idinstitucion
-            AND SERVICIOSSOLICITADOS.IDPERSONA = p_Idpersona
-            AND SERVICIOSSOLICITADOS.IDCUENTA = p_Idcuenta
-            AND SERVICIOSSOLICITADOS.ACEPTADO IN ('A', 'P', 'B') -- Aceptado, Pendiente o Baja
-            AND EXISTS (
-                SELECT 1
-                FROM PYS_PETICIONCOMPRASUSCRIPCION PETICIONCOMPRASUSCRIPCION
-                WHERE PETICIONCOMPRASUSCRIPCION.IDINSTITUCION = SERVICIOSSOLICITADOS.IDINSTITUCION
-                    AND PETICIONCOMPRASUSCRIPCION.IDPETICION = SERVICIOSSOLICITADOS.IDPETICION
-                    AND PETICIONCOMPRASUSCRIPCION.TIPOPETICION = 'A'
-            )
-            AND (
-                NOT EXISTS (
-                    SELECT 1
-                    FROM FAC_FACTURACIONSUSCRIPCION FACTURACIONSUSCRIPCION,
-                        PYS_SUSCRIPCION SUSCRIPCION
-                    WHERE SUSCRIPCION.IDINSTITUCION = SERVICIOSSOLICITADOS.IDINSTITUCION
-                        AND SUSCRIPCION.IDTIPOSERVICIOS = SERVICIOSSOLICITADOS.IDTIPOSERVICIOS
-                        AND SUSCRIPCION.IDSERVICIO = SERVICIOSSOLICITADOS.IDSERVICIO
-                        AND SUSCRIPCION.IDSERVICIOSINSTITUCION = SERVICIOSSOLICITADOS.IDSERVICIOSINSTITUCION
-                        AND SUSCRIPCION.IDPETICION = SERVICIOSSOLICITADOS.IDPETICION
-                        AND FACTURACIONSUSCRIPCION.IDINSTITUCION = SUSCRIPCION.IDINSTITUCION
-                        AND FACTURACIONSUSCRIPCION.IDTIPOSERVICIOS = SUSCRIPCION.IDTIPOSERVICIOS
-                        AND FACTURACIONSUSCRIPCION.IDSERVICIO = SUSCRIPCION.IDSERVICIO
-                        AND FACTURACIONSUSCRIPCION.IDSERVICIOSINSTITUCION = SUSCRIPCION.IDSERVICIOSINSTITUCION
-                        AND FACTURACIONSUSCRIPCION.IDSUSCRIPCION = SUSCRIPCION.IDSUSCRIPCION
-                ) OR EXISTS (
-                    SELECT 1
-                    FROM FAC_FACTURACIONSUSCRIPCION FACTURACIONSUSCRIPCION,
-                        FAC_FACTURA FACTURA,
-                        PYS_SUSCRIPCION SUSCRIPCION
-                    WHERE SUSCRIPCION.IDINSTITUCION = SERVICIOSSOLICITADOS.IDINSTITUCION
-                        AND SUSCRIPCION.IDTIPOSERVICIOS = SERVICIOSSOLICITADOS.IDTIPOSERVICIOS
-                        AND SUSCRIPCION.IDSERVICIO = SERVICIOSSOLICITADOS.IDSERVICIO
-                        AND SUSCRIPCION.IDSERVICIOSINSTITUCION = SERVICIOSSOLICITADOS.IDSERVICIOSINSTITUCION
-                        AND SUSCRIPCION.IDPETICION = SERVICIOSSOLICITADOS.IDPETICION
-                        AND FACTURACIONSUSCRIPCION.IDINSTITUCION = SUSCRIPCION.IDINSTITUCION
-                        AND FACTURACIONSUSCRIPCION.IDTIPOSERVICIOS = SUSCRIPCION.IDTIPOSERVICIOS
-                        AND FACTURACIONSUSCRIPCION.IDSERVICIO = SUSCRIPCION.IDSERVICIO
-                        AND FACTURACIONSUSCRIPCION.IDSERVICIOSINSTITUCION = SUSCRIPCION.IDSERVICIOSINSTITUCION
-                        AND FACTURACIONSUSCRIPCION.IDSUSCRIPCION = SUSCRIPCION.IDSUSCRIPCION
-                        AND FACTURA.IDINSTITUCION = FACTURACIONSUSCRIPCION.IDINSTITUCION
-                        AND FACTURA.IDFACTURA =  FACTURACIONSUSCRIPCION.IDFACTURA -- JPT: Si la factura tiene comisiones es que ya se ha facturado
-                        AND FACTURA.ESTADO IN (5, 7)
-                )
-            );*/
+            -- No vamos a modificar el servicio solicitado (PYS_SERVICIOSSOLICITADOS), para mantener sus datos iniciales, solo PYS_SUSCRIPCION
 
             V_TEXTOERROR := V_PROCEDIMIENTO || ': 5 - Actualiza la compra de los productos';
             UPDATE PYS_COMPRA COMPRA
@@ -1250,39 +1261,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
                     AND PETICIONCOMPRASUSCRIPCION.TIPOPETICION = 'A'
             );
 
-        /* No vamos a modificar el producto solicitado, para mantener sus datos iniciales, solo PYS_COMPRA
-        V_TEXTOERROR := V_PROCEDIMIENTO || ': 7 - Actualiza los productos solicitados';
-        UPDATE PYS_PRODUCTOSSOLICITADOS PRODUCTOSSOLICITADOS
-        SET PRODUCTOSSOLICITADOS.IDFORMAPAGO = DECODE(v_idCuentaFinal, NULL, 30, 20),
-            PRODUCTOSSOLICITADOS.IDCUENTA = v_idCuentaFinal,
-            PRODUCTOSSOLICITADOS.USUMODIFICACION = p_Usumodificacion,
-            PRODUCTOSSOLICITADOS.FECHAMODIFICACION = SYSDATE
-        WHERE PRODUCTOSSOLICITADOS.IDINSTITUCION = p_Idinstitucion
-            AND PRODUCTOSSOLICITADOS.IDPERSONA = p_Idpersona
-            AND PRODUCTOSSOLICITADOS.IDCUENTA = p_Idcuenta
-            AND EXISTS (
-                SELECT 1
-                FROM PYS_PETICIONCOMPRASUSCRIPCION PETICIONCOMPRASUSCRIPCION,
-                    PYS_COMPRA COMPRA
-                WHERE PETICIONCOMPRASUSCRIPCION.IDINSTITUCION = PRODUCTOSSOLICITADOS.IDINSTITUCION
-                    AND PETICIONCOMPRASUSCRIPCION.IDPETICION = PRODUCTOSSOLICITADOS.IDPETICION
-                    AND PETICIONCOMPRASUSCRIPCION.TIPOPETICION = 'A'
-                    AND COMPRA.IDINSTITUCION = PRODUCTOSSOLICITADOS.IDINSTITUCION
-                    AND COMPRA.IDTIPOPRODUCTO = PRODUCTOSSOLICITADOS.IDTIPOPRODUCTO
-                    AND COMPRA.IDPRODUCTO = PRODUCTOSSOLICITADOS.IDPRODUCTO
-                    AND COMPRA.IDPRODUCTOINSTITUCION = PRODUCTOSSOLICITADOS.IDPRODUCTOINSTITUCION
-                    AND COMPRA.IDPETICION = PRODUCTOSSOLICITADOS.IDPETICION
-                    AND (
-                        COMPRA.IDFACTURA IS NULL
-                        OR EXISTS (
-                                 SELECT 1
-                                FROM FAC_FACTURA FACTURA
-                                WHERE FACTURA.IDINSTITUCION = COMPRA.IDINSTITUCION
-                                    AND FACTURA.IDFACTURA = COMPRA.IDFACTURA -- JPT: Si la factura tiene comisiones es que ya se ha facturado
-                                    AND FACTURA.ESTADO IN (5, 7)
-                        )
-                    )
-            );*/
+            -- No vamos a modificar el producto solicitado (PYS_PRODUCTOSSOLICITADOS), para mantener sus datos iniciales, solo PYS_COMPRA
 
         /* Notas JPT - Estados Factura:
             - 1: Pagado => No se modifica
@@ -1437,7 +1416,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
             WHEN OTHERS THEN
                 P_CODRETORNO := TO_CHAR(SQLCODE);
                 P_DATOSERROR := SQLERRM || ' - ' || V_TEXTOERROR;
-    END PROCESO_ACT_CUENTA_BANCO_PEND;
+    END PROCESO_REVISION_CUENTA;
   
   /****************************************************************************************************************/
   /* Nombre: PROCESO_ELIMINAR_SUSCRIPCION

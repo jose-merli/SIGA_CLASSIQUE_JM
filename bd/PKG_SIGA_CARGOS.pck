@@ -4290,7 +4290,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
 
             -- Controlo que el fichero tenga ficheros incluidos registros individuales que devolver
             v_Datoserror := 'DevolucionesFin: Comprobar existencia ficheros individuales en disquete de devoluciones - Tratamiento Devoluciones';
-            IF (M_DISQ_DEVO(contadorDisq).CONT_M_FIED_DEVO>0) THEN
+            IF (M_DISQ_DEVO(contadorDisq).CONT_M_FIED_DEVO=0) THEN
                 v_numFicherosSinFacturas := v_numFicherosSinFacturas + 1;
             
             ELSE                           

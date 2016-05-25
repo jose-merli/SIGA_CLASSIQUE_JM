@@ -13,6 +13,7 @@
 
 package com.siga.censo.form;
 
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.MasterForm;
 
 
@@ -20,10 +21,6 @@ import com.siga.general.MasterForm;
 public class SolicitudesModificacionEspecificasForm extends MasterForm{
 		
 	// Variables busqueda
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6130560235999912018L;
 	private String fechaDesde="";
 	private String fechaHasta="";		
@@ -34,8 +31,6 @@ public class SolicitudesModificacionEspecificasForm extends MasterForm{
 	private String idPersona="";
 	private String idInstitucion="";
 	private String textoModificacion="";
-	
-	
 	
 	// Metodos set
 
@@ -125,8 +120,12 @@ public class SolicitudesModificacionEspecificasForm extends MasterForm{
 	}	
 	public String[] getPeticionesTipoModif(){		
 		return this.solicitudesTipoModif.split("%");
-		
 	}	
 	
-	
+	public void setConfirmacionProcesoAltaCuentaCargos(Boolean dato) {
+		UtilidadesHash.set(this.datos, "confirmacionProcesoAltaCuentaCargos", dato);
+	}
+	public Boolean getConfirmacionProcesoAltaCuentaCargos() {
+		return UtilidadesHash.getBoolean(this.datos, "confirmacionProcesoAltaCuentaCargos");
+	}		
 }

@@ -8,8 +8,15 @@ package com.siga.beans;
 
 import java.util.Hashtable;
 import java.util.Vector;
-import com.atos.utils.*;
-import com.siga.Utilidades.*;
+
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 
@@ -201,7 +208,6 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
 	       return datos;                        
 	    }	
 
-	
 	/** 
 	 * Recoge informacion de las tablas a partir de la informacion suministrada por la busqueda<br/>
 	 * @param  institucion - identificador de la institucion
@@ -212,299 +218,240 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */	
 	public Vector getSolicitudesModifEspecifTotales(String institucion, String estado, String fechaI, String fechaF) throws ClsExceptions, SIGAException {
-		   Vector datos=new Vector();
+		   Vector datos = new Vector();
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
-	            String sql ="(SELECT " +
-    						CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDSOLICITUD + "," +
-    						CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_MOTIVO + "," +							
-    												
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDPERSONA + "," +
-	            			CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDINSTITUCION + ", 0 as CODIGO, " +
-	            			CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_FECHAALTA + "," +
-	            			CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC + "," +
-	            			UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS ESTADO, " +
-	            			ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_GENERALES+" as TIPOMODIF, "+
-							" (SELECT "+UtilidadesMultidioma.getCampoMultidioma(CenTiposModificacionesBean.C_DESCRIPCION, this.usrbean.getLanguage())+
-							" from "+CenTiposModificacionesBean.T_NOMBRETABLA+
-							" where "+CenTiposModificacionesBean.C_IDTIPOMODIFICACION+"="+ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_GENERALES+") as TEXTOTIPOMODIF"+
-							
-							" FROM " + 
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+
-							" WHERE " +
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +"."+ CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA +"."+ CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
-							" AND " +
-							CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +"."+ CenSolicitModifDatosBasicosBean.C_IDINSTITUCION + "=" + institucion;	            
+	            String sql = "(SELECT " + CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDSOLICITUD + "," +
+						CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_MOTIVO + "," +							    												
+						CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDPERSONA + "," +
+						CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDINSTITUCION + "," + 
+						" 0 AS CODIGO," +
+						CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_FECHAALTA + "," +
+						CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC + "," +
+						UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS ESTADO, " +
+						ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_GENERALES + " AS TIPOMODIF," +
+						" (SELECT " + UtilidadesMultidioma.getCampoMultidioma(CenTiposModificacionesBean.C_DESCRIPCION, this.usrbean.getLanguage()) +
+							" from " + CenTiposModificacionesBean.T_NOMBRETABLA +
+							" where " + CenTiposModificacionesBean.C_IDTIPOMODIFICACION + "=" + ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_GENERALES + ") as TEXTOTIPOMODIF," +
+						" NULL AS " + CenCuentasBancariasBean.C_ABONOCARGO + "," +
+	     				" NULL AS ABONOCARGO_CUENTABANCARIA" +
+					" FROM " + CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + ", " +
+						CenEstadoSolicitudModifBean.T_NOMBRETABLA +
+					" WHERE " + CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
+						" AND " + CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDINSTITUCION + "=" + institucion;	            
 											
-				if (!estado.trim().equals("")){								 
-					sql +=" AND " +
-						  CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +"."+ CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC + "=" + estado;									 
-				}				
-				
-				if (!fechaI.trim().equals("")){								 
-					sql +=" AND " +
-						  CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +"."+ CenSolicitModifDatosBasicosBean.C_FECHAALTA + ">= TO_DATE ('" + fechaI + "', 'DD/MM/YYYY')";
-				}							
-
-				if (!fechaF.trim().equals("")){								 
-					sql +=" AND (" +
-					  CenSolicitModifDatosBasicosBean.T_NOMBRETABLA +"."+ CenSolicitModifDatosBasicosBean.C_FECHAALTA + "<= TO_DATE ('" + fechaF + "', 'DD/MM/YYYY')" +									 
-					  " OR " +
-					  GstDate.dateBetween0and24h(CenSolicitModifDatosBasicosBean.C_FECHAALTA,fechaF)+")";									 
-				}							
-				sql+=" ) union";
-				sql+= " (SELECT " +
-					CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_IDSOLICITUD + "," +
-					CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_MOTIVO + "," +	
-					CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_IDPERSONA + "," +
-     			    CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_IDINSTITUCION + "," +
-					CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_IDDIRECCION + " as CODIGO," +							
-					CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_FECHAALTA + "," +
-	     			CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_IDESTADOSOLIC + "," +
-	     			//CenTiposModificacionesBean.T_NOMBRETABLA + "." + CenTiposModificacionesBean.C_DESCRIPCION + " AS MODIFICACION," +							
-	     			UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS ESTADO, " +
-	     			ClsConstants.TIPO_SOLICITUD_MODIF_DIRECCIONES+" as TIPOMODIF, "+
-	     			" (SELECT "+UtilidadesMultidioma.getCampoMultidioma(CenTiposModificacionesBean.C_DESCRIPCION, this.usrbean.getLanguage())+
-					" from "+CenTiposModificacionesBean.T_NOMBRETABLA+
-					" where "+CenTiposModificacionesBean.C_IDTIPOMODIFICACION+"="+ClsConstants.TIPO_SOLICITUD_MODIF_DIRECCIONES+") as TEXTOTIPOMODIF"+
-					" FROM " + 
-					//CenSoliModiDireccionesBean.T_NOMBRETABLA +", "+CenTiposModificacionesBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+ 
-					CenSoliModiDireccionesBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+
-					" WHERE " +
-					//CenTiposModificacionesBean.T_NOMBRETABLA +"."+ CenSolicitudesModificacionBean.C_IDTIPOMODIFICACION + "=" + String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DIRECCIONES) +
-					//" AND " +							
-					CenSoliModiDireccionesBean.T_NOMBRETABLA +"."+ CenSoliModiDireccionesBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA +"."+ CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
-					" AND " +
-					CenSoliModiDireccionesBean.T_NOMBRETABLA +"."+ CenSoliModiDireccionesBean.C_IDINSTITUCION + "=" + institucion;	            
-									
-		if (!estado.trim().equals("")){								 
-			sql +=" AND " +
-				  CenSoliModiDireccionesBean.T_NOMBRETABLA +"."+ CenSoliModiDireccionesBean.C_IDESTADOSOLIC + "=" + estado;									 
-		}				
-		
-		if (!fechaI.trim().equals("")){								 
-			sql +=" AND " +
-				  CenSoliModiDireccionesBean.T_NOMBRETABLA +"."+ CenSoliModiDireccionesBean.C_FECHAALTA + ">= TO_DATE ('" + fechaI + "', 'DD/MM/YYYY')";
-		}							
-
-		if (!fechaF.trim().equals("")){								 
-			sql +=" AND (" +
-				  CenSoliModiDireccionesBean.T_NOMBRETABLA +"."+ CenSoliModiDireccionesBean.C_FECHAALTA + "<= TO_DATE ('" + fechaF + "', 'DD/MM/YYYY')" +									 
-				  " OR " +
-				  GstDate.dateBetween0and24h(CenSoliModiDireccionesBean.C_FECHAALTA,fechaF)+")";
-		}							
-		sql+=" ) union ";
-		sql+= " (SELECT " +
-		CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDSOLICITUD + "," +
-		CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_MOTIVO + "," +
-		CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDPERSONA + "," +
-	
-		
-		CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDINSTITUCION + "," +							
-		CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDCUENTA + " as CODIGO, " +							
-		CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_FECHAALTA + "," +
-		CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDESTADOSOLIC + "," +
-		//CenTiposModificacionesBean.T_NOMBRETABLA + "." + CenTiposModificacionesBean.C_DESCRIPCION + " AS MODIFICACION," +							
-		UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS ESTADO, " +
-		ClsConstants.TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS+" as TIPOMODIF, "+
-		" (SELECT "+UtilidadesMultidioma.getCampoMultidioma(CenTiposModificacionesBean.C_DESCRIPCION,this.usrbean.getLanguage())+
-		" from "+CenTiposModificacionesBean.T_NOMBRETABLA+
-		" where "+CenTiposModificacionesBean.C_IDTIPOMODIFICACION+"="+ClsConstants.TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS+") as TEXTOTIPOMODIF"+
-		" FROM " + 
-		//CenSolicModiCuentasBean.T_NOMBRETABLA +", "+CenTiposModificacionesBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+ 
-		CenSolicModiCuentasBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+
-		" WHERE " +
-		//CenTiposModificacionesBean.T_NOMBRETABLA +"."+ CenSolicitudesModificacionBean.C_IDTIPOMODIFICACION + "=" + String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS) +
-		//" AND " +							
-		CenSolicModiCuentasBean.T_NOMBRETABLA +"."+ CenSolicModiCuentasBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA +"."+ CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
-		" AND " +
-		CenSolicModiCuentasBean.T_NOMBRETABLA +"."+ CenSolicModiCuentasBean.C_IDINSTITUCION + "=" + institucion;	            
-						
-		if (!estado.trim().equals("")){								 
-		sql +=" AND " +
-			  CenSolicModiCuentasBean.T_NOMBRETABLA +"."+ CenSolicModiCuentasBean.C_IDESTADOSOLIC + "=" + estado;									 
-		}				
-		
-		if (!fechaI.trim().equals("")){								 
-		sql +=" AND " +
-			  CenSolicModiCuentasBean.T_NOMBRETABLA +"."+ CenSolicModiCuentasBean.C_FECHAALTA + ">= TO_DATE ('" + fechaI + "', 'DD/MM/YYYY')";
-		}							
-		
-		if (!fechaF.trim().equals("")){								 
-		sql +=" AND (" +
-		  CenSolicModiCuentasBean.T_NOMBRETABLA +"."+ CenSolicModiCuentasBean.C_FECHAALTA + "<= TO_DATE ('" + fechaF + "', 'DD/MM/YYYY')" +									 
-		  " OR " +
-		  GstDate.dateBetween0and24h(CenSolicModiCuentasBean.C_FECHAALTA,fechaF)+")";									 
-		}							
-		
-		sql+=" ) union ";
-		sql+=" (SELECT " +
-		CenSolicitudModificacionCVBean.T_NOMBRETABLA + "." + CenSolicitudModificacionCVBean.C_IDSOLICITUD + "," +
-		CenSolicitudModificacionCVBean.T_NOMBRETABLA + "." + CenSolicitudModificacionCVBean.C_MOTIVO + "," +
-															
-		CenSolicitudModificacionCVBean.T_NOMBRETABLA + "." + CenSolicitudModificacionCVBean.C_IDPERSONA + "," +
-		CenSolicitudModificacionCVBean.T_NOMBRETABLA + "." + CenSolicitudModificacionCVBean.C_IDINSTITUCION + "," +
-		CenSolicitudModificacionCVBean.T_NOMBRETABLA + "." + CenSolicitudModificacionCVBean.C_IDCV + " as CODIGO, " +
-					
-		CenSolicitudModificacionCVBean.T_NOMBRETABLA + "." + CenSolicitudModificacionCVBean.C_FECHAALTA + "," +
-		CenSolicitudModificacionCVBean.T_NOMBRETABLA + "." + CenSolicitudModificacionCVBean.C_IDESTADOSOLIC + "," +
-		//CenTiposModificacionesBean.T_NOMBRETABLA + "." + CenTiposModificacionesBean.C_DESCRIPCION + " AS MODIFICACION," +							
-		UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS ESTADO, " +
-		ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_CV+" as TIPOMODIF, "+
-		" (SELECT "+UtilidadesMultidioma.getCampoMultidioma(CenTiposModificacionesBean.C_DESCRIPCION,this.usrbean.getLanguage())+
-		" from "+CenTiposModificacionesBean.T_NOMBRETABLA+
-		" where "+CenTiposModificacionesBean.C_IDTIPOMODIFICACION+"="+ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_CV+") as TEXTOTIPOMODIF"+
-		" FROM " + 
-		//CenSolicitudModificacionCVBean.T_NOMBRETABLA +", "+CenTiposModificacionesBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+ 
-		CenSolicitudModificacionCVBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+
-		" WHERE " +
-		//CenTiposModificacionesBean.T_NOMBRETABLA +"."+ CenSolicitudesModificacionBean.C_IDTIPOMODIFICACION + "=" + String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_CV) +
-		//" AND " +							
-		CenSolicitudModificacionCVBean.T_NOMBRETABLA +"."+ CenSolicitudModificacionCVBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA +"."+ CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
-		" AND " +
-		CenSolicitudModificacionCVBean.T_NOMBRETABLA +"."+ CenSolicitudModificacionCVBean.C_IDINSTITUCION + "=" + institucion;	            
-						
-			if (!estado.trim().equals("")){								 
-			sql +=" AND " +
-				  CenSolicitudModificacionCVBean.T_NOMBRETABLA +"."+ CenSolicitudModificacionCVBean.C_IDESTADOSOLIC + "=" + estado;									 
-			}				
-			
-			if (!fechaI.trim().equals("")){								 
-			sql +=" AND " +
-				  CenSolicitudModificacionCVBean.T_NOMBRETABLA +"."+ CenSolicitudModificacionCVBean.C_FECHAALTA + ">= TO_DATE ('" + fechaI + "', 'DD/MM/YYYY')";
-			}							
-			
-			if (!fechaF.trim().equals("")){								 
-			sql +=" AND (" +
-			  CenSolicitudModificacionCVBean.T_NOMBRETABLA +"."+ CenSolicitudModificacionCVBean.C_FECHAALTA + "<= TO_DATE ('" + fechaF + "', 'DD/MM/YYYY')" +									 
-			  " OR " +
-			  GstDate.dateBetween0and24h(CenSolicitudModificacionCVBean.C_FECHAALTA,fechaF)+")";									 
-			}						
-	   sql+=" ) union ";
-	   
-	   sql+=" (SELECT " +
-					CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_IDSOLICITUD + "," +
-					CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_MOTIVO + "," +
-					CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_IDPERSONA + "," +
-					CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_IDINSTITUCION + "," +
-	    			CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_IDCUENTA + " as CODIGO, " +
-	    			
-	    			CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_FECHAALTA + "," +
-	    			CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_IDESTADOSOLIC + "," +							
-       			//CenTiposModificacionesBean.T_NOMBRETABLA + "." + CenTiposModificacionesBean.C_DESCRIPCION + " AS MODIFICACION," +							
-       			UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS ESTADO, " +
-
-       			ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_FACTURACION+" as TIPOMODIF, "+
-       			" (SELECT "+UtilidadesMultidioma.getCampoMultidioma(CenTiposModificacionesBean.C_DESCRIPCION,this.usrbean.getLanguage())+
-				" from "+CenTiposModificacionesBean.T_NOMBRETABLA+
-				" where "+CenTiposModificacionesBean.C_IDTIPOMODIFICACION+"="+ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_FACTURACION+") as TEXTOTIPOMODIF"+
-					" FROM " + 
-					//CenSolModiFacturacionServicioBean.T_NOMBRETABLA +", "+CenTiposModificacionesBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+ 
-					CenSolModiFacturacionServicioBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+
-					" WHERE " +
-					//CenTiposModificacionesBean.T_NOMBRETABLA +"."+ CenSolicitudesModificacionBean.C_IDTIPOMODIFICACION + "=" + String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_FACTURACION) +
-					//" AND " +							
-					CenSolModiFacturacionServicioBean.T_NOMBRETABLA +"."+ CenSolModiFacturacionServicioBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA +"."+ CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
-					" AND " +
-					CenSolModiFacturacionServicioBean.T_NOMBRETABLA +"."+ CenSolModiFacturacionServicioBean.C_IDINSTITUCION + "=" + institucion;	            
-									
-						if (!estado.trim().equals("")){								 
-							sql +=" AND " +
-								  CenSolModiFacturacionServicioBean.T_NOMBRETABLA +"."+ CenSolModiFacturacionServicioBean.C_IDESTADOSOLIC + "=" + estado;									 
-						}				
-						
-						if (!fechaI.trim().equals("")){								 
-							sql +=" AND " +
-								  CenSolModiFacturacionServicioBean.T_NOMBRETABLA +"."+ CenSolModiFacturacionServicioBean.C_FECHAALTA + ">= TO_DATE ('" + fechaI + "', 'DD/MM/YYYY')";
-						}							
-				
-						if (!fechaF.trim().equals("")){								 
-							sql +=" AND (" +
-							  CenSolModiFacturacionServicioBean.T_NOMBRETABLA +"."+ CenSolModiFacturacionServicioBean.C_FECHAALTA + "<= TO_DATE ('" + fechaF + "', 'DD/MM/YYYY')" +									 
-							  " OR " +
-							  GstDate.dateBetween0and24h(CenSolModiFacturacionServicioBean.C_FECHAALTA,fechaF)+")";									 
-						}	
-	   sql+=" ) union ";
-	 
-	   
-//////////////////////////////////////////	 EXPORTAR FOTO //////////////////////////////////////////////////	   
-	   sql+=" (SELECT " +
-					CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDSOLICITUD + "," +
-					CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_MOTIVO + "," +							
-					CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDPERSONA + "," +
-        			CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDINSTITUCION + ", 0 as CODIGO, " +
-        			CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_FECHAALTA + "," +
-        			CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDESTADOSOLIC + "," +	
-
-				    UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS ESTADO, " +
-	    			ClsConstants.TIPO_SOLICITUD_MODIF_EXP_FOTO+" as TIPOMODIF, "+
-					" (SELECT "+UtilidadesMultidioma.getCampoMultidioma(CenTiposModificacionesBean.C_DESCRIPCION, this.usrbean.getLanguage()) +
-					" from "+CenTiposModificacionesBean.T_NOMBRETABLA+
-					" where "+CenTiposModificacionesBean.C_IDTIPOMODIFICACION+"="+ClsConstants.TIPO_SOLICITUD_MODIF_EXP_FOTO+") as TEXTOTIPOMODIF"+
-					" FROM " + 
-					CenSolicModifExportarFotoBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+
-					" WHERE " +
-					CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA +"."+ CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
-					" AND " +
-					CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_IDINSTITUCION + "=" + institucion;	            
-
-	   				if (!estado.trim().equals("")){								 
-						sql +=" AND " +
-							  CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_IDESTADOSOLIC + "=" + estado;									 
+					if (!estado.trim().equals("")){								 
+						sql +=" AND " + CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_IDESTADOSOLIC + "=" + estado;									 
 					}				
 					
-					if (!fechaI.trim().equals("")){								 
-						sql +=" AND " +
-							  CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_FECHAALTA + ">= TO_DATE ('" + fechaI + "', 'DD/MM/YYYY')";
+					if (!fechaI.trim().equals("")) {								 
+						sql +=" AND " + CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_FECHAALTA + ">= TO_DATE ('" + fechaI + "', 'DD/MM/YYYY')";
 					}							
 	
 					if (!fechaF.trim().equals("")){								 
-						sql +=" AND (" +
-						  CenSolicModifExportarFotoBean.T_NOMBRETABLA +"."+ CenSolicModifExportarFotoBean.C_FECHAALTA + "<= TO_DATE ('" + fechaF + "', 'DD/MM/YYYY')" +									 
-						  " OR " +
-						  GstDate.dateBetween0and24h(CenSolicModifExportarFotoBean.C_FECHAALTA,fechaF)+")";									 
-					}
-	        			
-//////////////////////////////////////////////////////////////////////////////////////////////////////////							
-
+						sql +=" AND (" + CenSolicitModifDatosBasicosBean.T_NOMBRETABLA + "." + CenSolicitModifDatosBasicosBean.C_FECHAALTA + "<= TO_DATE ('" + fechaF + "', 'DD/MM/YYYY')" +									 
+								" OR " + GstDate.dateBetween0and24h(CenSolicitModifDatosBasicosBean.C_FECHAALTA, fechaF) + ")";									 
+					}					
+				
+				sql += " ) UNION (SELECT " + CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_IDSOLICITUD + "," +
+						CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_MOTIVO + "," +	
+						CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_IDPERSONA + "," +
+	     			    CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_IDINSTITUCION + "," +
+						CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_IDDIRECCION + " AS CODIGO," +							
+						CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_FECHAALTA + "," +
+		     			CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_IDESTADOSOLIC + "," +
+		     			UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS ESTADO, " +
+		     			ClsConstants.TIPO_SOLICITUD_MODIF_DIRECCIONES + " AS TIPOMODIF," +
+		     			" (SELECT " + UtilidadesMultidioma.getCampoMultidioma(CenTiposModificacionesBean.C_DESCRIPCION, this.usrbean.getLanguage()) +
+		     				" from " + CenTiposModificacionesBean.T_NOMBRETABLA +
+		     				" where " + CenTiposModificacionesBean.C_IDTIPOMODIFICACION + "=" + ClsConstants.TIPO_SOLICITUD_MODIF_DIRECCIONES+") AS TEXTOTIPOMODIF," +
+	     				" NULL AS " + CenCuentasBancariasBean.C_ABONOCARGO + "," +
+	     				" NULL AS ABONOCARGO_CUENTABANCARIA" +
+					" FROM " + CenSoliModiDireccionesBean.T_NOMBRETABLA + ", " +
+						CenEstadoSolicitudModifBean.T_NOMBRETABLA +
+					" WHERE " + CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
+						" AND " + CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_IDINSTITUCION + "=" + institucion;	            
+									
+					if (!estado.trim().equals("")) {								 
+						sql += " AND " + CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_IDESTADOSOLIC + "=" + estado;									 
+					}				
+					
+					if (!fechaI.trim().equals("")) {								 
+						sql += " AND " + CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_FECHAALTA + ">= TO_DATE ('" + fechaI + "', 'DD/MM/YYYY')";
+					}							
+			
+					if (!fechaF.trim().equals("")) { 								 
+						sql += " AND (" + CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_FECHAALTA + "<= TO_DATE ('" + fechaF + "', 'DD/MM/YYYY')" +									 
+							  " OR " + GstDate.dateBetween0and24h(CenSoliModiDireccionesBean.C_FECHAALTA, fechaF) + ")";
+					}							
+				
+				sql += " ) UNION (SELECT " + CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDSOLICITUD + "," +
+						CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_MOTIVO + "," +
+						CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDPERSONA + "," +
+						CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDINSTITUCION + "," +							
+						CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDCUENTA + " AS CODIGO," +							
+						CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_FECHAALTA + "," +
+						CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDESTADOSOLIC + "," +
+						UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS ESTADO," +
+						ClsConstants.TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS + " AS TIPOMODIF," +
+						" (SELECT " + UtilidadesMultidioma.getCampoMultidioma(CenTiposModificacionesBean.C_DESCRIPCION,this.usrbean.getLanguage()) +
+							" from " + CenTiposModificacionesBean.T_NOMBRETABLA +
+							" where " + CenTiposModificacionesBean.C_IDTIPOMODIFICACION + "=" + ClsConstants.TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS + ") AS TEXTOTIPOMODIF, " +
+						CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_ABONOCARGO + "," +						
+						" (SELECT " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_ABONOCARGO +
+			            	" FROM " + CenCuentasBancariasBean.T_NOMBRETABLA +
+			            	" WHERE " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDINSTITUCION + " = " + CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDINSTITUCION + 
+			            		" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDPERSONA + " = " + CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDPERSONA +
+		            			" AND " + CenCuentasBancariasBean.T_NOMBRETABLA + "." + CenCuentasBancariasBean.C_IDCUENTA + " = " + CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDCUENTA + ") AS ABONOCARGO_CUENTABANCARIA " +
+					" FROM " + CenSolicModiCuentasBean.T_NOMBRETABLA + ", " +
+						CenEstadoSolicitudModifBean.T_NOMBRETABLA +
+					" WHERE " + CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
+						" AND " + CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDINSTITUCION + "=" + institucion;	            
 						
-		sql+=" ) union ";
-		sql+=" (SELECT " + 
-		ExpSolicitudBorradoBean.T_NOMBRETABLA + "." + ExpSolicitudBorradoBean.C_IDSOLICITUD + "," +
-		ExpSolicitudBorradoBean.T_NOMBRETABLA + "." + ExpSolicitudBorradoBean.C_MOTIVO + "," +
-		ExpSolicitudBorradoBean.T_NOMBRETABLA + "." + ExpSolicitudBorradoBean.C_IDPERSONA + "," +
-		ExpSolicitudBorradoBean.T_NOMBRETABLA + "." + ExpSolicitudBorradoBean.C_IDINSTITUCION + ", 0 as CODIGO, " +
-		ExpSolicitudBorradoBean.T_NOMBRETABLA + "." + ExpSolicitudBorradoBean.C_FECHAALTA + "," +
-		ExpSolicitudBorradoBean.T_NOMBRETABLA + "." + ExpSolicitudBorradoBean.C_IDESTADOSOLIC + "," +
-		UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS ESTADO, " +
-		ClsConstants.TIPO_SOLICITUD_MODIF_EXPEDIENTES+" as TIPOMODIF, "+
-		" (SELECT "+UtilidadesMultidioma.getCampoMultidioma(CenTiposModificacionesBean.C_DESCRIPCION, this.usrbean.getLanguage())+
-		" from "+CenTiposModificacionesBean.T_NOMBRETABLA+
-		" where "+CenTiposModificacionesBean.C_IDTIPOMODIFICACION+"="+ClsConstants.TIPO_SOLICITUD_MODIF_EXPEDIENTES+") as TEXTOTIPOMODIF"+
-		" FROM " + 
-		ExpSolicitudBorradoBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+ 
-		" WHERE " + 
-		ExpSolicitudBorradoBean.T_NOMBRETABLA +"."+ ExpSolicitudBorradoBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA +"."+ CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
-		" AND " +
-		ExpSolicitudBorradoBean.T_NOMBRETABLA +"."+ ExpSolicitudBorradoBean.C_IDINSTITUCION + "=" + institucion;        
+					if (!estado.trim().equals("")) {								 
+						sql += " AND " + CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDESTADOSOLIC + "=" + estado;									 
+					}				
+					
+					if (!fechaI.trim().equals("")) {
+						sql += " AND " + CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_FECHAALTA + ">= TO_DATE ('" + fechaI + "', 'DD/MM/YYYY')";
+					}							
+					
+					if (!fechaF.trim().equals("")) {
+						sql += " AND (" + CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_FECHAALTA + "<= TO_DATE ('" + fechaF + "', 'DD/MM/YYYY')" +									 
+							" OR " + GstDate.dateBetween0and24h(CenSolicModiCuentasBean.C_FECHAALTA, fechaF) + ")";									 
+					}							
 		
-			if (!estado.trim().equals("")){								 
-				sql +=" AND " +
-					ExpSolicitudBorradoBean.T_NOMBRETABLA +"."+ ExpSolicitudBorradoBean.C_IDESTADOSOLIC + "=" + estado;									 
-			}				
-			
-			String auxFechaInicio = "";
-			String auxFechaFin = "";
-			if (!fechaI.trim().equals("")) 
-					auxFechaInicio = GstDate.getApplicationFormatDate("",fechaI);
-			if (!fechaF.trim().equals("")) 
-					auxFechaFin = GstDate.getApplicationFormatDate("",fechaF);
-			
-			if ((fechaI!=null && !fechaI.trim().equals("")) || (fechaF!=null && !fechaF.trim().equals(""))) {
-				sql += " AND " + GstDate.dateBetweenDesdeAndHasta(ExpSolicitudBorradoBean.T_NOMBRETABLA +"."+ ExpSolicitudBorradoBean.C_FECHAALTA,auxFechaInicio,auxFechaFin);
-			} 
-		sql+=" )";	
-		sql += " ORDER BY 6 DESC"; 										
+				sql += " ) UNION (SELECT " + CenSolicitudModificacionCVBean.T_NOMBRETABLA + "." + CenSolicitudModificacionCVBean.C_IDSOLICITUD + "," +
+						CenSolicitudModificacionCVBean.T_NOMBRETABLA + "." + CenSolicitudModificacionCVBean.C_MOTIVO + "," +															
+						CenSolicitudModificacionCVBean.T_NOMBRETABLA + "." + CenSolicitudModificacionCVBean.C_IDPERSONA + "," +
+						CenSolicitudModificacionCVBean.T_NOMBRETABLA + "." + CenSolicitudModificacionCVBean.C_IDINSTITUCION + "," +
+						CenSolicitudModificacionCVBean.T_NOMBRETABLA + "." + CenSolicitudModificacionCVBean.C_IDCV + " AS CODIGO," +					
+						CenSolicitudModificacionCVBean.T_NOMBRETABLA + "." + CenSolicitudModificacionCVBean.C_FECHAALTA + "," +
+						CenSolicitudModificacionCVBean.T_NOMBRETABLA + "." + CenSolicitudModificacionCVBean.C_IDESTADOSOLIC + "," +
+						UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS ESTADO, " +
+						ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_CV + " AS TIPOMODIF," +
+						" (SELECT " + UtilidadesMultidioma.getCampoMultidioma(CenTiposModificacionesBean.C_DESCRIPCION,this.usrbean.getLanguage()) +
+							" from " + CenTiposModificacionesBean.T_NOMBRETABLA +
+							" where " + CenTiposModificacionesBean.C_IDTIPOMODIFICACION + "=" + ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_CV + ") AS TEXTOTIPOMODIF," +
+	     				" NULL AS " + CenCuentasBancariasBean.C_ABONOCARGO + "," +
+	     				" NULL AS ABONOCARGO_CUENTABANCARIA" +
+					" FROM " + CenSolicitudModificacionCVBean.T_NOMBRETABLA + ", " +
+						CenEstadoSolicitudModifBean.T_NOMBRETABLA +
+					" WHERE " + CenSolicitudModificacionCVBean.T_NOMBRETABLA + "." + CenSolicitudModificacionCVBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
+						" AND " + CenSolicitudModificacionCVBean.T_NOMBRETABLA + "." + CenSolicitudModificacionCVBean.C_IDINSTITUCION + "=" + institucion;	            
+						
+					if (!estado.trim().equals("")) {
+						sql += " AND " + CenSolicitudModificacionCVBean.T_NOMBRETABLA + "." + CenSolicitudModificacionCVBean.C_IDESTADOSOLIC + "=" + estado;									 
+					}				
+					
+					if (!fechaI.trim().equals("")) {
+						sql += " AND " + CenSolicitudModificacionCVBean.T_NOMBRETABLA + "." + CenSolicitudModificacionCVBean.C_FECHAALTA + ">= TO_DATE ('" + fechaI + "', 'DD/MM/YYYY')";
+					}							
+					
+					if (!fechaF.trim().equals("")){
+						sql += " AND (" + CenSolicitudModificacionCVBean.T_NOMBRETABLA + "." + CenSolicitudModificacionCVBean.C_FECHAALTA + "<= TO_DATE ('" + fechaF + "', 'DD/MM/YYYY')" +
+							" OR " + GstDate.dateBetween0and24h(CenSolicitudModificacionCVBean.C_FECHAALTA, fechaF) + ")";									 
+					}
+					
+				sql += " ) UNION (SELECT " + CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_IDSOLICITUD + "," +
+						CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_MOTIVO + "," +
+						CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_IDPERSONA + "," +
+						CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_IDINSTITUCION + "," +
+						CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_IDCUENTA + " AS CODIGO," +						
+						CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_FECHAALTA + "," +
+						CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_IDESTADOSOLIC + "," +							
+						UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS ESTADO, " +
+						ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_FACTURACION + " AS TIPOMODIF," +
+						" (SELECT " + UtilidadesMultidioma.getCampoMultidioma(CenTiposModificacionesBean.C_DESCRIPCION,this.usrbean.getLanguage()) +
+							" from " + CenTiposModificacionesBean.T_NOMBRETABLA +
+							" where " + CenTiposModificacionesBean.C_IDTIPOMODIFICACION + "=" + ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_FACTURACION + ") AS TEXTOTIPOMODIF," +
+	     				" NULL AS " + CenCuentasBancariasBean.C_ABONOCARGO + "," +
+	     				" NULL AS ABONOCARGO_CUENTABANCARIA" +
+					" FROM " + CenSolModiFacturacionServicioBean.T_NOMBRETABLA + ", " +
+						CenEstadoSolicitudModifBean.T_NOMBRETABLA +
+					" WHERE " + CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
+						" AND " + CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_IDINSTITUCION + "=" + institucion;	            
+									
+					if (!estado.trim().equals("")) {
+						sql += " AND " + CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_IDESTADOSOLIC + "=" + estado;									 
+					}
+					
+					if (!fechaI.trim().equals("")) {
+						sql += " AND " + CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_FECHAALTA + ">= TO_DATE ('" + fechaI + "', 'DD/MM/YYYY')";
+					}							
+					
+					if (!fechaF.trim().equals("")){
+						sql += " AND (" + CenSolModiFacturacionServicioBean.T_NOMBRETABLA + "." + CenSolModiFacturacionServicioBean.C_FECHAALTA + "<= TO_DATE ('" + fechaF + "', 'DD/MM/YYYY')" +
+							" OR " + GstDate.dateBetween0and24h(CenSolModiFacturacionServicioBean.C_FECHAALTA, fechaF) +")";									 
+					}
+
+				sql+=" ) UNION (SELECT " + CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDSOLICITUD + "," +
+						CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_MOTIVO + "," +							
+						CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDPERSONA + "," +
+						CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDINSTITUCION + "," + 
+						" 0 AS CODIGO," +
+						CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_FECHAALTA + "," +
+						CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDESTADOSOLIC + "," +	
+						UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS ESTADO, " +
+						ClsConstants.TIPO_SOLICITUD_MODIF_EXP_FOTO + " AS TIPOMODIF," +
+						" (SELECT " + UtilidadesMultidioma.getCampoMultidioma(CenTiposModificacionesBean.C_DESCRIPCION, this.usrbean.getLanguage()) +
+							" from " + CenTiposModificacionesBean.T_NOMBRETABLA +
+							" where " + CenTiposModificacionesBean.C_IDTIPOMODIFICACION + "=" + ClsConstants.TIPO_SOLICITUD_MODIF_EXP_FOTO + ") AS TEXTOTIPOMODIF," +
+	     				" NULL AS " + CenCuentasBancariasBean.C_ABONOCARGO + "," +
+	     				" NULL AS ABONOCARGO_CUENTABANCARIA" +
+					" FROM " + CenSolicModifExportarFotoBean.T_NOMBRETABLA + ", " +
+						CenEstadoSolicitudModifBean.T_NOMBRETABLA+
+					" WHERE " + CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
+						" AND " + CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDINSTITUCION + "=" + institucion;	            
+
+	   				if (!estado.trim().equals("")) {
+						sql += " AND " + CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_IDESTADOSOLIC + "=" + estado;									 
+					}
+					
+					if (!fechaI.trim().equals("")) {
+						sql += " AND " + CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_FECHAALTA + ">= TO_DATE ('" + fechaI + "', 'DD/MM/YYYY')";
+					}
+	
+					if (!fechaF.trim().equals("")) {
+						sql += " AND (" + CenSolicModifExportarFotoBean.T_NOMBRETABLA + "." + CenSolicModifExportarFotoBean.C_FECHAALTA + "<= TO_DATE ('" + fechaF + "', 'DD/MM/YYYY')" +									 
+							" OR " + GstDate.dateBetween0and24h(CenSolicModifExportarFotoBean.C_FECHAALTA, fechaF) + ")";									 
+					}
+						
+				sql += " ) UNION  (SELECT " + ExpSolicitudBorradoBean.T_NOMBRETABLA + "." + ExpSolicitudBorradoBean.C_IDSOLICITUD + "," +
+						ExpSolicitudBorradoBean.T_NOMBRETABLA + "." + ExpSolicitudBorradoBean.C_MOTIVO + "," +
+						ExpSolicitudBorradoBean.T_NOMBRETABLA + "." + ExpSolicitudBorradoBean.C_IDPERSONA + "," +
+						ExpSolicitudBorradoBean.T_NOMBRETABLA + "." + ExpSolicitudBorradoBean.C_IDINSTITUCION + "," + 
+						" 0 AS CODIGO," +
+						ExpSolicitudBorradoBean.T_NOMBRETABLA + "." + ExpSolicitudBorradoBean.C_FECHAALTA + "," +
+						ExpSolicitudBorradoBean.T_NOMBRETABLA + "." + ExpSolicitudBorradoBean.C_IDESTADOSOLIC + "," +
+						UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS ESTADO, " +
+						ClsConstants.TIPO_SOLICITUD_MODIF_EXPEDIENTES + " AS TIPOMODIF," +
+						" (SELECT " + UtilidadesMultidioma.getCampoMultidioma(CenTiposModificacionesBean.C_DESCRIPCION, this.usrbean.getLanguage()) +
+							" from " + CenTiposModificacionesBean.T_NOMBRETABLA +
+							" where " + CenTiposModificacionesBean.C_IDTIPOMODIFICACION + "=" + ClsConstants.TIPO_SOLICITUD_MODIF_EXPEDIENTES + ") AS TEXTOTIPOMODIF," +
+	     				" NULL AS " + CenCuentasBancariasBean.C_ABONOCARGO + "," +
+	     				" NULL AS ABONOCARGO_CUENTABANCARIA" +
+					" FROM " + ExpSolicitudBorradoBean.T_NOMBRETABLA + ", " +
+						CenEstadoSolicitudModifBean.T_NOMBRETABLA + 
+					" WHERE " + ExpSolicitudBorradoBean.T_NOMBRETABLA + "." + ExpSolicitudBorradoBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
+						" AND " + ExpSolicitudBorradoBean.T_NOMBRETABLA + "." + ExpSolicitudBorradoBean.C_IDINSTITUCION + "=" + institucion;        
+		
+					if (!estado.trim().equals("")){
+						sql += " AND " + ExpSolicitudBorradoBean.T_NOMBRETABLA + "." + ExpSolicitudBorradoBean.C_IDESTADOSOLIC + "=" + estado;									 
+					}				
+					
+					String auxFechaInicio = "";
+					String auxFechaFin = "";
+					if (!fechaI.trim().equals("")) 
+							auxFechaInicio = GstDate.getApplicationFormatDate("",fechaI);
+					if (!fechaF.trim().equals("")) 
+							auxFechaFin = GstDate.getApplicationFormatDate("",fechaF);
+					
+					if ((fechaI!=null && !fechaI.trim().equals("")) || (fechaF!=null && !fechaF.trim().equals(""))) {
+						sql += " AND " + GstDate.dateBetweenDesdeAndHasta(ExpSolicitudBorradoBean.T_NOMBRETABLA + "." + ExpSolicitudBorradoBean.C_FECHAALTA, auxFechaInicio, auxFechaFin);
+					} 
+					
+				sql += " ) ORDER BY 6 DESC"; 										
 							
 	            if (rc.find(sql)) {
 	            	for (int i = 0; i < rc.size(); i++){
@@ -512,13 +459,9 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
 	                  datos.add(fila);
 	               }
 	            }
-	       }
-//			catch (SIGAException e) {
-//				throw e;
-//			}
-
-	       catch (Exception e) {
-	       	throw new ClsExceptions (e, "Error al obtener solicitudes de datos basicos");
+	            
+	       } catch (Exception e) {
+	       		throw new ClsExceptions (e, "Error al obtener solicitudes de datos basicos");
 	       }
 	       return datos;                        
 	    }	
@@ -627,10 +570,8 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
 
 		boolean correcto=true;
 		Vector original = new Vector();
-		Vector busqueda = new Vector();		
 		Hashtable hash = new Hashtable();
 		Hashtable hashOriginal = new Hashtable();		
-		Hashtable clave = new Hashtable();
 		Hashtable clienteOriginal = new Hashtable(); 
 		CenClienteBean clienteModificado = new CenClienteBean();		
 		CenHistoricoBean beanHist = new CenHistoricoBean();		

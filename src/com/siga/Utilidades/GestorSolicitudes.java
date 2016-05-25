@@ -5,7 +5,11 @@
 package com.siga.Utilidades;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 import javax.transaction.UserTransaction;
 
@@ -16,14 +20,14 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.beans.CenSolModiFacturacionServicioAdm;
-import com.siga.beans.CenSoliModiDireccionesAdm;
-import com.siga.beans.CenSolicModiCuentasAdm;
-import com.siga.beans.CenSolicitModifDatosBasicosAdm;
-import com.siga.beans.CenSolicitudModificacionCVAdm;
 import com.siga.beans.CenSolModiFacturacionServicioBean;
+import com.siga.beans.CenSoliModiDireccionesAdm;
 import com.siga.beans.CenSoliModiDireccionesBean;
+import com.siga.beans.CenSolicModiCuentasAdm;
 import com.siga.beans.CenSolicModiCuentasBean;
+import com.siga.beans.CenSolicitModifDatosBasicosAdm;
 import com.siga.beans.CenSolicitModifDatosBasicosBean;
+import com.siga.beans.CenSolicitudModificacionCVAdm;
 import com.siga.beans.CenSolicitudModificacionCVBean;
 import com.siga.beans.ExpSolicitudBorradoAdm;
 import com.siga.beans.ExpSolicitudBorradoBean;
@@ -137,8 +141,9 @@ public class GestorSolicitudes
 			while(listaSolicitudes.hasMoreElements()){
 				try {
 					solicitud = ((Row)listaSolicitudes.nextElement()).getRow();
-					tx.begin();					
-					correcto=adminCB.procesarSolicitud((String)solicitud.get(CenSolicModiCuentasBean.C_IDSOLICITUD),new Integer(ClsConstants.USUMODIFICACION_AUTOMATICO), idioma);
+					tx.begin();			
+					boolean bProcesoAltaCuentaCargos = false; // Los procesos automaticos no realizaran el proceso de alta de una cuenta bancaria, pq no han confirmado la operacion
+					correcto=adminCB.procesarSolicitud((String)solicitud.get(CenSolicModiCuentasBean.C_IDSOLICITUD),new Integer(ClsConstants.USUMODIFICACION_AUTOMATICO), idioma, bProcesoAltaCuentaCargos);
 					if (correcto){							
 						ClsGestionAutomaticaLog.escribirLogGestionAutomatica(institucion.toString(),(String)solicitud.get(CenSolicitModifDatosBasicosBean.C_IDSOLICITUD),"SOLICITUD DATOS CV","Solicitud procesada");
 						tx.commit();

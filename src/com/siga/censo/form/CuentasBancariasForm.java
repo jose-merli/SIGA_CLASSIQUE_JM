@@ -27,7 +27,7 @@ public class CuentasBancariasForm extends MasterForm
 	private String IBAN;
 	private String BIC;	
 	private String[] modos = {"informacionCuentaBancaria", "listadoMandatosCuentaBancaria"};
-
+		
 	public void setCuentaAbono(Boolean dato) {
 		UtilidadesHash.set(this.datos, "CUENTA_ABONO", dato);
 	}
@@ -173,4 +173,11 @@ public class CuentasBancariasForm extends MasterForm
 	}
 	
 	public String[] getModos () {return this.modos;}
+	
+	public void setConfirmacionProcesoAltaCuentaCargos(Boolean dato) {
+		UtilidadesHash.set(this.datos, "confirmacionProcesoAltaCuentaCargos", dato);
+	}
+	public Boolean getConfirmacionProcesoAltaCuentaCargos() {
+		return UtilidadesHash.getBoolean(this.datos, "confirmacionProcesoAltaCuentaCargos");
+	}	
 }

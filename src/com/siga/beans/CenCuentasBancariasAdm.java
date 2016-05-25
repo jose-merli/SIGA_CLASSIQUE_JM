@@ -574,16 +574,18 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 	 * @version 1	 
 	 * @param beanCuentas datos de la cuenta
 	 * @param beanHis con el motivo y el tipo, para almacenar en el Historico
+	 * @param userName
 	 * @param usrBean 
+	 * @param abonoCargoOrig
 	 * @param idioma idioma actual
-	 * @param string 
+	 * @param bProcesoAltaCuentaCargos 
 	 * @return int indicando el resultado de la operacion:
 	 * 				-1: Error
 	 * 				 0: OK
 	 * 				 1: OK messages.updated.borrarCuenta
 	 * 				 2: OK messages.updated.actualizarCuenta
 	 */
-	public int updateConHistoricoYfecBaj(CenCuentasBancariasBean beanCuentas, CenHistoricoBean beanHis, Integer userName, UsrBean usrBean, String abonoCargoOrig, String idioma) throws ClsExceptions, SIGAException {
+	public int updateConHistoricoYfecBaj(CenCuentasBancariasBean beanCuentas, CenHistoricoBean beanHis, Integer userName, UsrBean usrBean, String abonoCargoOrig, String idioma, boolean bProcesoAltaCuentaCargos) throws ClsExceptions, SIGAException {
 		int iResult = 0;
 		Hashtable clavesCuenta = new Hashtable();
 		try{
@@ -600,20 +602,21 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 				throw new ClsExceptions("Error al borrar el registro anterior");
 			}
 			
-			iResult = revisionesCuentas(beanCuentas, userName, usrBean,true);
-			
-			
+			iResult = this.revisionesCuentas(beanCuentas, userName, usrBean, true, bProcesoAltaCuentaCargos);						
 			
 		} catch (SIGAException e) {
 			iResult = -1;
 			throw e;
+			
 		} catch (ClsExceptions e) {
 			iResult = -1;
 			throw e;
+			
 		} catch (Exception e){
 			iResult = -1;
 			throw new ClsExceptions (e, "Se ha producido un error al ejecutar la acción");
 		}
+		
 		return iResult;
 	}
 	
@@ -622,12 +625,13 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 	 * @param beanCuentas
 	 * @param userName
 	 * @param usrBean
-	 * @param clavesCuenta
-	 * @return
+	 * @param comprobarSJCS
+	 * @param bProcesoAltaCuentaCargos
+	 * @return 0:OperacionRealizada; 
 	 * @throws ClsExceptions
 	 * @throws SIGAException 
 	 */
-	public int revisionesCuentas(CenCuentasBancariasBean beanCuentas, Integer userName, UsrBean usrBean, boolean comprobarSJCS) throws ClsExceptions, SIGAException {
+	public int revisionesCuentas(CenCuentasBancariasBean beanCuentas, Integer userName, UsrBean usrBean, boolean comprobarSJCS, boolean bProcesoAltaCuentaCargos) throws ClsExceptions, SIGAException {
 		
 	Integer iResult = -1;
 	
@@ -687,19 +691,29 @@ public class CenCuentasBancariasAdm extends MasterBeanAdmVisible {
 			throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_LETRADO"+resultado[1]);
 		}
 		
-		
-		// Lanzamos el proceso de actualización de la cuenta de cosas pendientes 
-		String[] resultado1 = EjecucionPLs.ejecutarPL_Act_Cuenta_Banco_Pend(""+beanCuentas.getIdInstitucion().toString(),
-																			 ""+beanCuentas.getIdPersona().toString(),
-																			 ""+beanCuentas.getIdCuenta().toString(),
-																			 ""+userName);
-		
+		// Este proceso se encarga de actualizar las cosas pendientes asociadas a la cuenta de la persona 
+		String[] resultado1 = EjecucionPLs.ejecutarPL_Revision_Cuenta(
+			""+beanCuentas.getIdInstitucion().toString(),
+			  ""+beanCuentas.getIdPersona().toString(),
+			  ""+beanCuentas.getIdCuenta().toString(),
+			  ""+userName);
 		if (resultado1 == null || !resultado1[0].equals("0")) {
-			throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_ACT_CUENTA_BANCO_PEND" + resultado[1]);
+			throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_CUENTA" + resultado[1]);
 		}
 		
-		iResult=Integer.valueOf((String)resultado1[0]);
-		
+		// Comprueba si va a lanzar el proceso que asocia las suscripciones activas con forma de pago en metalico a la nueva cuenta bancaria
+		if (bProcesoAltaCuentaCargos) { 
+			// Este proceso asocia las suscripciones activas con forma de pago en metalico a la nueva cuenta bancaria 
+			resultado1 = EjecucionPLs.ejecutarPL_AltaCuentaCargos(
+				""+beanCuentas.getIdInstitucion().toString(),
+				  ""+beanCuentas.getIdPersona().toString(),
+				  ""+beanCuentas.getIdCuenta().toString(),
+				  ""+userName);
+			if (resultado1 == null || !resultado1[0].equals("0")) {
+				throw new ClsExceptions ("Error al ejecutar el PL PKG_SERVICIOS_AUTOMATICOS.PROCESO_ALTA_CUENTA_CARGOS" + resultado[1]);
+			}
+		}		
+		iResult = 0;
 		
 	} catch (SIGAException e) {
 			throw e;
