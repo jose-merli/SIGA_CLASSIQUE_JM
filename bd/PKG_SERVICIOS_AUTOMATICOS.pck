@@ -24,25 +24,29 @@ CREATE OR REPLACE package PKG_SERVICIOS_AUTOMATICOS is
         P_CODRETORNO OUT VARCHAR2,
         P_DATOSERROR OUT VARCHAR2);
 
-    
-  /****************************************************************************************************************
-    Nombre: PROCESO_BAJA_CUENTA
-    Descripcion: Este proceso se encarga de actualizar las cosas pendientes asociadas a la cuenta de baja de una persona
-    
-    Parametros (IN/OUT - Descripcion - Tipo de Datos):
+   /****************************************************************************************************************/
+  /* Nombre: PROCESO_BAJA_SERVICIO
+    Descripcion:
+        1. Las solicitudes de servicios pasan al estado denegado.
+        2. Las peticiones de baja de servicios se procesan
+        3. Las peticiones que no tengan algo pendiente se procesan
+        4. Las suscripciones pasan a tener la baja logica
+
     - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER(4)
-    - P_IDPERSONA - IN - Identificador de la persona suscrita al servicio - NUMBER(10)
-    - P_IDCUENTA - IN - Identificador de la cuenta bancaria dada de baja - NUMBER(3)
+    - P_IDTIPOSERVICIOS - IN - Identificador del tipo de servicio - NUMBER(4)
+    - P_IDSERVICIO - IN - Identificador del servicio - NUMBER(10)
+    - P_IDSERVICIOSINSTITUCION - IN - Identificador del servicio institucion - NUMBER(10)
+    - P_FECHAPROCESO - IN - Fecha en la que se va a realizar la baja del servicio - VARCHAR2(10)
+    - P_USUMODIFICACION - IN - Usuario que realiza la modificacion - NUMBER(5)
     - P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - NUMBER(10)
         En caso de error devuelve el codigo de error Oracle correspondiente.
     - P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - NUMBER(10)
         En caso de error devuelve el mensaje de error Oracle correspondiente.
-        
-    Versiones (Fecha - Autor - Datos):
-    - 1.0 - 10/03/2014 - Maria Jimenez
-    - 2.0 - 08/08/2014 - Jorge Paez - SIGA_122
-    - 3.0 - 18/05/2016 - Jorge Paez - SIGA_124
-  ****************************************************************************************************************/   
+
+    Version: 1.0 - 31/01/2006 - Pilar Duran
+    Version: 2.0 - 14/09/2015 - Jorge Paez
+        - Version SIGA_122         
+  /****************************************************************************************************************/ 
     PROCEDURE PROCESO_BAJA_SERVICIO(
         P_IDINSTITUCION IN PYS_SERVICIOSSOLICITADOS.IDINSTITUCION%TYPE,
         P_IDTIPOSERVICIOS IN PYS_SERVICIOSSOLICITADOS.IDTIPOSERVICIOS%TYPE,
@@ -201,7 +205,7 @@ CREATE OR REPLACE package PKG_SERVICIOS_AUTOMATICOS is
 
 END PKG_SERVICIOS_AUTOMATICOS;
 /
-CREATE OR REPLACE PACKAGE BODY USCGAE_DESA.PKG_SERVICIOS_AUTOMATICOS IS
+CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
 
   /****************************************************************************************************************/
   /* Nombre: PROCESO_BAJA_SERVICIO
@@ -338,7 +342,10 @@ CREATE OR REPLACE PACKAGE BODY USCGAE_DESA.PKG_SERVICIOS_AUTOMATICOS IS
         1. Las solicitudes de servicios pasan al estado denegado.
         2. Las peticiones de baja de servicios se procesan
         3. Las peticiones que no tengan algo pendiente se procesan
-        4. Las suscripciones pasan a tener la baja logica
+        4.1. Cuando tiene una fecha de proceso igual o anterior a la fecha de suscripcion:
+        4.1.1. Si no se ha facturado, se realiza el borrado fisico de la suscripcion.
+        4.1.2. Si se ha facturado, se pone como fecha de baja logica el ultimo dia facturado. 
+        4.2. Si la fecha de baja es posterior a la fecha de suscripcion, se pone como fecha de baja logica la fecha del proceso
 
     - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER(4)
     - P_IDTIPOSERVICIOS - IN - Identificador del tipo de servicio - NUMBER(4)
@@ -354,7 +361,9 @@ CREATE OR REPLACE PACKAGE BODY USCGAE_DESA.PKG_SERVICIOS_AUTOMATICOS IS
 
     Version: 1.0 - 15/03/2007 - Pilar Duran
     Version: 2.0 - 14/09/2015 - Jorge Paez
-        - Version SIGA_122         
+        - Version SIGA_122
+    Version: 3.0 - 25/05/2016 - Jorge Paez            
+        - Version SIGA_124     
   /****************************************************************************************************************/    
     PROCEDURE BAJA_SERVICIO_PERSONA(
         P_IDINSTITUCION IN PYS_SERVICIOSSOLICITADOS.IDINSTITUCION%TYPE,
@@ -367,10 +376,13 @@ CREATE OR REPLACE PACKAGE BODY USCGAE_DESA.PKG_SERVICIOS_AUTOMATICOS IS
         P_CODRETORNO OUT  VARCHAR2,
         P_DATOSERROR OUT  VARCHAR2) IS
 
+        V_FECHA_SUCRIPCION PYS_SUSCRIPCION.FECHASUSCRIPCION%TYPE;
+        V_IDSUSCRIPCION PYS_SUSCRIPCION.IDSUSCRIPCION%TYPE;
+        V_FECHAFIN FAC_FACTURACIONSUSCRIPCION.FECHAFIN%TYPE;
         V_CONTADOR NUMBER;
         V_PROCEDIMIENTO CONSTANT VARCHAR2(40) := 'BAJA_SERVICIO_PERSONA';
         V_TEXTOERROR VARCHAR2(4000) := NULL;
-        P_FECHAPROCESO_FINAL DATE := P_FECHAPROCESO - 1; -- Se le resta un dia porque cuando se da de baja algun servicio automaticamente esta de alta hasta el dia anterior
+        V_FECHAPROCESO_FINAL DATE := P_FECHAPROCESO - 1; -- Se le resta un dia porque cuando se da de baja algun servicio automaticamente esta de alta hasta el dia anterior
 
         CURSOR C_BAJA  (VC_IDINSTITUCION NUMBER, VC_IDTIPOSERVICIOS NUMBER, VC_IDSERVICIO NUMBER, VC_IDSERVICIOSINSTITUCION NUMBER, VC_IDPERSONA NUMBER) IS
             SELECT PP.IDPETICION,
@@ -440,22 +452,80 @@ CREATE OR REPLACE PACKAGE BODY USCGAE_DESA.PKG_SERVICIOS_AUTOMATICOS IS
                     AND IDPETICION = DatosBaja.IDPETICION;
             END IF;             
         END LOOP;
+        
+        /* Cuando se va a dar de baja una suscripcion automatica con una fecha igual o anterior a la de la suscripcion:
+        * 1. Si no se ha facturado, se elimina la suscripcion.
+        * 2. Si se ha facturado, poner como fecha de baja el ultimo dia facturado.*/
+        BEGIN
+            V_TEXTOERROR := V_PROCEDIMIENTO || ': 5 - Consulta datos de la suscripcion activa';
+            SELECT FECHASUSCRIPCION, IDSUSCRIPCION
+                INTO V_FECHA_SUCRIPCION, V_IDSUSCRIPCION
+            FROM PYS_SUSCRIPCION 
+            WHERE IDINSTITUCION = P_IDINSTITUCION
+                AND IDTIPOSERVICIOS = P_IDTIPOSERVICIOS
+                AND IDSERVICIO = P_IDSERVICIO
+                AND IDSERVICIOSINSTITUCION = P_IDSERVICIOSINSTITUCION
+                AND IDPERSONA = P_IDPERSONA
+                AND FECHABAJA IS NULL;      
+                
+            IF (V_FECHAPROCESO_FINAL <= V_FECHA_SUCRIPCION) THEN
+                V_TEXTOERROR := V_PROCEDIMIENTO || ': 6 - Consulta la fecha maxima facturada de esa suscripcion';
+                SELECT MAX(FECHAFIN)
+                    INTO V_FECHAFIN
+                FROM FAC_FACTURACIONSUSCRIPCION
+                WHERE IDINSTITUCION = P_IDINSTITUCION
+                    AND IDTIPOSERVICIOS = P_IDTIPOSERVICIOS
+                    AND IDSERVICIO = P_IDSERVICIO
+                    AND IDSERVICIOSINSTITUCION = P_IDSERVICIOSINSTITUCION
+                    AND IDSUSCRIPCION = V_IDSUSCRIPCION;
+                    
+                IF (V_FECHAFIN IS NOT NULL) THEN
+                    -- Borrado logico de las suscripciones
+                    V_TEXTOERROR := V_PROCEDIMIENTO || ': 7 - Actualiza las fechas de baja logica de la suscripcion a la ultima facturada';   
+                    UPDATE PYS_SUSCRIPCION 
+                    SET FECHABAJA = V_FECHAFIN,
+                        FECHABAJAFACTURACION = V_FECHAFIN,
+                        USUMODIFICACION = P_USUMODIFICACION,
+                        FECHAMODIFICACION = SYSDATE
+                    WHERE IDINSTITUCION = P_IDINSTITUCION
+                        AND IDTIPOSERVICIOS = P_IDTIPOSERVICIOS
+                        AND IDSERVICIO = P_IDSERVICIO
+                        AND IDSERVICIOSINSTITUCION = P_IDSERVICIOSINSTITUCION
+                        AND IDSUSCRIPCION = IDSUSCRIPCION;
+                         
+                ELSE
+                    -- Borrado fisico de las suscripciones
+                    V_TEXTOERROR := V_PROCEDIMIENTO || ': 8 - Elimina la suscripcion al no estar facturada';
+                    DELETE PYS_SUSCRIPCION 
+                    WHERE IDINSTITUCION = P_IDINSTITUCION
+                        AND IDTIPOSERVICIOS = P_IDTIPOSERVICIOS
+                        AND IDSERVICIO = P_IDSERVICIO
+                        AND IDSERVICIOSINSTITUCION = P_IDSERVICIOSINSTITUCION
+                        AND IDSUSCRIPCION = IDSUSCRIPCION;  
+                END IF;
+                
+            ELSE
+                -- Borrado logico de las suscripciones
+                V_TEXTOERROR := V_PROCEDIMIENTO || ': 9 - Actualiza las fechas de baja logica de la suscripcion';   
+                UPDATE PYS_SUSCRIPCION 
+                SET FECHABAJA = CASE WHEN(V_FECHAPROCESO_FINAL < FECHASUSCRIPCION) THEN FECHASUSCRIPCION ELSE V_FECHAPROCESO_FINAL END ,
+                    FECHABAJAFACTURACION = CASE WHEN(V_FECHAPROCESO_FINAL < FECHASUSCRIPCION) THEN FECHASUSCRIPCION ELSE V_FECHAPROCESO_FINAL END,
+                    USUMODIFICACION = P_USUMODIFICACION,
+                    FECHAMODIFICACION = SYSDATE
+                WHERE IDINSTITUCION = P_IDINSTITUCION
+                    AND IDTIPOSERVICIOS = P_IDTIPOSERVICIOS
+                    AND IDSERVICIO = P_IDSERVICIO
+                    AND IDSERVICIOSINSTITUCION = P_IDSERVICIOSINSTITUCION
+                    AND IDSUSCRIPCION = IDSUSCRIPCION;   
+            END IF;      
+            
+            EXCEPTION
+                WHEN OTHERS THEN
+                    -- No da error, porque no encuentra la suscripcion activa
+                    P_DATOSERROR := SQLERRM || ' - ' || V_TEXTOERROR || ' - No encuentra la suscripcion activa';                                              
+        END;
 
-        -- Borrado logico de las suscripciones
-        V_TEXTOERROR := V_PROCEDIMIENTO || ': 5 - Actualiza las fechas de baja logica del servicio';   
-        UPDATE PYS_SUSCRIPCION 
-        SET FECHABAJA = CASE WHEN(P_FECHAPROCESO_FINAL < FECHASUSCRIPCION) THEN FECHASUSCRIPCION ELSE P_FECHAPROCESO_FINAL END ,
-            FECHABAJAFACTURACION = CASE WHEN(P_FECHAPROCESO_FINAL < FECHASUSCRIPCION) THEN FECHASUSCRIPCION ELSE P_FECHAPROCESO_FINAL END,
-            USUMODIFICACION = P_USUMODIFICACION,
-            FECHAMODIFICACION = SYSDATE
-        WHERE IDINSTITUCION = P_IDINSTITUCION
-            AND IDTIPOSERVICIOS = P_IDTIPOSERVICIOS
-            AND IDSERVICIO = P_IDSERVICIO
-            AND IDSERVICIOSINSTITUCION = P_IDSERVICIOSINSTITUCION
-            AND IDPERSONA = P_IDPERSONA
-            AND FECHABAJA IS NULL;   
-
-        V_TEXTOERROR := V_PROCEDIMIENTO || ': 6 - Finaliza el proceso correctamente';
+        V_TEXTOERROR := V_PROCEDIMIENTO || ': 10 - Finaliza el proceso correctamente';
         P_CODRETORNO := '0';
         P_DATOSERROR := V_TEXTOERROR;
         
