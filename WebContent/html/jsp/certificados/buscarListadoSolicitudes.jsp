@@ -217,7 +217,7 @@
   		  			certificados.mantenimiento.literal.certificado,
   		  			certificados.solicitudes.literal.institucionOrigenLista,
   		  			certificados.solicitudes.literal.fechaEmision,"
-	  	columnSizes="3,7,16,23,16,10,10,15">
+	  	columnSizes="3,7,16,23,13,10,10,18">
 <%
 		if (resultado==null || resultado.size()==0) {
 %>
@@ -227,7 +227,7 @@
 <%
 		} else {
 		 	for (int i=0; i<resultado.size(); i++) {
-	   			String botones = "E";
+	   			String botones = "C,E";
 	   			Hashtable<String,Object> hDatos = (Hashtable<String,Object>) resultado.elementAt(i);
 				
 		  		// RGG obtengo los datos en la jsp
@@ -283,7 +283,7 @@
 				}	
 					
 				if (extNumeroFactura!=null && !extNumeroFactura.trim().equals("")) {
-					botones = "E";
+					botones = "C,E";
 				}		
 				
 				
@@ -395,6 +395,14 @@
 			document.forms[0].submit();		
 		 }
 		
+		function consultar(fila, id) {
+			if (typeof id == 'undefined')
+				id='tablaDatos';
+			preparaDatos(fila, id);
+			document.forms[0].target="mainWorkArea";
+			document.forms[0].modo.value = "ver";
+			document.forms[0].submit();		
+		 }
 		 
 	</script>		
 				
