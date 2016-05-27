@@ -37,7 +37,7 @@ public class ScsHitoFacturableBean extends MasterBean{
 	
 	static public final String	C_IDHITO	=			"IDHITO";
 	static public final String 	C_NOMBRE	=			"NOMBRE";
-	static public final String 	C_DESCRIPCION	=		"DESCRIPCON";
+	static public final String 	C_DESCRIPCION	=		"DESCRIPCION";
 	static public final String 	C_APLICABLEA	=		"APLICABLEA";
 	static public final String 	C_SQLSELECCION =		"SQLSELECCION";
 	static public final String 	C_SQLUPDATE =			"SQLUPDATE";

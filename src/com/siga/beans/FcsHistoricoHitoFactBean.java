@@ -3,17 +3,15 @@
 //
 package com.siga.beans;
 
-
 public class FcsHistoricoHitoFactBean extends MasterBean {
 		
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3191043297926114549L;
 	/* Variables */
 	private Integer idFacturacion, idGuardia, idTurno, idHito, idInstitucion;
 	private String  pagoFacturacion;
 	private Double  precioHito;
+	private String	diasAplicables;
+	private boolean	agrupar;
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FCS_HISTORICO_HITOFACT";
@@ -26,7 +24,8 @@ public class FcsHistoricoHitoFactBean extends MasterBean {
 	static public final String C_IDHITO				= "IDHITO";
 	static public final String C_PAGOFACTURACION	= "PAGOOFACTURACION";
 	static public final String C_PRECIOHITO			= "PRECIOHITO";
-
+	static public final String C_DIASAPLICABLES		= "DIASAPLICABLES";
+	static public final String C_AGRUPAR			= "AGRUPAR";
 
 	// Métodos GET
 	public Integer getIdInstitucion() {
@@ -50,6 +49,12 @@ public class FcsHistoricoHitoFactBean extends MasterBean {
 	public Double getPrecioHito() {
 		return precioHito;
 	}
+	public String getDiasAplicables() {
+		return diasAplicables;
+	}
+	public boolean getAgrupar() {
+		return agrupar;
+	}
 
 	//	 Métodos SET
 	public void setIdInstitucion(Integer idInstitucion) {
@@ -72,5 +77,11 @@ public class FcsHistoricoHitoFactBean extends MasterBean {
 	}
 	public void setPrecioHito(Double precioHito) {
 		this.precioHito = precioHito;
+	}
+	public void setDiasAplicables(String diasAplicables) {
+		this.diasAplicables = diasAplicables;
+	}
+	public void setAgrupar(boolean agrupar) {
+		this.agrupar = agrupar;
 	}
 }

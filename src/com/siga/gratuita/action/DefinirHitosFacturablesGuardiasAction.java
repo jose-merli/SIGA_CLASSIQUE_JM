@@ -17,9 +17,11 @@ import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
+import com.siga.beans.FcsHistoricoHitoFactAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
+import com.siga.beans.ScsHitoFacturableAdm;
 import com.siga.beans.ScsHitoFacturableGuardiaAdm;
 import com.siga.beans.ScsHitoFacturableGuardiaBean;
 import com.siga.beans.ScsTipoActuacionBean;
@@ -181,7 +183,6 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		// Controles generales
 		UsrBean usr = null;
-		ScsHitoFacturableGuardiaAdm hFact = null;
 
 		// Variables
 		String c_idhito = ScsHitoFacturableGuardiaBean.C_IDHITO;
@@ -189,37 +190,36 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 		try {
 			// Controles generales
 			usr = this.getUserBean(request);
-			hFact = new ScsHitoFacturableGuardiaAdm(null);
+			
+			// definiendo el formulario
+			DefinirHitosFacturablesGuardiasForm miForm = (DefinirHitosFacturablesGuardiasForm) formulario;
 
 			// recuperando la guardia que está seleccionada desde la sesion
 			ScsGuardiasTurnoBean guardia = (ScsGuardiasTurnoBean) request.getSession().getAttribute("DATABACKUPPESTANA");
 			Hashtable hash1 = (Hashtable) guardia.getOriginalHash();
 			request.getSession().setAttribute("ORIGINALHASH", hash1);
-
-			String consulta = "select " + UtilidadesMultidioma.getCampoMultidioma("h.descripcion", this.getUserBean(request).getLanguage()) + ", "
-					+ "       hg.preciohito, "
-					+ "       hg.diasaplicables, " 
-					+ "       hg.agrupar, "
-					+ "       hg.idinstitucion IDINSTITUCION, "
-					+ "       hg.idturno IDTURNO, "
-					+ "       hg.idguardia IDGUARDIA, "
-					+ "       hg.idhito IDHITO "
-		//			+ "       hg.pagoofacturacion PAGOFACTURACION"
-					+ "  from scs_hitofacturable h, "
-					+ "       scs_hitofacturableguardia hg"
-					+ " where h.idhito = hg.idhito"
-					+ "   and hg.idinstitucion = " + usr.getLocation()
-					+ "   and hg.idturno =" + (String) hash1.get("IDTURNO")
-					+ "   and hg.idguardia =" + (String) hash1.get("IDGUARDIA");
-				//	+ "   and hg.pagoofacturacion = 'F'";
-
-			Vector vHitos = (Vector) hFact.ejecutaSelect(consulta);
+			
+			String sInstitucion = usr.getLocation();
+			String sIdTurno = UtilidadesHash.getString(hash1, "IDTURNO");
+			String sIdGuardia = UtilidadesHash.getString(hash1, "IDGUARDIA");
+			FcsHistoricoHitoFactAdm admFcsHistoricoHitoFact = new FcsHistoricoHitoFactAdm(usr);
+			Vector<Hashtable<String,Object>> vFcsHistoricoHitoFact = admFcsHistoricoHitoFact.obtenerFacturacionesSJCSGuardia(sInstitucion, sIdTurno, sIdGuardia);
+			request.setAttribute("vFcsHistoricoHitoFact", vFcsHistoricoHitoFact);
+			
+			Vector<Hashtable<String,Object>> vHitos;
+			String sBuscarFacturacionSJCS =  miForm.getBuscarFacturacionSJCS();
+			ScsHitoFacturableAdm admHitoFacturable = new ScsHitoFacturableAdm(usr);
+			if (sBuscarFacturacionSJCS==null || sBuscarFacturacionSJCS.equals("")) {
+				vHitos = admHitoFacturable.obtenerHitosActual(sInstitucion, sIdTurno, sIdGuardia);
+			} else {
+				vHitos = admHitoFacturable.obtenerHitosHistorico(sInstitucion, sIdTurno, sIdGuardia);
+			}
 
 			// Si no hay una configuracion de guardias se muestra un mensaje
 			if (vHitos.size() == 0) {
 				request.setAttribute("EXISTENHITOS", "0");
 				// y se obliga a tener un hito
-				Hashtable hash = new Hashtable();
+				Hashtable<String,Object> hash = new Hashtable<String,Object>();
 				hash.put(c_idhito, "2");
 				hash.put(ScsHitoFacturableGuardiaBean.C_PRECIOHITO, "0");
 				hash.put(ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES, "LMXJVSD");
@@ -255,9 +255,6 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 
 				hashResul.put(hashElem.get(c_idhito), hashElem.get(ScsHitoFacturableGuardiaBean.C_PRECIOHITO));
 			}
-
-			// definiendo el formulario
-			DefinirHitosFacturablesGuardiasForm miForm = (DefinirHitosFacturablesGuardiasForm) formulario;
 
 			miForm.setRadioA("0");
 			miForm.setCheckB1(false);

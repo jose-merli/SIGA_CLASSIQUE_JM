@@ -5,6 +5,7 @@ package com.siga.beans;
 
 import java.util.Hashtable;
 import java.util.Vector;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -113,5 +114,86 @@ public class FcsHistoricoHitoFactAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
 		}
 		return datos;
-	}	
+	}
+	
+	/**
+	 * Obtiene las facturaciones SJCS historicas de una guardia
+	 * @param sInstitucion
+	 * @param sIdTurno
+	 * @param sIdGuardia
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector<Hashtable<String,Object>> obtenerFacturacionesSJCSGuardia (String sInstitucion, String sIdTurno, String sIdGuardia) throws ClsExceptions {
+		Vector<Hashtable<String,Object>> vFacturacionesSJCS = new Vector<Hashtable<String,Object>>();
+       try {
+            StringBuilder sql = new StringBuilder();
+            sql.append("SELECT DISTINCT ");
+            sql.append(FcsFacturacionJGBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsFacturacionJGBean.C_IDFACTURACION);
+            sql.append(", ");
+            sql.append(FcsFacturacionJGBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsFacturacionJGBean.C_NOMBRE);
+            sql.append(", ");
+            sql.append(FcsFacturacionJGBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsFacturacionJGBean.C_FECHADESDE);
+            sql.append(", ");
+            sql.append(FcsFacturacionJGBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsFacturacionJGBean.C_FECHAHASTA);
+            sql.append(" FROM ");
+            sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
+            sql.append(", ");
+            sql.append(FcsFacturacionJGBean.T_NOMBRETABLA);
+            sql.append(" WHERE ");
+            sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsHistoricoHitoFactBean.C_IDINSTITUCION);
+            sql.append(" = ");
+            sql.append(sInstitucion);
+            sql.append(" AND ");
+            sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsHistoricoHitoFactBean.C_IDTURNO);
+            sql.append(" = ");
+            sql.append(sIdTurno);
+            sql.append(" AND ");
+            sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsHistoricoHitoFactBean.C_IDGUARDIA);
+            sql.append(" = ");
+            sql.append(sIdGuardia);
+            sql.append(" AND ");
+            sql.append(FcsFacturacionJGBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsFacturacionJGBean.C_IDINSTITUCION);
+            sql.append(" = ");
+            sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsHistoricoHitoFactBean.C_IDINSTITUCION);
+            sql.append(" AND ");
+            sql.append(FcsFacturacionJGBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsFacturacionJGBean.C_IDFACTURACION);
+            sql.append(" = ");
+            sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsHistoricoHitoFactBean.C_IDFACTURACION);
+            sql.append(" ORDER BY ");
+            sql.append(FcsFacturacionJGBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsFacturacionJGBean.C_FECHADESDE);
+            sql.append(" DESC");
+            
+            vFacturacionesSJCS = this.selectGenerico(sql.toString());
+            
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al invocar obtenerFacturacionesSJCSGuardia.");
+       }
+       
+       return vFacturacionesSJCS;                        
+    }			
 }

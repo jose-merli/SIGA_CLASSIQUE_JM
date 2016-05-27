@@ -37,6 +37,8 @@
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
+<%@ page import="com.siga.Utilidades.UtilidadesHash"%>
+<%@ page import="com.siga.gratuita.form.DefinirHitosFacturablesGuardiasForm"%>
 <!---------------------------------------------------------------------->
 <!-------------------- CABECERA JSP Y TAGLIBS - FIN -------------------->
 <!---------------------------------------------------------------------->
@@ -56,6 +58,12 @@
   //Modo de la pestanha:
   String modopestanha = request.getSession().getAttribute("modo")==null ? "" : (String)request.getSession().getAttribute("modo");
   
+  DefinirHitosFacturablesGuardiasForm form = (DefinirHitosFacturablesGuardiasForm) request.getAttribute("DefinirHitosFacturablesGuardiasForm");
+  String sBuscarFacturacionSJCS = form.getBuscarFacturacionSJCS();
+  if (sBuscarFacturacionSJCS!=null && !sBuscarFacturacionSJCS.equals("")) {
+	  modopestanha = "VER";
+  }
+  
   UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
   String entrada=(String)request.getSession().getAttribute("entrada");
   String acceso=usr.getAccessType();
@@ -64,6 +72,8 @@
   String checkControlado=(String)request.getAttribute("checkControlado");
   String importeControlado=(String)request.getAttribute("importeControlado");
   String minimoControlado=(String)request.getAttribute("minimoControlado");
+  
+  Vector<Hashtable<String,Object>> vFcsHistoricoHitoFact = (Vector<Hashtable<String,Object>>) request.getAttribute("vFcsHistoricoHitoFact");
 %>	
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -373,12 +383,12 @@
 				if (controlado)
 					divDatos = jQuery('#divFacturacionControlada')[0];
 				else
-					divDatos = jQuery('#divFacturacionNoControlada')[0];				
+					divDatos = jQuery('#divFacturacionNoControlada')[0];
 			
 				var posTablaBotones = tablaBotones.offsetTop;
 				var posDivDatos = divDatos.offsetTop;
 			
-				jQuery('#scrollValores').height(posTablaBotones - posDivDatos);			
+				jQuery('#scrollValores').height(posTablaBotones - posDivDatos);
 			}		
 		}	
 	    
@@ -1240,7 +1250,7 @@
     	<html:hidden property = "importeMax" value = ""/>
     	<html:hidden property = "actionModal" value = ""/>
     
-    	<div id="scrollValores" style="height:100%; width:100%; overflow-y: auto; overflow-x: hidden; border: white">    	
+    	<div id="scrollValores" style="height:100%; width:100%; overflow-y: auto; overflow-x: hidden">    	
     	<div id="divFacturacionNoControlada">
 <%
         	if (existenHitos.equals ("0")) {
@@ -1255,6 +1265,32 @@
 <%
         	}
 %>
+
+			<div class="labelText">
+   				<siga:Idioma key="gratuita.confGuardia.literal.configuracionHistorica"/>
+				&nbsp;	
+				<html:select name="DefinirHitosFacturablesGuardiasForm" property="buscarFacturacionSJCS" styleId="buscarFacturacionSJCS" styleClass="boxCombo" onchange="buscar()">
+					<html:option value=""><siga:Idioma key="gratuita.confGuardia.literal.configuracionHistorica.actual"/></html:option>
+<%
+					if (vFcsHistoricoHitoFact!=null && vFcsHistoricoHitoFact.size()>0) {
+						for (int i=1; i<=vFcsHistoricoHitoFact.size(); i++) {
+							Hashtable<String,Object> hFcsHistoricoHitoFact = (Hashtable<String,Object>) vFcsHistoricoHitoFact.get(i-1);
+							if (hFcsHistoricoHitoFact!= null) {
+								String sIdFacturacion = UtilidadesHash.getString(hFcsHistoricoHitoFact, FcsFacturacionJGBean.C_IDFACTURACION);
+								String sNombre = UtilidadesHash.getString(hFcsHistoricoHitoFact, FcsFacturacionJGBean.C_NOMBRE);
+								String sFechaDesde = UtilidadesHash.getString(hFcsHistoricoHitoFact, FcsFacturacionJGBean.C_FECHADESDE);
+								sFechaDesde = GstDate.getFormatedDateShort("", sFechaDesde);
+								String sFechaHasta = UtilidadesHash.getString(hFcsHistoricoHitoFact, FcsFacturacionJGBean.C_FECHAHASTA);							
+								sFechaHasta = GstDate.getFormatedDateShort("", sFechaHasta);
+%>
+								<html:option value="<%=sIdFacturacion%>"><%=sFechaDesde%>-<%=sFechaHasta%> - <%=sNombre%></html:option>
+<%							
+							}
+						}
+					}
+%>				
+				</html:select>
+			</div>
       
       		<table width="100%" border="1" cellspacing="0" cellpadding="0">
         		<!-- Titulos de las columnas -->
