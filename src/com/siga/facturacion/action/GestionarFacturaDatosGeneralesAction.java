@@ -39,7 +39,6 @@ import com.siga.informes.InformeFactura;
  *
  */
 public class GestionarFacturaDatosGeneralesAction extends MasterAction{
-
 	
 	/** 
 	 *  Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
@@ -50,54 +49,46 @@ public class GestionarFacturaDatosGeneralesAction extends MasterAction{
 	 * @return  String  Destino del action  
 	 * @exception  SIGAException  En cualquier caso de error
 	 */	
-	protected ActionForward executeInternal (ActionMapping mapping,
-							      ActionForm formulario,
-							      HttpServletRequest request, 
-							      HttpServletResponse response) throws SIGAException {
-
+	protected ActionForward executeInternal (ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String mapDestino = "exception";
 		MasterForm miForm = null;
 
 		try {
 			miForm = (MasterForm) formulario;
 			if (miForm == null) {
-					return mapping.findForward(mapDestino);
-				}
+				return mapping.findForward(mapDestino);
+			}
 				
-				String accion = miForm.getModo();
+			String accion = miForm.getModo();
 				
-//				 La primera vez que se carga el formulario 
-				// Abrir
-				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
-					mapDestino = abrir(mapping, miForm, request, response);
-				}else if (accion.equalsIgnoreCase("imprimirFactura")){
-					mapDestino = imprimirFactura(mapping, miForm, request, response);
-				} else {
-					return super.executeInternal(mapping,
-							      formulario,
-							      request, 
-							      response);
-				}
+			// La primera vez que se carga el formulario 
+			// Abrir
+			if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
+				mapDestino = abrir(mapping, miForm, request, response);
+			
+			} else if (accion.equalsIgnoreCase("imprimirFactura") || accion.equalsIgnoreCase("descargarFacturaSinRegenerarPDF")){
+				mapDestino = imprimirFactura(mapping, miForm, request, response);
+			
+			} else {
+				return super.executeInternal(mapping, formulario, request, response);
+			}
 
 			// Redireccionamos el flujo a la JSP correspondiente
-			if (mapDestino == null) 
-			{ 
-				//mapDestino = "exception";
-			    if (miForm.getModal().equalsIgnoreCase("TRUE"))
-			    {
+			if (mapDestino == null) { 
+			    if (miForm.getModal().equalsIgnoreCase("TRUE")) {
 			        request.setAttribute("exceptionTarget", "parent.modal");
 			    }
 			    
-			    //throw new SIGAException("El ActionMapping no puede ser nulo");
 			    throw new ClsExceptions("El ActionMapping no puede ser nulo","","0","GEN00","15");
 			}
 			
 		} catch (SIGAException es) { 
-			throw es; 
-		} 
-		catch (Exception e) { 
+			throw es;
+			
+		} catch (Exception e) { 
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.facturacion"}); // o el recurso del modulo que sea 
 		} 
+		
 		return mapping.findForward(mapDestino);
 	}
 	
@@ -205,10 +196,13 @@ public class GestionarFacturaDatosGeneralesAction extends MasterAction{
 				direccion = admCenDirecciones.getEntradaDireccionEspecifica(idPersonaFactura, institucion, ""+ClsConstants.TIPO_DIRECCION_CENSOWEB);
 			}
 		
-			if (direccion.size()>0 || (direccion.size()==0 && request.getParameter("generarFactura")!=null && request.getParameter("generarFactura").equals("1"))){
+			if (direccion.size()>0 || (direccion.size()==0 && request.getParameter("generarFactura")!=null && request.getParameter("generarFactura").equals("1"))) {
+				
+				String accion = formulario.getModo();
+				boolean bRegenerar = (accion!=null && accion.equalsIgnoreCase("imprimirFactura")); // true=RegeneraPdfFacturaSinFirmar; false=descargaFacturaSinRegenerarPDF (GeneraPdfFacturaSinFirmar si no existe)
 
 			    ClsLogging.writeFileLog("ANTES DE LA GENERACION DE LA FACTURA. ",10);
-				File filePDF = infFactura.generarPdfFacturaFirmada(request, bFacFactura, true);
+				File filePDF = infFactura.generarPdfFacturaFirmada(request, bFacFactura, bRegenerar);
 				
 				// Siempre se debe borrar el fichero pdf con la firma
 				String nombreColegiado = personaAdm.obtenerNombreApellidos(idPersonaFactura);
