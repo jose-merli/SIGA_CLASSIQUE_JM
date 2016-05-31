@@ -31,6 +31,35 @@
 
 
 <script>
+function calcularEdad(fecha){
+
+	 // Si la fecha es correcta, calculamos la edad
+    var values=fecha.split("/");
+    var dia = values[0];
+    var mes = values[1];
+    var ano = values[2];
+
+	fecha_hoy = new Date();
+	ahora_ano = fecha_hoy.getYear();
+	ahora_mes = fecha_hoy.getMonth();
+	ahora_dia = fecha_hoy.getDate();
+	edad = (ahora_ano + 1900) - ano;
+		
+		if ( ahora_mes < (mes - 1)){
+		  edad--;
+		}
+		if (((mes - 1) == ahora_mes) && (ahora_dia < dia)){ 
+		  edad--;
+		}
+		if (edad > 1900){
+			edad -= 1900;
+		}
+		if(edad == 1900){
+			edad = 0;
+		}
+		return edad;
+	}
+
 function habilitarCampos(isHabilitar) {
 		
 		if(isHabilitar==true){
@@ -269,7 +298,7 @@ function habilitarCampos(isHabilitar) {
 <html:hidden property="nombre"/>
 <html:hidden property="apellido1"/>
 <html:hidden property="apellido2"/>
-<html:hidden property="fechaNacimiento"/>
+<html:hidden property="fechaNacimiento" value="${MutualidadForm.fechaNacimiento}"/>
 <html:hidden property="idSolicitud"/>
 <html:hidden property="idSolicitudAceptada"/>
 <html:hidden property="pais"/>
@@ -445,9 +474,19 @@ function habilitarCampos(isHabilitar) {
 					</c:otherwise>
 					</c:choose>
 					</td>
+					<c:choose>
+					<c:when test="${MutualidadForm.fechaNacimiento != null && MutualidadForm.fechaNacimiento != ''}">
+							<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaNacimiento" /></td>
+							<td class="labelTextValor"><c:out value="${MutualidadForm.fechaNacimiento}" /></td>
+					</c:when>
+					<c:otherwise>
+						<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaNacimiento" />&nbsp;(*)</td>
+						<td class="labelTextValor">
+							<siga:Fecha nombreCampo="fechaNaci" valorInicial="" />
+						</td>
+					</c:otherwise>
+					</c:choose>
 					
-					<td class="labelText"><siga:Idioma key="censo.SolicitudIncorporacion.literal.fechaNacimiento" /></td>
-					<td class="labelTextValor"><c:out value="${MutualidadForm.fechaNacimiento}" /></td>
 				</tr>
 
 			</table>
@@ -926,6 +965,34 @@ function habilitarCampos(isHabilitar) {
 					fin();
 					return false;
 				}
+				
+			}
+			//Validación fecha de nacimiento
+			if(document.MutualidadForm.fechaNacimiento.value=="" && jQuery("#fechaNaci").val() ==""){
+				mensaje= "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.FNacimiento'/>" + '\n';
+				alert(mensaje);
+				fin();
+				return false;
+			}else{
+				//Si la fecha ha sido introducida porque no venía
+				if(jQuery("#fechaNaci").val() != null && jQuery("#fechaNaci").val() !=''){
+					//Comprobamos que la fecha introducida es correcta
+					if (!jQuery("#fechaNaci").is('[disabled]') && esFechaNacimientoInvalida(jQuery("#fechaNaci").val())) {
+						alert("<siga:Idioma key='errors.date.past' arg0='censo.SolicitudIncorporacion.literal.FNacimiento'/>");
+						fin();
+						return false;
+					}
+					document.MutualidadForm.fechaNacimiento.value= jQuery("#fechaNaci").val();
+					//Comprobamos que la fecha introducida esté entre los rangos de edad.
+					
+					var edadObtenida = calcularEdad(document.MutualidadForm.fechaNacimiento.value);
+					if(edadObtenida < 18 ||  edadObtenida > 50){
+						alert("<siga:Idioma key='censo.mutualidad.aviso.rangoEdad' />");
+						fin();
+						return false;
+					}
+				}
+				
 				
 			}
 			
