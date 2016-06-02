@@ -524,29 +524,30 @@
 					}
 				}					
 			}
-			if((document.getElementById('validar')&&document.getElementById('validar').checked)||!document.getElementById('validar')){
-				if(document.InscripcionTGForm.porGrupos.value=='1'){
-					numGuardiasSel =  document.InscripcionTGForm.guardiasSel.value.split("@");
-					
-					
-					if(document.InscripcionTGForm.modo.value!='vmitValidar' && numGuardiasSel.length-1 ==1){
-							if(document.InscripcionTGForm.numeroGrupo.value == "") {
-								fin();
-								error = "<siga:Idioma key='errors.required' arg0='gratuita.guardiasTurno.literal.porGrupos.numero'/>"+ '\n';
-								alert(error);
-								return false;
-							}
-							if(document.InscripcionTGForm.ordenGrupo.value == "") {
-								fin();
-								error = "<siga:Idioma key='errors.required' arg0='gratuita.guardiasTurno.literal.porGrupos.orden'/>"+ '\n';
-								alert(error);
-								return false;
-							}
-					} else {
-						if(document.getElementById('mostrarAvisoPorGrupo')){
-							alertStop("<siga:Idioma key='gratuita.guardiasTurno.aviso.porGrupos.insertarEnGrupo'/>");
-						}		
-					}			
+			if(document.InscripcionTGForm.letrado.value == "false"){	
+				if((document.getElementById('validar')&&document.getElementById('validar').checked)||!document.getElementById('validar')){
+					if(document.InscripcionTGForm.porGrupos.value=='1'){
+						numGuardiasSel =  document.InscripcionTGForm.guardiasSel.value.split("@");
+						
+						if(document.InscripcionTGForm.modo.value!='vmitValidar' && numGuardiasSel.length-1 ==1){
+								if(document.InscripcionTGForm.numeroGrupo.value == "") {
+									fin();
+									error = "<siga:Idioma key='errors.required' arg0='gratuita.guardiasTurno.literal.porGrupos.numero'/>"+ '\n';
+									alert(error);
+									return false;
+								}
+								if(document.InscripcionTGForm.ordenGrupo.value == "") {
+									fin();
+									error = "<siga:Idioma key='errors.required' arg0='gratuita.guardiasTurno.literal.porGrupos.orden'/>"+ '\n';
+									alert(error);
+									return false;
+								}
+						} else {
+							if(document.getElementById('mostrarAvisoPorGrupo')){
+								alertStop("<siga:Idioma key='gratuita.guardiasTurno.aviso.porGrupos.insertarEnGrupo'/>");
+							}		
+						}			
+					}
 				}
 			}
 			document.InscripcionTGForm.target="submitArea";
@@ -634,6 +635,7 @@
 		<html:hidden property="observacionesValBaja" styleId="observacionesValBaja"/>
 		<html:hidden property="tipoActualizacionSyC" styleId="tipoActualizacionSyC"/>	
 		<html:hidden property="guardiasSel" styleId="guardiasSel"/>
+		<html:hidden property="letrado" styleId="letrado" value="${InscripcionTGForm.usrBean.letrado}"/>
 		
 		
 		<c:if test="${(InscripcionTGForm.fechaSolicitud==null || InscripcionTGForm.fechaSolicitud=='')&& InscripcionTGForm.solicitudAlta==true}">
