@@ -377,6 +377,7 @@
 		}
 		
 		function obtenerProcedimiento() { 
+			
 			if (document.getElementById("codigoBusquedaAux").value!= ""){
 				document.MantenimientoProcedimientosForm.codigoBusqueda.value = document.getElementById("codigoBusquedaAux").value;
 				document.MantenimientoProcedimientosForm.submit();		
@@ -398,9 +399,9 @@
 			document.getElementById("juzgado").onchange();
 		}
 		
-		function traspasoProcDatos(resultado){			
+		function traspasoProcDatos(resultado){		
 			if (resultado[0]==undefined) {
-				document.forms[0].procedimiento.value=-1;
+				//document.forms[0].procedimiento.value=-1; 
 				document.getElementById("codigoBusquedaAux").value = "";
 			} else {
 				var procSelect = jQuery("#procedimientoFrame").contents().find("select");
@@ -1066,7 +1067,6 @@
 		function accionGuardarCerrar() 
 		{
 			sub();	
-			
 			
 			<%if(modoJustificacion!=null && modoJustificacion.equalsIgnoreCase("editarJustificacionFicha")){%>
 				error = '';
