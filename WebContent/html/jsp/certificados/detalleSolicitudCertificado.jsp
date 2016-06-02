@@ -231,10 +231,15 @@
 %>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
+	<link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">	
+	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.9.1.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>		
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
@@ -779,6 +784,26 @@
 	</table>
 		
 	<div id="camposRegistro" style="overflow-x:hidden; overflow-y:auto">
+	
+	<div id="divSeleccionSerieFacturacion" title="<siga:Idioma key='facturacion.seleccionSerie.titulo'/>" style="display:none">
+		<table align="left">
+			<tr>		
+				<td class="labelText" nowrap>
+					<siga:Idioma key="facturacion.nuevaPrevisionFacturacion.literal.serieFacturacion"/>&nbsp;(*)
+				</td>
+				<td>
+					<select class='box' style='width:270px' id='selectSeleccionSerieFacturacion'>
+					</select>
+				</td>
+			</tr>				
+							
+			<tr>
+				<td class="labelTextValue" colspan="2">
+					<siga:Idioma key="pys.gestionSolicitudes.aviso.seriesFacturacionMostradas"/>
+				</td>
+			</tr>					
+		</table>			
+	</div>	
 		
 	<html:form action="/CER_GestionSolicitudes.do" method="POST" target="submitArea">
 		<html:hidden property="modo" value="" />
