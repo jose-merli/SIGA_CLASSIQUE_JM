@@ -24,6 +24,7 @@ import com.atos.utils.UsrBean;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
 import com.lowagie.text.pdf.PdfStamper;
+import com.siga.Utilidades.FirmaPdfHelper;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.PaginadorCaseSensitiveBind;
 import com.siga.Utilidades.UtilidadesHash;
@@ -1210,64 +1211,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	{
 		try {
 		    ClsLogging.writeFileLog("VOY A FIRMAR EL PDF: "+fIn.getAbsolutePath(),10);
-		    String nombreFinal=fIn.getAbsolutePath();
-			GregorianCalendar gcFecha = new GregorianCalendar();
-			GenParametrosAdm admParametros = new GenParametrosAdm(this.usrbean);
-			
-            String sPathCertificadosDigitales = admParametros.getValor(idInstitucion, "CER", "PATH_CERTIFICADOS_DIGITALES", "");
-            String sNombreCertificadosDigitales = admParametros.getValor(idInstitucion, "CER", "NOMBRE_CERTIFICADOS_DIGITALES", "");
-            String sClave = admParametros.getValor(idInstitucion, "CER", "CLAVE_CERTIFICADOS_DIGITALES", "");
-            boolean tieneParametro = admParametros.tieneParametro(idInstitucion, "CER", "CLAVE_CERTIFICADOS_DIGITALES");
-            String sIDDigital =""; 
-            if (tieneParametro) {
-                sIDDigital = sPathCertificadosDigitales + File.separator + idInstitucion + File.separator + sNombreCertificadosDigitales;
-            } else {
-                sIDDigital = sPathCertificadosDigitales + File.separator + sNombreCertificadosDigitales;
-            }
-	
-			ClsLogging.writeFileLog(" - Path certificado digital: "+sPathCertificadosDigitales,10);
-            ClsLogging.writeFileLog(" - Nombre certificado digital: "+sNombreCertificadosDigitales,10);
-            ClsLogging.writeFileLog(" - Clave certificado digital: "+sClave,10);
-            ClsLogging.writeFileLog(" - sIDDigital: "+sIDDigital,10);
-	
-			String sNombreFicheroSalida = fIn.getAbsolutePath()+".tmp";        //sNombreFicheroEntrada + ".tmp";
-		    ClsLogging.writeFileLog(" Fichero temporal: "+sNombreFicheroSalida,10);
-	
-	        File fOut = new File(sNombreFicheroSalida);
-	        
-	        FileInputStream fisID = new FileInputStream(sIDDigital);
-	        
-
-	        KeyStore ks = KeyStore.getInstance("PKCS12");
-	        ks.load(fisID, sClave.toCharArray());
-	        
-	        fisID.close();
-	        
-	        String sAlias = (String)ks.aliases().nextElement();
-	
-	        PrivateKey pKey = (PrivateKey)ks.getKey(sAlias, sClave.toCharArray());
-	        
-	        Certificate[] aCertificados = ks.getCertificateChain(sAlias);
-	        
-	        PdfReader reader = new PdfReader(fIn.getAbsolutePath());
-	        
-	        FileOutputStream fos = new FileOutputStream(sNombreFicheroSalida);	        
-	        
-	        
-	        
-	        PdfStamper stamper = PdfStamper.createSignature(reader, fos, '\0');
-	        PdfSignatureAppearance psa = stamper.getSignatureAppearance();
-	        
-	        psa.setCrypto(pKey, aCertificados, null, PdfSignatureAppearance.WINCER_SIGNED);
-	        
-	        psa.setSignDate(gcFecha);
-	
-	        stamper.close();
-	        fos.close();
-	                
-	        fIn.delete();
-	        fOut.renameTo(new File(nombreFinal));
-			return true;
+			return FirmaPdfHelper.firmarPDF(new Short(idInstitucion), fIn.getAbsolutePath());
 		} catch (Exception e) {
 			ClsLogging.writeFileLog("***************** ERROR DE FIRMA DIGITAL EN DOCUMENTO *************************", 3);
  			ClsLogging.writeFileLog("Error al FIRMAR el PDF de la institucion: " + idInstitucion, 3);

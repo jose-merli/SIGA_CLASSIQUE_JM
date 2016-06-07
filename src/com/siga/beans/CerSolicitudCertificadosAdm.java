@@ -6,9 +6,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
@@ -29,9 +26,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfSignatureAppearance;
-import com.lowagie.text.pdf.PdfStamper;
+import com.siga.Utilidades.FirmaPdfHelper;
 import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesFecha;
@@ -1408,7 +1403,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 		return id;
   
     }
- 
+    
  	public boolean firmarPDF(String idSolicitud, String idInstitucion,Integer i)
  	{
         FileInputStream fisID = null;
@@ -1418,29 +1413,13 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 	    	GregorianCalendar gcFecha = new GregorianCalendar();
 	        
             GenParametrosAdm admParametros = new GenParametrosAdm(this.usrbean);
-
             String sPathCertificados = admParametros.getValor(idInstitucion, "CER", "PATH_CERTIFICADOS", "");
-            String sPathCertificadosDigitales = admParametros.getValor(idInstitucion, "CER", "PATH_CERTIFICADOS_DIGITALES", "");
-            String sNombreCertificadosDigitales = admParametros.getValor(idInstitucion, "CER", "NOMBRE_CERTIFICADOS_DIGITALES", "");
-            String sClave = admParametros.getValor(idInstitucion, "CER", "CLAVE_CERTIFICADOS_DIGITALES", "");
-            boolean tieneParametro = admParametros.tieneParametro(idInstitucion, "CER", "CLAVE_CERTIFICADOS_DIGITALES");
-            String sIDDigital =""; 
-            if (tieneParametro) {
-                sIDDigital = sPathCertificadosDigitales + File.separator + idInstitucion + File.separator + sNombreCertificadosDigitales;
-            } else {
-                sIDDigital = sPathCertificadosDigitales + File.separator + sNombreCertificadosDigitales;
-            }
-
             CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.usrbean);
-            
             Hashtable htSolicitud = new Hashtable();
             htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
             htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
-            
             Vector vSolicitud = admSolicitud.selectByPK(htSolicitud);
-            
             CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean)vSolicitud.elementAt(0);
-            
             String sNombreFicheroEntrada = getRutaCertificadoDirectorio(beanSolicitud, sPathCertificados);
            
             if(i == -1){
@@ -1450,44 +1429,11 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
             	//Ficheros subplantillas
             	 sNombreFicheroEntrada =sNombreFicheroEntrada + File.separator + idSolicitud +"-"+i+".pdf";
             }
-            
-            String sNombreFicheroSalida = sNombreFicheroEntrada + ".tmp";
-
-            File fOut = new File(sNombreFicheroSalida);
-            File fIn = new File(sNombreFicheroEntrada);
-
-	        fisID = new FileInputStream(sIDDigital);
-	        KeyStore ks = KeyStore.getInstance("PKCS12");
-	        ks.load(fisID, sClave.toCharArray());
-
-	        fisID.close();
-
+	        boolean isFirmadoOk = FirmaPdfHelper.firmarPDF(new Short(idInstitucion), sNombreFicheroEntrada);
+	        ClsLogging.writeFileLog("PDF FIRMADO:: " + isFirmadoOk, 10);
 	        
-	        String sAlias = (String)ks.aliases().nextElement();
-	
-	        PrivateKey pKey = (PrivateKey)ks.getKey(sAlias, sClave.toCharArray());
 	        
-	        Certificate[] aCertificados = ks.getCertificateChain(sAlias);
-	        
-	        PdfReader reader = new PdfReader(sNombreFicheroEntrada);
-	        
-	        fos = new FileOutputStream(sNombreFicheroSalida);
-	        
-	        PdfStamper stamper = PdfStamper.createSignature(reader, fos, '\0');
-	        PdfSignatureAppearance psa = stamper.getSignatureAppearance();
-	        
-	        psa.setCrypto(pKey, aCertificados, null, PdfSignatureAppearance.WINCER_SIGNED);
-	        
-	        psa.setSignDate(gcFecha);
-
-	        stamper.close();
-	        fos.close();
-	        
-	        fIn.delete();
-	        
-	        fOut.renameTo(fIn);
-
- 			return true;
+ 			return isFirmadoOk;
  		}
  		
  		catch(Exception e)
@@ -1495,7 +1441,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
  			ClsLogging.writeFileLog("***************** ERROR DE FIRMA DIGITAL EN DOCUMENTO *************************", 3);
  			ClsLogging.writeFileLog("Error al FIRMAR el PDF de la Solicitud: " + idSolicitud + " IdInstitucion: "+idInstitucion, 3);
  			ClsLogging.writeFileLog("*******************************************************************************", 3);
-	        e.printStackTrace();
+//	        e.printStackTrace();
  			ClsLogging.writeFileLog("*******************************************************************************", 3);
  			return false;
  		}

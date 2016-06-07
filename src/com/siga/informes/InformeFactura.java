@@ -258,7 +258,8 @@ public class InformeFactura extends MasterReport {
 			UtilidadesFicheros.copyFile(filePDF, fFicheroFirmado);		
 			
 			// Firmo el pdf
-			admFacFactura.firmarPDF(fFicheroFirmado, bFacFactura.getIdInstitucion().toString());
+			boolean isFirmadoOk =	admFacFactura.firmarPDF(fFicheroFirmado, bFacFactura.getIdInstitucion().toString());
+			ClsLogging.writeFileLog("PDF FIRMADO:: " + isFirmadoOk, 10);
 							
 			// Hay que borrar el pdf sin firma si no tiene numero de factura
 			if (bFacFactura.getNumeroFactura()==null || bFacFactura.getNumeroFactura().equals("")) {
