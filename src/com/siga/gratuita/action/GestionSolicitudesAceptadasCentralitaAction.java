@@ -1,8 +1,10 @@
 package com.siga.gratuita.action;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONException;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.autogen.model.ScsComisaria;
 import org.redabogacia.sigaservices.app.autogen.model.ScsComisariaExample;
@@ -21,9 +24,10 @@ import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.services.scs.ScsComisariaService;
 import org.redabogacia.sigaservices.app.services.scs.ScsJuzgadoService;
 import org.redabogacia.sigaservices.app.services.scs.ScsSolicitudesAcpetadasService;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import org.redabogacia.sigaservices.app.vo.scs.SolicitudAceptadaCentralitaVo;
 
-import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
@@ -124,7 +128,7 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 		
 		String accessType = testAccess(request.getContextPath() + "/JGR_GestionSolicitudesAceptadasCentralita.do", null, request);
 		request.setAttribute("accessType",accessType);		
-		
+		request.setAttribute("volverBusqueda","");
 		return "inicio";
 	}
 	private void actualizarDatosFicha(String pathAccion,SolicitudAceptadaCentralitaForm miForm,HttpServletRequest request){
@@ -212,7 +216,24 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 		String accessType = testAccess(request.getContextPath() + "/JGR_GestionSolicitudesAceptadasCentralita.do", null, request);
 		request.setAttribute("accessType",accessType);		
 		
+		HashMap<String, String> hashMapPaginador = solicitudAceptadaCentralitaForm.getDatosPaginador();
+		Iterator<String> iterador =  hashMapPaginador.keySet().iterator();
+		StringBuilder parametros = new StringBuilder();
+		while (iterador.hasNext()) {
+			String key = (String) iterador.next();
+			String elemento =  hashMapPaginador.get(key);
+			parametros.append("&");
+			parametros.append(key);
+			parametros.append("=");
+			parametros.append(elemento);
+			
+		}
+		
+		
+		request.setAttribute("volverBusqueda",parametros.toString());
+		
 		return "inicio";
+		
 	}
 
 	/**
@@ -223,6 +244,7 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 	 * @param response
 	 * @return
 	 * @throws SIGAException 
+	 * @throws JSONException 
 	 */
 	private String getAjaxBusqueda (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 			SolicitudAceptadaCentralitaForm solicitudAceptadaCentralitaForm = (SolicitudAceptadaCentralitaForm) formulario;
@@ -237,6 +259,13 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 	        String idJuzgado = request.getParameter("idJuzgado");
 	        String idPersona = request.getParameter("idPersona");
 	        String colegiadoNumero = request.getParameter("colegiadoNumero");
+	        Enumeration enumeration = request.getParameterNames();
+	        while (enumeration.hasMoreElements()) {
+				String object = (String) enumeration.nextElement();
+				System.out.println(object);
+				
+			}
+	        String pagina = request.getParameter("pagina");
 	        
 	        solicitudAceptadaCentralitaForm.setIdInstitucion(idInstitucion);
 	        solicitudAceptadaCentralitaForm.setNumAvisoCV(numAvisoCV);
@@ -251,33 +280,66 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 	        solicitudAceptadaCentralitaForm.setColegiadoNumero(colegiadoNumero);
 	        
 	        
-	        String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
-			request.getSession().setAttribute(identificadorFormularioBusqueda,solicitudAceptadaCentralitaForm.clone());
-	        
-	        
 	        BusinessManager bm = getBusinessManager();
 			ScsSolicitudesAcpetadasService scsSolicitudesAcpetadasService = (ScsSolicitudesAcpetadasService) bm.getService(ScsSolicitudesAcpetadasService.class);
 			VoUiService<SolicitudAceptadaCentralitaForm, SolicitudAceptadaCentralitaVo> voService = new SolicitudAceptadaCentralitaVoService();
 			List<SolicitudAceptadaCentralitaForm> solicitudesAceptadasForms = null;
+			SolicitudAceptadaCentralitaVo solicitudAceptadaCentralitaVoForm = voService.getForm2Vo(solicitudAceptadaCentralitaForm);
+			solicitudAceptadaCentralitaVoForm.setIdioma(this.getUserBean(request).getLanguage());
+			
 			try {
+				int rowNumPageSize = 0;
+				int page = 1;
+				String registrosPorPagina = null;
+				Short numSolicitudAceptadas = null;
+				if(pagina ==null){
+					ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+					registrosPorPagina = properties.returnProperty("paginador.registrosPorPagina", true);
+					rowNumPageSize = Integer.parseInt(registrosPorPagina);
+					numSolicitudAceptadas = scsSolicitudesAcpetadasService.getNumSolicitudesAceptadas(solicitudAceptadaCentralitaVoForm);
+					request.setAttribute("paginaSeleccionada", page);
+					request.setAttribute("totalRegistros", numSolicitudAceptadas.toString());
+					request.setAttribute("registrosPorPagina", registrosPorPagina);
+				}else{
+					page = Integer.parseInt(request.getParameter("pagina"));
+					request.setAttribute("paginaSeleccionada", page);
+					numSolicitudAceptadas = Short.valueOf(request.getParameter("totalRegistros"));
+					request.setAttribute("totalRegistros", request.getParameter("totalRegistros"));
+					registrosPorPagina = request.getParameter("registrosPorPagina");
+					request.setAttribute("registrosPorPagina",registrosPorPagina );
+					rowNumPageSize = Integer.parseInt(registrosPorPagina);
+				}
 				
-				SolicitudAceptadaCentralitaVo solicitudAceptadaCentralitaVoForm = voService.getForm2Vo(solicitudAceptadaCentralitaForm);
-				solicitudAceptadaCentralitaVoForm.setIdioma(this.getUserBean(request).getLanguage());
+				String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
+				HashMap<String, String> paginadorHashMap = new HashMap<String, String>();
+				paginadorHashMap.put("pagina", String.valueOf(page));
+				paginadorHashMap.put("totalRegistros", numSolicitudAceptadas.toString());
+				paginadorHashMap.put("registrosPorPagina", registrosPorPagina);
+				solicitudAceptadaCentralitaForm.setDatosPaginador(paginadorHashMap);
 				
-				solicitudesAceptadasForms =  voService.getVo2FormList(scsSolicitudesAcpetadasService.getList(solicitudAceptadaCentralitaVoForm));
+				request.getSession().setAttribute(identificadorFormularioBusqueda,solicitudAceptadaCentralitaForm.clone());
+				
+				int rowNumStart = ((page - 1) * rowNumPageSize);
+				
+				
+				solicitudesAceptadasForms =  voService.getVo2FormList(scsSolicitudesAcpetadasService.getList(solicitudAceptadaCentralitaVoForm,rowNumStart,rowNumPageSize));	
+				request.setAttribute("mensajeSuccess", "");
 				request.setAttribute("solicitudesAceptadasCentralita", solicitudesAceptadasForms);
 				return "listado";
 			}catch (Exception e){
 				solicitudesAceptadasForms = new ArrayList<SolicitudAceptadaCentralitaForm>();
 				request.setAttribute("solicitudesAceptadasCentralita", solicitudesAceptadasForms);
 				String error = UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.general.errorExcepcion");
+				request.setAttribute("mensajeSuccess", error);
 				throw new SIGAException(error,e);
 				
 			}
 							
 
 		}
-		
+	
+	
+	
 	  
 	private String editarSolicitudAceptada (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		SolicitudAceptadaCentralitaForm solicitudAceptadaCentralitaForm = (SolicitudAceptadaCentralitaForm) formulario;
