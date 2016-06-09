@@ -60,6 +60,75 @@ BEGIN
 END F_SIGA_ESTADOSOLCENTRALITA;
 
 
+insert into gen_recursos values ('pys.cargaProductos.infoGeneral', 'INSTRUCCIONES PARA LA CARGA DE COMPRAS', 0, 1, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.infoGeneral', 'INSTRUCCIONES PARA LA CARGA DE COMPRAS#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.infoGeneral', 'INSTRUCCIONES PARA LA CARGA DE COMPRAS#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.infoGeneral', 'INSTRUCCIONES PARA LA CARGA DE COMPRAS#GL', 0, 4, sysdate, 0, 19);
+
+update gen_recursos set descripcion = '1. Descargue el Fichero Modelo.' where idrecurso = 'pys.cargaProductos.info1' and idlenguaje = 1;
+update gen_recursos set descripcion = '1. Descargue el Fichero Modelo.#CA' where idrecurso = 'pys.cargaProductos.info1' and idlenguaje = 2;
+update gen_recursos set descripcion = '1. Descargue el Fichero Modelo.#EU' where idrecurso = 'pys.cargaProductos.info1' and idlenguaje = 3;
+update gen_recursos set descripcion = '1. Descargue el Fichero Modelo.#GL' where idrecurso = 'pys.cargaProductos.info1' and idlenguaje = 4;
+
+
+
+update gen_recursos set descripcion = '2. Rellene el fichero descargado siguiendo estas indicaciones:' where idrecurso = 'pys.cargaProductos.info2' and idlenguaje = 1;
+update gen_recursos set descripcion = '2. Rellene el fichero descargado siguiendo estas indicaciones:#CA' where idrecurso = 'pys.cargaProductos.info2' and idlenguaje = 2;
+update gen_recursos set descripcion = '2. Rellene el fichero descargado siguiendo estas indicaciones:#EU' where idrecurso = 'pys.cargaProductos.info2' and idlenguaje = 3;
+update gen_recursos set descripcion = '2. Rellene el fichero descargado siguiendo estas indicaciones:#GL' where idrecurso = 'pys.cargaProductos.info2' and idlenguaje = 4;
+
+
+
+insert into gen_recursos values ('pys.cargaProductos.info21', '-- 2.1. El Excel modelo dispone de cabeceras en la fila 1, que debe mantenerse.', 0, 1, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info21', '-- 2.1. El Excel modelo dispone de cabeceras en la fila 1, que debe mantenerse.#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info21', '-- 2.1. El Excel modelo dispone de cabeceras en la fila 1, que debe mantenerse.#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info21', '-- 2.1. El Excel modelo dispone de cabeceras en la fila 1, que debe mantenerse.#GL', 0, 4, sysdate, 0, 19);
+
+insert into gen_recursos values ('pys.cargaProductos.info22', '-- 2.2. El Excel modelo tiene en la columna A las instrucciones de uso. Un vez leídas debe aliminarse la columna A.', 0, 1, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info22', '-- 2.2. El Excel modelo tiene en la columna A las instrucciones de uso. Un vez leídas debe aliminarse la columna A.#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info22', '-- 2.2. El Excel modelo tiene en la columna A las instrucciones de uso. Un vez leídas debe aliminarse la columna A.#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info22', '-- 2.2. El Excel modelo tiene en la columna A las instrucciones de uso. Un vez leídas debe aliminarse la columna A.#GL', 0, 4, sysdate, 0, 19);
+
+insert into gen_recursos values ('pys.cargaProductos.info23', '-- 2.3. Proceda a rellenar los datos:', 0, 1, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info23', '-- 2.3. Proceda a rellenar los datos:#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info23', '-- 2.3. Proceda a rellenar los datos:#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info23', '-- 2.3. Proceda a rellenar los datos:#GL', 0, 4, sysdate, 0, 19);
+
+insert into gen_recursos values ('pys.cargaProductos.info231', '---- 2.3.1. Si se informa el número de colegiado no es necesario informar su NIF. El NIF sólo es necesario informarlo para los No Colegiados.
+', 0, 1, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info231', '---- 2.3.1. Si se informa el número de colegiado no es necesario informar su NIF. El NIF sólo es necesario informarlo para los No Colegiados.
+#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info231', '---- 2.3.1. Si se informa el número de colegiado no es necesario informar su NIF. El NIF sólo es necesario informarlo para los No Colegiados.
+#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info231', '---- 2.3.1. Si se informa el número de colegiado no es necesario informar su NIF. El NIF sólo es necesario informarlo para los No Colegiados.
+#GL', 0, 4, sysdate, 0, 19);
+
+insert into gen_recursos values ('pys.cargaProductos.info232', '---- 2.3.2. El nombre y apellido de las personas o sociedades no es necesario que figuren completos ni exactos, pero debe informarse.', 0, 1, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info232', '---- 2.3.2. El nombre y apellido de las personas o sociedades no es necesario que figuren completos ni exactos, pero debe informarse.#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info232', '---- 2.3.2. El nombre y apellido de las personas o sociedades no es necesario que figuren completos ni exactos, pero debe informarse.#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info232', '---- 2.3.2. El nombre y apellido de las personas o sociedades no es necesario que figuren completos ni exactos, pero debe informarse.#GL', 0, 4, sysdate, 0, 19);
+
+insert into gen_recursos values ('pys.cargaProductos.info233', '---- 2.3.3. El nombre del producto comprado tampoco requiere ser informado de forma completa ni exacta, pero debe informarse.', 0, 1, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info233', '---- 2.3.3. El nombre del producto comprado tampoco requiere ser informado de forma completa ni exacta, pero debe informarse.#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info233', '---- 2.3.3. El nombre del producto comprado tampoco requiere ser informado de forma completa ni exacta, pero debe informarse.#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info233', '---- 2.3.3. El nombre del producto comprado tampoco requiere ser informado de forma completa ni exacta, pero debe informarse.#GL', 0, 4, sysdate, 0, 19);
+
+insert into gen_recursos values ('pys.cargaProductos.info234', '---- 2.3.4. Los identificadores de los productos pueden obtenerse desde el mantenimiento de los productos.', 0, 1, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info234', '---- 2.3.4. Los identificadores de los productos pueden obtenerse desde el mantenimiento de los productos.#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info234', '---- 2.3.4. Los identificadores de los productos pueden obtenerse desde el mantenimiento de los productos.#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info234', '---- 2.3.4. Los identificadores de los productos pueden obtenerse desde el mantenimiento de los productos.#GL', 0, 4, sysdate, 0, 19);
+
+insert into gen_recursos values ('pys.cargaProductos.info235', '---- 2.3.5. Complete todas las líneas sin dejar filas en blanco entre la información registrada.', 0, 1, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info235', '---- 2.3.5. Complete todas las líneas sin dejar filas en blanco entre la información registrada.#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info235', '---- 2.3.5. Complete todas las líneas sin dejar filas en blanco entre la información registrada.#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info235', '---- 2.3.5. Complete todas las líneas sin dejar filas en blanco entre la información registrada.#GL', 0, 4, sysdate, 0, 19);
+
+insert into gen_recursos values ('pys.cargaProductos.info24', '-- 2.4. Guarde el fichero, cárguelo y procese. Si el fichero es correcto se realizarán las compras y quedarán validadas.', 0, 1, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info24', '-- 2.4. Guarde el fichero, cárguelo y procese. Si el fichero es correcto se realizarán las compras y quedarán validadas.#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info24', '-- 2.4. Guarde el fichero, cárguelo y procese. Si el fichero es correcto se realizarán las compras y quedarán validadas.#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaProductos.info24', '-- 2.4. Guarde el fichero, cárguelo y procese. Si el fichero es correcto se realizarán las compras y quedarán validadas.#GL', 0, 4, sysdate, 0, 19);
+
+
 -- Create table
 create table FAC_NOMBRES_DESCARGA_FAC
 (
