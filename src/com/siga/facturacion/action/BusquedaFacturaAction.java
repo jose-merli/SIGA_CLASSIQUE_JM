@@ -15,6 +15,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,6 +43,8 @@ import com.siga.beans.FacAbonoAdm;
 import com.siga.beans.FacAbonoBean;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
+import com.siga.beans.FacSerieFacturacionAdm;
+import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.envios.Documento;
 import com.siga.envios.form.DefinirEnviosForm;
 import com.siga.facturacion.form.BusquedaFacturaForm;
@@ -401,6 +404,7 @@ public class BusquedaFacturaAction extends MasterAction {
 			String idInstitucion = user.getLocation();
 			
 			FacFacturaAdm admFacFactura = new FacFacturaAdm(user);
+			FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(user);
 			CenDireccionesAdm admCenDirecciones = new CenDireccionesAdm(user);
 			InformeFactura infFactura = new InformeFactura(user);
 			
@@ -475,7 +479,37 @@ public class BusquedaFacturaAction extends MasterAction {
 							nombreColegiado="";
 						}
 						
-						documento.setDescripcion(nombreColegiado+documento.getDescripcion());
+						
+						String where = " WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + bFacFactura.getIdSerieFacturacion() +
+								" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +" = " + bFacFactura.getIdInstitucion();
+									
+						Vector<FacSerieFacturacionBean> vSeriesFacturacion = admSerieFacturacion.select(where);
+												
+				
+						if (vSeriesFacturacion!=null && vSeriesFacturacion.size()>0) {
+							FacSerieFacturacionBean beanSerieFacturacion = vSeriesFacturacion.get(0);
+						
+							switch (beanSerieFacturacion.getIdNombreDescargaPDF()) {
+							case 1:
+								documento.setDescripcion(documento.getDescripcion());
+								break;
+							case 2:
+								//Quitamos la extensión y añadimos el nombre más la extensión
+								String[] separacionExtensionDelFichero = documento.getDescripcion().split(Pattern.quote("."));
+								String[] separacionNombreColegiado = nombreColegiado.split("-");
+								documento.setDescripcion(separacionExtensionDelFichero[0] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
+								break;
+							case 3:
+								documento.setDescripcion(nombreColegiado+documento.getDescripcion());
+								break;
+		
+							default:
+								documento.setDescripcion(nombreColegiado+documento.getDescripcion());
+								break;
+							}
+						}else{
+							documento.setDescripcion(nombreColegiado+documento.getDescripcion());
+						}
 						documentosList.add(documento);
 					}
 				}

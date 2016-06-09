@@ -25,7 +25,8 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 	protected String[] getCamposBean() {
 		String [] campos = {FacSerieFacturacionBean.C_IDINSTITUCION, 		
 							FacSerieFacturacionBean.C_IDSERIEFACTURACION,
-							FacSerieFacturacionBean.C_IDPLANTILLA, 	
+							FacSerieFacturacionBean.C_IDPLANTILLA,	
+							FacSerieFacturacionBean.C_IDNOMBREDESCARGAPDF,
 							FacSerieFacturacionBean.C_DESCRIPCION,
 							FacSerieFacturacionBean.C_NOMBREABREVIADO,
 							FacSerieFacturacionBean.C_ENVIOFACTURA,	
@@ -58,6 +59,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, FacSerieFacturacionBean.C_IDINSTITUCION));
 			bean.setIdSerieFacturacion(UtilidadesHash.getLong(hash, FacSerieFacturacionBean.C_IDSERIEFACTURACION));
 			bean.setIdPlantilla(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_IDPLANTILLA));
+			bean.setIdNombreDescargaPDF(UtilidadesHash.getInteger(hash,FacSerieFacturacionBean.C_IDNOMBREDESCARGAPDF));
 			bean.setDescripcion(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_DESCRIPCION));
 			bean.setEnvioFactura(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_ENVIOFACTURA));
 			bean.setGenerarPDF(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_GENERARPDF));
@@ -90,6 +92,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDINSTITUCION, b.getIdInstitucion());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDSERIEFACTURACION, b.getIdSerieFacturacion());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDPLANTILLA, b.getIdPlantilla());
+			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDNOMBREDESCARGAPDF, b.getIdNombreDescargaPDF());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_DESCRIPCION, b.getDescripcion());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_ENVIOFACTURA, b.getEnvioFactura());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_GENERARPDF, b.getGenerarPDF());

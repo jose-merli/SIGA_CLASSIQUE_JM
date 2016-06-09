@@ -3,7 +3,7 @@ package com.siga.beans;
 public class FacSerieFacturacionBean extends MasterBean {
 
 	private static final long serialVersionUID = 3143948645003008848L;
-	private Integer idInstitucion, idPlantilla, idTipoPlantillaMail, idTipoEnvios;
+	private Integer idInstitucion, idPlantilla, idTipoPlantillaMail, idTipoEnvios,idNombreDescargaPDF;
 	private Long idSerieFacturacion,idSerieFacturacionPrevia;
 	private String descripcion, nombreAbreviado, envioFactura,generarPDF, idContador, configDeudor, configIngresos, cuentaIngresos, cuentaClientes,tipoSerie, observaciones, fechaBaja;
 	private String[] formaPagoAutomática;				
@@ -31,11 +31,15 @@ public class FacSerieFacturacionBean extends MasterBean {
 	static public final String C_IDFORMAPAGO = "IDFORMAPAGO";
 	static public final String C_IDSERIEFACTURACIONPREVIA = "IDSERIEFACTURACIONPREVIA";
 	static public final String C_FECHABAJA = "FECHABAJA";
+	static public final String C_IDNOMBREDESCARGAPDF = "ID_NOMBRE_DESCARGA_FAC";
+	
+	
 	
 	// Metodos SET
 	public void setIdInstitucion (Integer dato) {this.idInstitucion = dato;}
 	public void setIdSerieFacturacion (Long dato) {this.idSerieFacturacion = dato;}
 	public void setIdPlantilla (Integer dato) {this.idPlantilla = dato;}
+	public void setIdNombreDescargaPDF (Integer dato) {this.idNombreDescargaPDF = dato;}
 	public void setDescripcion (String dato) {this.descripcion = dato;}
 	public void setNombreAbreviado (String dato) {this.nombreAbreviado = dato;}
 	public void setEnvioFactura (String dato) {this.envioFactura = dato;}
@@ -58,6 +62,7 @@ public class FacSerieFacturacionBean extends MasterBean {
 	public Integer getIdInstitucion() {return this.idInstitucion;}
 	public Long getIdSerieFacturacion()	{return this.idSerieFacturacion;}
 	public Integer getIdPlantilla() {return this.idPlantilla;}
+	public Integer getIdNombreDescargaPDF() {return this.idNombreDescargaPDF;}
 	public String getDescripcion() {return this.descripcion;}
 	public String getNombreAbreviado() {return this.nombreAbreviado;}
 	public String getEnvioFactura() {return this.envioFactura;}

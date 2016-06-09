@@ -60,3 +60,68 @@ BEGIN
 END F_SIGA_ESTADOSOLCENTRALITA;
 
 
+-- Create table
+create table FAC_NOMBRES_DESCARGA_FAC
+(
+  ID                           NUMBER(4) not null,
+  NOMBRE                       VARCHAR2 (100) not null,
+  USUCREACION                  NUMBER(5) not null,
+  FECHACREACION                DATE not null,
+  USUBAJA                      NUMBER(5),
+  FECHABAJA                    DATE
+  
+)
+tablespace TS_SIGA_FAC
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 61M
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+  
+  
+  
+  alter table FAC_NOMBRES_DESCARGA_FAC
+  add constraint PK_FAC_NOMBRES_DESCARGA_FAC primary key (ID)
+  deferrable
+  using index 
+  tablespace TS_SIGA_FAC_IDX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+  
+  
+INSERT INTO FAC_NOMBRES_DESCARGA_FAC (ID, NOMBRE,USUCREACION,FECHACREACION) VALUES (1,'Número de factura',0,SYSDATE);
+INSERT INTO FAC_NOMBRES_DESCARGA_FAC (ID, NOMBRE,USUCREACION,FECHACREACION) VALUES (2,'Número de factura, Nombre destinatario',0,SYSDATE);
+INSERT INTO FAC_NOMBRES_DESCARGA_FAC (ID, NOMBRE,USUCREACION,FECHACREACION) VALUES (3,'Nombre destinatario, Número de factura',0,SYSDATE);
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacion.serios.literal.configuracionEnvios', 'Configuración de envíos', 0, '1', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacion.serios.literal.configuracionEnvios', 'Configuración de envíos#GL', 0, '4', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacion.serios.literal.configuracionEnvios', 'Configuración de envíos#CA', 0, '2', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacion.serios.literal.configuracionEnvios', 'Configuración de envíos#EU', 0, '3', sysdate, 0, '22');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacion.serios.literal.configuracionPDF', 'Configuración PDF', 0, '1', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacion.serios.literal.configuracionPDF', 'Configuración PDF#GL', 0, '4', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacion.serios.literal.configuracionPDF', 'Configuración PDF#CA', 0, '2', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacion.serios.literal.configuracionPDF', 'Configuración PDF#EU', 0, '3', sysdate, 0, '22');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacion.datosGenerales.literal.nombrePDF', 'Nombre PDF', 0, '1', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacion.datosGenerales.literal.nombrePDF', 'Nombre PDF#GL', 0, '4', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacion.datosGenerales.literal.nombrePDF', 'Nombre PDF#CA', 0, '2', sysdate, 0, '22');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacion.datosGenerales.literal.nombrePDF', 'Nombre PDF#EU', 0, '3', sysdate, 0, '22');
+
+alter table fac_seriefacturacion add (ID_NOMBRE_DESCARGA_FAC NUMBER DEFAULT 1 NOT NULL);
+
+alter table fac_seriefacturacion add constraint FK_FAC_NOMBRES_DESCARGA_FAC foreign key (ID_NOMBRE_DESCARGA_FAC) references fac_nombres_descarga_fac (ID);

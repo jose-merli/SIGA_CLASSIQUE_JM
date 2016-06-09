@@ -52,6 +52,10 @@ public class DatosGeneralesForm extends MasterForm {
  		UtilidadesHash.set(datos, FacSerieFacturacionBean.C_NOMBREABREVIADO, dato.toUpperCase());
  	}
  	
+ 	public void setIdNombreDescargaPDF (String dato) {
+ 		UtilidadesHash.set(datos, FacSerieFacturacionBean.C_IDNOMBREDESCARGAPDF, dato.toUpperCase());
+ 	}
+ 	
  	public void setDescripcion (String dato) { 
  		UtilidadesHash.set(datos, FacSerieFacturacionBean.C_DESCRIPCION, dato);
  	}
@@ -124,6 +128,10 @@ public class DatosGeneralesForm extends MasterForm {
  	
  	public String getNombreAbreviado	() 	{ 
  		return UtilidadesHash.getString(datos, FacSerieFacturacionBean.C_NOMBREABREVIADO);
+ 	}
+ 	
+	public String getIdNombreDescargaPDF	() 	{ 
+ 		return UtilidadesHash.getString(datos, FacSerieFacturacionBean.C_IDNOMBREDESCARGAPDF);
  	}
  	
  	public String getDescripcion	() 	{ 

@@ -9,6 +9,8 @@ package com.siga.facturacion.action;
 
 import java.io.File;
 import java.util.Hashtable;
+import java.util.Vector;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,6 +30,8 @@ import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
+import com.siga.beans.FacSerieFacturacionAdm;
+import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.facturacion.form.GestionarFacturaForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -176,6 +180,7 @@ public class GestionarFacturaDatosGeneralesAction extends MasterAction{
 			InformeFactura infFactura = new InformeFactura(usr);			
 			CenDireccionesAdm admCenDirecciones = new CenDireccionesAdm(usr);
 			FacFacturaAdm admFacFactura = new FacFacturaAdm(usr);
+			FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(usr);
 			
 			// PDM Antes de generar la factura comprobamos si existe la direccion del receptor de la factura
 			Hashtable<String,String> hFacFactura = new Hashtable<String,String>();			
@@ -212,8 +217,39 @@ public class GestionarFacturaDatosGeneralesAction extends MasterAction{
 					nombreColegiado="";
 				}
 				
+				String where = " WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + bFacFactura.getIdSerieFacturacion() +
+						" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +" = " +bFacFactura.getIdInstitucion();
+							
+				Vector<FacSerieFacturacionBean> vSeriesFacturacion = admSerieFacturacion.select(where);
+										
+		
+				if (vSeriesFacturacion!=null && vSeriesFacturacion.size()>0) {
+					FacSerieFacturacionBean beanSerieFacturacion = vSeriesFacturacion.get(0);
+				
+					switch (beanSerieFacturacion.getIdNombreDescargaPDF()) {
+					case 1:
+						request.setAttribute("nombreFichero",filePDF.getName());
+						break;
+					case 2:
+						//Quitamos la extensión y añadimos el nombre más la extensión
+						String[] separacionExtensionDelFichero = filePDF.getName().split(Pattern.quote("."));
+						String[] separacionNombreColegiado = nombreColegiado.split("-");
+						request.setAttribute("nombreFichero",separacionExtensionDelFichero[0] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
+						break;
+					case 3:
+						request.setAttribute("nombreFichero",nombreColegiado+filePDF.getName());
+						break;
+
+					default:
+						request.setAttribute("nombreFichero",nombreColegiado+ filePDF.getName());
+						break;
+					}
+				}else{
+					request.setAttribute("nombreFichero",nombreColegiado+ filePDF.getName());
+				}
+				
+				
 				// Siempre se debe borrar el fichero pdf con la firma
-				request.setAttribute("nombreFichero",nombreColegiado+filePDF.getName());
 				request.setAttribute("rutaFichero", filePDF.getPath());			
 				
 			} else {

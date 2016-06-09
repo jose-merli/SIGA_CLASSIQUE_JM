@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -77,6 +78,8 @@ import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
+import com.siga.beans.FacSerieFacturacionAdm;
+import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.PysCompraBean;
 import com.siga.beans.PysProductosInstitucionAdm;
@@ -2288,6 +2291,7 @@ public class DefinirEnviosAction extends MasterAction {
 			// Obtenemos el certificado
 			CerSolicitudCertificadosAdm admCer = new CerSolicitudCertificadosAdm(userBean);
 			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(userBean);
+			FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(userBean);
 			StringBuilder pathDirectorioTemporal = new StringBuilder(admSolicitud.getRutaCertificadoDirectorioBD(2000));
 			pathDirectorioTemporal.append(ClsConstants.FILE_SEP);
 			pathDirectorioTemporal.append("tmp");
@@ -2452,7 +2456,43 @@ public class DefinirEnviosAction extends MasterAction {
 							    			}
 							    			}
 							      			
-							    			Documento factura = new Documento(fichero,nombreColegiado+ fichero.getName());
+							    			
+							    			
+							    			String where = " WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + vFacturas.get(0).get("IDSERIEFACTURACION") +
+													" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +" = " + vFacturas.get(0).get("IDINSTITUCION");
+														
+											Vector<FacSerieFacturacionBean> vSeriesFacturacion = admSerieFacturacion.select(where);
+																	
+											Documento factura = null;
+											if (vSeriesFacturacion!=null && vSeriesFacturacion.size()>0) {
+												FacSerieFacturacionBean beanSerieFacturacion = vSeriesFacturacion.get(0);
+												
+												switch (beanSerieFacturacion.getIdNombreDescargaPDF()) {
+												case 1:
+													factura = new Documento(fichero,fichero.getName());
+													break;
+												case 2:
+													//Quitamos la extensión del fichero y añadimos el nombre más la extensión
+													String[] separacionExtensionDelFichero = fichero.getName().split(Pattern.quote("."));
+													String[] separacionNombreColegiado = nombreColegiado.split("-");
+													factura = new Documento(fichero,separacionExtensionDelFichero[0] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
+													
+													break;
+												case 3:
+													factura = new Documento(fichero,nombreColegiado+ fichero.getName());
+													
+													break;
+							
+												default:
+													factura = new Documento(fichero,nombreColegiado+ fichero.getName());
+													break;
+												}
+											}else{
+												factura = new Documento(fichero,nombreColegiado+ fichero.getName());
+											}
+							    			
+							    			
+							    			
 							      			//Comprobamos que la factura no esté añadida ya. Caso en que dos certificados pertenezca a la misma facturación con que salga una vez sería suficiente.
 							      			Iterator<Documento> iteratorFicheros = documentosList.iterator();
 											Boolean encontrado = Boolean.FALSE;
@@ -2716,6 +2756,7 @@ public class DefinirEnviosAction extends MasterAction {
 			CenInstitucionAdm admInst = new CenInstitucionAdm(userBean);
 			CenPersonaAdm admPersona = new CenPersonaAdm(userBean);
 			EnvEnviosAdm enviosAdm =  new EnvEnviosAdm(userBean);
+			FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(userBean);
 
 			HashMap<Long, List<CerSolicitudCertificadosBean>> hashCertificadosPorDestinatario = new HashMap<Long, List<CerSolicitudCertificadosBean>>();
 			List<CerSolicitudCertificadosBean> cerSolicitudCertificadosBeans = new ArrayList<CerSolicitudCertificadosBean>();
@@ -2997,7 +3038,37 @@ public class DefinirEnviosAction extends MasterAction {
 					    			}
 					    			}
 					      			
-					      			Documento certificado = new Documento(fichero,nombreColegiado+ fichero.getName());
+					    			
+					    			String where = " WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + vFacturas.get(0).get("IDSERIEFACTURACION") +
+											" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +" = " + vFacturas.get(0).get("IDINSTITUCION");
+												
+									Vector<FacSerieFacturacionBean> vSeriesFacturacion = admSerieFacturacion.select(where);
+															
+									Documento certificado = null;
+									if (vSeriesFacturacion!=null && vSeriesFacturacion.size()>0) {
+										FacSerieFacturacionBean beanSerieFacturacion = vSeriesFacturacion.get(0);
+										
+										switch (beanSerieFacturacion.getIdNombreDescargaPDF()) {
+										case 1:
+											certificado = new Documento(fichero,fichero.getName());
+											break;
+										case 2:
+											//Quitamos la extensión y añadimos el nombre más la extensión
+											String[] separacionExtensionDelFichero = fichero.getName().split(Pattern.quote("."));
+											String[] separacionNombreColegiado = nombreColegiado.split("-");
+											certificado = new Documento(fichero,separacionExtensionDelFichero[0] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
+											break;
+										case 3:
+											certificado = new Documento(fichero,nombreColegiado+ fichero.getName());
+											break;
+					
+										default:
+											certificado = new Documento(fichero,nombreColegiado+ fichero.getName());
+											break;
+										}
+									}else{
+										certificado = new Documento(fichero,nombreColegiado+ fichero.getName());
+									}
 									
 					      			solicitudCertificadoBeanAux = (CerSolicitudCertificadosBean) BeanUtils.cloneBean(solicitudCertificadoBean);
 									solicitudCertificadoBeanAux.setCertificado(certificado);

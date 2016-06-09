@@ -45,13 +45,15 @@
 	ArrayList<String> aPlantillaEnviosSeleccionada = new ArrayList<String>();
 	ArrayList<String> aSerieSeleccionada = new ArrayList<String>();
 	Integer iPlantilla=new Integer(-1);
-	String sAbreviatura="", sDescripcion="", idSerieFacturacion="-1", idSeriePrevia="-1", enviarFacturas="", generarPDF="", observaciones="", sPlantilla="", sFechaBaja="", sTipoSerieFacturacion="";
+	Integer nombreDescargaPDF=new Integer(1);
+	String sAbreviatura="", sDescripcion="", idSerieFacturacion="-1", idSeriePrevia="-1", enviarFacturas="", generarPDF="", observaciones="", sPlantilla="", sFechaBaja="", sTipoSerieFacturacion="",sNombreDescargaPDF="";
 	FacSerieFacturacionBean beanSerieFacturacion = (FacSerieFacturacionBean) request.getAttribute("beanSerieFacturacion");	
 	if (beanSerieFacturacion!=null) {		
 		sAbreviatura = beanSerieFacturacion.getNombreAbreviado();
 		sDescripcion = beanSerieFacturacion.getDescripcion();
 		iPlantilla = beanSerieFacturacion.getIdPlantilla();
 		idSerieFacturacion = String.valueOf(beanSerieFacturacion.getIdSerieFacturacion());
+		nombreDescargaPDF = beanSerieFacturacion.getIdNombreDescargaPDF();
 		enviarFacturas = beanSerieFacturacion.getEnvioFactura();
 		generarPDF = beanSerieFacturacion.getGenerarPDF();
 		sTipoSerieFacturacion = beanSerieFacturacion.getTipoSerie();
@@ -71,6 +73,7 @@
 				parametrosCmbPlantillaEnvios[2] = beanSerieFacturacion.getIdTipoPlantillaMail().toString();
 			}
 		}	
+		sNombreDescargaPDF = (String) request.getAttribute("nombreFacturaDescarga");
 	}
 	
 	// datos seleccionados Combo
@@ -127,6 +130,12 @@
 	<script language="JavaScript">
 		var resetComboPagoSecretaria;
 		
+		function ediccion(){
+			<%if (!bEditable){%>
+				jQuery("#idNombreDescargaPDF").attr("disabled","disabled");
+			<%}%>
+			
+		}
 		function actualiza() {
 			jQuery("#idTipoPlantillaMail").attr("disabled","disabled");
 			
@@ -283,7 +292,7 @@
 	</script>
 </head>
 
-<body class="tablaCentralCampos" onLoad="configuraContador();actualiza();">
+<body class="tablaCentralCampos" onLoad="configuraContador();actualiza();ediccion();">
 	
 	<table class="tablaCentralCampos">
 		<html:form action="/FAC_DatosGenerales.do" method="POST" focus="nombreAbreviado" target="submitArea">
@@ -296,24 +305,137 @@
 				<td style="width:100%">		
 					<siga:ConjCampos leyenda="facturacion.serios.literal.seriesFacturacion">
 						<table align="center" border="0">
-
 							<tr>
-								<td class="labelText" width="10%" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.nombreAbreviado"/>&nbsp;(*)</td>
+								<td width="10%"></td>
+								<td width="20%"></td>
+								<td width="5%"></td>
+								<td width="5%"></td>
+								<td width="10%"></td>
+								<td width="10%"></td>
+								<td width="15%"></td>
+								<td width="5%"></td>
+							</tr>
+							<tr>
+								<td class="labelText" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.nombreAbreviado"/>&nbsp;(*)</td>
 								<td>
 <%
 									if (!bEditable) {
 %>
-										<html:text name="DatosGeneralesForm" styleId="nombreAbreviado" property="nombreAbreviado" size="20" maxlength="20" styleClass="boxConsulta" value="<%=sAbreviatura%>" readonly="true"/>
+										<html:text name="DatosGeneralesForm" styleId="nombreAbreviado" property="nombreAbreviado" size="36" maxlength="20" styleClass="boxConsulta" value="<%=sAbreviatura%>" readonly="true"/>
 <%
 									} else {
 %>
-										<html:text name="DatosGeneralesForm" styleId="nombreAbreviado" property="nombreAbreviado" size="20" maxlength="20" styleClass="boxMayuscula" value="<%=sAbreviatura%>" readonly="false"/>
+										<html:text name="DatosGeneralesForm" styleId="nombreAbreviado" property="nombreAbreviado" size="36" maxlength="20" styleClass="boxMayuscula" value="<%=sAbreviatura%>" readonly="false"/>
+<%
+									}
+%>
+								</td>
+								<td class="labelText" nowrap title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (user, "facturacion.seriesFacturacion.tipoGenerica.ayuda").replaceAll("\\\\n", ""))%>'>
+									<siga:Idioma key="facturacion.datosGenerales.literal.tipoGenerica"/>
+								</td>
+								<td title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (user, "facturacion.seriesFacturacion.tipoGenerica.ayuda").replaceAll("\\\\n", ""))%>'>
+<% 
+									if (sTipoSerieFacturacion!=null && sTipoSerieFacturacion.equals("G")) { 
+%>
+										<input type="checkbox" name="tipoSerie" id="tipoSerie" <%=(accion.equals("ver") ? "disabled" : "") %> checked>
+<% 
+									} else { 
+%>
+										<input type="checkbox" name="tipoSerie" id="tipoSerie" <%=(accion.equals("ver") ? "disabled" : "") %> >
+<% 
+									} 
+%>
+								</td>					
+								<td class="labelText" nowrap><siga:Idioma key="facturacion.datosGenerales.literal.estado"/></td>
+								<td>
+<%
+									if (sFechaBaja==null || sFechaBaja.equals("")) {
+%>								
+										<siga:Idioma key="facturacion.datosGenerales.literal.estado.alta"/>
+<%
+									} else {
+%>										
+										<siga:Idioma key="facturacion.datosGenerales.literal.estado.baja"/>
+<%
+									}
+%>																			
+								</td>	
+								<%
+								if (ClsConstants.esConsejoITCGAE(idInstitucion)) {
+%>
+									<td id="titulo" class="labelText"><siga:Idioma key="facturacion.datosGenerales.literal.facturacion.datosGenerales.literal.planificarPosteriormente"/></td>
+									<td>
+<%
+										if (!bEditable) {
+%>
+											<siga:ComboBD nombre = "idSerieFacturacionPrevia" tipo="cmbSerieFacturacionPrevias" elementoSel ="<%=aSerieSeleccionada%>" clase="boxCombo" ancho="180" parametro="<%=datoSerie%>" readonly="true"/>
+<%
+										} else { 
+%>
+											<siga:ComboBD nombre = "idSerieFacturacionPrevia" tipo="cmbSerieFacturacionPrevias" elementoSel ="<%=aSerieSeleccionada%>" clase="boxCombo" ancho="180" parametro="<%=datoSerie%>"/>
+<%
+										}
+%>									
+									</td>
+<% 
+								} else{
+%>									
+									<td></td>
+									<td></td>
+<% 								} %>
+																
+							</tr>
+												
+							<tr> 
+       							<td class="labelText" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.descripcion"/>&nbsp;(*)</td>
+								<td colspan="7">
+<%
+									if (!bEditable) {
+%>
+										<html:text name="DatosGeneralesForm"  styleId="descripcion"  property="descripcion" size="100" maxlength="100" styleClass="boxConsulta" value="<%=sDescripcion%>" readonly="true"/>
+<%
+									} else {
+%>
+										<html:text name="DatosGeneralesForm" styleId="descripcion"  property="descripcion" size="100" maxlength="100" styleClass="box" value="<%=sDescripcion%>" readonly="false"/>
 <%
 									}
 %>
 								</td>
 								
-       							<td class="labelText" width="10%" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.plantilla"/>&nbsp;(*)</td>
+							</tr>
+							<tr>
+							    <td class="labelText" style="text-align:left" >
+									<siga:Idioma key="facturacion.datosGenerales.literal.observaciones"/>
+								</td>
+								<td colspan="7">
+<%
+									if (!bEditable) {
+%>
+										<html:textarea name="DatosGeneralesForm" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleId="observaciones" property="observaciones" onkeydown="cuenta(this,4000);" styleClass="boxConsulta" value="<%=observaciones%>" readonly="true"
+											style="overflow-y:auto;overflow-x:hidden;width:750px;height:50px;resize:none;"/>
+<%
+									} else {
+%>
+										<html:textarea name="DatosGeneralesForm" property="observaciones" styleId="observaciones" onkeydown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleClass="box" value="<%=observaciones%>" readonly="false"
+											style="overflow-y:auto;overflow-x:hidden;width:750px;height:50px;resize:none;"/>
+<%
+									}
+%>
+								</td>
+							</tr>
+						</table>
+					</siga:ConjCampos>
+				</td>
+			</tr>
+		</table>
+		
+		<table class="tablaCentralCampos" border="0">	
+			<tr>
+				<td style="width:100%" >		
+					<siga:ConjCampos leyenda="facturacion.serios.literal.configuracionPDF">
+						<table align="left" border="0">
+							<tr>
+								<td class="labelText" width="10%" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.plantilla"/>&nbsp;(*)</td>
 								<td>
 <%
 									if (!bEditable) {
@@ -330,60 +452,24 @@
 <%
 									}
 %>
-								</td>								
-								
-								<td class="labelText" nowrap><siga:Idioma key="facturacion.datosGenerales.literal.estado"/></td>
-								<td>
-<%
-									if (sFechaBaja==null || sFechaBaja.equals("")) {
-%>								
-										<siga:Idioma key="facturacion.datosGenerales.literal.estado.alta"/>
-<%
-									} else {
-%>										
-										<siga:Idioma key="facturacion.datosGenerales.literal.estado.baja"/>
-<%
-									}
-%>																			
-								</td>								
-							</tr>
-												
-							<tr> 
-       							<td class="labelText" width="10%" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.descripcion"/>&nbsp;(*)</td>
-								<td colspan="3">
-<%
-									if (!bEditable) {
-%>
-										<html:text name="DatosGeneralesForm"  styleId="descripcion"  property="descripcion" size="100" maxlength="100" styleClass="boxConsulta" value="<%=sDescripcion%>" readonly="true"/>
-<%
-									} else {
-%>
-										<html:text name="DatosGeneralesForm" styleId="descripcion"  property="descripcion" size="100" maxlength="100" styleClass="box" value="<%=sDescripcion%>" readonly="false"/>
-<%
-									}
-%>
 								</td>
 								
-								<td class="labelText" nowrap title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (user, "facturacion.seriesFacturacion.tipoGenerica.ayuda").replaceAll("\\\\n", ""))%>'>
-									<siga:Idioma key="facturacion.datosGenerales.literal.tipoGenerica"/>
-								</td>
-								<td title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (user, "facturacion.seriesFacturacion.tipoGenerica.ayuda").replaceAll("\\\\n", ""))%>'>
-<% 
-									if (sTipoSerieFacturacion!=null && sTipoSerieFacturacion.equals("G")) { 
-%>
-										<input type="checkbox" name="tipoSerie" id="tipoSerie" <%=(accion.equals("ver") ? "disabled" : "") %> checked>
-<% 
-									} else { 
-%>
-										<input type="checkbox" name="tipoSerie" id="tipoSerie" <%=(accion.equals("ver") ? "disabled" : "") %> >
-<% 
-									} 
-%>
-								</td>
+								<td class="labelText" width="15%" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.nombrePDF"/>&nbsp;(*)</td>
+								<td>		
+									<siga:ComboBD nombre="idNombreDescargaPDF"  elementoSelstring="<%=String.valueOf(nombreDescargaPDF)%>" obligatorioSinTextoSeleccionar="true" tipo="cmbNombreDescargaPDF" clase="boxCombo"  />
+								</td>		
 							</tr>
 						</table>
-						
-						<table border="0">
+					</siga:ConjCampos>
+				</td>
+			</tr>
+		 </table>
+		 
+		 <table class="tablaCentralCampos" border="0">	
+			<tr>
+				<td style="width:100%" >		
+					<siga:ConjCampos leyenda="facturacion.serios.literal.configuracionEnvios">
+						<table align="left" border="0">
 							<tr>
 								<td class="labelText" style="text-align:left" colspan="4">
 									<siga:Idioma key="facturacion.datosGenerales.literal.generaPDF"/>&nbsp;&nbsp;
@@ -422,52 +508,11 @@
 									<siga:ComboBD  nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=aPlantillaEnviosSeleccionada%>" ancho="280" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>" />
 								</td>									
 							</tr>
-
-							<tr>
-							    <td class="labelText" width="10%" style="text-align:left" >
-									<siga:Idioma key="facturacion.datosGenerales.literal.observaciones"/>
-								</td>
-								<td colspan="3">
-<%
-									if (!bEditable) {
-%>
-										<html:textarea name="DatosGeneralesForm" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleId="observaciones" property="observaciones" onkeydown="cuenta(this,4000);" styleClass="boxConsulta" value="<%=observaciones%>" readonly="true"
-											style="overflow-y:auto;overflow-x:hidden;width:350px;height:50px;resize:none;"/>
-<%
-									} else {
-%>
-										<html:textarea name="DatosGeneralesForm" property="observaciones" styleId="observaciones" onkeydown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleClass="box" value="<%=observaciones%>" readonly="false"
-											style="overflow-y:auto;overflow-x:hidden;width:350px;height:50px;resize:none;"/>
-<%
-									}
-%>
-								</td>
-<%
-								if (ClsConstants.esConsejoITCGAE(idInstitucion)) {
-%>
-									<td id="titulo" class="labelText"><siga:Idioma key="facturacion.datosGenerales.literal.facturacion.datosGenerales.literal.planificarPosteriormente"/></td>
-									<td>
-<%
-										if (!bEditable) {
-%>
-											<siga:ComboBD nombre = "idSerieFacturacionPrevia" tipo="cmbSerieFacturacionPrevias" elementoSel ="<%=aSerieSeleccionada%>" clase="boxCombo" ancho="280" parametro="<%=datoSerie%>" readonly="true"/>
-<%
-										} else { 
-%>
-											<siga:ComboBD nombre = "idSerieFacturacionPrevia" tipo="cmbSerieFacturacionPrevias" elementoSel ="<%=aSerieSeleccionada%>" clase="boxCombo" ancho="280" parametro="<%=datoSerie%>"/>
-<%
-										}
-%>									
-									</td>
-<% 
-								} 
-%>									
-							</tr>
 						</table>
 					</siga:ConjCampos>
 				</td>
 			</tr>
-		</table>
+		 </table>
 
 <% 
 		if (accion.equals("nuevo")) {  

@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -2466,14 +2467,42 @@ public class Facturacion {
 				}
 			}
 			}
+			
 			int inicio = fichero.getName().indexOf(".zip");
 			 //Si se llama a este método desde el demonio de: acciones masivas, la request viene null
 		    if(request != null){
 			//Si es -1 no es un fichero zip
 				if(inicio == -1){
-					request.setAttribute("nombreFichero",nombreColegiado+ fichero.getName());
-				}else{
-					request.setAttribute("nombreFichero",fichero.getName());
+					String where = " WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + vFacturas.get(0).get("IDSERIEFACTURACION") +
+							" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +" = " + vFacturas.get(0).get("IDINSTITUCION");
+								
+					Vector<FacSerieFacturacionBean> vSeriesFacturacion = admSerieFacturacion.select(where);
+											
+			
+					if (vSeriesFacturacion!=null && vSeriesFacturacion.size()>0) {
+						FacSerieFacturacionBean beanSerieFacturacion = vSeriesFacturacion.get(0);
+					
+						switch (beanSerieFacturacion.getIdNombreDescargaPDF()) {
+						case 1:
+							request.setAttribute("nombreFichero",fichero.getName());
+							break;
+						case 2:
+							//Quitamos la extensión y añadimos el nombre más la extensión
+							String[] separacionExtensionDelFichero = fichero.getName().split(Pattern.quote("."));
+							String[] separacionNombreColegiado = nombreColegiado.split("-");
+							request.setAttribute("nombreFichero",separacionExtensionDelFichero[0] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
+							break;
+						case 3:
+							request.setAttribute("nombreFichero",nombreColegiado+ fichero.getName());
+							break;
+	
+						default:
+							request.setAttribute("nombreFichero",nombreColegiado+ fichero.getName());
+							break;
+						}
+					}else{
+						request.setAttribute("nombreFichero",nombreColegiado+ fichero.getName());
+					}
 				}
 				request.setAttribute("rutaFichero", fichero.getPath());
 				request.setAttribute("generacionOK", "OK");
