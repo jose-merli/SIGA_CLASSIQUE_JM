@@ -40,7 +40,7 @@
 	Vector v = (Vector) request.getAttribute("acreditaciones");
 
 	//variables quese van a mostrar en la jsp
-	String nombre = "", importe = "", idProc = "", idJurisdiccion = "", codigo = "", complemento = "", vigente = "",permitirAniadirLetrado="";
+	String nombre = "", importe = "", idProc = "", idJurisdiccion = "", codigo = "", complemento = "", permitirAniadirLetrado="";
 	String fechaInicio="", fechaFin="";
 
 	//inicializamos los valores
@@ -51,7 +51,6 @@
 		idJurisdiccion = (String) resultado.get(ScsProcedimientosBean.C_IDJURISDICCION);
 		codigo = (String) resultado.get(ScsProcedimientosBean.C_CODIGO);
 		complemento = (String) resultado.get(ScsProcedimientosBean.C_COMPLEMENTO);
-		vigente = (String) resultado.get(ScsProcedimientosBean.C_VIGENTE);
 		permitirAniadirLetrado = (String) resultado.get(ScsProcedimientosBean.C_PERMITIRANIADIRLETRADO);
 		fechaInicio = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),(String)resultado.get(ScsProcedimientosBean.C_FECHADESDEVIGOR)));
 		fechaFin = (String)resultado.get(ScsProcedimientosBean.C_FECHAHASTAVIGOR);

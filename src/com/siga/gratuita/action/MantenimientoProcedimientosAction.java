@@ -232,11 +232,6 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 			else
 			    UtilidadesHash.set(procedimientoNuevo, ScsProcedimientosBean.C_COMPLEMENTO, ClsConstants.DB_FALSE);
 			
-			if (miform.getVigente()!=null && miform.getVigente().equals("1"))
-			    UtilidadesHash.set(procedimientoNuevo, ScsProcedimientosBean.C_VIGENTE, ClsConstants.DB_TRUE);
-			else
-			    UtilidadesHash.set(procedimientoNuevo, ScsProcedimientosBean.C_VIGENTE, ClsConstants.DB_FALSE);
-			
 			if (miform.getPermitirAniadirLetrado()!=null && miform.getPermitirAniadirLetrado().equals("1"))
 			    UtilidadesHash.set(procedimientoNuevo, ScsProcedimientosBean.C_PERMITIRANIADIRLETRADO, ClsConstants.DB_TRUE);
 			else
@@ -320,11 +315,6 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 			else
 			    UtilidadesHash.set(tramoNew, ScsProcedimientosBean.C_COMPLEMENTO, ClsConstants.DB_FALSE);
 			
-			if (checkVigente){
-				UtilidadesHash.set(tramoNew, ScsProcedimientosBean.C_VIGENTE, ClsConstants.DB_TRUE);
-			}else{
-				UtilidadesHash.set(tramoNew, ScsProcedimientosBean.C_VIGENTE, ClsConstants.DB_FALSE);
-			}
 			if (checkPermitirAniadirLetrado){
 				UtilidadesHash.set(tramoNew, ScsProcedimientosBean.C_PERMITIRANIADIRLETRADO, ClsConstants.DB_TRUE);
 			}else{
