@@ -798,4 +798,25 @@ public class PersonaJGForm extends MasterForm {
 		this.forzarAjax = forzarAjax;
 	}
 
+	private boolean incapacitado = false;
+	
+	private boolean circunstanciasExcepcionales = false;
+
+	public boolean isIncapacitado() {
+		return incapacitado;
+	}
+
+	public void setIncapacitado(boolean incapacitado) {
+		this.incapacitado = incapacitado;
+	}
+
+	public boolean isCircunstanciasExcepcionales() {
+		return circunstanciasExcepcionales;
+	}
+
+	public void setCircunstanciasExcepcionales(boolean circunstanciasExcepcionales) {
+		this.circunstanciasExcepcionales = circunstanciasExcepcionales;
+	}
+	
+	
 }

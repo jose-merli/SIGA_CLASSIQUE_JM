@@ -197,7 +197,8 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 							ScsUnidadFamiliarEJGBean.C_IMPORTEBIENESMUEBLES,	ScsUnidadFamiliarEJGBean.C_OTROSBIENES,
 							ScsUnidadFamiliarEJGBean.C_IMPORTEOTROSBIENES,		ScsUnidadFamiliarEJGBean.C_IDPERSONA,
 							ScsUnidadFamiliarEJGBean.C_TIPOGRUPOLAB, 		    ScsUnidadFamiliarEJGBean.C_IDPARENTESCO,
-							ScsUnidadFamiliarEJGBean.C_TIPOINGRESO
+							ScsUnidadFamiliarEJGBean.C_TIPOINGRESO,				ScsUnidadFamiliarEJGBean.C_INCAPACITADO,
+							ScsUnidadFamiliarEJGBean.C_CIRCUNSTANCIAS_EXCEPCIONALES
 						};
 		return campos;
 	}
@@ -239,6 +240,8 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 			bean.setTipoGrupoLab(UtilidadesHash.getInteger(hash,ScsUnidadFamiliarEJGBean.C_TIPOGRUPOLAB));
 			bean.setIdParentesco(UtilidadesHash.getInteger(hash,ScsUnidadFamiliarEJGBean.C_IDPARENTESCO));
 			bean.setTipoIngreso(UtilidadesHash.getInteger(hash,ScsUnidadFamiliarEJGBean.C_TIPOINGRESO));
+			bean.setIncapacitado(UtilidadesHash.getInteger(hash, ScsUnidadFamiliarEJGBean.C_INCAPACITADO));
+			bean.setCircunstanciasExcepcionales(UtilidadesHash.getInteger(hash, ScsUnidadFamiliarEJGBean.C_CIRCUNSTANCIAS_EXCEPCIONALES));
 		}
 		catch(Exception e){
 			bean = null;
@@ -276,6 +279,8 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash,ScsUnidadFamiliarEJGBean.C_TIPOGRUPOLAB,miBean.getTipoGrupoLab());
 			UtilidadesHash.set(hash,ScsUnidadFamiliarEJGBean.C_IDPARENTESCO,miBean.getIdParentesco());
 			UtilidadesHash.set(hash,ScsUnidadFamiliarEJGBean.C_TIPOINGRESO,miBean.getTipoIngreso());
+			UtilidadesHash.set(hash,ScsUnidadFamiliarEJGBean.C_INCAPACITADO,miBean.getIncapacitado());
+			UtilidadesHash.set(hash,ScsUnidadFamiliarEJGBean.C_CIRCUNSTANCIAS_EXCEPCIONALES,miBean.getCircunstanciasExcepcionales());
 		}
 		catch (Exception e){
 			hash = null;
@@ -308,7 +313,8 @@ public class ScsUnidadFamiliarEJGAdm extends MasterBeanAdministrador {
 				ScsUnidadFamiliarEJGBean.C_IMPORTEOTROSBIENES,		ScsUnidadFamiliarEJGBean.C_IDPERSONA,
 				ScsUnidadFamiliarEJGBean.C_TIPOGRUPOLAB, 		    ScsUnidadFamiliarEJGBean.C_IDPARENTESCO,
 				ScsUnidadFamiliarEJGBean.C_USUMODIFICACION, 		    ScsUnidadFamiliarEJGBean.C_FECHAMODIFICACION,
-				ScsUnidadFamiliarEJGBean.C_TIPOINGRESO
+				ScsUnidadFamiliarEJGBean.C_TIPOINGRESO,				ScsUnidadFamiliarEJGBean.C_INCAPACITADO,
+				ScsUnidadFamiliarEJGBean.C_CIRCUNSTANCIAS_EXCEPCIONALES
 			};
 		return campos;
 	}

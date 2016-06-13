@@ -42,6 +42,8 @@ public class ScsUnidadFamiliarEJGBean extends MasterBean{
 	private String  descripcionIngresosAnuales;
 	private Integer idParentesco;
 	private Integer tipoIngreso;
+	private Integer incapacitado;
+	private Integer circunstanciasExcepcionales;
 	
 		
 	
@@ -70,6 +72,8 @@ public class ScsUnidadFamiliarEJGBean extends MasterBean{
 	static public final String  C_TIPOGRUPOLAB= 	             				"IDTIPOGRUPOLAB";
 	static public final String  C_IDPARENTESCO= 	             				"IDPARENTESCO";
 	static public final String  C_TIPOINGRESO= 	             				"IDTIPOINGRESO";
+	static public final String  C_INCAPACITADO= 	             				"INCAPACITADO";
+	static public final String  C_CIRCUNSTANCIAS_EXCEPCIONALES= 	            "CIRCUNSTANCIAS_EXCEPCIONALES";
 	
 	
 	/*Metodos SET*/
@@ -415,6 +419,7 @@ public class ScsUnidadFamiliarEJGBean extends MasterBean{
 		if(tipoIngreso!=null)
 			unidadFamiliarForm.setIdTipoIngreso(tipoIngreso.toString());
 		
+		
 		return unidadFamiliarForm;
 	}
 
@@ -433,5 +438,23 @@ public class ScsUnidadFamiliarEJGBean extends MasterBean{
 	public void setEjg(ScsEJGBean ejg) {
 		this.ejg = ejg;
 	}
+	
+	public Integer getIncapacitado() {
+		return incapacitado;
+	}
+
+	public void setIncapacitado(Integer incapacitado) {
+		this.incapacitado = incapacitado;
+	}
+
+	public Integer getCircunstanciasExcepcionales() {
+		return circunstanciasExcepcionales;
+	}
+
+	public void setCircunstanciasExcepcionales(Integer circunstanciasExcepcionales) {
+		this.circunstanciasExcepcionales = circunstanciasExcepcionales;
+	}
+
+
 	
 }
