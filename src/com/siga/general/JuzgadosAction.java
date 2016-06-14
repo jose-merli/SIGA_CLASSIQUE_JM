@@ -228,8 +228,8 @@ public class JuzgadosAction extends MasterAction{
 		
 		//Comprobamos el valor del parametro 
 		GenParametrosAdm adm = new GenParametrosAdm (usr);
-		String filtrarModulos = adm.getValor((String)usr.getLocation(),"SCS","FILTRAR_MODULOS_PORFECHA_DESIGNACION", "");
-		if(filtrarModulos.equalsIgnoreCase("S")){
+		String filtrarModulos = adm.getValor((String)usr.getLocation(),"SCS",ClsConstants.GEN_PARAM_FILTRAR_MODULOS_PORFECHA, "");
+		if(!filtrarModulos.equalsIgnoreCase(ClsConstants.FILTRAR_MODULOS_FECHAACTUAL)){
 			fecha = "'" + request.getParameter("fecha") + "'";
 		}
 		boolean isFichaColegial = false;

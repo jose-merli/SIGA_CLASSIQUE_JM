@@ -244,7 +244,12 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 			if(miForm.getPonerVisibilidadMovil() != null && miForm.getPonerVisibilidadMovil().equalsIgnoreCase("S"))
 				hashJuzgadoModificado.put(ScsJuzgadoBean.C_VISIBLEMOVIL,"1");
 			else
-				hashJuzgadoModificado.put(ScsJuzgadoBean.C_VISIBLEMOVIL,"0");			
+				hashJuzgadoModificado.put(ScsJuzgadoBean.C_VISIBLEMOVIL,"0");	
+			
+			if(miForm.getPutDecano() != null && miForm.getPutDecano().equalsIgnoreCase("S"))
+				hashJuzgadoModificado.put(ScsJuzgadoBean.C_ESDECANO,"1");
+			else
+				hashJuzgadoModificado.put(ScsJuzgadoBean.C_ESDECANO,"0");			
 		
 			boolean modificar=true;
 
@@ -338,7 +343,12 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 			if(miForm.getPonerVisibilidadMovil() != null && miForm.getPonerVisibilidadMovil().equalsIgnoreCase("S"))
 				beanJuzgado.setVisibleMovil("1");
 			else
-				beanJuzgado.setVisibleMovil("0");				
+				beanJuzgado.setVisibleMovil("0");	
+			
+			if(miForm.getPutDecano() != null && miForm.getPutDecano().equalsIgnoreCase("S"))
+				beanJuzgado.setEsDecano("1");
+			else
+				beanJuzgado.setEsDecano("0");				
 			
 			ScsJuzgadoAdm admJuz = new ScsJuzgadoAdm(this.getUserBean(request));
 //			if (!codigoExt.trim().equals("") && admJuz.comprobarCodigoExt(idInstitucion,null,codigoExt)) {

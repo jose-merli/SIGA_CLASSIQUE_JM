@@ -51,7 +51,8 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 							ScsJuzgadoBean.C_TELEFONO2, ScsJuzgadoBean.C_FAX1,ScsJuzgadoBean.C_FECHABAJA,
 							ScsJuzgadoBean.C_USUMODIFICACION, ScsJuzgadoBean.C_FECHAMODIFICACION,
 							ScsJuzgadoBean.C_CODPROCURADOR, ScsJuzgadoBean.C_VISIBLE, ScsJuzgadoBean.C_MOVIL,
-							ScsJuzgadoBean.C_EMAIL, ScsJuzgadoBean.C_CODIGOEXT2, ScsJuzgadoBean.C_ISCODIGOEJIS, ScsJuzgadoBean.C_VISIBLEMOVIL};
+							ScsJuzgadoBean.C_EMAIL, ScsJuzgadoBean.C_CODIGOEXT2, ScsJuzgadoBean.C_ISCODIGOEJIS,
+							ScsJuzgadoBean.C_VISIBLEMOVIL, ScsJuzgadoBean.C_ESDECANO};
 		return campos;
 	}	
 	
@@ -96,6 +97,7 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 			bean.setMovil(UtilidadesHash.getString(hash,ScsJuzgadoBean.C_MOVIL));
 			bean.setIsCodigoEjis(UtilidadesHash.getString(hash,ScsJuzgadoBean.C_ISCODIGOEJIS));
 			bean.setVisibleMovil(UtilidadesHash.getString(hash,ScsJuzgadoBean.C_VISIBLEMOVIL));
+			bean.setEsDecano(UtilidadesHash.getString(hash,ScsJuzgadoBean.C_ESDECANO));
 		}
 		catch(Exception e){
 			bean = null;
@@ -139,6 +141,7 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 				hash.put(ScsJuzgadoBean.C_ISCODIGOEJIS, "0"); //Valor por defecto
 			}
 			hash.put(ScsJuzgadoBean.C_VISIBLEMOVIL, b.getVisibleMovil());
+			hash.put(ScsJuzgadoBean.C_ESDECANO, b.getEsDecano());
 		}
 		catch (Exception e){
 			hash = null;
@@ -199,6 +202,7 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 			select += " , juzgado."+ScsJuzgadoBean.C_FECHABAJA;
 			select += " , juzgado."+ScsJuzgadoBean.C_MOVIL;
 			select += " , juzgado."+ScsJuzgadoBean.C_VISIBLEMOVIL;
+			select += " , juzgado."+ScsJuzgadoBean.C_ESDECANO;
 			select += " , juzgado."+ScsJuzgadoBean.C_EMAIL;
 			select += " , (SELECT provincia."+CenProvinciaBean.C_NOMBRE+
 					  "    FROM "+CenProvinciaBean.T_NOMBRETABLA +" provincia "+
@@ -338,6 +342,7 @@ public class ScsJuzgadoAdm extends MasterBeanAdministrador {
 			select += " , juzgado."+ScsJuzgadoBean.C_CODPROCURADOR;
 			select += " , juzgado."+ScsJuzgadoBean.C_VISIBLE;
 			select += " , juzgado."+ScsJuzgadoBean.C_VISIBLEMOVIL;
+			select += " , juzgado."+ScsJuzgadoBean.C_ESDECANO;
 			select += " , juzgado."+ScsJuzgadoBean.C_MOVIL;
 			select += " , juzgado."+ScsJuzgadoBean.C_EMAIL;
 			select += " , juzgado."+ScsJuzgadoBean.C_ISCODIGOEJIS;

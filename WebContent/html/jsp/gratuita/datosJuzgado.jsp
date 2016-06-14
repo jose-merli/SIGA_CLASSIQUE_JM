@@ -43,7 +43,7 @@
 		ArrayList provinciaSel = new ArrayList();
 		ArrayList poblacionSel = new ArrayList();
 		String parametro[] = new String[1];
-		String fechaBaja = "", visibleMovil ="";
+		String fechaBaja = "", visibleMovil ="", esDecano ="";
 		
 		//Procedimientos de este Juzgado:
 		Vector vProcedimientos = (Vector)request.getAttribute("vProcedimientos");
@@ -66,6 +66,15 @@
 		if(visibleMovil !=null && visibleMovil.equals("1")){
 			ponerVisibilidadMovil = "S";
 		}
+		
+		if(formulario.getDatos().get("ESDECANO")!=null && !((String)formulario.getDatos().get("ESDECANO")).equals("")){
+			esDecano = (String)formulario.getDatos().get("ESDECANO");
+		}		
+		String putDecano = "N";
+		if(esDecano !=null && esDecano.equals("1")){
+			putDecano = "S";
+		}
+
 		
 		
 		String topBotones=null, topTabla=null;
@@ -230,7 +239,16 @@
 			} else {
 				MantenimientoJuzgadoForm.ponerVisibilidadMovil.value = "N";
 			}
- 		} 		
+ 		} 	
+ 		
+ 		function checkDecano (o) {
+ 			if (o.checked) {
+ 				MantenimientoJuzgadoForm.putDecano.value = "S";
+			} else {
+				MantenimientoJuzgadoForm.putDecano.value = "N";
+			}
+ 		}  		
+ 		
 	</script>	
 </head>
 
@@ -377,14 +395,23 @@
 								<td class="labelText">
 									<html:text name="MantenimientoJuzgadoForm" property="codigoExt2" size="10" maxlength="10"  readonly="<%=desactivado %>" styleClass="<%=estilo%>"></html:text>
 								</td>
-								
 								<td class="labelText">
 									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.visibilidadMovil"/>
 								</td>
 								<td class="labelTextValue">
 									<input type="checkbox" name="ponerVisibilidadMovil" style="" onclick="darVisibilidadMovil(this);" <% if (modo.equalsIgnoreCase("VER")) { %>disabled<%}%> value="<%=ponerVisibilidadMovil%>" <%if (visibleMovil !=null && visibleMovil.equals("1")) {%>checked<%}%>>
-								</td>								
+								</td>									
 							</tr>
+							
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.decano"/>
+								</td>
+								<td class="labelTextValue">
+									<input type="checkbox" name="putDecano" style="" onclick="checkDecano(this);" <% if (modo.equalsIgnoreCase("VER")) { %>disabled<%}%> value="<%=esDecano%>" <%if (esDecano !=null && esDecano.equals("1")) {%>checked<%}%>>
+								</td>								
+							
+							</tr>							
 						</table>
 					</siga:ConjCampos>	
 				</td>

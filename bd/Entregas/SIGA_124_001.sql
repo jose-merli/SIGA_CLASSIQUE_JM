@@ -194,3 +194,8 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 alter table fac_seriefacturacion add (ID_NOMBRE_DESCARGA_FAC NUMBER DEFAULT 1 NOT NULL);
 
 alter table fac_seriefacturacion add constraint FK_FAC_NOMBRES_DESCARGA_FAC foreign key (ID_NOMBRE_DESCARGA_FAC) references fac_nombres_descarga_fac (ID);
+
+insert into gen_recursos values ('gratuita.mantenimientoTablasMaestra.literal.decano', 'Decano', 0, 1, sysdate, 0, 19);
+insert into gen_recursos values ('gratuita.mantenimientoTablasMaestra.literal.decano', 'Decano#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos values ('gratuita.mantenimientoTablasMaestra.literal.decano', 'Decano#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos values ('gratuita.mantenimientoTablasMaestra.literal.decano', 'Decano#GL', 0, 4, sysdate, 0, 19);
