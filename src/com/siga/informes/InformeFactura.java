@@ -298,11 +298,12 @@ public class InformeFactura extends MasterReport {
 			return ficheroPDF;
 
 		} catch (SIGAException se) {
+			se.setErrorCode("1");
 			throw se;
 			
 		} catch (ClsExceptions ex) {
+			ex.setErrorCode("2");
 			throw ex;
-			
 		} catch (Exception e) {
 			throw new ClsExceptions(e,"Error al invocar generarPdfFacturaSinFirma: " + e.getLocalizedMessage());
 		}
@@ -393,9 +394,11 @@ public class InformeFactura extends MasterReport {
 			}
     		
 		} catch (SIGAException se) {
+			se.setErrorCode("1");
 			throw se;
 			
 		} catch (ClsExceptions ex) {
+			ex.setErrorCode("2");
 			throw ex;
 			
 		} catch (Exception e) {

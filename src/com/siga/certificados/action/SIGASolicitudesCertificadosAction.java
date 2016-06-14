@@ -2733,26 +2733,53 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 									    			
 									    		 }
 								    	
-								    	}catch(SIGAException e){
-								    		log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),((SIGAException) e).getLiteral(usr.getLanguage())});
-									    	  /** Escribiendo fichero de log **/
-											if (log != null)
-												log.flush();
-								    		
-											contadorError++;
-											String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
-								    		htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
-								    		admSolicitud.updateDirect(htNew, claves, camposAux );
-								    	}catch(ClsExceptions e){
-								    		log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), e.getMsg()});
-									    	  /** Escribiendo fichero de log **/
-											if (log != null)
-												log.flush();
-								    		
-											contadorError++;
-											String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
-								    		htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
-								    		admSolicitud.updateDirect(htNew, claves, camposAux );
+								    	}catch(SIGAException se){
+								    		contadorError++;
+								    		if((se.getErrorCode() != null && !"".equalsIgnoreCase(se.getErrorCode())) && (se.getErrorCode().equalsIgnoreCase("1")||se.getErrorCode().equalsIgnoreCase("2"))){
+												String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
+												htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+												admSolicitud.updateDirect(htNew, claves, camposAux);
+												log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), (se.getLiteral(usr.getLanguage()))});
+											
+										    	  /** Escribiendo fichero de log **/
+												if (log != null)
+													log.flush();
+												
+											}else{
+												contadorError++;
+												String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
+												htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
+												admSolicitud.updateDirect(htNew, claves, camposAux);
+												
+												log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), (se.getLiteral(usr.getLanguage()))});
+										    	  /** Escribiendo fichero de log **/
+												if (log != null)
+													log.flush();
+
+											}
+								    	}catch(ClsExceptions se){
+								    		contadorError++;
+								    		if((se.getErrorCode() != null && !"".equalsIgnoreCase(se.getErrorCode())) && (se.getErrorCode().equalsIgnoreCase("1")||se.getErrorCode().equalsIgnoreCase("2"))){
+												String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
+												htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+												admSolicitud.updateDirect(htNew, claves, camposAux);
+												log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), se.getMessage()});
+										    	  /** Escribiendo fichero de log **/
+												if (log != null)
+													log.flush();
+												
+											}else{
+												contadorError++;
+												String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
+												htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
+												admSolicitud.updateDirect(htNew, claves, camposAux);
+												
+												log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), se.getMessage()});
+										    	  /** Escribiendo fichero de log **/
+												if (log != null)
+													log.flush();
+												
+											}
 								    	}
 								   }else{
 									   CerEstadoSoliCertifiAdm estAdm = new CerEstadoSoliCertifiAdm(usr);
@@ -2884,6 +2911,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 
 		UsrBean usr = this.getUserBean(request);
 		CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(usr);
+		LogFileWriter log = null;
 		String[] claves = { CerSolicitudCertificadosBean.C_IDINSTITUCION, CerSolicitudCertificadosBean.C_IDSOLICITUD };
 		String[] campos = {CerSolicitudCertificadosBean.C_FECHAESTADO,CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
 
@@ -2918,14 +2946,18 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			Vector vDatos = admSolicitud.selectByPK(htSolicitud);
 			CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean) vDatos.elementAt(0);
 			htNew = beanSolicitud.getOriginalHash();
+			
+			log = LogFileWriter.getLogFileWriter(admSolicitud.obtenerRutaLogError(beanSolicitud),beanSolicitud.getIdSolicitud()+"-LogError");
+			log.clear();
 			try {
 				Facturacion facturacion = new Facturacion(usr);
 				FacFacturaAdm admFactura = new FacFacturaAdm(usr);
 				Vector<Hashtable<String,Object>> vFacturas = admFactura.obtenerFacturasFacturacionRapida(idInstitucion, null, idSolicitudCertificado);	
 				 if (vFacturas==null ||  vFacturas.size()==0) { // No esta facturado 
-				facturacion.facturacionRapidaProductosCertificados(idInstitucion, null, idSerieSeleccionada, idSolicitudCertificado, request);
-				request.setAttribute("mensaje", "messages.updated.success");
-				request.setAttribute("borrarFichero", "false");		
+					facturacion.facturacionRapidaProductosCertificados(idInstitucion, null, idSerieSeleccionada, idSolicitudCertificado, request);
+					request.setAttribute("mensaje", "messages.updated.success");
+					request.setAttribute("estilo","success");
+					request.setAttribute("borrarFichero", "false");		
 				// Pasamos a facturado
 					htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
 			    	htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
@@ -2941,6 +2973,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				        			//Import! volvemos a llamar al método facturacionRapidaProductosCertificados, al existir factura este método sólo descargará la factura.
 				        			facturacion.facturacionRapidaProductosCertificados(idInstitucion, null, idSerieSeleccionada, idSolicitudCertificado, request); 
 				        			request.setAttribute("mensaje", "messages.updated.success");
+				        			request.setAttribute("estilo","success");
 									request.setAttribute("borrarFichero", "false");		
 							    	htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
 				htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
@@ -2951,7 +2984,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 						    		htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
 						    		admSolicitud.updateDirect(htNew, claves, camposAux );
 						    		String tipoAlert ="error";   
-									request.setAttribute("estiloMensaje",tipoAlert);	
+									request.setAttribute("estilo",tipoAlert);	
 								     request.setAttribute("mensaje","El certificado ya está facturado, pero la factura está En revisión. "+
 				        						"Si quiere continuar con la facturación rápida de este certificado, hay que eliminar previamente la facturación de Certificados " +
 				        						"NO confirmada en Facturación > Mantenimiento Facturación.");
@@ -2960,19 +2993,81 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				        		
 				        	}
 					 }
+			} catch (SIGAException se) {
+				//Se establece un errorCode para diferenciar si la excepción viene por parte de la facturación o por parte de la generación del pdf.
+				if((se.getErrorCode() != null && !"".equalsIgnoreCase(se.getErrorCode())) && (se.getErrorCode().equalsIgnoreCase("1")||se.getErrorCode().equalsIgnoreCase("2"))){
+					String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
+					htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+					admSolicitud.updateDirect(htNew, claves, camposAux);
+					log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), (se.getLiteral(usr.getLanguage()))});
+				
+			    	  /** Escribiendo fichero de log **/
+					if (log != null)
+						log.flush();
+					
+					throw new Exception(se.getLiteral());
+				}else{
+					String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
+					htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
+					admSolicitud.updateDirect(htNew, claves, camposAux);
+					
+					log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), (se.getLiteral(usr.getLanguage()))});
+			    	  /** Escribiendo fichero de log **/
+					if (log != null)
+						log.flush();
+					
+					
+					throw new Exception(se.getLiteral());
+				}
+			} catch (ClsExceptions se) {
+				if((se.getErrorCode() != null && !"".equalsIgnoreCase(se.getErrorCode())) && (se.getErrorCode().equalsIgnoreCase("1")||se.getErrorCode().equalsIgnoreCase("2"))){
+					String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
+					htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+					admSolicitud.updateDirect(htNew, claves, camposAux);
+					log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), se.getMessage()});
+			    	  /** Escribiendo fichero de log **/
+					if (log != null)
+						log.flush();
+					
+					
+					throw new Exception(se.getMessage());
+				}else{
+					String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
+					htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
+					admSolicitud.updateDirect(htNew, claves, camposAux);
+					
+					log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), se.getMessage()});
+			    	  /** Escribiendo fichero de log **/
+					if (log != null)
+						log.flush();
+					
+					throw new Exception(se.getMessage());
+				}
+						
+				
 			} catch (Exception e) {
 				String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
 				htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
 				admSolicitud.updateDirect(htNew, claves, camposAux);
-				throw new SIGAException("Error en la facturación");
+				
+				log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), e.getLocalizedMessage()});
+		    	  /** Escribiendo fichero de log **/
+				if (log != null)
+					log.flush();
+				
+				throw new Exception(e.getLocalizedMessage());
 			}
 
 
 		} catch (Exception e) {
-			if (e instanceof SIGAException || e instanceof ClsExceptions)
-				throwExcp(e.getMessage(), new String[] { "modulo.certificados" }, e, null);
-			else
-				throwExcp("messages.general.error", new String[] { "modulo.certificados" }, e, null);
+			if (e.getMessage() != null && !"".equalsIgnoreCase(e.getMessage())){
+				//throwExcp(e.getMessage(), new String[] { "modulo.certificados" }, e, null);
+				salida = errorRefresco(e.getMessage(),new ClsExceptions(e.toString()),request);
+			}
+			else{
+				//throwExcp("messages.general.error", new String[] { "modulo.certificados" }, e, null);
+				salida =  errorRefresco("messages.general.error",new ClsExceptions(e.toString()),request);
+			}
 		}
 
 		return salida;

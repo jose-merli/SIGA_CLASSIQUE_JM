@@ -363,24 +363,50 @@ public class AccionesMasivasCertificadosListener extends SIGAListenerPorMinutosA
 					        		
 					        	}
 			    		 }
-					 }catch(SIGAException e){
-				    		log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),((SIGAException) e).getLiteral(usr.getLanguage())});
-					    	  /** Escribiendo fichero de log **/
-							if (log != null)
-								log.flush();
-							String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
-				    		htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
-				    		admSolicitud.updateDirect(htNew, claves, camposAux );
-			    	}catch(ClsExceptions e){
-			    		log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), e.getMsg()});
-				    	  /** Escribiendo fichero de log **/
-						if (log != null)
-							log.flush();
-						String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
-			    		htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
-			    		admSolicitud.updateDirect(htNew, claves, camposAux );
-			    	}
-					 
+						}catch(SIGAException se){
+				    		if((se.getErrorCode() != null && !"".equalsIgnoreCase(se.getErrorCode())) && (se.getErrorCode().equalsIgnoreCase("1")||se.getErrorCode().equalsIgnoreCase("2"))){
+								String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
+								htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+								admSolicitud.updateDirect(htNew, claves, camposAux);
+								log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), (se.getLiteral(usr.getLanguage()))});
+							
+						    	  /** Escribiendo fichero de log **/
+								if (log != null)
+									log.flush();
+								
+							}else{
+								String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
+								htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
+								admSolicitud.updateDirect(htNew, claves, camposAux);
+								
+								log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), (se.getLiteral(usr.getLanguage()))});
+						    	  /** Escribiendo fichero de log **/
+								if (log != null)
+									log.flush();
+
+							}
+				    	}catch(ClsExceptions se){
+				    		if((se.getErrorCode() != null && !"".equalsIgnoreCase(se.getErrorCode())) && (se.getErrorCode().equalsIgnoreCase("1")||se.getErrorCode().equalsIgnoreCase("2"))){
+								String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
+								htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+								admSolicitud.updateDirect(htNew, claves, camposAux);
+								log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), se.getMessage()});
+						    	  /** Escribiendo fichero de log **/
+								if (log != null)
+									log.flush();
+								
+							}else{
+								String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
+								htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
+								admSolicitud.updateDirect(htNew, claves, camposAux);
+								
+								log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), se.getMessage()});
+						    	  /** Escribiendo fichero de log **/
+								if (log != null)
+									log.flush();
+								
+							}
+				    	}
 				 }else{
 					 CerEstadoSoliCertifiAdm estAdm = new CerEstadoSoliCertifiAdm(usr);
 						switch(beanSolicitud.getIdEstadoSolicitudCertificado()){
