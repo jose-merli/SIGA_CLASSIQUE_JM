@@ -99,7 +99,7 @@
 	String asistenciaAnio = "", asistenciaNumero = "", sFechaJuicio = "", auxJuicio = "", sHorasJuicio = "", sMinutosJuicio = "", calidad ="", nig = "";	
 	
 	String maxLenghtProc = "20", estilo = "box", readOnly="false", estiloCombo="boxCombo";
-	String idPretension = "",pretension="", turno = "", paramsJuzgadoJSON = "", idProcedimientoParamsJSON = "", filtrarModulos = "N";
+	String idPretension = "",pretension="", turno = "", paramsJuzgadoJSON = "", idProcedimientoParamsJSON = "", filtrarModulos = ClsConstants.FILTRAR_MODULOS_FECHAACTUAL;
 	String comboJuzgados ="", comboModulos="",comboPretensionesEjis="", comboModulosParentQueryIds="";
 	String art27 = "", fechaVigor = "";
 	
@@ -212,10 +212,10 @@
 			idInstitucionJuzgado = (String) datosDesigna.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO);
 		}
 		
-		if(filtrarModulos.equals("S")) {
-			fechaVigor = fechaApertura;
+		if(filtrarModulos.equals(ClsConstants.FILTRAR_MODULOS_FECHAACTUAL)) {
+			fechaVigor = GstDate.getHoyJsp();			
 		} else {
-			fechaVigor = GstDate.getHoyJsp();
+			fechaVigor = fechaApertura;
 		}
 		
 		juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");

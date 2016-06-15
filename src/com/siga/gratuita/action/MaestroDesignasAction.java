@@ -160,7 +160,7 @@ public class MaestroDesignasAction extends MasterAction {
 			String ejisActivo = admParametros.getValor(idInstitucion, "ECOM", "EJIS_ACTIVO", "0");
 			request.setAttribute("EJIS_ACTIVO", ejisActivo);			
 			
-			String filtrarModulos = admParametros.getValor(idInstitucion,"SCS","FILTRAR_MODULOS_PORFECHA_DESIGNACION", "");
+			String filtrarModulos = admParametros.getValor(idInstitucion,"SCS",ClsConstants.GEN_PARAM_FILTRAR_MODULOS_PORFECHA, "");
 			request.setAttribute("filtrarModulos", filtrarModulos);
 			
 			

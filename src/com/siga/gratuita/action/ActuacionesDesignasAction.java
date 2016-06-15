@@ -534,7 +534,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 		   Hashtable actuacionAntigua =(Hashtable)(designaAdm.getDesignaActuaciones(hashDatosDesigna, request)).get(0);
 		   
 		   	GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
-			String filtrarModulos = adm.getValor(idInstitucion,"SCS","FILTRAR_MODULOS_PORFECHA_DESIGNACION", "");
+			String filtrarModulos = adm.getValor(idInstitucion,"SCS",ClsConstants.GEN_PARAM_FILTRAR_MODULOS_PORFECHA, "");
 			request.setAttribute("filtrarModulos", filtrarModulos);
 		    
 		   	int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
@@ -711,7 +711,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			designaActual = actuacionDesignaAdm.prepararInsert(designaActual);
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 			GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
-			String filtrarModulos = adm.getValor((String)designaActual.get("IDINSTITUCION"),"SCS","FILTRAR_MODULOS_PORFECHA_DESIGNACION", "");
+			String filtrarModulos = adm.getValor((String)designaActual.get("IDINSTITUCION"),"SCS",ClsConstants.GEN_PARAM_FILTRAR_MODULOS_PORFECHA, "");
 			String ejisActivo = adm.getValor((String)designaActual.get("IDINSTITUCION"), "ECOM", "EJIS_ACTIVO", "0");
 			
 			request.setAttribute("EJIS_ACTIVO", ejisActivo);
