@@ -199,3 +199,64 @@ insert into gen_recursos values ('gratuita.mantenimientoTablasMaestra.literal.de
 insert into gen_recursos values ('gratuita.mantenimientoTablasMaestra.literal.decano', 'Decano#CA', 0, 2, sysdate, 0, 19);
 insert into gen_recursos values ('gratuita.mantenimientoTablasMaestra.literal.decano', 'Decano#EU', 0, 3, sysdate, 0, 19);
 insert into gen_recursos values ('gratuita.mantenimientoTablasMaestra.literal.decano', 'Decano#GL', 0, 4, sysdate, 0, 19);
+
+INSERT INTO GEN_PARAMETROS (MODULO,PARAMETRO,VALOR,FECHAMODIFICACION,USUMODIFICACION,IDINSTITUCION,IDRECURSO)
+VALUES ('CEN','WS_ACA_URL','0',SYSDATE,0,0,'cen.parametro.urlwsaca');
+  
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.urlwsaca', 'Url de acceso al Servicio Web de ACA', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.urlwsaca', 'Url de acceso al Servicio Web de ACA#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.urlwsaca', 'Url de acceso al Servicio Web de ACA#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.urlwsaca', 'Url de acceso al Servicio Web de ACA#EU', 0, '3', sysdate, 0, '19');
+ 
+ 
+ INSERT INTO GEN_PARAMETROS (MODULO,PARAMETRO,VALOR,FECHAMODIFICACION,USUMODIFICACION,IDINSTITUCION,IDRECURSO)
+VALUES ('CEN','WS_ACA_PASS','1392010586',SYSDATE,0,0,'cen.parametro.passwsaca');
+  
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.passwsaca', 'Contraseña de acceso al Servicio Web de ACA para usuario SIGA', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.passwsaca', 'Contraseña de acceso al Servicio Web de ACA para usuario SIGA#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.passwsaca', 'Contraseña de acceso al Servicio Web de ACA para usuario SIGA#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.passwsaca', 'Contraseña de acceso al Servicio Web de ACA para usuario SIGA#EU', 0, '3', sysdate, 0, '19');
+ 
+  INSERT INTO GEN_PARAMETROS (MODULO,PARAMETRO,VALOR,FECHAMODIFICACION,USUMODIFICACION,IDINSTITUCION,IDRECURSO)
+VALUES ('CEN','WS_ACA_USER','SIGA',SYSDATE,0,0,'cen.parametro.userwsaca');
+  
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.userwsaca', 'Usuario de acceso al Servicio Web de ACA', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.userwsaca', 'Usuario de acceso al Servicio Web de ACA#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.userwsaca', 'Usuario de acceso al Servicio Web de ACA#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.userwsaca', 'Usuario de acceso al Servicio Web de ACA#EU', 0, '3', sysdate, 0, '19');
+ 
+   INSERT INTO GEN_PARAMETROS (MODULO,PARAMETRO,VALOR,FECHAMODIFICACION,USUMODIFICACION,IDINSTITUCION,IDRECURSO)
+VALUES ('CEN','WS_ACA_ACTIVO','0',SYSDATE,0,0,'cen.parametro.wsacaactivo');
+  
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.wsacaactivo', 'Activar Servicios Web ACA(1:Sí, 0:No)', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.wsacaactivo', 'Activar Servicios Web ACA(1:Sí, 0:No)#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.wsacaactivo', 'Activar Servicios Web ACA(1:Sí, 0:No)#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.wsacaactivo', 'Activar Servicios Web ACA(1:Sí, 0:No)#EU', 0, '3', sysdate, 0, '19');
+ 
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.bajacolegial.errorNotificacionAca', 'No se ha podido notificar a ACA del cambio de situación, por lo que el colegiado no aparecerá en la bandeja de revisión de ACA', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.bajacolegial.errorNotificacionAca', 'No se ha podido notificar a ACA del cambio de situación, por lo que el colegiado no aparecerá en la bandeja de revisión de ACA#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.bajacolegial.errorNotificacionAca', 'No se ha podido notificar a ACA del cambio de situación, por lo que el colegiado no aparecerá en la bandeja de revisión de ACA#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.bajacolegial.errorNotificacionAca', 'No se ha podido notificar a ACA del cambio de situación, por lo que el colegiado no aparecerá en la bandeja de revisión de ACA#EU', 0, '3', sysdate, 0, '19');
+ 
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.bajacolegial.successSolicitudRevisionAca', 'Petición de Solicitud de Revision de Certificado realizada correctamente. ', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.bajacolegial.successSolicitudRevisionAca', 'Petición de Solicitud de Revision de Certificado realizada correctamente. #GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.bajacolegial.successSolicitudRevisionAca', 'Petición de Solicitud de Revision de Certificado realizada correctamente. #CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.bajacolegial.successSolicitudRevisionAca', 'Petición de Solicitud de Revision de Certificado realizada correctamente. #EU', 0, '3', sysdate, 0, '19');
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.bajacolegial.avisoSolicitudRevisionAca', 'La petición ha generado el siguiente aviso:', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.bajacolegial.avisoSolicitudRevisionAca', 'La petición ha generado el siguiente aviso:#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.bajacolegial.avisoSolicitudRevisionAca', 'La petición ha generado el siguiente aviso:#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHA
+ 
+  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.bajacolegial.identNoValidaSolicitudRevisionAca', 'Tipo de identificación no contemplado en el Servicio Web ACA', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.bajacolegial.identNoValidaSolicitudRevisionAca', 'Tipo de identificación no contemplado en el Servicio Web ACA#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.bajacolegial.identNoValidaSolicitudRevisionAca', 'Tipo de identificación no contemplado en el Servicio Web ACA#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.bajacolegial.identNoValidaSolicitudRevisionAca', 'Tipo de identificación no contemplado en el Servicio Web ACA#EU', 0, '3', sysdate, 0, '19');
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.general.error.indeterminado', 'Se ha producido un error indeterminado. Consulte con su administrador.', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.general.error.indeterminado', 'Se ha producido un error indeterminado. Consulte con su administrador.#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.general.error.indeterminado', 'Se ha producido un error indeterminado. Consulte con su administrador.#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.general.error.indeterminado', 'Se ha producido un error indeterminado. Consulte con su administrador.#EU', 0, '3', sysdate, 0, '19');
+
+ 
+ 
