@@ -83,7 +83,7 @@ public class NuevaRemesaAction extends MasterAction {
 	
 	
 	private String actualizaWS(ActionMapping mapping, MasterForm masterForm, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		Short idcol = 0;
+		Short idcol = null;
 		try {
 			NuevaRemesaForm form = (NuevaRemesaForm) masterForm;
 			String idColegio=form.getIdColegioActualizar();
@@ -93,14 +93,14 @@ public class NuevaRemesaAction extends MasterAction {
 			}
 			EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
 			if (ecomColaService.insertaColaCargaCenso(idcol) != 1) {
-					throw new Exception("No se ha podido insertar correctamente en la cola de carga de censo para el colegio " + idcol);
+					throw new Exception("No se ha podido insertar correctamente en la cola para el colegio " + idcol);
 			}
 		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, null);
 			log.error("Error al insertar en la cola para el colegio " + idcol, e);
+			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, null);			
 		}
 		
-		return exitoRefresco("messages.inserted.success.nuevoFicheroExcel", request);
+		return exitoRefresco("messages.success.censo.peticion", request);
 	}
 	
 	
