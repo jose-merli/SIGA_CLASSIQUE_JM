@@ -23,3 +23,9 @@ alter table SCS_UNIDADFAMILIAREJG add CIRCUNSTANCIAS_EXCEPCIONALES number(1);
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.literal.circunstanciasExcepcionales', 'Circunst. Excepc.#CA', 0, '2', sysdate, 0, '19');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.literal.circunstanciasExcepcionales', 'Circunst. Excepc.#EU', 0, '3', sysdate, 0, '19');
 
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.success.censo.peticion', 'La solicitud de actualización de censo ha sido procesada correctamente.', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.success.censo.peticion', 'La solicitud de actualización de censo ha sido procesada correctamente.#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.success.censo.peticion', 'La solicitud de actualización de censo ha sido procesada correctamente.#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.success.censo.peticion', 'La solicitud de actualización de censo ha sido procesada correctamente.#EU', 0, '3', sysdate, 0, '19');
+
