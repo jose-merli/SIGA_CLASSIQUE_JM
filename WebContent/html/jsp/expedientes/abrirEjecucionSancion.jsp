@@ -46,11 +46,22 @@
 		<script>
 			function abrirModal() {
 				<%if (nuevo){%>
-					alert('<%=insertado%>');
+					alert('<%=insertado%>','success');
 				<%}else{%>
-					alert('<%=actualizado%>');
+					alert('<%=actualizado%>','success');
 				<%}%>
-				var result=ventaModalGeneral("EjecucionSancionForm", "P");
+				var resultado=ventaModalGeneral("EjecucionSancionForm", "P");
+				if (resultado[0] != "") {
+					mensaje = "";			
+					for ( var j = 1; j < resultado.length; j++) {
+						if(resultado[j] && resultado[j]!=''){
+							mensaje += resultado[j];
+							mensaje += "\r\n";
+						}
+					}
+					if(mensaje!='')
+						alert(mensaje,resultado[0]);
+				}
 				parent.refrescarLocal();
 			}
 		</script>

@@ -753,7 +753,6 @@
 <%
 			} else { %>
 			 // Si visualizamos los datos de colegiacion desde la ficha colegial
-			 				
 			    document.forms[0].modo.value="abrir";
 				document.forms[0].target="mainPestanas";
 <%
@@ -764,6 +763,7 @@
 			document.forms[0].idInstitucion.value="<%=idInstitucion%>";
 			document.forms[0].submit();
 		}
+		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
@@ -989,7 +989,16 @@
 						
 						if(confirm('<siga:Idioma key="messages.censo.estadosColegiales.aviso.inscripciones.baja"/>')) {
 							var resultado = ventaModalGeneral(document.forms[0].name,"P");
-							if (resultado=="MODIFICADO") {
+							if (resultado[0] != "") {
+								mensaje = "";			
+								for ( var j = 1; j < resultado.length; j++) {
+									if(resultado && resultado[j]!=''){
+										mensaje += resultado[j];
+										mensaje += "\r\n";
+									}
+								}	
+								alert(mensaje,resultado[0]);
+								
 								refrescarLocal();
 							}
 						}else{
@@ -997,7 +1006,16 @@
 						}
 					}else{
 						var resultado = ventaModalGeneral(document.forms[0].name,"P");
-						if (resultado=="MODIFICADO") {
+						if (resultado && resultado[0] != "") {
+							mensaje = "";			
+							for ( var j = 1; j < resultado.length; j++) {
+								if(resultado[j]!=''){
+									mensaje += resultado[j];
+									mensaje += "\r\n";
+								}
+							}	
+							alert(mensaje,resultado[0]);
+							
 							refrescarLocal();
 						}
 					}
@@ -1009,7 +1027,16 @@
 			});	
 		}else{
 			var resultado = ventaModalGeneral(document.forms[0].name,"P");
-			if (resultado=="MODIFICADO") {
+			if (resultado && resultado[0] != "") {
+				mensaje = "";			
+				for ( var j = 1; j < resultado.length; j++) {
+					if(resultado[j]!=''){
+						mensaje += resultado[j];
+						mensaje += "\r\n";
+					}
+				}	
+				alert(mensaje,resultado[0]);
+				
 				refrescarLocal();
 			}
 		}
@@ -1020,6 +1047,7 @@
 			// un valor a la ventana padre (USAR SIEMPRE)
 			top.cierraConParametros("MODIFICADO");
 		}
+		
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->

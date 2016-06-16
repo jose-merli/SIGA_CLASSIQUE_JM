@@ -18,6 +18,7 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenDatosColegialesEstadoAdm;
 import com.siga.beans.ExpExpedienteAdm;
 import com.siga.beans.ExpExpedienteBean;
@@ -50,7 +51,8 @@ public class EjecucionSancionAction extends MasterAction {
 			throws SIGAException {
 	    
 		UserTransaction tx = null;
-		
+		int estado = 0;
+		StringBuilder messageLlamadaWebServiceAcaRevisionLetrado = new StringBuilder();
 		try {
 			
 			UsrBean userBean = (UsrBean)request.getSession().getAttribute(("USRBEAN"));
@@ -95,7 +97,7 @@ public class EjecucionSancionAction extends MasterAction {
 			String idPersona;
 			ExpExpedienteAdm exp = new ExpExpedienteAdm(this.getUserBean(request));
 			Vector vDenunciado = exp.getDenunciados(idInstitucion, idInstitucion_tipoExpediente.toString(), anioExpediente.toString(), numeroExpediente.toString(), IdTipoExpediente.toString());
-				
+			
 			for (int  j = 0; j < vDenunciado.size(); j++){
 				Hashtable h = new Hashtable();
 				h = (Hashtable)vDenunciado.get(j);
@@ -111,7 +113,19 @@ public class EjecucionSancionAction extends MasterAction {
 				
 				if (form.isBajaColegial()){
 					CenDatosColegialesEstadoAdm c1Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
-					c1Adm.insertarBajaColegial(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request),expedienteBean.getFechaInicialEstado());
+					Hashtable<String,String> bajaColegialHashtable = new Hashtable<String, String>();
+					
+					bajaColegialHashtable.put("idPersona", idPersona);
+					bajaColegialHashtable.put("idInstitucion", idInstitucion);
+					bajaColegialHashtable.put("motivo", form.getMotivo());
+					bajaColegialHashtable.put("idioma", this.getLenguaje(request));
+					bajaColegialHashtable.put("fechaSancion", expedienteBean.getFechaInicialEstado());
+					estado = c1Adm.insertarBajaColegial(bajaColegialHashtable);
+					if(estado!=2 && bajaColegialHashtable.get("RESPUESTA_ACA")!=null){
+						messageLlamadaWebServiceAcaRevisionLetrado.append(bajaColegialHashtable.get("RESPUESTA_ACA"));
+						messageLlamadaWebServiceAcaRevisionLetrado.append(" ");
+					}
+					
 				}
 				
 				SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_LONG_ENGLISH);
@@ -136,7 +150,25 @@ public class EjecucionSancionAction extends MasterAction {
 		}catch(Exception e){
 			throwExcp("messages.general.error", new String[] {"modulo.expediente"}, e, tx); 
 		}
-		
-		return exitoModal("messages.updated.success",request);
+		if(estado==0){
+			return exitoModal("messages.updated.success",request);
+		}
+		else{
+			String[] parametros = {"","","",""};
+			// informando de fin correcto y de cosas SJCS pendientes
+			parametros[0] = "success";
+			parametros[1] = UtilidadesString.getMensajeIdioma(this.getUserBean(request), "messages.updated.success");
+			if(estado==2){
+				parametros[3] =  UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.bajacolegial.errorNotificacionAca");
+				parametros[0] = "error";
+			}else if(messageLlamadaWebServiceAcaRevisionLetrado.length()>0){
+				parametros[3] =  messageLlamadaWebServiceAcaRevisionLetrado.toString();
+				parametros[0] = "notice";
+				
+			}
+			request.setAttribute("parametrosArray", parametros);
+			request.setAttribute("modal", "");
+			return "exitoParametros";
+		}
 	}
 }

@@ -12,8 +12,19 @@ import java.util.Vector;
 
 import javax.transaction.UserTransaction;
 
+import org.acabogacia.www.aca2.ws.certrev.CertificateReviewResponse;
+import org.acabogacia.www.aca2.ws.certrev.ErrorsType;
+import org.acabogacia.www.aca2.ws.certrev.SuccessType;
+import org.acabogacia.www.aca2.ws.certrev.WarningsType;
+import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.AppConstants.MODULO;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -21,6 +32,9 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
+import com.siga.ws.aca.AcaWSClient;
+
+import es.satec.businessManager.BusinessManager;
 
 /**
 *
@@ -371,12 +385,20 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 	 * @return  Boolean - Resultado de la operacion  
 	 * @exception  SIGAException  En caso de error 
 	 */
-	public boolean insertarBajaColegial (String idPersona, String idInstitucion, String motivo, String idioma, String fechaSancion) throws SIGAException , ClsExceptions
+	public int insertarBajaColegial (Hashtable<String, String> bajaColegialHashtable) throws SIGAException , ClsExceptions
 	{
-		boolean resultado = false;
+		
+		int resultado = 0;
 		CenColegiadoBean bean = new CenColegiadoBean();
 		
-		try {		
+		boolean isErrorLlamadaAca = false;
+		try {
+			String idPersona = bajaColegialHashtable.get("idPersona");
+			String idInstitucion = bajaColegialHashtable.get("idInstitucion");
+			String motivo = bajaColegialHashtable.get("motivo");
+			String idioma = bajaColegialHashtable.get("idioma");
+			String fechaSancion =bajaColegialHashtable.get("fechaSancion");
+			
 			// Compruebo que existan datos colegiales asociados a esos identificadores
 			CenColegiadoAdm admCol=new CenColegiadoAdm(this.usrbean);			
 			if (admCol.getDatosColegiales(new Long(idPersona),new Integer(idInstitucion))==null){
@@ -392,32 +414,72 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 				beanDatos.setObservaciones(motivo);
 				
 				if (this.insert(beanDatos)) {
-
-					// MAV 25/8/2005 Cambio por incidencia
-					if (motivo.equalsIgnoreCase("") || motivo.equalsIgnoreCase(" ")){
-						//motivo="Suspensión por apertura de expediente.";
-						motivo=UtilidadesString.getMensajeIdioma(usrbean,"expedientes.alertas.literal.motivo2");
-					}
+					
+					
 					CenHistoricoBean bHist = new CenHistoricoBean();
 					bHist.setMotivo(motivo);
 					bHist.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_COLEGIAL));
+					
+					GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
+					//Niramos si esta activo la llamada al servicio Web llamadaWebServiceAcaRevisionLetrado
+					String acaActivo = genParametrosService.getValorParametroWithNull((short)0,PARAMETRO.WS_ACA_ACTIVO,MODULO.CEN);
+					if(acaActivo!=null && acaActivo.equalsIgnoreCase(AppConstants.DB_TRUE)){
+						//Niramos si esta activo para esta institucion la llamada al servicio Web llamadaWebServiceAcaRevisionLetrado
+						acaActivo = genParametrosService.getValorParametroWithNull( beanDatos.getIdInstitucion().shortValue(),PARAMETRO.WS_ACA_ACTIVO,MODULO.CEN);
+					}
+					
+					if(acaActivo!=null && acaActivo.equalsIgnoreCase(AppConstants.DB_TRUE)){
+					
+						CenPersonaAdm cenPersonaAdm = new CenPersonaAdm(this.usrbean);
+						Hashtable personaHashtable = new Hashtable();
+						personaHashtable.put(CenPersonaBean.C_IDPERSONA,idPersona );
+						Vector personaVector = cenPersonaAdm.selectByPK(personaHashtable);
+						CenPersonaBean cenPersonaBean = (CenPersonaBean) personaVector.get(0);
+						
+						
+						
+						String llamadaReport= null;
+						try {
+							llamadaReport = llamadaWebServiceAcaRevisionLetrado((short)cenPersonaBean.getIdTipoIdentificacion().shortValue(), cenPersonaBean.getNIFCIF(), beanDatos.getIdInstitucion().shortValue());	
+						} catch (BusinessException e) {
+							isErrorLlamadaAca = true;
+							llamadaReport = e.getMessage();
+						}
+						
+						// MAV 25/8/2005 Cambio por incidencia
+						if (motivo.equalsIgnoreCase("") || motivo.equalsIgnoreCase(" ")){
+							//motivo="Suspensión por apertura de expediente.";
+							motivo=UtilidadesString.getMensajeIdioma(usrbean,"expedientes.alertas.literal.motivo2");
+						}
+						
+						if(llamadaReport!=null){
+							llamadaReport = cenPersonaBean.getNombreCompleto()+" - "+llamadaReport;
+							bajaColegialHashtable.put("RESPUESTA_ACA", llamadaReport);
+						}
+						bHist.setObservaciones(llamadaReport);
+					}
+					
 
 					CenHistoricoAdm admHis = new CenHistoricoAdm(this.usrbean);
 					if (admHis.insertCompleto(bHist, beanDatos, CenHistoricoAdm.ACCION_INSERT, idioma)) {
-						resultado=true;
+						resultado=1;
 					}	
 				}
 			}
 		}
 		catch (SIGAException ee) {
-			resultado=false;
+			resultado=0;
 			throw new SIGAException("messages.censo.estadosColegiales.errorNoEsColegiado",ee,new String[] {"modulo.censo"});
 		}
-		catch (Exception e) {
-			resultado=false;
+		catch (ClsExceptions e) {
+			resultado=0;
 			throw new ClsExceptions("messages.general.error");
 		}
+		if(isErrorLlamadaAca)
+			resultado = 2;
 		return resultado;
+		
+		
 	}
 	
 	/**
@@ -537,30 +599,132 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 	 * Inserta un nuevo estado colegial y rellena la tabla de historicos (CEN_HISTORICO)	 
 	 * @param  nuevo - estado a insertar 
 	 * @param  entHistorico - entrada historico
-	 * @return  Boolean - Resultado de la operacion  
+	 * @return  int - Resultado de la operacion  . 0 ko, 1 ok, 2 ok con errores de WS 
 	 * @exception  ClsExceptions  En cualquier caso de error 
 	 */
-	public boolean insercionConHistorico (Hashtable nuevo, CenHistoricoBean entHistorico, String idioma) throws ClsExceptions, SIGAException{
+	public int insercionConHistorico (Hashtable nuevo, CenHistoricoBean entHistorico, String idioma) throws ClsExceptions, SIGAException{
 		return  insercionConHistorico (nuevo, entHistorico, idioma, false);
 	}
-	public boolean insercionConHistorico (Hashtable nuevo, CenHistoricoBean entHistorico, String idioma, boolean bDesdeCGAE) throws ClsExceptions, SIGAException 
+	public int insercionConHistorico (Hashtable nuevo, CenHistoricoBean entHistorico, String idioma, boolean bDesdeCGAE) throws ClsExceptions, SIGAException 
 	{
-		boolean resultado = false;
-		
+		int resultado = 0;
+		boolean isErrorLlamadaAca = false;
 		try {
 			CenDatosColegialesEstadoBean beanDatos = (CenDatosColegialesEstadoBean) this.hashTableToBean(nuevo);
+			
 			if (this.insert(beanDatos)) {
+				int estado = new Integer(nuevo.get(CenDatosColegialesEstadoBean.C_IDESTADO).toString()).intValue();
+				if (estado== ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL){
+					
+					GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
+					//Niramos si esta activo la llamada al servicio Web llamadaWebServiceAcaRevisionLetrado
+					String acaActivo = genParametrosService.getValorParametroWithNull((short)0,PARAMETRO.WS_ACA_ACTIVO,MODULO.CEN);
+					if(acaActivo!=null && acaActivo.equalsIgnoreCase(AppConstants.DB_TRUE)){
+						//Niramos si esta activo para esta institucion la llamada al servicio Web llamadaWebServiceAcaRevisionLetrado
+						acaActivo = genParametrosService.getValorParametroWithNull( beanDatos.getIdInstitucion().shortValue(),PARAMETRO.WS_ACA_ACTIVO,MODULO.CEN);
+					}
+					
+					if(acaActivo!=null && acaActivo.equalsIgnoreCase(AppConstants.DB_TRUE)){
+						CenPersonaAdm cenPersonaAdm = new CenPersonaAdm(this.usrbean);
+						Vector personaVector = cenPersonaAdm.selectByPK(nuevo);
+						CenPersonaBean cenPersonaBean = (CenPersonaBean) personaVector.get(0);
+						
+						String llamadaReport= null;
+						try {
+							llamadaReport = llamadaWebServiceAcaRevisionLetrado((short)cenPersonaBean.getIdTipoIdentificacion().shortValue(), cenPersonaBean.getNIFCIF(), beanDatos.getIdInstitucion().shortValue());	
+						} catch (BusinessException e) {
+							isErrorLlamadaAca = true;
+							llamadaReport = e.getMessage();
+						}
+						nuevo.put("RESPUESTA_ACA", llamadaReport);
+						entHistorico.setObservaciones(llamadaReport);
+					}
+				}
 				CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
 				if (admHis.insertCompleto(entHistorico, beanDatos, CenHistoricoAdm.ACCION_INSERT, idioma, bDesdeCGAE)) {
-					resultado=true;
+					resultado=1;
 				}	
 			}					
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al insertar datos en B.D.");
 		}
+		if(isErrorLlamadaAca)
+			resultado = 2;
 		return resultado;
 	}	
+	/**
+	 * 
+	 * @param idTipoIdentificacion
+	 * @param numIdentificacion
+	 * @param idInstitucion
+	 * @return
+	 * @throws BusinessException
+	 */
+	public String llamadaWebServiceAcaRevisionLetrado(short idTipoIdentificacion,String numIdentificacion,Short idInstitucion)throws BusinessException{
+		
+		ClsLogging.writeFileLog("Inicio llamadaWebServiceAcaRevisionLetrado "+ numIdentificacion+ " "+idTipoIdentificacion + " "+idInstitucion, 3); 
+		StringBuilder llamadaWSAca = new StringBuilder("");
+		boolean isErrorLlamadaAca = false;
+		try {
+			//Informamos al Servicio Web de ACA de que al haber una baja  colegial debe revisar los certificados del letrado.
+			AcaWSClient acaWSClient = new AcaWSClient();
+			if(AcaWSClient.PersonalIdTypes.getEnum(idTipoIdentificacion)==null)
+				throw new BusinessException(UtilidadesString.getMensajeIdioma(usrbean, "messages.bajacolegial.identNoValidaSolicitudRevisionAca"));
+			CertificateReviewResponse certificateReviewResponse = acaWSClient.getCertificateReviewResponse(AcaWSClient.PersonalIdTypes.getEnum(idTipoIdentificacion).getIdType(), numIdentificacion,idInstitucion,this.usrbean);
+			if(certificateReviewResponse.getSuccess()==null){
+				ErrorsType errorsType = certificateReviewResponse.getErrors();
+				String messagesErrorNotificaionAca = UtilidadesString.getMensajeIdioma(usrbean, "messages.bajacolegial.errorNotificacionAca");
+				llamadaWSAca.append(messagesErrorNotificaionAca);
+				llamadaWSAca.append(". ");
+				llamadaWSAca.append(errorsType.getError().getText());
+				ClsLogging.writeFileLog(messagesErrorNotificaionAca+" "+errorsType.getError().getCode()+" "+errorsType.getError().getText(),3);
+//				llamadaWSAca.append(errorsType.getError().getCode());
+//				llamadaWSAca.append(" ");
+//				llamadaWSAca.append(errorsType.getError().getText());
+				isErrorLlamadaAca = true;
+				
+				
+			}else{
+				SuccessType successType =  certificateReviewResponse.getSuccess();
+				//System.out.println("SuccessType"+successType.);
+				llamadaWSAca.append(UtilidadesString.getMensajeIdioma(usrbean, "messages.bajacolegial.successSolicitudRevisionAca"));
+				WarningsType warningsType = certificateReviewResponse.getWarnings();
+				if(warningsType!=null && warningsType.getWarning()!=null){
+					String messagesAvisorNotificaionAca = UtilidadesString.getMensajeIdioma(usrbean, "messages.bajacolegial.avisoSolicitudRevisionAca");
+					llamadaWSAca.append(messagesAvisorNotificaionAca);
+//					llamadaWSAca.append(warningsType.getWarning().getCode());
+					llamadaWSAca.append(". ");
+					llamadaWSAca.append(warningsType.getWarning().getText());
+					ClsLogging.writeFileLog(messagesAvisorNotificaionAca+" "+warningsType.getWarning().getCode()+" "+warningsType.getWarning().getText(),3);
+				}
+			}
+			
+			ClsLogging.writeFileLog("Fin llamadaWebServiceAcaRevisionLetrado "+ llamadaWSAca.toString(), 3);
+			
+		}catch (BusinessException e) {
+			ClsLogging.writeFileLog("Fin llamadaWebServiceAcaRevisionLetrado.  Se ha producido un error controlado en la llamada el Servicio web de ACA AcaWSClient.getCertificateReviewResponse "+e.getMessage(),7);
+			isErrorLlamadaAca = true;
+			llamadaWSAca.append(UtilidadesString.getMensajeIdioma(usrbean, "messages.bajacolegial.errorNotificacionAca"));
+			llamadaWSAca.append(". ");
+			llamadaWSAca.append(e.getMessage());
+			
+		} catch (Exception e) {
+			ClsLogging.writeFileLogError("Fin llamadaWebServiceAcaRevisionLetrado.  Se ha producido un error no controlado en la llamada el Servicio web de ACA AcaWSClient.getCertificateReviewResponse",e,7);
+			StringBuilder errorControlado = new StringBuilder(UtilidadesString.getMensajeIdioma(usrbean, "messages.bajacolegial.errorNotificacionAca"));
+			errorControlado.append(". ");
+			errorControlado.append(UtilidadesString.getMensajeIdioma(usrbean,"messages.general.error.indeterminado"));
+			throw new BusinessException(errorControlado.toString());
+		}
+		
+		if(isErrorLlamadaAca)
+			throw new BusinessException(llamadaWSAca.toString());
+		
+		
+		return llamadaWSAca.toString();
+		
+	}
+	
 	
 	/**
 	 * Borra un estado colegial y rellena la tabla de historicos (CEN_HISTORICO)	 
