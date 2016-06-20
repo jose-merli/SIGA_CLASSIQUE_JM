@@ -210,7 +210,11 @@
 					});
 					jQuery("#idInstitucionCargo").change();
 				}
-				cargarCombos();
+				<% if (esMantenimiento && junta) {  %>
+				//NO hacer nada ni cargar combos
+			 <% } else {  %>
+			 	cargarCombos();
+			 <% }  %>
 			});
 			 
 			// Asociada al boton Volver
@@ -241,7 +245,11 @@
 				if(confirm('<siga:Idioma key="messages.confirm.cancel"/>')) {
 					document.getElementById("datosCVForm").reset();
 					rellenarCampos();
-					cargarCombos();
+					<% if (esMantenimiento && junta) {  %>
+					//NO hacer nada ni cargar combos
+				 <% } else {  %>
+				 	cargarCombos();
+				 <% }  %>
 				}
 			}			
 	
@@ -387,6 +395,7 @@
 			<html:hidden property="idInstitucionCargo" styleId="idInstitucionCargo" value="<%=idInstitucionCargo%>" />
 			<html:hidden property="motivo" styleId="motivo" value="" />
 			<input type='hidden' id="accion"  name="accion" value="<%=accion%>" />
+			<input type='hidden' id="comisionCargos"  name="comisionCargos" value="<%=mantenimiento%>" />
 			<table class="tablaCentralCamposMedia" align="center">
 				<tr>
 					<td>
@@ -581,13 +590,15 @@
 
 	</div>
 	
-	<html:form action="/CEN_GestionarComisiones.do" styleId="BusquedaComisionesForm" method="POST" target="mainWorkArea" type="" style="display:none" scope="request">
-		<html:hidden property = "modo" 	value="abrirVolver" />
-		<html:hidden property="idPersona" styleId="idPersona" value="<%=idPersona%>" />
-		<html:hidden property="idInstitucion" styleId="idInstitucion" value="<%=idInstitucion%>" />
-		<html:hidden property="idInstitucionCargo" styleId="idInstitucionCargo" value="<%=idInstitucionCargo%>" />	
-		<html:hidden property="nombreColegiado" styleId="nombreColegiado" value="<%=nombreUsu%>" />
-	</html:form>		
+	<% if (esMantenimiento && junta) {  %>
+		<html:form action="/CEN_GestionarComisiones.do" styleId="BusquedaComisionesForm" method="POST" target="mainWorkArea" type="" >
+			<html:hidden property ="modo" 	value="abrirVolver" />
+			<html:hidden property="idPersona" styleId="idPersona" value="<%=idPersona%>" />
+			<html:hidden property="idInstitucion" styleId="idInstitucion" value="<%=idInstitucion%>" />
+			<html:hidden property="idInstitucionCargo" styleId="idInstitucionCargo" value="<%=idInstitucionCargo%>" />	
+			<html:hidden property="nombreColegiado" styleId="nombreColegiado" value="<%=nombreUsu%>" />
+		</html:form>	
+	<% }  %>		
 	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 
 	<!-- INICIO: SUBMIT AREA -->
