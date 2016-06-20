@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.exceptions.SIGAServiceException;
 import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
 import org.redabogacia.sigaservices.app.vo.DocuShareObjectVO;
 import org.redabogacia.sigaservices.app.vo.DocuShareObjectVO.DocuShareTipo;
@@ -149,7 +150,9 @@ public abstract class DocumentacionRegTelAction extends MasterAction {
 
 			}
 			
-				
+		} catch (SIGAServiceException e) {
+			throw new SIGAException(e.getMessage(), e);
+			
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
 		}
