@@ -29,3 +29,5 @@ alter table SCS_UNIDADFAMILIAREJG add CIRCUNSTANCIAS_EXCEPCIONALES number(1);
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.success.censo.peticion', 'La solicitud de actualización de censo ha sido procesada correctamente.#CA', 0, '2', sysdate, 0, '19');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.success.censo.peticion', 'La solicitud de actualización de censo ha sido procesada correctamente.#EU', 0, '3', sysdate, 0, '19');
 
+-- Ejecutado por Adrian en SIGA INT - 2016-06-20 08:25
+
