@@ -1,6 +1,8 @@
 
 package com.siga.beans;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -14,6 +16,7 @@ import org.redabogacia.sigaservices.app.AppConstants;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -634,7 +637,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		
 		}
 
-		public void setActuacionesDesignas(DesignaForm designa, boolean isMostrarJustificacionesPtes, boolean isSoloLectura, boolean idPermitirEditarLetrado)  throws ClsExceptions, SIGAException 
+		public void setActuacionesDesignas(DesignaForm designa, boolean isMostrarJustificacionesPtes, boolean isSoloLectura, boolean idPermitirEditarLetrado)  throws ClsExceptions, SIGAException, ParseException 
 	{
 	    Hashtable<Integer,String> codigos = new Hashtable<Integer,String>();
 	    int contador=0;
@@ -649,6 +652,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" DESCRIPCIONFACTURACION ");
 		sql.append(" ,ACT.DOCJUSTIFICACION ");
 		sql.append(" ,ACP.NIG_NUMPROCEDIMIENTO ");
+		sql.append(" ,ACT.NIG,ACT.FECHA");
 		
 		if(idPermitirEditarLetrado){
 			if(this.usrbean.isLetrado()){
@@ -717,6 +721,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		ActuacionDesignaForm actuacionDesigna = null;
 		AcreditacionForm acreditacion = null;
 		StringBuffer asuntoDesigna = null; 
+		SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
 		if(actuacionesVector!=null && actuacionesVector.size()>0){
 			asuntoDesigna = new StringBuffer(designa.getAsunto()==null?"":designa.getAsunto());
 			asuntoDesigna.append(" ");
@@ -732,6 +737,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				actuacionDesigna = new ActuacionDesignaForm();
 				actuacionDesigna.setCategoria((String)registro.get("CATEGORIA"));
 				actuacionDesigna.setFechaJustificacion((String)registro.get("FECHAJUSTIFICACION"));
+				
 				actuacionDesigna.setValidada((String)registro.get("VALIDADA"));
 				actuacionDesigna.setNumero((String)registro.get("NUMEROASUNTO"));
 				actuacionDesigna.setIdJuzgado((String)registro.get("IDJUZGADO"));
@@ -745,7 +751,8 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				actuacionDesigna.setPermitirEditActuacionLetrado((String)registro.get("PERMITIREDITARLETRADO"));
 				actuacionDesigna.setNumeroProcedimiento((String)registro.get("NUMEROPROCEDIMIENTO"));
 				actuacionDesigna.setAnioProcedimiento((String)registro.get("ANIOPROCEDIMIENTO"));
-				
+				actuacionDesigna.setFecha(GstDate.getFormatedDateShort(sdf.parse((String)registro.get("FECHA"))));
+				actuacionDesigna.setNig((String)registro.get("NIG"));
 				
 				actuacionDesigna.setDocumentoJustificacion(registro.get("DOCJUSTIFICACION")!=null && ((String)registro.get("DOCJUSTIFICACION")).equals(AppConstants.DB_TRUE));
 				
