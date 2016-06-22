@@ -758,6 +758,8 @@
 		
 		function descargarPDF() {
 			<% if (descargaPDF != null && descargaPDF.equalsIgnoreCase("1")) { %>
+				sub();
+				SolicitudesCertificadosForm.descargarCertificado.value="1";
 				SolicitudesCertificadosForm.modo.value="descargar";
 				SolicitudesCertificadosForm.submit();
 			<% } %>		   	
@@ -820,6 +822,7 @@
 		<html:hidden property="idsTemp" value="<%=idsTemp%>"/>
 		<html:hidden property="idSerieSeleccionada" styleId="idSerieSeleccionada" />
 		<input type="hidden" id="idPeticion" name="idPeticion" value="<%=idPeticion%>">	
+		<input type="hidden" id="descargarCertificado" name="descargarCertificado" value="">	
 		<html:hidden property="aceptaCesionMutualidad" value="<%=aceptMut%>" />
 		<tr>
 			<td><siga:ConjCampos leyenda="certificados.solicitudes.ventanaEdicion.datosSolicitud">

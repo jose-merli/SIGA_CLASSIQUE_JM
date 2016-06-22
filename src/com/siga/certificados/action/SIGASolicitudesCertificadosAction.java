@@ -1678,13 +1678,19 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			} else {
 				request.setAttribute("nombreFichero", admSolicitud.getNombreFicheroSalida(solicitudCertificadoBean));
 				request.setAttribute("rutaFichero", fCertificado.get(0).getPath());
+				request.setAttribute("borrarFichero", "false");
 			}
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.certificados" }, e, tx);
 		}
 
-		return "descargaFichero";
+		if(request.getParameter("descargarCertificado") != null && !"".equals(request.getParameter("descargarCertificado")) && request.getParameter("descargarCertificado").equalsIgnoreCase("1")){
+			return "exitoDescarga";
+		}else{
+			return "descargaFichero";
+		}	
+
 	}
 
 	public static void generarZip(UsrBean usr, String idInstitucion, String idSolicitud) throws ClsExceptions, SIGAException {
