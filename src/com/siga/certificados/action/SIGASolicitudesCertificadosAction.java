@@ -41,6 +41,8 @@ import org.redabogacia.sigaservices.app.util.PropertyReader;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
+import utils.system;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
@@ -562,7 +564,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				idSolicitud = form.getIdSolicitud();
 				tipoCertificado = form.getTipoCertificado();
 			}
-
+			
 			Hashtable<String, Object> htSolicitud = new Hashtable<String, Object>();
 			htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
 			htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
@@ -660,6 +662,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 						strSiguienteEstado = estAdm.getNombreEstadoSolicitudCert(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
 					break;					
 				default:
+						Thread.sleep(2000);
 						strSiguienteEstado = "-";
 					break;
 				}
@@ -1672,12 +1675,14 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				}
 				//Descargo el fichero .zip
 				request.setAttribute("nombreFichero",fichero.getName());
-				request.setAttribute("rutaFichero", fichero.getPath());
+				String path =  UtilidadesString.replaceAllIgnoreCase( fichero.getPath(), "\\", "/");
+				request.setAttribute("rutaFichero", path);				
 				request.setAttribute("borrarFichero", "true");
 
 			} else {
 				request.setAttribute("nombreFichero", admSolicitud.getNombreFicheroSalida(solicitudCertificadoBean));
-				request.setAttribute("rutaFichero", fCertificado.get(0).getPath());
+				String path =  UtilidadesString.replaceAllIgnoreCase( fCertificado.get(0).getPath(), "\\", "/");
+				request.setAttribute("rutaFichero", path);					
 			}
 
 		} catch (Exception e) {
@@ -3069,7 +3074,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				salida =  errorRefresco("messages.general.error",new ClsExceptions(e.toString()),request);
 			}
 		}
-
 		return salida;
 	}
 	
