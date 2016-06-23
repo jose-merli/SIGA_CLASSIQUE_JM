@@ -2475,7 +2475,8 @@ public class Facturacion {
 				}else{
 					request.setAttribute("nombreFichero",fichero.getName());
 				}
-				request.setAttribute("rutaFichero", fichero.getPath());
+				String path =  UtilidadesString.replaceAllIgnoreCase( fichero.getPath(), "\\", "/");
+				request.setAttribute("rutaFichero", path);
 				request.setAttribute("generacionOK", "OK");
 		    }
 			

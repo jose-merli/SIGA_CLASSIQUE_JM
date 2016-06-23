@@ -643,6 +643,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			String strEstadoActual = estAdm.getNombreEstadoSolicitudCert(idEstadoSolicitud);
 			String strSiguienteEstado = "-";
 			if(idEstadoSolicitud!=null){
+				Thread.sleep(2000);
 				switch (Integer.parseInt(idEstadoSolicitud)) {
 					case 1://Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND)
 						strSiguienteEstado = estAdm.getNombreEstadoSolicitudCert(CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO);
@@ -1672,12 +1673,14 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				}
 				//Descargo el fichero .zip
 				request.setAttribute("nombreFichero",fichero.getName());
-				request.setAttribute("rutaFichero", fichero.getPath());
+				String path =  UtilidadesString.replaceAllIgnoreCase( fichero.getPath(), "\\", "/");
+				request.setAttribute("rutaFichero", path);
 				request.setAttribute("borrarFichero", "true");
 
 			} else {
 				request.setAttribute("nombreFichero", admSolicitud.getNombreFicheroSalida(solicitudCertificadoBean));
-				request.setAttribute("rutaFichero", fCertificado.get(0).getPath());
+				String path =  UtilidadesString.replaceAllIgnoreCase( fCertificado.get(0).getPath(), "\\", "/");
+				request.setAttribute("rutaFichero", path);
 				request.setAttribute("borrarFichero", "false");
 			}
 
