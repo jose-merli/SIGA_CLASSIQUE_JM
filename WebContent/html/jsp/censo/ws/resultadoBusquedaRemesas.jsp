@@ -204,12 +204,11 @@
 	   		   			
 	   		   			if(AppConstants.ECOM_CEN_MAESESTADOENVIO.PENDIENTE.getCodigo()==edicionRemesaForm.getIdEstadoenvio()){
 	   		   				botones =botones+ ",B";
-	   		   			}
-	   		   			
-	   		   			if (AppConstants.ECOM_CEN_MAESESTADOENVIO.ANALIZANDO.getCodigo() == edicionRemesaForm.getIdEstadoenvio()) {
+	   		   			} else if (AppConstants.ECOM_CEN_MAESESTADOENVIO.ANALIZANDO.getCodigo() == edicionRemesaForm.getIdEstadoenvio()) {
+	   		   				elems = new FilaExtElement[0];
 	   		   				botones = "";
-	   		   			}
-		   		   		if (AppConstants.ECOM_CEN_MAESESTADOENVIO.ELIMINANDO.getCodigo() == edicionRemesaForm.getIdEstadoenvio()) {
+	   		   			} else if (AppConstants.ECOM_CEN_MAESESTADOENVIO.ELIMINANDO.getCodigo() == edicionRemesaForm.getIdEstadoenvio()) {
+		   		   			elems = new FilaExtElement[0];
 	   		   				botones = "";
 	   		   			}
 	   		   			
