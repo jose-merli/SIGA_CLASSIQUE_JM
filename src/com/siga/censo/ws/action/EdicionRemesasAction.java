@@ -335,71 +335,72 @@ public class EdicionRemesasAction extends MasterAction {
 
 
 	protected String generaExcel(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		Vector datos = new Vector();
-		EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm) formulario;
 		
-		String[] cabeceras = new String[]{"COLEGIO"
-		       	, "FECHA_PETICION"
-           		, "PUBLICAR_COLEGIADO"
-		       	, "N_COLEGIADO"
-		       	, "NOMBRE"
-		       	, "APELLIDO_1"
-		       	, "APELLIDO_2"
-           		, "FECHA_NACIMIENTO"
-           		, "TIPO_IDENTIFICACION"
-		       	, "NUM_DOCUMENTO"
-           		, "PUBLICAR_TELEFONO"
-           		, "TELEFONO"
-           		, "PUBLICAR_MOVIL"
-           		, "TELEFONO_MOVIL"
-           		, "PUBLICAR_FAX"
-           		, "FAX"				
-           		, "PUBLICAR_EMAIL"
-           		, "EMAIL"
-           		, "SITUACION"
-		       	, "FECHA_SITUACION"
-           		, "RESIDENTE"
-           		, "ESTADO"       
-		       	, "INCIDENCIA"
-		       	, "DETALLE_INCIDENCIA"
-           		, "FECHA_INCORPORACION"};
-        
-        CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
-		
-		EcomCenDatosExample ecomCenDatosExample = new EcomCenDatosExample();
-		Criteria datosCriteria = ecomCenDatosExample.createCriteria();
-		
-		rellenaFiltroDatos(datosCriteria, edicionRemesaForm);
-		
-		String idincidencia = null;
-		if (isNotnull(edicionRemesaForm.getIdincidencia())) {
-			idincidencia = edicionRemesaForm.getIdincidencia();
+		try {
+			Vector datos = new Vector();
+			EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm) formulario;
+			
+			String[] cabeceras = new String[]{"COLEGIO"
+			       	, "FECHA_PETICION"
+	           		, "PUBLICAR_COLEGIADO"
+			       	, "N_COLEGIADO"
+			       	, "NOMBRE"
+			       	, "APELLIDO_1"
+			       	, "APELLIDO_2"
+	           		, "FECHA_NACIMIENTO"
+	           		, "TIPO_IDENTIFICACION"
+			       	, "NUM_DOCUMENTO"
+	           		, "PUBLICAR_TELEFONO"
+	           		, "TELEFONO"
+	           		, "PUBLICAR_MOVIL"
+	           		, "TELEFONO_MOVIL"
+	           		, "PUBLICAR_FAX"
+	           		, "FAX"				
+	           		, "PUBLICAR_EMAIL"
+	           		, "EMAIL"
+	           		, "SITUACION"
+			       	, "FECHA_SITUACION"
+	           		, "RESIDENTE"
+	           		, "ESTADO"       
+			       	, "INCIDENCIA"
+			       	, "DETALLE_INCIDENCIA"
+	           		, "FECHA_INCORPORACION"};
+	        
+	        CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
+			
+			EcomCenDatosExample ecomCenDatosExample = new EcomCenDatosExample();
+			Criteria datosCriteria = ecomCenDatosExample.createCriteria();
+			
+			rellenaFiltroDatos(datosCriteria, edicionRemesaForm);
+			
+			String idincidencia = null;
+			if (isNotnull(edicionRemesaForm.getIdincidencia())) {
+				idincidencia = edicionRemesaForm.getIdincidencia();
+			}
+			
+			ecomCenDatosExample.orderByApellido1();
+			ecomCenDatosExample.orderByApellido2();
+			ecomCenDatosExample.orderByNombre();
+			
+			List<Hashtable<String, Object>> listaResultados = cenWSService.getDatosExcel(edicionRemesaForm.getIdcensowsenvio(), ecomCenDatosExample, idincidencia, edicionRemesaForm.isModificado());
+	    	
+	    	datos.addAll(listaResultados);
+	    	
+	    	String nombreFichero = request.getParameter("nombreFichero");
+	    
+			request.setAttribute("campos",cabeceras);
+			request.setAttribute("datos",datos);
+			request.setAttribute("cabeceras",cabeceras);
+			request.setAttribute("descripcion", nombreFichero);
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error", e, null);
 		}
-		
-		ecomCenDatosExample.orderByApellido1();
-		ecomCenDatosExample.orderByApellido2();
-		ecomCenDatosExample.orderByNombre();
-		
-		List<Hashtable<String, Object>> listaResultados = cenWSService.getDatosExcel(edicionRemesaForm.getIdcensowsenvio(), ecomCenDatosExample, idincidencia, edicionRemesaForm.isModificado());
-    	
-    	datos.addAll(listaResultados);
-    	
-    	String nombreFichero = request.getParameter("nombreFichero");
-    
-		request.setAttribute("campos",cabeceras);
-		request.setAttribute("datos",datos);
-		request.setAttribute("cabeceras",cabeceras);
-		request.setAttribute("descripcion", nombreFichero);
 		
 		return "generaExcel";		
 	}
 	
 	
-	private String getDato(Object dato) {		
-		return dato!=null?dato.toString().trim():"";
-	}
-
-
 	protected String erroresCarga(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
 			CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
