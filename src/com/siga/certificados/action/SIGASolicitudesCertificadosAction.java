@@ -643,13 +643,13 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			String strEstadoActual = estAdm.getNombreEstadoSolicitudCert(idEstadoSolicitud);
 			String strSiguienteEstado = "-";
 			if(idEstadoSolicitud!=null){
-				Thread.sleep(2000);
 				switch (Integer.parseInt(idEstadoSolicitud)) {
 					case 1://Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND)
 						strSiguienteEstado = estAdm.getNombreEstadoSolicitudCert(CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO);
 					break;
 					
-				case 2://Integer.parseInt(CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO)
+					case 2://Integer.parseInt(CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO)
+						Thread.sleep(2000);
 						if(beanSolicitud.getFechaCobro()!=null && !beanSolicitud.getFechaCobro().trim().equals("")){
 							strSiguienteEstado = estAdm.getNombreEstadoSolicitudCert(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
 						}else{
@@ -657,10 +657,16 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 						}
 					break;
 					
-				case 10://Integer.parseInt(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR)
-						strSiguienteEstado = estAdm.getNombreEstadoSolicitudCert(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+					case 4://Integer.parseInt(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)
+						Thread.sleep(2000);
+						strSiguienteEstado = "-";
 					break;					
-				default:
+					
+					case 10://Integer.parseInt(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR)
+							strSiguienteEstado = estAdm.getNombreEstadoSolicitudCert(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+						break;					
+						
+					default:
 						strSiguienteEstado = "-";
 					break;
 				}
