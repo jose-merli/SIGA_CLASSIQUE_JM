@@ -245,12 +245,14 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
 		function refrescarLocal() {
+			sub();
 			SolicitudesCertificadosForm.target="mainWorkArea";
 			SolicitudesCertificadosForm.modo.value="editar";
 			SolicitudesCertificadosForm.submit();
 		}
 		
 		function refrescarLocalDescarga() {
+			sub();
 			SolicitudesCertificadosForm.target="mainWorkArea";
 			SolicitudesCertificadosForm.modo.value="editarDescarga";
 			SolicitudesCertificadosForm.submit();
