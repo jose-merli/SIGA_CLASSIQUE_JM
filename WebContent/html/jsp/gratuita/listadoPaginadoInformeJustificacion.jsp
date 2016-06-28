@@ -387,6 +387,7 @@ function accionGuardar (isLetrado)
 		
 		
 		
+		
 		document.InformeJustificacionMasivaForm.modo.value="justificar";
 		document.InformeJustificacionMasivaForm.datosBaja.value = datosBaja;
 		document.InformeJustificacionMasivaForm.datosJustificacion.value = datosJustificacion;
@@ -2019,14 +2020,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																<c:otherwise>
 																<td style="text-align: left;  font-size: 13px; white-space: nowrap; vertical-align: top">
 																	<span style="vertical-align: top"><c:out value="${actuacion.numero}" /></span>
-																	<span style='align:right; word-wrap: break-word;display: inline-block; width: 60px'>
-																		<div   id="div_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}" >&nbsp;</div>
-																	</span>
-																	<input type="hidden" id="fechaactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}" value ="${actuacion.fecha}"/>
-																	<input type="hidden" id="numprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}" value ="${actuacion.numeroProcedimiento}"/> 
-																	<input type="hidden" id="anioprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}" value ="${actuacion.anioProcedimiento}"/>
-																	<input type="hidden" id="nigactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}" value ="${actuacion.nig}"/>
-																	
 
 																</c:otherwise>
 															</c:choose>
@@ -2036,26 +2029,20 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 													<td><c:choose>
 														<c:when
 															test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
-															
-															
-															<c:if test="${InformeJustificacionMasivaForm.fichaColegial==false}">
-																
-														
-																<input name="checkAcreditacion"
-																	id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
-																	onclick="onCheckAcreditacion(this);"
-																	 type="checkbox" />
-																<input
-																	name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
-																	id="checkacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
-																	type="hidden" />
-																</c:if>
+															<input name="checkAcreditacion"
+																id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
+																onclick="onCheckAcreditacion(this);"
+																 type="checkbox" />
+															<input
+																name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
+																id="checkacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
+																type="hidden" />
 															<c:out value="${actuacion.descripcion}" />
 														</c:when>
 														<c:otherwise>
 															<input
 																name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
-																id="hiddacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																id="hiddacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}"
 																type="hidden" />
 															<c:out value="${actuacion.descripcion}" />
 														</c:otherwise>
@@ -2076,12 +2063,12 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																		<c:when
 																			test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
 																			<input name="checkValidacion"
-																				id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																				id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
 																				type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/>
 																		</c:when>
 																		<c:otherwise>
 																			<input name="checkValidacion"
-																				id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																				id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}"
 																				type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/>
 																		</c:otherwise>
 																	</c:choose>
@@ -2208,18 +2195,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																	</c:if>
 																	</c:when>
 																<c:otherwise>
-																
-																<td style="text-align: left;  font-size: 13px; white-space: nowrap; vertical-align: top">
-																	<span style="vertical-align: top"><c:out value="${actuacion.numero}" /></span>
-																	<span style='align:right; word-wrap: break-word;display: inline-block; width: 60px'>
-																		<div   id="div_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}" >&nbsp;</div>
-																	</span>
-																	<input type="hidden" id="fechaactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}" value ="${actuacion.fecha}"/>
-																	<input type="hidden" id="numprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}" value ="${actuacion.numeroProcedimiento}"/> 
-																	<input type="hidden" id="anioprocactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}" value ="${actuacion.anioProcedimiento}"/>
-																	<input type="hidden" id="nigactold_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}" value ="${actuacion.nig}"/>
-																	
-																</td>
+																<td style="text-align: left;  font-size: 13px;">
+																	<c:out value="${actuacion.numero}" /></td>
 																	<td>
 																		
 																	</td>
@@ -2231,22 +2208,20 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 														<td><c:choose>
 															<c:when
 																test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
-																<c:if test="${InformeJustificacionMasivaForm.fichaColegial==false}">
 																<input name="checkAcreditacion"
-																	id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																	id="acre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
 																	onclick="onCheckAcreditacion(this);"
 																	 type="checkbox" />
 																<input
 																	name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
-																	id="checkacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																	id="checkacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
 																	type="hidden" />
-																	</c:if>
 																<c:out value="${actuacion.descripcion}" />
 															</c:when>
 															<c:otherwise>
 																<input
 																	name="${status.count}_${actuacion.acreditacion.idProcedimiento}_checkAcreditacion"
-																	id="hiddacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																	id="hiddacre_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}"
 																	type="hidden" />
 																<c:out value="${actuacion.descripcion}" />
 															</c:otherwise>
@@ -2266,12 +2241,12 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																			<c:when
 																				test="${actuacion.fechaJustificacion==null || actuacion.fechaJustificacion==''}">
 																				<input name="checkValidacion"
-																					id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																					id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}"
 																					type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/>
 																			</c:when>
 																			<c:otherwise>
 																				<input name="checkValidacion"
-																					id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}"
+																					id="vali_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_1_${actuacion.idJurisdiccion}"
 																					type="checkbox" onclick="onCheckValidacion(this);" ${valiDisabled}/>
 																			</c:otherwise>
 																		</c:choose>
@@ -2569,12 +2544,13 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		openDialog(objImgDivActuacion,mostrarDatosDesigna);
 		
 	}
+	
+	
 	function muestraIconosActuacion(objImgDivActuacion,mostrarIcono){
-		
 		if(objImgDivActuacion && objImgDivActuacion.attr("id")){
 			if(mostrarIcono==true){
 				cadenaAcreditacion = objImgDivActuacion.attr("id").split("div_")[1];
-				countDesigna = cadenaAcreditacion.split("_")[0];
+				countDesigna = cadenaAcreditacion.split("_x_")[0];
 				nigNumProcRequired = cadenaAcreditacion.split("_nigNumProc_")[1];
 				isAcreditacionCompleta =  document.getElementById("acreditacionCompleta_"+countDesigna).value;
 				var formularioActuacionPte = '';
@@ -2600,30 +2576,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 				formularioActuacionPte +=nigNumProcRequired;
 				formularioActuacionPte += '"/>';
 				
-				if(document.getElementById("fechaactold_"+cadenaAcreditacion)){
-					isAcreditacionCompleta = 'true';
-					
-				}
-
-				if(document.getElementById("numprocactold_"+cadenaAcreditacion)){
-					if(document.getElementById("numprocactold_"+cadenaAcreditacion).value=='')
-						isAcreditacionCompleta = 'false';
-					
-				}
-				
-				
-				if(document.getElementById("anioprocactold_"+cadenaAcreditacion)){
-					if(document.getElementById("anioprocactold_"+cadenaAcreditacion).value=='')
-						isAcreditacionCompleta = 'false';
-					
-				}
-				if(document.getElementById("nigactold_"+cadenaAcreditacion)){
-					if(document.getElementById("nigactold_"+cadenaAcreditacion).value=='')
-						isAcreditacionCompleta = 'false';
-					
-				}
-				
-				
 				if(nigNumProcRequired=='1' && isAcreditacionCompleta=='false'){
 					formularioActuacionPte += '<input type="hidden" id="insertar_';
 					formularioActuacionPte +=cadenaAcreditacion;
@@ -2648,9 +2600,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		
 	}
 	
-	
 	function muestraIconoActuacion(objImgDivActuacion,completa){
-		
 		cadenaAcreditacion = objImgDivActuacion.attr("id").split("div_")[1];
 		idObjImagen = 'img_'+cadenaAcreditacion;
 		var src ="";
@@ -2670,7 +2620,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 
 	}
 	
-	//mostradatos =1 mostramos datos designa mostradatos =2 mostramos datos actuacion
+	
 	function openDialog(objImgDivActuacion,mostrarDatosDesigna){
 		
 
@@ -2681,8 +2631,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		valAnioProc = jQuery("#anioprocact_"+cadenaAcreditacion).val();
 		valNig = jQuery("#nigact_"+cadenaAcreditacion).val();
 		valNigNumProcRequired = jQuery("#nigNumProcRequired_"+cadenaAcreditacion).val();
-
-		
 		
 
 		if(valFechaActuacion && valFechaActuacion!=''){
@@ -2725,28 +2673,16 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 
 			
 			
-			
-			if(mostrarDatosDesigna==true){
-				valFechaActuacionOld = jQuery("#fechaactold_"+cadenaAcreditacion).val();
-				if(valFechaActuacionOld && valFechaActuacionOld!=''){
-					valNumProcOld = jQuery("#numprocactold_"+cadenaAcreditacion).val();
-					valAnioProcOld = jQuery("#anioprocactold_"+cadenaAcreditacion).val();
-					valNigOld = jQuery("#nigactold_"+cadenaAcreditacion).val();
-					jQuery("#dialogFechaActuacion").val(valFechaActuacionOld);
-					jQuery("#dialogNumProc").val(valNumProcOld);
-					jQuery("#dialogAnioProc").val(valAnioProcOld);
-					jQuery("#dialogNig").val(valNigOld);
-				}else{
-					
-					countDesigna = cadenaAcreditacion.split("_x_")[0];
-					valNumProcDesigna = jQuery("#numProcedimientoDesigna_"+countDesigna).val();
-					valAnioProcDesigna = jQuery("#anioProcedimientoDesigna_"+countDesigna).val();
-					valNigDesigna = jQuery("#nigDesigna_"+countDesigna).val();
-					jQuery("#dialogNumProc").val(valNumProcDesigna);
-					jQuery("#dialogAnioProc").val(valAnioProcDesigna);
-					jQuery("#dialogNig").val(valNigDesigna);
-					jQuery("#dialogFechaActuacion").val(getFormattedDate(new Date()));
-				}
+			jQuery("#dialogFechaActuacion").val(getFormattedDate(new Date()));
+			 if(mostrarDatosDesigna==true){
+				countDesigna = cadenaAcreditacion.split("_x_")[0];
+				valNumProcDesigna = jQuery("#numProcedimientoDesigna_"+countDesigna).val();
+				valAnioProcDesigna = jQuery("#anioProcedimientoDesigna_"+countDesigna).val();
+				valNigDesigna = jQuery("#nigDesigna_"+countDesigna).val();
+				jQuery("#dialogNumProc").val(valNumProcDesigna);
+				jQuery("#dialogAnioProc").val(valAnioProcDesigna);
+				jQuery("#dialogNig").val(valNigDesigna);
+				//jQuery("#dialogFechaActuacion").val("");
 			}
 		}
 	}
@@ -2767,7 +2703,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		
 		
 		cadenaAcreditacion = objImgDivActuacion.attr("id").split("div_")[1]
-		var indexDesigna = cadenaAcreditacion.split("_")[0];
+		var indexDesigna = cadenaAcreditacion.split("_x_")[0];
 		var fechaDesigna = document.getElementById("fechaDesigna_"+indexDesigna).value;
 		var fechaJustificacion = document.getElementById("fecha").value;
 		

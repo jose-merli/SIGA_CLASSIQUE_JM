@@ -34,10 +34,6 @@ public class ActuacionDesignaForm extends MasterForm
 	private String permitirEditActuacionLetrado;
 	private String numeroProcedimiento;
 	private String anioProcedimiento;
-	private String fecha;
-	private String nig;
-	 
-
 	
 	private boolean documentoJustificacion;
 	
@@ -173,30 +169,6 @@ public class ActuacionDesignaForm extends MasterForm
 	
 	public void setPermitirEditActuacionLetrado(String permitirEditActuacionLetrado) {
 		this.permitirEditActuacionLetrado = permitirEditActuacionLetrado;
-	}
-	/**
-	 * @return the fecha
-	 */
-	public String getFecha() {
-		return fecha;
-	}
-	/**
-	 * @param fecha the fecha to set
-	 */
-	public void setFecha(String fecha) {
-		this.fecha = fecha;
-	}
-	/**
-	 * @return the nig
-	 */
-	public String getNig() {
-		return nig;
-	}
-	/**
-	 * @param nig the nig to set
-	 */
-	public void setNig(String nig) {
-		this.nig = nig;
 	}
 	
 	
