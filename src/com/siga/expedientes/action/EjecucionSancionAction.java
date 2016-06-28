@@ -19,7 +19,9 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenColaCambioLetradoAdm;
 import com.siga.beans.CenDatosColegialesEstadoAdm;
+import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.ExpExpedienteAdm;
 import com.siga.beans.ExpExpedienteBean;
 import com.siga.beans.ScsInscripcionTurnoAdm;
@@ -121,6 +123,15 @@ public class EjecucionSancionAction extends MasterAction {
 					bajaColegialHashtable.put("idioma", this.getLenguaje(request));
 					bajaColegialHashtable.put("fechaSancion", expedienteBean.getFechaInicialEstado());
 					estado = c1Adm.insertarBajaColegial(bajaColegialHashtable);
+					
+					CenDireccionesBean beanDir = new CenDireccionesBean ();
+					
+					beanDir.setIdPersona (Long.valueOf(idPersona));
+					beanDir.setIdInstitucion (Integer.valueOf(idInstitucion));
+					
+					//Se inserta en la cola de modificacion de datos para Consejos
+					insertarModificacionConsejo(beanDir,this.getUserBean(request), ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION);
+					
 					if(estado!=2 && bajaColegialHashtable.get("RESPUESTA_ACA")!=null){
 						messageLlamadaWebServiceAcaRevisionLetrado.append(bajaColegialHashtable.get("RESPUESTA_ACA"));
 						messageLlamadaWebServiceAcaRevisionLetrado.append(" ");
@@ -170,5 +181,11 @@ public class EjecucionSancionAction extends MasterAction {
 			request.setAttribute("modal", "");
 			return "exitoParametros";
 		}
+	}
+	
+	private static void insertarModificacionConsejo(CenDireccionesBean beanDir, UsrBean usr, int accionCola) throws SIGAException{
+		CenColaCambioLetradoAdm colaAdm = new CenColaCambioLetradoAdm (usr);
+		if (!colaAdm.insertarCambioEnCola (accionCola, beanDir.getIdInstitucion (), beanDir.getIdPersona (), beanDir.getIdDireccion ()))
+			throw new SIGAException (colaAdm.getError ());
 	}
 }

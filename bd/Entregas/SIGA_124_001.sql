@@ -259,4 +259,17 @@ VALUES ('CEN','WS_ACA_ACTIVO','0',SYSDATE,0,0,'cen.parametro.wsacaactivo');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.general.error.indeterminado', 'Se ha producido un error indeterminado. Consulte con su administrador.#EU', 0, '3', sysdate, 0, '19');
 
  
+ INSERT INTO cen_colacambioletrado (IDPERSONA,IDINSTITUCION,IDCAMBIO,FECHACAMBIO,IDTIPOCAMBIO,IDDIRECCION,FECHAMODIFICACION,USUMODIFICACION)
+                     ( select cen_direcciones.idpersona,cen_direcciones.idinstitucionalta,1,SYSDATE,30,cen_direcciones.iddireccionalta,SYSDATE,0
+                       from cen_direcciones,cen_direccion_tipodireccion, cen_colegiado
+                       where 
+                       cen_direccion_tipodireccion.idpersona= cen_direcciones.idpersona 
+		               and cen_direcciones.idinstitucion=2000  
+                   	   and cen_direccion_tipodireccion.idtipodireccion=9 
+                   	   and cen_direcciones.fechabaja is null
+                   	   and cen_direcciones.idinstitucion=cen_direccion_tipodireccion.idinstitucion  
+		               and cen_direcciones.iddireccion = cen_direccion_tipodireccion.iddireccion
+		               and cen_direcciones.idpersona=cen_colegiado.idpersona
+		               and cen_colegiado.idinstitucion=cen_direcciones.idinstitucionalta
+		               and cen_colegiado.situacionejercicio<>'1');
  
