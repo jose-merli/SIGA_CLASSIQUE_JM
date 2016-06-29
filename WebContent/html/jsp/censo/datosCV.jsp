@@ -121,36 +121,36 @@
 			idInstitucion = String.valueOf((Integer) request.getAttribute("idInstitucion"));
 		}
 	}
-	ArrayList modoSel = new ArrayList();
-	String parametro[] = new String[1];
-	parametro[0] = (String) usr.getLocation();
+	
 	String nombreInstitucionAcceso = "";
-	boolean junta = false;
-	String parametroJunta[] = new String[1];
 	String idInstitucionCargo = "";
-	String esJunta = (String) request.getAttribute("esJunta");
-	String mantenimiento = (String) request.getAttribute("mantenimiento");
+	if (request.getAttribute("idInstitucionCargo") != null && request.getAttribute("idInstitucionCargo").toString() != "") {
+		try {
+			idInstitucionCargo = (String) request.getAttribute("idInstitucionCargo");
+		} catch (Exception e) {
+			idInstitucionCargo = String.valueOf((Integer) request.getAttribute("idInstitucionCargo"));
+		}
+		CenInstitucionAdm institucionAdm = new CenInstitucionAdm(usr);
+		if (idInstitucionCargo.equals("0")) {
+			nombreInstitucionAcceso = institucionAdm.getNombreInstitucion("2000");
+		} else {
+			nombreInstitucionAcceso = institucionAdm.getNombreInstitucion(idInstitucionCargo);
+		}
+	}
+	
 	boolean esMantenimiento = false;
+	String mantenimiento = (String) request.getAttribute("mantenimiento");
 	if (mantenimiento != null && mantenimiento.equals("S"))
-		esMantenimiento = true;
+		esMantenimiento = true;	
+	
+	boolean junta = false;
+	String esJunta = (String) request.getAttribute("esJunta");
+	ArrayList modoSel = new ArrayList();
 	if (esJunta != null && esJunta.equals("S")) {
 		junta = true;
-		if (request.getAttribute("idInstitucionCargo") != null && request.getAttribute("idInstitucionCargo").toString() != "") {
-			try {
-				idInstitucionCargo = (String) request.getAttribute("idInstitucionCargo");
-			} catch (Exception e) {
-				idInstitucionCargo = String.valueOf((Integer) request.getAttribute("idInstitucionCargo"));
-			}
-			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(usr);
-			if (idInstitucionCargo.equals("0")) {
-				nombreInstitucionAcceso = institucionAdm.getNombreInstitucion("2000");
-			} else {
-				nombreInstitucionAcceso = institucionAdm.getNombreInstitucion(idInstitucionCargo);
-			}
-		}
 		modoSel.add(idInstitucionCargo);
-		parametroJunta[0] = idInstitucionCargo;
 	}
+	
 %>
 <%@page import="java.util.Hashtable"%>
 <%@page import="java.util.Properties"%>
