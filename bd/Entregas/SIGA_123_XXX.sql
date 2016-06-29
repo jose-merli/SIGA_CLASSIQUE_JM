@@ -71,3 +71,6 @@ Where RegistroTemporal = 0;
 Creado Refresh_t_censo_Letrados.prc
 Modificado ECENSO.P_SYNC_ABOGADOS_REFRESH.prc
 
+
+-- Ejecutado por Adrian en SIGA INT - 2016-06-29 10:30
+
