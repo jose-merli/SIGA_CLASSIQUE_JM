@@ -74,3 +74,8 @@ Modificado ECENSO.P_SYNC_ABOGADOS_REFRESH.prc
 
 -- Ejecutado por Adrian en SIGA INT - 2016-06-29 10:30
 
+UPDATE CEN_DATOSCV
+   SET idinstitucioncargo = NULL
+ WHERE IDINSTITUCION <> 2000
+   AND FECHABAJA IS NULL
+   AND idinstitucioncargo IS NOT NULL
