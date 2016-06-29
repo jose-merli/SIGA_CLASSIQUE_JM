@@ -497,6 +497,24 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 								ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO,
 								idPersona);
 						
+						if(fechaActuacion!=null && !fechaActuacion.equals("")){
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_FECHA, GstDate.getApplicationFormatDate("", fechaActuacion));
+							camposList.add(ScsActuacionDesignaBean.C_FECHA);
+						}
+						
+						if(nigActuacion!=null && !nigActuacion.equals("")){
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_NIG, nigActuacion);
+							camposList.add(ScsActuacionDesignaBean.C_NIG);
+						}
+						
+						if(numProcActuacion!=null && !numProcActuacion.equals("")){
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, numProcActuacion);
+							camposList.add(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO);
+						}
+						if(anioProcActuacion!=null && !anioProcActuacion.equals("")){
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, anioProcActuacion);
+							camposList.add(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO);
+						}
 						
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_NUMEROASUNTO,
