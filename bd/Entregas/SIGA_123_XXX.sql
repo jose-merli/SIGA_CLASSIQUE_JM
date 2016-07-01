@@ -79,3 +79,8 @@ UPDATE CEN_DATOSCV
  WHERE IDINSTITUCION <> 2000
    AND FECHABAJA IS NULL
    AND idinstitucioncargo IS NOT NULL
+   
+ modificar trigger SCS_GUARDIASCOLEGIADO_AID como esta en SIGA_DES
+ modificar trigger CEN_DIRECCION_TIPODIR_AIR como esta en SIGA_DES
+ modificar trigger CEN_DIRECCIONES_AUR como esta en SIGA_DES
+ 
