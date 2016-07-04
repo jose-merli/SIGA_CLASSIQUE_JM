@@ -83,4 +83,7 @@ UPDATE CEN_DATOSCV
  modificar trigger SCS_GUARDIASCOLEGIADO_AID como esta en SIGA_DES
  modificar trigger CEN_DIRECCION_TIPODIR_AIR como esta en SIGA_DES
  modificar trigger CEN_DIRECCIONES_AUR como esta en SIGA_DES
+
+-- Ejecutado por Adrian en SIGA INT - 2016-07-04 08:55
+
  

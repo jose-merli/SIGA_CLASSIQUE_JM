@@ -9,8 +9,13 @@ Declare
 
   r_Guardiacolegiado Scs_Guardiascolegiado%Rowtype;
   v_Accion           Ecom_Guardiacolegiado.Accion%Type;
+  activogeneral           GEN_PARAMETROS.Valor%Type;
+  activocolegio           GEN_PARAMETROS.Valor%Type;
+  e exception;
 
 Begin
+
+  
   If (:Old.Idinstitucion Is Null) Then
     -- insert
     r_Guardiacolegiado.Idinstitucion := :New.Idinstitucion;
@@ -28,6 +33,33 @@ Begin
     r_Guardiacolegiado.Fechainicio   := :Old.Fechainicio;
     v_Accion                         := 2;
   End If;
+  --Comprobamos que es servicio centralita virtual este activo para 0 y la institucion.
+--si no esta activo no hacemos nada
+  Begin
+    select VALOR
+      into activogeneral
+      from GEN_PARAMETROS
+     where IDINSTITUCION = 0
+       and MODULO = 'ECOM'
+       and PARAMETRO = 'CENTRALITAVIRTUAL_ACTIVO';
+  exception
+    when others then
+      activogeneral := 0;
+  end;
+  Begin
+    select VALOR
+      into activocolegio
+      from GEN_PARAMETROS
+     where IDINSTITUCION = r_Guardiacolegiado.Idinstitucion
+       and MODULO = 'ECOM'
+       and PARAMETRO = 'CENTRALITAVIRTUAL_ACTIVO';
+  exception
+    when others then
+      activocolegio := 0;
+  end;
+  If (activogeneral = 0 or activocolegio = 0) Then
+    raise e;
+  end if;
 
   -- obteniendo si la guardia es para envio a la centralita
   Select Gt.Enviocentralita
@@ -153,5 +185,6 @@ Begin
         Where Egc.Idecomguardiacolegiado = v_Ecomidguardiacol);
   
   End If;
+  exception when e then null;
 End Scs_Guardiascolegiado_Aid;
 /
