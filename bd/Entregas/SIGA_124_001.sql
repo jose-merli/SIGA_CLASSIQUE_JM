@@ -273,3 +273,37 @@ VALUES ('CEN','WS_ACA_ACTIVO','0',SYSDATE,0,0,'cen.parametro.wsacaactivo');
 		               and cen_colegiado.idinstitucion=cen_direcciones.idinstitucionalta
 		               and cen_colegiado.situacionejercicio<>'1');
  
+		               
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.updatedok', 'El resto de los campos del acta se han actualizado correctamente', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.updatedok', 'El resto de los campos del acta se han actualizado correctamente#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.updatedok', 'El resto de los campos del acta se han actualizado correctamente#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.updatedok', 'El resto de los campos del acta se han actualizado correctamente#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expotrosactas.solucion', 'La fecha de resolución del acta no será modificada hasta que no finalice esos actas o saque los expedientes de los actas abiertos.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expotrosactas.solucion', 'La fecha de resolución del acta no será modificada hasta que no finalice esos actas o saque los expedientes de los actas abiertos.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expotrosactas.solucion', 'La fecha de resolución del acta no será modificada hasta que no finalice esos actas o saque los expedientes de los actas abiertos.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expotrosactas.solucion', 'La fecha de resolución del acta no será modificada hasta que no finalice esos actas o saque los expedientes de los actas abiertos.#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.solucion', 'Para ello debera ir a la pestaña de resolución del EJG y asociarles una resolución y un fundamento Jurídico.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.solucion', 'Para ello debera ir a la pestaña de resolución del EJG y asociarles una resolución y un fundamento Jurídico.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.solucion', 'Para ello debera ir a la pestaña de resolución del EJG y asociarles una resolución y un fundamento Jurídico.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.solucion', 'Para ello debera ir a la pestaña de resolución del EJG y asociarles una resolución y un fundamento Jurídico.#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.lista', 'Los siguientes expedientes no tienen resolución o fundamento jurídico:', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.lista', 'Los siguientes expedientes no tienen resolución o fundamento jurídico:#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.lista', 'Los siguientes expedientes no tienen resolución o fundamento jurídico:#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.lista', 'Los siguientes expedientes no tienen resolución o fundamento jurídico:#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expotrosactas.lista', 'Los siguientes expedientes estan asociados a otros actas abiertos:', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expotrosactas.lista', 'Los siguientes expedientes estan asociados a otros actas abiertos:#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expotrosactas.lista', 'Los siguientes expedientes estan asociados a otros actas abiertos:#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expotrosactas.lista', 'Los siguientes expedientes estan asociados a otros actas abiertos:#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.updatedko', 'La fecha de resolución del acta no sera modificada hasta que no resuelva esos expedientes.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.updatedko', 'La fecha de resolución del acta no sera modificada hasta que no resuelva esos expedientes.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.updatedko', 'La fecha de resolución del acta no sera modificada hasta que no resuelva esos expedientes.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.updatedko', 'La fecha de resolución del acta no sera modificada hasta que no resuelva esos expedientes.#GL', 0, '4', sysdate, 0, '19');
+
+
+
+		               
