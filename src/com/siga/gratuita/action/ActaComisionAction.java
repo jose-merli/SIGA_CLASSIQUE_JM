@@ -620,10 +620,12 @@ public class ActaComisionAction extends MasterAction{
 				
 				if(expedientesRepetidosEnActasAbiertas!=null){
 					StringBuilder descr = new StringBuilder();
-					descr.append("Los siguientes expedientes estan asociados a otros actas abiertos:");
+					
+					descr.append(UtilidadesString.getMensajeIdioma(usr, "messages.acta.error.expotrosactas.lista"));
 					descr.append("\n");
 					descr.append(expedientesRepetidosEnActasAbiertas);
-					descr.append("La fecha de resolución del acta no será modificada hasta que no finalice esos actas o saque los expedientes de los actas abiertos.");
+					
+					descr.append(UtilidadesString.getMensajeIdioma(usr, "messages.acta.error.expotrosactas.solucion"));
 					throw new BusinessException(descr.toString());
 				}
 				
@@ -674,13 +676,20 @@ public class ActaComisionAction extends MasterAction{
 			if(detalleEjgsNoResueltos!=null){
 				if(!descripcion.equals(""))
 					descripcion.append("\n");
-				descripcion.append("Los siguientes expedientes no tienen resolución o fundamento jurídico:");
+				descripcion.append(UtilidadesString.getMensajeIdioma(usr, "messages.acta.error.expsinresolucvion.lista"));
 				descripcion.append("\n");
 				descripcion.append(detalleEjgsNoResueltos);
-				descripcion.append("\nPara ello debera ir a la pestaña Resolución del EJG y asociarles una resolución y un fundamento Jurídico.");
+				descripcion.append("\n");
+				
+				descripcion.append(UtilidadesString.getMensajeIdioma(usr, "messages.acta.error.expsinresolucvion.solucion"));
 				
 			}
-			descripcion.append("\nLa fecha de resolución del acta no sera modificada hasta que no resuelva esos expedientes.\nEl resto de los campos del acta se han actualizado correctamente");
+			descripcion.append("\n");
+			
+			descripcion.append(UtilidadesString.getMensajeIdioma(usr, "messages.acta.error.expsinresolucvion.updatedko"));
+			
+			descripcion.append("\n");
+			descripcion.append(UtilidadesString.getMensajeIdioma(usr, "messages.acta.error.expsinresolucvion.updatedok"));
 			return errorRefresco(descripcion.toString(),new ClsExceptions(descripcion.toString()), request);
 			
 		}
