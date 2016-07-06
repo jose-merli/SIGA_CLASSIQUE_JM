@@ -47,7 +47,7 @@ public class InformeCertificadosEspeciales extends MasterReport {
 			registro = (Hashtable) iterador.getValues().get(0);
 
 		}
-		Hashtable<String, Object> hDatosAWHashtable = getDatosFijosCertificado(datosBase, registro);
+		Hashtable<String, Object> hDatosAWHashtable = getDatosFijosCertificado(datosBase, registro,false);
 		hDatosAWHashtable.put("INI_" + iterador.getKey(), iterador.getValues());
 
 		return hDatosAWHashtable;
@@ -117,11 +117,11 @@ public class InformeCertificadosEspeciales extends MasterReport {
 	 * @return
 	 * @throws SIGAException
 	 */
-	private Hashtable<String, Object> getDatosFijosCertificado(Hashtable datosBase, Hashtable registro) throws SIGAException {
+	private Hashtable<String, Object> getDatosFijosCertificado(Hashtable datosBase, Hashtable registro,boolean isFo) throws SIGAException {
 		Hashtable<String, Object> hDatosFijos = new Hashtable<String, Object>();
 		hDatosFijos.putAll(registro);
 		CenClienteAdm admcli = new CenClienteAdm(this.getUsuario());
-		hDatosFijos.putAll(admcli.getEtiquetasComunesCertificados(datosBase, this.getUsuario().getLocation()));
+		hDatosFijos.putAll(admcli.getEtiquetasComunesCertificados(datosBase, this.getUsuario().getLocation(),isFo));
 
 		String nombre = UtilidadesHash.getString(registro, "NOMBRE");
 
@@ -194,10 +194,6 @@ public class InformeCertificadosEspeciales extends MasterReport {
 
 	protected String reemplazarDatos(HttpServletRequest request, String plantillaFO, Hashtable datosBase) throws ClsExceptions, SIGAException {
 
-		return reemplazarDatos((UsrBean) null, plantillaFO, datosBase);
-	}
-	protected String reemplazarDatos(UsrBean usr, String plantillaFO, Hashtable datosBase) throws ClsExceptions, SIGAException {
-
 		Iterador iterador = getIterador(datosBase);
 		if (iterador != null) {
 			plantillaFO = this.reemplazaRegistros(plantillaFO, iterador.getValues(), null, iterador.getKey());
@@ -209,7 +205,7 @@ public class InformeCertificadosEspeciales extends MasterReport {
 			registro = (Hashtable) iterador.getValues().get(0);
 
 		}
-		Hashtable hDatosFijos = getDatosFijosCertificado(datosBase, registro);
+		Hashtable hDatosFijos = getDatosFijosCertificado(datosBase, registro,true);
 
 		plantillaFO = this.reemplazaVariables(hDatosFijos, plantillaFO);
 		// aalg: inc_10344_siga. Quitar la cadena BRdummyBR que se añadió para
@@ -218,6 +214,41 @@ public class InformeCertificadosEspeciales extends MasterReport {
 		return plantillaFO;
 	}
 
+	/**
+	 * Metodo que implementa la generación de la factura en PDF
+	 * 
+	 * @param mapping
+	 *            - Mapeo de los struts
+	 * @param formulario
+	 *            - Action Form asociado a este Action
+	 * @param request
+	 *            - objeto llamada HTTP
+	 * @param response
+	 *            - objeto respuesta HTTP
+	 * @param idFactura
+	 *            -
+	 * @return File - fichero PDF generado
+	 * @exception ClsExceptions
+	 *                En cualquier caso de error
+	 */
+	public File generarListadoCertificados(HttpServletRequest request, Hashtable datos, String pdfRuta, String pdfNombre, String plantillaRuta, String plantillaNombre, String dirTemporal) throws ClsExceptions, SIGAException {
+		File fPdf = null;
+
+		try {
+			String contenidoPlantilla = this.obtenerContenidoPlantilla(plantillaRuta, plantillaNombre);
+			fPdf = this.generarInforme(request, datos, dirTemporal, contenidoPlantilla, pdfRuta, pdfNombre.substring(0, pdfNombre.indexOf(".pdf")));
+		} catch (SIGAException se) {
+			throw se;
+		} catch (ClsExceptions ex) {
+			throw ex;
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al generar el informe: " + e.getLocalizedMessage());
+		} finally {
+
+		}
+		return fPdf;
+	}
+	
 	//Eitamos el uso de la request
 	public File generarListadoCertificados(UsrBean usr, Hashtable datos, String pdfRuta, String pdfNombre, String plantillaRuta, String plantillaNombre, String dirTemporal) throws ClsExceptions, SIGAException {
 		File fPdf = null;

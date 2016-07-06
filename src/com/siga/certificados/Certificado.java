@@ -88,7 +88,7 @@ public class Certificado {
 				}
 			} else {
 				if (extension.equalsIgnoreCase("doc")) {
-					Hashtable htDatos = admCliente.getDatosCertificado(htParametros, idInstitucion);
+					Hashtable htDatos = admCliente.getDatosCertificado(htParametros, idInstitucion,false);
 					htDatos = admPlantilla.darFormatoCampos(String.valueOf(idInstitucion), idTipoProducto, idProducto, idProductoInstitucion, idPlantilla, usr.getLanguageInstitucion(), htDatos);
 					Vector datosInVector = new Vector();
 					datosInVector.add(htDatos);
@@ -98,7 +98,7 @@ public class Certificado {
 
 				} else {
 					// datos certificado en plantilla
-					Hashtable htDatos = admCliente.getDatosCertificado(htParametros, idInstitucion);
+					Hashtable htDatos = admCliente.getDatosCertificado(htParametros, idInstitucion,true);
 					htDatos = admPlantilla.darFormatoCampos(String.valueOf(idInstitucion), idTipoProducto, idProducto, idProductoInstitucion, idPlantilla, usr.getLanguageInstitucion(), htDatos);
 					plantilla.sustituirEtiquetas(htDatos, fIn);
 
