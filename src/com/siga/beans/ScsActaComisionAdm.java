@@ -1017,4 +1017,45 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		return detalleEjgsPteRetirarActas.toString();
 	}
 	
+	public Vector<Hashtable> getEJGsEnActaParaActualizar(Integer idInstitucion, Integer idActa, Integer anioActa) throws ClsExceptions, SIGAException {
+		RowsContainer rc = new RowsContainer();
+		
+		StringBuilder sql= new StringBuilder();
+		sql.append(" ");
+		sql.append("SELECT E.IDINSTITUCION, E.ANIO, E.IDTIPOEJG, E.NUMERO ");
+		sql.append("FROM SCS_EJG_ACTA EA, SCS_EJG E ");
+		sql.append("WHERE EA.IDACTA =  ");
+		sql.append(idActa);
+		
+		sql.append(" AND EA.IDINSTITUCIONACTA =  ");
+		sql.append(idInstitucion);
+		sql.append(" AND EA.ANIOACTA =  ");
+		sql.append(anioActa);
+		sql.append(" AND E.IDINSTITUCION = EA.IDINSTITUCIONEJG ");
+		sql.append("AND E.ANIO = EA.ANIOEJG ");
+		sql.append("AND E.IDTIPOEJG = EA.IDTIPOEJG ");
+		sql.append("AND E.NUMERO = EA.NUMEROEJG ");
+		sql.append("AND E.IDINSTITUCIONACTA IS NULL ");
+		sql.append("AND E.ANIOACTA IS NULL ");
+		sql.append("AND E.IDACTA IS NULL ");
+ 		
+		Vector<Hashtable> datos = new Vector<Hashtable>();
+		try{    	   	    	   			
+			rc = this.find(sql.toString());
+ 			if (rc!=null){
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable)fila.getRow(); 
+					if (registro != null) 
+						datos.add(registro);
+				}
+			}		       
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error ScsActaComisionAdm.getEJGsEnActaParaActualizar.");	
+		} 
+		
+		return datos;			
+	}
+	
+	
 }

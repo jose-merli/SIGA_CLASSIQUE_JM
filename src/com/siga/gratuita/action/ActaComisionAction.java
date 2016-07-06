@@ -568,7 +568,7 @@ public class ActaComisionAction extends MasterAction{
 			StringBuilder ejgActaBuilder = null; 
 			//si la fecha de resolucion es nueva o si la modifica
 			
-			
+			Vector ejgsActualizarVector = null;
 			
 			if(((fechaResOld==null||fechaResOld.equalsIgnoreCase("")) &&
 					(actaBean.getFechaResolucionCAJG()!=null&&!actaBean.getFechaResolucionCAJG().equalsIgnoreCase("")))||(fechaResOld!=null &&
@@ -629,6 +629,8 @@ public class ActaComisionAction extends MasterAction{
 					throw new BusinessException(descr.toString());
 				}
 				
+				ejgsActualizarVector = actaAdm.getEJGsEnActaParaActualizar(actaBean.getIdInstitucion(), actaBean.getIdActa(), actaBean.getAnioActa());
+				
 				sql = new StringBuffer();
 				sql.append("update " + ScsEJGBean.T_NOMBRETABLA+ " set ");
 				sql.append(ScsEJGBean.C_FECHARESOLUCIONCAJG+ " = null "); 
@@ -656,6 +658,14 @@ public class ActaComisionAction extends MasterAction{
 				ejgAdm.updateSQL(sql.toString());
 				if(ejgActaBuilder!=null)
 					ejgAdm.updateSQL(ejgActaBuilder.toString());
+				if(ejgsActualizarVector!=null && ejgsActualizarVector.size()>0){
+					for (int i = 0; i < ejgsActualizarVector.size(); i++) {
+						Hashtable ejgHashtable = (Hashtable) ejgsActualizarVector.get(i);
+						ejgAdm.actalizaActaEjgSinDatoActa(ejgHashtable, actaBean.getIdInstitucion(), actaBean.getIdActa(), actaBean.getAnioActa());
+						
+					}
+					
+				}
 				
 			}
 			
