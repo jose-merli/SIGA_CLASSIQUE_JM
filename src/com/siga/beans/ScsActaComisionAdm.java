@@ -146,18 +146,31 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		int nextVal = 1;
 		
 		String sql = 
-				" SELECT NVL(MAX(" + ScsActaComisionBean.C_NUMEROACTA + "), 0) AS " + ScsActaComisionBean.C_NUMEROACTA +
+				" SELECT NVL(MAX(TO_NUMBER(" + ScsActaComisionBean.C_NUMEROACTA + ")), 0) AS " + ScsActaComisionBean.C_NUMEROACTA +
 				" FROM " + ScsActaComisionBean.T_NOMBRETABLA +
 				" WHERE " + ScsActaComisionBean.C_IDINSTITUCION + " = " + idInstitucion+
 				" AND " + ScsActaComisionBean.C_ANIOACTA + " = " + anio;
 		
 		RowsContainer rc = new RowsContainer();
-		
-		if (rc.find(sql)) {
-			Row r = (Row) rc.get(0);
-			nextVal = Integer.parseInt(r.getString(ScsActaComisionBean.C_NUMEROACTA));
-			nextVal++;
+		try {
+			if (rc.find(sql)) {
+				Row r = (Row) rc.get(0);
+				nextVal = Integer.parseInt(r.getString(ScsActaComisionBean.C_NUMEROACTA));
+				nextVal++;
+			}	
+		} catch (Exception e) {
+			sql = 
+					" SELECT NVL(MAX(" + ScsActaComisionBean.C_NUMEROACTA + "), 0) AS " + ScsActaComisionBean.C_NUMEROACTA +
+					" FROM " + ScsActaComisionBean.T_NOMBRETABLA +
+					" WHERE " + ScsActaComisionBean.C_IDINSTITUCION + " = " + idInstitucion+
+					" AND " + ScsActaComisionBean.C_ANIOACTA + " = " + anio;
+			if (rc.find(sql)) {
+				Row r = (Row) rc.get(0);
+				nextVal = Integer.parseInt(r.getString(ScsActaComisionBean.C_NUMEROACTA));
+				nextVal++;
+			}
 		}
+		
 		
 		return nextVal;
 		
@@ -176,7 +189,9 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		int nextVal = 1;
 
 		StringBuilder sql =  new StringBuilder();
-		sql.append(" SELECT NVL(MAX(NUMEROACTA), 0) AS NUMEROACTA FROM SCS_ACTACOMISION WHERE "); 
+		sql.append(" SELECT NVL(MAX(to_number(regexp_replace(NUMEROACTA, '\\D', ''))),0)  AS NUMEROACTA");
+
+		sql.append(" FROM SCS_ACTACOMISION WHERE "); 
 		sql.append(" IDINSTITUCION =  ");
 		sql.append(idInstitucion);
 		sql.append(" AND ANIOACTA =  ");
@@ -186,12 +201,31 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		sql.append("'");
 				
 		RowsContainer rc = new RowsContainer();
-		if (rc.find(sql.toString())) {
-			Row r = (Row) rc.get(0);
-			String numeroActa = r.getString(ScsActaComisionBean.C_NUMEROACTA);
-			numeroActa = UtilidadesString.replaceAllIgnoreCase(numeroActa, sufijo, "");
-			nextVal = Integer.parseInt(numeroActa)+1;
+		try {
+			if (rc.find(sql.toString())) {
+				Row r = (Row) rc.get(0);
+				String numeroActa = r.getString(ScsActaComisionBean.C_NUMEROACTA);
+				numeroActa = UtilidadesString.replaceAllIgnoreCase(numeroActa, sufijo, "");
+				nextVal = Integer.parseInt(numeroActa)+1;
+			}	
+		} catch (Exception e) {
+			sql =  new StringBuilder();
+			sql.append(" SELECT NVL(MAX(NUMEROACTA), 0) AS NUMEROACTA FROM SCS_ACTACOMISION WHERE "); 
+			sql.append(" IDINSTITUCION =  ");
+			sql.append(idInstitucion);
+			sql.append(" AND ANIOACTA =  ");
+			sql.append(anio);
+			sql.append(" and numeroacta like '%"); 
+			sql.append(sufijo); 
+			sql.append("'");
+			if (rc.find(sql.toString())) {
+				Row r = (Row) rc.get(0);
+				String numeroActa = r.getString(ScsActaComisionBean.C_NUMEROACTA);
+				numeroActa = UtilidadesString.replaceAllIgnoreCase(numeroActa, sufijo, "");
+				nextVal = Integer.parseInt(numeroActa)+1;
+			}
 		}
+		
 
 		return nextVal;
 
@@ -268,7 +302,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		if(filtros.get(ScsActaComisionBean.C_IDSECRETARIO)!=null && !filtros.get(ScsActaComisionBean.C_IDSECRETARIO).toString().equalsIgnoreCase("")){
 			consulta.append(" and act." + ScsActaComisionBean.C_IDSECRETARIO + " = " + filtros.get(ScsActaComisionBean.C_IDSECRETARIO).toString());
 		}
-		consulta.append(" order by act." + ScsActaComisionBean.C_ANIOACTA + " desc, act." + ScsActaComisionBean.C_NUMEROACTA + " desc");
+		consulta.append(" order by act." + ScsActaComisionBean.C_ANIOACTA + " desc,  to_number(regexp_replace(NUMEROACTA, '\\D', '')) desc,NUMEROACTA");
 		Paginador<Vector> paginador = new Paginador<Vector>(consulta.toString());
 		return paginador;
 		
@@ -1016,7 +1050,6 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		}
 		return detalleEjgsPteRetirarActas.toString();
 	}
-	
 	public Vector<Hashtable> getEJGsEnActaParaActualizar(Integer idInstitucion, Integer idActa, Integer anioActa) throws ClsExceptions, SIGAException {
 		RowsContainer rc = new RowsContainer();
 		
@@ -1056,6 +1089,5 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		
 		return datos;			
 	}
-	
 	
 }
