@@ -95,7 +95,7 @@
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
-				<td class="labelText"><siga:Idioma key="sjcs.actas.fechaReunion" /></td>
+				<td class="labelText"><siga:Idioma key="sjcs.actas.fechaReunion" />(*)</td>
 				<td>
 					<siga:Fecha nombreCampo="fechaReunion" valorInicial="${ActaComisionForm.fechaReunion}"/> 
 					
@@ -183,6 +183,11 @@
 						errores += "<siga:Idioma key='errors.integer' arg0='sjcs.actas.numeroActa'/>"+ '\n';
 					}
 				
+			}
+			if(document.ActaComisionForm.fechaReunion.value==""){
+				error = true;
+				errores += "<siga:Idioma key='errors.required' arg0='sjcs.actas.fechaReunion'/>"+ '\n';
+			
 			}
 			
 			if(document.ActaComisionForm.horaIni.value!=""){

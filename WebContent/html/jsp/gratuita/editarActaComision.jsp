@@ -135,7 +135,7 @@
 				</tr>
 			
 				<tr>
-					<td class="labelText"><siga:Idioma key="sjcs.actas.fechaReunion" /></td>
+					<td class="labelText"><siga:Idioma key="sjcs.actas.fechaReunion" />(*)</td>
 					<td>
 						<% if (readOnly) { %>
 							<html:text property="fechaReunion" size="10" styleClass="boxConsulta" value="<%=fechaReunion%>" disabled="false" readonly="true"></html:text>
@@ -305,6 +305,13 @@
 				error = true;
 				errores += "<siga:Idioma key='errors.required' arg0='sjcs.actas.numeroActa'/>"+ '\n';
 			}
+			if(document.ActaComisionForm.fechaReunion.value=="" ){
+				error = true;
+				errores += "<siga:Idioma key='errors.required' arg0='sjcs.actas.fechaReunion'/>"+ '\n';
+			}
+			
+			
+			
 
 			if(document.ActaComisionForm.horaIni.value!=""){
 				if(document.ActaComisionForm.horaIni.value>23){
