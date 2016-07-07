@@ -1204,7 +1204,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sql.append(" (SELECT COUNT(*) FROM SCS_DESIGNASLETRADO SDL WHERE D.IDINSTITUCION = SDL.IDINSTITUCION AND D.ANIO = SDL.ANIO AND D.NUMERO = SDL.NUMERO AND D.IDTURNO = SDL.IDTURNO) AS CAMBIOLETRADO, ");
 	               
 		sql.append(" (SELECT MIN(CASE WHEN (EJG.FECHARESOLUCIONCAJG IS NOT NULL ");
-		sql.append(" AND ((EJG.IDTIPORATIFICACIONEJG IN (3,6,7) ");
+		sql.append(" AND ((EJG.IDTIPORATIFICACIONEJG IN (3,5,6,7) ");
 		sql.append(" AND EJG.IDTIPORESOLAUTO IS NOT NULL ");
 		sql.append(" AND EJG.IDTIPORESOLAUTO IN (1)) ");
 		sql.append(" OR (EJG.IDTIPORATIFICACIONEJG IN (1,2,8,9,10,11) ");
@@ -1215,7 +1215,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sql.append(" AND ((EJG.IDTIPORATIFICACIONEJG IN (1,2,8,9,10,11,0) ");
 		sql.append(" AND EJG.IDTIPORESOLAUTO IS NOT NULL ");
 		sql.append(" AND EJG.IDTIPORESOLAUTO IN (3)) ");
-		sql.append(" OR (EJG.IDTIPORATIFICACIONEJG IN (3,6,7) ");
+		sql.append(" OR (EJG.IDTIPORATIFICACIONEJG IN (3,5,6,7) ");
 		sql.append(" AND (EJG.IDTIPORESOLAUTO IS NULL ");
 		sql.append(" OR EJG.IDTIPORESOLAUTO NOT IN (1))))) THEN 2 "); 
 	                           

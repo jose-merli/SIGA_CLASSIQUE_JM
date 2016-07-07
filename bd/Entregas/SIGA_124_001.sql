@@ -304,6 +304,10 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.updatedko', 'La fecha de resolución del acta no sera modificada hasta que no resuelva esos expedientes.#EU', 0, '3', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.updatedko', 'La fecha de resolución del acta no sera modificada hasta que no resuelva esos expedientes.#GL', 0, '4', sysdate, 0, '19');
 
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.informeJustificacionMasiva.resolucionDesignaFavorable', 'Designación con algun EJG favorable', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.informeJustificacionMasiva.resolucionDesignaFavorable', 'Designación con algun EJG favorable#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.informeJustificacionMasiva.resolucionDesignaFavorable', 'Designación con algun EJG favorable#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.informeJustificacionMasiva.resolucionDesignaFavorable', 'Designación con algun EJG favorable#GL', 0, '4', sysdate, 0, '19');
 
 
 		               
