@@ -2859,6 +2859,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(this.usrbean.getLanguage());
 			sql.append(") FROM SCS_SITUACION WHERE IDSITUACION = EJG.IDSITUACION) AS SITUACIONPROCEDIMIENTO_DJ ");
 			
+			sql.append(" ,DECODE(NVL(D.ESTADO,'A'),'V',1,'F',2,'A',3) ORDEN ");
+			
 			sql.append(" FROM SCS_EJG EJG, ");
 			sql.append(" SCS_EJGDESIGNA EJGD, ");
 			sql.append(" SCS_TIPOFUNDAMENTOS FUND,");
@@ -2883,6 +2885,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(anio);
 			sql.append(" AND EJG.numero = ");
 			sql.append(numero);
+			
+			sql.append("	ORDER BY ORDEN,EJGD.FECHAMODIFICACION DESC");
 			
 			try {    	   	    	   			
 				rc = this.find(sql.toString());
