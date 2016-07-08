@@ -76,16 +76,16 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	public Hashtable getTituloPantallaEJG (String idInstitucion, String anio, String numero, String idTipoEJG, String longitudNumEjg ) 
 	{
 		try {
-			String ejgActaBuilder = 	"select " + ScsPersonaJGBean.C_NOMBRE + "," + 
+			String sql = 	"select " + ScsPersonaJGBean.C_NOMBRE + "," + 
 			                            ScsPersonaJGBean.C_APELLIDO1 + ", " + 
 										ScsPersonaJGBean.C_APELLIDO2 + ", " + 
 										ScsEJGBean.C_ANIO + ", " ;
 										if(longitudNumEjg!=null)
-											ejgActaBuilder += "LPAD( a." + ScsEJGBean.C_NUMEJG + ", "+longitudNumEjg+",0)" + ScsEJGBean.C_NUMEJG + ", " ;
+											sql += "LPAD( a." + ScsEJGBean.C_NUMEJG + ", "+longitudNumEjg+",0)" + ScsEJGBean.C_NUMEJG + ", " ;
 										else
-											ejgActaBuilder += " a." + ScsEJGBean.C_NUMEJG + ", " ;
+											sql += " a." + ScsEJGBean.C_NUMEJG + ", " ;
 
-										ejgActaBuilder+=ScsEJGBean.C_IDTIPODICTAMENEJG+","+
+										sql+=ScsEJGBean.C_IDTIPODICTAMENEJG+","+
 										"TO_CHAR("+ScsEJGBean.C_FECHADICTAMEN+", 'DD/MM/YYYY') AS FECHADICTAMEN, "+
 										ScsEJGBean.C_SUFIJO+
 																				
@@ -97,7 +97,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							  " and a." + ScsEJGBean.C_IDPERSONAJG + " = p." + ScsPersonaJGBean.C_IDPERSONA+"(+)" +
 							  " and a." + ScsEJGBean.C_IDINSTITUCION+ " = p." + ScsPersonaJGBean.C_IDINSTITUCION+"(+)";
 	
-			Vector v = this.selectGenerico(ejgActaBuilder);
+			Vector v = this.selectGenerico(sql);
 			if (v!=null && v.size()>0) {
 				return (Hashtable) v.get(0);
 			}
@@ -113,29 +113,29 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	public Hashtable getDatosEjg (String idInstitucion, String anio, String numero, String idTipoEJG, String longitudNumEjg) 
 	{
 		try {
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append("SELECT SUFIJO, lpad(NUMEJG,");
-			ejgActaBuilder.append(longitudNumEjg);
-			ejgActaBuilder.append(",0) AS CODIGO, ");
-			ejgActaBuilder.append("PJG.NIF,PJG.NOMBRE,PJG.APELLIDO1,PJG.APELLIDO2 ");
-			ejgActaBuilder.append("FROM SCS_EJG EJG,SCS_PERSONAJG PJG ");
-			ejgActaBuilder.append("WHERE "); 
-			ejgActaBuilder.append("EJG.IDPERSONAJG = PJG.IDPERSONA(+) ");
-			ejgActaBuilder.append(" AND EJG.IDINSTITUCION = PJG.IDINSTITUCION(+) ");
-			ejgActaBuilder.append(" AND EJG.IDINSTITUCION = :1 ");
-//			ejgActaBuilder.append(idInstitucion);
-			ejgActaBuilder.append(" AND EJG.ANIO = :2 ");
-//			ejgActaBuilder.append(anio);
-			ejgActaBuilder.append(" AND EJG.NUMERO = :3");
-//			ejgActaBuilder.append(numero);
-			ejgActaBuilder.append(" AND EJG.IDTIPOEJG = :4 ");
-//			ejgActaBuilder.append(idTipoEJG);
+			StringBuffer sql = new StringBuffer();
+			sql.append("SELECT SUFIJO, lpad(NUMEJG,");
+			sql.append(longitudNumEjg);
+			sql.append(",0) AS CODIGO, ");
+			sql.append("PJG.NIF,PJG.NOMBRE,PJG.APELLIDO1,PJG.APELLIDO2 ");
+			sql.append("FROM SCS_EJG EJG,SCS_PERSONAJG PJG ");
+			sql.append("WHERE "); 
+			sql.append("EJG.IDPERSONAJG = PJG.IDPERSONA(+) ");
+			sql.append(" AND EJG.IDINSTITUCION = PJG.IDINSTITUCION(+) ");
+			sql.append(" AND EJG.IDINSTITUCION = :1 ");
+//			sql.append(idInstitucion);
+			sql.append(" AND EJG.ANIO = :2 ");
+//			sql.append(anio);
+			sql.append(" AND EJG.NUMERO = :3");
+//			sql.append(numero);
+			sql.append(" AND EJG.IDTIPOEJG = :4 ");
+//			sql.append(idTipoEJG);
 			Hashtable htCodigos = new Hashtable();
 			htCodigos.put(new Integer(1), idInstitucion);
 			htCodigos.put(new Integer(2), anio);
 			htCodigos.put(new Integer(3), numero);
 			htCodigos.put(new Integer(4), idTipoEJG);
-			Vector v = this.selectGenericoBind(ejgActaBuilder.toString(),htCodigos );
+			Vector v = this.selectGenericoBind(sql.toString(),htCodigos );
 			if (v!=null && v.size()>0) {
 				return (Hashtable) v.get(0);
 			}
@@ -162,9 +162,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		RowsContainer rc = null;
 		try { 
 			rc = new RowsContainer(); 
-			String ejgActaBuilder = "SELECT * FROM " + ScsEJGBean.T_NOMBRETABLA + " " + where ;
+			String sql = "SELECT * FROM " + ScsEJGBean.T_NOMBRETABLA + " " + where ;
 			
-			if (rc.query(ejgActaBuilder)) {
+			if (rc.query(sql)) {
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
 					MasterBean registro = (MasterBean) this.hashTableToBeanInicial(fila.getRow()); 
@@ -226,7 +226,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 			rc = new RowsContainer();		
 			rc1 = new RowsContainer();
-			// Se prepara la sentencia ejgActaBuilder para hacer el select
+			// Se prepara la sentencia sql para hacer el select
 
 //			String anio = "";
 //			anio = (String) entrada.get("SOJ_ANIO");
@@ -240,10 +240,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			anio = anio.substring(6);
 			entrada.put(ScsEJGBean.C_ANIO, anio);
 			
-			String ejgActaBuilder ="SELECT (MAX("+ ScsEJGBean.C_NUMERO + ") + 1) AS NUMERO FROM " + nombreTabla + " WHERE IDINSTITUCION = " + entrada.get("IDINSTITUCION") + " AND ANIO = " + anio + " AND IDTIPOEJG = " + entrada.get("IDTIPOEJG");			 
+			String sql ="SELECT (MAX("+ ScsEJGBean.C_NUMERO + ") + 1) AS NUMERO FROM " + nombreTabla + " WHERE IDINSTITUCION = " + entrada.get("IDINSTITUCION") + " AND ANIO = " + anio + " AND IDTIPOEJG = " + entrada.get("IDTIPOEJG");			 
 			
 //			PDM INC-4774
-			String ejgActaBuilderNumeroEjg ="SELECT (MAX(to_number(NUMEJG)) + 1) AS NUMEROEJG FROM " + nombreTabla + 
+			String sqlNumeroEjg ="SELECT (MAX(to_number(NUMEJG)) + 1) AS NUMEROEJG FROM " + nombreTabla + 
 			" WHERE IDINSTITUCION =" + entrada.get("IDINSTITUCION") +
 			" AND ANIO =" + anio;//Obtenemos el max(codigo)+1 por institucion y anio 
 			                               // y asi poder crear una UK del campo Codigo por institucion y anio.
@@ -251,7 +251,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			String longitudEJG = paramAdm.getValor (this.usrbean.getLocation (), "SCS", "LONGITUD_CODEJG", "");
 			idTipoEJGColegioDefecto = paramAdm.getValor (this.usrbean.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_TIPO_EJG_COLEGIO, "");				
 			
-			if (rc.query(ejgActaBuilder)) {
+			if (rc.query(sql)) {
 				Row fila = (Row) rc.get(0);
 				Hashtable prueba = fila.getRow();			
 				if (prueba.get("NUMERO").equals("")) {
@@ -260,7 +260,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				else numeroMaximo = prueba.get("NUMERO").toString();				
 			}						
 			
-			if (rc1.query(ejgActaBuilderNumeroEjg)) {
+			if (rc1.query(sqlNumeroEjg)) {
 				Row fila1 = (Row) rc1.get(0);
 				Hashtable prueba1 = fila1.getRow();			
 				if (prueba1.get("NUMEROEJG").equals("")) {
@@ -674,7 +674,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
 	            	            
-	            String ejgActaBuilder ="SELECT " +ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_NIF+","+
+	            String sql ="SELECT " +ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_NIF+","+
 							"(" + ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_APELLIDO1 + " || ' ' || " +
 							ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_APELLIDO2 + " || ', ' || " +
 							ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_NOMBRE + ") AS MIEMBRO, " +
@@ -704,7 +704,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							//" AND " +
 							//ScsUnidadFamiliarEJGBean.T_NOMBRETABLA +"."+ ScsUnidadFamiliarEJGBean.C_SOLICITANTE + "=" + ClsConstants.DB_FALSE;
 	            
-	            if (rc.find(ejgActaBuilder)) {
+	            if (rc.find(sql)) {
 	               for (int i = 0; i < rc.size(); i++){
 	                  Row fila = (Row) rc.get(i);
 	                  Hashtable resultado=fila.getRow();	                  
@@ -733,7 +733,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
 	            	            
-	            String ejgActaBuilder ="SELECT " +
+	            String sql ="SELECT " +
 							"(" + ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_APELLIDO1 + " || ' ' || " +
 							ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_APELLIDO2 + " || ', ' || " +
 							ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_NOMBRE + ") AS PERCEPTOR, " +
@@ -759,7 +759,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							" AND " +
 							ScsUnidadFamiliarEJGBean.T_NOMBRETABLA +"."+ ScsUnidadFamiliarEJGBean.C_NUMERO + "=" + numero;
 														
-	            if (rc.find(ejgActaBuilder)) {
+	            if (rc.find(sql)) {
 	               for (int i = 0; i < rc.size(); i++){
 	                  Row fila = (Row) rc.get(i);
 	                  Hashtable resultado=fila.getRow();	                  
@@ -785,79 +785,79 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	private Vector<Hashtable<String,Object>> getContrariosEjg(String idInstitucion, String  tipoEjg, String anioEjg, String numeroEjg, String idContrario) throws ClsExceptions {	
 		Vector<Hashtable<String,Object>> datos = new Vector<Hashtable<String,Object>>();   
   		RowsContainer rc = new RowsContainer();
-  		StringBuffer ejgActaBuilderBuffer = new StringBuffer();
+  		StringBuffer sqlBuffer = new StringBuffer();
   		
-  		ejgActaBuilderBuffer.append("SELECT PER.IDPERSONA AS IDPERSONA_PJG, ");
-  		ejgActaBuilderBuffer.append(" DECODE(PER.DIRECCION, null, null, 1) AS IDDIRECCION_PJG, ");
-  		ejgActaBuilderBuffer.append(" NVL(PER.NOMBRE, '') AS NOMBRE_PJG, ");
-  		ejgActaBuilderBuffer.append(" NVL(PER.APELLIDO1, '') AS APELLIDO1_PJG, ");
-  		ejgActaBuilderBuffer.append(" NVL(PER.APELLIDO2, '') AS APELLIDO2_PJG, ");
-  		ejgActaBuilderBuffer.append(" NVL(PER.CODIGOPOSTAL, '') AS CP_PJG, ");
-  		ejgActaBuilderBuffer.append(" NVL(POBL.NOMBRE, '') AS POBLACION_PJG, ");
-  		ejgActaBuilderBuffer.append(" NVL(PROV.NOMBRE, '') AS PROVINCIA_PJG, ");
+  		sqlBuffer.append("SELECT PER.IDPERSONA AS IDPERSONA_PJG, ");
+  		sqlBuffer.append(" DECODE(PER.DIRECCION, null, null, 1) AS IDDIRECCION_PJG, ");
+  		sqlBuffer.append(" NVL(PER.NOMBRE, '') AS NOMBRE_PJG, ");
+  		sqlBuffer.append(" NVL(PER.APELLIDO1, '') AS APELLIDO1_PJG, ");
+  		sqlBuffer.append(" NVL(PER.APELLIDO2, '') AS APELLIDO2_PJG, ");
+  		sqlBuffer.append(" NVL(PER.CODIGOPOSTAL, '') AS CP_PJG, ");
+  		sqlBuffer.append(" NVL(POBL.NOMBRE, '') AS POBLACION_PJG, ");
+  		sqlBuffer.append(" NVL(PROV.NOMBRE, '') AS PROVINCIA_PJG, ");
   		
-  		ejgActaBuilderBuffer.append(" NVL2(VIA.DESCRIPCION, F_SIGA_GETRECURSO(VIA.DESCRIPCION, ");
-  		ejgActaBuilderBuffer.append(this.usrbean.getLanguage());
-  		ejgActaBuilderBuffer.append("), '') || ");
-  		ejgActaBuilderBuffer.append(" NVL2(PER.DIRECCION, ' ' || PER.DIRECCION, '') || ");
-  		ejgActaBuilderBuffer.append(" NVL2(PER.NUMERODIR, ' ' || PER.NUMERODIR, '') || ");
-  		ejgActaBuilderBuffer.append(" NVL2(PER.ESCALERADIR, ' ' || PER.ESCALERADIR, '') || ");
-  		ejgActaBuilderBuffer.append(" NVL2(PER.PISODIR, ' ' || PER.PISODIR, '') || ");
-  		ejgActaBuilderBuffer.append(" NVL2(PER.PUERTADIR, ' ' || PER.PUERTADIR, '') AS DOMICILIO_PJG, ");
+  		sqlBuffer.append(" NVL2(VIA.DESCRIPCION, F_SIGA_GETRECURSO(VIA.DESCRIPCION, ");
+  		sqlBuffer.append(this.usrbean.getLanguage());
+  		sqlBuffer.append("), '') || ");
+  		sqlBuffer.append(" NVL2(PER.DIRECCION, ' ' || PER.DIRECCION, '') || ");
+  		sqlBuffer.append(" NVL2(PER.NUMERODIR, ' ' || PER.NUMERODIR, '') || ");
+  		sqlBuffer.append(" NVL2(PER.ESCALERADIR, ' ' || PER.ESCALERADIR, '') || ");
+  		sqlBuffer.append(" NVL2(PER.PISODIR, ' ' || PER.PISODIR, '') || ");
+  		sqlBuffer.append(" NVL2(PER.PUERTADIR, ' ' || PER.PUERTADIR, '') AS DOMICILIO_PJG, ");
   		
-  		ejgActaBuilderBuffer.append(" DECODE(PER.SEXO, null, null, 'M', 'gratuita.personaEJG.sexo.mujer', 'gratuita.personaEJG.sexo.hombre') AS SEXO_PJG, ");
-  		ejgActaBuilderBuffer.append(" NVL2(PER.SEXO, DECODE(PER.SEXO, 'H', 'o', 'a'), '') AS O_A_PJG, ");
-  		ejgActaBuilderBuffer.append(" DECODE(PER.SEXO, 'H', 'el', 'la') AS EL_LA_PJG, ");
-  		ejgActaBuilderBuffer.append(" NVL(PER.NIF, '') AS NIF_PJG, ");
+  		sqlBuffer.append(" DECODE(PER.SEXO, null, null, 'M', 'gratuita.personaEJG.sexo.mujer', 'gratuita.personaEJG.sexo.hombre') AS SEXO_PJG, ");
+  		sqlBuffer.append(" NVL2(PER.SEXO, DECODE(PER.SEXO, 'H', 'o', 'a'), '') AS O_A_PJG, ");
+  		sqlBuffer.append(" DECODE(PER.SEXO, 'H', 'el', 'la') AS EL_LA_PJG, ");
+  		sqlBuffer.append(" NVL(PER.NIF, '') AS NIF_PJG, ");
         
-  		ejgActaBuilderBuffer.append(" (SELECT ST.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA ST WHERE ST.IDINSTITUCION = PER.IDINSTITUCION AND ST.IDPERSONA = PER.IDPERSONA AND ST.IDTELEFONO = 1) TELEFONO1_PJG, ");
-  		ejgActaBuilderBuffer.append(" (SELECT ST.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA ST WHERE ST.IDINSTITUCION = PER.IDINSTITUCION AND ST.IDPERSONA = PER.IDPERSONA AND ST.IDTELEFONO = 2) TELEFONO2_PJG, ");        
-  		ejgActaBuilderBuffer.append(" (SELECT MAX(ST.NUMEROTELEFONO) FROM SCS_TELEFONOSPERSONA ST WHERE ST.IDINSTITUCION = PER.IDINSTITUCION AND ST.IDPERSONA = PER.IDPERSONA AND ST.PREFERENTESMS = 1) MOVIL_PJG, ");
+  		sqlBuffer.append(" (SELECT ST.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA ST WHERE ST.IDINSTITUCION = PER.IDINSTITUCION AND ST.IDPERSONA = PER.IDPERSONA AND ST.IDTELEFONO = 1) TELEFONO1_PJG, ");
+  		sqlBuffer.append(" (SELECT ST.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA ST WHERE ST.IDINSTITUCION = PER.IDINSTITUCION AND ST.IDPERSONA = PER.IDPERSONA AND ST.IDTELEFONO = 2) TELEFONO2_PJG, ");        
+  		sqlBuffer.append(" (SELECT MAX(ST.NUMEROTELEFONO) FROM SCS_TELEFONOSPERSONA ST WHERE ST.IDINSTITUCION = PER.IDINSTITUCION AND ST.IDPERSONA = PER.IDPERSONA AND ST.PREFERENTESMS = 1) MOVIL_PJG, ");
   		
-  		ejgActaBuilderBuffer.append(" PER.Fax AS FAX_PJG, ");
-  		ejgActaBuilderBuffer.append(" PER.CORREOELECTRONICO AS CORREOELECTRONICO_PJG, ");
-  		ejgActaBuilderBuffer.append(" PER.IDREPRESENTANTEJG, ");
-  		ejgActaBuilderBuffer.append(" PER.IDINSTITUCION, ");
+  		sqlBuffer.append(" PER.Fax AS FAX_PJG, ");
+  		sqlBuffer.append(" PER.CORREOELECTRONICO AS CORREOELECTRONICO_PJG, ");
+  		sqlBuffer.append(" PER.IDREPRESENTANTEJG, ");
+  		sqlBuffer.append(" PER.IDINSTITUCION, ");
 
-  		ejgActaBuilderBuffer.append(" CON.Nombreabogadocontrarioejg AS ABOGADO_CONTRARIO, ");
-        ejgActaBuilderBuffer.append(" CON.Nombrerepresentanteejg AS REPRESENTANTE_CONTRARIO, ");
-        ejgActaBuilderBuffer.append(" NVL(PRO.NOMBRE, '') || NVL2(PRO.APELLIDOS1, ' ' || PRO.APELLIDOS1, '') || NVL2(PRO.APELLIDOS2, ' ' || PRO.APELLIDOS2, '') AS PROCURADOR_CONTRARIO ");
+  		sqlBuffer.append(" CON.Nombreabogadocontrarioejg AS ABOGADO_CONTRARIO, ");
+        sqlBuffer.append(" CON.Nombrerepresentanteejg AS REPRESENTANTE_CONTRARIO, ");
+        sqlBuffer.append(" NVL(PRO.NOMBRE, '') || NVL2(PRO.APELLIDOS1, ' ' || PRO.APELLIDOS1, '') || NVL2(PRO.APELLIDOS2, ' ' || PRO.APELLIDOS2, '') AS PROCURADOR_CONTRARIO ");
   		
-  		ejgActaBuilderBuffer.append(" FROM SCS_CONTRARIOSEJG CON, ");
-  		ejgActaBuilderBuffer.append(" SCS_PERSONAJG PER, ");
-  		ejgActaBuilderBuffer.append(" CEN_TIPOVIA VIA, ");
-  		ejgActaBuilderBuffer.append(" CEN_POBLACIONES POBL, ");
-  		ejgActaBuilderBuffer.append(" CEN_PROVINCIAS PROV, ");
-  		ejgActaBuilderBuffer.append(" SCS_PROCURADOR PRO ");
+  		sqlBuffer.append(" FROM SCS_CONTRARIOSEJG CON, ");
+  		sqlBuffer.append(" SCS_PERSONAJG PER, ");
+  		sqlBuffer.append(" CEN_TIPOVIA VIA, ");
+  		sqlBuffer.append(" CEN_POBLACIONES POBL, ");
+  		sqlBuffer.append(" CEN_PROVINCIAS PROV, ");
+  		sqlBuffer.append(" SCS_PROCURADOR PRO ");
   		
-  		ejgActaBuilderBuffer.append(" WHERE CON.IDINSTITUCION = PER.IDINSTITUCION ");
-  		ejgActaBuilderBuffer.append(" AND CON.IDPERSONA = PER.IDPERSONA ");
-  		ejgActaBuilderBuffer.append(" AND VIA.IDINSTITUCION(+) = PER.IDINSTITUCION ");
-  		ejgActaBuilderBuffer.append(" AND VIA.IDTIPOVIA(+) = PER.IDTIPOVIA ");
-  		ejgActaBuilderBuffer.append(" AND POBL.IDPOBLACION(+) = PER.IDPOBLACION ");
-  		ejgActaBuilderBuffer.append(" AND PROV.IDPROVINCIA(+) = PER.IDPROVINCIA ");
-  		ejgActaBuilderBuffer.append(" AND CON.IDPROCURADOR = PRO.IDPROCURADOR(+) ");
-  		ejgActaBuilderBuffer.append(" AND CON.IDINSTITUCION_PROCU = PRO.IDINSTITUCION(+) ");
+  		sqlBuffer.append(" WHERE CON.IDINSTITUCION = PER.IDINSTITUCION ");
+  		sqlBuffer.append(" AND CON.IDPERSONA = PER.IDPERSONA ");
+  		sqlBuffer.append(" AND VIA.IDINSTITUCION(+) = PER.IDINSTITUCION ");
+  		sqlBuffer.append(" AND VIA.IDTIPOVIA(+) = PER.IDTIPOVIA ");
+  		sqlBuffer.append(" AND POBL.IDPOBLACION(+) = PER.IDPOBLACION ");
+  		sqlBuffer.append(" AND PROV.IDPROVINCIA(+) = PER.IDPROVINCIA ");
+  		sqlBuffer.append(" AND CON.IDPROCURADOR = PRO.IDPROCURADOR(+) ");
+  		sqlBuffer.append(" AND CON.IDINSTITUCION_PROCU = PRO.IDINSTITUCION(+) ");
   		
-  		ejgActaBuilderBuffer.append(" AND CON.IDINSTITUCION = ");
-  		ejgActaBuilderBuffer.append(idInstitucion);
+  		sqlBuffer.append(" AND CON.IDINSTITUCION = ");
+  		sqlBuffer.append(idInstitucion);
   		
-  		ejgActaBuilderBuffer.append(" AND CON.IDTIPOEJG = ");
-  		ejgActaBuilderBuffer.append(tipoEjg);
+  		sqlBuffer.append(" AND CON.IDTIPOEJG = ");
+  		sqlBuffer.append(tipoEjg);
   		
-  		ejgActaBuilderBuffer.append(" AND CON.ANIO = ");
-  		ejgActaBuilderBuffer.append(anioEjg);
+  		sqlBuffer.append(" AND CON.ANIO = ");
+  		sqlBuffer.append(anioEjg);
   		
-  		ejgActaBuilderBuffer.append(" AND CON.NUMERO = ");
-  		ejgActaBuilderBuffer.append(numeroEjg);
+  		sqlBuffer.append(" AND CON.NUMERO = ");
+  		sqlBuffer.append(numeroEjg);
   				
   		if (idContrario!=null) {
-  			ejgActaBuilderBuffer.append(" AND CON.IDPERSONA = ");
-  			ejgActaBuilderBuffer.append(idContrario);
+  			sqlBuffer.append(" AND CON.IDPERSONA = ");
+  			sqlBuffer.append(idContrario);
   		}
   				
         try {    
-        	if (rc.find(ejgActaBuilderBuffer.toString())) {
+        	if (rc.find(sqlBuffer.toString())) {
         		for (int i = 0; i < rc.size(); i++){
         			Row fila = (Row) rc.get(i);
         			Hashtable<String,Object> resultado = fila.getRow();	                  
@@ -887,7 +887,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
         Row fila = null;
 	       try {
 
-            String ejgActaBuilder ="select "+
+            String sql ="select "+
             "A."+ScsEJGBean.C_ANIO+","+
             "A."+ScsEJGBean.C_NUMERO+","+
             "A."+ScsEJGBean.C_IDTIPOEJG+","+
@@ -909,7 +909,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
             "   and C." + ScsSOJBean.C_EJGIDTIPOEJG + "=B." + ScsTipoEJGBean.C_IDTIPOEJG;
 	     
-//	       		String ejgActaBuilder ="select "+
+//	       		String sql ="select "+
 //	            "A."+ScsEJGBean.C_ANIO+","+
 //	            "A."+ScsEJGBean.C_NUMERO+","+
 //	            "A."+ScsEJGBean.C_IDTIPOEJG+","+
@@ -923,7 +923,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 //	            "   and A."+ScsEJGBean.C_SOJ_NUMERO+"="+numero+
 //	            "   and A."+ScsEJGBean.C_IDTIPOEJG+"=B."+ScsTipoEJGBean.C_IDTIPOEJG;
 	            
-	            if(rc.find(ejgActaBuilder)){
+	            if(rc.find(sql)){
 	                  fila = (Row) rc.get(0);
 	            }
 	       }
@@ -937,7 +937,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	{
 		try {
 	            	            
-	       	String ejgActaBuilder = " SELECT * FROM ( " +
+	       	String sql = " SELECT * FROM ( " +
 			
 							" SELECT TRIM('ASISTENCIA') SJCS, " + 
 									 ScsAsistenciasBean.C_IDINSTITUCION + " IDINSTITUCION, " + 
@@ -1032,7 +1032,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 							" ) " +
 						 " ORDER BY SJCS, IDINSTITUCION, ANIO, CODIGO ";
 
-	       	return this.selectGenerico(ejgActaBuilder);
+	       	return this.selectGenerico(sql);
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion sobre las relaciones de un ejg.");
@@ -1049,7 +1049,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		Vector v=new Vector();
 		Hashtable h=new Hashtable();
 		
-		String ejgActaBuilder="select a.anio as ASIANIO, a.numero as ASINUMERO" +
+		String sql="select a.anio as ASIANIO, a.numero as ASINUMERO" +
 				"  from scs_asistencia a" +
 				" where a.ejganio = "+anio+
 				"   and a.ejgnumero = "+ numero +
@@ -1057,7 +1057,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				"   and a.idinstitucion = "+ this.usrbean.getLocation();
 
 		try {
-			v=super.selectGenerico(ejgActaBuilder);
+			v=super.selectGenerico(sql);
 			if(v.size()>0)
 				h=(Hashtable)v.get(0);
 		} catch (ClsExceptions e) {
@@ -1080,18 +1080,18 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			    
 			    contador++;
 				codigos.put(new Integer(contador),institucion);
-	            String ejgActaBuilder ="select f_siga_getunidadejg(:"+contador+", ";
+	            String sql ="select f_siga_getunidadejg(:"+contador+", ";
 	            contador++;
 				codigos.put(new Integer(contador),anio);
-	            ejgActaBuilder += "                    :"+contador+", ";
+	            sql += "                    :"+contador+", ";
 	            contador++;
 				codigos.put(new Integer(contador),numero);
-	            ejgActaBuilder += "                    :"+contador+", ";
+	            sql += "                    :"+contador+", ";
 	            contador++;
 				codigos.put(new Integer(contador),tipoEJG);
-	            ejgActaBuilder += "                    :"+contador+") AS NOMBRE from dual";
+	            sql += "                    :"+contador+") AS NOMBRE from dual";
 														
-	            if (rc.findBind(ejgActaBuilder,codigos)) {
+	            if (rc.findBind(sql,codigos)) {
 	               for (int i = 0; i < rc.size(); i++){
 	                  Row fila = (Row) rc.get(i);
 	                  Hashtable resultado=fila.getRow();	                  
@@ -1121,22 +1121,22 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		    Hashtable codigos = new Hashtable();
 		    int contador=0;
 		    
-            String ejgActaBuilder ="SELECT ejg." + ScsEJGBean.C_FECHAAPERTURA +
+            String sql ="SELECT ejg." + ScsEJGBean.C_FECHAAPERTURA +
                       " FROM SCS_EJG ejg ";
       	            contador++;
     				codigos.put(new Integer(contador),institucion);
-    	            ejgActaBuilder += " WHERE ejg.IDINSTITUCION =:"+contador;
+    	            sql += " WHERE ejg.IDINSTITUCION =:"+contador;
     	            contador++;
     				codigos.put(new Integer(contador),tipoEJG);
-    	            ejgActaBuilder += "  and ejg.IDTIPOEJG =:" +contador;
+    	            sql += "  and ejg.IDTIPOEJG =:" +contador;
     	            contador++;
     				codigos.put(new Integer(contador),anio);
-    	            ejgActaBuilder += "  and ejg.ANIO =:" + contador;
+    	            sql += "  and ejg.ANIO =:" + contador;
     	            contador++;
     				codigos.put(new Integer(contador),numero);
-    	            ejgActaBuilder += "  and ejg.NUMERO =:" + contador ;
+    	            sql += "  and ejg.NUMERO =:" + contador ;
 													
-            if (rc.findBind(ejgActaBuilder,codigos)) {
+            if (rc.findBind(sql,codigos)) {
                for (int i = 0; i < rc.size(); i++){
                   Row fila = (Row) rc.get(i);
                   Hashtable resultado=fila.getRow();	                  
@@ -1767,30 +1767,30 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			String salidaNombre,String salidaAbrev) throws ClsExceptions  
 	{
 		try {
-			//ejgActaBuilder.append(" f_siga_getabrevturno(ejg.idinstitucion, ejg.guardiaturno_idturno) AS ABREV_TURNO, ");
+			//sql.append(" f_siga_getabrevturno(ejg.idinstitucion, ejg.guardiaturno_idturno) AS ABREV_TURNO, ");
 			Hashtable htCodigos = new Hashtable();
 			int keyContador = 0;
 			htCodigos.put(new Integer(1), idInstitucion);
 			htCodigos.put(new Integer(2), idTurno);
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append("select nvl(NOMBRE,'-') as ");
-			ejgActaBuilder.append(salidaNombre);
-			ejgActaBuilder.append(" ,t.abreviatura as ");
-			ejgActaBuilder.append(salidaAbrev);
-			ejgActaBuilder.append(" from scs_turno t ");
-			ejgActaBuilder.append(" where ");
+			StringBuffer sql = new StringBuffer();
+			sql.append("select nvl(NOMBRE,'-') as ");
+			sql.append(salidaNombre);
+			sql.append(" ,t.abreviatura as ");
+			sql.append(salidaAbrev);
+			sql.append(" from scs_turno t ");
+			sql.append(" where ");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(" idinstitucion = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" idinstitucion = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idTurno);
-			ejgActaBuilder.append(" AND idturno = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" AND idturno = :");
+			sql.append(keyContador);
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion sobre las relaciones de procuradores.");
@@ -1805,73 +1805,73 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			int keyContador = 0;
 			
 		
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" ");
-			ejgActaBuilder.append(" select ejg.idpersonajg IDPERSONAJG,");
-			ejgActaBuilder.append(" ejg.idpersona IDPERSONA,EJG.JUZGADO IDJUZGADO,EJG.COMISARIA IDCOMISARIA, ");
-			ejgActaBuilder.append(" ejg.idfundamentocalif IDFUNDAMENTOCALIF,ejg.idtipodictamenejg IDTIPODICTAMENEJG, ");
-			ejgActaBuilder.append(" ejg.idtipoejgcolegio IDTIPOEJGCOLEGIO, ");
-			ejgActaBuilder.append(" ejg.guardiaturno_idturno GUARDIATURNO_IDTURNO, ");
-			ejgActaBuilder.append(" ejg.guardiaturno_idguardia GUARDIATURNO_IDGUARDIA, ");
-			ejgActaBuilder.append(" ejg.idtiporatificacionejg IDTIPORATIFICACIONEJG, ");
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			sql.append(" select ejg.idpersonajg IDPERSONAJG,");
+			sql.append(" ejg.idpersona IDPERSONA,EJG.JUZGADO IDJUZGADO,EJG.COMISARIA IDCOMISARIA, ");
+			sql.append(" ejg.idfundamentocalif IDFUNDAMENTOCALIF,ejg.idtipodictamenejg IDTIPODICTAMENEJG, ");
+			sql.append(" ejg.idtipoejgcolegio IDTIPOEJGCOLEGIO, ");
+			sql.append(" ejg.guardiaturno_idturno GUARDIATURNO_IDTURNO, ");
+			sql.append(" ejg.guardiaturno_idguardia GUARDIATURNO_IDGUARDIA, ");
+			sql.append(" ejg.idtiporatificacionejg IDTIPORATIFICACIONEJG, ");
 			
-			ejgActaBuilder.append(" ejg.idinstitucion_proc IDINSTITUCIONPROC, ");
-			ejgActaBuilder.append(" ejg.idprocurador IDPROCURADOR, ");
+			sql.append(" ejg.idinstitucion_proc IDINSTITUCIONPROC, ");
+			sql.append(" ejg.idprocurador IDPROCURADOR, ");
 			
-			ejgActaBuilder.append(" nvl(lpad( ejg.numejg,"+longitudNumEjg+",0) || '/' || substr(ejg.anio, 3, 2), '-') as NUM_SOLICITUD, ");
-			ejgActaBuilder.append(" lpad( ejg.numejg,"+longitudNumEjg+",0) as NUMERO_EJG, ejg.anio as ANIO_EJG, ");
+			sql.append(" nvl(lpad( ejg.numejg,"+longitudNumEjg+",0) || '/' || substr(ejg.anio, 3, 2), '-') as NUM_SOLICITUD, ");
+			sql.append(" lpad( ejg.numejg,"+longitudNumEjg+",0) as NUMERO_EJG, ejg.anio as ANIO_EJG, ");
 			
-			ejgActaBuilder.append(" nvl(to_char(ejg.fechaapertura, 'DD/mm/YYYY'), '-') as FECHA_SOLICITUD, ");
-			//ejgActaBuilder.append(" ' ' as SITUACION_LABORAL, ");
+			sql.append(" nvl(to_char(ejg.fechaapertura, 'DD/mm/YYYY'), '-') as FECHA_SOLICITUD, ");
+			//sql.append(" ' ' as SITUACION_LABORAL, ");
 			
-			ejgActaBuilder.append(" pkg_siga_fecha_en_letra.f_siga_fechacompletaenletra(nvl(ejg.fechadictamen, SYSDATE), 'M', :");
+			sql.append(" pkg_siga_fecha_en_letra.f_siga_fechacompletaenletra(nvl(ejg.fechadictamen, SYSDATE), 'M', :");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idioma);
-			ejgActaBuilder.append(keyContador);
-			ejgActaBuilder.append(" ) as FECHA_DICTAMEN, ");
-			ejgActaBuilder.append(" nvl(ejg.dictamen, '-') as DICTAMEN_TEXTO, ");
-			ejgActaBuilder.append(" ejg.idfundamentocalif as IDFUNDAMENTO, ");
-			ejgActaBuilder.append(" nvl(ejg.dictamen, '-') as OBSERVACIONES_DICTAMEN, ");
-			ejgActaBuilder.append(" ejg.observaciones AS OBSERVACIONES, ");
+			sql.append(keyContador);
+			sql.append(" ) as FECHA_DICTAMEN, ");
+			sql.append(" nvl(ejg.dictamen, '-') as DICTAMEN_TEXTO, ");
+			sql.append(" ejg.idfundamentocalif as IDFUNDAMENTO, ");
+			sql.append(" nvl(ejg.dictamen, '-') as OBSERVACIONES_DICTAMEN, ");
+			sql.append(" ejg.observaciones AS OBSERVACIONES, ");
 			
-			ejgActaBuilder.append(" ejg.fecharesolucioncajg FECHA_RES_CAJG, ");
-			ejgActaBuilder.append(" EJG.OBSERVACIONES AS ASUNTO_DEFENSA_JURIDICA, ");
-			ejgActaBuilder.append(" EJG.NUMERODILIGENCIA AS NUMDILIGENCIA_DEFENSA_JURIDICA, ");
-			ejgActaBuilder.append(" EJG.NUMEROPROCEDIMIENTO AS NUMPROCED_DEFENSA_JURIDICA ");
-			ejgActaBuilder.append(" , EJG.ANIOPROCEDIMIENTO AS ANIOPROCED_DEFENSA_JURIDICA ");
-			ejgActaBuilder.append(" , Decode(EJG.ANIOPROCEDIMIENTO, null, EJG.NUMEROPROCEDIMIENTO, (EJG.NUMEROPROCEDIMIENTO || '/' || EJG.ANIOPROCEDIMIENTO))  AS NUMANIOPROCED_DEFENSA_JURIDICA ");			
-			ejgActaBuilder.append(" ,TO_CHAR(EJG.FECHAPRESENTACION, 'dd-mm-yyyy') as FECHAPRESENTACION");
-			ejgActaBuilder.append(" ,TO_CHAR(EJG.FECHALIMITEPRESENTACION, 'dd-mm-yyyy') as FECHALIMITEPRESENTACION, ");
+			sql.append(" ejg.fecharesolucioncajg FECHA_RES_CAJG, ");
+			sql.append(" EJG.OBSERVACIONES AS ASUNTO_DEFENSA_JURIDICA, ");
+			sql.append(" EJG.NUMERODILIGENCIA AS NUMDILIGENCIA_DEFENSA_JURIDICA, ");
+			sql.append(" EJG.NUMEROPROCEDIMIENTO AS NUMPROCED_DEFENSA_JURIDICA ");
+			sql.append(" , EJG.ANIOPROCEDIMIENTO AS ANIOPROCED_DEFENSA_JURIDICA ");
+			sql.append(" , Decode(EJG.ANIOPROCEDIMIENTO, null, EJG.NUMEROPROCEDIMIENTO, (EJG.NUMEROPROCEDIMIENTO || '/' || EJG.ANIOPROCEDIMIENTO))  AS NUMANIOPROCED_DEFENSA_JURIDICA ");			
+			sql.append(" ,TO_CHAR(EJG.FECHAPRESENTACION, 'dd-mm-yyyy') as FECHAPRESENTACION");
+			sql.append(" ,TO_CHAR(EJG.FECHALIMITEPRESENTACION, 'dd-mm-yyyy') as FECHALIMITEPRESENTACION, ");
 			
-			ejgActaBuilder.append(" ejg.idpretension AS PRETENSION ");			
+			sql.append(" ejg.idpretension AS PRETENSION ");			
 			
 		       
 			
-			ejgActaBuilder.append(" from scs_ejg  ejg ");
-			ejgActaBuilder.append(" where  ");
+			sql.append(" from scs_ejg  ejg ");
+			sql.append(" where  ");
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(" ejg.idinstitucion = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" ejg.idinstitucion = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), tipoEjg);
-			ejgActaBuilder.append(" and ejg.idtipoejg = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and ejg.idtipoejg = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), anio);
-			ejgActaBuilder.append(" and ejg.anio = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and ejg.anio = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), numero);
-			ejgActaBuilder.append(" and ejg.numero = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and ejg.numero = :");
+			sql.append(keyContador);
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		}
 		catch (Exception e) {
@@ -1890,67 +1890,67 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		try {
 			Hashtable htCodigos = new Hashtable();
 			int keyContador = 0;
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" select F_SIGA_GETRECURSO(Tgl.Descripcion, decode(Pjg.Idlenguaje, NULL, IDIOMAS.IDIOMA, Pjg.Idlenguaje)) AS SITUACION_LABORAL,");
+			StringBuffer sql = new StringBuffer();
+			sql.append(" select F_SIGA_GETRECURSO(Tgl.Descripcion, decode(Pjg.Idlenguaje, NULL, IDIOMAS.IDIOMA, Pjg.Idlenguaje)) AS SITUACION_LABORAL,");
 			
-			ejgActaBuilder.append(" NVL(pjg.nombre || ' ' || pjg.apellido1 || ' ' || pjg.apellido2, '-') AS NOMBRE_APE_SOLIC, ");
+			sql.append(" NVL(pjg.nombre || ' ' || pjg.apellido1 || ' ' || pjg.apellido2, '-') AS NOMBRE_APE_SOLIC, ");
 			
-			ejgActaBuilder.append(" pjg.nif AS NIFCIF_SOLIC, ");
-			ejgActaBuilder.append(" pjg.IDREPRESENTANTEJG, ");
+			sql.append(" pjg.nif AS NIFCIF_SOLIC, ");
+			sql.append(" pjg.IDREPRESENTANTEJG, ");
 			
-			ejgActaBuilder.append(" DECODE(pjg.DIRECCION, NULL, '-', (SELECT UPPER(SUBSTR(F_SIGA_GETRECURSO(TV.DESCRIPCION, IDIOMAS.IDIOMA), 1, 1)) ");
-			ejgActaBuilder.append(" || LOWER(SUBSTR(F_SIGA_GETRECURSO(TV.DESCRIPCION, IDIOMAS.IDIOMA), 2)) FROM CEN_TIPOVIA TV WHERE TV.IDTIPOVIA = pjg.IDTIPOVIA AND TV.IDINSTITUCION = fam.IDINSTITUCION) ");
-			ejgActaBuilder.append(" || ' ' || pjg.DIRECCION || ' ' || pjg.NUMERODIR || ' ' || pjg.ESCALERADIR || ' ' || pjg.PISODIR || ' ' || pjg.PUERTADIR) AS DIR_SOLIC, ");
+			sql.append(" DECODE(pjg.DIRECCION, NULL, '-', (SELECT UPPER(SUBSTR(F_SIGA_GETRECURSO(TV.DESCRIPCION, IDIOMAS.IDIOMA), 1, 1)) ");
+			sql.append(" || LOWER(SUBSTR(F_SIGA_GETRECURSO(TV.DESCRIPCION, IDIOMAS.IDIOMA), 2)) FROM CEN_TIPOVIA TV WHERE TV.IDTIPOVIA = pjg.IDTIPOVIA AND TV.IDINSTITUCION = fam.IDINSTITUCION) ");
+			sql.append(" || ' ' || pjg.DIRECCION || ' ' || pjg.NUMERODIR || ' ' || pjg.ESCALERADIR || ' ' || pjg.PISODIR || ' ' || pjg.PUERTADIR) AS DIR_SOLIC, ");
 			
-			ejgActaBuilder.append(" NVL(pjg.codigopostal, '-') AS  CP_SOLIC, ");
+			sql.append(" NVL(pjg.codigopostal, '-') AS  CP_SOLIC, ");
 			
-			ejgActaBuilder.append(" NVL((SELECT F_SIGA_GETRECURSO(Nombre, DECODE(Pjg.Idlenguaje, NULL, IDIOMAS.IDIOMA, Pjg.Idlenguaje)) FROM CEN_POBLACIONES WHERE IDPOBLACION = pjg.idpoblacion), '-') AS POB_SOLIC, ");
+			sql.append(" NVL((SELECT F_SIGA_GETRECURSO(Nombre, DECODE(Pjg.Idlenguaje, NULL, IDIOMAS.IDIOMA, Pjg.Idlenguaje)) FROM CEN_POBLACIONES WHERE IDPOBLACION = pjg.idpoblacion), '-') AS POB_SOLIC, ");
 			
-			ejgActaBuilder.append(" NVL((SELECT F_SIGA_GETRECURSO(Nombre, DECODE(Pjg.Idlenguaje, NULL, IDIOMAS.IDIOMA, Pjg.Idlenguaje)) FROM CEN_PROVINCIAS WHERE Idprovincia = Pjg.Idprovincia), '-') AS PROV_SOLIC, ");
+			sql.append(" NVL((SELECT F_SIGA_GETRECURSO(Nombre, DECODE(Pjg.Idlenguaje, NULL, IDIOMAS.IDIOMA, Pjg.Idlenguaje)) FROM CEN_PROVINCIAS WHERE Idprovincia = Pjg.Idprovincia), '-') AS PROV_SOLIC, ");
 			
-			ejgActaBuilder.append(" DECODE(Pjg.Idlenguaje, NULL, IDIOMAS.IDIOMA, Pjg.Idlenguaje) AS IDLENGUAJE,");
+			sql.append(" DECODE(Pjg.Idlenguaje, NULL, IDIOMAS.IDIOMA, Pjg.Idlenguaje) AS IDLENGUAJE,");
 			
-			ejgActaBuilder.append(" f_Siga_Getcodidioma(DECODE(Pjg.Idlenguaje, NULL, IDIOMAS.IDIOMA, Pjg.Idlenguaje)) AS CODIGOLENGUAJE ");
+			sql.append(" f_Siga_Getcodidioma(DECODE(Pjg.Idlenguaje, NULL, IDIOMAS.IDIOMA, Pjg.Idlenguaje)) AS CODIGOLENGUAJE ");
 			
-			ejgActaBuilder.append(" FROM scs_unidadfamiliarejg fam, ");
-			ejgActaBuilder.append(" scs_personajg pjg, ");
-			ejgActaBuilder.append(" SCS_TIPOGRUPOLABORAL tgl, ");
-			ejgActaBuilder.append(" (SELECT ");
-			ejgActaBuilder.append(idioma);
-			ejgActaBuilder.append(" AS IDIOMA FROM DUAL) IDIOMAS ");
+			sql.append(" FROM scs_unidadfamiliarejg fam, ");
+			sql.append(" scs_personajg pjg, ");
+			sql.append(" SCS_TIPOGRUPOLABORAL tgl, ");
+			sql.append(" (SELECT ");
+			sql.append(idioma);
+			sql.append(" AS IDIOMA FROM DUAL) IDIOMAS ");
 			
-			ejgActaBuilder.append(" WHERE fam.idinstitucion = tgl.idinstitucion(+) ");
-			ejgActaBuilder.append(" AND fam.idtipogrupolab = tgl.idtipogrupolab(+) ");
-			ejgActaBuilder.append(" AND pjg.idinstitucion = fam.idinstitucion ");
-			ejgActaBuilder.append(" AND pjg.idpersona = fam.idpersona ");		
+			sql.append(" WHERE fam.idinstitucion = tgl.idinstitucion(+) ");
+			sql.append(" AND fam.idtipogrupolab = tgl.idtipogrupolab(+) ");
+			sql.append(" AND pjg.idinstitucion = fam.idinstitucion ");
+			sql.append(" AND pjg.idpersona = fam.idpersona ");		
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idPersonaJG);
-			ejgActaBuilder.append(" AND fam.idpersona = :");			
-			ejgActaBuilder.append(keyContador);			
+			sql.append(" AND fam.idpersona = :");			
+			sql.append(keyContador);			
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), tipoEjg);
-			ejgActaBuilder.append(" AND fam.idtipoejg = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" AND fam.idtipoejg = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), anioEjg);
-			ejgActaBuilder.append(" AND fam.anio = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" AND fam.anio = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), numeroEjg);
-			ejgActaBuilder.append(" AND fam.numero = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" AND fam.numero = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(" AND fam.idinstitucion = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" AND fam.idinstitucion = :");
+			sql.append(keyContador);
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error ScsEJGAdm.getSolicitanteCalificacionEjgSalida");
@@ -1965,53 +1965,53 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			int keyContador = 0;
 			
 		
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" ");
-			ejgActaBuilder.append(" select ");  
-			ejgActaBuilder.append(" des.idinstitucion DES_INSTITUCION,des.idturno DES_IDTURNO,des.anio DES_ANIO, des.numero DES_NUMERO, ");
-			ejgActaBuilder.append(" nvl(des.resumenasunto, '-') as ASUNTO, ");
-			ejgActaBuilder.append(" nvl((SELECT j.NOMBRE || ' (' || substr(p.nombre, 0, 30) || ')' ");
-			ejgActaBuilder.append(" FROM SCS_JUZGADO j, cen_poblaciones p ");
-			ejgActaBuilder.append(" where j.idpoblacion = p.idpoblacion(+) ");
-			ejgActaBuilder.append(" and IDINSTITUCION = des.idinstitucion_juzg ");
-			ejgActaBuilder.append(" and IDJUZGADO = des.idjuzgado),'-') AS JUZGADO, ");
-			ejgActaBuilder.append(" nvl(des.numprocedimiento, '-') as AUTO, ");
-			ejgActaBuilder.append(" nvl(to_char(des.fechaentrada, 'DD/mm/YYYY'), '-') AS FECHA_DESIGNA, ");
-			ejgActaBuilder.append(" nvl(to_char(des.anio), '-') as ANIO_OFICIO, ");
-			ejgActaBuilder.append(" nvl(des.codigo, '-') as NUM_OFICIO ");
-			ejgActaBuilder.append(" from scs_designa             des , scs_ejgdesigna          ejgd");
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			sql.append(" select ");  
+			sql.append(" des.idinstitucion DES_INSTITUCION,des.idturno DES_IDTURNO,des.anio DES_ANIO, des.numero DES_NUMERO, ");
+			sql.append(" nvl(des.resumenasunto, '-') as ASUNTO, ");
+			sql.append(" nvl((SELECT j.NOMBRE || ' (' || substr(p.nombre, 0, 30) || ')' ");
+			sql.append(" FROM SCS_JUZGADO j, cen_poblaciones p ");
+			sql.append(" where j.idpoblacion = p.idpoblacion(+) ");
+			sql.append(" and IDINSTITUCION = des.idinstitucion_juzg ");
+			sql.append(" and IDJUZGADO = des.idjuzgado),'-') AS JUZGADO, ");
+			sql.append(" nvl(des.numprocedimiento, '-') as AUTO, ");
+			sql.append(" nvl(to_char(des.fechaentrada, 'DD/mm/YYYY'), '-') AS FECHA_DESIGNA, ");
+			sql.append(" nvl(to_char(des.anio), '-') as ANIO_OFICIO, ");
+			sql.append(" nvl(des.codigo, '-') as NUM_OFICIO ");
+			sql.append(" from scs_designa             des , scs_ejgdesigna          ejgd");
 			
-			ejgActaBuilder.append(" where  ");
+			sql.append(" where  ");
 			
-            ejgActaBuilder.append(" des.idinstitucion = ejgd.idinstitucion ");
-            ejgActaBuilder.append(" and des.idturno = ejgd.idturno ");
-            ejgActaBuilder.append("  and des.anio = ejgd.aniodesigna ");
-            ejgActaBuilder.append(" and des.numero = ejgd.numerodesigna ");
+            sql.append(" des.idinstitucion = ejgd.idinstitucion ");
+            sql.append(" and des.idturno = ejgd.idturno ");
+            sql.append("  and des.anio = ejgd.aniodesigna ");
+            sql.append(" and des.numero = ejgd.numerodesigna ");
 
 
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(" and ejgd.idinstitucion = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and ejgd.idinstitucion = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), tipoEjg);
-			ejgActaBuilder.append(" and ejgd.idtipoejg = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and ejgd.idtipoejg = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), anioEjg);
-			ejgActaBuilder.append(" and ejgd.anioejg  = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and ejgd.anioejg  = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), numeroEjg);
-			ejgActaBuilder.append(" and ejgd.numeroejg = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and ejgd.numeroejg = :");
+			sql.append(keyContador);
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		}
 		catch (Exception e) {
@@ -2027,52 +2027,52 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			int keyContador = 0;
 			
 		
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" ");
-			ejgActaBuilder.append(" SELECT "); 
-			ejgActaBuilder.append(" nvl(per.nombre || ' ' || per.apellidos1 || ' ' || per.apellidos2 || '  ' || ");
-			ejgActaBuilder.append(" f_siga_calculoncolegiado(cli.idinstitucion, cli.idpersona) || '', ");
-			ejgActaBuilder.append(" '-') as NOMBRE_COLEGIADO, ");
-			ejgActaBuilder.append(" f_siga_getdireccioncliente(cli.idinstitucion, cli.idpersona, 2, 11) AS TELEFONO1_DESPACHO ");
-			ejgActaBuilder.append(" FROM cen_persona per, cen_cliente cli, scs_designasletrado descol ");
-			ejgActaBuilder.append(" where  ");
-			ejgActaBuilder.append(" cli.idpersona = per.idpersona ");
-			ejgActaBuilder.append(" and cli.idpersona = per.idpersona ");
-			ejgActaBuilder.append(" and (descol.fechadesigna = ");
-			ejgActaBuilder.append(" (select max(s.fechadesigna) ");
-			ejgActaBuilder.append(" from scs_designasletrado s ");
-			ejgActaBuilder.append(" where s.idinstitucion = descol.idinstitucion ");
-			ejgActaBuilder.append(" and s.idturno = descol.idturno ");
-			ejgActaBuilder.append(" and s.anio = descol.anio ");
-			ejgActaBuilder.append(" and s.numero = descol.numero ");
-			ejgActaBuilder.append(" and s.fecharenuncia is null) or descol.fechadesigna is null) ");
-			ejgActaBuilder.append(" and descol.idinstitucion = cli.idinstitucion ");
-			ejgActaBuilder.append(" and descol.idpersona = cli.idpersona ");
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			sql.append(" SELECT "); 
+			sql.append(" nvl(per.nombre || ' ' || per.apellidos1 || ' ' || per.apellidos2 || '  ' || ");
+			sql.append(" f_siga_calculoncolegiado(cli.idinstitucion, cli.idpersona) || '', ");
+			sql.append(" '-') as NOMBRE_COLEGIADO, ");
+			sql.append(" f_siga_getdireccioncliente(cli.idinstitucion, cli.idpersona, 2, 11) AS TELEFONO1_DESPACHO ");
+			sql.append(" FROM cen_persona per, cen_cliente cli, scs_designasletrado descol ");
+			sql.append(" where  ");
+			sql.append(" cli.idpersona = per.idpersona ");
+			sql.append(" and cli.idpersona = per.idpersona ");
+			sql.append(" and (descol.fechadesigna = ");
+			sql.append(" (select max(s.fechadesigna) ");
+			sql.append(" from scs_designasletrado s ");
+			sql.append(" where s.idinstitucion = descol.idinstitucion ");
+			sql.append(" and s.idturno = descol.idturno ");
+			sql.append(" and s.anio = descol.anio ");
+			sql.append(" and s.numero = descol.numero ");
+			sql.append(" and s.fecharenuncia is null) or descol.fechadesigna is null) ");
+			sql.append(" and descol.idinstitucion = cli.idinstitucion ");
+			sql.append(" and descol.idpersona = cli.idpersona ");
 
-			ejgActaBuilder.append(" AND  ");
+			sql.append(" AND  ");
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(" descol.idinstitucion = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" descol.idinstitucion = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idTurno);
-			ejgActaBuilder.append(" and descol.idturno = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and descol.idturno = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), anioDesigna);
-			ejgActaBuilder.append(" and descol.anio  = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and descol.anio  = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), numeroDesigna);
-			ejgActaBuilder.append(" and descol.numero= :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and descol.numero= :");
+			sql.append(keyContador);
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		}
 		catch (Exception e) {
@@ -2094,29 +2094,29 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			int keyContador = 0;
 			
 		
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" ");
-			ejgActaBuilder.append(" select nvl(f_siga_calculoncolegiado(cli2.idinstitucion, cli2.idpersona), ");
-			ejgActaBuilder.append(" '-') as NCOLEGIADO ");
-			ejgActaBuilder.append(" from  ");
-			ejgActaBuilder.append(" cen_cliente             cli2,cen_persona             per2 ");
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			sql.append(" select nvl(f_siga_calculoncolegiado(cli2.idinstitucion, cli2.idpersona), ");
+			sql.append(" '-') as NCOLEGIADO ");
+			sql.append(" from  ");
+			sql.append(" cen_cliente             cli2,cen_persona             per2 ");
 
-			ejgActaBuilder.append(" WHERE ");
-			ejgActaBuilder.append(" cli2.idpersona = per2.idpersona ");
+			sql.append(" WHERE ");
+			sql.append(" cli2.idpersona = per2.idpersona ");
 			
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(" AND cli2.idinstitucion = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" AND cli2.idinstitucion = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idPersona);
-			ejgActaBuilder.append(" AND cli2.idpersona  = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" AND cli2.idpersona  = :");
+			sql.append(keyContador);
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		}
 		catch (Exception e) {
@@ -2137,31 +2137,31 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			int keyContador = 0;
 			
 		
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" ");
-			ejgActaBuilder.append(" select nvl(pro.nombre || ' ' || pro.apellidos1 || ' ' || pro.apellidos2 || '  ' || ");
-			ejgActaBuilder.append(" pro.ncolegiado || '', ");
-			ejgActaBuilder.append(" '-') as ");
-			ejgActaBuilder.append(campoSalida);
-			ejgActaBuilder.append(" from  ");
-			ejgActaBuilder.append(" scs_procurador          pro ");
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			sql.append(" select nvl(pro.nombre || ' ' || pro.apellidos1 || ' ' || pro.apellidos2 || '  ' || ");
+			sql.append(" pro.ncolegiado || '', ");
+			sql.append(" '-') as ");
+			sql.append(campoSalida);
+			sql.append(" from  ");
+			sql.append(" scs_procurador          pro ");
 
-			ejgActaBuilder.append(" WHERE ");
+			sql.append(" WHERE ");
 			
 		
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(" pro.idinstitucion = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" pro.idinstitucion = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idProcurador);
-			ejgActaBuilder.append(" AND pro.idprocurador  = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" AND pro.idprocurador  = :");
+			sql.append(keyContador);
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		}
 		catch (Exception e) {
@@ -2183,64 +2183,64 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			int keyContador = 0;
 			
 		
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" ");
-			ejgActaBuilder.append(" select nvl(pro.nombre || ' ' || pro.apellidos1 || ' ' || pro.apellidos2 || '  ' || ");
-			ejgActaBuilder.append(" pro.ncolegiado || '', ");
-			ejgActaBuilder.append(" '-') as PROCURADOR_DEFENSA_JURIDICA,");
-			ejgActaBuilder.append(" pro.ncolegiado as PROCURADOR_DJ_NCOLEGIADO, ");
-			ejgActaBuilder.append(" pro.telefono1 as PROCURADOR_DJ_TELEFONO1, ");
-			ejgActaBuilder.append(" pro.telefono2 as PROCURADOR_DJ_TELEFONO2, ");
-			ejgActaBuilder.append(" pro.Domicilio AS PROCURADOR_DOMICILIO_D_J, ");		
-			ejgActaBuilder.append(" pro.EMAIL AS PROCURADOR_EMAIL, ");
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			sql.append(" select nvl(pro.nombre || ' ' || pro.apellidos1 || ' ' || pro.apellidos2 || '  ' || ");
+			sql.append(" pro.ncolegiado || '', ");
+			sql.append(" '-') as PROCURADOR_DEFENSA_JURIDICA,");
+			sql.append(" pro.ncolegiado as PROCURADOR_DJ_NCOLEGIADO, ");
+			sql.append(" pro.telefono1 as PROCURADOR_DJ_TELEFONO1, ");
+			sql.append(" pro.telefono2 as PROCURADOR_DJ_TELEFONO2, ");
+			sql.append(" pro.Domicilio AS PROCURADOR_DOMICILIO_D_J, ");		
+			sql.append(" pro.EMAIL AS PROCURADOR_EMAIL, ");
 			
-			ejgActaBuilder.append(" pro.Codigopostal AS PROCURADOR_CODIGOPOSTAL_D_J, ");
-			ejgActaBuilder.append(" (Select Provincia.Nombre ");
-			ejgActaBuilder.append("  From Cen_Provincias Provincia ");
-			ejgActaBuilder.append(" Where Provincia.Idprovincia = Pro.Idprovincia) As PROCURADOR_PROVINCIA_D_J, ");
-			ejgActaBuilder.append("  (Select Poblacion.Nombre ");
-			ejgActaBuilder.append("  From Cen_Poblaciones Poblacion, Cen_Provincias Provincia ");
-			ejgActaBuilder.append("  Where Poblacion.Idprovincia = Provincia.Idprovincia ");
-			ejgActaBuilder.append("  And Pro.Idprovincia = Poblacion.Idprovincia ");
-			ejgActaBuilder.append(" And Pro.Idpoblacion = Poblacion.Idpoblacion) As PROCURADOR_POBLACION_D_J ");
-			ejgActaBuilder.append(" ,CP.NOMBRE AS COLPROCURADORES_NOMBRE, ");
-			ejgActaBuilder.append(" CP.DIRECCION AS COLPROCURADORES_DIRECCION, ");
-			ejgActaBuilder.append(" (SELECT F_SIGA_GETRECURSO(TIPOVIA.DESCRIPCION, 1) ");
-			ejgActaBuilder.append(" FROM CEN_TIPOVIA TIPOVIA ");
-			ejgActaBuilder.append(" WHERE TIPOVIA.IDTIPOVIA = CP.IDTIPOVIA ");
-			ejgActaBuilder.append(" AND TIPOVIA.IDINSTITUCION = 2000) AS COLPROCURADORES_TIPOVIA, ");
-			ejgActaBuilder.append(" CP.NUMERODIR AS COLPROCURADORES_NUMERODIR, ");
-			ejgActaBuilder.append(" CP.ESCALERADIR AS COLPROCURADORES_ESCALERADIR, ");
+			sql.append(" pro.Codigopostal AS PROCURADOR_CODIGOPOSTAL_D_J, ");
+			sql.append(" (Select Provincia.Nombre ");
+			sql.append("  From Cen_Provincias Provincia ");
+			sql.append(" Where Provincia.Idprovincia = Pro.Idprovincia) As PROCURADOR_PROVINCIA_D_J, ");
+			sql.append("  (Select Poblacion.Nombre ");
+			sql.append("  From Cen_Poblaciones Poblacion, Cen_Provincias Provincia ");
+			sql.append("  Where Poblacion.Idprovincia = Provincia.Idprovincia ");
+			sql.append("  And Pro.Idprovincia = Poblacion.Idprovincia ");
+			sql.append(" And Pro.Idpoblacion = Poblacion.Idpoblacion) As PROCURADOR_POBLACION_D_J ");
+			sql.append(" ,CP.NOMBRE AS COLPROCURADORES_NOMBRE, ");
+			sql.append(" CP.DIRECCION AS COLPROCURADORES_DIRECCION, ");
+			sql.append(" (SELECT F_SIGA_GETRECURSO(TIPOVIA.DESCRIPCION, 1) ");
+			sql.append(" FROM CEN_TIPOVIA TIPOVIA ");
+			sql.append(" WHERE TIPOVIA.IDTIPOVIA = CP.IDTIPOVIA ");
+			sql.append(" AND TIPOVIA.IDINSTITUCION = 2000) AS COLPROCURADORES_TIPOVIA, ");
+			sql.append(" CP.NUMERODIR AS COLPROCURADORES_NUMERODIR, ");
+			sql.append(" CP.ESCALERADIR AS COLPROCURADORES_ESCALERADIR, ");
 			
-			ejgActaBuilder.append(" CP.PISODIR AS COLPROCURADORES_PISODIR, ");
-			ejgActaBuilder.append(" CP.PUERTADIR AS COLPROCURADORES_PUERTADIR, ");
-			ejgActaBuilder.append(" CP.CODIGOPOSTAL AS COLPROCURADORES_CODPOSTAL, ");
-			ejgActaBuilder.append(" (SELECT POBLACION.NOMBRE ");
-			ejgActaBuilder.append(" FROM CEN_POBLACIONES POBLACION, CEN_PROVINCIAS PROVINCIA ");
-			ejgActaBuilder.append(" WHERE POBLACION.IDPROVINCIA = PROVINCIA.IDPROVINCIA ");
-			ejgActaBuilder.append(" AND CP.IDPROVINCIA = POBLACION.IDPROVINCIA ");
-			ejgActaBuilder.append(" AND CP.IDPOBLACION = POBLACION.IDPOBLACION) AS COLPROCURADORES_POBLACION, ");
-			ejgActaBuilder.append(" (SELECT PROVINCIA.NOMBRE ");
-			ejgActaBuilder.append(" FROM CEN_PROVINCIAS PROVINCIA ");
-			ejgActaBuilder.append(" WHERE PROVINCIA.IDPROVINCIA = CP.IDPROVINCIA) AS COLPROCURADORES_PROVINCIA ");
+			sql.append(" CP.PISODIR AS COLPROCURADORES_PISODIR, ");
+			sql.append(" CP.PUERTADIR AS COLPROCURADORES_PUERTADIR, ");
+			sql.append(" CP.CODIGOPOSTAL AS COLPROCURADORES_CODPOSTAL, ");
+			sql.append(" (SELECT POBLACION.NOMBRE ");
+			sql.append(" FROM CEN_POBLACIONES POBLACION, CEN_PROVINCIAS PROVINCIA ");
+			sql.append(" WHERE POBLACION.IDPROVINCIA = PROVINCIA.IDPROVINCIA ");
+			sql.append(" AND CP.IDPROVINCIA = POBLACION.IDPROVINCIA ");
+			sql.append(" AND CP.IDPOBLACION = POBLACION.IDPOBLACION) AS COLPROCURADORES_POBLACION, ");
+			sql.append(" (SELECT PROVINCIA.NOMBRE ");
+			sql.append(" FROM CEN_PROVINCIAS PROVINCIA ");
+			sql.append(" WHERE PROVINCIA.IDPROVINCIA = CP.IDPROVINCIA) AS COLPROCURADORES_PROVINCIA ");
 			
-			ejgActaBuilder.append(" from  ");
-			ejgActaBuilder.append(" scs_procurador          pro ");
-			ejgActaBuilder.append(" , CEN_COLEGIOPROCURADOR CP ");
-			ejgActaBuilder.append(" WHERE ");
-			ejgActaBuilder.append("  PRO.IDCOLPROCURADOR = CP.IDCOLPROCURADOR(+) AND ");
+			sql.append(" from  ");
+			sql.append(" scs_procurador          pro ");
+			sql.append(" , CEN_COLEGIOPROCURADOR CP ");
+			sql.append(" WHERE ");
+			sql.append("  PRO.IDCOLPROCURADOR = CP.IDCOLPROCURADOR(+) AND ");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(" pro.idinstitucion = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" pro.idinstitucion = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idProcurador);
-			ejgActaBuilder.append(" AND pro.idprocurador  = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" AND pro.idprocurador  = :");
+			sql.append(keyContador);
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		}
 		catch (Exception e) {
@@ -2262,7 +2262,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			Hashtable htCodigos = new Hashtable();
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
 			
-			String ejgActaBuilder = "SELECT F_SIGA_GETRECURSO(NVL(TFC.DESCRIPCION, '-'), :1) AS FUNDAMENTO, "+
+			String sql = "SELECT F_SIGA_GETRECURSO(NVL(TFC.DESCRIPCION, '-'), :1) AS FUNDAMENTO, "+
 					" TEXTOPLANTILLA AS TEXTO_FUNDAMENTO_CALIFICACION "+
 					" FROM SCS_TIPOFUNDAMENTOCALIF TFC "+
 					" WHERE TFC.IDINSTITUCION = :2 "+
@@ -2272,7 +2272,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			htCodigos.put(2, idInstitucion);
 			htCodigos.put(3, idFundamento);
 						
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder, htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql, htCodigos);
 			
 		}
 		catch (Exception e) {
@@ -2293,34 +2293,34 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			int keyContador = 0;
 			
 		
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" ");
-			ejgActaBuilder.append(" select nvl(f_siga_getrecurso(dic.descripcion, :");
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			sql.append(" select nvl(f_siga_getrecurso(dic.descripcion, :");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idioma);
-			ejgActaBuilder.append(keyContador);
-			ejgActaBuilder.append("), '-') as DICTAMEN, ");
-			ejgActaBuilder.append(" UPPER(f_siga_getrecurso(nvl(dic.descripcion, '-'), :");
+			sql.append(keyContador);
+			sql.append("), '-') as DICTAMEN, ");
+			sql.append(" UPPER(f_siga_getrecurso(nvl(dic.descripcion, '-'), :");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idioma);
-			ejgActaBuilder.append(keyContador);
-			ejgActaBuilder.append(" )) as RESOLUCION ");
-			ejgActaBuilder.append(" from scs_tipodictamenejg     dic");
-			ejgActaBuilder.append(" WHERE ");
+			sql.append(keyContador);
+			sql.append(" )) as RESOLUCION ");
+			sql.append(" from scs_tipodictamenejg     dic");
+			sql.append(" WHERE ");
 			
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(" dic.idinstitucion = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" dic.idinstitucion = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idDictamen);
-			ejgActaBuilder.append(" AND dic.idtipodictamenejg  = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" AND dic.idtipodictamenejg  = :");
+			sql.append(keyContador);
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		}
 		catch (Exception e) {
@@ -2341,26 +2341,26 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			int keyContador = 0;
 			
 		
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" select JUZDF.NOMBRE AS JUZGADO_DEFENSA_JURIDICA, POB.NOMBRE AS POBLACION_JUZGADO, PROV.NOMBRE AS PROVINCIA_JUZGADO ");
-			ejgActaBuilder.append(" from SCS_JUZGADO JUZDF, CEN_POBLACIONES POB, CEN_PROVINCIAS PROV ");
-			ejgActaBuilder.append(" WHERE ");
+			StringBuffer sql = new StringBuffer();
+			sql.append(" select JUZDF.NOMBRE AS JUZGADO_DEFENSA_JURIDICA, POB.NOMBRE AS POBLACION_JUZGADO, PROV.NOMBRE AS PROVINCIA_JUZGADO ");
+			sql.append(" from SCS_JUZGADO JUZDF, CEN_POBLACIONES POB, CEN_PROVINCIAS PROV ");
+			sql.append(" WHERE ");
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(" JUZDF.IDINSTITUCION = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" JUZDF.IDINSTITUCION = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idJuzgado);
-			ejgActaBuilder.append(" AND JUZDF.IDJUZGADO  = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" AND JUZDF.IDJUZGADO  = :");
+			sql.append(keyContador);
 	
-			ejgActaBuilder.append(" AND JUZDF.Idpoblacion = pob.idpoblacion ");
-			ejgActaBuilder.append(" AND JUZDF.Idprovincia = prov.Idprovincia ");
+			sql.append(" AND JUZDF.Idpoblacion = pob.idpoblacion ");
+			sql.append(" AND JUZDF.Idprovincia = prov.Idprovincia ");
 		
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		}
 		catch (Exception e) {
@@ -2377,7 +2377,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	
 	private Vector getComisariaEjgSalida (String idInstitucion, String idComisaria) throws ClsExceptions {
 		try {			
-			String ejgActaBuilder = "SELECT COMISARIA.NOMBRE AS COMISARIA_DEFENSA_JURIDICA, " +
+			String sql = "SELECT COMISARIA.NOMBRE AS COMISARIA_DEFENSA_JURIDICA, " +
 					" COMISARIA.NOMBRE AS COMISARIA_D_J, " +
 					" COMISARIA.DOMICILIO AS DIR_COMISARIA_D_J, " +
 					" COMISARIA.CODIGOPOSTAL AS CP_COMISARIA_D_J, " +
@@ -2394,7 +2394,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			Vector vComisaria = new Vector();
 			RowsContainer rc = new RowsContainer();
 			
-			if (rc.find(ejgActaBuilder)) {
+			if (rc.find(sql)) {
 				if (rc.size() > 0) {
 					Row fila = (Row) rc.get(0);
 					Hashtable hDatos = fila.getRow();
@@ -2425,30 +2425,30 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			int keyContador = 0;
 			
 		
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" ");
-			ejgActaBuilder.append(" select f_siga_getrecurso(descripcion, :");
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			sql.append(" select f_siga_getrecurso(descripcion, :");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idioma);
-			ejgActaBuilder.append(keyContador);
+			sql.append(keyContador);
 			
-			ejgActaBuilder.append(" )  as ");
-			ejgActaBuilder.append(campoSalida);
-			ejgActaBuilder.append(" from scs_tipoejgcolegio ");
-			ejgActaBuilder.append(" WHERE ");
+			sql.append(" )  as ");
+			sql.append(campoSalida);
+			sql.append(" from scs_tipoejgcolegio ");
+			sql.append(" WHERE ");
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(" IDINSTITUCION = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" IDINSTITUCION = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idTipoColegio);
-			ejgActaBuilder.append("  and idtipoejgcolegio = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append("  and idtipoejgcolegio = :");
+			sql.append(keyContador);
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		}
 		catch (Exception e) {
@@ -2474,41 +2474,41 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			int keyContador = 0;
 			
 		
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" ");
-			ejgActaBuilder.append(" SELECT decode(SUM(nvl(IMPORTEINGRESOSANUALES, '0')), ");
-			ejgActaBuilder.append(" 0, ");
-			ejgActaBuilder.append(" '-', ");
-			ejgActaBuilder.append(" f_siga_formatonumero(SUM(nvl(IMPORTEINGRESOSANUALES, ");
-			ejgActaBuilder.append(" '0')), ");
-			ejgActaBuilder.append("                  2)) AS ");
-			ejgActaBuilder.append(salida);
-			ejgActaBuilder.append(" FROM SCS_UNIDADFAMILIAREJG ");
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			sql.append(" SELECT decode(SUM(nvl(IMPORTEINGRESOSANUALES, '0')), ");
+			sql.append(" 0, ");
+			sql.append(" '-', ");
+			sql.append(" f_siga_formatonumero(SUM(nvl(IMPORTEINGRESOSANUALES, ");
+			sql.append(" '0')), ");
+			sql.append("                  2)) AS ");
+			sql.append(salida);
+			sql.append(" FROM SCS_UNIDADFAMILIAREJG ");
 			
-			ejgActaBuilder.append(" where  ");
+			sql.append(" where  ");
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(" idinstitucion = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" idinstitucion = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), tipoEjg);
-			ejgActaBuilder.append(" and IDTIPOEJG = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and IDTIPOEJG = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), anioEjg);
-			ejgActaBuilder.append(" and anio  = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and anio  = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), numeroEjg);
-			ejgActaBuilder.append(" and numero = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and numero = :");
+			sql.append(keyContador);
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		}
 		catch (Exception e) {
@@ -2527,14 +2527,14 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			htCodigos.put(new Integer(3), numeroEjg);
 			htCodigos.put(new Integer(4), tipoEjg);
 		
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" ");
-			ejgActaBuilder.append(" SELECT f_siga_getunidadejg(:1,:2,:3,:4) AS ");
-			ejgActaBuilder.append(salida);
-			ejgActaBuilder.append(" FROM dual ");
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			sql.append(" SELECT f_siga_getunidadejg(:1,:2,:3,:4) AS ");
+			sql.append(salida);
+			sql.append(" FROM dual ");
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		}
 		catch (Exception e) {
@@ -2771,121 +2771,125 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			RowsContainer rc = new RowsContainer();
 			Vector datos = new Vector();
 			
-			StringBuilder ejgActaBuilder = new StringBuilder();
-			ejgActaBuilder.append(" SELECT EJGD.IDINSTITUCION DES_INSTITUCION, ");
-			ejgActaBuilder.append(" EJGD.IDTURNO DES_IDTURNO, ");
-			ejgActaBuilder.append(" EJGD.ANIODESIGNA DES_ANIO, "); 
-			ejgActaBuilder.append(" EJGD.NUMERODESIGNA DES_NUMERO, "); 
-			ejgActaBuilder.append(" F_SIGA_GETIDLETRADO_DESIGNA(d.idinstitucion,d.idturno,d.anio  , d.numero) IDPERSONADESIGNADO, ");
-			ejgActaBuilder.append(" EJG.IDPERSONA IDPERSONATRAMITADOR, ");
-			ejgActaBuilder.append(" EJG.idfundamentocalif, ");
-			ejgActaBuilder.append(" EJG.IDPROCURADOR, "); 
-			ejgActaBuilder.append(" EJG.IDINSTITUCION_PROC, "); 
-			ejgActaBuilder.append(" EJG.JUZGADO AS IDJUZGADO_DJ, ");
-			ejgActaBuilder.append(" EJG.JUZGADOIDINSTITUCION AS JUZGADOIDINSTITUCION_DJ, ");
-			ejgActaBuilder.append(" EJG.COMISARIA, ");
-			ejgActaBuilder.append(" EJG.COMISARIAIDINSTITUCION, "); 
-			ejgActaBuilder.append(" EJG.ANIO AS ANIO_EJG, ");
-			ejgActaBuilder.append(" TO_CHAR(EJG.FECHAAPERTURA, 'dd/mm/yyyy') AS FECHAAPERTURA_EJG, ");
-			ejgActaBuilder.append(" EJG.OBSERVACIONES AS OBSERVACIONES, ");
-			ejgActaBuilder.append(" EJG.OBSERVACIONES AS ASUNTO_EJG, ");
-			ejgActaBuilder.append(" (SELECT observaciones FROM scs_designa des WHERE des.IDINSTITUCION = EJGD.Idinstitucion AND des.IDTURNO = EJGD.Idturno AND des.ANIO = ejgd.aniodesigna AND des.NUMERO = EJGD.Numerodesigna) as OBSERVACIONES_DESIGNA, ");			
-			ejgActaBuilder.append(" TO_CHAR(SYSDATE, 'dd') AS DIA_ACTUAL, "); 
-			ejgActaBuilder.append(" TO_CHAR(SYSDATE, 'dd/mm/yyyy') AS MESACTUAL, ");
-			ejgActaBuilder.append(" TO_CHAR(SYSDATE, 'yyyy') AS ANIO_ACTUAL, ");
-			ejgActaBuilder.append(" EJG.IDTIPOEJG, ");
-			ejgActaBuilder.append(" EJG.ANIO, ");
-			ejgActaBuilder.append(" lpad(EJG.NUMEJG,");
-			ejgActaBuilder.append(longitudNumEjg);
-			ejgActaBuilder.append(",0) as NUMERO, ");
-			ejgActaBuilder.append(" (EJG.ANIO || '/' || lpad(EJG.NUMEJG,");
-			ejgActaBuilder.append(longitudNumEjg);
-			ejgActaBuilder.append(",0)) as NUMERO_EJG, ");			
-			ejgActaBuilder.append(" EJG.IDPERSONA, ");		
-			ejgActaBuilder.append(" EJG.IDPERSONAJG AS IDSOLICITANTEPRINCIPAL, ");
-			ejgActaBuilder.append(" EJG.CALIDAD, ");			
-			ejgActaBuilder.append(" (SELECT Descripcion FROM Scs_Tipoencalidad WHERE Idinstitucion = Ejg.Idinstitucion AND Idtipoencalidad = Ejg.Idtipoencalidad) as CALIDAD_DJ_DESCRIPCION, ");  			
-			ejgActaBuilder.append(" EJG.OBSERVACIONES AS ASUNTO_DEFENSA_JURIDICA, ");
-			ejgActaBuilder.append(" EJG.DELITOS AS COM_DEL_DEFENSA_JURIDICA, ");
-			ejgActaBuilder.append(" EJG.NUMERO_CAJG AS NUMERO_CAJG_DEFENSA_JURIDICA, "); 
-			ejgActaBuilder.append(" EJG.ANIOCAJG AS ANIO_CAJG_DEFENSA_JURIDICA, "); 
-			ejgActaBuilder.append(" EJG.NUMERODILIGENCIA AS NUMDILIGENCIA_DEFENSA_JURIDICA, ");
-			ejgActaBuilder.append(" EJG.NUMEROPROCEDIMIENTO AS NUMPROCED_DEFENSA_JURIDICA, ");
-			ejgActaBuilder.append(" EJG.ANIOPROCEDIMIENTO AS ANIOPROCED_DEFENSA_JURIDICA, ");
-			ejgActaBuilder.append(" EJG.NUMEROPROCEDIMIENTO AS NUM_PROCEDIMIENTO_EJG, ");
-			ejgActaBuilder.append(" Decode(EJG.ANIOPROCEDIMIENTO, null, EJG.NUMEROPROCEDIMIENTO, (EJG.NUMEROPROCEDIMIENTO || '/' || EJG.ANIOPROCEDIMIENTO))  AS NUMANIOPROCED_DEFENSA_JURIDICA, ");				
-			ejgActaBuilder.append(" EJG.NIG, "); 
-			ejgActaBuilder.append(" TO_CHAR(EJG.FECHA_DES_PROC,'dd-mm-yyyy') AS  FECHAEJG_PROCURADOR, ");
-			ejgActaBuilder.append(" EJG.NUMERODESIGNAPROC AS NUMDESIGNA_PROCURADOR, "); 
-			ejgActaBuilder.append(" EJG.idtipodictamenejg, "); 
-			ejgActaBuilder.append(" TO_CHAR(EJG.fechadictamen,'dd-mm-yyyy') AS fechadictamen, "); 
-			ejgActaBuilder.append(" EJG.dictamen, "); 
-			ejgActaBuilder.append(" TO_CHAR(EJG.fecharesolucioncajg,'dd-mm-yyyy') AS fecharesolucioncajg, "); 
-			ejgActaBuilder.append(" EJG.idtiporatificacionejg, "); 
-			ejgActaBuilder.append(" TO_CHAR(EJG.fechanotificacion,'dd-mm-yyyy') AS fechanotificacion, "); 
-			ejgActaBuilder.append(" EJG.refauto, ");
-			ejgActaBuilder.append(" EJG.ratificaciondictamen, ");
-			ejgActaBuilder.append(" TO_CHAR(EJG.fechaauto,'dd-mm-yyyy') AS fechaauto, ");
-			ejgActaBuilder.append(" EJG.idtiporesolauto, ");
-			ejgActaBuilder.append(" EJG.idtiposentidoauto, "); 
-			ejgActaBuilder.append(" (SELECT pon.nombre FROM SCS_PONENTE pon WHERE pon.idPonente = EJG.idPONENTE AND pon.idInstitucion = EJG.IDINSTITUCIONPONENTE) as PONENTE, "); 			
-			ejgActaBuilder.append(" (SELECT DESCRIPCION FROM SCS_TIPOEJGCOLEGIO TEC WHERE tec.IDINSTITUCION = EJG.IDINSTITUCION AND TEC.IDTIPOEJGCOLEGIO=EJG.IDTIPOEJGCOLEGIO) AS DESCRIPCIONTIPOEJGCOL, ");
-			ejgActaBuilder.append(" TO_CHAR(EJG.Fecharatificacion, 'dd-mm-yyyy') AS Fecharatificacion, ");			
-			ejgActaBuilder.append(" TO_CHAR(EJG.FECHAPRESENTACION, 'dd-mm-yyyy') as FECHAPRESENTACION, ");
-			ejgActaBuilder.append(" TO_CHAR(EJG.FECHALIMITEPRESENTACION, 'dd-mm-yyyy') as FECHALIMITEPRESENTACION, ");
+			StringBuilder sql = new StringBuilder();
+			sql.append(" SELECT EJGD.IDINSTITUCION DES_INSTITUCION, ");
+			sql.append(" EJGD.IDTURNO DES_IDTURNO, ");
+			sql.append(" EJGD.ANIODESIGNA DES_ANIO, "); 
+			sql.append(" EJGD.NUMERODESIGNA DES_NUMERO, "); 
+			sql.append(" F_SIGA_GETIDLETRADO_DESIGNA(d.idinstitucion,d.idturno,d.anio  , d.numero) IDPERSONADESIGNADO, ");
+			sql.append(" EJG.IDPERSONA IDPERSONATRAMITADOR, ");
+			sql.append(" EJG.idfundamentocalif, ");
+			sql.append(" EJG.IDPROCURADOR, "); 
+			sql.append(" EJG.IDINSTITUCION_PROC, "); 
+			sql.append(" EJG.JUZGADO AS IDJUZGADO_DJ, ");
+			sql.append(" EJG.JUZGADOIDINSTITUCION AS JUZGADOIDINSTITUCION_DJ, ");
+			sql.append(" EJG.COMISARIA, ");
+			sql.append(" EJG.COMISARIAIDINSTITUCION, "); 
+			sql.append(" EJG.ANIO AS ANIO_EJG, ");
+			sql.append(" TO_CHAR(EJG.FECHAAPERTURA, 'dd/mm/yyyy') AS FECHAAPERTURA_EJG, ");
+			sql.append(" EJG.OBSERVACIONES AS OBSERVACIONES, ");
+			sql.append(" EJG.OBSERVACIONES AS ASUNTO_EJG, ");
+			sql.append(" (SELECT observaciones FROM scs_designa des WHERE des.IDINSTITUCION = EJGD.Idinstitucion AND des.IDTURNO = EJGD.Idturno AND des.ANIO = ejgd.aniodesigna AND des.NUMERO = EJGD.Numerodesigna) as OBSERVACIONES_DESIGNA, ");			
+			sql.append(" TO_CHAR(SYSDATE, 'dd') AS DIA_ACTUAL, "); 
+			sql.append(" TO_CHAR(SYSDATE, 'dd/mm/yyyy') AS MESACTUAL, ");
+			sql.append(" TO_CHAR(SYSDATE, 'yyyy') AS ANIO_ACTUAL, ");
+			sql.append(" EJG.IDTIPOEJG, ");
+			sql.append(" EJG.ANIO, ");
+			sql.append(" lpad(EJG.NUMEJG,");
+			sql.append(longitudNumEjg);
+			sql.append(",0) as NUMERO, ");
+			sql.append(" (EJG.ANIO || '/' || lpad(EJG.NUMEJG,");
+			sql.append(longitudNumEjg);
+			sql.append(",0)) as NUMERO_EJG, ");			
+			sql.append(" EJG.IDPERSONA, ");		
+			sql.append(" EJG.IDPERSONAJG AS IDSOLICITANTEPRINCIPAL, ");
+			sql.append(" EJG.CALIDAD, ");			
+			sql.append(" (SELECT Descripcion FROM Scs_Tipoencalidad WHERE Idinstitucion = Ejg.Idinstitucion AND Idtipoencalidad = Ejg.Idtipoencalidad) as CALIDAD_DJ_DESCRIPCION, ");  			
+			sql.append(" EJG.OBSERVACIONES AS ASUNTO_DEFENSA_JURIDICA, ");
+			sql.append(" EJG.DELITOS AS COM_DEL_DEFENSA_JURIDICA, ");
+			sql.append(" EJG.NUMERO_CAJG AS NUMERO_CAJG_DEFENSA_JURIDICA, "); 
+			sql.append(" EJG.ANIOCAJG AS ANIO_CAJG_DEFENSA_JURIDICA, "); 
+			sql.append(" EJG.NUMERODILIGENCIA AS NUMDILIGENCIA_DEFENSA_JURIDICA, ");
+			sql.append(" EJG.NUMEROPROCEDIMIENTO AS NUMPROCED_DEFENSA_JURIDICA, ");
+			sql.append(" EJG.ANIOPROCEDIMIENTO AS ANIOPROCED_DEFENSA_JURIDICA, ");
+			sql.append(" EJG.NUMEROPROCEDIMIENTO AS NUM_PROCEDIMIENTO_EJG, ");
+			sql.append(" Decode(EJG.ANIOPROCEDIMIENTO, null, EJG.NUMEROPROCEDIMIENTO, (EJG.NUMEROPROCEDIMIENTO || '/' || EJG.ANIOPROCEDIMIENTO))  AS NUMANIOPROCED_DEFENSA_JURIDICA, ");				
+			sql.append(" EJG.NIG, "); 
+			sql.append(" TO_CHAR(EJG.FECHA_DES_PROC,'dd-mm-yyyy') AS  FECHAEJG_PROCURADOR, ");
+			sql.append(" EJG.NUMERODESIGNAPROC AS NUMDESIGNA_PROCURADOR, "); 
+			sql.append(" EJG.idtipodictamenejg, "); 
+			sql.append(" TO_CHAR(EJG.fechadictamen,'dd-mm-yyyy') AS fechadictamen, "); 
+			sql.append(" EJG.dictamen, "); 
+			sql.append(" TO_CHAR(EJG.fecharesolucioncajg,'dd-mm-yyyy') AS fecharesolucioncajg, "); 
+			sql.append(" EJG.idtiporatificacionejg, "); 
+			sql.append(" TO_CHAR(EJG.fechanotificacion,'dd-mm-yyyy') AS fechanotificacion, "); 
+			sql.append(" EJG.refauto, ");
+			sql.append(" EJG.ratificaciondictamen, ");
+			sql.append(" TO_CHAR(EJG.fechaauto,'dd-mm-yyyy') AS fechaauto, ");
+			sql.append(" EJG.idtiporesolauto, ");
+			sql.append(" EJG.idtiposentidoauto, "); 
+			sql.append(" (SELECT pon.nombre FROM SCS_PONENTE pon WHERE pon.idPonente = EJG.idPONENTE AND pon.idInstitucion = EJG.IDINSTITUCIONPONENTE) as PONENTE, "); 			
+			sql.append(" (SELECT DESCRIPCION FROM SCS_TIPOEJGCOLEGIO TEC WHERE tec.IDINSTITUCION = EJG.IDINSTITUCION AND TEC.IDTIPOEJGCOLEGIO=EJG.IDTIPOEJGCOLEGIO) AS DESCRIPCIONTIPOEJGCOL, ");
+			sql.append(" TO_CHAR(EJG.Fecharatificacion, 'dd-mm-yyyy') AS Fecharatificacion, ");			
+			sql.append(" TO_CHAR(EJG.FECHAPRESENTACION, 'dd-mm-yyyy') as FECHAPRESENTACION, ");
+			sql.append(" TO_CHAR(EJG.FECHALIMITEPRESENTACION, 'dd-mm-yyyy') as FECHALIMITEPRESENTACION, ");
 				// Campos necesarios para las comucioncaciones de la comision
 				// Nos quedamos con los digitos para saber la cantidad que se reduce
-			ejgActaBuilder.append(" REGEXP_REPLACE((SELECT F_SIGA_GETRECURSO(r.descripcion, ");
-			ejgActaBuilder.append(this.usrbean.getLanguage());
-			ejgActaBuilder.append(") FROM Scs_Tiporesolucion r WHERE r.Idtiporesolucion=ejg.idtiporatificacionejg),'[^[:digit:]]','') as REDUCCION, ");
+			sql.append(" REGEXP_REPLACE((SELECT F_SIGA_GETRECURSO(r.descripcion, ");
+			sql.append(this.usrbean.getLanguage());
+			sql.append(") FROM Scs_Tiporesolucion r WHERE r.Idtiporesolucion=ejg.idtiporatificacionejg),'[^[:digit:]]','') as REDUCCION, ");
 				// Las fechas en letra
-			ejgActaBuilder.append(" TO_CHAR(EJG.Fecharatificacion, 'dd/mm/yyyy') AS FECHARATIFICACIONLETRA, "); 
-			ejgActaBuilder.append(" TO_CHAR(EJG.FECHAPRESENTACION, 'dd/mm/yyyy') AS FECHAPRESENTACIONLETRA, "); 
-			ejgActaBuilder.append(" TO_CHAR(EJG.FECHALIMITEPRESENTACION,'dd/mm/yyyy') AS FECHALIMITEPRESENTACIONLETRA, ");
-			ejgActaBuilder.append(" TO_CHAR(EJG.fechaauto,'dd/mm/yyyy') AS FECHAAUTO_LETRA, ");
-			ejgActaBuilder.append(" TO_CHAR(EJG.fechanotificacion,'dd/mm/yyyy') AS FECHANOTIFICACIONLETRA, ");
-			ejgActaBuilder.append(" TO_CHAR(EJG.fecharesolucioncajg,'dd/mm/yyyy') AS FECHARESOLUCIONCAJGLETRA, ");
-			ejgActaBuilder.append(" TO_CHAR(EJG.FECHAAPERTURA,'dd/mm/yyyy') AS FECHAAPERTURA_EJGLETRA, "); 
-			ejgActaBuilder.append(" TO_CHAR(SYSDATE,'dd/mm/yyyy') AS FECHAACTUALLETRA, "); 
-			ejgActaBuilder.append(" FUND.TEXTOPLANTILLA, ");
-			ejgActaBuilder.append(" FUND.TEXTOPLANTILLA2, ");
-			ejgActaBuilder.append(" FUND.TEXTOPLANTILLA3, ");
-			ejgActaBuilder.append(" FUND.TEXTOPLANTILLA4, ");
-			ejgActaBuilder.append(" FUND.TEXTOPLANTILLA4, ");
-			ejgActaBuilder.append(" FUND.DESCRIPCION AS FUNDAMENTO_JURIDICO_DESCR, ");
-			ejgActaBuilder.append(" d.ESTADO, ");
+			sql.append(" TO_CHAR(EJG.Fecharatificacion, 'dd/mm/yyyy') AS FECHARATIFICACIONLETRA, "); 
+			sql.append(" TO_CHAR(EJG.FECHAPRESENTACION, 'dd/mm/yyyy') AS FECHAPRESENTACIONLETRA, "); 
+			sql.append(" TO_CHAR(EJG.FECHALIMITEPRESENTACION,'dd/mm/yyyy') AS FECHALIMITEPRESENTACIONLETRA, ");
+			sql.append(" TO_CHAR(EJG.fechaauto,'dd/mm/yyyy') AS FECHAAUTO_LETRA, ");
+			sql.append(" TO_CHAR(EJG.fechanotificacion,'dd/mm/yyyy') AS FECHANOTIFICACIONLETRA, ");
+			sql.append(" TO_CHAR(EJG.fecharesolucioncajg,'dd/mm/yyyy') AS FECHARESOLUCIONCAJGLETRA, ");
+			sql.append(" TO_CHAR(EJG.FECHAAPERTURA,'dd/mm/yyyy') AS FECHAAPERTURA_EJGLETRA, "); 
+			sql.append(" TO_CHAR(SYSDATE,'dd/mm/yyyy') AS FECHAACTUALLETRA, "); 
+			sql.append(" FUND.TEXTOPLANTILLA, ");
+			sql.append(" FUND.TEXTOPLANTILLA2, ");
+			sql.append(" FUND.TEXTOPLANTILLA3, ");
+			sql.append(" FUND.TEXTOPLANTILLA4, ");
+			sql.append(" FUND.TEXTOPLANTILLA4, ");
+			sql.append(" FUND.DESCRIPCION AS FUNDAMENTO_JURIDICO_DESCR, ");
+			sql.append(" d.ESTADO, ");
 			
-			ejgActaBuilder.append(" (SELECT F_SIGA_GETRECURSO(DESCRIPCION, ");
-			ejgActaBuilder.append(this.usrbean.getLanguage());
-			ejgActaBuilder.append(") FROM SCS_SITUACION WHERE IDSITUACION = EJG.IDSITUACION) AS SITUACIONPROCEDIMIENTO_DJ ");
+			sql.append(" (SELECT F_SIGA_GETRECURSO(DESCRIPCION, ");
+			sql.append(this.usrbean.getLanguage());
+			sql.append(") FROM SCS_SITUACION WHERE IDSITUACION = EJG.IDSITUACION) AS SITUACIONPROCEDIMIENTO_DJ ");
 			
-			ejgActaBuilder.append(" FROM SCS_EJG EJG, ");
-			ejgActaBuilder.append(" SCS_EJGDESIGNA EJGD, ");
-			ejgActaBuilder.append(" SCS_TIPOFUNDAMENTOS FUND,");
-			ejgActaBuilder.append(" scs_designa d ");
 			
-			ejgActaBuilder.append(" WHERE EJG.IDINSTITUCION = EJGD.IDINSTITUCION(+) ");
-			ejgActaBuilder.append(" AND EJG.IDTIPOEJG = EJGD.IDTIPOEJG(+) "); 
-			ejgActaBuilder.append(" AND EJG.ANIO = EJGD.ANIOEJG(+) "); 
-			ejgActaBuilder.append(" AND EJG.NUMERO = EJGD.NUMEROEJG(+) ");
-			ejgActaBuilder.append(" and  EJGD.IDINSTITUCION = d.idinstitucion(+) ");
-			ejgActaBuilder.append(" AND  EJGD.Aniodesigna =  d.anio(+) ");
-			ejgActaBuilder.append(" AND  EJGD.Idturno = d.idturno(+) ");
-			ejgActaBuilder.append(" AND  EJGD.NUMERODESIGNA = d.numero(+) ");
-			//	ejgActaBuilder.append(" AND (d.idinstitucion is null or d.ESTADO <> 'A' ) ");
-			ejgActaBuilder.append(" AND fund.idfundamento(+) = ejg.idfundamentojuridico "); 
-			ejgActaBuilder.append(" AND fund.idinstitucion(+) = ejg.idinstitucion "); 
-			ejgActaBuilder.append(" AND EJG.idinstitucion = ");
-			ejgActaBuilder.append(idInstitucion);
-			ejgActaBuilder.append(" AND EJG.idtipoejg = ");
-			ejgActaBuilder.append(tipoEjg);
-			ejgActaBuilder.append(" AND EJG.anio = ");
-			ejgActaBuilder.append(anio);
-			ejgActaBuilder.append(" AND EJG.numero = ");
-			ejgActaBuilder.append(numero);
+			sql.append(" FROM SCS_EJG EJG, ");
+			sql.append(" SCS_EJGDESIGNA EJGD, ");
+			sql.append(" SCS_TIPOFUNDAMENTOS FUND,");
+			sql.append(" scs_designa d ");
+			
+			sql.append(" WHERE EJG.IDINSTITUCION = EJGD.IDINSTITUCION(+) ");
+			sql.append(" AND EJG.IDTIPOEJG = EJGD.IDTIPOEJG(+) "); 
+			sql.append(" AND EJG.ANIO = EJGD.ANIOEJG(+) "); 
+			sql.append(" AND EJG.NUMERO = EJGD.NUMEROEJG(+) ");
+			sql.append(" and  EJGD.IDINSTITUCION = d.idinstitucion(+) ");
+			sql.append(" AND  EJGD.Aniodesigna =  d.anio(+) ");
+			sql.append(" AND  EJGD.Idturno = d.idturno(+) ");
+			sql.append(" AND  EJGD.NUMERODESIGNA = d.numero(+) ");
+			//	sql.append(" AND (d.idinstitucion is null or d.ESTADO <> 'A' ) ");
+			sql.append(" AND fund.idfundamento(+) = ejg.idfundamentojuridico "); 
+			sql.append(" AND fund.idinstitucion(+) = ejg.idinstitucion "); 
+			sql.append(" AND EJG.idinstitucion = ");
+			sql.append(idInstitucion);
+			sql.append(" AND EJG.idtipoejg = ");
+			sql.append(tipoEjg);
+			sql.append(" AND EJG.anio = ");
+			sql.append(anio);
+			sql.append(" AND EJG.numero = ");
+			sql.append(numero);
+			
+			
+			
 			
 			try {    	   	    	   			
-				rc = this.find(ejgActaBuilder.toString());
+				rc = this.find(sql.toString());
 				if (rc!=null){
 					GenParametrosAdm paramAdm = new GenParametrosAdm (usrbean);
 					CenInstitucionAdm cenInstitucionAdm = new CenInstitucionAdm (usrbean);
@@ -2923,55 +2927,55 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		try {
 			Hashtable htCodigos = new Hashtable();
 			int keyContador = 0;
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" SELECT A.*,FECHA_ASISTENCIA_LETRA AS FECHA_ASISTENCIALETRA,ROWNUM FROM ( ");
-			ejgActaBuilder.append(" (SELECT  ");
+			StringBuffer sql = new StringBuffer();
+			sql.append(" SELECT A.*,FECHA_ASISTENCIA_LETRA AS FECHA_ASISTENCIALETRA,ROWNUM FROM ( ");
+			sql.append(" (SELECT  ");
 			 
-			ejgActaBuilder.append(" TO_CHAR(ASI.FECHAHORA,'DD/MM/YYYY') FECHA_ASISTENCIA, ");
-			ejgActaBuilder.append(" TO_CHAR(ASI.FECHASOLICITUD, 'DD/MM/YYYY hh:mm') FECHA_SOLICITUD, ");
-			ejgActaBuilder.append(" PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(ASI.FECHAHORA ,'m',1) FECHA_ASISTENCIA_LETRA, ");
-			ejgActaBuilder.append(" DECODE(ASI.NUMERODILIGENCIA, NULL, ASI.NUMEROPROCEDIMIENTO, ASI.NUMERODILIGENCIA) AS ASUNTODILIGENCIA, ");
-			ejgActaBuilder.append(" DECODE(ASI.COMISARIA, NULL, "+
+			sql.append(" TO_CHAR(ASI.FECHAHORA,'DD/MM/YYYY') FECHA_ASISTENCIA, ");
+			sql.append(" TO_CHAR(ASI.FECHASOLICITUD, 'DD/MM/YYYY hh:mm') FECHA_SOLICITUD, ");
+			sql.append(" PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(ASI.FECHAHORA ,'m',1) FECHA_ASISTENCIA_LETRA, ");
+			sql.append(" DECODE(ASI.NUMERODILIGENCIA, NULL, ASI.NUMEROPROCEDIMIENTO, ASI.NUMERODILIGENCIA) AS ASUNTODILIGENCIA, ");
+			sql.append(" DECODE(ASI.COMISARIA, NULL, "+
 					" (SELECT J.NOMBRE FROM SCS_JUZGADO J WHERE J.IDINSTITUCION = ASI.JUZGADOIDINSTITUCION AND J.IDJUZGADO = ASI.JUZGADO), "+
 					" (SELECT C.NOMBRE FROM SCS_COMISARIA C WHERE C.IDINSTITUCION = ASI.COMISARIAIDINSTITUCION AND C.IDCOMISARIA = ASI.COMISARIA)) AS COMISARIAJUZGADO, ");
-			ejgActaBuilder.append(" GT.NOMBRE NOMBRE_GUARDIA_ASISTENCIA, ");
-			ejgActaBuilder.append(" PER.nombre || ' ' || PER.apellidos1 || ' ' || PER.apellidos2 AS NOMBRE_LETRADO_ASISTENCIA, ");
-			ejgActaBuilder.append(" DECODE(COL.COMUNITARIO,'1',COL.NCOMUNITARIO, COL.NCOLEGIADO) NCOLEGIADO_LETRADO_ASISTENCIA, ");
-			ejgActaBuilder.append(" ASI.IDPERSONACOLEGIADO AS IDPERSONA_LET_ASIST, ");
-			ejgActaBuilder.append(" ASI.IDINSTITUCION AS IDINSTITUCION_LET_ASIST");
+			sql.append(" GT.NOMBRE NOMBRE_GUARDIA_ASISTENCIA, ");
+			sql.append(" PER.nombre || ' ' || PER.apellidos1 || ' ' || PER.apellidos2 AS NOMBRE_LETRADO_ASISTENCIA, ");
+			sql.append(" DECODE(COL.COMUNITARIO,'1',COL.NCOMUNITARIO, COL.NCOLEGIADO) NCOLEGIADO_LETRADO_ASISTENCIA, ");
+			sql.append(" ASI.IDPERSONACOLEGIADO AS IDPERSONA_LET_ASIST, ");
+			sql.append(" ASI.IDINSTITUCION AS IDINSTITUCION_LET_ASIST");
 
-			ejgActaBuilder.append(" FROM SCS_ASISTENCIA ASI, SCS_GUARDIASTURNO GT,CEN_COLEGIADO COL, CEN_PERSONA PER ");
-			ejgActaBuilder.append(" WHERE  ");
-			ejgActaBuilder.append(" ASI.IDINSTITUCION = GT.IDINSTITUCION ");
-			ejgActaBuilder.append(" AND ASI.IDTURNO = GT.IDTURNO ");
-			ejgActaBuilder.append(" AND ASI.IDGUARDIA = GT.IDGUARDIA ");
-			ejgActaBuilder.append(" AND ASI.IDPERSONACOLEGIADO = COL.IDPERSONA ");
-			ejgActaBuilder.append(" AND ASI.IDINSTITUCION = COL.IDINSTITUCION ");
-			ejgActaBuilder.append(" AND ASI.IDPERSONACOLEGIADO = PER.IDPERSONA ");
-			ejgActaBuilder.append(" AND ASI.IDINSTITUCION = :");
+			sql.append(" FROM SCS_ASISTENCIA ASI, SCS_GUARDIASTURNO GT,CEN_COLEGIADO COL, CEN_PERSONA PER ");
+			sql.append(" WHERE  ");
+			sql.append(" ASI.IDINSTITUCION = GT.IDINSTITUCION ");
+			sql.append(" AND ASI.IDTURNO = GT.IDTURNO ");
+			sql.append(" AND ASI.IDGUARDIA = GT.IDGUARDIA ");
+			sql.append(" AND ASI.IDPERSONACOLEGIADO = COL.IDPERSONA ");
+			sql.append(" AND ASI.IDINSTITUCION = COL.IDINSTITUCION ");
+			sql.append(" AND ASI.IDPERSONACOLEGIADO = PER.IDPERSONA ");
+			sql.append(" AND ASI.IDINSTITUCION = :");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(keyContador);
-			ejgActaBuilder.append(" AND ASI.EJGIDTIPOEJG = :");
+			sql.append(keyContador);
+			sql.append(" AND ASI.EJGIDTIPOEJG = :");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), tipoEjg);
-			ejgActaBuilder.append(keyContador);
-			ejgActaBuilder.append(" AND ASI.EJGANIO = :");
+			sql.append(keyContador);
+			sql.append(" AND ASI.EJGANIO = :");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), anio);
-			ejgActaBuilder.append(keyContador);
-			ejgActaBuilder.append(" AND ASI.EJGNUMERO =  :");
+			sql.append(keyContador);
+			sql.append(" AND ASI.EJGNUMERO =  :");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), numero);
-			ejgActaBuilder.append(keyContador);
-			ejgActaBuilder.append(" ORDER BY ASI.FECHAHORA DESC ) A ");
-			ejgActaBuilder.append(" ) ");
+			sql.append(keyContador);
+			sql.append(" ORDER BY ASI.FECHAHORA DESC ) A ");
+			sql.append(" ) ");
 	   
 	   
-			ejgActaBuilder.append(" WHERE ROWNUM = 1 ");
+			sql.append(" WHERE ROWNUM = 1 ");
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		}
 		catch (Exception e) {
@@ -2985,69 +2989,69 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		try {
 			Hashtable htCodigos = new Hashtable();
 			int keyContador = 0;
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" ");
-			ejgActaBuilder.append(" SELECT  ");
-			ejgActaBuilder.append(" PROC.NOMBRE || ' ' || PROC.APELLIDOS1 || ' ' || PROC.APELLIDOS2 AS PROCURADOR, ");
-			ejgActaBuilder.append(" PROC.Domicilio AS PROCURADOR_DOMICILIO, ");
-			ejgActaBuilder.append(" PROC.Codigopostal AS PROCURADOR_CP, ");
-			ejgActaBuilder.append(" PROC.Provincia AS PROCURADOR_PROVINCIA, ");
-			ejgActaBuilder.append(" PROC.Poblacion AS PROCURADOR_POBLACION, ");
-			ejgActaBuilder.append(" PROC.Idpretencion AS IDPRETENCION, ");
-			ejgActaBuilder.append(" PROC.TELEFONO1 AS PROCURADOR_TELEFONO1, ");
-			ejgActaBuilder.append(" COLPROCURADORES_NOMBRE, ");
-			ejgActaBuilder.append(" COLPROCURADORES_DIRECCION, ");
-			ejgActaBuilder.append(" COLPROCURADORES_TIPOVIA, ");
-			ejgActaBuilder.append(" COLPROCURADORES_NUMERODIR, ");
-			ejgActaBuilder.append(" COLPROCURADORES_ESCALERADIR, ");
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			sql.append(" SELECT  ");
+			sql.append(" PROC.NOMBRE || ' ' || PROC.APELLIDOS1 || ' ' || PROC.APELLIDOS2 AS PROCURADOR, ");
+			sql.append(" PROC.Domicilio AS PROCURADOR_DOMICILIO, ");
+			sql.append(" PROC.Codigopostal AS PROCURADOR_CP, ");
+			sql.append(" PROC.Provincia AS PROCURADOR_PROVINCIA, ");
+			sql.append(" PROC.Poblacion AS PROCURADOR_POBLACION, ");
+			sql.append(" PROC.Idpretencion AS IDPRETENCION, ");
+			sql.append(" PROC.TELEFONO1 AS PROCURADOR_TELEFONO1, ");
+			sql.append(" COLPROCURADORES_NOMBRE, ");
+			sql.append(" COLPROCURADORES_DIRECCION, ");
+			sql.append(" COLPROCURADORES_TIPOVIA, ");
+			sql.append(" COLPROCURADORES_NUMERODIR, ");
+			sql.append(" COLPROCURADORES_ESCALERADIR, ");
 			
-			ejgActaBuilder.append(" COLPROCURADORES_PISODIR, ");
-			ejgActaBuilder.append(" COLPROCURADORES_PUERTADIR, ");
-			ejgActaBuilder.append(" COLPROCURADORES_CODPOSTAL, ");
-			ejgActaBuilder.append(" COLPROCURADORES_POBLACION, ");
-			ejgActaBuilder.append(" COLPROCURADORES_PROVINCIA ");
+			sql.append(" COLPROCURADORES_PISODIR, ");
+			sql.append(" COLPROCURADORES_PUERTADIR, ");
+			sql.append(" COLPROCURADORES_CODPOSTAL, ");
+			sql.append(" COLPROCURADORES_POBLACION, ");
+			sql.append(" COLPROCURADORES_PROVINCIA ");
 			
-			ejgActaBuilder.append(" FROM V_SIGA_PROCURADOR_EJG PROC ");					
-			ejgActaBuilder.append(" WHERE "); 	
+			sql.append(" FROM V_SIGA_PROCURADOR_EJG PROC ");					
+			sql.append(" WHERE "); 	
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(" PROC.IDINSTITUCION = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" PROC.IDINSTITUCION = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), tipoEjg);
-			ejgActaBuilder.append(" and PROC.IDTIPOEJG = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and PROC.IDTIPOEJG = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), anio);
-			ejgActaBuilder.append(" and PROC.ANIO = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and PROC.ANIO = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), numero);
-			ejgActaBuilder.append(" and PROC.NUMERO = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and PROC.NUMERO = :");
+			sql.append(keyContador);
 			
 			if (anioDesigna!=null && !anioDesigna.trim().equalsIgnoreCase("") && turnoDesigna!=null && !turnoDesigna.trim().equalsIgnoreCase("") && numeroDesigna!=null && !numeroDesigna.trim().equalsIgnoreCase("")) {
 				keyContador++;
 				htCodigos.put(new Integer(keyContador), anioDesigna);
-				ejgActaBuilder.append(" and PROC.ANIODESIGNA = :");
-				ejgActaBuilder.append(keyContador);
+				sql.append(" and PROC.ANIODESIGNA = :");
+				sql.append(keyContador);
 				
 				keyContador++;
 				htCodigos.put(new Integer(keyContador), turnoDesigna);
-				ejgActaBuilder.append(" and PROC.IDTURNO = :");
-				ejgActaBuilder.append(keyContador);
+				sql.append(" and PROC.IDTURNO = :");
+				sql.append(keyContador);
 				
 				keyContador++;
 				htCodigos.put(new Integer(keyContador), numeroDesigna);
-				ejgActaBuilder.append(" and PROC.NUMERODESIGNA = :");
-				ejgActaBuilder.append(keyContador);
+				sql.append(" and PROC.NUMERODESIGNA = :");
+				sql.append(keyContador);
 			}
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		}
 		catch (Exception e) {
@@ -3069,122 +3073,122 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	 */
 	private Vector<Hashtable<String,Object>> getInteresadosEjgSalida (String idInstitucion, String tipoEjg, String anio, String numero,String idioma, String idPersonaJG, String longitudNumEjg) throws ClsExceptions {
 		try {			
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append("SELECT INTERESADO.NOMBRE AS NOMBRE_D, ");
-			ejgActaBuilder.append(" INTERESADO.APELLIDO1 AS APELLIDO1_D, ");
-			ejgActaBuilder.append(" INTERESADO.APELLIDO2 AS APELLIDO2_D, ");			
-			ejgActaBuilder.append(" INTERESADO.NOMBRE || ' ' || INTERESADO.APELLIDO1 || ' ' || INTERESADO.APELLIDO2 AS NOMBRE_DEFENDIDO, ");
-			ejgActaBuilder.append(" INTERESADO.CODIGOPOSTAL AS CP_DEFENDIDO, ");
-			ejgActaBuilder.append(" INTERESADO.NOMBRE_POB AS POBLACION_DEFENDIDO, ");
-			ejgActaBuilder.append(" INTERESADO.TELEFONO AS TELEFONO1_DEFENDIDO, ");
-			ejgActaBuilder.append(" INTERESADO.TELEFONOLIST AS LISTA_TELEFONOS_INTERESADO, ");
-			ejgActaBuilder.append(" INTERESADO.NIF AS NIF_DEFENDIDO, ");
-			ejgActaBuilder.append(" INTERESADO.NOMBRE_PROV AS PROVINCIA_DEFENDIDO, ");
-			ejgActaBuilder.append(" INTERESADO.IDLENGUAJE AS LENGUAJE_INTERESADO, ");
-			ejgActaBuilder.append(" INTERESADO.IDLENGUAJE, ");
-			ejgActaBuilder.append(" F_SIGA_GETCODIDIOMA(INTERESADO.IDLENGUAJE) AS CODIGOLENGUAJE, ");
-			ejgActaBuilder.append(" ESTADOCIVIL.DESCRIPCION AS ESTADOCIVILDEFENDIDO, ");
-			ejgActaBuilder.append(" PROFESION.DESCRIPCION AS PROFESIONDEFENDIDO, ");
-			ejgActaBuilder.append(" PERSONAJG.IDPERSONA, ");
-            ejgActaBuilder.append(" PERSONAJG.IDREPRESENTANTEJG, ");
-            ejgActaBuilder.append(" PERSONAJG.IDINSTITUCION, ");
-            ejgActaBuilder.append(" NVL(PERSONAJG.NOMBRE, '') AS NOMBRE_PJG, ");
-            ejgActaBuilder.append(" NVL(PERSONAJG.APELLIDO1, '') AS APELLIDO1_PJG, ");
-            ejgActaBuilder.append(" NVL(PERSONAJG.APELLIDO2, '') AS APELLIDO2_PJG, ");
-            ejgActaBuilder.append(" TO_CHAR(PERSONAJG.FECHANACIMIENTO, 'DD/MM/YYYY') AS FECHANAC_DEFENDIDO, ");
-            ejgActaBuilder.append(" TRUNC(MONTHS_BETWEEN(SYSDATE, PERSONAJG.FECHANACIMIENTO) / 12) as EDAD_DEFENDIDO, ");
-            ejgActaBuilder.append(" PERSONAJG.Fax AS FAX_PJG, ");
-            ejgActaBuilder.append(" PERSONAJG.CORREOELECTRONICO AS CORREOELECTRONICO_PJG, ");
+			StringBuffer sql = new StringBuffer();
+			sql.append("SELECT INTERESADO.NOMBRE AS NOMBRE_D, ");
+			sql.append(" INTERESADO.APELLIDO1 AS APELLIDO1_D, ");
+			sql.append(" INTERESADO.APELLIDO2 AS APELLIDO2_D, ");			
+			sql.append(" INTERESADO.NOMBRE || ' ' || INTERESADO.APELLIDO1 || ' ' || INTERESADO.APELLIDO2 AS NOMBRE_DEFENDIDO, ");
+			sql.append(" INTERESADO.CODIGOPOSTAL AS CP_DEFENDIDO, ");
+			sql.append(" INTERESADO.NOMBRE_POB AS POBLACION_DEFENDIDO, ");
+			sql.append(" INTERESADO.TELEFONO AS TELEFONO1_DEFENDIDO, ");
+			sql.append(" INTERESADO.TELEFONOLIST AS LISTA_TELEFONOS_INTERESADO, ");
+			sql.append(" INTERESADO.NIF AS NIF_DEFENDIDO, ");
+			sql.append(" INTERESADO.NOMBRE_PROV AS PROVINCIA_DEFENDIDO, ");
+			sql.append(" INTERESADO.IDLENGUAJE AS LENGUAJE_INTERESADO, ");
+			sql.append(" INTERESADO.IDLENGUAJE, ");
+			sql.append(" F_SIGA_GETCODIDIOMA(INTERESADO.IDLENGUAJE) AS CODIGOLENGUAJE, ");
+			sql.append(" ESTADOCIVIL.DESCRIPCION AS ESTADOCIVILDEFENDIDO, ");
+			sql.append(" PROFESION.DESCRIPCION AS PROFESIONDEFENDIDO, ");
+			sql.append(" PERSONAJG.IDPERSONA, ");
+            sql.append(" PERSONAJG.IDREPRESENTANTEJG, ");
+            sql.append(" PERSONAJG.IDINSTITUCION, ");
+            sql.append(" NVL(PERSONAJG.NOMBRE, '') AS NOMBRE_PJG, ");
+            sql.append(" NVL(PERSONAJG.APELLIDO1, '') AS APELLIDO1_PJG, ");
+            sql.append(" NVL(PERSONAJG.APELLIDO2, '') AS APELLIDO2_PJG, ");
+            sql.append(" TO_CHAR(PERSONAJG.FECHANACIMIENTO, 'DD/MM/YYYY') AS FECHANAC_DEFENDIDO, ");
+            sql.append(" TRUNC(MONTHS_BETWEEN(SYSDATE, PERSONAJG.FECHANACIMIENTO) / 12) as EDAD_DEFENDIDO, ");
+            sql.append(" PERSONAJG.Fax AS FAX_PJG, ");
+            sql.append(" PERSONAJG.CORREOELECTRONICO AS CORREOELECTRONICO_PJG, ");
 			
-			ejgActaBuilder.append(" NVL2(VIA.DESCRIPCION, F_SIGA_GETRECURSO(VIA.DESCRIPCION, ");
-			ejgActaBuilder.append(idioma);
-			ejgActaBuilder.append("), '') || ");
-			ejgActaBuilder.append(" NVL2(PERSONAJG.DIRECCION, ' ' || PERSONAJG.DIRECCION, '') || ");
-			ejgActaBuilder.append(" NVL2(PERSONAJG.NUMERODIR, ' ' || PERSONAJG.NUMERODIR, '') || ");
-			ejgActaBuilder.append(" NVL2(PERSONAJG.ESCALERADIR, ' ' || PERSONAJG.ESCALERADIR, '') || ");
-			ejgActaBuilder.append(" NVL2(PERSONAJG.PISODIR, ' ' || PERSONAJG.PISODIR, '') || ");
-			ejgActaBuilder.append(" NVL2(PERSONAJG.PUERTADIR, ' ' || PERSONAJG.PUERTADIR, '') AS DOMICILIO_DEFENDIDO, ");
+			sql.append(" NVL2(VIA.DESCRIPCION, F_SIGA_GETRECURSO(VIA.DESCRIPCION, ");
+			sql.append(idioma);
+			sql.append("), '') || ");
+			sql.append(" NVL2(PERSONAJG.DIRECCION, ' ' || PERSONAJG.DIRECCION, '') || ");
+			sql.append(" NVL2(PERSONAJG.NUMERODIR, ' ' || PERSONAJG.NUMERODIR, '') || ");
+			sql.append(" NVL2(PERSONAJG.ESCALERADIR, ' ' || PERSONAJG.ESCALERADIR, '') || ");
+			sql.append(" NVL2(PERSONAJG.PISODIR, ' ' || PERSONAJG.PISODIR, '') || ");
+			sql.append(" NVL2(PERSONAJG.PUERTADIR, ' ' || PERSONAJG.PUERTADIR, '') AS DOMICILIO_DEFENDIDO, ");
 			
-			ejgActaBuilder.append(" (SELECT tg.descripcion FROM Scs_Tipogrupolaboral tg  WHERE tg.idinstitucion = ");
-			ejgActaBuilder.append(idInstitucion);
-			ejgActaBuilder.append(" AND tg.idtipogrupolab = Interesado.IDTIPOGRUPOLAB) AS GRUPOLABORAL_DEFENDIDO, ");
+			sql.append(" (SELECT tg.descripcion FROM Scs_Tipogrupolaboral tg  WHERE tg.idinstitucion = ");
+			sql.append(idInstitucion);
+			sql.append(" AND tg.idtipogrupolab = Interesado.IDTIPOGRUPOLAB) AS GRUPOLABORAL_DEFENDIDO, ");
 			
-			ejgActaBuilder.append(" DECODE(INTERESADO.SEXO, null, null, 'M', 'gratuita.personaEJG.sexo.mujer', 'gratuita.personaEJG.sexo.hombre') AS SEXOINTERESADO, ");			
-			ejgActaBuilder.append(" DECODE(INTERESADO.SEXO, 'H', 'o', 'a') AS O_A_INTERESADO, ");			
-			ejgActaBuilder.append(" DECODE(INTERESADO.SEXO, 'H' , 'el', 'la') AS EL_LA_INTERESADO, ");
+			sql.append(" DECODE(INTERESADO.SEXO, null, null, 'M', 'gratuita.personaEJG.sexo.mujer', 'gratuita.personaEJG.sexo.hombre') AS SEXOINTERESADO, ");			
+			sql.append(" DECODE(INTERESADO.SEXO, 'H', 'o', 'a') AS O_A_INTERESADO, ");			
+			sql.append(" DECODE(INTERESADO.SEXO, 'H' , 'el', 'la') AS EL_LA_INTERESADO, ");
 						
-			ejgActaBuilder.append(" (SELECT  Descripcion FROM Scs_Tipoencalidad WHERE Idinstitucion = INTERESADO.Idinstitucion AND Idtipoencalidad = INTERESADO.Idtipoencalidad) AS CALIDADINTERESADO, ");  			
+			sql.append(" (SELECT  Descripcion FROM Scs_Tipoencalidad WHERE Idinstitucion = INTERESADO.Idinstitucion AND Idtipoencalidad = INTERESADO.Idtipoencalidad) AS CALIDADINTERESADO, ");  			
 			
-			ejgActaBuilder.append(" DECODE(INTERESADO.ANIOEJG, NULL, NULL, INTERESADO.ANIOEJG || '/' || LPAD(INTERESADO.NUMEJG, ");
-			ejgActaBuilder.append(longitudNumEjg);
-			ejgActaBuilder.append(", 0)) AS NUMERO_EJG, ");				
+			sql.append(" DECODE(INTERESADO.ANIOEJG, NULL, NULL, INTERESADO.ANIOEJG || '/' || LPAD(INTERESADO.NUMEJG, ");
+			sql.append(longitudNumEjg);
+			sql.append(", 0)) AS NUMERO_EJG, ");				
 			
-			ejgActaBuilder.append(" DECODE(regimen_conyugal, 'G', 'gratuita.personaJG.regimen.literal.gananciales', ");
-            ejgActaBuilder.append(" 'I', 'gratuita.personaJG.regimen.literal.indeterminado', ");
-            ejgActaBuilder.append(" 'S', 'gratuita.personaJG.regimen.literal.separacion') AS REGIMENCONYUGALDEFENDIDO, ");
+			sql.append(" DECODE(regimen_conyugal, 'G', 'gratuita.personaJG.regimen.literal.gananciales', ");
+            sql.append(" 'I', 'gratuita.personaJG.regimen.literal.indeterminado', ");
+            sql.append(" 'S', 'gratuita.personaJG.regimen.literal.separacion') AS REGIMENCONYUGALDEFENDIDO, ");
             
-            ejgActaBuilder.append(" DECODE(PERSONAJG.DIRECCION, null, null, 1) AS IDDIRECCION_PJG, ");
+            sql.append(" DECODE(PERSONAJG.DIRECCION, null, null, 1) AS IDDIRECCION_PJG, ");
             
-            ejgActaBuilder.append(" (SELECT ST.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA ST WHERE ST.IDINSTITUCION = PERSONAJG.IDINSTITUCION AND ST.IDPERSONA = PERSONAJG.IDPERSONA AND ST.IDTELEFONO = 1) AS TELEFONO1_PJG, ");            
-            ejgActaBuilder.append(" (SELECT ST.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA ST WHERE ST.IDINSTITUCION = PERSONAJG.IDINSTITUCION AND ST.IDPERSONA = PERSONAJG.IDPERSONA AND ST.IDTELEFONO = 2) AS TELEFONO2_PJG, ");            
-            ejgActaBuilder.append(" (SELECT MAX(ST.NUMEROTELEFONO) FROM SCS_TELEFONOSPERSONA ST WHERE ST.IDINSTITUCION = PERSONAJG.IDINSTITUCION AND ST.IDPERSONA = PERSONAJG.IDPERSONA AND ST.PREFERENTESMS = 1) AS MOVIL_PJG, ");
+            sql.append(" (SELECT ST.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA ST WHERE ST.IDINSTITUCION = PERSONAJG.IDINSTITUCION AND ST.IDPERSONA = PERSONAJG.IDPERSONA AND ST.IDTELEFONO = 1) AS TELEFONO1_PJG, ");            
+            sql.append(" (SELECT ST.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA ST WHERE ST.IDINSTITUCION = PERSONAJG.IDINSTITUCION AND ST.IDPERSONA = PERSONAJG.IDPERSONA AND ST.IDTELEFONO = 2) AS TELEFONO2_PJG, ");            
+            sql.append(" (SELECT MAX(ST.NUMEROTELEFONO) FROM SCS_TELEFONOSPERSONA ST WHERE ST.IDINSTITUCION = PERSONAJG.IDINSTITUCION AND ST.IDPERSONA = PERSONAJG.IDPERSONA AND ST.PREFERENTESMS = 1) AS MOVIL_PJG, ");
             
-            ejgActaBuilder.append(" (SELECT F_SIGA_GETRECURSO(NOMBRE, ");
-			ejgActaBuilder.append(this.usrbean.getLanguage());
-			ejgActaBuilder.append(") FROM CEN_PAIS WHERE IDPAIS = PERSONAJG.IDPAIS) AS NACIONALIDAD_DEFENDIDO, ");
+            sql.append(" (SELECT F_SIGA_GETRECURSO(NOMBRE, ");
+			sql.append(this.usrbean.getLanguage());
+			sql.append(") FROM CEN_PAIS WHERE IDPAIS = PERSONAJG.IDPAIS) AS NACIONALIDAD_DEFENDIDO, ");
 			
-			ejgActaBuilder.append(" (SELECT F_SIGA_GETRECURSO(DESCRIPCION, ");
-			ejgActaBuilder.append(this.usrbean.getLanguage());
-			ejgActaBuilder.append(") FROM CEN_TIPOIDENTIFICACION WHERE IDTIPOIDENTIFICACION = PERSONAJG.IDTIPOIDENTIFICACION) AS TIPOIDENTIFICACION_DEFENDIDO, ");
+			sql.append(" (SELECT F_SIGA_GETRECURSO(DESCRIPCION, ");
+			sql.append(this.usrbean.getLanguage());
+			sql.append(") FROM CEN_TIPOIDENTIFICACION WHERE IDTIPOIDENTIFICACION = PERSONAJG.IDTIPOIDENTIFICACION) AS TIPOIDENTIFICACION_DEFENDIDO, ");
 			
-			ejgActaBuilder.append(" F_SIGA_GETRECURSO_ETIQUETA(DECODE(PERSONAJG.TIPOPERSONAJG, 'J', 'gratuita.personaJG.literal.tipoJuridica', 'F', 'gratuita.personaJG.literal.tipoFisica','O', 'gratuita.personaJG.literal.otra'), ");
-			ejgActaBuilder.append(this.usrbean.getLanguage());
-			ejgActaBuilder.append(") AS TIPOPERSONA_DEFENDIDO "); 
+			sql.append(" F_SIGA_GETRECURSO_ETIQUETA(DECODE(PERSONAJG.TIPOPERSONAJG, 'J', 'gratuita.personaJG.literal.tipoJuridica', 'F', 'gratuita.personaJG.literal.tipoFisica','O', 'gratuita.personaJG.literal.otra'), ");
+			sql.append(this.usrbean.getLanguage());
+			sql.append(") AS TIPOPERSONA_DEFENDIDO "); 
             
-			ejgActaBuilder.append(" FROM V_SIGA_INTERESADOS_EJG INTERESADO, ");
-			ejgActaBuilder.append(" SCS_PERSONAJG PERSONAJG, ");
-			ejgActaBuilder.append(" CEN_ESTADOCIVIL ESTADOCIVIL, ");
-			ejgActaBuilder.append(" SCS_PROFESION PROFESION, ");
-			ejgActaBuilder.append(" CEN_TIPOVIA VIA ");
+			sql.append(" FROM V_SIGA_INTERESADOS_EJG INTERESADO, ");
+			sql.append(" SCS_PERSONAJG PERSONAJG, ");
+			sql.append(" CEN_ESTADOCIVIL ESTADOCIVIL, ");
+			sql.append(" SCS_PROFESION PROFESION, ");
+			sql.append(" CEN_TIPOVIA VIA ");
   
-			ejgActaBuilder.append(" WHERE VIA.IDINSTITUCION(+) = PERSONAJG.IDINSTITUCION ");
-			ejgActaBuilder.append(" AND VIA.IDTIPOVIA(+) = PERSONAJG.IDTIPOVIA ");
-			ejgActaBuilder.append(" AND PERSONAJG.IDINSTITUCION = INTERESADO.IDINSTITUCION ");
-			ejgActaBuilder.append(" AND PERSONAJG.IDPERSONA = INTERESADO.IDPERSONAJG ");	
-			ejgActaBuilder.append(" AND ESTADOCIVIL.IDESTADOCIVIL(+) = PERSONAJG.IDESTADOCIVIL ");
-			ejgActaBuilder.append(" AND PERSONAJG.IDPROFESION = PROFESION.IDPROFESION(+) ");
+			sql.append(" WHERE VIA.IDINSTITUCION(+) = PERSONAJG.IDINSTITUCION ");
+			sql.append(" AND VIA.IDTIPOVIA(+) = PERSONAJG.IDTIPOVIA ");
+			sql.append(" AND PERSONAJG.IDINSTITUCION = INTERESADO.IDINSTITUCION ");
+			sql.append(" AND PERSONAJG.IDPERSONA = INTERESADO.IDPERSONAJG ");	
+			sql.append(" AND ESTADOCIVIL.IDESTADOCIVIL(+) = PERSONAJG.IDESTADOCIVIL ");
+			sql.append(" AND PERSONAJG.IDPROFESION = PROFESION.IDPROFESION(+) ");
 			
 			Hashtable htCodigos = new Hashtable();
 			int keyContador = 0;
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(" AND INTERESADO.IDINSTITUCION = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" AND INTERESADO.IDINSTITUCION = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), tipoEjg);
-			ejgActaBuilder.append(" and INTERESADO.IDTIPOEJG = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and INTERESADO.IDTIPOEJG = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), anio);
-			ejgActaBuilder.append(" and INTERESADO.ANIO = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and INTERESADO.ANIO = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), numero);
-			ejgActaBuilder.append(" and INTERESADO.NUMERO = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and INTERESADO.NUMERO = :");
+			sql.append(keyContador);
 			if(idPersonaJG!=null && !idPersonaJG.trim().equalsIgnoreCase("")){
 				keyContador++;
 				htCodigos.put(new Integer(keyContador), idPersonaJG);
-				ejgActaBuilder.append(" and INTERESADO.IDPERSONAJG = :");
-				ejgActaBuilder.append(keyContador);
+				sql.append(" and INTERESADO.IDPERSONAJG = :");
+				sql.append(keyContador);
 				
 			}
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error ScsEJGAdm.getInteresadosEjgSalida.");
@@ -3199,87 +3203,87 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			int keyContador = 0;
 			
 		
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" ");
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
 			
-			ejgActaBuilder.append(" SELECT ");
+			sql.append(" SELECT ");
 			
-			ejgActaBuilder.append(" let.Idpersona IDPERSONA_DESIGNA,let.IDINSTITUCION IDINSTITUCION_LETDESIGNA ,let.IDINSTITUCIONORIGEN IDINSTITUCIONORIGEN_LETDESIGNA , ");
-			ejgActaBuilder.append(" DES.IDINSTITUCION_JUZG IDINSTITUCION_JUZGDESIGNA ,DES.IDJUZGADO IDJUZGADODESIGNA, ");
-			ejgActaBuilder.append(" DES.NUMPROCEDIMIENTO AS AUTOS, "); 
-			ejgActaBuilder.append(" TO_CHAR(DES.FECHAJUICIO, 'dd/MM/yyyy') AS FECHA_JUICIO, ");
-			ejgActaBuilder.append(" TO_CHAR(DES.FECHAJUICIO, 'HH24:MI') AS HORA_JUICIO, ");
-			ejgActaBuilder.append(" DES.IDPROCEDIMIENTO  AS IDPROCEDIMIENTO,");
+			sql.append(" let.Idpersona IDPERSONA_DESIGNA,let.IDINSTITUCION IDINSTITUCION_LETDESIGNA ,let.IDINSTITUCIONORIGEN IDINSTITUCIONORIGEN_LETDESIGNA , ");
+			sql.append(" DES.IDINSTITUCION_JUZG IDINSTITUCION_JUZGDESIGNA ,DES.IDJUZGADO IDJUZGADODESIGNA, ");
+			sql.append(" DES.NUMPROCEDIMIENTO AS AUTOS, "); 
+			sql.append(" TO_CHAR(DES.FECHAJUICIO, 'dd/MM/yyyy') AS FECHA_JUICIO, ");
+			sql.append(" TO_CHAR(DES.FECHAJUICIO, 'HH24:MI') AS HORA_JUICIO, ");
+			sql.append(" DES.IDPROCEDIMIENTO  AS IDPROCEDIMIENTO,");
 		   
 			
-			ejgActaBuilder.append(" DES.ANIO AS ANIO_DESIGNA, DES.CODIGO AS CODIGO, ");
-			ejgActaBuilder.append(" DES.RESUMENASUNTO AS ASUNTO, ");
-			ejgActaBuilder.append(" DES.ANIO || '/' || DES.CODIGO AS NOFICIO, ");
+			sql.append(" DES.ANIO AS ANIO_DESIGNA, DES.CODIGO AS CODIGO, ");
+			sql.append(" DES.RESUMENASUNTO AS ASUNTO, ");
+			sql.append(" DES.ANIO || '/' || DES.CODIGO AS NOFICIO, ");
 		   
 		   // --DES.NOMBRE_PROCEDIMIENTO AS PROCEDIMIENTO,
 			
 			
-			ejgActaBuilder.append(" TO_CHAR(DES.FECHAENTRADA, 'dd-mm-yyyy') AS FECHA_DESIGNA, ");
-			ejgActaBuilder.append(" TO_CHAR(DES.FECHAFIN, 'dd-mm-yyyy') AS FECHA_CIERRE, ");
-			ejgActaBuilder.append(" PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(DES.FECHAFIN, 'M', "+idioma+") FECHA_CIERRE_LETRA ");		
+			sql.append(" TO_CHAR(DES.FECHAENTRADA, 'dd-mm-yyyy') AS FECHA_DESIGNA, ");
+			sql.append(" TO_CHAR(DES.FECHAFIN, 'dd-mm-yyyy') AS FECHA_CIERRE, ");
+			sql.append(" PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(DES.FECHAFIN, 'M', "+idioma+") FECHA_CIERRE_LETRA ");		
 		 
 			
 		   
-			ejgActaBuilder.append(" FROM SCS_DESIGNA DES, SCS_DESIGNASLETRADO LET ");
-			ejgActaBuilder.append(" WHERE  ");
-			ejgActaBuilder.append(" des.IDINSTITUCION = LET.IDINSTITUCION(+) ");
-			ejgActaBuilder.append(" AND DES.IDTURNO = LET.IDTURNO(+) ");
-			ejgActaBuilder.append(" AND DES.ANIO = LET.ANIO(+) ");
-			ejgActaBuilder.append(" AND DES.NUMERO = LET.NUMERO(+) ");
-			ejgActaBuilder.append(" AND (LET.FECHADESIGNA IS NULL OR ");
-			ejgActaBuilder.append(" LET.FECHADESIGNA = (SELECT MAX(LET2.FECHADESIGNA) ");
-			ejgActaBuilder.append(" FROM SCS_DESIGNASLETRADO LET2 ");
-			ejgActaBuilder.append(" WHERE LET2.IDINSTITUCION = :");
+			sql.append(" FROM SCS_DESIGNA DES, SCS_DESIGNASLETRADO LET ");
+			sql.append(" WHERE  ");
+			sql.append(" des.IDINSTITUCION = LET.IDINSTITUCION(+) ");
+			sql.append(" AND DES.IDTURNO = LET.IDTURNO(+) ");
+			sql.append(" AND DES.ANIO = LET.ANIO(+) ");
+			sql.append(" AND DES.NUMERO = LET.NUMERO(+) ");
+			sql.append(" AND (LET.FECHADESIGNA IS NULL OR ");
+			sql.append(" LET.FECHADESIGNA = (SELECT MAX(LET2.FECHADESIGNA) ");
+			sql.append(" FROM SCS_DESIGNASLETRADO LET2 ");
+			sql.append(" WHERE LET2.IDINSTITUCION = :");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(keyContador);
+			sql.append(keyContador);
 			
-			ejgActaBuilder.append(" AND LET2.IDTURNO =:");
+			sql.append(" AND LET2.IDTURNO =:");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idTurno);
-			ejgActaBuilder.append(keyContador);
-			ejgActaBuilder.append(" AND LET2.ANIO = :");
+			sql.append(keyContador);
+			sql.append(" AND LET2.ANIO = :");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), anioDesigna);
-			ejgActaBuilder.append(keyContador);
+			sql.append(keyContador);
 			
-			ejgActaBuilder.append(" AND LET2.NUMERO = :");
+			sql.append(" AND LET2.NUMERO = :");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), numeroDesigna);
-			ejgActaBuilder.append(keyContador);
+			sql.append(keyContador);
 			
-			ejgActaBuilder.append(" AND TRUNC(LET2.FECHADESIGNA) <= TRUNC(SYSDATE))) ");
+			sql.append(" AND TRUNC(LET2.FECHADESIGNA) <= TRUNC(SYSDATE))) ");
 
 		
 			
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(" and DES.IDINSTITUCION = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and DES.IDINSTITUCION = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idTurno);
-			ejgActaBuilder.append(" and DES.IDTURNO = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and DES.IDTURNO = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), anioDesigna);
-			ejgActaBuilder.append(" and DES.ANIO = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and DES.ANIO = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), numeroDesigna);
-			ejgActaBuilder.append(" and DES.NUMERO = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and DES.NUMERO = :");
+			sql.append(keyContador);
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		}
 		catch (Exception e) {
@@ -3294,62 +3298,62 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			int keyContador = 0;
 			
 		
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" ");
-			ejgActaBuilder.append(" SELECT ");
-			ejgActaBuilder.append(" let.Idpersona IDPERSONA_DESIGNA,let.IDINSTITUCION IDINSTITUCION_LETDESIGNA  ");
-			ejgActaBuilder.append(" ,des.anio||'/'||des.codigo NUMERO_DESIGNA ");
-			ejgActaBuilder.append(" FROM SCS_DESIGNA DES, SCS_DESIGNASLETRADO LET ");
-			ejgActaBuilder.append(" WHERE  ");
-			ejgActaBuilder.append(" des.IDINSTITUCION = LET.IDINSTITUCION(+) ");
-			ejgActaBuilder.append(" AND DES.IDTURNO = LET.IDTURNO(+) ");
-			ejgActaBuilder.append(" AND DES.ANIO = LET.ANIO(+) ");
-			ejgActaBuilder.append(" AND DES.NUMERO = LET.NUMERO(+) ");
-			ejgActaBuilder.append(" AND (LET.FECHADESIGNA IS NULL OR ");
-			ejgActaBuilder.append(" LET.FECHADESIGNA = (SELECT MAX(LET2.FECHADESIGNA) ");
-			ejgActaBuilder.append(" FROM SCS_DESIGNASLETRADO LET2 ");
-			ejgActaBuilder.append(" WHERE LET2.IDINSTITUCION = :");
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			sql.append(" SELECT ");
+			sql.append(" let.Idpersona IDPERSONA_DESIGNA,let.IDINSTITUCION IDINSTITUCION_LETDESIGNA  ");
+			sql.append(" ,des.anio||'/'||des.codigo NUMERO_DESIGNA ");
+			sql.append(" FROM SCS_DESIGNA DES, SCS_DESIGNASLETRADO LET ");
+			sql.append(" WHERE  ");
+			sql.append(" des.IDINSTITUCION = LET.IDINSTITUCION(+) ");
+			sql.append(" AND DES.IDTURNO = LET.IDTURNO(+) ");
+			sql.append(" AND DES.ANIO = LET.ANIO(+) ");
+			sql.append(" AND DES.NUMERO = LET.NUMERO(+) ");
+			sql.append(" AND (LET.FECHADESIGNA IS NULL OR ");
+			sql.append(" LET.FECHADESIGNA = (SELECT MAX(LET2.FECHADESIGNA) ");
+			sql.append(" FROM SCS_DESIGNASLETRADO LET2 ");
+			sql.append(" WHERE LET2.IDINSTITUCION = :");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(keyContador);
+			sql.append(keyContador);
 			
-			ejgActaBuilder.append(" AND LET2.IDTURNO =:");
+			sql.append(" AND LET2.IDTURNO =:");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idTurno);
-			ejgActaBuilder.append(keyContador);
-			ejgActaBuilder.append(" AND LET2.ANIO = :");
+			sql.append(keyContador);
+			sql.append(" AND LET2.ANIO = :");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), anioDesigna);
-			ejgActaBuilder.append(keyContador);
+			sql.append(keyContador);
 			
-			ejgActaBuilder.append(" AND LET2.NUMERO = :");
+			sql.append(" AND LET2.NUMERO = :");
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), numeroDesigna);
-			ejgActaBuilder.append(keyContador);
-			ejgActaBuilder.append(" AND TRUNC(LET2.FECHADESIGNA) <= TRUNC(SYSDATE))) ");
+			sql.append(keyContador);
+			sql.append(" AND TRUNC(LET2.FECHADESIGNA) <= TRUNC(SYSDATE))) ");
 
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(" and DES.IDINSTITUCION = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and DES.IDINSTITUCION = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idTurno);
-			ejgActaBuilder.append(" and DES.IDTURNO = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and DES.IDTURNO = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), anioDesigna);
-			ejgActaBuilder.append(" and DES.ANIO = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and DES.ANIO = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), numeroDesigna);
-			ejgActaBuilder.append(" and DES.NUMERO = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and DES.NUMERO = :");
+			sql.append(keyContador);
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		}
 		catch (Exception e) {
@@ -3368,73 +3372,73 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			int keyContador = 0;
 			
 		
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" ");
-			ejgActaBuilder.append(" SELECT COLDES.NCOLEGIADO AS NCOLEGIADO");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(" ,COLDES.NOMBRE AS NOMBRE_D");
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			sql.append(" SELECT COLDES.NCOLEGIADO AS NCOLEGIADO");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(" ,COLDES.NOMBRE AS NOMBRE_D");
 			
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(" ,COLDES.APELLIDOS1 AS APELLIDOS1_D");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(" ,COLDES.APELLIDOS1 AS APELLIDOS1_D");
 			
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(" ,COLDES.APELLIDOS2 AS APELLIDOS2_D");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(" ,COLDES.APELLIDOS2 AS APELLIDOS2_D");
 			
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
+			sql.append("_");
+			sql.append(aliasSalida);
 			
-			ejgActaBuilder.append(" ,COLDES.NOMBRE || ' ' || COLDES.APELLIDOS1 || ' ' ||COLDES.APELLIDOS2 AS NOMBRE");
+			sql.append(" ,COLDES.NOMBRE || ' ' || COLDES.APELLIDOS1 || ' ' ||COLDES.APELLIDOS2 AS NOMBRE");
 			
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(" ,substr(COLDES.NOMBRE || ' ' || COLDES.APELLIDOS1,1,31)  AS N_APELLI_1");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(" ,substr(COLDES.NOMBRE || ' ' || COLDES.APELLIDOS1,1,31)  AS N_APELLI_1");
 			
-			ejgActaBuilder.append("_");
-			
-			
-			ejgActaBuilder.append(aliasSalida);
-			
-			ejgActaBuilder.append(" ,substr(COLDES.NOMBRE || ' ' || COLDES.APELLIDOS1|| ' ' || COLDES.APELLIDOS2,1,31)  AS N_APEL_1_2");
-			
-			ejgActaBuilder.append("_");
+			sql.append("_");
 			
 			
-			ejgActaBuilder.append(aliasSalida);
+			sql.append(aliasSalida);
 			
-			ejgActaBuilder.append(" ,substr(COLDES.APELLIDOS1|| ' ' || COLDES.APELLIDOS2 || ', ' ||COLDES.NOMBRE  ,1,31)  AS APEL_1_2_N");
+			sql.append(" ,substr(COLDES.NOMBRE || ' ' || COLDES.APELLIDOS1|| ' ' || COLDES.APELLIDOS2,1,31)  AS N_APEL_1_2");
 			
-			ejgActaBuilder.append("_");
+			sql.append("_");
 			
 			
-			ejgActaBuilder.append(aliasSalida);
+			sql.append(aliasSalida);
 			
-			ejgActaBuilder.append(" ,DECODE(COLDES.SEXO, null, null,'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_ST");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append("  ,DECODE(COLDES.SEXO,'H','o','a') as O_A");	
-			ejgActaBuilder.append("  ,DECODE(COLDES.SEXO,'H','el','la') as EL_LA");			
-			ejgActaBuilder.append(",COLDES.NIFCIF AS NIFCIF");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(" FROM V_SIGA_DATOSLETRADO_COLEGIADO COLDES ");
-			ejgActaBuilder.append(" WHERE "); 
+			sql.append(" ,substr(COLDES.APELLIDOS1|| ' ' || COLDES.APELLIDOS2 || ', ' ||COLDES.NOMBRE  ,1,31)  AS APEL_1_2_N");
+			
+			sql.append("_");
+			
+			
+			sql.append(aliasSalida);
+			
+			sql.append(" ,DECODE(COLDES.SEXO, null, null,'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_ST");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append("  ,DECODE(COLDES.SEXO,'H','o','a') as O_A");	
+			sql.append("  ,DECODE(COLDES.SEXO,'H','el','la') as EL_LA");			
+			sql.append(",COLDES.NIFCIF AS NIFCIF");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(" FROM V_SIGA_DATOSLETRADO_COLEGIADO COLDES ");
+			sql.append(" WHERE "); 
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucionDesigna);
-			ejgActaBuilder.append(" COLDES.IDINSTITUCION = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" COLDES.IDINSTITUCION = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idPersonaDesigna);
-			ejgActaBuilder.append(" and COLDES.IDPERSONA = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and COLDES.IDPERSONA = :");
+			sql.append(keyContador);
 			
 		
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		}
 		catch (Exception e) {
@@ -3449,58 +3453,58 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			Hashtable h = new Hashtable();
 			h.put(new Integer(1), idInstitucion);
 			h.put(new Integer(2), idPersona);
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append("SELECT ");
-			ejgActaBuilder.append(" DIR.Domicilio DOMICILIO");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
+			StringBuffer sql = new StringBuffer();
+			sql.append("SELECT ");
+			sql.append(" DIR.Domicilio DOMICILIO");
+			sql.append("_");
+			sql.append(aliasSalida);
 			
-			ejgActaBuilder.append(",dir.codigopostal CP");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida); 
-			ejgActaBuilder.append(",dir.poblacionextranjera POBLACION");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(",dir.idpoblacion ID_POBLACION");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(",dir.idprovincia ID_PROVINCIA");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(",dir.telefono1 TELDESPACHO");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(",dir.fax1 FAX");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(",dir.correoelectronico EMAIL");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(",dir.IDDIRECCION IDDIRECCION");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(",dir.POBLACIONEXTRANJERA PEXTRANJERA");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(",dir.fax2 FAX2");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(",dir.PAGINAWEB PAGINAWEB");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
+			sql.append(",dir.codigopostal CP");
+			sql.append("_");
+			sql.append(aliasSalida); 
+			sql.append(",dir.poblacionextranjera POBLACION");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.idpoblacion ID_POBLACION");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.idprovincia ID_PROVINCIA");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.telefono1 TELDESPACHO");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.fax1 FAX");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.correoelectronico EMAIL");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.IDDIRECCION IDDIRECCION");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.POBLACIONEXTRANJERA PEXTRANJERA");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.fax2 FAX2");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.PAGINAWEB PAGINAWEB");
+			sql.append("_");
+			sql.append(aliasSalida);
 			
-			ejgActaBuilder.append(" from CEN_DIRECCIONES DIR, CEN_DIRECCION_TIPODIRECCION TIP " );
-			ejgActaBuilder.append(" where dir.idinstitucion = tip.idinstitucion ");
-			ejgActaBuilder.append(" and dir.idpersona = tip.idpersona  " );
-			ejgActaBuilder.append(" and dir.iddireccion = tip.iddireccion " );
-			ejgActaBuilder.append(" and tip.idtipodireccion = 2 " );
-			ejgActaBuilder.append(" and dir.fechabaja is null ");
-			ejgActaBuilder.append(" and dir.idinstitucion = :1 ");
-			ejgActaBuilder.append(" and dir.idpersona = :2 ");
-			ejgActaBuilder.append(" and rownum = 1 ");
+			sql.append(" from CEN_DIRECCIONES DIR, CEN_DIRECCION_TIPODIRECCION TIP " );
+			sql.append(" where dir.idinstitucion = tip.idinstitucion ");
+			sql.append(" and dir.idpersona = tip.idpersona  " );
+			sql.append(" and dir.iddireccion = tip.iddireccion " );
+			sql.append(" and tip.idtipodireccion = 2 " );
+			sql.append(" and dir.fechabaja is null ");
+			sql.append(" and dir.idinstitucion = :1 ");
+			sql.append(" and dir.idpersona = :2 ");
+			sql.append(" and rownum = 1 ");
 
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), h);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), h);
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion sobre getDireccionLetrado");
@@ -3512,60 +3516,60 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			Hashtable h = new Hashtable();
 			h.put(new Integer(1), idInstitucion);
 			h.put(new Integer(2), idPersona);
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append("SELECT ");
-			ejgActaBuilder.append(" DIR.Domicilio DOMICILIO");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
+			StringBuffer sql = new StringBuffer();
+			sql.append("SELECT ");
+			sql.append(" DIR.Domicilio DOMICILIO");
+			sql.append("_");
+			sql.append(aliasSalida);
 			
-			ejgActaBuilder.append(",dir.codigopostal CP");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida); 
-			ejgActaBuilder.append(",dir.poblacionextranjera POBLACION");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(",dir.idpoblacion ID_POBLACION");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(",dir.idprovincia ID_PROVINCIA");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(",dir.telefono1 TELDESPACHO");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(",dir.fax1 FAX");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(",dir.correoelectronico EMAIL");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(",dir.IDDIRECCION IDDIRECCION");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(",dir.POBLACIONEXTRANJERA PEXTRANJERA");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(",dir.fax2 FAX2");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(",dir.PAGINAWEB PAGINAWEB");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
+			sql.append(",dir.codigopostal CP");
+			sql.append("_");
+			sql.append(aliasSalida); 
+			sql.append(",dir.poblacionextranjera POBLACION");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.idpoblacion ID_POBLACION");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.idprovincia ID_PROVINCIA");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.telefono1 TELDESPACHO");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.fax1 FAX");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.correoelectronico EMAIL");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.IDDIRECCION IDDIRECCION");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.POBLACIONEXTRANJERA PEXTRANJERA");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.fax2 FAX2");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(",dir.PAGINAWEB PAGINAWEB");
+			sql.append("_");
+			sql.append(aliasSalida);
 			
 			
-			ejgActaBuilder.append(" from CEN_DIRECCIONES DIR, CEN_DIRECCION_TIPODIRECCION TIP " );
-			ejgActaBuilder.append(" where dir.idinstitucion = tip.idinstitucion ");
-			ejgActaBuilder.append(" and dir.idpersona = tip.idpersona  " );
-			ejgActaBuilder.append(" and dir.iddireccion = tip.iddireccion " );
-			ejgActaBuilder.append(" and dir.preferente like '%C%' ");
-			ejgActaBuilder.append(" and tip.idtipodireccion = 2 " );
-			ejgActaBuilder.append(" and dir.fechabaja is null ");
-			ejgActaBuilder.append(" and dir.idinstitucion = :1 ");
-			ejgActaBuilder.append(" and dir.idpersona = :2 ");
-			ejgActaBuilder.append(" and rownum = 1 ");
+			sql.append(" from CEN_DIRECCIONES DIR, CEN_DIRECCION_TIPODIRECCION TIP " );
+			sql.append(" where dir.idinstitucion = tip.idinstitucion ");
+			sql.append(" and dir.idpersona = tip.idpersona  " );
+			sql.append(" and dir.iddireccion = tip.iddireccion " );
+			sql.append(" and dir.preferente like '%C%' ");
+			sql.append(" and tip.idtipodireccion = 2 " );
+			sql.append(" and dir.fechabaja is null ");
+			sql.append(" and dir.idinstitucion = :1 ");
+			sql.append(" and dir.idpersona = :2 ");
+			sql.append(" and rownum = 1 ");
 
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), h);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), h);
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion sobre getDireccionLetrado");
@@ -3578,30 +3582,30 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			Hashtable h = new Hashtable();
 			h.put(new Integer(1), idInstitucion);
 			h.put(new Integer(2), idPersona);
-			StringBuffer ejgActaBuilder = new StringBuffer("SELECT ");
-			ejgActaBuilder.append(" dir.telefono1 TELEFONO1");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
-			ejgActaBuilder.append(" ,dir.telefono2 TELEFONO2");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
+			StringBuffer sql = new StringBuffer("SELECT ");
+			sql.append(" dir.telefono1 TELEFONO1");
+			sql.append("_");
+			sql.append(aliasSalida);
+			sql.append(" ,dir.telefono2 TELEFONO2");
+			sql.append("_");
+			sql.append(aliasSalida);
 	
-			ejgActaBuilder.append(" ,dir.movil MOVIL");
-			ejgActaBuilder.append("_");
-			ejgActaBuilder.append(aliasSalida);
+			sql.append(" ,dir.movil MOVIL");
+			sql.append("_");
+			sql.append(aliasSalida);
 	
-			ejgActaBuilder.append(" from CEN_DIRECCIONES DIR, CEN_DIRECCION_TIPODIRECCION TIP  ");
-			ejgActaBuilder.append("  where dir.idinstitucion = tip.idinstitucion  ");
-			ejgActaBuilder.append("  and dir.idpersona = tip.idpersona   ");
-			ejgActaBuilder.append("  and dir.iddireccion = tip.iddireccion  ");
-			ejgActaBuilder.append("  and tip.idtipodireccion = 6 "  );
-			ejgActaBuilder.append("  and dir.fechabaja is null ");
-			ejgActaBuilder.append("  and dir.idinstitucion = :1 ");
-			ejgActaBuilder.append("  and dir.idpersona = :2 ");
-			ejgActaBuilder.append("  and rownum = 1 ");
+			sql.append(" from CEN_DIRECCIONES DIR, CEN_DIRECCION_TIPODIRECCION TIP  ");
+			sql.append("  where dir.idinstitucion = tip.idinstitucion  ");
+			sql.append("  and dir.idpersona = tip.idpersona   ");
+			sql.append("  and dir.iddireccion = tip.iddireccion  ");
+			sql.append("  and tip.idtipodireccion = 6 "  );
+			sql.append("  and dir.fechabaja is null ");
+			sql.append("  and dir.idinstitucion = :1 ");
+			sql.append("  and dir.idpersona = :2 ");
+			sql.append("  and rownum = 1 ");
 
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), h);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), h);
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion sobre las getDireccionPersonalLetrado");
@@ -3615,33 +3619,33 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			int keyContador = 0;
 			
 		
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" ");
-			ejgActaBuilder.append(" SELECT JUZ.NOMBRE AS JUZGADO, ");
-			ejgActaBuilder.append(" JUZ.DOMICILIO AS DIR_JUZGADO, ");
-			ejgActaBuilder.append(" JUZ.CODIGOPOSTAL AS CP_JUZGADO, ");
-			ejgActaBuilder.append(" JUZ.POBLACION_NOMBRE AS POBLACION_JUZGADO ");
-			ejgActaBuilder.append("  ,JUZ.FAX1 AS FAX1_JUZGADO" );
-			ejgActaBuilder.append(" ,JUZ.TELEFONO1 AS TELEFONO1_JUZGADO");
-			ejgActaBuilder.append(" ,JUZ.EMAIL AS EMAIL_JUZGADO");
-			ejgActaBuilder.append(" ,JUZ.MOVIL AS MOVIL_JUZGADO");		    			
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			sql.append(" SELECT JUZ.NOMBRE AS JUZGADO, ");
+			sql.append(" JUZ.DOMICILIO AS DIR_JUZGADO, ");
+			sql.append(" JUZ.CODIGOPOSTAL AS CP_JUZGADO, ");
+			sql.append(" JUZ.POBLACION_NOMBRE AS POBLACION_JUZGADO ");
+			sql.append("  ,JUZ.FAX1 AS FAX1_JUZGADO" );
+			sql.append(" ,JUZ.TELEFONO1 AS TELEFONO1_JUZGADO");
+			sql.append(" ,JUZ.EMAIL AS EMAIL_JUZGADO");
+			sql.append(" ,JUZ.MOVIL AS MOVIL_JUZGADO");		    			
                                        
-			ejgActaBuilder.append(" FROM V_SIGA_JUZGADOS JUZ ");
-			ejgActaBuilder.append(" WHERE "); 
+			sql.append(" FROM V_SIGA_JUZGADOS JUZ ");
+			sql.append(" WHERE "); 
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucionDesigna);
-			ejgActaBuilder.append(" JUZ.IDINSTITUCION = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" JUZ.IDINSTITUCION = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idJuzgadoDesigna);
-			ejgActaBuilder.append(" and JUZ.IDJUZGADO = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and JUZ.IDJUZGADO = :");
+			sql.append(keyContador);
 			
 		
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		}
 		catch (Exception e) {
@@ -3658,74 +3662,74 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		h.put(new Integer(2), tipoEjg);
 		h.put(new Integer(3), anioEjg);
 		h.put(new Integer(4), numeroEjg);
-		StringBuffer ejgActaBuilder = new StringBuffer();		
-		ejgActaBuilder.append("SELECT decode(PER2.APELLIDO2, null, PER2.APELLIDO1, PER2.APELLIDO1 || ' ' || PER2.APELLIDO2) || ', ' || PER2.NOMBRE as CONYUGE_UF, ");
-		ejgActaBuilder.append(" PER2.NIF as NIF_CONYUGE_UF, ");
-		ejgActaBuilder.append(" (select f_siga_getrecurso(descripcion, ");
-		ejgActaBuilder.append(idioma);
-		ejgActaBuilder.append(") from scs_parentesco paren where paren.idinstitucion = ufa.idinstitucion and paren.idparentesco = UFA.Idparentesco) as PARENTESCO_UF, ");
-		ejgActaBuilder.append(" trunc(months_between(sysdate, PER2.FECHANACIMIENTO) / 12) as EDAD_UF, ");
-		ejgActaBuilder.append(" UFA.IDINSTITUCION, ");
-		ejgActaBuilder.append(" UFA.IDTIPOEJG, "); 
-		ejgActaBuilder.append(" UFA.ANIO, ");
-		ejgActaBuilder.append(" UFA.NUMERO, ");
-		ejgActaBuilder.append(" UFA.IDPERSONA AS IDPERSONAJG, ");
-		ejgActaBuilder.append(" EJG3.CALIDAD, ");
-		ejgActaBuilder.append(" EJG3.IDTIPOENCALIDAD, ");
-		ejgActaBuilder.append(" EJG3.CALIDADIDINSTITUCION, ");
-		ejgActaBuilder.append(" decode(UFA.SOLICITANTE, 1, f_siga_getrecurso_etiqueta('gratuita.busquedaSOJ.literal.solicitante', ");
-		ejgActaBuilder.append(idioma);
-		ejgActaBuilder.append("), null) AS SOLICITANTE, ");
-		ejgActaBuilder.append(" PER2.NOMBRE, ");
-		ejgActaBuilder.append(" PER2.APELLIDO1, ");
-		ejgActaBuilder.append(" PER2.APELLIDO2, "); 
-		ejgActaBuilder.append(" PER2.DIRECCION, ");
-		ejgActaBuilder.append(" PER2.CODIGOPOSTAL, ");
-		ejgActaBuilder.append(" POB.NOMBRE AS NOMBRE_POB, ");
-		ejgActaBuilder.append(" PROV.NOMBRE AS NOMBRE_PROV, ");
-		ejgActaBuilder.append(" PAIS.NOMBRE AS NOMBRE_PAIS, ");
-		ejgActaBuilder.append(" EJG3.ANIO AS ANIOEJG, ");
-		ejgActaBuilder.append(" lpad(EJG3.NUMEJG, ");
-		ejgActaBuilder.append(longitudNumEjg);
-		ejgActaBuilder.append(",0) as NUMEJG, ");
-		ejgActaBuilder.append(" PER2.SEXO, ");
-		ejgActaBuilder.append(" PER2.IDLENGUAJE, ");
-		ejgActaBuilder.append(" (SELECT TEL2.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA TEL2 WHERE TEL2.IDINSTITUCION = UFA.IDINSTITUCION AND TEL2.IDPERSONA = UFA.IDPERSONA AND ROWNUM = 1) AS TELEFONO, ");
+		StringBuffer sql = new StringBuffer();		
+		sql.append("SELECT decode(PER2.APELLIDO2, null, PER2.APELLIDO1, PER2.APELLIDO1 || ' ' || PER2.APELLIDO2) || ', ' || PER2.NOMBRE as CONYUGE_UF, ");
+		sql.append(" PER2.NIF as NIF_CONYUGE_UF, ");
+		sql.append(" (select f_siga_getrecurso(descripcion, ");
+		sql.append(idioma);
+		sql.append(") from scs_parentesco paren where paren.idinstitucion = ufa.idinstitucion and paren.idparentesco = UFA.Idparentesco) as PARENTESCO_UF, ");
+		sql.append(" trunc(months_between(sysdate, PER2.FECHANACIMIENTO) / 12) as EDAD_UF, ");
+		sql.append(" UFA.IDINSTITUCION, ");
+		sql.append(" UFA.IDTIPOEJG, "); 
+		sql.append(" UFA.ANIO, ");
+		sql.append(" UFA.NUMERO, ");
+		sql.append(" UFA.IDPERSONA AS IDPERSONAJG, ");
+		sql.append(" EJG3.CALIDAD, ");
+		sql.append(" EJG3.IDTIPOENCALIDAD, ");
+		sql.append(" EJG3.CALIDADIDINSTITUCION, ");
+		sql.append(" decode(UFA.SOLICITANTE, 1, f_siga_getrecurso_etiqueta('gratuita.busquedaSOJ.literal.solicitante', ");
+		sql.append(idioma);
+		sql.append("), null) AS SOLICITANTE, ");
+		sql.append(" PER2.NOMBRE, ");
+		sql.append(" PER2.APELLIDO1, ");
+		sql.append(" PER2.APELLIDO2, "); 
+		sql.append(" PER2.DIRECCION, ");
+		sql.append(" PER2.CODIGOPOSTAL, ");
+		sql.append(" POB.NOMBRE AS NOMBRE_POB, ");
+		sql.append(" PROV.NOMBRE AS NOMBRE_PROV, ");
+		sql.append(" PAIS.NOMBRE AS NOMBRE_PAIS, ");
+		sql.append(" EJG3.ANIO AS ANIOEJG, ");
+		sql.append(" lpad(EJG3.NUMEJG, ");
+		sql.append(longitudNumEjg);
+		sql.append(",0) as NUMEJG, ");
+		sql.append(" PER2.SEXO, ");
+		sql.append(" PER2.IDLENGUAJE, ");
+		sql.append(" (SELECT TEL2.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA TEL2 WHERE TEL2.IDINSTITUCION = UFA.IDINSTITUCION AND TEL2.IDPERSONA = UFA.IDPERSONA AND ROWNUM = 1) AS TELEFONO, ");
 		
-		ejgActaBuilder.append(" (SELECT F_SIGA_GETRECURSO(DESCRIPCION, ");
-		ejgActaBuilder.append(idioma);
-		ejgActaBuilder.append(") FROM SCS_PROFESION WHERE IDPROFESION = PER2.IDPROFESION) AS PROFESION_CONYUGE_UF, ");
+		sql.append(" (SELECT F_SIGA_GETRECURSO(DESCRIPCION, ");
+		sql.append(idioma);
+		sql.append(") FROM SCS_PROFESION WHERE IDPROFESION = PER2.IDPROFESION) AS PROFESION_CONYUGE_UF, ");
 		
-		ejgActaBuilder.append(" PER2.OBSERVACIONES");
+		sql.append(" PER2.OBSERVACIONES");
 		
-		ejgActaBuilder.append(" FROM SCS_UNIDADFAMILIAREJG UFA, ");
-		ejgActaBuilder.append(" SCS_PERSONAJG PER2, ");
-		ejgActaBuilder.append(" CEN_POBLACIONES POB, ");
-		ejgActaBuilder.append(" CEN_PROVINCIAS PROV, ");
-		ejgActaBuilder.append(" CEN_PAIS PAIS, ");
-		ejgActaBuilder.append(" SCS_EJG EJG3 ");
+		sql.append(" FROM SCS_UNIDADFAMILIAREJG UFA, ");
+		sql.append(" SCS_PERSONAJG PER2, ");
+		sql.append(" CEN_POBLACIONES POB, ");
+		sql.append(" CEN_PROVINCIAS PROV, ");
+		sql.append(" CEN_PAIS PAIS, ");
+		sql.append(" SCS_EJG EJG3 ");
 		
-		ejgActaBuilder.append(" WHERE UFA.IDINSTITUCION = PER2.IDINSTITUCION ");
-		ejgActaBuilder.append(" AND UFA.idpersona <> ejg3.idpersonajg ");
-		ejgActaBuilder.append(" AND UFA.idparentesco = ");
-		ejgActaBuilder.append(ClsConstants.TIPO_CONYUGE);
-		ejgActaBuilder.append(" AND UFA.IDPERSONA = PER2.IDPERSONA");
-		ejgActaBuilder.append(" AND UFA.IDINSTITUCION = EJG3.IDINSTITUCION ");
-		ejgActaBuilder.append(" AND UFA.IDTIPOEJG = EJG3.IDTIPOEJG ");
-		ejgActaBuilder.append(" AND UFA.ANIO = EJG3.ANIO ");
-		ejgActaBuilder.append(" AND UFA.NUMERO = EJG3.NUMERO ");
-		ejgActaBuilder.append(" AND PER2.IDPOBLACION = POB.IDPOBLACION(+) ");
-		ejgActaBuilder.append(" AND PER2.IDPROVINCIA = PROV.IDPROVINCIA(+) ");
-		ejgActaBuilder.append(" AND PER2.IDPAIS = PAIS.IDPAIS(+) ");
-		ejgActaBuilder.append(" AND UFA.IDINSTITUCION = :1 ");
-		ejgActaBuilder.append(" AND UFA.IDTIPOEJG = :2 ");
-		ejgActaBuilder.append(" AND UFA.ANIO = :3 ");
-		ejgActaBuilder.append(" AND UFA.NUMERO = :4 ");
-		ejgActaBuilder.append(" ORDER BY IDINSTITUCION, IDTIPOEJG, ANIO, NUMERO, IDPERSONAJG ");
+		sql.append(" WHERE UFA.IDINSTITUCION = PER2.IDINSTITUCION ");
+		sql.append(" AND UFA.idpersona <> ejg3.idpersonajg ");
+		sql.append(" AND UFA.idparentesco = ");
+		sql.append(ClsConstants.TIPO_CONYUGE);
+		sql.append(" AND UFA.IDPERSONA = PER2.IDPERSONA");
+		sql.append(" AND UFA.IDINSTITUCION = EJG3.IDINSTITUCION ");
+		sql.append(" AND UFA.IDTIPOEJG = EJG3.IDTIPOEJG ");
+		sql.append(" AND UFA.ANIO = EJG3.ANIO ");
+		sql.append(" AND UFA.NUMERO = EJG3.NUMERO ");
+		sql.append(" AND PER2.IDPOBLACION = POB.IDPOBLACION(+) ");
+		sql.append(" AND PER2.IDPROVINCIA = PROV.IDPROVINCIA(+) ");
+		sql.append(" AND PER2.IDPAIS = PAIS.IDPAIS(+) ");
+		sql.append(" AND UFA.IDINSTITUCION = :1 ");
+		sql.append(" AND UFA.IDTIPOEJG = :2 ");
+		sql.append(" AND UFA.ANIO = :3 ");
+		sql.append(" AND UFA.NUMERO = :4 ");
+		sql.append(" ORDER BY IDINSTITUCION, IDTIPOEJG, ANIO, NUMERO, IDPERSONAJG ");
 
 		try {
 			HelperInformesAdm helperInformes = new HelperInformesAdm();
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), h);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), h);
 
 		} catch (Exception e) {
 			throw new ClsExceptions(e, "Error al obtener la informacion en getDatosRegionConyuge");
@@ -3742,36 +3746,36 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		h.put(new Integer(3), anioEjg);
 		h.put(new Integer(4), numeroEjg);
 			
-		StringBuffer ejgActaBuilder = new StringBuffer();		
-		ejgActaBuilder.append(" SELECT decode(PER2.APELLIDO2, null,PER2.APELLIDO1,PER2.APELLIDO1 || ' ' || PER2.APELLIDO2) || ', ' || ");
-		ejgActaBuilder.append("    PER2.NOMBRE as NOMBRE_UF, PER2.NIF as NIF_UF, decode(ufa.idparentesco, null, f_siga_getrecurso_etiqueta('informes.sjcs.parentesco.noConsta',"+idioma+"),(select f_siga_getrecurso(descripcion, "+idioma+") from scs_parentesco paren where paren.idinstitucion = ufa.idinstitucion and paren.idparentesco = UFA.Idparentesco)) as PARENTESCO_UF,");
-		ejgActaBuilder.append("    trunc(months_between(sysdate, PER2.FECHANACIMIENTO) / 12) as EDAD_UF,  UFA.IDINSTITUCION, UFA.IDTIPOEJG, UFA.ANIO,UFA.NUMERO, UFA.IDPERSONA IDPERSONAJG, EJG3.CALIDAD AS CALIDAD, ");
-		ejgActaBuilder.append("    EJG3.IDTIPOENCALIDAD AS IDTIPOENCALIDAD,EJG3.CALIDADIDINSTITUCION AS CALIDADIDINSTITUCION, ");
-		ejgActaBuilder.append("    decode(UFA.SOLICITANTE,1, f_siga_getrecurso_etiqueta('gratuita.busquedaSOJ.literal.solicitante',"+idioma+"), null) AS SOLICITANTE, ");
-		ejgActaBuilder.append("    PER2.NOMBRE, PER2.APELLIDO1,PER2.APELLIDO2, PER2.DIRECCION, PER2.CODIGOPOSTAL, POB.NOMBRE AS NOMBRE_POB,");
-		ejgActaBuilder.append("    PROV.NOMBRE AS NOMBRE_PROV, PAIS.NOMBRE AS NOMBRE_PAIS, EJG3.ANIO AS ANIOEJG,lpad(EJG3.NUMEJG,"+longitudNumEjg+",0) as NUMEJG, PER2.SEXO, PER2.IDLENGUAJE,");
-		ejgActaBuilder.append("    (SELECT TEL2.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA TEL2 WHERE TEL2.IDINSTITUCION = UFA.IDINSTITUCION AND TEL2.IDPERSONA = UFA.IDPERSONA AND ROWNUM < 2) AS TELEFONO, PER2.OBSERVACIONES");
-		ejgActaBuilder.append(" FROM SCS_UNIDADFAMILIAREJG UFA, SCS_PERSONAJG PER2, CEN_POBLACIONES POB, CEN_PROVINCIAS PROV, CEN_PAIS PAIS, SCS_EJG EJG3 ");
-		ejgActaBuilder.append(" WHERE UFA.IDINSTITUCION = PER2.IDINSTITUCION");
-		ejgActaBuilder.append("  AND UFA.IDPERSONA <> EJG3.IDPERSONAJG");
-		ejgActaBuilder.append("  AND (UFA.idparentesco <> "+ClsConstants.TIPO_CONYUGE+" or UFA.idparentesco is null)");
-		ejgActaBuilder.append("  AND UFA.IDPERSONA = PER2.IDPERSONA");
-		ejgActaBuilder.append("  AND UFA.IDINSTITUCION = EJG3.IDINSTITUCION");
-		ejgActaBuilder.append("  AND UFA.IDTIPOEJG = EJG3.IDTIPOEJG");
-		ejgActaBuilder.append("  AND UFA.ANIO = EJG3.ANIO");
-		ejgActaBuilder.append("  AND UFA.NUMERO = EJG3.NUMERO");
-		ejgActaBuilder.append("  AND PER2.IDPOBLACION = POB.IDPOBLACION(+)");
-		ejgActaBuilder.append("  AND PER2.IDPROVINCIA = PROV.IDPROVINCIA(+)");
-		ejgActaBuilder.append("  AND PER2.IDPAIS = PAIS.IDPAIS(+) ");
-		ejgActaBuilder.append("  AND UFA.IDINSTITUCION = :1");
-		ejgActaBuilder.append("  AND UFA.IDTIPOEJG = :2");
-		ejgActaBuilder.append("  AND UFA.ANIO = :3");
-		ejgActaBuilder.append("  AND UFA.NUMERO = :4");
-		ejgActaBuilder.append(" ORDER BY IDINSTITUCION, IDTIPOEJG, ANIO, NUMERO, IDPERSONAJG ");
+		StringBuffer sql = new StringBuffer();		
+		sql.append(" SELECT decode(PER2.APELLIDO2, null,PER2.APELLIDO1,PER2.APELLIDO1 || ' ' || PER2.APELLIDO2) || ', ' || ");
+		sql.append("    PER2.NOMBRE as NOMBRE_UF, PER2.NIF as NIF_UF, decode(ufa.idparentesco, null, f_siga_getrecurso_etiqueta('informes.sjcs.parentesco.noConsta',"+idioma+"),(select f_siga_getrecurso(descripcion, "+idioma+") from scs_parentesco paren where paren.idinstitucion = ufa.idinstitucion and paren.idparentesco = UFA.Idparentesco)) as PARENTESCO_UF,");
+		sql.append("    trunc(months_between(sysdate, PER2.FECHANACIMIENTO) / 12) as EDAD_UF,  UFA.IDINSTITUCION, UFA.IDTIPOEJG, UFA.ANIO,UFA.NUMERO, UFA.IDPERSONA IDPERSONAJG, EJG3.CALIDAD AS CALIDAD, ");
+		sql.append("    EJG3.IDTIPOENCALIDAD AS IDTIPOENCALIDAD,EJG3.CALIDADIDINSTITUCION AS CALIDADIDINSTITUCION, ");
+		sql.append("    decode(UFA.SOLICITANTE,1, f_siga_getrecurso_etiqueta('gratuita.busquedaSOJ.literal.solicitante',"+idioma+"), null) AS SOLICITANTE, ");
+		sql.append("    PER2.NOMBRE, PER2.APELLIDO1,PER2.APELLIDO2, PER2.DIRECCION, PER2.CODIGOPOSTAL, POB.NOMBRE AS NOMBRE_POB,");
+		sql.append("    PROV.NOMBRE AS NOMBRE_PROV, PAIS.NOMBRE AS NOMBRE_PAIS, EJG3.ANIO AS ANIOEJG,lpad(EJG3.NUMEJG,"+longitudNumEjg+",0) as NUMEJG, PER2.SEXO, PER2.IDLENGUAJE,");
+		sql.append("    (SELECT TEL2.NUMEROTELEFONO FROM SCS_TELEFONOSPERSONA TEL2 WHERE TEL2.IDINSTITUCION = UFA.IDINSTITUCION AND TEL2.IDPERSONA = UFA.IDPERSONA AND ROWNUM < 2) AS TELEFONO, PER2.OBSERVACIONES");
+		sql.append(" FROM SCS_UNIDADFAMILIAREJG UFA, SCS_PERSONAJG PER2, CEN_POBLACIONES POB, CEN_PROVINCIAS PROV, CEN_PAIS PAIS, SCS_EJG EJG3 ");
+		sql.append(" WHERE UFA.IDINSTITUCION = PER2.IDINSTITUCION");
+		sql.append("  AND UFA.IDPERSONA <> EJG3.IDPERSONAJG");
+		sql.append("  AND (UFA.idparentesco <> "+ClsConstants.TIPO_CONYUGE+" or UFA.idparentesco is null)");
+		sql.append("  AND UFA.IDPERSONA = PER2.IDPERSONA");
+		sql.append("  AND UFA.IDINSTITUCION = EJG3.IDINSTITUCION");
+		sql.append("  AND UFA.IDTIPOEJG = EJG3.IDTIPOEJG");
+		sql.append("  AND UFA.ANIO = EJG3.ANIO");
+		sql.append("  AND UFA.NUMERO = EJG3.NUMERO");
+		sql.append("  AND PER2.IDPOBLACION = POB.IDPOBLACION(+)");
+		sql.append("  AND PER2.IDPROVINCIA = PROV.IDPROVINCIA(+)");
+		sql.append("  AND PER2.IDPAIS = PAIS.IDPAIS(+) ");
+		sql.append("  AND UFA.IDINSTITUCION = :1");
+		sql.append("  AND UFA.IDTIPOEJG = :2");
+		sql.append("  AND UFA.ANIO = :3");
+		sql.append("  AND UFA.NUMERO = :4");
+		sql.append(" ORDER BY IDINSTITUCION, IDTIPOEJG, ANIO, NUMERO, IDPERSONAJG ");
 
 		try {
 			HelperInformesAdm helperInformes = new HelperInformesAdm();
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), h);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), h);
 
 		} catch (Exception e) {
 			throw new ClsExceptions(e, "Error al obtener la informacion en getDatosRegionUF");
@@ -4965,11 +4969,11 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	{
 		try {
 			
-			String ejgActaBuilder = "select TO_CHAR(F_SIGA_GETFIRSTACTDESIGNA(:1, :2, :3, :4 ),:5) AS "+salida+"" +
+			String sql = "select TO_CHAR(F_SIGA_GETFIRSTACTDESIGNA(:1, :2, :3, :4 ),:5) AS "+salida+"" +
 					"	FROM DUAL";
 				
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener getFisrtAsistencia.");
@@ -4991,26 +4995,26 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			Hashtable htCodigos = new Hashtable();
 			int keyContador = 0;
 	
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" ");
-			ejgActaBuilder.append(" select f_siga_getrecurso (DESCRIPCION,"+idioma+") as PRETENSION ");
-			ejgActaBuilder.append(" from  SCS_PRETENSION PRET");
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			sql.append(" select f_siga_getrecurso (DESCRIPCION,"+idioma+") as PRETENSION ");
+			sql.append(" from  SCS_PRETENSION PRET");
 	
-			ejgActaBuilder.append(" WHERE ");
+			sql.append(" WHERE ");
 			
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idPretension);
-			ejgActaBuilder.append(" PRET.IDPRETENSION = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" PRET.IDPRETENSION = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append("  and PRET.IDINSTITUCION = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append("  and PRET.IDINSTITUCION = :");
+			sql.append(keyContador);
 			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 }
 		catch (Exception e) {
@@ -5024,34 +5028,34 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		try {
 			Hashtable htCodigos = new Hashtable();
 			int keyContador = 0;
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" ");
-			ejgActaBuilder.append(" SELECT  ");
-			ejgActaBuilder.append(" f_siga_getrecurso (pret.DESCRIPCION,"+idioma+") as DESCPRETENCION from scs_ejg e, scs_pretension pret ");						
-			ejgActaBuilder.append(" WHERE "); 	
+			StringBuffer sql = new StringBuffer();
+			sql.append(" ");
+			sql.append(" SELECT  ");
+			sql.append(" f_siga_getrecurso (pret.DESCRIPCION,"+idioma+") as DESCPRETENCION from scs_ejg e, scs_pretension pret ");						
+			sql.append(" WHERE "); 	
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), idInstitucion);
-			ejgActaBuilder.append(" e.IDINSTITUCION = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" e.IDINSTITUCION = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), tipoEjg);
-			ejgActaBuilder.append(" and e.IDTIPOEJG = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and e.IDTIPOEJG = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), anio);
-			ejgActaBuilder.append(" and e.ANIO = :");
-			ejgActaBuilder.append(keyContador);
+			sql.append(" and e.ANIO = :");
+			sql.append(keyContador);
 			
 			keyContador++;
 			htCodigos.put(new Integer(keyContador), numero);
-			ejgActaBuilder.append(" and e.NUMERO = :");
-			ejgActaBuilder.append(keyContador);
-			ejgActaBuilder.append(" and pret.idinstitucion=e.idinstitucion(+) ");
-            ejgActaBuilder.append(" and pret.idpretension=e.idpretension(+) ");			
+			sql.append(" and e.NUMERO = :");
+			sql.append(keyContador);
+			sql.append(" and pret.idinstitucion=e.idinstitucion(+) ");
+            sql.append(" and pret.idpretension=e.idpretension(+) ");			
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
-			return helperInformes.ejecutaConsultaBind(ejgActaBuilder.toString(), htCodigos);
+			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
 		}
 		catch (Exception e) {
@@ -5066,14 +5070,14 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		try {
 			Hashtable h = new Hashtable();
 			h.put(new Integer(1), idTipoEjg);
-			String ejgActaBuilder = "SELECT te.CODIGOEXT,te.BLOQUEADO,f_siga_getrecurso(te.DESCRIPCION,1) AS DESCRIPCION "
+			String sql = "SELECT te.CODIGOEXT,te.BLOQUEADO,f_siga_getrecurso(te.DESCRIPCION,1) AS DESCRIPCION "
 				+" FROM scs_tipoejg  te"
 				+" WHERE " 
 				
 				+" te.idtipoejg = :1";
 			
 				
-			Vector resultadoObj =  this.selectGenericoBind(ejgActaBuilder, h);
+			Vector resultadoObj =  this.selectGenericoBind(sql, h);
 			Hashtable registro = (Hashtable) resultadoObj.get(0);
 			
 			tipoEjg = new ScsTipoEJGBean();
@@ -5105,34 +5109,34 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			 RowsContainer rc = new RowsContainer(); 
 			 Vector datos=new Vector();
 			
-			StringBuffer ejgActaBuilder = new StringBuffer();		
-			ejgActaBuilder.append(" Select  (pro.Nombre || ' ' || pro.Apellidos1 || ' ' || pro.Apellidos2) as PROCURADOR_DJ_CONTRARIO, ");
-			ejgActaBuilder.append(" pro.domicilio as PROCURADOR_CONTRA_DOMICI_D_J,pro.codigopostal AS PROCURADOR_CONTRA_CP_D_J, ");
-			ejgActaBuilder.append(" (Select Provincia.Nombre ");
-			ejgActaBuilder.append(" From Cen_Provincias Provincia ");						
-			ejgActaBuilder.append(" Where Provincia.Idprovincia = Pro.Idprovincia) AS PROCURADOR_CONTRA_PROVIN_D_J, ");
-            ejgActaBuilder.append(" (Select Poblacion.Nombre ");
-            ejgActaBuilder.append(" From Cen_Poblaciones Poblacion, Cen_Provincias Provincia ");
-            ejgActaBuilder.append(" Where Poblacion.Idprovincia = Provincia.Idprovincia ");
-            ejgActaBuilder.append(" And Pro.Idprovincia = Poblacion.Idprovincia");
-            ejgActaBuilder.append(" And Pro.Idpoblacion = Poblacion.Idpoblacion) As PROCURADOR_CONTRA_POBLA_D_J ");
-            ejgActaBuilder.append(" From Scs_Contrariosejg, Scs_Personajg p, Scs_Procurador Pro ");
-            ejgActaBuilder.append(" Where Scs_Contrariosejg.Idinstitucion = p.Idinstitucion ");
-            ejgActaBuilder.append(" And Scs_Contrariosejg.Idpersona = p.Idpersona ");
-            ejgActaBuilder.append(" And Scs_Contrariosejg.Idinstitucion  = ");
-            ejgActaBuilder.append( idInstitucion);
-            ejgActaBuilder.append(" And Scs_Contrariosejg.Idtipoejg = ");
-            ejgActaBuilder.append(tipoEjg);
-            ejgActaBuilder.append(" And Scs_Contrariosejg.Anio = ");
-            ejgActaBuilder.append(anioEjg);
-            ejgActaBuilder.append(" And Scs_Contrariosejg.Numero = ");
-            ejgActaBuilder.append(numeroEjg);
-            ejgActaBuilder.append(" And Pro.Idinstitucion = Scs_Contrariosejg.Idinstitucion_Procu");
-            ejgActaBuilder.append(" And Pro.Idprocurador = Scs_Contrariosejg.Idprocurador ");
+			StringBuffer sql = new StringBuffer();		
+			sql.append(" Select  (pro.Nombre || ' ' || pro.Apellidos1 || ' ' || pro.Apellidos2) as PROCURADOR_DJ_CONTRARIO, ");
+			sql.append(" pro.domicilio as PROCURADOR_CONTRA_DOMICI_D_J,pro.codigopostal AS PROCURADOR_CONTRA_CP_D_J, ");
+			sql.append(" (Select Provincia.Nombre ");
+			sql.append(" From Cen_Provincias Provincia ");						
+			sql.append(" Where Provincia.Idprovincia = Pro.Idprovincia) AS PROCURADOR_CONTRA_PROVIN_D_J, ");
+            sql.append(" (Select Poblacion.Nombre ");
+            sql.append(" From Cen_Poblaciones Poblacion, Cen_Provincias Provincia ");
+            sql.append(" Where Poblacion.Idprovincia = Provincia.Idprovincia ");
+            sql.append(" And Pro.Idprovincia = Poblacion.Idprovincia");
+            sql.append(" And Pro.Idpoblacion = Poblacion.Idpoblacion) As PROCURADOR_CONTRA_POBLA_D_J ");
+            sql.append(" From Scs_Contrariosejg, Scs_Personajg p, Scs_Procurador Pro ");
+            sql.append(" Where Scs_Contrariosejg.Idinstitucion = p.Idinstitucion ");
+            sql.append(" And Scs_Contrariosejg.Idpersona = p.Idpersona ");
+            sql.append(" And Scs_Contrariosejg.Idinstitucion  = ");
+            sql.append( idInstitucion);
+            sql.append(" And Scs_Contrariosejg.Idtipoejg = ");
+            sql.append(tipoEjg);
+            sql.append(" And Scs_Contrariosejg.Anio = ");
+            sql.append(anioEjg);
+            sql.append(" And Scs_Contrariosejg.Numero = ");
+            sql.append(numeroEjg);
+            sql.append(" And Pro.Idinstitucion = Scs_Contrariosejg.Idinstitucion_Procu");
+            sql.append(" And Pro.Idprocurador = Scs_Contrariosejg.Idprocurador ");
          
        try{    	   
     	   			
-			 rc = this.find(ejgActaBuilder.toString());
+			 rc = this.find(sql.toString());
  			if (rc!=null){
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
@@ -6160,23 +6164,23 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		Hashtable htRegistro = null;
 		try {
 			
-			StringBuffer ejgActaBuilder = new StringBuffer();
-			ejgActaBuilder.append(" select e.juzgado  ");
-			ejgActaBuilder.append(" , e.IDPROCURADOR  ");
-			ejgActaBuilder.append(" from SCS_EJG e  ");
+			StringBuffer sql = new StringBuffer();
+			sql.append(" select e.juzgado  ");
+			sql.append(" , e.IDPROCURADOR  ");
+			sql.append(" from SCS_EJG e  ");
  
-			ejgActaBuilder.append(" WHERE e.idinstitucion = ");
-			ejgActaBuilder.append(institucion);
-			ejgActaBuilder.append(" AND e.ANIO = ");
-			ejgActaBuilder.append(anio);
-			ejgActaBuilder.append(" and e.NUMERO =  ");
-			ejgActaBuilder.append(numero);
+			sql.append(" WHERE e.idinstitucion = ");
+			sql.append(institucion);
+			sql.append(" AND e.ANIO = ");
+			sql.append(anio);
+			sql.append(" and e.NUMERO =  ");
+			sql.append(numero);
 			
-			ejgActaBuilder.append(" and e.IDTIPOEJG = ");
-			ejgActaBuilder.append(idTipoEJG);
+			sql.append(" and e.IDTIPOEJG = ");
+			sql.append(idTipoEJG);
 			RowsContainer rc = new RowsContainer(); 
 			
-			if (rc.find(ejgActaBuilder.toString())) {
+			if (rc.find(sql.toString())) {
 				Row fila = (Row) rc.get(0);
 				htRegistro = fila.getRow();
 				
@@ -6259,33 +6263,33 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		Hashtable salida = new Hashtable();
 
 		try {
-			StringBuilder ejgActaBuilder = new StringBuilder();
-			ejgActaBuilder.append(" SELECT * ");
-			ejgActaBuilder.append(" FROM (SELECT TO_CHAR(ACTA.FECHAREUNION, 'dd/mm/yyyy') AS FECHAREUNION_ACTA, ");
-			ejgActaBuilder.append(" PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(ACTA.FECHAREUNION,  'DMA', 1) AS FECHAREUNION_ACTA_LETRA, ");
-			ejgActaBuilder.append(" (select F_SIGA_GETRECURSO(NOMBRE, ");
-			ejgActaBuilder.append(idioma);
-			ejgActaBuilder.append(") from SCS_PONENTE where IDINSTITUCION = ACTA.IDINSTITUCION  AND IDPONENTE = ACTA.IDPRESIDENTE) PRESIDENTECOMISION, ");
-			ejgActaBuilder.append(" (select F_SIGA_GETRECURSO(NOMBRE, ");
-			ejgActaBuilder.append(idioma);
-			ejgActaBuilder.append(") from SCS_PONENTE where IDINSTITUCION = ACTA.IDINSTITUCION AND IDPONENTE = ACTA.IDSECRETARIO) SECRETARIOCOMISION ");
+			StringBuilder sql = new StringBuilder();
+			sql.append(" SELECT * ");
+			sql.append(" FROM (SELECT TO_CHAR(ACTA.FECHAREUNION, 'dd/mm/yyyy') AS FECHAREUNION_ACTA, ");
+			sql.append(" PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(ACTA.FECHAREUNION,  'DMA', 1) AS FECHAREUNION_ACTA_LETRA, ");
+			sql.append(" (select F_SIGA_GETRECURSO(NOMBRE, ");
+			sql.append(idioma);
+			sql.append(") from SCS_PONENTE where IDINSTITUCION = ACTA.IDINSTITUCION  AND IDPONENTE = ACTA.IDPRESIDENTE) PRESIDENTECOMISION, ");
+			sql.append(" (select F_SIGA_GETRECURSO(NOMBRE, ");
+			sql.append(idioma);
+			sql.append(") from SCS_PONENTE where IDINSTITUCION = ACTA.IDINSTITUCION AND IDPONENTE = ACTA.IDSECRETARIO) SECRETARIOCOMISION ");
 
-			ejgActaBuilder.append(" FROM SCS_EJG_ACTA EJGACTA, SCS_ACTACOMISION ACTA ");
-			ejgActaBuilder.append(" WHERE EJGACTA.ANIOEJG = ");
-			ejgActaBuilder.append(anio);
-			ejgActaBuilder.append(" AND EJGACTA.NUMEROEJG =  ");
-			ejgActaBuilder.append(numero);
-			ejgActaBuilder.append(" AND EJGACTA.IDINSTITUCIONEJG = ");
-			ejgActaBuilder.append(idInstitucion);
-			ejgActaBuilder.append(" AND EJGACTA.IDTIPOEJG = ");
-			ejgActaBuilder.append(idTipoEjg);
-			ejgActaBuilder.append(" AND EJGACTA.IDACTA = ACTA.IDACTA ");
-			ejgActaBuilder.append(" AND EJGACTA.IDINSTITUCIONACTA = ACTA.IDINSTITUCION ");
-			ejgActaBuilder.append(" AND EJGACTA.ANIOACTA = ACTA.ANIOACTA ");
-			ejgActaBuilder.append(" ORDER BY FECHAREUNION_ACTA) ");
-			ejgActaBuilder.append(" WHERE ROWNUM = 1 ");
+			sql.append(" FROM SCS_EJG_ACTA EJGACTA, SCS_ACTACOMISION ACTA ");
+			sql.append(" WHERE EJGACTA.ANIOEJG = ");
+			sql.append(anio);
+			sql.append(" AND EJGACTA.NUMEROEJG =  ");
+			sql.append(numero);
+			sql.append(" AND EJGACTA.IDINSTITUCIONEJG = ");
+			sql.append(idInstitucion);
+			sql.append(" AND EJGACTA.IDTIPOEJG = ");
+			sql.append(idTipoEjg);
+			sql.append(" AND EJGACTA.IDACTA = ACTA.IDACTA ");
+			sql.append(" AND EJGACTA.IDINSTITUCIONACTA = ACTA.IDINSTITUCION ");
+			sql.append(" AND EJGACTA.ANIOACTA = ACTA.ANIOACTA ");
+			sql.append(" ORDER BY FECHAREUNION_ACTA) ");
+			sql.append(" WHERE ROWNUM = 1 ");
 			RowsContainer rc = new RowsContainer();
-			if (rc.find(ejgActaBuilder.toString())) {
+			if (rc.find(sql.toString())) {
 				if (rc.size() > 0) {
 					Row fila = (Row) rc.get(0);
 					salida = fila.getRow();
@@ -6313,7 +6317,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		Hashtable salida = new Hashtable();
 		
 		try {
-			String ejgActaBuilder = "SELECT TO_CHAR(ESTADOS.FECHAINICIO, 'dd/mm/yyyy') AS FECHAREMITIDO_COMISION, " +
+			String sql = "SELECT TO_CHAR(ESTADOS.FECHAINICIO, 'dd/mm/yyyy') AS FECHAREMITIDO_COMISION, " +
 					" PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(ESTADOS.FECHAINICIO , 'DMA', " + idioma + ") AS FECHAREMITIDO_COMISION_LETRA " +
 				" FROM SCS_ESTADOEJG ESTADOS " +
 				" WHERE ESTADOS.IDINSTITUCION = " + idInstitucion + 
@@ -6325,7 +6329,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				" ORDER BY ESTADOS.FECHAMODIFICACION DESC ";
 			
 			RowsContainer rc = new RowsContainer(); 
-			if (rc.find(ejgActaBuilder)) {
+			if (rc.find(sql)) {
 				if (rc.size() > 0) {
 					Row fila = (Row) rc.get(0);
 					salida = fila.getRow();	                  
@@ -6372,43 +6376,43 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			Short idTipoEJG, Short anio, Integer numero) throws ClsExceptions {
 		Vector datos = new Vector();
 		RowsContainer rc = new RowsContainer();
-		StringBuffer ejgActaBuilderBuffer = new StringBuffer();
-		ejgActaBuilderBuffer.append("SELECT F_SIGA_GETRECURSO(P.DESCRIPCION, ");
-		ejgActaBuilderBuffer.append(  this.usrbean.getLanguage() );
-		ejgActaBuilderBuffer.append( ") PRETENSION, ");
-		ejgActaBuilderBuffer.append("(SELECT J.CODIGOEJIS FROM SCS_JURISDICCION J ");
-		ejgActaBuilderBuffer.append("WHERE J.IDJURISDICCION = P.IDJURISDICCION) JURISDICCION, ");
-		ejgActaBuilderBuffer.append("DECODE(EJG.ANIOPROCEDIMIENTO, ");
-		ejgActaBuilderBuffer.append("NULL, ");
-		ejgActaBuilderBuffer.append("EJG.NUMEROPROCEDIMIENTO, ");
-		ejgActaBuilderBuffer.append("EJG.NUMEROPROCEDIMIENTO || '/' || EJG.ANIOPROCEDIMIENTO) NUMPROCEDIMINETO, ");
-		ejgActaBuilderBuffer.append("(SELECT DECODE(JUZ.CODIGOEJIS,'','',JUZ.CODIGOEJIS||'-')|| JUZ.NOMBRE || ' (' || P.NOMBRE || ')' ");
-		ejgActaBuilderBuffer.append("FROM SCS_JUZGADO JUZ, CEN_POBLACIONES P ");
-		ejgActaBuilderBuffer.append("WHERE JUZ.IDPOBLACION = P.IDPOBLACION(+) ");
-		ejgActaBuilderBuffer.append("AND JUZ.IDJUZGADO = EJG.JUZGADO ");
-		ejgActaBuilderBuffer.append("AND JUZ.IDINSTITUCION = EJG.JUZGADOIDINSTITUCION) JUZGADO, ");
-		ejgActaBuilderBuffer.append("(SELECT SIT.CODIGOEJIS ");
-		ejgActaBuilderBuffer.append("FROM SCS_SITUACION SIT ");
-		ejgActaBuilderBuffer.append("WHERE SIT.IDSITUACION = EJG.IDSITUACION) SITUACION, ");
+		StringBuffer sqlBuffer = new StringBuffer();
+		sqlBuffer.append("SELECT F_SIGA_GETRECURSO(P.DESCRIPCION, ");
+		sqlBuffer.append(  this.usrbean.getLanguage() );
+		sqlBuffer.append( ") PRETENSION, ");
+		sqlBuffer.append("(SELECT J.CODIGOEJIS FROM SCS_JURISDICCION J ");
+		sqlBuffer.append("WHERE J.IDJURISDICCION = P.IDJURISDICCION) JURISDICCION, ");
+		sqlBuffer.append("DECODE(EJG.ANIOPROCEDIMIENTO, ");
+		sqlBuffer.append("NULL, ");
+		sqlBuffer.append("EJG.NUMEROPROCEDIMIENTO, ");
+		sqlBuffer.append("EJG.NUMEROPROCEDIMIENTO || '/' || EJG.ANIOPROCEDIMIENTO) NUMPROCEDIMINETO, ");
+		sqlBuffer.append("(SELECT DECODE(JUZ.CODIGOEJIS,'','',JUZ.CODIGOEJIS||'-')|| JUZ.NOMBRE || ' (' || P.NOMBRE || ')' ");
+		sqlBuffer.append("FROM SCS_JUZGADO JUZ, CEN_POBLACIONES P ");
+		sqlBuffer.append("WHERE JUZ.IDPOBLACION = P.IDPOBLACION(+) ");
+		sqlBuffer.append("AND JUZ.IDJUZGADO = EJG.JUZGADO ");
+		sqlBuffer.append("AND JUZ.IDINSTITUCION = EJG.JUZGADOIDINSTITUCION) JUZGADO, ");
+		sqlBuffer.append("(SELECT SIT.CODIGOEJIS ");
+		sqlBuffer.append("FROM SCS_SITUACION SIT ");
+		sqlBuffer.append("WHERE SIT.IDSITUACION = EJG.IDSITUACION) SITUACION, ");
 
-		ejgActaBuilderBuffer.append("DECODE(EJG.IDTIPOENCALIDAD,NULL,'',0,1,2) DECLARANTE ");
-		ejgActaBuilderBuffer.append("FROM SCS_EJG EJG, SCS_PRETENSION P ");
-		ejgActaBuilderBuffer.append("WHERE P.IDPRETENSION(+) = EJG.IDPRETENSION ");
-		ejgActaBuilderBuffer.append(" AND P.IDINSTITUCION(+) = EJG.IDINSTITUCION ");
-		ejgActaBuilderBuffer.append(" AND EJG.IDTIPOEJG =  ");
-		ejgActaBuilderBuffer.append(idTipoEJG);
-		ejgActaBuilderBuffer.append(" AND EJG.IDINSTITUCION =  ");
-		ejgActaBuilderBuffer.append(idInstitucion);
-		ejgActaBuilderBuffer.append(" AND EJG.ANIO =  ");
-		ejgActaBuilderBuffer.append(anio);
-		ejgActaBuilderBuffer.append(" AND EJG.NUMERO =  ");
-		ejgActaBuilderBuffer.append(numero);
+		sqlBuffer.append("DECODE(EJG.IDTIPOENCALIDAD,NULL,'',0,1,2) DECLARANTE ");
+		sqlBuffer.append("FROM SCS_EJG EJG, SCS_PRETENSION P ");
+		sqlBuffer.append("WHERE P.IDPRETENSION(+) = EJG.IDPRETENSION ");
+		sqlBuffer.append(" AND P.IDINSTITUCION(+) = EJG.IDINSTITUCION ");
+		sqlBuffer.append(" AND EJG.IDTIPOEJG =  ");
+		sqlBuffer.append(idTipoEJG);
+		sqlBuffer.append(" AND EJG.IDINSTITUCION =  ");
+		sqlBuffer.append(idInstitucion);
+		sqlBuffer.append(" AND EJG.ANIO =  ");
+		sqlBuffer.append(anio);
+		sqlBuffer.append(" AND EJG.NUMERO =  ");
+		sqlBuffer.append(numero);
 
 		Hashtable resultado = null;
 
 		try {
 
-			if (rc.find(ejgActaBuilderBuffer.toString())) {
+			if (rc.find(sqlBuffer.toString())) {
 
 				Row fila = (Row) rc.get(0);
 				resultado = fila.getRow();
@@ -6428,39 +6432,39 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	public Hashtable getHistoricoActaEjg(Short idInstitucion, Short idTipoEJG, Short anio, Integer numero, Short idInstitucionActa, Short anioActa, Integer idActa) throws ClsExceptions {
 		Vector datos = new Vector();
 		RowsContainer rc = new RowsContainer();
-		StringBuilder ejgActaBuilderBuffer = new StringBuilder();
+		StringBuilder sqlBuffer = new StringBuilder();
 
-		ejgActaBuilderBuffer.append("SELECT EJGACTA.IDINSTITUCIONACTA, ");
-		ejgActaBuilderBuffer.append("COM.NUMEROACTA, ");
-		ejgActaBuilderBuffer.append("EJGACTA.IDACTA, ");
-		ejgActaBuilderBuffer.append("EJGACTA.ANIOACTA, ");
-		ejgActaBuilderBuffer.append("EJGACTA.IDTIPORATIFICACIONEJG, ");
-		ejgActaBuilderBuffer.append("EJGACTA.IDFUNDAMENTOJURIDICO, ");
-		ejgActaBuilderBuffer.append("COM.FECHARESOLUCION ");
-		ejgActaBuilderBuffer.append("FROM SCS_EJG_ACTA EJGACTA, SCS_ACTACOMISION COM ");
-		ejgActaBuilderBuffer.append("WHERE EJGACTA.IDINSTITUCIONACTA = COM.IDINSTITUCION ");
-		ejgActaBuilderBuffer.append("AND EJGACTA.IDACTA = COM.IDACTA ");
-		ejgActaBuilderBuffer.append("AND EJGACTA.ANIOACTA = COM.ANIOACTA ");
-		ejgActaBuilderBuffer.append("AND EJGACTA.IDINSTITUCIONACTA = ");
-		ejgActaBuilderBuffer.append(idInstitucionActa);
-		ejgActaBuilderBuffer.append("AND EJGACTA.ANIOACTA =  ");
-		ejgActaBuilderBuffer.append(anioActa);
-		ejgActaBuilderBuffer.append("AND EJGACTA.IDACTA =  ");
-		ejgActaBuilderBuffer.append(idActa);
-		ejgActaBuilderBuffer.append("AND EJGACTA.IDINSTITUCIONEJG = ");
-		ejgActaBuilderBuffer.append(idInstitucion);
-		ejgActaBuilderBuffer.append("AND EJGACTA.IDTIPOEJG = ");
-		ejgActaBuilderBuffer.append(idTipoEJG);
-		ejgActaBuilderBuffer.append("AND EJGACTA.ANIOEJG =  ");
-		ejgActaBuilderBuffer.append(anio);
-		ejgActaBuilderBuffer.append("AND EJGACTA.NUMEROEJG =  ");
-		ejgActaBuilderBuffer.append(numero);
+		sqlBuffer.append("SELECT EJGACTA.IDINSTITUCIONACTA, ");
+		sqlBuffer.append("COM.NUMEROACTA, ");
+		sqlBuffer.append("EJGACTA.IDACTA, ");
+		sqlBuffer.append("EJGACTA.ANIOACTA, ");
+		sqlBuffer.append("EJGACTA.IDTIPORATIFICACIONEJG, ");
+		sqlBuffer.append("EJGACTA.IDFUNDAMENTOJURIDICO, ");
+		sqlBuffer.append("COM.FECHARESOLUCION ");
+		sqlBuffer.append("FROM SCS_EJG_ACTA EJGACTA, SCS_ACTACOMISION COM ");
+		sqlBuffer.append("WHERE EJGACTA.IDINSTITUCIONACTA = COM.IDINSTITUCION ");
+		sqlBuffer.append("AND EJGACTA.IDACTA = COM.IDACTA ");
+		sqlBuffer.append("AND EJGACTA.ANIOACTA = COM.ANIOACTA ");
+		sqlBuffer.append("AND EJGACTA.IDINSTITUCIONACTA = ");
+		sqlBuffer.append(idInstitucionActa);
+		sqlBuffer.append("AND EJGACTA.ANIOACTA =  ");
+		sqlBuffer.append(anioActa);
+		sqlBuffer.append("AND EJGACTA.IDACTA =  ");
+		sqlBuffer.append(idActa);
+		sqlBuffer.append("AND EJGACTA.IDINSTITUCIONEJG = ");
+		sqlBuffer.append(idInstitucion);
+		sqlBuffer.append("AND EJGACTA.IDTIPOEJG = ");
+		sqlBuffer.append(idTipoEJG);
+		sqlBuffer.append("AND EJGACTA.ANIOEJG =  ");
+		sqlBuffer.append(anio);
+		sqlBuffer.append("AND EJGACTA.NUMEROEJG =  ");
+		sqlBuffer.append(numero);
 
 		Hashtable resultado = null;
 
 		try {
 
-			if (rc.find(ejgActaBuilderBuffer.toString())) {
+			if (rc.find(sqlBuffer.toString())) {
 
 				Row fila = (Row) rc.get(0);
 				resultado = fila.getRow();
