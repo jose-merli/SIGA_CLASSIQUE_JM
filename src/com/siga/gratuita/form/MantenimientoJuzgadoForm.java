@@ -17,6 +17,7 @@ public class MantenimientoJuzgadoForm extends MasterForm {
 	 */
 	private static final long serialVersionUID = -8537080981044756240L;
 	private String ponerBaja, ponerVisibilidadMovil, putDecano;
+	private String registrosBorrar;
 	
 	// METODOS SET
 	public void setIdInstitucionJuzgado(String dato) {
@@ -191,5 +192,12 @@ public class MantenimientoJuzgadoForm extends MasterForm {
 	}
 	public void setPutDecano(String putDecano) {
 		this.putDecano = putDecano;
+	}
+	public String getRegistrosBorrar() {
+		return registrosBorrar;
+	}
+	public void setRegistrosBorrar(String registrosBorrar) {
+		this.registrosBorrar = registrosBorrar;
 	}	
+	
 }
