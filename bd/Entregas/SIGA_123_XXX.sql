@@ -83,3 +83,11 @@ Modificado ECENSO.P_SYNC_ABOGADOS_REFRESH.prc
  Modificado PKG_SIGA_FACTURACION_SJCS;
  
 -- Ejecutado por Adrian en SIGA INT - 2016-07-11 08:45
+
+UPDATE CEN_DATOSCV
+   SET idinstitucioncargo = NULL
+ WHERE IDINSTITUCION <> 2000
+   AND FECHABAJA IS NULL
+   AND idinstitucioncargo IS NOT NULL;
+
+-- Ejecutado por Carlos en SIGA INT - 2016-07-11 10:50
