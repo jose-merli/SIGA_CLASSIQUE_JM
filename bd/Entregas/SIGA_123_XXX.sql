@@ -81,3 +81,5 @@ Modificado ECENSO.P_SYNC_ABOGADOS_REFRESH.prc
 -- Ejecutado por Adrian en SIGA INT - 2016-07-04 08:55
 
  Modificado PKG_SIGA_FACTURACION_SJCS;
+ 
+-- Ejecutado por Adrian en SIGA INT - 2016-07-11 08:45
