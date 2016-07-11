@@ -47,7 +47,7 @@ public class InformeCertificadosEspeciales extends MasterReport {
 			registro = (Hashtable) iterador.getValues().get(0);
 
 		}
-		Hashtable<String, Object> hDatosAWHashtable = getDatosFijosCertificado(datosBase, registro,true);
+		Hashtable<String, Object> hDatosAWHashtable = getDatosFijosCertificado(datosBase, registro,false);
 		hDatosAWHashtable.put("INI_" + iterador.getKey(), iterador.getValues());
 
 		return hDatosAWHashtable;
