@@ -9842,33 +9842,21 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         -- Cursor utilizado para cargar la matriz de cabecera de guardia (de las actuaciones Fuera de Guardia)
         CURSOR CABECERA_GUARDIASFG(V_IDINSTITUCION NUMBER, V_IDTURNO number, V_IDGUARDIA NUMBER) IS
             -- CG con actuaciones validadas y de fuera de guardia, justificadas en el rango de fechas de la facturacion
-            SELECT CG.IDINSTITUCION,
-                   CG.IDTURNO,
-                   CG.IDGUARDIA,
-                   CG.IDPERSONA,
-                   CG.FECHAINICIO,
-                   CG.FECHA_FIN,
+            SELECT ASI.IDINSTITUCION,
+                   ASI.IDTURNO,
+                   ASI.IDGUARDIA,
+                   ASI.IDPERSONACOLEGIADO IDPERSONA,
+                   TRUNC(ASI.FECHAHORA) FECHAINICIO,
+                   TRUNC(ASI.FECHAHORA) FECHA_FIN,
                    ACT.FECHA,
-                   MAX(CG.FACTURADO) AS FACTURADO, 
-                   FUNC_OBTENER_IDFACTURACION(CG.IDINSTITUCION, CG.IDTURNO, CG.IDGUARDIA, ACT.FECHA) AS IDFACTURACION
-            FROM SCS_CABECERAGUARDIAS CG, 
-                SCS_GUARDIASCOLEGIADO UG,
-                SCS_ASISTENCIA ASI,
+                   MAX(ASI.FACTURADO) AS FACTURADO, 
+                   FUNC_OBTENER_IDFACTURACION(ASI.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.FECHA) AS IDFACTURACION
+            FROM SCS_ASISTENCIA ASI,
                 SCS_ACTUACIONASISTENCIA ACT
-            WHERE CG.IDINSTITUCION = V_IDINSTITUCION
-                AND CG.IDTURNO = V_IDTURNO
-                AND CG.IDGUARDIA = V_IDGUARDIA
-                AND NVL(CG.VALIDADO, '0') = '1' -- validadas
-                AND CG.IDINSTITUCION = UG.IDINSTITUCION
-                AND CG.IDTURNO = UG.IDTURNO
-                AND CG.IDGUARDIA = UG.IDGUARDIA
-                AND CG.FECHAINICIO = UG.FECHAINICIO
-                AND CG.IDPERSONA = UG.IDPERSONA
-                AND UG.IDINSTITUCION = ASI.IDINSTITUCION
-                AND UG.IDTURNO = ASI.IDTURNO
-                AND UG.IDGUARDIA = ASI.IDGUARDIA
-                AND UG.IDPERSONA = ASI.IDPERSONACOLEGIADO
-                AND UG.FECHAFIN = TRUNC(ASI.FECHAHORA)
+            WHERE ASI.IDINSTITUCION = V_IDINSTITUCION
+                AND ASI.IDTURNO = V_IDTURNO
+                AND ASI.IDGUARDIA = V_IDGUARDIA
+                AND NVL(ACT.VALIDADA, '0') = '1' -- validadas
                 AND ASI.IDINSTITUCION = ACT.IDINSTITUCION
                 AND ASI.ANIO = ACT.ANIO
                 AND ASI.NUMERO = ACT.NUMERO
@@ -9882,12 +9870,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                         AND FAC.ANIO = ACT.ANIO
                         AND FAC.NUMERO = ACT.NUMERO
                         AND FAC.IDACTUACION = ACT.IDACTUACION)
-            GROUP BY CG.IDINSTITUCION,
-                  CG.IDTURNO,
-                  CG.IDGUARDIA,
-                  CG.IDPERSONA,
-                  CG.FECHAINICIO,
-                  CG.FECHA_FIN,
+            GROUP BY ASI.IDINSTITUCION,
+                  ASI.IDTURNO,
+                  ASI.IDGUARDIA,
+                  ASI.IDPERSONACOLEGIADO,
+                  TRUNC(ASI.FECHAHORA),
+                  TRUNC(ASI.FECHAHORA),
                   ACT.FECHA
             ORDER BY IDFACTURACION DESC; -- JPT: Se ordena DESC para que salgan primero los IDFACTURACION con valor NULL        
 
