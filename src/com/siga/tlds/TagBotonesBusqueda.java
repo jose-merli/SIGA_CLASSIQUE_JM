@@ -121,6 +121,7 @@ public class TagBotonesBusqueda extends TagSupport {
 		
 			//valores permitidos para el parametro modo cuando se entra en modo edicion
 			this.valoresEdicion = new ArrayList<String>();
+			this.valoresEdicion.add("CONFIGURAR PERFIL");
 			this.valoresEdicion.add("EDICION");
 			this.valoresEdicion.add("EDITAR");
 			this.valoresEdicion.add("NUEVO");

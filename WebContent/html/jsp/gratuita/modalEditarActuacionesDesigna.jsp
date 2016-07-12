@@ -915,9 +915,7 @@
 							<siga:Idioma key="gratuita.inicio_PestanaCalendarioGuardias.literal.fecha"/>
 						</td>
 						<td>	
-						<%
-								if (modoAnterior.equalsIgnoreCase("ver") || actuacionValidada.equals("1") || deDonde.equals("/JGR_PestanaDesignas") || (modoJustificacion == null || modoJustificacion.equals("editarJustificacionFicha"))) {
-							%>
+						<% if (modoAnterior.equalsIgnoreCase("ver") || actuacionValidada.equals("1") || deDonde.equals("/JGR_PestanaDesignas")|| (modoJustificacion!=null && modoJustificacion.equals("editarJustificacionFicha"))) { %>
 						<script type="text/javascript">
 						jQuery(function(){
 							jQuery("#fechaJustificacion").removeClass("box");

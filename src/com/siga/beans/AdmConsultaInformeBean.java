@@ -18,7 +18,7 @@ public class AdmConsultaInformeBean extends MasterBean
 	private Integer idInstitucion;
 	private String idPlantilla;
 	private Integer idInstitucion_consulta;
-	private Integer idConsulta;
+	private Long idConsulta;
 	private String nombre;
 	private String variasLineas;
 
@@ -37,7 +37,7 @@ public class AdmConsultaInformeBean extends MasterBean
 	public void setIdInstitucion			(Integer valor) {this.idInstitucion = valor;}
 	public void setIdPlantilla				(String valor) {this.idPlantilla = valor;}
 	public void setIdInstitucion_consulta	(Integer valor) {this.idInstitucion_consulta = valor;}
-	public void setIdConsulta				(Integer valor) {this.idConsulta = valor;}
+	public void setIdConsulta				( Long valor) {this.idConsulta = valor;}
 	public void setNombre					(String valor) {this.nombre = valor;}
 	public void setVariasLineas				(String valor) {this.variasLineas = valor;}
 
@@ -45,7 +45,7 @@ public class AdmConsultaInformeBean extends MasterBean
 	public Integer getIdInstitucion()			{return idInstitucion;}
 	public String getIdPlantilla()				{return idPlantilla;}
 	public Integer getIdInstitucion_consulta()	{return idInstitucion_consulta;}
-	public Integer getIdConsulta()				{return idConsulta;}
+	public  Long getIdConsulta()				{return idConsulta;}
 	public String getNombre()					{return nombre;}
 	public String getVariasLineas()				{return variasLineas;}
 

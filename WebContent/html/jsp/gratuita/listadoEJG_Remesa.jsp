@@ -122,8 +122,16 @@
 				buttons+=",val,ws";//envio WebService GVasco
 			} else if (cajgConfig == 8) {
 				buttons+=",val,ws";//envio WebService GenValenciana
-			} else if (cajgConfig == 9) {
-				buttons+=",val,ws";//envio WebService EJIS
+			} else if (cajgConfig == 9 ) {
+				if (tipoPCAJGGeneral == 1) {
+					buttons+=",val,ws";//envio WebService EJIS
+					
+				} else {
+					buttons+=",gf";//genera fichero
+						
+				}
+				//ELIMINAR ,gf CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
+				
 			}
 		}
 	
@@ -136,6 +144,11 @@
 				buttons+=",d";//descargar
 			} else if (cajgConfig == 6) {
 				buttons+=",d";//descargar
+			}else if (cajgConfig == 9) {//ELIMINAR CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
+				if (tipoPCAJGGeneral == 0) {
+					buttons+=",d";//descarga envio
+						
+				}
 			}
 		}
 	
@@ -160,6 +173,11 @@
 				buttons+=",d";//descargar
 			} else if (cajgConfig == 6) {
 				buttons+=",d";//descargar
+			}else if (cajgConfig == 9) {//ELIMINAR CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
+				if (tipoPCAJGGeneral == 0) {
+					buttons+=",d";//descarga envio
+						
+				}
 			}
 		}
 	}

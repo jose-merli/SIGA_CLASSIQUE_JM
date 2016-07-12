@@ -224,7 +224,14 @@ public class DatosCVAction extends MasterAction{
 				request.setAttribute("esJunta", "S");
 				request.setAttribute("idInstitucionCargo", (String)hash.get("IDINSTITUCIONCARGO"));
 			}
-			request.setAttribute("mantenimiento", "");
+			
+			//Seteamos el valor si venimos de comisiones y cargos
+			if(request.getParameter("comisionCargos")!=null){
+				String mantenimiento = (String) request.getParameter("comisionCargos");
+				request.setAttribute("mantenimiento", mantenimiento);
+			}else{
+				request.setAttribute("mantenimiento", "");
+			}
 
 		}
 		catch (Exception e) {
@@ -570,6 +577,7 @@ public class DatosCVAction extends MasterAction{
 				throw new SIGAException (admDatosCV.getError());
 			}
 			t.commit();
+			
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, t);

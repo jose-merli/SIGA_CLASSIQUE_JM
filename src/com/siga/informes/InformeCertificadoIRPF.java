@@ -387,7 +387,7 @@ public class InformeCertificadoIRPF extends MasterReport
 
 		// Genera el envio:
 		envio.generarEnvio(programIRPFBean.getIdPersona().toString(),
-				EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA, vDocumentos);
+				EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA, vDocumentos,null,null);
 
 	}
 	

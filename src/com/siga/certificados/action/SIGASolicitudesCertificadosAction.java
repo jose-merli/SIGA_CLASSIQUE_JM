@@ -651,12 +651,18 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 					break;
 					
 				case 2://Integer.parseInt(CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO)
+						Thread.sleep(2000);
 						if(beanSolicitud.getFechaCobro()!=null && !beanSolicitud.getFechaCobro().trim().equals("")){
 							strSiguienteEstado = estAdm.getNombreEstadoSolicitudCert(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
 						}else{
 							strSiguienteEstado = estAdm.getNombreEstadoSolicitudCert(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
 						}
 					break;
+					
+					case 4://Integer.parseInt(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)
+						Thread.sleep(2000);
+						strSiguienteEstado = "-";
+					break;					
 					
 				case 10://Integer.parseInt(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR)
 						strSiguienteEstado = estAdm.getNombreEstadoSolicitudCert(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
@@ -1683,13 +1689,19 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				request.setAttribute("nombreFichero", admSolicitud.getNombreFicheroSalida(solicitudCertificadoBean));
 				String path =  UtilidadesString.replaceAllIgnoreCase( fCertificado.get(0).getPath(), "\\", "/");
 				request.setAttribute("rutaFichero", path);					
+				request.setAttribute("borrarFichero", "false");
 			}
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.certificados" }, e, tx);
 		}
 
-		return "descargaFichero";
+		if(request.getParameter("descargarCertificado") != null && !"".equals(request.getParameter("descargarCertificado")) && request.getParameter("descargarCertificado").equalsIgnoreCase("1")){
+			return "exitoDescarga";
+		}else{
+			return "descargaFichero";
+		}
+
 	}
 
 	public static void generarZip(UsrBean usr, String idInstitucion, String idSolicitud) throws ClsExceptions, SIGAException {

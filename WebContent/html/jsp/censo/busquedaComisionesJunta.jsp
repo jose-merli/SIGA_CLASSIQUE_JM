@@ -45,8 +45,30 @@
 	String parametro[] = new String[2];
 	parametro[0] = (String)usr.getLocation();
 	parametro[1] = (String)usr.getLanguage().toUpperCase();
+	
+	//Variables de busqueda
+	String idInstitucionCargo = "-1";
+	String cargos = "-1";
+	String nombreColegiado = "";
+	String numeroColegiado = "";
+	
 	ArrayList modoSel = new ArrayList();
-	modoSel.add("-1");
+	ArrayList selCargos = new ArrayList();
+	String volverStr = (String)request.getAttribute("volver");
+	boolean volver = false;
+	if (volverStr != null && volverStr.equals("volver")){
+		volver = true;
+		idInstitucionCargo = (String)request.getAttribute("idInstitucionCargo");
+		nombreColegiado  = (String)request.getAttribute("nombreColegiado");
+		numeroColegiado  = (String)request.getAttribute("numColegiado");
+		cargos = (String)request.getAttribute("cargos");
+		modoSel.add(idInstitucionCargo);
+		selCargos.add(cargos);
+	}else{
+		modoSel.add("-1");
+		selCargos.add("-1");
+	}
+		
 %>
 
 
@@ -107,10 +129,10 @@
 									<siga:Idioma	key="gratuita.volantesExpres.literal.colegiado" />
 								</td>
 								<td>
-									<html:text styleId="numeroColegiado" property="numeroColegiado" size="4" maxlength="9"	styleClass="box" value="" />
+									<html:text styleId="numeroColegiado" property="numeroColegiado" size="4" maxlength="9"	styleClass="box" value="<%=numeroColegiado%>" />
 								</td>
 								<td>
-									<html:text styleId="nombreColegiado" property="nombreColegiado" size="40" maxlength="50" styleClass="box" readonly="true" id="nombreCol" />
+									<html:text styleId="nombreColegiado" property="nombreColegiado" size="40" maxlength="50" styleClass="box" readonly="true" id="nombreCol" value="<%=nombreColegiado%>"/>
 								</td>
 								<td><!-- Boton buscar --> 
 									<input type="button" class="button"  name="Buscar" id="idButtonB" value="<siga:Idioma key='general.boton.search' />" onClick="buscarColegiado();" /> 
@@ -137,8 +159,7 @@
 									<siga:Idioma key="censo.busquedaComisiones.literal.cargos"/>
 								</td>
 								<td class="labelText">
-									<siga:Select id="cargos"
-												queryId="getCenTiposCVsubtipo2IdTipoCvJuntasGobierno" />
+									<siga:Select id="cargos" queryId="getCenTiposCVsubtipo2IdTipoCvJuntasGobierno" selectedIds="<%=selCargos%>" />
 								</td>
 								<td></td>
 								<td><input type='button'  id = 'idBorrar' name='idButton' style="display:none" value='Borrar' alt='Borrar' ></td>
@@ -240,7 +261,14 @@
 <script language="JavaScript">
 	jQuery.noConflict();
 	var indice = 0;
-	//jQuery.noConflict();
+
+	
+	jQuery(document).ready(function () {
+		 <% if (volver) {  %>
+		 document.getElementById('idBuscarCargos').onclick();	
+		 <% } %>
+	});	
+		
 	
 	function preAccionBuscarCargos(){
 		jQuery("#idButtonL").removeAttr("disabled");
@@ -747,7 +775,7 @@
 		document.datosCVForm.idInstitucionCargo.value=document.BusquedaComisionesForm.idInstitucionCargo.value;	
 		document.datosCVForm.idCV.value=document.getElementById("IDCV_" + idFila).value; 	
 		document.datosCVForm.modo.value = "verModal";
-		ventaModalGeneral(document.datosCVForm.name, "M");
+		document.datosCVForm.submit();
 	}
 
 	function  editarCargo (idFila) { 
@@ -759,8 +787,8 @@
 		document.datosCVForm.idInstitucionCargo.value=document.BusquedaComisionesForm.idInstitucionCargo.value;	
 		document.datosCVForm.idCV.value=document.getElementById("IDCV_" + idFila).value; 	
 		document.datosCVForm.modo.value = "editarModal";
-	 	var rc = ventaModalGeneral(document.datosCVForm.name, "M");
 		document.getElementById('idBuscarCargos').onclick();
+		document.datosCVForm.submit();
 	}
 			
 	function accionGuardar(){

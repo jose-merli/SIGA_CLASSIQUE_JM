@@ -841,7 +841,7 @@ public class GestionInformesAction extends MasterAction {
 			consultaInformeBean.setIdInstitucion_consulta(new Integer(informeForm.getIdInstitucionConsulta()));
 			consultaInformeBean.setIdInstitucion(new Integer(informeForm.getIdInstitucion()));
 			consultaInformeBean.setIdPlantilla(informeForm.getIdPlantilla());
-			consultaInformeBean.setIdConsulta(new Integer(informeForm.getIdConsulta()));
+			consultaInformeBean.setIdConsulta(new Long(informeForm.getIdConsulta()));
 			
 			informeService.borrarConsultaInforme(consultaInformeBean,informeFormEdicion, usrBean);
 			forward = exitoRefresco("messages.updated.success",request);

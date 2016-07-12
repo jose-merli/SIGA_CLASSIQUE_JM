@@ -29,6 +29,7 @@
 <%@ page import="com.siga.beans.CenPersonaAdm"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="com.siga.Utilidades.UtilidadesBDAdm"%>
+<%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.facturacion.form.BusquedaFacturaForm"%>
  
 <!-- JSP -->
@@ -80,6 +81,9 @@
 	if(idConsejo==2000 || idConsejo>=3000) {
 		esConsejo=true;
 	}		
+	
+	String textoInicialMotivoAnulacion = UtilidadesString.getMensajeIdioma(user,"facturacion.altaAbonos.literal.devolucion");
+	int numCaracteresMaximoMotivoanulacion = 255 - textoInicialMotivoAnulacion.length();
 %>	
 
 	<!-- HEAD -->
@@ -303,6 +307,10 @@
 			document.forms[0].seleccionarTodos.value = pagina;
 			buscar('buscarPor');				
 		}		
+		
+		function controlCaracteresMotivo(objThis) {
+			cuenta(objThis,<%=numCaracteresMaximoMotivoanulacion%>);
+		}
 	</script>
 
 <body onload="ajusteAltoBotones('resultado');inicio();<%=buscar%>">
@@ -439,7 +447,7 @@
 				
 				<tr>
 					<td class="labelText"><siga:Idioma key="facturacion.altaAbonos.literal.motivos"/>&nbsp;(*)</td>
-					<td><html:textarea styleId="motivos" property="motivos" onkeydown="cuenta(this,255)" onchange="cuenta(this,255)" rows="4" size="100" value="" style="overflow-y:auto; overflow-x:hidden; width:300px; height:50px; resize:none;"/></td>
+					<td><html:textarea styleId="motivos" property="motivos" onkeydown="controlCaracteresMotivo(this)" onchange="controlCaracteresMotivo(this)" rows="4" value="" style="overflow-y:auto; overflow-x:hidden; width:300px; height:50px; resize:none;"/></td>
 				</tr>
 			</table>
 		</siga:ConjCampos>

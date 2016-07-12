@@ -29,6 +29,7 @@ import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatosExample.Criter
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsEnvio;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.services.cen.CenWSService;
+import org.redabogacia.sigaservices.app.services.cen.EcomCenWsEnvioService;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.vo.EcomCenColegiadoVO;
@@ -258,6 +259,11 @@ public class EdicionRemesasAction extends MasterAction {
 		return verEditar("editar", formulario, request);		
 	}
 	
+	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		return eliminaRemesa(formulario, request);
+	}
+	
+	
 	protected String actualizarCenso(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		actualizaCenso(formulario, null);		
 //		return exitoRefresco("messages.actualizar.censo", request);
@@ -329,71 +335,72 @@ public class EdicionRemesasAction extends MasterAction {
 
 
 	protected String generaExcel(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		Vector datos = new Vector();
-		EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm) formulario;
 		
-		String[] cabeceras = new String[]{"COLEGIO"
-		       	, "FECHA_PETICION"
-           		, "PUBLICAR_COLEGIADO"
-		       	, "N_COLEGIADO"
-		       	, "NOMBRE"
-		       	, "APELLIDO_1"
-		       	, "APELLIDO_2"
-           		, "FECHA_NACIMIENTO"
-           		, "TIPO_IDENTIFICACION"
-		       	, "NUM_DOCUMENTO"
-           		, "PUBLICAR_TELEFONO"
-           		, "TELEFONO"
-           		, "PUBLICAR_MOVIL"
-           		, "TELEFONO_MOVIL"
-           		, "PUBLICAR_FAX"
-           		, "FAX"				
-           		, "PUBLICAR_EMAIL"
-           		, "EMAIL"
-           		, "SITUACION"
-		       	, "FECHA_SITUACION"
-           		, "RESIDENTE"
-           		, "ESTADO"       
-		       	, "INCIDENCIA"
-		       	, "DETALLE_INCIDENCIA"
-           		, "FECHA_INCORPORACION"};
-        
-        CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
-		
-		EcomCenDatosExample ecomCenDatosExample = new EcomCenDatosExample();
-		Criteria datosCriteria = ecomCenDatosExample.createCriteria();
-		
-		rellenaFiltroDatos(datosCriteria, edicionRemesaForm);
-		
-		String idincidencia = null;
-		if (isNotnull(edicionRemesaForm.getIdincidencia())) {
-			idincidencia = edicionRemesaForm.getIdincidencia();
+		try {
+			Vector datos = new Vector();
+			EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm) formulario;
+			
+			String[] cabeceras = new String[]{"COLEGIO"
+			       	, "FECHA_PETICION"
+	           		, "PUBLICAR_COLEGIADO"
+			       	, "N_COLEGIADO"
+			       	, "NOMBRE"
+			       	, "APELLIDO_1"
+			       	, "APELLIDO_2"
+	           		, "FECHA_NACIMIENTO"
+	           		, "TIPO_IDENTIFICACION"
+			       	, "NUM_DOCUMENTO"
+	           		, "PUBLICAR_TELEFONO"
+	           		, "TELEFONO"
+	           		, "PUBLICAR_MOVIL"
+	           		, "TELEFONO_MOVIL"
+	           		, "PUBLICAR_FAX"
+	           		, "FAX"				
+	           		, "PUBLICAR_EMAIL"
+	           		, "EMAIL"
+	           		, "SITUACION"
+			       	, "FECHA_SITUACION"
+	           		, "RESIDENTE"
+	           		, "ESTADO"       
+			       	, "INCIDENCIA"
+			       	, "DETALLE_INCIDENCIA"
+	           		, "FECHA_INCORPORACION"};
+	        
+	        CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
+			
+			EcomCenDatosExample ecomCenDatosExample = new EcomCenDatosExample();
+			Criteria datosCriteria = ecomCenDatosExample.createCriteria();
+			
+			rellenaFiltroDatos(datosCriteria, edicionRemesaForm);
+			
+			String idincidencia = null;
+			if (isNotnull(edicionRemesaForm.getIdincidencia())) {
+				idincidencia = edicionRemesaForm.getIdincidencia();
+			}
+			
+			ecomCenDatosExample.orderByApellido1();
+			ecomCenDatosExample.orderByApellido2();
+			ecomCenDatosExample.orderByNombre();
+			
+			List<Hashtable<String, Object>> listaResultados = cenWSService.getDatosExcel(edicionRemesaForm.getIdcensowsenvio(), ecomCenDatosExample, idincidencia, edicionRemesaForm.isModificado());
+	    	
+	    	datos.addAll(listaResultados);
+	    	
+	    	String nombreFichero = request.getParameter("nombreFichero");
+	    
+			request.setAttribute("campos",cabeceras);
+			request.setAttribute("datos",datos);
+			request.setAttribute("cabeceras",cabeceras);
+			request.setAttribute("descripcion", nombreFichero);
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error", e, null);
 		}
-		
-		ecomCenDatosExample.orderByApellido1();
-		ecomCenDatosExample.orderByApellido2();
-		ecomCenDatosExample.orderByNombre();
-		
-		List<Hashtable<String, Object>> listaResultados = cenWSService.getDatosExcel(edicionRemesaForm.getIdcensowsenvio(), ecomCenDatosExample, idincidencia, edicionRemesaForm.isModificado());
-    	
-    	datos.addAll(listaResultados);
-    	
-    	String nombreFichero = request.getParameter("nombreFichero");
-    
-		request.setAttribute("campos",cabeceras);
-		request.setAttribute("datos",datos);
-		request.setAttribute("cabeceras",cabeceras);
-		request.setAttribute("descripcion", nombreFichero);
 		
 		return "generaExcel";		
 	}
 	
 	
-	private String getDato(Object dato) {		
-		return dato!=null?dato.toString().trim():"";
-	}
-
-
 	protected String erroresCarga(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		try {
 			CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
@@ -480,6 +487,27 @@ public class EdicionRemesasAction extends MasterAction {
 	}
 
 
+	private String eliminaRemesa(MasterForm formulario, HttpServletRequest request){
+	
+		EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm) formulario;
+		
+		// Recuperamos los datos del registro que hemos seleccionado
+		Vector ocultos = edicionRemesaForm.getDatosTablaOcultos(0);
+		
+		Long idcensowsenvio = null;
+		
+		if (ocultos != null && ocultos.size() > 0) {
+			idcensowsenvio = Long.valueOf(ocultos.get(0).toString());
+		} else {
+			throw new IllegalArgumentException("No se ha recibido el identificador para editar la remesa");
+		}
+		
+		EcomCenWsEnvioService ecomCenWsEnvioService = (EcomCenWsEnvioService) BusinessManager.getInstance().getService(EcomCenWsEnvioService.class);		
+		ecomCenWsEnvioService.eliminarRemesa(idcensowsenvio);
+		
+		return exitoRefresco("messages.processed.success.deleteRemesa", request);
+		
+	}
 	
 	
 

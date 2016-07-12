@@ -1709,6 +1709,9 @@ public class PersonaJGAction extends MasterAction {
 							UtilidadesHash.setForCompare(hash,ScsUnidadFamiliarEJGBean.C_IMPORTEOTROSBIENES,ufBean.getImporteOtrosBienes());
 							UtilidadesHash.setForCompare(hash,ScsUnidadFamiliarEJGBean.C_TIPOGRUPOLAB,ufBean.getTipoGrupoLab());
 							UtilidadesHash.setForCompare(hash,ScsUnidadFamiliarEJGBean.C_TIPOINGRESO,ufBean.getTipoIngreso());
+							UtilidadesHash.setForCompare(hash,ScsUnidadFamiliarEJGBean.C_INCAPACITADO, ufBean.getIncapacitado());
+							UtilidadesHash.setForCompare(hash,ScsUnidadFamiliarEJGBean.C_CIRCUNSTANCIAS_EXCEPCIONALES, ufBean.getCircunstanciasExcepcionales());
+							
 							dataBackup.put(ScsUnidadFamiliarEJGBean.T_NOMBRETABLA,hash);
 							
 							if (ufBean.getImoporteBienesInmuebles()!=null)
@@ -1735,6 +1738,14 @@ public class PersonaJGAction extends MasterAction {
 							
 							if (ufBean.getSolicitante()!=null)
 								  miform.setSolicitante(ufBean.getSolicitante().toString());
+							
+							if (ufBean.getIncapacitado() != null && ufBean.getIncapacitado().equals(1)) {
+								miform.setIncapacitado(true);
+							}
+							
+							if (ufBean.getCircunstanciasExcepcionales() != null && ufBean.getCircunstanciasExcepcionales().equals(1)) {
+								miform.setCircunstanciasExcepcionales(true);
+							}
 						} else {
 							dataBackup.remove(ScsUnidadFamiliarEJGBean.T_NOMBRETABLA);
 						}
@@ -2316,6 +2327,19 @@ public class PersonaJGAction extends MasterAction {
 			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IMPORTEOTROSBIENES,miform.getImporteOtrosBienes());						 
 			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_IMPORTEOTROSBIENES,miform.getImporteOtrosBienes());	
 			UtilidadesHash.set(unidadFamiliarBean,ScsUnidadFamiliarEJGBean.C_TIPOGRUPOLAB,miform.getTipoGrupoLaboral());
+			
+			if (miform.isIncapacitado()) {
+				UtilidadesHash.set(unidadFamiliarBean, ScsUnidadFamiliarEJGBean.C_INCAPACITADO, 1);
+			} else {
+				UtilidadesHash.set(unidadFamiliarBean, ScsUnidadFamiliarEJGBean.C_INCAPACITADO, 0);
+			}
+			if (miform.isCircunstanciasExcepcionales()) {
+				UtilidadesHash.set(unidadFamiliarBean, ScsUnidadFamiliarEJGBean.C_CIRCUNSTANCIAS_EXCEPCIONALES, 1);
+			} else {
+				UtilidadesHash.set(unidadFamiliarBean, ScsUnidadFamiliarEJGBean.C_CIRCUNSTANCIAS_EXCEPCIONALES, 0);
+			}
+			
+			
 			if (miform.getConceptoE().equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
 				boolean checkSolicitante  = UtilidadesString.stringToBoolean(miform.getSolicitante());
 				if (checkSolicitante){

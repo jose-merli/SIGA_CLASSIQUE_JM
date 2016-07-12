@@ -24,7 +24,9 @@ public class BusquedaRemesasForm extends MasterForm {
 	private boolean conIncidencia = false;
 	private boolean conError = false;
 	
+	private List<InstitucionVO> institucionesWS;
 	
+
 	private List<InstitucionVO> instituciones;
 	private List<ValueKeyVO> tiposIdentificacion;
 	private String nombreColegio = null;
@@ -55,7 +57,13 @@ public class BusquedaRemesasForm extends MasterForm {
 	}
 
 
+	public List<InstitucionVO> getInstitucionesWS() {
+		return institucionesWS;
+	}
 
+	public void setInstitucionesWS(List<InstitucionVO> institucionesWS) {
+		this.institucionesWS = institucionesWS;
+	}
 
 	public String getIdColegio() {
 		return idColegio;

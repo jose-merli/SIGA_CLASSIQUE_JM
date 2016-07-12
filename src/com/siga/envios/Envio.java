@@ -82,8 +82,7 @@ import es.satec.businessManager.BusinessManager;
 public class Envio
 {
 	
-	List<ScsEjg> ejgs;
-    List<ScsDesigna> designas;
+	
 	
 	public EnvEnviosBean enviosBean;
     private UsrBean usrBean;
@@ -654,7 +653,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
      * @param documentos Vector de objetos Documento para el destinatario
      * @throws SIGAException
      */
-    public void generarEnvio(String idPersona,String tipoDestinatario, Vector documentos) throws SIGAException,ClsExceptions
+    public void generarEnvio(String idPersona,String tipoDestinatario, Vector documentos, ArrayList<ScsDesigna> designasList, ArrayList<ScsEjg> ejgsList) throws SIGAException,ClsExceptions
 	{
         EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
         //aalg: INC_06541_SIGA. incluir el usuario de modificación al generar el envío
@@ -670,12 +669,12 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 
         if (idPersona!=null) 
         	addDocumentosDestinatario(idPersona,tipoDestinatario,documentos); 
-        insertarComunicaciones(this.usrBean);
+        insertarComunicaciones(this.usrBean,designasList,ejgsList);
         
         
     }
     
-    public void generarEnvioBean(String idPersona,String tipoDestinatario, Vector documentos, Object bean) throws SIGAException,ClsExceptions {
+    public void generarEnvioBean(String idPersona,String tipoDestinatario, Vector documentos, Object bean, ArrayList<ScsDesigna> designasList, ArrayList<ScsEjg> ejgsList) throws SIGAException,ClsExceptions {
         EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
         enviosBean.setUsuMod(Integer.valueOf(this.usrBean.getUserName()));
         envAdm.insert(enviosBean);
@@ -690,7 +689,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
         if (idPersona!=null) 
         	addDocumentosDestinatario(idPersona, tipoDestinatario, documentos);     
         
-        insertarComunicaciones(this.usrBean);
+        insertarComunicaciones(this.usrBean,designasList,ejgsList);
         
         
         
@@ -725,30 +724,28 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 //    	
 //    }
     
-    private void insertarComunicaciones(UsrBean usrBean) throws SIGAException{
-    	EnvEnviosAdm envAdm = new EnvEnviosAdm(usrBean);
-    	if((getDesignas()!=null &&getDesignas().size()>0) ||(getEjgs()!=null &&getEjgs().size()>0)){
-
-	       
-	        try {
-       		 if(getDesignas()!=null &&getDesignas().size()>0)
-       			 envAdm.insertarComunicacionDesignaSalida(getDesignas(),Long.parseLong(enviosBean.getIdEnvio().toString()), usrBean);
-    	        else if(getEjgs()!=null &&getEjgs().size()>0)
-    	        	envAdm.insertarComunicacionEjgSalida(getEjgs(),Long.parseLong(enviosBean.getIdEnvio().toString()), usrBean);	
-
+	private void insertarComunicaciones(UsrBean usrBean, ArrayList<ScsDesigna> designasList, ArrayList<ScsEjg> ejgsList) throws SIGAException {
+		EnvEnviosAdm envAdm = new EnvEnviosAdm(usrBean);
+		if (designasList != null && designasList.size() > 0) {
+			try {
+				envAdm.insertarComunicacionDesignaSalida(designasList, Long.parseLong(enviosBean.getIdEnvio().toString()), usrBean);
 			} catch (Exception e) {
-				throw new SIGAException("Error al insertar en scs_comunicaciones"+e.toString());
-				
+				throw new SIGAException("Error al insertar en scs_comunicaciones" + e.toString());
 			}
-	       
-	        
-        }
-    	
-    	
-    }
+		}
+		if (ejgsList != null && ejgsList.size() > 0) {
+			try {
+				envAdm.insertarComunicacionEjgSalida(ejgsList, Long.parseLong(enviosBean.getIdEnvio().toString()), usrBean);
+			} catch (Exception e) {
+				throw new SIGAException("Error al insertar en scs_comunicaciones" + e.toString());
+			}
+
+		}
+
+	}
     
    
-    public void generarEnvio(String idPersona,String tipoDestinatario, Object bean) throws SIGAException,ClsExceptions
+    public void generarEnvio(String idPersona,String tipoDestinatario, Object bean, ArrayList<ScsDesigna> designasList, ArrayList<ScsEjg> ejgsList) throws SIGAException,ClsExceptions
 	{
         EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
       //aalg: INC_06541_SIGA. incluir el usuario de modificación al generar el envío
@@ -763,7 +760,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 
         if (idPersona!=null) 
         	addDocumentosDestinatario(idPersona,tipoDestinatario,null);     
-        insertarComunicaciones(this.usrBean);
+        insertarComunicaciones(this.usrBean,designasList,ejgsList);
     }
     
     
@@ -796,7 +793,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
      * @throws SIGAException
      * @throws ClsExceptions
      */
-    public void generarEnvioOrdinario(EnvEnviosBean enviosBean,Hashtable htPersonas,Hashtable htPersonasJG,Hashtable htJuzgado, Hashtable htProcurador) throws SIGAException,ClsExceptions
+    public void generarEnvioOrdinario(EnvEnviosBean enviosBean,Hashtable htPersonas,Hashtable htPersonasJG,Hashtable htJuzgado, Hashtable htProcurador, ArrayList<ScsDesigna> designasList, ArrayList<ScsEjg> ejgsList) throws SIGAException,ClsExceptions
 	{
         EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
       //aalg: INC_06541_SIGA. incluir el usuario de modificación al generar el envío
@@ -836,10 +833,10 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 			addDocumentosDestinatario(idPersona,EnvDestinatariosBean.TIPODESTINATARIO_SCSJUZGADO,documentos);
 			
 		}    
-        insertarComunicaciones(this.usrBean);
+        insertarComunicaciones(this.usrBean,designasList,ejgsList);
                 
     }
-    public void generarIntercambioTelematico(EnvEnviosBean enviosBean,Hashtable htPersonas, List<Object> listObjetosTelematicos) throws SIGAException,ClsExceptions
+    public void generarIntercambioTelematico(EnvEnviosBean enviosBean,Hashtable htPersonas, List<Object> listObjetosTelematicos, ArrayList<ScsDesigna> designasList, ArrayList<ScsEjg> ejgsList) throws SIGAException,ClsExceptions
 	{
         EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrBean);
       //aalg: INC_06541_SIGA. incluir el usuario de modificación al generar el envío
@@ -920,7 +917,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
         	enviosBean.setIdEstado(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO);
             envAdm.updateDirect(enviosBean);
 		}
-        insertarComunicaciones(this.usrBean);
+        insertarComunicaciones(this.usrBean,designasList,ejgsList);
         envAdm.generarLogEnvioHT(destinatariosBeans,null,"", new Hashtable(), enviosBean);
     }
     
@@ -1958,20 +1955,5 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 
 	
 
-	public List<ScsDesigna> getDesignas() {
-		return designas;
-	}
-
-	public void setDesignas(List<ScsDesigna> designas) {
-		this.designas = designas;
-	}
-
-	public List<ScsEjg> getEjgs() {
-		return ejgs;
-	}
-
-	public void setEjgs(List<ScsEjg> ejgs) {
-		this.ejgs = ejgs;
-	}
 	
 }

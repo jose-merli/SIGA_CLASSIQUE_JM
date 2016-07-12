@@ -574,8 +574,9 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 			contador ++;
 			sql.append(contador);
 			htCodigos.put(new Integer(contador),volanteExpres.getIdInstitucion());
-			      
+			
 			sql.append(" AND GC.IDINSTITUCION = TURNO.IDINSTITUCION ");
+			sql.append(" AND nvl(TURNO.IDTIPOTURNO, 2) = 2 ");
 			sql.append(" AND GC.IDTURNO = TURNO.IDTURNO ");
 			sql.append(" AND TO_DATE(:");
 			String truncFechaGuardia = GstDate.getFormatedDateShort("", volanteExpres.getFechaGuardia());

@@ -2860,6 +2860,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(") FROM SCS_SITUACION WHERE IDSITUACION = EJG.IDSITUACION) AS SITUACIONPROCEDIMIENTO_DJ ");
 			
 			
+			sql.append(" ,DECODE(NVL(D.ESTADO,'A'),'V',1,'F',2,'A',3) ORDEN ");
+			
 			sql.append(" FROM SCS_EJG EJG, ");
 			sql.append(" SCS_EJGDESIGNA EJGD, ");
 			sql.append(" SCS_TIPOFUNDAMENTOS FUND,");
@@ -2885,8 +2887,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" AND EJG.numero = ");
 			sql.append(numero);
 			
-			
-			
+			sql.append("	ORDER BY ORDEN,EJGD.FECHAMODIFICACION DESC");
 			
 			try {    	   	    	   			
 				rc = this.find(sql.toString());
@@ -6286,7 +6287,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" AND EJGACTA.IDACTA = ACTA.IDACTA ");
 			sql.append(" AND EJGACTA.IDINSTITUCIONACTA = ACTA.IDINSTITUCION ");
 			sql.append(" AND EJGACTA.ANIOACTA = ACTA.ANIOACTA ");
-			sql.append(" ORDER BY FECHAREUNION_ACTA) ");
+			sql.append(" ORDER BY ACTA.FECHAREUNION desc) ");
 			sql.append(" WHERE ROWNUM = 1 ");
 			RowsContainer rc = new RowsContainer();
 			if (rc.find(sql.toString())) {

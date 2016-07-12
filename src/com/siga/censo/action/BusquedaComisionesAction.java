@@ -68,8 +68,11 @@ public class BusquedaComisionesAction extends MasterAction {
 				// Abrir
 				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
 					mapDestino = abrir(mapping, miForm, request, response);						
+				}else if (accion.equalsIgnoreCase("abrirVolver")){
+					request.setAttribute("volver","volver");
+					mapDestino = abrir(mapping, miForm, request, response);
 				}else if (accion.equalsIgnoreCase("buscar")){
-					mapDestino = buscar(mapping, miForm, request, response);						
+					mapDestino = buscar(mapping, miForm, request, response);							
 				}else if (accion.equalsIgnoreCase("ver")){
 					mapDestino = ver(mapping, miForm, request, response);	
 				}else if (accion.equalsIgnoreCase("getAjaxGuardarCargos")){
@@ -142,6 +145,10 @@ public class BusquedaComisionesAction extends MasterAction {
 		parametro[0] = (String)user.getLocation();
 		parametro[1] = (String)user.getLanguage().toUpperCase();
 		request.setAttribute("parambdcomisiones",parametro);
+		request.setAttribute("idInstitucionCargo",miForm.getIdInstitucionCargo());
+		request.setAttribute("nombreColegiado",miForm.getNombreColegiado());
+		request.setAttribute("numColegiado",miForm.getNumeroColegiado());
+		request.setAttribute("cargos",miForm.getCargos());
 		
 /*		if(idInstitucion!="2000")
 			return "inicio";

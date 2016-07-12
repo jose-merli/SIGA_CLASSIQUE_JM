@@ -267,7 +267,8 @@
 	</script>
 </head>
 
-<body onload="inicio();cambioComisaria();cambioJuzgado();">
+<body onload="ajusteAltoMain('datosModal',0);inicio();cambioComisaria();cambioJuzgado();">
+
 	<bean:define id="usrBean" name="USRBEAN" scope="session" type="com.atos.utils.UsrBean" />
 	<bean:define id="botones" name="botones" scope="request" />
 	<bean:define id="tipoPcajg" name="tipoPcajg" scope="request" />
@@ -278,6 +279,8 @@
 			<td id="titulo" class="titulosPeq"><siga:Idioma key="gratuita.mantActuacion.literal.titulo" /></td>
 		</tr>
 	</table>
+	
+	<div id="datosModal" style='position:absolute; width:100%; overflow-y:auto'>
 	
 	<html:form action="${path}">
 		<html:hidden property="modo" />
@@ -446,7 +449,7 @@
 
 							</c:when>
 							<c:otherwise>
-								<siga:Fecha  nombreCampo= "fecha" valorInicial="${ActuacionAsistenciaFormEdicion.fecha}" readonly="true" postFunction="compruebaDiaDespues('${asistencia.fechaHora}');"/>
+								<siga:Fecha  nombreCampo= "fecha" valorInicial="${ActuacionAsistenciaFormEdicion.fecha}" readOnly="true" postFunction="compruebaDiaDespues('${asistencia.fechaHora}');"/>
 							</c:otherwise>
 						</c:choose>
 					</td>
@@ -715,10 +718,10 @@
 				<td class="labelText">
 					<siga:Idioma key='gratuita.mantActuacion.literal.mensajeAsunto' /></td>
 			</tr>
-		</table>
-		
-		<siga:ConjBotonesAccion botones="${botones}" modal="P" />
+		</table>			
 	</html:form>
+	</div>
+	<siga:ConjBotonesAccion botones="${botones}" modal="P" />
 	
 	<ajax:select
 			baseUrl="/SIGA${path}.do?modo=getAjaxTipoCosteFijoActuacion"
@@ -798,7 +801,7 @@
 						habilitarCampos(false);
 					}
 				}
-			}		
+			}			
 		}
 		
 		function habilitarCampos(isHabilitar) {

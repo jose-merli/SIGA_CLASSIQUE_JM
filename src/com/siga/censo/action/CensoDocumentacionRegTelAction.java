@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.exceptions.SIGAServiceException;
 import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
 
 import com.atos.utils.UsrBean;
@@ -72,7 +73,10 @@ public class CensoDocumentacionRegTelAction extends DocumentacionRegTelAction {
 			
 			salto = "inicioDS";
 
-		} catch (Exception e) {
+		} catch (SIGAServiceException e) {
+			throw new SIGAException(e.getMessage(), e);
+
+		} catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null); 
 		} 
 		return salto;

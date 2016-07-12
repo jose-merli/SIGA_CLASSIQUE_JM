@@ -30,6 +30,7 @@ import com.atos.utils.GstDate;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.paginadores.PaginadorVector;
 import com.siga.censo.ws.form.BusquedaRemesasForm;
+import com.siga.censo.ws.form.ConfiguracionPerfilColegioForm;
 import com.siga.censo.ws.form.EdicionRemesaForm;
 import com.siga.censo.ws.util.CombosCenWS;
 import com.siga.comun.vos.InstitucionVO;
@@ -116,9 +117,12 @@ public class BusquedaRemesasAction extends MasterAction {
 			request.getSession().removeAttribute(DATAPAGINADOR);
 			
 			CombosCenWS combosCenWS = new CombosCenWS();
+			
 			List<InstitucionVO> listInstitucionVOs = getColegiosDependientes(getUserBean(request).getLocation());
 			busquedaRemesasForm.setInstituciones(listInstitucionVOs);
 			busquedaRemesasForm.setTiposIdentificacion(combosCenWS.getTiposIdentificacion(getUserBean(request)));
+			
+			List<InstitucionVO> listInstitucionWsVos = getColegiosWS();
 			
 			if (listInstitucionVOs != null) {
 				Map<String, String> mapa = new HashMap<String, String>();
@@ -128,6 +132,10 @@ public class BusquedaRemesasAction extends MasterAction {
 				busquedaRemesasForm.setMapaInstituciones(mapa);
 			}
 			
+			if(listInstitucionWsVos!=null){
+				busquedaRemesasForm.setInstitucionesWS(listInstitucionWsVos);
+			}
+			
 			String buscar = request.getParameter("buscar");
 			request.setAttribute("buscar",buscar);
 		} catch (Exception e) {
@@ -135,6 +143,23 @@ public class BusquedaRemesasAction extends MasterAction {
 		}
 		return "inicio";
 	}
+	
+	
+	/**
+	 * Recupera los colegios que tienen carga de censo por Web Services <code>idInstitucion</code>
+	 * @param idInstitucion Institucion para la cual se buscan sus colegios asociados
+	 * @return Una lista con los colegios que tienen carga de web services, o <code>null</code> si la institucion
+	 * no tiene colegios dependientes, es decir, si es un Colegio y no un Consejo.
+	 * @throws SIGAException 
+	 */
+	private List<InstitucionVO> getColegiosWS() throws SIGAException{
+		List<InstitucionVO> institucionesWS = null;
+		CenInstitucionService service = (CenInstitucionService) getBusinessManager().getService(CenInstitucionService.class);
+		institucionesWS =	service.getColegiosWS();
+		return institucionesWS;
+	}
+	
+	
 	
 	/**
 	 * Recupera los colegios asociados a la institucion <code>idInstitucion</code>
@@ -157,7 +182,7 @@ public class BusquedaRemesasAction extends MasterAction {
 		return instituciones;
 	}
 	
-		
+
 	protected String buscar (ActionMapping mapping, 		
 			MasterForm formulario, 
 			HttpServletRequest request, 
@@ -225,6 +250,15 @@ public class BusquedaRemesasAction extends MasterAction {
 	}
 
 
+	
+	private void calculaTotalRegistros(CenWSService cenWSService,	List<EdicionRemesaForm> datos) throws SIGAException {
+		if (datos != null) {
+			for (EdicionRemesaForm edicionRemesaForm : datos) {
+				cenWSService.selectCountColegiadosEnvio(edicionRemesaForm.getIdcensowsenvio());
+			}
+		}
+	}
+	
 	private void calculaIncidencias(CenWSService cenWSService,	List<EdicionRemesaForm> datos) throws SIGAException {
 
 		if (datos != null) {

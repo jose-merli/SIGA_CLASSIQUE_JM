@@ -284,7 +284,7 @@
 				&nbsp;
 				</td>
 				<td class="tdBotones">
-				<c:if test="${InformesGenericosForm.descargar =='1'}">
+				<c:if test="${InformesGenericosForm.descargar =='1'||InformesGenericosForm.idTipoInforme!='JUSDE'}">
 					<input type="button" alt="Descargar"  id="botonDescargar" onclick="return accionDownload();" class="button" name="idButton" value="Descargar">
 				</c:if>
 				</td>
@@ -304,7 +304,7 @@
 				&nbsp;
 				</td>
 				<td class="tdBotones">
-					<c:if test="${InformesGenericosForm.descargar =='1'}">
+					<c:if test="${InformesGenericosForm.descargar =='1'||InformesGenericosForm.idTipoInforme!='JUSDE'}">
 						<input type="button" alt="Descargar"  id="botonDescargar" onclick="return accionDownload();" class="button" name="idButton" value="Descargar">
 					</c:if>
 				</td>

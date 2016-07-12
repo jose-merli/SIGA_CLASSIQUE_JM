@@ -89,7 +89,10 @@ public class EJGDocumentacionRegTelAction extends DocumentacionRegTelAction {
 
 			salto = "inicioDS";
 
-		} catch (Exception e) {
+		} catch (SIGAServiceException e) {
+			throw new SIGAException(e.getMessage(), e);
+
+		} catch(Exception e){
 			throwExcp("messages.general.error", e, null);
 
 		} 

@@ -3829,17 +3829,17 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		return beanCli;
 	} //altaColegial ()
 	
-	public Hashtable getDatosCertificado(Long idPersona, Integer idInstitucion, String location) throws SIGAException
+	public Hashtable getDatosCertificado(Long idPersona, Integer idInstitucion, String location,boolean isFo) throws SIGAException
 	{
 	    Hashtable htTabla = new Hashtable();
 	    
 	    htTabla.put("@idpersona@", ""+idPersona);
 	    htTabla.put("@idinstitucion@", ""+idInstitucion);
 	    
-	    return getDatosCertificado(htTabla, location);
+	    return getDatosCertificado(htTabla, location,isFo);
 	}
 	
-	public Hashtable getDatosCertificado(Hashtable ht,String idInstitucion) throws SIGAException
+	public Hashtable getDatosCertificado(Hashtable ht,String idInstitucion,boolean isFo) throws SIGAException
 	{
 	    try
 	    {
@@ -3850,7 +3850,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 	        
 	        String sSQL = new InformeCertificadosEspeciales().getSqlCamposGeneral(new Integer(idInstitucion));
 	  
-	        htDatos=this.getEtiquetasComunesCertificados(ht,idInstitucion);
+	        htDatos=this.getEtiquetasComunesCertificados(ht,idInstitucion,isFo);
 	        Enumeration enumHash = ht.keys();
 	        
 	        while (enumHash.hasMoreElements())
@@ -3902,7 +3902,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 
 	
 	
-	public Hashtable getEtiquetasComunesCertificados(Hashtable ht,String idInstitucion) throws SIGAException
+	public Hashtable getEtiquetasComunesCertificados(Hashtable ht,String idInstitucion, boolean isFo) throws SIGAException
 	{
 	    try
 	    {  Hashtable htDatos = new Hashtable();
@@ -3954,7 +3954,8 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			
 			
 			// SUSTITUIR los saltos de linea por esto: <fo:block  space-before="0.5cm" />
-		    textoCertificado = textoCertificado.replaceAll("\\n","BRdummyBR");
+		    if(isFo)
+		    	textoCertificado = textoCertificado.replaceAll("\\n","BRdummyBR");
 			// lo guardamos 
 			htDatos.put("TEXTOCERTIFICADO",textoCertificado);
 			

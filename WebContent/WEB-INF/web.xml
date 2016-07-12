@@ -117,12 +117,12 @@
 	<!--************ Seguridad de Certificados FIN ************-->
 
 	<listener><listener-class>com.siga.general.BusinessManagerListener</listener-class></listener>
+<!-- COMENTAR LOS FILTROS SIGUIENTES SI NO SE NECESITAN SERVICIOS AUTOMATICOS -->
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoCenso</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoServicios</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlInicializacionesSecundarias</listener-class></listener>
 	<listener><listener-class>com.siga.certificados.AccionesMasivasCertificadosListener</listener-class></listener>
 
-<!-- COMENTAR LOS FILTROS SIGUIENTES SI NO SE NECESITAN SERVICIOS AUTOMATICOS -->
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoExpedientes</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoColaDatosLetrado</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoContadores</listener-class></listener>
@@ -137,11 +137,15 @@
 	<listener><listener-class>com.siga.ws.cen.CargaCensoWSListener</listener-class></listener>
 	<listener><listener-class>com.siga.ws.mutualidad.MutualidadEnvioCertificadosFnalizadosListener</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlEnvioCorreoPeriodicoSancionesCGAEListener</listener-class></listener>
-		
+	
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoGeneracionCalendarios</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoFacturacionSJCS</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlEnvioCorreoAlertasIntentosEEJGListener</listener-class></listener>
 <!-- -->
+	 
+	 
+	 
+	 
 
 
 	<servlet>
@@ -159,8 +163,7 @@
 		<servlet-name>SIGASvlProcesoEnvios</servlet-name>
 		<servlet-class>com.siga.servlets.SIGASvlProcesoEnvios</servlet-class>
 	</servlet>
-
-
+	
 	<servlet>
 		<servlet-name>SIGASvlProcesoAutomaticoFacturacion</servlet-name>
 		<servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoFacturacion</servlet-class>
@@ -304,18 +307,18 @@
 		<servlet-name>SIGATest</servlet-name>
 		<url-pattern>SIGATest.svrl</url-pattern>
 	</servlet-mapping>
-		<servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>
 		<url-pattern>SIGASvlProcesoAutomaticoEnvios.svrl</url-pattern>
-		</servlet-mapping>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>SIGASvlProcesoEnvios</servlet-name>
 		<url-pattern>SIGASvlProcesoEnvios.svrl</url-pattern>
 	</servlet-mapping>
-		<servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>SIGASvlProcesoAutomaticoFacturacion</servlet-name>
 		<url-pattern>SIGASvlProcesoAutomaticoFacturacion.svrl</url-pattern>
-		</servlet-mapping>
+	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>SIGASvlProcesoFacturacion</servlet-name>
@@ -483,7 +486,7 @@
 			<taglib-uri>ajaxtags.tld</taglib-uri>
 			<taglib-location>/WEB-INF/tlds/ajaxtags.tld</taglib-location>
 		</taglib>
-		
+
 
 	</jsp-config>
 </web-app>

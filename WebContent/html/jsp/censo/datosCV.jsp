@@ -37,8 +37,7 @@
 <%
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();
-	UsrBean usr = (UsrBean) request.getSession()
-			.getAttribute("USRBEAN");
+	UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	String idUsr = (String) usr.getUserName();
 	boolean bOcultarHistorico = usr.getOcultarHistorico();
 
@@ -52,8 +51,7 @@
 	String DB_FALSE = ClsConstants.DB_FALSE;
 
 	String nombreUsu = (String) request.getAttribute("nombrePersona");
-	String idPersona = String.valueOf((Long) request
-			.getAttribute("idPersona"));
+	String idPersona = String.valueOf((Long) request.getAttribute("idPersona"));
 	String numero = (String) request.getAttribute("numero");
 	if (numero == null)
 		numero = "";
@@ -80,12 +78,9 @@
 	if (modo.equals("ver") || modo.equals("editar")) {
 		htData = (Hashtable) request.getSession().getAttribute("DATABACKUP");
 		if (htData != null) {
-			fechaInicio = GstDate.getFormatedDateShort("",
-					(String) htData.get(CenDatosCVBean.C_FECHAINICIO));
-			fechaFin = GstDate.getFormatedDateShort("",
-					(String) htData.get(CenDatosCVBean.C_FECHAFIN));
-			fechaCertificado = GstDate.getFormatedDateShort("",
-					(String) htData.get(CenDatosCVBean.C_FECHAMOVIMIENTO));
+			fechaInicio = GstDate.getFormatedDateShort("", (String) htData.get(CenDatosCVBean.C_FECHAINICIO));
+			fechaFin = GstDate.getFormatedDateShort("", (String) htData.get(CenDatosCVBean.C_FECHAFIN));
+			fechaCertificado = GstDate.getFormatedDateShort("", (String) htData.get(CenDatosCVBean.C_FECHAMOVIMIENTO));
 			creditos = String.valueOf(htData.get(CenDatosCVBean.C_CREDITOS));
 			descripcion = String.valueOf(htData.get(CenDatosCVBean.C_DESCRIPCION));
 			certificado = String.valueOf(htData.get(CenDatosCVBean.C_CERTIFICADO));
@@ -102,81 +97,60 @@
 			if (modo.equals("editar")) {
 				editarCampos = true;
 				desactivado = false;
-				idCV = String
-						.valueOf(htData.get(CenDatosCVBean.C_IDCV));
+				idCV = String.valueOf(htData.get(CenDatosCVBean.C_IDCV));
 				idInstitucion = String.valueOf(htData.get(CenDatosCVBean.C_IDINSTITUCION));
 				idTipoCV.add(String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCV)));
-				paramIdTipoCV = "{\"idtipocv\":\""+String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCV))+"\"}";
+				paramIdTipoCV = "{\"idtipocv\":\"" + String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCV)) + "\"}";
 
-				idSubtipo1.add(String.valueOf(htData
-								.get(CenDatosCVBean.C_IDTIPOCVSUBTIPO1)
-								+ "@"
-								+ htData.get(CenDatosCVBean.C_IDINSTITUCION_SUBT1)));
-				idSubtipo2.add(String.valueOf(htData
-								.get(CenDatosCVBean.C_IDTIPOCVSUBTIPO2)
-								+ "@"
-								+ htData.get(CenDatosCVBean.C_IDINSTITUCION_SUBT2)));
+				idSubtipo1.add(String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCVSUBTIPO1) + "@" + htData.get(CenDatosCVBean.C_IDINSTITUCION_SUBT1)));
+				idSubtipo2.add(String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCVSUBTIPO2) + "@" + htData.get(CenDatosCVBean.C_IDINSTITUCION_SUBT2)));
 			} else {
 				desactivado = true;
 				clase = "boxConsulta";
 				idInstitucion = String.valueOf(htData.get(CenDatosCVBean.C_IDINSTITUCION));
 				idTipoCV.add(String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCV)));
-				paramIdTipoCV = "{\"idtipocv\":\""+String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCV))+"\"}";
-				idSubtipo1.add(String.valueOf(htData
-						.get(CenDatosCVBean.C_IDTIPOCVSUBTIPO1)
-						+ "@"
-						+ htData.get(CenDatosCVBean.C_IDINSTITUCION_SUBT1)));
-				idSubtipo2.add(String.valueOf(htData
-						.get(CenDatosCVBean.C_IDTIPOCVSUBTIPO2)
-						+ "@"
-						+ htData.get(CenDatosCVBean.C_IDINSTITUCION_SUBT2)));
+				paramIdTipoCV = "{\"idtipocv\":\"" + String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCV)) + "\"}";
+				idSubtipo1.add(String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCVSUBTIPO1) + "@" + htData.get(CenDatosCVBean.C_IDINSTITUCION_SUBT1)));
+				idSubtipo2.add(String.valueOf(htData.get(CenDatosCVBean.C_IDTIPOCVSUBTIPO2) + "@" + htData.get(CenDatosCVBean.C_IDINSTITUCION_SUBT2)));
 			}
 		}
 	} else {
 		if (modo.equals("nuevo")) {
 			editarCampos = true;
 			desactivado = false;
-			idInstitucion = String.valueOf((Integer) request
-					.getAttribute("idInstitucion"));
+			idInstitucion = String.valueOf((Integer) request.getAttribute("idInstitucion"));
 		}
 	}
-	ArrayList modoSel = new ArrayList();
-	String parametro[] = new String[1];
-	parametro[0] = (String) usr.getLocation();
+	
 	String nombreInstitucionAcceso = "";
-	boolean junta = false;
-	String parametroJunta[] = new String[1];
-	String institucionAcceso = "";
-	String esJunta = (String) request.getAttribute("esJunta");
-	String mantenimiento = (String) request.getAttribute("mantenimiento");
-	boolean esMantenimiento = false;
-	if (mantenimiento != null && mantenimiento == "S")
-		esMantenimiento = true;
-	if (esJunta != null && esJunta == "S") {
-		junta = true;
-		if (request.getAttribute("idInstitucionCargo") != null
-				&& request.getAttribute("idInstitucionCargo")
-						.toString() != "") {
-			try {
-				institucionAcceso = (String) request
-						.getAttribute("idInstitucionCargo");
-			} catch (Exception e) {
-				institucionAcceso = String.valueOf((Integer) request
-						.getAttribute("idInstitucionCargo"));
-			}
-			CenInstitucionAdm institucionAdm = new CenInstitucionAdm(
-					usr);
-			if (institucionAcceso.equals("0")){
-				nombreInstitucionAcceso = institucionAdm
-						.getNombreInstitucion("2000");
-			} else {
-				nombreInstitucionAcceso = institucionAdm
-						.getNombreInstitucion(institucionAcceso);
-			}
+	String idInstitucionCargo = "";
+	if (request.getAttribute("idInstitucionCargo") != null && request.getAttribute("idInstitucionCargo").toString() != "") {
+		try {
+			idInstitucionCargo = (String) request.getAttribute("idInstitucionCargo");
+		} catch (Exception e) {
+			idInstitucionCargo = String.valueOf((Integer) request.getAttribute("idInstitucionCargo"));
 		}
-		modoSel.add(institucionAcceso);
-		parametroJunta[0] = institucionAcceso;
+		CenInstitucionAdm institucionAdm = new CenInstitucionAdm(usr);
+		if (idInstitucionCargo.equals("0")) {
+			nombreInstitucionAcceso = institucionAdm.getNombreInstitucion("2000");
+		} else {
+			nombreInstitucionAcceso = institucionAdm.getNombreInstitucion(idInstitucionCargo);
+		}
 	}
+	
+	boolean esMantenimiento = false;
+	String mantenimiento = (String) request.getAttribute("mantenimiento");
+	if (mantenimiento != null && mantenimiento.equals("S"))
+		esMantenimiento = true;	
+	
+	boolean junta = false;
+	String esJunta = (String) request.getAttribute("esJunta");
+	ArrayList modoSel = new ArrayList();
+	if (esJunta != null && esJunta.equals("S")) {
+		junta = true;
+		modoSel.add(idInstitucionCargo);
+	}
+	
 %>
 <%@page import="java.util.Hashtable"%>
 <%@page import="java.util.Properties"%>
@@ -236,15 +210,27 @@
 					});
 					jQuery("#idInstitucionCargo").change();
 				}
-				cargarCombos();
+				<% if (esMantenimiento && junta) {  %>
+				//NO hacer nada ni cargar combos
+			 <% } else {  %>
+			 	cargarCombos();
+			 <% }  %>
 			});
 			 
 			// Asociada al boton Volver
 			function accionVolver(){		
 				sub();
-				document.datosCVForm.modo.value="abrir";
-				document.datosCVForm.target="_self";
- 				document.datosCVForm.submit(); 
+				
+				 <% if (esMantenimiento && junta) {  %>
+					document.BusquedaComisionesForm.modo.value="abrirVolver";
+	 				document.BusquedaComisionesForm.submit(); 
+				 
+				 <% } else {  %>
+					document.datosCVForm.modo.value="abrir";
+					document.datosCVForm.target="_self";
+	 				document.datosCVForm.submit(); 
+				 <% }  %>
+
 				fin();
 			}
 			
@@ -259,7 +245,11 @@
 				if(confirm('<siga:Idioma key="messages.confirm.cancel"/>')) {
 					document.getElementById("datosCVForm").reset();
 					rellenarCampos();
-					cargarCombos();
+					<% if (esMantenimiento && junta) {  %>
+					//NO hacer nada ni cargar combos
+				 <% } else {  %>
+				 	cargarCombos();
+				 <% }  %>
 				}
 			}			
 	
@@ -311,7 +301,6 @@
 					
 					<%if (modo.equals("editar")){%>
 						
- 			 			
  						document.datosCVForm.modo.value="modificar";
  						document.datosCVForm.target="submitArea"; 
  						document.datosCVForm.submit(); 
@@ -402,10 +391,13 @@
 
 			<html:hidden property="idPersona" styleId="" value="<%=idPersona%>" />
 			<html:hidden property="idCV" styleId="idCV" value="<%=idCV%>" />
-			<html:hidden property="idInstitucion" styleId="idInstitucion"
-				value="<%=idInstitucion%>" />
+			<html:hidden property="idInstitucion" styleId="idInstitucion" value="<%=idInstitucion%>" />
+			<% if (esMantenimiento && junta) {  %>
+				<html:hidden property="idInstitucionCargo" styleId="idInstitucionCargo" value="<%=idInstitucionCargo%>" />
+			 <% }  %>
 			<html:hidden property="motivo" styleId="motivo" value="" />
 			<input type='hidden' id="accion"  name="accion" value="<%=accion%>" />
+			<input type='hidden' id="comisionCargos"  name="comisionCargos" value="<%=mantenimiento%>" />
 			<table class="tablaCentralCamposMedia" align="center">
 				<tr>
 					<td>
@@ -579,6 +571,7 @@
 				</tr>
 			</table>
 		</html:form>
+		
 		<!-- FIN: CAMPOS -->
 
 		<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
@@ -598,12 +591,21 @@
 		<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 
 	</div>
+	
+	<% if (esMantenimiento && junta) {  %>
+		<html:form action="/CEN_GestionarComisiones.do" styleId="BusquedaComisionesForm" method="POST" target="mainWorkArea" type="" >
+			<html:hidden property ="modo" 	value="abrirVolver" />
+			<html:hidden property="idPersona" styleId="idPersona" value="<%=idPersona%>" />
+			<html:hidden property="idInstitucion" styleId="idInstitucion" value="<%=idInstitucion%>" />
+			<html:hidden property="idInstitucionCargo" styleId="idInstitucionCargo" value="<%=idInstitucionCargo%>" />	
+			<html:hidden property="nombreColegiado" styleId="nombreColegiado" value="<%=nombreUsu%>" />
+		</html:form>	
+	<% }  %>		
 	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 
 	<!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->
-	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"
-		style="display: none"></iframe>
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp"	style="display: none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
 
 </body>

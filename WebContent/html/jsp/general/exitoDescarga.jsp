@@ -88,7 +88,6 @@
 	            formu.setAttribute('method', 'POST');
 	            formu.setAttribute('action', '/SIGA/ServletDescargaFichero.svrl');
 	            formu.setAttribute('target', 'submitArea');
-	            formu.setAttribute('method', 'POST');
 	
 	            var myinput = document.createElement('input');
 	            myinput.setAttribute('type', 'hidden');

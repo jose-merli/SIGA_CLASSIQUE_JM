@@ -178,6 +178,10 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			
 		}
 		if(form.getFichaColegial()){
+			if(form.getIdPersona()==null || form.getIdPersona().equalsIgnoreCase("") ){
+				ClsLogging.writeFileLogError("Se ha perdido el idPersona de formulario!!!!Lanzamos excepcion general",request,3);
+				throw new ClsExceptions("Se ha perdido el idPersona de formulario!!!!Lanzamos excepcion general");
+			}
 			
 			GenParametrosAdm paramAdm = new GenParametrosAdm (user);
 			String activarMensaje = paramAdm.getValor (user.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.ACTIVAR_MENSAJE_DOCRESOLUCION_COLEGIADO, "");
@@ -493,6 +497,24 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 								ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO,
 								idPersona);
 						
+						if(fechaActuacion!=null && !fechaActuacion.equals("")){
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_FECHA, GstDate.getApplicationFormatDate("", fechaActuacion));
+							camposList.add(ScsActuacionDesignaBean.C_FECHA);
+						}
+						
+						if(nigActuacion!=null && !nigActuacion.equals("")){
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_NIG, nigActuacion);
+							camposList.add(ScsActuacionDesignaBean.C_NIG);
+						}
+						
+						if(numProcActuacion!=null && !numProcActuacion.equals("")){
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, numProcActuacion);
+							camposList.add(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO);
+						}
+						if(anioProcActuacion!=null && !anioProcActuacion.equals("")){
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, anioProcActuacion);
+							camposList.add(ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO);
+						}
 						
 						UtilidadesHash.set(hashActuacion,
 								ScsActuacionDesignaBean.C_NUMEROASUNTO,
@@ -729,6 +751,10 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		request.setAttribute("EJIS_ACTIVO", ejisActivo);
 		
 		try {
+			if(fInformeJustificacion.getIdPersona()==null || fInformeJustificacion.getIdPersona().equalsIgnoreCase("") ){
+				ClsLogging.writeFileLogError("Se ha perdido el idPersona de formulario!!!!Lanzamos excepcion general",request,3);
+				throw new Exception("Se ha perdido el idPersona de formulario!!!!Lanzamos excepcion general");
+			}
 			HashMap databackup=getPaginador(request, paginadorPenstania);
 			if (databackup!=null){ 
 

@@ -152,6 +152,8 @@
 			<html:hidden property="puertaDir"/>			
 			<html:hidden property="numeroDir"/>			
 			<html:hidden property="ninstitucionOrigen"/>
+			<html:hidden property="incapacitado"/>
+			<html:hidden property="circunstanciasExcepcionales"/>
 			<input type="hidden" name="actionModal" value="">
 		</html:form>
 

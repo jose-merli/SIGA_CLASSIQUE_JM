@@ -1869,6 +1869,20 @@
 			<siga:ComboBD nombre = "enCalidadDe" tipo="cmbEnCalidadDe" clase="<%=estiloBox%>" readonly="<%=sreadonly%>"/>
 		</td>
 <%
+						} else if (conceptoE.equals(PersonaJGAction.EJG)) {
+%>
+
+							<td class="labelText">
+								<html:checkbox name="PersonaJGForm" property="incapacitado"/><html:hidden name="PersonaJGForm" property="incapacitado" value="false"/>
+								<label for="incapacitado"><siga:Idioma key="gratuita.personaJG.literal.incapacitado"/></label>
+							</td>
+							
+							<td class="labelText">
+								<html:checkbox name="PersonaJGForm" property="circunstanciasExcepcionales"/><html:hidden name="PersonaJGForm" property="circunstanciasExcepcionales" value="false"/>
+								<label for="circunstanciasExcepcionales"><siga:Idioma key="gratuita.personaJG.literal.circunstanciasExcepcionales"/></label>
+							</td>
+		
+<%
 						} else if (conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
 %>
 
