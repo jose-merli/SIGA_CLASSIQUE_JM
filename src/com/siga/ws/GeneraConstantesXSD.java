@@ -10,13 +10,13 @@ import java.util.List;
 
 public class GeneraConstantesXSD {
 	
-	private static String schema = "USCGAE2";
+	private static String schema = "USCGAE_DESA";
 	
 	public static void main (String[] args) throws Exception {
 		
 
 //		String url = "jdbc:oracle:thin:pcajg/pcajg@127.0.0.1:1521:XE";
-		String url = "jdbc:oracle:thin:uscgae2/uscgae2@192.168.11.55:1521:SIGADES";
+		String url = "jdbc:oracle:thin:uscgae_desa/desarrollo@10.60.3.121:1546:SIGADES";
 		
 //		String url = "jdbc:oracle:thin:angelcpe/angelcpe@10.60.3.79:1526:SIGAPRE";		
 		
@@ -30,11 +30,11 @@ public class GeneraConstantesXSD {
 		Connection conn = DriverManager.getConnection(url);
 
 		//PCAJG 
-//		String[] vistas = new String[]{"V_PCAJG_EJG", "V_PCAJG_ABOGADOSDESIGNADOS", "V_PCAJG_CONTRARIOS", "V_PCAJG_DOCUMENTACIONEXP_F", "V_PCAJG_DOCUMENTACIONEXP_DS"
-//				, "V_PCAJG_FAMILIARES", "V_PCAJG_MARCASEXPEDIENTES", "V_PCAJG_DELITOS"};
+		String[] vistas = new String[]{"V_PCAJG_EJG", "V_PCAJG_ABOGADOSDESIGNADOS", "V_PCAJG_CONTRARIOS", "V_PCAJG_DOCUMENTACIONEXP_F", "V_PCAJG_DOCUMENTACIONEXP_DS"
+				, "V_PCAJG_FAMILIARES", "V_PCAJG_MARCASEXPEDIENTES", "V_PCAJG_DELITOS"};
 		
 		//PAMPLONA 2055
-		String[] vistas = new String[]{"v_ws_2055_archivo","v_ws_2055_ejg","v_ws_2055_persona", "V_WS_2055_ARCHIVO"};
+//		String[] vistas = new String[]{"v_ws_2055_archivo","v_ws_2055_ejg","v_ws_2055_persona", "V_WS_2055_ARCHIVO"};
 		
 		//SANTIAGO 2064
 //		String[] vistas = new String[]{"V_WS_2064_EJG", "V_WS_2064_PERSONA", "V_WS_2064_CONTRARIOS", "V_WS_2064_DOCUMENTO"};
