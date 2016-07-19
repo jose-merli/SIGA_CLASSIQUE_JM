@@ -27,6 +27,7 @@ import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.log4j.SatecLogger;
 import org.redabogacia.sigaservices.app.mapper.EnvEnviosExtendsMapper;
 import org.redabogacia.sigaservices.app.services.scs.ComunicacionesService;
+import org.redabogacia.sigaservices.app.vo.env.ComunicacionesVo;
 
 import com.siga.beans.EnvEstadoEnvioAdm;
 import com.siga.envios.service.IntercambiosService;
@@ -356,6 +357,47 @@ public  class SalidaEnviosServiceImpl extends MyBatisBusinessServiceTemplate imp
 		} catch (Exception e) {
 			log.error("Se ha producido un error al realizar la busqueda en la bandeja de salida de envíos", e);
 			throw new BusinessException("Se ha producido un error al realizar la busqueda en la bandeja de entrada de envíos",e);
+			
+		} 	
+		
+		return salidaEnvios;
+	}
+
+	public Short getNumComunicacionesLetrado(Long idPersona, Short idInstitucion) throws BusinessException {
+		Short  numComunicacionesLetrado = null;
+		EnvEnviosExtendsMapper envEnviosMapper = getMyBatisSqlSessionManager().getMapper(EnvEnviosExtendsMapper.class);
+
+		try {
+			Map<String, Object> parametrosMap = new HashMap<String, Object>();
+			parametrosMap.put("idInstitucion", idInstitucion);
+			parametrosMap.put("idPersona", idPersona);
+			numComunicacionesLetrado = envEnviosMapper.getNumComunicacionesLetrado(parametrosMap);
+			
+		} catch (Exception e) {
+			log.error("Se ha producido un error en getNumComunicacionesLetrado", e);
+			throw new BusinessException("Se ha producido un error en getNumComunicacionesLetrado",e);
+			
+		} 	
+		
+		return numComunicacionesLetrado;
+	}
+
+	public List<ComunicacionesVo> getComunicacionesLetrado(Long idPersona,String codIdioma, Short idInstitucion, int rowNumStart, int rowNumPageSize) throws BusinessException {
+		List<ComunicacionesVo>  salidaEnvios = null;
+		EnvEnviosExtendsMapper envEnviosMapper = getMyBatisSqlSessionManager().getMapper(EnvEnviosExtendsMapper.class);
+
+		try {
+			Map<String, Object> parametrosMap = new HashMap<String, Object>();
+			parametrosMap.put("idInstitucion", idInstitucion);
+			parametrosMap.put("idPersona", idPersona);
+			parametrosMap.put("codIdioma", codIdioma);
+			parametrosMap.put("rowNumStart", rowNumStart);
+			parametrosMap.put("rowNumPageSize", rowNumPageSize);
+			salidaEnvios = envEnviosMapper.getComunicacionesLetrado(parametrosMap);
+			
+		} catch (Exception e) {
+			log.error("Se ha producido un error al realizar la busqueda de getComunicacionesLetrado", e);
+			throw new BusinessException("Se ha producido un error al realizar la busqueda de getComunicacionesLetrado",e);
 			
 		} 	
 		

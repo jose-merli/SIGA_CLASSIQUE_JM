@@ -138,7 +138,7 @@ public class ProgramacionAction extends MasterAction {
             
             
 	        envioBean = (EnvEnviosBean)envio.firstElement();
-	        if(envioBean.getIdTipoEnvios()!=null && envioBean.getIdTipoEnvios().intValue()==EnvEnviosAdm.TIPO_CORREO_ORDINARIO){
+	        if(envioBean.getIdTipoEnvios()!=null && envioBean.getIdTipoEnvios().intValue()==EnvTipoEnviosAdm.K_CORREO_ORDINARIO){
 		        String pathFTP = "";
 	    		GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
 	    		try {

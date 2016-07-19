@@ -1,6 +1,8 @@
 
 package com.siga.gratuita.form;
 
+import java.util.List;
+
 import com.siga.general.MasterForm;
 
 /**
@@ -33,7 +35,14 @@ public class ComunicacionesForm extends MasterForm{
 	
 	String comisionAJG;
 	
-
+	String idEnvio;
+	String fecha;
+	String tipo;
+	String nombre;
+	String asunto;
+	String idInstitucion;
+	String idPersona;
+	List<String> documentos;
 	
 	
 	public String getSolicitante() {
@@ -123,6 +132,68 @@ public class ComunicacionesForm extends MasterForm{
 	public void setDesignaCodigo(String designaCodigo) {
 		this.designaCodigo = designaCodigo;
 	}
+	public String getIdEnvio() {
+		return idEnvio;
+	}
+	public String getFecha() {
+		return fecha;
+	}
+	public String getTipo() {
+		return tipo;
+	}
+	public String getNombre() {
+		return nombre;
+	}
+	public String getAsunto() {
+		return asunto;
+	}
+	public List<String> getDocumentos() {
+		return documentos;
+	}
+	public void setIdEnvio(String idEnvio) {
+		this.idEnvio = idEnvio;
+	}
+	public void setFecha(String fecha) {
+		this.fecha = fecha;
+	}
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+	public void setAsunto(String asunto) {
+		this.asunto = asunto;
+	}
+	public void setDocumentos(List<String> documentos) {
+		this.documentos = documentos;
+	}
+	public String getIdInstitucion() {
+		return idInstitucion;
+	}
+	public void setIdInstitucion(String idInstitucion) {
+		this.idInstitucion = idInstitucion;
+	}
 	
+	public ComunicacionesForm clone() {
+		ComunicacionesForm miForm = new ComunicacionesForm();
+		miForm.setIdInstitucion(this.idInstitucion);
+		miForm.setIdPersona(this.idPersona);
+		miForm.setIdEnvio(this.idEnvio);
+		miForm.setFecha(this.fecha);
+		miForm.setTipo(this.tipo);
+		miForm.setNombre(this.nombre);
+		miForm.setAsunto(this.asunto);
+		miForm.setDocumentos(this.documentos);
+        miForm.setDatosPaginador(this.getDatosPaginador());
+		return miForm;
+		
+	}
+	public String getIdPersona() {
+		return idPersona;
+	}
+	public void setIdPersona(String idPersona) {
+		this.idPersona = idPersona;
+	}
 
 }

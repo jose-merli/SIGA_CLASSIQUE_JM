@@ -259,12 +259,7 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 	        String idJuzgado = request.getParameter("idJuzgado");
 	        String idPersona = request.getParameter("idPersona");
 	        String colegiadoNumero = request.getParameter("colegiadoNumero");
-	        Enumeration enumeration = request.getParameterNames();
-	        while (enumeration.hasMoreElements()) {
-				String object = (String) enumeration.nextElement();
-				System.out.println(object);
-				
-			}
+	        
 	        String pagina = request.getParameter("pagina");
 	        
 	        solicitudAceptadaCentralitaForm.setIdInstitucion(idInstitucion);

@@ -10,6 +10,7 @@ import com.siga.administracion.SIGAConstants;
 import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.EnvEstadoEnvioAdm;
 import com.siga.beans.EnvPlantillasEnviosBean;
+import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.general.MasterForm;
 import com.siga.tlds.FilaExtElement;
 
@@ -183,7 +184,7 @@ public class DefinirEnviosForm extends MasterForm
 		}else{
 			 elementosFila=new FilaExtElement[3];
 			 elementosFila[0]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ);
-			if (getIdTipoEnvio().equals(EnvEnviosAdm.TIPO_CORREO_ORDINARIO) && (getIdEstado().equals(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADO) || getIdEstado().equals(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES)))
+			if (Integer.valueOf(getIdTipoEnvio()).equals(EnvTipoEnviosAdm.K_CORREO_ORDINARIO) && (getIdEstado().equals(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADO) || getIdEstado().equals(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES)))
 			{
 				elementosFila[1]=new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ);
 			} else {

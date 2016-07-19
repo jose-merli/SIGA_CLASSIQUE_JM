@@ -48,6 +48,7 @@ import com.siga.beans.EnvEstadoEnvioAdm;
 import com.siga.beans.EnvListaCorreosBean;
 import com.siga.beans.EnvListaCorreosEnviosAdm;
 import com.siga.beans.EnvListaCorreosEnviosBean;
+import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.beans.ExpAnotacionAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.PysProductosInstitucionAdm;
@@ -446,9 +447,9 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 			        if(vTelefonos!=null && vTelefonos.size()>0){
 				        GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);
 				        String activoParamSMS = "0";
-				        if(enviosBean.getIdTipoEnvios() == EnvEnviosAdm.TIPO_SMS ){
+				        if(enviosBean.getIdTipoEnvios() == EnvTipoEnviosAdm.K_SMS ){
 				        	activoParamSMS = admParametros.getValor(enviosBean.getIdInstitucion().toString(), "SCS", "ENVIAR_SMS_SOLO_PREFERENTES", "0");
-				        } else if(enviosBean.getIdTipoEnvios() == EnvEnviosAdm.TIPO_BUROSMS ){
+				        } else if(enviosBean.getIdTipoEnvios() == EnvTipoEnviosAdm.K_BUROSMS ){
 				        	activoParamSMS = admParametros.getValor(enviosBean.getIdInstitucion().toString(), "SCS", "ENVIAR_BUROSMS_SOLO_PREFERENTES", "0");
 				        }
 				        
@@ -1473,13 +1474,14 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
     private boolean comprobarDireccion(int tipo, EnvDestinatariosBean destBean){
         boolean resultado = false;
         switch (tipo) {
-        case EnvEnviosAdm.TIPO_CORREO_ELECTRONICO:
+        case EnvTipoEnviosAdm.K_CORREO_ELECTRONICO:case EnvTipoEnviosAdm.K_DOCUMENTACIONLETRADO:
+        	
             String correoElectronico = destBean.getCorreoElectronico();
             if (correoElectronico!=null && !correoElectronico.equals("")){
                 resultado = true;
      		}
             break;
-        case EnvEnviosAdm.TIPO_CORREO_ORDINARIO:
+        case EnvTipoEnviosAdm.K_CORREO_ORDINARIO:
             String direccion = destBean.getDomicilio();
         	String idPoblacion = destBean.getIdPoblacion();
         	String poblacionExtranjera = destBean.getPoblacionExtranjera();
@@ -1491,7 +1493,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
                 resultado = true;
      		}
             break;
-        case EnvEnviosAdm.TIPO_FAX:
+        case EnvTipoEnviosAdm.K_FAX:
             String fax1 = destBean.getFax1();
         	String fax2 = destBean.getFax2();
         	if ((fax1!=null && !fax1.equals(""))||
@@ -1696,19 +1698,19 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 			// Proceso de Correo Electrónico
 			switch (iTipoEnvio) {
 			
-			case EnvEnviosAdm.TIPO_CORREO_ELECTRONICO:
+			case EnvTipoEnviosAdm.K_CORREO_ELECTRONICO:case EnvTipoEnviosAdm.K_DOCUMENTACIONLETRADO:
 				estadoEnvio = envAdm.enviarCorreoElectronico(enviosBean, vDestinatarios, htErrores, generarLog);
 				break;
-			case EnvEnviosAdm.TIPO_SMS:
+			case EnvTipoEnviosAdm.K_SMS:
 				estadoEnvio = envAdm.enviarSMS(enviosBean, vDestinatarios, htErrores, generarLog);
 				break;
-			case EnvEnviosAdm.TIPO_BUROSMS:
+			case EnvTipoEnviosAdm.K_BUROSMS:
 				estadoEnvio = envAdm.enviarBuroSMS(enviosBean, vDestinatarios, htErrores, generarLog);
 				break;
-			case EnvEnviosAdm.TIPO_CORREO_ORDINARIO:
+			case EnvTipoEnviosAdm.K_CORREO_ORDINARIO:
 				estadoEnvio = envAdm.enviarCorreoOrdinario(enviosBean, vDestinatarios, htErrores, generarLog);
 				break;
-			case EnvEnviosAdm.TIPO_FAX:
+			case EnvTipoEnviosAdm.K_FAX:
 				estadoEnvio = envAdm.enviarFax(enviosBean, vDestinatarios, htErrores, generarLog);
 
 				break;

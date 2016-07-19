@@ -2936,7 +2936,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			enviosBean.setDescripcion(enviosBean.getDescripcion().substring(0, 99));
 		// Preferencia del tipo de envio si el usuario tiene uno:
 		enviosBean.setIdTipoEnvios(envioProgramadoBean.getIdTipoEnvios());
-		if (envioProgramadoBean != null && envioProgramadoBean.getIdTipoEnvios() != null && !envioProgramadoBean.getIdTipoEnvios().toString().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))
+		if (envioProgramadoBean != null && envioProgramadoBean.getIdTipoEnvios() != null && !envioProgramadoBean.getIdTipoEnvios().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))
 			envio.getEnviosBean().setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
 
 		enviosBean.setFechaProgramada(envioProgramadoBean.getFechaProgramada());
@@ -3955,7 +3955,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		if (fechaProgramada == null || fechaProgramada.equals(""))
 			enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
 		else {
-			if (idTipoEnvio != null && !idTipoEnvio.equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))
+			if (enviosBean.getIdTipoEnvios() != null && !enviosBean.getIdTipoEnvios().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))
 				enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
 			else
 				enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_PENDIENTE_AUTOMATICO));
@@ -7408,7 +7408,7 @@ public class EnvioInformesGenericos extends MasterReport {
 							ClsLogging.writeFileLogWithoutSession(" ----------ERROR ENVIO DE INFORMES GENERICOS PENDIENTES CORREO ORDINARIO: ", 3);
 						}
 
-					} else if (idTipoEnvio.toString().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO) || idTipoEnvio.toString().equals(EnvTipoEnviosAdm.K_FAX)) {
+					} else if (idTipoEnvio.equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO) || idTipoEnvio.equals(EnvTipoEnviosAdm.K_FAX)) {
 
 						Vector vDestinatarios = admDestProgram.getDestinatariosInformesGenericosProgramados(programInfGenericoBean);
 						Vector vPlantillas = admInformesGenericos.getPlantillasInformesGenericosProgramados(programInfGenericoBean);
@@ -7428,7 +7428,7 @@ public class EnvioInformesGenericos extends MasterReport {
 							}
 						}
 
-					} else if (idTipoEnvio.toString().equals(EnvTipoEnviosAdm.K_SMS) || idTipoEnvio.toString().equals(EnvTipoEnviosAdm.K_BUROSMS)) {
+					} else if (idTipoEnvio.equals(EnvTipoEnviosAdm.K_SMS) || idTipoEnvio.equals(EnvTipoEnviosAdm.K_BUROSMS)) {
 
 						Vector vDestinatarios = admDestProgram.getDestinatariosInformesGenericosProgramados(programInfGenericoBean);
 						Vector vPlantillas = admInformesGenericos.getPlantillasInformesGenericosProgramados(programInfGenericoBean);
@@ -7443,7 +7443,7 @@ public class EnvioInformesGenericos extends MasterReport {
 							}
 						}
 
-					} else if (idTipoEnvio.toString().equals(EnvTipoEnviosAdm.K_ENVIOTELEMATICO)) {
+					} else if (idTipoEnvio.equals(EnvTipoEnviosAdm.K_ENVIOTELEMATICO)) {
 
 						// juzga
 

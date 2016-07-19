@@ -319,5 +319,27 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.deleted.selected.success', 'Registros borrados correctamente#EU', 0, '3', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.deleted.selected.success', 'Registros borrados correctamente#GL', 0, '4', sysdate, 0, '19');
 
+insert into ENV_TIPOENVIOS (IDTIPOENVIOS, NOMBRE, FECHAMODIFICACION, USUMODIFICACION)
+values (7, '47007', to_date('06-06-2012 15:57:25', 'dd-mm-yyyy hh24:mi:ss'), 0);
+insert into gen_recursos_catalogos values ('47007', 'Documentación letrado',  '1', sysdate, 0,null, 'ENV_TIPOENVIOS','NOMBRE','env_tipoenvios.nombre.0.7');
+insert into gen_recursos_catalogos values ('47007', 'Documentación letrado#CA',  '2', sysdate,0,null,'ENV_TIPOENVIOS','NOMBRE','env_tipoenvios.nombre.0.7');
+insert into gen_recursos_catalogos  values ('47007', 'Documentación letrado#EU',  '3', sysdate,0,null, 'ENV_TIPOENVIOS','NOMBRE','env_tipoenvios.nombre.0.7');
+insert into gen_recursos_catalogos  values ('47007', 'Documentación letrado#GL',  '4', sysdate,0,null, 'ENV_TIPOENVIOS','NOMBRE','env_tipoenvios.nombre.0.7');
+
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('pestana.fichaCliente.comunicaciones', 'Comunicaciones', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('pestana.fichaCliente.comunicaciones', 'Comunicaciones#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('pestana.fichaCliente.comunicaciones', 'Comunicaciones#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('pestana.fichaCliente.comunicaciones', 'Comunicaciones#GL', 0, '4', sysdate, 0, '19');
+
+insert into 
+GEN_PROCESOS (IDPROCESO, IDMODULO, TRAZA, TARGET, FECHAMODIFICACION, USUMODIFICACION, DESCRIPCION, TRANSACCION, IDPARENT, NIVEL) 
+values ('228','CEN', 1, 'Y', SYSDATE,0 ,'Comunicaciones', 'CEN_Comunicaciones', 500,10);
+
+insert into 
+GEN_PESTANAS (idproceso, Idlenguaje, Idrecurso, Posicion, Idgrupo) 
+values(228,1, 'pestana.fichaCliente.comunicaciones', 19, 'FICHACLIEN');
+
+
 
 		               

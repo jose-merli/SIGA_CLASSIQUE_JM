@@ -100,12 +100,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
   public final static int ESTADO_PENDIENTE_AUTOMATICO = 4;
   public final static int ESTADO_PROCESANDO = 5;
 
-  public final static int TIPO_CORREO_ELECTRONICO = 1;
-  public final static int TIPO_CORREO_ORDINARIO = 2;
-  public final static int TIPO_FAX = 3;
-  public final static int TIPO_SMS = 4;
-  public final static int TIPO_BUROSMS = 5;
-  public final static int TIPO_TELEMATICO = 6;
+ 
 
   public final static String NO_GENERAR = "N";
   public final static String GENERAR_ETIQUETAS = "G";
@@ -718,7 +713,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
  		}
  		boolean foundPrimeraPreferente = false;
  		switch (tipo) {
-        case TIPO_CORREO_ELECTRONICO:
+        case EnvTipoEnviosAdm.K_CORREO_ELECTRONICO:case EnvTipoEnviosAdm.K_DOCUMENTACIONLETRADO:
             for (int i=0;i<direcciones.size();i++){
      		    Hashtable htDir = (Hashtable)direcciones.get(i);
      		    String correoElectronico = (String)htDir.get(CenDireccionesBean.C_CORREOELECTRONICO);
@@ -740,7 +735,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
      		    }
      		}
             break;
-        case TIPO_CORREO_ORDINARIO:
+        case EnvTipoEnviosAdm.K_CORREO_ORDINARIO:
             for (int i=0;i<direcciones.size();i++){
                 Hashtable htDir = (Hashtable)direcciones.get(i);
      		    String direccion = (String)htDir.get(CenDireccionesBean.C_DOMICILIO);
@@ -766,8 +761,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				}
      		}
             break;
-        case TIPO_SMS:
-        case TIPO_BUROSMS:
+        case EnvTipoEnviosAdm.K_SMS:
+        case EnvTipoEnviosAdm.K_BUROSMS:
             for (int i=0;i<direcciones.size();i++){
                 Hashtable htDir = (Hashtable)direcciones.get(i);
                 String movil = (String)htDir.get(CenDireccionesBean.C_MOVIL);
@@ -788,7 +783,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
      		    }
      		}
             break;
-        case TIPO_FAX:
+        case EnvTipoEnviosAdm.K_FAX:
             for (int i=0;i<direcciones.size();i++){
                 Hashtable htDir = (Hashtable)direcciones.get(i);
      		    String fax1 = (String)htDir.get(CenDireccionesBean.C_FAX1);
@@ -2148,52 +2143,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-/*	
-	public Hashtable getCamposCorreoElectronico(Integer idInstitucion, Integer idEnvio, Long idPersona, String consulta) 
-	throws SIGAException,ClsExceptions {
-    
-	    EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrbean);
-	    Hashtable htPk = new Hashtable();
-	    htPk.put(EnvEnviosBean.C_IDINSTITUCION,idInstitucion);
-	    htPk.put(EnvEnviosBean.C_IDENVIO,idEnvio);
-	    EnvEnviosBean envBean = null;
-	    try {
-	        envBean = (EnvEnviosBean)envAdm.selectByPK(htPk).firstElement();
-	    } catch (ClsExceptions e) {
-	        throw e;
-	    }
-	    if (!envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))){
-	        throw new ClsExceptions("Tipo de envío electrónico incorrecto");
-	//        throw new SIGAException("messages.envios.error.tipoenvioincorrecto ");
-	    }
-	    
-	    String sAsunto = (getAsunto(idInstitucion,idEnvio)==null)?"":getAsunto(idInstitucion,idEnvio);
-	    String sCuerpo = (getCuerpo(idInstitucion,idEnvio)==null)?"":getCuerpo(idInstitucion,idEnvio);
-	    
-	    //Obtenemos los valores de las etiquetas y los formateamos
-	    Hashtable htDatosEnvio = getDatosEnvio(idInstitucion,idEnvio,idPersona, consulta);
-	    Hashtable htDatosEnvioForm = null;
-	    try {
-	        htDatosEnvioForm = darFormatoCampos(idInstitucion,idEnvio,htDatosEnvio);
-	    } catch (Exception e1) {
-	        throw new ClsExceptions(e1,"Error dando formato a los campos del envío electrónico");
-	//        throw new SIGAException("messages.general.error",e1);
-	    }
-	    
-	    //Sustituimos las etiquetas por sus valores
-	    sAsunto = sustituirEtiquetas(sAsunto,htDatosEnvioForm);
-	    sCuerpo = sustituirEtiquetas(sCuerpo,htDatosEnvioForm);
-	    
-	    Hashtable htCorreo = new Hashtable();
-	    htCorreo.put("asunto",sAsunto);
-	    htCorreo.put("cuerpo",sCuerpo);
-	    return htCorreo;        
-	}
-*/
+
 	public Hashtable getCamposCorreoElectronico(EnvEnviosBean envBean,EnvDestinatariosBean beanDestinatario
 			, Long idPersona, String consulta,Hashtable htDatosEnvio) throws SIGAException,ClsExceptions {
     
-	    if (!envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))){
+	    if (!envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))&&!envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_DOCUMENTACIONLETRADO))){
 	        throw new ClsExceptions("Tipo de envío electrónico incorrecto");
 	    }
 	    List<ImagenPlantillaForm> lImagenes = (List<ImagenPlantillaForm>) htDatosEnvio.get("imagenesPlantilla");
@@ -3948,7 +3902,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 
         // COMPROBACIÓN
         /////////////////////////////////////
-        if (!envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))){
+        if (!envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))&&!envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_DOCUMENTACIONLETRADO))){
             throw new ClsExceptions("Tipo de envio electrónico incorrecto");
         }
         
@@ -3994,7 +3948,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	        sFrom = remBean.getCorreoElectronico();
         }else{
         	// obtengo la de la institucion
-            Row dirPref = getDireccionPreferenteInstitucion(envBean.getIdInstitucion(),TIPO_CORREO_ELECTRONICO);
+            Row dirPref = getDireccionPreferenteInstitucion(envBean.getIdInstitucion(),EnvTipoEnviosAdm.K_CORREO_ELECTRONICO);
             sFrom = dirPref.getString(EnvRemitentesBean.C_CORREOELECTRONICO);
         }
 
@@ -4228,18 +4182,21 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		            // DOCUMENTOS ADJUNTOS
 			        /////////////////////////////////////
 		    	    /* documentos adjuntos de envío*/
-		    	    EnvDocumentosAdm docAdm = new EnvDocumentosAdm(this.usrbean);
-		    	    Vector vDocs = docAdm.select(htPk);
-		    	    for (int d=0;d<vDocs.size();d++){
-		    	        EnvDocumentosBean docBean = (EnvDocumentosBean)vDocs.elementAt(d);
-		    	        String idDoc = String.valueOf(docBean.getIdDocumento());
-		    	        File fDoc = docAdm.getFile(envBean,idDoc);
-		    	        sAttachment = fDoc.getPath();
-		    	        sAttach = docBean.getPathDocumento();
-		    	        addAttachToMultipart(mixedMultipart, fDoc.getPath(), docBean.getPathDocumento());
-		    	        txtDocumentos.append(docBean.getDescripcion());
-		    	        txtDocumentos.append(",");
-		    	      
+		    	    //Solo adjuntamos docuemntos al envio NO es de tipo Docuemntacion letrado 
+		    	    if (envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))){
+			    	    EnvDocumentosAdm docAdm = new EnvDocumentosAdm(this.usrbean);
+			    	    Vector vDocs = docAdm.select(htPk);
+			    	    for (int d=0;d<vDocs.size();d++){
+			    	        EnvDocumentosBean docBean = (EnvDocumentosBean)vDocs.elementAt(d);
+			    	        String idDoc = String.valueOf(docBean.getIdDocumento());
+			    	        File fDoc = docAdm.getFile(envBean,idDoc);
+			    	        sAttachment = fDoc.getPath();
+			    	        sAttach = docBean.getPathDocumento();
+			    	        addAttachToMultipart(mixedMultipart, fDoc.getPath(), docBean.getPathDocumento());
+			    	        txtDocumentos.append(docBean.getDescripcion());
+			    	        txtDocumentos.append(",");
+			    	      
+			    	    }
 		    	    }
 		    	    
 		    	  
@@ -4713,7 +4670,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	        sFrom = remBean.getCorreoElectronico();
         }else{
         	// obtengo la de la institucion
-            Row dirPref = getDireccionPreferenteInstitucion(envBean.getIdInstitucion(),TIPO_CORREO_ELECTRONICO);
+            Row dirPref = getDireccionPreferenteInstitucion(envBean.getIdInstitucion(),EnvTipoEnviosAdm.K_CORREO_ELECTRONICO);
             sFrom = dirPref.getString(EnvRemitentesBean.C_CORREOELECTRONICO);
         }
 

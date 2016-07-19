@@ -32,7 +32,8 @@
 	
 	
 	Hashtable htDatos = (Hashtable)request.getAttribute("envio");
-	String idTipoEnvio=(String)htDatos.get("idTipoEnvio");
+	String idTipoEnvios=(String)htDatos.get("idTipoEnvio");
+	Integer idTipoEnvio = Integer.valueOf(idTipoEnvios);
 	int elementoActivo = 1;
 %>	
 
@@ -95,7 +96,7 @@
 
 <%
 	String[] lista = new String[6];
-	if (idTipoEnvio.equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO)) {
+	if (idTipoEnvio.equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO)||idTipoEnvio.equals(EnvTipoEnviosAdm.K_DOCUMENTACIONLETRADO)) {
 		lista[0] = "73i";
 		lista[1] = "73k";
 	}else if(idTipoEnvio.equals(EnvTipoEnviosAdm.K_ENVIOTELEMATICO)){

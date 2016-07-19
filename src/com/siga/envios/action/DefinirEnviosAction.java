@@ -357,7 +357,7 @@ public class DefinirEnviosAction extends MasterAction {
 			envioBean.setIdInstitucion(Integer.valueOf(userBean.getLocation()));
 			envioBean.setDescripcion(form.getNombre());
 			envioBean.setIdTipoEnvios(Integer.valueOf(form.getIdTipoEnvio()));
-			if(form.getIdTipoEnvio().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))
+			if(envioBean.getIdTipoEnvios().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))
 				envioBean.setAcuseRecibo(form.getAcuseRecibo());
 			envioBean.setIdPlantillaEnvios(Integer.valueOf(form.getIdPlantillaEnvios()));
 			if (!form.getIdPlantillaGeneracion().trim().equals("")){
@@ -646,7 +646,7 @@ public class DefinirEnviosAction extends MasterAction {
 			htParametros.put("idEnvio",idEnvio);
 			htParametros.put("idTipoEnvio",idTipoEnvio);
 			htParametros.put("acceso",bEditable?"editar":"ver");
-			if(idIntercambio!=null && Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_TELEMATICO){
+			if(idIntercambio!=null && Integer.parseInt(idTipoEnvio)==EnvTipoEnviosAdm.K_ENVIOTELEMATICO){
 				htParametros.put("idIntercambio",idIntercambio);
 			}else{
 				htParametros.put("idIntercambio","");
@@ -1017,7 +1017,7 @@ public class DefinirEnviosAction extends MasterAction {
 			String nombreEnvio = form.getNombre();
 			// obtener tipoEnvio
 			String idTipoEnvio = form.getIdTipoEnvio();
-			boolean isEnvioSMS = Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_BUROSMS || Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_SMS;
+			boolean isEnvioSMS = Integer.parseInt(idTipoEnvio)==EnvTipoEnviosAdm.K_BUROSMS || Integer.parseInt(idTipoEnvio)==EnvTipoEnviosAdm.K_SMS;
 			String acuseRecibo = form.getAcuseRecibo();
 			// obtener plantilla
 			
@@ -1117,7 +1117,7 @@ public class DefinirEnviosAction extends MasterAction {
 			if (fechaProgramada==null || fechaProgramada.equals(""))
 				enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
 			else{
-				if(idTipoEnvio!=null &&!idTipoEnvio.equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))			
+				if(enviosBean.getIdTipoEnvios()!=null &&!enviosBean.getIdTipoEnvios().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))			
 					enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
 				else
 					enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_PENDIENTE_AUTOMATICO));
@@ -1528,7 +1528,7 @@ public class DefinirEnviosAction extends MasterAction {
 						if (fechaProgramada == null || fechaProgramada.equals(""))
 							enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
 						else {
-							if (idTipoEnvio != null && !idTipoEnvio.equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))
+							if (enviosBean.getIdTipoEnvios() != null && !enviosBean.getIdTipoEnvios().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))
 								enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
 							else
 								enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_PENDIENTE_AUTOMATICO));
@@ -1747,7 +1747,7 @@ public class DefinirEnviosAction extends MasterAction {
 			if(envBean.getIdEstado().compareTo(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESANDO)==0)
 				throw new SIGAException("messages.envios.procesandoEnvio");
 			
-			if(Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_TELEMATICO ){
+			if(Integer.parseInt(idTipoEnvio)==EnvTipoEnviosAdm.K_ENVIOTELEMATICO ){
 				if(idEstadoEnvio.equals(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES )){
 					IntercambiosInService intercambiosService = (IntercambiosInService) IntercambiosServiceDispatcher.getService(getBusinessManager(),envBean.getIdTipoIntercambioTelematico().toString());
 					intercambiosService.reprocesarIntercambio(idEnvio, idInstitucion,Integer.parseInt(userBean.getUserName()));
@@ -1811,7 +1811,7 @@ public class DefinirEnviosAction extends MasterAction {
 
 			EnvEnviosAdm envioAdm = new EnvEnviosAdm(this.getUserBean(request));
 			File fichero = null;
-			if(Integer.parseInt(idTipoEnvio)==EnvEnviosAdm.TIPO_TELEMATICO && idEstadoEnvio.equals(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES )){
+			if(Integer.parseInt(idTipoEnvio)==EnvTipoEnviosAdm.K_ENVIOTELEMATICO && idEstadoEnvio.equals(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES )){
 				Hashtable htPk = new Hashtable();
 				htPk.put(EnvEnviosBean.C_IDINSTITUCION,sIdInstitucion);
 				htPk.put(EnvEnviosBean.C_IDENVIO,sIdEnvio);
@@ -2233,7 +2233,7 @@ public class DefinirEnviosAction extends MasterAction {
 		//Anhadimos parametros para las pestanhas
 		Hashtable htParametros=new Hashtable();
 		htParametros.put("idEnvio",idEnvio);
-		htParametros.put("idTipoEnvio",""+EnvEnviosAdm.TIPO_TELEMATICO);
+		htParametros.put("idTipoEnvio",""+EnvTipoEnviosAdm.K_ENVIOTELEMATICO);
 		htParametros.put("acceso",editable?"editar":"ver");
 		htParametros.put("idIntercambio","");
 
@@ -3151,7 +3151,7 @@ public class DefinirEnviosAction extends MasterAction {
 						if (fechaProgramada == null || fechaProgramada.equals(""))
 							enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
 						else {
-							if (idTipoEnvio != null && !idTipoEnvio.equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))
+							if (enviosBean.getIdTipoEnvios() != null && !enviosBean.getIdTipoEnvios().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))
 								enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
 							else
 								enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_PENDIENTE_AUTOMATICO));
