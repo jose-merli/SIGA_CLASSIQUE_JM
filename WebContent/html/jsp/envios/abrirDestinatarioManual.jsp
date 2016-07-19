@@ -99,10 +99,10 @@
 	<siga:Table 
 		name="tablaDatos"
 		border="1"
-		columnNames="Origen, envios.listas.literal.nombreyapellidos,
+		columnNames="envios.listas.literal.nombreyapellidos,
 			censo.fichaCliente.literal.colegiado,
 			censo.busquedaClientes.literal.nif,"
-		columnSizes="20,40,15,15,10"
+		columnSizes="60,15,15,10"
 		modal="g">
 
 		<% if (vDatos==null || vDatos.size()==0) {%>
@@ -123,9 +123,7 @@
 				}			
 		%>
 	  		
-	  		<% if(i==0){ %>
-	  		<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botonesFila %>" clase="listaNonEdit" visibleConsulta="no">	
-	  			<td>Lista Correo</td>			
+	  		<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botonesFila %>" clase="listaNonEdit" visibleConsulta="no">				
 				<td>
 					<input type="hidden" name="idPersona_<%=""+(i+1)%>" value="<%=fila.getString("IDPERSONA")%>"/>
 					<%=UtilidadesString.mostrarDatoJSP(fila.getString("NOMBREYAPELLIDOS"))%>
@@ -133,19 +131,6 @@
 				<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NCOLEGIADO"))%></td>
 				<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NIFCIF"))%></td>
 			</siga:FilaConIconos>
-			<%}else{ %>
-			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botonesFila %>" clase="listaNonEdit" visibleConsulta="no">	
-				<td>Individual</td>			
-				<td>
-					<input type="hidden" name="idPersona_<%=""+(i+1)%>" value="<%=fila.getString("IDPERSONA")%>"/>
-					<%=UtilidadesString.mostrarDatoJSP(fila.getString("NOMBREYAPELLIDOS"))%>
-				</td>
-				<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NCOLEGIADO"))%></td>
-				<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NIFCIF"))%></td>
-			</siga:FilaConIconos>
-			
-			
-				<%} %>
 		<%		}
 			}
 		%>
