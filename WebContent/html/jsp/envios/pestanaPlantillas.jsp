@@ -78,12 +78,17 @@
 
 			function download(fila)
 			{
-				var datos;
-				datos = document.getElementById('tablaDatosDinamicosD');
-				//datos.value = ""; 
-				preparaDatos(fila, 'tabladatos');
-
-				//preparaDatos(fila, 'tabladatos', datos);
+		
+				var idInstitucion = document.getElementById("oculto"+fila+"_1").value;
+				var idTipoEnvios = document.getElementById("oculto"+fila+"_2").value;
+				var idPlantillaEnvios = document.getElementById("oculto"+fila+"_3").value;
+				var idPlantilla = document.getElementById("oculto"+fila+"_4").value;
+				
+				document.forms[0].idInstitucion.value = idInstitucion;
+				document.forms[0].idTipoEnvios.value = idTipoEnvios;
+				document.forms[0].idPlantillaEnvios.value = idPlantillaEnvios;
+				document.forms[0].idPlantilla.value =	idPlantilla	;
+				
 				document.forms[0].target="submitArea";
 				document.forms[0].modo.value = "download";
 				document.forms[0].submit();
@@ -91,12 +96,16 @@
 			}
 			function descargar(fila) 
 			{
-				sub();
-				var datos;
-				//datos = document.getElementById('tablaDatosDinamicosD');
-				//datos.value = "";
-				//preparaDatos(fila, 'tabladatos', datos);
-				preparaDatos(fila, 'tabladatos');
+				var idInstitucion = document.getElementById("oculto"+fila+"_1").value;
+				var idTipoEnvios = document.getElementById("oculto"+fila+"_2").value;
+				var idPlantillaEnvios = document.getElementById("oculto"+fila+"_3").value;
+				var idPlantilla = document.getElementById("oculto"+fila+"_4").value;
+				
+				document.forms[0].idInstitucion.value = idInstitucion;
+				document.forms[0].idTipoEnvios.value = idTipoEnvios;
+				document.forms[0].idPlantillaEnvios.value = idPlantillaEnvios;
+				document.forms[0].idPlantilla.value =	idPlantilla	;
+				
 				document.forms[0].target="submitArea";
 				document.forms[0].modo.value = "descargar";
 				document.forms[0].submit();
@@ -121,7 +130,7 @@
 			<html:hidden property="idInstitucion" value="<%=sIdInstitucion%>"/>
 			<html:hidden property="idTipoEnvio" value="<%=sIdTipoEnvio%>"/>
 			<html:hidden property="idPlantillaEnvios" value="<%=sIdPlantillaEnvios%>"/>
-			
+			<html:hidden property="idPlantilla" />			
 			<html:hidden property="descripcionPlantilla" value="<%=descripcionPlantilla%>"/>
 			<html:hidden property="idTipoEnvios" value="<%=idTipoEnvios%>"/>
 			

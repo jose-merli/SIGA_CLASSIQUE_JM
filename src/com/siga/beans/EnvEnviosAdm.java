@@ -4444,6 +4444,15 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 						nombreFin);
 				
 				
+			}else{
+				
+				String path = admEnvio.getPathEnvio(beanEnvio) + File.separator + "documentosdest";
+				File crear = new File(path);
+				if (!crear.exists())
+					crear.mkdirs();
+				String nombreFin =  beanEnvio.getIdInstitucion().toString() + "_" + beanEnvio.getIdEnvio().toString() + "_" + beanDestinatario.getIdPersona()+"."+tipoArchivoPlantilla;
+				ficheroSalida = SIGAServicesHelper.copyFile(fPlantilla, path, nombreFin);
+				
 			}
 
             return ficheroSalida.getPath();

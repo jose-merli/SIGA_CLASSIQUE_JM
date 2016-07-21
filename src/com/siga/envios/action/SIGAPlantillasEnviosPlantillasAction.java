@@ -1,20 +1,39 @@
 package com.siga.envios.action;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.Vector;
 
-import com.atos.utils.*;
-import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.*;
-import com.siga.general.*;
-
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
-import com.siga.envios.form.*;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
 
-import org.apache.struts.action.*;
-import org.apache.struts.upload.*;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.EnvCamposPlantillaBean;
+import com.siga.beans.EnvDestinatariosBean;
+import com.siga.beans.EnvEnviosAdm;
+import com.siga.beans.EnvEnviosBean;
+import com.siga.beans.EnvPlantillaGeneracionAdm;
+import com.siga.beans.EnvPlantillaGeneracionBean;
+import com.siga.beans.EnvPlantillasEnviosAdm;
+import com.siga.beans.EnvPlantillasEnviosBean;
+import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.GenParametrosBean;
+import com.siga.envios.form.SIGAPlantillasEnviosPlantillasForm;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 
 public class SIGAPlantillasEnviosPlantillasAction extends MasterAction
 {
@@ -81,22 +100,25 @@ public class SIGAPlantillasEnviosPlantillasAction extends MasterAction
 		{
 			SIGAPlantillasEnviosPlantillasForm form = (SIGAPlantillasEnviosPlantillasForm)formulario;
 
-			Vector vOcultos = form.getDatosTablaOcultos(0);
-
-			String idInstitucion = (String)vOcultos.elementAt(0);
-			String idTipoEnvios = (String)vOcultos.elementAt(1);
-			String idPlantillaEnvios = (String)vOcultos.elementAt(2);
-			String idPlantilla = (String)vOcultos.elementAt(3);
-			String idTipoArchivo = (String)vOcultos.elementAt(6);
+			String idInstitucion = form.getIdInstitucion();
+			String idTipoEnvios = form.getIdTipoEnvios();
+			String idPlantillaEnvios = form.getIdPlantillaEnvios();
+			String idPlantilla = form.getIdPlantilla();
 			
-			//String sNombrePlantilla = idTipoEnvios + "_" + idPlantillaEnvios + "_" + idPlantilla + ".zip";
-	    	//String sRutaPlantilla = getPathPlantillasFromDB() + File.separator + form.getIdInstitucion();
-			//String sNombreFichero=sRutaPlantilla + File.separator + sNombrePlantilla;
 			
 			EnvPlantillaGeneracionAdm admPlantilla = new EnvPlantillaGeneracionAdm(this.getUserBean(request));
-			//fPlantilla = admPlantilla.descargarPlantilla(idInstitucion, idTipoProducto, idProducto, idProductoInstitucion, idPlantilla);
-			fPlantilla = admPlantilla.descargarPlantilla(idInstitucion, idTipoEnvios, idPlantillaEnvios, idPlantilla,idTipoArchivo);
+			Hashtable htPk = new Hashtable();
+		    htPk.put(EnvPlantillaGeneracionBean.C_IDINSTITUCION,idInstitucion);
+		    htPk.put(EnvPlantillaGeneracionBean.C_IDTIPOENVIOS,idTipoEnvios);
+		    htPk.put(EnvPlantillaGeneracionBean.C_IDPLANTILLAENVIOS,idPlantillaEnvios);
+		    htPk.put(EnvPlantillaGeneracionBean.C_IDPLANTILLA,idPlantilla);
+		    
+		    
+		    Vector vPlant = admPlantilla.selectByPK(htPk);	    
+		    EnvPlantillaGeneracionBean plantBean = (EnvPlantillaGeneracionBean)vPlant.get(0);
+		    String idTipoArchivo = plantBean.getTipoArchivo();
 			
+			fPlantilla = admPlantilla.descargarPlantilla(idInstitucion, idTipoEnvios, idPlantillaEnvios, idPlantilla,idTipoArchivo);
 			if(fPlantilla==null || !fPlantilla.exists()){
 				throw new SIGAException("messages.general.error.ficheroNoExiste"); 
 			}
@@ -401,42 +423,51 @@ public class SIGAPlantillasEnviosPlantillasAction extends MasterAction
 	    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
 	    
 	    SIGAPlantillasEnviosPlantillasForm form = (SIGAPlantillasEnviosPlantillasForm)formulario;
-
-		Vector vOcultos = form.getDatosTablaOcultos(0);
-        
-	    String idInstitucion = (String)vOcultos.elementAt(0);
-		String idTipoEnvios = (String)vOcultos.elementAt(1);
-		String idPlantillaEnvios = (String)vOcultos.elementAt(2);
-		String idPlantilla = (String)vOcultos.elementAt(3);
-		String idTipoArchivo = (String)vOcultos.elementAt(6);
 	    
-//		if(idTipoArchivo.equals(EnvEnviosAdm.TIPOARCHIVO_DOC))
-//			return download(mapping, formulario, request, response);
+	    String idInstitucion = form.getIdInstitucion();
+		String idTipoEnvios = form.getIdTipoEnvios();
+		String idPlantillaEnvios = form.getIdPlantillaEnvios();
+		String idPlantilla = form.getIdPlantilla();
+	
+	    EnvPlantillaGeneracionAdm admPlantilla = new EnvPlantillaGeneracionAdm(this.getUserBean(request));
+		Hashtable htPk = new Hashtable();
+	    htPk.put(EnvPlantillaGeneracionBean.C_IDINSTITUCION,idInstitucion);
+	    htPk.put(EnvPlantillaGeneracionBean.C_IDTIPOENVIOS,idTipoEnvios);
+	    htPk.put(EnvPlantillaGeneracionBean.C_IDPLANTILLAENVIOS,idPlantillaEnvios);
+	    htPk.put(EnvPlantillaGeneracionBean.C_IDPLANTILLA,idPlantilla);
 	    
-	    EnvPlantillaGeneracionAdm admPlantilla = new EnvPlantillaGeneracionAdm(userBean);
-        File fPlantilla = admPlantilla.obtenerPlantilla(idInstitucion, 
-        		idTipoEnvios,    		idPlantillaEnvios, idPlantilla);
-        Hashtable htPkPlantillaGeneracion = new Hashtable();
-        htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDINSTITUCION,idInstitucion);
-        htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDTIPOENVIOS,idTipoEnvios);
-        htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDPLANTILLAENVIOS,idPlantillaEnvios);
-        htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDPLANTILLA,idPlantilla);
-        
-//        Vector vPlant = admPlantilla.selectByPK(htPkPlantillaGeneracion);	    
-//	    EnvPlantillaGeneracionBean plantBean = (EnvPlantillaGeneracionBean)vPlant.firstElement();
-//	    String tipoArchivoPlantilla = plantBean.getTipoArchivo();
-	               
-        EnvEnviosAdm admEnvios = new EnvEnviosAdm(userBean);
-        EnvEnviosBean envBean = new EnvEnviosBean();
-        envBean.setIdInstitucion(new Integer(idInstitucion));
-        envBean.setIdEnvio(new Integer(0));
-        envBean.setFechaCreacion(UtilidadesString.formatoFecha(new Date(), "yyyy/MM/dd HH:mm:ss"));
-        EnvDestinatariosBean beanDestinatario = new EnvDestinatariosBean();
-        beanDestinatario.setIdPersona(new Long("0"));
-    	String pathArchivoGenerado = admEnvios.generarDocumentoEnvioPDFDestinatario(envBean, beanDestinatario, fPlantilla,idTipoArchivo,new Hashtable());
+	    
+	    Vector vPlant = admPlantilla.selectByPK(htPk);	    
+	    EnvPlantillaGeneracionBean plantBean = (EnvPlantillaGeneracionBean)vPlant.get(0);
+	    String idTipoArchivo = plantBean.getTipoArchivo();
+	    if(idTipoArchivo!=null && !idTipoArchivo.equalsIgnoreCase("doc")&& !idTipoArchivo.equalsIgnoreCase("fo")){
+	    	File fPlantilla = admPlantilla.descargarPlantilla(idInstitucion, idTipoEnvios, idPlantillaEnvios, idPlantilla,idTipoArchivo);
+			if(fPlantilla==null || !fPlantilla.exists()){
+				throw new SIGAException("messages.general.error.ficheroNoExiste"); 
+			}
+			String nombreFichero = fPlantilla.getName();
+			if (fPlantilla.getName().indexOf(".zip")==-1){
+			    nombreFichero = nombreFichero + "."+idTipoArchivo;
+			}
+			request.setAttribute("nombreFichero", nombreFichero);
+			request.setAttribute("rutaFichero", fPlantilla.getPath());
+			return "descargaFichero";
+	    }else{
+	        File fPlantilla = admPlantilla.obtenerPlantilla(idInstitucion, 
+	        		idTipoEnvios,    		idPlantillaEnvios, idPlantilla);
+	        EnvEnviosAdm admEnvios = new EnvEnviosAdm(userBean);
+	        EnvEnviosBean envBean = new EnvEnviosBean();
+	        envBean.setIdInstitucion(new Integer(idInstitucion));
+	        envBean.setIdEnvio(new Integer(0));
+	        envBean.setFechaCreacion(UtilidadesString.formatoFecha(new Date(), "yyyy/MM/dd HH:mm:ss"));
+	        EnvDestinatariosBean beanDestinatario = new EnvDestinatariosBean();
+	        beanDestinatario.setIdPersona(new Long("0"));
+	    	String pathArchivoGenerado = admEnvios.generarDocumentoEnvioPDFDestinatario(envBean, beanDestinatario, fPlantilla,idTipoArchivo,new Hashtable());
+			
+			request.setAttribute("rutaFichero", pathArchivoGenerado);
+			request.setAttribute("generacionOK","OK");
+			return "descarga";
+	    }
 		
-		request.setAttribute("rutaFichero", pathArchivoGenerado);
-		request.setAttribute("generacionOK","OK");
-		return "descarga";
 	}
 }

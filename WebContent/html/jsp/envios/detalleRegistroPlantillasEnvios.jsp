@@ -65,7 +65,7 @@
 					return false;
 				}
 				
-				if (!TestFileType(document.PlantillasEnviosPlantillasForm.theFile.value, ['ZIP', 'FO','DOC'])){
+				if (!TestFileType(document.PlantillasEnviosPlantillasForm.theFile.value, ['ZIP', 'FO','DOC','PDF'])){
 					fin();
 					return false;
 				}
