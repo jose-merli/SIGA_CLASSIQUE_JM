@@ -53,7 +53,7 @@
 	String descargar = UtilidadesString.getMensajeIdioma(user,"general.boton.download");
 	
 	boolean impObligatoria = false;
-	if (idTipoEnvio.equals(String.valueOf(EnvEnviosAdm.TIPO_CORREO_ORDINARIO))) impObligatoria=true;
+	if (idTipoEnvio.equals(String.valueOf(EnvTipoEnviosAdm.K_CORREO_ORDINARIO))) impObligatoria=true;
 %>	
 
 

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import="com.siga.beans.EnvTipoEnviosAdm"%>
 <html>
 <head>
 <!-- facturacion/datosGenerales.jsp -->
@@ -40,7 +41,7 @@
 	String editable = (String)ses.getAttribute("editable");
 	boolean bEditable = (editable!=null && editable.equals("1"));
 	
-	String idTipoEnvioCorreoElectronico = String.valueOf(EnvEnviosAdm.TIPO_CORREO_ELECTRONICO);
+	String idTipoEnvioCorreoElectronico = String.valueOf(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO);
 	String parametrosCmbPlantillaEnvios[] = {user.getLocation(), idTipoEnvioCorreoElectronico, "-1"};
 	ArrayList<String> aPlantillaEnviosSeleccionada = new ArrayList<String>();
 	ArrayList<String> aSerieSeleccionada = new ArrayList<String>();

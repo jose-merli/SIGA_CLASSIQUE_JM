@@ -36,7 +36,7 @@
 	}
 	request.removeAttribute("datos");	
 	CampoTipoExpedienteForm form1 = (CampoTipoExpedienteForm) request.getAttribute("camposForm");
-	String idTipoEnvioCorreoElectronico = ""+EnvEnviosAdm.TIPO_CORREO_ELECTRONICO;
+	String idTipoEnvioCorreoElectronico = ""+EnvTipoEnviosAdm.K_CORREO_ELECTRONICO;
 	String parametrosCmbPlantillaEnvios2[] = {user.getLocation(),idTipoEnvioCorreoElectronico,"-1"};
 	ArrayList plantillaEnviosSeleccionada = new ArrayList();
 	ArrayList plantillaSeleccionada = new ArrayList();

@@ -200,7 +200,7 @@
 						boolean existeFichero=true;
 						String auxPath="";
 						
-						if (idTipoEnvio.equals(new Integer(EnvEnviosAdm.TIPO_CORREO_ORDINARIO).toString())) {
+						if (idTipoEnvio.equals(new Integer(EnvTipoEnviosAdm.K_CORREO_ORDINARIO).toString())) {
 							auxPath = pathFTPOrdAux + pathSistema;
 						} else {
 							auxPath = pathFTPFaxAux + pathSistema;
@@ -215,7 +215,7 @@
 						existeFichero = true;
 
 						//Boton de descarga del envio:
-						if (existeFichero && (idTipoEnvio.equals(new Integer(EnvEnviosAdm.TIPO_CORREO_ORDINARIO).toString()) && (idEstado.equals(new Integer(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADO).toString()) || idEstado.equals(new Integer(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES).toString()))))
+						if (existeFichero && (idTipoEnvio.equals(new Integer(EnvTipoEnviosAdm.K_CORREO_ORDINARIO).toString()) && (idEstado.equals(new Integer(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADO).toString()) || idEstado.equals(new Integer(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES).toString()))))
 						{
 							elems[1]=new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ);
 						} else {
@@ -308,10 +308,10 @@
 			document.forms[0].target="submitArea";	   	
 			document.forms[0].modo.value='procesarEnvio';
 				
-			/*if (idTipoEnv.value=="< %=EnvEnviosAdm.TIPO_CORREO_ELECTRONICO%>") {
+			/*if (idTipoEnv.value=="< %=EnvTipoEnviosAdm.K_CORREO_ELECTRONICO%>") {
 				document.forms[0].submit();
 				document.forms[0].target="mainWorkArea";	   	
-			} else if (idTipoEnv.value=="< %=EnvEnviosAdm.TIPO_CORREO_ORDINARIO%>"){
+			} else if (idTipoEnv.value=="< %=EnvTipoEnviosAdm.K_CORREO_ORDINARIO%>"){
 				var resultado = ventaModalGeneral("DefinirEnviosForm", "P");
 			
 				if (resultado!=undefined)
