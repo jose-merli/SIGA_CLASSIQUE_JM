@@ -232,7 +232,7 @@
 										<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),row.getString("FECHAFINAL")))%>
 									<% } %>
 								<% } else { %>
-									<siga:Idioma key="censo.consultaExpedientes.literal.sancionFinalizada"/>
+									&nbsp;
 								<% } %>
 							</td>  	
 							<td>
