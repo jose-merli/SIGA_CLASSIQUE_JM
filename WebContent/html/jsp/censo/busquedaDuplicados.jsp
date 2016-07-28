@@ -71,11 +71,8 @@
   	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	
 	<script>
+	
 		function ChequearCriterios(){
-			jQuery('input[name=chkApellidos]').attr('checked', true);
-			jQuery('input[name=chkNombreApellidos]').attr('checked', true);
-			jQuery('input[name=chkIdentificador]').attr('checked', true);
-			jQuery('input[name=chkNumColegiado]').attr('checked', true); 
 			jQuery("#campoOrdenacion").append('<option value="numeroColegiado">Inst/Nº.Col</option>');
 		}
 		
@@ -87,9 +84,11 @@
 			fin();
 		}
 		function onClickChkNumColegiado(){
-			
-			if(document.MantenimientoDuplicadosForm.chkNumColegiado.checked){
-				jQuery("#campoOrdenacion").append('<option value="numeroColegiado">Inst/Nº.Col</option>');
+			if(document.MantenimientoDuplicadosForm.chkNumColegiado.value=="1"){
+				//Comprobamos si ya existe en la select para no añadirlo más
+				if(jQuery("#campoOrdenacion option[value='numeroColegiado']").length == 0){
+					jQuery("#campoOrdenacion").append('<option value="numeroColegiado">Inst/Nº.Col</option>');
+				}
 			}else{
 				jQuery("#campoOrdenacion option[value='numeroColegiado']").remove();
 			}
@@ -98,23 +97,27 @@
 		function buscar(){
 			sub();
 			//chequear los criterios en el hidden
-			if (document.MantenimientoDuplicadosForm.chkApellidos.checked)
+			if (document.MantenimientoDuplicadosForm.chkApellidos.value=="1"){
 				document.MantenimientoDuplicadosForm.valoresCheck.value = "1";
-			else
+			}else{
 				document.MantenimientoDuplicadosForm.valoresCheck.value = "0";
-			if (document.MantenimientoDuplicadosForm.chkNombreApellidos.checked)
+			}
+			if (document.MantenimientoDuplicadosForm.chkNombreApellidos.value=="1"){
 				document.MantenimientoDuplicadosForm.valoresCheck.value = document.MantenimientoDuplicadosForm.valoresCheck.value+"1";
-			else
+			}else{
 				document.MantenimientoDuplicadosForm.valoresCheck.value = document.MantenimientoDuplicadosForm.valoresCheck.value+"0";
-			if (document.MantenimientoDuplicadosForm.chkIdentificador.checked)
+			}
+			if (document.MantenimientoDuplicadosForm.chkIdentificador.value=="1"){
 				document.MantenimientoDuplicadosForm.valoresCheck.value = document.MantenimientoDuplicadosForm.valoresCheck.value+"1";
-			else
+			}else{
 				document.MantenimientoDuplicadosForm.valoresCheck.value = document.MantenimientoDuplicadosForm.valoresCheck.value+"0";
-			if (document.MantenimientoDuplicadosForm.chkNumColegiado.checked)
+			}
+			if (document.MantenimientoDuplicadosForm.chkNumColegiado.value=="1"){
 				document.MantenimientoDuplicadosForm.valoresCheck.value = document.MantenimientoDuplicadosForm.valoresCheck.value+"1";
-			else
+			}
+			else{
 				document.MantenimientoDuplicadosForm.valoresCheck.value = document.MantenimientoDuplicadosForm.valoresCheck.value+"0";
-			
+			}
 			if(comprobarFiltros()){
 				document.MantenimientoDuplicadosForm.modo.value = "buscar";
 				document.MantenimientoDuplicadosForm.target="resultado";
@@ -127,7 +130,7 @@
 		function limpiar()
 		{
 			document.MantenimientoDuplicadosForm.reset();
-			ChequearCriterios();
+			//ChequearCriterios();
 		}	
 		function refrescarLocal(){
 			buscar();
@@ -136,13 +139,15 @@
 			var error=false;
 			var msg="";
 			//aalg: modificado para controlar que siempre haya un check marcado al buscar
-			if(!(document.MantenimientoDuplicadosForm.chkApellidos.checked ||
-				document.MantenimientoDuplicadosForm.chkNombreApellidos.checked||
-				document.MantenimientoDuplicadosForm.chkIdentificador.checked||
-				document.MantenimientoDuplicadosForm.chkNumColegiado.checked)){
+			if(document.MantenimientoDuplicadosForm.nifcif.value.length ==0 &&
+					document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length ==0 &&
+					document.MantenimientoDuplicadosForm.listadoInstitucion.value == "" &&
+					document.MantenimientoDuplicadosForm.nombreText.value.length ==0 &&
+					document.MantenimientoDuplicadosForm.apellido1Text.value.length ==0 &&
+					document.MantenimientoDuplicadosForm.apellido2Text.value.length ==0){
 				
 				error = true;
-				msg=msg+"Tiene que estar marcado alguno de los criterios de coincidencia";
+				msg=msg+"Debe seleccionar alguna opción de busqueda";
 
 			}
 			else {
@@ -172,14 +177,162 @@
 		}
 		
 		function inicio(){
+			
 			<% if (request.getParameter("buscar")!=null && request.getParameter("buscar").equals("true")) {%>
 				document.forms[0].modo.value="buscarPor";
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();	
-			<% } else{%>
-				ChequearCriterios();
-			<%}%>
+			<% } %>
 			
+		}
+		function presionarNif(){
+			alertStop("hola");
+			if(document.MantenimientoDuplicadosForm.nifcif.value.length >0 ){
+				//Deshabilitamso los demás elementos del filtro	
+				document.getElementById('numeroColegiadoText').readOnly = true;
+				document.getElementById('nombreText').readOnly = true;
+				document.getElementById('apellido1Text').readOnly = true;
+				document.getElementById('apellido2Text').readOnly = true;
+				document.MantenimientoDuplicadosForm.idInstitucion.disabled=true;
+				document.MantenimientoDuplicadosForm.chkIdentificador.value="1";
+				
+				
+			}else{
+				//Habilitamos los demás elementos del filtro
+				if(document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length ==0 && document.MantenimientoDuplicadosForm.listadoInstitucion.value == "" && (document.MantenimientoDuplicadosForm.nombreText.value.length ==0
+						&& document.MantenimientoDuplicadosForm.apellido1Text.value.length ==0 && document.MantenimientoDuplicadosForm.apellido2Text.value.length ==0)){
+					document.getElementById('numeroColegiadoText').readOnly = false;
+					document.getElementById('nombreText').readOnly = false;
+					document.getElementById('apellido1Text').readOnly = false;
+					document.getElementById('apellido2Text').readOnly = false;
+					document.MantenimientoDuplicadosForm.idInstitucion.disabled=false;
+					document.MantenimientoDuplicadosForm.chkIdentificador.value="0";
+				}
+			}
+		}
+		
+		function presionarNumeroColegiado(){
+		
+			if(document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length >0 || document.MantenimientoDuplicadosForm.listadoInstitucion.value != ""){
+				
+				document.getElementById('nifcif').readOnly = true;
+				document.getElementById('nombreText').readOnly = true;
+				document.getElementById('apellido1Text').readOnly = true;
+				document.getElementById('apellido2Text').readOnly = true;
+				document.getElementById('idInstitucion').disabled = false;
+				document.MantenimientoDuplicadosForm.chkNumColegiado.value="1";
+				onClickChkNumColegiado();
+			}else{
+				if(document.MantenimientoDuplicadosForm.nifcif.value.length ==0 && (document.MantenimientoDuplicadosForm.nombreText.value.length ==0
+						&& document.MantenimientoDuplicadosForm.apellido1Text.value.length ==0 && document.MantenimientoDuplicadosForm.apellido2Text.value.length ==0)){
+				document.getElementById('nifcif').readOnly = false;
+				document.getElementById('nombreText').readOnly = false;
+				document.getElementById('apellido1Text').readOnly = false;
+				document.getElementById('apellido2Text').readOnly = false;
+				document.MantenimientoDuplicadosForm.chkNumColegiado.value="0";
+				onClickChkNumColegiado();
+			}
+		 }
+		}
+		
+		function presionarNombreApellidos(){
+			
+			if(document.MantenimientoDuplicadosForm.nombreText.value.length >0 ||
+					document.MantenimientoDuplicadosForm.apellido1Text.value.length >0 ||
+					document.MantenimientoDuplicadosForm.apellido2Text.value.length >0){
+					document.getElementById('nifcif').readOnly = true;
+				document.getElementById('numeroColegiadoText').readOnly = true;
+				document.getElementById('idInstitucion').readOnly = true;
+				document.getElementById('idInstitucion').disabled = true;
+			
+				if(document.MantenimientoDuplicadosForm.nombreText.value.length >0 && (document.MantenimientoDuplicadosForm.apellido1Text.value.length >0 ||
+						document.MantenimientoDuplicadosForm.apellido2Text.value.length >0)){
+					document.MantenimientoDuplicadosForm.chkNombreApellidos.value="1";	
+				}else{
+					document.MantenimientoDuplicadosForm.chkNombreApellidos.value="0";	
+				}
+				if((document.MantenimientoDuplicadosForm.apellido1Text.value.length >0 ||
+						document.MantenimientoDuplicadosForm.apellido2Text.value.length >0)){
+					document.MantenimientoDuplicadosForm.chkApellidos.value="1";	
+				}else{
+					document.MantenimientoDuplicadosForm.chkApellidos.value="0";	
+				}
+			}else{
+				if(document.MantenimientoDuplicadosForm.nifcif.value.length ==0 && document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length ==0 && document.MantenimientoDuplicadosForm.listadoInstitucion.value == "" ){
+						document.getElementById('nifcif').readOnly = false;
+						document.getElementById('numeroColegiadoText').readOnly = false;
+						document.getElementById('idInstitucion').readOnly = false;
+						document.getElementById('idInstitucion').disabled = false;
+						
+						document.MantenimientoDuplicadosForm.chkNombreApellidos.value="0";
+						document.MantenimientoDuplicadosForm.chkApellidos.value="0";
+				}
+			}
+		}
+		
+		function recargarCamposHabilitados (){
+			if(document.MantenimientoDuplicadosForm.nifcif.value.length ==0 &&
+					document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length ==0 &&
+					document.MantenimientoDuplicadosForm.listadoInstitucion.value == "" &&
+					document.MantenimientoDuplicadosForm.nombreText.value.length ==0 &&
+					document.MantenimientoDuplicadosForm.apellido1Text.value.length ==0 &&
+					document.MantenimientoDuplicadosForm.apellido2Text.value.length ==0){
+				
+					document.getElementById('nifcif').readOnly = false;
+					document.getElementById('numeroColegiadoText').readOnly = false;
+					document.getElementById('nombreText').readOnly = false;
+					document.getElementById('apellido1Text').readOnly = false;
+					document.getElementById('apellido2Text').readOnly = false;
+					document.getElementById('idInstitucion').disabled = false;
+			}else{
+				if(document.MantenimientoDuplicadosForm.nifcif.value.length >0 ){
+					//Deshabilitamso los demás elementos del filtro	
+					document.getElementById('nifcif').focus();
+					document.getElementById('numeroColegiadoText').readOnly = true;
+					document.getElementById('nombreText').readOnly = true;
+					document.getElementById('apellido1Text').readOnly = true;
+					document.getElementById('apellido2Text').readOnly = true;
+					document.getElementById('idInstitucion').disabled = true;
+					
+					document.MantenimientoDuplicadosForm.chkIdentificador.value="1";
+				}
+				if(document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length >0 || document.MantenimientoDuplicadosForm.listadoInstitucion.value != ""){
+					
+					
+					document.getElementById('numeroColegiadoText').focus();
+					document.getElementById('nifcif').readOnly = true;
+					document.getElementById('nombreText').readOnly = true;
+					document.getElementById('apellido1Text').readOnly = true;
+					document.getElementById('apellido2Text').readOnly = true;
+					document.getElementById('idInstitucion').disabled = false;
+					
+					document.MantenimientoDuplicadosForm.chkNumColegiado.value="1";
+					onClickChkNumColegiado();
+				}
+				if(document.MantenimientoDuplicadosForm.nombreText.value.length >0 ||
+						document.MantenimientoDuplicadosForm.apellido1Text.value.length >0 ||
+						document.MantenimientoDuplicadosForm.apellido2Text.value.length >0){
+				
+					document.getElementById('nifcif').readOnly = true;
+					document.getElementById('numeroColegiadoText').readOnly = true;
+					document.getElementById('idInstitucion').disabled = true;
+					document.getElementById('nombreText').focus();
+					
+					if(document.MantenimientoDuplicadosForm.nombreText.value.length >0 && (document.MantenimientoDuplicadosForm.apellido1Text.value.length >0 ||
+							document.MantenimientoDuplicadosForm.apellido2Text.value.length >0)){
+						document.MantenimientoDuplicadosForm.chkNombreApellidos.value="1";	
+					}else{
+						document.MantenimientoDuplicadosForm.chkNombreApellidos.value="0";	
+					}
+					if((document.MantenimientoDuplicadosForm.apellido1Text.value.length >0 ||
+							document.MantenimientoDuplicadosForm.apellido2Text.value.length >0)){
+						document.MantenimientoDuplicadosForm.chkApellidos.value="1";	
+					}else{
+						document.MantenimientoDuplicadosForm.chkApellidos.value="0";	
+					}
+				}
+				
+			}
 		}
 		</script>
 		<siga:Titulo 
@@ -187,97 +340,65 @@
 			localizacion="censo.busquedaDuplicados.localizacion"/>
 </head>
 
-<body onload="inicio();ajusteAlto('resultado');">
+<body onload="inicio();ajusteAlto('resultado');recargarCamposHabilitados();">
 
 
-	
 
-<html:form action="/CEN_MantenimientoDuplicados.do?noReset=true" method="POST" target="mainWorkArea" >
+<html:form action="/CEN_MantenimientoDuplicados.do?noReset=true" method="POST" target="mainWorkArea"  >
 	<input type="hidden" name="modo" value="">
-	<input type="hidden" name="valoresCheck" value="">
+	<input type="hidden" name="chkNombreApellidos" id="chkNombreApellidos" value="0">
+	<input type="hidden" name="chkApellidos" id="chkApellidos" value="0">
+	<input type="hidden" name="chkIdentificador" id="chkIdentificador" value="0">
+	<input type="hidden" name="chkNumColegiado" id="chkNumColegiado" value="0">
+	<input type="hidden" name="tipoConexion" id="tipoConexion" value="intersect">
+	<input type="hidden" name="agruparColegiaciones" id="agruparColegiaciones" value="s">
+	<input type="hidden" name="valoresCheck" id="valoresCheck" value="0">
+	
 	
 	<table  class="tablaCentralCampos"  align="center"><tr><td>
-	
-		<siga:ConjCampos leyenda="censo.busquedaDuplicados.coincidencias.cabecera">
-			<table class="tablaCampos" align="center" width="100%">
-				<tr>
-					<td colspan="4" class="labelText">
-						<siga:Idioma key="censo.busquedaDuplicados.coincidencias.explicacion"/>
-					</td>
-				</tr>
-				<tr>
-					<td class="labelText">
-						<html:checkbox styleid="chkNombreApellidos" name="MantenimientoDuplicadosForm" property="chkNombreApellidos" />
-						<label for="chkNombreApellidos"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.nombreApellidos"/></label>
-					</td>
-					<td class="labelText">
-						<html:checkbox styleid="chkApellidos" name="MantenimientoDuplicadosForm" property="chkApellidos" /> 
-						<label for="chkApellidos"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.apellidos"/></label>
-					</td>
-					<td class="labelText" style="align:right">
-						<siga:Idioma key="censo.busquedaDuplicados.coincidencias.ordenacion"/>
-						<html:select name="MantenimientoDuplicadosForm" styleId="campoOrdenacion" property="campoOrdenacion" styleClass="boxCombo">
-							<html:option value="apellidos" key="gratuita.turnos.literal.apellidosSolo"></html:option>
-							<html:option value="nif" key="censo.busquedaClientesAvanzada.literal.nif"></html:option>
-						</html:select>
-						<html:select name="MantenimientoDuplicadosForm" property="sentidoOrdenacion" styleClass="boxCombo">
-							<html:option value="asc" key="orden.literal.ascendente"></html:option>						
-							<html:option value="desc" key="orden.literal.descendente"></html:option>
-						</html:select>
-					</td>
-				</tr>
-				<tr>
-					<td class="labelText">
-						<html:checkbox styleid="chkIdentificador" name="MantenimientoDuplicadosForm" property="chkIdentificador" /> 
-						<label for="chkIdentificador"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.nifCif"/></label>
-					</td>
-					<td class="labelText">
-						<html:checkbox styleid="chkNumColegiado" name="MantenimientoDuplicadosForm" property="chkNumColegiado" onclick="return onClickChkNumColegiado();" /> 
-						<label for="chkNumColegiado"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.numeroColegiado"/></label>
-					</td>
-					<td class="labelText" style="align:right">
-						<html:select name="MantenimientoDuplicadosForm" property="tipoConexion" styleClass="boxCombo">
-							<html:option value="intersect"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.criterios.todos"/></html:option>
-							<html:option value="union"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.criterios.alguno"/></html:option>
-						</html:select>
-					</td>
-					
-					<td class="labelText" style="align:right;display:none">
-						<html:select name="MantenimientoDuplicadosForm" property="agruparColegiaciones" styleClass="boxCombo">
-							<html:option value="s"><siga:Idioma key="Mostrar personas"/></html:option>
-							<html:option value="n"><siga:Idioma key="Mostrar colegiaciones"/></html:option>
-						</html:select>
-					</td>
-				</tr>
-			</table>
-		</siga:ConjCampos>
-	
 		<siga:ConjCampos leyenda="censo.busquedaDuplicados.patron.cabecera">
-			<table class="tablaCampos" align="center">
-			<tr>
-				<td colspan="6" class="labelText"><siga:Idioma key="censo.busquedaDuplicados.patron.explicacion"/></td>
-			</tr>
+			<table class="tablaCampos" align="center">		
 			<tr></tr>
-			
 			<tr>
 				<td class="labelText" width="100px"> <siga:Idioma key="censo.busquedaDuplicados.patron.nif"/> </td>
-				<td> <html:text name="MantenimientoDuplicadosForm" property="nifcif" size="15" styleClass="box"></html:text> </td>
+				<td> <html:text styleId="nifcif" name="MantenimientoDuplicadosForm" property="nifcif" size="15" styleClass="box" onchange="presionarNif()"  ></html:text> </td>
 				
+				<td class="labelText" width="100px">
+					<siga:Idioma key="censo.busquedaDuplicados.coincidencias.ordenacion"/>
+				</td>
+				<td>
+					<html:select name="MantenimientoDuplicadosForm" styleId="campoOrdenacion" property="campoOrdenacion" styleClass="boxCombo">
+						<html:option value="apellidos" key="gratuita.turnos.literal.apellidosSolo"></html:option>
+						<html:option value="nif" key="censo.busquedaClientesAvanzada.literal.nif"></html:option>
+					</html:select>
+					<html:select name="MantenimientoDuplicadosForm" property="sentidoOrdenacion" styleClass="boxCombo">
+						<html:option value="asc" key="orden.literal.ascendente"></html:option>						
+						<html:option value="desc" key="orden.literal.descendente"></html:option>
+					</html:select>
+				</td>
+			</tr>
+			<tr>
 				<td class="labelText" width="100px"> <siga:Idioma key="censo.busquedaDuplicados.patron.institucion"/> </td>
-				<td> <siga:Select queryId="getNombreColegiosTodos" id="idInstitucion"/> </td>
-				
+				<td>
+					<html:select styleId="listadoInstitucion" property="idInstitucion" styleClass="boxCombo" onchange="presionarNumeroColegiado()">
+							<html:option value="">&nbsp;</html:option>
+							<c:forEach items="${listadoInstituciones}" var="inst">
+								<html:option value="${inst.idInstitucion}">${inst.abreviatura}</html:option>
+							</c:forEach>
+					</html:select>
+				</td>		
 				<td class="labelText" width="100px"> <siga:Idioma key="censo.busquedaDuplicados.patron.numeroColegiado"/> </td>
-				<td> <html:text name="MantenimientoDuplicadosForm" property="numeroColegiado" size="20" styleClass="box"></html:text> </td>
+				<td> <html:text styleId="numeroColegiadoText" name="MantenimientoDuplicadosForm" property="numeroColegiado" size="20" styleClass="box" onchange="presionarNumeroColegiado()"></html:text> </td>
 			</tr>
 			<tr>
 				<td class="labelText"><siga:Idioma key="censo.busquedaDuplicados.patron.nombre"/></td>				
-				<td><html:text name="MantenimientoDuplicadosForm" property="nombre" size="25" styleClass="box"></html:text></td>
+				<td><html:text styleId="nombreText" name="MantenimientoDuplicadosForm" property="nombre" size="25" styleClass="box" onchange="presionarNombreApellidos()" ></html:text></td>
 				
 				<td class="labelText"><siga:Idioma key="censo.busquedaDuplicados.patron.apellido1"/></td>
-				<td><html:text name="MantenimientoDuplicadosForm" property="apellido1" size="35" styleClass="box"></html:text></td>
+				<td><html:text styleId="apellido1Text" name="MantenimientoDuplicadosForm" property="apellido1" size="35" styleClass="box" onchange="presionarNombreApellidos()" ></html:text></td>
 			
 				<td class="labelText"><siga:Idioma key="censo.busquedaDuplicados.patron.apellido2"/></td>
-				<td><html:text name="MantenimientoDuplicadosForm" property="apellido2" size="35" styleClass="box"></html:text></td>
+				<td><html:text styleId="apellido2Text" name="MantenimientoDuplicadosForm" property="apellido2" size="35" styleClass="box" onchange="presionarNombreApellidos()" ></html:text></td>
 			</tr>
 			</table>
 		</siga:ConjCampos>

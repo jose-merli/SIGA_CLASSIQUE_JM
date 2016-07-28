@@ -11,11 +11,12 @@
  */
 package com.siga.censo.action;
 
+
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +25,6 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
-import org.apache.batik.dom.util.HashTable;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -45,6 +45,7 @@ import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenHistoricoAdm;
 import com.siga.beans.CenHistoricoBean;
 import com.siga.beans.CenInstitucionAdm;
+import com.siga.beans.CenInstitucionBean;
 import com.siga.beans.CenNoColegiadoAdm;
 import com.siga.beans.CenNoColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
@@ -54,7 +55,6 @@ import com.siga.beans.CerSolicitudCertificadosAdm;
 import com.siga.beans.DuplicadosHelper;
 import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.GenParametrosAdm;
-import com.siga.censo.form.BusquedaClientesForm;
 import com.siga.censo.form.MantenimientoDuplicadosForm;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
@@ -108,7 +108,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					formDupl.setNombre("");
 					formDupl.setNumeroColegiado("");
 					formDupl.setSentidoOrdenacion("asc");
-					formDupl.setTipoConexion("intersect");
+					//formDupl.setTipoConexion("intersect");
 					formDupl.setIdInstitucion("");
 					request.getSession().removeAttribute("DATAPAGINADOR");
 					mapDestino = abrir(mapping, miForm, request, response);
@@ -163,6 +163,12 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 	{
 		try {
 			// No hacemos nada
+			//Devolvemos la lista de instituciones
+			UsrBean usr = this.getUserBean(request);
+			String parametros = usr.getLocation();
+			CenInstitucionAdm admInstitucion = new CenInstitucionAdm(usr); 
+			List<CenInstitucionBean> listadoInstituciones = admInstitucion.getNombreColegiosTodos(parametros);
+			request.setAttribute("listadoInstituciones", listadoInstituciones);
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
@@ -243,7 +249,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			miFormulario.setRegistrosSeleccionados(new ArrayList());
 			formulario=miFormulario;
 			
-			request.setAttribute("mostarNColegiado", miFormulario.getChkNumColegiado()?ClsConstants.DB_TRUE:ClsConstants.DB_FALSE);
+			request.setAttribute("mostarNColegiado", "0");
 			destino="resultado";
 
 		}catch (SIGAException e1) {
@@ -309,7 +315,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			}
 			
 			formulario=miFormulario;
-			request.setAttribute("mostarNColegiado", miFormulario.getChkNumColegiado()?ClsConstants.DB_TRUE:ClsConstants.DB_FALSE);
+			request.setAttribute("mostarNColegiado", "0");
 			destino="resultado";
 
 		}catch (SIGAException e1) {
@@ -1128,6 +1134,11 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			//la busqueda una vez presentada la pagina
 			String buscar = request.getParameter("buscar");
 			request.setAttribute("buscar",buscar);
+			UsrBean usr = this.getUserBean(request);
+			String parametros = usr.getLocation();
+			CenInstitucionAdm admInstitucion = new CenInstitucionAdm(usr); 
+			List<CenInstitucionBean> listadoInstituciones = admInstitucion.getNombreColegiosTodos(parametros);
+			request.setAttribute("listadoInstituciones", listadoInstituciones);
 			
 		}
 		catch (Exception e) {

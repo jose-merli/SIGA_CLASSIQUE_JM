@@ -1,8 +1,10 @@
 package com.siga.censo.form;
 
+import java.util.List;
 import java.util.Vector;
 
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.beans.CenInstitucionBean;
 import com.siga.general.MasterForm;
 
 public class MantenimientoDuplicadosForm extends MasterForm {
@@ -26,6 +28,7 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	String seleccion;
 	boolean chkApellidos,chkNombreApellidos,chkNumColegiado,chkIdentificador = false;
 	private Vector resultadoBusqueda;
+	private List<CenInstitucionBean> listadoInstituciones;
 
 	public String getListaDirecciones() {
 		return listaDirecciones;
@@ -165,6 +168,13 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	}
 	public void setSeleccion(String seleccion) {
 		this.seleccion = seleccion;
+	}
+	public List<CenInstitucionBean> getListadoInstituciones() {
+		return listadoInstituciones;
+	}
+	public void setListadoInstituciones(
+			List<CenInstitucionBean> listadoInstituciones) {
+		this.listadoInstituciones = listadoInstituciones;
 	}	
 	
 }
