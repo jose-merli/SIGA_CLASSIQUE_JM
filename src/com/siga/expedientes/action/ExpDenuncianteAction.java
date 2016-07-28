@@ -216,7 +216,7 @@ public class ExpDenuncianteAction extends MasterAction {
 	        form.setPrimerApellido(persona.getApellido1());
 	        form.setSegundoApellido(persona.getApellido2());
 	        if(bean.getIdDireccion()!=null ){
-		        Hashtable direccion = clienteAdm.getDirecciones(bean.getIdPersona(),bean.getIdInstitucion(), bean.getIdDireccion());
+		        Hashtable direccion = clienteAdm.getDirecciones(bean.getIdPersona(),bean.getIdInstitucion(), bean.getIdDireccion(),true);
 		        // hacemos los set del formulario       
 		        
 		        form.setDireccion(UtilidadesHash.getString(direccion, CenDireccionesBean.C_DOMICILIO));
@@ -225,6 +225,11 @@ public class ExpDenuncianteAction extends MasterAction {
 		        form.setProvincia(UtilidadesHash.getString(direccion, "PROVINCIA"));
 		        form.setPais(UtilidadesHash.getString(direccion, "PAIS"));
 		        form.setCpostal(UtilidadesHash.getString(direccion, CenDireccionesBean.C_CODIGOPOSTAL));
+		        
+		        String fechaBaja = UtilidadesHash.getString(direccion, CenDireccionesBean.C_FECHABAJA);
+		        if(fechaBaja != null && !"".equalsIgnoreCase(fechaBaja)){
+		        	form.setFechaBaja(fechaBaja);
+		        }
 		        
 		        String telefono = UtilidadesHash.getString(direccion, CenDireccionesBean.C_TELEFONO1);
 		        if (telefono == null || telefono.equals("")) telefono = UtilidadesHash.getString(direccion, CenDireccionesBean.C_MOVIL);

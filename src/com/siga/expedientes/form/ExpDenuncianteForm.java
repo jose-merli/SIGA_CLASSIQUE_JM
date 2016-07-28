@@ -36,8 +36,15 @@ public class ExpDenuncianteForm extends MasterForm {
 			idTipoExpediente = "", 
 			numExpediente = "", 
 			anioExpediente = "";
+	private String fechaBaja;
 	
-
+	
+	public String getFechaBaja() {
+		return fechaBaja;
+	}
+	public void setFechaBaja(String fechaBaja) {
+		this.fechaBaja = fechaBaja;
+	}
 	public String getCpostal() {
 		return cpostal;
 	}

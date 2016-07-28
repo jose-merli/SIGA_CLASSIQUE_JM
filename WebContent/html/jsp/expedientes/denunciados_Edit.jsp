@@ -184,7 +184,15 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 
 	<siga:ConjCampos leyenda="expedientes.auditoria.literal.direccion">
 	<table width="100%">
-		
+		  <%	
+				if(form.getFechaBaja() != null && !"".equalsIgnoreCase(form.getFechaBaja()) ){
+			%>
+				<td class="labelText">
+					<span style="color: red;">(DIRECCIÓN DE BAJA)</span> 
+				</td>
+			<%
+				}
+			%>
 		<!-- FILA -->
 		<tr>				
 
