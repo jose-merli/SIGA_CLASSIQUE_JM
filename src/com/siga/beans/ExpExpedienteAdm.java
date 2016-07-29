@@ -2165,7 +2165,7 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			String destinatario,
 			boolean isInforme,
 			boolean isDesdoblar,String longitudNumEjg
-	) throws ClsExceptions {
+	) throws ClsExceptions, SIGAException {
 		
 		Vector datos = null;
 		try {
@@ -2432,7 +2432,8 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 			// Implicados y direcciones
 			if(destinatario!=null)
 				datos = helperInformes.getImplicadosDireccionesExpediente(datos,idInstitucion,idInstitucionTipoExp,idTipoExp,anio, numero, idPersona, this.usrbean.getLanguage(),destinatario,isDesdoblar);		
-		
+		} catch (SIGAException e){
+			throw e;
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error ExpExpedienteAdm.getDatosInformeExpediente.");
 		}

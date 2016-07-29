@@ -5,6 +5,7 @@
  */
 package com.siga.expedientes.action;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,11 +14,14 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -104,8 +108,13 @@ public class BusquedaExpedientesAction extends MasterAction {
 			}else if (accion.equalsIgnoreCase("nuevoCopia")){
 				mapDestino = nuevoCopia(mapping, miForm, request, response);
 			}
+			else if (accion.equalsIgnoreCase("descargarLogError")) {
+                mapDestino = descargarLog(mapping, miForm, request, response);
+                
+            }
 			else if (accion.equalsIgnoreCase("generaExcel")){
 				mapDestino = generaExcel(mapping, miForm, request, response);
+			
 			}else {
 				return super.executeInternal(mapping,
 				formulario,
@@ -927,6 +936,62 @@ public class BusquedaExpedientesAction extends MasterAction {
 		}
 
 		return "generaExcel";
+	}
+	
+	/**
+	 * Descarga el fichero de Log.
+	 * 
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
+	private String descargarLog(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String forward = "descargaFichero";
+		UserTransaction tx = null;
+		try {
+			// Obtengo usuario y creo manejadores para acceder a las BBDD
+			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			BusquedaExpedientesForm form = (BusquedaExpedientesForm)formulario;	
+			
+			Vector vOcultos = form.getDatosTablaOcultos(0);
+
+			
+			String idInstitucionRow =  ((String) vOcultos.elementAt(0)).trim();
+	  		String idInstitucionTipoExpRow =  ((String) vOcultos.elementAt(1)).trim();
+	  		String idTipoExpedienteRow =  ((String) vOcultos.elementAt(2)).trim();
+	  		String numeroExpedienteRow =  ((String) vOcultos.elementAt(3)).trim();
+	  		String anioExpedienteRow =  ((String) vOcultos.elementAt(4)).trim();
+
+		  	// --- acceso a paths y nombres
+			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			// ReadProperties rp = new ReadProperties("SIGA.properties");
+			String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava") + rp.returnProperty("informes.directorioPlantillaInformesJava");
+
+			String rutaFichero = rutaPlantilla + ClsConstants.FILE_SEP + idInstitucionRow 
+					 + ClsConstants.FILE_SEP + "generico_expediente" + ClsConstants.FILE_SEP+idInstitucionRow+idInstitucionTipoExpRow+idTipoExpedienteRow+numeroExpedienteRow+anioExpedienteRow;
+		
+			StringBuffer sFicheroLog = new StringBuffer(rutaFichero);
+			sFicheroLog.append("-");
+			sFicheroLog.append("LogError");
+			sFicheroLog.append(".log.xls");
+			
+			File fichero = new File(sFicheroLog.toString());
+			
+			if (fichero == null || !fichero.exists()) {
+				throw new SIGAException("messages.general.error.ficheroNoExiste");
+			}
+			request.setAttribute("nombreFichero", fichero.getName());
+			request.setAttribute("rutaFichero", fichero.getPath());
+
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.certificados" }, e, tx);
+		}
+
+		return "descargaFichero";
 	}
 	
 	

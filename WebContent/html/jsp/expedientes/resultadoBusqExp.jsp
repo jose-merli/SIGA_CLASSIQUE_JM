@@ -24,9 +24,10 @@
 <%@ page import="com.siga.administracion.SIGAConstants" %>
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.*"%>
+<%@ page import="org.redabogacia.sigaservices.app.util.ReadProperties"%>
+<%@ page import="org.redabogacia.sigaservices.app.util.SIGAReferences"%>
 <%@ page import="com.siga.expedientes.ExpPermisosTiposExpedientes"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
-
 <!-- JSP -->
 <bean:define id="registrosSeleccionados" name="busquedaExpedientesForm" property="registrosSeleccionados" type="java.util.ArrayList"/>
 <bean:define id="datosPaginador" name="busquedaExpedientesForm" property="datosPaginador" type="java.util.HashMap"/>
@@ -43,10 +44,10 @@
 	boolean isInstitucion = Integer.parseInt(idInstitucion)>2000 && Integer.parseInt(idInstitucion)<3000;
 	
 	String nombreCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,expedientes.auditoria.literal.institucion, 	expedientes.auditoria.literal.tipo,expedientes.auditoria.literal.nexpediente,expedientes.auditoria.literal.numyanioejg,	expedientes.auditoria.literal.fase, expedientes.tiposexpedientes.literal.estado,expedientes.auditoria.literal.fecha, 	expedientes.auditoria.literal.nombreyapellidos,";
-	String tamanoCol="3,8,8,8,8,8,8,8,18,12";
+	String tamanoCol="3,8,8,8,8,8,8,8,15,15";
 	if(isInstitucion){
 		nombreCol = "<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,expedientes.auditoria.literal.tipo,expedientes.auditoria.literal.nexpediente,expedientes.auditoria.literal.numyanioejg,	expedientes.auditoria.literal.fase, expedientes.tiposexpedientes.literal.estado,expedientes.gestionarExpedientes.fechaApertura,	expedientes.auditoria.literal.nombreyapellidos,";
-		  tamanoCol="3,15,10,10,10,10,8,18,12";
+		  tamanoCol="3,15,10,10,10,10,8,15,15";
 		
 	}
 	
@@ -169,7 +170,7 @@
 				{
 			 		for (int i=0; i<resultado.size(); i++)
 			   		{
-			 			FilaExtElement[] elemento=new FilaExtElement[1];
+			 			FilaExtElement[] elemento=new FilaExtElement[2];
 			 			elemento[0]=new FilaExtElement("enviar","comunicar",SIGAConstants.ACCESS_READ);
 				  		Row fila = (Row)resultado.elementAt(i);
 				  		String idInstitucionRow = fila.getString("IDINSTITUCION");
@@ -177,6 +178,25 @@
 				  		String idTipoExpedienteRow = fila.getString("IDTIPOEXPEDIENTE");
 				  		String anioExpedienteRow = fila.getString("ANIOEXPEDIENTE");
 				  		String numeroExpedienteRow = fila.getString("NUMEROEXPEDIENTE");
+				  		
+				  		
+				  	// --- acceso a paths y nombres
+						ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+						// ReadProperties rp = new ReadProperties("SIGA.properties");
+						String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava") + rp.returnProperty("informes.directorioPlantillaInformesJava");
+
+						String rutaFichero = rutaPlantilla + ClsConstants.FILE_SEP + idInstitucion 
+								 + ClsConstants.FILE_SEP + "generico_expediente" + ClsConstants.FILE_SEP+idInstitucionRow+idInstitucionTipoExpRow+idTipoExpedienteRow+numeroExpedienteRow+anioExpedienteRow;
+					
+						StringBuffer sFicheroLog = new StringBuffer(rutaFichero);
+						sFicheroLog.append("-");
+						sFicheroLog.append("LogError");
+						sFicheroLog.append(".log.xls");
+						
+						File fichero = new File(sFicheroLog.toString());
+						if(fichero!=null && fichero.exists()){
+							elemento[1]=new FilaExtElement("descargaLog", "descargaLog", SIGAConstants.ACCESS_READ);
+						}	
 				  		
 				  		if (idInstitucionRow.equals(idInstitucion)){	
 				  			botones="C,E,B";
@@ -560,7 +580,8 @@
 			document.InformesGenericosForm.datosInforme.value =datos;
 			var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
 			if (arrayResultado==undefined||arrayResultado[0]==undefined){
-			   		
+				refrescarLocal();
+				cargarChecks();
 		   	} 
 		   	else {
 		   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
@@ -647,6 +668,16 @@
 		document.forms[0].target="mainWorkArea";	
 		document.forms[0].submit();	
 	}
+	
+	function descargaLog(fila) {
+		var datos = document.getElementById('tablaDatosDinamicosD');
+	    datos.value = ""; 
+	    preparaDatos(fila,'tablaDatos', datos);
+	   	
+	   	document.forms[0].target="submitArea";
+	   	document.forms[0].modo.value = "descargarLogError";
+	   	document.forms[0].submit();
+	}	
 	 
 		
 

@@ -1,13 +1,19 @@
 package com.siga.beans;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
+
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
+import com.atos.utils.LogFileWriter;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -721,6 +727,23 @@ public class HelperInformesAdm  {
 		Vector denunciantesVector = new Vector();
 		Vector partesVector = new Vector();
 		Hashtable datoActual, datoNuevo;
+		LogFileWriter log = null;
+		
+		//Creamos el log de error
+		
+		
+		// --- acceso a paths y nombres
+		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		// ReadProperties rp = new ReadProperties("SIGA.properties");
+		String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava") + rp.returnProperty("informes.directorioPlantillaInformesJava");
+		String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava") + rp.returnProperty("informes.directorioPlantillaInformesJava");
+		// //////////////////////////////////////////////
+
+
+		 log = LogFileWriter.getLogFileWriter(rutaPlantilla + ClsConstants.FILE_SEP + idInstitucion 
+				 + ClsConstants.FILE_SEP + "generico_expediente" + ClsConstants.FILE_SEP,idInstitucion+idInstitucionTipoExp+idTipoExp+numero+anio+"-LogError");
+		 
+		log.clear();
 
 		// Variables para la ejecucion de las consultas
 		StringBuffer sql; // sentencia
@@ -881,7 +904,8 @@ public class HelperInformesAdm  {
 					sql.append(" and   pe.idpersona=cli.idpersona ");
 					sql.append(" and   cli.idtratamiento= tra.idtratamiento ");
 					sql.append(" and   cli.idinstitucion=d.idinstitucion ");
-
+					sql.append(" and   dir.fechaBaja is null ");
+					
 					resultadoConsulta = ejecutaConsultaBind(sql.toString(), codigos);
 					for (int i = 0; i < resultadoConsulta.size(); i++) {
 						reg = (Hashtable) resultadoConsulta.get(i);
@@ -1027,199 +1051,208 @@ public class HelperInformesAdm  {
 			
 			// en caso de no haber datos por lo menos devuelvo lo que he recibido.
 			
-			
+			if(denunciantesVector != null && denunciantesVector.size()>0){
 				
-
-			if(destinatario!=null && destinatario.equals(AdmInformeBean.TIPODESTINATARIO_CENPERSONA)){
-				// A Lios denunciados le metemos regiones de partes y denunciantes
-				for (int i = 0; i < denunciadosVector.size(); i++) {
-					Hashtable datosHashtable = (Hashtable)denunciadosVector.get(i);
-					if(denunciantesVector!=null && denunciantesVector.size()>0)
-						datosHashtable.put("regiondenunciantes", denunciantesVector);
-					else
-						datosHashtable.put("regiondenunciantes", new Vector());
-					
-					if(partesVector!=null && partesVector.size()>0)
-						datosHashtable.put("regionpartes", partesVector);
-					else
-						datosHashtable.put("regionpartes", new Vector());
-					
-					for (int j = 0; j < partesVector.size(); j++) {
-						Hashtable datosPartes = (Hashtable)partesVector.get(j);
-						String descripcionRolParte = (String) datosPartes.get("DESC_ROLPARTE");
-						Iterator iteParte = datosPartes.keySet().iterator();
-						while (iteParte.hasNext()) {
-							String objParte = (String) iteParte.next();
-							datosHashtable.put(objParte+"_"+descripcionRolParte.toUpperCase(), datosPartes.get(objParte));
-							
-						}
-						
-					}
-					
-					
-					
-				}
-				//VAmo a meter las parte concatenando el nombre de su rol
-				
-				
-				
-				
-				
-				Vector denunciadosVectorClon =  (Vector) denunciadosVector.clone();
-				for (int i = 0; i < denunciadosVector.size(); i++) {
-					Hashtable datosHashtable = (Hashtable)denunciadosVector.get(i);
-					datosHashtable.put("regiondenunciados", denunciadosVectorClon);
-					
-				}
-				if(idPersona!=null){
-					Iterator iterador = denunciadosVector.iterator();
-					while (iterador.hasNext()) {
-						Hashtable datosHashtable = (Hashtable) iterador.next();
-						String idPersonaAux = (String) datosHashtable.get("IDINTERESADO");
-						if(!idPersona.equals(idPersonaAux))
-							iterador.remove();
-						if(datosHashtable.get("IDPERSONA_DEST")==null){
-							ClsLogging.writeFileLog("Envio informes generico de expedientes. En destinatario(denunciado) del envio no tiene configurada direccion de envio:"+datosHashtable.get("NOMBRE")+" "+ datosHashtable.get("APELLIDO1"),10);
-						}
-						
-					}
-				}
-				
-				
-				
-				
-				
-				if(denunciadosVector.size()>0)
-					return denunciadosVector;
-				else
-					return datos;
-				
-			}
-			else if(destinatario!=null && destinatario.equals(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
-				//Para los denunciantes le metemos regiones de denunciados 
-				for (int i = 0; i < denunciantesVector.size(); i++) {
-					Hashtable datosHashtable = (Hashtable)denunciantesVector.get(i);
-					if(denunciadosVector!=null && denunciadosVector.size()>0)
-						datosHashtable.put("regiondenunciados", denunciadosVector);
-					else//Esto es imposible ya que es obligatorio el denunciado con una direccion pero ...
-						datosHashtable.put("regiondenunciados", new Vector());
-					
-					if(partesVector!=null && partesVector.size()>0)
-						datosHashtable.put("regionpartes", partesVector);
-					else
-						datosHashtable.put("regionpartes", new Vector());
-					
-					for (int j = 0; j < partesVector.size(); j++) {
-						Hashtable datosPartes = (Hashtable)partesVector.get(j);
-						String descripcionRolParte = (String) datosPartes.get("DESC_ROLPARTE");
-						Iterator iteParte = datosPartes.keySet().iterator();
-						while (iteParte.hasNext()) {
-							String objParte = (String) iteParte.next();
-							datosHashtable.put(objParte+"_"+descripcionRolParte.toUpperCase(), datosPartes.get(objParte));
-							
-						}
-						
-					}
-					
-				}
-				
-				
-				
-				Vector denunciantesVectorClon =  (Vector) denunciantesVector.clone();
-				for (int i = 0; i < denunciantesVector.size(); i++) {
-					Hashtable datosHashtable = (Hashtable)denunciantesVector.get(i);
-					datosHashtable.put("regiondenunciantes", denunciantesVectorClon);
-					
-				}
-				if(idPersona!=null){
-					Iterator iterador = denunciantesVector.iterator();
-					while (iterador.hasNext()) {
-						Hashtable datosHashtable = (Hashtable) iterador.next();
-						String idPersonaAux = (String) datosHashtable.get("IDINTERESADO");
-						if(!idPersona.equals(idPersonaAux))
-							iterador.remove();
-						if(datosHashtable.get("IDPERSONA_DEST")==null){
-							ClsLogging.writeFileLog("Envio informes generico de expedientes. En destinatario(parte) del envio no tiene configurada direccion de envio:"+datosHashtable.get("NOMBRE")+" "+ datosHashtable.get("APELLIDO1"),10);
-						}
-						
-					}
-				}
-				
-				if(denunciantesVector.size()>0)
-					return denunciantesVector;
-				else
-					return datos;
-				
-			}
-			else if(destinatario!=null && destinatario.equals(AdmInformeBean.TIPODESTINATARIO_SCSPROCURADOR)){
-					//Para las partes le metemos regiones de denunciados y de denunciantes
-					for (int i = 0; i < partesVector.size(); i++) {
-						Hashtable datosHashtable = (Hashtable)partesVector.get(i);
-						if(denunciadosVector!=null && denunciadosVector.size()>0)
-							datosHashtable.put("regiondenunciados", denunciadosVector);
-						//Esto es imposible ya que es obligatorio el denunciado con una direccion pero ...
-						else
-							datosHashtable.put("regiondenunciados", new Vector());
+	
+				if(destinatario!=null && destinatario.equals(AdmInformeBean.TIPODESTINATARIO_CENPERSONA)){
+					// A Lios denunciados le metemos regiones de partes y denunciantes
+					for (int i = 0; i < denunciadosVector.size(); i++) {
+						Hashtable datosHashtable = (Hashtable)denunciadosVector.get(i);
 						if(denunciantesVector!=null && denunciantesVector.size()>0)
 							datosHashtable.put("regiondenunciantes", denunciantesVector);
 						else
 							datosHashtable.put("regiondenunciantes", new Vector());
 						
+						if(partesVector!=null && partesVector.size()>0)
+							datosHashtable.put("regionpartes", partesVector);
+						else
+							datosHashtable.put("regionpartes", new Vector());
 						
-						
-						Hashtable auxParteHashtable = new Hashtable();
 						for (int j = 0; j < partesVector.size(); j++) {
 							Hashtable datosPartes = (Hashtable)partesVector.get(j);
 							String descripcionRolParte = (String) datosPartes.get("DESC_ROLPARTE");
 							Iterator iteParte = datosPartes.keySet().iterator();
 							while (iteParte.hasNext()) {
 								String objParte = (String) iteParte.next();
-								auxParteHashtable.put(objParte+"_"+descripcionRolParte.toUpperCase(), datosPartes.get(objParte));
+								datosHashtable.put(objParte+"_"+descripcionRolParte.toUpperCase(), datosPartes.get(objParte));
 								
 							}
 							
 						}
-						datosHashtable.putAll(auxParteHashtable);
 						
 						
 						
 					}
+					//VAmo a meter las parte concatenando el nombre de su rol
 					
+					
+					
+					
+					
+					Vector denunciadosVectorClon =  (Vector) denunciadosVector.clone();
+					for (int i = 0; i < denunciadosVector.size(); i++) {
+						Hashtable datosHashtable = (Hashtable)denunciadosVector.get(i);
+						datosHashtable.put("regiondenunciados", denunciadosVectorClon);
+						
+					}
 					if(idPersona!=null){
-						Iterator iterador = partesVector.iterator();
+						Iterator iterador = denunciadosVector.iterator();
 						while (iterador.hasNext()) {
 							Hashtable datosHashtable = (Hashtable) iterador.next();
 							String idPersonaAux = (String) datosHashtable.get("IDINTERESADO");
 							if(!idPersona.equals(idPersonaAux))
 								iterador.remove();
 							if(datosHashtable.get("IDPERSONA_DEST")==null){
-								ClsLogging.writeFileLog("Envio informes generico de expedientes. En destinatario(denunciante) del envio no tiene configurada direccion de envio:"+datosHashtable.get("NOMBRE")+" "+ datosHashtable.get("APELLIDO1"),10);
+								ClsLogging.writeFileLog("Envio informes generico de expedientes. En destinatario(denunciado) del envio no tiene configurada direccion de envio:"+datosHashtable.get("NOMBRE")+" "+ datosHashtable.get("APELLIDO1"),10);
 							}
 							
 						}
 					}
 					
-					if(partesVector.size()>0)
-						return partesVector;
+					
+					
+					
+					
+					if(denunciadosVector.size()>0)
+						return denunciadosVector;
 					else
 						return datos;
 					
 				}
-				 else{
-					return datos;
+				else if(destinatario!=null && destinatario.equals(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
+					//Para los denunciantes le metemos regiones de denunciados 
+					for (int i = 0; i < denunciantesVector.size(); i++) {
+						Hashtable datosHashtable = (Hashtable)denunciantesVector.get(i);
+						if(denunciadosVector!=null && denunciadosVector.size()>0)
+							datosHashtable.put("regiondenunciados", denunciadosVector);
+						else//Esto es imposible ya que es obligatorio el denunciado con una direccion pero ...
+							datosHashtable.put("regiondenunciados", new Vector());
+						
+						if(partesVector!=null && partesVector.size()>0)
+							datosHashtable.put("regionpartes", partesVector);
+						else
+							datosHashtable.put("regionpartes", new Vector());
+						
+						for (int j = 0; j < partesVector.size(); j++) {
+							Hashtable datosPartes = (Hashtable)partesVector.get(j);
+							String descripcionRolParte = (String) datosPartes.get("DESC_ROLPARTE");
+							Iterator iteParte = datosPartes.keySet().iterator();
+							while (iteParte.hasNext()) {
+								String objParte = (String) iteParte.next();
+								datosHashtable.put(objParte+"_"+descripcionRolParte.toUpperCase(), datosPartes.get(objParte));
+								
+							}
+							
+						}
+						
+					}
+					
+					
+					
+					Vector denunciantesVectorClon =  (Vector) denunciantesVector.clone();
+					for (int i = 0; i < denunciantesVector.size(); i++) {
+						Hashtable datosHashtable = (Hashtable)denunciantesVector.get(i);
+						datosHashtable.put("regiondenunciantes", denunciantesVectorClon);
+						
+					}
+					if(idPersona!=null){
+						Iterator iterador = denunciantesVector.iterator();
+						while (iterador.hasNext()) {
+							Hashtable datosHashtable = (Hashtable) iterador.next();
+							String idPersonaAux = (String) datosHashtable.get("IDINTERESADO");
+							if(!idPersona.equals(idPersonaAux))
+								iterador.remove();
+							if(datosHashtable.get("IDPERSONA_DEST")==null){
+								ClsLogging.writeFileLog("Envio informes generico de expedientes. En destinatario(parte) del envio no tiene configurada direccion de envio:"+datosHashtable.get("NOMBRE")+" "+ datosHashtable.get("APELLIDO1"),10);
+							}
+							
+						}
+					}
+					
+					if(denunciantesVector.size()>0)
+						return denunciantesVector;
+					else
+						return datos;
+					
 				}
+				else if(destinatario!=null && destinatario.equals(AdmInformeBean.TIPODESTINATARIO_SCSPROCURADOR)){
+						//Para las partes le metemos regiones de denunciados y de denunciantes
+						for (int i = 0; i < partesVector.size(); i++) {
+							Hashtable datosHashtable = (Hashtable)partesVector.get(i);
+							if(denunciadosVector!=null && denunciadosVector.size()>0)
+								datosHashtable.put("regiondenunciados", denunciadosVector);
+							//Esto es imposible ya que es obligatorio el denunciado con una direccion pero ...
+							else
+								datosHashtable.put("regiondenunciados", new Vector());
+							if(denunciantesVector!=null && denunciantesVector.size()>0)
+								datosHashtable.put("regiondenunciantes", denunciantesVector);
+							else
+								datosHashtable.put("regiondenunciantes", new Vector());
+							
+							
+							
+							Hashtable auxParteHashtable = new Hashtable();
+							for (int j = 0; j < partesVector.size(); j++) {
+								Hashtable datosPartes = (Hashtable)partesVector.get(j);
+								String descripcionRolParte = (String) datosPartes.get("DESC_ROLPARTE");
+								Iterator iteParte = datosPartes.keySet().iterator();
+								while (iteParte.hasNext()) {
+									String objParte = (String) iteParte.next();
+									auxParteHashtable.put(objParte+"_"+descripcionRolParte.toUpperCase(), datosPartes.get(objParte));
+									
+								}
+								
+							}
+							datosHashtable.putAll(auxParteHashtable);
+							
+							
+							
+						}
+						
+						if(idPersona!=null){
+							Iterator iterador = partesVector.iterator();
+							while (iterador.hasNext()) {
+								Hashtable datosHashtable = (Hashtable) iterador.next();
+								String idPersonaAux = (String) datosHashtable.get("IDINTERESADO");
+								if(!idPersona.equals(idPersonaAux))
+									iterador.remove();
+								if(datosHashtable.get("IDPERSONA_DEST")==null){
+									ClsLogging.writeFileLog("Envio informes generico de expedientes. En destinatario(denunciante) del envio no tiene configurada direccion de envio:"+datosHashtable.get("NOMBRE")+" "+ datosHashtable.get("APELLIDO1"),10);
+								}
+								
+							}
+						}
+						
+						if(partesVector.size()>0)
+							return partesVector;
+						else
+							return datos;
+						
+					}
+					 else{
+						return datos;
+					}
+					
+					
+			}else{
+				log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),"La dirección del destinatario está de baja o no existe"});
+		    	  /** Escribiendo fichero de log **/
+				if (log != null)
+					log.flush();
+				throw new SIGAException("La dirección del destinatario está de baja o no existe");
+			}
+					
 				
-				
-				
-				
+					
+		}catch (SIGAException e){
 			
-				
-				
+			throw e;
 			
 
 		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error al ejecutar getImplicadosDireccionesExpediente");
+			new ClsExceptions(e, "Error al ejecutar getImplicadosDireccionesExpediente");
 		}
+		return datos;
 
 	} //getImplicadosDireccionesExpediente()
 	private String getIdiomaInforme(String idInstitucion, String idPersona, String idTipoPersona,UsrBean usrBean) 
