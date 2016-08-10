@@ -419,7 +419,8 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			} //while
 
 			if (correcto) {
-				tx.commit();
+				if (nFicherosGenerados > 0)
+					tx.commit();
 
 				String[] datos = { String.valueOf(nFicherosGenerados) };
 				String mensaje = UtilidadesString.getMensaje("facturacion.ficheroBancarioAbonos.mensaje.generacionDisquetesOK", datos, lenguaje);
@@ -471,18 +472,19 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		// Variables generales
 		String idInstitucion = user.getLocation();
 		String lenguaje = user.getLanguage();
-
 		Long idDisqueteAbono; // id del nuevo disquete a generar
 
-		String prefijoFichero = rp.returnProperty("facturacion.prefijo.ficherosAbonos");
+		// Variables de control
+		int numeroAbonosIncluidosEnDisquete = 0;
 
+		// Control basico de entrada
 		if (abonosBanco.isEmpty()) {
 			return 0;
 		}
 
-		// Identificadores del nuevo fichero
+		// Creando registro de nuevo fichero
 		idDisqueteAbono = admDisqueteAbonos.getNuevoID(idInstitucion);
-		String nombreFichero = prefijoFichero + idDisqueteAbono;
+		String nombreFichero = rp.returnProperty("facturacion.prefijo.ficherosAbonos") + idDisqueteAbono;
 
 		// Creacion entrada FAC_DISQUETEABONO
 		Hashtable disqueteAbono = new Hashtable();
@@ -509,13 +511,22 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		Double importeAbonado, impPendientePorAbonar, impTotalAbonado, impTotalAbonadoPorBanco;
 		Enumeration listaReceptores = abonosBanco.elements();
 		while ((correcto) && (listaReceptores.hasMoreElements())) {
-			datosAbono = new Hashtable();
+			// obteniendo datos del abono a introducir en fichero
 			datosAbono = ((Row) listaReceptores.nextElement()).getRow();
+			
+			// control del importe a abonar
+			importeAbonado = admAbonoDisquete.getImporteAbonado(idInstitucion, (String) datosAbono.get(FacAbonoBean.C_IDABONO));
+			if (importeAbonado == 0) {
+				continue;
+			}
+			// si hay importe a abonar, se puede continuar con la generacion del fichero 
+			numeroAbonosIncluidosEnDisquete++;
+			
+			// introduciendo el abono en el fichero
 			abonoDisquete = new Hashtable();
 			abonoDisquete.put(FacAbonoIncluidoEnDisqueteBean.C_IDINSTITUCION, idInstitucion);
 			abonoDisquete.put(FacAbonoIncluidoEnDisqueteBean.C_IDABONO, (String) datosAbono.get(FacAbonoBean.C_IDABONO));
 			abonoDisquete.put(FacAbonoIncluidoEnDisqueteBean.C_IDDISQUETEABONO, idDisqueteAbono.toString());
-			importeAbonado = admAbonoDisquete.getImporteAbonado(idInstitucion, (String) datosAbono.get(FacAbonoBean.C_IDABONO));
 			abonoDisquete.put(FacAbonoIncluidoEnDisqueteBean.C_IMPORTEABONADO, importeAbonado);
 			abonoDisquete.put(FacAbonoIncluidoEnDisqueteBean.C_CONTABILIZADO, "N");
 			correcto = admAbonoDisquete.insert(abonoDisquete);
@@ -557,6 +568,12 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 				}
 			}
 		}
+		
+		// El siguiente control se realiza para que no se generen ficheros vacios (mas info en R1608_0005)
+		// TODO Este control es solo un parche. La solucion completa seria impedir iniciar el proceso si hay una generacion de fichero bancario en marcha: esto requiere introducir la generacion de ficheros de abonos en un proceso controlado en segundo plano.
+		if (numeroAbonosIncluidosEnDisquete == 0) {
+			return 0;
+		}
 
 		// Creacion de un fichero de abonos por cada banco
 		try {
@@ -576,20 +593,18 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			paramIn[3] = idPropositoOtros.toString();
 			paramIn[4] = rutaServidor;
 			paramIn[5] = nombreFichero;
-			paramIn[6] = user.getLanguage();
+			paramIn[6] = lenguaje;
 
 			int nParametrosOut = 2;
 			String resultado[] = new String[nParametrosOut];
 			String paramInCadena = "?";
-			for (int i = 1; i < nParametrosIn + nParametrosOut; i++)
+			for (int i = 1; i < nParametrosIn + nParametrosOut; i++) {
 				paramInCadena = paramInCadena + ",?";
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_ABONOS.Generarficherotransferencias("
-					+ paramInCadena + ")}", nParametrosOut, paramIn);
+			}
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_ABONOS.Generarficherotransferencias(" + paramInCadena + ")}", nParametrosOut, paramIn);
 			if (!resultado[0].equalsIgnoreCase("0")) {
 				// ClsLogging.writeFileLog("Error en PL = "+(String)resultado[3],3);
-				throw new ClsExceptions(
-						"Ha ocurrido un error al generar el fichero de transferencias. \nError en PL = " + resultado[0]
-								+ " - " + resultado[1]);
+				throw new ClsExceptions("Ha ocurrido un error al generar el fichero de transferencias. \nError en PL = " + resultado[0] + " - " + resultado[1]);
 			}
 
 		} catch (Exception e) {
