@@ -140,6 +140,7 @@
 		if (document.getElementById('seleccionados') &&
 			document.getElementById('seleccionados').value==2){
 			document.MantenimientoDuplicadosForm.modo.value = "gestionar";
+			//document.MantenimientoDuplicadosForm.submit();
 			sub(); 
 			var resultado = ventaModalGeneral("MantenimientoDuplicadosForm","G");
 			if(resultado&&resultado!="NOMODIFICADO"){
@@ -266,11 +267,95 @@
 	   	document.forms[0].submit();			   	
 	}
 	
+	
+	function recargarCamposHabilitados (){
+		if(parent.document.MantenimientoDuplicadosForm.nifcif.value.length ==0 &&
+				parent.document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length ==0 &&
+				parent.document.MantenimientoDuplicadosForm.listadoInstitucion.value == "" &&
+				parent.document.MantenimientoDuplicadosForm.nombreText.value.length ==0 &&
+				parent.document.MantenimientoDuplicadosForm.apellido1Text.value.length ==0 &&
+				parent.document.MantenimientoDuplicadosForm.apellido2Text.value.length ==0){
+			
+				jQuery("#nifcif",parent.document).removeAttr("disabled");
+				jQuery("#numeroColegiadoText",parent.document).removeAttr("disabled");
+				jQuery("#nombreText",parent.document).removeAttr("disabled");
+				jQuery("#apellido1Text",parent.document).removeAttr("disabled");
+				jQuery("#apellido2Text",parent.document).removeAttr("disabled");
+				jQuery("#listadoInstitucion",parent.document).removeAttr("disabled");
+			
+				
+		}else{
+			if(parent.document.MantenimientoDuplicadosForm.nifcif.value.length >0 ){
+				//Deshabilitamso los demás elementos del filtro	
+				parent.document.getElementById('nifcif').focus();
+				
+				
+				jQuery("#numeroColegiadoText",parent.document).attr("disabled","disabled");
+				jQuery("#nombreText",parent.document).attr("disabled","disabled");
+				jQuery("#apellido1Text",parent.document).attr("disabled","disabled");
+				jQuery("#apellido2Text",parent.document).attr("disabled","disabled");
+				jQuery("#listadoInstitucion",parent.document).attr("disabled","disabled");
+				
+				parent.document.MantenimientoDuplicadosForm.chkIdentificador.value="1";
+			}
+			if(parent.document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length >0 || parent.document.MantenimientoDuplicadosForm.listadoInstitucion.value != ""){
+				
+				
+				parent.document.getElementById('numeroColegiadoText').focus();
+				
+				jQuery("#nifcif",parent.document).attr("disabled","disabled");
+				jQuery("#nombreText",parent.document).attr("disabled","disabled");
+				jQuery("#apellido1Text",parent.document).attr("disabled","disabled");
+				jQuery("#apellido2Text",parent.document).attr("disabled","disabled");
+				jQuery("#listadoInstitucion",parent.document).removeAttr("disabled");
+				
+				parent.document.MantenimientoDuplicadosForm.chkNumColegiado.value="1";
+				onClickChkNumColegiado();
+			}
+			if(parent.document.MantenimientoDuplicadosForm.nombreText.value.length >0 ||
+					parent.document.MantenimientoDuplicadosForm.apellido1Text.value.length >0 ||
+					parent.document.MantenimientoDuplicadosForm.apellido2Text.value.length >0){
+			
+				jQuery("#nifcif",parent.document).attr("disabled","disabled");
+				jQuery("#numeroColegiadoText",parent.document).attr("disabled","disabled");
+				jQuery("#listadoInstitucion",parent.document).attr("disabled","disabled");
+		
+				parent.document.getElementById('nombreText').focus();
+				
+				if(parent.document.MantenimientoDuplicadosForm.nombreText.value.length >0 && (parent.document.MantenimientoDuplicadosForm.apellido1Text.value.length >0 ||
+						parent.document.MantenimientoDuplicadosForm.apellido2Text.value.length >0)){
+					parent.document.MantenimientoDuplicadosForm.chkNombreApellidos.value="1";	
+				}else{
+					parent.document.MantenimientoDuplicadosForm.chkNombreApellidos.value="0";	
+				}
+				if((parent.document.MantenimientoDuplicadosForm.apellido1Text.value.length >0 ||
+						parent.document.MantenimientoDuplicadosForm.apellido2Text.value.length >0)){
+					parent.document.MantenimientoDuplicadosForm.chkApellidos.value="1";	
+				}else{
+					parent.document.MantenimientoDuplicadosForm.chkApellidos.value="0";	
+				}
+			}
+			
+		}
+	}
+	
+	function onClickChkNumColegiado(){
+		if(parent.document.MantenimientoDuplicadosForm.chkNumColegiado.value=="1"){
+			//Comprobamos si ya existe en la select para no añadirlo más
+			if(jQuery("#campoOrdenacion option[value='numeroColegiado']",parent.document).length == 0){
+				jQuery("#campoOrdenacion",parent.document).append('<option value="numeroColegiado">Inst/Nº.Col</option>');
+			}
+		}else{
+			jQuery("#campoOrdenacion option[value='numeroColegiado']",parent.document).remove();
+		}
+		
+	}
+	
 	</script>
 
 </head>
 
-<body class="tablaCentralCampos"  onload="cargarChecks()" >
+<body class="tablaCentralCampos"  onload="cargarChecks();recargarCamposHabilitados();" >
 
 <html:form action="/CEN_MantenimientoDuplicados.do?noReset=true" method="POST" target="mainWorkArea">
 	<input type="hidden" name="actionModal" id="actionModal"  value="">
