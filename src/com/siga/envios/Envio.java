@@ -1673,7 +1673,19 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 		Vector vDestinatarios = null;
 		Hashtable htErrores = new Hashtable();
 		try {
-			vDestinatarios = envAdm.getDestinatarios(this.enviosBean.getIdInstitucion().toString(), this.enviosBean.getIdEnvio().toString(), this.enviosBean.getIdTipoEnvios().toString());			
+			EnvDestinatariosAdm envDestinatariosAdm = new EnvDestinatariosAdm(this.usrBean);
+			Hashtable htPk = new Hashtable();
+			htPk.put(EnvEnviosBean.C_IDINSTITUCION,this.enviosBean.getIdInstitucion().toString());
+			htPk.put(EnvEnviosBean.C_IDENVIO,this.enviosBean.getIdEnvio().toString());
+			htPk.put(EnvDestinatariosBean.C_ORIGENDESTINATARIO, EnvDestinatariosBean.ORIGENDESTINATARIO_DINAMICO);
+			 String[] claves = {EnvDestinatariosBean.C_IDINSTITUCION, 
+          		   EnvDestinatariosBean.C_IDENVIO,
+          		   EnvDestinatariosBean.C_ORIGENDESTINATARIO};
+			 
+			envDestinatariosAdm.deleteDirect(htPk, claves);
+			envDestinatariosAdm.insertarDestinatariosDinamicos(this.enviosBean.getIdInstitucion().toString(), this.enviosBean.getIdEnvio().toString(), this.enviosBean.getIdTipoEnvios().toString());
+			
+			vDestinatarios = envDestinatariosAdm.getDestinatarios(this.enviosBean.getIdInstitucion().toString(), this.enviosBean.getIdEnvio().toString(), this.enviosBean.getIdTipoEnvios().toString());			
 		} catch (Exception e) {
 			SIGAException sigaExc = new SIGAException("messages.envios.errorDestinatarios");
 			envAdm.generarLogEnvioExceptionHT(this.enviosBean,sigaExc);
@@ -1766,6 +1778,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 		    if (!bloqueado.equals("1")) {
 		        
 			    EnvEnviosAdm envAdm = new EnvEnviosAdm(_usrBean);
+			    EnvDestinatariosAdm envDestinatariosAdm = new EnvDestinatariosAdm(_usrBean);
 			    enviosBeans = envAdm.getEnviosPendientes(idInstitucion);
 			    UsrBean usr = new UsrBean();
 //			    UserTransaction tx = (UserTransaction)usr.getTransaction();
@@ -1803,9 +1816,20 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 			    		
 		    			// OBTENCION DE DESTINATARIOS 
 		    	        /////////////////////////////////////
+		    			 String[] claves = {EnvDestinatariosBean.C_IDINSTITUCION, 
+		                		   EnvDestinatariosBean.C_IDENVIO,
+		                		   EnvDestinatariosBean.C_ORIGENDESTINATARIO};
+		    			 htPk.put(EnvDestinatariosBean.C_ORIGENDESTINATARIO, EnvDestinatariosBean.ORIGENDESTINATARIO_DINAMICO);
+		    			envDestinatariosAdm.deleteDirect(htPk, claves);
+		    			
+		    			envDestinatariosAdm.insertarDestinatariosDinamicos(envBean.getIdInstitucion().toString(), 
+				    				envBean.getIdEnvio().toString(), envBean.getIdTipoEnvios().toString());
+		    			
+		    			
+		    			
 		    			Vector vDestinatarios = null;
 		    			try {
-		    				vDestinatarios = envAdm.getDestinatarios(envBean.getIdInstitucion().toString(), 
+		    				vDestinatarios = envDestinatariosAdm.getDestinatarios(envBean.getIdInstitucion().toString(), 
 				    				envBean.getIdEnvio().toString(), envBean.getIdTipoEnvios().toString());			
 		    			} catch (Exception e) {
 		    				SIGAException sigaExc = new SIGAException("messages.envios.errorDestinatarios");

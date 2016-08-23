@@ -83,6 +83,7 @@
 	</table>
 
 	<html:form  action="${path}" method="POST" target="submitArea">
+	
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property = "idPersona" />
 		<html:hidden property = "idInstitucion" />
@@ -94,15 +95,16 @@
 		<html:hidden property = "idEnvio" value="${idEnvio}"/>
 		<html:hidden property = "idTipoEnvio" value="${idTipoEnvio}"/>
 		<html:hidden property = "idTipoExpediente" value="${idTipoExpediente}"/>
+		
 	</html:form>
 				
 	<siga:Table 
 		name="tablaDatos"
 		border="1"
-		columnNames="envios.listas.literal.nombreyapellidos,
+		columnNames="envios.destinatarios.origen,envios.destinatarios.estadoproceso ,envios.listas.literal.nombreyapellidos,
 			censo.fichaCliente.literal.colegiado,
 			censo.busquedaClientes.literal.nif,"
-		columnSizes="60,15,15,10"
+		columnSizes="15,10,40,15,10,10"
 		modal="g">
 
 		<% if (vDatos==null || vDatos.size()==0) {%>
@@ -123,9 +125,26 @@
 				}			
 		%>
 	  		
-	  		<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botonesFila %>" clase="listaNonEdit" visibleConsulta="no">				
-				<td>
+	  		<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botonesFila %>" clase="listaNonEdit" visibleConsulta="no">	
+	  			<td>
 					<input type="hidden" name="idPersona_<%=""+(i+1)%>" value="<%=fila.getString("IDPERSONA")%>"/>
+					
+					<%=UtilidadesString.mostrarDatoJSP(fila.getString("ORIGENDESTINATARIO")!=null&&fila.getString("ORIGENDESTINATARIO").equalsIgnoreCase("1")?"Lista correo":"Destinatario Individual")%>
+				</td>
+				<td align="center">
+				<%String idEstado =  fila.getString("IDESTADO");
+				String estado =  "";
+				if(idEstado.equals("2"))
+					estado = "Si";
+				else if(idEstado.equals("3"))
+					estado = "No";
+					
+				%>
+				
+					<%=UtilidadesString.mostrarDatoJSP(estado)%>
+				</td>			
+				<td>
+				
 					<%=UtilidadesString.mostrarDatoJSP(fila.getString("NOMBREYAPELLIDOS"))%>
 				</td>
 				<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NCOLEGIADO"))%></td>

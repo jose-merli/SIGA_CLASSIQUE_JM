@@ -133,6 +133,9 @@
 			<html:hidden styleId = "idImpresora"  property = "idImpresora"/>
 			<html:hidden styleId = "idEstadoEnvio" property = "idEstado"/>
 			<html:hidden styleId = "origen" property = "origen" value ="${path}"/>
+			<html:hidden styleId = "tipoEnvio"  property = "tipoEnvio"/>
+			<html:hidden styleId = "estado" property = "estado"/>
+			
 			<input type="hidden" id="actionModal"  name="actionModal" value="">
 		</html:form>
 
@@ -231,10 +234,19 @@
 						String botones = "C";
 						
 						if(fila.getString("FECHABAJA") == null || fila.getString("FECHABAJA").equals("")){
-							botones += ",E,B";
-							elems[0]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ);
+							
+							if(fila.getString("IDESTADO") != null && fila.getString("IDESTADO").equals(String.valueOf(EnvEnviosAdm.ESTADO_PROCESADO))){
+								botones += ",B";
+								elems[0]=new FilaExtElement("enviardenuevo","enviardenuevo",SIGAConstants.ACCESS_READ);
+							}else if(fila.getString("IDESTADO") != null && fila.getString("IDESTADO").equals(String.valueOf(EnvEnviosAdm.ESTADO_PROCESADO_ERRORES))){
+								botones += ",B";
+								elems[0]=new FilaExtElement("reenviar","reenviar",SIGAConstants.ACCESS_READ);
+							}else{
+								botones += ",E,B";
+								elems[0]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ);
+							}
 						} else {
-							elems[0]= null;
+							elems[0]=new FilaExtElement("enviardenuevo","enviardenuevo",SIGAConstants.ACCESS_READ);
 						}
 %>
 	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botones%>"elementos="<%=elems%>" clase="listaNonEdit">
@@ -286,8 +298,8 @@
 	<script language="JavaScript">
 		
 		function refrescarLocal()
-		{			
-			parent.buscar() ;			
+		{
+			parent.buscar() ;
 		}
 		
 		function enviar(fila) {
@@ -307,25 +319,56 @@
 			
 			document.forms[0].target="submitArea";	   	
 			document.forms[0].modo.value='procesarEnvio';
-				
-			/*if (idTipoEnv.value=="< %=EnvTipoEnviosAdm.K_CORREO_ELECTRONICO%>") {
-				document.forms[0].submit();
-				document.forms[0].target="mainWorkArea";	   	
-			} else if (idTipoEnv.value=="< %=EnvTipoEnviosAdm.K_CORREO_ORDINARIO%>"){
-				var resultado = ventaModalGeneral("DefinirEnviosForm", "P");
-			
-				if (resultado!=undefined)
-				{					
-					DefinirEnviosForm.idImpresora.value=resultado;
-					DefinirEnviosForm.modo.value="procesarCorreoOrdinario";
-					DefinirEnviosForm.target="submitArea";
-					DefinirEnviosForm.submit();
-				}
-			}*/
-			
 			document.forms[0].submit();
 			document.forms[0].target="mainWorkArea";
-			//finsubicono('iconoboton_enviar'+fila);
+		}
+		function reenviar(fila) {
+			if(!confirm('<siga:Idioma key="envios.confirmar.reenviar"/>')){
+				return false;
+			}
+			
+			sub();
+			
+			
+			subicono('iconoboton_reeenviar'+fila);
+			var auxEnv = 'oculto' + fila + '_1';
+			var idEnv = document.getElementById(auxEnv);			          		
+			var auxTipoEnv = 'oculto' + fila + '_2';
+			var idTipoEnv = document.getElementById(auxTipoEnv);			          		
+			var auxEstadoEnv = 'oculto' + fila + '_4';
+			var idEstadoEnv = document.getElementById(auxEstadoEnv);
+			document.forms[0].target="mainWorkArea";
+			document.forms[0].idEnvio.value=idEnv.value;
+			document.forms[0].tipoEnvio.value=idTipoEnv.value;
+			document.forms[0].estado.value=idEstadoEnv.value;
+			document.forms[0].modo.value='reenviar';
+			document.forms[0].submit();
+			alert('<siga:Idioma key="envios.aviso.reenviar.ok"/>');
+			
+		}
+		function enviardenuevo(fila) {
+			
+			if(!confirm('<siga:Idioma key="envios.confirmar.duplicarcomonuevo"/>')){
+				return false;
+			}		
+			sub();
+			subicono('iconoboton_enviardenuevo'+fila);
+			var auxEnv = 'oculto' + fila + '_1';
+			var idEnv = document.getElementById(auxEnv);			          		
+			
+			var auxTipoEnv = 'oculto' + fila + '_2';
+			var idTipoEnv = document.getElementById(auxTipoEnv);			          		
+			var auxEstadoEnv = 'oculto' + fila + '_4';
+			var idEstadoEnv = document.getElementById(auxEstadoEnv);
+			
+			document.forms[0].idEnvio.value=idEnv.value;
+			document.forms[0].idTipoEnvio.value=idTipoEnv.value;
+			document.forms[0].idEstado.value=idEstadoEnv.value;
+			
+			document.forms[0].target="submitArea";	   	
+			document.forms[0].modo.value='enviardenuevo';
+			document.forms[0].submit();
+			document.forms[0].target="mainWorkArea";
 		}
 
 			function download(fila)

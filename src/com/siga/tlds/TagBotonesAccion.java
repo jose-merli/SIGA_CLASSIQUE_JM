@@ -253,6 +253,9 @@ public class TagBotonesAccion extends TagSupport {
 				case GENERAR_INFORME:
 					printButton(usrbean, out, abc);
 					break;
+				case GENERAR_ETIQUETAS:
+					printButton(usrbean, out, abc);
+					break;
 				case XUNTA_ENVIO_REINTEGRO:
 					printButton(usrbean, out, abc);
 					break;

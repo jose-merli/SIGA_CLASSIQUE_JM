@@ -20,7 +20,7 @@
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	<script type='text/javascript' src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
 	<title><siga:Idioma key="pestana.justiciagratuitaejg.comunicacion"/></title>
-	<siga:Titulo  titulo="pestana.justiciagratuitaejg.comunicacion"  localizacion="gratuita.busquedaEJG.localizacion"/>
+	<siga:Titulo  titulo="pestana.justiciagratuitaejg.comunicacion"  localizacion="censo.fichaCliente.localizacion"/>
 </head>
 
 <body onload="inicio();">

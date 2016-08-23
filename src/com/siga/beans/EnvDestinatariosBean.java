@@ -11,10 +11,13 @@ public class EnvDestinatariosBean extends MasterBean {
 	 */
 	private static final long serialVersionUID = -4811209378603696423L;
 	static public final String TIPODESTINATARIO_CENPERSONA = "CEN_PERSONA";
+	
 	static public final String TIPODESTINATARIO_SCSPERSONAJG = "SCS_PERSONAJG";
 	static public final String TIPODESTINATARIO_SCSJUZGADO = "SCS_JUZGADO";
 	static public final String TIPODESTINATARIO_SCSPROCURADOR = "SCS_PROCURADOR";
 	static public final String TIPODESTINATARIO_SCSCONTRARIOSJG = "SCS_CONTRARIOSJG";
+	static public final short ORIGENDESTINATARIO_INDIVIDUAL = 0;
+	static public final short ORIGENDESTINATARIO_DINAMICO = 1;
 	
 	//Variables
     private Integer idEnvio;
@@ -38,6 +41,8 @@ public class EnvDestinatariosBean extends MasterBean {
 	private String provincia;
 	private String poblacion;
 	private String tipoDestinatario=TIPODESTINATARIO_CENPERSONA;
+	private Short origenDestinatario=ORIGENDESTINATARIO_INDIVIDUAL;
+	private Short idEstado;
 	
 	
 	
@@ -60,6 +65,8 @@ public class EnvDestinatariosBean extends MasterBean {
 	static public final String C_NIFCIF = "NIFCIF";
 	static public final String C_MOVIL = "MOVIL";
 	static public final String C_TIPODESTINATARIO = "TIPODESTINATARIO";
+	static public final String C_ORIGENDESTINATARIO = "ORIGENDESTINATARIO";
+	static public final String C_IDESTADO = "IDESTADO";
 	
 	
 	
@@ -194,5 +201,17 @@ public class EnvDestinatariosBean extends MasterBean {
 	}
 	public void setTipoDestinatario(String tipoDestinatario) {
 		this.tipoDestinatario = tipoDestinatario;
+	}
+	public Short getOrigenDestinatario() {
+		return origenDestinatario;
+	}
+	public void setOrigenDestinatario(Short origenDestinatario) {
+		this.origenDestinatario = origenDestinatario;
+	}
+	public Short getIdEstado() {
+		return idEstado;
+	}
+	public void setIdEstado(Short idEstado) {
+		this.idEstado = idEstado;
 	}
 }

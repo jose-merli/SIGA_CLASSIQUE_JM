@@ -171,6 +171,14 @@ public class DefinirEnviosAction extends MasterAction {
 				else if (accion.equalsIgnoreCase("procesarEnvio")){
 					ClsLogging.writeFileLog("DefinirEnviosAction:procesarEnvio. IdInstitucion:" + userBean.getLocation(), 10);
 					mapDestino = procesarEnvio(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("reenviar")){
+					ClsLogging.writeFileLog("DefinirEnviosAction:procesarEnvio. IdInstitucion:" + userBean.getLocation(), 10);
+					String idPaginador = getIdPaginador(super.paginador,getClass().getName());
+					request.getSession().removeAttribute(idPaginador);
+					mapDestino = reenviar(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("enviardenuevo")){
+					ClsLogging.writeFileLog("DefinirEnviosAction:procesarEnvio. IdInstitucion:" + userBean.getLocation(), 10);
+					mapDestino = enviardenuevo(mapping, miForm, request, response);
 				}
 
 				else if (accion.equalsIgnoreCase("descargarLogErrores")){
@@ -357,7 +365,7 @@ public class DefinirEnviosAction extends MasterAction {
 			envioBean.setIdInstitucion(Integer.valueOf(userBean.getLocation()));
 			envioBean.setDescripcion(form.getNombre());
 			envioBean.setIdTipoEnvios(Integer.valueOf(form.getIdTipoEnvio()));
-			if(envioBean.getIdTipoEnvios().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))
+			if(envioBean.getIdTipoEnvios().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO) || envioBean.getIdTipoEnvios().equals(EnvTipoEnviosAdm.K_DOCUMENTACIONLETRADO))
 				envioBean.setAcuseRecibo(form.getAcuseRecibo());
 			envioBean.setIdPlantillaEnvios(Integer.valueOf(form.getIdPlantillaEnvios()));
 			if (!form.getIdPlantillaGeneracion().trim().equals("")){
@@ -502,6 +510,7 @@ public class DefinirEnviosAction extends MasterAction {
 
 		return mostrarRegistro(mapping,formulario,request,response,true);
 	}
+	
 	
 	protected String editarComunicacion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, boolean bEditable) throws ClsExceptions{
 
@@ -663,14 +672,14 @@ public class DefinirEnviosAction extends MasterAction {
 			//Anhadimos parametros para las pestanhas
 			Hashtable htParametros=new Hashtable();
 			htParametros.put("idEnvio",form.getIdEnvio());
-			htParametros.put("idInstitucion",form.getIdInstitucion());
+			htParametros.put("idInstitucion",form.getIdInstitucion()!=null?form.getIdInstitucion():userBean.getLocation());
 			htParametros.put("idTipoEnvio",form.getIdTipoEnvio());
 			htParametros.put("acceso",bEditable?"editar":"ver");
-			htParametros.put("idIntercambio",form.getIdIntercambio());
+			htParametros.put("idIntercambio",form.getIdIntercambio()!=null?form.getIdIntercambio():"");
 			request.setAttribute("envio", htParametros);    
 			request.setAttribute("nuevo", "false");	    
 			request.setAttribute("buscarEnvios","false");
-	
+			
 			ClsLogging.writeFileLog("DefinirEnviosAction:fin mostrarRegistro de pestaña comunicaciones. IdInstitucion:" + userBean.getLocation(), 10);
 			
 		}
@@ -1117,7 +1126,7 @@ public class DefinirEnviosAction extends MasterAction {
 			if (fechaProgramada==null || fechaProgramada.equals(""))
 				enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
 			else{
-				if(enviosBean.getIdTipoEnvios()!=null &&!enviosBean.getIdTipoEnvios().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))			
+				if(enviosBean.getIdTipoEnvios()!=null &&!enviosBean.getIdTipoEnvios().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO)&&!enviosBean.getIdTipoEnvios().equals(EnvTipoEnviosAdm.K_DOCUMENTACIONLETRADO))			
 					enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
 				else
 					enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_PENDIENTE_AUTOMATICO));
@@ -1528,7 +1537,7 @@ public class DefinirEnviosAction extends MasterAction {
 						if (fechaProgramada == null || fechaProgramada.equals(""))
 							enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
 						else {
-							if (enviosBean.getIdTipoEnvios() != null && !enviosBean.getIdTipoEnvios().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))
+							if (enviosBean.getIdTipoEnvios() != null && !enviosBean.getIdTipoEnvios().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO)&& !enviosBean.getIdTipoEnvios().equals(EnvTipoEnviosAdm.K_DOCUMENTACIONLETRADO))
 								enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
 							else
 								enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_PENDIENTE_AUTOMATICO));
@@ -1782,8 +1791,56 @@ public class DefinirEnviosAction extends MasterAction {
 			return exitoRefresco("messages.envio.successErrores",request);
 		else
 			return exitoRefresco("messages.envio.success",request);
-	}	
-	
+	}
+
+	protected String enviardenuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		UsrBean userBean = ((UsrBean) request.getSession().getAttribute(("USRBEAN")));
+		EnvEnviosAdm envAdm = new EnvEnviosAdm(this.getUserBean(request));
+		Integer idEstadoEnvioFinal = null;
+		try {
+
+			DefinirEnviosForm form = (DefinirEnviosForm) formulario;
+			String idInstitucion = userBean.getLocation();
+			String idEnvio = form.getIdEnvio();
+			Integer newIdEnvio = envAdm.enviarDeNuevo(Integer.valueOf(idEnvio),Short.valueOf(idInstitucion)) ;
+
+		} catch (Exception e) {
+			this.throwExcp("messages.general.error", new String[] { "modulo.envios" }, e, null);
+		}
+		
+		return exitoRefresco("Se ha copiado correctamente el envio. Si necesita realizar algun cambio edite el envio y modifíquelo. Cuando haya terminado pulse el botón enviar para procesar el envio.",request);
+		
+	}
+
+	protected String reenviar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		UsrBean userBean = ((UsrBean) request.getSession().getAttribute(("USRBEAN")));
+		EnvEnviosAdm envAdm = new EnvEnviosAdm(this.getUserBean(request));
+		Integer idEstadoEnvioFinal = null;
+		try {
+
+			DefinirEnviosForm form = (DefinirEnviosForm) formulario;
+			String idInstitucion = userBean.getLocation();
+			String idEnvio = form.getIdEnvio();
+			Integer newIdEnvio =  envAdm.reenviar(Integer.valueOf(idEnvio),Short.valueOf(idInstitucion)) ;
+			
+			Hashtable htParametros=new Hashtable();
+			htParametros.put("idEnvio",newIdEnvio);
+			htParametros.put("idInstitucion",form.getIdInstitucion()!=null?form.getIdInstitucion():userBean.getLocation());
+			htParametros.put("idTipoEnvio",form.getTipoEnvio());
+			htParametros.put("acceso","editar");
+			htParametros.put("idIntercambio","");
+			htParametros.put("elementoActivo","6");
+			request.setAttribute("envio", htParametros);    
+			request.setAttribute("buscarEnvios","true");
+			request.setAttribute("nuevo", "false");
+			
+
+		} catch (Exception e) {
+			this.throwExcp("messages.general.error", new String[] { "modulo.envios" }, e, null);
+		}
+		return "destinatariosIndividuales";
+//		return exitoRefresco("Se ha copiado correctamente el envio excepto los destinatarios. Edite el envio y agregue los destinatarios. Cuando haya terminado pulse el botón enviar para procesar el envio.",request);
+	}
 	
 	/**
 	 * Descarga el fichero de Log.
@@ -3151,7 +3208,7 @@ public class DefinirEnviosAction extends MasterAction {
 						if (fechaProgramada == null || fechaProgramada.equals(""))
 							enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
 						else {
-							if (enviosBean.getIdTipoEnvios() != null && !enviosBean.getIdTipoEnvios().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))
+							if (enviosBean.getIdTipoEnvios() != null && !enviosBean.getIdTipoEnvios().equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO)&& !enviosBean.getIdTipoEnvios().equals(EnvTipoEnviosAdm.K_DOCUMENTACIONLETRADO))
 								enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
 							else
 								enviosBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_PENDIENTE_AUTOMATICO));

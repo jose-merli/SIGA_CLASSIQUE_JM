@@ -1891,6 +1891,7 @@
 			<forward name="export" path="/SIGASvlVectorToClientFile.svrl"/>
 			<forward name="confirmar" path="/html/jsp/general/msjConfirmar.jsp"/>
 			<forward name="descargarEnvioTelematico" path="/html/jsp/general/exitoTelematicoSinEJIS.jsp"/>
+			<forward name="destinatariosIndividuales" path="/html/jsp/envios/pestanaEnvios.jsp"  />
 		<!--  	<forward name="finalizar" path="/ENV_EntradaEnvios.do"/> -->
 		</action>
 		

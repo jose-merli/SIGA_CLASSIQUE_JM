@@ -341,5 +341,50 @@ GEN_PESTANAS (idproceso, Idlenguaje, Idrecurso, Posicion, Idgrupo)
 values(228,1, 'pestana.fichaCliente.comunicaciones', 19, 'FICHACLIEN');
 
 
+alter table ENV_DESTINATARIOS add ORIGENDESTINATARIO number(1) default 0;
+comment on column ENV_DESTINATARIOS.ORIGENDESTINATARIO
+  is '0: Origen individual, 1: Origen lista de correo';
+  
+  
+
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.boton.enviardenuevo', 'Duplicar como nuevo', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.boton.enviardenuevo', 'Duplicar como nuevo#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.boton.enviardenuevo', 'Duplicar como nuevo#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.boton.enviardenuevo', 'Duplicar como nuevo#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.confirmar.duplicarcomonuevo', 'Va a duplicar el mensaje con los mismos atributos dejándolo en estado pendiente manual.Después deberá procesar el mensaje pulsando la accion correspondiente. ¿Desea continuar? ', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.confirmar.duplicarcomonuevo', 'Va a duplicar el mensaje con los mismos atributos dejándolo en estado pendiente manual.Después deberá procesar el mensaje pulsando la accion correspondiente. ¿Desea continuar? #CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.confirmar.duplicarcomonuevo', 'Va a duplicar el mensaje con los mismos atributos dejándolo en estado pendiente manual.Después deberá procesar el mensaje pulsando la accion correspondiente. ¿Desea continuar? #EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.confirmar.duplicarcomonuevo', 'Va a duplicar el mensaje con los mismos atributos dejándolo en estado pendiente manual.Después deberá procesar el mensaje pulsando la accion correspondiente. ¿Desea continuar? #GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.confirmar.reenviar', 'Va a duplicar el mensaje con los mismos atributos excepto los destinatarios dejándolo en estado pendiente manual. deberá añadir los destinatarios y luego procesar el mensaje pulsando la acción correspondiente. ¿Desea continuar? ', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.confirmar.reenviar', 'Va a duplicar el mensaje con los mismos atributos excepto los destinatarios dejándolo en estado pendiente manual. deberá añadir los destinatarios y luego procesar el mensaje pulsando la acción correspondiente. ¿Desea continuar? #CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.confirmar.reenviar', 'Va a duplicar el mensaje con los mismos atributos excepto los destinatarios dejándolo en estado pendiente manual. deberá añadir los destinatarios y luego procesar el mensaje pulsando la acción correspondiente. ¿Desea continuar? #EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.confirmar.reenviar', 'Va a duplicar el mensaje con los mismos atributos excepto los destinatarios dejándolo en estado pendiente manual. deberá añadir los destinatarios y luego procesar el mensaje pulsando la acción correspondiente. ¿Desea continuar? #GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.boton.reenviar', 'Reenviar', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.boton.reenviar', 'Reenviar#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.boton.reenviar', 'Reenviar#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.boton.reenviar', 'Reenviar#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.aviso.reenviar.ok', 'Se ha copiado correctamente el envio excepto los destinatarios. Edite el envio y agregue los destinatarios. Cuando haya terminado pulse el botón enviar para procesar el envio.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.aviso.reenviar.ok', 'Se ha copiado correctamente el envio excepto los destinatarios. Edite el envio y agregue los destinatarios. Cuando haya terminado pulse el botón enviar para procesar el envio.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.aviso.reenviar.ok', 'Se ha copiado correctamente el envio excepto los destinatarios. Edite el envio y agregue los destinatarios. Cuando haya terminado pulse el botón enviar para procesar el envio.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.aviso.reenviar.ok', 'Se ha copiado correctamente el envio excepto los destinatarios. Edite el envio y agregue los destinatarios. Cuando haya terminado pulse el botón enviar para procesar el envio.#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.destinatarios.origen', 'Origen', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.destinatarios.origen', 'Origen#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.destinatarios.origen', 'Origen#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.destinatarios.origen', 'Origen#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.destinatarios.estadoproceso', 'Estado proceso', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.destinatarios.estadoproceso', 'Estado proceso#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.destinatarios.estadoproceso', 'Estado proceso#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('envios.destinatarios.estadoproceso', 'Estado proceso#GL', 0, '4', sysdate, 0, '19');
+
+alter table ENV_DESTINATARIOS add IDESTADO number(2);
+
+  
 
 		               
