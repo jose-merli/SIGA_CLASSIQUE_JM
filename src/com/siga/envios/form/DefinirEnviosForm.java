@@ -217,10 +217,25 @@ public class DefinirEnviosForm extends MasterForm
 		this.elementosFila = elementosFila;
 	}
 	public String getBotones() {
+//		String botones = "C";
+//		if (!getModo().equalsIgnoreCase("ver")){
+//			botones = "C,E";
+//		}
+		
 		String botones = "C";
-		if (!getModo().equalsIgnoreCase("ver")){
-			botones = "C,E";
+		
+		if(getIdEstado() != null && !getIdEstado().equals(String.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_ARCHIVADO))){
+			
+			if(getIdEstado() != null && getIdEstado().equals(String.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADO))){
+				botones += ",B";
+			}else if(getIdEstado() != null && getIdEstado().equals(String.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES))){
+				botones += ",B";
+			}else{
+				botones += ",E,B";
+			}
 		}
+		
+		
 		this.setBotones(botones);
 		
 		
