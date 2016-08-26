@@ -14,6 +14,7 @@ import org.redabogacia.sigaservices.app.autogen.mapper.EnvComunicacionmorososMap
 import org.redabogacia.sigaservices.app.autogen.mapper.EnvEnviosMapper;
 import org.redabogacia.sigaservices.app.autogen.mapper.EnvEstatEnvioMapper;
 import org.redabogacia.sigaservices.app.autogen.mapper.GenParametrosMapper;
+import org.redabogacia.sigaservices.app.autogen.mapper.ScsComunicacionesMapper;
 import org.redabogacia.sigaservices.app.autogen.model.EnvComunicacionmorosos;
 import org.redabogacia.sigaservices.app.autogen.model.EnvComunicacionmorososExample;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEnvios;
@@ -23,6 +24,8 @@ import org.redabogacia.sigaservices.app.autogen.model.EnvEstatEnvioExample;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametrosKey;
 import org.redabogacia.sigaservices.app.autogen.model.ScsComunicaciones;
+import org.redabogacia.sigaservices.app.autogen.model.ScsComunicacionesExample;
+import org.redabogacia.sigaservices.app.autogen.model.ScsComunicacionesExample.Criteria;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.log4j.SatecLogger;
 import org.redabogacia.sigaservices.app.mapper.EnvEnviosExtendsMapper;
@@ -403,6 +406,24 @@ public  class SalidaEnviosServiceImpl extends MyBatisBusinessServiceTemplate imp
 		
 		return salidaEnvios;
 	}
+	public List<ScsComunicaciones> getComunicaciones(Long idEnvio, Short idInstitucion) throws BusinessException {
+		List<ScsComunicaciones>  salidaEnvios = null;
+		ScsComunicacionesMapper envEnviosMapper = getMyBatisSqlSessionManager().getMapper(ScsComunicacionesMapper.class);
+		try {
+			ScsComunicacionesExample scscomunicaionesExample = new ScsComunicacionesExample();
+			Criteria criteria =  scscomunicaionesExample.createCriteria();
+			criteria.andIdinstitucionEqualTo(idInstitucion);
+			criteria.andIdenviosalidaEqualTo(idEnvio);
+			salidaEnvios = envEnviosMapper.selectByExample(scscomunicaionesExample);
+			
+		} catch (Exception e) {
+			log.error("Se ha producido un error al realizar la busqueda de getComunicaciones", e);
+			throw new BusinessException("Se ha producido un error al realizar la busqueda de getComunicaciones",e);
+			
+		} 	
+		return salidaEnvios;
+	}
+	
 	
 	
 

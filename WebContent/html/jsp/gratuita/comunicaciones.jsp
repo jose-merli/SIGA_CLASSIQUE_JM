@@ -58,10 +58,15 @@
 	    <html:hidden styleId = "modo" property = "modo"/>
 		<html:hidden styleId = "idEnvio" property = "idEnvio"/>
 		<html:hidden styleId = "idTipoEnvio" property = "idTipoEnvio"/>
+		<html:hidden styleId = "tipoEnvio" property = "tipoEnvio"/>
 		<html:hidden styleId = "idIntercambio" property = "idIntercambio"/>
 		<html:hidden styleId = "idInstitucion" property = "idInstitucion"/>
 		<html:hidden styleId = "datosEnvios" property = "datosEnvios"/>
 		<html:hidden styleId = "origen" property = "origen" value ="${path}"/>
+		<html:hidden styleId = "idEstadoEnvio" property = "idEstado"/>
+		<html:hidden styleId = "estado" property = "estado"/>
+		
+		
 	</html:form>
 
 	<html:form action="/ENV_EntradaEnvios.do?noReset=true" method="POST" target="mainWorkArea" style="display:none">		
@@ -145,7 +150,8 @@
 							<c:when test="${PERMISOENVIOS=='1'}">
 								<siga:FilaConIconosExtExt fila='${status.count}' botones="${comunicacionSalida.botones}" elementos="${comunicacionSalida.elementosFila}" nombreTablaPadre="comunicacionesSalida"  clase="listaNonEdit">
 									<td>
-										<input type="hidden" id="idEnvio_${status.count}" value = "${comunicacionSalida.idEnvio}"/> 
+										<input type="hidden" id="idEnvio_${status.count}" value = "${comunicacionSalida.idEnvio}"/>
+										<input type="hidden" id="idEstadoEnvio_${status.count}" value = "${comunicacionSalida.idEstado}"/> 
 										<input type="hidden" id="idTipoEnvio_${status.count}" value = "${comunicacionSalida.idTipoEnvio}"/>
 										<input type="hidden" id="idIntercambio_${status.count}" value = "${comunicacionSalida.idIntercambio}"/>
 										<c:out value="${comunicacionSalida.idEnvio}"/>
@@ -161,6 +167,7 @@
 								<siga:FilaConIconosExtExt fila='${status.count}' botones = "" pintarEspacio="no" visibleBorrado="false" visibleEdicion="false" visibleConsulta="false"   nombreTablaPadre="comunicacionesSalida"  clase="listaNonEdit">
 									<td>
 										<input type="hidden" id="idEnvio_${status.count}" value = "${comunicacionSalida.idEnvio}"/> 
+										<input type="hidden" id="idEstadoEnvio_${status.count}" value = "${comunicacionSalida.idEstado}"/>
 										<input type="hidden" id="idTipoEnvio_${status.count}" value = "${comunicacionSalida.idTipoEnvio}"/>
 										<input type="hidden" id="idIntercambio_${status.count}" value = "${comunicacionSalida.idIntercambio}"/>
 										<c:out value="${comunicacionSalida.idEnvio}"/>
@@ -348,6 +355,44 @@
 			document.forms['FormDefinirEnvio'].target="mainWorkArea";
 		}		
 	}
+	
+	function reenviar(fila) {
+		if(!confirm('<siga:Idioma key="envios.confirmar.reenviar"/>')){
+			return false;
+		}
+		
+		sub();
+		subicono('iconoboton_reeenviar'+fila);
+		document.forms['FormDefinirEnvio'].target="mainWorkArea";
+		document.forms['FormDefinirEnvio'].idEnvio.value = document.getElementById("idEnvio_"+fila).value;
+		document.forms['FormDefinirEnvio'].tipoEnvio.value = document.getElementById("idTipoEnvio_"+fila).value;
+		document.forms['FormDefinirEnvio'].estado.value = document.getElementById("idEstadoEnvio_"+fila).value;
+		
+		document.forms['FormDefinirEnvio'].modo.value='reenviar';
+		document.forms['FormDefinirEnvio'].submit();
+		alert('<siga:Idioma key="envios.aviso.reenviar.ok"/>');
+		
+	}
+	function enviardenuevo(fila) {
+		
+		if(!confirm('<siga:Idioma key="envios.confirmar.duplicarcomonuevo"/>')){
+			return false;
+		}		
+		sub();
+		subicono('iconoboton_enviardenuevo'+fila);
+		
+		document.forms['FormDefinirEnvio'].idEnvio.value = document.getElementById("idEnvio_"+fila).value;
+		document.forms['FormDefinirEnvio'].idTipoEnvio.value = document.getElementById("idTipoEnvio_"+fila).value;
+		document.forms['FormDefinirEnvio'].idEstado.value = document.getElementById("idEstadoEnvio_"+fila).value;
+		
+		
+		document.forms['FormDefinirEnvio'].target="submitArea";	   	
+		document.forms['FormDefinirEnvio'].modo.value='enviardenuevo';
+		document.forms['FormDefinirEnvio'].submit();
+		document.forms['FormDefinirEnvio'].target="mainWorkArea";
+	}
+	
+	
 	
 	function refrescarLocal() {
 		if(document.forms['ComunicacionesForm'].ejgIdInstitucion.value!=''){

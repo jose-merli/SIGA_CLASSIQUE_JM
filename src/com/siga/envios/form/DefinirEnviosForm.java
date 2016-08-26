@@ -183,15 +183,31 @@ public class DefinirEnviosForm extends MasterForm
 			elementosFila = new FilaExtElement[3];
 		}else{
 			 elementosFila=new FilaExtElement[3];
-			 elementosFila[0]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ);
+			 
 			if (Integer.valueOf(getIdTipoEnvio()).equals(EnvTipoEnviosAdm.K_CORREO_ORDINARIO) && (getIdEstado().equals(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADO) || getIdEstado().equals(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES)))
 			{
-				elementosFila[1]=new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ);
+				elementosFila[2]=new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ);
 			} else {
-				elementosFila[1] = null;
+				elementosFila[2] = null;
 			}
 			//Boton de descarga del fichero de log de errores:
-			elementosFila[2]=new FilaExtElement("descargaLog", "descargaLog", SIGAConstants.ACCESS_READ);
+			elementosFila[1]=new FilaExtElement("descargaLog", "descargaLog", SIGAConstants.ACCESS_READ);
+			
+			if(getIdEstado() != null && getIdEstado().equals(String.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADO))){
+				botones += ",B";
+				elementosFila[0]=new FilaExtElement("enviardenuevo","enviardenuevo",SIGAConstants.ACCESS_READ);
+			}else if(getIdEstado() != null && getIdEstado().equals(String.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES))){
+				botones += ",B";
+				elementosFila[0]=new FilaExtElement("reenviar","reenviar",SIGAConstants.ACCESS_READ);
+			}else if(getIdEstado() != null && getIdEstado().equals(String.valueOf(EnvEstadoEnvioAdm.K_ESTADOENVIO_ARCHIVADO))){
+				botones += ",B";
+				elementosFila[0]=new FilaExtElement("enviardenuevo","enviardenuevo",SIGAConstants.ACCESS_READ);
+			}else{
+				botones += ",E,B";
+				elementosFila[0]=new FilaExtElement("enviar","enviar",SIGAConstants.ACCESS_READ);
+			}
+		
+			
 		
 		}
 		this.setElementosFila(elementosFila);

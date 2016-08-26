@@ -6261,7 +6261,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		}
 
-		if (isDestinatarioUnico && enviosHashtable.size() == 1 && !isASolicitantes && !isAJuzgado && !isAContrario && !isAProcurador) {
+		if (isDestinatarioUnico && enviosHashtable.size() == 1 && destinatariosHashtable!=null && destinatariosHashtable.contains(EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA) && !isASolicitantes && !isAJuzgado && !isAContrario && !isAProcurador) {
 			ArrayList<ScsEjg> ejgs = new ArrayList<ScsEjg>();
 			Vector vDocumentos = new Vector();
 			for (int i = 0; i < datosInformeVector.size(); i++) {

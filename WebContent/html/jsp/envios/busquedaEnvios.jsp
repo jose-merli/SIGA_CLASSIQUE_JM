@@ -220,13 +220,13 @@
 						//Boton de descarga del envio:
 						if (existeFichero && (idTipoEnvio.equals(new Integer(EnvTipoEnviosAdm.K_CORREO_ORDINARIO).toString()) && (idEstado.equals(new Integer(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADO).toString()) || idEstado.equals(new Integer(EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES).toString()))))
 						{
-							elems[1]=new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ);
+							elems[2]=new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ);
 						} else {
-							elems[1] = null;
+							elems[2] = null;
 						}
 
 						//Boton de descarga del fichero de log de errores:
-						elems[2]=new FilaExtElement("descargaLog", "descargaLog", SIGAConstants.ACCESS_READ);
+						elems[1]=new FilaExtElement("descargaLog", "descargaLog", SIGAConstants.ACCESS_READ);
 						
 						String fechaCreacionRegistro = fila.getString(EnvEnviosBean.C_FECHACREACION);
 						String fechaProgramada = fila.getString(EnvEnviosBean.C_FECHAPROGRAMADA);

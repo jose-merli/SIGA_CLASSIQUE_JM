@@ -80,6 +80,7 @@ import com.siga.certificados.Plantilla;
 import com.siga.envios.UsuarioFax;
 import com.siga.envios.ZetaFax;
 import com.siga.envios.form.ImagenPlantillaForm;
+import com.siga.envios.service.SalidaEnviosService;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.SIGAException;
 import com.siga.informes.MasterReport;
@@ -87,6 +88,7 @@ import com.siga.informes.MasterWords;
 import com.sun.mail.smtp.SMTPAddressFailedException;
 
 import es.satec.businessManager.BusinessException;
+import es.satec.businessManager.BusinessManager;
 
 
 public class EnvEnviosAdm extends MasterBeanAdministrador {
@@ -4837,6 +4839,40 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
     	
     }
     
+    private void insertarComunicacionSalida(ScsComunicaciones scsComunicaciones, UsrBean usr)throws BusinessException{
+    	StringBuffer s = new StringBuffer();
+    	s.append("insert into SCS_COMUNICACIONES (IDCOMUNICACION, IDINSTITUCION, IDENVIOSALIDA,  ");
+    	s.append(" EJGANIO, EJGNUMERO,     EJGIDTIPO,DESIGNAANIO,  DESIGNANUMERO, 	  DESIGNAIDTURNO, FECHAMODIFICACION, " );
+    	s.append(" USUMODIFICACION ) values ((SELECT NVL(MAX(IDCOMUNICACION), 0) + 1 FROM scs_comunicaciones),");
+		s.append(scsComunicaciones.getIdinstitucion());
+		s.append(",");
+		s.append(scsComunicaciones.getIdenviosalida());
+		s.append(",");
+    	s.append(scsComunicaciones.getEjganio());
+		s.append(",");
+		s.append(scsComunicaciones.getEjgnumero());
+		s.append(",");
+		s.append(scsComunicaciones.getEjgidtipo());
+		s.append(",");
+		s.append(scsComunicaciones.getDesignaanio());
+		s.append(",");
+		s.append(scsComunicaciones.getDesignanumero());
+		s.append(",");
+		s.append(scsComunicaciones.getDesignaidturno());
+		s.append(",");
+		s.append("sysdate");
+		s.append(",");
+		s.append(usr.getUserName());
+		s.append(")");
+		
+		try {
+			insertSQL(s.toString());
+		} catch (ClsExceptions e) {
+			throw new BusinessException("Error al insertarComunicacionSalida"+e.toString());
+		}
+    	
+    }
+    
     
     
     
@@ -4948,7 +4984,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		EnvListaCorreosEnviosAdm envListaCorreosEnviosAdm = new EnvListaCorreosEnviosAdm(this.usrbean);
 		EnvRemitentesAdm envRemitentesAdm = new EnvRemitentesAdm(this.usrbean);
 		EnvDocumentosAdm envDocumentosAdm = new EnvDocumentosAdm(this.usrbean);
-		
+		SalidaEnviosService salidaEnviosService = (SalidaEnviosService)BusinessManager.getInstance().getService(SalidaEnviosService.class);
 		Hashtable pkEnvioHashtable = new Hashtable();
 		pkEnvioHashtable.put(EnvEnviosBean.C_IDINSTITUCION,idInstitucion);
 		pkEnvioHashtable.put(EnvEnviosBean.C_IDENVIO,idOldEnvio);
@@ -4959,6 +4995,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			EnvEnviosBean envioBean = (EnvEnviosBean) envioVector.get(0);
 			envioBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
 			envioBean.setFechaCreacion("SYSDATE");
+			envioBean.setFechaProgramada(null);
 			
 			// Obtenemos todos los campos configurados para el envio 
 			Vector<EnvCamposEnviosBean> envCamposEnviosVector = envCamposEnviosAdm.select(pkEnvioHashtable);
@@ -4972,11 +5009,15 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			//Obtenemos los docuemntos
 			Vector<EnvDocumentosBean> envDocumentosVector = envDocumentosAdm.select(pkEnvioHashtable);
 			
+			//Obtenemos las comunicaciones de designa o ejg que ha realizado esta comunicacion
+			List<ScsComunicaciones> scsComunicaciones = salidaEnviosService.getComunicaciones(idOldEnvio.longValue(), idInstitucion);
+			
 			tx = this.usrbean.getTransaction();
 			tx.begin();
 			
 			idNewEnvio = getNewIdEnvio(idInstitucion.toString());
 			envioBean.setIdEnvio(idNewEnvio);
+			
 			
 			//Insertamos el nuevo envio
 			insert(envioBean);
@@ -5010,6 +5051,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				envDocumentosBean.setIdEnvio(idNewEnvio);
 				envDocumentosAdm.insert(envDocumentosBean);
 				duplicarDocumento(idInstitucion, idNewEnvio, envDocumentosBean.getIdDocumento(), idOldEnvio);
+			}
+			//Recorremos e insertamos
+			for (ScsComunicaciones scsComunicacion : scsComunicaciones) {
+				scsComunicacion.setIdenviosalida(idNewEnvio.longValue());
+				this.insertarComunicacionSalida(scsComunicacion,usrbean);
 			}
 			
 			tx.commit();
@@ -5102,10 +5148,6 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			ClsLogging.writeFileLogError("Error al reenviar el mensaje",e,10);
 			throw new SIGAException("general.error.noDisponible");
 		}
-			
-			
-			
-		
 		
 	} 
     
