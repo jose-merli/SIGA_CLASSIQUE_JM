@@ -355,7 +355,18 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			Hashtable datos = new Hashtable();
 			MantenimientoDuplicadosForm miFormulario = (MantenimientoDuplicadosForm)formulario;
 			//ArrayList clavesRegSeleccinados = (ArrayList) miFormulario.getRegistrosSeleccionados();
-			String seleccionados = request.getParameter("registrosSeleccionados");
+			String seleccionados = null;
+			//Comprobamos si entramos a este método desde un acceso inicial o desde el botón volver
+			String valorVolver=miFormulario.getVolver();
+			if(valorVolver != null && "SI".equalsIgnoreCase(valorVolver)){
+				 seleccionados = (String) request.getSession().getAttribute("registrosSeleccionados");
+			}else{
+				//Si es la primera vez, almacenamos el valor de los seleccionados para luego tenerlos cuando demos a volver
+				 seleccionados = request.getParameter("registrosSeleccionados");
+				 request.getSession().removeAttribute("registrosSeleccionados");
+				 request.getSession().setAttribute("registrosSeleccionados", seleccionados);
+			}
+			miFormulario.setVolver("NO");
 			// Los seleccionados deberian ser 2, separados por comas
 			if (seleccionados != null && !seleccionados.equalsIgnoreCase("")) {
 				String[] registros = UtilidadesString.split(seleccionados, ",");

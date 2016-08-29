@@ -26,6 +26,7 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	String seleccionados;
 	String agruparColegiaciones;
 	String seleccion;
+	String volver;
 	boolean chkApellidos,chkNombreApellidos,chkNumColegiado,chkIdentificador = false;
 	private Vector resultadoBusqueda;
 	private List<CenInstitucionBean> listadoInstituciones;
@@ -175,6 +176,13 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	public void setListadoInstituciones(
 			List<CenInstitucionBean> listadoInstituciones) {
 		this.listadoInstituciones = listadoInstituciones;
+	}
+	public String getVolver() {
+		return volver;
+	}
+	public void setVolver(String volver) {
+		this.volver = volver;
 	}	
+	
 	
 }

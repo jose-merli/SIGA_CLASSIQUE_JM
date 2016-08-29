@@ -50,6 +50,9 @@
 	// para ver si tengo que buscar tras mostrar la pantalla
 	String buscar = (String)request.getAttribute("buscar");
 	
+	//Gestiona botón volver MD= Mantenimiento Duplicado
+	request.getSession().setAttribute("CenBusquedaClientesTipo","MD");
+	
 	/**************/
 		
 %>

@@ -140,14 +140,7 @@
 		if (document.getElementById('seleccionados') &&
 			document.getElementById('seleccionados').value==2){
 			document.MantenimientoDuplicadosForm.modo.value = "gestionar";
-			//document.MantenimientoDuplicadosForm.submit();
-			sub(); 
-			var resultado = ventaModalGeneral("MantenimientoDuplicadosForm","G");
-			if(resultado&&resultado!="NOMODIFICADO"){
-				buscar();
-			}else{
-				fin();
-			}
+			document.MantenimientoDuplicadosForm.submit();
 		}else{
 			alert("<siga:Idioma key='censo.resultadoDuplicados.error.seleccioneLetrados'/>");
 		}
@@ -256,7 +249,7 @@
 	
 	function informacionLetrado(fila) {
 		document.forms[0].filaSelD.value = fila;					
-	    var idInst = <%=idInstitucionLocation%>;			   				   	
+	    var idInst = <%=idInstitucionLocation%>;									
 	   	var auxPers = 'oculto' + fila + '_1';
 	    var idPers = document.getElementById(auxPers);
 		document.forms[0].tablaDatosDinamicosD.value=idPers.value + ',' + idInst + ',LETRADO' + '%';		
