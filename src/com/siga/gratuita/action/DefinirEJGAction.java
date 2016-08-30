@@ -533,7 +533,7 @@ public class DefinirEJGAction extends MasterAction
 	 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 	 		
 	 		if(miForm.getOrigen()!=null &&miForm.getOrigen().equalsIgnoreCase("/JGR_ComunicacionEJG")){
-	 			request.setAttribute("elementoActivo","9");
+	 			request.setAttribute("elementoActivo","10");
 	 		}else if(usr.isComision()){
 	 			//Miramos si existe algun estado de impugnacion no nulo, mostraremos la pestaña de impugnacion
 	 			ScsEstadoEJGAdm scsEstadoEJGAdm = new ScsEstadoEJGAdm(usr);
@@ -667,7 +667,7 @@ public class DefinirEJGAction extends MasterAction
 	 		}
 	 		if(miForm.getOrigen()!=null &&miForm.getOrigen().equalsIgnoreCase("/JGR_ComunicacionEJG")){
 	 			
-	 			request.setAttribute("elementoActivo","9");
+	 			request.setAttribute("elementoActivo","10");
 	 		}
 			
 	 		//Guardamos el modo de gestión del acta

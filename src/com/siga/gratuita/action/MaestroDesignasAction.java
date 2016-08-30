@@ -387,7 +387,7 @@ public class MaestroDesignasAction extends MasterAction {
 			}		 
 			 if(miform.getOrigen()!=null &&miform.getOrigen().equalsIgnoreCase("/JGR_ComunicacionDesigna")){
 		 			
-		 			request.setAttribute("elementoActivo","11");
+		 			request.setAttribute("elementoActivo","12");
 		 		}
 			 
 			 
@@ -479,7 +479,7 @@ public class MaestroDesignasAction extends MasterAction {
 			ses.setAttribute("ModoAction","Ver");
 			if(miform.getOrigen()!=null &&miform.getOrigen().equalsIgnoreCase("/JGR_ComunicacionDesigna")){
 	 			
-	 			request.setAttribute("elementoActivo","10");
+	 			request.setAttribute("elementoActivo","11");
 	 		}
 			
 			request.setAttribute("idDesigna",elegido);
