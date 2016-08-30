@@ -227,20 +227,19 @@ VALUES ('CEN','WS_ACA_ACTIVO','0',SYSDATE,0,0,'cen.parametro.wsacaactivo');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.general.error.indeterminado', 'Se ha producido un error indeterminado. Consulte con su administrador.#EU', 0, '3', sysdate, 0, '19');
 
  
- INSERT INTO cen_colacambioletrado (IDPERSONA,IDINSTITUCION,IDCAMBIO,FECHACAMBIO,IDTIPOCAMBIO,IDDIRECCION,FECHAMODIFICACION,USUMODIFICACION)
-                     ( select cen_direcciones.idpersona,cen_direcciones.idinstitucionalta,1,SYSDATE,30,cen_direcciones.iddireccionalta,SYSDATE,0
-                       from cen_direcciones,cen_direccion_tipodireccion, cen_colegiado
-                       where 
-                       cen_direccion_tipodireccion.idpersona= cen_direcciones.idpersona 
-		               and cen_direcciones.idinstitucion=2000  
-                   	   and cen_direccion_tipodireccion.idtipodireccion=9 
-                   	   and cen_direcciones.fechabaja is null
-                   	   and cen_direcciones.idinstitucion=cen_direccion_tipodireccion.idinstitucion  
-		               and cen_direcciones.iddireccion = cen_direccion_tipodireccion.iddireccion
-		               and cen_direcciones.idpersona=cen_colegiado.idpersona
-		               and cen_colegiado.idinstitucion=cen_direcciones.idinstitucionalta
-		               and cen_colegiado.situacionejercicio<>'1');
- 
+Insert Into Cen_Colacambioletrado
+  (Idpersona, Idinstitucion, Idcambio, Fechacambio, Idtipocambio, Iddireccion, Fechamodificacion, Usumodificacion)
+  (Select Cen_Direcciones.Idpersona, Cen_Direcciones.Idinstitucionalta, 1, Sysdate, 30, Cen_Direcciones.Iddireccionalta, Sysdate, 0
+     From Cen_Direcciones, Cen_Direccion_Tipodireccion, Cen_Colegiado
+    Where Cen_Direcciones.Idpersona = Cen_Direccion_Tipodireccion.Idpersona
+      And Cen_Direcciones.Idinstitucion = Cen_Direccion_Tipodireccion.Idinstitucion
+      And Cen_Direcciones.Iddireccion = Cen_Direccion_Tipodireccion.Iddireccion
+      And Cen_Direcciones.Idpersona = Cen_Colegiado.Idpersona
+      And Cen_Direcciones.Idinstitucionalta = Cen_Colegiado.Idinstitucion
+      And Cen_Direccion_Tipodireccion.Idinstitucion = 2000
+      And Cen_Direccion_Tipodireccion.Idtipodireccion = 9
+      And Cen_Direcciones.Fechabaja Is Null
+      And Cen_Colegiado.Situacionejercicio <> '1'); 
 		               
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.updatedok', 'El resto de los campos del acta se han actualizado correctamente', 0, '1', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.acta.error.expsinresolucvion.updatedok', 'El resto de los campos del acta se han actualizado correctamente#CA', 0, '2', sysdate, 0, '19');
