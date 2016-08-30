@@ -741,20 +741,48 @@
 			// Solo se genera el NIF o CIF de la persona
 			if(document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
 				document.getElementById("textoInformativo").style.display="none";
+				jQuery ("#nacionalidad").not(this).children('option[value=191]').removeAttr("disabled");
 				jQuery("#nacionalidad").val("191");
-				jQuery("#nacionalidad").change();				
+				jQuery("#nacionalidad").change();
 				
+				jQuery("#nacionalidad").attr("disabled","disabled");
 				
 			} else if ((document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") || (document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>")){
 				document.getElementById("textoInformativo").style.display="none";
+				jQuery ("#nacionalidad").removeAttr("disabled");
+				jQuery ("#nacionalidad").not(this).children('option[value=191]').attr("disabled","disabled");
+				jQuery("#nacionalidad").val("");
+				jQuery("#nacionalidad").change();
 				//document.getElementById("textoInformativoEnBlanco").style.display="block";								
 
 			} else{
 				document.getElementById("textoInformativo").style.display="block";
+				jQuery ("#nacionalidad").removeAttr("disabled");
+				jQuery ("#nacionalidad").not(this).children('option[value=191]').attr("disabled","disabled");
+				jQuery("#nacionalidad").val("");
+				jQuery("#nacionalidad").change();
 				//document.getElementById("textoInformativoEnBlanco").style.display="none";											
 			}			
 			<%}%>
 		}	
+		
+		 function comprobarTipoIdentNif(){
+				<%if (!accion.equalsIgnoreCase("ver")) {%>			
+				// Solo se genera el NIF o CIF de la persona
+				if(document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>"){
+					document.getElementById("textoInformativo").style.display="none";
+					jQuery ("#nacionalidad").not(this).children('option[value=191]').removeAttr("disabled");
+					if(jQuery ("#nacionalidad").val() == "191"){
+						jQuery("#nacionalidad").attr("disabled","disabled");
+					}else{
+						jQuery("#nacionalidad").removeAttr("disabled");
+					}
+					
+				} else{
+					jQuery ("#nacionalidad").not(this).children('option[value=191]').attr("disabled","disabled");
+				}	
+				<%}%>
+			}	
 		
 		
 		function rellenarFormulario(){
@@ -1095,7 +1123,8 @@
 				jQuery(document).ready(function(){
 					recargar();
 					comprobarTipoPersona();
-					comprobarTipoIdent();
+					//comprobarTipoIdent();
+					comprobarTipoIdentNif();
 				});
 			</script>
 			<!-- capa principal -->
@@ -1111,6 +1140,7 @@
 				recargar();
 				comprobarTipoPersona();
 				proFechaNac();
+				comprobarTipoIdentNif();
 			});
 		</script>
 
@@ -2892,6 +2922,7 @@
 							return false;
 						}
 					}
+						jQuery ("#nacionalidad").removeAttr("disabled");
 				    	document.forms[0].submit();
 					}else{
 						fin();
@@ -3062,6 +3093,7 @@
 			   
 				//angelcorral: enviamos el formulario si es nuevo o no ha cambiado de persona o confirma la pregunta
 				if (<%=idPersona == null%> || (document.PersonaJGForm.idPersonaJG.value == '<%=idPersona%>') || confirm('<siga:Idioma key="gratuita.personaJG.messages.cambioPersona"/>')) {
+					jQuery ("#nacionalidad").removeAttr("disabled");
 					document.forms[0].submit();			
 				}else{
 					fin();
@@ -3151,6 +3183,7 @@
 					
 				} else{
 					if (validatePersonaJGForm(document.forms[0]) ){
+						jQuery ("#nacionalidad").removeAttr("disabled");
 						document.forms[0].submit();
 					}else{
 						fin();
@@ -3261,6 +3294,7 @@
 								return false;
 							}	
 						}	
+						jQuery ("#nacionalidad").removeAttr("disabled");
 						document.forms[0].submit();
 						
 					}else{
@@ -3359,7 +3393,7 @@
 							fin();
 							return false;
 						}
-					
+						jQuery ("#nacionalidad").removeAttr("disabled");
 						document.forms[0].submit();
 					}else{
 						fin();
@@ -3463,7 +3497,7 @@
 							fin();
 							return false;
 						}
-						
+						jQuery ("#nacionalidad").removeAttr("disabled");
 						document.forms[0].submit();
 					}else{
 						fin();
@@ -3557,6 +3591,7 @@
 								return false;
 							}
 						}
+						jQuery ("#nacionalidad").removeAttr("disabled");
 						document.forms[0].submit();
 					}else{
 						fin();
@@ -3671,7 +3706,9 @@
 					return false;
 					
 				} else {
-					if (validatePersonaJGForm(document.forms[0]) ){		
+					if (validatePersonaJGForm(document.forms[0]) ){	
+						
+						jQuery ("#nacionalidad").removeAttr("disabled");
 						document.forms[0].submit();
 					}else{
 						fin();
@@ -3786,6 +3823,7 @@ function accionGuardarCerrar()	{
 						return false;
 					}	
 				}	
+				jQuery ("#nacionalidad").removeAttr("disabled");
 				document.forms[0].submit();
 			}else{
 				fin();
