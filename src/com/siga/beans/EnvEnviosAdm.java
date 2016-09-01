@@ -5001,7 +5001,10 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			Vector<EnvCamposEnviosBean> envCamposEnviosVector = envCamposEnviosAdm.select(pkEnvioHashtable);
 			
 			//Obtenemos las listas de correo configuradas
-			Vector<EnvListaCorreosEnviosBean> envListaCorreosEnviosVector = envListaCorreosEnviosAdm.select(pkEnvioHashtable);
+			Vector<EnvListaCorreosEnviosBean> envListaCorreosEnviosVector = null;
+			if(envDestinatariosVector!=null){
+				envListaCorreosEnviosVector =  envListaCorreosEnviosAdm.select(pkEnvioHashtable);
+			}
 			
 			//Obtenemos los remitentes
 			Vector<EnvRemitentesBean> envRemitentesVector = envRemitentesAdm.select(pkEnvioHashtable);
@@ -5037,9 +5040,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				}
 			}
 			//Recorremos e insertamos
-			for (EnvListaCorreosEnviosBean envListaCorreosEnviosBean : envListaCorreosEnviosVector) {
-				envListaCorreosEnviosBean.setIdEnvio(idNewEnvio);
-				envListaCorreosEnviosAdm.insert(envListaCorreosEnviosBean);
+			if(envListaCorreosEnviosVector != null){
+				for (EnvListaCorreosEnviosBean envListaCorreosEnviosBean : envListaCorreosEnviosVector) {
+					envListaCorreosEnviosBean.setIdEnvio(idNewEnvio);
+					envListaCorreosEnviosAdm.insert(envListaCorreosEnviosBean);
+				}
 			}
 			//Recorremos e insertamos
 			for (EnvRemitentesBean envRemitentesBean : envRemitentesVector) {

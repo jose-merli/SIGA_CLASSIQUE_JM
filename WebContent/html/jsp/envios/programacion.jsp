@@ -126,18 +126,11 @@
 				}
 			}
 	
-			<!-- Asociada al boton Volver -->
-			/*function accionVolver() 
-			{		
-				document.forms[0].action = "<%=app%>/ENV_DefinirEnvios.do?buscar=true";
-				document.forms[0].modo.value="abrir";
-				document.forms[0].target = "mainWorkArea";
-				document.forms[0].submit();
-			}*/
+			
 	
 			function refrescarLocal()
 			{			
-				document.location.reload();			
+				accionVolver();			
 			}
 			
 			function accionRestablecer() 
@@ -470,7 +463,17 @@
 		<!-- G Guardar, Y GuardaryCerrar, R Reestablecer, C Cerrar, X Cancelar -->
 			<siga:ConjBotonesAccion botones="V,GET,R,G,EN" clase="botonesDetalle"  />
 		
-		
+	<script type="text/javascript">
+	
+	<!-- Asociada al boton Volver -->
+ 	function accionVolver() 
+	{		
+	 	document.forms[0].action = "<%=app%>/ENV_DefinirEnvios.do?buscar=true&reset=true";
+		document.forms[0].modo.value="abrir";
+		document.forms[0].target = "mainWorkArea";
+		document.forms[0].submit();
+	}
+	</script>	
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 	</body>
 </html>

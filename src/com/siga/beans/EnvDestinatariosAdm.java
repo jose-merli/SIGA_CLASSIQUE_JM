@@ -276,12 +276,15 @@ public class EnvDestinatariosAdm extends MasterBeanAdministrador {
 	public void insertarDestinatariosDinamicos(String idInstitucion, String idEnvio, String idTipoEnvio) throws SIGAException, ClsExceptions{
 		TreeMap<Integer,EnvDestinatariosBean> detDinamicos =  getDestinatariosDinamicos(idInstitucion, idEnvio, idTipoEnvio);
 		EnvDestinatariosAdm destinatariosAdm = new EnvDestinatariosAdm(usrbean);
-		for (Iterator iterator = detDinamicos.keySet().iterator(); iterator.hasNext();) {
-			Integer orden =  (Integer) iterator.next();
-			EnvDestinatariosBean envDestinatariosBean= (EnvDestinatariosBean)detDinamicos.get(orden);
+		Iterator<Integer> iterator = detDinamicos.keySet().iterator();
+		while (iterator.hasNext()) {
+			Integer key = (Integer) iterator.next();
+			EnvDestinatariosBean envDestinatariosBean = detDinamicos.get(key);
 			envDestinatariosBean.setOrigenDestinatario(EnvDestinatariosBean.ORIGENDESTINATARIO_DINAMICO);
 			destinatariosAdm.insert(envDestinatariosBean);
+			
 		}
+		
 	}
 	/**
 	 * Metodo que devuelve los destinatarios que provienen de una lista dinamica y que no estan incluidos como destinatarios individukles
@@ -293,7 +296,8 @@ public class EnvDestinatariosAdm extends MasterBeanAdministrador {
 	 */
 	public TreeMap<Integer,EnvDestinatariosBean> getDestinatariosDinamicos (String idInstitucion, String idEnvio, String idTipoEnvio) throws SIGAException{
 		
-		Hashtable<String,EnvDestinatariosBean> destManualesHash = getDestinatariosManuales(idInstitucion, idEnvio, idTipoEnvio);
+		Hashtable<String,EnvDestinatariosBean> destinatarios = getDestinatariosManuales(idInstitucion, idEnvio, idTipoEnvio);
+		
 		TreeMap<Integer,EnvDestinatariosBean> destDinamicosMap = new TreeMap<Integer, EnvDestinatariosBean>();
 		String sql = null;
 		int orden = 0;
@@ -306,8 +310,10 @@ public class EnvDestinatariosAdm extends MasterBeanAdministrador {
 				for (int i = 0; i < rcDes.size(); i++)	{
 					Row fila = (Row) rcDes.get(i);
 					orden++;
-					if(!destManualesHash.containsKey("CEN_PERSONA_"+fila.getString("IDPERSONA"))){
-						destDinamicosMap.put(orden,getDestinatario(fila,Integer.valueOf(idInstitucion),Integer.valueOf(idEnvio)));
+					if(!destinatarios.containsKey("CEN_PERSONA_"+fila.getString("IDPERSONA"))){
+						EnvDestinatariosBean destDinamico = getDestinatario(fila,Integer.valueOf(idInstitucion),Integer.valueOf(idEnvio)); 
+						destDinamicosMap.put(orden,destDinamico);
+						destinatarios.put(destDinamico.getTipoDestinatario()+"_"+destDinamico.getIdPersona(),  destDinamico);
 				
 					}
 				}
@@ -360,9 +366,11 @@ public class EnvDestinatariosAdm extends MasterBeanAdministrador {
 				if (rcDestDin.query(getQueryDestinatarios(sql.toString()))) {
 					for (int i = 0; i < rcDestDin.size(); i++)	{
 						Row fila = (Row) rcDestDin.get(i);
-						if(!destManualesHash.containsKey("CEN_PERSONA_"+fila.getString("IDPERSONA"))){
+						if(!destinatarios.containsKey("CEN_PERSONA_"+fila.getString("IDPERSONA")) ){
 							orden++;
-							destDinamicosMap.put(orden,getDestinatario(fila,Integer.valueOf(idInstitucion),Integer.valueOf(idEnvio)));
+							EnvDestinatariosBean destDinamico = getDestinatario(fila,Integer.valueOf(idInstitucion),Integer.valueOf(idEnvio));
+							destDinamicosMap.put(orden,destDinamico);
+							destinatarios.put(destDinamico.getTipoDestinatario()+"_"+destDinamico.getIdPersona(),  destDinamico);
 						}
 					}
 				}
@@ -403,7 +411,7 @@ public class EnvDestinatariosAdm extends MasterBeanAdministrador {
 				sql = (String) ht.get("sentencia");
 				Hashtable codigosOrdenados = (Hashtable) ht.get("codigosOrdenados");
 
-				String sqlExperta = getQueryDestinatarios(sql);
+//				String sqlExperta = getQueryDestinatarios(sql);
 
 				RowsContainer rcDestDin = new RowsContainer();
 				try {
@@ -411,9 +419,11 @@ public class EnvDestinatariosAdm extends MasterBeanAdministrador {
 					if (rcDestDin.findBind(getQueryDestinatarios(sql.toString()),codigosOrdenados)) {
 						for (int j = 0; j < rcDestDin.size(); j++)	{
 							Row filaDestDin = (Row) rcDestDin.get(j);
-							if(!destManualesHash.containsKey("CEN_PERSONA_"+filaDestDin.getString("IDPERSONA"))){
+							if(!destinatarios.containsKey("CEN_PERSONA_"+filaDestDin.getString("IDPERSONA"))){
 								orden++;
-								destDinamicosMap.put(orden, getDestinatario(filaDestDin,Integer.valueOf(idInstitucion),Integer.valueOf(idEnvio)));
+								EnvDestinatariosBean destDinamico = getDestinatario(filaDestDin,Integer.valueOf(idInstitucion),Integer.valueOf(idEnvio)); 
+								destDinamicosMap.put(orden, destDinamico );
+								destinatarios.put(destDinamico.getTipoDestinatario()+"_"+destDinamico.getIdPersona(),  destDinamico);
 							}
 						}
 					}
@@ -450,11 +460,14 @@ public class EnvDestinatariosAdm extends MasterBeanAdministrador {
 		//Para el caso de correo ordinario no se procesan los envios por lo que no se generaran los destinatario cuyo origen son las listas dinamicas
 		if(Integer.valueOf(idTipoEnvio)==EnvTipoEnviosAdm.K_CORREO_ORDINARIO){
 			TreeMap<Integer,EnvDestinatariosBean> detDinamicos =  getDestinatariosDinamicos(idInstitucion, idEnvio, idTipoEnvio);
-			for (Iterator iterator = detDinamicos.keySet().iterator(); iterator.hasNext();) {
-				EnvDestinatariosBean envDestinatariosBean = (EnvDestinatariosBean) iterator.next();
+			Iterator<Integer> iterator = detDinamicos.keySet().iterator();
+			while (iterator.hasNext()) {
+				Integer key = (Integer) iterator.next();
+				EnvDestinatariosBean envDestinatariosBean = detDinamicos.get(key);
 				vDestManuales.add(envDestinatariosBean);
 				
 			}
+			
 			
 		}
 		return vDestManuales;
@@ -599,7 +612,7 @@ public class EnvDestinatariosAdm extends MasterBeanAdministrador {
 		Vector<EnvDestinatariosBean> vDestManuales = null;
 		
 		
-		int orden = 0; 
+//		int orden = 0; 
 		
 		TreeMap<String,Object[]> destinatariosMap = new TreeMap<String, Object[]>();
 
@@ -618,7 +631,7 @@ public class EnvDestinatariosAdm extends MasterBeanAdministrador {
 		Hashtable<String,EnvDestinatariosBean> destinatariosHashtable = new Hashtable<String, EnvDestinatariosBean>();
 		for (EnvDestinatariosBean objectDestinatariosBean : vDestManuales) {
 			destinatariosHashtable.put(objectDestinatariosBean.getTipoDestinatario()+"_"+objectDestinatariosBean.getIdPersona(), objectDestinatariosBean);
-			orden++;
+//			orden++;
 			
 		}
 		return destinatariosHashtable;

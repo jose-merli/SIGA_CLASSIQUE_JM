@@ -280,6 +280,7 @@ public class DefinirEnviosAction extends MasterAction {
 			//la busqueda una vez presentada la pagina
 			String buscar2 = request.getParameter("buscar");
 			request.setAttribute("buscar",buscar2);
+			request.setAttribute("reset",request.getParameter("reset")!=null?request.getParameter("reset"):"");
 
 			/*
 	    	if (ses.getAttribute("DATABACKUP")!=null){

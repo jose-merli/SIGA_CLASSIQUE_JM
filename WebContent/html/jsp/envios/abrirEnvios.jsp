@@ -32,13 +32,16 @@
 	UsrBean userBean = (UsrBean)ses.getAttribute(("USRBEAN"));
 	//boolean isComision = request.getAttribute("isComision");
 	
-//	String buscar = (String) request.getAttribute("buscarEnvios");
+	String reset = (String) request.getAttribute("reset");
 	String buscar = (String) request.getAttribute("buscar");
 	
 	// para ver si tengo que buscar tras mostrar la pantalla
 	String funcionBuscar = "";
 	if (buscar!=null && buscar.equals("true")) {
-		funcionBuscar = "buscarPaginador()";
+		if (reset!=null && reset.equals("true"))
+			funcionBuscar = "buscarPaginador(true)";
+		else
+			funcionBuscar = "buscarPaginador()";
 	}
 	 
 	ArrayList aEstado = new ArrayList();
@@ -214,11 +217,14 @@
 		}
 		
 		
-		function buscarPaginador() 
+		function buscarPaginador(reset) 
 		{		
 //			if (validateBusquedaClientesForm(document.forms[0])) 
 			{  
-				document.forms[0].modo.value="buscar";
+				if(reset && reset==true)
+					document.forms[0].modo.value="buscarInicio";
+				else
+					document.forms[0].modo.value="buscar";
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();	
 			}
