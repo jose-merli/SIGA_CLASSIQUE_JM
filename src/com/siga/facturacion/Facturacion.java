@@ -2008,6 +2008,7 @@ public class Facturacion {
 	 * @throws Exception
 	 */
 	private void generandoFacturacion(String idInstitucion, String idSerieFacturacion, String idProgramacion) throws Exception {
+		String[] codigosErrorFormato = {"-201", "-202", "-203", "-204"};
 		
 		ClsLogging.writeFileLog("### Inicio generarFicheroPrevisiones institución: " + idInstitucion, 7);
 		
@@ -2052,11 +2053,10 @@ public class Facturacion {
 			}
 
 			String codretorno = resultado[0];
-			
-			String[] codigosErrorFormato = {"-201", "-202", "-203", "-204"};
-        	if (Arrays.asList(codigosErrorFormato).contains(codretorno)){
+						
+        	if (Arrays.asList(codigosErrorFormato).contains(codretorno)) {
         		ClsLogging.writeFileLog("### Fin GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "), finalizada con errores", 7);				
-				throw new ClsExceptions(resultado[1] + "(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + codretorno + ")");
+				throw new ClsExceptions(resultado[1]);
 			
         	} else if (!codretorno.equals("0")) {				
 				ClsLogging.writeFileLog("### Fin GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "), finalizada con errores", 7);				
@@ -2116,14 +2116,13 @@ public class Facturacion {
 			// Le cambio el estado a error
 			try { 
 				String sMensaje = null;
-				if (resultado[0]!=null && resultado[0].equals("-201")) {
+				if (resultado[0]!=null && Arrays.asList(codigosErrorFormato).contains(resultado[0])) {
 					sMensaje = resultado[1];
 				} else if (e.getMessage().indexOf("TimedOutException")!=-1 || e.getMessage().indexOf("timed out")!=-1) {
 					sMensaje = UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"messages.error.generacionFacturacion.timeout");
 				} else {
 					sMensaje = UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"messages.error.generacionFacturacion.general");
-				}
-				
+				}				
 				
 				controlarEstadoErrorGeneracion(tx,admFacturacionProgramada,claves,hashEstado,nombreFichero, FacEstadoConfirmFactBean.ERROR_GENERACION, sMensaje);	
 				
