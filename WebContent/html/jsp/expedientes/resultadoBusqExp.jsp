@@ -28,6 +28,8 @@
 <%@ page import="org.redabogacia.sigaservices.app.util.SIGAReferences"%>
 <%@ page import="com.siga.expedientes.ExpPermisosTiposExpedientes"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
+<%@ page import="java.io.File"%>
+
 <!-- JSP -->
 <bean:define id="registrosSeleccionados" name="busquedaExpedientesForm" property="registrosSeleccionados" type="java.util.ArrayList"/>
 <bean:define id="datosPaginador" name="busquedaExpedientesForm" property="datosPaginador" type="java.util.HashMap"/>
@@ -110,7 +112,6 @@
 
 <%@page import="com.siga.Utilidades.Paginador"%>
 <%@page import="com.siga.tlds.FilaExtElement"%>
-
 
 <!-- HEAD -->
 	
