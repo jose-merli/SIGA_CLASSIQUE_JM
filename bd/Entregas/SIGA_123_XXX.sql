@@ -91,3 +91,9 @@ UPDATE CEN_DATOSCV
    AND idinstitucioncargo IS NOT NULL;
 
 -- Ejecutado por Carlos en SIGA INT - 2016-07-11 10:50
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.literal.nacionalidadIncompatible', 'La Nacionalidad seleccionada es incompatible con el tipo de documento, debe seleccionar otra Nacionalidad', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.literal.nacionalidadIncompatible', 'La Nacionalidad seleccionada es incompatible con el tipo de documento, debe seleccionar otra Nacionalidad#GL', 0, '4', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.literal.nacionalidadIncompatible', 'La Nacionalidad seleccionada es incompatible con el tipo de documento, debe seleccionar otra Nacionalidad#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.literal.nacionalidadIncompatible', 'La Nacionalidad seleccionada es incompatible con el tipo de documento, debe seleccionar otra Nacionalidad#EU', 0, '3', sysdate, 0, '19');
+

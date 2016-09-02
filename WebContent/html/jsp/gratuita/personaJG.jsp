@@ -2929,6 +2929,19 @@
 							return false;
 						}
 					}
+				
+					if(document.forms[0].tipoId.value != "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" 
+							&& document.forms[0].nacionalidad.value =="191"){
+						alert("<siga:Idioma key='gratuita.personaJG.literal.nacionalidadIncompatible'/>");
+						fin();
+						return false;
+					}
+					if(document.forms[0].tipoId.value == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" 
+						&& document.forms[0].nacionalidad.value !="191"){
+						alert("<siga:Idioma key='gratuita.personaJG.literal.nacionalidadIncompatible'/>");
+						fin();
+						return false;
+					}
 						jQuery ("#nacionalidad").removeAttr("disabled");
 				    	document.forms[0].submit();
 					}else{
@@ -3100,6 +3113,19 @@
 			   
 				//angelcorral: enviamos el formulario si es nuevo o no ha cambiado de persona o confirma la pregunta
 				if (<%=idPersona == null%> || (document.PersonaJGForm.idPersonaJG.value == '<%=idPersona%>') || confirm('<siga:Idioma key="gratuita.personaJG.messages.cambioPersona"/>')) {
+					
+					if(document.forms[0].tipoId.value != "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" 
+						&& document.forms[0].nacionalidad.value =="191"){
+						alert("<siga:Idioma key='gratuita.personaJG.literal.nacionalidadIncompatible'/>");
+						fin();
+						return false;
+					}
+					if(document.forms[0].tipoId.value == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" 
+						&& document.forms[0].nacionalidad.value !="191"){
+						alert("<siga:Idioma key='gratuita.personaJG.literal.nacionalidadIncompatible'/>");
+						fin();
+						return false;
+					}
 					jQuery ("#nacionalidad").removeAttr("disabled");
 					document.forms[0].submit();			
 				}else{
@@ -3190,6 +3216,18 @@
 					
 				} else{
 					if (validatePersonaJGForm(document.forms[0]) ){
+						if(document.forms[0].tipoId.value != "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" 
+							&& document.forms[0].nacionalidad.value =="191"){
+							alert("<siga:Idioma key='gratuita.personaJG.literal.nacionalidadIncompatible'/>");
+							fin();
+							return false;
+						}
+						if(document.forms[0].tipoId.value == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" 
+							&& document.forms[0].nacionalidad.value !="191"){
+							alert("<siga:Idioma key='gratuita.personaJG.literal.nacionalidadIncompatible'/>");
+							fin();
+							return false;
+						}
 						jQuery ("#nacionalidad").removeAttr("disabled");
 						document.forms[0].submit();
 					}else{
@@ -3301,6 +3339,18 @@
 								return false;
 							}	
 						}	
+						if(document.forms[0].tipoId.value != "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" 
+							&& document.forms[0].nacionalidad.value =="191"){
+							alert("<siga:Idioma key='gratuita.personaJG.literal.nacionalidadIncompatible'/>");
+							fin();
+							return false;
+						}
+						if(document.forms[0].tipoId.value == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" 
+							&& document.forms[0].nacionalidad.value !="191"){
+							alert("<siga:Idioma key='gratuita.personaJG.literal.nacionalidadIncompatible'/>");
+							fin();
+							return false;
+						}
 						jQuery ("#nacionalidad").removeAttr("disabled");
 						document.forms[0].submit();
 						
@@ -3397,6 +3447,18 @@
 					if (validatePersonaJGForm(document.forms[0]) ){
 						if(error!=""){
 							alert(error);
+							fin();
+							return false;
+						}
+						if(document.forms[0].tipoId.value != "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" 
+							&& document.forms[0].nacionalidad.value =="191"){
+							alert("<siga:Idioma key='gratuita.personaJG.literal.nacionalidadIncompatible'/>");
+							fin();
+							return false;
+						}
+						if(document.forms[0].tipoId.value == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" 
+							&& document.forms[0].nacionalidad.value !="191"){
+							alert("<siga:Idioma key='gratuita.personaJG.literal.nacionalidadIncompatible'/>");
 							fin();
 							return false;
 						}
@@ -3504,6 +3566,18 @@
 							fin();
 							return false;
 						}
+						if(document.forms[0].tipoId.value != "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" 
+							&& document.forms[0].nacionalidad.value =="191"){
+							alert("<siga:Idioma key='gratuita.personaJG.literal.nacionalidadIncompatible'/>");
+							fin();
+							return false;
+						}
+						if(document.forms[0].tipoId.value == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" 
+							&& document.forms[0].nacionalidad.value !="191"){
+							alert("<siga:Idioma key='gratuita.personaJG.literal.nacionalidadIncompatible'/>");
+							fin();
+							return false;
+						}
 						jQuery ("#nacionalidad").removeAttr("disabled");
 						document.forms[0].submit();
 					}else{
@@ -3597,6 +3671,18 @@
 								fin();
 								return false;
 							}
+						}
+						if(document.forms[0].tipoId.value != "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" 
+							&& document.forms[0].nacionalidad.value =="191"){
+							alert("<siga:Idioma key='gratuita.personaJG.literal.nacionalidadIncompatible'/>");
+							fin();
+							return false;
+						}
+						if(document.forms[0].tipoId.value == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" 
+							&& document.forms[0].nacionalidad.value !="191"){
+							alert("<siga:Idioma key='gratuita.personaJG.literal.nacionalidadIncompatible'/>");
+							fin();
+							return false;
 						}
 						jQuery ("#nacionalidad").removeAttr("disabled");
 						document.forms[0].submit();
@@ -3714,7 +3800,18 @@
 					
 				} else {
 					if (validatePersonaJGForm(document.forms[0]) ){	
-						
+						if(document.forms[0].tipoId.value != "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" 
+							&& document.forms[0].nacionalidad.value =="191"){
+							alert("<siga:Idioma key='gratuita.personaJG.literal.nacionalidadIncompatible'/>");
+							fin();
+							return false;
+						}
+						if(document.forms[0].tipoId.value == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" 
+							&& document.forms[0].nacionalidad.value !="191"){
+							alert("<siga:Idioma key='gratuita.personaJG.literal.nacionalidadIncompatible'/>");
+							fin();
+							return false;
+						}
 						jQuery ("#nacionalidad").removeAttr("disabled");
 						document.forms[0].submit();
 					}else{
@@ -3830,6 +3927,18 @@ function accionGuardarCerrar()	{
 						return false;
 					}	
 				}	
+				if(document.forms[0].tipoId.value != "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" 
+					&& document.forms[0].nacionalidad.value =="191"){
+					alert("<siga:Idioma key='gratuita.personaJG.literal.nacionalidadIncompatible'/>");
+					fin();
+					return false;
+				}
+				if(document.forms[0].tipoId.value == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" 
+					&& document.forms[0].nacionalidad.value !="191"){
+					alert("<siga:Idioma key='gratuita.personaJG.literal.nacionalidadIncompatible'/>");
+					fin();
+					return false;
+				}
 				jQuery ("#nacionalidad").removeAttr("disabled");
 				document.forms[0].submit();
 			}else{
