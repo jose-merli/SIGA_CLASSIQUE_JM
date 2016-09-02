@@ -750,17 +750,24 @@
 			} else if ((document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE%>") || (document.forms[0].tipoId.value== "<%=ClsConstants.TIPO_IDENTIFICACION_CIF%>")){
 				document.getElementById("textoInformativo").style.display="none";
 				jQuery ("#nacionalidad").removeAttr("disabled");
+				if(document.getElementById("nacionalidad").value == "191"){
+					jQuery("#nacionalidad").val("");
+					jQuery("#nacionalidad").change();
+				}
 				jQuery ("#nacionalidad").not(this).children('option[value=191]').attr("disabled","disabled");
-				jQuery("#nacionalidad").val("");
-				jQuery("#nacionalidad").change();
+				
+				
 				//document.getElementById("textoInformativoEnBlanco").style.display="block";								
 
 			} else{
 				document.getElementById("textoInformativo").style.display="block";
 				jQuery ("#nacionalidad").removeAttr("disabled");
+				if(document.getElementById("nacionalidad").value == "191"){
+					jQuery("#nacionalidad").val("");
+					jQuery("#nacionalidad").change();
+				}
 				jQuery ("#nacionalidad").not(this).children('option[value=191]').attr("disabled","disabled");
-				jQuery("#nacionalidad").val("");
-				jQuery("#nacionalidad").change();
+			
 				//document.getElementById("textoInformativoEnBlanco").style.display="none";											
 			}			
 			<%}%>
