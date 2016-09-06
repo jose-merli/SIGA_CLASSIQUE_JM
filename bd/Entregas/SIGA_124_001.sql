@@ -360,5 +360,5 @@ delete from GEN_PARAMETROS where PARAMETRO ='PREFIJO_EJG' and MODULO = 'SCS'
 delete from GEN_PARAMETROS where PARAMETRO ='PREFIJO_SOJ' and MODULO = 'SCS'
 
   
-
+ -- Subir la funcion F_SIGA_GETNIFINTERESADOSDES 
 		               

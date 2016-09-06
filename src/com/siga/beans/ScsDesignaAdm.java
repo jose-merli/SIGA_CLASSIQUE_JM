@@ -3896,6 +3896,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			
 			htCodigo.put(new Integer(5), "0");
 			helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETINTERESADOSDESIGNA", "LISTA_INTERESADOS_DESIGNA"));
+			helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_GETNIFINTERESADOSDES", "LISTA_NIF_INTERESADOS_DESIGNA"));
 
 			if(idPersona==null ||idPersona.trim().equalsIgnoreCase("")){
 			    idPersona="-33"; // forzamos que no encuentre datos, en lugar de dar error
