@@ -258,7 +258,8 @@ public class InformeFactura extends MasterReport {
 			UtilidadesFicheros.copyFile(filePDF, fFicheroFirmado);		
 			
 			// Firmo el pdf
-			admFacFactura.firmarPDF(fFicheroFirmado, bFacFactura.getIdInstitucion().toString());
+			boolean isFirmadoOk =	admFacFactura.firmarPDF(fFicheroFirmado, bFacFactura.getIdInstitucion().toString());
+			ClsLogging.writeFileLog("PDF FIRMADO:: " + isFirmadoOk, 10);
 							
 			// Hay que borrar el pdf sin firma si no tiene numero de factura
 			if (bFacFactura.getNumeroFactura()==null || bFacFactura.getNumeroFactura().equals("")) {
@@ -297,11 +298,12 @@ public class InformeFactura extends MasterReport {
 			return ficheroPDF;
 
 		} catch (SIGAException se) {
+			se.setErrorCode("1");
 			throw se;
 			
 		} catch (ClsExceptions ex) {
+			ex.setErrorCode("2");
 			throw ex;
-			
 		} catch (Exception e) {
 			throw new ClsExceptions(e,"Error al invocar generarPdfFacturaSinFirma: " + e.getLocalizedMessage());
 		}
@@ -392,9 +394,11 @@ public class InformeFactura extends MasterReport {
 			}
     		
 		} catch (SIGAException se) {
+			se.setErrorCode("1");
 			throw se;
 			
 		} catch (ClsExceptions ex) {
+			ex.setErrorCode("2");
 			throw ex;
 			
 		} catch (Exception e) {

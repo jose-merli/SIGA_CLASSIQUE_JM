@@ -26,7 +26,8 @@
 	Hashtable htDatos = (Hashtable)request.getAttribute("htDatos");
 
 	String idInstitucion        = (String)htDatos.get("idInstitucion");
-	String idTipoEnvio          = (String)htDatos.get("idTipoEnvio");
+	String idTipoEnvios          = (String)htDatos.get("idTipoEnvio");
+	Integer idTipoEnvio = Integer.valueOf(idTipoEnvios);
 	String idPlantillaEnvios    = (String)htDatos.get("idPlantillaEnvios");
 	String sEditable            = (String)htDatos.get("editable");
 	String sPlantilla           = (String)htDatos.get("plantilla");
@@ -38,14 +39,13 @@
 		sModo="editar";
 
 	String[] lista = new String[3];
-	if (idTipoEnvio.equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO)) {
+	if ( idTipoEnvio.equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO)||idTipoEnvio.equals(EnvTipoEnviosAdm.K_DOCUMENTACIONLETRADO)) {
 		lista[0] = "74e";
-	} else 
-	if (idTipoEnvio.equals(EnvTipoEnviosAdm.K_SMS) || idTipoEnvio.equals(EnvTipoEnviosAdm.K_BUROSMS)) {
+	} else 	if (idTipoEnvio.equals(EnvTipoEnviosAdm.K_SMS) || idTipoEnvio.equals(EnvTipoEnviosAdm.K_BUROSMS)) {
 		lista[0] = "74c";
 		lista[1] = "74b";
 		lista[2] = "74f";
-	} else {
+	}else {
 		lista[0] = "74c";
 		lista[1] = "74e";
 		lista[2] = "74f";
@@ -82,7 +82,7 @@
 				<html:hidden property="actionModal" value=""/>
 				
 				<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>
-				<html:hidden property="idTipoEnvio" value="<%=idTipoEnvio%>"/>
+				<html:hidden property="idTipoEnvio" value="<%=idTipoEnvio.toString()%>"/>
 				<html:hidden property="idPlantillaEnvios" value="<%=idPlantillaEnvios%>"/>
 				<html:hidden property="descripcionPlantilla" value="<%=descripcionPlantilla%>"/>
 				<html:hidden property="editable" value="<%=sEditable%>"/>

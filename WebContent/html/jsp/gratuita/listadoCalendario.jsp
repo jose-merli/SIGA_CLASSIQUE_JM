@@ -31,7 +31,7 @@
 	String app=request.getContextPath(); 
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
-	
+	String idInstitucion = usr.getLocation();
 	Vector obj = (Vector) ses.getAttribute("resultado");
 	ses.removeAttribute("resultado");
 %>
@@ -68,19 +68,23 @@
 <%
 		if (obj.size()>0){
 	   		int recordNumber=1;
-			while (recordNumber-1 < obj.size()) {			
+			while (recordNumber-1 < obj.size()) {
+				String botones = "E,B";
 				ScsCalendarioLaboralBean fila = (ScsCalendarioLaboralBean)obj.get(recordNumber-1);
 				String nombrePartidoJudicial = "TODO EL COLEGIO";
 				try {
+					if(!idInstitucion.equals(String.valueOf(ClsConstants.INSTITUCION_CGAE)) && ClsConstants.esConsejoGeneral(fila.getIdInstitucion())){
+						botones = "";	
+					}				
+					
 					CenPartidoJudicialAdm partidoJudicialAdm = new CenPartidoJudicialAdm(usr);
 					Vector resultado = new Vector();
 					resultado = partidoJudicialAdm.selectGenerico(partidoJudicialAdm.getNombrePartido((fila.getIdPartido()).toString()));
-									
 					nombrePartidoJudicial = (String)(((Hashtable)resultado.elementAt(0)).get("NOMBRE"));
 				}
 				catch (Exception e) {};
 %>
-				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' visibleConsulta="no" pintarEspacio="no" botones="E,B" clase="listaNonEdit">
+				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' visibleConsulta="no" pintarEspacio="no" botones="<%=botones%>" clase="listaNonEdit">
 					<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=fila.getIdentificativo()%>"><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=fila.getIdInstitucion()%>"><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=fila.getUsuMod()%>"><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=fila.getFechaMod()%>"><%=GstDate.getFormatedDateShort(usr.getLanguage(),fila.getFecha())%></td>
 					<td><%=fila.getNombreFiesta()%>&nbsp;</td>
 					<td><%=nombrePartidoJudicial%></td>

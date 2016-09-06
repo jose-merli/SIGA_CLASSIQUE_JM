@@ -43,7 +43,7 @@
 		ArrayList provinciaSel = new ArrayList();
 		ArrayList poblacionSel = new ArrayList();
 		String parametro[] = new String[1];
-		String fechaBaja = "", visibleMovil ="";
+		String fechaBaja = "", visibleMovil ="", esDecano ="";
 		
 		//Procedimientos de este Juzgado:
 		Vector vProcedimientos = (Vector)request.getAttribute("vProcedimientos");
@@ -66,6 +66,15 @@
 		if(visibleMovil !=null && visibleMovil.equals("1")){
 			ponerVisibilidadMovil = "S";
 		}
+		
+		if(formulario.getDatos().get("ESDECANO")!=null && !((String)formulario.getDatos().get("ESDECANO")).equals("")){
+			esDecano = (String)formulario.getDatos().get("ESDECANO");
+		}		
+		String putDecano = "N";
+		if(esDecano !=null && esDecano.equals("1")){
+			putDecano = "S";
+		}
+
 		
 		
 		String topBotones=null, topTabla=null;
@@ -188,7 +197,20 @@
 			if (resultado && resultado=='MODIFICADO')
 				refrescarLocal();
 		}	
-
+		
+		function pulsarCheck(obj){
+			   
+		}
+		
+		function cargarChecksTodos(obj){
+			
+			var modulos = document.getElementsByName("chkModulos");
+			
+			for ( var i = 0; i < modulos.length; i++) {
+				modulos[i].checked = obj.checked; 
+			}
+				
+		}
 		//Guardo los campos seleccionados
 		function seleccionarFila(fila){
 	    	var idInstitucionProcedimiento = 'oculto' + fila + '_' + 1;
@@ -230,7 +252,16 @@
 			} else {
 				MantenimientoJuzgadoForm.ponerVisibilidadMovil.value = "N";
 			}
- 		} 		
+ 		} 	
+ 		
+ 		function checkDecano (o) {
+ 			if (o.checked) {
+ 				MantenimientoJuzgadoForm.putDecano.value = "S";
+			} else {
+				MantenimientoJuzgadoForm.putDecano.value = "N";
+			}
+ 		}  		
+ 		
 	</script>	
 </head>
 
@@ -250,7 +281,9 @@
 		<html:hidden name="MantenimientoJuzgadoForm" property="idJuzgado" />
 		<html:hidden name="MantenimientoJuzgadoForm" property="idInstitucionJuzgado" />
 		<html:hidden name="MantenimientoJuzgadoForm" property="idInstitucionProcedimiento" />
-		<html:hidden name="MantenimientoJuzgadoForm" property="idProcedimiento" />		
+		<html:hidden name="MantenimientoJuzgadoForm" property="idProcedimiento" />	
+		<html:hidden name="MantenimientoJuzgadoForm" property="registrosBorrar" />
+		
 		<input type="hidden" name="actionModal" value="">
 	
 		<table class="tablaCentralCamposGrande" align="center" cellspacing="0" cellpadding="0">
@@ -377,14 +410,23 @@
 								<td class="labelText">
 									<html:text name="MantenimientoJuzgadoForm" property="codigoExt2" size="10" maxlength="10"  readonly="<%=desactivado %>" styleClass="<%=estilo%>"></html:text>
 								</td>
-								
 								<td class="labelText">
 									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.visibilidadMovil"/>
 								</td>
 								<td class="labelTextValue">
 									<input type="checkbox" name="ponerVisibilidadMovil" style="" onclick="darVisibilidadMovil(this);" <% if (modo.equalsIgnoreCase("VER")) { %>disabled<%}%> value="<%=ponerVisibilidadMovil%>" <%if (visibleMovil !=null && visibleMovil.equals("1")) {%>checked<%}%>>
-								</td>								
+								</td>									
 							</tr>
+							
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.decano"/>
+								</td>
+								<td class="labelTextValue">
+									<input type="checkbox" name="putDecano" style="" onclick="checkDecano(this);" <% if (modo.equalsIgnoreCase("VER")) { %>disabled<%}%> value="<%=esDecano%>" <%if (esDecano !=null && esDecano.equals("1")) {%>checked<%}%>>
+								</td>								
+							
+							</tr>							
 						</table>
 					</siga:ConjCampos>	
 				</td>
@@ -397,8 +439,8 @@
 	<siga:Table 
 		name="tablaResultados"
 		border="1"
-		columnNames="gratuita.procedimientos.literal.codigo,gratuita.procedimientos.literal.nombre,gratuita.procedimientos.literal.importe,gratuita.procedimientos.literal.Jurisdiccion,"
-		columnSizes="20,22,20,22,16">
+		columnNames="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,gratuita.procedimientos.literal.codigo,gratuita.procedimientos.literal.nombre,gratuita.procedimientos.literal.importe,gratuita.procedimientos.literal.Jurisdiccion,"
+		columnSizes="5,10,50,10,20,5">
 				
 <% 
 		if (vProcedimientos != null && vProcedimientos.size()>0) {
@@ -414,12 +456,27 @@
 					String codigo = UtilidadesHash.getString (hash, ScsProcedimientosBean.C_CODIGO);
 					String jurisdiccion = UtilidadesHash.getString (hash, "JURISDICCION");
 %>
-					<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' visibleConsulta="no" visibleEdicion="no" visibleBorrado="no" botones=''  elementos="<%=elems%>"  modo="<%=modo%>" clase="listaNonEdit">
-						<td>
+					<tr>
+						<td width="5"></td>
+						<td width="10"></td>
+						<td width="50"></td>
+						<td width="10"></td>
+						<td width="20"></td>
+						<td width="5"></td>
+					</tr>
+					<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' visibleConsulta="no" visibleEdicion="no" visibleBorrado="no" pintarEspacio="no" botones=''  elementos="<%=elems%>"  modo="<%=modo%>" clase="listaNonEdit">
+						
+					
+					
+						<td align="center">
 							<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=idInstitucionProcedimiento%>">
 							<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_2" value="<%=idProcedimiento%>">
 							<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_3" value="<%=idInstitucionJuzgado%>">
 							<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_4" value="<%=idJuzgado%>">
+							<input type="checkbox" id="chkModulos_<%=String.valueOf(i+1)%>"  name="chkModulos" >
+						</td>
+						<td align="center">
+							
 							<%=UtilidadesString.mostrarDatoJSP(codigo)%>
 						</td>
 						<td>
@@ -428,7 +485,7 @@
 						<td align="right">
 							<%=UtilidadesString.mostrarDatoJSP(UtilidadesNumero.formatoCampo(importe))%>
 						</td>	
-						<td>
+						<td align="center">
 							<%=UtilidadesString.mostrarDatoJSP(jurisdiccion)%>
 						</td>
 					</siga:FilaConIconos>
@@ -447,7 +504,7 @@
 	<!-- FIN: CAMPOS -->
 
 	 <% if (!modo.equalsIgnoreCase("nuevo")) {%>
-	 	<siga:ConjBotonesAccion botones="N" modal="G" modo="<%=modo%>" clase="botonesDetalle" />
+	 	<siga:ConjBotonesAccion botones="bm,N"  modal="G" modo="<%=modo%>" clase="botonesDetalle" />
  	<% } %>
 	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 		
@@ -455,5 +512,38 @@
 	<!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 	<!-- FIN: SUBMIT AREA -->
+	<script type="text/javascript">
+
+	function borrarSeleccionados() {
+		sub();
+		var registrosBorrar = '';
+		modulos = document.getElementsByName('chkModulos');
+		for ( var j = 0; j < modulos.length; j++) {
+			if(document.getElementById(modulos[j].id).checked){
+			
+				filaModulo = modulos[j].id.split("chkModulos_")[1];
+				idInstitucion = document.getElementById("oculto"+filaModulo+"_1").value;
+				idProcedimiento = document.getElementById("oculto"+filaModulo+"_2").value;
+				idInstitucionJuzgado = document.getElementById("oculto"+filaModulo+"_3").value;
+				idJuzgado = document.getElementById("oculto"+filaModulo+"_4").value;
+				
+				registrosBorrar = registrosBorrar + 
+				idInstitucion + "," + 
+				idProcedimiento + "," + 
+				idInstitucionJuzgado + "," + 
+				idJuzgado + "#" ; 
+			}
+		}
+		if(registrosBorrar==''){
+			alert('<siga:Idioma key="general.message.seleccionar"/>');
+			fin();
+		}else{
+			document.forms[0].registrosBorrar.value = registrosBorrar;
+			document.forms[0].modo.value = "borrarProcedimientos";
+			document.forms[0].submit();
+		}
+	}
+		jQuery("#idTituloBotonera").css('width', '500px');
+	</script>
 </body>
 </html>

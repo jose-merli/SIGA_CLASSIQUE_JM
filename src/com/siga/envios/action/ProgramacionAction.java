@@ -27,20 +27,17 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.EnvDestinatariosAdm;
 import com.siga.beans.EnvDestinatariosBean;
 import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.EnvEstadoEnvioAdm;
 import com.siga.beans.EnvHistoricoEstadoEnvioAdm;
-import com.siga.beans.EnvHistoricoEstadoEnvioBean;
 import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.beans.EnvTipoEnviosBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.envios.Envio;
-import com.siga.envios.form.DefinirEnviosForm;
 import com.siga.envios.form.ProgramacionForm;
-import com.siga.envios.service.IntercambiosService;
-import com.siga.envios.service.IntercambiosServiceDispatcher;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -138,7 +135,7 @@ public class ProgramacionAction extends MasterAction {
             
             
 	        envioBean = (EnvEnviosBean)envio.firstElement();
-	        if(envioBean.getIdTipoEnvios()!=null && envioBean.getIdTipoEnvios().intValue()==EnvEnviosAdm.TIPO_CORREO_ORDINARIO){
+	        if(envioBean.getIdTipoEnvios()!=null && envioBean.getIdTipoEnvios().intValue()==EnvTipoEnviosAdm.K_CORREO_ORDINARIO){
 		        String pathFTP = "";
 	    		GenParametrosAdm paramAdm = new GenParametrosAdm(this.getUserBean(request));
 	    		try {
@@ -425,7 +422,7 @@ public class ProgramacionAction extends MasterAction {
 		EnvEnviosBean envBean = (EnvEnviosBean)enviosAdm.selectByPK(htPk).firstElement();
 		// OBTENCION DE DESTINATARIOS 
         /////////////////////////////////////
-		EnvEnviosAdm envAdm = new EnvEnviosAdm(this.getUserBean(request));
+		EnvDestinatariosAdm envAdm = new EnvDestinatariosAdm(this.getUserBean(request));
 		Vector vDestinatarios =  envAdm.getDestinatarios(envBean.getIdInstitucion().toString(), envBean.getIdEnvio().toString(), envBean.getIdTipoEnvios().toString());			
 		if(vDestinatarios== null)
 			throw new SIGAException("gratuita.envio.ordinario.noDestinatario"); 

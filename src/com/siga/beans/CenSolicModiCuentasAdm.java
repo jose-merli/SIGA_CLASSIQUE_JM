@@ -144,7 +144,6 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 	public Long	getNuevoId()throws ClsExceptions, SIGAException {
 		String sql;
 		RowsContainer rc = null;
-		int contador = 0;
 		Long id=null;
 		
 		try { rc = new RowsContainer(); }
@@ -181,68 +180,173 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 		   Vector datos=new Vector();
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
-	            String sql ="SELECT " +
-    						CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDSOLICITUD + "," +
-    						CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_MOTIVO + "," +
-							CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_ABONOCARGO + "," +
-							CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_ABONOSJCS + "," +
-    						CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_CBO_CODIGO + "," +
-    						CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_CODIGOSUCURSAL + "," +
-    						CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_DIGITOCONTROL + "," +
-    						CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_NUMEROCUENTA + "," +
-    						CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_TITULAR + "," +
-							CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDPERSONA + "," +
-	            			CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDINSTITUCION + "," +							
-    						CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDCUENTA + " AS CODIGO," +							
-	            			CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_FECHAALTA + "," +
-	            			CenSolicModiCuentasBean.T_NOMBRETABLA + "." + CenSolicModiCuentasBean.C_IDESTADOSOLIC + "," +
-	            			//CenTiposModificacionesBean.T_NOMBRETABLA + "." + CenTiposModificacionesBean.C_DESCRIPCION + " AS MODIFICACION," +							
-	            			UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " AS ESTADO, " +
-	            			ClsConstants.TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS+" as TIPOMODIF, "+
-							" (SELECT "+UtilidadesMultidioma.getCampoMultidioma(CenTiposModificacionesBean.C_DESCRIPCION, this.usrbean.getLanguage())+
-							" from "+CenTiposModificacionesBean.T_NOMBRETABLA+
-							" where "+CenTiposModificacionesBean.C_IDTIPOMODIFICACION+"="+ClsConstants.TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS+") as TEXTOTIPOMODIF"+
-							" FROM " + 
-							//CenSolicModiCuentasBean.T_NOMBRETABLA +", "+CenTiposModificacionesBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+ 
-							CenSolicModiCuentasBean.T_NOMBRETABLA +", "+CenEstadoSolicitudModifBean.T_NOMBRETABLA+
-							" WHERE " +
-							//CenTiposModificacionesBean.T_NOMBRETABLA +"."+ CenSolicitudesModificacionBean.C_IDTIPOMODIFICACION + "=" + String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS) +
-							//" AND " +							
-							CenSolicModiCuentasBean.T_NOMBRETABLA +"."+ CenSolicModiCuentasBean.C_IDESTADOSOLIC + "=" + CenEstadoSolicitudModifBean.T_NOMBRETABLA +"."+ CenEstadoSolicitudModifBean.C_IDESTADOSOLIC +
-							" AND " +
-							CenSolicModiCuentasBean.T_NOMBRETABLA +"."+ CenSolicModiCuentasBean.C_IDINSTITUCION + "=" + institucion;	            
+	            StringBuilder sql = new StringBuilder();
+	            sql.append("SELECT ");
+	            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenSolicModiCuentasBean.C_IDSOLICITUD);
+	            sql.append(",");
+	            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenSolicModiCuentasBean.C_MOTIVO);
+	            sql.append(",");
+	            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenSolicModiCuentasBean.C_ABONOCARGO);
+	            sql.append(",");	            
+	            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenSolicModiCuentasBean.C_ABONOSJCS);
+	            sql.append(",");
+	            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenSolicModiCuentasBean.C_CBO_CODIGO);
+	            sql.append(",");
+	            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenSolicModiCuentasBean.C_CODIGOSUCURSAL);
+	            sql.append(",");
+	            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenSolicModiCuentasBean.C_DIGITOCONTROL);
+	            sql.append(",");
+	            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenSolicModiCuentasBean.C_NUMEROCUENTA);
+	            sql.append(",");
+	            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenSolicModiCuentasBean.C_TITULAR);
+	            sql.append(",");
+	            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenSolicModiCuentasBean.C_IDPERSONA);
+	            sql.append(",");
+	            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenSolicModiCuentasBean.C_IDINSTITUCION);
+	            sql.append(",");							
+	            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenSolicModiCuentasBean.C_IDCUENTA);
+	            sql.append(" AS CODIGO,");							
+	            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenSolicModiCuentasBean.C_FECHAALTA);
+	            sql.append(",");
+	            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenSolicModiCuentasBean.C_IDESTADOSOLIC);
+	            sql.append(",");						
+	            sql.append(UtilidadesMultidioma.getCampoMultidiomaSimple(CenEstadoSolicitudModifBean.T_NOMBRETABLA + "." + CenEstadoSolicitudModifBean.C_DESCRIPCION, this.usrbean.getLanguage()));
+	            sql.append(" AS ESTADO, ");
+	            sql.append(ClsConstants.TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS);
+	            sql.append(" as TIPOMODIF, ");
+	            sql.append(" (SELECT ");
+	            sql.append(UtilidadesMultidioma.getCampoMultidioma(CenTiposModificacionesBean.C_DESCRIPCION, this.usrbean.getLanguage()));
+	            sql.append(" from ");
+	            sql.append(CenTiposModificacionesBean.T_NOMBRETABLA);
+	            sql.append(" where ");
+	            sql.append(CenTiposModificacionesBean.C_IDTIPOMODIFICACION);
+	            sql.append(" = ");
+	            sql.append(ClsConstants.TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS);
+	            sql.append(") as TEXTOTIPOMODIF,");
+							
+	            sql.append(" (SELECT ");
+	            sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenCuentasBancariasBean.C_ABONOCARGO);
+	            sql.append(" FROM ");
+	            sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+	            sql.append(" WHERE ");
+	            sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenCuentasBancariasBean.C_IDINSTITUCION);
+	            sql.append(" = ");
+	            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenSolicModiCuentasBean.C_IDINSTITUCION);
+	            sql.append(" AND ");
+	            sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenCuentasBancariasBean.C_IDPERSONA);
+	            sql.append(" = ");
+	            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenSolicModiCuentasBean.C_IDPERSONA);
+	            sql.append(" AND ");
+	            sql.append(CenCuentasBancariasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenCuentasBancariasBean.C_IDCUENTA);
+	            sql.append(" = ");
+	            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenSolicModiCuentasBean.C_IDCUENTA);
+	            sql.append(") AS ABONOCARGO_CUENTABANCARIA ");
+							
+				sql.append(" FROM ");  
+				sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(", ");
+	            sql.append(CenEstadoSolicitudModifBean.T_NOMBRETABLA);
+	            sql.append(" WHERE ");
+	            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenSolicModiCuentasBean.C_IDESTADOSOLIC);
+	            sql.append(" = ");
+	            sql.append(CenEstadoSolicitudModifBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenEstadoSolicitudModifBean.C_IDESTADOSOLIC);
+	            sql.append(" AND ");
+	            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+	            sql.append(".");
+	            sql.append(CenSolicModiCuentasBean.C_IDINSTITUCION);
+	            sql.append(" = ");
+	            sql.append(institucion);	            
 											
 				if (!estado.trim().equals("")){								 
-					sql +=" AND " +
-						  CenSolicModiCuentasBean.T_NOMBRETABLA +"."+ CenSolicModiCuentasBean.C_IDESTADOSOLIC + "=" + estado;									 
+		            sql.append(" AND ");
+		            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+		            sql.append(".");
+		            sql.append(CenSolicModiCuentasBean.C_IDESTADOSOLIC);
+		            sql.append(" = ");
+		            sql.append(estado);									 
 				}				
 				
 				if (!fechaI.trim().equals("")){								 
-					sql +=" AND " +
-						  CenSolicModiCuentasBean.T_NOMBRETABLA +"."+ CenSolicModiCuentasBean.C_FECHAALTA + ">= TO_DATE ('" + fechaI + "', 'DD/MM/YYYY')";
+		            sql.append(" AND ");
+		            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+		            sql.append(".");
+		            sql.append(CenSolicModiCuentasBean.C_FECHAALTA);
+		            sql.append(">= TO_DATE ('");
+		            sql.append(fechaI);
+		            sql.append("', 'DD/MM/YYYY')");
 				}							
 
 				if (!fechaF.trim().equals("")){								 
-					sql +=" AND (" +
-					  CenSolicModiCuentasBean.T_NOMBRETABLA +"."+ CenSolicModiCuentasBean.C_FECHAALTA + "<= TO_DATE ('" + fechaF + "', 'DD/MM/YYYY')" +									 
-					  " OR " +
-					  GstDate.dateBetween0and24h(CenSolicModiCuentasBean.C_FECHAALTA,fechaF)+")";									 
+		            sql.append(" AND (");
+		            sql.append(CenSolicModiCuentasBean.T_NOMBRETABLA);
+		            sql.append(".");
+		            sql.append(CenSolicModiCuentasBean.C_FECHAALTA);
+		            sql.append("<= TO_DATE ('");
+		            sql.append(fechaF);
+		            sql.append("', 'DD/MM/YYYY')");									 
+		            sql.append(" OR ");
+		            sql.append(GstDate.dateBetween0and24h(CenSolicModiCuentasBean.C_FECHAALTA,fechaF));
+		            sql.append(")");									 
 				}							
 							
-				sql += " ORDER BY " + CenSolicModiCuentasBean.C_FECHAALTA + " DESC"; 										
+	            sql.append(" ORDER BY ");
+	            sql.append(CenSolicModiCuentasBean.C_FECHAALTA);
+	            sql.append(" DESC"); 										
 							
-	            if (rc.find(sql)) {
+	            if (rc.find(sql.toString())) {
 	            	for (int i = 0; i < rc.size(); i++){
 	                  Row fila = (Row) rc.get(i);
 	                  datos.add(fila);
 	               }
 	            }
-	       }
-//			catch (SIGAException e) {
-//				throw e;
-//			}
-	       catch (Exception e) {
-	       	throw new ClsExceptions (e, "Error al obtener solicitudes de modificacion de direcciones");
+	       } catch (Exception e) {
+	       		throw new ClsExceptions (e, "Error al obtener solicitudes de modificacion de direcciones");
 	       }
 	       return datos;                        
 	    }	
@@ -302,8 +406,6 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */	
 	public boolean denegarSolicitud(String solicitud) throws ClsExceptions, SIGAException {
-
-		int procesados=0;
 		boolean correcto=true;
 		Vector original = new Vector();
 		Hashtable hash = new Hashtable();
@@ -343,13 +445,12 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 	 * @return  boolean - resultado de la operacion  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */	
-	public boolean procesarSolicitud(String solicitud, Integer usuario, String idioma) throws ClsExceptions, SIGAException {
+	public boolean procesarSolicitud(String solicitud, Integer usuario, String idioma, boolean bProcesoAltaCuentaCargos) throws ClsExceptions, SIGAException {
 
 		boolean correcto=true;
 		Vector original = new Vector();		
 		Hashtable hash = new Hashtable();
 		Hashtable hashOriginal = new Hashtable();		
-		Hashtable clave = new Hashtable();
 		Hashtable cuentaOriginal = new Hashtable(); 
 		CenCuentasBancariasBean cuentaModificada = new CenCuentasBancariasBean();		
 		CenHistoricoBean beanHist = new CenHistoricoBean();		
@@ -393,7 +494,7 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 					// Fijamos los datos del Historico
 					beanHist.setMotivo((String)hash.get(CenSolicModiCuentasBean.C_MOTIVO));		
 					//BEGIN BNS 11/12/12 INCIDENCIA INC_08950_SIGA
-					if (adminCuentas.updateConHistoricoYfecBaj(cuentaModificada, beanHist, usuario, this.usrbean, abonoCargoOrig, idioma) <0)
+					if (adminCuentas.updateConHistoricoYfecBaj(cuentaModificada, beanHist, usuario, this.usrbean, abonoCargoOrig, idioma, bProcesoAltaCuentaCargos) <0)
 						correcto = false;
 					
 				}				

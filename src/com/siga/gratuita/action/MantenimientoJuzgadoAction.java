@@ -73,6 +73,8 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 				mapDestino = borrarProcedimiento(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("recargarJuzgadoModal")){
 				mapDestino = recargarJuzgadoModal(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("borrarProcedimientos")){
+				mapDestino = borrarProcedimientos(mapping, miForm, request, response);
 			}else if (accion.equalsIgnoreCase("buscarJuzgado")){
 			    mapDestino = buscarJuzgado(mapping, miForm, request, response);			   			    
 		    	
@@ -244,7 +246,12 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 			if(miForm.getPonerVisibilidadMovil() != null && miForm.getPonerVisibilidadMovil().equalsIgnoreCase("S"))
 				hashJuzgadoModificado.put(ScsJuzgadoBean.C_VISIBLEMOVIL,"1");
 			else
-				hashJuzgadoModificado.put(ScsJuzgadoBean.C_VISIBLEMOVIL,"0");			
+				hashJuzgadoModificado.put(ScsJuzgadoBean.C_VISIBLEMOVIL,"0");	
+			
+			if(miForm.getPutDecano() != null && miForm.getPutDecano().equalsIgnoreCase("S"))
+				hashJuzgadoModificado.put(ScsJuzgadoBean.C_ESDECANO,"1");
+			else
+				hashJuzgadoModificado.put(ScsJuzgadoBean.C_ESDECANO,"0");			
 		
 			boolean modificar=true;
 
@@ -338,7 +345,12 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 			if(miForm.getPonerVisibilidadMovil() != null && miForm.getPonerVisibilidadMovil().equalsIgnoreCase("S"))
 				beanJuzgado.setVisibleMovil("1");
 			else
-				beanJuzgado.setVisibleMovil("0");				
+				beanJuzgado.setVisibleMovil("0");	
+			
+			if(miForm.getPutDecano() != null && miForm.getPutDecano().equalsIgnoreCase("S"))
+				beanJuzgado.setEsDecano("1");
+			else
+				beanJuzgado.setEsDecano("0");				
 			
 			ScsJuzgadoAdm admJuz = new ScsJuzgadoAdm(this.getUserBean(request));
 //			if (!codigoExt.trim().equals("") && admJuz.comprobarCodigoExt(idInstitucion,null,codigoExt)) {
@@ -476,7 +488,49 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 		} 
 		return exitoRefresco("messages.deleted.success", request);
 	}	
-	
+	protected String borrarProcedimientos(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
+		UserTransaction tx = null;
+		UsrBean user = null;
+		String idInstitucionProcedimiento=null, idProcedimiento=null, idInstitucion=null, idJuzgado=null;
+		String msgSuccess = "messages.deleted.success";
+		try {
+			MantenimientoJuzgadoForm miForm = (MantenimientoJuzgadoForm) formulario;
+			user = (UsrBean)request.getSession().getAttribute("USRBEAN");
+			tx = user.getTransaction();
+			
+			ScsJuzgadoProcedimientoAdm juzgadoProcedimientoAdm = new ScsJuzgadoProcedimientoAdm (this.getUserBean(request));
+			ScsJuzgadoProcedimientoBean beanJuzgadoProcedimiento = null;
+			
+			String registrosBorrar = miForm.getRegistrosBorrar();
+			String[] registrosBorrarStrings = registrosBorrar.split("#");
+			if(registrosBorrarStrings.length>1)
+				msgSuccess = "messages.deleted.selected.success";
+			tx.begin();
+			
+			for (int i = 0; i < registrosBorrarStrings.length; i++) {
+				String lineaBorrar = registrosBorrarStrings[i];
+				String[] identificadores = lineaBorrar.split(",");
+				idInstitucionProcedimiento = identificadores[0];
+				idProcedimiento = identificadores[1];
+				idInstitucion = identificadores[2];	
+				idJuzgado = identificadores[3];
+				beanJuzgadoProcedimiento = new ScsJuzgadoProcedimientoBean();
+				beanJuzgadoProcedimiento.setIdInstitucionJuzgado(new Integer(idInstitucion));
+				beanJuzgadoProcedimiento.setIdJuzgado(new Integer(idJuzgado));
+				beanJuzgadoProcedimiento.setIdProcedimiento(idProcedimiento);
+				beanJuzgadoProcedimiento.setIdInstitucion(new Integer(idInstitucionProcedimiento));
+				juzgadoProcedimientoAdm.delete(beanJuzgadoProcedimiento);
+				
+				
+			}
+			tx.commit();
+			
+		}
+		catch (Exception e) { 
+			throwExcp("messages.deleted.error", new String[] {"modulo.gratuita"}, e, tx); 
+		} 
+		return exitoRefresco(msgSuccess, request);
+	}	
 	private void buscarProcedimientos(String idInstitucionJuzgado, String idJuzgado, HttpServletRequest request) throws ClsExceptions, SIGAException {
 		try {
 			

@@ -33,10 +33,12 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.CenClienteAdm;
+import com.siga.beans.CenColaCambioLetradoAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenDatosColegialesEstadoAdm;
 import com.siga.beans.CenDatosColegialesEstadoBean;
+import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenEstadoActividadPersonaAdm;
 import com.siga.beans.CenEstadoActividadPersonaBean;
 import com.siga.beans.CenEstadoColegialBean;
@@ -651,6 +653,14 @@ public class DatosColegiacionAction extends MasterAction {
 			
 			String message=admEstados.eliminarEstadoColegiado((String)camposOcultos.get(1),(String)camposOcultos.get(0),(String)camposOcultos.get(5),usr);
 			
+			CenDireccionesBean beanDir = new CenDireccionesBean ();
+			
+			beanDir.setIdPersona (Long.valueOf((String)camposOcultos.get(0)));
+			beanDir.setIdInstitucion (Integer.valueOf((String)camposOcultos.get(1)));
+			
+			//Se inserta en la cola de modificacion de datos para Consejos
+			insertarModificacionConsejo(beanDir,usr, ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION);
+			
 			if(message.contains("error"))
 				result=exito(message,request);
 			else
@@ -799,7 +809,11 @@ public class DatosColegiacionAction extends MasterAction {
 
 	}
 	
-	
+	private static void insertarModificacionConsejo(CenDireccionesBean beanDir, UsrBean usr, int accionCola) throws SIGAException{
+		CenColaCambioLetradoAdm colaAdm = new CenColaCambioLetradoAdm (usr);
+		if (!colaAdm.insertarCambioEnCola (accionCola, beanDir.getIdInstitucion (), beanDir.getIdPersona (), beanDir.getIdDireccion ()))
+			throw new SIGAException (colaAdm.getError ());
+	}
 }
 
 

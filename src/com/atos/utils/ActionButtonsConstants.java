@@ -116,7 +116,8 @@ public enum ActionButtonsConstants {
 	DESCARGAR_SEL ("dse","facturacion.facturasMasivo.descarga","accionDescargarSel()",93),
 	DESCARTAR ("desc","general.botons.Descartar","accionArchivar()",76),
 	APROBAR_GENERAR ("ag","general.boton.generar","accionAprobarGenerar()",94),
-	REGENERAR ("rg","cert.boton.regenerar","accionRegenerar()",95);
+	REGENERAR ("rg","cert.boton.regenerar","accionRegenerar()",95),
+	BORRARMASIVO ("bm","general.delete.selected","borrarSeleccionados()",96);
 
     private final String valor;   
 	private final String label;   

@@ -1224,7 +1224,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 						</c:when>
 						
 						<c:otherwise>
-							<td rowspan="${designa.rowSpan}" >
+							<td rowspan="${designa.rowSpan}"  title="<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaFavorable" />">
 								<c:forEach items="${designa.expedientes}" var="ejgForm" varStatus="statusSinEjg">     
 									<c:choose>            
 										<c:when test="${ejgForm.docResolucion!=null && ejgForm.docResolucion!=''}">

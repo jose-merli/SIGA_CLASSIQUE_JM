@@ -77,6 +77,7 @@
 	String FECHAAPERTURA 		= (String) hash.get("FECHAAPERTURA");
 	if(FECHAAPERTURA!= null) 
 		FECHAAPERTURA = GstDate.getFormatedDateShort("",FECHAAPERTURA);
+	String NOMBREESTADOEJG = (String) hash.get("NOMBREESTADOEJG");
 	
 	String DESIGNA_ANIO 		= (String) hash.get("DESIGNA_ANIO");
 	String DESIGNA_NUMERO 		= (String) hash.get("DESIGNA_NUMERO");
@@ -784,14 +785,18 @@
 														<td class="labelText" width="100px">	
 															<siga:Idioma key='gratuita.mantAsistencias.literal.ejg'/>
 														</td>
+														
 														<td class="labelText" width="100px">				
 															<siga:Idioma key='gratuita.mantAsistencias.literal.tipo'/>
 														</td>
+														
 														<td class="labelTextValor" width="200px">	
 															<% if(TIPOEJG!=null && TIPOEJG.length()>70) TIPOEJG = TIPOEJG.substring(0,69); 	%>
 															<%=TIPOEJG%>
 														</td>
-														<%// Recuperamos el nombre del interesado usando el mismo metodo que nos devuelve la cabecera de los EJG
+														
+														<%
+															// Recuperamos el nombre del interesado usando el mismo metodo que nos devuelve la cabecera de los EJG
 															String nombreIntEJG = "", apellido1IntEJG = "", apellido2IntEJG = "";
 															ScsEJGAdm admEJG = new ScsEJGAdm(usr);
 											
@@ -807,34 +812,19 @@
 											
 															}
 														%>
-														<td class="labelTextValue" width="300px">	
+														<td class="labelTextValue" width="350px">	
 															
 															<%=UtilidadesString.mostrarDatoJSP(ANIOEJG)%>/<%=UtilidadesString.mostrarDatoJSP(CODIGO_EJG)%>
 																- <%=UtilidadesString.mostrarDatoJSP(nombreIntEJG)%> <%=UtilidadesString.mostrarDatoJSP(apellido1IntEJG)%> <%=UtilidadesString.mostrarDatoJSP(apellido2IntEJG)%>
 														</td>
-														<!--<td class="labelTextValor" width="50px">	
-															< %=ANIOEJG%>
-														</td>-->
-														<td class="labelText" style="display:none">	
-															<siga:Idioma key='gratuita.mantAsistencias.literal.numero'/>
-														</td>
-														<td class="labelTextValor" style="display:none">	
-															<%=NUMEROEJG%>
+
+														<td class="labelText" width="100px">	
+															<siga:Idioma key='gratuita.busquedaEJG.literal.estadoEJG'/>
 														</td>
 														
-														<!--<td class="labelTextValor" width="100px">	
-															< %=CODIGO_EJG%>
-														</td>-->			
-														
-														<!--<td class="labelTextValor" width="200px">	
-															< %=TIPOEJG%>
-														</td>-->
-														<!--<td class="labelText">	
-															<siga:Idioma key='gratuita.mantAsistencias.literal.fecha'/>
-														</td>-->
-														<!--<td class="labelTextValor" width="90px">	
-															< %=FECHAAPERTURA%>
-														</td>-->
+														<td class="labelTextValor">	
+															<%=NOMBREESTADOEJG%>
+														</td>
 														
 <%		
 														if (!esFichaColegial){ 
@@ -861,6 +851,8 @@
 <% 
 										} 
 										
+										
+										
 										if (hayDesigna) { 
 %>
 											<fieldset>
@@ -869,13 +861,16 @@
 														<td class="labelText"  width="100px">	
 															<siga:Idioma key='gratuita.mantAsistencias.literal.designa'/>
 														</td>
+														
 														<td class="labelText" width="100px">	
 															<siga:Idioma key='gratuita.mantAsistencias.literal.turno'/>
 														</td>
-														<td class="labelTextValor" width="400px">	
+														
+														<td class="labelTextValor" width="200px">	
 															<%=DES_DESIGNA_TURNO%>
 														</td>
-														<td class="labelTextValue">
+														
+														<td class="labelTextValue" width="350px">	
 														
 															<% // Recuperamos el nombre del interesado usando el mismo metodo que nos devuelve la cabecera de las designaciones
 																String nombreIntDes = "", apellido1IntDes = "", apellido2IntDes = "";
@@ -893,33 +888,15 @@
 															%>
 															<%=UtilidadesString.mostrarDatoJSP(DESIGNA_ANIO)%>/<%=UtilidadesString.mostrarDatoJSP(CODIGO)%> - <%=UtilidadesString.mostrarDatoJSP(nombreIntDes)%> <%=UtilidadesString.mostrarDatoJSP(apellido1IntDes)%> <%=UtilidadesString.mostrarDatoJSP(apellido2IntDes)%>
 																
-																<!--<input type="text"  class="boxConsulta" value="< %=DESIGNA_ANIO%>" readOnly="true">/<input type="text"  class="boxConsulta" value="< %=DESIGNA_CODIGO%>" readOnly="true">-->
 														</td>
-														<!--<td class="labelText">	
-															<siga:Idioma key='gratuita.mantAsistencias.literal.anio'/>
-														</td>
-														<td class="labelTextValor" width="50px">	
-															< %=DESIGNA_ANIO%>
-														</td>-->
+
 													   <td class="labelText"  style="display:none" width="0px">	
 															<siga:Idioma key='gratuita.mantAsistencias.literal.numero'/>
 														</td>
+														
 														<td class="labelTextValor"  style="display:none" width="0px">	
 															<%=DESIGNA_NUMERO%>
 														</td>
-														<!--<td class="labelText" >	
-															<siga:Idioma key='gratuita.mantAsistencias.literal.numero'/>
-														</td>-->
-														<!--<td class="labelTextValor" width="100px">	
-															< %=CODIGO%>
-														</td>-->
-														
-														<!--<td class="labelText">	
-															<siga:Idioma key='gratuita.mantAsistencias.literal.fecha'/>
-														</td>
-														<td class="labelTextValor" width="90px">	
-															< %=FECHAENTRADA%>
-														</td>-->
 											
 <%		
 														if (!esFichaColegial){ 

@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -2007,6 +2008,7 @@ public class Facturacion {
 	 * @throws Exception
 	 */
 	private void generandoFacturacion(String idInstitucion, String idSerieFacturacion, String idProgramacion) throws Exception {
+		String[] codigosErrorFormato = {"-201", "-202", "-203", "-204"};
 		
 		ClsLogging.writeFileLog("### Inicio generarFicheroPrevisiones institución: " + idInstitucion, 7);
 		
@@ -2051,11 +2053,10 @@ public class Facturacion {
 			}
 
 			String codretorno = resultado[0];
-			
-			String[] codigosErrorFormato = {"-201", "-202", "-203", "-204"};
-        	if (Arrays.asList(codigosErrorFormato).contains(codretorno)){
+						
+        	if (Arrays.asList(codigosErrorFormato).contains(codretorno)) {
         		ClsLogging.writeFileLog("### Fin GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "), finalizada con errores", 7);				
-				throw new ClsExceptions(resultado[1] + "(Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "; CodigoError:" + codretorno + ")");
+				throw new ClsExceptions(resultado[1]);
 			
         	} else if (!codretorno.equals("0")) {				
 				ClsLogging.writeFileLog("### Fin GENERACION (Serie:" + idSerieFacturacion + "; IdProgramacion:" + idProgramacion + "), finalizada con errores", 7);				
@@ -2115,14 +2116,13 @@ public class Facturacion {
 			// Le cambio el estado a error
 			try { 
 				String sMensaje = null;
-				if (resultado[0]!=null && resultado[0].equals("-201")) {
+				if (resultado[0]!=null && Arrays.asList(codigosErrorFormato).contains(resultado[0])) {
 					sMensaje = resultado[1];
 				} else if (e.getMessage().indexOf("TimedOutException")!=-1 || e.getMessage().indexOf("timed out")!=-1) {
 					sMensaje = UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"messages.error.generacionFacturacion.timeout");
 				} else {
 					sMensaje = UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(),"messages.error.generacionFacturacion.general");
-				}
-				
+				}				
 				
 				controlarEstadoErrorGeneracion(tx,admFacturacionProgramada,claves,hashEstado,nombreFichero, FacEstadoConfirmFactBean.ERROR_GENERACION, sMensaje);	
 				
@@ -2445,41 +2445,98 @@ public class Facturacion {
 			    
 	        } else {} // Esta facturado => vFacturas => No Tx
 				
-	        // GENERAR FICHERO: Siempre elimina el zip con los pdfs firmads o el pdf firmado 	    
-			File fichero = informe.generarInformeFacturacionRapida(request, idInstitucion, idPeticion, vFacturas);
-			if (fichero == null) {
-				throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");
-			}
-			
-			// DESCARGAR FICHERO
-			String nombreColegiado ="";
-			if(vFacturas != null &&  vFacturas.size()>0){
-			Hashtable<String,Object> obj = vFacturas.get(0);
-			String idPersona = (String)obj.get("IDPERSONA");
-		    nombreColegiado ="";
-			if(idPersona != null && !"".equalsIgnoreCase(idPersona)){
-				 nombreColegiado = personaAdm.obtenerNombreApellidos(idPersona);
-				if(nombreColegiado != null && !"".equalsIgnoreCase(nombreColegiado)){
-					nombreColegiado = UtilidadesString.eliminarAcentosYCaracteresEspeciales(nombreColegiado)+"-";	
-				}else{
-					nombreColegiado="";
+	        // GENERAR FICHERO: Siempre elimina el zip con los pdfs firmads o el pdf firmado 	 
+	        try{
+	        	File fichero = informe.generarInformeFacturacionRapida(request, idInstitucion, idPeticion, vFacturas);
+	        	
+	        	if (fichero == null) {
+					throw new ClsExceptions("Error al generar la factura. Fichero devuelto es nulo.");
 				}
-			}
-			}
-			int inicio = fichero.getName().indexOf(".zip");
-			 //Si se llama a este método desde el demonio de: acciones masivas, la request viene null
-		    if(request != null){
-			//Si es -1 no es un fichero zip
-				if(inicio == -1){
-					request.setAttribute("nombreFichero",nombreColegiado+ fichero.getName());
-				}else{
-					request.setAttribute("nombreFichero",fichero.getName());
+	        	
+	    		// DESCARGAR FICHERO
+				String nombreColegiado ="";
+				if(vFacturas != null &&  vFacturas.size()>0){
+				Hashtable<String,Object> obj = vFacturas.get(0);
+				String idPersona = (String)obj.get("IDPERSONA");
+			    nombreColegiado ="";
+				if(idPersona != null && !"".equalsIgnoreCase(idPersona)){
+					 nombreColegiado = personaAdm.obtenerNombreApellidos(idPersona);
+					if(nombreColegiado != null && !"".equalsIgnoreCase(nombreColegiado)){
+						nombreColegiado = UtilidadesString.eliminarAcentosYCaracteresEspeciales(nombreColegiado)+"-";	
+					}else{
+						nombreColegiado="";
+					}
 				}
-				String path =  UtilidadesString.replaceAllIgnoreCase( fichero.getPath(), "\\", "/");
-				request.setAttribute("rutaFichero", path);
-				request.setAttribute("generacionOK", "OK");
-		    }
-			
+				}
+				
+				int inicio = fichero.getName().indexOf(".zip");
+				 //Si se llama a este método desde el demonio de: acciones masivas, la request viene null
+			    if(request != null){
+				//Si es -1 no es un fichero zip
+					if(inicio == -1){
+						String where = " WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + vFacturas.get(0).get("IDSERIEFACTURACION") +
+								" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +" = " + vFacturas.get(0).get("IDINSTITUCION");
+									
+						Vector<FacSerieFacturacionBean> vSeriesFacturacion = admSerieFacturacion.select(where);
+												
+				
+						if (vSeriesFacturacion!=null && vSeriesFacturacion.size()>0) {
+							FacSerieFacturacionBean beanSerieFacturacion = vSeriesFacturacion.get(0);
+						
+							switch (beanSerieFacturacion.getIdNombreDescargaPDF()) {
+							case 1:
+								request.setAttribute("nombreFichero",fichero.getName());
+								break;
+							case 2:
+								//Quitamos la extensión y añadimos el nombre más la extensión
+								String[] separacionExtensionDelFichero = fichero.getName().split(Pattern.quote("."));
+								String[] separacionNombreColegiado = nombreColegiado.split("-");
+								request.setAttribute("nombreFichero",separacionExtensionDelFichero[0] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
+								break;
+							case 3:
+								request.setAttribute("nombreFichero",nombreColegiado+ fichero.getName());
+								break;
+		
+							default:
+								request.setAttribute("nombreFichero",nombreColegiado+ fichero.getName());
+								break;
+							}
+						}else{
+							request.setAttribute("nombreFichero",nombreColegiado+ fichero.getName());
+						}
+					}
+					String path =  UtilidadesString.replaceAllIgnoreCase( fichero.getPath(), "\\", "/");
+					request.setAttribute("rutaFichero", path);
+					request.setAttribute("generacionOK", "OK");
+			    }
+	        	
+	        } catch (SIGAException se) {
+	       	
+				throw se;
+				
+				
+		    } catch (ClsExceptions se) {
+		       	
+				throw se;
+				
+	        }
+
+	    }catch (SIGAException e) { 
+			try { // Tratamiento rollback
+				if (Status.STATUS_ACTIVE  == tx.getStatus()){
+					tx.rollback();
+				}
+			} catch (Exception e3) {}	
+	    	
+				throw e; 	
+	    }catch (ClsExceptions e) { 
+			try { // Tratamiento rollback
+				if (Status.STATUS_ACTIVE  == tx.getStatus()){
+					tx.rollback();
+				}
+			} catch (Exception e3) {}	
+	    	
+				throw e; 	
 	    } catch (Exception e) { 
 			try { // Tratamiento rollback
 				if (Status.STATUS_ACTIVE  == tx.getStatus()){

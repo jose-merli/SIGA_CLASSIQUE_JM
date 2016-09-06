@@ -176,9 +176,17 @@
 	</table>
 	</siga:ConjCampos>
 
-	<siga:ConjCampos leyenda="expedientes.auditoria.literal.direccion">
+	<siga:ConjCampos leyenda="expedientes.auditoria.literal.direccion"> 	
 	<table width="100%">
-		
+		    <%	
+				if(form.getFechaBaja() != null && !"".equalsIgnoreCase(form.getFechaBaja()) ){
+			%>
+				<td class="labelText">
+					<span style="color: red;">(DIRECCIÓN DE BAJA)</span> 
+				</td>
+			<%
+				}
+			%>
 		<!-- FILA -->
 		<tr>				
 
@@ -187,6 +195,7 @@
 		</td>				
 		<td colspan="3">
 			<html:textarea cols="90" rows="2"  property="direccion"  name="ExpDenuncianteForm"  onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)" styleClass="boxConsulta" readonly="true"></html:textarea>
+			
 		</td>	
 		</tr>		
 		

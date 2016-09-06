@@ -933,6 +933,7 @@ public class SolicitudAceptadaCentralitaForm extends MasterForm {
         miForm.setIdPersona(this.getIdPersona());
         miForm.setColegiadoNombre(this.getColegiadoNombre());
         miForm.setColegiadoNumero(this.getColegiadoNumero());
+        miForm.setDatosPaginador(this.getDatosPaginador());
 		
 		
 		

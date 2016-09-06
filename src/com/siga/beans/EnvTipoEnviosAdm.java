@@ -21,12 +21,13 @@ import com.siga.gratuita.form.ProgrCalendariosForm;
 
 public class EnvTipoEnviosAdm extends MasterBeanAdministrador {
 
-	public static final String K_CORREO_ELECTRONICO = "1";
-	public static final String K_CORREO_ORDINARIO = "2";
-	public static final String K_FAX = "3";
-	public static final String K_SMS = "4";
-	public static final String K_BUROSMS = "5";
-	public static final String K_ENVIOTELEMATICO = "6";
+	public static final int K_CORREO_ELECTRONICO = 1;
+	public static final int K_CORREO_ORDINARIO = 2;
+	public static final int K_FAX = 3;
+	public static final int K_SMS = 4;
+	public static final int K_BUROSMS = 5;
+	public static final int K_ENVIOTELEMATICO = 6;
+	public static final int K_DOCUMENTACIONLETRADO  = 7;
 	static public final String CONS_TIPOENVIO="%%TIPOENVIO%%";
 	
 	public EnvTipoEnviosAdm(UsrBean usuario)

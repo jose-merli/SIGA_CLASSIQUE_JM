@@ -143,7 +143,7 @@
 			}
 			function descargar() 
 			{
-				sub();
+				//sub();
 				
 				if (!validateEnviosDatosGeneralesForm(EnviosDatosGeneralesForm)){
 					fin();

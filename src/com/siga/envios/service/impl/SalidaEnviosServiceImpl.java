@@ -14,6 +14,7 @@ import org.redabogacia.sigaservices.app.autogen.mapper.EnvComunicacionmorososMap
 import org.redabogacia.sigaservices.app.autogen.mapper.EnvEnviosMapper;
 import org.redabogacia.sigaservices.app.autogen.mapper.EnvEstatEnvioMapper;
 import org.redabogacia.sigaservices.app.autogen.mapper.GenParametrosMapper;
+import org.redabogacia.sigaservices.app.autogen.mapper.ScsComunicacionesMapper;
 import org.redabogacia.sigaservices.app.autogen.model.EnvComunicacionmorosos;
 import org.redabogacia.sigaservices.app.autogen.model.EnvComunicacionmorososExample;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEnvios;
@@ -23,10 +24,13 @@ import org.redabogacia.sigaservices.app.autogen.model.EnvEstatEnvioExample;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametrosKey;
 import org.redabogacia.sigaservices.app.autogen.model.ScsComunicaciones;
+import org.redabogacia.sigaservices.app.autogen.model.ScsComunicacionesExample;
+import org.redabogacia.sigaservices.app.autogen.model.ScsComunicacionesExample.Criteria;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.log4j.SatecLogger;
 import org.redabogacia.sigaservices.app.mapper.EnvEnviosExtendsMapper;
 import org.redabogacia.sigaservices.app.services.scs.ComunicacionesService;
+import org.redabogacia.sigaservices.app.vo.env.ComunicacionesVo;
 
 import com.siga.beans.EnvEstadoEnvioAdm;
 import com.siga.envios.service.IntercambiosService;
@@ -361,6 +365,65 @@ public  class SalidaEnviosServiceImpl extends MyBatisBusinessServiceTemplate imp
 		
 		return salidaEnvios;
 	}
+
+	public Short getNumComunicacionesLetrado(Long idPersona, Short idInstitucion) throws BusinessException {
+		Short  numComunicacionesLetrado = null;
+		EnvEnviosExtendsMapper envEnviosMapper = getMyBatisSqlSessionManager().getMapper(EnvEnviosExtendsMapper.class);
+
+		try {
+			Map<String, Object> parametrosMap = new HashMap<String, Object>();
+			parametrosMap.put("idInstitucion", idInstitucion);
+			parametrosMap.put("idPersona", idPersona);
+			numComunicacionesLetrado = envEnviosMapper.getNumComunicacionesLetrado(parametrosMap);
+			
+		} catch (Exception e) {
+			log.error("Se ha producido un error en getNumComunicacionesLetrado", e);
+			throw new BusinessException("Se ha producido un error en getNumComunicacionesLetrado",e);
+			
+		} 	
+		
+		return numComunicacionesLetrado;
+	}
+
+	public List<ComunicacionesVo> getComunicacionesLetrado(Long idPersona,String codIdioma, Short idInstitucion, int rowNumStart, int rowNumPageSize) throws BusinessException {
+		List<ComunicacionesVo>  salidaEnvios = null;
+		EnvEnviosExtendsMapper envEnviosMapper = getMyBatisSqlSessionManager().getMapper(EnvEnviosExtendsMapper.class);
+
+		try {
+			Map<String, Object> parametrosMap = new HashMap<String, Object>();
+			parametrosMap.put("idInstitucion", idInstitucion);
+			parametrosMap.put("idPersona", idPersona);
+			parametrosMap.put("codIdioma", codIdioma);
+			parametrosMap.put("rowNumStart", rowNumStart);
+			parametrosMap.put("rowNumPageSize", rowNumPageSize);
+			salidaEnvios = envEnviosMapper.getComunicacionesLetrado(parametrosMap);
+			
+		} catch (Exception e) {
+			log.error("Se ha producido un error al realizar la busqueda de getComunicacionesLetrado", e);
+			throw new BusinessException("Se ha producido un error al realizar la busqueda de getComunicacionesLetrado",e);
+			
+		} 	
+		
+		return salidaEnvios;
+	}
+	public List<ScsComunicaciones> getComunicaciones(Long idEnvio, Short idInstitucion) throws BusinessException {
+		List<ScsComunicaciones>  salidaEnvios = null;
+		ScsComunicacionesMapper envEnviosMapper = getMyBatisSqlSessionManager().getMapper(ScsComunicacionesMapper.class);
+		try {
+			ScsComunicacionesExample scscomunicaionesExample = new ScsComunicacionesExample();
+			Criteria criteria =  scscomunicaionesExample.createCriteria();
+			criteria.andIdinstitucionEqualTo(idInstitucion);
+			criteria.andIdenviosalidaEqualTo(idEnvio);
+			salidaEnvios = envEnviosMapper.selectByExample(scscomunicaionesExample);
+			
+		} catch (Exception e) {
+			log.error("Se ha producido un error al realizar la busqueda de getComunicaciones", e);
+			throw new BusinessException("Se ha producido un error al realizar la busqueda de getComunicaciones",e);
+			
+		} 	
+		return salidaEnvios;
+	}
+	
 	
 	
 

@@ -215,7 +215,7 @@ public class TagBotonesAccion extends TagSupport {
 			out.println("<tr>");
 			if (this.titulo!=null && !titulo.equals("")) {
 				//out.println("<td class=\"titulitos "+this.clase+"\">");
-				out.println("<td class=\"titulitos\">");
+				out.println("<td class=\"titulitos\" id=\"idTituloBotonera\" > ");
 				out.println(UtilidadesString.getMensajeIdioma(usrbean, this.titulo));
 				out.println("</td>");			
 			}
@@ -251,6 +251,9 @@ public class TagBotonesAccion extends TagSupport {
 					}
 					break;
 				case GENERAR_INFORME:
+					printButton(usrbean, out, abc);
+					break;
+				case GENERAR_ETIQUETAS:
 					printButton(usrbean, out, abc);
 					break;
 				case XUNTA_ENVIO_REINTEGRO:

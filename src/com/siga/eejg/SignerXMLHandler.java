@@ -2,6 +2,7 @@ package com.siga.eejg;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.security.KeyStore;
 
@@ -16,6 +17,10 @@ import org.apache.axis.MessageContext;
 import org.apache.axis.encoding.DeserializationContext;
 import org.apache.axis.handlers.BasicHandler;
 import org.apache.axis.message.SOAPEnvelope;
+import org.redabogacia.sigaservices.app.AppConstants.MODULO;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
+import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -29,6 +34,8 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.FirmaXMLHelper;
 import com.siga.beans.GenParametrosAdm;
+
+import es.satec.businessManager.BusinessManager;
 
 public class SignerXMLHandler extends BasicHandler {
 	private static final long serialVersionUID = 4903930523115324378L;
@@ -172,26 +179,43 @@ public class SignerXMLHandler extends BasicHandler {
 				UsrBean usrBean = new UsrBean();
 				usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));
 				
-				GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);
-	            String sPathCertificadosDigitales = admParametros.getValor("0", "CER", "PATH_CERTIFICADOS_DIGITALES", "");
-	            String sNombreCertificadosDigitales = admParametros.getValor("0", "CER", "NOMBRE_CERTIFICADOS_DIGITALES", "");
-	            String keyStorePass = admParametros.getValor("0", "CER", "CLAVE_CERTIFICADOS_DIGITALES", "");
-	            	            
-	            String xmlSigNSPrefix = admParametros.getValor("0", "CER", "EEJG_FIRMA_XMLSIGNSPREFIX", "");
+				GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
+	        	GenParametros genParametros = new GenParametros();
+	    		genParametros.setModulo(MODULO.CER.name());
+	    		genParametros.setParametro(PARAMETRO.PATH_CERTIFICADOS_DIGITALES.name());
+	    		genParametros.setIdinstitucion((short)0);
+	        	
+	    		GenParametros certificadoDigitalDirectorio = genParametrosService.getGenParametroInstitucionORvalor0(genParametros);
+	    		genParametros.setParametro(PARAMETRO.NOMBRE_CERTIFICADOS_DIGITALES.name());
+	    		GenParametros certificadoDigitalNombre =  genParametrosService.getGenParametroInstitucionORvalor0(genParametros);
+	    		genParametros.setParametro(PARAMETRO.CLAVE_CERTIFICADOS_DIGITALES.name());
+	    		GenParametros pwdCertificadoDigital =  genParametrosService.getGenParametroInstitucionORvalor0(genParametros);
+
+	    		StringBuilder certificadoDigitalPath = new StringBuilder();
+	        	certificadoDigitalPath.append(certificadoDigitalDirectorio.getValor());
+	        	certificadoDigitalPath.append(File.separator);
+	        	certificadoDigitalPath.append(certificadoDigitalNombre.getValor());
+	        	
+	    		genParametros.setParametro(PARAMETRO.EEJG_FIRMA_KEYSTORETYPE.name());
+	    		GenParametros keyStoreType =  genParametrosService.getGenParametroInstitucionORvalor0(genParametros);
+	        	
+	    		genParametros.setParametro(PARAMETRO.EEJG_FIRMA_XMLSIGNSPREFIX.name());
+	    		GenParametros xmlSigNSPrefix =  genParametrosService.getGenParametroInstitucionORvalor0(genParametros);
+	        	
 	            
-	            String keyStoreFile = sPathCertificadosDigitales + "/" + sNombreCertificadosDigitales;	            
-	            String keyStoreType = admParametros.getValor("0", "CER", "EEJG_FIRMA_KEYSTORETYPE", "");
 	            
-	            FileInputStream fisID = new FileInputStream(keyStoreFile);
-		        KeyStore ks = KeyStore.getInstance(keyStoreType);
-		        ks.load(fisID, keyStorePass.toCharArray());
+	            
+	            FileInputStream fisID = new FileInputStream(certificadoDigitalPath.toString());
+		        KeyStore ks = KeyStore.getInstance(keyStoreType.getValor());
+		        ks.load(fisID, pwdCertificadoDigital.getValor().toCharArray());
 		        fisID.close();
 		        String privateKeyAlias = (String)ks.aliases().nextElement();
 				
-				String privateKeyPass = keyStorePass;
+				String privateKeyPass = pwdCertificadoDigital.getValor();
 				String certificateAlias = privateKeyAlias;
 	
-				firmaXMLHelper = new FirmaXMLHelper(xmlSigNSPrefix, keyStoreType, keyStoreFile, keyStorePass, privateKeyAlias, privateKeyPass, certificateAlias);
+				firmaXMLHelper = new FirmaXMLHelper(xmlSigNSPrefix.getValor(), keyStoreType.getValor(), certificadoDigitalPath.toString(),
+						pwdCertificadoDigital.getValor(), privateKeyAlias, privateKeyPass, certificateAlias);
 			
 	        } catch (Exception e) {
 				throw new ClsExceptions(e, "Error al recuperar los parámetros");

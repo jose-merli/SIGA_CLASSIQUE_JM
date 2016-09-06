@@ -2,6 +2,7 @@ package com.siga.beans;
 
 import java.util.*;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
@@ -42,7 +43,7 @@ public class ScsCalendarioLaboralAdm extends MasterBeanAdministrador {
 			where += ScsCalendarioLaboralBean.C_FECHA + " >= TO_DATE ('01/01/" + hash.get(ScsCalendarioLaboralBean.C_FECHA) + "', 'DD/MM/YYYY') AND "  + 
 					 ScsCalendarioLaboralBean.C_FECHA + " <= TO_DATE ('31/12/" + hash.get(ScsCalendarioLaboralBean.C_FECHA) + "', 'DD/MM/YYYY') AND ("  +
 					 ScsCalendarioLaboralBean.C_IDINSTITUCION + " = " + hash.get(ScsCalendarioLaboralBean.C_IDINSTITUCION) 	 +
-					 " OR " + ScsCalendarioLaboralBean.C_IDINSTITUCION + " IS NULL)";		
+					 " OR " + ScsCalendarioLaboralBean.C_IDINSTITUCION + " = " + ClsConstants.INSTITUCION_CGAE + ")";		
 		
 			datos = this.select(where);
 		} 

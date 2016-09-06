@@ -30,30 +30,30 @@
 
 
 <!-- JSP -->
-<% 
-	String app=request.getContextPath();  
-	HttpSession ses=request.getSession(true);
-	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");	
-	String profile[]=usr.getProfile();
-	
-	boolean esLetrado=usr.isLetrado();
+<%
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession(true);
+	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
+	String profile[] = usr.getProfile();
+
+	boolean esLetrado = usr.isLetrado();
 	boolean justificacionValidada;
 
-	String anio="", numero="", turno="", idTurno="", fecha="", ncolegiado="", nombre="", apellido1="", apellido2="", codigo="", idJuzgadoDesigna="", juzgadoInstitucionDesigna="", idPretensionDesigna="";
-	String nactuacion = "", fechaActuacion="", acuerdoExtrajudicial="";
-	String anulacion = "", observaciones = "", fechaJustificacion ="", observacionesJustificacion ="", modo="";
-	String idPersona=null;
-	String numeroProcedimiento="";
-	String anioProcedimiento="";
-	String nig="";
+	String anio = "", numero = "", turno = "", idTurno = "", fecha = "", ncolegiado = "", nombre = "", apellido1 = "", apellido2 = "", codigo = "", idJuzgadoDesigna = "", juzgadoInstitucionDesigna = "", idPretensionDesigna = "";
+	String nactuacion = "", fechaActuacion = "", acuerdoExtrajudicial = "";
+	String anulacion = "", observaciones = "", fechaJustificacion = "", observacionesJustificacion = "", modo = "", fechaComboFiltros = "";
+	String idPersona = null;
+	String numeroProcedimiento = "";
+	String anioProcedimiento = "";
+	String nig = "";
 	String maxLenghtProc = "20";
-	
-	String estiloCombo=null, readOnlyCombo=null;
-	
+
+	String estiloCombo = null, readOnlyCombo = null;
+
 	Hashtable hashDesigna = null;
 	Hashtable hashActuacion = null;
-	ArrayList vTipoRatificacion= new ArrayList();
-	
+	ArrayList vTipoRatificacion = new ArrayList();
+
 	// Arrays de los combos de juzgado, comisaria y prision:
 	ArrayList prisionSel = new ArrayList();
 	ArrayList juzgadoSel = new ArrayList();
@@ -62,28 +62,28 @@
 	ArrayList pretensionSel = new ArrayList();
 	ArrayList motCambioSel = new ArrayList();
 
-	String idJuzgado=null, idInstitucionJuzgado=null, idPrision=null, idInstitucionPrision=null, idProcedimiento="-1", idInstitucionProcedimiento=null, idAcreditacion=null, idMotivoCambio=null;
-	String idTipoRatificacion=null,fechaRatificacion=null,fechaNotificacion=null,anioEJG=null,numEJG=null;
-	String idPretension=null;
-	String nombreJuzgado="", nombreProcedimiento="", nombreAcreditacion="";
-	String deDonde=(String)request.getParameter("deDonde");
+	String idJuzgado = null, idInstitucionJuzgado = null, idPrision = null, idInstitucionPrision = null, idProcedimiento = "-1", idInstitucionProcedimiento = null, idAcreditacion = null, idMotivoCambio = null;
+	String idTipoRatificacion = null, fechaRatificacion = null, fechaNotificacion = null, anioEJG = null, numEJG = null;
+	String idPretension = null;
+	String nombreJuzgado = "", nombreProcedimiento = "", nombreAcreditacion = "";
+	String deDonde = (String) request.getParameter("deDonde");
 	String validarJustificaciones = "";
 	String estadoActuacion = "";
 	String actuacionValidada = "";
 	String modoJustificacion = (String) request.getAttribute("modoJustificacion");
 	String modoAnterior = (String) request.getAttribute("MODO_ANTERIOR");
-	String facturada="";
+	String facturada = "";
 	String validarActuacion = (String) request.getAttribute("validarActuacion");
-	String filtrarModulos = "N";
-	String comboJuzgados ="", comboModulos="", comboJuzgadosJustificacion="";
+	String filtrarModulos = ClsConstants.FILTRAR_MODULOS_FECHAACTUAL;
+	String comboJuzgados = "", comboModulos = "", comboJuzgadosJustificacion = "";
 	String[] datoJuzg = null;
 	String dato[] = { (String) usr.getLocation() };
 	if (request.getAttribute("filtrarModulos") != null) {
-		filtrarModulos = (String)request.getAttribute("filtrarModulos");
+		filtrarModulos = (String) request.getAttribute("filtrarModulos");
 	}
 
 	// Estilo de los combos:
-	if (modoAnterior!=null && modoAnterior.equalsIgnoreCase("VER")||(modoJustificacion!=null && modoJustificacion.equals("editarJustificacionFicha"))) {
+	if (modoAnterior != null && modoAnterior.equalsIgnoreCase("VER") || (modoJustificacion != null && modoJustificacion.equals("editarJustificacionFicha"))) {
 		estiloCombo = "boxConsulta";
 		readOnlyCombo = "true";
 	} else {
@@ -93,219 +93,220 @@
 
 	//Hash con la designa y la actuacion:
 	hashDesigna = (Hashtable) request.getAttribute("hashDesigna");
-	
-	anio = (String)hashDesigna.get("ANIO");
-	numero = (String)hashDesigna.get("NUMERO");
-	codigo = (String)hashDesigna.get("CODIGO");
-	turno = (String)hashDesigna.get("TURNO");
-	idTurno = (String)hashDesigna.get("IDTURNO");
-	fecha = GstDate.getFormatedDateShort("",(String)hashDesigna.get("FECHA"));
-//	ncolegiado =(String)hashDesigna.get("NCOLEGIADO");
-//	nombre = (String)hashDesigna.get("NOMBRE");
-//	apellido1 = (String)hashDesigna.get("APELLIDO1");
-//	apellido2 = (String)hashDesigna.get("APELLIDO2");
-	idTipoRatificacion=(String)hashDesigna.get("IDTIPORATIFICACIONEJG");
-	
-	idJuzgadoDesigna=(String)hashDesigna.get(ScsDesignaBean.C_IDJUZGADO);
-	juzgadoInstitucionDesigna=(String)hashDesigna.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO);
-	
-	idPretensionDesigna=(String)hashDesigna.get(ScsDesignaBean.C_IDPRETENSION);
 
-	String fechaAnulacion = hashDesigna.get("FECHAANULACION") == null?"":(String)hashDesigna.get("FECHAANULACION");	
-    String param[] = {usr.getLocation(),idTurno};
-    
-    if(filtrarModulos.equals("S")){
-    	datoJuzg = new String[6];
-    	datoJuzg [0] = "-1";
-    	datoJuzg [1] = fecha;
-    	datoJuzg [2] = fecha;
-    	datoJuzg [3] = usr.getLocation();
-    	datoJuzg [4] = idTurno;
-    	datoJuzg [5] = "-1";
-    	comboJuzgados = "comboJuzgadosJurisdiccionModulos";
-    	comboModulos = "comboProcedimientosVigencia";
-    	comboJuzgadosJustificacion = "comboProcedimientosJustificacionVigencia";
-    }else{
-    	datoJuzg = new String[3];
-    	datoJuzg [0] = usr.getLocation();
-		datoJuzg [1] = idTurno;
-		datoJuzg [2] = "-1";
-		comboJuzgados = "comboJuzgadosJurisdiccion";
-    	comboModulos = "comboProcedimientos";
-    	comboJuzgadosJustificacion = "comboProcedimientosJustificacion";
-    }
+	anio = (String) hashDesigna.get("ANIO");
+	numero = (String) hashDesigna.get("NUMERO");
+	codigo = (String) hashDesigna.get("CODIGO");
+	turno = (String) hashDesigna.get("TURNO");
+	idTurno = (String) hashDesigna.get("IDTURNO");
+	fecha = GstDate.getFormatedDateShort("", (String) hashDesigna.get("FECHA"));
+	//	ncolegiado =(String)hashDesigna.get("NCOLEGIADO");
+	//	nombre = (String)hashDesigna.get("NOMBRE");
+	//	apellido1 = (String)hashDesigna.get("APELLIDO1");
+	//	apellido2 = (String)hashDesigna.get("APELLIDO2");
+	idTipoRatificacion = (String) hashDesigna.get("IDTIPORATIFICACIONEJG");
+
+	idJuzgadoDesigna = (String) hashDesigna.get(ScsDesignaBean.C_IDJUZGADO);
+	juzgadoInstitucionDesigna = (String) hashDesigna.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO);
+
+	idPretensionDesigna = (String) hashDesigna.get(ScsDesignaBean.C_IDPRETENSION);
+
+	String fechaAnulacion = hashDesigna.get("FECHAANULACION") == null ? "" : (String) hashDesigna.get("FECHAANULACION");
+	String param[] = { usr.getLocation(), idTurno };
+
 	// Caso de estar en Edicion o Consulta:
-	
-	idInstitucionProcedimiento =  usr.getLocation();
+
+	idInstitucionProcedimiento = usr.getLocation();
 	String nombreFacturacion = "";
 	if (!modoAnterior.equalsIgnoreCase("NUEVO")) {
 		hashActuacion = (Hashtable) request.getAttribute("hashActuacionActual");
-		
-		if(hashActuacion!=null && hashActuacion.size() > 0){
-			nombreFacturacion =	(String)hashActuacion.get("NOMBREFACTURACION");
+
+		if (hashActuacion != null && hashActuacion.size() > 0) {
+			nombreFacturacion = (String) hashActuacion.get("NOMBREFACTURACION");
 			//Nuevo numero de actuacion:
-			nactuacion = (String)hashActuacion.get("NUMEROASUNTO");		
+			nactuacion = (String) hashActuacion.get("NUMEROASUNTO");
 			//INC_3094_SIGA el colegiado se toma de la actuación, no de la designación
-			ncolegiado =(String)hashActuacion.get("NCOLEGIADO");
-			nombre = (String)hashActuacion.get("NOMBRE");
-			apellido1 = (String)hashActuacion.get("APELLIDO1");
-			apellido2 = (String)hashActuacion.get("APELLIDO2");
-	
+			ncolegiado = (String) hashActuacion.get("NCOLEGIADO");
+			nombre = (String) hashActuacion.get("NOMBRE");
+			apellido1 = (String) hashActuacion.get("APELLIDO1");
+			apellido2 = (String) hashActuacion.get("APELLIDO2");
+
 			// Datos de la actuacion modificables:
-			fechaActuacion=GstDate.getFormatedDateShort("",(String)hashActuacion.get("FECHAACTUACION"));
-			acuerdoExtrajudicial= (String)hashActuacion.get("ACUERDOEXTRAJUDICIAL");
-			anulacion = (String)hashActuacion.get("ANULACION");
-			if(hashActuacion.get("OBSERVACIONES")!=null){
-				observaciones = (String)hashActuacion.get("OBSERVACIONES");
+			fechaActuacion = GstDate.getFormatedDateShort("", (String) hashActuacion.get("FECHAACTUACION"));
+			acuerdoExtrajudicial = (String) hashActuacion.get("ACUERDOEXTRAJUDICIAL");
+			anulacion = (String) hashActuacion.get("ANULACION");
+			if (hashActuacion.get("OBSERVACIONES") != null) {
+				observaciones = (String) hashActuacion.get("OBSERVACIONES");
 			}
-			fechaJustificacion = GstDate.getFormatedDateShort("",(String)hashActuacion.get("FECHAJUSTIFICACION"));
-			
-			if(hashActuacion.get("OBSERVACIONESJUSTIFICACION")!=null){
-				observacionesJustificacion = (String)hashActuacion.get("OBSERVACIONESJUSTIFICACION");
+			fechaJustificacion = GstDate.getFormatedDateShort("", (String) hashActuacion.get("FECHAJUSTIFICACION"));
+
+			if (hashActuacion.get("OBSERVACIONESJUSTIFICACION") != null) {
+				observacionesJustificacion = (String) hashActuacion.get("OBSERVACIONESJUSTIFICACION");
 			}
-			
-			nombreAcreditacion = (String)hashActuacion.get("NOMBREACREDITACION");
-	        nombreJuzgado = (String)hashActuacion.get("NOMBREJUZGADO");
-	        if(hashActuacion.get("NOMBREPROCEDIMIENTO")!=null){
-		    	nombreProcedimiento = (String)hashActuacion.get("NOMBREPROCEDIMIENTO");
-	        }
-		 	// Datos de la Prision seleccionada:
-		 	idPrision =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDPRISION);
-		 	facturada =  (String)hashActuacion.get("FACTURADO");
-		 	idInstitucionPrision =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION);
-			if (idPrision!=null && idInstitucionPrision!=null)
-				prisionSel.add(0,idPrision+","+idInstitucionPrision);
-				
-		    // Datos de la Pretension seleccionada:
-		 	idPretension =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDPRETENSION);
-		 	if (idPretension!=null){
-				pretensionSel.add(0,idPretension);
-			}	
-		 	
-		 	 // Datos del motivo del cambio seleccionado
-		 	idMotivoCambio =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO);
-		 	if (idMotivoCambio!=null){
-				motCambioSel.add(0,idMotivoCambio);
+
+			nombreAcreditacion = (String) hashActuacion.get("NOMBREACREDITACION");
+			nombreJuzgado = (String) hashActuacion.get("NOMBREJUZGADO");
+			if (hashActuacion.get("NOMBREPROCEDIMIENTO") != null) {
+				nombreProcedimiento = (String) hashActuacion.get("NOMBREPROCEDIMIENTO");
 			}
-			
-		 	// Datos del Procedimiento seleccionado:
-		 	if(hashActuacion.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO)!=null && !((String)hashActuacion.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO)).equals("")){
-		 		idProcedimiento =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO);
-		 	}
-		 	
-		 	// Datos de la Acreditacion seleccionada:
-		 	idAcreditacion =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDACREDITACION);
-			if (idAcreditacion!=null)
-				acreditacionSel.add(0,idAcreditacion);
-				
-		 	// Datos del Juzgado seleccionado:
-		 	idJuzgado =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDJUZGADO);
-		
-			idInstitucionJuzgado =  (String)hashActuacion.get(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO);
-			
-			
-	
+			// Datos de la Prision seleccionada:
+			idPrision = (String) hashActuacion.get(ScsActuacionDesignaBean.C_IDPRISION);
+			facturada = (String) hashActuacion.get("FACTURADO");
+			idInstitucionPrision = (String) hashActuacion.get(ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION);
+			if (idPrision != null && idInstitucionPrision != null)
+				prisionSel.add(0, idPrision + "," + idInstitucionPrision);
+
+			// Datos de la Pretension seleccionada:
+			idPretension = (String) hashActuacion.get(ScsActuacionDesignaBean.C_IDPRETENSION);
+			if (idPretension != null) {
+				pretensionSel.add(0, idPretension);
+			}
+
+			// Datos del motivo del cambio seleccionado
+			idMotivoCambio = (String) hashActuacion.get(ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO);
+			if (idMotivoCambio != null) {
+				motCambioSel.add(0, idMotivoCambio);
+			}
+
+			// Datos del Procedimiento seleccionado:
+			if (hashActuacion.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO) != null && !((String) hashActuacion.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO)).equals("")) {
+				idProcedimiento = (String) hashActuacion.get(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO);
+			}
+
+			// Datos de la Acreditacion seleccionada:
+			idAcreditacion = (String) hashActuacion.get(ScsActuacionDesignaBean.C_IDACREDITACION);
+			if (idAcreditacion != null)
+				acreditacionSel.add(0, idAcreditacion);
+
+			// Datos del Juzgado seleccionado:
+			idJuzgado = (String) hashActuacion.get(ScsActuacionDesignaBean.C_IDJUZGADO);
+
+			idInstitucionJuzgado = (String) hashActuacion.get(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO);
+
 			actuacionValidada = (String) hashActuacion.get("ACTUACIONVALIDADA");
 			numeroProcedimiento = (String) hashActuacion.get("NUMEROPROCEDIMIENTO");
 			anioProcedimiento = (String) hashActuacion.get("ANIOPROCEDIMIENTO");
-			
+
 			nig = (String) hashActuacion.get("NIG");
 		}
-		
-		
-	} else { //Para el caso de estar en NUEVO:
-		
-		//Cuando es el caso de NUEVO el letrado se coge de la designa.
-		ncolegiado =(String)hashDesigna.get("NCOLEGIADO");
-		nombre = (String)hashDesigna.get("NOMBRE");
-		apellido1 = (String)hashDesigna.get("APELLIDO1");
-		apellido2 = (String)hashDesigna.get("APELLIDO2");
 
-	 	// Datos del Juzgado seleccionado:
-	 	idJuzgado =  (String)hashDesigna.get(ScsDesignaBean.C_IDJUZGADO);
-	 	idInstitucionJuzgado =  (String)hashDesigna.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO);
-	 	// Datos del Procedimiento seleccionado:
-	 	if(hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO)!=null && !((String)hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO)).equals("")){
-	 		idProcedimiento =  (String)hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO);
-	 	}	 	
-		idPretension = (String)hashDesigna.get(ScsDesignaBean.C_IDPRETENSION);
-		if (idPretension!=null){
-			pretensionSel.add(0,idPretension);
+	} else { //Para el caso de estar en NUEVO:
+
+		//Cuando es el caso de NUEVO el letrado se coge de la designa.
+		ncolegiado = (String) hashDesigna.get("NCOLEGIADO");
+		nombre = (String) hashDesigna.get("NOMBRE");
+		apellido1 = (String) hashDesigna.get("APELLIDO1");
+		apellido2 = (String) hashDesigna.get("APELLIDO2");
+
+		// Datos del Juzgado seleccionado:
+		idJuzgado = (String) hashDesigna.get(ScsDesignaBean.C_IDJUZGADO);
+		idInstitucionJuzgado = (String) hashDesigna.get(ScsDesignaBean.C_IDINSTITUCIONJUZGADO);
+		// Datos del Procedimiento seleccionado:
+		if (hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO) != null && !((String) hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO)).equals("")) {
+			idProcedimiento = (String) hashDesigna.get(ScsDesignaBean.C_IDPROCEDIMIENTO);
 		}
-		String aux = (String)request.getAttribute("fechaJustificacion");
-		fechaJustificacion = aux!=null?aux:"";
-	 	//Datos de la designa:
-		nactuacion = (String)hashDesigna.get("NUMEROASUNTO");
-		idPersona = (String)hashDesigna.get("IDPERSONA");
-		 nombreJuzgado = (String)hashDesigna.get("NOMBREJUZGADO");
-		if(hashDesigna.get("NOMBREPROCEDIMIENTO")!=null){
-	    	nombreProcedimiento = (String)hashDesigna.get("NOMBREPROCEDIMIENTO");
-        }
-	    numeroProcedimiento = (String) hashDesigna.get("NUMPROCEDIMIENTO");
-	    anioProcedimiento = (String) hashDesigna.get("ANIOPROCEDIMIENTO");
-	    nig = (String) hashDesigna.get("NIG");
-	    if(validarActuacion!=null)
-	    	actuacionValidada = validarActuacion!=null&&validarActuacion.equals("S")?"0":"1";
+		idPretension = (String) hashDesigna.get(ScsDesignaBean.C_IDPRETENSION);
+		if (idPretension != null) {
+			pretensionSel.add(0, idPretension);
+		}
+		String aux = (String) request.getAttribute("fechaJustificacion");
+		fechaJustificacion = aux != null ? aux : "";
+		//Datos de la designa:
+		nactuacion = (String) hashDesigna.get("NUMEROASUNTO");
+		idPersona = (String) hashDesigna.get("IDPERSONA");
+		nombreJuzgado = (String) hashDesigna.get("NOMBREJUZGADO");
+		if (hashDesigna.get("NOMBREPROCEDIMIENTO") != null) {
+			nombreProcedimiento = (String) hashDesigna.get("NOMBREPROCEDIMIENTO");
+		}
+		numeroProcedimiento = (String) hashDesigna.get("NUMPROCEDIMIENTO");
+		anioProcedimiento = (String) hashDesigna.get("ANIOPROCEDIMIENTO");
+		nig = (String) hashDesigna.get("NIG");
+		if (validarActuacion != null)
+			actuacionValidada = validarActuacion != null && validarActuacion.equals("S") ? "0" : "1";
+		fechaComboFiltros = GstDate.getHoyJsp();
 	}
 	//  Datos de la designa comunes a todos los modos de visualizacion:
-	
-	String[] paramPretension = {usr.getLocation(), "-1"};
-	if(idPretension!=null && (!idPretension.equals("")))
-		paramPretension[1]= idPretension;
-	
-	String[] paramMotivoCambio = new String[]{usr.getLocation()};
+
+	String[] paramPretension = { usr.getLocation(), "-1" };
+	if (idPretension != null && (!idPretension.equals("")))
+		paramPretension[1] = idPretension;
+
+	String[] paramMotivoCambio = new String[] { usr.getLocation() };
 	validarJustificaciones = (String) hashDesigna.get("VALIDARJUSTIFICACIONES");
-	actuacionValidada = actuacionValidada ==null ? "0":actuacionValidada;
-	//Actualizo el combo de juzgados:
-	if(filtrarModulos.equals("S")){
-		if ((idJuzgado!=null && idInstitucionJuzgado!=null) && (idProcedimiento!=null && idInstitucionProcedimiento!=null))
-			juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado+","+idProcedimiento+","+fecha+","+fecha);
-		
-		if(idJuzgado!=null && !idJuzgado.equals(""))
-			datoJuzg[5]=idJuzgado;
-		
-		if(idProcedimiento!=null && !idProcedimiento.equals(""))
-			datoJuzg[0]=idProcedimiento;
-	}else{
-		
+	actuacionValidada = actuacionValidada == null ? "0" : actuacionValidada;
+
+	/////////  COMBOS POR FILTRO ///////////////////
+	if (filtrarModulos.equals(ClsConstants.FILTRAR_MODULOS_FECHAACTUAL)) {
+		datoJuzg = new String[3];
+		datoJuzg[0] = usr.getLocation();
+		datoJuzg[1] = idTurno;
+		datoJuzg[2] = "-1";
+		comboJuzgados = "comboJuzgadosJurisdiccion";
+		comboModulos = "comboProcedimientos";
+		comboJuzgadosJustificacion = "comboProcedimientosJustificacion";
+
 		//Actualizo el combo de juzgados:
-		if (idJuzgado!=null && idInstitucionJuzgado!=null)
-			juzgadoSel.add(0,idJuzgado+","+idInstitucionJuzgado);
-				
-		if(idJuzgado!=null && !idJuzgado.equals(""))
-			datoJuzg[2]=idJuzgado;
+		if (idJuzgado != null && idInstitucionJuzgado != null)
+			juzgadoSel.add(0, idJuzgado + "," + idInstitucionJuzgado);
+
+		if (idJuzgado != null && !idJuzgado.equals(""))
+			datoJuzg[2] = idJuzgado;
+		
+	} else {
+		if (filtrarModulos.equals(ClsConstants.FILTRAR_MODULOS_FECHADESIGNACION)) {
+			fechaComboFiltros = fecha;
+		} else if (!fechaComboFiltros.equals("") && fechaComboFiltros.equals(ClsConstants.FILTRAR_MODULOS_FECHAACTUACION)) {
+			fechaComboFiltros = fechaActuacion;
+		}		
+
+		datoJuzg = new String[6];
+		datoJuzg[0] = "-1";
+		datoJuzg[1] = fechaComboFiltros;
+		datoJuzg[2] = fechaComboFiltros;
+		datoJuzg[3] = usr.getLocation();
+		datoJuzg[4] = idTurno;
+		datoJuzg[5] = "-1";
+		comboJuzgados = "comboJuzgadosJurisdiccionModulos";
+		comboModulos = "comboProcedimientosVigencia";
+		comboJuzgadosJustificacion = "comboProcedimientosJustificacionVigencia";
+
+		//Actualizo el combo de juzgados:
+		if ((idJuzgado != null && idInstitucionJuzgado != null) && (idProcedimiento != null && idInstitucionProcedimiento != null))
+			juzgadoSel.add(0, idJuzgado + "," + idInstitucionJuzgado + "," + idProcedimiento + "," + fechaComboFiltros + "," + fechaComboFiltros);
+
+		if (idJuzgado != null && !idJuzgado.equals(""))
+			datoJuzg[5] = idJuzgado;
+
+		if (idProcedimiento != null && !idProcedimiento.equals(""))
+			datoJuzg[0] = idProcedimiento;
 	}
 
-	if (idProcedimiento!=null && idInstitucionProcedimiento!=null)
-		procedimientoSel.add(0,idProcedimiento+","+idInstitucionProcedimiento);	
-	
-	String paramAcreditacion[] = {idProcedimiento,usr.getLocation()};	
+	if (idProcedimiento != null && idInstitucionProcedimiento != null)
+		procedimientoSel.add(0, idProcedimiento + "," + idInstitucionProcedimiento);
 
-	
+	String paramAcreditacion[] = { idProcedimiento, usr.getLocation() };
+
 	int pcajgActivo = 0;
-	if (request.getAttribute("PCAJG_ACTIVO")!=null){
+	if (request.getAttribute("PCAJG_ACTIVO") != null) {
 		pcajgActivo = Integer.parseInt(request.getAttribute("PCAJG_ACTIVO").toString());
 	}
-	
-	if(pcajgActivo==2)
-		maxLenghtProc = "15";
-	
-	
-	String asterisco = "&nbsp;(*)";
-	
-	//si es el colegio de Alcala validaremos el procedimiento y el numero de procedimiento
-	boolean isColegioAlcala = pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA;
-	
 
-	
+	if (pcajgActivo == 2)
+		maxLenghtProc = "15";
+
+	String asterisco = "&nbsp;(*)";
+
+	//si es el colegio de Alcala validaremos el procedimiento y el numero de procedimiento
+	boolean isColegioAlcala = pcajgActivo == CajgConfiguracion.TIPO_CAJG_TXT_ALCALA;
+
 	ArrayList vTipoResolAuto = new ArrayList();
-	if (hashDesigna.containsKey(ScsEJGBean.C_IDTIPORESOLAUTO)&& hashDesigna.get(ScsEJGBean.C_IDTIPORESOLAUTO) != "")
+	if (hashDesigna.containsKey(ScsEJGBean.C_IDTIPORESOLAUTO) && hashDesigna.get(ScsEJGBean.C_IDTIPORESOLAUTO) != "")
 		vTipoResolAuto.add(hashDesigna.get(ScsEJGBean.C_IDTIPORESOLAUTO).toString());
-	
+
 	String fechaAuto = "";
 	if (hashDesigna.containsKey("FECHAAUTO"))
-		fechaAuto = GstDate.getFormatedDateShort("",hashDesigna.get(ScsEJGBean.C_FECHAAUTO).toString()).toString();
-	%>
+		fechaAuto = GstDate.getFormatedDateShort("", hashDesigna.get(ScsEJGBean.C_FECHAAUTO).toString()).toString();
+%>
 
 <%@page import="com.siga.ws.CajgConfiguracion"%>
 
@@ -336,7 +337,7 @@
 	
 	
 	function cambiarAcreditacion() {
-		<%if(!isColegioAlcala){%>
+		<%if (!isColegioAlcala) {%>
 			acreditacionString = document.getElementById("acreditacion").value
 			acreditacionStrings = acreditacionString.split(',');
 
@@ -347,7 +348,7 @@
 				 jQuery("#labelNumProc").attr('style','display: none');
 				 jQuery("#labelNig").attr('style','display: none');
 			 } 
-		<%}else{%>
+		<%} else {%>
 			acreditacionString = document.getElementById("acreditacion").value
 			acreditacionStrings = acreditacionString.split(',');
 	
@@ -377,6 +378,7 @@
 		}
 		
 		function obtenerProcedimiento() { 
+			
 			if (document.getElementById("codigoBusquedaAux").value!= ""){
 				document.MantenimientoProcedimientosForm.codigoBusqueda.value = document.getElementById("codigoBusquedaAux").value;
 				document.MantenimientoProcedimientosForm.submit();		
@@ -398,9 +400,9 @@
 			document.getElementById("juzgado").onchange();
 		}
 		
-		function traspasoProcDatos(resultado){			
+		function traspasoProcDatos(resultado){		
 			if (resultado[0]==undefined) {
-				document.forms[0].procedimiento.value=-1;
+				//document.forms[0].procedimiento.value=-1; 
 				document.getElementById("codigoBusquedaAux").value = "";
 			} else {
 				var procSelect = jQuery("#procedimientoFrame").contents().find("select");
@@ -502,13 +504,15 @@
 </table>
 
 	<!-- Comienzo del formulario con los campos -->	
-	<% String aDonde="";
-        if (deDonde!=null && ((deDonde.equals("ficha") && usr.isLetrado())||deDonde.equals("/JGR_PestanaDesignas"))) {
-    		aDonde="/JGR_ActuacionDesignaLetrado.do";
-		} else {
-     		deDonde="";
-		    aDonde="/JGR_ActuacionesDesigna.do";
-		} %>	
+	<%
+			String aDonde = "";
+			if (deDonde != null && ((deDonde.equals("ficha") && usr.isLetrado()) || deDonde.equals("/JGR_PestanaDesignas"))) {
+				aDonde = "/JGR_ActuacionDesignaLetrado.do";
+			} else {
+				deDonde = "";
+				aDonde = "/JGR_ActuacionesDesigna.do";
+			}
+		%>	
 		
 <html:form action="<%=aDonde%>" method="post" target="submitArea">
 	<html:hidden property = "modo" value= ""/>
@@ -596,11 +600,17 @@
 						</td>
 						
 						<td>
-						<% if (modoAnterior==null || modoAnterior.equalsIgnoreCase("ver")) { %> 
+						<%
+							if (modoAnterior == null || modoAnterior.equalsIgnoreCase("ver")) {
+						%> 
 							<siga:Fecha nombreCampo="fechaActuacion"  disabled="true" valorInicial="<%=fechaActuacion%>" ></siga:Fecha> 
-						<%}else{%>
+						<%
+ 							} else {
+ 						%>
 							<siga:Fecha nombreCampo="fechaActuacion"   valorInicial="<%=fechaActuacion%>" ></siga:Fecha> 
-						<%} %>							
+						<%
+ 							}
+ 						%>							
 							
 						</td>
 							
@@ -615,18 +625,27 @@
 							<siga:Idioma key="gratuita.modalActuacionesDesigna.literal.anulacion"/>
 							&nbsp;
 							
-							<% if (!modoAnterior.equalsIgnoreCase("VER") && (modoJustificacion==null || !modoJustificacion.equals("editarJustificacionFicha"))) { 
-									if(!fechaAnulacion.equals("")) {
+							<%
+															if (!modoAnterior.equalsIgnoreCase("VER") && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))) {
+																		if (!fechaAnulacion.equals("")) {
+														%>
+										<INPUT NAME="anulacion" TYPE=CHECKBOX <%if ((anulacion != null) && (anulacion).equalsIgnoreCase("1")) {%>checked<%}%> disabled>
+							<%
+								} else {
+							%>	
+										<INPUT NAME="anulacion" TYPE=CHECKBOX <%if ((anulacion != null) && (anulacion).equalsIgnoreCase("1")) {%>checked<%}%>>
+							
+							<%
+															}
+														%>
+							
+							<%
+															} else {
+														%>
+								<INPUT NAME="anulacion" TYPE=CHECKBOX <%if ((anulacion != null) && (anulacion).equalsIgnoreCase("1")) {%>checked<%}%> disabled>
+							<%
+								}
 							%>
-										<INPUT NAME="anulacion" TYPE=CHECKBOX <%if((anulacion!=null)&&(anulacion).equalsIgnoreCase("1")){%>checked<%}%> disabled>
-							<% 		} else{ %>	
-										<INPUT NAME="anulacion" TYPE=CHECKBOX <%if((anulacion!=null)&&(anulacion).equalsIgnoreCase("1")){%>checked<%}%>>
-							
-							<%		} %>
-							
-							<%}else{%>
-								<INPUT NAME="anulacion" TYPE=CHECKBOX <%if((anulacion!=null)&&(anulacion).equalsIgnoreCase("1")){%>checked<%}%> disabled>
-							<%}%>
 						</td>
 					</tr>
 					
@@ -634,13 +653,15 @@
 						<td class="labelText" nowrap>
 							<table>
 							<tr>
-							<td><siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento" /></td><%=(isColegioAlcala?"<td>"+asterisco+"</td>":"<td id='labelNumProc' style='display:block'>(*)</td>")%>	
+							<td><siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento" /></td><%=(isColegioAlcala ? "<td>" + asterisco + "</td>" : "<td id='labelNumProc' style='display:block'>(*)</td>")%>	
 							</tr> 
 							</table>
 							
 						</td>
 						<td>
-							<% if (!modoAnterior.equalsIgnoreCase("VER")) { %> 
+							<%
+								if (!modoAnterior.equalsIgnoreCase("VER")) {
+							%> 
 							
 								<c:choose>
 									<c:when	test="${EJIS_ACTIVO=='1'}">
@@ -659,7 +680,9 @@
 							
 							
 								 
-							<% } else { %> 
+							<%
+																						 								} else {
+																						 							%> 
 								<c:choose>
 									<c:when	test="${EJIS_ACTIVO=='1'}">
 											<c:out value="<%=numeroProcedimiento%>"/>/<c:out value="<%=anioProcedimiento%>"/>
@@ -670,20 +693,28 @@
 								</c:choose>
 								
 								 
-							<% } %>
+							<%
+																 								}
+																 							%>
 						</td>
 									
 			            <td class="labelText" nowrap>	
 						 	<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>&nbsp;(*)
 					  	</td>
 					  	<td colspan="2">	 
-							<% if (modoAnterior.equalsIgnoreCase("VER")||(modoJustificacion!=null && modoJustificacion.equals("editarJustificacionFicha"))){%>							
+							<%
+	 								if (modoAnterior.equalsIgnoreCase("VER") || (modoJustificacion != null && modoJustificacion.equals("editarJustificacionFicha"))) {
+	 							%>							
 									<siga:ComboBD nombre="juzgado" ancho="500" tipo="<%=comboJuzgados%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento"/>
 							
-							<%}else{%>
+							<%
+															} else {
+														%>
 								<input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerJuzgado();" />
 								<siga:ComboBD nombre="juzgado" ancho="400" tipo="<%=comboJuzgados%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>"  accion="Hijo:procedimiento; cambiarJuzgado(this);"/>
-							<%}%>
+							<%
+								}
+							%>
 						</td>														
 					</tr>	
 					
@@ -696,11 +727,17 @@
 							</table>
 						</td>				
 						<td > 
-							<% if (!modoAnterior.equalsIgnoreCase("VER")) { %> 
+							<%
+ 								if (!modoAnterior.equalsIgnoreCase("VER")) {
+ 							%> 
 								<html:text name="ActuacionesDesignasForm" property="nig" styleId="nig" value="<%=nig%>" styleClass="box" style="size:19;width:200px"/>
-							<%}else{%>
+							<%
+								} else {
+							%>
 								<html:text name="ActuacionesDesignasForm" property="nig" styleId="nig" value="<%=nig%>" styleClass="boxConsulta" readonly="true" style="size:19;width:200px"/>
-							<%}%>						
+							<%
+								}
+							%>						
 						</td>
 									
 							<td id="info" style="display:none" ><img  id="imagenInfo" src="/SIGA/html/imagenes/info.gif"	style="cursor: hand;"	title="" border="0" />
@@ -713,16 +750,24 @@
 							<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo"/>&nbsp;(*)			
 						</td>						
 						<td colspan="4">											
-							<%if (modoJustificacion!=null && modoJustificacion.equals("nuevoJustificacion")){%>
+							<%
+																			if (modoJustificacion != null && modoJustificacion.equals("nuevoJustificacion")) {
+																		%>
 			                	<siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboJuzgadosJustificacion%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
 								
-							<%} else if ((esLetrado||modoAnterior.equalsIgnoreCase("VER"))||(modoJustificacion!=null && modoJustificacion.equals("editarJustificacionFicha"))){%>
+							<%
+																} else if ((esLetrado || modoAnterior.equalsIgnoreCase("VER")) || (modoJustificacion != null && modoJustificacion.equals("editarJustificacionFicha"))) {
+															%>
 								<html:text name="ActuacionesDesignasForm" style="width:600px" property="procedimiento1" styleClass="boxConsulta" readonly="true" value="<%=nombreProcedimiento%>"/>
 								
-							<%} else { %>				
+							<%
+																} else {
+															%>				
 								<input type="text" id="codigoBusquedaAux" name="codigoBusquedaAux" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerProcedimiento();" />
 			                	<siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboModulos%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
-							<%}%>
+							<%
+								}
+							%>
 						</td>
 					</tr>		
 					
@@ -731,17 +776,27 @@
 							<siga:Idioma key="gratuita.procedimientos.literal.acreditacion"/>&nbsp;(*)
 						</td>			
 						<td  colspan="4">
-							<%if (modoJustificacion!=null && modoJustificacion.equals("nuevoJustificacion")){%>
+							<%
+								if (modoJustificacion != null && modoJustificacion.equals("nuevoJustificacion")) {
+							%>
 								<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>" accion="parent.cambiarAcreditacion();"/>
-							<%}else if (modoAnterior.equalsIgnoreCase("VER")||(modoJustificacion!=null && modoJustificacion.equals("editarJustificacionFicha"))) { %>
+							<%
+								} else if (modoAnterior.equalsIgnoreCase("VER") || (modoJustificacion != null && modoJustificacion.equals("editarJustificacionFicha"))) {
+							%>
 								<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="true"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>" />	
-							<% } else { 
-								if (esLetrado){%>
+							<%
+									} else {
+												if (esLetrado) {
+								%>
 									<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>"  accion="parent.cambiarAcreditacion();" />
-								<%} else {%>	
+								<%
+									} else {
+								%>	
 									<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>"  accion="parent.cambiarAcreditacion();"/>
-								<%}
-							}%>
+								<%
+									}
+											}
+								%>
 						</td>
 					</tr>
 					
@@ -750,38 +805,56 @@
 							<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.prision"/>
 						</td>
 						<td colspan="4">
-							<%if (modoJustificacion!=null && modoJustificacion.equals("editarJustificacionFicha")){%>
+							<%
+								if (modoJustificacion != null && modoJustificacion.equals("editarJustificacionFicha")) {
+							%>
 								<siga:ComboBD  ancho="300" nombre="prision" tipo="comboPrisiones"  estilo="true" clase="boxConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=param%>" elementoSel="<%=prisionSel%>" />
-							<% } else { %>
+							<%
+								} else {
+							%>
 								<siga:ComboBD  ancho="300" nombre="prision" tipo="comboPrisiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=param%>" elementoSel="<%=prisionSel%>" />
 							 
 								<font class="labelTextValor" style="vertical-align: middle;">
 									<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.prisionCompletar"/>
 								</font>
-							<% }%>
+							<%
+								}
+							%>
 							
 						</td>
 					</tr>
 					
 					<tr>
 						<td class="labelText" nowrap>
-							<siga:Idioma key="gratuita.actuacionesDesigna.literal.pretensiones"/><%=(isColegioAlcala?asterisco:"")%>
+							<siga:Idioma key="gratuita.actuacionesDesigna.literal.pretensiones"/><%=(isColegioAlcala ? asterisco : "")%>
 						</td>
 						<td colspan="4">
-						<%if (modoJustificacion!=null && modoJustificacion.equals("editarJustificacionFicha")){%>
+						<%
+							if (modoJustificacion != null && modoJustificacion.equals("editarJustificacionFicha")) {
+						%>
 								<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="boxConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />
-							<% } else { %>
+							<%
+								} else {
+							%>
 								<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />										 
-								<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) { %>
+								<%
+										 									if (pcajgActivo == CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) {
+										 								%>
 									<font class="labelText">
 										<siga:Idioma key="gratuita.altaGuardia.literal.motivoCambio"/>
 									</font>
 									<siga:ComboBD  ancho="300" nombre="idMotivoCambio" tipo="cmbActuacionDesignaMotivoCambio"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramMotivoCambio%>" elementoSel="<%=motCambioSel%>" />
-								<%} else {%>
+								<%
+									} else {
+								%>
 									<html:hidden property = "idMotivoCambio" value="<%=idMotivoCambio%>"/>
-								<%}%>
+								<%
+									}
+								%>
 								
-							<% }%>
+							<%
+																}
+															%>
 							
 						</td>					
 					</tr>
@@ -791,15 +864,21 @@
 							<siga:Idioma key="gratuita.altaGuardia.literal.observaciones"/>
 						</td>
 						<td  colspan="4">
-							<% if (!modoAnterior.equalsIgnoreCase("VER") && (modoJustificacion==null || !modoJustificacion.equals("editarJustificacionFicha"))) { %>
+							<%
+								if (!modoAnterior.equalsIgnoreCase("VER") && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))) {
+							%>
 								<textarea class="box" name="observaciones"
 									onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" style="overflow:auto;width:600px;height:45px" 
 								><%=observaciones%></textarea>
-							<% } else { %>
+							<%
+								} else {
+							%>
 								<textarea class="boxConsulta" name="observaciones" readonly
 									style="overflow:auto;width:600px;height:40px"
 								><%=observaciones%></textarea>
-							<%}%>							
+							<%
+								}
+							%>							
 						</td>
 					</tr>
 					
@@ -809,15 +888,21 @@
 							<siga:Idioma key="gratuita.actuacionesDesigna.literal.talon"/>					     
 						</td>
 						<td  colspan="4">	
-							 <%if(!modoAnterior.equalsIgnoreCase("VER")&& (modoJustificacion==null || !modoJustificacion.equals("editarJustificacionFicha"))){%>
+							 <%
+								 	if (!modoAnterior.equalsIgnoreCase("VER") && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))) {
+								 %>
 								<html:text name="ActuacionesDesignasForm" property="talonario" size="20" maxlength="20" styleClass="box" />
 								&nbsp;/&nbsp;
 					     		<html:text name="ActuacionesDesignasForm" property="talon" size="20"  maxlength="20" styleClass="box" />
-						     <%}else{%>	
+						     <%
+						     	} else {
+						     %>	
 					     		<html:text name="ActuacionesDesignasForm" property="talonario" size="20" styleClass="boxConsulta" readonly="true"/>
 					     		&nbsp;/&nbsp;
 					     		<html:text name="ActuacionesDesignasForm" property="talon" size="20" styleClass="boxConsulta" readonly="true"/>
-						     <%}%>				     
+						     <%
+						     	}
+						     %>				     
 						</td>			
 					</tr>
 				</table>
@@ -839,24 +924,36 @@
 							jQuery("#fechaJustificacion-datepicker-trigger").hide();
 						});
 						</script>
-						 <%}%>
+						 <%
+						 	}
+						 %>
 						<siga:Fecha nombreCampo="fechaJustificacion"   valorInicial="<%=fechaJustificacion%>" ></siga:Fecha> 
 						
 												
 						</td>						
 
 						<td>
-							<%if(!modoAnterior.equals("VER")&&!usr.isLetrado()&&!deDonde.equals("/JGR_PestanaDesignas")&&(facturada != null) && (!facturada.equals("1"))&& (modoJustificacion==null || !modoJustificacion.equals("editarJustificacionFicha"))) {%>
+							<%
+								if (!modoAnterior.equals("VER") && !usr.isLetrado() && !deDonde.equals("/JGR_PestanaDesignas") && (facturada != null) && (!facturada.equals("1")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))) {
+							%>
 								<input type="button" id="idButton" alt="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>" id="bValidarActuacion" onclick="validarJustificacion();" class="button" value="<siga:Idioma key='gratuita.altaTurnos.literal.validacion'/>">
-							<%}%>
+							<%
+								}
+							%>
 						</td>
 						
 						<td class="labelText">
-							<%if(actuacionValidada.equals("1")) {%>	
+							<%
+								if (actuacionValidada.equals("1")) {
+							%>	
 								<input name="estadoActuacion" type="text" class="boxConsulta" value='<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>' readonly style="width:400px; border:0px solid">
-							<%} else {%>
+							<%
+								} else {
+							%>
 								<input name="estadoActuacion" type="text" class="boxConsulta" value="<siga:Idioma key='gratuita.mantActuacion.literal.actuacionPteValidar'/>" readonly style="width:400px; border:px solid">
-							<%}%>
+							<%
+								}
+							%>
 						</td>
 					</tr>
 					<tr>
@@ -864,15 +961,21 @@
 							<siga:Idioma key="gratuita.altaGuardia.literal.observaciones"/>
 						</td>
 						<td colspan="3">
-							<% if (!modoAnterior.equalsIgnoreCase("VER") && !usr.isLetrado()&& (modoJustificacion==null || !modoJustificacion.equals("editarJustificacionFicha"))) { %>
+							<%
+								if (!modoAnterior.equalsIgnoreCase("VER") && !usr.isLetrado() && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))) {
+							%>
 								<textarea class="box" name="observacionesJustificacion"
 									onKeyDown="cuenta(this,1024)" onChange="cuenta(this,1024)" style="overflow:auto;width:600px;height:45px"
 								><%=observacionesJustificacion%></textarea>
-							<%}else{%>
+							<%
+								} else {
+							%>
 								<textarea class="boxConsulta" name="observacionesJustificacion" readonly 
 									style="overflow:auto;width:600px;height:40px" 
 								><%=observacionesJustificacion%></textarea>
-							<%}%>
+							<%
+								}
+							%>
 						</td>
 					</tr>
 				</table>
@@ -881,9 +984,9 @@
 		<c:if test="${not empty ActuacionesDesignasForm.ejgs}">
 		<%
 			ActuacionesDesignasForm form = (ActuacionesDesignasForm) request.getSession().getAttribute("ActuacionesDesignasForm");
-			int i = 0;
-			if(form != null){
-				List<ScsEJGBean> listadoEjgs = form.getEjgs();	
+					int i = 0;
+					if (form != null) {
+						List<ScsEJGBean> listadoEjgs = form.getEjgs();
 		%>
 				<siga:ConjCampos leyenda="gratuita.operarEJG.literal.expedienteEJG" >
 					<div id="panel" style="width:100%;  height: 150px; ">
@@ -908,18 +1011,18 @@
 										<td class="labelTextValue">
 										<c:choose>
 										<c:when test="${ejg2.idTipoRatificacionEJG != null && ejg2.idTipoRatificacionEJG !=''}">
-									<% 
+									<%
 										ArrayList selTipoRatificacion = new ArrayList();
-										ScsEJGBean ejg = (ScsEJGBean) listadoEjgs.get(i++);
-										selTipoRatificacion.add (ejg.getIdTipoRatificacionEJG() + "," + usr.getLocation());	
+																	ScsEJGBean ejg = (ScsEJGBean) listadoEjgs.get(i++);
+																	selTipoRatificacion.add(ejg.getIdTipoRatificacionEJG() + "," + usr.getLocation());
 									%>	
 													<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucionTodos" ancho="300" clase="boxConsulta" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=selTipoRatificacion%>" readonly="true"/>				
 											</c:when>
 											<c:otherwise>
 												-
-												<% 
-														i++;
-												%>
+												<%
+												i++;
+											%>
 											</c:otherwise>
 										</c:choose>
 										</td>
@@ -1008,11 +1111,15 @@
 							</script>
 						</div>
 			</siga:ConjCampos> 
-			<% } %>	
+			<%
+ 				}
+ 			%>	
 			</c:if>
 	
 	
-	<%if (nombreFacturacion!=null && !nombreFacturacion.equals("")){%>
+	<%
+				if (nombreFacturacion != null && !nombreFacturacion.equals("")) {
+			%>
 
 				<siga:ConjCampos leyenda="gratuita.actuacionesDesigna.literal.facturacion">
 					<table width="100%">
@@ -1036,7 +1143,9 @@
 					</table>
 				</siga:ConjCampos>
 
-	<%}%>	
+	<%
+		}
+	%>	
 
 </div>
 
@@ -1052,11 +1161,17 @@
 		<html:hidden property = "codigoBusqueda" value=""/>
 	</html:form>
 
-<% if (modoAnterior.equalsIgnoreCase("VER")) { %>
+<%
+	if (modoAnterior.equalsIgnoreCase("VER")) {
+%>
 	<siga:ConjBotonesAccion botones="C" modal="G"/>
-<% } else { %>
+<%
+	} else {
+%>
 	<siga:ConjBotonesAccion botones="Y,C" modal="G"/>
-<% } %>
+<%
+	}
+%>
 	
 
 <!-- INICIO: SCRIPTS BOTONES -->
@@ -1067,8 +1182,7 @@
 		{
 			sub();	
 			
-			
-			<%if(modoJustificacion!=null && modoJustificacion.equalsIgnoreCase("editarJustificacionFicha")){%>
+			<%if (modoJustificacion != null && modoJustificacion.equalsIgnoreCase("editarJustificacionFicha")) {%>
 				error = '';
 				if( document.forms[0].fechaActuacion.value==''){
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesAsistencia.literal.fechaActuacion'/>"+ '\n';	
@@ -1103,7 +1217,7 @@
 					return false;
 				}
 				
-			<%}else{%>
+			<%} else {%>
 				error = '';
 					fecha = document.getElementById("fechaJustificacion");
 					//Comparar fecha
@@ -1143,7 +1257,7 @@
 							if ('<%=(idJuzgadoDesigna + "," + juzgadoInstitucionDesigna)%>' != document.forms[0].juzgado.value) {
 								error += "<siga:Idioma key='messages.gratuita.actuacionesDesigna.distintoJuzgado' />"+ '\n';
 							}
-							if ('<%=(idPretensionDesigna!=null?idPretensionDesigna:"")%>' != document.forms[0].pretension.value) {
+							if ('<%=(idPretensionDesigna != null ? idPretensionDesigna : "")%>' != document.forms[0].pretension.value) {
 								error += "<siga:Idioma key='messages.gratuita.actuacionesDesigna.distintoProcedimiento' />"+ '\n';
 							}
 						}
@@ -1168,13 +1282,13 @@
 			<%}%>
 			
 			 
-			<% if(modoJustificacion!=null && modoJustificacion.equalsIgnoreCase("editarJustificacionFicha")){  %>
+			<%if (modoJustificacion != null && modoJustificacion.equalsIgnoreCase("editarJustificacionFicha")) {%>
 				document.forms[0].modo.value="modificarJustificacionFicha";
-			<% } else if (modoAnterior.equalsIgnoreCase("EDITAR")) {   %>
+			<%} else if (modoAnterior.equalsIgnoreCase("EDITAR")) {%>
 				document.forms[0].modo.value="modificar";
-			<% } else { %>
+			<%} else {%>
 				document.forms[0].modo.value="insertar";
-			<% } %>
+			<%}%>
 			document.forms[0].submit();
 
 			
@@ -1218,10 +1332,10 @@
 			var objRegExp  = /^([0-9]+\/[0-9]{4})?$/;
 			return objRegExp.test(strValue);
 		}
-		<% if (modoAnterior!=null && !modoAnterior.equalsIgnoreCase("VER")) { %>
+		<%if (modoAnterior != null && !modoAnterior.equalsIgnoreCase("VER")) {%>
 			if(document.getElementById("juzgado") && document.getElementById("juzgado").onchange)
 				document.getElementById("juzgado").onchange();
-		<% } %>
+		<%}%>
 	</script>
 	<!-- FIN: SCRIPTS BOTONES -->
 

@@ -421,20 +421,33 @@ public class SIGAEnviosDatosGeneralesAction extends MasterAction
         Vector vPlant = admPlantilla.selectByPK(htPkPlantillaGeneracion);	    
 	    EnvPlantillaGeneracionBean plantBean = (EnvPlantillaGeneracionBean)vPlant.firstElement();
 	    String tipoArchivoPlantilla = plantBean.getTipoArchivo();
-	               
-        EnvEnviosAdm admEnvios = new EnvEnviosAdm(userBean);
-        
-	    Hashtable htPk = new Hashtable();
-	    htPk.put(EnvEnviosBean.C_IDINSTITUCION,idInstitucion);
-	    htPk.put(EnvEnviosBean.C_IDENVIO,idEnvio);
-	    EnvEnviosBean envioBean = (EnvEnviosBean)admEnvios.selectByPK(htPk).firstElement();
-        EnvDestinatariosBean beanDestinatario = new EnvDestinatariosBean();
-        beanDestinatario.setIdPersona(new Long("0"));
-    	String pathArchivoGenerado = admEnvios.generarDocumentoEnvioPDFDestinatario(envioBean, beanDestinatario, fPlantilla,tipoArchivoPlantilla,new Hashtable());
-		
-		request.setAttribute("rutaFichero", pathArchivoGenerado);
-		request.setAttribute("generacionOK","OK");
-		return "descarga";
+	    if(tipoArchivoPlantilla!=null && !tipoArchivoPlantilla.equalsIgnoreCase("doc")&& !tipoArchivoPlantilla.equalsIgnoreCase("fo")){
+			if(fPlantilla==null || !fPlantilla.exists()){
+				throw new SIGAException("messages.general.error.ficheroNoExiste"); 
+			}
+			String nombreFichero = fPlantilla.getName();
+			if (fPlantilla.getName().indexOf(".zip")==-1){
+			    nombreFichero = nombreFichero + "."+tipoArchivoPlantilla;
+			}
+			request.setAttribute("nombreFichero", nombreFichero);
+			request.setAttribute("rutaFichero", fPlantilla.getPath());
+			request.setAttribute("generacionOK","OK");
+			return "descargaFichero";
+	    }else{          
+	        EnvEnviosAdm admEnvios = new EnvEnviosAdm(userBean);
+	        
+		    Hashtable htPk = new Hashtable();
+		    htPk.put(EnvEnviosBean.C_IDINSTITUCION,idInstitucion);
+		    htPk.put(EnvEnviosBean.C_IDENVIO,idEnvio);
+		    EnvEnviosBean envioBean = (EnvEnviosBean)admEnvios.selectByPK(htPk).firstElement();
+	        EnvDestinatariosBean beanDestinatario = new EnvDestinatariosBean();
+	        beanDestinatario.setIdPersona(new Long("0"));
+	    	String pathArchivoGenerado = admEnvios.generarDocumentoEnvioPDFDestinatario(envioBean, beanDestinatario, fPlantilla,tipoArchivoPlantilla,new Hashtable());
+			
+			request.setAttribute("rutaFichero", pathArchivoGenerado);
+			request.setAttribute("generacionOK","OK");
+			return "descarga";
+	    }
 	}
 	protected String modificarAcuseRecibo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
 	{

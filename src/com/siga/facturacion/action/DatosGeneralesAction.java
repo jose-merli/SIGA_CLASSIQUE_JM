@@ -29,6 +29,7 @@ import com.siga.beans.AdmContadorAdm;
 import com.siga.beans.AdmContadorBean;
 import com.siga.beans.FacBancoInstitucionAdm;
 import com.siga.beans.FacFormaPagoSerieAdm;
+import com.siga.beans.FacNombresDescargaAdm;
 import com.siga.beans.FacPlantillaFacturacionAdm;
 import com.siga.beans.FacPlantillaFacturacionBean;
 import com.siga.beans.FacSerieFacturacionAdm;
@@ -61,6 +62,7 @@ public class DatosGeneralesAction extends MasterAction{
 			FacPlantillaFacturacionAdm admPlantillaFacturacion = new FacPlantillaFacturacionAdm(user);
 			FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(user);
 			FacBancoInstitucionAdm admBancoInstitucion = new FacBancoInstitucionAdm(user);
+			FacNombresDescargaAdm facNombresDescargaAdm = new FacNombresDescargaAdm(user);
 		
 			/** ---------- 1. OBTIENE LA SERIE DE FACTURACION ----------*/
 			String idInstitucion = user.getLocation();
@@ -96,6 +98,10 @@ public class DatosGeneralesAction extends MasterAction{
 				hContador.put(AdmContadorBean.C_IDINSTITUCION, idInstitucion);
 				hContador.put(AdmContadorBean.C_IDCONTADOR, beanSerieFacturacion.getIdContador());
 				vContador = admContador.selectByPK(hContador);
+				
+				/** ---------- 5. OBTENEMOS EL FORMATO DE NOMBRE DE LA PLANTILLA DE DESCARGA ----------*/
+				String nombreFacturaDescarga = facNombresDescargaAdm.getNombreDescargarPDF(beanSerieFacturacion.getIdNombreDescargaPDF());
+				request.setAttribute("nombreFacturaDescarga", nombreFacturaDescarga);
 				
 			} else {
 				hContador.put(AdmContadorBean.C_IDINSTITUCION,idInstitucion);
@@ -199,6 +205,7 @@ public class DatosGeneralesAction extends MasterAction{
 			beanSerieFacturacion.setIdInstitucion(Integer.valueOf(idInstitucion));
 			beanSerieFacturacion.setIdSerieFacturacion(Long.valueOf(nuevoidSerieFacturacion));
 			beanSerieFacturacion.setIdPlantilla(formDatosGenerales.getIdPlantilla());
+			beanSerieFacturacion.setIdNombreDescargaPDF(Integer.valueOf(formDatosGenerales.getIdNombreDescargaPDF()));
 			beanSerieFacturacion.setDescripcion(formDatosGenerales.getDescripcion());
 			beanSerieFacturacion.setObservaciones(formDatosGenerales.getObservaciones());
 			beanSerieFacturacion.setNombreAbreviado(nombreAbreviado);	
@@ -366,6 +373,7 @@ public class DatosGeneralesAction extends MasterAction{
 			hashNew.put(FacSerieFacturacionBean.C_IDINSTITUCION, idInstitucion);
 			hashNew.put(FacSerieFacturacionBean.C_IDSERIEFACTURACION, sIdSerieFacturacion);
 			hashNew.put(FacSerieFacturacionBean.C_IDPLANTILLA, formDatosGenerales.getIdPlantilla());
+			hashNew.put(FacSerieFacturacionBean.C_IDNOMBREDESCARGAPDF, formDatosGenerales.getIdNombreDescargaPDF());
 			hashNew.put(FacSerieFacturacionBean.C_NOMBREABREVIADO, formDatosGenerales.getNombreAbreviado());
 			hashNew.put(FacSerieFacturacionBean.C_DESCRIPCION, formDatosGenerales.getDescripcion());
 			hashNew.put(FacSerieFacturacionBean.C_OBSERVACIONES, formDatosGenerales.getObservaciones());

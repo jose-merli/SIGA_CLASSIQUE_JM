@@ -29,6 +29,7 @@ public class ExpDenunciadoForm extends MasterForm {
 	private String nif="";
 	private String poblacionExt="";
 	private String numColegiado;
+	private String fechaBaja;
 	
 	private String idPersona = "", 
 			idDireccion = "" , 
@@ -39,7 +40,14 @@ public class ExpDenunciadoForm extends MasterForm {
 			numExpediente = "", 
 			anioExpediente = "";
 	
+	
 
+	public String getFechaBaja() {
+		return fechaBaja;
+	}
+	public void setFechaBaja(String fechaBaja) {
+		this.fechaBaja = fechaBaja;
+	}
 	public String getCpostal() {
 		return cpostal;
 	}

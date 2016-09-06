@@ -90,8 +90,8 @@ public class CuentasBancariasAction extends MasterAction{
 					mapDestino = insertarModificacion(mapping, miForm, request, response);
 			
 			//BEGIN BNS 11/12/12 INCIDENCIA INC_08950_SIGA
-				} else if(accion.equalsIgnoreCase("guardarInsertarHistorico")){
-					mapDestino = guardarInsertarHistorico(mapping, miForm, request, response);
+				/*} else if(accion.equalsIgnoreCase("guardarInsertarHistorico")){
+					mapDestino = guardarInsertarHistorico(mapping, miForm, request, response);*/
 			//END BNS
 					
 				} else if (accion.equalsIgnoreCase("informacionCuentaBancaria")){
@@ -361,9 +361,10 @@ public class CuentasBancariasAction extends MasterAction{
 			CenCuentasBancariasAdm cuentasAdm = new CenCuentasBancariasAdm (this.getUserBean(request));
 			if (!cuentasAdm.insertarConHistorico(beanCuentas, beanHis, this.getLenguaje(request))) {
 				throw new SIGAException (cuentasAdm.getError());
-			}
+			}		
 			
-			cuentasAdm.revisionesCuentas(beanCuentas, this.getUserName(request), this.getUserBean(request),true);
+			boolean bProcesoAltaCuentaCargos = miForm.getConfirmacionProcesoAltaCuentaCargos();
+			cuentasAdm.revisionesCuentas(beanCuentas, this.getUserName(request), this.getUserBean(request), true, bProcesoAltaCuentaCargos);
 
 			t.commit();
 			
@@ -375,7 +376,6 @@ public class CuentasBancariasAction extends MasterAction{
 				if (t!=null) {
 					t.rollback();
 				}
-			
 			} catch (Exception el) {
 				e.printStackTrace();
 			}			
@@ -403,7 +403,7 @@ public class CuentasBancariasAction extends MasterAction{
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 * @exception  SIGAException  Errores de aplicación
 	 */
-	private String guardarInsertarHistorico(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException{
+	/*private String guardarInsertarHistorico(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException{
 		String sResult = null;
 		UserTransaction t = null;
 		
@@ -483,7 +483,7 @@ public class CuentasBancariasAction extends MasterAction{
 		}
 
 		return exitoRefresco(sResult, request);
-	}
+	}*/
 	// END BNS
 	
 	/* (non-Javadoc)
@@ -540,14 +540,10 @@ public class CuentasBancariasAction extends MasterAction{
 				throw new SIGAException (cuentasAdm.getError());
 			}
 			
-			int iResult = cuentasAdm.revisionesCuentas(beanCuentas, this.getUserName(request), this.getUserBean(request),true);
+			boolean bProcesoAltaCuentaCargos = miForm.getConfirmacionProcesoAltaCuentaCargos();
+			cuentasAdm.revisionesCuentas(beanCuentas, this.getUserName(request), this.getUserBean(request), true, bProcesoAltaCuentaCargos);
 			
 			t.commit();
-
-			if(iResult==1)
-				retorno = "messages.updated.borrarCuenta";
-			else if(iResult==2)
-				retorno = "messages.updated.actualizarCuenta";			
 			
 		} catch (ClsExceptions e){
 			try {
@@ -603,18 +599,14 @@ public class CuentasBancariasAction extends MasterAction{
 			beanCuentas.setIdPersona(idPersona);
 			beanCuentas.setIdCuenta(idCuenta);
 			
-			int iResult = cuentaAdm.revisionesCuentas(beanCuentas, this.getUserName(request), this.getUserBean(request),false);
+			cuentaAdm.revisionesCuentas(beanCuentas, this.getUserName(request), this.getUserBean(request), false, false);
 			
 			t.commit();
-
-			if(iResult==1)
-				return exitoRefresco("messages.updated.borrarCuenta", request);
-			else if(iResult==2)
-				return exitoRefresco("messages.updated.actualizarCuenta", request);			
 			
 		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, t);
 		}
+		
 		return exitoRefresco("messages.deleted.success", request);
 	}
 

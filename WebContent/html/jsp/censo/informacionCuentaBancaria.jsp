@@ -175,7 +175,7 @@ VERSIONES: -->
 			<%if (modo.equals("editar")) {%>
 				modo = "modificar";
 			<%}	else { %>
-				modo = "insertar";
+				modo = "insertar";						
 			<%}%>
 			guardar(modo);
 		}
@@ -233,8 +233,22 @@ VERSIONES: -->
 				fin();
 				return false;
 			}
-			
+						
 			if (datos[0] == 1) { // Boton Guardar
+				
+				var abonoCargo = "<%=UtilidadesHash.getString(htData, CenCuentasBancariasBean.C_ABONOCARGO)%>";				
+				var bCuentaCargoPrevia = (abonoCargo=="<%=ClsConstants.TIPO_CUENTA_CARGO%>" || abonoCargo=="<%=ClsConstants.TIPO_CUENTA_ABONO_CARGO%>");				
+				var bCuentaCargoActual = jQuery("#cuentaCargo").is(':checked');
+				
+				// Compruebo que ahora este marcado la casilla de Cargo y antes no estuviera (da igual si es creacion o modificacion)
+				if (bCuentaCargoActual && !bCuentaCargoPrevia) {
+					
+					var mensajeConfirmacionProcesoAltaCuentaCargos = '<%=UtilidadesString.getMensajeIdioma(usr, "censo.tipoCuenta.cargo.confirmacionProcesoAltaCuentaCargos")%>';					
+					if (confirm(mensajeConfirmacionProcesoAltaCuentaCargos)) {
+						jQuery("#confirmacionProcesoAltaCuentaCargos").val("true");
+					}
+				}
+				
 				document.cuentasBancariasForm.motivo.value = datos[1];
 				document.cuentasBancariasForm.modo.value = modo;				
 				document.cuentasBancariasForm.target = "submitArea";
@@ -417,6 +431,7 @@ VERSIONES: -->
 	
 		<html:form action="/CEN_CuentasBancarias.do" method="POST" target="resultado">
 			<html:hidden property="modo" value=""/>
+			<html:hidden property="confirmacionProcesoAltaCuentaCargos" styleId="confirmacionProcesoAltaCuentaCargos" value="false"/>
 	  
 			<%if (editarCampos) {%>
 				<html:hidden property="idCuenta" value="<%=idCuenta%>"/> 
@@ -481,7 +496,7 @@ VERSIONES: -->
 												<siga:Idioma key="censo.tipoCuenta.abono"/><html:checkbox name="cuentasBancariasForm" property="cuentaAbono" disabled="<%=desactivado%>"/>
 											</td>
 											<td class="labelText">
-												<siga:Idioma key="censo.tipoCuenta.cargo"/><html:checkbox name="cuentasBancariasForm" property="cuentaCargo" disabled="<%=desactivado%>"/>
+												<siga:Idioma key="censo.tipoCuenta.cargo"/><html:checkbox name="cuentasBancariasForm" property="cuentaCargo" styleId="cuentaCargo" disabled="<%=desactivado%>"/>
 											</td>												
 											<td class="labelText">
 												<siga:Idioma key="censo.datosCuentaBancaria.literal.abonoSJCS"/><html:checkbox name="cuentasBancariasForm" property="abonoSJCS" disabled="<%=desactivado%>"/>

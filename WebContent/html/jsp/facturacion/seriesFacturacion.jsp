@@ -62,7 +62,7 @@
 	boolean bEditable = true;
 	boolean nuevo = true;
 	String auxFcargo ="";
-	String idTipoEnvioCorreoElectronico = ""+EnvEnviosAdm.TIPO_CORREO_ELECTRONICO;
+	String idTipoEnvioCorreoElectronico = ""+EnvTipoEnviosAdm.K_CORREO_ELECTRONICO;
 	String parametrosCmbPlantillaEnvios[] = {usr.getLocation(),idTipoEnvioCorreoElectronico,"-1"};
 	String parametrosPlantillasMail [] = {"-1",usr.getLocation(),"1"};
 	ArrayList plantillaEnviosSeleccionada = new ArrayList();

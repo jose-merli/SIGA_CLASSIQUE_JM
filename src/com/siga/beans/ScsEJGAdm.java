@@ -226,7 +226,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 			rc = new RowsContainer();		
 			rc1 = new RowsContainer();
-			// Se prepara la sentencia SQL para hacer el select
+			// Se prepara la sentencia sql para hacer el select
 
 //			String anio = "";
 //			anio = (String) entrada.get("SOJ_ANIO");
@@ -2858,6 +2858,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			sql.append(" (SELECT F_SIGA_GETRECURSO(DESCRIPCION, ");
 			sql.append(this.usrbean.getLanguage());
 			sql.append(") FROM SCS_SITUACION WHERE IDSITUACION = EJG.IDSITUACION) AS SITUACIONPROCEDIMIENTO_DJ ");
+			
 			
 			sql.append(" ,DECODE(NVL(D.ESTADO,'A'),'V',1,'F',2,'A',3) ORDEN ");
 			
@@ -6478,7 +6479,28 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 
 		return resultado;
 	}
-	
+	public void actalizaActaEjgSinDatoActa(Hashtable ejgHashtable,Integer idInstitucion,Integer idActa, Integer anioActa ) throws ClsExceptions{
+		StringBuilder ejgActaBuilder = new StringBuilder();
+		ejgActaBuilder.append(" UPDATE SCS_EJG SET ");
+		ejgActaBuilder.append(" IDINSTITUCIONACTA = ");
+		ejgActaBuilder.append(idInstitucion);
+		ejgActaBuilder.append(",ANIOACTA= ");
+		ejgActaBuilder.append(anioActa);
+		ejgActaBuilder.append(",IDACTA= ");
+		ejgActaBuilder.append(idActa);
+		ejgActaBuilder.append(" WHERE ");
+		ejgActaBuilder.append(" IDINSTITUCION  = ");
+		ejgActaBuilder.append(ejgHashtable.get(ScsEJGBean.C_IDINSTITUCION));
+		ejgActaBuilder.append(" AND ANIO = ");
+		ejgActaBuilder.append(ejgHashtable.get(ScsEJGBean.C_ANIO));
+		ejgActaBuilder.append(" AND IDTIPOEJG = ");
+		ejgActaBuilder.append(ejgHashtable.get(ScsEJGBean.C_IDTIPOEJG));
+		ejgActaBuilder.append(" AND NUMERO =  ");
+		ejgActaBuilder.append(ejgHashtable.get(ScsEJGBean.C_NUMERO));
+		this.updateSQL(ejgActaBuilder.toString());
+		
+		
+	}
 
 	
 }

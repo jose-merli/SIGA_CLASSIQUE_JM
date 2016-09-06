@@ -141,7 +141,7 @@
 			sub();
 			
 			
-			if (document.ActaComisionForm.guardaActa.checked && jQuery("#idActaComp option:selected").html().length>10 && document.getElementById("isObligatorioResolucion").value=='true' &&
+			if (document.ActaComisionForm.guardaActa.checked && jQuery("#idActaComp option:selected").html().length>15 && document.getElementById("isObligatorioResolucion").value=='true' &&
 				( (!document.ActaComisionForm.guardaRatificacion.checked || jQuery("#idTipoRatificacionEJG option:selected").val()==0)
 				|| (!document.ActaComisionForm.guardaFundamento.checked || jQuery("#idFundamentoJuridico option:selected").val()==0))){
 				alert("<siga:Idioma key='sjcs.actas.checkRatificacionResolucion'/>");

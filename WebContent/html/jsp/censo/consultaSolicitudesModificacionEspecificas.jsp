@@ -54,17 +54,12 @@
 
 
 	<!-- HEAD -->
-	
-			<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<!-- Incluido jquery en siga.js -->
-	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-
 		
-		
-		<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 
 		<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 		<!-- Validaciones en Cliente -->
@@ -122,7 +117,8 @@
 			<html:hidden styleId="idInstitucion"  property="idInstitucion" value="<%=idInstitucion%>"/>
 			<html:hidden styleId="solicitudes" property="solicitudes"/>
 			<html:hidden styleId="solicitudesTipoModif" property="solicitudesTipoModif"/>
-			<html:hidden styleId="tipoModifEspec" property="tipoModifEspec" value="<%=tipoModificacion%>"/>			
+			<html:hidden styleId="tipoModifEspec" property="tipoModifEspec" value="<%=tipoModificacion%>"/>		
+			<html:hidden property="confirmacionProcesoAltaCuentaCargos" styleId="confirmacionProcesoAltaCuentaCargos" value="false"/>	
 		</html:form>
 					
 		<!-- EN FUNCION DEL TIPO DE MODIFICACION SOLICITADA SE ABRE UNA VENTANA DE UN TAMAÑO U OTRO -->
@@ -176,7 +172,7 @@
 							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_2" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDINSTITUCION)%>">
 							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_3" name="oculto<%=String.valueOf(recordNumber)%>_3" value="<%=row.getString(CenSolicitudesModificacionBean.C_IDSOLICITUD)%>">
 							<input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_4" name="oculto<%=String.valueOf(recordNumber)%>_4" value="<%=row.getString("TIPOMODIF")%>">
-                               <input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_5" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=row.getString("CODIGO")%>">
+                            <input type="hidden" id="oculto<%=String.valueOf(recordNumber)%>_5" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=row.getString("CODIGO")%>">
 							<!-- Valores especificos de la clave original para cada tipo de modificacion existente -->
 
 							<!-- ENVIOS 3 idSolicitud, 1 idPersona, 6 descripcion -->
@@ -186,8 +182,10 @@
 							<% if (row.getString("IDESTADOSOLIC").equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_SOLICITUD_MODIF_PENDIENTE))){%>
 								<input type="checkbox" id="validado" value="1" name="validado" value="1">
 								<input type="hidden" id="solicita_<%=String.valueOf(recordPendiente)%>" name="solicita_<%=String.valueOf(recordPendiente)%>" value='<%=row.getString("IDSOLICITUD")%>'>	
-								<input type="hidden" id="solicitaTipoModif_<%=String.valueOf(recordPendiente)%>"  name="solicitaTipoModif_<%=String.valueOf(recordPendiente)%>" value='<%=row.getString("TIPOMODIF")%>'>								
-								<% recordPendiente++; %>
+								<input type="hidden" id="solicitaTipoModif_<%=String.valueOf(recordPendiente)%>"  name="solicitaTipoModif_<%=String.valueOf(recordPendiente)%>" value='<%=row.getString("TIPOMODIF")%>'>
+								<input type="hidden" id="cargoNew_<%=String.valueOf(recordPendiente)%>" name="cargoNew_<%=String.valueOf(recordPendiente)%>" value="<%=row.getString("ABONOCARGO")%>">
+								<input type="hidden" id="cargoOld_<%=String.valueOf(recordPendiente)%>" name="cargoOld_<%=String.valueOf(recordPendiente)%>" value="<%=row.getString("ABONOCARGO_CUENTABANCARIA")%>">								
+								<% recordPendiente++; %>								
 							<% } else { %>
 								&nbsp;
 							<% } %>
@@ -230,7 +228,7 @@
 				if (document.getElementById("solicita_1")!=null){
 					var dd = document.getElementsByName("validado");
 					if (dd.type != 'checkbox') {
-						for (i = 0; i < dd.length; i++){
+						for (var i = 0; i < dd.length; i++){
 							dd[i].checked=1;		
 						}
 						
@@ -245,7 +243,7 @@
 				if (document.getElementById("solicita_1")!=null){
 					var dd = document.getElementsByName("validado");
 					if (dd.type != 'checkbox') {
-						for (i = 0; i < dd.length; i++){
+						for (var i = 0; i < dd.length; i++){
 							dd[i].checked=0;		
 						}
 						
@@ -261,10 +259,11 @@
 				var datos = "";
 				var datosTipoModif = "";
 				var checked=false;
+				var bConfirmacionProcesoAltaCuentaCargos=false;
 				if (document.getElementById("solicita_1")!=null){
 				 	var dd = document.getElementsByName("validado");
 					if (dd.type != 'checkbox') {
-						for (i = 0; i < dd.length; i++){
+						for (var i = 0; i < dd.length; i++){
 							if (dd[i].checked==1){							
 								var j=i+1;
 								var aux="solicita_"+j;
@@ -274,6 +273,19 @@
 								var solicitadoTipoModif=document.getElementById(aux1);
 								datosTipoModif=datosTipoModif + solicitadoTipoModif.value + "%";						
 								checked=true;
+								
+								// Obtengo si es una cuenta bancaria de cargo actualmente
+								var cargoOld = jQuery("#cargoOld_"+j).val();
+								var bCargoOld = (cargoOld=="<%=ClsConstants.TIPO_CUENTA_CARGO%>" || cargoOld=="<%=ClsConstants.TIPO_CUENTA_ABONO_CARGO%>");
+								
+								// Obtengo si es una solicitud de modificacion de una cuenta bancaria de cargos
+								var cargoNew = jQuery("#cargoNew_"+j).val();								
+								var bCargoNew = (cargoNew=="<%=ClsConstants.TIPO_CUENTA_CARGO%>" || cargoNew=="<%=ClsConstants.TIPO_CUENTA_ABONO_CARGO%>");
+								
+								// Compruebo que ahora este marcado la casilla de Cargo y antes no estuviera
+								if (bCargoNew && !bCargoOld) {
+									bConfirmacionProcesoAltaCuentaCargos=true;									
+								}								
 							}	
 						}
 						
@@ -294,7 +306,15 @@
 				 	return false;
 				}
 				
-				if(checked){
+				if (checked){
+					
+					if (bConfirmacionProcesoAltaCuentaCargos) {
+						var mensajeConfirmacionProcesoAltaCuentaCargos = '<%=UtilidadesString.getMensajeIdioma(usr, "censo.tipoCuenta.cargo.confirmacionProcesoAltaCuentaCargos")%>';					
+						if (confirm(mensajeConfirmacionProcesoAltaCuentaCargos)) {
+							jQuery("#confirmacionProcesoAltaCuentaCargos").val("true");
+						}
+					}
+					
 					document.forms[0].solicitudes.value = datos;	
 					document.forms[0].solicitudesTipoModif.value = datosTipoModif;				
 					document.forms[0].modo.value = "procesarSolicitud";
@@ -317,7 +337,7 @@
 				if (document.getElementById("solicita_1")!=null){
 					var dd = document.getElementsByName("validado");
 					if (dd.type != 'checkbox') {
-						for (i = 0; i < dd.length; i++){
+						for (var i = 0; i < dd.length; i++){
 							if (dd[i].checked==1){
 								var j=i+1;
 								var aux="solicita_"+j;

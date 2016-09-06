@@ -898,19 +898,15 @@ public class EjecucionPLs {
 	}	
 	
 	/**
-	 * PL que actualiza la cuenta de abono/cargo de las cosas pendientes asociadas a la cuenta 
-	 * pasada como parámetro. 
+	 * Este proceso se encarga de actualizar las cosas pendientes asociadas a la cuenta de la persona 
 	 * @param idInstitucion
 	 * @param idPersona
 	 * @param idCuenta
 	 * @param usuario
-	 * @return 1 si se ha modificado el tipo de pago a metálico (caso de borrado, 
-	 * 			 no existe la cuenta más reciente) 
-	 * 		   2 si se actualiza la cuenta con la cuenta más reciente (actualizar)	
+	 * @return Codigo y mensaje de error
 	 * @throws ClsExceptions
 	 */
-	public static String[] ejecutarPL_Act_Cuenta_Banco_Pend (String idInstitucion, String idPersona, String idCuenta, String usuario) throws ClsExceptions {
-
+	public static String[] ejecutarPL_Revision_Cuenta (String idInstitucion, String idPersona, String idCuenta, String usuario) throws ClsExceptions {
 		Object[] paramIn = new Object[4]; 	//Parametros de entrada del PL
 		String resultado[] = new String[2]; //Parametros de salida del PL
 	
@@ -922,7 +918,7 @@ public class EjecucionPLs {
 	        paramIn[3] = usuario;
 
 	        // Ejecucion del PL
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_ACT_CUENTA_BANCO_PEND (?,?,?,?,?,?)}", 2, paramIn);
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_REVISION_CUENTA(?,?,?,?,?,?)}", 2, paramIn);
 			
 		} catch (Exception e) {
 			resultado[0] = "1"; 	// P_CODRETORNO
@@ -931,6 +927,87 @@ public class EjecucionPLs {
 		
 	    return resultado;
 	}
+	
+	/**
+	 * Notas Jorge PT (25/05/2016):
+	 * 1. Situación Actual:
+	 * 1.1. Cuando se modifica o se da de baja una cuenta bancaria, sus suscripciones, compras, facturas y abonos pendientes pasan a estar asociados por el tipo de cuenta bancaria activa adecuado más actual (por ejemplo para suscripciones una cuenta bancaria activa de tipo cargos).
+	 * 1.2. Así, cuando se quieres cambiar una cuenta bancaria, pero quieres que todo lo que tenía asociado pase a la nueva cuenta, el procedimiento a seguir es el siguiente:
+	 * 1.2.1. Crear la nueva cuenta
+	 * 1.2.2. Dar de baja la anterior.	 
+	 * 2. Se pide:
+	 * 2.1. Que al crear una cuenta bancaria de cargos, se le pregunte al guardar al colegio, "¿Desea asociar las suscripciones activas con forma de pago en metálico a la nueva cuenta?", y que en caso de confirmación, se asocien las suscripciones activas con forma de pago en metálico a la nueva cuenta.
+	 * 2.2. Que se realice este mismo procedimiento, cuando se va a modificar una cuenta bancaria que previamente no era de cargos y ahora pasa a ser de cargos. 
+	 * 3. Desarrollo:
+	 * 3.1. Cuando se crea o se modifica una cuenta bancaria de un Colegiado, No Colegiado o Sociedad, pasando a ser una cuenta de cargos (cuando antes no era de cargos), se lanzará un mensaje para confirmación ('censo.tipoCuenta.cargo.confirmacionProcesoAltaCuentaCargos'), y en caso de validación se lanzará el procedimiento PKG_SERVICIOS_AUTOMATICOS.PROCESO_ALTA_CUENTA_CARGOS.
+	 * 3.2. No se pueden hacer solicitudes de creación de una cuenta bancaria.
+	 * 3.3. Después de analizar la situación actual, se permite solicitar modificaciones de cuentas bancarias a los colegiados, que pueden ser aprobadas automáticamente... Pero no vamos a lanzar un mensaje de confirmación para un colegiado... Con lo que las solicitudes de modificación de cuentas bancarias que se hayan realizado de forma automática, no van a realizar este cambio.
+	 * 3.4. Cuando se apruebe de forma masiva (manualmente) alguna solicitud de modificación de una cuenta bancaria de un Colegiado, No Colegiado o Sociedad, pasando a ser una cuenta de cargos (cuando antes no era de cargos), se lanzará un mensaje para confirmación ('censo.tipoCuenta.cargo.confirmacionProcesoAltaCuentaCargos'), y en caso de validación se lanzará el procedimiento PKG_SERVICIOS_AUTOMATICOS.PROCESO_ALTA_CUENTA_CARGOS para cada caso individual que cumpla las condiciones.
+	 * 3.4.1. Hay dos formas de aprobar una solicitud:
+	 * 3.4.1.1. Indicando en el filtro "Datos Bancarios" ... que obtiene los datos exclusivamente bancarios.
+	 * 3.4.1.2. Sin filtro ... que obtiene los datos de todos los tipos de solicitudes.
+	 * 
+	 * JPT (19/05/2016): Este proceso asocia las suscripciones activas con forma de pago en metalico a la nueva cuenta bancaria
+	 * 
+	 *  Notas:
+	 *  - Solo actualiza las suscripciones (PYS_SUSCRIPCION)
+	 *  - No actualiza las compras
+	 *  - No actualiza las facturas pendientes de pagar por caja o en revision
+	 *  - No actualiza los abonos
+	 * 
+	 * Lugares donde se gestiona las cuentas bancarias: 
+	 * 1. Gestion Solicitudes Incorporacion:
+	 * 1.1. Nueva Incorporacion: No tiene sentido hacer nada, porque no tiene suscripciones asignadas
+	 * 1.2. Modificacion Solicitud Incorporacion: No tiene sentido hacer nada, porque no tiene suscripciones asignadas
+	 * 
+	 * 2. Gestion Cuentas Bancarias - Colegiado:
+	 * 2.1. Nueva Cuenta Bancaria: Se realizara el cambio al crear una cuenta bancaria de cargos.
+	 * 2.2. Modificacion Cuenta Bancaria: Se realizara el cambio al modificar una cuenta bancaria de cargos (cuando antes no era de cargos)
+	 * 2.3. Solicitud Nueva Cuenta Bancaria: Cuando se auto-aprueban solicitudes, se realizara el cambio al solicitar una nueva cuenta bancaria de cargos.
+	 * 2.4. Solicitud Modificacion Cuenta Bancaria Colegiado: Cuando se auto-aprueban solicitudes, se realizara el cambio al solicitar una modificacion de una cuenta bancaria de cargos (cuando antes no era de cargos)
+	 * 
+	 * 3. Gestion Cuentas Bancarias - No Colegiado y Sociedad:
+	 * 3.1. Nueva Cuenta Bancaria: Se realizara el cambio al crear una cuenta bancaria de cargos.
+	 * 3.2. Modificacion Cuenta Bancaria: Se realizara el cambio al modificar una cuenta bancaria de cargos (cuando antes no era de cargos)
+	 * 3.3. Solicitud Nueva Cuenta Bancaria: Cuando se auto-aprueban solicitudes, se realizara el cambio al solicitar una nueva cuenta bancaria de cargos.
+	 * 3.4. Solicitud Modificacion Cuenta Bancaria: Cuando se auto-aprueban solicitudes, se realizara el cambio al solicitar una modificacion de una cuenta bancaria de cargos (cuando antes no era de cargos)
+	 * 
+	 * 4. Gestion Solicitudes Especificas - Cuentas Bancarias:
+	 * 4.1. Aprobacion Solicitud Nueva Cuenta Bancaria (Colegiado o No Colegiado o Sociedad): Se realizara el cambio al aprobar una solicitud de creacion de una cuenta bancaria de cargos.
+	 * 4.2. Aprobacion Solicitud Modificacion Cuenta Bancaria (Colegiado o No Colegiado o Sociedad): Se realizara el cambio al aprobar una solicitud de modificacion de una cuenta bancaria de cargos (cuando antes no era de cargos)
+	 * 
+	 * 5. Gestion Componentes - Sociedad:
+	 * 5.1. Nuevo Componente - Activar la casilla para asociar una cuenta bancaria de una sociedad a un componente de la sociedad: No tiene sentido hacer nada, porque las cuentas bancarias asociadas a los componentes solo sirven para abonos.
+	 * 5.2. Modificacion Componente - Activar la casilla para asociar una cuenta bancaria de una sociedad a un componente de la sociedad: No tiene sentido hacer nada, porque las cuentas bancarias asociadas a los componentes solo sirven para abonos.
+	 * 
+	 * @param idInstitucion
+	 * @param idPersona
+	 * @param idCuenta
+	 * @param usuario
+	 * @return Codigo y mensaje de error
+	 * @throws ClsExceptions
+	 */
+	public static String[] ejecutarPL_AltaCuentaCargos (String idInstitucion, String idPersona, String idCuenta, String usuario) throws ClsExceptions {
+		Object[] paramIn = new Object[4]; 	//Parametros de entrada del PL
+		String resultado[] = new String[2]; //Parametros de salida del PL
+	
+		try {
+	 		// Parametros de entrada del PL
+	        paramIn[0] = idInstitucion;
+	        paramIn[1] = idPersona;
+	        paramIn[2] = idCuenta;
+	        paramIn[3] = usuario;
+
+	        // Ejecucion del PL
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SERVICIOS_AUTOMATICOS.PROCESO_ALTA_CUENTA_CARGOS(?,?,?,?,?,?)}", 2, paramIn);
+			
+		} catch (Exception e) {
+			resultado[0] = "1"; 	// P_CODRETORNO
+	    	resultado[1] = "ERROR"; // ERROR P_DATOSERROR        	
+		}
+		
+	    return resultado;
+	}	
 	
 	/**
 	 * Funcion que suma los dias hábiles a una fecha pasada por parámetro

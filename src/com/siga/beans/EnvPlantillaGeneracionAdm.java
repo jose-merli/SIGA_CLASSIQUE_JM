@@ -1,11 +1,28 @@
 package com.siga.beans;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
-import com.atos.utils.*;
-import com.siga.general.*;
-import com.siga.Utilidades.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Vector;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
+
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesHash;
+import com.siga.general.FiltroFicheros;
+import com.siga.general.SIGAException;
 
 public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
 {

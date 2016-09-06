@@ -119,12 +119,6 @@
 		Integer idCuenta = UtilidadesHash.getInteger(factura, FacFacturaBean.C_IDCUENTA);
 		Integer idCuentaDeudor = UtilidadesHash.getInteger(factura, FacFacturaBean.C_IDCUENTADEUDOR);
 		nombreDeudor = UtilidadesHash.getString(factura, "PERSONADEUDOR");
-		
-		/*if (idCuenta != null) {
-			formaPago = "facturacion.buscarFactura.literal.Banco";
-		}
-		else 
-			formaPago = "facturacion.buscarFactura.literal.Caja";*/
 			
 	 	if (nifcifDeudor!=null && !nifcifDeudor.equals("")) {
 			if (idCuentaDeudor != null && !idCuentaDeudor.equals("")) {//si existe idCuentaDeudor siempre se factura por domiciliacion bancaria		   
@@ -140,12 +134,6 @@
 		     formaPago = "facturacion.buscarFactura.literal.Caja";
 		   	}
 	 	}
-               
-		/*if (idCuentaDeudor != null) {//si existe idCuentaDeudor siempre se factura por domiciliacion bancaria
-			formaPago = "facturacion.buscarFactura.literal.Banco";
-		}
-		else// se le factura al cliente mediante pago en metalico
-			formaPago = "facturacion.buscarFactura.literal.Caja";	*/
 			
 		cuenta = UtilidadesHash.getString(factura, CenCuentasBancariasBean.C_NUMEROCUENTA);
 		codEntidad= UtilidadesHash.getString(factura, CenCuentasBancariasBean.C_CBO_CODIGO);
@@ -218,21 +206,16 @@
 			GestionarFacturaForm.submit();
 		}		
 		
-		// Asociada al boton Guardar
-		function accionImprimir() {
-			alert ("Codificar");		
-			var alto = 500, ancho = 800;					  
-	 		var posX = (screen.width - ancho) / 2;
-     		var posY = (screen.height - alto) / 2;
-     		var medidasWin = "height=" + alto + ", width=" + ancho + ", top=" + posY + ", left=" + posX; 			
-			w = window.open ("html/pdf/<%=facturaPDF%>", "", "status=0, toolbar=0, location=0, menubar=0, resizable=1," + medidasWin);
-		}		
-		
 		function abrirPDF () {
 			if (confirm('<siga:Idioma key="facturacion.facturas.datosGenerales.regenerarFactura"/>')) { 
 				GestionarFacturaForm.modo.value = "imprimirFactura";
 				GestionarFacturaForm.submit();
 			}
+		}
+		
+		function descargarFacturaSinRegenerarPDF () {
+			GestionarFacturaForm.modo.value = "descargarFacturaSinRegenerarPDF";
+			GestionarFacturaForm.submit();
 		}
 		
 		function mensaje ()	{
@@ -258,7 +241,7 @@
 	<!-- INICIO: CAMPOS -->
 	<!-- Zona de campos de busqueda o filtro -->	
 	<html:form action="<%=path%>" method="POST" target="submitArea">
-		<html:hidden property = "modo" value = ""/>
+		<html:hidden property = "modo" value = ""/>		
 		
 		<table class="tablaCampos" border="0">
 			<% if (abonoAnulacion!=null && !abonoAnulacion.equals("null")) { %>
@@ -325,7 +308,7 @@
 								<td width="120px" class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.Observaciones"/></td>
 								<td>
 									<html:textarea property="datosGeneralesObservaciones" 
-										onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" 
+										onkeydown="cuenta(this,255)" onchange="cuenta(this,255)" 
 										style="overflow-y:auto; overflow-x:hidden; width:850px; height:50px; resize:none;"
 										styleClass="<%=claseEditarCampos%>" value="<%=observaciones%>"></html:textarea>
 								</td>
@@ -334,7 +317,7 @@
 								<td class="labelText"><siga:Idioma key="facturacion.datosFactura.literal.Observinforme"/></td>
 								<td>
 									<html:textarea property="datosGeneralesObservinforme" 
-										onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)" 
+										onkeydown="cuenta(this,255)" onchange="cuenta(this,255)" 
 										style="overflow-y:auto; overflow-x:hidden; width:850px; height:50px; resize:none;"
 										styleClass="<%=claseEditarCampos%>" value="<%=observinforme%>"></html:textarea>
 								</td>
@@ -346,7 +329,17 @@
 							
 			<tr width="100%">
 				<td>
-					<html:button property="idButton" onclick="abrirPDF();" styleClass="button"><siga:Idioma key="facturacion.datosFactura.boton.DescargarFacturaPDF"/> </html:button>
+<%
+					if (claseEditarCampos.equalsIgnoreCase("boxConsulta")) {
+%>
+						<html:button property="idButton" onclick="descargarFacturaSinRegenerarPDF();" styleClass="button"><siga:Idioma key="facturacion.datosFactura.boton.DescargarFacturaSinRegenerarPDF"/></html:button>
+<%
+					} else {
+%>
+						<html:button property="idButton" onclick="abrirPDF();" styleClass="button"><siga:Idioma key="facturacion.datosFactura.boton.DescargarFacturaPDF"/></html:button>
+<%
+					}
+%>
 				</td>
 			</tr>
 			

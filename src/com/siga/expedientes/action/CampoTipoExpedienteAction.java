@@ -24,6 +24,7 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.atos.utils.Validaciones;
 import com.siga.beans.EnvEnviosAdm;
+import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.beans.ExpCampoTipoExpedienteAdm;
 import com.siga.beans.ExpCampoTipoExpedienteBean;
 import com.siga.beans.ExpDestinatariosAvisosAdm;
@@ -93,7 +94,7 @@ public class CampoTipoExpedienteAction extends MasterAction {
         	
         }else{
         	form.setEnviarAvisos(ClsConstants.DB_FALSE);
-        	form.setIdTipoEnvios(""+EnvEnviosAdm.TIPO_CORREO_ELECTRONICO);
+        	form.setIdTipoEnvios(""+EnvTipoEnviosAdm.K_CORREO_ELECTRONICO);
         	form.setIdPlantillaEnvios("");
        		form.setIdPlantilla("");
         	

@@ -101,14 +101,24 @@ public class DocumentosAction extends MasterAction
 		try {
 			UsrBean usrBean = this.getUserBean(request);
 			DocumentosForm form = (DocumentosForm) formulario;
-			String idInstitucion = this.getUserBean(request).getLocation();
-			String idEnvio = (String) request.getParameter("idEnvio");
-			// Recupero el bean del envio para mostrar el nombre y el tipo
+			String idInstitucion = null;
+			String idEnvio = null;
+			String idDocumento = null;
+			
+			if(form.getIdEnvio()!=null && form.getIdInstitucion()!=null && form.getIdDocumento()!=null 
+					&& !form.getIdEnvio().equalsIgnoreCase("") && !form.getIdInstitucion().equalsIgnoreCase("") && !form.getIdDocumento().equalsIgnoreCase("")){
+				idInstitucion = form.getIdInstitucion();
+				idEnvio = form.getIdEnvio();
+				idDocumento = form.getIdDocumento();
+			}else{
+				idInstitucion = this.getUserBean(request).getLocation();
+				idEnvio = (String) request.getParameter("idEnvio");
+				// Recupero el bean del envio para mostrar el nombre y el tipo
+				Vector vOcultos = form.getDatosTablaOcultos(0);
+				idDocumento = (String) vOcultos.elementAt(2);
+			}
 			
 			EnvDocumentosAdm docAdm = new EnvDocumentosAdm(usrBean);
-			Vector vOcultos = form.getDatosTablaOcultos(0);
-			String idDocumento = (String) vOcultos.elementAt(2);
-			
 			File fDocumento  = docAdm.getFile(idInstitucion, idEnvio, idDocumento);
 			Hashtable documentosPkHashtable = new Hashtable();
 			documentosPkHashtable.put(EnvDocumentosBean.C_IDINSTITUCION, idInstitucion);
@@ -412,8 +422,8 @@ public class DocumentosAction extends MasterAction
 			
 			//Comprobamos que en los correos de tipo ordinario, sólo se adjunten pdf's
 		    if(theFile!=null && theFile.getFileSize()>=0) 
-			if ((envioBean.getIdTipoEnvios().equals(new Integer(EnvEnviosAdm.TIPO_CORREO_ORDINARIO)) || 
-				 envioBean.getIdTipoEnvios().equals(new Integer(EnvEnviosAdm.TIPO_FAX))) && 
+			if ((envioBean.getIdTipoEnvios().equals(new Integer(EnvTipoEnviosAdm.K_CORREO_ORDINARIO)) || 
+				 envioBean.getIdTipoEnvios().equals(new Integer(EnvTipoEnviosAdm.K_FAX))) && 
 				!(theFile.getContentType().equalsIgnoreCase("application/pdf")||
 				  theFile.getContentType().equalsIgnoreCase("application/msword"))) {
 			    

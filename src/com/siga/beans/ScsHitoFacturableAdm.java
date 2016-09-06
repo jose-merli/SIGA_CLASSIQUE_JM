@@ -2,9 +2,12 @@
 package com.siga.beans;
 
 import java.util.Hashtable;
+import java.util.Vector;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesMultidioma;
 
 /**
  * Implementa las operaciones sobre la base de datos, es decir: select, insert, update... a la tabla SCS_HITOFACTURABLE
@@ -105,5 +108,168 @@ public class ScsHitoFacturableAdm extends MasterBeanAdministrador {
 	protected String[] getOrdenCampos() {
 		return null;
 	}
-		
+
+	/**
+	 * Obtiene los hitos (SCS_HITOFACTURABLE) de una guardia con la configuración actual (SCS_HITOFACTURABLEGUARDIA)
+	 * @param sInstitucion
+	 * @param sIdTurno
+	 * @param sIdGuardia
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector<Hashtable<String,Object>> obtenerHitosActual (String sInstitucion, String sIdTurno, String sIdGuardia) throws ClsExceptions {
+		Vector<Hashtable<String,Object>> vHitos = new Vector<Hashtable<String,Object>>();
+       try {
+            StringBuilder sql = new StringBuilder();
+            sql.append("SELECT ");
+            sql.append(UtilidadesMultidioma.getCampoMultidioma(ScsHitoFacturableBean.T_NOMBRETABLA + "." + ScsHitoFacturableBean.C_DESCRIPCION, this.usrbean.getLanguage()));
+            sql.append(",");
+            sql.append(ScsHitoFacturableGuardiaBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(ScsHitoFacturableGuardiaBean.C_PRECIOHITO);
+            sql.append(",");
+            sql.append(ScsHitoFacturableGuardiaBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(ScsHitoFacturableGuardiaBean.C_DIASAPLICABLES);
+            sql.append(",");
+            sql.append(ScsHitoFacturableGuardiaBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(ScsHitoFacturableGuardiaBean.C_AGRUPAR);
+            sql.append(",");
+            sql.append(ScsHitoFacturableGuardiaBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(ScsHitoFacturableGuardiaBean.C_IDINSTITUCION);
+            sql.append(",");
+            sql.append(ScsHitoFacturableGuardiaBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(ScsHitoFacturableGuardiaBean.C_IDTURNO);
+            sql.append(",");
+            sql.append(ScsHitoFacturableGuardiaBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(ScsHitoFacturableGuardiaBean.C_IDGUARDIA);
+            sql.append(",");
+            sql.append(ScsHitoFacturableGuardiaBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(ScsHitoFacturableGuardiaBean.C_IDHITO);
+            sql.append(" FROM ");
+            sql.append(ScsHitoFacturableGuardiaBean.T_NOMBRETABLA);
+            sql.append(",");
+            sql.append(ScsHitoFacturableBean.T_NOMBRETABLA);
+            sql.append(" WHERE ");
+            sql.append(ScsHitoFacturableGuardiaBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(ScsHitoFacturableGuardiaBean.C_IDINSTITUCION);
+            sql.append("=");
+            sql.append(sInstitucion);
+            sql.append(" AND ");
+            sql.append(ScsHitoFacturableGuardiaBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(ScsHitoFacturableGuardiaBean.C_IDTURNO);
+            sql.append("=");
+            sql.append(sIdTurno);
+            sql.append(" AND ");
+            sql.append(ScsHitoFacturableGuardiaBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(ScsHitoFacturableGuardiaBean.C_IDGUARDIA);
+            sql.append("=");
+            sql.append(sIdGuardia);
+            sql.append(" AND ");
+            sql.append(ScsHitoFacturableBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(ScsHitoFacturableBean.C_IDHITO);
+            sql.append("=");
+            sql.append(ScsHitoFacturableGuardiaBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(ScsHitoFacturableGuardiaBean.C_IDHITO);
+            
+            vHitos = this.selectGenerico(sql.toString());
+            
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al invocar obtenerHitoActual.");
+       }
+       
+       return vHitos;                        
+    }			
+	
+	/**
+	 * Obtiene los hitos (SCS_HITOFACTURABLE) de una guardia con la configuración histórica (FCS_HISTORICO_HITOFACT)
+	 * @param sInstitucion
+	 * @param sIdTurno
+	 * @param sIdGuardia
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector<Hashtable<String,Object>> obtenerHitosHistorico (String sInstitucion, String sIdTurno, String sIdGuardia) throws ClsExceptions {
+		Vector<Hashtable<String,Object>> vHitos = new Vector<Hashtable<String,Object>>();
+       try {
+            StringBuilder sql = new StringBuilder();
+            sql.append("SELECT ");
+            sql.append(UtilidadesMultidioma.getCampoMultidioma(ScsHitoFacturableBean.T_NOMBRETABLA + "." + ScsHitoFacturableBean.C_DESCRIPCION, this.usrbean.getLanguage()));
+            sql.append(",");
+            sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsHistoricoHitoFactBean.C_PRECIOHITO);
+            sql.append(",");
+            sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsHistoricoHitoFactBean.C_DIASAPLICABLES);
+            sql.append(",");
+            sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsHistoricoHitoFactBean.C_AGRUPAR);
+            sql.append(",");
+            sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsHistoricoHitoFactBean.C_IDINSTITUCION);
+            sql.append(",");
+            sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsHistoricoHitoFactBean.C_IDTURNO);
+            sql.append(",");
+            sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsHistoricoHitoFactBean.C_IDGUARDIA);
+            sql.append(",");
+            sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsHistoricoHitoFactBean.C_IDHITO);
+            sql.append(" FROM ");
+            sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
+            sql.append(",");
+            sql.append(ScsHitoFacturableBean.T_NOMBRETABLA);
+            sql.append(" WHERE ");
+            sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsHistoricoHitoFactBean.C_IDINSTITUCION);
+            sql.append("=");
+            sql.append(sInstitucion);
+            sql.append(" AND ");
+            sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsHistoricoHitoFactBean.C_IDTURNO);
+            sql.append("=");
+            sql.append(sIdTurno);
+            sql.append(" AND ");
+            sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsHistoricoHitoFactBean.C_IDGUARDIA);
+            sql.append("=");
+            sql.append(sIdGuardia);
+            sql.append(" AND ");
+            sql.append(ScsHitoFacturableBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(ScsHitoFacturableBean.C_IDHITO);
+            sql.append("=");
+            sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsHistoricoHitoFactBean.C_IDHITO);
+            
+            vHitos = this.selectGenerico(sql.toString());
+            
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al invocar obtenerHitoActual.");
+       }
+       
+       return vHitos;                        
+    }	
 }

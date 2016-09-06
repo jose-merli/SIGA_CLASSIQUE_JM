@@ -654,6 +654,8 @@
 		<action path="/CEN_Mutualidad" type="com.siga.censo.action.GestionMutualidadAction" name="MutualidadForm" scope="request">
 			<forward name="pestanas" path="/html/jsp/censo/pestanasMutualidad.jsp"/>
 		</action>
+		
+		
 		<action path="/CEN_MutualidadPlanProfesional" type="com.siga.censo.action.GestionMutualidadAction" name="MutualidadForm" scope="request">
 			<forward name="edicion" path="/html/jsp/censo/mutualidad.jsp"/>
 		</action>
@@ -1889,6 +1891,7 @@
 			<forward name="export" path="/SIGASvlVectorToClientFile.svrl"/>
 			<forward name="confirmar" path="/html/jsp/general/msjConfirmar.jsp"/>
 			<forward name="descargarEnvioTelematico" path="/html/jsp/general/exitoTelematicoSinEJIS.jsp"/>
+			<forward name="destinatariosIndividuales" path="/html/jsp/envios/pestanaEnvios.jsp"  />
 		<!--  	<forward name="finalizar" path="/ENV_EntradaEnvios.do"/> -->
 		</action>
 		
@@ -3515,6 +3518,12 @@
 			<forward name="consultarSolicitudAceptada" path="/html/jsp/gratuita/editarSolicitudAceptadaCentralita.jsp"/>
 			<forward name="validarSolicitudAceptada" path="/html/jsp/gratuita/editarSolicitudAceptadaCentralita.jsp"/>
     	</action>
+    	
+    	<action path="/CEN_Comunicaciones" type="com.siga.gratuita.action.ComunicacionesAction" name="ComunicacionesForm" scope="request">
+    		<forward name="inicio" path="/html/jsp/censo/ficha/comunicacionesFicha.jsp"/>
+			<forward name="listado" path="/html/jsp/censo/ficha/listadoComunicacionesFicha.jsp"/>
+    	
+		</action>
 		
 		<!-- ****************************************************************************
 -->

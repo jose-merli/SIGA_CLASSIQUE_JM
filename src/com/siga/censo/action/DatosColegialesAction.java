@@ -31,6 +31,7 @@ import com.siga.beans.CenDatosColegialesEstadoAdm;
 import com.siga.beans.CenDatosColegialesEstadoBean;
 import com.siga.beans.CenDireccionTipoDireccionAdm;
 import com.siga.beans.CenDireccionTipoDireccionBean;
+import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenEstadoColegialBean;
 import com.siga.beans.CenHistoricoAdm;
 import com.siga.beans.CenHistoricoBean;
@@ -403,7 +404,7 @@ public class DatosColegialesAction extends MasterAction {
 		CenColegiadoAdm admColegiado = new CenColegiadoAdm(usr);
 		CenDatosColegialesEstadoAdm admEstados = new CenDatosColegialesEstadoAdm(usr);
 		UserTransaction tx = null;
-		String result;
+		String result = "exception";
 
 		// Variables
 		String idinstitucion;
@@ -507,23 +508,51 @@ public class DatosColegialesAction extends MasterAction {
 			tx = usr.getTransactionPesada();
 			tx.begin();
 
-			// 1 y 2. guardando estado e historico
-			if (admEstados.insercionConHistorico(hashEstado, beanHis, idioma, bDesdeCGAE)) {
-				admEstados.revisionesPorCambioEstadoColegial(idinstitucion, idpersona, Integer.toString(estado), miForm.getFechaEstado(), usr); // OJO: se pasa la fecha sin hora
-
-				// terminando transaccion
-				tx.commit();
-
-				// informando de fin correcto y de cosas SJCS pendientes
-				String message = (UtilidadesString.getMensajeIdioma(usr, "messages.updated.success"));
-				if (pendienteSJCS == 1 || pendienteSJCS == 2)
-					message += "\r\n"
-							+ UtilidadesString.getMensajeIdioma(usr,
-									"messages.censo.estadosColegiales.avisoTareasPendientes");
-				result = exitoModal(message, request);
-			} else {
-				throw new SIGAException(admEstados.getError());
-			}
+			// Si devuelve 2 es porque se ha relizado todo correctamente excepto la llamada al servicio web de revision de letrado.
+			int isInsercionCorrecta = admEstados.insercionConHistorico(hashEstado, beanHis, idioma, bDesdeCGAE);
+			
+			switch (isInsercionCorrecta) {
+				case 0:
+					
+					throw new SIGAException(admEstados.getError());
+				case 1:case 2:
+					admEstados.revisionesPorCambioEstadoColegial(idinstitucion, idpersona, Integer.toString(estado), miForm.getFechaEstado(), usr); // OJO: se pasa la fecha sin hora
+				
+					CenDireccionesBean beanDir = new CenDireccionesBean ();
+					
+					beanDir.setIdPersona (Long.valueOf(idpersona));
+					beanDir.setIdInstitucion (Integer.valueOf(idinstitucion));
+					
+					//Se inserta en la cola de modificacion de datos para Consejos
+					insertarModificacionConsejo(beanDir,usr, ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION);
+				
+					
+					// terminando transaccion
+					tx.commit();
+					String[] parametros = {"","","",""};
+					// informando de fin correcto y de cosas SJCS pendientes
+					
+					parametros[0] = "success";
+					parametros[1] = UtilidadesString.getMensajeIdioma(usr, "messages.updated.success");
+					if (pendienteSJCS == 1 || pendienteSJCS == 2){
+						parametros[2] = UtilidadesString.getMensajeIdioma(usr,"messages.censo.estadosColegiales.avisoTareasPendientes");
+						parametros[0] = "notice";
+						
+					}
+					if(isInsercionCorrecta==2){
+						parametros[3] =  UtilidadesString.getMensajeIdioma(usr,"messages.bajacolegial.errorNotificacionAca");
+						parametros[0] = "error";
+					}else if(hashEstado.get("RESPUESTA_ACA")!=null){
+						parametros[3] =  UtilidadesString.getMensajeIdioma(usr,(String)hashEstado.get("RESPUESTA_ACA"));
+						parametros[0] = "notice";
+						
+					}
+					request.setAttribute("parametrosArray", parametros);
+					request.setAttribute("modal", "");
+					result="exitoParametros";
+					break;
+			}		
+			
 		} catch (Exception e) {
 			result = "error";
 			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, tx);
@@ -871,6 +900,17 @@ public class DatosColegialesAction extends MasterAction {
 			Vector camposOcultos = miForm.getDatosTablaOcultos(0);
 						
 			String message=admEstados.eliminarEstadoColegiado(miForm.getIdInstitucion(),miForm.getIdPersona(),(String) camposOcultos.get(2),usr);
+			//Volvemos a restaurar direcciones.
+
+			CenDireccionesBean beanDir = new CenDireccionesBean ();
+			
+			beanDir.setIdPersona (Long.valueOf(miForm.getIdPersona()));
+			beanDir.setIdInstitucion (Integer.valueOf(miForm.getIdInstitucion()));
+			
+			//Se inserta en la cola de modificacion de datos para Consejos
+			insertarModificacionConsejo(beanDir,usr, ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION);
+		
+			
 			
 			if(message.contains("error"))
 				result=exito(message,request);
@@ -953,4 +993,9 @@ public class DatosColegialesAction extends MasterAction {
 		
 	}
 
+	private static void insertarModificacionConsejo(CenDireccionesBean beanDir, UsrBean usr, int accionCola) throws SIGAException{
+		CenColaCambioLetradoAdm colaAdm = new CenColaCambioLetradoAdm (usr);
+		if (!colaAdm.insertarCambioEnCola (accionCola, beanDir.getIdInstitucion (), beanDir.getIdPersona (), beanDir.getIdDireccion ()))
+			throw new SIGAException (colaAdm.getError ());
+	}
 }

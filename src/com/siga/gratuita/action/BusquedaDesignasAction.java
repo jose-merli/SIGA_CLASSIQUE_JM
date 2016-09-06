@@ -646,7 +646,7 @@ public class BusquedaDesignasAction extends MasterAction {
 			miform.setIdPretension("");
 			miform.setIdProcedimiento("");
 			GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
-			String filtrarModulos = adm.getValor((String)usr.getLocation(),"SCS","FILTRAR_MODULOS_PORFECHA_DESIGNACION", "");
+			String filtrarModulos = adm.getValor((String)usr.getLocation(),"SCS",ClsConstants.GEN_PARAM_FILTRAR_MODULOS_PORFECHA, "");
 			request.setAttribute("filtrarModulos", filtrarModulos);
 			
 

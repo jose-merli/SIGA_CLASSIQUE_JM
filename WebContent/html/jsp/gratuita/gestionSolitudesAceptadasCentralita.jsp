@@ -113,7 +113,7 @@
 		return buscarSolicitudesAceptadas();
 	}
 	
-	function buscarSolicitudesAceptadas() {
+	function buscarSolicitudesAceptadas(pagina,parametros) {
 		
         var idInstitucion = document.SolicitudAceptadaCentralitaForm.idInstitucion.value;
         var numAvisoCV = document.SolicitudAceptadaCentralitaForm.numAvisoCV.value;
@@ -148,11 +148,7 @@
         	}
         	data += "&numAvisoCV="+numAvisoCV;
         }
-        if(idTurno!='' && idGuardia==''){
-        	error = "<siga:Idioma key='errors.required' arg0='gratuita.busquedaAsistencias.literal.guardia'/>"+ '\n';
-    		alert(error);
-    		return false;
-        }
+        
         if(idTurno!='')
         	data += "&idTurno="+idTurno;
         if(idGuardia!='')
@@ -169,8 +165,18 @@
         	data += "&idPersona="+idPersona;
         if(colegiadoNumero!='')
         	data += "&colegiadoNumero="+colegiadoNumero;
-        
-        
+        if(pagina)
+        	data += "&pagina="+pagina;
+        if(parametros){
+        	data += '&'+parametros;
+        	
+        	/*parametro=parametros.split('&');
+        	
+        	alertStop("parametros:"+parametros);
+	        for(var i=0;i<parametro.length;i++){
+	        	data += '&'+parametro[i];
+			}*/
+        }
         if(idEstado=='0'){
         	jQuery("#idValidarSolicitudAceptada").show();
         	jQuery("#idDenegarSolicitudAceptada").show();
@@ -192,8 +198,9 @@
             url: accion+"?modo=getAjaxBusqueda",
             data: data,
             success: function(response){
-                jQuery('#divListado').html(response);
-	                fin();
+            	console.log(response);
+            	jQuery('#divListado').html(response);
+	             fin();
             },
             error: function(e){
             	fin();
@@ -311,10 +318,14 @@
 		if(document.getElementById("mensajeSuccess") && document.getElementById("mensajeSuccess").value!=''){
 			alert(document.getElementById("mensajeSuccess").value,'success');
 		}
-		//Ponemos el colegiado si hubiera
-		onChangeColegiado();
+		if(document.getElementById("fichaColegial") && document.getElementById("fichaColegial").value=='0'){
+			onChangeColegiado();
+		}
+		if(document.getElementById("volverBusqueda") && document.getElementById("volverBusqueda").value!=''){
+			buscarSolicitudesAceptadas('',document.getElementById("volverBusqueda").value);
+		}
 		
-		buscarSolicitudesAceptadas();
+		
 		
 	}	
 			
@@ -340,9 +351,10 @@
 </c:choose>
 	<body onload="return inicio();">
 		<c:set var="parametrosComboComisaria" value="{\"idcomisaria\":\"-1\"}"/>
-		<input type="hidden" id="mensajeSuccess" value="${mensajeSuccess}"/>
 		<input type="hidden" id="fichaColegial" value="${fichaColegial}"/>
 		<input type="hidden" id="accessType" value="${accessType}"/>
+		<input type="hidden" id="volverBusqueda" value="${volverBusqueda}"/>
+		
 			
 		<!-- INICIO: CAMPOS DE BUSQUEDA-->
 		<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
@@ -377,7 +389,7 @@
 						</td>
 						<td>
 						
-							<html:select property="idEstado" styleClass="boxCombo" onchange="return buscarSolicitudesAceptadas();" >						
+							<html:select property="idEstado" styleClass="boxCombo"  >						
 								<html:option value="0" ><siga:Idioma key="gratuita.gestionInscripciones.estado.pendiente"/></html:option>
 								<html:option value="1"><siga:Idioma key="gratuita.gestionInscripciones.estado.confirmada"/></html:option>
 								<html:option value="2"><siga:Idioma key="gratuita.gestionInscripciones.estado.denegada"/></html:option>

@@ -193,7 +193,7 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
 
 	    if (insert(hash))
 	    {
-	        if (!idTipoEnvios.equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))
+	        if (!Integer.valueOf(idTipoEnvios).equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO)&&!Integer.valueOf(idTipoEnvios).equals(EnvTipoEnviosAdm.K_DOCUMENTACIONLETRADO))
 	        {
 	            return true;
 	        }

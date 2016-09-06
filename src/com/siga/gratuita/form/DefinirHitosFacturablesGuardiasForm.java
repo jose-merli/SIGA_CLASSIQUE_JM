@@ -1,9 +1,8 @@
 package com.siga.gratuita.form;
 
-
 import java.util.Hashtable;
-import com.siga.general.MasterForm;
 
+import com.siga.general.MasterForm;
 
 /**
  * Formulario para la administración de los Hitos Facturables de las Guardias
@@ -14,9 +13,6 @@ import com.siga.general.MasterForm;
  */
 public class DefinirHitosFacturablesGuardiasForm extends MasterForm
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 3357306348596830312L;
 	//////////////////// ATRIBUTOS ////////////////////
 	protected Hashtable mapHitoPrecio = null;
@@ -50,8 +46,7 @@ public class DefinirHitosFacturablesGuardiasForm extends MasterForm
 	protected boolean chNoPagaGuardiaDomingo=false;
 	protected boolean chPagaGuardiaPorDia=false;
 	protected boolean chNoPagaGuardiaPorDia=false;
-	
-	
+	protected String buscarFacturacionSJCS="";
 	
 	//////////////////// GETTERS ////////////////////
 	public Object getHitoPrecio	(int key) {
@@ -98,6 +93,7 @@ public class DefinirHitosFacturablesGuardiasForm extends MasterForm
 	public boolean getChNoPagaGuardiaDomingo	() {return chNoPagaGuardiaDomingo;}
 	public boolean getChPagaGuardiaPorDia		() {return chPagaGuardiaPorDia;}
 	public boolean getChNoPagaGuardiaPorDia		() {return chNoPagaGuardiaPorDia;}
+	public String getBuscarFacturacionSJCS		() {return buscarFacturacionSJCS;}
 	
 	public String getDescripcion		() {return (String) this.datos.get("IDHITO");}
 		//corresponde con el idHito del Hito seleccionado en el combo
@@ -105,8 +101,6 @@ public class DefinirHitosFacturablesGuardiasForm extends MasterForm
 	public String getModal				() {return (String) this.datos.get("MODAL");}
 	public String getPrecio				() {return (String) this.datos.get("PRECIOHITO");}
 	public String getUsuModificacion	() {return (String) this.datos.get("USUMODIFICACION");}
-	
-	
 	
 	//////////////////// SETTERS ////////////////////
 	public void setHitoPrecio (int key, Object value) {
@@ -145,6 +139,7 @@ public class DefinirHitosFacturablesGuardiasForm extends MasterForm
 	public void setChNoPagaGuardiaDomingo	(boolean valor) {chNoPagaGuardiaDomingo=valor;}
 	public void setChPagaGuardiaPorDia		(boolean valor) {chPagaGuardiaPorDia=valor;}
 	public void setChNoPagaGuardiaPorDia	(boolean valor) {chNoPagaGuardiaPorDia=valor;}
+	public void setBuscarFacturacionSJCS	(String valor) {buscarFacturacionSJCS=valor;}
 	
 	public void setDescripcion			(String descripcion) {this.datos.put ("IDHITO", descripcion);}
 	public void setFechaModificacion	(String fechaModificacion) {this.datos.put ("FECHAMODIFICACION", fechaModificacion);}

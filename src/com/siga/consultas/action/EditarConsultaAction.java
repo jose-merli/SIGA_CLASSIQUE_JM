@@ -1921,7 +1921,7 @@ public class EditarConsultaAction extends MasterAction {
 				if (select.toUpperCase().indexOf(EnvTipoEnviosAdm.CONS_TIPOENVIO)>=0){
 					select=select.toUpperCase().replaceAll(
 							EnvTipoEnviosAdm.CONS_TIPOENVIO,
-							String.valueOf(EnvEnviosAdm.TIPO_CORREO_ELECTRONICO));
+							String.valueOf(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO));
 				}	
 				if (select.toUpperCase().indexOf("F_SIGA_GETRECURSO")>=0){
 					select=select.toUpperCase().replaceAll("%%IDIOMA%%",userBean.getLanguage());

@@ -428,33 +428,26 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 			tipoBusqueda=form.getTipoModifEspec();
 			textoTipo=form.getTextoModificacion();
 			if (tipoBusqueda !=null && !tipoBusqueda.equals("")){
-			// Obtengo las entradas correspondientes a la busqueda en funcion del tipo de modificacion
-				if (tipoBusqueda.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_GENERALES))){
-									
-					vector=adminDB.getSolicitudes(form.getIdInstitucion(),form.getEstadoSolicitudModif(),form.getFechaDesde(),form.getFechaHasta()); 
-				}
-				if (tipoBusqueda.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DIRECCIONES))){
-									
-					vector=adminD.getSolicitudes(form.getIdInstitucion(),form.getEstadoSolicitudModif(),form.getFechaDesde(),form.getFechaHasta());				
-				}
-				if (tipoBusqueda.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_EXP_FOTO))){
-									
-					vector=adminExpFoto.getSolicitudes(form.getIdInstitucion(),form.getEstadoSolicitudModif(),form.getFechaDesde(),form.getFechaHasta());				
-				}				
-				if (tipoBusqueda.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS))){
-									
-					vector=adminCB.getSolicitudes(form.getIdInstitucion(),form.getEstadoSolicitudModif(),form.getFechaDesde(),form.getFechaHasta());				
-				}
-				if (tipoBusqueda.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_CV))){
-									
-					vector=adminCV.getSolicitudes(form.getIdInstitucion(),form.getEstadoSolicitudModif(),form.getFechaDesde(),form.getFechaHasta());				
-				}
-				if (tipoBusqueda.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_FACTURACION))){
-									
-					vector=adminFact.getSolicitudes(form.getIdInstitucion(),form.getEstadoSolicitudModif(),form.getFechaDesde(),form.getFechaHasta());				
-				}
-				if (tipoBusqueda.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_EXPEDIENTES))){
-									
+				// Obtengo las entradas correspondientes a la busqueda en funcion del tipo de modificacion
+				if (tipoBusqueda.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_GENERALES))) {
+					vector=adminDB.getSolicitudes(form.getIdInstitucion(),form.getEstadoSolicitudModif(),form.getFechaDesde(),form.getFechaHasta());
+					
+				} else if (tipoBusqueda.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DIRECCIONES))) {
+					vector=adminD.getSolicitudes(form.getIdInstitucion(),form.getEstadoSolicitudModif(),form.getFechaDesde(),form.getFechaHasta());
+					
+				} else if (tipoBusqueda.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_EXP_FOTO))) {
+					vector=adminExpFoto.getSolicitudes(form.getIdInstitucion(),form.getEstadoSolicitudModif(),form.getFechaDesde(),form.getFechaHasta());
+					
+				} else if (tipoBusqueda.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS))) {
+					vector=adminCB.getSolicitudes(form.getIdInstitucion(),form.getEstadoSolicitudModif(),form.getFechaDesde(),form.getFechaHasta());
+					
+				} else if (tipoBusqueda.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_CV))) {
+					vector=adminCV.getSolicitudes(form.getIdInstitucion(),form.getEstadoSolicitudModif(),form.getFechaDesde(),form.getFechaHasta());
+					
+				} else if (tipoBusqueda.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_FACTURACION))) {
+					vector=adminFact.getSolicitudes(form.getIdInstitucion(),form.getEstadoSolicitudModif(),form.getFechaDesde(),form.getFechaHasta());
+					
+				} else if (tipoBusqueda.equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_EXPEDIENTES))){
 					vector=adminExp.getSolicitudes(form.getIdInstitucion(),form.getEstadoSolicitudModif(),form.getFechaDesde(),form.getFechaHasta());				
 				}
 			}else{
@@ -668,21 +661,20 @@ public class SolicitudesModificacionEspecificasAction extends MasterAction {
 						}
 					//	i++;
 					//}
-				}else if (solicitudesTipoModif[i].equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS))){
+						
+				} else if (solicitudesTipoModif[i].equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_CUENTAS_BANCARIAS))) {
+					
+					boolean bProcesoAltaCuentaCargos = miForm.getConfirmacionProcesoAltaCuentaCargos();					
 					CenSolicModiCuentasAdm adminCB = new CenSolicModiCuentasAdm(this.getUserBean(request));
-			       	//i=0;
-					//while(i<solicitudes.length){
-						tx.begin();					
-						correcto=adminCB.procesarSolicitud(solicitudes[i],this.getUserName(request), this.getLenguaje(request));
-						if (correcto){
-							tx.commit();
-						}
-						else{
-							noProcesadas.add(solicitudes[i]);
-							tx.rollback();
-						}
-						//i++;
-					//}	
+					tx.begin();					
+					correcto = adminCB.procesarSolicitud(solicitudes[i],this.getUserName(request), this.getLenguaje(request), bProcesoAltaCuentaCargos);
+					if (correcto) {
+						tx.commit();
+					} else {
+						noProcesadas.add(solicitudes[i]);
+						tx.rollback();
+					}
+
 				}else if (solicitudesTipoModif[i].equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_SOLICITUD_MODIF_DATOS_CV))){
 					CenSolicitudModificacionCVAdm adminCV = new CenSolicitudModificacionCVAdm(this.getUserBean(request));
 			       	//i=0;

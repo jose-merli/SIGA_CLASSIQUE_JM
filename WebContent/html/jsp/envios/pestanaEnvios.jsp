@@ -32,8 +32,13 @@
 	
 	
 	Hashtable htDatos = (Hashtable)request.getAttribute("envio");
-	String idTipoEnvio=(String)htDatos.get("idTipoEnvio");
+	String idTipoEnvios=(String)htDatos.get("idTipoEnvio");
+	Integer idTipoEnvio = Integer.valueOf(idTipoEnvios);
 	int elementoActivo = 1;
+	if(htDatos.get("elementoActivo")!=null){
+		elementoActivo = Integer.parseInt((String)htDatos.get("elementoActivo"));
+	}
+	
 %>	
 
 
@@ -65,15 +70,13 @@
 		
 </head>
  
-<body onload="ajusteAlto('mainPestanas');return activarPestana();">
-
+<body onload="ajusteAlto('mainPestanas');return activarPestana();mostrarMensajeInicio()">
 <div class="posicionPestanas">
 
 	<!-- Formulario de la lista de detalle multiregistro -->
 	<html:form action="/ENV_DefinirEnvios.do" method="POST">
-
 	<!-- Campo obligatorio -->
-	<html:hidden property = "modo" value = ""/>	
+	<html:hidden property = "modo" value = ""/>
 	
 	<!-- INICIO: CONJUNTO DE PESTAÑAS (LINEA) -->
 <!-- Esto pinta una linea de pestanhas, pero primero es necesario
@@ -95,7 +98,7 @@
 
 <%
 	String[] lista = new String[6];
-	if (idTipoEnvio.equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO)) {
+	if (idTipoEnvio.equals(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO)||idTipoEnvio.equals(EnvTipoEnviosAdm.K_DOCUMENTACIONLETRADO)) {
 		lista[0] = "73i";
 		lista[1] = "73k";
 	}else if(idTipoEnvio.equals(EnvTipoEnviosAdm.K_ENVIOTELEMATICO)){

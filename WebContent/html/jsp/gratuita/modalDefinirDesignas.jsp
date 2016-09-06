@@ -113,10 +113,6 @@
 	if (request.getAttribute("PCAJG_ACTIVO")!=null){
 		pcajgActivo = Integer.parseInt(request.getAttribute("PCAJG_ACTIVO").toString());
 	}
-	String filtrarModulos = "N";
-	if (request.getAttribute("filtrarModulos") != null) {
-		filtrarModulos = (String)request.getAttribute("filtrarModulos");
-	}
 	
 	String comboJuzgados = "getJuzgadosJurisdiccionNuevaDesigna";
    	

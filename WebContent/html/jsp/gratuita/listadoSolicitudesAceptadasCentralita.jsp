@@ -18,8 +18,10 @@
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="c.tld" prefix="c"%>
 
-<!-- HEAD -->
 
+<bean:define id="path" name="org.apache.struts.action.mapping.instance"
+	property="path" scope="request" />
+<input type="hidden" id="mensajeSuccess" name="mensajeSuccess" value="${mensajeSuccess}"/>
 <siga:Table name="listadoInicial" border="1"
 	columnNames="<input type='checkbox' name='chkGeneral' onclick='marcarDesmarcarTodos(this);'/>,
 		    gratuita.busquedaAsistencias.literal.idAvisoCentralita,gratuita.seleccionColegiadoJG.literal.colegiado,gratuita.busquedaAsistencias.literal.guardia,
@@ -75,7 +77,27 @@
 		</c:otherwise>
 	</c:choose>
 </siga:Table>
+<siga:Paginador 
+	totalRegistros="${totalRegistros}"
+	registrosPorPagina="${registrosPorPagina}"
+	paginaSeleccionada="${paginaSeleccionada}" idioma="${usrBean.language}"
+	modo="getAjaxBusqueda"								
+	clase="paginator" 
+	divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:27px; left: 0px"
+	distanciaPaginas=""
+	action="${pageContext.request.contextPath}${path}.do?noReset=true&totalRegistros=${totalRegistros}&registrosPorPagina=${registrosPorPagina}" />
 
+<script type="text/javascript">
+	if(document.getElementById("mensajeSuccess") && document.getElementById("mensajeSuccess").value!=''){
+		alert(document.getElementById("mensajeSuccess").value,'alert');
+	}
+	
+	function paginar(pagina){
+		var action = formPaginador.action;
+		buscarSolicitudesAceptadas(pagina,action);
+	
+	}
+</script>
 
 
 

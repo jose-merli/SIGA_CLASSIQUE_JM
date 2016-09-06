@@ -4242,7 +4242,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
     /* P_IDINSTITUCION - IN - Identificador de la institucion - DATE */
     /* P_NOMBREFICHERO - IN - Nombre del fichero - VARCHAR2(80) */    
     /* M_DISQ_DEVO - IN OUT - Matriz de los disquetes de devoluciones - TAB_DISQ_DEVO */
-    /* P_CONTADORDISQDEVO - IN - Contador de disquetes de las devoluciones a gestionar - NUMBER */
+    /* P_CONTADORDISQDEVO - IN OUT - Contador de disquetes de las devoluciones a gestionar - NUMBER */
     /* P_FECHADEVOLUCION - IN - Fecha de la devolucion - DATE */
     /* P_IDIOMA - IN - Identificador del idioma - NUMBER */
     /* P_USUMODIFICACION - IN - Usuario que realiza la modificacion - NUMBER */
@@ -4257,7 +4257,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         p_Idinstitucion IN NUMBER,
         p_Nombrefichero IN VARCHAR2,
         M_DISQ_DEVO IN OUT TAB_DISQ_DEVO,
-        p_ContadorDisqDevo IN NUMBER,
+        p_ContadorDisqDevo IN OUT NUMBER,
         p_FechaDevolucion IN DATE,
         p_Idioma IN NUMBER,
         p_Usumodificacion IN NUMBER,
@@ -4269,6 +4269,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         v_Datoserror Varchar2(4000) := Null;
         v_Datoserror_2 Varchar2(4000) := Null;
         v_EstadoFactura FAC_FACTURA.ESTADO%TYPE;
+        v_numFicherosSinFacturas NUMBER := 0;
         
         /* Declaracion de excepciones */
         e_Error Exception;
@@ -4290,86 +4291,88 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             -- Controlo que el fichero tenga ficheros incluidos registros individuales que devolver
             v_Datoserror := 'DevolucionesFin: Comprobar existencia ficheros individuales en disquete de devoluciones - Tratamiento Devoluciones';
             IF (M_DISQ_DEVO(contadorDisq).CONT_M_FIED_DEVO=0) THEN
-                v_Datoserror := v_Datoserror || ', Secuencia de registros incorrecta';
-                v_Codretorno := To_Char(20000);
-                RAISE e_Error;
-            END IF;
-
-            -- Insercion tabla FAC_DISQUETEDEVOLUCIONES
-            v_Datoserror := 'DevolucionesFin: Llamada al procedimiento CargaDisqueteDevoluciones - Tratamiento Devoluciones';
-            Cargadisquetedevoluciones(
-                p_Idinstitucion,
-                M_DISQ_DEVO(contadorDisq).CODIGO_BANCO,
-                p_FechaDevolucion,
-                p_Nombrefichero,
-                p_Usumodificacion,
-                M_DISQ_DEVO(contadorDisq).ID_DISQUETE_DEVO,
-                v_Codretorno,
-                v_Datoserror_2);
-            IF (v_Codretorno <> TO_CHAR(0)) THEN
-                RAISE e_Error;
-            ELSE
-                v_Datoserror_2 := '';
-            END IF;
-
-            v_Datoserror := 'DevolucionesFin: Recorro todos los ficheros incluidos en disquete - Tratamiento Devoluciones';
-            FOR contadorFied IN 1..M_DISQ_DEVO(contadorDisq).CONT_M_FIED_DEVO LOOP
+                v_numFicherosSinFacturas := v_numFicherosSinFacturas + 1;
             
-                v_Datoserror := 'DevolucionesFin: Se comprueba obtiene el estado actual de la factura';
-                SELECT ESTADO
-                    INTO v_EstadoFactura
-                FROM FAC_FACTURA
-                WHERE IDINSTITUCION = p_Idinstitucion
-                    AND IDFACTURA = M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).ID_FACTURA; 
-
-                -- Compruebo que la factura tiene el estado pagada
-                IF (v_EstadoFactura = 1) THEN
-                    
-                    -- JPT (17-02-2015): Actualizo FAC_FACTURAINCLUIDAENDISQUETE por su PK
-                    v_Datoserror := 'DevolucionesFin: Actualizacion tabla FAC_FACTURAINCLUIDAENDISQUETE - Tratamiento Devoluciones';
-                    UPDATE FAC_FACTURAINCLUIDAENDISQUETE
-                    SET DEVUELTA = 'S',
-                        FECHADEVOLUCION = p_FechaDevolucion,
-                        FECHAMODIFICACION = SYSDATE,
-                        USUMODIFICACION = p_Usumodificacion
-                    WHERE IDINSTITUCION = p_Idinstitucion
-                        AND IDDISQUETECARGOS = M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).IDDISQUETECARGOS
-                        AND IDFACTURAINCLUIDAENDISQUETE = M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).IDFACTURAINCLUIDAENDISQUETE;
-                        
-                    v_Datoserror := 'DevolucionesFin: Actualizacion tabla FAC_FACTURA - Tratamiento Devoluciones';
-                    UPDATE FAC_FACTURA
-                    SET IMPTOTALPAGADOPORBANCO = IMPTOTALPAGADOPORBANCO - M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).IMPORTE_DEVO,
-                        IMPTOTALPAGADO = IMPTOTALPAGADO - M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).IMPORTE_DEVO,
-                        IMPTOTALPORPAGAR = IMPTOTALPORPAGAR + M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).IMPORTE_DEVO,
-                        ESTADO = 4, -- devuelta
-                        FECHAMODIFICACION = SYSDATE,
-                        USUMODIFICACION = p_Usumodificacion
-                    Where IDINSTITUCION = p_Idinstitucion
-                        And IDFACTURA = M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).ID_FACTURA;
-
-                    -- Insercion tabla FAC_LINEADEVOLUDISQBANCO
-                    v_Datoserror := 'DevolucionesFin: Llamada al procedimiento CargaLineasDevoluciones - Tratamiento Devoluciones';
-                    Cargalineasdevoluciones(
-                        p_Idinstitucion,
-                        M_DISQ_DEVO(contadorDisq).ID_DISQUETE_DEVO,
-                        M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).IDDISQUETECARGOS,
-                        M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).IDFACTURAINCLUIDAENDISQUETE,
-                        M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).ID_RECIBO,
-                        M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).MOTIVO_DEVO,
-                        p_Idioma,
-                        p_Usumodificacion,
-                        v_Codretorno,
-                        v_Datoserror_2);
-                    IF (v_Codretorno = TO_CHAR(0) AND v_Datoserror_2 IS NOT NULL) THEN
-                        v_Observaciones := v_Datoserror_2;
-                    ELSIF (v_Codretorno <> TO_CHAR(0)) THEN
-                        RAISE e_Error;
-                    ELSE
-                        v_Datoserror_2 := '';
-                    END IF;
+            ELSE                           
+                -- Insercion tabla FAC_DISQUETEDEVOLUCIONES
+                v_Datoserror := 'DevolucionesFin: Llamada al procedimiento CargaDisqueteDevoluciones - Tratamiento Devoluciones';
+                Cargadisquetedevoluciones(
+                    p_Idinstitucion,
+                    M_DISQ_DEVO(contadorDisq).CODIGO_BANCO,
+                    p_FechaDevolucion,
+                    p_Nombrefichero,
+                    p_Usumodificacion,
+                    M_DISQ_DEVO(contadorDisq).ID_DISQUETE_DEVO,
+                    v_Codretorno,
+                    v_Datoserror_2);
+                IF (v_Codretorno <> TO_CHAR(0)) THEN
+                    RAISE e_Error;
+                ELSE
+                    v_Datoserror_2 := '';
                 END IF;
-            END LOOP;
+
+                v_Datoserror := 'DevolucionesFin: Recorro todos los ficheros incluidos en disquete - Tratamiento Devoluciones';
+                FOR contadorFied IN 1..M_DISQ_DEVO(contadorDisq).CONT_M_FIED_DEVO LOOP
+                
+                    v_Datoserror := 'DevolucionesFin: Se comprueba obtiene el estado actual de la factura';
+                    SELECT ESTADO
+                        INTO v_EstadoFactura
+                    FROM FAC_FACTURA
+                    WHERE IDINSTITUCION = p_Idinstitucion
+                        AND IDFACTURA = M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).ID_FACTURA; 
+
+                    -- Compruebo que la factura tiene el estado pagada
+                    IF (v_EstadoFactura = 1) THEN
+                        
+                        -- JPT (17-02-2015): Actualizo FAC_FACTURAINCLUIDAENDISQUETE por su PK
+                        v_Datoserror := 'DevolucionesFin: Actualizacion tabla FAC_FACTURAINCLUIDAENDISQUETE - Tratamiento Devoluciones';
+                        UPDATE FAC_FACTURAINCLUIDAENDISQUETE
+                        SET DEVUELTA = 'S',
+                            FECHADEVOLUCION = p_FechaDevolucion,
+                            FECHAMODIFICACION = SYSDATE,
+                            USUMODIFICACION = p_Usumodificacion
+                        WHERE IDINSTITUCION = p_Idinstitucion
+                            AND IDDISQUETECARGOS = M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).IDDISQUETECARGOS
+                            AND IDFACTURAINCLUIDAENDISQUETE = M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).IDFACTURAINCLUIDAENDISQUETE;
+                            
+                        v_Datoserror := 'DevolucionesFin: Actualizacion tabla FAC_FACTURA - Tratamiento Devoluciones';
+                        UPDATE FAC_FACTURA
+                        SET IMPTOTALPAGADOPORBANCO = IMPTOTALPAGADOPORBANCO - M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).IMPORTE_DEVO,
+                            IMPTOTALPAGADO = IMPTOTALPAGADO - M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).IMPORTE_DEVO,
+                            IMPTOTALPORPAGAR = IMPTOTALPORPAGAR + M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).IMPORTE_DEVO,
+                            ESTADO = 4, -- devuelta
+                            FECHAMODIFICACION = SYSDATE,
+                            USUMODIFICACION = p_Usumodificacion
+                        Where IDINSTITUCION = p_Idinstitucion
+                            And IDFACTURA = M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).ID_FACTURA;
+
+                        -- Insercion tabla FAC_LINEADEVOLUDISQBANCO
+                        v_Datoserror := 'DevolucionesFin: Llamada al procedimiento CargaLineasDevoluciones - Tratamiento Devoluciones';
+                        Cargalineasdevoluciones(
+                            p_Idinstitucion,
+                            M_DISQ_DEVO(contadorDisq).ID_DISQUETE_DEVO,
+                            M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).IDDISQUETECARGOS,
+                            M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).IDFACTURAINCLUIDAENDISQUETE,
+                            M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).ID_RECIBO,
+                            M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).MOTIVO_DEVO,
+                            p_Idioma,
+                            p_Usumodificacion,
+                            v_Codretorno,
+                            v_Datoserror_2);
+                        IF (v_Codretorno = TO_CHAR(0) AND v_Datoserror_2 IS NOT NULL) THEN
+                            v_Observaciones := v_Datoserror_2;
+                        ELSIF (v_Codretorno <> TO_CHAR(0)) THEN
+                            RAISE e_Error;
+                        ELSE
+                            v_Datoserror_2 := '';
+                        END IF;
+                    END IF;                    
+                END LOOP;
+            END IF;
         END LOOP;
+        
+        -- Hay que restar los ficheros sin facturas
+        p_ContadorDisqDevo := p_ContadorDisqDevo - v_numFicherosSinFacturas;
 
         v_Datoserror := 'DevolucionesFin: Actualizacion de los parametros de salida';
         p_Codretorno := To_Char(0);
@@ -4450,6 +4453,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         M_DISQ_DEVO TAB_DISQ_DEVO;
         v_IdFicheroOriginal VARCHAR2(35);
         v_IdDisqueteCargos FAC_FACTURAINCLUIDAENDISQUETE.IDDISQUETECARGOS%TYPE;
+        v_facturaDevuelta FAC_FACTURAINCLUIDAENDISQUETE.DEVUELTA%TYPE;
+        v_IdFacturaIncluidaEnDisquete FAC_FACTURAINCLUIDAENDISQUETE.IDFACTURAINCLUIDAENDISQUETE%TYPE;
         v_IdDisqueteCargos2 VARCHAR2(35);
         v_Codretorno VARCHAR2(10) := To_Char(0);
         v_Datoserror VARCHAR2(4000) := Null;
@@ -4543,10 +4548,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             LOOP -- Empezamos a recorrer el fichero hasta encontrar el registro de cabecera del presentador de la devolucion
                 v_Datoserror := 'DEVOLUCIONES: Lectura registro - Cabecera presentador';
                 Utl_File.Get_Line(f_Entrada, v_Registro);
-                /* Notas Jorge PT: Se quita temporalmente
                 IF (v_Registro IS NULL OR LENGTH(v_Registro) < PKG_SIGA_CONSTANTES.c_LongitudRegistroSEPA) THEN
                     RAISE e_Ficheroincorrecto;
-                END IF;*/
+                END IF;
 
                 v_Datoserror := 'DEVOLUCIONES: Obtencion codigo registro - Cabecera presentador - SEPA';
                 v_Codregistro := TO_NUMBER(SUBSTR(v_Registro, 1, 2));
@@ -4692,38 +4696,41 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         v_Codretorno := To_Char(5404);
                         RAISE e_Error;
                     END IF;
-
-                    v_Datoserror := 'DEVOLUCIONES: Guardo datos en matriz de disquetes de devoluciones - Registro individual';
-                    v_contadorFiedDevo := M_DISQ_DEVO(v_contadorActualDisqDevo).CONT_M_FIED_DEVO + 1;
-                    M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).ID_RECIBO := v_Codigoreferencia;
-                    M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).ID_FACTURA := v_Idfactura;
-                    M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IMPORTE_DEVO := v_Importe;
-                    M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).MOTIVO_DEVO := v_Motivodevolucion;
                     
                     -- JPT (17-02-2015): Obtengo IMPORTE, IDDISQUETECARGOS y IDFACTURAINCLUIDAENDISQUETE
                     BEGIN
                         v_Datoserror := 'DEVOLUCIONES: Obtengo IDFACTURAINCLUIDAENDISQUETE';
-                        SELECT IMPORTE, IDDISQUETECARGOS, IDFACTURAINCLUIDAENDISQUETE
-                            INTO v_ImporteFIED, v_IdDisqueteCargos, M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IDFACTURAINCLUIDAENDISQUETE
+                        SELECT IMPORTE, 
+                                IDDISQUETECARGOS, 
+                                IDFACTURAINCLUIDAENDISQUETE, 
+                                DEVUELTA
+                            INTO v_ImporteFIED, 
+                                v_IdDisqueteCargos, 
+                                v_IdFacturaIncluidaEnDisquete,
+                                v_facturaDevuelta
                         FROM FAC_FACTURAINCLUIDAENDISQUETE
                         WHERE IDINSTITUCION = p_Idinstitucion
                             AND IDDISQUETECARGOS = TO_NUMBER(v_IdDisqueteCargos2)
                             AND IDFACTURA = v_Idfactura
                             AND IDRECIBO = v_Codigoreferencia
-                            AND DEVUELTA = 'N' -- Faltaba controlar que no se haya devuelto previamente
                             AND ROWNUM = 1;
 
                         EXCEPTION
                             WHEN OTHERS THEN        
                                 BEGIN  
                                     -- JPT (17-02-2015): Si no viene IDDISQUETECARGOS, intento buscarlo con IDFACTURA e IDRECIBO                   
-                                    SELECT IMPORTE, IDDISQUETECARGOS, IDFACTURAINCLUIDAENDISQUETE
-                                        INTO v_ImporteFIED, v_IdDisqueteCargos, M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IDFACTURAINCLUIDAENDISQUETE
+                                    SELECT IMPORTE, 
+                                            IDDISQUETECARGOS, 
+                                            IDFACTURAINCLUIDAENDISQUETE,
+                                            DEVUELTA
+                                        INTO v_ImporteFIED, 
+                                            v_IdDisqueteCargos, 
+                                            v_IdFacturaIncluidaEnDisquete,
+                                            v_facturaDevuelta
                                     FROM FAC_FACTURAINCLUIDAENDISQUETE
                                     WHERE IDINSTITUCION = p_Idinstitucion
                                         AND IDFACTURA = v_Idfactura
-                                        AND IDRECIBO = v_Codigoreferencia
-                                        AND DEVUELTA = 'N' -- Faltaba controlar que no se haya devuelto previamente                                    
+                                        AND IDRECIBO = v_Codigoreferencia                                    
                                         AND ROWNUM = 1; 
                                         
                                     EXCEPTION
@@ -4733,15 +4740,25 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                                 END;
                     END; 
                     
-                      v_Datoserror := 'DEVOLUCIONES: Comprobar importe FAC_FACTURAINCLUIDAENDISQUETE - Tratamiento Devoluciones';
-                    IF (v_Importe <> v_ImporteFIED) THEN
-                        v_Codretorno := To_Char(5405);
-                        RAISE e_Error;
-                    END IF;
-                    
-                    -- JPT (17-02-2015): Guarda el identificador del disquete de cargos
-                    M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IDDISQUETECARGOS := v_IdDisqueteCargos; 
-                    M_DISQ_DEVO(v_contadorActualDisqDevo).CONT_M_FIED_DEVO := v_contadorFiedDevo; -- Tiene un fichero incluidos en disquete nuevo                
+                    IF (v_facturaDevuelta = 'N') THEN
+                        v_Datoserror := 'DEVOLUCIONES: Guardo datos en matriz de disquetes de devoluciones - Registro individual';
+                        v_contadorFiedDevo := M_DISQ_DEVO(v_contadorActualDisqDevo).CONT_M_FIED_DEVO + 1;
+                        M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).ID_RECIBO := v_Codigoreferencia;
+                        M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).ID_FACTURA := v_Idfactura;
+                        M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IMPORTE_DEVO := v_Importe;
+                        M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).MOTIVO_DEVO := v_Motivodevolucion;
+                        M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IDFACTURAINCLUIDAENDISQUETE := v_IdFacturaIncluidaEnDisquete;
+                        
+                          v_Datoserror := 'DEVOLUCIONES: Comprobar importe FAC_FACTURAINCLUIDAENDISQUETE - Tratamiento Devoluciones';
+                        IF (v_Importe <> v_ImporteFIED) THEN
+                            v_Codretorno := To_Char(5405);
+                            RAISE e_Error;
+                        END IF;
+                        
+                        -- JPT (17-02-2015): Guarda el identificador del disquete de cargos
+                        M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IDDISQUETECARGOS := v_IdDisqueteCargos; 
+                        M_DISQ_DEVO(v_contadorActualDisqDevo).CONT_M_FIED_DEVO := v_contadorFiedDevo; -- Tiene un fichero incluidos en disquete nuevo
+                    END IF;                
 
                     /****************** LINEAS INDIVIDUALES O TOTALES ORDENANTE ****************************************/
                     LOOP
@@ -4767,7 +4784,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     v_Datoserror := 'DEVOLUCIONES: Comprobar codigo registro y codigo dato - Registro individual o total ordenante - SEPA';
                     IF NOT (v_Codregistro = v_tipoDevolucion + 3 AND v_Coddato = 3) THEN -- Error si no es un registro individual obligatorio
                         RAISE e_Ficheroincorrecto;
-                    END IF;
+                    END IF;                    
                 END LOOP;
 
                 /******************** LINEAS TOTALES O CABECERA ORDENANTE *******************************/
@@ -5105,37 +5122,44 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     RAISE e_Error;
                 END IF;
 
-                v_Datoserror := 'DEVOLUCIONES: Guardo datos en matriz de disquetes de devoluciones - bloque remesa - fichero xml';
-                v_contadorFiedDevo := M_DISQ_DEVO(v_contadorActualDisqDevo).CONT_M_FIED_DEVO + 1;
-                M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).ID_RECIBO := v_Codigoreferencia;
-                M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).ID_FACTURA := v_Idfactura;
-                M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IMPORTE_DEVO := v_Importe;
-                M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).MOTIVO_DEVO := v_Motivodevolucion;
-
                 -- JPT (17-02-2015): Obtengo IMPORTE, IDDISQUETECARGOS y IDFACTURAINCLUIDAENDISQUETE
                 BEGIN
                     v_Datoserror := 'DEVOLUCIONES: Obtengo IDFACTURAINCLUIDAENDISQUETE - bloque remesa - fichero xml';
-                    SELECT IMPORTE, IDDISQUETECARGOS, IDFACTURAINCLUIDAENDISQUETE, ESQUEMA
-                        INTO v_ImporteFIED, v_IdDisqueteCargos, M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IDFACTURAINCLUIDAENDISQUETE, v_Esquema
+                    SELECT IMPORTE, 
+                            IDDISQUETECARGOS, 
+                            IDFACTURAINCLUIDAENDISQUETE, 
+                            ESQUEMA,
+                            DEVUELTA
+                        INTO v_ImporteFIED, 
+                            v_IdDisqueteCargos, 
+                            v_IdFacturaIncluidaEnDisquete, 
+                            v_Esquema,
+                            v_facturaDevuelta
                     FROM FAC_FACTURAINCLUIDAENDISQUETE
                     WHERE IDINSTITUCION = p_Idinstitucion
                         AND IDDISQUETECARGOS = TO_NUMBER(v_IdDisqueteCargos2)
                         AND IDFACTURA = v_Idfactura
                         AND IDRECIBO = v_Codigoreferencia
-                        AND DEVUELTA = 'N' -- Faltaba controlar que no se haya devuelto previamente
-                        AND ROWNUM = 1;
+                        AND ROWNUM = 1;                     
 
                     EXCEPTION
                         WHEN OTHERS THEN
                             BEGIN
                                 -- JPT (17-02-2015): Si no viene IDDISQUETECARGOS, intento buscarlo con IDFACTURA e IDRECIBO
-                                SELECT IMPORTE, IDDISQUETECARGOS, IDFACTURAINCLUIDAENDISQUETE, ESQUEMA
-                                    INTO v_ImporteFIED, v_IdDisqueteCargos, M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IDFACTURAINCLUIDAENDISQUETE, v_Esquema
+                                SELECT IMPORTE, 
+                                        IDDISQUETECARGOS, 
+                                        IDFACTURAINCLUIDAENDISQUETE, 
+                                        ESQUEMA,
+                                        DEVUELTA
+                                    INTO v_ImporteFIED, 
+                                        v_IdDisqueteCargos, 
+                                        v_IdFacturaIncluidaEnDisquete, 
+                                        v_Esquema,
+                                        v_facturaDevuelta
                                 FROM FAC_FACTURAINCLUIDAENDISQUETE
                                 WHERE IDINSTITUCION = p_Idinstitucion
                                     AND IDFACTURA = v_Idfactura
                                     AND IDRECIBO = v_Codigoreferencia
-                                    AND DEVUELTA = 'N' -- Faltaba controlar que no se haya devuelto previamente
                                     AND ROWNUM = 1;
 
                                 EXCEPTION
@@ -5144,25 +5168,34 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                                         RAISE e_Error;
                             END;
                 END;
-
-                v_Datoserror := 'DEVOLUCIONES: Comprobar si hay una devolucion B2B';
-                IF v_tipoDevolucion = 10 AND v_Esquema = 2  THEN -- 2 esquema B2B
-                    v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.B2B', p_Idioma) || ' - ' || 
-                                        F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts['||v_contadorBloqueRemesa||']/TxInfAndSts['||v_contadorBloqueIndividual||']/OrgnlEndToEndId"';
-                    v_Codretorno := To_Char(5420);
-                    RAISE e_Error;
-                END IF;
-
-                v_Datoserror := 'DEVOLUCIONES: Comprobar importe FAC_FACTURAINCLUIDAENDISQUETE - bloque remesa - fichero xml';
-                IF (v_Importe <> v_ImporteFIED) THEN
-                    v_Codretorno := To_Char(5405);
-                    RAISE e_Error;
-                END IF;
-
-                -- JPT (17-02-2015): Guarda el identificador del disquete de cargos
-                M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IDDISQUETECARGOS := v_IdDisqueteCargos;
-                M_DISQ_DEVO(v_contadorActualDisqDevo).CONT_M_FIED_DEVO := v_contadorFiedDevo; -- Tiene un fichero incluidos en disquete nuevo
                 
+                IF (v_facturaDevuelta = 'N') THEN                
+                    v_Datoserror := 'DEVOLUCIONES: Guardo datos en matriz de disquetes de devoluciones - bloque remesa - fichero xml';
+                    v_contadorFiedDevo := M_DISQ_DEVO(v_contadorActualDisqDevo).CONT_M_FIED_DEVO + 1;
+                    M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).ID_RECIBO := v_Codigoreferencia;
+                    M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).ID_FACTURA := v_Idfactura;
+                    M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IMPORTE_DEVO := v_Importe;
+                    M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).MOTIVO_DEVO := v_Motivodevolucion;
+                    M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IDFACTURAINCLUIDAENDISQUETE := v_IdFacturaIncluidaEnDisquete;
+
+                    v_Datoserror := 'DEVOLUCIONES: Comprobar si hay una devolucion B2B';
+                    IF v_tipoDevolucion = 10 AND v_Esquema = 2  THEN -- 2 esquema B2B
+                        v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.B2B', p_Idioma) || ' - ' || 
+                                            F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts['||v_contadorBloqueRemesa||']/TxInfAndSts['||v_contadorBloqueIndividual||']/OrgnlEndToEndId"';
+                        v_Codretorno := To_Char(5420);
+                        RAISE e_Error;
+                    END IF;
+
+                    v_Datoserror := 'DEVOLUCIONES: Comprobar importe FAC_FACTURAINCLUIDAENDISQUETE - bloque remesa - fichero xml';
+                    IF (v_Importe <> v_ImporteFIED) THEN
+                        v_Codretorno := To_Char(5405);
+                        RAISE e_Error;
+                    END IF;
+
+                    -- JPT (17-02-2015): Guarda el identificador del disquete de cargos
+                    M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IDDISQUETECARGOS := v_IdDisqueteCargos;
+                    M_DISQ_DEVO(v_contadorActualDisqDevo).CONT_M_FIED_DEVO := v_contadorFiedDevo; -- Tiene un fichero incluidos en disquete nuevo
+                END IF;
                 v_contadorBloqueIndividual := v_contadorBloqueIndividual + 1;
             END LOOP; 
         END IF;

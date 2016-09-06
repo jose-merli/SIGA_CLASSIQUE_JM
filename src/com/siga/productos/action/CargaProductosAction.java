@@ -240,7 +240,7 @@ public class CargaProductosAction extends MasterAction {
 		Vector<Hashtable<String, Object>> datosVector = new Vector<Hashtable<String, Object>>();
 		Hashtable<String, Object> datosHashtable = new Hashtable<String, Object>();
 		try {
-			datosHashtable.put(CargaMasivaDatosVo.C_INFO, UtilidadesString.getMensajeIdioma(usrBean, "pys.cargaProductos.info1"));
+			datosHashtable.put(CargaMasivaDatosVo.C_INFO, UtilidadesString.getMensajeIdioma(usrBean, "pys.cargaProductos.infoGeneral"));
 			datosHashtable.put(CargaMasivaDatosProductosVo.C_NUM_COLEGIADO_CLIENTE, "nnnnnn");
 			datosHashtable.put(CargaMasivaDatosProductosVo.C_NIF_CLIENTE, "nnnnnnnna");
 			datosHashtable.put(CargaMasivaDatosProductosVo.C_APELLIDOS_CLIENTE, "aaaaaaaaaaa aaaaaaaaa");
@@ -250,10 +250,11 @@ public class CargaProductosAction extends MasterAction {
 			datosHashtable.put(CargaMasivaDatosProductosVo.C_ID_CATEGORIA_PRODUCTO, "nn");
 			datosHashtable.put(CargaMasivaDatosProductosVo.C_ID_TIPO_PRODUCTO, "nn");
 			datosHashtable.put(CargaMasivaDatosProductosVo.C_ID_PRODUCTO, "nn");
+			datosHashtable.put(CargaMasivaDatosProductosVo.C_FECHA_COMPRA, "dd/mm/yyyy");
 			datosVector.add(datosHashtable);
 
 			datosHashtable = new Hashtable<String, Object>();
-			datosHashtable.put(CargaMasivaDatosVo.C_INFO, UtilidadesString.getMensajeIdioma(usrBean, "pys.cargaProductos.info2"));
+			datosHashtable.put(CargaMasivaDatosVo.C_INFO, UtilidadesString.getMensajeIdioma(usrBean, "pys.cargaProductos.info1"));
 			datosHashtable.put(CargaMasivaDatosProductosVo.C_NUM_COLEGIADO_CLIENTE, "Opcional. Si nulo NIF_CLIENTE requerido");
 			datosHashtable.put(CargaMasivaDatosProductosVo.C_NIF_CLIENTE, "Opcional. Si nulo NUM_COLEGIADO_CLIENTE requerido");
 			datosHashtable.put(CargaMasivaDatosProductosVo.C_APELLIDOS_CLIENTE, "Requerido");
@@ -263,8 +264,51 @@ public class CargaProductosAction extends MasterAction {
 			datosHashtable.put(CargaMasivaDatosProductosVo.C_ID_CATEGORIA_PRODUCTO, "Requerido");
 			datosHashtable.put(CargaMasivaDatosProductosVo.C_ID_TIPO_PRODUCTO, "Requerido");
 			datosHashtable.put(CargaMasivaDatosProductosVo.C_ID_PRODUCTO, "Requerido");
+			datosHashtable.put(CargaMasivaDatosProductosVo.C_FECHA_COMPRA, "Opcional. Si nulo fecha de hoy");
 			datosVector.add(datosHashtable);
 			
+			/** SEGUNDA CLAUSULA **/
+			datosHashtable = new Hashtable<String, Object>();
+			datosHashtable.put(CargaMasivaDatosProductosVo.C_INFO, UtilidadesString.getMensajeIdioma(usrBean, "pys.cargaProductos.info2"));
+			datosVector.add(datosHashtable);					
+			
+			datosHashtable = new Hashtable<String, Object>();
+			datosHashtable.put(CargaMasivaDatosProductosVo.C_INFO, UtilidadesString.getMensajeIdioma(usrBean, "pys.cargaProductos.info21"));
+			datosVector.add(datosHashtable);	
+			
+			datosHashtable = new Hashtable<String, Object>();
+			datosHashtable.put(CargaMasivaDatosProductosVo.C_INFO, UtilidadesString.getMensajeIdioma(usrBean, "pys.cargaProductos.info22"));
+			datosVector.add(datosHashtable);		
+			
+			datosHashtable = new Hashtable<String, Object>();
+			datosHashtable.put(CargaMasivaDatosProductosVo.C_INFO, UtilidadesString.getMensajeIdioma(usrBean, "pys.cargaProductos.info23"));
+			datosVector.add(datosHashtable);	
+			
+			datosHashtable = new Hashtable<String, Object>();
+			datosHashtable.put(CargaMasivaDatosProductosVo.C_INFO, UtilidadesString.getMensajeIdioma(usrBean, "pys.cargaProductos.info231"));
+			datosVector.add(datosHashtable);		
+			
+			datosHashtable = new Hashtable<String, Object>();
+			datosHashtable.put(CargaMasivaDatosProductosVo.C_INFO, UtilidadesString.getMensajeIdioma(usrBean, "pys.cargaProductos.info232"));
+			datosVector.add(datosHashtable);	
+			
+			datosHashtable = new Hashtable<String, Object>();
+			datosHashtable.put(CargaMasivaDatosProductosVo.C_INFO, UtilidadesString.getMensajeIdioma(usrBean, "pys.cargaProductos.info233"));
+			datosVector.add(datosHashtable);	
+			
+			datosHashtable = new Hashtable<String, Object>();
+			datosHashtable.put(CargaMasivaDatosProductosVo.C_INFO, UtilidadesString.getMensajeIdioma(usrBean, "pys.cargaProductos.info234"));
+			datosVector.add(datosHashtable);	
+			
+			datosHashtable = new Hashtable<String, Object>();
+			datosHashtable.put(CargaMasivaDatosProductosVo.C_INFO, UtilidadesString.getMensajeIdioma(usrBean, "pys.cargaProductos.info235"));
+			datosVector.add(datosHashtable);	
+			
+			datosHashtable = new Hashtable<String, Object>();
+			datosHashtable.put(CargaMasivaDatosProductosVo.C_INFO, UtilidadesString.getMensajeIdioma(usrBean, "pys.cargaProductos.info24"));
+			datosVector.add(datosHashtable);				
+			
+			/** TERCERA CLAUSULA **/
 			datosHashtable = new Hashtable<String, Object>();
 			datosHashtable.put(CargaMasivaDatosProductosVo.C_INFO, UtilidadesString.getMensajeIdioma(usrBean, "pys.cargaProductos.info3"));
 			datosVector.add(datosHashtable);		
@@ -277,6 +321,7 @@ public class CargaProductosAction extends MasterAction {
 			datosHashtable.put(CargaMasivaDatosProductosVo.C_INFO, UtilidadesString.getMensajeIdioma(usrBean, "pys.cargaProductos.info32"));
 			datosVector.add(datosHashtable);		
 			
+			/** CUARTA CLAUSULA **/
 			datosHashtable = new Hashtable<String, Object>();
 			datosHashtable.put(CargaMasivaDatosProductosVo.C_INFO, UtilidadesString.getMensajeIdioma(usrBean, "pys.cargaProductos.info4"));
 			datosVector.add(datosHashtable);			
