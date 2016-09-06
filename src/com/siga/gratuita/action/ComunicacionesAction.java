@@ -100,7 +100,14 @@ public class ComunicacionesAction extends MasterAction {
 			
 			Hashtable datosColegiado = (Hashtable)request.getSession().getAttribute("DATOSCOLEGIADO");
 			String idInstitucion = request.getParameter("idInstitucion").toString();
+			
 			String idPersona = request.getParameter("idPersona").toString();
+			String accion = (String)request.getParameter("accion");
+			if ( accion!=null && accion.equals("nuevo") || accion.equalsIgnoreCase("nuevaSociedad") || 
+					 (request.getParameter("idPersona").equals("") && request.getParameter("idInstitucion").equals("") )) {
+					request.setAttribute("modoVolver",accion);
+					return "clienteNoExiste";
+			}
 			CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
 			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
 			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
