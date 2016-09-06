@@ -180,7 +180,10 @@ public class AlcalaJE extends InformeXML implements PCAJGConstantes {
 						numeroActuacion = valor;
 					}
 						
-					if (valida(numEJG, anioEJG, desNumero, desAnio, numeroActuacion, columna, valor) && imprimirColumna(columna)) {						
+					//aunque esté mal los datos y no cumplan los campos obligatorios debemos luego imprimirloos qp se generan los dos ficheros
+					valida(numEJG, anioEJG, desNumero, desAnio, numeroActuacion, columna, valor);
+					
+					if (imprimirColumna(columna)) {						
 						if ("$$".equals(valor)) {
 							bw.newLine();
 						} else if (CAB2_NUMERO_INTERCAMBIO.equalsIgnoreCase(columna)) {							
