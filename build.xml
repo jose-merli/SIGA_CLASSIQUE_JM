@@ -154,6 +154,8 @@
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/poi-3.12-20150511.jar"/>
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/jsch-0.1.42.jar"/>
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/commons-net-ftp-2.0.jar"/>
+    	<!-- Libreria generada del wsdl de ACA -->
+    	<pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/ACA.jar"/>
     </path>
     <path id="repositorio_weblogic.userclasspath">
         <pathelement location="${Repositorio.location}/asm_1.1.0.0_3-1.jar"/>
