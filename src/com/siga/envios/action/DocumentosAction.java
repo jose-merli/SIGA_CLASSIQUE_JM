@@ -32,9 +32,10 @@ import com.siga.beans.EnvDocumentosAdm;
 import com.siga.beans.EnvDocumentosBean;
 import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.EnvEnviosBean;
+import com.siga.beans.EnvPlantillaGeneracionAdm;
+import com.siga.beans.EnvPlantillaGeneracionBean;
 import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.beans.EnvTipoEnviosBean;
-import com.siga.certificados.Plantilla;
 import com.siga.envios.Documento;
 import com.siga.envios.form.DocumentosForm;
 import com.siga.general.MasterAction;
@@ -104,12 +105,13 @@ public class DocumentosAction extends MasterAction
 			String idInstitucion = null;
 			String idEnvio = null;
 			String idDocumento = null;
-			
+			String tipoDocumento = null;
 			if(form.getIdEnvio()!=null && form.getIdInstitucion()!=null && form.getIdDocumento()!=null 
 					&& !form.getIdEnvio().equalsIgnoreCase("") && !form.getIdInstitucion().equalsIgnoreCase("") && !form.getIdDocumento().equalsIgnoreCase("")){
 				idInstitucion = form.getIdInstitucion();
 				idEnvio = form.getIdEnvio();
 				idDocumento = form.getIdDocumento();
+				tipoDocumento = form.getTipo();
 			}else{
 				idInstitucion = this.getUserBean(request).getLocation();
 				idEnvio = (String) request.getParameter("idEnvio");
@@ -119,37 +121,77 @@ public class DocumentosAction extends MasterAction
 			}
 			
 			EnvDocumentosAdm docAdm = new EnvDocumentosAdm(usrBean);
-			File fDocumento  = docAdm.getFile(idInstitucion, idEnvio, idDocumento);
-			Hashtable documentosPkHashtable = new Hashtable();
-			documentosPkHashtable.put(EnvDocumentosBean.C_IDINSTITUCION, idInstitucion);
-			documentosPkHashtable.put(EnvDocumentosBean.C_IDENVIO, idEnvio);
-			documentosPkHashtable.put(EnvDocumentosBean.C_IDDOCUMENTO, idDocumento);
-			Vector documentoPkVector = docAdm.selectByPK(documentosPkHashtable);
-			EnvDocumentosBean documentosBean = (EnvDocumentosBean) documentoPkVector.get(0);
-			String nombreOriginal = documentosBean.getPathDocumento();
-			if (documentosBean.getDescripcion() != null) {
-				boolean tieneextension = documentosBean.getDescripcion().lastIndexOf(".") == documentosBean.getDescripcion().length() - 4;
-				if (tieneextension)
-					nombreOriginal = documentosBean.getDescripcion();
+			
+			if(tipoDocumento==null ||Short.valueOf(tipoDocumento)==EnvDocumentosAdm.tipoDocumentoEnvio){
+				File fDocumento  = docAdm.getFile(idInstitucion, idEnvio, idDocumento);
+				Hashtable documentosPkHashtable = new Hashtable();
+				documentosPkHashtable.put(EnvDocumentosBean.C_IDINSTITUCION, idInstitucion);
+				documentosPkHashtable.put(EnvDocumentosBean.C_IDENVIO, idEnvio);
+				documentosPkHashtable.put(EnvDocumentosBean.C_IDDOCUMENTO, idDocumento);
+				Vector documentoPkVector = docAdm.selectByPK(documentosPkHashtable);
+				EnvDocumentosBean documentosBean = (EnvDocumentosBean) documentoPkVector.get(0);
+				String nombreOriginal = documentosBean.getPathDocumento();
+				if (documentosBean.getDescripcion() != null) {
+					boolean tieneextension = documentosBean.getDescripcion().lastIndexOf(".") == documentosBean.getDescripcion().length() - 4;
+					if (tieneextension)
+						nombreOriginal = documentosBean.getDescripcion();
 
-			}
+				}
 
 
-			if (fDocumento == null || !fDocumento.exists()) {
-				EnvEnviosAdm envioAdm = new EnvEnviosAdm(usrBean);
-				String pathDocumentosAdjuntos = envioAdm.getPathEnvio(idInstitucion, idEnvio);
-				String rutaAlm = pathDocumentosAdjuntos + ClsConstants.FILE_SEP;
-				File fdocumento1 = new File(rutaAlm + nombreOriginal);				
-				if (!fdocumento1.exists()) {
-					throw new SIGAException("messages.general.error.ficheroNoExiste");
+				if (fDocumento == null || !fDocumento.exists()) {
+					EnvEnviosAdm envioAdm = new EnvEnviosAdm(usrBean);
+					String pathDocumentosAdjuntos = envioAdm.getPathEnvio(idInstitucion, idEnvio);
+					String rutaAlm = pathDocumentosAdjuntos + ClsConstants.FILE_SEP;
+					File fdocumento1 = new File(rutaAlm + nombreOriginal);				
+					if (!fdocumento1.exists()) {
+						throw new SIGAException("messages.general.error.ficheroNoExiste");
+					} else {
+						request.setAttribute("rutaFichero", fdocumento1.getPath());
+						request.setAttribute("nombreFichero", nombreOriginal);
+					}
 				} else {
-					request.setAttribute("rutaFichero", fdocumento1.getPath());
+					request.setAttribute("rutaFichero", fDocumento.getPath());
 					request.setAttribute("nombreFichero", nombreOriginal);
 				}
-			} else {
-				request.setAttribute("rutaFichero", fDocumento.getPath());
-				request.setAttribute("nombreFichero", nombreOriginal);
+			}else{
+				EnvEnviosAdm envioAdm = new EnvEnviosAdm(usrBean);
+			
+				Hashtable htPk = new Hashtable();
+				htPk.put(EnvEnviosBean.C_IDINSTITUCION,idInstitucion);
+				htPk.put(EnvEnviosBean.C_IDENVIO,idEnvio);
+				Vector envios = envioAdm.selectByPK(htPk);
+				if(envios!= null && envios.size()>0){
+					EnvEnviosBean envBean = (EnvEnviosBean) envios.get(0);
+					String sDirPdf = envioAdm.getPathEnvio(envBean)+File.separator + "documentosdest";
+					
+					EnvPlantillaGeneracionAdm admPlantilla = new EnvPlantillaGeneracionAdm(usrBean);
+					
+					Hashtable htPkPlantillaGeneracion = new Hashtable();
+		            htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDINSTITUCION,envBean.getIdInstitucion());
+		            htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDTIPOENVIOS,envBean.getIdTipoEnvios());
+		            htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDPLANTILLAENVIOS,envBean.getIdPlantillaEnvios());
+		            htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDPLANTILLA,envBean.getIdPlantilla());
+		        	
+		            
+		            Vector vPlant = admPlantilla.selectByPK(htPkPlantillaGeneracion);	    
+		            EnvPlantillaGeneracionBean plantBean = (EnvPlantillaGeneracionBean)vPlant.firstElement();
+					
+					
+					String nombreArchivo = envioAdm.getNombreArchivoEnvioPlantillaDestinatario(envBean,new Long(2014011548),plantBean.getTipoArchivo());
+					String[] ext = nombreArchivo.split("\\.");
+					request.setAttribute("rutaFichero", sDirPdf+File.separator +nombreArchivo);
+					request.setAttribute("nombreFichero", plantBean.getDescripcion()+"."+ext[1]);
+				}
+				
+				
+				
+			
+				
+				
 			}
+			
+			
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.envios" }, e, null);
 		}

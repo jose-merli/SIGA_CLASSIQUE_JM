@@ -156,17 +156,19 @@
 					fin();
 					return false;
 				}
-								
-				if(document.EnviosDatosGeneralesForm.idPlantillaGeneracion.value==''){
-					var campo = '<siga:Idioma key="envios.definir.literal.plantillageneracion"/>';
-  					var msg = "<siga:Idioma key="errors.required"  arg0=' " + campo + "'/>";
-					alert (msg);
-					fin();
-					return false;
+				//si esta definido es porque esta en modo lectura
+				if(document.getElementById('idPlantillaEnviada')){
+					document.EnviosDatosGeneralesForm.idPlantillaGeneracion.value = document.getElementById('idPlantillaEnviada').value;
+				}else{								
+					if(document.EnviosDatosGeneralesForm.idPlantillaGeneracion.value==''){
+						var campo = '<siga:Idioma key="envios.definir.literal.plantillageneracion"/>';
+	  					var msg = "<siga:Idioma key="errors.required"  arg0=' " + campo + "'/>";
+						alert (msg);
+						fin();
+						return false;
+					}
 				}
 						
-
-				
 				EnviosDatosGeneralesForm.modo.value = "descargar";
 				EnviosDatosGeneralesForm.submit();
 				
@@ -256,7 +258,10 @@
 							<siga:Idioma key="envios.definir.literal.plantillageneracion"/>
 						</td>
 						<td>
-							<siga:ComboBD nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion" clase="boxConsulta" ancho="600" obligatorio="false" parametro="<%=parametro3%>" elementoSel="<%=al2%>" hijo="true" pestana="t" readOnly="true"/>
+						
+							<siga:ComboBD nombre="idPlantillaGeneracion" tipo="cmbPlantillaGeneracion" clase="boxConsulta" ancho="600" obligatorio="false" parametro="<%=parametro3%>" elementoSel="<%=al2%>" hijo="t" pestana="true" readOnly="true"/>
+							<input  type = "hidden"  id="idPlantillaEnviada" value ='<%=idPlantillaGeneracion%>' />
+							
 						</td>
 <%
 					}

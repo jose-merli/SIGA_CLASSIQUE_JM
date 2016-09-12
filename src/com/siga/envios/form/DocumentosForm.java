@@ -16,6 +16,7 @@ public class DocumentosForm extends MasterForm
     private String idDocumento="";
     private String descripcion="";
     private String pathDocumento="";
+    private String tipo="";
     
     private FormFile theFile;
     
@@ -68,4 +69,16 @@ public class DocumentosForm extends MasterForm
     public void setPathDocumento(String pathDocumento) {
         this.pathDocumento = pathDocumento;
     }
+	/**
+	 * @return the tipo
+	 */
+	public String getTipo() {
+		return tipo;
+	}
+	/**
+	 * @param tipo the tipo to set
+	 */
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
 }

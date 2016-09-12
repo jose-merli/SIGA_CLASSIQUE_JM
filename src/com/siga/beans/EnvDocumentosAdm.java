@@ -17,7 +17,8 @@ import com.siga.general.SIGAException;
 
 
 public class EnvDocumentosAdm extends MasterBeanAdministrador {
-
+	public static final short tipoDocumentoEnvio= 0;
+	public static final short tipoDocumentoPlantilla= 1;
 	public EnvDocumentosAdm(UsrBean usuario)
 	{
 	    super(EnvDocumentosBean.T_NOMBRETABLA, usuario);

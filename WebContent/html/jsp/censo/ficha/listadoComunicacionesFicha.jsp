@@ -18,7 +18,8 @@
 	<html:hidden property="modo" value = "download"/>
 	<html:hidden property="idInstitucion"/>
 	<html:hidden property="idEnvio"/>
-	<html:hidden property="idDocumento"/>			
+	<html:hidden property="idDocumento"/>
+	<html:hidden property="tipo"/>			
 
 </html:form>
 
@@ -64,7 +65,7 @@
 												<img id="iconoboton_download1" hspace="0"
 												src="/SIGA/html/imagenes/bdownload_off.gif" style="cursor:pointer;" 
 												alt="Descargar" name="iconoFila" title="Descargar" border="0" 
-												onClick="accionDescargaDocumento('${comunicacion.idEnvio}','${comunicacion.idInstitucion}','${documento.id}')" 
+												onClick="accionDescargaDocumento('${comunicacion.idEnvio}','${comunicacion.idInstitucion}','${documento.id}','${documento.tipo}')" 
 												onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
 											
 											</td>
@@ -128,11 +129,12 @@
 		});
 
 	}
-	function accionDescargaDocumento(idEnvio,idInstitucion,idDocumento)
+	function accionDescargaDocumento(idEnvio,idInstitucion,idDocumento,tipo)
 	{
 		document.DocumentosForm.idEnvio.value = idEnvio;
 		document.DocumentosForm.idInstitucion.value =idInstitucion;
 		document.DocumentosForm.idDocumento.value = idDocumento;
+		document.DocumentosForm.tipo.value = tipo;
 		document.DocumentosForm.submit();
 	}
 

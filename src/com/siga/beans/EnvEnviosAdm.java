@@ -3757,6 +3757,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		        
 		        	// GENERACION DEL PDF DEL ENVIO SI PROCEDE
 		        	/////////////////////////////////////
+		        	
+		        	
 			        if (envBean.getIdPlantilla()!=null && fPlantilla!=null){
 				        //Si no tiene plantilla no enviamos documento, 
 				        //pero continuamos para mandar el correo
@@ -4097,6 +4099,27 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			destinatarioBean.setPais("");
         
         	
+	}
+
+	public String getNombreArchivoEnvioPlantillaDestinatario(EnvEnviosBean beanEnvio,Long idPersonaDestinatario,String tipoArchivoPlantilla) {
+		String nombreFin = null;
+
+		if (tipoArchivoPlantilla.equals(TIPOARCHIVO_FO)) {
+			
+			nombreFin = idPersonaDestinatario+".pdf";
+
+		} else if (tipoArchivoPlantilla.equals(TIPOARCHIVO_DOC)) {
+			//
+			nombreFin = beanEnvio.getIdInstitucion().toString() + "_" + beanEnvio.getIdEnvio().toString() + "_" +idPersonaDestinatario + ".doc";
+
+		} else {
+
+			nombreFin = beanEnvio.getIdInstitucion().toString() + "_" + beanEnvio.getIdEnvio().toString() + "_" + idPersonaDestinatario+ "." + tipoArchivoPlantilla;
+
+		}
+
+		return nombreFin;
+
 	}
 
 	public String generarDocumentoEnvioPDFDestinatario(EnvEnviosBean beanEnvio,EnvDestinatariosBean beanDestinatario
