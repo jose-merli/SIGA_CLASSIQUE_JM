@@ -417,7 +417,7 @@
 							<siga:Idioma key="gratuita.busquedaAsistencias.literal.guardia"/>
 						</td>
 						<td>
-							<siga:Select queryId="getGuardiasDeTurno" id="idGuardia"  parentQueryParamIds="idturno" params="${paramsGuardiasDeTurno}" selectedIds="${idGuardiaSelected}" width="300" />
+							<siga:Select queryId="getGuardiasDeTurno" id="idGuardia"  parentQueryParamIds="idturno" selectedIds="${idGuardiaSelected}" width="300" />
 						</td>
 					</tr>
 			
@@ -533,6 +533,9 @@
 			</siga:ConjCampos>
 	
 			<siga:ConjBotonesBusqueda botones="B"  titulo="menu.sjcs.solicitudesAceptadasCentralita"/>
+		 
+		  </html:form>
+			
 			<div id="divListado"></div>	
 			
 			
@@ -580,9 +583,7 @@
 				</c:otherwise>
 			
 			</c:choose>
-			
-			
-		</html:form>
+
 		
 		<!-- FIN: CAMPOS DE BUSQUEDA-->
 		<!-- Formularios auxiliares -->
