@@ -21,7 +21,7 @@
 
 <bean:define id="path" name="org.apache.struts.action.mapping.instance"
 	property="path" scope="request" />
-<input type="hidden" id="mensajeSuccess" name="mensajeSuccess" value="${mensajeSuccess}"/>
+<input type="hidden" id="mensajeSuccess" name="mensajeSuccess" class="inputNotSelect" value="${mensajeSuccess}"/>
 <siga:Table name="listadoInicial" border="1"
 	columnNames="<input type='checkbox' name='chkGeneral' onclick='marcarDesmarcarTodos(this);'/>,
 		    gratuita.busquedaAsistencias.literal.idAvisoCentralita,gratuita.seleccionColegiadoJG.literal.colegiado,gratuita.busquedaAsistencias.literal.guardia,
@@ -44,20 +44,20 @@
 					clase="listaNonEdit">
 					<td align='center'><input type="hidden"
 						id="idSolicitudAceptada_${status.count}"
-						value="${solicitudAceptadaCentralita.idSolicitudAceptada}">
+						value="${solicitudAceptadaCentralita.idSolicitudAceptada}" class="inputNotSelect"/>
 						<input type="hidden" id="idInstitucion_${status.count}"
-						value="${solicitudAceptadaCentralita.idInstitucion}"> 
+						value="${solicitudAceptadaCentralita.idInstitucion}" class="inputNotSelect"/> 
 						<input type="hidden"
 						id="idLlamada_${status.count}"
-						value="${solicitudAceptadaCentralita.idLlamada}">
+						value="${solicitudAceptadaCentralita.idLlamada}" class="inputNotSelect"/>
 						<input type="hidden"
 						id="fechaLlamada_${status.count}"
-						value="${solicitudAceptadaCentralita.fechaLlamadaHoras}">
+						value="${solicitudAceptadaCentralita.fechaLlamadaHoras}" class="inputNotSelect"/>
 						<input
-						type="checkbox" value="${status.count}" name="chkSolicitud">
+						type="checkbox" value="${status.count}" name="chkSolicitud" class="inputNotSelect"/>
 						<input type="hidden"
 						id="numAviso_${status.count}"
-						value="${solicitudAceptadaCentralita.numAvisoCV}">
+						value="${solicitudAceptadaCentralita.numAvisoCV}" class="inputNotSelect"/>
 					</td>
 					<td align="right"><c:out
 							value="${solicitudAceptadaCentralita.numAvisoCV}"></c:out></td>
@@ -97,6 +97,7 @@
 		buscarSolicitudesAceptadas(pagina,action);
 	
 	}
+	
 </script>
 
 

@@ -286,12 +286,12 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 				int rowNumPageSize = 0;
 				int page = 1;
 				String registrosPorPagina = null;
-				Short numSolicitudAceptadas = null;
-				if(pagina ==null){
+				Short numSolicitudAceptadas  = scsSolicitudesAcpetadasService.getNumSolicitudesAceptadas(solicitudAceptadaCentralitaVoForm);
+				if(pagina ==null || (request.getParameter("totalRegistros")!=null && numSolicitudAceptadas.shortValue()!=Short.valueOf(request.getParameter("totalRegistros")).shortValue())){
 					ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 					registrosPorPagina = properties.returnProperty("paginador.registrosPorPagina", true);
 					rowNumPageSize = Integer.parseInt(registrosPorPagina);
-					numSolicitudAceptadas = scsSolicitudesAcpetadasService.getNumSolicitudesAceptadas(solicitudAceptadaCentralitaVoForm);
+					
 					request.setAttribute("paginaSeleccionada", page);
 					request.setAttribute("totalRegistros", numSolicitudAceptadas.toString());
 					request.setAttribute("registrosPorPagina", registrosPorPagina);
