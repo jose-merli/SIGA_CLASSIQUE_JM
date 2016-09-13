@@ -2816,7 +2816,7 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 		}
 		jQuery("#"+loadingId).css('visibility', 'visible');
 		var dataObject = {};
-		dataObject = jQuery("select, input").not("*[data-queryparamid], input.tagSelect_disabled, input.tagSelect_searchBox").serializeObject();
+		dataObject = jQuery("select, input").not("*[data-queryparamid], input.inputNotSelect, input.tagSelect_disabled, input.tagSelect_searchBox").serializeObject();
 		jQuery("*[data-queryparamid]").each(function(){
 			var key = jQuery(this).data("queryparamid");
 			var value = jQuery(this).val();
@@ -2837,6 +2837,7 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 			dataObject[key] = value || '';
 			console.debug("ADDED queryparamid: " + key + " = " + dataObject[key]);
 		});
+		
 		if (params){
 			jQuery.each(params, function(index, param){
 				try{
