@@ -363,4 +363,7 @@ delete from GEN_PARAMETROS where PARAMETRO ='PREFIJO_SOJ' and MODULO = 'SCS'
  -- Subir la funcion F_SIGA_GETNIFINTERESADOSDES 
  
 -- Ejecutado en Integración por Adrian 2016-09-09 10:28
+
+ALTER TABLE SCS_PROCEDIMIENTOS
+MODIFY VIGENTE DEFAULT 1;
 		               
