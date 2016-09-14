@@ -167,7 +167,7 @@
 				var cmbPlantillaEnvio = document.getElementsByName("comboPlantillaEnvio")[0];
 				var opcionArray=cmbPlantillaEnvio.value.split(",");
 				var idTipoEnvio = opcionArray[2]; 
-				if(idTipoEnvio=='1'){
+				if(idTipoEnvio=='1'||idTipoEnvio=='7'){
 					DefinirEnviosForm.acuseRecibo.value = opcionArray[3] 
 				}
 				DefinirEnviosForm.submit();
