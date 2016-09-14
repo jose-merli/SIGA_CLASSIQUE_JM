@@ -199,7 +199,7 @@ public class ScsHitoFacturableAdm extends MasterBeanAdministrador {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Vector<Hashtable<String,Object>> obtenerHitosHistorico (String sInstitucion, String sIdTurno, String sIdGuardia) throws ClsExceptions {
+	public Vector<Hashtable<String,Object>> obtenerHitosHistorico (String sInstitucion, String sIdTurno, String sIdGuardia, String sIdFacturacion) throws ClsExceptions {
 		Vector<Hashtable<String,Object>> vHitos = new Vector<Hashtable<String,Object>>();
        try {
             StringBuilder sql = new StringBuilder();
@@ -256,13 +256,19 @@ public class ScsHitoFacturableAdm extends MasterBeanAdministrador {
             sql.append("=");
             sql.append(sIdGuardia);
             sql.append(" AND ");
+            sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
+            sql.append(".");
+            sql.append(FcsHistoricoHitoFactBean.C_IDFACTURACION);
+            sql.append("=");
+            sql.append(sIdFacturacion);            
+            sql.append(" AND ");
             sql.append(ScsHitoFacturableBean.T_NOMBRETABLA);
             sql.append(".");
             sql.append(ScsHitoFacturableBean.C_IDHITO);
             sql.append("=");
             sql.append(FcsHistoricoHitoFactBean.T_NOMBRETABLA);
             sql.append(".");
-            sql.append(FcsHistoricoHitoFactBean.C_IDHITO);
+            sql.append(FcsHistoricoHitoFactBean.C_IDHITO);            
             
             vHitos = this.selectGenerico(sql.toString());
             

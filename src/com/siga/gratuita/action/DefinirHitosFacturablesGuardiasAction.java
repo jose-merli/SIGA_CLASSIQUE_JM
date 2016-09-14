@@ -212,7 +212,7 @@ public class DefinirHitosFacturablesGuardiasAction extends MasterAction {
 			if (sBuscarFacturacionSJCS==null || sBuscarFacturacionSJCS.equals("")) {
 				vHitos = admHitoFacturable.obtenerHitosActual(sInstitucion, sIdTurno, sIdGuardia);
 			} else {
-				vHitos = admHitoFacturable.obtenerHitosHistorico(sInstitucion, sIdTurno, sIdGuardia);
+				vHitos = admHitoFacturable.obtenerHitosHistorico(sInstitucion, sIdTurno, sIdGuardia, sBuscarFacturacionSJCS);
 			}
 
 			// Si no hay una configuracion de guardias se muestra un mensaje
