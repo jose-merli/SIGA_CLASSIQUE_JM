@@ -345,7 +345,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
         4.1. Cuando tiene una fecha de proceso igual o anterior a la fecha de suscripcion:
         4.1.1. Si no se ha facturado, se realiza el borrado fisico de la suscripcion.
         4.1.2. Si se ha facturado, se pone como fecha de baja logica el ultimo dia facturado. 
-        4.2. Si la fecha de baja es posterior a la fecha de suscripcion, se pone como fecha de baja logica la fecha del proceso
+        4.2. Si la fecha de proceso es posterior a la fecha de suscripcion, se pone como fecha de baja logica la fecha del proceso
 
     - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER(4)
     - P_IDTIPOSERVICIOS - IN - Identificador del tipo de servicio - NUMBER(4)
@@ -491,7 +491,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
                         AND IDTIPOSERVICIOS = P_IDTIPOSERVICIOS
                         AND IDSERVICIO = P_IDSERVICIO
                         AND IDSERVICIOSINSTITUCION = P_IDSERVICIOSINSTITUCION
-                        AND IDSUSCRIPCION = IDSUSCRIPCION;
+                        AND IDSUSCRIPCION = V_IDSUSCRIPCION;
                          
                 ELSE
                     -- Borrado fisico de las suscripciones
@@ -501,7 +501,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
                         AND IDTIPOSERVICIOS = P_IDTIPOSERVICIOS
                         AND IDSERVICIO = P_IDSERVICIO
                         AND IDSERVICIOSINSTITUCION = P_IDSERVICIOSINSTITUCION
-                        AND IDSUSCRIPCION = IDSUSCRIPCION;  
+                        AND IDSUSCRIPCION = V_IDSUSCRIPCION;  
                 END IF;
                 
             ELSE
@@ -516,7 +516,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SERVICIOS_AUTOMATICOS IS
                     AND IDTIPOSERVICIOS = P_IDTIPOSERVICIOS
                     AND IDSERVICIO = P_IDSERVICIO
                     AND IDSERVICIOSINSTITUCION = P_IDSERVICIOSINSTITUCION
-                    AND IDSUSCRIPCION = IDSUSCRIPCION;   
+                    AND IDSUSCRIPCION = V_IDSUSCRIPCION;   
             END IF;      
             
             EXCEPTION
