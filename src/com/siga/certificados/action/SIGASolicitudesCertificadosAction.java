@@ -71,6 +71,7 @@ import com.siga.beans.CerPlantillasBean;
 import com.siga.beans.CerSolicitudCertificadosAdm;
 import com.siga.beans.CerSolicitudCertificadosBean;
 import com.siga.beans.CerSolicitudCertificadosTextoBean;
+import com.siga.beans.DuplicadosHelper;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacSerieFacturacionAdm;
@@ -85,6 +86,7 @@ import com.siga.beans.PysProductosInstitucionBean;
 import com.siga.beans.PysProductosSolicitadosAdm;
 import com.siga.beans.PysProductosSolicitadosBean;
 import com.siga.beans.PysServiciosSolicitadosBean;
+import com.siga.censo.form.MantenimientoDuplicadosForm;
 import com.siga.certificados.Certificado;
 import com.siga.certificados.form.SIGASolicitudesCertificadosForm;
 import com.siga.facturacion.Facturacion;
@@ -191,6 +193,10 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	                
 	            } else if (accion.equalsIgnoreCase("getAjaxSeleccionSerieFacturacionFacturacionMasiva")) {
 	            	getAjaxSeleccionSerieFacturacionFacturacionMasiva(request, response);	     
+					return null;
+	                
+	            } else if (accion.equalsIgnoreCase("getAjaxObtenerDuplicados")) {
+	            	getAjaxObtenerDuplicados(request, response);	     
 					return null;
 	                
 	            } else {
@@ -3530,5 +3536,70 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			response.getWriter().write(json.toString()); 		
 		}    	
 	
+		 /**
+		 *Obtiene los duplicados de una persona
+		 * @param request
+		 * @param response
+		 */
+		private void getAjaxObtenerDuplicados(HttpServletRequest request, HttpServletResponse response) throws Exception {	
+
+			DuplicadosHelper helper = new DuplicadosHelper();
+			MantenimientoDuplicadosForm miFormulario = new MantenimientoDuplicadosForm();
+			String composicionTabla ="";
+			
+			//Actualmente siempre va a ser TRUE, hasta que se cambie el código de  getPersonasSimilares
+			if(request.getParameter("checkIdentificador").equalsIgnoreCase("1")){
+				miFormulario.setChkIdentificador(Boolean.TRUE);
+			}else{
+				miFormulario.setChkIdentificador(Boolean.FALSE);
+			}
+			
+			miFormulario.setNifcif(request.getParameter("nidSolicitante"));
+			
+			Vector personasSimilares = helper.getPersonasSimilares(miFormulario);
+			Hashtable registro;
+			if(personasSimilares != null && personasSimilares.size() >0){
+				composicionTabla += "<tr><td WIDTH='18%' align='center'><strong>Nº de colegiado</strong></td><td WIDTH='18%' align='center'><strong>Nif</strong></td>"+
+						"<td WIDTH='18%' align='center'><strong>Nombre</strong></td><td WIDTH='18%' align='center'><strong>Apellido1</strong></td><td WIDTH='18%' align='center'><strong>Apellido2</td><strong></td>"+
+						"<td WIDTH='18%'>&nbsp;</td>";
+						
+						
+				 for (int i = 0; i < personasSimilares.size(); i++)	{
+					 registro =(Hashtable)personasSimilares.elementAt(i);
+					 
+					 composicionTabla +="<tr><td>"+(String)registro.get("NOCOLEGIADOCGAE")+"</td>" +
+					 		"<td>"+(String)registro.get("NIFCIF")+"</td>" +
+					 		"<td>"+(String)registro.get("NOMBRE")+"</td>" +
+					 		"<td>"+(String)registro.get("APELLIDOS1")+"</td>" +
+					 		"<td>"+(String)registro.get("APELLIDOS2")+"</td>" +
+					 		"<td> <img id='iconoboton_informacionLetrado1' src='/SIGA/html/imagenes/binformacionLetrado_off.gif' style='cursor:pointer;' alt='Información letrado' class='botonesIcoTabla' " +
+					 				"name='iconoFila' border='0' onClick='informacionLetrado("+(String)registro.get("IDPERSONA")+","+"2000"+");'>"+
+					 				"<img id='iconoboton_informacionLetrado1' src='/SIGA/html/imagenes/imagenCarpeta.png' style='cursor:pointer;' alt='Mantenimiento duplicados' class='botonesIcoTabla' " +
+					 				"name='iconoFila' border='0' " +
+					 				"onClick= mantenimientoDuplicados('"+(String)registro.get("NIFCIF")+"');>"+
+					 		"</td>";
+					 
+					 
+					 
+				 }
+			}
+			
+			
+			JSONObject json = new JSONObject();
+			UsrBean usr = this.getUserBean(request);
+			
+			// Devuelvo la lista de series de facturacion
+	    	ArrayList<String> aOptionsListadoDocumentacion = new ArrayList<String>();
+	    	if(composicionTabla != null && !"".equalsIgnoreCase(composicionTabla)){
+	    		aOptionsListadoDocumentacion.add(composicionTabla);
+	    	}
+	    	json.put("aOptionsListadoDocumentacion", aOptionsListadoDocumentacion);
+			
+			response.setContentType("text/x-json;charset=UTF-8");
+			response.setHeader("Cache-Control", "no-cache");
+			response.setHeader("Content-Type", "application/json");
+		    response.setHeader("X-JSON", json.toString());
+			response.getWriter().write(json.toString()); 		
+		}    	
 	
 }

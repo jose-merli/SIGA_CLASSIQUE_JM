@@ -104,8 +104,10 @@
 			
 <% 		} else { %>
 			<html:form  action="/CEN_BusquedaClientes.do" method="POST" target="mainWorkArea">
-			<html:hidden  name="busquedaClientesForm" property="modo"/>
-			<html:hidden  name="busquedaClientesForm" property="avanzada"/>
+				<html:hidden  name="busquedaClientesForm" property="modo"/>
+				<html:hidden  name="busquedaClientesForm" property="avanzada"/>
+				<html:hidden styleId="filaSelD" property="filaSelD"/>
+				<html:hidden styleId="tablaDatosDinamicosD" property="tablaDatosDinamicosD" value="ver"/>
 			</html:form>
 <%			
 		} 

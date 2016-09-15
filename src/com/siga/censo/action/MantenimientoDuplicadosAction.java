@@ -95,7 +95,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			if (miForm != null) {
 				String accion = miForm.getModo();
 				
-				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("inicio")){
+				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("inicio") || accion.equalsIgnoreCase("mantenimientoDuplicadosCertificados") ){
 					//aalg: en el acceso inicial a la página de duplicados tienen que estar chequeados todos
 					//aalg: añadido para el paginador
 					miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
@@ -104,7 +104,9 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					formDupl.setApellido1("");
 					formDupl.setApellido2("");
 					formDupl.setCampoOrdenacion("apellidos");
-					formDupl.setNifcif("");
+					//En el caso de que venga de certificados hay que mantener el nif
+					if(!accion.equalsIgnoreCase("mantenimientoDuplicadosCertificados"))
+						formDupl.setNifcif("");
 					formDupl.setNombre("");
 					formDupl.setNumeroColegiado("");
 					formDupl.setSentidoOrdenacion("asc");
