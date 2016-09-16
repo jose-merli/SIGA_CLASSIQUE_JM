@@ -522,8 +522,8 @@ public class SolicitudesModificacionAction extends MasterAction {
 						//beanHistorico.setIdPersona(Long.parseLong(miForm.getIdPersona()));
 						beanHistorico.setIdPersona(Long.parseLong((String) hashSol.get("IDPERSONA")));
 						beanHistorico.setDescripcion(miForm.getDescripcion());
-						beanHistorico.setFechaEfectiva(UtilidadesString.formatoFecha(GstDate.getHoyJava(),ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_LONG_SPANISH));
-						beanHistorico.setFechaEntrada(UtilidadesString.formatoFecha(hashSol.get("FECHAALTA").toString(),ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_LONG_SPANISH));
+						beanHistorico.setFechaEfectiva(UtilidadesString.formatoFecha(GstDate.getHoyJava(),ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_JAVA));
+						beanHistorico.setFechaEntrada(UtilidadesString.formatoFecha(hashSol.get("FECHAALTA").toString(),ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_JAVA));
 						int tipoCambio = Integer.parseInt(hashSol.get("IDTIPOMODIFICACION").toString());
 						if(tipoCambio % 10 != 0) tipoCambio=99;
 						beanHistorico.setIdTipoCambio(tipoCambio);
