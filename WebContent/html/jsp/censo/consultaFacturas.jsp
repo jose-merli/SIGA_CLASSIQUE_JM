@@ -206,8 +206,16 @@
 								Double totalPagado = UtilidadesHash.getDouble(factura, FacFacturaBean.C_IMPTOTALPAGADO);
 								
 								String sEstado = UtilidadesHash.getString(factura, "DESCRIPCION_ESTADO");
+								
+								// Si es letrado, o viene de consultar o esta pagado ... solamente se puede consultar
+							    String sBotones = "";
+							    if (usr.isLetrado() || accion.equalsIgnoreCase("ver") || total.doubleValue() == totalPagado.doubleValue()) { 
+									sBotones="C";
+								} else {
+									sBotones="C,E";
+								}
    	 			%>
-   	 				<siga:FilaConIconos fila='<%=""+i%>' botones="C" visibleEdicion="false" visibleBorrado="false" pintarEspacio="no" clase="listaNonEdit"> 
+   	 				<siga:FilaConIconos fila='<%=""+i%>' botones="<%=sBotones%>" visibleEdicion="false" visibleBorrado="false" pintarEspacio="no" clase="listaNonEdit"> 
 						<td><!-- Datos ocultos tabla -->
 							<input type="hidden" id="oculto<%=i%>_1" name="oculto<%=i%>_1" value="<%=idInstitucion%>">
 							<input type="hidden" id="oculto<%=i%>_2" name="oculto<%=i%>_2" value="<%=idFactura%>">

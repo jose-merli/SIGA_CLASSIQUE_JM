@@ -69,7 +69,7 @@ public class FacturasClienteAction extends MasterAction {
 					mapDestino = abrir(mapping, miForm, request, response);
 					break;
 				} 
-				else if (accion.equalsIgnoreCase("ver")){
+				else if (accion.equalsIgnoreCase("ver") || accion.equalsIgnoreCase("editar")){
 					mapDestino = ver(mapping, miForm, request, response);
 					break;
 				}
@@ -158,12 +158,17 @@ public class FacturasClienteAction extends MasterAction {
 			Double totalPagado = new Double((String)vOcultos.get(3));
 			String accion = (String)vOcultos.get(4);
 			String idPersona = (String)vOcultos.get(5);
-
-			if (!accion.equalsIgnoreCase("ver")) {
+			
+			String modo = form.getModo();
+			
+			if (accion.equalsIgnoreCase("ver") || modo.equalsIgnoreCase("ver")) {
+				accion = "ver";
+			} else { // accion=editar + modo=editar
 				if (total.doubleValue() == totalPagado.doubleValue()) {
 					accion = "ver";
+				} else {
+					accion = "editar";
 				}
-				else accion = "editar";
 			}
 			
 			Hashtable<String,String> datosFac = new Hashtable<String,String>();
