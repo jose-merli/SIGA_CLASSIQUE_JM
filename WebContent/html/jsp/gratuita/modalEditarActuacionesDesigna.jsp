@@ -383,9 +383,6 @@
 				document.MantenimientoProcedimientosForm.codigoBusqueda.value = document.getElementById("codigoBusquedaAux").value;
 				document.MantenimientoProcedimientosForm.submit();		
 			 }
-			else {
-				document.getElementById("procedimiento").value=-1;			
-			}
 		}		
 		
 		function traspasoDatos(resultado){			
