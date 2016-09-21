@@ -16,6 +16,7 @@
 <%@ taglib uri = "libreria_SIGA.tld" 	prefix = "siga"%>
 <%@ taglib uri = "struts-bean.tld"  	prefix = "bean"%>
 <%@ taglib uri = "struts-html.tld" 		prefix = "html"%>
+<%@ taglib uri = "c.tld" 				prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="com.siga.gratuita.form.MantenimientoJuzgadoForm" %>
@@ -434,13 +435,22 @@
 		</table>
 	</html:form>	
 	
-	<siga:ConjBotonesAccion botones="C,Y,R" modo="<%=accion%>" modal="G" modo="<%=modo%>" titulo="gratuita.mantenimientoTablasMaestra.literal.procedimientos" clase="botonesSeguido"/>
-		
-	<siga:Table 
-		name="tablaResultados"
-		border="1"
-		columnNames="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,gratuita.procedimientos.literal.codigo,gratuita.procedimientos.literal.nombre,gratuita.procedimientos.literal.importe,gratuita.procedimientos.literal.Jurisdiccion,"
-		columnSizes="5,10,50,10,20,5">
+	<siga:ConjBotonesAccion botones="C,Y,R" modal="G" modo="<%=modo%>" titulo="gratuita.mantenimientoTablasMaestra.literal.procedimientos" clase="botonesSeguido"/>
+
+	<c:set var="columnNames" value="<input type='checkbox' name='chkGeneral'  id='chkGeneral' onclick='cargarChecksTodos(this)'/>,gratuita.procedimientos.literal.codigo,gratuita.procedimientos.literal.nombre,gratuita.procedimientos.literal.importe,gratuita.procedimientos.literal.Jurisdiccion," />
+	<c:set var="columnSizes" value="5,10,50,10,20,5" />
+	<c:if test="${modo=='ver'}">
+		<c:set var="columnNames" value="gratuita.procedimientos.literal.codigo,gratuita.procedimientos.literal.nombre,gratuita.procedimientos.literal.importe,gratuita.procedimientos.literal.Jurisdiccion," />
+		<c:set var="columnSizes" value="10,50,10,20,5" />
+	</c:if>
+	<siga:Table	
+			name="tablaResultados"
+			border="1"
+			columnNames="${columnNames}"
+			columnSizes="${columnSizes}"
+			>
+
+	
 				
 <% 
 		if (vProcedimientos != null && vProcedimientos.size()>0) {
@@ -457,7 +467,9 @@
 					String jurisdiccion = UtilidadesHash.getString (hash, "JURISDICCION");
 %>
 					<tr>
+					<% if(!modo.equalsIgnoreCase("VER")){ %>
 						<td width="5"></td>
+					<% } %>
 						<td width="10"></td>
 						<td width="50"></td>
 						<td width="10"></td>
@@ -466,16 +478,17 @@
 					</tr>
 					<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' visibleConsulta="no" visibleEdicion="no" visibleBorrado="no" pintarEspacio="no" botones=''  elementos="<%=elems%>"  modo="<%=modo%>" clase="listaNonEdit">
 						
-					
-					
+						
+						<% if(!modo.equalsIgnoreCase("VER")){ %>
+							<td align="center">
+								<input type="checkbox" id="chkModulos_<%=String.valueOf(i+1)%>"  name="chkModulos" >
+							</td>
+						<% } %>
 						<td align="center">
 							<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=idInstitucionProcedimiento%>">
 							<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_2" value="<%=idProcedimiento%>">
 							<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_3" value="<%=idInstitucionJuzgado%>">
 							<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_4" value="<%=idJuzgado%>">
-							<input type="checkbox" id="chkModulos_<%=String.valueOf(i+1)%>"  name="chkModulos" >
-						</td>
-						<td align="center">
 							
 							<%=UtilidadesString.mostrarDatoJSP(codigo)%>
 						</td>
