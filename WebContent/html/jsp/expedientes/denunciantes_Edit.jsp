@@ -182,7 +182,7 @@
 				if(form.getFechaBaja() != null && !"".equalsIgnoreCase(form.getFechaBaja()) ){
 			%>
 				<td class="labelText">
-					<span style="color: red;">(DIRECCIÓN DE BAJA)</span> 
+					<span style="color: red;" id="direccionBaja">(DIRECCIÓN DE BAJA)</span> 
 				</td>
 			<%
 				}
@@ -355,7 +355,6 @@
 		
 		function buscarCliente()
 		{		
-			
 			var resultado=ventaModalGeneral("busquedaClientesModalForm","G");
 			if (resultado!=undefined && resultado[0]!=undefined ){
 				document.ExpDenuncianteForm.idPersona.value       = resultado[0];
@@ -413,7 +412,7 @@
 				document.ExpDenuncianteForm.pais.value=direccion[3];
 				document.ExpDenuncianteForm.cpostal.value=direccion[4];
 				document.ExpDenuncianteForm.idDireccion.value=direccion[11];
-
+				jQuery("#direccionBaja").hide();
 				if (trim(direccion[13])=="") document.ExpDenuncianteForm.telefono.value=direccion[14]; // el movil
 				else document.ExpDenuncianteForm.telefono.value=direccion[13];
 			} 
@@ -423,7 +422,6 @@
 		
 		function nuevaDireccion() 
 		{
-			
 			if(document.ExpDenuncianteForm.idPersona.value.length == 0) {					
 					alert ('<siga:Idioma key="factSJCS.resumenPagos.literal.seleccionarPersona"/>');
 					return;

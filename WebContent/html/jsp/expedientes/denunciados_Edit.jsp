@@ -188,7 +188,7 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 				if(form.getFechaBaja() != null && !"".equalsIgnoreCase(form.getFechaBaja()) ){
 			%>
 				<td class="labelText">
-					<span style="color: red;">(DIRECCIÓN DE BAJA)</span> 
+					<span style="color: red;" id="direccionBaja">(DIRECCIÓN DE BAJA)</span> 
 				</td>
 			<%
 				}
@@ -427,7 +427,7 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 				document.ExpDenunciadoForm.pais.value=direccion[3];
 				document.ExpDenunciadoForm.cpostal.value=direccion[4];
 				document.ExpDenunciadoForm.idDireccion.value=direccion[11];
-				
+				jQuery("#direccionBaja").hide();
 
 				if (trim(direccion[13])=="") document.ExpDenunciadoForm.telefono.value=direccion[14]; // el movil
 				else document.ExpDenunciadoForm.telefono.value=direccion[13];
