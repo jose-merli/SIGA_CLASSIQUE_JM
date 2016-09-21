@@ -64,7 +64,7 @@
 			<tr>
 				<td class="labelText"><siga:Idioma key="sjcs.actas.anio" />/<siga:Idioma key="sjcs.actas.numeroActa" /> (*)</td>
 				<td>
-					<html:text name="ActaComisionForm" property="anioActa" style="width:40px" maxlength="4" styleClass="box" onkeypress="return soloDigitos(event)"></html:text>
+					<html:text name="ActaComisionForm" property="anioActa" style="width:40px" maxlength="4" styleClass="box" onkeyup="return onchangeSufijo();" onkeypress="return soloDigitos(event);"></html:text>
 					/
 					<html:text name="ActaComisionForm" property="numActa" style="width:40px" maxlength="7" styleClass="box"></html:text>
 					
