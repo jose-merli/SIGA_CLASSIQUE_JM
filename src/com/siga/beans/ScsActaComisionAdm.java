@@ -302,7 +302,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		if(filtros.get(ScsActaComisionBean.C_IDSECRETARIO)!=null && !filtros.get(ScsActaComisionBean.C_IDSECRETARIO).toString().equalsIgnoreCase("")){
 			consulta.append(" and act." + ScsActaComisionBean.C_IDSECRETARIO + " = " + filtros.get(ScsActaComisionBean.C_IDSECRETARIO).toString());
 		}
-		consulta.append(" order by act." + ScsActaComisionBean.C_ANIOACTA + " desc,  to_number(regexp_replace(NUMEROACTA, '\\D', '')) desc,NUMEROACTA");
+		consulta.append(" order by act." + ScsActaComisionBean.C_ANIOACTA + " desc,  to_number(regexp_replace(NUMEROACTA, '\\D', '')) desc,NUMEROACTA desc");
 		Paginador<Vector> paginador = new Paginador<Vector>(consulta.toString());
 		return paginador;
 		
