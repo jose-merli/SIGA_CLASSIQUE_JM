@@ -382,4 +382,9 @@ Modificado PKG_SERVICIOS_AUTOMATICOS;
  UPDATE gen_parametros
     SET parametro = 'FILTRAR_MODULOS_PORFECHA', fechamodificacion = SYSDATE
   WHERE parametro = 'FILTRAR_MODULOS_PORFECHA_DESIGNACION';
+  
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('comunicaciones.plantillas.error.archivosZip', 'En el fichero zip es obligatorio incluir el fichero fo. Las imagenes son opcionales y deben ser de tipo png, gif y jpg.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('comunicaciones.plantillas.error.archivosZip', 'En el fichero zip es obligatorio incluir el fichero fo. Las imagenes son opcionales y deben ser de tipo png, gif y jpg.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('comunicaciones.plantillas.error.archivosZip', 'En el fichero zip es obligatorio incluir el fichero fo. Las imagenes son opcionales y deben ser de tipo png, gif y jpg.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('comunicaciones.plantillas.error.archivosZip', 'En el fichero zip es obligatorio incluir el fichero fo. Las imagenes son opcionales y deben ser de tipo png, gif y jpg.#GL', 0, '4', sysdate, 0, '19');
 		               

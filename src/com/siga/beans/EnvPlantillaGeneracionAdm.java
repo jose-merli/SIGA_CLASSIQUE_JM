@@ -353,8 +353,8 @@ public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
 	                        FileOutputStream fos = null;
 	                        
 	                        //if (cont==0)
-	                        if (sNombreAux.toLowerCase().endsWith(".doc")){
-	                        	throw new SIGAException("messages.certificados.error.nocomunicacion");
+	                        if (!sNombreAux.toLowerCase().endsWith(".fo")&&!sNombreAux.toLowerCase().endsWith(".jpg")&&sNombreAux.toLowerCase().endsWith(".gif")&&sNombreAux.toLowerCase().endsWith(".png")){
+	                        	throw new SIGAException("comunicaciones.plantillas.error.archivosZip");
 	                        }
 	                        else if (sNombreAux.endsWith(".fo"))
 	                        {
@@ -387,6 +387,10 @@ public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
 	                zf.close();
 	                
 	                File fTemp = new File(sNombreFinal + ".tmp");
+	                if(!fTemp.exists()){
+	                	throw new SIGAException("comunicaciones.plantillas.error.archivosZip");
+	                	
+	                }
 	                
 	                BufferedReader br = new BufferedReader(new FileReader(fTemp));
 	                String sLeido="";
