@@ -368,4 +368,18 @@ ALTER TABLE SCS_PROCEDIMIENTOS
 MODIFY VIGENTE DEFAULT 1;
 
 Modificado PKG_SERVICIOS_AUTOMATICOS;
+
+ UPDATE gen_parametros
+    SET valor = '0'
+  WHERE parametro = 'FILTRAR_MODULOS_PORFECHA_DESIGNACION'
+    AND VALOR = 'N';
+ 
+ UPDATE gen_parametros
+    SET valor = '1'
+  WHERE parametro = 'FILTRAR_MODULOS_PORFECHA_DESIGNACION'
+    AND VALOR = 'S';
+ 
+ UPDATE gen_parametros
+    SET parametro = 'FILTRAR_MODULOS_PORFECHA', fechamodificacion = SYSDATE
+  WHERE parametro = 'FILTRAR_MODULOS_PORFECHA_DESIGNACION';
 		               
