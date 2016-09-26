@@ -64,6 +64,7 @@ import com.siga.beans.FacFacturaIncluidaEnDisqueteAdm;
 import com.siga.beans.FacFacturaIncluidaEnDisqueteBean;
 import com.siga.beans.FacFacturacionProgramadaAdm;
 import com.siga.beans.FacFacturacionProgramadaBean;
+import com.siga.beans.FacFicherosDescargaBean;
 import com.siga.beans.FacLineaDevoluDisqBancoAdm;
 import com.siga.beans.FacLineaDevoluDisqBancoBean;
 import com.siga.beans.FacLineaFacturaAdm;
@@ -483,13 +484,18 @@ public class Facturacion {
 	
 	private void generarZip(String idInstitucion, String nombreFichero) throws SIGAException, ClsExceptions{
 	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);		
-		String sRutaTemporal = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava") + 
+	    
+	    FacFacturaAdm factAdm = new FacFacturaAdm(usrbean);
+	    FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(usrbean);
+	    CenPersonaAdm personaAdm = new CenPersonaAdm(usrbean);
+	    
+	    String sRutaTemporal = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava") + 
 								rp.returnProperty("facturacion.directorioFacturaPDFJava") +
 								File.separator + idInstitucion + File.separator;
 		String sRutaJava = sRutaTemporal + nombreFichero + File.separator;
 
-		ArrayList<File> lista = new ArrayList<File>();
-
+		ArrayList<FacFicherosDescargaBean> lista = new ArrayList<FacFicherosDescargaBean>();
+		FacFicherosDescargaBean facFicherosDescargaBean = null;
 		//Control de que no exista el fichero a descargar:
 		File directorio = new File(sRutaJava);
 
@@ -500,8 +506,40 @@ public class Facturacion {
 			
 		} else {
 			for (int x=0;x<ficheros.length;x++){
+				facFicherosDescargaBean = new FacFicherosDescargaBean();
 				File fichero = new File(sRutaJava+File.separator+ficheros[x]);
-				lista.add(fichero);
+				String[] nombreFicherosarrays = fichero.getName().split("-");
+				String[] separacionExtensionDelFichero = nombreFicherosarrays[1].split(Pattern.quote("."));
+				
+				//Obtenemos las facturas del fichero para obtener el tipo de formato de salida del pdf 
+				Vector<?> factura = factAdm.getFactura(idInstitucion, separacionExtensionDelFichero[0]);
+				Hashtable<String, Object> hFactura = (Hashtable<String, Object>) factura.get(0);
+				
+				String idPersona = (String)hFactura.get(FacFacturaBean.C_IDPERSONA);
+				String idSerieFacturacion = (String)hFactura.get(FacFacturaBean.C_IDSERIEFACTURACION);
+				String idInstitucionFac= (String)hFactura.get(FacFacturaBean.C_IDINSTITUCION);
+				
+				// Obtenemos el nombre de la persona de la factura
+				String nombreColegiado ="";
+				if(idPersona != null && !"".equalsIgnoreCase(idPersona)){
+					 nombreColegiado = personaAdm.obtenerNombreApellidos(idPersona);
+					if(nombreColegiado != null && !"".equalsIgnoreCase(nombreColegiado)){
+						nombreColegiado = UtilidadesString.eliminarAcentosYCaracteresEspeciales(nombreColegiado)+"-";	
+					}else{
+						nombreColegiado="";
+					}
+				}
+				String where = " WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion +
+						" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +" = " + idInstitucionFac;
+				Vector<FacSerieFacturacionBean> vSeriesFacturacion = admSerieFacturacion.select(where);
+				
+				if (vSeriesFacturacion!=null && vSeriesFacturacion.size()>0) {
+					FacSerieFacturacionBean beanSerieFacturacion = vSeriesFacturacion.get(0);
+					facFicherosDescargaBean.setFormatoDescarga(beanSerieFacturacion.getIdNombreDescargaPDF() );
+					facFicherosDescargaBean.setFichero(fichero);
+					facFicherosDescargaBean.setNombreFacturaFichero(nombreColegiado);
+					lista.add(facFicherosDescargaBean);
+				}
 			}
 			
 			this.doZip(sRutaTemporal, nombreFichero, lista);
@@ -514,8 +552,8 @@ public class Facturacion {
 	 * @param ficherosPDF
 	 * @throws ClsExceptions
 	 */
-	public void doZip(String rutaServidorDescargasZip, String nombreFichero, ArrayList<File> ficherosPDF) throws ClsExceptions	{
-		doZipGeneracionRapida(rutaServidorDescargasZip,nombreFichero,ficherosPDF,null);
+	public void doZip(String rutaServidorDescargasZip, String nombreFichero, ArrayList<FacFicherosDescargaBean> ficherosPDF) throws ClsExceptions	{
+		doZipGeneracionRapida(rutaServidorDescargasZip,nombreFichero,ficherosPDF);
 	}
     
 	
@@ -526,7 +564,7 @@ public class Facturacion {
 	 * @param ficherosPDF
 	 * @throws ClsExceptions
 	 */
-	public void doZipGeneracionRapida(String rutaServidorDescargasZip, String nombreFichero, ArrayList<File> ficherosPDF,String nombreFicherosAdjuntos) throws ClsExceptions	{
+	public void doZipGeneracionRapida(String rutaServidorDescargasZip, String nombreFichero, ArrayList<FacFicherosDescargaBean> ficherosPDF) throws ClsExceptions	{
 		// Generar Zip
 		File ficZip=null;
 		byte[] buffer = new byte[8192];
@@ -551,14 +589,37 @@ public class Facturacion {
 				for (int i=0; i<ficherosPDF.size(); i++)
 				{
 
-				    File auxFile = (File)ficherosPDF.get(i);
+				    File auxFile = (File)ficherosPDF.get(i).getFichero();
 				    ClsLogging.writeFileLog("DESCARGA DE FACTURAS: fichero numero "+i+" longitud="+auxFile.length(),10);
 					if (auxFile.exists()) {
 						ZipEntry ze = null;
-						if(nombreFicherosAdjuntos != null && !"".equalsIgnoreCase(nombreFicherosAdjuntos)){
-							 ze = new ZipEntry(nombreFicherosAdjuntos+"-"+auxFile.getName());
-						}else{
-							 ze = new ZipEntry(auxFile.getName());
+						String[] nombreFicherosarrays;
+						
+						switch (ficherosPDF.get(i).getFormatoDescarga()) {
+						case 1:
+								 nombreFicherosarrays = auxFile.getName().split("-");
+								 ze = new ZipEntry(nombreFicherosarrays[1]);
+							break;
+						case 2:
+							//Quitamos la extensión y añadimos el nombre más la extensión
+								String[] separacionExtensionDelFichero = auxFile.getName().split(Pattern.quote("."));
+								String[] separacionNombreColegiado = ficherosPDF.get(i).getNombreFacturaFichero().split("-");
+								nombreFicherosarrays = separacionExtensionDelFichero[0].split("-");
+								
+								ze = new ZipEntry(nombreFicherosarrays[1] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
+							break;
+						case 3:
+								nombreFicherosarrays = auxFile.getName().split("-");
+								ze = new ZipEntry(ficherosPDF.get(i).getNombreFacturaFichero()+ nombreFicherosarrays[1]);
+							break;
+						case -1: //Tipos de ficheros especiales cuyo nombre no se ha de modificar
+							ze = new ZipEntry(auxFile.getName());
+						break;
+	
+						default:
+							nombreFicherosarrays = auxFile.getName().split("-");
+							ze = new ZipEntry(ficherosPDF.get(i).getNombreFacturaFichero()+  nombreFicherosarrays[1]);
+							break;
 						}
 						outTemp.putNextEntry(ze);
 						FileInputStream fis=new FileInputStream(auxFile);
@@ -1015,6 +1076,8 @@ public class Facturacion {
 			FacPlantillaFacturacionAdm plantillaAdm = new FacPlantillaFacturacionAdm(userbean);		
 			FacFacturacionProgramadaAdm facProgAdm = new FacFacturacionProgramadaAdm(userbean);
 			InformeFactura inf = new InformeFactura(userbean);
+			FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(userbean);
+		    CenPersonaAdm personaAdm = new CenPersonaAdm(userbean);
 			
 			// Obtengo las facturas a almacenar		    		    
 		    Vector<?> vFacturas = admF.getFacturasDeFacturacionProgramada(institucion.toString(), serieFacturacion.toString(), idProgramacion.toString());
@@ -1097,8 +1160,11 @@ public class Facturacion {
 			//Aunque nos ha fallado esta factura es posible que la siguiente, no.
     		//POR LO TANTO no COMPROBAMOS QUE HAYA SIDO CORRECTO EL CAMBIO ANTERIOR
 			//while (correcto && listaFacturas.hasMoreElements()){
+			ArrayList<FacFicherosDescargaBean> listaFicherosPDFDescarga = new ArrayList<FacFicherosDescargaBean> ();
 			ArrayList<File> listaFicheros = new ArrayList<File>();
+			FacFicherosDescargaBean facFicherosDescargaBean = null;
     		while (listaFacturas.hasMoreElements()){
+    			facFicherosDescargaBean = new FacFicherosDescargaBean();
     			try {
 	    			Hashtable<String,Object> facturaHash = (Hashtable<String,Object>)listaFacturas.nextElement();
 	    			idFactura = (String)facturaHash.get(FacFacturaBean.C_IDFACTURA);
@@ -1117,6 +1183,30 @@ public class Facturacion {
 	    				if (filePDF==null) {
 	    				    throw new ClsExceptions("message.facturacion.error.fichero.nulo");				
 	    				} else {
+	    					
+	    					// Obtenemos el nombre de la persona de la factura
+	    					String nombreColegiado ="";
+	    				    nombreColegiado ="";
+	    					if(idPersona != null && !"".equalsIgnoreCase(idPersona)){
+	    						 nombreColegiado = personaAdm.obtenerNombreApellidos(idPersona);
+	    						if(nombreColegiado != null && !"".equalsIgnoreCase(nombreColegiado)){
+	    							nombreColegiado = UtilidadesString.eliminarAcentosYCaracteresEspeciales(nombreColegiado)+"-";	
+	    						}else{
+	    							nombreColegiado="";
+	    						}
+	    					}
+	    					String where = " WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + serieFacturacion.toString()+
+	    							" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +" = " + (String)facturaHash.get(FacFacturaBean.C_IDINSTITUCION);
+	    					Vector<FacSerieFacturacionBean> vSeriesFacturacion = admSerieFacturacion.select(where);
+	    					
+	    					if (vSeriesFacturacion!=null && vSeriesFacturacion.size()>0) {
+	    						FacSerieFacturacionBean beanSerieFacturacion = vSeriesFacturacion.get(0);
+	    						facFicherosDescargaBean.setFormatoDescarga(beanSerieFacturacion.getIdNombreDescargaPDF() );
+	    						facFicherosDescargaBean.setFichero(filePDF);
+		    					facFicherosDescargaBean.setNombreFacturaFichero(nombreColegiado);
+		    					listaFicherosPDFDescarga.add(facFicherosDescargaBean);
+	    					}
+		
 	    					listaFicheros.add(filePDF);
 	    				}
 						
@@ -1223,6 +1313,10 @@ public class Facturacion {
 						for (int i=0; i<fichPrev.size(); i++) {
 			    			File ficheroXls = fichPrev.get(0);
 			    			listaFicheros.add(ficheroXls);
+			    			FacFicherosDescargaBean facFicherosDescargaBeanXls = new FacFicherosDescargaBean();
+			    			facFicherosDescargaBeanXls.setFichero(ficheroXls);
+			    			facFicherosDescargaBeanXls.setFormatoDescarga(-1);     //Ponemos -4 para indicar que el nombre de este ficho en la descarga no se debe de modificar
+			    			listaFicherosPDFDescarga.add(facFicherosDescargaBeanXls);
 			    		}
 					}	
 				}
@@ -1230,7 +1324,7 @@ public class Facturacion {
 
 	    		// inc6666 - Si es correcto generamos el ZIP con los pdfs firmados y el documento excel de facturacion
 				ruta = ficheroPdfFirmado.getParentFile().getParentFile().getParentFile().getPath() + File.separator; // "\Datos\SIGADES\ficheros\facturas_emitidas\" + idInstitucion + "\"
-				this.doZip(ruta, serieFacturacion.toString() + "_" + idProgramacion.toString(), listaFicheros);
+				this.doZip(ruta, serieFacturacion.toString() + "_" + idProgramacion.toString(), listaFicherosPDFDescarga);
     		}
     		
     		// Eliminacion de los pdfs firmados, el documento excel de la facturacion y su carpeta
@@ -2479,30 +2573,35 @@ public class Facturacion {
 									
 						Vector<FacSerieFacturacionBean> vSeriesFacturacion = admSerieFacturacion.select(where);
 												
-				
+						String[] nombreFicherosarrays;
 						if (vSeriesFacturacion!=null && vSeriesFacturacion.size()>0) {
 							FacSerieFacturacionBean beanSerieFacturacion = vSeriesFacturacion.get(0);
-						
 							switch (beanSerieFacturacion.getIdNombreDescargaPDF()) {
 							case 1:
-								request.setAttribute("nombreFichero",fichero.getName());
+									 nombreFicherosarrays = fichero.getName().split("-");
+									 request.setAttribute("nombreFichero",nombreFicherosarrays[1]);
 								break;
 							case 2:
 								//Quitamos la extensión y añadimos el nombre más la extensión
 								String[] separacionExtensionDelFichero = fichero.getName().split(Pattern.quote("."));
 								String[] separacionNombreColegiado = nombreColegiado.split("-");
-								request.setAttribute("nombreFichero",separacionExtensionDelFichero[0] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
+								nombreFicherosarrays = separacionExtensionDelFichero[0].split("-");
+								
+								request.setAttribute("nombreFichero",nombreFicherosarrays[1] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
 								break;
 							case 3:
-								request.setAttribute("nombreFichero",nombreColegiado+ fichero.getName());
+								nombreFicherosarrays = fichero.getName().split("-");
+								request.setAttribute("nombreFichero",nombreColegiado+ nombreFicherosarrays[1]);
 								break;
 		
 							default:
-								request.setAttribute("nombreFichero",nombreColegiado+ fichero.getName());
+								nombreFicherosarrays = fichero.getName().split("-");
+								request.setAttribute("nombreFichero",nombreColegiado+  nombreFicherosarrays[1]);
 								break;
 							}
 						}else{
-							request.setAttribute("nombreFichero",nombreColegiado+ fichero.getName());
+							nombreFicherosarrays = fichero.getName().split("-");
+							request.setAttribute("nombreFichero",nombreColegiado+ nombreFicherosarrays[1]);
 						}
 					}
 					String path =  UtilidadesString.replaceAllIgnoreCase( fichero.getPath(), "\\", "/");

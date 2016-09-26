@@ -25,8 +25,11 @@ import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
+import com.siga.beans.FacFicherosDescargaBean;
 import com.siga.beans.FacLineaFacturaAdm;
 import com.siga.beans.FacPlantillaFacturacionAdm;
+import com.siga.beans.FacSerieFacturacionAdm;
+import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.facturacion.Facturacion;
 import com.siga.general.SIGAException;
 
@@ -324,7 +327,8 @@ public class InformeFactura extends MasterReport {
 			
 		try {
 		    ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		    
+		    FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(usrbean);
+		    CenPersonaAdm personaAdm = new CenPersonaAdm(usrbean);
 		    // Obtenemos las rutas del zip
 		    String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoFacturaPDFJava") + rp.returnProperty("facturacion.directorioFacturaPDFJava") + File.separator + idInstitucion;
 		    String rutaFicheroZip = rutaAlmacen + File.separator + idPeticion + ".zip";
@@ -349,12 +353,18 @@ public class InformeFactura extends MasterReport {
 			
 			// Se crea un array con los pdf del zip
 			ArrayList<File> listaFicherosPDF = new ArrayList<File>();
+			ArrayList<FacFicherosDescargaBean> listaFicherosPDFDescarga = new ArrayList<FacFicherosDescargaBean> ();
 			ArrayList<Hashtable<String,Object>> arrayDatosFacturas = new ArrayList<Hashtable<String,Object>>();
-			
+			FacFicherosDescargaBean facFicherosDescargaBean = null;
 			// Recorre las facturas asociadas a una peticion
 			for (int i = 0; i < vFacturas.size(); i++) {
+				
+				facFicherosDescargaBean = new FacFicherosDescargaBean();
 				/** Generamos cada PDF de la facturacion para ir añadiendolo al ZIP **/
 				Hashtable<String, Object> hFactura = (Hashtable<String, Object>) vFacturas.get(i);
+				String idPersona = (String)hFactura.get(FacFacturaBean.C_IDPERSONA);
+				String idSerieFacturacion = (String)hFactura.get(FacFacturaBean.C_IDSERIEFACTURACION);
+				String idInstitucionFac= (String)hFactura.get(FacFacturaBean.C_IDINSTITUCION);
 				File ficheroPdf = this.generarPdfFacturaFirmada(request, hFactura);
 
 				// Comprobamos que exista el fichero pdf de la factura
@@ -363,7 +373,30 @@ public class InformeFactura extends MasterReport {
 				} else if (!ficheroPdf.exists()) {
 					throw new SIGAException("messages.general.error.ficheroNoExisteReintentar");
 				}
-
+				// Obtenemos el nombre de la persona de la factura
+				String nombreColegiado ="";
+			    nombreColegiado ="";
+				if(idPersona != null && !"".equalsIgnoreCase(idPersona)){
+					 nombreColegiado = personaAdm.obtenerNombreApellidos(idPersona);
+					if(nombreColegiado != null && !"".equalsIgnoreCase(nombreColegiado)){
+						nombreColegiado = UtilidadesString.eliminarAcentosYCaracteresEspeciales(nombreColegiado)+"-";	
+					}else{
+						nombreColegiado="";
+					}
+				}
+				String where = " WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion +
+						" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +" = " + idInstitucionFac;
+				Vector<FacSerieFacturacionBean> vSeriesFacturacion = admSerieFacturacion.select(where);
+				
+				if (vSeriesFacturacion!=null && vSeriesFacturacion.size()>0) {
+					FacSerieFacturacionBean beanSerieFacturacion = vSeriesFacturacion.get(0);
+					facFicherosDescargaBean.setFormatoDescarga(beanSerieFacturacion.getIdNombreDescargaPDF() );
+					facFicherosDescargaBean.setFichero(ficheroPdf);
+					facFicherosDescargaBean.setNombreFacturaFichero(nombreColegiado);
+					listaFicherosPDFDescarga.add(facFicherosDescargaBean);
+				}
+				
+				
 				// Si llega a este punto, o bien existia el fichero previamente, o bien lo hemos generado => Lo incluimos en el array con los pdf del zip
 				listaFicherosPDF.add(ficheroPdf);				
 
@@ -379,8 +412,7 @@ public class InformeFactura extends MasterReport {
 			//Obtenemos el bean del envio: 
 			CenPersonaAdm admPersona = new CenPersonaAdm(usrbean);
 			
-			facturacion.doZipGeneracionRapida(rutaAlmacen + File.separator, idPeticion, listaFicherosPDF,
-					UtilidadesString.eliminarAcentosYCaracteresEspeciales(admPersona.obtenerNombreApellidos((String)vFacturas.get(0).get("IDPERSONA"))));
+			facturacion.doZipGeneracionRapida(rutaAlmacen + File.separator, idPeticion, listaFicherosPDFDescarga);
 			
 			// Eliminacion de los pdfs firmados y su carpeta
 			File directorio = null;

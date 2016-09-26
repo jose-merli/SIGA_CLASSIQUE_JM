@@ -222,30 +222,35 @@ public class GestionarFacturaDatosGeneralesAction extends MasterAction{
 							
 				Vector<FacSerieFacturacionBean> vSeriesFacturacion = admSerieFacturacion.select(where);
 										
-		
+				String[] nombreFicherosarrays;
 				if (vSeriesFacturacion!=null && vSeriesFacturacion.size()>0) {
 					FacSerieFacturacionBean beanSerieFacturacion = vSeriesFacturacion.get(0);
 				
 					switch (beanSerieFacturacion.getIdNombreDescargaPDF()) {
 					case 1:
-						request.setAttribute("nombreFichero",filePDF.getName());
+						nombreFicherosarrays = filePDF.getName().split("-");
+						request.setAttribute("nombreFichero",nombreFicherosarrays[1]);
 						break;
 					case 2:
 						//Quitamos la extensión y añadimos el nombre más la extensión
 						String[] separacionExtensionDelFichero = filePDF.getName().split(Pattern.quote("."));
 						String[] separacionNombreColegiado = nombreColegiado.split("-");
-						request.setAttribute("nombreFichero",separacionExtensionDelFichero[0] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
+						nombreFicherosarrays = separacionExtensionDelFichero[0].split("-");
+						request.setAttribute("nombreFichero",nombreFicherosarrays[1] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
 						break;
 					case 3:
-						request.setAttribute("nombreFichero",nombreColegiado+filePDF.getName());
+						nombreFicherosarrays =filePDF.getName().split("-");
+						request.setAttribute("nombreFichero",nombreColegiado+nombreFicherosarrays[1]);
 						break;
 
 					default:
-						request.setAttribute("nombreFichero",nombreColegiado+ filePDF.getName());
+						nombreFicherosarrays =filePDF.getName().split("-");
+						request.setAttribute("nombreFichero",nombreColegiado+ nombreFicherosarrays[1]);
 						break;
 					}
 				}else{
-					request.setAttribute("nombreFichero",nombreColegiado+ filePDF.getName());
+					nombreFicherosarrays =filePDF.getName().split("-");
+					request.setAttribute("nombreFichero",nombreColegiado+ nombreFicherosarrays[1]);
 				}
 				
 				

@@ -485,30 +485,35 @@ public class BusquedaFacturaAction extends MasterAction {
 									
 						Vector<FacSerieFacturacionBean> vSeriesFacturacion = admSerieFacturacion.select(where);
 												
-				
+						String[] nombreFicherosarrays;
 						if (vSeriesFacturacion!=null && vSeriesFacturacion.size()>0) {
 							FacSerieFacturacionBean beanSerieFacturacion = vSeriesFacturacion.get(0);
 						
 							switch (beanSerieFacturacion.getIdNombreDescargaPDF()) {
 							case 1:
-								documento.setDescripcion(documento.getDescripcion());
+								nombreFicherosarrays = documento.getDescripcion().split("-");
+								documento.setDescripcion(nombreFicherosarrays[1]);
 								break;
 							case 2:
 								//Quitamos la extensión y añadimos el nombre más la extensión
 								String[] separacionExtensionDelFichero = documento.getDescripcion().split(Pattern.quote("."));
 								String[] separacionNombreColegiado = nombreColegiado.split("-");
-								documento.setDescripcion(separacionExtensionDelFichero[0] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
+								nombreFicherosarrays = separacionExtensionDelFichero[0].split("-");
+								documento.setDescripcion(nombreFicherosarrays[1] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
 								break;
 							case 3:
-								documento.setDescripcion(nombreColegiado+documento.getDescripcion());
+								nombreFicherosarrays = documento.getDescripcion().split("-");
+								documento.setDescripcion(nombreColegiado+nombreFicherosarrays[1]);
 								break;
 		
 							default:
-								documento.setDescripcion(nombreColegiado+documento.getDescripcion());
+								nombreFicherosarrays = documento.getDescripcion().split("-");
+								documento.setDescripcion(nombreColegiado+nombreFicherosarrays[1]);
 								break;
 							}
 						}else{
-							documento.setDescripcion(nombreColegiado+documento.getDescripcion());
+							nombreFicherosarrays = documento.getDescripcion().split("-");
+							documento.setDescripcion(nombreColegiado+nombreFicherosarrays[1]);
 						}
 						documentosList.add(documento);
 					}

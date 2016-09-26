@@ -2522,31 +2522,37 @@ public class DefinirEnviosAction extends MasterAction {
 											Vector<FacSerieFacturacionBean> vSeriesFacturacion = admSerieFacturacion.select(where);
 																	
 											Documento factura = null;
+											String[] nombreFicherosarrays;
 											if (vSeriesFacturacion!=null && vSeriesFacturacion.size()>0) {
 												FacSerieFacturacionBean beanSerieFacturacion = vSeriesFacturacion.get(0);
 												
 												switch (beanSerieFacturacion.getIdNombreDescargaPDF()) {
 												case 1:
-													factura = new Documento(fichero,fichero.getName());
+													nombreFicherosarrays = fichero.getName().split("-");
+													factura = new Documento(fichero,nombreFicherosarrays[1]);
 													break;
 												case 2:
 													//Quitamos la extensión del fichero y añadimos el nombre más la extensión
 													String[] separacionExtensionDelFichero = fichero.getName().split(Pattern.quote("."));
 													String[] separacionNombreColegiado = nombreColegiado.split("-");
-													factura = new Documento(fichero,separacionExtensionDelFichero[0] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
+													nombreFicherosarrays = separacionExtensionDelFichero[0].split("-");
+													factura = new Documento(fichero,nombreFicherosarrays[1] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
 													
 													break;
 												case 3:
-													factura = new Documento(fichero,nombreColegiado+ fichero.getName());
+													nombreFicherosarrays = fichero.getName().split("-");
+													factura = new Documento(fichero,nombreColegiado+ nombreFicherosarrays[1]);
 													
 													break;
 							
 												default:
-													factura = new Documento(fichero,nombreColegiado+ fichero.getName());
+													nombreFicherosarrays = fichero.getName().split("-");
+													factura = new Documento(fichero,nombreColegiado+ nombreFicherosarrays[1]);
 													break;
 												}
 											}else{
-												factura = new Documento(fichero,nombreColegiado+ fichero.getName());
+												nombreFicherosarrays = fichero.getName().split("-");
+												factura = new Documento(fichero,nombreFicherosarrays[1]);
 											}
 							    			
 							    			
@@ -3103,29 +3109,35 @@ public class DefinirEnviosAction extends MasterAction {
 									Vector<FacSerieFacturacionBean> vSeriesFacturacion = admSerieFacturacion.select(where);
 															
 									Documento certificado = null;
+									String[] nombreFicherosarrays;
 									if (vSeriesFacturacion!=null && vSeriesFacturacion.size()>0) {
 										FacSerieFacturacionBean beanSerieFacturacion = vSeriesFacturacion.get(0);
 										
 										switch (beanSerieFacturacion.getIdNombreDescargaPDF()) {
 										case 1:
-											certificado = new Documento(fichero,fichero.getName());
+											nombreFicherosarrays = fichero.getName().split("-");
+											certificado = new Documento(fichero,nombreFicherosarrays[1]);
 											break;
 										case 2:
 											//Quitamos la extensión y añadimos el nombre más la extensión
 											String[] separacionExtensionDelFichero = fichero.getName().split(Pattern.quote("."));
 											String[] separacionNombreColegiado = nombreColegiado.split("-");
-											certificado = new Documento(fichero,separacionExtensionDelFichero[0] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
+											nombreFicherosarrays = separacionExtensionDelFichero[0].split("-");
+											certificado = new Documento(fichero,nombreFicherosarrays[1] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
 											break;
 										case 3:
-											certificado = new Documento(fichero,nombreColegiado+ fichero.getName());
+											nombreFicherosarrays = fichero.getName().split("-");
+											certificado = new Documento(fichero,nombreColegiado+ nombreFicherosarrays[1]);
 											break;
 					
 										default:
-											certificado = new Documento(fichero,nombreColegiado+ fichero.getName());
+											nombreFicherosarrays = fichero.getName().split("-");
+											certificado = new Documento(fichero,nombreColegiado+ nombreFicherosarrays[1]);
 											break;
 										}
 									}else{
-										certificado = new Documento(fichero,nombreColegiado+ fichero.getName());
+										nombreFicherosarrays = fichero.getName().split("-");
+										certificado = new Documento(fichero,nombreColegiado+ nombreFicherosarrays[1]);
 									}
 									
 					      			solicitudCertificadoBeanAux = (CerSolicitudCertificadosBean) BeanUtils.cloneBean(solicitudCertificadoBean);
