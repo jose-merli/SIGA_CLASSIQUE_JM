@@ -387,4 +387,10 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('comunicaciones.plantillas.error.archivosZip', 'En el fichero zip es obligatorio incluir el fichero fo. Las imagenes son opcionales y deben ser de tipo png, gif y jpg.#CA', 0, '2', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('comunicaciones.plantillas.error.archivosZip', 'En el fichero zip es obligatorio incluir el fichero fo. Las imagenes son opcionales y deben ser de tipo png, gif y jpg.#EU', 0, '3', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('comunicaciones.plantillas.error.archivosZip', 'En el fichero zip es obligatorio incluir el fichero fo. Las imagenes son opcionales y deben ser de tipo png, gif y jpg.#GL', 0, '4', sysdate, 0, '19');
+
+
+DELETE FROM gen_parametros where Modulo='SCS' and parametro='PREFIJO_DESIGNA';
+DELETE FROM gen_parametros where Modulo='SCS' and parametro='PREFIJO_EJG';
+DELETE FROM gen_parametros where Modulo='SCS' and parametro='PREFIJO_SOJ';
+
 		               
