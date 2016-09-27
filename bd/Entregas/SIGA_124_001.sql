@@ -402,6 +402,30 @@ values ('messages.envios.aviso.denuncianteSinDireccion', 'La dirección del desti
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
  values ('messages.envios.aviso.denuncianteSinDireccion', 'La dirección del destinatario está de baja o no existe#EU', 0, '3', sysdate, 0, '19');
  
- 
+ Insert Into Cen_Colacambioletrado
+  (Idpersona, Idinstitucion, Idcambio, Fechacambio, Idtipocambio, Iddireccion, Fechamodificacion, Usumodificacion)
+  (Select Cen_Colegiado.Idpersona, Cen_Colegiado.Idinstitucion, 1, Sysdate, 30, 1, Sysdate, 0
+     From Cen_Colegiado, Cen_Persona, Cen_Direcciones, Cen_Direccion_Tipodireccion
+    Where Cen_Colegiado.Situacionejercicio = '1'
+      And Cen_Colegiado.Idpersona = Cen_Persona.Idpersona
+      And Cen_Direcciones.Idpersona = Cen_Direccion_Tipodireccion.Idpersona
+      And Cen_Direcciones.Idinstitucion = Cen_Direccion_Tipodireccion.Idinstitucion
+      And Cen_Direcciones.Iddireccion = Cen_Direccion_Tipodireccion.Iddireccion
+      
+      And Cen_Direcciones.Idpersona = Cen_Colegiado.Idpersona
+      And Cen_Direcciones.Idinstitucion = Cen_Colegiado.Idinstitucion
+      And Cen_Direccion_Tipodireccion.Idtipodireccion = 9
+      And Cen_Direcciones.Fechabaja Is Null
+      
+      And Not Exists (Select 1
+            From Cen_Direcciones, Cen_Direccion_Tipodireccion
+           Where Cen_Direcciones.Idpersona = Cen_Direccion_Tipodireccion.Idpersona
+             And Cen_Direcciones.Idinstitucion = Cen_Direccion_Tipodireccion.Idinstitucion
+             And Cen_Direcciones.Iddireccion = Cen_Direccion_Tipodireccion.Iddireccion
+             
+             And Cen_Direcciones.Idpersona = Cen_Colegiado.Idpersona
+             And Cen_Direccion_Tipodireccion.Idinstitucion = 2000
+             And Cen_Direccion_Tipodireccion.Idtipodireccion = 9
+             And Cen_Direcciones.Fechabaja Is Null));
 
 		               
