@@ -393,4 +393,15 @@ DELETE FROM gen_parametros where Modulo='SCS' and parametro='PREFIJO_DESIGNA';
 DELETE FROM gen_parametros where Modulo='SCS' and parametro='PREFIJO_EJG';
 DELETE FROM gen_parametros where Modulo='SCS' and parametro='PREFIJO_SOJ';
 
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+values ('messages.envios.aviso.denuncianteSinDireccion', 'La dirección del destinatario está de baja o no existe', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+ values ('messages.envios.aviso.denuncianteSinDireccion', 'La dirección del destinatario está de baja o no existe#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+ values ('messages.envios.aviso.denuncianteSinDireccion', 'La dirección del destinatario está de baja o no existe#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+ values ('messages.envios.aviso.denuncianteSinDireccion', 'La dirección del destinatario está de baja o no existe#EU', 0, '3', sysdate, 0, '19');
+ 
+ 
+
 		               

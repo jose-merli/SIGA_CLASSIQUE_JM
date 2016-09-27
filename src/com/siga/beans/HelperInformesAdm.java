@@ -1239,7 +1239,7 @@ public class HelperInformesAdm  {
 		    	  /** Escribiendo fichero de log **/
 				if (log != null)
 					log.flush();
-				throw new SIGAException("La dirección del destinatario está de baja o no existe");
+				throw new SIGAException("messages.envios.aviso.denuncianteSinDireccion");
 			}
 					
 				
