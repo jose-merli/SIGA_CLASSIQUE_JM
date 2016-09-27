@@ -324,7 +324,12 @@ public class CargaProductosAction extends MasterAction {
 			/** CUARTA CLAUSULA **/
 			datosHashtable = new Hashtable<String, Object>();
 			datosHashtable.put(CargaMasivaDatosProductosVo.C_INFO, UtilidadesString.getMensajeIdioma(usrBean, "pys.cargaProductos.info4"));
-			datosVector.add(datosHashtable);			
+			datosVector.add(datosHashtable);
+			
+			/** QUINTA CLAUSULA **/
+			datosHashtable = new Hashtable<String, Object>();
+			datosHashtable.put(CargaMasivaDatosProductosVo.C_INFO, UtilidadesString.getMensajeIdioma(usrBean, "pys.cargaProductos.info5"));
+			datosVector.add(datosHashtable);				
 			
 			File exampleFile = cargaMasiva.createExcelFile(CargaMasivaProductos.CAMPOSEJEMPLO, datosVector);
 			request.setAttribute("nombreFichero", exampleFile.getName());
