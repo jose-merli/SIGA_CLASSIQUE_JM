@@ -433,3 +433,6 @@ insert into gen_recursos values ('pys.cargaProductos.info5', '5. En el campo FEC
 insert into gen_recursos values ('pys.cargaProductos.info5', '5. En el campo FECHA_COMPRA solo se aceptarán fechas que cumplan el formato dd/mm/yyyy (en caso de que esto no se cumpla dará error). Si no se rellena la celda se cogerá el valor de la fecha actual.#CA', 0, 2, sysdate, 0, 19);
 insert into gen_recursos values ('pys.cargaProductos.info5', '5. En el campo FECHA_COMPRA solo se aceptarán fechas que cumplan el formato dd/mm/yyyy (en caso de que esto no se cumpla dará error). Si no se rellena la celda se cogerá el valor de la fecha actual.#EU', 0, 3, sysdate, 0, 19);
 insert into gen_recursos values ('pys.cargaProductos.info5', '5. En el campo FECHA_COMPRA solo se aceptarán fechas que cumplan el formato dd/mm/yyyy (en caso de que esto no se cumpla dará error). Si no se rellena la celda se cogerá el valor de la fecha actual.#GL', 0, 4, sysdate, 0, 19);
+
+-- Ejecutado en Integración por Adrian 2016-09-28 12:50
+
