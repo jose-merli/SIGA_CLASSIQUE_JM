@@ -148,6 +148,11 @@ public class CargaMasivaDatosProductosVoService implements VoUiService<CargaProd
 			objectForm.setCantidadProducto(objectVo.getCantidadProducto().toString());
 		else
 			objectForm.setCantidadProducto("");		
+		
+		if (objectVo.getFechaCompra() != null && !objectVo.getFechaCompra().equals(""))
+			objectForm.setFechaCompra(objectVo.getFechaCompra());		
+		else
+			objectForm.setFechaCompra("");		
 
 		return objectForm;
 	}

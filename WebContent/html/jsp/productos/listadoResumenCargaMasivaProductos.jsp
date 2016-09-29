@@ -73,8 +73,9 @@
    		  			   pys.cargaCompraProductos.cantidad,
    		  			   pys.cargaCompraProductos.idCategoriaProducto,
    		  			   pys.cargaCompraProductos.idTipoProducto,
-   		  			   pys.cargaCompraProductos.idProducto,"
-   		  columnSizes="15,20,17,8,8,8,8,8,8">
+   		  			   pys.cargaCompraProductos.idProducto,
+   		  			   pys.cargaCompraProductos.fechacompra,"
+   		  columnSizes="14,19,15,7,8,8,8,8,8,5">
    		  
 		<c:choose>
 		<c:when test="${empty listado}">
@@ -101,6 +102,7 @@
 						<td align='left'><c:out value="${datoProd.idCategoriaProducto}" /></td>
 						<td align='left'><c:out value="${datoProd.idTipoProducto}" /></td>
 						<td align='left'><c:out value="${datoProd.idProducto}" /></td>
+						<td align='left'><c:out value="${datoProd.fechaCompra}" /></td>
 						<td align='left'>
 							<c:choose>
 								<c:when test="${datoProd.error!=''}">

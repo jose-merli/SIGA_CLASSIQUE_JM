@@ -15,6 +15,7 @@ public class CargaProductosForm extends CargaMasivaForm {
 	private String idCategoriaProducto;
 	private String idTipoProducto;
 	private String idProducto;
+	private String fechaCompra;
 	
 	public void clear() {
 		setModo("");
@@ -100,4 +101,12 @@ public class CargaProductosForm extends CargaMasivaForm {
 		this.idProducto = idProducto;
 	}
 
+	public String getFechaCompra() {
+		return fechaCompra;
+	}
+
+	public void setFechaCompra(String fechaCompra) {
+		this.fechaCompra = fechaCompra;
+	}
+	
 }
