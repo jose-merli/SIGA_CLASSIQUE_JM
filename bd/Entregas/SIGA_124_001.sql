@@ -436,3 +436,7 @@ insert into gen_recursos values ('pys.cargaProductos.info5', '5. En el campo FEC
 
 -- Ejecutado en Integración por Adrian 2016-09-28 12:50
 
+ insert into gen_recursos values ('pys.cargaCompraProductos.fechacompra', 'Fecha Compra', 0, 1, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaCompraProductos.fechacompra', 'Fecha Compra#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaCompraProductos.fechacompra', 'Fecha Compra#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos values ('pys.cargaCompraProductos.fechacompra', 'Fecha Compra#GL', 0, 4, sysdate, 0, 19);
