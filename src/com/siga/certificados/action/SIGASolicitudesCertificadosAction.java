@@ -2731,6 +2731,9 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 													    	htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
 													    	htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
 													    	admSolicitud.updateDirect(htNew, claves, campos );
+													    	//Además llamamos de nuevo a facturacionRapidaProductosCertificados para generarla
+													    	facturacion.facturacionRapidaProductosCertificados((informacionDeUnCertificado[1].split("="))[1], null, idSerieSeleccionada, (informacionDeUnCertificado[0].split("="))[1], request);
+													    	
 										        		}else{
 										        			//La factura está en revisión introducimos mensaje 
 										        			log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), "El certificado ya está facturado, pero la factura está En revisión. "+
