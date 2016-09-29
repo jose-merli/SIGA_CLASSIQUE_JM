@@ -306,16 +306,27 @@ public class ActaComisionAction extends MasterAction{
 				horaInicio.set(Calendar.MINUTE, Integer.valueOf(actaForm.getMinuIni()));
 				actaBean.setHoraInicioReunion(sdf.format(horaInicio.getTime()));
 			}
-			tx = usr.getTransaction();		
-			tx.begin();
+						
 			
-			actaBean.setIdActa(actaAdm.getNuevoIdActa(usr.getLocation(), actaForm.getAnioActa()));
-			actaBean.setIdInstitucion(Integer.valueOf(usr.getLocation()));
 			StringBuilder numeroActa = new StringBuilder(actaForm.getNumActa());
 			if(!actaForm.getSufijoNumActa().equals("")){
 				numeroActa.append(actaForm.getSufijoNumActa());
 				
 			}
+			
+			Hashtable hashActa = new Hashtable();
+			hashActa.put(ScsActaComisionBean.C_ANIOACTA, actaForm.getAnioActa());
+			hashActa.put(ScsActaComisionBean.C_NUMEROACTA, numeroActa.toString());
+			hashActa.put(ScsActaComisionBean.C_IDINSTITUCION, usr.getLocation());
+			Vector actaExisteVector = actaAdm.select(hashActa);
+			if(actaExisteVector!=null && actaExisteVector.size()>0)
+				throw new SIGAException("El número de acta ya existe.");
+			
+			tx = usr.getTransaction();		
+			tx.begin();
+
+			actaBean.setIdActa(actaAdm.getNuevoIdActa(usr.getLocation(), actaForm.getAnioActa()));
+			actaBean.setIdInstitucion(Integer.valueOf(usr.getLocation()));
 			actaBean.setNumeroActa(numeroActa.toString().trim());
 			actaBean.setAnioActa(Integer.valueOf(actaForm.getAnioActa()));
 			
@@ -323,7 +334,9 @@ public class ActaComisionAction extends MasterAction{
 			
 			tx.commit();
 			
-		} catch (Exception e) {
+		} catch (SIGAException e) {
+			throw e;
+		}catch (Exception e) {
 			throw new SIGAException("Error al crear el nuevo acta.",e);
 		}
 		
@@ -633,7 +646,7 @@ public class ActaComisionAction extends MasterAction{
 				
 				sql = new StringBuffer();
 				sql.append("update " + ScsEJGBean.T_NOMBRETABLA+ " set ");
-				sql.append(ScsEJGBean.C_FECHARESOLUCIONCAJG+ " = null "); 
+				sql.append(ScsEJGBean.C_FECHARESOLUCIONCAJG+ " = null ");
 				sql.append(" where " + ScsEJGBean.C_IDACTA + " = " + actaBean.getIdActa());
 				sql.append(" and " + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + actaBean.getIdInstitucion());
 				sql.append(" and " + ScsEJGBean.C_ANIOACTA + " = " + actaBean.getAnioActa());
