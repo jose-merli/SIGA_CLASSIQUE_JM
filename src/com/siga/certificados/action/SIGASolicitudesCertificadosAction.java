@@ -2756,6 +2756,10 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 												String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
 												htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
 												admSolicitud.updateDirect(htNew, claves, camposAux);
+												
+												if(se.getLiteral() != null && !"".equalsIgnoreCase(se.getLiteral()) && se.getLiteral().equalsIgnoreCase("messages.censo.direcciones.facturacion")){
+													se.setLiteral("messages.censo.direcciones.facturacion.certificados");
+												}
 												log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), (se.getLiteral(usr.getLanguage()))});
 											
 										    	  /** Escribiendo fichero de log **/
@@ -3018,6 +3022,9 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 					String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
 					htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
 					admSolicitud.updateDirect(htNew, claves, camposAux);
+					if(se.getLiteral() != null && !"".equalsIgnoreCase(se.getLiteral()) && se.getLiteral().equalsIgnoreCase("messages.censo.direcciones.facturacion")){
+						se.setLiteral("messages.censo.direcciones.facturacion.certificados");
+					}
 					log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), (se.getLiteral(usr.getLanguage()))});
 				
 			    	  /** Escribiendo fichero de log **/
