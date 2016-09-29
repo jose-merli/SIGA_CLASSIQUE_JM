@@ -458,7 +458,7 @@ public class EnvDestinatariosAdm extends MasterBeanAdministrador {
 			throw new SIGAException("process.database_error");
 		}
 		//Para el caso de correo ordinario no se procesan los envios por lo que no se generaran los destinatario cuyo origen son las listas dinamicas
-		if(Integer.valueOf(idTipoEnvio)==EnvTipoEnviosAdm.K_CORREO_ORDINARIO){
+		if(Integer.valueOf(idTipoEnvio)==EnvTipoEnviosAdm.K_CORREO_ORDINARIO ){
 			TreeMap<Integer,EnvDestinatariosBean> detDinamicos =  getDestinatariosDinamicos(idInstitucion, idEnvio, idTipoEnvio);
 			Iterator<Integer> iterator = detDinamicos.keySet().iterator();
 			while (iterator.hasNext()) {
@@ -472,6 +472,42 @@ public class EnvDestinatariosAdm extends MasterBeanAdministrador {
 		}
 		return vDestManuales;
 	}
+	public Vector getDestinatariosEtiquetas(String idInstitucion, String idEnvio, String idTipoEnvio)throws SIGAException, ClsExceptions{
+
+		Vector<EnvDestinatariosBean> vDestManuales = null;
+		
+		int orden = 0; 
+		
+		TreeMap<Integer,String> destinatariosmMap = new TreeMap<Integer, String>();
+		Hashtable<String,EnvDestinatariosBean> destinatariosHashtable = new Hashtable<String, EnvDestinatariosBean>();
+
+		Hashtable htPk = new Hashtable();
+		htPk.put(EnvDestinatariosBean.C_IDINSTITUCION,idInstitucion);
+		htPk.put(EnvDestinatariosBean.C_IDENVIO,idEnvio);
+		htPk.put(EnvDestinatariosBean.C_ORIGENDESTINATARIO,EnvDestinatariosBean.ORIGENDESTINATARIO_INDIVIDUAL);
+		//	    Obtenemos los destinatarios manuales
+		EnvDestinatariosAdm destAdm = new EnvDestinatariosAdm(this.usrbean);
+		try {
+			vDestManuales = destAdm.select(htPk);
+			
+		} catch (ClsExceptions e1) {
+			ClsLogging.writeFileLogError("EnvEnviosAdm.getDestinatarios. Error obteniendo los destinatarios manuales del envio",e1,10);
+			throw new SIGAException("process.database_error");
+		}
+		TreeMap<Integer,EnvDestinatariosBean> detDinamicos =  getDestinatariosDinamicos(idInstitucion, idEnvio, idTipoEnvio);
+		Iterator<Integer> iterator = detDinamicos.keySet().iterator();
+		while (iterator.hasNext()) {
+			Integer key = (Integer) iterator.next();
+			EnvDestinatariosBean envDestinatariosBean = detDinamicos.get(key);
+			vDestManuales.add(envDestinatariosBean);
+			
+		}
+			
+		return vDestManuales;
+	}
+	
+	
+	
 	private String getQueryDestinatariosListasNoDinamicasSinDireccion(String idInstitucion, String idEnvio, String idTipoEnvio){
 		StringBuffer sql = new StringBuffer();
 		sql.append(" SELECT CL.IDPERSONA,NULL IDDIRECCION,'' CODIGOPOSTAL,'' CORREOELECTRONICO,'' DOMICILIO,'' FAX1,'' FAX2,'' IDPAIS,'' IDPROVINCIA,'' IDPOBLACION,'' POBLACIONEXTRANJERA,'' MOVIL ");
