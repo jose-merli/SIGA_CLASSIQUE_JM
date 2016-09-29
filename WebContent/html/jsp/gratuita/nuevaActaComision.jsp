@@ -95,7 +95,7 @@
 				<td>&nbsp;</td>
 			</tr>
 			<tr>
-				<td class="labelText"><siga:Idioma key="sjcs.actas.fechaReunion" />(*)</td>
+				<td wrap  class="labelText"><siga:Idioma key="sjcs.actas.fechaReunion" />(*)</td>
 				<td>
 					<siga:Fecha nombreCampo="fechaReunion" valorInicial="${ActaComisionForm.fechaReunion}"/> 
 					
