@@ -255,7 +255,7 @@
 	} else {
 		if (filtrarModulos.equals(ClsConstants.FILTRAR_MODULOS_FECHADESIGNACION)) {
 			fechaComboFiltros = fecha;
-		} else if (!fechaComboFiltros.equals("") && fechaComboFiltros.equals(ClsConstants.FILTRAR_MODULOS_FECHAACTUACION)) {
+		} else if (fechaComboFiltros.equals("") && filtrarModulos.equals(ClsConstants.FILTRAR_MODULOS_FECHAACTUACION)) {
 			fechaComboFiltros = fechaActuacion;
 		}		
 
