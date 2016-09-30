@@ -450,3 +450,27 @@ values ('messages.censo.direcciones.facturacion.certificados', 'PDF de factura n
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
  values ('messages.censo.direcciones.facturacion.certificados', 'PDF de factura no generado. Para poder descargarlo, añada una dirección de facturación.#EU', 0, '3', sysdate, 0, '19');
  
+ update gen_recursos
+   set descripcion = 'Este parámetro sólo afecta a la vigencia de los módulos en Designación y actuaciones. Valores posibles: 0 -> Se filtrarán los módulos en función de la fecha actual. 1 -> Se filtrarán los módulos en función de la fecha de designación. 2 -> Se filtrarán los módulos en función de la fecha de actuacion'
+ where idrecurso = 'administracion.parametro.filtrarModulos'
+   and idlenguaje = 1;
+   
+   update gen_recursos
+   set descripcion = 'Este parámetro sólo afecta a la vigencia de los módulos en Designación y actuaciones. Valores posibles: 0 -> Se filtrarán los módulos en función de la fecha actual. 1 -> Se filtrarán los módulos en función de la fecha de designación. 2 -> Se filtrarán los módulos en función de la fecha de actuacion#CA'
+ where idrecurso = 'administracion.parametro.filtrarModulos'
+   and idlenguaje = 2;
+   
+update gen_recursos
+   set descripcion = 'Este parámetro sólo afecta a la vigencia de los módulos en Designación y actuaciones. Valores posibles: 0 -> Se filtrarán los módulos en función de la fecha actual. 1 -> Se filtrarán los módulos en función de la fecha de designación. 2 -> Se filtrarán los módulos en función de la fecha de actuacion#EU'
+ where idrecurso = 'administracion.parametro.filtrarModulos'
+   and idlenguaje = 3;
+   
+update gen_recursos
+   set descripcion = 'Este parámetro sólo afecta a la vigencia de los módulos en Designación y actuaciones. Valores posibles: 0 -> Se filtrarán los módulos en función de la fecha actual. 1 -> Se filtrarán los módulos en función de la fecha de designación. 2 -> Se filtrarán los módulos en función de la fecha de actuacion#GL'
+ where idrecurso = 'administracion.parametro.filtrarModulos'
+   and idlenguaje = 4;  
+ 
+ insert into gen_recursos values ('gratuita.listadoCalendario.literal.festivoNacional', 'FESTIVO NACIONAL', 0, 1, sysdate, 0, 19);
+insert into gen_recursos values ('gratuita.listadoCalendario.literal.festivoNacional', 'FESTIVO NACIONAL#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos values ('gratuita.listadoCalendario.literal.festivoNacional', 'FESTIVO NACIONAL#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos values ('gratuita.listadoCalendario.literal.festivoNacional', 'FESTIVO NACIONAL#GL', 0, 4, sysdate, 0, 19);   

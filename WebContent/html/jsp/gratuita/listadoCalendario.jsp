@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import="com.siga.Utilidades.UtilidadesString"%>
 <html>
 <head>
 <!-- listadoCalendario.jsp -->
@@ -24,6 +25,7 @@
 <%@ page import="com.siga.beans.CenPartidoJudicialAdm"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
+<%@ page import="com.siga.Utilidades.UtilidadesString"%>
 
 
 <!-- JSP -->
@@ -71,7 +73,7 @@
 			while (recordNumber-1 < obj.size()) {
 				String botones = "E,B";
 				ScsCalendarioLaboralBean fila = (ScsCalendarioLaboralBean)obj.get(recordNumber-1);
-				String nombrePartidoJudicial = "TODO EL COLEGIO";
+				String nombrePartidoJudicial = UtilidadesString.getMensajeIdioma(usr,"gratuita.listadoCalendario.literal.festivoNacional");
 				try {
 					if(!idInstitucion.equals(String.valueOf(ClsConstants.INSTITUCION_CGAE)) && ClsConstants.esConsejoGeneral(fila.getIdInstitucion())){
 						botones = "";	
