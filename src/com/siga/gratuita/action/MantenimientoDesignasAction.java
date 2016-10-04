@@ -13,6 +13,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsDesignaBean;
+import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
 import com.siga.general.MasterAction;
@@ -153,18 +154,43 @@ public class MantenimientoDesignasAction extends MasterAction {
 			HttpSession ses = (HttpSession)request.getSession();
 			UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
 			BusquedaDesignasForm miform = (BusquedaDesignasForm)formulario;
+			miform.reset(new String[]{"NOMBRE"});
 			Vector visibles = (Vector)miform.getDatosTablaVisibles(0);
 			Vector ocultos = (Vector)miform.getDatosTablaOcultos(0);
-			String consultaDesigna =" select "+ScsDesignaBean.C_ANIO+", "+ScsDesignaBean.C_IDINSTITUCION+", "+ScsDesignaBean.C_IDTURNO+", "+ScsDesignaBean.C_NUMERO+
-			                        " from "+ScsDesignaBean.T_NOMBRETABLA+
-									" where " 	+ ScsDesignaBean.C_IDINSTITUCION+ " = " + (String)usr.getLocation()	+
-									" and "   	+ ScsDesignaBean.C_IDTURNO 		+ " = " + (String)ocultos.get(0) 	+	//el idturno
-									" and " 	+ ScsDesignaBean.C_ANIO			+ " = " + (String)visibles.get(2)	+	//el anho
-									" and "		+ ScsDesignaBean.C_NUMERO		+ " = " + (String)visibles.get(3)+" ";
+			Hashtable elegido = new Hashtable();
+			elegido.put(ScsDesignaBean.C_IDINSTITUCION, usr.getLocation());
+			elegido.put(ScsDesignaBean.C_IDTURNO, (String)ocultos.get(0));
+			elegido.put(ScsDesignaBean.C_ANIO, (String)visibles.get(2));
+			elegido.put(ScsDesignaBean.C_NUMERO,(String)visibles.get(3));
 			
-			ScsDesignaAdm designaAdm = new ScsDesignaAdm (this.getUserBean(request));
-			Vector result = designaAdm.selectGenerico(consultaDesigna);
-			Hashtable elegido = (Hashtable)result.elementAt(0);
+			String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_sufijo="";
+			ScsDesignaAdm adm = new ScsDesignaAdm(usr);
+			Hashtable hTitulo = adm.getTituloPantallaDesigna(usr.getLocation(),
+					(String)elegido.get(ScsDesignaBean.C_ANIO), (String)elegido.get(ScsDesignaBean.C_NUMERO), (String)elegido.get(ScsDesignaBean.C_IDTURNO));
+
+			if (hTitulo != null) {
+				t_nombre = (String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
+				t_apellido1 = (String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO1);
+				t_apellido2 = (String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO2);
+				t_anio = (String) hTitulo.get(ScsDesignaBean.C_ANIO);
+				t_numero = (String) hTitulo.get(ScsDesignaBean.C_CODIGO);
+				t_sufijo = (String) hTitulo.get(ScsDesignaBean.C_SUFIJO);
+				if (t_sufijo!=null && !t_sufijo.equals("")){
+					t_numero=t_numero+"-"+t_sufijo;
+				}
+
+			}
+			StringBuffer solicitante = new StringBuffer();
+			solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE));
+			solicitante.append(" ");
+			solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO1));
+			solicitante.append(" ");
+			solicitante.append((String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO2));
+			elegido.put("solicitante", solicitante.toString());
+			elegido.put("designaCodigo", t_numero);
+			elegido.put("codigoDesignaNumEJG", t_numero);
+			
+			
 			
 			ses.setAttribute("Modo","editar");		// para saber en que modo se mete desde la tabla
 			request.setAttribute("idDesigna",elegido);

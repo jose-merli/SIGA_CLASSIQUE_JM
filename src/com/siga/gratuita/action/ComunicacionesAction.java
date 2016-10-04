@@ -347,7 +347,7 @@ public class ComunicacionesAction extends MasterAction {
 			comunicacionesForm.setDesignaIdTurno(request.getParameter("IDTURNO").toString());
 			comunicacionesForm.setDesignaNumero(request.getParameter("NUMERO").toString());
 			comunicacionesForm.setAnio(comunicacionesForm.getDesignaAnio());
-			comunicacionesForm.setCodigoDesignaNumEJG(request.getParameter("designaCodigo").toString());
+			comunicacionesForm.setCodigoDesignaNumEJG(request.getParameter("designaCodigo")!=null?request.getParameter("designaCodigo"):request.getParameter("DESIGNACODIGO"));
 			comunicacionesForm.setSolicitante(request.getParameter("solicitante").toString());
 		}
 		
