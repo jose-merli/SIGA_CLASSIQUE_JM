@@ -95,7 +95,7 @@ public class PermisosConsultaAction extends MasterAction {
 	    	
 	    	ConConsultaPerfilAdm cpAdm = new ConConsultaPerfilAdm (this.getUserBean(request));
 	    	ConConsultaPerfilBean cpBean = new ConConsultaPerfilBean();
-	    	cpBean.setIdConsulta(Integer.valueOf(idConsulta));
+	    	cpBean.setIdConsulta(Long.valueOf(idConsulta));
 	    	cpBean.setIdInstitucion(Integer.valueOf(userBean.getLocation()));
 	    	cpBean.setIdInstitucion_Consulta(Integer.valueOf(idInstitucion_Consulta));
 	    	

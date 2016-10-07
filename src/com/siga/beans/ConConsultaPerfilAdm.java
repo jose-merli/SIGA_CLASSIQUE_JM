@@ -70,7 +70,7 @@ public class ConConsultaPerfilAdm extends MasterBeanAdministrador {
 			bean = new ConConsultaPerfilBean();
 						
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, ConConsultaPerfilBean.C_IDINSTITUCION));
-			bean.setIdConsulta(UtilidadesHash.getInteger(hash, ConConsultaPerfilBean.C_IDCONSULTA));
+			bean.setIdConsulta(UtilidadesHash.getLong(hash, ConConsultaPerfilBean.C_IDCONSULTA));
 			bean.setIdPerfil(UtilidadesHash.getString(hash, ConConsultaPerfilBean.C_IDPERFIL));
 			bean.setIdInstitucion_Consulta(UtilidadesHash.getInteger(hash, ConConsultaPerfilBean.C_IDINSTITUCION_CONSULTA));
 			bean.setFechaModificacion(UtilidadesHash.getString(hash, ConConsultaPerfilBean.C_FECHAMODIFICACION));			

@@ -513,8 +513,6 @@ public class RecuperarConsultasAction extends MasterAction {
 			UsrBean userBean = this.getUserBean (request);
 			HashMap databackup = (HashMap)request.getSession().getAttribute("DATABACKUP");
 			ConConsultaBean conBean = (ConConsultaBean)databackup.get("datosParticulares");
-			Integer idConsulta = conBean.getIdConsulta();
-			Integer idInstitucion = conBean.getIdInstitucion();
 			BusinessManager bm = getBusinessManager();
 			InformesService informeService = (InformesService)bm.getService(InformesService.class);
 			InformeForm informeForm = new InformeForm();

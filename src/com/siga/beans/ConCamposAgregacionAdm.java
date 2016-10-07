@@ -75,7 +75,7 @@ public class ConCamposAgregacionAdm extends MasterBeanAdministrador {
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, ConCamposAgregacionBean.C_IDINSTITUCION));
 			bean.setIdCampo(UtilidadesHash.getInteger(hash, ConCamposAgregacionBean.C_IDCAMPO));
 			bean.setOrden(UtilidadesHash.getInteger(hash, ConCamposAgregacionBean.C_ORDEN));
-			bean.setIdConsulta(UtilidadesHash.getInteger(hash, ConCamposAgregacionBean.C_IDCONSULTA));
+			bean.setIdConsulta(UtilidadesHash.getLong(hash, ConCamposAgregacionBean.C_IDCONSULTA));
 			bean.setFechaMod(UtilidadesHash.getString(hash, ConCamposAgregacionBean.C_FECHAMODIFICACION));			
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, ConCamposAgregacionBean.C_USUMODIFICACION));
 		

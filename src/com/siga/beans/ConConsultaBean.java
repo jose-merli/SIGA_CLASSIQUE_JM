@@ -16,7 +16,7 @@ public class ConConsultaBean extends MasterBean {
 	private static final long serialVersionUID = -4029158552936382421L;
 	//	Variables
 	private Integer idInstitucion;
-	private Integer idConsulta;
+	private Long idConsulta;
 	private String descripcion;
 	private String general;
 	private String tipoConsulta;
@@ -84,10 +84,10 @@ public class ConConsultaBean extends MasterBean {
 	public void setGeneral(String general) {
 		this.general = general;
 	}
-	public Integer getIdConsulta() {
+	public Long getIdConsulta() {
 		return idConsulta;
 	}
-	public void setIdConsulta(Integer idConsulta) {
+	public void setIdConsulta(Long idConsulta) {
 		this.idConsulta = idConsulta;
 	}
 	public Integer getIdInstitucion() {

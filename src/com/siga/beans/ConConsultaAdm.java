@@ -103,7 +103,7 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 			bean = new ConConsultaBean();
 						
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, ConConsultaBean.C_IDINSTITUCION));
-			bean.setIdConsulta(UtilidadesHash.getInteger(hash, ConConsultaBean.C_IDCONSULTA));
+			bean.setIdConsulta(UtilidadesHash.getLong(hash, ConConsultaBean.C_IDCONSULTA));
 			bean.setDescripcion(UtilidadesHash.getString(hash, ConConsultaBean.C_DESCRIPCION));
 			bean.setGeneral(UtilidadesHash.getString(hash, ConConsultaBean.C_GENERAL));
 			bean.setTipoConsulta(UtilidadesHash.getString(hash, ConConsultaBean.C_TIPOCONSULTA));

@@ -18,7 +18,7 @@ public class ConConsultaPerfilBean extends MasterBean {
 	private Integer idInstitucion;
 	private String idPerfil;
 	private Integer idInstitucion_Consulta;
-	private Integer idConsulta;
+	private Long idConsulta;
 	private String fechaModificacion;
 	private Integer usuModificacion;
 	
@@ -40,10 +40,10 @@ public class ConConsultaPerfilBean extends MasterBean {
 	public void setFechaModificacion(String fechaModificacion) {
 		this.fechaModificacion = fechaModificacion;
 	}
-	public Integer getIdConsulta() {
+	public Long getIdConsulta() {
 		return idConsulta;
 	}
-	public void setIdConsulta(Integer idConsulta) {
+	public void setIdConsulta(Long idConsulta) {
 		this.idConsulta = idConsulta;
 	}
 	public Integer getIdInstitucion() {

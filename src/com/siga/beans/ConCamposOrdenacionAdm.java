@@ -76,7 +76,7 @@ public class ConCamposOrdenacionAdm extends MasterBeanAdministrador {
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, ConCamposOrdenacionBean.C_IDINSTITUCION));
 			bean.setIdCampo(UtilidadesHash.getInteger(hash, ConCamposOrdenacionBean.C_IDCAMPO));
 			bean.setOrden(UtilidadesHash.getInteger(hash, ConCamposOrdenacionBean.C_ORDEN));
-			bean.setIdConsulta(UtilidadesHash.getInteger(hash, ConCamposOrdenacionBean.C_IDCONSULTA));
+			bean.setIdConsulta(UtilidadesHash.getLong(hash, ConCamposOrdenacionBean.C_IDCONSULTA));
 			bean.setFechaMod(UtilidadesHash.getString(hash, ConCamposOrdenacionBean.C_FECHAMODIFICACION));			
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, ConCamposOrdenacionBean.C_USUMODIFICACION));
 		

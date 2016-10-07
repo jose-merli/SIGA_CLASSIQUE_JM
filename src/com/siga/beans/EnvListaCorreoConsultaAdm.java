@@ -71,7 +71,7 @@ public class EnvListaCorreoConsultaAdm extends MasterBeanAdministrador {
 			bean = new EnvListaCorreoConsultaBean();
 			
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, EnvListaCorreoConsultaBean.C_IDINSTITUCION));
-			bean.setIdConsulta(UtilidadesHash.getInteger(hash, EnvListaCorreoConsultaBean.C_IDCONSULTA));
+			bean.setIdConsulta(UtilidadesHash.getLong(hash, EnvListaCorreoConsultaBean.C_IDCONSULTA));
 			bean.setIdListaCorreo(UtilidadesHash.getInteger(hash, EnvListaCorreoConsultaBean.C_IDLISTACORREO));
 			bean.setIdInstitucionCon(UtilidadesHash.getInteger(hash, EnvListaCorreoConsultaBean.C_IDINSTITUCION_CON));
 			

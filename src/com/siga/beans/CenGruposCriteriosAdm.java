@@ -42,7 +42,7 @@ public class CenGruposCriteriosAdm extends MasterBeanAdministrador {
 			bean.setIdGruposCriterios	(UtilidadesHash.getInteger(hash, CenGruposCriteriosBean.C_IDGRUPOSCRITERIOS));
 			bean.setNombre				(UtilidadesHash.getString(hash, CenGruposCriteriosBean.C_NOMBRE));
 			bean.setSentencia			(UtilidadesHash.getString(hash, CenGruposCriteriosBean.C_SENTENCIA));
-			bean.setIdConsulta			(UtilidadesHash.getInteger(hash, CenGruposCriteriosBean.C_IDCONSULTA));
+			bean.setIdConsulta			(UtilidadesHash.getLong(hash, CenGruposCriteriosBean.C_IDCONSULTA));
 			bean.setFechaMod			(UtilidadesHash.getString(hash, CenGruposCriteriosBean.C_FECHAMODIFICACION));			
 			bean.setUsuMod				(UtilidadesHash.getInteger(hash, CenGruposCriteriosBean.C_USUMODIFICACION));
 		}

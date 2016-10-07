@@ -16,7 +16,7 @@ public class ConCamposSalidaBean extends MasterBean {
 	private static final long serialVersionUID = -4229360630982452046L;
 	//	Variables
 	private Integer idInstitucion;
-	private Integer idConsulta;
+	private Long idConsulta;
 	private String cabecera;
 	private Integer orden;
 	private Integer idCampo;
@@ -40,10 +40,10 @@ public class ConCamposSalidaBean extends MasterBean {
     public void setIdCampo(Integer idCampo) {
         this.idCampo = idCampo;
     }
-    public Integer getIdConsulta() {
+    public Long getIdConsulta() {
         return idConsulta;
     }
-    public void setIdConsulta(Integer idConsulta) {
+    public void setIdConsulta(Long idConsulta) {
         this.idConsulta = idConsulta;
     }
     public String getCabecera() {

@@ -398,7 +398,7 @@ public class EnvDestinatariosAdm extends MasterBeanAdministrador {
 				conBean.setSentencia(fila.getString(ConConsultaBean.C_SENTENCIA));
 				conBean.setTipoConsulta(ConConsultaAdm.TIPO_CONSULTA_ENV);
 				conBean.setIdInstitucion(Integer.valueOf(idInstitucion));
-				conBean.setIdConsulta(Integer.valueOf(fila.getString(ConConsultaBean.C_IDCONSULTA)));
+				conBean.setIdConsulta(Long.valueOf(fila.getString(ConConsultaBean.C_IDCONSULTA)));
 				Hashtable ht = null;
 				try {
 					ht = conAdm.procesarEjecutarConsulta(idTipoEnvio, conBean, new CriterioDinamico[0], true);

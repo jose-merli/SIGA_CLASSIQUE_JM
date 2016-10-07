@@ -23,7 +23,7 @@ public class ConCriterioConsultaBean extends MasterBean {
 	private String valor;
 	private String valorDesc;
 	private String separadorFin;
-	private Integer idConsulta;
+	private Long idConsulta;
 	private Integer idOperacion;
 	private Integer idCampo;
 	private String abrirPar;
@@ -63,10 +63,10 @@ public class ConCriterioConsultaBean extends MasterBean {
 	public void setIdCampo(Integer idCampo) {
 		this.idCampo = idCampo;
 	}
-	public Integer getIdConsulta() {
+	public Long getIdConsulta() {
 		return idConsulta;
 	}
-	public void setIdConsulta(Integer idConsulta) {
+	public void setIdConsulta(Long idConsulta) {
 		this.idConsulta = idConsulta;
 	}
 	public Integer getIdInstitucion() {

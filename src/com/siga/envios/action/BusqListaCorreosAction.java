@@ -383,7 +383,7 @@ public class BusqListaCorreosAction extends MasterAction {
 		    EnvListaCorreoConsultaBean consultaBean = new EnvListaCorreoConsultaBean();	    
 	    	consultaBean.setIdInstitucion(Integer.valueOf(idInstitucion));
 	    	consultaBean.setIdListaCorreo(Integer.valueOf(idListaCorreo));
-	    	consultaBean.setIdConsulta(Integer.valueOf(idConsulta));
+	    	consultaBean.setIdConsulta(Long.valueOf(idConsulta));
 	    	consultaBean.setIdInstitucionCon(Integer.valueOf(idInstitucionCon));
 
 	    	tx.begin();

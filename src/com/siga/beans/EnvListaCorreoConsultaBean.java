@@ -16,7 +16,7 @@ public class EnvListaCorreoConsultaBean extends MasterBean {
 	private static final long serialVersionUID = 6644423401818614124L;
 	//Variables
 	private Integer idInstitucion;
-	private Integer idConsulta;
+	private Long idConsulta;
 	private Integer idListaCorreo;
 	private Integer idInstitucionCon;
 	
@@ -29,10 +29,10 @@ public class EnvListaCorreoConsultaBean extends MasterBean {
 	static public final String T_NOMBRETABLA = "ENV_LISTACORREOCONSULTA";
 	
 	
-	public Integer getIdConsulta() {
+	public Long getIdConsulta() {
 		return idConsulta;
 	}
-	public void setIdConsulta(Integer idConsulta) {
+	public void setIdConsulta(Long idConsulta) {
 		this.idConsulta = idConsulta;
 	}
 	public Integer getIdInstitucion() {

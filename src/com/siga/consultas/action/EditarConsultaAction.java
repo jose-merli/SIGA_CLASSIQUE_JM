@@ -59,7 +59,6 @@ import com.siga.beans.ConOperacionConsultaBean;
 import com.siga.beans.ConTablaConsultaAdm;
 import com.siga.beans.ConTablaConsultaBean;
 import com.siga.beans.ConTipoCampoConsultaBean;
-import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.EnvTipoEnviosAdm;
 import com.siga.consultas.Campo;
 import com.siga.consultas.CriterioDinamico;
@@ -650,7 +649,7 @@ public class EditarConsultaAction extends MasterAction {
 						if (camposSalida[i]==null || camposSalida[i].getTc().equals("null")){
 							break;
 						}else{					
-							csBean.setIdConsulta(Integer.valueOf(idConsulta));
+							csBean.setIdConsulta(Long.valueOf(idConsulta));
 							csBean.setIdInstitucion(Integer.valueOf(idInstitucion));
 							csBean.setCabecera(camposSalida[i].getCab());
 							csBean.setOrden(new Integer(i+1));
@@ -674,7 +673,7 @@ public class EditarConsultaAction extends MasterAction {
 						if (camposOrden[i]==null || camposOrden[i].getTc().equals("null")){
 							break;
 						}else{					
-							coBean.setIdConsulta(Integer.valueOf(idConsulta));
+							coBean.setIdConsulta(Long.valueOf(idConsulta));
 							coBean.setIdInstitucion(Integer.valueOf(idInstitucion));
 							coBean.setOrden(new Integer(i+1));
 							coBean.setIdCampo(Integer.valueOf(camposOrden[i].getIdC()));
@@ -698,7 +697,7 @@ public class EditarConsultaAction extends MasterAction {
 						if (camposAgregacion[i]==null || camposAgregacion[i].getTc().equals("null")){
 							break;
 						}else{					
-							caBean.setIdConsulta(Integer.valueOf(idConsulta));
+							caBean.setIdConsulta(Long.valueOf(idConsulta));
 							caBean.setIdInstitucion(Integer.valueOf(idInstitucion));
 							caBean.setOrden(new Integer(i+1));
 							caBean.setIdCampo(Integer.valueOf(camposAgregacion[i].getIdC()));
@@ -721,7 +720,7 @@ public class EditarConsultaAction extends MasterAction {
 						if (criteriosDinamicos[i]==null || criteriosDinamicos[i].getTc().equals("null")){
 							break;
 						}else{					
-							cdBean.setIdConsulta(Integer.valueOf(idConsulta));
+							cdBean.setIdConsulta(Long.valueOf(idConsulta));
 							cdBean.setIdInstitucion(Integer.valueOf(idInstitucion));
 							cdBean.setOrden(new Integer(i+1));
 							cdBean.setIdCampo(Integer.valueOf(criteriosDinamicos[i].getIdC()));
@@ -795,7 +794,7 @@ public class EditarConsultaAction extends MasterAction {
 							ccBean.setSeparadorFin(null);
 						}
 						ccBean.setOrden(String.valueOf(i+1));
-						ccBean.setIdConsulta(Integer.valueOf(idConsulta));
+						ccBean.setIdConsulta(Long.valueOf(idConsulta));
 						ccBean.setIdInstitucion(Integer.valueOf(idInstitucion));
 						
 						ccAdm.insert(ccBean);
@@ -816,7 +815,7 @@ public class EditarConsultaAction extends MasterAction {
 					conBean.setSentencia(sentencia);
 					conBean.setTipoConsulta(ConConsultaAdm.TIPO_CONSULTA_FAC);
 					conBean.setIdInstitucion(Integer.valueOf(idInstitucion));
-					conBean.setIdConsulta(Integer.valueOf(idConsulta));
+					conBean.setIdConsulta(Long.valueOf(idConsulta));
 					//La sentencia se debe insertar con los parámetros resueltos.
 					//Como es una consulta de facturacion, el parametro idTipoEnvio es innecesario y se pasa como null
 					//Tampoco son necesarios los criterios dinamicos y se pasa un array vacio.
@@ -872,7 +871,7 @@ public class EditarConsultaAction extends MasterAction {
 					grBean.setIdGruposCriterios(grAdm.getNewIdGruposCriterios(userBean.getLocation()));
 					grBean.setNombre(form.getDescripcion());
 					grBean.setSentencia(sentencia);
-					grBean.setIdConsulta(Integer.valueOf(idConsulta));
+					grBean.setIdConsulta(Long.valueOf(idConsulta));
 					grAdm.insert(grBean);
 				}
 		}
@@ -980,7 +979,7 @@ public class EditarConsultaAction extends MasterAction {
 			    	cBean.setIdTabla(null);
 			    }
 			    cBean.setIdInstitucion(Integer.valueOf(idInstitucion));
-			    cBean.setIdConsulta(Integer.valueOf(idConsulta));
+			    cBean.setIdConsulta(Long.valueOf(idConsulta));
 			    cBean.setTipoConsulta(form.getTipoConsulta());
 			    cBean.setSentencia(sentencia);
 			    cBean.setEsExperta(form.getConsultaExperta());
@@ -996,7 +995,7 @@ public class EditarConsultaAction extends MasterAction {
 						if (camposSalida[i]==null || camposSalida[i].getTc().equals("null")){
 							break;
 						}else{					
-							csBean.setIdConsulta(Integer.valueOf(idConsulta));
+							csBean.setIdConsulta(Long.valueOf(idConsulta));
 							csBean.setIdInstitucion(Integer.valueOf(idInstitucion));
 							csBean.setCabecera(camposSalida[i].getCab());
 							csBean.setOrden(new Integer(i+1));
@@ -1014,7 +1013,7 @@ public class EditarConsultaAction extends MasterAction {
 						if (camposOrden[i]==null || camposOrden[i].getTc().equals("null")){
 							break;
 						}else{					
-							coBean.setIdConsulta(Integer.valueOf(idConsulta));
+							coBean.setIdConsulta(Long.valueOf(idConsulta));
 							coBean.setIdInstitucion(Integer.valueOf(idInstitucion));
 							coBean.setOrden(new Integer(i+1));
 							coBean.setIdCampo(Integer.valueOf(camposOrden[i].getIdC()));
@@ -1032,7 +1031,7 @@ public class EditarConsultaAction extends MasterAction {
 							break;
 						}
 						else{					
-							caBean.setIdConsulta(Integer.valueOf(idConsulta));
+							caBean.setIdConsulta(Long.valueOf(idConsulta));
 							caBean.setIdInstitucion(Integer.valueOf(idInstitucion));
 							caBean.setOrden(new Integer(i+1));
 							caBean.setIdCampo(Integer.valueOf(camposAgregacion[i].getIdC()));
@@ -1048,7 +1047,7 @@ public class EditarConsultaAction extends MasterAction {
 						if (criteriosDinamicos[i]==null || criteriosDinamicos[i].getTc().equals("null")){
 							break;
 						}else{					
-							cdBean.setIdConsulta(Integer.valueOf(idConsulta));
+							cdBean.setIdConsulta(Long.valueOf(idConsulta));
 							cdBean.setIdInstitucion(Integer.valueOf(idInstitucion));
 							cdBean.setOrden(new Integer(i+1));
 							cdBean.setIdCampo(Integer.valueOf(criteriosDinamicos[i].getIdC()));
@@ -1116,7 +1115,7 @@ public class EditarConsultaAction extends MasterAction {
 							ccBean.setSeparadorFin(null);
 						}
 						ccBean.setOrden(String.valueOf(i+1));
-						ccBean.setIdConsulta(Integer.valueOf(idConsulta));
+						ccBean.setIdConsulta(Long.valueOf(idConsulta));
 						ccBean.setIdInstitucion(Integer.valueOf(idInstitucion));
 						
 						ccAdm.insert(ccBean);
@@ -1138,7 +1137,7 @@ public class EditarConsultaAction extends MasterAction {
 					conBean.setSentencia(sentencia);
 					conBean.setTipoConsulta(ConConsultaAdm.TIPO_CONSULTA_FAC);
 					conBean.setIdInstitucion(Integer.valueOf(idInstitucion));
-					conBean.setIdConsulta(Integer.valueOf(idConsulta));
+					conBean.setIdConsulta(Long.valueOf(idConsulta));
 					//La sentencia se debe insertar con los parámetros resueltos.
 					//Como es una consulta de facturacion, el parametro idTipoEnvio es innecesario y se pasa como null
 					//Tampoco son necesarios los criterios dinamicos y se pasa un array vacio.
@@ -1184,7 +1183,7 @@ public class EditarConsultaAction extends MasterAction {
 			grBean.setIdGruposCriterios(grAdm.getNewIdGruposCriterios(userBean.getLocation()));
 			grBean.setNombre(form.getDescripcion());
 			grBean.setSentencia(sentencia);
-			grBean.setIdConsulta(Integer.valueOf(idConsulta));
+			grBean.setIdConsulta(Long.valueOf(idConsulta));
 			
 			grAdm.insert(grBean);
 		}

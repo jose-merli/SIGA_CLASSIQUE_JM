@@ -79,7 +79,7 @@ public class ConCriteriosDinamicosAdm extends MasterBeanAdministrador {
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, ConCriteriosDinamicosBean.C_IDINSTITUCION));
 			bean.setIdCampo(UtilidadesHash.getInteger(hash, ConCriteriosDinamicosBean.C_IDCAMPO));
 			bean.setOrden(UtilidadesHash.getInteger(hash, ConCriteriosDinamicosBean.C_ORDEN));
-			bean.setIdConsulta(UtilidadesHash.getInteger(hash, ConCriteriosDinamicosBean.C_IDCONSULTA));
+			bean.setIdConsulta(UtilidadesHash.getLong(hash, ConCriteriosDinamicosBean.C_IDCONSULTA));
 			bean.setFechaMod(UtilidadesHash.getString(hash, ConCriteriosDinamicosBean.C_FECHAMODIFICACION));			
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, ConCriteriosDinamicosBean.C_USUMODIFICACION));
 		

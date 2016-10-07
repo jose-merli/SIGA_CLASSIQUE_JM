@@ -13,7 +13,8 @@ public class CenGruposCriteriosBean extends MasterBean{
 	private static final long serialVersionUID = -4021604135520997998L;
 
 	/* Variables */
-	private Integer idInstitucion, idGruposCriterios, idConsulta;
+	private Integer idInstitucion, idGruposCriterios;
+	private Long idConsulta;
 	
 	private String 	nombre, sentencia;
 	
@@ -32,12 +33,12 @@ public class CenGruposCriteriosBean extends MasterBean{
 	public void setIdGruposCriterios (Integer id)	{ this.idGruposCriterios = id; }
 	public void setNombre (String s)				{ this.nombre = s; }
 	public void setSentencia (String s)				{ this.sentencia = s; }
-	public void setIdConsulta (Integer id)			{ this.idConsulta = id; }
+	public void setIdConsulta (Long id)			{ this.idConsulta = id; }
 
 	// Metodos GET
 	public Integer getIdInstitucion 	()	{ return this.idInstitucion; }
 	public Integer getIdGruposCriterios ()	{ return this.idGruposCriterios; }
 	public String  getNombre    		()	{ return this.nombre; }
 	public String  getSentencia    		()	{ return this.sentencia; }
-	public Integer  getIdConsulta  		()	{ return this.idConsulta; }
+	public Long  getIdConsulta  		()	{ return this.idConsulta; }
 }

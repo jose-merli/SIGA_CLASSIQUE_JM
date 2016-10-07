@@ -69,7 +69,7 @@ public class AdmConsultaInformeAdm extends MasterBeanAdministrador {
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, AdmConsultaInformeConsultaBean.C_IDINSTITUCION));
 			bean.setIdPlantilla(UtilidadesHash.getString(hash, AdmConsultaInformeConsultaBean.C_IDPLANTILLA));
 			bean.setIdInstitucion_consulta(UtilidadesHash.getInteger(hash, AdmConsultaInformeConsultaBean.C_IDINSTITUCION_CONSULTA));
-			bean.setIdConsulta(UtilidadesHash.getInteger(hash, AdmConsultaInformeConsultaBean.C_IDCONSULTA));
+			bean.setIdConsulta(UtilidadesHash.getLong(hash, AdmConsultaInformeConsultaBean.C_IDCONSULTA));
 			bean.setNombre(UtilidadesHash.getString(hash, AdmConsultaInformeConsultaBean.C_NOMBRE));
 			bean.setVariasLineas(UtilidadesHash.getString(hash, AdmConsultaInformeConsultaBean.C_VARIASLINEAS));
 			bean.setDescripcion(UtilidadesHash.getString(hash, AdmConsultaInformeConsultaBean.C_DESCRIPCION));

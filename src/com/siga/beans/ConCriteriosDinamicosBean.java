@@ -16,7 +16,7 @@ public class ConCriteriosDinamicosBean extends MasterBean {
 	private static final long serialVersionUID = 1083008628062619209L;
 	//	Variables
 	private Integer idInstitucion;
-	private Integer idConsulta;
+	private Long idConsulta;
 	private Integer orden;
 	private Integer idCampo;
 	
@@ -38,10 +38,10 @@ public class ConCriteriosDinamicosBean extends MasterBean {
     public void setIdCampo(Integer idCampo) {
         this.idCampo = idCampo;
     }
-    public Integer getIdConsulta() {
+    public Long getIdConsulta() {
         return idConsulta;
     }
-    public void setIdConsulta(Integer idConsulta) {
+    public void setIdConsulta(Long idConsulta) {
         this.idConsulta = idConsulta;
     }
     public Integer getIdInstitucion() {

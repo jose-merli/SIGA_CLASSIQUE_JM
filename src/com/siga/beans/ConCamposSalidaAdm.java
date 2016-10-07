@@ -78,7 +78,7 @@ public class ConCamposSalidaAdm extends MasterBeanAdministrador {
 			bean.setIdCampo(UtilidadesHash.getInteger(hash, ConCamposSalidaBean.C_IDCAMPO));
 			bean.setCabecera(UtilidadesHash.getString(hash, ConCamposSalidaBean.C_CABECERA));			
 			bean.setOrden(UtilidadesHash.getInteger(hash, ConCamposSalidaBean.C_ORDEN));
-			bean.setIdConsulta(UtilidadesHash.getInteger(hash, ConCamposSalidaBean.C_IDCONSULTA));
+			bean.setIdConsulta(UtilidadesHash.getLong(hash, ConCamposSalidaBean.C_IDCONSULTA));
 			bean.setFechaMod(UtilidadesHash.getString(hash, ConCamposSalidaBean.C_FECHAMODIFICACION));			
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, ConCamposSalidaBean.C_USUMODIFICACION));
 		
