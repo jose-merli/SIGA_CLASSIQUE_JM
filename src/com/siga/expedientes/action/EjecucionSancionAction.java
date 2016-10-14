@@ -73,29 +73,7 @@ public class EjecucionSancionAction extends MasterAction {
 					anioExpediente.toString(), numeroExpediente.toString());
 			//Comienzo la transaccion:
 			tx.begin();
-			/*//aalg:se modifica primero el estado del denunciado que está grabado en exp_expediente
-			if (form.isBajaTurno()){
-				ScsInscripcionTurnoAdm tAdm = new ScsInscripcionTurnoAdm(this.getUserBean(request));
-				//Obligo a que no use internamente una transaccion.
-				 tAdm.insertarBajaEnTurnos(idPersona,idInstitucion,form.getMotivo());
-			}
-			if (form.isBajaColegial()){
-				CenDatosColegialesEstadoAdm c1Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
-				c1Adm.insertarBajaColegial(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request));
-			}
-			if (form.isBajaEjercicio()){
-				CenDatosColegialesEstadoAdm c2Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
-				c2Adm.insertarBajaEnEjercicio(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request));
-			}
-			if (form.isInhabilitacion()){
-				CenDatosColegialesEstadoAdm c3Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
-				c3Adm.insertarInhabilitacion(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request));
-			}
-			if (form.isSuspension()){
-				CenDatosColegialesEstadoAdm c3Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
-				c3Adm.insertarSuspension(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request));
-			}*/
-			//aalg: se buscan los denunciados para modificarles el estado
+			
 			String idPersona;
 			ExpExpedienteAdm exp = new ExpExpedienteAdm(this.getUserBean(request));
 			Vector vDenunciado = exp.getDenunciados(idInstitucion, idInstitucion_tipoExpediente.toString(), anioExpediente.toString(), numeroExpediente.toString(), IdTipoExpediente.toString());
@@ -113,47 +91,41 @@ public class EjecucionSancionAction extends MasterAction {
 					tAdm.cancelarInscripcionesTurnosPersona(idPersona, idInstitucion, form.getMotivo(), GstDate.getFormatedDateShort(sdf.parse(expedienteBean.getFechaInicialEstado())));
 				}
 				
+				Hashtable<String,String> estadoColegialHashtable = new Hashtable<String, String>();
+				
+				estadoColegialHashtable.put("idPersona", idPersona);
+				estadoColegialHashtable.put("idInstitucion", idInstitucion);
+				estadoColegialHashtable.put("motivo", form.getMotivo());
+				estadoColegialHashtable.put("idioma", this.getLenguaje(request));
+				estadoColegialHashtable.put("fechaSancion", expedienteBean.getFechaInicialEstado());
+				CenDatosColegialesEstadoAdm cenDatosColegialesAdm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
+				
+				
 				if (form.isBajaColegial()){
-					CenDatosColegialesEstadoAdm c1Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
-					Hashtable<String,String> bajaColegialHashtable = new Hashtable<String, String>();
 					
-					bajaColegialHashtable.put("idPersona", idPersona);
-					bajaColegialHashtable.put("idInstitucion", idInstitucion);
-					bajaColegialHashtable.put("motivo", form.getMotivo());
-					bajaColegialHashtable.put("idioma", this.getLenguaje(request));
-					bajaColegialHashtable.put("fechaSancion", expedienteBean.getFechaInicialEstado());
-					estado = c1Adm.insertarBajaColegial(bajaColegialHashtable);
+					estado = cenDatosColegialesAdm.insertaEstadoColegial(estadoColegialHashtable,ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL);
+
 					
-					CenDireccionesBean beanDir = new CenDireccionesBean ();
 					
-					beanDir.setIdPersona (Long.valueOf(idPersona));
-					beanDir.setIdInstitucion (Integer.valueOf(idInstitucion));
-					
-					//Se inserta en la cola de modificacion de datos para Consejos
-					insertarModificacionConsejo(beanDir,this.getUserBean(request), ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION);
-					
-					if(estado!=2 && bajaColegialHashtable.get("RESPUESTA_ACA")!=null){
-						messageLlamadaWebServiceAcaRevisionLetrado.append(bajaColegialHashtable.get("RESPUESTA_ACA"));
+				}
+				if (form.isBajaEjercicio()){
+					cenDatosColegialesAdm.insertaEstadoColegial(estadoColegialHashtable,ClsConstants.ESTADO_COLEGIAL_SINEJERCER);
+				}
+				
+				if (form.isInhabilitacion()){
+					estado = cenDatosColegialesAdm.insertaEstadoColegial(estadoColegialHashtable,ClsConstants.ESTADO_COLEGIAL_INHABILITACION);
+				}
+				
+				if (form.isSuspension()){
+					estado = cenDatosColegialesAdm.insertaEstadoColegial(estadoColegialHashtable,ClsConstants.ESTADO_COLEGIAL_SUSPENSION);
+				}		
+				if (form.isBajaColegial() || form.isInhabilitacion() ||form.isSuspension()){
+					if(estado!=2 && estadoColegialHashtable.get("RESPUESTA_ACA")!=null){
+						messageLlamadaWebServiceAcaRevisionLetrado.append(estadoColegialHashtable.get("RESPUESTA_ACA"));
 						messageLlamadaWebServiceAcaRevisionLetrado.append(" ");
 					}
 					
 				}
-				
-				SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_LONG_ENGLISH);
-				if (form.isBajaEjercicio()){
-					CenDatosColegialesEstadoAdm c2Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
-					c2Adm.insertarBajaEnEjercicio(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request),expedienteBean.getFechaInicialEstado());
-				}
-				
-				if (form.isInhabilitacion()){
-					CenDatosColegialesEstadoAdm c3Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
-					c3Adm.insertarInhabilitacion(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request),expedienteBean.getFechaInicialEstado());
-				}
-				
-				if (form.isSuspension()){
-					CenDatosColegialesEstadoAdm c3Adm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
-					c3Adm.insertarSuspension(idPersona,idInstitucion,form.getMotivo(),this.getLenguaje(request),expedienteBean.getFechaInicialEstado());
-				}				
 			}
 			//Fin de la transaccion:
 		    tx.commit();
@@ -183,9 +155,5 @@ public class EjecucionSancionAction extends MasterAction {
 		}
 	}
 	
-	private static void insertarModificacionConsejo(CenDireccionesBean beanDir, UsrBean usr, int accionCola) throws SIGAException{
-		CenColaCambioLetradoAdm colaAdm = new CenColaCambioLetradoAdm (usr);
-		if (!colaAdm.insertarCambioEnCola (accionCola, beanDir.getIdInstitucion (), beanDir.getIdPersona (), beanDir.getIdDireccion ()))
-			throw new SIGAException (colaAdm.getError ());
-	}
+	
 }

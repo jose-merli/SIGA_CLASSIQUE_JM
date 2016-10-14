@@ -466,5 +466,10 @@ insert into gen_recursos values ('gratuita.listadoCalendario.literal.festivoNaci
 insert into gen_recursos values ('gratuita.listadoCalendario.literal.festivoNacional', 'FESTIVO NACIONAL#EU', 0, 3, sysdate, 0, 19);
 insert into gen_recursos values ('gratuita.listadoCalendario.literal.festivoNacional', 'FESTIVO NACIONAL#GL', 0, 4, sysdate, 0, 19);   
 
+
 -- Ejecutado en Integración por Adrian 2016-10-10 09:36
 
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.general.error.conexion', 'No se ha podido establecer la conexión.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.general.error.conexion', 'No se ha podido establecer la conexión.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.general.error.conexion', 'No se ha podido establecer la conexión.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.general.error.conexion', 'No se ha podido establecer la conexión.#GL', 0, '4', sysdate, 0, '19');

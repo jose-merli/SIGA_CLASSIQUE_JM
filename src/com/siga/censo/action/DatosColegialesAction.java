@@ -516,17 +516,8 @@ public class DatosColegialesAction extends MasterAction {
 					
 					throw new SIGAException(admEstados.getError());
 				case 1:case 2:
-					admEstados.revisionesPorCambioEstadoColegial(idinstitucion, idpersona, Integer.toString(estado), miForm.getFechaEstado(), usr); // OJO: se pasa la fecha sin hora
+					
 				
-					CenDireccionesBean beanDir = new CenDireccionesBean ();
-					
-					beanDir.setIdPersona (Long.valueOf(idpersona));
-					beanDir.setIdInstitucion (Integer.valueOf(idinstitucion));
-					
-					//Se inserta en la cola de modificacion de datos para Consejos
-					insertarModificacionConsejo(beanDir,usr, ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION);
-				
-					
 					// terminando transaccion
 					tx.commit();
 					String[] parametros = {"","","",""};
@@ -908,7 +899,7 @@ public class DatosColegialesAction extends MasterAction {
 			beanDir.setIdInstitucion (Integer.valueOf(miForm.getIdInstitucion()));
 			
 			//Se inserta en la cola de modificacion de datos para Consejos
-			insertarModificacionConsejo(beanDir,usr, ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION);
+			admEstados.insertarModificacionConsejo(beanDir,usr, ClsConstants.COLA_CAMBIO_LETRADO_MODIFICACION_DIRECCION);
 		
 			
 			
@@ -993,9 +984,5 @@ public class DatosColegialesAction extends MasterAction {
 		
 	}
 
-	private static void insertarModificacionConsejo(CenDireccionesBean beanDir, UsrBean usr, int accionCola) throws SIGAException{
-		CenColaCambioLetradoAdm colaAdm = new CenColaCambioLetradoAdm (usr);
-		if (!colaAdm.insertarCambioEnCola (accionCola, beanDir.getIdInstitucion (), beanDir.getIdPersona (), beanDir.getIdDireccion ()))
-			throw new SIGAException (colaAdm.getError ());
-	}
+	
 }
