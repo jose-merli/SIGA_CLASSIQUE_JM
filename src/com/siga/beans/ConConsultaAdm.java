@@ -170,10 +170,11 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 	 * Genera el id de una nueva Consulta
 	 * @param String idInstitucion
 	 * @return nuevo idConsulta
+	 * @throws SIGAException 
 	 * */
-	public Integer getNewIdConsulta(String idInstitucion) throws ClsExceptions 
+	public Long getNewIdConsulta(String idInstitucion) throws ClsExceptions, SIGAException 
 	{		
-		int nuevoIdConsulta = 1;
+		long nuevoIdConsulta = 1;
 		
 		// Acceso a BBDD
 		RowsContainer rc = null;
@@ -190,8 +191,8 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 			if (rc.find(sql)) {
 				Hashtable htRow=((Row)rc.get(0)).getRow();
 				if(!((String)htRow.get("ULTIMACONSULTA")).equals("")) {
-					Integer ultimaConsultaInt = Integer.valueOf((String)htRow.get("ULTIMACONSULTA"));
-					int ultimaConsulta=ultimaConsultaInt.intValue();
+					Long ultimaConsultaInt = Long.valueOf((String)htRow.get("ULTIMACONSULTA"));
+					long ultimaConsulta=ultimaConsultaInt.longValue();
 					ultimaConsulta++;
 					nuevoIdConsulta = ultimaConsulta;
 				}
@@ -200,7 +201,9 @@ public class ConConsultaAdm extends MasterBeanAdministrador {
 		catch (Exception e) { 	
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
 		}
-		return new Integer (nuevoIdConsulta);
+		if(nuevoIdConsulta>=new Long("10000000000"))
+			throw new SIGAException("messages.general.error.identificadorExcedido");
+		return new Long (nuevoIdConsulta);
 	}
 	
 	

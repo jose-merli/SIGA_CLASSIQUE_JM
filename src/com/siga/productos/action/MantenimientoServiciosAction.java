@@ -1502,7 +1502,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 			String nuevoIdConsulta = "";
 			boolean esInsercion = false;
 			if (((String)hash.get(PysPreciosServiciosBean.C_IDCONSULTA)).equals("")){
-				nuevoIdConsulta = ((Integer)consultaAdm.getNewIdConsulta(usr.getLocation())).toString();
+				nuevoIdConsulta = ((Long)consultaAdm.getNewIdConsulta(usr.getLocation())).toString();
 				esInsercion = true;
 			}
 			else nuevoIdConsulta = (String)hash.get(PysPreciosServiciosBean.C_IDCONSULTA);
