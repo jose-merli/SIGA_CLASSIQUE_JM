@@ -478,3 +478,9 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.general.error.identificadorExcedido', 'Se ha excedido el límite de registros permitido. Consulte con su administrador#CA', 0, '2', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.general.error.identificadorExcedido', 'Se ha excedido el límite de registros permitido. Consulte con su administrador#EU', 0, '3', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.general.error.identificadorExcedido', 'Se ha excedido el límite de registros permitido. Consulte con su administrador#GL', 0, '4', sysdate, 0, '19');
+
+ update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Los siguientes expedientes están asociados a otras actas abiertas' where idrecurso='messages.acta.error.expotrosactas.lista' and idlenguaje='1';
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Los siguientes expedientes están asociados a otras actas abiertas#CA' where idrecurso='messages.acta.error.expotrosactas.lista' and idlenguaje='2';
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Los siguientes expedientes están asociados a otras actas abiertas#EU' where idrecurso='messages.acta.error.expotrosactas.lista' and idlenguaje='3';
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Los siguientes expedientes están asociados a otras actas abiertas#GL' where idrecurso='messages.acta.error.expotrosactas.lista' and idlenguaje='4';
+
