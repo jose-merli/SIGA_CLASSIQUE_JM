@@ -50,8 +50,8 @@
 		<siga:ConjCampos leyenda="general.criterios">	
 			<table class="tablaCampos" border="0" align="left">
 			<tr>
-				<td  width="19%"></td>
-				<td  width="20%"></td>
+				<td  width="21%"></td>
+				<td  width="18%"></td>
 				<td  width="8%"></td>
 				<td  width="10%"></td>
 				<td  width="14%"></td>
@@ -66,7 +66,7 @@
 				<td>
 					<html:text name="ActaComisionForm" property="anioActa" style="width:40px" maxlength="4" styleClass="box" onkeyup="return onchangeSufijo();" onkeypress="return soloDigitos(event);"></html:text>
 					/
-					<html:text name="ActaComisionForm" property="numActa" style="width:40px" maxlength="7" styleClass="box"></html:text>
+					<html:text name="ActaComisionForm" property="numActa" style="width:40px" maxlength="6" styleClass="box" onkeypress="return soloDigitos(event)"></html:text>
 					
 					
 				</td>
