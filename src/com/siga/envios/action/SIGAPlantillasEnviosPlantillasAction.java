@@ -16,6 +16,9 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
+import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
@@ -304,6 +307,14 @@ public class SIGAPlantillasEnviosPlantillasAction extends MasterAction
 			tx = userBean.getTransaction();			
 
 			FormFile theFile = form.getTheFile();
+			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_MB.getValor());
+			int maxSizebytes = Integer.parseInt(maxsize) * 1000 * 1024;
+			if (theFile != null && theFile.getFileSize() > maxSizebytes) {
+				throw new SIGAException("messages.general.file.maxsize", new String[] { (maxsize) });
+			}
+			
+			
 //		    if(theFile==null || theFile.getFileSize()<1)
 //		    	throw new SIGAException("messages.general.error.ficheroNoExiste");
 
