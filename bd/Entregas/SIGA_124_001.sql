@@ -484,3 +484,5 @@ update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Los siguientes e
 update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Los siguientes expedientes están asociados a otras actas abiertas#EU' where idrecurso='messages.acta.error.expotrosactas.lista' and idlenguaje='3';
 update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Los siguientes expedientes están asociados a otras actas abiertas#GL' where idrecurso='messages.acta.error.expotrosactas.lista' and idlenguaje='4';
 
+
+-- Ejecutado en Integración por Adrian 2016-10-18 10:06
