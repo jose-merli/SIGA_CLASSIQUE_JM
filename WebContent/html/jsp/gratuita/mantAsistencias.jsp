@@ -786,7 +786,7 @@
 															<siga:Idioma key='gratuita.mantAsistencias.literal.ejg'/>
 														</td>
 														
-														<td class="labelText" width="100px">				
+														<td class="labelText" width="50px">				
 															<siga:Idioma key='gratuita.mantAsistencias.literal.tipo'/>
 														</td>
 														
@@ -818,7 +818,7 @@
 																- <%=UtilidadesString.mostrarDatoJSP(nombreIntEJG)%> <%=UtilidadesString.mostrarDatoJSP(apellido1IntEJG)%> <%=UtilidadesString.mostrarDatoJSP(apellido2IntEJG)%>
 														</td>
 
-														<td class="labelText" width="100px">	
+														<td class="labelText" width="150px">	
 															<siga:Idioma key='gratuita.busquedaEJG.literal.estadoEJG'/>
 														</td>
 														
@@ -836,7 +836,7 @@
 <% 
 															} else { 
 %>
-																<td align="right">
+																<td align="right" nowrap>
 																	<img src="<%=app%>/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarEJG'/>" name="" border="0" onclick="consultarEJGFuncion('ver')">
 																	<img src="<%=app%>/html/imagenes/beditar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.EditarEJG'/>" name="" border="0" onclick="consultarEJGFuncion('<%=modo%>')">
 																	<img src="<%=app%>/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.BorrarEJG'/>" name="" border="0" onclick="borrarRelacionConEJG()">
@@ -862,7 +862,7 @@
 															<siga:Idioma key='gratuita.mantAsistencias.literal.designa'/>
 														</td>
 														
-														<td class="labelText" width="100px">	
+														<td class="labelText" width="50px">	
 															<siga:Idioma key='gratuita.mantAsistencias.literal.turno'/>
 														</td>
 														
@@ -908,7 +908,7 @@
 <% 
 															} else { 
 %>
-																<td  align="right">
+																<td  align="right" nowrap>
 																	<img src="<%=app%>/html/imagenes/bconsultar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.operarEJG.boton.ConsultarDesigna'/>" name="" border="0" onclick="consultarDesignaFuncion('ver')">
 																	<img src="<%=app%>/html/imagenes/beditar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.boton.EditarDesigna'/>" name="" border="0" onclick="consultarDesignaFuncion('<%=modo%>')">
 																	<img src="<%=app%>/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='gratuita.boton.BorrarDesigna'/>" name="" border="0" onclick="borrarRelacionConDesigna()">
