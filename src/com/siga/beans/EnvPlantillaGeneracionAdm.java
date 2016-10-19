@@ -277,190 +277,154 @@ public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
         }
    	}
    	
-   	private boolean grabarFicheroPlantilla(String idInstitucion, 
-				 						   String idTipoEnvios, 
-				 						   String idPlantillaEnvios, 
-				 						   String idPlantilla, 
-				 						   File fPlantilla, 
-				 						   String extension) throws SIGAException, ClsExceptions
-   	{
-   	    try
-   	    {
-   	        String sCompuesto = idTipoEnvios + "_" + idPlantillaEnvios + "_" + idPlantilla;
-	        String sNombreFinal = fPlantilla.getParent() + File.separator + sCompuesto;
-	        String sDirectorioFinal = fPlantilla.getParent();
+	private boolean grabarFicheroPlantilla(String idInstitucion, String idTipoEnvios, String idPlantillaEnvios, String idPlantilla, File fPlantilla, String extension) throws SIGAException, ClsExceptions {
+		try {
+			String sCompuesto = idTipoEnvios + "_" + idPlantillaEnvios + "_" + idPlantilla;
+			String sNombreFinal = fPlantilla.getParent() + File.separator + sCompuesto;
+			String sDirectorioFinal = fPlantilla.getParent();
 
-	        
-	        Vector vFiles = getFicherosPlantilla(sDirectorioFinal, sCompuesto, idPlantilla);
+			Vector vFiles = getFicherosPlantilla(sDirectorioFinal, sCompuesto, idPlantilla);
 
-            File[] fFicheros1 = (File[])vFiles.elementAt(0);
-            File[] fFicheros2 = (File[])vFiles.elementAt(1);
+			File[] fFicheros1 = (File[]) vFiles.elementAt(0);
+			File[] fFicheros2 = (File[]) vFiles.elementAt(1);
 
-	        if (idPlantilla==null || idPlantilla.equals(""))
-	        {
-	            if ((fFicheros1!=null && fFicheros1.length>0) || (fFicheros2!=null && fFicheros2.length>0))
-	            {
-	                fPlantilla.delete();
-	
-	                throw new SIGAException("messages.certificados.error.archivoexiste");
-	            }
-	        }
-	        
-	        else
-	        {
-	            if (fFicheros1!=null)
-	            {
-	                for (int i=0; i<fFicheros1.length; i++)
-	                {
-	                    File fAux = fFicheros1[i];
-	                    fAux.delete();
-	                }
-	            }
-	
-	            if (fFicheros2!=null)
-	            {
-	                for (int i=0; i<fFicheros2.length; i++)
-	                {
-	                    File fAux = fFicheros2[i];
-	                    fAux.delete();
-	                }
-	            }
-	        }
-	        
-	        if (extension.toLowerCase().equals("zip"))
-	        {
-	            try 
-	            {
-	                ZipFile zf = new ZipFile(fPlantilla.getAbsolutePath());
+			if (idPlantilla == null || idPlantilla.equals("")) {
+				if ((fFicheros1 != null && fFicheros1.length > 0) || (fFicheros2 != null && fFicheros2.length > 0)) {
+					fPlantilla.delete();
 
-	                Enumeration enumer = zf.entries();
-	                int cont=0;
-	                String sNombreRecursos=sCompuesto;
-	                
-	                Hashtable htNombresRecursos = new Hashtable();
-	                
-	                File fDirectorio = new File(sDirectorioFinal + File.separator + sDirectorioRecursos);
-                    fDirectorio.mkdirs();
+					throw new SIGAException("messages.certificados.error.archivoexiste");
+				}
+			}
 
-	                while (enumer.hasMoreElements()) 
-	                {
-	                    ZipEntry ze=(ZipEntry)enumer.nextElement();
-	                    String sNombreAux=ze.getName();
-           
-	                    if (!ze.isDirectory())
-	                    {
-	                        InputStream is = zf.getInputStream(ze);
-	                        FileOutputStream fos = null;
-	                        
-	                        //if (cont==0)
-	                        if (!sNombreAux.toLowerCase().endsWith(".fo")&&!sNombreAux.toLowerCase().endsWith(".jpg")&&sNombreAux.toLowerCase().endsWith(".gif")&&sNombreAux.toLowerCase().endsWith(".png")){
-	                        	throw new SIGAException("comunicaciones.plantillas.error.archivosZip");
-	                        }
-	                        else if (sNombreAux.endsWith(".fo"))
-	                        {
-	                            fos = new FileOutputStream(sNombreFinal + ".tmp");
-	                        }
-	                        
-	                        else
-	                        {
-//	                            htNombresRecursos.put(sNombreAux.substring(sDirectorioRecursos.length()), sNombreRecursos + "_" + cont);
-	                            htNombresRecursos.put(sNombreAux, sNombreRecursos + "_" + cont);
+			else {
+				if (fFicheros1 != null) {
+					for (int i = 0; i < fFicheros1.length; i++) {
+						File fAux = fFicheros1[i];
+						fAux.delete();
+					}
+				}
 
-	                            fos = new FileOutputStream(sDirectorioFinal + File.separator + sDirectorioRecursos + sNombreRecursos + "_" + cont);
-	                        }
-	                        
-	                        byte[] buf = new byte[10000];
-	                        int length=0;
+				if (fFicheros2 != null) {
+					for (int i = 0; i < fFicheros2.length; i++) {
+						File fAux = fFicheros2[i];
+						fAux.delete();
+					}
+				}
+			}
 
-	                        while ((length=is.read(buf))>-1)
-	                        {
-	                            fos.write(buf, 0, length);
-	                        }
+			if (extension.toLowerCase().equals("zip")) {
+				try {
+					ZipFile zf = new ZipFile(fPlantilla.getAbsolutePath());
 
-	                        is.close();
-	                        fos.close();
+					Enumeration enumer = zf.entries();
+					int cont = 0;
+					String sNombreRecursos = sCompuesto;
 
-	                        cont++;
-	                    }
-	                }
-	                
-	                zf.close();
-	                
-	                File fTemp = new File(sNombreFinal + ".tmp");
-	                if(!fTemp.exists()){
-	                	throw new SIGAException("comunicaciones.plantillas.error.archivosZip");
-	                	
-	                }
-	                
-	                BufferedReader br = new BufferedReader(new FileReader(fTemp));
-	                String sLeido="";
-	                int iLeido=0;
-	                
-	                while ((iLeido=br.read())!=-1)
-	                {
-	                    sLeido += (char)iLeido;
-	                }
-	                
-	                br.close();
-	                
-	                Enumeration enumNombresRecursos = htNombresRecursos.keys();
-	                
-	                while (enumNombresRecursos.hasMoreElements())
-	                {
-	                    String sTemp1 = (String)enumNombresRecursos.nextElement();
-	                    String sTemp2 = (String)htNombresRecursos.get(sTemp1);
-	                    
-	                    // RGG cambio para que el replace cambie solo el nombre de la imagen pero no su camino
-	                    if (sTemp1.lastIndexOf("/")!=-1) {
-	                    	String auxiliar1 = sTemp1.substring(0,sTemp1.lastIndexOf("/")+1);
-	                    	sTemp2 = auxiliar1 + sTemp2;
-	                    }
-	                    
-	                    sLeido = sLeido.replaceAll(sTemp1, sTemp2);
-	                }
-	                
-	                BufferedWriter bw = new BufferedWriter(new FileWriter(sNombreFinal));
-	                
-	                bw.write(sLeido);
-	                bw.close();
-	                
-	                fPlantilla.deleteOnExit();
-	                fPlantilla.delete();
-	                
-	                //fTemp.renameTo(new File(sNombreFinal));
-	                fTemp.deleteOnExit();
-	                fTemp.delete();
-	            }
-	            catch(SIGAException e)
-	            {	throw e;
-	                
-	            }
-	            catch(Exception e)
-	            {
-	                e.printStackTrace();
-	            }
-	        }
-	        
-	        else 
-	        {
-//	        	if(extension.toLowerCase().equals("doc")){
-//	        		sNombreFinal += ".doc";
-//	        	}
-	        	File fFicheroDestino = new File(sNombreFinal);
-	            
-	            fPlantilla.renameTo(fFicheroDestino);
-	        }
-	        
-	        return true;
-   	    }
-   	 catch(SIGAException e)
-     {	throw e;
-         
-     }
-   	    catch(Exception e)
-   	    {
-   	        return false;
-   	    }
+					Hashtable htNombresRecursos = new Hashtable();
+
+					File fDirectorio = new File(sDirectorioFinal + File.separator + sDirectorioRecursos);
+					fDirectorio.mkdirs();
+
+					while (enumer.hasMoreElements()) {
+						ZipEntry ze = (ZipEntry) enumer.nextElement();
+						String sNombreAux = ze.getName();
+
+						if (!ze.isDirectory()) {
+							InputStream is = zf.getInputStream(ze);
+							FileOutputStream fos = null;
+
+							if (!sNombreAux.toLowerCase().endsWith(".fo") && !sNombreAux.toLowerCase().endsWith(".jpg") && sNombreAux.toLowerCase().endsWith(".gif") && sNombreAux.toLowerCase().endsWith(".png")) {
+								throw new SIGAException("comunicaciones.plantillas.error.archivosZip");
+							} else if (sNombreAux.endsWith(".fo")) {
+								fos = new FileOutputStream(sNombreFinal + ".tmp");
+							}
+
+							else {
+								htNombresRecursos.put(sNombreAux, sNombreRecursos + "_" + cont);
+
+								fos = new FileOutputStream(sDirectorioFinal + File.separator + sDirectorioRecursos + sNombreRecursos + "_" + cont);
+							}
+
+							byte[] buf = new byte[1000000];
+							int length = 0;
+
+							while ((length = is.read(buf)) > -1) {
+								fos.write(buf, 0, length);
+							}
+
+							is.close();
+							fos.close();
+
+							cont++;
+						}
+					}
+
+					zf.close();
+
+					File fTemp = new File(sNombreFinal + ".tmp");
+					if (!fTemp.exists()) {
+						throw new SIGAException("comunicaciones.plantillas.error.archivosZip");
+
+					}
+					
+					BufferedReader br = new BufferedReader(new FileReader(fTemp));
+					StringBuilder leidoBuilder = new StringBuilder("");
+					String cadena;
+					while ((cadena = br.readLine()) != null) {
+						leidoBuilder.append(cadena);
+						leidoBuilder.append("\n");
+					}
+
+					br.close();
+
+					String sLeido = leidoBuilder.toString();
+					Enumeration enumNombresRecursos = htNombresRecursos.keys();
+
+					while (enumNombresRecursos.hasMoreElements()) {
+						String sTemp1 = (String) enumNombresRecursos.nextElement();
+						String sTemp2 = (String) htNombresRecursos.get(sTemp1);
+
+						// RGG cambio para que el replace cambie solo el nombre de la imagen pero no su camino
+						if (sTemp1.lastIndexOf("/") != -1) {
+							String auxiliar1 = sTemp1.substring(0, sTemp1.lastIndexOf("/") + 1);
+							sTemp2 = auxiliar1 + sTemp2;
+						}
+
+						sLeido = sLeido.replaceAll(sTemp1, sTemp2);
+					}
+
+					BufferedWriter bw = new BufferedWriter(new FileWriter(sNombreFinal));
+
+					bw.write(sLeido);
+					bw.close();
+
+					fPlantilla.deleteOnExit();
+					fPlantilla.delete();
+
+					fTemp.deleteOnExit();
+					fTemp.delete();
+				} catch (SIGAException e) {
+					throw e;
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+			else {
+
+				File fFicheroDestino = new File(sNombreFinal);
+
+				fPlantilla.renameTo(fFicheroDestino);
+			}
+
+			return true;
+		} catch (SIGAException e) {
+			throw e;
+
+		} catch (Exception e) {
+			return false;
+		}
 	}
    	
    	public File descargarPlantilla(String idInstitucion, 
