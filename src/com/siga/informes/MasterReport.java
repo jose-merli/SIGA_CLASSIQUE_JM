@@ -1016,15 +1016,29 @@ Así que hemos logrado convertirse en el documento en formato RTF xml. So that we
 		
 		return ficZip;
 	}
-	 public void convertFO2PDF(File fo, File pdf) 
-	    throws IOException, FOPException, ClsExceptions
-	    {
-	    	convertFO2PDF(fo, pdf, fo.getPath());
-	    }
-	    
-	   public synchronized  void convertFO2PDF(File fo, File pdf, String sBaseDir) 
-	    throws IOException, FOPException, ClsExceptions
-	    {
+
+	public void convertFO2PDF(File fo, File pdf) throws IOException, FOPException, ClsExceptions
+	{
+		convertFO2PDF(fo, pdf, fo.getPath());
+	}
+	
+	/**
+	 * Este metodo realiza la conversion de FO a PDF dado el fichero origen y la ruta del destino
+	 * 
+	 * @param fo
+	 * @param pdf
+	 * @param sBaseDir
+	 * @throws IOException
+	 * @throws FOPException
+	 * @throws ClsExceptions
+	 */
+	public static synchronized void convertFO2PDF(File fo, File pdf, String sBaseDir) throws IOException, FOPException, ClsExceptions
+	{	// ¡OJO, Muy importante! 
+		// 1. Este metodo ha de ser sincronizado para que solo se ejecute de forma atomica.
+		//    Esto es por culpa de la configuración que se establece a nivel global (org.apache.fop.configuration.Configuration)
+		// 2. Y ha de ser estatico (de clase) para que funcione de verdad; 
+		//    Si no lo fuera, en cada instancia (objeto) creado de MasterReport se podria ejecutar este metodo sin sincronizacion con las demas instancias. 
+		//    De hecho, esto es lo que pasaba: se mezclaban las imagenes de un FO con las de otro.
 	    	OutputStream out = null;
 	    	FileOutputStream fileOut = null;
 	    	
@@ -1101,7 +1115,7 @@ Así que hemos logrado convertirse en el documento en formato RTF xml. So that we
 		            fileOut.close();
 	        	} catch (Exception e) {}
 	        }
-	    }
+	} //convertFO2PDF()
 	   
 	
 	   
