@@ -266,14 +266,12 @@
 				parent.document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length ==0 &&
 				parent.document.MantenimientoDuplicadosForm.listadoInstitucion.value == "" &&
 				parent.document.MantenimientoDuplicadosForm.nombreText.value.length ==0 &&
-				parent.document.MantenimientoDuplicadosForm.apellido1Text.value.length ==0 &&
-				parent.document.MantenimientoDuplicadosForm.apellido2Text.value.length ==0){
+				parent.document.MantenimientoDuplicadosForm.apellido1Text.value.length ==0){
 			
 				jQuery("#nifcif",parent.document).removeAttr("disabled");
 				jQuery("#numeroColegiadoText",parent.document).removeAttr("disabled");
 				jQuery("#nombreText",parent.document).removeAttr("disabled");
 				jQuery("#apellido1Text",parent.document).removeAttr("disabled");
-				jQuery("#apellido2Text",parent.document).removeAttr("disabled");
 				jQuery("#listadoInstitucion",parent.document).removeAttr("disabled");
 			
 				
@@ -286,47 +284,25 @@
 				jQuery("#numeroColegiadoText",parent.document).attr("disabled","disabled");
 				jQuery("#nombreText",parent.document).attr("disabled","disabled");
 				jQuery("#apellido1Text",parent.document).attr("disabled","disabled");
-				jQuery("#apellido2Text",parent.document).attr("disabled","disabled");
 				jQuery("#listadoInstitucion",parent.document).attr("disabled","disabled");
-				
-				parent.document.MantenimientoDuplicadosForm.chkIdentificador.value="1";
 			}
 			if(parent.document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length >0 || parent.document.MantenimientoDuplicadosForm.listadoInstitucion.value != ""){
-				
 				
 				parent.document.getElementById('numeroColegiadoText').focus();
 				
 				jQuery("#nifcif",parent.document).attr("disabled","disabled");
 				jQuery("#nombreText",parent.document).attr("disabled","disabled");
 				jQuery("#apellido1Text",parent.document).attr("disabled","disabled");
-				jQuery("#apellido2Text",parent.document).attr("disabled","disabled");
 				jQuery("#listadoInstitucion",parent.document).removeAttr("disabled");
-				
-				parent.document.MantenimientoDuplicadosForm.chkNumColegiado.value="1";
-				onClickChkNumColegiado();
 			}
 			if(parent.document.MantenimientoDuplicadosForm.nombreText.value.length >0 ||
-					parent.document.MantenimientoDuplicadosForm.apellido1Text.value.length >0 ||
-					parent.document.MantenimientoDuplicadosForm.apellido2Text.value.length >0){
+					parent.document.MantenimientoDuplicadosForm.apellido1Text.value.length >0){
 			
 				jQuery("#nifcif",parent.document).attr("disabled","disabled");
 				jQuery("#numeroColegiadoText",parent.document).attr("disabled","disabled");
 				jQuery("#listadoInstitucion",parent.document).attr("disabled","disabled");
 		
 				parent.document.getElementById('nombreText').focus();
-				
-				if(parent.document.MantenimientoDuplicadosForm.nombreText.value.length >0 && (parent.document.MantenimientoDuplicadosForm.apellido1Text.value.length >0 ||
-						parent.document.MantenimientoDuplicadosForm.apellido2Text.value.length >0)){
-					parent.document.MantenimientoDuplicadosForm.chkNombreApellidos.value="1";	
-				}else{
-					parent.document.MantenimientoDuplicadosForm.chkNombreApellidos.value="0";	
-				}
-				if((parent.document.MantenimientoDuplicadosForm.apellido1Text.value.length >0 ||
-						parent.document.MantenimientoDuplicadosForm.apellido2Text.value.length >0)){
-					parent.document.MantenimientoDuplicadosForm.chkApellidos.value="1";	
-				}else{
-					parent.document.MantenimientoDuplicadosForm.chkApellidos.value="0";	
-				}
 			}
 			
 		}
@@ -357,15 +333,10 @@
 	<html:hidden styleId="seleccionados" property="seleccionados" />
 	<html:hidden styleId="seleccion" property="seleccion" />
 	<html:hidden styleId="datosPaginador" property="datosPaginador" />
-	<html:hidden styleId="chkApellidos" property="chkApellidos" />
-	<html:hidden styleId="chkNombreApellidos" property="chkNombreApellidos" />
-	<html:hidden styleId="chkNumColegiado" property="chkNumColegiado" />
-	<html:hidden styleId="chkIdentificador" property="chkIdentificador" />
 	<html:hidden styleId="nifcif" property="nifcif" />
 	<html:hidden styleId="nombre" property="nombre" />
 	<html:hidden styleId="numeroColegiado" property="numeroColegiado" />
 	<html:hidden styleId="apellido1" property="apellido1" />
-	<html:hidden styleId="apellido2" property="apellido2" />
 	<html:hidden styleId="agruparColegiaciones" property="agruparColegiaciones" />
 	<html:hidden styleId="tipoConexion" property="tipoConexion" />
 	<html:hidden styleId="sentidoOrdenacion" property="sentidoOrdenacion" />
@@ -394,7 +365,7 @@
 				</td>
 			</tr>
 		<%}else{%>
-			<%String identificador="", nif="", nombre="", apellido1="",apellido2="", institucion="",nColegiado="", inst="", valorCheck="", abrev="", colegiaciones="", nocolegiadoCGAE="";%>
+			<%String identificador="", nif="", nombre="", apellido1="",apellido2="",institucion="",nColegiado="", valorCheck="", inst="", abrev="", colegiaciones="", nocolegiadoCGAE="";%>
 			<%Row fila; 
 			  Hashtable registro;
 			  String numFila;

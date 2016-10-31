@@ -3547,13 +3547,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			MantenimientoDuplicadosForm miFormulario = new MantenimientoDuplicadosForm();
 			String composicionTabla ="";
 			
-			//Actualmente siempre va a ser TRUE, hasta que se cambie el código de  getPersonasSimilares
-			if(request.getParameter("checkIdentificador").equalsIgnoreCase("1")){
-				miFormulario.setChkIdentificador(Boolean.TRUE);
-			}else{
-				miFormulario.setChkIdentificador(Boolean.FALSE);
-			}
-			
 			miFormulario.setNifcif(request.getParameter("nidSolicitante"));
 			
 			Vector personasSimilares = helper.getPersonasSimilares(miFormulario);

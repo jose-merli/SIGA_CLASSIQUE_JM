@@ -27,7 +27,6 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	String agruparColegiaciones;
 	String seleccion;
 	String volver;
-	boolean chkApellidos,chkNombreApellidos,chkNumColegiado,chkIdentificador = false;
 	private Vector resultadoBusqueda;
 	private List<CenInstitucionBean> listadoInstituciones;
 
@@ -64,30 +63,6 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	}
 
 
-	public boolean getChkApellidos() {
-		return chkApellidos;
-	}
-	public void setChkApellidos(boolean chkApellidos) {
-		this.chkApellidos = chkApellidos;
-	}
-	public boolean getChkNombreApellidos() {
-		return chkNombreApellidos;
-	}
-	public void setChkNombreApellidos(boolean chkNombreApellidos) {
-		this.chkNombreApellidos = chkNombreApellidos;
-	}
-	public boolean getChkNumColegiado() {
-		return chkNumColegiado;
-	}
-	public void setChkNumColegiado(boolean chkNumColegiado) {
-		this.chkNumColegiado = chkNumColegiado;
-	}
-	public boolean getChkIdentificador() {
-		return chkIdentificador;
-	}
-	public void setChkIdentificador(boolean chkIdentificador) {
-		this.chkIdentificador = chkIdentificador;
-	}
 	public void setChkBusqueda(String valor){
 		UtilidadesHash.set(this.datos, "ChkBusqueda", valor);
 	}

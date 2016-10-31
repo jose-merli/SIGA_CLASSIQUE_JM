@@ -12,10 +12,15 @@
 package com.siga.censo.action;
 
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -28,14 +33,15 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.Utilidades.PaginadorBind;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColegiadoAdm;
@@ -53,13 +59,13 @@ import com.siga.beans.CenPersonaBean;
 import com.siga.beans.CenSancionAdm;
 import com.siga.beans.CerSolicitudCertificadosAdm;
 import com.siga.beans.DuplicadosHelper;
-import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.censo.form.MantenimientoDuplicadosForm;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.informes.MasterReport;
 
 /**
  * Clase action del caso de uso BUSCAR CLIENTE
@@ -70,7 +76,9 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 	//seguir al obtener los adtos en la jsp. Ver metodos actualizarSelecionados y aniadeClaveBusqueda(2)
 	//de la super clase(MasterAction)
 	final String[] clavesBusqueda={CenClienteBean.C_IDINSTITUCION,CenClienteBean.C_IDPERSONA};
-	
+
+	private static Boolean alguienEjecutando=Boolean.FALSE;
+
 	/** 
 	 *  Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
 	 * @param  mapping - Mapeo de los struts
@@ -94,6 +102,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			miForm = (MasterForm) formulario;
 			if (miForm != null) {
 				String accion = miForm.getModo();
+				miForm.setModo("");
 				
 				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("inicio") || accion.equalsIgnoreCase("mantenimientoDuplicadosCertificados") ){
 					//aalg: en el acceso inicial a la página de duplicados tienen que estar chequeados todos
@@ -216,53 +225,51 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	protected String buscar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-
+	protected String buscar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
+	{
+		// Controles generales
+		UsrBean user = this.getUserBean(request);
+		MantenimientoDuplicadosForm miFormulario = (MantenimientoDuplicadosForm) formulario;
+		DuplicadosHelper helper = new DuplicadosHelper();
+		
+		// Variables generales
 		String destino = "";
+		
 		try {
-			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			String idInstitucion=user.getLocation();
 
-			MantenimientoDuplicadosForm miFormulario = (MantenimientoDuplicadosForm)formulario;
-
-			String chequeados = (String)request.getParameter("valoresCheck");
-
-			if (chequeados!=null){
-				miFormulario.setChkApellidos((boolean)(chequeados.substring(0, 1).equals("1") ? true : false));
-				miFormulario.setChkNombreApellidos((boolean)(chequeados.substring(1, 2).equals("1") ? true : false));
-				miFormulario.setChkIdentificador((boolean)(chequeados.substring(2, 3).equals("1") ? true : false));
-				miFormulario.setChkNumColegiado((boolean)(chequeados.substring(3, 4).equals("1") ? true : false));			
-			}
-			DuplicadosHelper helper = new DuplicadosHelper();
-			//aalg: para añadir la paginación
-			HashMap databackup = new HashMap();
-							
-			databackup=new HashMap();
-			Vector datos = null;
-			PaginadorBind resultado = null;
-			
-			resultado = new PaginadorBind(helper.getPersonasSimilares(miFormulario));
+			PaginadorBind resultado = new PaginadorBind(helper.getPersonasSimilares(miFormulario));
 			request.setAttribute("resultado", resultado);
-			databackup.put("paginador",resultado);
-			
-			datos = resultado.obtenerPagina(1);
-			databackup.put("datos",datos);
-			miFormulario.setDatosPaginador(databackup);
-			miFormulario.setRegistrosSeleccionados(new ArrayList());
-			formulario=miFormulario;
-			
-			request.setAttribute("mostarNColegiado", "0");
-			destino="resultado";
 
-		}catch (SIGAException e1) {
+			HashMap databackup = new HashMap();
+			databackup.put("paginador", resultado);
+			databackup.put("datos", resultado.obtenerPagina(1));
+			miFormulario.setDatosPaginador(databackup);
+
+			miFormulario.setRegistrosSeleccionados(new ArrayList());
+
+			// calculando si se ha de mostrar los campos de colegio en funcion de si se busca por colegiado o por
+			// persona
+			String institucion = miFormulario.getIdInstitucion();
+			institucion = (institucion == null || institucion.trim().equalsIgnoreCase("")) ? "" : institucion;
+			String nColegiado = miFormulario.getNumeroColegiado();
+			nColegiado = (nColegiado == null || nColegiado.trim().equalsIgnoreCase("")) ? "" : nColegiado;
+			if (institucion.equalsIgnoreCase("") && nColegiado.equalsIgnoreCase("")) {
+				request.setAttribute("mostarNColegiado", "0");
+			} else {
+				request.setAttribute("mostarNColegiado", "1");
+			}
+
+			destino = "resultado";
+
+		} catch (SIGAException e1) {
 			// Excepcion procedente de obtenerPagina cuando se han borrado datos
-			return exitoRefresco("error.messages.obtenerPagina",request);
-		}catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
+			return exitoRefresco("error.messages.obtenerPagina", request);
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, null);
 		}
 		return destino;
 	}
-	
+
 	/**
 	 * Metodo que implementa el modo buscar para realizar la busqueda de duplicados
 	 * 
@@ -317,7 +324,17 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			}
 			
 			formulario=miFormulario;
-			request.setAttribute("mostarNColegiado", "0");
+			// calculando si se ha de mostrar los campos de colegio en funcion de si se busca por colegiado o por
+			// persona
+			String institucion = miFormulario.getIdInstitucion();
+			institucion = (institucion == null || institucion.trim().equalsIgnoreCase("")) ? "" : institucion;
+			String nColegiado = miFormulario.getNumeroColegiado();
+			nColegiado = (nColegiado == null || nColegiado.trim().equalsIgnoreCase("")) ? "" : nColegiado;
+			if (institucion.equalsIgnoreCase("") && nColegiado.equalsIgnoreCase("")) {
+				request.setAttribute("mostarNColegiado", "0");
+			} else {
+				request.setAttribute("mostarNColegiado", "1");
+			}
 			destino="resultado";
 
 		}catch (SIGAException e1) {
@@ -466,52 +483,48 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 	 * @throws SystemException 
 	 * @throws NotSupportedException 
 	 */
-	protected String combinar(ActionMapping mapping, 		
-							MasterForm formulario, 
-							HttpServletRequest request, 
-							HttpServletResponse response) throws SIGAException{
-		
+	protected String combinar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
+	{
+
 		UsrBean user = this.getUserBean(request);
-		MantenimientoDuplicadosForm miForm = (MantenimientoDuplicadosForm)formulario;
-		CenDireccionesAdm admDireccion     = new CenDireccionesAdm(user);
-		CenDireccionesBean beanDireccion   = new CenDireccionesBean();
-		CenHistoricoBean beanHistorico     = new CenHistoricoBean();
-		CenColegiadoAdm admColeg  = new CenColegiadoAdm(user);
-		CenPersonaAdm admPersona  = new CenPersonaAdm(user);
-		CenClienteAdm admCliente  = new CenClienteAdm(user);
+		MantenimientoDuplicadosForm miForm = (MantenimientoDuplicadosForm) formulario;
+		CenDireccionesAdm admDireccion = new CenDireccionesAdm(user);
+		CenDireccionesBean beanDireccion = new CenDireccionesBean();
+		CenHistoricoBean beanHistorico = new CenHistoricoBean();
+		CenColegiadoAdm admColeg = new CenColegiadoAdm(user);
+		CenPersonaAdm admPersona = new CenPersonaAdm(user);
+		CenClienteAdm admCliente = new CenClienteAdm(user);
 		CenInstitucionAdm admInst = new CenInstitucionAdm(user);
-		CenHistoricoAdm	  admHistorico = new CenHistoricoAdm(user);
-		
+		CenHistoricoAdm admHistorico = new CenHistoricoAdm(user);
+
 		String personaDestino = miForm.getIdPersonaDestino();
 		String personaOrigen = miForm.getIdPersonaOrigen();
 		String institucion = miForm.getIdInstOrigen();
 		String msgError = "";
 		String msgSalida = "Se han copiado correctamente los datos de la persona";
-		Hashtable hashDireccionOriginal, hashDireccionDestino ;
+		Hashtable hashDireccionOriginal, hashDireccionDestino;
 		int colegiacionesCopiadas = 0;
-		String resul [];
+		String resul[];
 		String acciones = "";
-		
+
 		UserTransaction tx = null;
-		
+
 		try {
-			
-			// jbd // Insertamos una copia de las direcciones que se quieran añadir, la original sera borrada en el proceso PL
+
+			// jbd // Insertamos una copia de las direcciones que se quieran añadir, la original sera borrada en el
+			// proceso PL
 			// Recuperamos las direcciones
-			String[] direcciones = miForm.getListaDirecciones().split(","); 
+/*			String[] direcciones = miForm.getListaDirecciones().split(",");
 			String[] direccion;
-			String idInstitucion=String.valueOf(ClsConstants.INSTITUCION_CGAE), idPersona="", idDireccion="";
+			String idInstitucion = String.valueOf(ClsConstants.INSTITUCION_CGAE), idPersona = "", idDireccion = "";
 			beanDireccion.setIdInstitucion(Integer.valueOf(idInstitucion));
-			// Cogemos la direccion que vamos a copiar 
+			// Cogemos la direccion que vamos a copiar
 			beanDireccion.setIdPersona(Long.valueOf(personaDestino));
-			
-			tx = this.getUserBean(request).getTransactionPesada();
-			tx.begin();	
-			
-			if(direcciones.length>0){
+
+			if (direcciones.length > 0) {
 				for (int i = 0; i < direcciones.length; i++) {
-					direccion=direcciones[i].split("&&");
-					if(direccion.length>1){
+					direccion = direcciones[i].split("&&");
+					if (direccion.length > 1) {
 						idPersona = direccion[1];
 						idDireccion = direccion[2];
 						// Recuperamos la direccion Original que vamos a copiar
@@ -527,89 +540,29 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					}
 				}
 			}
-			
+
 			Vector instCliente = admCliente.getClientes(personaOrigen);
 			String stInstitucion = "";
 			String nombreInstitucion = "";
 			int intInstitucion;
 			int institucionEscogida = -1;
 			// muevePersona
-			
-			for(int i=0;i<instCliente.size();i++){	
-			// Recorremos la lista de clientes del colegiado origen
-				stInstitucion = instCliente.get(i).toString();
-				intInstitucion = Integer.parseInt(stInstitucion);
-				nombreInstitucion = admInst.getAbreviaturaInstitucion(stInstitucion);
-				if(admCliente.existeCliente(Long.parseLong(personaDestino),intInstitucion )!=null){
-				// Si la persona destino ya es cliente de la institucion ...
-					if(intInstitucion<=3000&&intInstitucion>2000){
-					// Si la institucion es un colegio damos error porque no se puede hacer
-						tx.rollback();
-						throw new SIGAException("No se puede realizar la fusión porque ya existe como colegiado o no colegiado en "+nombreInstitucion);
-					}
-				}else{
-					msgError= "Error al copiar los datos del cliente de " + nombreInstitucion;
-					resul = EjecucionPLs.ejecutarPL_copiaCliente(personaDestino, personaOrigen, stInstitucion);
-					acciones+=resul[1];
-				}
+*/
+			tx = user.getTransactionPesada();
+			tx.begin();
+
+			String[] resultadoEjecucionPLs = EjecucionPLs.ejecutarPL_fusion(personaOrigen, personaDestino);
+			if (! resultadoEjecucionPLs[0].equals("0")) {
+				msgError= "Error en la fusión de las personas: ";
+				msgError += resultadoEjecucionPLs[1];
 			}
-			
-			msgError= "Error al mover los datos de la persona";
-			resul = EjecucionPLs.ejecutarPL_mueveDatosPersona(personaDestino, personaOrigen);
-			acciones+=resul[1];
-			
-			for(int i=0;i<instCliente.size();i++){	
-			// Recorremos la lista de clientes del colegiado origen
-				stInstitucion = instCliente.get(i).toString();
-				intInstitucion = Integer.parseInt(stInstitucion);
-				if(institucionEscogida == -1){
-					if(intInstitucion<=3000&&intInstitucion>2000){
-						institucionEscogida=intInstitucion;
-					}
-				}
-				nombreInstitucion = admInst.getAbreviaturaInstitucion(stInstitucion);
-				if(admCliente.existeCliente(Long.parseLong(personaDestino),intInstitucion )==null){
-					msgError= "Error al borrar los datos del cliente de " + nombreInstitucion;
-					resul = EjecucionPLs.ejecutarPL_borraCliente(personaOrigen, stInstitucion);
-					acciones+=resul[1];
-				}
-			}
-			msgError= "Error al borrar los datos de la persona";
-			resul = EjecucionPLs.ejecutarPL_borraPersona(personaOrigen); // borraPersona
-			acciones+=resul[1];
-			
-			if(institucionEscogida != -1){
-				String resultado[] = EjecucionPLs.ejecutarPL_ActualizarDatosLetrado(
-						institucionEscogida, 
-						Long.valueOf(personaDestino), 
-						10, 
-						null, 
-						Integer.parseInt(String.valueOf(user.getUserName())));
-				if(resultado[0].equals("-1")){
-					throw new SIGAException("Error en ejecución de paquete PKG_SIGA_CENSO.ACTUALIZARDATOSLETRADO. Contacte con el Administrador.");
-				}
-			}
-			
-			// Modificamos la persona para que modifique la fechamodificacion
-			admPersona.update(admPersona.getPersonaPorId(personaDestino));
-			beanHistorico.setIdPersona(Long.parseLong(personaDestino));
-			beanHistorico.setIdInstitucion(Integer.parseInt(user.getLocation()));
-			beanHistorico.setIdHistorico(admHistorico.getNuevoID(beanHistorico));
-			beanHistorico.setFechaEfectiva(GstDate.getHoyJsp());
-			beanHistorico.setFechaEntrada(GstDate.getHoyJsp());
-			beanHistorico.setMotivo("Se ha realizado un mantenimiento de duplicados sobre esta persona.");
-			beanHistorico.setDescripcion(acciones);
-			beanHistorico.setIdTipoCambio(10); // Datos Generales
-			
-			admHistorico.insertarRegistroHistorico(beanHistorico, user);
-					
+
 			tx.commit();
 		} catch (Exception e) {
-			throwExcp(msgError,new String[] {"modulo.censo"},e,tx);
+			throwExcp(msgError, new String[] { "modulo.censo" }, e, tx);
 		}
 		return exitoModal(msgSalida, request);
 	}
-
 	
 	/**
 	 * Abre la ventana de exportacion para que el proceso se haga en background
@@ -619,7 +572,8 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		return "espera";
 	}
 	/**
-	 * Exporta los resultados de la busqueda a excel
+	 * Exporta un listado de duplicados completo a Excel.
+	 * Este listado se genera una vez al dia (esta comprobacion se controla simplemente con el nombre del fichero)
 	 * 
 	 * @param  mapping - Mapeo de los struts
 	 * @param  formulario -  Action Form asociado a este Action
@@ -628,251 +582,137 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
+	protected String exportar(ActionMapping mapping,
+			MasterForm formulario,
+			HttpServletRequest request,
+			HttpServletResponse response) throws ClsExceptions, SIGAException
+	{
+		// Controles y variables generales
+		UsrBean user = this.getUserBean(request);
+		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		SimpleDateFormat sdfDateOnly = new SimpleDateFormat("dd-MM-yyyy");
 
-	protected String exportar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
-        Vector datos = new Vector();
-        CenPersonaBean beanPersona = new CenPersonaBean();
-        Vector direccionesPersona = new Vector();
-        Vector colegiacionesPersona = new Vector();
-        Hashtable estadoColegial = new Hashtable();
-        Row estadoColegialRw = new Row();
-        Hashtable colegiacionHt = new Hashtable();
-        Vector vec = new Vector();
-        Hashtable per = new Hashtable();
-        formulario.setModo("abrir");
-		
 		try {
-			UsrBean user = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
-			String idInstitucion=user.getLocation();
-	        MantenimientoDuplicadosForm form = (MantenimientoDuplicadosForm)formulario;
-	        CenColegiadoAdm colegiadoAdm = null;
-			DuplicadosHelper admDuplicados = null;
-			Vector datosTabla = null;
-			Hashtable datosPersona = new Hashtable();
-			Hashtable tablaDatos = new Hashtable();
-			String idTipoPersona = null;
-			EnvEnviosAdm enviosAdm = new EnvEnviosAdm(user);
+			String rutaFichero = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")
+					+ ClsConstants.FILE_SEP + rp.returnProperty("censo.duplicados.directorio");
+			String fechaActual = sdfDateOnly.format(Calendar.getInstance().getTime());
+			String nombreFichero = rutaFichero + ClsConstants.FILE_SEP + "duplicados_" + fechaActual;
+			File ruta = new File(rutaFichero);
+			ruta.mkdirs();
 
-			tablaDatos=this.datosPersonas(mapping, formulario, request, response);
-			int personas = (Integer)tablaDatos.get("numeroPersonas");
-	        for (int i = 0; i <= personas -1; i++) {
-	        	per=new Hashtable();
-	        	// Recuperamos los datos de la persona (una tabla hash inicialmente ideada para mostrarse en gestionarDuplicados.jsp)
-	        	datosPersona = (Hashtable) tablaDatos.get("persona"+i);
-	        	
-	        	direccionesPersona = (Vector) datosPersona.get("datosDirecciones");
-	        	colegiacionesPersona = (Vector) datosPersona.get("datosColegiales");
-	        	beanPersona = (CenPersonaBean) datosPersona.get("datosPersonales");
-
-	        	per.put("IDENTIFICADOR", beanPersona.getIdPersona());
-	        	per.put("NOMBRE", beanPersona.getNombre());
-	        	per.put("APELLIDO1", beanPersona.getApellido1());
-	        	per.put("APELLIDO2",beanPersona.getApellido2());
-	        	per.put("NIF_CIF", beanPersona.getNIFCIF());
-	        	per.put("LUGAR_NACIMIENTO",beanPersona.getNaturalDe());
-	        	per.put("FECHA_NACIMIENTO",beanPersona.getFechaNacimiento());
-	        	per.put("SANCIONES", datosPersona.get("sanciones"));
-	        	per.put("CERTIFICADOS", datosPersona.get("certificados"));
-	        	per.put("ULTIMAMODIFICACION", beanPersona.getFechaMod());
-	        	for(int col = 0; col<colegiacionesPersona.size(); col++){
-	        		Hashtable perCol = new Hashtable();
-	        		perCol= (Hashtable) per.clone();
-	        		colegiacionHt = (Hashtable) colegiacionesPersona.get(col);
-	        		CenColegiadoBean colBean = new CenColegiadoBean();
-	        		colBean = (CenColegiadoBean) colegiacionHt.get("datosColegiacion");
-	        		perCol.put("COLEGIO", colegiacionHt.get("institucionColegiacion"));
-	        		perCol.put("NCOLEGIADO", colBean.getNColegiado()+colBean.getNComunitario());
-	        		perCol.put("FECHAINCORPORACION", colBean.getFechaIncorporacion());
-	        		if(colBean.getComunitario().equalsIgnoreCase("1")){
-	        			perCol.put("INSCRIPCION", "Inscrito");
-	        		}else{
-	        			perCol.put("INSCRIPCION", " ");
-	        		}
-	        		if(colBean.getSituacionResidente().equalsIgnoreCase("1")){
-	        			perCol.put("RESIDENCIA", "Residente");
-	        		}else{
-	        			perCol.put("RESIDENCIA", " ");
-	        		}
-	        		estadoColegialRw = new Row();
-	        		estadoColegialRw = (Row) colegiacionHt.get("estadoColegiacion");
-	        		if(estadoColegialRw != null){
-	        			estadoColegial = estadoColegialRw.getRow();
-		        		perCol.put("ESTADOCOLEGIAL", estadoColegial.get("DESCRIPCION"));
-		        		perCol.put("FECHAESTADO", estadoColegial.get("FECHAESTADO"));
-	        		}else{
-	        			perCol.put("ESTADOCOLEGIAL", "Sin estado");
-		        		perCol.put("FECHAESTADO", "-");
-	        		}
-	        		if(direccionesPersona.size()>0){
-		        		for (int j=0; j<direccionesPersona.size();j++){
-							Hashtable direccion = (Hashtable)direccionesPersona.get(j);
-							if(direccion.get("CEN_TIPODIRECCION.DESCRIPCION")!=null && direccion.get("CEN_TIPODIRECCION.DESCRIPCION").toString().contains("Censo")){
-								perCol.put("DIRECCION", ""+direccion.get("DOMICILIO")+", "+direccion.get("POBLACION")+ " (" +direccion.get("PROVINCIA")+")");
-								perCol.put("EMAIL", ""+direccion.get("CORREOELECTRONICO"));
-								perCol.put("TELEFONO", ""+direccion.get("TELEFONO1"));
-								perCol.put("FAX", ""+direccion.get("FAX1"));
-								perCol.put("MOVIL", ""+direccion.get("MOVIL"));
-							}else{
-								perCol.put("DIRECCION", "");
-								perCol.put("EMAIL", "");
-								perCol.put("TELEFONO", "");
-								perCol.put("FAX", "");
-								perCol.put("MOVIL", "");
-							}
-						}
-	        		}else{
-	        			perCol.put("DIRECCION", "");
-						perCol.put("EMAIL", "");
-						perCol.put("TELEFONO", "");
-						perCol.put("FAX", "");
-						perCol.put("MOVIL", "");
-	        		}
-	        		
-	        		vec.add(perCol);
-	        	}
-	        	
+			if (isAlguienEjecutando()) {//TODO crear recurso de error propio
+				throw new SIGAException(UtilidadesString.getMensajeIdioma(user, "mensaje.error.facturacionsjcs.wait"));
 			}
-	        
-	        if(vec!=null)
-	        	datos.addAll(vec);
-	        String[] cabeceras = null;
-	        String[] campos = null;
-			cabeceras = new String[]{"IDENTIFICADOR", "NOMBRE", "APELLIDO1", "APELLIDO2", "NIF", 
-					"LUGAR NACIMIENTO","FECHA NACIMIENTO", "SANCIONES", "CERTIFICADOS", "ULTIMA MODIFICACION", "COLEGIO", 
-					"NUMERO COLEGIADO", "FECHA INCORPORACION", "ESTADO", "FECHA ESTADO", "INSCRIPCION", "RESIDENCIA", 
-					"DIRECCION", "EMAIL", "TELEFONO", "FAX", "MOVIL"};	
-			
-			campos = new String[]{"IDENTIFICADOR", "NOMBRE", "APELLIDO1", "APELLIDO2", "NIF_CIF", 
-					"LUGAR_NACIMIENTO","FECHA_NACIMIENTO", "SANCIONES", "CERTIFICADOS", "ULTIMAMODIFICACION", "COLEGIO", 
-					"NCOLEGIADO", "FECHAINCORPORACION", "ESTADOCOLEGIAL", "FECHAESTADO", "INSCRIPCION", "RESIDENCIA",
-					"DIRECCION", "EMAIL", "TELEFONO", "FAX", "MOVIL"};
 
-			request.setAttribute("campos",campos);
-			request.setAttribute("datos",datos);
-			request.setAttribute("cabeceras",cabeceras);
-			request.setAttribute("descripcion", "duplicados"+"_"+UtilidadesString.formatoFecha(new Date(),"yyyyMMddhhmmss"));
-						
+			// comprobando si no existe ya el fichero
+			File fichero = new File(nombreFichero + ".zip");
+			if (fichero == null || !fichero.exists()) {
+				fichero = generarExportacionXLS(nombreFichero, user);
+			}
+			if (fichero == null || !fichero.exists()) {
+				throw new SIGAException("messages.general.error.ficheroNoExiste");
+			} else {
+				request.setAttribute("nombreFichero", fichero.getName());
+				request.setAttribute("rutaFichero", fichero.getPath());
+			}
+
+		} catch (SIGAException e) {
+			throwExcp(e.getLiteral(), e, null);
+
 		} catch (Exception e) {
-			throwExcp("facturacion.consultaMorosos.errorInformes", new String[] { "modulo.facturacion" }, e, null);
+			throwExcp("messages.general.error", new String[] { "modulo.facturacionSJCS" }, e, null);
+
+		} finally {
+			// ABRIMOS EL SEMAFORO. SE DEBE EJECUTAR SIEMPRE
+			setNadieEjecutando();
 		}
 
-		return "generaExcel";
-	}
-	
+		return "descargaFichero";
+	} // exportar()
 	
 	/**
-	 * Metodo que implementa el modo buscar
-	 * @param  mapping - Mapeo de los struts
-	 * @param  formulario -  Action Form asociado a este Action
-	 * @param  request - objeto llamada HTTP 
-	 * @param  response - objeto respuesta HTTP
-	 * @return  String  Destino del action  
-	 * @exception  ClsExceptions  En cualquier caso de error
+	 * Genera un fichero de exportacion con todos los datos de personas duplicadas y lo devuelve para descarga
+	 * 
+	 * @param nombreFichero
+	 * @param user
+	 * @return
+	 * @throws Exception
 	 */
-	protected Hashtable datosPersonas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		Vector similares = new Vector();
-		Vector colegiaciones = new Vector();
-		CenPersonaAdm admPersona = new CenPersonaAdm(this.getUserBean(request));
-		CenClienteAdm admCliente = new CenClienteAdm(this.getUserBean(request));
-		CenColegiadoAdm admColeg = new CenColegiadoAdm(this.getUserBean(request));
-		CenSancionAdm admSancion = new CenSancionAdm(this.getUserBean(request));
-		CerSolicitudCertificadosAdm admCertificados = new CerSolicitudCertificadosAdm(this.getUserBean(request));
-		CenInstitucionAdm admInstitucion = new CenInstitucionAdm(this.getUserBean(request)); 
-		Hashtable datos = new Hashtable();
-		// Vamos a leer los datos de la bbdd para cargarlos en la ventana de consulta de colegiaciones 
-		try {
-			MantenimientoDuplicadosForm miFormulario = (MantenimientoDuplicadosForm)formulario;
-			Vector vdatos=new Vector();
-			HashMap databackup = (HashMap) miFormulario.getDatosPaginador();
-			String conjuntoPersonasBusqueda ="";
-			PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
-			for (int i=1;i<=paginador.getNumeroPaginas();i++){
-				vdatos = paginador.obtenerPagina(i);
-				for (int j=0;j<vdatos.size();j++){
-					Hashtable hdatos = (Hashtable)vdatos.get(j);
-					conjuntoPersonasBusqueda += "null||" + (String)hdatos.get("IDPERSONA") + ",";
-				}
+	public static File generarExportacionXLS(String nombreFichero, UsrBean user) throws Exception {
+		DuplicadosHelper helper = new DuplicadosHelper();
+		Vector<Hashtable<String, String>> personas;
+		File ficheroGenerado, ficheroSalida;
+		ArrayList<ArrayList<String>> datosPersona;
+
+		// controles de acceso a datos
+		CenPersonaAdm admPersona = new CenPersonaAdm(user);
+
+		ArrayList<File> listaFicheros = new ArrayList<File>();
+		for (int similaritud = 0; similaritud < DuplicadosHelper.similaritudes.length; similaritud++) {
+			personas = helper.getPersonasSimilares(similaritud);
+
+			// generando cada fichero
+			ficheroGenerado = new File(nombreFichero + "_" + DuplicadosHelper.similaritudes[similaritud] + ".xls");
+			ficheroGenerado.createNewFile();
+			BufferedWriter out = new BufferedWriter(new FileWriter(ficheroGenerado));
+
+			// escribiendo las cabeceras
+			datosPersona = helper.getDatosPersonaSimilar(null, user);
+			for (Iterator<String> iterColumnas = datosPersona.get(0).iterator(); iterColumnas.hasNext();) {
+				out.write(iterColumnas.next() + "\t");
 			}
-			conjuntoPersonasBusqueda = conjuntoPersonasBusqueda.substring(0, conjuntoPersonasBusqueda.length()-1);
-			
-			if (conjuntoPersonasBusqueda != null && !conjuntoPersonasBusqueda.equalsIgnoreCase("")) {
-				String[] registros = UtilidadesString.split(conjuntoPersonasBusqueda, ",");
-				for (int i=0; i<registros.length;i++){					
-					// Aqui meteremos todos los datos de la persona
-					Hashtable hashPersona = new Hashtable(); 
-					
-					// Las claves de cada registro estan separadas por ||
-					String[] claves = UtilidadesString.split(registros[i], "||");
-					String idInstitucion="";
-					String idPersona="";
-					Vector estadosPersona = new Vector();
-					Vector colegiacionesPersona = new Vector();
-					Row estado = null;
-					if(claves.length>1){
-						colegiaciones = new Vector();
-						idInstitucion = claves[0];
-						idPersona = claves[1]; 
-						// Si la institucion es nula significa que estamos mirando una persona y necesitamos todas las colegiaciones
-						if(idInstitucion==null || idInstitucion.equalsIgnoreCase("")|| idInstitucion.equalsIgnoreCase("null")){
-							colegiaciones=admColeg.getColegiaciones(idPersona);
-						}else{
-							colegiaciones.add(idInstitucion);
-						}
-						String stColegiaciones = "";
-						// Buscamos los datos de cada colegiacion
-						for (int c=0; c<colegiaciones.size();c++){
-							Hashtable hashColegiacion = new Hashtable(); // Aqui meteremos todos los datos de la colegiacion de la persona
-							String idInstitucionCol=colegiaciones.get(c).toString();
-							stColegiaciones+=idInstitucionCol+"_";
-							CenColegiadoBean colegiacion = admColeg.getDatosColegiales(Long.valueOf(idPersona), Integer.valueOf(idInstitucionCol));
-							if(colegiacion!=null && colegiacion.getFechaIncorporacion()!=null && !colegiacion.getFechaIncorporacion().equalsIgnoreCase("")){
-								colegiacion.setFechaIncorporacion(UtilidadesString.formatoFecha(colegiacion.getFechaIncorporacion(),ClsConstants.DATE_FORMAT_JAVA,ClsConstants.DATE_FORMAT_SHORT_SPANISH));
-								hashColegiacion.put("datosColegiacion", colegiacion);
-							}
-							hashColegiacion.put("institucionColegiacion", admInstitucion.getAbreviaturaInstitucion(idInstitucionCol));
-							hashColegiacion.put("fechaProduccion", admInstitucion.getFechaEnProduccion (idInstitucionCol));
-							
-							Vector estadosColegio = admColeg.getEstadosColegiales(Long.valueOf(idPersona), Integer.valueOf(idInstitucionCol), "1");
-							if(estadosColegio!=null && estadosColegio.size()>0){
-								estado = (Row)estadosColegio.get(0);
-								estado.getRow().put("FECHAESTADO", UtilidadesString.formatoFecha(estado.getRow().get("FECHAESTADO").toString(),ClsConstants.DATE_FORMAT_JAVA,ClsConstants.DATE_FORMAT_SHORT_SPANISH));
-								hashColegiacion.put("estadoColegiacion", estado);
-							}
-							colegiacionesPersona.add(hashColegiacion);
-						}
-						hashPersona.put("datosColegiales", colegiacionesPersona);
-						hashPersona.put("colegiaciones", stColegiaciones);
-						hashPersona.put("sanciones", admSancion.getSancionesLetrado(idPersona, String.valueOf(ClsConstants.INSTITUCION_CGAE)).size());
-						hashPersona.put("certificados", admCertificados.getNumeroCertificados(String.valueOf(ClsConstants.INSTITUCION_CGAE),idPersona));
-						
-						CenPersonaBean beanP = admPersona.getPersonaPorId(idPersona);
-						if(beanP.getFechaNacimiento()!=null && !beanP.getFechaNacimiento().equalsIgnoreCase("")){
-							beanP.setFechaNacimiento(UtilidadesString.formatoFecha(beanP.getFechaNacimiento(),ClsConstants.DATE_FORMAT_JAVA,ClsConstants.DATE_FORMAT_SHORT_SPANISH));
-						}
-						beanP.setFechaMod(UtilidadesString.formatoFecha(beanP.getFechaMod(),ClsConstants.DATE_FORMAT_JAVA,ClsConstants.DATE_FORMAT_SHORT_SPANISH));
-						hashPersona.put("datosPersonales", beanP);
-						
-						Vector vDirecciones = admCliente.getDirecciones(Long.valueOf(idPersona), Integer.valueOf(2000), false);
-						for (int j=0; j<vDirecciones.size();j++){
-							Hashtable dir = (Hashtable)vDirecciones.get(j);
-							dir.put("FECHAMODIFICACION", UtilidadesString.formatoFecha(dir.get("FECHAMODIFICACION").toString(),ClsConstants.DATE_FORMAT_JAVA,ClsConstants.DATE_FORMAT_SHORT_SPANISH));
-						
-						}
-						hashPersona.put("datosDirecciones", vDirecciones);						
-						int cert = admCertificados.getNumeroCertificados("2000",idPersona);
-						
-					}else{
-						idPersona = claves[0];
+			out.newLine();
+
+			// escribiendo los resultados
+			for (Iterator<Hashtable<String, String>> iterPersonas = personas.iterator(); iterPersonas.hasNext();) {
+				datosPersona = helper.getDatosPersonaSimilar(iterPersonas.next(), user);
+				for (Iterator<ArrayList<String>> iterFilas = datosPersona.iterator(); iterFilas.hasNext();) {
+					for (Iterator<String> iterColumnas = iterFilas.next().iterator(); iterColumnas.hasNext();) {
+						out.write(iterColumnas.next() + "\t");
 					}
-					
-					datos.put("persona"+i, hashPersona);
-					datos.put("numeroPersonas", i+1);
+	
+					out.newLine();
 				}
 			}
-		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, null);
+
+			// cerrando el fichero
+			out.close();
+			listaFicheros.add(ficheroGenerado);
+			ficheroGenerado.deleteOnExit();
 		}
-		return datos;
+
+		if (listaFicheros.size() == 0) {
+			throw new SIGAException("No se ha generado ningun informe");
+		}
+		ficheroSalida = MasterReport.doZip(listaFicheros, nombreFichero);
+		
+		return ficheroSalida;
+	}
+	
+	/**
+	 * Pregunta al semaforo de ejecucion si se puede pasar. Si se puede pasar, lo cierra.
+	 * @return
+	 */
+	private boolean isAlguienEjecutando()
+	{
+		synchronized (alguienEjecutando) {
+			if (!alguienEjecutando) {
+				alguienEjecutando = Boolean.TRUE;
+				return false;
+			} else {
+				return true;
+			}
+		}
+	}
+
+	/**
+	 * Abre el semaforo para que otro proceso pueda entrar
+	 */
+	private void setNadieEjecutando()
+	{
+		synchronized (alguienEjecutando) {
+			alguienEjecutando = Boolean.FALSE;
+		}
 	}
 	
 	/**

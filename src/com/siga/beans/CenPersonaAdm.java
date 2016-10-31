@@ -1301,70 +1301,6 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 		return personaBean;
 	}
 	
-	
-	/**
-	 * Obtiene clientes repetidos segun los criterios de entrada
-	 * 
-	 * @param idInstitucion 
-	 * @param formulario Formulario de busqueda de clientes con los datos de busqueda 
-	 * @return java.util.Vector Vector de tablas hash  
-	 */
-	public Vector getPersonasSimilares(MantenimientoDuplicadosForm formulario) throws ClsExceptions, SIGAException {
-
-		Vector salida = null;
-		String sqlClientes = "";
-	  	
-	  	// Acceso a BBDD
-		RowsContainer rcClientes = null;
-		try { 
-		    
-			String nombre = formulario.getNombre();
-			String apellido1 = formulario.getApellido1();
-			String apellido2 = formulario.getApellido2();
-			String nif = formulario.getNifcif();
-			
-			//Tabla cen_persona
-			String P_APELLIDOS1=CenPersonaBean.C_APELLIDOS1;
-			String P_APELLIDOS2=CenPersonaBean.C_APELLIDOS2;
-			String P_NOMBRE=CenPersonaBean.C_NOMBRE;
-			String P_NIF=CenPersonaBean.C_NIFCIF;
-			
-			StringBuffer sqlSelect = new StringBuffer();
-			sqlSelect.append("select "); 
-			sqlSelect.append("p1.idpersona idpersona1, p1.nombre nombre1, p1.apellidos1 apellido11, p1.apellidos2 apellido21, p1.nifcif nifcif1, c1.ncolegiado ncolegiado1, ");
-			sqlSelect.append("p2.idpersona idpersona2, p2.nombre nombre2, p2.apellidos1 apellido12, p2.apellidos2 apellido22, p2.nifcif nifcif2, c2.ncolegiado ncolegiado2 ");
-
-			StringBuffer sqlFrom = new StringBuffer();
-			sqlFrom.append(" from cen_persona p1, cen_persona p2, cen_colegiado c1, cen_colegiado c2 ");
-
-			StringBuffer sqlWhere = new StringBuffer();
-			sqlWhere.append(" where p1.idpersona < p2.idpersona "); 
-			
-			// Outerjoin con la tabla de colegiados (no solo buscamos duplicados de colegiados)
-	       	sqlWhere.append(" and c1.idpersona(+) = p1.idpersona ");
-	       	sqlWhere.append(" and c2.idpersona(+) = p2.idpersona ");
-	       	
-	       	// Colegiados del mismo colegio, con el mismo nColegiado, pero distinta persona
-	       	if(formulario.getChkNumColegiado()){
-		       	sqlWhere.append(" and c1.ncolegiado=c2.ncolegiado ");
-		       	sqlWhere.append(" and c1.idinstitucion=c2.idinstitucion ");
-	       	}
-	       	
-	       	String sql=sqlSelect.toString()+sqlFrom.toString()+sqlWhere.toString();
-	        
-			Vector similares=this.selectGenerico(sql);
-	       	
-			return similares;
-		} 
-//		catch (SIGAException e) { 
-//			throw e; 	
-//		}
-		catch (Exception e) { 	
-			throw new ClsExceptions(e,"Error obteniendo clientes "); 
-		}
-	}
-	
-	
 	/**
 	 * Devuelve una persona a partir de su idPersona  
 	 * @version 1	 
@@ -1390,63 +1326,6 @@ public class CenPersonaAdm extends MasterBeanAdmVisible {
 			throw new ClsExceptions (e, "Error al recuperar los datos");
 		}
 	}
-	
-	public PaginadorBind getDatosPersonas (DatosRegistralesForm formulario, String idInstitucion) throws ClsExceptions, SIGAException {
-		Vector clientes = new Vector();
-		String sqlClientes = "";
-		int contador = 0;
-		Hashtable codigos = new Hashtable();
-
-		try {
-			sqlClientes = " SELECT p.idpersona, p.nombre, p.apellidos1, p.apellidos2, p.nifcif "+ 
-						  " FROM cen_persona p, cen_nocolegiado nc "+
-						  " WHERE p.idpersona = nc.idpersona "+
-						  " AND nc.idinstitucion = "+idInstitucion;   
-			
-  	       if (formulario.getNombre()!=null && !formulario.getNombre().trim().equals("")) {
-  		       	contador++;
-  		       	sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getNombre().trim(),"p.nombre",contador,codigos )+") ";
-  	       }
-				  	       
-			  	       
-  	       if ((formulario.getApellido1()!= null && !formulario.getApellido1().trim().equals("")) && (formulario.getApellido2()!= null && !formulario.getApellido2().trim().equals(""))) {// Los dos campos rellenos
-	    	  	contador++;
-	       		sqlClientes += " AND ((("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(),"p.apellidos1",contador,codigos )+")";
-	       		
-	  	       	contador++;
-	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(),"p.apellidos2",contador,codigos)+"))";
-	       	    contador++;
-	       		sqlClientes += " OR ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim()+"% %"+formulario.getApellido2().trim() ,"p.apellidos1",contador,codigos )+"))";
-		  	      
-
-  	       }else if (formulario.getApellido1()!= null && !formulario.getApellido1().trim().equals("")) {//Apellido1 relleno
-  	       		contador++;	
-  	       		sqlClientes += " AND ("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido1().trim(),"p.apellidos1",contador,codigos )+" OR (p.apellidos1||' '||p.apellidos2 LIKE '%"+UtilidadesBDAdm.validateChars(formulario.getApellido1().trim())+"%')) ";
-	  	       	
-  	       }else if (formulario.getApellido2()!= null && !formulario.getApellido2().trim().equals("")) {//Apellido2 relleno
-  	       		contador++;
-  	       		sqlClientes += " AND (("+ComodinBusquedas.prepararSentenciaCompletaBind(formulario.getApellido2().trim(),"p.apellidos2",contador,codigos)+") ";
-  	       		contador++;	
-  	       	    sqlClientes += " OR ("+ComodinBusquedas.prepararSentenciaCompletaBind(" "+formulario.getApellido2().trim(),"p.apellidos1",contador,codigos)+ ")  )";
-	  	       	
-  	       }       	  	       
-
-		    sqlClientes+= " ORDER BY p.apellidos1||' '||p.apellidos2, p.nombre";	       
-			PaginadorBind paginado = new PaginadorBind(sqlClientes, codigos);
-
-			int totalRegistros = paginado.getNumeroTotalRegistros();
-			if (totalRegistros == 0) {
-				paginado = null;
-			}
-
-			return paginado;
-		}
-		
-		catch (Exception e) {
-			throw new ClsExceptions(e, "Error obteniendo clientes ");
-		}
-	}
-	
 
 	public String getEstadoCivil (Long idPersona) 
 	{
