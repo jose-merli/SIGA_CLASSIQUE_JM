@@ -23,17 +23,51 @@
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.*"%>
+<%@ page import="com.siga.tlds.FilaExtElement"%>
+<%@ page import="com.siga.administracion.SIGAConstants"%>
+<%@page import="java.util.Vector"%>
 
 <%
+	String app=request.getContextPath();
+	HttpSession ses=request.getSession();
+		
+	UsrBean usrbean = (UsrBean) session.getAttribute(ClsConstants.USERBEAN);
+	String idInstitucionLocation = usrbean.getLocation();
+	
 	Hashtable datos = (Hashtable)request.getAttribute("datos");
 	Hashtable htPersona0 = (Hashtable)datos.get("persona0");
 	Hashtable htPersona1 = (Hashtable)datos.get("persona1");
 	CenPersonaBean persona0 = (CenPersonaBean)htPersona0.get("datosPersonales");
 	CenPersonaBean persona1 = (CenPersonaBean)htPersona1.get("datosPersonales");
+	
+	
+	Vector datosColegiales0 = (Vector)htPersona0.get("datosColegiales");
+	Vector datosColegiales1 = (Vector)htPersona1.get("datosColegiales");
+	
+	String idInstitucion0="";
+	String idInstitucion1="";
+	
+	if(datosColegiales0 != null && datosColegiales0.size()>0){
+		Hashtable colegiado0 = (Hashtable)datosColegiales0.elementAt(0);
+		CenColegiadoBean datosColegiacion0 = (CenColegiadoBean) colegiado0.get("datosColegiacion");
+		idInstitucion0 = datosColegiacion0.getIdInstitucion().toString();
+	}
+	if(datosColegiales1 != null && datosColegiales1.size()>0){
+		Hashtable colegiado1 = (Hashtable)datosColegiales1.elementAt(0);
+		CenColegiadoBean datosColegiacion1 = (CenColegiadoBean) colegiado1.get("datosColegiacion");
+		idInstitucion1 = datosColegiacion1.getIdInstitucion().toString();
+	}	
+	
 	String idPersona0 =	persona0.getIdPersona().toString();
 	String idPersona1 = persona1.getIdPersona().toString();
+	
+	//Comprobamos si es letrado o no
+	String letrado0 = CenClienteAdm.getEsLetrado(idPersona0, idInstitucion0);
+	String letrado1 = CenClienteAdm.getEsLetrado(idPersona1, idInstitucion1);
+		
 	String colegiaciones0 = htPersona0.get("colegiaciones").toString();
 	String colegiaciones1 = htPersona1.get("colegiaciones").toString();
+	
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -58,14 +92,17 @@
 		<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 		<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>
 		
-		<title>
-			<siga:Idioma key="censo.SolicitudIncorporacionDatos.titulo"/>
-		</title>
+		
+		<siga:Titulo 
+			titulo="censo.busquedaDuplicados.titulo.fusion" 
+			localizacion="censo.busquedaDuplicados.localizacion"/>
+			
+		<siga:TituloExt titulo="censo.busquedaDuplicados.titulo" localizacion="censo.busquedaDuplicados.titulo.fusion"/>
 </head>
 
-<body onload="ajusteAlto('divScroll')" class="tablaCentralCampos" >
+<body class="tablaCentralCampos" >
 	
-	<html:form action="/CEN_MantenimientoDuplicados.do" method="POST" target="submitArea">
+	<html:form action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
 		<html:hidden property = "idPersonaOrigen" value = ""/>
 		<html:hidden property = "idPersonaDestino" value = ""/>
 		<html:hidden property = "idInstOrigen" value = ""/>
@@ -100,10 +137,8 @@
 			</c:when>
 			
 			<c:otherwise>		
+			<siga:ConjCampos leyenda="censo.fusionDuplicados.datosPersonales.titulo">
 				<table width="100%"> 
-					<tr>
-						<td class="tableTitle" colspan="3"><siga:Idioma key="censo.fusionDuplicados.datosPersonales.titulo"/></td>
-					</tr>
 					
 					<tr>
 						<td class="labelText" width="30%">
@@ -161,6 +196,22 @@
 							|<c:out value="${datos.persona1.datosPersonales.naturalDe}"/>
 						</td>
 					</tr>
+					<tr>
+						<td class="labelText">
+						</td>
+						<td class="labelTextValue">
+							
+								<img id="iconoboton_informacionLetrado1" src="/SIGA/html/imagenes/binformacionLetrado_off.gif" 
+								style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila"
+								 title="Acceso a ficha" border="0" onClick="informacionLetrado('${datos.persona0.datosPersonales.idPersona}','<%=idInstitucion0%>'); " >
+						</td>
+						<td class="labelTextValue">
+						
+							<img id="iconoboton_informacionLetrado1" src="/SIGA/html/imagenes/binformacionLetrado_off.gif" 
+							style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila" 
+							title="Acceso a ficha" border="0" onClick="informacionLetrado('${datos.persona1.datosPersonales.idPersona}','<%=idInstitucion1%>'); ">		
+						</td>
+					</tr>
 					
 					<tr>
 						<td class="labelText"></td>
@@ -174,16 +225,12 @@
 						</td>
 					</tr>
 				</table>
-				
+				</siga:ConjCampos>
 				<hr style="color:black;"></hr>
 				
-				<div name="divScroll" style="overflow:auto; height:400px;">
+				<div name="divScroll" style="overflow:auto; height:500px;">
+					<siga:ConjCampos leyenda="censo.fusionDuplicados.colegiaciones.titulo">
 					<table width="100%">
-						<tr>
-							<td class="tableTitle" colspan="3">
-								<siga:Idioma key="censo.fusionDuplicados.colegiaciones.titulo"/>
-							</td>
-						</tr>
 							
 						<tr>
 							<td width="30%">&nbsp;</td>
@@ -391,18 +438,15 @@
 								</table>
 							</td>
 						</tr>
-				
+					</table>
+					</siga:ConjCampos>
+					<siga:ConjCampos leyenda="censo.fusionDuplicados.direcciones.cabecera">
+				    <table width="100%">				
 						<tr>
-							<td class="tableTitle" colspan="3">
-								<siga:Idioma key="censo.fusionDuplicados.direcciones.cabecera"/>
-							</td>
+							<td width="30%">&nbsp;</td>
+							<td width="30%">&nbsp;</td>
+							<td width="30%">&nbsp;</td>
 						</tr>
-							
-						<tr>
-							<td>
-							</td>
-						</tr>
-						
 						<tr>
 							<td>
 								<table>
@@ -553,17 +597,20 @@
 							</td>
 						</tr>
 					</table>
+					</siga:ConjCampos>
 				</div>
 			</c:otherwise>
 		</c:choose>
 		
-		<siga:ConjBotonesAccion botones="A,C" clase="botonesDetalle" />
+		<siga:ConjBotonesAccion botones="A,V" clase="botonesDetalle" />
 		
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 		<script language="JavaScript">
-			function accionCerrar(){	
-				top.cierraConParametros("NOMODIFICADO");
+			function accionVolver(){	
+				document.forms[0].action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
+				document.forms[0].modo.value = "abrirConParametros";
+				document.forms[0].submit();
 			}
 
 			// jbd // helpers para recorrer radios y checks
@@ -704,8 +751,41 @@
 				}
 				seleccionado=true;
 			}
+			
 		</script>	
 	</html:form>
+	<!-- Formulario para la búsqueda de clientes -->
+	<html:form action="/CEN_BusquedaClientes.do" method="POST" target="mainWorkArea">
+		<html:hidden styleId="modo" property="modo" />
+		<html:hidden styleId="tablaDatosDinamicosD" property="tablaDatosDinamicosD" value="ver"/>
+		<html:hidden styleId="filaSelD" property="filaSelD"/>
+	</html:form>
+	
+	<script language="JavaScript">
+	
+	function informacionLetrado(idPersona,idIntitucion) {
+		
+		
+	
+	    var idInst = idIntitucion;			          		
+	    var idPers = idPersona;		    
+	    var idLetrado =idLetrado;			    
+		
+	    document.forms[1].filaSelD.value = 1;
+		
+		 
+		if(idIntitucion != null && idIntitucion !=""){
+			document.forms[1].tablaDatosDinamicosD.value=idPers + ',' + idInst + '%';	
+			document.forms[1].modo.value="editar";
+		}else{
+			//Es no colegiado y el idIntitucion será de donde estés logeado.
+			document.forms[1].tablaDatosDinamicosD.value=idPers + ',' + <%=idInstitucionLocation%> + '%';	
+			document.forms[1].modo.value="ver";
+		}
+		
+	   	document.forms[1].submit();		   	
+	}
+	</script>	
 	
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 </body>

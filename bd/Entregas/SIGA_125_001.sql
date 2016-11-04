@@ -12,3 +12,9 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cajg.opcion.informeEconomicoKo', 'Expedientes cuya información económica ha sido enviada con incidencias#CA', 0, '2', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cajg.opcion.informeEconomicoKo', 'Expedientes cuya información económica ha sido enviada con incidencias#EU', 0, '3', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cajg.opcion.informeEconomicoKo', 'Expedientes cuya información económica ha sido enviada con incidencias#GL', 0, '4', sysdate, 0, '19');
+
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.busquedaDuplicados.titulo.fusion', 'Censo > Mantenimiento de duplicados > Fusionar', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.busquedaDuplicados.titulo.fusion', 'Censo > Mantenimiento de duplicados > Fusionar#GL', 0, '4', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.busquedaDuplicados.titulo.fusion', 'Censo > Mantenimiento de duplicados > Fusionar#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.busquedaDuplicados.titulo.fusion', 'Censo > Mantenimiento de duplicados > Fusionar#EU', 0, '3', sysdate, 0, '19');

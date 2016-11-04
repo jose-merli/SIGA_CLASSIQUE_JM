@@ -751,93 +751,18 @@ public class EjecucionPLs {
 	    return resultado;
 	} // ejecutarPL_RevocarCertificados()
 	
-	public static String[] ejecutarPL_mueveDatosPersona(String idPersonaD, String idPersonaO) throws ClsExceptions{
+	public static String[] ejecutarPL_fusion(String idPersonaOrigen, String idPersonaDestino) throws ClsExceptions{
 		Object[] param_in; //Parametros de entrada del PL
 		String resultado[] = null; //Parametros de salida del PL
 	
 		try {
 			resultado = new String[2];
 			param_in = new Object[2];
-			param_in[0] = idPersonaO;
-			param_in[1] = idPersonaD;
+			param_in[0] = idPersonaOrigen;
+			param_in[1] = idPersonaDestino;
 		        
 			//Ejecucion del PL
-		    resultado = ClsMngBBDD.callPLProcedure("{call PKG_FUSION_PERSONAS.MueveCosasDePersonaAPersona(?,?,?,?)}", 2, param_in);
-			if(resultado[0].equalsIgnoreCase("-1")){
-		    	throw new ClsExceptions(resultado[1]);
-		    }
-		} catch (Exception e){
-			resultado[0] = "-1"; //ERROR P_CODRETORNO
-	    	resultado[1] = resultado[1]; //ERROR P_DATOSERROR       
-	    	throw new ClsExceptions(e.getMessage());
-		}
-	    
-	    //Resultado del PL        
-	    return resultado;
-	}
-	
-	public static String[] ejecutarPL_borraPersona(String idPersonaO) throws ClsExceptions{
-		Object[] param_in; //Parametros de entrada del PL
-		String resultado[] = null; //Parametros de salida del PL
-	
-		try {
-			resultado = new String[2];
-			param_in = new Object[1];
-			param_in[0] = idPersonaO;
-		        
-			//Ejecucion del PL
-		    resultado = ClsMngBBDD.callPLProcedure("{call PKG_FUSION_PERSONAS.BorraPersona_simple(?,?,?)}", 2, param_in);
-			if(resultado[0].equalsIgnoreCase("-1")){
-		    	throw new ClsExceptions(resultado[1]);
-		    }
-		} catch (Exception e){
-			resultado[0] = "-1"; //ERROR P_CODRETORNO
-	    	resultado[1] = resultado[1]; //ERROR P_DATOSERROR        
-	    	throw new ClsExceptions(e.getMessage());
-		}
-	    
-	    //Resultado del PL        
-	    return resultado;
-	}
-	
-	public static String[] ejecutarPL_borraCliente(String idPersonaO, String idInstitucion) throws ClsExceptions{
-		Object[] param_in; //Parametros de entrada del PL
-		String resultado[] = null; //Parametros de salida del PL
-	
-		try {
-			resultado = new String[2];
-			param_in = new Object[2];
-			param_in[0] = idPersonaO;
-			param_in[1] = idInstitucion;
-		        
-			//Ejecucion del PL
-		    resultado = ClsMngBBDD.callPLProcedure("{call PKG_FUSION_PERSONAS.BorraCliente_simple(?,?,?,?)}", 2, param_in);
-			if(resultado[0].equalsIgnoreCase("-1")){
-		    	throw new ClsExceptions(resultado[1]);
-		    }
-		} catch (Exception e){
-			resultado[0] = "-1"; //ERROR P_CODRETORNO
-	    	resultado[1] = resultado[1]; //ERROR P_DATOSERROR    
-	    	throw new ClsExceptions(e.getMessage());
-		}
-	    
-	    //Resultado del PL        
-	    return resultado;
-	}
-
-	public static String[] ejecutarPL_copiaCliente(String idPersonaD, String idPersonaO, String idInstitucion) throws ClsExceptions{
-		Object[] param_in; //Parametros de entrada del PL
-		String resultado[] = null; //Parametros de salida del PL
-	
-		try {
-			resultado = new String[2];
-			param_in = new Object[3];
-			param_in[0] = idPersonaO;
-			param_in[1] = idPersonaD;
-			param_in[2] = idInstitucion;
-		        
-			//Ejecucion del PL
-		    resultado = ClsMngBBDD.callPLProcedure("{call PKG_FUSION_PERSONAS.CopiaClienteAotraPersona(?,?,?,?,?)}", 2, param_in);
+		    resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FUSION_PERSONAS.Fusiona_Personas(?,?,?,?)}", 2, param_in);
 			if(resultado[0].equalsIgnoreCase("-1")){
 		    	throw new ClsExceptions(resultado[1]);
 		    }

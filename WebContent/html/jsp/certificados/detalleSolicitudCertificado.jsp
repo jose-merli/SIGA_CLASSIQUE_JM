@@ -241,9 +241,20 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>		
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
 	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	
 
+	<style type="text/css">
+		.ui-dialog-titlebar-close {
+			  visibility: hidden;
+		}
+		td{
+			padding-top: .3em;
+			height: 27px;
+		}
+	</style>
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
+	jQuery.noConflict();
 		function refrescarLocal() {
 			sub();
 			SolicitudesCertificadosForm.target="mainWorkArea";
@@ -766,7 +777,85 @@
 				SolicitudesCertificadosForm.submit();
 			<% } %>		   	
 		}		
+		function accionObtenerDuplicados(nidSolicitante) 
+		{	
+				   jQuery.ajax({ 
+						type: "POST",
+						url: "/SIGA/CER_GestionSolicitudes.do?modo=getAjaxObtenerDuplicados",				
+						data: "checkIdentificador="+"1"+"&nidSolicitante="+nidSolicitante,
+						dataType: "json",
+						contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+						success: function(json){	
+							// Recupera el identificador de la serie de facturacion
+							jQuery("#tablaDocumentacion tr").remove();
+							jQuery("#tablaDocumentacion").append(json.aOptionsListadoDocumentacion);
+							
+							jQuery("#tablaDocumentacion").append("</table>");	
+								
+								jQuery("#divDescargaDocumentacion").dialog(
+										{
+											width: 950,
+											height: '300',
+											modal: true,
+											position:['middle',20],
+											resizable: false,
+											buttons: {
+												"Cerrar": function() {
+													jQuery(this).dialog("close");
+												}
+											}
+										}
+									);
+									jQuery(".ui-widget-overlay").css("opacity","0");													
+						}
+					});		
+		}
 		
+		function comprobarDuplicados(nidSolicitante){
+			<% if(idInstitucion.equals("2000")){ %>
+			  jQuery.ajax({ 
+					type: "POST",
+					url: "/SIGA/CER_GestionSolicitudes.do?modo=getAjaxObtenerDuplicados",				
+					data: "checkIdentificador="+"1"+"&nidSolicitante="+nidSolicitante,
+					dataType: "json",
+					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+					success: function(json){	
+						// Recupera el identificador de la serie de facturacion
+						if(json.aOptionsListadoDocumentacion != null && json.aOptionsListadoDocumentacion.length > 0){
+							jQuery("#iconoboton_aviso_1").show();
+						}																
+					}
+				});	
+			 <%}%>
+		}
+		
+		function informacionLetrado(idPersona,idIntitucion) {
+			
+		    var idInst = idIntitucion;			          		
+		    var idPers = idPersona;		        
+			
+		    document.forms[1].filaSelD.value = 1;
+			
+			 
+			if(idIntitucion != null && idIntitucion !=""){
+				document.forms[1].tablaDatosDinamicosD.value=idPers + ',' + idInst + '%';	
+				document.forms[1].modo.value="editar";
+			}else{
+				//Es no colegiado y el idIntitucion será de donde estés logeado.
+				document.forms[1].tablaDatosDinamicosD.value=idPers + ',' + <%=idInstitucion%> + '%';	
+				document.forms[1].modo.value="ver";
+			}
+			
+		   	document.forms[1].submit();		   	
+		}
+		
+		function mantenimientoDuplicados(nifcif) {
+			document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true";
+			document.MantenimientoDuplicadosForm.modo.value = "mantenimientoDuplicadosCertificados";
+			document.MantenimientoDuplicadosForm.nifcif.value=nifcif;
+			document.MantenimientoDuplicadosForm.submit();
+		
+		}
 	</script>
 		
 	<style>
@@ -779,7 +868,7 @@
 <!-- FIN: SCRIPTS BOTONES -->
 </head>
 
-<body onLoad="ajusteAltoBotones('mainWorkArea');revisarCheck();descargarPDF();" height="100%">
+<body onLoad="ajusteAltoBotones('mainWorkArea');revisarCheck();descargarPDF();comprobarDuplicados('<%=nidSolicitante%>');" height="100%">
 
 	<table class="tablaTitulo" cellspacing="0">
 		<tr>
@@ -810,7 +899,7 @@
 		</table>			
 	</div>	
 		
-	<html:form action="/CER_GestionSolicitudes.do" method="POST" target="submitArea">
+	<html:form action="/CER_GestionSolicitudes.do" method="POST" target="mainWorkArea">
 		<html:hidden property="modo" value="" />
 		<html:hidden property="idInstitucion" styleId="idInstitucion" value="<%=idInstitucion%>" />
 		<html:hidden property="idInstitucionSolicitud" value="<%=idInstitucionSolicitud%>" />
@@ -975,6 +1064,9 @@
 %>			
 							<td align="right">	
 								<img id="iconoboton_editSol_1" src="/SIGA/html/imagenes/bseleccionar_on.gif" style="cursor: hand;" alt="Editar Solicitante" name="editSol_1" border="0" onClick="editarSolicitante();">			
+								<img id="iconoboton_aviso_1"  src="/SIGA/html/imagenes/warning.png"          style="cursor: hand; display: none" 
+								alt="Duplicidades"  name="newSol_1"  border="0" 
+								onClick="accionObtenerDuplicados('<%=nidSolicitante%>');"> 
 							</td>
 <%
 						} 
@@ -1366,6 +1458,12 @@
 		<html:hidden styleId="tablaDatosDinamicosD" property="tablaDatosDinamicosD" value="ver"/>
 	</html:form>
 	
+	<!-- Formulario para el mantenimiento de duplicados -->
+	<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
+		<html:hidden property="modo" value="buscarPor"/>
+		<html:hidden property="nifcif" value=""/>
+	</html:form>
+	
 	<html:form action="/CEN_BusquedaCensoModal" method="POST" target="mainWorkArea">
 		<input type="hidden" name="actionModal" value="1">
 		<input type="hidden" name="modo" value="designarArt27">
@@ -1384,9 +1482,14 @@
 		<input type="hidden" name="fechaSolicitud" value="${SolicitudesCertificadosForm.fechaSolicitud}">
 		<input type="hidden" name="idInstitucionColegiacion" value="${SolicitudesCertificadosForm.idInstitucionColegiacion}">
 		<input type="hidden" name="aceptaCesionMutualidad" value="${SolicitudesCertificadosForm.aceptaCesionMutualidad}">
-	</html:form>	
+	</html:form>
+	
 
 <iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display: none"></iframe>
 
+<div id="divDescargaDocumentacion" title="Duplicidades" style="display:none">
+	<table id='tablaDocumentacion' style='width:100%;table-layout: fixed;'  border='1' align='center' cellspacing='0' cellpadding='0'>	
+	
+</div>
 </body>
 </html>

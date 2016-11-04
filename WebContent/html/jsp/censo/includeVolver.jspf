@@ -69,7 +69,14 @@
 				<html:hidden property="modo" value="abrir"/>
 			</html:form>
 			
-<% 		} else if (busquedaVolver.equals("BUSQUEDA_LETRADO")) {  %>
+<% 		} else if (busquedaVolver.equals("MD")) {  %>
+			<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
+				<html:hidden property="modo" value="gestionar"/>
+				<html:hidden property="volver" value=""/>
+			</html:form>
+			
+<% 	
+		} else if (busquedaVolver.equals("BUSQUEDA_LETRADO")) {  %>
 			<html:form  action="/CEN_BusquedaLetradosNew.do" method="POST" target="mainWorkArea">
 				<html:hidden property="accion" value="buscar"/>
 				<html:hidden property="deleteForm" value="true"/>
@@ -97,8 +104,10 @@
 			
 <% 		} else { %>
 			<html:form  action="/CEN_BusquedaClientes.do" method="POST" target="mainWorkArea">
-			<html:hidden  name="busquedaClientesForm" property="modo"/>
-			<html:hidden  name="busquedaClientesForm" property="avanzada"/>
+				<html:hidden  name="busquedaClientesForm" property="modo"/>
+				<html:hidden  name="busquedaClientesForm" property="avanzada"/>
+				<html:hidden styleId="filaSelD" property="filaSelD"/>
+				<html:hidden styleId="tablaDatosDinamicosD" property="tablaDatosDinamicosD" value="ver"/>
 			</html:form>
 <%			
 		} 
@@ -196,6 +205,11 @@
 <% 				} else if (busquedaVolver.equals("GS")) {	%>
 					document.SolicitudesCertificadosForm.action = "/SIGA/CER_GestionSolicitudes.do" + "?noReset=true&buscar=true";
 					document.SolicitudesCertificadosForm.submit();
+<% 				} else if (busquedaVolver.equals("MD")) {	%>
+					document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
+					document.MantenimientoDuplicadosForm.modo.value = "gestionar";
+					document.MantenimientoDuplicadosForm.volver.value="SI";
+					document.MantenimientoDuplicadosForm.submit();
 <%				}
 			}
 %>
