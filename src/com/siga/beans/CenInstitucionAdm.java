@@ -454,6 +454,28 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
 		}
 		return fechaProduccion;
 	}
+	
+	public boolean estaEnProduccion(String idInstitucion) throws ClsExceptions
+	{
+		boolean enProduccion = false;
+
+		RowsContainer rc = new RowsContainer();
+		String sql = " select fechaenproduccion " + " from " + CenInstitucionBean.T_NOMBRETABLA + " where idinstitucion = " + idInstitucion;
+
+		if (rc.query(sql)) {
+			if (rc.size() == 1) {
+				Row fila = (Row) rc.get(0);
+				Hashtable ht = fila.getRow();
+
+				if (ht.get("FECHAENPRODUCCION") != null && !ht.get("FECHAENPRODUCCION").equals("")) {
+					enProduccion = true;
+				}
+			}
+		}
+
+		return enProduccion;
+	} // estaEnProduccion()
+	
 	public static boolean esConsejoGeneral(Object idInstitucion){
 		boolean esConsejoGeneral = false;	  
 		String strInstitucion = idInstitucion.toString();

@@ -42,6 +42,7 @@ import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.PaginadorBind;
+import com.siga.administracion.SIGAConstants;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColegiadoAdm;
@@ -540,14 +541,25 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					}
 				}
 			}
-
-			Vector instCliente = admCliente.getClientes(personaOrigen);
-			String stInstitucion = "";
-			String nombreInstitucion = "";
-			int intInstitucion;
-			int institucionEscogida = -1;
-			// muevePersona
 */
+
+			// Control de fusion de colegiados en el mismo colegio
+			Vector listaColegiacionesPersonaOrigen = admColeg.getColegiaciones(personaOrigen);
+			String stInstitucion;
+			String nombreInstitucion;
+			int intInstitucion;
+			for(int i=0;i<listaColegiacionesPersonaOrigen.size();i++){
+				// para cada colegiacion de la persona origen
+				stInstitucion = listaColegiacionesPersonaOrigen.get(i).toString();
+				nombreInstitucion = admInst.getAbreviaturaInstitucion(stInstitucion);
+				intInstitucion = Integer.parseInt(stInstitucion);
+				// Si se quiere fusionar un colegiado en el mismo colegio, solo lo permitimos al personal de IT o bien si el colegio no esta en produccion
+				if (admColeg.existeColegiado(Long.parseLong(personaDestino), intInstitucion) != null && !tienePermisoFusionColegiosEnProduccion(mapping, request) && admInst.estaEnProduccion(stInstitucion)) {
+					tx.rollback();
+					throw new SIGAException("No está permitida la fusión por seguridad. El colegio "+nombreInstitucion+" usa SIGA y puede contener datos delicados.");
+				}
+			}
+			
 			tx = user.getTransactionPesada();
 			tx.begin();
 
@@ -1000,4 +1012,28 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		
 		return "inicio";
 	}
+	
+	/**
+	 *Se Verifica que el usuario tiene permiso de Archivazión.
+	 * @param form Formulario con los criterios
+	 * @return se muestra un resultado con un numero si tiene permiso.
+	 * @throws ClsExceptions
+	 */
+	public boolean tienePermisoFusionColegiosEnProduccion(ActionMapping mapping, HttpServletRequest request) throws ClsExceptions {
+		boolean permiso = false;
+		try {
+
+			String accessEnvio = testAccess(request.getContextPath() + "/CEN_FusionColegiosEnProduccion.do", null, request);
+			if (accessEnvio.equals(SIGAConstants.ACCESS_FULL)) {
+				permiso = true;
+			}
+			// Hacemos lo siguiente para setear el permiso de esta accion
+			testAccess(request.getContextPath() + mapping.getPath() + ".do", null, request);
+
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al obtener el permiso para fusionar personas en colegios en produccion.");
+		}
+		return permiso;
+	} // tienePermisoFusionColegiosEnProduccion()
+
 }
