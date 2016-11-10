@@ -94,6 +94,7 @@
 <% 		} else if (busquedaVolver.equals("DUPLICADOS")) {  %>
 			<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
 				<html:hidden property="modo" value="buscarPor"/>
+				<html:hidden property="nifcif" value=""/>
 			</html:form>
 			
 <% 		} else if (busquedaVolver.equals("CARGA_CENSO_WS")) {  %>			

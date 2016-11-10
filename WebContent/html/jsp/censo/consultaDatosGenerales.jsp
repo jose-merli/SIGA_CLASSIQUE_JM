@@ -1710,13 +1710,6 @@
 	
 <%	} // else de "no hay datos" %>
 
-<!-- Formulario para la búsqueda de clientes -->	
-	<!-- Formulario para el mantenimiento de duplicados -->
-	<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
-		<html:hidden property="modo" value="buscarPor"/>
-		<html:hidden property="nifcif" value=""/>
-	</html:form>
-
 <html:form action="/CEN_ModificacionDatos.do" method="POST" target="mainWorkArea"  style="display:none">
 		<input type="hidden" name="modo" value="solicitarModificacionDatos">
 		<html:hidden property = "actionModal" value = ""/>
