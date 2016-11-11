@@ -365,19 +365,20 @@
 					var minutosConf = trim(document.confirmarFacturacionForm.minutosConfirmacion.value);
 					var horasGen = trim(document.confirmarFacturacionForm.horasGeneracion.value);
 					var minutosGen = trim(document.confirmarFacturacionForm.minutosGeneracion.value);
-					if (parseInt(horasConf)<parseInt(horasGen)) {
+					
+					if (horasConf<horasGen) {
 						alert ("<siga:Idioma key='messages.fechas.rangoHorasPrevistas'/>");
 						fin();
 						return false;
-					} else if (parseInt(horasConf)==parseInt(horasGen)) {
-						if (parseInt(minutosConf)<parseInt(minutosGen)) {
+					} else if (horasConf==horasGen) {
+						if (minutosConf<minutosGen) {
 							alert ("<siga:Idioma key='messages.fechas.rangoHorasPrevistas'/>");
 							fin();
 							return false;
 						}
 					}
 				}
-			}
+			}			
 
 			if(document.confirmarFacturacionForm.enviarFacturas.checked){
 				if(document.confirmarFacturacionForm.idTipoPlantillaMail.value == ""){
