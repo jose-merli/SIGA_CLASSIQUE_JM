@@ -32,3 +32,4 @@ End;
 
 -- Entregado a version por AAG el 14/11 a las 11:25
 
+modificadas vistas: V_PCAJG_EJG.sql, V_PCAJG_FAMILIARES.sql, V_PCAJG_MARCASEXPEDIENTES.sql
