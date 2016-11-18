@@ -29,31 +29,34 @@ public class ScsCalendarioLaboralAdm extends MasterBeanAdministrador {
 	}
 	
 	/**
-	 * Efectúa un SELECT en la tabla SCS_CALENDARIOLABORAL con los datos de selección intoducidos. 
+	 * Obtiene la lista de festivos para un colegio, dado un anyo.
+	 * - Hace caso omiso al partido al que pertenezcan los festivos, devuelve todos.
+	 * - Se incluyen tambien los festivos generales, es decir los introducidos en CGAE.
 	 * 
-	 * @param miHash Hashtable con los campos de búsqueda. De tipo "Hashtable". 
-	 * @return Vector con los resultados del SELECT
+	 * El uso correcto de este metodo es para obtener los festivos configurados en un colegio 
+	 * y no para saber si un dia concreto es festivo, 
+	 * ya que para esto habria que revisar el partido al que pertenece el festivo.
+	 * 
+	 * @return Vector con los resultados
 	 */
-	public Vector select(Hashtable hash) throws ClsExceptions {
+	public Vector getFestivosAnyo(String idinstitucion, String anyo) throws ClsExceptions
+	{
+		Vector datos;
 
-		Vector datos = new Vector(); 
-		
-		try {		
-			String where = " WHERE ";
-			where += ScsCalendarioLaboralBean.C_FECHA + " >= TO_DATE ('01/01/" + hash.get(ScsCalendarioLaboralBean.C_FECHA) + "', 'DD/MM/YYYY') AND "  + 
-					 ScsCalendarioLaboralBean.C_FECHA + " <= TO_DATE ('31/12/" + hash.get(ScsCalendarioLaboralBean.C_FECHA) + "', 'DD/MM/YYYY') AND ("  +
-					 ScsCalendarioLaboralBean.C_IDINSTITUCION + " = " + hash.get(ScsCalendarioLaboralBean.C_IDINSTITUCION) 	 +
-					 " OR " + ScsCalendarioLaboralBean.C_IDINSTITUCION + " = " + ClsConstants.INSTITUCION_CGAE + ")";		
-		
-			datos = this.select(where);
-		} 
-		catch (ClsExceptions e) {
-			throw e;			
+		if (anyo == null || anyo.length() != 4)
+			return null;
+
+		StringBuilder where = new StringBuilder();
+		where.append(" WHERE to_char( "+ScsCalendarioLaboralBean.C_FECHA+", 'yyyy') = " +anyo+ " ");
+		where.append("   AND " +ScsCalendarioLaboralBean.C_IDINSTITUCION+ " in (" +idinstitucion+ ", " +ClsConstants.INSTITUCION_CGAE+ ")");
+
+		datos = new Vector();
+		try {
+			datos = this.select(where.toString());
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "EXCEPCION EN BUSCAR");
 		}
-		catch (Exception e){
-			 throw new ClsExceptions(e,"EXCEPCION EN BUSCAR");
-		}
-		return datos;	
+		return datos;
 	}
 
 	/**
@@ -248,182 +251,73 @@ public class ScsCalendarioLaboralAdm extends MasterBeanAdministrador {
 		String[] campos= {ScsCalendarioLaboralBean.C_FECHA};
 		return campos;
 	}
-
-	/** 
-	 * Devuelve un String con la consulta SQL que devuelve la fecha de permuta y la fecha de inicio del confirmador si existe la permuta.
-	 * @param String fecha: fecha seleccionada 
-	 * @param Hashtable hash con todos los datos necesarios
-	 * @return String con la consulta SQL.
-	 * @throws ClsExceptions
-	 */	
-	public String busquedaCalendario3(String fecha, Hashtable hash) throws ClsExceptions{
-		String consulta = "";
-		String idinstitucion="", idpartido="";
-		try {
-			idinstitucion = (String)hash.get(ScsCalendarioLaboralBean.C_IDINSTITUCION);
-			idpartido = (String)hash.get(ScsCalendarioLaboralBean.C_IDPARTIDO);
-			
-			consulta = "SELECT * FROM "+ScsCalendarioLaboralBean.T_NOMBRETABLA+" cal ";
-			consulta += " WHERE ";
-			consulta += " cal."+ScsCalendarioLaboralBean.C_IDINSTITUCION+"="+idinstitucion;
-			consulta += " AND cal."+ScsCalendarioLaboralBean.C_FECHA+" = TO_DATE ('"+fecha+"','DD/MM/YYYY')";
-			consulta += " AND cal."+ScsCalendarioLaboralBean.C_IDPARTIDO+"="+idpartido;
-		}
-		catch (Exception e){
-			throw new ClsExceptions(e,"Excepcion en ScsCalendarioLaboralAdm.busquedaCalendario3(). Consulta SQL:"+consulta);
-		}
-		
-		return consulta;
-	}		
-	
-	/** 
-	 * Devuelve un String con la consulta SQL que devuelve la fecha de permuta y la fecha de inicio del confirmador si existe la permuta.
-	 * @param String fecha: fecha seleccionada 
-	 * @param Hashtable hash con todos los datos necesarios
-	 * @return String con la consulta SQL.
-	 * @throws ClsExceptions
-	 */	
-	public String busquedaCalendario2(String fecha, Hashtable hash) throws ClsExceptions{
-		String idpartido = "";
-		String consulta1="", consulta2="";
-		String idinstitucion="", idturno="", idguardia="", idpersona="", idcalendario="";
-		Vector registros = new Vector();
-		
-		try {
-			idinstitucion = (String)hash.get(ScsTurnoBean.C_IDINSTITUCION);
-			idturno = (String)hash.get(ScsTurnoBean.C_IDTURNO);
-			
-			//Consulta 1 para ver si tiene idzona, idsubzona
-			consulta1 = "SELECT turno."+ScsTurnoBean.C_IDZONA+", turno."+ScsTurnoBean.C_IDSUBZONA;
-			consulta1 += " FROM "+ScsTurnoBean.T_NOMBRETABLA+" turno";
-			consulta1 += " WHERE ";
-			consulta1 += " turno."+ScsTurnoBean.C_IDINSTITUCION+"="+idinstitucion;
-			consulta1 += " AND turno."+ScsTurnoBean.C_IDTURNO+"="+idturno;
-			//Ejecuto la consulta:
-			registros = this.selectGenerico(consulta1);			
-			
-			//Si no encontramos registros no busco mas
-			if (registros.size()==0 || ((String)((Hashtable)registros.get(0)).get("IDSUBZONA")).equals("")) 
-				idpartido="";
-			//Si encontramos un registro miro si tiene asociado un idpartido
-			else {
-				String idzona = (String)((Hashtable)registros.get(0)).get("IDZONA");
-				String idsubzona = (String)((Hashtable)registros.get(0)).get("IDSUBZONA");
-				//Consulta 2 para ver si tiene idzona, idsubzona
-				consulta2 = "SELECT subzona."+ScsSubzonaBean.C_IDPARTIDO;
-				consulta2 += " FROM "+ScsSubzonaBean.T_NOMBRETABLA+" subzona";
-				consulta2 += " WHERE ";
-				consulta2 += " subzona."+ScsTurnoBean.C_IDINSTITUCION+"="+idinstitucion;
-				consulta2 += " AND subzona."+ScsTurnoBean.C_IDZONA+"="+idzona;
-				consulta2 += " AND subzona."+ScsTurnoBean.C_IDSUBZONA+"="+idsubzona;
-				//Ejecuto la segunda consulta:
-				registros.clear();
-				registros = this.selectGenerico(consulta2);
-				//Si encuentro el idpartido devuelvo el mismo, sino String vacio			
-				if (registros.size()!=0)
-					idpartido = (String)((Hashtable)registros.get(0)).get("IDPARTIDO");
-				else
-					idpartido = "";
-			}
-		}
-		catch (Exception e){
-			throw new ClsExceptions(e,"Excepcion en ScsCalendarioLaboralAdm.busquedaCalendario2(). Consulta SQL:"+consulta1);
-		}
-		return idpartido;
-	}		
-	
-	/** 
-	 * Devuelve un String con la consulta SQL que devuelve la fecha de permuta y la fecha de inicio del confirmador si existe la permuta.
-	 * @param String fecha: fecha seleccionada 
-	 * @param Hashtable hash con todos los datos necesarios
-	 * @return String con la consulta SQL.
-	 * @throws ClsExceptions
-	 */	
-	public static String busquedaCalendario1(String fecha, String idinstitucion) throws ClsExceptions{
-		String consulta = "";
-
-		try {
-			consulta = "SELECT * FROM "+ScsCalendarioLaboralBean.T_NOMBRETABLA+" cal ";
-			consulta += " WHERE ";
-			consulta += " cal."+ScsCalendarioLaboralBean.C_IDINSTITUCION+"="+idinstitucion;
-			consulta += " AND cal."+ScsCalendarioLaboralBean.C_FECHA+" = TO_DATE ('"+fecha+"','DD/MM/YYYY')";
-			consulta += " AND cal."+ScsCalendarioLaboralBean.C_IDPARTIDO+" IS NULL";
-		}
-		catch (Exception e){
-			throw new ClsExceptions(e,"Excepcion en ScsCalendarioLaboralAdm.busquedaCalendario1(). Consulta SQL:"+consulta);
-		}
-		
-		return consulta;
-	}	
 	
 	/**
-	 * Insertar en un vector cada fila como una tabla hash del resultado de ejecutar la query
-	 * @param Hashtable miHash: tabla hash de datos necesarios para la consulta SQL.
-	 * @param String consulta: consulta SQL del SELECT almacenada en un String.
-	 * @return Vector con tablas hash. Cada tabla hash es una fila del resultado del select en la base de datos.
-	 * @throws ClsExceptions
+	 * Obtiene la lista de festivos configuradas en un colegio, dados un turno (de donde se sacaran los
+	 * partidos judiciales) y un periodo de fechas.
+	 * 
+	 * - Se devolveran los festivos globales (establecidos como Nacionales en el Consejo), 
+	 * los festivos configurados globales para el colegio 
+	 * y los festivos locales que pertenezcan a un partido configurado dentro del turno indicado.
+	 * 
+	 * - Si no se indica turno, no se devolvera ningun festivo asociado a partido judicial.
+	 * 
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param fechaInicio
+	 * @param fechaFin
+	 * @return
 	 */
-	public Vector selectGenerico(String consulta) throws ClsExceptions {
-		Vector datos = new Vector();
-		
-		// Acceso a BBDD	
-		try { 
-			RowsContainer rc = new RowsContainer(); 	
-			if (rc.query(consulta)) {
-				for (int i = 0; i < rc.size(); i++)	{		
-					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable)fila.getRow();
-					Hashtable registro2 = new Hashtable();
-					if (registro != null) 
-						datos.add(registro);
+	public Vector obtenerFestivosTurno(Integer idInstitucion, Integer idTurno, String fechaInicio, String fechaFin)
+	{
+		Vector vFestivos = new Vector();
+
+		try {
+			String fechaInicioFormateada = GstDate.getFormatedDateShort("ES", fechaInicio);
+			String fechaFinFormateada = GstDate.getFormatedDateShort("ES", fechaFin);
+
+			StringBuilder consulta = new StringBuilder();
+			consulta.append(" SELECT cal." + ScsCalendarioLaboralBean.C_FECHA);
+			consulta.append("   FROM " + ScsCalendarioLaboralBean.T_NOMBRETABLA + " cal ");
+			consulta.append("  WHERE cal." + ScsCalendarioLaboralBean.C_FECHA);
+			consulta.append("             between TO_DATE('");
+			consulta.append(fechaInicioFormateada);
+			consulta.append("', 'DD/MM/YYYY') AND TO_DATE('");
+			consulta.append(fechaFinFormateada);
+			consulta.append("', 'DD/MM/YYYY') ");
+			consulta.append("    AND (cal." + ScsCalendarioLaboralBean.C_IDINSTITUCION + " = ");
+			consulta.append(idInstitucion);
+			consulta.append("         OR cal." + ScsCalendarioLaboralBean.C_IDINSTITUCION + " = ");
+			consulta.append(ClsConstants.INSTITUCION_CGAE);
+			consulta.append("        ) ");
+			consulta.append("    AND (cal." + ScsCalendarioLaboralBean.C_IDPARTIDO + " IS NULL ");
+			consulta.append("         OR cal." + ScsCalendarioLaboralBean.C_IDPARTIDO + " IN  ");
+			consulta.append("               (SELECT p." + ScsSubZonaPartidoBean.C_IDPARTIDO);
+			consulta.append("                  FROM " + ScsTurnoBean.T_NOMBRETABLA + " t, ");
+			consulta.append("      	                " + ScsSubZonaPartidoBean.T_NOMBRETABLA + " p ");
+			consulta.append("                 WHERE p." + ScsSubZonaPartidoBean.C_IDINSTITUCION + " = t." + ScsTurnoBean.C_IDINSTITUCION);
+			consulta.append("                   AND p." + ScsSubZonaPartidoBean.C_IDZONA + " = t." + ScsTurnoBean.C_IDZONA);
+			consulta.append("                   AND p." + ScsSubZonaPartidoBean.C_IDSUBZONA + " = t." + ScsTurnoBean.C_IDSUBZONA);
+			consulta.append("                   AND t." + ScsTurnoBean.C_IDINSTITUCION + " = " + idInstitucion);
+			consulta.append("                   AND t." + ScsTurnoBean.C_IDTURNO + " = " + idTurno);
+			consulta.append("               )");
+			consulta.append("        )");
+
+			RowsContainer rc = new RowsContainer();
+			Row fila;
+			Hashtable registro;
+			if (rc.query(consulta.toString())) {
+				for (int i = 0; i < rc.size(); i++) {
+					fila = (Row) rc.get(i);
+					registro = (Hashtable) fila.getRow();
+					// anyadiendo la fecha en formato corto
+					if (registro != null)
+						vFestivos.add(GstDate.getFormatedDateShort("ES", (String) registro.get(ScsCalendarioLaboralBean.C_FECHA)));
 				}
 			}
-		} 
-		catch (Exception e) {
-			throw new ClsExceptions (e, "Excepcion en ScsCalendarioLaboralAdm.selectGenerico(). Consulta SQL:"+consulta);
-		}
-		return datos;	
-	}		
-
-	public Vector obtenerFestivosTurno(Integer idInstitucion, Integer idTurno, String fechaInicio, String fechaFin) {
-		Vector vFestivos = new Vector();
-		String consulta = null;
-		
-		try {		
-			String fechaInicioFormateada = GstDate.getFormatedDateShort("ES",fechaInicio);
-			String fechaFinFormateada = GstDate.getFormatedDateShort("ES",fechaFin);
-			
-			consulta =" SELECT cal."+ScsCalendarioLaboralBean.C_FECHA+
-					  " FROM "+ScsCalendarioLaboralBean.T_NOMBRETABLA+" cal "+
-					  " WHERE cal."+ScsCalendarioLaboralBean.C_IDINSTITUCION+" = "+idInstitucion+ 
-					  " AND cal."+ScsCalendarioLaboralBean.C_FECHA+" >= TO_DATE('"+fechaInicioFormateada+"', 'DD/MM/YYYY') "+
-					  " AND cal."+ScsCalendarioLaboralBean.C_FECHA+" <= TO_DATE('"+fechaFinFormateada+"', 'DD/MM/YYYY') "+
-					  " AND (    cal."+ScsCalendarioLaboralBean.C_IDPARTIDO+" IS NULL "+ 
-					  "       OR cal."+ScsCalendarioLaboralBean.C_IDPARTIDO+" IN  "+
-					  "         ( SELECT p."+ScsSubZonaPartidoBean.C_IDPARTIDO+
-					  "   		  FROM "+ScsTurnoBean.T_NOMBRETABLA+" t, "+
-					  "      		   "+ScsSubZonaPartidoBean.T_NOMBRETABLA+" p "+
-					  "	  		  WHERE p."+ScsSubZonaPartidoBean.C_IDINSTITUCION+" = t."+ScsTurnoBean.C_IDINSTITUCION+
-					  "     	    AND p."+ScsSubZonaPartidoBean.C_IDZONA+" = t."+ScsTurnoBean.C_IDZONA+
-					  "     		AND p."+ScsSubZonaPartidoBean.C_IDSUBZONA+" = t."+ScsTurnoBean.C_IDSUBZONA+
-					  "     		AND t."+ScsTurnoBean.C_IDINSTITUCION+" = "+idInstitucion+
-					  "     		AND t."+ScsTurnoBean.C_IDTURNO+" = "+idTurno+
-					  " 		)"+
-					  "     )";
-		
-			RowsContainer rc = new RowsContainer(); 	
-			if (rc.query(consulta)) {
-				for (int i = 0; i < rc.size(); i++)	{		
-					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable)fila.getRow();
-					//Anhado al vector un String con la fecha en formato corto:
-					if (registro != null) 
-						vFestivos.add(GstDate.getFormatedDateShort("ES",(String)registro.get(ScsCalendarioLaboralBean.C_FECHA)));
-				}
-			} 
-		} catch (Exception e){
+		} catch (Exception e) {
 			vFestivos.clear();
-		}		
+		}
 		return vFestivos;
 	}
 	
