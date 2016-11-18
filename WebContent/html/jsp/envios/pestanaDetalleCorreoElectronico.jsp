@@ -117,7 +117,7 @@
 		
 	</head>
 
-	<body class="detallePestanas">
+	<body>
 		<div id="camposRegistro">
 			<html:form action="/ENV_Correo_Electronico.do" method="POST" target="submitArea">
 				<html:hidden property = "modo" value = ""/>

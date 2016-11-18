@@ -168,32 +168,38 @@
 			optionsProcedimientos.selectedIndex=0;
 		}
 	}
-	function tab(pestana,panel)
-	{
-		pst 	= document.getElementById(pestana);
-		pnl 	= document.getElementById(panel);
-		psts	= document.getElementById('tabs').getElementsByTagName('li');
-		pnls	= document.getElementById('paneles').getElementsByTagName('div');
+	
+	
+	function pulsa(tabCount){
 		
-		// eliminamos las clases de las pestañas
-		for(i=0; i< psts.length; i++)
-		{
-			psts[i].className = '';
-			psts[i].style.width="100px";
+		if(!tabCount){
+			tabCount = "0";
 		}
-		
-		// Añadimos la clase "actual" a la pestaña activa
-		pst.className = 'actual';
-		
+		objLink = jQuery("#tab_"+tabCount);
+		psts	= document.getElementsByName('linkTabs');
 		// eliminamos las clases de las pestañas
-		for(i=0; i< pnls.length; i++)
+		for( i=0; i< psts.length; i++)
 		{
-			pnls[i].style.display = 'none';
+			jQuery(psts[i]).removeClass('here');
+			
+		}
+		objLink.addClass('here');
+		
+		//Ahora las pestañas
+		pnl 	= document.getElementById('panel_'+tabCount);
+		pnls	= document.getElementById('paneles').getElementsByTagName('div');
+		for(j=0; j< pnls.length; j++)
+		{
+			pnls[j].style.display = 'none';
 		}
 		
 		// Añadimos la clase "actual" a la pestaña activa
 		pnl.style.display = 'block';
+		
 	}
+	
+	
+	
 	jQuery(function($){
 		var defaultValue = jQuery("#nig").val();
 		if(defaultValue.length > 19){
@@ -347,7 +353,7 @@
 			</siga:ConjCampos>
 		
  		<siga:ConjCampos leyenda="gratuita.operarEJG.literal.expedienteEJG">
-		<div id="panelEJGs" style="display: inline;overflow-y: auto;overflow-x: hidden;">
+		<div id="panelEJGs" style="display: inline;overflow-x: hidden;">
 			 	<bean:define id="ejgs" name="MaestroDesignasForm"	property="ejgs" type="java.util.Collection"/>
 	   	<c:choose>
 		<c:when test="${empty ejgs}">
@@ -360,18 +366,39 @@
 			</tr>
 		</table>	
 		</c:when>
+		
 		<c:otherwise>
-				<div align="right" id="panel" style="width:100%;">
-					<ul id="tabs" style="width:100%;">
+				<div style=" position:relative; left:0px; width=100%; height=30px; top:0px; " id="divid">
 					<logic:notEmpty name="MaestroDesignasForm" property="ejgs">
-						<logic:iterate name="MaestroDesignasForm" property="ejgs" id="ejg1" indexId="index">
-					    	<li id="tab_${index}"><a href="#" onclick="tab('tab_${index}','panel_${index}');"><c:out
-							value="${ejg1.anio}" />/<c:out
-							value="${ejg1.numEJG}" /></a></li>
-						</logic:iterate>
-					</logic:notEmpty>		   
-				    </ul>
-					<div id="paneles">
+					<table  class="tablaLineaPestanasArriba"  border="0" cellspacing="0" cellpadding="0">
+						<tr>
+						<td></td>
+						</tr>
+						</table>
+						<table id="tabs" class="pest" border="0" cellspacing="0" cellpadding="0" style="width:100%;">
+							<tr>
+								<logic:iterate name="MaestroDesignasForm" property="ejgs" id="ejg1" indexId="index">
+									
+										<td class="pestanaTD"   name="pestanas" >
+											<a id="tab_${index}" name="linkTabs" href="#" onClick="pulsa('${index}');">
+												<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<c:out	value="${ejg1.anio}" />/<c:out	value="${ejg1.numEJG}" />
+											</a>
+										</td>
+								
+								</logic:iterate>
+								<td width="90%">
+								</td>
+							</tr>
+						</table>
+						<table  class="tablaLineaPestanas"  border="0" cellspacing="0" cellpadding="0">
+							<tr>
+							<td></td>
+							</tr>
+						</table>
+					</logic:notEmpty>
+					</div>
+						
+					<div id="paneles" style="height:280px;overflow-y: scroll; ">
 					<logic:notEmpty name="MaestroDesignasForm" property="ejgs">
 					<%
 						MaestroDesignasForm form = (MaestroDesignasForm) request.getAttribute("MaestroDesignasForm");
@@ -382,9 +409,13 @@
 											}
 					%>
 						<logic:iterate name="MaestroDesignasForm" property="ejgs" id="ejg2" indexId="index2">
-							<div id="panel_${index2}" style="display: inline;overflow-y: auto;overflow-x: hidden;">
+							<div id="panel_${index2}"  style="height:400;display: inline;overflow-x: hidden;">
+							
+								
+								
+							
 								<table class="tablaCampos" align="center" cellpadding="0"
-									cellpadding="0" width="100%" border="0">
+									cellpadding="0" width="100%" border="0" style="height:500;">
 								<tr>
 										<td colspan="1"   class="labelText" style="width:100px;">	
 											<siga:Idioma key='gratuita.operarEJG.literal.interesado'/>
@@ -585,10 +616,9 @@
 							
 						</div>
 						<script type="text/javascript">
-							tab('tab_0','panel_0');
+							pulsa();
 							ajusteAlto('panelEJGs');
 						</script>
-					</div>
 				  </c:otherwise>
 				</c:choose>
 				</div>
@@ -619,7 +649,7 @@
 				style="display: none"></iframe>
 
 <script>
-
+//a.a();
 </script>	
 </body>
 

@@ -1072,7 +1072,8 @@ public class MaestroDesignasAction extends MasterAction {
 		GenParametrosAdm admParametros = new GenParametrosAdm(usr);		
 		String ejisActivo = admParametros.getValor(usr.getLocation(), "ECOM", "EJIS_ACTIVO", "0");
 		request.setAttribute("EJIS_ACTIVO", ejisActivo);
-		
+		String prefijoExpedienteCajg = admParametros.getValor (usr.getLocation(), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+		request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
 
 		return "actualizarDesigna";
 	}
@@ -1395,12 +1396,13 @@ public class MaestroDesignasAction extends MasterAction {
 			
 			
 			
+			
+			if(nombre!=null  && !nombre.trim().equals(""))
+				nombreSolicita=nombre;
 			if(apellido1!=null && !apellido1.trim().equals(""))
-				nombreSolicita=apellido1;
+				nombreSolicita+=" "+apellido1;
 			if(apellido2!=null)
 				nombreSolicita+=" "+apellido2;
-			if(nombre!=null  && !nombre.trim().equals(""))
-				nombreSolicita+=", "+nombre;
 			
 			
 			// Obtenemos el procurador seleccionado:

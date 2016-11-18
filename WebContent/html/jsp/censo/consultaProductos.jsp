@@ -332,7 +332,7 @@
 		<div style="position: absolute; left: 400px; width:140px; bottom: 0px; z-index: 99;">
 			<table align="center" border="0" class="botonesSeguido">
 				<tr>
-					<td class="labelText">
+					<td class="botonesDetalle">
 						<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal" /> 
 						<%if (bIncluirBajaLogica) {%>
 							<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);" checked> 

@@ -234,7 +234,7 @@
 			
 			<siga:FilaConIconos fila="<%=cont %>" botones="" modo="consulta" elementos="<%=elems%>" visibleBorrado="no" visibleEdicion="no" visibleConsulta="no" clase="listaNonEdit" pintarEspacio="false">
 			
-				<td class='tableTitlePrimero'>
+				<td >
 					<!-- campos hidden -->
 					<input type="hidden" id="oculto<%=cont %>_1" name="oculto<%=cont %>_1" value="<%=idPersona %>">
 					<input type="hidden" id="oculto<%=cont %>_2" name="oculto<%=cont %>_2" value="<%=ncolegiado %>">
@@ -303,7 +303,7 @@
 						idioma="<%=idioma%>"
 						modo="buscarPaginador"								
 						clase="paginator" 
-						divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:28px; left: 0px"
+						divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:36px; left: 0px"
 						distanciaPaginas=""
 						action="<%=action%>" />
 	 <% } %>

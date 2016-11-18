@@ -184,7 +184,7 @@
 		<html:hidden name="MandatosCuentasBancariasForm" property="idCuenta" styleId="idCuenta" value="<%=beanMandato.getIdCuenta()%>" />
 		<html:hidden name="MandatosCuentasBancariasForm" property="idMandato" styleId="idMandato" value="<%=beanMandato.getIdMandato()%>" />
 		
-		<table cellpadding="5" border="0">
+		<table cellpadding="5" border="0" >
 			<tr>
 				<td>
 					<input type="checkbox" id="firmado" name="firmado" 

@@ -306,7 +306,7 @@
 		<!-- GUARDIA -->
 		<!-- gratuita.listarGuardias.literal.guardia -->
 		<siga:ConjCampos leyenda="gratuita.guardiasTurno.literal.datosgenerales" desplegable="true" oculto="false">			
-			<table align="center" border="0" width="100%">
+			<table align="center" border="0" width="100%" >
 				<tr>
 					<td class="labelText" style="width: 100px;">
 						<siga:Idioma key="censo.SolicitudIncorporacion.literal.nombre" />&nbsp;(*)
@@ -391,32 +391,44 @@
 				<logic:notEmpty name="DefinirGuardiasTurnosForm" property="guardiasVinculadas">
 					<tr>
 						<td colspan="4">
-							<div style="position: relative; height: 100%; width: 100%; overflow-y: auto">
-								<table class="tablaCampos" border='1' align='center' width='100%' height="10" cellspacing='0' cellpadding='0' style='table-layout: fixed'>
-									<tr class='tableTitle'>
-										<td align='center' width='50%'>
-											<siga:Idioma key="gratuita.guardiasTurno.literal.turnoVinculado" />
+						
+							<siga:Table 
+								name="tablaResultados"
+								border="1"
+								columnNames="gratuita.guardiasTurno.literal.turnoVinculado,gratuita.guardiasTurno.literal.guardiaVinculada"
+								columnSizes="50,50"
+								fixedHeight="50"
+								>
+								
+								
+								<logic:iterate name="DefinirGuardiasTurnosForm" property="guardiasVinculadas" id="guardiaVinculada" indexId="index">
+									<tr>
+									<c:choose>
+										<c:when test="${index%2==0}">
+											<tr class="filaTablaPar" >
+										</c:when>
+										<c:otherwise>
+											<tr  class="filaTablaImpar">
+										</c:otherwise>
+									</c:choose>
+										<td align='left' width='50%'>
+											<c:out value="${guardiaVinculada.turno.abreviatura}" />
 										</td>
-										<td align='center' width='50%'>
-											<siga:Idioma key="gratuita.guardiasTurno.literal.guardiaVinculada" />
+										<td align='left' width='50%'>
+											<c:out value="${guardiaVinculada.nombre}" />
 										</td>
+											
 									</tr>
-									
-									<logic:iterate name="DefinirGuardiasTurnosForm" property="guardiasVinculadas" id="guardiaVinculada" indexId="index">
-										<tr class="filaTablaImpar">
-											<td align='left' width='50%'>
-												<c:out value="${guardiaVinculada.turno.abreviatura}" />
-											</td>
-											<td align='left' width='50%'>
-												<c:out value="${guardiaVinculada.nombre}" />
-											</td>
-										</tr>
-									</logic:iterate>
-								</table>
-							</div>
+								</logic:iterate>
+								
+							</siga:Table>
+							
 						</td>
 					</tr>
 				</logic:notEmpty>
+				
+				
+				
 			</table>
 		</siga:ConjCampos>
 		

@@ -157,14 +157,14 @@
 <!---------- Letrados en Cola ---------------------------------------------------------------------->	
 <!-------------------------------------------------------------------------------------------------->
 
-				<table id="tituloTablaLetrados" width="100%" border="1" cellpadding="5" cellspacing="0">
-					<tr class='tableTitle'>
-						<td width='32%'>
-							<input id="buscarLetrado" type="text" class="box" size="8" value="<%=literalNColegiado%>" onfocus="limpiarTexto(this, 1);" onblur="limpiarTexto(this, 0);buscarLetradoEnColaLetrado();"/>
+				<table id="tituloTablaLetrados" width="100%"  cellpadding="0" cellspacing="0">
+					<tr >
+						<td class="titulitosDatos" style="width: 22%">
+							<input id="buscarLetrado" type="text" class="box" size="10" value="<%=literalNColegiado%>" onfocus="limpiarTexto(this, 1);" onblur="limpiarTexto(this, 0);buscarLetradoEnColaLetrado();"/>
 							<img src="<html:rewrite page='/html/imagenes/bconsultar_off.gif'/>" style="cursor: hand;" onClick="buscarLetradoEnColaLetrado();" alt="<%=buscarLetrado%>" />
 						</td>
 
-						<td align='center' width='68%'>
+						<td class="titulitosDatos" style="text-align: left">
 							<siga:Idioma key="gratuita.colaGuardia.literal.letradosInscritos" />:&nbsp;&nbsp;<%=nListad%>
 						</td>
 					</tr>
@@ -175,7 +175,7 @@
 		   			border="1"
 		   			columnSizes="16,38,18,18,10"
 		   			columnNames="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,F.Val,F.Baja,"
-		   			width="650px">				
+		   			width="100%">				
 
 					<!-- INICIO: ZONA DE REGISTROS -->
 					<!-- Aqui se iteran los diferentes registros de la lista -->
@@ -241,100 +241,108 @@
 <!---------- Compensaciones ------------------------------------------------------------------------>	
 <!-------------------------------------------------------------------------------------------------->	
 
-				<table id="tituloTablaCompensaciones" width="100%" border="1" cellpadding="5" cellspacing="0">
-		  			<tr class='tableTitle'>
-						<td align='center' width='100%'><siga:Idioma key="gratuita.turnos.literal.compensaciones"/></td>
-		  			</tr>
-				</table> 
+				<table width="100%">
+					<tr>
+						<td>
+							<siga:ConjCampos leyenda="gratuita.turnos.literal.compensaciones">
 				
-				<siga:Table
-	    			name="tablaCompensaciones"
-	    			border="1"
-					columnSizes="22,50,28"			
-					columnNames="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.compensaciones"
-	    			fixedHeight="48%">
-
-					<!-- INICIO: ZONA DE REGISTROS -->
-					<!-- Aqui se iteran los diferentes registros de la lista -->
-			
-<%	
-					Vector resultado = (Vector) request.getAttribute("vCompensaciones");
-					if (resultado==null || resultado.size()==0) { 
-%>			
-	 					<tr class="notFound">
-			   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-						</tr>	 		
-<%	
-					} else { 
-						for (int i=0;i<resultado.size();i++) {
-							Row registro = (Row) resultado.elementAt(i);
-			
-							// calculo de campos
-							String apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
-							String apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
-							String nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
-							String ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
-							String numero = UtilidadesString.mostrarDatoJSP(registro.getString("NUMERO"));
-%>
-				  			<tr class="listaNonEdit">
-								<td><%=ncolegiado%></td>
-								<td><%=nombre+" "+apellido1+" "+apellido2%></td>
-								<td><%=numero%></td>
-							</tr>		
-<%		
-						} // for
-					} // else 
-%>			
-				</siga:Table>	  
-	  
-<!-------------------------------------------------------------------------------------------------->	
-<!---------- Saltos -------------------------------------------------------------------------------->	
-<!-------------------------------------------------------------------------------------------------->	
-
-				<table id="tituloTablaSaltos" width="100%" border="1" cellpadding="5" cellspacing="0">
-			  		<tr class='tableTitle'>
-						<td align='center' width='100%'><siga:Idioma key="gratuita.turnos.literal.saltos"/></td>
-			  		</tr>
+								<siga:Table
+					    			name="tablaCompensaciones"
+					    			border="1"
+									columnSizes="22,50,28"			
+									columnNames="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.compensaciones"
+					    			fixedHeight="48%">
+				
+									<!-- INICIO: ZONA DE REGISTROS -->
+									<!-- Aqui se iteran los diferentes registros de la lista -->
+							
+				<%	
+									Vector resultado = (Vector) request.getAttribute("vCompensaciones");
+									if (resultado==null || resultado.size()==0) { 
+				%>			
+					 					<tr class="notFound">
+							   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+										</tr>	 		
+				<%	
+									} else { 
+										for (int i=0;i<resultado.size();i++) {
+											Row registro = (Row) resultado.elementAt(i);
+							
+											// calculo de campos
+											String apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
+											String apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
+											String nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
+											String ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
+											String numero = UtilidadesString.mostrarDatoJSP(registro.getString("NUMERO"));
+				%>
+								  			<tr class="listaNonEdit">
+												<td><%=ncolegiado%></td>
+												<td><%=nombre+" "+apellido1+" "+apellido2%></td>
+												<td><%=numero%></td>
+											</tr>		
+				<%		
+										} // for
+									} // else 
+				%>			
+								
+								</siga:Table>	  
+	  						</siga:ConjCampos>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<siga:ConjCampos leyenda="gratuita.turnos.literal.saltos">
+			<!-------------------------------------------------------------------------------------------------->	
+		<!---------- Saltos -------------------------------------------------------------------------------->	
+		<!-------------------------------------------------------------------------------------------------->	
+								<table id="tituloTablaSaltos" width="100%" border="1" cellpadding="5" cellspacing="0">
+							  		<tr class='tableTitle'>
+										<td align='center' width='100%'><siga:Idioma key="gratuita.turnos.literal.saltos"/></td>
+							  		</tr>
+								</table>
+								
+								<siga:Table
+								   	name="tablaSaltos"
+								   	border="1"
+								   	columnSizes="22,50,28"
+								   	columnNames="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.saltos">				
+						   
+									<!-- INICIO: ZONA DE REGISTROS -->
+									<!-- Aqui se iteran los diferentes registros de la lista -->
+							
+				<%	
+									Vector resultado = (Vector) request.getAttribute("vSaltos");
+									if (resultado==null || resultado.size()==0) { 
+				%>			
+					 					<tr class="notFound">
+							   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+										</tr> 		
+				<%	
+									} else { 
+										for (int i=0;i<resultado.size();i++) {
+											Row registro = (Row) resultado.elementAt(i);
+							
+											// calculo de campos
+											String apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
+											String apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
+											String nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
+											String ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
+											String numero = UtilidadesString.mostrarDatoJSP(registro.getString("NUMERO"));
+				%>
+								  			<tr class="listaNonEdit">
+												<td><%=ncolegiado %></td>
+												<td><%=nombre+" "+apellido1+" "+apellido2%></td>
+												<td><%=numero%></td>
+											</tr>		
+				<%		
+										} // for
+									} // else 
+				%>			
+								</siga:Table>
+							</siga:ConjCampos>
+						</td>
+					</tr>
 				</table>
-				
-				<siga:Table
-				   	name="tablaSaltos"
-				   	border="1"
-				   	columnSizes="22,50,28"
-				   	columnNames="gratuita.turnos.literal.nColegiado,gratuita.turnos.literal.nombreSolo,gratuita.turnos.literal.saltos">				
-		   
-					<!-- INICIO: ZONA DE REGISTROS -->
-					<!-- Aqui se iteran los diferentes registros de la lista -->
-			
-<%	
-					Vector resultado = (Vector) request.getAttribute("vSaltos");
-					if (resultado==null || resultado.size()==0) { 
-%>			
-	 					<tr class="notFound">
-			   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-						</tr> 		
-<%	
-					} else { 
-						for (int i=0;i<resultado.size();i++) {
-							Row registro = (Row) resultado.elementAt(i);
-			
-							// calculo de campos
-							String apellido1 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS1));
-							String apellido2 = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_APELLIDOS2));
-							String nombre = UtilidadesString.mostrarDatoJSP(registro.getString(CenPersonaBean.C_NOMBRE));
-							String ncolegiado = UtilidadesString.mostrarDatoJSP(registro.getString(CenColegiadoBean.C_NCOLEGIADO));
-							String numero = UtilidadesString.mostrarDatoJSP(registro.getString("NUMERO"));
-%>
-				  			<tr class="listaNonEdit">
-								<td><%=ncolegiado %></td>
-								<td><%=nombre+" "+apellido1+" "+apellido2%></td>
-								<td><%=numero%></td>
-							</tr>		
-<%		
-						} // for
-					} // else 
-%>			
-				</siga:Table>
   			</td>
 		</tr>
 	</table>

@@ -324,10 +324,10 @@
 	}
 %>
 	
-	<div style="position:absolute; left:200px;bottom:5px;z-index:99;">
+	<div style="position:absolute; left:350px;bottom:0px;z-index:99;">
 		<table align="center" border="0">
 			<tr>
-				<td class="labelText">
+				<td class="botonesSeguido">
 					<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal"/>
 						
 					<% if (bIncluirBajaLogica) { %>
@@ -335,8 +335,6 @@
 					<% } else { %>
 						<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);">
 					<% } %>
-				</td>
-				<td class="labelText">&nbsp;&nbsp;
 					<siga:Idioma key="censo.servicios.literal.mensajeAnticipado"/>
 				</td>
 			</tr>

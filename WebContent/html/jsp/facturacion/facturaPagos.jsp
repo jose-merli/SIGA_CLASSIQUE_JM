@@ -364,7 +364,7 @@
 			</table>
 		</fieldset>			
 	</div>
-	
+	<%if(mostrarBotonPago||mostrarBotonTarjeta||mostrarBotonRenegociar){ %>
 	<div style="position:absolute;left:23px;bottom:35px;">
 		<table align="center" border="0" width="25%" >
 			<tr>
@@ -392,6 +392,7 @@
 			</tr>
 		</table>
 	</div>			
+	<%}%>
 	<!-- FIN: CAMPOS -->
 
 	<siga:ConjBotonesAccion botones='<%=botonesAccion%>' />

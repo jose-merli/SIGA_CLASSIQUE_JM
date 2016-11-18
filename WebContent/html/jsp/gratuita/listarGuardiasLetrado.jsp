@@ -279,7 +279,7 @@
 			<table align="center" border="0" class="botonesSeguido">
 				<tr>
 					<td class="labelText">
-						<siga:Idioma key="gratuita.gestionInscripciones.vertodas" /> 
+						<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal" /> 
 						<%if (bIncluirBajaLogica.equals("S")) {%>
 							<input type="checkbox" name="bajaLogica" onclick="incluirRegBajaLogica(this);" checked> 
 						<%} else {%>

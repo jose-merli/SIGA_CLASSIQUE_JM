@@ -114,7 +114,7 @@
 	
 </head>
 
-<body class="posicionModalPeque" onload="recargarCombos();inicio();<%=noExistDatos%>">
+<body  onload="recargarCombos();inicio();<%=noExistDatos%>">
 
 <!-- INICIO ******* CAPA DE PRESENTACION ****** -->
 <!-- dentro de esta capa se tienen que situar los diferentes componentes 
@@ -138,7 +138,6 @@
 	<!-- INICIO: CAMPOS -->
 	<!-- Zona de campos de busqueda o filtro -->
 
-	<table  class="tablaCentralCamposPeque"  align="center">
 
 	<html:form action="/ENV_DefinirEnvios.do" method="POST" target="submitArea">
 		<html:hidden property = "hiddenFrame" value = "1"/>
@@ -157,8 +156,7 @@
 		
 		
 			
-	<tr>				
-	<td>
+
 
 		<table class="tablaCampos" align="center" border="0">
 		<tr>	
@@ -246,12 +244,10 @@
 							</tr>
 						</table>
 
-	</td>
-	</tr>
 
 	</html:form>
 	
-	</table>
+
 
 <html:form action="/INF_InformesGenericos.do" method="POST" target="submitArea">
 	<input type="hidden" name="actionModal" value="">

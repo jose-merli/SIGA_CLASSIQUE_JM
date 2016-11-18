@@ -1008,33 +1008,38 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 
 </html:form>
 <div>
-
-<table id='listadoInformeJustificacionCab' style="width:100%;table-layout: fixed;"  border='1' 
-	cellspacing='0' cellpadding='0'>
-	<tr class='tableTitle'>
-		<td align='center' width="8%"><siga:Idioma
-			key="gratuita.informeJustificacionMasiva.literal.designa" /></td>
-		<td align='center' width="8%"><siga:Idioma
-			key="gratuita.informeJustificacionMasiva.literal.ejg" /></td>
-		<td align='center' width="17%"><siga:Idioma
-			key="gratuita.informeJustificacionMasiva.literal.juzgado" /></td>
-		<td align='center' width="8%"><siga:Idioma
-			key="gratuita.informeJustificacionMasiva.literal.numeroProcedimiento" /></td>
-		<td align='center' width="14%"><siga:Idioma
-			key="gratuita.informeJustificacionMasiva.literal.cliente" /></td>
-		<td align='center' width="4%"><siga:Idioma
-			key="gratuita.informeJustificacionMasiva.literal.categoria" /></td>
-		<td align='center' width="5%"><siga:Idioma
-			key="gratuita.informeJustificacionMasiva.literal.numeroActuacion" /></td>
-		<td align='center' width="17%"><siga:Idioma
-			key="gratuita.informeJustificacionMasiva.literal.acreditaciones" /></td>
-		<td align='center' width="3%">V</td>
-		<td align='center' width="3%">&nbsp;</td>
-		<td align='center' width="4%"><siga:Idioma
-			key="gratuita.informeJustificacionMasiva.literal.baja" /></td>
-
-	</tr>
+<table id="listadoInformeJustificacionCab" name="listadoInformeJustificacionCab" width='100%' cellspacing='0' cellpadding='0'
+	class='fixedHeaderTable dataScroll'
+	style='table-layout: fixed; border-spacing: 0px;'>
+	<thead class='Cabeceras' style='text-align: center;'>
+		<tr class='tableTitle'>
+			<th align='center' width="8%"><siga:Idioma
+			key="gratuita.informeJustificacionMasiva.literal.designa" /></th>
+		<th align='center' width="8%"><siga:Idioma
+			key="gratuita.informeJustificacionMasiva.literal.ejg" /></th>
+		<th align='center' width="17%"><siga:Idioma
+			key="gratuita.informeJustificacionMasiva.literal.juzgado" /></th>
+		<th align='center' width="8%"><siga:Idioma
+			key="gratuita.informeJustificacionMasiva.literal.numeroProcedimiento" /></th>
+		<th align='center' width="14%"><siga:Idioma
+			key="gratuita.informeJustificacionMasiva.literal.cliente" /></th>
+		<th align='center' width="4%"><siga:Idioma
+			key="gratuita.informeJustificacionMasiva.literal.categoria" /></th>
+		<th align='center' width="5%"><siga:Idioma
+			key="gratuita.informeJustificacionMasiva.literal.numeroActuacion" /></th>
+		<th align='center' width="17%"><siga:Idioma
+			key="gratuita.informeJustificacionMasiva.literal.acreditaciones" /></th>
+		<th align='center' width="3%">V</th>
+		<th align='center' width="3%">&nbsp;</th>
+		<th align='center' width="4%"><siga:Idioma
+			key="gratuita.informeJustificacionMasiva.literal.baja" /></th>
+		</tr>
+	</thead>
 </table>
+
+		
+
+	
 </div>
 <!-- 2. Pintamos el contenido de la tabla -->
 <div id='listadoInformeJustificacionDiv'

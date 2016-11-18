@@ -144,7 +144,7 @@
 	</script>
 </head>
 
-<body>	
+<body  >	
 	<table class="tablaTitulo">		
 		<tr>		
 			<td class="titulitosDatos">

@@ -1136,7 +1136,7 @@
 												<td></td>
 											</tr>
 											<tr>
-												<td class="tdBotones">
+												<td class="labelText">
 												<% if (modificarSolicitud.equals("1")) { %> 
 												<input type="button" width="200"
 													alt="<siga:Idioma key="certificados.solicitudes.literal.copiarHistorico"/>"
@@ -1149,7 +1149,7 @@
 												</td>
 											</tr>
 											<tr>
-												<td class="tdBotones">
+												<td class="labelText">
 												<%
 													if (modificarSolicitud.equals("1")) {
 												%> <input type="button"

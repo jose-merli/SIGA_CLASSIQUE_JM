@@ -42,7 +42,6 @@
 	if(request.getAttribute("noFicha")==null){
 		esFicha = (String)request.getParameter("esFichaColegial");
 	}
-	
 	//campos a mostrar en la tabla
 	String nif ="", nombre ="", pagoAsociado="", movimiento="", cantidad="", idMovimiento="", ncolegiado="";
 	String cantidadRestante="";
@@ -223,10 +222,10 @@
 
 		</siga:Table>	
 		
-		<div style="position:absolute; left:400px;bottom:20px;z-index:2;">
+		<div style="position:absolute; left:400px;bottom:0px;z-index:99;">
 			<table align="center" border="0">
 				<tr>
-					<td class="labelText">
+					<td class="botonesDetalle">
 						<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal"/>
 							<% if (mosMovimiento != null && mosMovimiento.equals("0")) { %>
 								<input type="checkbox" id="idCheckHistorico" name="checkHistorico" onclick="comprobarCheckHistorico(this);"checked>
@@ -236,7 +235,9 @@
 					</td>
 				</tr>
 			</table>
-		</div>			
+		</div>
+		<siga:ConjBotonesAccion botones=""	clase="botonesDetalle" />
+					
 	
 	<%} else {%>	
 
@@ -315,6 +316,8 @@
 								distanciaPaginas=""
 								action="<%=action%>" />
    <%}%>			
+	
+	
 	
 <!-- INICIO: SUBMIT AREA -->
 	<!-- Obligatoria en todas las páginas-->
