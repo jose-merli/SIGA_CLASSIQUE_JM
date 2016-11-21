@@ -789,8 +789,11 @@
 		
 			//Validación del campo Nombre Fichero Generado
 			//Sólo se permite carac. Alfanumércos y guión bajo y alto
-			
-			if(!(validarAlfaNumericoYGuiones(document.InformeFormEdicion.nombreSalida.value)&&validarAlfaNumericoYGuiones(document.InformeFormEdicion.nombreFisico.value)))
+			var nombreSalida = document.InformeFormEdicion.nombreSalida.value;
+			var nombreFisico = document.InformeFormEdicion.nombreFisico.value;
+			nombreSalida = replaceAll(nombreSalida,' ','');
+			nombreFisico = replaceAll(nombreFisico,' ','');
+			 if(!(validarAlfaNumericoYGuiones(nombreSalida)&&validarAlfaNumericoYGuiones(nombreFisico)))
 			{
 				error = "<siga:Idioma key='administracion.informes.mensaje.aviso.caracteresAlfaNumericos'/>";
 				alert(error);

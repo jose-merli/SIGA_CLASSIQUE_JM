@@ -172,7 +172,7 @@
         	
         	/*parametro=parametros.split('&');
         	
-        	alertStop("parametros:"+parametros);
+        	// alertStop("parametros:"+parametros);
 	        for(var i=0;i<parametro.length;i++){
 	        	data += '&'+parametro[i];
 			}*/
