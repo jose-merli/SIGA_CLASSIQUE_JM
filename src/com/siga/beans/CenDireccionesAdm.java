@@ -205,6 +205,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 			tipoDireccion = "f_siga_gettiposdireccion(" + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCION + "," + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPERSONA + "," + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDDIRECCION + ", " + this.usrbean.getLanguage() + ") as \"" + CenTipoDireccionBean.T_NOMBRETABLA +"."+CenTipoDireccionBean.C_DESCRIPCION+"\"";
 			idTipoDireccion = "F_SIGA_GET_IDTIPOSDIRECCION(" + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCION + "," + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPERSONA + "," + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDDIRECCION + ") as \"" + CenTipoDireccionBean.C_IDTIPODIRECCION+"\"";
 		}
+		String colegioOrigen = "nvl((select ins.abreviatura from cen_institucion ins where ins.idinstitucion = " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCIONALTA + "), '') as COLEGIOORIGEN";
 		String[] campos = {	
 				CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCION,	
 				CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPERSONA,	
@@ -236,7 +237,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 				CenProvinciaBean.T_NOMBRETABLA + "." + CenProvinciaBean.C_NOMBRE +" AS PROVINCIA ",
 				UtilidadesMultidioma.getCampoMultidiomaSimple(CenPaisBean.T_NOMBRETABLA + "." + CenPaisBean.C_NOMBRE, this.usrbean.getLanguage()) + " AS PAIS", 
 				CenPaisBean.T_NOMBRETABLA + "." + CenPaisBean.C_IDPAIS + " AS IDPAIS", 
-				tipoDireccion, idTipoDireccion
+				tipoDireccion, idTipoDireccion, colegioOrigen
 		};
 		return campos;
 	}
