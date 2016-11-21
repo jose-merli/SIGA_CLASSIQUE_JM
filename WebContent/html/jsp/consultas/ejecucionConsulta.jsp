@@ -68,7 +68,7 @@
 	<!-- FIN: SCRIPTS BOTONES -->
 </head>
 
-<body>
+<body onload="ajusteAltoPaginador('resultado')">
 
 	<script language="JavaScript">
 		jQuery(document).ready(function () {
@@ -113,13 +113,13 @@
 					for (int i = 0; i < datos.size(); i++) {
 						Row fila = (Row) datos.elementAt(i);
 			%>
-						<tr>
-						  	<siga:FilaConIconos fila="1" botones="" visibleEdicion="no" visibleConsulta="no" visibleBorrado="no" pintarEspacio="no" clase="listaNonEdit">
+						
+						  	<siga:FilaConIconos fila='<%=String.valueOf(i)%>' botones="" visibleEdicion="no" visibleConsulta="no" visibleBorrado="no" pintarEspacio="no" clase="listaNonEdit">
 								<% for (int k = 0; k < cabeceras.length; k++) { %>
 									<td><%=UtilidadesString.mostrarDatoJSP(fila.getString(cabeceras[k]))%></td>
 								<% } %>
 							</siga:FilaConIconos>				
-						</tr>
+						
 					<% } 
 				} %>
 			
@@ -134,7 +134,7 @@
 					idioma="<%=idioma%>"
 					modo="ejecutarConsulta"								
 					clase="paginator" 
-					divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:10px; left: 0px"
+					divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:35px; left: 0px"
 					distanciaPaginas=""
 					action="<%=action%>" />
 					
@@ -146,7 +146,7 @@
 					idioma="<%=idioma%>"
 					modo="ejecutarConsulta"								
 					clase="paginator" 
-					divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:25px; left: 0px"
+					divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:35px; left: 0px"
 					distanciaPaginas=""
 					action="<%=action%>" />
 	<% } %>

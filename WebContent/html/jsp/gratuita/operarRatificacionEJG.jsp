@@ -220,13 +220,12 @@
 					- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
 			</td>
 			
-			<td>
+			
 				<%
 					if (!accion.equalsIgnoreCase("ver")) {
 				%>
-					<table>
-						<tr>
-							<td>
+					
+							<td class="titulitosDatos">
 								<input 	type="button" 
 									alt="UtilidadesString.getMensajeIdioma(usrbean,general.boton.cartaInteresados)"  
 							       	id="idButton"  
@@ -234,12 +233,11 @@
 							       	class="button" 
 							       	value='<%=UtilidadesString.getMensajeIdioma(usr,"gratuita.EJG.botonComunicaciones")%>' />
 							</td>
-						</tr>
-					</table>
+						
 				<%
 					}
 				%>
-			</td>
+			
 		</tr>
 	</table>
 

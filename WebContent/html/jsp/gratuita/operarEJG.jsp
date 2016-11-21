@@ -468,6 +468,74 @@
 
 
 <body onload="cargarComboTipoColegio();">
+
+<table class="tablaTitulo" cellspacing="0">
+	<tr>
+		<td id="titulo" class="titulitosDatos">
+			<%
+				String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_tipoEJG = "", t_sufijo = "";
+					ScsEJGAdm adm = new ScsEJGAdm(usr);
+					Hashtable hTitulo = adm.getTituloPantallaEJG(idInstitucion,
+							ANIO, NUMERO, IDTIPOEJG,(String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
+
+					if (hTitulo != null) {
+						t_nombre = (String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
+						t_apellido1 = (String) hTitulo
+								.get(ScsPersonaJGBean.C_APELLIDO1);
+						t_apellido2 = (String) hTitulo
+								.get(ScsPersonaJGBean.C_APELLIDO2);
+						t_anio = (String) hTitulo.get(ScsEJGBean.C_ANIO);
+						t_numero = (String) hTitulo.get(ScsEJGBean.C_NUMEJG);
+						t_sufijo = (String) hTitulo.get(ScsEJGBean.C_SUFIJO);
+						if (t_sufijo != null && !t_sufijo.equals("")) {
+							t_numero = t_numero + "-" + t_sufijo;
+						}
+
+						t_tipoEJG = (String) hTitulo.get("TIPOEJG");
+					}
+			%> 
+			<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
+			- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%>
+			<%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
+		</td>
+
+		<%
+								if (!modo.equalsIgnoreCase("ver")) {
+										if (tienePermisos) {
+							%>					
+			<td class="titulitosDatos">
+				<input 	type="button" 
+					alt="UtilidadesString.getMensajeIdioma(usrbean,gratuita.EJG.expInsostenibilidad)"    
+      					id="idButton"  
+      					onclick="return generarExpediente();" 
+     						class="button" 
+     						value='<%=UtilidadesString.getMensajeIdioma(usr,
+			"gratuita.EJG.expInsostenibilidad")%>' />						
+			</td>
+		<%
+			} else {
+		%>	
+			<td class="titulitosDatos"></td>
+		<%
+			}
+		%>
+	<%
+		}
+	%>
+	
+		<td class="titulitosDatos">
+			<input 	type="button" 
+				alt="UtilidadesString.getMensajeIdioma(usrbean,general.boton.cartaInteresados)"  
+     					id="idButton"  
+     					onclick="return generarCarta();" 
+     					class="button" 	
+     					value='<%=UtilidadesString.getMensajeIdioma(usr,
+	"gratuita.EJG.botonComunicaciones")%>' />
+		</td>
+						
+	</tr>
+</table>
+
 	<html:form action = "/JGR_MantenimientoEJG.do" method="POST" target="mainWorkArea">
 	
 		<html:hidden property = "modo" value = ""/>	
@@ -492,72 +560,7 @@
 		<table>
 			<tr>				
 				<td width="100%" align="center">
-					<table class="tablaTitulo" cellspacing="0">
-						<tr>
-							<td id="titulo" class="titulitosDatos">
-								<%
-									String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_tipoEJG = "", t_sufijo = "";
-										ScsEJGAdm adm = new ScsEJGAdm(usr);
-										Hashtable hTitulo = adm.getTituloPantallaEJG(idInstitucion,
-												ANIO, NUMERO, IDTIPOEJG,(String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
-
-										if (hTitulo != null) {
-											t_nombre = (String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
-											t_apellido1 = (String) hTitulo
-													.get(ScsPersonaJGBean.C_APELLIDO1);
-											t_apellido2 = (String) hTitulo
-													.get(ScsPersonaJGBean.C_APELLIDO2);
-											t_anio = (String) hTitulo.get(ScsEJGBean.C_ANIO);
-											t_numero = (String) hTitulo.get(ScsEJGBean.C_NUMEJG);
-											t_sufijo = (String) hTitulo.get(ScsEJGBean.C_SUFIJO);
-											if (t_sufijo != null && !t_sufijo.equals("")) {
-												t_numero = t_numero + "-" + t_sufijo;
-											}
-
-											t_tipoEJG = (String) hTitulo.get("TIPOEJG");
-										}
-								%> 
-								<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
-								- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%>
-								<%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
-							</td>
 					
-							<%
-													if (!modo.equalsIgnoreCase("ver")) {
-															if (tienePermisos) {
-												%>					
-								<td>
-									<input 	type="button" 
-										alt="UtilidadesString.getMensajeIdioma(usrbean,gratuita.EJG.expInsostenibilidad)"    
-				       					id="idButton"  
-				       					onclick="return generarExpediente();" 
-			       						class="button" 
-			       						value='<%=UtilidadesString.getMensajeIdioma(usr,
-								"gratuita.EJG.expInsostenibilidad")%>' />						
-								</td>
-							<%
-								} else {
-							%>	
-								<td></td>
-							<%
-								}
-							%>
-						<%
-							}
-						%>
-						
-							<td>
-								<input 	type="button" 
-									alt="UtilidadesString.getMensajeIdioma(usrbean,general.boton.cartaInteresados)"  
-			       					id="idButton"  
-			       					onclick="return generarCarta();" 
-			       					class="button" 	
-			       					value='<%=UtilidadesString.getMensajeIdioma(usr,
-						"gratuita.EJG.botonComunicaciones")%>' />
-							</td>
-											
-						</tr>
-					</table>
 	
 					<siga:ConjCampos leyenda="gratuita.operarEJG.literal.expedienteEJG">
 						<table width="100%" style="table-layout:fixed" border=0>

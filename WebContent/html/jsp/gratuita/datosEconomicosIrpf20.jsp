@@ -93,31 +93,36 @@
 				</td>	
 			</tr>
 		</table>	
-		<br>		
-		<table border="1" cellspacing="0" cellpadding="5" id='cabeceraTabla' width="100%">
-			<tr class="tableTitle">
-				<td align="center" width="27%">
-					<b><siga:Idioma key="gratuita.datoseconomicos.tiporendimiento"/></b>
-				</td>
-				<td align="center" width="17%">
-					<b><siga:Idioma key="gratuita.datoseconomicos.ejercicio"/></b>
-				</td>
-				<td align="center" width="35%">
-					<b><siga:Idioma key="gratuita.datoseconomicos.titular"/></b>
-				</td>
-				<td align="center" width="16%">
-					<b><siga:Idioma key="gratuita.datoseconomicos.importe"/></b>
-				</td>			
+		
+			<table id='cabeceraTabla' name='cabeceraTabla' width='100%' cellspacing='0' cellpadding='0' class='fixedHeaderTable dataScroll' style='table-layout: fixed; border-spacing: 0px;'>
+				<thead class='Cabeceras' style='text-align:center; '>
+				<tr class='tableTitle'>
+				<th style='text-align:center; width: 27%;'>
+				<siga:Idioma key="gratuita.datoseconomicos.tiporendimiento"/>
+				<th style='text-align:center; width: 17%;'>
+				<siga:Idioma key="gratuita.datoseconomicos.ejercicio"/>
+				</th>
+				<th style='text-align:center; width: 35%;'>
+				<siga:Idioma key="gratuita.datoseconomicos.titular"/>
+				</th>
+				<th style='text-align:center; width: 16%;'>
+				<siga:Idioma key="gratuita.datoseconomicos.importe"/>
+				</th>
 				<% if (editable) { %>	
-					<td align="center" width="5%">
-						<b>&nbsp;</b>
-					</td>
+				<th style='text-align:center; width: 5%;'>
+				&nbsp;
+				</th>
 				<% } %>
-			</tr>
-		</table>
+				
+				
+				</tr>
+				</thead>
+			</table>
+		
+		
 		
 		<div style="overflow-y:auto; position:absolute;width:100%;" id="divDatosTabla">
-			<table border="1" cellspacing="0" cellpadding="5" id='datosTabla' width="100%">
+			<table border="1" cellspacing="0" cellpadding="0" id='datosTabla' width="100%">
 				<% 
 					if (listaIrpfs != null && listaIrpfs.size()>0) {
 						for (int i=0; i<listaIrpfs.size(); i++) {

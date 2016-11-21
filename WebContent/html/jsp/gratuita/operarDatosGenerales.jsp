@@ -161,27 +161,23 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 					<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%> <%=UtilidadesString.mostrarDatoJSP(t_tipoSOJ)%>
 					- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
 			</td>
-			<td>
+			
 				<%
 					if (!accion.equalsIgnoreCase("ver")) {
 				%>
-				<table>
-					<tr>
-						<td>
+					<td class="titulitosDatos">	
 						<input 	type="button" 
-				alt='<siga:Idioma key="general.boton.cartaInteresados" />'  
-		       	id="idButton"  
-		       	onclick="return generarCarta();" 
-		       	class="button" 
-		       	value='<siga:Idioma key="gratuita.EJG.botonComunicaciones" />'/>
+						alt='<siga:Idioma key="general.boton.cartaInteresados" />'  
+		       			id="idButton"  
+		       			onclick="return generarCarta();" 
+		       			class="button" 
+		       			value='<siga:Idioma key="gratuita.EJG.botonComunicaciones" />'/>
 		       	
-						</td>
-					</tr>
-				</table>
+					</td>
 				<%
 					}
 				%>
-				</td>
+				
 		</tr>
 		</table>
 

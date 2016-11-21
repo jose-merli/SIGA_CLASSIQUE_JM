@@ -165,12 +165,8 @@
 	
 	
 
-	<fieldset name="fieldset1" id="fieldset1">
-	<legend>
-		<span  class="boxConsulta">
-			<siga:Idioma key="gratuita.busquedaResolucionesCAJG.literal.datos"/>
-		</span>
-	</legend>
+	<siga:ConjCampos leyenda="gratuita.busquedaResolucionesCAJG.literal.datos">
+	
 	
 	<table align="center" width="100%" border="0">
 		<tr>	
@@ -218,7 +214,7 @@
 		
 
 	</table>
-	</fieldset>
+	</siga:ConjCampos>
 	
 	</html:form>	
 	
