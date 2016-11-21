@@ -210,10 +210,13 @@
 		}
 %>
 	</siga:Table>	
-	<div style="position:absolute; left:400px;bottom:30px;z-index:99;">
+	
+	
+	
+	<div style="position:absolute; left:400px;bottom:0px;z-index:99;">
 				<table align="center" border="0">
 					<tr>
-						<td class="labelText">
+						<td class="botonesDetalle">
 							<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal"/>
 							
 							<%if (booVerHistorico) { %>
