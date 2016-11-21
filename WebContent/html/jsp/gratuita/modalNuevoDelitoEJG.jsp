@@ -66,7 +66,6 @@
 		</tr>
 	</table>
 	
-	<div id="camposRegistro" class="posicionModalPeque" align="center">
 	
 		<!-- Comienzo del formulario con los campos -->	
 		<html:form action="/JGR_DelitosEJG.do" method="post">
@@ -82,31 +81,30 @@
 			<table class="tablaCentralCamposPeque" align="center">
 
 				<!-- INICIO: CAMPOS DEL REGISTRO -->
-				<tr>			
-					<td>		
-						<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.delito">
-							<table class="tablaCampos" align="center">
-								<tr>
-									<td class="labelText" nowrap>
-										<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.delito"/>&nbsp;(*)
-									</td>
-									<td>
-<%
-										HashMap<String, String> hmDeligosparams = new HashMap<String, String>();
-										hmDeligosparams.put("numero", numero);
-										hmDeligosparams.put("anio", anio);
-										hmDeligosparams.put("idtipoejg", idTipoEJG);
-										hmDeligosparams.put("idinstitucion", idInstitucion);
-										String deligosparamsJSON = UtilidadesString.createJsonString(hmDeligosparams);
-%>
-										<siga:Select queryId="getDelitosEJG" id="idDelito" params="<%=deligosparamsJSON%>" required="true" width="520"/>
-									</td>
-								</tr>
-							</table>
-						</siga:ConjCampos>		
+				<tr>
+					<td width="20%"></td>
+					<td width="70%"></td>
+					<td width="10%"></td>
+				</tr>
+				<tr>
+					<td class="labelText" nowrap>
+						<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.delito"/>&nbsp;(*)
 					</td>
+					<td>
+<%
+						HashMap<String, String> hmDeligosparams = new HashMap<String, String>();
+						hmDeligosparams.put("numero", numero);
+						hmDeligosparams.put("anio", anio);
+						hmDeligosparams.put("idtipoejg", idTipoEJG);
+						hmDeligosparams.put("idinstitucion", idInstitucion);
+						String deligosparamsJSON = UtilidadesString.createJsonString(hmDeligosparams);
+%>
+						<siga:Select queryId="getDelitosEJG" id="idDelito" params="<%=deligosparamsJSON%>" required="true" width="300"/>
+					</td>
+					<td></td>
 				</tr>
 			</table>
+				
 		</html:form>			
 	
 		<siga:ConjBotonesAccion botones="Y,C" modal="P"/>
@@ -138,7 +136,6 @@
 		<!-- FIN: SCRIPTS BOTONES -->
 		<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	
-	</div>
 	<!-- FIN ******* CAPA DE PRESENTACION ****** -->
 	
 	<!-- INICIO: SUBMIT AREA -->

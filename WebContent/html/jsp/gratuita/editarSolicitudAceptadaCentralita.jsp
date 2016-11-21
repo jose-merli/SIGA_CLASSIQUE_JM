@@ -269,32 +269,19 @@
 	
 </script>
 </head>
-<c:choose> 
-	<c:when test="${fichaColegial=='0'}">
-		<siga:Titulo  titulo="${tituloLocalizacion}" localizacion="${localizacion}"/>
-		<table class="tablaTitulo" cellspacing="0" height="32">
-			<tr>
-				<td id="titulo" class="titulosPeq">
-					<siga:Idioma key="${titulo}"/>
-					
-				</td>
-			</tr>
-		</table>
-	</c:when>
-	<c:otherwise>
-		
-		<table class="tablaTitulo" cellspacing="0">
-			<tr>
-				<td class="titulitosDatos"><siga:Idioma
-						key="sjcs.solicitudaceptadacentralita.preasistencias" /> <c:out
-						value="${SolicitudAceptadaCentralitaForm.descripcionColegiado}"></c:out>
-					
-				</td>
-			</tr>
-		</table>
-	</c:otherwise>
-
-</c:choose>
+ 
+<c:if test="${fichaColegial=='1'}">
+	
+	<table class="tablaTitulo" cellspacing="0">
+		<tr>
+			<td class="titulitosDatos"><siga:Idioma
+					key="sjcs.solicitudaceptadacentralita.preasistencias" /> <c:out
+					value="${SolicitudAceptadaCentralitaForm.descripcionColegiado}"></c:out>
+				
+			</td>
+		</tr>
+	</table>
+</c:if>
 <body onload="inicio();">
 
 	<c:set var="parametrosComboComisaria" value="{\"idcomisaria\":\"-1\"}"/>
