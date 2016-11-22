@@ -65,11 +65,10 @@ public class CensoDocumentacionRegTelAction extends DocumentacionRegTelAction {
 					colegiadoAdm.updateDirect(colegiadoBean);
 				}
 			}
-		
 			
 			request.setAttribute("IDENTIFICADORDS", colegiadoBean.getIdentificadorDS());
-			
-			request.getSession().removeAttribute("MIGAS_DS");			
+			request.getSession().removeAttribute("MIGAS_DS");
+			request.setAttribute("ACTION","/CEN_Censo_DocumentacionRegTel.do?noReset=true");
 			
 			salto = "inicioDS";
 

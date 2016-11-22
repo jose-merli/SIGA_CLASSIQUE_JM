@@ -46,7 +46,7 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 							CenNoColegiadoBean.C_IDPERSONANOTARIO,	CenNoColegiadoBean.C_SOCIEDADSP,
 							CenNoColegiadoBean.C_SUFIJO_NUMREGSP,   CenNoColegiadoBean.C_CONTADOR_NUMREGSP,
 							CenNoColegiadoBean.C_PREFIJO_NUMREGSP,	CenNoColegiadoBean.C_NOPOLIZA,
-							CenNoColegiadoBean.C_COMPANIASEG};
+							CenNoColegiadoBean.C_IDENTIFICADORDS,	CenNoColegiadoBean.C_COMPANIASEG};
 		return campos;
 	}
 
@@ -93,6 +93,7 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 			bean.setContadorNumRegSP(UtilidadesHash.getInteger(hash, CenNoColegiadoBean.C_CONTADOR_NUMREGSP));
 			bean.setNoPoliza(UtilidadesHash.getString(hash, CenNoColegiadoBean.C_NOPOLIZA));
 			bean.setCompaniaSeg(UtilidadesHash.getString(hash, CenNoColegiadoBean.C_COMPANIASEG));
+			bean.setIdentificadorDS(UtilidadesHash.getString(hash, CenNoColegiadoBean.C_IDENTIFICADORDS));
 		}
 		catch(Exception e){
 			bean = null;
@@ -131,6 +132,7 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 					UtilidadesHash.set(hash, CenNoColegiadoBean.C_SUFIJO_NUMREGSP, b.getSufijoNumRegSP());
 					UtilidadesHash.set(hash, CenNoColegiadoBean.C_NOPOLIZA, b.getNoPoliza());
 					UtilidadesHash.set(hash, CenNoColegiadoBean.C_COMPANIASEG, b.getCompaniaSeg());
+					UtilidadesHash.set(hash, CenNoColegiadoBean.C_IDENTIFICADORDS, b.getIdentificadorDS());
 				}
 			}
 		}
@@ -419,5 +421,31 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al consultar datos en B.D.");
 		}
 	} //existeNoColegiado ()	
+
+	/**
+	 * @param personaBean
+	 * @return
+	 */
+	public String getIdentificadorColegiado(CenPersonaBean bean) {
+		if (bean == null)
+			return "";
+
+		String rc = null;
+		if (bean.getIdTipoIdentificacion() == ClsConstants.TIPO_IDENTIFICACION_NIF) {
+			rc = "NIF " + bean.getNIFCIF();
+		} else if (bean.getIdTipoIdentificacion() == ClsConstants.TIPO_IDENTIFICACION_CIF) {
+			rc = "CIF " + bean.getNIFCIF();
+		} else if (bean.getIdTipoIdentificacion() == ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE) {
+			rc = "NIE " + bean.getNIFCIF();
+		}
+
+		// RGG 13-03-2006 cambio para que nunca devuelva un blanco y produzca un filtro vacio en las busquedas.
+		if (rc == null)
+			return "-1";
+		if (rc.trim().equals(""))
+			return "-1";
+		
+		return rc;
+	}
 	
-}
+}		

@@ -199,12 +199,12 @@
 		} %>
 			</tr>
 		</table>
-					
+					<!-- columnNames="censo.regtel.literal.name,censo.regtel.literal.descripcion,censo.regtel.literal.fechaModificacion,censo.regtel.literal.tamanio,,," -->
 		<siga:Table 		   
 		   name="contenidoCollection"
 		   border="1"
-		   columnNames="censo.regtel.literal.descripcion,censo.regtel.literal.fechaModificacion,censo.regtel.literal.tamanio,"
-		   columnSizes="60,15,15">
+		   columnNames="censo.regtel.literal.name,Resumen,censo.regtel.literal.fechaModificacion,censo.regtel.literal.tamanio,"
+		   columnSizes="30,40,15,4">
 		   
 		   	<%
    				if (resultado != null && resultado.size() > 0) {
@@ -233,22 +233,22 @@
 		   		   		
 		   		   		
 		   		   	%>
-		   		<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' elementos="<%=elems%>" visibleBorrado="false" visibleEdicion="false" visibleConsulta="<%=visibleConsulta%>" pintarEspacio="no" botones="<%=botones%>" clase="listaNonEdit">
-					
-					
-					<td>
-					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=dsObj.getId()%>">
-					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_2" value="<%=dsObj.getTitle()%>">
-					<img src='<%=srcImage%>'/>&nbsp;<%=dsObj.getTitle()%></td>										
-					<td style="text-align: center;"><%=UtilidadesString.formatoFecha(dsObj.getFechaModificacion(), ClsConstants.DATE_FORMAT_MEDIUM_SPANISH)%>&nbsp;</td>
-					<td style="text-align: right;"><%=size%></td>
-				</siga:FilaConIconos>	
-							<% }
-		   				   } else { %>
-	 							<tr class="notFound">
-	   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-				</tr>
-						<% } %>
+				   		<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' elementos="<%=elems%>" visibleBorrado="false" visibleEdicion="false" visibleConsulta="<%=visibleConsulta%>" pintarEspacio="no" botones="<%=botones%>" clase="listaNonEdit">
+							<td>
+								<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=dsObj.getId()%>">
+								<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_2" value="<%=dsObj.getTitle()%>">
+								<img src='<%=srcImage%>' style="float:left;padding:3px;"/><span><%=dsObj.getTitle()%><br/><%=dsObj.getOriginalFilename()%></span>
+							</td>
+							<td><%=dsObj.getSummary()%></td>									
+							<td style="text-align: center;"><%=UtilidadesString.formatoFecha(dsObj.getFechaModificacion(), ClsConstants.DATE_FORMAT_MEDIUM_SPANISH)%>&nbsp;</td>
+							<td style="text-align: right;"><%=size%></td>
+						</siga:FilaConIconos>	
+				<% }
+		   		} else { %>
+			 			<tr class="notFound">
+			   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+						</tr>
+				<% } %>
 				
 			</siga:Table>
 			
