@@ -32,9 +32,55 @@ End;
 
 -- Entregado a version por AAG el 14/11 a las 11:25
 
+-- 124_004
+
 UPDATE GEN_PARAMETROS P SET P.VALOR = 0, P.FECHAMODIFICACION = SYSDATE, P.USUMODIFICACION = 0
 WHERE P.PARAMETRO = 'PCAJG_RESP_RESOL_FTP_ACTIVO' AND P.IDINSTITUCION IN (2026,2030,2041,2047,2048,2057,2059,2061,2072,2075,2079);
 
 modificadas vistas: V_PCAJG_EJG.sql, V_PCAJG_FAMILIARES.sql, V_PCAJG_MARCASEXPEDIENTES.sql
 
 -- Ejecutado en Integracion por AAG el 21/11 a las 13:18
+
+-- 124_005
+
+insert into gen_recursos values ('censo.regtel.literal.name', 'Nombre', 0, 1, sysdate, 0, 19);
+insert into gen_recursos values ('censo.regtel.literal.name', 'Nombre#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos values ('censo.regtel.literal.name', 'Nombre#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos values ('censo.regtel.literal.name', 'Nombre#GL', 0, 4, sysdate, 0, 19);
+ -- Add/modify columns 
+alter table CEN_NOCOLEGIADO add IDENTIFICADORDS VARCHAR2(20);
+
+INSERT INTO gen_procesos
+  (idproceso, idmodulo, traza, target, fechamodificacion, usumodificacion, descripcion, transaccion, idparent, nivel)
+VALUES
+  ('227', 'CEN', 1, 'Y', SYSDATE, 0, 'RegTel_NoColegiado', 'CEN_NoColegiado_DocumentacionRegTel', 500, 10);
+
+INSERT INTO gen_pestanas
+  (idproceso, idlenguaje, idrecurso, posicion, idgrupo, tipoacceso)
+VALUES
+  ('227', 1, 'pestana.auditoriaexp.RegTel', 18, 'FICHACLIEN', NULL);
+  
+INSERT INTO gen_parametros
+    (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
+  VALUES
+    ('GEN',
+     'PATH_DOCUSHARE_NOCOLEGIADO',
+     'SIN CONFIGURAR',
+     SYSDATE,
+     0,
+     0,
+     'administracion.parametro.path_docushare_censo');  
+     
+INSERT INTO gen_parametros
+    (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
+  VALUES
+    ('GEN',
+     'ID_DOCUSHARE_NOCOLEGIADO',
+     'SIN CONFIGURAR',
+     SYSDATE,
+     0,
+     0,
+     'administracion.parametro.id_docushare_censo');
+
+-- Ejecutado en Integracion por AAG el 23/11 a las 13:05
+
