@@ -821,7 +821,7 @@
 											}
 										}
 									);
-									jQuery(".ui-widget-overlay").css("opacity","0");													
+									jQuery(".ui-widget-overlay").css("opacity","0.5");													
 						}
 					});		
 		}
@@ -864,8 +864,9 @@
 		}
 		
 		function mantenimientoDuplicados(nifcif) {
-			document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true";
-			document.MantenimientoDuplicadosForm.modo.value = "mantenimientoDuplicadosCertificados";
+				
+			document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
+			document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
 			document.MantenimientoDuplicadosForm.nifcif.value=nifcif;
 			document.MantenimientoDuplicadosForm.submit();
 		
@@ -879,7 +880,7 @@
 	<% } else { %>
 		<siga:TituloExt titulo="censo.fichaCliente.datosGenerales.cabecera" localizacion="censo.fichaCliente.datosGenerales.localizacion"/>
 	<% } %>	
-	<!-- FIN: TITULO Y LOCALIZACION -->
+	<!-- FIN: TITULO Y LOCALIZACION --> 
 </head>
 
 

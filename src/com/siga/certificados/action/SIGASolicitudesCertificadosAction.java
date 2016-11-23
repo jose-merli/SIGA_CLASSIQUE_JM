@@ -3650,7 +3650,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			
 			Vector personasSimilares = helper.getPersonasSimilares(miFormulario);
 			Hashtable registro;
-			if(personasSimilares != null && personasSimilares.size() >0){
+			if(personasSimilares != null && personasSimilares.size() >1){   //Mayor que uno para que no se cuente a él mismo.
 				composicionTabla += "<tr><td WIDTH='18%' align='center'><strong>Nº de colegiado</strong></td><td WIDTH='18%' align='center'><strong>Nif</strong></td>"+
 						"<td WIDTH='18%' align='center'><strong>Nombre</strong></td><td WIDTH='18%' align='center'><strong>Apellido1</strong></td><td WIDTH='18%' align='center'><strong>Apellido2</td><strong></td>"+
 						"<td WIDTH='18%'>&nbsp;</td>";

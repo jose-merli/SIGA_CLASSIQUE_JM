@@ -268,7 +268,7 @@
 												}
 											}
 										);
-										jQuery(".ui-widget-overlay").css("opacity","0");													
+										jQuery(".ui-widget-overlay").css("opacity","0.5");													
 							}
 						});		
 			}
@@ -310,13 +310,13 @@
 			   	document.forms[3].submit();		   	
 			}
 			
-			function mantenimientoDuplicados(nifcif) {
-				document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true";
-				document.MantenimientoDuplicadosForm.modo.value = "mantenimientoDuplicadosCertificados";
-				document.MantenimientoDuplicadosForm.nifcif.value=nifcif;
-				document.MantenimientoDuplicadosForm.submit();
-			
-			}
+		function mantenimientoDuplicados(nifcif) {
+			document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
+			document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
+			document.MantenimientoDuplicadosForm.nifcif.value=nifcif;
+			document.MantenimientoDuplicadosForm.submit();
+		
+		}
 		</script>
 	</head>
 
@@ -520,11 +520,6 @@
 			<html:hidden styleId="tablaDatosDinamicosD" property="tablaDatosDinamicosD" value="ver"/>
 		</html:form>
 		
-		<!-- Formulario para el mantenimiento de duplicados -->
-		<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
-			<html:hidden property="modo" value="buscarPor"/>
-			<html:hidden property="nifcif" value=""/>
-		</html:form>	
 	
 		<!-- FIN para buscar las sanciones -->	
 		<!-- FIN para buscar las colegiaciones -->

@@ -108,6 +108,11 @@
 		<html:hidden property = "idInstOrigen" value = ""/>
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property = "listaDirecciones" value=""/>
+		<html:hidden property = "tablaDatosDinamicosD" value=""/>
+		<html:hidden property = "filaSelD" value=""/>
+		<input type="hidden" id="verFichaLetrado"  name="verFichaLetrado" value="">
+		<input type="hidden" id="volver"  name="volver" value="MD">
+		
 	
 		<table class="tablaTitulo" align="center" width="100%">
 			<tr>
@@ -754,36 +759,28 @@
 			
 		</script>	
 	</html:form>
-	<!-- Formulario para la búsqueda de clientes -->
-	<html:form action="/CEN_BusquedaClientes.do" method="POST" target="mainWorkArea">
-		<html:hidden styleId="modo" property="modo" />
-		<html:hidden styleId="tablaDatosDinamicosD" property="tablaDatosDinamicosD" value="ver"/>
-		<html:hidden styleId="filaSelD" property="filaSelD"/>
-	</html:form>
 	
 	<script language="JavaScript">
 	
 	function informacionLetrado(idPersona,idIntitucion) {
-		
-		
-	
 	    var idInst = idIntitucion;			          		
 	    var idPers = idPersona;		    
 	    var idLetrado =idLetrado;			    
 		
-	    document.forms[1].filaSelD.value = 1;
+	    document.forms[0].filaSelD.value = 1;
 		
 		 
 		if(idIntitucion != null && idIntitucion !=""){
-			document.forms[1].tablaDatosDinamicosD.value=idPers + ',' + idInst + '%';	
-			document.forms[1].modo.value="editar";
+			document.forms[0].tablaDatosDinamicosD.value=idPers + ',' + idInst + '%';
+			document.forms[0].verFichaLetrado.value=1;
+			document.forms[0].modo.value="editar";
 		}else{
 			//Es no colegiado y el idIntitucion será de donde estés logeado.
-			document.forms[1].tablaDatosDinamicosD.value=idPers + ',' + <%=idInstitucionLocation%> + '%';	
-			document.forms[1].modo.value="ver";
+			document.forms[0].tablaDatosDinamicosD.value=idPers + ',' + <%=idInstitucionLocation%> + '%';	
+			document.forms[0].modo.value="ver";
 		}
 		
-	   	document.forms[1].submit();		   	
+	   	document.forms[0].submit();		   	
 	}
 	</script>	
 	

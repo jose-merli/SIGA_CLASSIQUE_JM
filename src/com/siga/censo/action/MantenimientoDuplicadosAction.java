@@ -103,7 +103,6 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			miForm = (MasterForm) formulario;
 			if (miForm != null) {
 				String accion = miForm.getModo();
-				miForm.setModo("");
 				
 				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("inicio") || accion.equalsIgnoreCase("mantenimientoDuplicadosCertificados") ){
 					//aalg: en el acceso inicial a la página de duplicados tienen que estar chequeados todos
@@ -502,7 +501,6 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		String personaOrigen = miForm.getIdPersonaOrigen();
 		String institucion = miForm.getIdInstOrigen();
 		String msgError = "";
-		String msgSalida = "Se han copiado correctamente los datos de la persona";
 		Hashtable hashDireccionOriginal, hashDireccionDestino;
 		int colegiacionesCopiadas = 0;
 		String resul[];
@@ -567,13 +565,20 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			if (! resultadoEjecucionPLs[0].equals("0")) {
 				msgError= "Error en la fusión de las personas: ";
 				msgError += resultadoEjecucionPLs[1];
+				throw new Exception(msgError);
 			}
 
 			tx.commit();
+			
+			CenPersonaBean beanP = admPersona.getPersonaPorId(personaDestino);
+			String msgSalida = "Fusión completada: se encuentran todos los datos de "+beanP.getNombreCompleto()+" en el registro con número de identificación "+beanP.getNIFCIF();
+			request.setAttribute("mensaje", msgSalida);
+			
 		} catch (Exception e) {
 			throwExcp(msgError, new String[] { "modulo.censo" }, e, tx);
 		}
-		return exitoModal(msgSalida, request);
+		
+		return "exitoFusionar";
 	}
 	
 	/**
@@ -961,8 +966,12 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			datosCliente.put("tipo",tipo);
 	
 			request.setAttribute("datosCliente", datosCliente);		
+			if(request.getParameter("volver") != null && "MD".equalsIgnoreCase(request.getParameter("volver"))){
+				request.getSession ().setAttribute ("CenBusquedaClientesTipo", "MD");  
+			}else{
+				request.getSession ().setAttribute ("CenBusquedaClientesTipo", "DUPLICADOS");  
+			}
 			
-			request.getSession ().setAttribute ("CenBusquedaClientesTipo", "DUPLICADOS");  
 			 
 		}
 		catch (Exception e) {
