@@ -85,12 +85,6 @@
 		function buscar(){
 			sub();
 			if(comprobarFiltros()){
-			 //Habilitamos los campos para que el valor se envíe al action
-				jQuery ("#nifcif").removeAttr("disabled");
-				jQuery ("#numeroColegiadoText").removeAttr("disabled");
-				jQuery ("#nombreText").removeAttr("disabled");
-				jQuery ("#apellido1Text").removeAttr("disabled");
-				jQuery ("#listadoInstitucion").removeAttr("disabled");
 				document.MantenimientoDuplicadosForm.modo.value = "buscar";
 				document.MantenimientoDuplicadosForm.target="resultado";
 			 	document.MantenimientoDuplicadosForm.submit();
@@ -143,7 +137,6 @@
 		}
 		
 		function inicio(){
-			
 			<% if (request.getParameter("buscar")!=null && request.getParameter("buscar").equals("true")) {%>
 				document.forms[0].modo.value="buscarPor";
 				document.forms[0].target="resultado";	
@@ -152,59 +145,25 @@
 			
 		}
 		function presionarNif(){
+			jQuery("#numeroColegiadoText").val("");
+			jQuery("#nombreText").val("");
+			jQuery("#apellido1Text").val("");
+			jQuery('#listadoInstitucion option[value=""]').attr("selected","selected");
 			
-			if(document.MantenimientoDuplicadosForm.nifcif.value.length >0 ){
-				//Deshabilitamso los demás elementos del filtro	
-				jQuery("#numeroColegiadoText").attr("disabled","disabled");
-				jQuery("#nombreText").attr("disabled","disabled");
-				jQuery("#apellido1Text").attr("disabled","disabled");
-				jQuery("#listadoInstitucion").attr("disabled","disabled");
-				
-			}else{
-				//Habilitamos los demás elementos del filtro
-				if(document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length ==0 && document.MantenimientoDuplicadosForm.listadoInstitucion.value == "" && (document.MantenimientoDuplicadosForm.nombreText.value.length ==0
-						&& document.MantenimientoDuplicadosForm.apellido1Text.value.length ==0)){
-					jQuery ("#numeroColegiadoText").removeAttr("disabled");
-					jQuery ("#nombreText").removeAttr("disabled");
-					jQuery ("#apellido1Text").removeAttr("disabled");
-					jQuery ("#listadoInstitucion").removeAttr("disabled");
-				}
-			}
 		}
 		
 		function presionarNumeroColegiado(){
-			if(document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length >0 || document.MantenimientoDuplicadosForm.listadoInstitucion.value != ""){
-				jQuery("#nifcif").attr("disabled","disabled");
-				jQuery("#nombreText").attr("disabled","disabled");
-				jQuery("#apellido1Text").attr("disabled","disabled");
-				jQuery ("#listadoInstitucion").removeAttr("disabled");
-			}else{
-				if(document.MantenimientoDuplicadosForm.nifcif.value.length ==0 && (document.MantenimientoDuplicadosForm.nombreText.value.length ==0
-						&& document.MantenimientoDuplicadosForm.apellido1Text.value.length ==0)){
-				jQuery ("#nifcif").removeAttr("disabled");
-				jQuery ("#nombreText").removeAttr("disabled");
-				jQuery ("#apellido1Text").removeAttr("disabled");
-			}
-		 }
+			jQuery("#nifcif").val("");
+			jQuery("#nombreText").val("");
+			jQuery("#apellido1Text").val("");
+			
 		}
 		
 		function presionarNombreApellidos(){
+			jQuery("#nifcif").val("");
+			jQuery("#numeroColegiadoText").val("");
+			jQuery('#listadoInstitucion option[value=""]').attr("selected","selected");
 			
-			if(document.MantenimientoDuplicadosForm.nombreText.value.length >0 ||
-					document.MantenimientoDuplicadosForm.apellido1Text.value.length >0){
-					
-				jQuery("#nifcif").attr("disabled","disabled");
-				jQuery("#numeroColegiadoText").attr("disabled","disabled");
-				jQuery("#listadoInstitucion").attr("disabled","disabled");
-			}else{
-				if(document.MantenimientoDuplicadosForm.nifcif.value.length ==0 && document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length ==0 && document.MantenimientoDuplicadosForm.listadoInstitucion.value == "" ){
-						
-					jQuery ("#nifcif").removeAttr("disabled");
-					jQuery ("#numeroColegiadoText").removeAttr("disabled");
-					jQuery ("#numeroColegiadoText").removeAttr("disabled");
-					jQuery ("#listadoInstitucion").removeAttr("disabled");
-				}
-			}
 		}
 		
 		function recargarCamposHabilitados (){
@@ -214,39 +173,42 @@
 					document.MantenimientoDuplicadosForm.nombreText.value.length ==0 &&
 					document.MantenimientoDuplicadosForm.apellido1Text.value.length ==0){
 				
-					jQuery ("#nifcif").removeAttr("disabled");
-					jQuery ("#numeroColegiadoText").removeAttr("disabled");
-					jQuery ("#nombreText").removeAttr("disabled");
-					jQuery ("#apellido1Text").removeAttr("disabled");
-					jQuery ("#listadoInstitucion").removeAttr("disabled");
+					jQuery ("#nifcif").val("");
+					jQuery ("#numeroColegiadoText").val("");
+					jQuery ("#nombreText").val("");
+					jQuery ("#apellido1Text").val("");
+					jQuery('#listadoInstitucion option[value=""]').attr("selected","selected")
 					
 			}else{
 				if(document.MantenimientoDuplicadosForm.nifcif.value.length >0 ){
 					//Deshabilitamso los demás elementos del filtro	
 					document.getElementById('nifcif').focus();
-					jQuery("#numeroColegiadoText").attr("disabled","disabled");
-					jQuery("#nombreText").attr("disabled","disabled");
-					jQuery("#apellido1Text").attr("disabled","disabled");
-					jQuery("#listadoInstitucion").attr("disabled","disabled");
+					
+					jQuery("#numeroColegiadoText").val("");
+					jQuery("#nombreText").val("");
+					jQuery("#apellido1Text").val("");
+					jQuery('#listadoInstitucion option[value=""]').attr("selected","selected");
+					
+					
 				}
 				if(document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length >0 || document.MantenimientoDuplicadosForm.listadoInstitucion.value != ""){
-					
 					document.getElementById('numeroColegiadoText').focus();
-					jQuery("#nifcif").attr("disabled","disabled");
-					jQuery("#nombreText").attr("disabled","disabled");
-					jQuery("#apellido1Text").attr("disabled","disabled");
-					jQuery ("#listadoInstitucion").removeAttr("disabled");
+					
+					jQuery("#nifcif").val();
+					jQuery("#nombreText").val();
+					jQuery("#apellido1Text").val();
 				}
 				if(document.MantenimientoDuplicadosForm.nombreText.value.length >0 ||
 						document.MantenimientoDuplicadosForm.apellido1Text.value.length >0){
-				
-					jQuery("#nifcif").attr("disabled","disabled");
-					jQuery("#numeroColegiadoText").attr("disabled","disabled");
-					jQuery("#listadoInstitucion").attr("disabled","disabled");
+					
+					jQuery("#nifcif").val();
+					jQuery("#numeroColegiadoText").val();
+					jQuery('#listadoInstitucion option[value=""]').attr("selected","selected");
 					document.getElementById('nombreText').focus();
 				}
 				
 			}
+			
 		}
 		</script>
 		<siga:Titulo 
@@ -269,11 +231,11 @@
 			<tr><td colspan="3" class="labelText"> Elija uno de los tres patrones siguientes para empezar a buscar duplicados: </td></tr>
 			<tr>
 				<td class="labelText" width="100px"> <siga:Idioma key="censo.busquedaDuplicados.patron.nif"/> </td>
-				<td> <html:text styleId="nifcif" name="MantenimientoDuplicadosForm" property="nifcif" size="15" styleClass="box" onblur="presionarNif()"   ></html:text> </td>
+				<td> <html:text styleId="nifcif" name="MantenimientoDuplicadosForm" property="nifcif" size="15" styleClass="box" onkeyup="presionarNif()"   ></html:text> </td>
 				
 				<td class="labelText" width="100px"> <siga:Idioma key="censo.busquedaDuplicados.patron.institucion"/> </td>
 				<td>
-					<html:select styleId="listadoInstitucion" property="idInstitucion" styleClass="boxCombo" onblur="presionarNumeroColegiado()">
+					<html:select styleId="listadoInstitucion" property="idInstitucion" styleClass="boxCombo" onchange="presionarNumeroColegiado()">
 							<html:option value="">&nbsp;</html:option>
 							<c:forEach items="${listadoInstituciones}" var="inst">
 								<html:option value="${inst.idInstitucion}">${inst.abreviatura}</html:option>
@@ -281,15 +243,15 @@
 					</html:select>
 				</td>		
 				<td class="labelText"><siga:Idioma key="censo.busquedaDuplicados.patron.nombre"/></td>				
-				<td><html:text styleId="nombreText" name="MantenimientoDuplicadosForm" property="nombre" size="25" styleClass="box" onblur="presionarNombreApellidos()" ></html:text></td>
+				<td><html:text styleId="nombreText" name="MantenimientoDuplicadosForm" property="nombre" size="25" styleClass="box" onkeyup="presionarNombreApellidos()" ></html:text></td>
 			</tr>
 			<tr>
 				<td class="labelText" width="100px">  </td>
 				<td>  </td>
 				<td class="labelText" width="100px"> <siga:Idioma key="censo.busquedaDuplicados.patron.numeroColegiado"/> </td>
-				<td> <html:text styleId="numeroColegiadoText" name="MantenimientoDuplicadosForm" property="numeroColegiado" size="20" styleClass="box" onblur="presionarNumeroColegiado()"></html:text> </td>
+				<td> <html:text styleId="numeroColegiadoText" name="MantenimientoDuplicadosForm" property="numeroColegiado" size="20" styleClass="box" onkeyup="presionarNumeroColegiado()"></html:text> </td>
 				<td class="labelText"><siga:Idioma key="censo.busquedaDuplicados.patron.apellido1"/></td>
-				<td><html:text styleId="apellido1Text" name="MantenimientoDuplicadosForm" property="apellido1" size="35" styleClass="box" onblur="presionarNombreApellidos()" ></html:text></td>
+				<td><html:text styleId="apellido1Text" name="MantenimientoDuplicadosForm" property="apellido1" size="35" styleClass="box" onkeyup="presionarNombreApellidos()" ></html:text></td>
 			</tr>
 		</table>
 		</siga:ConjCampos>

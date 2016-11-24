@@ -268,11 +268,12 @@
 				parent.document.MantenimientoDuplicadosForm.nombreText.value.length ==0 &&
 				parent.document.MantenimientoDuplicadosForm.apellido1Text.value.length ==0){
 			
-				jQuery("#nifcif",parent.document).removeAttr("disabled");
-				jQuery("#numeroColegiadoText",parent.document).removeAttr("disabled");
-				jQuery("#nombreText",parent.document).removeAttr("disabled");
-				jQuery("#apellido1Text",parent.document).removeAttr("disabled");
-				jQuery("#listadoInstitucion",parent.document).removeAttr("disabled");
+			
+				jQuery("#nifcif",parent.document).val("");
+				jQuery("#numeroColegiadoText",parent.document).val("");
+				jQuery("#nombreText",parent.document).val("");
+				jQuery("#apellido1Text",parent.document).val("");
+				jQuery('#listadoInstitucion option[value=""]',parent.document).attr("selected","selected");
 			
 				
 		}else{
@@ -280,28 +281,27 @@
 				//Deshabilitamso los demás elementos del filtro	
 				parent.document.getElementById('nifcif').focus();
 				
-				
-				jQuery("#numeroColegiadoText",parent.document).attr("disabled","disabled");
-				jQuery("#nombreText",parent.document).attr("disabled","disabled");
-				jQuery("#apellido1Text",parent.document).attr("disabled","disabled");
-				jQuery("#listadoInstitucion",parent.document).attr("disabled","disabled");
+				jQuery("#numeroColegiadoText",parent.document).val("");
+				jQuery("#nombreText",parent.document).val("");
+				jQuery("#apellido1Text",parent.document).val("");
+				jQuery('#listadoInstitucion option[value=""]',parent.document).attr("selected","selected");
 			}
 			if(parent.document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length >0 || parent.document.MantenimientoDuplicadosForm.listadoInstitucion.value != ""){
-				
 				parent.document.getElementById('numeroColegiadoText').focus();
 				
-				jQuery("#nifcif",parent.document).attr("disabled","disabled");
-				jQuery("#nombreText",parent.document).attr("disabled","disabled");
-				jQuery("#apellido1Text",parent.document).attr("disabled","disabled");
-				jQuery("#listadoInstitucion",parent.document).removeAttr("disabled");
+				jQuery("#nifcif",parent.document).val("");
+				jQuery("#nombreText",parent.document).val("");
+				jQuery("#apellido1Text",parent.document).val("");
+	
 			}
 			if(parent.document.MantenimientoDuplicadosForm.nombreText.value.length >0 ||
 					parent.document.MantenimientoDuplicadosForm.apellido1Text.value.length >0){
 			
-				jQuery("#nifcif",parent.document).attr("disabled","disabled");
-				jQuery("#numeroColegiadoText",parent.document).attr("disabled","disabled");
+				
+				
+				jQuery("#nifcif",parent.document).val("");
+				jQuery("#numeroColegiadoText",parent.document).val("");
 				jQuery("#listadoInstitucion",parent.document).attr("disabled","disabled");
-		
 				parent.document.getElementById('nombreText').focus();
 			}
 			
