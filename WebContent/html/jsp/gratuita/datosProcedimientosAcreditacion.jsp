@@ -135,65 +135,68 @@
 		<html:hidden property = "idAcreditacion" value = ""/>
 		<html:hidden property = "porcentaje" value = ""/>
 		<html:hidden property = "nigNumProcedimiento" value = ""/>
-		<fieldset>
-		<table  class="tablaCentralCamposPeque" align="center">			
-			<tr>				
-				<td>
-					<table class="tablaCampos" align="center">	
-						<tr>
-							<td class="labelText"><siga:Idioma key="gratuita.procedimientos.acreditacion.literal.acreditacion"/>&nbsp;(*)</td>
-							<td>
-							
+		
+		<table class="tablaCampos" align="center">	
+			<tr>
+				<td width="25%"></td>
+				<td width="65%"></td>
+				<td width="10%"></td>
+			</tr>
+			<tr>
+				<td class="labelText"><siga:Idioma key="gratuita.procedimientos.acreditacion.literal.acreditacion"/>&nbsp;(*)</td>
+				<td class="labelTextValor">
+				
 <%										if (modo.equalsIgnoreCase("editar")) {
-												if (bean != null) {
-													ArrayList seleccion = new ArrayList ();
-													seleccion.add (String.valueOf(bean.getIdAcreditacion()));
-													String [] parametroCombo = {String.valueOf(bean.getIdInstitucion()), 
-																				String.valueOf(bean.getIdProcedimiento()), 
-																				String.valueOf(bean.getIdAcreditacion())};	%>
-													<siga:ComboBD nombre="acreditacion" tipo="acreditacionSCJS_2" clase="boxConsulta" elementoSel="<%=seleccion%>" parametro="<%=parametroCombo%>" readonly="true"/>
-									<%			}
-										} else { 
-												String [] parametroCombo = {String.valueOf(idInstitucion), idProcedimiento};	%>												
-												<siga:ComboBD nombre="acreditacion" tipo="acreditacionSCJS_1" clase="boxCombo" obligatorio="true" parametro="<%=parametroCombo%>"/>
-									<% } %>
-							</td>
-						</tr>
-						<tr>
-							<td class="labelText"><siga:Idioma key="gratuita.procedimientos.acreditacion.literal.porcentaje"/></td>
-							<td>
-<%										Integer porcentajeValor = new Integer(0);
-											if (modo.equalsIgnoreCase("editar")) {
-												if (bean != null){
-													porcentajeValor = bean.getPorcentaje();
-												}
-											}
-%>
-							<input type="text" name="porcentajeTexto" size="10" maxlength="3" value="<%=porcentajeValor.intValue()%>" class="box"> <font class="labelText">%</font></td>
-						</tr>
-						<tr>
-							<td class="labelText"><siga:Idioma key="gratuita.procedimientos.acreditacion.literal.nigNumeroProcedimiento"/></td>
-							<td>
-								<%		Integer checkValor = new Integer(0);
-											if (modo.equalsIgnoreCase("editar")) {
-												if (bean != null){
-													checkValor = bean.getNigNumeroProcedimiento();
-													if(checkValor == 1){ %>
-														<input type="checkbox" id ="nigNumeroProcedimientoCheck" name="nigNumeroProcedimientoCkeck" checked="checked" />
-												<% 	}else{ %>
-														<input type="checkbox" id ="nigNumeroProcedimientoCheck" name="nigNumeroProcedimientoCkeck" />
-												<% 	}
-												}
-											}else{%>
-												<input type="checkbox" id ="nigNumeroProcedimientoCheck" name="nigNumeroProcedimientoCkeck" />
-											<%} %>
-							</td>
-						</tr>
-					</table>
+									if (bean != null) {
+										ArrayList seleccion = new ArrayList ();
+										seleccion.add (String.valueOf(bean.getIdAcreditacion()));
+										String [] parametroCombo = {String.valueOf(bean.getIdInstitucion()), 
+																	String.valueOf(bean.getIdProcedimiento()), 
+																	String.valueOf(bean.getIdAcreditacion())};	%>
+										<siga:ComboBD nombre="acreditacion" tipo="acreditacionSCJS_2" clase="boxConsulta" elementoSel="<%=seleccion%>" parametro="<%=parametroCombo%>" readonly="true"/>
+						<%			}
+							} else { 
+									String [] parametroCombo = {String.valueOf(idInstitucion), idProcedimiento};	%>												
+									<siga:ComboBD nombre="acreditacion" tipo="acreditacionSCJS_1" clase="boxCombo" obligatorio="true" parametro="<%=parametroCombo%>"/>
+						<% } %>
 				</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td class="labelText"><siga:Idioma key="gratuita.procedimientos.acreditacion.literal.porcentaje"/></td>
+				<td class="labelTextValor">
+<%										Integer porcentajeValor = new Integer(0);
+								if (modo.equalsIgnoreCase("editar")) {
+									if (bean != null){
+										porcentajeValor = bean.getPorcentaje();
+									}
+								}
+%>
+				<input type="text" name="porcentajeTexto" size="10" maxlength="3" value="<%=porcentajeValor.intValue()%>" class="box"> <font class="labelText">%</font></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td class="labelText" nowrap><siga:Idioma key="gratuita.procedimientos.acreditacion.literal.nigNumeroProcedimiento"/></td>
+				<td class="labelText">
+					<%		Integer checkValor = new Integer(0);
+								if (modo.equalsIgnoreCase("editar")) {
+									if (bean != null){
+										checkValor = bean.getNigNumeroProcedimiento();
+										if(checkValor == 1){ %>
+											<input type="checkbox" id ="nigNumeroProcedimientoCheck" name="nigNumeroProcedimientoCkeck" checked="checked" />
+									<% 	}else{ %>
+											<input type="checkbox" id ="nigNumeroProcedimientoCheck" name="nigNumeroProcedimientoCkeck" />
+									<% 	}
+									}
+								}else{%>
+									<input type="checkbox" id ="nigNumeroProcedimientoCheck" name="nigNumeroProcedimientoCkeck" />
+								<%} %>
+				</td>
+				<td></td>
+				<td></td>
 			</tr>
 		</table>
-		</fieldset>
+	
 	</html:form>
 	<!-- FIN: CAMPOS -->
 

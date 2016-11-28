@@ -357,25 +357,25 @@
 			 	<bean:define id="ejgs" name="MaestroDesignasForm"	property="ejgs" type="java.util.Collection"/>
 	   	<c:choose>
 		<c:when test="${empty ejgs}">
-		<table class="tablaCampos" align="center" cellpadding="0"
-					cellpadding="0" width="100%" border="0">
-
-			<tr>
-				<td colspan="13" class="titulitos" style="text-align: center"><siga:Idioma
-					key="messages.noRecordFound" /></td>
-			</tr>
-		</table>	
+			<table class="tablaCampos" align="center" cellpadding="0"
+						cellpadding="0" width="100%" border="0">
+	
+				<tr>
+					<td colspan="13" class="titulitos" style="text-align: center"><siga:Idioma
+						key="messages.noRecordFound" /></td>
+				</tr>
+			</table>	
 		</c:when>
 		
 		<c:otherwise>
-				<div style=" position:relative; left:0px; width=100%; height=30px; top:0px; " id="divid">
+				<div style="position:relative; left:0px; width:100%; height:30px; top:0px; " id="divid">
 					<logic:notEmpty name="MaestroDesignasForm" property="ejgs">
-					<table  class="tablaLineaPestanasArriba"  border="0" cellspacing="0" cellpadding="0">
+					<table  class="tablaLineaPestanasArriba"  >
 						<tr>
 						<td></td>
 						</tr>
 						</table>
-						<table id="tabs" class="pest" border="0" cellspacing="0" cellpadding="0" style="width:100%;">
+						<table id="tabs" class="pest" style="width:100%;border-bottom: 2px;border-bottom-color: black;">
 							<tr>
 								<logic:iterate name="MaestroDesignasForm" property="ejgs" id="ejg1" indexId="index">
 									
@@ -390,11 +390,9 @@
 								</td>
 							</tr>
 						</table>
-						<table  class="tablaLineaPestanas"  border="0" cellspacing="0" cellpadding="0">
-							<tr>
-							<td></td>
-							</tr>
-						</table>
+						
+						
+						
 					</logic:notEmpty>
 					</div>
 						
@@ -410,9 +408,6 @@
 					%>
 						<logic:iterate name="MaestroDesignasForm" property="ejgs" id="ejg2" indexId="index2">
 							<div id="panel_${index2}"  style="height:400;display: inline;overflow-x: hidden;">
-							
-								
-								
 							
 								<table class="tablaCampos" align="center" cellpadding="0"
 									cellpadding="0" width="100%" border="0" style="height:500;">

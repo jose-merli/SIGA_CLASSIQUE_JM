@@ -304,9 +304,9 @@
 		
 	</head>
 	
-	<body class="detallePestanas" onLoad="faviso();inicioPestana();">
+	<body onLoad="faviso();inicioPestana();">
 	
-	<div id="camposRegistro">
+	<div id="camposRegistro" >
 		<html:form  action="/EXP_TiposExpedientes_Campos.do" method="POST" target="submitArea">
 			<html:hidden property = "modo" value = "modificar"/>
 			<html:hidden property = "hiddenFrame" value = "1"/>
@@ -341,7 +341,7 @@
 				</tr>
 			</table>
 						
-			<table class="tablaCampos" align="center" cellspacing="10">
+			<table class="tablaCampos" align="center" cellspacing="0">
 				<tr>
 					<td width="50%" valign="top">
 					

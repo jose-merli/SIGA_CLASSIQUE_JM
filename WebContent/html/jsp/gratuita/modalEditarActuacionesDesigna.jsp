@@ -978,7 +978,10 @@
 				</table>
 		</siga:ConjCampos>
 		
+		
+		
 		<c:if test="${not empty ActuacionesDesignasForm.ejgs}">
+		
 		<%
 			ActuacionesDesignasForm form = (ActuacionesDesignasForm) request.getSession().getAttribute("ActuacionesDesignasForm");
 					int i = 0;
@@ -986,131 +989,150 @@
 						List<ScsEJGBean> listadoEjgs = form.getEjgs();
 		%>
 				<siga:ConjCampos leyenda="gratuita.operarEJG.literal.expedienteEJG" >
-					<div id="panel" style="width:100%;  height: 150px; ">
-						<ul id="tabs" style="width:100%;">
-							<logic:iterate name="ActuacionesDesignasForm" property="ejgs" id="ejg1" indexId="index">
-						    	<li id="tab_${index}"><a href="#"  onclick="tab('tab_${index}','panel_${index}');"><c:out
-								value="${ejg1.anio}" />/<c:out
-								value="${ejg1.numEJG}" /></a></li>
-							</logic:iterate>
-						   
-					    </ul>
-						<div id="paneles" style="height: 70%;">
-						<logic:iterate name="ActuacionesDesignasForm" property="ejgs" id="ejg2" indexId="index2">
-							<div id="panel_${index2}">
-									<table class="tablaCampos" align="center" cellpadding="0"
-										cellpadding="0" style="width:100%;" border="0">
-									<tr>
-										<td class="labelText" style="width:200px;">
-											<siga:Idioma key="gratuita.operarRatificacion.literal.tipoRatificacion"/>
-										</td>	
-					 
-										<td class="labelTextValue">
-										<c:choose>
-										<c:when test="${ejg2.idTipoRatificacionEJG != null && ejg2.idTipoRatificacionEJG !=''}">
-									<%
-										ArrayList selTipoRatificacion = new ArrayList();
-																	ScsEJGBean ejg = (ScsEJGBean) listadoEjgs.get(i++);
-																	selTipoRatificacion.add(ejg.getIdTipoRatificacionEJG() + "," + usr.getLocation());
-									%>	
-													<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucionTodos" ancho="300" clase="boxConsulta" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=selTipoRatificacion%>" readonly="true"/>				
-											</c:when>
-											<c:otherwise>
-												-
-												<%
-												i++;
-											%>
-											</c:otherwise>
-										</c:choose>
-										</td>
-										<td class="labelText" style="width:200px;">
-											<siga:Idioma key="gratuita.operarRatificacion.literal.fechaResolucionCAJG"/>
-										</td>	
-											
-										<td class="labelTextValue">
-										<c:choose>
-											<c:when test="${ejg2.fechaResolucionCAJG != null && ejg2.fechaResolucionCAJG!=''}">
-												<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="${ejg2.fechaResolucionCAJG}" disabled="true" readOnly="true"></siga:Fecha>	
-											</c:when>
-											<c:otherwise>
-												-
-											</c:otherwise>
-										</c:choose>
-										</td>
-									</tr>
-									
-									<tr>
-										<td class="labelText" style="width:200px;">
-											<siga:Idioma key="gratuita.operarRatificacion.literal.fechaNotificacion"/>
-										</td>
-											
-										<td class="labelTextValue">
-										<c:choose>
-											<c:when test="${ejg2.fechaNotificacion != null && ejg2.fechaNotificacion!=''}">
-												<siga:Fecha nombreCampo="fechaNotificacion" valorInicial="${ejg2.fechaNotificacion}" disabled="true" readOnly="true"></siga:Fecha>	
-											</c:when>
-											<c:otherwise>
-												-
-											</c:otherwise>
-										</c:choose>
-										</td>	
+				<div id="panelEJGs" style="display: inline;overflow-x: hidden;">
+					<div style="position:relative; left:0px; width:100%; height:30px; top:0px; " id="divid">
+					<logic:notEmpty name="ActuacionesDesignasForm" property="ejgs">
+						<table  class="tablaLineaPestanasArriba"  >
+							<tr>
+							<td></td>
+							</tr>
+							</table>
+							<table id="tabs" class="pest" style="width:100%;border-bottom: 2px;border-bottom-color: black;">
+								<tr>
+									<logic:iterate name="ActuacionesDesignasForm" property="ejgs" id="ejg1" indexId="index">
 										
-										<td class="labelText" style="width:160px;" >
-											<siga:Idioma key="gratuita.operarRatificacion.literal.fechaRatificacion"/>
-										</td>
-											
-										<td class="labelTextValue">
-										<c:choose>
-											<c:when test="${ejg2.fechaRatificacion != null && ejg2.fechaRatificacion!=''}">
-												<siga:Fecha nombreCampo="fechaRatificacion" valorInicial="${ejg2.fechaRatificacion}" disabled="true" readOnly="true"></siga:Fecha>	
-											</c:when>
-											<c:otherwise>
-												-
-											</c:otherwise>
-										</c:choose>
-										</td>					
-									</tr>							
-									<c:if test="${ejg2.fechaAuto!=null && ejg2.fechaAuto !=''}">
-										<tr>
-											<td class="labelText">
-												<siga:Idioma key="gratuita.EJG.literal.autoResolutorio"/>
-											</td>	
-											<td class="labelTextValue">
-												<c:choose>
-													<c:when test="${ejg2.nombreTipoResolAuto != null && ejg2.nombreTipoResolAuto!=''}">
-														<html:text name="DefinirEJGForm" property="nombreTipoResolAuto" size="30" styleClass="boxConsulta" value="${ejg2.nombreTipoResolAuto}" disabled="false" readonly="true"/>		
-													</c:when>	
-													<c:otherwise>
-														-
-													</c:otherwise>	
-												</c:choose>
+											<td class="pestanaTD"   name="pestanas" style="width:15px" >
+												<a id="tab_${index}" name="linkTabs" href="#" onClick="pulsa('${index}');">
+													<c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<c:out	value="${ejg1.anio}" />/<c:out	value="${ejg1.numEJG}" />
+												</a>
 											</td>
-											
-											<td class="labelText">
-												<siga:Idioma key="pestana.justiciagratuitaejg.impugnacion"/>
-												<siga:Idioma key="gratuita.operarRatificacion.literal.fechaAuto"/>
-											</td>
-											<td class="labelTextValue">
-												<siga:Fecha nombreCampo="fechaAuto" valorInicial="${ejg2.fechaAuto}" disabled="true" readOnly="true"></siga:Fecha>
-											</td>
-											
-										</tr>
-										</c:if>
 									
-									</table>
+									</logic:iterate>
+									<td width="90%">
+									</td>
+								</tr>
+							</table>
+					</logic:notEmpty>
+					</div>	
+					    		
+					<div id="paneles" style="height:100px;overflow-y: auto; ">
+					<logic:iterate name="ActuacionesDesignasForm" property="ejgs" id="ejg2" indexId="index2">
+						<div id="panel_${index2}"  style="display: inline;overflow-x: hidden;">
+						
+								<table class="tablaCampos" align="center" cellpadding="0"
+									cellpadding="0" style="width:100%;" border="0">
+								<tr>
+									<td class="labelText" style="width:200px;">
+										<siga:Idioma key="gratuita.operarRatificacion.literal.tipoRatificacion"/>
+									</td>	
+				 
+									<td class="labelTextValue">
+									<c:choose>
+									<c:when test="${ejg2.idTipoRatificacionEJG != null && ejg2.idTipoRatificacionEJG !=''}">
+								<%
+									ArrayList selTipoRatificacion = new ArrayList();
+																ScsEJGBean ejg = (ScsEJGBean) listadoEjgs.get(i++);
+																selTipoRatificacion.add(ejg.getIdTipoRatificacionEJG() + "," + usr.getLocation());
+								%>	
+												<siga:ComboBD nombre="idTipoRatificacionEJG" tipo="tipoResolucionTodos" ancho="300" clase="boxConsulta" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  elementoSel="<%=selTipoRatificacion%>" readonly="true"/>				
+										</c:when>
+										<c:otherwise>
+											-
+											<%
+											i++;
+										%>
+										</c:otherwise>
+									</c:choose>
+									</td>
+									<td class="labelText" style="width:200px;">
+										<siga:Idioma key="gratuita.operarRatificacion.literal.fechaResolucionCAJG"/>
+									</td>	
+										
+									<td class="labelTextValue">
+									<c:choose>
+										<c:when test="${ejg2.fechaResolucionCAJG != null && ejg2.fechaResolucionCAJG!=''}">
+											<siga:Fecha nombreCampo="fechaResolucionCAJG" valorInicial="${ejg2.fechaResolucionCAJG}" disabled="true" readOnly="true"></siga:Fecha>	
+										</c:when>
+										<c:otherwise>
+											-
+										</c:otherwise>
+									</c:choose>
+									</td>
+								</tr>
 								
-								</div>
-							</logic:iterate>	
+								<tr>
+									<td class="labelText" style="width:200px;">
+										<siga:Idioma key="gratuita.operarRatificacion.literal.fechaNotificacion"/>
+									</td>
+										
+									<td class="labelTextValue">
+									<c:choose>
+										<c:when test="${ejg2.fechaNotificacion != null && ejg2.fechaNotificacion!=''}">
+											<siga:Fecha nombreCampo="fechaNotificacion" valorInicial="${ejg2.fechaNotificacion}" disabled="true" readOnly="true"></siga:Fecha>	
+										</c:when>
+										<c:otherwise>
+											-
+										</c:otherwise>
+									</c:choose>
+									</td>	
+									
+									<td class="labelText" style="width:160px;" >
+										<siga:Idioma key="gratuita.operarRatificacion.literal.fechaRatificacion"/>
+									</td>
+										
+									<td class="labelTextValue">
+									<c:choose>
+										<c:when test="${ejg2.fechaRatificacion != null && ejg2.fechaRatificacion!=''}">
+											<siga:Fecha nombreCampo="fechaRatificacion" valorInicial="${ejg2.fechaRatificacion}" disabled="true" readOnly="true"></siga:Fecha>	
+										</c:when>
+										<c:otherwise>
+											-
+										</c:otherwise>
+									</c:choose>
+									</td>					
+								</tr>							
+								<c:if test="${ejg2.fechaAuto!=null && ejg2.fechaAuto !=''}">
+									<tr>
+										<td class="labelText">
+											<siga:Idioma key="gratuita.EJG.literal.autoResolutorio"/>
+										</td>	
+										<td class="labelTextValue">
+											<c:choose>
+												<c:when test="${ejg2.nombreTipoResolAuto != null && ejg2.nombreTipoResolAuto!=''}">
+													<html:text name="DefinirEJGForm" property="nombreTipoResolAuto" size="30" styleClass="boxConsulta" value="${ejg2.nombreTipoResolAuto}" disabled="false" readonly="true"/>		
+												</c:when>	
+												<c:otherwise>
+													-
+												</c:otherwise>	
+											</c:choose>
+										</td>
+										
+										<td class="labelText">
+											<siga:Idioma key="pestana.justiciagratuitaejg.impugnacion"/>
+											<siga:Idioma key="gratuita.operarRatificacion.literal.fechaAuto"/>
+										</td>
+										<td class="labelTextValue">
+											<siga:Fecha nombreCampo="fechaAuto" valorInicial="${ejg2.fechaAuto}" disabled="true" readOnly="true"></siga:Fecha>
+										</td>
+										
+									</tr>
+									</c:if>
+								
+								</table>
+							
 							</div>
-							<script type="text/javascript">
-								tab('tab_0','panel_0');
-								ajusteAlto('panelEJGs');
-							</script>
+						</logic:iterate>	
 						</div>
+						<script type="text/javascript">
+							tab('tab_0','panel_0');
+							ajusteAlto('panelEJGs');
+						</script>
+					</div>
 			</siga:ConjCampos> 
 			<%
  				}
  			%>	
+ 			
 			</c:if>
 	
 	
@@ -1299,6 +1321,33 @@
 		
 		function limpiarValor(combo){
 			seleccionComboSiga (combo, "");
+		}
+		function pulsa(tabCount){
+			
+			if(!tabCount){
+				tabCount = "0";
+			}
+			objLink = jQuery("#tab_"+tabCount);
+			psts	= document.getElementsByName('linkTabs');
+			// eliminamos las clases de las pestañas
+			for( i=0; i< psts.length; i++)
+			{
+				jQuery(psts[i]).removeClass('here');
+				
+			}
+			objLink.addClass('here');
+			
+			//Ahora las pestañas
+			pnl 	= document.getElementById('panel_'+tabCount);
+			pnls	= document.getElementById('paneles').getElementsByTagName('div');
+			for(j=0; j< pnls.length; j++)
+			{
+				pnls[j].style.display = 'none';
+			}
+			
+			// Añadimos la clase "actual" a la pestaña activa
+			pnl.style.display = 'block';
+			
 		}
 
 		function validarJustificacion () {

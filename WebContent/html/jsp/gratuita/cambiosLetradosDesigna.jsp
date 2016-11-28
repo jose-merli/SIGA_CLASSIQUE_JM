@@ -112,7 +112,7 @@
 			document.forms[0].target="submitArea";
 			<% if(botonNuevo){ %>
 				document.forms[0].modo.value = "nuevo";
-				var resultado=ventaModalGeneral(document.forms[0].name,"M");
+				var resultado=ventaModalGeneral(document.forms[0].name,"G");
 				if(resultado=='MODIFICADO') 
 					buscar();
 			<% } else { %>

@@ -1045,7 +1045,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 <div id='listadoInformeJustificacionDiv'
 	style='height:400; width: 100%; overflow-y: auto; overflow-x:hidden '>
 	
-<table id='listadoInformeJustificacion' border='1' align='center' 
+<table id='listadoInformeJustificacion' class='fixedHeaderTable dataScroll' border='1' align='center' 
 	width='100%' cellspacing='0' cellpadding='0' style='table-layout: fixed; border-style: solid;'>
 	<tr style="display:none;">
 		<td width="8%"></td>

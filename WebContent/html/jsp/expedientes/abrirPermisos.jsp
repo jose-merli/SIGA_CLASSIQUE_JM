@@ -13,6 +13,7 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <%@ page import="com.siga.administracion.SIGAConstants,com.atos.utils.*,com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.siga.expedientes.action.PermisosTiposExpedientesAction"%>
@@ -100,8 +101,15 @@
 <%
 			} else {
 %>
-				<logic:iterate id="perfil" name="PermisosTiposExpedientesForm" property="perfiles" >
-					<tr class="listaNonEdit">
+				<logic:iterate id="perfil" name="PermisosTiposExpedientesForm" property="perfiles" indexId="index">
+					<c:choose>
+						<c:when test="${index%2==0}">
+							<tr class="listaNonEdit filaTablaImpar"	id="fila_<bean:write name='index'/>">
+						</c:when>
+						<c:otherwise>
+							<tr class="listaNonEdit filaTablaPar" id="fila_<bean:write name='index'/>">
+						</c:otherwise>
+					</c:choose>
   						<td>
   							<html:hidden property="idInstitucion"/>
 							<html:hidden property="idInstitucionTipoExpediente"/>

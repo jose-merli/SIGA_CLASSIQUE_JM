@@ -64,7 +64,7 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 </head>
 
-<body onload="iniciarVariablesTelefonos ()">
+<body onload="iniciarVariablesTelefonos ()" >
 	<!-- CAMPOS DEL REGISTRO -->
 	<html:form action="/JGR_TelefonosPersonasJG" method="POST" target="submitArea" style="display:none">
 		<html:hidden property="modo" value="" />
@@ -75,7 +75,7 @@
 		<input type="hidden" id="tablaDatosDinamicosD" name="tablaDatosDinamicosD">
 		<input type="hidden" name="actionModal" value="">
 	</html:form>
-	
+<div style="height:100px;" class="tablaCentralCampos" align="center" >	
 <%
 	int contador = 0;
 	if (!accion.equalsIgnoreCase("ver")) {
@@ -84,7 +84,10 @@
 		<siga:Table
 			name="tablaTelefonos"
 			columnSizes="30,30,10,30"
-			columnNames="<%=columnNames%>">
+			columnNames="<%=columnNames%>"
+			fixedHeight="91"
+			
+			>
 	
 			<logic:notEmpty name="DefinirTelefonosJGForm" property="telefonos">
 				<logic:iterate name="DefinirTelefonosJGForm" property="telefonos" id="telefono" indexId="index">
@@ -143,7 +146,9 @@
 			columnSizes="40,40,20"
 			columnNames="gratuita.operarDatosBeneficiario.literal.telefonoUso,
 					gratuita.operarDatosBeneficiario.literal.numeroTelefono,
-					censo.preferente.sms">
+					censo.preferente.sms"
+			fixedHeight="91"
+					>
 	
 			<logic:notEmpty name="DefinirTelefonosJGForm" property="telefonos">
 				<logic:iterate name="DefinirTelefonosJGForm" property="telefonos" id="telefono" indexId="index">
@@ -172,7 +177,7 @@
 <%
 	}
 %>		
-
+</div>
 	<script type="text/javascript">
 		var numMaximoElementos = 0;	
 		function iniciarVariablesTelefonos () {

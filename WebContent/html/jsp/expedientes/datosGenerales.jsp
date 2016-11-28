@@ -1214,10 +1214,11 @@
 	<!-- FIN: SCRIPTS BOTONES -->	
 </head>
 
-<body class="detallePestanas">
+<body >
 
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
-	<div id="camposRegistro">
+	<div id="camposRegistro" class="posicionBusquedaSolo" align="center">
+	
 
 		<!-- INICIO: CAMPOS DE BUSQUEDA-->
 		<!-- Zona de campos de busqueda o filtro -->

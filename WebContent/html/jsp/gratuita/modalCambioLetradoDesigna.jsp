@@ -104,7 +104,14 @@
 	<html:hidden property = "flagCompensacion" value=""/>
 	<html:hidden property = "cambioMismoDia" value=""/>
 
-	<table  class="tablaCentralCamposMedia"  align="center">
+	<table  style="width:100%;vertical-align: center" class="tablaCentralCamposMedia"   >
+	<tr>				
+		<td width="15%"></td>
+		<td width="22%"></td>
+		<td width="63%"></td>
+		
+	</tr>
+	
 	<tr>				
 	<td colspan="3">
 
@@ -205,28 +212,33 @@
 			</table>
 		</siga:ConjCampos>
 	</logic:notEmpty>
+	</td>
+	</tr>
 	
 	<%if (accion.equalsIgnoreCase("nuevo")){%>
 
 		<!-- FECHA DESIGNACION-->
 		<tr>
-			<td class="labelText" width="150px">
+			<td class="labelText" nowrap>
 				<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.literal.fechaDesigna"/>&nbsp;(*)
 			</td>
-			<td width="110px">			
+			<td>			
 				<siga:Fecha nombreCampo="fechaDesigna" postFunction="rellenarFechaRenunciaEfectiva(this)"></siga:Fecha>
 			</td>
 			
-			<td class="labelText" width="390px">
+			<td class="labelText">
 				&nbsp;
 			</td>
 		</tr>
 		
 		<tr>
-			<td class="labelText" colspan="5">	
+			<td class="labelText" colspan="3">	
 				<siga:Idioma key="gratuita.designa.designacionAutomatica"/>
 			</td>		
 		</tr>
+		<tr>
+		<td colspan="3">
+		
 		
 		<!-- SELECCION DE LETRADO -->
 		<table border="0" width="100%">

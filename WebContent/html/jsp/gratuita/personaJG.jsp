@@ -1148,7 +1148,7 @@
 		</table>
 	
 		<!-- capa principal -->
-		<div style="height:430px;" id="camposRegistro" class="posicionModalGrande" align="center">
+		<div style="height:600px;" id="camposRegistro" class="posicionModalGrande" align="center" style="overflow-y:auto;overflow-x:hidden; position: relative;">
 <%
 	}
 %>
@@ -2555,7 +2555,7 @@
 										frameborder="0"
 										marginheight="0" 
 										marginwidth="0"
-										style="width:400px; height:150px;"></iframe>
+										style="width:400px; height:100px;"></iframe>
 								</siga:ConjCampos>
 							</td>
 						</tr>
@@ -2747,10 +2747,10 @@
 
 	}
 %>
-
+</div>
 <siga:ConjBotonesAccion botones="<%=sBoton%>" modo="<%=accion%>" clase="botonesDetalle"/>
 
-</div>
+
 
 	
 <!-- FIN: BOTONES REGISTRO -->
