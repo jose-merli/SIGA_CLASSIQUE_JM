@@ -9,7 +9,7 @@
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%> 
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
@@ -84,7 +84,7 @@
 		}
 	</script>
 
-	<body onload="cargarCollection();ajusteAlto('resultado1')">
+	<body onload="sub();cargarCollection();ajusteAlto('resultado1')">
 	
 		<html:form action="<%=action%>" method="post" target="mainWorkArea" style="display:none">
 			<input type="hidden" name="modo" value="<%=modo%>">			
@@ -97,22 +97,14 @@
 		
 		<!-- TITULO -->
 		<!-- Barra de titulo actualizable desde los mantenimientos -->
-		<table class="titulitosDatos" cellspacing="0" height="32">
+		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
-				<td id="titulitos" class="titulosPeq">
+				<td class="titulitosDatos">
 					<siga:Idioma key="censo.docushare.literal.titulo1"/> &nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%>&nbsp;
 				    <%
 				    	if (numero != null && !numero.equalsIgnoreCase("")) {
 				    %>
 						<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;<%=UtilidadesString.mostrarDatoJSP(numero)%>
-					<%
-						} else if (idNoColegiado != null && !idNoColegiado.equalsIgnoreCase("")) {
-					%>
-					   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>&nbsp;<%=UtilidadesString.mostrarDatoJSP(idNoColegiado)%>
-					<%
-						} else {
-					%>
-					   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
 					<%
 						}
 					%>

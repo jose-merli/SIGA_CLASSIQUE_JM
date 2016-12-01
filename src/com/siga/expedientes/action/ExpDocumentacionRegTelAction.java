@@ -164,7 +164,7 @@ public class ExpDocumentacionRegTelAction extends DocumentacionRegTelAction {
 				short idInstitucionShort = getIDInstitucion(request).shortValue();
 				
 				DocuShareHelper docuShareHelper = new DocuShareHelper(idInstitucionShort);
-				idDS = docuShareHelper.createCollectionExpedientes(title);
+				idDS = docuShareHelper.createCollectionExpedientes(title,"");
 				expExpedienteBean.setIdentificadorDS(idDS);
 				expAdm.updateDirect(expExpedienteBean);
 			}

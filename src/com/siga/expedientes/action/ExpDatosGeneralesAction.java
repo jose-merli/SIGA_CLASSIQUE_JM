@@ -2348,7 +2348,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 		String idDS = docuShareHelper.buscaCollectionExpedientes(collectionTitle);
 		
 		if (idDS == null || idDS.trim().equals(idDS)) {
-			idDS = docuShareHelper.createCollectionExpedientes(collectionTitle);	
+			idDS = docuShareHelper.createCollectionExpedientes(collectionTitle,"");	
 		} 
 			
 		return idDS;

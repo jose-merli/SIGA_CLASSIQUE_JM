@@ -396,21 +396,24 @@ public class BusquedaClientesAction extends MasterAction {
 			}
 			}
 			
-			
-			if (tipoAcceso.intValue()==new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO).intValue()
-					|| tipoAcceso.intValue()==new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO_FISICO).intValue() ){
-				  
-				  pestanasOcultas[0]=ClsConstants.IDPROCESO_REGTEL_CENSO;
-				  request.setAttribute("pestanasOcultas",pestanasOcultas);
-			}else{
-				GenParametrosAdm parametrosAdm = new GenParametrosAdm(this.getUserBean(request));
-		 		String valor = parametrosAdm.getValor(this.getUserBean(request).getLocation(), ClsConstants.MODULO_GENERAL, "REGTEL", "0");
-		 		if (valor!=null && valor.equals(ClsConstants.DB_FALSE)){
-				  pestanasOcultas=new String [1];
-				  pestanasOcultas[0]=ClsConstants.IDPROCESO_REGTEL_CENSO;
-				  request.setAttribute("pestanasOcultas",pestanasOcultas);
+			GenParametrosAdm parametrosAdm = new GenParametrosAdm(this.getUserBean(request));
+	 		String valor = parametrosAdm.getValor(this.getUserBean(request).getLocation(), ClsConstants.MODULO_GENERAL, "REGTEL", "0");
+	 		if (valor!=null && valor.equals(ClsConstants.DB_FALSE)){
+			  pestanasOcultas=new String [2];
+			  pestanasOcultas[0]=ClsConstants.IDPROCESO_REGTEL_CENSO;
+			  pestanasOcultas[1]=ClsConstants.IDPROCESO_REGTEL_CENSO_NOCOLEGIADO;
+			  request.setAttribute("pestanasOcultas",pestanasOcultas);
+	 		}else{
+	 			if (tipoAcceso.intValue()==new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO).intValue()
+						|| tipoAcceso.intValue()==new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_NOCOLEGIADO_FISICO).intValue() ){				  
+					  pestanasOcultas[0]=ClsConstants.IDPROCESO_REGTEL_CENSO;
+					  request.setAttribute("pestanasOcultas",pestanasOcultas);
+				}else{
+					  pestanasOcultas[0]=ClsConstants.IDPROCESO_REGTEL_CENSO_NOCOLEGIADO;
+					  request.setAttribute("pestanasOcultas",pestanasOcultas);
 		 		}
 			}
+
 			String modo = "editar";
 			Hashtable datosCliente = new Hashtable();
 			datosCliente.put("accion",modo);
