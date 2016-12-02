@@ -513,12 +513,13 @@
 			<html:hidden property="idInstitucionAlta" value="<%=user.getLocation() %>" />
 		</html:form>
 		
-		<!-- Formulario para la búsqueda de clientes -->
-		<html:form action="/CEN_BusquedaClientes.do" method="POST" target="mainWorkArea">
-			<html:hidden styleId="modo" property="modo" value="editar"/>
-			<html:hidden styleId="filaSelD" property="filaSelD"/>
-			<html:hidden styleId="tablaDatosDinamicosD" property="tablaDatosDinamicosD" value="ver"/>
-		</html:form>
+		 <%if(!"DUPLICADOS".equalsIgnoreCase(busquedaVolver) && !"MD".equalsIgnoreCase(busquedaVolver)){ %>   
+			<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
+				<html:hidden property="modo" value="buscarPor"/>
+				<html:hidden property="nifcif" />
+			</html:form>
+		
+	   <%} %>
 		
 	
 		<!-- FIN para buscar las sanciones -->	

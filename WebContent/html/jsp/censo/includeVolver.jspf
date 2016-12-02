@@ -73,6 +73,7 @@
 			<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
 				<html:hidden property="modo" value="gestionar"/>
 				<html:hidden property="volver" value=""/>
+				<html:hidden property="nifcif" />
 			</html:form>
 			
 <% 	

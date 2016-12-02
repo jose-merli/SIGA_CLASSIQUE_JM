@@ -180,6 +180,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			CenInstitucionAdm admInstitucion = new CenInstitucionAdm(usr); 
 			List<CenInstitucionBean> listadoInstituciones = admInstitucion.getNombreColegiosTodos(parametros);
 			request.setAttribute("listadoInstituciones", listadoInstituciones);
+			request.getSession().setAttribute("CenBusquedaClientesTipo","DUPLICADOS"); // Desde duplicados
 		}
 		catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
@@ -1000,10 +1001,6 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			//String visibilidad = obtenerVisibilidadUsuario(request);
 			//request.setAttribute("CenInstitucionesVisibles",visibilidad);
 
-			// para saber en que tipo de busqueda estoy
-			request.getSession().setAttribute("CenBusquedaClientesTipo","N"); // busqueda normal
-			
-			
 			// miro a ver si tengo que ejecutar 
 			//la busqueda una vez presentada la pagina
 			String buscar = request.getParameter("buscar");

@@ -50,6 +50,9 @@
 	// para ver si tengo que buscar tras mostrar la pantalla
 	String buscar = (String)request.getAttribute("buscar");
 	
+	//Comprobamos de donde viene para que el vovler sea con paginación o no
+	String valorIncialVolver =  (String)request.getSession().getAttribute("CenBusquedaClientesTipo");
+	
 	//Gestiona botón volver MD= Mantenimiento Duplicado
 	request.getSession().setAttribute("CenBusquedaClientesTipo","MD");
 	
@@ -138,7 +141,11 @@
 		
 		function inicio(){
 			<% if (request.getParameter("buscar")!=null && request.getParameter("buscar").equals("true")) {%>
-				document.forms[0].modo.value="buscarPor";
+			 	<%if(!"DUPLICADOS".equalsIgnoreCase(valorIncialVolver) && !"MD".equalsIgnoreCase(valorIncialVolver)){ %>   
+			 		document.forms[0].modo.value="buscar";
+				<% }else{ %>
+					document.forms[0].modo.value="buscarPor";
+				<%}%>
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();	
 			<% } %>

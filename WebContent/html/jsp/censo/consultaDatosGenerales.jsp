@@ -863,14 +863,14 @@
 		   	document.forms[4].submit();		   	
 		}
 		
-		function mantenimientoDuplicados(nifcif) {
-				
-			document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
-			document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
-			document.MantenimientoDuplicadosForm.nifcif.value=nifcif;
-			document.MantenimientoDuplicadosForm.submit();
+	function mantenimientoDuplicados(nifcif) {
 		
-		}
+		document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
+		document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
+		document.MantenimientoDuplicadosForm.nifcif.value=nifcif;
+		document.MantenimientoDuplicadosForm.submit();
+	
+	}
 	</script>
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -1512,7 +1512,15 @@
 		<html:hidden name="GruposClienteClienteForm" property="idPersona" />
 		<html:hidden name="GruposClienteClienteForm" property="idInstitucion" />
 		<html:hidden name="GruposClienteClienteForm" property="modoAnterior" />		
-	</html:form>		
+	</html:form>
+	
+	   <%if(!"DUPLICADOS".equalsIgnoreCase(busquedaVolver) && !"MD".equalsIgnoreCase(busquedaVolver)){ %>   
+			<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
+				<html:hidden property="modo" value="buscarPor"/>
+				<html:hidden property="nifcif" />
+			</html:form>
+		
+	   <%} %>		
 	
 	
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
