@@ -186,14 +186,16 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 		return lista;
 	}
 	
-	public void insertaProgrCalendarios(ProgrCalendariosForm progrCalendariosForm, UsrBean usrBean)	throws ClsExceptions {
+	public void insertaProgrCalendarios(ProgrCalendariosForm progrCalendariosForm, UsrBean usrBean)	throws ClsExceptions,org.redabogacia.sigaservices.app.exceptions.BusinessException {
 		ScsProgCalendariosBean progCalendariosBean = progrCalendariosForm.getProgCalendariosVO();
 		ScsProgrCalendariosAdm progrCalendariosAdm = new ScsProgrCalendariosAdm(usrBean);
+		progrCalendariosAdm.compruebaSolapamientoProgramamciones(progrCalendariosForm);
 		Long idProgrCalendarios = progrCalendariosAdm.getNewIdProgrCalendarios();
 		progCalendariosBean.setIdProgrCalendario(idProgrCalendarios);
 		progrCalendariosAdm.insert(progCalendariosBean);
 		
 	}
+
 	public ScsProgCalendariosBean getProgrCalendario(ProgrCalendariosForm progrCalendariosForm, UsrBean usrBean)throws ClsExceptions {
 		ScsProgrCalendariosAdm progrCalendariosAdm = new ScsProgrCalendariosAdm(usrBean);
 		ScsProgCalendariosBean progCalendariosBean = progrCalendariosAdm.getProgrCalendario(progrCalendariosForm);
@@ -383,34 +385,44 @@ public class AtosProgramacionCalendariosService extends JtaBusinessServiceTempla
 	}
 	public void borrarProgrCalendarios(
 			ProgrCalendariosForm progrCalendariosForm, UsrBean usrBean)
-			throws ClsExceptions, SIGAException {
+			throws ClsExceptions, SIGAException,Exception {
 		
 		CalendarioSJCS calendarioSJCS = new CalendarioSJCS();
 		ScsCalendarioGuardiasAdm calendarioGuardiasAdm = new ScsCalendarioGuardiasAdm(usrBean);
 		ScsProgCalendariosBean progCalendariosBean = progrCalendariosForm.getProgCalendariosVO();
 		 List<ScsCalendarioGuardiasBean> calendarioGuardiasBeans=calendarioGuardiasAdm.getCalendariosProgramados(progCalendariosBean);
-		for (ScsCalendarioGuardiasBean calendarioGuardiasBean : calendarioGuardiasBeans) {
-			calendarioSJCS.inicializaParaBorrarCalendarios(calendarioGuardiasBean.getIdInstitucion(), calendarioGuardiasBean.getIdTurno(), calendarioGuardiasBean.getIdGuardia(), calendarioGuardiasBean.getIdCalendarioGuardias(), usrBean);
-			calendarioSJCS.borrarCalendario();
-			//Borramos fichero si existe
-			String sFicheroLog=null;
-			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			sFicheroLog = rp.returnProperty("sjcs.directorioFisicoGeneracionCalendarios") + File.separator
-					+ calendarioGuardiasBean.getIdInstitucion() + File.separator
-					+ calendarioSJCS.getNombreFicheroLogCalendario(new Integer(calendarioGuardiasBean.getIdTurno()), new Integer(calendarioGuardiasBean.getIdGuardia()),
-							new Integer( calendarioGuardiasBean.getIdCalendarioGuardias()), GstDate.getFormatedDateShort(usrBean.getLanguage(),calendarioGuardiasBean.getFechaInicio()), GstDate.getFormatedDateShort(usrBean.getLanguage(),calendarioGuardiasBean.getFechaFin()))
-					+ ".log.xls";
-			File fichero = new File(sFicheroLog);
-			if(fichero != null && fichero.exists()){
-				fichero.delete();
-			}
+		 try {
+			 this.getBusinessManager().startTransaction();
+			 for (ScsCalendarioGuardiasBean calendarioGuardiasBean : calendarioGuardiasBeans) {
+					calendarioSJCS.inicializaParaBorrarCalendarios(calendarioGuardiasBean.getIdInstitucion(), calendarioGuardiasBean.getIdTurno(), calendarioGuardiasBean.getIdGuardia(), calendarioGuardiasBean.getIdCalendarioGuardias(), usrBean);
+					calendarioSJCS.borrarCalendario();
+					//Borramos fichero si existe
+					String sFicheroLog=null;
+					ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+					sFicheroLog = rp.returnProperty("sjcs.directorioFisicoGeneracionCalendarios") + File.separator
+							+ calendarioGuardiasBean.getIdInstitucion() + File.separator
+							+ calendarioSJCS.getNombreFicheroLogCalendario(new Integer(calendarioGuardiasBean.getIdTurno()), new Integer(calendarioGuardiasBean.getIdGuardia()),
+									new Integer( calendarioGuardiasBean.getIdCalendarioGuardias()), GstDate.getFormatedDateShort(usrBean.getLanguage(),calendarioGuardiasBean.getFechaInicio()), GstDate.getFormatedDateShort(usrBean.getLanguage(),calendarioGuardiasBean.getFechaFin()))
+							+ ".log.xls";
+					File fichero = new File(sFicheroLog);
+					if(fichero != null && fichero.exists()){
+						fichero.delete();
+					}
+					
+				}
+				ScsHcoConfProgrCalendariosAdm hcoConfProgrCalendariosAdm = new ScsHcoConfProgrCalendariosAdm(usrBean);
+				 
+				hcoConfProgrCalendariosAdm.delete(progCalendariosBean);
+				ScsProgrCalendariosAdm progrCalendariosAdm = new ScsProgrCalendariosAdm(usrBean);
+				progrCalendariosAdm.delete(progCalendariosBean);
+				this.getBusinessManager().commitTransaction();
+		} catch (Exception e) {
+			throw e;
+		}finally {
+			getBusinessManager().endTransaction();
 			
 		}
-		ScsHcoConfProgrCalendariosAdm hcoConfProgrCalendariosAdm = new ScsHcoConfProgrCalendariosAdm(usrBean);
-		 
-		hcoConfProgrCalendariosAdm.delete(progCalendariosBean);
-		ScsProgrCalendariosAdm progrCalendariosAdm = new ScsProgrCalendariosAdm(usrBean);
-		progrCalendariosAdm.delete(progCalendariosBean);
+		
 		
 		
 	}

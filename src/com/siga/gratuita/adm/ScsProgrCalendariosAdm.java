@@ -7,6 +7,8 @@ import java.util.Vector;
 
 import javax.transaction.UserTransaction;
 
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -404,6 +406,99 @@ public class ScsProgrCalendariosAdm extends MasterBeanAdministrador{
 		}
 
 		return progCalendariosBean;
+	}
+	
+	public void compruebaSolapamientoProgramamciones(ProgrCalendariosForm progrCalendariosForm) throws ClsExceptions,BusinessException {
+		Hashtable codigosHashtable = new Hashtable();
+		int contador = 0;
+		StringBuilder sql = new StringBuilder();
+		
+
+//-- PROGRAMACIONES
+		sql.append("SELECT 1 ");
+		sql.append("FROM SCS_PROG_CALENDARIOS PRO, SCS_CONF_CONJUNTO_GUARDIAS CON ");
+//-- DE MI COLEGIO
+		sql.append("WHERE CON.IDINSTITUCION =  :");
+		contador++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador), progrCalendariosForm.getIdInstitucion());
+//      -- PARA UN CONJUNTO DE GUARDIAS ");
+		sql.append("AND PRO.IDINSTITUCION = CON.IDINSTITUCION ");
+		sql.append("AND PRO.IDCONJUNTOGUARDIA = CON.IDCONJUNTOGUARDIA ");
+//      -- QUE CONTENGA UNA GUARDIA
+		sql.append("AND (CON.IDINSTITUCION, CON.IDTURNO, CON.IDGUARDIA) IN ");
+		sql.append("(SELECT CON2.IDINSTITUCION, CON2.IDTURNO, CON2.IDGUARDIA ");
+		sql.append("FROM SCS_CONF_CONJUNTO_GUARDIAS CON2 ");
+//        -- DENTRO DE MI CONJUNTO DE GUARDIAS
+		sql.append("WHERE CON2.IDINSTITUCION = CON.IDINSTITUCION ");
+		sql.append("AND CON2.IDCONJUNTOGUARDIA = :");
+		contador++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador), progrCalendariosForm.getIdConjuntoGuardia());
+		sql.append(") ");
+//      -- Y PARA ESAS FECHAS
+		sql.append("AND (:");
+		contador++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador), progrCalendariosForm.getFechaCalInicio());
+		sql.append("<= PRO.FECHACALFIN ");
+		sql.append("AND :");
+		contador++;
+		sql.append(contador);
+		codigosHashtable.put(new Integer(contador), progrCalendariosForm.getFechaCalFin());
+		sql.append(">= PRO.FECHACALINICIO) ");
+		
+		ScsProgCalendariosBean progCalendariosBean = null;
+		try {
+			RowsContainer rc = new RowsContainer();
+			if (rc.findBind(sql.toString(), codigosHashtable)) {
+				throw new BusinessException("messages.factSJCS.error.solapamientoRango");
+			}
+			
+			sql = new StringBuilder();
+			codigosHashtable = new Hashtable();
+			contador = 0;
+			sql.append("SELECT 1 ");
+			sql.append("FROM SCS_CALENDARIOGUARDIAS CAL ");
+//			-- PARA ESAS FECHAS
+			sql.append("WHERE (: ");
+			contador++;
+			sql.append(contador);
+			codigosHashtable.put(new Integer(contador), progrCalendariosForm.getFechaCalInicio());
+			sql.append("<= CAL.FECHAFIN AND :");
+			contador++;
+			sql.append(contador);
+			codigosHashtable.put(new Integer(contador), progrCalendariosForm.getFechaCalFin());
+			sql.append(" >= CAL.FECHAINICIO) ");
+			      
+//			      -- DE UNA GUARDIA
+			sql.append("AND (CAL.IDINSTITUCION, CAL.IDTURNO, CAL.IDGUARDIA) IN ");
+//			      -- DENTRO DE MI CONJUNTO DE GUARDIAS
+			sql.append("(SELECT CGG2.IDINSTITUCION, CGG2.IDTURNO, CGG2.IDGUARDIA ");
+			sql.append("FROM SCS_CONF_CONJUNTO_GUARDIAS CGG2 ");
+			sql.append("WHERE CGG2.IDINSTITUCION = :");
+			contador++;
+			sql.append(contador);
+			codigosHashtable.put(new Integer(contador), progrCalendariosForm.getIdInstitucion());
+			sql.append("AND CGG2.IDCONJUNTOGUARDIA = :"); 
+			contador++;
+			sql.append(contador);
+			codigosHashtable.put(new Integer(contador), progrCalendariosForm.getIdConjuntoGuardia());
+			sql.append(")");
+			        
+			rc = new RowsContainer();
+			if (rc.findBind(sql.toString(), codigosHashtable)) {
+				throw new BusinessException("messages.factSJCS.error.solapamientoRango");
+			}
+			
+			
+
+		}catch (BusinessException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al ejecutar consulta.");
+		}
+
 	}
 
 }
