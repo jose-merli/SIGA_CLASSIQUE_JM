@@ -647,6 +647,7 @@ public class ActaComisionAction extends MasterAction{
 				sql = new StringBuffer();
 				sql.append("update " + ScsEJGBean.T_NOMBRETABLA+ " set ");
 				sql.append(ScsEJGBean.C_FECHARESOLUCIONCAJG+ " = null ");
+				sql.append(","+ScsEJGBean.C_FECHAMODIFICACION+ " = SYSDATE ");
 				sql.append(" where " + ScsEJGBean.C_IDACTA + " = " + actaBean.getIdActa());
 				sql.append(" and " + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + actaBean.getIdInstitucion());
 				sql.append(" and " + ScsEJGBean.C_ANIOACTA + " = " + actaBean.getAnioActa());
