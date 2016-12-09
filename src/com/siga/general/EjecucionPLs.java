@@ -755,22 +755,16 @@ public class EjecucionPLs {
 		Object[] param_in; //Parametros de entrada del PL
 		String resultado[] = null; //Parametros de salida del PL
 	
-		try {
-			resultado = new String[2];
-			param_in = new Object[2];
-			param_in[0] = idPersonaOrigen;
-			param_in[1] = idPersonaDestino;
-		        
-			//Ejecucion del PL
-		    resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FUSION_PERSONAS.Fusiona_Personas(?,?,?,?)}", 2, param_in);
-			if(resultado[0].equalsIgnoreCase("-1")){
-		    	throw new ClsExceptions(resultado[1]);
-		    }
-		} catch (Exception e){
-			resultado[0] = "-1"; //ERROR P_CODRETORNO
-	    	resultado[1] = resultado[1]; //ERROR P_DATOSERROR     
-	    	throw new ClsExceptions(e.getMessage());
-		}
+		resultado = new String[2];
+		param_in = new Object[2];
+		param_in[0] = idPersonaOrigen;
+		param_in[1] = idPersonaDestino;
+	        
+		//Ejecucion del PL
+	    resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FUSION_PERSONAS.Fusiona_Personas(?,?,?,?)}", 2, param_in);
+		if(resultado[0].equalsIgnoreCase("-1")){
+	    	throw new ClsExceptions(resultado[1]);
+	    }
 	    
 	    //Resultado del PL        
 	    return resultado;

@@ -863,14 +863,19 @@
 		   	document.forms[4].submit();		   	
 		}
 		
-	function mantenimientoDuplicados(nifcif) {
+		function mantenimientoDuplicados(nifcif, numcol, idinstitucion, nombre, apellido1, apellido2) {
+				
+			document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
+			document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
+			document.MantenimientoDuplicadosForm.nifcif.value=nifcif;
+			document.MantenimientoDuplicadosForm.numeroColegiado=numcol;
+			document.MantenimientoDuplicadosForm.idInstitucion=idinstitucion;
+			document.MantenimientoDuplicadosForm.nombre=nombre;
+			document.MantenimientoDuplicadosForm.apellido1=apellido1;
+			document.MantenimientoDuplicadosForm.apellido2=apellido2;
+			document.MantenimientoDuplicadosForm.submit();
 		
-		document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
-		document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
-		document.MantenimientoDuplicadosForm.nifcif.value=nifcif;
-		document.MantenimientoDuplicadosForm.submit();
-	
-	}
+		}
 	</script>
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->

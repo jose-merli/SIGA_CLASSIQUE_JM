@@ -82,7 +82,7 @@ public class DuplicadosHelper{
 				sqlFinal.append(sqlFrom);
 				sqlFinal.append(sqlWhere);
 				if (! nombre.equalsIgnoreCase("")) {
-					sqlFinal.append(" and regexp_like(regexp_replace(upper(translate(Per.nombre), ");
+					sqlFinal.append(" and regexp_like(regexp_replace(upper(translate(Per.nombre, ");
 					sqlFinal.append("                     'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', ");
 					sqlFinal.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', ''), ");
 					sqlFinal.append("      regexp_replace(upper(translate('"+nombre+"', ");

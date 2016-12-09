@@ -3788,31 +3788,27 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			
 			//estableciendo los datos del tipo de direccion guardia
 			//Si existe una dirección de facturación no se inserta el tipo de dirección de facturación
-			String sql = direccionAdm.comprobarTipoDireccion(String.valueOf(ClsConstants.TIPO_DIRECCION_FACTURACION), beanDir.getIdInstitucion().toString(), beanDir.getIdPersona().toString());
-				
-			//Solo se permite una dirección de facturación
-			String tiposDir ="";
-			List <Integer> direccionesObligatorias=Direccion.getListaDireccionesObligatorias(ClsConstants.TIPO_ACCESO_PESTANAS_COLEGIADO);
-			RowsContainer rc1 = new RowsContainer ();
-			if (rc1.query (sql)){
-				if (rc1.size () >= 1){
+			String tiposDir = "";
+			Row row = direccionAdm.comprobarTipoDireccion(String.valueOf(ClsConstants.TIPO_DIRECCION_FACTURACION), beanDir.getIdInstitucion().toString(),
+					beanDir.getIdPersona().toString());
+			List<Integer> direccionesObligatorias = new ArrayList<Integer>();
+			if (row != null) {
+				// Solo se permite una dirección de facturación
+				direccionesObligatorias = Direccion.getListaDireccionesObligatorias(ClsConstants.TIPO_ACCESO_PESTANAS_COLEGIADO);
 
-					//Si existe la dirección de fact. elimino esta de direcciones obligatorias. 
-					//MJM: Lo hago leyendo la lista por si cambian las direcciones obligatorias.
-					List <Integer> direccionesObligatorias_aux=direccionesObligatorias;
-					for(int d=0;d<direccionesObligatorias_aux.size();d++)
-					{
-						if(direccionesObligatorias.get(d).intValue()==ClsConstants.TIPO_DIRECCION_FACTURACION)
-							direccionesObligatorias.remove(d);
-					}	
-					
-					tiposDir = ClsConstants.TIPO_DIRECCION_CENSOWEB + "," +ClsConstants.TIPO_DIRECCION_TRASPASO_OJ + ","+ClsConstants.TIPO_DIRECCION_DESPACHO + "," + ClsConstants.TIPO_DIRECCION_GUIA;
-				}else{
-					tiposDir = ClsConstants.TIPO_DIRECCION_CENSOWEB+ "," +ClsConstants.TIPO_DIRECCION_TRASPASO_OJ +  "," +ClsConstants.TIPO_DIRECCION_DESPACHO + "," + ClsConstants.TIPO_DIRECCION_GUIA+ "," + ClsConstants.TIPO_DIRECCION_FACTURACION;
+				// Si existe la dirección de fact. elimino esta de direcciones obligatorias.
+				// MJM: Lo hago leyendo la lista por si cambian las direcciones obligatorias.
+				List<Integer> direccionesObligatorias_aux = direccionesObligatorias;
+				for (int d = 0; d < direccionesObligatorias_aux.size(); d++) {
+					if (direccionesObligatorias.get(d).intValue() == ClsConstants.TIPO_DIRECCION_FACTURACION)
+						direccionesObligatorias.remove(d);
 				}
-			
-			}else{
-					tiposDir = ClsConstants.TIPO_DIRECCION_CENSOWEB+ "," +ClsConstants.TIPO_DIRECCION_TRASPASO_OJ +  "," +ClsConstants.TIPO_DIRECCION_DESPACHO + "," + ClsConstants.TIPO_DIRECCION_GUIA+ "," + ClsConstants.TIPO_DIRECCION_FACTURACION;
+
+				tiposDir = ClsConstants.TIPO_DIRECCION_CENSOWEB + "," + ClsConstants.TIPO_DIRECCION_TRASPASO_OJ + "," + ClsConstants.TIPO_DIRECCION_DESPACHO
+						+ "," + ClsConstants.TIPO_DIRECCION_GUIA;
+			} else {
+				tiposDir = ClsConstants.TIPO_DIRECCION_CENSOWEB + "," + ClsConstants.TIPO_DIRECCION_TRASPASO_OJ + "," + ClsConstants.TIPO_DIRECCION_DESPACHO
+						+ "," + ClsConstants.TIPO_DIRECCION_GUIA + "," + ClsConstants.TIPO_DIRECCION_FACTURACION;
 			}
 
 			// Se llama a la interfaz Direccion para actualizar una nueva direccion

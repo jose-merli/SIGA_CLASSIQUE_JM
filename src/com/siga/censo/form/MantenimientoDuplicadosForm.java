@@ -21,8 +21,8 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	String modo = "";
 	String nifcif="", nombre="", apellido1="", apellido2="", numeroColegiado="";
 	String campoOrdenacion="", sentidoOrdenacion="", tipoConexion="";
-	String idPersonaOrigen = "", idPersonaDestino = "", idInstOrigen = "";
-	String listaDirecciones;
+	String idPersonaOrigen = "", idPersonaDestino = "";
+	String listaDirecciones, listaEstados;
 	String seleccionados;
 	String agruparColegiaciones;
 	String seleccion;
@@ -35,6 +35,12 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	}
 	public void setListaDirecciones(String listaDirecciones) {
 		this.listaDirecciones = listaDirecciones;
+	}
+	public String getListaEstados() {
+		return listaEstados;
+	}
+	public void setListaEstados(String listaEstados) {
+		this.listaEstados = listaEstados;
 	}
 	public String getIdInstitucion() {
 		return idInstitucion;
@@ -54,12 +60,6 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	}
 	public void setIdPersonaDestino(String idPersonaDestino) {
 		this.idPersonaDestino = idPersonaDestino;
-	}
-	public String getIdInstOrigen() {
-		return idInstOrigen;
-	}
-	public void setIdInstOrigen(String idInstOrigen) {
-		this.idInstOrigen = idInstOrigen;
 	}
 
 

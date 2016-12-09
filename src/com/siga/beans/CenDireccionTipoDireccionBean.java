@@ -6,6 +6,8 @@
  */
 package com.siga.beans;
 
+import com.atos.utils.ClsConstants;
+
 /**
  * @author nuria.rgonzalez
  *
@@ -13,10 +15,14 @@ package com.siga.beans;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class CenDireccionTipoDireccionBean extends MasterBean {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 470332967527814293L;
+	
+	// Los siguientes son los tipos que no pueden repetirse dentro de un cliente
+	public static final Integer[] tiposDireccionUnicos = { 
+			ClsConstants.TIPO_DIRECCION_CENSOWEB, ClsConstants.TIPO_DIRECCION_GUARDIA,
+			ClsConstants.TIPO_DIRECCION_FACTURACION, ClsConstants.TIPO_DIRECCION_TRASPASO_OJ
+			};
+	
 	/* Variables */
 	private Integer idInstitucion;
 	private Long idPersona;

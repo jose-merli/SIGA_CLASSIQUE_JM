@@ -157,6 +157,9 @@
 			jQuery("#apellido1Text").val("");
 			jQuery('#listadoInstitucion option[value=""]').attr("selected","selected");
 			
+			jQuery('#tdIdentificacion').attr("style", "background-color:aliceblue; border: 1px solid DarkGray;");
+			jQuery('#tdColegiacion').attr("style", "border: 1px solid white;");
+			jQuery('#tdNombre').attr("style", "border: 1px solid white;");
 		}
 		
 		function presionarNumeroColegiado(){
@@ -164,6 +167,9 @@
 			jQuery("#nombreText").val("");
 			jQuery("#apellido1Text").val("");
 			
+			jQuery('#tdIdentificacion').attr("style", "border: 1px solid white;");
+			jQuery('#tdColegiacion').attr("style", "background-color:aliceblue; border: 1px solid DarkGray;");
+			jQuery('#tdNombre').attr("style", "border: 1px solid white;");
 		}
 		
 		function presionarNombreApellidos(){
@@ -171,6 +177,9 @@
 			jQuery("#numeroColegiadoText").val("");
 			jQuery('#listadoInstitucion option[value=""]').attr("selected","selected");
 			
+			jQuery('#tdIdentificacion').attr("style", "border: 1px solid white;");
+			jQuery('#tdColegiacion').attr("style", "border: 1px solid white;");
+			jQuery('#tdNombre').attr("style", "background-color:aliceblue; border: 1px solid DarkGray;");
 		}
 		
 		function recargarCamposHabilitados (){
@@ -184,7 +193,7 @@
 					jQuery ("#numeroColegiadoText").val("");
 					jQuery ("#nombreText").val("");
 					jQuery ("#apellido1Text").val("");
-					jQuery('#listadoInstitucion option[value=""]').attr("selected","selected")
+					jQuery('#listadoInstitucion option[value=""]').attr("selected","selected");
 					
 			}else{
 				if(document.MantenimientoDuplicadosForm.nifcif.value.length >0 ){
@@ -195,7 +204,7 @@
 					jQuery("#nombreText").val("");
 					jQuery("#apellido1Text").val("");
 					jQuery('#listadoInstitucion option[value=""]').attr("selected","selected");
-					
+					presionarNif();
 					
 				}
 				if(document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length >0 || document.MantenimientoDuplicadosForm.listadoInstitucion.value != ""){
@@ -204,6 +213,7 @@
 					jQuery("#nifcif").val();
 					jQuery("#nombreText").val();
 					jQuery("#apellido1Text").val();
+					presionarNumeroColegiado();
 				}
 				if(document.MantenimientoDuplicadosForm.nombreText.value.length >0 ||
 						document.MantenimientoDuplicadosForm.apellido1Text.value.length >0){
@@ -212,6 +222,7 @@
 					jQuery("#numeroColegiadoText").val();
 					jQuery('#listadoInstitucion option[value=""]').attr("selected","selected");
 					document.getElementById('nombreText').focus();
+					presionarNombreApellidos();
 				}
 				
 			}
@@ -231,38 +242,71 @@
 	<input type="hidden" name="modo" value="">
 	<input type="hidden" name="tipoConexion" id="tipoConexion" value="intersect">
 	<input type="hidden" name="agruparColegiaciones" id="agruparColegiaciones" value="s">
-	
-	<table  class="tablaCentralCampos"  align="center"><tr><td>
-		<siga:ConjCampos leyenda="censo.busquedaDuplicados.patron.cabecera">
-		<table class="tablaCampos" align="center">		
-			<tr><td colspan="3" class="labelText"> Elija uno de los tres patrones siguientes para empezar a buscar duplicados: </td></tr>
+
+	<siga:ConjCampos leyenda="censo.busquedaDuplicados.patron.cabecera">
+		<table class="tablaCampos" align="center">
 			<tr>
-				<td class="labelText" width="100px"> <siga:Idioma key="censo.busquedaDuplicados.patron.nif"/> </td>
-				<td> <html:text styleId="nifcif" name="MantenimientoDuplicadosForm" property="nifcif" size="15" styleClass="box" onkeyup="presionarNif()"   ></html:text> </td>
-				
-				<td class="labelText" width="100px"> <siga:Idioma key="censo.busquedaDuplicados.patron.institucion"/> </td>
-				<td>
-					<html:select styleId="listadoInstitucion" property="idInstitucion" styleClass="boxCombo" onchange="presionarNumeroColegiado()">
-							<html:option value="">&nbsp;</html:option>
-							<c:forEach items="${listadoInstituciones}" var="inst">
-								<html:option value="${inst.idInstitucion}">${inst.abreviatura}</html:option>
-							</c:forEach>
-					</html:select>
-				</td>		
-				<td class="labelText"><siga:Idioma key="censo.busquedaDuplicados.patron.nombre"/></td>				
-				<td><html:text styleId="nombreText" name="MantenimientoDuplicadosForm" property="nombre" size="25" styleClass="box" onkeyup="presionarNombreApellidos()" ></html:text></td>
-			</tr>
-			<tr>
-				<td class="labelText" width="100px">  </td>
-				<td>  </td>
-				<td class="labelText" width="100px"> <siga:Idioma key="censo.busquedaDuplicados.patron.numeroColegiado"/> </td>
-				<td> <html:text styleId="numeroColegiadoText" name="MantenimientoDuplicadosForm" property="numeroColegiado" size="20" styleClass="box" onkeyup="presionarNumeroColegiado()"></html:text> </td>
-				<td class="labelText"><siga:Idioma key="censo.busquedaDuplicados.patron.apellido1"/></td>
-				<td><html:text styleId="apellido1Text" name="MantenimientoDuplicadosForm" property="apellido1" size="35" styleClass="box" onkeyup="presionarNombreApellidos()" ></html:text></td>
+				<td id="tdIdentificacion" style="border: 1px solid white;">
+					<table>
+						<tr>
+							<td class="labelText">
+								Número Identificación
+							</td>
+							<td>
+								<html:text styleId="nifcif" name="MantenimientoDuplicadosForm" property="nifcif" size="15" styleClass="box" onkeyup="presionarNif()" />
+							</td>
+						</tr>
+					</table>
+				</td>
+
+				<td id="tdColegiacion" style="border: 1px solid white;">
+					<table>
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="censo.busquedaDuplicados.patron.institucion" />
+							</td>
+							<td>
+								<html:select styleId="listadoInstitucion" property="idInstitucion" styleClass="boxCombo" onchange="presionarNumeroColegiado()">
+									<html:option value="">&nbsp;</html:option>
+									<c:forEach items="${listadoInstituciones}" var="inst">
+										<html:option value="${inst.idInstitucion}">${inst.abreviatura}</html:option>
+									</c:forEach>
+								</html:select>
+							</td>
+						</tr>
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="censo.busquedaDuplicados.patron.numeroColegiado" />
+							</td>
+							<td>
+								<html:text styleId="numeroColegiadoText" name="MantenimientoDuplicadosForm" property="numeroColegiado" size="20" styleClass="box" onkeyup="presionarNumeroColegiado()" />
+							</td>
+						</tr>
+					</table>
+				</td>
+
+				<td id="tdNombre" style="border: 1px solid white;">
+					<table>
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="censo.busquedaDuplicados.patron.nombre" />
+							</td>
+							<td>
+								<html:text styleId="nombreText" name="MantenimientoDuplicadosForm" property="nombre" size="25" styleClass="box" onkeyup="presionarNombreApellidos()" />
+							</td>
+						</tr>
+						<tr>
+							<td class="labelText">Apellidos</td>
+							<td>
+								<html:text styleId="apellido1Text" name="MantenimientoDuplicadosForm" property="apellido1" size="35" styleClass="box" onkeyup="presionarNombreApellidos()" />
+							</td>
+						</tr>
+					</table>
+				</td>
 			</tr>
 		</table>
-		</siga:ConjCampos>
-	</td></tr></table>
+	</siga:ConjCampos>
+
 	<siga:ConjBotonesBusqueda botones="B,L"/>
 
 	</html:form>  

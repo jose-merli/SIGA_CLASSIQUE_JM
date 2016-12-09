@@ -654,7 +654,7 @@ public class DatosColegiacionAction extends MasterAction {
 			
 			camposOcultos = (Vector)formulario.getDatosTablaOcultos(0);		
 			
-			String message=admEstados.eliminarEstadoColegiado((String)camposOcultos.get(1),(String)camposOcultos.get(0),(String)camposOcultos.get(5),usr);
+			String message=admEstados.eliminarEstadoColegiado((String)camposOcultos.get(1),(String)camposOcultos.get(0),(String)camposOcultos.get(5));
 			
 			CenDireccionesBean beanDir = new CenDireccionesBean ();
 			

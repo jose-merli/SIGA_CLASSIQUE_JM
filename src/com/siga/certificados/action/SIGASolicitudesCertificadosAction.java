@@ -3635,63 +3635,72 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			response.getWriter().write(json.toString()); 		
 		}    	
 	
-		 /**
-		 *Obtiene los duplicados de una persona
-		 * @param request
-		 * @param response
-		 */
-		private void getAjaxObtenerDuplicados(HttpServletRequest request, HttpServletResponse response) throws Exception {	
+	/**
+	 *Obtiene los duplicados de una persona
+	 * @param request
+	 * @param response
+	 */
+	private void getAjaxObtenerDuplicados(HttpServletRequest request, HttpServletResponse response) throws Exception {	
 
-			DuplicadosHelper helper = new DuplicadosHelper();
-			MantenimientoDuplicadosForm miFormulario = new MantenimientoDuplicadosForm();
-			String composicionTabla ="";
-			
-			miFormulario.setNifcif(request.getParameter("nidSolicitante"));
-			
-			Vector personasSimilares = helper.getPersonasSimilares(miFormulario);
-			Hashtable registro;
-			if(personasSimilares != null && personasSimilares.size() >1){   //Mayor que uno para que no se cuente a él mismo.
-				composicionTabla += "<tr><td WIDTH='18%' align='center'><strong>Nº de colegiado</strong></td><td WIDTH='18%' align='center'><strong>Nif</strong></td>"+
-						"<td WIDTH='18%' align='center'><strong>Nombre</strong></td><td WIDTH='18%' align='center'><strong>Apellido1</strong></td><td WIDTH='18%' align='center'><strong>Apellido2</td><strong></td>"+
-						"<td WIDTH='18%'>&nbsp;</td>";
-						
-						
-				 for (int i = 0; i < personasSimilares.size(); i++)	{
-					 registro =(Hashtable)personasSimilares.elementAt(i);
-					 
-					 composicionTabla +="<tr><td>"+(String)registro.get("NOCOLEGIADOCGAE")+"</td>" +
-					 		"<td>"+(String)registro.get("NIFCIF")+"</td>" +
-					 		"<td>"+(String)registro.get("NOMBRE")+"</td>" +
-					 		"<td>"+(String)registro.get("APELLIDOS1")+"</td>" +
-					 		"<td>"+(String)registro.get("APELLIDOS2")+"</td>" +
-					 		"<td> <img id='iconoboton_informacionLetrado1' src='/SIGA/html/imagenes/binformacionLetrado_off.gif' style='cursor:pointer;' alt='Información letrado' class='botonesIcoTabla' " +
-					 				"name='iconoFila' border='0' onClick='informacionLetrado("+(String)registro.get("IDPERSONA")+","+"2000"+");'>"+
-					 				"<img id='iconoboton_informacionLetrado1' src='/SIGA/html/imagenes/bconsultar_on.gif' style='cursor:pointer;' alt='Mantenimiento duplicados' class='botonesIcoTabla' " +
-					 				"name='iconoFila' border='0' " +
-					 				"onClick= mantenimientoDuplicados('"+(String)registro.get("NIFCIF")+"');>"+
-					 		"</td>";
-					 
-					 
-					 
-				 }
+		DuplicadosHelper helper = new DuplicadosHelper();
+		MantenimientoDuplicadosForm miFormulario = new MantenimientoDuplicadosForm();
+		String composicionTabla = "";
+
+		miFormulario.setNifcif(request.getParameter("nidSolicitante"));
+
+		Vector personasSimilares = helper.getPersonasSimilares(miFormulario);
+		Hashtable registro;
+		if (personasSimilares != null && personasSimilares.size() > 1) { // Mayor que uno para que no se cuente a él mismo.
+			composicionTabla += "<tr><td WIDTH='18%' align='center'><strong>Nº de colegiado</strong></td><td WIDTH='18%' align='center'><strong>Nif</strong></td>"
+					+ "<td WIDTH='18%' align='center'><strong>Nombre</strong></td><td WIDTH='18%' align='center'><strong>Apellido1</strong></td><td WIDTH='18%' align='center'><strong>Apellido2</td><strong></td>"
+					+ "<td WIDTH='18%'>&nbsp;</td>";
+
+			for (int i = 0; i < personasSimilares.size(); i++) {
+				registro = (Hashtable) personasSimilares.elementAt(i);
+
+				composicionTabla += "<tr><td>"
+						+ (String) registro.get("NOCOLEGIADOCGAE")
+						+ "</td>"
+						+ "<td>"
+						+ (String) registro.get("NIFCIF")
+						+ "</td>"
+						+ "<td>"
+						+ (String) registro.get("NOMBRE")
+						+ "</td>"
+						+ "<td>"
+						+ (String) registro.get("APELLIDOS1")
+						+ "</td>"
+						+ "<td>"
+						+ (String) registro.get("APELLIDOS2")
+						+ "</td>"
+						+ "<td> <img id='iconoboton_informacionLetrado1' src='/SIGA/html/imagenes/binformacionLetrado_off.gif' style='cursor:pointer;' alt='Información letrado' class='botonesIcoTabla' "
+						+ "name='iconoFila' border='0' onClick='informacionLetrado("
+						+ (String) registro.get("IDPERSONA")
+						+ ", 2000);'>"
+						+ "<img id='iconoboton_informacionLetrado1' src='/SIGA/html/imagenes/bconsultar_on.gif' style='cursor:pointer;' alt='Mantenimiento duplicados' class='botonesIcoTabla' "
+						+ "name='iconoFila' border='0' " + "onClick= mantenimientoDuplicados('" + (String) registro.get("NIFCIF") + "','"
+						+ (String) registro.get("NOCOLEGIADOCGAE") + "','" + (String) registro.get("NOMBRE") + "','" + (String) registro.get("APELLIDOS1")
+						+ "','" + (String) registro.get("APELLIDOS2") + "');>" + "</td>";
+
 			}
-			
-			
-			JSONObject json = new JSONObject();
-			UsrBean usr = this.getUserBean(request);
-			
-			// Devuelvo la lista de series de facturacion
-	    	ArrayList<String> aOptionsListadoDocumentacion = new ArrayList<String>();
-	    	if(composicionTabla != null && !"".equalsIgnoreCase(composicionTabla)){
-	    		aOptionsListadoDocumentacion.add(composicionTabla);
-	    	}
-	    	json.put("aOptionsListadoDocumentacion", aOptionsListadoDocumentacion);
-			
-			response.setContentType("text/x-json;charset=UTF-8");
-			response.setHeader("Cache-Control", "no-cache");
-			response.setHeader("Content-Type", "application/json");
-		    response.setHeader("X-JSON", json.toString());
-			response.getWriter().write(json.toString()); 		
-		}    	
+		}
+
+		JSONObject json = new JSONObject();
+		UsrBean usr = this.getUserBean(request);
+
+		// Devuelvo la lista de series de facturacion
+		ArrayList<String> aOptionsListadoDocumentacion = new ArrayList<String>();
+		if (composicionTabla != null && !"".equalsIgnoreCase(composicionTabla)) {
+			aOptionsListadoDocumentacion.add(composicionTabla);
+		}
+		json.put("aOptionsListadoDocumentacion", aOptionsListadoDocumentacion);
+
+		response.setContentType("text/x-json;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+		response.setHeader("X-JSON", json.toString());
+		response.getWriter().write(json.toString());
+		
+	} //getAjaxObtenerDuplicados()
 	
 }

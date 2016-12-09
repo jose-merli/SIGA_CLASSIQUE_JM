@@ -25,49 +25,19 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
-<%@page import="java.util.Vector"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="java.util.ArrayList"%>
 
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-		
 	UsrBean usrbean = (UsrBean) session.getAttribute(ClsConstants.USERBEAN);
+	
 	String idInstitucionLocation = usrbean.getLocation();
 	
 	Hashtable datos = (Hashtable)request.getAttribute("datos");
-	Hashtable htPersona0 = (Hashtable)datos.get("persona0");
-	Hashtable htPersona1 = (Hashtable)datos.get("persona1");
-	CenPersonaBean persona0 = (CenPersonaBean)htPersona0.get("datosPersonales");
-	CenPersonaBean persona1 = (CenPersonaBean)htPersona1.get("datosPersonales");
-	
-	
-	Vector datosColegiales0 = (Vector)htPersona0.get("datosColegiales");
-	Vector datosColegiales1 = (Vector)htPersona1.get("datosColegiales");
-	
-	String idInstitucion0="";
-	String idInstitucion1="";
-	
-	if(datosColegiales0 != null && datosColegiales0.size()>0){
-		Hashtable colegiado0 = (Hashtable)datosColegiales0.elementAt(0);
-		CenColegiadoBean datosColegiacion0 = (CenColegiadoBean) colegiado0.get("datosColegiacion");
-		idInstitucion0 = datosColegiacion0.getIdInstitucion().toString();
-	}
-	if(datosColegiales1 != null && datosColegiales1.size()>0){
-		Hashtable colegiado1 = (Hashtable)datosColegiales1.elementAt(0);
-		CenColegiadoBean datosColegiacion1 = (CenColegiadoBean) colegiado1.get("datosColegiacion");
-		idInstitucion1 = datosColegiacion1.getIdInstitucion().toString();
-	}	
-	
-	String idPersona0 =	persona0.getIdPersona().toString();
-	String idPersona1 = persona1.getIdPersona().toString();
-	
-	//Comprobamos si es letrado o no
-	String letrado0 = CenClienteAdm.getEsLetrado(idPersona0, idInstitucion0);
-	String letrado1 = CenClienteAdm.getEsLetrado(idPersona1, idInstitucion1);
-		
-	String colegiaciones0 = htPersona0.get("colegiaciones").toString();
-	String colegiaciones1 = htPersona1.get("colegiaciones").toString();
-	
+	String idPersona0 =	((CenPersonaBean) ((ArrayList) datos.get("datosPersonales")).get(0)).getIdPersona().toString();
+	String idPersona1 =	((CenPersonaBean) ((ArrayList) datos.get("datosPersonales")).get(1)).getIdPersona().toString();
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -100,7 +70,7 @@
 		<siga:TituloExt titulo="censo.busquedaDuplicados.titulo" localizacion="censo.busquedaDuplicados.titulo.fusion"/>
 </head>
 
-<body class="tablaCentralCampos" >
+<body class="tablaCentralCampos">
 	
 	<html:form action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
 		<html:hidden property = "idPersonaOrigen" value = ""/>
@@ -108,6 +78,7 @@
 		<html:hidden property = "idInstOrigen" value = ""/>
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property = "listaDirecciones" value=""/>
+		<html:hidden property = "listaEstados" value=""/>
 		<html:hidden property = "tablaDatosDinamicosD" value=""/>
 		<html:hidden property = "filaSelD" value=""/>
 		<input type="hidden" id="verFichaLetrado"  name="verFichaLetrado" value="">
@@ -134,476 +105,572 @@
 	
 		<c:choose>
 			<c:when test="${empty data}">
-				<div class="notFound">
+			<div class="notFound">
 				<br><br>
 		   		<p class="titulitos" style="text-align:center"><siga:Idioma key="messages.noRecordFound"/></p>
 				<br><br>
-				</div>
+			</div>
 			</c:when>
 			
 			<c:otherwise>		
-			<siga:ConjCampos leyenda="censo.fusionDuplicados.datosPersonales.titulo">
-				<table width="100%"> 
-					
-					<tr>
-						<td class="labelText" width="30%">
-							<siga:Idioma key="censo.fusionDuplicados.datosPersonales.identificador"/> | Última Modificación
-						</td>
-						<td class="labelTextValue" width="30%">
-							<c:out value="${datos.persona0.datosPersonales.idPersona}"/>
-							| <c:out value="${datos.persona0.datosPersonales.fechaMod}"/>
-						</td>
-						<td class="labelTextValue" width="30%">
-							<c:out value="${datos.persona1.datosPersonales.idPersona}"/>
-							| <c:out value="${datos.persona1.datosPersonales.fechaMod}"/>
-						</td>
-					</tr>
-					
-					<tr>
-						<td class="labelText">
-							NIF
-						</td>
-						<td class="labelTextValue">
-							<c:out value="${datos.persona0.datosPersonales.NIFCIF}"/>
-						</td>
-						<td class="labelTextValue">
-							<c:out value="${datos.persona1.datosPersonales.NIFCIF}"/>
-						</td>
-					</tr>
-					
-					<tr>
-						<td class="labelText">
-							Nombre | Apellido 1 | Apellido 2
-						</td>
-						<td class="labelTextValue">
-							<c:out value="${datos.persona0.datosPersonales.nombre}"/>
-							|<c:out value="${datos.persona0.datosPersonales.apellido1}"/>
-							|<c:out value="${datos.persona0.datosPersonales.apellido2}"/>
-						</td>
-						<td class="labelTextValue">
-							<c:out value="${datos.persona1.datosPersonales.nombre}"/>
-							|<c:out value="${datos.persona1.datosPersonales.apellido1}"/>
-							|<c:out value="${datos.persona1.datosPersonales.apellido2}"/>
-						</td>
-					</tr>
-					
-					<tr>
-						<td class="labelText">
-							<siga:Idioma key="censo.fusionDuplicados.datosPersonales.fechaNacimiento"/>
-							|<siga:Idioma key="censo.fusionDuplicados.datosPersonales.lugarNacimiento"/>
-						</td>
-						<td class="labelTextValue">
-							<c:out value="${datos.persona0.datosPersonales.fechaNacimiento}"/>
-							|<c:out value="${datos.persona0.datosPersonales.naturalDe}"/>
-						</td>
-						<td class="labelTextValue">
-							<c:out value="${datos.persona1.datosPersonales.fechaNacimiento}"/>
-							|<c:out value="${datos.persona1.datosPersonales.naturalDe}"/>
-						</td>
-					</tr>
-					<tr>
-						<td class="labelText">
-						</td>
-						<td class="labelTextValue">
+			<div name="divScroll" style="overflow-y:scroll; height:170px;">
+				<siga:ConjCampos leyenda="censo.fusionDuplicados.datosPersonales.titulo">
+					<table width="100%" style="vertical-align:top"> 
+						<tr>
+						
+							<!-- Etiquetas de campos -->
+							<td width="26%">
+								<table>
+									<tr>
+										<td class="labelText">
+											Identificación | Última Modificación
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="labelText">
+											Apellido 1 Apellido 2, Nombre
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="labelText">
+											<siga:Idioma key="censo.fusionDuplicados.datosPersonales.fechaNacimiento"/>&nbsp;|&nbsp;
+											<siga:Idioma key="censo.fusionDuplicados.datosPersonales.lugarNacimiento"/>
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="labelText">
+											<b>>> Modificar datos >></b>
+										</td>
+									</tr>
+									
+									<tr>
+										<!-- Aqui se meten los radio buttons para seleccionar el colegiado base -->
+										<td class="labelText">
+											<b>Seleccione cuál será el destino</b>
+											<br>
+											(datos generales que se conservarán)
+										</td>
+									</tr>
+								</table>
+							</td>
 							
-								<img id="iconoboton_informacionLetrado1" src="/SIGA/html/imagenes/binformacionLetrado_off.gif" 
-								style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila"
-								 title="Acceso a ficha" border="0" onClick="informacionLetrado('${datos.persona0.datosPersonales.idPersona}','<%=idInstitucion0%>'); " >
-						</td>
-						<td class="labelTextValue">
+							<!-- Personas -->
+							<c:forEach items="${datos.datosPersonales}" var="datosPersona" varStatus="status">
+							<td width="37%">
+								<div id="datosPersonaBox0">
+								<table>
+									<tr>
+										<td class="labelTextValue">
+											<c:out value="${datosPersona.NIFCIF}"/>
+											| <c:out value="${datosPersona.fechaMod}"/>
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="labelTextValue">
+											<c:out value="${datosPersona.apellido1}"/>&nbsp;
+											<c:out value="${datosPersona.apellido2}"/>,&nbsp; 
+											<c:out value="${datosPersona.nombre}"/>
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="labelTextValue">
+											<c:out value="${datosPersona.fechaNacimiento}"/>
+											<c:if test="${datosPersona.fechaNacimiento==''}">
+												<i>[<strike>fecha de nacimiento</strike>]</i>
+											</c:if>
+											 | <c:out value="${datosPersona.naturalDe}"/>
+											<c:if test="${datosPersona.naturalDe==''}">
+												<i>[<strike>lugar de nacimiento</strike>]</i>
+											</c:if>
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="labelTextValue">
+											<img id="iconoboton_informacionLetrado1" src="/SIGA/html/imagenes/binformacionLetrado_off.gif" 
+											style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila"
+											 title="Acceso a ficha" border="0" onClick="informacionLetrado('${datosPersona.idPersona}','<%=idInstitucionLocation%>'); " >
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="labelTextValue">
+											<input name="idPersonaSel" value="${datosPersona.idPersona}" type="radio" onclick="seleccionar(0, <%=idPersona0%>, <%=idPersona1%>);"/> 
+										</td>
+									</tr>
+								</table>
+								</div>
+							</td>
+							</c:forEach>
 						
-							<img id="iconoboton_informacionLetrado1" src="/SIGA/html/imagenes/binformacionLetrado_off.gif" 
-							style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila" 
-							title="Acceso a ficha" border="0" onClick="informacionLetrado('${datos.persona1.datosPersonales.idPersona}','<%=idInstitucion1%>'); ">		
-						</td>
-					</tr>
-					
+						</tr>
+					</table>
+				</siga:ConjCampos>
+			</div>
+			
+			<hr style="color:black;"></hr>
+			
+			<div name="divScroll" style="overflow-y:scroll; height:500px;">
+				
+				<!-- INI Colegiaciones iguales -->
+				<c:forEach items="${datos.datosColegialesIguales}" var="datosColUnica" varStatus="status">
+				
+				<c:if test="${datosColUnica.fechaProduccion!=''}">
+					<c:set var="institucionColegiacion" value="${datosColUnica.institucionColegiacion} (autogestión)"/>
+				</c:if>
+				<c:if test="${datosColUnica.fechaProduccion==''}">
+					<c:set var="institucionColegiacion" value="${datosColUnica.institucionColegiacion}"/>
+				</c:if>
+				
+				<siga:ConjCampos leyenda="${institucionColegiacion}">
+				
+					<!-- INI Datos colegiacion comun -->
+					<table width="100%">
 					<tr>
-						<td class="labelText"></td>
+						<td width="26%" class="labelText"> 
+							Num. col. | Fecha Inc. | Inscr. y Resid. 
+						</td>
 						
-						<!-- Aqui se meten los radio buttons para seleccionar el colegiado base -->
-						<td class="labelTextValue">
-							<input name="idPersonaSel" value="${datos.persona0.datosPersonales.idPersona}" type="radio" onclick="seleccionar(0, <%=idPersona0%>, <%=idPersona1%>, '<%=colegiaciones1%>');"/> 
+						<c:forEach items="${datosColUnica.datosColegiacion}" var="datosCol" varStatus="status">
+						<td width="37%">
+							<table>
+								<tr>
+									<td class="labelText" colspan="3">
+										<c:out value="${datosCol.NColegiado}"/><c:out value="${datosCol.NComunitario}"/>
+										| <c:out value="${datosCol.fechaIncorporacion}"/>
+								
+										<c:if test="${datosCol.comunitario=='1'}">
+										| <b><c:out value="Inscrito"/></b> &nbsp;
+										</c:if>
+										
+										|
+										<c:choose>
+											<c:when test="${datosCol.situacionResidente=='1'}">
+												<c:out value="Residente"/>
+											</c:when>
+											<c:otherwise>
+												<c:out value="No Residente"/>
+											</c:otherwise>
+										</c:choose>
+									</td>
+								</tr>
+							</table>
 						</td>
-						<td class="labelTextValue">
-							<input name="idPersonaSel" value="${datos.persona0.datosPersonales.idPersona}" type="radio" onclick="seleccionar(1, <%=idPersona1%>, <%=idPersona0%>, '<%=colegiaciones0%>');"/>
+						</c:forEach>
+					</tr>
+								
+					<tr>
+						<td width="26%" class="labelText"> 
+							Histórico de estados
 						</td>
+						
+						<c:forEach items="${datosColUnica.historicoEstadosColegiacion}" var="datosCol" varStatus="status">
+						<td width="37%">
+							<table>
+								<c:forEach items="${datosCol}" var="histEstados"  varStatus="status">
+								<tr>
+									<td class="labelTextValue">
+										<input type="checkBox" name="checkEstado" id="${histEstados.row.IDPERSONA}" value="${histEstados.row.IDINSTITUCION}&&${histEstados.row.IDPERSONA}&&${histEstados.row.FECHAESTADO}" checked/>
+									</td>
+									<td class="labelText">
+										<c:out value="${histEstados.row.DESCRIPCION}"/>
+									</td>
+									<td class="labelText">
+										desde <c:out value="${histEstados.row.FECHAESTADO_SPANISH}"/>
+									</td>
+								</tr>															
+								</c:forEach>
+							</table>
+						</td>
+						</c:forEach>
+					</tr>
+					</table>
+					<!-- FIN Datos colegiacion comun -->
+
+					<table width="100%">
+						<tr>
+							<td class="labelText">
+								<hr/>
+							</td>
+						</tr>
+						<tr>
+							<td class="labelText">
+								<b><u>Direcciones</u></b>
+							</td>
+						</tr>
+					</table>
+					
+					<!-- INI Conjunto de direcciones de cada colegiacion comun -->
+					<table width="100%">
+					<tr>
+						<!-- Etiquetas de campos -->
+						<td width="26%">
+							<table>
+								<tr>
+									<td class="labelText">
+										Selección | Tipo
+									</td>
+								</tr>
+								<tr>
+									<td class="labelText">
+										Domicilio 
+									</td>
+								</tr>
+								<tr>
+									<td class="labelText">
+										Población | Provincia | País
+									</td>
+								</tr>
+								<tr>
+									<td class="labelText">
+										Correo | Teléfonos
+									</td>
+								</tr>
+								<tr>
+									<td class="labelText">
+										Última modificación
+									</td>
+								</tr>
+								<tr>
+									<td class="labelText">
+										<b>Prevalecerán los tipos y las preferencias de envío de la persona destino</b>
+									</td>
+								</tr>
+							</table>
+						</td>
+						
+						<!-- Personas -->
+						<c:forEach items="${datosColUnica.direcciones}" var="datosColDir" varStatus="status">
+						<td width="37%">
+							<table>
+								<c:forEach items="${datosColDir}" var="datosDir"  varStatus="status">
+								<tr>
+									<td class="labelTextValue">
+										<input type="checkBox" name="checkDireccion" id="${datosDir.IDPERSONA}" value="${datosDir.IDINSTITUCION}&&${datosDir.IDPERSONA}&&${datosDir.IDDIRECCION}" checked/>
+										<c:out value="${datosDir.TIPOSDIRECCION}"/>
+										<c:if test="${datosDir.TIPOSDIRECCION==''}">
+											<i>[<strike>tipos</strike>]</i>
+										</c:if>
+									</td>
+								</tr>
+								
+								<tr>
+									<td class="labelTextValue">
+										<c:out value="${datosDir.DOMICILIO}"/>
+										<c:if test="${datosDir.DOMICILIO==''}">
+											<i>[<strike>domicilio</strike>]</i>
+										</c:if>
+									</td>
+								</tr>
+								
+								<tr>
+									<td class="labelTextValue">
+										<c:out value="${datosDir.POBLACION}"/>
+										<c:if test="${datosDir.POBLACION==''}">
+											<i>[<strike>población</strike>]</i>
+										</c:if>
+										 | <c:out value="${datosDir.PROVINCIA}"/>
+										<c:if test="${datosDir.PROVINCIA==''}">
+											<i>[<strike>provincia</strike>]</i>
+										</c:if>
+										 | <c:out value="${datosDir.PAIS}"/>
+									</td>
+								</tr>
+								
+								<tr>
+									<td class="labelTextValue">
+										<c:out value="${datosDir.CORREOELECTRONICO}"/>
+										<c:if test="${datosDir.CORREOELECTRONICO==''}">
+											<i>[<strike>correo electrónico</strike>]</i>
+										</c:if>
+										<c:if test="${datosDir.TELEFONO1!=''}">
+										| <c:out value="${datosDir.TELEFONO1}"/>
+										</c:if>
+										<c:if test="${datosDir.TELEFONO2!=''}">
+										| <c:out value="${datosDir.TELEFONO2}"/>
+										</c:if>
+										<c:if test="${datosDir.MOVIL!=''}">
+										| <c:out value="${datosDir.MOVIL}"/>
+										</c:if>
+									</td>
+								</tr>
+								
+								<tr>
+									<td class="labelTextValue">
+										<c:out value="${datosDir.FECHAMODIFICACION}"/>
+									</td>
+								</tr>
+								</c:forEach>
+								
+								<tr>
+									<td>
+										&nbsp;
+									</td>
+								</tr>															
+							</table>
+						</td>
+						</c:forEach>
+						
+					</tr>
+					</table>
+					<!-- FIN Conjunto de direcciones de cada colegiacion comun -->
+
+				</siga:ConjCampos>
+				</c:forEach>
+				<!-- FIN Colegiaciones iguales -->
+					
+				<siga:ConjCampos leyenda="censo.fusionDuplicados.colegiaciones.titulo">
+
+					<!-- INI Sanciones y certificados -->
+					<table width="100%">
+					<tr>
+						<td width="26%" class="labelText">
+							Sanciones y Certificados
+						</td>
+						
+						<c:forEach items="${datos.datosClienteCGAE}" var="datosCliente" varStatus="status">
+						<td width="37%" class="labelText">
+							<c:out value="${datosCliente.sanciones}"></c:out> sanciones y 
+							<c:out value="${datosCliente.certificados}"></c:out> certificados
+						</td>
+						</c:forEach>
+					</tr>
+					</table>
+					<!-- FIN Sanciones y certificados -->
+					
+					<!-- INI Colegiaciones diferentes -->
+ 					<table width="100%">
+					<tr>
+						<!-- Etiquetas de campos -->
+ 						<td width="26%">
+							<table>
+								<tr>
+									<td>
+										&nbsp;
+									</td>
+								</tr>
+																							
+								<tr>
+									<td class="labelText"> 
+										<siga:Idioma key="Colegio"/> 
+										| Num. col. 
+										| Fecha Inc. <!-- <siga:Idioma key="Fecha Incorporación"/> -->
+ 									</td>
+								</tr>
+								
+								<tr>
+									<td class="labelText"> 
+										Situación colegial
+									</td>
+								</tr>
+							</table>
+						</td>
+						
+						<!-- Personas -->
+						<c:forEach items="${datos.datosColegiales}" var="datosCliente" varStatus="status">
+ 						<td width="37%">
+							<table>
+								<c:forEach items="${datosCliente}" var="datosCol"  varStatus="status">
+								<tr>
+									<td>
+										&nbsp;
+									</td>
+								</tr>															
+								
+								<tr>
+									<td class="labelText">
+										<c:out value="${datosCol.datosColegio.institucionColegiacion}"/> 
+										<c:if test="${datosCol.datosColegio.fechaProduccion!=null && datosCol.datosColegio.fechaProduccion!=''}">
+											<b>(autogestión)</b>
+										</c:if>
+										
+										<c:if test="${datosCol.datosColegiacion.NColegiado!=null}">
+											| <c:out value="${datosCol.datosColegiacion.NColegiado}"/><c:out value="${datosCol.datosColegiacion.NComunitario}"/>
+										</c:if>
+										
+										| <c:out value="${datosCol.datosColegiacion.fechaIncorporacion}"/>
+									</td>
+								</tr>
+								
+								<tr>
+									<td class="labelText">
+										<c:choose>
+										<c:when test="${datosCol.datosColegiacion.NColegiado!=null}">
+											<c:if test="${datosCol.datosColegiacion.comunitario!=null && datosCol.datosColegiacion.comunitario=='1'}">
+												<b><c:out value="Inscrito"/></b>
+												&nbsp;
+											</c:if>
+											
+											<c:choose>
+											<c:when test="${datosCol.datosColegiacion.situacionResidente!=null && datosCol.datosColegiacion.situacionResidente=='1'}">
+												<c:out value="Residente"/>
+											</c:when>
+											
+											<c:otherwise>
+												<c:out value="No Residente"/>
+											</c:otherwise>
+											</c:choose>
+											
+											<c:choose>
+											<c:when test="${datosCol.estadoColegiacion != null}">
+											| <c:out value="${datosCol.estadoColegiacion.row.DESCRIPCION}"/>
+												desde <c:out value="${datosCol.estadoColegiacion.row.FECHAESTADO_SPANISH}"/>
+											</c:when>
+											
+											<c:otherwise>
+												<i>[<strike>estado colegial</strike>]</i>
+											</c:otherwise>
+											</c:choose>
+										</c:when>
+										
+										<c:otherwise>
+											<i>No Colegiado</i>
+										</c:otherwise>
+										</c:choose>
+									</td>
+								</tr>
+								</c:forEach>
+							</table>
+						</td>
+						</c:forEach>
+						
+					</tr>
+					</table>
+					<!-- FIN Colegiaciones diferentes -->
+					
+				</siga:ConjCampos>
+				
+				<siga:ConjCampos leyenda="censo.fusionDuplicados.direcciones.cabecera">
+				<table width="100%">				
+					<tr>
+						<!-- Etiquetas de campos -->
+						<td width="26%">
+							<table>
+								<tr>
+									<td class="labelText">
+										Selección | Tipo
+									</td>
+								</tr>
+								<tr>
+									<td class="labelText">
+										Domicilio 
+									</td>
+								</tr>
+								<tr>
+									<td class="labelText">
+										Población | Provincia | País
+									</td>
+								</tr>
+								<tr>
+									<td class="labelText">
+										Correo | Teléfonos
+									</td>
+								</tr>
+								<tr>
+									<td class="labelText">
+										Última modif. | Colegio Origen
+									</td>
+								</tr>
+								<tr>
+									<td class="labelText">
+										&nbsp;
+									</td>
+								</tr>
+								<tr>
+									<td class="labelText">
+										<b>Prevalecerán los tipos y las preferencias de envío de la persona destino</b>
+									</td>
+								</tr>
+							</table>
+						</td>
+						
+						<!-- Personas -->
+						<c:forEach items="${datos.datosDirecciones}" var="datosCliente"  varStatus="status">
+						<td width="37%">
+							<table>
+								<c:forEach items="${datosCliente}" var="datosDir"  varStatus="status">
+								<tr>
+									<td class="labelTextValue">
+										<input type="checkBox" name="checkDireccion" id="${datosDir.IDPERSONA}" value="${datosDir.IDINSTITUCION}&&${datosDir.IDPERSONA}&&${datosDir.IDDIRECCION}" checked/>
+										<c:out value="${datosDir.TIPOSDIRECCION}"/>
+										<c:if test="${datosDir.TIPOSDIRECCION==''}">
+											<i>[<strike>tipos</strike>]</i>
+										</c:if>
+									</td>
+								</tr>
+								
+								<tr>
+									<td class="labelTextValue">
+										<c:out value="${datosDir.DOMICILIO}"/>
+										<c:if test="${datosDir.DOMICILIO==''}">
+											<i>[<strike>domicilio</strike>]</i>
+										</c:if>
+									</td>
+								</tr>
+								
+								<tr>
+									<td class="labelTextValue">
+										<c:out value="${datosDir.POBLACION}"/>
+										<c:if test="${datosDir.POBLACION==''}">
+											<i>[<strike>población</strike>]</i>
+										</c:if>
+										 | <c:out value="${datosDir.PROVINCIA}"/>
+										<c:if test="${datosDir.PROVINCIA==''}">
+											<i>[<strike>provincia</strike>]</i>
+										</c:if>
+										 | <c:out value="${datosDir.PAIS}"/>
+									</td>
+								</tr>
+								
+								<tr>
+									<td class="labelTextValue">
+										<c:out value="${datosDir.CORREOELECTRONICO}"/>
+										<c:if test="${datosDir.CORREOELECTRONICO==''}">
+											<i>[<strike>correo electrónico</strike>]</i>
+										</c:if>
+										<c:if test="${datosDir.TELEFONO1!=''}">
+										| <c:out value="${datosDir.TELEFONO1}"/>
+										</c:if>
+										<c:if test="${datosDir.TELEFONO2!=''}">
+										| <c:out value="${datosDir.TELEFONO2}"/>
+										</c:if>
+										<c:if test="${datosDir.MOVIL!=''}">
+										| <c:out value="${datosDir.MOVIL}"/>
+										</c:if>
+									</td>
+								</tr>
+								
+								<tr>
+									<td class="labelTextValue">
+										<c:out value="${datosDir.FECHAMODIFICACION}"/>
+										 | <c:out value="${datosDir.COLEGIOORIGEN}"/>
+										<c:if test="${datosDir.COLEGIOORIGEN==''}">
+											<i>[<strike>colegio origen</strike>]</i>
+										</c:if>
+									</td>
+								</tr>
+								
+								<tr>
+									<td class="labelTextValue">
+										&nbsp;
+									</td>
+								</tr>
+								</c:forEach>
+							</table>
+						</td>
+						</c:forEach>
+						
 					</tr>
 				</table>
 				</siga:ConjCampos>
-				<hr style="color:black;"></hr>
 				
-				<div name="divScroll" style="overflow:auto; height:500px;">
-					<siga:ConjCampos leyenda="censo.fusionDuplicados.colegiaciones.titulo">
-					<table width="100%">
-							
-						<tr>
-							<td width="30%">&nbsp;</td>
-							<td width="30%">&nbsp;</td>
-							<td width="30%">&nbsp;</td>
-						</tr>
-						
-						<tr>
-							<td>
-								<table>
-									<tr>
-										<td class="labelText">
-											Sanciones y Certificados
-										</td>
-									</tr>
-									
-									<tr>
-										<td>
-											&nbsp;
-										</td>
-									</tr>
-									
-									<tr>
-										<td class="labelText"> 
-											<siga:Idioma key="Colegio"/> 
-											| <siga:Idioma key="NºColegiado"/> 
-											| <siga:Idioma key="Fecha Incorporación"/>
-										</td>
-									</tr>
-									
-									<tr>
-										<td class="labelText"> 
-											<siga:Idioma key="Residente"/> 
-											| <siga:Idioma key="Inscrito"/>
-										</td>
-									</tr>
-									
-									<tr>
-										<td class="labelText">
-											<siga:Idioma key="Estado Colegial"/>
-										</td>
-									</tr>
-									
-									<tr>
-										<td class="labelText">
-											<siga:Idioma key="Gestión"/>
-										</td>
-									</tr>
-								</table>
-							</td>
-							
-							<td>
-								<table>
-									<tr>
-										<td class="labelTextValue">
-											<c:out value="${datos.persona0.sanciones}"></c:out> sanciones y 
-											<c:out value="${datos.persona0.certificados}"></c:out> certificados
-										</td>
-									</tr>
-									
-									<tr>
-										<td>
-											&nbsp;
-										</td>
-									</tr>
-									
-									<c:forEach items="${datos.persona0.datosColegiales}" var="datosCol"  varStatus="status">
-										<tr>
-											<td class="labelTextValue" colspan="2">
-												<c:out value="${datosCol.institucionColegiacion}"/> 
-												| <c:out value="${datosCol.datosColegiacion.NColegiado}"/><c:out value="${datosCol.datosColegiacion.NComunitario}"/>
-												| <c:out value="${datosCol.datosColegiacion.fechaIncorporacion}"/>
-											</td>
-										</tr>
-										
-										<tr>
-											<c:choose>
-												<c:when test="${datosCol.datosColegiacion.situacionResidente=='1'}">
-													<td class="labelText">
-														<c:out value="Residente"/>
-													</td>
-												</c:when>
-												
-												<c:otherwise>
-													<td class="labelTextValue">
-														<c:out value="No Residente"/>
-													</td>
-												</c:otherwise>
-											</c:choose>
-										
-											<td class="labelText">
-												<c:choose>
-													<c:when test="${datosCol.datosColegiacion.comunitario=='1'}">
-														<c:out value="Inscrito"/>
-													</c:when>
-												</c:choose>
-											</td>											
-										</tr>
-										
-										<tr>
-											<td class="labelTextValue" colspan="2">
-												<c:if test="${datosCol.estadoColegiacion!=null}">
-													<c:out value="${datosCol.estadoColegiacion.row.DESCRIPCION}"/>
-													desde <c:out value="${datosCol.estadoColegiacion.row.FECHAESTADO}"/>
-												</c:if>
-												<c:if test="${datosCol.estadoColegiacion==null}">
-													Sin estado colegial
-												</c:if>
-											</td>
-										</tr>
-										
-										<tr>
-											<c:if test="${datosCol.fechaProduccion!=''}">
-												<td class="labelTextValue">Se autogestiona</td>
-											</c:if>
-											<c:if test="${datosCol.fechaProduccion==''}">
-												<td class="labelText">Gestionado por CGAE</td>
-											</c:if>
-										</tr>
-										
-										<tr>
-											<td>
-												&nbsp;
-											</td>
-										</tr>															
-									</c:forEach>
-								</table>
-							</td>
-							
-							<td>
-								<table>
-									<tr>
-										<td class="labelTextValue">
-											<c:out value="${datos.persona1.sanciones}"></c:out> sanciones y 
-											<c:out value="${datos.persona1.certificados}"></c:out> certificados
-										</td>
-									</tr>
-									
-									<tr>
-										<td>
-											&nbsp;
-										</td>
-									</tr>
-									
-									<c:forEach items="${datos.persona1.datosColegiales}" var="datosCol"  varStatus="status">
-										<tr>
-											<td class="labelTextValue" colspan="2">
-												<c:out value="${datosCol.institucionColegiacion}"/> 
-												| <c:out value="${datosCol.datosColegiacion.NColegiado}"/><c:out value="${datosCol.datosColegiacion.NComunitario}"/>
-												| <c:out value="${datosCol.datosColegiacion.fechaIncorporacion}"/>
-											</td>
-										</tr>
-										
-										<tr>
-											<c:choose>
-												<c:when test="${datosCol.datosColegiacion.situacionResidente=='1'}">
-													<td class="labelText">
-														<c:out value="Residente"/>
-													</td>
-												</c:when>
-												
-												<c:otherwise>
-													<td class="labelTextValue">
-														<c:out value="No Residente"/>
-													</td>
-												</c:otherwise>
-											</c:choose>
-											
-											<td class="labelText">
-												<c:choose>
-													<c:when test="${datosCol.datosColegiacion.comunitario=='1'}">
-														<c:out value="Inscrito"/>
-													</c:when>
-												</c:choose>
-											</td>
-										</tr>
-										
-										<tr>
-											<td class="labelTextValue" colspan="2">
-												<c:if test="${datosCol.estadoColegiacion!=null}">
-													<c:out value="${datosCol.estadoColegiacion.row.DESCRIPCION}"/>
-													desde <c:out value="${datosCol.estadoColegiacion.row.FECHAESTADO}"/>
-												</c:if>
-												<c:if test="${datosCol.estadoColegiacion==null}">
-													Sin estado colegial
-												</c:if>
-											</td>
-										</tr>
-										
-										<tr>
-											<c:if test="${datosCol.fechaProduccion!=''}">
-												<td class="labelTextValue">Se autogestiona</td>
-											</c:if>
-											<c:if test="${datosCol.fechaProduccion==''}">
-												<td class="labelText">Gestionado por CGAE</td>
-											</c:if>
-										</tr>
-										
-										<tr>
-											<td>
-												&nbsp;
-											</td>
-										</tr>
-									</c:forEach>
-								</table>
-							</td>
-						</tr>
-					</table>
-					</siga:ConjCampos>
-					<siga:ConjCampos leyenda="censo.fusionDuplicados.direcciones.cabecera">
-				    <table width="100%">				
-						<tr>
-							<td width="30%">&nbsp;</td>
-							<td width="30%">&nbsp;</td>
-							<td width="30%">&nbsp;</td>
-						</tr>
-						<tr>
-							<td>
-								<table>
-									<tr>
-										<td class="labelText">
-											Domicilio 
-										</td>
-									</tr>
-									
-									<tr>
-										<td class="labelText">
-											Población | Provincia
-										</td>
-									</tr>
-									
-									<tr>
-										<td class="labelText">
-											País
-										</td>
-									</tr>
-									
-									<tr>
-										<td class="labelText">
-											Teléfono | Móvil | Fax
-										</td>
-									</tr>
-									
-									<tr>
-										<td class="labelText">
-											Correo
-										</td>
-									</tr>
-									
-									<tr>
-										<td class="labelText">
-											Última modificación
-										</td>
-									</tr>
-								</table>
-							</td>
-							
-							<td>
-								<table>
-									<c:forEach items="${datos.persona0.datosDirecciones}" var="datosDir"  varStatus="status">
-										<tr>
-											<td class="labelTextValue">
-												&nbsp;<c:out value="${datosDir.DOMICILIO}"/>
-											</td>
-										</tr>
-										
-										<tr>
-											<td class="labelTextValue">
-												&nbsp;<c:out value="${datosDir.POBLACION}"/> | <c:out value="${datosDir.PROVINCIA}"/>
-											</td>
-										</tr>
-										
-										<tr>
-											<td class="labelTextValue">
-												&nbsp;<c:out value="${datosDir.PAIS}"/>
-											</td>
-										</tr>
-										
-										<tr>
-											<td class="labelTextValue">
-												&nbsp;<c:out value="${datosDir.TELEFONO1}"/> | <c:out value="${datosDir.MOVIL}"/> | <c:out value="${datosDir.FAX1}"/>
-											</td>
-										</tr>
-										
-										<tr>
-											<td class="labelTextValue">
-												&nbsp;<c:out value="${datosDir.CORREOELECTRONICO}"/>
-											</td>
-										</tr>
-										
-										<tr>
-											<td class="labelTextValue">
-												&nbsp;<c:out value="${datosDir.FECHAMODIFICACION}"/>
-											</td>
-										</tr>
-										
-										<tr>
-											<td class="labelTextValue">
-												<input name="checkDireccion" id="${datosDir.IDPERSONA}" value="${datosDir.IDINSTITUCION}&&${datosDir.IDPERSONA}&&${datosDir.IDDIRECCION}" type="checkBox"/>
-											</td>
-										</tr>
-										
-										<tr>
-											<td class="labelTextValue">
-												&nbsp;
-											</td>
-										</tr>
-									</c:forEach>
-								</table>
-							</td>
-							
-							<td>
-								<table>
-									<c:forEach items="${datos.persona1.datosDirecciones}" var="datosDir"  varStatus="status">
-										<tr>
-											<td class="labelTextValue">
-												&nbsp;<c:out value="${datosDir.DOMICILIO}"/>
-											</td>
-										</tr>
-										
-										<tr>
-											<td class="labelTextValue">
-												&nbsp;<c:out value="${datosDir.POBLACION}"/> | <c:out value="${datosDir.PROVINCIA}"/>
-											</td>
-										</tr>
-										
-										<tr>
-											<td class="labelTextValue">
-												&nbsp;<c:out value="${datosDir.PAIS}"/>
-											</td>
-										</tr>
-										
-										<tr>
-											<td class="labelTextValue">
-												&nbsp;<c:out value="${datosDir.TELEFONO1}"/> | <c:out value="${datosDir.MOVIL}"/> | <c:out value="${datosDir.FAX1}"/>
-											</td>
-										</tr>
-										
-										<tr>
-											<td class="labelTextValue">
-												&nbsp;<c:out value="${datosDir.CORREOELECTRONICO}"/>
-											</td>
-										</tr>
-										
-										<tr>
-											<td class="labelTextValue">
-												&nbsp;<c:out value="${datosDir.FECHAMODIFICACION}"/>
-											</td>
-										</tr>
-										
-										<tr>
-											<td class="labelTextValue">
-												<input name="checkDireccion" id="${datosDir.IDPERSONA}" value="${datosDir.IDINSTITUCION}&&${datosDir.IDPERSONA}&&${datosDir.IDDIRECCION}" type="checkBox"/>
-											</td>
-										</tr>
-										
-										<tr>
-											<td class="labelTextValue">
-												&nbsp;
-											</td>
-										</tr>
-									</c:forEach>
-								</table>
-							</td>
-						</tr>
-					</table>
-					</siga:ConjCampos>
-				</div>
+			</div>
+			
 			</c:otherwise>
 		</c:choose>
 		
@@ -706,7 +773,6 @@
 					      		buttonGroup[i].checked=true;
 					      		buttonGroup[i].disabled=true;
 					      }else{
-					    	  	buttonGroup[i].checked=false;
 					    	  	buttonGroup[i].disabled=false;
 					      }
 				      }
@@ -723,18 +789,19 @@
 			// jbd // fin helpers
 			
 			function accionAceptar(){
-				if(incluido){
-					alert("<siga:Idioma key="censo.fusionDuplicados.error.existeColegiacion"/>");
-				}else if (seleccionado){
+				if (seleccionado){
 					<%if(idPersona1.equalsIgnoreCase(idPersona0)){%>
 						alert("<siga:Idioma key="censo.fusionDuplicados.error.mismaPersona"/>");
 					<%}else{%>
 						sub();
 						if(document.forms[0].checkDireccion){
-							var direcciones = getSelectedCheckboxValue(document.forms[0].checkDireccion);
-							document.forms[0].listaDirecciones.value = direcciones;
+							document.forms[0].listaDirecciones.value = getSelectedCheckboxValue(document.forms[0].checkDireccion);
+						}
+						if(document.forms[0].checkEstado){
+							document.forms[0].listaEstados.value = getSelectedCheckboxValue(document.forms[0].checkEstado);
 						}
 						if(confirm("Se van a combinar los datos a una sola persona.")){
+							alert("Este proceso puede durar varios minutos. Por favor, espere...");
 							document.forms[0].modo.value = "aceptar";
 							document.forms[0].target="submitArea";	
 						 	document.forms[0].submit();
@@ -747,12 +814,14 @@
 				}
 			}
 
-			function seleccionar(perso, idD, idO, col){
+			function seleccionar(perso, idD, idO){
 				document.forms[0].idPersonaDestino.value = idD;
 				document.forms[0].idPersonaOrigen.value = idO;
-				document.forms[0].idInstOrigen.value = col;
 				if(document.forms[0].checkDireccion!=null){
 					seleccionarChecks(document.forms[0].checkDireccion, idD);
+				}
+				if(document.forms[0].checkEstado!=null){
+					seleccionarChecks(document.forms[0].checkEstado, idD);
 				}
 				seleccionado=true;
 			}

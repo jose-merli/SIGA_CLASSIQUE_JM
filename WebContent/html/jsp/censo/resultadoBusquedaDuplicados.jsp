@@ -344,13 +344,6 @@
 	<input type="hidden" id="verFichaLetrado"  name="verFichaLetrado" value="">
 </html:form>
 	
-	<table class="tablaTitulo" align="center">
-		<tr>
-		<td class="titulitos">
-			<siga:Idioma key="censo.busquedaClientesAvanzada.literal.resultados" />
-		</td>
-		</tr>
-	</table>
 	
 	<siga:Table 
 	   name="tablaDatos"
