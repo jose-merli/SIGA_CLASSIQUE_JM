@@ -796,7 +796,7 @@
 		{	
 				   jQuery.ajax({ 
 						type: "POST",
-						url: "/SIGA/CER_GestionSolicitudes.do?modo=getAjaxObtenerDuplicados",				
+						url: "/SIGA/CEN_MantenimientoDuplicados.do?modo=getAjaxObtenerDuplicados",				
 						data: "checkIdentificador="+"1"+"&nidSolicitante="+nidSolicitante,
 						dataType: "json",
 						contentType: "application/x-www-form-urlencoded;charset=UTF-8",
@@ -830,7 +830,7 @@
 			<% if(idInstitucionAcceso.equals("2000")){ %>
 				  jQuery.ajax({ 
 						type: "POST",
-						url: "/SIGA/CER_GestionSolicitudes.do?modo=getAjaxObtenerDuplicados",				
+						url: "/SIGA/CEN_MantenimientoDuplicados.do?modo=getAjaxObtenerDuplicados",				
 						data: "checkIdentificador="+"1"+"&nidSolicitante="+nidSolicitante,
 						dataType: "json",
 						contentType: "application/x-www-form-urlencoded;charset=UTF-8",
