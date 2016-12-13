@@ -445,12 +445,16 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			}
 			// Si no hay seleccionados, no se puede hacer nada mas
 			if (seleccionados == null || seleccionados.equalsIgnoreCase("")) {
-				throw new SIGAException(UtilidadesString.getMensajeIdioma(usr, "No se ha seleccionado nada. Seleccione dos personas para fusionar."));
+				String mensaje = "No se ha seleccionado nada. Seleccione dos personas para fusionar.";
+				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr, mensaje));
+				return "exitoFusionar";
 			}
 			// Los seleccionados deben ser 2, separados por comas
 			String[] personasSeleccionadas = UtilidadesString.split(seleccionados, ",");
 			if (personasSeleccionadas.length != 2) {
-				throw new SIGAException(UtilidadesString.getMensajeIdioma(usr, "Selección incorrecta. Seleccione dos personas para fusionar."));
+				String mensaje = "Selección incorrecta. Seleccione dos personas para fusionar.";
+				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr, mensaje));
+				return "exitoFusionar";
 			}
 			
 			// obteniendo los datos de cada persona
@@ -461,7 +465,9 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				// Controlando si ya se estan fusionando estas personas
 				//TODO hay que mostrar al usuario un recurso concreto
 				if (arePersonasFusionando(idPersona, null)) {
-					throw new SIGAException(UtilidadesString.getMensajeIdioma(usr, "Ya se ha solicitado la combinación de alguna de estas personas. Espere unos minutos hasta que termine."));
+					String mensaje = "Ya se ha solicitado la combinación de alguna de estas personas. Espere unos minutos hasta que termine.";
+					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr, mensaje));
+					return "exitoFusionar";
 				}
 				removePersonasFusionando(idPersona, null); // abrimos el semaforo: ya se cerrara mas tarde al comenzar la fusion
 				
@@ -609,9 +615,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			todosLosDatos.put("datosDirecciones", listaDireccionesCGAEDeAmbas);
 			
 			request.setAttribute("datos", todosLosDatos);
-		} catch (SIGAException e) {
-			throwExcp(e.getLiteral(), new String[] { "modulo.censo" }, e, null);	
-		} catch (Exception e) {
+		}catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, null);
 		}
 		return "gestionar";
@@ -670,18 +674,24 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				intInstitucion = Integer.parseInt(stInstitucion);
 				// Si se quiere fusionar un colegiado en el mismo colegio, solo lo permitimos al personal de IT o bien si el colegio no esta en produccion
 				if (admColeg.existeColegiado(Long.parseLong(idPersonaDestino), intInstitucion) != null && !tienePermisoFusionColegiosEnProduccion(mapping, request) && admInst.estaEnProduccion(stInstitucion)) {
-					throw new SIGAException("No está permitida la fusión por seguridad. El colegio "+nombreInstitucion+" usa SIGA y puede contener datos delicados.");
+					String mensaje = "No está permitida la fusión por seguridad. El colegio "+nombreInstitucion+" usa SIGA y puede contener datos delicados.";
+					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, mensaje));
+					return "exitoFusionar";
 				}
 			}
 
 			// semaforo para evitar que se pida la fusion de la misma persona varias veces
 			if (arePersonasFusionando(idPersonaOrigen, idPersonaDestino)) {
-				throw new SIGAException(UtilidadesString.getMensajeIdioma(user, "Ya se ha solicitado la combinación de alguna de estas personas. Espere unos minutos hasta que termine."));
+				String mensaje = "Ya se ha solicitado la combinación de alguna de estas personas. Espere unos minutos hasta que termine.";
+				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, mensaje));
+				return "exitoFusionar";
 			}
 			
 			// comprobando que existan las dos personas a fusionar, por si acaso ya no existe alguna (por ejemplo, si se ha fusionado en otro hilo de ejecucion)
 			if (admPersona.getPersonaPorId(idPersonaOrigen) == null || admPersona.getPersonaPorId(idPersonaDestino) == null) {
-				throw new SIGAException(UtilidadesString.getMensajeIdioma(user, "Ya se ha solicitado la combinación de alguna de estas personas. Por favor, realice una nueva búsqueda."));
+				String mensaje = "Ya se ha solicitado la combinación de alguna de estas personas. Por favor, realice una nueva búsqueda.";
+				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, mensaje));
+				return "exitoFusionar";
 			}
 
 			tx = user.getTransactionPesada();
@@ -818,8 +828,6 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			String msgSalida = "Fusión completada: se encuentran todos los datos de "+beanP.getNombreCompleto()+" en el registro con número de identificación "+beanP.getNIFCIF();
 			request.setAttribute("mensaje", msgSalida);
 			
-		} catch (SIGAException e) {
-			throwExcp(e.getLiteral(), new String[] { "modulo.censo" }, e, tx);	
 		} catch (Exception e) {
 			throwExcp("Error en la fusión de las personas. Consulte al administrador", new String[] { "modulo.censo" }, e, tx);
 		} finally {
