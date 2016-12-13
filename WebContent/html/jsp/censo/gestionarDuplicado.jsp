@@ -78,7 +78,9 @@
 		<html:hidden property = "idInstOrigen" value = ""/>
 		<html:hidden property = "modo" value = ""/>
 		<html:hidden property = "listaDirecciones" value=""/>
+		<html:hidden property = "listaDireccionesNoSeleccionadas" value=""/>
 		<html:hidden property = "listaEstados" value=""/>
+		<html:hidden property = "listaEstadosNoSeleccionados" value=""/>
 		<html:hidden property = "tablaDatosDinamicosD" value=""/>
 		<html:hidden property = "filaSelD" value=""/>
 		<input type="hidden" id="verFichaLetrado"  name="verFichaLetrado" value="">
@@ -157,7 +159,6 @@
 								</table>
 							</td>
 							
-							<!-- Personas -->
 							<c:forEach items="${datos.datosPersonales}" var="datosPersona" varStatus="status">
 							<td width="37%">
 								<div id="datosPersonaBox0">
@@ -227,6 +228,7 @@
 					<c:set var="institucionColegiacion" value="${datosColUnica.institucionColegiacion}"/>
 				</c:if>
 				
+				<br/>
 				<siga:ConjCampos leyenda="${institucionColegiacion}">
 				
 					<!-- INI Datos colegiacion comun -->
@@ -292,132 +294,121 @@
 					</table>
 					<!-- FIN Datos colegiacion comun -->
 
-					<table width="100%">
-						<tr>
-							<td class="labelText">
-								<hr/>
-							</td>
-						</tr>
-						<tr>
-							<td class="labelText">
-								<b><u>Direcciones</u></b>
-							</td>
-						</tr>
-					</table>
-					
 					<!-- INI Conjunto de direcciones de cada colegiacion comun -->
-					<table width="100%">
-					<tr>
-						<!-- Etiquetas de campos -->
-						<td width="26%">
-							<table>
-								<tr>
-									<td class="labelText">
-										Selección | Tipo
-									</td>
-								</tr>
-								<tr>
-									<td class="labelText">
-										Domicilio 
-									</td>
-								</tr>
-								<tr>
-									<td class="labelText">
-										Población | Provincia | País
-									</td>
-								</tr>
-								<tr>
-									<td class="labelText">
-										Correo | Teléfonos
-									</td>
-								</tr>
-								<tr>
-									<td class="labelText">
-										Última modificación
-									</td>
-								</tr>
-								<tr>
-									<td class="labelText">
-										<b>Prevalecerán los tipos y las preferencias de envío de la persona destino</b>
-									</td>
-								</tr>
-							</table>
-						</td>
-						
-						<!-- Personas -->
-						<c:forEach items="${datosColUnica.direcciones}" var="datosColDir" varStatus="status">
-						<td width="37%">
-							<table>
-								<c:forEach items="${datosColDir}" var="datosDir"  varStatus="status">
-								<tr>
-									<td class="labelTextValue">
-										<input type="checkBox" name="checkDireccion" id="${datosDir.IDPERSONA}" value="${datosDir.IDINSTITUCION}&&${datosDir.IDPERSONA}&&${datosDir.IDDIRECCION}" checked/>
-										<c:out value="${datosDir.TIPOSDIRECCION}"/>
-										<c:if test="${datosDir.TIPOSDIRECCION==''}">
-											<i>[<strike>tipos</strike>]</i>
-										</c:if>
-									</td>
-								</tr>
-								
-								<tr>
-									<td class="labelTextValue">
-										<c:out value="${datosDir.DOMICILIO}"/>
-										<c:if test="${datosDir.DOMICILIO==''}">
-											<i>[<strike>domicilio</strike>]</i>
-										</c:if>
-									</td>
-								</tr>
-								
-								<tr>
-									<td class="labelTextValue">
-										<c:out value="${datosDir.POBLACION}"/>
-										<c:if test="${datosDir.POBLACION==''}">
-											<i>[<strike>población</strike>]</i>
-										</c:if>
-										 | <c:out value="${datosDir.PROVINCIA}"/>
-										<c:if test="${datosDir.PROVINCIA==''}">
-											<i>[<strike>provincia</strike>]</i>
-										</c:if>
-										 | <c:out value="${datosDir.PAIS}"/>
-									</td>
-								</tr>
-								
-								<tr>
-									<td class="labelTextValue">
-										<c:out value="${datosDir.CORREOELECTRONICO}"/>
-										<c:if test="${datosDir.CORREOELECTRONICO==''}">
-											<i>[<strike>correo electrónico</strike>]</i>
-										</c:if>
-										<c:if test="${datosDir.TELEFONO1!=''}">
-										| <c:out value="${datosDir.TELEFONO1}"/>
-										</c:if>
-										<c:if test="${datosDir.TELEFONO2!=''}">
-										| <c:out value="${datosDir.TELEFONO2}"/>
-										</c:if>
-										<c:if test="${datosDir.MOVIL!=''}">
-										| <c:out value="${datosDir.MOVIL}"/>
-										</c:if>
-									</td>
-								</tr>
-								
-								<tr>
-									<td class="labelTextValue">
-										<c:out value="${datosDir.FECHAMODIFICACION}"/>
-									</td>
-								</tr>
-								</c:forEach>
-								
-								<tr>
-									<td>
-										&nbsp;
-									</td>
-								</tr>															
-							</table>
-						</td>
-						</c:forEach>
-						
-					</tr>
-					</table>
+					<siga:ConjCampos leyenda="Direcciones de colegio">
+						<table width="100%">
+						<tr>
+							<!-- Etiquetas de campos -->
+							<td width="26%">
+								<table>
+									<tr>
+										<td class="labelText">
+											Selección | Tipo
+										</td>
+									</tr>
+									<tr>
+										<td class="labelText">
+											Domicilio 
+										</td>
+									</tr>
+									<tr>
+										<td class="labelText">
+											Población | Provincia | País
+										</td>
+									</tr>
+									<tr>
+										<td class="labelText">
+											Correo | Teléfonos
+										</td>
+									</tr>
+									<tr>
+										<td class="labelText">
+											Última modificación
+										</td>
+									</tr>
+									<tr>
+										<td class="labelText">
+											<b>Prevalecerán los tipos y las preferencias de envío de la persona destino</b>
+										</td>
+									</tr>
+								</table>
+							</td>
+							
+							<c:forEach items="${datosColUnica.direcciones}" var="datosColDir" varStatus="status">
+							<td width="37%">
+								<table>
+									<c:forEach items="${datosColDir}" var="datosDir"  varStatus="status">
+									<tr>
+										<td class="labelTextValue">
+											<input type="checkBox" name="checkDireccion" id="${datosDir.IDPERSONA}" value="${datosDir.IDINSTITUCION}&&${datosDir.IDPERSONA}&&${datosDir.IDDIRECCION}" checked/>
+											<c:out value="${datosDir.TIPOSDIRECCION}"/>
+											<c:if test="${datosDir.TIPOSDIRECCION==''}">
+												<i>[<strike>tipos</strike>]</i>
+											</c:if>
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="labelTextValue">
+											<c:out value="${datosDir.DOMICILIO}"/>
+											<c:if test="${datosDir.DOMICILIO==''}">
+												<i>[<strike>domicilio</strike>]</i>
+											</c:if>
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="labelTextValue">
+											<c:out value="${datosDir.POBLACION}"/>
+											<c:if test="${datosDir.POBLACION==''}">
+												<i>[<strike>población</strike>]</i>
+											</c:if>
+											 | <c:out value="${datosDir.PROVINCIA}"/>
+											<c:if test="${datosDir.PROVINCIA==''}">
+												<i>[<strike>provincia</strike>]</i>
+											</c:if>
+											 | <c:out value="${datosDir.PAIS}"/>
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="labelTextValue">
+											<c:out value="${datosDir.CORREOELECTRONICO}"/>
+											<c:if test="${datosDir.CORREOELECTRONICO==''}">
+												<i>[<strike>correo electrónico</strike>]</i>
+											</c:if>
+											<c:if test="${datosDir.TELEFONO1!=''}">
+											| <c:out value="${datosDir.TELEFONO1}"/>
+											</c:if>
+											<c:if test="${datosDir.TELEFONO2!=''}">
+											| <c:out value="${datosDir.TELEFONO2}"/>
+											</c:if>
+											<c:if test="${datosDir.MOVIL!=''}">
+											| <c:out value="${datosDir.MOVIL}"/>
+											</c:if>
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="labelTextValue">
+											<c:out value="${datosDir.FECHAMODIFICACION}"/>
+										</td>
+									</tr>
+									
+									<tr>
+										<td>
+											&nbsp;
+										</td>
+									</tr>															
+									</c:forEach>
+									
+								</table>
+							</td>
+							</c:forEach>
+							
+						</tr>
+						</table>
+					</siga:ConjCampos>
 					<!-- FIN Conjunto de direcciones de cada colegiacion comun -->
 
 				</siga:ConjCampos>
@@ -471,7 +462,6 @@
 							</table>
 						</td>
 						
-						<!-- Personas -->
 						<c:forEach items="${datos.datosColegiales}" var="datosCliente" varStatus="status">
  						<td width="37%">
 							<table>
@@ -589,7 +579,6 @@
 							</table>
 						</td>
 						
-						<!-- Personas -->
 						<c:forEach items="${datos.datosDirecciones}" var="datosCliente"  varStatus="status">
 						<td width="37%">
 							<table>
@@ -746,12 +735,40 @@
 			   }
 			   return retArr;
 			}
+			function getNotSelectedCheckbox(buttonGroup) {
+				   // Go through all the check boxes. return an array of all the ones
+				   // that are selected (their position numbers). if no boxes were checked,
+				   // returned array will be empty (length will be zero)
+				   var retArr = new Array();
+				   var lastElement = 0;
+				   if (buttonGroup[0]) { // if the button group is an array (one check box is not an array)
+				      for (var i=0; i<buttonGroup.length; i++) {
+				         if (!buttonGroup[i].checked && buttonGroup[i].disabled==false) {
+				            retArr.length = lastElement;
+				            retArr[lastElement] = i;
+				            lastElement++;
+				         }
+				      }
+				   
+				   } else { // There is only one check box (it's not an array)
+				      if (!buttonGroup.checked && buttonGroup.disabled==false) { // if the one check box is checked
+				         retArr.length = lastElement;
+				         retArr[lastElement] = 0; // return zero as the only array value
+				      }
+				   }
+				   return retArr;
+				}
 
-			function getSelectedCheckboxValue(buttonGroup) {
+			function getSelectedCheckboxValue(buttonGroup, selected) {
 			   // return an array of values selected in the check box group. if no boxes
 			   // were checked, returned array will be empty (length will be zero)
 			   var retArr = new Array(); // set up empty array for the return values
-			   var selectedItems = getSelectedCheckbox(buttonGroup);
+			   var selectedItems;
+			   if (selected) {
+			      selectedItems = getSelectedCheckbox(buttonGroup);
+			   } else {
+				  selectedItems = getNotSelectedCheckbox(buttonGroup);
+			   }
 			   if (selectedItems.length != 0) { // if there was something selected
 			      retArr.length = selectedItems.length;
 			      for (var i=0; i<selectedItems.length; i++) {
@@ -795,10 +812,12 @@
 					<%}else{%>
 						sub();
 						if(document.forms[0].checkDireccion){
-							document.forms[0].listaDirecciones.value = getSelectedCheckboxValue(document.forms[0].checkDireccion);
+							document.forms[0].listaDirecciones.value = getSelectedCheckboxValue(document.forms[0].checkDireccion, true);
+							document.forms[0].listaDireccionesNoSeleccionadas.value = getSelectedCheckboxValue(document.forms[0].checkDireccion, false);
 						}
 						if(document.forms[0].checkEstado){
-							document.forms[0].listaEstados.value = getSelectedCheckboxValue(document.forms[0].checkEstado);
+							document.forms[0].listaEstados.value = getSelectedCheckboxValue(document.forms[0].checkEstado, true);
+							document.forms[0].listaEstadosNoSeleccionados.value = getSelectedCheckboxValue(document.forms[0].checkEstado, false);
 						}
 						if(confirm("Se van a combinar los datos a una sola persona.")){
 							alert("Este proceso puede durar varios minutos. Por favor, espere...");

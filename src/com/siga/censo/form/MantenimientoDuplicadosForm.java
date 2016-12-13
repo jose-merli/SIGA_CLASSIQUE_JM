@@ -22,7 +22,7 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	String nifcif="", nombre="", apellido1="", apellido2="", numeroColegiado="";
 	String campoOrdenacion="", sentidoOrdenacion="", tipoConexion="";
 	String idPersonaOrigen = "", idPersonaDestino = "";
-	String listaDirecciones, listaEstados;
+	private String listaDirecciones, listaEstados, listaDireccionesNoSeleccionadas, listaEstadosNoSeleccionados;
 	String seleccionados;
 	String agruparColegiaciones;
 	String seleccion;
@@ -30,6 +30,18 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	private Vector resultadoBusqueda;
 	private List<CenInstitucionBean> listadoInstituciones;
 
+	public String getListaDireccionesNoSeleccionadas()	{
+		return listaDireccionesNoSeleccionadas;
+	}
+	public void setListaDireccionesNoSeleccionadas(String listaDireccionesNoSeleccionadas)	{
+		this.listaDireccionesNoSeleccionadas = listaDireccionesNoSeleccionadas;
+	}
+	public String getListaEstadosNoSeleccionados()	{
+		return listaEstadosNoSeleccionados;
+	}
+	public void setListaEstadosNoSeleccionados(String listaEstadosNoSeleccionados)	{
+		this.listaEstadosNoSeleccionados = listaEstadosNoSeleccionados;
+	}
 	public String getListaDirecciones() {
 		return listaDirecciones;
 	}

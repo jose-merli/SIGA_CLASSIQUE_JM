@@ -1347,7 +1347,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 		try {
 			RowsContainer rc = this.findBind(sql.toString(), codigos);
 			if (rc != null && rc.size() > 0) {
-				return (Hashtable<String, String>) rc.get(0);
+				return ((Row) rc.get(0)).getRow();
 			} else {
 				return null;
 			}

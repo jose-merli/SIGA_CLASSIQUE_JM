@@ -215,8 +215,8 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 		// Cargo una nueva tabla hash para insertar en la tabla de historico
 		Hashtable hashHist = new Hashtable();			
 		// Cargo los valores obtenidos del formulario referentes al historico			
-		hashHist.put(CenHistoricoBean.C_IDPERSONA, modificacion.get(CenHistoricoBean.C_IDPERSONA));
-		hashHist.put(CenHistoricoBean.C_IDINSTITUCION, modificacion.get(CenHistoricoBean.C_IDINSTITUCION));
+		hashHist.put(CenHistoricoBean.C_IDPERSONA, modificacion.get(CenDatosColegialesEstadoBean.C_IDPERSONA));
+		hashHist.put(CenHistoricoBean.C_IDINSTITUCION, modificacion.get(CenDatosColegialesEstadoBean.C_IDINSTITUCION));
 		hashHist.put(CenHistoricoBean.C_MOTIVO, modificacion.get(CenHistoricoBean.C_MOTIVO));
 		// Especifico el tipo de cambio del historico
 		int tipohistorico=0;
