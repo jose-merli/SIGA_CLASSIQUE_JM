@@ -85,6 +85,9 @@
 		.col400px{width:400px;min-height:24px;float:left;display:block;}
 		.col420px{width:420px;min-height:24px;float:left;display:block;}
 		
+		.col35pc{width:35%;min-height:24px;float:left;display:block;}
+		.col20pc{width:20%;min-height:24px;float:left;display:block;}
+		
 		.scrollClass{clear:left;display:block;overflow-x:hidden;overflow-y:auto; }
 		
 		</style>
@@ -398,27 +401,28 @@
 		
 		<c:if test="${!empty requestScope.estados}">
 		<div class="colIzq">
-			<div style='margin-bottom:12px;display:block;padding-left:8px; padding-bottom:8px'>
-				<div class='tableTitle' style='float:left;width:100%;padding:2px;font-weight: bold;'>
+			<div style='margin-bottom:12px;display:block;width:98%;padding-left:8px; padding-bottom:8px'>
+			
+				<div class='tableTitle' style='height:24px;padding:2px;font-weight: bold;margin-right:2px;margin-left:2px'>
 				
-					<div class='colIzq col300px '>ESTADO</div>
-					<div class='col180px '>FECHA</div>
-					<div class='col400px '>USUARIO</div>
+					<div class='colIzq col35pc '>ESTADO</div>
+					<div class='col20pc '>FECHA</div>
+					<div class='col35pc '>USUARIO</div>
 					
 				</div>
-				<br>
+				
 				<div id='scrollDiv' class='scrollClass'>
 				<c:forEach items="${requestScope.estados}" var="estado" varStatus="status">
-					<div class='${status.index % 2 == 0 ? "filaTablaImpar": "filaTablaPar"}' style='float:left;width:100%;padding:2px;'>
-						<div class='${status.index % 2 == 0 ? "filaTablaImpar": "filaTablaPar"} colIzq col300px labelTextValue' style='vertical-align: middle;'>	
+					<div class='${status.index % 2 == 0 ? "filaTablaImpar": "filaTablaPar"}' style='width:99%;padding:2px;height:26px;'>
+						<div class='colIzq col35pc labelTextValue' style='vertical-align: middle;'>	
 							<c:out value="${estado.ESTADO}"></c:out>
 							<c:if test="${estado.IDESTADO==3 && status.last}">
 								<IMG onclick="descargaLog();" title="Descargar informe" 
 								style="CURSOR: pointer;vertical-align: middle" border=0 alt="Descargar informe" src="/SIGA/html/imagenes/bdescargaLog_off.gif">
 							</c:if>
 						</div>
-						<div class='${status.index % 2 == 0 ? "filaTablaImpar": "filaTablaPar"} col180px labelTextValue'><c:out value="${estado.FECHACAMBIOESTADO}"></c:out></div>
-						<div class='${status.index % 2 == 0 ? "filaTablaImpar": "filaTablaPar"} col400px labelTextValue'><c:out value="${estado.USUARIO}"></c:out></div>
+						<div class=' col20pc labelTextValue'><c:out value="${estado.FECHACAMBIOESTADO}"></c:out></div>
+						<div class=' col35pc labelTextValue'><c:out value="${estado.USUARIO}"></c:out></div>
 					</div>
 				</c:forEach>
 				</div>
