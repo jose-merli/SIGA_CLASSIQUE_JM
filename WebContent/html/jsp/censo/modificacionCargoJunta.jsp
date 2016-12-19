@@ -30,17 +30,17 @@
 
 </head>
 <body>
-	<table class="tablaCampos" id='cargostabla' border='1' width='100%' cellspacing='0' cellpadding='0'  style='table-layout:fixed'>
+	<table class="tablaCampos" id='cargostabla' width='100%' class='fixedHeaderTable dataScroll' style='table-layout: fixed; border-spacing: 0px; ' >
 	  <logic:notEmpty name="BusquedaComisionesForm"	property="comisiones">
 		<logic:iterate name="BusquedaComisionesForm" id="comision"   property="comisiones" indexId="index">
 				
 
 				<c:choose>
 					<c:when test="${index%2==0}">
-						<tr id="fila_<bean:write name='index'/>" class="filaTablaPar">
+						<tr id="fila_<bean:write name='index'/>" class="listaNonEdit filaTablaPar">
 					</c:when>
 					<c:otherwise>
-						<tr id="fila_<bean:write name='index'/>" class="filaTablaImpar">
+						<tr id="fila_<bean:write name='index'/>" class="listaNonEdit filaTablaImpar">
 					</c:otherwise>
 				</c:choose>
 				<td  align='center' width='10%'>

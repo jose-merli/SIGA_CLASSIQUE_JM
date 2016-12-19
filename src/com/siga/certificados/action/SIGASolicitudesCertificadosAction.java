@@ -73,6 +73,7 @@ import com.siga.beans.CerPlantillasBean;
 import com.siga.beans.CerSolicitudCertificadosAdm;
 import com.siga.beans.CerSolicitudCertificadosBean;
 import com.siga.beans.CerSolicitudCertificadosTextoBean;
+import com.siga.beans.DuplicadosHelper;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacSerieFacturacionAdm;
@@ -87,6 +88,7 @@ import com.siga.beans.PysProductosInstitucionBean;
 import com.siga.beans.PysProductosSolicitadosAdm;
 import com.siga.beans.PysProductosSolicitadosBean;
 import com.siga.beans.PysServiciosSolicitadosBean;
+import com.siga.censo.form.MantenimientoDuplicadosForm;
 import com.siga.certificados.Certificado;
 import com.siga.certificados.form.SIGASolicitudesCertificadosForm;
 import com.siga.facturacion.Facturacion;
@@ -193,8 +195,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	                
 	            } else if (accion.equalsIgnoreCase("getAjaxSeleccionSerieFacturacionFacturacionMasiva")) {
 	            	getAjaxSeleccionSerieFacturacionFacturacionMasiva(request, response);	     
-					return null;
-	                
+					return null;     
 	            } else {
 	                return super.executeInternal(mapping,formulario,request,response);
 	            }
@@ -3629,5 +3630,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 			response.getWriter().write(json.toString()); 		
 		}    	
 	
+
 	
 }

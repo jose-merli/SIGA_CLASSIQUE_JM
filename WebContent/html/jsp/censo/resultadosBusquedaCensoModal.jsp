@@ -156,7 +156,7 @@
 		</script>
 	</head>
 
-	<body class="tablaCentralCampos">
+	<body class="tablaCentralCampos" >
 		<!-- INICIO: LISTA DE VALORES --> 
 		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
 			 de cabeceras fijas -->
@@ -367,7 +367,7 @@
 	registrosPorPagina="${registrosPorPagina}"
 	paginaSeleccionada="${paginaSeleccionada}" idioma="${usrbean.language}"
 	modo="buscarTodosModal" clase="paginator" 
-	divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:26px; left: 0px"	
+	divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:0px; left: 0px"	
 	distanciaPaginas="" action="<%=action%>"/>
 		    
 		<!-- FIN: LISTA DE VALORES -->		

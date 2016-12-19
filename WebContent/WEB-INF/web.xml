@@ -95,7 +95,7 @@
 		<url-pattern>/infoDirectorio.do</url-pattern>
 	</filter-mapping>
 
- <!-- COMENTAR LOS FILTROS SIGUIENTES EN LOCAL -->
+<!-- COMENTAR LOS FILTROS SIGUIENTES EN LOCAL -->
 	<filter-mapping>
 		<filter-name>HttpsFilter</filter-name>
 		<url-pattern>/developmentLogin.do</url-pattern>
@@ -112,17 +112,18 @@
 		<filter-name>DatosSesionFilter</filter-name>
 		<url-pattern>/developmentLogin.do</url-pattern>
 	</filter-mapping>
- <!-- -->
+<!-- -->
 
 	<!--************ Seguridad de Certificados FIN ************-->
 
 	<listener><listener-class>com.siga.general.BusinessManagerListener</listener-class></listener>
-<!-- COMENTAR LOS FILTROS SIGUIENTES SI NO SE NECESITAN SERVICIOS AUTOMATICOS -->
+	
+<!-- SERVICIOS AUTOMATICOS: COMENTAR SI NO SON NECESARIOS -->
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoCenso</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoServicios</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlInicializacionesSecundarias</listener-class></listener>
 	<listener><listener-class>com.siga.certificados.AccionesMasivasCertificadosListener</listener-class></listener>
-
+	
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoExpedientes</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoColaDatosLetrado</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoContadores</listener-class></listener>
@@ -141,56 +142,97 @@
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoGeneracionCalendarios</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoFacturacionSJCS</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlEnvioCorreoAlertasIntentosEEJGListener</listener-class></listener>
-<!-- -->
-	 
-	 
-	 
-	 
-
 
 	<servlet>
 		<servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>
 		<servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoEnvios</servlet-class>
 		<load-on-startup>3</load-on-startup>
 	</servlet>
-
-	<servlet>
-		<servlet-name>SIGATest</servlet-name>
-		<servlet-class>com.siga.servlets.SIGASvlConectarBaseDatos</servlet-class>
-	</servlet>
-
+	<servlet-mapping>
+		<servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>
+		<url-pattern>SIGASvlProcesoAutomaticoEnvios.svrl</url-pattern>
+	</servlet-mapping>
+	
 	<servlet>
 		<servlet-name>SIGASvlProcesoEnvios</servlet-name>
 		<servlet-class>com.siga.servlets.SIGASvlProcesoEnvios</servlet-class>
 	</servlet>
+	<servlet-mapping>
+		<servlet-name>SIGASvlProcesoEnvios</servlet-name>
+		<url-pattern>SIGASvlProcesoEnvios.svrl</url-pattern>
+	</servlet-mapping>
 	
 	<servlet>
 		<servlet-name>SIGASvlProcesoAutomaticoFacturacion</servlet-name>
 		<servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoFacturacion</servlet-class>
 		<load-on-startup>4</load-on-startup>
 	</servlet>
-
+	<servlet-mapping>
+		<servlet-name>SIGASvlProcesoAutomaticoFacturacion</servlet-name>
+		<url-pattern>SIGASvlProcesoAutomaticoFacturacion.svrl</url-pattern>
+	</servlet-mapping>
+	
 	<servlet>
 		<servlet-name>SIGASvlProcesoFacturacion</servlet-name>
 		<servlet-class>com.siga.servlets.SIGASvlProcesoFacturacion</servlet-class>
 	</servlet>
-
+	<servlet-mapping>
+		<servlet-name>SIGASvlProcesoFacturacion</servlet-name>
+		<url-pattern>SIGASvlProcesoFacturacion.svrl</url-pattern>
+	</servlet-mapping>
+	
 	<servlet>
 		<servlet-name>SIGASvlProcesoAutomaticoRapido</servlet-name>
 		<servlet-class>com.siga.servlets.SIGASvlProcesoAutomaticoRapido</servlet-class>
 		<load-on-startup>5</load-on-startup>
 	</servlet>
+	<servlet-mapping>
+		<servlet-name>SIGASvlProcesoAutomaticoRapido</servlet-name>
+		<url-pattern>SIGASvlProcesoAutomaticoRapido.svrl</url-pattern>
+	</servlet-mapping>
+	
 	<servlet>
 		<servlet-name>SIGASvlProcesoRapidoFacturacion</servlet-name>
 		<servlet-class>com.siga.servlets.SIGASvlProcesoRapidoFacturacion</servlet-class>
 	</servlet>
+	<servlet-mapping>
+		<servlet-name>SIGASvlProcesoRapidoFacturacion</servlet-name>
+		<url-pattern>SIGASvlProcesoRapidoFacturacion.svrl</url-pattern>
+	</servlet-mapping>
+	
 	<servlet>
 		<servlet-name>SIGASvlProcesoGeneracionEnvio</servlet-name>
 		<servlet-class>com.siga.servlets.SIGASvlProcesoGeneracionEnvio</servlet-class>
 	</servlet>
+	<servlet-mapping>
+		<servlet-name>SIGASvlProcesoGeneracionEnvio</servlet-name>
+		<url-pattern>SIGASvlProcesoGeneracionEnvio.svrl</url-pattern>
+	</servlet-mapping>
+	
 	<servlet>
 		<servlet-name>SIGASvlProcesoFacturacionSJCS</servlet-name>
 		<servlet-class>com.siga.servlets.SIGASvlProcesoFacturacionSJCS</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SIGASvlProcesoFacturacionSJCS</servlet-name>
+		<url-pattern>SIGASvlProcesoFacturacionSJCS.svrl</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>SIGASvlProcesoIndividualConfirmacionFacturacion</servlet-name>
+		<servlet-class>com.siga.servlets.SIGASvlProcesoIndividualConfirmacionFacturacion</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SIGASvlProcesoIndividualConfirmacionFacturacion</servlet-name>
+		<url-pattern>SIGASvlProcesoIndividualConfirmacionFacturacion.svrl</url-pattern>
+	</servlet-mapping>
+
+<!-- FIN SERVICIOS AUTOMATICOS -->
+
+
+	<servlet>
+		<servlet-name>SIGATest</servlet-name>
+		<servlet-class>com.siga.servlets.SIGASvlConectarBaseDatos</servlet-class>
 	</servlet>
 
 	<servlet>
@@ -275,11 +317,6 @@
 		</init-param>
 	</servlet>
 
-	<servlet>
-		<servlet-name>SIGASvlProcesoIndividualConfirmacionFacturacion</servlet-name>
-		<servlet-class>com.siga.servlets.SIGASvlProcesoIndividualConfirmacionFacturacion</servlet-class>
-	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>Ajaxsourceloader</servlet-name>
 		<!--
@@ -306,42 +343,6 @@
 	<servlet-mapping>
 		<servlet-name>SIGATest</servlet-name>
 		<url-pattern>SIGATest.svrl</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>
-		<url-pattern>SIGASvlProcesoAutomaticoEnvios.svrl</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>SIGASvlProcesoEnvios</servlet-name>
-		<url-pattern>SIGASvlProcesoEnvios.svrl</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>SIGASvlProcesoAutomaticoFacturacion</servlet-name>
-		<url-pattern>SIGASvlProcesoAutomaticoFacturacion.svrl</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>SIGASvlProcesoFacturacion</servlet-name>
-		<url-pattern>SIGASvlProcesoFacturacion.svrl</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>SIGASvlProcesoAutomaticoRapido</servlet-name>
-		<url-pattern>SIGASvlProcesoAutomaticoRapido.svrl</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>SIGASvlProcesoRapidoFacturacion</servlet-name>
-		<url-pattern>SIGASvlProcesoRapidoFacturacion.svrl</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>SIGASvlProcesoGeneracionEnvio</servlet-name>
-		<url-pattern>SIGASvlProcesoGeneracionEnvio.svrl</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>SIGASvlProcesoFacturacionSJCS</servlet-name>
-		<url-pattern>SIGASvlProcesoFacturacionSJCS.svrl</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>action</servlet-name>
@@ -371,11 +372,6 @@
 	<servlet-mapping>
 		<servlet-name>SIGASvlAsignarUsuariosGrupo</servlet-name>
 		<url-pattern>SIGASvlAsignarUsuariosGrupo.svrl</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>SIGASvlProcesoIndividualConfirmacionFacturacion</servlet-name>
-		<url-pattern>SIGASvlProcesoIndividualConfirmacionFacturacion.svrl</url-pattern>
 	</servlet-mapping>
 
 

@@ -121,7 +121,7 @@
 <!-- FIN: TITULO Y LOCALIZACION -->
 </head>
 
-<body class="detallePestanas" onLoad="ajusteAlto('resultado');accionBuscar();">
+<body  onLoad="ajusteAlto('resultado');accionBuscar();">
 
 <table class="tablaTitulo" align="center" cellspacing="0">
 

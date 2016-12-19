@@ -107,7 +107,7 @@
 				<td class="titulitos">
 					&nbsp;				
 				</td>
-				<td class="tdBotones">
+				<td >
 				<%-- Sólo muestra el botón de borrar si la institución está en el nivel más alto--%>
 					<%if (CenVisibilidad.getNivelInstitucion(user.getLocation()).equals("1")){%>
 					<html:button property="deleteButton" onclick="return borrarLog();" styleClass="button">
@@ -116,7 +116,7 @@
 				    <%};%> 
 					
 				</td>
-				<td class="tdBotones">
+				<td >
 					<html:button property="idButton" onclick="return buscar();" styleClass="button">
 						<siga:Idioma key="general.search"/>
 					</html:button>

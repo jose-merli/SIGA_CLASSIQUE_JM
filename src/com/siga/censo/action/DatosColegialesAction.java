@@ -741,7 +741,6 @@ public class DatosColegialesAction extends MasterAction {
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			CenDatosColegialesEstadoAdm admin=new CenDatosColegialesEstadoAdm(this.getUserBean(request));
-			CenHistoricoAdm adminHist=new CenHistoricoAdm(this.getUserBean(request));			
  			
 			// Obtengo los datos del formulario
 			DatosColegialesForm miForm = (DatosColegialesForm)formulario;
@@ -749,7 +748,8 @@ public class DatosColegialesAction extends MasterAction {
 			// Cargo la tabla hash con los valores del formulario para insertar en la BBDD
 			Hashtable hash = miForm.getDatos();
 			hash.put(CenHistoricoBean.C_IDPERSONA, miForm.getIdPersona());			
-			hash.put(CenHistoricoBean.C_IDINSTITUCION, miForm.getIdInstitucion());										
+			hash.put(CenHistoricoBean.C_IDINSTITUCION, miForm.getIdInstitucion());
+			hash.put(CenHistoricoBean.C_MOTIVO, miForm.getMotivo());
 									
 			// Cargo una hastable con los valores originales del registro sobre el que se realizará la modificacion	
 			if (request.getSession().getAttribute("DATABACKUP_EST")!=null){
@@ -760,29 +760,6 @@ public class DatosColegialesAction extends MasterAction {
 			
 			original.remove(CenEstadoColegialBean.C_DESCRIPCION);
 			
-			// Cargo una nueva tabla hash para insertar en la tabla de historico
-			Hashtable hashHist = new Hashtable();			
-			// Cargo los valores obtenidos del formulario referentes al historico			
-			hashHist.put(CenHistoricoBean.C_IDPERSONA, miForm.getIdPersona());			
-			hashHist.put(CenHistoricoBean.C_IDINSTITUCION, miForm.getIdInstitucion());			
-			hashHist.put(CenHistoricoBean.C_MOTIVO, miForm.getMotivo());
-			// Especifico el tipo de cambio del historico	
-			if(hash.get(CenDatosColegialesEstadoBean.C_IDESTADO).toString().equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL))){				
-				hashHist.put(CenHistoricoBean.C_IDTIPOCAMBIO, new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_COLEGIAL).toString());
-			}
-			if(hash.get(CenDatosColegialesEstadoBean.C_IDESTADO).toString().equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_COLEGIAL_EJERCIENTE))){				
-				hashHist.put(CenHistoricoBean.C_IDTIPOCAMBIO, new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_ALTA_EJERCICIO).toString());		
-			}	
-			if(hash.get(CenDatosColegialesEstadoBean.C_IDESTADO).toString().equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_COLEGIAL_SINEJERCER))){				
-				hashHist.put(CenHistoricoBean.C_IDTIPOCAMBIO, new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_EJERCICIO).toString());		
-			}
-			if(hash.get(CenDatosColegialesEstadoBean.C_IDESTADO).toString().equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_COLEGIAL_INHABILITACION))){				
-				hashHist.put(CenHistoricoBean.C_IDTIPOCAMBIO, new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_INHABILITACION).toString());		
-			}
-			if(hash.get(CenDatosColegialesEstadoBean.C_IDESTADO).toString().equalsIgnoreCase(String.valueOf(ClsConstants.ESTADO_COLEGIAL_SUSPENSION))){				
-				hashHist.put(CenHistoricoBean.C_IDTIPOCAMBIO, new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_SUSPENSION).toString());		
-			}
-						
 			//Control de las fechas:
 			// PDM: Recogemos todos los estados colegiales por los que ha pasado la persona
 			// Si solamente tuviera un estado colegial y quisieramos modificar su fecha de estado,
@@ -813,20 +790,15 @@ public class DatosColegialesAction extends MasterAction {
 				
 				
 			 
-		   }	
-			 boolean bDesdeGGAE = false;
-			 if (this.getIDInstitucion(request) == 2000){
-				 hashHist.put(CenHistoricoBean.C_IDINSTITUCION, "2000");
-				 bDesdeGGAE = true;
-			 }
+			}	
+			
 			// Comienzo control de transacciones
 			tx = usr.getTransactionPesada();
 			tx.begin();	
 
-			// Asigno el IDHISTORICO			
-			hashHist.put(CenHistoricoBean.C_IDHISTORICO, adminHist.getNuevoID(hashHist).toString());			
 			
-			if (admin.modificacionConHistorico(hash,original,hashHist, this.getLenguaje(request), bDesdeGGAE)){
+			boolean bDesdeGGAE = (this.getIDInstitucion(request) == 2000);
+			if (admin.modificacionConHistorico(hash,original, bDesdeGGAE)){
 
 			    // Lanzamos el proceso de revision de ANTICIPOS 
 				String resultado1[] = EjecucionPLs.ejecutarPL_RevisionAnticiposLetrado(miForm.getIdInstitucion(),
@@ -890,7 +862,7 @@ public class DatosColegialesAction extends MasterAction {
 			DatosColegialesForm miForm = (DatosColegialesForm)formulario;
 			Vector camposOcultos = miForm.getDatosTablaOcultos(0);
 						
-			String message=admEstados.eliminarEstadoColegiado(miForm.getIdInstitucion(),miForm.getIdPersona(),(String) camposOcultos.get(2),usr);
+			String message=admEstados.eliminarEstadoColegiado(miForm.getIdInstitucion(),miForm.getIdPersona(),(String) camposOcultos.get(2));
 			//Volvemos a restaurar direcciones.
 
 			CenDireccionesBean beanDir = new CenDireccionesBean ();

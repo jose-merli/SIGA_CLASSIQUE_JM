@@ -59,7 +59,7 @@
 	</style>
 </head>
 
-<body onload="ajusteAlto('resultado');">
+<body onload="ajusteAltoMain('resultado',-32);">
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<!-- Zona de campos de busqueda o filtro -->

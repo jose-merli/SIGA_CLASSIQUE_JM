@@ -465,7 +465,7 @@
  
 
 		<tr class="<%=clase%>">
-			<td>
+			<td align="center">
 			<%boolean isChecked = false;
 			for (int z = 0; z < registrosSeleccionados.size(); z++) {
 				Hashtable clavesRegistro = (Hashtable) registrosSeleccionados.get(z);

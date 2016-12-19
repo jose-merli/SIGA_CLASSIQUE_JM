@@ -463,12 +463,17 @@
 				numFila = table.rows.length;
 				tr = table.insertRow(numFila);
 				tr.id = "fila_" + numFila;
-				tr.align = "center";
-		
+				
+				if(numFila%2==0){
+					
+					tr.className  = "listaNonEdit filaTablaImpar";
+				}else{
+					tr.className  = "listaNonEdit filaTablaPar";
+				}
+				tr.style.textAlign = 'center';
 				td = tr.insertCell(0);
 				td.setAttribute("width", "6%");
 				td.setAttribute("align", "center");
-				td.className = "";
 				td.innerHTML = '<input type="hidden" id="claveAnio_' + numFila + '" value=""> ' +
 			                  '<input type="hidden" id="claveNumero_' + numFila + '" value="">' + 
 			                  '<input type="hidden" id="claveIdInstitucion_' + numFila + '" value="">' +
@@ -477,27 +482,28 @@
 			                  '<input type="hidden" id="ejgAnio_' + numFila + '" value=""> ' +
 			                  '<input type="hidden" id="ejgTipo_' + numFila + '" value=""> ' +
 			                  '<input type="hidden" id="delitosImputados_' + numFila + '" value="">' + 
-							  '<table><tr><td><input type="text" id="hora_'   + numFila + '" class="box" style="width:20px;margin-top:2px;text-align:center;margin-rigth:1px;" maxLength="2" value="" onBlur="validaHora(this);" /></td>' + 
-			 				  '<td><input type="text" id="minuto_' + numFila + '" class="box" style="width:20px;margin-top:2px;text-align:center;" maxLength="2" value="" onBlur="validaMinuto(this);" /></td></table></tr>';
+							  '<table><tr><td style="border: none"><input type="text" id="hora_'   + numFila + '" class="box" style="width:20px;margin-top:2px;text-align:center;margin-rigth:1px;" maxLength="2" value="" onBlur="validaHora(this);" /></td>' + 
+			 				  '<td style="border: none"><input type="text" id="minuto_' + numFila + '" class="box" style="width:20px;margin-top:2px;text-align:center;" maxLength="2" value="" onBlur="validaMinuto(this);" /></td></table></tr>';
 			
 				// centro detencion	/ Juzgado
 				td = tr.insertCell(1); 
+				
 				td.setAttribute("width", "17%");
 				td.className = "";
 				//Centro detencion
 				if (document.VolantesExpressForm.lugar[0].checked && 
 				    document.VolantesExpressForm.lugar[0].value == "centro") {
 				    
-					aux = '<table><tr><td><input type="text" id="codComisaria_' + numFila + '" class="box" size="8"  style="width:20px;margin-top:2px;" maxlength="10" onBlur="obtenerComisaria(' + numFila + ');" /></td>'+ 			
-							'<td><select class="boxCombo" id="comisaria_' + numFila + '" style="width:135px;" name="comisaria_' + numFila + '" onchange="cambiarComisaria(' + numFila + ');">'+ 
+					aux = '<table><tr><td style="border: none"><input type="text" id="codComisaria_' + numFila + '" class="box" size="8"  style="width:20px;margin-top:2px;" maxlength="10" onBlur="obtenerComisaria(' + numFila + ');" /></td>'+ 			
+							'<td style="border: none"><select class="boxCombo" id="comisaria_' + numFila + '" style="width:135px;" name="comisaria_' + numFila + '" onchange="cambiarComisaria(' + numFila + ');">'+ 
 								
 							'</select></td></table></tr>';
 					td.innerHTML = aux;
 				}
 				// Juzgado
 				else {
-					aux = '<table><tr><td><input type="text" id="codJuzgado_' + numFila + '" class="box" size="8" style="width:21px;margin-top:2px;" maxlength="10" onBlur="obtenerJuzgado(' + numFila + ');"/></td> ' +
-						  '<td><select class="boxCombo" id="juzgado_' + numFila + '" style="width:135px;" name="juzgado_' + numFila + '" onchange="cambiarJuzgado(' + numFila + ');">'+ 
+					aux = '<table><tr><td style="border: none"><input type="text" id="codJuzgado_' + numFila + '" class="box" size="8" style="width:21px;margin-top:2px;" maxlength="10" onBlur="obtenerJuzgado(' + numFila + ');"/></td> ' +
+						  '<td style="border: none"><select class="boxCombo" id="juzgado_' + numFila + '" style="width:135px;" name="juzgado_' + numFila + '" onchange="cambiarJuzgado(' + numFila + ');">'+ 
 							'</select></td></table></tr>';
 					 td.innerHTML = aux;
 				}
@@ -505,12 +511,12 @@
 				td = tr.insertCell(2); 
 				td.setAttribute("width", "44%");
 				td.className = "";
-				var filaDinamica= '<table><tr><td><input type="text" id="dni_' + numFila + '" class="box" style="width:70px;margin-top:2px;margin-rigth:1px;" value="" maxlength="20" onBlur="obtenerPersona(' + numFila + ');" /></td><td>-</td> ' +
-						                '<td><input type="text" id="nombre_' + numFila + '" class="box" style="width:70px;margin-top:2px;margin-rigth:1px;" value="" maxlength="80"/></td>' + 
-						                '<td><input type="text" id="apellido1_' + numFila + '" class="box" style="width:70px;margin-top:2px;margin-rigth:1px;" value="" maxlength="80"/></td>' +
-						                '<td><input type="text" id="apellido2_' + numFila + '" class="box" style="width:70px;margin-top:2px;" value="" maxlength="80"/></td>';
+				var filaDinamica= '<table><tr><td style="border: none"><input type="text" id="dni_' + numFila + '" class="box" style="width:70px;margin-top:2px;margin-rigth:1px;" value="" maxlength="20" onBlur="obtenerPersona(' + numFila + ');" /></td><td style="border: none">-</td> ' +
+						                '<td style="border: none"><input type="text" id="nombre_' + numFila + '" class="box" style="width:70px;margin-top:2px;margin-rigth:1px;" value="" maxlength="80"/></td>' + 
+						                '<td style="border: none"><input type="text" id="apellido1_' + numFila + '" class="box" style="width:70px;margin-top:2px;margin-rigth:1px;" value="" maxlength="80"/></td>' +
+						                '<td style="border: none"><input type="text" id="apellido2_' + numFila + '" class="box" style="width:70px;margin-top:2px;" value="" maxlength="80"/></td>';
 				if (document.VolantesExpressForm.tipoPcajg.value =="9"){
-						filaDinamica =filaDinamica + '<td><select id="comboSexo_' + numFila + '" styleClass="box" name="comboSexo_'+numFila+'"><option value="" selected ="selected">--Sexo</option>'+
+						filaDinamica =filaDinamica + '<td style="border: none"><select id="comboSexo_' + numFila + '" styleClass="box" name="comboSexo_'+numFila+'"><option value="" selected ="selected">--Sexo</option>'+
 																								  '<option value="H"><siga:Idioma key="censo.sexo.hombre"/></option>'+
 																								  '<option value="M"><siga:Idioma key="censo.sexo.mujer"/></option>'+
 																								  '<option value="N"><siga:Idioma key="censo.sexo.nc"/></option>'+
@@ -519,8 +525,8 @@
 	            }
 				
 				
-				filaDinamica = filaDinamica + '<td><img id="info_existe_' + numFila + '" src="/SIGA/html/imagenes/nuevo.gif" alt="<siga:Idioma key="gratuita.volantesExpres.mensaje.esNuevaPersonaJG"/>"/></td>'+
-                '<td><input type="hidden" id="idPersona_' + numFila + '" class="box" value=""/></td>' +
+				filaDinamica = filaDinamica + '<td style="border: none"><img id="info_existe_' + numFila + '" src="/SIGA/html/imagenes/nuevo.gif" alt="<siga:Idioma key="gratuita.volantesExpres.mensaje.esNuevaPersonaJG"/>"/></td>'+
+                '<td style="border: none"><input type="hidden" id="idPersona_' + numFila + '" class="box" value=""/></td>' +
                 '</tr></table>'
                 ;		                
 				td.innerHTML = filaDinamica;
@@ -540,7 +546,7 @@
 				if(document.VolantesExpressForm.delito && document.VolantesExpressForm.delito.value=='true'){
 					aux = '';
 					// Delitos
-					aux = '<table><tr><td><select class="boxCombo" id="idDelito_' + numFila + '" style="width:130px;margin-top:2px;" name="idDelito_' + numFila + '" >'+ 
+					aux = '<table><tr><td style="border: none"><select class="boxCombo" id="idDelito_' + numFila + '" style="width:130px;margin-top:2px;" name="idDelito_' + numFila + '" >'+ 
 	    					'</select></td></tr></table>';
 					
 					td.innerHTML = aux;
@@ -554,7 +560,7 @@
 				td.setAttribute("width", "11%");
 				td.setAttribute("align", "left");
 				td.className = "";			
-				concatenado = '<table><tr><td><img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='general.boton.borrar'/>" name="" border="0" onclick="borrarFila(\''+ tr.id +'\')"></td></tr></table>';
+				concatenado = '<table><tr><td style="border: none"><img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt="<siga:Idioma key='general.boton.borrar'/>" name="" border="0" onclick="borrarFila(\''+ tr.id +'\')"></td></tr></table>';
 				td.innerHTML = concatenado;
 				tr.scrollIntoView(false);
 				
@@ -604,6 +610,7 @@
 				document.getElementById('idPrimeraAsistencia').onclick();
 				
 			}
+			
 		}
 			
 		function validarAnchoTabla () {
@@ -993,39 +1000,49 @@
 	    source="colegiadosGuardia" target="idColegiado,numeroColegiado,nombreColegiado"
 		parameters="idColegiadoGuardia={idColegiadoGuardia}" postFunction="postAccionColegiadoGuardia"/>
 
-	<table id='tabAsistenciasCabeceras' border='1' width='100%' cellspacing='0' cellpadding='0'>
-		<tr class='tableTitle'>
-			<td align='center' width='6%'>
-				<siga:Idioma key="gratuita.volantesExpres.literal.hora"/>
-			</td>
-			<td id='centroDetencionJuzgado' align='center' width='17%'>
-				<siga:Idioma key="gratuita.volantesExpres.literal.centroDetencion"/>
-			</td>
-			<td align='center' width='44%'>
-				<siga:Idioma key="gratuita.volantesExpres.literal.asistido"/>
-			</td>
-			<td id='diligenciaProcedimiento' align='center' width='8%'>
-				<siga:Idioma key="gratuita.volantesExpres.literal.numeroDiligencia"/>
-			</td>
-			<td align='center' width='14%'>
-				<c:if test="${VolantesExpressForm.delito==true}">
-					<siga:Idioma key="gratuita.volantesExpres.literal.delitos"/>
-				</c:if>
-				<c:if test="${VolantesExpressForm.delito==false}">
-					<siga:Idioma key="gratuita.volantesExpres.literal.observaciones"/>
-				</c:if>
-			</td>
-			<td align='center' width='11%'>
-				<input type='button'  id = 'idBuscarAsistencias' name='idButton' style="display:none" value='Buscar' alt='Buscar' class='busquedaAsistencias'>
-				<input type='button'  id = 'idInsertarAsistencia' class="button" name='idButton' value='<siga:Idioma key="general.boton.insertar"/>' alt='<siga:Idioma key="general.boton.insertar"/>' onclick="accionInsertarRegistroTabla();">
-			</td>
-		</tr>
-	</table>
-	
-	<div id="divAsistencias" style='height:300px;position:absolute;width:100%; overflow-y:auto'>
-		<table id='asistencias' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
+		<table id='tabAsistenciasCabeceras'	name ='tabAsistenciasCabeceras' class='fixedHeaderTable dataScroll' style='table-layout: fixed;border: 0px;'>
+
+			<thead class='Cabeceras' style='text-align: center;border: 0px;' >
+				<tr class='tableTitle'>
+					<th style='text-align: center; width: 6%;'><siga:Idioma
+							key="gratuita.volantesExpres.literal.hora" /></th>
+					<th id='centroDetencionJuzgado'
+						style='text-align: center; width: 17%;'><siga:Idioma
+							key="gratuita.volantesExpres.literal.centroDetencion" /></th>
+					<th style='text-align: center; width: 44%;'><siga:Idioma
+							key="gratuita.volantesExpres.literal.asistido" /></th>
+					<th id='diligenciaProcedimiento'
+						style='text-align: center; width: 8%;'><siga:Idioma
+							key="gratuita.volantesExpres.literal.numeroDiligencia" /></th>
+					<th style='text-align: center; width: 14%;'><c:if
+							test="${VolantesExpressForm.delito==true}">
+							<siga:Idioma key="gratuita.volantesExpres.literal.delitos" />
+						</c:if> <c:if test="${VolantesExpressForm.delito==false}">
+							<siga:Idioma key="gratuita.volantesExpres.literal.observaciones" />
+						</c:if></th>
+					<th style='text-align: center; width: 11%;'><input
+						type='button' id='idBuscarAsistencias' name='idButton'
+						style="display: none" value='Buscar' alt='Buscar'
+						class='busquedaAsistencias'> <input type='button'
+						id='idInsertarAsistencia' class="button" name='idButton'
+						value='<siga:Idioma key="general.boton.insertar"/>'
+						alt='<siga:Idioma key="general.boton.insertar"/>'
+						onclick="accionInsertarRegistroTabla();"></th>
+
+				</tr>
+			</thead>
+			
+			<tbody style='text-align:center; overflow-y: scroll; overflow-x: hidden; margin:0px;'>
+			</tbody>
+
 		</table>
-	</div>	
+		
+				
+		<div id="divAsistencias" style='height:300px;position:absolute;width:100%; overflow-y:auto'>
+			<table id='asistencias' class="fixedHeaderTable dataScroll" id='asistencias' style='table-layout:fixed'>
+			</table>
+		</div>	
+
 
 	<!-- INICIO: BOTONES BUSQUEDA -->
 	<table id="tablaBotonesDetalle" class="botonesDetalle" align="center">

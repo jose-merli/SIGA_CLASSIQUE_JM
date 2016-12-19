@@ -244,12 +244,9 @@
 		}
 	</script>
 
-<%
-		String sClasePestanas = esFichaColegial ? "botonesDetalle3" : "botonesDetalle";
-%>
 	<!-- INICIO: BOTONES BUSQUEDA -->	
 
-		<siga:ConjBotonesAccion botones="<%=botonesAccion %>" clase="<%=sClasePestanas%>"  />	
+		<siga:ConjBotonesAccion botones="<%=botonesAccion %>" clase="botonesDetalle"  />	
 	<!-- FIN: BOTONES BUSQUEDA -->
 
 			

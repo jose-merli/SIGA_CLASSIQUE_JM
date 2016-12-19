@@ -235,13 +235,15 @@
 <%}%>
 
 
-<table class="tablaTitulo" cellspacing="0">
-	<tr>
-		<td id="titulo" class="titulos">
-			<siga:Idioma key="gratuita.busquedaDesignas.literal.nuevaDesigna"/>
-		</td>
-	</tr>
-</table>
+<table class="tablaTitulo" align="center" cellspacing="0">
+		<tr>
+			<td class="titulitosDatos">
+				<siga:Idioma key="gratuita.busquedaDesignas.literal.nuevaDesigna"/>
+			</td>
+		</tr>
+	</table>
+
+
 
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="">
 		<input type="hidden" name="actionModal" value="">

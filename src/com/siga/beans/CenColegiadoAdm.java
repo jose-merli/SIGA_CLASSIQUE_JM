@@ -223,7 +223,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 	 * @return  Vector - Filas de la tabla seleccionadas  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */		
-	public Vector getEstadosColegiales (Long idPersona, Integer idInstitucion, String idioma) throws ClsExceptions, SIGAException{ 
+	public Vector getEstadosColegiales (Long idPersona, Integer idInstitucion, String idioma) throws ClsExceptions, SIGAException{
 		
 		RowsContainer rc = null;
 		Vector datos=new Vector();
@@ -236,6 +236,7 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 		    codigos.put(new Integer(3),idInstitucion.toString());
 			String sql = "";
 			sql = " SELECT " + CenDatosColegialesEstadoBean.C_FECHAESTADO	+ ", " +
+							   "to_char(" + CenDatosColegialesEstadoBean.C_FECHAESTADO	+ ", 'dd/mm/yyyy') as FECHAESTADO_SPANISH, " +
 							   CenDatosColegialesEstadoBean.T_NOMBRETABLA	+ "." + CenDatosColegialesEstadoBean.C_IDESTADO		+ " AS " + CenEstadoColegialBean.C_IDESTADO + ", " +
 							   CenDatosColegialesEstadoBean.C_IDINSTITUCION	+ ", " +
 							   CenDatosColegialesEstadoBean.C_IDPERSONA		+ ", " +
@@ -1390,15 +1391,15 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 	 * @return  CenColegiadoBean con los datos colegiales  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */		
-	public Vector getColegiaciones (String idPersona) throws ClsExceptions, SIGAException{
-		Vector colegiaciones = new Vector();
+	public Vector<Integer> getColegiaciones (String idPersona) throws ClsExceptions, SIGAException{
+		Vector<Integer> colegiaciones = new Vector<Integer>();
 		try {
-			Hashtable hash = new Hashtable();
+			Hashtable<String, String> hash = new Hashtable<String, String>();
 			UtilidadesHash.set(hash, CenColegiadoBean.C_IDPERSONA, idPersona);
-			Vector v = this.select(hash);
+			Vector<CenColegiadoBean> v = this.select(hash);
 			if ((v != null) && (v.size()>0)) {
 				for (int i = 0; i < v.size(); i++) {
-					colegiaciones.add(((CenColegiadoBean)v.get(i)).getIdInstitucion());
+					colegiaciones.add(v.get(i).getIdInstitucion());
 				}
 			}
 		}catch (Exception e) {

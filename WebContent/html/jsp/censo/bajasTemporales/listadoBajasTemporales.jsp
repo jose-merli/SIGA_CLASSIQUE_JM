@@ -190,11 +190,11 @@
 	</table>
 	
 				<!-- Check para pasar a modo historico donde se muestran los turnos dados de baja -->
-			<div style="position:absolute; left:400px;bottom:30px;z-index:99;">
+			<div style="position:absolute; left:400px;bottom:0px;z-index:99;">
 				<table align="center" border="0">
 					<tr>
-						<td class="labelText">
-							<siga:Idioma key="gratuita.gestionInscripciones.vertodas" /> 
+						<td class="botonesDetalle">
+							<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal" /> 
 							<c:choose>
 								<c:when test="${BajasTemporalesForm.incluirRegistrosConBajaLogica != null && BajasTemporalesForm.incluirRegistrosConBajaLogica == 'S'}">
 									<input type="checkbox" id="bajaLogica" name="bajaLogica" onclick="incluirRegBajaLogica(this);" checked/>

@@ -53,15 +53,20 @@
 	<html:hidden property="ibanSerie"/>
     <input type="hidden" id="actionModal" name="actionModal" />	
     <siga:ConjCampos leyenda="facturacion.datos.serie">
-	<table  class="tablaCentralCamposMedia"  align="center">
+	<table  class="tablaCentralCamposPequena" style="width:100% ; " >
 	<c:choose>
   		<c:when test="${empty listaSeriesDisponibles}">
-   			<tr class="notFound">
-	   			<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+   			<tr class="notFound" >
+	   			<td class="titulitos" ><siga:Idioma key="messages.noRecordFound"/></td>
 			</tr>	 		
    		
    		</c:when>
    			<c:otherwise>
+   				<tr>		
+					<td width="35%"></td>
+					<td width="55%"></td>
+					<td width="10%"></td>	
+				</tr>
 				<tr>		
 					<td class="labelText">
 						<siga:Idioma key="facturacion.nuevaPrevisionFacturacion.literal.serieFacturacion"/>&nbsp;(*)
@@ -69,7 +74,7 @@
 					<td>
 						<bean:define id="listaSeriesDisponibles" name="listaSeriesDisponibles" scope="request"/>
 						<c:set var="separador" value="#"/>
-						<html:select styleId="comboSeries" property="idSerieFacturacionIban" value="" styleClass="boxCombo" style="width:200px;">
+						<html:select styleId="comboSeries" property="idSerieFacturacionIban" value="" styleClass="boxCombo" >
 						<html:option value=""><siga:Idioma key="general.combo.seleccionar" /></html:option>
 						<c:forEach items="${listaSeriesDisponibles}" var="seriesCmb">
 							<html:option value="${seriesCmb.idseriefacturacion}${separador}${seriesCmb.iban}"><c:out value="${seriesCmb.nombreabreviado}"/>
@@ -77,6 +82,7 @@
 						</c:forEach>
 						</html:select>	
 					</td>
+					<td>&nbsp;</td>
 				</tr>
 				<tr>
 					<td class="labelText">
@@ -84,7 +90,7 @@
 					</td>
 					<td>
 					<bean:define id="listaSufijos" name="listaSufijos" scope="request"/> 
-					<html:select styleId="comboSufijos" property="idSufijoSerie" value="" styleClass="boxCombo" style="width:200px;">
+					<html:select styleId="comboSufijos" property="idSufijoSerie" value="" styleClass="boxCombo" >
 					<html:option value=""><siga:Idioma key="general.combo.seleccionar" /></html:option>
 					<c:forEach items="${listaSufijos}" var="sufijoSerieCmb">
 						<html:option value="${sufijoSerieCmb.idSufijo}">
@@ -98,6 +104,7 @@
 					</c:forEach>
 					</html:select>	
 					</td>
+					<td>&nbsp;</td>
 				</tr>	
 			</c:otherwise>
 		</c:choose>

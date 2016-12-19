@@ -712,7 +712,7 @@
 			- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%>
 			<%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
 		</td>
-		<td>
+		<td class="titulitosDatos">
 			<input 	type="button" 
 					alt="UtilidadesString.getMensajeIdioma(usrbean,general.boton.cartaInteresados)"  
 			       	id="idButton"  

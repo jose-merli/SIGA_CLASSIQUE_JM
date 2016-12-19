@@ -664,8 +664,55 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 		
 		return consulta;
 	}
-
 	
+	/**
+	 * Obtiene las cabeceras de guardia que contienen a todas las personas del listado pasado como parametro
+	 * No devuelve nada si la lista esta vacia
+	 * 
+	 * @param idinstitucion
+	 * @param listaIdPersonas
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector getCabeceraGuardiasDeVariasPersonas(String idinstitucion, ArrayList<String> listaIdPersonas) throws ClsExceptions
+	{
+		StringBuilder consulta = new StringBuilder();
+		Vector resultado = new Vector();
+		try {
+			consulta.append(" select ");
+			consulta.append(ScsCabeceraGuardiasBean.C_IDINSTITUCION);
+			consulta.append(", ");
+			consulta.append(ScsCabeceraGuardiasBean.C_IDTURNO);
+			consulta.append(", ");
+			consulta.append(ScsCabeceraGuardiasBean.C_IDGUARDIA);
+			consulta.append(", ");
+			consulta.append(ScsCabeceraGuardiasBean.C_FECHA_INICIO);
+			consulta.append("   from " + ScsCabeceraGuardiasBean.T_NOMBRETABLA + " ");
+			consulta.append("  where " + ScsCabeceraGuardiasBean.C_IDINSTITUCION + "=" + idinstitucion + " ");
+			if (listaIdPersonas != null && listaIdPersonas.size() > 0) {
+				consulta.append("    and " + ScsCabeceraGuardiasBean.C_IDPERSONA + " in (-1");
+				for (String idPersona : listaIdPersonas) {
+					consulta.append("," + idPersona);
+				}
+				consulta.append(")");
+			}
+			consulta.append("  Group By ");
+			consulta.append(ScsCabeceraGuardiasBean.C_IDINSTITUCION);
+			consulta.append(", ");
+			consulta.append(ScsCabeceraGuardiasBean.C_IDTURNO);
+			consulta.append(", ");
+			consulta.append(ScsCabeceraGuardiasBean.C_IDGUARDIA);
+			consulta.append(", ");
+			consulta.append(ScsCabeceraGuardiasBean.C_FECHA_INICIO);
+			consulta.append(" Having Count(1) = " + ((listaIdPersonas == null) ? 0 : listaIdPersonas.size()));
+
+			resultado = (Vector) this.selectGenerico(consulta.toString());
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Excepcion en "+Thread.currentThread().getStackTrace()[1].getMethodName()+". Consulta SQL:" + consulta.toString());
+		}
+
+		return resultado;
+	} // getCabeceraGuardiasDeVariasPersonas ()
 
 	
 	

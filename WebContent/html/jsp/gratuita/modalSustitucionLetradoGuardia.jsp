@@ -108,7 +108,7 @@
 		<input type="hidden" name="checkCompensacion" id="checkCompensacion" value=""/> 
 			
 		<!-- INICIO: CAMPOS DEL REGISTRO -->
-		<table class="tablaCentralCamposPeque" align="center" border="0">
+		<table class="tablaCentralCamposPeque" style="width:100%" align="center" border="0">
 		<tr>
 			<td>
 				<!-- SUBCONJUNTO DE DATOS -->

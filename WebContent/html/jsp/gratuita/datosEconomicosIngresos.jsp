@@ -26,26 +26,27 @@
 <%@ page import="java.util.Hashtable"%>
 <%@page import="org.redabogacia.sigaservices.app.AppConstants.PARAMETRO"%>
 
-<% 	
-	HttpSession ses=request.getSession();
+<%
+	HttpSession ses = request.getSession();
 	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
 
 	// para ver si tengo que buscar tras mostrar la pantalla
 	List listaIngresos = (List) request.getAttribute("LISTA_INGRESOS");
 	String trNew = (String) request.getAttribute("TR_NEW");
 	String[] tdsNew = (String[]) request.getAttribute("TDS_NEW");
-	
-	String accion = (String)request.getSession().getAttribute("accion");
+
+	String accion = (String) request.getSession().getAttribute("accion");
 	//aalg: INC_10624
-	if(usr.getAccessType().equals(SIGAConstants.ACCESS_READ)) accion="ver";
-	
-	boolean editable = false;				
+	if (usr.getAccessType().equals(SIGAConstants.ACCESS_READ))
+		accion = "ver";
+
+	boolean editable = false;
 	String botones = "V";
-	if (accion!=null && accion.equals("editar")) {
-		editable=true;
+	if (accion != null && accion.equals("editar")) {
+		editable = true;
 		botones = "G,V";
 	}
-	
+
 	String idtipoejg = (String) request.getParameter("idtipoejg");
 	String anio = (String) request.getParameter("anio");
 	String numero = (String) request.getParameter("numero");
@@ -73,61 +74,63 @@
 		
 		<table class="tablaTitulo" cellspacing="0">
 			<tr>
-				<%  String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_tipoEJG="";;
-					ScsEJGAdm adm = new ScsEJGAdm (usr);
-					
-					Hashtable hTitulo = adm.getTituloPantallaEJG(usr.getLocation(), anio, numero, idtipoejg,(String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
-					if (hTitulo != null) {
-						t_nombre    = (String)hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
-						t_apellido1 = (String)hTitulo.get(ScsPersonaJGBean.C_APELLIDO1);
-						t_apellido2 = (String)hTitulo.get(ScsPersonaJGBean.C_APELLIDO2);
-						t_anio      = (String)hTitulo.get(ScsEJGBean.C_ANIO);
-						t_numero    = (String)hTitulo.get(ScsEJGBean.C_NUMEJG);
-						t_tipoEJG   = (String)hTitulo.get("TIPOEJG");
-					}
-		
+				<%
+					String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_tipoEJG = "";
+						;
+						ScsEJGAdm adm = new ScsEJGAdm(usr);
+
+						Hashtable hTitulo = adm.getTituloPantallaEJG(usr.getLocation(), anio, numero, idtipoejg, (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
+						if (hTitulo != null) {
+							t_nombre = (String) hTitulo.get(ScsPersonaJGBean.C_NOMBRE);
+							t_apellido1 = (String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO1);
+							t_apellido2 = (String) hTitulo.get(ScsPersonaJGBean.C_APELLIDO2);
+							t_anio = (String) hTitulo.get(ScsEJGBean.C_ANIO);
+							t_numero = (String) hTitulo.get(ScsEJGBean.C_NUMEJG);
+							t_tipoEJG = (String) hTitulo.get("TIPOEJG");
+						}
 				%>
 				<td id="titulo" class="titulitosDatos">
 						<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
 						- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
 				</td>			
 			</tr>
-		</table>		
-		<br>
-		<table border="1" cellspacing="0" cellpadding="5" id='cabeceraTabla' width="100%">
-			<tr class="tableTitle">
-				<td align="center" width="22%">
-					<b><siga:Idioma key="gratuita.datoseconomicos.tipoingreso"/></b>
-				</td>
-				<td align="center" width="22%">
-					<b><siga:Idioma key="gratuita.datoseconomicos.periodicidad"/></b>
-				</td>
-				<td align="center" width="35%">
-					<b><siga:Idioma key="gratuita.datoseconomicos.perceptor"/></b>
-				</td>
-				<td align="center" width="16%">
-					<b><siga:Idioma key="gratuita.datoseconomicos.importe"/></b>
-				</td>				
-				<% if (editable) { %>	
-					<td align="center" width="5%">
-						<b>&nbsp;</b>
-					</td>
-				<% } %>
-			</tr>
 		</table>
-		
+
+		<table id='cabeceraTabla' name='cabeceraTabla' width='100%'
+			cellspacing='0' cellpadding='0' class='fixedHeaderTable dataScroll'
+			style='table-layout: fixed; border-spacing: 0px;'>
+			<thead class='Cabeceras' style='text-align: center;'>
+				<tr class='tableTitle'>
+					<th style='text-align: center; width: 22%;'><siga:Idioma
+							key="gratuita.datoseconomicos.tipoingreso" />
+					<th style='text-align: center; width: 22%;'><siga:Idioma
+							key="gratuita.datoseconomicos.periodicidad" /></th>
+					<th style='text-align: center; width: 35%;'><siga:Idioma
+							key="gratuita.datoseconomicos.perceptor" /></th>
+					<th style='text-align: center; width: 16%;'><siga:Idioma
+							key="gratuita.datoseconomicos.importe" /></th>
+					<%
+						if (editable) {
+					%>
+					<th style='text-align: center; width: 5%;'>&nbsp;</th>
+					<%
+						}
+					%>
+				</tr>
+			</thead>
+		</table>
 		<div style="overflow-y:auto; position:absolute;width:100%;" id="divDatosTabla">
 			<table border="1" cellspacing="0" cellpadding="5" id='datosTabla' width="100%">
-				<% 
-					if (listaIngresos != null && listaIngresos.size()>0) {
-						for (int i=0; i<listaIngresos.size(); i++) {
-							ScsDeIngresosExtends datoIngreso = (ScsDeIngresosExtends) listaIngresos.get(i);
-							
-							String claseFila;
-							if((i+2)%2==0)
-		   	 	 				claseFila = "filaTablaPar";
-		   	 				else
-		   		 				claseFila = "filaTablaImpar";
+				<%
+					if (listaIngresos != null && listaIngresos.size() > 0) {
+							for (int i = 0; i < listaIngresos.size(); i++) {
+								ScsDeIngresosExtends datoIngreso = (ScsDeIngresosExtends) listaIngresos.get(i);
+
+								String claseFila;
+								if ((i + 2) % 2 == 0)
+									claseFila = "filaTablaPar";
+								else
+									claseFila = "filaTablaImpar";
 				%>				
 					<tr class="<%=claseFila%>">
 						<td align="left" width="22%">
@@ -143,18 +146,29 @@
 							<%=datoIngreso.getImporteFormateado()%> &euro;
 						</td>		
 						
-						<% if (editable) { %>		
+						<%
+															if (editable) {
+														%>		
 							<td align="center" width="5%">
 								<img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:pointer;" title="<siga:Idioma key='general.boton.borrar'/>" alt="<siga:Idioma key='general.boton.borrar'/>" name="" border="0" 
 									onclick="borrarIngreso(<%=datoIngreso.getIddeingresos()%>)">
 							</td>
-						<% } %>
+						<%
+							}
+						%>
 					</tr>
-				<% }} %>
+				<%
+					}
+						}
+				%>
 				
-				<% if (editable) { %>	
+				<%
+									if (editable) {
+								%>	
 					<%=trNew%>
-				<% } %>
+				<%
+					}
+				%>
 			</table>
 		</div>
 	</html:form>

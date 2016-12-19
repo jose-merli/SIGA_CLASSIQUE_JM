@@ -4,13 +4,16 @@
  */
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.Paginador;
 import com.siga.Utilidades.paginadores.PaginadorBind;
@@ -26,459 +29,339 @@ import com.siga.general.SIGAException;
 // RGG cambio visibilidad public class CenPersonaAdm extends MasterBeanAdministrador {
 public class DuplicadosHelper{
 
-	/**
-	 * Obtiene clientes repetidos segun los criterios de entrada
-	 * 
-	 * @param idInstitucion 
-	 * @param formulario Formulario de busqueda de clientes con los datos de busqueda 
-	 * @return java.util.Vector Vector de tablas hash  
-	 */
-	public Vector getPersonasSimilares(MantenimientoDuplicadosForm formulario) throws ClsExceptions, SIGAException {
-
-		//aalg: modificado para que considere tanto a los colegiados como los no colegiados
-		//se busca indistintamente con tildes y sin ellas, may˙sculas o min˙sculas
-		//se aÒade la b˙squeda unida del primer y segundo apellido en caso de que se informen ambos
-		Vector salida = null;
-		String sqlClientes = "";
-	  	
-	  	// Acceso a BBDD
-		RowsContainer rcClientes = null;
-		try { 
-		    
-			String nombre = formulario.getNombre();
-			String apellido1 = formulario.getApellido1();
-			if (apellido1 == null)
-				apellido1 = "";
-			String apellido2 = formulario.getApellido2();
-			if (apellido2 == null)
-				apellido2 = "";
-			String nif = formulario.getNifcif();
-			String nColegiado = formulario.getNumeroColegiado();
-			String institucion = formulario.getIdInstitucion();
-			
-			boolean buscar = false;
-			boolean checkIdentificador = formulario.getChkIdentificador();
-			boolean checkApellidos = formulario.getChkApellidos();
-			boolean checkNombreApellidos = formulario.getChkNombreApellidos();
-			boolean checkNumColegiado = formulario.getChkNumColegiado();
-			
-			StringBuffer sqlPersona = new StringBuffer();
-			sqlPersona.append(" select distinct per.idpersona, per.nifcif, per.nombre, per.apellidos1, per.apellidos2, col.ncolegiado ");
-			sqlPersona.append(" ,col.idinstitucion ");
-            
-			
-			sqlPersona.append(" from cen_persona per, cen_cliente cli");
-			sqlPersona.append(", (select nvl(ncolegiado,ncomunitario) ncolegiado, idpersona, idinstitucion ");
-			sqlPersona.append("                                     from cen_colegiado ");
-			if(!checkNumColegiado){
-				sqlPersona.append("                                     union all  ");
-				sqlPersona.append("                                    select null ncolegiado, idpersona, idinstitucion ");
-				sqlPersona.append("                                     from cen_nocolegiado ");
-			}
-			sqlPersona.append("                                     ) col ");
-			
-			sqlPersona.append(" where per.idpersona = cli.idpersona ");
-			sqlPersona.append(" and per.idpersona > 100 ");
-			sqlPersona.append(" and cli.idinstitucion = " + ClsConstants.INSTITUCION_CGAE);
-			if(institucion!=null && !institucion.equalsIgnoreCase("")){
-				sqlPersona.append("  and col.idinstitucion = ");
-				sqlPersona.append(institucion);
-			}
-			
-			if(checkNumColegiado)
-				sqlPersona.append(" and col.idpersona = cli.idpersona ");
-			else
-				sqlPersona.append(" and col.idpersona(+) = cli.idpersona ");
-			// A partir de aqui filtros de la persona
-			if(institucion!=null && !institucion.equalsIgnoreCase("")){
-				buscar=true;
-				sqlPersona.append(" and exists (select 1 from cen_colegiado cole where cole.idpersona=per.idpersona and cole.idinstitucion=");
-				sqlPersona.append(institucion);
-				if(!checkNumColegiado){
-					sqlPersona.append(" union select 1 from cen_nocolegiado nocole where nocole.idpersona=per.idpersona and nocole.idinstitucion=");
-					sqlPersona.append(institucion);
-				}
-				sqlPersona.append(")");
-			}
-			if(nombre!=null && !nombre.equalsIgnoreCase("")){
-				buscar=true;
-				
-				sqlPersona.append(" and upper(translate(per.nombre, " +
-						" '·ÈÌÛ˙‡ËÏÚ˘„ı‚ÍÓÙÙ‰ÎÔˆ¸Á¡…Õ”⁄¿»Ã“Ÿ√’¬ Œ‘€ƒÀœ÷‹«', " +
-						" 'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC'))" +
-						" like upper(translate('%"+nombre+"%', " +
-						" '·ÈÌÛ˙‡ËÏÚ˘„ı‚ÍÓÙÙ‰ÎÔˆ¸Á¡…Õ”⁄¿»Ã“Ÿ√’¬ Œ‘€ƒÀœ÷‹«', " +
-						" 'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')) ");
-			}
-			if (!apellido1.equalsIgnoreCase("") || !apellido2.equalsIgnoreCase("") ){
-				buscar=true;
-				sqlPersona.append(" and upper(translate(replace(per.apellidos1 || per.apellidos2, ' ', ''), " +
-						" '·ÈÌÛ˙‡ËÏÚ˘„ı‚ÍÓÙÙ‰ÎÔˆ¸Á¡…Õ”⁄¿»Ã“Ÿ√’¬ Œ‘€ƒÀœ÷‹«', " +
-						" 'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC'))" +
-						" like upper(translate(replace('%"+apellido1+apellido2+ "%', ' ', ''), " +
-						" '·ÈÌÛ˙‡ËÏÚ˘„ı‚ÍÓÙÙ‰ÎÔˆ¸Á¡…Õ”⁄¿»Ã“Ÿ√’¬ Œ‘€ƒÀœ÷‹«', " +
-						" 'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')) ");
-			}
-			
-			
-			if(nColegiado!=null && !nColegiado.equalsIgnoreCase("")){
-				buscar=true;
-				//sqlPersona.append(" and col.idpersona = cli.idpersona ");
-				sqlPersona.append(" and col.ncolegiado = '"+nColegiado+"' ");
-			}
-			if(nif!=null && !nif.equalsIgnoreCase("")){
-				buscar=true;
-				sqlPersona.append(" and to_number(regexp_replace(per.nifcif, '[^[:digit:]]', '')) = to_number(regexp_replace('"+nif+"', '[^[:digit:]]', '')) ");
-			}
-
-			
-			String sqlFinal = "";
-			// Parte de la query comun a todas las subconsultas
-			StringBuffer sqlGenerico = new StringBuffer();
-			sqlGenerico.append(" select p1.idpersona, p1.nifcif, p1.nombre, p1.apellidos1, p1.apellidos2, (select count(1) from cen_colegiado where idpersona=p1.idpersona) as colegiaciones, ");
-			if(checkNumColegiado)
-				sqlGenerico.append("  p1.idinstitucion,      p1.ncolegiado,i.ABREVIATURA, ");
-			
-			sqlGenerico.append(" (select count(1) from cen_nocolegiado n where n.idinstitucion=" + ClsConstants.INSTITUCION_CGAE + " and n.idpersona=p1.idpersona) nocolegiadoCGAE from ");
-			sqlGenerico.append(" ("+ sqlPersona.toString() +" ) p1, ");
-			sqlGenerico.append(" ("+ sqlPersona.toString() +" ) p2 ");
-			if(checkNumColegiado)
-				sqlGenerico.append(",cen_institucion i ");
-			sqlGenerico.append(" where p1.idpersona <> p2.idpersona ");
-			if(checkNumColegiado){
-				sqlGenerico.append(" and p1.idinstitucion = p2.idinstitucion ");
-				sqlGenerico.append(" and p1.idinstitucion = i.idinstitucion ");
-			}
-			// Creamos las querys para cada paremetro de busqueda
-			StringBuffer sqlMismoNif = new StringBuffer();
-			sqlMismoNif.append("    and to_number(regexp_replace(p1.nifcif, '[^[:digit:]]', '')) = to_number(regexp_replace(p2.nifcif, '[^[:digit:]]', '')) ");
-
-			StringBuffer sqlMismosApellidos = new StringBuffer();
-/*			sqlMismosApellidos.append("   and (regexp_replace(replace(replace(replace(upper(translate(p1.apellidos1 || decode(p1.apellidos2, null, '', ' ' || p1.apellidos2), ");
-			
-			sqlMismosApellidos.append(" '·ÈÌÛ˙‡ËÏÚ˘„ı‚ÍÓÙÙ‰ÎÔˆ¸Á¡…Õ”⁄¿»Ã“Ÿ√’¬ Œ‘€ƒÀœ÷‹«', " +
-							" 'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE ', ''), 'LA ', ''), 'Y ', ''), '[^[:alpha:]]', '')  = ");
-*/
-			sqlMismosApellidos.append(" and (regexp_replace(upper(translate(p1.apellidos1 || decode(p1.apellidos2, null, '', ' ' || p1.apellidos2), " +
-					"'·ÈÌÛ˙‡ËÏÚ˘„ı‚ÍÓÙÙ‰ÎÔˆ¸Á¡…Õ”⁄¿»Ã“Ÿ√’¬ Œ‘€ƒÀœ÷‹«', " + 
-					"'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I | ', '') = ");
-			
-			sqlMismosApellidos.append("regexp_replace(upper(translate(p2.apellidos1 || decode(p2.apellidos2, null, '', ' ' || p2.apellidos2), " +
-							"'·ÈÌÛ˙‡ËÏÚ˘„ı‚ÍÓÙÙ‰ÎÔˆ¸Á¡…Õ”⁄¿»Ã“Ÿ√’¬ Œ‘€ƒÀœ÷‹«', " + 
-							"'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I | ', ''))");
-			
-			/*sqlMismosApellidos.append("        regexp_replace(replace(replace(replace(upper(translate(p2.apellidos1 || decode(p2.apellidos2, null, '', ' ' || p2.apellidos2), "); 
-			sqlMismosApellidos.append(" '·ÈÌÛ˙‡ËÏÚ˘„ı‚ÍÓÙÙ‰ÎÔˆ¸Á¡…Õ”⁄¿»Ã“Ÿ√’¬ Œ‘€ƒÀœ÷‹«', " +
-					" 'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE ', ''), 'LA ', ''), 'Y ', ''), '[^[:alpha:]]', ''))");
-	*/
-					
-
-			StringBuffer sqlMismoNombreApellidos = new StringBuffer();
-			sqlMismoNombreApellidos.append("   and p1.nombre<>'-'   ");
-			sqlMismoNombreApellidos.append("   and (regexp_replace(replace(replace(replace(upper(p1.nombre || ' ' || p1.apellidos1 || decode(p1.apellidos2, null, '', ' ' || p1.apellidos2)), 'DE ', ''), 'LA ', ''), 'Y ', ''), '[^[:alpha:]]', '') =     ");
-			sqlMismoNombreApellidos.append("       regexp_replace(replace(replace(replace(upper(p2.nombre || ' ' || p2.apellidos1 || decode(p2.apellidos2, null, '', ' ' || p2.apellidos2)), 'DE ', ''), 'LA ', ''), 'Y ', ''), '[^[:alpha:]]', '')) ");
-			
-			StringBuffer sqlNumeroColegiado = new StringBuffer();
-			sqlNumeroColegiado.append("   and p1.ncolegiado = p2.ncolegiado ");
-			sqlNumeroColegiado.append("   and p1.ncolegiado is not null ");
-
-			// Creamos el order by dependiendo de la eleccion del usuario 
-			StringBuffer sqlOrden = new StringBuffer();
-	       	String campoOrden = formulario.getCampoOrdenacion();
-	       	
-	       	
-	       	if (campoOrden.equalsIgnoreCase("nif"))
-	       		sqlOrden.append(" order by regexp_replace(nifcif, '[^[:digit:]]', '') ");
-	       	if (campoOrden.equalsIgnoreCase("numeroColegiado"))
-	       		sqlOrden.append(" order by ABREVIATURA,to_number(ncolegiado) ");
-	       	if (campoOrden.equalsIgnoreCase("apellidos"))
-	       		sqlOrden.append(" order by upper(apellidos1||' '||nvl(apellidos2, ' ')) ");
-			sqlOrden.append(formulario.getSentidoOrdenacion());
-			
-			
-			
-			
-	       	
-			if(formulario.getTipoConexion()!=null && formulario.getTipoConexion().equalsIgnoreCase("union")){
-				if(buscar)
-					sqlFinal += sqlGenerico.toString();
-				// AÒadimos las querys especificas que han sido seleccionadas
-		       	if(checkIdentificador){
-		       		if(!sqlFinal.equalsIgnoreCase(""))
-		       			sqlFinal+=" union ";
-					sqlFinal += sqlGenerico.toString()+sqlMismoNif.toString();
-				}
-		       	if(checkNumColegiado){
-		       		if(!sqlFinal.equalsIgnoreCase(""))
-		       			sqlFinal+=" union ";
-		       		sqlFinal += sqlGenerico.toString()+sqlNumeroColegiado.toString();
-				}
-		       	if(checkApellidos){
-		       		if(!sqlFinal.equalsIgnoreCase(""))
-		       			sqlFinal+=" union ";
-		       		sqlFinal += sqlGenerico.toString()+sqlMismosApellidos.toString();
-				}
-		       	if(checkNombreApellidos){
-		       		if(!sqlFinal.equalsIgnoreCase(""))
-		       			sqlFinal+=" union ";
-		       		sqlFinal += sqlGenerico.toString()+sqlMismoNombreApellidos.toString();
-				}
-			}else{
-				if(buscar)
-					sqlFinal += sqlGenerico.toString();
-				if(checkIdentificador){
-					if(!sqlFinal.equalsIgnoreCase(""))
-						sqlFinal += sqlMismoNif.toString();
-					else
-						sqlFinal += sqlGenerico.toString()+sqlMismoNif.toString();
-				}
-		       	if(checkNumColegiado){
-		       		if(!sqlFinal.equalsIgnoreCase(""))
-		       			sqlFinal += sqlNumeroColegiado.toString();
-		       		else
-		       			sqlFinal += sqlGenerico.toString()+sqlNumeroColegiado.toString();
-				}
-		       	if(checkApellidos){
-		       		if(!sqlFinal.equalsIgnoreCase(""))
-		       			sqlFinal += sqlMismosApellidos.toString();
-		       		else
-		       			sqlFinal += sqlGenerico.toString()+sqlMismosApellidos.toString();
-				}
-		       	if(checkNombreApellidos){
-		       		if(!sqlFinal.equalsIgnoreCase(""))
-		       			sqlFinal += sqlMismoNombreApellidos.toString();
-		       		else
-		       			sqlFinal += sqlGenerico.toString()+sqlMismoNombreApellidos.toString();
-				}
-		       	if(institucion!=null && !institucion.equalsIgnoreCase("")){
-		       		if(!sqlFinal.equalsIgnoreCase(""))
-		       			sqlFinal += " and  p1.idinstitucion = "+institucion;
-		       		else
-		       			sqlFinal += sqlGenerico.toString()+" and  p1.idinstitucion = "+institucion;
-		       		
-		       	}
-			}
-			if(formulario.getTipoConexion()!=null && formulario.getTipoConexion().equalsIgnoreCase("union")){
-				if(sqlFinal!=""){
-					sqlFinal = "select distinct * from ( " + sqlFinal +")";
-				}
-			}else{
-				if(sqlFinal!=""){
-					sqlFinal += " group by p1.idpersona, p1.nifcif, p1.nombre, p1.apellidos1, p1.apellidos2 ";
-					if(checkNumColegiado)
-						sqlFinal += "  ,p1.idinstitucion,      p1.ncolegiado, i.ABREVIATURA ";
-				}
-			}
-	       	Vector similares = new Vector();
-	       	// Completamos la query que se va a ejecutar
-	       	String sql= sqlFinal.toString() + " " + sqlOrden.toString();
-	       	// Si se ha seleccionado algun criterio o patron realizamos la busqueda, si no no
-	       	if(!sqlFinal.equalsIgnoreCase("")){
-	       		similares=this.selectGenerico(sql);
-	       	}
-	       	
-			return similares;
-		}catch (Exception e) { 	
-			throw new ClsExceptions(e,"Error obteniendo clientes "); 
-		}
-	}
+	public static final int SIMIL_NIF = 0;
+	public static final int SIMIL_NOMAPEL = 1;
+	public static final int SIMIL_NCOL = 2;
+	public static final String[] similaritudes = {"nif", "nomapel", "ncol"};
 
 	
 	/**
-	 * Obtiene clientes repetidos segun los criterios de entrada
+	 * Busca y devuelve un listado de clientes que contengan algo parecido al NIF, Nombre y Apellidos o Colegio y Numero de colegiado introducidos por formulario.
+	 * En caso de encontrar solo una coincidencia, tambien la devuelve.
 	 * 
-	 * @param idInstitucion 
 	 * @param formulario Formulario de busqueda de clientes con los datos de busqueda 
 	 * @return java.util.Vector Vector de tablas hash  
 	 */
-	public Vector getDuplicados(MantenimientoDuplicadosForm formulario) throws ClsExceptions, SIGAException {
+	public Vector<Hashtable<String, String>> getPersonasSimilares(MantenimientoDuplicadosForm formulario) throws ClsExceptions, SIGAException
+	{
+		StringBuffer sqlSelect, sqlFrom, sqlWhere, sqlFinal = null;
+		
+		// construyendo base de la consulta: personas
+		sqlSelect = new StringBuffer();
+		sqlSelect.append("select per.idpersona, per.nifcif, per.nombre, per.apellidos1, per.apellidos2,");
+		sqlSelect.append("       (select count(1) from cen_colegiado coleg where coleg.idpersona=Per.idpersona) as colegiaciones, ");
+		sqlSelect.append("       (select count(1) from cen_nocolegiado conse where conse.idinstitucion=" + ClsConstants.INSTITUCION_CGAE + " and conse.idpersona=Per.idpersona) nocolegiadoCGAE ");
+		sqlFrom = new StringBuffer();
+		sqlFrom.append(" from cen_persona per ");
+		sqlWhere = new StringBuffer();
+		sqlWhere.append(" where per.idpersona > 100 ");
 
-		Vector salida = null;
-		String sqlClientes = "";
-	  	
-	  	// Acceso a BBDD
-		RowsContainer rcClientes = null;
-		try { 
-		    
-			String nombre = formulario.getNombre();
-			String apellido1 = formulario.getApellido1();
-			String apellido2 = formulario.getApellido2();
-			String nif = formulario.getNifcif();
-			String nColegiado = formulario.getNumeroColegiado();
-			String idInstitucion = formulario.getIdInstitucion();
-			
-			boolean buscar = false;
-			boolean checkIdentificador = formulario.getChkIdentificador();
-			boolean checkApellidos = formulario.getChkApellidos();
-			boolean checkNombreApellidos = formulario.getChkNombreApellidos();
-			boolean checkNumColegiado = formulario.getChkNumColegiado();
-			
-			boolean ocultarColegiaciones = formulario.getAgruparColegiaciones()!=null && formulario.getAgruparColegiaciones().equalsIgnoreCase("s");
-			
-			Hashtable codigos = new Hashtable();
-			int contador = 0;
-			
-			String sqlFinal = "";
-			// Parte de la query comun a todas las subconsultas
-			StringBuffer sqlGenerico = new StringBuffer();
-			sqlGenerico.append(" select p.idpersona, ");
-			sqlGenerico.append("        p.nifcif, ");
-			sqlGenerico.append("        p.nombre, ");
-			sqlGenerico.append("        p.apellidos1, ");
-			sqlGenerico.append("        p.apellidos2, ");
-			if(ocultarColegiaciones){
-				sqlGenerico.append("        (select count(1) from cen_colegiado where idpersona=p.idpersona) as colegiaciones ");
-			}else{
-				sqlGenerico.append("        c.idinstitucion, ");
-				sqlGenerico.append("        decode(c.comunitario,'1',c.ncomunitario,c.ncolegiado) ncolegiado, ");
-				sqlGenerico.append("        c.ncomunitario, ");
-				sqlGenerico.append("        i.abreviatura ");
-			}
-			sqlGenerico.append("   from cen_persona p, cen_persona p2, ");
-			sqlGenerico.append("        cen_colegiado c, cen_colegiado c2, ");
-			sqlGenerico.append("        cen_cliente cli, cen_cliente cli2, ");
-			sqlGenerico.append("        cen_institucion i");
-			sqlGenerico.append("  where p.idpersona > 100 ");
-			sqlGenerico.append("    and p2.idpersona > 100 ");
-			sqlGenerico.append("    and cli.idpersona=p.idpersona ");
-			sqlGenerico.append("    and cli.idinstitucion= " + ClsConstants.INSTITUCION_CGAE);
-			sqlGenerico.append("    and cli2.idpersona=p2.idpersona ");
-			sqlGenerico.append("    and cli2.idinstitucion=" + ClsConstants.INSTITUCION_CGAE);
-			sqlGenerico.append("    and p.idpersona = c.idpersona(+) ");
-			sqlGenerico.append("    and p2.idpersona = c2.idpersona(+) ");
-			sqlGenerico.append("    and p.idpersona <> p2.idpersona ");
-			sqlGenerico.append("    and i.idinstitucion(+)= c.idinstitucion ");
-			
-			sqlGenerico.append("    and decode((select n.tipo from cen_nocolegiado n where n.idpersona = p.idpersona and n.idinstitucion=" + ClsConstants.INSTITUCION_CGAE + "),'1', '1', NULL, '1', '0')='1'");
-			sqlGenerico.append("    and decode((select n.tipo from cen_nocolegiado n where n.idpersona = p2.idpersona and n.idinstitucion=" + ClsConstants.INSTITUCION_CGAE + "),'1', '1', NULL, '1', '0')='1'");
-
-			// AÒadimos los patrones al sql generico para que se apliquen en cada subquery
-			// Ponemos el flag buscar a true para forzar que busque con el patron aunque no haya ningun criterio 
-			if(nombre!=null && !nombre.equalsIgnoreCase("")){
-				contador++;
-				sqlGenerico.append("    and upper(p.nombre) like upper('%"+nombre+"%') ");
-				sqlGenerico.append("    and upper(p2.nombre) like upper('%"+nombre+"%') ");
-				buscar=true;
-			}
-			if((apellido1!=null && !apellido1.equalsIgnoreCase(""))||(apellido2!=null && !apellido2.equalsIgnoreCase(""))){
-				String apellidos = apellido1+apellido2;
-				apellidos=UtilidadesString.replaceAllIgnoreCase(apellidos, " ", "%");
-				sqlGenerico.append("    and upper(p.apellidos1)||upper(p.apellidos2) like upper('%"+apellidos+"%') ");
-				sqlGenerico.append("    and upper(p2.apellidos1)||upper(p2.apellidos2) like upper('%"+apellidos+"%') ");
-				buscar=true;
-			}
-			if(nif!=null && !nif.equalsIgnoreCase("")){
-				sqlGenerico.append("    and to_number(regexp_replace(p.nifcif, '[^[:digit:]]', '')) = to_number(regexp_replace('"+nif+"', '[^[:digit:]]', '')) ");
-				sqlGenerico.append("    and to_number(regexp_replace(p2.nifcif, '[^[:digit:]]', '')) = to_number(regexp_replace('"+nif+"', '[^[:digit:]]', '')) ");
-				buscar=true;
-			}
-			if(nColegiado!=null && !nColegiado.equalsIgnoreCase("")){
-				sqlGenerico.append("    and c.ncolegiado = '"+nColegiado+"' ");
-				sqlGenerico.append("    and c2.ncolegiado = '"+nColegiado+"' ");
-				buscar=true;
-			}
-			if(idInstitucion!=null && !idInstitucion.equalsIgnoreCase("")){
-				sqlGenerico.append("    and c.idInstitucion = '"+idInstitucion+"' ");
-				sqlGenerico.append("    and c2.idInstitucion = '"+idInstitucion+"' ");
-				buscar=true;
-			}
-
-			
-			// Creamos las querys para cada paremetro de busqueda
-			StringBuffer sqlMismoNif = new StringBuffer();
-			sqlMismoNif.append("    and to_number(regexp_replace(p.nifcif, '[^[:digit:]]', '')) = to_number(regexp_replace(p2.nifcif, '[^[:digit:]]', '')) ");
-
-			StringBuffer sqlNumeroColegiado = new StringBuffer();
-			sqlNumeroColegiado.append("    and c.idinstitucion = c2.idinstitucion ");
-			sqlNumeroColegiado.append("    and c.ncolegiado = c2.ncolegiado       ");
-
-			StringBuffer sqlMismosApellidos = new StringBuffer();
-			sqlMismosApellidos.append("   and (upper(p.apellidos1 || decode(p.apellidos2, null, '', ' ' || p.apellidos2)) =     ");
-			sqlMismosApellidos.append("        upper(p2.apellidos1 || decode(p2.apellidos2, null, '', ' ' || p2.apellidos2)) or ");
-			sqlMismosApellidos.append("        upper(p2.apellidos1 || decode(p2.apellidos2, null, '', ' ' || p2.apellidos2)) =  ");
-			sqlMismosApellidos.append("        upper(p.apellidos1 || decode(p.apellidos2, null, '', ' ' || p.apellidos2)))      ");
-
-			StringBuffer sqlMismoNombreApellidos = new StringBuffer();
-			sqlMismoNombreApellidos.append("   and p.nombre<>'-'   ");
-			sqlMismoNombreApellidos.append("   and (upper(regexp_replace(p.nombre || ' ' || p.apellidos1 || decode(p.apellidos2, null, '', ' ' || p.apellidos2), '[^[:alpha:]]', '')) =     ");
-			sqlMismoNombreApellidos.append("       upper(regexp_replace(p2.nombre || ' ' || p2.apellidos1 || decode(p2.apellidos2, null, '', ' ' || p2.apellidos2), '[^[:alpha:]]', '')) or ");
-			sqlMismoNombreApellidos.append("       upper(regexp_replace(p2.nombre || ' ' || p2.apellidos1 || decode(p2.apellidos2, null, '', ' ' || p2.apellidos2), '[^[:alpha:]]', '')) =  ");
-			sqlMismoNombreApellidos.append("       upper(regexp_replace(p.nombre || ' ' || p.apellidos1 || decode(p.apellidos2, null, '', ' ' || p.apellidos2), '[^[:alpha:]]', '')))       ");
-
-			// Creamos el order by dependiendo de la eleccion del usuario 
-			StringBuffer sqlOrden = new StringBuffer();
-	       	String campoOrden = formulario.getCampoOrdenacion();
-	       	if (campoOrden.equalsIgnoreCase("nif"))
-	       		sqlOrden.append(" order by to_number(regexp_replace(nifcif, '[^[:digit:]]', '')) ");
-	       	if (campoOrden.equalsIgnoreCase("numeroColegiado"))
-	       		sqlOrden.append(" order by abreviatura, to_number(ncolegiado) ");
-	       	if (campoOrden.equalsIgnoreCase("apellidos"))
-	       		sqlOrden.append(" order by apellidos1||' '||apellidos2 ");
-			sqlOrden.append(formulario.getSentidoOrdenacion());      	
-			
-			if(formulario.getTipoConexion()!=null && formulario.getTipoConexion().equalsIgnoreCase("union")){
-				
-				// AÒadimos las querys especificas que han sido seleccionadas
-		       	if(checkIdentificador){
-					sqlFinal += sqlGenerico.toString()+sqlMismoNif.toString();
-				}
-		       	if(checkNumColegiado){
-		       		if(!sqlFinal.equalsIgnoreCase(""))
-		       			sqlFinal+=" union ";
-		       		sqlFinal += sqlGenerico.toString()+sqlNumeroColegiado.toString();
-				}
-		       	if(checkApellidos){
-		       		if(!sqlFinal.equalsIgnoreCase(""))
-		       			sqlFinal+=" union ";
-		       		sqlFinal += sqlGenerico.toString()+sqlMismosApellidos.toString();
-				}
-		       	if(checkNombreApellidos){
-		       		if(!sqlFinal.equalsIgnoreCase(""))
-		       			sqlFinal+=" union ";
-		       		sqlFinal += sqlGenerico.toString()+sqlMismoNombreApellidos.toString();
-				}
-			}else{
-				if(checkIdentificador){
-					sqlFinal += sqlGenerico.toString()+sqlMismoNif.toString();
-				}
-		       	if(checkNumColegiado){
-		       		if(!sqlFinal.equalsIgnoreCase(""))
-		       			sqlFinal += sqlNumeroColegiado.toString();
-		       		else
-		       			sqlFinal += sqlGenerico.toString()+sqlNumeroColegiado.toString();
-				}
-		       	if(checkApellidos){
-		       		if(!sqlFinal.equalsIgnoreCase(""))
-		       			sqlFinal += sqlMismosApellidos.toString();
-		       		else
-		       			sqlFinal += sqlGenerico.toString()+sqlMismosApellidos.toString();
-				}
-		       	if(checkNombreApellidos){
-		       		if(!sqlFinal.equalsIgnoreCase(""))
-		       			sqlFinal += sqlMismoNombreApellidos.toString();
-		       		else
-		       			sqlFinal += sqlGenerico.toString()+sqlMismoNombreApellidos.toString();
-				}
-			}
-	       	if(sqlFinal.equalsIgnoreCase("") && buscar)
-	       		sqlFinal += sqlGenerico.toString();
-	       	
-	       	Vector similares = new Vector();
-	       	// Completamos la query que se va a ejecutar
-	       	String sql=" select distinct * from (" + sqlFinal.toString() + ")" + sqlOrden.toString();
-	       	
-	       	// Si se ha seleccionado algun criterio o patron realizamos la busqueda, si no no
-	       	if(!sqlFinal.equalsIgnoreCase("")){
-	       		similares=this.selectGenerico(sql);
-				return similares;
-	       	}else{
-	       		return null;
-	       	}
-			
-		}catch (Exception e) { 	
-			throw new ClsExceptions(e,"Error obteniendo duplicados "); 
+		// anyadiendo la busqueda por NIF, si se introdujo en el formulario
+		String nif = formulario.getNifcif();
+		nif = (nif == null || nif.trim().equalsIgnoreCase("")) ? "" : nif;
+		if (! nif.equalsIgnoreCase("")) {
+			sqlFinal = new StringBuffer();
+			sqlFinal.append(sqlSelect);
+			sqlFinal.append(sqlFrom);
+			sqlFinal.append(sqlWhere);
+			sqlFinal.append(" and regexp_like(regexp_replace(per.nifcif, '[^[:digit:]]', ''), regexp_replace('" +nif+ "', '[^[:digit:]]', '')) ");
+			sqlFinal.append(" order by to_number(regexp_replace(Per.nifcif, '[^[:digit:]]', '')) ");
 		}
-	}
+		
+		if (sqlFinal == null) {
+			// anyadiendo la busqueda por nombre y/o apellidos, si se introdujo en el formulario
+			String nombre = formulario.getNombre();
+			nombre = (nombre == null || nombre.trim().equalsIgnoreCase("")) ? "" : nombre;
+			//TODO Apellido1 contiene ambos apellidos para que sea mas directa la busqueda: Habria que sustituirlo por "Apellidos"
+			String apellido1 = formulario.getApellido1();
+			apellido1 = (apellido1 == null || apellido1.trim().equalsIgnoreCase("")) ? "" : apellido1;
+			
+			if (! nombre.equalsIgnoreCase("") || ! apellido1.equalsIgnoreCase("")) {
+				sqlFinal = new StringBuffer();
+				sqlFinal.append(sqlSelect);
+				sqlFinal.append(", per.apellidos1 || ' ' || per.apellidos2 as Apellidos "); // devolviendo este campo, podremos diferenciar en los resultados si se ha buscado por NIF o por Apellidos
+				sqlFinal.append(sqlFrom);
+				sqlFinal.append(sqlWhere);
+				if (! nombre.equalsIgnoreCase("")) {
+					sqlFinal.append(" and regexp_like(regexp_replace(upper(translate(Per.nombre, ");
+					sqlFinal.append("                     '·ÈÌÛ˙‡ËÏÚ˘„ı‚ÍÓÙÙ‰ÎÔˆ¸Á¡…Õ”⁄¿»Ã“Ÿ√’¬ Œ‘€ƒÀœ÷‹«', ");
+					sqlFinal.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', ''), ");
+					sqlFinal.append("      regexp_replace(upper(translate('"+nombre+"', ");
+					sqlFinal.append("                     '·ÈÌÛ˙‡ËÏÚ˘„ı‚ÍÓÙÙ‰ÎÔˆ¸Á¡…Õ”⁄¿»Ã“Ÿ√’¬ Œ‘€ƒÀœ÷‹«', ");
+					sqlFinal.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', ''))");
+				}
+				if (! apellido1.equalsIgnoreCase("")) {
+					sqlFinal.append(" and regexp_like(regexp_replace(upper(translate(Per.apellidos1 || decode(Per.apellidos2, null, '', ' ' || Per.apellidos2), ");
+					sqlFinal.append("                     '·ÈÌÛ˙‡ËÏÚ˘„ı‚ÍÓÙÙ‰ÎÔˆ¸Á¡…Õ”⁄¿»Ã“Ÿ√’¬ Œ‘€ƒÀœ÷‹«', ");
+					sqlFinal.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', ''), ");
+					sqlFinal.append("      regexp_replace(upper(translate('"+apellido1+"', ");
+					sqlFinal.append("                     '·ÈÌÛ˙‡ËÏÚ˘„ı‚ÍÓÙÙ‰ÎÔˆ¸Á¡…Õ”⁄¿»Ã“Ÿ√’¬ Œ‘€ƒÀœ÷‹«', ");
+					sqlFinal.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', ''))");
+				}
+				sqlFinal.append(" order by Per.apellidos1, Per.apellidos2, Per.nombre ");
+			}
+		}
+
+		if (sqlFinal == null) {
+			// anyadiendo la busqueda por colegio y/o numero de colegiado, si se introdujo en el formulario
+			String institucion = formulario.getIdInstitucion();
+			institucion = (institucion == null || institucion.trim().equalsIgnoreCase("")) ? "" : institucion;
+			String nColegiado = formulario.getNumeroColegiado();
+			nColegiado = (nColegiado == null || nColegiado.trim().equalsIgnoreCase("")) ? "" : nColegiado;
+			
+			if (! institucion.equalsIgnoreCase("") || ! nColegiado.equalsIgnoreCase("")) {
+				sqlFinal = new StringBuffer();
+				sqlFinal.append(sqlSelect);
+				sqlFinal.append(", col.ncolegiado, ins.ABREVIATURA, ins.idinstitucion ");
+				sqlFinal.append(sqlFrom);
+				sqlFinal.append(", cen_colegiado col, cen_institucion ins ");
+				sqlFinal.append(sqlWhere);
+				sqlFinal.append(" and per.Idpersona = col.Idpersona ");
+				sqlFinal.append(" and col.Idinstitucion = ins.Idinstitucion ");
+				if (! institucion.equalsIgnoreCase("")) {
+					sqlFinal.append(" and col.idinstitucion = "+institucion+" ");
+				}
+				if (! nColegiado.equalsIgnoreCase("")) { 
+					sqlFinal.append(" and Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado) = '"+nColegiado+"' ");
+				}
+				sqlFinal.append(" order by col.idinstitucion, To_Number(Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado)) ");
+			}
+		}
+
+		// ejecutando la consulta
+		try {
+			String sql = sqlFinal.toString();
+			Vector<Hashtable<String, String>> similares = new Vector<Hashtable<String, String>>();
+			if (!sql.equalsIgnoreCase("")) {
+				similares = this.selectGenerico(sql);
+			}
+
+			return similares;
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error obteniendo clientes ");
+		}
+	} //getPersonasSimilares()
+
+	/**
+	 * Busca y devuelve un listado de personas duplicadas en funcion del parametro. Ver los valores posibles en el array 'similaritudes'
+	 * 
+	 * @param similaritud
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	public Vector<Hashtable<String, String>> getPersonasSimilares(int similaritud) throws ClsExceptions, SIGAException
+	{
+		StringBuffer sqlPersona, sqlGenerico, sqlMismoNif, sqlMismoNombreApellidos, sqlMismoNumeroColegiado;
+		String sqlOrden, sqlFinal;
+		try {
+			// Subquery que se utiliza dos veces para buscar duplicados
+			sqlPersona = new StringBuffer();
+			sqlPersona.append("select per.idpersona, per.nifcif, per.nombre, per.apellidos1, per.apellidos2,");
+			sqlPersona.append("       Col.Idinstitucion, Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado) Numcol ");
+			sqlPersona.append("  from cen_persona per, cen_cliente cli, cen_colegiado col");
+			sqlPersona.append(" where per.idpersona = cli.idpersona ");
+			sqlPersona.append("   and per.idpersona > 100 ");
+			sqlPersona.append("   and cli.idinstitucion = " + ClsConstants.INSTITUCION_CGAE);
+			sqlPersona.append("   And Per.Idpersona = Col.Idpersona(+) ");
+
+			// Parte de la query comun a todas las subconsultas
+			sqlGenerico = new StringBuffer();
+			sqlGenerico.append("select distinct p1."+CenPersonaBean.C_IDPERSONA+", p1.nifcif, p1.nombre, p1.apellidos1, p1.apellidos2, ");
+			sqlGenerico.append("       (select count(1) from cen_colegiado where idpersona=p1.idpersona) as colegiaciones, ");
+			sqlGenerico.append("       (select count(1) from cen_nocolegiado n where n.idinstitucion=" + ClsConstants.INSTITUCION_CGAE + " and n.idpersona=p1.idpersona) nocolegiadoCGAE, ");
+			sqlGenerico.append("       (select ins.abreviatura from cen_institucion ins where ins.idinstitucion = p1.idinstitucion) as colegio, ");
+			sqlGenerico.append("       p1.Numcol ");
+			sqlGenerico.append("  from ( ");
+			sqlGenerico.append(sqlPersona);
+			sqlGenerico.append("       ) p1, ( ");
+			sqlGenerico.append(sqlPersona);
+			sqlGenerico.append("       ) p2 ");
+			sqlGenerico.append(" where p1.idpersona <> p2.idpersona ");
+			
+			// creando las querys para cada parametro de busqueda
+			sqlMismoNif = new StringBuffer();
+			sqlMismoNif.append(" and to_number(regexp_replace(p1.nifcif, '[^[:digit:]]', '')) = to_number(regexp_replace(p2.nifcif, '[^[:digit:]]', '')) ");
+			
+			sqlMismoNombreApellidos = new StringBuffer();
+			sqlMismoNombreApellidos.append(" and (regexp_replace(upper(translate(p1.nombre || ' ' || p1.apellidos1 || ' ' || p1.apellidos2, ");
+			sqlMismoNombreApellidos.append("                     '·ÈÌÛ˙‡ËÏÚ˘„ı‚ÍÓÙÙ‰ÎÔˆ¸Á¡…Õ”⁄¿»Ã“Ÿ√’¬ Œ‘€ƒÀœ÷‹«', ");
+			sqlMismoNombreApellidos.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', '') = ");
+			sqlMismoNombreApellidos.append("      regexp_replace(upper(translate(p2.nombre || ' ' || p2.apellidos1 || ' ' || p2.apellidos2, ");
+			sqlMismoNombreApellidos.append("                     '·ÈÌÛ˙‡ËÏÚ˘„ı‚ÍÓÙÙ‰ÎÔˆ¸Á¡…Õ”⁄¿»Ã“Ÿ√’¬ Œ‘€ƒÀœ÷‹«', ");
+			sqlMismoNombreApellidos.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', ''))");
+			
+			sqlMismoNumeroColegiado = new StringBuffer();
+			sqlMismoNumeroColegiado.append(" and P1.Idinstitucion = P2.Idinstitucion ");
+			sqlMismoNumeroColegiado.append(" and P1.Numcol = P2.Numcol ");
+			sqlMismoNumeroColegiado.append(" and P1.Numcol Is Not Null ");
+
+			// construyendo consulta final
+			sqlFinal = sqlGenerico.toString();
+			switch (similaritud) {
+				case SIMIL_NIF:
+					sqlOrden = " order by to_number(regexp_replace(nifcif, '[^[:digit:]]', '')) ";
+					sqlFinal += sqlMismoNif.toString() + " " + sqlOrden.toString();
+					break;
+				case SIMIL_NOMAPEL:
+					sqlOrden = " order by upper(apellidos1||' '||apellidos2||' '||nombre) ";
+					sqlFinal += sqlMismoNombreApellidos.toString() + sqlOrden.toString();
+					break;
+				case SIMIL_NCOL:
+					sqlOrden = " order by Colegio, To_Number(Numcol) ";
+					sqlFinal += sqlMismoNumeroColegiado.toString() + sqlOrden.toString();
+					break;
+			}
+			
+			Vector<Hashtable<String, String>> similares = this.selectGenerico(sqlFinal);
+			return similares;
+			
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error obteniendo clientes ");
+		}
+	} // getPersonasSimilares()
+	
+	/**
+	 * Dada una persona, devuelve todos los datos que luego se imprimiran en un listado
+	 * 
+	 * @param persona
+	 * @param user
+	 * @return
+	 * @throws Exception
+	 */
+	public ArrayList<ArrayList<String>> getDatosPersonaSimilar(Hashtable<String, String> persona, UsrBean user) throws Exception
+	{
+		// Datos
+		String idPersona;
+		CenPersonaBean beanPersona;
+		ArrayList<String> datosPersona, datosColegiacion;
+
+		Vector<Integer> colegiacionesPersona;
+		String idInstitucionCol;
+		CenColegiadoBean colegiacion;
+		Vector<Row> estadosColegio;
+		Hashtable<String, String> estado;
+		Hashtable<String, String> direccionCenso;
+
+		ArrayList<ArrayList<String>> todoslosdatos = new ArrayList<ArrayList<String>>();
+
+		if (persona == null) {
+			// rellenando la cabecera
+			datosPersona = new ArrayList<String>();
+			datosPersona.add("IDENTIFICADOR");
+			datosPersona.add("NOMBRE");
+			datosPersona.add("APELLIDO1");
+			datosPersona.add("APELLIDO2");
+			datosPersona.add("NIF_CIF");
+			datosPersona.add("LUGAR_NACIMIENTO");
+			datosPersona.add("FECHA_NACIMIENTO");
+			datosPersona.add("ULTIMAMODIFICACION");
+			datosPersona.add("SANCIONES");
+			datosPersona.add("CERTIFICADOS");
+			datosPersona.add("COLEGIO");
+			datosPersona.add("INSCRIPCION");
+			datosPersona.add("NCOLEGIADO");
+			datosPersona.add("FECHAINCORPORACION");
+			datosPersona.add("RESIDENCIA");
+			datosPersona.add("ESTADOCOLEGIAL");
+			datosPersona.add("FECHAESTADO");
+	
+			datosPersona.add("DIRECCION");
+			datosPersona.add("EMAIL");
+			datosPersona.add("TELEFONO");
+			datosPersona.add("FAX");
+			datosPersona.add("MOVIL");
+			
+			todoslosdatos.add(datosPersona);
+			return (todoslosdatos);
+		}
+		
+		// Controles
+		CenPersonaAdm admPersona = new CenPersonaAdm(user);
+		CenSancionAdm admSancion = new CenSancionAdm(user);
+		CerSolicitudCertificadosAdm admCertificados = new CerSolicitudCertificadosAdm(user);
+		CenColegiadoAdm admColeg = new CenColegiadoAdm(user);
+		CenInstitucionAdm admInstitucion = new CenInstitucionAdm(user);
+		CenDireccionesAdm admDireccion = new CenDireccionesAdm(user);
+
+		// iniciando la recogida de datos de una persona
+		idPersona = persona.get(CenPersonaBean.C_IDPERSONA);
+		datosPersona = new ArrayList<String>();
+
+		// obteniendo datos personales
+		beanPersona = admPersona.getPersonaPorId(idPersona);
+		if (beanPersona.getFechaNacimiento() != null && !beanPersona.getFechaNacimiento().equalsIgnoreCase("")) {
+			beanPersona.setFechaNacimiento(UtilidadesString.formatoFecha(beanPersona.getFechaNacimiento(), ClsConstants.DATE_FORMAT_JAVA,
+					ClsConstants.DATE_FORMAT_SHORT_SPANISH));
+		}
+		beanPersona.setFechaMod(UtilidadesString.formatoFecha(beanPersona.getFechaMod(), ClsConstants.DATE_FORMAT_JAVA,
+				ClsConstants.DATE_FORMAT_SHORT_SPANISH));
+		datosPersona.add(beanPersona.getIdPersona().toString());
+		datosPersona.add(beanPersona.getNombre());
+		datosPersona.add(beanPersona.getApellido1());
+		datosPersona.add(beanPersona.getApellido2());
+		datosPersona.add(beanPersona.getNIFCIF());
+		datosPersona.add(beanPersona.getNaturalDe());
+		datosPersona.add(beanPersona.getFechaNacimiento());
+		datosPersona.add(beanPersona.getFechaMod());
+		datosPersona.add(String.valueOf(admSancion.getSancionesLetrado(idPersona, String.valueOf(ClsConstants.INSTITUCION_CGAE)).size()));
+		datosPersona.add(String.valueOf(admCertificados.getNumeroCertificados(String.valueOf(ClsConstants.INSTITUCION_CGAE), idPersona)));
+
+		// obteniendo datos de cada colegiacion
+		colegiacionesPersona = admColeg.getColegiaciones(idPersona);
+		for (Iterator<Integer> iterColegiaciones = colegiacionesPersona.iterator(); iterColegiaciones.hasNext();) {
+			idInstitucionCol = iterColegiaciones.next().toString();
+			colegiacion = admColeg.getDatosColegiales(Long.valueOf(idPersona), Integer.valueOf(idInstitucionCol));
+
+			// por cada colegiacion se anyadira un registro, duplicando la persona si hay mas de una colegiacion
+			datosColegiacion = new ArrayList<String>(datosPersona);
+
+			// anyadiendo datos de colegiacion
+			datosColegiacion.add(admInstitucion.getAbreviaturaInstitucion(idInstitucionCol));
+			if (colegiacion.getComunitario().equalsIgnoreCase("1")) {
+				datosColegiacion.add("Inscrito");
+				datosColegiacion.add(colegiacion.getNComunitario());
+			} else {
+				datosColegiacion.add(" ");
+				datosColegiacion.add(colegiacion.getNColegiado());
+			}
+			if (colegiacion.getFechaIncorporacion() != null && !colegiacion.getFechaIncorporacion().equalsIgnoreCase("")) {
+				colegiacion.setFechaIncorporacion((UtilidadesString.formatoFecha(colegiacion.getFechaIncorporacion(), ClsConstants.DATE_FORMAT_JAVA,
+						ClsConstants.DATE_FORMAT_SHORT_SPANISH)));
+			}
+			datosColegiacion.add(colegiacion.getFechaIncorporacion());
+			datosColegiacion.add(colegiacion.getSituacionResidente().equalsIgnoreCase("1") ? "Residente" : " ");
+
+			// anyadiendo estado colegial
+			estadosColegio = admColeg.getEstadosColegiales(Long.valueOf(idPersona), Integer.valueOf(idInstitucionCol), "1");
+			if (estadosColegio != null && estadosColegio.size() > 0) {
+				estado = estadosColegio.get(0).getRow();
+				datosColegiacion.add(UtilidadesString.formatoFecha(estado.get(CenDatosColegialesEstadoBean.C_FECHAESTADO).toString(),
+						ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH));
+				datosColegiacion.add(estado.get(CenEstadoColegialBean.C_DESCRIPCION).toString());
+			} else {
+				datosColegiacion.add(" ");
+				datosColegiacion.add(" ");
+			}
+
+			// anyadiendo direccion
+			direccionCenso = admDireccion.getDireccionTipo(idPersona, idInstitucionCol, String.valueOf(ClsConstants.TIPO_DIRECCION_CENSOWEB));
+			datosColegiacion.add(direccionCenso.get(CenDireccionesBean.C_DOMICILIO) + ", " + direccionCenso.get("POBLACION") + ", "
+					+ direccionCenso.get(CenDireccionesBean.C_CODIGOPOSTAL) + " " + direccionCenso.get("PROVINCIA"));
+			datosColegiacion.add(direccionCenso.get(CenDireccionesBean.C_CORREOELECTRONICO));
+			datosColegiacion.add(direccionCenso.get(CenDireccionesBean.C_TELEFONO1));
+			datosColegiacion.add(direccionCenso.get(CenDireccionesBean.C_FAX1));
+			datosColegiacion.add(direccionCenso.get(CenDireccionesBean.C_MOVIL));
+
+			todoslosdatos.add(datosColegiacion);
+		}
+
+		if (colegiacionesPersona.size() == 0) {
+			todoslosdatos.add(datosPersona);
+		}
+
+		return todoslosdatos;
+	} // getDatosPersonaSimilar()
 	
 
 	////////////////////////// Metodos genericos de MasterBean ////////////////////////// 
@@ -489,9 +372,9 @@ public class DuplicadosHelper{
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public Vector selectGenerico(String select) throws ClsExceptions, SIGAException 
+	public Vector<Hashtable<String, String>> selectGenerico(String select) throws ClsExceptions, SIGAException 
 	{
-		Vector datos = new Vector();
+		Vector<Hashtable<String, String>> datos = new Vector<Hashtable<String, String>>();
 		
 		RowsContainer rc = null;
 		try { 
@@ -499,7 +382,7 @@ public class DuplicadosHelper{
 			if (rc.query(select)) {
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable) fila.getRow(); 
+					Hashtable<String, String> registro = (Hashtable<String, String>) fila.getRow(); 
 					if (registro != null) 
 						datos.add(registro);
 				}

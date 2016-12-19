@@ -213,9 +213,12 @@
 
 <body>
 	<!-- TITULO -->
-	<table class="tablaTitulo" cellspacing="0">
+	
+	
+	
+	<table class="tablaTitulo" align="center" cellspacing="0">
 		<tr>
-			<td id="titulo" class="titulosPeq">
+			<td id="titulo" class="titulitosDatos">
 				<siga:Idioma key="censo.comisiones.literal.titulo1"/> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombreUsu)%> &nbsp;&nbsp;
 			  <%if ((numero != null) && (!numero.equalsIgnoreCase(""))){%>
 					<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(numero)%>

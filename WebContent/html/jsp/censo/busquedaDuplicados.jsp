@@ -50,6 +50,12 @@
 	// para ver si tengo que buscar tras mostrar la pantalla
 	String buscar = (String)request.getAttribute("buscar");
 	
+	//Comprobamos de donde viene para que el vovler sea con paginación o no
+	String valorIncialVolver =  (String)request.getSession().getAttribute("CenBusquedaClientesTipo");
+	
+	//Gestiona botón volver MD= Mantenimiento Duplicado
+	request.getSession().setAttribute("CenBusquedaClientesTipo","MD");
+	
 	/**************/
 		
 %>
@@ -71,13 +77,6 @@
   	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	
 	<script>
-		function ChequearCriterios(){
-			jQuery('input[name=chkApellidos]').attr('checked', true);
-			jQuery('input[name=chkNombreApellidos]').attr('checked', true);
-			jQuery('input[name=chkIdentificador]').attr('checked', true);
-			jQuery('input[name=chkNumColegiado]').attr('checked', true); 
-			jQuery("#campoOrdenacion").append('<option value="numeroColegiado">Inst/Nº.Col</option>');
-		}
 		
 		function preAccionBusqueda(){
 			sub();
@@ -86,35 +85,8 @@
 		function postAccionBusqueda(){
 			fin();
 		}
-		function onClickChkNumColegiado(){
-			
-			if(document.MantenimientoDuplicadosForm.chkNumColegiado.checked){
-				jQuery("#campoOrdenacion").append('<option value="numeroColegiado">Inst/Nº.Col</option>');
-			}else{
-				jQuery("#campoOrdenacion option[value='numeroColegiado']").remove();
-			}
-			
-		}
 		function buscar(){
 			sub();
-			//chequear los criterios en el hidden
-			if (document.MantenimientoDuplicadosForm.chkApellidos.checked)
-				document.MantenimientoDuplicadosForm.valoresCheck.value = "1";
-			else
-				document.MantenimientoDuplicadosForm.valoresCheck.value = "0";
-			if (document.MantenimientoDuplicadosForm.chkNombreApellidos.checked)
-				document.MantenimientoDuplicadosForm.valoresCheck.value = document.MantenimientoDuplicadosForm.valoresCheck.value+"1";
-			else
-				document.MantenimientoDuplicadosForm.valoresCheck.value = document.MantenimientoDuplicadosForm.valoresCheck.value+"0";
-			if (document.MantenimientoDuplicadosForm.chkIdentificador.checked)
-				document.MantenimientoDuplicadosForm.valoresCheck.value = document.MantenimientoDuplicadosForm.valoresCheck.value+"1";
-			else
-				document.MantenimientoDuplicadosForm.valoresCheck.value = document.MantenimientoDuplicadosForm.valoresCheck.value+"0";
-			if (document.MantenimientoDuplicadosForm.chkNumColegiado.checked)
-				document.MantenimientoDuplicadosForm.valoresCheck.value = document.MantenimientoDuplicadosForm.valoresCheck.value+"1";
-			else
-				document.MantenimientoDuplicadosForm.valoresCheck.value = document.MantenimientoDuplicadosForm.valoresCheck.value+"0";
-			
 			if(comprobarFiltros()){
 				document.MantenimientoDuplicadosForm.modo.value = "buscar";
 				document.MantenimientoDuplicadosForm.target="resultado";
@@ -127,7 +99,7 @@
 		function limpiar()
 		{
 			document.MantenimientoDuplicadosForm.reset();
-			ChequearCriterios();
+			//ChequearCriterios();
 		}	
 		function refrescarLocal(){
 			buscar();
@@ -136,13 +108,14 @@
 			var error=false;
 			var msg="";
 			//aalg: modificado para controlar que siempre haya un check marcado al buscar
-			if(!(document.MantenimientoDuplicadosForm.chkApellidos.checked ||
-				document.MantenimientoDuplicadosForm.chkNombreApellidos.checked||
-				document.MantenimientoDuplicadosForm.chkIdentificador.checked||
-				document.MantenimientoDuplicadosForm.chkNumColegiado.checked)){
+			if(document.MantenimientoDuplicadosForm.nifcif.value.length ==0 &&
+					document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length ==0 &&
+					document.MantenimientoDuplicadosForm.listadoInstitucion.value == "" &&
+					document.MantenimientoDuplicadosForm.nombreText.value.length ==0 &&
+					document.MantenimientoDuplicadosForm.apellido1Text.value.length ==0){
 				
 				error = true;
-				msg=msg+"Tiene que estar marcado alguno de los criterios de coincidencia";
+				msg=msg+"Debe seleccionar alguna opción de busqueda";
 
 			}
 			else {
@@ -156,11 +129,6 @@
 					error=true;
 					msg=msg+"El campo Apellido 1 es demasiado corto\n";
 				}		
-				if(document.MantenimientoDuplicadosForm.apellido2.value.length>0&&
-				   document.MantenimientoDuplicadosForm.apellido2.value.length<3){
-					error=true;
-					msg=msg+"El campo Apellido 2 es demasiado corto\n";
-				}
 				msg= msg + "Si no se rellenan al menos 3 caracteres la consulta devolverá demasiados resultados.\nIntente afinar la búsqueda";
 			}
 			if(error){
@@ -173,12 +141,103 @@
 		
 		function inicio(){
 			<% if (request.getParameter("buscar")!=null && request.getParameter("buscar").equals("true")) {%>
-				document.forms[0].modo.value="buscarPor";
+			 	<%if(!"DUPLICADOS".equalsIgnoreCase(valorIncialVolver) && !"MD".equalsIgnoreCase(valorIncialVolver)){ %>   
+			 		document.forms[0].modo.value="buscar";
+				<% }else{ %>
+					document.forms[0].modo.value="buscarPor";
+				<%}%>
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();	
-			<% } else{%>
-				ChequearCriterios();
-			<%}%>
+			<% } %>
+			
+		}
+		function presionarNif(){
+			jQuery("#numeroColegiadoText").val("");
+			jQuery("#nombreText").val("");
+			jQuery("#apellido1Text").val("");
+			jQuery('#listadoInstitucion option[value=""]').attr("selected","selected");
+			
+			jQuery('#tdIdentificacion').attr("style", "background-color:aliceblue; border: 1px solid DarkGray;");
+			jQuery('#tdColegiacion').attr("style", "border: 1px solid white;");
+			jQuery('#tdNombre').attr("style", "border: 1px solid white;");
+			
+			jQuery('#tdIdentificacionOrden').attr("style", "visibility:visible;");
+			jQuery('#tdColegiacionOrden').attr("style", "visibility:hidden;");
+			jQuery('#tdNombreOrden').attr("style", "visibility:hidden;");
+		}
+		
+		function presionarNumeroColegiado(){
+			jQuery("#nifcif").val("");
+			jQuery("#nombreText").val("");
+			jQuery("#apellido1Text").val("");
+			
+			jQuery('#tdIdentificacion').attr("style", "border: 1px solid white;");
+			jQuery('#tdColegiacion').attr("style", "background-color:aliceblue; border: 1px solid DarkGray;");
+			jQuery('#tdNombre').attr("style", "border: 1px solid white;");
+			
+			jQuery('#tdIdentificacionOrden').attr("style", "visibility:hidden;");
+			jQuery('#tdColegiacionOrden').attr("style", "visibility:visible;");
+			jQuery('#tdNombreOrden').attr("style", "visibility:hidden;");
+		}
+		
+		function presionarNombreApellidos(){
+			jQuery("#nifcif").val("");
+			jQuery("#numeroColegiadoText").val("");
+			jQuery('#listadoInstitucion option[value=""]').attr("selected","selected");
+			
+			jQuery('#tdIdentificacion').attr("style", "border: 1px solid white;");
+			jQuery('#tdColegiacion').attr("style", "border: 1px solid white;");
+			jQuery('#tdNombre').attr("style", "background-color:aliceblue; border: 1px solid DarkGray;");
+			
+			jQuery('#tdIdentificacionOrden').attr("style", "visibility:hidden;");
+			jQuery('#tdColegiacionOrden').attr("style", "visibility:hidden;");
+			jQuery('#tdNombreOrden').attr("style", "visibility:visible;");
+		}
+		
+		function recargarCamposHabilitados (){
+			if(document.MantenimientoDuplicadosForm.nifcif.value.length ==0 &&
+					document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length ==0 &&
+					document.MantenimientoDuplicadosForm.listadoInstitucion.value == "" &&
+					document.MantenimientoDuplicadosForm.nombreText.value.length ==0 &&
+					document.MantenimientoDuplicadosForm.apellido1Text.value.length ==0){
+				
+					jQuery ("#nifcif").val("");
+					jQuery ("#numeroColegiadoText").val("");
+					jQuery ("#nombreText").val("");
+					jQuery ("#apellido1Text").val("");
+					jQuery ('#listadoInstitucion option[value=""]').attr("selected","selected");
+					
+			}else{
+				if(document.MantenimientoDuplicadosForm.nifcif.value.length >0 ){
+					//Deshabilitamso los demás elementos del filtro	
+					document.getElementById('nifcif').focus();
+					
+					jQuery("#numeroColegiadoText").val("");
+					jQuery("#nombreText").val("");
+					jQuery("#apellido1Text").val("");
+					jQuery('#listadoInstitucion option[value=""]').attr("selected","selected");
+					presionarNif();
+					
+				}
+				if(document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length >0 || document.MantenimientoDuplicadosForm.listadoInstitucion.value != ""){
+					document.getElementById('numeroColegiadoText').focus();
+					
+					jQuery("#nifcif").val();
+					jQuery("#nombreText").val();
+					jQuery("#apellido1Text").val();
+					presionarNumeroColegiado();
+				}
+				if(document.MantenimientoDuplicadosForm.nombreText.value.length >0 ||
+						document.MantenimientoDuplicadosForm.apellido1Text.value.length >0){
+					
+					jQuery("#nifcif").val();
+					jQuery("#numeroColegiadoText").val();
+					jQuery('#listadoInstitucion option[value=""]').attr("selected","selected");
+					document.getElementById('nombreText').focus();
+					presionarNombreApellidos();
+				}
+				
+			}
 			
 		}
 		</script>
@@ -187,105 +246,103 @@
 			localizacion="censo.busquedaDuplicados.localizacion"/>
 </head>
 
-<body onload="inicio();ajusteAlto('resultado');">
+<body onload="inicio();ajusteAlto('resultado');recargarCamposHabilitados();">
 
 
-	
 
-<html:form action="/CEN_MantenimientoDuplicados.do?noReset=true" method="POST" target="mainWorkArea" >
+<html:form action="/CEN_MantenimientoDuplicados.do?noReset=true" method="POST" target="mainWorkArea"  >
 	<input type="hidden" name="modo" value="">
-	<input type="hidden" name="valoresCheck" value="">
-	
-	<table  class="tablaCentralCampos"  align="center"><tr><td>
-	
-		<siga:ConjCampos leyenda="censo.busquedaDuplicados.coincidencias.cabecera">
-			<table class="tablaCampos" align="center" width="100%">
-				<tr>
-					<td colspan="4" class="labelText">
-						<siga:Idioma key="censo.busquedaDuplicados.coincidencias.explicacion"/>
-					</td>
-				</tr>
-				<tr>
-					<td class="labelText">
-						<html:checkbox styleid="chkNombreApellidos" name="MantenimientoDuplicadosForm" property="chkNombreApellidos" />
-						<label for="chkNombreApellidos"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.nombreApellidos"/></label>
-					</td>
-					<td class="labelText">
-						<html:checkbox styleid="chkApellidos" name="MantenimientoDuplicadosForm" property="chkApellidos" /> 
-						<label for="chkApellidos"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.apellidos"/></label>
-					</td>
-					<td class="labelText" style="align:right">
-						<siga:Idioma key="censo.busquedaDuplicados.coincidencias.ordenacion"/>
-						<html:select name="MantenimientoDuplicadosForm" styleId="campoOrdenacion" property="campoOrdenacion" styleClass="boxCombo">
-							<html:option value="apellidos" key="gratuita.turnos.literal.apellidosSolo"></html:option>
-							<html:option value="nif" key="censo.busquedaClientesAvanzada.literal.nif"></html:option>
-						</html:select>
-						<html:select name="MantenimientoDuplicadosForm" property="sentidoOrdenacion" styleClass="boxCombo">
-							<html:option value="asc" key="orden.literal.ascendente"></html:option>						
-							<html:option value="desc" key="orden.literal.descendente"></html:option>
-						</html:select>
-					</td>
-				</tr>
-				<tr>
-					<td class="labelText">
-						<html:checkbox styleid="chkIdentificador" name="MantenimientoDuplicadosForm" property="chkIdentificador" /> 
-						<label for="chkIdentificador"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.nifCif"/></label>
-					</td>
-					<td class="labelText">
-						<html:checkbox styleid="chkNumColegiado" name="MantenimientoDuplicadosForm" property="chkNumColegiado" onclick="return onClickChkNumColegiado();" /> 
-						<label for="chkNumColegiado"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.numeroColegiado"/></label>
-					</td>
-					<td class="labelText" style="align:right">
-						<html:select name="MantenimientoDuplicadosForm" property="tipoConexion" styleClass="boxCombo">
-							<html:option value="intersect"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.criterios.todos"/></html:option>
-							<html:option value="union"><siga:Idioma key="censo.busquedaDuplicados.coincidencias.criterios.alguno"/></html:option>
-						</html:select>
-					</td>
-					
-					<td class="labelText" style="align:right;display:none">
-						<html:select name="MantenimientoDuplicadosForm" property="agruparColegiaciones" styleClass="boxCombo">
-							<html:option value="s"><siga:Idioma key="Mostrar personas"/></html:option>
-							<html:option value="n"><siga:Idioma key="Mostrar colegiaciones"/></html:option>
-						</html:select>
-					</td>
-				</tr>
-			</table>
-		</siga:ConjCampos>
-	
-		<siga:ConjCampos leyenda="censo.busquedaDuplicados.patron.cabecera">
-			<table class="tablaCampos" align="center">
+	<input type="hidden" name="tipoConexion" id="tipoConexion" value="intersect">
+	<input type="hidden" name="agruparColegiaciones" id="agruparColegiaciones" value="s">
+
+	<siga:ConjCampos leyenda="censo.busquedaDuplicados.patron.cabecera">
+		<table class="tablaCampos" align="center">
 			<tr>
-				<td colspan="6" class="labelText"><siga:Idioma key="censo.busquedaDuplicados.patron.explicacion"/></td>
+				<td id="tdIdentificacion" style="border: 1px solid white;">
+					<table>
+						<tr>
+							<td class="labelText">
+								Número Identificación
+							</td>
+							<td>
+								<html:text styleId="nifcif" name="MantenimientoDuplicadosForm" property="nifcif" size="15" styleClass="box" onkeyup="presionarNif()" />
+							</td>
+						</tr>
+						<tr>
+							<td class="labelText">
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td id="tdIdentificacionOrden" class="labelText" colspan="2" style="visibility:hidden;">
+								<p><b><i>Se ordena por Número Identificación</i></b></p>
+							</td>
+						</tr>
+					</table>
+				</td>
+
+				<td id="tdColegiacion" style="border: 1px solid white;">
+					<table>
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="censo.busquedaDuplicados.patron.institucion" />
+							</td>
+							<td>
+								<html:select styleId="listadoInstitucion" property="idInstitucion" styleClass="boxCombo" onchange="presionarNumeroColegiado()">
+									<html:option value="">&nbsp;</html:option>
+									<c:forEach items="${listadoInstituciones}" var="inst">
+										<html:option value="${inst.idInstitucion}">${inst.abreviatura}</html:option>
+									</c:forEach>
+								</html:select>
+							</td>
+						</tr>
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="censo.busquedaDuplicados.patron.numeroColegiado" />
+							</td>
+							<td>
+								<html:text styleId="numeroColegiadoText" name="MantenimientoDuplicadosForm" property="numeroColegiado" size="20" styleClass="box" onkeyup="presionarNumeroColegiado()" />
+							</td>
+						</tr>
+						<tr>
+							<td id="tdColegiacionOrden" class="labelText" colspan="2" style="visibility:hidden;">
+								<p><b><i>Se ordena por Institución y Número de colegiado</i></b></p>
+							</td>
+						</tr>
+					</table>
+				</td>
+
+				<td id="tdNombre" style="border: 1px solid white;">
+					<table>
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="censo.busquedaDuplicados.patron.nombre" />
+							</td>
+							<td>
+								<html:text styleId="nombreText" name="MantenimientoDuplicadosForm" property="nombre" size="25" styleClass="box" onkeyup="presionarNombreApellidos()" />
+							</td>
+						</tr>
+						<tr>
+							<td class="labelText">Apellidos</td>
+							<td>
+								<html:text styleId="apellido1Text" name="MantenimientoDuplicadosForm" property="apellido1" size="35" styleClass="box" onkeyup="presionarNombreApellidos()" />
+							</td>
+						</tr>
+						<tr>
+							<td id="tdNombreOrden" class="labelText" colspan="2" style="visibility:hidden;">
+								<p><b><i>Se ordena por Apellidos y Nombre</i></b></p>
+							</td>
+						</tr>
+					</table>
+				</td>
 			</tr>
-			<tr></tr>
-			
-			<tr>
-				<td class="labelText" width="100px"> <siga:Idioma key="censo.busquedaDuplicados.patron.nif"/> </td>
-				<td> <html:text name="MantenimientoDuplicadosForm" property="nifcif" size="15" styleClass="box"></html:text> </td>
-				
-				<td class="labelText" width="100px"> <siga:Idioma key="censo.busquedaDuplicados.patron.institucion"/> </td>
-				<td> <siga:Select queryId="getNombreColegiosTodos" id="idInstitucion"/> </td>
-				
-				<td class="labelText" width="100px"> <siga:Idioma key="censo.busquedaDuplicados.patron.numeroColegiado"/> </td>
-				<td> <html:text name="MantenimientoDuplicadosForm" property="numeroColegiado" size="20" styleClass="box"></html:text> </td>
-			</tr>
-			<tr>
-				<td class="labelText"><siga:Idioma key="censo.busquedaDuplicados.patron.nombre"/></td>				
-				<td><html:text name="MantenimientoDuplicadosForm" property="nombre" size="25" styleClass="box"></html:text></td>
-				
-				<td class="labelText"><siga:Idioma key="censo.busquedaDuplicados.patron.apellido1"/></td>
-				<td><html:text name="MantenimientoDuplicadosForm" property="apellido1" size="35" styleClass="box"></html:text></td>
-			
-				<td class="labelText"><siga:Idioma key="censo.busquedaDuplicados.patron.apellido2"/></td>
-				<td><html:text name="MantenimientoDuplicadosForm" property="apellido2" size="35" styleClass="box"></html:text></td>
-			</tr>
-			</table>
-		</siga:ConjCampos>
-	</td></tr></table>
+		</table>
+	</siga:ConjCampos>
+
 	<siga:ConjBotonesBusqueda botones="B,L"/>
 
 	</html:form>  
-   <iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
+	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"
 			id="resultado"
 			name="resultado" 
 			scrolling="no"
@@ -293,8 +350,6 @@
 			marginheight="0"
 			marginwidth="0"
 			class="frameGeneral"/>
-
-
 
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"/>
 	

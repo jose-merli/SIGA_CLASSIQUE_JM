@@ -171,8 +171,10 @@
 		</fieldset>	
 	<!-- FIN: CAMPOS DE BUSQUEDA-->	
 	
-	<!-- INICIO: BOTONES BUSQUEDA -->		
-		<table style="width: 100%;">
+	
+	<!-- INICIO: BOTONES BUSQUEDA -->
+			
+		<table class="botonesSeguido" id="idBotonesBusqueda" align="center" >
 			<tr> 
 				<td class="titulitos">
 					<siga:Idioma key="censo.comisiones.literal.consultarComisiones"/>
@@ -188,30 +190,30 @@
 		</table>	
 	<!-- FIN: BOTONES BUSQUEDA -->
 		
-		<div>		
-			<table id="tabCargosCabeceras" border="1" width="100%" cellspacing="0" cellpadding="0">
-				<tr class="tableTitle">
-					<td align="center" width="10%">
-						<siga:Idioma key="FactSJCS.mantRetencionesJ.literal.fechaInicio"/>
-					</td>
-					<td id="cargo" align="center" width="15%">
-						<siga:Idioma key="censo.datosCV.literal.cargo"/>
-					</td>
-					<td align="center" width="10%">
-						<siga:Idioma key="censo.busquedaClientes.literal.nColegiado"/>
-					</td>
-					<td align="center" width="35%">
-						<siga:Idioma key="censo.busquedaClientes.literal.nombre"/>
-					</td>
-					<td align="center" width="20%"></td>
-					<td align="center" width="10%"></td>
-				</tr>
+		<div>
+			<table id="tabCargosCabeceras" name="tabCargosCabeceras" width='100%' cellspacing='0' cellpadding='0'
+				class='fixedHeaderTable dataScroll'
+				style='table-layout: fixed; border-spacing: 0px;'>
+				<thead class='Cabeceras' style='text-align: center;'>
+					<tr class='tableTitle'>
+						<th style="text-align: center; width: 10%;"><siga:Idioma
+								key="FactSJCS.mantRetencionesJ.literal.fechaInicio" /></th>
+
+						<th id="cargo" style="text-align: center; width: 15%"><siga:Idioma
+								key="censo.datosCV.literal.cargo" /></th>
+						<th style="text-align: center; width: 10%"><siga:Idioma
+								key="censo.busquedaClientes.literal.nColegiado" /></th>
+						<th style="text-align: center; width: 35%"><siga:Idioma
+								key="censo.busquedaClientes.literal.nombre" /></th>
+						<th style="text-align: center; width: 20%">&nbsp;</th>
+						<th style="text-align: center; width: 10%">&nbsp;</th>
+					</tr>
+				</thead>
 			</table>
 		</div>
 		
 		<div id="divCargos" style="height:595px;position:absolute;width:100%;overflow-y:auto" >
-			<table id='cargostabla' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>		
-			</table>
+			
 			<div id="vacio">
 			</div>
 		</div>
@@ -406,7 +408,7 @@
         '</tr></table>';
         
 		td = tr.insertCell(4); 	
-		td.setAttribute("colspan", "2");
+		//td.setAttribute("colspan", "2");
 		td.setAttribute("align", "center");
 		td.className = "";
 		td.setAttribute("width", "20%");
@@ -415,8 +417,8 @@
 		
 		td = tr.insertCell(5); 
 		td.setAttribute("width", "10%");
-		td.setAttribute("align", "left");
-		td.innerHTML= '<img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:pointer;margin:4px;" title="<siga:Idioma key='general.boton.borrar'/>" alt="<siga:Idioma key='general.boton.borrar'/>" name="" border="0" onclick="borrarFila( ' + numFila + ',\''+ tr.id +'\')">';
+		td.setAttribute("align", "center");
+		td.innerHTML= '<img id="iconoboton_consultar1"  src="/SIGA/html/imagenes/bconsultar_disable.gif" alt="<siga:Idioma key='general.boton.consultar'/>" title="<siga:Idioma key='general.boton.consultar'/>" name="consultar_1" border="0"> <img id="iconoboton_editar1"  src="/SIGA/html/imagenes/beditar_disable.gif" alt="<siga:Idioma key='general.boton.editar'/>" title="<siga:Idioma key='general.boton.editar'/>" name="editar_1" border="0"> <img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:pointer;" title="<siga:Idioma key='general.boton.borrar'/>" alt="<siga:Idioma key='general.boton.borrar'/>" name="borrar_1" border="0" onclick="borrarFila( ' + numFila + ',\''+ tr.id +'\')">';
 
 		disablebuttons();
 		var cargo='cargos_' + numFila + '';

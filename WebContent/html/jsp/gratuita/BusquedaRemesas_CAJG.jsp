@@ -110,12 +110,9 @@
 		<html:hidden property = "actionModal" value = ""/>
 		<html:hidden property = "idRemesa" value = ""/>
 
-		<fieldset name="fieldset1" id="fieldset1">
-			<legend>
-				<span  class="boxConsulta">
-					<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.datos"/>
-				</span>
-			</legend>
+<siga:ConjCampos leyenda="gratuita.BusquedaRemesas_CAJG.literal.datos">
+
+		
 
 			<table align="center" width="100%" border="0">
 				<tr>	
@@ -180,7 +177,7 @@
 					</td>
 				</tr>
 			</table>
-		</fieldset>	
+		</siga:ConjCampos>	
 	</html:form>	
 	
 	<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">

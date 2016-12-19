@@ -2,6 +2,7 @@
 package com.siga.beans;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -110,7 +111,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 	 * Devuelve un CenDireccionesBean con los campos de la tabla CEN_DIRECCIONES
 	 * @param Hashtable 
 	 */
-	protected MasterBean hashTableToBean (Hashtable hash)
+	public MasterBean hashTableToBean (Hashtable hash)
 			throws ClsExceptions
 	{
 		CenDireccionesBean bean = null;
@@ -204,6 +205,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 			tipoDireccion = "f_siga_gettiposdireccion(" + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCION + "," + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPERSONA + "," + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDDIRECCION + ", " + this.usrbean.getLanguage() + ") as \"" + CenTipoDireccionBean.T_NOMBRETABLA +"."+CenTipoDireccionBean.C_DESCRIPCION+"\"";
 			idTipoDireccion = "F_SIGA_GET_IDTIPOSDIRECCION(" + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCION + "," + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPERSONA + "," + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDDIRECCION + ") as \"" + CenTipoDireccionBean.C_IDTIPODIRECCION+"\"";
 		}
+		String colegioOrigen = "nvl((select ins.abreviatura from cen_institucion ins where ins.idinstitucion = " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCIONALTA + "), '') as COLEGIOORIGEN";
 		String[] campos = {	
 				CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCION,	
 				CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPERSONA,	
@@ -224,6 +226,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 				CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPOBLACION,
 				CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_POBLACIONEXTRANJERA,
 				CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FECHAMODIFICACION,
+				CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_USUMODIFICACION,
 /////////////////////////////////////////////////////////////////////////////
 // DCG Cambios realizamos por el nuevo tratamiento de direcciones  //////////
 //				CenDireccionTipoDireccionBean.T_NOMBRETABLA + "." + CenDireccionTipoDireccionBean.C_IDTIPODIRECCION,
@@ -234,7 +237,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 				CenProvinciaBean.T_NOMBRETABLA + "." + CenProvinciaBean.C_NOMBRE +" AS PROVINCIA ",
 				UtilidadesMultidioma.getCampoMultidiomaSimple(CenPaisBean.T_NOMBRETABLA + "." + CenPaisBean.C_NOMBRE, this.usrbean.getLanguage()) + " AS PAIS", 
 				CenPaisBean.T_NOMBRETABLA + "." + CenPaisBean.C_IDPAIS + " AS IDPAIS", 
-				tipoDireccion, idTipoDireccion
+				tipoDireccion, idTipoDireccion, colegioOrigen
 		};
 		return campos;
 	}
@@ -339,7 +342,6 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 			String sql = UtilidadesBDAdm.sqlSelect(this.getTablasDirecciones(), this.getCamposDirecciones());
 			
 			sql += where;
-//			sql += UtilidadesBDAdm.sqlOrderBy(this.getOrdenDirecciones()); // DCG cambio de la select de direcciones
 			sql += UtilidadesBDAdm.sqlOrderBy(this.getOrdenCampos());
 			// RGG cambio visibilidad
 			rc = this.find(sql);
@@ -415,9 +417,16 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 	 * @param beanTipoDir datos el tipo de la direccion.
 	 * @param BeanHis con el motivo y el tipo, para almacenar en el Historico
 	 */
-	public boolean insertarConHistorico (CenDireccionesBean beanDir, CenDireccionTipoDireccionBean beanTipoDir[], CenHistoricoBean beanHis,
+	public boolean insertarConHistorico (CenDireccionesBean beanDir, CenDireccionTipoDireccionBean beanTipoDir[], String motivoHis,
 			List<Integer> idTipoDireccionAValidarIntegers, String idioma) throws ClsExceptions, SIGAException 
 	{
+		CenHistoricoBean beanHis = null;
+		if(motivoHis != null){
+			//estableciendo los datos del Historico
+			beanHis = new CenHistoricoBean ();
+			beanHis.setMotivo (motivoHis);
+		}			
+
 		try {
 			// Insertamos la direccion
 			beanDir.setIdDireccion(this.getNuevoID(beanDir));
@@ -426,22 +435,18 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 				boolean error = false;
 				
 				for (int i = 0; i < beanTipoDir.length; i++) {
-					  String no=beanTipoDir[i].getIdTipoDireccion().toString();
 					beanTipoDir[i].setIdDireccion(beanDir.getIdDireccion());
 					beanTipoDir[i].setIdInstitucion(beanDir.getIdInstitucion());
 					beanTipoDir[i].setIdPersona(beanDir.getIdPersona());
 
 					// Insertamos el tipo de direccion
 					CenDireccionTipoDireccionAdm admTipoDir = new CenDireccionTipoDireccionAdm(this.usrbean);
-					if (admTipoDir.insert(beanTipoDir[i])) {						
+					if (! admTipoDir.insert(beanTipoDir[i])) {
+						error = true;
 					}
-					else error = true;
 				}
 
-				// si es direccion postal
-//				if (beanDir.getDomicilio()!=null && !beanDir.getDomicilio().equals("")) { 
-					validarRestricciones(beanDir, idTipoDireccionAValidarIntegers);
-//				}
+				validarRestricciones(beanDir, idTipoDireccionAValidarIntegers);
 				
 				if (!error) {
 					//Se comprueba si se quiere insertar con historico o no
@@ -615,6 +620,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_POBLACIONEXTRANJERA + "," +
 							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FECHAMODIFICACION + "," +
 	            			CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_USUMODIFICACION +
+	            			
 							" FROM " + CenDireccionesBean.T_NOMBRETABLA + 
 							" WHERE " +
 							CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_IDPERSONA + "=" + idPersona +
@@ -984,8 +990,16 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 	 * @param Hash con las claves de la direccion a borrar
 	 * @param BeanHis con el motivo y el tipo, para almacenar en el Historico.
 	 */
-	public boolean deleteConHistorico (Hashtable clavesDir, CenHistoricoBean beanHis, String idioma, boolean validar,List<Integer> idTipoDireccionAValidarIntegers) throws ClsExceptions, SIGAException 
+	public boolean deleteConHistorico (Hashtable clavesDir, String motivoHis, boolean validar,List<Integer> idTipoDireccionAValidarIntegers) throws ClsExceptions, SIGAException 
 	{
+		//estableciendo los datos del Historico
+		CenHistoricoBean beanHis = new CenHistoricoBean();
+		if (motivoHis == null || motivoHis.equals("")) {
+			beanHis.setMotivo(ClsConstants.HISTORICO_REGISTRO_ELIMINADO);
+		} else {
+			beanHis.setMotivo(motivoHis);
+		}
+		
 		try {
 			CenDireccionesBean beanDir = (CenDireccionesBean) this.selectByPK(clavesDir).get(0);
 
@@ -994,7 +1008,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 				if(validar) validarRestricciones((CenDireccionesBean)hashTableToBean(clavesDir),idTipoDireccionAValidarIntegers);
 				
 				CenHistoricoAdm admHis = new CenHistoricoAdm(this.usrbean);
-				if (admHis.insertCompleto(beanHis, beanDir, CenHistoricoAdm.ACCION_DELETE, idioma)) {
+				if (admHis.insertCompleto(beanHis, beanDir, CenHistoricoAdm.ACCION_DELETE, this.usrbean.getLanguage())) {
 					return true;
 				}
 			}
@@ -1223,6 +1237,126 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 		return salida;
 		
 	}
+	
+	/**
+	 * Devuelve una direccion del cliente para el tipo dado, usando una funcion de bd para elegir la direccion
+	 * 
+	 * @param idPersona
+	 * @param idInstitucion
+	 * @param idTipo
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	public Hashtable<String, String> getDireccionTipo(String idPersona, String idInstitucion, String idTipo) throws ClsExceptions, SIGAException
+	{
+		Hashtable<String, String> hashDireccion = new Hashtable<String, String>();
+
+		String sql = UtilidadesBDAdm.sqlSelect(this.getTablasDirecciones(), this.getCamposDirecciones());
+
+		StringBuilder where = new StringBuilder();
+		where.append(" WHERE " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPERSONA + "=" + idPersona);
+		where.append("   AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCION + "=" + idInstitucion);
+		where.append("   AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FECHABAJA + " IS NULL");
+		where.append("   AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDDIRECCION + "=" );
+		where.append("           F_SIGA_GETIDDIRECCION_TIPOPREF("+ idInstitucion +","+ idPersona +","+ idTipo +")");
+		sql += where;
+
+		RowsContainer rc = this.find(sql);
+		if (rc != null && rc.size() > 0) {
+			Row fila = (Row) rc.get(0);
+			hashDireccion = fila.getRow();
+		}
+
+		return hashDireccion;
+	} // getDireccionTipo()
+	
+	/**
+	 * Obtiene una direccion para el cliente dado (idInstitucion, idPersona) que tenga el tipo dado.
+	 * Notas:
+	 *  - Solo busca direcciones de alta
+	 *  - Si no hay, se devuelve null
+	 *  - Si hay varias, se devuelve la mas moderna
+	 * 
+	 * @param idInstitucion
+	 * @param idPersona
+	 * @param idTipo
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Hashtable<String, String> getDireccionTipoExacto(String idInstitucion, String idPersona, String idTipo) throws ClsExceptions
+	{
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT * ");
+		sql.append("   FROM cen_direcciones dir, cen_direccion_tipodireccion tpd ");
+		sql.append("  WHERE dir.idinstitucion = tpd.idinstitucion ");
+		sql.append("    AND dir.idpersona = tpd.idpersona ");
+		sql.append("    AND dir.iddireccion = tpd.iddireccion ");
+		sql.append("    AND dir.idinstitucion =:1 ");
+		sql.append("    AND dir.idpersona =:2 ");
+		sql.append("    AND dir.FECHABAJA IS NULL ");
+		sql.append("    AND tpd.idtipodireccion =:3 ");
+		sql.append("  ORDER BY dir.fechamodificacion desc ");
+		
+		Hashtable codigos = new Hashtable();
+		codigos.put(new Integer(1), idInstitucion);
+		codigos.put(new Integer(2), idPersona);
+		codigos.put(new Integer(3), idTipo);
+
+		try {
+			RowsContainer rc = this.findBind(sql.toString(), codigos);
+			if (rc != null && rc.size() > 0) {
+				return ((Row) rc.get(0)).getRow();
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al buscar la direccion adecuada con un tipo determinado. ");
+		}
+	}
+	
+	/**
+	 * Obtiene una direccion para el cliente dado (idInstitucion, idPersona) que tenga la preferencia dado.
+	 * Notas:
+	 *  - Solo busca direcciones de alta
+	 *  - Si no hay, se devuelve null
+	 *  - Si hay varias, se devuelve la mas moderna
+	 * 
+	 * @param idInstitucion
+	 * @param idPersona
+	 * @param preferencia
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Hashtable<String, String> getDireccionPreferenciaExacta(String idInstitucion, String idPersona, char preferencia) throws ClsExceptions
+	{
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT * ");
+		sql.append("   FROM cen_direcciones dir ");
+		sql.append("  WHERE dir.idinstitucion =:1 ");
+		sql.append("    AND dir.idpersona =:2 ");
+		sql.append("    AND dir.FECHABAJA IS NULL ");
+		sql.append("    AND :3 in dir.PREFERENTE ");
+		sql.append("  ORDER BY dir.fechamodificacion desc ");
+		
+		Hashtable codigos = new Hashtable();
+		codigos.put(new Integer(1), idInstitucion);
+		codigos.put(new Integer(2), idPersona);
+		codigos.put(new Integer(3), String.valueOf(preferencia));
+
+		try {
+			RowsContainer rc = this.findBind(sql.toString(), codigos);
+			if (rc != null && rc.size() > 0) {
+				return ((Row) rc.get(0)).getRow();
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al buscar la direccion adecuada con un tipo determinado. ");
+		}
+	}
+
+	
 	/** 
 	 * Recoge la dirección preferente de correo, o la única direccion de correo.
 	 * @param  idPersona - identificador de persona 
@@ -1234,39 +1368,17 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 	public Hashtable getDireccionCorreo (String idPersona, String idInstitucion) throws ClsExceptions, SIGAException {
 		   Hashtable datos=new Hashtable();
 	       try {
-	            RowsContainer rc = new RowsContainer(); 
-	            String sql ="SELECT " +
-							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPERSONA + "," +
-							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCION + "," +
-							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDDIRECCION + "," +
-							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_DOMICILIO + "," +
-							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_CODIGOPOSTAL + "," +
-							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_TELEFONO1 + "," +
-							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_TELEFONO2 + "," +
-							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_MOVIL + "," +
-							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FAX1 + "," +
-							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FAX2 + "," +							
-							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_CORREOELECTRONICO + "," +
-			    			CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_PAGINAWEB + "," +
-			    			CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FECHABAJA + "," +							
-			    			CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_PREFERENTE + "," +
-							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPAIS + "," +
-							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPROVINCIA + "," +
-							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPOBLACION + "," +
-							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_POBLACIONEXTRANJERA + "," +
-							CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FECHAMODIFICACION + "," +
-	            			CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_USUMODIFICACION +
-							" FROM " + CenDireccionesBean.T_NOMBRETABLA + 
-							" WHERE " +
+	            String sql = UtilidadesBDAdm.sqlSelect(this.getTablasDirecciones(), this.getCamposDirecciones());
+	            sql +=" WHERE " +
 							CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_IDPERSONA + "=" + idPersona +
 							" AND " +
 							CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_IDINSTITUCION + "=" + idInstitucion +
 							" AND " +
 							CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_PREFERENTE + " like '%C%'"+
-//							 Se vuelve a poner las restriccion de que solo muestre direcciones que no se hayan dado de baja		  
 							" AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FECHABAJA + " IS NULL";
 														
 	            // RGG cambio visibilidad
+	            RowsContainer rc = new RowsContainer();
 	            rc = this.findForUpdate(sql);
 	            if (rc!=null) {
 	               for (int i = 0; i < rc.size(); i++){
@@ -1301,10 +1413,6 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 			" AND " +
 			CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_IDINSTITUCION + "=" + idInstitucion +
 			" AND " +
-			// INC-6205-SIGA jbd 8/7/2009
-			/* CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_PREFERENTE + " LIKE '%"+idTipoEnvios+"%'"+
-//			 Se vuelve a poner las restriccion de que solo muestre direcciones que no se hayan dado de baja		  
-			  " AND " + CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FECHABAJA + " IS NULL";*/
 			CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_IDDIRECCION + "=" + 
 			    " F_SIGA_GETDIRECCION("+ idInstitucion +","+ idPersona +","+ intTipo +")";
 			
@@ -1315,41 +1423,13 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
             }
             
 			return salida;
-/*			
-            RowsContainer rc = new RowsContainer(); 
-            String sql ="SELECT " +
-						CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDPERSONA + "," +
-						CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDINSTITUCION + "," +
-						CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_IDDIRECCION + 
-						" FROM " + CenDireccionesBean.T_NOMBRETABLA + ", " + CenDireccionTipoDireccionBean.T_NOMBRETABLA +  
-						" WHERE " +
-						CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_IDPERSONA + "=" + CenDireccionTipoDireccionBean.T_NOMBRETABLA +"."+ CenDireccionTipoDireccionBean.C_IDPERSONA + 
-						" AND " +
-						CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_IDINSTITUCION + "=" + CenDireccionTipoDireccionBean.T_NOMBRETABLA +"."+ CenDireccionTipoDireccionBean.C_IDINSTITUCION + 
-						" AND " +
-						CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_IDDIRECCION + "=" + CenDireccionTipoDireccionBean.T_NOMBRETABLA +"."+ CenDireccionTipoDireccionBean.C_IDDIRECCION + 
-						" AND " +
-						CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_IDPERSONA + "=" + idPersona +
-						" AND " +
-						CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_IDINSTITUCION + "=" + idInstitucion +
-						" AND " +
-						CenDireccionTipoDireccionBean.T_NOMBRETABLA +"."+ CenDireccionTipoDireccionBean.C_IDTIPODIRECCION + "='"+idTipoEnvios+"'";							
-													
-            // RGG cambio visibilidad
-            rc = this.findForUpdate(sql);
-            if (rc!=null) {
-               for (int i = 0; i < rc.size(); i++){
-                  Row fila = (Row) rc.get(i);
-                  datos=fila.getRow();
-               }
-            } 
-*/			
 
 		} catch (Exception e) {
 			throw new ClsExceptions(e,"Error al buscar la direccion adecuada segun tipo. ");
 		}
 		
 	}
+	
 	/**
 	 * Obtiene la primera direccion de una persona y si no encuentra para ese tipo devuelve nulo.
 	 * @param idPersona
@@ -1746,31 +1826,44 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 	}
 	
 	
-	
-	public String comprobarTipoDireccion(String tipo, String idInstitucion, String idpersona){
-		
-		String sentencia="";
-		
+	/**
+	 * Busca si existe alguna direccion para el cliente dado (idinstitucion, idpersona) que tenga el tipo pasado como parametro.
+	 * Si encuentra alguna, devuelve una cualquiera de ellas.
+	 * TODO: (AAG) Si, yo tampoco entiendo esta chapuza, pero al menos ahora sabemos lo que hace.
+	 *  
+	 * @param idInstitucion
+	 * @param idpersona
+	 * @param tipo
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Row comprobarTipoDireccion(String idInstitucion, String idpersona, String tipo) throws ClsExceptions
+	{
+		String sentencia = "";
+
 		sentencia= "SELECT TIPO."+CenDireccionTipoDireccionBean.C_FECHAMODIFICACION+", " +
-						"       TIPO."+CenDireccionTipoDireccionBean.C_IDDIRECCION+", " +
-						"       TIPO."+CenDireccionTipoDireccionBean.C_IDINSTITUCION+", " +
-						"       TIPO."+CenDireccionTipoDireccionBean.C_IDPERSONA+", " +
-						"       TIPO."+CenDireccionTipoDireccionBean.C_IDTIPODIRECCION+", " +
-						"       TIPO."+CenDireccionTipoDireccionBean.C_USUMODIFICACION+" " +
-						"  FROM "+CenDireccionTipoDireccionBean.T_NOMBRETABLA+" TIPO, " +
-						"       "+CenDireccionesBean.T_NOMBRETABLA+" DIR " +
-						" WHERE TIPO."+CenDireccionTipoDireccionBean.C_IDTIPODIRECCION+" = "+tipo+" " +
-						"   AND TIPO."+CenDireccionTipoDireccionBean.C_IDPERSONA+" = "+idpersona+" " +
-						"   AND TIPO."+CenDireccionTipoDireccionBean.C_IDINSTITUCION+" = "+idInstitucion+" " +
-						"   AND TIPO."+CenDireccionTipoDireccionBean.C_IDINSTITUCION+" = DIR."+CenDireccionesBean.C_IDINSTITUCION+" " +
-						"   AND TIPO."+CenDireccionTipoDireccionBean.C_IDPERSONA+" = DIR."+CenDireccionesBean.C_IDPERSONA+" " +
-						"   AND TIPO."+CenDireccionTipoDireccionBean.C_IDDIRECCION+" = DIR."+CenDireccionesBean.C_IDDIRECCION+" " +
-						"   AND DIR."+CenDireccionesBean.C_FECHABAJA +" IS NULL";
-		 
-		
-		
-		return sentencia;
-		
+				"       TIPO."+CenDireccionTipoDireccionBean.C_IDDIRECCION+", " +
+				"       TIPO."+CenDireccionTipoDireccionBean.C_IDINSTITUCION+", " +
+				"       TIPO."+CenDireccionTipoDireccionBean.C_IDPERSONA+", " +
+				"       TIPO."+CenDireccionTipoDireccionBean.C_IDTIPODIRECCION+", " +
+				"       TIPO."+CenDireccionTipoDireccionBean.C_USUMODIFICACION+" " +
+				"  FROM "+CenDireccionTipoDireccionBean.T_NOMBRETABLA+" TIPO, " +
+				"       "+CenDireccionesBean.T_NOMBRETABLA+" DIR " +
+				" WHERE TIPO."+CenDireccionTipoDireccionBean.C_IDTIPODIRECCION+" = "+tipo+" " +
+				"   AND TIPO."+CenDireccionTipoDireccionBean.C_IDPERSONA+" = "+idpersona+" " +
+				"   AND TIPO."+CenDireccionTipoDireccionBean.C_IDINSTITUCION+" = "+idInstitucion+" " +
+				"   AND TIPO."+CenDireccionTipoDireccionBean.C_IDINSTITUCION+" = DIR."+CenDireccionesBean.C_IDINSTITUCION+" " +
+				"   AND TIPO."+CenDireccionTipoDireccionBean.C_IDPERSONA+" = DIR."+CenDireccionesBean.C_IDPERSONA+" " +
+				"   AND TIPO."+CenDireccionTipoDireccionBean.C_IDDIRECCION+" = DIR."+CenDireccionesBean.C_IDDIRECCION+" " +
+				"   AND DIR."+CenDireccionesBean.C_FECHABAJA +" IS NULL";
+
+		RowsContainer rc = new RowsContainer();
+		if (rc.query(sentencia)) {
+			if (rc.size() > 0) {
+				return (Row) rc.get(0);
+			}
+		}
+		return null;
 	}
 
 	public void insertarDireccionGuardia(Integer idInstitucion, Long idPersona, String idDireccion, String fax1, String fax2, String movil,
@@ -1852,43 +1945,4 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 		return alDirecciones;
 	}
 
-	/**
-	 * Obtiene la direccion de una persona de un tipo determinado. Obtiene la primera que encuentra y si no encuentra para ese tipo devuelve nulo.
-	 * @param idPersona
-	 * @param idInstitucion
-	 * @param idTipoEnvios
-	 * @return Bean de direcciones. En cdaso de no encontrarlo devuelve nulo.
-	 * @throws ClsExceptions en cualquier caso de error.
-	 */
-	public CenDireccionesBean obtenerDireccionTipo(String idPersona, String idInstitucion, String idTipoDireccion) throws ClsExceptions
-	{
-		CenDireccionesBean salida = null;
-		try {
-            
-			int intTipo=new Integer(idTipoDireccion).intValue();
-			
-			String where =" WHERE " + 
-			CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_IDPERSONA + "=" + idPersona +
-			" AND " +
-			CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_IDINSTITUCION + "=" + idInstitucion +
-			" AND " +
-			CenDireccionesBean.T_NOMBRETABLA +"."+ CenDireccionesBean.C_IDDIRECCION + "=" + 
-			    " F_SIGA_GETIDDIRECCION_TIPOPREF("+ idInstitucion +","+ idPersona +","+ intTipo +")";
-			
-            Vector v = this.select(where);
-            if (v!=null && v.size()>0) {
-            	salida = (CenDireccionesBean) v.get(0);
-            }
-            
-			return salida;
-
-		} catch (Exception e) {
-			throw new ClsExceptions(e,"Error al buscar la direccion adecuada segun tipo. ");
-		}
-		
-	}
-
-	
-/**/	
-	
 }

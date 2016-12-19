@@ -537,6 +537,9 @@ public class ActuacionesDesignasAction extends MasterAction {
 			String filtrarModulos = adm.getValor(idInstitucion,"SCS",ClsConstants.GEN_PARAM_FILTRAR_MODULOS_PORFECHA, "");
 			request.setAttribute("filtrarModulos", filtrarModulos);
 		    
+			String prefijoExpedienteCajg = adm.getValor (idInstitucion, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
+			request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
+			
 		   	int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			

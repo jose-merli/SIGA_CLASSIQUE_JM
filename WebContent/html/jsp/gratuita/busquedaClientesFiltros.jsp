@@ -131,7 +131,8 @@
 									<option value="5"><siga:Idioma key="gratuita.busquedaSJCS.tipoFiltro.ejercientes" /></option>
 								</logic:equal>
 							</select>
-						</td>					
+						</td>	
+						<td></td>				
 					</tr>
 				</logic:notEmpty>
 				
@@ -144,6 +145,7 @@
 							<siga:ComboBD nombre="identificador" tipo="turnos" clase="boxCombo" obligatorio="false" accion="Hijo:identificador2" parametro="<%=dato%>" ancho="830" />
 						</div>
 					</td>
+					<td></td>
 				</tr>
 				
 				<tr>					
@@ -153,16 +155,15 @@
 					<td>
 						<div id="selecGuardia">
 							<siga:ComboBD nombre="identificador2" tipo="guardiasConSustitucion" clase="boxCombo" elementoSel="<%=elementoSel%>" obligatorio="false" hijo="t" ancho="830" /> 
-							&nbsp;
-							<img src="<%=app + "/html/imagenes/botonAyuda.gif"%>" width="20" style="cursor: hand" alt="<siga:Idioma key='gratuita.busquedaEJG.tooltip.guardia'/>" title="<siga:Idioma key='gratuita.busquedaEJG.tooltip.guardia'/>">
 						</div>
 					</td>
+					<td id="ayudaGuardia" class="labelText"><img src="<%=app + "/html/imagenes/botonAyuda.gif"%>" width="20" style="cursor: hand" alt="<siga:Idioma key='gratuita.busquedaEJG.tooltip.guardia'/>" title="<siga:Idioma key='gratuita.busquedaEJG.tooltip.guardia'/>"></td>
 				</tr>
 				
 				
 				
 				<tr id="labelAux1">
-					<td  class="labelText" width="90px" colspan="2">
+					<td  class="labelText" width="90px" colspan="3">
 						<div>
 							&nbsp;
 						</div>
@@ -170,7 +171,7 @@
 				</tr>
 				
 				<tr id="labelAux2">
-					<td  class="labelText" width="90px" colspan="2">
+					<td  class="labelText" width="90px" colspan="3">
 						<div>
 							&nbsp;
 						</div>
@@ -316,6 +317,7 @@
 			labelTurnos = jQuery("#labelTurno");
 			comboTurnos = jQuery("#identificadorDiv");
 			labelGuardias = jQuery("#labelGuardia");			
+			ayudaGuardias = jQuery("#ayudaGuardia");
 			divGuardias = jQuery("#selecGuardia");
 			divFiltrosBusqueda = jQuery("#filtrosBusqueda");
 			divInfoBusqueda = jQuery("#infoBusqueda");
@@ -326,6 +328,7 @@
 			labelTurnos.show();
 			comboTurnos.show();
 			labelGuardias.show();
+			ayudaGuardias.show();
 			divGuardias.show();
 			divFiltrosBusqueda.show();
 			divInfoBusqueda.hide();
@@ -340,6 +343,7 @@
 				divFiltrosBusqueda.hide();
 				divInfoBusqueda.show();
 				labelGuardias.hide();
+				ayudaGuardias.hide();
 				divGuardias.hide();
 				labelGuardiaAux2.show();
 				
@@ -347,11 +351,13 @@
 				
 			} else if (idFiltro == 4) {
 				labelGuardias.hide();
+				ayudaGuardias.hide();
 				divGuardias.hide();
 				labelGuardiaAux2.show();
 				
 			} else if (idFiltro == 5) {
 				labelGuardias.hide();
+				ayudaGuardias.hide();
 				divGuardias.hide();
 				labelGuardiaAux2.show();
 				labelTurnos.hide();

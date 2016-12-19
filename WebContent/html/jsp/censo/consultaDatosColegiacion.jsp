@@ -34,11 +34,17 @@
 <%
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();
+	
+	
 	UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
+	String idInstitucionAcceso= user.getLocation();
 	String modo = (String) request.getAttribute("ACCION");
 	String nombre = (String) request.getAttribute("NOMBRE"); // Obtengo el nombre completo de la persona
+	String nombreSolo = (String) request.getAttribute("NOMBRESOLO"); // Obtengo el nombre completo de la persona
+	String apellidos = (String) request.getAttribute("APELLIDOS"); // Obtengo el nombre completo de la persona
 	String numero = (String) request.getAttribute("NUMERO"); // Obtengo el numero de colegiado de la persona	
 	Long idPersona = (Long) request.getAttribute("IDPERSONA");
+	String nif = (String) request.getAttribute("NIF"); // Obtengo el nif de la persona
 	String idInstitucion = (String) request
 			.getAttribute("IDINSTITUCIONPERSONA"); // Obtengo el identificador de la institucion	
 	String motivo = (String) request.getAttribute("MOTIVO");
@@ -104,6 +110,10 @@
 		<siga:Titulo titulo="censo.fichaCliente.situacion.cabecera"
 			localizacion="censo.fichaLetrado.localizacion" />
 		<!-- FIN: TITULO Y LOCALIZACION -->
+		
+		<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
+		<link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">
+		
 		
 		<script type="text/javascript">
 			function darBaja(){     
@@ -229,11 +239,77 @@
 					
 					jQuery('#resultados').height(posTablaBotones - posTablaDatos);					
 				}		
-			}				
+			}	
+			
+			function accionObtenerDuplicados() 
+			{
+				// mostrando la tabla de posibles duplicados
+				jQuery("#divDescargaDocumentacion").dialog(
+					{
+						width: 950, height: 300, modal: true, position:['middle',20], resizable: false,
+						buttons: { "Cerrar": function() { jQuery(this).dialog("close"); } }
+					}
+				);
+				jQuery(".ui-widget-overlay").css("opacity","0.5");													
+			}
+			
+			function comprobarDuplicados(){
+				<% if(idInstitucionAcceso.equals("2000")){ %>
+					jQuery.ajax({ 
+							type: "POST",
+							url: "/SIGA/CEN_MantenimientoDuplicados.do?modo=getAjaxObtenerDuplicados",				
+							data: "checkIdentificador="+"1"+"&idPersona="+"<%=idPersona%>"+"&nidSolicitante="+"<%=nif%>"+"&nombre="+"<%=nombreSolo%>"+"&apellidos="+"<%=apellidos%>"+"&idInstitucion="+"<%=idInstitucion%>"+"&nColegiado="+"<%=numero%>",
+							dataType: "json",
+							contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+							success: function(json){	
+								// mostrando el icono que avisa de que existen posibles duplicados
+								if(json.aOptionsListadoDocumentacion != null && json.aOptionsListadoDocumentacion.length > 0){
+									jQuery("#iconoboton_cargando_1").hide();
+									jQuery("#iconoboton_aviso_1").show();
+								}
+								// preparando la tabla de resultados de posibles duplicados
+								jQuery("#tablaDocumentacion tr").remove();
+								jQuery("#tablaDocumentacion").append(json.aOptionsListadoDocumentacion);
+								jQuery("#tablaDocumentacion").append("</table>");	
+							}
+						});		
+				<%}%>
+			}
+		function informacionLetrado(idPersona,idIntitucion) {
+				
+			    var idInst = idIntitucion;			          		
+			    var idPers = idPersona;		
+			  
+			    document.forms[3].filaSelD.value = 1;
+				
+				 
+				if(idIntitucion != null && idIntitucion !=""){
+					document.forms[3].tablaDatosDinamicosD.value=idPers + ',' + idInst + '%';	
+					document.forms[3].modo.value="editar";
+				}else{
+					//Es no colegiado y el idIntitucion será de donde estés logeado.
+					document.forms[3].tablaDatosDinamicosD.value=idPers + ',' + <%=idInstitucion%> + '%';	
+					document.forms[3].modo.value="ver";
+				}
+				
+			   	document.forms[3].submit();		   	
+			}
+			
+		function mantenimientoDuplicados(nifcif, numcol, idinstitucion, nombre, apellido1, apellido2) {
+			
+			document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
+			document.MantenimientoDuplicadosForm.nifcif.value=nifcif;
+			document.MantenimientoDuplicadosForm.numeroColegiado=numcol;
+			document.MantenimientoDuplicadosForm.idInstitucion=idinstitucion;
+			document.MantenimientoDuplicadosForm.nombre=nombre;
+			document.MantenimientoDuplicadosForm.apellido1=apellido1;
+			document.MantenimientoDuplicadosForm.apellido2=apellido2;
+			document.MantenimientoDuplicadosForm.submit();
+		}
 		</script>
 	</head>
 
-	<body class="tablaCentralCampos" onLoad="situacionLetrado();buscar();calcularAltura();">
+	<body class="tablaCentralCampos" onLoad="situacionLetrado();buscar();calcularAltura();comprobarDuplicados();">
 	
 		<!-- ******* INFORMACION GENERAL CLIENTE ****** -->
 		<table class="tablaTitulo" align="center" cellspacing="0">
@@ -378,6 +454,10 @@
 <%
 					}
 %>
+					<td align="right">
+						<img id="iconoboton_cargando_1"	src="/SIGA/html/imagenes/bloading_on_23.gif"	style="cursor: hand" alt="Cargando posibles duplicados"> 
+						<img id="iconoboton_aviso_1"	src="/SIGA/html/imagenes/warning.png"			style="cursor: hand; display: none" alt="Duplicidades" onClick="accionObtenerDuplicados();"> 
+					</td>
 				</tr>
 			</table>
 		</siga:ConjCampos>
@@ -419,7 +499,16 @@
 			<input type="hidden" name="accion" 	value="<%=(String) request.getAttribute("ACCION")%>">
 			<html:hidden property="idPersona" value="<%=idPersona.toString() %>" />
 			<html:hidden property="idInstitucionAlta" value="<%=user.getLocation() %>" />
-		</html:form>	
+		</html:form>
+		
+		 <%if(!"DUPLICADOS".equalsIgnoreCase(busquedaVolver) && !"MD".equalsIgnoreCase(busquedaVolver)){ %>   
+			<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
+				<html:hidden property="modo" value="buscarPor"/>
+				<html:hidden property="nifcif" />
+			</html:form>
+		
+	   <%} %>
+		
 	
 		<!-- FIN para buscar las sanciones -->	
 		<!-- FIN para buscar las colegiaciones -->
@@ -429,6 +518,9 @@
 		<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display: none"></iframe>
 		<iframe name="submitArea33" src="<%=app%>/html/jsp/general/blank.jsp" style="display: none"></iframe>
 		<!-- FIN: SUBMIT AREA -->
-	
+			<!-- FIN: SUBMIT AREA -->
+		<div id="divDescargaDocumentacion" title="Duplicidades" style="display:none">
+			<table id='tablaDocumentacion' style='width:100%;table-layout: fixed;'  border='1' align='center' cellspacing='0' cellpadding='0'>	
+		</div>
 	</body>
 </html>

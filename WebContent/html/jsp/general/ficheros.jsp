@@ -53,23 +53,23 @@
 			</c:when>
 			<c:otherwise>
 				<div>
-					<table id='listadoArchivosCab' border='1' width='100%'
-						cellspacing='0' cellpadding='0'>
-						<tr>
-							<td width='30%'></td>
-							<td width='30%'></td>
-							<td width='25%'></td>
-							<td width='15%'></td>
-						</tr>
-						<tr class='tableTitle'>
-							<td align='center' width='30%'><b><siga:Idioma
-										key="administracion.informes.literal.archivo.nombre" /></b></td>
-							<td align='center' width='30%'><b><siga:Idioma
-										key="administracion.informes.literal.archivo.extension" /></b></td>
-							<td align='center' width='25%'><b><siga:Idioma
-										key="administracion.informes.literal.archivo.fecha" /></b></td>
-							<td align='center' width='15%'>&nbsp;</td>
-						</tr>
+					<table id='listadoArchivosCab' name='listadoArchivosCab'
+						width='100%' cellspacing='0' cellpadding='0' class='fixedHeaderTable dataScroll' 
+						style='table-layout: fixed; border-spacing: 0px;'>
+
+						<thead class='Cabeceras' style='text-align: center;'>
+							<tr class='tableTitle'>
+								<th style='text-align: center; width: 30%;'><siga:Idioma
+										key="administracion.informes.literal.archivo.nombre" /></th>
+								<th style='text-align: center; width: 30%;'><siga:Idioma
+										key="administracion.informes.literal.archivo.extension" />
+								</th>
+								<th style='text-align: center; width: 25%;'><siga:Idioma
+										key="administracion.informes.literal.archivo.fecha" /></th>
+								<th style='text-align: center; width: 15%;'>&nbsp;</th>
+							</tr>
+						</thead>
+
 					</table>
 				</div>
 				<div id='listadoArchivosDiv'
@@ -89,7 +89,7 @@
 							<td width='25%'></td>
 							<td width='15%'></td>
 						</tr>
-						<tr class="filaTablaPar">
+						<tr class="filaTablaImpar">
 							<td align='left'>
 							<html:hidden styleId="idFichero" property = "idFichero" />
 							<c:out value="${FicheroForm.descripcionArchivo}"/></td>

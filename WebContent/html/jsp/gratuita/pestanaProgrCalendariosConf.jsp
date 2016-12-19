@@ -326,7 +326,7 @@ function onclickCheckConfiguracion(fila) {
 			</tr>
 	</table>
 
-<div id="divConfConjuntoGuardias" style=''position:absolute;width:100%; '>
+<div id="divConfConjuntoGuardias" style='position:absolute;width:100%; '>
 	<table id='confConjuntoGuardias' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
 	</table>
 </div>	

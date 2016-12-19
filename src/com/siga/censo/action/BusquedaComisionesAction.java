@@ -372,7 +372,7 @@ public class BusquedaComisionesAction extends MasterAction {
 
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			CenPersonaAdm personaAdm = new CenPersonaAdm(user);
-			String nombreUsuario = personaAdm.obtenerApellidos1(idPersona.toString());
+			String nombreUsuario = personaAdm.obtenerNombreApellidos(idPersona.toString());
 			
 			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request),user,idInstitucionPersona.intValue(),idPersona.longValue());
 			Hashtable hash = clienteAdm.getDatosCV(idPersona,idInstitucionPersona,idCV);

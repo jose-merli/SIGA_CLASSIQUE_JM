@@ -89,6 +89,7 @@
 	ArrayList idPoblacion = new ArrayList();
 	ArrayList idTipoDireccionArrayList = new ArrayList();
 	String fechaModificacion = "", fechaBaja = "";
+	String colegioOrigen = "";
 	String ididPais = "";
 
 	String modo = (String) request.getAttribute("modoConsulta");
@@ -125,6 +126,8 @@
 				fechaBaja = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("", fechaBaja));
 			else
 				fechaBaja = "";
+			
+			colegioOrigen = String.valueOf(htData.get("COLEGIOORIGEN"));
 
 			String aux = "";
 			aux = (String) request.getAttribute("preferenteFax");
@@ -1147,6 +1150,10 @@
 												<td class="labelText">
 													<p align="right">
 														<siga:Idioma key="censo.datosDireccion.literal.fechaModificacion" />
+													</p>
+												</td>
+												<td class="labelText">
+													<p align="right">
 														&nbsp;&nbsp;<%=fechaModificacion%>
 													</p>
 												</td>
@@ -1158,7 +1165,29 @@
 												<td class="labelText">
 													<p align="right">
 														<siga:Idioma key="censo.consultaDatos.literal.fechaBaja" />
+													</p>
+												</td>
+												<td class="labelText">
+													<p align="right">
 														&nbsp;&nbsp;<%=fechaBaja%>
+													</p>
+												</td>
+											</tr>
+											<%
+												}
+											%>
+											<%
+												if (!colegioOrigen.equals("")) {
+											%>
+											<tr>
+												<td class="labelText">
+													<p align="right">
+														<siga:Idioma key="envios.definir.literal.institucionOrigen" />
+													</p>
+												</td>
+												<td class="labelText">
+													<p align="left">
+														&nbsp;&nbsp;<%=colegioOrigen%>
 													</p>
 												</td>
 											</tr>

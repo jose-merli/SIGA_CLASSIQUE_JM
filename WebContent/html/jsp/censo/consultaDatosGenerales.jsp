@@ -35,6 +35,7 @@
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();
 	UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
+	String idInstitucionAcceso= user.getLocation();
 	
 	// Datos formulario y sesion
 	DatosGeneralesForm formulario = (DatosGeneralesForm)request.getAttribute("datosGeneralesForm");
@@ -198,9 +199,11 @@
 	<meta http-equiv="Cache-Control" content="no-cache">
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
+	<link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">
 	
 	<!-- Incluido jquery en siga.js -->
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>">
+	</script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 	
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
@@ -209,6 +212,11 @@
 	<html:javascript formName="datosGeneralesForm" staticJavascript="false" />  
 	 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
+	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	
+	
+		
 	
 	<script>
 		// Si fechaNacimiento es editable, indica si es valida o no (ver esFechaNacimientoInvalida)
@@ -782,6 +790,92 @@
 	           }
 	        }); 
 		}
+		
+		
+		function accionObtenerDuplicados(nidSolicitante) 
+		{	
+				   jQuery.ajax({ 
+						type: "POST",
+						url: "/SIGA/CEN_MantenimientoDuplicados.do?modo=getAjaxObtenerDuplicados",				
+						data: "checkIdentificador="+"1"+"&nidSolicitante="+nidSolicitante,
+						dataType: "json",
+						contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+						success: function(json){	
+							// Recupera el identificador de la serie de facturacion
+							jQuery("#tablaDocumentacion tr").remove();
+							jQuery("#tablaDocumentacion").append(json.aOptionsListadoDocumentacion);
+							
+							jQuery("#tablaDocumentacion").append("</table>");	
+								
+								jQuery("#divDescargaDocumentacion").dialog(
+										{
+											width: 950,
+											height: '300',
+											modal: true,
+											position:['middle',20],
+											resizable: false,
+											buttons: {
+												"Cerrar": function() {
+													jQuery(this).dialog("close");
+												}
+											}
+										}
+									);
+									jQuery(".ui-widget-overlay").css("opacity","0.5");													
+						}
+					});		
+		}
+		
+		function comprobarDuplicados(nidSolicitante){
+			<% if(idInstitucionAcceso.equals("2000")){ %>
+				  jQuery.ajax({ 
+						type: "POST",
+						url: "/SIGA/CEN_MantenimientoDuplicados.do?modo=getAjaxObtenerDuplicados",				
+						data: "checkIdentificador="+"1"+"&nidSolicitante="+nidSolicitante,
+						dataType: "json",
+						contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+						success: function(json){	
+							// Recupera el identificador de la serie de facturacion
+							if(json.aOptionsListadoDocumentacion != null && json.aOptionsListadoDocumentacion.length > 0){
+								jQuery("#iconoboton_aviso_1").show();
+							}																
+						}
+					});		
+			<%}%>
+		}
+	function informacionLetrado(idPersona,idIntitucion) {
+			
+		    var idInst = idIntitucion;			          		
+		    var idPers = idPersona;		
+		  
+		    document.forms[4].filaSelD.value = 1;
+			
+			 
+			if(idIntitucion != null && idIntitucion !=""){
+				document.forms[4].tablaDatosDinamicosD.value=idPers + ',' + idInst + '%';	
+				document.forms[4].modo.value="editar";
+			}else{
+				//Es no colegiado y el idIntitucion será de donde estés logeado.
+				document.forms[4].tablaDatosDinamicosD.value=idPers + ',' + <%=idInstitucion%> + '%';	
+				document.forms[4].modo.value="ver";
+			}
+			
+		   	document.forms[4].submit();		   	
+		}
+		
+		function mantenimientoDuplicados(nifcif, numcol, idinstitucion, nombre, apellido1, apellido2) {
+				
+			document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
+			document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
+			document.MantenimientoDuplicadosForm.nifcif.value=nifcif;
+			document.MantenimientoDuplicadosForm.numeroColegiado=numcol;
+			document.MantenimientoDuplicadosForm.idInstitucion=idinstitucion;
+			document.MantenimientoDuplicadosForm.nombre=nombre;
+			document.MantenimientoDuplicadosForm.apellido1=apellido1;
+			document.MantenimientoDuplicadosForm.apellido2=apellido2;
+			document.MantenimientoDuplicadosForm.submit();
+		
+		}
 	</script>
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
@@ -791,7 +885,7 @@
 	<% } else { %>
 		<siga:TituloExt titulo="censo.fichaCliente.datosGenerales.cabecera" localizacion="censo.fichaCliente.datosGenerales.localizacion"/>
 	<% } %>	
-	<!-- FIN: TITULO Y LOCALIZACION -->
+	<!-- FIN: TITULO Y LOCALIZACION --> 
 </head>
 
 
@@ -907,7 +1001,7 @@
 		camposReadonly = false;
 	%>
 
-	<body class="tablaCentralCampos" onload="adaptaTamanoFoto();buscarGrupos();mostrarMensaje();obtenerTratamientos ('<%=sexo%>','<%=idTratamiento%>');">
+	<body class="tablaCentralCampos" onload="adaptaTamanoFoto();buscarGrupos();mostrarMensaje();obtenerTratamientos ('<%=sexo%>','<%=idTratamiento%>');comprobarDuplicados('<%=nIdentificacion%>');">
 
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
@@ -1072,6 +1166,11 @@
 					<% } else { %>
 					  <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" onBlur="formatearDocumento();"/>
 					<% } %>
+					</td>
+					<td align="right">	
+								<img id="iconoboton_aviso_1"  src="/SIGA/html/imagenes/warning.png"          style="cursor: hand; display: none" 
+								alt="Duplicidades"  name="newSol_1"  border="0" 
+								onClick="accionObtenerDuplicados('<%=nIdentificacion%>');"> 
 					</td>
 				</tr>
 				</table>
@@ -1418,7 +1517,15 @@
 		<html:hidden name="GruposClienteClienteForm" property="idPersona" />
 		<html:hidden name="GruposClienteClienteForm" property="idInstitucion" />
 		<html:hidden name="GruposClienteClienteForm" property="modoAnterior" />		
-	</html:form>		
+	</html:form>
+	
+	   <%if(!"DUPLICADOS".equalsIgnoreCase(busquedaVolver) && !"MD".equalsIgnoreCase(busquedaVolver)){ %>   
+			<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
+				<html:hidden property="modo" value="buscarPor"/>
+				<html:hidden property="nifcif" />
+			</html:form>
+		
+	   <%} %>		
 	
 	
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
@@ -1623,6 +1730,7 @@
 		<html:hidden property = "idPersona" value = "<%=idPersonaSolicitud%>"/>
 </html:form>
 
+
 <%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 
 
@@ -1630,6 +1738,8 @@
 <!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->
-
+<div id="divDescargaDocumentacion" title="Duplicidades" style="display:none">
+	<table id='tablaDocumentacion' style='width:100%;table-layout: fixed;'  border='1' align='center' cellspacing='0' cellpadding='0'>	
+</div>
 </body>
 </html>

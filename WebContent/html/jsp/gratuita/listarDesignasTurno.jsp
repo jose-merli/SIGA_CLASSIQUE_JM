@@ -136,9 +136,9 @@
 	<div style="position:absolute; left:400px;bottom:3px;z-index:99">
 		<table align="center">
 		<tr>
-			<td class="labelText">
+			<td class="botonesDetalle">
 				<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.ordenar"/>
-				<Select name = "orden1" style = "true" class = "box" onChange="accionOrdenar(this);">
+				<Select name = "orden1"  class = "boxCombo" onChange="accionOrdenar(this);">
 							<option value="0" <%if ((orden!=null)&&(orden.equalsIgnoreCase("0"))){%>selected<%}%>><siga:Idioma key="gratuita.listarDesignasTurno.literal.nColegiado"/></option>
 							<option value="1" <%if ((orden!=null)&&(orden.equalsIgnoreCase("1"))){%>selected<%}%>><siga:Idioma key="gratuita.listarDesignasTurno.literal.nombre"/></option>
 							<option value="2" <%if ((orden!=null)&&(orden.equalsIgnoreCase("2"))){%>selected<%}%>><siga:Idioma key="gratuita.listarDesignasTurno.literal.anioNumero"/></option>

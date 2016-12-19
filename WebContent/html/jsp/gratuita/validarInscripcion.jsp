@@ -1012,22 +1012,25 @@
 									
 									<td rowspan="2" align="center">
 										<div style="height: 140px; width: 100%; overflow-y: auto">
-											<table id='tabInscripcionesCabeceras' border='1' width='100%' cellspacing='0' cellpadding='0'>
+											<table id='tabInscripcionesCabeceras' border='0' width='100%' cellspacing='0' cellpadding='0'
+											class='fixedHeaderTable dataScroll'	style='table-layout: fixed; border-spacing: 0px;'>
+											<thead class='Cabeceras' style='text-align: center;'>
 												<tr class='tableTitle'>
-													<td align='center' width='8%'>
+													<th style="text-align: center; width: 8%">
 														<siga:Idioma key="gratuita.guardiasTurno.literal.porGrupos.numero" />
-													</td>
-													<td align='center' width='8%'>
+													</th> 
+													<th style="text-align: center; width: 8%">
 														<siga:Idioma key="gratuita.guardiasTurno.literal.porGrupos.orden" />
-													</td>
-													<td align='center' width='8%'>
+													</th>
+													<th style="text-align: center; width: 8%">
 														<siga:Idioma key="gratuita.listaTurnosLetrados.literal.numeroletrado" />
-													</td>
-													<td align='center' width='13%'>
+													</th>
+													<th style="text-align: center; width: 13%">
 														<siga:Idioma key="gratuita.listaTurnosLetrados.literal.nombreletrado" />
-													</td>		
+													</th>		
 												</tr>
-				
+											</thead>
+											<tbody style='text-align:center; overflow-y: scroll; overflow-x: hidden; margin:0px;'>
 												<logic:notEmpty name="InscripcionTGForm" property="gruposGuardiaLetrado">
 													<logic:iterate name="InscripcionTGForm"
 														property="gruposGuardiaLetrado" id="grupoGuardiaLetrado"
@@ -1065,6 +1068,7 @@
 														</tr>
 													</logic:iterate>
 												</logic:notEmpty>
+												</tbody>
 											</table>
 										</div>
 									</td>

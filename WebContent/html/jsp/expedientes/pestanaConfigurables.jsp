@@ -105,8 +105,8 @@
 				</td>
 			</tr>
 		</table>	
-		<div id="camposRegistro" class="posicionModalPeque" align="center">
-			<table class="tablaCentralCamposPeque" align="center" border="0">
+		<div id="camposRegistro" class="posicionModal" align="center">
+			<table class="tablaCentralCampos" align="center" border="0">
 				<html:form action="<%=action %>" method="POST" target="submitArea">
 					<input type="hidden" name="tablaDatosDinamicosD" value="">
 					<html:hidden name="PestanaConfigurableForm" property = "idInstitucion" />

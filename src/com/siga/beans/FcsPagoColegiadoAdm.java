@@ -3,6 +3,7 @@
 
 package com.siga.beans;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -225,6 +226,40 @@ public class FcsPagoColegiadoAdm extends MasterBeanAdministrador {
 			return "";
 	}
 	
+	/**
+	 * Obtiene los pagos (idinstitucion, idpago) que contienen a todas las personas del listado pasado como parametro
+	 * No devuelve nada si la lista esta vacia
+	 * 
+	 * @param idinstitucion
+	 * @param listaIdPersonas
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector selectPagosColegiadoDeVariasPersonas(String idinstitucion, ArrayList<String> listaIdPersonas) throws ClsExceptions
+	{
+		StringBuilder consulta = new StringBuilder();
+		Vector resultado = new Vector();
+		try {
+			consulta.append(" select " + FcsPagoColegiadoBean.C_IDINSTITUCION + ", " + FcsPagoColegiadoBean.C_IDPAGOSJG);
+			consulta.append("   from " + FcsPagoColegiadoBean.T_NOMBRETABLA + " ");
+			consulta.append("  where " + FcsPagoColegiadoBean.C_IDINSTITUCION + "=" + idinstitucion + " ");
+			if (listaIdPersonas != null && listaIdPersonas.size() > 0) {
+				consulta.append("    and " + FcsPagoColegiadoBean.C_IDPERORIGEN + " in (-1");
+				for (String idPersona : listaIdPersonas) {
+					consulta.append("," + idPersona);
+				}
+				consulta.append(")");
+			}
+			consulta.append("  Group By " + FcsPagoColegiadoBean.C_IDINSTITUCION + ", " + FcsPagoColegiadoBean.C_IDPAGOSJG + " ");
+			consulta.append(" Having Count(1) = " + ((listaIdPersonas == null) ? 0 : listaIdPersonas.size()));
+
+			resultado = (Vector) this.selectGenerico(consulta.toString());
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Excepcion en "+Thread.currentThread().getStackTrace()[1].getMethodName()+". Consulta SQL:" + consulta.toString());
+		}
+
+		return resultado;
+	} // selectPagosColegiadoDeVariasPersonas ()
 
 	/**
 	 * Generar una lista los registros de la tabla FCS_PAGO_COLEGIADO que tengan el valo de la institución

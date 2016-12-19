@@ -135,10 +135,10 @@
 		
 			<table width="100%" border="0">
 				<tr>
-					<td width="150x"></td>
-					<td width="110x"></td>
-					<td width="110x"></td>
-					<td width="110x"></td>
+					<td width="15%"></td>
+					<td width="15%"></td>
+					<td width="15%"></td>
+					<td width="55%"></td>
 					
 				</tr>
 				
@@ -149,8 +149,8 @@
 					<td>
 						<siga:Fecha nombreCampo="fechaCarga" valorInicial="${CargaMasivaCVForm.fechaCarga}"/>
 					</td>
-					<td width="110x"></td>
-					<td width="110x"></td>
+					<td></td>
+					<td></td>
 				</tr>
 				
 				<tr>
@@ -159,12 +159,12 @@
 					</td>
 					<td><html:file  property="theFile" styleClass="boxCombo"  style="width:400px;" />
 					</td>
-					<td class="tdBotones">
+					<td >
 						<input  type="button" alt="<siga:Idioma key="general.boton.procesaFichero" />"
 							 onclick="return parseExcelFile();"
 							class="button" name="idButton" value="<siga:Idioma key="general.boton.procesaFichero" />"></input>
 					</td>
-					<td class="tdBotones">
+					<td >
 						<input type="button" alt='<siga:Idioma key="general.boton.descargaFicheroModelo" />'  onClick="downloadExample()" class="button" name="idButton" value="<siga:Idioma key="general.boton.descargaFicheroModelo" />"/>
 					</td>
 				</tr>

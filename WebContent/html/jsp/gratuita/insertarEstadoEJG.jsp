@@ -107,84 +107,89 @@
 	<!-- FIN: TITULO OPCIONAL DE LA TABLA -->
 
 	<!-- INICIO: CAPA DE REGISTRO CON MEDIDAS EN EL ESTILO -->
-	<fieldset>
+
 
 	<!-- INICIO: CAMPOS DEL REGISTRO -->
 
 	<!-- Comienzo del formulario con los campos -->
-	<table class="tablaCentralCamposPeque" align="center">	
+		
 	
 	<html:form action="/JGR_EstadosEJG" method="POST" target="submitArea">
-	<html:hidden property = "modo" value = "Insertar"/>
-	<html:hidden property = "idInstitucion" value ="<%=idInstitucion%>"/>
-	<html:hidden property = "idTipoEJG" value ="<%=idTipoEJG%>"/>
-	<html:hidden property = "anio" value ="<%=anio%>"/>
-	<html:hidden property = "numero" value ="<%=numero%>"/>
-	<html:hidden property = "idEstadoPorEJG" value ="<%=idEstadoPorEJG%>"/>
-	<html:hidden property = "automatico" value ="<%=automatico%>"/>
-	
-
-	<tr>		
-	<td>	
-	<!-- SUBCONJUNTO DE DATOS -->
-	<table class="tablaCampos" align="center">
-	<tr>	
-	<td class="labelText">
-		<siga:Idioma key="gratuita.operarEJG.literal.fecha"/>&nbsp;(*)
-	</td>
-	<td>		
-		<siga:Fecha nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>" disabled="<%=String.valueOf(bReadOnly)%>"></siga:Fecha>
-	</td>
-	</tr>
-	<tr>
-	<td class="labelText">
-		<siga:Idioma key="pestana.justiciagratuitaejg.estados"/>&nbsp;(*)
-	</td>
-	<td>
-	<%String readOnly = "true";
-	  if (automatico!=null && !automatico.equals("1"))
-		readOnly = "false"; 
-	%>
-	<%if(bReadOnly){ %>
-		<siga:ComboBD nombre="idEstadoEJG" tipo="estadosEJG" clase="<%=estiloCombo%>"  ancho="300" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vSel%>" readonly="true"/>
-	<%}else{ %>
-		<% if(esComision){%>
-				<siga:ComboBD nombre="idEstadoEJG" tipo="estadosEJGComision" clase="<%=estiloCombo%>"  ancho="300" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vSel%>" readonly="<%=readOnly%>"/>
-		<% }else{ %>
-				<siga:ComboBD nombre="idEstadoEJG" tipo="estadosEJG" clase="<%=estiloCombo%>"  ancho="300" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vSel%>" readonly="<%=readOnly%>"/>
-		<% } %>
-	<%} %>
-	
-	</td>
-	</tr>
-	<tr>
-	<td class="labelText">
-		<siga:Idioma key="pestana.justiciagratuitaejg.observaciones"/>
-	</td>
-	<td colspan="3">
-		<html:textarea cols="60" rows="8" property="observaciones" onkeydown="cuenta(this,4000)" onchange="cuenta(this,4000)"  styleClass="<%=estilo%>" value="<%=observaciones%>" ></html:textarea> 
-	
-	</td>
-	</tr>		
-	
-	</table>
-	</td>
-	</tr>
-	</html:form>
-	</table>
-	</fieldset>
-	<table align="left">
-	
-	<%if (!modo.equalsIgnoreCase("consulta")){%>
-		<%if (automatico!=null && automatico.equals("1")){%>
+		<html:hidden property = "modo" value = "Insertar"/>
+		<html:hidden property = "idInstitucion" value ="<%=idInstitucion%>"/>
+		<html:hidden property = "idTipoEJG" value ="<%=idTipoEJG%>"/>
+		<html:hidden property = "anio" value ="<%=anio%>"/>
+		<html:hidden property = "numero" value ="<%=numero%>"/>
+		<html:hidden property = "idEstadoPorEJG" value ="<%=idEstadoPorEJG%>"/>
+		<html:hidden property = "automatico" value ="<%=automatico%>"/>
+	<table class="tablaCentralCamposPeque" align="center">
+		
 		<tr>
-		  <td class="labelText" colspan="6"  >
-			<siga:Idioma key="gratuita.maestro.campoBloqueo.nota"/>
-		  </td>
+			<td width="27%"></td>
+			<td width="70%"></td>
+			<td width="3%"></td>	
 		</tr>
+		
+		<tr>		
+			
+		<!-- SUBCONJUNTO DE DATOS -->
+		
+			<td class="labelText">
+				<siga:Idioma key="gratuita.operarEJG.literal.fecha"/>&nbsp;(*)
+			</td>
+			<td>		
+				<siga:Fecha nombreCampo="fechaInicio" valorInicial="<%=fechaInicio%>" disabled="<%=String.valueOf(bReadOnly)%>"></siga:Fecha>
+			</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td class="labelText">
+				<siga:Idioma key="pestana.justiciagratuitaejg.estados"/>&nbsp;(*)
+			</td>
+			<td>
+			<%String readOnly = "true";
+			  if (automatico!=null && !automatico.equals("1"))
+				readOnly = "false"; 
+			%>
+			<%if(bReadOnly){ %>
+				<siga:ComboBD nombre="idEstadoEJG" tipo="estadosEJG" clase="<%=estiloCombo%>"  ancho="300" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vSel%>" readonly="true"/>
+			<%}else{ %>
+				<% if(esComision){%>
+						<siga:ComboBD nombre="idEstadoEJG" tipo="estadosEJGComision" clase="<%=estiloCombo%>"  ancho="300" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vSel%>" readonly="<%=readOnly%>"/>
+				<% }else{ %>
+						<siga:ComboBD nombre="idEstadoEJG" tipo="estadosEJG" clase="<%=estiloCombo%>"  ancho="300" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=vSel%>" readonly="<%=readOnly%>"/>
+				<% } %>
+			<%} %>
+			
+			</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td class="labelText">
+				<siga:Idioma key="pestana.justiciagratuitaejg.observaciones"/>
+			</td>
+			<td> 
+				<html:textarea cols="60" rows="8" property="observaciones" onkeydown="cuenta(this,4000)" onchange="cuenta(this,4000)"  styleClass="<%=estilo%>" value="<%=observaciones%>" ></html:textarea> 
+			
+			</td>
+			<td>&nbsp;</td>
+		</tr>
+		
+		<%if (!modo.equalsIgnoreCase("consulta")){%>
+			<%if (automatico!=null && automatico.equals("1")){%>
+			<tr>
+		  		<td class="labelText" colspan="3"  >
+				<siga:Idioma key="gratuita.maestro.campoBloqueo.nota"/>
+		  		</td>
+			</tr>
 		<%}%>
 	<%}%>		
+				
 	</table>
+	</html:form>
+	
+	
+	
 	
 	<!-- FIN: CAMPOS DEL REGISTRO -->
 

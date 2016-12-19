@@ -97,7 +97,7 @@
 	
 	</head>
 
-	<body class="detallePestanas">
+	<body >
 	<bean:define id="listadoInformes" name="listadoInformes" scope="request"/>
 		<table class="tablaTitulo" align="center" cellspacing="0">
 			<tr>
@@ -186,28 +186,20 @@
 <%
 		if (bEditable){
 %>	
-<table class="tablaTitulo" align="center" cellspacing="0">
-	<tr>
-		<td id="titulo" class="titulitosDatos" style="width:95%;">
-			<siga:Idioma key="menu.administracion.informes"/>
-		</td>
-		
-		<td class="tdBotones" style="vertical-align: left">
-		
-			<input type="button" alt="<siga:Idioma key="general.boton.new"/>"  id="idButton" onclick="return accionNuevo();" class="button" name="idButton" value="<siga:Idioma key="general.boton.new"/>">
-		</td>
-	</tr>
-</table>
+
+	<siga:ConjBotonesBusqueda botones="N"  titulo="menu.administracion.informes"/>
+
 <%} %>		
-	<table id='listadoArchivosCab' style="table-layout:fixed" border='1' width='100%' cellspacing='0' cellpadding='0'>
-		<tr class ='tableTitle'>
-			<td align='left' width='80%'><siga:Idioma key="administracion.informes.literal.descripcion"/></td>
-			<td align='center' width='10%'><siga:Idioma key="administracion.informes.literal.formato"/></td>
-			<td width='10%'></td>
-		</tr>
+
+<siga:Table 
+  				name="listadoArchivosCab"
+  				border="2"
+  				columnNames="administracion.informes.literal.descripcion,administracion.informes.literal.formato," 
+   				columnSizes="80,10,10"	   			
+		   		modal="M">
 		<c:choose>
 			<c:when test="${listadoInformes==null}">
-			<tr>
+				<tr>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -224,10 +216,7 @@
 					<td></td>
 					<td></td>
 					<td></td>
-					
-					
 				</tr>
-   				
 				<tr class ='titulitos' id="noRecordFound">
 					<td class="titulitos" style="text-align:center" colspan = "3">
 						<siga:Idioma key="messages.noRecordFound"/>
@@ -253,11 +242,14 @@
 		  				id="filaInforme_${status.count}"
 		  				modo="<%=modoInformes%>"
 		  				>
-		  				<input type="hidden" name="idPlantilla_${status.count}" value="${informe.idPlantilla}">
-						<input type="hidden" name="idInstitucion_${status.count}" value="${informe.idInstitucion}">
-						<input type="hidden" name="claseTipoInforme_${status.count}" value="${informe.claseTipoInforme}">
+		  				
 						
-						<td align='left'><c:out value="${informe.descripcion}"></c:out></td>
+						<td align='left'>
+							<input type="hidden" name="idPlantilla_${status.count}" value="${informe.idPlantilla}">
+							<input type="hidden" name="idInstitucion_${status.count}" value="${informe.idInstitucion}">
+							<input type="hidden" name="claseTipoInforme_${status.count}" value="${informe.claseTipoInforme}">
+							<c:out value="${informe.descripcion}"></c:out>
+						</td>
 						<td align='left'>
 							<c:choose>
 							<c:when test="${informe.tipoFormato=='W'}">
@@ -283,9 +275,7 @@
 			</c:otherwise>
 	</c:choose>
 
-</table>
-
-		
+</siga:Table>
 		
 </html:form>
 		
@@ -333,7 +323,6 @@
 	
 		function refrescarLocal()
 		{			
-			//alertStop("aqui refrescarLocal");
 			document.location.reload();			
 		}
 
@@ -415,7 +404,7 @@
 			document.PermisosConsultaForm.gruposAntiguos.value="<%=gruposAntiguos%>";
 			document.PermisosConsultaForm.submit();
 		}
-		function accionNuevo() 
+		function nuevo() 
 		{		
 			document.InformeForm.modo.value = "nuevoInformeConsulta";
 			document.InformeForm.alias.value = PermisosConsultaForm.nombreConsulta.value;

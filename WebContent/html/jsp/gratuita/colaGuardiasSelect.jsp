@@ -113,6 +113,10 @@ parametros[1] = (String)turnoElegido.get("IDTURNO");	// turno
 	 <html:form action="/JGR_ColaGuardias" method="get" >
 	 	<fieldset>
 		<table border="0" style="table-layout:fixed;" cellpadding="2" cellspacing="2" width="100%" align="center">
+		
+			  
+			
+			
 		  	<tr>
 			  <td class="labelText" width="200">
 			  	<siga:Idioma key="gratuita.turnos.literal.seleccionarGuardia"/>: 
@@ -124,7 +128,8 @@ parametros[1] = (String)turnoElegido.get("IDTURNO");	// turno
 					<td class="labelText"><siga:Idioma key="gratuita.gestionInscripciones.fechaConsulta"/></td>
 					<td >
 					<siga:Fecha nombreCampo="fechaConsulta" postFunction="postAccionCalendario();"></siga:Fecha>
-
+					</td>
+				<td width="20%"> </td>
 				</tr>
 			
 			

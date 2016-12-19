@@ -81,7 +81,7 @@
 			
 			</td>
 							
-			<td class="tdBotones">
+			<td >
 
 				<input type="button" alt="<siga:Idioma key="administracion.informes.boton.archivo.anadir"/>" id="idButton" onclick="return upload();" class="button" value="<siga:Idioma key="administracion.informes.boton.archivo.anadir"/>">
 
@@ -95,19 +95,13 @@
 </table>
 </div>
 </c:if>
-<div>		
-	<table id='listadoArchivosCab' border='1' width='100%' cellspacing='0' cellpadding='0'>
-		<tr class ='tableTitle'>
-			<td align='center' width='30%'><b><siga:Idioma key="administracion.informes.literal.archivo.nombre"/></b></td>
-			<td align='center' width='30%'><b><siga:Idioma key="administracion.informes.literal.archivo.permisos"/></b></td>
-			<td align='center' width='30%'><b><siga:Idioma key="administracion.informes.literal.archivo.fecha"/></b></td>
-			<td align='center' width='10%'>&nbsp;</td>
-		</tr>
-	</table>
-</div>
-<div id='listadoArchivosDiv' style='height:400;width:100%; overflow-y:auto'>
 
-<table class="tablaCampos" id='listadoArchivos' border='1' align='center' width='100%' cellspacing='0' cellpadding='0' style='table-layout:fixed'>
+<siga:Table		name="listadoArchivosCab"
+  				border="2"
+  				columnNames="administracion.informes.literal.archivo.nombre,administracion.informes.literal.archivo.permisos,administracion.informes.literal.archivo.fecha," 
+   				columnSizes="30,30,30,10"	  
+		   		>
+
 	
 		<c:choose>
 			<c:when test="${InformeForm.directorioFile==null}">
@@ -167,9 +161,8 @@
 			</c:otherwise>
 	</c:choose>
 
-</table>
+</siga:Table>
 
-</div>
 </html:form>
 
 <script language="JavaScript">
@@ -217,13 +210,7 @@ function refrescarLocal()
 
 function ajustarCabeceraTabla(){
 	
-		if (document.getElementById("listadoArchivos").clientHeight < document.all.listadoArchivosDiv.clientHeight) {
-			document.getElementById("listadoArchivosCab").width='100%';
-		   
-	  } else {
-		  document.getElementById("listadoArchivosCab").width='98.43%';
-		   
-	  }
+	
 }
 function inicio() 
 {	

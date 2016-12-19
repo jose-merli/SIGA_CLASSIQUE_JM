@@ -92,29 +92,32 @@
 				</td>	
 			</tr>
 		</table>	
-		<br>		
-		<table border="1" cellspacing="0" cellpadding="5" id='cabeceraTabla' width="100%">
-			<tr class="tableTitle">
-				<td align="center" width="22%">
-					<b><siga:Idioma key="gratuita.datoseconomicos.tipocargaeconomica"/></b>
-				</td>
-				<td align="center" width="22%">
-					<b><siga:Idioma key="gratuita.datoseconomicos.periodicidad"/></b>
-				</td>
-				<td align="center" width="35%">
-					<b><siga:Idioma key="gratuita.datoseconomicos.titular"/></b>
-				</td>
-				<td align="center" width="16%px">
-					<b><siga:Idioma key="gratuita.datoseconomicos.importe"/></b>
-				</td>
-				<% if (editable) { %>
-					<td align="center" width="5%">
-						<b>&nbsp;</b>
-					</td>	
-				<% } %>			
-			</tr>
-		</table>
 		
+		<table id='cabeceraTabla' name='cabeceraTabla' width='100%'
+			cellspacing='0' cellpadding='0' class='fixedHeaderTable dataScroll'
+			style='table-layout: fixed; border-spacing: 0px;'>
+			<thead class='Cabeceras' style='text-align: center;'>
+				<tr class='tableTitle'>
+					<th style='text-align: center; width: 22%;'><siga:Idioma
+							key="gratuita.datoseconomicos.tipocargaeconomica" />
+					
+					<th style='text-align: center; width: 22%;'><siga:Idioma
+							key="gratuita.datoseconomicos.periodicidad" /></th>
+					<th style='text-align: center; width: 35%;'><siga:Idioma
+							key="gratuita.datoseconomicos.titular" /></th>
+					<th style='text-align: center; width: 16%;'><siga:Idioma
+							key="gratuita.datoseconomicos.importe" /></th>
+					<%
+						if (editable) {
+					%>
+					<th style='text-align: center; width: 5%;'>&nbsp;</th>
+					<%
+						}
+					%>
+				</tr>
+			</thead>
+		</table>
+	
 		<div style="overflow-y:auto; position:absolute;width:100%;" id="divDatosTabla">
 			<table border="1" cellspacing="0" cellpadding="5" id='datosTabla' width="100%">
 				<% 

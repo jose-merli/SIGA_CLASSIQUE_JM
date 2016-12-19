@@ -156,7 +156,7 @@
 			 <c:out value="${PREFIJOEXPEDIENTECAJG}" />&nbsp;<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%>
 			- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%>
 			<%=UtilidadesString.mostrarDatoJSP(t_apellido2)%></td>
-			<td> 
+			<td class="titulitosDatos"> 
 			<input 	type="button" 
 				alt='<siga:Idioma key="gratuita.EJG.InformeCalificacion" />'  
 		       	id="idButton"  

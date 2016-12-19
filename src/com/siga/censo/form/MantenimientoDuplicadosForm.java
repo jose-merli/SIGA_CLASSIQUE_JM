@@ -1,8 +1,10 @@
 package com.siga.censo.form;
 
+import java.util.List;
 import java.util.Vector;
 
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.beans.CenInstitucionBean;
 import com.siga.general.MasterForm;
 
 public class MantenimientoDuplicadosForm extends MasterForm {
@@ -19,19 +21,38 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	String modo = "";
 	String nifcif="", nombre="", apellido1="", apellido2="", numeroColegiado="";
 	String campoOrdenacion="", sentidoOrdenacion="", tipoConexion="";
-	String idPersonaOrigen = "", idPersonaDestino = "", idInstOrigen = "";
-	String listaDirecciones;
+	String idPersonaOrigen = "", idPersonaDestino = "";
+	private String listaDirecciones, listaEstados, listaDireccionesNoSeleccionadas, listaEstadosNoSeleccionados;
 	String seleccionados;
 	String agruparColegiaciones;
 	String seleccion;
-	boolean chkApellidos,chkNombreApellidos,chkNumColegiado,chkIdentificador = false;
+	String volver;
 	private Vector resultadoBusqueda;
+	private List<CenInstitucionBean> listadoInstituciones;
 
+	public String getListaDireccionesNoSeleccionadas()	{
+		return listaDireccionesNoSeleccionadas;
+	}
+	public void setListaDireccionesNoSeleccionadas(String listaDireccionesNoSeleccionadas)	{
+		this.listaDireccionesNoSeleccionadas = listaDireccionesNoSeleccionadas;
+	}
+	public String getListaEstadosNoSeleccionados()	{
+		return listaEstadosNoSeleccionados;
+	}
+	public void setListaEstadosNoSeleccionados(String listaEstadosNoSeleccionados)	{
+		this.listaEstadosNoSeleccionados = listaEstadosNoSeleccionados;
+	}
 	public String getListaDirecciones() {
 		return listaDirecciones;
 	}
 	public void setListaDirecciones(String listaDirecciones) {
 		this.listaDirecciones = listaDirecciones;
+	}
+	public String getListaEstados() {
+		return listaEstados;
+	}
+	public void setListaEstados(String listaEstados) {
+		this.listaEstados = listaEstados;
 	}
 	public String getIdInstitucion() {
 		return idInstitucion;
@@ -52,38 +73,8 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	public void setIdPersonaDestino(String idPersonaDestino) {
 		this.idPersonaDestino = idPersonaDestino;
 	}
-	public String getIdInstOrigen() {
-		return idInstOrigen;
-	}
-	public void setIdInstOrigen(String idInstOrigen) {
-		this.idInstOrigen = idInstOrigen;
-	}
 
 
-	public boolean getChkApellidos() {
-		return chkApellidos;
-	}
-	public void setChkApellidos(boolean chkApellidos) {
-		this.chkApellidos = chkApellidos;
-	}
-	public boolean getChkNombreApellidos() {
-		return chkNombreApellidos;
-	}
-	public void setChkNombreApellidos(boolean chkNombreApellidos) {
-		this.chkNombreApellidos = chkNombreApellidos;
-	}
-	public boolean getChkNumColegiado() {
-		return chkNumColegiado;
-	}
-	public void setChkNumColegiado(boolean chkNumColegiado) {
-		this.chkNumColegiado = chkNumColegiado;
-	}
-	public boolean getChkIdentificador() {
-		return chkIdentificador;
-	}
-	public void setChkIdentificador(boolean chkIdentificador) {
-		this.chkIdentificador = chkIdentificador;
-	}
 	public void setChkBusqueda(String valor){
 		UtilidadesHash.set(this.datos, "ChkBusqueda", valor);
 	}
@@ -165,6 +156,20 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	}
 	public void setSeleccion(String seleccion) {
 		this.seleccion = seleccion;
+	}
+	public List<CenInstitucionBean> getListadoInstituciones() {
+		return listadoInstituciones;
+	}
+	public void setListadoInstituciones(
+			List<CenInstitucionBean> listadoInstituciones) {
+		this.listadoInstituciones = listadoInstituciones;
+	}
+	public String getVolver() {
+		return volver;
+	}
+	public void setVolver(String volver) {
+		this.volver = volver;
 	}	
+	
 	
 }

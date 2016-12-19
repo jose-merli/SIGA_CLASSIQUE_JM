@@ -310,9 +310,7 @@
 		<!-- FIN: BOTONES BUSQUEDA -->
 
 		<!-- INICIO: IFRAME LISTA RESULTADOS -->
-
-	</div>	
-   		<iframe align="center" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
+		<iframe align="center" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
 			id="resultado"
 			name="resultado" 
 			scrolling="no"
@@ -322,6 +320,8 @@
 			class="frameGeneral">
 		<!--style="position:absolute; width:964; height:297; z-index:2; top: 177px; left: 0px"> -->
   		</iframe>
+	</div>	
+   		
 
 		<!-- FIN: IFRAME LISTA RESULTADOS -->
 		<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->

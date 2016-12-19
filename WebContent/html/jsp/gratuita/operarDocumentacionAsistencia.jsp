@@ -37,7 +37,7 @@
 	<!-- FIN: TITULO OPCIONAL DE LA TABLA -->
 
 	<!-- INICIO: CAPA DE REGISTRO CON MEDIDAS EN EL ESTILO -->
-<div id="campos" class="posicionModalPeque" align="center">
+
 
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 <% 
@@ -67,12 +67,18 @@
 	<!-- Ejemplo de conjunto de campos recuadrado y con titulo -->
 	<siga:ConjCampos leyenda="pestana.justiciagratuitaejg.documentacion">
 		
-	<table class="tablaCampos" align="center" border ="0">
+	<table class="tablaCampos" align="center" border ="0" style="width:'100%'">
+	<tr>
+		<td width="30%"></td>
+		<td width="65%"></td>
+		<td width="5%"></td>
+		
+	</tr>
 	<tr>
 		<td class="labelText">	
 			<siga:Idioma key='sjcs.asistencia.documentacion.asociado'/>&nbsp;(*)
 		</td>
-		<td colspan="3">
+		<td >
 			<c:choose>
 				<c:when test="${DefinirDocumentacionAsistenciaForm.modo=='insertar'}">
 					<siga:Select id="idActuacion" queryId="getTipoActuacionAsociada" required="true"  width="300" firstLabel="Asistencia"  />
@@ -86,12 +92,13 @@
 			</c:choose>
 		
 		</td>
+		<td>&nbsp;</td>
 	</tr>	
 	<tr>
 		<td class="labelText">	
 			<siga:Idioma key='sjcs.ejg.documentacion.tipoDocumentacion'/>&nbsp;(*)
 		</td>
-		<td colspan="3">
+		<td >
 			<c:choose>
 				<c:when test="${DefinirDocumentacionAsistenciaForm.modo=='insertar'}">
 					<siga:Select id="idTipoDocumento" queryId="getTipoDocumentoAsi" required="true"  width="300"   />
@@ -105,6 +112,7 @@
 			</c:choose>
 		
 		</td>
+		<td>&nbsp;</td>
 	</tr>					
 
 	
@@ -113,7 +121,7 @@
 		<td class="labelText">
 			Observaciones<c:out value="${ClsConstants.ACCESS_FULL}"></c:out>
 		</td>
-		<td colspan="2">
+		<td >
 			<c:choose>
 				<c:when test="${accionModo=='ver'}">
 					<html:textarea property="observaciones"  rows="6" cols="50" style="width:350" styleClass="boxConsulta" readonly="true"/>
@@ -122,11 +130,12 @@
 					<html:textarea property="observaciones"  onkeydown="cuenta(this,1024)" onchange="cuenta(this,1024)" rows="6" cols="10" styleClass="box" style="width:100"/>
 				</c:otherwise>
 			</c:choose>
-		</td>	
+		</td>
+		<td>&nbsp;</td>	
 	</tr>
 	</table>
 	</siga:ConjCampos>
-</div>
+
 <%@ include file="/html/jsp/general/ficheros.jsp"%>
 </html:form>
 

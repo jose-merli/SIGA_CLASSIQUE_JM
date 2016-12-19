@@ -588,7 +588,8 @@ function bloquearDesbloquear(o)
 <body class="detallePestanas" onload="inicializar()">
 
 <!--   Tabla para mostrar la barra superior de la tabla-->
- <table class="tablaTitulo" align="center" cellspacing=0 border ="5">
+
+ <table class="tablaTitulo" align="center" cellspacing=0 >
 		<tr>
 			<td class="titulitosDatos">
 			

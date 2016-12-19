@@ -503,6 +503,10 @@ public class TagBusquedaSJCS extends TagSupport {
 					out.print(" onclick=\"eliminaLetradoSeleccionado();\">");
 					out.println("</td>");
 				}
+				
+				out.println("<td width=\"10%\">");
+				out.println("</td>");
+				
 				out.println("</tr>");  
 				
 				
@@ -520,6 +524,8 @@ public class TagBusquedaSJCS extends TagSupport {
 				out.println("</td>");  
 				out.println("</tr>");  
 				out.println("</table>");
+				out.println("</td>");
+				out.println("<td>");
 				out.println("</td></tr>");  
 				out.println("</table>");
 			}

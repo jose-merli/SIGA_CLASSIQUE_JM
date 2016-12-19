@@ -377,7 +377,36 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 		return total;					
 	}
 	
-		/**
+	/** 
+	 * Obtiene los idinstitucion donde la persona pasada como parametro es no colegiado. Excluye al CGAE
+	 * 
+	 * @param  idPersona - identificador de la persona
+	 * @param  idInstitucion - identificador de la institucion	
+	 * @return  CenColegiadoBean con los datos colegiales  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */		
+	public Vector<Integer> getColegiaciones (String idPersona) throws ClsExceptions, SIGAException{
+		Vector<Integer> colegiaciones = new Vector<Integer>();
+		Integer idinstitucion;
+		try {
+			Hashtable<String, String> hash = new Hashtable<String, String>();
+			UtilidadesHash.set(hash, CenNoColegiadoBean.C_IDPERSONA, idPersona);
+			Vector<CenNoColegiadoBean> v = this.select(hash);
+			if ((v != null) && (v.size()>0)) {
+				for (int i = 0; i < v.size(); i++) {
+					idinstitucion = v.get(i).getIdInstitucion();
+					if (! idinstitucion.equals(ClsConstants.INSTITUCION_CGAE)) {
+						colegiaciones.add(idinstitucion);
+					}
+				}
+			}
+		}catch (Exception e) {
+			throw new ClsExceptions (e, "Error al recuperar los datos");
+		}
+		return colegiaciones;
+	}
+	
+	/**
 	 * Comprueba si existe un colegiado
 	 * 
 	 * @param idPersona Long

@@ -70,10 +70,9 @@
 </tr>
 </table>
 	
-<div id="camposRegistro" class="posicionModalPeque" align="center">
 
 	<!-- Comienzo del formulario con los campos -->	
-	<html:form action="/JGR_DelitosDesignas.do" method="post">
+<html:form action="/JGR_DelitosDesignas.do" method="post">
 		<html:hidden property = "modo" value = ""/>
 		<!-- Datos de la pestanha -->
 		<html:hidden name="pestanaDelitoDesignaForm" property="anio" />
@@ -83,26 +82,23 @@
 	<!-- INICIO: CAMPOS -->
 	<!-- Zona de campos de busqueda o filtro -->
 	<table class="tablaCentralCamposPeque" align="center">
-
-	<!-- INICIO: CAMPOS DEL REGISTRO -->
-	<tr>			
-		<td>		
-		<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.delito">
-			<table class="tablaCampos" align="center">
-			<tr>
-				<td class="labelText">
-						<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.delito"/>&nbsp;(*)
-				</td>
-				<td>
-						<siga:ComboBD nombre="idDelito" tipo="comboDelitosDesignas" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=parametro%>" />
-				</td>
-			</tr>
-			</table>
-		</siga:ConjCampos>		
-		</td>
-	</tr>
+		<tr>
+			<td width="20%"></td>
+			<td width="70%"></td>
+			<td width="10%"></td>
+		</tr>
+		<tr>
+			<td class="labelText" nowrap>
+					<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.delito"/>&nbsp;(*)
+			</td>
+			<td>
+					<siga:ComboBD nombre="idDelito" tipo="comboDelitosDesignas" estilo="true" clase="boxCombo" filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=parametro%>" />
+			</td>
+			<td></td>
+		</tr>
 	</table>
-	</html:form>			
+	
+</html:form>			
 	
 		<siga:ConjBotonesAccion botones="Y,C" modal="P"/>
 
@@ -137,7 +133,6 @@
 	<!-- FIN: SCRIPTS BOTONES -->
 	<!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 
-</div>
 <!-- FIN ******* CAPA DE PRESENTACION ****** -->
 
 	

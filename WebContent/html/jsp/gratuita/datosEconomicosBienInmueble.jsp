@@ -96,31 +96,36 @@
 				</td>	
 			</tr>
 		</table>	
-		<br>		
-		<table border="1" cellspacing="0" cellpadding="5" id='cabeceraTabla' width="100%">
-			<tr class="tableTitle">
-				<td align="center" width="14%">
-					<b><siga:Idioma key="gratuita.datoseconomicos.origenvaloracion"/></b>
-				</td>
-				<td align="center" width="27%">
-					<b><siga:Idioma key="gratuita.datoseconomicos.tipovivienda"/></b>
-				</td>
-				<td align="center" width="15%">
-					<b><siga:Idioma key="gratuita.datoseconomicos.tipoinmueble"/></b>
-				</td>				
-				<td align="center" width="23%">
-					<b><siga:Idioma key="gratuita.datoseconomicos.titular"/></b>
-				</td>
-				<td align="center" width="16%">
-					<b><siga:Idioma key="gratuita.datoseconomicos.valoracion"/></b>
-				</td>	
-				<% if (editable) { %>
-					<td align="center" width="5%">
-						<b>&nbsp;</b>
-					</td>			
-				<% } %>
-			</tr>
+		
+		
+		<table id='cabeceraTabla' name='cabeceraTabla' width='100%'
+			cellspacing='0' cellpadding='0' class='fixedHeaderTable dataScroll'
+			style='table-layout: fixed; border-spacing: 0px;'>
+			<thead class='Cabeceras' style='text-align: center;'>
+				<tr class='tableTitle'>
+					<th style='text-align: center; width: 14%;'><siga:Idioma
+							key="gratuita.datoseconomicos.origenvaloracion" />
+					<th style='text-align: center; width: 27%;'><siga:Idioma
+							key="gratuita.datoseconomicos.tipovivienda" /></th>
+					<th style='text-align: center; width: 15%;'><siga:Idioma
+							key="gratuita.datoseconomicos.tipoinmueble" /></th>
+					<th style='text-align: center; width: 23%;'><siga:Idioma
+							key="gratuita.datoseconomicos.titular" /></th>
+					<th style='text-align: center; width: 16%;'><siga:Idioma
+							key="gratuita.datoseconomicos.valoracion" /></th>
+					<%
+						if (editable) {
+					%>
+					<th style='text-align: center; width: 5%;'>&nbsp;</th>
+					<%
+						}
+					%>
+				</tr>
+			</thead>
 		</table>
+		
+		
+		
 		
 		<div style="overflow-y:auto; position:absolute;width:100%;" id="divDatosTabla">
 			<table border="1" cellspacing="0" cellpadding="5" id='datosTabla' width="100%">

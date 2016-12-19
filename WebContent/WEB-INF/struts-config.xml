@@ -1116,6 +1116,8 @@
 			<forward name="gestionar" path="/html/jsp/censo/gestionarDuplicado.jsp"/>
 			<forward name="espera" path="/html/jsp/censo/esperaDuplicados.jsp"/>
 			<forward name="generaExcel" path="/SIGASvlVectorToClientFile.svrl"/>	
+			<forward name="exitoFusionar" path="/html/jsp/censo/exitoFusionar.jsp"/>
+			
 		</action>
 		
 

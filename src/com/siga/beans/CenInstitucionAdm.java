@@ -454,6 +454,28 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
 		}
 		return fechaProduccion;
 	}
+	
+	public boolean estaEnProduccion(String idInstitucion) throws ClsExceptions
+	{
+		boolean enProduccion = false;
+
+		RowsContainer rc = new RowsContainer();
+		String sql = " select fechaenproduccion " + " from " + CenInstitucionBean.T_NOMBRETABLA + " where idinstitucion = " + idInstitucion;
+
+		if (rc.query(sql)) {
+			if (rc.size() == 1) {
+				Row fila = (Row) rc.get(0);
+				Hashtable ht = fila.getRow();
+
+				if (ht.get("FECHAENPRODUCCION") != null && !ht.get("FECHAENPRODUCCION").equals("")) {
+					enProduccion = true;
+				}
+			}
+		}
+
+		return enProduccion;
+	} // estaEnProduccion()
+	
 	public static boolean esConsejoGeneral(Object idInstitucion){
 		boolean esConsejoGeneral = false;	  
 		String strInstitucion = idInstitucion.toString();
@@ -555,6 +577,37 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
 		catch (Exception e) {
 			throw e;
 		}
+	}
+	
+	public List<CenInstitucionBean> getNombreColegiosTodos (String sIdColegio) throws ClsExceptions {		
+		String sql = "select " + CenInstitucionBean.C_IDINSTITUCION +","+CenInstitucionBean.C_ABREVIATURA +
+				" FROM "+ CenInstitucionBean.T_NOMBRETABLA +  
+				" WHERE " +  CenInstitucionBean.C_IDINSTITUCION + " <> " + ClsConstants.INSTITUCION_CONSEJOGENERAL +
+				" connect by prior idinstitucion=cen_inst_idinstitucion start with idinstitucion= "+sIdColegio+ "ORDER BY 2";
+		List<CenInstitucionBean> aInstituciones = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.query(sql)) {
+            	aInstituciones = new ArrayList<CenInstitucionBean>();       
+            	
+            	CenInstitucionBean institucionBean = new CenInstitucionBean();
+            	institucionBean.setIdInstitucion(-1);	
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		institucionBean = new CenInstitucionBean();            		
+            		institucionBean.setIdInstitucion(UtilidadesHash.getInteger(htFila, CenInstitucionBean.C_IDINSTITUCION));
+            		institucionBean.setAbreviatura(UtilidadesHash.getString(htFila, CenInstitucionBean.C_ABREVIATURA));
+            		aInstituciones.add(institucionBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+       }
+		
+       return aInstituciones;
 	}
 	
 }
