@@ -101,4 +101,10 @@ public class CenColegiadoBean extends MasterBean {
 	public String getIdentificadorDS    () 	{ return this.identificadorDS; }
 	public String getNMutualista    	() 	{ return this.nMutualista; }
 	public String getNumSolicitudColegiacion() { return numSolicitudColegiacion; }
+
+	/**
+	 * Devuelve el numero de colegiado o el numero de comunitario segun sea
+	 * @return
+	 */
+	public String getNumCol 			()	{ return (this.comunitario.equalsIgnoreCase("1") ? this.nComunitario : this.nColegiado); }
 }

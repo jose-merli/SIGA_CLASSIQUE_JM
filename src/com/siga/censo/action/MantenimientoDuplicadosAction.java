@@ -1346,7 +1346,9 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 	private void getAjaxObtenerDuplicados(HttpServletRequest request, HttpServletResponse response) throws Exception {	
 
 		// Controles generales
+		UsrBean user = this.getUserBean(request);
 		DuplicadosHelper helper = new DuplicadosHelper();
+		CenColegiadoAdm admColeg = new CenColegiadoAdm(user);
 		MantenimientoDuplicadosForm miFormulario = new MantenimientoDuplicadosForm();
 		
 		// Variables generales
@@ -1363,9 +1365,16 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		miFormulario.setNifcif("");
 
 		// buscando duplicados por Numero colegiado
-		miFormulario.setIdInstitucion(request.getParameter("idInstitucion"));
-		miFormulario.setNumeroColegiado(request.getParameter("nColegiado"));
-		personasSimilares.addAll(helper.getPersonasSimilares(miFormulario));
+		CenColegiadoBean beanColegiado;
+		Vector listaColegiacionesPersonaOrigen = admColeg.getColegiaciones(idPersonaActual);
+		for(int i=0;i<listaColegiacionesPersonaOrigen.size();i++){
+			// para cada colegiacion de la persona
+			beanColegiado = admColeg.getDatosColegiales(Long.getLong(idPersonaActual), Integer.getInteger(listaColegiacionesPersonaOrigen.get(i).toString()));
+			
+			miFormulario.setIdInstitucion(beanColegiado.getIdInstitucion().toString());
+			miFormulario.setNumeroColegiado(beanColegiado.getNumCol().toString());
+			personasSimilares.addAll(helper.getPersonasSimilares(miFormulario));
+		}
 		miFormulario.setIdInstitucion("");
 		miFormulario.setNumeroColegiado("");
 
@@ -1417,12 +1426,12 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					composicionTabla.append("  <td>");
 					composicionTabla.append("    <img id='iconoboton_informacionLetrado1' src='/SIGA/html/imagenes/binformacionLetrado_off.gif'");
 					composicionTabla.append("         style='cursor:pointer;' alt='Información letrado' class='botonesIcoTabla' ");
-					composicionTabla.append("         name='iconoFila' border='0' onClick=informacionLetrado(");
+					composicionTabla.append("         name='iconoFila' border='0' onClick=\"informacionLetrado(");
 					composicionTabla.append((String) registro.get("IDPERSONA"));
-					composicionTabla.append(", 2000);>");
+					composicionTabla.append(", 2000);\">");
 					composicionTabla.append("    <img id='iconoboton_informacionLetrado1' src='/SIGA/html/imagenes/bconsultar_on.gif'");
 					composicionTabla.append("         style='cursor:pointer;' alt='Mantenimiento duplicados' class='botonesIcoTabla' ");
-					composicionTabla.append("         name='iconoFila' border='0' onClick=mantenimientoDuplicados(");
+					composicionTabla.append("         name='iconoFila' border='0' onClick=\"mantenimientoDuplicados(");
 					
 					if (registro.get("NCOLEGIADO") != null) {
 						composicionTabla.append("'', '" + (String) registro.get("NCOLEGIADO") + "', '" + (String) registro.get("IDINSTITUCION") + "', '', '', ''");
@@ -1435,7 +1444,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 						composicionTabla.append("'" + (String) registro.get("NIFCIF") + "', '', '', '', '', ''");
 					}
 					
-					composicionTabla.append(");>");
+					composicionTabla.append(");\">");
 					composicionTabla.append("  </td>");
 					composicionTabla.append("</tr>");
 				}
