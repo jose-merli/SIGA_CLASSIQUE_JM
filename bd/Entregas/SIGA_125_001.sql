@@ -1935,3 +1935,5 @@ Insert Into gen_procesos
 Update Gen_Procesos Set Descripcion = 'HIDDEN_' || Descripcion Where Idproceso In ('18');
 Delete From Adm_Tiposacceso Where Idproceso = '18' And Idinstitucion <> 2000;
 -- FIN Mantenimiento duplicados
+
+-- Ejecutado en Integracion por AAG el 19/12 a las 13:00
