@@ -6922,45 +6922,11 @@ public class EnvioInformesGenericos extends MasterReport {
 	
 	
 		if (datosInformeVector.size() == 0)
-			throw new SIGAException("messages.envios.aviso.sinDestinatarios");
-		
-		//Recorrer los datos de envío cogiendo los denunciantes y ver si alguno tiene la dirección dada de baja, si alguna está dada de baja lanzamos la excepción.
-		for(int j=0; j<datosInformeVector.size();j++){
-			Hashtable htDenunciantes = (Hashtable) datosInformeVector.get(j);
-			List denunciantesList = (List) htDenunciantes.get("denunciantes");
-			CenDireccionesAdm cenDireccionesAdm = new CenDireccionesAdm(userBean);
-			if(denunciantesList != null && denunciantesList.size() >0 ){
-				for(int i = 0;i<denunciantesList.size();i++)
-				{
-					ExpDenuncianteBean denuncianteBean = (ExpDenuncianteBean) denunciantesList.get(0);
-					Hashtable direccion = cenDireccionesAdm.selectDirecciones(denuncianteBean.getIdPersona(), denuncianteBean.getIdInstitucion(), denuncianteBean.getIdDireccion(),true);
-					if((String)direccion.get(CenDireccionesBean.C_FECHABAJA) != null 
-							&& !"".equalsIgnoreCase((String)direccion.get(CenDireccionesBean.C_FECHABAJA)))
-					{
-						
-						 log = LogFileWriter.getLogFileWriter(rutaPlantilla + ClsConstants.FILE_SEP + denuncianteBean.getIdInstitucion() 
-								 + ClsConstants.FILE_SEP + "generico_expediente" + ClsConstants.FILE_SEP,
-								 denuncianteBean.getIdInstitucion().toString()+denuncianteBean.getIdInstitucion_TipoExpediente().toString()+denuncianteBean.getIdTipoExpediente().toString()
-								 +denuncianteBean.getNumeroExpediente().toString()+denuncianteBean.getAnioExpediente().toString()+"-LogError");
-						 
-						 log.clear();
-						//La dirección está dada de baja lanzamos la excepción
-						log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),"La dirección del destinatario está de baja o no existe"});
-				    	  /** Escribiendo fichero de log **/
-						if (log != null)
-							log.flush();
-						throw new SIGAException("messages.envios.aviso.denuncianteSinDireccion");
-						
-					}
-				}
-				
-			}
-		}
-		
+			throw new SIGAException("messages.envios.aviso.sinDestinatarios");	
 		
 		
 		Hashtable destinatariosHashtable = getDestinatariosExpedientes(datosInformeVector);
-
+		
 		String idInstitucion = userBean.getLocation();
 
 		String datosEnvios = form.getDatosEnvios();
@@ -7189,6 +7155,40 @@ public class EnvioInformesGenericos extends MasterReport {
 
 							// ATENCION EN INFORMES DE EXPEDIENTES USAMOS LAS CONSTANTES DE SOLICITANTESEJG COMO DENUNCIANTES
 						} else if (tiposDestinatario.equalsIgnoreCase(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG) && denunciantes != null && denunciantes.size() > 0) {
+							
+							//Sólo en el caso de que el envio de la plantilla sea para Solicitante Recorrer los datos de envío 
+							//cogiendo los denunciantes y ver si alguno tiene la dirección dada de baja, si alguna está dada de baja lanzamos la excepción.
+							
+									CenDireccionesAdm cenDireccionesAdm = new CenDireccionesAdm(userBean);
+									if(denunciantes != null && denunciantes.size() >0 ){
+									
+										ExpDenuncianteBean denuncianteBean = (ExpDenuncianteBean) denunciantes.get(0);
+										Hashtable direccion = cenDireccionesAdm.selectDirecciones(denuncianteBean.getIdPersona(), denuncianteBean.getIdInstitucion(), denuncianteBean.getIdDireccion(),true);
+										if((String)direccion.get(CenDireccionesBean.C_FECHABAJA) != null 
+												&& !"".equalsIgnoreCase((String)direccion.get(CenDireccionesBean.C_FECHABAJA)))
+										{
+											
+											 log = LogFileWriter.getLogFileWriter(rutaPlantilla + ClsConstants.FILE_SEP + denuncianteBean.getIdInstitucion() 
+													 + ClsConstants.FILE_SEP + "generico_expediente" + ClsConstants.FILE_SEP,
+													 denuncianteBean.getIdInstitucion().toString()+denuncianteBean.getIdInstitucion_TipoExpediente().toString()+denuncianteBean.getIdTipoExpediente().toString()
+													 +denuncianteBean.getNumeroExpediente().toString()+denuncianteBean.getAnioExpediente().toString()+"-LogError");
+											 
+											 log.clear();
+											//La dirección está dada de baja lanzamos la excepción
+											log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),"La dirección del destinatario está de baja o no existe"});
+									    	  /** Escribiendo fichero de log **/
+											if (log != null)
+												log.flush();
+											throw new SIGAException("messages.envios.aviso.denuncianteSinDireccion");
+											
+										}
+									
+										
+									}
+								
+							
+							
+							
 							for (int jta = 0; jta < denunciantes.size(); jta++) {
 								ExpDenuncianteBean denuncianteBean = (ExpDenuncianteBean) denunciantes.get(jta);
 								String idPersonaJG = denuncianteBean.getIdPersona().toString();

@@ -753,35 +753,37 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
 
         End If;
 
-      Else -- Si no hay direccion para copiar al consejo, hay que borrar la/s que exista/n
-        v_Datoserror := 'Buscar_Actualizar_Direcciones: 4. Como no hay direccion, quitamos el tipo de la direccion en el Consejo, si tiene otro tipo';
-        Delete From Cen_Direccion_Tipodireccion Tip
-         Where Tip.Idpersona = p_Idpersona
-           And Tip.Idinstitucion = r_Consejo.Idinstitucion
-           And Tip.Idtipodireccion = p_Tipoespecial
-           And Exists (Select 1
-                  From Cen_Direccion_Tipodireccion Tipotro
-                 Where Tip.Idpersona = Tipotro.Idpersona
-                   And Tip.Idinstitucion = Tipotro.Idinstitucion
-                   And Tip.Iddireccion = Tipotro.Iddireccion
-                   And Tipotro.Idtipodireccion <> p_Tipoespecial);
-        
-        v_Datoserror := 'Buscar_Actualizar_Direcciones: 4. Como no hay direccion, damos de baja las direccion en el Consejo, si no tiene otro tipo';
-        Update Cen_Direcciones dir
-           Set Fechamodificacion = Sysdate,
-               Usumodificacion   = 0,
-               fechabaja         = Sysdate
-         Where Idpersona = p_Idpersona
-           And Idinstitucion = r_Consejo.Idinstitucion
-           And Fechabaja Is Null
-           And Exists (Select 1
-                  From Cen_Direccion_Tipodireccion Tip
-                 Where Tip.Idinstitucion = Dir.Idinstitucion
-                   And Tip.Idpersona = Dir.Idpersona
-                   And Tip.Iddireccion = Dir.Iddireccion
-                   And Tip.Idtipodireccion = p_Tipoespecial);
-        Total_Actualizadas := Total_Actualizadas + Sql%Rowcount;
       End If;
+      
+      v_Datoserror := 'Buscar_Actualizar_Direcciones: 4a. Para otras direcciones existentes en el Consejo que tengan el tipo especial: si la direccion tiene otros tipos ademas del especial, solo borramos el tipo especial';
+      Delete From Cen_Direccion_Tipodireccion Tip
+       Where Tip.Idpersona = p_Idpersona
+         And Tip.Idinstitucion = r_Consejo.Idinstitucion
+         And Tip.Idtipodireccion = p_Tipoespecial
+         And Tip.Iddireccion <> nvl(v_Iddireccion_Consejo, -1)
+         And Exists (Select 1
+                From Cen_Direccion_Tipodireccion Tipotro
+               Where Tip.Idpersona = Tipotro.Idpersona
+                 And Tip.Idinstitucion = Tipotro.Idinstitucion
+                 And Tip.Iddireccion = Tipotro.Iddireccion
+                 And Tipotro.Idtipodireccion <> p_Tipoespecial);
+      
+      v_Datoserror := 'Buscar_Actualizar_Direcciones: 4b. Para otras direcciones existentes en el Consejo que tengan el tipo especial: si la direccion solo tiene el tipo especial, la damos de baja';
+      Update Cen_Direcciones dir
+         Set Fechamodificacion = Sysdate,
+             Usumodificacion   = 0,
+             fechabaja         = Sysdate
+       Where Idpersona = p_Idpersona
+         And Idinstitucion = r_Consejo.Idinstitucion
+         And Fechabaja Is Null
+         And Iddireccion <> nvl(v_Iddireccion_Consejo, -1)
+         And Exists (Select 1
+                From Cen_Direccion_Tipodireccion Tip
+               Where Tip.Idinstitucion = Dir.Idinstitucion
+                 And Tip.Idpersona = Dir.Idpersona
+                 And Tip.Iddireccion = Dir.Iddireccion
+                 And Tip.Idtipodireccion = p_Tipoespecial);
+      Total_Actualizadas := Total_Actualizadas + Sql%Rowcount;
 
       Total_Borradas := Total_Borradas + Sql%Rowcount;
 

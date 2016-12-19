@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -419,7 +420,9 @@ public class GestionProgramacionCalendariosAction extends MasterAction {
 			programacionCalendariosService.insertaProgrCalendarios(progrCalendariosForm, usrBean);
 			forward = exitoModal("messages.updated.success", request);
 
-		} catch (Exception e) {
+		} catch (BusinessException e) {
+			throwExcp(e.getMessage(), e, null);
+		}catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null);
 		}
 		return forward;

@@ -9,7 +9,7 @@
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%> 
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
@@ -40,38 +40,20 @@
 	String nombre = (String) request.getAttribute("NOMBRE"); // Obtengo el nombre completo de la persona
 	String numero = (String) request.getAttribute("NUMERO"); // Obtengo el numero de colegiado de la persona	
 	String idPersona = (String) request.getAttribute("IDPERSONA"); // Obtengo el numero de colegiado de la persona
-	
-	
+	String idNoColegiado = (String) request.getAttribute("ID_NOCOLEGIADO"); // Obtengo el identificador del NO colegiado de la persona
 	String identificadorDS = (String) request.getAttribute("IDENTIFICADORDS");
 
-	// para saber hacia donde volver
+	// Para saber hacia donde volver
 	String busquedaVolver = (String) request.getSession().getAttribute("CenBusquedaClientesTipo");
 	if (busquedaVolver == null) {
 		busquedaVolver = "volverNo";
 	}
 
-	
-
-	String idioma=usr.getLanguage().toUpperCase();
-	/** PAGINADOR ***/
 	List<DocuShareObjectVO> resultado= new ArrayList<DocuShareObjectVO>();
-	String paginaSeleccionada ="";
-	
-	
-	
-	String registrosPorPagina = "";
-	HashMap hm=new HashMap();
-	
-
-	
-	String action=app+"/CEN_Censo_DocumentacionRegTel.do?noReset=true";
+	String action = (String) request.getAttribute("ACTION"); // Obtengo el action al que pertenece la transaccion (Censo o No Colegiado)
 	String modo=(String)request.getSession().getAttribute("accion");
 	
-	String botones = "C";
-	
-	
 %>	
-
 
 <%@page import="org.redabogacia.sigaservices.app.vo.DocuShareObjectVO"%>
 
@@ -102,34 +84,27 @@
 		}
 	</script>
 
-	<body onload="cargarCollection();ajusteAlto('resultado1')">
+	<body onload="sub();cargarCollection();ajusteAlto('resultado1')">
 	
-		<html:form action="/CEN_Censo_DocumentacionRegTel.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
+		<html:form action="<%=action%>" method="post" target="mainWorkArea" style="display:none">
 			<input type="hidden" name="modo" value="<%=modo%>">			
 			<input type="hidden" name="identificadorDs" value="<%=identificadorDS%>">
 			<input type="hidden" name="titleDs" value="">
 			<input type="hidden" name="posicionDs" value="">
-			
 			<input type="hidden" name="creaCollection" value="false">
 			<input type="hidden" name="idPersona" value="<%=idPersona%>">
-			
-			
 		</html:form>
 		
 		<!-- TITULO -->
 		<!-- Barra de titulo actualizable desde los mantenimientos -->
-		<table class="titulitosDatos" cellspacing="0" height="32">
+		<table class="tablaTitulo" cellspacing="0" height="32">
 			<tr>
-				<td id="titulitos" class="titulosPeq">
+				<td class="titulitosDatos">
 					<siga:Idioma key="censo.docushare.literal.titulo1"/> &nbsp;<%=UtilidadesString.mostrarDatoJSP(nombre)%>&nbsp;
 				    <%
-				    	if (!numero.equalsIgnoreCase("")) {
+				    	if (numero != null && !numero.equalsIgnoreCase("")) {
 				    %>
 						<siga:Idioma key="censo.fichaCliente.literal.colegiado"/>&nbsp;<%=UtilidadesString.mostrarDatoJSP(numero)%>
-					<%
-						} else {
-					%>
-					   <siga:Idioma key="censo.fichaCliente.literal.NoColegiado"/>
 					<%
 						}
 					%>

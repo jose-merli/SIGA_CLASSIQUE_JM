@@ -5,10 +5,15 @@
  */
 package com.siga.beans;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -300,6 +305,71 @@ public class ExpTipoExpedienteAdm extends MasterBeanAdministrador {
 		return valor;  
    }
 	
+	/**
+	 * Obtiene la fecha final calculada según la fecha inicial, el tipo de duracion y el valor de la duracion
+	 * @param fechaInicial
+	 * @return
+	 */
+	public String obtenerFechaFinal(String idInstitucion, String fechaInicial, int tipoDuracion, int valorDuracion) throws ClsExceptions {
+		String fechaFinal = "";
+		
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+			Date d=sdf.parse(fechaInicial);
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(d);
+			boolean bHabiles=false;			
+			
+			switch (tipoDuracion){
+				case ExpTipoExpedienteBean.DIAS_NATURALES:				
+					cal.add(Calendar.DATE, valorDuracion);					
+					break;
+					
+				case ExpTipoExpedienteBean.MESES:
+					cal.add(Calendar.MONTH, valorDuracion);
+					break;
+					
+				case ExpTipoExpedienteBean.ANIOS:
+					cal.add(Calendar.YEAR, valorDuracion);
+					break;
+					
+				case ExpTipoExpedienteBean.DIAS_HABILES:
+					bHabiles=true;
+					Date datFormat = sdf.parse(fechaInicial);
+					sdf.applyPattern(ClsConstants.DATE_FORMAT_SHORT_SPANISH);//"dd/MM/yyyy"
+					String fAux = sdf.format(datFormat);					
+					
+					StringBuilder consultaFechaFinal = new StringBuilder();
+					consultaFechaFinal.append(" select to_char(F_SIGA_SUMARDIASHABILESCOLEGIO('");
+					consultaFechaFinal.append(fAux);
+					consultaFechaFinal.append("', ");
+					consultaFechaFinal.append(valorDuracion);
+					consultaFechaFinal.append(", ");
+					consultaFechaFinal.append(idInstitucion);
+					consultaFechaFinal.append("), '");
+					consultaFechaFinal.append(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
+					consultaFechaFinal.append("') AS FECHAFIN ");
+					consultaFechaFinal.append("   from dual ");
+					Vector resultadoEjecucionFuncion = this.selectGenerico(consultaFechaFinal.toString());
+					fAux = ((Hashtable) resultadoEjecucionFuncion.get(0)).get("FECHAFIN").toString();
+					
+					fechaFinal = GstDate.getApplicationFormatDate("",fAux);
+					break;					
+			}
+			
+			if (!bHabiles) {
+				d=cal.getTime();
+				sdf.applyPattern(ClsConstants.DATE_FORMAT_JAVA);
+				fechaFinal = sdf.format(d);
+			}	
+			
+			return fechaFinal;
+			
+		} catch(Exception e) {
+			throw new ClsExceptions (e, "Error al calcular la fecha final");
+		}			
+	}
+	
    /** Funcion establecerFechaCaducidad (ExpExpedienteBean bean)
 	 * Calcula la fecha de caducidad a partir de la fecha de apertura, y hace set de la fecha de caducidad en el bean.
 	 * @param bean del expediente
@@ -325,16 +395,9 @@ public class ExpTipoExpedienteAdm extends MasterBeanAdministrador {
 				tipoPlazoCaducidad = ExpTipoExpedienteBean.DIAS_NATURALES; 
 			}
 			
-			ScsCalendarioGuardiasAdm calAdm = new ScsCalendarioGuardiasAdm(this.usrbean);			
-			String fechaCaducidad = calAdm.obtenerFechaFinal(
-					String.valueOf(bean.getIdInstitucion_tipoExpediente()),
-					bean.getFecha(),
-					tipoPlazoCaducidad,
-					valorPlazoCaducidad);
-			
+			String fechaCaducidad = this.obtenerFechaFinal(String.valueOf(bean.getIdInstitucion_tipoExpediente()), bean.getFecha(), tipoPlazoCaducidad, valorPlazoCaducidad);
 			if (valorPlazoCaducidad>0) {
 				bean.setFechaCaducidad(fechaCaducidad);
-				
 			} else {
 				bean.setFechaCaducidad("");
 			}

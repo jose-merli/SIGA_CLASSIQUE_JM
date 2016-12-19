@@ -1047,13 +1047,7 @@ public class HelperInformesAdm  {
 				
 
 			}
-			
-			
-			// en caso de no haber datos por lo menos devuelvo lo que he recibido.
-			
-			if(denunciantesVector != null && denunciantesVector.size()>0){
-				
-	
+
 				if(destinatario!=null && destinatario.equals(AdmInformeBean.TIPODESTINATARIO_CENPERSONA)){
 					// A Lios denunciados le metemos regiones de partes y denunciantes
 					for (int i = 0; i < denunciadosVector.size(); i++) {
@@ -1120,59 +1114,68 @@ public class HelperInformesAdm  {
 					
 				}
 				else if(destinatario!=null && destinatario.equals(AdmInformeBean.TIPODESTINATARIO_SCSPERSONAJG)){
-					//Para los denunciantes le metemos regiones de denunciados 
-					for (int i = 0; i < denunciantesVector.size(); i++) {
-						Hashtable datosHashtable = (Hashtable)denunciantesVector.get(i);
-						if(denunciadosVector!=null && denunciadosVector.size()>0)
-							datosHashtable.put("regiondenunciados", denunciadosVector);
-						else//Esto es imposible ya que es obligatorio el denunciado con una direccion pero ...
-							datosHashtable.put("regiondenunciados", new Vector());
-						
-						if(partesVector!=null && partesVector.size()>0)
-							datosHashtable.put("regionpartes", partesVector);
-						else
-							datosHashtable.put("regionpartes", new Vector());
-						
-						for (int j = 0; j < partesVector.size(); j++) {
-							Hashtable datosPartes = (Hashtable)partesVector.get(j);
-							String descripcionRolParte = (String) datosPartes.get("DESC_ROLPARTE");
-							Iterator iteParte = datosPartes.keySet().iterator();
-							while (iteParte.hasNext()) {
-								String objParte = (String) iteParte.next();
-								datosHashtable.put(objParte+"_"+descripcionRolParte.toUpperCase(), datosPartes.get(objParte));
+					if(denunciantesVector != null && denunciantesVector.size()>0){
+							//Para los denunciantes le metemos regiones de denunciados 
+							for (int i = 0; i < denunciantesVector.size(); i++) {
+								Hashtable datosHashtable = (Hashtable)denunciantesVector.get(i);
+								if(denunciadosVector!=null && denunciadosVector.size()>0)
+									datosHashtable.put("regiondenunciados", denunciadosVector);
+								else//Esto es imposible ya que es obligatorio el denunciado con una direccion pero ...
+									datosHashtable.put("regiondenunciados", new Vector());
+								
+								if(partesVector!=null && partesVector.size()>0)
+									datosHashtable.put("regionpartes", partesVector);
+								else
+									datosHashtable.put("regionpartes", new Vector());
+								
+								for (int j = 0; j < partesVector.size(); j++) {
+									Hashtable datosPartes = (Hashtable)partesVector.get(j);
+									String descripcionRolParte = (String) datosPartes.get("DESC_ROLPARTE");
+									Iterator iteParte = datosPartes.keySet().iterator();
+									while (iteParte.hasNext()) {
+										String objParte = (String) iteParte.next();
+										datosHashtable.put(objParte+"_"+descripcionRolParte.toUpperCase(), datosPartes.get(objParte));
+										
+									}
+									
+								}
 								
 							}
 							
-						}
-						
-					}
-					
-					
-					
-					Vector denunciantesVectorClon =  (Vector) denunciantesVector.clone();
-					for (int i = 0; i < denunciantesVector.size(); i++) {
-						Hashtable datosHashtable = (Hashtable)denunciantesVector.get(i);
-						datosHashtable.put("regiondenunciantes", denunciantesVectorClon);
-						
-					}
-					if(idPersona!=null){
-						Iterator iterador = denunciantesVector.iterator();
-						while (iterador.hasNext()) {
-							Hashtable datosHashtable = (Hashtable) iterador.next();
-							String idPersonaAux = (String) datosHashtable.get("IDINTERESADO");
-							if(!idPersona.equals(idPersonaAux))
-								iterador.remove();
-							if(datosHashtable.get("IDPERSONA_DEST")==null){
-								ClsLogging.writeFileLog("Envio informes generico de expedientes. En destinatario(parte) del envio no tiene configurada direccion de envio:"+datosHashtable.get("NOMBRE")+" "+ datosHashtable.get("APELLIDO1"),10);
+							
+							
+							Vector denunciantesVectorClon =  (Vector) denunciantesVector.clone();
+							for (int i = 0; i < denunciantesVector.size(); i++) {
+								Hashtable datosHashtable = (Hashtable)denunciantesVector.get(i);
+								datosHashtable.put("regiondenunciantes", denunciantesVectorClon);
+								
+							}
+							if(idPersona!=null){
+								Iterator iterador = denunciantesVector.iterator();
+								while (iterador.hasNext()) {
+									Hashtable datosHashtable = (Hashtable) iterador.next();
+									String idPersonaAux = (String) datosHashtable.get("IDINTERESADO");
+									if(!idPersona.equals(idPersonaAux))
+										iterador.remove();
+									if(datosHashtable.get("IDPERSONA_DEST")==null){
+										ClsLogging.writeFileLog("Envio informes generico de expedientes. En destinatario(parte) del envio no tiene configurada direccion de envio:"+datosHashtable.get("NOMBRE")+" "+ datosHashtable.get("APELLIDO1"),10);
+									}
+									
+								}
 							}
 							
-						}
+							if(denunciantesVector.size()>0)
+								return denunciantesVector;
+							else
+								return datos;
+					}else{
+						log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),"La dirección del destinatario está de baja o no existe"});
+				    	  /** Escribiendo fichero de log **/
+						if (log != null)
+							log.flush();
+						throw new SIGAException("messages.envios.aviso.denuncianteSinDireccion");
 					}
-					
-					if(denunciantesVector.size()>0)
-						return denunciantesVector;
-					else
-						return datos;
+							
 					
 				}
 				else if(destinatario!=null && destinatario.equals(AdmInformeBean.TIPODESTINATARIO_SCSPROCURADOR)){
@@ -1234,13 +1237,7 @@ public class HelperInformesAdm  {
 					}
 					
 					
-			}else{
-				log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),"La dirección del destinatario está de baja o no existe"});
-		    	  /** Escribiendo fichero de log **/
-				if (log != null)
-					log.flush();
-				throw new SIGAException("messages.envios.aviso.denuncianteSinDireccion");
-			}
+			
 					
 				
 					

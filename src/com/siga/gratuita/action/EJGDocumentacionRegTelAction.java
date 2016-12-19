@@ -108,7 +108,7 @@ public class EJGDocumentacionRegTelAction extends DocumentacionRegTelAction {
 		String title = DocuShareHelper.getTitleEJG(hashtable.get(ScsEJGBean.C_ANIO).toString(), hashtable.get(ScsEJGBean.C_NUMEJG).toString());
 		short idInstitucion = Short.valueOf((String)hashtable.get(ScsEJGBean.C_IDINSTITUCION));
 		DocuShareHelper docuShareHelper = new DocuShareHelper(idInstitucion);
-		String idDS = docuShareHelper.createCollectionEJG(title);
+		String idDS = docuShareHelper.createCollectionEJG(title,"");
 		hashtable.put(ScsEJGBean.C_IDENTIFICADORDS, idDS);
 		
 		ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));

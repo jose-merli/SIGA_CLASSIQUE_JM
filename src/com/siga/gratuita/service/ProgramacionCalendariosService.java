@@ -14,6 +14,7 @@ import com.siga.gratuita.form.DefinirCalendarioGuardiaForm;
 import com.siga.gratuita.form.HcoConfProgrCalendarioForm;
 import com.siga.gratuita.form.ProgrCalendariosForm;
 
+
 import es.satec.businessManager.BusinessException;
 import es.satec.businessManager.BusinessService;
 
@@ -25,7 +26,7 @@ public interface ProgramacionCalendariosService extends BusinessService{
 	public void insertaConjuntoGuardias(ConjuntoGuardiasForm ConjuntoGuardiasForm,UsrBean usrBean)throws ClsExceptions, SIGAException;
 	public void insertarConfiguracionConjuntoGuardias(ConfConjuntoGuardiasForm confConjuntoGuardiasForm, UsrBean usrBean)throws ClsExceptions, SIGAException;
 	public List<ProgrCalendariosForm> getProgramacionCalendarios(ProgrCalendariosForm progrCalendariosForm,UsrBean usrBean) throws ClsExceptions ;
-	public void insertaProgrCalendarios(ProgrCalendariosForm progrCalendariosForm, UsrBean usrBean)throws ClsExceptions;
+	public void insertaProgrCalendarios(ProgrCalendariosForm progrCalendariosForm, UsrBean usrBean)throws ClsExceptions,org.redabogacia.sigaservices.app.exceptions.BusinessException;
 	public ScsProgCalendariosBean getProgrCalendario(ProgrCalendariosForm progrCalendariosForm, UsrBean usrBean)throws ClsExceptions;
 	public void modificaProgrCalendarios(ProgrCalendariosForm progrCalendariosForm, UsrBean usrBean)throws ClsExceptions;
 	public List<HcoConfProgrCalendarioForm> getHcoProgrCalendarios(ProgrCalendariosForm progrCalendariosForm ,UsrBean usrBean) throws ClsExceptions;
@@ -34,7 +35,7 @@ public interface ProgramacionCalendariosService extends BusinessService{
 	public void cancelarGeneracionCalendarios(ProgrCalendariosForm progrCalendariosForm,UsrBean usrBean)throws ClsExceptions;
 	public void procesarAutomaticamenteGeneracionCalendarios()throws Exception;
 	public void borrarHcoProgramacion(	HcoConfProgrCalendarioForm hcoConfProgrCalendarioForm,	UsrBean usrBean)throws ClsExceptions;
-	public void borrarProgrCalendarios(	ProgrCalendariosForm progrCalendariosForm, UsrBean usrBean)throws ClsExceptions, SIGAException;
+	public void borrarProgrCalendarios(	ProgrCalendariosForm progrCalendariosForm, UsrBean usrBean)throws ClsExceptions, SIGAException,Exception;
 	public void borrarConjuntoGuardias(ConjuntoGuardiasForm ConjuntoGuardiasForm,UsrBean usrBean)throws ClsExceptions;
 	public List<ScsTurnoBean> getTurnos(String idInstitucion,UsrBean usrBean) throws ClsExceptions ;
 	public List<ScsGuardiasTurnoBean> getGuardiasTurnos(Integer idTurno,Integer idInstitucion, boolean b,UsrBean usrBean) throws ClsExceptions ;

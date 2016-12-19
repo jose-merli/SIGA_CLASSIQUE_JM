@@ -30,7 +30,7 @@ public class CenNoColegiadoBean extends MasterBean {
 	/* Variables */
 	private Long idPersona;
 	private Integer idInstitucion,contadorNumReg,contadorNumRegSP=null;
-	private String sociedadSJ=null, tipo=null, anotaciones=null, prefijoNumReg=null, sociedadSP=null; 
+	private String sociedadSJ=null, tipo=null, anotaciones=null, prefijoNumReg=null, sociedadSP=null, identificadorDS; 
 	private String  sufijoNumReg=null;
 	private String prefijoNumRegSP=null,sufijoNumRegSP=null;
 	private String  fecha_constitucion=null;
@@ -64,6 +64,7 @@ public class CenNoColegiadoBean extends MasterBean {
 	static public final String C_SUFIJO_NUMREGSP	= "SUFIJO_NUMSSPP";
 	static public final String C_NOPOLIZA			= "NOPOLIZA";
 	static public final String C_COMPANIASEG		= "COMPANIASEG";
+	static public final String C_IDENTIFICADORDS    = "IDENTIFICADORDS";
 	
 	// Metodos SET
 	public void setIdInstitucion(Integer idInstitucion) {		this.idInstitucion = idInstitucion;	}
@@ -181,4 +182,11 @@ public class CenNoColegiadoBean extends MasterBean {
 	public void setSufijoNumRegSP(String sufijoNumRegSP) {
 		this.sufijoNumRegSP = sufijoNumRegSP;
 	}
+	public String getIdentificadorDS() {
+		return identificadorDS;
+	}
+	public void setIdentificadorDS(String identificadorDS) {
+		this.identificadorDS = identificadorDS;
+	}
+	
 }

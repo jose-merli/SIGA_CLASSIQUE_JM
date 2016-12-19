@@ -596,6 +596,8 @@ public class ActaComisionAction extends MasterAction{
 					sql = new StringBuffer();
 					sql.append("update " + ScsEJGBean.T_NOMBRETABLA+ " set ");
 					sql.append(ScsEJGBean.C_FECHARESOLUCIONCAJG+ " = TO_DATE('" + actaBean.getFechaResolucionCAJG() + "', 'YYYY/MM/DD HH24:MI:SS')"); 
+					sql.append(","+ScsEJGBean.C_FECHAMODIFICACION+ " = SYSDATE ");
+					sql.append(","+ScsEJGBean.C_USUMODIFICACION+" = "+usr.getUserName());
 					sql.append(" where " + ScsEJGBean.C_IDACTA + " = " + actaBean.getIdActa());
 					sql.append(" and " + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + actaBean.getIdInstitucion());
 					sql.append(" and " + ScsEJGBean.C_ANIOACTA + " = " + actaBean.getAnioActa());
@@ -647,6 +649,8 @@ public class ActaComisionAction extends MasterAction{
 				sql = new StringBuffer();
 				sql.append("update " + ScsEJGBean.T_NOMBRETABLA+ " set ");
 				sql.append(ScsEJGBean.C_FECHARESOLUCIONCAJG+ " = null ");
+				sql.append(","+ScsEJGBean.C_FECHAMODIFICACION+ " = SYSDATE ");
+				sql.append(","+ScsEJGBean.C_USUMODIFICACION+" = "+usr.getUserName());
 				sql.append(" where " + ScsEJGBean.C_IDACTA + " = " + actaBean.getIdActa());
 				sql.append(" and " + ScsEJGBean.C_IDINSTITUCIONACTA + " = " + actaBean.getIdInstitucion());
 				sql.append(" and " + ScsEJGBean.C_ANIOACTA + " = " + actaBean.getAnioActa());

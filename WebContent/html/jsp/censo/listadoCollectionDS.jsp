@@ -9,7 +9,7 @@
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
-<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
+<meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%> 
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
@@ -133,7 +133,8 @@
 	
 	<script type="text/javascript">
 		
-		
+			sub();
+			
 			function download(fila) {			
 				var idDoc = document.getElementById('oculto' + fila + '_1');
 				if (idDoc) {			
@@ -162,7 +163,7 @@
 			
 	</script>
 
-	<body onload="preguntaCrearCollection()">	
+	<body onload="preguntaCrearCollection();fin();">	
 		
 		
 		<table>
@@ -199,12 +200,12 @@
 		} %>
 			</tr>
 		</table>
-					
+					<!-- columnNames="censo.regtel.literal.name,censo.regtel.literal.descripcion,censo.regtel.literal.fechaModificacion,censo.regtel.literal.tamanio,,," -->
 		<siga:Table 		   
 		   name="contenidoCollection"
 		   border="1"
-		   columnNames="censo.regtel.literal.descripcion,censo.regtel.literal.fechaModificacion,censo.regtel.literal.tamanio,"
-		   columnSizes="60,15,15">
+		   columnNames="censo.regtel.literal.name,Resumen,censo.regtel.literal.fechaModificacion,censo.regtel.literal.tamanio,"
+		   columnSizes="30,40,15,4">
 		   
 		   	<%
    				if (resultado != null && resultado.size() > 0) {
@@ -233,22 +234,22 @@
 		   		   		
 		   		   		
 		   		   	%>
-		   		<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' elementos="<%=elems%>" visibleBorrado="false" visibleEdicion="false" visibleConsulta="<%=visibleConsulta%>" pintarEspacio="no" botones="<%=botones%>" clase="listaNonEdit">
-					
-					
-					<td>
-					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=dsObj.getId()%>">
-					<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_2" value="<%=dsObj.getTitle()%>">
-					<img src='<%=srcImage%>'/>&nbsp;<%=dsObj.getTitle()%></td>										
-					<td style="text-align: center;"><%=UtilidadesString.formatoFecha(dsObj.getFechaModificacion(), ClsConstants.DATE_FORMAT_MEDIUM_SPANISH)%>&nbsp;</td>
-					<td style="text-align: right;"><%=size%></td>
-				</siga:FilaConIconos>	
-							<% }
-		   				   } else { %>
-	 							<tr class="notFound">
-	   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
-				</tr>
-						<% } %>
+				   		<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' elementos="<%=elems%>" visibleBorrado="false" visibleEdicion="false" visibleConsulta="<%=visibleConsulta%>" pintarEspacio="no" botones="<%=botones%>" clase="listaNonEdit">
+							<td>
+								<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_1" value="<%=dsObj.getId()%>">
+								<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_2" value="<%=dsObj.getTitle()%>">
+								<img src='<%=srcImage%>' style="float:left;padding:3px;"/><span><%=dsObj.getTitle()%><br/><%=dsObj.getOriginalFilename()%></span>
+							</td>
+							<td><%=dsObj.getSummary()%></td>									
+							<td style="text-align: center;"><%=UtilidadesString.formatoFecha(dsObj.getFechaModificacion(), ClsConstants.DATE_FORMAT_MEDIUM_SPANISH)%>&nbsp;</td>
+							<td style="text-align: right;"><%=size%></td>
+						</siga:FilaConIconos>	
+				<% }
+		   		} else { %>
+			 			<tr class="notFound">
+			   				<td class="titulitos"><siga:Idioma key="messages.noRecordFound"/></td>
+						</tr>
+				<% } %>
 				
 			</siga:Table>
 			

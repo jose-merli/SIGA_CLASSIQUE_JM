@@ -724,6 +724,11 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 						, F_F_DE_D_DD_TIPODOCUMENTO_CDA, F_F_DE_D_DD_FECHAPRESENTACIDO, F_F_DE_D_DD_DESCRIPCIONAMPLIAD, F_F_DE_D_DD_PROCEDENTE);
 			}
 		}
+		
+		Short consentimiento = SIGAServicesHelper.getShort("consentimiento consulta datos", (String)htFam.get(F_F_CONSENTIMIENTO_DATOS));
+		if (consentimiento != null) {
+			datosFamiliares.setConsentimientoConsultaDatos(consentimiento);	
+		}
 	}
 
 	/**
@@ -882,6 +887,11 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		}
 		
 		datosEconomicosPersona.setOtrosDatosEconomicos((String)htEJGs.get(DS_DEP_OTROSDATOSECONOMICOS));
+		
+		Short consentimiento = SIGAServicesHelper.getShort("consentimiento consulta datos solicitante", (String)htEJGs.get(DS_DEP_CONSENTIMIENTO_DATOS));
+		if (consentimiento != null) {
+			datosSolicitante.setConsentimientoConsultaDatos(consentimiento);	
+		}		
 	}
 
 	
@@ -1127,6 +1137,12 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			datosExpediente.setFechaSolicitud(cal);
 		}
 		datosExpediente.setObservaciones((String)htEJGs.get(DE_OBSERVACIONES2));
+		
+		Integer cantidadMiembrosUF = SIGAServicesHelper.getInteger("cantidad miembros UF", (String)htEJGs.get(DE_CANTIDAD_MIEMBROS_UF));
+		if (cantidadMiembrosUF != null) {
+			datosExpediente.setCantidadMiembrosUF(cantidadMiembrosUF);	
+		}		
+		
 		
 		String key = getKey(new Object[]{getIdInstitucion(), anyo, numero, idTipoEJG});
 		List list = (List) htMarcasExpediente.get(key);

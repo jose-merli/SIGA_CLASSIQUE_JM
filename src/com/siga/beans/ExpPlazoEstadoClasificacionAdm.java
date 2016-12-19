@@ -209,12 +209,8 @@ public class ExpPlazoEstadoClasificacionAdm extends MasterBeanAdministrador {
 				tipoPlazo = ExpPlazoEstadoClasificacionBean.DIAS_NATURALES; 
 			}
 			
-			ScsCalendarioGuardiasAdm calAdm = new ScsCalendarioGuardiasAdm(this.usrbean);			
-			String fechaFinal = calAdm.obtenerFechaFinal(
-					String.valueOf(bean.getIdInstitucion_tipoExpediente()),
-					bean.getFechaInicialEstado(),
-					tipoPlazo,
-					valorPlazo);			
+			ExpTipoExpedienteAdm expAdm = new ExpTipoExpedienteAdm(this.usrbean);			
+			String fechaFinal = expAdm.obtenerFechaFinal(String.valueOf(bean.getIdInstitucion_tipoExpediente()), bean.getFechaInicialEstado(), tipoPlazo, valorPlazo);
 			
 			if (valorPlazo>0) {
 				bean.setFechaFinalEstado(fechaFinal);

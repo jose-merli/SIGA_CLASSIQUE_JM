@@ -43,8 +43,10 @@ public class CalendarioLaboralAction extends MasterAction {
 		CalendarioLaboralForm miForm = (CalendarioLaboralForm) formulario;		
 		ScsCalendarioLaboralAdm admBean =  new ScsCalendarioLaboralAdm(this.getUserBean(request));
 		Vector v = new Vector ();
+		String idinstitucion = (String) miForm.getDatos().get(ScsCalendarioLaboralBean.C_IDINSTITUCION);
+		String anyo = (String) miForm.getDatos().get(ScsCalendarioLaboralBean.C_FECHA);
 		try {
-			v = admBean.select(miForm.getDatos());
+			v = admBean.getFestivosAnyo(idinstitucion, anyo);
 			request.getSession().setAttribute("resultado",v);			
 		}catch(Exception e){
 			throwExcp("messages.general.error",e,null);

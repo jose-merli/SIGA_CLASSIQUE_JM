@@ -640,6 +640,7 @@ MDB Microsoft Access Database
   public static String IDPROCESO_REGTEL_EXP="314";
   public static String IDPROCESO_REGTEL_EJG="94U";
   public static String IDPROCESO_REGTEL_CENSO="222";
+  public static String IDPROCESO_REGTEL_CENSO_NOCOLEGIADO="227";
   
   //public static final String GEN_PARAM_EEJG="EEJG";
   // Cambiado por la inc-6980

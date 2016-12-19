@@ -11,6 +11,7 @@ import com.atos.utils.UsrBean;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenPersonaBean;
 import com.siga.censo.form.DatosColegialesForm;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -65,11 +66,10 @@ public class CensoDocumentacionRegTelAction extends DocumentacionRegTelAction {
 					colegiadoAdm.updateDirect(colegiadoBean);
 				}
 			}
-		
 			
 			request.setAttribute("IDENTIFICADORDS", colegiadoBean.getIdentificadorDS());
-			
-			request.getSession().removeAttribute("MIGAS_DS");			
+			request.getSession().removeAttribute("MIGAS_DS");
+			request.setAttribute("ACTION","/CEN_Censo_DocumentacionRegTel.do?noReset=true");
 			
 			salto = "inicioDS";
 
@@ -88,7 +88,7 @@ public class CensoDocumentacionRegTelAction extends DocumentacionRegTelAction {
 	protected String createCollection(MasterForm formulario, HttpServletRequest request) throws Exception {
 		CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm (this.getUserBean(request));
 		DatosColegialesForm miForm = (DatosColegialesForm) formulario;
-		
+		CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));			
 		CenColegiadoBean colegiadoBean = colegiadoAdm.getDatosColegiales(new Long(miForm.getIdPersona()), getIDInstitucion(request));
 		
 		String title = null;
@@ -97,9 +97,11 @@ public class CensoDocumentacionRegTelAction extends DocumentacionRegTelAction {
 		} else {
 			title = colegiadoBean.getNColegiado();
 		}
+		CenPersonaBean personaBean = personaAdm.getPersonaPorId(miForm.getIdPersona());
+		String description = personaAdm.obtenerNombreApellidos(String.valueOf(miForm.getIdPersona()));
 		short idInstitucion = getIDInstitucion(request).shortValue();
 		DocuShareHelper docuShareHelper = new DocuShareHelper(idInstitucion);
-		String idDS = docuShareHelper.createCollectionCenso(title);
+		String idDS = docuShareHelper.createCollectionCenso(title, description);
 		colegiadoBean.setIdentificadorDS(idDS);		
 		
 		colegiadoAdm.updateDirect(colegiadoBean);
