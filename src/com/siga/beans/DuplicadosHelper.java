@@ -79,6 +79,7 @@ public class DuplicadosHelper{
 			if (! nombre.equalsIgnoreCase("") || ! apellido1.equalsIgnoreCase("")) {
 				sqlFinal = new StringBuffer();
 				sqlFinal.append(sqlSelect);
+				sqlFinal.append(", per.apellidos1 || ' ' || per.apellidos2 as Apellidos "); // devolviendo este campo, podremos diferenciar en los resultados si se ha buscado por NIF o por Apellidos
 				sqlFinal.append(sqlFrom);
 				sqlFinal.append(sqlWhere);
 				if (! nombre.equalsIgnoreCase("")) {
@@ -111,7 +112,7 @@ public class DuplicadosHelper{
 			if (! institucion.equalsIgnoreCase("") || ! nColegiado.equalsIgnoreCase("")) {
 				sqlFinal = new StringBuffer();
 				sqlFinal.append(sqlSelect);
-				sqlFinal.append(", col.ncolegiado, ins.ABREVIATURA ");
+				sqlFinal.append(", col.ncolegiado, ins.ABREVIATURA, ins.idinstitucion ");
 				sqlFinal.append(sqlFrom);
 				sqlFinal.append(", cen_colegiado col, cen_institucion ins ");
 				sqlFinal.append(sqlWhere);

@@ -138,8 +138,6 @@ public class DatosColegiacionAction extends MasterAction {
 	 */
 	protected String abrir (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String numero = "";
-		String nombre = "";
-		String nif="";
 		String result = "abrir";
 		boolean estadoCertificacion = false;
 		String certificadoCorrecto = "";
@@ -158,8 +156,7 @@ public class DatosColegiacionAction extends MasterAction {
 			
 			CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));			
 			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserName(request),user,idInstPers.intValue(),idPersona.longValue());
-			nombre = personaAdm.obtenerNombreApellidos(String.valueOf(idPersona));
-			nif = personaAdm.obtenerNIF(String.valueOf(idPersona));
+			CenPersonaBean personaBean = personaAdm.getPersonaPorId(String.valueOf(idPersona));
 			datosColegiales=colegiadoAdm.getDatosColegiales(idPersona,idInstPers);
 			numero = colegiadoAdm.getIdentificadorColegiado(datosColegiales);
 		
@@ -168,10 +165,12 @@ public class DatosColegiacionAction extends MasterAction {
 			request.setAttribute("IDPERSONA", idPersona);
 			request.setAttribute("IDINSTITUCION", idInstitucion);
 			request.setAttribute("IDINSTITUCIONPERSONA", idInstitucionPersona);	
-			request.setAttribute("NOMBRE", nombre);
 			request.setAttribute("NUMERO", numero);
+			request.setAttribute("NIF", personaBean.getNIFCIF());
+			request.setAttribute("NOMBRE", personaBean.getNombreCompleto());
+			request.setAttribute("NOMBRESOLO", personaBean.getNombre());
+			request.setAttribute("APELLIDOS", personaBean.getApellido1() + " " + personaBean.getApellido2());
 			request.setAttribute("ACCION", accion);
-			request.setAttribute("NIF", nif);
 			
 	// Recuperamos la ultima fecha de la situacion introducida y el motivo introducidos por el usuario		
 			Hashtable consultaHash=new Hashtable();

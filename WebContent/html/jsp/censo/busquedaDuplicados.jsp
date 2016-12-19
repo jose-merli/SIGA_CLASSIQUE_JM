@@ -160,6 +160,10 @@
 			jQuery('#tdIdentificacion').attr("style", "background-color:aliceblue; border: 1px solid DarkGray;");
 			jQuery('#tdColegiacion').attr("style", "border: 1px solid white;");
 			jQuery('#tdNombre').attr("style", "border: 1px solid white;");
+			
+			jQuery('#tdIdentificacionOrden').attr("style", "visibility:visible;");
+			jQuery('#tdColegiacionOrden').attr("style", "visibility:hidden;");
+			jQuery('#tdNombreOrden').attr("style", "visibility:hidden;");
 		}
 		
 		function presionarNumeroColegiado(){
@@ -170,6 +174,10 @@
 			jQuery('#tdIdentificacion').attr("style", "border: 1px solid white;");
 			jQuery('#tdColegiacion').attr("style", "background-color:aliceblue; border: 1px solid DarkGray;");
 			jQuery('#tdNombre').attr("style", "border: 1px solid white;");
+			
+			jQuery('#tdIdentificacionOrden').attr("style", "visibility:hidden;");
+			jQuery('#tdColegiacionOrden').attr("style", "visibility:visible;");
+			jQuery('#tdNombreOrden').attr("style", "visibility:hidden;");
 		}
 		
 		function presionarNombreApellidos(){
@@ -180,6 +188,10 @@
 			jQuery('#tdIdentificacion').attr("style", "border: 1px solid white;");
 			jQuery('#tdColegiacion').attr("style", "border: 1px solid white;");
 			jQuery('#tdNombre').attr("style", "background-color:aliceblue; border: 1px solid DarkGray;");
+			
+			jQuery('#tdIdentificacionOrden').attr("style", "visibility:hidden;");
+			jQuery('#tdColegiacionOrden').attr("style", "visibility:hidden;");
+			jQuery('#tdNombreOrden').attr("style", "visibility:visible;");
 		}
 		
 		function recargarCamposHabilitados (){
@@ -193,7 +205,7 @@
 					jQuery ("#numeroColegiadoText").val("");
 					jQuery ("#nombreText").val("");
 					jQuery ("#apellido1Text").val("");
-					jQuery('#listadoInstitucion option[value=""]').attr("selected","selected");
+					jQuery ('#listadoInstitucion option[value=""]').attr("selected","selected");
 					
 			}else{
 				if(document.MantenimientoDuplicadosForm.nifcif.value.length >0 ){
@@ -256,6 +268,16 @@
 								<html:text styleId="nifcif" name="MantenimientoDuplicadosForm" property="nifcif" size="15" styleClass="box" onkeyup="presionarNif()" />
 							</td>
 						</tr>
+						<tr>
+							<td class="labelText">
+								&nbsp;
+							</td>
+						</tr>
+						<tr>
+							<td id="tdIdentificacionOrden" class="labelText" colspan="2" style="visibility:hidden;">
+								<p><b><i>Se ordena por Número Identificación</i></b></p>
+							</td>
+						</tr>
 					</table>
 				</td>
 
@@ -282,6 +304,11 @@
 								<html:text styleId="numeroColegiadoText" name="MantenimientoDuplicadosForm" property="numeroColegiado" size="20" styleClass="box" onkeyup="presionarNumeroColegiado()" />
 							</td>
 						</tr>
+						<tr>
+							<td id="tdColegiacionOrden" class="labelText" colspan="2" style="visibility:hidden;">
+								<p><b><i>Se ordena por Institución y Número de colegiado</i></b></p>
+							</td>
+						</tr>
 					</table>
 				</td>
 
@@ -299,6 +326,11 @@
 							<td class="labelText">Apellidos</td>
 							<td>
 								<html:text styleId="apellido1Text" name="MantenimientoDuplicadosForm" property="apellido1" size="35" styleClass="box" onkeyup="presionarNombreApellidos()" />
+							</td>
+						</tr>
+						<tr>
+							<td id="tdNombreOrden" class="labelText" colspan="2" style="visibility:hidden;">
+								<p><b><i>Se ordena por Apellidos y Nombre</i></b></p>
 							</td>
 						</tr>
 					</table>

@@ -40,6 +40,8 @@
 	String idInstitucionAcceso= user.getLocation();
 	String modo = (String) request.getAttribute("ACCION");
 	String nombre = (String) request.getAttribute("NOMBRE"); // Obtengo el nombre completo de la persona
+	String nombreSolo = (String) request.getAttribute("NOMBRESOLO"); // Obtengo el nombre completo de la persona
+	String apellidos = (String) request.getAttribute("APELLIDOS"); // Obtengo el nombre completo de la persona
 	String numero = (String) request.getAttribute("NUMERO"); // Obtengo el numero de colegiado de la persona	
 	Long idPersona = (Long) request.getAttribute("IDPERSONA");
 	String nif = (String) request.getAttribute("NIF"); // Obtengo el nif de la persona
@@ -239,53 +241,36 @@
 				}		
 			}	
 			
-			function accionObtenerDuplicados(nidSolicitante) 
-			{	
-					   jQuery.ajax({ 
-							type: "POST",
-							url: "/SIGA/CEN_MantenimientoDuplicados.do?modo=getAjaxObtenerDuplicados",				
-							data: "checkIdentificador="+"1"+"&nidSolicitante="+nidSolicitante,
-							dataType: "json",
-							contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-							success: function(json){	
-								// Recupera el identificador de la serie de facturacion
-								jQuery("#tablaDocumentacion tr").remove();
-								jQuery("#tablaDocumentacion").append(json.aOptionsListadoDocumentacion);
-								
-								jQuery("#tablaDocumentacion").append("</table>");	
-									
-									jQuery("#divDescargaDocumentacion").dialog(
-											{
-												width: 950,
-												height: '300',
-												modal: true,
-												position:['middle',20],
-												resizable: false,
-												buttons: {
-													"Cerrar": function() {
-														jQuery(this).dialog("close");
-													}
-												}
-											}
-										);
-										jQuery(".ui-widget-overlay").css("opacity","0.5");													
-							}
-						});		
+			function accionObtenerDuplicados() 
+			{
+				// mostrando la tabla de posibles duplicados
+				jQuery("#divDescargaDocumentacion").dialog(
+					{
+						width: 950, height: 300, modal: true, position:['middle',20], resizable: false,
+						buttons: { "Cerrar": function() { jQuery(this).dialog("close"); } }
+					}
+				);
+				jQuery(".ui-widget-overlay").css("opacity","0.5");													
 			}
 			
-			function comprobarDuplicados(nidSolicitante){
+			function comprobarDuplicados(){
 				<% if(idInstitucionAcceso.equals("2000")){ %>
-					  jQuery.ajax({ 
+					jQuery.ajax({ 
 							type: "POST",
 							url: "/SIGA/CEN_MantenimientoDuplicados.do?modo=getAjaxObtenerDuplicados",				
-							data: "checkIdentificador="+"1"+"&nidSolicitante="+nidSolicitante,
+							data: "checkIdentificador="+"1"+"&idPersona="+"<%=idPersona%>"+"&nidSolicitante="+"<%=nif%>"+"&nombre="+"<%=nombreSolo%>"+"&apellidos="+"<%=apellidos%>"+"&idInstitucion="+"<%=idInstitucion%>"+"&nColegiado="+"<%=numero%>",
 							dataType: "json",
 							contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 							success: function(json){	
-								// Recupera el identificador de la serie de facturacion
+								// mostrando el icono que avisa de que existen posibles duplicados
 								if(json.aOptionsListadoDocumentacion != null && json.aOptionsListadoDocumentacion.length > 0){
+									jQuery("#iconoboton_cargando_1").hide();
 									jQuery("#iconoboton_aviso_1").show();
-								}																
+								}
+								// preparando la tabla de resultados de posibles duplicados
+								jQuery("#tablaDocumentacion tr").remove();
+								jQuery("#tablaDocumentacion").append(json.aOptionsListadoDocumentacion);
+								jQuery("#tablaDocumentacion").append("</table>");	
 							}
 						});		
 				<%}%>
@@ -312,7 +297,6 @@
 			
 		function mantenimientoDuplicados(nifcif, numcol, idinstitucion, nombre, apellido1, apellido2) {
 			
-			//document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
 			document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
 			document.MantenimientoDuplicadosForm.nifcif.value=nifcif;
 			document.MantenimientoDuplicadosForm.numeroColegiado=numcol;
@@ -321,12 +305,11 @@
 			document.MantenimientoDuplicadosForm.apellido1=apellido1;
 			document.MantenimientoDuplicadosForm.apellido2=apellido2;
 			document.MantenimientoDuplicadosForm.submit();
-		
 		}
 		</script>
 	</head>
 
-	<body class="tablaCentralCampos" onLoad="situacionLetrado();buscar();calcularAltura(); comprobarDuplicados('<%=nif%>');">
+	<body class="tablaCentralCampos" onLoad="situacionLetrado();buscar();calcularAltura();comprobarDuplicados();">
 	
 		<!-- ******* INFORMACION GENERAL CLIENTE ****** -->
 		<table class="tablaTitulo" align="center" cellspacing="0">
@@ -471,12 +454,11 @@
 <%
 					}
 %>
-				</tr>
-				<td align="right">	
-								<img id="iconoboton_aviso_1"  src="/SIGA/html/imagenes/warning.png"          style="cursor: hand; display: none" 
-								alt="Duplicidades"  name="newSol_1"  border="0" 
-								onClick="accionObtenerDuplicados('<%=nif%>');"> 
+					<td align="right">
+						<img id="iconoboton_cargando_1"	src="/SIGA/html/imagenes/bloading_on_23.gif"	style="cursor: hand" alt="Cargando posibles duplicados"> 
+						<img id="iconoboton_aviso_1"	src="/SIGA/html/imagenes/warning.png"			style="cursor: hand; display: none" alt="Duplicidades" onClick="accionObtenerDuplicados();"> 
 					</td>
+				</tr>
 			</table>
 		</siga:ConjCampos>
 		

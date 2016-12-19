@@ -68,7 +68,9 @@ import com.siga.beans.CenSancionAdm;
 import com.siga.beans.CenTipoDireccionBean;
 import com.siga.beans.CerSolicitudCertificadosAdm;
 import com.siga.beans.DuplicadosHelper;
+import com.siga.beans.FcsPagoColegiadoAdm;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.ScsCabeceraGuardiasAdm;
 import com.siga.censo.form.MantenimientoDuplicadosForm;
 import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
@@ -87,7 +89,52 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 	final String[] clavesBusqueda={CenClienteBean.C_IDINSTITUCION,CenClienteBean.C_IDPERSONA};
 
 	private static final Object mantenimientoDuplicados = new Object(); // semaforo
-	private static HashSet<String> listaPersonasFusionando = new HashSet<String>();
+	private static class ControlFusionador {
+		/**
+		 * Conjunto de personas que se estan fusionando en este momento. Se van metiendo y sacando segun se termina la fusion
+		 */
+		private static HashSet<String> listaPersonasFusionando = new HashSet<String>();
+		
+		/**
+		 * Obtiene un control basado en dos personas a fusionar
+		 * @param idpersona1
+		 * @param idpersona2
+		 * @return
+		 */
+		public static ControlFusionador getControlFusionador(String idpersona1, String idpersona2) {
+			synchronized (listaPersonasFusionando) {
+				if (listaPersonasFusionando.contains(idpersona1) || listaPersonasFusionando.contains(idpersona2)) {
+					return null;
+				} else {
+					return new ControlFusionador(idpersona1, idpersona2);
+				}
+			}
+		}
+		
+		private String personaFusionando1, personaFusionando2;
+		
+		/**
+		 * Constructor privado: solo se puede obtener un control llamando a getControlFusionador(), que busca si las personas ya estan en una fusion
+		 * @param idpersona1
+		 * @param idpersona2
+		 */
+		private ControlFusionador (String idpersona1, String idpersona2) {
+			listaPersonasFusionando.add(idpersona1);
+			listaPersonasFusionando.add(idpersona2);
+			personaFusionando1 = idpersona1;
+			personaFusionando2 = idpersona2;
+		}
+		
+		/**
+		 * Da por terminada la fusion controlada por este objeto
+		 */
+		public void removeControlFusionador() {
+			synchronized (listaPersonasFusionando) {
+				listaPersonasFusionando.remove(this.personaFusionando1);
+				listaPersonasFusionando.remove(this.personaFusionando2);
+			}
+		}
+	}
 
 	/** 
 	 *  Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
@@ -106,6 +153,11 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 
 		String mapDestino = "exception";
 		MasterForm miForm = null;
+		
+		UsrBean usr = this.getUserBean(request);
+		if (! usr.getLocation().equalsIgnoreCase(Integer.toString(ClsConstants.INSTITUCION_CGAE))) {
+			throw (new SIGAException("Esta funcionalidad no está disponible. Consulte con el Administrador"));
+		}
 
 		try { 
 
@@ -445,15 +497,13 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			}
 			// Si no hay seleccionados, no se puede hacer nada mas
 			if (seleccionados == null || seleccionados.equalsIgnoreCase("")) {
-				String mensaje = "No se ha seleccionado nada. Seleccione dos personas para fusionar.";
-				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr, mensaje));
+				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr, "No se ha seleccionado nada. Seleccione dos personas para fusionar."));
 				return "exitoFusionar";
 			}
 			// Los seleccionados deben ser 2, separados por comas
 			String[] personasSeleccionadas = UtilidadesString.split(seleccionados, ",");
 			if (personasSeleccionadas.length != 2) {
-				String mensaje = "Selección incorrecta. Seleccione dos personas para fusionar.";
-				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr, mensaje));
+				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr, "Selección incorrecta. Seleccione dos personas para fusionar."));
 				return "exitoFusionar";
 			}
 			
@@ -464,12 +514,12 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 
 				// Controlando si ya se estan fusionando estas personas
 				//TODO hay que mostrar al usuario un recurso concreto
-				if (arePersonasFusionando(idPersona, null)) {
-					String mensaje = "Ya se ha solicitado la combinación de alguna de estas personas. Espere unos minutos hasta que termine.";
-					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr, mensaje));
+				ControlFusionador controlFusionador = ControlFusionador.getControlFusionador(idPersona, null);
+				if (controlFusionador == null) {
+					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr, "Ya se ha solicitado la combinación de alguna de estas personas. Espere unos minutos hasta que termine."));
 					return "exitoFusionar";
 				}
-				removePersonasFusionando(idPersona, null); // abrimos el semaforo: ya se cerrara mas tarde al comenzar la fusion
+				controlFusionador.removeControlFusionador(); // abrimos el semaforo: ya se cerrara mas tarde al comenzar la fusion
 				
 				// 1. obteniendo datos personales
 				datosPersonaDeUna = admPersona.getPersonaPorId(idPersona);
@@ -644,16 +694,13 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		CenPersonaAdm admPersona = new CenPersonaAdm(user);
 		CenClienteAdm admCliente = new CenClienteAdm(user);
 		CenInstitucionAdm admInst = new CenInstitucionAdm(user);
-		CenHistoricoAdm admHistorico = new CenHistoricoAdm(user);
 
+		ControlFusionador controlFusionador = null;
 		String idPersonaDestino = miForm.getIdPersonaDestino();
 		String idPersonaOrigen = miForm.getIdPersonaOrigen();
-		String msgError = "";
 		HashSet<String> conjuntoColegiosIguales;
 		String idInstitucion, fechaEstado;
 		boolean bDesdeCgae = true;
-		String resul[];
-		String acciones = "";
 
 		UserTransaction tx = null;
 		
@@ -674,23 +721,21 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				intInstitucion = Integer.parseInt(stInstitucion);
 				// Si se quiere fusionar un colegiado en el mismo colegio, solo lo permitimos al personal de IT o bien si el colegio no esta en produccion
 				if (admColeg.existeColegiado(Long.parseLong(idPersonaDestino), intInstitucion) != null && !tienePermisoFusionColegiosEnProduccion(mapping, request) && admInst.estaEnProduccion(stInstitucion)) {
-					String mensaje = "No está permitida la fusión por seguridad. El colegio "+nombreInstitucion+" usa SIGA y puede contener datos delicados.";
-					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, mensaje));
+					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "No está permitida la fusión por seguridad. El colegio "+nombreInstitucion+" usa SIGA y puede contener datos delicados. Por favor, pida ayuda al Administrador."));
 					return "exitoFusionar";
 				}
 			}
 
 			// semaforo para evitar que se pida la fusion de la misma persona varias veces
-			if (arePersonasFusionando(idPersonaOrigen, idPersonaDestino)) {
-				String mensaje = "Ya se ha solicitado la combinación de alguna de estas personas. Espere unos minutos hasta que termine.";
-				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, mensaje));
+			controlFusionador = ControlFusionador.getControlFusionador(idPersonaOrigen, idPersonaDestino);
+			if (controlFusionador == null) {
+				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "Ya se ha solicitado la combinación de alguna de estas personas. Espere unos minutos hasta que termine."));
 				return "exitoFusionar";
 			}
 			
 			// comprobando que existan las dos personas a fusionar, por si acaso ya no existe alguna (por ejemplo, si se ha fusionado en otro hilo de ejecucion)
 			if (admPersona.getPersonaPorId(idPersonaOrigen) == null || admPersona.getPersonaPorId(idPersonaDestino) == null) {
-				String mensaje = "Ya se ha solicitado la combinación de alguna de estas personas. Por favor, realice una nueva búsqueda.";
-				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, mensaje));
+				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "Ya se ha solicitado la combinación de alguna de estas personas. Por favor, realice una nueva búsqueda."));
 				return "exitoFusionar";
 			}
 
@@ -747,6 +792,29 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				estadosColegialesEnUnColegio = admEstadoColegial.getDatosColegialesPersonaInstitucion(colegio, idPersonaOrigen);
 				for (Hashtable<String, String> estadoColegial : estadosColegialesEnUnColegio) {
 					admEstadoColegial.borrarConHistorico(estadoColegial, bDesdeCgae);
+				}
+			}
+			
+			// comprobando datos que no es posible fusionar y hay que arreglar a mano
+			ArrayList<String> listaIdPersonas = new ArrayList<String>();
+			listaIdPersonas.add(idPersonaOrigen);
+			listaIdPersonas.add(idPersonaDestino);
+			Vector vRegistros;
+			FcsPagoColegiadoAdm pagoColAdm = new FcsPagoColegiadoAdm(user);
+			ScsCabeceraGuardiasAdm cabGuaAdm = new ScsCabeceraGuardiasAdm(user);
+			for (String colegio : conjuntoColegiosIguales) {
+				vRegistros = pagoColAdm.selectPagosColegiadoDeVariasPersonas(colegio, listaIdPersonas);
+				if (vRegistros != null && vRegistros.size() > 0) {
+					tx.rollback();
+					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "Ambas personas tienen registros en el mismo Pago SJCS. Por favor, consulte al Administrador."));
+					return "exitoFusionar";
+				}
+				
+				vRegistros = cabGuaAdm.getCabeceraGuardiasDeVariasPersonas(colegio, listaIdPersonas);
+				if (vRegistros != null && vRegistros.size() > 0) {
+					tx.rollback();
+					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "Ambas personas tienen guardia en el mismo día. Por favor, consulte al Administrador."));
+					return "exitoFusionar";
 				}
 			}
 			
@@ -832,38 +900,12 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			throwExcp("Error en la fusión de las personas. Consulte al administrador", new String[] { "modulo.censo" }, e, tx);
 		} finally {
 			// ABRIMOS EL SEMAFORO. SE DEBE EJECUTAR SIEMPRE
-			removePersonasFusionando(idPersonaOrigen, idPersonaDestino);
+			if (controlFusionador != null) {
+				controlFusionador.removeControlFusionador();
+			}
 		}
 		
 		return "exitoFusionar";
-	}
-	
-	/**
-	 * Pregunta al semaforo de ejecucion si se puede pasar. Si se puede pasar, lo cierra.
-	 * @return
-	 */
-	private boolean arePersonasFusionando(String idpersona1, String idpersona2)
-	{
-		synchronized (listaPersonasFusionando) {
-			if (listaPersonasFusionando.contains(idpersona1) || listaPersonasFusionando.contains(idpersona2)) {
-				return true;
-			} else {
-				listaPersonasFusionando.add(idpersona1);
-				listaPersonasFusionando.add(idpersona2);
-				return false;
-			}
-		}
-	}
-
-	/**
-	 * Abre el semaforo para que otro proceso pueda entrar
-	 */
-	private void removePersonasFusionando(String idpersona1, String idpersona2)
-	{
-		synchronized (listaPersonasFusionando) {
-			listaPersonasFusionando.remove(idpersona1);
-			listaPersonasFusionando.remove(idpersona2);
-		}
 	}
 	
 	/**
@@ -1297,52 +1339,111 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 	} // tienePermisoFusionColegiosEnProduccion()
 	
 	/**
-	 *Obtiene los duplicados de una persona
+	 * Obtiene los duplicados de una persona
 	 * @param request
 	 * @param response
 	 */
 	private void getAjaxObtenerDuplicados(HttpServletRequest request, HttpServletResponse response) throws Exception {	
 
+		// Controles generales
 		DuplicadosHelper helper = new DuplicadosHelper();
 		MantenimientoDuplicadosForm miFormulario = new MantenimientoDuplicadosForm();
-		String composicionTabla = "";
+		
+		// Variables generales
+		StringBuilder composicionTabla = new StringBuilder();
+		Vector personasSimilares = new Vector();
+		ArrayList<String> aOptionsListadoDocumentacion = null;
+		String idPersonaActual = request.getParameter("idPersona");
+		idPersonaActual = (idPersonaActual == null) ? "" : idPersonaActual;
 
+		
+		// buscando duplicados por NIF parecido
 		miFormulario.setNifcif(request.getParameter("nidSolicitante"));
+		personasSimilares.addAll(helper.getPersonasSimilares(miFormulario));
+		miFormulario.setNifcif("");
 
-		Vector personasSimilares = helper.getPersonasSimilares(miFormulario);
-		Hashtable registro;
-		if (personasSimilares != null && personasSimilares.size() > 1) { // Mayor que uno para que no se cuente a él mismo.
-			composicionTabla += "<tr><td WIDTH='18%' align='center'><strong>Nº de colegiado</strong></td><td WIDTH='18%' align='center'><strong>Nif</strong></td>"
-					+ "<td WIDTH='18%' align='center'><strong>Nombre</strong></td><td WIDTH='18%' align='center'><strong>Apellido1</strong></td><td WIDTH='18%' align='center'><strong>Apellido2</td><strong></td>"
-					+ "<td WIDTH='18%'>&nbsp;</td>";
+		// buscando duplicados por Numero colegiado
+		miFormulario.setIdInstitucion(request.getParameter("idInstitucion"));
+		miFormulario.setNumeroColegiado(request.getParameter("nColegiado"));
+		personasSimilares.addAll(helper.getPersonasSimilares(miFormulario));
+		miFormulario.setIdInstitucion("");
+		miFormulario.setNumeroColegiado("");
 
+		// buscando duplicados por Nombre y apellidos
+		miFormulario.setNombre(request.getParameter("nombre"));
+		miFormulario.setApellido1(request.getParameter("apellidos"));
+		personasSimilares.addAll(helper.getPersonasSimilares(miFormulario));
+		miFormulario.setNombre("");
+		miFormulario.setApellido1("");
+		
+		if (personasSimilares != null) {
+			composicionTabla.append("<tr>");
+			composicionTabla.append("  <td><strong>Nif</strong></td>");
+			composicionTabla.append("  <td><strong>Nombre</strong></td>");
+			composicionTabla.append("  <td><strong>Apellido1</strong></td>");
+			composicionTabla.append("  <td><strong>Apellido2</td><strong></td>");
+			composicionTabla.append("  <td><strong>Colegio</strong></td>");
+			composicionTabla.append("  <td><strong>Nº de colegiado</strong></td>");
+			composicionTabla.append("  <td>&nbsp;</td>");
+			composicionTabla.append("</tr>");
+
+			Hashtable registro;
+			HashSet<String> conjuntoPersonas = new HashSet<String>();
 			for (int i = 0; i < personasSimilares.size(); i++) {
 				registro = (Hashtable) personasSimilares.elementAt(i);
-
-				composicionTabla += "<tr><td>"
-						+ (String) registro.get("NOCOLEGIADOCGAE")
-						+ "</td>"
-						+ "<td>"
-						+ (String) registro.get("NIFCIF")
-						+ "</td>"
-						+ "<td>"
-						+ (String) registro.get("NOMBRE")
-						+ "</td>"
-						+ "<td>"
-						+ (String) registro.get("APELLIDOS1")
-						+ "</td>"
-						+ "<td>"
-						+ (String) registro.get("APELLIDOS2")
-						+ "</td>"
-						+ "<td> <img id='iconoboton_informacionLetrado1' src='/SIGA/html/imagenes/binformacionLetrado_off.gif' style='cursor:pointer;' alt='Información letrado' class='botonesIcoTabla' "
-						+ "name='iconoFila' border='0' onClick='informacionLetrado("
-						+ (String) registro.get("IDPERSONA")
-						+ ", 2000);'>"
-						+ "<img id='iconoboton_informacionLetrado1' src='/SIGA/html/imagenes/bconsultar_on.gif' style='cursor:pointer;' alt='Mantenimiento duplicados' class='botonesIcoTabla' "
-						+ "name='iconoFila' border='0' " + "onClick= mantenimientoDuplicados('" + (String) registro.get("NIFCIF") + "','"
-						+ (String) registro.get("NOCOLEGIADOCGAE") + "','" + (String) registro.get("NOMBRE") + "','" + (String) registro.get("APELLIDOS1")
-						+ "','" + (String) registro.get("APELLIDOS2") + "');>" + "</td>";
-
+				// solo hay que mostrar personas diferentes a la actual
+				if (! idPersonaActual.equalsIgnoreCase((String) registro.get("IDPERSONA"))) {
+					conjuntoPersonas.add((String) registro.get("IDPERSONA"));
+	
+					composicionTabla.append("<tr>");
+					composicionTabla.append("  <td>");
+					composicionTabla.append((String) registro.get("NIFCIF"));
+					composicionTabla.append("  </td>");
+					composicionTabla.append("  <td>");
+					composicionTabla.append((String) registro.get("NOMBRE"));
+					composicionTabla.append("  </td>");
+					composicionTabla.append("  <td>");
+					composicionTabla.append((String) registro.get("APELLIDOS1"));
+					composicionTabla.append("  </td>");
+					composicionTabla.append("  <td>");
+					composicionTabla.append((String) registro.get("APELLIDOS2"));
+					composicionTabla.append("  </td>");
+					composicionTabla.append("  <td>");
+					composicionTabla.append((registro.get("ABREVIATURA") == null) ? "&nbsp;" : (String) registro.get("ABREVIATURA"));
+					composicionTabla.append("  </td>");
+					composicionTabla.append("  <td>");
+					composicionTabla.append((registro.get("NCOLEGIADO") == null) ? "&nbsp;" : (String) registro.get("NCOLEGIADO"));
+					composicionTabla.append("  </td>");
+					composicionTabla.append("  <td>");
+					composicionTabla.append("    <img id='iconoboton_informacionLetrado1' src='/SIGA/html/imagenes/binformacionLetrado_off.gif'");
+					composicionTabla.append("         style='cursor:pointer;' alt='Información letrado' class='botonesIcoTabla' ");
+					composicionTabla.append("         name='iconoFila' border='0' onClick=informacionLetrado(");
+					composicionTabla.append((String) registro.get("IDPERSONA"));
+					composicionTabla.append(", 2000);>");
+					composicionTabla.append("    <img id='iconoboton_informacionLetrado1' src='/SIGA/html/imagenes/bconsultar_on.gif'");
+					composicionTabla.append("         style='cursor:pointer;' alt='Mantenimiento duplicados' class='botonesIcoTabla' ");
+					composicionTabla.append("         name='iconoFila' border='0' onClick=mantenimientoDuplicados(");
+					
+					if (registro.get("NCOLEGIADO") != null) {
+						composicionTabla.append("'', '" + (String) registro.get("NCOLEGIADO") + "', '" + (String) registro.get("IDINSTITUCION") + "', '', '', ''");
+					}
+					else if (registro.get("APELLIDOS") != null) {
+						composicionTabla.append("'', '', '', '" + (String) registro.get("NOMBRE") + "','" + (String) registro.get("APELLIDOS1")
+							+ "','" + (String) registro.get("APELLIDOS2") + "'");
+					}
+					else {
+						composicionTabla.append("'" + (String) registro.get("NIFCIF") + "', '', '', '', '', ''");
+					}
+					
+					composicionTabla.append(");>");
+					composicionTabla.append("  </td>");
+					composicionTabla.append("</tr>");
+				}
+			}
+			
+			aOptionsListadoDocumentacion = new ArrayList<String>();
+			if (composicionTabla != null && !"".equalsIgnoreCase(composicionTabla.toString())) {
+				aOptionsListadoDocumentacion.add(composicionTabla.toString());
 			}
 		}
 
@@ -1350,10 +1451,6 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		UsrBean usr = this.getUserBean(request);
 
 		// Devuelvo la lista de series de facturacion
-		ArrayList<String> aOptionsListadoDocumentacion = new ArrayList<String>();
-		if (composicionTabla != null && !"".equalsIgnoreCase(composicionTabla)) {
-			aOptionsListadoDocumentacion.add(composicionTabla);
-		}
 		json.put("aOptionsListadoDocumentacion", aOptionsListadoDocumentacion);
 
 		response.setContentType("text/x-json;charset=UTF-8");
