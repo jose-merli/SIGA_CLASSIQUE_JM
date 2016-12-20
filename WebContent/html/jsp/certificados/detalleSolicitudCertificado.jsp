@@ -779,75 +779,6 @@
 				SolicitudesCertificadosForm.submit();
 			<% } %>		   	
 		}		
-		
-		function accionObtenerDuplicados() 
-		{
-			// mostrando la tabla de posibles duplicados
-			jQuery("#divDescargaDocumentacion").dialog(
-				{
-					width: 950, height: 300, modal: true, position:['middle',20], resizable: false,
-					buttons: { "Cerrar": function() { jQuery(this).dialog("close"); } }
-				}
-			);
-			jQuery(".ui-widget-overlay").css("opacity","0.5");													
-		}
-		
-		function comprobarDuplicados(){
-			<% if(idInstitucion.equals("2000")){ %>
-				jQuery.ajax({ 
-						type: "POST",
-						url: "/SIGA/CEN_MantenimientoDuplicados.do?modo=getAjaxObtenerDuplicados",				
-						data: "checkIdentificador="+"1"+"&idPersona="+"<%=idPersona%>"+"&nidSolicitante="+"<%=nidSolicitante%>"+"&nombre="+"<%=nombreSoloSolicitante%>"+"&apellidos="+"<%=apellidosSolicitante%>"+"&idInstitucion="+"<%=idInstitucion%>"+"&nColegiado="+"<%=ncolSolicitante%>",
-						dataType: "json",
-						contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-						success: function(json){	
-							// mostrando el icono que avisa de que existen posibles duplicados
-							jQuery("#iconoboton_cargando_1").hide();
-							if(json.aOptionsListadoDocumentacion != null && json.aOptionsListadoDocumentacion.length > 0){
-								jQuery("#iconoboton_aviso_1").show();
-							}
-							// preparando la tabla de resultados de posibles duplicados
-							jQuery("#tablaDocumentacion tr").remove();
-							jQuery("#tablaDocumentacion").append(json.aOptionsListadoDocumentacion);
-							jQuery("#tablaDocumentacion").append("</table>");	
-						}
-					});		
-			<%}%>
-		}
-		
-		function informacionLetrado(idPersona,idIntitucion) {
-			
-		    var idInst = idIntitucion;			          		
-		    var idPers = idPersona;		        
-			
-		    document.forms[1].filaSelD.value = 1;
-			
-			 
-			if(idIntitucion != null && idIntitucion !=""){
-				document.forms[1].tablaDatosDinamicosD.value=idPers + ',' + idInst + '%';	
-				document.forms[1].modo.value="editar";
-			}else{
-				//Es no colegiado y el idIntitucion será de donde estés logeado.
-				document.forms[1].tablaDatosDinamicosD.value=idPers + ',' + <%=idInstitucion%> + '%';	
-				document.forms[1].modo.value="ver";
-			}
-			
-		   	document.forms[1].submit();		   	
-		}
-		
-		function mantenimientoDuplicados(nifcif, numcol, idinstitucion, nombre, apellido1, apellido2) {
-				
-			document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
-			document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
-			document.MantenimientoDuplicadosForm.nifcif.value=nifcif;
-			document.MantenimientoDuplicadosForm.numeroColegiado=numcol;
-			document.MantenimientoDuplicadosForm.idInstitucion=idinstitucion;
-			document.MantenimientoDuplicadosForm.nombre=nombre;
-			document.MantenimientoDuplicadosForm.apellido1=apellido1;
-			document.MantenimientoDuplicadosForm.apellido2=apellido2;
-			document.MantenimientoDuplicadosForm.submit();
-		
-		}
 	</script>
 		
 	<style>
@@ -860,7 +791,7 @@
 <!-- FIN: SCRIPTS BOTONES -->
 </head>
 
-<body onLoad="ajusteAltoBotones('mainWorkArea');revisarCheck();descargarPDF();comprobarDuplicados();" height="100%">
+<body onLoad="ajusteAltoBotones('mainWorkArea');revisarCheck();descargarPDF();comprobarDuplicados('<%=idInstitucion%>', '<%=idPersona%>', '<%=nidSolicitante%>', '<%=nombreSoloSolicitante%>', '<%=apellidosSolicitante%>', '', '<%=idInstitucion%>', '<%=ncolSolicitante%>');" height="100%">
 
 	<table class="tablaTitulo" cellspacing="0">
 		<tr>
@@ -1449,12 +1380,6 @@
 		<html:hidden styleId="tablaDatosDinamicosD" property="tablaDatosDinamicosD" value="ver"/>
 	</html:form>
 	
-	<!-- Formulario para el mantenimiento de duplicados -->
-	<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
-		<html:hidden property="modo" value="buscarPor"/>
-		<html:hidden property="nifcif" value=""/>
-	</html:form>
-	
 	<html:form action="/CEN_BusquedaCensoModal" method="POST" target="mainWorkArea">
 		<input type="hidden" name="actionModal" value="1">
 		<input type="hidden" name="modo" value="designarArt27">
@@ -1475,12 +1400,10 @@
 		<input type="hidden" name="aceptaCesionMutualidad" value="${SolicitudesCertificadosForm.aceptaCesionMutualidad}">
 	</html:form>
 	
+	<% String busquedaVolver = null; /* la vuelta no se trata de forma generica */ %>
+	<%@ include file="/html/jsp/censo/includeMantenimientoDuplicados.jspf"%>
 
-<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display: none"></iframe>
+	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display: none"></iframe>
 
-<div id="divDescargaDocumentacion" title="Duplicidades" style="display:none">
-	<table id='tablaDocumentacion' style='width:100%;table-layout: fixed;'  border='1' align='center' cellspacing='0' cellpadding='0'>	
-	
-</div>
 </body>
 </html>
