@@ -71,6 +71,7 @@
 			
 <% 		} else if (busquedaVolver.equals("MD")) {  %>
 			<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
+				<html:hidden property="tablaDatosDinamicosD" value=""/>
 				<html:hidden property="modo" value="gestionar"/>
 				<html:hidden property="volver" value=""/>
 				<html:hidden property="nifcif" />
@@ -94,6 +95,7 @@
 			<!-- aalg: para volver a la pantalla de personas duplicadas -->
 <% 		} else if (busquedaVolver.equals("DUPLICADOS")) {  %>
 			<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
+				<html:hidden property="tablaDatosDinamicosD" value=""/>
 				<html:hidden property="modo" value="buscarPor"/>
 				<html:hidden property="nifcif" />
 			</html:form>
@@ -195,6 +197,7 @@
 					document.BusquedaColegiadosForm.submit();	
 <%				} else if (busquedaVolver.equals("DUPLICADOS")) {	%>
 					document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
+					document.MantenimientoDuplicadosForm.tablaDatosDinamicosD.value = "";
 					document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
 					document.MantenimientoDuplicadosForm.submit();
 <%				} else if (busquedaVolver.equals("CARGA_CENSO_WS")) {	%>

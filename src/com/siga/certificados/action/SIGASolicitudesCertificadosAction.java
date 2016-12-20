@@ -744,7 +744,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				request.setAttribute("codigo", "");
 			}
     		
-			String nombreSolicitante = "", nidSolicitante = "", ncolSolicitante = "";
+			String nombreSolicitante = "", nombreSoloSolicitante = "", apellidosSolicitante = "", nidSolicitante = "", ncolSolicitante = "";
 			/** DATOS SOLICITANTE **/
 			if (beanSolicitud.getIdPersona_Des() != null) {
 				String idPersona = beanSolicitud.getIdPersona_Des().toString();
@@ -752,9 +752,13 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 				CenColegiadoAdm colAdm=new CenColegiadoAdm(this.getUserBean(request));
 				nidSolicitante = personaAdm.obtenerNIF(idPersona);
 				nombreSolicitante = personaAdm.obtenerNombreApellidos(idPersona);
+				nombreSoloSolicitante = personaAdm.obtenerNombre(idPersona);
+				apellidosSolicitante = personaAdm.obtenerApellidos1(idPersona) + " " + personaAdm.obtenerApellidos2(idPersona);
 				ncolSolicitante=colAdm.getNumColegiado(beanSolicitud.getIdInstitucion(),idPersona);
 			}
 			request.setAttribute("nombreSolicitante", nombreSolicitante);
+			request.setAttribute("nombreSoloSolicitante", nombreSoloSolicitante);
+			request.setAttribute("apellidosSolicitante", apellidosSolicitante);
 			request.setAttribute("nidSolicitante", nidSolicitante);
 			request.setAttribute("ncolSolicitante", ncolSolicitante);
 

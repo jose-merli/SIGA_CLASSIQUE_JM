@@ -1391,15 +1391,37 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 	 * @return  CenColegiadoBean con los datos colegiales  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */		
-	public Vector<Integer> getColegiaciones (String idPersona) throws ClsExceptions, SIGAException{
-		Vector<Integer> colegiaciones = new Vector<Integer>();
+	public Vector<CenColegiadoBean> getColegiacionesCompletas (String idPersona) throws ClsExceptions, SIGAException{
+		Vector<CenColegiadoBean> colegiaciones = new Vector<CenColegiadoBean>();
 		try {
 			Hashtable<String, String> hash = new Hashtable<String, String>();
 			UtilidadesHash.set(hash, CenColegiadoBean.C_IDPERSONA, idPersona);
 			Vector<CenColegiadoBean> v = this.select(hash);
 			if ((v != null) && (v.size()>0)) {
 				for (int i = 0; i < v.size(); i++) {
-					colegiaciones.add(v.get(i).getIdInstitucion());
+					colegiaciones.add(v.get(i));
+				}
+			}
+		}catch (Exception e) {
+			throw new ClsExceptions (e, "Error al recuperar los datos");
+		}
+		return colegiaciones;
+	}
+	
+	/** 
+	 * Obtiene los datos colegiales de una persona dependiendo de la institucion
+	 * @param  idPersona - identificador de la persona
+	 * @param  idInstitucion - identificador de la institucion	
+	 * @return  CenColegiadoBean con los datos colegiales  
+	 * @exception  ClsExceptions  En cualquier caso de error
+	 */		
+	public Vector<Integer> getColegiaciones (String idPersona) throws ClsExceptions, SIGAException{
+		Vector<CenColegiadoBean> v = this.getColegiacionesCompletas(idPersona);
+		Vector<Integer> colegiaciones = new Vector<Integer>();
+		try {
+			if ((v != null) && (v.size()>0)) {
+				for (int i = 0; i < v.size(); i++) {
+					colegiaciones.add(((CenColegiadoBean)v.get(i)).getIdInstitucion());
 				}
 			}
 		}catch (Exception e) {
@@ -1415,18 +1437,14 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 	 * @return  CenColegiadoBean con los datos colegiales  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */		
-	public Vector getColegiacionesString(String idPersona) throws ClsExceptions, SIGAException{
-		Vector colegiaciones = new Vector<String>();
+	public Vector<String> getColegiacionesString(String idPersona) throws ClsExceptions, SIGAException{
+		Vector<CenColegiadoBean> v = this.getColegiacionesCompletas(idPersona);
+		Vector<String> colegiaciones = new Vector<String>();
 		try {
-			Hashtable hash = new Hashtable();
-			UtilidadesHash.set(hash, CenColegiadoBean.C_IDPERSONA, idPersona);
-			Vector v = this.select(hash);
-			String [] idInstitucion = new String[v.size()];
 			if ((v != null) && (v.size()>0)) {
 				for (int i = 0; i < v.size(); i++) {
-					idInstitucion[i] =((CenColegiadoBean)v.get(i)).getIdInstitucion().toString();
+					colegiaciones.add(((CenColegiadoBean)v.get(i)).getIdInstitucion().toString());
 				}
-				colegiaciones.add(idInstitucion);
 			}
 		}catch (Exception e) {
 			throw new ClsExceptions (e, "Error al recuperar los datos");

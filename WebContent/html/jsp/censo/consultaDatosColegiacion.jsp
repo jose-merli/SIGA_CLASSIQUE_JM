@@ -263,8 +263,8 @@
 							contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 							success: function(json){	
 								// mostrando el icono que avisa de que existen posibles duplicados
+								jQuery("#iconoboton_cargando_1").hide();
 								if(json.aOptionsListadoDocumentacion != null && json.aOptionsListadoDocumentacion.length > 0){
-									jQuery("#iconoboton_cargando_1").hide();
 									jQuery("#iconoboton_aviso_1").show();
 								}
 								// preparando la tabla de resultados de posibles duplicados

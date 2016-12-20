@@ -130,10 +130,9 @@ public class DuplicadosHelper{
 
 		// ejecutando la consulta
 		try {
-			String sql = sqlFinal.toString();
 			Vector<Hashtable<String, String>> similares = new Vector<Hashtable<String, String>>();
-			if (!sql.equalsIgnoreCase("")) {
-				similares = this.selectGenerico(sql);
+			if (sqlFinal != null && !sqlFinal.toString().equalsIgnoreCase("")) {
+				similares = this.selectGenerico(sqlFinal.toString());
 			}
 
 			return similares;

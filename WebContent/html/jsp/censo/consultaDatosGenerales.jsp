@@ -106,6 +106,8 @@
 	String nombre = "";
 	String apellido1 = "";
 	String apellido2 = "";
+	String apellidos = "";
+	String numero = "";
 	String nIdentificacion = "";
 	String fechaNacimiento = "";
 	String fechaAlta = "";
@@ -214,6 +216,7 @@
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script src="<html:rewrite page='/html/js/censo/posiblesDuplicados.js?v=${sessionScope.VERSIONJS}'/>" type="text/javascript"></script>
 	
 	
 		
@@ -790,93 +793,8 @@
 	           }
 	        }); 
 		}
-		
-		
-		function accionObtenerDuplicados(nidSolicitante) 
-		{	
-				   jQuery.ajax({ 
-						type: "POST",
-						url: "/SIGA/CEN_MantenimientoDuplicados.do?modo=getAjaxObtenerDuplicados",				
-						data: "checkIdentificador="+"1"+"&nidSolicitante="+nidSolicitante,
-						dataType: "json",
-						contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-						success: function(json){	
-							// Recupera el identificador de la serie de facturacion
-							jQuery("#tablaDocumentacion tr").remove();
-							jQuery("#tablaDocumentacion").append(json.aOptionsListadoDocumentacion);
-							
-							jQuery("#tablaDocumentacion").append("</table>");	
-								
-								jQuery("#divDescargaDocumentacion").dialog(
-										{
-											width: 950,
-											height: '300',
-											modal: true,
-											position:['middle',20],
-											resizable: false,
-											buttons: {
-												"Cerrar": function() {
-													jQuery(this).dialog("close");
-												}
-											}
-										}
-									);
-									jQuery(".ui-widget-overlay").css("opacity","0.5");													
-						}
-					});		
-		}
-		
-		function comprobarDuplicados(nidSolicitante){
-			<% if(idInstitucionAcceso.equals("2000")){ %>
-				  jQuery.ajax({ 
-						type: "POST",
-						url: "/SIGA/CEN_MantenimientoDuplicados.do?modo=getAjaxObtenerDuplicados",				
-						data: "checkIdentificador="+"1"+"&nidSolicitante="+nidSolicitante,
-						dataType: "json",
-						contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-						success: function(json){	
-							// Recupera el identificador de la serie de facturacion
-							if(json.aOptionsListadoDocumentacion != null && json.aOptionsListadoDocumentacion.length > 0){
-								jQuery("#iconoboton_aviso_1").show();
-							}																
-						}
-					});		
-			<%}%>
-		}
-	function informacionLetrado(idPersona,idIntitucion) {
-			
-		    var idInst = idIntitucion;			          		
-		    var idPers = idPersona;		
-		  
-		    document.forms[4].filaSelD.value = 1;
-			
-			 
-			if(idIntitucion != null && idIntitucion !=""){
-				document.forms[4].tablaDatosDinamicosD.value=idPers + ',' + idInst + '%';	
-				document.forms[4].modo.value="editar";
-			}else{
-				//Es no colegiado y el idIntitucion será de donde estés logeado.
-				document.forms[4].tablaDatosDinamicosD.value=idPers + ',' + <%=idInstitucion%> + '%';	
-				document.forms[4].modo.value="ver";
-			}
-			
-		   	document.forms[4].submit();		   	
-		}
-		
-		function mantenimientoDuplicados(nifcif, numcol, idinstitucion, nombre, apellido1, apellido2) {
-				
-			document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
-			document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
-			document.MantenimientoDuplicadosForm.nifcif.value=nifcif;
-			document.MantenimientoDuplicadosForm.numeroColegiado=numcol;
-			document.MantenimientoDuplicadosForm.idInstitucion=idinstitucion;
-			document.MantenimientoDuplicadosForm.nombre=nombre;
-			document.MantenimientoDuplicadosForm.apellido1=apellido1;
-			document.MantenimientoDuplicadosForm.apellido2=apellido2;
-			document.MantenimientoDuplicadosForm.submit();
-		
-		}
 	</script>
+
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -932,6 +850,8 @@
 			if (apellido1==null) apellido1=""; 
 			apellido2 = (String) registro.get(CenPersonaBean.C_APELLIDOS2);
 			if (apellido2==null) apellido2=""; 
+			apellidos = apellido1 + apellido2;
+			numero = "";
 			nIdentificacion = (String) registro.get(CenPersonaBean.C_NIFCIF);
 			if (nIdentificacion==null) nIdentificacion=""; 
 			fechaNacimiento = registro.get(CenPersonaBean.C_FECHANACIMIENTO)==null?"":GstDate.getFormatedDateShort(user.getLanguage(),(String)registro.get(CenPersonaBean.C_FECHANACIMIENTO));	
@@ -1001,7 +921,7 @@
 		camposReadonly = false;
 	%>
 
-	<body class="tablaCentralCampos" onload="adaptaTamanoFoto();buscarGrupos();mostrarMensaje();obtenerTratamientos ('<%=sexo%>','<%=idTratamiento%>');comprobarDuplicados('<%=nIdentificacion%>');">
+	<body class="tablaCentralCampos" onload="adaptaTamanoFoto();buscarGrupos();mostrarMensaje();obtenerTratamientos ('<%=sexo%>','<%=idTratamiento%>');comprobarDuplicados('<%=idInstitucionAcceso%>', '<%=idPersona%>', '<%=nIdentificacion%>', '<%=nombre%>', '<%=apellido1%>', '<%=apellido2%>', '<%=idInstitucion%>', '<%=numero%>');">
 
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
@@ -1167,10 +1087,9 @@
 					  <html:text name="datosGeneralesForm" property="numIdentificacion" size="20" styleClass="boxConsulta" value="<%=nIdentificacion %>" readonly="true" onBlur="formatearDocumento();"/>
 					<% } %>
 					</td>
-					<td align="right">	
-								<img id="iconoboton_aviso_1"  src="/SIGA/html/imagenes/warning.png"          style="cursor: hand; display: none" 
-								alt="Duplicidades"  name="newSol_1"  border="0" 
-								onClick="accionObtenerDuplicados('<%=nIdentificacion%>');"> 
+					<td align="right">
+						<img id="iconoboton_cargando_1"	src="/SIGA/html/imagenes/bloading_on_23.gif"	style="cursor: hand" alt="Cargando posibles duplicados"> 
+						<img id="iconoboton_aviso_1"	src="/SIGA/html/imagenes/warning.png"			style="cursor: hand; display: none" alt="Duplicidades" onClick="accionObtenerDuplicados();"> 
 					</td>
 				</tr>
 				</table>
@@ -1519,14 +1438,6 @@
 		<html:hidden name="GruposClienteClienteForm" property="modoAnterior" />		
 	</html:form>
 	
-	   <%if(!"DUPLICADOS".equalsIgnoreCase(busquedaVolver) && !"MD".equalsIgnoreCase(busquedaVolver)){ %>   
-			<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
-				<html:hidden property="modo" value="buscarPor"/>
-				<html:hidden property="nifcif" />
-			</html:form>
-		
-	   <%} %>		
-	
 	
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	<!-- Aqui comienza la zona de botones de acciones -->
@@ -1731,6 +1642,7 @@
 </html:form>
 
 
+<%@ include file="/html/jsp/censo/includeMantenimientoDuplicados.jspf"%>
 <%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 
 
@@ -1738,8 +1650,5 @@
 <!-- Obligatoria en todas las páginas-->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->
-<div id="divDescargaDocumentacion" title="Duplicidades" style="display:none">
-	<table id='tablaDocumentacion' style='width:100%;table-layout: fixed;'  border='1' align='center' cellspacing='0' cellpadding='0'>	
-</div>
 </body>
 </html>

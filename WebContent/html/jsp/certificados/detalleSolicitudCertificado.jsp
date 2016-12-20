@@ -83,7 +83,7 @@
 
 	String numSolicitud = "", idProducto = "",idProductoInstitucion = "",idTipoProducto = "";
 	String idInstitucionCertificado = "", institucionFinal = "", idsTemp= "", idPeticion = "";
-	String idPersona = "", nombreSolicitante = "", nidSolicitante = "", ncolSolicitante ="";
+	String idPersona = "", nombreSolicitante = "", nombreSoloSolicitante = "", apellidosSolicitante = "", nidSolicitante = "", ncolSolicitante ="";
 	String sIdCompra = "";
 	boolean isSolicitudColegio = false;
 	String[] parametros = null;
@@ -119,6 +119,8 @@
 		if (idPersona != null){
 			nidSolicitante = (String) request.getAttribute("nidSolicitante");
 			nombreSolicitante = (String) request.getAttribute("nombreSolicitante");
+			nombreSoloSolicitante = (String) request.getAttribute("nombreSoloSolicitante");
+			apellidosSolicitante = (String) request.getAttribute("apellidosSolicitante");
 			ncolSolicitante = (String) request.getAttribute("ncolSolicitante");
 		}
 		
@@ -777,56 +779,40 @@
 				SolicitudesCertificadosForm.submit();
 			<% } %>		   	
 		}		
-		function accionObtenerDuplicados(nidSolicitante) 
-		{	
-				   jQuery.ajax({ 
+		
+		function accionObtenerDuplicados() 
+		{
+			// mostrando la tabla de posibles duplicados
+			jQuery("#divDescargaDocumentacion").dialog(
+				{
+					width: 950, height: 300, modal: true, position:['middle',20], resizable: false,
+					buttons: { "Cerrar": function() { jQuery(this).dialog("close"); } }
+				}
+			);
+			jQuery(".ui-widget-overlay").css("opacity","0.5");													
+		}
+		
+		function comprobarDuplicados(){
+			<% if(idInstitucion.equals("2000")){ %>
+				jQuery.ajax({ 
 						type: "POST",
 						url: "/SIGA/CEN_MantenimientoDuplicados.do?modo=getAjaxObtenerDuplicados",				
-						data: "checkIdentificador="+"1"+"&nidSolicitante="+nidSolicitante,
+						data: "checkIdentificador="+"1"+"&idPersona="+"<%=idPersona%>"+"&nidSolicitante="+"<%=nidSolicitante%>"+"&nombre="+"<%=nombreSoloSolicitante%>"+"&apellidos="+"<%=apellidosSolicitante%>"+"&idInstitucion="+"<%=idInstitucion%>"+"&nColegiado="+"<%=ncolSolicitante%>",
 						dataType: "json",
 						contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 						success: function(json){	
-							// Recupera el identificador de la serie de facturacion
+							// mostrando el icono que avisa de que existen posibles duplicados
+							jQuery("#iconoboton_cargando_1").hide();
+							if(json.aOptionsListadoDocumentacion != null && json.aOptionsListadoDocumentacion.length > 0){
+								jQuery("#iconoboton_aviso_1").show();
+							}
+							// preparando la tabla de resultados de posibles duplicados
 							jQuery("#tablaDocumentacion tr").remove();
 							jQuery("#tablaDocumentacion").append(json.aOptionsListadoDocumentacion);
-							
 							jQuery("#tablaDocumentacion").append("</table>");	
-								
-								jQuery("#divDescargaDocumentacion").dialog(
-										{
-											width: 950,
-											height: '300',
-											modal: true,
-											position:['middle',20],
-											resizable: false,
-											buttons: {
-												"Cerrar": function() {
-													jQuery(this).dialog("close");
-												}
-											}
-										}
-									);
-									jQuery(".ui-widget-overlay").css("opacity","0");													
 						}
 					});		
-		}
-		
-		function comprobarDuplicados(nidSolicitante){
-			<% if(idInstitucion.equals("2000")){ %>
-			  jQuery.ajax({ 
-					type: "POST",
-					url: "/SIGA/CEN_MantenimientoDuplicados.do?modo=getAjaxObtenerDuplicados",				
-					data: "checkIdentificador="+"1"+"&nidSolicitante="+nidSolicitante,
-					dataType: "json",
-					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-					success: function(json){	
-						// Recupera el identificador de la serie de facturacion
-						if(json.aOptionsListadoDocumentacion != null && json.aOptionsListadoDocumentacion.length > 0){
-							jQuery("#iconoboton_aviso_1").show();
-						}																
-					}
-				});	
-			 <%}%>
+			<%}%>
 		}
 		
 		function informacionLetrado(idPersona,idIntitucion) {
@@ -849,10 +835,16 @@
 		   	document.forms[1].submit();		   	
 		}
 		
-		function mantenimientoDuplicados(nifcif) {
-			document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true";
-			document.MantenimientoDuplicadosForm.modo.value = "mantenimientoDuplicadosCertificados";
+		function mantenimientoDuplicados(nifcif, numcol, idinstitucion, nombre, apellido1, apellido2) {
+				
+			document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
+			document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
 			document.MantenimientoDuplicadosForm.nifcif.value=nifcif;
+			document.MantenimientoDuplicadosForm.numeroColegiado=numcol;
+			document.MantenimientoDuplicadosForm.idInstitucion=idinstitucion;
+			document.MantenimientoDuplicadosForm.nombre=nombre;
+			document.MantenimientoDuplicadosForm.apellido1=apellido1;
+			document.MantenimientoDuplicadosForm.apellido2=apellido2;
 			document.MantenimientoDuplicadosForm.submit();
 		
 		}
@@ -868,7 +860,7 @@
 <!-- FIN: SCRIPTS BOTONES -->
 </head>
 
-<body onLoad="ajusteAltoBotones('mainWorkArea');revisarCheck();descargarPDF();comprobarDuplicados('<%=nidSolicitante%>');" height="100%">
+<body onLoad="ajusteAltoBotones('mainWorkArea');revisarCheck();descargarPDF();comprobarDuplicados();" height="100%">
 
 	<table class="tablaTitulo" cellspacing="0">
 		<tr>
@@ -1064,9 +1056,8 @@
 %>			
 							<td align="right">	
 								<img id="iconoboton_editSol_1" src="/SIGA/html/imagenes/bseleccionar_on.gif" style="cursor: hand;" alt="Editar Solicitante" name="editSol_1" border="0" onClick="editarSolicitante();">			
-								<img id="iconoboton_aviso_1"  src="/SIGA/html/imagenes/warning.png"          style="cursor: hand; display: none" 
-								alt="Duplicidades"  name="newSol_1"  border="0" 
-								onClick="accionObtenerDuplicados('<%=nidSolicitante%>');"> 
+								<img id="iconoboton_cargando_1"	src="/SIGA/html/imagenes/bloading_on_23.gif"	style="cursor: hand" alt="Cargando posibles duplicados"> 
+								<img id="iconoboton_aviso_1"	src="/SIGA/html/imagenes/warning.png"			style="cursor: hand; display: none" alt="Duplicidades" onClick="accionObtenerDuplicados();"> 
 							</td>
 <%
 						} 
