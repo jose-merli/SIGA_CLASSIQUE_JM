@@ -3,14 +3,18 @@
 	<%
 		if (!"DUPLICADOS".equalsIgnoreCase(busquedaVolver) && !"MD".equalsIgnoreCase(busquedaVolver)) {
 	%>   
-		<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
-			<html:hidden property="tablaDatosDinamicosD" value=""/>
-			<html:hidden property="modo" value="buscarPor"/>
-			<html:hidden property="nifcif" />
-		</html:form>
+	<html:form action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
+		<html:hidden property="tablaDatosDinamicosD" value=""/>
+		<html:hidden property="modo" value="buscarPor"/>
+		<html:hidden property="nifcif" />
+		<html:hidden property="numeroColegiado" />
+		<html:hidden property="idInstitucion" />
+		<html:hidden property="nombre" />
+		<html:hidden property="apellidos" />
+	</html:form>
 	<%
 		}
-	%>		
+	%>
 
 	<script language="javascript">
 
@@ -76,11 +80,10 @@
 			document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
 			document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
 			document.MantenimientoDuplicadosForm.nifcif.value = nifcif;
-			document.MantenimientoDuplicadosForm.numeroColegiado = numcol;
-			document.MantenimientoDuplicadosForm.idInstitucion = idinstitucion;
-			document.MantenimientoDuplicadosForm.nombre = nombre;
-			document.MantenimientoDuplicadosForm.apellido1 = apellido1;
-			document.MantenimientoDuplicadosForm.apellido2 = apellido2;
+			document.MantenimientoDuplicadosForm.numeroColegiado.value = numcol;
+			document.MantenimientoDuplicadosForm.idInstitucion.value = idinstitucion;
+			document.MantenimientoDuplicadosForm.nombre.value = nombre;
+			document.MantenimientoDuplicadosForm.apellidos.value = apellido1 + " " + apellido2;
 			document.MantenimientoDuplicadosForm.submit();
 
 		}

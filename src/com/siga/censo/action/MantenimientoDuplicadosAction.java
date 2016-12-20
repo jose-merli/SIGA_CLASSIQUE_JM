@@ -166,21 +166,13 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				String accion = miForm.getModo();
 				
 				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("inicio") || accion.equalsIgnoreCase("mantenimientoDuplicadosCertificados") ){
-					//aalg: en el acceso inicial a la página de duplicados tienen que estar chequeados todos
-					//aalg: añadido para el paginador
 					miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
 					MantenimientoDuplicadosForm formDupl = (MantenimientoDuplicadosForm)miForm;
 					formDupl.reset(mapping,request);
-					formDupl.setApellido1("");
-					formDupl.setApellido2("");
-					formDupl.setCampoOrdenacion("apellidos");
-					//En el caso de que venga de certificados hay que mantener el nif
-					if(!accion.equalsIgnoreCase("mantenimientoDuplicadosCertificados"))
-						formDupl.setNifcif("");
+					formDupl.setApellidos("");
+					formDupl.setNifcif("");
 					formDupl.setNombre("");
 					formDupl.setNumeroColegiado("");
-					formDupl.setSentidoOrdenacion("asc");
-					//formDupl.setTipoConexion("intersect");
 					formDupl.setIdInstitucion("");
 					request.getSession().removeAttribute("DATAPAGINADOR");
 					mapDestino = abrir(mapping, miForm, request, response);
@@ -1384,10 +1376,10 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 
 		// buscando duplicados por Nombre y apellidos
 		miFormulario.setNombre(request.getParameter("nombre"));
-		miFormulario.setApellido1(request.getParameter("apellidos"));
+		miFormulario.setApellidos(request.getParameter("apellidos"));
 		personasSimilares.addAll(helper.getPersonasSimilares(miFormulario));
 		miFormulario.setNombre("");
-		miFormulario.setApellido1("");
+		miFormulario.setApellidos("");
 		
 		if (personasSimilares != null && personasSimilares.size() > 1) {
 			tableHeader.append("<tr>");

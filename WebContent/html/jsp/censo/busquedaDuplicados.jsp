@@ -112,7 +112,7 @@
 					document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length ==0 &&
 					document.MantenimientoDuplicadosForm.listadoInstitucion.value == "" &&
 					document.MantenimientoDuplicadosForm.nombreText.value.length ==0 &&
-					document.MantenimientoDuplicadosForm.apellido1Text.value.length ==0){
+					document.MantenimientoDuplicadosForm.apellidosText.value.length ==0){
 				
 				error = true;
 				msg=msg+"Debe seleccionar alguna opción de busqueda";
@@ -124,8 +124,8 @@
 					error=true;
 				   	msg=msg+"El campo Nombre es demasiado corto\n";
 				}
-				if(document.MantenimientoDuplicadosForm.apellido1.value.length>0&&
-				   document.MantenimientoDuplicadosForm.apellido1.value.length<3){	
+				if(document.MantenimientoDuplicadosForm.apellidos.value.length>0&&
+				   document.MantenimientoDuplicadosForm.apellidos.value.length<3){	
 					error=true;
 					msg=msg+"El campo Apellido 1 es demasiado corto\n";
 				}		
@@ -154,7 +154,7 @@
 		function presionarNif(){
 			jQuery("#numeroColegiadoText").val("");
 			jQuery("#nombreText").val("");
-			jQuery("#apellido1Text").val("");
+			jQuery("#apellidosText").val("");
 			jQuery('#listadoInstitucion option[value=""]').attr("selected","selected");
 			
 			jQuery('#tdIdentificacion').attr("style", "background-color:aliceblue; border: 1px solid DarkGray;");
@@ -169,7 +169,7 @@
 		function presionarNumeroColegiado(){
 			jQuery("#nifcif").val("");
 			jQuery("#nombreText").val("");
-			jQuery("#apellido1Text").val("");
+			jQuery("#apellidosText").val("");
 			
 			jQuery('#tdIdentificacion').attr("style", "border: 1px solid white;");
 			jQuery('#tdColegiacion').attr("style", "background-color:aliceblue; border: 1px solid DarkGray;");
@@ -199,12 +199,12 @@
 					document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length ==0 &&
 					document.MantenimientoDuplicadosForm.listadoInstitucion.value == "" &&
 					document.MantenimientoDuplicadosForm.nombreText.value.length ==0 &&
-					document.MantenimientoDuplicadosForm.apellido1Text.value.length ==0){
+					document.MantenimientoDuplicadosForm.apellidosText.value.length ==0){
 				
 					jQuery ("#nifcif").val("");
 					jQuery ("#numeroColegiadoText").val("");
 					jQuery ("#nombreText").val("");
-					jQuery ("#apellido1Text").val("");
+					jQuery ("#apellidosText").val("");
 					jQuery ('#listadoInstitucion option[value=""]').attr("selected","selected");
 					
 			}else{
@@ -214,7 +214,7 @@
 					
 					jQuery("#numeroColegiadoText").val("");
 					jQuery("#nombreText").val("");
-					jQuery("#apellido1Text").val("");
+					jQuery("#apellidosText").val("");
 					jQuery('#listadoInstitucion option[value=""]').attr("selected","selected");
 					presionarNif();
 					
@@ -224,11 +224,11 @@
 					
 					jQuery("#nifcif").val();
 					jQuery("#nombreText").val();
-					jQuery("#apellido1Text").val();
+					jQuery("#apellidosText").val();
 					presionarNumeroColegiado();
 				}
 				if(document.MantenimientoDuplicadosForm.nombreText.value.length >0 ||
-						document.MantenimientoDuplicadosForm.apellido1Text.value.length >0){
+						document.MantenimientoDuplicadosForm.apellidosText.value.length >0){
 					
 					jQuery("#nifcif").val();
 					jQuery("#numeroColegiadoText").val();
@@ -325,7 +325,7 @@
 						<tr>
 							<td class="labelText">Apellidos</td>
 							<td>
-								<html:text styleId="apellido1Text" name="MantenimientoDuplicadosForm" property="apellido1" size="35" styleClass="box" onkeyup="presionarNombreApellidos()" />
+								<html:text styleId="apellidosText" name="MantenimientoDuplicadosForm" property="apellidos" size="35" styleClass="box" onkeyup="presionarNombreApellidos()" />
 							</td>
 						</tr>
 						<tr>

@@ -70,11 +70,29 @@
 			</html:form>
 			
 <% 		} else if (busquedaVolver.equals("MD")) {  %>
-			<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
+			<html:form action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
+				<html:hidden property="action" value=""/>
 				<html:hidden property="tablaDatosDinamicosD" value=""/>
 				<html:hidden property="modo" value="gestionar"/>
 				<html:hidden property="volver" value=""/>
 				<html:hidden property="nifcif" />
+				<html:hidden property="numeroColegiado" />
+				<html:hidden property="idInstitucion" />
+				<html:hidden property="nombre" />
+				<html:hidden property="apellidos" />
+			</html:form>
+			
+			<!-- aalg: para volver a la pantalla de personas duplicadas -->
+<% 		} else if (busquedaVolver.equals("DUPLICADOS")) {  %>
+			<html:form action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
+				<html:hidden property="action" value=""/>
+				<html:hidden property="tablaDatosDinamicosD" value=""/>
+				<html:hidden property="modo" value="buscarPor"/>
+				<html:hidden property="nifcif" />
+				<html:hidden property="numeroColegiado" />
+				<html:hidden property="idInstitucion" />
+				<html:hidden property="nombre" />
+				<html:hidden property="apellidos" />
 			</html:form>
 			
 <% 	
@@ -90,14 +108,6 @@
 				<html:hidden property="accion" value="buscar"/>
 				<html:hidden property="deleteForm" value="true"/>
 				<html:hidden property="id" value=""/>
-			</html:form>
-			
-			<!-- aalg: para volver a la pantalla de personas duplicadas -->
-<% 		} else if (busquedaVolver.equals("DUPLICADOS")) {  %>
-			<html:form  action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
-				<html:hidden property="tablaDatosDinamicosD" value=""/>
-				<html:hidden property="modo" value="buscarPor"/>
-				<html:hidden property="nifcif" />
 			</html:form>
 			
 <% 		} else if (busquedaVolver.equals("CARGA_CENSO_WS")) {  %>			
@@ -197,8 +207,12 @@
 					document.BusquedaColegiadosForm.submit();	
 <%				} else if (busquedaVolver.equals("DUPLICADOS")) {	%>
 					document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
-					document.MantenimientoDuplicadosForm.tablaDatosDinamicosD.value = "";
 					document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
+					document.MantenimientoDuplicadosForm.submit();
+<% 				} else if (busquedaVolver.equals("MD")) {	%>
+					document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
+					document.MantenimientoDuplicadosForm.modo.value = "gestionar";
+					document.MantenimientoDuplicadosForm.volver.value="SI";
 					document.MantenimientoDuplicadosForm.submit();
 <%				} else if (busquedaVolver.equals("CARGA_CENSO_WS")) {	%>
 					document.EdicionRemesaForm.submit();
@@ -210,11 +224,6 @@
 <% 				} else if (busquedaVolver.equals("GS")) {	%>
 					document.SolicitudesCertificadosForm.action = "/SIGA/CER_GestionSolicitudes.do" + "?noReset=true&buscar=true";
 					document.SolicitudesCertificadosForm.submit();
-<% 				} else if (busquedaVolver.equals("MD")) {	%>
-					document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
-					document.MantenimientoDuplicadosForm.modo.value = "gestionar";
-					document.MantenimientoDuplicadosForm.volver.value="SI";
-					document.MantenimientoDuplicadosForm.submit();
 <%				}
 			}
 %>

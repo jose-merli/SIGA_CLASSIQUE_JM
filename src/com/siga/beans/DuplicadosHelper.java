@@ -73,10 +73,10 @@ public class DuplicadosHelper{
 			String nombre = formulario.getNombre();
 			nombre = (nombre == null || nombre.trim().equalsIgnoreCase("")) ? "" : nombre;
 			//TODO Apellido1 contiene ambos apellidos para que sea mas directa la busqueda: Habria que sustituirlo por "Apellidos"
-			String apellido1 = formulario.getApellido1();
-			apellido1 = (apellido1 == null || apellido1.trim().equalsIgnoreCase("")) ? "" : apellido1;
+			String apellidos = formulario.getApellidos();
+			apellidos = (apellidos == null || apellidos.trim().equalsIgnoreCase("")) ? "" : apellidos;
 			
-			if (! nombre.equalsIgnoreCase("") || ! apellido1.equalsIgnoreCase("")) {
+			if (! nombre.equalsIgnoreCase("") || ! apellidos.equalsIgnoreCase("")) {
 				sqlFinal = new StringBuffer();
 				sqlFinal.append(sqlSelect);
 				sqlFinal.append(", per.apellidos1 || ' ' || per.apellidos2 as Apellidos "); // devolviendo este campo, podremos diferenciar en los resultados si se ha buscado por NIF o por Apellidos
@@ -90,11 +90,11 @@ public class DuplicadosHelper{
 					sqlFinal.append("                     'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', ");
 					sqlFinal.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', ''))");
 				}
-				if (! apellido1.equalsIgnoreCase("")) {
+				if (! apellidos.equalsIgnoreCase("")) {
 					sqlFinal.append(" and regexp_like(regexp_replace(upper(translate(Per.apellidos1 || decode(Per.apellidos2, null, '', ' ' || Per.apellidos2), ");
 					sqlFinal.append("                     'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', ");
 					sqlFinal.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', ''), ");
-					sqlFinal.append("      regexp_replace(upper(translate('"+apellido1+"', ");
+					sqlFinal.append("      regexp_replace(upper(translate('"+apellidos+"', ");
 					sqlFinal.append("                     'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', ");
 					sqlFinal.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', ''))");
 				}
