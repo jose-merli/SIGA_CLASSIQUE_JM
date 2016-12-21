@@ -338,9 +338,6 @@
 	<html:hidden styleId="numeroColegiado" property="numeroColegiado" />
 	<html:hidden styleId="apellido1" property="apellido1" />
 	<html:hidden styleId="agruparColegiaciones" property="agruparColegiaciones" />
-	<html:hidden styleId="tipoConexion" property="tipoConexion" />
-	<html:hidden styleId="sentidoOrdenacion" property="sentidoOrdenacion" />
-	<html:hidden styleId="campoOrdenacion" property="campoOrdenacion" />
 	<input type="hidden" id="verFichaLetrado"  name="verFichaLetrado" value="">
 </html:form>
 	
