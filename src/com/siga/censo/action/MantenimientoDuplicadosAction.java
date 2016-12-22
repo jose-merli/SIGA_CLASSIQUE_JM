@@ -195,8 +195,10 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				}else if(accion.equalsIgnoreCase("volver")){
 					mapDestino = volver(mapping, miForm, request, response);
 				}else if(accion.equalsIgnoreCase("export")){
+					miForm.setModo("");
 					mapDestino = export(mapping, miForm, request, response);
 				} else if (accion.equalsIgnoreCase("getAjaxObtenerDuplicados")) {
+					miForm.setModo("");
 		            getAjaxObtenerDuplicados(request, response);	     
 					return null;
 				}else if(accion.equalsIgnoreCase("exportar")){
@@ -540,11 +542,12 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				datosClienteCGAEDeUna = admCliente.existeCliente(Long.valueOf(idPersona), ClsConstants.INSTITUCION_CGAE);
 				if (datosClienteCGAEDeUna == null) {
 					datosClienteCGAEDeUna = new CenClienteBean();
+				} else {
+					datosClienteCGAEDeUna.setIdTratamientoStr(((CenTratamientoBean) tratamientoAdm.select("where "+CenTratamientoBean.C_IDTRATAMIENTO+"="+datosClienteCGAEDeUna.getIdTratamiento()).get(0)).getDescripcion());
+					datosClienteCGAEDeUna.setIdLenguajeStr(((AdmLenguajesBean) lenguajeAdm.select("where "+AdmLenguajesBean.C_IDLENGUAJE+"="+datosClienteCGAEDeUna.getIdLenguaje()).get(0)).getDescripcion());
+					datosClienteCGAEDeUna.setSanciones(Integer.toString(admSancion.getSancionesLetrado(idPersona, String.valueOf(ClsConstants.INSTITUCION_CGAE)).size()));
+					datosClienteCGAEDeUna.setCertificados(Integer.toString(admCertificados.getNumeroCertificados(String.valueOf(ClsConstants.INSTITUCION_CGAE), idPersona)));
 				}
-				datosClienteCGAEDeUna.setIdTratamientoStr(((CenTratamientoBean) tratamientoAdm.select("where "+CenTratamientoBean.C_IDTRATAMIENTO+"="+datosClienteCGAEDeUna.getIdTratamiento()).get(0)).getDescripcion());
-				datosClienteCGAEDeUna.setIdLenguajeStr(((AdmLenguajesBean) lenguajeAdm.select("where "+AdmLenguajesBean.C_IDLENGUAJE+"="+datosClienteCGAEDeUna.getIdLenguaje()).get(0)).getDescripcion());
-				datosClienteCGAEDeUna.setSanciones(Integer.toString(admSancion.getSancionesLetrado(idPersona, String.valueOf(ClsConstants.INSTITUCION_CGAE)).size()));
-				datosClienteCGAEDeUna.setCertificados(Integer.toString(admCertificados.getNumeroCertificados(String.valueOf(ClsConstants.INSTITUCION_CGAE), idPersona)));
 				datosClienteCGAEDeAmbas.add(datosClienteCGAEDeUna);
 				
 				// 3. obteniendo los datos de colegiaciones y no colegiaciones
@@ -905,7 +908,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			tx.commit();
 			
 			CenPersonaBean beanP = admPersona.getPersonaPorId(idPersonaDestino);
-			String msgSalida = "Fusión completada: se encuentran todos los datos de "+beanP.getNombreCompleto()+" en el registro con número de identificación "+beanP.getNIFCIF();
+			String msgSalida = "Fusión completada: se encuentran todos los datos de '"+beanP.getNombreCompleto()+"' en el registro con Num. ident. '"+beanP.getNIFCIF()+"'";
 			request.setAttribute("mensaje", msgSalida);
 			
 		} catch (Exception e) {
