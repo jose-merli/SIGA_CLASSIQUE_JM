@@ -87,22 +87,6 @@
 		<input type="hidden" id="volver"  name="volver" value="MD">
 		
 	
-		<table class="tablaTitulo" align="center" width="100%">
-			<tr>
-				<td class="titulitosDatos">
-					<siga:Idioma key="censo.fusionDuplicados.explicacion"/>
-				</td>
-			</tr>
-			
-			<tr>
-				<td class="titulitosDatos">
-					<img src="/SIGA/html/imagenes/blopd_disable.gif" align="middle" border="0" >
-					<siga:Idioma key="censo.fusionDuplicados.advertencia"/>
-					<img src="/SIGA/html/imagenes/blopd_disable.gif" align="middle" border="0" >
-				</td>
-			</tr>
-		</table>
-
 		<bean:define id="data" name="datos" scope="request"/>
 	
 		<c:choose>
@@ -115,7 +99,7 @@
 			</c:when>
 			
 			<c:otherwise>		
-			<div name="divScroll" style="overflow-y:scroll; height:170px;">
+			<div id="divPersona" name="divScroll" style="overflow-y:scroll; height:150px;">
 				<siga:ConjCampos leyenda="censo.fusionDuplicados.datosPersonales.titulo">
 					<table width="100%" style="vertical-align:top"> 
 						<tr>
@@ -132,13 +116,6 @@
 									<tr>
 										<td class="labelText">
 											Apellido 1 Apellido 2, Nombre
-										</td>
-									</tr>
-									
-									<tr>
-										<td class="labelText">
-											<siga:Idioma key="censo.fusionDuplicados.datosPersonales.fechaNacimiento"/>&nbsp;|&nbsp;
-											<siga:Idioma key="censo.fusionDuplicados.datosPersonales.lugarNacimiento"/>
 										</td>
 									</tr>
 									
@@ -161,7 +138,6 @@
 							
 							<c:forEach items="${datos.datosPersonales}" var="datosPersona" varStatus="status">
 							<td width="37%">
-								<div id="datosPersonaBox0">
 								<table>
 									<tr>
 										<td class="labelTextValue">
@@ -180,6 +156,56 @@
 									
 									<tr>
 										<td class="labelTextValue">
+											<img id="iconoboton_informacionLetrado1" src="/SIGA/html/imagenes/binformacionLetrado_off.gif" 
+											style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila"
+											 title="Acceso a ficha" border="0" onClick="informacionLetrado('${datosPersona.idPersona}','<%=idInstitucionLocation%>'); " >
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="labelTextValue">
+											<input name="idPersonaSel" value="${datosPersona.idPersona}" type="radio" onclick="seleccionar(0, <%=idPersona0%>, <%=idPersona1%>);"/> 
+										</td>
+									</tr>
+								</table>
+							</td>
+							</c:forEach>
+						
+						</tr>
+					</table>
+				</siga:ConjCampos>
+			</div>
+			
+			<hr style="color:black;"></hr>
+			
+			<!-- INI Otros datos -->
+			<div id="divGeneral" name="divScroll" style="overflow-y:scroll; height:550px;">
+				
+				<siga:ConjCampos leyenda="Otros datos">
+					<table width="100%">
+						<tr>
+							<td width="26%">
+								<table>
+									<tr>
+										<td class="labelText">
+											<siga:Idioma key="censo.fusionDuplicados.datosPersonales.fechaNacimiento"/>&nbsp;|&nbsp;
+											<siga:Idioma key="censo.fusionDuplicados.datosPersonales.lugarNacimiento"/>
+										</td>
+									</tr>
+
+									<tr>
+										<td class="labelText">
+											Sexo | Estado civil
+										</td>
+									</tr>
+								</table>
+							</td>
+							
+							<c:forEach items="${datos.datosPersonales}" var="datosPersona" varStatus="status">
+							<td width="37%">
+								<table>
+									<tr>
+										<td class="labelTextValue">
 											<c:out value="${datosPersona.fechaNacimiento}"/>
 											<c:if test="${datosPersona.fechaNacimiento==''}">
 												<i>[<strike>fecha de nacimiento</strike>]</i>
@@ -193,30 +219,90 @@
 									
 									<tr>
 										<td class="labelTextValue">
-											<img id="iconoboton_informacionLetrado1" src="/SIGA/html/imagenes/binformacionLetrado_off.gif" 
-											style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila"
-											 title="Acceso a ficha" border="0" onClick="informacionLetrado('${datosPersona.idPersona}','<%=idInstitucionLocation%>'); " >
-										</td>
-									</tr>
-									
-									<tr>
-										<td class="labelTextValue">
-											<input name="idPersonaSel" value="${datosPersona.idPersona}" type="radio" onclick="seleccionar(0, <%=idPersona0%>, <%=idPersona1%>);"/> 
+											<c:if test="${datosPersona.fallecido=='1'}">
+												<b><c:out value="(Fallecido)"/></b> &nbsp;
+											</c:if>
+											<c:out value="${datosPersona.sexoStr}"/>
+											<c:if test="${datosPersona.sexoStr==''}">
+												<i>[<strike>sexo</strike>]</i>
+											</c:if>
+											 | <c:out value="${datosPersona.idEstadoCivilStr}"/>
+											<c:if test="${datosPersona.idEstadoCivilStr==null}">
+												<i>[<strike>estado civil</strike>]</i>
+											</c:if>
 										</td>
 									</tr>
 								</table>
-								</div>
 							</td>
 							</c:forEach>
 						
 						</tr>
+						<tr>
+							<td width="26%">
+								<table>
+									<tr>
+										<td class="labelText">
+											Sanciones y Certificados
+										</td>
+									</tr>
+																								
+									<tr>
+										<td class="labelText"> 
+											Tratamiento 
+											| Idioma
+	 									</td>
+									</tr>
+									
+									<tr>
+										<td class="labelText"> 
+											Otros checks
+										</td>
+									</tr>
+								</table>
+							</td>
+							
+							<c:forEach items="${datos.datosClienteCGAE}" var="datosCliente" varStatus="status">
+							<td width="37%">
+								<table>
+									<tr>
+										<td class="labelText">
+											<c:out value="${datosCliente.sanciones}"/> sanciones y 
+											<c:out value="${datosCliente.certificados}"/> certificados
+										</td>
+									</tr>
+																								
+									<tr>
+										<td class="labelText"> 
+											<c:out value="${datosCliente.idTratamientoStr}"/>
+											<c:if test="${datosCliente.idTratamientoStr==''}">
+												<i>[<strike>tratamiento</strike>]</i>
+											</c:if>
+											| <c:out value="${datosCliente.idLenguajeStr}"/>
+											<c:if test="${datosCliente.idLenguajeStr==''}">
+												<i>[<strike>idioma</strike>]</i>
+											</c:if>
+	 									</td>
+									</tr>
+									
+									<tr>
+										<td class="labelText"> 
+											<!-- Este campo solo se muestra en CGAE -->
+											<c:if test="${datosCliente.noEnviarRevista=='1'}">
+												<i><b><siga:Idioma key="messages.letrados.noRevistaCGAE"/></b></i> |
+											</c:if>
+											<c:if test="${datosCliente.noAparacerRedAbogacia=='1'}">
+												<!-- Este mensaje es diferente entre CGAE y Colegios -->
+												<i><b><siga:Idioma key="messages.letrados.noApareceRedAbogacia"/></b></i>
+											</c:if>
+										</td>
+									</tr>
+								</table>
+							</td>
+							</c:forEach>
+						</tr>
 					</table>
 				</siga:ConjCampos>
-			</div>
-			
-			<hr style="color:black;"></hr>
-			
-			<div name="divScroll" style="overflow-y:scroll; height:500px;">
+				<!-- FIN Otros datos -->
 				
 				<!-- INI Colegiaciones iguales -->
 				<c:forEach items="${datos.datosColegialesIguales}" var="datosColUnica" varStatus="status">
@@ -229,13 +315,19 @@
 				</c:if>
 				
 				<br/>
-				<siga:ConjCampos leyenda="${institucionColegiacion}">
+				<siga:ConjCampos leyenda="Coincidencia - ${institucionColegiacion}">
 				
 					<!-- INI Datos colegiacion comun -->
 					<table width="100%">
 					<tr>
-						<td width="26%" class="labelText"> 
-							Num. col. | Fecha Inc. | Inscr. y Resid. 
+						<td width="26%"> 
+							<table>
+								<tr>
+									<td class="labelText">
+										Num. col. | Fecha Inc. | Inscr. y Resid. 
+									</td>
+								</tr>
+							</table>
 						</td>
 						
 						<c:forEach items="${datosColUnica.datosColegiacion}" var="datosCol" varStatus="status">
@@ -267,8 +359,14 @@
 					</tr>
 								
 					<tr>
-						<td width="26%" class="labelText"> 
-							Histórico de estados
+						<td width="26%"> 
+							<table>
+								<tr>
+									<td class="labelText">
+										Histórico de estados 
+									</td>
+								</tr>
+							</table>
 						</td>
 						
 						<c:forEach items="${datosColUnica.historicoEstadosColegiacion}" var="datosCol" varStatus="status">
@@ -415,37 +513,13 @@
 				</c:forEach>
 				<!-- FIN Colegiaciones iguales -->
 					
+				<!-- INI Colegiaciones diferentes -->
 				<siga:ConjCampos leyenda="censo.fusionDuplicados.colegiaciones.titulo">
-
-					<!-- INI Sanciones y certificados -->
-					<table width="100%">
-					<tr>
-						<td width="26%" class="labelText">
-							Sanciones y Certificados
-						</td>
-						
-						<c:forEach items="${datos.datosClienteCGAE}" var="datosCliente" varStatus="status">
-						<td width="37%" class="labelText">
-							<c:out value="${datosCliente.sanciones}"></c:out> sanciones y 
-							<c:out value="${datosCliente.certificados}"></c:out> certificados
-						</td>
-						</c:forEach>
-					</tr>
-					</table>
-					<!-- FIN Sanciones y certificados -->
-					
-					<!-- INI Colegiaciones diferentes -->
  					<table width="100%">
 					<tr>
 						<!-- Etiquetas de campos -->
  						<td width="26%">
 							<table>
-								<tr>
-									<td>
-										&nbsp;
-									</td>
-								</tr>
-																							
 								<tr>
 									<td class="labelText"> 
 										<siga:Idioma key="Colegio"/> 
@@ -459,6 +533,12 @@
 										Situación colegial
 									</td>
 								</tr>
+								
+								<tr>
+									<td>
+										&nbsp;
+									</td>
+								</tr>
 							</table>
 						</td>
 						
@@ -466,12 +546,6 @@
  						<td width="37%">
 							<table>
 								<c:forEach items="${datosCliente}" var="datosCol"  varStatus="status">
-								<tr>
-									<td>
-										&nbsp;
-									</td>
-								</tr>															
-								
 								<tr>
 									<td class="labelText">
 										<c:out value="${datosCol.datosColegio.institucionColegiacion}"/> 
@@ -524,6 +598,12 @@
 										</c:choose>
 									</td>
 								</tr>
+								
+								<tr>
+									<td>
+										&nbsp;
+									</td>
+								</tr>															
 								</c:forEach>
 							</table>
 						</td>
@@ -531,9 +611,8 @@
 						
 					</tr>
 					</table>
-					<!-- FIN Colegiaciones diferentes -->
-					
 				</siga:ConjCampos>
+				<!-- FIN Colegiaciones diferentes -->
 				
 				<siga:ConjCampos leyenda="censo.fusionDuplicados.direcciones.cabecera">
 				<table width="100%">				

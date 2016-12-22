@@ -26,6 +26,7 @@ public class CenClienteBean extends MasterBean {
 	private String 	abonosBanco, asientoContable, caracter, cargosBanco, comisiones, fechaAlta, fotografia, 
 					guiaJudicial, idLenguaje, publicidad,  letrado, fechaCarga,norevista,noredabogacia, exportarFoto;
 	private boolean existeDatos;
+	private String sanciones = "", certificados = "", idTratamientoStr = "", idLenguajeStr = ""; //para mostrar datos en mantenimiento de duplicados
 
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_CLIENTE";
@@ -248,6 +249,38 @@ public class CenClienteBean extends MasterBean {
 	}
 	public void setExportarFoto(String exportarFoto) {
 		this.exportarFoto = exportarFoto;
+	}
+	public String getSanciones()
+	{
+		return sanciones;
+	}
+	public void setSanciones(String sanciones)
+	{
+		this.sanciones = sanciones;
+	}
+	public String getCertificados()
+	{
+		return certificados;
+	}
+	public void setCertificados(String certificados)
+	{
+		this.certificados = certificados;
+	}
+	public String getIdLenguajeStr()
+	{
+		return idLenguajeStr;
+	}
+	public void setIdLenguajeStr(String idLenguajeStr)
+	{
+		this.idLenguajeStr = idLenguajeStr;
+	}
+	public String getIdTratamientoStr()
+	{
+		return idTratamientoStr;
+	}
+	public void setIdTratamientoStr(String idTratamientoStr)
+	{
+		this.idTratamientoStr = idTratamientoStr;
 	}
 	
 	

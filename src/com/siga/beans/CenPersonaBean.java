@@ -22,9 +22,11 @@ public class CenPersonaBean extends MasterBean
 	private String nifcif;
 	private Integer idTipoIdentificacion;
 	private Integer idEstadoCivil;
+	private String idEstadoCivilStr;
 	private String fechaNacimiento;
 	private String naturalDe;
-	private String sexo;  
+	private String sexo;
+	private String sexoStr;
 	private String fallecido;
 	
 	private boolean existeDatos;
@@ -120,6 +122,24 @@ public class CenPersonaBean extends MasterBean
 			sNombreCompleto += this.getApellido2();
 		}
 		return this.getNombre() + " " + this.getApellido1() + " " + this.getApellido2();
+	}
+	
+	// Para mostrar a usuario
+	public String getIdEstadoCivilStr()
+	{
+		return idEstadoCivilStr;
+	}
+	public void setIdEstadoCivilStr(String idEstadoCivilStr)
+	{
+		this.idEstadoCivilStr = idEstadoCivilStr;
+	}
+	public String getSexoStr()
+	{
+		return sexoStr;
+	}
+	public void setSexoStr(String sexoStr)
+	{
+		this.sexoStr = sexoStr;
 	}
 	
 }

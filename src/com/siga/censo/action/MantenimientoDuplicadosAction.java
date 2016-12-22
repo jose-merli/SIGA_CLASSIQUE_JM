@@ -47,6 +47,8 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.administracion.SIGAConstants;
+import com.siga.beans.AdmLenguajesAdm;
+import com.siga.beans.AdmLenguajesBean;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenColegiadoAdm;
@@ -56,6 +58,8 @@ import com.siga.beans.CenDatosColegialesEstadoBean;
 import com.siga.beans.CenDireccionTipoDireccionBean;
 import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
+import com.siga.beans.CenEstadoCivilAdm;
+import com.siga.beans.CenEstadoCivilBean;
 import com.siga.beans.CenHistoricoAdm;
 import com.siga.beans.CenHistoricoBean;
 import com.siga.beans.CenInstitucionAdm;
@@ -66,6 +70,8 @@ import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.CenSancionAdm;
 import com.siga.beans.CenTipoDireccionBean;
+import com.siga.beans.CenTratamientoAdm;
+import com.siga.beans.CenTratamientoBean;
 import com.siga.beans.CerSolicitudCertificadosAdm;
 import com.siga.beans.DuplicadosHelper;
 import com.siga.beans.FcsPagoColegiadoAdm;
@@ -428,6 +434,9 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		CenSancionAdm admSancion = new CenSancionAdm(usr);
 		CerSolicitudCertificadosAdm admCertificados = new CerSolicitudCertificadosAdm(usr);
 		CenInstitucionAdm admInstitucion = new CenInstitucionAdm(usr);
+		CenEstadoCivilAdm estadoCivilAdm = new CenEstadoCivilAdm(usr);
+		CenTratamientoAdm tratamientoAdm = new CenTratamientoAdm(usr);
+		AdmLenguajesAdm lenguajeAdm = new AdmLenguajesAdm(usr);
 		
 		
 		// Variables
@@ -439,8 +448,8 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					CenPersonaBean datosPersonaDeUna;
 					
 		// 2. datos del cliente CGAE
-		ArrayList	<Hashtable<String, String>> datosClienteCGAEDeAmbas = new ArrayList	<Hashtable<String, String>>(2);
-					Hashtable<String, String> datosClienteCGAEDeUna;
+		ArrayList	<CenClienteBean> datosClienteCGAEDeAmbas = new ArrayList	<CenClienteBean>(2);
+					CenClienteBean datosClienteCGAEDeUna;
 					
 		// 3. datos de colegiaciones y no colegiaciones
 		ArrayList	<Hashtable	<String, Hashtable>> listaColegiacionesDeAmbas = new ArrayList<Hashtable<String,Hashtable>>();
@@ -515,16 +524,27 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				
 				// 1. obteniendo datos personales
 				datosPersonaDeUna = admPersona.getPersonaPorId(idPersona);
+				datosPersonaDeUna.setFechaMod(UtilidadesString.formatoFecha(datosPersonaDeUna.getFechaMod(), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH));
 				if (datosPersonaDeUna.getFechaNacimiento() != null && !datosPersonaDeUna.getFechaNacimiento().equalsIgnoreCase("")) {
 					datosPersonaDeUna.setFechaNacimiento(UtilidadesString.formatoFecha(datosPersonaDeUna.getFechaNacimiento(), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH));
 				}
-				datosPersonaDeUna.setFechaMod(UtilidadesString.formatoFecha(datosPersonaDeUna.getFechaMod(), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH));
+				if (datosPersonaDeUna.getSexo() != null && !datosPersonaDeUna.getSexo().equalsIgnoreCase("")) {
+					datosPersonaDeUna.setSexoStr(UtilidadesString.getMensajeIdioma(usr, datosPersonaDeUna.getSexo().equalsIgnoreCase(ClsConstants.TIPO_SEXO_HOMBRE) ? "censo.sexo.hombre" : "censo.sexo.mujer"));
+				}
+				if (datosPersonaDeUna.getIdEstadoCivil() != null) {
+					datosPersonaDeUna.setIdEstadoCivilStr(((CenEstadoCivilBean) estadoCivilAdm.select("where "+CenEstadoCivilBean.C_IDESTADO+"="+datosPersonaDeUna.getIdEstadoCivil()).get(0)).getDescripcion());
+				}
 				datosPersonaDeAmbas.add(datosPersonaDeUna);
 
 				// 2. obteniendo datos del cliente CGAE
-				datosClienteCGAEDeUna = new Hashtable<String, String>();
-				datosClienteCGAEDeUna.put("sanciones", Integer.toString(admSancion.getSancionesLetrado(idPersona, String.valueOf(ClsConstants.INSTITUCION_CGAE)).size()));
-				datosClienteCGAEDeUna.put("certificados", Integer.toString(admCertificados.getNumeroCertificados(String.valueOf(ClsConstants.INSTITUCION_CGAE), idPersona)));
+				datosClienteCGAEDeUna = admCliente.existeCliente(Long.valueOf(idPersona), ClsConstants.INSTITUCION_CGAE);
+				if (datosClienteCGAEDeUna == null) {
+					datosClienteCGAEDeUna = new CenClienteBean();
+				}
+				datosClienteCGAEDeUna.setIdTratamientoStr(((CenTratamientoBean) tratamientoAdm.select("where "+CenTratamientoBean.C_IDTRATAMIENTO+"="+datosClienteCGAEDeUna.getIdTratamiento()).get(0)).getDescripcion());
+				datosClienteCGAEDeUna.setIdLenguajeStr(((AdmLenguajesBean) lenguajeAdm.select("where "+AdmLenguajesBean.C_IDLENGUAJE+"="+datosClienteCGAEDeUna.getIdLenguaje()).get(0)).getDescripcion());
+				datosClienteCGAEDeUna.setSanciones(Integer.toString(admSancion.getSancionesLetrado(idPersona, String.valueOf(ClsConstants.INSTITUCION_CGAE)).size()));
+				datosClienteCGAEDeUna.setCertificados(Integer.toString(admCertificados.getNumeroCertificados(String.valueOf(ClsConstants.INSTITUCION_CGAE), idPersona)));
 				datosClienteCGAEDeAmbas.add(datosClienteCGAEDeUna);
 				
 				// 3. obteniendo los datos de colegiaciones y no colegiaciones
