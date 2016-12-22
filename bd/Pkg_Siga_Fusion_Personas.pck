@@ -122,6 +122,69 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     p_Datoserror := p_Datoserror || Chr(10) || 'Muevecosasclienteaotrapersona (' || p_Idinstitucion || ', ' ||
                     p_Idpersona_Origen || ' > ' || p_Idpersona_Destino || '): INI';
   
+    
+    Tabla := 'CEN_CLIENTE fecha modificacion';
+    Update Cen_Cliente Destino
+       Set (Fechamodificacion, Fechaalta, Fechacarga, Fechaactualizacion, Fechaexportcenso) = 
+                                 (Select Greatest(Nvl(Origen.Fechamodificacion, Destino.Fechamodificacion),
+                                                  Nvl(Destino.Fechamodificacion, Origen.Fechamodificacion)),
+                                         Least(Nvl(Origen.Fechaalta, Destino.Fechaalta),
+                                               Nvl(Destino.Fechaalta, Origen.Fechaalta)),
+                                         Greatest(Nvl(Origen.Fechacarga, Destino.Fechacarga),
+                                                  Nvl(Destino.Fechacarga, Origen.Fechacarga)),
+                                         Greatest(Nvl(Origen.Fechaactualizacion,
+                                                      Destino.Fechaactualizacion),
+                                                  Nvl(Destino.Fechaactualizacion,
+                                                      Origen.Fechaactualizacion)),
+                                         Greatest(Nvl(Origen.Fechaexportcenso, Destino.Fechaexportcenso),
+                                                  Nvl(Destino.Fechaexportcenso, Origen.Fechaexportcenso))
+                                    From Cen_Cliente Origen
+                                   Where Origen.Idpersona = p_Idpersona_Origen
+                                     And Destino.Idinstitucion = Origen.Idinstitucion)
+     Where Destino.Idpersona = p_Idpersona_Destino
+       And Destino.Idinstitucion = Nvl(p_Idinstitucion, Idinstitucion)
+       And Exists (Select 1
+              From Cen_Cliente Origen
+             Where Origen.Idpersona = p_Idpersona_Origen
+               And Destino.Idinstitucion = Origen.Idinstitucion);
+    If Sql%Rowcount > 0 Then
+      p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
+    End If;
+    
+    Tabla := 'CEN_COLEGIADO fecha modificacion';
+    Update Cen_Colegiado Destino
+       Set (Fechamodificacion) = (Select Greatest(Nvl(Origen.Fechamodificacion, Destino.Fechamodificacion),
+                                                  Nvl(Destino.Fechamodificacion, Origen.Fechamodificacion))
+                                    From Cen_Colegiado Origen
+                                   Where Origen.Idpersona = p_Idpersona_Origen
+                                     And Destino.Idinstitucion = Origen.Idinstitucion)
+     Where Destino.Idpersona = p_Idpersona_Destino
+       And Destino.Idinstitucion = Nvl(p_Idinstitucion, Idinstitucion)
+       And Exists (Select 1
+              From Cen_Colegiado Origen
+             Where Origen.Idpersona = p_Idpersona_Origen
+               And Destino.Idinstitucion = Origen.Idinstitucion);
+    If Sql%Rowcount > 0 Then
+      p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
+    End If;
+    
+    Tabla := 'CEN_NOCOLEGIADO fecha modificacion';
+    Update Cen_Nocolegiado Destino
+       Set (Fechamodificacion) = (Select Greatest(Nvl(Origen.Fechamodificacion, Destino.Fechamodificacion),
+                                                  Nvl(Destino.Fechamodificacion, Origen.Fechamodificacion))
+                                    From Cen_Nocolegiado Origen
+                                   Where Origen.Idpersona = p_Idpersona_Origen
+                                     And Destino.Idinstitucion = Origen.Idinstitucion)
+     Where Destino.Idpersona = p_Idpersona_Destino
+       And Destino.Idinstitucion = Nvl(p_Idinstitucion, Idinstitucion)
+       And Exists (Select 1
+              From Cen_Nocolegiado Origen
+             Where Origen.Idpersona = p_Idpersona_Origen
+               And Destino.Idinstitucion = Origen.Idinstitucion);
+    If Sql%Rowcount > 0 Then
+      p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
+    End If;
+    
     Tabla := 'CEN_NOCOLEGIADO Notario';
     Update CEN_NOCOLEGIADO
        Set idpersonanotario = p_Idpersona_Destino

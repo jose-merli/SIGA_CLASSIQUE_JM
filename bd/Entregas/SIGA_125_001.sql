@@ -1937,3 +1937,7 @@ Delete From Adm_Tiposacceso Where Idproceso = '18' And Idinstitucion <> 2000;
 -- FIN Mantenimiento duplicados
 
 -- Ejecutado en Integracion por AAG el 19/12 a las 13:00
+
+Actualizado Pkg_Siga_Fusion_Personas
+
+-- Ejecutado en Integracion por AAG el 22/12 a las 12:40
