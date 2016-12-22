@@ -164,7 +164,7 @@
 									
 									<tr>
 										<td class="labelTextValue">
-											<input name="idPersonaSel" value="${datosPersona.idPersona}" type="radio" onclick="seleccionar(0, <%=idPersona0%>, <%=idPersona1%>);"/> 
+											<input name="idPersonaSel" value="${datosPersona.idPersona}" type="radio" onclick="seleccionar('${datosPersona.idPersona}');"/>
 										</td>
 									</tr>
 								</table>
@@ -912,9 +912,13 @@
 				}
 			}
 
-			function seleccionar(perso, idD, idO){
+			function seleccionar(idD){
 				document.forms[0].idPersonaDestino.value = idD;
-				document.forms[0].idPersonaOrigen.value = idO;
+				if (idD == <%=idPersona1%>) {
+					document.forms[0].idPersonaOrigen.value = <%=idPersona0%>;
+				} else {
+					document.forms[0].idPersonaOrigen.value = <%=idPersona1%>;
+				}
 				if(document.forms[0].checkDireccion!=null){
 					seleccionarChecks(document.forms[0].checkDireccion, idD);
 				}

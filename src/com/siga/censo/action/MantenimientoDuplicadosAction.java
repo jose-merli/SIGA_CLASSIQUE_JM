@@ -709,6 +709,8 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		CenPersonaAdm admPersona = new CenPersonaAdm(user);
 		CenClienteAdm admCliente = new CenClienteAdm(user);
 		CenInstitucionAdm admInst = new CenInstitucionAdm(user);
+		
+		CenClienteBean beanCliente;
 
 		ControlFusionador controlFusionador = null;
 		String idPersonaDestino = miForm.getIdPersonaDestino();
@@ -853,6 +855,15 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 						idDireccionOrigen = direccion[2];
 						beanDireccion.setIdInstitucion(Integer.valueOf(idInstitucionComun));
 						beanDireccion.setIdPersona(Long.valueOf(idPersonaDestino));
+						
+						// hay que asegurarse que existe el cliente de CGAE
+						if (idInstitucionComun.equalsIgnoreCase(String.valueOf(ClsConstants.INSTITUCION_CGAE))) {
+							if (admCliente.existeCliente(Long.valueOf(idPersonaDestino), ClsConstants.INSTITUCION_CGAE) == null) {
+								beanCliente = admCliente.existeCliente(Long.valueOf(idPersonaOrigen), ClsConstants.INSTITUCION_CGAE);
+								beanCliente.setIdPersona(Long.valueOf(idPersonaDestino));
+								admCliente.insert(beanCliente);
+							}
+						}
 						
 						// recuperando el registro original que se va a copiar
 						hashDireccion = admDireccion.selectDirecciones(Long.valueOf(idPersonaOrigen), Integer.valueOf(idInstitucionComun), Long.valueOf(idDireccionOrigen));
