@@ -108,33 +108,30 @@
 			var error=false;
 			var msg="";
 			//aalg: modificado para controlar que siempre haya un check marcado al buscar
-			if(document.MantenimientoDuplicadosForm.nifcif.value.length ==0 &&
-					document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length ==0 &&
+			if(		document.MantenimientoDuplicadosForm.nifcif.value.length == 0 &&
+					document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length == 0 &&
 					document.MantenimientoDuplicadosForm.listadoInstitucion.value == "" &&
-					document.MantenimientoDuplicadosForm.nombreText.value.length ==0 &&
-					document.MantenimientoDuplicadosForm.apellidosText.value.length ==0){
+					document.MantenimientoDuplicadosForm.nombreText.value.length == 0 &&
+					document.MantenimientoDuplicadosForm.apellidosText.value.length == 0){
 				
 				error = true;
 				msg=msg+"Debe seleccionar alguna opción de busqueda";
 
 			}
-			else {
-				if(document.MantenimientoDuplicadosForm.nombre.value.length>0&&
-				   document.MantenimientoDuplicadosForm.nombre.value.length<3){
-					error=true;
-				   	msg=msg+"El campo Nombre es demasiado corto\n";
-				}
-				if(document.MantenimientoDuplicadosForm.apellidos.value.length>0&&
-				   document.MantenimientoDuplicadosForm.apellidos.value.length<3){	
-					error=true;
-					msg=msg+"El campo Apellido 1 es demasiado corto\n";
-				}		
-				msg= msg + "Si no se rellenan al menos 3 caracteres la consulta devolverá demasiados resultados.\nIntente afinar la búsqueda";
+			else if((document.MantenimientoDuplicadosForm.nifcif.value.length>0 &&
+					document.MantenimientoDuplicadosForm.nifcif.value.length<3) ||
+					(document.MantenimientoDuplicadosForm.nombre.value.length>0 &&
+					document.MantenimientoDuplicadosForm.nombre.value.length<3) ||
+					(document.MantenimientoDuplicadosForm.apellidos.value.length>0 &&
+					document.MantenimientoDuplicadosForm.apellidos.value.length<3)) {
+				error=true;
+			   	msg=msg+"Para buscar por Número Identificación, Nombre o Apellidos, introduzca al menos 3 caracteres";
 			}
-			if(error){
+			
+			if (error) {
 				alert(msg);
 				return false;
-			}else{
+			} else {
 				return true;
 			}
 		}
@@ -242,8 +239,8 @@
 
 		function informeGeneralDuplicados(){
 			sub();
+			alert("Se está generando el informe. Espere unos minutos, o vuelva más tarde para descargarlo.")
 			document.forms[0].modo.value="exportar";
-			document.forms[0].target="submitArea";
 		  	document.forms[0].submit();
 			fin();
 		}
@@ -346,7 +343,7 @@
 		</table>
 	</siga:ConjCampos>
 
-	<siga:ConjBotonesBusqueda botones="B,L,IGD"/>
+	<siga:ConjBotonesBusqueda botones="IGD,B,L"/>
 
 	</html:form>  
 	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"

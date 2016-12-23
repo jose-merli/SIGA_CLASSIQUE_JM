@@ -139,6 +139,7 @@
 	function comparar(){
 		if (document.getElementById('seleccionados') &&
 			document.getElementById('seleccionados').value==2){
+			sub();
 			document.MantenimientoDuplicadosForm.modo.value = "gestionar";
 			document.MantenimientoDuplicadosForm.submit();
 		}else{
@@ -251,13 +252,13 @@
 				parent.document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length ==0 &&
 				parent.document.MantenimientoDuplicadosForm.listadoInstitucion.value == "" &&
 				parent.document.MantenimientoDuplicadosForm.nombreText.value.length ==0 &&
-				parent.document.MantenimientoDuplicadosForm.apellido1Text.value.length ==0){
+				parent.document.MantenimientoDuplicadosForm.apellidosText.value.length ==0){
 			
 			
 				jQuery("#nifcif",parent.document).val("");
 				jQuery("#numeroColegiadoText",parent.document).val("");
 				jQuery("#nombreText",parent.document).val("");
-				jQuery("#apellido1Text",parent.document).val("");
+				jQuery("#apellidosText",parent.document).val("");
 				jQuery('#listadoInstitucion option[value=""]',parent.document).attr("selected","selected");
 			
 				
@@ -268,7 +269,7 @@
 				
 				jQuery("#numeroColegiadoText",parent.document).val("");
 				jQuery("#nombreText",parent.document).val("");
-				jQuery("#apellido1Text",parent.document).val("");
+				jQuery("#apellidosText",parent.document).val("");
 				jQuery('#listadoInstitucion option[value=""]',parent.document).attr("selected","selected");
 			}
 			if(parent.document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length >0 || parent.document.MantenimientoDuplicadosForm.listadoInstitucion.value != ""){
@@ -276,11 +277,11 @@
 				
 				jQuery("#nifcif",parent.document).val("");
 				jQuery("#nombreText",parent.document).val("");
-				jQuery("#apellido1Text",parent.document).val("");
+				jQuery("#apellidosText",parent.document).val("");
 	
 			}
 			if(parent.document.MantenimientoDuplicadosForm.nombreText.value.length >0 ||
-					parent.document.MantenimientoDuplicadosForm.apellido1Text.value.length >0){
+					parent.document.MantenimientoDuplicadosForm.apellidosText.value.length >0){
 			
 				
 				

@@ -89,58 +89,6 @@ import com.siga.informes.MasterReport;
  * @author AtosOrigin 14-12-2004
  */
 public class MantenimientoDuplicadosAction extends MasterAction {
-	//Atencion!!Tenr en cuenta que el orden de estas claves es el mismo oden que se va a
-	//seguir al obtener los adtos en la jsp. Ver metodos actualizarSelecionados y aniadeClaveBusqueda(2)
-	//de la super clase(MasterAction)
-	final String[] clavesBusqueda={CenClienteBean.C_IDINSTITUCION,CenClienteBean.C_IDPERSONA};
-
-	private static final Object mantenimientoDuplicados = new Object(); // semaforo
-	private static class ControlFusionador {
-		/**
-		 * Conjunto de personas que se estan fusionando en este momento. Se van metiendo y sacando segun se termina la fusion
-		 */
-		private static HashSet<String> listaPersonasFusionando = new HashSet<String>();
-		
-		/**
-		 * Obtiene un control basado en dos personas a fusionar
-		 * @param idpersona1
-		 * @param idpersona2
-		 * @return
-		 */
-		public static ControlFusionador getControlFusionador(String idpersona1, String idpersona2) {
-			synchronized (listaPersonasFusionando) {
-				if (listaPersonasFusionando.contains(idpersona1) || listaPersonasFusionando.contains(idpersona2)) {
-					return null;
-				} else {
-					return new ControlFusionador(idpersona1, idpersona2);
-				}
-			}
-		}
-		
-		private String personaFusionando1, personaFusionando2;
-		
-		/**
-		 * Constructor privado: solo se puede obtener un control llamando a getControlFusionador(), que busca si las personas ya estan en una fusion
-		 * @param idpersona1
-		 * @param idpersona2
-		 */
-		private ControlFusionador (String idpersona1, String idpersona2) {
-			listaPersonasFusionando.add(idpersona1);
-			listaPersonasFusionando.add(idpersona2);
-			personaFusionando1 = idpersona1;
-			personaFusionando2 = idpersona2;
-		}
-		
-		/**
-		 * Da por terminada la fusion controlada por este objeto
-		 */
-		public void removeControlFusionador() {
-			synchronized (listaPersonasFusionando) {
-				listaPersonasFusionando.remove(this.personaFusionando1);
-				listaPersonasFusionando.remove(this.personaFusionando2);
-			}
-		}
-	}
 
 	/** 
 	 *  Funcion que atiende a las peticiones. Segun el valor del parametro modo del formulario ejecuta distintas acciones
@@ -194,14 +142,12 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					mapDestino = combinar(mapping, miForm, request, response);
 				}else if(accion.equalsIgnoreCase("volver")){
 					mapDestino = volver(mapping, miForm, request, response);
-				}else if(accion.equalsIgnoreCase("export")){
-					miForm.setModo("");
-					mapDestino = export(mapping, miForm, request, response);
 				} else if (accion.equalsIgnoreCase("getAjaxObtenerDuplicados")) {
 					miForm.setModo("");
 		            getAjaxObtenerDuplicados(request, response);	     
 					return null;
 				}else if(accion.equalsIgnoreCase("exportar")){
+					miForm.setModo("");
 					mapDestino = exportar(mapping, miForm, request, response);
 				}else {
 					return super.executeInternal(mapping,formulario,request,response);
@@ -221,6 +167,58 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		}
 	}
 
+	private static class ControlFusionador {
+		/**
+		 * Conjunto de personas que se estan fusionando en este momento. Se van metiendo y sacando segun se termina la fusion
+		 */
+		private static HashSet<String> listaPersonasFusionando = new HashSet<String>();
+		public static final String CONTROL_INFORME = "CONTROL_INFORME_FUSIONADOR";
+		
+		/**
+		 * Obtiene un control basado en dos personas a fusionar
+		 * @param idpersona1
+		 * @param idpersona2
+		 * @return
+		 */
+		public static ControlFusionador getControlFusionador(String idpersona1, String idpersona2) {
+			synchronized (listaPersonasFusionando) {
+				if (listaPersonasFusionando.contains(idpersona1) || listaPersonasFusionando.contains(idpersona2)) {
+					return null;
+				} else {
+					return new ControlFusionador(idpersona1, idpersona2);
+				}
+			}
+		}
+		
+		private String personaFusionando1, personaFusionando2;
+		
+		/**
+		 * Constructor privado: solo se puede obtener un control llamando a getControlFusionador(), que busca si las personas ya estan en una fusion
+		 * @param idpersona1
+		 * @param idpersona2
+		 */
+		private ControlFusionador(String idpersona1, String idpersona2)
+		{
+			if (idpersona1 != null) {
+				listaPersonasFusionando.add(idpersona1);
+				personaFusionando1 = idpersona1;
+			}
+			if (idpersona2 != null) {
+				listaPersonasFusionando.add(idpersona2);
+				personaFusionando2 = idpersona2;
+			}
+		}
+		
+		/**
+		 * Da por terminada la fusion controlada por este objeto
+		 */
+		public void removeControlFusionador() {
+			synchronized (listaPersonasFusionando) {
+				listaPersonasFusionando.remove(this.personaFusionando1);
+				listaPersonasFusionando.remove(this.personaFusionando2);
+			}
+		}
+	}
 	
 	/**
 	 * Metodo que implementa el modo abrir
@@ -350,6 +348,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		String destino = "";
 		try {
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			CenClienteAdm clienteAdm = new CenClienteAdm(user);
 			String idInstitucion=user.getLocation();
 
 			MantenimientoDuplicadosForm miFormulario = (MantenimientoDuplicadosForm)formulario;
@@ -359,7 +358,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			
 			
 			if (seleccionados != null ) {
-				ArrayList alRegistros = actualizarSelecionados(clavesBusqueda,seleccionados, clavesRegSeleccinados);
+				ArrayList alRegistros = actualizarSelecionados(clienteAdm.getClavesBean(), seleccionados, clavesRegSeleccinados);
 				if (alRegistros != null) {
 					clavesRegSeleccinados = alRegistros;
 					miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
@@ -961,6 +960,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		UsrBean user = this.getUserBean(request);
 		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		SimpleDateFormat sdfDateOnly = new SimpleDateFormat("dd-MM-yyyy");
+		ControlFusionador controlFusionador = null;
 
 		try {
 			String rutaFichero = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")
@@ -971,12 +971,17 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			ruta.mkdirs();
 
 			File fichero;
-			synchronized (mantenimientoDuplicados) {
-				// antes de generar, se comprueba si existe ya el fichero
-				fichero = new File(nombreFichero + ".zip");
-				if (fichero == null || !fichero.exists()) {
-					fichero = generarExportacionXLS(nombreFichero, user);
-				}
+			// semaforo para evitar que se pida la fusion de la misma persona varias veces
+			controlFusionador = ControlFusionador.getControlFusionador(ControlFusionador.CONTROL_INFORME, null);
+			if (controlFusionador == null) {
+				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "Ya se ha solicitado la generación del informe de duplicados. Espere unos minutos hasta que termine."));
+				return "exitoFusionar";
+			}
+			
+			// antes de generar, se comprueba si existe ya el fichero
+			fichero = new File(nombreFichero + ".zip");
+			if (fichero == null || !fichero.exists()) {
+				fichero = generarExportacionXLS(nombreFichero, user);
 			}
 			
 			if (fichero == null || !fichero.exists()) {
@@ -991,6 +996,11 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.facturacionSJCS" }, e, null);
+		} finally {
+			// ABRIMOS EL SEMAFORO. SE DEBE EJECUTAR SIEMPRE
+			if (controlFusionador != null) {
+				controlFusionador.removeControlFusionador();
+			}
 		}
 
 		return "descargaFichero";

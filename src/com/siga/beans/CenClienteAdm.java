@@ -106,7 +106,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		return campos;
 	} //getCamposBean ()
 	
-	protected String[] getClavesBean ()
+	public String[] getClavesBean ()
 	{
 		String [] claves = 
 		{

@@ -92,7 +92,7 @@
 
 </head>
 
-<body class="tablaCentralCampos" onload="accionExportar();">
+<body class="tablaCentralCampos"><!--  onload="accionExportar();" -->
 
 	<html:form action="/CEN_MantenimientoDuplicados.do?noReset=true" method="POST" target="submitArea">
 		<input type="hidden" name="actionModal" value="">
@@ -100,19 +100,11 @@
 		<html:hidden property="seleccion" />
 		<html:hidden property="seleccionados" />
 		<html:hidden property="datosPaginador" />
-		<html:hidden property="chkApellidos" />
-		<html:hidden property="chkNombreApellidos" />
-		<html:hidden property="chkNumColegiado" />
-		<html:hidden property="chkIdentificador" />
 		<html:hidden property="nifcif" />
 		<html:hidden property="nombre" />
 		<html:hidden property="numeroColegiado" />
 		<html:hidden property="apellido1" />
 		<html:hidden property="apellido2" />
-		<html:hidden property="agruparColegiaciones" />
-		<html:hidden property="tipoConexion" />
-		<html:hidden property="sentidoOrdenacion" />
-		<html:hidden property="campoOrdenacion" />
 		
 		<table align="center" border="0" height="100%" width="100%">
 			<tr><td align="center">&nbsp;</td></tr>
@@ -126,7 +118,7 @@
 		<table class="botonesDetalle" align="center">
 			<tr>
 				<td>&nbsp;</td>
-				<td class="tdBotones"><input type="button" alt="Cerrar"  id="idButton" onclick="return accionCerrar();" class="button" name="idButton" value="Cerrar"></td>
+				<td class="tdBotones"><input type="button" alt="Cerrar"  id="idButton" onclick="accionCerrar();" class="button" name="idButton" value="Cerrar"></td>
 			</tr>
 		</table>	
 	</html:form>

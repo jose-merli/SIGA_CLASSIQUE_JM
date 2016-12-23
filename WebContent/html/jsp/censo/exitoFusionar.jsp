@@ -36,7 +36,7 @@
 			var type = '<siga:Idioma key="<%=mensaje%>"/>';
 			alert(type);
 		<%  } %>
-			document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
+			document.MantenimientoDuplicadosForm.action.value = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
 			document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
 			document.MantenimientoDuplicadosForm.submit();
 
