@@ -38,6 +38,16 @@
 	Hashtable datos = (Hashtable)request.getAttribute("datos");
 	String idPersona0 =	((CenPersonaBean) ((ArrayList) datos.get("datosPersonales")).get(0)).getIdPersona().toString();
 	String idPersona1 =	((CenPersonaBean) ((ArrayList) datos.get("datosPersonales")).get(1)).getIdPersona().toString();
+	
+	ArrayList informacionColegiacionesAmbas = ((ArrayList) datos.get("informacionColegiacionesAmbas"));
+	
+	Hashtable  Hashtable0 = (Hashtable) informacionColegiacionesAmbas.get(0);
+	Hashtable  Hashtable1 = (Hashtable) informacionColegiacionesAmbas.get(1);
+	
+	String estadoColegiaciones0 = (String) Hashtable0.get("colegiacion");
+	String estadoColegiaciones1 =  (String) Hashtable1.get("colegiacion");
+	
+	
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -156,9 +166,53 @@
 									
 									<tr>
 										<td class="labelTextValue">
-											<img id="iconoboton_informacionLetrado1" src="/SIGA/html/imagenes/binformacionLetrado_off.gif" 
-											style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila"
-											 title="Acceso a ficha" border="0" onClick="informacionLetrado('${datosPersona.idPersona}','<%=idInstitucionLocation%>'); " >
+											<c:choose>
+												<c:when test="${status.count == 1}">
+													<c:set var="estado" value="<%=estadoColegiaciones0%>" />
+													<c:choose>
+															<c:when test="${estado=='L'}">
+																<img id="iconoboton_informacionLetrado1" src="/SIGA/html/imagenes/binformacionLetrado_off.gif" 
+																	style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila"
+																	 title="Acceso a ficha" border="0" onClick="informacionLetrado('${datosPersona.idPersona}','<%=idInstitucionLocation%>',1); " >
+															</c:when>
+															<c:when test="${estado=='NC'}">
+																	<img id="iconoboton_consultar1" src="/SIGA/html/imagenes/bconsultar_on.gif" 
+																style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila"
+																 title="consultar" border="0" onClick="informacionLetrado('${datosPersona.idPersona}',''); " >
+															<img id="iconoboton_editar10" src="/SIGA/html/imagenes/beditar_off.gif" 
+																style="cursor:pointer;" alt="Editar" class="botonesIcoTabla" name="iconoFila"
+																 title="Editar" border="0" onClick="informacionLetrado('${datosPersona.idPersona}','<%=idInstitucionLocation%>',0); " >
+															</c:when>
+															<c:when test="${estado=='C'}">
+																No hay colegiaciones
+															</c:when>
+															
+													</c:choose>
+												</c:when>
+												<c:otherwise>
+													<c:set var="estado" value="<%=estadoColegiaciones1%>" />
+													<c:choose>
+														<c:when test="${estado=='L'}">
+															<img id="iconoboton_informacionLetrado1" src="/SIGA/html/imagenes/binformacionLetrado_off.gif" 
+																	style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila"
+																	 title="Acceso a ficha" border="0" onClick="informacionLetrado('${datosPersona.idPersona}','<%=idInstitucionLocation%>',1); " >
+														</c:when>
+														<c:when test="${estado=='NC'}">
+															<img id="iconoboton_consultar2" src="/SIGA/html/imagenes/bconsultar_on.gif" 
+																style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila"
+																 title="Consultar" border="0" onClick="informacionLetrado('${datosPersona.idPersona}',''); " >
+															<img id="iconoboton_editar11" src="/SIGA/html/imagenes/beditar_off.gif" 
+																style="cursor:pointer;" alt="Editar" class="botonesIcoTabla" name="iconoFila"
+																 title="editar" border="0" onClick="informacionLetrado('${datosPersona.idPersona}','<%=idInstitucionLocation%>',0); " >
+															</c:when>
+														<c:when test="${estado=='C'}">
+																No hay colegiaciones
+															</c:when>
+															
+													</c:choose>
+												</c:otherwise>
+											</c:choose>
+											
 										</td>
 									</tr>
 									
@@ -933,17 +987,16 @@
 	
 	<script language="JavaScript">
 	
-	function informacionLetrado(idPersona,idIntitucion) {
+	function informacionLetrado(idPersona,idIntitucion,verFichaLetrado) {
 	    var idInst = idIntitucion;			          		
 	    var idPers = idPersona;		    
 	    var idLetrado =idLetrado;			    
 		
 	    document.forms[0].filaSelD.value = 1;
-		
-		 
+	
 		if(idIntitucion != null && idIntitucion !=""){
 			document.forms[0].tablaDatosDinamicosD.value=idPers + ',' + idInst + '%';
-			document.forms[0].verFichaLetrado.value=1;
+			document.forms[0].verFichaLetrado.value=verFichaLetrado;
 			document.forms[0].modo.value="editar";
 		}else{
 			//Es no colegiado y el idIntitucion será de donde estés logeado.

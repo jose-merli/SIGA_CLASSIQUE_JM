@@ -70,7 +70,7 @@
 			</html:form>
 			
 <% 		} else if (busquedaVolver.equals("MD")) {  %>
-			<html:form action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
+			<html:form action="/CEN_MantenimientoDuplicados.do?noReset=true&buscar=true" method="POST" target="mainWorkArea">
 				<html:hidden property="action" value=""/>
 				<html:hidden property="tablaDatosDinamicosD" value=""/>
 				<html:hidden property="modo" value="gestionar"/>
@@ -84,7 +84,7 @@
 			
 			<!-- aalg: para volver a la pantalla de personas duplicadas -->
 <% 		} else if (busquedaVolver.equals("DUPLICADOS")) {  %>
-			<html:form action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
+			<html:form action="/CEN_MantenimientoDuplicados.do?noReset=true&buscar=true" method="POST" target="mainWorkArea">
 				<html:hidden property="action" value=""/>
 				<html:hidden property="tablaDatosDinamicosD" value=""/>
 				<html:hidden property="modo" value="buscarPor"/>
@@ -206,11 +206,11 @@
 					document.BusquedaColegiadosForm.accion.value = "buscarAvanzada";
 					document.BusquedaColegiadosForm.submit();	
 <%				} else if (busquedaVolver.equals("DUPLICADOS")) {	%>
-					document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
+					//document.MantenimientoDuplicadosForm.action.value = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
 					document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
 					document.MantenimientoDuplicadosForm.submit();
 <% 				} else if (busquedaVolver.equals("MD")) {	%>
-					document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
+					//document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
 					document.MantenimientoDuplicadosForm.modo.value = "gestionar";
 					document.MantenimientoDuplicadosForm.volver.value="SI";
 					document.MantenimientoDuplicadosForm.submit();

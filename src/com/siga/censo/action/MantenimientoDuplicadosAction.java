@@ -19,11 +19,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
@@ -478,9 +480,12 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		
 		// 4. direcciones en CGAE
 		ArrayList	<Vector	<Hashtable<String, String>>> listaDireccionesCGAEDeAmbas = new ArrayList	<Vector<Hashtable<String, String>>>(2);
-					Vector	<Hashtable<String, String>> listaDireccionesCGAEDeUna;
-		
-		
+					Vector	<Hashtable<String, String>> listaDireccionesCGAEDeUna ;
+				
+		// 5. Saber si es colegiado, no colegiado y sino es nada
+		ArrayList	<Hashtable	<String, String>> informacionColegiacionesAmbas  = new ArrayList<Hashtable<String,String>>();
+		Hashtable	<String, String> informacionColegiaciones ;
+
 		// A continuacion todo el proceso de lectura y devolucion de los datos de las personas seleccionadas
 		try {
 			// controlando el Volver
@@ -608,6 +613,22 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					direccion.put("TIPOSDIRECCION", direccion.get("CEN_TIPODIRECCION.DESCRIPCION").toString());
 				}
 				listaDireccionesCGAEDeAmbas.add(listaDireccionesCGAEDeUna);
+				
+				
+				//NUEVO
+				informacionColegiaciones = new Hashtable<String, String>();
+ 				Vector<Integer> resultado = admColeg.getColegiaciones(idPersona);
+				if(resultado!= null && resultado.size()>0){
+					 informacionColegiaciones.put("colegiacion", "L");
+				}else{
+					CenClienteBean cenClienteBean= admCliente.existeCliente(Long.valueOf(idPersona),2000 );
+					if(cenClienteBean != null){
+						 informacionColegiaciones.put("colegiacion", "NC");
+					}else{
+						 informacionColegiaciones.put("colegiacion", "C");
+					}
+				}
+				informacionColegiacionesAmbas.add(informacionColegiaciones);
 			}
 			
 			// ahora hay que separar las colegiaciones comunes de las diferentes
@@ -677,7 +698,8 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			todosLosDatos.put("datosColegialesIguales", listaColegiacionesComunesDeAmbas);
 			todosLosDatos.put("datosColegiales", listaColegiacionesDiferentesDeAmbas);
 			todosLosDatos.put("datosDirecciones", listaDireccionesCGAEDeAmbas);
-			
+			todosLosDatos.put("informacionColegiacionesAmbas", informacionColegiacionesAmbas);
+	
 			request.setAttribute("datos", todosLosDatos);
 		}catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, null);
@@ -1169,7 +1191,11 @@ public class MantenimientoDuplicadosAction extends MasterAction {
           
 			request.setAttribute("datosCliente", datosCliente);		
 			
-			request.getSession ().setAttribute ("CenBusquedaClientesTipo", "DUPLICADOS");  
+			if(request.getParameter("volver") != null && "MD".equalsIgnoreCase(request.getParameter("volver"))){
+				request.getSession ().setAttribute ("CenBusquedaClientesTipo", "MD");  
+			}else{
+				request.getSession ().setAttribute ("CenBusquedaClientesTipo", "DUPLICADOS");  
+			}
 			
 			destino="administracion";
 		 } 	
@@ -1464,11 +1490,6 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					tableBody.append((registro.get("NCOLEGIADO") == null) ? "&nbsp;" : (String) registro.get("NCOLEGIADO"));
 					tableBody.append("  </td>");
 					tableBody.append("  <td>");
-					tableBody.append("    <img id='iconoboton_informacionLetrado1' src='/SIGA/html/imagenes/binformacionLetrado_off.gif'");
-					tableBody.append("         style='cursor:pointer;' alt='Información letrado' class='botonesIcoTabla' ");
-					tableBody.append("         name='iconoFila' border='0' onClick=\"informacionLetrado(");
-					tableBody.append((String) registro.get("IDPERSONA"));
-					tableBody.append(", 2000);\">");
 					tableBody.append("    <img id='iconoboton_informacionLetrado1' src='/SIGA/html/imagenes/bconsultar_on.gif'");
 					tableBody.append("         style='cursor:pointer;' alt='Mantenimiento duplicados' class='botonesIcoTabla' ");
 					tableBody.append("         name='iconoFila' border='0' onClick=\"mantenimientoDuplicados(");

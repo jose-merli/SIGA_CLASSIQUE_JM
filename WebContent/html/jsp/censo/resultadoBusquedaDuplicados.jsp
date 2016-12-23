@@ -246,54 +246,6 @@
 	   	document.forms[0].submit();			   	
 	}
 	
-	
-	function recargarCamposHabilitados (){
-		if(parent.document.MantenimientoDuplicadosForm.nifcif.value.length ==0 &&
-				parent.document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length ==0 &&
-				parent.document.MantenimientoDuplicadosForm.listadoInstitucion.value == "" &&
-				parent.document.MantenimientoDuplicadosForm.nombreText.value.length ==0 &&
-				parent.document.MantenimientoDuplicadosForm.apellidosText.value.length ==0){
-			
-			
-				jQuery("#nifcif",parent.document).val("");
-				jQuery("#numeroColegiadoText",parent.document).val("");
-				jQuery("#nombreText",parent.document).val("");
-				jQuery("#apellidosText",parent.document).val("");
-				jQuery('#listadoInstitucion option[value=""]',parent.document).attr("selected","selected");
-			
-				
-		}else{
-			if(parent.document.MantenimientoDuplicadosForm.nifcif.value.length >0 ){
-				//Deshabilitamso los demás elementos del filtro	
-				parent.document.getElementById('nifcif').focus();
-				
-				jQuery("#numeroColegiadoText",parent.document).val("");
-				jQuery("#nombreText",parent.document).val("");
-				jQuery("#apellidosText",parent.document).val("");
-				jQuery('#listadoInstitucion option[value=""]',parent.document).attr("selected","selected");
-			}
-			if(parent.document.MantenimientoDuplicadosForm.numeroColegiadoText.value.length >0 || parent.document.MantenimientoDuplicadosForm.listadoInstitucion.value != ""){
-				parent.document.getElementById('numeroColegiadoText').focus();
-				
-				jQuery("#nifcif",parent.document).val("");
-				jQuery("#nombreText",parent.document).val("");
-				jQuery("#apellidosText",parent.document).val("");
-	
-			}
-			if(parent.document.MantenimientoDuplicadosForm.nombreText.value.length >0 ||
-					parent.document.MantenimientoDuplicadosForm.apellidosText.value.length >0){
-			
-				
-				
-				jQuery("#nifcif",parent.document).val("");
-				jQuery("#numeroColegiadoText",parent.document).val("");
-				jQuery("#listadoInstitucion",parent.document).attr("disabled","disabled");
-				parent.document.getElementById('nombreText').focus();
-			}
-			
-		}
-	}
-	
 	function onClickChkNumColegiado(){
 		if(parent.document.MantenimientoDuplicadosForm.chkNumColegiado.value=="1"){
 			//Comprobamos si ya existe en la select para no añadirlo más
@@ -310,7 +262,7 @@
 
 </head>
 
-<body class="tablaCentralCampos"  onload="cargarChecks();recargarCamposHabilitados();" >
+<body class="tablaCentralCampos"  onload="cargarChecks();" >
 
 <html:form action="/CEN_MantenimientoDuplicados.do?noReset=true" method="POST" target="mainWorkArea">
 	<input type="hidden" name="actionModal" id="actionModal"  value="">

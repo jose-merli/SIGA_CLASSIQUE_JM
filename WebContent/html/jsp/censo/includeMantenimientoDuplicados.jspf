@@ -60,24 +60,9 @@
 				});
 			}
 		}
-
-		function informacionLetrado(idPersona, idInstitucion) {
-
-			if (idInstitucion != null && idInstitucion != "") {
-				document.MantenimientoDuplicadosForm.tablaDatosDinamicosD.value = idPersona + ',' + idInstitucion + '%';
-				document.MantenimientoDuplicadosForm.modo.value = "editar";
-			} else {
-				// Es no colegiado y el idIntitucion será de donde estés logeado.
-				document.MantenimientoDuplicadosForm.tablaDatosDinamicosD.value = idPersona + ',' + idInstitucion + '%';
-				document.MantenimientoDuplicadosForm.modo.value = "ver";
-			}
-
-			document.MantenimientoDuplicadosForm.submit();
-		}
-
 		function mantenimientoDuplicados(nifcif, numcol, idinstitucion, nombre, apellido1, apellido2) {
 
-			document.MantenimientoDuplicadosForm.action = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
+			//document.MantenimientoDuplicadosForm.action.value = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
 			document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
 			document.MantenimientoDuplicadosForm.nifcif.value = nifcif;
 			document.MantenimientoDuplicadosForm.numeroColegiado.value = numcol;

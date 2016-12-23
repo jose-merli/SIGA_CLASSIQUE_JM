@@ -235,6 +235,7 @@
 				}
 				
 			}
+			 buscar();
 		}
 
 		function informeGeneralDuplicados(){
@@ -256,7 +257,6 @@
 
 <html:form action="/CEN_MantenimientoDuplicados.do?noReset=true" method="POST" target="mainWorkArea"  >
 	<input type="hidden" name="modo" value="">
-	<input type="hidden" name="tipoConexion" id="tipoConexion" value="intersect">
 	<input type="hidden" name="agruparColegiaciones" id="agruparColegiaciones" value="s">
 
 	<siga:ConjCampos leyenda="censo.busquedaDuplicados.patron.cabecera">
