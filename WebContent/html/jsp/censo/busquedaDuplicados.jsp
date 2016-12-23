@@ -238,7 +238,14 @@
 				}
 				
 			}
-			
+		}
+
+		function informeGeneralDuplicados(){
+			sub();
+			document.forms[0].modo.value="exportar";
+			document.forms[0].target="submitArea";
+		  	document.forms[0].submit();
+			fin();
 		}
 		</script>
 		<siga:Titulo 
@@ -339,7 +346,7 @@
 		</table>
 	</siga:ConjCampos>
 
-	<siga:ConjBotonesBusqueda botones="B,L"/>
+	<siga:ConjBotonesBusqueda botones="B,L,IGD"/>
 
 	</html:form>  
 	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp"

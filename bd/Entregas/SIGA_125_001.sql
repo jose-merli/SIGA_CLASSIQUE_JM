@@ -1941,3 +1941,14 @@ Delete From Adm_Tiposacceso Where Idproceso = '18' And Idinstitucion <> 2000;
 Actualizado Pkg_Siga_Fusion_Personas
 
 -- Ejecutado en Integracion por AAG el 22/12 a las 12:40
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.busquedaDuplicados.botonInforme', 'Informe general de duplicados', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.busquedaDuplicados.botonInforme', 'Informe general de duplicats', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.busquedaDuplicados.botonInforme', 'Informe general de duplicados#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.busquedaDuplicados.botonInforme', 'Informe general de duplicados#GL', 0, '4', sysdate, 0, '19');
+
+alter table 	CEN_SANCION	 drop constraint 	FK_CEN_SANCION_SANCION_CGAE	 ; 
+alter table 	CEN_SANCION	 add constraint 	FK_CEN_SANCION_SANCION_CGAE	 foreign key (	IDPERSONA, IDSANCIONORIGEN, IDINSTITUCIONORIGEN	)	 references 	CEN_SANCION	 (	IDPERSONA, IDSANCION, IDINSTITUCION	) 		 Deferrable;
+
+alter table 	CEN_PARTIDOJUDICIAL	 drop constraint 	SYS_C0043299	 ; --Solo funciona en PRO
+alter table 	CEN_PARTIDOJUDICIAL	 drop constraint 	SYS_C0016807	 ; --Solo funciona en PRE

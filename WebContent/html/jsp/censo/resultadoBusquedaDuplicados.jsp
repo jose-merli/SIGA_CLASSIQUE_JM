@@ -219,21 +219,6 @@
 		document.forms[0].submit();
 	}
 
-	function accionExportar(){
-		sub();
-		if(<%=nRegistros%> > 100){
-			 if(!confirm("Hay muchos registros. El proceso de exportación puede tardar varios minutos. ¿Desea continuar?")){
-				 fin();
-				 return false;
-			 }			
-		}
-			
-		document.forms[0].modo.value="exportar";
-		document.forms[0].target="submitArea";
-	  	document.forms[0].submit();
-		fin();
-	}
-
 	function seleccionarTodo(){
 		var ele = document.getElementsByName("chkPersona");
 		selArray = new Array();
@@ -472,9 +457,6 @@
 				<input type="button" id="idButton" name="idButton" class="button" value="<siga:Idioma key="censo.resultadoDuplicados.botonLimpiar"/>" onclick="desmarcar();">
 			</td>
 			<td style="width:550px;text-align:center" class="labelText"><%=nRegistros%> registros</td>
-			<td class="tdBotones">
-				<input type="button" id="idButton" name="idButton" class="button" value="<siga:Idioma key="general.boton.exportarExcel"/>" onclick="accionExportar();">
-			</td>
 			<td class="tdBotones">
 				<input type="button" id="idButton" name="idButton" class="button" value="<siga:Idioma key="censo.resultadoDuplicados.botonFusionar"/>" onclick="comparar();">
 			</td>

@@ -37,7 +37,8 @@ public enum SearchButtonsConstants {
 	FICHERO_DEVOLUCIONES ("pnf","facturacion.consultaDevolucion.boton.nuevoFichero","procesarNuevoFichero()",28),
 	ACTUALIZAR_CENSO ("AC","censo.boton.actualizar","actualizarCenso()",28),
 	CONGIGURAR_PERFIL ("CONP","general.configp","configurar_perfil()",29),
-	ACTUALIZAR_CENSO_PROGRAMADO ("ACP","censo.boton.actualizarProgramdo","actualizarCensoProgramado()",28);
+	ACTUALIZAR_CENSO_PROGRAMADO ("ACP","censo.boton.actualizarProgramdo","actualizarCensoProgramado()",28),
+	INFORME_GENERAL_DUPLICADOS ("igd","censo.busquedaDuplicados.botonInforme","informeGeneralDuplicados()",33);
 	
     private final String valor;   
 	private final String label;   

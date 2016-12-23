@@ -1014,6 +1014,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
   
+    Execute Immediate 'set constraint FK_CEN_SANCION_SANCION_CGAE deferred';
     Tabla := 'CEN_SANCION';
     Update Cen_Sancion
        Set Idpersona = p_Idpersona_Destino
@@ -1022,6 +1023,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+    Execute Immediate 'set constraint FK_CEN_SANCION_SANCION_CGAE immediate';
   
     Tabla := 'CEN_MEDIADOR_CSV';
     Update CEN_MEDIADOR_CSV

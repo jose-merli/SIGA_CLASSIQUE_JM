@@ -89,7 +89,7 @@
 		}
 	</script>
 	
-	<div id="divDuplicidades" title="Duplicidades" style="display:none">
+	<div id="divDuplicidades" title="Posibles duplicados" style="display:none">
 		<table id='tablaDuplicidades' style='width:100%;table-layout: fixed;'  border='1' align='center' cellspacing='0' cellpadding='0'>	
 	</div>
 	
