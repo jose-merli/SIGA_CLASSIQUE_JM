@@ -1952,3 +1952,6 @@ alter table 	CEN_SANCION	 add constraint 	FK_CEN_SANCION_SANCION_CGAE	 foreign k
 
 alter table 	CEN_PARTIDOJUDICIAL	 drop constraint 	SYS_C0043299	 ; --Solo funciona en PRO
 alter table 	CEN_PARTIDOJUDICIAL	 drop constraint 	SYS_C0016807	 ; --Solo funciona en PRE
+
+-- Ejecutado en Integracion por AAG el 29/12 a las 15:00
+
