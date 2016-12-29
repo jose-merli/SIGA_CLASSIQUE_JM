@@ -31,6 +31,7 @@ public class CenPersonaBean extends MasterBean
 	
 	private boolean existeDatos;
 	CenColegiadoBean colegiado;
+	private String tipoCliente;
 	
 	/** Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_PERSONA";
@@ -140,6 +141,14 @@ public class CenPersonaBean extends MasterBean
 	public void setSexoStr(String sexoStr)
 	{
 		this.sexoStr = sexoStr;
+	}
+	public String getTipoCliente()
+	{
+		return tipoCliente;
+	}
+	public void setTipoCliente(String tipoCliente)
+	{
+		this.tipoCliente = tipoCliente;
 	}
 	
 }

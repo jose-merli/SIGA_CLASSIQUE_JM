@@ -13,6 +13,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.general.SIGAException;
@@ -142,5 +143,35 @@ public class CenTiposSeguroAdm extends MasterBeanAdministrador {
 	       return datos;                        
 	    }
 	
+	public Vector select(String where) throws ClsExceptions 
+	{
+		Vector datos = new Vector();
+		
+		// Acceso a BBDD
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer(); 
+			String sql = " SELECT " + CenTiposSeguroBean.C_IDTIPOSSEGURO + ", " + 
+								      UtilidadesMultidioma.getCampoMultidioma(CenTiposSeguroBean.C_NOMBRE, this.usrbean.getLanguage()) +" , " +
+								      CenTiposSeguroBean.C_CODIGOEXT +", " +
+								      CenTiposSeguroBean.C_FECHAMODIFICACION +", " +
+								      CenTiposSeguroBean.C_USUMODIFICACION +
+						   " FROM " + CenTiposSeguroBean.T_NOMBRETABLA + " ";
+			sql += " " + where;
+			sql += this.getOrdenCampos()!=null ? UtilidadesBDAdm.sqlOrderBy(this.getOrdenCampos()) : UtilidadesBDAdm.sqlOrderBy(this.getClavesBean());
+			if (rc.query(sql)) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					MasterBean registro = (MasterBean) this.hashTableToBeanInicial(fila.getRow()); 
+					if (registro != null) 
+						datos.add(registro);
+				}
+			}
+		} 
+		catch (Exception e) { 	
+			throw new ClsExceptions (e, "Error al ejecutar el \"select\" en B.D."); 
+		}
+		return datos;
+	}
 
 }

@@ -36,19 +36,17 @@
 			var type = '<siga:Idioma key="<%=mensaje%>"/>';
 			alert(type);
 		<%  } %>
-			document.MantenimientoDuplicadosForm.action.value = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
-			document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
-			document.MantenimientoDuplicadosForm.submit();
+			document.forms[0].submit();
 
 	 }
 	</script>
 </head>
 
-<body onload="reloadPage();">
+<body onload="reloadPage()"></body>
 
-	<html:form action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea" style="display:none">
-		<html:hidden property = "modo" value = ""/>
+	<html:form action="/CEN_MantenimientoDuplicados.do?noReset=true&buscar=true" target="mainWorkArea">
+		<html:hidden property = "modo" value = "abrirConParametros"/>
 	</html:form>
 	
-</body>
+
 </html>

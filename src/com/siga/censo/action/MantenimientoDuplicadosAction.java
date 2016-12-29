@@ -19,14 +19,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,7 +59,6 @@ import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenEstadoCivilAdm;
 import com.siga.beans.CenEstadoCivilBean;
-import com.siga.beans.CenHistoricoAdm;
 import com.siga.beans.CenHistoricoBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
@@ -72,6 +68,8 @@ import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.CenSancionAdm;
 import com.siga.beans.CenTipoDireccionBean;
+import com.siga.beans.CenTiposSeguroAdm;
+import com.siga.beans.CenTiposSeguroBean;
 import com.siga.beans.CenTratamientoAdm;
 import com.siga.beans.CenTratamientoBean;
 import com.siga.beans.CerSolicitudCertificadosAdm;
@@ -155,7 +153,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					return super.executeInternal(mapping,formulario,request,response);
 				}
 			}
-			 miForm.setModo("");
+			miForm.setModo("");
 
 			// Redireccionamos el flujo a la JSP correspondiente
 			if (mapDestino == null)	{ 
@@ -440,11 +438,13 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		CenEstadoCivilAdm estadoCivilAdm = new CenEstadoCivilAdm(usr);
 		CenTratamientoAdm tratamientoAdm = new CenTratamientoAdm(usr);
 		AdmLenguajesAdm lenguajeAdm = new AdmLenguajesAdm(usr);
+		CenTiposSeguroAdm tipoSeguroAdm = new CenTiposSeguroAdm(usr);
 		
 		
 		// Variables
 		String idPersona;
 		Hashtable todosLosDatos;
+		boolean tieneColegiaciones, esClienteEnCGAE;
 		
 		// 1. datos personales
 		ArrayList	<CenPersonaBean> datosPersonaDeAmbas = new ArrayList	<CenPersonaBean>(2);
@@ -540,23 +540,27 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				if (datosPersonaDeUna.getIdEstadoCivil() != null) {
 					datosPersonaDeUna.setIdEstadoCivilStr(((CenEstadoCivilBean) estadoCivilAdm.select("where "+CenEstadoCivilBean.C_IDESTADO+"="+datosPersonaDeUna.getIdEstadoCivil()).get(0)).getDescripcion());
 				}
-				datosPersonaDeAmbas.add(datosPersonaDeUna);
 
 				// 2. obteniendo datos del cliente CGAE
 				datosClienteCGAEDeUna = admCliente.existeCliente(Long.valueOf(idPersona), ClsConstants.INSTITUCION_CGAE);
 				if (datosClienteCGAEDeUna == null) {
 					datosClienteCGAEDeUna = new CenClienteBean();
+					datosClienteCGAEDeUna.setSanciones("0");
+					datosClienteCGAEDeUna.setCertificados("0");
+					esClienteEnCGAE = false;
 				} else {
 					datosClienteCGAEDeUna.setIdTratamientoStr(((CenTratamientoBean) tratamientoAdm.select("where "+CenTratamientoBean.C_IDTRATAMIENTO+"="+datosClienteCGAEDeUna.getIdTratamiento()).get(0)).getDescripcion());
 					datosClienteCGAEDeUna.setIdLenguajeStr(((AdmLenguajesBean) lenguajeAdm.select("where "+AdmLenguajesBean.C_IDLENGUAJE+"="+datosClienteCGAEDeUna.getIdLenguaje()).get(0)).getDescripcion());
 					datosClienteCGAEDeUna.setSanciones(Integer.toString(admSancion.getSancionesLetrado(idPersona, String.valueOf(ClsConstants.INSTITUCION_CGAE)).size()));
 					datosClienteCGAEDeUna.setCertificados(Integer.toString(admCertificados.getNumeroCertificados(String.valueOf(ClsConstants.INSTITUCION_CGAE), idPersona)));
+					esClienteEnCGAE = true;
 				}
 				datosClienteCGAEDeAmbas.add(datosClienteCGAEDeUna);
 				
 				// 3. obteniendo los datos de colegiaciones y no colegiaciones
 				listaColegiacionesDeUna = new Hashtable<String, Hashtable>();
 				Vector<Integer> vColegiaciones = admColeg.getColegiaciones(idPersona);
+				tieneColegiaciones = (vColegiaciones.size() > 0);
 				vColegiaciones.addAll(admNoColeg.getColegiaciones(idPersona));
 				for (Integer idInstitucionCol : vColegiaciones) {
 					datosColegiacionDeUna = new Hashtable();
@@ -574,6 +578,9 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					if (beanColegiado != null) {
 						if (beanColegiado.getFechaIncorporacion() != null && !beanColegiado.getFechaIncorporacion().equalsIgnoreCase("")) {
 							beanColegiado.setFechaIncorporacion(UtilidadesString.formatoFecha(beanColegiado.getFechaIncorporacion(), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH));
+						}
+						if (beanColegiado.getIdTipoSeguro() != null) {
+							beanColegiado.setIdTipoSeguroStr(((CenTiposSeguroBean) tipoSeguroAdm.select("where "+CenTiposSeguroBean.C_IDTIPOSSEGURO+"="+beanColegiado.getIdTipoSeguro().toString()).get(0)).getNombre());
 						}
 						datosColegiacionDeUna.put("datosColegiacion", beanColegiado);
 	
@@ -614,21 +621,15 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				}
 				listaDireccionesCGAEDeAmbas.add(listaDireccionesCGAEDeUna);
 				
-				
-				//NUEVO
-				informacionColegiaciones = new Hashtable<String, String>();
- 				Vector<Integer> resultado = admColeg.getColegiaciones(idPersona);
-				if(resultado!= null && resultado.size()>0){
-					 informacionColegiaciones.put("colegiacion", "L");
-				}else{
-					CenClienteBean cenClienteBean= admCliente.existeCliente(Long.valueOf(idPersona),2000 );
-					if(cenClienteBean != null){
-						 informacionColegiaciones.put("colegiacion", "NC");
-					}else{
-						 informacionColegiaciones.put("colegiacion", "C");
-					}
+				// Para saber que tipo de cliente es esta persona NUEVO
+				if (tieneColegiaciones){
+					datosPersonaDeUna.setTipoCliente(ClsConstants.TIPO_CLIENTE_LETRADO);
+				} else if (esClienteEnCGAE){
+					datosPersonaDeUna.setTipoCliente(ClsConstants.TIPO_CLIENTE_NOCOLEGIADO);
+				} else {
+					datosPersonaDeUna.setTipoCliente("");
 				}
-				informacionColegiacionesAmbas.add(informacionColegiaciones);
+				datosPersonaDeAmbas.add(datosPersonaDeUna);
 			}
 			
 			// ahora hay que separar las colegiaciones comunes de las diferentes
@@ -940,7 +941,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			tx.commit();
 			
 			CenPersonaBean beanP = admPersona.getPersonaPorId(idPersonaDestino);
-			String msgSalida = "Fusión completada: se encuentran todos los datos de '"+beanP.getNombreCompleto()+"' en el registro con Num. ident. '"+beanP.getNIFCIF()+"'";
+			String msgSalida = "Fusión completada: se encuentran todos los datos de ´"+beanP.getNombreCompleto()+"´ en el registro con Num. ident. ´"+beanP.getNIFCIF()+"´"; // OJOOO: No se pueden poner comillas dobles ni simples porque fallará la JSP
 			request.setAttribute("mensaje", msgSalida);
 			
 		} catch (Exception e) {

@@ -24,6 +24,7 @@ public class CenColegiadoBean extends MasterBean {
 					fechaIncorporacion, fechaJura,			fechaTitulacion, 	fechaDeontologia, 	fechaMovimiento,
 					cuentacontableSJCS,	nMutualista, identificadorDS, numSolicitudColegiacion;
 	
+	private String idTipoSeguroStr;
 	
 	
 	/* Nombre tabla */
@@ -107,4 +108,8 @@ public class CenColegiadoBean extends MasterBean {
 	 * @return
 	 */
 	public String getNumCol 			()	{ return (this.comunitario.equalsIgnoreCase("1") ? this.nComunitario : this.nColegiado); }
+	
+	/** Devuelve el nombre del seguro ya calculado previamente a partir del id en el catálogo */
+	public String	getIdTipoSeguroStr	()	{ return idTipoSeguroStr; }
+	public void 	setIdTipoSeguroStr	(String idTipoSeguroStr)	{ this.idTipoSeguroStr = idTipoSeguroStr; }
 }

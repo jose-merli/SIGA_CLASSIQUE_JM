@@ -737,21 +737,39 @@
 		function nuevoSolicitante() {
 			var resultado=ventaModalGeneral("busquedaCensoModalForm","G");
 			if (resultado!=undefined && resultado[0]!=undefined ) {
+				var idInstitucion = <%=idInstitucion%>;
+				var idPersona;
+				var idInstitucionOrigen;
+				var ncol;
+				var nid;
+				var nombre;
+				var apellidos;
+				
 				if (resultado[8]!=undefined && resultado[8] == 'Nuevo') {
 					//Se cera desde cero
-					SolicitudesCertificadosForm.idPersonaSolicitante.value=resultado[0];
-					SolicitudesCertificadosForm.nColSolicitante.value=resultado[2];
-					SolicitudesCertificadosForm.nombre.value=resultado[4] + " " + resultado[5] + " " +resultado[6];
-					SolicitudesCertificadosForm.idInstitucionOrigenSolicitante.value=resultado[1];
-					SolicitudesCertificadosForm.nidSolicitante.value=resultado[3];
+					idPersona = resultado[0];
+					idInstitucionOrigen = resultado[1];
+					ncol = resultado[2];
+					nid = resultado[3];
+					nombre = resultado[4];
+					apellidos = resultado[5] + " " +resultado[6];
 				} else {
 					//Selecciona uno existente
-					SolicitudesCertificadosForm.idPersonaSolicitante.value=resultado[0];
-					SolicitudesCertificadosForm.nColSolicitante.value=resultado[1];
-					SolicitudesCertificadosForm.nombre.value=resultado[2] + " " + resultado[3] + " " +resultado[4];
-					SolicitudesCertificadosForm.idInstitucionOrigenSolicitante.value=resultado[5];
-					SolicitudesCertificadosForm.nidSolicitante.value=resultado[6];
+					idPersona = resultado[0];
+					idInstitucionOrigen = resultado[5];
+					ncol = resultado[1];
+					nid = resultado[6];
+					nombre = resultado[2];
+					apellidos = resultado[3] + " " +resultado[4];
 				}				
+				
+				SolicitudesCertificadosForm.idPersonaSolicitante.value=idPersona;
+				SolicitudesCertificadosForm.nColSolicitante.value=ncol;
+				SolicitudesCertificadosForm.nombre.value=nombre + " " + apellidos;
+				SolicitudesCertificadosForm.idInstitucionOrigenSolicitante.value=idInstitucionOrigen;
+				SolicitudesCertificadosForm.nidSolicitante.value=nid;
+				
+				comprobarDuplicados(idInstitucion, idPersona, nid, nombre, apellidos, '', idInstitucionOrigen, ncol);
 			}
 		}
 		
@@ -976,23 +994,21 @@
 							<html:text name="SolicitudesCertificadosForm" property="nombre" styleId="nombre" size="20" styleClass="boxConsulta" readonly="true" style="width:500px" value="<%=nombreSolicitante%>"/>																								 				 																										
 						</td>		
 
+						<td align="right">	
 <% 
-						if (modo.equals("nuevo")) {  
+							if (modo.equals("nuevo")) {  
 %>			
-							<td align="right">	
 								<img id="iconoboton_newSol_1"  src="/SIGA/html/imagenes/icono+.gif"          style="cursor: hand;" alt="Nuevo Solicitante"  name="newSol_1"  border="0" onClick="nuevoSolicitante();"> 
-							</td>	
 <%
-						} else if (modoEditar && !idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO) && !idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR)) {
+							} else if (modoEditar && !idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO) && !idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR)) {
 %>			
-							<td align="right">	
 								<img id="iconoboton_editSol_1" src="/SIGA/html/imagenes/bseleccionar_on.gif" style="cursor: hand;" alt="Editar Solicitante" name="editSol_1" border="0" onClick="editarSolicitante();">			
-								<img id="iconoboton_cargando_1"	src="/SIGA/html/imagenes/bloading_on_23.gif"	style="cursor: hand" alt="Cargando posibles duplicados"> 
-								<img id="iconoboton_aviso_1"	src="/SIGA/html/imagenes/warning.png"			style="cursor: hand; display: none" alt="Duplicidades" onClick="accionObtenerDuplicados();"> 
-							</td>
-<%
-						} 
-%>					</tr>
+<%							} 
+%>
+							<img id="iconoboton_cargando_1"	src="/SIGA/html/imagenes/bloading_on_23.gif"	style="cursor: hand; display: none" alt="Cargando posibles duplicados"> 
+							<img id="iconoboton_aviso_1"	src="/SIGA/html/imagenes/warning.png"			style="cursor: hand; display: none" alt="Duplicidades" onClick="accionObtenerDuplicados();"> 
+						</td>
+					</tr>
 				</table>		
 			</siga:ConjCampos>			
 			

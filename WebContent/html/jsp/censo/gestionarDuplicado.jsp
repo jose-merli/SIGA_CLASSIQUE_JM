@@ -38,16 +38,6 @@
 	Hashtable datos = (Hashtable)request.getAttribute("datos");
 	String idPersona0 =	((CenPersonaBean) ((ArrayList) datos.get("datosPersonales")).get(0)).getIdPersona().toString();
 	String idPersona1 =	((CenPersonaBean) ((ArrayList) datos.get("datosPersonales")).get(1)).getIdPersona().toString();
-	
-	ArrayList informacionColegiacionesAmbas = ((ArrayList) datos.get("informacionColegiacionesAmbas"));
-	
-	Hashtable  Hashtable0 = (Hashtable) informacionColegiacionesAmbas.get(0);
-	Hashtable  Hashtable1 = (Hashtable) informacionColegiacionesAmbas.get(1);
-	
-	String estadoColegiaciones0 = (String) Hashtable0.get("colegiacion");
-	String estadoColegiaciones1 =  (String) Hashtable1.get("colegiacion");
-	
-	
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -166,53 +156,26 @@
 									
 									<tr>
 										<td class="labelTextValue">
+											<c:set var="tipoLetrado" value='<%=ClsConstants.TIPO_CLIENTE_LETRADO%>'/>
+											<c:set var="tipoNoColegiado" value='<%=ClsConstants.TIPO_CLIENTE_NOCOLEGIADO%>'/>
 											<c:choose>
-												<c:when test="${status.count == 1}">
-													<c:set var="estado" value="<%=estadoColegiaciones0%>" />
-													<c:choose>
-															<c:when test="${estado=='L'}">
-																<img id="iconoboton_informacionLetrado1" src="/SIGA/html/imagenes/binformacionLetrado_off.gif" 
-																	style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila"
-																	 title="Acceso a ficha" border="0" onClick="informacionLetrado('${datosPersona.idPersona}','<%=idInstitucionLocation%>',1); " >
-															</c:when>
-															<c:when test="${estado=='NC'}">
-																	<img id="iconoboton_consultar1" src="/SIGA/html/imagenes/bconsultar_on.gif" 
-																style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila"
-																 title="consultar" border="0" onClick="informacionLetrado('${datosPersona.idPersona}',''); " >
-															<img id="iconoboton_editar10" src="/SIGA/html/imagenes/beditar_off.gif" 
-																style="cursor:pointer;" alt="Editar" class="botonesIcoTabla" name="iconoFila"
-																 title="Editar" border="0" onClick="informacionLetrado('${datosPersona.idPersona}','<%=idInstitucionLocation%>',0); " >
-															</c:when>
-															<c:when test="${estado=='C'}">
-																No hay colegiaciones
-															</c:when>
-															
-													</c:choose>
+												<c:when test="${datosPersona.tipoCliente==tipoLetrado}">
+													<img id="iconoboton_informacionLetrado1" src="/SIGA/html/imagenes/binformacionLetrado_off.gif" 
+														 style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila"
+														 title="Acceso a ficha" border="0" onClick="informacionLetrado('${datosPersona.idPersona}','<%=idInstitucionLocation%>',1); " >
+												</c:when>
+												<c:when test="${datosPersona.tipoCliente==tipoNoColegiado}">
+													<img id="iconoboton_consultar1" src="/SIGA/html/imagenes/bconsultar_on.gif" 
+														 style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila"
+														 title="consultar" border="0" onClick="informacionLetrado('${datosPersona.idPersona}',''); " >
+													<img id="iconoboton_editar10" src="/SIGA/html/imagenes/beditar_off.gif" 
+														 style="cursor:pointer;" alt="Editar" class="botonesIcoTabla" name="iconoFila"
+														 title="Editar" border="0" onClick="informacionLetrado('${datosPersona.idPersona}','<%=idInstitucionLocation%>',0); " >
 												</c:when>
 												<c:otherwise>
-													<c:set var="estado" value="<%=estadoColegiaciones1%>" />
-													<c:choose>
-														<c:when test="${estado=='L'}">
-															<img id="iconoboton_informacionLetrado1" src="/SIGA/html/imagenes/binformacionLetrado_off.gif" 
-																	style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila"
-																	 title="Acceso a ficha" border="0" onClick="informacionLetrado('${datosPersona.idPersona}','<%=idInstitucionLocation%>',1); " >
-														</c:when>
-														<c:when test="${estado=='NC'}">
-															<img id="iconoboton_consultar2" src="/SIGA/html/imagenes/bconsultar_on.gif" 
-																style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila"
-																 title="Consultar" border="0" onClick="informacionLetrado('${datosPersona.idPersona}',''); " >
-															<img id="iconoboton_editar11" src="/SIGA/html/imagenes/beditar_off.gif" 
-																style="cursor:pointer;" alt="Editar" class="botonesIcoTabla" name="iconoFila"
-																 title="editar" border="0" onClick="informacionLetrado('${datosPersona.idPersona}','<%=idInstitucionLocation%>',0); " >
-															</c:when>
-														<c:when test="${estado=='C'}">
-																No hay colegiaciones
-															</c:when>
-															
-													</c:choose>
+													<i><b>No disponible</b></i>
 												</c:otherwise>
 											</c:choose>
-											
 										</td>
 									</tr>
 									
@@ -277,7 +240,7 @@
 												<b><c:out value="(Fallecido)"/></b> &nbsp;
 											</c:if>
 											<c:out value="${datosPersona.sexoStr}"/>
-											<c:if test="${datosPersona.sexoStr==''}">
+											<c:if test="${datosPersona.sexoStr==null}">
 												<i>[<strike>sexo</strike>]</i>
 											</c:if>
 											 | <c:out value="${datosPersona.idEstadoCivilStr}"/>
@@ -381,6 +344,11 @@
 										Num. col. | Fecha Inc. | Inscr. y Resid. 
 									</td>
 								</tr>
+								<tr>
+									<td class="labelText">
+										Otros datos 
+									</td>
+								</tr>
 							</table>
 						</td>
 						
@@ -389,14 +357,19 @@
 							<table>
 								<tr>
 									<td class="labelText" colspan="3">
-										<c:out value="${datosCol.NColegiado}"/><c:out value="${datosCol.NComunitario}"/>
-										| <c:out value="${datosCol.fechaIncorporacion}"/>
-								
-										<c:if test="${datosCol.comunitario=='1'}">
-										| <b><c:out value="Inscrito"/></b> &nbsp;
+										<c:if test="${datosCol.numCol!=null && datosCol.numCol!=''}">
+											<c:out value="${datosCol.numCol}"/> |
+										</c:if>
+										<c:if test="${datosCol.numCol==null || datosCol.numCol==''}">
+											<i><b>No colegiado</i></b> |
 										</c:if>
 										
-										|
+										<c:out value="${datosCol.fechaIncorporacion}"/> |
+										
+										<c:if test="${datosCol.comunitario=='1'}">
+											<b><c:out value="Inscrito"/></b> &nbsp;
+										</c:if>
+										
 										<c:choose>
 											<c:when test="${datosCol.situacionResidente=='1'}">
 												<c:out value="Residente"/>
@@ -405,6 +378,22 @@
 												<c:out value="No Residente"/>
 											</c:otherwise>
 										</c:choose>
+									</td>
+								</tr>
+								<tr>
+									<td class="labelText" colspan="3">
+										<c:if test="${datosCol.jubilacionCuota=='1'}">
+											<siga:Idioma key="censo.consultaDatosGenerales.literal.jubilacion"/> |
+										</c:if>
+										
+										<c:if test="${datosCol.identificadorDS!=null && datosCol.identificadorDS!=''}">
+											Con acceso a Docushare |
+										</c:if>
+										
+										<c:out value="${datosCol.idTipoSeguroStr}"/>
+										<c:if test="${datosCol.NMutualista!=null && datosCol.NMutualista!=''}">
+											&nbsp;Número asegurado: <c:out value="${datosCol.NMutualista}"/> |
+										</c:if>
 									</td>
 								</tr>
 							</table>

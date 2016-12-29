@@ -115,7 +115,7 @@
 					document.MantenimientoDuplicadosForm.apellidosText.value.length == 0){
 				
 				error = true;
-				msg=msg+"Debe seleccionar alguna opción de busqueda";
+				msg=msg+"Introduzca algún campo para empezar a buscar";
 
 			}
 			else if((document.MantenimientoDuplicadosForm.nifcif.value.length>0 &&
@@ -137,6 +137,7 @@
 		}
 		
 		function inicio(){
+			sub();
 			<% if (request.getParameter("buscar")!=null && request.getParameter("buscar").equals("true")) {%>
 			 	<%if(!"DUPLICADOS".equalsIgnoreCase(valorIncialVolver) && !"MD".equalsIgnoreCase(valorIncialVolver)){ %>   
 			 		document.forms[0].modo.value="buscar";
@@ -144,9 +145,9 @@
 					document.forms[0].modo.value="buscarPor";
 				<%}%>
 				document.forms[0].target="resultado";	
-				document.forms[0].submit();	
+				document.forms[0].submit();
 			<% } %>
-			
+			fin();
 		}
 		function presionarNif(){
 			jQuery("#numeroColegiadoText").val("");
@@ -235,7 +236,6 @@
 				}
 				
 			}
-			 buscar();
 		}
 
 		function informeGeneralDuplicados(){

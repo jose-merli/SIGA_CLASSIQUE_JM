@@ -3,9 +3,9 @@
 	<%
 		if (!"DUPLICADOS".equalsIgnoreCase(busquedaVolver) && !"MD".equalsIgnoreCase(busquedaVolver)) {
 	%>   
-	<html:form action="/CEN_MantenimientoDuplicados.do" method="POST" target="mainWorkArea">
+	<html:form action="/CEN_MantenimientoDuplicados.do?noReset=true&buscar=true" target="mainWorkArea">
+		<html:hidden property="modo" value="abrirConParametros"/>
 		<html:hidden property="tablaDatosDinamicosD" value=""/>
-		<html:hidden property="modo" value="buscarPor"/>
 		<html:hidden property="nifcif" />
 		<html:hidden property="numeroColegiado" />
 		<html:hidden property="idInstitucion" />
@@ -38,7 +38,12 @@
 		
 		function comprobarDuplicados(idInstitucionAcceso, idPersona, nIdentificacion, nombre, apellido1, apellido2, idInstitucion, numCol) {
 		
+			if (idPersona == "") {
+				return;
+			}
 			if (idInstitucionAcceso=="2000") {
+				jQuery("#iconoboton_cargando_1").show();
+				
 				jQuery.ajax({
 					type : "POST",
 					url : "/SIGA/CEN_MantenimientoDuplicados.do?modo=getAjaxObtenerDuplicados",
@@ -62,8 +67,6 @@
 		}
 		function mantenimientoDuplicados(nifcif, numcol, idinstitucion, nombre, apellido1, apellido2) {
 
-			//document.MantenimientoDuplicadosForm.action.value = "/SIGA/CEN_MantenimientoDuplicados.do" + "?noReset=true&buscar=true";
-			document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
 			document.MantenimientoDuplicadosForm.nifcif.value = nifcif;
 			document.MantenimientoDuplicadosForm.numeroColegiado.value = numcol;
 			document.MantenimientoDuplicadosForm.idInstitucion.value = idinstitucion;
