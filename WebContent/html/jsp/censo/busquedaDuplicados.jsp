@@ -139,7 +139,8 @@
 		function inicio(){
 			sub();
 			<% if (request.getParameter("buscar")!=null && request.getParameter("buscar").equals("true")) {%>
-			 	<%if(!"DUPLICADOS".equalsIgnoreCase(valorIncialVolver) && !"MD".equalsIgnoreCase(valorIncialVolver)){ %>   
+			 	<%if((!"DUPLICADOS".equalsIgnoreCase(valorIncialVolver) && !"MD".equalsIgnoreCase(valorIncialVolver)) 
+			 			|| "exitoFusionar".equalsIgnoreCase(valorIncialVolver)){ %>   
 			 		document.forms[0].modo.value="buscar";
 				<% }else{ %>
 					document.forms[0].modo.value="buscarPor";

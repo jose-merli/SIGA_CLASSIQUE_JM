@@ -952,7 +952,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				controlFusionador.removeControlFusionador();
 			}
 		}
-		
+		request.getSession().setAttribute("CenBusquedaClientesTipo","exitoFusionar");
 		return "exitoFusionar";
 	}
 	
