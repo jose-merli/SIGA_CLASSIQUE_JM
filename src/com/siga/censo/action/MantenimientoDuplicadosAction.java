@@ -1364,6 +1364,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			//la busqueda una vez presentada la pagina
 			String buscar = request.getParameter("buscar");
 			request.setAttribute("buscar",buscar);
+			request.getSession().setAttribute("CenBusquedaClientesTipo","abrirConParametros");
 			UsrBean usr = this.getUserBean(request);
 			String parametros = usr.getLocation();
 			CenInstitucionAdm admInstitucion = new CenInstitucionAdm(usr); 
