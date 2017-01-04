@@ -137,18 +137,17 @@
 		}
 		
 		function inicio(){
-			sub();
 			<% if (request.getParameter("buscar")!=null && request.getParameter("buscar").equals("true")) {%>
 			 	<%if((!"DUPLICADOS".equalsIgnoreCase(valorIncialVolver) && !"MD".equalsIgnoreCase(valorIncialVolver)) 
 			 			|| "exitoFusionar".equalsIgnoreCase(valorIncialVolver) || "abrirConParametros".equalsIgnoreCase(valorIncialVolver)){ %>   
-			 		document.forms[0].modo.value="buscar";
+			 			sub();
+			 			document.forms[0].modo.value="buscar";
 				<% }else{ %>
 					document.forms[0].modo.value="buscarPor";
 				<%}%>
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();
 			<% } %>
-			fin();
 		}
 		function presionarNif(){
 			jQuery("#numeroColegiadoText").val("");
