@@ -473,7 +473,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					Hashtable colegiacionComunDeAmbas;
 								ArrayList	<Hashtable <String, String>> datosColegioDeAmbas;
 								ArrayList	<CenColegiadoBean> beanColegiadoDeAmbas;
-								ArrayList	<Hashtable <String, String>> hashClienteDeAmbas;
+								ArrayList	<CenClienteBean> beanClienteDeAmbas;
 								ArrayList	<Row> estadoUltimoDeAmbas;
 								ArrayList	<Vector> estadosColegioDeAmbas;
 								ArrayList	<Vector	<Hashtable<String, String>>> listaDireccionesDeAmbas;
@@ -647,7 +647,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 						
 						datosColegioDeAmbas = new ArrayList<Hashtable<String,String>>(2);
 						beanColegiadoDeAmbas = new ArrayList<CenColegiadoBean>(2);
-						hashClienteDeAmbas = new ArrayList<Hashtable<String,String>>(2);
+						beanClienteDeAmbas = new ArrayList<CenClienteBean>(2);
 						estadoUltimoDeAmbas = new ArrayList<Row>(2);
 						estadosColegioDeAmbas = new ArrayList<Vector>(2);
 						listaDireccionesDeAmbas = new ArrayList<Vector<Hashtable<String,String>>>();
@@ -662,7 +662,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 							
 							datosColegioDeAmbas.add		((Hashtable<String,String>) 		datosColegiacionDeUna.get("datosColegio"));
 							beanColegiadoDeAmbas.add	((CenColegiadoBean) 				datosColegiacionDeUna.get("datosColegiacion"));
-							hashClienteDeAmbas.add		((Hashtable <String, String>) 		datosColegiacionDeUna.get("datosCliente"));
+							beanClienteDeAmbas.add		((CenClienteBean) 					datosColegiacionDeUna.get("datosCliente"));
 							estadoUltimoDeAmbas.add		((Row) 								datosColegiacionDeUna.get("estadoColegiacion"));
 							estadosColegioDeAmbas.add	((Vector) 							datosColegiacionDeUna.get("historicoEstadosColegiacion"));
 							listaDireccionesDeAmbas.add	((Vector<Hashtable<String,String>>) datosColegiacionDeUna.get("direcciones"));
@@ -671,7 +671,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 						colegiacionComunDeAmbas.put("institucionColegiacion", 		datosColegioDeAmbas.get(0).get("institucionColegiacion"));
 						colegiacionComunDeAmbas.put("fechaProduccion", 				datosColegioDeAmbas.get(0).get("fechaProduccion"));
 						colegiacionComunDeAmbas.put("datosColegiacion", 			beanColegiadoDeAmbas);
-						colegiacionComunDeAmbas.put("datosCliente", 				hashClienteDeAmbas);
+						colegiacionComunDeAmbas.put("datosCliente", 				beanClienteDeAmbas);
 						colegiacionComunDeAmbas.put("estadoColegiacion", 			estadoUltimoDeAmbas);
 						colegiacionComunDeAmbas.put("historicoEstadosColegiacion", 	estadosColegioDeAmbas);
 						colegiacionComunDeAmbas.put("direcciones", 					listaDireccionesDeAmbas);
@@ -683,7 +683,9 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 						listaColegiacionesDiferentesDeUna.add(datosColegiacionDeUna);
 					}
 				}
-				listaColegiacionesDiferentesDeAmbas.add(listaColegiacionesDiferentesDeUna);
+				if (listaColegiacionesDiferentesDeUna.size() > 0) {
+					listaColegiacionesDiferentesDeAmbas.add(listaColegiacionesDiferentesDeUna);
+				}
 				
 				listaColegiacionesDiferentesDeUna = new ArrayList<Hashtable>();
 				for (String idInstitucionCol : listaColegiacionesDeAmbas.get(segundaPersona).keySet()) {
@@ -691,7 +693,14 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					datosColegiacionDeUna = listaColegiacionesDeAmbas.get(segundaPersona).get(idInstitucionCol); // aqui no se puede eliminar porque fallaria el bucle
 					listaColegiacionesDiferentesDeUna.add(datosColegiacionDeUna);
 				}
-				listaColegiacionesDiferentesDeAmbas.add(listaColegiacionesDiferentesDeUna);
+				if (listaColegiacionesDiferentesDeAmbas.size() > 0) {
+					// Si la primera persona si tenia colegiaciones, ahora hay que anyadir la segunda (aunque sea una lista vacia) 
+					listaColegiacionesDiferentesDeAmbas.add(listaColegiacionesDiferentesDeUna);
+				} else if (listaColegiacionesDiferentesDeAmbas.size() == 0 && listaColegiacionesDiferentesDeUna.size() > 0) {
+					// Si la primera persona no tenia colegiaciones, pero la segunda si, hay que anaydir una lista vacia antes de anyadir la segunda 
+					listaColegiacionesDiferentesDeAmbas.add(new ArrayList<Hashtable>());
+					listaColegiacionesDiferentesDeAmbas.add(listaColegiacionesDiferentesDeUna);
+				}
 			} // separando las colegiaciones comunes de las diferentes
 			
 			// guardando todos los datos

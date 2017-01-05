@@ -240,10 +240,14 @@
 
 		function informeGeneralDuplicados(){
 			sub();
-			alert("Se ha empezado a generar el informe con éxito. Espere unos minutos, o vuelva más tarde para descargarlo.")
+			// El siguiente alert solo se vera al pulsar por primera vez
+			alert("Se ha empezado a generar el informe con éxito. Espere unos minutos, o vuelva más tarde para descargarlo.");
+			// El anterior alert sera reemplazado por otro mensaje si es la segunda vez que se pulsa el boton
 			document.forms[0].modo.value="exportar";
 		  	document.forms[0].submit();
 			fin();
+			// El siguiente alert solo se vera cuando se descargue el fichero
+			alert("Descargando el informe del día de hoy. Si quiere actualizar los datos, vuelva a generar el informe mañana.");
 		}
 		</script>
 		<siga:Titulo 

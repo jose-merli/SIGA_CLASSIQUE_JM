@@ -195,10 +195,10 @@
 			
 			<hr style="color:black;"></hr>
 			
-			<!-- INI Otros datos -->
+		<!-- INI Datos en GENERAL -->
 			<div id="divGeneral" name="divScroll" style="overflow-y:scroll; height:550px;">
 				
-				<siga:ConjCampos leyenda="Otros datos">
+				<siga:ConjCampos leyenda="Otros datos" desplegable="true" oculto="true" postFunction="pulsarOtrosDatos()">
 					<table width="100%">
 						<tr>
 							<td width="26%">
@@ -272,7 +272,7 @@
 									
 									<tr>
 										<td class="labelText"> 
-											Otros checks
+											Otros datos generales
 										</td>
 									</tr>
 								</table>
@@ -305,11 +305,11 @@
 										<td class="labelText"> 
 											<!-- Este campo solo se muestra en CGAE -->
 											<c:if test="${datosCliente.noEnviarRevista=='1'}">
-												<i><b><siga:Idioma key="messages.letrados.noRevistaCGAE"/></b></i> |
+												<font color="red"><i><b><siga:Idioma key="messages.letrados.noRevistaCGAE"/></b></i></font> |
 											</c:if>
 											<c:if test="${datosCliente.noAparacerRedAbogacia=='1'}">
 												<!-- Este mensaje es diferente entre CGAE y Colegios -->
-												<i><b><siga:Idioma key="messages.letrados.noApareceRedAbogacia"/></b></i>
+												<font color="red"><i><b><siga:Idioma key="messages.letrados.noApareceRedAbogacia"/></b></i></font>
 											</c:if>
 										</td>
 									</tr>
@@ -319,9 +319,9 @@
 						</tr>
 					</table>
 				</siga:ConjCampos>
-				<!-- FIN Otros datos -->
+		<!-- FIN Datos en GENERAL -->
 				
-				<!-- INI Colegiaciones iguales -->
+		<!-- INI Colegiaciones iguales -->
 				<c:forEach items="${datos.datosColegialesIguales}" var="datosColUnica" varStatus="status">
 				
 				<c:if test="${datosColUnica.fechaProduccion!=''}">
@@ -332,9 +332,9 @@
 				</c:if>
 				
 				<br/>
-				<siga:ConjCampos leyenda="Coincidencia - ${institucionColegiacion}">
+				<siga:ConjCampos leyenda="Coincidencia - ${institucionColegiacion}" desplegable="true" oculto="true" postFunction="pulsarColegiacionesIguales()">
 				
-					<!-- INI Datos colegiacion comun -->
+		<!-- INI Datos colegiacion comun -->
 					<table width="100%">
 						<tr>
 							<td width="26%"> 
@@ -342,11 +342,6 @@
 									<tr>
 										<td class="labelText">
 											Num. col. | Fecha Inc. | Inscr. y Resid. 
-										</td>
-									</tr>
-									<tr>
-										<td class="labelText">
-											Otros datos 
 										</td>
 									</tr>
 								</table>
@@ -380,27 +375,11 @@
 											</c:choose>
 										</td>
 									</tr>
-									<tr>
-										<td class="labelText" colspan="3">
-											<c:if test="${datosCol.jubilacionCuota=='1'}">
-												<siga:Idioma key="censo.consultaDatosGenerales.literal.jubilacion"/> |
-											</c:if>
-											
-											<c:if test="${datosCol.identificadorDS!=null && datosCol.identificadorDS!=''}">
-												Con acceso a Docushare |
-											</c:if>
-											
-											<c:out value="${datosCol.idTipoSeguroStr}"/>
-											<c:if test="${datosCol.NMutualista!=null && datosCol.NMutualista!=''}">
-												&nbsp;Número asegurado: <c:out value="${datosCol.NMutualista}"/> |
-											</c:if>
-										</td>
-									</tr>
 								</table>
 							</td>
 							</c:forEach>
 						</tr>
-									
+						
 						<tr>
 							<td width="26%"> 
 								<table>
@@ -437,39 +416,22 @@
 							<td width="26%"> 
 								<table>
 									<tr>
-										<td class="labelText"> 
-											Tratamiento 
-											| Idioma
-	 									</td>
-									</tr>
-									
-									<tr>
-										<td class="labelText"> 
-											Otros checks
+										<td class="labelText">
+											Otros datos colegiales
 										</td>
 									</tr>
 								</table>
 							</td>
 							
-							<c:forEach items="${datosColUnica.datosClienteCGAE}" var="datosCliente" varStatus="status">
+							<c:forEach items="${datosColUnica.datosCliente}" var="datosCliente" varStatus="status">
 							<td width="37%">
 								<table>
 									<tr>
 										<td class="labelText"> 
-											<c:out value="${datosCliente.idTratamientoStr}"/>
-											<c:if test="${datosCliente.idTratamientoStr==''}">
-												<i>[<strike>tratamiento</strike>]</i>
-											</c:if>
-											| <c:out value="${datosCliente.idLenguajeStr}"/>
-											<c:if test="${datosCliente.idLenguajeStr==''}">
-												<i>[<strike>idioma</strike>]</i>
-											</c:if>
-	 									</td>
-									</tr>
+											Tratamiento '<c:out value="${datosCliente.idTratamientoStr}"/>' | 
+											Idioma '<c:out value="${datosCliente.idLenguajeStr}"/>' | 
 									
-									<tr>
-										<td class="labelText"> 
-											<c:out value="${datosCliente.asientoContable}"> | 
+											Asiento contable '<c:out value="${datosCliente.asientoContable}"/>' | 
 											<c:if test="${datosCliente.fotografia!=''}">
 												<i><b>Con foto</b></i> | 
 											</c:if>
@@ -492,11 +454,46 @@
 							</td>
 							</c:forEach>
 						</tr>
+						
+						<tr>
+							<td width="26%"> 
+								<table>
+									<tr>
+										<td class="labelText"> 
+											&nbsp;
+	 									</td>
+									</tr>
+								</table>
+							</td>
+							
+							<c:forEach items="${datosColUnica.datosColegiacion}" var="datosCol" varStatus="status">
+							<td width="37%">
+								<table>
+									<tr>
+										<td class="labelText" colspan="3">
+											<c:if test="${datosCol.jubilacionCuota=='1'}">
+												<siga:Idioma key="censo.consultaDatosGenerales.literal.jubilacion"/> |
+											</c:if>
+											
+											<c:if test="${datosCol.identificadorDS!=null && datosCol.identificadorDS!=''}">
+												Con acceso a Docushare |
+											</c:if>
+											
+											<c:out value="${datosCol.idTipoSeguroStr}"/>
+											<c:if test="${datosCol.NMutualista!=null && datosCol.NMutualista!=''}">
+												&nbsp;Número asegurado: <c:out value="${datosCol.NMutualista}"/> |
+											</c:if>
+										</td>
+									</tr>
+								</table>
+							</td>
+							</c:forEach>
+						</tr>
 
 					</table>
-					<!-- FIN Datos colegiacion comun -->
+		<!-- FIN Datos colegiacion comun -->
 
-					<!-- INI Conjunto de direcciones de cada colegiacion comun -->
+		<!-- INI Conjunto de direcciones de cada colegiacion comun -->
 					<siga:ConjCampos leyenda="Direcciones de colegio">
 						<table width="100%">
 						<tr>
@@ -611,14 +608,21 @@
 						</tr>
 						</table>
 					</siga:ConjCampos>
-					<!-- FIN Conjunto de direcciones de cada colegiacion comun -->
+		<!-- FIN Conjunto de direcciones de cada colegiacion comun -->
 
 				</siga:ConjCampos>
 				</c:forEach>
-				<!-- FIN Colegiaciones iguales -->
+		<!-- FIN Colegiaciones iguales -->
 					
-				<!-- INI Colegiaciones diferentes -->
-				<siga:ConjCampos leyenda="Colegiaciones diferentes">
+		<!-- INI Colegiaciones diferentes -->
+				
+				<c:choose>
+				<c:when test="${empty datos.datosColegiales}">
+					<br/>
+				</c:when>
+				<c:otherwise>		
+				<br/>
+				<siga:ConjCampos leyenda="Colegiaciones diferentes" desplegable="true" oculto="true" postFunction="pulsarColegiacionesDiferentes()">
  					<table width="100%">
 					<tr>
 						<!-- Etiquetas de campos -->
@@ -716,9 +720,13 @@
 					</tr>
 					</table>
 				</siga:ConjCampos>
-				<!-- FIN Colegiaciones diferentes -->
+				</c:otherwise>		
+				</c:choose>
+		<!-- FIN Colegiaciones diferentes -->
 				
-				<siga:ConjCampos leyenda="censo.fusionDuplicados.direcciones.cabecera">
+		<!-- INI Direcciones en GENERAL -->
+				<br/>
+				<siga:ConjCampos leyenda="censo.fusionDuplicados.direcciones.cabecera" desplegable="true" oculto="true" postFunction="pulsarDirecciones()">
 				<table width="100%">				
 					<tr>
 						<!-- Etiquetas de campos -->
@@ -840,6 +848,7 @@
 					</tr>
 				</table>
 				</siga:ConjCampos>
+		<!-- FIN Direcciones en GENERAL -->
 				
 			</div>
 			
@@ -989,6 +998,10 @@
 			// jbd // fin helpers
 			
 			function accionAceptar(){
+				if (!pulsadoOtrosDatos || !pulsadoColegiacionesIguales || !pulsadoColegiacionesDiferentes || !pulsadoDirecciones) {
+					alert("Revise todos los conjuntos de datos antes de aceptar la combinación");
+					return
+				}
 				if (seleccionado){
 					<%if(idPersona1.equalsIgnoreCase(idPersona0)){%>
 						alert("<siga:Idioma key="censo.fusionDuplicados.error.mismaPersona"/>");
@@ -1030,6 +1043,24 @@
 					seleccionarChecks(document.forms[0].checkEstado, idD);
 				}
 				seleccionado=true;
+			}
+			
+			var pulsadoOtrosDatos = false;
+			var pulsadoColegiacionesIguales = false;
+			var pulsadoColegiacionesDiferentes = false;
+			var pulsadoDirecciones = false;
+			
+			function pulsarOtrosDatos() {
+				pulsadoOtrosDatos = true;
+			}
+			function pulsarColegiacionesIguales() {
+				pulsadoColegiacionesIguales = true;
+			}
+			function pulsarColegiacionesDiferentes() {
+				pulsadoColegiacionesDiferentes = true;
+			}
+			function pulsarDirecciones() {
+				pulsadoDirecciones = true;
 			}
 			
 		</script>	
