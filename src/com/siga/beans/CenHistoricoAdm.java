@@ -521,18 +521,10 @@ public class CenHistoricoAdm extends MasterBeanAdministrador {
 
 	public boolean insertCompleto(Hashtable hHistorico, MasterBean beanAsociado, int accion, String idioma) throws ClsExceptions
 	{
-		return this.insertCompleto((CenHistoricoBean)this.hashTableToBean(hHistorico), beanAsociado, accion, idioma, false);
-	}
-	
-	public boolean insertCompleto(Hashtable hHistorico, MasterBean beanAsociado, int accion, String idioma, boolean bDesdeCGAE) throws ClsExceptions
-	{
-		return this.insertCompleto((CenHistoricoBean)this.hashTableToBean(hHistorico), beanAsociado, accion, idioma, bDesdeCGAE);
+		return this.insertCompleto((CenHistoricoBean)this.hashTableToBean(hHistorico), beanAsociado, accion, idioma);
 	}
 
-	public boolean insertCompleto(CenHistoricoBean beanHistorico, MasterBean beanAsociado, int accion, String idioma) throws ClsExceptions{
-		return this.insertCompleto(beanHistorico, beanAsociado, accion, idioma, false);
-	}
-	public boolean insertCompleto(CenHistoricoBean beanHistorico, MasterBean beanAsociado, int accion, String idioma, boolean bDesdeCGAE) throws ClsExceptions
+	public boolean insertCompleto(CenHistoricoBean beanHistorico, MasterBean beanAsociado, int accion, String idioma) throws ClsExceptions
 	{
 		try {
 			Hashtable hBeanAsociado  = null, hBeanAsociadoAnterior = null;
@@ -902,15 +894,18 @@ public class CenHistoricoAdm extends MasterBeanAdministrador {
 					hBeanAsociado = adm.beanToHashTable(beanDatosColegiales);
 					hBeanAsociadoAnterior = adm.beanToHashTable(adm.hashTableToBean(beanDatosColegiales.getOriginalHash()));
 					
-					if(beanDatosColegiales.getFechaEstado()!=null && !beanDatosColegiales.getFechaEstado().equals(""))
+					if (beanDatosColegiales.getFechaEstado()!=null && !beanDatosColegiales.getFechaEstado().equals("")) {
 						beanHistorico.setFechaEfectiva(beanDatosColegiales.getFechaEstado());
+					}
 					
-					beanHistorico.setIdPersona(beanDatosColegiales.getIdPersona());			
-					beanHistorico.setIdInstitucion(beanDatosColegiales.getIdInstitucion());
+					if (beanHistorico.getIdPersona()==null) {
+						beanHistorico.setIdPersona(beanDatosColegiales.getIdPersona());
+					}
+					if (beanHistorico.getIdInstitucion()==null) {
+						beanHistorico.setIdInstitucion(beanDatosColegiales.getIdInstitucion());
+					}
 					
-					if (beanHistorico.getIdTipoCambio()!=null && !beanHistorico.getIdTipoCambio().equals("")){
-					  beanHistorico.setIdTipoCambio(beanHistorico.getIdTipoCambio());
-					}else{
+					if (beanHistorico.getIdTipoCambio()==null || beanHistorico.getIdTipoCambio().equals("")) {
 						beanHistorico.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_INHABILITACION));	
 					}
 					
@@ -1217,9 +1212,7 @@ public class CenHistoricoAdm extends MasterBeanAdministrador {
 				beanHistorico.setFechaEfectiva("SYSDATE");
 			if ((beanHistorico.getFechaEntrada()  == null) || (beanHistorico.getFechaEntrada().equals(""))) 
 				beanHistorico.setFechaEntrada ("SYSDATE");
-			if (bDesdeCGAE)
-				beanHistorico.setIdInstitucion(2000);
-			//beanHistorico.setIdInstitucionCargo("");
+			
 			// Insertamos el historico
 			if (this.insert(beanHistorico)) {
 				return true;

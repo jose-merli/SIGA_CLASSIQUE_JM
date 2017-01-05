@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -460,7 +461,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 								Hashtable datosColegiacionDeUna;
 											Hashtable <String, String> datosColegioDeUna;
 											CenColegiadoBean beanColegiado;
-											Hashtable <String, String> hashCliente;
+											CenClienteBean beanCliente;
 											Row estadoUltimo;
 											Vector estadosColegio;
 											Vector	<Hashtable<String, String>> listaDireccionesDeUna;
@@ -468,7 +469,6 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 
 		ArrayList	<ArrayList	<Hashtable>> listaColegiacionesDiferentesDeAmbas = new ArrayList	<ArrayList	<Hashtable>>(2);
 					ArrayList	<Hashtable> listaColegiacionesDiferentesDeUna;
-		//Hashtable<String,	Hashtable	<String, ArrayList>> listaColegiacionesComunesDeAmbas = new Hashtable<String, Hashtable<String,ArrayList>>();
 		ArrayList	<Hashtable> listaColegiacionesComunesDeAmbas = new ArrayList<Hashtable>();
 					Hashtable colegiacionComunDeAmbas;
 								ArrayList	<Hashtable <String, String>> datosColegioDeAmbas;
@@ -594,8 +594,10 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					}
 					
 					// obteniendo otros datos del colegiado
-					hashCliente = (Hashtable) admCliente.getDatosPersonales(Long.valueOf(idPersona), idInstitucionCol).get(0);
-					datosColegiacionDeUna.put("datosCliente", hashCliente);
+					beanCliente = admCliente.existeCliente(Long.valueOf(idPersona), idInstitucionCol);
+					beanCliente.setIdTratamientoStr(((CenTratamientoBean) tratamientoAdm.select("where "+CenTratamientoBean.C_IDTRATAMIENTO+"="+beanCliente.getIdTratamiento()).get(0)).getDescripcion());
+					beanCliente.setIdLenguajeStr(((AdmLenguajesBean) lenguajeAdm.select("where "+AdmLenguajesBean.C_IDLENGUAJE+"="+beanCliente.getIdLenguaje()).get(0)).getDescripcion());
+					datosColegiacionDeUna.put("datosCliente", beanCliente);
 
 					// obteniendo direcciones del colegiado
 					listaDireccionesDeUna = admCliente.getDirecciones(Long.valueOf(idPersona), idInstitucionCol, false);//incluirBajas = false;
@@ -760,7 +762,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				intInstitucion = Integer.parseInt(stInstitucion);
 				// Si se quiere fusionar un colegiado en el mismo colegio, solo lo permitimos al personal de IT o bien si el colegio no esta en produccion
 				if (admColeg.existeColegiado(Long.parseLong(idPersonaDestino), intInstitucion) != null && !tienePermisoFusionColegiosEnProduccion(mapping, request) && admInst.estaEnProduccion(stInstitucion)) {
-					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "No está permitida la fusión por seguridad. El colegio "+nombreInstitucion+" usa SIGA y puede contener datos delicados. Por favor, pida ayuda al Administrador."));
+					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "No está permitida la fusión por seguridad. El colegio de "+nombreInstitucion+" usa SIGA y puede contener datos delicados. Por favor, consulte con el Administrador."));
 					return "exitoFusionar";
 				}
 			}
@@ -997,7 +999,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			// semaforo para evitar que se pida la fusion de la misma persona varias veces
 			controlFusionador = ControlFusionador.getControlFusionador(ControlFusionador.CONTROL_INFORME, null);
 			if (controlFusionador == null) {
-				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "Ya se ha solicitado la generación del informe de duplicados. Espere unos minutos hasta que termine."));
+				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "Ya se solicitó la generación del informe de duplicados. Espere unos minutos hasta que termine."));
 				return "exitoFusionar";
 			}
 			

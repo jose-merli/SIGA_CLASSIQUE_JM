@@ -336,102 +336,163 @@
 				
 					<!-- INI Datos colegiacion comun -->
 					<table width="100%">
-					<tr>
-						<td width="26%"> 
-							<table>
-								<tr>
-									<td class="labelText">
-										Num. col. | Fecha Inc. | Inscr. y Resid. 
-									</td>
-								</tr>
-								<tr>
-									<td class="labelText">
-										Otros datos 
-									</td>
-								</tr>
-							</table>
-						</td>
-						
-						<c:forEach items="${datosColUnica.datosColegiacion}" var="datosCol" varStatus="status">
-						<td width="37%">
-							<table>
-								<tr>
-									<td class="labelText" colspan="3">
-										<c:if test="${datosCol.numCol!=null && datosCol.numCol!=''}">
-											<c:out value="${datosCol.numCol}"/> |
-										</c:if>
-										<c:if test="${datosCol.numCol==null || datosCol.numCol==''}">
-											<i><b>No colegiado</i></b> |
-										</c:if>
-										
-										<c:out value="${datosCol.fechaIncorporacion}"/> |
-										
-										<c:if test="${datosCol.comunitario=='1'}">
-											<b><c:out value="Inscrito"/></b> &nbsp;
-										</c:if>
-										
-										<c:choose>
-											<c:when test="${datosCol.situacionResidente=='1'}">
-												<c:out value="Residente"/>
-											</c:when>
-											<c:otherwise>
-												<c:out value="No Residente"/>
-											</c:otherwise>
-										</c:choose>
-									</td>
-								</tr>
-								<tr>
-									<td class="labelText" colspan="3">
-										<c:if test="${datosCol.jubilacionCuota=='1'}">
-											<siga:Idioma key="censo.consultaDatosGenerales.literal.jubilacion"/> |
-										</c:if>
-										
-										<c:if test="${datosCol.identificadorDS!=null && datosCol.identificadorDS!=''}">
-											Con acceso a Docushare |
-										</c:if>
-										
-										<c:out value="${datosCol.idTipoSeguroStr}"/>
-										<c:if test="${datosCol.NMutualista!=null && datosCol.NMutualista!=''}">
-											&nbsp;Número asegurado: <c:out value="${datosCol.NMutualista}"/> |
-										</c:if>
-									</td>
-								</tr>
-							</table>
-						</td>
-						</c:forEach>
-					</tr>
-								
-					<tr>
-						<td width="26%"> 
-							<table>
-								<tr>
-									<td class="labelText">
-										Histórico de estados 
-									</td>
-								</tr>
-							</table>
-						</td>
-						
-						<c:forEach items="${datosColUnica.historicoEstadosColegiacion}" var="datosCol" varStatus="status">
-						<td width="37%">
-							<table>
-								<c:forEach items="${datosCol}" var="histEstados"  varStatus="status">
-								<tr>
-									<td class="labelTextValue">
-										<input type="checkBox" name="checkEstado" id="${histEstados.row.IDPERSONA}" value="${histEstados.row.IDINSTITUCION}&&${histEstados.row.IDPERSONA}&&${histEstados.row.FECHAESTADO}" checked/>
-									</td>
-									<td class="labelText">
-										<c:out value="${histEstados.row.DESCRIPCION}"/>
-									</td>
-									<td class="labelText">
-										desde <c:out value="${histEstados.row.FECHAESTADO_SPANISH}"/>
-									</td>
-								</tr>															
-								</c:forEach>
-							</table>
-						</td>
-						</c:forEach>
-					</tr>
+						<tr>
+							<td width="26%"> 
+								<table>
+									<tr>
+										<td class="labelText">
+											Num. col. | Fecha Inc. | Inscr. y Resid. 
+										</td>
+									</tr>
+									<tr>
+										<td class="labelText">
+											Otros datos 
+										</td>
+									</tr>
+								</table>
+							</td>
+							
+							<c:forEach items="${datosColUnica.datosColegiacion}" var="datosCol" varStatus="status">
+							<td width="37%">
+								<table>
+									<tr>
+										<td class="labelText" colspan="3">
+											<c:if test="${datosCol.numCol!=null && datosCol.numCol!=''}">
+												<c:out value="${datosCol.numCol}"/> |
+											</c:if>
+											<c:if test="${datosCol.numCol==null || datosCol.numCol==''}">
+												<i><b>No colegiado</i></b> |
+											</c:if>
+											
+											<c:out value="${datosCol.fechaIncorporacion}"/> |
+											
+											<c:if test="${datosCol.comunitario=='1'}">
+												<b><c:out value="Inscrito"/></b> &nbsp;
+											</c:if>
+											
+											<c:choose>
+												<c:when test="${datosCol.situacionResidente=='1'}">
+													<c:out value="Residente"/>
+												</c:when>
+												<c:otherwise>
+													<c:out value="No Residente"/>
+												</c:otherwise>
+											</c:choose>
+										</td>
+									</tr>
+									<tr>
+										<td class="labelText" colspan="3">
+											<c:if test="${datosCol.jubilacionCuota=='1'}">
+												<siga:Idioma key="censo.consultaDatosGenerales.literal.jubilacion"/> |
+											</c:if>
+											
+											<c:if test="${datosCol.identificadorDS!=null && datosCol.identificadorDS!=''}">
+												Con acceso a Docushare |
+											</c:if>
+											
+											<c:out value="${datosCol.idTipoSeguroStr}"/>
+											<c:if test="${datosCol.NMutualista!=null && datosCol.NMutualista!=''}">
+												&nbsp;Número asegurado: <c:out value="${datosCol.NMutualista}"/> |
+											</c:if>
+										</td>
+									</tr>
+								</table>
+							</td>
+							</c:forEach>
+						</tr>
+									
+						<tr>
+							<td width="26%"> 
+								<table>
+									<tr>
+										<td class="labelText">
+											Histórico de estados 
+										</td>
+									</tr>
+								</table>
+							</td>
+							
+							<c:forEach items="${datosColUnica.historicoEstadosColegiacion}" var="datosCol" varStatus="status">
+							<td width="37%">
+								<table>
+									<c:forEach items="${datosCol}" var="histEstados"  varStatus="status">
+									<tr>
+										<td class="labelTextValue">
+											<input type="checkBox" name="checkEstado" id="${histEstados.row.IDPERSONA}" value="${histEstados.row.IDINSTITUCION}&&${histEstados.row.IDPERSONA}&&${histEstados.row.FECHAESTADO}" checked/>
+										</td>
+										<td class="labelText">
+											<c:out value="${histEstados.row.DESCRIPCION}"/>
+										</td>
+										<td class="labelText">
+											desde <c:out value="${histEstados.row.FECHAESTADO_SPANISH}"/>
+										</td>
+									</tr>															
+									</c:forEach>
+								</table>
+							</td>
+							</c:forEach>
+						</tr>
+					
+						<tr>
+							<td width="26%"> 
+								<table>
+									<tr>
+										<td class="labelText"> 
+											Tratamiento 
+											| Idioma
+	 									</td>
+									</tr>
+									
+									<tr>
+										<td class="labelText"> 
+											Otros checks
+										</td>
+									</tr>
+								</table>
+							</td>
+							
+							<c:forEach items="${datosColUnica.datosClienteCGAE}" var="datosCliente" varStatus="status">
+							<td width="37%">
+								<table>
+									<tr>
+										<td class="labelText"> 
+											<c:out value="${datosCliente.idTratamientoStr}"/>
+											<c:if test="${datosCliente.idTratamientoStr==''}">
+												<i>[<strike>tratamiento</strike>]</i>
+											</c:if>
+											| <c:out value="${datosCliente.idLenguajeStr}"/>
+											<c:if test="${datosCliente.idLenguajeStr==''}">
+												<i>[<strike>idioma</strike>]</i>
+											</c:if>
+	 									</td>
+									</tr>
+									
+									<tr>
+										<td class="labelText"> 
+											<c:out value="${datosCliente.asientoContable}"> | 
+											<c:if test="${datosCliente.fotografia!=''}">
+												<i><b>Con foto</b></i> | 
+											</c:if>
+											<c:if test="${datosCliente.guiaJudicial=='1'}">
+												<i><b><siga:Idioma key="censo.consultaDatosGenerales.literal.guiaJudicial"/></b></i> | 
+											</c:if>
+											<c:if test="${datosCliente.publicidad=='1'}">
+												<i><b><siga:Idioma key="censo.consultaDatosGenerales.literal.publicidad"/></b></i> | 
+											</c:if>
+											<c:if test="${datosCliente.comisiones=='1'}">
+												<i><b><siga:Idioma key="censo.consultaDatosGenerales.literal.comisiones"/></b></i> | 
+											</c:if>
+											<c:if test="${datosCliente.noAparacerRedAbogacia=='1'}">
+												<!-- Este mensaje es diferente entre CGAE y Colegios -->
+												<i><b><siga:Idioma key="messages.letrados.lopd"/></b></i> 
+											</c:if>
+										</td>
+									</tr>
+								</table>
+							</td>
+							</c:forEach>
+						</tr>
+
 					</table>
 					<!-- FIN Datos colegiacion comun -->
 
@@ -557,7 +618,7 @@
 				<!-- FIN Colegiaciones iguales -->
 					
 				<!-- INI Colegiaciones diferentes -->
-				<siga:ConjCampos leyenda="censo.fusionDuplicados.colegiaciones.titulo">
+				<siga:ConjCampos leyenda="Colegiaciones diferentes">
  					<table width="100%">
 					<tr>
 						<!-- Etiquetas de campos -->

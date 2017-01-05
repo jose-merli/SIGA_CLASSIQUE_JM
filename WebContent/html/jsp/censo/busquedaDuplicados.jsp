@@ -240,7 +240,7 @@
 
 		function informeGeneralDuplicados(){
 			sub();
-			alert("Se está generando el informe. Espere unos minutos, o vuelva más tarde para descargarlo.")
+			alert("Se ha empezado a generar el informe con éxito. Espere unos minutos, o vuelva más tarde para descargarlo.")
 			document.forms[0].modo.value="exportar";
 		  	document.forms[0].submit();
 			fin();

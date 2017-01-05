@@ -28,6 +28,7 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.EjecucionPLs;
@@ -216,41 +217,36 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 		Hashtable hashHist = new Hashtable();			
 		// Cargo los valores obtenidos del formulario referentes al historico			
 		hashHist.put(CenHistoricoBean.C_IDPERSONA, modificacion.get(CenDatosColegialesEstadoBean.C_IDPERSONA));
-		hashHist.put(CenHistoricoBean.C_IDINSTITUCION, modificacion.get(CenDatosColegialesEstadoBean.C_IDINSTITUCION));
+		hashHist.put(CenHistoricoBean.C_IDINSTITUCION, (bDesdeCGAE ? Integer.toString(ClsConstants.INSTITUCION_CGAE) : modificacion.get(CenDatosColegialesEstadoBean.C_IDINSTITUCION)));
 		hashHist.put(CenHistoricoBean.C_MOTIVO, modificacion.get(CenHistoricoBean.C_MOTIVO));
 		// Especifico el tipo de cambio del historico
 		int tipohistorico=0;
 		switch (Integer.valueOf(modificacion.get(CenDatosColegialesEstadoBean.C_IDESTADO).toString())) {
 		case ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL:
 			tipohistorico = ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_COLEGIAL;
+			break;
 		case ClsConstants.ESTADO_COLEGIAL_EJERCIENTE:
 			tipohistorico = ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_ALTA_EJERCICIO;
+			break;
 		case ClsConstants.ESTADO_COLEGIAL_SINEJERCER:
 			tipohistorico = ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_EJERCICIO;
+			break;
 		case ClsConstants.ESTADO_COLEGIAL_INHABILITACION:
 			tipohistorico = ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_INHABILITACION;
+			break;
 		case ClsConstants.ESTADO_COLEGIAL_SUSPENSION:
 			tipohistorico = ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_SUSPENSION;
+			break;
 		}
 		if (tipohistorico > 0) {
 			hashHist.put(CenHistoricoBean.C_IDTIPOCAMBIO, new Integer(tipohistorico).toString());
 		}
 		
-		if (bDesdeCGAE) {
-			hashHist.put(CenHistoricoBean.C_IDINSTITUCION, "2000");
-		}
 		// Asigno el IDHISTORICO			
 		hashHist.put(CenHistoricoBean.C_IDHISTORICO, adminHist.getNuevoID(hashHist).toString());			
 		
 		try {		
-			//Control de fechaEstado: debe ser mayor o igual que la fechaEstado de la ultima:
-			String fechaEstadoNew = (String)modificacion.get(CenDatosColegialesEstadoBean.C_FECHAESTADO);
-			
-			java.text.SimpleDateFormat sdfOri = new java.text.SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
-			
-			java.text.SimpleDateFormat sdfNew = new java.text.SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);			
-			Date dateNew = sdfNew.parse(fechaEstadoNew);
-			String fechaNewBD = sdfOri.format(dateNew);
+			String fechaNewBD = UtilidadesFecha.getFechaApruebaDeFormato((String) modificacion.get(CenDatosColegialesEstadoBean.C_FECHAESTADO));
 			modificacion.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, fechaNewBD);
 			
 			//ELimino campos no usados:
@@ -271,7 +267,7 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 				// entHistorico.put(CenHistoricoBean.C_FECHAENTRADA, fechaNewBD);
 				
 				CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
-				if (admHis.insertCompleto(hashHist, beanDatos, CenHistoricoAdm.ACCION_UPDATE, this.getLenguaje(), bDesdeCGAE)) {
+				if (admHis.insertCompleto(hashHist, beanDatos, CenHistoricoAdm.ACCION_UPDATE, this.getLenguaje())) {
 					resultado=true;
 				}	
 			}		 
@@ -343,7 +339,7 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 					bDesdeCGAE = true;
 				}
 				CenDatosColegialesEstadoAdm admEstados = new CenDatosColegialesEstadoAdm(usrbean);
-				resultado = admEstados.insercionConHistorico(estadoColegialHashtable, beanHis, idioma, bDesdeCGAE);
+				resultado = admEstados.insercionConHistorico(estadoColegialHashtable, beanHis, idioma);
 				
 			}
 		}
@@ -377,7 +373,7 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 	 * @return  int - Resultado de la operacion  . 0 ko, 1 ok, 2 ok con errores de WS 
 	 * @exception  ClsExceptions  En cualquier caso de error 
 	 */
-	public int insercionConHistorico (Hashtable nuevo, CenHistoricoBean entHistorico, String idioma, boolean bDesdeCGAE) throws ClsExceptions, SIGAException 
+	public int insercionConHistorico (Hashtable nuevo, CenHistoricoBean entHistorico, String idioma) throws ClsExceptions, SIGAException 
 	{
 		int resultado = 0;
 		boolean isErrorLlamadaAca = false;
@@ -429,7 +425,7 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 					}
 				}
 				CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
-				if (admHis.insertCompleto(entHistorico, beanDatos, CenHistoricoAdm.ACCION_INSERT, idioma, bDesdeCGAE)) {
+				if (admHis.insertCompleto(entHistorico, beanDatos, CenHistoricoAdm.ACCION_INSERT, idioma)) {
 					resultado=1;
 				}	
 			}					
@@ -526,8 +522,8 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 		CenHistoricoAdm admHis = new CenHistoricoAdm (this.usrbean);
 		// generando datos para el historico
 		Hashtable hashHist = new Hashtable();
+		hashHist.put(CenHistoricoBean.C_IDINSTITUCION, (bDesdeCGAE ? Integer.toString(ClsConstants.INSTITUCION_CGAE) : entrada.get(CenDatosColegialesEstadoBean.C_IDINSTITUCION)));
 		hashHist.put(CenHistoricoBean.C_IDPERSONA, entrada.get(CenDatosColegialesEstadoBean.C_IDPERSONA));
-		hashHist.put(CenHistoricoBean.C_IDINSTITUCION, entrada.get(CenDatosColegialesEstadoBean.C_IDINSTITUCION));
 		hashHist.put(CenHistoricoBean.C_MOTIVO, ClsConstants.HISTORICO_REGISTRO_ELIMINADO);
 		hashHist.put(CenHistoricoBean.C_IDTIPOCAMBIO, new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_COLEGIALES).toString());
 		hashHist.put(CenHistoricoBean.C_IDHISTORICO, admHis.getNuevoID(hashHist).toString());
@@ -535,7 +531,7 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 		try {
 			CenDatosColegialesEstadoBean beanDatos = (CenDatosColegialesEstadoBean) this.selectByPK(entrada).get(0);
 			if (this.delete(entrada)) {
-				if (admHis.insertCompleto(hashHist, beanDatos, CenHistoricoAdm.ACCION_DELETE, this.usrbean.getLanguage(), bDesdeCGAE)) {
+				if (admHis.insertCompleto(hashHist, beanDatos, CenHistoricoAdm.ACCION_DELETE, this.usrbean.getLanguage())) {
 					return true;
 				}	
 			}					

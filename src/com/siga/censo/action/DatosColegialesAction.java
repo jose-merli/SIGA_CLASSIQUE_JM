@@ -509,7 +509,7 @@ public class DatosColegialesAction extends MasterAction {
 			tx.begin();
 
 			// Si devuelve 2 es porque se ha relizado todo correctamente excepto la llamada al servicio web de revision de letrado.
-			int isInsercionCorrecta = admEstados.insercionConHistorico(hashEstado, beanHis, idioma, bDesdeCGAE);
+			int isInsercionCorrecta = admEstados.insercionConHistorico(hashEstado, beanHis, idioma);
 			
 			switch (isInsercionCorrecta) {
 				case 0:

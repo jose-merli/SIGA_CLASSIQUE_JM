@@ -32,6 +32,18 @@ public class UtilidadesFecha {
 			return null;
 	}
 	
+	/**
+	 * Devuelve la misma fecha pasada como parametro pero en formato Java (ClsConstants.DATE_FORMAT_JAVA), lista para insertar en BD.
+	 * <br>
+	 * <br>
+	 * Internamente primero comprueba si esta en dicho formato. Si no lo esta, prueba con el formato corto espanyol ClsConstants.DATE_FORMAT_SHORT_SPANISH.
+	 * <br>
+	 * Finalmente devuelve la fecha en formato Java (ClsConstants.DATE_FORMAT_JAVA) o bien lanza un error si no ha coincidido con ninguno de los formatos.
+	 * 
+	 * @param fecha
+	 * @return
+	 * @throws ClsExceptions
+	 */
 	public static String getFechaApruebaDeFormato(String fecha) throws ClsExceptions
 	{
 		String fechaFormateada = new String(fecha);
