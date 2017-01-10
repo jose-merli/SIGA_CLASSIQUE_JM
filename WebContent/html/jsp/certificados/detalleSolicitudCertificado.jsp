@@ -769,7 +769,8 @@
 				SolicitudesCertificadosForm.idInstitucionOrigenSolicitante.value=idInstitucionOrigen;
 				SolicitudesCertificadosForm.nidSolicitante.value=nid;
 				
-				comprobarDuplicados(idInstitucion, idPersona, nid, nombre, apellidos, '', idInstitucionOrigen, ncol);
+				comprobarDuplicados(idInstitucion, idPersona, nid, nombre, apellidos, '', '', '');
+				// NOTA: es mejor no pasar el numcol, para que asi busque duplicados por todas las colegiaciones
 			}
 		}
 		
@@ -809,7 +810,7 @@
 <!-- FIN: SCRIPTS BOTONES -->
 </head>
 
-<body onLoad="ajusteAltoBotones('mainWorkArea');revisarCheck();descargarPDF();comprobarDuplicados('<%=idInstitucion%>', '<%=idPersona%>', '<%=nidSolicitante%>', '<%=nombreSoloSolicitante%>', '<%=apellidosSolicitante%>', '', '<%=idInstitucion%>', '<%=ncolSolicitante%>');" height="100%">
+<body onLoad="ajusteAltoBotones('mainWorkArea');revisarCheck();descargarPDF();comprobarDuplicados('<%=idInstitucion%>', '<%=idPersona%>', '<%=nidSolicitante%>', '<%=nombreSoloSolicitante%>', '<%=apellidosSolicitante%>', '', '', '');" height="100%">
 
 	<table class="tablaTitulo" cellspacing="0">
 		<tr>
