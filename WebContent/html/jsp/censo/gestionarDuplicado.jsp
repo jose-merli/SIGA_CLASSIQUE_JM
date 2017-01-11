@@ -411,7 +411,28 @@
 							</td>
 							</c:forEach>
 						</tr>
-					
+						<tr>
+							<td width="26%"> 
+								<table>
+									<tr>
+										<td class="labelText">
+											Última actualización externa
+										</td>
+									</tr>
+								</table>
+							</td>
+							<c:forEach items="${datosColUnica.datosCenso}" var="datosCenso" varStatus="status">
+							<td width="37%">
+								<table>
+									<tr>
+										<td class="labelText">
+											<c:out value="${datosCenso.estadoCenso}"/>  -  <c:out value="${datosCenso.fechaCenso}"/>
+										</td>
+									</tr>															
+								</table>
+							</td>
+							</c:forEach>
+						</tr>				
 						<tr>
 							<td width="26%"> 
 								<table>
