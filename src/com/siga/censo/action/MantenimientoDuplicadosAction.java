@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -37,6 +36,9 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.json.JSONObject;
+import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCenDatos;
+import org.redabogacia.sigaservices.app.services.ecom.EcomCenDatosService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -44,8 +46,8 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.PaginadorBind;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
 import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.AdmLenguajesBean;
@@ -450,12 +452,13 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		// 1. datos personales
 		ArrayList	<CenPersonaBean> datosPersonaDeAmbas = new ArrayList	<CenPersonaBean>(2);
 					CenPersonaBean datosPersonaDeUna;
-					
-		// 2. datos del cliente CGAE
+		// 2. Datos censo
+		Hashtable	<String, String> datosCenso = null ;			
+		// 3. datos del cliente CGAE
 		ArrayList	<CenClienteBean> datosClienteCGAEDeAmbas = new ArrayList	<CenClienteBean>(2);
 					CenClienteBean datosClienteCGAEDeUna;
 					
-		// 3. datos de colegiaciones y no colegiaciones
+		// 4. datos de colegiaciones y no colegiaciones
 		ArrayList	<Hashtable	<String, Hashtable>> listaColegiacionesDeAmbas = new ArrayList<Hashtable<String,Hashtable>>();
 					Hashtable	<String, Hashtable> listaColegiacionesDeUna;
 								Hashtable datosColegiacionDeUna;
@@ -472,17 +475,18 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		ArrayList	<Hashtable> listaColegiacionesComunesDeAmbas = new ArrayList<Hashtable>();
 					Hashtable colegiacionComunDeAmbas;
 								ArrayList	<Hashtable <String, String>> datosColegioDeAmbas;
+								ArrayList	<Hashtable <String, String>> datosCensoDeAmbas;
 								ArrayList	<CenColegiadoBean> beanColegiadoDeAmbas;
 								ArrayList	<CenClienteBean> beanClienteDeAmbas;
 								ArrayList	<Row> estadoUltimoDeAmbas;
 								ArrayList	<Vector> estadosColegioDeAmbas;
 								ArrayList	<Vector	<Hashtable<String, String>>> listaDireccionesDeAmbas;
 		
-		// 4. direcciones en CGAE
+		// 5. direcciones en CGAE
 		ArrayList	<Vector	<Hashtable<String, String>>> listaDireccionesCGAEDeAmbas = new ArrayList	<Vector<Hashtable<String, String>>>(2);
 					Vector	<Hashtable<String, String>> listaDireccionesCGAEDeUna ;
 				
-		// 5. Saber si es colegiado, no colegiado y sino es nada
+		// 6. Saber si es colegiado, no colegiado y sino es nada
 		ArrayList	<Hashtable	<String, String>> informacionColegiacionesAmbas  = new ArrayList<Hashtable<String,String>>();
 		Hashtable	<String, String> informacionColegiaciones ;
 
@@ -540,7 +544,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				if (datosPersonaDeUna.getIdEstadoCivil() != null) {
 					datosPersonaDeUna.setIdEstadoCivilStr(((CenEstadoCivilBean) estadoCivilAdm.select("where "+CenEstadoCivilBean.C_IDESTADO+"="+datosPersonaDeUna.getIdEstadoCivil()).get(0)).getDescripcion());
 				}
-
+			
 				// 2. obteniendo datos del cliente CGAE
 				datosClienteCGAEDeUna = admCliente.existeCliente(Long.valueOf(idPersona), ClsConstants.INSTITUCION_CGAE);
 				if (datosClienteCGAEDeUna == null) {
@@ -571,6 +575,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 						datosColegioDeUna.put("institucionColegiacion", admInstitucion.getAbreviaturaInstitucion(idInstitucionCol.toString()));
 						datosColegioDeUna.put("fechaProduccion", admInstitucion.getFechaEnProduccion(idInstitucionCol.toString()));
 					}
+					
 					datosColegiacionDeUna.put("datosColegio", datosColegioDeUna);
 					
 					// obteniendo datos del colegio
@@ -598,8 +603,20 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					beanCliente.setIdTratamientoStr(((CenTratamientoBean) tratamientoAdm.select("where "+CenTratamientoBean.C_IDTRATAMIENTO+"="+beanCliente.getIdTratamiento()).get(0)).getDescripcion());
 					beanCliente.setIdLenguajeStr(((AdmLenguajesBean) lenguajeAdm.select("where "+AdmLenguajesBean.C_IDLENGUAJE+"="+beanCliente.getIdLenguaje()).get(0)).getDescripcion());
 					datosColegiacionDeUna.put("datosCliente", beanCliente);
+					
+					//Obteniendo datos de ecom
+					EcomCenDatosService ecomCenDatosService =  (EcomCenDatosService) getBusinessManager().getService(EcomCenDatosService.class);
+					List<EcomCenDatos> lista = ecomCenDatosService.getInfoMantenimientoDuplicados(idPersona, idInstitucionCol.toString());
+					if(lista != null & lista.size()>0){
+						EcomCenDatos ecomCenDatos = lista.get(0);
+						datosCenso = new Hashtable	<String, String>() ;
+						datosCenso.put("estadoCenso", UtilidadesString.getMensajeIdioma(usr, AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.getDescripcion(ecomCenDatos.getIdestadocolegiado())));
+						SimpleDateFormat sdfDateOnly = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+						datosCenso.put("fechaCenso", sdfDateOnly.format(ecomCenDatos.getFechamodificacion()));
+						datosColegiacionDeUna.put("datosCenso", datosCenso);
+					}
 
-					// obteniendo direcciones del colegiado
+					//4. obteniendo direcciones del colegiado
 					listaDireccionesDeUna = admCliente.getDirecciones(Long.valueOf(idPersona), idInstitucionCol, false);//incluirBajas = false;
 					for (int j = 0; j < listaDireccionesDeUna.size(); j++) {
 						direccion = (Hashtable<String, String>) listaDireccionesDeUna.get(j);
@@ -613,7 +630,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				} // fin de recorrer todas las colegiaciones y no colegiaciones
 				listaColegiacionesDeAmbas.add(listaColegiacionesDeUna);
 
-				// 4. obteniendo direcciones en CGAE
+				// 5. obteniendo direcciones en CGAE
 				listaDireccionesCGAEDeUna = admCliente.getDirecciones(Long.valueOf(idPersona), ClsConstants.INSTITUCION_CGAE, false);//incluirBajas = false;
 				for (int j = 0; j < listaDireccionesCGAEDeUna.size(); j++) {
 					direccion = (Hashtable<String, String>) listaDireccionesCGAEDeUna.get(j);
@@ -646,6 +663,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 						colegiacionComunDeAmbas = new Hashtable<String, ArrayList>();
 						
 						datosColegioDeAmbas = new ArrayList<Hashtable<String,String>>(2);
+						datosCensoDeAmbas = new ArrayList<Hashtable<String,String>>(2);
 						beanColegiadoDeAmbas = new ArrayList<CenColegiadoBean>(2);
 						beanClienteDeAmbas = new ArrayList<CenClienteBean>(2);
 						estadoUltimoDeAmbas = new ArrayList<Row>(2);
@@ -661,6 +679,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 							}
 							
 							datosColegioDeAmbas.add		((Hashtable<String,String>) 		datosColegiacionDeUna.get("datosColegio"));
+							datosCensoDeAmbas.add		((Hashtable<String,String>) 		datosColegiacionDeUna.get("datosCenso"));
 							beanColegiadoDeAmbas.add	((CenColegiadoBean) 				datosColegiacionDeUna.get("datosColegiacion"));
 							beanClienteDeAmbas.add		((CenClienteBean) 					datosColegiacionDeUna.get("datosCliente"));
 							estadoUltimoDeAmbas.add		((Row) 								datosColegiacionDeUna.get("estadoColegiacion"));
@@ -672,6 +691,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 						colegiacionComunDeAmbas.put("fechaProduccion", 				datosColegioDeAmbas.get(0).get("fechaProduccion"));
 						colegiacionComunDeAmbas.put("datosColegiacion", 			beanColegiadoDeAmbas);
 						colegiacionComunDeAmbas.put("datosCliente", 				beanClienteDeAmbas);
+						colegiacionComunDeAmbas.put("datosCenso", 				     datosCensoDeAmbas);
 						colegiacionComunDeAmbas.put("estadoColegiacion", 			estadoUltimoDeAmbas);
 						colegiacionComunDeAmbas.put("historicoEstadosColegiacion", 	estadosColegioDeAmbas);
 						colegiacionComunDeAmbas.put("direcciones", 					listaDireccionesDeAmbas);
