@@ -442,6 +442,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		CenTratamientoAdm tratamientoAdm = new CenTratamientoAdm(usr);
 		AdmLenguajesAdm lenguajeAdm = new AdmLenguajesAdm(usr);
 		CenTiposSeguroAdm tipoSeguroAdm = new CenTiposSeguroAdm(usr);
+		SimpleDateFormat fomatoFechaHora = new SimpleDateFormat(ClsConstants.DATE_FORMAT_LONG_SPANISH);
 		
 		
 		// Variables
@@ -452,18 +453,19 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		// 1. datos personales
 		ArrayList	<CenPersonaBean> datosPersonaDeAmbas = new ArrayList	<CenPersonaBean>(2);
 					CenPersonaBean datosPersonaDeUna;
-		// 2. Datos censo
-		Hashtable	<String, String> datosCenso = null ;			
-		// 3. datos del cliente CGAE
+		
+		// 2. datos del cliente CGAE
 		ArrayList	<CenClienteBean> datosClienteCGAEDeAmbas = new ArrayList	<CenClienteBean>(2);
 					CenClienteBean datosClienteCGAEDeUna;
-					
-		// 4. datos de colegiaciones y no colegiaciones
+		
+		// 3. datos de colegiaciones y no colegiaciones
 		ArrayList	<Hashtable	<String, Hashtable>> listaColegiacionesDeAmbas = new ArrayList<Hashtable<String,Hashtable>>();
 					Hashtable	<String, Hashtable> listaColegiacionesDeUna;
 								Hashtable datosColegiacionDeUna;
 											Hashtable <String, String> datosColegioDeUna;
+											Hashtable <String, String> datosCenso;
 											CenColegiadoBean beanColegiado;
+											CenNoColegiadoBean beanNoColegiado;
 											CenClienteBean beanCliente;
 											Row estadoUltimo;
 											Vector estadosColegio;
@@ -482,11 +484,11 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 								ArrayList	<Vector> estadosColegioDeAmbas;
 								ArrayList	<Vector	<Hashtable<String, String>>> listaDireccionesDeAmbas;
 		
-		// 5. direcciones en CGAE
+		// 4. direcciones en CGAE
 		ArrayList	<Vector	<Hashtable<String, String>>> listaDireccionesCGAEDeAmbas = new ArrayList	<Vector<Hashtable<String, String>>>(2);
 					Vector	<Hashtable<String, String>> listaDireccionesCGAEDeUna ;
 				
-		// 6. Saber si es colegiado, no colegiado y sino es nada
+		// 5. Saber si es colegiado, no colegiado y sino es nada
 		ArrayList	<Hashtable	<String, String>> informacionColegiacionesAmbas  = new ArrayList<Hashtable<String,String>>();
 		Hashtable	<String, String> informacionColegiaciones ;
 
@@ -579,23 +581,38 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					datosColegiacionDeUna.put("datosColegio", datosColegioDeUna);
 					
 					// obteniendo datos del colegio
-					beanColegiado = admColeg.getDatosColegiales(Long.valueOf(idPersona), idInstitucionCol);
-					if (beanColegiado != null) {
-						if (beanColegiado.getFechaIncorporacion() != null && !beanColegiado.getFechaIncorporacion().equalsIgnoreCase("")) {
-							beanColegiado.setFechaIncorporacion(UtilidadesString.formatoFecha(beanColegiado.getFechaIncorporacion(), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH));
+					{
+						beanColegiado = admColeg.getDatosColegiales(Long.valueOf(idPersona), idInstitucionCol);
+						if (beanColegiado != null) {
+							if (beanColegiado.getFechaIncorporacion() != null && !beanColegiado.getFechaIncorporacion().equalsIgnoreCase("")) {
+								beanColegiado.setFechaIncorporacion(UtilidadesString.formatoFecha(beanColegiado.getFechaIncorporacion(), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH));
+							}
+							if (beanColegiado.getIdTipoSeguro() != null) {
+								beanColegiado.setIdTipoSeguroStr(((CenTiposSeguroBean) tipoSeguroAdm.select("where "+CenTiposSeguroBean.C_IDTIPOSSEGURO+"="+beanColegiado.getIdTipoSeguro().toString()).get(0)).getNombre());
+							}
+		
+							// obteniendo historico de estados del colegiado
+							estadosColegio = admColeg.getEstadosColegiales(Long.valueOf(idPersona), idInstitucionCol, "1");
+							if (estadosColegio != null && estadosColegio.size() > 0) {
+								estadoUltimo = (Row) estadosColegio.get(0);
+								datosColegiacionDeUna.put("estadoColegiacion", estadoUltimo);
+								datosColegiacionDeUna.put("historicoEstadosColegiacion", estadosColegio);
+							}
+						} else {
+							beanColegiado = new CenColegiadoBean();
 						}
-						if (beanColegiado.getIdTipoSeguro() != null) {
-							beanColegiado.setIdTipoSeguroStr(((CenTiposSeguroBean) tipoSeguroAdm.select("where "+CenTiposSeguroBean.C_IDTIPOSSEGURO+"="+beanColegiado.getIdTipoSeguro().toString()).get(0)).getNombre());
+						
+						// obteniendo tipo si es no colegiado
+						beanNoColegiado = admNoColeg.existeNoColegiadoInstitucion(Long.valueOf(idPersona), idInstitucionCol);
+						if (beanNoColegiado != null) {
+							if (beanNoColegiado.getTipo().equalsIgnoreCase("1")) {
+								beanColegiado.setNColegiado("No colegiado");
+							} else {
+								beanColegiado.setNColegiado("Sociedad");
+							}
 						}
+						
 						datosColegiacionDeUna.put("datosColegiacion", beanColegiado);
-	
-						// obteniendo historico de estados del colegiado
-						estadosColegio = admColeg.getEstadosColegiales(Long.valueOf(idPersona), idInstitucionCol, "1");
-						if (estadosColegio != null && estadosColegio.size() > 0) {
-							estadoUltimo = (Row) estadosColegio.get(0);
-							datosColegiacionDeUna.put("estadoColegiacion", estadoUltimo);
-							datosColegiacionDeUna.put("historicoEstadosColegiacion", estadosColegio);
-						}
 					}
 					
 					// obteniendo otros datos del colegiado
@@ -611,8 +628,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 						EcomCenDatos ecomCenDatos = lista.get(0);
 						datosCenso = new Hashtable	<String, String>() ;
 						datosCenso.put("estadoCenso", UtilidadesString.getMensajeIdioma(usr, AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.getDescripcion(ecomCenDatos.getIdestadocolegiado())));
-						SimpleDateFormat sdfDateOnly = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-						datosCenso.put("fechaCenso", sdfDateOnly.format(ecomCenDatos.getFechamodificacion()));
+						datosCenso.put("fechaCenso", fomatoFechaHora.format(ecomCenDatos.getFechamodificacion()));
 						datosColegiacionDeUna.put("datosCenso", datosCenso);
 					}
 
@@ -644,7 +660,12 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				if (tieneColegiaciones){
 					datosPersonaDeUna.setTipoCliente(ClsConstants.TIPO_CLIENTE_LETRADO);
 				} else if (esClienteEnCGAE){
-					datosPersonaDeUna.setTipoCliente(ClsConstants.TIPO_CLIENTE_NOCOLEGIADO);
+					beanNoColegiado = admNoColeg.existeNoColegiadoInstitucion(Long.valueOf(idPersona), ClsConstants.INSTITUCION_CGAE);
+					if (beanNoColegiado != null || beanNoColegiado.getTipo().equalsIgnoreCase("1")) {
+						datosPersonaDeUna.setTipoCliente(ClsConstants.TIPO_CLIENTE_NOCOLEGIADO);
+					} else {
+						datosPersonaDeUna.setTipoCliente(ClsConstants.TIPO_CLIENTE_INSTITUCION);
+					}
 				} else {
 					datosPersonaDeUna.setTipoCliente("");
 				}
@@ -691,7 +712,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 						colegiacionComunDeAmbas.put("fechaProduccion", 				datosColegioDeAmbas.get(0).get("fechaProduccion"));
 						colegiacionComunDeAmbas.put("datosColegiacion", 			beanColegiadoDeAmbas);
 						colegiacionComunDeAmbas.put("datosCliente", 				beanClienteDeAmbas);
-						colegiacionComunDeAmbas.put("datosCenso", 				     datosCensoDeAmbas);
+						colegiacionComunDeAmbas.put("datosCenso", 					datosCensoDeAmbas);
 						colegiacionComunDeAmbas.put("estadoColegiacion", 			estadoUltimoDeAmbas);
 						colegiacionComunDeAmbas.put("historicoEstadosColegiacion", 	estadosColegioDeAmbas);
 						colegiacionComunDeAmbas.put("direcciones", 					listaDireccionesDeAmbas);
@@ -968,7 +989,16 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				}
 			}
 			
-			EjecucionPLs.ejecutarPL_fusion(idPersonaOrigen, idPersonaDestino);
+			// ejecutando la fusion y controlando las posibles excepciones
+			String[] resultadoFusion = EjecucionPLs.ejecutarPL_fusion(idPersonaOrigen, idPersonaDestino);
+			if (resultadoFusion[0].equalsIgnoreCase("-1")) { //error controlado: mostrando el error en pantalla
+				tx.rollback();
+				request.setAttribute("mensaje", "Imposible completar la fusión de las personas: " + resultadoFusion[1] + ". Consulte con el Administrador");
+				return "exitoFusionar";
+			} else if (!resultadoFusion[0].equalsIgnoreCase("-1") && !resultadoFusion[0].equalsIgnoreCase("0")) {
+				throw new ClsExceptions(resultadoFusion[1]);
+			}
+			
 			tx.commit();
 			
 			CenPersonaBean beanP = admPersona.getPersonaPorId(idPersonaDestino);

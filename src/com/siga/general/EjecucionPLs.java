@@ -762,9 +762,11 @@ public class EjecucionPLs {
 	        
 		//Ejecucion del PL
 	    resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FUSION_PERSONAS.Fusiona_Personas(?,?,?,?)}", 2, param_in);
+	    /* Se controlara el error en la llamada
 		if(resultado[0].equalsIgnoreCase("-1")){
 	    	throw new ClsExceptions(resultado[1]);
 	    }
+	    */
 	    
 	    //Resultado del PL        
 	    return resultado;

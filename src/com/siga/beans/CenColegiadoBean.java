@@ -107,7 +107,7 @@ public class CenColegiadoBean extends MasterBean {
 	 * Devuelve el numero de colegiado o el numero de comunitario segun sea
 	 * @return
 	 */
-	public String getNumCol 			()	{ return (this.comunitario.equalsIgnoreCase("1") ? this.nComunitario : this.nColegiado); }
+	public String getNumCol 			()	{ return (this.comunitario != null && this.comunitario.equalsIgnoreCase("1") ? this.nComunitario : this.nColegiado); }
 	
 	/** Devuelve el nombre del seguro ya calculado previamente a partir del id en el catálogo */
 	public String	getIdTipoSeguroStr	()	{ return idTipoSeguroStr; }

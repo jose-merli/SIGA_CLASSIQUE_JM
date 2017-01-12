@@ -246,8 +246,6 @@
 			document.forms[0].modo.value="exportar";
 		  	document.forms[0].submit();
 			fin();
-			// El siguiente alert solo se vera cuando se descargue el fichero
-			alert("<siga:Idioma key="messages.error.censo.mantenimientoDuplicados.descargarInformeDeHoy"/>");
 		}
 		</script>
 		<siga:Titulo 

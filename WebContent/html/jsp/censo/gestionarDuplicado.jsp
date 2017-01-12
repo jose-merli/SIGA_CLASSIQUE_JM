@@ -38,6 +38,9 @@
 	Hashtable datos = (Hashtable)request.getAttribute("datos");
 	String idPersona0 =	((CenPersonaBean) ((ArrayList) datos.get("datosPersonales")).get(0)).getIdPersona().toString();
 	String idPersona1 =	((CenPersonaBean) ((ArrayList) datos.get("datosPersonales")).get(1)).getIdPersona().toString();
+	
+	boolean existeColegiacionesIguales = false;
+	boolean existeColegiacionesDiferentes = false;
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -142,6 +145,10 @@
 									<tr>
 										<td class="labelTextValue">
 											<c:out value="${datosPersona.NIFCIF}"/>
+											<c:set var="tipoSociedad" value='<%=ClsConstants.TIPO_CLIENTE_INSTITUCION%>'/>
+											<c:if test="${datosPersona.tipoCliente==tipoSociedad}">
+												<b>(SOCIEDAD)</b>
+											</c:if>
 											| <c:out value="${datosPersona.fechaMod}"/>
 										</td>
 									</tr>
@@ -158,6 +165,7 @@
 										<td class="labelTextValue">
 											<c:set var="tipoLetrado" value='<%=ClsConstants.TIPO_CLIENTE_LETRADO%>'/>
 											<c:set var="tipoNoColegiado" value='<%=ClsConstants.TIPO_CLIENTE_NOCOLEGIADO%>'/>
+											<c:set var="tipoSociedad" value='<%=ClsConstants.TIPO_CLIENTE_INSTITUCION%>'/>
 											<c:choose>
 												<c:when test="${datosPersona.tipoCliente==tipoLetrado}">
 													<img id="iconoboton_informacionLetrado1" src="/SIGA/html/imagenes/binformacionLetrado_off.gif" 
@@ -165,6 +173,14 @@
 														 title="Acceso a ficha" border="0" onClick="informacionLetrado('${datosPersona.idPersona}','<%=idInstitucionLocation%>',1); " >
 												</c:when>
 												<c:when test="${datosPersona.tipoCliente==tipoNoColegiado}">
+													<img id="iconoboton_consultar1" src="/SIGA/html/imagenes/bconsultar_on.gif" 
+														 style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila"
+														 title="consultar" border="0" onClick="informacionLetrado('${datosPersona.idPersona}',''); " >
+													<img id="iconoboton_editar10" src="/SIGA/html/imagenes/beditar_off.gif" 
+														 style="cursor:pointer;" alt="Editar" class="botonesIcoTabla" name="iconoFila"
+														 title="Editar" border="0" onClick="informacionLetrado('${datosPersona.idPersona}','<%=idInstitucionLocation%>',0); " >
+												</c:when>
+												<c:when test="${datosPersona.tipoCliente==tipoSociedad}">
 													<img id="iconoboton_consultar1" src="/SIGA/html/imagenes/bconsultar_on.gif" 
 														 style="cursor:pointer;" alt="Información letrado" class="botonesIcoTabla" name="iconoFila"
 														 title="consultar" border="0" onClick="informacionLetrado('${datosPersona.idPersona}',''); " >
@@ -322,6 +338,12 @@
 		<!-- FIN Datos en GENERAL -->
 				
 		<!-- INI Colegiaciones iguales -->
+				<c:choose>
+				<c:when test="${empty datos.datosColegialesIguales}">
+					<c:set var="existeColegiacionesIguales" value="false"/>
+				</c:when>
+				<c:otherwise>		
+					<c:set var="existeColegiacionesIguales" value="true"/>
 				<c:forEach items="${datos.datosColegialesIguales}" var="datosColUnica" varStatus="status">
 				
 				<c:if test="${datosColUnica.fechaProduccion!=''}">
@@ -341,7 +363,7 @@
 								<table>
 									<tr>
 										<td class="labelText">
-											Num. col. | Fecha Inc. | Inscr. y Resid. 
+											Num. col. | Fecha Inc. | Resid. e Inscr.
 										</td>
 									</tr>
 								</table>
@@ -352,27 +374,22 @@
 								<table>
 									<tr>
 										<td class="labelText" colspan="3">
-											<c:if test="${datosCol.numCol!=null && datosCol.numCol!=''}">
-												<c:out value="${datosCol.numCol}"/> |
-											</c:if>
-											<c:if test="${datosCol.numCol==null || datosCol.numCol==''}">
-												<i><b>No colegiado</i></b> |
-											</c:if>
+											<c:out value="${datosCol.numCol}"/> |
 											
 											<c:out value="${datosCol.fechaIncorporacion}"/> |
-											
-											<c:if test="${datosCol.comunitario=='1'}">
-												<b><c:out value="Inscrito"/></b> &nbsp;
-											</c:if>
 											
 											<c:choose>
 												<c:when test="${datosCol.situacionResidente=='1'}">
 													<c:out value="Residente"/>
 												</c:when>
-												<c:otherwise>
+												<c:when test="${datosCol.situacionResidente=='0'}">
 													<c:out value="No Residente"/>
-												</c:otherwise>
+												</c:when>
 											</c:choose>
+											
+											<c:if test="${datosCol.comunitario=='1'}">
+												<b><c:out value="Inscrito"/></b> &nbsp;
+											</c:if>
 										</td>
 									</tr>
 								</table>
@@ -411,6 +428,7 @@
 							</td>
 							</c:forEach>
 						</tr>
+						
 						<tr>
 							<td width="26%"> 
 								<table>
@@ -432,7 +450,8 @@
 								</table>
 							</td>
 							</c:forEach>
-						</tr>				
+						</tr>
+						
 						<tr>
 							<td width="26%"> 
 								<table>
@@ -619,7 +638,7 @@
 										<td>
 											&nbsp;
 										</td>
-									</tr>															
+									</tr>
 									</c:forEach>
 									
 								</table>
@@ -633,15 +652,18 @@
 
 				</siga:ConjCampos>
 				</c:forEach>
+				</c:otherwise>		
+				</c:choose>		
 		<!-- FIN Colegiaciones iguales -->
 					
 		<!-- INI Colegiaciones diferentes -->
 				
 				<c:choose>
 				<c:when test="${empty datos.datosColegiales}">
-					<br/>
+					<c:set var="existeColegiacionesDiferentes" value="false"/>
 				</c:when>
 				<c:otherwise>		
+					<c:set var="existeColegiacionesDiferentes" value="true"/>
 				<br/>
 				<siga:ConjCampos leyenda="Colegiaciones diferentes" desplegable="true" oculto="true" postFunction="pulsarColegiacionesDiferentes()">
  					<table width="100%">
@@ -1018,8 +1040,28 @@
 			}
 			// jbd // fin helpers
 			
+			var pulsadoOtrosDatos = false;
+			var pulsadoColegiacionesIguales = false;
+			var pulsadoColegiacionesDiferentes = false;
+			var pulsadoDirecciones = false;
+			
+			function pulsarOtrosDatos() {
+				pulsadoOtrosDatos = true;
+			}
+			function pulsarColegiacionesIguales() {
+				pulsadoColegiacionesIguales = true;
+			}
+			function pulsarColegiacionesDiferentes() {
+				alert('Pulsando diferentes');
+				pulsadoColegiacionesDiferentes = true;
+			}
+			function pulsarDirecciones() {
+				pulsadoDirecciones = true;
+			}
+		
 			function accionAceptar(){
-				if (!pulsadoOtrosDatos || !pulsadoColegiacionesIguales || !pulsadoColegiacionesDiferentes || !pulsadoDirecciones) {
+				
+				if (!pulsadoOtrosDatos || (!pulsadoColegiacionesIguales && <%=existeColegiacionesIguales%>) || (!pulsadoColegiacionesDiferentes && <%=existeColegiacionesDiferentes%>) || !pulsadoDirecciones) {
 					alert("<siga:Idioma key="messages.error.censo.mantenimientoDuplicados.reviseDatos"/>");
 					return
 				}
@@ -1064,24 +1106,6 @@
 					seleccionarChecks(document.forms[0].checkEstado, idD);
 				}
 				seleccionado=true;
-			}
-			
-			var pulsadoOtrosDatos = false;
-			var pulsadoColegiacionesIguales = false;
-			var pulsadoColegiacionesDiferentes = false;
-			var pulsadoDirecciones = false;
-			
-			function pulsarOtrosDatos() {
-				pulsadoOtrosDatos = true;
-			}
-			function pulsarColegiacionesIguales() {
-				pulsadoColegiacionesIguales = true;
-			}
-			function pulsarColegiacionesDiferentes() {
-				pulsadoColegiacionesDiferentes = true;
-			}
-			function pulsarDirecciones() {
-				pulsadoDirecciones = true;
 			}
 			
 		</script>	
