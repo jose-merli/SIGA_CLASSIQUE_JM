@@ -1954,4 +1954,139 @@ alter table 	CEN_PARTIDOJUDICIAL	 drop constraint 	SYS_C0043299	 ; --Solo funcio
 alter table 	CEN_PARTIDOJUDICIAL	 drop constraint 	SYS_C0016807	 ; --Solo funciona en PRE
 
 -- Ejecutado en Integracion por AAG el 29/12 a las 15:00
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.funcionalidadNoDisponible', 'Esta funcionalidad no está disponible. Consulte con el Administrador', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.funcionalidadNoDisponible', 'Esta funcionalidad no está disponible. Consulte con el Administrador#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.funcionalidadNoDisponible', 'Esta funcionalidad no está disponible. Consulte con el Administrador#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.funcionalidadNoDisponible', 'Esta funcionalidad no está disponible. Consulte con el Administrador#EU', 0, '3', sysdate, 0, '19');
 
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.ningunaSeleccionFusionar', 'No se ha seleccionado nada. Seleccione dos personas para fusionar.', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.ningunaSeleccionFusionar', 'No se ha seleccionado nada. Seleccione dos personas para fusionar.#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.ningunaSeleccionFusionar', 'No se ha seleccionado nada. Seleccione dos personas para fusionar.#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.ningunaSeleccionFusionar', 'No se ha seleccionado nada. Seleccione dos personas para fusionar.#EU', 0, '3', sysdate, 0, '19');
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.incorrectaSeleccionFusionar', 'Selección incorrecta. Seleccione dos personas para fusionar.', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.incorrectaSeleccionFusionar', 'Selección incorrecta. Seleccione dos personas para fusionar.#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.incorrectaSeleccionFusionar', 'Selección incorrecta. Seleccione dos personas para fusionar.#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.incorrectaSeleccionFusionar', 'Selección incorrecta. Seleccione dos personas para fusionar.#EU', 0, '3', sysdate, 0, '19');
+        
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.fusionEnCurso', 'Ya se ha solicitado la combinación de alguna de estas personas. Espere unos minutos hasta que termine.', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.fusionEnCurso', 'Ya se ha solicitado la combinación de alguna de estas personas. Espere unos minutos hasta que termine.#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.fusionEnCurso', 'Ya se ha solicitado la combinación de alguna de estas personas. Espere unos minutos hasta que termine.#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.fusionEnCurso', 'Ya se ha solicitado la combinación de alguna de estas personas. Espere unos minutos hasta que termine.#EU', 0, '3', sysdate, 0, '19');
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar1', 'No está permitida la fusión por seguridad. El colegio de ', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar1', 'No está permitida la fusión por seguridad. El colegio de #GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar1', 'No está permitida la fusión por seguridad. El colegio de #CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar1', 'No está permitida la fusión por seguridad. El colegio de #EU', 0, '3', sysdate, 0, '19');
+           
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar2', ' usa SIGA y puede contener datos delicados. Por favor, consulte con el Administrador.', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar2', ' usa SIGA y puede contener datos delicados. Por favor, consulte con el Administrador.#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar2', ' usa SIGA y puede contener datos delicados. Por favor, consulte con el Administrador.#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar2', ' usa SIGA y puede contener datos delicados. Por favor, consulte con el Administrador.#EU', 0, '3', sysdate, 0, '19');
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.fusionEnCursoNuevaBusqueda', 'Ya se ha solicitado la combinación de alguna de estas personas. Por favor, realice una nueva búsqueda.', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.fusionEnCursoNuevaBusqueda', 'Ya se ha solicitado la combinación de alguna de estas personas. Por favor, realice una nueva búsqueda.#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.fusionEnCursoNuevaBusqueda', 'Ya se ha solicitado la combinación de alguna de estas personas. Por favor, realice una nueva búsqueda.#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.fusionEnCursoNuevaBusqueda', 'Ya se ha solicitado la combinación de alguna de estas personas. Por favor, realice una nueva búsqueda.#EU', 0, '3', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.registroMismoPagoSJCS', 'Ambas personas tienen registros en el mismo Pago SJCS. Por favor, consulte al Administrador.', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.registroMismoPagoSJCS', 'Ambas personas tienen registros en el mismo Pago SJCS. Por favor, consulte al Administrador.#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.registroMismoPagoSJCS', 'Ambas personas tienen registros en el mismo Pago SJCS. Por favor, consulte al Administrador.#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.registroMismoPagoSJCS', 'Ambas personas tienen registros en el mismo Pago SJCS. Por favor, consulte al Administrador.#EU', 0, '3', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.guardiaMismoDia', 'Ambas personas tienen guardia en el mismo día. Por favor, consulte al Administrador.', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.guardiaMismoDia', 'Ambas personas tienen guardia en el mismo día. Por favor, consulte al Administrador.#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.guardiaMismoDia', 'Ambas personas tienen guardia en el mismo día. Por favor, consulte al Administrador.#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.guardiaMismoDia', 'Ambas personas tienen guardia en el mismo día. Por favor, consulte al Administrador.#EU', 0, '3', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.solicitadaFusionEstadoEnCurso', 'Ya se solicitó la generación del informe de duplicados. Espere unos minutos hasta que termine.', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.solicitadaFusionEstadoEnCurso', 'Ya se solicitó la generación del informe de duplicados. Espere unos minutos hasta que termine.#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.solicitadaFusionEstadoEnCurso', 'Ya se solicitó la generación del informe de duplicados. Espere unos minutos hasta que termine.#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.solicitadaFusionEstadoEnCurso', 'Ya se solicitó la generación del informe de duplicados. Espere unos minutos hasta que termine.#EU', 0, '3', sysdate, 0, '19');
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.fusionarColegiosProduccion', 'Error al obtener el permiso para fusionar personas en colegios en producción.', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.fusionarColegiosProduccion', 'Error al obtener el permiso para fusionar personas en colegios en producción.#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.fusionarColegiosProduccion', 'Error al obtener el permiso para fusionar personas en colegios en producción.#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.fusionarColegiosProduccion', 'Error al obtener el permiso para fusionar personas en colegios en producción.#EU', 0, '3', sysdate, 0, '19');
+
+        
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.generacionInforme', 'Se ha empezado a generar el informe con éxito. Espere unos minutos, o vuelva más tarde para descargarlo.', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.generacionInforme', 'Se ha empezado a generar el informe con éxito. Espere unos minutos, o vuelva más tarde para descargarlo.#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.generacionInforme', 'Se ha empezado a generar el informe con éxito. Espere unos minutos, o vuelva más tarde para descargarlo.#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.generacionInforme', 'Se ha empezado a generar el informe con éxito. Espere unos minutos, o vuelva más tarde para descargarlo.#EU', 0, '3', sysdate, 0, '19');
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.descargarInformeDeHoy', 'Descargando el informe del día de hoy. Si quiere actualizar los datos, vuelva a generar el informe mañana.', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.descargarInformeDeHoy', 'Descargando el informe del día de hoy. Si quiere actualizar los datos, vuelva a generar el informe mañana.#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.descargarInformeDeHoy', 'Descargando el informe del día de hoy. Si quiere actualizar los datos, vuelva a generar el informe mañana.#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.descargarInformeDeHoy', 'Descargando el informe del día de hoy. Si quiere actualizar los datos, vuelva a generar el informe mañana.#EU', 0, '3', sysdate, 0, '19');
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.reviseDatos', 'Revise todos los conjuntos de datos antes de aceptar la combinación.', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.reviseDatos', 'Revise todos los conjuntos de datos antes de aceptar la combinación.#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.reviseDatos', 'Revise todos los conjuntos de datos antes de aceptar la combinación.#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.reviseDatos', 'Revise todos los conjuntos de datos antes de aceptar la combinación.#EU', 0, '3', sysdate, 0, '19');
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.espera', 'Este proceso puede durar varios minutos. Por favor, espere...', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.espera', 'Este proceso puede durar varios minutos. Por favor, espere...#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.espera', 'Este proceso puede durar varios minutos. Por favor, espere...#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('messages.error.censo.mantenimientoDuplicados.espera', 'Este proceso puede durar varios minutos. Por favor, espere...#EU', 0, '3', sysdate, 0, '19');
+              

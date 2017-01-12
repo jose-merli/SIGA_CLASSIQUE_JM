@@ -1020,7 +1020,7 @@
 			
 			function accionAceptar(){
 				if (!pulsadoOtrosDatos || !pulsadoColegiacionesIguales || !pulsadoColegiacionesDiferentes || !pulsadoDirecciones) {
-					alert("Revise todos los conjuntos de datos antes de aceptar la combinación");
+					alert("<siga:Idioma key="messages.error.censo.mantenimientoDuplicados.reviseDatos"/>");
 					return
 				}
 				if (seleccionado){
@@ -1037,7 +1037,7 @@
 							document.forms[0].listaEstadosNoSeleccionados.value = getSelectedCheckboxValue(document.forms[0].checkEstado, false);
 						}
 						if(confirm("Se van a combinar los datos a una sola persona.")){
-							alert("Este proceso puede durar varios minutos. Por favor, espere...");
+							alert("<siga:Idioma key="messages.error.censo.mantenimientoDuplicados.espera"/>");
 							document.forms[0].modo.value = "aceptar";
 							document.forms[0].target="submitArea";	
 						 	document.forms[0].submit();

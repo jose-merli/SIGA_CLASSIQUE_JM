@@ -113,7 +113,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		
 		UsrBean usr = this.getUserBean(request);
 		if (! usr.getLocation().equalsIgnoreCase(Integer.toString(ClsConstants.INSTITUCION_CGAE))) {
-			throw (new SIGAException("Esta funcionalidad no está disponible. Consulte con el Administrador"));
+			throw (new SIGAException("messages.error.censo.mantenimientoDuplicados.funcionalidadNoDisponible"));
 		}
 
 		try { 
@@ -508,13 +508,13 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			}
 			// Si no hay seleccionados, no se puede hacer nada mas
 			if (seleccionados == null || seleccionados.equalsIgnoreCase("")) {
-				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr, "No se ha seleccionado nada. Seleccione dos personas para fusionar."));
+				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr, "messages.error.censo.mantenimientoDuplicados.ningunaSeleccionFusionar"));
 				return "exitoFusionar";
 			}
 			// Los seleccionados deben ser 2, separados por comas
 			String[] personasSeleccionadas = UtilidadesString.split(seleccionados, ",");
 			if (personasSeleccionadas.length != 2) {
-				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr, "Selección incorrecta. Seleccione dos personas para fusionar."));
+				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr, "messages.error.censo.mantenimientoDuplicados.incorrectaSeleccionFusionar"));
 				return "exitoFusionar";
 			}
 			
@@ -527,7 +527,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				//TODO hay que mostrar al usuario un recurso concreto
 				ControlFusionador controlFusionador = ControlFusionador.getControlFusionador(idPersona, null);
 				if (controlFusionador == null) {
-					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr, "Ya se ha solicitado la combinación de alguna de estas personas. Espere unos minutos hasta que termine."));
+					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr, "messages.error.censo.mantenimientoDuplicados.fusionEnCurso"));
 					return "exitoFusionar";
 				}
 				controlFusionador.removeControlFusionador(); // abrimos el semaforo: ya se cerrara mas tarde al comenzar la fusion
@@ -791,7 +791,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				intInstitucion = Integer.parseInt(stInstitucion);
 				// Si se quiere fusionar un colegiado en el mismo colegio, solo lo permitimos al personal de IT o bien si el colegio no esta en produccion
 				if (admColeg.existeColegiado(Long.parseLong(idPersonaDestino), intInstitucion) != null && !tienePermisoFusionColegiosEnProduccion(mapping, request) && admInst.estaEnProduccion(stInstitucion)) {
-					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "No está permitida la fusión por seguridad. El colegio de "+nombreInstitucion+" usa SIGA y puede contener datos delicados. Por favor, consulte con el Administrador."));
+					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar1"+nombreInstitucion+"messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar2"));
 					return "exitoFusionar";
 				}
 			}
@@ -799,13 +799,13 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			// semaforo para evitar que se pida la fusion de la misma persona varias veces
 			controlFusionador = ControlFusionador.getControlFusionador(idPersonaOrigen, idPersonaDestino);
 			if (controlFusionador == null) {
-				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "Ya se ha solicitado la combinación de alguna de estas personas. Espere unos minutos hasta que termine."));
+				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.fusionEnCurso"));
 				return "exitoFusionar";
 			}
 			
 			// comprobando que existan las dos personas a fusionar, por si acaso ya no existe alguna (por ejemplo, si se ha fusionado en otro hilo de ejecucion)
 			if (admPersona.getPersonaPorId(idPersonaOrigen) == null || admPersona.getPersonaPorId(idPersonaDestino) == null) {
-				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "Ya se ha solicitado la combinación de alguna de estas personas. Por favor, realice una nueva búsqueda."));
+				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.fusionEnCursoNuevaBusqueda"));
 				return "exitoFusionar";
 			}
 
@@ -876,14 +876,14 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				vRegistros = pagoColAdm.selectPagosColegiadoDeVariasPersonas(colegio, listaIdPersonas);
 				if (vRegistros != null && vRegistros.size() > 0) {
 					tx.rollback();
-					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "Ambas personas tienen registros en el mismo Pago SJCS. Por favor, consulte al Administrador."));
+					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.registroMismoPagoSJCS"));
 					return "exitoFusionar";
 				}
 				
 				vRegistros = cabGuaAdm.getCabeceraGuardiasDeVariasPersonas(colegio, listaIdPersonas);
 				if (vRegistros != null && vRegistros.size() > 0) {
 					tx.rollback();
-					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "Ambas personas tienen guardia en el mismo día. Por favor, consulte al Administrador."));
+					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.guardiaMismoDia"));
 					return "exitoFusionar";
 				}
 			}
@@ -1028,7 +1028,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			// semaforo para evitar que se pida la fusion de la misma persona varias veces
 			controlFusionador = ControlFusionador.getControlFusionador(ControlFusionador.CONTROL_INFORME, null);
 			if (controlFusionador == null) {
-				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "Ya se solicitó la generación del informe de duplicados. Espere unos minutos hasta que termine."));
+				request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.solicitadaFusionEstadoEnCurso"));
 				return "exitoFusionar";
 			}
 			
@@ -1428,7 +1428,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			testAccess(request.getContextPath() + mapping.getPath() + ".do", null, request);
 
 		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error al obtener el permiso para fusionar personas en colegios en produccion.");
+			throw new ClsExceptions(e, "messages.error.censo.mantenimientoDuplicados.fusionarColegiosProduccion");
 		}
 		return permiso;
 	} // tienePermisoFusionColegiosEnProduccion()
