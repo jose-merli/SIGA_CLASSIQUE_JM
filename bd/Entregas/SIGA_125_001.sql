@@ -2055,13 +2055,13 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 
         
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
-        values ('messages.error.censo.mantenimientoDuplicados.generacionInforme', 'Se ha empezado a generar el informe con éxito. Espere unos minutos, o vuelva más tarde para descargarlo.', 0, '1', sysdate, 0, '19');
+        values ('messages.error.censo.mantenimientoDuplicados.generacionInforme', 'Se ha empezado a generar el informe. Si no se descarga ahora, vuelva a intentarlo más tarde.', 0, '1', sysdate, 0, '19');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
-        values ('messages.error.censo.mantenimientoDuplicados.generacionInforme', 'Se ha empezado a generar el informe con éxito. Espere unos minutos, o vuelva más tarde para descargarlo.#GL', 0, '4', sysdate, 0, '19');
+        values ('messages.error.censo.mantenimientoDuplicados.generacionInforme', 'Se ha empezado a generar el informe. Si no se descarga ahora, vuelva a intentarlo más tarde.#GL', 0, '4', sysdate, 0, '19');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
-        values ('messages.error.censo.mantenimientoDuplicados.generacionInforme', 'Se ha empezado a generar el informe con éxito. Espere unos minutos, o vuelva más tarde para descargarlo.#CA', 0, '2', sysdate, 0, '19');
+        values ('messages.error.censo.mantenimientoDuplicados.generacionInforme', 'Se ha empezado a generar el informe. Si no se descarga ahora, vuelva a intentarlo más tarde.#CA', 0, '2', sysdate, 0, '19');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
-        values ('messages.error.censo.mantenimientoDuplicados.generacionInforme', 'Se ha empezado a generar el informe con éxito. Espere unos minutos, o vuelva más tarde para descargarlo.#EU', 0, '3', sysdate, 0, '19');
+        values ('messages.error.censo.mantenimientoDuplicados.generacionInforme', 'Se ha empezado a generar el informe. Si no se descarga ahora, vuelva a intentarlo más tarde.#EU', 0, '3', sysdate, 0, '19');
 
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
         values ('messages.error.censo.mantenimientoDuplicados.descargarInformeDeHoy', 'Descargando el informe del día de hoy. Si quiere actualizar los datos, vuelva a generar el informe mañana.', 0, '1', sysdate, 0, '19');
