@@ -2262,14 +2262,51 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     
     v_colegiomovido Cen_Cliente.Idinstitucion%Type;
   
-    Cursor c_Clientes Is
+    c_CLIENTENOCOLEGIADO Constant Int := 1;
+    c_CLIENTESOCIEDAD Constant Int := 2;
+    c_CLIENTECOLEGIADO Constant Int := 3;
+    v_Tipoclientecgae_Origen Int;
+    v_Tipoclientecgae_Destino Int;
+    n_Colegiados_Origen Int;
+    n_Colegiados_Destino Int;
+    Cursor c_Clientes (p_Idorigen Cen_Persona.Idpersona%Type, p_Iddestino Cen_Persona.Idpersona%Type) Is
       Select Ori.Idinstitucion,
-             (Select Count(*)
-                From Cen_Colegiado Col
-               Where Col.Idpersona = Ori.Idpersona
-                 And Col.Idinstitucion = Ori.Idinstitucion) As Escolegiado
+             Decode((Select Count(1)
+                      From Cen_Colegiado Col
+                     Where Col.Idpersona = Ori.Idpersona
+                       And Col.Idinstitucion = Ori.Idinstitucion),
+                    1,
+                    c_CLIENTECOLEGIADO,
+                    Decode((Select Count(1)
+                             From Cen_Nocolegiado Nocol
+                            Where Nocol.Idpersona = Ori.Idpersona
+                              And Nocol.Idinstitucion = Ori.Idinstitucion
+                              And Nocol.Tipo <> '1'),
+                           1,
+                           c_CLIENTESOCIEDAD,
+                           c_CLIENTENOCOLEGIADO)) As Tipoclienteorigen,
+             Decode((Select Count(1)
+                      From Cen_Colegiado Col
+                     Where Col.Idpersona = p_Iddestino
+                       And Col.Idinstitucion = Ori.Idinstitucion),
+                    1,
+                    c_CLIENTECOLEGIADO,
+                    Decode((Select Count(1)
+                             From Cen_Nocolegiado Nocol
+                            Where Nocol.Idpersona = p_Iddestino
+                              And Nocol.Idinstitucion = Ori.Idinstitucion
+                              And Nocol.Tipo <> '1'),
+                           1,
+                           c_CLIENTESOCIEDAD,
+                           Decode((Select Count(1)
+                                    From Cen_Cliente Nocol
+                                   Where Nocol.Idpersona = p_Iddestino
+                                     And Nocol.Idinstitucion = Ori.Idinstitucion),
+                                  1,
+                                  c_CLIENTENOCOLEGIADO,
+                                  0))) As Tipoclientedestino
         From Cen_Cliente Ori
-       Where Ori.Idpersona = p_Idpersona_Origen
+       Where Ori.Idpersona = p_Idorigen
        Order By Ori.Idinstitucion;
   
     v_Codretorno Varchar2(10);
@@ -2282,8 +2319,9 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
                     p_Idpersona_Destino || '): INI';
   
     p_Datoserror := p_Datoserror || Chr(10) || 'Copiacliente_simple (';
+    p_Datoserror := p_Datoserror || p_Idpersona_Origen || ' > ' || p_Idpersona_Destino || ')';
     -- Para todos los clientes en origen
-    For Reg_Cliente In c_Clientes Loop
+    For Reg_Cliente In c_Clientes(p_Idpersona_Origen, p_Idpersona_Destino) Loop
       -- Se copian los registros de cliente si no existen ya en destino
       Copiacliente_Simple(p_Idpersona_Origen,
                           p_Idpersona_Destino,
@@ -2297,12 +2335,89 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
       End If;
     
       -- Se marca si existe colegiado
-      If Reg_Cliente.Escolegiado = 1 Then
+      If Reg_Cliente.Tipoclienteorigen = c_CLIENTECOLEGIADO Then
         v_colegiomovido := Reg_Cliente.Idinstitucion;
       End If;
     
+      -- Comprobando que no se mezcla sociedad con persona fisica en cada colegio
+      If Reg_Cliente.Tipoclientedestino > 0 Then
+        If (Reg_Cliente.Tipoclienteorigen = c_CLIENTESOCIEDAD And Reg_Cliente.Tipoclientedestino <> c_CLIENTESOCIEDAD) Then
+          p_Codretorno := -1;
+          p_Datoserror := 'No se pueden mover datos de una Sociedad hacia una persona fisica';
+          Return;
+        End If;
+        If (Reg_Cliente.Tipoclienteorigen = c_CLIENTECOLEGIADO And Reg_Cliente.Tipoclientedestino = c_CLIENTESOCIEDAD) Then
+          p_Codretorno := -1;
+          p_Datoserror := 'No se puede mezclar un Colegiado con una Sociedad';
+          Return;
+        End If;
+      End If;
     End Loop;
-    p_Datoserror := p_Datoserror || p_Idpersona_Origen || ' > ' || p_Idpersona_Destino || ')';
+    
+    -- Comprobando que no se mezcla sociedad con persona fisica en CGAE
+    Begin
+      Select Decode((Select Count(1)
+                      From Cen_Nocolegiado Nocol
+                     Where Nocol.Idpersona = p_Idpersona_Origen
+                       And Nocol.Idinstitucion = 2000
+                       And Nocol.Tipo <> '1'),
+                    1,
+                    c_Clientesociedad,
+                    Decode((Select Count(1)
+                             From Cen_Cliente Cli
+                            Where Cli.Idpersona = p_Idpersona_Origen
+                              And Cli.Idinstitucion = 2000
+                              And Cli.Letrado = '1'),
+                           1,
+                           c_Clientecolegiado,
+                           Decode((Select Count(1)
+                                    From Cen_Cliente Nocol
+                                   Where Nocol.Idpersona = p_Idpersona_Origen
+                                     And Nocol.Idinstitucion = 2000),
+                                  1,
+                                  c_Clientenocolegiado,
+                                  0))),
+             Decode((Select Count(1)
+                      From Cen_Nocolegiado Nocol
+                     Where Nocol.Idpersona = p_Idpersona_Destino
+                       And Nocol.Idinstitucion = 2000
+                       And Nocol.Tipo <> '1'),
+                    1,
+                    c_Clientesociedad,
+                    Decode((Select Count(1)
+                             From Cen_Cliente Cli
+                            Where Cli.Idpersona = p_Idpersona_Destino
+                              And Cli.Idinstitucion = 2000
+                              And Cli.Letrado = '1'),
+                           1,
+                           c_Clientecolegiado,
+                           Decode((Select Count(1)
+                                    From Cen_Cliente Nocol
+                                   Where Nocol.Idpersona = p_Idpersona_Destino
+                                     And Nocol.Idinstitucion = 2000),
+                                  1,
+                                  c_Clientenocolegiado,
+                                  0))),
+             (Select Count(1) From Cen_Colegiado Col Where Col.Idpersona = p_Idpersona_Origen),
+             (Select Count(1) From Cen_Colegiado Col Where Col.Idpersona = p_Idpersona_Destino)
+        Into v_Tipoclientecgae_Origen,
+             v_Tipoclientecgae_Destino,
+             n_Colegiados_Origen,
+             n_Colegiados_Destino
+        From Dual;
+      
+      If v_Tipoclientecgae_Destino = c_Clientesociedad Then
+        If n_Colegiados_Origen > 0 Or n_Colegiados_Destino > 0 Then
+          p_Codretorno := -1;
+          p_Datoserror := 'No se puede mezclar un Colegiado con una Sociedad';
+          Return;
+        End If;
+      Elsif v_Tipoclientecgae_Origen = c_Clientesociedad Then
+        p_Codretorno := -1;
+        p_Datoserror := 'No se pueden mover datos de una Sociedad hacia una persona fisica';
+        Return;
+      End If;
+    End;
     
     Begin
       -- Aseguramos que exista el cliente en el CGAE

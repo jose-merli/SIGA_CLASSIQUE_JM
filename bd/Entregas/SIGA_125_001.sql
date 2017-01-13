@@ -1954,6 +1954,7 @@ alter table 	CEN_PARTIDOJUDICIAL	 drop constraint 	SYS_C0043299	 ; --Solo funcio
 alter table 	CEN_PARTIDOJUDICIAL	 drop constraint 	SYS_C0016807	 ; --Solo funciona en PRE
 
 -- Ejecutado en Integracion por AAG el 29/12 a las 15:00
+
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
         values ('messages.error.censo.mantenimientoDuplicados.funcionalidadNoDisponible', 'Esta funcionalidad no está disponible. Consulte con el Administrador', 0, '1', sysdate, 0, '19');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
@@ -2089,4 +2090,6 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
         values ('messages.error.censo.mantenimientoDuplicados.espera', 'Este proceso puede durar varios minutos. Por favor, espere...#CA', 0, '2', sysdate, 0, '19');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
         values ('messages.error.censo.mantenimientoDuplicados.espera', 'Este proceso puede durar varios minutos. Por favor, espere...#EU', 0, '3', sysdate, 0, '19');
-              
+
+Actualizacion Pkg_Siga_Fusion_Personas
+
