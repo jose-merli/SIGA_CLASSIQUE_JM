@@ -2093,3 +2093,5 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 
 Actualizacion Pkg_Siga_Fusion_Personas
 
+
+-- Ejecutado en Integracion por AAG el 13/01 a las 13:30
