@@ -147,7 +147,7 @@
 											<c:out value="${datosPersona.NIFCIF}"/>
 											<c:set var="tipoSociedad" value='<%=ClsConstants.TIPO_CLIENTE_INSTITUCION%>'/>
 											<c:if test="${datosPersona.tipoCliente==tipoSociedad}">
-												<b>(SOCIEDAD)</b>
+												<font color="red"><i><b>(SOCIEDAD)</b></i></font>
 											</c:if>
 											| <c:out value="${datosPersona.fechaMod}"/>
 										</td>
@@ -374,7 +374,7 @@
 								<table>
 									<tr>
 										<td class="labelText" colspan="3">
-											<c:out value="${datosCol.numCol}"/> |
+											<b><c:out value="${datosCol.numCol}"/></b> |
 											
 											<c:out value="${datosCol.fechaIncorporacion}"/> |
 											
@@ -704,9 +704,7 @@
 											<b>(autogestión)</b>
 										</c:if>
 										
-										<c:if test="${datosCol.datosColegiacion.NColegiado!=null}">
-											| <c:out value="${datosCol.datosColegiacion.NColegiado}"/><c:out value="${datosCol.datosColegiacion.NComunitario}"/>
-										</c:if>
+										| <b><c:out value="${datosCol.datosColegiacion.numCol}"/></b>
 										
 										| <c:out value="${datosCol.datosColegiacion.fechaIncorporacion}"/>
 									</td>
@@ -715,37 +713,26 @@
 								<tr>
 									<td class="labelText">
 										<c:choose>
-										<c:when test="${datosCol.datosColegiacion.NColegiado!=null}">
-											<c:if test="${datosCol.datosColegiacion.comunitario!=null && datosCol.datosColegiacion.comunitario=='1'}">
-												<b><c:out value="Inscrito"/></b>
-												&nbsp;
-											</c:if>
-											
-											<c:choose>
-											<c:when test="${datosCol.datosColegiacion.situacionResidente!=null && datosCol.datosColegiacion.situacionResidente=='1'}">
+											<c:when test="${datosCol.datosColegiacion.situacionResidente=='1'}">
 												<c:out value="Residente"/>
 											</c:when>
-											
-											<c:otherwise>
+											<c:when test="${datosCol.datosColegiacion.situacionResidente=='0'}">
 												<c:out value="No Residente"/>
-											</c:otherwise>
-											</c:choose>
-											
-											<c:choose>
+											</c:when>
+										</c:choose>
+										
+										<c:if test="${datosCol.datosColegiacion.comunitario=='1'}">
+											<b><c:out value="Inscrito"/></b> &nbsp;
+										</c:if>
+										
+										<c:choose>
 											<c:when test="${datosCol.estadoColegiacion != null}">
 											| <c:out value="${datosCol.estadoColegiacion.row.DESCRIPCION}"/>
 												desde <c:out value="${datosCol.estadoColegiacion.row.FECHAESTADO_SPANISH}"/>
 											</c:when>
-											
-											<c:otherwise>
+											<c:when test="${datosCol.datosColegiacion.comunitario != null}">
 												<i>[<strike>estado colegial</strike>]</i>
-											</c:otherwise>
-											</c:choose>
-										</c:when>
-										
-										<c:otherwise>
-											<i>No Colegiado</i>
-										</c:otherwise>
+											</c:when>
 										</c:choose>
 									</td>
 								</tr>
@@ -1052,7 +1039,6 @@
 				pulsadoColegiacionesIguales = true;
 			}
 			function pulsarColegiacionesDiferentes() {
-				alert('Pulsando diferentes');
 				pulsadoColegiacionesDiferentes = true;
 			}
 			function pulsarDirecciones() {

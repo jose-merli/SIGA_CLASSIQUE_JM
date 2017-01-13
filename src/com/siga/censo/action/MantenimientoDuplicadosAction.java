@@ -580,6 +580,12 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					
 					datosColegiacionDeUna.put("datosColegio", datosColegioDeUna);
 					
+					// obteniendo datos generales del colegiado
+					beanCliente = admCliente.existeCliente(Long.valueOf(idPersona), idInstitucionCol);
+					beanCliente.setIdTratamientoStr(((CenTratamientoBean) tratamientoAdm.select("where "+CenTratamientoBean.C_IDTRATAMIENTO+"="+beanCliente.getIdTratamiento()).get(0)).getDescripcion());
+					beanCliente.setIdLenguajeStr(((AdmLenguajesBean) lenguajeAdm.select("where "+AdmLenguajesBean.C_IDLENGUAJE+"="+beanCliente.getIdLenguaje()).get(0)).getDescripcion());
+					datosColegiacionDeUna.put("datosCliente", beanCliente);
+					
 					// obteniendo datos del colegio
 					{
 						beanColegiado = admColeg.getDatosColegiales(Long.valueOf(idPersona), idInstitucionCol);
@@ -600,6 +606,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 							}
 						} else {
 							beanColegiado = new CenColegiadoBean();
+							beanColegiado.setFechaIncorporacion(UtilidadesString.formatoFecha(beanCliente.getFechaAlta(), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH));
 						}
 						
 						// obteniendo tipo si es no colegiado
@@ -608,18 +615,12 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 							if (beanNoColegiado.getTipo().equalsIgnoreCase("1")) {
 								beanColegiado.setNColegiado("No colegiado");
 							} else {
-								beanColegiado.setNColegiado("Sociedad");
+								beanColegiado.setNColegiado("SOCIEDAD");
 							}
 						}
 						
 						datosColegiacionDeUna.put("datosColegiacion", beanColegiado);
 					}
-					
-					// obteniendo otros datos del colegiado
-					beanCliente = admCliente.existeCliente(Long.valueOf(idPersona), idInstitucionCol);
-					beanCliente.setIdTratamientoStr(((CenTratamientoBean) tratamientoAdm.select("where "+CenTratamientoBean.C_IDTRATAMIENTO+"="+beanCliente.getIdTratamiento()).get(0)).getDescripcion());
-					beanCliente.setIdLenguajeStr(((AdmLenguajesBean) lenguajeAdm.select("where "+AdmLenguajesBean.C_IDLENGUAJE+"="+beanCliente.getIdLenguaje()).get(0)).getDescripcion());
-					datosColegiacionDeUna.put("datosCliente", beanCliente);
 					
 					//Obteniendo datos de ecom
 					EcomCenDatosService ecomCenDatosService =  (EcomCenDatosService) getBusinessManager().getService(EcomCenDatosService.class);
@@ -661,7 +662,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					datosPersonaDeUna.setTipoCliente(ClsConstants.TIPO_CLIENTE_LETRADO);
 				} else if (esClienteEnCGAE){
 					beanNoColegiado = admNoColeg.existeNoColegiadoInstitucion(Long.valueOf(idPersona), ClsConstants.INSTITUCION_CGAE);
-					if (beanNoColegiado != null || beanNoColegiado.getTipo().equalsIgnoreCase("1")) {
+					if (beanNoColegiado != null && beanNoColegiado.getTipo().equalsIgnoreCase("1")) {
 						datosPersonaDeUna.setTipoCliente(ClsConstants.TIPO_CLIENTE_NOCOLEGIADO);
 					} else {
 						datosPersonaDeUna.setTipoCliente(ClsConstants.TIPO_CLIENTE_INSTITUCION);
