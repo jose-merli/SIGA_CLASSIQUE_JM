@@ -112,28 +112,28 @@
 								<table>
 									<tr>
 										<td class="labelText">
-											Identificación | Última Modificación
+											<siga:Idioma key="censo.gestionarDuplicado.patron.identificacion" /> | <siga:Idioma key="censo.gestionarDuplicado.patron.ultimaModificacion" />
 										</td>
 									</tr>
 									
 									<tr>
 										<td class="labelText">
-											Apellido 1 Apellido 2, Nombre
+											<siga:Idioma key="censo.busquedaDuplicados.patron.apellido1" /> <siga:Idioma key="censo.busquedaDuplicados.patron.apellido2" />, <siga:Idioma key="censo.busquedaDuplicados.patron.nombre" />
 										</td>
 									</tr>
 									
 									<tr>
 										<td class="labelText">
-											<b>>> Modificar datos >></b>
+											<b><siga:Idioma key="censo.gestionarDuplicado.patron.modificarDatos" /></b>
 										</td>
 									</tr>
 									
 									<tr>
 										<!-- Aqui se meten los radio buttons para seleccionar el colegiado base -->
 										<td class="labelText">
-											<b>Seleccione cuál será el destino</b>
+											<b><siga:Idioma key="censo.gestionarDuplicado.patron.seleccionDestino" /></b>
 											<br>
-											(datos generales que se conservarán)
+											<siga:Idioma key="censo.gestionarDuplicado.patron.datosGenerales" />
 										</td>
 									</tr>
 								</table>
@@ -189,7 +189,7 @@
 														 title="Editar" border="0" onClick="informacionLetrado('${datosPersona.idPersona}','<%=idInstitucionLocation%>',0); " >
 												</c:when>
 												<c:otherwise>
-													<i><b>No disponible</b></i>
+													<i><b><siga:Idioma key="censo.gestionarDuplicado.patron.noDisponible" /></b></i>
 												</c:otherwise>
 											</c:choose>
 										</td>
@@ -228,7 +228,7 @@
 
 									<tr>
 										<td class="labelText">
-											Sexo | Estado civil
+											<siga:Idioma key="censo.gestionarDuplicado.patron.sexo"/> | <siga:Idioma key="censo.gestionarDuplicado.patron.estadoCivil"/>
 										</td>
 									</tr>
 								</table>
@@ -241,11 +241,11 @@
 										<td class="labelTextValue">
 											<c:out value="${datosPersona.fechaNacimiento}"/>
 											<c:if test="${datosPersona.fechaNacimiento==''}">
-												<i>[<strike>fecha de nacimiento</strike>]</i>
+												<i>[<strike><siga:Idioma key="censo.gestionarDuplicado.patron.fechaNacimiento"/></strike>]</i>
 											</c:if>
 											 | <c:out value="${datosPersona.naturalDe}"/>
 											<c:if test="${datosPersona.naturalDe==''}">
-												<i>[<strike>lugar de nacimiento</strike>]</i>
+												<i>[<strike><siga:Idioma key="censo.gestionarDuplicado.patron.lugarNacimiento"/></strike>]</i>
 											</c:if>
 										</td>
 									</tr>
@@ -257,11 +257,11 @@
 											</c:if>
 											<c:out value="${datosPersona.sexoStr}"/>
 											<c:if test="${datosPersona.sexoStr==null}">
-												<i>[<strike>sexo</strike>]</i>
+												<i>[<strike><siga:Idioma key="censo.gestionarDuplicado.patron.sexo"/></strike>]</i>
 											</c:if>
 											 | <c:out value="${datosPersona.idEstadoCivilStr}"/>
 											<c:if test="${datosPersona.idEstadoCivilStr==null}">
-												<i>[<strike>estado civil</strike>]</i>
+												<i>[<strike><siga:Idioma key="censo.gestionarDuplicado.patron.estadoCivil"/></strike>]</i>
 											</c:if>
 										</td>
 									</tr>
@@ -275,14 +275,14 @@
 								<table>
 									<tr>
 										<td class="labelText">
-											Sanciones y Certificados
+											<siga:Idioma key="censo.gestionarDuplicado.patron.sancionesYCertificados"/>
 										</td>
 									</tr>
 																								
 									<tr>
 										<td class="labelText"> 
-											Tratamiento 
-											| Idioma
+											<siga:Idioma key="censo.consultaDatosGenerales.literal.tratamiento"/> 
+											| <siga:Idioma key="censo.consultaDatosGenerales.literal.idioma"/>
 	 									</td>
 									</tr>
 									
@@ -402,7 +402,7 @@
 								<table>
 									<tr>
 										<td class="labelText">
-											Histórico de estados 
+											<siga:Idioma key="censo.gestionarDuplicado.patron.historicoEstados"/> 
 										</td>
 									</tr>
 								</table>
@@ -434,7 +434,7 @@
 								<table>
 									<tr>
 										<td class="labelText">
-											Última actualización externa
+											<siga:Idioma key="censo.gestionarDuplicado.patron.ultimaActualizacionExterna"/>
 										</td>
 									</tr>
 								</table>

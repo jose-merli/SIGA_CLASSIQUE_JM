@@ -268,7 +268,7 @@
 					<table>
 						<tr>
 							<td class="labelText">
-								Número Identificación
+								<siga:Idioma key="censo.busquedaDuplicados.patron.numeroIdentificacion"/>
 							</td>
 							<td>
 								<html:text styleId="nifcif" name="MantenimientoDuplicadosForm" property="nifcif" size="15" styleClass="box" onkeyup="presionarNif()" />
@@ -281,7 +281,7 @@
 						</tr>
 						<tr>
 							<td id="tdIdentificacionOrden" class="labelText" colspan="2" style="visibility:hidden;">
-								<p><b><i>Se ordena por Número Identificación</i></b></p>
+								<p><b><i><siga:Idioma key="censo.busquedaDuplicados.patron.ordenNumeroIdentificacion"/></i></b></p>
 							</td>
 						</tr>
 					</table>
@@ -312,7 +312,7 @@
 						</tr>
 						<tr>
 							<td id="tdColegiacionOrden" class="labelText" colspan="2" style="visibility:hidden;">
-								<p><b><i>Se ordena por Institución y Número de colegiado</i></b></p>
+								<p><b><i><siga:Idioma key="censo.busquedaDuplicados.patron.ordenInstitucionYNumeroIdentificacion" /></i></b></p>
 							</td>
 						</tr>
 					</table>
@@ -329,14 +329,14 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="labelText">Apellidos</td>
+							<td class="labelText"><siga:Idioma key="censo.busquedaDuplicados.patron.apellidos" /></td> 
 							<td>
 								<html:text styleId="apellidosText" name="MantenimientoDuplicadosForm" property="apellidos" size="35" styleClass="box" onkeyup="presionarNombreApellidos()" />
 							</td>
 						</tr>
 						<tr>
 							<td id="tdNombreOrden" class="labelText" colspan="2" style="visibility:hidden;">
-								<p><b><i>Se ordena por Apellidos y Nombre</i></b></p>
+								<p><b><i><siga:Idioma key="censo.busquedaDuplicados.patron.ordenApellidosYNombre" /></i></b></p>  
 							</td>
 						</tr>
 					</table>

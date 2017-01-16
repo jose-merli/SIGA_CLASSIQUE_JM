@@ -2090,8 +2090,172 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
         values ('messages.error.censo.mantenimientoDuplicados.espera', 'Este proceso puede durar varios minutos. Por favor, espere...#CA', 0, '2', sysdate, 0, '19');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
         values ('messages.error.censo.mantenimientoDuplicados.espera', 'Este proceso puede durar varios minutos. Por favor, espere...#EU', 0, '3', sysdate, 0, '19');
-
 Actualizacion Pkg_Siga_Fusion_Personas
 
 
 -- Ejecutado en Integracion por AAG el 13/01 a las 13:30
+              
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.numeroIdentificacion', 'Número Identificación', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.numeroIdentificacion', 'Número Identificación#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.numeroIdentificacion', 'Número Identificación#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.numeroIdentificacion', 'Número Identificación#EU', 0, '3', sysdate, 0, '19');
+        
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.ordenNumeroIdentificacion', 'Se ordena por Número Identificación', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.ordenNumeroIdentificacion', 'Se ordena por Número Identificación#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.ordenNumeroIdentificacion', 'Se ordena por Número Identificación#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.ordenNumeroIdentificacion', 'Se ordena por Número Identificación#EU', 0, '3', sysdate, 0, '19');
+        
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.ordenInstitucionYNumeroIdentificacion', 'Se ordena por Institución y Número de colegiado', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.ordenInstitucionYNumeroIdentificacion', 'Se ordena por Institución y Número de colegiado#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.ordenInstitucionYNumeroIdentificacion', 'Se ordena por Institución y Número de colegiado#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.ordenInstitucionYNumeroIdentificacion', 'Se ordena por Institución y Número de colegiado#EU', 0, '3', sysdate, 0, '19');
+        
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.apellidos', 'Apellidos', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.apellidos', 'Apellidos#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.apellidos', 'Apellidos#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.apellidos', 'Apellidos#EU', 0, '3', sysdate, 0, '19');
+    
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.ordenApellidosYNombre', 'Se ordena por Apellidos y Nombre', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.ordenApellidosYNombre', 'Se ordena por Apellidos y Nombre#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.ordenApellidosYNombre', 'Se ordena por Apellidos y Nombre#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.busquedaDuplicados.patron.ordenApellidosYNombre', 'Se ordena por Apellidos y Nombre#EU', 0, '3', sysdate, 0, '19');  
+        
+        
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.identificacion', 'Identificación', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.identificacion', 'Identificación#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.identificacion', 'Identificación#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.identificacion', 'Identificación#EU', 0, '3', sysdate, 0, '19');
+        
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.ultimaModificacion', 'Última Modificación', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.ultimaModificacion', 'Última Modificación#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.ultimaModificacion', 'Última Modificación#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.ultimaModificacion', 'Última Modificación#EU', 0, '3', sysdate, 0, '19');
+        
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.modificarDatos', '>> Modificar datos >>', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.modificarDatos', '>> Modificar datos >>#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.modificarDatos', '>> Modificar datos >>#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.modificarDatos', '>> Modificar datos >>#EU', 0, '3', sysdate, 0, '19');
+        
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.seleccionDestino', 'Seleccione cuál será el destino', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.seleccionDestino', 'Seleccione cuál será el destino#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.seleccionDestino', 'Seleccione cuál será el destino#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.seleccionDestino', 'Seleccione cuál será el destino#EU', 0, '3', sysdate, 0, '19');
+        
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.datosGenerales', '(datos generales que se conservarán)', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.datosGenerales', '(datos generales que se conservarán)#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.datosGenerales', '(datos generales que se conservarán)#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.datosGenerales', '(datos generales que se conservarán)#EU', 0, '3', sysdate, 0, '19');
+        
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.noDisponible', 'No disponible', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.noDisponible', 'No disponible#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.noDisponible', 'No disponible#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.noDisponible', 'No disponible#EU', 0, '3', sysdate, 0, '19');
+      
+  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.sexo', 'Sexo', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.sexo', 'Sexo#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.sexo', 'Sexo#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.sexo', 'Sexo#EU', 0, '3', sysdate, 0, '19');
+        
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.estadoCivil', 'Estado civil', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.estadoCivil', 'Estado civil#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.estadoCivil', 'Estado civil#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.estadoCivil', 'Estado civil#EU', 0, '3', sysdate, 0, '19');
+        
+        
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.fechaNacimiento', 'fecha de nacimiento', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.fechaNacimiento', 'fecha de nacimiento#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.fechaNacimiento', 'fecha de nacimiento#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.fechaNacimiento', 'fecha de nacimiento#EU', 0, '3', sysdate, 0, '19');
+        
+        
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.lugarNacimiento', 'lugar de nacimiento', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.lugarNacimiento', 'lugar de nacimiento#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.lugarNacimiento', 'lugar de nacimiento#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.lugarNacimiento', 'lugar de nacimiento#EU', 0, '3', sysdate, 0, '19');
+        
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.sancionesYCertificados', 'Sanciones y Certificados', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.sancionesYCertificados', 'Sanciones y Certificados#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.sancionesYCertificados', 'Sanciones y Certificados#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.sancionesYCertificados', 'Sanciones y Certificados#EU', 0, '3', sysdate, 0, '19');
+        
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.historicoEstados', 'Histórico de estados', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.historicoEstados', 'Histórico de estados#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.historicoEstados', 'Histórico de estados#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.historicoEstados', 'Histórico de estados#EU', 0, '3', sysdate, 0, '19');         
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.ultimaActualizacionExterna', 'Última actualización externa', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.ultimaActualizacionExterna', 'Última actualización externa#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.ultimaActualizacionExterna', 'Última actualización externa#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+        values ('censo.gestionarDuplicado.patron.ultimaActualizacionExterna', 'Última actualización externa#EU', 0, '3', sysdate, 0, '19'); 
