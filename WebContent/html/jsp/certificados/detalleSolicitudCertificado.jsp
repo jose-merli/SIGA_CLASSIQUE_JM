@@ -841,7 +841,7 @@
 		</table>			
 	</div>	
 		
-	<html:form action="/CER_GestionSolicitudes.do" method="POST" target="mainWorkArea">
+	<html:form action="/CER_GestionSolicitudes.do" method="POST" target="submitArea">
 		<html:hidden property="modo" value="" />
 		<html:hidden property="idInstitucion" styleId="idInstitucion" value="<%=idInstitucion%>" />
 		<html:hidden property="idInstitucionSolicitud" value="<%=idInstitucionSolicitud%>" />
