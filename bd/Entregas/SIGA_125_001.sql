@@ -2259,3 +2259,5 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
         values ('censo.gestionarDuplicado.patron.ultimaActualizacionExterna', 'Última actualización externa#CA', 0, '2', sysdate, 0, '19');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
         values ('censo.gestionarDuplicado.patron.ultimaActualizacionExterna', 'Última actualización externa#EU', 0, '3', sysdate, 0, '19'); 
+
+-- Ejecutado en Integracion por AAG el 16/01 a las 10:30
