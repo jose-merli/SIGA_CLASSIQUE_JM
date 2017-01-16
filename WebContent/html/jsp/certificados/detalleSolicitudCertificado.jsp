@@ -976,14 +976,6 @@
 						<td>				
 							<html:text name="SolicitudesCertificadosForm" size="12" property="nidSolicitante" styleId="nidSolicitante" styleClass="boxConsulta" readonly="true" style="width:80px" value="<%=nidSolicitante%>"/>
 						</td>
-
-						<td class="labelText" nowrap width="95px">
-							<siga:Idioma key="expedientes.auditoria.literal.ncolegiado"/>			
-						</td>
-						<td>
-							<html:text name="SolicitudesCertificadosForm" property="nColSolicitante" styleId="nColSolicitante" size="8" styleClass="boxConsulta" readonly="true" style="width:80px" value="<%=ncolSolicitante%>"/>
-						</td>
-
 						<td class="labelText" width="60px">
 							<html:hidden name="SolicitudesCertificadosForm" property = "idPersonaSolicitante" styleId="idPersonaSolicitante" value="<%=idPersona%>"/>
 							<html:hidden name="SolicitudesCertificadosForm" property = "idInstitucionOrigenSolicitante" styleId="idInstitucionOrigenSolicitante"/>
