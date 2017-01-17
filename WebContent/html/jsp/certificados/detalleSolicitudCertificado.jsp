@@ -740,7 +740,6 @@
 				var idInstitucion = <%=idInstitucion%>;
 				var idPersona;
 				var idInstitucionOrigen;
-				var ncol;
 				var nid;
 				var nombre;
 				var apellidos;
@@ -749,7 +748,6 @@
 					//Se cera desde cero
 					idPersona = resultado[0];
 					idInstitucionOrigen = resultado[1];
-					ncol = resultado[2];
 					nid = resultado[3];
 					nombre = resultado[4];
 					apellidos = resultado[5] + " " +resultado[6];
@@ -757,14 +755,11 @@
 					//Selecciona uno existente
 					idPersona = resultado[0];
 					idInstitucionOrigen = resultado[5];
-					ncol = resultado[1];
 					nid = resultado[6];
 					nombre = resultado[2];
 					apellidos = resultado[3] + " " +resultado[4];
 				}				
-				
 				SolicitudesCertificadosForm.idPersonaSolicitante.value=idPersona;
-				SolicitudesCertificadosForm.nColSolicitante.value=ncol;
 				SolicitudesCertificadosForm.nombre.value=nombre + " " + apellidos;
 				SolicitudesCertificadosForm.idInstitucionOrigenSolicitante.value=idInstitucionOrigen;
 				SolicitudesCertificadosForm.nidSolicitante.value=nid;
