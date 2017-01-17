@@ -526,7 +526,6 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				idPersona = UtilidadesString.split(personasSeleccionadas[iPersona], "||") [1];
 
 				// Controlando si ya se estan fusionando estas personas
-				//TODO hay que mostrar al usuario un recurso concreto
 				ControlFusionador controlFusionador = ControlFusionador.getControlFusionador(idPersona, null);
 				if (controlFusionador == null) {
 					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(usr, "messages.error.censo.mantenimientoDuplicados.fusionEnCurso"));
@@ -836,7 +835,6 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			
 			// Como no se puede pasar al PL el listado de estados elegidos, hay que borrar los que el usuario ha deseleccionado en la interfaz.
 			// Pero primero, vamos a pasar los estados existentes, para que nos salten errores en este momento.
-			// TODO hay que propagar el error a la interfaz
 			conjuntoColegiosIguales = new HashSet<String>();
 			
 			String[] estados = miForm.getListaEstados().split(",");

@@ -20,13 +20,6 @@ import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.censo.form.MantenimientoDuplicadosForm;
 import com.siga.general.SIGAException;
 
-/**
- * @author daniel.campos
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
-// RGG cambio visibilidad public class CenPersonaAdm extends MasterBeanAdministrador {
 public class DuplicadosHelper{
 
 	public static final int SIMIL_NIF = 0;
@@ -72,7 +65,6 @@ public class DuplicadosHelper{
 			// anyadiendo la busqueda por nombre y/o apellidos, si se introdujo en el formulario
 			String nombre = formulario.getNombre();
 			nombre = (nombre == null || nombre.trim().equalsIgnoreCase("")) ? "" : nombre;
-			//TODO Apellido1 contiene ambos apellidos para que sea mas directa la busqueda: Habria que sustituirlo por "Apellidos"
 			String apellidos = formulario.getApellidos();
 			apellidos = (apellidos == null || apellidos.trim().equalsIgnoreCase("")) ? "" : apellidos;
 			
