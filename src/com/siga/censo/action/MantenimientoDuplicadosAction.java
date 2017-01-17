@@ -964,6 +964,10 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 						hashDireccion.put(CenDireccionesBean.C_IDPERSONA, idPersonaDestino);
 						admDireccion.insertarConHistorico((CenDireccionesBean)admDireccion.hashTableToBean(hashDireccion), vBeanTipoDir, "Dirección movida a persona destino antes de fusión", null, user.getLanguage());
 						
+						// borrando la direccion de origen
+						hashDireccion.put(CenDireccionesBean.C_IDPERSONA, idPersonaOrigen);
+						admDireccion.delete(hashDireccion);
+						
 						// guardando la institucion en la que se estan tratando direcciones
 						conjuntoColegiosIguales.add(idInstitucionComun);
 					}
