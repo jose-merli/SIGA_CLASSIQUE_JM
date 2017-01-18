@@ -323,7 +323,7 @@ public class AtosMutualidadService extends JtaBusinessServiceTemplate
 		Vector v = cliAdm.getDatosPersonales(Long.parseLong(idPersona), Integer.parseInt(idInstitucion));
 
 		CenDireccionesAdm dirAdm = new CenDireccionesAdm(usr);
-		CenDireccionesBean dirBean = dirAdm.obtenerDireccionPorTipo(idPersona, idInstitucion, Integer.toString(ClsConstants.TIPO_DIRECCION_CENSOWEB));
+		CenDireccionesBean dirBean = dirAdm.obtenerDireccionTipo(idPersona, idInstitucion, Integer.toString(ClsConstants.TIPO_DIRECCION_CENSOWEB));
 
 		CenInstitucionAdm instAdm = new CenInstitucionAdm(usr);
 

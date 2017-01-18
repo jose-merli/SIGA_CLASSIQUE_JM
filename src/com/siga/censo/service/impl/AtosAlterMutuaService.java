@@ -474,7 +474,7 @@ public class AtosAlterMutuaService extends JtaBusinessServiceTemplate
 				Vector v = cliAdm.getDatosPersonales(idPersona, idInstitucion);
 				
 				CenDireccionesAdm dirAdm = new CenDireccionesAdm(usr);
-				CenDireccionesBean dirBean = dirAdm.obtenerDireccionPorTipo(String.valueOf(idPersona), String.valueOf(idInstitucion), Integer.toString(ClsConstants.TIPO_DIRECCION_CENSOWEB));
+				CenDireccionesBean dirBean = dirAdm.obtenerDireccionTipo(String.valueOf(idPersona), String.valueOf(idInstitucion), Integer.toString(ClsConstants.TIPO_DIRECCION_CENSOWEB));
 				
 				CenCuentasBancariasAdm cuentaAdm = new CenCuentasBancariasAdm(usr);
 				ArrayList<CenCuentasBancariasBean> cuentasArr = cuentaAdm.getCuentasCargo(idPersona, idInstitucion);

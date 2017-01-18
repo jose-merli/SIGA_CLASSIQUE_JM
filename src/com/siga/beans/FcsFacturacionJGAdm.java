@@ -1019,7 +1019,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 
 			//CR7 - Ahora la provincia se cogerá de la direccion de facturacion del colegio.
 			CenDireccionesAdm direccionesAdm = new CenDireccionesAdm(this.usrbean);
-			CenDireccionesBean direccionesBean = direccionesAdm.obtenerDireccionPorTipo((String)datosInstitucion.get("IDPERSONA"), idInstitucion, String.valueOf(ClsConstants.TIPO_DIRECCION_FACTURACION));			
+			CenDireccionesBean direccionesBean = direccionesAdm.obtenerDireccionTipo((String)datosInstitucion.get("IDPERSONA"), idInstitucion, String.valueOf(ClsConstants.TIPO_DIRECCION_FACTURACION));			
 			String codigoProvincia = direccionesBean.getIdProvincia();
 			
 			//select a ejecutar: obtener pagos cerrados en el anho de entrada
