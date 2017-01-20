@@ -789,6 +789,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		ControlFusionador controlFusionador = null;
 		String idPersonaDestino = miForm.getIdPersonaDestino();
 		String idPersonaOrigen = miForm.getIdPersonaOrigen();
+		CenPersonaBean beanPersonaDestino, beanPersonaOrigen;
 		HashSet<String> conjuntoColegiosIguales;
 		String idInstitucion, fechaEstado;
 		boolean bDesdeCgae = true;
@@ -799,6 +800,9 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		miForm.setModo("inicio");
 
 		try {
+			beanPersonaDestino = admPersona.getPersonaPorId(idPersonaDestino);
+			beanPersonaOrigen = admPersona.getPersonaPorId(idPersonaOrigen);
+			
 			// Control de fusion de colegiados en el mismo colegio
 			Vector<Integer> listaColegiacionesPersonaOrigen = admColeg.getColegiaciones(idPersonaOrigen);
 			listaColegiacionesPersonaOrigen.addAll(admNoColeg.getColegiaciones(idPersonaOrigen));
@@ -833,83 +837,8 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			tx = user.getTransactionPesada();
 			tx.begin();
 			
-			// Como no se puede pasar al PL el listado de estados elegidos, hay que borrar los que el usuario ha deseleccionado en la interfaz.
-			// Pero primero, vamos a pasar los estados existentes, para que nos salten errores en este momento.
-			conjuntoColegiosIguales = new HashSet<String>();
-			
-			String[] estados = miForm.getListaEstados().split(",");
-			String[] estado;
-			if (estados.length > 0) {
-				Hashtable<String, String> estadoColegialOrigen, estadoColegialDestino;
-				for (int i = 0; i < estados.length; i++) {
-					estado = estados[i].split("&&");
-					if (estado.length > 1) {
-						// recuperando el registro original
-						idInstitucion = estado[0];
-						fechaEstado = estado[2];
-						Hashtable<String, String> pkEstado = new Hashtable<String, String>();
-						pkEstado.put(CenDatosColegialesEstadoBean.C_IDPERSONA, idPersonaOrigen);
-						pkEstado.put(CenDatosColegialesEstadoBean.C_IDINSTITUCION, idInstitucion);
-						pkEstado.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, fechaEstado);
-						estadoColegialOrigen = admEstadoColegial.beanToHashTable((CenDatosColegialesEstadoBean) admEstadoColegial.selectByPK(pkEstado).get(0));
-
-						// moviendo a la persona destino
-						estadoColegialDestino = (Hashtable<String, String>) estadoColegialOrigen.clone();
-						estadoColegialDestino.put(CenDatosColegialesEstadoBean.C_IDPERSONA, idPersonaDestino);
-						estadoColegialDestino.put(CenHistoricoBean.C_MOTIVO, "Estado movido a persona destino antes de fusión");
-						// la comprobacion la hace el metodo de insertar
-						admEstadoColegial.modificacionConHistorico(estadoColegialDestino, estadoColegialOrigen, bDesdeCgae);
-
-						// guardamos el colegio para luego borrar el resto de estados
-						conjuntoColegiosIguales.add(idInstitucion);
-					}
-				}
-			}
-			// anyadiendo tambien el listado de colegios iguales de los que se ha deseleccionado todos los estados
-			estados = miForm.getListaEstadosNoSeleccionados().split(",");
-			if (estados.length > 0) {
-				for (int i = 0; i < estados.length; i++) {
-					estado = estados[i].split("&&");
-					if (estado.length > 1) {
-						idInstitucion = estado[0];
-						conjuntoColegiosIguales.add(idInstitucion);
-					}
-				}
-			}
-			// borrando los estados de los colegios iguales (ya se movieron los que fueron seleccionados en la interfaz)
-			Vector<Hashtable<String, String>> estadosColegialesEnUnColegio;
-			for (String colegio : conjuntoColegiosIguales) {
-				estadosColegialesEnUnColegio = admEstadoColegial.getDatosColegialesPersonaInstitucion(colegio, idPersonaOrigen);
-				for (Hashtable<String, String> estadoColegial : estadosColegialesEnUnColegio) {
-					admEstadoColegial.borrarConHistorico(estadoColegial, bDesdeCgae);
-				}
-			}
-			
-			// comprobando datos que no es posible fusionar y hay que arreglar a mano
-			ArrayList<String> listaIdPersonas = new ArrayList<String>();
-			listaIdPersonas.add(idPersonaOrigen);
-			listaIdPersonas.add(idPersonaDestino);
-			Vector vRegistros;
-			FcsPagoColegiadoAdm pagoColAdm = new FcsPagoColegiadoAdm(user);
-			ScsCabeceraGuardiasAdm cabGuaAdm = new ScsCabeceraGuardiasAdm(user);
-			for (String colegio : conjuntoColegiosIguales) {
-				vRegistros = pagoColAdm.selectPagosColegiadoDeVariasPersonas(colegio, listaIdPersonas);
-				if (vRegistros != null && vRegistros.size() > 0) {
-					tx.rollback();
-					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.registroMismoPagoSJCS"));
-					return "exitoFusionar";
-				}
-				
-				vRegistros = cabGuaAdm.getCabeceraGuardiasDeVariasPersonas(colegio, listaIdPersonas);
-				if (vRegistros != null && vRegistros.size() > 0) {
-					tx.rollback();
-					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.guardiaMismoDia"));
-					return "exitoFusionar";
-				}
-			}
-			
 			// Aunque el proceso de fusion (en PL) ya se encarga de combinar las direcciones, 
-			// tenemos que comprobar las unicidades. Para ello, es mejor moverlas ahora y comprobar las unicidades
+			// tenemos que comprobar las unicidades de direcciones. Para ello, es mejor moverlas ahora y comprobar las unicidades
 			conjuntoColegiosIguales = new HashSet<String>();
 			
 			String[] direcciones = miForm.getListaDirecciones().split(",");
@@ -992,11 +921,34 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				}
 			}
 			
+			// comprobando datos que no es posible fusionar y hay que arreglar a mano
+			ArrayList<String> listaIdPersonas = new ArrayList<String>();
+			listaIdPersonas.add(idPersonaOrigen);
+			listaIdPersonas.add(idPersonaDestino);
+			Vector vRegistros;
+			FcsPagoColegiadoAdm pagoColAdm = new FcsPagoColegiadoAdm(user);
+			ScsCabeceraGuardiasAdm cabGuaAdm = new ScsCabeceraGuardiasAdm(user);
+			for (String colegio : conjuntoColegiosIguales) {
+				vRegistros = pagoColAdm.selectPagosColegiadoDeVariasPersonas(colegio, listaIdPersonas);
+				if (vRegistros != null && vRegistros.size() > 0) {
+					tx.rollback();
+					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.registroMismoPagoSJCS"));
+					return "exitoFusionar";
+				}
+				
+				vRegistros = cabGuaAdm.getCabeceraGuardiasDeVariasPersonas(colegio, listaIdPersonas);
+				if (vRegistros != null && vRegistros.size() > 0) {
+					tx.rollback();
+					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.guardiaMismoDia"));
+					return "exitoFusionar";
+				}
+			}
+			
 			// ejecutando la fusion y controlando las posibles excepciones
 			String[] resultadoFusion = EjecucionPLs.ejecutarPL_fusion(idPersonaOrigen, idPersonaDestino);
 			if (resultadoFusion[0].equalsIgnoreCase("-1")) { //error controlado: mostrando el error en pantalla
 				tx.rollback();
-				request.setAttribute("mensaje", "Imposible completar la fusión de las personas: " + resultadoFusion[1] + ". Consulte con el Administrador");
+				request.setAttribute("mensaje", "Imposible completar la fusión de las personas con Num. ident. ´"+beanPersonaOrigen.getNIFCIF()+"´ y ´"+beanPersonaDestino.getNIFCIF()+"´: " + resultadoFusion[1] + ". Consulte con el Administrador");
 				return "exitoFusionar";
 			} else if (!resultadoFusion[0].equalsIgnoreCase("-1") && !resultadoFusion[0].equalsIgnoreCase("0")) {
 				throw new ClsExceptions(resultadoFusion[1]);
@@ -1004,8 +956,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			
 			tx.commit();
 			
-			CenPersonaBean beanP = admPersona.getPersonaPorId(idPersonaDestino);
-			String msgSalida = "Fusión completada: se encuentran todos los datos de ´"+beanP.getNombreCompleto()+"´ en el registro con Num. ident. ´"+beanP.getNIFCIF()+"´"; // OJOOO: No se pueden poner comillas dobles ni simples porque fallará la JSP
+			String msgSalida = "Fusión completada: se encuentran todos los datos de ´"+beanPersonaDestino.getNombreCompleto()+"´ en el registro con Num. ident. ´"+beanPersonaDestino.getNIFCIF()+"´"; // OJOOO: No se pueden poner comillas dobles ni simples porque fallará la JSP
 			request.setAttribute("mensaje", msgSalida);
 			
 		} catch (Exception e) {

@@ -413,9 +413,6 @@
 								<table>
 									<c:forEach items="${datosCol}" var="histEstados"  varStatus="status">
 									<tr>
-										<td class="labelTextValue">
-											<input type="checkBox" name="checkEstado" id="${histEstados.row.IDPERSONA}" value="${histEstados.row.IDINSTITUCION}&&${histEstados.row.IDPERSONA}&&${histEstados.row.FECHAESTADO}" checked/>
-										</td>
 										<td class="labelText">
 											<c:out value="${histEstados.row.DESCRIPCION}"/>
 										</td>
@@ -1060,10 +1057,6 @@
 							document.forms[0].listaDirecciones.value = getSelectedCheckboxValue(document.forms[0].checkDireccion, true);
 							document.forms[0].listaDireccionesNoSeleccionadas.value = getSelectedCheckboxValue(document.forms[0].checkDireccion, false);
 						}
-						if(document.forms[0].checkEstado){
-							document.forms[0].listaEstados.value = getSelectedCheckboxValue(document.forms[0].checkEstado, true);
-							document.forms[0].listaEstadosNoSeleccionados.value = getSelectedCheckboxValue(document.forms[0].checkEstado, false);
-						}
 						if(confirm("Se van a combinar los datos a una sola persona.")){
 							alert("<siga:Idioma key="messages.error.censo.mantenimientoDuplicados.espera"/>");
 							document.forms[0].modo.value = "aceptar";
@@ -1087,9 +1080,6 @@
 				}
 				if(document.forms[0].checkDireccion!=null){
 					seleccionarChecks(document.forms[0].checkDireccion, idD);
-				}
-				if(document.forms[0].checkEstado!=null){
-					seleccionarChecks(document.forms[0].checkEstado, idD);
 				}
 				seleccionado=true;
 			}

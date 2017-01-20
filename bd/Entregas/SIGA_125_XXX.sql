@@ -63,3 +63,5 @@ create index SI_SCS_CV_DATCONTCOL_IDPERSONA on SCS_CV_DATOSCONTACTOCOLEGIADO (ID
 create index SI_SCS_CV_GUARDIACOL_IDPERSONA on SCS_CV_GUARDIACOLEGIADO (IDPERSONA);
 
 -- Ejecutado en Integracion por AAG el 19/01 a las 15:00
+
+Cambios en Pkg_Siga_Fusion_Personas

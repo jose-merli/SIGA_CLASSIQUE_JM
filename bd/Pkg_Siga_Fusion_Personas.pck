@@ -48,6 +48,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'MJU_COLEGIADO_ERROR';
     Update MJU_COLEGIADO_ERROR
@@ -56,6 +57,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     p_Datoserror := p_Datoserror || Chr(10) || 'Muevecosaspersonaaotrapersona (' ||
                     p_Idpersona_Origen || ' > ' || p_Idpersona_Destino || '): FIN';
@@ -79,6 +81,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
                                           p_Idinstitucion     In Cen_Cliente.Idinstitucion%Type,
                                           p_Codretorno        Out Varchar2,
                                           p_Datoserror        Out Clob) Is
+    n_estadoscolegialesiguales Number;
     v_Iddireccionnueva Cen_Direcciones.Iddireccion%Type;
     Cursor c_Direcciones Is
       Select Idinstitucion, Iddireccion
@@ -150,6 +153,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
     Tabla := 'CEN_COLEGIADO fecha modificacion';
     Update Cen_Colegiado Destino
@@ -167,6 +171,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
     Tabla := 'CEN_NOCOLEGIADO fecha modificacion';
     Update Cen_Nocolegiado Destino
@@ -184,6 +189,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
     Tabla := 'CEN_NOCOLEGIADO Notario';
     Update CEN_NOCOLEGIADO
@@ -193,6 +199,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
     Tabla := 'CEN_DATOSCOLEGIALESESTADO borrado duplicados';
     Delete From Cen_Datoscolegialesestado Ori
@@ -200,32 +207,48 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
               From Cen_Datoscolegialesestado Des
              Where Des.Idpersona = p_Idpersona_Destino
                And Des.Idinstitucion = Ori.Idinstitucion
-               And Des.Fechaestado = Ori.Fechaestado
+               And trunc(Des.Fechaestado) = trunc(Ori.Fechaestado)
                And Des.Idestado = Ori.Idestado)
        And Idpersona = p_Idpersona_Origen
        And Idinstitucion = Nvl(p_Idinstitucion, Idinstitucion);
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
     Tabla := 'CEN_DATOSCOLEGIALESESTADO borrado duplicados de baja automaticos';
     Delete From Cen_Datoscolegialesestado Ori
      Where Idestado = 30
-       And Usumodificacion < 0
        And Exists (Select *
               From Cen_Datoscolegialesestado Des
              Where Des.Idpersona In (p_Idpersona_Origen, p_Idpersona_Destino)
                And Des.Idinstitucion = Ori.Idinstitucion
-               And Des.Fechaestado = Ori.Fechaestado
+               And trunc(Des.Fechaestado) = trunc(Ori.Fechaestado)
                And Des.Idestado < 30)
        And Idpersona In (p_Idpersona_Origen, p_Idpersona_Destino)
        And Idinstitucion = Nvl(p_Idinstitucion, Idinstitucion);
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
     Tabla := 'CEN_DATOSCOLEGIALESESTADO';
--- LOS ESTADOS SON DATOS SENSIBLES: SE TIENEN QUE ARREGLAR MANUALMENTE ANTES
+-- LOS ESTADOS SON DATOS SENSIBLES: SE TIENEN QUE ARREGLAR MANUALMENTE SI COINCIDEN EN FECHAS
+    Select Count(1)
+      Into n_estadoscolegialesiguales
+      From Cen_Datoscolegialesestado Ori
+     Where Exists (Select *
+              From Cen_Datoscolegialesestado Des
+             Where Des.Idpersona = p_Idpersona_Destino
+               And Des.Idinstitucion = Ori.Idinstitucion
+               And trunc(Des.Fechaestado) = trunc(Ori.Fechaestado))
+       And Idpersona = p_Idpersona_Origen
+       And Idinstitucion = Nvl(p_Idinstitucion, Idinstitucion);
+    If n_estadoscolegialesiguales > 0 Then
+      p_Datoserror := 'Ambas personas tienen estados colegiales diferentes en la misma fecha. Por favor, borre los estados que no correspondan antes de continuar con la Fusión';
+      p_Codretorno := -1;
+      Return;
+    End If;
     Update Cen_Datoscolegialesestado
        Set Idpersona = p_Idpersona_Destino
      Where Idpersona = p_Idpersona_Origen
@@ -233,6 +256,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
     -- PYS_PRODUCTOSSOLICITADOS tiene doble FK. Solo se puede activar de nuevo despues de cambiar ambos
     Execute Immediate 'set constraint FK_PYS_PSOLICITADOS_CEN_DIRECC deferred';
@@ -262,6 +286,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
            And Idinstitucion = Reg.Idinstitucion
            And Iddireccion = Reg.Iddireccion;
         n_direcciones := n_direcciones + Sql%Rowcount;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'CEN_DIRECCION_TIPODIRECCION';
         Update Cen_Direccion_Tipodireccion
@@ -271,6 +296,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
            And Iddireccion = Reg.Iddireccion;
         n_tiposdirecciones := n_tiposdirecciones + Sql%Rowcount;
         Execute Immediate 'set constraint FK_CEN_DIRECCION_DIRECCION immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
         
         Tabla := 'CEN_SOLICITUDINCORPORACION';
         Update CEN_SOLICITUDINCORPORACION
@@ -280,6 +306,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
            And Iddirecciontemp = Reg.Iddireccion;
         n_solicitudesincorporacion := n_solicitudesincorporacion + Sql%Rowcount;
         Execute Immediate 'set constraint FK_DIRECCIONES immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
         
         Tabla := 'CEN_SOLIMODIDIRECCIONES';
         Update CEN_SOLIMODIDIRECCIONES
@@ -289,6 +316,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
            And Iddireccion = Reg.Iddireccion;
         n_solicitudesmodifdirecciones := n_solicitudesmodifdirecciones + Sql%Rowcount;
         Execute Immediate 'set constraint FK_DIRECCIONES_SOLICITUDMODIFI immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
         
         Tabla := 'EXP_EXPEDIENTE';
         Update Exp_Expediente
@@ -298,6 +326,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
            And Iddireccion = Reg.Iddireccion;
         n_expedientes := n_expedientes + Sql%Rowcount;
         Execute Immediate 'set constraint FK_EXP_EXPEDIENTE_DIRECCION immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'EXP_DENUNCIANTE';
         Update Exp_Denunciante
@@ -307,6 +336,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
            And Iddireccion = Reg.Iddireccion;
         n_denunciantes := n_denunciantes + Sql%Rowcount;
         Execute Immediate 'set constraint FK_EXP_DENUNCIANTE_DIRECCION immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'EXP_DENUNCIADO';
         Update Exp_Denunciado
@@ -316,6 +346,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
            And Iddireccion = Reg.Iddireccion;
         n_denunciados := n_denunciados + Sql%Rowcount;
         Execute Immediate 'set constraint FK_EXP_DENUNCIADO_DIRECCION immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'EXP_PARTE';
         Update EXP_PARTE
@@ -325,6 +356,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
            And Iddireccion = Reg.Iddireccion;
         n_partes := n_partes + Sql%Rowcount;
         Execute Immediate 'set constraint FK_EXP_PARTE_DIRECCION immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'CER_SOLICITUDCERTIFICADOS';
         Update Cer_Solicitudcertificados
@@ -333,6 +365,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
            And Idinstitucion = Reg.Idinstitucion
            And Iddireccion_Dir = Reg.Iddireccion;
         n_solicitudescertificados := n_solicitudescertificados + Sql%Rowcount;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'PYS_PRODUCTOSSOLICITADOS';
         Update Pys_Productossolicitados
@@ -341,6 +374,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
            And Idinstitucion = Reg.Idinstitucion
            And Iddireccion = Reg.Iddireccion;
         n_productossolicitados := n_productossolicitados + Sql%Rowcount;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
         
       End Loop;
     End;
@@ -378,6 +412,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         If Sql%Rowcount > 0 Then
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'CEN_SOLICMODICUENTAS';
         Update CEN_SOLICMODICUENTAS
@@ -389,6 +424,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
         Execute Immediate 'set constraint FK_CUENTASBANCARIASSOLICITUDMO immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'CEN_MANDATOS_CUENTASBANCARIAS';
         Update CEN_MANDATOS_CUENTASBANCARIAS
@@ -400,6 +436,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
         Execute Immediate 'set constraint FK_MANDATOS_CUENTASBANCARIAS immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'CEN_ANEXOS_CUENTASBANCARIAS';
         Update CEN_ANEXOS_CUENTASBANCARIAS
@@ -411,6 +448,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
         Execute Immediate 'set constraint FK_MANDATOS_ANEXOS immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'CEN_COMPONENTES';
         Update Cen_Componentes Ori
@@ -428,7 +466,8 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
         Execute Immediate 'set constraint FK_COMPONENTES_CUENTASBANCARIA immediate';
-      
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
+     
         Tabla := 'FAC_FACTURA';
         Update FAC_FACTURA
            Set Idpersona = p_Idpersona_Destino, Idcuenta = v_Idcuentanueva
@@ -440,6 +479,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         End If;
         Execute Immediate 'set constraint FK_FACTURA_MANDATO immediate';
         Execute Immediate 'set constraint FK_FAC_FACTURA_CUENTASBANCARIA immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'FAC_FACTURA deudor';
         Update fac_factura
@@ -451,6 +491,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
         Execute Immediate 'set constraint FK_FACTURA_MANDATO_DEUDOR immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'FAC_ABONO';
         Update FAC_ABONO
@@ -462,6 +503,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
         Execute Immediate 'set constraint FK_FAC_ABONO_CUENTASBANCARIAS immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'FAC_ABONO deudor';
         Update FAC_ABONO
@@ -472,6 +514,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         If Sql%Rowcount > 0 Then
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'FCS_PAGO_COLEGIADO destino';
         Update FCS_PAGO_COLEGIADO
@@ -483,6 +526,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
         Execute Immediate 'set constraint FK_FCS_PER_DEST_CUENTASBANCA immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'FAC_FACTURAINCLUIDAENDISQUETE';
         Update Fac_Facturaincluidaendisquete
@@ -494,7 +538,8 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
         Execute Immediate 'set constraint FK_FACINCLUIDADISQUETE_CUENTAS immediate';
-      
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
+     
         Tabla := 'FAC_RENEGOCIACION';
         Update Fac_Renegociacion
            Set Idpersona = p_Idpersona_Destino, idcuenta = v_Idcuentanueva
@@ -505,6 +550,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
         Execute Immediate 'set constraint FK_FAC_RENEGOCIACION_CUENTASBA immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'PYS_COMPRA';
         Update Pys_Compra
@@ -516,6 +562,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
         Execute Immediate 'set constraint FK_COMPRA_CUENTASBANCARIAS immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'PYS_SUSCRIPCION';
         Update Pys_Suscripcion
@@ -527,6 +574,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
         Execute Immediate 'set constraint FK_SUSCRIPCION_CUENTASBANCARIA immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
         
         Tabla := 'PYS_SERVICIOSSOLICITADOS';
         Update Pys_Serviciossolicitados
@@ -538,6 +586,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
         Execute Immediate 'set constraint FK_SERVICIOSSOLICITADOS_CUENTA immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
         
         Tabla := 'PYS_PRODUCTOSSOLICITADOS';
         Update PYS_PRODUCTOSSOLICITADOS
@@ -548,6 +597,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         If Sql%Rowcount > 0 Then
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
       End Loop;
     
@@ -564,6 +614,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     -- PYS_PRODUCTOSSOLICITADOS tiene doble FK. Solo se puede activar de nuevo despues de cambiar ambos
     Execute Immediate 'set constraint FK_PYS_PSOLICITADOS_CEN_DIRECC immediate';
     Execute Immediate 'set constraint PK_PRODUCTOSSOLICITADOS_CUENTA immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'CEN_SOLICITUDINCORPORACION sin direccion';
     Update CEN_SOLICITUDINCORPORACION
@@ -573,6 +624,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     Tabla := 'CEN_SOLICITUDINCORPORACION sin direccion temp';
     Update CEN_SOLICITUDINCORPORACION
        Set Idpersonatemp = p_Idpersona_Destino
@@ -582,6 +634,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'EXP_EXPEDIENTE sin direccion';
     Update Exp_Expediente
@@ -592,6 +645,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'EXP_DENUNCIANTE sin direccion';
     Update Exp_Denunciante
@@ -602,6 +656,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'EXP_DENUNCIADO sin direccion';
     Update Exp_Denunciado
@@ -612,6 +667,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'EXP_PARTE sin direccion';
     Update EXP_PARTE
@@ -622,6 +678,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
     Tabla := 'CER_SOLICITUDCERTIFICADOS sin direccion';
     Update Cer_Solicitudcertificados
@@ -631,6 +688,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     Tabla := 'CER_SOLICITUDCERTIFICADOS sin direccion dir';
     Update Cer_Solicitudcertificados
        Set Idpersona_Dir = p_Idpersona_Destino
@@ -640,6 +698,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'CEN_COMPONENTES sin cuenta';
     Update Cen_Componentes Ori
@@ -655,6 +714,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
     Tabla := 'CEN_COMPONENTES socios';
     Update Cen_Componentes Ori
@@ -664,6 +724,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'FAC_FACTURA sin cuenta';
     Update FAC_FACTURA
@@ -674,6 +735,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'FAC_FACTURA deudor sin cuenta';
     Update fac_factura
@@ -684,6 +746,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'FAC_ABONO sin cuenta';
     Update FAC_ABONO
@@ -694,6 +757,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'FAC_ABONO deudor sin cuenta';
     Update FAC_ABONO
@@ -704,6 +768,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'FCS_PAGO_COLEGIADO destino sin cuenta';
     -- Esto no genera error porque la clave esta en idperorigen
@@ -715,6 +780,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'FAC_RENEGOCIACION sin cuenta';
     Update Fac_Renegociacion
@@ -725,6 +791,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'PYS_COMPRA sin cuenta';
     Update Pys_Compra
@@ -735,6 +802,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'PYS_SUSCRIPCION sin cuenta';
     Update Pys_Suscripcion
@@ -745,6 +813,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
     Tabla := 'PYS_SERVICIOSSOLICITADOS sin cuenta';
     Update Pys_Serviciossolicitados
@@ -755,6 +824,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'PYS_PETICIONCOMPRASUSCRIPCION';
     Update Pys_Peticioncomprasuscripcion
@@ -764,6 +834,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
     Begin
       Execute Immediate 'set constraint FK_COBROS_RET_PAGOCOLEGIADO deferred';
@@ -779,6 +850,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
       If Sql%Rowcount > 0 Then
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
       Tabla := 'FCS_COBROS_RETENCIONJUDICIAL';
       Update FCS_COBROS_RETENCIONJUDICIAL
@@ -789,6 +861,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
       Execute Immediate 'set constraint FK_COBROS_RET_PAGOCOLEGIADO immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
       Tabla := 'FCS_APLICA_MOVIMIENTOSVARIOS';
       Update FCS_APLICA_MOVIMIENTOSVARIOS
@@ -799,6 +872,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
       Execute Immediate 'set constraint FK_APLICA_MOVIMIENTOS_PAGOS immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
       Tabla := 'FAC_ABONO origen';
       Update FAC_ABONO
@@ -809,6 +883,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
       Execute Immediate 'set constraint FK_FAC_ABONO_PAGOSCOLEGIADO immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     End;
   
     Begin
@@ -831,6 +906,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         If Sql%Rowcount > 0 Then
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'CEN_SOLICITUDMODIFICACIONCV';
         Update Cen_Solicitudmodificacioncv
@@ -842,6 +918,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
         Execute Immediate 'set constraint FK_DATOSCV_SOLICITUDMODIFICACI immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
       End Loop;
     
@@ -868,6 +945,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         If Sql%Rowcount > 0 Then
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'PYS_LINEAANTICIPO';
         Update PYS_LINEAANTICIPO
@@ -879,6 +957,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
         Execute Immediate 'set constraint FK_PYS_LINEAANT_CEN_ANTICIPO immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'PYS_SERVICIOANTICIPO';
         Update PYS_SERVICIOANTICIPO
@@ -890,6 +969,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
           p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
         End If;
         Execute Immediate 'set constraint FK_PYS_SERVANT_PYS_ANTICIPO immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
       End Loop;
     
@@ -908,6 +988,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     Tabla := 'CEN_GRUPOSCLIENTE_CLIENTE';
     Update Cen_Gruposcliente_Cliente
        Set Idpersona = p_Idpersona_Destino
@@ -916,6 +997,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'CEN_HISTORICO';
     Update Cen_Historico Ori
@@ -929,6 +1011,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'CEN_COLACAMBIOLETRADO borrado';
     -- No necesitamos estos datos: igualmente se actualizara al final de este proceso
@@ -938,6 +1021,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
     Tabla := 'CEN_NOCOLEGIADO_ACTIVIDAD';
     Update Cen_Nocolegiado_Actividad Ori
@@ -952,6 +1036,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'ECOM_CEN_COLEGIADO';
     Update Ecom_Cen_Colegiado
@@ -961,6 +1046,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'FAC_CLIENINCLUIDOENSERIEFACTUR borrado duplicados';
     Delete Fac_Clienincluidoenseriefactur Ori
@@ -974,6 +1060,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     Tabla := 'FAC_CLIENINCLUIDOENSERIEFACTUR';
     Update Fac_Clienincluidoenseriefactur
        Set Idpersona = p_Idpersona_Destino
@@ -982,6 +1069,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'CEN_BAJASTEMPORALES borrado duplicados';
     -- en este caso se pierden datos, como la descripcion de la baja. Pero no es algo importante
@@ -996,6 +1084,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     Tabla := 'CEN_BAJASTEMPORALES';
     Update Cen_Bajastemporales
        Set Idpersona = p_Idpersona_Destino
@@ -1004,6 +1093,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'CEN_SOLICMODIFEXPORTARFOTO';
     Update Cen_Solicmodifexportarfoto
@@ -1013,6 +1103,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Execute Immediate 'set constraint FK_CEN_SANCION_SANCION_CGAE deferred';
     Tabla := 'CEN_SANCION';
@@ -1024,6 +1115,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
     Execute Immediate 'set constraint FK_CEN_SANCION_SANCION_CGAE immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'CEN_MEDIADOR_CSV';
     Update CEN_MEDIADOR_CSV
@@ -1033,6 +1125,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'CEN_MEDIADOR_XML';
     Update CEN_MEDIADOR_XML
@@ -1042,6 +1135,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'CEN_SOLICITMODIFDATOSBASICOS';
     Update CEN_SOLICITMODIFDATOSBASICOS
@@ -1051,6 +1145,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'CEN_SOLICITUDALTER';
     Update CEN_SOLICITUDALTER
@@ -1060,6 +1155,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'CEN_SOLICITUDESMODIFICACION';
     Update CEN_SOLICITUDESMODIFICACION
@@ -1069,6 +1165,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'ECOM_COMUNICACIONRESOLUCIONAJG';
     Update ECOM_COMUNICACIONRESOLUCIONAJG
@@ -1078,6 +1175,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'ECOM_DESIGNAPROVISIONAL';
     Update ECOM_DESIGNAPROVISIONAL
@@ -1087,6 +1185,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'ECOM_SOLIMPUGRESOLUCIONAJG';
     Update ECOM_SOLIMPUGRESOLUCIONAJG
@@ -1096,6 +1195,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'EXP_DESTINATARIOSAVISOS borrado duplicados';
     -- en este caso se pierden datos, como la direccion adjunta. Pero al menos no son datos visibles
@@ -1110,6 +1210,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     Tabla := 'EXP_DESTINATARIOSAVISOS';
     Update EXP_DESTINATARIOSAVISOS
        Set Idpersona = p_Idpersona_Destino
@@ -1118,6 +1219,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'EXP_SOLICITUDBORRADO';
     Update EXP_SOLICITUDBORRADO
@@ -1127,6 +1229,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Begin
       Execute Immediate 'set constraint FK_SCS_INSCRIPCION_ULTIMO_T deferred';
@@ -1145,6 +1248,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
       If Sql%Rowcount > 0 Then
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       Tabla := 'SCS_INSCRIPCIONTURNO';
       Update Scs_Inscripcionturno
          Set Idpersona = p_Idpersona_Destino
@@ -1153,6 +1257,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
       If Sql%Rowcount > 0 Then
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
       Tabla := 'SCS_TURNO';
       Update SCS_TURNO
@@ -1162,6 +1267,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
       If Sql%Rowcount > 0 Then
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
       Execute Immediate 'set constraint FK_SCS_INSCRIPCION_ULTIMO_T immediate';
     End;
@@ -1186,6 +1292,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
       If Sql%Rowcount > 0 Then
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       Tabla := 'SCS_INSCRIPCIONGUARDIA';
       Update SCS_INSCRIPCIONGUARDIA
          Set Idpersona = p_Idpersona_Destino
@@ -1194,6 +1301,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
       If Sql%Rowcount > 0 Then
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
       Tabla := 'SCS_GUARDIASTURNO';
       Update Scs_Guardiasturno
@@ -1204,6 +1312,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
       Execute Immediate 'set constraint FK_SCS_INSCRIPCION_ULTIMO immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
       Tabla := 'SCS_GRUPOGUARDIACOLEGIADO';
       Update Scs_Grupoguardiacolegiado
@@ -1214,6 +1323,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
       Execute Immediate 'set constraint FK_SCS_GRUPOGUA_INSCRIPCIONGUA immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
       Tabla := 'SCS_CALENDARIOGUARDIAS';
       Update Scs_Calendarioguardias c
@@ -1224,6 +1334,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
       Execute Immediate 'set constraint FK_CALENDARIO_COLEGIADO_ULTIMO immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
     End;
   
@@ -1235,6 +1346,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Begin
       Execute Immediate 'set constraint FK_SCS_PERMUTA_CABECERA deferred';
@@ -1251,6 +1363,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
       If Sql%Rowcount > 0 Then
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
       Tabla := 'SCS_PERMUTA_CABECERA';
       Update Scs_Permuta_Cabecera
@@ -1261,6 +1374,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
       Execute Immediate 'set constraint FK_SCS_PERMUTA_CABECERA immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
       Tabla := 'SCS_GUARDIASCOLEGIADO';
       Update SCS_GUARDIASCOLEGIADO
@@ -1272,6 +1386,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
       Execute Immediate 'set constraint FK_SCS_GUARDIASCOLEGIADO_CABE immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
       Tabla := 'FCS_FACT_GUARDIASCOLEGIADO';
       Update Fcs_Fact_Guardiascolegiado
@@ -1282,6 +1397,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
       Execute Immediate 'set constraint FK_FACT_GUARDIASCOLEGIADO_GUAR immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
       Tabla := 'FCS_FACT_APUNTE';
       Update Fcs_Fact_Apunte
@@ -1292,6 +1408,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
       Execute Immediate 'set constraint FK_FCS_FACT_APUNTE_CABECERA immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
     End;
     
@@ -1303,6 +1420,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'FCS_FACT_ASISTENCIA';
     Update Fcs_Fact_Asistencia
@@ -1312,6 +1430,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'FCS_FACT_ACTUACIONASISTENCIA';
     Update Fcs_Fact_Actuacionasistencia
@@ -1321,6 +1440,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'FCS_FACT_ACTUACIONDESIGNA';
     Update Fcs_Fact_Actuaciondesigna
@@ -1330,6 +1450,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'FCS_MOVIMIENTOSVARIOS';
     Update Fcs_Movimientosvarios
@@ -1339,6 +1460,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'FCS_FACT_EJG';
     Update FCS_FACT_EJG
@@ -1348,6 +1470,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'FCS_FACT_SOJ';
     Update FCS_FACT_SOJ
@@ -1357,6 +1480,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'FCS_RETENCIONES_JUDICIALES';
     Update Fcs_Retenciones_Judiciales
@@ -1366,6 +1490,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'SCS_ACTUACIONDESIGNA';
     Update Scs_Actuaciondesigna
@@ -1375,6 +1500,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'SCS_PERMUTAGUARDIAS solicitante';
     Update Scs_Permutaguardias
@@ -1384,6 +1510,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'SCS_PERMUTAGUARDIAS confirmador';
     Update Scs_Permutaguardias
@@ -1393,6 +1520,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'SCS_CONTRARIOSDESIGNA';
     Update Scs_Contrariosdesigna
@@ -1403,6 +1531,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'SCS_DESIGNASLETRADO borrado duplicados';
     -- en este caso se pierden datos, como el motivo de renuncia. Pero al menos no son datos visibles
@@ -1420,6 +1549,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     Tabla := 'SCS_DESIGNASLETRADO';
     Update Scs_Designasletrado
        Set Idpersona = p_Idpersona_Destino
@@ -1428,6 +1558,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'SCS_RETENCIONESIRPF borrado duplicados';
     Delete Scs_Retencionesirpf Ori
@@ -1442,6 +1573,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     Tabla := 'SCS_RETENCIONESIRPF';
     Update Scs_Retencionesirpf
        Set Idpersona = p_Idpersona_Destino
@@ -1450,6 +1582,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'SCS_EJG';
     Update Scs_Ejg
@@ -1459,6 +1592,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'SCS_SOJ';
     Update Scs_Soj
@@ -1468,6 +1602,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'SCS_CARACTASISTENCIA';
     Update SCS_CARACTASISTENCIA
@@ -1477,6 +1612,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'SCS_CONTRARIOSEJG';
     Update SCS_CONTRARIOSEJG
@@ -1487,6 +1623,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'SCS_CV_DATOSCONTACTOCOLEGIADO';
     Update SCS_CV_DATOSCONTACTOCOLEGIADO
@@ -1496,6 +1633,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'SCS_CV_GUARDIACOLEGIADO';
     Update SCS_CV_GUARDIACOLEGIADO
@@ -1505,6 +1643,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'ENV_ESTAT_ENVIO';
     Update Env_Estat_Envio
@@ -1514,6 +1653,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'ENV_COMUNICACIONMOROSOS';
     -- aunque contiene idpersona, no se envia la misma factura a dos personas
@@ -1524,6 +1664,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'ENV_COMPONENTESLISTACORREO borrado duplicados';
     Delete Env_Componenteslistacorreo ori
@@ -1537,6 +1678,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     Tabla := 'ENV_COMPONENTESLISTACORREO';
     Update Env_Componenteslistacorreo
        Set Idpersona = p_Idpersona_Destino
@@ -1545,6 +1687,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'ENV_PROGRAMIRPF';
     Update Env_Programirpf
@@ -1554,6 +1697,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'ENV_PROGRAMPAGOS';
     Update Env_Programpagos
@@ -1563,6 +1707,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'ENV_PLANTILLAREMITENTES borrado duplicados';
     -- en este caso se pierden datos, como la direccion adjunta. Pero al menos no son datos visibles
@@ -1578,6 +1723,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     Tabla := 'ENV_PLANTILLAREMITENTES';
     Update ENV_PLANTILLAREMITENTES
        Set Idpersona = p_Idpersona_Destino
@@ -1586,6 +1732,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'ENV_REMITENTES borrado duplicados';
     -- en este caso se pierden datos, como la direccion adjunta. Pero al menos no son datos visibles
@@ -1600,6 +1747,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     Tabla := 'ENV_REMITENTES';
     Update Env_Remitentes
        Set Idpersona = p_Idpersona_Destino
@@ -1608,6 +1756,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
   
     Tabla := 'ENV_TEMP_DESTINATARIOS borrado duplicados';
     -- en este caso se pierden datos, como la direccion adjunta. Pero al menos no son datos visibles
@@ -1622,6 +1771,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     Tabla := 'ENV_TEMP_DESTINATARIOS';
     Update Env_Temp_Destinatarios
        Set Idpersona = p_Idpersona_Destino
@@ -1630,6 +1780,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     If Sql%Rowcount > 0 Then
       p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
     End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
     Begin
     
@@ -1647,6 +1798,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
       If Sql%Rowcount > 0 Then
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       Tabla := 'ENV_DESTINATARIOS';
       Update Env_Destinatarios
          Set Idpersona = p_Idpersona_Destino
@@ -1655,6 +1807,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
       If Sql%Rowcount > 0 Then
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
       Tabla := 'ENV_DOCUMENTOSDESTINATARIOS';
       Update Env_Documentosdestinatarios Ori
@@ -1671,6 +1824,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
       Execute Immediate 'set constraint FK_ENV_DOCUMENTOSENVIOS_DESTIN immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
       Execute Immediate 'set constraint FK_VALOR_DESTPROGINF deferred';
       Tabla := 'ENV_DESTPROGRAMINFORMES borrado duplicado';
@@ -1687,6 +1841,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
       If Sql%Rowcount > 0 Then
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       Tabla := 'ENV_DESTPROGRAMINFORMES';
       Update Env_Destprograminformes
          Set Idpersona = p_Idpersona_Destino
@@ -1695,6 +1850,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
       If Sql%Rowcount > 0 Then
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
       Tabla := 'ENV_VALORCAMPOCLAVE';
       Update ENV_VALORCAMPOCLAVE
@@ -1705,6 +1861,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
       End If;
       Execute Immediate 'set constraint FK_VALOR_DESTPROGINF immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
     
     End;
   
@@ -2317,6 +2474,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
   Begin
     p_Datoserror := p_Datoserror || Chr(10) || 'Fusiona_Personas (' || p_Idpersona_Origen || ' > ' ||
                     p_Idpersona_Destino || '): INI';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Al principio');
   
     p_Datoserror := p_Datoserror || Chr(10) || 'Copiacliente_simple (';
     p_Datoserror := p_Datoserror || p_Idpersona_Origen || ' > ' || p_Idpersona_Destino || ')';
@@ -2452,26 +2610,30 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
       End If;
     End;
   
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Antes de copiar cosas');
     -- Se mueve lo maximo posible de los registros de tablas a la nueva persona
     Muevecosaspersonaaotrapersona(p_Idpersona_Origen,
                                   p_Idpersona_Destino,
                                   v_Codretorno,
                                   v_Datoserror);
-    p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
     If v_Codretorno <> 0 Then
       p_Codretorno := v_Codretorno;
+      p_Datoserror := v_Datoserror;
       Return;
     End If;
+    p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
     Muevecosasclienteaotrapersona(p_Idpersona_Origen,
                                   p_Idpersona_Destino,
                                   Null, --todos a la vez
                                   v_Codretorno,
                                   v_Datoserror);
-    p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
     If v_Codretorno <> 0 Then
       p_Codretorno := v_Codretorno;
+      p_Datoserror := v_Datoserror;
       Return;
     End If;
+    p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de copiar cosas');
       
     -- Se borran los clientes del origen
     Borracliente_Simple(p_Idpersona_Origen,
@@ -2576,6 +2738,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         p_Codretorno := Sqlcode;
     End;
   
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Al final');
     p_Codretorno := 0;
   
   Exception
