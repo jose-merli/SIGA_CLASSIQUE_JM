@@ -65,3 +65,5 @@ create index SI_SCS_CV_GUARDIACOL_IDPERSONA on SCS_CV_GUARDIACOLEGIADO (IDPERSON
 -- Ejecutado en Integracion por AAG el 19/01 a las 15:00
 
 Cambios en Pkg_Siga_Fusion_Personas
+
+Update Scs_Maestroretenciones Set clavem190 = Null Where clavem190 Is Not Null;--quita la G04 que ha sido suprimida

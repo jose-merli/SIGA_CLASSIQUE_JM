@@ -1248,18 +1248,20 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			//
 			String linea = "";
 			int nreg=importes.size();
-			linea += "1"; // tipo registro
-			linea += "190"; // modelo declaracion
-			linea += formatea(anio,4,true); // anho
-			linea += formatea(datosInstitucion.get("NIDENTIFICACION"),9,true); // NIF
+			linea += "1"; //1: tipo registro
+			linea += "190"; //2-4: modelo declaracion
+			linea += formatea(anio,4,true); //5-8 ejercicio (anyo)
+			linea += formatea(datosInstitucion.get("NIDENTIFICACION"),9,true); //9-17: NIF del declarante
+			
 			String nombreInstitucion = datosInstitucion.get("NOMBREINSTITUCION").toString();
 			nombreInstitucion = nombreInstitucion.toUpperCase();
 			nombreInstitucion = UtilidadesString.quitarAcentos((nombreInstitucion));
 			nombreInstitucion = UtilidadesString.validarModelo190(nombreInstitucion);
-			linea += formatea(nombreInstitucion,40,false); // nombre de la institucion
-			linea += soporte; // nombre de la institucion
-			linea += formatea(telefonoContacto,9,true); // telefono de contacto
-			// Pasamos el nombre completo a un formato valido para el modelo 190
+			linea += formatea(nombreInstitucion,40,false); //18-57: apellidos y nombre, denominación o razón social del declarante (nombre de la institucion)
+			
+			linea += soporte; //58: tipo de soporte
+			linea += formatea(telefonoContacto,9,true); //59-67: telefono de contacto
+			
 			apellido1Contacto = apellido1Contacto.toUpperCase();
 			apellido2Contacto = apellido2Contacto.toUpperCase();
 			nombreContacto = nombreContacto.toUpperCase();
@@ -1269,37 +1271,26 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			apellido2Contacto = UtilidadesString.validarModelo190(apellido2Contacto);
 			nombreContacto    = UtilidadesString.quitarAcentos(nombreContacto);
 			nombreContacto    = UtilidadesString.validarModelo190(nombreContacto);
-			linea += formatea(apellido1Contacto + " " + apellido2Contacto + " " + nombreContacto,40,false); // nombre de contacto
-			linea += "170"+relleno("0",10); // justificante de la declaracion
-			linea += relleno(" ",2); // complementaria
-			linea += relleno("0",13); // numero justificante declaracion anterior
-			//linea += formatea("1",9,true);; // numero de percepciones (DE MOMENTO SOLO LOS IRPFS)
-			linea += formatea(String.valueOf(nreg),9,true);; // numero de percepciones (DE MOMENTO SOLO LOS IRPFS)
+			linea += formatea(apellido1Contacto + " " + apellido2Contacto + " " + nombreContacto,40,false); //68-107: nombre de contacto
 			
-			//Tomo solo los 2 primeros decimales:
-			// Double importeTotalDouble = new Double(FcsFacturacionJGAdm.formatearDouble(importeTotal, 2));
-			// Double irpfTotalDouble = new Double(FcsFacturacionJGAdm.formatearDouble(irpfTotal, 2));
+			linea += "170"+relleno("0",10); //108-120: numero identificativo de la declaracion
+			linea += rellenoPosiciones(" ",121,122); //121-122: complementaria
+			linea += rellenoPosiciones("0",123,135); //123-135: numero identificativo declaracion anterior
+			linea += formatea(String.valueOf(nreg),9,true);; //136-144: numero de percepciones (DE MOMENTO SOLO LOS IRPFS)
 			
-			// importe total
-			// Vector valor = desdoblarDouble(importeTotalDouble); 
+			//145-160: importe total
 			Vector valor = desdoblarDouble(new Double(importeTotal));
-			linea += formatea(valor.get(0),1,false); // signo
-			linea += formatea(valor.get(1),13,true); // entera
-			linea += formatea(valor.get(2),2,true); // decimal
+			linea += formatea(valor.get(0),1,false); //145: signo
+			linea += formatea(valor.get(1),13,true); //146-158: entera
+			linea += formatea(valor.get(2),2,true); //159-160: decimal
 			
-			// retencion total			
-			// valor = desdoblarDouble(irpfTotalDouble);
+			//161-175: retencion total			
 			valor = desdoblarDouble(new Double (irpfTotal));
-			linea += formatea(valor.get(1),13,true); // entera
-			linea += formatea(valor.get(2),2,true); // decimal
-			linea += relleno(" ",62); // relleno
-			linea += relleno(" ",13); // espacio para la firma electronica
+			linea += formatea(valor.get(1),13,true); //161-173: entera
+			linea += formatea(valor.get(2),2,true); //174-175: decimal
 			
-			// jbd Adaptamos el informe 190 al 2010
-			//linea += relleno (" ",236);// espacios 251-487
-			// Faltaba uno
-			linea += relleno (" ",237);// espacios 251-487
-			linea += relleno (" ",13);// sello electronico
+			linea += rellenoPosiciones(" ",176,487); //176-487: relleno
+			linea += rellenoPosiciones(" ",488,500); //488-500: sello electronico
 			
 			// escribo
 			// cambio a formato DOS
@@ -1318,100 +1309,86 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				
 				// registro unico de persona
 				linea = "";
-				linea += "2"; // tipo registro
-				linea += "190"; // modelo declaracion
-				linea += formatea(anio,4,true); // anho
-				linea += formatea(datosInstitucion.get("NIDENTIFICACION"),9,true); // NIF retenedor
-				linea += formatea(datosPersonaRegistro.get("NIDENTIFICACION"),9,true); // NIF perceptor
-				linea += relleno(" ",9); // NIF representante legal
-				//linea += formatea(((String)datosPersonaRegistro.get("NOMBREPERSONA")).replaceAll(",",""),40,false); // nombre de perceptor
+				linea += "2"; //1: tipo registro
+				linea += "190"; //2-4: modelo declaracion
+				linea += formatea(anio,4,true); //5-8: ejercicio (anyo)
+				linea += formatea(datosInstitucion.get("NIDENTIFICACION"),9,true); //9-17: NIF declarante
+				linea += formatea(datosPersonaRegistro.get("NIDENTIFICACION"),9,true); //18-26: NIF perceptor
+				linea += rellenoPosiciones(" ",27,35); //27-35: NIF representante legal
 				
-				/* Comentado por Pilar porque no compilan los metodos UtilidadesString.quitarAcentos y UtilidadesString.validarModelo190*/
 				String apellido = (String)datosPersonaRegistro.get("APELLIDOS1");
-				String nombrePerceptor = "";
-				if ( apellido.equals("#NA") ){
-					//Si es sociedad sin abreviatura se deja solo el nombre
-					nombrePerceptor = (String)datosPersonaRegistro.get("NOMBRE");
-				}else{
-					nombrePerceptor = (String)datosPersonaRegistro.get("NOMBREPERSONA");
-				}
+				//Si es sociedad sin abreviatura se deja solo el nombre
+				String nombrePerceptor = (String) datosPersonaRegistro.get(apellido.equals("#NA") ? "NOMBRE" : "NOMBREPERSONA");
 				nombrePerceptor = nombrePerceptor.toUpperCase();  
 				nombrePerceptor = UtilidadesString.quitarAcentos(nombrePerceptor);
 				nombrePerceptor = UtilidadesString.validarModelo190(nombrePerceptor);
+				linea += formatea(nombrePerceptor,40,false); //36-75: apellidos y nombre o denominación del perceptor
 				
-				/*Las comas se aceptan*/
-				// linea += formatea((nombrePerceptor).replaceAll(",",""),40,false); // nombre de perceptor
-				linea += formatea(nombrePerceptor,40,false); // nombre de perceptor
-				
-				linea += formatea(codigoProvincia,2,true); // provincia
-				
-				//CR - Obtenemmos la clave del modelo 190 por cada colegiado
-				String claveM190 = (String)clavesM190.get(persona);				
-				linea += claveM190; 
-				/*
-				 * CR - YA NO SE PONE SIEMPRE ESTO
-				 * linea += "G"; // clave de registro G (rendimientos de actividaddes economicas)
-				 * linea += "01"; // subclave de registro 01 (tipo de retencion de caracter general)
-				 */
-
-				/*
-				 * Esto no hace falta porque desdoblarDouble y formatea ya se encargan de ello
-				 * 
-				//Obtengo el IRPF y el importe para esta persona:
-				Double personaImporteTotalDouble = (Double)importes.get(persona.toString());
-				Double personaIrpfTotalDouble = (Double)irpfs.get(persona.toString());
-				//Tomo solo los 2 primeros decimales:
-				personaImporteTotalDouble = new Double(FcsFacturacionJGAdm.formatearDouble(personaImporteTotalDouble.doubleValue(), 2));
-				personaIrpfTotalDouble = new Double(FcsFacturacionJGAdm.formatearDouble(personaIrpfTotalDouble.doubleValue(), 2));*/
+				linea += formatea(codigoProvincia,2,true); //76-77: provincia
+				linea += (String)clavesM190.get(persona); //78-80: clave+subclave de percepcion ("G01" casi siempre)
 				
 				//Obtengo el IRPF y el importe para esta persona:
 				Double personaImporteTotalDouble = (Double)importes.get(persona);
 				Double personaIrpfTotalDouble = (Double)irpfs.get(persona);
-				
 				// Si no hay retenciones "no debe aparecer" en el archivo
 				if(!personaIrpfTotalDouble.equals(new Double(0))){
 				
-					// percepciones dinerarias
+					//81-94: percepciones dinerarias
 					valor = desdoblarDouble(personaImporteTotalDouble); 
-					linea += formatea(valor.get(0),1,false); // signo
-					linea += formatea(valor.get(1),11,true); // entera
-					linea += formateaDecimal(valor.get(2),2); // decimal
+					linea += formatea(valor.get(0),1,false); //81: signo
+					linea += formatea(valor.get(1),11,true); //82-92 entera
+					linea += formateaDecimal(valor.get(2),2); //93-94 decimal
 					
-					// retencion total
+					//95-107: retenciones practicadas
 					valor = desdoblarDouble(personaIrpfTotalDouble); 
-					linea += formatea(valor.get(1),11,true); // entera
-					linea += formateaDecimal(valor.get(2),2); // decimal
-					linea += relleno(" ",1); // signo de percepcion en especie
-					linea += relleno("0",39); // valor de percepcion en especie
-					linea += relleno("0",4); // ejercicio devengo
+					linea += formatea(valor.get(1),11,true); //95-105: entera
+					linea += formateaDecimal(valor.get(2),2); //106-107: decimal
 					
-					// caso de ceuta y melilla
-					if (codigoProvincia.equals(ClsConstants.CODIGO_PROVINCIA_CEUTA) || codigoProvincia.equals(ClsConstants.CODIGO_PROVINCIA_MELILLA)) {
-						linea += "1";
-					} else {
-						linea += "0";
-					}
-					linea += relleno("0",4); // anho nacimiento
-					linea += relleno("0",1); // situacion familiar
-					linea += relleno(" ",9); // nif conyuge
-					linea += relleno("0",2); // discapacidad, contrato o relacion
-					linea += relleno(" ",1); // MOVILIDAD GEOGRÁFICA - ACEPTACION EN 2014
-					linea += relleno("0",1); // movilidad geografica (170)
-					linea += relleno("0",80); // resto datos adicionales
+					//108-147: percepciones en especie (no aplican)
+					linea += " "; //108: signo de percepcion en especie
+					linea += rellenoPosiciones("0",109,121); //109-121: valor de percepcion en especie
+					linea += rellenoPosiciones("0",122,134); //122-134: valor de percepcion en especie
+					linea += rellenoPosiciones("0",135,147); //135-147: valor de percepcion en especie
 					
-					// jbd Adaptamos el modelo 190 al 2010, hay que completar hasta 500
-					linea += relleno("0", 3); // nº de hijos
-					linea += relleno("0", 1); // prestamo vivienda. Al ser tipo G no aplica
-					//linea += relleno(" ", 245); // blancos
-					// Faltaba uno
-					linea += relleno(" ", 246); // blancos 
+					linea += rellenoPosiciones("0",148,151); //148-151: ejercicio devengo
 					
-					//Fin de linea:
-					//linea += "\n";
+					boolean esCeutaOMelilla = (codigoProvincia.equals(ClsConstants.CODIGO_PROVINCIA_CEUTA)||codigoProvincia.equals(ClsConstants.CODIGO_PROVINCIA_MELILLA));
+					linea += esCeutaOMelilla ? "1":"0"; //152: caso de ceuta y melilla
 					
-					// escribo
+					//153-254: Datos adicionales no necesarios para nuestro caso
+					linea += rellenoPosiciones("0",153,156); //153-156: anyo nacimiento
+					linea += "0"; //157: situacion familiar
+					linea += rellenoPosiciones(" ",158,166); //158-166: nif conyuge
+					linea += "0"; //167: discapacidad
+					linea += "0"; //168: contrato o relacion
+					linea += " "; //169: MOVILIDAD GEOGRÁFICA - ACEPTACION EN 2014
+					linea += "0"; //170: movilidad geografica
+					linea += rellenoPosiciones("0",171,183); //171-183: reducciones aplicables
+					linea += rellenoPosiciones("0",184,196); //184-196: gastos deducibles
+					linea += rellenoPosiciones("0",197,209); //197-209: pensiones compensatorias
+					linea += rellenoPosiciones("0",210,222); //210-222: anualidades por alimentos
+					linea += rellenoPosiciones("0",223,228); //223-228: hijos y otros descendientes
+					linea += rellenoPosiciones("0",229,240); //229-240: hijos y otros descendientes con discapacidad
+					linea += rellenoPosiciones("0",241,244); //241-244: ascendientes
+					linea += rellenoPosiciones("0",245,250); //245-250: ascendientes con discapacidad
+					linea += rellenoPosiciones("0",251,253); //251-253: nº de hijos
+					linea += "0"; //254: prestamo vivienda
+					
+					//255-294: percepciones derivadas de incapacidad laboral (no aplican)
+					linea += " "; //255: Signo de la percepcion integra/valoracion derivada de incapacidad laboral
+					linea += rellenoPosiciones("0",256,266); //256-266: Parte entera del importe de la percepcion integra
+					linea += rellenoPosiciones("0",267,268); //267-268: Parte decimal del importe de la percepcion integra
+					linea += rellenoPosiciones("0",269,279); //269-279: Parte entera del importe de las retenciones practicadas
+					linea += rellenoPosiciones("0",280,281); //280-281: Parte decimal del importe de las retenciones practicadas
+					linea += rellenoPosiciones("0",282,292); //282-292: Parte entera del importe de los ingresos a cuenta repercutidos
+					linea += rellenoPosiciones("0",293,294); //293-294: Parte decimal del importe de los ingresos a cuenta repercutidos
+					
+					linea += rellenoPosiciones(" ",295,500); //295-500: blancos 
+					
 					// cambio a formato DOS
 					linea += "\r\n";
+					
+					// escribiendo la linea
 					bw.write(linea);
 				}
 			}
@@ -1499,7 +1476,16 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	// crea un string de longitud x relleno de caracteres para el impreso 190
+	private String rellenoPosiciones (String caracter, int inicio, int fin) throws ClsExceptions {
+		return relleno(caracter, Math.abs(fin-inicio)+1);
+	}
+	/** 
+	 * Crea un string de longitud x relleno de caracteres para el impreso 190
+	 * @param caracter
+	 * @param longitud
+	 * @return
+	 * @throws ClsExceptions
+	 */
 	private String relleno (String caracter, int longitud) throws ClsExceptions {
 		String salida= "";
 		
