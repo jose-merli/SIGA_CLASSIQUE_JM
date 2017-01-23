@@ -543,7 +543,7 @@
 				DummyForm.metodoSolicitud.value = SolicitudesCertificadosForm.metodoSolicitud.value;
 				DummyForm.fechaSolicitud.value = SolicitudesCertificadosForm.fechaSolicitud.value;
 				DummyForm.idInstitucionColegiacion.value =SolicitudesCertificadosForm.idInstitucionColegiacion.value;
-				if(SolicitudesCertificadosForm.aceptaCesionMutualidadCheck.checked){
+				if(SolicitudesCertificadosForm.aceptaCesionMutualidadCheck != null && SolicitudesCertificadosForm.aceptaCesionMutualidadCheck.checked){
 					DummyForm.aceptaCesionMutualidad.value = "1";
 				} else {
 					DummyForm.aceptaCesionMutualidad.value = "0";

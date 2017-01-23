@@ -3582,11 +3582,19 @@ public class SIGASolicitudesCertificadosAction extends MasterAction
 	
 	   protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 	    	try{
+	    		UsrBean userBean = (UsrBean) request.getSession().getAttribute("USRBEAN");
+	    		String idInstitucion=null;
 	    		MasterForm miForm = (MasterForm) formulario;
 	    		String accion = miForm.getModo();
 	    		request.setAttribute("modo", accion);
 	    		request.setAttribute("modificarSolicitud", "1");
-	    		request.setAttribute("pintarCheckMutualidad", true);
+	   	        idInstitucion = userBean.getLocation();
+	   	        //Sólo debe de mostrarse el check de la mutualidad en los casos que no sea un colegio
+	   	        if(idInstitucion != null && idInstitucion.equals("2000")){
+	   	        	request.setAttribute("pintarCheckMutualidad", true);
+	   	        }else{
+	   	        	request.setAttribute("pintarCheckMutualidad", false);
+	   	        }
 	    		request.setAttribute("facturable", false);
 	    		request.setAttribute("idEstadoSolicitud", CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND);
 	    
