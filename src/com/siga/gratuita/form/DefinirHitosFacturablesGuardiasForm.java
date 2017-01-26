@@ -16,7 +16,10 @@ public class DefinirHitosFacturablesGuardiasForm extends MasterForm
 	private static final long serialVersionUID = 3357306348596830312L;
 	//////////////////// ATRIBUTOS ////////////////////
 	protected Hashtable mapHitoPrecio = null;
-	protected String radioA="0";
+	protected String radioNPG="0";
+	protected String radioPG="0";
+	protected String radioConfig="0";
+	protected String radioConfigFg="0";
 	protected boolean checkB1=false;
 	protected boolean checkB2=false;
 	protected boolean chAsist=false;
@@ -63,7 +66,10 @@ public class DefinirHitosFacturablesGuardiasForm extends MasterForm
 		}
 	}
 	public Hashtable getHitoPrecioHt			() {return this.mapHitoPrecio;}
-	public String getRadioA						() {return radioA;}
+	public String getRadioNPG					() {return radioNPG;}
+	public String getRadioPG					() {return radioPG;}
+	public String getRadioConfig				() {return radioConfig;}	
+	public String getRadioConfigFg				() {return radioConfigFg;}	
 	public boolean getCheckB1					() {return checkB1;}
 	public boolean getCheckB2					() {return checkB2;}
 	public boolean getChAsist					() {return chAsist;}
@@ -109,7 +115,10 @@ public class DefinirHitosFacturablesGuardiasForm extends MasterForm
 		this.mapHitoPrecio.put(Integer.toString(key), value);
 	}
 	public void setHitoPrecioHt				(Hashtable ht) {this.mapHitoPrecio=ht;}
-	public void setRadioA					(String valor) {radioA=valor;}
+	public void setRadioNPG					(String valor) {radioNPG=valor;}
+	public void setRadioPG					(String valor) {radioPG=valor;}
+	public void setRadioConfig				(String valor) {this.radioConfig = valor;}
+	public void setRadioConfigFg			(String valor) {this.radioConfigFg = valor;}
 	public void setCheckB1					(boolean valor) {checkB1=valor;}
 	public void setCheckB2					(boolean valor) {checkB2=valor;}
 	public void setChAsist					(boolean valor) {chAsist=valor;}

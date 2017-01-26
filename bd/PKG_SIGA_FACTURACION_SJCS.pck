@@ -1840,7 +1840,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
       
     --INI: Cambio facturacion guardias inactivas catalanes de VG --
     C_CATALAN CEN_INSTITUCION.CEN_INST_IDINSTITUCION%TYPE := 3001;
-    C_IMPORTE_GUARDIA_INACTIVA SCS_HITOFACTURABLEGUARDIA.PRECIOHITO%TYPE := 61.16;
+    C_IMPORTE_GUARDIA_INACTIVA SCS_HITOFACTURABLEGUARDIA.PRECIOHITO%TYPE := 61.96;
     --FIN: Cambio facturacion guardias inactivas catalanes de VG --
 
   -- declaracion de cursores para la facturacion de guardias
@@ -4240,7 +4240,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 P_IDINSTITUCION,
                 P_IDFACTURACION,
                 V_GRUPOSFACTURACION.IDGRUPOFACTURACION,
-                C_IMPORTE_GUARDIA_INACTIVA,
                 V_CODRETORNO2,
                 V_DATOSERROR2);       
             IF (V_CODRETORNO2 <> '0') THEN
@@ -4333,12 +4332,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                 V_DATOSERROR2 := V_DATOSERROR2 || '; V_CONFIG_GUARDIA.LISTAHITOS(' || AUX || '):' || NVL(TO_CHAR(V_CONFIG_GUARDIA.LISTAHITOS(AUX)), 'NULL');
                             END LOOP;
 
-                            IF (V_CONFIG_GUARDIA.NUMHITOS = 3
-                                AND V_CONFIG_GUARDIA.LISTAHITOS(1) = 5
-                                AND V_CONFIG_GUARDIA.LISTAHITOS(2) = 12
-                                AND V_CONFIG_GUARDIA.LISTAHITOS(3) = 13
+                            IF (V_CONFIG_GUARDIA.NUMHITOS = 5
+                                AND V_CONFIG_GUARDIA.LISTAHITOS(1) = 5 -- As
+                                AND V_CONFIG_GUARDIA.LISTAHITOS(2) = 12 -- SOJ
+                                AND V_CONFIG_GUARDIA.LISTAHITOS(3) = 13 -- EJG
+                                AND V_CONFIG_GUARDIA.LISTAHITOS(4) = 61 -- FacConfig
+                                AND V_CONFIG_GUARDIA.LISTAHITOS(5) = 62 -- FacConfigFG
                                 AND V_CONFIG_GUARDIA.IMPORTEASISTENCIA IS NOT NULL
-                                AND V_CONFIG_GUARDIA.IMPORTEASISTENCIA <> 0.0) THEN
+                                AND V_CONFIG_GUARDIA.IMPORTEASISTENCIA > 0.0) THEN -- Tiene importe de asistencia
 
                                 V_DATOSERROR2 := 'Facturacion por asistencias (sin minimos, sin maximos, sin tipos)';
                                 PROC_FAC_AS_CONTROLADO (
@@ -4351,16 +4352,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                     V_DATOSERROR2);
                                 V_ESFACTURACIONCONTROLADA := TRUE;
 
-                            ELSIF (V_CONFIG_GUARDIA.NUMHITOS = 4
-                                AND V_CONFIG_GUARDIA.LISTAHITOS(1) = 5
-                                AND V_CONFIG_GUARDIA.LISTAHITOS(2) = 10
-                                AND V_CONFIG_GUARDIA.LISTAHITOS(3) = 12
-                                AND V_CONFIG_GUARDIA.LISTAHITOS(4) = 13
-                                AND V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA=0
+                            ELSIF (V_CONFIG_GUARDIA.NUMHITOS = 6
+                                AND V_CONFIG_GUARDIA.LISTAHITOS(1) = 5 -- As
+                                AND V_CONFIG_GUARDIA.LISTAHITOS(2) = 10 -- AsMin
+                                AND V_CONFIG_GUARDIA.LISTAHITOS(3) = 12 -- SOJ
+                                AND V_CONFIG_GUARDIA.LISTAHITOS(4) = 13 -- EJG
+                                AND V_CONFIG_GUARDIA.LISTAHITOS(5) = 61 -- FacConfig
+                                AND V_CONFIG_GUARDIA.LISTAHITOS(6) = 62 -- FacConfigFG
+                                AND V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA=0 -- Aplica Mínimo en UG (no tiene máximos)
                                 AND V_CONFIG_GUARDIA.IMPORTEASISTENCIA IS NOT NULL
-                                AND V_CONFIG_GUARDIA.IMPORTEASISTENCIA <> 0.0
+                                AND V_CONFIG_GUARDIA.IMPORTEASISTENCIA > 0.0 -- Tiene importe de asistencia
                                 AND V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA IS NOT NULL
-                                AND V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA <> 0.0) THEN
+                                AND V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA > 0.0) THEN -- Tiene importe mínimo de asistencia
 
                                 V_DATOSERROR2 := 'Facturacion por asistencias configuradas con minimos y no agrupadas (sin maximos, ni tipos)';
                                 PROC_FAC_ASMIN_CONTROLADO (
@@ -4377,15 +4380,19 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                     V_DATOSERROR2);
                                 V_ESFACTURACIONCONTROLADA := TRUE;
 
-                            ELSIF (V_CONFIG_GUARDIA.NUMHITOS = 5
-                                AND V_CONFIG_GUARDIA.LISTAHITOS(1) = 5
-                                AND V_CONFIG_GUARDIA.LISTAHITOS(2) = 10
-                                AND V_CONFIG_GUARDIA.LISTAHITOS(3) = 12
-                                AND V_CONFIG_GUARDIA.LISTAHITOS(4) = 13
-                                AND V_CONFIG_GUARDIA.LISTAHITOS(5) = 20
-                                AND V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA=0
+                            ELSIF (V_CONFIG_GUARDIA.NUMHITOS = 7
+                                AND V_CONFIG_GUARDIA.LISTAHITOS(1) = 5 -- As
+                                AND V_CONFIG_GUARDIA.LISTAHITOS(2) = 10 -- AsMin
+                                AND V_CONFIG_GUARDIA.LISTAHITOS(3) = 12 -- SOJ
+                                AND V_CONFIG_GUARDIA.LISTAHITOS(4) = 13 -- EJG
+                                AND V_CONFIG_GUARDIA.LISTAHITOS(5) = 20 -- AsTp
+                                AND V_CONFIG_GUARDIA.LISTAHITOS(6) = 61 -- FacConfig
+                                AND V_CONFIG_GUARDIA.LISTAHITOS(7) = 62 -- FacConfigFG
+                                AND V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA=0 -- Aplica Mínimo en UG (no tiene máximos)
+                                AND V_CONFIG_GUARDIA.IMPORTEASISTENCIA IS NOT NULL
+                                AND V_CONFIG_GUARDIA.IMPORTEASISTENCIA > 0.0 -- Tiene importe de asistencia
                                 AND V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA IS NOT NULL
-                                AND V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA <> 0.0) THEN
+                                AND V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA > 0.0) THEN -- Tiene importe mínimo de asistencia
 
                                 V_DATOSERROR2 := 'Facturacion por asistencias configuradas con tipos, con minimos y no agrupadas (sin maximos)';
                                 PROC_FAC_ASMIN_CONTROLADO (
@@ -4402,16 +4409,36 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                     V_DATOSERROR2);
                                 V_ESFACTURACIONCONTROLADA := TRUE;
 
-                            ELSIF (V_CONFIG_GUARDIA.NUMHITOS = 5
-                                AND V_CONFIG_GUARDIA.LISTAHITOS(1) = 1
-                                AND V_CONFIG_GUARDIA.LISTAHITOS(2) = 2
-                                AND V_CONFIG_GUARDIA.LISTAHITOS(3) = 12
-                                AND V_CONFIG_GUARDIA.LISTAHITOS(4) = 13
-                                AND V_CONFIG_GUARDIA.LISTAHITOS(5) = 45
-                                AND V_CONFIG_GUARDIA.AGRUPARPAGAGUARDIA=0
+                            ELSIF (
+                                (
+                                    (V_CONFIG_GUARDIA.NUMHITOS = 7
+                                    AND V_CONFIG_GUARDIA.LISTAHITOS(1) = 1 -- GAs
+                                    AND V_CONFIG_GUARDIA.LISTAHITOS(2) = 2 -- GDAs
+                                    AND V_CONFIG_GUARDIA.LISTAHITOS(3) = 12 -- SOJ
+                                    AND V_CONFIG_GUARDIA.LISTAHITOS(4) = 13 -- EJG
+                                    AND V_CONFIG_GUARDIA.LISTAHITOS(5) = 45 -- NDAs
+                                    AND V_CONFIG_GUARDIA.LISTAHITOS(6) = 61 -- FacConfig
+                                    AND V_CONFIG_GUARDIA.LISTAHITOS(7) = 62 -- FacConfigFG
+                                    )
+                                    OR
+                                    (V_CONFIG_GUARDIA.NUMHITOS = 8
+                                    AND V_CONFIG_GUARDIA.LISTAHITOS(1) = 1 -- GAs
+                                    AND V_CONFIG_GUARDIA.LISTAHITOS(2) = 2 -- GDAs
+                                    AND V_CONFIG_GUARDIA.LISTAHITOS(3) = 12 -- SOJ
+                                    AND V_CONFIG_GUARDIA.LISTAHITOS(4) = 13 -- EJG
+                                    AND V_CONFIG_GUARDIA.LISTAHITOS(5) = 45 -- NDAs
+                                    AND V_CONFIG_GUARDIA.LISTAHITOS(6) = 53 -- GAsMin
+                                    AND V_CONFIG_GUARDIA.LISTAHITOS(7) = 61 -- FacConfig
+                                    AND V_CONFIG_GUARDIA.LISTAHITOS(8) = 62 -- FacConfigFG                                    
+                                    )
+                                )
                                 AND V_CONFIG_GUARDIA.IMPORTEGUARDIA IS NOT NULL
-                                AND V_CONFIG_GUARDIA.IMPORTEGUARDIA <> 0.0
-                                AND V_CONFIG_GUARDIA.IMPORTEGUARDIADOBLADA IN (0.0, V_CONFIG_GUARDIA.IMPORTEGUARDIA)) THEN
+                                AND V_CONFIG_GUARDIA.IMPORTEGUARDIA > 0.0 -- Tiene importe de guardia por asistencias
+                                AND (
+                                    V_CONFIG_GUARDIA.IMPORTEGUARDIADOBLADA IS NULL
+                                    OR V_CONFIG_GUARDIA.IMPORTEGUARDIADOBLADA = 0.0
+                                    OR V_CONFIG_GUARDIA.IMPORTEGUARDIADOBLADA = V_CONFIG_GUARDIA.IMPORTEGUARDIA
+                                )) THEN
 
                                 V_DATOSERROR2 := 'Facturacion por guardias (sin minimos, sin maximos, sin tipos)';
                                 PROC_FAC_GAS_CONTROLADO (
@@ -9443,6 +9470,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         V_CONFIG_GUARDIA.NUMACTUACIONESDOBLA := NULL;
         V_CONFIG_GUARDIA.NUMHITOS := 0;
         V_CONFIG_GUARDIA.LISTAHITOS.DELETE;
+        C_IMPORTE_GUARDIA_INACTIVA := 0; -- Inicialmente el importe de guardia inactiva es 0
 
         --Actualizo para saber que el procedimiento ha finalizado correctamente:
         P_DATOSERROR := 'PROCEDURE PROC_FCS_INI_CONFIG_GUARDIA: ha finalizado correctamente.';
@@ -9587,32 +9615,34 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
                 WHEN 20 THEN -- AsTp
                    V_CONFIG_GUARDIA.TIPOASISTENCIA := PKG_SIGA_CONSTANTES.DB_TRUE_N;
-                   V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA := V_IDHITO.DIASAPLICABLES;
-                   V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA := V_IDHITO.AGRUPAR;
 
                 WHEN 22 THEN -- AcTp
                    V_CONFIG_GUARDIA.TIPOACTUACION := PKG_SIGA_CONSTANTES.DB_TRUE_N;
-                   V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA := V_IDHITO.DIASAPLICABLES;
-                   V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA := V_IDHITO.AGRUPAR;
 
                 WHEN 23 THEN -- AcTpMax
                    b_actTpMax := true;
                    V_CONFIG_GUARDIA.TIPOACTUACION := PKG_SIGA_CONSTANTES.DB_TRUE_N;
-                   V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA := V_IDHITO.DIASAPLICABLES;
-                   V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA := V_IDHITO.AGRUPAR;
 
                WHEN 25 THEN -- AcFGTp
                    V_CONFIG_GUARDIA.TIPOACTUACIONFG := PKG_SIGA_CONSTANTES.DB_TRUE_N;
 
                 WHEN 44 THEN -- GAc
-                   V_CONFIG_GUARDIA.DIASPAGAGUARDIA := V_IDHITO.DIASAPLICABLES;
-                   V_CONFIG_GUARDIA.AGRUPARPAGAGUARDIA := V_IDHITO.AGRUPAR;
+                    V_CONFIG_GUARDIA.GUARDIA := PKG_SIGA_CONSTANTES.DB_TRUE_N;
+                    V_CONFIG_GUARDIA.IMPORTEGUARDIA := V_IDHITO.PRECIO;
+                    V_CONFIG_GUARDIA.DIASPAGAGUARDIA := V_IDHITO.DIASAPLICABLES;
+                    V_CONFIG_GUARDIA.AGRUPARPAGAGUARDIA := V_IDHITO.AGRUPAR;
 
                 WHEN 45 THEN -- NDAs
                    V_CONFIG_GUARDIA.NUMASISTENCIASDOBLA := V_IDHITO.PRECIO;
 
                 WHEN 46 THEN -- NDAc
                    V_CONFIG_GUARDIA.NUMACTUACIONESDOBLA := V_IDHITO.PRECIO;
+                   
+                WHEN 53 THEN -- AsMin 
+                    C_IMPORTE_GUARDIA_INACTIVA := V_IDHITO.PRECIO;
+                    
+                WHEN 54 THEN -- AcMin 
+                    C_IMPORTE_GUARDIA_INACTIVA := V_IDHITO.PRECIO;
                    
                 ELSE
                     P_DATOSERROR := 'No recupera el hito';                                       
@@ -11402,7 +11432,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
         --INI: Cambio facturacion guardias inactivas catalanes de VG --
         IF (v_totalAsist = 0 
-            AND V_CONFIG_GUARDIA.CONSEJOINSTITUCION = C_CATALAN 
+            AND V_CONFIG_GUARDIA.CONSEJOINSTITUCION = C_CATALAN
+            AND C_IMPORTE_GUARDIA_INACTIVA > 0 -- Tiene importe de guardia inactiva 
             AND V_CONFIG_GUARDIA.ESGUARDIAVG = '1') THEN
             M_APUNTE_CG(IND_CG).IMPORTE := C_IMPORTE_GUARDIA_INACTIVA - M_CG_FACTURABLE(indiceMatrizFacturable).IMPORTEFACTURADO;
 
@@ -11520,7 +11551,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             --comprobando que importe apuntar y motivo
             --INI: Cambio facturacion guardias inactivas catalanes de VG --
             IF (v_totalasist = 0 
-                And V_CONFIG_GUARDIA.CONSEJOINSTITUCION = C_CATALAN 
+                And V_CONFIG_GUARDIA.CONSEJOINSTITUCION = C_CATALAN
+                AND C_IMPORTE_GUARDIA_INACTIVA > 0 -- Tiene importe de guardia inactiva 
                 And V_CONFIG_GUARDIA.ESGUARDIAVG = '1') THEN
                 M_APUNTE_UG(IND_UG).IMPORTE := C_IMPORTE_GUARDIA_INACTIVA - V_UNIDADES_GUARDIA.IMPORTEFACTURADO;
 
@@ -11749,7 +11781,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
     --comprobando que importe apuntar y motivo
     --INI: Cambio facturacion guardias inactivas catalanes de VG --
-    If (v_totalActua = 0 And V_CONFIG_GUARDIA.CONSEJOINSTITUCION = C_CATALAN And V_CONFIG_GUARDIA.ESGUARDIAVG = '1') Then
+    If (v_totalActua = 0         
+        And V_CONFIG_GUARDIA.CONSEJOINSTITUCION = C_CATALAN 
+        AND C_IMPORTE_GUARDIA_INACTIVA > 0 -- Tiene importe de guardia inactiva
+        And V_CONFIG_GUARDIA.ESGUARDIAVG = '1') Then
       MATRIZAPUNTES.IMPORTE := C_IMPORTE_GUARDIA_INACTIVA - MATRIZFACTURABLE.IMPORTEFACTURADO;
 
       If (MATRIZFACTURABLE.IMPORTEFACTURADO = 0) Then
@@ -11888,7 +11923,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
       --comprobando que importe apuntar y motivo
       --INI: Cambio facturacion guardias inactivas catalanes de VG --
-      If (v_totalactua = 0 And V_CONFIG_GUARDIA.CONSEJOINSTITUCION = C_CATALAN And V_CONFIG_GUARDIA.ESGUARDIAVG = '1') Then
+      If (v_totalactua = 0 
+        And V_CONFIG_GUARDIA.CONSEJOINSTITUCION = C_CATALAN 
+        AND C_IMPORTE_GUARDIA_INACTIVA > 0 -- Tiene importe de guardia inactiva
+        And V_CONFIG_GUARDIA.ESGUARDIAVG = '1') Then
         MATRIZAPUNTES_UG.IMPORTE := C_IMPORTE_GUARDIA_INACTIVA - V_UNIDADES_GUARDIA.IMPORTEFACTURADO;
 
         If (V_UNIDADES_GUARDIA.IMPORTEFACTURADO = 0) Then
@@ -14374,6 +14412,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             AND ASI.ANIO = ACT.ANIO
             AND ASI.NUMERO = ACT.NUMERO
             AND ACT.FECHAJUSTIFICACION BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA)
+            AND ACT.VALIDADA = '1' -- Validada
             AND NVL(ACT.ANULACION, '0') = '0'
             AND ACT.DIADESPUES = 'S' -- solo las del día después
             AND NOT EXISTS ( -- solo las NO FACTURADAS
