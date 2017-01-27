@@ -81,7 +81,17 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
     private String busquedaIdSolicitud;
     private String busquedaIdInstitucionDestino;
     private String busquedaIdInstitucionOrigen;
-        
+    
+    private String regenerar;
+    
+    
+    
+	public String getRegenerar() {
+		return regenerar;
+	}
+	public void setRegenerar(String regenerar) {
+		this.regenerar = regenerar;
+	}
 	public String getIdTipoProducto() {
 		return idTipoProducto;
 	}
