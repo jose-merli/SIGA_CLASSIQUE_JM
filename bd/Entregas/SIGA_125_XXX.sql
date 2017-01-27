@@ -69,3 +69,5 @@ Cambios en Pkg_Siga_Fusion_Personas
 Update Scs_Maestroretenciones Set clavem190 = Null Where clavem190 Is Not Null;--quita la G04 que ha sido suprimida
 
 Cambios en Pkg_Siga_Fusion_Personas
+
+-- Ejecutado en Integracion por AAG el 27/01 a las 12:30
