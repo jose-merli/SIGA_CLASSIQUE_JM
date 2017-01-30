@@ -816,7 +816,10 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				intInstitucion = Integer.parseInt(stInstitucion);
 				// Si se quiere fusionar un colegiado en el mismo colegio, solo lo permitimos al personal de IT o bien si el colegio no esta en produccion
 				if (admColeg.existeColegiado(Long.parseLong(idPersonaDestino), intInstitucion) != null && !tienePermisoFusionColegiosEnProduccion(mapping, request) && admInst.estaEnProduccion(stInstitucion)) {
-					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar1"+nombreInstitucion+"messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar2"));
+					request.setAttribute("mensaje", 
+							UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar1") + 
+							" " + nombreInstitucion + " " + 
+							UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar2"));
 					return "exitoFusionar";
 				}
 			}
