@@ -74,3 +74,5 @@ Cambios en Pkg_Siga_Fusion_Personas
 
 Cambios en Pkg_Siga_Fusion_Personas
 
+-- Ejecutado en Integracion por AAG el 30/01 a las 12:55
+
