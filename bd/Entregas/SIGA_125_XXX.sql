@@ -71,3 +71,6 @@ Update Scs_Maestroretenciones Set clavem190 = Null Where clavem190 Is Not Null;-
 Cambios en Pkg_Siga_Fusion_Personas
 
 -- Ejecutado en Integracion por AAG el 27/01 a las 12:30
+
+Cambios en Pkg_Siga_Fusion_Personas
+

@@ -78,7 +78,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     When Others Then
       p_Datoserror := p_Datoserror || Chr(10) || 'ERR: Al mover en ' || Tabla || ': ' || Sqlcode || ': ' ||
                       Sqlerrm;
-      p_Codretorno := -1;
+      p_Codretorno := Sqlcode;
   End Muevecosaspersonaaotrapersona;
   
   --
@@ -2832,7 +2832,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     When Others Then
       p_Datoserror := p_Datoserror || Chr(10) || 'ERR: Al mover en ' || Tabla || ': ' || Sqlcode || ': ' ||
                       Sqlerrm;
-      p_Codretorno := -1;
+      p_Codretorno := Sqlcode;
   End; --Muevecosasclienteaotrapersona
 
   --
@@ -2958,7 +2958,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     When Others Then
       p_Datoserror := p_Datoserror || Chr(10) || 'ERR: Al insertar en ' || Tabla || ': ' || Sqlcode || ': ' ||
                       Sqlerrm;
-      p_Codretorno := -1;
+      p_Codretorno := Sqlcode;
   End; --Copiacliente_simple
 
   --
@@ -3158,7 +3158,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     When Others Then
       p_Datoserror := p_Datoserror || Chr(10) || 'ERR: Al borrar en ' || Tabla || ': ' || Sqlcode || ': ' ||
                       Sqlerrm;
-      p_Codretorno := -1;
+      p_Codretorno := Sqlcode;
   End; --Borracliente_Simple
 
   --
@@ -3286,7 +3286,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     When Others Then
       p_Datoserror := p_Datoserror || Chr(10) || 'ERR: Al borrar en ' || Tabla || ': ' || Sqlcode || ': ' ||
                       Sqlerrm;
-      p_Codretorno := -1;
+      p_Codretorno := Sqlcode;
   End; --Borracolegiado_Simple
 
   --
@@ -3353,7 +3353,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     When Others Then
       p_Datoserror := p_Datoserror || Chr(10) || 'ERR: Al borrar en ' || Tabla || ': ' || Sqlcode || ': ' ||
                       Sqlerrm;
-      p_Codretorno := -1;
+      p_Codretorno := Sqlcode;
   End; --Borrapersona_simple
 
   --
@@ -3445,10 +3445,12 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
                           Reg_Cliente.Idinstitucion,
                           v_Codretorno,
                           v_Datoserror);
-      p_Datoserror := p_Datoserror || Reg_Cliente.Idinstitucion || '(' || v_Datoserror || ')'  || ', ';
       If v_Codretorno <> 0 Then
         p_Codretorno := v_Codretorno;
+        p_Datoserror := v_Datoserror;
         Return;
+      Else 
+        p_Datoserror := p_Datoserror || Reg_Cliente.Idinstitucion || '(' || v_Datoserror || ')'  || ', ';
       End If;
     
       -- Se marca si existe colegiado
@@ -3459,13 +3461,13 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
       -- Comprobando que no se mezcla sociedad con persona fisica en cada colegio
       If Reg_Cliente.Tipoclientedestino > 0 Then
         If (Reg_Cliente.Tipoclienteorigen = c_CLIENTESOCIEDAD And Reg_Cliente.Tipoclientedestino <> c_CLIENTESOCIEDAD) Then
-          p_Codretorno := -1;
           p_Datoserror := 'No se pueden mover datos de una Sociedad hacia una persona fisica';
+          p_Codretorno := -1;
           Return;
         End If;
         If (Reg_Cliente.Tipoclienteorigen = c_CLIENTECOLEGIADO And Reg_Cliente.Tipoclientedestino = c_CLIENTESOCIEDAD) Then
-          p_Codretorno := -1;
           p_Datoserror := 'No se puede mezclar un Colegiado con una Sociedad';
+          p_Codretorno := -1;
           Return;
         End If;
       End If;
@@ -3525,13 +3527,13 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
       
       If v_Tipoclientecgae_Destino = c_Clientesociedad Then
         If n_Colegiados_Origen > 0 Or n_Colegiados_Destino > 0 Then
-          p_Codretorno := -1;
           p_Datoserror := 'No se puede mezclar un Colegiado con una Sociedad';
+          p_Codretorno := -1;
           Return;
         End If;
       Elsif v_Tipoclientecgae_Origen = c_Clientesociedad Then
-        p_Codretorno := -1;
         p_Datoserror := 'No se pueden mover datos de una Sociedad hacia una persona fisica';
+        p_Codretorno := -1;
         Return;
       End If;
     End;
@@ -3579,8 +3581,9 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
       p_Codretorno := v_Codretorno;
       p_Datoserror := v_Datoserror;
       Return;
+    Else
+      p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
     End If;
-    p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
     Muevecosasclienteaotrapersona(p_Idpersona_Origen,
                                   p_Idpersona_Destino,
                                   Null, --todos a la vez
@@ -3590,8 +3593,9 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
       p_Codretorno := v_Codretorno;
       p_Datoserror := v_Datoserror;
       Return;
+    Else
+      p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
     End If;
-    p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
 --dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de copiar cosas');
       
     -- Se borran los clientes del origen
@@ -3600,10 +3604,12 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
                         Null, --todos a la vez
                         v_Codretorno,
                         v_Datoserror);
-    p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
     If v_Codretorno <> 0 Then
       p_Codretorno := v_Codretorno;
+      p_Datoserror := v_Datoserror;
       Return;
+    Else
+      p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
     End If;
   
     -- Si se movio alguna colegiacion, habra que actualizar los datos en los Consejos
@@ -3665,10 +3671,12 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
                       p_Idpersona_Origen || ' > ' || p_Idpersona_Destino || '): FIN';
     
       Borrapersona_Simple(p_Idpersona_Origen, p_Idpersona_Destino, v_Codretorno, v_Datoserror);
-      p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
       If v_Codretorno <> 0 Then
         p_Codretorno := v_Codretorno;
+        p_Datoserror := v_Datoserror;
         Return;
+      Else
+        p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
       End If;
     End;
   
@@ -3703,7 +3711,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
   Exception
     When Others Then
       p_Datoserror := p_Datoserror || Chr(10) || Sqlcode || ': ' || Sqlerrm;
-      p_Codretorno := -1;
+      p_Codretorno := Sqlcode;
     
   End; --Fusiona_personas
 
@@ -3732,10 +3740,12 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
                           p_Idinstitucion,
                           v_Codretorno,
                           v_Datoserror);
-      p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
       If v_Codretorno <> 0 Then
         p_Codretorno := v_Codretorno;
+        p_Datoserror := v_Datoserror;
         Return;
+      Else
+        p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
       End If;
     End;
   
@@ -3744,10 +3754,12 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
                                   p_Idinstitucion,
                                   v_Codretorno,
                                   v_Datoserror);
-    p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
     If v_Codretorno <> 0 Then
       p_Codretorno := v_Codretorno;
+      p_Datoserror := v_Datoserror;
       Return;
+    Else
+      p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
     End If;
   
     Borracliente_Simple(p_Idpersona_Origen,
@@ -3755,10 +3767,12 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
                         p_Idinstitucion,
                         v_Codretorno,
                         v_Datoserror);
-    p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
     If v_Codretorno <> 0 Then
       p_Codretorno := v_Codretorno;
+      p_Datoserror := v_Datoserror;
       Return;
+    Else
+      p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
     End If;
   
   End; --Mueveclienteaotrapersona
@@ -3795,10 +3809,12 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     p_Datoserror := p_Datoserror || Chr(10) || 'PasaAnoColegiado (' || p_Idpersona || '): INI';
   
     Borracolegiado_Simple(p_Idpersona, p_Idpersona, Null, v_Codretorno, v_Datoserror);
-    p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
     If v_Codretorno <> 0 Then
       p_Codretorno := v_Codretorno;
+      p_Datoserror := v_Datoserror;
       Return;
+    Else
+      p_Datoserror := p_Datoserror || Chr(10) || v_Datoserror;
     End If;
   
     Tabla := 'CEN_CLIENTE';

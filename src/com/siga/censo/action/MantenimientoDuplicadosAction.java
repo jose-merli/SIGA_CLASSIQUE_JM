@@ -951,10 +951,10 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			String[] resultadoFusion = EjecucionPLs.ejecutarPL_fusion(idPersonaOrigen, idPersonaDestino);
 			if (resultadoFusion[0].equalsIgnoreCase("-1")) { //error controlado: mostrando el error en pantalla
 				tx.rollback();
-				request.setAttribute("mensaje", "Imposible completar la fusión de las personas con Num. ident. ´"+beanPersonaOrigen.getNIFCIF()+"´ y ´"+beanPersonaDestino.getNIFCIF()+"´. Consulte con el Administrador");
+				request.setAttribute("mensaje", "Imposible completar la fusión de las personas con Num. ident. ´"+beanPersonaOrigen.getNIFCIF()+"´ y ´"+beanPersonaDestino.getNIFCIF()+"´: " + resultadoFusion[1]);
 				return "exitoFusionar";
 			} else if (!resultadoFusion[0].equalsIgnoreCase("-1") && !resultadoFusion[0].equalsIgnoreCase("0")) {
-				throw new ClsExceptions(resultadoFusion[1]);
+				throw new ClsExceptions("Imposible completar la fusión de las personas con Num. ident. ´"+beanPersonaOrigen.getNIFCIF()+"´ y ´"+beanPersonaDestino.getNIFCIF()+"´. Consulte con el Administrador");
 			}
 			
 			tx.commit();
