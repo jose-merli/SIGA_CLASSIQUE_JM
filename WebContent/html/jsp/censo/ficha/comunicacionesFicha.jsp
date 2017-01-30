@@ -69,7 +69,6 @@
 			url : accion + "?modo=listadoComunicacionesAjax",
 			data : data,
 			success : function(response) {
-				console.log(response);
 				jQuery('#divListado').html(response);
 				fin();
 			},

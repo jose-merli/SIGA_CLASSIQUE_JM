@@ -20,7 +20,7 @@
         }
     }
     
-    // Para los navegadores que no soportan la función trim
+    // Para los navegadores que no soportan la funciï¿½n trim
     if(typeof String.prototype.trim !== 'function') {
     	  String.prototype.trim = function() {
     	    return this.replace(/^\s+|\s+$/g, ''); 
@@ -77,9 +77,9 @@ if (typeof jQuery == "undefined"){
 	} else {
 		headElement.appendChild(jqueryScript);
 	}
-	// Se establecen un número máximo de intentos
+	// Se establecen un nï¿½mero mï¿½ximo de intentos
 	// El primer intento espera un segundo y luego hace pool cada 500ms
-	var maxIntentos = 38; // unos 20 segundos como máximo para dar error
+	var maxIntentos = 38; // unos 20 segundos como mï¿½ximo para dar error
 	var intento = 0;
 	var waitForLoad = function () {
 	    if (typeof jQuery != "undefined") {
@@ -89,7 +89,7 @@ if (typeof jQuery == "undefined"){
 	    	intento++;
 	        window.setTimeout(waitForLoad, 500);
 	    } else {
-	    	alert("Se ha producido un error al cargar la página, por favor, intentelo de nuevo más tarde...");
+	    	alert("Se ha producido un error al cargar la pï¿½gina, por favor, intentelo de nuevo mï¿½s tarde...");
 	    }
 	};
 	window.setTimeout(waitForLoad, 1000);
@@ -109,7 +109,7 @@ p=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u20
 {"":a})};if(typeof JSON.parse!=="function")JSON.parse=function(a,e){function c(a,d){var g,f,b=a[d];if(b&&typeof b==="object")for(g in b)Object.prototype.hasOwnProperty.call(b,g)&&(f=c(b,g),f!==void 0?b[g]=f:delete b[g]);return e.call(a,d,b)}var d,a=String(a);q.lastIndex=0;q.test(a)&&(a=a.replace(q,function(a){return"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)}));if(/^[\],:{}\s]*$/.test(a.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,"@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
 "]").replace(/(?:^|:|,)(?:\s*\[)+/g,"")))return d=eval("("+a+")"),typeof e==="function"?c({"":d},""):d;throw new SyntaxError("JSON.parse");}})();
 
-// OBTIENE EL TEXTO SELECCIONADO DE UNA PÁGINA
+// OBTIENE EL TEXTO SELECCIONADO DE UNA Pï¿½GINA
 var getSelected = function(){
     var t = '';
     if(window.getSelection) {
@@ -122,19 +122,19 @@ var getSelected = function(){
     return t;
 }
 /**
-*	Inicialización una vez cargado jquery en el iframe
-*	Esta función ya incluye un método de onload de jquery
-*	por lo que cualquier cosa que se tenga que añadir en el
-*	onload debería estár aquí
+*	Inicializaciï¿½n una vez cargado jquery en el iframe
+*	Esta funciï¿½n ya incluye un mï¿½todo de onload de jquery
+*	por lo que cualquier cosa que se tenga que aï¿½adir en el
+*	onload deberï¿½a estï¿½r aquï¿½
 *	
 **/
 function jQueryLoaded(){
 	console.debug("[jQueryLoaded] inicializando contexto jQuery...");
-	// Inicialización de jquery para el contexto actual
+	// Inicializaciï¿½n de jquery para el contexto actual
 	window.top.jQueryContext(window);
-	// Con este método se inicializa otra vez jquery UI dentro del jquery local de esta página pero
+	// Con este mï¿½todo se inicializa otra vez jquery UI dentro del jquery local de esta pï¿½gina pero
 	// esto no evita los memory leaks de jquery UI por lo que voy a intentar cargarlo solo en el TOP
-	// y usarlo desde allí.
+	// y usarlo desde allï¿½.
 	//window.top.jQueryUiContext(window.jQuery);
 	
 	// *** BEGIN PLUGINS *** //
@@ -562,7 +562,7 @@ function jQueryLoaded(){
 	// SERIALIZE
 	jQuery.fn.serializeObject = function() {
 	    var o = {};
-	    // Para poder enviar los elementos sin name pero con ID. Si no tienen ni name ni ID se envía un array 'desconocido'
+	    // Para poder enviar los elementos sin name pero con ID. Si no tienen ni name ni ID se envï¿½a un array 'desconocido'
 	    this.each(function(){
 	    	if (typeof jQuery(this).attr("name") == "undefined" || jQuery(this).attr("name") == ""){
 	    		if (typeof jQuery(this).attr("id") !== "undefined" && jQuery(this).attr("id") !== ""){
@@ -1275,7 +1275,7 @@ function jQueryLoaded(){
 		
 		// *** TAGFECHA *** //
 		jQuery("input.datepicker").each(function(){
-			// Parámetro cargar fecha desde. Selecciona el ID desde el que se quiere cargar el valor
+			// Parï¿½metro cargar fecha desde. Selecciona el ID desde el que se quiere cargar el valor
 			if (jQuery(this).data("cargarfechadesde")){
 				if (jQuery(this).val() == "")
 					jQuery(this).val(jQuery('#'+jQuery(this).data("cargarfechadesde")).val());
@@ -1313,7 +1313,7 @@ function jQueryLoaded(){
 						//console.debug("DATEPICKER INPUT BLUR! focus: " + jQuery(this).is(":focus") + "; CARET: " + jQuery(this).atCaret('getCaretPosition') + "; CARETPOS: " + jQuery(this).data("caretpos"));
 						// SOLO PARA IE. EL CAMBIO DEL CURSOR OCASIONA UN EVENTO BLUR, PARA DIFERENCIARLO
 						// DE UN BLUR 'DE VERDAD' YA HEMOS COMPROBADO SI TIENE O NO EL FOCO. SI NO TIENE
-						// EL FOCO, HAY QUE COMPROBAR SI TENEMOS QUE ACTUALIZAR LA POSICIÓN DEL CURSOR
+						// EL FOCO, HAY QUE COMPROBAR SI TENEMOS QUE ACTUALIZAR LA POSICIï¿½N DEL CURSOR
 						// ALMACENADA EN DATA (caretpos). FINALMENTE ELIMINAMOS ESE DATA PARA NO ENTRAR EN BUCLE
 						jQuery(this).atCaret('setCaretPosition', jQuery(this).data("caretpos") + 1);
 						jQuery(this).removeData("caretpos");
@@ -1323,7 +1323,7 @@ function jQueryLoaded(){
 				jQuery(this).on("keyup",function(e){
 					//console.debug("keyup");
 					// EVENTO KEYUP SOBRE EL INPUT TEXT DATEPICKER
-					var actualizarCursor = false; // INDICA SI ES NECESARIO ACTUALIZAR LA POSICIÓN DEL CURSOR
+					var actualizarCursor = false; // INDICA SI ES NECESARIO ACTUALIZAR LA POSICIï¿½N DEL CURSOR
 					if (typeof jQuery(this).data("selectedText") != "undefined"){
 						// INDICA SI EL CORRESPONDIENTE EVENTO keydown SE HA PRODUCIDO SOBRE UN TEXTO SELECCIONADO
 						// MEDIANTE EL DATA (selectedtext). ELIMINAMOS EL DATA E INDICAMOS QUE HAY QUE ACTUALIZAR
@@ -1361,7 +1361,7 @@ function jQueryLoaded(){
 							}
 							if (typeof fechaArray[2] != "undefined"){
 								y = fechaArray[2];
-								if (y.length > 4){ // EL AÑO TIENE MAS DE DOS DIGITOS
+								if (y.length > 4){ // EL Aï¿½O TIENE MAS DE DOS DIGITOS
 									y = y.substring(0,4);
 									sustituir = true;
 								}
@@ -1382,8 +1382,8 @@ function jQueryLoaded(){
 						}
 					}
 					if (actualizarCursor){
-						// ACTUALIZA EL CURSOR A LA POSICIÓN CORRECTA Y ALMACENA 
-						// ESTA POSICIÓN EN DATA
+						// ACTUALIZA EL CURSOR A LA POSICIï¿½N CORRECTA Y ALMACENA 
+						// ESTA POSICIï¿½N EN DATA
 						var caretpos = jQuery(this).data("caretpos") + 1;
 						jQuery(this).data("caretpos", caretpos);
 						jQuery(this).atCaret('setCaretPosition', caretpos);
@@ -1394,10 +1394,10 @@ function jQueryLoaded(){
 				jQuery(this).on("keydown", function(e){
 					// EVENTO KEYDOWN DEL INPUT TEXT DATEPICKER
 					var permitirValor = false; //INDICA SI SE PERMITE O NO EL VALOR DE LA TECLA
-					var caretpos = jQuery(this).atCaret('getCaretPosition'); // POSICIÓN DEL CURSOR (INDICE 0)				
-					var code = e.keyCode || e.which; // CÓDIGO DE LA TECLA PULSADA
+					var caretpos = jQuery(this).atCaret('getCaretPosition'); // POSICIï¿½N DEL CURSOR (INDICE 0)				
+					var code = e.keyCode || e.which; // Cï¿½DIGO DE LA TECLA PULSADA
 					var fecha = jQuery(this).val(); // VALOR ACTUAL DE LA FECHA
-					var fechaArray = fecha.split("/"); // ARRAY QUE CONTIENE 0-> Día, 1 -> Mes, 2 -> Año
+					var fechaArray = fecha.split("/"); // ARRAY QUE CONTIENE 0-> Dï¿½a, 1 -> Mes, 2 -> Aï¿½o
 					var charAtCaretPos = ""; // CARACTER DEL VALOR ACTUAL DE LA FECHA EN LA POSICION ACTUAL DEL CURSOR
 					if (typeof fecha != "undefined" && 
 							typeof fecha.charAt(caretpos) != "undefined")
@@ -1407,7 +1407,7 @@ function jQueryLoaded(){
 					// SUSTITUIR TEXTO SELECCIONADO
 					if (typeof jQuery(this).data("selectedText") != "undefined" && ((code >= 48 && code <= 57) || 
 							(code >= 96 && code <= 105))){
-						// SI TENEMOS EN DATA TEXTO SELECCIONADO Y PULSAMOS UN NÚMERO (NORMAL / NUMPAD)
+						// SI TENEMOS EN DATA TEXTO SELECCIONADO Y PULSAMOS UN Nï¿½MERO (NORMAL / NUMPAD)
 						var selectedText = jQuery(this).data("selectedText");
 						var selection = getSelected().toString(); //OBTENEMOS EL TEXTO SELECCIONADO
 						// DESELECCIONA EL TEXTO
@@ -1415,51 +1415,51 @@ function jQueryLoaded(){
 							document.selection.empty();
 						else
 							window.getSelection().removeAllRanges();
-						// SI LA SELECCIÓN ES LA MISMA QUE SE HA GUARDADO EN EL CAMPO, NO SE HA SELECCIONADO OTRO TEXTO
-						// DE LA PÁGINA ENTRE MEDIAS...
+						// SI LA SELECCIï¿½N ES LA MISMA QUE SE HA GUARDADO EN EL CAMPO, NO SE HA SELECCIONADO OTRO TEXTO
+						// DE LA Pï¿½GINA ENTRE MEDIAS...
 						if (selection == selectedText){
 							var keyCode = code;
 							if (keyCode >= 96)	
 								keyCode -= 48; // AJUSTE PARA EL NUMPAD
-							var replace = String.fromCharCode(keyCode); // CARACTER TECLEADO A PARTIR DEL CÓDIGO
+							var replace = String.fromCharCode(keyCode); // CARACTER TECLEADO A PARTIR DEL Cï¿½DIGO
 							var value = jQuery(this).val().toString();
 							
 							// EL COMPORTAMIENTO EN IE Y EN LOS DEMAS NAVEGADORES ES DISTINTO RESPECTO A SELECCIONAR TEXTO.
-							// EN IE EL CURSOR PERMANECE EN EL LADO IZDO DE LA SELECCIÓN (EL FINAL) Y EN EL RESTO EN EL LADO
+							// EN IE EL CURSOR PERMANECE EN EL LADO IZDO DE LA SELECCIï¿½N (EL FINAL) Y EN EL RESTO EN EL LADO
 							// DERECHO (AL PRINCIPIO). POR ESO, Y PARA NO HACER DESARROLLOS PARTICULARIZADOS POR EXPLORADOR,
 							// HAY QUE TENER EN CUENTA LOS DOS ESCENARIOS
 							if (value.length - selectedText.length > 2){
-								// SI LA SELECCIÓN ES PARCIAL (HAY MÁS DE 2 CARACTERES NO SELECCIONADOS)
+								// SI LA SELECCIï¿½N ES PARCIAL (HAY Mï¿½S DE 2 CARACTERES NO SELECCIONADOS)
 								var d = typeof fechaArray[0] != "undefined"?fechaArray[0]:"";
 								var m = typeof fechaArray[1] != "undefined"?fechaArray[1]:"";
 								var y = typeof fechaArray[2] != "undefined"?fechaArray[2]:"";
 								if (y != "")
 								if (caretpos >= 0 && caretpos <= 2){
-									// SELECCIÓN DE DIAS. POR LA POSICION DEL CURSOR
+									// SELECCIï¿½N DE DIAS. POR LA POSICION DEL CURSOR
 									d = replace;
 									caretpos = 0;
 								} else if (caretpos >= 3 && caretpos <= 5){
-									// SELECCIÓN DE MES. POR LA POSICION DEL CURSOR
+									// SELECCIï¿½N DE MES. POR LA POSICION DEL CURSOR
 									var indexSeparador = selectedText.indexOf("/");
 									if (indexSeparador != -1 && indexSeparador != 0){
-										// REEMPLAZA MES Y AÑO. LA POSICION DEL CURSOR INDICA QUE ESTA SELECCIONADO
-										// EL MES PERO ADEMAS ESTA SELECCIONADO AL MENOS PARTE DEL AÑO.
-										// SUSTITUIMOS EL MES Y ELIMINAMOS EL AÑO
+										// REEMPLAZA MES Y Aï¿½O. LA POSICION DEL CURSOR INDICA QUE ESTA SELECCIONADO
+										// EL MES PERO ADEMAS ESTA SELECCIONADO AL MENOS PARTE DEL Aï¿½O.
+										// SUSTITUIMOS EL MES Y ELIMINAMOS EL Aï¿½O
 										y = "";
 									}
 									m = replace;
 									caretpos = d.length + 1;
 								} else {
 									// 8 <= caretpos<= 10
-									// LA POSICION DEL CURSOR INDICA QUE AL MENOS EL AÑO ESTA SELECCIONADO
+									// LA POSICION DEL CURSOR INDICA QUE AL MENOS EL Aï¿½O ESTA SELECCIONADO
 									var indexSeparador = selectedText.indexOf("/");
 									if (indexSeparador != -1 && indexSeparador != 0){
-										// REEMPLAZA MES Y AÑO
+										// REEMPLAZA MES Y Aï¿½O
 										m = replace;
 										y = "";
 										caretpos = d.length + 1;
 									} else {
-										// REEMPLAZA AÑO
+										// REEMPLAZA Aï¿½O
 										y = replace;
 										caretpos = d.length + m.length + 2;
 									}
@@ -1472,12 +1472,12 @@ function jQueryLoaded(){
 										value += "/"+y;
 								}
 							} else {
-								// SELECCIÓN COMPLETA (O CASI). SIMPLEMENTE SE SUSTITUYE EL TEXTO SELECCIONADO POR EL VALOR
+								// SELECCIï¿½N COMPLETA (O CASI). SIMPLEMENTE SE SUSTITUYE EL TEXTO SELECCIONADO POR EL VALOR
 								// INTRODUCIDO
 								caretpos = value.indexOf(selectedText) + 1;
 								value = value.replace(selectedText, replace);
 							}
-							// FINALMENTE ACTUALIZAMOS EL VALOR DEL INPUT TEXT Y LA POSICIÓN DEL CURSOR
+							// FINALMENTE ACTUALIZAMOS EL VALOR DEL INPUT TEXT Y LA POSICIï¿½N DEL CURSOR
 							// ADEMAS ACABAMOS EL EVENTO YA QUE YA HEMOS INCORPORADO LA TECLA PULSADA
 							jQuery(this).val(value);
 							jQuery(this).data("caretpos",caretpos);
@@ -1520,7 +1520,7 @@ function jQueryLoaded(){
 								
 							} else if ((fecha.length == 2 && typeof fechaArray[1] == "undefined") || 
 									(fecha.length == 5 && typeof fechaArray[2] == "undefined")){
-								// INSERTAMOS SEPARADOR AL LLEGAR AL MES O AL AÑO
+								// INSERTAMOS SEPARADOR AL LLEGAR AL MES O AL Aï¿½O
 								//console.debug("Inserto separador");
 								jQuery(this).val(fecha + "/");
 								jQuery(this).data("caretpos",caretpos + 1);
@@ -1529,7 +1529,7 @@ function jQueryLoaded(){
 							permitirValor = true;
 						} else if (fecha != "" && fecha.length < 10 && fecha.charAt(fecha.length-1) != "/"){
 							// INSERTAMOS SEPARADOR SI PROCEDE Y LA TECLA NO ES PERMITIDA. ESTO PERMITE USAR CUALQUIER
-							// TECLA COMO SEPARADOR DE DIA, MES, AÑO
+							// TECLA COMO SEPARADOR DE DIA, MES, Aï¿½O
 							var y = false;
 							var m = false;
 							var d = false;
@@ -1571,7 +1571,7 @@ function jQueryLoaded(){
 				if (false && window == window.top){
 					//DESACTIVAMOS EL DATEPICKER NORMAL PARA QUE TODOS FUNCINEN IGUAL (DIALOG)
 					
-					//console.debug("DATEPICKER: Está en el top, construimos datepicker normal");
+					//console.debug("DATEPICKER: Estï¿½ en el top, construimos datepicker normal");
 					/*
 					jQueryTop(this, this.ownerDocument).datepicker({
 						dateFormat: jQuery(this).data("datepickerformat"),
@@ -1600,7 +1600,7 @@ function jQueryLoaded(){
 					});
 					*/
 				} else {
-					//console.debug("DATEPICKER: NO está en el top, construimos datepicker dialog");
+					//console.debug("DATEPICKER: NO estï¿½ en el top, construimos datepicker dialog");
 					// INSERTAMOS EL BOTON DEL DATEPICKER DESPUES DEL INPUT TEXT
 					jQuery(this).after('<img id="'+jQuery(this).attr("id")+'-datepicker-trigger" class="siga-datepicker-trigger" style="cursor:pointer;" src="/SIGA/html/imagenes/calendar.gif" alt="..." title="...">');
 					var datepickerInput = jQueryTop(this, this.ownerDocument);
@@ -1689,7 +1689,7 @@ function jQueryLoaded(){
 						alert("vContainment: [0,0,"+winW+","+winH+"]");
 						*/
 						
-						// CONFIGURACIÓN DEL DEL MOVIMIENTO DEL DATEPICKER
+						// CONFIGURACIï¿½N DEL DEL MOVIMIENTO DEL DATEPICKER
 						if (jQueryTop("#mainWorkArea").length > 0){
 							jQueryTop(".ui-datepicker-header").css("cursor", "move");
 							jQueryTop("#ui-datepicker-div").draggable({ containment: jQueryTop("#mainWorkArea"), scroll: false});
@@ -1716,7 +1716,7 @@ function jQueryLoaded(){
 								containment: jQueryTop("#main_overlay"),
 								scroll: false,
 								drag: function(e,ui){
-									// ÑAPA QUE ARREGLA EL DIAOLOG EN LAS MODALES
+									// ï¿½APA QUE ARREGLA EL DIAOLOG EN LAS MODALES
 									alert("ui.position.top: " + ui.position.top);
 									jQueryTop('.notice-item-wrapper').remove();
 								}
@@ -1756,7 +1756,7 @@ function jQueryLoaded(){
 			   	            //prev
 			   	        	offset = -1;
 			   	        }
-			   			// COMPROBAMOS SI ES EL AÑO EL QUE TIENE EL FOCO Y POR DEFECTO ASUMIMOS QUE CAMBIA EL MES
+			   			// COMPROBAMOS SI ES EL Aï¿½O EL QUE TIENE EL FOCO Y POR DEFECTO ASUMIMOS QUE CAMBIA EL MES
 			   			if (jQueryTop(this).find("#datepicker-change-year:focus").length > 0)
 			   				type = "Y";
 			   			if (offset != 0){
@@ -1829,7 +1829,7 @@ function jQueryLoaded(){
 							jQuery("#"+jQuery(this).attr("id")+"_disabled").val(optionSelected.text());
 					});
 					
-					//OJO: NO FUNCIONA EN IE AL AÑADIR EL ATTRIBUTO DISABLED/READONLY PERO SI AL ELIMINARLO POR ELLO
+					//OJO: NO FUNCIONA EN IE AL Aï¿½ADIR EL ATTRIBUTO DISABLED/READONLY PERO SI AL ELIMINARLO POR ELLO
 					jQuery(this).attrchange({
 						callback:function(event){
 							tagSelectDivAttrChangeCallback(event, jQuery(this));
@@ -1844,7 +1844,7 @@ function jQueryLoaded(){
 				
 				//PAGINACION
 				if (tagSelect_select.data("paginated")){
-					console.debug("[tagSelect] construyendo paginación...");					
+					console.debug("[tagSelect] construyendo paginaciï¿½n...");					
 					var paginatedDiv = jQuery(this).find("div.tagSelectPaginatedDiv");					
 					var page = tagSelect_select.data("page");
 					var pageSize = tagSelect_select.data("pagesize");
@@ -2035,7 +2035,7 @@ function jQueryLoaded(){
 					//console.debug(tagSelect_select.attr("id") + " NO TIENE HIJOS!");
 				}
 				// Inicializa hijos si hay valor en los padres y no estaba
-				// ya inicializado por TAGSELECT con los parámetros de la request
+				// ya inicializado por TAGSELECT con los parï¿½metros de la request
 				if (tagSelect_select.children().length <= 0){
 					//console.debug(tagSelect_select.attr("id")+" NO TIENE OPTIONS CARGADAS, COMPROBANDO SI HAY QUE INICIALIZARLO...");
 					var parentSelects = jQuery("select[data-childrenIds*='" + tagSelect_select.attr("id")+"']");
@@ -2163,7 +2163,7 @@ function searchPaginatedSelect(paginatedDiv, lastPage, loadNextPageUrl){
 			}
 		} else {
 			jQueryTop.unblockUI();
-			alert("Ningún elemento encontrado por: " + searchText);
+			alert("Ningï¿½n elemento encontrado por: " + searchText);
 		}
 	}
 }
@@ -2206,9 +2206,9 @@ function cargarJqueryUI(){
 		jqueryScript.src = jqueryUIfileUri;
 		var headElement = document.getElementsByTagName("head")[0];
 		headElement.appendChild(jqueryScript);
-		// Se establecen un número máximo de intentos
+		// Se establecen un nï¿½mero mï¿½ximo de intentos
 		// El primer intento espera un segundo y luego hace pool cada 500ms
-		var maxIntentos = 38; // unos 20 segundos como máximo para dar error
+		var maxIntentos = 38; // unos 20 segundos como mï¿½ximo para dar error
 		var intento = 0;
 		var waitForLoad = function () {
 			if (typeof window.jQuery.ui != "undefined") {
@@ -2218,7 +2218,7 @@ function cargarJqueryUI(){
 		    	intento++;
 		        window.setTimeout(waitForLoad, 500);
 		    } else {
-		    	alert("Se ha producido un error al cargar la página, por favor, intentelo de nuevo más tarde...");
+		    	alert("Se ha producido un error al cargar la pï¿½gina, por favor, intentelo de nuevo mï¿½s tarde...");
 		    }
 		};
 		window.setTimeout(waitForLoad, 1000);
@@ -2265,7 +2265,7 @@ function jQueryUILoaded(){
 
         document.getElementsByTagName("head")[0].appendChild(link);
     }
-    // CONFIGURACIÓN POR DEFECTO DE DATEPICKER
+    // CONFIGURACIï¿½N POR DEFECTO DE DATEPICKER
 	if (jQueryTop!=null&&jQueryTop.fn.datepicker){
 		console.debug("[jQueryUILoaded] JQUERY datepicker INI");		
 		
@@ -2281,7 +2281,7 @@ function jQueryUILoaded(){
 			yearRange: "c-100:c+10"
 		});
 	   
-		// Botón Hoy
+		// Botï¿½n Hoy
 	   jQueryTop.datepicker._gotoTodayOriginal = jQueryTop.datepicker._gotoToday;
 	   jQueryTop.datepicker._gotoToday = function(id) {
 		   jQueryTop.datepicker._gotoTodayOriginal.apply(this, [id]);
@@ -2292,7 +2292,7 @@ function jQueryUILoaded(){
 	   var old_fn = jQueryTop.datepicker._updateDatepicker;
 	   jQueryTop.datepicker._updateDatepicker = function(inst) {
 		   var currentDatepicker = jQueryTop(this);
-		   // Botón Borrar
+		   // Botï¿½n Borrar
 		   old_fn.call(this, inst);
 		   var buttonPane = jQueryTop(this).datepicker("widget").find(".ui-datepicker-buttonpane");
 		   var clearText = "Borrar";		   
@@ -2304,7 +2304,7 @@ function jQueryUILoaded(){
 			   jQueryTop.datepicker._clearDate(inst.input);
 	   		});
 		   
-		   // Botones sig/ant año
+		   // Botones sig/ant aï¿½o
 		   var header = jQueryTop(this).datepicker("widget").find(".ui-datepicker-header");
 		   var next = jQueryTop(this).datepicker("widget").find(".ui-datepicker-next");
 		   var prev = jQueryTop(this).datepicker("widget").find(".ui-datepicker-prev");
@@ -2372,7 +2372,7 @@ function jQueryUILoaded(){
 			   jQueryTop.datepicker._updateDatepicker(inst);
 		   });
 		   
-		   // Estilo del botón de hoy activo
+		   // Estilo del botï¿½n de hoy activo
 		   var btnToday = jQueryTop(this).datepicker("widget").find(".ui-datepicker-current");
 		   btnToday.removeClass("ui-priority-secondary");
 		   btnToday.addClass("ui-priority-primary");
@@ -2392,13 +2392,13 @@ function datepickerMaskValueChanged(datepickerInput){
 		if (!date){
 			error = true;
 			datepickerInput.val("");
-			alert("La fecha "+dateValue+" no es válida. Introduzca una fecha válida: " + datepickerInput.data("format"));		
+			alert("La fecha "+dateValue+" no es vï¿½lida. Introduzca una fecha vï¿½lida: " + datepickerInput.data("format"));		
 		} else {
 			var fecha = datepickerInput.val();
 			if (fecha){
-				// LA FECHA HA VALIDADO, RELLENAMOS LOS 0 DE LOS DÍAS Y MESES COMO 
-				// CORRESPONDA. PARA EL AÑO SE RELLENAN LOS DÍGITOS INTRODUCIDOS CON
-				// EL AÑO ACTUAL, EJ: 3 -> 2013, 13 -> 2013, 013 -> 2013
+				// LA FECHA HA VALIDADO, RELLENAMOS LOS 0 DE LOS Dï¿½AS Y MESES COMO 
+				// CORRESPONDA. PARA EL Aï¿½O SE RELLENAN LOS Dï¿½GITOS INTRODUCIDOS CON
+				// EL Aï¿½O ACTUAL, EJ: 3 -> 2013, 13 -> 2013, 013 -> 2013
 				var fechaArray = fecha.split("/");
 				var y = false;
 				var m = false;
@@ -2456,7 +2456,7 @@ function ajaxSubmit(form, iFrame){
 		iFrame.replaceWith("<div data-iframe='true' id="+iFrame.attr("id")+" name="+iFrame.attr("name")+" class="+iFrame.attr("class")+">" + data + "</div>");
 	}).fail(function(jqXHR, textStatus, errorThrown) {
 		console.error("Se ha producido un error al enviar el formulario: " + errorThrown);
-		alert("Se ha producido un error, por favor, inténtelo de nuevo más tarde.");
+		alert("Se ha producido un error, por favor, intï¿½ntelo de nuevo mï¿½s tarde.");
 	}).always(function(data_jqXHR, textStatus, jqXHR_errorThrown) {
 		
 	});
@@ -2480,7 +2480,7 @@ function tagSelectAttrChangeCallback(event, element){
 					console.debug("[tagSelectAttrChangeCallback] ADD CLASS DISABLED TO "+element.attr("id")+"_tagSelectDiv");
 					jQuery("#"+element.attr("id")+"_tagSelectDiv").addClass("disabled");
 					if (window.MutationObserver || window.WebKitMutationObserver){
-						// No hacer nada, se detectará el cambio y se ejecutará tagSelectAttrChangeCallback
+						// No hacer nada, se detectarï¿½ el cambio y se ejecutarï¿½ tagSelectAttrChangeCallback
 					} else {
 						var e = {};
 						e.attributeName = "forceCheckAttr";
@@ -2491,7 +2491,7 @@ function tagSelectAttrChangeCallback(event, element){
 				console.debug("[tagSelectAttrChangeCallback] REMOVE CLASS DISABLED FROM "+element.attr("id")+"_tagSelectDiv");
 				jQuery("#"+element.attr("id")+"_tagSelectDiv").removeClass("disabled");
 				if (window.MutationObserver || window.WebKitMutationObserver){
-					// No hacer nada, se detectará el cambio y se ejecutará tagSelectAttrChangeCallback
+					// No hacer nada, se detectarï¿½ el cambio y se ejecutarï¿½ tagSelectAttrChangeCallback
 				} else {
 					var e = {};
 					e.attributeName = "forceCheckAttr";
@@ -2536,7 +2536,7 @@ function disableTagSelects(oSelects){
 			var oSelect = jQuery(this);
 			oSelect.attr("disabled", true);
 			if (window.MutationObserver || window.WebKitMutationObserver){
-				// No hacer nada, se detectará el cambio y se ejecutará tagSelectAttrChangeCallback
+				// No hacer nada, se detectarï¿½ el cambio y se ejecutarï¿½ tagSelectAttrChangeCallback
 			} else {
 				var tagSelectDiv = jQuery("#"+oSelect.attr("id")+"_tagSelectDiv");
 				tagSelectDiv.addClass("disabled");
@@ -2554,7 +2554,7 @@ function enableTagSelects(oSelects){
 			var oSelect = jQuery(this);
 			oSelect.removeAttr("disabled");
 			if (window.MutationObserver || window.WebKitMutationObserver){
-				// No hacer nada, se detectará el cambio y se ejecutará tagSelectAttrChangeCallback
+				// No hacer nada, se detectarï¿½ el cambio y se ejecutarï¿½ tagSelectAttrChangeCallback
 			} else {
 				var tagSelectDiv = jQuery("#"+oSelect.attr("id")+"_tagSelectDiv");
 				tagSelectDiv.removeClass("disabled");
@@ -2653,8 +2653,8 @@ function tagSelect_search(tagSelect_select, tagSelect_searchBox){
 			
 			if (optionsFound.length > 1){
 				/* Esto soluciona el problema de que se borre el filtro introducido al 
-					perder el foco, seleccionando el primer elemento no vacío como estaba
-					pero es que no se quiere que se seleccione (falta análisis)
+					perder el foco, seleccionando el primer elemento no vacï¿½o como estaba
+					pero es que no se quiere que se seleccione (falta anï¿½lisis)
 				var vSelected = false;
 				optionsFound.each(function() {
 					if (jQuery(this).parent().is("span")){							
@@ -2742,7 +2742,7 @@ function tagSelectLoadNextPage(select, page, callSearch, loadNextPageUrl){
 			
 			var finalURL = "selectData.do?queryId="+select.data("queryid");
 			if (typeof loadNextPageUrl == "undefined"){
-				// parámetros de carga
+				// parï¿½metros de carga
 				var dataObject = {};
 				dataObject = jQuery("select, input").not("*[data-queryparamid], input.tagSelect_disabled, input.tagSelect_searchBox").serializeObject();
 				jQuery("*[data-queryparamid]").each(function(){
@@ -2758,7 +2758,7 @@ function tagSelectLoadNextPage(select, page, callSearch, loadNextPageUrl){
 						try{
 							dataObject[param.key] = param.value || '';
 						} catch (e){
-							console.error("Error al incluir algún parámetro en la carga del select");
+							console.error("Error al incluir algï¿½n parï¿½metro en la carga del select");
 						}
 					});
 				}
@@ -2787,7 +2787,7 @@ function tagSelectLoadNextPage(select, page, callSearch, loadNextPageUrl){
 				console.debug("[tagSelect]" + select.attr("id")+" load page "+page+" FAIL! ERROR: " + errorThrown);
 				//alert("Se ha producido un error al cargar los datos");
 				tagSelectPaginatedDiv.find(".loading").remove();
-				tagSelectPaginatedDiv.find("ul").append("<li class='selectOption loading'><span class='selectOptionText'>Error, inténtelo de nuevo</span></li>");
+				tagSelectPaginatedDiv.find("ul").append("<li class='selectOption loading'><span class='selectOptionText'>Error, intï¿½ntelo de nuevo</span></li>");
 			}).always(function(data_jqXHR, textStatus, jqXHR_errorThrown) {
 				select.data("loadingpage", false);
 				if (tagSelectPaginatedDiv.find("li.notFound").exists()){
@@ -2832,7 +2832,7 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 				dataObject[key] = value || '';
 			}
 			*/
-			// Sobreescribimos el valor siempre aunque exista ya para evitar errores en páginas donde hay más de un formulario y se repiten atributos
+			// Sobreescribimos el valor siempre aunque exista ya para evitar errores en pï¿½ginas donde hay mï¿½s de un formulario y se repiten atributos
 			// atributos
 			dataObject[key] = value || '';
 			console.debug("ADDED queryparamid: " + key + " = " + dataObject[key]);
@@ -2844,7 +2844,7 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 					dataObject[param.key] = param.value || '';
 					console.debug("ADDED param "+ param.key + " = " + dataObject[param.key]);
 				} catch (e){
-					console.error("Error al incluir algún parámetro en la carga del select");
+					console.error("Error al incluir algï¿½n parï¿½metro en la carga del select");
 				}
 			});
 		}
@@ -2889,7 +2889,7 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 				//var start = +new Date();
 				var currentChildId = jQuery(currentChild).attr("id");
 				jQuery(currentChild).html(data);
-				/* FUNCIONA MUCHO MÁS RÁPIDO EN IE PERO SE PIERDEN LOS EVENTOS					
+				/* FUNCIONA MUCHO Mï¿½S Rï¿½PIDO EN IE PERO SE PIERDEN LOS EVENTOS					
 				jQuery(currentChild).empty();
 				var currentChild_loader = jQuery("#"+jQuery(currentChild).attr("id")+"_loader")[0];
 				
@@ -2972,8 +2972,8 @@ var ie = (function(){
     return v> 4 ? v : undef;
 }());
 
-/*  METODO OBLIGATORIO EN EVENTO onLoad DE TODAS LAS PÁGINAS
-	Inicia estilos para todas las páginas que importen este fichero
+/*  METODO OBLIGATORIO EN EVENTO onLoad DE TODAS LAS Pï¿½GINAS
+	Inicia estilos para todas las pï¿½ginas que importen este fichero
     Es necesario definir la hoja de estilos SIGA.css con el atributo ID="default" */
 
 
@@ -2985,7 +2985,7 @@ function alert(message, title, acceptText) {
 	var returnValue = true;
 	if(message){
 		if(!title){
-			title = "Atención";
+			title = "Atenciï¿½n";
 		}
 		if(!acceptText){
 			acceptText = "Aceptar";
@@ -3016,7 +3016,7 @@ function confirm(message, title, acceptText, cancelText) {
 	var returnValue = false;
 	if(message){
 		if(!title){
-			title = "Confirmación";
+			title = "Confirmaciï¿½n";
 		}
 		if(!acceptText){
 			acceptText = "Aceptar";
@@ -3035,7 +3035,7 @@ function confirm(message, title, acceptText, cancelText) {
 */
 
 //Disable right mouse click Script
-var message = "Función Deshabilitada!";
+var message = "Funciï¿½n Deshabilitada!";
 
 var semaforoPestana = true;
 
@@ -3127,17 +3127,17 @@ function initStyles() {
 }
 
 /*
- * Al usar Javascript y referencias directas entre páginas HTML, el prototipo
+ * Al usar Javascript y referencias directas entre pï¿½ginas HTML, el prototipo
  * necesita que los formularios sean de tipo GET, para poder realizar el paso de
- * parámetros entre distintos formularios abiertos en el mismo target. Este
- * método implementa la funcionalidad de obtener un array de dos dimensiones
- * (pares nombre/valor) conteniendo los parámetros que se pasan en una peticion
+ * parï¿½metros entre distintos formularios abiertos en el mismo target. Este
+ * mï¿½todo implementa la funcionalidad de obtener un array de dos dimensiones
+ * (pares nombre/valor) conteniendo los parï¿½metros que se pasan en una peticion
  * get.
  */
 function getFormParameters() {
 	var allArgs = new Array();
 	var counter = 0;
-	// el primer caracter es '?', y lo sustituímos por '&' para la busqueda de
+	// el primer caracter es '?', y lo sustituï¿½mos por '&' para la busqueda de
 	// parametros
 	var argsString = '&' + document.location.search.substring(1);
 	var idx = -1;
@@ -3173,9 +3173,9 @@ function getParameterValue(sName) {
 /* Metodos para imagenes */
 
 /*
- * TNF Función para dejar una imagen asociada a un link activada tras pulsar
- * sobre éste. El link no debe tener atributo class, y cualquier link en la
- * misma página que no lleve imagenes, debe tener algún valor para ese atributo
+ * TNF Funciï¿½n para dejar una imagen asociada a un link activada tras pulsar
+ * sobre ï¿½ste. El link no debe tener atributo class, y cualquier link en la
+ * misma pï¿½gina que no lleve imagenes, debe tener algï¿½n valor para ese atributo
  */
 function activateLink(objLink) {
 	var links = document.getElementsByTagName('a');
@@ -3291,7 +3291,7 @@ function MM_swapImage() { // v3.0
 }
 
 // METODOS PARA CAMBIAR EL TITULO
-// Una o varias funciones aplicadas en cada página seran las encargadas
+// Una o varias funciones aplicadas en cada pï¿½gina seran las encargadas
 // de modificar la linea de navegacion y el titulo en la barra de titulo
 // de la cabecera de las paginas. Esto es, en la pagina main de la aplicacion
 
@@ -3352,27 +3352,27 @@ function ventaModalGeneral(nombreFormulario, tamano, recursoMsg) {
 	if (tamano == "G") {
 		returnValue = showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp" + msg,
 				formulario,
-				"dialogHeight:650px;dialogWidth:1000px;help:no;scroll:no;status:no;");
+				"dialogHeight:700px;dialogWidth:1050px;help:no;scroll:no;status:no;");
 	} else if (tamano == "M") {
 		returnValue = showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp" + msg,
 				formulario,
-				"dialogHeight:440px;dialogWidth:700px;help:no;scroll:no;status:no;");
+				"dialogHeight:490px;dialogWidth:750px;help:no;scroll:no;status:no;");
 	} else if (tamano == "P") {
 		returnValue = showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp" + msg,
 				formulario,
-				"dialogHeight:340px;dialogWidth:500px;help:no;scroll:no;status:no;");
+				"dialogHeight:400px;dialogWidth:550px;help:no;scroll:no;status:no;");
 	} else if (tamano == "S") {
 		returnValue = showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp" + msg,
 				formulario,
-				"dialogHeight:300px;dialogWidth:300px;help:no;scroll:no;status:no;");
+				"dialogHeight:350px;dialogWidth:350px;help:no;scroll:no;status:no;");
 	} else if (tamano == "XS") {
 		returnValue = showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp" + msg,
 				formulario,
-				"dialogHeight:140px;dialogWidth:300px;help:no;scroll:no;status:no;");
+				"dialogHeight:200px;dialogWidth:350px;help:no;scroll:no;status:no;");
 	} else if (tamano == "BT") {
 		returnValue = showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp" + msg,
 				formulario,
-				"dialogHeight:500px;dialogWidth:760px;help:no;scroll:no;status:no;");		
+				"dialogHeight:550px;dialogWidth:810px;help:no;scroll:no;status:no;");		
 	} else if (tamano == "0") {
 		returnValue = showModalDialog(
 				"/SIGA/html/jsp/general/ventanaModal.jsp" + msg,
@@ -3381,7 +3381,7 @@ function ventaModalGeneral(nombreFormulario, tamano, recursoMsg) {
 	} else {
 		returnValue = showModalDialog("/SIGA/html/jsp/general/ventanaModal.jsp" + msg,
 				formulario,
-				"dialogHeight:590px;dialogWidth:1000px;help:no;scroll:no;status:no;");
+				"dialogHeight:640px;dialogWidth:1050px;help:no;scroll:no;status:no;");
 	}
 	
 	//alert("Ventana Modal: returnValue = "+returnValue);	
@@ -4103,11 +4103,11 @@ function getStyle(atributo, clase, css) {
 		}
 	}
 
-	if (theCss.cssRules) // Comprobación de reglas de Estilos en Firefox
+	if (theCss.cssRules) // Comprobaciï¿½n de reglas de Estilos en Firefox
 	{
 		theRules = theCss.cssRules;
 	} else {
-		if (theCss.rules) // Comprobación de reglas de Estilos en Internet
+		if (theCss.rules) // Comprobaciï¿½n de reglas de Estilos en Internet
 							// Explorer
 		{
 			theRules = theCss.rules;
@@ -4170,7 +4170,7 @@ function ajusteAltoDisplayTag(nObj) {
 			}
 		}
 
-		// el 5 es un ajuste que me saco de la manga, mas o menos, habrá que
+		// el 5 es un ajuste que me saco de la manga, mas o menos, habrï¿½ que
 		// terminar de calcular bien el tamanyo, teneiendo en cuenta
 		// los margenes, paddings y demas
 		var cont = height - obj.offsetTop - (2 * contHermanos) - 5;
@@ -4545,8 +4545,8 @@ function isSWIFTValido(swift){
 	return true; 
 }
 
-// JBD // ¿Por que has quitado esto BNS? No funciona nada en chrome si lo quitas porque el tag html:text no crea id, solo name 
-// BNS porque daba errores de llenado de pila de llamadas en chrome e IE y como esta funcionalidad te la da jquery sin sobrescribir un método de document creía que ya no se estaba usando...
+// JBD // ï¿½Por que has quitado esto BNS? No funciona nada en chrome si lo quitas porque el tag html:text no crea id, solo name 
+// BNS porque daba errores de llenado de pila de llamadas en chrome e IE y como esta funcionalidad te la da jquery sin sobrescribir un mï¿½todo de document creï¿½a que ya no se estaba usando...
 document._oldGetElementById = document.getElementById;
 document.getElementById = function(elemIdOrName) {
     var result = document._oldGetElementById(elemIdOrName);
@@ -4589,7 +4589,7 @@ document.getElementById = function(elemIdOrName) {
 				    		   select.bind("DOMAttrModified", function(event){disableSelect(jQuery(this));});
 				    		   //alert("voy por DOMAttrModified");
 			    	   } else {
-			    		   // No hay forma de detectar la modificación del atributo
+			    		   // No hay forma de detectar la modificaciï¿½n del atributo
 			    	   }
 					}
 				}	            
@@ -4655,7 +4655,7 @@ document.getElementById = function(elemIdOrName) {
 	
 	function scrolify(tblAsJQueryObject, height) {
 		//console.debug("scrolify TableId"+tblAsJQueryObject.attr("id")+" height: " + height);
-		/* CONTROL DE NÚMERO DE CABECERAS/COLUMNAS DATOS
+		/* CONTROL DE Nï¿½MERO DE CABECERAS/COLUMNAS DATOS
 		var numRows = parseInt(tblAsJQueryObject.find('tbody tr').length);
 		var numHeaders = parseInt(tblAsJQueryObject.find('thead th').length);
 		var numCells = parseInt(tblAsJQueryObject.find('tbody td').length);
@@ -4666,7 +4666,7 @@ document.getElementById = function(elemIdOrName) {
 			while((numRows * (numHeaders + addHeader)) < numCells){
 				addHeader++;
 			}
-			//console.log("scrolify AÑADO "+addHeader+" CABECERAS VACÍAS");
+			//console.log("scrolify Aï¿½ADO "+addHeader+" CABECERAS VACï¿½AS");
 			for (var i = 0; i < addHeader; i++)
 				tblAsJQueryObject.find('thead').append("<th></th>");
 		}		
@@ -4689,7 +4689,7 @@ document.getElementById = function(elemIdOrName) {
         // height and overflow property  
         var oTblDiv = jQuery("<div id='"+tblId+"_BodyDiv'/>");
         //console.debug(tblId+"_BodyDiv height: " + height);
-        //BNS: NO TENÍA EN CUENTA LA ALTURA DE LA CABECERA PARA EL CÁLCULO DE LA ALTURA DEL CUERPO
+        //BNS: NO TENï¿½A EN CUENTA LA ALTURA DE LA CABECERA PARA EL Cï¿½LCULO DE LA ALTURA DEL CUERPO
         oTblDiv.css('height', height - oTbl.find("thead").height());
         oTblDiv.css('overflow-y', 'auto');
         oTblDiv.css('overflow-x', 'hidden');
@@ -4793,10 +4793,10 @@ document.getElementById = function(elemIdOrName) {
 				} else {
 					tableContainer = jQuery(tableContainer);
 				}
-				// En ventanaModal debe de cargarse el iframe después de la inicialización por lo que
-				// el tamaño del conteneder (iframe id="modal") es de 5 cosa que luego no se cumple...
+				// En ventanaModal debe de cargarse el iframe despuï¿½s de la inicializaciï¿½n por lo que
+				// el tamaï¿½o del conteneder (iframe id="modal") es de 5 cosa que luego no se cumple...
 				// como estos casos son una tabla cuyo padre directamente es el iframe modal podemos
-				// tomar como altura el tamaño de la ventana modal.
+				// tomar como altura el tamaï¿½o de la ventana modal.
 				if (tableContainer != null && tableContainer.attr("id") == "modal" && tableContainer.height() < 20){
 					console.debug("[loadFixedHeaderTables] AJUSTE MODAL (window height)");
 					var winW = 630, winH = 460;
@@ -4839,8 +4839,8 @@ document.getElementById = function(elemIdOrName) {
 						//alert("buscando en parent..." + parentElement);
 					}				
 				}
-	        	// Buscamos paginación
-				//alert("Buscamos paginación ...");
+	        	// Buscamos paginaciï¿½n
+				//alert("Buscamos paginaciï¿½n ...");
 				var clonarTablaPaginacion = true;
 	        	var tablaPaginacion = undefined;
 				if (jQuery('div.tPaginatorDiv').length > 0){
@@ -5196,7 +5196,7 @@ function formateaMask(strValue)
 
 }
 
-/* CR7 - Funcion que suma 'X' dias a una fecha (formato dd/mm/yyyy) pasada por parámetros */
+/* CR7 - Funcion que suma 'X' dias a una fecha (formato dd/mm/yyyy) pasada por parï¿½metros */
 function sumarDias(fechaInput,dias){ 
 	
 	//Si pasamos el primer parametro vacio, tomamos como referencia el dia actual
