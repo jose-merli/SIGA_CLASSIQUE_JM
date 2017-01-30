@@ -336,6 +336,104 @@
 					</table>
 				</siga:ConjCampos>
 		<!-- FIN Datos en GENERAL -->
+					
+		<!-- INI Colegiaciones diferentes -->
+				
+				<c:choose>
+				<c:when test="${empty datos.datosColegiales}">
+					<c:set var="existeColegiacionesDiferentes" value="false"/>
+				</c:when>
+				<c:otherwise>		
+					<c:set var="existeColegiacionesDiferentes" value="true"/>
+				<br/>
+				<siga:ConjCampos leyenda="Colegiaciones diferentes" desplegable="true" oculto="true" postFunction="pulsarColegiacionesDiferentes()">
+ 					<table width="100%">
+					<tr>
+						<!-- Etiquetas de campos -->
+ 						<td width="26%">
+							<table>
+								<tr>
+									<td class="labelText"> 
+										<siga:Idioma key="Colegio"/> 
+										| Num. col. 
+										| Fecha Inc. <!-- <siga:Idioma key="Fecha Incorporación"/> -->
+ 									</td>
+								</tr>
+								
+								<tr>
+									<td class="labelText"> 
+										Situación colegial
+									</td>
+								</tr>
+								
+								<tr>
+									<td>
+										&nbsp;
+									</td>
+								</tr>
+							</table>
+						</td>
+						
+						<c:forEach items="${datos.datosColegiales}" var="datosCliente" varStatus="status">
+ 						<td width="37%">
+							<table>
+								<c:forEach items="${datosCliente}" var="datosCol"  varStatus="status">
+								<tr>
+									<td class="labelText">
+										<c:out value="${datosCol.datosColegio.institucionColegiacion}"/> 
+										<c:if test="${datosCol.datosColegio.fechaProduccion!=null && datosCol.datosColegio.fechaProduccion!=''}">
+											<b>(autogestión)</b>
+										</c:if>
+										
+										| <b><c:out value="${datosCol.datosColegiacion.numCol}"/></b>
+										
+										| <c:out value="${datosCol.datosColegiacion.fechaIncorporacion}"/>
+									</td>
+								</tr>
+								
+								<tr>
+									<td class="labelText">
+										<c:choose>
+											<c:when test="${datosCol.datosColegiacion.situacionResidente=='1'}">
+												<c:out value="Residente"/>
+											</c:when>
+											<c:when test="${datosCol.datosColegiacion.situacionResidente=='0'}">
+												<c:out value="No Residente"/>
+											</c:when>
+										</c:choose>
+										
+										<c:if test="${datosCol.datosColegiacion.comunitario=='1'}">
+											<b><c:out value="Inscrito"/></b> &nbsp;
+										</c:if>
+										
+										<c:choose>
+											<c:when test="${datosCol.estadoColegiacion != null}">
+											| <c:out value="${datosCol.estadoColegiacion.row.DESCRIPCION}"/>
+												desde <c:out value="${datosCol.estadoColegiacion.row.FECHAESTADO_SPANISH}"/>
+											</c:when>
+											<c:when test="${datosCol.datosColegiacion.comunitario != null}">
+												<i>[<strike>estado colegial</strike>]</i>
+											</c:when>
+										</c:choose>
+									</td>
+								</tr>
+								
+								<tr>
+									<td>
+										&nbsp;
+									</td>
+								</tr>															
+								</c:forEach>
+							</table>
+						</td>
+						</c:forEach>
+						
+					</tr>
+					</table>
+				</siga:ConjCampos>
+				</c:otherwise>		
+				</c:choose>
+		<!-- FIN Colegiaciones diferentes -->
 				
 		<!-- INI Colegiaciones iguales -->
 				<c:choose>
@@ -363,7 +461,7 @@
 								<table>
 									<tr>
 										<td class="labelText">
-											Num. col. | Fecha Inc. | Resid. e Inscr.
+											Colegio | Num. col. | Fecha Inc. | Resid. e Inscr.
 										</td>
 									</tr>
 								</table>
@@ -374,6 +472,8 @@
 								<table>
 									<tr>
 										<td class="labelText" colspan="3">
+											${institucionColegiacion} | 
+											
 											<b><c:out value="${datosCol.numCol}"/></b> |
 											
 											<c:out value="${datosCol.fechaIncorporacion}"/> |
@@ -652,104 +752,6 @@
 				</c:otherwise>		
 				</c:choose>		
 		<!-- FIN Colegiaciones iguales -->
-					
-		<!-- INI Colegiaciones diferentes -->
-				
-				<c:choose>
-				<c:when test="${empty datos.datosColegiales}">
-					<c:set var="existeColegiacionesDiferentes" value="false"/>
-				</c:when>
-				<c:otherwise>		
-					<c:set var="existeColegiacionesDiferentes" value="true"/>
-				<br/>
-				<siga:ConjCampos leyenda="Colegiaciones diferentes" desplegable="true" oculto="true" postFunction="pulsarColegiacionesDiferentes()">
- 					<table width="100%">
-					<tr>
-						<!-- Etiquetas de campos -->
- 						<td width="26%">
-							<table>
-								<tr>
-									<td class="labelText"> 
-										<siga:Idioma key="Colegio"/> 
-										| Num. col. 
-										| Fecha Inc. <!-- <siga:Idioma key="Fecha Incorporación"/> -->
- 									</td>
-								</tr>
-								
-								<tr>
-									<td class="labelText"> 
-										Situación colegial
-									</td>
-								</tr>
-								
-								<tr>
-									<td>
-										&nbsp;
-									</td>
-								</tr>
-							</table>
-						</td>
-						
-						<c:forEach items="${datos.datosColegiales}" var="datosCliente" varStatus="status">
- 						<td width="37%">
-							<table>
-								<c:forEach items="${datosCliente}" var="datosCol"  varStatus="status">
-								<tr>
-									<td class="labelText">
-										<c:out value="${datosCol.datosColegio.institucionColegiacion}"/> 
-										<c:if test="${datosCol.datosColegio.fechaProduccion!=null && datosCol.datosColegio.fechaProduccion!=''}">
-											<b>(autogestión)</b>
-										</c:if>
-										
-										| <b><c:out value="${datosCol.datosColegiacion.numCol}"/></b>
-										
-										| <c:out value="${datosCol.datosColegiacion.fechaIncorporacion}"/>
-									</td>
-								</tr>
-								
-								<tr>
-									<td class="labelText">
-										<c:choose>
-											<c:when test="${datosCol.datosColegiacion.situacionResidente=='1'}">
-												<c:out value="Residente"/>
-											</c:when>
-											<c:when test="${datosCol.datosColegiacion.situacionResidente=='0'}">
-												<c:out value="No Residente"/>
-											</c:when>
-										</c:choose>
-										
-										<c:if test="${datosCol.datosColegiacion.comunitario=='1'}">
-											<b><c:out value="Inscrito"/></b> &nbsp;
-										</c:if>
-										
-										<c:choose>
-											<c:when test="${datosCol.estadoColegiacion != null}">
-											| <c:out value="${datosCol.estadoColegiacion.row.DESCRIPCION}"/>
-												desde <c:out value="${datosCol.estadoColegiacion.row.FECHAESTADO_SPANISH}"/>
-											</c:when>
-											<c:when test="${datosCol.datosColegiacion.comunitario != null}">
-												<i>[<strike>estado colegial</strike>]</i>
-											</c:when>
-										</c:choose>
-									</td>
-								</tr>
-								
-								<tr>
-									<td>
-										&nbsp;
-									</td>
-								</tr>															
-								</c:forEach>
-							</table>
-						</td>
-						</c:forEach>
-						
-					</tr>
-					</table>
-				</siga:ConjCampos>
-				</c:otherwise>		
-				</c:choose>
-		<!-- FIN Colegiaciones diferentes -->
 				
 		<!-- INI Direcciones en GENERAL -->
 				<br/>
