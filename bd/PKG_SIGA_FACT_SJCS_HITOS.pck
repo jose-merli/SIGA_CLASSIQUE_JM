@@ -838,7 +838,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACT_SJCS_HITOS IS
                 AND IDGUARDIA = V_IDGUARDIA
                 AND NVL(VALIDADO, '0') = '1' -- validadas
                 AND TRUNC(NVL(FECHAVALIDACION, FECHAINICIO)) BETWEEN TRUNC(V_FECHAFACTURACIONDESDE) AND TRUNC(V_FECHAFACTURACIONHASTA) -- dentro del rango de fechas de la facturacion
-                AND NOT EXISTS ( -- sin facturar
+                AND NOT EXISTS ( -- NO FACTURADO
                     SELECT 1
                     FROM FCS_FACT_APUNTE FAC_CG
                     WHERE CG.IDINSTITUCION = FAC_CG.IDINSTITUCION
@@ -847,7 +847,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACT_SJCS_HITOS IS
                         AND CG.IDPERSONA = FAC_CG.IDPERSONA
                         AND CG.FECHAINICIO = FAC_CG.FECHAINICIO
                 )
-            UNION ALL
+            UNION -- ALL - Puede darse el caso de tener cabeceras no facturadas iguales, que es necesario por si no se facturo algo, pero si en el futuro se justifico
             -- CG con actuaciones (que no son de fuera de guardia) justificadas en el rango del ciclo de facturacion
             SELECT IDPERSONA,
                    FECHAINICIO,
@@ -3324,7 +3324,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACT_SJCS_HITOS IS
                 
                 IF (R_TP.IMPORTE_FACTURADO_TP = -1) THEN
                     -- En la facturacion antigua no tenia TP los identificadores necesarios para encontrar el importe de cada tipo
-                    -- Hay que a񡤩r al importe actual, el acumulado pasado, para que funcione para el futuro
+                    -- Hay que anyadir al importe actual, el acumulado pasado, para que funcione para el futuro
                     -- Saldra un valor raro en TP, pero no se debe acumular para CG 
                     V_IMPORTE_TP := V_IMPORTE_TP + V_IMPORTEFACTURADO_AS_TP;
                 END IF;                                                         
@@ -3604,7 +3604,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACT_SJCS_HITOS IS
                 
                 IF (R_TP.IMPORTE_FACTURADO_TP = -1) THEN
                     -- En la facturacion antigua no tenia TP los identificadores necesarios para encontrar el importe de cada tipo
-                    -- Hay que a񡤩r al importe actual, el acumulado pasado, para que funcione para el futuro
+                    -- Hay que anyadir al importe actual, el acumulado pasado, para que funcione para el futuro
                     -- Saldra un valor raro en TP, pero no se debe acumular para CG 
                     V_IMPORTE_TP := V_IMPORTE_TP + V_IMPORTEFACTURADO_AC_TP;
                 END IF;                  
@@ -5015,7 +5015,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACT_SJCS_HITOS IS
                 
                 IF (R_TP.IMPORTE_FACTURADO_TP = -1) THEN
                     -- En la facturacion antigua no tenia TP los identificadores necesarios para encontrar el importe de cada tipo
-                    -- Hay que a񡤩r al importe actual, el acumulado pasado, para que funcione para el futuro
+                    -- Hay que anyadir al importe actual, el acumulado pasado, para que funcione para el futuro
                     -- Saldra un valor raro en TP, pero no se debe acumular para CG 
                     V_IMPORTE_TP := V_IMPORTE_TP + V_IMPORTEFACTURADO_AC_TP;
                 END IF;  
