@@ -76,3 +76,4 @@ Cambios en Pkg_Siga_Fusion_Personas
 
 -- Ejecutado en Integracion por AAG el 30/01 a las 12:55
 
+Modificado PKG_SIGA_FACTURACION_SJCS;
