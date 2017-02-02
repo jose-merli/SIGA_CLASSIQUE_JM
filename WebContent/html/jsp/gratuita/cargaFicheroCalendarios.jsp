@@ -134,7 +134,7 @@
 				return;
 			}	
 			
-			if(compararFecha(document.DefinirCalendarioGuardiaForm.fechaInicio.value,document.DefinirCalendarioGuardiaForm.fechaFin.value) < 2){
+			if(compararFecha(document.DefinirCalendarioGuardiaForm.fechaInicio.value,document.DefinirCalendarioGuardiaForm.fechaFin.value) == 1){
 				error = "<siga:Idioma key='messages.fechas.rangoFechas'/>";
 				alert(error);
 				fin();
