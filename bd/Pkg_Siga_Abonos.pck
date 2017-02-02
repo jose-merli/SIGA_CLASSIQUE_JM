@@ -591,6 +591,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_sepa OUT DBMS_XMLDOM.DOMDocument,
         l_CstmrCdtTrfInitn_node OUT DBMS_XMLDOM.DomNode,
         v_Ordenante IN Reg_Ordenante,
+        p_Idioma In Adm_Lenguajes.Idlenguaje%Type,
         p_CodRetorno OUT VARCHAR2,
         p_DatosError OUT VARCHAR2
     ) IS
@@ -639,28 +640,20 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_GrpHdr_node := DBMS_XMLDOM.appendChild(l_CstmrCdtTrfInitn_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'GrpHdr')));
 
         -- 1.1 [1..1] ++ Identificacion del mensaje <MsgId> 35 - Localizacion /Document/CstmrCdtTrfInitn/GrpHdr/MsgId
-        v_Datoserror := 'Generando fichero de transferencias: CabOrdenanteXML (/Document/CstmrCdtTrfInitn/GrpHdr/MsgId)';
-        If (v_Ordenante.Idinstitucion Is Null Or v_Ordenante.Iddisqueteabono Is Null) Then
-            v_Datoserror := v_Datoserror || ': faltan datos de identificacion del fichero bancario';
-            Raise e_error;
-        End If;
+        v_Datoserror := 'CabOrdenanteXML: Creo Nodo GrpHdr (Cabecera) - Localización /Document/CstmrCdtTrfInitn/GrpHdr/MsgId';
         v_IdMensaje := F_RevisarCaracteresSEPA (NVL(TRIM(v_Ordenante.Idinstitucion), ' ') || NVL(TRIM(v_Ordenante.Iddisqueteabono), ' ') || '001'); --MsgId - Identificacion del mensaje
-        If (trim(v_IdMensaje) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en la identificacion del fichero bancario';
-            Raise e_error;
-        End If;
         l_MsgId_node := DBMS_XMLDOM.appendChild(l_GrpHdr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'MsgId')));
         dummy := DBMS_XMLDOM.appendChild(l_MsgId_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, v_IdMensaje)));
 
         -- 1.2 [1..1] ++ Fecha y hora de creacion <CreDtTm> 19 - Localizacion /Document/CstmrCdtTrfInitn/GrpHdr/CreDtTm
-        v_Datoserror := 'Generando fichero de transferencias: CabOrdenanteXML (/Document/CstmrCdtTrfInitn/GrpHdr/CreDtTm)';
+        v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.xml.cabecera', p_Idioma);
         If (v_Ordenante.Fechacreacion Is Null) Then
-            v_Datoserror := v_Datoserror || ': falta la fecha de creación del fichero bancario';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.fechaCreacion', p_Idioma);
             Raise e_error;
         End If;
         v_FechaCreacion := to_char(v_Ordenante.Fechacreacion,'YYYY-MM-DD')||'T00:00:00'; --CreDtTm - Fecha y hora de creacion
         If (trim(v_FechaCreacion) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en la fecha de creación del fichero bancario';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.fechaCreacion', p_Idioma);
             Raise e_error;
         End If;
         l_CreDtTm_node := DBMS_XMLDOM.appendChild(l_GrpHdr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'CreDtTm')));
@@ -681,18 +674,12 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_InitgPty_node := DBMS_XMLDOM.appendChild(l_GrpHdr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'InitgPty')));
 
         -- 1.8 [0..1] +++ Nombre <Nm> 70 - Localizacion /Document/CstmrCdtTrfInitn/GrpHdr/InitgPty/Nm
-        v_Datoserror := 'Generando fichero de transferencias: CabOrdenanteXML (/Document/CstmrCdtTrfInitn/GrpHdr/InitgPty/Nm)';
-        If (v_Ordenante.Nombre Is Null) Then
-            v_Datoserror := v_Datoserror || ': faltan datos de identificación del fichero bancario';
-            Raise e_error;
-        End If;
+        v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.xml.cabecera', p_Idioma);
         v_NombreOrdenante := F_RevisarCaracteresSEPA(Nvl(SUBSTR(TRIM(v_Ordenante.Nombre),1,70), ' ')); --Nm - Nombre
-        If (trim(v_NombreOrdenante) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en la identificación del fichero bancario';
-            Raise e_error;
+        If (trim(v_NombreOrdenante) Is Not Null) Then
+          l_Nm_node := DBMS_XMLDOM.appendChild(l_InitgPty_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Nm')));
+          dummy := DBMS_XMLDOM.appendChild(l_Nm_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, v_NombreOrdenante)));
         End If;
-        l_Nm_node := DBMS_XMLDOM.appendChild(l_InitgPty_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Nm')));
-        dummy := DBMS_XMLDOM.appendChild(l_Nm_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, v_NombreOrdenante)));
 
         -- 1.8 [0..1] +++ Identificacion <Id> - Localizacion /Document/CstmrCdtTrfInitn/GrpHdr/InitgPty/Id
         v_Datoserror := 'CabOrdenanteXML: Creo Nodo Id (Identificación) - Localización /Document/CstmrCdtTrfInitn/GrpHdr/InitgPty/Id';
@@ -707,14 +694,18 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_Othr_node := DBMS_XMLDOM.appendChild(l_OrgId_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Othr')));
 
         -- [1..1] ++++++ Identificacion <Id> 35 - Localizacion /Document/CstmrCdtTrfInitn/GrpHdr/InitgPty/Id/OrgId/Othr/Id
-        v_Datoserror := 'Generando fichero de transferencias: CabOrdenanteXML (/Document/CstmrCdtTrfInitn/GrpHdr/InitgPty/Id/OrgId/Othr/Id)';
-        If (v_Ordenante.Cif Is Null Or v_Ordenante.Sufijo Is Null) Then
-            v_Datoserror := v_Datoserror || ': falta CIF y/o Sufijo del ordenante';
+        v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.xml.cabecera', p_Idioma);
+        If (v_Ordenante.Cif Is Null) Then
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.cifColegio', p_Idioma);
+            Raise e_error;
+        End If;
+        If (v_Ordenante.Sufijo Is Null) Then
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.sufijo', p_Idioma);
             Raise e_error;
         End If;
         v_IdOrdenante := F_RevisarCaracteresSEPA(TRIM(v_Ordenante.Cif) || Lpad(v_Ordenante.Sufijo, 3, '0'));--Id - Identificacion
         If (trim(v_IdOrdenante) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en CIF y/o Sufijo del ordenante';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.cifOsufijo.caracteresNoValidos', p_Idioma);
             Raise e_error;
         End If;
         l_Id2_node := DBMS_XMLDOM.appendChild (l_Othr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Id')));
@@ -754,6 +745,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_CstmrCdtTrfInitn_node IN DBMS_XMLDOM.DomNode,
         l_PmtInf_node OUT DBMS_XMLDOM.DomNode,
         v_Ordenante IN Reg_Ordenante,
+        p_Idioma In Adm_Lenguajes.Idlenguaje%Type,
         p_CodRetorno OUT VARCHAR2,
         p_DatosError OUT VARCHAR2
     ) IS
@@ -807,15 +799,8 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_PmtInf_node := DBMS_XMLDOM.appendChild(l_CstmrCdtTrfInitn_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'PmtInf')));
 
         -- 2.1 [1..1] ++ Identificacion de la informacion del pago <PmtInfId> 35 - Localizacion /Document/CstmrCdtTrfInitn/PmtInf/PmtInfId
-        If (v_Ordenante.Idinstitucion Is Null Or v_Ordenante.Iddisqueteabono Is Null) Then
-            v_Datoserror := v_Datoserror || ': faltan datos de identificacion del fichero bancario';
-            Raise e_error;
-        End If;
+        v_Datoserror := 'BloqueOrdenateXML: Creo Nodo PmtInfId (Identificacion de la Información del pago) - Localización /Document/CstmrCdtTrfInitn/PmtInf/PmtInfId';
         v_IdPago := F_RevisarCaracteresSEPA (v_Ordenante.Idinstitucion || v_Ordenante.Iddisqueteabono || '001'); --l_PmtInfId_textnode - Identificacion de la informacion del pago
-        If (trim(v_IdPago) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en la identificacion del fichero bancario';
-            Raise e_error;
-        End If;
         l_PmtInfId_node := DBMS_XMLDOM.appendChild(l_PmtInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'PmtInfId')));
         dummy := DBMS_XMLDOM.appendChild(l_PmtInfId_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, v_IdPago))); 
 
@@ -835,14 +820,14 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         dummy := DBMS_XMLDOM.appendChild(l_CtrlSum_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, '0')));
 
         -- 2.17 [1..1] ++ Fecha de ejecución solicitada   <ReqdExctnDt> 10 - Localizacion /Document/CstmrCdtTrfInitn/PmtInf/ReqdExctnDt
-        v_Datoserror := 'Generando fichero de transferencias: BloqueOrdenanteXML (/Document/CstmrCdtTrfInitn/PmtInf/ReqdExctnDt)';
+        v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.xml.ordenante', p_Idioma);
         If (v_Ordenante.Fechaejecucion Is Null) Then
-            v_Datoserror := v_Datoserror || ': falta la fecha de ejecución del pago';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.fechaEjecucion', p_Idioma);
             Raise e_error;
         End If;
         v_FechaPago := Nvl(to_char(v_Ordenante.Fechaejecucion,'YYYY-MM-DD'), '0'); --l_ReqdExctnDt_textnode - Fecha de cobro
         If (trim(v_FechaPago) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en la fecha de ejecución del pago';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.fechaEjecucion', p_Idioma);
             Raise e_error;
         End If;
         l_ReqdExctnDt_node := DBMS_XMLDOM.appendChild(l_PmtInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'ReqdExctnDt')));
@@ -853,16 +838,8 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_Dbtr_node := DBMS_XMLDOM.appendChild(l_PmtInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Dbtr')));
 
         -- 2.19 [0..1] +++ Nombre <Nm> 70 - Localizacion /Document/CstmrCdtTrfInitn/PmtInf/Dbtr/Nm
-        v_Datoserror := 'Generando fichero de transferencias: BloqueOrdenanteXML (/Document/CstmrCdtTrfInitn/PmtInf/Dbtr/Nm)';
-        If (v_Ordenante.Nombre Is Null) Then
-            v_Datoserror := v_Datoserror || ': faltan datos de identificación del fichero bancario';
-            Raise e_error;
-        End If;
+        v_Datoserror := 'BloqueOrdenateXML: Creo Nodo Nm (Nm) - Localización /Document/CstmrCdtTrfInitn/PmtInf/Dbtr/Nm';
         v_NomOrdenante := F_RevisarCaracteresSEPA(Nvl(v_Ordenante.NOMBRE, ' ')); --l_Nm_textnode - Nombre
-        If (trim(v_NomOrdenante) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en la identificación del fichero bancario';
-            Raise e_error;
-        End If;
         l_Nm_node := DBMS_XMLDOM.appendChild(l_Dbtr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Nm')));
         dummy := DBMS_XMLDOM.appendChild(l_Nm_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, v_NomOrdenante)));
 
@@ -871,28 +848,28 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_PstlAdr_node := DBMS_XMLDOM.appendChild(l_Dbtr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'PstlAdr')));
 
         -- 2.19 [0..1] ++++ Pais <Ctry> 2 - Localizacion /Document/CstmrCdtTrfInitn/PmtInf/Dbtr/PstlAdr/Ctry
-        v_Datoserror := 'Generando fichero de transferencias: BloqueOrdenanteXML (/Document/CstmrCdtTrfInitn/PmtInf/Dbtr/PstlAdr/Ctry)';
+        v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.xml.ordenante', p_Idioma);
         If (v_Ordenante.DIRECCION.PAIS_ISO Is Null) Then
-            v_Datoserror := v_Datoserror || ': faltan datos de la dirección del colegio';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.direccion', p_Idioma);
             Raise e_error;
         End If;
         v_CodPais := F_RevisarCaracteresSEPA(NVL(v_Ordenante.DIRECCION.PAIS_ISO, ' ')); --l_Ctry_textnode - Pais
         If (trim(v_CodPais) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en datos de la dirección del colegio';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.direccion.caracteresNoValidos', p_Idioma);
             Raise e_error;
         End If;
         l_Ctry_node := DBMS_XMLDOM.appendChild(l_PstlAdr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Ctry')));
         dummy := DBMS_XMLDOM.appendChild(l_Ctry_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, v_CodPais)));
 
         -- 2.19 [0..2] ++++ Direccion en texto libre <AdrLine> 70 - Localizacion /Document/CstmrCdtTrfInitn/PmtInf/Dbtr/PstlAdr/AdrLine
-        v_Datoserror := 'Generando fichero de transferencias: BloqueOrdenanteXML (/Document/CstmrCdtTrfInitn/PmtInf/Dbtr/PstlAdr/AdrLine)';
+        v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.xml.ordenante', p_Idioma);
         If (v_Ordenante.DIRECCION.DOMICILIO Is Null) Then
-            v_Datoserror := v_Datoserror || ': faltan datos de la dirección del colegio';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.direccion', p_Idioma);
             Raise e_error;
         End If;
         v_Direccion := F_RevisarCaracteresSEPA(NVL(SUBSTR(v_Direccion_Total,1,70), ' ')); --l_AdrLine_textnode - Direccion1
         If (trim(v_Direccion) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en datos de la dirección del colegio';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.direccion.caracteresNoValidos', p_Idioma);
             Raise e_error;
         End If;
         l_AdrLine_node := DBMS_XMLDOM.appendChild(l_PstlAdr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'AdrLine')));
@@ -918,14 +895,18 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_Othr_node := DBMS_XMLDOM.appendChild(l_OrgId_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Othr')));
 
         -- 2.19 [1..1] ++++++ Identificacion <Id> 35 - Localizacion /Document/CstmrCdtTrfInitn/PmtInf/Dbtr/Id/OrgId/Othr/Id
-        v_Datoserror := 'Generando fichero de transferencias: BloqueOrdenanteXML (/Document/CstmrCdtTrfInitn/PmtInf/Dbtr/Id/OrgId/Othr/Id)';
-        If (v_Ordenante.Cif Is Null Or v_Ordenante.Sufijo Is Null) Then
-            v_Datoserror := v_Datoserror || ': falta CIF y/o Sufijo';
+        v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.xml.ordenante', p_Idioma);
+        If (v_Ordenante.Cif Is Null) Then
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.cifColegio', p_Idioma);
+            Raise e_error;
+        End If;
+        If (v_Ordenante.Sufijo Is Null) Then
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.sufijo', p_Idioma);
             Raise e_error;
         End If;
         v_Identificacion := F_RevisarCaracteresSEPA(TRIM(v_Ordenante.Cif) || Lpad(v_Ordenante.Sufijo, 3, '0')); --l_Id_textnode - Identificacion
         If (trim(v_Identificacion) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en CIF y/o Sufijo';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.cifOsufijo.caracteresNoValidos', p_Idioma);
             Raise e_error;
         End If;
         l_Id2_node := DBMS_XMLDOM.appendChild(l_Othr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Id')));
@@ -940,14 +921,14 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_Id3_node := DBMS_XMLDOM.appendChild(l_DbtrAcct_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Id')));
 
         -- 2.20 [1..1] ++++ IBAN <IBAN> 34 - Localizacion /Document/CstmrCdtTrfInitn/PmtInf/DbtrAcct/Id/IBAN
-        v_Datoserror := 'Generando fichero de transferencias: BloqueOrdenanteXML (/Document/CstmrCdtTrfInitn/PmtInf/DbtrAcct/Id/IBAN)';
+        v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.xml.ordenante', p_Idioma);
         If (v_Ordenante.BANCO_IBAN Is Null) Then
-            v_Datoserror := v_Datoserror || ': falta cuenta del colegio';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.cuentaColegio', p_Idioma);
             Raise e_error;
         End If;
         v_Iban := F_RevisarCaracteresSEPA(NVL(TRIM(v_Ordenante.BANCO_IBAN), ' ')); --l_IBAN_textnode - IBAN
         If (trim(v_Iban) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en cuenta del colegio';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.cuentaColegio.caracteresNoValidos', p_Idioma);
             Raise e_error;
         End If;
         l_IBAN_node := DBMS_XMLDOM.appendChild(l_Id3_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'IBAN')));
@@ -962,14 +943,14 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_FinInstnId_node := DBMS_XMLDOM.appendChild(l_DbtrAgt_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'FinInstnId')));
 
         -- 2.21 [0..1] ++++ BIC <BIC> 11 - Localizacion /Document/CstmrCdtTrfInitn/PmtInf/DbtrAgt/FinInstnId/BIC
-        v_Datoserror := 'Generando fichero de transferencias: BloqueOrdenanteXML (/Document/CstmrCdtTrfInitn/PmtInf/DbtrAgt/FinInstnId/BIC)';
+        v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.xml.ordenante', p_Idioma);
         If (v_Ordenante.Banco_Bic Is Null) Then
-            v_Datoserror := v_Datoserror || ': falta BIC de la cuenta del colegio';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.bicColegio', p_Idioma);
             Raise e_error;
         End If;
         v_Bic := F_RevisarCaracteresSEPA(NVL(TRIM(v_Ordenante.Banco_Bic), ' '));--F_RevisarCaracteresSEPA(NVL(TRIM(v_Ordenante.BANCO_BIC), ' ')); --l_BIC_textnode - BIC
         If (trim(v_Bic) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en BIC de la cuenta del colegio';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.bicColegio.caracteresNoValidos', p_Idioma);
             Raise e_error;
         End If;
         l_BIC_node := DBMS_XMLDOM.appendChild(l_FinInstnId_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'BIC')));
@@ -1012,6 +993,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_PmtInf_node IN DBMS_XMLDOM.DomNode,
         v_Abonosdisquete IN Reg_Abonos,
         v_Contador IN NUMBER,
+        p_Idioma In Adm_Lenguajes.Idlenguaje%Type,
         p_CodRetorno OUT VARCHAR2,
         p_DatosError OUT VARCHAR2
     ) Is
@@ -1086,16 +1068,8 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_PmtId_node := DBMS_XMLDOM.appendChild(l_CdtTrfTxInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'PmtId')));
 
         -- 2.30 [1..1] ++++ Identificacion de extremo a extremo <EndToEndId> 35 - Localizacion /Document/CstmrCdtTrfInitn/PmtInf/CdtTrfTxInf/PmtId/EndToEndId
-        v_Datoserror := 'Generando fichero de transferencias: BloqueBeneficiarioXML (/Document/CstmrCdtTrfInitn/PmtInf/CdtTrfTxInf/PmtId/EndToEndId)';
-        If (v_Abonosdisquete.m_Abonossepa(v_Contador).Referenciainterna Is Null) Then
-            v_Datoserror := v_Datoserror || ': falta identificación del abono para `' || v_NombreColegiado || '`';
-            Raise e_error;
-        End If;
+        v_Datoserror := 'BloqueBeneficiarioXML: Creo Nodo EndToEndId (Identificacion de extremo a extremo) - Localización /Document/CstmrCdtTrfInitn/PmtInf/CdtTrfTxInf/PmtId/EndToEndId'; 
         v_IdenExtremo := F_RevisarCaracteresSEPA(NVL(TRIM(v_Abonosdisquete.m_Abonossepa(v_Contador).Referenciainterna), ' ')); --l_EndToEndId_textnode - Identificacion de extremo a extremo
-        If (trim(v_IdenExtremo) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en identificación del abono para `' || v_NombreColegiado || '`';
-            Raise e_error;
-        End If;
         l_EndToEndId_node := DBMS_XMLDOM.appendChild(l_PmtId_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'EndToEndId')));
         dummy := DBMS_XMLDOM.appendChild(l_EndToEndId_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, v_IdenExtremo)));
 
@@ -1130,18 +1104,18 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_Amt_node := DBMS_XMLDOM.appendChild(l_CdtTrfTxInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Amt')));
 
         -- 2.43 [1..1] ++++ Importe ordenado <InstdAmt> 11 - Localizacion /Document/CstmrCdtTrfInitn/PmtInf/CdtTrfTxInf/Amt/InstdAmt
-        v_Datoserror := 'Generando fichero de transferencias: BloqueBeneficiarioXML (/Document/CstmrCdtTrfInitn/PmtInf/CdtTrfTxInf/Amt/InstdAmt)';
+        v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.xml.beneficiario', p_Idioma);
         If (v_Abonosdisquete.m_Abonossepa(v_Contador).Importe Is Null) Then
-            v_Datoserror := v_Datoserror || ': falta importe del abono para `' || v_NombreColegiado || '`';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.importe', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         v_Importe := NVL(TRIM(v_Abonosdisquete.m_Abonossepa(v_Contador).Importe), 0); --l_InstdAmt_textnode - Importe ordenado
         If (trim(v_Importe) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en importe del abono para `' || v_NombreColegiado || '`';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.importe.caracteresNoValidos', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         If (ltrim(v_Importe, '0') = '0') Then
-            v_Datoserror := v_Datoserror || ': falta importe del abono para `' || v_NombreColegiado || '`';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.importe', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         l_InstdAmt_element := DBMS_XMLDOM.createElement(l_sepa, 'InstdAmt');
@@ -1158,14 +1132,14 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_FinInstnId_node := DBMS_XMLDOM.appendChild(l_CdtrAgt_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'FinInstnId')));
 
         -- 2.77 [0..1] +++++ BIC <BIC> 11 - Localizacion /Document/CstmrCdtTrfInitn/PmtInf/DrctDbtTxInf/CdtrAgt/FinInstnId/BIC
-        v_Datoserror := 'Generando fichero de transferencias: BloqueBeneficiarioXML (/Document/CstmrCdtTrfInitn/PmtInf/DrctDbtTxInf/CdtrAgt/FinInstnId/BIC)';
+        v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.xml.beneficiario', p_Idioma);
         If (v_Abonosdisquete.m_Abonossepa(v_Contador).Banco_Bic Is Null) Then
-            v_Datoserror := v_Datoserror || ': falta BIC de la cuenta del beneficiario `' || v_NombreColegiado || '`';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.bic', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         v_Bic := F_RevisarCaracteresSEPA(NVL(TRIM(v_Abonosdisquete.m_Abonossepa(v_Contador).Banco_Bic), ' ')); --l_NbOfTxs_textnode - BIC
         If (trim(v_Bic) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en BIC de la cuenta del beneficiario `' || v_NombreColegiado || '`';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.bic.caracteresNoValidos', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         l_BIC_node := DBMS_XMLDOM.appendChild(l_FinInstnId_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'BIC')));
@@ -1176,16 +1150,8 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_Cdtr_node := DBMS_XMLDOM.appendChild(l_CdtTrfTxInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Cdtr')));
  
         -- 2.79 [0..1] ++++ Nombre <Nm> 70 - Localizacion /Document/CstmrCdtTrfInitn/PmtInf/DrctDbtTxInf/Cdtr/Nm
-        v_Datoserror := 'Generando fichero de transferencias: BloqueBeneficiarioXML: (/Document/CstmrCdtTrfInitn/PmtInf/DrctDbtTxInf/Cdtr/Nm)';
-        If (v_Abonosdisquete.m_Abonossepa(v_Contador).Benef_Nombre Is Null) Then
-            v_Datoserror := v_Datoserror || ': falta nombre del beneficiario';
-            Raise e_error;
-        End If;
+        v_Datoserror := 'BloqueBeneficiarioXML: Creo Nodo Nm (Nombre) - Localización /Document/CstmrCdtTrfInitn/PmtInf/DrctDbtTxInf/Cdtr/Nm';
         v_NomBeneficiario := F_RevisarCaracteresSEPA(Nvl(SUBSTR(TRIM(v_Abonosdisquete.m_Abonossepa(v_Contador).Benef_Nombre),1,70), ' ')); --l_Nm_textnode - Nombre Beneficiario
-        If (trim(v_NomBeneficiario) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en nombre del beneficiario';
-            Raise e_error;
-        End If;
         l_Nm_node := DBMS_XMLDOM.appendChild(l_Cdtr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Nm')));
         dummy := DBMS_XMLDOM.appendChild(l_Nm_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, v_NomBeneficiario)));
 
@@ -1194,28 +1160,28 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_PstlAdr_node := DBMS_XMLDOM.appendChild(l_Cdtr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'PstlAdr')));
         
         -- 2.79 [0..1] +++++ Pais <Ctry> 2 - Localizacion /Document/CstmrCdtTrfInitn/PmtInf/DrctDbtTxInf/Cdtr/PstlAdr/Ctry
-        v_Datoserror := 'Generando fichero de transferencias: BloqueBeneficiarioXML (/Document/CstmrCdtTrfInitn/PmtInf/DrctDbtTxInf/Cdtr/PstlAdr/Ctry)';
+        v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.xml.beneficiario', p_Idioma);
         If (v_Abonosdisquete.m_Abonossepa(v_Contador).Benef_Direccion.Pais_Iso Is Null) Then
-            v_Datoserror := v_Datoserror || ': faltan datos de la dirección del beneficiario `' || v_NombreColegiado || '`';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.direccion', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         v_CodPais := F_RevisarCaracteresSEPA(NVL(TRIM(v_Abonosdisquete.m_Abonossepa(v_Contador).Benef_Direccion.Pais_Iso), ' ')); --l_Ctry_textnode - Pais
         If (trim(v_CodPais) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en los datos de la dirección del beneficiario `' || v_NombreColegiado || '`';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.direccion.caracteresNoValidos', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         l_Ctry_node := DBMS_XMLDOM.appendChild(l_PstlAdr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Ctry')));
         dummy := DBMS_XMLDOM.appendChild(l_Ctry_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, v_CodPais)));
         
         -- 2.79 [0..2] +++++ Direccion en texto libre <AdrLine> 70 - Localizacion /Document/CstmrCdtTrfInitn/PmtInf/DrctDbtTxInf/Cdtr/PstlAdr/AdrLine
-        v_Datoserror := 'Generando fichero de transferencias: BloqueBeneficiarioXML (/Document/CstmrCdtTrfInitn/PmtInf/DrctDbtTxInf/Cdtr/PstlAdr/AdrLine)';
+        v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.xml.beneficiario', p_Idioma);
         If (v_Abonosdisquete.m_Abonossepa(v_Contador).Benef_Direccion.DOMICILIO Is Null) Then
-            v_Datoserror := v_Datoserror || ': faltan datos de la dirección del beneficiario `' || v_NombreColegiado || '`';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.direccion', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         v_Direccion := F_RevisarCaracteresSEPA(NVL(SUBSTR(v_Direccion_Total,1,70), ' ')); --l_AdrLine_textnode - Direccion1
         If (trim(v_Direccion) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en los datos de la dirección del beneficiario `' || v_NombreColegiado || '`';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.direccion.caracteresNoValidos', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         l_AdrLine_node := DBMS_XMLDOM.appendChild(l_PstlAdr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'AdrLine')));
@@ -1237,14 +1203,14 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_Id_node := DBMS_XMLDOM.appendChild(l_CdtrAcct_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Id')));
 
         -- [0..1] +++++ IBAN <IBAN> 34 - Localizacion /Document/CstmrCdtTrfInitn/PmtInf/DrctDbtTxInf/CdtrAcct/Id/IBAN
-        v_Datoserror := 'Generando fichero de transferencias: BloqueBeneficiarioXML (/Document/CstmrCdtTrfInitn/PmtInf/DrctDbtTxInf/CdtrAcct/Id/IBAN)';
+        v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.xml.beneficiario', p_Idioma);
         If (v_Abonosdisquete.m_Abonossepa(v_Contador).Banco_Iban Is Null) Then
-            v_Datoserror := v_Datoserror || ': falta la cuenta del beneficiario `' || v_NombreColegiado || '`';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.cuenta', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         v_Iban := F_RevisarCaracteresSEPA(NVL(TRIM(v_Abonosdisquete.m_Abonossepa(v_Contador).Banco_Iban), ' ')); --l_IBAN_textnode - IBAN
         If (trim(v_Iban) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en la cuenta del beneficiario `' || v_NombreColegiado || '`';
+            v_Datoserror := v_Datoserror || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.cuenta.caracteresNoValidos', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         l_IBAN_node := DBMS_XMLDOM.appendChild(l_Id_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'IBAN')));
@@ -1255,16 +1221,8 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_RmtInf_node := DBMS_XMLDOM.appendChild(l_CdtTrfTxInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'RmtInf')));
 
         -- 2.99 [0..n]{Or ++++ No estructurado <Ustrd> 140 - Localizacion /Document/CstmrCdtTrfInitn/PmtInf/DrctDbtTxInf/RmtInf/Ustrd
-        v_Datoserror := 'Generando fichero de transferencias: BloqueBeneficiarioXML (/Document/CstmrCdtTrfInitn/PmtInf/DrctDbtTxInf/RmtInf/Ustrd)';
-        If (v_conceptoFinal Is Null) Then
-            v_Datoserror := v_Datoserror || ': falta el concepto del abono para `' || v_NombreColegiado || '`';
-            Raise e_error;
-        End If;
+        v_Datoserror := 'BloqueBeneficiarioXML: Creo Nodo Ustrd (No estructurado) - Localización /Document/CstmrCdtTrfInitn/PmtInf/DrctDbtTxInf/RmtInf/Ustrd';
         v_Concepto := F_RevisarCaracteresSEPA(NVL(SUBSTR(TRIM(v_conceptoFinal),1,140), ' ')); --l_Ustrd_textnode - Concepto
-        If (trim(v_Concepto) Is Null) Then
-            v_Datoserror := v_Datoserror || ': caracteres no válidos en el concepto del abono para `' || v_NombreColegiado || '`';
-            Raise e_error;
-        End If;
         l_Ustrd_node := DBMS_XMLDOM.appendChild(l_RmtInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Ustrd')));
         dummy := DBMS_XMLDOM.appendChild(l_Ustrd_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, v_Concepto)));
 
@@ -1375,6 +1333,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
                          p_Nombrefichero  Varchar2,
                          v_Ordenante      Reg_Ordenante,
                          v_Abonosdisquete Reg_Abonos,
+                         p_Idioma         Adm_Lenguajes.Idlenguaje%Type,
                          p_CodRetorno OUT VARCHAR2,
                          p_DatosError OUT VARCHAR2) Is
     f_Salida          Utl_File.File_Type; -- Fichero de salida
@@ -1392,13 +1351,13 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
     v_Conta_Abonos_Otro    Number := 0;
     v_Subtotal_Abonos_Otro Number := 0;
   Begin
-    p_DatosError := 'Generando fichero de transferencias TXT';
+    p_DatosError := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.txt', p_Idioma);
     Select Valor
       Into v_Versioncuaderno
       From Gen_Properties
      Where Parametro = 'facturacion.cuaderno.transferencias.identificador';
     If (trim(v_Versioncuaderno) Is Null) Then
-        p_DatosError := p_DatosError || ': no se ha encontrado versión del cuaderno. Contacte con el Administrador';
+        p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.versionCuaderno', p_Idioma);
         Raise e_error;
     End If;
     v_Versioncuaderno := v_Versioncuaderno || Mod(To_Number(v_Versioncuaderno), 7);
@@ -1412,31 +1371,31 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
     v_Registro := v_Registro || '001'; --numero de dato
     
     If (trim(v_Ordenante.Cif) Is Null) Then
-        p_DatosError := p_DatosError || ': falta CIF';
+        p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.cifColegio', p_Idioma);
         Raise e_error;
     End If;
     v_Registro := v_Registro || Rpad(v_Ordenante.Cif, 9, ' '); --identificacion del ordenante
     
     If (trim(v_Ordenante.Sufijo) Is Null) Then
-        p_DatosError := p_DatosError || ': falta Suf';
+        p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.sufijo', p_Idioma);
         Raise e_error;
     End If;
     v_Registro := v_Registro || Lpad(v_Ordenante.Sufijo, 3, '0'); --sufijo
     
     If (v_Ordenante.Fechacreacion Is Null) Then
-        p_DatosError := p_DatosError || ': falta la fecha de creación del fichero bancario';
+        p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.fechaCreacion', p_Idioma);
         Raise e_error;
     End If;
     v_Registro := v_Registro || To_Char(v_Ordenante.Fechacreacion, 'yyyymmdd'); --fecha de creacion del fichero
     If (v_Ordenante.Fechaejecucion Is Null) Then
-        p_DatosError := p_DatosError || ': falta la fecha de ejecución del fichero bancario';
+        p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.fechaEjecucion', p_Idioma);
         Raise e_error;
     End If;
     v_Registro := v_Registro || To_Char(v_Ordenante.Fechaejecucion, 'yyyymmdd'); --fecha de ejecucion de ordenes (configurable en el futuro??)
     
     v_Registro := v_Registro || 'A'; --identificador de la cuenta del ordenante
     If (v_Ordenante.BANCO_IBAN Is Null) Then
-        p_DatosError := p_DatosError || ': falta cuenta del colegio';
+        p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.cuentaColegio', p_Idioma);
         Raise e_error;
     End If;
     v_Registro := v_Registro || Rpad(v_Ordenante.Banco_Iban, 34, ' '); --cuenta del ordenante
@@ -1484,39 +1443,39 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         v_Registro := v_Registro || 'A'; --identificador de la cuenta del beneficiario: A - iban
 
         If (v_Abonosdisquete.m_Abonossepa(v_Contador).Banco_Iban Is Null) Then
-            p_DatosError := p_DatosError || ': falta la cuenta del beneficiario `' || v_NombreColegiado || '`';
+            p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.cuenta', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         v_Iban := F_RevisarCaracteresSEPA(NVL(TRIM(v_Abonosdisquete.m_Abonossepa(v_Contador).Banco_Iban), ' ')); --l_IBAN_textnode - IBAN
         If (trim(v_Iban) Is Null) Then
-            p_DatosError := p_DatosError || ': caracteres no válidos en la cuenta del beneficiario `' || v_NombreColegiado || '`';
+            p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.cuenta.caracteresNoValidos', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         v_Registro := v_Registro || Rpad(v_Iban, 34, ' '); --cuenta del beneficiario
 
         If (v_Abonosdisquete.m_Abonossepa(v_Contador).Importe Is Null) Then
-            p_DatosError := p_DatosError || ': falta importe del abono para `' || v_NombreColegiado || '`';
+            p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.importe', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         v_Importe := NVL(TRIM(v_Abonosdisquete.m_Abonossepa(v_Contador).Importe), 0); --l_InstdAmt_textnode - Importe ordenado
         If (trim(v_Importe) Is Null) Then
-            p_DatosError := p_DatosError || ': caracteres no válidos en importe del abono para `' || v_NombreColegiado || '`';
+            p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.importe.caracteresNoValidos', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         If (ltrim(v_Importe, '0') = '0') Then
-            p_DatosError := p_DatosError || ': falta importe del abono para `' || v_NombreColegiado || '`';
+            p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.importe', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         v_Registro := v_Registro || Lpad(v_Importe * 100, 11, '0');
         v_Registro := v_Registro || '3'; --clave de gastos: 3 - compartidos (da igual porque luego solo importa lo q aplique el destinatario)
 
         If (v_Abonosdisquete.m_Abonossepa(v_Contador).Banco_Bic Is Null) Then
-            p_DatosError := p_DatosError || ': falta BIC de la cuenta del beneficiario `' || v_NombreColegiado || '`';
+            p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.bic', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         v_Bic := F_RevisarCaracteresSEPA(NVL(TRIM(v_Abonosdisquete.m_Abonossepa(v_Contador).Banco_Bic), ' ')); --l_NbOfTxs_textnode - BIC
         If (trim(v_Bic) Is Null) Then
-            p_DatosError := p_DatosError || ': caracteres no válidos en BIC de la cuenta del beneficiario `' || v_NombreColegiado || '`';
+            p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.bic.caracteresNoValidos', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         v_Registro := v_Registro || Rpad(v_Bic, 11, ' '); --bic entidad del beneficiario
@@ -1609,39 +1568,39 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         v_Registro := v_Registro || 'A'; --identificador de la cuenta del beneficiario: A - iban
 
         If (v_Abonosdisquete.m_Abonossepa(v_Contador).Banco_Iban Is Null) Then
-            p_DatosError := p_DatosError || ': falta la cuenta del beneficiario `' || v_NombreColegiado || '`';
+            p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.cuenta', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         v_Iban := F_RevisarCaracteresSEPA(NVL(TRIM(v_Abonosdisquete.m_Abonossepa(v_Contador).Banco_Iban), ' ')); --l_IBAN_textnode - IBAN
         If (trim(v_Iban) Is Null) Then
-            p_DatosError := p_DatosError || ': caracteres no válidos en la cuenta del beneficiario `' || v_NombreColegiado || '`';
+            p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.cuenta.caracteresNoValidos', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         v_Registro := v_Registro || Rpad(v_Iban, 34, ' '); --cuenta del beneficiario
 
         If (v_Abonosdisquete.m_Abonossepa(v_Contador).Importe Is Null) Then
-            p_DatosError := p_DatosError || ': falta importe del abono para `' || v_NombreColegiado || '`';
+            p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.importe', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         v_Importe := NVL(TRIM(v_Abonosdisquete.m_Abonossepa(v_Contador).Importe), 0); --l_InstdAmt_textnode - Importe ordenado
         If (trim(v_Importe) Is Null) Then
-            p_DatosError := p_DatosError || ': caracteres no válidos en importe del abono para `' || v_NombreColegiado || '`';
+            p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.importe.caracteresNoValidos', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         If (ltrim(v_Importe, '0') = '0') Then
-            p_DatosError := p_DatosError || ': falta importe del abono para `' || v_NombreColegiado || '`';
+            p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.importe', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         v_Registro := v_Registro || Lpad(v_Importe * 100, 11, '0');
         v_Registro := v_Registro || '3'; --clave de gastos: 3 - compartidos (da igual porque luego solo importa lo q aplique el destinatario)
 
         If (v_Abonosdisquete.m_Abonossepa(v_Contador).Banco_Bic Is Null) Then
-            p_DatosError := p_DatosError || ': falta BIC de la cuenta del beneficiario `' || v_NombreColegiado || '`';
+            p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.bic', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         v_Bic := F_RevisarCaracteresSEPA(NVL(TRIM(v_Abonosdisquete.m_Abonossepa(v_Contador).Banco_Bic), ' ')); --l_NbOfTxs_textnode - BIC
         If (trim(v_Bic) Is Null) Then
-            p_DatosError := p_DatosError || ': caracteres no válidos en BIC de la cuenta del beneficiario `' || v_NombreColegiado || '`';
+            p_DatosError := p_DatosError || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.bic.caracteresNoValidos', p_Idioma) || ' `' || v_NombreColegiado || '`';
             Raise e_error;
         End If;
         v_Registro := v_Registro || Rpad(v_Bic,
@@ -1747,10 +1706,11 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
   ----
   Procedure Escribir_Xml(p_Pathfichero    Varchar2,
                          p_Nombrefichero  Varchar2,
-                         v_Ordenante IN  Reg_Ordenante,
-                         v_Abonosdisquete IN Reg_Abonos,
-                         p_CodRetorno OUT VARCHAR2,
-                         p_DatosError OUT VARCHAR2) Is
+                         v_Ordenante      Reg_Ordenante,
+                         v_Abonosdisquete Reg_Abonos,
+                         p_Idioma         Adm_Lenguajes.Idlenguaje%Type,
+                         p_CodRetorno     OUT VARCHAR2,
+                         p_DatosError     OUT VARCHAR2) Is
   
     v_Conta_Abonos_Sepa    Number := 0;
     v_Subtotal_Abonos_Sepa Number := 0;
@@ -1775,6 +1735,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_sepa, -- Contenedor documento xml
         l_CstmrCdtTrfInitn_node, -- Raiz del mensaje adeudos
         v_Ordenante,
+        p_Idioma,
         v_Codretorno,
         v_Datoserror);         
     IF v_Codretorno <> To_Char(0) THEN
@@ -1787,6 +1748,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
         l_CstmrCdtTrfInitn_node,
         l_PmtInf_node,
         v_Ordenante,
+        p_Idioma,
         v_Codretorno,
         v_Datoserror);
     IF v_Codretorno <> To_Char(0) THEN
@@ -1801,6 +1763,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
             l_PmtInf_node,
             v_Abonosdisquete,
             v_Contador,
+            p_Idioma,
             v_Codretorno,
             v_Datoserror);
         IF v_Codretorno <> To_Char(0) THEN
@@ -1835,6 +1798,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
             l_sepa, -- Contenedor documento xml
             l_CstmrCdtTrfInitn_node, -- Raiz del mensaje adeudos
             v_Ordenante,
+            p_Idioma,
             v_Codretorno,
             v_Datoserror);         
         IF v_Codretorno <> To_Char(0) THEN
@@ -1847,6 +1811,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
             l_CstmrCdtTrfInitn_node,
             l_PmtInf_node,
             v_Ordenante,
+            p_Idioma,
             v_Codretorno,
             v_Datoserror);
         IF v_Codretorno <> To_Char(0) THEN
@@ -1861,6 +1826,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
                 l_PmtInf_node,
                 v_Abonosdisquete,
                 v_Contador,
+                p_Idioma,
                 v_Codretorno,
                 v_Datoserror);
                 
@@ -1968,14 +1934,14 @@ CREATE OR REPLACE Package Body Pkg_Siga_Abonos Is
     v_Datoserror         := 'GenerarFicheroTransferencias: escribiendo ficheros';
     CASE v_TipoFicheroGenerar
        WHEN c_TipoFicheroTxt THEN 
-            Escribir_Txt(p_Pathfichero, p_Nombrefichero, v_Regordenante, v_Abonos, v_CodRetorno, v_DatosError);
+            Escribir_Txt(p_Pathfichero, p_Nombrefichero, v_Regordenante, v_Abonos, p_Idioma, v_CodRetorno, v_DatosError);
        WHEN c_TipoFicheroTxtXml THEN 
-            Escribir_Txt(p_Pathfichero, p_Nombrefichero, v_Regordenante, v_Abonos, v_CodRetorno, v_DatosError);
+            Escribir_Txt(p_Pathfichero, p_Nombrefichero, v_Regordenante, v_Abonos, p_Idioma, v_CodRetorno, v_DatosError);
             IF v_Codretorno = 0 THEN
-               Escribir_Xml(p_Pathfichero, p_Nombrefichero, v_Regordenante, v_Abonos, v_CodRetorno, v_DatosError);
+               Escribir_Xml(p_Pathfichero, p_Nombrefichero, v_Regordenante, v_Abonos, p_Idioma, v_CodRetorno, v_DatosError);
             End If;
        WHEN c_TipoFicheroXml Then
-            Escribir_Xml(p_Pathfichero, p_Nombrefichero, v_Regordenante, v_Abonos, v_CodRetorno, v_DatosError);
+            Escribir_Xml(p_Pathfichero, p_Nombrefichero, v_Regordenante, v_Abonos, p_Idioma, v_CodRetorno, v_DatosError);
        Else
             v_Codretorno := To_Char(-1);
             Raise e_Error;

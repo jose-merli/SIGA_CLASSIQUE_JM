@@ -81,3 +81,221 @@ Cambios en Pkg_Siga_Fusion_Personas
 Modificado PKG_SIGA_FACTURACION_SJCS;
 
 Cambios en Pkg_Siga_Abonos
+
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.txt', 'Generando fichero de transferencias TXT', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.txt', 'Generando fichero de transferencias TXT#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.txt', 'Generando fichero de transferencias TXT#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.txt', 'Generando fichero de transferencias TXT#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.versionCuaderno', ': no se ha encontrado versión del cuaderno. Contacte con el Administrador', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.versionCuaderno', ': no se ha encontrado versión del cuaderno. Contacte con el Administrador#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.versionCuaderno', ': no se ha encontrado versión del cuaderno. Contacte con el Administrador#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.versionCuaderno', ': no se ha encontrado versión del cuaderno. Contacte con el Administrador#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.cifColegio', ': falta CIF del colegio', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.cifColegio', ': falta CIF del colegio#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.cifColegio', ': falta CIF del colegio#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.cifColegio', ': falta CIF del colegio#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.sufijo', ': falta Sufijo', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.sufijo', ': falta Sufijo#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.sufijo', ': falta Sufijo#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.sufijo', ': falta Sufijo#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.cifOsufijo.caracteresNoValidos', ': caracteres no válidos en CIF y/o Sufijo del ordenante', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.cifOsufijo.caracteresNoValidos', ': caracteres no válidos en CIF y/o Sufijo del ordenante#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.cifOsufijo.caracteresNoValidos', ': caracteres no válidos en CIF y/o Sufijo del ordenante#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.cifOsufijo.caracteresNoValidos', ': caracteres no válidos en CIF y/o Sufijo del ordenante#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.fechaCreacion', ': falta la fecha de creación del fichero bancario', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.fechaCreacion', ': falta la fecha de creación del fichero bancario#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.fechaCreacion', ': falta la fecha de creación del fichero bancario#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.fechaCreacion', ': falta la fecha de creación del fichero bancario#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.fechaEjecucion', ': falta la fecha de ejecución del fichero bancario', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.fechaEjecucion', ': falta la fecha de ejecución del fichero bancario#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.fechaEjecucion', ': falta la fecha de ejecución del fichero bancario#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.fechaEjecucion', ': falta la fecha de ejecución del fichero bancario#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.cuentaColegio', ': falta cuenta del colegio', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.cuentaColegio', ': falta cuenta del colegio#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.cuentaColegio', ': falta cuenta del colegio#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.cuentaColegio', ': falta cuenta del colegio#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.cuentaColegio.caracteresNoValidos', ': caracteres no válidos en la cuenta del colegio', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.cuentaColegio.caracteresNoValidos', ': caracteres no válidos en la cuenta del colegio#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.cuentaColegio.caracteresNoValidos', ': caracteres no válidos en la cuenta del colegio#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.cuentaColegio.caracteresNoValidos', ': caracteres no válidos en la cuenta del colegio#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.bicColegio', ': falta BIC de la cuenta del colegio', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.bicColegio', ': falta BIC de la cuenta del colegio#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.bicColegio', ': falta BIC de la cuenta del colegio#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.bicColegio', ': falta BIC de la cuenta del colegio#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.bicColegio.caracteresNoValidos', ': caracteres no válidos en BIC de la cuenta del colegio', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.bicColegio.caracteresNoValidos', ': caracteres no válidos en BIC de la cuenta del colegio#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.bicColegio.caracteresNoValidos', ': caracteres no válidos en BIC de la cuenta del colegio#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.bicColegio.caracteresNoValidos', ': caracteres no válidos en BIC de la cuenta del colegio#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.cuenta', ': falta la cuenta del beneficiario', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.cuenta', ': falta la cuenta del beneficiario#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.cuenta', ': falta la cuenta del beneficiario#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.cuenta', ': falta la cuenta del beneficiario#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.cuenta.caracteresNoValidos', ': caracteres no válidos en la cuenta del beneficiario', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.cuenta.caracteresNoValidos', ': caracteres no válidos en la cuenta del beneficiario#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.cuenta.caracteresNoValidos', ': caracteres no válidos en la cuenta del beneficiario#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.cuenta.caracteresNoValidos', ': caracteres no válidos en la cuenta del beneficiario#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.importe', ': falta importe del abono para', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.importe', ': falta importe del abono para#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.importe', ': falta importe del abono para#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.importe', ': falta importe del abono para#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.importe.caracteresNoValidos', ': caracteres no válidos en importe del abono para', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.importe.caracteresNoValidos', ': caracteres no válidos en importe del abono para#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.importe.caracteresNoValidos', ': caracteres no válidos en importe del abono para#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.importe.caracteresNoValidos', ': caracteres no válidos en importe del abono para#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.bic', ': falta BIC de la cuenta del beneficiario', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.bic', ': falta BIC de la cuenta del beneficiario#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.bic', ': falta BIC de la cuenta del beneficiario#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.bic', ': falta BIC de la cuenta del beneficiario#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.bic.caracteresNoValidos', ': caracteres no válidos en BIC de la cuenta del beneficiario', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.bic.caracteresNoValidos', ': caracteres no válidos en BIC de la cuenta del beneficiario#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.bic.caracteresNoValidos', ': caracteres no válidos en BIC de la cuenta del beneficiario#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.bic.caracteresNoValidos', ': caracteres no válidos en BIC de la cuenta del beneficiario#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.direccion', ': faltan datos de la dirección del beneficiario', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.direccion', ': faltan datos de la dirección del beneficiario#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.direccion', ': faltan datos de la dirección del beneficiario#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.direccion', ': faltan datos de la dirección del beneficiario#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.direccion.caracteresNoValidos', ': caracteres no válidos en datos de la dirección del beneficiario', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.direccion.caracteresNoValidos', ': caracteres no válidos en datos de la dirección del beneficiario#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.direccion.caracteresNoValidos', ': caracteres no válidos en datos de la dirección del beneficiario#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.beneficiario.direccion.caracteresNoValidos', ': caracteres no válidos en datos de la dirección del beneficiario#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.xml.cabecera', 'Generando fichero de transferencias: CabOrdenanteXML', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.xml.cabecera', 'Generando fichero de transferencias: CabOrdenanteXML#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.xml.cabecera', 'Generando fichero de transferencias: CabOrdenanteXML#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.xml.cabecera', 'Generando fichero de transferencias: CabOrdenanteXML#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.xml.ordenante', 'Generando fichero de transferencias: BloqueOrdenanteXML', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.xml.ordenante', 'Generando fichero de transferencias: BloqueOrdenanteXML#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.xml.ordenante', 'Generando fichero de transferencias: BloqueOrdenanteXML#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.xml.ordenante', 'Generando fichero de transferencias: BloqueOrdenanteXML#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.direccion', ': faltan datos de la dirección del colegio', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.direccion', ': faltan datos de la dirección del colegio#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.direccion', ': faltan datos de la dirección del colegio#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.direccion', ': faltan datos de la dirección del colegio#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.direccion.caracteresNoValidos', ': caracteres no válidos en datos de la dirección del colegio', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.direccion.caracteresNoValidos', ': caracteres no válidos en datos de la dirección del colegio#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.direccion.caracteresNoValidos', ': caracteres no válidos en datos de la dirección del colegio#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.direccion.caracteresNoValidos', ': caracteres no válidos en datos de la dirección del colegio#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.xml.beneficiario', 'Generando fichero de transferencias: BloqueBeneficiarioXML', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.xml.beneficiario', 'Generando fichero de transferencias: BloqueBeneficiarioXML#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.xml.beneficiario', 'Generando fichero de transferencias: BloqueBeneficiarioXML#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('facturacion.ficheroBancarioAbonos.error.genera.xml.beneficiario', 'Generando fichero de transferencias: BloqueBeneficiarioXML#GL', '0', 4, Sysdate, 0, '19');
+
