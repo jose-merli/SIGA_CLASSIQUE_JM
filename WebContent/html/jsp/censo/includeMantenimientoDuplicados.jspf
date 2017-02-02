@@ -38,6 +38,9 @@
 		
 		function comprobarDuplicados(idInstitucionAcceso, idPersona, nIdentificacion, nombre, apellido1, apellido2, idInstitucion, numCol) {
 		
+			jQuery("#iconoboton_cargando_1").hide();
+			jQuery("#iconoboton_aviso_1").hide();
+			
 			if (idPersona == "") {
 				return;
 			}
