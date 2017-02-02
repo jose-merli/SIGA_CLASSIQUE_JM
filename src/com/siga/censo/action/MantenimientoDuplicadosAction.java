@@ -1435,15 +1435,30 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		
 		// Variables generales
 		StringBuilder tableHeader = new StringBuilder(), tableBody = new StringBuilder();
+		StringBuilder tableBodyNIF = new StringBuilder();
+		StringBuilder tableBodyNombreYApellidos = new StringBuilder();
+		StringBuilder tableBodyColegiacionNum = new StringBuilder();
+		
+		
 		Vector personasSimilares = new Vector();
+		
+		Vector personasSimilaresNIF = new Vector();
+		Vector personasSimilaresNombreApellidos = new Vector();
+		Vector personasSimilaresColegiacionesNum = new Vector();
+		
 		ArrayList<String> aOptionsListadoDocumentacion = null;
+		ArrayList<String> aOptionsListadoDocumentacionNIF = new ArrayList<String> ();
+		ArrayList<String> aOptionsListadoDocumentacionColegiacionesNum = new ArrayList<String> ();
+		ArrayList<String> aOptionsListadoDocumentacionNombreApellidos = new ArrayList<String> ();
+		
 		String idPersonaActual = request.getParameter("idPersona");
 		idPersonaActual = (idPersonaActual == null) ? "" : idPersonaActual;
 
 		
 		// buscando duplicados por NIF parecido
 		miFormulario.setNifcif(request.getParameter("nidSolicitante"));
-		personasSimilares.addAll(helper.getPersonasSimilares(miFormulario));
+		personasSimilaresNIF = helper.getPersonasSimilares(miFormulario);
+		personasSimilares.addAll(personasSimilaresNIF);
 		miFormulario.setNifcif("");
 
 		// buscando duplicados por Numero colegiado
@@ -1451,14 +1466,16 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		if (numCol != null && ! numCol.equalsIgnoreCase("")) {
 			miFormulario.setIdInstitucion(request.getParameter("idInstitucion"));
 			miFormulario.setNumeroColegiado(numCol);
-			personasSimilares.addAll(helper.getPersonasSimilares(miFormulario));
+			personasSimilaresColegiacionesNum=helper.getPersonasSimilares(miFormulario);
+			personasSimilares.addAll(personasSimilaresColegiacionesNum);
 		} else {
 			Vector<CenColegiadoBean> listaColegiacionesPersonaOrigen = admColeg.getColegiacionesCompletas(idPersonaActual);
 			for(CenColegiadoBean beanColegiado : listaColegiacionesPersonaOrigen){
 				// para cada colegiacion de la persona
 				miFormulario.setIdInstitucion(beanColegiado.getIdInstitucion().toString());
 				miFormulario.setNumeroColegiado(beanColegiado.getNumCol().toString());
-				personasSimilares.addAll(helper.getPersonasSimilares(miFormulario));
+				personasSimilaresColegiacionesNum.addAll(helper.getPersonasSimilares(miFormulario));
+				personasSimilares.addAll(personasSimilaresColegiacionesNum);
 			}
 		}
 		miFormulario.setIdInstitucion("");
@@ -1467,7 +1484,8 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		// buscando duplicados por Nombre y apellidos
 		miFormulario.setNombre(request.getParameter("nombre"));
 		miFormulario.setApellidos(request.getParameter("apellidos"));
-		personasSimilares.addAll(helper.getPersonasSimilares(miFormulario));
+		personasSimilaresNombreApellidos = helper.getPersonasSimilares(miFormulario);
+		personasSimilares.addAll(personasSimilaresNombreApellidos);
 		miFormulario.setNombre("");
 		miFormulario.setApellidos("");
 		
@@ -1482,66 +1500,38 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			tableHeader.append("  <td>&nbsp;</td>");
 			tableHeader.append("</tr>");
 
-			Hashtable registro;
-			HashSet<String> conjuntoPersonas = new HashSet<String>();
-			for (int i = 0; i < personasSimilares.size(); i++) {
-				registro = (Hashtable) personasSimilares.elementAt(i);
-				// solo hay que mostrar personas diferentes a la actual
-				if (! idPersonaActual.equalsIgnoreCase((String) registro.get("IDPERSONA"))) {
-					conjuntoPersonas.add((String) registro.get("IDPERSONA"));
-	
-					tableBody.append("<tr>");
-					tableBody.append("  <td>");
-					tableBody.append((String) registro.get("NIFCIF"));
-					tableBody.append("  </td>");
-					tableBody.append("  <td>");
-					tableBody.append((String) registro.get("NOMBRE"));
-					tableBody.append("  </td>");
-					tableBody.append("  <td>");
-					tableBody.append((String) registro.get("APELLIDOS1"));
-					tableBody.append("  </td>");
-					tableBody.append("  <td>");
-					tableBody.append((String) registro.get("APELLIDOS2"));
-					tableBody.append("  </td>");
-					tableBody.append("  <td>");
-					tableBody.append((registro.get("ABREVIATURA") == null) ? "&nbsp;" : (String) registro.get("ABREVIATURA"));
-					tableBody.append("  </td>");
-					tableBody.append("  <td>");
-					tableBody.append((registro.get("NCOLEGIADO") == null) ? "&nbsp;" : (String) registro.get("NCOLEGIADO"));
-					tableBody.append("  </td>");
-					tableBody.append("  <td>");
-					tableBody.append("    <img id='iconoboton_informacionLetrado1' src='/SIGA/html/imagenes/bconsultar_on.gif'");
-					tableBody.append("         style='cursor:pointer;' alt='Mantenimiento duplicados' class='botonesIcoTabla' ");
-					tableBody.append("         name='iconoFila' border='0' onClick=\"mantenimientoDuplicados(");
-					
-					if (registro.get("NCOLEGIADO") != null) {
-						tableBody.append("'', '" + (String) registro.get("NCOLEGIADO") + "', '" + (String) registro.get("IDINSTITUCION") + "', '', '', ''");
-					}
-					else if (registro.get("APELLIDOS") != null) {
-						tableBody.append("'', '', '', '" + (String) registro.get("NOMBRE") + "','" + (String) registro.get("APELLIDOS1")
-							+ "','" + (String) registro.get("APELLIDOS2") + "'");
-					}
-					else {
-						tableBody.append("'" + (String) registro.get("NIFCIF") + "', '', '', '', '', ''");
-					}
-					
-					tableBody.append(");\">");
-					tableBody.append("  </td>");
-					tableBody.append("</tr>");
-				}
+			tableBodyNIF = componerInformacionHtml(personasSimilaresNIF,0,idPersonaActual,request);
+			tableBodyNombreYApellidos = componerInformacionHtml(personasSimilaresNombreApellidos,1,idPersonaActual,request);
+			tableBodyColegiacionNum = componerInformacionHtml(personasSimilaresColegiacionesNum,2,idPersonaActual,request);
+			
+			//Duplicados por NIF
+			if (tableBodyNIF != null && !"".equalsIgnoreCase(tableBodyNIF.toString())) {
+				aOptionsListadoDocumentacionNIF.add(tableHeader.toString() + tableBodyNIF.toString());
+			}else{
+				aOptionsListadoDocumentacionNIF.add(null);
+			}
+			//Duplicados por Nombre y Apellido
+			if (tableBodyNombreYApellidos != null && !"".equalsIgnoreCase(tableBodyNombreYApellidos.toString())) {
+				aOptionsListadoDocumentacionNombreApellidos.add(tableHeader.toString() + tableBodyNombreYApellidos.toString());
+			}else{
+				aOptionsListadoDocumentacionNombreApellidos.add(null);
+			}
+			//Duplicados por colegiaciones
+			if (tableBodyColegiacionNum != null && !"".equalsIgnoreCase(tableBodyColegiacionNum.toString())) {
+				aOptionsListadoDocumentacionColegiacionesNum.add(tableHeader.toString() + tableBodyColegiacionNum.toString());
+			}else{
+				aOptionsListadoDocumentacionColegiacionesNum.add(null);
 			}
 			
-			aOptionsListadoDocumentacion = new ArrayList<String>();
-			if (tableBody != null && !"".equalsIgnoreCase(tableBody.toString())) {
-				aOptionsListadoDocumentacion.add(tableHeader.toString() + tableBody.toString());
-			}
 		}
 
 		JSONObject json = new JSONObject();
 		UsrBean usr = this.getUserBean(request);
 
 		// Devuelvo la lista de series de facturacion
-		json.put("aOptionsListadoDocumentacion", aOptionsListadoDocumentacion);
+		json.put("aOptionsListadoDocumentacionNIF", aOptionsListadoDocumentacionNIF);
+		json.put("aOptionsListadoDocumentacionNombreApellidos", aOptionsListadoDocumentacionNombreApellidos);
+		json.put("aOptionsListadoDocumentacionColegiacionesNum", aOptionsListadoDocumentacionColegiacionesNum);
 
 		response.setContentType("text/x-json;charset=UTF-8");
 		response.setHeader("Cache-Control", "no-cache");
@@ -1550,5 +1540,92 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		response.getWriter().write(json.toString());
 		
 	} //getAjaxObtenerDuplicados()
+	
+	private StringBuilder componerInformacionHtml(Vector informacion,int tipo,String idPersonaActual,HttpServletRequest request){
+		
+		StringBuilder tableBody = new StringBuilder();
+		int inicio=0;
+		Boolean masDeDosRegistros=Boolean.FALSE;
+		
+		if(informacion != null && informacion.size()>0){
+			Hashtable registro;
+			HashSet<String> conjuntoPersonas = new HashSet<String>();
+			if(informacion.size()<=2){
+				inicio=0;
+			}else{
+				inicio=informacion.size()-2;
+				masDeDosRegistros=Boolean.TRUE;
+			}
+			for (int i=inicio; i < informacion.size(); i++) {
+				registro = (Hashtable) informacion.elementAt(i);
+				// solo hay que mostrar personas diferentes a la actual
+				if (! idPersonaActual.equalsIgnoreCase((String) registro.get("IDPERSONA"))) {
+					conjuntoPersonas.add((String) registro.get("IDPERSONA"));
+	
+					tableBody.append("<tr>");
+					if(tipo==0)
+						tableBody.append("  <td style='BACKGROUND-COLOR: aliceblue;'>");
+					else
+						tableBody.append("  <td>");
+					tableBody.append((String) registro.get("NIFCIF"));
+					tableBody.append("  </td>");
+					if(tipo==1)
+						tableBody.append("  <td style='BACKGROUND-COLOR: aliceblue;'>");
+					else
+						tableBody.append("  <td>");
+					tableBody.append((String) registro.get("NOMBRE"));
+					tableBody.append("  </td>");
+					if(tipo==1)
+						tableBody.append("  <td style='BACKGROUND-COLOR: aliceblue;'>");
+					else
+						tableBody.append("  <td>");
+					tableBody.append((String) registro.get("APELLIDOS1"));
+					tableBody.append("  </td>");
+					if(tipo==1)
+						tableBody.append("  <td style='BACKGROUND-COLOR: aliceblue;'>");
+					else
+						tableBody.append("  <td>");
+					tableBody.append((String) registro.get("APELLIDOS2"));
+					tableBody.append("  </td>");
+					if(tipo==2)
+						tableBody.append("  <td style='BACKGROUND-COLOR: aliceblue;'>");
+					else
+						tableBody.append("  <td>");
+					tableBody.append((registro.get("ABREVIATURA") == null) ? "&nbsp;" : (String) registro.get("ABREVIATURA"));
+					tableBody.append("  </td>");
+					if(tipo==2)
+						tableBody.append(" <td style='BACKGROUND-COLOR: aliceblue;'>");
+					else
+						tableBody.append("  <td>");
+					tableBody.append((registro.get("NCOLEGIADO") == null) ? "&nbsp;" : (String) registro.get("NCOLEGIADO"));
+					tableBody.append("  </td>");
+					
+					tableBody.append("  <td>");
+					tableBody.append("    <img id='iconoboton_informacionLetrado1' src='/SIGA/html/imagenes/bconsultar_on.gif'");
+					tableBody.append("         style='cursor:pointer;' alt='Mantenimiento duplicados' class='botonesIcoTabla' ");
+					tableBody.append("         name='iconoFila' border='0' onClick=\"mantenimientoDuplicados(");
+					
+					if (registro.get("NCOLEGIADO") != null) {
+						tableBody.append("'', '" + (String) request.getParameter("NCOLEGIADO") + "', '" + (String) request.getParameter("idInstitucion") + "', '', '', ''");
+					}
+					else if (registro.get("APELLIDOS") != null) {
+						tableBody.append("'', '', '', '" + (String) request.getParameter("nombre") + "','" + (String) request.getParameter("apellido1")
+							+ "','" + (String) request.getParameter("apellido2") + "'");
+					}
+					else {
+						tableBody.append("'" + (String) request.getParameter("nidSolicitante") + "', '', '', '', '', ''");
+					}
+					
+					tableBody.append(");\">");
+					tableBody.append("  </td>");
+					tableBody.append("</tr>");
+				}
+			}
+			if(masDeDosRegistros){
+				tableBody.append("<tr><td colspan='7'>Existen más registros...</td></tr>");
+			}
+		}
+		return tableBody;
+	}
 
 }
