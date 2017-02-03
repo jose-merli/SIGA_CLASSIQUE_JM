@@ -299,3 +299,6 @@ Values  ('facturacion.ficheroBancarioAbonos.error.genera.xml.beneficiario', 'Gen
 Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
 Values  ('facturacion.ficheroBancarioAbonos.error.genera.xml.beneficiario', 'Generando fichero de transferencias: BloqueBeneficiarioXML#GL', '0', 4, Sysdate, 0, '19');
 
+
+-- Ejecutado en Integracion por AAG el 03/02 a las 10:15
+
