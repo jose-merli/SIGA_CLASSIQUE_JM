@@ -81,7 +81,7 @@
 							jQuery("#tablaDuplicidadesNombreYApellidos").append(json.aOptionsListadoDocumentacionNombreApellidos);
 							jQuery("#tablaDuplicidadesNombreYApellidos").append("</table>");
 						}else{
-							jQuery("#divDuplicidades").append("<label>No hay duplicados</label>");
+							jQuery("#divDuplicidades").append("<label>No hay duplicados</label></br>");
 							jQuery("#divDuplicidades").remove("#tablaDuplicidadesNombreYApellidos");
 							
 						}

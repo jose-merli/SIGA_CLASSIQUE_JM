@@ -1606,7 +1606,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					tableBody.append("         name='iconoFila' border='0' onClick=\"mantenimientoDuplicados(");
 					
 					if (registro.get("NCOLEGIADO") != null) {
-						tableBody.append("'', '" + (String) request.getParameter("NCOLEGIADO") + "', '" + (String) request.getParameter("idInstitucion") + "', '', '', ''");
+						tableBody.append("'', '" + (String) registro.get("NCOLEGIADO") + "', '" + (String) registro.get("IDINSTITUCION") + "', '', '', ''");
 					}
 					else if (registro.get("APELLIDOS") != null) {
 						tableBody.append("'', '', '', '" + (String) request.getParameter("nombre") + "','" + (String) request.getParameter("apellido1")
