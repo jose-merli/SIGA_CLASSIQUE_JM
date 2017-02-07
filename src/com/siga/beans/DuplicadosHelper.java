@@ -63,9 +63,9 @@ public class DuplicadosHelper{
 		
 		if (sqlFinal == null) {
 			// anyadiendo la busqueda por nombre y/o apellidos, si se introdujo en el formulario
-			String nombre = formulario.getNombre();
+			String nombre = formulario.getNombreDuplicados();
 			nombre = (nombre == null || nombre.trim().equalsIgnoreCase("")) ? "" : nombre;
-			String apellidos = formulario.getApellidos();
+			String apellidos = formulario.getApellidosDuplicados();
 			apellidos = (apellidos == null || apellidos.trim().equalsIgnoreCase("")) ? "" : apellidos;
 			
 			if (! nombre.equalsIgnoreCase("") || ! apellidos.equalsIgnoreCase("")) {
@@ -96,7 +96,7 @@ public class DuplicadosHelper{
 
 		if (sqlFinal == null) {
 			// anyadiendo la busqueda por colegio y/o numero de colegiado, si se introdujo en el formulario
-			String institucion = formulario.getIdInstitucion();
+			String institucion = formulario.getIdInstitucionDuplicados();
 			institucion = (institucion == null || institucion.trim().equalsIgnoreCase("")) ? "" : institucion;
 			String nColegiado = formulario.getNumeroColegiado();
 			nColegiado = (nColegiado == null || nColegiado.trim().equalsIgnoreCase("")) ? "" : nColegiado.trim();

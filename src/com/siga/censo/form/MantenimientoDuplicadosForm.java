@@ -13,9 +13,9 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	private static final long serialVersionUID = 1916453132854234795L;
 	String permitirAniadirNuevo= "N";
 	String idPersona =  "";
-	String idInstitucion;
+	String idInstitucionDuplicados;
 	String modo = "";
-	String nifcif="", nombre="", apellidos="", numeroColegiado="";
+	String nifcif="", nombreDuplicados="", apellidosDuplicados="", numeroColegiado="";
 	private String apellido1="", apellido2=""; //solo se utilizan para mostrar en el listado
 	String idPersonaOrigen = "", idPersonaDestino = "";
 	private String listaDirecciones, listaEstados, listaDireccionesNoSeleccionadas, listaEstadosNoSeleccionados;
@@ -50,13 +50,12 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	public void setListaEstados(String listaEstados) {
 		this.listaEstados = listaEstados;
 	}
-	public String getIdInstitucion() {
-		return idInstitucion;
+	public String getIdInstitucionDuplicados() {
+		return idInstitucionDuplicados;
 	}
-	public void setIdInstitucion(String idInstitucion) {
-		this.idInstitucion = idInstitucion;
+	public void setIdInstitucionDuplicados(String idInstitucionDuplicados) {
+		this.idInstitucionDuplicados = idInstitucionDuplicados;
 	}
-
 	public String getIdPersonaOrigen() {
 		return idPersonaOrigen;
 	}
@@ -86,17 +85,17 @@ public class MantenimientoDuplicadosForm extends MasterForm {
 	public void setNifcif(String nifcif) {
 		this.nifcif = nifcif;
 	}
-	public String getNombre() {
-		return nombre;
+	public String getNombreDuplicados() {
+		return nombreDuplicados;
 	}
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
+	public void setNombreDuplicados(String nombreDuplicados) {
+		this.nombreDuplicados = nombreDuplicados;
 	}
-	public String getApellidos() {
-		return apellidos;
+	public String getApellidosDuplicados() {
+		return apellidosDuplicados;
 	}
-	public void setApellidos(String apellidos) {
-		this.apellidos = apellidos;
+	public void setApellidosDuplicados(String apellidosDuplicados) {
+		this.apellidosDuplicados = apellidosDuplicados;
 	}
 	public String getApellido1()
 	{

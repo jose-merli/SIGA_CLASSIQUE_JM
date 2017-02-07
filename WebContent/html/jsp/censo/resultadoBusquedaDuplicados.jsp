@@ -272,7 +272,7 @@
 	<html:hidden styleId="seleccion" property="seleccion" />
 	<html:hidden styleId="datosPaginador" property="datosPaginador" />
 	<html:hidden styleId="nifcif" property="nifcif" />
-	<html:hidden styleId="nombre" property="nombre" />
+	<html:hidden styleId="nombre" property="nombreDuplicados" />
 	<html:hidden styleId="numeroColegiado" property="numeroColegiado" />
 	<html:hidden styleId="apellido1" property="apellido1" />
 	<html:hidden styleId="agruparColegiaciones" property="agruparColegiaciones" />

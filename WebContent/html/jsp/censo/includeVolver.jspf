@@ -77,9 +77,9 @@
 				<html:hidden property="volver" value=""/>
 				<html:hidden property="nifcif" />
 				<html:hidden property="numeroColegiado" />
-				<html:hidden property="idInstitucion" />
-				<html:hidden property="nombre" />
-				<html:hidden property="apellidos" />
+				<html:hidden property="idInstitucionDuplicados" />
+				<html:hidden property="nombreDuplicados" />
+				<html:hidden property="apellidosDuplicados" />
 			</html:form>
 			
 			<!-- aalg: para volver a la pantalla de personas duplicadas -->
@@ -90,9 +90,9 @@
 				<html:hidden property="modo" value="buscarPor"/>
 				<html:hidden property="nifcif" />
 				<html:hidden property="numeroColegiado" />
-				<html:hidden property="idInstitucion" />
-				<html:hidden property="nombre" />
-				<html:hidden property="apellidos" />
+				<html:hidden property="idInstitucionDuplicados" />
+				<html:hidden property="nombreDuplicados" />
+				<html:hidden property="apellidosDuplicados" />
 			</html:form>
 			
 <% 	

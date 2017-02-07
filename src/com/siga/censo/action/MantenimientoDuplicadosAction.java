@@ -126,11 +126,11 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
 					MantenimientoDuplicadosForm formDupl = (MantenimientoDuplicadosForm)miForm;
 					formDupl.reset(mapping,request);
-					formDupl.setApellidos("");
+					formDupl.setApellidosDuplicados("");
 					formDupl.setNifcif("");
-					formDupl.setNombre("");
+					formDupl.setNombreDuplicados("");
 					formDupl.setNumeroColegiado("");
-					formDupl.setIdInstitucion("");
+					formDupl.setIdInstitucionDuplicados("");
 					request.getSession().removeAttribute("DATAPAGINADOR");
 					mapDestino = abrir(mapping, miForm, request, response);
 				}else if(accion.equalsIgnoreCase("buscar")){
@@ -315,7 +315,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 
 			// calculando si se ha de mostrar los campos de colegio en funcion de si se busca por colegiado o por
 			// persona
-			String institucion = miFormulario.getIdInstitucion();
+			String institucion = miFormulario.getIdInstitucionDuplicados();
 			institucion = (institucion == null || institucion.trim().equalsIgnoreCase("")) ? "" : institucion;
 			String nColegiado = miFormulario.getNumeroColegiado();
 			nColegiado = (nColegiado == null || nColegiado.trim().equalsIgnoreCase("")) ? "" : nColegiado;
@@ -393,7 +393,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			formulario=miFormulario;
 			// calculando si se ha de mostrar los campos de colegio en funcion de si se busca por colegiado o por
 			// persona
-			String institucion = miFormulario.getIdInstitucion();
+			String institucion = miFormulario.getIdInstitucionDuplicados();
 			institucion = (institucion == null || institucion.trim().equalsIgnoreCase("")) ? "" : institucion;
 			String nColegiado = miFormulario.getNumeroColegiado();
 			nColegiado = (nColegiado == null || nColegiado.trim().equalsIgnoreCase("")) ? "" : nColegiado;
@@ -1271,6 +1271,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			
 			if (verFichaLetrado!=null && verFichaLetrado.equals("1")){
 				tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_LETRADO);
+				tipo="LETRADO";
 				elementoActivo="3";
 				
 			}else{
@@ -1464,7 +1465,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		// buscando duplicados por Numero colegiado
 		String numCol = request.getParameter("nColegiado");
 		if (numCol != null && ! numCol.equalsIgnoreCase("")) {
-			miFormulario.setIdInstitucion(request.getParameter("idInstitucion"));
+			miFormulario.setIdInstitucionDuplicados(request.getParameter("idInstitucion"));
 			miFormulario.setNumeroColegiado(numCol);
 			personasSimilaresColegiacionesNum=helper.getPersonasSimilares(miFormulario);
 			personasSimilares.addAll(personasSimilaresColegiacionesNum);
@@ -1472,22 +1473,22 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			Vector<CenColegiadoBean> listaColegiacionesPersonaOrigen = admColeg.getColegiacionesCompletas(idPersonaActual);
 			for(CenColegiadoBean beanColegiado : listaColegiacionesPersonaOrigen){
 				// para cada colegiacion de la persona
-				miFormulario.setIdInstitucion(beanColegiado.getIdInstitucion().toString());
+				miFormulario.setIdInstitucionDuplicados(beanColegiado.getIdInstitucion().toString());
 				miFormulario.setNumeroColegiado(beanColegiado.getNumCol().toString());
 				personasSimilaresColegiacionesNum.addAll(helper.getPersonasSimilares(miFormulario));
 				personasSimilares.addAll(personasSimilaresColegiacionesNum);
 			}
 		}
-		miFormulario.setIdInstitucion("");
+		miFormulario.setIdInstitucionDuplicados("");
 		miFormulario.setNumeroColegiado("");
 
 		// buscando duplicados por Nombre y apellidos
-		miFormulario.setNombre(request.getParameter("nombre"));
-		miFormulario.setApellidos(request.getParameter("apellidos"));
+		miFormulario.setNombreDuplicados(request.getParameter("nombre"));
+		miFormulario.setApellidosDuplicados(request.getParameter("apellidos"));
 		personasSimilaresNombreApellidos = helper.getPersonasSimilares(miFormulario);
 		personasSimilares.addAll(personasSimilaresNombreApellidos);
-		miFormulario.setNombre("");
-		miFormulario.setApellidos("");
+		miFormulario.setNombreDuplicados("");
+		miFormulario.setApellidosDuplicados("");
 		
 		if (personasSimilares != null && personasSimilares.size() > 1) {
 			tableHeader.append("<tr>");
@@ -1544,25 +1545,24 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 	private StringBuilder componerInformacionHtml(Vector informacion,int tipo,String idPersonaActual,HttpServletRequest request){
 		
 		StringBuilder tableBody = new StringBuilder();
-		int inicio=0;
 		Boolean masDeDosRegistros=Boolean.FALSE;
-		int contador=0;   //Cuenta el número filas que lleva
+		int contador=0;   //Cuenta el número filas que lleva pintadas
 		
 		if(informacion != null && informacion.size()>0){
 			Hashtable registro;
 			HashSet<String> conjuntoPersonas = new HashSet<String>();
-			if(informacion.size()<=2){
-				inicio=0;
-			}else{
-				inicio=informacion.size()-2;
-				masDeDosRegistros=Boolean.TRUE;
-			}
-			for (int i=inicio; i < informacion.size(); i++) {
+			
+			//Recorremos la información obtenida de las consultas
+			for (int i=0; i < informacion.size(); i++) {
 				registro = (Hashtable) informacion.elementAt(i);
-				// solo hay que mostrar personas diferentes a la actual
+				// SÓLO hay que mostrar personas diferentes a la actual
 				if (! idPersonaActual.equalsIgnoreCase((String) registro.get("IDPERSONA"))) {
 					conjuntoPersonas.add((String) registro.get("IDPERSONA"));
+					//Si son diferentes y no supera los tres registros se añaden para pintar 
 					contador++;
+					if(contador==3){  //Si pinta ya dos registro salimos del bucle ya que no queremos más de dos
+						break;
+					}
 					tableBody.append("<tr>");
 					if(tipo==0)
 						tableBody.append("  <td style='BACKGROUND-COLOR: aliceblue;'>");
@@ -1621,8 +1621,11 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					tableBody.append("  </td>");
 					tableBody.append("</tr>");
 				}
+				
 			}
-			if(masDeDosRegistros && contador==2){  //Si tiene ya dos filas y además son más de dos registros se añade esta fila
+			//Si hay 3 elementos quiere decir que no se han pintado todos debido a la limitación 
+			//impuesta por nosotros de sólo dos elementos, pero se le indicará al usuario de que hay más
+			if(contador==3){  
 				tableBody.append("<tr><td colspan='7'>Existen más registros...</td></tr>");
 			}
 		}

@@ -8,9 +8,9 @@
 		<html:hidden property="tablaDatosDinamicosD" value=""/>
 		<html:hidden property="nifcif" />
 		<html:hidden property="numeroColegiado" />
-		<html:hidden property="idInstitucion" />
-		<html:hidden property="nombre" />
-		<html:hidden property="apellidos" />
+		<html:hidden property="idInstitucionDuplicados" />
+		<html:hidden property="nombreDuplicados" />
+		<html:hidden property="apellidosDuplicados" />
 	</html:form>
 	<%
 		}
@@ -102,9 +102,9 @@
 		function mantenimientoDuplicados(nifcif, numcol, idinstitucion, nombre, apellido1, apellido2) {
 			document.MantenimientoDuplicadosForm.nifcif.value = nifcif;
 			document.MantenimientoDuplicadosForm.numeroColegiado.value = numcol;
-			document.MantenimientoDuplicadosForm.idInstitucion.value = idinstitucion;
-			document.MantenimientoDuplicadosForm.nombre.value = nombre;
-			document.MantenimientoDuplicadosForm.apellidos.value = apellido1 + " " + apellido2;
+			document.MantenimientoDuplicadosForm.idInstitucionDuplicados.value = idinstitucion;
+			document.MantenimientoDuplicadosForm.nombreDuplicados.value = nombre;
+			document.MantenimientoDuplicadosForm.apellidosDuplicados.value = apellido1 + " " + apellido2;
 			document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
 			document.MantenimientoDuplicadosForm.submit();
 

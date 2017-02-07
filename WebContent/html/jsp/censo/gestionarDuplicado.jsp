@@ -1099,6 +1099,7 @@
 	    document.forms[0].filaSelD.value = 1;
 	
 		if(idIntitucion != null && idIntitucion !=""){
+			//Es letrado
 			document.forms[0].tablaDatosDinamicosD.value=idPers + ',' + idInst + '%';
 			document.forms[0].verFichaLetrado.value=verFichaLetrado;
 			document.forms[0].modo.value="editar";

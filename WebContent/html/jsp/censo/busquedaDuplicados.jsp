@@ -120,10 +120,10 @@
 			}
 			else if((document.MantenimientoDuplicadosForm.nifcif.value.length>0 &&
 					document.MantenimientoDuplicadosForm.nifcif.value.length<3) ||
-					(document.MantenimientoDuplicadosForm.nombre.value.length>0 &&
-					document.MantenimientoDuplicadosForm.nombre.value.length<3) ||
-					(document.MantenimientoDuplicadosForm.apellidos.value.length>0 &&
-					document.MantenimientoDuplicadosForm.apellidos.value.length<3)) {
+					(document.MantenimientoDuplicadosForm.nombreDuplicados.value.length>0 &&
+					document.MantenimientoDuplicadosForm.nombreDuplicados.value.length<3) ||
+					(document.MantenimientoDuplicadosForm.apellidosDuplicados.value.length>0 &&
+					document.MantenimientoDuplicadosForm.apellidosDuplicados.value.length<3)) {
 				error=true;
 			   	msg=msg+"Para buscar por Número Identificación, Nombre o Apellidos, introduzca al menos 3 caracteres";
 			}
@@ -294,7 +294,7 @@
 								<siga:Idioma key="censo.busquedaDuplicados.patron.institucion" />
 							</td>
 							<td>
-								<html:select styleId="listadoInstitucion" property="idInstitucion" styleClass="boxCombo" onchange="presionarNumeroColegiado()">
+								<html:select styleId="listadoInstitucion" property="idInstitucionDuplicados" styleClass="boxCombo" onchange="presionarNumeroColegiado()">
 									<html:option value="">&nbsp;</html:option>
 									<c:forEach items="${listadoInstituciones}" var="inst">
 										<html:option value="${inst.idInstitucion}">${inst.abreviatura}</html:option>
@@ -325,13 +325,13 @@
 								<siga:Idioma key="censo.busquedaDuplicados.patron.nombre" />
 							</td>
 							<td>
-								<html:text styleId="nombreText" name="MantenimientoDuplicadosForm" property="nombre" size="25" styleClass="box" onkeyup="presionarNombreApellidos()" />
+								<html:text styleId="nombreText" name="MantenimientoDuplicadosForm" property="nombreDuplicados" size="25" styleClass="box" onkeyup="presionarNombreApellidos()" />
 							</td>
 						</tr>
 						<tr>
 							<td class="labelText"><siga:Idioma key="censo.busquedaDuplicados.patron.apellidos" /></td> 
 							<td>
-								<html:text styleId="apellidosText" name="MantenimientoDuplicadosForm" property="apellidos" size="35" styleClass="box" onkeyup="presionarNombreApellidos()" />
+								<html:text styleId="apellidosText" name="MantenimientoDuplicadosForm" property="apellidosDuplicados" size="35" styleClass="box" onkeyup="presionarNombreApellidos()" />
 							</td>
 						</tr>
 						<tr>
