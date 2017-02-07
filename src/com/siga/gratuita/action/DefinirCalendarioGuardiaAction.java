@@ -817,7 +817,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				hashPermuta.put(ScsPermutaGuardiasBean.C_NUMERO, numero);
 
 				//comprobando que no hay ninguna guardia realizada
-				if (admGuardiasColegiado.validarBorradoGuardia(idInstitucion, idTurno, idGuardia, fechaInicio, fechaFin)) {
+				if (admGuardiasColegiado.existeGuardiaParaBorrar(idInstitucion, idTurno, idGuardia, idPersona, fechaInicio)) {
 					//empezando transaccion
 					tx = usr.getTransaction();
 					tx.begin();
@@ -917,11 +917,10 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 
 	protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm) formulario;
+		FcsFactApunteAdm admApuntes = new FcsFactApunteAdm(this.getUserBean(request));
 		ScsCabeceraGuardiasAdm admCabeceraGuardia = new ScsCabeceraGuardiasAdm(this.getUserBean(request));
 		ScsGuardiasColegiadoAdm admGuardiaColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
-		ScsPermutaGuardiasAdm admPermutaguardias = new ScsPermutaGuardiasAdm(this.getUserBean(request));
-		FcsFactApunteAdm admApuntes = new FcsFactApunteAdm(this.getUserBean(request));
-
+		ScsPermutaGuardiasAdm admPermutaguardias = new ScsPermutaGuardiasAdm(this.getUserBean(request));		
 
 		Hashtable miHash = new Hashtable();
 		UsrBean usr = null;
@@ -1015,13 +1014,11 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				htCodigo.put(new Integer(6), idCalendarioGuardias);
 
 				//FECHAINICIOPERMUTA
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-						htCodigo, "F_SIGA_FECHAINISOLICITANTE", "FECHAINICIOPERMUTA"));
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_FECHAINISOLICITANTE", "FECHAINICIOPERMUTA"));
 				String fInicioPermuta = (String)registro.get("FECHAINICIOPERMUTA");
 				//Si la fecha de inicio del solicitante es nula miramos  la fecha de inicio del confirmador
-				if(fInicioPermuta==null||fInicioPermuta.trim().equals("")){
-					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-							htCodigo, "F_SIGA_FECHAINICONFIRMADOR", "FECHAINICIOPERMUTA"));
+				if (fInicioPermuta==null||fInicioPermuta.trim().equals("")){
+					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_FECHAINICONFIRMADOR", "FECHAINICIOPERMUTA"));
 					fInicioPermuta = (String)registro.get("FECHAINICIOPERMUTA");
 					//Si la fecha de inicio del confirmador es nula ponemos como fecha de inicio de la permuta 
 					//la fecha de inicio real
@@ -1029,16 +1026,14 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 						fInicioPermuta = fechaInicioPK;
 						registro.put("FECHAINICIOPERMUTA", fInicioPermuta);
 					}
-
 				}
+				
 				//FECHAFINPERMUTA
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-						htCodigo, "F_SIGA_FECHAFINSOLICITANTE", "FECHAFINPERMUTA"));
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_FECHAFINSOLICITANTE", "FECHAFINPERMUTA"));
 				String fFinPermuta = (String)registro.get("FECHAFINPERMUTA");
 				//Si la fecha de fin del solicitante es nula miramos  la fecha de fin del confirmador
 				if(fFinPermuta==null||fFinPermuta.trim().equals("")){
-					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-							htCodigo, "F_SIGA_FECHAFINCONFIRMADOR", "FECHAFINPERMUTA"));
+					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_FECHAFINCONFIRMADOR", "FECHAFINPERMUTA"));
 					fFinPermuta = (String)registro.get("FECHAFINPERMUTA");
 					//Si la fecha de fin del confirmador es nula ponemos como fecha de fin de la permuta 
 					//la fecha de fin real
@@ -1046,17 +1041,14 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 						fFinPermuta = fechaFin;
 						registro.put("FECHAFINPERMUTA", fFinPermuta);
 					}
-
 				}
 
 				//FECHAINICIO
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-						htCodigo, "F_SIGA_FECHAORIGSOLICITANTE", "FECHAINICIO"));
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_FECHAORIGSOLICITANTE", "FECHAINICIO"));
 				String fInicio = (String)registro.get("FECHAINICIO");
 				//Si la fecha de origen del solicitante es nula miramos  la fecha de origen del confirmador
 				if(fInicio==null||fInicio.trim().equals("")){
-					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-							htCodigo, "F_SIGA_FECHAORIGCONFIRMADOR", "FECHAINICIO"));
+					helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_FECHAORIGCONFIRMADOR", "FECHAINICIO"));
 					fInicio = (String)registro.get("FECHAINICIO");
 					//Si la fecha de origen del confirmador es nula ponemos como fecha de origen de la permuta 
 					//la fecha de origen real
@@ -1064,22 +1056,17 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 						fInicio = fechaInicioPK;
 						registro.put("FECHAINICIO", fInicio);
 					}
-
-				}
+				}				
+				
 				//NUMEROPERMUTA 
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-						htCodigo, "F_SIGA_NUMERO", "NUMEROPERMUTA"));
-
-
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_NUMERO", "NUMEROPERMUTA"));
 
 				htCodigo = new Hashtable();
 				htCodigo.put(new Integer(1), idinstitucion);
 				htCodigo.put(new Integer(2), idpersona);
 
 				//F_SIGA_CALCULONCOLEGIADO(coleg.IDINSTITUCION, coleg.IDPERSONA) as NCOLEGIADO
-				//NCOLEGIADO
-				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(
-						htCodigo, "F_SIGA_CALCULONCOLEGIADO", "NCOLEGIADO"));
+				helperInformes.completarHashSalida(registro,helperInformes.ejecutaFuncionSalida(htCodigo, "F_SIGA_CALCULONCOLEGIADO", "NCOLEGIADO"));
 
 				numeroColegiado = (String)registro.get(CenColegiadoBean.C_NCOLEGIADO);
 
@@ -1087,60 +1074,66 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				if (numeroPermuta==null || numeroPermuta.equals("")){
 					numeroPermuta="NINGUNO";
 				}
-
-
-
-
-				//Chequeo si existe una permuta de esa persona como solicitante o como confirmador
-				//Consulta como solicitante
-
-				//Ejecuto el PL de Permutas que me dice el tipo de Permuta posible:				
-				pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio));
-				if (pl.equals("5")){//si buscando por la fecha de inicio (para el caso en el que todavia no se haya confirmado la solicitud de la permuta) devuelve el valor "5" (pendiente de permutar) volvemos a ejecutar
-					// el procedimiento pasando la fecha de inicio de permuta (para el caso en el que ya se haya 
-					// confirmado la permuta) por si sigue devolviendo "5" o devuelve otro
-					// valor como "3" (guardia permutada), como "2" (Permuta solicitada) o "4" (Pendiente de confirmar).
-
-					pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fInicioPermuta));
-				} 
-
 				
-				String guardiaFacturada = admApuntes.exiteApunteGuardia(idinstitucion,idturno,idguardia,idpersona,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio))?"true":"false";
+				// Aqui formateo la fecha que voy a utilizar
+				String sFechaInicioFormateada;
+				if (fInicio!=null && fInicioPermuta!=null && fInicio.equals(fInicioPermuta)) {
+					sFechaInicioFormateada = GstDate.getFormatedDateShort(usr.getLanguage(), fInicio);
+				} else {
+					sFechaInicioFormateada = GstDate.getFormatedDateShort(usr.getLanguage(), fInicioPermuta);
+				}								
+				
+				// JPT: Obtiene si ha facturado el dia de guardia (FCS_FACT_APUNTE)
+				boolean bExisteGuardiaFacturada = admApuntes.existeGuardiaFacturada(idinstitucion, idturno, idguardia, idpersona, sFechaInicioFormateada);
+				
+				boolean bExisteGuardiaParaBorrar = false;
+				// JPT: Si ya esta facturada, no se puede hacer nada, no merece la pena mirar si se puede borrar
+				if (!bExisteGuardiaFacturada) {
+					
+					// 	JPT: Obtiene si tiene guardias el dia y es posterior al dia actual (SCS_GUARDIASCOLEGIADO)
+					bExisteGuardiaParaBorrar = admGuardiaColegiado.existeGuardiaParaBorrar(idinstitucion, idturno, idguardia, idpersona, sFechaInicioFormateada);
+					
+					// JPT: Si NO se puede borrar, entonces no merece la pena mirar si se puede permutar
+					if (bExisteGuardiaParaBorrar) {
+						
+						/* JPT - Ejecuto la funcion de Permutas F_SIGA_NUMEROPERMUTAGUARDIAS, que me dice el tipo de Permuta posible:
+						 * 
+						 * Futuras [>TRUNC(SYSDATE)]
+						 * - 2: Pendiente de confirmar por solicitante
+						 * - 3: Permutada
+						 * - 4: Pendiente de confirmar por confirmador
+						 * - 5: Pendiente de realizar
+						 * 
+						 * Pasadas [<=TRUNC(SYSDATE)] => Mira SCS_CABECERAGUARDIAS ... Esto no nos interesa para este codigo
+						 * - 1: Guardia realizada y NO facturada
+						 * - 5: Pendiente de realizar
+						 * - 6: Guardia realizada y FACTURADA				
+						 */
+						pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion, idturno, idguardia, idpersona, sFechaInicioFormateada);
+					}
+				}
 
 				//Inserto los datos a visualizar en el JSP
 				Hashtable nueva = new Hashtable();
-				nueva.put("FECHAINICIO",fInicio);
-				nueva.put("FECHA_INICIO_PK",fechaInicioPK);
-				nueva.put("FECHAFIN",fechaFin);			
-				nueva.put("FECHAINICIOPERMUTA",fInicioPermuta);
-				nueva.put("FECHAFINPERMUTA",fFinPermuta);
-				/*nueva.put("FECHAINICIO",fechaInicio);
-				nueva.put("FECHAFIN",fechaFin);			
-				nueva.put("FECHAINICIOPERMUTA",fechaInicioPermuta);
-				nueva.put("FECHAFINPERMUTA",fechaFinPermuta);				
-				nueva.put("FECHAPERMUTA",fechaPermuta);*/
-				nueva.put("NUMEROPERMUTA",numeroPermuta);
-				nueva.put("NUMEROCOLEGIADO",numeroColegiado);
-				nueva.put("NOMBRE",nombre);
-				nueva.put("IDPERSONA",idpersona);
-				nueva.put("IDINSTITUCION",idinstitucion);
-				nueva.put("IDTURNO",idturno);
-				nueva.put("IDGUARDIA",idguardia);
-				nueva.put("IDCALENDARIOGUARDIAS",idcalendarioguardias);
-				nueva.put("OBSERVACIONES",observaciones);
+				nueva.put("FECHAINICIO", fInicio);
+				nueva.put("FECHA_INICIO_PK", fechaInicioPK);
+				nueva.put("FECHAFIN", fechaFin);			
+				nueva.put("FECHAINICIOPERMUTA", fInicioPermuta);
+				nueva.put("FECHAFINPERMUTA", fFinPermuta);
+				nueva.put("NUMEROPERMUTA", numeroPermuta);
+				nueva.put("NUMEROCOLEGIADO", numeroColegiado);
+				nueva.put("NOMBRE", nombre);
+				nueva.put("IDPERSONA", idpersona);
+				nueva.put("IDINSTITUCION", idinstitucion);
+				nueva.put("IDTURNO", idturno);
+				nueva.put("IDGUARDIA", idguardia);
+				nueva.put("IDCALENDARIOGUARDIAS", idcalendarioguardias);
+				nueva.put("OBSERVACIONES", observaciones);
 				nueva.put("PL",pl);
-				nueva.put("GUARDIAFACTURADA",guardiaFacturada);
+				nueva.put("EXISTEGUARDIAFACTURADA", bExisteGuardiaFacturada ? "1" : "0");
+				nueva.put("EXISTEGUARDIAPARABORRAR", bExisteGuardiaParaBorrar ? "1" : "0");
 				nueva.put("ORDEN", orden);
 				nueva.put("VALIDADO", validado);
-			
-				ScsGuardiasColegiadoAdm admGuardiasColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
-				if (admGuardiasColegiado.validarBorradoGuardia(idinstitucion,idturno,idguardia,GstDate.getFormatedDateShort(usr.getLanguage(),fInicio),GstDate.getFormatedDateShort(usr.getLanguage(),fechaFin))){
-					nueva.put("PINTARBOTONBORRAR", "1");
-
-				}else{
-					nueva.put("PINTARBOTONBORRAR", "0");
-				}
-
 				resultado.add(nueva);	
 			}//Fin del while
 			

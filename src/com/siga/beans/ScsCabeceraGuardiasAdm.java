@@ -5,16 +5,13 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
-import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
@@ -150,10 +147,6 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 	protected String[] getOrdenCampos() {
 		return null;
 	}
-	
-	private String[] getOrderSelectBuscarCabeceraGuardias(){
-		return null;
-	}
 		
 	/**
 	 * Borra en BD todas las cabeceras de un calendario dado
@@ -197,15 +190,14 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 	 * @return String con la consulta SQL.
 	 * @throws ClsExceptions
 	 */	
-	public String buscarOtrosColegiados(Hashtable miHash, boolean guardiasPasadas) throws ClsExceptions{
+	public String buscarOtrosColegiados(Hashtable miHash) throws ClsExceptions{
 		String consulta = "";
-		String idinstitucion="", idguardia="", idturno="", idcalendarioguardias="", reserva="", idpersona="";
+		String idinstitucion="", idguardia="", idturno="", idpersona="";
 		
 		try {
 			idinstitucion = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDINSTITUCION);
 			idguardia = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDGUARDIA);
 			idturno = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDTURNO);
-			idcalendarioguardias = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS);
 			idpersona = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDPERSONA);
 
 			consulta = "SELECT ";
@@ -239,20 +231,16 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			consulta += " AND perso."+CenPersonaBean.C_IDPERSONA+"=guard."+ScsCabeceraGuardiasBean.C_IDPERSONA;
 			//consulta += " AND coleg."+CenColegiadoBean.C_IDPERSONA+"=guard."+ScsCabeceraGuardiasBean.C_IDPERSONA;
 			//consulta += " AND coleg."+CenColegiadoBean.C_IDINSTITUCION+"=guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION;
-			//PDM se anyade esta restriccion para que no se muestren colegiados con fecha de inicio de guardia anterior
-			// al dia actual
-			if (!guardiasPasadas) {
-			    consulta += " AND guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+" >= sysdate";
-			}
-			// PDM solo mostramos aquellas personas con las que no se hayan hecho niguna permuta.
+			
+			// JPT (07/02/2017): Solo se puede permutar por guardias posteriores al dia actual
+		    consulta += " AND TRUNC(guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+") > TRUNC(sysdate)";
+		    
+		    // JPT (07/02/2017): Solo se puede permutar por dias con el tipo de permuta a 3 (permutada) o 5 (pendiente de realizar)
 			consulta += " AND F_SIGA_NUMEROPERMUTAGUARDIAS(";
 			consulta +=       " guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+", guard."+ScsCabeceraGuardiasBean.C_IDTURNO+", guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA+",";
 			consulta += 	  " guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+", guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO;
-			if (!guardiasPasadas) {
-			    consulta+= 		  ") IN (3,5)";
-			} else {
-			    consulta+= 		  ") IN (1,5)";
-			}
+		    consulta+= 		  ") IN (3,5)";
+		    
 			//ORDEN
 			consulta += " ORDER BY guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO;
 		}
@@ -309,7 +297,7 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 	 */	
 	public String getDatosColegiado(Hashtable miHash) throws ClsExceptions{
 		String consulta = "";
-		String idinstitucion="", idguardia="", idturno="", idcalendarioguardias="", reserva="", idpersona="";
+		String idinstitucion="", idguardia="", idturno="", idcalendarioguardias="", idpersona="";
 		
 		try {
 			idinstitucion = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDINSTITUCION);
@@ -455,7 +443,7 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 		boolean ok = false;
 		
 		String consulta = "";
-		String idinstitucion="", idturno="", idguardia="", fechaInicio="", fechaFin="", idPersona="";
+		String idinstitucion="", idturno="", idguardia="", fechaInicio="", idPersona="";
 		
 		try {
 			idinstitucion = (String)hashCabecera.get(ScsCabeceraGuardiasBean.C_IDINSTITUCION);
@@ -491,8 +479,6 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 	
 	
 	public void actualizarValidacionCabecera(String idInstitucion,String anio, String numero,  boolean actValidada) throws ClsExceptions {
-		String consulta = "";
-		
 		try {
 			GenParametrosAdm admPar = new GenParametrosAdm(this.usrbean);
 			String param = admPar.getValor(this.usrbean.getLocation(), "SCS","VALIDAR_VOLANTE","N");
@@ -845,14 +831,7 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 
 	public String buscarColegiados(Hashtable miHash) throws ClsExceptions{
 		String consulta = "";
-		String idinstitucion="", idguardia="", idturno="", idcalendarioguardias="", reserva="";
-		
 		try {
-			idinstitucion = (String)miHash.get(ScsCabeceraGuardiasBean.C_IDINSTITUCION);
-			idguardia = (miHash.get(ScsCabeceraGuardiasBean.C_IDGUARDIA)==null || miHash.get(ScsCabeceraGuardiasBean.C_IDGUARDIA).equals(""))?"guard.IDGUARDIA":(String)miHash.get(ScsCabeceraGuardiasBean.C_IDGUARDIA);
-			idturno = (miHash.get(ScsCabeceraGuardiasBean.C_IDTURNO)==null || miHash.get(ScsCabeceraGuardiasBean.C_IDTURNO).equals(""))?"guard.IDTURNO":(String)miHash.get(ScsCabeceraGuardiasBean.C_IDTURNO);
-			idcalendarioguardias = (miHash.get(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS)==null || miHash.get(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS).equals(""))?"guard.IDCALENDARIOGUARDIAS":(String)miHash.get(ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS);
-
 			consulta = " SELECT guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION;
 			consulta+= " ,guard.rowid AS ROWIND";
 			consulta+= " ,guard."+ScsCabeceraGuardiasBean.C_VALIDADO;
@@ -1039,7 +1018,6 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			consulta += " AND " + ScsCabeceraGuardiasBean.C_IDCALENDARIOGUARDIAS + "=" + idCalendario;
 
 			Vector v = this.selectGenerico(consulta);
-			Hashtable cabecera = new Hashtable();
 			if (v != null && !v.isEmpty()) {
 				hash = (Hashtable) v.firstElement();
 			}

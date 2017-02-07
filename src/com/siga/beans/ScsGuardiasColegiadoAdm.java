@@ -476,34 +476,51 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		return datos;	
 	}		
 
-	
-
-	//Comprueba antes de borrar UNA guardia no este realizada.
-	//Nota: las fechas de inicio y fin son del periodo.
-	public boolean validarBorradoGuardia(String idInstitucion, String idTurno, String idGuardia, String fechaInicio, String fechaFin) {
-		boolean correcto = false;
+	/**
+	 * Obtiene si tiene guardias el dia y es posterior al dia actual (SCS_GUARDIASCOLEGIADO)
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idGuardia
+	 * @param idPersona
+	 * @param fechaInicio
+	 * @return
+	 */
+	public boolean existeGuardiaParaBorrar(String idInstitucion, String idTurno, String idGuardia, String idPersona, String fechaInicio) {
+		Vector<Hashtable<String,Object>> vGuardias = new Vector<Hashtable<String,Object>>();
 		StringBuffer consulta = new StringBuffer();
+		consulta.append("SELECT 1 FROM ");
+		consulta.append(ScsGuardiasColegiadoBean.T_NOMBRETABLA);
+		consulta.append(" WHERE ");
+		consulta.append(ScsGuardiasColegiadoBean.C_IDINSTITUCION);
+		consulta.append(" = ");
+		consulta.append(idInstitucion);
+		consulta.append(" AND ");
+		consulta.append(ScsGuardiasColegiadoBean.C_IDTURNO);
+		consulta.append(" = ");
+		consulta.append(idTurno);
+		consulta.append(" AND ");
+		consulta.append(ScsGuardiasColegiadoBean.C_IDGUARDIA);
+		consulta.append(" = ");
+		consulta.append(idGuardia);
+	    consulta.append(" AND ");
+	    consulta.append(ScsGuardiasColegiadoBean.C_IDPERSONA);
+	    consulta.append(" = ");
+	    consulta.append(idPersona);		
+		consulta.append(" AND TRUNC(");
+		consulta.append(ScsGuardiasColegiadoBean.C_FECHAINICIO);
+		consulta.append(") = TO_DATE('");
+		consulta.append(fechaInicio);
+		consulta.append("','DD/MM/YYYY') AND TRUNC("); // JPT: Solo se puede borrar si la fecha es posterior al dia actual
+		consulta.append(ScsGuardiasColegiadoBean.C_FECHAINICIO);
+		consulta.append(") > TRUNC(SYSDATE)");
 		
-		consulta.append("select count(*) AS TOTAL from "+ScsGuardiasColegiadoBean.T_NOMBRETABLA);
-		consulta.append(" where "+ScsGuardiasColegiadoBean.C_IDINSTITUCION+"="+idInstitucion);
-		consulta.append(" and "+ScsGuardiasColegiadoBean.C_IDTURNO+"="+idTurno);
-		consulta.append(" and "+ScsGuardiasColegiadoBean.C_IDGUARDIA+"="+idGuardia);
-		consulta.append(" and trunc("+ScsGuardiasColegiadoBean.C_FECHAINICIO+")=TO_DATE('"+fechaInicio+"','DD/MM/YYYY')");
-		consulta.append(" and trunc("+ScsGuardiasColegiadoBean.C_FECHAFIN+") < trunc(sysdate)");
-
-		Vector vLetrados = new Vector();
-		int totalLetrados = 0;
 		try {
-			vLetrados = this.selectGenerico(consulta.toString());
-			if (!vLetrados.isEmpty()) {
-				totalLetrados = Integer.parseInt((String)((Hashtable)vLetrados.get(0)).get("TOTAL"));
-				if (totalLetrados == 0)
-					correcto = true;
-			}
+			vGuardias = this.selectGenerico(consulta.toString());
 		} catch (Exception e) {
-			correcto = false;
+			return false;
 		}
-		return correcto;
+					
+		return vGuardias.size() > 0;		
 	}
 	
 	//Comprueba si hay incompatibilidades de guardia en el calendario
