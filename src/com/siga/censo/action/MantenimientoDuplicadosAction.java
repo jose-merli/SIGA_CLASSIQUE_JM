@@ -1546,6 +1546,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		StringBuilder tableBody = new StringBuilder();
 		int inicio=0;
 		Boolean masDeDosRegistros=Boolean.FALSE;
+		int contador=0;   //Cuenta el número filas que lleva
 		
 		if(informacion != null && informacion.size()>0){
 			Hashtable registro;
@@ -1561,7 +1562,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				// solo hay que mostrar personas diferentes a la actual
 				if (! idPersonaActual.equalsIgnoreCase((String) registro.get("IDPERSONA"))) {
 					conjuntoPersonas.add((String) registro.get("IDPERSONA"));
-	
+					contador++;
 					tableBody.append("<tr>");
 					if(tipo==0)
 						tableBody.append("  <td style='BACKGROUND-COLOR: aliceblue;'>");
@@ -1621,7 +1622,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					tableBody.append("</tr>");
 				}
 			}
-			if(masDeDosRegistros){
+			if(masDeDosRegistros && contador==2){  //Si tiene ya dos filas y además son más de dos registros se añade esta fila
 				tableBody.append("<tr><td colspan='7'>Existen más registros...</td></tr>");
 			}
 		}
