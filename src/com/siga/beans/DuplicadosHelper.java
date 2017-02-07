@@ -116,7 +116,7 @@ public class DuplicadosHelper{
 				if (! nColegiado.equalsIgnoreCase("")) { 
 					sqlFinal.append(" and Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado) = '"+nColegiado+"' ");
 				}
-				sqlFinal.append(" order by col.idinstitucion, , Lpad(Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado), 20, '0') ");
+				sqlFinal.append(" order by col.idinstitucion, Lpad(Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado), 20, '0') ");
 			}
 		}
 
