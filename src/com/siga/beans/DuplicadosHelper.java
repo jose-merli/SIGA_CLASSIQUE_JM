@@ -116,7 +116,7 @@ public class DuplicadosHelper{
 				if (! nColegiado.equalsIgnoreCase("")) { 
 					sqlFinal.append(" and Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado) = '"+nColegiado+"' ");
 				}
-				sqlFinal.append(" order by col.idinstitucion, To_Number(Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado)) ");
+				sqlFinal.append(" order by col.idinstitucion, , Lpad(Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado), 20, '0') ");
 			}
 		}
 
@@ -199,7 +199,7 @@ public class DuplicadosHelper{
 					sqlFinal += sqlMismoNombreApellidos.toString() + sqlOrden.toString();
 					break;
 				case SIMIL_NCOL:
-					sqlOrden = " order by Colegio, To_Number(Numcol) ";
+					sqlOrden = " order by Colegio, Lpad(Numcol, 20, '0') ";
 					sqlFinal += sqlMismoNumeroColegiado.toString() + sqlOrden.toString();
 					break;
 			}
