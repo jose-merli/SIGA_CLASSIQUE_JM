@@ -75,18 +75,18 @@ public class DuplicadosHelper{
 				sqlFinal.append(sqlFrom);
 				sqlFinal.append(sqlWhere);
 				if (! nombre.equalsIgnoreCase("")) {
-					sqlFinal.append(" and regexp_like(regexp_replace(upper(translate(Per.nombre, ");
+					sqlFinal.append(" and regexp_like(regexp_replace(upper(translate(Per.nombre || ' ', ");
 					sqlFinal.append("                     'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', ");
 					sqlFinal.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', ''), ");
-					sqlFinal.append("      regexp_replace(upper(translate('"+nombre+"', ");
+					sqlFinal.append("      regexp_replace(upper(translate('"+nombre+"' || ' ', ");
 					sqlFinal.append("                     'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', ");
 					sqlFinal.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', ''))");
 				}
 				if (! apellidos.equalsIgnoreCase("")) {
-					sqlFinal.append(" and regexp_like(regexp_replace(upper(translate(Per.apellidos1 || decode(Per.apellidos2, null, '', ' ' || Per.apellidos2), ");
+					sqlFinal.append(" and regexp_like(regexp_replace(upper(translate(Per.apellidos1 || ' ' || Per.apellidos2 || ' ', ");
 					sqlFinal.append("                     'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', ");
 					sqlFinal.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', ''), ");
-					sqlFinal.append("      regexp_replace(upper(translate('"+apellidos+"', ");
+					sqlFinal.append("      regexp_replace(upper(translate('"+apellidos+"' || ' ', ");
 					sqlFinal.append("                     'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', ");
 					sqlFinal.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', ''))");
 				}
@@ -99,7 +99,7 @@ public class DuplicadosHelper{
 			String institucion = formulario.getIdInstitucion();
 			institucion = (institucion == null || institucion.trim().equalsIgnoreCase("")) ? "" : institucion;
 			String nColegiado = formulario.getNumeroColegiado();
-			nColegiado = (nColegiado == null || nColegiado.trim().equalsIgnoreCase("")) ? "" : nColegiado;
+			nColegiado = (nColegiado == null || nColegiado.trim().equalsIgnoreCase("")) ? "" : nColegiado.trim();
 			
 			if (! institucion.equalsIgnoreCase("") || ! nColegiado.equalsIgnoreCase("")) {
 				sqlFinal = new StringBuffer();
@@ -175,10 +175,10 @@ public class DuplicadosHelper{
 			sqlMismoNif.append(" and to_number(regexp_replace(p1.nifcif, '[^[:digit:]]', '')) = to_number(regexp_replace(p2.nifcif, '[^[:digit:]]', '')) ");
 			
 			sqlMismoNombreApellidos = new StringBuffer();
-			sqlMismoNombreApellidos.append(" and (regexp_replace(upper(translate(p1.nombre || ' ' || p1.apellidos1 || ' ' || p1.apellidos2, ");
+			sqlMismoNombreApellidos.append(" and (regexp_replace(upper(translate(p1.nombre || ' ' || p1.apellidos1 || ' ' || p1.apellidos2 || ' ', ");
 			sqlMismoNombreApellidos.append("                     'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', ");
 			sqlMismoNombreApellidos.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', '') = ");
-			sqlMismoNombreApellidos.append("      regexp_replace(upper(translate(p2.nombre || ' ' || p2.apellidos1 || ' ' || p2.apellidos2, ");
+			sqlMismoNombreApellidos.append("      regexp_replace(upper(translate(p2.nombre || ' ' || p2.apellidos1 || ' ' || p2.apellidos2 || ' ', ");
 			sqlMismoNombreApellidos.append("                     'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', ");
 			sqlMismoNombreApellidos.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', ''))");
 			
