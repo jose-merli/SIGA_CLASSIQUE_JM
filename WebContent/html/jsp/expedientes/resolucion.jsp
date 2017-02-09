@@ -154,7 +154,7 @@
 	
 </head>
 
-<body class="detallePestanas">
+<body>
 
 	<table class="tablaTitulo" align="center" cellspacing="0">
 		<tr>
