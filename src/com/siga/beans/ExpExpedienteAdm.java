@@ -1096,7 +1096,9 @@ public class ExpExpedienteAdm extends MasterBeanAdministrador {
 	        sql += "e." + E_ANIOEXPEDIENTE + ", ";
 	        sql += "e." + E_NUMEROEXPEDIENTE + ", ";
 	        sql += E_SANCIONADO + ", ";
-	        sql += E_SANCIONFINALIZADA + ", ";		    
+	        sql += E_SANCIONFINALIZADA + ", ";		
+	        sql += E_FECHAPRORROGAESTADO + ", ";	
+	        sql += E_FECHAFINALESTADO + ", ";	
 		    sql += T_TIPOEXPEDIENTE + " as TIPOEXPEDIENTE, ";	
 		    sql += E_ASUNTO + ", ";
 		    sql += ES_ESEJECUCIONSANCION + " as EJECUCIONSANCION, ";

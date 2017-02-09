@@ -225,14 +225,29 @@
 								<% } %>
 							</td>  															
 							<td >
-								<% if ((row.getString("SANCIONFINALIZADA")==null)||(row.getString("SANCIONFINALIZADA").equalsIgnoreCase(""))){%>
-									<% if (row.getString("SANCIONFINALIZADA").equalsIgnoreCase("")){%>
-										&nbsp;
-									<% } else { %>
-										<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),row.getString("FECHAFINAL")))%>
-									<% } %>
+								<% if ((row.getString("SANCIONFINALIZADA") !=null) && !"".equalsIgnoreCase(row.getString("SANCIONFINALIZADA"))){%>
+									<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),row.getString("SANCIONFINALIZADA")))%>
 								<% } else { %>
-									&nbsp;
+									<% if ((row.getString("FECHAPRORROGAESTADO") !=null) && !"".equalsIgnoreCase(row.getString("FECHAPRORROGAESTADO"))){%>
+											<% if ((row.getString("FECHAFINALESTADO") !=null) && !"".equalsIgnoreCase(row.getString("FECHAFINALESTADO"))){%>
+													<!-- Comprobamos cual de las dos fechas es mayor, para poner una u otra -->
+													<% if (GstDate.compararFechas(row.getString("FECHAPRORROGAESTADO"),row.getString("FECHAFINALESTADO")) ==0){%>
+														<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),row.getString("FECHAPRORROGAESTADO")))%>
+													<%}else{ %>
+														<% if (GstDate.compararFechas(row.getString("FECHAPRORROGAESTADO"),row.getString("FECHAFINALESTADO")) <0){%>
+															<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),row.getString("FECHAFINALESTADO")))%>
+														<%}else{ %>
+															<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),row.getString("FECHAPRORROGAESTADO")))%>
+														<% } %>	
+													<% } %>	
+											<%}else{ %>
+												<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),row.getString("FECHAPRORROGAESTADO")))%>
+											<% } %>			
+									<%}else{ %>
+										<% if ((row.getString("FECHAFINALESTADO") !=null) && !"".equalsIgnoreCase(row.getString("FECHAFINALESTADO"))){%>
+											<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),row.getString("FECHAFINALESTADO")))%>
+										<% } %>	
+									<% } %>			
 								<% } %>
 							</td>  	
 							<td>
