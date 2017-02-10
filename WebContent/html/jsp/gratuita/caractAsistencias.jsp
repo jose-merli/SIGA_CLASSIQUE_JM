@@ -60,6 +60,7 @@ String		violenciaGenero="";
 String		violenciaDomestica="";
 String		contraLibertadSexual="";
 String		victimaMenorAbusoMaltrato=""; 
+String		personaConDiscapacidad=""; 
 String		judicial="";
 String		civil="";
 String		penal="";
@@ -113,6 +114,7 @@ if(miform!=null)
 	 violenciaGenero = miform.getViolenciaGenero();
 	 contraLibertadSexual = miform.getContraLibertadSexual();
 	 victimaMenorAbusoMaltrato = miform.getVictimaMenorAbusoMaltrato();
+	 personaConDiscapacidad = miform.getPersonaConDiscapacidad();
 	 judicial = miform.getJudicial();
 	 civil = miform.getCivil();
 	 penal = miform.getPenal();
@@ -332,6 +334,15 @@ function fVictimaMenorAbusoMaltrato(o)
 		document.forms[0].victimaMenorAbusoMaltrato.value = "1";
 	} else {		 	
 		document.forms[0].victimaMenorAbusoMaltrato.value = "0";
+	}		
+}
+
+function fPersonaConDiscapacidad(o) 
+{
+	if (o.checked) { 			
+		document.forms[0].personaConDiscapacidad.value = "1";
+	} else {		 	
+		document.forms[0].personaConDiscapacidad.value = "0";
 	}		
 }
 
@@ -617,6 +628,7 @@ function bloquearDesbloquear(o)
 <html:hidden styleId="jsonVolver" property = "jsonVolver"  />
 <!-- VARIABLES HIDDEN -->
 <input type="hidden" name="violenciaDomestica" value="<%=violenciaDomestica%>">
+<input type="hidden" name="personaConDiscapacidad" value="<%=personaConDiscapacidad%>">
 <input type="hidden" name="violenciaGenero" value="<%=violenciaGenero%>">
 <input type="hidden" name="contraLibertadSexual" value="<%=contraLibertadSexual%>">
 <input type="hidden" name="victimaMenorAbusoMaltrato" value="<%=victimaMenorAbusoMaltrato%>">
@@ -677,6 +689,8 @@ function bloquearDesbloquear(o)
 			<input type="checkbox" name="cVictimaMenorAbusoMaltrato" onclick="fVictimaMenorAbusoMaltrato(this);" <%=(victimaMenorAbusoMaltrato.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>
 			<siga:Idioma key="gratuita.caracteristicas.literal.victimaMenorAbusoMaltrato"/>&nbsp;
 						 	
+			<input type="checkbox" name="cPersonaConDiscapacidad" onclick="fPersonaConDiscapacidad(this);" <%=(personaConDiscapacidad.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>
+			<siga:Idioma key="gratuita.personaJG.literal.personaConDiscapacidad"/>&nbsp;
 		</td>
 	</tr>
 	<tr>

@@ -353,3 +353,13 @@ INSERT INTO SCS_HITOFACTURABLEGUARDIA (
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.confGuardia.actuacion.importeGuardia', 'Importe Guardia Ac#CA', 0, '2', sysdate, 0, '19');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.confGuardia.actuacion.importeGuardia', 'Importe Guardia Ac#EU', 0, '3', sysdate, 0, '19');
 
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+values ('gratuita.personaJG.literal.personaConDiscapacidad', 'Persona con discapacidad psíquica víctima de abuso o maltrato', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+values ('gratuita.personaJG.literal.personaConDiscapacidad', 'Persona con discapacidad psíquica víctima de abuso o maltrato#GL', 0, '4', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+values ('gratuita.personaJG.literal.personaConDiscapacidad', 'Persona con discapacidad psíquica víctima de abuso o maltrato#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
+values ('gratuita.personaJG.literal.personaConDiscapacidad', 'Persona con discapacidad psíquica víctima de abuso o maltrato#EU', 0, '3', sysdate, 0, '19');
+
+alter table SCS_CARACTASISTENCIA add PERSONACONDISCAPACIDAD VARCHAR2(1) DEFAULT 0;

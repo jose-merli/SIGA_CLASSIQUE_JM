@@ -20,6 +20,7 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	private String		otroDescripcionOrigenContacto;
 	private String		contraLibertadSexual;
 	private String		victimaMenorAbusoMaltrato;
+	private String      personaConDiscapacidad;
 	private String		judicial;
 	private String		civil;
 	private String		penal;
@@ -94,6 +95,7 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	static public final String 	C_NIG =									"NIG";
 	static public final String 	C_VIOLENCIAGENERO =						"VIOLENCIAGENERO";
 	static public final String 	C_VIOLENCIADOMESTICA =					"VIOLENCIADOMESTICA";
+	static public final String 	C_PERSONACONDISCAPACIDAD =				"PERSONACONDISCAPACIDAD";
 	
 	
 	public Integer getIdInstitucion() {
@@ -326,6 +328,13 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	public void setViolenciaDomestica(String violenciaDomestica) {
 		this.violenciaDomestica = violenciaDomestica;
 	}
+	public String getPersonaConDiscapacidad() {
+		return personaConDiscapacidad;
+	}
+	public void setPersonaConDiscapacidad(String personaConDiscapacidad) {
+		this.personaConDiscapacidad = personaConDiscapacidad;
+	}
+	
 
 }
 
