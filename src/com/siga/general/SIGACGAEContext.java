@@ -664,13 +664,30 @@ System.setProperties(properties);
 			//@certificado.setRol(usu.getRol());
 			// RGG SE PONE LA DESCRIPCION certificado.setRol(usu.getRol_codigo());
 			certificado.setRol(usu.getRolDesc());
+			//Añadimos el email
+			if(usu.getUsu_mail() != null && !"".equalsIgnoreCase(usu.getUsu_mail())){
+				certificado.setEmail(usu.getUsu_mail());
+			}
 			certificadoAdm.insert(certificado);
+			
 			}catch(Exception e){
 			 throw new SIGAException("messages.general.errorGrupoPorDefectoDuplicado");
 			}
+		}else{//Si existe tenemos que ver si tiene dirección de correo
+			AdmCertificadosBean admCertificadosBean=(AdmCertificadosBean)vec.elementAt(0);
+			if(admCertificadosBean.getEmail() == null || "".equalsIgnoreCase(admCertificadosBean.getEmail()) ){  //Si no está rellenado el email en bbdd
+				if(usu.getUsu_mail() != null && !"".equalsIgnoreCase(usu.getUsu_mail())){ //Si viene una dirección
+					String sql="update adm_certificados set email='"+usu.getUsu_mail()+"'"+
+							" where "+AdmCertificadosBean.C_IDINSTITUCION+"="+idInstitucion+" AND "+
+							 AdmCertificadosBean.C_NUMSERIE+"='"+usu.getNum_serie_cert().trim()+"'";
+					certificadoAdm.updateDirectSQL(sql);			
+				}
+			}else{
+				//Si está relleno y no son iguales lanzamos una excepción por si es una suplantación
+				if(usu.getUsu_mail() == null || !admCertificadosBean.getEmail().equalsIgnoreCase(usu.getUsu_mail())){
+					 throw new SIGAException("messages.general.errorEmailCertificado");
+				}
+			}
 		}
 	}
-
-
-
 }

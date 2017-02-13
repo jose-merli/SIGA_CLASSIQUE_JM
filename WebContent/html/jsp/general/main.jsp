@@ -89,15 +89,18 @@
 	
 	<title><siga:Idioma key="index.title" /></title>
 
-	<!-- ESTILOS Y JAVASCRIPT -->	
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>"/>
+
+<!-- ESTILOS Y JAVASCRIPT -->	
+ 	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>"/>
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
-	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.blockUI.js'/>"></script> -->
-	<script type="text/javascript" src="<html:rewrite page='/html/dropdownchecklist/ui.dropdownchecklist-1.4-min.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
+ 	<script type="text/javascript" src="<html:rewrite page='/html/dropdownchecklist/ui.dropdownchecklist-1.4-min.js'/>"></script>
+	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.blockUI.js'/>"></script> -->
+	
 	
 	<style type="text/css">
 	.notice-wrap {
@@ -152,12 +155,50 @@
 
 			function usuario()
 			{
-				MM_swapImage('AbrirUsuario','','<%=app%>/html/imagenes/botonUsuario_activo.gif',1);
-				f = "dialogHeight:250px;dialogWidth:450px;status:no;unadorned:no;scroll:no"
-				//"width=750,height=200,scrollbars=no;resizable:no;top=100;left=100;Directories=no;Location=no;Menubar=no;Status=yes;Toolbar=no;"
-				var returnValue = showModalDialog("<%=app%>/html/jsp/general/ventanaUsuario.jsp", "", f);
+			
+					jQuery.ajax({ //Comunicación jQuery hacia JSP  
+							type: "POST",
+					url: "/SIGA/GEN_InformacionUsuario.do?modo=getAjaxObtenerInfoUsuario",
+					data: "idCombo=",
+					dataType: "json",
+					success: function(json){	
+						if(json.Encontrado =="SI"){
+							jQuery("#dialogoInsercion").html("");
+							jQuery("#dialogoInsercion").append("<b>Nombre: </b>");
+							jQuery("#dialogoInsercion").append(json.Nombre + "</br>");
+							jQuery("#dialogoInsercion").append("<b>DNI: </b>");
+							jQuery("#dialogoInsercion").append(json.DNI + "</br>");
+							jQuery("#dialogoInsercion").append("<b>Grupo: </b>");
+							jQuery("#dialogoInsercion").append(json.Grupo+ "</br>");
+							jQuery("#dialogoInsercion").append("<b>Institución: </b>");
+							jQuery("#dialogoInsercion").append(json.Institucion+ "</br>");
+							jQuery("#dialogoInsercion").append("<b>Fecha último acceso: </b>");
+							jQuery("#dialogoInsercion").append(json.FechaAcceso);
+							jQuery("#dialogoInsercion").dialog(
+									{
+									      height: 270,
+									      width: 525,
+									      modal: true,
+									      resizable: false,
+									      buttons: {
+									    	  "Cerrar": function() {
+													jQuery(this).dialog("close");
+												}
+									      }
+									}
+								);
+						}else{
+							alert('No existe Usuario de acceso en el sistema ');
+						}
+					},
+					error: function(e){
+						alert('Error de comunicación: ' + e);
+						fin();
+					}
+				});				
+				jQuery(".ui-widget-overlay").css("opacity","0");
 				window.top.focus();
-				return returnValue;
+				return false;
 			}
 			
 			
@@ -375,6 +416,7 @@
 	<div id="divEspera" title="Espere por favor" style="z-index:100; position:absolute;vertical-align: center;display:none; top:45%; left:450px">
 		<span class="labelText"></span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>
 	</div>
-	
+	<div id="dialogoInsercion"  title='Datos Usuario' style="display: none">
+	</div>
 </body>
 </html>

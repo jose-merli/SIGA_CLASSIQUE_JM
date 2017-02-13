@@ -3463,7 +3463,11 @@
 		</action>
 		
 		<action path="/GEN_Comisarias" type="com.siga.general.ComisariasAction" scope="request">
-		</action>			
+		</action>	
+		
+		<action path="/GEN_InformacionUsuario" type="com.siga.general.UsuariosAction" scope="request">
+		</action>	
+			
 		
 		<action path="/JGR_DatosEconomicosEJG" type="com.siga.gratuita.action.DatosEconomicosEJGAction" name="DatosEconomicosEJGForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/datosEconomicos.jsp"/>

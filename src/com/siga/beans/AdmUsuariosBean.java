@@ -29,6 +29,8 @@ public class AdmUsuariosBean extends MasterBean
 	static public final String C_IDS_GRUPOS = "IDSGRUPOS";
 	static public final String C_IDS_PERFILES = "IDSPERFILES";
 	static public final String C_CODIGOEXT = "CODIGOEXT";
+	static public final String C_FECHA_REGISTRO = "FECHA_REGISTRO";
+	
 	
 	static public final String F_GRUPOS = "F_SIGA_ROLES_USUARIO(" + C_IDINSTITUCION + " , " + C_IDUSUARIO + ") AS " + C_IDS_GRUPOS;
 
