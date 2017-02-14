@@ -91,16 +91,14 @@
 
 
 <!-- ESTILOS Y JAVASCRIPT -->	
- 	
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>"/>
+	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
- 	<script type="text/javascript" src="<html:rewrite page='/html/dropdownchecklist/ui.dropdownchecklist-1.4-min.js'/>"></script>
 	<!-- <script type="text/javascript" src="<html:rewrite page='/html/js/jquery.blockUI.js'/>"></script> -->
-	
+	<script type="text/javascript" src="<html:rewrite page='/html/dropdownchecklist/ui.dropdownchecklist-1.4-min.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
 	
 	<style type="text/css">
 	.notice-wrap {
@@ -174,7 +172,7 @@
 							jQuery("#dialogoInsercion").append(json.Institucion+ "</br>");
 							jQuery("#dialogoInsercion").append("<b>Fecha último acceso: </b>");
 							jQuery("#dialogoInsercion").append(json.FechaAcceso);
-							jQuery("#dialogoInsercion").dialog(
+							$("#dialogoInsercion").dialog(
 									{
 									      height: 270,
 									      width: 525,
