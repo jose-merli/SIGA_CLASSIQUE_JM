@@ -115,7 +115,7 @@
 	</style>
 	
 	<script type="text/javascript">
-	
+	jQuery.noConflict();
 	  var _gaq = _gaq || [];
 	  _gaq.push(['_setAccount', '<%=idAnalytics%>']);
 	  _gaq.push(['_trackPageview']);
@@ -161,17 +161,17 @@
 					dataType: "json",
 					success: function(json){	
 						if(json.Encontrado =="SI"){
-							jQuery("#dialogoInsercion").html("");
-							jQuery("#dialogoInsercion").append("<b>Nombre: </b>");
-							jQuery("#dialogoInsercion").append(json.Nombre + "</br>");
-							jQuery("#dialogoInsercion").append("<b>DNI: </b>");
-							jQuery("#dialogoInsercion").append(json.DNI + "</br>");
-							jQuery("#dialogoInsercion").append("<b>Grupo: </b>");
-							jQuery("#dialogoInsercion").append(json.Grupo+ "</br>");
-							jQuery("#dialogoInsercion").append("<b>Institución: </b>");
-							jQuery("#dialogoInsercion").append(json.Institucion+ "</br>");
-							jQuery("#dialogoInsercion").append("<b>Fecha último acceso: </b>");
-							jQuery("#dialogoInsercion").append(json.FechaAcceso);
+							$("#dialogoInsercion").html("");
+							$("#dialogoInsercion").append("<b>Nombre: </b>");
+							$("#dialogoInsercion").append(json.Nombre + "</br>");
+							$("#dialogoInsercion").append("<b>DNI: </b>");
+							$("#dialogoInsercion").append(json.DNI + "</br>");
+							$("#dialogoInsercion").append("<b>Grupo: </b>");
+							$("#dialogoInsercion").append(json.Grupo+ "</br>");
+							$("#dialogoInsercion").append("<b>Institución: </b>");
+							$("#dialogoInsercion").append(json.Institucion+ "</br>");
+							$("#dialogoInsercion").append("<b>Fecha último acceso: </b>");
+							$("#dialogoInsercion").append(json.FechaAcceso);
 							$("#dialogoInsercion").dialog(
 									{
 									      height: 270,
@@ -194,7 +194,7 @@
 						fin();
 					}
 				});				
-				jQuery(".ui-widget-overlay").css("opacity","0");
+				$(".ui-widget-overlay").css("opacity","0");
 				window.top.focus();
 				return false;
 			}
@@ -397,6 +397,7 @@
 	<script>
 
 	function jAlert(texto, ancho, alto){
+		jQuery.noConflict();
 		$("#dialog-message").html(texto);
 		$("#dialog-message").height(alto);
 		$("#dialog-message").dialog({
