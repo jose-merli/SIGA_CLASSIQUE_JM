@@ -180,7 +180,7 @@
 									      resizable: false,
 									      buttons: {
 									    	  "Cerrar": function() {
-													jQuery(this).dialog("close");
+													$(this).dialog("close");
 												}
 									      }
 									}
