@@ -302,3 +302,4 @@ Values  ('facturacion.ficheroBancarioAbonos.error.genera.xml.beneficiario', 'Gen
 
 -- Ejecutado en Integracion por AAG el 03/02 a las 10:15
 
+-- SIGA_125_005
