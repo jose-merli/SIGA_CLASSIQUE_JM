@@ -391,3 +391,17 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
  values ('messages.general.errorEmailCertificado', 'El email del certificado no se corresponde con el almacenado en el sistema#CA', 0, '2', sysdate, 0, '19');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) 
  values ('messages.general.errorEmailCertificado', 'El email del certificado no se corresponde con el almacenado en el sistema#EU', 0, '3', sysdate, 0, '19');
+ 
+ 
+ INSERT INTO Cer_Camposcertificados (IDCAMPOCERTIFICADO, NOMBRE,TIPOCAMPO,NOMBRESALIDA,CAPTURARDATOS,FECHAMODIFICACION,USUMODIFICACION) 
+VALUES (89,'FECHA_ESTADO_COLEGIAL','F','FECHA_ESTADO_COLEGIAL','N',SYSDATE,0);
+
+update GEN_CATALOGOS_MULTIIDIOMA set migrado = 'N' where nombretabla = 'CER_CAMPOSCERTIFICADOS';
+
+declare
+    p_codretorno varchar2(4000);
+      p_datoserror varchar2(4000);
+   begin
+     proc_act_recursos(p_codretorno, p_datoserror);
+     dbms_output.put_line(p_codretorno || ': ' || p_datoserror);
+   end;
