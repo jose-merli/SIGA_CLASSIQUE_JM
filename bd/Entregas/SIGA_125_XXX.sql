@@ -303,3 +303,17 @@ Values  ('facturacion.ficheroBancarioAbonos.error.genera.xml.beneficiario', 'Gen
 -- Ejecutado en Integracion por AAG el 03/02 a las 10:15
 
 -- SIGA_125_005
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('fcs.forma_facturar_actuaciones_designa_defin.ayuda', 'Cómo se facturan las actuaciones con acreditación de FIN. Valores posibles: 0 - (Natural/Porcentual) Aplicar el porcentaje de la acreditación sobre el importe del módulo; 1 - (Resto) Facturar el 100% del importe del módulo restando lo que se haya facturado ya en la actuación de Inicio correspondiente (misma designación y módulo)', 0, 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('fcs.forma_facturar_actuaciones_designa_defin.ayuda', 'Cómo se facturan las actuaciones con acreditación de FIN. Valores posibles: 0 - (Natural/Porcentual) Aplicar el porcentaje de la acreditación sobre el importe del módulo; 1 - (Resto) Facturar el 100% del importe del módulo restando lo que se haya facturado ya en la actuación de Inicio correspondiente (misma designación y módulo)#CA', 0, 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('fcs.forma_facturar_actuaciones_designa_defin.ayuda', 'Cómo se facturan las actuaciones con acreditación de FIN. Valores posibles: 0 - (Natural/Porcentual) Aplicar el porcentaje de la acreditación sobre el importe del módulo; 1 - (Resto) Facturar el 100% del importe del módulo restando lo que se haya facturado ya en la actuación de Inicio correspondiente (misma designación y módulo)#EU', 0, 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('fcs.forma_facturar_actuaciones_designa_defin.ayuda', 'Cómo se facturan las actuaciones con acreditación de FIN. Valores posibles: 0 - (Natural/Porcentual) Aplicar el porcentaje de la acreditación sobre el importe del módulo; 1 - (Resto) Facturar el 100% del importe del módulo restando lo que se haya facturado ya en la actuación de Inicio correspondiente (misma designación y módulo)#GL', 0, 4, Sysdate, 0, '19');
+
+Insert Into gen_parametros  (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
+Values  ('FCS', 'FORMA_FACTURAR_ACTUACIONES_DESIGNA_DEFIN', '0', Sysdate, 0, 0, 'fcs.forma_facturar_actuaciones_designa_defin.ayuda');
+Insert Into gen_parametros  (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
+Values  ('FCS', 'FORMA_FACTURAR_ACTUACIONES_DESIGNA_DEFIN', '1', Sysdate, 0, 2003, 'fcs.forma_facturar_actuaciones_designa_defin.ayuda');
