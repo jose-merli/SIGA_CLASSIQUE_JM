@@ -243,7 +243,7 @@
 		</script>
 	</head>
 
-	<body class="tablaCentralCampos" onLoad="situacionLetrado();buscar();calcularAltura();comprobarDuplicados('<%=idInstitucionAcceso%>', '<%=idPersona%>', '<%=nif%>', '<%=nombreSolo%>', '<%=apellidos%>', '', '<%=idInstitucion%>', '<%=numero%>');">
+	<body class="tablaCentralCampos" onLoad="situacionLetrado();buscar();calcularAltura();comprobarDuplicados('<%=idInstitucionAcceso%>', '<%=idPersona%>', '<%=nif%>', '<%=nombreSolo.replaceAll("'","@")%>', '<%=apellidos.replaceAll("'","@")%>', '', '<%=idInstitucion%>', '<%=numero%>');">
 	
 		<!-- ******* INFORMACION GENERAL CLIENTE ****** -->
 		<table class="tablaTitulo" align="center" cellspacing="0">

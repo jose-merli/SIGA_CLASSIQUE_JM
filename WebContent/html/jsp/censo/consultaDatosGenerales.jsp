@@ -921,7 +921,7 @@
 		camposReadonly = false;
 	%>
 
-	<body class="tablaCentralCampos" onload="adaptaTamanoFoto();buscarGrupos();mostrarMensaje();obtenerTratamientos ('<%=sexo%>','<%=idTratamiento%>');comprobarDuplicados('<%=idInstitucionAcceso%>', '<%=idPersona%>', '<%=nIdentificacion%>', '<%=nombre%>', '<%=apellido1%>', '<%=apellido2%>', '<%=idInstitucion%>', '<%=numero%>');">
+	<body class="tablaCentralCampos" onload="adaptaTamanoFoto();buscarGrupos();mostrarMensaje();obtenerTratamientos ('<%=sexo%>','<%=idTratamiento%>');comprobarDuplicados('<%=idInstitucionAcceso%>', '<%=idPersona%>', '<%=nIdentificacion%>', '<%=nombre.replaceAll("'","@")%>', '<%=apellido1.replaceAll("'","@")%>', '<%=apellido2.replaceAll("'","@")%>', '<%=idInstitucion%>', '<%=numero%>');">
 
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->

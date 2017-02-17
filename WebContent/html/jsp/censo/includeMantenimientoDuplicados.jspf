@@ -37,7 +37,16 @@
 		}
 		
 		function comprobarDuplicados(idInstitucionAcceso, idPersona, nIdentificacion, nombre, apellido1, apellido2, idInstitucion, numCol) {
-		
+			if(nombre!= null && nombre != ""){
+				nombre=nombre.replace("@","'");
+			}
+			if(apellido1 != null && apellido1!= ""){
+				apellido1=apellido1.replace("@","'");
+			}
+			if(apellido2 != null && apellido2 !=""){
+				apellido2=apellido2.replace("@","'");
+			}
+			
 			jQuery("#iconoboton_cargando_1").hide();
 			jQuery("#iconoboton_aviso_1").hide();
 			
@@ -46,7 +55,6 @@
 			}
 			if (idInstitucionAcceso=="2000") {
 				jQuery("#iconoboton_cargando_1").show();
-				
 				jQuery.ajax({
 					type : "POST",
 					url : "/SIGA/CEN_MantenimientoDuplicados.do?modo=getAjaxObtenerDuplicados",
