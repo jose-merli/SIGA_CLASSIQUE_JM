@@ -1610,8 +1610,8 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 						tableBody.append("'', '" + (String) registro.get("NCOLEGIADO") + "', '" + (String) registro.get("IDINSTITUCION") + "', '', '', ''");
 					}
 					else if (registro.get("APELLIDOS") != null) {
-						tableBody.append("'', '', '', '" + (String) request.getParameter("nombre") + "','" + (String) request.getParameter("apellido1")
-							+ "','" + (String) request.getParameter("apellido2") + "'");
+						tableBody.append("'', '', '', '" + (String) request.getParameter("nombre").replaceAll("'","@") + "','" + (String) request.getParameter("apellido1").replaceAll("'","@")
+							+ "','" + (String) request.getParameter("apellido2").replaceAll("'","@") + "'");
 					}
 					else {
 						tableBody.append("'" + (String) request.getParameter("nidSolicitante") + "', '', '', '', '', ''");

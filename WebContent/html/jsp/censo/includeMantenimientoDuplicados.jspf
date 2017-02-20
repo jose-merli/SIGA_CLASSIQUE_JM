@@ -38,13 +38,13 @@
 		
 		function comprobarDuplicados(idInstitucionAcceso, idPersona, nIdentificacion, nombre, apellido1, apellido2, idInstitucion, numCol) {
 			if(nombre!= null && nombre != ""){
-				nombre=nombre.replace("@","'");
+				nombre=nombre.replace(/@/g ,"'");
 			}
 			if(apellido1 != null && apellido1!= ""){
-				apellido1=apellido1.replace("@","'");
+				apellido1=apellido1.replace(/@/g ,"'");
 			}
 			if(apellido2 != null && apellido2 !=""){
-				apellido2=apellido2.replace("@","'");
+				apellido2=apellido2.replace(/@/g ,"'");
 			}
 			
 			jQuery("#iconoboton_cargando_1").hide();
@@ -108,6 +108,15 @@
 			}
 		}
 		function mantenimientoDuplicados(nifcif, numcol, idinstitucion, nombre, apellido1, apellido2) {
+			if(nombre!= null && nombre != ""){
+				nombre=nombre.replace(/@/g , "'");
+			}
+			if(apellido1 != null && apellido1!= ""){
+				apellido1=apellido1.replace(/@/g , "'");
+			}
+			if(apellido2 != null && apellido2 !=""){
+				apellido2=apellido2.replace(/@/g , "'");
+			}
 			document.MantenimientoDuplicadosForm.nifcif.value = nifcif;
 			document.MantenimientoDuplicadosForm.numeroColegiado.value = numcol;
 			document.MantenimientoDuplicadosForm.idInstitucionDuplicados.value = idinstitucion;
