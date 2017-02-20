@@ -65,8 +65,10 @@ public class DuplicadosHelper{
 			// anyadiendo la busqueda por nombre y/o apellidos, si se introdujo en el formulario
 			String nombre = formulario.getNombreDuplicados();
 			nombre = (nombre == null || nombre.trim().equalsIgnoreCase("")) ? "" : nombre;
+			nombre = nombre.replaceAll("'", "''");
 			String apellidos = formulario.getApellidosDuplicados();
 			apellidos = (apellidos == null || apellidos.trim().equalsIgnoreCase("")) ? "" : apellidos;
+			apellidos = apellidos.replaceAll("'", "''");
 			
 			if (! nombre.equalsIgnoreCase("") || ! apellidos.equalsIgnoreCase("")) {
 				sqlFinal = new StringBuffer();
