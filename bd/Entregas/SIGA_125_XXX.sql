@@ -319,3 +319,6 @@ Insert Into gen_parametros  (modulo, parametro, valor, fechamodificacion, usumod
 Values  ('FCS', 'FORMA_FACTURAR_ACTUACIONES_DESIGNA_DEFIN', '1', Sysdate, 0, 2003, 'fcs.forma_facturar_actuaciones_designa_defin.ayuda');
 
 PKG_SIGA_FACTURACION_SJCS
+
+
+-- Ejecutado en Integracion por AAG el 20/02 a las 09:15
