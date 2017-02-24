@@ -3760,14 +3760,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                          p_Codretorno      Out Varchar2,
                                          p_Datoserror      Out Varchar2) Is
   
-    E_ERR_TOOMANY_FINS    EXCEPTION;
-    E_ERR_SEVERAL_INICIOS EXCEPTION;
-    
     C_FACTURA_FINES_PORCENTAJE  Constant Number := 0;
     C_FACTURA_FINES_RESTOINICIO Constant Number := 1;
     C_ACREDITACION_INICIO       Constant Number := 2;
     C_ACREDITACION_FIN          Constant Number := 3;
     v_tipo_facturacion_fines    Number;
+    n_fines                     Number;
     n_inicios_enestafacturacion Number;
     n_inicios_facturados        Number;
     n_fines_enestafacturacion   Number;
@@ -3775,6 +3773,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
     n_importe_Inicio_EstaFact   Fcs_Fact_Actuaciondesigna.Precioaplicado%Type;
     n_Importe_Inicio_Facturado  Fcs_Fact_Actuaciondesigna.Precioaplicado%Type;
     b_variosPrecios             Boolean;
+    
+    n_Actuac_Inicio_ant2012_Nofact Number;
+    
+    v_designas_TOOMANY_FINS     Varchar2(4000);
+    v_designas_SEVERAL_INICIOS  Varchar2(4000);
     
     v_Fechadesde Date;
     v_Fechahasta Date;
@@ -3812,7 +3815,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
              Scs_Actuaciondesigna.Idprocedimiento,
              Scs_Acreditacion.Descripcion,
              Scs_Acreditacionprocedimiento.Porcentaje,
-             Scs_Designa.Anio || '/' || Scs_Designa.Codigo As Numerodesigna
+             Scs_Designa.Anio || '/' || Scs_Designa.Codigo || Scs_Designa.Sufijo As Numerodesigna
         From Scs_Actuaciondesigna, Scs_Designa, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
        Where Scs_Actuaciondesigna.Idinstitucion = Scs_Designa.Idinstitucion
          And Scs_Actuaciondesigna.Idturno = Scs_Designa.Idturno
@@ -3867,134 +3870,31 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         
           v_Datoserror2 := 'Obteniendo el importe para la Actuacion de Designa';
           If v_tipo_facturacion_fines = C_FACTURA_FINES_RESTOINICIO And v_Actdesigna.Idacreditacion = C_ACREDITACION_FIN Then
-            -- obteniendo numero de actuaciones ...
-            Select Count(1) Into n_inicios_enestafacturacion
-              From Scs_Actuaciondesigna, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
-             Where Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Procedimientos.Idinstitucion
-               And Scs_Actuaciondesigna.Idprocedimiento = Scs_Procedimientos.Idprocedimiento
-               And Scs_Actuaciondesigna.Idacreditacion = Scs_Acreditacionprocedimiento.Idacreditacion
-               And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
-               And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
-               And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
-               
-               -- ... para la misma designacion y modulo ...
-               And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
-               And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
-               And Scs_Actuaciondesigna.Anio = v_Actdesigna.Anio
-               And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
-               And Scs_Actuaciondesigna.Idinstitucion_Proc = v_Actdesigna.Idinstitucion_Proc
-               And Scs_Actuaciondesigna.Idprocedimiento = v_Actdesigna.Idprocedimiento
-               
-               -- .. de inicio ...
-               And Scs_Actuaciondesigna.Idacreditacion = C_ACREDITACION_INICIO
-               
-               -- ... en esta facturacion. (CONDICIONES PARA ENTRAR EN ESTA FACTURACION - SIEMPRE IGUAL)
-               And Scs_Actuaciondesigna.Fechajustificacion Is Not Null
-               And Trunc(Scs_Actuaciondesigna.Fechajustificacion) Between Trunc(v_Fechadesde) And Trunc(v_Fechahasta)
-               And (Nvl(Scs_Actuaciondesigna.Facturado, 0) <> 1 Or Scs_Actuaciondesigna.idfacturacion = p_Idfacturacion)
-               And Nvl(Scs_Actuaciondesigna.Validada, '0') = '1'
-               And Nvl(Scs_Actuaciondesigna.Anulacion, '0') = '0'
-               And Scs_Actuaciondesigna.Idpersonacolegiado Is Not Null;
-               
-            -- obteniendo numero de actuaciones ...
-            Select Count(1) Into n_inicios_facturados
-              From Scs_Actuaciondesigna, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
-             Where Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Procedimientos.Idinstitucion
-               And Scs_Actuaciondesigna.Idprocedimiento = Scs_Procedimientos.Idprocedimiento
-               And Scs_Actuaciondesigna.Idacreditacion = Scs_Acreditacionprocedimiento.Idacreditacion
-               And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
-               And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
-               And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
-               
-               -- ... para la misma designacion y modulo ...
-               And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
-               And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
-               And Scs_Actuaciondesigna.Anio = v_Actdesigna.Anio
-               And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
-               And Scs_Actuaciondesigna.Idinstitucion_Proc = v_Actdesigna.Idinstitucion_Proc
-               And Scs_Actuaciondesigna.Idprocedimiento = v_Actdesigna.Idprocedimiento
-               
-               -- .. de inicio ...
-               And Scs_Actuaciondesigna.Idacreditacion = C_ACREDITACION_INICIO
-               
-               -- ... ya facturadas.
-               And (Nvl(Scs_Actuaciondesigna.Facturado, 0) = 1 And Scs_Actuaciondesigna.idfacturacion <> p_Idfacturacion);
-               
-            -- obteniendo numero de actuaciones ...
-            Select Count(1) Into n_fines_enestafacturacion
-              From Scs_Actuaciondesigna, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
-             Where Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Procedimientos.Idinstitucion
-               And Scs_Actuaciondesigna.Idprocedimiento = Scs_Procedimientos.Idprocedimiento
-               And Scs_Actuaciondesigna.Idacreditacion = Scs_Acreditacionprocedimiento.Idacreditacion
-               And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
-               And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
-               And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
-               
-               -- ... para la misma designacion y modulo ...
-               And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
-               And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
-               And Scs_Actuaciondesigna.Anio = v_Actdesigna.Anio
-               And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
-               And Scs_Actuaciondesigna.Idinstitucion_Proc = v_Actdesigna.Idinstitucion_Proc
-               And Scs_Actuaciondesigna.Idprocedimiento = v_Actdesigna.Idprocedimiento
-               
-               -- .. de fin ...
-               And Scs_Actuaciondesigna.Idacreditacion = C_ACREDITACION_FIN
-               
-               -- ... en esta facturacion. (CONDICIONES PARA ENTRAR EN ESTA FACTURACION - SIEMPRE IGUAL)
-               And Scs_Actuaciondesigna.Fechajustificacion Is Not Null
-               And Trunc(Scs_Actuaciondesigna.Fechajustificacion) Between Trunc(v_Fechadesde) And Trunc(v_Fechahasta)
-               And (Nvl(Scs_Actuaciondesigna.Facturado, 0) <> 1 Or Scs_Actuaciondesigna.idfacturacion = p_Idfacturacion)
-               And Nvl(Scs_Actuaciondesigna.Validada, '0') = '1'
-               And Nvl(Scs_Actuaciondesigna.Anulacion, '0') = '0'
-               And Scs_Actuaciondesigna.Idpersonacolegiado Is Not Null;
-               
-            -- obteniendo numero de actuaciones ...
-            Select Count(1) Into n_fines_facturados
-              From Scs_Actuaciondesigna, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
-             Where Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Procedimientos.Idinstitucion
-               And Scs_Actuaciondesigna.Idprocedimiento = Scs_Procedimientos.Idprocedimiento
-               And Scs_Actuaciondesigna.Idacreditacion = Scs_Acreditacionprocedimiento.Idacreditacion
-               And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
-               And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
-               And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
-               
-               -- ... para la misma designacion y modulo ...
-               And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
-               And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
-               And Scs_Actuaciondesigna.Anio = v_Actdesigna.Anio
-               And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
-               And Scs_Actuaciondesigna.Idinstitucion_Proc = v_Actdesigna.Idinstitucion_Proc
-               And Scs_Actuaciondesigna.Idprocedimiento = v_Actdesigna.Idprocedimiento
-               
-               -- .. de fin ...
-               And Scs_Actuaciondesigna.Idacreditacion = C_ACREDITACION_FIN
-               
-               -- ... ya facturadas.
-               And (Nvl(Scs_Actuaciondesigna.Facturado, 0) = 1 And Scs_Actuaciondesigna.idfacturacion <> p_Idfacturacion);
-               
-               
-            -- comprobando que el numero de actuaciones de fin es menor o igual al numero de actuaciones de inicio para esta misma designacion o modulo
-            If n_inicios_facturados + n_inicios_enestafacturacion < n_fines_facturados + n_fines_enestafacturacion Then
-              v_Datoserror2 := 'Error al facturar una actuación de fin en la designación ´' || 
-                               v_Actdesigna.Numerodesigna || 
-                               '´: no se ha encontrado su actuación de inicio correspondiente';
-              Raise E_ERR_TOOMANY_FINS;
-            End If;
             
-            b_variosPrecios := False;
             Begin
-              n_Importe_Inicio_Facturado := Null;
-              -- obteniendo importe ya facturado ...
-              Select Distinct 
-                     (Select Sum(Round(Facact_Ini.Precioaplicado * Facact_Ini.Porcentajefacturado / 100, 2))
-                        From Fcs_Fact_Actuaciondesigna Facact_Ini
-                       Where Scs_Actuaciondesigna.Idinstitucion = Facact_Ini.Idinstitucion
-                         And Scs_Actuaciondesigna.Idturno = Facact_Ini.Idturno
-                         And Scs_Actuaciondesigna.Anio = Facact_Ini.Anio
-                         And Scs_Actuaciondesigna.Numero = Facact_Ini.Numero
-                         And Scs_Actuaciondesigna.Numeroasunto = Facact_Ini.Numeroasunto)
-                Into n_Importe_Inicio_Facturado
+              v_Datoserror2 := 'Comprobando en el caso de que haya mas de una actuacion de Fin, que se corresponden las de Inicio con las de Fin';
+              
+              -- obteniendo numero de actuaciones ...
+              Select Count(1) Into n_fines
+                From Scs_Actuaciondesigna, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
+               Where Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Procedimientos.Idinstitucion
+                 And Scs_Actuaciondesigna.Idprocedimiento = Scs_Procedimientos.Idprocedimiento
+                 And Scs_Actuaciondesigna.Idacreditacion = Scs_Acreditacionprocedimiento.Idacreditacion
+                 And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
+                 And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
+                 And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
+                 
+                 -- ... para la misma designacion ...
+                 And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
+                 And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
+                 And Scs_Actuaciondesigna.Anio = v_Actdesigna.Anio
+                 And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
+                 
+                 -- .. de fin ...
+                 And Scs_Actuaciondesigna.Idacreditacion = C_ACREDITACION_FIN;
+              
+              -- obteniendo numero de actuaciones ...
+              Select Count(1) Into n_inicios_enestafacturacion
                 From Scs_Actuaciondesigna, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
                Where Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Procedimientos.Idinstitucion
                  And Scs_Actuaciondesigna.Idprocedimiento = Scs_Procedimientos.Idprocedimiento
@@ -4012,15 +3912,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                  And Scs_Actuaciondesigna.Idprocedimiento = v_Actdesigna.Idprocedimiento
                  
                  -- .. de inicio ...
-                 And Scs_Actuaciondesigna.Idacreditacion = c_Acreditacion_Inicio
+                 And Scs_Actuaciondesigna.Idacreditacion = C_ACREDITACION_INICIO
                  
-                 -- ... ya facturadas.
-                 And (Nvl(Scs_Actuaciondesigna.Facturado, 0) = 1 And Scs_Actuaciondesigna.Idfacturacion <> p_Idfacturacion);
-              
-              n_Importe_Inicio_Estafact  := Null;
-              -- obteniendo importe de esta facturacion ...
-              Select Distinct Round(Scs_Procedimientos.Precio * Scs_Acreditacionprocedimiento.Porcentaje / 100, 2)
-                Into n_Importe_Inicio_Estafact
+                 -- ... (CONDICIONES PARA ENTRAR EN ESTA FACTURACION - SIEMPRE IGUAL)
+                 And Scs_Actuaciondesigna.Fechajustificacion Is Not Null
+                 And Trunc(Scs_Actuaciondesigna.Fechajustificacion) Between Trunc(v_Fechadesde) And Trunc(v_Fechahasta)
+                 And (Nvl(Scs_Actuaciondesigna.Facturado, 0) <> 1 Or Scs_Actuaciondesigna.idfacturacion = p_Idfacturacion)
+                 And Nvl(Scs_Actuaciondesigna.Validada, '0') = '1'
+                 And Nvl(Scs_Actuaciondesigna.Anulacion, '0') = '0'
+                 And Scs_Actuaciondesigna.Idpersonacolegiado Is Not Null;
+                 
+              -- obteniendo numero de actuaciones ...
+              Select Count(1) Into n_inicios_facturados
                 From Scs_Actuaciondesigna, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
                Where Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Procedimientos.Idinstitucion
                  And Scs_Actuaciondesigna.Idprocedimiento = Scs_Procedimientos.Idprocedimiento
@@ -4028,35 +3931,304 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                  And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
                  And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
                  And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
-                    
-                    -- ... para la misma designacion y modulo ...
+                 
+                 -- ... para la misma designacion y modulo ...
                  And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
                  And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
                  And Scs_Actuaciondesigna.Anio = v_Actdesigna.Anio
                  And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
                  And Scs_Actuaciondesigna.Idinstitucion_Proc = v_Actdesigna.Idinstitucion_Proc
                  And Scs_Actuaciondesigna.Idprocedimiento = v_Actdesigna.Idprocedimiento
-                    
-                    -- .. de inicio ...
-                 And Scs_Actuaciondesigna.Idacreditacion = c_Acreditacion_Inicio
-                    
-                    -- ... en esta facturacion. (CONDICIONES PARA ENTRAR EN ESTA FACTURACION - SIEMPRE IGUAL)
+                 
+                 -- .. de inicio ...
+                 And Scs_Actuaciondesigna.Idacreditacion = C_ACREDITACION_INICIO
+                 
+                 -- ... ya facturadas.
+                 And (Nvl(Scs_Actuaciondesigna.Facturado, 0) = 1 And Scs_Actuaciondesigna.idfacturacion <> p_Idfacturacion);
+                 
+              -- obteniendo numero de actuaciones ...
+              Select Count(1) Into n_fines_enestafacturacion
+                From Scs_Actuaciondesigna, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
+               Where Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Procedimientos.Idinstitucion
+                 And Scs_Actuaciondesigna.Idprocedimiento = Scs_Procedimientos.Idprocedimiento
+                 And Scs_Actuaciondesigna.Idacreditacion = Scs_Acreditacionprocedimiento.Idacreditacion
+                 And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
+                 And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
+                 And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
+                 
+                 -- ... para la misma designacion y modulo ...
+                 And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
+                 And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
+                 And Scs_Actuaciondesigna.Anio = v_Actdesigna.Anio
+                 And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
+                 And Scs_Actuaciondesigna.Idinstitucion_Proc = v_Actdesigna.Idinstitucion_Proc
+                 And Scs_Actuaciondesigna.Idprocedimiento = v_Actdesigna.Idprocedimiento
+                 
+                 -- .. de fin ...
+                 And Scs_Actuaciondesigna.Idacreditacion = C_ACREDITACION_FIN
+                 
+                 -- ... (CONDICIONES PARA ENTRAR EN ESTA FACTURACION - SIEMPRE IGUAL)
                  And Scs_Actuaciondesigna.Fechajustificacion Is Not Null
                  And Trunc(Scs_Actuaciondesigna.Fechajustificacion) Between Trunc(v_Fechadesde) And Trunc(v_Fechahasta)
-                 And (Nvl(Scs_Actuaciondesigna.Facturado, 0) <> 1 Or Scs_Actuaciondesigna.Idfacturacion = p_Idfacturacion)
+                 And (Nvl(Scs_Actuaciondesigna.Facturado, 0) <> 1 Or Scs_Actuaciondesigna.idfacturacion = p_Idfacturacion)
                  And Nvl(Scs_Actuaciondesigna.Validada, '0') = '1'
                  And Nvl(Scs_Actuaciondesigna.Anulacion, '0') = '0'
                  And Scs_Actuaciondesigna.Idpersonacolegiado Is Not Null;
                  
-              If n_Importe_Inicio_Estafact Is Not Null And n_Importe_Inicio_Facturado Is Not Null And 
+              -- obteniendo numero de actuaciones ...
+              Select Count(1) Into n_fines_facturados
+                From Scs_Actuaciondesigna, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
+               Where Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Procedimientos.Idinstitucion
+                 And Scs_Actuaciondesigna.Idprocedimiento = Scs_Procedimientos.Idprocedimiento
+                 And Scs_Actuaciondesigna.Idacreditacion = Scs_Acreditacionprocedimiento.Idacreditacion
+                 And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
+                 And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
+                 And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
+                 
+                 -- ... para la misma designacion y modulo ...
+                 And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
+                 And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
+                 And Scs_Actuaciondesigna.Anio = v_Actdesigna.Anio
+                 And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
+                 And Scs_Actuaciondesigna.Idinstitucion_Proc = v_Actdesigna.Idinstitucion_Proc
+                 And Scs_Actuaciondesigna.Idprocedimiento = v_Actdesigna.Idprocedimiento
+                 
+                 -- .. de fin ...
+                 And Scs_Actuaciondesigna.Idacreditacion = C_ACREDITACION_FIN
+                 
+                 -- ... ya facturadas.
+                 And (Nvl(Scs_Actuaciondesigna.Facturado, 0) = 1 And Scs_Actuaciondesigna.idfacturacion <> p_Idfacturacion);
+                 
+              -- comprobando que el numero de actuaciones de fin es menor o igual al numero de actuaciones de inicio para esta misma designacion o modulo
+              If n_fines > 1 And n_inicios_facturados + n_inicios_enestafacturacion < n_fines_facturados + n_fines_enestafacturacion Then
+                If v_designas_TOOMANY_FINS is Null Then
+                  v_designas_TOOMANY_FINS := chr(10);
+                End If;
+                if length(v_designas_TOOMANY_FINS) < 3950 Then
+                  v_designas_TOOMANY_FINS := v_designas_TOOMANY_FINS || v_Actdesigna.Numerodesigna || chr(10);
+                Elsif length(v_designas_TOOMANY_FINS) > 3950 And length(v_designas_TOOMANY_FINS) < 3970 Then
+                  v_designas_TOOMANY_FINS := v_designas_TOOMANY_FINS || '...';
+                End If;
+              End If;
+            End;
+            
+            Begin
+              v_Datoserror2 := 'Buscando actuacion de Inicio correspondiente a la de Fin';
+              
+              b_variosPrecios := False;
+              
+              Begin
+                n_Importe_Inicio_Facturado := Null;
+                -- obteniendo importe ya facturado ...
+                Select Distinct 
+                       (Select Sum(Round(Facact_Ini.Precioaplicado * Facact_Ini.Porcentajefacturado / 100, 2))
+                          From Fcs_Fact_Actuaciondesigna Facact_Ini
+                         Where Scs_Actuaciondesigna.Idinstitucion = Facact_Ini.Idinstitucion
+                           And Scs_Actuaciondesigna.Idturno = Facact_Ini.Idturno
+                           And Scs_Actuaciondesigna.Anio = Facact_Ini.Anio
+                           And Scs_Actuaciondesigna.Numero = Facact_Ini.Numero
+                           And Scs_Actuaciondesigna.Numeroasunto = Facact_Ini.Numeroasunto)
+                  Into n_Importe_Inicio_Facturado
+                  From Scs_Actuaciondesigna, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
+                 Where Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Procedimientos.Idinstitucion
+                   And Scs_Actuaciondesigna.Idprocedimiento = Scs_Procedimientos.Idprocedimiento
+                   And Scs_Actuaciondesigna.Idacreditacion = Scs_Acreditacionprocedimiento.Idacreditacion
+                   And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
+                   And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
+                   And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
+                   
+                   -- ... para la misma designacion y modulo ...
+                   And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
+                   And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
+                   And Scs_Actuaciondesigna.Anio = v_Actdesigna.Anio
+                   And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
+                   And Scs_Actuaciondesigna.Idinstitucion_Proc = v_Actdesigna.Idinstitucion_Proc
+                   And Scs_Actuaciondesigna.Idprocedimiento = v_Actdesigna.Idprocedimiento
+                   
+                   -- .. de inicio ...
+                   And Scs_Actuaciondesigna.Idacreditacion = c_Acreditacion_Inicio
+                   
+                   -- ... ya facturada.
+                   And (Nvl(Scs_Actuaciondesigna.Facturado, 0) = 1 And Scs_Actuaciondesigna.Idfacturacion <> p_Idfacturacion);
+                   
+                If n_Importe_Inicio_Facturado = 0 Then
+                  n_Importe_Inicio_Facturado := Null;
+                End If;
+              Exception
+                When No_Data_Found Then
+                  Null;
+                When TOO_MANY_ROWS Then
+                  b_variosPrecios := True;
+              End;
+              
+              If n_Importe_Inicio_Facturado Is Null Then
+              Begin
+                -- obteniendo importe ya facturado ...
+                Select Distinct 
+                       (Select Sum(Round(Facact_Ini.Precioaplicado * Facact_Ini.Porcentajefacturado / 100, 2))
+                          From Fcs_Fact_Actuaciondesigna Facact_Ini
+                         Where Scs_Actuaciondesigna.Idinstitucion = Facact_Ini.Idinstitucion
+                           And Scs_Actuaciondesigna.Idturno = Facact_Ini.Idturno
+                           And Scs_Actuaciondesigna.Anio = Facact_Ini.Anio
+                           And Scs_Actuaciondesigna.Numero = Facact_Ini.Numero
+                           And Scs_Actuaciondesigna.Numeroasunto = Facact_Ini.Numeroasunto)
+                  Into n_Importe_Inicio_Facturado
+                  From Scs_Actuaciondesigna, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
+                 Where Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Procedimientos.Idinstitucion
+                   And Scs_Actuaciondesigna.Idprocedimiento = Scs_Procedimientos.Idprocedimiento
+                   And Scs_Actuaciondesigna.Idacreditacion = Scs_Acreditacionprocedimiento.Idacreditacion
+                   And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
+                   And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
+                   And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
+                   
+                   -- ... para la misma designacion (no miramos modulo) ...
+                   And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
+                   And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
+                   And Scs_Actuaciondesigna.Anio = v_Actdesigna.Anio
+                   And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
+                   
+                   -- .. de inicio ...
+                   And Scs_Actuaciondesigna.Idacreditacion = c_Acreditacion_Inicio
+                   
+                   -- ... ya facturada.
+                   And (Nvl(Scs_Actuaciondesigna.Facturado, 0) = 1 And Scs_Actuaciondesigna.Idfacturacion <> p_Idfacturacion);
+                   
+                If n_Importe_Inicio_Facturado = 0 Then
+                  n_Importe_Inicio_Facturado := Null;
+                End If;
+              Exception
+                When No_Data_Found Then
+                  Null;
+                When TOO_MANY_ROWS Then
+                  b_variosPrecios := True;
+              End;
+              End If;
+                
+              Begin
+                n_Importe_Inicio_Estafact  := Null;
+                -- obteniendo importe de esta facturacion ...
+                Select Distinct Round(Scs_Procedimientos.Precio * Scs_Acreditacionprocedimiento.Porcentaje / 100, 2)
+                  Into n_Importe_Inicio_Estafact
+                  From Scs_Actuaciondesigna, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
+                 Where Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Procedimientos.Idinstitucion
+                   And Scs_Actuaciondesigna.Idprocedimiento = Scs_Procedimientos.Idprocedimiento
+                   And Scs_Actuaciondesigna.Idacreditacion = Scs_Acreditacionprocedimiento.Idacreditacion
+                   And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
+                   And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
+                   And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
+                      
+                      -- ... para la misma designacion y modulo ...
+                   And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
+                   And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
+                   And Scs_Actuaciondesigna.Anio = v_Actdesigna.Anio
+                   And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
+                   And Scs_Actuaciondesigna.Idinstitucion_Proc = v_Actdesigna.Idinstitucion_Proc
+                   And Scs_Actuaciondesigna.Idprocedimiento = v_Actdesigna.Idprocedimiento
+                      
+                      -- .. de inicio ...
+                   And Scs_Actuaciondesigna.Idacreditacion = c_Acreditacion_Inicio
+                      
+                      -- ... en esta facturacion. (CONDICIONES PARA ENTRAR EN ESTA FACTURACION - SIEMPRE IGUAL)
+                   And Scs_Actuaciondesigna.Fechajustificacion Is Not Null
+                   And Trunc(Scs_Actuaciondesigna.Fechajustificacion) Between Trunc(v_Fechadesde) And Trunc(v_Fechahasta)
+                   And (Nvl(Scs_Actuaciondesigna.Facturado, 0) <> 1 Or Scs_Actuaciondesigna.Idfacturacion = p_Idfacturacion)
+                   And Nvl(Scs_Actuaciondesigna.Validada, '0') = '1'
+                   And Nvl(Scs_Actuaciondesigna.Anulacion, '0') = '0'
+                   And Scs_Actuaciondesigna.Idpersonacolegiado Is Not Null;
+              Exception
+                When No_Data_Found Then
+                  Null;
+                When TOO_MANY_ROWS Then
+                  b_variosPrecios := True;
+              End;
+                
+              If n_Importe_Inicio_Estafact Is Null Then
+              Begin
+                -- obteniendo importe de esta facturacion ...
+                Select Distinct Round(Scs_Procedimientos.Precio * Scs_Acreditacionprocedimiento.Porcentaje / 100, 2)
+                  Into n_Importe_Inicio_Estafact
+                  From Scs_Actuaciondesigna, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
+                 Where Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Procedimientos.Idinstitucion
+                   And Scs_Actuaciondesigna.Idprocedimiento = Scs_Procedimientos.Idprocedimiento
+                   And Scs_Actuaciondesigna.Idacreditacion = Scs_Acreditacionprocedimiento.Idacreditacion
+                   And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
+                   And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
+                   And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
+                      
+                      -- ... para la misma designacion (no miramos modulo) ...
+                   And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
+                   And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
+                   And Scs_Actuaciondesigna.Anio = v_Actdesigna.Anio
+                   And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
+                      
+                      -- .. de inicio ...
+                   And Scs_Actuaciondesigna.Idacreditacion = c_Acreditacion_Inicio
+                      
+                      -- ... en esta facturacion. (CONDICIONES PARA ENTRAR EN ESTA FACTURACION - SIEMPRE IGUAL)
+                   And Scs_Actuaciondesigna.Fechajustificacion Is Not Null
+                   And Trunc(Scs_Actuaciondesigna.Fechajustificacion) Between Trunc(v_Fechadesde) And Trunc(v_Fechahasta)
+                   And (Nvl(Scs_Actuaciondesigna.Facturado, 0) <> 1 Or Scs_Actuaciondesigna.Idfacturacion = p_Idfacturacion)
+                   And Nvl(Scs_Actuaciondesigna.Validada, '0') = '1'
+                   And Nvl(Scs_Actuaciondesigna.Anulacion, '0') = '0'
+                   And Scs_Actuaciondesigna.Idpersonacolegiado Is Not Null;
+              Exception
+                When No_Data_Found Then
+                  Null;
+                When TOO_MANY_ROWS Then
+                  b_variosPrecios := True;
+              End;
+              End If;
+
+              n_Actuac_Inicio_ant2012_Nofact := 0;
+              Begin
+                -- obteniendo cantidad de actuaciones
+                Select Count(1)
+                  Into n_Actuac_Inicio_ant2012_Nofact
+                  From Scs_Actuaciondesigna, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
+                 Where Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Procedimientos.Idinstitucion
+                   And Scs_Actuaciondesigna.Idprocedimiento = Scs_Procedimientos.Idprocedimiento
+                   And Scs_Actuaciondesigna.Idacreditacion = Scs_Acreditacionprocedimiento.Idacreditacion
+                   And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
+                   And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
+                   And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
+                      
+                      -- ... para la misma designacion (no miramos modulo) ...
+                   And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
+                   And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
+                   And Scs_Actuaciondesigna.Anio = v_Actdesigna.Anio
+                   And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
+                      
+                      -- ... de inicio ...
+                   And Scs_Actuaciondesigna.Idacreditacion = c_Acreditacion_Inicio
+                      -- ... antes de 2012 ...
+                   And Scs_Actuaciondesigna.Fechajustificacion < '01/01/2012'
+                      
+                      -- ... NO facturadas
+                   And (Nvl(Scs_Actuaciondesigna.Facturado, 0) <> 1);
+              Exception
+                When No_Data_Found Then
+                  n_Actuac_Inicio_ant2012_Nofact := 0;
+                When TOO_MANY_ROWS Then
+                  b_variosPrecios := True;
+              End;
+              
+              If n_Importe_Inicio_Estafact Is Null And n_Importe_Inicio_Facturado Is Null And 
+                 0 = n_Actuac_Inicio_ant2012_Nofact Then
+                -- Si no se ha obtenido ningun importe de inicio, se da error
+                If v_designas_TOOMANY_FINS is Null Then
+                  v_designas_TOOMANY_FINS := chr(10);
+                End If;
+                if length(v_designas_TOOMANY_FINS) < 3950 Then
+                  v_designas_TOOMANY_FINS := v_designas_TOOMANY_FINS || v_Actdesigna.Numerodesigna || chr(10);
+                Elsif length(v_designas_TOOMANY_FINS) > 3950 And length(v_designas_TOOMANY_FINS) < 3970 Then
+                  v_designas_TOOMANY_FINS := v_designas_TOOMANY_FINS || '...';
+                End If;
+                
+              Elsif n_Importe_Inicio_Estafact Is Not Null And n_Importe_Inicio_Facturado Is Not Null And 
                  n_Importe_Inicio_Estafact <> n_Importe_Inicio_Facturado Then
+                -- Si se han obtenido varios importes de inicio, se dara error probablemente
                 b_variosPrecios := True;
               End If;
-            Exception
-              When No_Data_Found Then
-                Null;
-              When TOO_MANY_ROWS Then
-                b_variosPrecios := True;
             End;
             
             If b_variosPrecios Then
@@ -4070,10 +4242,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 v_Porcentaje := v_Actdesigna.Porcentaje;
               Else
                 -- De otra forma, si hay varias actuaciones de inicio con varios precios, no se puede continuar
-                v_Datoserror2 := 'Error al facturar una actuación de fin en la designación ´' || 
-                                 v_Actdesigna.Numerodesigna || 
-                                 '´: se han encontrado varias actuaciones inicio con diferentes importes';
-                Raise E_ERR_SEVERAL_INICIOS;
+                If v_designas_SEVERAL_INICIOS is Null Then
+                  v_designas_SEVERAL_INICIOS := chr(10);
+                End If;
+                if length(v_designas_SEVERAL_INICIOS) < 3950 Then
+                  v_designas_SEVERAL_INICIOS := v_designas_SEVERAL_INICIOS || v_Actdesigna.Numerodesigna || chr(10);
+                Elsif length(v_designas_SEVERAL_INICIOS) > 3950 And length(v_designas_SEVERAL_INICIOS) < 3970 Then
+                  v_designas_SEVERAL_INICIOS := v_designas_SEVERAL_INICIOS || '...';
+                End If;
               End If;
             Else -- Si solo hay un precio de inicio, entonces se puede facturar sin problemas
               If n_Importe_Inicio_Facturado Is Not Null Then
@@ -4148,26 +4324,33 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         End Loop; -- Fin Actuacion Designa
       End Loop; -- Fin Turnos
     End Loop; -- Fin Grupos Facturacion
-  
-  
-    v_Datoserror2 := 'Fin correcto ';
-    p_Codretorno := v_Codretorno2;
-    p_Datoserror := v_Datoserror2;
-    p_Total      := To_Char(v_Total);
+    
+    If v_designas_TOOMANY_FINS Is Not Null Then
+      v_Datoserror2 := 'Error al facturar una actuación de fin, no se ha encontrado su actuación de inicio correspondiente. Esto ha ocurrido en las designaciones siguientes: ' || 
+                       v_designas_TOOMANY_FINS;
+    End If;
+    If v_designas_SEVERAL_INICIOS Is Not Null Then
+      v_Datoserror2 := v_Datoserror2 || chr(10);
+      v_Datoserror2 := v_Datoserror2 || 'Error al facturar una actuación de fin, se han encontrado varias actuaciones inicio con diferentes importes. Esto ha ocurrido en las designaciones siguientes: ' || 
+                       v_designas_SEVERAL_INICIOS;
+    End If;
+    
+    If v_designas_TOOMANY_FINS Is Not Null Or v_designas_SEVERAL_INICIOS Is Not Null Then
+      p_Total      := To_Char(0);
+      p_Codretorno := -1;
+      p_Datoserror := v_Datoserror2;
+    Else
+      v_Datoserror2 := 'Fin correcto ';
+      p_Total      := To_Char(v_Total);
+      p_Codretorno := v_Codretorno2;
+      p_Datoserror := v_Datoserror2;
+    End If;
     
   Exception
     When No_Data_Found Then
       p_Total      := To_Char(0);
       p_Codretorno := To_Char(Sqlcode);
       p_Datoserror := Sqlerrm || ' (' || v_Datoserror2 || ')';
-    When E_ERR_TOOMANY_FINS Then
-      p_Total      := To_Char(0);
-      p_Codretorno := -1;
-      p_Datoserror := v_Datoserror2;
-    When E_ERR_SEVERAL_INICIOS Then
-      p_Total      := To_Char(0);
-      p_Codretorno := -1;
-      p_Datoserror := v_Datoserror2;
     When Others Then
       p_Total      := To_Char(0);
       p_Codretorno := To_Char(Sqlcode);
