@@ -405,3 +405,7 @@ declare
      proc_act_recursos(p_codretorno, p_datoserror);
      dbms_output.put_line(p_codretorno || ': ' || p_datoserror);
    end;
+   
+   
+   alter table scs_personajg add IDPAISDIR VARCHAR2(3);
+   alter table scs_personajg add POBLACIONEXTRANJERA VARCHAR2(100);

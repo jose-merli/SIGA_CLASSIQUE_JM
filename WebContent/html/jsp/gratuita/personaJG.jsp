@@ -41,7 +41,7 @@
 	HttpSession ses = request.getSession();
 	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
 	
-
+	ArrayList idPais = new ArrayList();
 	int pcajgActivo = 0;
 	String minusDefecto=null;
 	/*String sEsPcajgActivo = (String)request.getAttribute("pcajgActivo");
@@ -424,6 +424,7 @@
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 	<script type="text/javascript">	
+	var idEspana='<%=ClsConstants.ID_PAIS_ESPANA%>';
 		function validacionFecha (dia, mes, anio) {
 				if (mes<1 || mes>12 || day<1 || dia>31 || 
 					((mes==4 || mes==6 || mes==9 || mes==11) && dia>30) ||
@@ -1104,7 +1105,48 @@
 			document.PersonaJGForm.fax.value = "";
 			document.PersonaJGForm.correoElectronico.value = "";
 		}
-               
+		
+		   function selPais(valor) {
+		    				   
+			   if (valor!=null && valor!="" && valor!=idEspana) {
+				   jQuery("#provinciaPoblacion").hide();
+				   jQuery("#labelPoblacionExt").show();
+				   jQuery("#campoPoblacionExt").show();
+				   
+				   jQuery("#provincia").val(jQuery("#provincia option:first").val());
+				   jQuery("#poblacion").val(jQuery("#poblacion option:first").val());
+				   
+		
+		       } else {
+		    	   jQuery("#provinciaPoblacion").show();
+		    	   jQuery("#labelPoblacionExt").hide();
+		    	   jQuery("#campoPoblacionExt").hide();
+		    	   jQuery("#poblacionExtranjera").val("");
+		    	   
+		       }
+		    }
+		   
+		   function selPaisInicio() {
+			   <%if(obligatorioPoblacion){%>
+			   	   jQuery("#paisDir option[value='191']").prop("selected",true);
+			   	   jQuery("#paisDir option:not(:selected)").prop('disabled',true);
+				   jQuery("#provinciaPoblacion").show();
+				   jQuery("#poblacionExtranjera").val("");
+		    	   jQuery("#labelPoblacionExt").hide();
+		    	   jQuery("#campoPoblacionExt").hide();
+			   <%}else{%>
+					   var valor = document.getElementById("paisDir").value;
+						if (valor!=null && valor!="" && valor!=idEspana) {
+						   jQuery("#provinciaPoblacion").hide();
+						   jQuery("#labelPoblacionExt").show();
+						   jQuery("#campoPoblacionExt").show();
+				       } else {
+				    	   jQuery("#provinciaPoblacion").show();
+				    	   jQuery("#labelPoblacionExt").hide();
+				    	   jQuery("#campoPoblacionExt").hide();
+				       }
+			   <%}%>
+			   }
 		</script>
 </head>
 
@@ -1112,7 +1154,7 @@
 	// BOTONES PARA PESTAÑAS
 	if (pantalla.equals("P")) {
 %>
-		<body class="tablaCentralCampos">
+		<body class="tablaCentralCampos" onload="selPaisInicio();">
 			<script type="text/javascript">
 				jQuery(document).ready(function(){
 					recargar();
@@ -1128,7 +1170,7 @@
 	} else {
 		// BOTONES PARA MODAL
 %>
-	<body class="tablaCentralCampos">
+	<body class="tablaCentralCampos" onload="selPaisInicio();">
 		<script type="text/javascript">
 			jQuery(document).ready(function(){
 				recargar();
@@ -1448,12 +1490,150 @@
 			<siga:ConjCampos leyenda="gratuita.personaJG.literal.direccion">
 				<table width="100%" cellpadding="2" cellspacing="0" border="0">
 					<tr>
+						<td class="labelText"  width="85px">
+							<siga:Idioma key="censo.datosDireccion.literal.pais2" />
+						</td>
+					
+						
+						<td width="20%">
+							<%
+								ArrayList selIdPais = new ArrayList();
+									if (miform.getPaisDir() != null)
+										selIdPais.add(miform.getPaisDir());
+									String paramPaisDir[] = { idInstitucion };
+							%>				
+								<siga:ComboBD nombre="paisDir" tipo="pais" clase="<%=classCombo%>" obligatorio="false" ancho="200" elementoSel="<%=selIdPais%>" accion="selPais(this.value);" readonly="<%=sreadonly%>"  /> 
+						</td>
+						<td class="labelText">
+							<siga:Idioma key="gratuita.personaJG.literal.cp"/>	
+<% 
+							if(opcionDireccion) {	
+%>
+								<div id="desapareceCp">
+									<%=asterisco%> 
+								</div>
+			
+<% 
+							} else if (obligatorioCodigoPostal) {	
+%>
+								<%=asterisco%> 
+<% 
+							} 
+%>												
+						</td>
+						<td >
+							<html:text name="PersonaJGForm" property="cp" size="5" maxlength="5" styleClass="<%=estiloBox%>" readonly="<%=readonly%>"  onchange="createProvince()" />
+						</td>
+						
+						<td class="labelText" id="labelPoblacionExt">
+							<siga:Idioma key="gratuita.personaJG.literal.poblacion"/>												
+						</td>
+						<td colspan="7" id="campoPoblacionExt">
+							<html:text name="PersonaJGForm" property="poblacionExt" styleId="poblacionExtranjera" size="30" maxlength="100" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" />
+						</td>
+					</tr>
+					
+
+					<tr id="provinciaPoblacion">	
+						<td class="labelText" id="labelProvincia">
+							<siga:Idioma key="gratuita.personaJG.literal.provincia"/>	
+<% 
+							if(opcionDireccion) {
+%>
+								<div id="desaparecePr">
+									<%=asterisco%> 
+								</div>
+<%
+							} else if (obligatorioPoblacion) {
+%>
+								<%=asterisco%> 
+<%
+							}
+%>		
+						</td>
+						<td id="campoProvincia">
+			<%
+				ArrayList selProvincia = new ArrayList();
+						if (miform.getProvincia() != null)
+							selProvincia.add(miform.getProvincia());
+			%>
+			<%
+				//LMS 13/09/2006
+						//Hack para cargar combos anidados dentro de 3 niveles de pestañas (Asistencias en Ficha Colegial).
+						String sHack = "";
+						if (esFichaColegial && bPestana.equals("true")) {
+							//sHack = "top.frames[0].document.frames[0].document.frames[0].document.frames[0].document.getElementById('poblacionFrame').src";
+			
+							sHack += "var destino_provincia0=(document.getElementById('poblacionFrame')).src;";
+							sHack += "var tam_provincia0 = destino_provincia0.indexOf('&id=');";
+							sHack += "if(tam_provincia0==-1)";
+							sHack += "{";
+							sHack += "	tam_provincia0=destino_provincia0.length;";
+							sHack += "}";
+							sHack += "destino_provincia0=destino_provincia0.substring(0,tam_provincia0)+'&id='+provincia.value;";
+							sHack += "(document.getElementById('poblacionFrame')).src=destino_provincia0;";
+			
+						} else {
+							sHack = "Hijo:poblacion";
+						}
+			%>
+			
+		  
+			<siga:ComboBD pestana="<%=bPestana%>" nombre = "provincia" tipo="provincia" elementoSel="<%=selProvincia %>" clase="<%=classCombo %>" obligatorio="false" accion="<%=sHack%>" readonly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false"/>
+		 
+		</td>
+						
+						<td colspan="2" id="labelPoblacion">
+							<table width="100%" cellpadding="0" cellspacing="0" border="0">			
+								<tr>						
+									<td class="labelText">
+	 									<siga:Idioma key="gratuita.personaJG.literal.poblacion"/>	
+<% 
+										if(opcionDireccion) {
+%>
+											<div id="desaparecePo">
+												<%=asterisco%> 
+											</div>	
+<%
+										} else if (obligatorioPoblacion) {
+%>
+											<%=asterisco%> 
+<%		
+ 										}
+%>	
+									</td>
+									<td colspan="8" id="campoPoblacion">
+			<%
+				ArrayList selPoblacion = new ArrayList();
+						if (miform.getPoblacion() != null)
+							selPoblacion.add(miform.getPoblacion());
+
+						if (accion.equalsIgnoreCase("ver")) {
+							String poblacion = (String) request
+									.getAttribute("poblacion");
+			%>
+		   		<html:text property="poblacion" value="<%=poblacion%>" maxlength="100" styleClass="boxConsulta" readonly="true" ></html:text>
+		   <%
+		   	} else {
+		   %>
+				<siga:ComboBD pestana="<%=bPestana%>" nombre="poblacion" tipo="poblacion" elementoSel="<%=selPoblacion%>" clase="<%=classCombo%>" obligatorio="true" hijo="t" readonly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false" />
+		   <%
+		   	}
+		   %>
+		</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					
+					<tr>
+						
 						<td class="labelText" width="107px">
 							<siga:Idioma key="gratuita.personaJG.literal.tipovia"/>
 						</td>			
 
 			
-						<td>	
+			<td>	
 						<%
 					ArrayList selTipoVia = new ArrayList();
 						if (miform.getTipoVia() != null)
@@ -1480,11 +1660,10 @@
 <% 
 							} 
 %>							
-						</td>						
+						</td>					
 						<td width="200px">		
 							<html:text name="PersonaJGForm" property="direccion" maxlength="100" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:190px" />
 						</td>
-						
 						<td class="labelText" width="25px">
 							<siga:Idioma key="gratuita.personaJG.literal.numdir"/>
 						</td>						
@@ -1513,119 +1692,6 @@
 							<html:text name="PersonaJGForm" property="puertaDir" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:30px" maxlength="5" />
 						</td>																							
 					</tr>				
-
-					<tr>	
-						<td class="labelText">
-							<siga:Idioma key="gratuita.personaJG.literal.cp"/>	
-<% 
-							if(opcionDireccion) {	
-%>
-								<div id="desapareceCp">
-									<%=asterisco%> 
-								</div>
-			
-<% 
-							} else if (obligatorioCodigoPostal) {	
-%>
-								<%=asterisco%> 
-<% 
-							} 
-%>												
-						</td>
-						<td>
-							<html:text name="PersonaJGForm" property="cp" size="5" maxlength="5" styleClass="<%=estiloBox%>" readonly="<%=readonly%>"  onchange="createProvince()" />
-						</td>
-
-						<td class="labelText">
-							<siga:Idioma key="gratuita.personaJG.literal.provincia"/>	
-<% 
-							if(opcionDireccion) {
-%>
-								<div id="desaparecePr">
-									<%=asterisco%> 
-								</div>
-<%
-							} else if (obligatorioPoblacion) {
-%>
-								<%=asterisco%> 
-<%
-							}
-%>		
-						</td>
-						<td>
-			<%
-				ArrayList selProvincia = new ArrayList();
-						if (miform.getProvincia() != null)
-							selProvincia.add(miform.getProvincia());
-			%>
-<%
-	//LMS 13/09/2006
-			//Hack para cargar combos anidados dentro de 3 niveles de pestañas (Asistencias en Ficha Colegial).
-			String sHack = "";
-			if (esFichaColegial && bPestana.equals("true")) {
-				//sHack = "top.frames[0].document.frames[0].document.frames[0].document.frames[0].document.getElementById('poblacionFrame').src";
-
-				sHack += "var destino_provincia0=(document.getElementById('poblacionFrame')).src;";
-				sHack += "var tam_provincia0 = destino_provincia0.indexOf('&id=');";
-				sHack += "if(tam_provincia0==-1)";
-				sHack += "{";
-				sHack += "	tam_provincia0=destino_provincia0.length;";
-				sHack += "}";
-				sHack += "destino_provincia0=destino_provincia0.substring(0,tam_provincia0)+'&id='+provincia.value;";
-				sHack += "(document.getElementById('poblacionFrame')).src=destino_provincia0;";
-
-			} else {
-				sHack = "Hijo:poblacion";
-			}
-%>
-			
-		  
-			<siga:ComboBD pestana="<%=bPestana%>" nombre = "provincia" tipo="provincia" elementoSel="<%=selProvincia %>" clase="<%=classCombo %>" obligatorio="false" accion="<%=sHack%>" readonly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false"/>
-		 
-		</td>
-						
-						<td colspan="8">
-							<table width="100%" cellpadding="0" cellspacing="0" border="0">			
-								<tr>						
-									<td class="labelText">
-	 									<siga:Idioma key="gratuita.personaJG.literal.poblacion"/>	
-<% 
-										if(opcionDireccion) {
-%>
-											<div id="desaparecePo">
-												<%=asterisco%> 
-											</div>	
-<%
-										} else if (obligatorioPoblacion) {
-%>
-											<%=asterisco%> 
-<%		
- 										}
-%>	
-									</td>
-									<td colspan="8">
-			<%
-				ArrayList selPoblacion = new ArrayList();
-						if (miform.getPoblacion() != null)
-							selPoblacion.add(miform.getPoblacion());
-
-						if (accion.equalsIgnoreCase("ver")) {
-							String poblacion = (String) request
-									.getAttribute("poblacion");
-			%>
-		   		<html:text property="poblacion" value="<%=poblacion%>" maxlength="100" styleClass="boxConsulta" readonly="true" ></html:text>
-		   <%
-		   	} else {
-		   %>
-				<siga:ComboBD pestana="<%=bPestana%>" nombre="poblacion" tipo="poblacion" elementoSel="<%=selPoblacion%>" clase="<%=classCombo%>" obligatorio="true" hijo="t" readonly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false" />
-		   <%
-		   	}
-		   %>
-		</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
 					
 					<tr>
 						<td class="labelText" colspan="6" >
