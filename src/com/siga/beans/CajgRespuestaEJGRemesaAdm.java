@@ -8,6 +8,8 @@ package com.siga.beans;
 
 import java.util.Hashtable;
 
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -168,5 +170,35 @@ public class CajgRespuestaEJGRemesaAdm extends MasterBeanAdministrador {
 						" AND V.IDREMESA = " + idRemesa + ")";
 		insertSQL(sql);		
 	}
+	public void insertaErrorEJGnoEnviados(String idInstitucion, String idRemesa,String numeroIntercambio) throws BusinessException {
+		StringBuilder builder = new StringBuilder();
+		builder.append(" INSERT INTO CAJG_RESPUESTA_EJGREMESA ");
+		builder.append("(IDRESPUESTA, IDEJGREMESA, CODIGO, DESCRIPCION, ABREVIATURA, FECHA, FECHAMODIFICACION, USUMODIFICACION, IDTIPORESPUESTA) ");
+		builder.append("(  ");
+		
+		 
+		builder.append("SELECT SEQ_CAJG_RESPUESTA_EJGREMESA.NEXTVAL,ER.IDEJGREMESA,  -1, ");
+	     builder.append("'No existen actualizaciones en el expediente', null,  SYSDATE, SYSDATE,  ");
+	     builder.append(this.usrbean.getUserName());
+	     builder.append(",");
+         builder.append(CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
+         
+	     builder.append(" FROM CAJG_EJGREMESA ER WHERE ER.IDINSTITUCIONREMESA =");
+	     builder.append(Integer.parseInt(idInstitucion));
+	     builder.append(" AND ER.IDREMESA = ");
+	     builder.append(Integer.parseInt(idRemesa));
+	     builder.append(" AND NUMEROINTERCAMBIO = ");
+	     builder.append(Integer.parseInt(numeroIntercambio));
+	     builder.append(")");
+		
+		try {
+			insertSQL(builder.toString());
+		} catch (ClsExceptions e) {
+			throw new BusinessException("Error al insertar el error en CAJG_RESPUESTA_EJGREMESA"+e.toString());
+			
+		}		
+	}
+	
+	
 	
 }

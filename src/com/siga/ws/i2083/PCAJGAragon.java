@@ -1607,7 +1607,7 @@ public class PCAJGAragon extends SIGAWSClientAbstract implements PCAJGConstantes
 		StringBuffer mensaje = new StringBuffer();		
 		DefinirRemesasCAJGAction definirRemesasCAJGAction = new DefinirRemesasCAJGAction();
 		try {
-			definirRemesasCAJGAction.generaFicherosTXT(String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), nombreFichero, mensaje, pathFichero);
+			definirRemesasCAJGAction.generaFicherosTXT(String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), nombreFichero, mensaje, false,pathFichero);
 		} catch (Exception e) {
 			ClsLogging.writeFileLogError("Error al generar el archivo TXT", e, 3);			
 		}

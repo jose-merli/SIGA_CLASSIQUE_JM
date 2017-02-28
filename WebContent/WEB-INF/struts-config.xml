@@ -3030,7 +3030,7 @@
 			<forward name="exitoEJG" path="/html/jsp/gratuita/exitoEJG.jsp"/>
 		</action>
 		<!-- ***** Justicia Gratuita / e_comunicaciones / Gestion ***** -->
-		<action path="/JGR_E-Comunicaciones_Gestion" type="com.siga.gratuita.action.DefinirRemesasCAJGAction" name="DefinicionRemesas_CAJG_Form" scope="request">
+		<action path="/JGR_E-Comunicaciones_Gestion" type="com.siga.gratuita.action.DefinirRemesasCAJGAction" name="DefinicionRemesas_CAJG_Form" >
 			<forward name="inicio" path="/html/jsp/gratuita/BusquedaRemesas_CAJG.jsp"/>
 			<forward name="insertarRemesa" path="/html/jsp/gratuita/insertarRemesa.jsp"/>
 			<forward name="busquedaAutomatica" path="/html/jsp/gratuita/recargarModalInsercionEJG.jsp"/>
@@ -3063,6 +3063,10 @@
 		
 		<action path="/CargaDesignaProcurador" type="com.siga.gratuita.action.DefinirRemesaResolucionesCAJGAction" name="DefinicionRemesaResolucionesCAJGForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/busquedaRemesaResoluciones_CAJG.jsp?idTipoRemesa=2"/>						
+		</action>
+		
+		<action path="/JGR_E-Comunicaciones_ResultadoRemesa" type="com.siga.gratuita.action.DefinirRemesaResolucionesCAJGAction" name="DefinicionRemesaResolucionesCAJGForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaRemesaResoluciones_CAJG.jsp?idTipoRemesa=3"/>						
 		</action>
 		
 		<!-- ***** Consultas / Recuperar Consultas ***** -->

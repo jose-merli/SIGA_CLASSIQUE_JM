@@ -21,6 +21,7 @@ import com.siga.beans.ScsPersonaJGBean;
 
  public class DefinicionRemesas_CAJG_Form extends DefinirEJGForm{
 	 
+	 String datosSolicInformeEconomico;
 	   /**
 	 * 
 	 */
@@ -959,6 +960,20 @@ import com.siga.beans.ScsPersonaJGBean;
 			 */
 			public void setFile(FormFile file) {
 				this.file = file;
+			}
+
+			/**
+			 * @return the datosSolicInformeEconomico
+			 */
+			public String getDatosSolicInformeEconomico() {
+				return datosSolicInformeEconomico;
+			}
+
+			/**
+			 * @param datosSolicInformeEconomico the datosSolicInformeEconomico to set
+			 */
+			public void setDatosSolicInformeEconomico(String datosSolicInformeEconomico) {
+				this.datosSolicInformeEconomico = datosSolicInformeEconomico;
 			}
 		
 }

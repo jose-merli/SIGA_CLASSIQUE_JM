@@ -14,6 +14,9 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.MODULO;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
@@ -24,6 +27,8 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.EstadosRemesaForm;
+
+import es.satec.businessManager.BusinessManager;
 
 /**
  * @author davidsp
@@ -157,13 +162,20 @@ public class EstadosRemesaAction extends MasterAction {
 			idInstitucion = miform.getIdInstitucion();
 			idRemesa = miform.getIdRemesa();
 			modoAnterior = miform.getModoAnterior();
-			
+			boolean isDatosEconomicos = false;
+			GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
+			//Niramos si esta configurada la url de envio de informe economico
+			if(idInstitucion.equals("2003")){
+				String urlEnvioInformeEconomico = genParametrosService.getValorParametroWithNull((short)2003,PARAMETRO.INFORMEECONOMICO_WS_URL,MODULO.ECOM);
+				isDatosEconomicos = urlEnvioInformeEconomico!=null && !urlEnvioInformeEconomico.equalsIgnoreCase(""); 
+				
+			}
 			if (modoAnterior!=null && (modoAnterior.equalsIgnoreCase("nuevo") || modoAnterior.equalsIgnoreCase("nuevaSociedad")))
 				registros = new Vector();
 			else {
 				//Traemos de base de datos los grupos:
 				CajgRemesaEstadosAdm admEstados = new CajgRemesaEstadosAdm(this.getUserBean(request));
-				registros = admEstados.busquedaEstadosRemesa(idInstitucion, idRemesa);
+				registros = admEstados.busquedaEstadosRemesa(idInstitucion, idRemesa,isDatosEconomicos);
 			}
 			
 			request.setAttribute("ESTADOS", registros);

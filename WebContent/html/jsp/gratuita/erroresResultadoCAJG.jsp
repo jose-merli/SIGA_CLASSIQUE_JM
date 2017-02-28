@@ -108,7 +108,7 @@
 	
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">	
-		document.body.onLoad=ajusteAltoMain('listadoEJGDiv',52);
+		document.body.onLoad=ajusteAlto('listadoEJGDiv');
 	
 		//Asociada al boton Restablecer -->
 		function accionRestablecer() 

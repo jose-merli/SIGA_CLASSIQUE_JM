@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -93,7 +94,7 @@ public class CajgRemesaEstadosAdm extends MasterBeanAdministrador {
 		return hash;
 	}
 	
-	public Vector busquedaEstadosRemesa(String idInstitucion, String idRemesa) throws ClsExceptions 
+	public Vector busquedaEstadosRemesa(String idInstitucion, String idRemesa, boolean isDatosEconomicos) throws ClsExceptions 
 	{
 		Vector datos = new Vector();
 		String select = null;
@@ -105,6 +106,14 @@ public class CajgRemesaEstadosAdm extends MasterBeanAdministrador {
 			select  +=",r."+CajgRemesaEstadosBean.C_FECHAREMESA+"";
 			select  +=",f_siga_getrecurso("+CajgTipoEstadoRemesaBean.C_DESCRIPCION+","+this.getLenguaje()+") AS DESCRIPCION";
 			
+////			select C.FECHACREACION
+//			  from ecom_cola_parametros A, ECOM_COLA_PARAMETROS B, ECOM_COLA C
+//			  where A.CLAVE = 'IDREMESAENVIO'
+//			    AND B.CLAVE = 'IDINSTITUCION'
+//			    AND B.VALOR = 2003
+//			    AND A.IDECOMCOLA = B.IDECOMCOLA
+//			    AND C.IDECOMCOLA = A.IDECOMCOLA;
+			
 			//FROM:
 			select += " FROM "+CajgRemesaEstadosBean.T_NOMBRETABLA+" r";
 			select += " ,"+CajgTipoEstadoRemesaBean.T_NOMBRETABLA+" t";
@@ -113,9 +122,31 @@ public class CajgRemesaEstadosAdm extends MasterBeanAdministrador {
 			select += " WHERE r."+CajgRemesaEstadosBean.C_IDINSTITUCION+"="+idInstitucion;
 			select += " AND r."+CajgRemesaEstadosBean.C_IDREMESA+"="+idRemesa;
 			select += " AND r."+CajgRemesaEstadosBean.C_IDESTADO+"=t."+CajgTipoEstadoRemesaBean.C_IDESTADO+"";
-			select += "  order by r."+CajgRemesaEstadosBean.C_IDESTADO;
-			
-			
+			//Si el colegio es alcala miramos si ha enviado el informe economico. No se crea un nuevo estado ya que no sabemos si
+//			se usan esos estado en consultas expertas o pl. Es por esto que la union mira si ha habido peticiones en ecom cola d3l tipo de operacion 
+			if(isDatosEconomicos){
+				select += " UNION ";
+				select += " (";
+				select += " select DISTINCT C.IDINSTITUCION ,";
+				select += idRemesa;
+				select += " AS IDREMESA,9 AS IDESTADO,TRUNC(C.FECHACREACION) AS FECHAREMESA, ";
+				select += " f_siga_getrecurso_etiqueta('gratuita.BusquedaRemesas_CAJG.estado.enviadoInformeEconomico',";
+				select += this.getLenguaje();
+				select += " )";
+				select += " AS DESCRIPCION"; 
+				select += " from ecom_cola_parametros A, ECOM_COLA_PARAMETROS B, ECOM_COLA C ";
+				select += " where A.CLAVE = 'IDREMESA'";
+				select += " AND B.CLAVE = 'IDINSTITUCION'";
+				select += " AND A.VALOR =";
+				select += idRemesa;
+				select += " AND B.VALOR = ";
+				select += idInstitucion;
+				select += " AND A.IDECOMCOLA = B.IDECOMCOLA";
+				select += " AND C.IDECOMCOLA = A.IDECOMCOLA";
+				select += " AND C.IDOPERACION = 48 ";
+				select += " )";
+			}
+			select += "  order by "+CajgRemesaEstadosBean.C_IDESTADO+",FECHAREMESA";
 			//Consulta:
 			datos = this.selectGenerico(select);			
 		} 
@@ -235,5 +266,6 @@ public class CajgRemesaEstadosAdm extends MasterBeanAdministrador {
         
         return listaIdRemesas;
 	}
+	
 	
 }

@@ -95,6 +95,7 @@
 			subirFicheroRespuesta = true;
 		}
 	}
+	Boolean isDatosEconomicos = (Boolean)request.getAttribute("ISDATOSECONOMICOS");
 	
 %>
 
@@ -147,7 +148,7 @@
 		}
 		function cargadatosRemesa(){
 					
-			document.DefinicionRemesas_CAJG_Form.modo.value="buscarPorEJG";
+			document.DefinicionRemesas_CAJG_Form.modo.value="buscarPorEJGInit";
 					
 			document.DefinicionRemesas_CAJG_Form.idRemesa.value=document.forms[0].idRemesa.value;	
 			document.DefinicionRemesas_CAJG_Form.idInstitucion.value=document.forms[0].idInstitucion.value;	
@@ -236,8 +237,18 @@
 			document.DefinicionRemesas_CAJG_Form.target="submitArea";
 			document.DefinicionRemesas_CAJG_Form.submit();	
 		}
+		function marcarRespuestaIncorrecta(datos) {
+			sub();
+			document.DefinicionRemesas_CAJG_Form.datosSolicInformeEconomico.value = datos;
+			document.DefinicionRemesas_CAJG_Form.modo.value = "marcarRespuestaIncorrectaManual";
+			document.DefinicionRemesas_CAJG_Form.target="submitArea";
+			document.DefinicionRemesas_CAJG_Form.submit();
+			
+		}
 		
-		function filtrado() {		
+		
+		function filtrado() {	
+			sub();
 			document.DefinicionRemesas_CAJG_Form.modo.value="buscarPorEJG";
 			document.DefinicionRemesas_CAJG_Form.target="resultado1";
 			document.DefinicionRemesas_CAJG_Form.submit();
@@ -247,6 +258,12 @@
 			document.DefinicionRemesas_CAJG_Form.modo.value="descargarLog";				
 		   	document.DefinicionRemesas_CAJG_Form.target="submitArea";		   	
 			document.DefinicionRemesas_CAJG_Form.submit();
+		}
+		
+		function seleccionarTodos(pagina) {
+			document.DefinicionRemesas_CAJG_Form.seleccionarTodos.value = pagina;
+			filtrado();
+							
 		}
 		
 		function ultimoEstado(idEstado) {
@@ -271,6 +288,9 @@
 		<html:hidden property = "idRemesa" value = "<%=idremesa%>"/>
 		<html:hidden property = "simular" value = "0"/>
 		<html:hidden property = "idEstado" value = "<%=String.valueOf(idEstado)%>"/>
+		<html:hidden property="seleccionarTodos" />
+		<html:hidden property="datosSolicInformeEconomico" />
+		
 		<html:hidden  name="DefinicionRemesas_CAJG_Form" property="accion"/>
 	
 		
@@ -319,6 +339,16 @@
 								<option value="3"><siga:Idioma key="cajg.opcion.conErroresAntesEnvio"/></option>
 								<option value="4"><siga:Idioma key="cajg.opcion.conErroresDespuesEnvio"/></option>
 								<option value="5"><siga:Idioma key="cajg.opcion.conErroresNoEnNuevaRemesa"/></option>
+								<%if(isDatosEconomicos!=null && isDatosEconomicos.booleanValue() && idEstado==2){ %>
+									<option value="6"><siga:Idioma key="cajg.opcion.informeEconomicoSol"/></option>
+									<option value="7"><siga:Idioma key="cajg.opcion.informeEconomicoNoSol"/></option>
+									<option value="8"><siga:Idioma key="cajg.opcion.informeEconomicoOk"/></option>
+									<option value="9"><siga:Idioma key="cajg.opcion.informeEconomicoKo"/></option>
+								<%} %>
+	
+								
+								
+								
 							</html:select>
 							
 						</td>
