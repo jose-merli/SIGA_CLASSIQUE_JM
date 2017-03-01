@@ -818,6 +818,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 				}else if (segmentoActualizar.equals("DOM")) {
 //					007	Actualización domicilio solicitante
 					lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"007"));
+					lineasFicheroAct.add(getSegmento("SOA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
 					lineasFicheroAct.add(getSegmento("DOM",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
 					
 				}
@@ -828,7 +829,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 			
 			expInluidosFicheroActualizacion.put(keyExpIncluidosFicheroAct, lineasFicheroAct);
 		}
-		/*
+		
 		Iterator<String> pruebaFinal = expInluidosFicheroActualizacion.keySet().iterator();
 		while (pruebaFinal.hasNext()) {
 			String key = (String) pruebaFinal.next();
@@ -840,7 +841,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 			}
 			
 			
-		}*/
+		}
 		
 		
 		
