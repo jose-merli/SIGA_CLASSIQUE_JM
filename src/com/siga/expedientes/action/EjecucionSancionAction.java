@@ -19,9 +19,8 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.CenColaCambioLetradoAdm;
 import com.siga.beans.CenDatosColegialesEstadoAdm;
-import com.siga.beans.CenDireccionesBean;
+import com.siga.beans.CenDatosColegialesEstadoBean;
 import com.siga.beans.ExpExpedienteAdm;
 import com.siga.beans.ExpExpedienteBean;
 import com.siga.beans.ScsInscripcionTurnoAdm;
@@ -92,33 +91,35 @@ public class EjecucionSancionAction extends MasterAction {
 				}
 				
 				Hashtable<String,String> estadoColegialHashtable = new Hashtable<String, String>();
+				estadoColegialHashtable.put(CenDatosColegialesEstadoBean.C_IDINSTITUCION, idInstitucion);
+				estadoColegialHashtable.put(CenDatosColegialesEstadoBean.C_IDPERSONA, idPersona);
+				estadoColegialHashtable.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, expedienteBean.getFechaInicialEstado());
 				
-				estadoColegialHashtable.put("idPersona", idPersona);
-				estadoColegialHashtable.put("idInstitucion", idInstitucion);
-				estadoColegialHashtable.put("motivo", form.getMotivo());
-				estadoColegialHashtable.put("idioma", this.getLenguaje(request));
-				estadoColegialHashtable.put("fechaSancion", expedienteBean.getFechaInicialEstado());
-				CenDatosColegialesEstadoAdm cenDatosColegialesAdm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
-				
-				
+				// construyendo el idestado y el motivo
+				String motivo = "";
 				if (form.isBajaColegial()){
-					
-					estado = cenDatosColegialesAdm.insertaEstadoColegial(estadoColegialHashtable,ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL);
-
-					
-					
+					estadoColegialHashtable.put(CenDatosColegialesEstadoBean.C_IDESTADO, ""+ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL);
+					motivo = UtilidadesString.getMensajeIdioma(userBean, "expedientes.alertas.literal.motivo2");
 				}
 				if (form.isBajaEjercicio()){
-					cenDatosColegialesAdm.insertaEstadoColegial(estadoColegialHashtable,ClsConstants.ESTADO_COLEGIAL_SINEJERCER);
+					estadoColegialHashtable.put(CenDatosColegialesEstadoBean.C_IDESTADO, ""+ClsConstants.ESTADO_COLEGIAL_SINEJERCER);
+					motivo = UtilidadesString.getMensajeIdioma(userBean, "expedientes.alertas.literal.motivo3");
 				}
-				
 				if (form.isInhabilitacion()){
-					estado = cenDatosColegialesAdm.insertaEstadoColegial(estadoColegialHashtable,ClsConstants.ESTADO_COLEGIAL_INHABILITACION);
+					estadoColegialHashtable.put(CenDatosColegialesEstadoBean.C_IDESTADO, ""+ClsConstants.ESTADO_COLEGIAL_INHABILITACION);
+					motivo = UtilidadesString.getMensajeIdioma(userBean, "expedientes.alertas.literal.motivo1");
 				}
-				
 				if (form.isSuspension()){
-					estado = cenDatosColegialesAdm.insertaEstadoColegial(estadoColegialHashtable,ClsConstants.ESTADO_COLEGIAL_SUSPENSION);
-				}		
+					estadoColegialHashtable.put(CenDatosColegialesEstadoBean.C_IDESTADO, ""+ClsConstants.ESTADO_COLEGIAL_SUSPENSION);
+					motivo = UtilidadesString.getMensajeIdioma(userBean, "expedientes.alertas.literal.motivo4");
+				}
+				motivo += " " + form.getMotivo();
+				estadoColegialHashtable.put(CenDatosColegialesEstadoBean.C_OBSERVACIONES, motivo);
+				
+				CenDatosColegialesEstadoAdm cenDatosColegialesAdm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
+				boolean bDesdeCGAE = false;
+				estado = cenDatosColegialesAdm.insertaEstadoColegial(estadoColegialHashtable, bDesdeCGAE, this.getLenguaje(request));
+				
 				if (form.isBajaColegial() || form.isInhabilitacion() ||form.isSuspension()){
 					if(estado!=2 && estadoColegialHashtable.get("RESPUESTA_ACA")!=null){
 						messageLlamadaWebServiceAcaRevisionLetrado.append(estadoColegialHashtable.get("RESPUESTA_ACA"));

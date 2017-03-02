@@ -106,7 +106,7 @@ public class DuplicadosHelper{
 			if (! institucion.equalsIgnoreCase("") || ! nColegiado.equalsIgnoreCase("")) {
 				sqlFinal = new StringBuffer();
 				sqlFinal.append(sqlSelect);
-				sqlFinal.append(", col.ncolegiado, ins.ABREVIATURA, ins.idinstitucion ");
+				sqlFinal.append(", Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado) Ncolegiado, ins.ABREVIATURA, ins.idinstitucion ");
 				sqlFinal.append(sqlFrom);
 				sqlFinal.append(", cen_colegiado col, cen_institucion ins ");
 				sqlFinal.append(sqlWhere);

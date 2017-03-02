@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -47,6 +48,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
 import com.siga.beans.AdmLenguajesAdm;
@@ -62,7 +64,8 @@ import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenEstadoCivilAdm;
 import com.siga.beans.CenEstadoCivilBean;
-import com.siga.beans.CenHistoricoBean;
+import com.siga.beans.CenEstadoColegialAdm;
+import com.siga.beans.CenEstadoColegialBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
 import com.siga.beans.CenNoColegiadoAdm;
@@ -442,7 +445,8 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		CenTratamientoAdm tratamientoAdm = new CenTratamientoAdm(usr);
 		AdmLenguajesAdm lenguajeAdm = new AdmLenguajesAdm(usr);
 		CenTiposSeguroAdm tipoSeguroAdm = new CenTiposSeguroAdm(usr);
-		SimpleDateFormat fomatoFechaHora = new SimpleDateFormat(ClsConstants.DATE_FORMAT_LONG_SPANISH);
+		SimpleDateFormat formatoFechaHora = new SimpleDateFormat(ClsConstants.DATE_FORMAT_LONG_SPANISH);
+		SimpleDateFormat formatoFecha = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 		
 		
 		// Variables
@@ -626,9 +630,16 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					List<EcomCenDatos> lista = ecomCenDatosService.getInfoMantenimientoDuplicados(idPersona, idInstitucionCol.toString());
 					if(lista != null & lista.size()>0){
 						EcomCenDatos ecomCenDatos = lista.get(0);
+						CenEstadoColegialAdm estadosAdm = new CenEstadoColegialAdm(usr);
 						datosCenso = new Hashtable	<String, String>() ;
+						Hashtable estadoPk = new Hashtable();
+						if (ecomCenDatos.getIdecomcensosituacionejer() != null) {
+							estadoPk.put(CenEstadoColegialBean.C_IDESTADO, ecomCenDatos.getIdecomcensosituacionejer());
+							datosCenso.put("situacionEjercicio", UtilidadesString.getMensajeIdioma(usr, ((CenEstadoColegialBean) estadosAdm.selectByPK(estadoPk).get(0)).getDescripcion()));
+						}
+						datosCenso.put("fechaSituacion", formatoFecha.format(ecomCenDatos.getFechamodifrecibida()));
 						datosCenso.put("estadoCenso", UtilidadesString.getMensajeIdioma(usr, AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.getDescripcion(ecomCenDatos.getIdestadocolegiado())));
-						datosCenso.put("fechaCenso", fomatoFechaHora.format(ecomCenDatos.getFechamodificacion()));
+						datosCenso.put("fechaCenso", formatoFechaHora.format(ecomCenDatos.getFechamodificacion()));
 						datosColegiacionDeUna.put("datosCenso", datosCenso);
 					}
 
@@ -776,6 +787,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 
 		UsrBean user = this.getUserBean(request);
 		MantenimientoDuplicadosForm miForm = (MantenimientoDuplicadosForm) formulario;
+		EcomCenDatosService ecomCenDatosService =  (EcomCenDatosService) getBusinessManager().getService(EcomCenDatosService.class);
 		CenDireccionesAdm admDireccion = new CenDireccionesAdm(user);
 		CenColegiadoAdm admColeg = new CenColegiadoAdm(user);
 		CenNoColegiadoAdm admNoColeg = new CenNoColegiadoAdm(user);
@@ -783,6 +795,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		CenPersonaAdm admPersona = new CenPersonaAdm(user);
 		CenClienteAdm admCliente = new CenClienteAdm(user);
 		CenInstitucionAdm admInst = new CenInstitucionAdm(user);
+		SimpleDateFormat formatoFecha = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
 		
 		CenClienteBean beanCliente;
 
@@ -791,6 +804,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		String idPersonaOrigen = miForm.getIdPersonaOrigen();
 		CenPersonaBean beanPersonaDestino, beanPersonaOrigen;
 		HashSet<String> conjuntoColegiosIguales;
+		ArrayList<Hashtable<String, String>> listaEstadosAinsertar;
 		String idInstitucion, fechaEstado;
 		boolean bDesdeCgae = true;
 
@@ -809,18 +823,96 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			String stInstitucion;
 			String nombreInstitucion;
 			int intInstitucion;
+			listaEstadosAinsertar = new ArrayList<Hashtable<String, String>>();
 			for(int i=0;i<listaColegiacionesPersonaOrigen.size();i++){
 				// para cada colegiacion de la persona origen
 				stInstitucion = listaColegiacionesPersonaOrigen.get(i).toString();
 				nombreInstitucion = admInst.getAbreviaturaInstitucion(stInstitucion);
 				intInstitucion = Integer.parseInt(stInstitucion);
 				// Si se quiere fusionar un colegiado en el mismo colegio, solo lo permitimos al personal de IT o bien si el colegio no esta en produccion
-				if (admColeg.existeColegiado(Long.parseLong(idPersonaDestino), intInstitucion) != null && !tienePermisoFusionColegiosEnProduccion(mapping, request) && admInst.estaEnProduccion(stInstitucion)) {
-					request.setAttribute("mensaje", 
-							UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar1") + 
-							" " + nombreInstitucion + " " + 
-							UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar2"));
-					return "exitoFusionar";
+				if (admColeg.existeColegiado(Long.parseLong(idPersonaDestino), intInstitucion) != null) {
+					if (!tienePermisoFusionColegiosEnProduccion(mapping, request) && admInst.estaEnProduccion(stInstitucion)) {
+						request.setAttribute("mensaje", 
+								UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar1") + 
+								" " + nombreInstitucion + " " + 
+								UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar2"));
+						return "exitoFusionar";
+					} else {
+						// Hay que comprobar el ultimo estado colegial de ambas personas. Si el origen tiene un estado colegial posterior al destino, algo va mal
+						Vector estadosColegio;
+						List<EcomCenDatos> actualizacionesColegio;
+						String idUltimoEstadoOrigen = null, idUltimoEstadoDestino = null, idEstadoActualizacionOrigen = null, idEstadoActualizacionDestino = null;
+						Date fechaUltimoEstadoOrigen = null, fechaUltimoEstadoDestino = null, fechaEstadoActualizacionOrigen = null, fechaEstadoActualizacionDestino = null;
+						
+						estadosColegio = admColeg.getEstadosColegiales(Long.valueOf(idPersonaOrigen), intInstitucion, "1");
+						if (estadosColegio != null && estadosColegio.size() > 0) {
+							Hashtable<String, String> ultimoEstado =  (Hashtable<String, String>) ((Row) estadosColegio.get(0)).getRow();
+							idUltimoEstadoOrigen = ultimoEstado.get(CenDatosColegialesEstadoBean.C_IDESTADO); 
+							fechaUltimoEstadoOrigen = UtilidadesFecha.getDate(ultimoEstado.get("FECHAESTADO_SPANISH"), UtilidadesFecha.FORMATO_FECHA_ES);
+						}
+						estadosColegio = admColeg.getEstadosColegiales(Long.valueOf(idPersonaDestino), intInstitucion, "1");
+						if (estadosColegio != null && estadosColegio.size() > 0) {
+							Hashtable<String, String> ultimoEstado =  (Hashtable<String, String>) ((Row) estadosColegio.get(0)).getRow();
+							idUltimoEstadoDestino = ultimoEstado.get(CenDatosColegialesEstadoBean.C_IDESTADO); 
+							fechaUltimoEstadoDestino = UtilidadesFecha.getDate(ultimoEstado.get("FECHAESTADO_SPANISH"), UtilidadesFecha.FORMATO_FECHA_ES);
+						}
+						
+						actualizacionesColegio = ecomCenDatosService.getInfoMantenimientoDuplicados(idPersonaOrigen, Integer.toString(intInstitucion));
+						if (actualizacionesColegio != null & actualizacionesColegio.size()>0){
+							EcomCenDatos ecomCenDatos = actualizacionesColegio.get(0);
+							if (ecomCenDatos.getIdecomcensosituacionejer() != null) {
+								idEstadoActualizacionOrigen = ecomCenDatos.getIdecomcensosituacionejer().toString();
+								fechaEstadoActualizacionOrigen = ecomCenDatos.getFechamodifrecibida();
+							}
+						}
+						actualizacionesColegio = ecomCenDatosService.getInfoMantenimientoDuplicados(idPersonaDestino, Integer.toString(intInstitucion));
+						if (actualizacionesColegio != null & actualizacionesColegio.size()>0){
+							EcomCenDatos ecomCenDatos = actualizacionesColegio.get(0);
+							if (ecomCenDatos.getIdecomcensosituacionejer() != null) {
+								idEstadoActualizacionDestino = ecomCenDatos.getIdecomcensosituacionejer().toString();
+								fechaEstadoActualizacionDestino = ecomCenDatos.getFechamodifrecibida();
+							}
+						}
+						
+						// Para cada persona, la fecha final sera la mayor entre la de estado y la de actualizacion por carga
+						if (fechaEstadoActualizacionOrigen != null && fechaEstadoActualizacionOrigen.after(fechaUltimoEstadoOrigen)) {
+							if (idEstadoActualizacionOrigen.equalsIgnoreCase(idUltimoEstadoOrigen)) {
+								fechaUltimoEstadoOrigen = fechaEstadoActualizacionOrigen;
+								
+								Hashtable<String, String> hashEstado = miForm.getDatos();
+								hashEstado.put(CenDatosColegialesEstadoBean.C_IDINSTITUCION, Integer.toString(intInstitucion));
+								hashEstado.put(CenDatosColegialesEstadoBean.C_IDPERSONA, idPersonaOrigen);
+								hashEstado.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, formatoFecha.format(fechaEstadoActualizacionOrigen));
+								hashEstado.put(CenDatosColegialesEstadoBean.C_IDESTADO, idEstadoActualizacionOrigen);
+								listaEstadosAinsertar.add(hashEstado);
+							} else {
+								request.setAttribute("mensaje", "En el colegio de " + nombreInstitucion + ", " + beanPersonaOrigen.getNombreCompleto() + " (" + beanPersonaOrigen.getNIFCIF() + ") tiene un estado colegial que no se corresponde con la última actuación por Carga de censo. Por favor, revise la carga y/o consulte al Administrador para más información.");
+								return "exitoFusionar";
+							}
+						}
+						if (fechaEstadoActualizacionDestino != null && fechaEstadoActualizacionDestino.after(fechaUltimoEstadoDestino)) {
+							if (idEstadoActualizacionDestino.equalsIgnoreCase(idUltimoEstadoDestino)) {
+								fechaUltimoEstadoDestino = fechaEstadoActualizacionDestino;
+								
+								Hashtable<String, String> hashEstado = miForm.getDatos();
+								hashEstado.put(CenDatosColegialesEstadoBean.C_IDINSTITUCION, Integer.toString(intInstitucion));
+								hashEstado.put(CenDatosColegialesEstadoBean.C_IDPERSONA, idPersonaDestino);
+								hashEstado.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, formatoFecha.format(fechaEstadoActualizacionDestino));
+								hashEstado.put(CenDatosColegialesEstadoBean.C_IDESTADO, idEstadoActualizacionDestino);
+								listaEstadosAinsertar.add(hashEstado);
+							} else {
+								request.setAttribute("mensaje", "En el colegio de " + nombreInstitucion + ", " + beanPersonaDestino.getNombreCompleto() + " (" + beanPersonaDestino.getNIFCIF() + ") tiene un estado colegial que no se corresponde con la última actuación por Carga de censo. Por favor, revise la carga y/o consulte al Administrador para más información.");
+								return "exitoFusionar";
+							}
+						}
+						// Si el destino tiene un estado mas antiguo que el origen, no podemos permitir la fusion.
+						if (idUltimoEstadoOrigen != null && idUltimoEstadoDestino != null && !idUltimoEstadoOrigen.equalsIgnoreCase(idUltimoEstadoDestino)) {
+							if (fechaUltimoEstadoOrigen.after(fechaUltimoEstadoDestino)) {
+								request.setAttribute("mensaje", "En el colegio de " + nombreInstitucion + ", " + beanPersonaOrigen.getNombreCompleto() + " (" + beanPersonaOrigen.getNIFCIF() + ") tiene una fecha de situación colegial posterior al de " + beanPersonaDestino.getNombreCompleto() + " (" + beanPersonaDestino.getNIFCIF() + "). Para evitar cambiar el estado colegial de esta última (destino de la combinación), se ha cancelado la operación. Por favor, modifique los estados colegiales para que el destino de la combinación tenga el último estado colegial.");
+								return "exitoFusionar";
+							}
+						}
+					}
 				}
 			}
 
@@ -839,6 +931,13 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 
 			tx = user.getTransactionPesada();
 			tx.begin();
+			
+			// insertando los estados de actualizacion de origen y destino
+			for (Hashtable<String, String> hashEstado : listaEstadosAinsertar) {
+				hashEstado.put(CenDatosColegialesEstadoBean.C_OBSERVACIONES, "Mantenimiento de duplicados: inserción automática de estado colegial por última actualización desde Carga de Censo");
+				boolean bDesdeCGAE = false;
+				admEstadoColegial.insertaEstadoColegial(hashEstado, bDesdeCGAE, user.getLanguage());
+			}
 			
 			// Aunque el proceso de fusion (en PL) ya se encarga de combinar las direcciones, 
 			// tenemos que comprobar las unicidades de direcciones. Para ello, es mejor moverlas ahora y comprobar las unicidades

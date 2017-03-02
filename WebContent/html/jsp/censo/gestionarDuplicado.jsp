@@ -503,6 +503,7 @@
 									<tr>
 										<td class="labelText">
 											<siga:Idioma key="censo.gestionarDuplicado.patron.historicoEstados"/> 
+											(OJO: se suman los estados de ambas colegiaciones)
 										</td>
 									</tr>
 								</table>
@@ -510,13 +511,13 @@
 							
 							<c:forEach items="${datosColUnica.historicoEstadosColegiacion}" var="datosCol" varStatus="status">
 							<td width="37%">
-								<table>
+								<table width="100%">
 									<c:forEach items="${datosCol}" var="histEstados"  varStatus="status">
 									<tr>
-										<td class="labelText">
+										<td class="labelText" width="50%">
 											<c:out value="${histEstados.row.DESCRIPCION}"/>
 										</td>
-										<td class="labelText">
+										<td class="labelText" width="50%">
 											desde <c:out value="${histEstados.row.FECHAESTADO_SPANISH}"/>
 										</td>
 									</tr>															
@@ -538,10 +539,28 @@
 							</td>
 							<c:forEach items="${datosColUnica.datosCenso}" var="datosCenso" varStatus="status">
 							<td width="37%">
-								<table>
+								<table width="100%">
 									<tr>
-										<td class="labelText">
-											<c:out value="${datosCenso.estadoCenso}"/>  -  <c:out value="${datosCenso.fechaCenso}"/>
+									<c:if test="${datosCenso.situacionEjercicio!=null}">
+										<td class="labelText" width="50%">
+											<c:out value="${datosCenso.situacionEjercicio}"/> 
+										</td>
+										<td class="labelText" width="50%">
+											a día <c:out value="${datosCenso.fechaSituacion}"/>
+										</td>
+									</c:if>
+									<c:if test="${datosCenso.situacionEjercicio==null}">
+										<td class="labelText" colspan="2" width="100%">
+											-
+										</td>
+									</c:if>
+									</tr>
+									<tr>
+										<td class="labelText" width="50%">
+											<c:out value="${datosCenso.estadoCenso}"/>
+										</td>
+										<td class="labelText" width="50%">
+											<c:out value="${datosCenso.fechaCenso}"/>
 										</td>
 									</tr>															
 								</table>

@@ -475,32 +475,10 @@ public class DatosColegialesAction extends MasterAction {
 			hashEstado.put(CenDatosColegialesEstadoBean.C_IDINSTITUCION, idinstitucion);
 			hashEstado.put(CenDatosColegialesEstadoBean.C_IDPERSONA, idpersona);
 			hashEstado.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, fechaEstado);
+			hashEstado.put(CenDatosColegialesEstadoBean.C_OBSERVACIONES, hashEstado.get(CenDatosColegialesEstadoBean.C_OBSERVACIONES) + " " + motivo);
 
-			// generando datos de historico
-			CenHistoricoBean beanHis = new CenHistoricoBean();
-			beanHis.setMotivo(motivo);
-			int estado = new Integer(hashEstado.get(CenDatosColegialesEstadoBean.C_IDESTADO).toString()).intValue();
-			switch (estado) {
-			case ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL:
-				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_COLEGIAL));
-				break;
-			case ClsConstants.ESTADO_COLEGIAL_EJERCIENTE:
-				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_ALTA_EJERCICIO));
-				break;
-			case ClsConstants.ESTADO_COLEGIAL_SINEJERCER:
-				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_EJERCICIO));
-				break;
-			case ClsConstants.ESTADO_COLEGIAL_INHABILITACION:
-				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_INHABILITACION));
-				break;
-			case ClsConstants.ESTADO_COLEGIAL_SUSPENSION:
-				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_SUSPENSION));
-				break;
-			}
-			
 			boolean bDesdeCGAE = false;
 			if (this.getIDInstitucion(request) == 2000){
-				beanHis.setIdInstitucion(2000);
 				bDesdeCGAE = true;
 			}
 			
@@ -509,7 +487,7 @@ public class DatosColegialesAction extends MasterAction {
 			tx.begin();
 
 			// Si devuelve 2 es porque se ha relizado todo correctamente excepto la llamada al servicio web de revision de letrado.
-			int isInsercionCorrecta = admEstados.insercionConHistorico(hashEstado, beanHis, idioma);
+			int isInsercionCorrecta = admEstados.insertaEstadoColegial(hashEstado, bDesdeCGAE, idioma);
 			
 			switch (isInsercionCorrecta) {
 				case 0:
