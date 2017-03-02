@@ -10,7 +10,8 @@ CREATE OR REPLACE PROCEDURE PROC_RESPUESTAEJG_2003(P_IDINSTITUCION      IN CAJG_
   V_NUMEJG             NUMBER(8);
   V_ANIO               NUMBER(4);
   V_REF_EJG            VARCHAR(15);
-  V_NUMEROINTERCAMBIO  NUMBER(7);
+  V_NUMEROINTERCAMBIO  NUMBER(8);
+  V_NUMINTERCAMBIOEJGREMESA      NUMBER(7);
   V_CAB_INTERCAMBIO_ID PCAJG_ALC_INT_CAB.CAB_INTERCAMBIO_ID%TYPE;
 
   V_TIPOERRORCODIGO        PCAJG_ALC_TIPOERRORINTERCAMBIO.ERROR_CODIGO%TYPE;
@@ -54,6 +55,7 @@ begin
         V_NUMEJG            := null;
         V_ANIO              := null;
         V_NUMEROINTERCAMBIO := null;
+        V_NUMINTERCAMBIOEJGREMESA       := null;
         EJG_ANIO            := null;
         EJG_NUMERO          := null;
         EJG_IDTIPOEJG       := null;
@@ -61,6 +63,10 @@ begin
       
       ELSIF v_cabecera_linea = 'CAO' THEN
         V_NUMEROINTERCAMBIO := substr(REG.LINEA, 17, 7);
+        -- En el envio estamos multiplicando por 10 el numero de intercambio para poder enviar mas de una actualizacion por expediente
+        V_NUMINTERCAMBIOEJGREMESA := trunc(V_NUMEROINTERCAMBIO/10);
+        V_NUMEROINTERCAMBIO := V_NUMINTERCAMBIOEJGREMESA*10;
+
       
       ELSIF v_cabecera_linea = 'DER' THEN
         V_TIPOERRORCODIGO := substr(REG.LINEA, 4, 3);
@@ -76,7 +82,7 @@ begin
                  EJG_NUMERO,
                  EJG_IDTIPOEJG
             FROM CAJG_EJGREMESA
-           WHERE TO_NUMBER(V_NUMEROINTERCAMBIO) = NUMEROINTERCAMBIO
+           WHERE TO_NUMBER(V_NUMINTERCAMBIOEJGREMESA) = NUMEROINTERCAMBIO
              AND IDINSTITUCION = P_IDINSTITUCION;
         
         EXCEPTION
@@ -369,4 +375,3 @@ begin
   END LOOP;
 
 end PROC_RESPUESTAEJG_2003;
-/

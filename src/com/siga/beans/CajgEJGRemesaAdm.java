@@ -645,28 +645,38 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 		}
 		List<String> lineasFicheroAct = null;
 		Iterator<String> ejgActualizar = expActualizarMap.keySet().iterator();
+		int numActualizacion = 1;
 		while (ejgActualizar.hasNext()) {
 			lineasFicheroAct = new ArrayList<String>();
 			String keyNumIntercambioAct = ejgActualizar.next();
 			Map<String, String> expActualizarMapDatosOriginalMap = expActualizarMapDatosOld.get(keyNumIntercambioAct);
 			Map<String, String> expActualizarMapDatosNewMap = expActualizarMapDatosNew.get(keyNumIntercambioAct);
-			lineasFicheroAct.add(getSegmento("CAB",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,true));
+			lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
+			numActualizacion++;
 			
 			Set<String> segmentosActualizarSetValue = expActualizarMap.get(keyNumIntercambioAct);
+			boolean isAñadidaSegmentosTipoMod = false;
 			for (String segmentoActualizar : segmentosActualizarSetValue) {
 				// Añadimos e
 				if (segmentoActualizar.equals("EXP")) {
+					if(isAñadidaSegmentosTipoMod){
+						lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
+						numActualizacion++;
+					}
+					
 //					001	Actualización datos expediente
 					
 					// hay que modificar EXP por AXP y añadirle el tipo de actualizacion ("001" Actualización datos expediente)
 					lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"001"));
+					isAñadidaSegmentosTipoMod = true;
+					
 				}else if (segmentoActualizar.equals("PRD")) {
 //					002	Turnado profesional
 //					003	Cambio de profesional
 					
 					
 					
-//					En todos los caso hay que añadir la linea del expediente si no estuviera añadima
+//					En todos los caso hay que añadir la linea del expediente si no estuviera añadimos
 					// Vamos a ver si el expediente que se envio no tgenia abogado designado.
 					// IF OLD.PRD1_NCOLEGIADOABOGADO NULL && NEW.PRD1_NCOLEGIADOABOGADO NOT NULL
 					
@@ -709,14 +719,25 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 						// IF OLD.PRJ3_ORGANO_JUDICIAL == NEW. PRJ3_ORGANO_JUDICIAL && OLD.PRJ4_TIPO_PROCED_JUDICIAL == NEW.PRJ4_TIPO_PROCED_JUDICIAL && OLD.PRJ5_NUM_PROCEDIMIENTO == NEW.PRJ5_NUM_PROCEDIMIENTO
 						// En tal caso se hara un turnado de profesional y si no se hara una nueva designacion de abogado
 						if (organoJudicialOld.equals(organoJudicialNew) && tipoProcedimientoOld.equals(tipoProcedimientoNew) && numProcedimientoOld.equals(numProcedimientoNew)) {
+							if(isAñadidaSegmentosTipoMod){
+								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
+								numActualizacion++;
+							}
 //							hay que modificar EXP por AXP y añadirle el tipo de actualizacion ("002" Turnado profesional)
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"002"));
 							lineasFicheroAct.add(getSegmento("PFA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,true));
+							isAñadidaSegmentosTipoMod = true;
+							
 						} else {
+							if(isAñadidaSegmentosTipoMod){
+								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
+								numActualizacion++;
+							}
 //							hay que modificar EXP por AXP y añadirle el tipo de actualizacion ("010"	Nueva designacion)
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"010"));
 							lineasFicheroAct.add(getSegmento("PRN",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,true));
 							lineasFicheroAct.add(getSegmento("PFA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,true));
+							isAñadidaSegmentosTipoMod = true;
 
 						}
 
@@ -724,16 +745,26 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 						
 //						si es el mismo procedimiento es un cambio de profesional designado. Si es distinto es una nueva designacion
 						if (organoJudicialOld.equals(organoJudicialNew) && tipoProcedimientoOld.equals(tipoProcedimientoNew) && numProcedimientoOld.equals(numProcedimientoNew)) {
+							if(isAñadidaSegmentosTipoMod){
+								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
+								numActualizacion++;
+							}
 //							hay que modificar EXP por AXP y añadirle el tipo de actualizacion ("002" Turnado profesional)
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"002"));
 							lineasFicheroAct.add(getSegmento("PFA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,true));
 							//La fecha de baja del colegiado sustituido es la fecha de designacion del nuevo
 //							expActualizarMapDatosOriginalMap.put("PRD2_FECHA_DESIGNA", expActualizarMapDatosNewMap.get("PRD2_FECHA_DESIGNA"));
 							lineasFicheroAct.add(getSegmento("PRS",expActualizarMapDatosOriginalMap,expActualizarMapDatosOriginalMap,true));
+							isAñadidaSegmentosTipoMod = true;
 						}else{
+							if(isAñadidaSegmentosTipoMod){
+								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
+								numActualizacion++;
+							}
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"010"));
 							lineasFicheroAct.add(getSegmento("PRN",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,true));
 							lineasFicheroAct.add(getSegmento("PFA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,true));
+							isAñadidaSegmentosTipoMod = true;
 							
 						}
 						
@@ -741,19 +772,33 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 						
 						//Si hay una nueva designacion para elmismo abogado
 						if(!numDesignaOld.equals(numDesignaNew) || !anioDesignaOld.equals(anioDesignaNew)){
+							if(isAñadidaSegmentosTipoMod){
+								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
+								numActualizacion++;
+							}
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"010"));
 							lineasFicheroAct.add(getSegmento("PRN",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,true));
 							lineasFicheroAct.add(getSegmento("PFA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,true));
+							isAñadidaSegmentosTipoMod = true;
 						}else if (organoJudicialOld.equals(organoJudicialNew) && tipoProcedimientoOld.equals(tipoProcedimientoNew) && numProcedimientoOld.equals(numProcedimientoNew)) {
 							//Mismo colegiado y mismo procedimineto no se hace nada
 						}else{
+							if(isAñadidaSegmentosTipoMod){
+								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
+								numActualizacion++;
+							}
 							//Nueva designacion
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"010"));
 							lineasFicheroAct.add(getSegmento("PRN",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,true));
 							lineasFicheroAct.add(getSegmento("PFA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,true));
+							isAñadidaSegmentosTipoMod = true;
 						}
 					}
 					if (procuradorOld.trim().equals("") && !procuradorNew.trim().equals("")) {
+						if(isAñadidaSegmentosTipoMod){
+							lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
+							numActualizacion++;
+						}
 						// Vamos a ver los datos del procedimiento judicial (tribunal, procedimiento y número de Procedimiento)
 						// IF OLD.PRJ3_ORGANO_JUDICIAL == NEW. PRJ3_ORGANO_JUDICIAL && OLD.PRJ4_TIPO_PROCED_JUDICIAL == NEW.PRJ4_TIPO_PROCED_JUDICIAL && OLD.PRJ5_NUM_PROCEDIMIENTO == NEW.PRJ5_NUM_PROCEDIMIENTO
 						// En tal caso se hara un turnado de profesional y si no se hara una nueva designacion de abogado
@@ -761,11 +806,13 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 //							hay que modificar EXP por AXP y añadirle el tipo de actualizacion ("002" Turnado profesional)
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"002"));
 							lineasFicheroAct.add(getSegmento("PFA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
+							isAñadidaSegmentosTipoMod = true;
 						} else {
 //							hay que modificar EXP por AXP y añadirle el tipo de actualizacion ("010"	Nueva designacion)
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"010"));
 							lineasFicheroAct.add(getSegmento("PRN",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
 							lineasFicheroAct.add(getSegmento("PFA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
+							isAñadidaSegmentosTipoMod = true;
 
 						}
 
@@ -773,53 +820,86 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 						
 //						si es el mismo procedimiento es un cambio de profesional designado. Si es distinto es una nueva designacion
 						if (organoJudicialOld.equals(organoJudicialNew) && tipoProcedimientoOld.equals(tipoProcedimientoNew) && numProcedimientoOld.equals(numProcedimientoNew)) {
+							if(isAñadidaSegmentosTipoMod){
+								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
+								numActualizacion++;
+							}
 //							hay que modificar EXP por AXP y añadirle el tipo de actualizacion ("002" Turnado profesional)
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"002"));
 							lineasFicheroAct.add(getSegmento("PFA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
 							//La fecha de baja del colegiado sustituido es la fecha de designacion del nuevo
 							expActualizarMapDatosOriginalMap.put("PRD2_FECHA_DESIGNA", expActualizarMapDatosNewMap.get("PRD2_FECHA_DESIGNA"));
 							lineasFicheroAct.add(getSegmento("PRS",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
+							isAñadidaSegmentosTipoMod = true;
 						}else{
+							if(isAñadidaSegmentosTipoMod){
+								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
+								numActualizacion++;
+							}
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"010"));
 							lineasFicheroAct.add(getSegmento("PRN",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
 							lineasFicheroAct.add(getSegmento("PFA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
+							isAñadidaSegmentosTipoMod = true;
 							
 						}
 						
 					}else if (procuradorOld.trim().equals(procuradorNew.trim()) && !procuradorOld.trim().equals("")) {
 						
 						if(!numDesignaProcuradorOld.equals(numDesignaProcuradorNew) || !anioDesignaProcuradorOld.equals(anioDesignaProcuradorNew)){
+							if(isAñadidaSegmentosTipoMod){
+								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
+								numActualizacion++;
+							}
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"010"));
 							lineasFicheroAct.add(getSegmento("PRN",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
 							lineasFicheroAct.add(getSegmento("PFA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
+							isAñadidaSegmentosTipoMod = true;
 						}else	if (organoJudicialOld.equals(organoJudicialNew) && tipoProcedimientoOld.equals(tipoProcedimientoNew) && numProcedimientoOld.equals(numProcedimientoNew)) {
 							//Mismo colegiado y mismo procedimineto no se hace nada
 						}else{
 							//Nueva designacion
-							
+							if(isAñadidaSegmentosTipoMod){
+								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
+								numActualizacion++;
+							}
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"010"));
 							lineasFicheroAct.add(getSegmento("PRN",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
 							lineasFicheroAct.add(getSegmento("PFA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
+							isAñadidaSegmentosTipoMod = true;
 						}
 					}
 				}else if (segmentoActualizar.equals("PRJ") && !segmentosActualizarSetValue.contains("PRD") ) {
+					if(isAñadidaSegmentosTipoMod){
+						lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
+						numActualizacion++;
+					}
 //					011	Actualización de Órgano y procedimiento judicial
 					lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"011"));
 					lineasFicheroAct.add(getSegmento("PRO",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
 					lineasFicheroAct.add(getSegmento("PRA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
+					isAñadidaSegmentosTipoMod = true;
 					
 					
 				}else if (segmentoActualizar.equals("SOL")) {
 //					006	Actualización datos solicitante
-
+					if(isAñadidaSegmentosTipoMod){
+						lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
+						numActualizacion++;
+					}
 					lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"006"));
 					lineasFicheroAct.add(getSegmento("SOA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
+					isAñadidaSegmentosTipoMod = true;
 					
 				}else if (segmentoActualizar.equals("DOM")) {
-//					007	Actualización domicilio solicitante
+//					007	Actualización domicilio solicitante. Hay que enviar primero el SOA
+					if(isAñadidaSegmentosTipoMod){
+						lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
+						numActualizacion++;
+					}
 					lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"007"));
 					lineasFicheroAct.add(getSegmento("SOA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
 					lineasFicheroAct.add(getSegmento("DOM",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
+					isAñadidaSegmentosTipoMod = true;
 					
 				}
 			}
@@ -906,19 +986,29 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 		
 		
 	}
+	private String getSegmentoCAB(String segmento, Map<String, String> expHashtableNew, int numActualizacion) {
+
+		StringBuilder linea = new StringBuilder();
+
+		linea.append(segmento);
+		// pONEMOS EL TIPO DE FICHERO QUE ES 002 Actualización
+		linea.append("002");
+		if(numActualizacion>1){
+			long numIntercambio = Long.parseLong(expHashtableNew.get("CAB2_NUMERO_INTERCAMBIO"))+1;
+			linea.append(StringHelper.rellena(""+numIntercambio, '0', 7, StringHelper.IZQUIERDA));
+		}
+		else
+			linea.append(StringHelper.rellena(expHashtableNew.get("CAB2_NUMERO_INTERCAMBIO"), '0', 7, StringHelper.IZQUIERDA));
+		linea.append(StringHelper.rellena(expHashtableNew.get("CAB3_ANIO_INTERCAMBIO"), '0', 4, StringHelper.IZQUIERDA));
+		return linea.toString();
+
+	}
 
 	private String getSegmento(String segmento, Map<String, String> expHashtableNew, Map<String, String> expHashtableOriginal, boolean isAbogado) {
 
 		StringBuilder linea = new StringBuilder();
 
-		if (segmento.equals("CAB")) {
-			linea.append(segmento);
-			// pONEMOS EL TIPO DE FICHERO QUE ES 002 Actualización
-			linea.append("002");
-			linea.append(StringHelper.rellena(expHashtableNew.get("CAB2_NUMERO_INTERCAMBIO"), '0', 7, StringHelper.IZQUIERDA));
-			linea.append(StringHelper.rellena(expHashtableNew.get("CAB3_ANIO_INTERCAMBIO"), '0', 4, StringHelper.IZQUIERDA));
-
-		} else if (segmento.equals("PFA")) {
+		if (segmento.equals("PFA")) {
 			// PFA1 Abogado/Procurador NO VARCHAR2(1) A = Abogado P = Procurador
 			// PFA2 Colegio Profesional NO VARCHAR2(5) INTS_C_COLEGIOPROFESIONAL
 			// PFA3 Número de colegiado SÍ VARCHAR2(6) INTS_PROFESIONAL

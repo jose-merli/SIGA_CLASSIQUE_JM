@@ -19,7 +19,7 @@ begin
 
   salida := '''CAB'' AS TIPO_REGISTRO_CAB
           , ''001'' AS CAB1_TIPO_INTERCAMBIO --Traslado de expediente
-          , LPAD(ER.NUMEROINTERCAMBIO, 7, ''0'') AS CAB2_NUMERO_INTERCAMBIO --Numero secuencial
+          , LPAD(ER.NUMEROINTERCAMBIO*10, 7, ''0'') AS CAB2_NUMERO_INTERCAMBIO --Numero secuencial
           , LPAD(R.PREFIJO, 4, ''0'') AS CAB3_ANIO_INTERCAMBIO --En el contador meteremos como prefijo el año
           , ''$$'' AS GRUPO_1
      , ''EXP'' AS TIPO_REGISTRO_EXP
@@ -518,4 +518,3 @@ begin
   return salida;
 
 end f_comunicaciones_ejg_2003_CAB;
-/
