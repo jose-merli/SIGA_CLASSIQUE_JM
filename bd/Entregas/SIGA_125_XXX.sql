@@ -335,4 +335,6 @@ Ejecutar SIGA_125_006/SIGA_125_XXX_ALCALA.sql
  PROC_RESPUESTAEJG_2003
 f_comunicaciones_ejg_2003_CAB                             
 
+-- Ejecutado en Integracion por AAG el 02/03 a las 15:00
+
 
