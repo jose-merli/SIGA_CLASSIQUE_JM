@@ -10,6 +10,12 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.redabogacia.sigaservices.app.AppConstants.PCAJG_ALC_ACT_NIVEL;
+import org.redabogacia.sigaservices.app.AppConstants.PCAJG_ALC_ACT_TIPO_INCIDENCIA;
+import org.redabogacia.sigaservices.app.autogen.model.PcajgAlcActIncidencia;
+import org.redabogacia.sigaservices.app.autogen.model.PcajgAlcActIncidenciaExample;
+import org.redabogacia.sigaservices.app.services.fac.PcajgAlcActIncidenciaService;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.Row;
@@ -19,44 +25,34 @@ import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.ws.InformeXML;
 
+import es.satec.businessManager.BusinessManager;
+
 public class AlcalaJE extends InformeXML implements PCAJGConstantes {
 
 	private String idInstitucion;
 	private String idFacturacion;
 	private UsrBean usrBean;
 	
-	private Map<String, String> obligatorios = new HashMap<String, String>();
+	private Map<String, PcajgAlcActIncidencia> mapaIncidencias = new HashMap<String, PcajgAlcActIncidencia>();
 	private List<String> listaColumnaNoImprimir = new ArrayList<String>();
 		
 	
 	private void init() {
-		this.listaColumnaNoImprimir.add(IDINSTITUCION);
-		this.listaColumnaNoImprimir.add(IDFACTURACION);
-		this.listaColumnaNoImprimir.add(IS_ENVIADO_ENREMESA);
-		this.listaColumnaNoImprimir.add(IS_CAMBIO_JUZGADO);
-		this.listaColumnaNoImprimir.add(IS_CAMBIO_PROCEDIMIENTO);
-		this.listaColumnaNoImprimir.add(EJG_ANIO);
-		this.listaColumnaNoImprimir.add(EJG_NUMERO);
-		this.listaColumnaNoImprimir.add(DESIGNA_ANIO);
-		this.listaColumnaNoImprimir.add(DESIGNA_CODIGO);
-		this.listaColumnaNoImprimir.add(NUMERO_ACTUACION);
 		
+		PcajgAlcActIncidenciaService pcajgAlcActIncidenciaService = (PcajgAlcActIncidenciaService) BusinessManager.getInstance().getService(PcajgAlcActIncidenciaService.class);
 		
-		this.obligatorios.put(AXP1_TIPO_ACTUALIZACION, "Debe rellenar el tipo de actuliazación");
-		this.obligatorios.put(AXP2_NUM_EXPEDIENTE, "La designación debe estar asociada a un expediente enviado a la comisión");
-		this.obligatorios.put(IS_ENVIADO_ENREMESA, "El expediente no ha sido enviado a la comisión en una remesa");
-		this.obligatorios.put(PRC1_ORGANO_JUDICIAL, "Debe rellenar el código del órgano judicial de la designación o del EJG");
-		this.obligatorios.put(PRC2_TIPO_PROCED_JUDICIAL, "Debe rellenar el código del procedimiento de la designación o del EJG");
-		this.obligatorios.put(PRC3_NUM_PROCEDIMIENTO, "Debe rellenar correctamente el número de procedimiento");
-		this.obligatorios.put(PRC4_ANIO_PROCEDIMIENTO, "Debe rellenar correctamente el año del procedimiento");
-		this.obligatorios.put(PRC6_ESTADO_PROCEDIMIENTO, "Debe rellenar el campo en calidad de");		
-		this.obligatorios.put(DPA1_ABOGADO_PROCURADOR, "Debe indicar si se trata de un abogado o un procurador");
-		this.obligatorios.put(DPA2_COLEGIO_PROFESIONAL, "Debe rellenar el código del colegio de abogados");
-		this.obligatorios.put(DPA4_FECHA_DESIGNA, "Debe rellenar la fecha de la designación del abogado");
-		this.obligatorios.put(DPA5_NUMERO_DESIGNA, "Debe rellenar el número de la designación");
-		this.obligatorios.put(DPA6_ANIO_DESIGNA, "Debe rellenar el año de la designación");
-		this.obligatorios.put(DAC1_TIPO_ACTUACION_SUPLEM, "Debe indicar el tipo de actuación o suplemento");
-		this.obligatorios.put(DAC2_FECHA_ACTUACION_SUPLEM, "Debe indicar la fecha de actuación o suplemento");
+		List<PcajgAlcActIncidencia> listaPcajgAlcActIncidencias = pcajgAlcActIncidenciaService.selectByExample(new PcajgAlcActIncidenciaExample());
+		
+		if (listaPcajgAlcActIncidencias != null) {
+			for (PcajgAlcActIncidencia pcajgAlcActIncidencia : listaPcajgAlcActIncidencias) {
+				if (PCAJG_ALC_ACT_TIPO_INCIDENCIA.NO_IMPRIMIR.getId() == pcajgAlcActIncidencia.getIdtipoinc()) {
+					this.listaColumnaNoImprimir.add(pcajgAlcActIncidencia.getCampo());
+				} else {
+					this.mapaIncidencias.put(pcajgAlcActIncidencia.getCampo(), pcajgAlcActIncidencia);
+				}
+			}
+		}
+		
 	}
 	
 	@Override
@@ -75,7 +71,7 @@ public class AlcalaJE extends InformeXML implements PCAJGConstantes {
 		
 		try {
 			init();	
-			setCabeceraLog("AÑO EJG;NÚMERO EJG;AÑO DESIGNACIÓN;NÚMERO DESIGNACIÓN;NÚMERO ACTUACIÓN;INCIDENCIA");
+			setCabeceraLog("AÑO EJG;NÚMERO EJG;AÑO DESIGNACIÓN;NÚMERO DESIGNACIÓN;NÚMERO ACTUACIÓN;TIPO INCIDENCIA;INCIDENCIA");
 			
 			String rutaAlm = getDirectorioSalida(directorio, idInstitucion);			
 			File file = new File(rutaAlm);
@@ -88,10 +84,14 @@ public class AlcalaJE extends InformeXML implements PCAJGConstantes {
 			String nombreFichero = getNombreFichero(nombreSalida, idInstitucion, usrBean);
 	
 			file = new File(file, nombreFichero + ".txt");				
-			rellenaFichero(file);			
+			boolean hayErrores = rellenaFichero(file);			
 			ClsLogging.writeFileLog("Generando fichero txt en: " + file.getAbsolutePath(), 3);
 	
-			listaFicheros.add(file);
+			if (!hayErrores) {
+				listaFicheros.add(file);
+			} else {
+				file.delete();
+			}
 			
 			if (closeLogFile()) {
 				listaFicheros.add(getFileInformeIncidencias(idInstitucion, idFacturacion));
@@ -117,29 +117,35 @@ public class AlcalaJE extends InformeXML implements PCAJGConstantes {
 	}
 	
 	private boolean valida(String numEJG, String anioEJG, String desNumero,	String desAnio, String numeroActuacion, String columna, String valor) throws ClsExceptions, IOException {
-		if ((valor == null || valor.trim().equals("")) && obligatorios.containsKey(columna)) {
-			String texto = getTexto(anioEJG, numEJG, desAnio, desNumero, numeroActuacion, obligatorios.get(columna));
-			escribeLog(idInstitucion, idFacturacion, usrBean, texto);
-			return false;
+		
+		boolean hayError = false;
+		PcajgAlcActIncidencia pcajgAlcActIncidencia = mapaIncidencias.get(columna);
+		
+		if (pcajgAlcActIncidencia != null) {
+			boolean muestraMensaje = false;
+			if (pcajgAlcActIncidencia.getIdtipoinc() == PCAJG_ALC_ACT_TIPO_INCIDENCIA.OBLIGATORIO.getId() && (valor == null || valor.trim().equals(""))) {
+				muestraMensaje = true;
+			} else if (pcajgAlcActIncidencia.getIdtipoinc() == PCAJG_ALC_ACT_TIPO_INCIDENCIA.BOOLEANO.getId() && "1".equals(valor)) {
+				muestraMensaje = true;
+			}
+			
+			if (muestraMensaje) {
+				String texto = getTexto(anioEJG, numEJG, desAnio, desNumero, numeroActuacion, pcajgAlcActIncidencia.getNivel(), pcajgAlcActIncidencia.getMensaje());
+				escribeLog(idInstitucion, idFacturacion, usrBean, texto);
+				hayError = PCAJG_ALC_ACT_NIVEL.ERROR.name().equals(pcajgAlcActIncidencia.getNivel());
+			}
 		}
 		
-		if (IS_CAMBIO_JUZGADO.equalsIgnoreCase(columna) && "1".equals(valor)) {
-			String texto = getTexto(anioEJG, numEJG, desAnio, desNumero, numeroActuacion, "El juzgado de la actuación es diferente al juzgado de la designación. Debe indicar el motivo del cambio en la actuación.");
-			escribeLog(idInstitucion, idFacturacion, usrBean, texto);
-			return false;
-		} else if (IS_CAMBIO_PROCEDIMIENTO.equalsIgnoreCase(columna) && "1".equals(valor)) {
-			String texto = getTexto(anioEJG, numEJG, desAnio, desNumero, numeroActuacion, "El procedimiento de la actuación es diferente al procedimiento de la designación. Debe indicar el motivo del cambio en la actuación.");
-			escribeLog(idInstitucion, idFacturacion, usrBean, texto);
-			return false;
-		}
-		return true;
+		return hayError;
 	}
 	
-	private String getTexto(String anioEJG, String numEJG, String desAnio, String desNumero, String numeroActuacion, String texto) {		
-		return anioEJG + ";" + numEJG + ";" + desAnio + ";" + desNumero + ";" + numeroActuacion + ";" + texto;
+	private String getTexto(String anioEJG, String numEJG, String desAnio, String desNumero, String numeroActuacion, String tipoError, String texto) {		
+		return anioEJG + ";" + numEJG + ";" + desAnio + ";" + desNumero + ";" + numeroActuacion + ";" + tipoError + ";" + texto;
 	}
 	
-	private void rellenaFichero(File file) throws Exception {
+	private boolean rellenaFichero(File file) throws Exception {
+		
+		boolean hayErrores = false;
 		FileWriter fw = new FileWriter(file);
 		BufferedWriter bw = new BufferedWriter(fw);
 		
@@ -181,7 +187,7 @@ public class AlcalaJE extends InformeXML implements PCAJGConstantes {
 					}
 						
 					//aunque esté mal los datos y no cumplan los campos obligatorios debemos luego imprimirloos qp se generan los dos ficheros
-					valida(numEJG, anioEJG, desNumero, desAnio, numeroActuacion, columna, valor);
+					hayErrores = hayErrores || valida(numEJG, anioEJG, desNumero, desAnio, numeroActuacion, columna, valor);
 					
 					if (imprimirColumna(columna)) {						
 						if ("$$".equals(valor)) {
@@ -205,6 +211,8 @@ public class AlcalaJE extends InformeXML implements PCAJGConstantes {
 		bw.flush();
 		bw.close();
 		fw.close();
+		
+		return hayErrores;
 	}
 	
 }
