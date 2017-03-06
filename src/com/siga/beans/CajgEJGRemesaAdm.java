@@ -897,7 +897,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 						numActualizacion++;
 					}
 					lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"007"));
-					lineasFicheroAct.add(getSegmento("SOA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
+					lineasFicheroAct.add(getSegmento("SOA",null,expActualizarMapDatosNewMap,false));
 					lineasFicheroAct.add(getSegmento("DOM",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
 					isAñadidaSegmentosTipoMod = true;
 					
@@ -1188,33 +1188,59 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 			linea.append(StringHelper.rellena(expHashtableOriginal.get("SOL4_NOMBRE_SOLICITANTE"), ' ', 50, StringHelper.DERECHA));
 			linea.append(StringHelper.rellena(expHashtableOriginal.get("SOL5_APELLIDO1_SOLICITANTE"), ' ', 50, StringHelper.DERECHA));
 			linea.append(StringHelper.rellena(expHashtableOriginal.get("SOL6_APELLIDO2_SOLICITANTE"), ' ', 50, StringHelper.DERECHA));
-
-			linea.append(StringHelper.rellena(expHashtableNew.get("SOL7_SEXO_SOLICITANTE"), ' ', 1, StringHelper.IZQUIERDA));
-			linea.append(StringHelper.rellena(expHashtableNew.get("SOL13_NOMBRE_ENTIDAD_JURIDICA"), ' ', 100, StringHelper.DERECHA));
-
-			linea.append(StringHelper.rellena(expHashtableNew.get("SOL1_TIPO_IDENTIFICACION"), '0', ' ', 1, StringHelper.IZQUIERDA));
-			linea.append(StringHelper.rellena(expHashtableNew.get("SOL2_IDENTIFICACION_SOLICIT"), ' ', ' ', 11, StringHelper.DERECHA));
-			linea.append(StringHelper.rellena(expHashtableNew.get("SOL3_TIPOPERSONA"), '0', ' ', 3, StringHelper.IZQUIERDA));
-			linea.append(StringHelper.rellena(expHashtableNew.get("SOL4_NOMBRE_SOLICITANTE"), ' ', 50, StringHelper.DERECHA));
-			linea.append(StringHelper.rellena(expHashtableNew.get("SOL5_APELLIDO1_SOLICITANTE"), ' ', 50, StringHelper.DERECHA));
-			linea.append(StringHelper.rellena(expHashtableNew.get("SOL6_APELLIDO2_SOLICITANTE"), ' ', 50, StringHelper.DERECHA));
-
-			linea.append(StringHelper.rellena(expHashtableNew.get("SOL8_NACIONALIDAD"), ' ', 3, StringHelper.DERECHA));
-			linea.append(StringHelper.rellena(expHashtableNew.get("SOL9_SITUACION_PERSONAL"), ' ', 1, StringHelper.DERECHA));
-			linea.append(StringHelper.rellena(expHashtableNew.get("SOL10_FECHA_NACIMIENTO"), ' ', 8, StringHelper.DERECHA));
-			linea.append(StringHelper.rellena(expHashtableNew.get("SOL11_PROFESION"), ' ', 50, StringHelper.DERECHA));
-			linea.append(StringHelper.rellena(expHashtableNew.get("SOL12_REGIMEN_ECONOMICO"), ' ', 1, StringHelper.DERECHA));
-			linea.append(StringHelper.rellena(expHashtableNew.get("SOL13_NOMBRE_ENTIDAD_JURIDICA"), ' ', 100, StringHelper.DERECHA));
-			linea.append(StringHelper.rellena(expHashtableNew.get("SOL14_USO_DOMICILIO"), ' ', 3, StringHelper.DERECHA));
-			linea.append(StringHelper.rellena(expHashtableNew.get("SOL15_TIPO_TELEFONO"), ' ', 1, StringHelper.DERECHA));
-			linea.append(StringHelper.rellena(expHashtableNew.get("SOL16_NUMERO_TELEFONO"), ' ', 15, StringHelper.DERECHA));
-			linea.append(StringHelper.rellena(expHashtableNew.get("SOL17_PRESO"), ' ', 1, StringHelper.DERECHA));
-			linea.append(StringHelper.rellena(expHashtableNew.get("SOL18_CENTRO_PENITENCIARIO"), ' ', 10, StringHelper.DERECHA));
-			// Esta linea vacia para para SOA26_Autorización
-			linea.append(" ");
-			// Esta linea vacia para para SOA27_Denunciado
-			linea.append(" ");
-
+			if(expHashtableNew!=null){
+			
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL7_SEXO_SOLICITANTE"), ' ', 1, StringHelper.IZQUIERDA));
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL13_NOMBRE_ENTIDAD_JURIDICA"), ' ', 100, StringHelper.DERECHA));
+	
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL1_TIPO_IDENTIFICACION"), '0', ' ', 1, StringHelper.IZQUIERDA));
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL2_IDENTIFICACION_SOLICIT"), ' ', ' ', 11, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL3_TIPOPERSONA"), '0', ' ', 3, StringHelper.IZQUIERDA));
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL4_NOMBRE_SOLICITANTE"), ' ', 50, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL5_APELLIDO1_SOLICITANTE"), ' ', 50, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL6_APELLIDO2_SOLICITANTE"), ' ', 50, StringHelper.DERECHA));
+	
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL8_NACIONALIDAD"), ' ', 3, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL9_SITUACION_PERSONAL"), ' ', 1, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL10_FECHA_NACIMIENTO"), ' ', 8, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL11_PROFESION"), ' ', 50, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL12_REGIMEN_ECONOMICO"), ' ', 1, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL13_NOMBRE_ENTIDAD_JURIDICA"), ' ', 100, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL14_USO_DOMICILIO"), ' ', 3, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL15_TIPO_TELEFONO"), ' ', 1, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL16_NUMERO_TELEFONO"), ' ', 15, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL17_PRESO"), ' ', 1, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL18_CENTRO_PENITENCIARIO"), ' ', 10, StringHelper.DERECHA));
+				// Esta linea vacia para para SOA26_Autorización
+				linea.append(" ");
+				// Esta linea vacia para para SOA27_Denunciado
+				linea.append(" ");
+			}else{
+				linea.append(StringHelper.rellena("", ' ', 1, StringHelper.IZQUIERDA));
+				linea.append(StringHelper.rellena("", ' ', 100, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena("", ' ', ' ', 1, StringHelper.IZQUIERDA));
+				linea.append(StringHelper.rellena("", ' ', ' ', 11, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena("", ' ', ' ', 3, StringHelper.IZQUIERDA));
+				linea.append(StringHelper.rellena("", ' ', 50, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena("", ' ', 50, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena("", ' ', 50, StringHelper.DERECHA));
+	
+				linea.append(StringHelper.rellena("", ' ', 3, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena("", ' ', 1, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena("", ' ', 8, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena("", ' ', 50, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena("", ' ', 1, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena("", ' ', 100, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena("", ' ', 3, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena("", ' ', 1, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena("", ' ', 15, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena("", ' ', 1, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena("", ' ', 10, StringHelper.DERECHA));
+				// Esta linea vacia para para SOA26_Autorización
+				linea.append(" ");
+				// Esta linea vacia para para SOA27_Denunciado
+				linea.append(" ");
+			}
 			// SOA1 Tipo Identificación (original) VARCHAR2(1) INTS_C_TIPOIDENTIFICACION
 			// SOA2 Identificación del sol. (original) DNI Litigante VARCHAR2(11)
 			// SOA3 Tipo persona solicitante (original) VARCHAR2(3) INTS_C_TIPOPERSONA
