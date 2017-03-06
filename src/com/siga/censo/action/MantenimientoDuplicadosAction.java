@@ -539,6 +539,11 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				
 				// 1. obteniendo datos personales
 				datosPersonaDeUna = admPersona.getPersonaPorId(idPersona);
+				if (datosPersonaDeUna == null) {
+					request.setAttribute("mensaje", "Error al buscar los datos de las personas a fusionar: al menos una de las personas seleccionadas ya no existe. Vuelva a seleccionar los duplicados o, si el problema persiste, contacte con el Administrador.");
+					return "exitoFusionar";
+				}
+				
 				datosPersonaDeUna.setFechaMod(UtilidadesString.formatoFecha(datosPersonaDeUna.getFechaMod(), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH));
 				if (datosPersonaDeUna.getFechaNacimiento() != null && !datosPersonaDeUna.getFechaNacimiento().equalsIgnoreCase("")) {
 					datosPersonaDeUna.setFechaNacimiento(UtilidadesString.formatoFecha(datosPersonaDeUna.getFechaNacimiento(), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH));
@@ -935,7 +940,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			// insertando los estados de actualizacion de origen y destino
 			for (Hashtable<String, String> hashEstado : listaEstadosAinsertar) {
 				hashEstado.put(CenDatosColegialesEstadoBean.C_OBSERVACIONES, "Mantenimiento de duplicados: inserción automática de estado colegial por última actualización desde Carga de Censo");
-				boolean bDesdeCGAE = false;
+				boolean bDesdeCGAE = true;
 				admEstadoColegial.insertaEstadoColegial(hashEstado, bDesdeCGAE, user.getLanguage());
 			}
 			
