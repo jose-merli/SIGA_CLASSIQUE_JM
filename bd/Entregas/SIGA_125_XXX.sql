@@ -342,3 +342,51 @@ UPDATE PCAJG_TIPO_IDENTIFICACION_CENT SET IDTIPOIDENTIFICACION = 20 WHERE IDINST
 -- Ejecutado en Integracion por AAG el 02/03 a las 15:00
 
 
+
+
+crear tabla pcajg_alc_act_tipo_incidencia
+
+insert into pcajg_alc_act_tipo_incidencia  (identificador, nombre, descripcion) values  (0, 'NO_IMPRIMIR', 'La columna con este valor no se enviará al fichero que se genera');
+insert into pcajg_alc_act_tipo_incidencia  (identificador, nombre, descripcion) values  (1, 'OBLIGATORIO', 'El valor de la columna de este tipo tendrá que tener un valor');
+insert into pcajg_alc_act_tipo_incidencia  (identificador, nombre, descripcion) values  (2, 'BOOLEANO', 'El valor de la columna si vale 1 mostrará el mensaje de la incidencia');
+---
+
+
+crear tabla pcajg_alc_act_incidencia
+
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (1, 'IDINSTITUCION', 0, null, null);
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (2, 'IDFACTURACION', 0, null, null);
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (3, 'IS_ENVIADO_ENREMESA', 0, null, null);
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (4, 'IS_CAMBIO_JUZGADO', 0, null, null);
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (5, 'IS_CAMBIO_JUZGADO', 0, null, null);
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (6, 'IS_CAMBIO_PROCEDIMIENTO', 0, null, null);
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (7, 'EJG_ANIO', 0, null, null);
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (8, 'EJG_NUMERO', 0, null, null);
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (9, 'DESIGNA_ANIO', 0, null, null);
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (10, 'DESIGNA_CODIGO', 0, null, null);
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (11, 'NUMERO_ACTUACION', 0, null, null);
+--
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (12, 'AXP1_TIPO_ACTUALIZACION', 1, 'ERROR', 'Debe rellenar el tipo de actualización');
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (13, 'AXP2_NUM_EXPEDIENTE', 1, 'ERROR', 'La designación debe estar asociada a un expediente enviado a la comisión');
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (14, 'IS_ENVIADO_ENREMESA', 1, 'ERROR', 'El expediente no ha sido enviado a la comisión en una remesa');
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (15, 'PRC1_ORGANO_JUDICIAL', 1, 'ERROR', 'Debe rellenar el código del órgano judicial de la actuación o designación');
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (16, 'PRC2_TIPO_PROCED_JUDICIAL', 1, 'ERROR', 'Debe rellenar el código del procedimiento (módulo) de la actuación');
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (17, 'PRC3_NUM_PROCEDIMIENTO', 1, 'ERROR', 'Debe rellenar correctamente el número de procedimiento');
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (18, 'PRC4_ANIO_PROCEDIMIENTO', 1, 'ERROR', 'Debe rellenar correctamente el año del procedimiento');
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (19, 'PRC6_ESTADO_PROCEDIMIENTO', 1, 'ERROR', 'Debe rellenar el campo en calidad de');
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (20, 'DPA1_ABOGADO_PROCURADOR', 1, 'ERROR', 'Debe indicar si se trata de un abogado o un procurador');
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (21, 'DPA2_COLEGIO_PROFESIONAL', 1, 'ERROR', 'Debe rellenar el código del colegio de abogados');
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (22, 'DPA4_FECHA_DESIGNA', 1, 'ERROR', 'Debe rellenar la fecha de la designación del abogado');
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (23, 'DPA5_NUMERO_DESIGNA', 1, 'ERROR', 'Debe rellenar el número de la designación');
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (24, 'DPA6_ANIO_DESIGNA', 1, 'ERROR', 'Debe rellenar el año de la designación');
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (25, 'DAC1_TIPO_ACTUACION_SUPLEM', 1, 'ERROR', 'Debe indicar el tipo de actuación o suplemento');
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (26, 'DAC2_FECHA_ACTUACION_SUPLEM', 1, 'ERROR', 'Debe indicar la fecha de actuación o suplemento');
+--
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (27, 'IS_CAMBIO_JUZGADO', 2, 'ERROR', 'El juzgado de la actuación es diferente al juzgado de la designación. Debe indicar el motivo del cambio en la actuación');
+insert into pcajg_alc_act_incidencia (identificador, campo, IDTIPOINC, nivel, mensaje)values (28, 'IS_CAMBIO_PROCEDIMIENTO', 2, 'ERROR', 'El código del módulo de la actuación es diferente al código del procedimiento de la designación. Debe indicar el motivo del cambio en la actuación');
+
+
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Los expedientes seleccionados se marcarán como Recibida respuesta incorrecta. ¿Desea continuar?' where idrecurso='e_comunicaciones.confirmar.marcarRespuestaIncorrecta' and idlenguaje='1';
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Los expedientes seleccionados se marcarán como Recibida respuesta incorrecta. ¿Desea continuar?#CA' where idrecurso='e_comunicaciones.confirmar.marcarRespuestaIncorrecta' and idlenguaje='2';
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Los expedientes seleccionados se marcarán como Recibida respuesta incorrecta. ¿Desea continuar?#EU' where idrecurso='e_comunicaciones.confirmar.marcarRespuestaIncorrecta' and idlenguaje='3';
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Los expedientes seleccionados se marcarán como Recibida respuesta incorrecta. ¿Desea continuar?#GL' where idrecurso='e_comunicaciones.confirmar.marcarRespuestaIncorrecta' and idlenguaje='4';
