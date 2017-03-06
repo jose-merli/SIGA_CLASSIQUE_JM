@@ -142,6 +142,9 @@
 		<service interface="org.redabogacia.sigaservices.app.services.cen.EcomCenWsEnvioService"			implementation="org.redabogacia.sigaservices.app.services.cen.impl.EcomCenWsEnvioServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.adm.AdmLenguajesService" 				 implementation="org.redabogacia.sigaservices.app.services.adm.impl.AdmLenguajesServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.ecom.EcomCenDatosService" 				 implementation="org.redabogacia.sigaservices.app.services.ecom.impl.EcomCenDatosServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.fac.PcajgAlcActIncidenciaService" 				 implementation="org.redabogacia.sigaservices.app.services.fac.impl.PcajgAlcActIncidenciaServiceImpl"/>
+		
+		
 		
 	</context>
 </configuration> 
