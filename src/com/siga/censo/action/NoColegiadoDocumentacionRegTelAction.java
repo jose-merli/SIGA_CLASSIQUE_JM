@@ -100,7 +100,16 @@ public class NoColegiadoDocumentacionRegTelAction extends DocumentacionRegTelAct
 		CenPersonaBean personaBean = personaAdm.getPersonaPorId(miForm.getIdPersona());
 
 		if (personaBean != null) {
-			String title = personaBean.getNIFCIF();
+			
+			String title = "";
+			if (personaBean.getIdTipoIdentificacion() == ClsConstants.TIPO_IDENTIFICACION_NIF) {
+				title = "NIF " + personaBean.getNIFCIF();
+			} else if (personaBean.getIdTipoIdentificacion() == ClsConstants.TIPO_IDENTIFICACION_CIF) {
+				title = "CIF " + personaBean.getNIFCIF();
+			} else if (personaBean.getIdTipoIdentificacion() == ClsConstants.TIPO_IDENTIFICACION_TRESIDENTE) {
+				title = "NIE " + personaBean.getNIFCIF();
+			}				
+			
 			String description=personaBean.getNombreCompleto();
 			/** Se crea la coleccion **/
 			short idInstitucion = getIDInstitucion(request).shortValue();
