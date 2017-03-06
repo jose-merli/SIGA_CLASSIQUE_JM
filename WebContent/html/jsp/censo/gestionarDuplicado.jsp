@@ -503,7 +503,7 @@
 									<tr>
 										<td class="labelText">
 											<siga:Idioma key="censo.gestionarDuplicado.patron.historicoEstados"/> 
-											(OJO: se suman los estados de ambas colegiaciones)
+											<b>(NOTA: se suman los estados de ambas colegiaciones)</b>
 										</td>
 									</tr>
 								</table>
