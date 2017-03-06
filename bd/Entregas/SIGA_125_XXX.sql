@@ -390,3 +390,6 @@ update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Los expedientes 
 update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Los expedientes seleccionados se marcarán como Recibida respuesta incorrecta. ¿Desea continuar?#CA' where idrecurso='e_comunicaciones.confirmar.marcarRespuestaIncorrecta' and idlenguaje='2';
 update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Los expedientes seleccionados se marcarán como Recibida respuesta incorrecta. ¿Desea continuar?#EU' where idrecurso='e_comunicaciones.confirmar.marcarRespuestaIncorrecta' and idlenguaje='3';
 update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Los expedientes seleccionados se marcarán como Recibida respuesta incorrecta. ¿Desea continuar?#GL' where idrecurso='e_comunicaciones.confirmar.marcarRespuestaIncorrecta' and idlenguaje='4';
+
+
+-- Ejecutado en Integracion por AAG el 06/03 a las 11:30
