@@ -867,7 +867,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 							EcomCenDatos ecomCenDatos = actualizacionesColegio.get(0);
 							if (ecomCenDatos.getIdecomcensosituacionejer() != null) {
 								idEstadoActualizacionOrigen = ecomCenDatos.getIdecomcensosituacionejer().toString();
-								fechaEstadoActualizacionOrigen = ecomCenDatos.getFechamodifrecibida();
+								fechaEstadoActualizacionOrigen = UtilidadesFecha.removeTime(ecomCenDatos.getFechamodifrecibida());
 							}
 						}
 						actualizacionesColegio = ecomCenDatosService.getInfoMantenimientoDuplicados(idPersonaDestino, Integer.toString(intInstitucion));
@@ -875,7 +875,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 							EcomCenDatos ecomCenDatos = actualizacionesColegio.get(0);
 							if (ecomCenDatos.getIdecomcensosituacionejer() != null) {
 								idEstadoActualizacionDestino = ecomCenDatos.getIdecomcensosituacionejer().toString();
-								fechaEstadoActualizacionDestino = ecomCenDatos.getFechamodifrecibida();
+								fechaEstadoActualizacionDestino = UtilidadesFecha.removeTime(ecomCenDatos.getFechamodifrecibida());
 							}
 						}
 						
