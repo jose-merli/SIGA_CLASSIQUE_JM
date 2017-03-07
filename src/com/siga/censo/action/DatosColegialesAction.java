@@ -15,12 +15,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.json.JSONObject;
-import org.redabogacia.sigaservices.app.AppConstants;
-import org.redabogacia.sigaservices.app.AppConstants.MODULO;
-import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
-import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
-
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
@@ -41,7 +36,6 @@ import com.siga.beans.CenEstadoColegialBean;
 import com.siga.beans.CenHistoricoAdm;
 import com.siga.beans.CenHistoricoBean;
 import com.siga.beans.CenPersonaAdm;
-import com.siga.beans.CenPersonaBean;
 import com.siga.beans.CenTiposSeguroAdm;
 import com.siga.beans.ScsInscripcionGuardiaAdm;
 import com.siga.beans.ScsInscripcionTurnoAdm;
@@ -52,8 +46,6 @@ import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-
-import es.satec.businessManager.BusinessManager;
 
 
 /**
