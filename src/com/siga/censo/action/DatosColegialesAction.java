@@ -549,8 +549,6 @@ public class DatosColegialesAction extends MasterAction {
 	{
 		String result = "error";
 		UserTransaction tx = null;
-		boolean isErrorLlamadaAca = false;
-		
 		try {
 			//obteniendo datos generales y usuario
 			Hashtable hashOriginal = new Hashtable();
@@ -670,8 +668,9 @@ public class DatosColegialesAction extends MasterAction {
 							CenDatosColegialesEstadoAdm cenDatosColegialesEstadoAdm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
 							llamadaReport = cenDatosColegialesEstadoAdm.llamadaWebServiceAcaRevisionLetrado(Long.valueOf(miForm.getIdPersona()), Short.valueOf(miForm.getIdInstitucion()));	
 						} catch (BusinessException e) {
-							isErrorLlamadaAca = true;
 							llamadaReport = e.getMessage();
+							tx.rollback();
+							return exitoRefresco(e.getMessage() + "\n Cambios NO realizados",request);
 						}
 						hash.put("RESPUESTA_ACA", llamadaReport);
 						hashHist.put(CenHistoricoBean.C_OBSERVACIONES, llamadaReport);
