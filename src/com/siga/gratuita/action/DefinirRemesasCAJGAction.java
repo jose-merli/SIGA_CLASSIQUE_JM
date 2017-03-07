@@ -15,9 +15,15 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,16 +39,22 @@ import org.apache.struts.upload.FormFile;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.AppConstants.GEN_RECURSOS;
+import org.redabogacia.sigaservices.app.AppConstants.MODULO;
+import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.CajgRemesa;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.caj.CajgRemesaService;
 import org.redabogacia.sigaservices.app.services.caj.PCAJGInsertaColaService;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService.RESPUESTA_ENVIO_REMESA;
+import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
+import org.redabogacia.sigaservices.app.vo.scs.CajgEjgRemesaVo;
+import org.redabogacia.sigaservices.app.vo.scs.CajgRemesaVo;
 
 import weblogic.management.timer.Timer;
 
@@ -50,7 +62,6 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
-import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -61,7 +72,6 @@ import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgEJGRemesaBean;
@@ -72,14 +82,11 @@ import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRemesaEstadosBean;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
-import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsEstadoEJGAdm;
 import com.siga.beans.ScsEstadoEJGBean;
-import com.siga.beans.ScsGuardiasTurnoBean;
-import com.siga.beans.ScsTipoEJGBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -99,7 +106,8 @@ import es.satec.businessManager.BusinessManager;
 * Maneja las acciones que se pueden realizar sobre la tabla SCS_EJG
 */
 public class DefinirRemesasCAJGAction extends MasterAction {
-	
+	final String[] clavesBusqueda={ScsEJGBean.C_IDINSTITUCION,ScsEJGBean.C_IDTIPOEJG,ScsEJGBean.C_ANIO
+			,ScsEJGBean.C_NUMERO,"IDEJGREMESA","NUMEROINTERCAMBIO","PERMITIRSOLINFECONOMICO"};
 	private static final Logger log = Logger.getLogger(DefinirRemesasCAJGAction.class);
 	
 	private static final String VALUE_TRUE = "1";
@@ -142,8 +150,14 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			
 			} else if (accion.equalsIgnoreCase("aniadirARemesa")) {
 				mapDestino = aniadirARemesa(mapping, miForm, request, response);
+				
 			} else if (accion.equalsIgnoreCase("buscarPorEJG")) {
 				mapDestino = buscarPorEJG(mapping, miForm, request, response);
+				
+				
+			}else if (accion.equalsIgnoreCase("buscarPorEJGInit")) {
+				mapDestino = buscarPorEJGInit(mapping, miForm, request, response);
+				
 			} else if (accion.equalsIgnoreCase("AniadirExpedientes")) {
 				mapDestino = aniadirExpedientes(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("BuscarListos")) {
@@ -174,12 +188,19 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				mapDestino = descargarLog(mapping, miForm, request, response);	
 			} else if (accion.equalsIgnoreCase("generaXML")) {
 				mapDestino = generaXML(mapping, miForm, request, response);			
-			} else if (accion.equalsIgnoreCase("borrarOviedoTemporal")) {
-				mapDestino = borrarOviedoTemporal(mapping, miForm, request, response);			
+			} else if (accion.equalsIgnoreCase("comunicarInfEconomico")) {
+				mapDestino = comunicarInfEconomico(mapping, miForm, request, response);		
+			
+			} else if (accion.equalsIgnoreCase("marcarRespuestaIncorrectaManual")) {
+				mapDestino = marcarRespuestaIncorrectaManual(mapping, miForm, request, response);		
+			
+			}else if (accion.equalsIgnoreCase("borrarOviedoTemporal")) {
+				mapDestino = borrarOviedoTemporal(mapping, miForm, request, response);		
+			
 			} else {
 				return super.executeInternal(mapping, formulario, request, response);
 			}
-
+			
 			// Redireccionamos el flujo a la JSP correspondiente
 			if (mapDestino == null) {
 				// mapDestino = "exception";
@@ -234,13 +255,20 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 	 * @return String que indicará la siguiente acción a llevar a cabo.
 	 */
 	protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-
+		
 		Hashtable miHash = new Hashtable();
-		String consulta = "";
-		String tipofecha="";
-		int estado=0;
-
+		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		CajgRemesaAdm cajgRemesaAdm = new CajgRemesaAdm(usr);
 		try {
+			
+			boolean isDatosEconomicos = false;
+			GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
+			//Niramos si esta configurada la url de envio de informe economico
+			if(usr.getLocation().equals("2003")){
+				String urlEnvioInformeEconomico = genParametrosService.getValorParametroWithNull((short)2003,PARAMETRO.INFORMEECONOMICO_WS_URL,MODULO.ECOM);
+				isDatosEconomicos = urlEnvioInformeEconomico!=null && !urlEnvioInformeEconomico.equalsIgnoreCase(""); 
+				request.setAttribute("ISDATOSECONOMICOS", Boolean.valueOf(isDatosEconomicos) );
+			}
 
 			DefinicionRemesas_CAJG_Form miForm = (DefinicionRemesas_CAJG_Form) formulario;
 			
@@ -265,7 +293,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
 					}
 				}
-
+				
+				actualizarPagina( datos,isDatosEconomicos,usr);
 				databackup.put("paginador", paginador);
 				databackup.put("datos", datos);
 
@@ -281,80 +310,13 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				 * Construimos la primera parte de la consulta, donde escogemos
 				 * los campos a recuperar y las tablas necesarias
 				 */
-				consulta = "select r.idremesa AS IDREMESA," + "r.prefijo AS PREFIJO," + "r.numero AS NUMERO," + "r.sufijo AS SUFIJO,"
-						+ "r.descripcion AS DESCRIPCION_REMESA," + "" +
-						"(select max(idestado)" + " from cajg_remesaestados" + " where idinstitucion = e.idinstitucion"
-						+ " and idremesa = e.idremesa)"//se añade el select max() aqui en lugar de e.idestado pq si no no funciona al poner alter session set NLS_COMP=LINGUISTIC NLS_SORT=GENERIC_BASELETTER
-						+ " AS IDESTADO"
-						+ "," + "f_siga_getrecurso(t.descripcion, " + this.getLenguaje(request)
-						+ ") AS ESTADO," + "f_siga_get_fechaEstadoRemesa(e.idinstitucion, e.idremesa, 1) AS FECHAGENERACION,"
-						+ "f_siga_get_fechaEstadoRemesa(e.idinstitucion, e.idremesa, 2) AS FECHAENVIO,"
-						+ "f_siga_get_fechaEstadoRemesa(e.idinstitucion, e.idremesa, 3) AS FECHARECEPCION, "
-						+ " (SELECT DECODE(COUNT(1), 0, NULL, COUNT(1))" +
-								" FROM CAJG_EJGREMESA ER" +
-								" WHERE ER.IDINSTITUCION = R.IDINSTITUCION" +
-								" AND ER.IDREMESA = R.IDREMESA" +
-								" AND ER.IDEJGREMESA IN (SELECT RE.IDEJGREMESA FROM CAJG_RESPUESTA_EJGREMESA RE)" +//--QUE TENGA ERRORES
-								" AND (ER.ANIO, ER.NUMERO, ER.IDTIPOEJG)" +//--QUE NO ESTÉ EN OTRA REMESA POSTERIOR
-								" NOT IN (SELECT ER2.ANIO, ER2.NUMERO, ER2.IDTIPOEJG" +
-								" FROM  CAJG_EJGREMESA ER2 WHERE ER2.IDINSTITUCION = R.IDINSTITUCION" +
-								" AND R.IDREMESA < ER2.IDREMESA" + //--REMESA POSTERIOR                      
-								//" AND ER2.IDEJGREMESA NOT IN (SELECT RE2.IDEJGREMESA FROM CAJG_RESPUESTA_EJGREMESA RE2)" +//SIN ERRORES
-								" )) AS CUENTA_INCIDENCIAS," +
-								" (SELECT COUNT(1) FROM CAJG_EJGREMESA ER WHERE ER.IDINSTITUCION = R.IDINSTITUCION AND ER.IDREMESA = R.IDREMESA) AS CUENTA_EXPEDIENTES"
-						+ " from cajg_remesa r, cajg_remesaestados e, cajg_tipoestadoremesa t" + " where r.idinstitucion = " + this.getIDInstitucion(request)
-						+ "" + " and r.idinstitucion = e.idinstitucion" + " and r.idremesa = e.idremesa" + " and e.idestado = t.idestado"
-						+ " and e.idestado = (select max(idestado)" + " from cajg_remesaestados" + " where idinstitucion = e.idinstitucion"
-						+ " and idremesa = e.idremesa) ";
-								
-				if ((String) miHash.get(CajgRemesaBean.C_PREFIJO) != null && (!((String) miHash.get(CajgRemesaBean.C_PREFIJO)).equals(""))) {					
-					consulta += " AND " + ComodinBusquedas.prepararSentenciaNLS(((String) miHash.get(CajgRemesaBean.C_PREFIJO)).trim(), "r." + CajgRemesaBean.C_PREFIJO);
-				}
-				if ((String) miHash.get(CajgRemesaBean.C_NUMERO) != null && (!((String) miHash.get(CajgRemesaBean.C_NUMERO)).equals(""))) {					
-					consulta += " AND " + ComodinBusquedas.prepararSentenciaNLS(((String) miHash.get(CajgRemesaBean.C_NUMERO)).trim(), "r." + CajgRemesaBean.C_NUMERO);
-				}
-				if ((String) miHash.get(CajgRemesaBean.C_SUFIJO) != null && (!((String) miHash.get(CajgRemesaBean.C_SUFIJO)).equals(""))) {
-					consulta += " AND " + ComodinBusquedas.prepararSentenciaNLS(((String) miHash.get(CajgRemesaBean.C_SUFIJO)).trim(), "r." + CajgRemesaBean.C_SUFIJO);					
-				}
-				
-				if ((String) miHash.get("DESCRIPCION") != null && (!((String) miHash.get("DESCRIPCION")).equals(""))) {
-					// consulta +=" and r.descripcion like
-					// '%"+(String)miHash.get("DESCRIPCION")+"'";
-					consulta += " AND " + ComodinBusquedas.prepararSentenciaNLS(((String) miHash.get("DESCRIPCION")).trim(), "r.descripcion");
-				}
-				if ((String) miHash.get("IDESTADO") != null && (!((String) miHash.get("IDESTADO")).equals(""))) {
-					consulta += " and e.idestado=" + (String) miHash.get("IDESTADO") + "";
-				}
-				
-				//definiendo los tipos de fechas.
-				tipofecha=miForm.getTipoFecha();				
-				if (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_GENERACION)){
-					estado=ClsConstants.ESTADO_REMESA_GENERADA;					
-				}else if (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_ENVIO)){
-						  estado=ClsConstants.ESTADO_REMESA_ENVIADA;
-						}else if (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_RECEPCION)){	
-								estado=ClsConstants.ESTADO_REMESA_RECIBIDA;
-						}
-				
-		
-				if ((tipofecha.equals(ClsConstants.COMBO_MOSTRAR_GENERACION)) || (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_ENVIO)) || (tipofecha.equals(ClsConstants.COMBO_MOSTRAR_RECEPCION))){				
-					if ((!miForm.getFechaInicioBuscar().trim().equals("")) && (!miForm.getFechaFinBuscar().trim().equals(""))){
-							consulta += " and f_siga_get_fechaEstadoRemesa(e.idinstitucion, e.idremesa,"+estado+")>= TO_DATE('"+miForm.getFechaInicioBuscar()+"', 'DD/MM/YYYY')"+
-					       " and f_siga_get_fechaEstadoRemesa(e.idinstitucion, e.idremesa, "+estado+")<= TO_DATE('"+miForm.getFechaFinBuscar()+"', 'DD/MM/YYYY')";					
-					}else if(miForm.getFechaInicioBuscar().trim().equals("")&&  (!miForm.getFechaFinBuscar().trim().equals(""))){
-							consulta +=" and f_siga_get_fechaEstadoRemesa(e.idinstitucion, e.idremesa,"+estado+") <= TO_DATE('"+miForm.getFechaFinBuscar()+"', 'DD/MM/YYYY')";
-						  }else if(!miForm.getFechaInicioBuscar().trim().equals("")&&  (miForm.getFechaFinBuscar().trim().equals(""))){
-							  consulta +=" and f_siga_get_fechaEstadoRemesa(e.idinstitucion, e.idremesa, "+estado+") >= TO_DATE('"+miForm.getFechaInicioBuscar()+"', 'DD/MM/YYYY')";
-						  }
-				}
-				
-				consulta += " order by r.prefijo DESC,r.numero DESC, r.sufijo DESC";				
+						
 
 				// Rellena un vector de Hastable con la claves primarias de la
 				// tabla
 				// scs_ejg para llevar el control de los check
 
-				PaginadorCaseSensitive paginador = new PaginadorCaseSensitive(consulta);
+				PaginadorCaseSensitive paginador = cajgRemesaAdm.getPaginadorRemesas(miForm);
 				int totalRegistros = paginador.getNumeroTotalRegistros();
 
 				if (totalRegistros == 0) {
@@ -365,6 +327,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				if (paginador != null) {
 					datos = paginador.obtenerPagina(1);
 					databackup.put("datos", datos);
+					actualizarPagina(datos,isDatosEconomicos, usr);
 					request.getSession().setAttribute("DATAPAGINADOR", databackup);
 					request.getSession().setAttribute("HORABUSQUEDA", UtilidadesBDAdm.getFechaCompletaBD("es"));
 				}
@@ -375,6 +338,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			}
 			// En "DATOSBUSQUEDA" almacenamos el identificador del letrado
 			miHash.put("BUSQUEDAREALIZADA", "1");
+			request.setAttribute("ISDATOSECONOMICOS", Boolean.valueOf(isDatosEconomicos) );
 			request.getSession().setAttribute("DATOSBUSQUEDA", miHash);
 
 		} catch (Exception e) {
@@ -428,7 +392,15 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 			// Entramos al formulario en modo 'modificación'
 			session.setAttribute("accion", "editar");
-
+			boolean isDatosEconomicos = false;
+			GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
+			//Niramos si esta configurada la url de envio de informe economico
+			if(this.getUserBean(request).getLocation().equals("2003")){
+				String urlEnvioInformeEconomico = genParametrosService.getValorParametroWithNull((short)2003,PARAMETRO.INFORMEECONOMICO_WS_URL,MODULO.ECOM);
+				isDatosEconomicos = urlEnvioInformeEconomico!=null && !urlEnvioInformeEconomico.equalsIgnoreCase(""); 
+				
+			}
+			request.setAttribute("ISDATOSECONOMICOS", Boolean.valueOf(isDatosEconomicos) );
 			request.setAttribute("REMESA", h);
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
@@ -828,7 +800,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				respuestaEJGRemesaAdm.eliminaAnterioresErrores(Integer.parseInt(idInstitucion), Integer.parseInt(miForm.getIdRemesa()));				
 				admRemesa.delete(hashRemesa);
 
-				eliminaFicheroTXTGenerado(idInstitucion, miForm.getIdRemesa());
+				eliminaFicheroTXTGenerado(idInstitucion, miForm.getIdRemesa(),idInstitucion.equals("2003"),usr);
 
 				tx.commit();
 			} else {// tiene estado enviado o recibido y no se puede enviar
@@ -872,10 +844,12 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 	 * @param idRemesa
 	 * @return
 	 */
-	public static boolean eliminaFicheroTXTGenerado(String idInstitucion, String idRemesa) {
-				
+	public static boolean eliminaFicheroTXTGenerado(String idInstitucion, String idRemesa, boolean isBorrarHistorico,UsrBean usrBean) {
+		//como esta regenrando el fichero a enviar, eliminamos tambien  los registro en las tablas 'foto enviada'		
 		int numFicheros = 0;
 		File file = null;
+		
+		
 	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		String rutaAlmacen = rp.returnProperty("cajg.directorioFisicoCAJG") + rp.returnProperty("cajg.directorioCAJGJava");
 			
@@ -895,6 +869,11 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 					}
 				}
 			}
+		}
+		
+		if(numFicheros>0 && isBorrarHistorico){
+			CajgEJGRemesaAdm cajEjgRemesaAdm = new CajgEJGRemesaAdm(usrBean);
+			cajEjgRemesaAdm.borraHistoricoRemesa(new Long(idRemesa), Short.valueOf(idInstitucion));
 		}
 
 		return numFicheros>0;
@@ -1153,6 +1132,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				request.getSession().removeAttribute("DATAPAGINADOR");
 
 				request.setAttribute("REMESA", miHash);
+				
 
 				return "editar";
 			} catch (SIGAException e) {
@@ -1177,10 +1157,11 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				" AND (1 = 0");
 	}
 
-	
-
-	protected String buscarPorEJG(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-
+	protected String buscarPorEJG(ActionMapping mapping, MasterForm formulario,
+			HttpServletRequest request, HttpServletResponse response)
+	throws ClsExceptions,SIGAException  {
+		
+		ScsEJGAdm admBean =new ScsEJGAdm(this.getUserBean(request));
 		Hashtable miHash = new Hashtable();
 		String consulta = "";
 
@@ -1191,158 +1172,191 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			String idremesa = miForm.getIdRemesa();
 			String idinstitucion = this.getIDInstitucion(request).toString();
 			request.setAttribute("idremesa", idremesa);
-			HashMap databackup = new HashMap();
-			String idIncidenciasEnvio =  miForm.getIdIncidenciasEnvio();
-			if (idIncidenciasEnvio != null && !idIncidenciasEnvio.equals("0")) {
-				request.getSession().removeAttribute("DATAPAGINADOR");
+			boolean isDatosEconomicos = false;
+			GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
+			//Niramos si esta configurada la url de envio de informe economico
+			if(idinstitucion.equals("2003")){
+				String urlEnvioInformeEconomico = genParametrosService.getValorParametroWithNull((short)2003,PARAMETRO.INFORMEECONOMICO_WS_URL,MODULO.ECOM);
+				isDatosEconomicos = urlEnvioInformeEconomico!=null && !urlEnvioInformeEconomico.equalsIgnoreCase(""); 
+				
 			}
+			request.setAttribute("ISDATOSECONOMICOS", Boolean.valueOf(isDatosEconomicos) );
+			
+			
 
-			if (request.getSession().getAttribute("DATAPAGINADOR") != null) {
-				databackup = (HashMap) request.getSession().getAttribute("DATAPAGINADOR");
-				Paginador paginador = (Paginador) databackup.get("paginador");
-				Vector datos = new Vector();
+			//Si es seleccionar todos esta variable no vandra nula y ademas nos traera el numero de pagina 
+			//donde nos han marcado el seleccionar todos(asi evitamos meter otra variable)
+			boolean isSeleccionarTodos = miForm.getSeleccionarTodos()!=null 
+				&& !miForm.getSeleccionarTodos().equals("");
+			//si no es seleccionar todos los cambios van a afectar a los datos que se han mostrado en 
+			//la jsp por lo que parseamos los datos dento dela variable Registro seleccionados. Cuando hay modificacion
+			//habra que actualizar estos datos
+			if(!isSeleccionarTodos){
+				ArrayList clavesRegSeleccinados = (ArrayList) miForm.getRegistrosSeleccionados();
+				String seleccionados = request.getParameter("Seleccion");
+				
+				
+				if (seleccionados != null ) {
+					ArrayList alRegistros = actualizarSelecionados(this.clavesBusqueda,seleccionados, clavesRegSeleccinados);
+					if (alRegistros != null) {
+						clavesRegSeleccinados = alRegistros;
+						miForm.setRegistrosSeleccionados(clavesRegSeleccinados);
+					}
+				}
+			}
+			
+			Hashtable busquedaRealizada =  (Hashtable)request.getSession().getAttribute("DATOSFORMULARIO");
+			
+			String idIncidenciasEnvioAnterior = busquedaRealizada!=null && busquedaRealizada.get("idIncidenciasEnvio")!=null?(String)busquedaRealizada.get("idIncidenciasEnvio"):"";
+			HashMap databackup = null;
+			if (miForm.getIdIncidenciasEnvio()!=null && idIncidenciasEnvioAnterior.equalsIgnoreCase(miForm.getIdIncidenciasEnvio()))
+				databackup =  (HashMap) miForm.getDatosPaginador();
+			
+			
+			if (databackup!=null && databackup.get("paginador")!=null&&!isSeleccionarTodos){
+				com.siga.Utilidades.paginadores.PaginadorBind paginador = (com.siga.Utilidades.paginadores.PaginadorBind)databackup.get("paginador");
+				Vector datos=new Vector();
 
-				// Si no es la primera llamada, obtengo la página del request y
-				// la busco con el paginador
-				String pagina = request.getParameter("pagina");
+				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				String pagina = (String)request.getParameter("pagina");
 
-				if (paginador != null) {
-					if (pagina != null) {
+
+
+				if (paginador!=null){	
+					if (pagina!=null){
 						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
-					} else {// cuando hemos editado un registro de la busqueda y
-							// volvemos a la paginacion
+					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
 						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
 					}
-				}
+				}	
+				// jbd //
+//				actualizarPagina(request, admBean, datos);
+				databackup.put("paginador",paginador);
+				databackup.put("datos",datos);
 
-				databackup.put("paginador", paginador);
-				databackup.put("datos", datos);
 
-			} else {
 
-				databackup = new HashMap();
 
-				// obtengo datos de la consulta
-				
+			}else{	
+
+				databackup=new HashMap();
+
+				//obtengo datos de la consulta 			
+				com.siga.Utilidades.paginadores.PaginadorBind resultado = null;
+				resultado = admBean.getPaginadorEJGRemesas(miHash, miForm,miForm.getIdInstitucion(),longitudNumEjg,isDatosEconomicos);
+//				resultado=desigAdm.getBusquedaDesigna((String)usr.getLocation(),miHash);
 				Vector datos = null;
+
+
+
+				databackup.put("paginador",resultado);
 				
-				String cuentaErrores = "SELECT COUNT(1) FROM " + CajgRespuestaEJGRemesaBean.T_NOMBRETABLA + " ER" +
-					" WHERE ER." + CajgRespuestaEJGRemesaBean.C_IDEJGREMESA + " = ejgremesa." +  CajgEJGRemesaBean.C_IDEJGREMESA;
-				
-				String filtrado = "";
-				if (idIncidenciasEnvio != null && !idIncidenciasEnvio.trim().equals("")) {
-					 
-					if (idIncidenciasEnvio.equals(VALUE_TRUE)) {//con errores
-						filtrado = " and (" + cuentaErrores + ") > 0";	
-					} else if (idIncidenciasEnvio.equals("2")) {//sin errores
-						filtrado = " and (" + cuentaErrores + ") = 0";
-					} else if (idIncidenciasEnvio.equals("3")) {//con errores antes del envío a comisión
-						filtrado = " and (" + cuentaErrores + " AND ER." + CajgRespuestaEJGRemesaBean.C_IDTIPORESPUESTA + " = " + CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA + ") > 0";
-					} else if (idIncidenciasEnvio.equals("4")) {//con errores después del envío a comisión
-						filtrado = " and (" + cuentaErrores + " AND ER." + CajgRespuestaEJGRemesaBean.C_IDTIPORESPUESTA + " = " + CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_COMISION + ") > 0";
-					} else if (idIncidenciasEnvio.equals("5")) {//con errores no en nueva remesa
-						filtrado = " and (" + cuentaErrores + ") > 0 AND 0 = (SELECT COUNT(1) FROM CAJG_EJGREMESA ER2" +
-								" WHERE ER2.IDINSTITUCION = EJGREMESA.IDINSTITUCION AND ER2.ANIO = EJGREMESA.ANIO" +
-								" AND ER2.NUMERO = EJGREMESA.NUMERO AND ER2.IDTIPOEJG = EJGREMESA.IDTIPOEJG" +
-								" AND ER2.IDREMESA > EJGREMESA.IDREMESA)";
-					}
-				}
-				
-				/*
-				 * Construimos la primera parte de la consulta, donde escogemos
-				 * los campos a recuperar y las tablas necesarias
-				 */
-				consulta = "select ejgremesa.idejgremesa, ejg."
-						+ ScsEJGBean.C_ANIO
-						+ ", ejg."
-						+ ScsEJGBean.C_IDINSTITUCION
-						+ ", ejg."
-						+ ScsEJGBean.C_IDTIPOEJG
-						+ ", ejg."
-						+ ScsEJGBean.C_IDFACTURACION
-						+ ", ejg. "
-						+ ScsEJGBean.C_FECHARATIFICACION
-						+ ",  "
-						+ UtilidadesMultidioma.getCampoMultidiomaSimple("tipoejg." + ScsTipoEJGBean.C_DESCRIPCION, this.getUserBean(request).getLanguage())
-						+ " as TIPOEJG,"
-						+" lpad( ejg."+ScsEJGBean.C_NUMEJG+","+longitudNumEjg+",0) as "
-						+ ScsEJGBean.C_NUMEJG
-						+ ", ejg."
-						+ ScsEJGBean.C_FECHAAPERTURA
-						+ ", f_siga_getnombreturno( ejg."
-						+ ScsEJGBean.C_IDINSTITUCION
-						+ ", ejg."
-						+ ScsEJGBean.C_GUARDIATURNO_IDTURNO
-						+ ") as TURNO, ejg."
-						+ ScsEJGBean.C_GUARDIATURNO_IDTURNO
-						+ ", guardia."
-						+ ScsGuardiasTurnoBean.C_NOMBRE
-						+ " as GUARDIA, f_siga_getunidadejg(ejg.idinstitucion,ejg.anio,ejg.numero,ejg.idtipoejg) AS NOMBRE, '' AS APELLIDO1,'' AS APELLIDO2,"
-//						+ " (select "
-//						+ UtilidadesMultidioma.getCampoMultidioma("maestroes." + ScsMaestroEstadosEJGBean.C_DESCRIPCION, this.getUserBean(request)
-//								.getLanguage()) + " from " + ScsEstadoEJGBean.T_NOMBRETABLA + " estadoejg," + ScsMaestroEstadosEJGBean.T_NOMBRETABLA
-//						+ " maestroes WHERE estadoejg." + ScsEstadoEJGBean.C_IDINSTITUCION + " = ejg." + ScsEJGBean.C_IDINSTITUCION + " and estadoejg."
-//						+ ScsEstadoEJGBean.C_IDTIPOEJG + " = ejg." + ScsEJGBean.C_IDTIPOEJG + " and estadoejg." + ScsEstadoEJGBean.C_ANIO + " = ejg."
-//						+ ScsEJGBean.C_ANIO + " and estadoejg." + ScsEstadoEJGBean.C_NUMERO + " = ejg." + ScsEJGBean.C_NUMERO + " and maestroes."
-//						+ ScsMaestroEstadosEJGBean.C_IDESTADOEJG + " = estadoejg." + ScsEstadoEJGBean.C_IDESTADOEJG + " and (estadoejg.idestadoporejg) "
-//						+ " = (SELECT max (ultimoestado.idestadoporejg) from " + ScsEstadoEJGBean.T_NOMBRETABLA + " ultimoestado where ultimoestado."
-//						+ ScsEstadoEJGBean.C_IDINSTITUCION + " = estadoejg." + ScsEstadoEJGBean.C_IDINSTITUCION + " and ultimoestado."
-//						+ ScsEstadoEJGBean.C_IDTIPOEJG + " = estadoejg." + ScsEstadoEJGBean.C_IDTIPOEJG + " and ultimoestado." + ScsEstadoEJGBean.C_ANIO
-//						+ " = estadoejg." + ScsEstadoEJGBean.C_ANIO + " and ultimoestado." + ScsEstadoEJGBean.C_NUMERO + " = estadoejg."
-//						+ ScsEstadoEJGBean.C_NUMERO + ") and rownum=1) as estado" +
-						+ " F_SIGA_GETRECURSO(f_siga_get_ultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero), " + this.getUserBean(request).getLanguage() + ") as estado"								
-						+ ", ejg." + ScsEJGBean.C_NUMERO
-						+ ", ("  + cuentaErrores + ") AS ERRORES"
-						+ " , (SELECT COUNT(1) FROM CAJG_EJGREMESA ER2 WHERE ER2.IDINSTITUCION = EJGREMESA.IDINSTITUCION AND ER2.ANIO = EJGREMESA.ANIO AND ER2.NUMERO = EJGREMESA.NUMERO AND ER2.IDTIPOEJG = EJGREMESA.IDTIPOEJG AND ER2.IDREMESA > EJGREMESA.IDREMESA) EN_NUEVA_REMESA"						
-						+ " from " + ScsEJGBean.T_NOMBRETABLA + " ejg,"
-						+ ScsGuardiasTurnoBean.T_NOMBRETABLA + " guardia,"
-						+ ScsTipoEJGBean.T_NOMBRETABLA + " tipoejg,"
-						+ CenColegiadoBean.T_NOMBRETABLA+ " colegiado, "
-						+ CajgEJGRemesaBean.T_NOMBRETABLA + " ejgremesa";
+				if (resultado!=null && resultado.getNumeroTotalRegistros()>0){ 
+					
+					
+					if(isSeleccionarTodos){
+						//Si hay que seleccionar todos hacemos la query completa.
+						ArrayList clavesRegSeleccinados = new ArrayList((Collection)admBean.selectGenericoNLSBind(resultado.getQueryInicio(), resultado.getCodigosInicio()));
+						aniadeClavesBusqueda(this.clavesBusqueda,clavesRegSeleccinados);
+						miForm.setRegistrosSeleccionados(clavesRegSeleccinados);
+						int pagina;
+						try{
+							pagina = Integer.parseInt(miForm.getSeleccionarTodos());
+						}catch (Exception e) {
+							// Con esto evitamos un error cuando se recupera una pagina y hemos "perdido" la pagina actual
+							// cargamos la primera y no evitamos mostrar un error
+							pagina = 1;
+						}
+						datos = resultado.obtenerPagina(pagina);
+						miForm.setSeleccionarTodos("");
 						
+					}else{
+//					
+						miForm.setRegistrosSeleccionados(new ArrayList());
+						datos = resultado.obtenerPagina(1);
+					}
+					// jbd //
+//					actualizarPagina(request, admBean, datos);
+					databackup.put("datos",datos);
+						
+					
+					
+				}else{
+					resultado = null;
+					miForm.setRegistrosSeleccionados(new ArrayList());
+				} 
+				miForm.setDatosPaginador(databackup);
+				
 
-				/* realizamos la join con de las tablas que necesitamos */
-				consulta += " where ejg." + ScsEJGBean.C_IDTIPOEJG + " = tipoejg." + ScsTipoEJGBean.C_IDTIPOEJG + " and " + " ejg."
-						+ ScsEJGBean.C_IDINSTITUCION + " = guardia." + ScsGuardiasTurnoBean.C_IDINSTITUCION + "(+) and " + " ejg."
-						+ ScsEJGBean.C_GUARDIATURNO_IDTURNO + " = guardia." + ScsGuardiasTurnoBean.C_IDTURNO + "(+) and " + " ejg."
-						+ ScsEJGBean.C_GUARDIATURNO_IDGUARDIA + " = guardia." + ScsGuardiasTurnoBean.C_IDGUARDIA + "(+) and " + " ejg."
-						+ ScsEJGBean.C_IDINSTITUCION + " = colegiado." + CenColegiadoBean.C_IDINSTITUCION + "(+) and " + " ejg." + ScsEJGBean.C_IDPERSONA
-						+ " = colegiado." + CenColegiadoBean.C_IDPERSONA + "(+)" + " and ejg.idinstitucion=ejgremesa.idinstitucion"
-						+ " and ejg.anio=ejgremesa.anio" + " and ejg.numero=ejgremesa.numero" + " and ejg.idtipoejg=ejgremesa.idtipoejg"
-						+ " and ejgremesa.idremesa=" + idremesa + " and ejgremesa.idinstitucion=" + idinstitucion + filtrado;
-
-				// Y ahora concatenamos los criterios de búsqueda
-
-				consulta += " ORDER BY " + ScsEJGBean.C_ANIO + ", to_number(" + ScsEJGBean.C_NUMEJG + ") desc";
-
-				// v = admBean.selectGenerico(consulta);
-				Paginador paginador = new Paginador(consulta);
-				int totalRegistros = paginador.getNumeroTotalRegistros();
-
-				if (totalRegistros == 0) {
-					paginador = null;
-				}
-
-				databackup.put("paginador", paginador);
-				if (paginador != null) {
-					datos = paginador.obtenerPagina(1);
-					databackup.put("datos", datos);
-					request.getSession().setAttribute("DATAPAGINADOR", databackup);
-				}
-
-				// resultado = admBean.selectGenerico(consulta);
-				// request.getSession().setAttribute("resultado",v);
-			}
-			// En "DATOSFORMULARIO" almacenamos el identificador del letrado
+			}			
+		
+			// En "DATOSFORMULARIO" almacenamos el identificador del letrado		
 			miHash.put("BUSQUEDAREALIZADA", "1");
 			request.getSession().setAttribute("DATOSFORMULARIO", miHash);
+			
+			
 
-		} catch (Exception e) {
-			throwExcp("messages.general.error", e, null);
+
+		}catch (SIGAException e1) {
+			// Excepcion procedente de obtenerPagina cuando se han borrado datos
+			return exitoRefresco("error.messages.obtenerPagina",request);
+		}catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
 		}
 
 		return "listarEJG";
 	}
+	
+	protected String buscarPorEJGInit(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
+
+		ScsEJGAdm admBean = new ScsEJGAdm(this.getUserBean(request));
+		Hashtable miHash = new Hashtable();
+		String consulta = "";
+
+		try {
+			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
+			DefinicionRemesas_CAJG_Form miForm = (DefinicionRemesas_CAJG_Form) formulario;
+			miHash = miForm.getDatos();
+			String idremesa = miForm.getIdRemesa();
+			String idinstitucion = this.getIDInstitucion(request).toString();
+			request.setAttribute("idremesa", idremesa);
+
+			boolean isDatosEconomicos = false;
+			GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
+			//Niramos si esta configurada la url de envio de informe economico
+			if(this.getUserBean(request).getLocation().equals("2003")){
+				String urlEnvioInformeEconomico = genParametrosService.getValorParametroWithNull((short)2003,PARAMETRO.INFORMEECONOMICO_WS_URL,MODULO.ECOM);
+				isDatosEconomicos = urlEnvioInformeEconomico!=null && !urlEnvioInformeEconomico.equalsIgnoreCase(""); 
+				
+			}
+			request.setAttribute("ISDATOSECONOMICOS", Boolean.valueOf(isDatosEconomicos) );
+			
+			com.siga.Utilidades.paginadores.PaginadorBind resultado = admBean.getPaginadorEJGRemesas(miHash, miForm, miForm.getIdInstitucion(), longitudNumEjg,isDatosEconomicos);
+			HashMap databackup = new HashMap();
+			databackup.put("paginador", resultado);
+			if (resultado != null && resultado.getNumeroTotalRegistros() > 0) {
+				miForm.setRegistrosSeleccionados(new ArrayList());
+				Vector datos = resultado.obtenerPagina(1);
+				databackup.put("datos", datos);
+			} else {
+				resultado = null;
+				miForm.setRegistrosSeleccionados(new ArrayList());
+			}
+			miForm.setDatosPaginador(databackup);
+			miHash.put("BUSQUEDAREALIZADA", "1");
+			request.getSession().setAttribute("DATOSFORMULARIO", miHash);
+			
+
+		} catch (SIGAException e1) {
+			// Excepcion procedente de obtenerPagina cuando se han borrado datos
+			return exitoRefresco("error.messages.obtenerPagina", request);
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
+		}
+
+		return "listarEJG";
+	}
+	
 
 	protected String aniadirExpedientes(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
 			throws SIGAException {
@@ -1472,6 +1486,9 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(usr);
 
 		if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(miForm.getIdRemesa()), ClsConstants.ESTADO_REMESA_ENVIADA)) {
+			//si es alcala metemos el estabdo recibida respuesta 
+			if(usr.getLocation().equals("2003"))
+				cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(miForm.getIdRemesa()), ClsConstants.ESTADO_REMESA_RECIBIDA);
 			cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, getIDInstitucion(request).toString(), miForm.getIdRemesa(), ESTADOS_EJG.REMITIDO_COMISION);
 		}
 
@@ -1517,7 +1534,10 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 		return "descargaFichero";
 	}
-	
+	public File generaFicherosTXT (String idInstitucion, String idRemesa, String nombreFicheroPorDefecto, StringBuffer mensaje,boolean isSimulacion, String rutaFicheroZIP) throws Exception {
+		return generaFicherosTXT(idInstitucion, idRemesa, nombreFicheroPorDefecto, mensaje, rutaFicheroZIP,isSimulacion, null);
+		
+	}
 
 	/**
 	 * 
@@ -1529,7 +1549,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 	 * @return
 	 * @throws Exception
 	 */
-	public File generaFicherosTXT (String idInstitucion, String idRemesa, String nombreFicheroPorDefecto, StringBuffer mensaje, String rutaFicheroZIP) throws Exception {
+	public File generaFicherosTXT (String idInstitucion, String idRemesa, String nombreFicheroPorDefecto, StringBuffer mensaje, String rutaFicheroZIP,boolean isSimulacion, UsrBean usrBean) throws Exception {
 		
 		String keyPath = "cajg.directorioFisicoCAJG";
 		String keyPath2 = "cajg.directorioCAJGJava";
@@ -1612,6 +1632,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						cs.setString(3, idRemesa);					    	
 				    	cs.execute();
 				    	fila_consulta = cs.getString(1);
+//				    	System.out.println("fila_consulta"+fila_consulta);
 					} catch (SQLException e) {					
 						ClsLogging.writeFileLogError("Error al ejecutar la función o procedimiento " + funcion, e, 3);
 						throw e;
@@ -1631,12 +1652,19 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 					
 					
 					if (rc2 != null && rc2.size() > 0) {						
-						// creación fichero						
-						File file = generaFichero(rc2, nombreFichero, sRutaJava, campos, "txt", imprimirCabecera, delimitador, saltoLinea, subCabecera, (usaTablaEJGremesa?numeroEJGs:null), mensaje); 
-						ficheros.add(file);
+						// creación fichero			
+						
+						if(idInstitucion.equals("2003")&&funcion.equalsIgnoreCase("f_comunicaciones_ejg_2003_CAB")){
+							List<File> files = generaFicheros(rc2, nombreFichero, sRutaJava, campos, "txt", delimitador, saltoLinea, subCabecera, (usaTablaEJGremesa?numeroEJGs:null), mensaje,idRemesa,isSimulacion,usrBean); 
+							ficheros.addAll(files);
+						}else if(!isSimulacion){
+							File file = generaFichero(rc2, nombreFichero, sRutaJava, campos, "txt", imprimirCabecera, delimitador, saltoLinea, subCabecera, (usaTablaEJGremesa?numeroEJGs:null), mensaje);
+							ficheros.add(file);
+						}
+						
 					}					
 				} catch (Exception e) {
-					ClsLogging.writeFileLogError("Error al generar el fichero", e, 3);
+					ClsLogging.writeFileLogError("Error al generar el fichero o al insertar el historico de envio", e, 3);
 					throw new SIGAException("messages.cajg.error.descargaFichero", e);
 				}			
 				
@@ -1655,11 +1683,17 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 					fileZIP = MasterWords.doZip(ficheros, pathdocumento);					
 				}
 				
+				
+				
+				
 			} else {
 				// no devuelve ningun resultado la consulta
 				if (numeroEJGs != null && Integer.parseInt(numeroEJGs) > 0) {
 					mensaje.delete(0, mensaje.length());
-					mensaje.append("cajg.error.noFicheroGenerado");
+					if(isSimulacion)
+						mensaje.append("No hay ningun expediente nuevo o actualización válida pendiente de enviar.");
+					else
+						mensaje.append("cajg.error.noFicheroGenerado");
 				}
 				//throw new SIGAException("messages.cajg.error.nodatos");
 			}
@@ -1703,11 +1737,11 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		mensaje.append(mensajeCorrecto);
 		
 		try {		
-			eliminaFicheroTXTGenerado(idInstitucion, form.getIdRemesa());//por si se estan regenerando...
+			eliminaFicheroTXTGenerado(idInstitucion, form.getIdRemesa(),idInstitucion.equals("2003"), usr);//por si se estan regenerando...
 			CajgRespuestaEJGRemesaAdm respuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(this.getUserBean(request));
 			respuestaEJGRemesaAdm.eliminaAnterioresErrores(Integer.parseInt(idInstitucion), Integer.parseInt(form.getIdRemesa()));
 			
-			File fileZIP = generaFicherosTXT(idInstitucion, form.getIdRemesa(), nombreFicheroPorDefecto, mensaje, null);
+			File fileZIP = generaFicherosTXT(idInstitucion, form.getIdRemesa(), nombreFicheroPorDefecto, mensaje, null,false,usr);
 				
 			if (fileZIP != null) {
 				UserTransaction tx = usr.getTransaction();
@@ -1726,6 +1760,38 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 		return exitoRefresco(mensaje.toString(), request);
 	}
+	
+	protected String validaRemesaTxt(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
+			throws ClsExceptions, SIGAException {
+		request.getSession().removeAttribute("DATAPAGINADOR");
+
+			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			String idInstitucion = this.getIDInstitucion(request).toString();	
+			DefinicionRemesas_CAJG_Form form = (DefinicionRemesas_CAJG_Form) formulario;		
+			String nombreFicheroPorDefecto = form.getPrefijo() + form.getNumero() + form.getSufijo() + "_" + idInstitucion;
+			
+			StringBuffer mensaje = new StringBuffer();
+//			String mensajeCorrecto = UtilidadesString.getMensajeIdioma(usr, "cajg.mensaje.ficheroCorrecto");
+//			mensaje.append(mensajeCorrecto);
+			
+			try {		
+				eliminaFicheroTXTGenerado(idInstitucion, form.getIdRemesa(),idInstitucion.equals("2003"), usr);//por si se estan regenerando...
+				CajgRespuestaEJGRemesaAdm respuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(this.getUserBean(request));
+				respuestaEJGRemesaAdm.eliminaAnterioresErrores(Integer.parseInt(idInstitucion), Integer.parseInt(form.getIdRemesa()));
+				
+				File fileZIP = generaFicherosTXT(idInstitucion, form.getIdRemesa(), nombreFicheroPorDefecto, mensaje, null,true,usr);
+					
+//				if (fileZIP == null) {
+//					mensaje = new StringBuffer("cajg.mensaje.ficheroNoGenerado");
+//				}
+				
+			} catch (Exception e) {
+				throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
+			}
+
+			return exitoRefresco(mensaje.toString(), request);
+		}
+		
 
 	/**
 	 * 
@@ -1856,6 +1922,20 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			}
 			
 			mensaje = getMensajeRespuesta(respuesta, request, simular);
+		}else if (CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == tipoCAJG) {
+			mensaje = validaRemesaTxt(mapping, formulario, request, response);
+			
+//			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
+//			RESPUESTA_ENVIO_REMESA respuesta = null;
+//			if (simular) {
+//				respuesta = pcajgInsertaColaService.validaExpedientesEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+//						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
+//			} else {
+//				respuesta = pcajgInsertaColaService.enviaExpedientesEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+//						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
+//			}
+			
+//			mensaje = getMensajeRespuesta(respuesta, request, simular);
 		} else {
 			ejecutaBackground(formulario, request, 0);	
 			if (simular) {
@@ -2057,6 +2137,282 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 		return archivo;
 	}
+	
+	
+	/**
+	 * 
+	 * @param datos
+	 * @param nombreFichero
+	 * @param rutaFichero
+	 * @param cabeceras
+	 * @param extension
+	 * @param imprimirCabecera
+	 * @param delimitador
+	 * @param saltoLinea
+	 * @param subCabecera
+	 * @param mensaje 
+	 * @param numeroEJGs 
+	 * @param idRemesa 
+	 * @return
+	 * @throws IOException
+	 */
+	private List<File> generaFicheros(RowsContainer rowsContainer, String nombreFichero, String rutaFichero, String[] cabeceras, String extension,  String delimitador, String saltoLinea, String subCabecera, String numeroEJGs, StringBuffer mensaje, String idRemesa,boolean isSimulacion, UsrBean usrBean) throws IOException, BusinessException {
+		List<File> files = new ArrayList<File>();
+		
+
+		
+		boolean isActualizacion = false;
+		String arraySubCabeceras = new String();
+		boolean inicioLinea = true;
+		int numeroDatos = 0;
+		
+		//Iremos acumulando los datos de las tablas de historico 
+		Map<String, Vector<List<String>>> mapTablasHistorico = null;
+		Vector<List<String>> vectorPares = null;
+		List<String> campos = null;
+		List<String> values = null;
+		CajgEJGRemesaAdm cajgRemesaAdm = new CajgEJGRemesaAdm(usrBean); 
+		ScsEJGAdm ejgAdm = new ScsEJGAdm(usrBean);
+		
+
+
+		// Vamos a crearnos la lista de expedientes incluidos en la remesa. Ademas nos guardaremos la informacion que se envia en las tablas creadas para tal efecto
+		List<Map<String, Vector<List<String>>>> expedientesList = new ArrayList<Map<String, Vector<List<String>>>>();
+		Map<String, Map<String, String>> newIntercambiosRemesaMap = new TreeMap<String, Map<String, String>>();
+		//En esta lista vamos a ir acumulando los expedientes que ya han sido incluidos en una remesa y disponemos historico
+		//En el caso que no haya modificacionesde dichio expediente no lo meteremos en el fichero de actualizacion
+		List<String> expedientesActualizar = new ArrayList<String>();
+		//Aqui vamosd a ir acumulando las lineas del fichero de expedientes
+		Map<String, String> expInluidosFichero = new HashMap<String, String>();
+
+		for (int i = 0; i < rowsContainer.size(); i++) {
+			String linea = "";
+			String cabecera = "";
+			inicioLinea = true;
+			numeroDatos++;
+
+			Row row = (Row) rowsContainer.get(i);
+
+			boolean mismoExpediente = true;
+			String numeroIntercambio = row.getString("CAB2_NUMERO_INTERCAMBIO");
+			String aniooEJG = row.getString("EXP2_ANIO_EXPEDIENTE");
+			String numEJG = row.getString("EXP1_NUM_EXPEDIENTE");
+
+			//Comprobamos si es actualizacion. Mira si hay registro en el hostorico 
+			isActualizacion = cajgRemesaAdm.isEJGHistorico(aniooEJG, numEJG);
+			//si es actualizacion vamos acumulando lo expedientes de los que hay que informar en el fichero de actualizaciones.
+			//Luego se mirara si ha tenido alguna modificacion con respecto a la ultima vez que se envio
+			if (isActualizacion) {
+//				expedientesActualizar.add(aniooEJG + "/" + numEJG);
+				if(!expedientesActualizar.contains(numeroIntercambio))
+					expedientesActualizar.add(numeroIntercambio);
+				newIntercambiosRemesaMap.put(numeroIntercambio, row.getRow());
+			}
+
+			for (int k = 0; k < cabeceras.length; k++) {
+				String cabeceraPK = cabeceras[k];
+				String valor = row.getString(cabeceraPK);
+
+				if (cabeceraPK.startsWith("TIPO_REGISTRO_CAB")) {
+					mapTablasHistorico = new TreeMap<String, Vector<List<String>>>();
+					expedientesList.add(mapTablasHistorico);
+
+				}
+				if (cabeceraPK.startsWith("TIPO_REGISTRO_")) {
+					String tipoRegistro = cabeceraPK.split("TIPO_REGISTRO_")[1];
+					if (!mapTablasHistorico.containsKey(tipoRegistro)) {
+						vectorPares = new Vector<List<String>>();
+						campos = new ArrayList<String>();
+						values = new ArrayList<String>();
+						if(!isSimulacion && tipoRegistro.equals("CAB")){
+							ScsEJGBean ejgBean =  ejgAdm.getEjg(aniooEJG,numEJG,usrBean.getLocation());
+							campos.add("CAB_EJG_IDINSTITUCION");
+							values.add(""+ejgBean.getIdInstitucion());
+							campos.add("CAB_EJG_IDTIPO");
+							values.add(""+ejgBean.getIdTipoEJG());
+							campos.add("CAB_EJG_ANIO");
+							values.add(""+ejgBean.getAnio());
+							campos.add("CAB_EJG_NUMERO");
+							values.add(""+ejgBean.getNumero());
+						}
+						vectorPares.add(0, campos);
+						vectorPares.add(1, values);
+						
+						
+					} else {
+						vectorPares = mapTablasHistorico.get(tipoRegistro);
+					}
+					mapTablasHistorico.put(tipoRegistro, vectorPares);
+				} else {
+					String tipoRegistro = cabeceraPK.substring(0, 3);
+					// Miramos que la tabla contenga la cabecera, si no, sera uno de los campos de separacion o cambio de linea
+					if (mapTablasHistorico.get(tipoRegistro) != null && valor != null && !valor.equals("")) {
+						vectorPares = mapTablasHistorico.get(tipoRegistro);
+						campos = vectorPares.get(0);
+						values = vectorPares.get(1);
+						campos.add(cabeceraPK);
+						values.add(valor);
+					}
+
+				}
+
+				if (valor != null) {
+					valor = valor.replaceAll("\\r\\n", " "); // sustituimos los posibles saltos de linea por un espacio
+				}
+				if (subCabecera != null && !subCabecera.trim().equals("") && subCabecera.trim().equals(valor)) {
+					if (arraySubCabeceras.indexOf(linea) == -1) {
+						arraySubCabeceras = arraySubCabeceras + linea;
+						linea = linea + "\r\n";
+					} else {
+						linea = "";
+						if (mismoExpediente) {
+							numeroDatos--;
+							mismoExpediente = false;
+						}
+					}
+					inicioLinea = true;
+				} else if (saltoLinea != null && !saltoLinea.trim().equals("") && saltoLinea.trim().equals(valor)) {
+					linea = linea + "\r\n";
+					inicioLinea = true;
+				} else {
+					if (inicioLinea) {
+						linea += valor;
+						inicioLinea = false;
+					} else {
+						linea += delimitador + valor;
+					}
+				}
+			}
+
+			if (!isActualizacion) {
+				expInluidosFichero.put(aniooEJG + "/" + numEJG, linea);
+			}
+
+		}
+		File directorio = new File(rutaFichero);
+		directorio.mkdirs();
+
+		File archivo = new File(rutaFichero + ClsConstants.FILE_SEP + nombreFichero + "." + extension);
+
+		int j = 1;
+		while (archivo.exists()) {
+			archivo = new File(rutaFichero + ClsConstants.FILE_SEP + nombreFichero + " (" + j + ")." + extension);
+			j++;
+		}
+		
+		OutputStream out = null;
+		if(expInluidosFichero.size()>0)
+			out = new FileOutputStream(archivo);
+		int findTheLast = 0;
+		Iterator<String> iteraExpIncluidosFichero = expInluidosFichero.keySet().iterator();
+		while (iteraExpIncluidosFichero.hasNext()) {
+			findTheLast ++;
+			String keyExpIncluidoFichero = (String) iteraExpIncluidosFichero.next();
+			out.write(expInluidosFichero.get(keyExpIncluidoFichero).getBytes());
+			if(findTheLast!=expInluidosFichero.keySet().size())
+				out.write("\r\n".getBytes());
+		}
+		
+
+		Map<String, List<String>> expInluidosFicheroActualizacion = cajgRemesaAdm.getLineasExpedientesFicheroActualizacion(newIntercambiosRemesaMap);
+		Set<String> expActualizacionesSet = expInluidosFicheroActualizacion.keySet();
+		Iterator<String> iteraExpIncluidosFicheroAct = expActualizacionesSet.iterator();
+		List<String> lineasFicheroActualizacion = new ArrayList<String>();
+		while (iteraExpIncluidosFicheroAct.hasNext()) {
+			String keyExpIncluidoFichero = (String) iteraExpIncluidosFicheroAct.next();
+			// Borramos los que hayan tenido modificaciones
+			expedientesActualizar.remove(keyExpIncluidoFichero);
+			List<String> lineasExp = expInluidosFicheroActualizacion.get(keyExpIncluidoFichero);
+			lineasFicheroActualizacion.addAll(lineasExp);
+
+		}
+		if (lineasFicheroActualizacion != null && lineasFicheroActualizacion.size() > 0) {
+			
+			boolean isPrimeralinea = false;
+			if(out==null){
+				isPrimeralinea = true;
+				out = new FileOutputStream(archivo);
+			}
+			for (String linea : lineasFicheroActualizacion) {
+				String newLine = isPrimeralinea?linea:"\r\n"+linea;
+				isPrimeralinea = false;
+				out.write(newLine.getBytes());
+			}
+			
+			
+			
+			
+		}
+		int numExpedientesProcesados = 0;
+		if(out!=null){
+			out.flush();
+			out.close();
+			files.add(archivo);
+			if(isSimulacion){
+				numExpedientesProcesados+=expInluidosFichero.size();
+				if(expInluidosFichero.size()>0){
+					mensaje.append(expInluidosFichero.keySet().size() );
+					mensaje.append(" expedientes nuevos válidos.");
+				}
+				numExpedientesProcesados+=expActualizacionesSet.size();
+				if (lineasFicheroActualizacion.size() > 0){
+					if(mensaje.length()>0)
+						mensaje.append("\n");
+					mensaje.append(expActualizacionesSet.size());
+					mensaje.append(" actualizaciones de expedientes validas.");
+				}
+				
+			}else{
+				
+				mensaje.append("- " + nombreFichero + "." + extension + " generado:");
+				if(expInluidosFichero.size()>0){
+					mensaje.append("\n"); 
+					mensaje.append(expInluidosFichero.keySet().size() );
+					mensaje.append(" expedientes nuevos.");
+				}
+				if (lineasFicheroActualizacion.size() > 0){
+					mensaje.append("\n");
+					mensaje.append(expActualizacionesSet.size());
+					mensaje.append(" actualizaciones de expedientes.");
+				}
+				
+				
+				
+			}
+			
+		}
+		
+		if(!isSimulacion && expedientesList!=null && expedientesList.size()>0)
+			cajgRemesaAdm.insertaHistoricoRemesa(expedientesList);
+		if (expedientesActualizar.size() > 0){
+			cajgRemesaAdm.insertaErroresHistoricoRemesa(usrBean.getLocation(),idRemesa,expedientesActualizar);
+			numExpedientesProcesados+=expedientesActualizar.size();
+			if(isSimulacion){
+				if(mensaje.length()>0)
+					mensaje.append("\n");
+				mensaje.append( expedientesActualizar.size() );
+				mensaje.append(" expedientes incluidos que ya estaban enviados, no han tenido modificaciones y no se incluiran en fichero.");
+			}
+			else{
+				mensaje.append("\n");
+				mensaje.append(expedientesActualizar.size() );
+				mensaje.append(" expedientes incluidos que ya estaban enviados, no han tenido modificaciones y no se incluyen en fichero.");
+			}
+			
+		}
+		if(isSimulacion){
+			if(Integer.parseInt(numeroEJGs)!=numExpedientesProcesados){
+				if(mensaje.length()>0)
+					mensaje.append("\n");
+				mensaje.append((Integer.parseInt(numeroEJGs) - numExpedientesProcesados) );
+				mensaje.append(" expedientes con incidencias que no se incluiran en el fichero");
+				
+			}
+		}
+
+		return files;
+	}
+	
 
 	/**
 	 * 
@@ -2085,5 +2441,112 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 		return "descargaFichero";
 	}
+	
+	protected String marcarRespuestaIncorrectaManual(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
+		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		DefinicionRemesas_CAJG_Form miForm = (DefinicionRemesas_CAJG_Form) formulario;
+		try {
+			CajgRemesaVo cajgRemesaVo = new CajgRemesaVo();
+			cajgRemesaVo.setIdInstitucion(Short.valueOf(usr.getLocation()));
+			cajgRemesaVo.setIdRemesa(Long.valueOf(miForm.getIdRemesa()));
+			cajgRemesaVo.setUsuModificacion(Integer.valueOf(usr.getUserName()));
+			String datosSolicInformeEconomico = (String) miForm.getDatosSolicInformeEconomico();
+			String [] datosSolicInformeEconomicoStrings = datosSolicInformeEconomico.split("%%%");
+			CajgEjgRemesaVo ejgVo = null;
+			List<CajgEjgRemesaVo> ejgVos = new ArrayList<CajgEjgRemesaVo>();
+			String respuestaErronea = "";
+			for (int i = 0; i < datosSolicInformeEconomicoStrings.length; i++) {
+				ejgVo = new CajgEjgRemesaVo();
+				String datosSolicInformeEconomicoString = datosSolicInformeEconomicoStrings[i];
+				if(datosSolicInformeEconomicoString!=null && !datosSolicInformeEconomicoString.equals("")){
+				String[] clavesEjgSolicInformeEconomicoStrings =  datosSolicInformeEconomicoString.split("##");
+					String idInstitucion = clavesEjgSolicInformeEconomicoStrings[0];
+					String idTipoEjg = clavesEjgSolicInformeEconomicoStrings[1];
+					String anio = clavesEjgSolicInformeEconomicoStrings[2];
+					String numero = clavesEjgSolicInformeEconomicoStrings[3];
+					ejgVo.setIdinstitucion(Short.valueOf(idInstitucion));
+					ejgVo.setAnio(Short.valueOf(anio));
+					ejgVo.setIdtipoejg(Short.valueOf(idTipoEjg));
+					ejgVo.setNumero(Long.valueOf(numero));
+					ejgVo.setIdejgremesa(Long.valueOf(clavesEjgSolicInformeEconomicoStrings[4]));
+					ejgVo.setNumerointercambio( Integer.valueOf(clavesEjgSolicInformeEconomicoStrings[5]));
+					respuestaErronea = clavesEjgSolicInformeEconomicoStrings[6];
+					ejgVos.add(ejgVo);
+				}
+			}
+			
+			cajgRemesaVo.setEjgRemesaVo(ejgVos);
+			BusinessManager bm = getBusinessManager();
+			CajgRemesaService cajgRemesaService = (CajgRemesaService)bm.getService(CajgRemesaService.class);
+			cajgRemesaService.erroresManual(cajgRemesaVo,respuestaErronea);
+		} catch (Exception e) {
+			throw new SIGAException("No se puede borrar la remesa"+e.toString(),e);
+		}
+
+
+		return exitoRefresco("messages.updated.success", request);
+	}
+	
+	protected String comunicarInfEconomico(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
+		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		DefinicionRemesas_CAJG_Form miForm = (DefinicionRemesas_CAJG_Form) formulario;
+		try {
+			CajgRemesaVo cajgRemesaVo = new CajgRemesaVo();
+			cajgRemesaVo.setIdInstitucion(Short.valueOf(usr.getLocation()));
+			cajgRemesaVo.setIdRemesa(Long.valueOf(miForm.getIdRemesa()));
+			cajgRemesaVo.setUsuModificacion(Integer.valueOf(usr.getUserName()));
+			String datosSolicInformeEconomico = (String) miForm.getDatosSolicInformeEconomico();
+			String [] datosSolicInformeEconomicoStrings = datosSolicInformeEconomico.split("%%%");
+			CajgEjgRemesaVo ejgVo = null;
+			List<CajgEjgRemesaVo> ejgVos = new ArrayList<CajgEjgRemesaVo>();
+			for (int i = 0; i < datosSolicInformeEconomicoStrings.length; i++) {
+				ejgVo = new CajgEjgRemesaVo();
+				String datosSolicInformeEconomicoString = datosSolicInformeEconomicoStrings[i];
+				String[] clavesEjgSolicInformeEconomicoStrings =  datosSolicInformeEconomicoString.split("##");
+				String idInstitucion = clavesEjgSolicInformeEconomicoStrings[0];
+				String idTipoEjg = clavesEjgSolicInformeEconomicoStrings[1];
+				String anio = clavesEjgSolicInformeEconomicoStrings[2];
+				String numero = clavesEjgSolicInformeEconomicoStrings[3];
+				String idEjgRemesa = clavesEjgSolicInformeEconomicoStrings[4];
+				
+				ejgVo.setIdejgremesa(Long.valueOf(idEjgRemesa));
+				ejgVo.setIdinstitucion(Short.valueOf(idInstitucion));
+				ejgVo.setAnio(Short.valueOf(anio));
+				ejgVo.setIdtipoejg(Short.valueOf(idTipoEjg));
+				ejgVo.setNumero(Long.valueOf(numero));
+				ejgVos.add(ejgVo);
+			}
+			
+			cajgRemesaVo.setEjgRemesaVo(ejgVos);
+			BusinessManager bm = getBusinessManager();
+			CajgRemesaService cajgRemesaService = (CajgRemesaService)bm.getService(CajgRemesaService.class);
+			cajgRemesaService.comunicaInformeEconomicoEjg(cajgRemesaVo,OPERACION.ENVIO_INFORME_ECONOMICO);
+		} catch (Exception e) {
+			throw new SIGAException("No se puede borrar la remesa"+e.toString(),e);
+		}
+
+
+		return exitoRefresco("messages.updated.success", request);
+	}
+	private Vector actualizarPagina(Vector datos,boolean isDatosEconomicos,UsrBean usrBean) throws ClsExceptions, SIGAException{
+		CajgRemesaAdm scsEJGAdm = new CajgRemesaAdm(usrBean);
+		
+		
+		try{
+			for (int i = 0; i < datos.size(); i++) {
+				
+				Row fila = (Row)datos.get(i);
+				Hashtable registro = (Hashtable) fila.getRow();
+				Hashtable datosRemesa  = scsEJGAdm.getDatosRemesa((String) registro.get("IDREMESA"),(String) registro.get("IDINSTITUCION"),isDatosEconomicos);
+				registro.putAll(datosRemesa);
+			}
+		} catch (Exception e) {
+			throwExcp("messages.general.error",e,null);
+		}
+		return datos;
+	}
+	
 
 }

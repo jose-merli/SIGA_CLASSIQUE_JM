@@ -3518,7 +3518,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				resultado = ClsMngBBDD.callPLProcedure("{call " + sPaqueteFacturacionSJCS + ".PROC_FCS_FACTURAR_TURNOS_OFI(?,?,?,?,?,?)}", 3, param_in_facturacion);
 				if (!resultado[1].equalsIgnoreCase("0")) {
 					ClsLogging.writeFileLog("Error en PL = "+(String)resultado[2],3);
-					throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Turnos de Oficio");
+					throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Turnos de Oficio: "+(String)resultado[2]);
 				}
 				importeOficio = new Double(resultado[0].replaceAll(",","."));
 				importeTotal += importeOficio.doubleValue();
@@ -3536,7 +3536,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				resultado = ClsMngBBDD.callPLProcedure("{call " + sPaqueteFacturacionSJCS + ".PROC_FCS_FACTURAR_GUARDIAS(?,?,?,?,?,?)}", 3, param_in_facturacion);
 				if (!resultado[1].equalsIgnoreCase("0")) {
 					ClsLogging.writeFileLog("Error en PL = "+(String)resultado[2],3);
-					throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Guardias");
+					throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Guardias: "+(String)resultado[2]);
 				} 
 				importeGuardia = new Double(resultado[0].replaceAll(",","."));
 				importeTotal += importeGuardia.doubleValue();
@@ -3553,7 +3553,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				resultado = ClsMngBBDD.callPLProcedure("{call " + sPaqueteFacturacionSJCS + ".PROC_FCS_FACTURAR_SOJ(?,?,?,?,?,?)}", 3, param_in_facturacion);
 				if (!resultado[1].equalsIgnoreCase("0")) {
 					ClsLogging.writeFileLog("Error en PL = "+(String)resultado[2],3);
-					throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Expedientes de Orientación Jurídica");
+					throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Expedientes de Orientación Jurídica: "+(String)resultado[2]);
 				} 
 				importeSOJ = new Double(resultado[0].replaceAll(",","."));
 				importeTotal += importeSOJ.doubleValue();
@@ -3571,7 +3571,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				resultado = ClsMngBBDD.callPLProcedure("{call " + sPaqueteFacturacionSJCS + ".PROC_FCS_FACTURAR_EJG (?,?,?,?,?,?)}", 3, param_in_facturacion);
 				if (!resultado[1].equalsIgnoreCase("0")) {
 					ClsLogging.writeFileLog("Error en PL = "+(String)resultado[2],3);
-					throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Expedientes de Justicia Gratuita");
+					throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Expedientes de Justicia Gratuita: "+(String)resultado[2]);
 				} 
 
 				importeEJG = new Double(resultado[0].replaceAll(",","."));

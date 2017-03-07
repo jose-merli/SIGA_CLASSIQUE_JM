@@ -85,11 +85,11 @@
 						<td align="center">
 							<c:choose>
 								<c:when test="${confConjuntoGuardiasForm.orden!=null}">
-									<input type="text" class="boxConsulta" style="width:40px;" id="orden_${status.count}" value="${confConjuntoGuardiasForm.orden}" disabled='disabled' maxlength="5">
+									<input type="text" class="boxConsulta" style="width:40px;" id="orden_${status.count}" readOnly="readOnly" value="${confConjuntoGuardiasForm.orden}" maxlength="5">
 								</c:when>
 								
 								<c:otherwise>
-									<input type="text" class="boxConsulta" style="width:40px;" id="orden_${status.count}" value="" disabled='disabled' maxlength="5">
+									<input type="text" class="boxConsulta" style="width:40px;" id="orden_${status.count}" readOnly="readOnly" value="" maxlength="5">
 								</c:otherwise>
 							</c:choose>
 						</td>

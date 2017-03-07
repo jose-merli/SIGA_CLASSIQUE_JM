@@ -47,6 +47,8 @@
 			titulo = "menu.justiciaGratuita.e_comunicaciones.Resoluciones"; 
 		} else if(idTipoRemesa.equals("2")) {
 			titulo = "menu.justiciaGratuita.e_comunicaciones.cargaDesignaProcurador";
+		}else if(idTipoRemesa.equals("3")) {
+			titulo = "menu.sjcs.ecomunicaciones.resultadoRemesaEJG";
 		}
 	}
 	

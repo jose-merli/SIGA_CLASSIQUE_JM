@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import="com.siga.Utilidades.paginadores.PaginadorBind"%>
 <html>
 <head>
 <!-- listadoEJG_Remesa.jsp -->
@@ -34,8 +35,13 @@
 <%@taglib uri = "struts-html.tld" 	prefix="html" %>
 <%@taglib uri = "libreria_SIGA.tld" prefix="siga" %>
 <%@taglib uri =	"struts-logic.tld" 	prefix="logic" %>
+<%@ taglib uri = "c.tld" 				prefix="c"%>
 
 <!-- JSP -->
+
+<bean:define id="registrosSeleccionados" name="DefinicionRemesas_CAJG_Form" property="registrosSeleccionados" type="java.util.ArrayList"/>
+<bean:define id="datosPaginador" name="DefinicionRemesas_CAJG_Form" property="datosPaginador" type="java.util.HashMap"/>
+
 <% 
 	String app=request.getContextPath(); 
 	HttpSession ses=request.getSession(true);
@@ -46,43 +52,37 @@
 	ses.removeAttribute("resultado");
 	
 	String idremesa=(String)request.getAttribute("idremesa");
+	
+	
+	Boolean isDatosEconomicos = (Boolean)request.getAttribute("ISDATOSECONOMICOS");
+	
 	/** PAGINADOR ***/
 	Vector resultado=null;
 	String paginaSeleccionada ="";
-	
 	String totalRegistros ="";
-	
 	String registrosPorPagina = "";
-	HashMap hm=new HashMap();
-	
- 	if (ses.getAttribute("DATAPAGINADOR")!=null){
-		 hm = (HashMap)ses.getAttribute("DATAPAGINADOR");
-		
-		 if ( hm.get("datos")!=null && !hm.get("datos").equals("")){
-		  	resultado = (Vector)hm.get("datos");	  
-		    Paginador paginador = (Paginador)hm.get("paginador");
-			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());	
-		 	totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());	
-		 	registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina());
-		 	
-		 } else {
-		    resultado =new Vector();
-		    paginaSeleccionada = "0";	
-		 	totalRegistros = "0";	
-		 	registrosPorPagina = "0";
-		 }
-		 
-	} else {
+	String valorCheckPersona = "";
+	if (datosPaginador!=null) {
+	 if ( datosPaginador.get("datos")!=null && !datosPaginador.get("datos").equals("")){
+	  	resultado = (Vector)datosPaginador.get("datos");
+	    PaginadorBind paginador = (PaginadorBind)datosPaginador.get("paginador");
+		paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
+	 	totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
+	 	registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina()); 
+	 }else{
+		resultado =new Vector();
+		paginaSeleccionada = "0";
+		totalRegistros = "0";
+		registrosPorPagina = "0";
+	 }
+	}else{
       	resultado =new Vector();
-	  	paginaSeleccionada = "0";	
-	 	totalRegistros = "0";	
-	 	registrosPorPagina = "0";
+	  	paginaSeleccionada = "0";
+		totalRegistros = "0";
+		registrosPorPagina = "0";
 	}	 
- 	
 	String action=app+"/JGR_E-Comunicaciones_Gestion.do?noReset=true&idRemesa=" + idremesa;
-	
 	String modo=(String)request.getSession().getAttribute("accion");
-	
 	CajgRemesaEstadosAdm admBean =  new CajgRemesaEstadosAdm(usr);	
 	int idEstado = admBean.UltimoEstadoRemesa(usr.getLocation(), idremesa);
 	
@@ -105,7 +105,7 @@
 		if (cajgConfig != 0) {
 			buttons="g,ae";//guardar y añadir expedientes
 			if (isPCajgTXT) {
-				buttons+=",gf";//generar fichero txt
+				buttons+=",val,gf";//generar fichero txt
 			} else if (cajgConfig == 2) {				
 				buttons+=",val,ftp";//validar remesa, envio ftp
 			} else if (cajgConfig == 3) {
@@ -155,7 +155,9 @@
 	} else if (idEstado == 2) {//enviada
 		if (cajgConfig != 0) {
 			buttons="g";//guardar
-			if (isPCajgTXT) {
+			if (cajgConfig == 5) {
+				buttons+=",d,mri";//descargar//marcar como respondidos con errores
+			}else if (isPCajgTXT) {
 				buttons+=",d";//descargar
 			} else if (cajgConfig == 2 && !SIGAWSClientAbstract.isRespondida(idInstitucion, Integer.parseInt(idremesa))) {
 				if (tieneTXT){
@@ -180,6 +182,14 @@
 				}
 			}
 		}
+		
+	}else if (idEstado == 3) {
+		buttons="g";//guardar
+		if (cajgConfig == 5) {
+			buttons+=",d,mri";
+		}
+		if(isDatosEconomicos.booleanValue())
+			buttons+=",com";//comunicar
 	}
 %>
 
@@ -187,13 +197,27 @@
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<!-- Incluido jquery en siga.js -->
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	<title><siga:Idioma key="gratuita.busquedaEJG.literal.EJG"/></title>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.9.1.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
+  	<link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">
 	
+	
+<title><siga:Idioma key="gratuita.busquedaEJG.literal.EJG"/></title>
+<style type="text/css">
+	.ui-dialog-titlebar-close {
+		  visibility: hidden;
+	}
+	td{
+		padding-top: .3em;
+		height: 27px;
+	}
+</style>
 	<script type="text/javascript">
 	
 		function refrescarLocal() {
-			parent.refrescarLocal();
+			parent.filtrado();
 		}
 		
 		function accionVolver(){
@@ -294,18 +318,25 @@
 	</script>
 </head>
 
-<body onload="inicio()">
+<body onload="inicio();cargarChecks();checkTodos();">
 	<html:form action="/JGR_E-Comunicaciones_Gestion.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
 		<input type="hidden" name="modo" value="">
 		<!-- RGG: cambio a formularios ligeros -->
 		<input type="hidden" name="actionModal" value="">
-		<input type="hidden" name="idRemesa" value="">
-		<html:hidden property="idInstitucion" value = ""/>
+		<html:hidden property="idRemesa" />
+		<html:hidden property="idInstitucion" />
 		<input type="hidden" name="idTipoEJG" value="">
 		<input type="hidden" name="anio" value="">
 		<input type="hidden" name="numero" value="">
-		<input type="hidden" name="idEjgRemesa" value="">		
+		<input type="hidden" name="idEjgRemesa" value="">
+		
 		<input type="hidden" name="volver" value="">		
+		<html:hidden property="registrosSeleccionados"  styleId="registrosSeleccionados"/>
+		<html:hidden property="datosPaginador"  styleId="datosPaginador" />
+		<html:hidden property="seleccionarTodos"  styleId="seleccionarTodos" />
+		<html:hidden property="datosSolicInformeEconomico"  styleId="datosSolicInformeEconomico" />
+		
+		
 	</html:form>	
 	
 	<html:form action="/JGR_EJG.do" method="post" target="mainWorkArea" style="display:none">
@@ -323,20 +354,44 @@
 	</html:form>
 		
 	<siga:ConjBotonesAccion botones="<%= buttons %>" clase="botonesSeguido" titulo="gratuita.BusquedaRemesas_CAJG.literal.Remesa"/>	
+	
+	<c:set var="columnNames" value="gratuita.busquedaEJG.literal.turnoGuardiaEJG,
+			gratuita.busquedaEJG.literal.anyo, 
+			gratuita.busquedaEJG.literal.codigo, 
+			gratuita.listadoActuacionesAsistencia.literal.fecha, 
+			gratuita.busquedaEJG.literal.estadoEJG, 
+			gratuita.busquedaEJG.literal.solicitante, 
+			gratuita.pcajg.listadoEJGremesa.enNuevaRemesa," />
+	<c:set var="columnSizes" value="22,5,5,8,20,22,8,10" />
+	<%	if(isDatosEconomicos.booleanValue()&&idEstado==3){ %>
+	
+		<c:set var="columnNames" value="<input type='checkbox' name='chkGeneral' id='chkGeneral' onclick='cargarChecksTodos(this);'/>,
+			gratuita.busquedaEJG.literal.turnoGuardiaEJG,
+			gratuita.busquedaEJG.literal.anyo, 
+			gratuita.busquedaEJG.literal.codigo, 
+			gratuita.listadoActuacionesAsistencia.literal.fecha, 
+			gratuita.busquedaEJG.literal.estadoEJG, 
+			gratuita.busquedaEJG.literal.solicitante, 
+			gratuita.pcajg.listadoEJGremesa.enNuevaRemesa,Estado I.Ec," />
+		<c:set var="columnSizes" value="5,18,5,5,8,15,18,8,8,10" />
+	<%} else if((idEstado==2 ||idEstado==3)&& cajgConfig==5 ){%>
+		<c:set var="columnNames" value="<input type='checkbox' name='chkGeneral' id='chkGeneral' onclick='cargarChecksTodos(this);'/>,
+			gratuita.busquedaEJG.literal.turnoGuardiaEJG,
+			gratuita.busquedaEJG.literal.anyo, 
+			gratuita.busquedaEJG.literal.codigo, 
+			gratuita.listadoActuacionesAsistencia.literal.fecha, 
+			gratuita.busquedaEJG.literal.estadoEJG, 
+			gratuita.busquedaEJG.literal.solicitante, 
+			gratuita.pcajg.listadoEJGremesa.enNuevaRemesa," />
+	<c:set var="columnSizes" value="5,17,5,5,8,20,22,8,10" />
+	<%}%>
+	
 		
 	<siga:Table 		   
 		name="tablaDatos"
 		border="1"
-		columnNames="gratuita.busquedaEJG.literal.turno, 
-			gratuita.busquedaEJG.literal.guardia, 
-			gratuita.busquedaEJG.literal.anyo, 
-			gratuita.busquedaEJG.literal.codigo, 
-			gratuita.busquedaEJG.literal.tipoEJG, 
-			gratuita.listadoActuacionesAsistencia.literal.fecha, 
-			gratuita.busquedaEJG.literal.estadoEJG, 
-			gratuita.busquedaEJG.literal.solicitante, 
-			gratuita.pcajg.listadoEJGremesa.enNuevaRemesa,"
-		columnSizes="13,12,4,5,15,9,8,13,7,13">		   
+		columnNames="${columnNames}"
+		columnSizes="${columnSizes}">		   
 
 <%
 		if (resultado.size()>0) {
@@ -357,14 +412,24 @@
 			  
 		    	Row fila = (Row)resultado.elementAt(recordNumber-1);
 				Hashtable registro = (Hashtable) fila.getRow();
-			
+				String idEstadoEJGRemesa = registro.get("IDESTADOEJGREMESA")!=null?(String)registro.get("IDESTADOEJGREMESA"):""; 
+				// String permitirSolInfEconomico = registro.get("PERMITIRSOLINFECONOMICO")!=null?(String)registro.get("PERMITIRSOLINFECONOMICO"):"0";
+				String permitirSolInfEconomico = "1";
+				String registroError = registro.get("ERRORES")!=null&&!registro.get("ERRORES").toString().equals("")?registro.get("ERRORES").toString():"0"; 
+				String deshabilitarCheck = "disabled";
+				if(isDatosEconomicos.booleanValue() && idEstado==3)
+					deshabilitarCheck = permitirSolInfEconomico.equals("1")?"":"disabled='disabled'";
+				else if(idEstado==2 ||idEstado==3)
+					deshabilitarCheck = registroError.equals("0")?"":"disabled='disabled'";
+					
+				
 				//Hashtable fila = (Hashtable)obj.get(recordNumber-1);
 				
 				// Comprobamos el estado del idfacturacion
 	    		ScsEJGAdm scsEJGAdm = new ScsEJGAdm(usr);
 			
 	    		FilaExtElement[] elems = new FilaExtElement[1];
-				if (!registro.get("ERRORES").equals("0")) {
+				if (!registroError.equals("0")) {
 	    			elems[0]=new FilaExtElement("descargaLog", "descargarLog", "gratuita.BusquedaRemesas_CAJG.literal.IncidenciasEnvio", SIGAConstants.ACCESS_FULL);
 				}
 				String CODIGO=null;
@@ -380,8 +445,58 @@
 %>
 				
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' elementos="<%=elems%>" botones="<%=botones%>" visibleconsulta="false" visibleEdicion="false" pintarespacio="false" clase="listaNonEdit" modo="<%=modo%>">
-					<td><%=(String)registro.get("TURNO")%>&nbsp;</td>
-					<td><%=(String)registro.get("GUARDIA")%>&nbsp;</td>
+					
+					<%
+					if(isDatosEconomicos.booleanValue()&&idEstado==3){ %>
+					<td align="center">
+						<%String valorCheck = registro.get("IDINSTITUCION")+"||"+registro.get("IDTIPOEJG")+"||"+registro.get("ANIO")+"||"+registro.get("NUMERO")+"||"+registro.get("IDEJGREMESA")+"||"+registro.get("NUMEROINTERCAMBIO")+"||"+registro.get("PERMITIRSOLINFECONOMICO");
+						boolean isChecked = false;
+						for (int z = 0; z < registrosSeleccionados.size(); z++) {
+							Hashtable clavesRegistro = (Hashtable) registrosSeleccionados.get(z);
+							String clave = (String)clavesRegistro.get("CLAVE");
+							if (valorCheck.equals(clave) && permitirSolInfEconomico.equals("1")) {
+								isChecked = true;
+								break;
+							}
+						}if (isChecked) {%>
+								<input type="checkbox" value="<%=valorCheck%>"  id="<%=valorCheck%>" name="chkPersona" checked <%=deshabilitarCheck%> onclick="pulsarCheck(this)">
+							<%} else {%>
+								<input type="checkbox" value="<%=valorCheck%>" id="<%=valorCheck%>"   name="chkPersona" <%=deshabilitarCheck%> onclick="pulsarCheck(this)" >
+						<%}%>
+					
+					
+					
+					</td>	
+					<%}else if((idEstado==2 ||idEstado==3)&& cajgConfig==5){%>
+						
+						<td align="center">
+						<%String valorCheck = registro.get("IDINSTITUCION")+"||"+registro.get("IDTIPOEJG")+"||"+registro.get("ANIO")+"||"+registro.get("NUMERO")+"||"+registro.get("IDEJGREMESA")+"||"+registro.get("NUMEROINTERCAMBIO")+"||"+registro.get("PERMITIRSOLINFECONOMICO");
+						boolean isChecked = false;
+						for (int z = 0; z < registrosSeleccionados.size(); z++) {
+							Hashtable clavesRegistro = (Hashtable) registrosSeleccionados.get(z);
+							String clave = (String)clavesRegistro.get("CLAVE");
+							if (valorCheck.equals(clave) && registroError.equals("0")) {
+								isChecked = true;
+								break;
+							}
+						}if (isChecked) {%>
+								<input type="checkbox" value="<%=valorCheck%>" id="<%=valorCheck%>" name="chkPersona"  checked <%=deshabilitarCheck%> onclick="pulsarCheck(this)">
+							<%} else {%>
+								<input type="checkbox" value="<%=valorCheck%>" id="<%=valorCheck%>" name="chkPersona" <%=deshabilitarCheck%> onclick="pulsarCheck(this)" >
+						<%}%>
+					
+					
+					
+					</td>	
+					
+					<%}%>
+					
+					
+					
+					
+					
+
+					<td><%=(String)registro.get("TURNO")%>&nbsp;<%=(String)registro.get("GUARDIA")%>&nbsp;</td>
 					<td>
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=registro.get(ScsEJGBean.C_IDTIPOEJG)%>">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=registro.get(ScsEJGBean.C_IDINSTITUCION)%>">
@@ -390,14 +505,31 @@
 					
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_5" value="<%=registro.get(CajgEJGRemesaBean.C_IDEJGREMESA)%>">
 					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_6" value="<%=registro.get(ScsEJGBean.C_NUMEJG)%>">
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_7" value="<%=registro.get("NUMEROINTERCAMBIO")%>">
+					
+					
 					
 					<%=registro.get(ScsEJGBean.C_ANIO)%></td>
 					<td><%=CODIGO%></td>
-					<td><%=registro.get("TIPOEJG")%></td>
 					<td><%=GstDate.getFormatedDateShort("",registro.get(ScsEJGBean.C_FECHAAPERTURA))%>&nbsp;</td>
 					<td><%=(String)registro.get("ESTADO")%>&nbsp;</td>
 					<td><%=(String)registro.get(ScsPersonaJGBean.C_NOMBRE) + " " + (String)registro.get(ScsPersonaJGBean.C_APELLIDO1) + " " + (String)registro.get(ScsPersonaJGBean.C_APELLIDO2)%>&nbsp;</td>
 					<td><%=enNuevaRemesa%></td>
+					
+					<%
+					if(isDatosEconomicos.booleanValue()&&idEstado>=2){ %>
+						<td>
+						<% if(idEstadoEJGRemesa.equals("")) {%>
+							&nbsp;
+							<% }else if(idEstadoEJGRemesa.equals("2")) {%>
+								Envío solicitado
+							<% }else if(idEstadoEJGRemesa.equals("3")) {%>
+								Entregado correctamnte
+							<% }else if(idEstadoEJGRemesa.equals("4")) {%>
+								Entregado con errores 
+							<% } %>
+						</td>
+						<%} %>
 				</siga:FilaConIconos>		
 <% 	
 				recordNumber++;
@@ -413,11 +545,14 @@
 	</siga:Table>
 
 <%
-	if ( hm.get("datos")!=null && !hm.get("datos").equals("")) {
-%>
+String regSeleccionados = ("" + ((registrosSeleccionados == null) ? 0
+		: registrosSeleccionados.size()));	
+if (  datosPaginador!=null && datosPaginador.get("datos")!=null && !datosPaginador.get("datos").equals("")){%>
+
 		<siga:Paginador totalRegistros="<%=totalRegistros%>" 
 						registrosPorPagina="<%=registrosPorPagina%>" 
 						paginaSeleccionada="<%=paginaSeleccionada%>" 
+						registrosSeleccionados="<%=regSeleccionados%>"
 						idioma="<%=idioma%>"
 						modo="buscarPorEJG"								
 						clase="paginator" 
@@ -432,10 +567,156 @@
 	 	
 	<!-- INICIO: SUBMIT AREA -->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+	
+<div id="dialogo"  title='Error manual de envio ' style="display:none">
+<div>&nbsp;</div>
+	<div>
+		<div class="labelText">
+   			<label for="errorManual"  style="width:90px;float:left;color: black">Descripción </label><textarea  id="errorManual" name="errorManual"
+			                	onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
+			                	style="overflow-y:auto; overflow-x:hidden; width:350px; height:70px; resize:none;" 
+			                	class="box"></textarea>  
+		</div>
+	</div>
+</div>
+	
 	<!-- FIN: SUBMIT AREA -->		
 </body>	
 
 <script type="text/javascript">
+
+ObjArray = new Array();
+
+Array.prototype.indexOf = function(s) {
+for (var x=0;x<this.length;x++) if(this[x] == s) return x;
+	return false;
+}
+
+   
+function pulsarCheck(obj){
+	if (!obj.checked ){
+	   		
+		ObjArray.splice(ObjArray.indexOf(obj.value),1);
+		seleccionados1=ObjArray;
+	}else{
+		ObjArray.push(obj.value);
+	   	seleccionados1=ObjArray;
+	}
+	  	
+	  	
+	document.forms[0].registrosSeleccionados.value=seleccionados1;
+	
+	document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
+	checkTodos();
+	
+	   
+}
+function cargarChecks(){
+	<%if (registrosSeleccionados!=null){
+   		for (int p=0;p<registrosSeleccionados.size();p++){
+	   		Hashtable clavesEJG= (Hashtable) registrosSeleccionados.get(p);
+			valorCheckPersona=(String)clavesEJG.get("CLAVE");
+			String[] claves =  valorCheckPersona.split("\\|\\|");
+			String permitirSolInfEconomico = claves[6];
+			//Con estos dos comentarios probablemte no funciona el check masivo del informe economico 
+			//if (permitirSolInfEconomico.equals("1")) { %>
+				ObjArray.push('<%=valorCheckPersona%>');
+			<%
+			//}
+		} 
+   	}%>
+	ObjArray.toString();
+	seleccionados1=ObjArray;
+		
+	document.forms[0].registrosSeleccionados.value=seleccionados1;
+	
+	if(document.getElementById('registrosSeleccionadosPaginador'))
+		document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
+		
+}
+function cargarChecksTodos(o){
+	   if (document.getElementById('registrosSeleccionadosPaginador')){ 	
+		var conf = confirm("<siga:Idioma key='paginador.message.marcarDesmarcar'/>"); 
+   	 
+   	if (conf){
+		ObjArray = new Array();
+	   	if (o.checked){
+	   		parent.seleccionarTodos('<%=paginaSeleccionada%>');
+	   	 		
+			
+		}else{
+			ObjArray1= new Array();
+		 	ObjArray=ObjArray1;
+		 	seleccionados1=ObjArray;
+		 	if(seleccionados1){
+				document.forms[0].registrosSeleccionados.value=seleccionados1;
+				var ele = document.getElementsByName("chkPersona");
+				for (i = 0; i < ele.length; i++) {
+					if(!ele[i].disabled)	
+						ele[i].checked = false; 
+						
+						
+				}
+			}
+
+		 }
+   	  
+   	  }else{
+   	  	if (!o.checked ){
+	   	  		var ele = document.getElementsByName("chkPersona");
+					
+			  	for (i = 0; i < ele.length; i++) {
+			  		if(!ele[i].disabled){
+			  			if(ele[i].checked){	
+	     					ele[i].checked = false;
+	     				
+							ObjArray.splice(ObjArray.indexOf(ele[i].value),1);
+						}
+					}
+			   	}
+			   	
+			   	seleccionados1=ObjArray;
+		   }else{
+			   	var ele = document.getElementsByName("chkPersona");
+						
+			  	for (i = 0; i < ele.length; i++) {
+			  		if(!ele[i].disabled){
+						if(!ele[i].checked){				  		
+		    				ele[i].checked = true;
+							ObjArray.push(ele[i].value);
+						}
+					}
+			   	}
+			   		
+		   		seleccionados1=ObjArray;
+		   }
+		   document.forms[0].registrosSeleccionados.value=seleccionados1;
+	   		
+   	  }
+   	 if (document.getElementById('registrosSeleccionadosPaginador')){ 		 
+	  document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
+	 }
+	} 
+ }
+   
+	function checkTodos(){
+	 	var ele = document.getElementsByName("chkPersona");
+		var todos=1;	
+	  	for (i = 0; i < ele.length; i++) {
+	  			if(!ele[i].checked && !ele[i].disabled){
+					todos=0;
+					break;
+				} 
+			}
+	  	if(document.getElementById("chkGeneral")){
+		   	if (todos==1){
+				document.getElementById("chkGeneral").checked=true;
+			}else{
+				document.getElementById("chkGeneral").checked=false;
+			}
+	  	}
+	}
+
 	function consultar(fila) {			
 		document.forms[0].modo.value = "Ver";
 		consultaEdita(fila);
@@ -467,6 +748,89 @@
 		
 		document.forms[0].submit();
 	}
+	function accionComunicar() {
+		sub();
+		datos = "";
+		//String valorCheck = registro.get("IDINSTITUCION")+"||"+registro.get("IDTIPOEJG")+"||"+registro.get("ANIO")+"||"+registro.get("NUMERO")+"||"+registro.get("IDEJGREMESA")+"||"+registro.get("NUMEROINTERCAMBIO")+"||"+registro.get("PERMITIRSOLINFECONOMICO");
+		for (i = 0; i < ObjArray.length; i++) {
+			var idRegistros = ObjArray[i];
+			
+			claves =  idRegistros.split("||");
+			idInstitucion  = claves[0];
+			idTipoEJG  = claves[1];
+			anio  = claves[2];
+			numero  = claves[3];
+			idEjgRemesa  = claves[4];
+			permitirSolInfo  = claves[6];
+		//if(permitirSolInfo=='1')
+ 		   		datos = datos +idInstitucion + "##" +idTipoEJG+"##" +anio+"##" +numero+"##" +idEjgRemesa+"%%%";
+		}
+		if (datos.length==0){
+    		alert("<siga:Idioma key='general.message.seleccionar'/>");
+	    	fin();
+	    	return false;
+		}
+		document.forms[0].datosSolicInformeEconomico.value = datos;
+		document.forms[0].modo.value = "comunicarInfEconomico";
+		document.forms[0].submit();
+		
+	}
+	function closeDialog(){
+		jQuery("#dialogo").dialog("close");
+	}
+	function openDialog(){
+		jQuery("#dialogo").dialog(
+			{
+				height: 250,
+			   	width: 525,
+				modal: true,
+				resizable: false,
+				
+				buttons: {
+				    	  "Guardar": { id: 'Guardar', text: '<siga:Idioma key="general.boton.guardar"/>', click: function(){ marcaRespuestaIncorrecta(jQuery("#errorManual").val()); }},
+				          "Cerrar": { id: 'Cerrar', text: '<siga:Idioma key="general.boton.close"/>', click: function(){closeDialog();}}
+				}
+			}
+		);
+		
+		jQuery(".ui-widget-overlay").css("opacity","0");
+		
+
+	}
+	
+	function marcaRespuestaIncorrecta(respuestaErronea) {
+		sub();
+		datos = "";
+		for (i = 0; i < ObjArray.length; i++) {
+			var idRegistros = ObjArray[i];
+			
+			claves =  idRegistros.split("||");
+			idInstitucion  = claves[0];
+			idTipoEJG  = claves[1];
+			anio  = claves[2];
+			numero  = claves[3];
+			idejgremesa  = claves[4];
+			numeroIntercambio  = claves[5];
+			permitirSolInfo  = claves[6];
+			var idCheck = idInstitucion+"||"+idTipoEJG+"||"+anio+"||"+numero+"||"+idejgremesa+"||"+numeroIntercambio+"||"+permitirSolInfo;
+			if(document.getElementById(idCheck).checked){
+		   			datos = datos +idInstitucion + "##" +idTipoEJG+"##" +anio+"##" +numero+"##"+idejgremesa+"##" +numeroIntercambio+"##" +respuestaErronea+"%%%";
+			}
+		}
+		parent.marcarRespuestaIncorrecta(datos);
+	}
+	
+	function marcarRespuestaIncorrecta() {
+		var conf = confirm("<siga:Idioma key='e_comunicaciones.confirmar.marcarRespuestaIncorrecta'/>"); 
+		//String valorCheck = registro.get("IDINSTITUCION")+"||"+registro.get("IDTIPOEJG")+"||"+registro.get("ANIO")+"||"+registro.get("NUMERO")+"||"+registro.get("IDEJGREMESA")+"||"+registro.get("NUMEROINTERCAMBIO")+"||"+registro.get("PERMITIRSOLINFECONOMICO");
+		 
+	   	if (conf){
+	   		openDialog();	   		
+	   	}
+		
+	}
+	
+	
 </script>
 
 </html>	

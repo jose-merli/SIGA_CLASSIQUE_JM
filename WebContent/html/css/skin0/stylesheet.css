@@ -35,12 +35,13 @@ body {
   max-width:1300px;*/
   font-family: arial;
   margin: 0 auto;
+  background-color: #f5f5f5;
 }
 .BodyIframe {
-	background-color:  #ffffff;
+	background-color:  #f5f5f5;
 }
 .bienvenidaBody {
-	background-color:  #ffffff;
+	background-color:  #f5f5f5;
 }
 select {
   border: 1px solid #222222;
@@ -79,14 +80,14 @@ fieldset {
     float:both;
 	padding-bottom: 2px;
     padding-top: 0;
+  	background-color: #f5f5f5;
 }
 
 legend {
     color: #496a93;
     cursor: default;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: bold;
-    padding-bottom: 8px;
     padding-left: 11px;
     padding-right: 8px;
 }
@@ -222,7 +223,7 @@ a.disabled {
   padding-top: 3px;
   padding-bottom: 3px;
   border: none;
-  background-color: transparent;
+  background-color: white;
   color: #6A0000;
   margin-top: 0px;
 }
@@ -237,7 +238,7 @@ a.disabled {
   padding-top: 3px;
   padding-bottom: 3px;
   border: none;
-  background-color: transparent;
+  background-color: white;
 }
 .boxComboRojo {
   font-family: Arial;
@@ -250,7 +251,7 @@ a.disabled {
   padding-top: 3px;
   padding-bottom: 3px;
   border: none;
-  background-color: transparent;
+  background-color: white;
   color: #6A0000;
 }
 .labelTextArea {
@@ -309,7 +310,7 @@ a.disabled {
   padding-top: 2px;
   text-align: center;
   color: #222222;
-  background-color: #ffffff;
+  background-color: #f5f5f5;
   border:1px solid #cbcbcb;
 
 }
@@ -329,7 +330,7 @@ table#tablaDatos.fixedHeaderTable.dataScroll thead.Cabeceras tr.tableTitle {
 }
 
 thead.Cabeceras {
-  background-color: #ffffff;	
+  background-color: #f5f5f5;	
 }
 #tablaDatos td {
   overflow: hidden;
@@ -412,7 +413,7 @@ thead.Cabeceras {
   margin-top: 0px;
   margin-left: 0px;
   color: #222222;
-  background-color: #FFFFFF;
+  background-color: white;
   border: 1px solid #7A96B6;
   padding-bottom: 2px;
   padding-left: 5px;
@@ -502,6 +503,7 @@ thead.Cabeceras {
   margin-left: 0px;
   vertical-align: top;
   text-align: left;
+  background-color: transparent;
   color: #222222;
   border: 0px solid #222222;
   padding-top: 2px;
@@ -676,7 +678,7 @@ thead.Cabeceras {
 .titulos {
     background-color: #7a96b6;
     color: #ffffff;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: bold;
     height: 14px;
     padding: 2px 0 2px 10px;
@@ -710,7 +712,7 @@ tbody tr td#titulo.titulosPeq {
 }
 .cabeceraGnal {
   background-color: #efefef;
-  height: 85px;
+  height: 76px;
   width: 100%;
 }
 .bienvenidoTable {
@@ -721,7 +723,7 @@ tbody tr td#titulo.titulosPeq {
 .titulosLeft {
   font-weight: normal;
   text-align: left;
-  font-size: 17px;
+  font-size: 15px;
   text-decoration: none;
   background-color: #7a96b6;
   color: #222222;
@@ -1075,15 +1077,15 @@ A.imageLink:active {
 	width:100%!important;
 }
 .tablaCentralCampos tr, .tablaCentralCamposGrande tr, .tablaCentralCamposPeque tr, .tablaCentralCamposMedia tr  {
-     background-color: #ffffff;
+  background-color: #f5f5f5;
 }
 .tablaBuscarLetrados {
-    background-color: #ffffff;
+  background-color: #f5f5f5;
     height: 145px;
 /*h* padding-top: 10px;*/
 }
 #tablaDatos_BodyDiv {
-	background-color: #ffffff;
+  background-color: #f5f5f5;
 }
 .tablaCentralCamposImp {
   background-color: #ced9e6;
@@ -1100,7 +1102,7 @@ A.imageLink:active {
   width: 500px;
 }
 .tablaCampos {
-    background-color: #ffffff;
+  background-color: #f5f5f5;
     border: 1px solid #ffffff;
     border-radius: 10px;
     border-radius: 10px;
@@ -1151,7 +1153,7 @@ A.imageLink:active {
   position: relative;
   min-width:1000px;
   max-width:1300px;
-  background-color: #ffffff;
+  background-color: #f5f5f5;
 }
 .posicionPestanas {
   position: relative;
@@ -1167,7 +1169,7 @@ A.imageLink:active {
   z-index: 2;
   top: -3px;
   left: 0px;
-  background-color:ffffff;
+  background-color: #f5f5f5;
 }
 .framePestanas {
   position: relative;
@@ -1177,7 +1179,7 @@ A.imageLink:active {
   top: -3px;
   left: 0px;
   margin-top: 0px;
-  background-color: #ffffff;
+  background-color: #f5f5f5;
 }
 .botonesDetalleSinPosicionFija {
   width: 100%;
@@ -1221,7 +1223,7 @@ A.imageLink:active {
     /*width:1200px;*/
     width:100%;
     z-index: 3;
-    background-color: #ffffff!important;
+    background-color: #f5f5f5!important;
     height: 600px;
  }
 
@@ -1231,7 +1233,7 @@ A.imageLink:active {
 	  max-width:1300px;;
 }
 .posicionBusquedaSolo {
-  background-color: #ffffff;
+  background-color: #f5f5f5;
   margin: 0 auto 2.5em;
   width: 100%;
   height: 100%;
@@ -1600,7 +1602,7 @@ div#panel #paneles div {
   cursor: pointer;
 }
 tr.notFound {
-  background-color: #ffffff;
+  background-color: #f5f5f5;
   text-align: center;
 }
 tr.notfound {
@@ -1735,7 +1737,7 @@ li.selectOption.selected > span.selectOptionText {
 }
 
 iframe#mainWorkArea.posicionPrincipal body {
-   background-color:#ffffff;	
+   background-color:#f5f5f5;	
 }
 .clLevel1border {
 	border-right: 1px solid #000;	 

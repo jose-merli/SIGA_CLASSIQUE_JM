@@ -95,10 +95,9 @@
 	<% if ((obj!=null) && !obj.isEmpty()) { %>
 				<%
 				int recordNumber=1;
-				String fechaInicio="", fechaFin="",  idcalendarioguardias="", idturno="", idguardia="", idinstitucion="";
+				String fechaInicio="", fechaFin="", idcalendarioguardias="", idturno="", idguardia="", idinstitucion="";
 				String numerocolegiado="", nombre="", observaciones="", idpersona="", numero="", fechaInicioPermuta="", fechaFinPermuta="";
-				String pl = "";
-				String fechaInicioPK = "";
+				String pl="", existeGuardiaFacturada="", existeGuardiaParaBorrar="", fechaInicioPK = "";
 				
 				while ((recordNumber) <= obj.size()) {	 	
 					Hashtable hash = (Hashtable)obj.get(recordNumber-1);
@@ -141,32 +140,47 @@
 				String nomGuardia = ((String)hash.get("NOMGUARDIA")).equals("")?"":(String)hash.get("NOMGUARDIA");
 				String validado = ((String)hash.get("VALIDADO")).equals("")?"":(String)hash.get("VALIDADO");
 				String fechaValidacion = UtilidadesHash.getString(hash,"FECHAVALIDACION").equals("")?"&nbsp;":GstDate.getFormatedDateShort("",(String)hash.get("FECHAVALIDACION"));
+				existeGuardiaFacturada = (String)hash.get("EXISTEGUARDIAFACTURADA");
+				existeGuardiaParaBorrar = (String)hash.get("EXISTEGUARDIAPARABORRAR");
+				
 				int numActuacionesValidadas = 0;
 				if (hash!=null && (String)hash.get("ACT_VALIDADAS")!=null &&
 					!hash.get("ACT_VALIDADAS").toString().trim().equals("")){
 					numActuacionesValidadas = UtilidadesNumero.parseInt((String)hash.get("ACT_VALIDADAS"));
 				}
 
-				//PL:
+				/* JPT - Ejecuto la funcion de Permutas F_SIGA_NUMEROPERMUTAGUARDIAS, que me dice el tipo de Permuta posible:
+				 * 
+				 * Futuras [>TRUNC(SYSDATE)]
+				 * - 2: Pendiente de confirmar por solicitante
+				 * - 3: Permutada
+				 * - 4: Pendiente de confirmar por confirmador
+				 * - 5: Pendiente de realizar
+				 * 
+				 * Pasadas [<=TRUNC(SYSDATE)] => Mira SCS_CABECERAGUARDIAS ... Esto no nos interesa para este codigo
+				 * - 1: Guardia realizada y NO facturada
+				 * - 5: Pendiente de realizar
+				 * - 6: Guardia realizada y FACTURADA				
+				 */				
 				pl = ((String)hash.get("PL")).equals("")?"":(String)hash.get("PL");
-
-// Antes:
-//				elems = new FilaExtElement[2];	
-//				//Boton cambiar solo aparece si estamos en Editar, y el pl vale 5:
-//				if (numActuacionesValidadas==0 && !esModificable.equals("0") && pl!=null && (pl.equals("5") || pl.equals("1"))) {
-//					elems[0]=new FilaExtElement("cambiar","cambiar",SIGAConstants.ACCESS_FULL);	
-//					elems[1]=new FilaExtElement("sustituir","sustituir",SIGAConstants.ACCESS_FULL);
-//				}	
-
-// Ahora:
-				elems = new FilaExtElement[2];	
-				//Boton cambiar solo aparece si estamos en Editar, y el pl vale 5:
 				
-				if (numActuacionesValidadas==0 && !esModificable.equals("0") && pl!=null && (pl.equals("5") || pl.equals("3"))) {
-					elems[0]=new FilaExtElement("cambiar","cambiar","general.boton.permutar", SIGAConstants.ACCESS_FULL);	
-				}	
-				if (numActuacionesValidadas==0 && !esModificable.equals("0") && pl!=null && !pl.equals("6"))
+				elems = new FilaExtElement[2];				
+				
+				// JPT: Si NO es el modo consulta y NO esta facturado => Sustituir y anular 
+				// numActuacionesValidadas==0 && 
+				if (!esModificable.equals("0") && existeGuardiaFacturada.equals("0")) {	
+					
+					// JPT: Si se puede borrar (existe el dia y es posterior al dia actual) => Borrar
+					if (existeGuardiaParaBorrar.equals("1")) {
+						
+						// Si esta pendiente de realizar (5) o permutada (3) => Permutar
+						if (pl!=null && (pl.equals("5") || pl.equals("3"))) {
+							elems[0]=new FilaExtElement("cambiar","cambiar","general.boton.permutar", SIGAConstants.ACCESS_FULL);
+						}
+					}
+					
 					elems[1]=new FilaExtElement("sustituir","sustituir",SIGAConstants.ACCESS_FULL);
+				}				
 			
 			%>
 	       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="C" visibleEdicion="false" visibleConsulta="false" visibleBorrado="false" elementos='<%=elems%>' clase="listaNonEdit" modo="editar" visibleEdicion="no" pintarEspacio="false">
@@ -187,10 +201,6 @@
 					
 					<input type="checkbox" name="chkVal" value="<%=idinstitucion+"@@"+idturno+"@@"+idguardia+"@@"+idcalendarioguardias+"@@"+idpersona+"@@"+fechaInicio+"@@"+fechaInicioPK %>" <%=(validado.equals("1"))?"checked":""%>  <%=(numActuacionesValidadas>0 || esModificable.equals("0"))?"disabled":""%> >
 					<input type="checkbox" name="chkValOld" value="<%=idinstitucion+"@@"+idturno+"@@"+idguardia+"@@"+idcalendarioguardias+"@@"+idpersona+"@@"+fechaInicio+"@@"+fechaInicio %>" <%=(validado.equals("1"))?"checked":""%>  disabled style="display:none">
-					
-						
-					
-					
 				</td>
 				<td><%=fechaValidacion%></td>
 				<td><%=nomTurno%></td>								

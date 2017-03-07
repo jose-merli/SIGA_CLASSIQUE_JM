@@ -203,10 +203,9 @@
 <%
 		if ((obj!=null) && !obj.isEmpty()) { 
 			int recordNumber=1;
-			String fechaInicio="",fechaInicioPK="", fechaFin="",  idcalendarioguardias="", idturno="", idguardia="", idinstitucion="";
+			String fechaInicio="", fechaInicioPK="", fechaFin="", idcalendarioguardias="", idturno="", idguardia="", idinstitucion="";
 			String numerocolegiado="", nombre="", observaciones="", idpersona="", numero="", fechaInicioPermuta="", fechaFinPermuta="";
-			String pl = "", orden="", validado="",activarCheck="";
-			boolean facturada= false;
+			String pl="", orden="", validado="", activarCheck="", existeGuardiaFacturada="", existeGuardiaParaBorrar="";
 			int i=0;
 			while ((recordNumber) <= obj.size()) {	 	
 				Hashtable hash = (Hashtable)obj.get(recordNumber-1);
@@ -248,39 +247,51 @@
 				fechaFinPermuta = ((String)hash.get("FECHAFINPERMUTA")).equals("")?"":(String)hash.get("FECHAFINPERMUTA");
 				orden = (hash.get("ORDEN")==null||((String)hash.get("ORDEN")).equals(""))?"&nbsp;":(String)hash.get("ORDEN");
 				validado = ((String)hash.get("VALIDADO")).equals("")?"":(String)hash.get("VALIDADO");
+				existeGuardiaFacturada = (String)hash.get("EXISTEGUARDIAFACTURADA");
+				existeGuardiaParaBorrar = (String)hash.get("EXISTEGUARDIAPARABORRAR");
 				
-				if(validado.equals("1"))
+				/* JPT - Ejecuto la funcion de Permutas F_SIGA_NUMEROPERMUTAGUARDIAS, que me dice el tipo de Permuta posible:
+				 * 
+				 * Futuras [>TRUNC(SYSDATE)]
+				 * - 2: Pendiente de confirmar por solicitante
+				 * - 3: Permutada
+				 * - 4: Pendiente de confirmar por confirmador
+				 * - 5: Pendiente de realizar
+				 * 
+				 * Pasadas [<=TRUNC(SYSDATE)] => Mira SCS_CABECERAGUARDIAS ... Esto no nos interesa para este codigo
+				 * - 1: Guardia realizada y NO facturada
+				 * - 5: Pendiente de realizar
+				 * - 6: Guardia realizada y FACTURADA				
+				 */				
+				pl = ((String)hash.get("PL")).equals("")?"":(String)hash.get("PL");
+				
+				String numeroColegiadoBusqueda="" + recordNumber + "_" + numerocolegiado;
+				
+				if (validado.equals("1"))
 					activarCheck="checked";
 				else
 					activarCheck="";
 				
-				facturada = ((String)hash.get("GUARDIAFACTURADA")).equalsIgnoreCase("false")?false:true;
-				//PL:
-				pl = ((String)hash.get("PL")).equals("")?"":(String)hash.get("PL");
-				elems = new FilaExtElement[3];	
-				//Boton cambiar solo aparece si estamos en Editar, y el pl vale 5:
+				elems = new FilaExtElement[3];				
+				String botones="C", visibleBorrado="si";
 				
-				if (!modoOriginal.equalsIgnoreCase("VER") && pl!=null && (pl.equals("5") || pl.equals("3"))) {
-					elems[0]=new FilaExtElement("permutar","permutar",SIGAConstants.ACCESS_FULL);	
-				}
-				
-				// inc7150 // Si la guardia esta facturada no se puede sustituir
-				//if (!modoOriginal.equalsIgnoreCase("VER")&& pl!=null && !pl.equals("6"))
-				if (!facturada && !modoOriginal.equalsIgnoreCase("VER")&& pl!=null && !pl.equals("6"))
+				// JPT: Si NO es el modo consulta y NO esta facturado => Sustituir y anular
+				if (!modoOriginal.equalsIgnoreCase("VER") && existeGuardiaFacturada.equals("0")) {
+					
+					// JPT: Si se puede borrar (existe el dia y es posterior al dia actual) => Borrar
+					if (existeGuardiaParaBorrar.equals("1")) {
+						botones+=",B";
+						visibleBorrado="";
+						
+						// Si esta pendiente de realizar (5) o permutada (3) => Permutar
+						if (pl!=null && (pl.equals("5") || pl.equals("3"))) {
+							elems[0]=new FilaExtElement("permutar","permutar",SIGAConstants.ACCESS_FULL);	
+						}
+					}
+					
 					elems[1]=new FilaExtElement("sustituir","sustituir",SIGAConstants.ACCESS_FULL);
-				
-				if (!facturada && !modoOriginal.equalsIgnoreCase("VER"))
 					elems[2]=new FilaExtElement("denegar", "anular","anular", SIGAConstants.ACCESS_FULL);
-				
-				String numeroColegiadoBusqueda = "" + recordNumber + "_" + numerocolegiado;
-				String botones="C";
-				String visibleBorrado="";
-				
-				if (hash.get("PINTARBOTONBORRAR").equals("1")){
-					botones+=",B";
-				} else {
-					visibleBorrado="si";
-				}	
+				}
 %>
 	       		<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" elementos='<%=elems%>' clase="listaNonEdit" modo="<%=modoOriginal%>" visibleEdicion="no" visibleBorrado="<%=visibleBorrado%>" pintarEspacio="no">
 					<td align="center">

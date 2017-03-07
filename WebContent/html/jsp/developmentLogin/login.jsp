@@ -94,18 +94,6 @@
 				frmLogin.profile.value=document.frmLogin.tmpLoginPerfil.value;
 			}
 
-/*			if (document.frmLogin.tmpLoginUsuario.value=="")
-			{
-				alert("Debe seleccionar un Usuario");
-				
-				return false;
-			}
-			
-			else
-			{
-				frmLogin.user.value=document.frmLogin.tmpLoginUsuario.value;
-			}
-*/
 			frmLogin.letrado.value=document.frmLogin.sLetrado.value;
 			
 			return true;
@@ -117,7 +105,7 @@
 		<form name="frmLogin" method="POST" action="<%=app%>/developmentLogin.do" target="_top">
 		<br>
 		
-		<p class="titulos"><siga:Idioma key="index.bienvenida"/></p>
+		<p class="titulos" style="text-align:center"><siga:Idioma key="index.bienvenida"/></p>
 		
 		<table align="center">
 			<tr>
@@ -140,23 +128,6 @@
 					<siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfil" clase="box" ancho="300" filasMostrar="20" elementoSel="<%=idADM%>" seleccionMultiple="true" hijo="t" obligatorioSinTextoSeleccionar="true"/>
 				</td>		
 			</tr>
-
-			<!--tr>
-				<td colspan="3" valign="middle" align="center" >
-					<input type="button" class="button" value="Colegio Madrid" onClick="entradaDirecta()" title="Entrar a LEON como ADMINistrador NO colegiado">
-					&nbsp;
-					<input type="button" class="button" value="GENERAL" onClick="entradaDirectaGen()"  title="Entrar a GENERAL como ADMINistrador NO colegiado">
-				</td>
-			</tr>
-			<tr>
-			<td colspan="3" class="labelText">
-				<CENTER>
-					<a href="/SIGA/CEN_SolicitudesIncorporacionAccesoDirecto.do?idInstitucion=2032"	onClick="false" target="_top">
-						<siga:Idioma key="censo.busquedaSolicitudesIncorporacion.literal.cabecera"/>
-					</a>
-				</CENTER>
-			</td>
-			</tr-->
 			
 		</table>
 		

@@ -311,11 +311,11 @@ public class DefinirEstadosEJGAction extends MasterAction
 			"   AND estado.NUMERO = "+UtilidadesHash.getString(miHash,"NUMERO")+" " ;
 		if(miForm.getVerHistorico()!=null && miForm.getVerHistorico().equalsIgnoreCase(ClsConstants.DB_TRUE)){
 			request.setAttribute("verHistorico", miForm.getVerHistorico());
-			consulta += " ORDER BY ESTADO.IDESTADOPOREJG asc ";
+			consulta += " ORDER BY ESTADO.FECHAMODIFICACION asc ";
 		}else{
 			request.setAttribute("verHistorico", ClsConstants.DB_FALSE);
 			consulta += " and fechabaja is null "+
-			" ORDER BY ESTADO.FECHAINICIO asc, ESTADO.IDESTADOPOREJG asc";
+			" ORDER BY trunc(ESTADO.FECHAINICIO) asc, ESTADO.IDESTADOPOREJG asc";
 		}
 //			" ";
 		

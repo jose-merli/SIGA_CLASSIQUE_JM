@@ -364,7 +364,7 @@ public class ScsEstadoEJGAdm extends MasterBeanAdministrador
 		query.append("   AND estado.ANIO =:3");
 		query.append("   AND estado.NUMERO =:4");
 		query.append("   AND estado.FECHABAJA IS NULL ");
-		query.append(" ORDER BY ESTADO.FECHAINICIO asc, ESTADO.IDESTADOPOREJG asc");
+		query.append(" ORDER BY trunc(ESTADO.FECHAINICIO) asc, ESTADO.IDESTADOPOREJG asc");
 		v = this.selectGenericoBind(query.toString(), claves);
 		
 		return v;

@@ -63,10 +63,12 @@ public class DuplicadosHelper{
 		
 		if (sqlFinal == null) {
 			// anyadiendo la busqueda por nombre y/o apellidos, si se introdujo en el formulario
-			String nombre = formulario.getNombre();
+			String nombre = formulario.getNombreDuplicados();
 			nombre = (nombre == null || nombre.trim().equalsIgnoreCase("")) ? "" : nombre;
-			String apellidos = formulario.getApellidos();
+			nombre = nombre.replaceAll("'", "''");
+			String apellidos = formulario.getApellidosDuplicados();
 			apellidos = (apellidos == null || apellidos.trim().equalsIgnoreCase("")) ? "" : apellidos;
+			apellidos = apellidos.replaceAll("'", "''");
 			
 			if (! nombre.equalsIgnoreCase("") || ! apellidos.equalsIgnoreCase("")) {
 				sqlFinal = new StringBuffer();
@@ -75,18 +77,18 @@ public class DuplicadosHelper{
 				sqlFinal.append(sqlFrom);
 				sqlFinal.append(sqlWhere);
 				if (! nombre.equalsIgnoreCase("")) {
-					sqlFinal.append(" and regexp_like(regexp_replace(upper(translate(Per.nombre, ");
+					sqlFinal.append(" and regexp_like(regexp_replace(upper(translate(Per.nombre || ' ', ");
 					sqlFinal.append("                     'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', ");
 					sqlFinal.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', ''), ");
-					sqlFinal.append("      regexp_replace(upper(translate('"+nombre+"', ");
+					sqlFinal.append("      regexp_replace(upper(translate('"+nombre+"' || ' ', ");
 					sqlFinal.append("                     'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', ");
 					sqlFinal.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', ''))");
 				}
 				if (! apellidos.equalsIgnoreCase("")) {
-					sqlFinal.append(" and regexp_like(regexp_replace(upper(translate(Per.apellidos1 || decode(Per.apellidos2, null, '', ' ' || Per.apellidos2), ");
+					sqlFinal.append(" and regexp_like(regexp_replace(upper(translate(Per.apellidos1 || ' ' || Per.apellidos2 || ' ', ");
 					sqlFinal.append("                     'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', ");
 					sqlFinal.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', ''), ");
-					sqlFinal.append("      regexp_replace(upper(translate('"+apellidos+"', ");
+					sqlFinal.append("      regexp_replace(upper(translate('"+apellidos+"' || ' ', ");
 					sqlFinal.append("                     'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', ");
 					sqlFinal.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', ''))");
 				}
@@ -96,15 +98,15 @@ public class DuplicadosHelper{
 
 		if (sqlFinal == null) {
 			// anyadiendo la busqueda por colegio y/o numero de colegiado, si se introdujo en el formulario
-			String institucion = formulario.getIdInstitucion();
+			String institucion = formulario.getIdInstitucionDuplicados();
 			institucion = (institucion == null || institucion.trim().equalsIgnoreCase("")) ? "" : institucion;
 			String nColegiado = formulario.getNumeroColegiado();
-			nColegiado = (nColegiado == null || nColegiado.trim().equalsIgnoreCase("")) ? "" : nColegiado;
+			nColegiado = (nColegiado == null || nColegiado.trim().equalsIgnoreCase("")) ? "" : nColegiado.trim();
 			
 			if (! institucion.equalsIgnoreCase("") || ! nColegiado.equalsIgnoreCase("")) {
 				sqlFinal = new StringBuffer();
 				sqlFinal.append(sqlSelect);
-				sqlFinal.append(", col.ncolegiado, ins.ABREVIATURA, ins.idinstitucion ");
+				sqlFinal.append(", Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado) Ncolegiado, ins.ABREVIATURA, ins.idinstitucion ");
 				sqlFinal.append(sqlFrom);
 				sqlFinal.append(", cen_colegiado col, cen_institucion ins ");
 				sqlFinal.append(sqlWhere);
@@ -116,7 +118,7 @@ public class DuplicadosHelper{
 				if (! nColegiado.equalsIgnoreCase("")) { 
 					sqlFinal.append(" and Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado) = '"+nColegiado+"' ");
 				}
-				sqlFinal.append(" order by col.idinstitucion, To_Number(Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado)) ");
+				sqlFinal.append(" order by col.idinstitucion, Lpad(Decode(Col.Comunitario, '1', Col.Ncomunitario, Col.Ncolegiado), 20, '0') ");
 			}
 		}
 
@@ -175,10 +177,10 @@ public class DuplicadosHelper{
 			sqlMismoNif.append(" and to_number(regexp_replace(p1.nifcif, '[^[:digit:]]', '')) = to_number(regexp_replace(p2.nifcif, '[^[:digit:]]', '')) ");
 			
 			sqlMismoNombreApellidos = new StringBuffer();
-			sqlMismoNombreApellidos.append(" and (regexp_replace(upper(translate(p1.nombre || ' ' || p1.apellidos1 || ' ' || p1.apellidos2, ");
+			sqlMismoNombreApellidos.append(" and (regexp_replace(upper(translate(p1.nombre || ' ' || p1.apellidos1 || ' ' || p1.apellidos2 || ' ', ");
 			sqlMismoNombreApellidos.append("                     'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', ");
 			sqlMismoNombreApellidos.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', '') = ");
-			sqlMismoNombreApellidos.append("      regexp_replace(upper(translate(p2.nombre || ' ' || p2.apellidos1 || ' ' || p2.apellidos2, ");
+			sqlMismoNombreApellidos.append("      regexp_replace(upper(translate(p2.nombre || ' ' || p2.apellidos1 || ' ' || p2.apellidos2 || ' ', ");
 			sqlMismoNombreApellidos.append("                     'áéíóúàèìòùãõâêîôôäëïöüçÁÉÍÓÚÀÈÌÒÙÃÕÂÊÎÔÛÄËÏÖÜÇ', ");
 			sqlMismoNombreApellidos.append("                     'aeiouaeiouaoaeiooaeioucAEIOUAEIOUAOAEIOOAEIOUC')), 'DE |LA |Y |DEL |LOS |EL |I |[^[:alpha:]]| ', ''))");
 			
@@ -199,7 +201,7 @@ public class DuplicadosHelper{
 					sqlFinal += sqlMismoNombreApellidos.toString() + sqlOrden.toString();
 					break;
 				case SIMIL_NCOL:
-					sqlOrden = " order by Colegio, To_Number(Numcol) ";
+					sqlOrden = " order by Colegio, Lpad(Numcol, 20, '0') ";
 					sqlFinal += sqlMismoNumeroColegiado.toString() + sqlOrden.toString();
 					break;
 			}

@@ -117,7 +117,8 @@ public enum ActionButtonsConstants {
 	DESCARTAR ("desc","general.botons.Descartar","accionArchivar()",76),
 	APROBAR_GENERAR ("ag","general.boton.generar","accionAprobarGenerar()",94),
 	REGENERAR ("rg","cert.boton.regenerar","accionRegenerar()",95),
-	BORRARMASIVO ("bm","general.delete.selected","borrarSeleccionados()",96);
+	BORRARMASIVO ("bm","general.delete.selected","borrarSeleccionados()",96),
+	MARCARRESPUESTAINCORRECTA ("mri","e_comunicaciones.boton.marcarRespuestaIncorrecta","marcarRespuestaIncorrecta()",97);
 
     private final String valor;   
 	private final String label;   

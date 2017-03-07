@@ -24,7 +24,7 @@
 	ses.removeAttribute(SIGAConstants.STYLESHEET_REF);
 	Properties props = PropertyReader.getProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 	String cssPath = props.getProperty(SIGAConstants.STYLESHEET_PATH);
-	ses.setAttribute(SIGAConstants.STYLESHEET_SKIN, cssPath + "/skin5/stylesheet.css");
+	ses.setAttribute(SIGAConstants.STYLESHEET_SKIN, cssPath + "/skin0/stylesheet.css");
 %>
 	
 
@@ -48,7 +48,7 @@
 				jQuery.noticeAdd({
 					text: msg,
 					type: type
-				});
+				}); 
 			}
 		
 		</script>
@@ -56,13 +56,13 @@
 
 	<body>
 		<iframe src="<%=app%>/html/jsp/developmentLogin/login.jsp"
-		
 				id="mainWorkArea"
 				name="mainWorkArea"
 				scrolling="no"
 				frameborder="0"
-				height="600px"
-				class="posicionPrincipal">
+				height="700px"
+				width="100%"
+				style="margin-top: 100px;">
 		</iframe>
 	</body>
 </html>

@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -47,6 +48,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
 import com.siga.beans.AdmLenguajesAdm;
@@ -62,7 +64,8 @@ import com.siga.beans.CenDireccionesAdm;
 import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.CenEstadoCivilAdm;
 import com.siga.beans.CenEstadoCivilBean;
-import com.siga.beans.CenHistoricoBean;
+import com.siga.beans.CenEstadoColegialAdm;
+import com.siga.beans.CenEstadoColegialBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
 import com.siga.beans.CenNoColegiadoAdm;
@@ -126,11 +129,11 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					miForm.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
 					MantenimientoDuplicadosForm formDupl = (MantenimientoDuplicadosForm)miForm;
 					formDupl.reset(mapping,request);
-					formDupl.setApellidos("");
+					formDupl.setApellidosDuplicados("");
 					formDupl.setNifcif("");
-					formDupl.setNombre("");
+					formDupl.setNombreDuplicados("");
 					formDupl.setNumeroColegiado("");
-					formDupl.setIdInstitucion("");
+					formDupl.setIdInstitucionDuplicados("");
 					request.getSession().removeAttribute("DATAPAGINADOR");
 					mapDestino = abrir(mapping, miForm, request, response);
 				}else if(accion.equalsIgnoreCase("buscar")){
@@ -315,7 +318,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 
 			// calculando si se ha de mostrar los campos de colegio en funcion de si se busca por colegiado o por
 			// persona
-			String institucion = miFormulario.getIdInstitucion();
+			String institucion = miFormulario.getIdInstitucionDuplicados();
 			institucion = (institucion == null || institucion.trim().equalsIgnoreCase("")) ? "" : institucion;
 			String nColegiado = miFormulario.getNumeroColegiado();
 			nColegiado = (nColegiado == null || nColegiado.trim().equalsIgnoreCase("")) ? "" : nColegiado;
@@ -393,7 +396,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			formulario=miFormulario;
 			// calculando si se ha de mostrar los campos de colegio en funcion de si se busca por colegiado o por
 			// persona
-			String institucion = miFormulario.getIdInstitucion();
+			String institucion = miFormulario.getIdInstitucionDuplicados();
 			institucion = (institucion == null || institucion.trim().equalsIgnoreCase("")) ? "" : institucion;
 			String nColegiado = miFormulario.getNumeroColegiado();
 			nColegiado = (nColegiado == null || nColegiado.trim().equalsIgnoreCase("")) ? "" : nColegiado;
@@ -442,7 +445,8 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		CenTratamientoAdm tratamientoAdm = new CenTratamientoAdm(usr);
 		AdmLenguajesAdm lenguajeAdm = new AdmLenguajesAdm(usr);
 		CenTiposSeguroAdm tipoSeguroAdm = new CenTiposSeguroAdm(usr);
-		SimpleDateFormat fomatoFechaHora = new SimpleDateFormat(ClsConstants.DATE_FORMAT_LONG_SPANISH);
+		SimpleDateFormat formatoFechaHora = new SimpleDateFormat(ClsConstants.DATE_FORMAT_LONG_SPANISH);
+		SimpleDateFormat formatoFecha = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 		
 		
 		// Variables
@@ -535,6 +539,11 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 				
 				// 1. obteniendo datos personales
 				datosPersonaDeUna = admPersona.getPersonaPorId(idPersona);
+				if (datosPersonaDeUna == null) {
+					request.setAttribute("mensaje", "Error al buscar los datos de las personas a fusionar: al menos una de las personas seleccionadas ya no existe. Vuelva a seleccionar los duplicados o, si el problema persiste, contacte con el Administrador.");
+					return "exitoFusionar";
+				}
+				
 				datosPersonaDeUna.setFechaMod(UtilidadesString.formatoFecha(datosPersonaDeUna.getFechaMod(), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH));
 				if (datosPersonaDeUna.getFechaNacimiento() != null && !datosPersonaDeUna.getFechaNacimiento().equalsIgnoreCase("")) {
 					datosPersonaDeUna.setFechaNacimiento(UtilidadesString.formatoFecha(datosPersonaDeUna.getFechaNacimiento(), ClsConstants.DATE_FORMAT_JAVA, ClsConstants.DATE_FORMAT_SHORT_SPANISH));
@@ -626,9 +635,16 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					List<EcomCenDatos> lista = ecomCenDatosService.getInfoMantenimientoDuplicados(idPersona, idInstitucionCol.toString());
 					if(lista != null & lista.size()>0){
 						EcomCenDatos ecomCenDatos = lista.get(0);
+						CenEstadoColegialAdm estadosAdm = new CenEstadoColegialAdm(usr);
 						datosCenso = new Hashtable	<String, String>() ;
+						Hashtable estadoPk = new Hashtable();
+						if (ecomCenDatos.getIdecomcensosituacionejer() != null) {
+							estadoPk.put(CenEstadoColegialBean.C_IDESTADO, ecomCenDatos.getIdecomcensosituacionejer());
+							datosCenso.put("situacionEjercicio", UtilidadesString.getMensajeIdioma(usr, ((CenEstadoColegialBean) estadosAdm.selectByPK(estadoPk).get(0)).getDescripcion()));
+						}
+						datosCenso.put("fechaSituacion", formatoFecha.format(ecomCenDatos.getFechamodifrecibida()));
 						datosCenso.put("estadoCenso", UtilidadesString.getMensajeIdioma(usr, AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.getDescripcion(ecomCenDatos.getIdestadocolegiado())));
-						datosCenso.put("fechaCenso", fomatoFechaHora.format(ecomCenDatos.getFechamodificacion()));
+						datosCenso.put("fechaCenso", formatoFechaHora.format(ecomCenDatos.getFechamodificacion()));
 						datosColegiacionDeUna.put("datosCenso", datosCenso);
 					}
 
@@ -776,6 +792,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 
 		UsrBean user = this.getUserBean(request);
 		MantenimientoDuplicadosForm miForm = (MantenimientoDuplicadosForm) formulario;
+		EcomCenDatosService ecomCenDatosService =  (EcomCenDatosService) getBusinessManager().getService(EcomCenDatosService.class);
 		CenDireccionesAdm admDireccion = new CenDireccionesAdm(user);
 		CenColegiadoAdm admColeg = new CenColegiadoAdm(user);
 		CenNoColegiadoAdm admNoColeg = new CenNoColegiadoAdm(user);
@@ -783,6 +800,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		CenPersonaAdm admPersona = new CenPersonaAdm(user);
 		CenClienteAdm admCliente = new CenClienteAdm(user);
 		CenInstitucionAdm admInst = new CenInstitucionAdm(user);
+		SimpleDateFormat formatoFecha = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
 		
 		CenClienteBean beanCliente;
 
@@ -791,6 +809,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		String idPersonaOrigen = miForm.getIdPersonaOrigen();
 		CenPersonaBean beanPersonaDestino, beanPersonaOrigen;
 		HashSet<String> conjuntoColegiosIguales;
+		ArrayList<Hashtable<String, String>> listaEstadosAinsertar;
 		String idInstitucion, fechaEstado;
 		boolean bDesdeCgae = true;
 
@@ -809,15 +828,96 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			String stInstitucion;
 			String nombreInstitucion;
 			int intInstitucion;
+			listaEstadosAinsertar = new ArrayList<Hashtable<String, String>>();
 			for(int i=0;i<listaColegiacionesPersonaOrigen.size();i++){
 				// para cada colegiacion de la persona origen
 				stInstitucion = listaColegiacionesPersonaOrigen.get(i).toString();
 				nombreInstitucion = admInst.getAbreviaturaInstitucion(stInstitucion);
 				intInstitucion = Integer.parseInt(stInstitucion);
 				// Si se quiere fusionar un colegiado en el mismo colegio, solo lo permitimos al personal de IT o bien si el colegio no esta en produccion
-				if (admColeg.existeColegiado(Long.parseLong(idPersonaDestino), intInstitucion) != null && !tienePermisoFusionColegiosEnProduccion(mapping, request) && admInst.estaEnProduccion(stInstitucion)) {
-					request.setAttribute("mensaje",UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar1"+nombreInstitucion+"messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar2"));
-					return "exitoFusionar";
+				if (admColeg.existeColegiado(Long.parseLong(idPersonaDestino), intInstitucion) != null) {
+					if (!tienePermisoFusionColegiosEnProduccion(mapping, request) && admInst.estaEnProduccion(stInstitucion)) {
+						request.setAttribute("mensaje", 
+								UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar1") + 
+								" " + nombreInstitucion + " " + 
+								UtilidadesString.getMensajeIdioma(user, "messages.error.censo.mantenimientoDuplicados.sinPermisoFusionar2"));
+						return "exitoFusionar";
+					} else {
+						// Hay que comprobar el ultimo estado colegial de ambas personas. Si el origen tiene un estado colegial posterior al destino, algo va mal
+						Vector estadosColegio;
+						List<EcomCenDatos> actualizacionesColegio;
+						String idUltimoEstadoOrigen = null, idUltimoEstadoDestino = null, idEstadoActualizacionOrigen = null, idEstadoActualizacionDestino = null;
+						Date fechaUltimoEstadoOrigen = null, fechaUltimoEstadoDestino = null, fechaEstadoActualizacionOrigen = null, fechaEstadoActualizacionDestino = null;
+						
+						estadosColegio = admColeg.getEstadosColegiales(Long.valueOf(idPersonaOrigen), intInstitucion, "1");
+						if (estadosColegio != null && estadosColegio.size() > 0) {
+							Hashtable<String, String> ultimoEstado =  (Hashtable<String, String>) ((Row) estadosColegio.get(0)).getRow();
+							idUltimoEstadoOrigen = ultimoEstado.get(CenDatosColegialesEstadoBean.C_IDESTADO); 
+							fechaUltimoEstadoOrigen = UtilidadesFecha.getDate(ultimoEstado.get("FECHAESTADO_SPANISH"), UtilidadesFecha.FORMATO_FECHA_ES);
+						}
+						estadosColegio = admColeg.getEstadosColegiales(Long.valueOf(idPersonaDestino), intInstitucion, "1");
+						if (estadosColegio != null && estadosColegio.size() > 0) {
+							Hashtable<String, String> ultimoEstado =  (Hashtable<String, String>) ((Row) estadosColegio.get(0)).getRow();
+							idUltimoEstadoDestino = ultimoEstado.get(CenDatosColegialesEstadoBean.C_IDESTADO); 
+							fechaUltimoEstadoDestino = UtilidadesFecha.getDate(ultimoEstado.get("FECHAESTADO_SPANISH"), UtilidadesFecha.FORMATO_FECHA_ES);
+						}
+						
+						actualizacionesColegio = ecomCenDatosService.getInfoMantenimientoDuplicados(idPersonaOrigen, Integer.toString(intInstitucion));
+						if (actualizacionesColegio != null & actualizacionesColegio.size()>0){
+							EcomCenDatos ecomCenDatos = actualizacionesColegio.get(0);
+							if (ecomCenDatos.getIdecomcensosituacionejer() != null) {
+								idEstadoActualizacionOrigen = ecomCenDatos.getIdecomcensosituacionejer().toString();
+								fechaEstadoActualizacionOrigen = UtilidadesFecha.removeTime(ecomCenDatos.getFechamodifrecibida());
+							}
+						}
+						actualizacionesColegio = ecomCenDatosService.getInfoMantenimientoDuplicados(idPersonaDestino, Integer.toString(intInstitucion));
+						if (actualizacionesColegio != null & actualizacionesColegio.size()>0){
+							EcomCenDatos ecomCenDatos = actualizacionesColegio.get(0);
+							if (ecomCenDatos.getIdecomcensosituacionejer() != null) {
+								idEstadoActualizacionDestino = ecomCenDatos.getIdecomcensosituacionejer().toString();
+								fechaEstadoActualizacionDestino = UtilidadesFecha.removeTime(ecomCenDatos.getFechamodifrecibida());
+							}
+						}
+						
+						// Para cada persona, la fecha final sera la mayor entre la de estado y la de actualizacion por carga
+						if (fechaEstadoActualizacionOrigen != null && fechaEstadoActualizacionOrigen.after(fechaUltimoEstadoOrigen)) {
+							if (idEstadoActualizacionOrigen.equalsIgnoreCase(idUltimoEstadoOrigen)) {
+								fechaUltimoEstadoOrigen = fechaEstadoActualizacionOrigen;
+								
+								Hashtable<String, String> hashEstado = miForm.getDatos();
+								hashEstado.put(CenDatosColegialesEstadoBean.C_IDINSTITUCION, Integer.toString(intInstitucion));
+								hashEstado.put(CenDatosColegialesEstadoBean.C_IDPERSONA, idPersonaOrigen);
+								hashEstado.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, formatoFecha.format(fechaEstadoActualizacionOrigen));
+								hashEstado.put(CenDatosColegialesEstadoBean.C_IDESTADO, idEstadoActualizacionOrigen);
+								listaEstadosAinsertar.add(hashEstado);
+							} else {
+								request.setAttribute("mensaje", "En el colegio de " + nombreInstitucion + ", " + beanPersonaOrigen.getNombreCompleto() + " (" + beanPersonaOrigen.getNIFCIF() + ") tiene un estado colegial que no se corresponde con la última actuación por Carga de censo. Por favor, revise la carga y/o consulte al Administrador para más información.");
+								return "exitoFusionar";
+							}
+						}
+						if (fechaEstadoActualizacionDestino != null && fechaEstadoActualizacionDestino.after(fechaUltimoEstadoDestino)) {
+							if (idEstadoActualizacionDestino.equalsIgnoreCase(idUltimoEstadoDestino)) {
+								fechaUltimoEstadoDestino = fechaEstadoActualizacionDestino;
+								
+								Hashtable<String, String> hashEstado = miForm.getDatos();
+								hashEstado.put(CenDatosColegialesEstadoBean.C_IDINSTITUCION, Integer.toString(intInstitucion));
+								hashEstado.put(CenDatosColegialesEstadoBean.C_IDPERSONA, idPersonaDestino);
+								hashEstado.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, formatoFecha.format(fechaEstadoActualizacionDestino));
+								hashEstado.put(CenDatosColegialesEstadoBean.C_IDESTADO, idEstadoActualizacionDestino);
+								listaEstadosAinsertar.add(hashEstado);
+							} else {
+								request.setAttribute("mensaje", "En el colegio de " + nombreInstitucion + ", " + beanPersonaDestino.getNombreCompleto() + " (" + beanPersonaDestino.getNIFCIF() + ") tiene un estado colegial que no se corresponde con la última actuación por Carga de censo. Por favor, revise la carga y/o consulte al Administrador para más información.");
+								return "exitoFusionar";
+							}
+						}
+						// Si el destino tiene un estado mas antiguo que el origen, no podemos permitir la fusion.
+						if (idUltimoEstadoOrigen != null && idUltimoEstadoDestino != null && !idUltimoEstadoOrigen.equalsIgnoreCase(idUltimoEstadoDestino)) {
+							if (fechaUltimoEstadoOrigen.after(fechaUltimoEstadoDestino)) {
+								request.setAttribute("mensaje", "En el colegio de " + nombreInstitucion + ", " + beanPersonaOrigen.getNombreCompleto() + " (" + beanPersonaOrigen.getNIFCIF() + ") tiene una fecha de situación colegial posterior al de " + beanPersonaDestino.getNombreCompleto() + " (" + beanPersonaDestino.getNIFCIF() + "). Para evitar cambiar el estado colegial de esta última (destino de la combinación), se ha cancelado la operación. Por favor, modifique los estados colegiales para que el destino de la combinación tenga el último estado colegial.");
+								return "exitoFusionar";
+							}
+						}
+					}
 				}
 			}
 
@@ -836,6 +936,13 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 
 			tx = user.getTransactionPesada();
 			tx.begin();
+			
+			// insertando los estados de actualizacion de origen y destino
+			for (Hashtable<String, String> hashEstado : listaEstadosAinsertar) {
+				hashEstado.put(CenDatosColegialesEstadoBean.C_OBSERVACIONES, "Mantenimiento de duplicados: inserción automática de estado colegial por última actualización desde Carga de Censo");
+				boolean bDesdeCGAE = true;
+				admEstadoColegial.insertaEstadoColegial(hashEstado, bDesdeCGAE, user.getLanguage());
+			}
 			
 			// Aunque el proceso de fusion (en PL) ya se encarga de combinar las direcciones, 
 			// tenemos que comprobar las unicidades de direcciones. Para ello, es mejor moverlas ahora y comprobar las unicidades
@@ -948,10 +1055,10 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			String[] resultadoFusion = EjecucionPLs.ejecutarPL_fusion(idPersonaOrigen, idPersonaDestino);
 			if (resultadoFusion[0].equalsIgnoreCase("-1")) { //error controlado: mostrando el error en pantalla
 				tx.rollback();
-				request.setAttribute("mensaje", "Imposible completar la fusión de las personas con Num. ident. ´"+beanPersonaOrigen.getNIFCIF()+"´ y ´"+beanPersonaDestino.getNIFCIF()+"´: " + resultadoFusion[1] + ". Consulte con el Administrador");
+				request.setAttribute("mensaje", "Imposible completar la fusión de las personas con Num. ident. ´"+beanPersonaOrigen.getNIFCIF()+"´ y ´"+beanPersonaDestino.getNIFCIF()+"´: " + resultadoFusion[1]);
 				return "exitoFusionar";
 			} else if (!resultadoFusion[0].equalsIgnoreCase("-1") && !resultadoFusion[0].equalsIgnoreCase("0")) {
-				throw new ClsExceptions(resultadoFusion[1]);
+				throw new ClsExceptions("Imposible completar la fusión de las personas con Num. ident. ´"+beanPersonaOrigen.getNIFCIF()+"´ y ´"+beanPersonaDestino.getNIFCIF()+"´. Consulte con el Administrador");
 			}
 			
 			tx.commit();
@@ -1268,6 +1375,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			
 			if (verFichaLetrado!=null && verFichaLetrado.equals("1")){
 				tipoAcceso = new Integer(ClsConstants.TIPO_ACCESO_PESTANAS_LETRADO);
+				tipo="LETRADO";
 				elementoActivo="3";
 				
 			}else{
@@ -1432,41 +1540,59 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 		
 		// Variables generales
 		StringBuilder tableHeader = new StringBuilder(), tableBody = new StringBuilder();
+		StringBuilder tableBodyNIF = new StringBuilder();
+		StringBuilder tableBodyNombreYApellidos = new StringBuilder();
+		StringBuilder tableBodyColegiacionNum = new StringBuilder();
+		
+		
 		Vector personasSimilares = new Vector();
+		
+		Vector personasSimilaresNIF = new Vector();
+		Vector personasSimilaresNombreApellidos = new Vector();
+		Vector personasSimilaresColegiacionesNum = new Vector();
+		
 		ArrayList<String> aOptionsListadoDocumentacion = null;
+		ArrayList<String> aOptionsListadoDocumentacionNIF = new ArrayList<String> ();
+		ArrayList<String> aOptionsListadoDocumentacionColegiacionesNum = new ArrayList<String> ();
+		ArrayList<String> aOptionsListadoDocumentacionNombreApellidos = new ArrayList<String> ();
+		
 		String idPersonaActual = request.getParameter("idPersona");
 		idPersonaActual = (idPersonaActual == null) ? "" : idPersonaActual;
 
 		
 		// buscando duplicados por NIF parecido
 		miFormulario.setNifcif(request.getParameter("nidSolicitante"));
-		personasSimilares.addAll(helper.getPersonasSimilares(miFormulario));
+		personasSimilaresNIF = helper.getPersonasSimilares(miFormulario);
+		personasSimilares.addAll(personasSimilaresNIF);
 		miFormulario.setNifcif("");
 
 		// buscando duplicados por Numero colegiado
 		String numCol = request.getParameter("nColegiado");
 		if (numCol != null && ! numCol.equalsIgnoreCase("")) {
-			miFormulario.setIdInstitucion(request.getParameter("idInstitucion"));
+			miFormulario.setIdInstitucionDuplicados(request.getParameter("idInstitucion"));
 			miFormulario.setNumeroColegiado(numCol);
-			personasSimilares.addAll(helper.getPersonasSimilares(miFormulario));
+			personasSimilaresColegiacionesNum=helper.getPersonasSimilares(miFormulario);
+			personasSimilares.addAll(personasSimilaresColegiacionesNum);
 		} else {
 			Vector<CenColegiadoBean> listaColegiacionesPersonaOrigen = admColeg.getColegiacionesCompletas(idPersonaActual);
 			for(CenColegiadoBean beanColegiado : listaColegiacionesPersonaOrigen){
 				// para cada colegiacion de la persona
-				miFormulario.setIdInstitucion(beanColegiado.getIdInstitucion().toString());
+				miFormulario.setIdInstitucionDuplicados(beanColegiado.getIdInstitucion().toString());
 				miFormulario.setNumeroColegiado(beanColegiado.getNumCol().toString());
-				personasSimilares.addAll(helper.getPersonasSimilares(miFormulario));
+				personasSimilaresColegiacionesNum.addAll(helper.getPersonasSimilares(miFormulario));
+				personasSimilares.addAll(personasSimilaresColegiacionesNum);
 			}
 		}
-		miFormulario.setIdInstitucion("");
+		miFormulario.setIdInstitucionDuplicados("");
 		miFormulario.setNumeroColegiado("");
 
 		// buscando duplicados por Nombre y apellidos
-		miFormulario.setNombre(request.getParameter("nombre"));
-		miFormulario.setApellidos(request.getParameter("apellidos"));
-		personasSimilares.addAll(helper.getPersonasSimilares(miFormulario));
-		miFormulario.setNombre("");
-		miFormulario.setApellidos("");
+		miFormulario.setNombreDuplicados(request.getParameter("nombre"));
+		miFormulario.setApellidosDuplicados(request.getParameter("apellidos"));
+		personasSimilaresNombreApellidos = helper.getPersonasSimilares(miFormulario);
+		personasSimilares.addAll(personasSimilaresNombreApellidos);
+		miFormulario.setNombreDuplicados("");
+		miFormulario.setApellidosDuplicados("");
 		
 		if (personasSimilares != null && personasSimilares.size() > 1) {
 			tableHeader.append("<tr>");
@@ -1479,33 +1605,106 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			tableHeader.append("  <td>&nbsp;</td>");
 			tableHeader.append("</tr>");
 
+			tableBodyNIF = componerInformacionHtml(personasSimilaresNIF,0,idPersonaActual,request);
+			tableBodyNombreYApellidos = componerInformacionHtml(personasSimilaresNombreApellidos,1,idPersonaActual,request);
+			tableBodyColegiacionNum = componerInformacionHtml(personasSimilaresColegiacionesNum,2,idPersonaActual,request);
+			
+			//Duplicados por NIF
+			if (tableBodyNIF != null && !"".equalsIgnoreCase(tableBodyNIF.toString())) {
+				aOptionsListadoDocumentacionNIF.add(tableHeader.toString() + tableBodyNIF.toString());
+			}else{
+				aOptionsListadoDocumentacionNIF.add(null);
+			}
+			//Duplicados por Nombre y Apellido
+			if (tableBodyNombreYApellidos != null && !"".equalsIgnoreCase(tableBodyNombreYApellidos.toString())) {
+				aOptionsListadoDocumentacionNombreApellidos.add(tableHeader.toString() + tableBodyNombreYApellidos.toString());
+			}else{
+				aOptionsListadoDocumentacionNombreApellidos.add(null);
+			}
+			//Duplicados por colegiaciones
+			if (tableBodyColegiacionNum != null && !"".equalsIgnoreCase(tableBodyColegiacionNum.toString())) {
+				aOptionsListadoDocumentacionColegiacionesNum.add(tableHeader.toString() + tableBodyColegiacionNum.toString());
+			}else{
+				aOptionsListadoDocumentacionColegiacionesNum.add(null);
+			}
+			
+		}
+
+		JSONObject json = new JSONObject();
+		UsrBean usr = this.getUserBean(request);
+
+		// Devuelvo la lista de series de facturacion
+		json.put("aOptionsListadoDocumentacionNIF", aOptionsListadoDocumentacionNIF);
+		json.put("aOptionsListadoDocumentacionNombreApellidos", aOptionsListadoDocumentacionNombreApellidos);
+		json.put("aOptionsListadoDocumentacionColegiacionesNum", aOptionsListadoDocumentacionColegiacionesNum);
+
+		response.setContentType("text/x-json;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+		response.setHeader("X-JSON", json.toString());
+		response.getWriter().write(json.toString());
+		
+	} //getAjaxObtenerDuplicados()
+	
+	private StringBuilder componerInformacionHtml(Vector informacion,int tipo,String idPersonaActual,HttpServletRequest request){
+		
+		StringBuilder tableBody = new StringBuilder();
+		Boolean masDeDosRegistros=Boolean.FALSE;
+		int contador=0;   //Cuenta el número filas que lleva pintadas
+		
+		if(informacion != null && informacion.size()>0){
 			Hashtable registro;
 			HashSet<String> conjuntoPersonas = new HashSet<String>();
-			for (int i = 0; i < personasSimilares.size(); i++) {
-				registro = (Hashtable) personasSimilares.elementAt(i);
-				// solo hay que mostrar personas diferentes a la actual
+			
+			//Recorremos la información obtenida de las consultas
+			for (int i=0; i < informacion.size(); i++) {
+				registro = (Hashtable) informacion.elementAt(i);
+				// SÓLO hay que mostrar personas diferentes a la actual
 				if (! idPersonaActual.equalsIgnoreCase((String) registro.get("IDPERSONA"))) {
 					conjuntoPersonas.add((String) registro.get("IDPERSONA"));
-	
+					//Si son diferentes y no supera los tres registros se añaden para pintar 
+					contador++;
+					if(contador==3){  //Si pinta ya dos registro salimos del bucle ya que no queremos más de dos
+						break;
+					}
 					tableBody.append("<tr>");
-					tableBody.append("  <td>");
+					if(tipo==0)
+						tableBody.append("  <td style='BACKGROUND-COLOR: aliceblue;'>");
+					else
+						tableBody.append("  <td>");
 					tableBody.append((String) registro.get("NIFCIF"));
 					tableBody.append("  </td>");
-					tableBody.append("  <td>");
+					if(tipo==1)
+						tableBody.append("  <td style='BACKGROUND-COLOR: aliceblue;'>");
+					else
+						tableBody.append("  <td>");
 					tableBody.append((String) registro.get("NOMBRE"));
 					tableBody.append("  </td>");
-					tableBody.append("  <td>");
+					if(tipo==1)
+						tableBody.append("  <td style='BACKGROUND-COLOR: aliceblue;'>");
+					else
+						tableBody.append("  <td>");
 					tableBody.append((String) registro.get("APELLIDOS1"));
 					tableBody.append("  </td>");
-					tableBody.append("  <td>");
+					if(tipo==1)
+						tableBody.append("  <td style='BACKGROUND-COLOR: aliceblue;'>");
+					else
+						tableBody.append("  <td>");
 					tableBody.append((String) registro.get("APELLIDOS2"));
 					tableBody.append("  </td>");
-					tableBody.append("  <td>");
+					if(tipo==2)
+						tableBody.append("  <td style='BACKGROUND-COLOR: aliceblue;'>");
+					else
+						tableBody.append("  <td>");
 					tableBody.append((registro.get("ABREVIATURA") == null) ? "&nbsp;" : (String) registro.get("ABREVIATURA"));
 					tableBody.append("  </td>");
-					tableBody.append("  <td>");
+					if(tipo==2)
+						tableBody.append(" <td style='BACKGROUND-COLOR: aliceblue;'>");
+					else
+						tableBody.append("  <td>");
 					tableBody.append((registro.get("NCOLEGIADO") == null) ? "&nbsp;" : (String) registro.get("NCOLEGIADO"));
 					tableBody.append("  </td>");
+					
 					tableBody.append("  <td>");
 					tableBody.append("    <img id='iconoboton_informacionLetrado1' src='/SIGA/html/imagenes/bconsultar_on.gif'");
 					tableBody.append("         style='cursor:pointer;' alt='Mantenimiento duplicados' class='botonesIcoTabla' ");
@@ -1515,37 +1714,26 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 						tableBody.append("'', '" + (String) registro.get("NCOLEGIADO") + "', '" + (String) registro.get("IDINSTITUCION") + "', '', '', ''");
 					}
 					else if (registro.get("APELLIDOS") != null) {
-						tableBody.append("'', '', '', '" + (String) registro.get("NOMBRE") + "','" + (String) registro.get("APELLIDOS1")
-							+ "','" + (String) registro.get("APELLIDOS2") + "'");
+						tableBody.append("'', '', '', '" + (String) request.getParameter("nombre").replaceAll("'","@") + "','" + (String) request.getParameter("apellido1").replaceAll("'","@")
+							+ "','" + (String) request.getParameter("apellido2").replaceAll("'","@") + "'");
 					}
 					else {
-						tableBody.append("'" + (String) registro.get("NIFCIF") + "', '', '', '', '', ''");
+						tableBody.append("'" + (String) request.getParameter("nidSolicitante") + "', '', '', '', '', ''");
 					}
 					
 					tableBody.append(");\">");
 					tableBody.append("  </td>");
 					tableBody.append("</tr>");
 				}
+				
 			}
-			
-			aOptionsListadoDocumentacion = new ArrayList<String>();
-			if (tableBody != null && !"".equalsIgnoreCase(tableBody.toString())) {
-				aOptionsListadoDocumentacion.add(tableHeader.toString() + tableBody.toString());
+			//Si hay 3 elementos quiere decir que no se han pintado todos debido a la limitación 
+			//impuesta por nosotros de sólo dos elementos, pero se le indicará al usuario de que hay más
+			if(contador==3){  
+				tableBody.append("<tr><td colspan='7'>Existen más registros...</td></tr>");
 			}
 		}
-
-		JSONObject json = new JSONObject();
-		UsrBean usr = this.getUserBean(request);
-
-		// Devuelvo la lista de series de facturacion
-		json.put("aOptionsListadoDocumentacion", aOptionsListadoDocumentacion);
-
-		response.setContentType("text/x-json;charset=UTF-8");
-		response.setHeader("Cache-Control", "no-cache");
-		response.setHeader("Content-Type", "application/json");
-		response.setHeader("X-JSON", json.toString());
-		response.getWriter().write(json.toString());
-		
-	} //getAjaxObtenerDuplicados()
+		return tableBody;
+	}
 
 }

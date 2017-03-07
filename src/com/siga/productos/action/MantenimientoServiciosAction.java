@@ -2027,13 +2027,14 @@ public class MantenimientoServiciosAction extends MasterAction {
 			//creamos el String
 			for (int cont=0; cont<vCriterios.size(); cont++){
 				Hashtable<String,Object> criterio = vCriterios.get(cont);
-				boolean contieneError = false;
+				boolean contieneError = false;							
+				String sSimbolo = (String)criterio.get("SIMBOLO");
 
 				//Ahora tenemos todos los campos a falta del idValor
 				//Ejecutamos la selectAyuda del campo, y recuperamos el ID para el valor con descripcion = al valor que ya tenemos
 				//Si tenemos la select buscamos el idvalor: 
 				String con = (String)criterio.get("SELECTAYUDA");
-				if (con!=null && ! con.equals("")) {					
+				if (con!=null && !con.equals("") && sSimbolo!=null && !sSimbolo.equalsIgnoreCase("is null")) { // Si utiliza el operador "esta vacio", no se calcula IDVALOR					
 					con = con.replaceAll("@IDINSTITUCION@",usr.getLocation());
 					con = con.replaceAll("@IDIOMA@" , usr.getLanguage());
 					Vector<Hashtable<String,Object>> campos = camposAdm.selectGenerico(con);
@@ -2074,7 +2075,7 @@ public class MantenimientoServiciosAction extends MasterAction {
 										(String)criterio.get("DESCRIPCION") + "_" +
 										(((String)criterio.get("VALOR")).equalsIgnoreCase("NULL") ? "" : (String)criterio.get("VALOR")) + "_" +
 										(String)criterio.get("IDCAMPO") + "," + (String)criterio.get("TIPOCAMPO") + "," + (String)criterio.get("IDTABLA") + "_" +
-										(String)criterio.get("OPERADOR") + "," + (String)criterio.get("SIMBOLO") + "_" +
+										(String)criterio.get("OPERADOR") + "," + sSimbolo + "_" +
 										(((String)criterio.get("IDVALOR")).equalsIgnoreCase("NULL") ? "" : (String)criterio.get("IDVALOR")) + "_" +
 										abrirPar + "_" +
 										cerrarPar + "_" + 

@@ -921,7 +921,7 @@
 		camposReadonly = false;
 	%>
 
-	<body class="tablaCentralCampos" onload="adaptaTamanoFoto();buscarGrupos();mostrarMensaje();obtenerTratamientos ('<%=sexo%>','<%=idTratamiento%>');comprobarDuplicados('<%=idInstitucionAcceso%>', '<%=idPersona%>', '<%=nIdentificacion%>', '<%=nombre%>', '<%=apellido1%>', '<%=apellido2%>', '<%=idInstitucion%>', '<%=numero%>');">
+	<body class="tablaCentralCampos" onload="adaptaTamanoFoto();buscarGrupos();mostrarMensaje();obtenerTratamientos ('<%=sexo%>','<%=idTratamiento%>');comprobarDuplicados('<%=idInstitucionAcceso%>', '<%=idPersona%>', '<%=nIdentificacion%>', '<%=nombre.replaceAll("'","@")%>', '<%=apellido1.replaceAll("'","@")%>', '<%=apellido2.replaceAll("'","@")%>', '<%=idInstitucion%>', '<%=numero%>');">
 
 
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
@@ -1088,7 +1088,7 @@
 					<% } %>
 					</td>
 					<td align="right">
-						<img id="iconoboton_cargando_1"	src="/SIGA/html/imagenes/bloading_on_23.gif"	style="cursor: hand" alt="Cargando posibles duplicados"> 
+						<img id="iconoboton_cargando_1"	src="/SIGA/html/imagenes/bloading_on_23.gif"	style="cursor: hand; display: none" alt="Cargando posibles duplicados"> 
 						<img id="iconoboton_aviso_1"	src="/SIGA/html/imagenes/warning.png"			style="cursor: hand; display: none" alt="Duplicidades" onClick="accionObtenerDuplicados();"> 
 					</td>
 				</tr>

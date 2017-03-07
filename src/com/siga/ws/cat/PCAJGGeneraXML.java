@@ -1218,15 +1218,15 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		String pathFichero = p.returnProperty(keyPathFicheros) + p.returnProperty(keyPath2);
 		String pathPlantillas = p.returnProperty(keyPathPlantillas) + p.returnProperty(keyPath2);
-		
-		String dirFicheros = pathFichero + File.separator + getIdInstitucion()  + File.separator + getIdRemesa();
+		int idInstitucion = getIdInstitucion();
+		String dirFicheros = pathFichero + File.separator + idInstitucion  + File.separator + getIdRemesa();
 		String dirPlantillas = pathPlantillas + File.separator + getIdInstitucion();
 
 		UserTransaction tx = usr.getTransactionPesada();
 		dirFicheros = dirFicheros + File.separator + "xml";
 		
 		//si se ha hecho una remesa txt previa hay que borrarla previamente
-		DefinirRemesasCAJGAction.eliminaFicheroTXTGenerado(String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()));//por si se estan regenerando...
+		DefinirRemesasCAJGAction.eliminaFicheroTXTGenerado(String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()),idInstitucion==2003,usr);//por si se estan regenerando...
 		
 		//si no queremos generar el fichero txt ademas del xml hay que comentar solamente esta línea
 		if (isGeneraTXT()) {
@@ -1320,7 +1320,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		StringBuffer mensaje = new StringBuffer();		
 		DefinirRemesasCAJGAction definirRemesasCAJGAction = new DefinirRemesasCAJGAction();
 		try {
-			definirRemesasCAJGAction.generaFicherosTXT(String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), nombreFichero, mensaje, pathFichero);
+			definirRemesasCAJGAction.generaFicherosTXT(String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), nombreFichero, mensaje,false, pathFichero);
 		} catch (Exception e) {
 			ClsLogging.writeFileLogError("Error al generar el archivo TXT", e, 3);			
 		}

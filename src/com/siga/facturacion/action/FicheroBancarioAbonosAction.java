@@ -576,6 +576,8 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		}
 
 		// Creacion de un fichero de abonos por cada banco
+		String resultado[];
+		int resultadoInt;
 		try {
 			// calculando nombre y ruta del fichero
 			String rutaServidor = rp.returnProperty("facturacion.directorioFisicoAbonosBancosJava")
@@ -596,19 +598,23 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 			paramIn[6] = lenguaje;
 
 			int nParametrosOut = 2;
-			String resultado[] = new String[nParametrosOut];
+			resultado = new String[nParametrosOut];
 			String paramInCadena = "?";
 			for (int i = 1; i < nParametrosIn + nParametrosOut; i++) {
 				paramInCadena = paramInCadena + ",?";
 			}
 			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_ABONOS.Generarficherotransferencias(" + paramInCadena + ")}", nParametrosOut, paramIn);
-			if (!resultado[0].equalsIgnoreCase("0")) {
-				// ClsLogging.writeFileLog("Error en PL = "+(String)resultado[3],3);
-				throw new ClsExceptions("Ha ocurrido un error al generar el fichero de transferencias. \nError en PL = " + resultado[0] + " - " + resultado[1]);
-			}
+			resultadoInt = Integer.parseInt(resultado[0]);
 
 		} catch (Exception e) {
 			throw new SIGAException("error.messages.application", e);
+		}
+		
+		// propagando errores a la interfaz
+		if (resultadoInt > 0) {
+			throw new SIGAException(resultado[1]);
+		} else if (resultadoInt < 0) {
+			throw new ClsExceptions("Ha ocurrido un error al generar el fichero de transferencias. \nError en PL = " + resultado[0] + " - " + resultado[1]);
 		}
 
 		return 1; // 1 fichero generado

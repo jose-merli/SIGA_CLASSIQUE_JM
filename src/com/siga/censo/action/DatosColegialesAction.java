@@ -483,32 +483,10 @@ public class DatosColegialesAction extends MasterAction {
 			hashEstado.put(CenDatosColegialesEstadoBean.C_IDINSTITUCION, idinstitucion);
 			hashEstado.put(CenDatosColegialesEstadoBean.C_IDPERSONA, idpersona);
 			hashEstado.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, fechaEstado);
+			hashEstado.put(CenDatosColegialesEstadoBean.C_OBSERVACIONES, hashEstado.get(CenDatosColegialesEstadoBean.C_OBSERVACIONES) + " " + motivo);
 
-			// generando datos de historico
-			CenHistoricoBean beanHis = new CenHistoricoBean();
-			beanHis.setMotivo(motivo);
-			int estado = new Integer(hashEstado.get(CenDatosColegialesEstadoBean.C_IDESTADO).toString()).intValue();
-			switch (estado) {
-			case ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL:
-				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_COLEGIAL));
-				break;
-			case ClsConstants.ESTADO_COLEGIAL_EJERCIENTE:
-				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_ALTA_EJERCICIO));
-				break;
-			case ClsConstants.ESTADO_COLEGIAL_SINEJERCER:
-				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_EJERCICIO));
-				break;
-			case ClsConstants.ESTADO_COLEGIAL_INHABILITACION:
-				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_INHABILITACION));
-				break;
-			case ClsConstants.ESTADO_COLEGIAL_SUSPENSION:
-				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_SUSPENSION));
-				break;
-			}
-			
 			boolean bDesdeCGAE = false;
 			if (this.getIDInstitucion(request) == 2000){
-				beanHis.setIdInstitucion(2000);
 				bDesdeCGAE = true;
 			}
 			
@@ -517,7 +495,7 @@ public class DatosColegialesAction extends MasterAction {
 			tx.begin();
 
 			// Si devuelve 2 es porque se ha relizado todo correctamente excepto la llamada al servicio web de revision de letrado.
-			int isInsercionCorrecta = admEstados.insercionConHistorico(hashEstado, beanHis, idioma);
+			int isInsercionCorrecta = admEstados.insertaEstadoColegial(hashEstado, bDesdeCGAE, idioma);
 			
 			switch (isInsercionCorrecta) {
 				case 0:
@@ -695,30 +673,16 @@ public class DatosColegialesAction extends MasterAction {
 					} //if (vDir != null)
 					//06/03/2017 - R1603_0029: Si se pasa de residente a no residente y viceversa llamamos al servicio de ACA para que se tenga constancia de ello.
 					if(residenteAhora.equals("0")){
-						GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
-						//Miramos si esta activo la llamada al servicio Web llamadaWebServiceAcaRevisionLetrado
-						String acaActivo = genParametrosService.getValorParametroWithNull((short)0,PARAMETRO.WS_ACA_ACTIVO,MODULO.CEN);
-						if(acaActivo!=null && acaActivo.equalsIgnoreCase(AppConstants.DB_TRUE)){
-							//Miramos si esta activo para esta institucion la llamada al servicio Web llamadaWebServiceAcaRevisionLetrado
-							acaActivo = genParametrosService.getValorParametroWithNull(Integer.valueOf(miForm.getIdInstitucion()).shortValue(),PARAMETRO.WS_ACA_ACTIVO,MODULO.CEN);
+						String llamadaReport= null;
+						try {
+							CenDatosColegialesEstadoAdm cenDatosColegialesEstadoAdm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
+							llamadaReport = cenDatosColegialesEstadoAdm.llamadaWebServiceAcaRevisionLetrado(Long.valueOf(miForm.getIdPersona()), Short.valueOf(miForm.getIdInstitucion()));	
+						} catch (BusinessException e) {
+							isErrorLlamadaAca = true;
+							llamadaReport = e.getMessage();
 						}
-						
-						if(acaActivo!=null && acaActivo.equalsIgnoreCase(AppConstants.DB_TRUE)){
-							CenPersonaAdm cenPersonaAdm = new CenPersonaAdm(this.getUserBean(request));
-							Vector personaVector = cenPersonaAdm.selectByPK(hash);
-							CenPersonaBean cenPersonaBean = (CenPersonaBean) personaVector.get(0);
-							
-							String llamadaReport= null;
-							try {
-								CenDatosColegialesEstadoAdm cenDatosColegialesEstadoAdm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
-								llamadaReport = cenDatosColegialesEstadoAdm.llamadaWebServiceAcaRevisionLetrado((short)cenPersonaBean.getIdTipoIdentificacion().shortValue(), cenPersonaBean.getNIFCIF(), Integer.valueOf(miForm.getIdInstitucion()).shortValue());	
-							} catch (BusinessException e) {
-								isErrorLlamadaAca = true;
-								llamadaReport = e.getMessage();
-							}
-							hash.put("RESPUESTA_ACA", llamadaReport);
-							hashHist.put(CenHistoricoBean.C_OBSERVACIONES, llamadaReport);
-						}
+						hash.put("RESPUESTA_ACA", llamadaReport);
+						hashHist.put(CenHistoricoBean.C_OBSERVACIONES, llamadaReport);
 					}
 				} //if (! residenteAhora.equals(residenteAntes))
 			} //bloque

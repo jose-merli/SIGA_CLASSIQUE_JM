@@ -243,7 +243,7 @@
 		</script>
 	</head>
 
-	<body class="tablaCentralCampos" onLoad="situacionLetrado();buscar();calcularAltura();comprobarDuplicados('<%=idInstitucionAcceso%>', '<%=idPersona%>', '<%=nif%>', '<%=nombreSolo%>', '<%=apellidos%>', '', '<%=idInstitucion%>', '<%=numero%>');">
+	<body class="tablaCentralCampos" onLoad="situacionLetrado();buscar();calcularAltura();comprobarDuplicados('<%=idInstitucionAcceso%>', '<%=idPersona%>', '<%=nif%>', '<%=nombreSolo.replaceAll("'","@")%>', '<%=apellidos.replaceAll("'","@")%>', '', '<%=idInstitucion%>', '<%=numero%>');">
 	
 		<!-- ******* INFORMACION GENERAL CLIENTE ****** -->
 		<table class="tablaTitulo" align="center" cellspacing="0">
@@ -389,7 +389,7 @@
 					}
 %>
 					<td align="right">
-						<img id="iconoboton_cargando_1"	src="/SIGA/html/imagenes/bloading_on_23.gif"	style="cursor: hand" alt="Cargando posibles duplicados"> 
+						<img id="iconoboton_cargando_1"	src="/SIGA/html/imagenes/bloading_on_23.gif"	style="cursor: hand; display: none" alt="Cargando posibles duplicados"> 
 						<img id="iconoboton_aviso_1"	src="/SIGA/html/imagenes/warning.png"			style="cursor: hand; display: none" alt="Duplicidades" onClick="accionObtenerDuplicados();"> 
 					</td>
 				</tr>

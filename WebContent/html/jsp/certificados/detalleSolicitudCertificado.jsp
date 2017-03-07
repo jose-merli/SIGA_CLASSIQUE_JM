@@ -308,6 +308,7 @@
 		{		
 			sub();
 			SolicitudesCertificadosForm.modo.value="comprobarNumPlantillas";
+			SolicitudesCertificadosForm.regenerar.value="1";
 			SolicitudesCertificadosForm.submit();
 		}			
 		
@@ -849,8 +850,10 @@
 		<html:hidden property="tipoCertificado" value="<%=tipoCertificado%>" />
 		<html:hidden property="idsTemp" value="<%=idsTemp%>"/>
 		<html:hidden property="idSerieSeleccionada" styleId="idSerieSeleccionada" />
+		<html:hidden property="regenerar" value="" />
 		<input type="hidden" id="idPeticion" name="idPeticion" value="<%=idPeticion%>">	
 		<input type="hidden" id="descargarCertificado" name="descargarCertificado" value="">	
+		
 		<html:hidden property="aceptaCesionMutualidad" value="<%=aceptMut%>" />
 		<tr>
 			<td><siga:ConjCampos leyenda="certificados.solicitudes.ventanaEdicion.datosSolicitud">

@@ -66,9 +66,9 @@
 	
 	<div style="position:absolute;width:100%;">
 		<% if (lenguaje.equals("2")) { // en catalan %>	
-			<img src="<%=app%>/html/imagenes/logoSIGAblanco_CA.JPG" style="display:block;margin-left:auto;margin-right:auto;" />
+			<img src="<%=app%>/html/imagenes/logoSIGAblanco_CA.png" style="display:block;margin-left:auto;margin-right:auto;" />
 		<% } else { %>	
-			<img src="<%=app%>/html/imagenes/logoSIGAblanco.JPG" style="display:block;margin-left:auto;margin-right:auto;" />
+			<img src="<%=app%>/html/imagenes/logoSIGAblanco.png" style="display:block;margin-left:auto;margin-right:auto;" />
 		<% } %>	
 	</div>
 	

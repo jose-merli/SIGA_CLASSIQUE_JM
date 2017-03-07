@@ -243,8 +243,8 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 			designacion.setNIF(mapExp.get(PR_NIF));
 			NOMEAPELIDOSTYPE nomeapelidostype = designacion.addNewNOMEAPELIDOS();
 			nomeapelidostype.setNOME(mapExp.get(PR_NOME));
-			nomeapelidostype.setPRIMERAPELLIDO(mapExp.get(PR_PRIMERAPELLIDO));
-			nomeapelidostype.setSEGUNDOAPELLIDO(mapExp.get(PR_SEGUNDOAPELLIDO));
+			nomeapelidostype.setPRIMERAPELLIDO(getTrimString(mapExp.get(PR_PRIMERAPELLIDO)));
+			nomeapelidostype.setSEGUNDOAPELLIDO(getTrimString(mapExp.get(PR_SEGUNDOAPELLIDO)));
 			procurador.setRENUNCIAPROCURADOR(b);	
 		}		
 	}
@@ -281,8 +281,8 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 				
 				NOMEAPELIDOSTYPE nomeapelidostype = partecontrariatype.addNewNOMECOMPLETO();
 				nomeapelidostype.setNOME(map.get(CONT_NOMBRE));
-				nomeapelidostype.setPRIMERAPELLIDO(map.get(CONT_APELLIDO1));
-				nomeapelidostype.setSEGUNDOAPELLIDO(map.get(CONT_APELLIDO2));
+				nomeapelidostype.setPRIMERAPELLIDO(getTrimString(map.get(CONT_APELLIDO1)));
+				nomeapelidostype.setSEGUNDOAPELLIDO(getTrimString(map.get(CONT_APELLIDO2)));
 				
 				partecontrariatype.setDOMICILIO(map.get(CONT_DOMICILIO));
 			}
@@ -303,8 +303,8 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 		designacion.setNIF(mapExp.get(A_NIF));
 		NOMEAPELIDOSTYPE nomeApe = designacion.addNewNOMEAPELIDOS();
 		nomeApe.setNOME(mapExp.get(A_NOME));
-		nomeApe.setPRIMERAPELLIDO(mapExp.get(A_PRIMERAPELLIDO));
-		nomeApe.setSEGUNDOAPELLIDO(mapExp.get(A_SEGUNDOAPELLIDO));
+		nomeApe.setPRIMERAPELLIDO(getTrimString(mapExp.get(A_PRIMERAPELLIDO)));
+		nomeApe.setSEGUNDOAPELLIDO(getTrimString(mapExp.get(A_SEGUNDOAPELLIDO)));
 		DIRECCIONTYPE direcciontype = designacion.addNewENDEREZO();
 		direcciontype.setENDEREZO(mapExp.get(A_ENDEREZO));
 		direcciontype.setLOCALIDADE(mapExp.get(A_LOCALIDADE));
@@ -415,8 +415,8 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 					FAMILIAR familiar = familia.addNewFAMILIAR();
 					NOMEAPELIDOSTYPE nomeapelidostype = familiar.addNewNOMEAPELIDOS();					
 					nomeapelidostype.setNOME(map.get(NOME));
-					nomeapelidostype.setPRIMERAPELLIDO(map.get(APELLIDO1));
-					nomeapelidostype.setSEGUNDOAPELLIDO(map.get(APELLIDO2));
+					nomeapelidostype.setPRIMERAPELLIDO(getTrimString(map.get(APELLIDO1)));
+					nomeapelidostype.setSEGUNDOAPELLIDO(getTrimString(map.get(APELLIDO2)));
 					
 					com.siga.ws.i2064.xsd.ANEXOITYPE.DATOSECONOMICOS.FAMILIA.FAMILIAR.BENS bens = familiar.addNewBENS();
 					rellenaBienesInmuebles(bens.addNewBENSINMUEBLES(), map);
@@ -522,8 +522,8 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 	private void rellenaDatosPersonalesFamilia(FAMILIARTYPE familiar, String nome, String apellido1, String apellido2, String idade, String parentesco) {
 		NOMEAPELIDOSTYPE nomeapelidostype = familiar.addNewNOMEAPELIDOS();
 		nomeapelidostype.setNOME(nome);
-		nomeapelidostype.setPRIMERAPELLIDO(apellido1);
-		nomeapelidostype.setSEGUNDOAPELLIDO(apellido2);
+		nomeapelidostype.setPRIMERAPELLIDO(getTrimString(apellido1));
+		nomeapelidostype.setSEGUNDOAPELLIDO(getTrimString(apellido2));
 		familiar.xsetIDADE(com.siga.ws.i2064.xsd.FAMILIARTYPE.IDADE.Factory.newValue(SIGAServicesHelper.getInteger("edad", idade)));
 		familiar.setPARENTESCO(getBigInteger(parentesco));
 	}
@@ -538,9 +538,9 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 	private void rellenaDatosPersonaType(PERSOATYPE personaType, Map<String, String> map) throws Exception {
 		
 		NOMEAPELIDOSTYPE nombreApeSol = personaType.addNewNOMEAPELIDOS();
-		nombreApeSol.setNOME(map.get(NOME));
-		nombreApeSol.setPRIMERAPELLIDO(map.get(APELLIDO1));
-		nombreApeSol.setSEGUNDOAPELLIDO(map.get(APELLIDO2));		
+		nombreApeSol.setNOME(getTrimString(map.get(NOME)));
+		nombreApeSol.setPRIMERAPELLIDO(getTrimString(map.get(APELLIDO1)));
+		nombreApeSol.setSEGUNDOAPELLIDO(getTrimString(map.get(APELLIDO2)));		
 		personaType.setNACIONALIDADE(SIGAServicesHelper.getBigInteger("nacionalidad", map.get(NACIONALIDADE)));
 		Integer iEstadoCivil = SIGAServicesHelper.getInteger("estado civil", map.get(ESTADO_CIVIL));
 		if (iEstadoCivil != null) {
@@ -680,6 +680,13 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 			}
 		}
 		return b;
+	}
+	
+	private String getTrimString(String value) {
+		if (!isNull(value)) {
+			return value.trim();
+		} 
+		return null;		
 	}
 
 }

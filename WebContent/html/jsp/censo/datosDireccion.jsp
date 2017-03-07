@@ -1018,9 +1018,9 @@
 <body onload="comprobarAsterico();selPaisInicio();">
 
 	<!-- TITULO -->
-	<table class="tablaTitulo" cellspacing="0">
+	<table class=titulitosDatos cellspacing="0">
 		<tr>
-			<td id="titulo" class="titulosPeq"><siga:Idioma
+			<td id="titulitos" class="titulosPeq"><siga:Idioma
 					key="censo.consultaDirecciones.literal.titulo1" /> &nbsp;&nbsp;<%=UtilidadesString.mostrarDatoJSP(nombreUsu)%>
 				&nbsp;&nbsp; <%
  	if ((numero != null) && (!numero.equalsIgnoreCase(""))) {

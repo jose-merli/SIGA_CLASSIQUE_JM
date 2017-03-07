@@ -156,13 +156,14 @@ function checkTodos(chkGeneral){
   	for (i = 0; i < ele.length; i++) {
   	  	var obj = ele[i]; 
   	  	obj.checked = chkGeneral.checked;
-  	  	if(obj.checked)
-  	  		jQuery("#orden_"+i).removeAttr("disabled");
-  	  	else
-  	  		jQuery("#orden_"+i).attr("disabled","disabled");
-  				
-  	
-  	  	
+  	  	if(obj.checked){ 	  		
+	  	  	jQuery("#orden_"+i).removeAttr("readOnly");	
+			jQuery("#orden_"+i).removeClass().addClass("box");
+  	  	}else{
+	  	  	jQuery("#orden_"+i).attr("readOnly","readOnly");	
+			jQuery("#orden_"+i).removeClass().addClass("boxConsulta");
+  	  	}
+
 	}
 		
 }
@@ -243,13 +244,15 @@ function onClickMostrarSoloGuardiasConfiguradas() {
 } 
 function onclickCheckConfiguracion(fila) {
 	if(document.getElementById("checkConfiguracion_"+fila).checked){
-		jQuery("#orden_"+fila).removeAttr("disabled");	
+		jQuery("#orden_"+fila).removeAttr("readOnly");	
+		jQuery("#orden_"+fila).removeClass().addClass("box");
 	}
 	else{
 		var mensaje = "<siga:Idioma key='gratuita.calendarios.confirma.restaurarValor'/>";
 		if(confirm(mensaje)) {
 			document.getElementById("orden_"+fila).value = document.getElementById("ordenOld_"+fila).value;
-			jQuery("#orden_"+fila).attr("disabled","disabled");	
+			jQuery("#orden_"+fila).attr("readOnly","readOnly");	
+			jQuery("#orden_"+fila).removeClass().addClass("boxConsulta");
 
 		}
 		else {

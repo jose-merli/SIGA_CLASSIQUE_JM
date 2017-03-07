@@ -68,7 +68,25 @@
 			<html:hidden property = "hiddenFrame" value = "1"/>
 			<html:hidden property="idInstitucion" styleId="idInstitucion"/>
 			<html:hidden property="idSolicitud" styleId="idSolicitud" />
-
+			<html:hidden property="fechaSolicitud" styleId="fechaSolicitud" />
+			<html:hidden property="idInstitucionOrigen" styleId="idInstitucionOrigen" />
+			<html:hidden property="idInstitucionDestino" styleId="idInstitucionDestino" />
+			<html:hidden property="fechaEmision" styleId="fechaEmision" />
+			<html:hidden property="fechaDescarga" styleId="fechaDescarga" />
+			<html:hidden property="fechaSolicitud" styleId="fechaSolicitud" />
+			<html:hidden property="fechaCobro" styleId="fechaCobro" />
+			<html:hidden property="codigoBanco" styleId="codigoBanco" />
+			<html:hidden property="sucursalBanco" styleId="sucursalBanco" />
+			<html:hidden property="fechaEntregaInfo" styleId="fechaEntregaInfo" />
+			<html:hidden property="idInstitucionOrigen" styleId="idInstitucionOrigen" />
+			<html:hidden property="idInstitucionColegiacion" styleId="idInstitucionColegiacion" />
+			<html:hidden property="idInstitucionDestino" styleId="idInstitucionDestino" />
+			<html:hidden property="comentario" styleId="comentario" />
+			<html:hidden property="metodoSolicitud" styleId="metodoSolicitud" />
+			<html:hidden property="idPersonaSolicitante" styleId="idPersonaSolicitante" />
+			<html:hidden property="aceptaCesionMutualidad" styleId="aceptaCesionMutualidad" />
+			<html:hidden property="regenerar" styleId="regenerar" />
+			
 			<input type="hidden" name="idsParaGenerarFicherosPDF" value="<%=sTemp%>">
 			<input type="hidden" name="idsTemp" value="">
 			<!-- RGG: cambio a formularios ligeros -->

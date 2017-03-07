@@ -8,9 +8,9 @@
 		<html:hidden property="tablaDatosDinamicosD" value=""/>
 		<html:hidden property="nifcif" />
 		<html:hidden property="numeroColegiado" />
-		<html:hidden property="idInstitucion" />
-		<html:hidden property="nombre" />
-		<html:hidden property="apellidos" />
+		<html:hidden property="idInstitucionDuplicados" />
+		<html:hidden property="nombreDuplicados" />
+		<html:hidden property="apellidosDuplicados" />
 	</html:form>
 	<%
 		}
@@ -23,7 +23,7 @@
 			// mostrando la tabla de posibles duplicados
 			jQuery("#divDuplicidades").dialog({
 				width : 950,
-				height : 300,
+				height : 500,
 				modal : true,
 				position : [ 'middle', 20 ],
 				resizable : false,
@@ -37,41 +37,91 @@
 		}
 		
 		function comprobarDuplicados(idInstitucionAcceso, idPersona, nIdentificacion, nombre, apellido1, apellido2, idInstitucion, numCol) {
-		
+			if(nombre!= null && nombre != ""){
+				nombre=nombre.replace(/@/g ,"'");
+			}
+			if(apellido1 != null && apellido1!= ""){
+				apellido1=apellido1.replace(/@/g ,"'");
+			}
+			if(apellido2 != null && apellido2 !=""){
+				apellido2=apellido2.replace(/@/g ,"'");
+			}
+			
+			jQuery("#iconoboton_cargando_1").hide();
+			jQuery("#iconoboton_aviso_1").hide();
+			
 			if (idPersona == "") {
 				return;
 			}
 			if (idInstitucionAcceso=="2000") {
 				jQuery("#iconoboton_cargando_1").show();
-				
 				jQuery.ajax({
 					type : "POST",
 					url : "/SIGA/CEN_MantenimientoDuplicados.do?modo=getAjaxObtenerDuplicados",
 					data : "checkIdentificador=" + "1" + "&idPersona=" + idPersona + "&nidSolicitante=" + nIdentificacion + "&nombre=" + nombre
-							+ "&apellidos=" + apellido1 + " " + apellido2 + "&idInstitucion=" + idInstitucion + "&nColegiado=" + numCol,
+							+ "&apellidos=" + apellido1 + " " + apellido2 + "&apellido1=" + apellido1 + "&apellido2= " + apellido2 + "&idInstitucion=" + idInstitucion + "&nColegiado=" + numCol,
 					dataType : "json",
 					contentType : "application/x-www-form-urlencoded;charset=UTF-8",
 					success : function(json) {
 						// mostrando el icono que avisa de que existen posibles duplicados
 						jQuery("#iconoboton_cargando_1").hide();
-						if (json.aOptionsListadoDocumentacion != null && json.aOptionsListadoDocumentacion.length > 0) {
+						
+						if (json.aOptionsListadoDocumentacionColegiacionesNum != null && json.aOptionsListadoDocumentacionColegiacionesNum !="" && json.aOptionsListadoDocumentacionColegiacionesNum.length > 0 ||
+								json.aOptionsListadoDocumentacionNIF != null && json.aOptionsListadoDocumentacionNIF!="" && json.aOptionsListadoDocumentacionNIF.length > 0 ||
+								json.aOptionsListadoDocumentacionNombreApellidos != null && json.aOptionsListadoDocumentacionNombreApellidos != "" && json.aOptionsListadoDocumentacionNombreApellidos.length > 0
+								) {
 							jQuery("#iconoboton_aviso_1").show();
 						}
-						// preparando la tabla de resultados de posibles duplicados
-						jQuery("#tablaDuplicidades tr").remove();
-						jQuery("#tablaDuplicidades").append(json.aOptionsListadoDocumentacion);
-						jQuery("#tablaDuplicidades").append("</table>");
+						jQuery("#divDuplicidades").append("<label><u><b>Duplicados por NIF</b></u></label></br>");
+						if(json.aOptionsListadoDocumentacionNIF != null && json.aOptionsListadoDocumentacionNIF != ""   && json.aOptionsListadoDocumentacionNIF.length > 0){
+							// preparando la tabla de resultados de posibles duplicados
+							jQuery("#divDuplicidades").append("<table id='tablaDuplicidadesNIF' style='width:100%;table-layout: fixed;'  border='1' align='center' cellspacing='0' cellpadding='0'>");
+							jQuery("#tablaDuplicidadesNIF").append(json.aOptionsListadoDocumentacionNIF);
+							jQuery("#tablaDuplicidadesNIF").append("</table>");
+						}else{
+							jQuery("#divDuplicidades").append("<label>No hay duplicados</label></br>");
+							jQuery("#divDuplicidades").remove("#tablaDuplicidadesNIF");
+						}
+						jQuery("#divDuplicidades").append("</br><label><u><b>Duplicados por Nombre y Apellidos</b></u></label></br>");
+						if(json.aOptionsListadoDocumentacionNombreApellidos != null && json.aOptionsListadoDocumentacionNombreApellidos != "" && json.aOptionsListadoDocumentacionNombreApellidos.length > 0){
+							// preparando la tabla de resultados de posibles duplicados
+							jQuery("#divDuplicidades").append("<table id='tablaDuplicidadesNombreYApellidos' style='width:100%;table-layout: fixed;'  border='1' align='center' cellspacing='0' cellpadding='0'>");
+							jQuery("#tablaDuplicidadesNombreYApellidos").append(json.aOptionsListadoDocumentacionNombreApellidos);
+							jQuery("#tablaDuplicidadesNombreYApellidos").append("</table>");
+						}else{
+							jQuery("#divDuplicidades").append("<label>No hay duplicados</label></br>");
+							jQuery("#divDuplicidades").remove("#tablaDuplicidadesNombreYApellidos");
+							
+						}
+						jQuery("#divDuplicidades").append("</br><label><u><b>Duplicados por Colegiaciones</b></u></label></br>");
+						if(json.aOptionsListadoDocumentacionColegiacionesNum != null && json.aOptionsListadoDocumentacionColegiacionesNum != "" && json.aOptionsListadoDocumentacionColegiacionesNum.length > 0){
+							// preparando la tabla de resultados de posibles duplicados
+							jQuery("#divDuplicidades").append("<table id='tablaDuplicidadesColegiaciones' style='width:100%;table-layout: fixed;'  border='1' align='center' cellspacing='0' cellpadding='0'>");
+							jQuery("#tablaDuplicidadesColegiaciones").append(json.aOptionsListadoDocumentacionColegiacionesNum);
+							jQuery("#tablaDuplicidadesColegiaciones").append("</table>");
+						}else{
+							jQuery("#divDuplicidades").append("<label>No hay duplicados</label>");
+							jQuery("#divDuplicidades").remove("#tablaDuplicidadesColegiaciones");
+						}	
 					}
 				});
 			}
 		}
 		function mantenimientoDuplicados(nifcif, numcol, idinstitucion, nombre, apellido1, apellido2) {
-
+			if(nombre!= null && nombre != ""){
+				nombre=nombre.replace(/@/g , "'");
+			}
+			if(apellido1 != null && apellido1!= ""){
+				apellido1=apellido1.replace(/@/g , "'");
+			}
+			if(apellido2 != null && apellido2 !=""){
+				apellido2=apellido2.replace(/@/g , "'");
+			}
 			document.MantenimientoDuplicadosForm.nifcif.value = nifcif;
 			document.MantenimientoDuplicadosForm.numeroColegiado.value = numcol;
-			document.MantenimientoDuplicadosForm.idInstitucion.value = idinstitucion;
-			document.MantenimientoDuplicadosForm.nombre.value = nombre;
-			document.MantenimientoDuplicadosForm.apellidos.value = apellido1 + " " + apellido2;
+			document.MantenimientoDuplicadosForm.idInstitucionDuplicados.value = idinstitucion;
+			document.MantenimientoDuplicadosForm.nombreDuplicados.value = nombre;
+			document.MantenimientoDuplicadosForm.apellidosDuplicados.value = apellido1 + " " + apellido2;
 			document.MantenimientoDuplicadosForm.modo.value = "abrirConParametros";
 			document.MantenimientoDuplicadosForm.submit();
 
@@ -79,6 +129,5 @@
 	</script>
 	
 	<div id="divDuplicidades" title="Posibles duplicados" style="display:none">
-		<table id='tablaDuplicidades' style='width:100%;table-layout: fixed;'  border='1' align='center' cellspacing='0' cellpadding='0'>	
 	</div>
 	

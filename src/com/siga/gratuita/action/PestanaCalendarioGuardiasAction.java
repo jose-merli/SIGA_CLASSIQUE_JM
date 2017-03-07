@@ -955,9 +955,6 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				fechaFinSolicitante = permutasForm.getFechaFin();
 				reserva = permutasForm.getReserva();
 				
-				// RGG 10/01/2008 si vengo desde validar volantes busco tambien las guardias pasadas
-				String validarVolantes = request.getParameter("validarVolantes");
-				
 				//------------------
 				//DATOS SOLICITANTE
 				//------------------
@@ -983,7 +980,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				//------------------
 				//Hago la busqueda de los datos necesarios de esa guardia, los guardo en el vector y mando en request:
 				registros.clear();
-				registros = cabeceraGuardiasAdm.selectGenerico(cabeceraGuardiasAdm.buscarOtrosColegiados(solicitanteHash,(validarVolantes!=null)));
+				registros = cabeceraGuardiasAdm.selectGenerico(cabeceraGuardiasAdm.buscarOtrosColegiados(solicitanteHash));
 				int i = 0;
 				//Elimino los registros con el valor FUNCIONPERMUTAS distinto de 1 o 5
 				while (i < registros.size()){

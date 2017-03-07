@@ -1,6 +1,7 @@
 package com.siga.beans;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
@@ -126,37 +127,49 @@ public class FcsFactApunteAdm extends MasterBeanAdministrador {
 		}
 		return datos;	
 	}
-	
-	
-	public boolean exiteApunteGuardia(String idinstitucion,String idturno,String idguardia,String idpersona, String fInicio){
-		String sql = "";	
-		Vector v = new Vector();
-		boolean salida = false;
 
-		//fechaInicio = "TO_DATE('"+fechaInicio+"','DD/MM/YYYY')";
-
-	    Hashtable codigos = new Hashtable();
-	    codigos.put(new Integer(1),idinstitucion);
-	    codigos.put(new Integer(2),idturno);
-	    codigos.put(new Integer(3),idguardia);
-	    codigos.put(new Integer(4),idpersona);
-	    codigos.put(new Integer(5),fInicio);
-	    
-		sql = "select 1 from fcs_fact_apunte ap ";
-		sql+= " where ap.idinstitucion=:1 and ap.idturno=:2 and ap.idguardia=:3 and ap.idpersona=:4 and ap.fechainicio=:5";
+	/**
+	 * Obtiene si ha facturado el dia de guardia (FCS_FACT_APUNTE)
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idGuardia
+	 * @param idPersona
+	 * @param fechaInicio
+	 * @return
+	 */
+	public boolean existeGuardiaFacturada(String idInstitucion, String idTurno, String idGuardia, String idPersona, String fechaInicio) {
+		Vector<Hashtable<String,Object>> vApuntes = new Vector<Hashtable<String,Object>>();
+	    StringBuffer consulta = new StringBuffer();
+	    consulta.append("SELECT 1 FROM ");
+	    consulta.append(FcsFactApunteBean.T_NOMBRETABLA);
+	    consulta.append(" WHERE ");
+	    consulta.append(FcsFactApunteBean.C_IDINSTITUCION);
+	    consulta.append(" = ");
+	    consulta.append(idInstitucion);
+	    consulta.append(" AND ");
+	    consulta.append(FcsFactApunteBean.C_IDTURNO);
+	    consulta.append(" = ");
+	    consulta.append(idTurno);
+	    consulta.append(" AND ");
+	    consulta.append(FcsFactApunteBean.C_IDGUARDIA);
+	    consulta.append(" = ");
+	    consulta.append(idGuardia);
+	    consulta.append(" AND ");
+	    consulta.append(FcsFactApunteBean.C_IDPERSONA);
+	    consulta.append(" = ");
+	    consulta.append(idPersona);
+		consulta.append(" AND TRUNC(");
+		consulta.append(FcsFactApunteBean.C_FECHAINICIO);
+		consulta.append(") = TO_DATE('");
+		consulta.append(fechaInicio);
+		consulta.append("','DD/MM/YYYY')");	    
 
 		try {
-			v = this.selectGenericoBind(sql,codigos);
-		}
-		catch (Exception e) {
+			vApuntes = this.selectGenerico(consulta.toString());
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 					
-		if (v.size() > 0)
-			salida = true;
-		
-		return salida;
+		return vApuntes.size() > 0;
 	}
-	
-	
 }
