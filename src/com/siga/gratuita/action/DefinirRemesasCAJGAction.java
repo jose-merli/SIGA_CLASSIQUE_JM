@@ -1691,7 +1691,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				if (numeroEJGs != null && Integer.parseInt(numeroEJGs) > 0) {
 					mensaje.delete(0, mensaje.length());
 					if(isSimulacion)
-						mensaje.append("No hay ningun expediente valido en la remesa");
+						mensaje.append("No hay ningun expediente nuevo o actualización válida pendiente de enviar.");
 					else
 						mensaje.append("cajg.error.noFicheroGenerado");
 				}

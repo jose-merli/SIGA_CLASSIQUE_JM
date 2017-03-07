@@ -890,14 +890,15 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 					lineasFicheroAct.add(getSegmento("SOA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
 					isAñadidaSegmentosTipoMod = true;
 					
-				}else if (segmentoActualizar.equals("DOM")) {
+				}else if (segmentoActualizar.equals("DOM")&& !segmentosActualizarSetValue.contains("SOL")) {
+//					Hemos estado haciendo prueba y no funciona cuando se envian un modificacion de sol y de dom a la vez.  Asi que ya vermeos mcomo lo hacemos
 //					007	Actualización domicilio solicitante. Hay que enviar primero el SOA
 					if(isAñadidaSegmentosTipoMod){
 						lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
 						numActualizacion++;
 					}
 					lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"007"));
-					lineasFicheroAct.add(getSegmento("SOA",null,expActualizarMapDatosNewMap,false));
+					lineasFicheroAct.add(getSegmento("SOA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
 					lineasFicheroAct.add(getSegmento("DOM",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
 					isAñadidaSegmentosTipoMod = true;
 					
