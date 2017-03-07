@@ -15,6 +15,11 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.json.JSONObject;
+import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.AppConstants.MODULO;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -36,6 +41,7 @@ import com.siga.beans.CenEstadoColegialBean;
 import com.siga.beans.CenHistoricoAdm;
 import com.siga.beans.CenHistoricoBean;
 import com.siga.beans.CenPersonaAdm;
+import com.siga.beans.CenPersonaBean;
 import com.siga.beans.CenTiposSeguroAdm;
 import com.siga.beans.ScsInscripcionGuardiaAdm;
 import com.siga.beans.ScsInscripcionTurnoAdm;
@@ -46,6 +52,8 @@ import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+
+import es.satec.businessManager.BusinessManager;
 
 
 /**
@@ -571,6 +579,7 @@ public class DatosColegialesAction extends MasterAction {
 	{
 		String result = "error";
 		UserTransaction tx = null;
+		boolean isErrorLlamadaAca = false;
 		
 		try {
 			//obteniendo datos generales y usuario
@@ -626,11 +635,6 @@ public class DatosColegialesAction extends MasterAction {
 			//obteniendo nuevo IDHISTORICO para auditoria			
 			hashHist.put(CenHistoricoBean.C_IDHISTORICO,adminHist.getNuevoID(hashHist).toString());
 			
-			//ejecutando la modificacion
-			if (! admin.modificacionConHistorico (hash, hashOriginal, hashHist,
-					this.getLenguaje (request)))
-				return (result);
-
 			
 			//lanzando el proceso de revision de suscripciones del colegiado
 			String resultado[] = EjecucionPLs.
@@ -689,12 +693,49 @@ public class DatosColegialesAction extends MasterAction {
 								throw new SIGAException (colaAdm.getError());
 						} //for
 					} //if (vDir != null)
+					//06/03/2017 - R1603_0029: Si se pasa de residente a no residente y viceversa llamamos al servicio de ACA para que se tenga constancia de ello.
+					if(residenteAhora.equals("0")){
+						GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
+						//Miramos si esta activo la llamada al servicio Web llamadaWebServiceAcaRevisionLetrado
+						String acaActivo = genParametrosService.getValorParametroWithNull((short)0,PARAMETRO.WS_ACA_ACTIVO,MODULO.CEN);
+						if(acaActivo!=null && acaActivo.equalsIgnoreCase(AppConstants.DB_TRUE)){
+							//Miramos si esta activo para esta institucion la llamada al servicio Web llamadaWebServiceAcaRevisionLetrado
+							acaActivo = genParametrosService.getValorParametroWithNull(Integer.valueOf(miForm.getIdInstitucion()).shortValue(),PARAMETRO.WS_ACA_ACTIVO,MODULO.CEN);
+						}
+						
+						if(acaActivo!=null && acaActivo.equalsIgnoreCase(AppConstants.DB_TRUE)){
+							CenPersonaAdm cenPersonaAdm = new CenPersonaAdm(this.getUserBean(request));
+							Vector personaVector = cenPersonaAdm.selectByPK(hash);
+							CenPersonaBean cenPersonaBean = (CenPersonaBean) personaVector.get(0);
+							
+							String llamadaReport= null;
+							try {
+								CenDatosColegialesEstadoAdm cenDatosColegialesEstadoAdm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
+								llamadaReport = cenDatosColegialesEstadoAdm.llamadaWebServiceAcaRevisionLetrado((short)cenPersonaBean.getIdTipoIdentificacion().shortValue(), cenPersonaBean.getNIFCIF(), Integer.valueOf(miForm.getIdInstitucion()).shortValue());	
+							} catch (BusinessException e) {
+								isErrorLlamadaAca = true;
+								llamadaReport = e.getMessage();
+							}
+							hash.put("RESPUESTA_ACA", llamadaReport);
+							hashHist.put(CenHistoricoBean.C_OBSERVACIONES, llamadaReport);
+						}
+					}
 				} //if (! residenteAhora.equals(residenteAntes))
 			} //bloque
+			//ejecutando la modificacion
+			if (! admin.modificacionConHistorico (hash, hashOriginal, hashHist,
+					this.getLenguaje (request)))
+				return (result);
+
 			
 			//confirmando los cambios en BD
 			tx.commit();
-			
+			if(hash.get("RESPUESTA_ACA")!=null){
+				 request.setAttribute("mensaje",hash.get("RESPUESTA_ACA"));
+				 result = exitoRefresco((String)hash.get("RESPUESTA_ACA") + "\n Cambios realizados correctamente",request);
+			}else{
+				result = exitoRefresco("messages.updated.success",request);
+			}
 			
 			//actualizando la pantalla en funcion del cambio en 
 			//check Comunitario
@@ -709,8 +750,6 @@ public class DatosColegialesAction extends MasterAction {
 				request.setAttribute("mensaje","messages.updated.success");
 				return "exitoConEditarNColegiado"; 
 			}
-			
-			result = exitoRefresco("messages.updated.success",request);
 		} catch (SIGAException es) {
 			es.setSubLiteral("");
 			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, tx);

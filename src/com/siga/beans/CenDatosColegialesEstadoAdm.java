@@ -6,7 +6,6 @@
  */
 package com.siga.beans;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -14,7 +13,6 @@ import javax.transaction.UserTransaction;
 
 import org.acabogacia.www.aca2.ws.certrev.CertificateReviewResponse;
 import org.acabogacia.www.aca2.ws.certrev.ErrorsType;
-import org.acabogacia.www.aca2.ws.certrev.SuccessType;
 import org.acabogacia.www.aca2.ws.certrev.WarningsType;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.MODULO;
@@ -398,7 +396,8 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 				
 				
 				int estado = new Integer(nuevo.get(CenDatosColegialesEstadoBean.C_IDESTADO).toString()).intValue();
-				if (estado== ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL ||estado== ClsConstants.ESTADO_COLEGIAL_SUSPENSION||estado== ClsConstants.ESTADO_COLEGIAL_INHABILITACION ){
+				if (estado== ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL ||estado== ClsConstants.ESTADO_COLEGIAL_SUSPENSION
+						||estado== ClsConstants.ESTADO_COLEGIAL_INHABILITACION ||estado== ClsConstants.ESTADO_COLEGIAL_SINEJERCER){
 					
 					GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
 					//Niramos si esta activo la llamada al servicio Web llamadaWebServiceAcaRevisionLetrado

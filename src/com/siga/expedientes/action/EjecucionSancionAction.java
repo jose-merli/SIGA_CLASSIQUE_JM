@@ -19,9 +19,7 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.CenColaCambioLetradoAdm;
 import com.siga.beans.CenDatosColegialesEstadoAdm;
-import com.siga.beans.CenDireccionesBean;
 import com.siga.beans.ExpExpedienteAdm;
 import com.siga.beans.ExpExpedienteBean;
 import com.siga.beans.ScsInscripcionTurnoAdm;
@@ -119,7 +117,7 @@ public class EjecucionSancionAction extends MasterAction {
 				if (form.isSuspension()){
 					estado = cenDatosColegialesAdm.insertaEstadoColegial(estadoColegialHashtable,ClsConstants.ESTADO_COLEGIAL_SUSPENSION);
 				}		
-				if (form.isBajaColegial() || form.isInhabilitacion() ||form.isSuspension()){
+				if (form.isBajaColegial() || form.isInhabilitacion() ||form.isSuspension()||form.isBajaEjercicio()){
 					if(estado!=2 && estadoColegialHashtable.get("RESPUESTA_ACA")!=null){
 						messageLlamadaWebServiceAcaRevisionLetrado.append(estadoColegialHashtable.get("RESPUESTA_ACA"));
 						messageLlamadaWebServiceAcaRevisionLetrado.append(" ");
