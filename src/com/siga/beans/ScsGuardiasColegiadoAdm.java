@@ -832,7 +832,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		catch (Exception e){
 			throw new ClsExceptions(e.getMessage());
 		}
-			
 		
 		//-------------------------------------------------------------------------------------------------
 		// Actualizamos la tabla de asistencias cambiando en dicha tabla el idpersona del saliente por el  
@@ -860,10 +859,6 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		} catch (Exception e) {
 			throw new ClsExceptions(e.getMessage());
 		}
-		
-		
-		
-		
 	}
 	
 	public String validacionesSustitucionGuardia(UsrBean usr, String idInstitucion, String idTurno, String idGuardia, String fechaInicio,String fechaFin,String idPersonaEntrante, String idPersonaSaliente) throws ClsExceptions

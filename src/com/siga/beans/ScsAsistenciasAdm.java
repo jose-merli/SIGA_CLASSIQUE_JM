@@ -2465,4 +2465,47 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 
 		return asistenciaForm;
 	}
+	
+	public boolean updateAsistenciasAccionesGuardias(String idInstitucion, String Idturno, String idGuardia, String idPersonaInicial, String fecha, String idPersonaFinal) throws ClsExceptions {
+		try {
+			StringBuffer sql =  new StringBuffer();
+			sql.append("UPDATE ");
+			sql.append(ScsAsistenciasBean.T_NOMBRETABLA);
+			sql.append(" SET ");
+			sql.append(ScsAsistenciasBean.C_IDPERSONACOLEGIADO);
+			sql.append(" = ");
+			sql.append(idPersonaFinal);
+			sql.append(" WHERE ");
+			sql.append(ScsAsistenciasBean.C_IDINSTITUCION);
+			sql.append(" = ");
+			sql.append(idInstitucion);
+			sql.append(" AND ");
+			sql.append(ScsAsistenciasBean.C_IDTURNO);
+			sql.append(" = ");
+			sql.append(Idturno);
+			sql.append(" AND ");
+			sql.append(ScsAsistenciasBean.C_IDGUARDIA);
+			sql.append(" = ");
+			sql.append(idGuardia);
+			sql.append(" AND ");
+			sql.append(ScsAsistenciasBean.C_IDPERSONACOLEGIADO);
+			sql.append(" = ");
+			sql.append(idPersonaInicial);
+			sql.append(" AND ");
+			sql.append(ScsAsistenciasBean.C_IDINSTITUCION);
+			sql.append(" = ");
+			sql.append(idInstitucion);
+			sql.append(" AND TRUNC(");
+			sql.append(ScsAsistenciasBean.C_FECHAHORA);
+			sql.append(") = TO_DATE('");
+			sql.append(fecha);
+			sql.append("','DD/MM/YYYY')");
+			
+			this.updateSQL(sql.toString());
+			
+		} catch (Exception e) {
+			return false;
+		}
+		return true;		
+	}	
 }

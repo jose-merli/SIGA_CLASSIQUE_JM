@@ -35,7 +35,6 @@ import com.siga.beans.CenBajasTemporalesAdm;
 import com.siga.beans.CenBajasTemporalesBean;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaBean;
-import com.siga.beans.FcsFactApunteAdm;
 import com.siga.beans.HelperInformesAdm;
 import com.siga.beans.ScsCabeceraGuardiasAdm;
 import com.siga.beans.ScsCabeceraGuardiasBean;
@@ -50,6 +49,7 @@ import com.siga.beans.ScsPermutaGuardiasAdm;
 import com.siga.beans.ScsPermutaGuardiasBean;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -917,10 +917,8 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 
 	protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		DefinirCalendarioGuardiaForm miForm = (DefinirCalendarioGuardiaForm) formulario;
-		FcsFactApunteAdm admApuntes = new FcsFactApunteAdm(this.getUserBean(request));
 		ScsCabeceraGuardiasAdm admCabeceraGuardia = new ScsCabeceraGuardiasAdm(this.getUserBean(request));
 		ScsGuardiasColegiadoAdm admGuardiaColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
-		ScsPermutaGuardiasAdm admPermutaguardias = new ScsPermutaGuardiasAdm(this.getUserBean(request));		
 
 		Hashtable miHash = new Hashtable();
 		UsrBean usr = null;
@@ -937,7 +935,6 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 		String buscarFechaDesde="";
 		String buscarFechaHasta="";
 		String buscarNcolegiado="";
-		String pl = ""; //Valor devuelto por el PL de Permutas
 		String orden = "";
 		HelperInformesAdm helperInformes = new HelperInformesAdm();
 
@@ -1081,37 +1078,18 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 					sFechaInicioFormateada = GstDate.getFormatedDateShort(usr.getLanguage(), fInicio);
 				} else {
 					sFechaInicioFormateada = GstDate.getFormatedDateShort(usr.getLanguage(), fInicioPermuta);
-				}								
-				
-				// JPT: Obtiene si ha facturado el dia de guardia (FCS_FACT_APUNTE)
-				boolean bExisteGuardiaFacturada = admApuntes.existeGuardiaFacturada(idinstitucion, idturno, idguardia, idpersona, sFechaInicioFormateada);
-				
-				boolean bExisteGuardiaParaBorrar = false;
-				// JPT: Si ya esta facturada, no se puede hacer nada, no merece la pena mirar si se puede borrar
-				if (!bExisteGuardiaFacturada) {
-					
-					// 	JPT: Obtiene si tiene guardias el dia y es posterior al dia actual (SCS_GUARDIASCOLEGIADO)
-					bExisteGuardiaParaBorrar = admGuardiaColegiado.existeGuardiaParaBorrar(idinstitucion, idturno, idguardia, idpersona, sFechaInicioFormateada);
-					
-					// JPT: Si NO se puede borrar, entonces no merece la pena mirar si se puede permutar
-					if (bExisteGuardiaParaBorrar) {
-						
-						/* JPT - Ejecuto la funcion de Permutas F_SIGA_NUMEROPERMUTAGUARDIAS, que me dice el tipo de Permuta posible:
-						 * 
-						 * Futuras [>TRUNC(SYSDATE)]
-						 * - 2: Pendiente de confirmar por solicitante
-						 * - 3: Permutada
-						 * - 4: Pendiente de confirmar por confirmador
-						 * - 5: Pendiente de realizar
-						 * 
-						 * Pasadas [<=TRUNC(SYSDATE)] => Mira SCS_CABECERAGUARDIAS ... Esto no nos interesa para este codigo
-						 * - 1: Guardia realizada y NO facturada
-						 * - 5: Pendiente de realizar
-						 * - 6: Guardia realizada y FACTURADA				
-						 */
-						pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion, idturno, idguardia, idpersona, sFechaInicioFormateada);
-					}
 				}
+				
+				/* Obtiene las acciones de la guardia
+				 * @return String[7]
+					 * 0 - P_SUSTITUIR: 'N'=NoSustituible; 'S'=Sustituible
+					 * 1 - P_ANULAR: 'N'=NoAnulable; 'S'=Anulable
+					 * 2 - P_BORRAR: 'N'=NoBorrable; 'S'=Borrable
+					 * 3 - P_PERMUTAR: 'N'=NoPermutable(PendienteSolicitante); 'P'=NoPermutable(PendienteConfirmador); 'S'=Permutable
+					 * 4 - P_ASISTENCIA: 'N'=SinAsistencias; 'S'=ConAsistencias
+					 * 5 - P_CODRETORNO: Devuelve 0 en caso de que la ejecucion haya sido OK, en caso de error devuelve el codigo de error Oracle correspondiente.
+					 * 6 - P_DATOSERROR: Devuelve null en caso de que la ejecucion haya sido OK, en caso de error devuelve el mensaje de error Oracle correspondiente.*/
+				String[] accionesGuardia = EjecucionPLs.ejecutarPLAccionesGuardia(idinstitucion, idturno, idguardia, idpersona, sFechaInicioFormateada);
 
 				//Inserto los datos a visualizar en el JSP
 				Hashtable nueva = new Hashtable();
@@ -1129,9 +1107,7 @@ public class DefinirCalendarioGuardiaAction extends MasterAction
 				nueva.put("IDGUARDIA", idguardia);
 				nueva.put("IDCALENDARIOGUARDIAS", idcalendarioguardias);
 				nueva.put("OBSERVACIONES", observaciones);
-				nueva.put("PL",pl);
-				nueva.put("EXISTEGUARDIAFACTURADA", bExisteGuardiaFacturada ? "1" : "0");
-				nueva.put("EXISTEGUARDIAPARABORRAR", bExisteGuardiaParaBorrar ? "1" : "0");
+				nueva.put("ACCIONESGUARDIA", accionesGuardia);
 				nueva.put("ORDEN", orden);
 				nueva.put("VALIDADO", validado);
 				resultado.add(nueva);	

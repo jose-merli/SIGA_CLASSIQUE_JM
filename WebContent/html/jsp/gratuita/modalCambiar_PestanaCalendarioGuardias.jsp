@@ -100,6 +100,7 @@
 		<html:hidden property = "idPersonaConfirmador" styleId="idPersonaConfirmador" value = ""/>
 		<html:hidden property = "fechaInicioConfirmador" styleId="fechaInicioConfirmador" value = ""/>
 		<html:hidden property = "fechaFinConfirmador" styleId="fechaFinConfirmador" value = ""/>
+		<input type="hidden" id='ocultoFila' name='ocultoFila' value='' />
 
 		<!-- INICIO: CAMPOS -->
 		<!-- Zona de campos de busqueda o filtro -->
@@ -212,27 +213,44 @@
 				idTurnoConfirmador = UtilidadesHash.getString(hash,ScsCabeceraGuardiasBean.C_IDTURNO);
 				idGuardiaConfirmador = UtilidadesHash.getString(hash,ScsCabeceraGuardiasBean.C_IDGUARDIA);
 				idPersonaConfirmador = UtilidadesHash.getString(hash,ScsCabeceraGuardiasBean.C_IDPERSONA);
-%>
-				<tr class="listaNonEdit">
-					<td align="center">
-						<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_1' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idCalendarioGuardiasConfirmador%>' >
-						<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_2' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=idTurnoConfirmador%>' >
-						<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_3' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=idGuardiaConfirmador%>' >
-						<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_4' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idPersonaConfirmador%>' />
-						<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_5' name='oculto<%=String.valueOf(recordNumber)%>_5' value='<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioConfirmador)%>' />
-						<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_6' name='oculto<%=String.valueOf(recordNumber)%>_6' value='<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFinConfirmador)%>' />				
-						<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioConfirmador)%>
-					</td>
-					<td align="center"><%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFinConfirmador)%></td>
-					<td align="center"><%=numeroColegiadoConfirmador%></td>
-					<td align="center"><%=nombreConfirmador%></td>								
-					<td align="center">
-						<input type="radio" name="guardiaConfirmador" id="guardiaConfirmador" value="<%=String.valueOf(recordNumber)%>" onclick="seleccionarFila('<%=String.valueOf(recordNumber)%>')" />
-					</td>
-				</tr>
 				
-<% 		
-				recordNumber++;  
+				/*Funcion que comprueba las acciones que puede hacer en una guardia (Sustituir, Anular, Borrar, Permutar)
+				- RETORNA SUSTITUIR(1) || ANULAR(1) || BORRAR(1) || PERMUTAR(1) || ASISTENCIA(1)
+				-- SUSTITUIR VARCHAR2(1); -- 'N': no sustituible; 'S': sustituible
+				-- ANULAR VARCHAR2(1); -- 'N': no anulable; 'S': anulable
+				-- BORRAR VARCHAR2(1); -- 'N': no borrable; 'S': borrable
+				-- PERMUTAR VARCHAR2(1); -- N': no permutable (Pendiente Solicitante); 'P': no permutable (Pendiente Confirmador); 'S': permutable
+				-- ASISTENCIA VARCHAR2(1); -- 'N': sin Asistencia; 'S': con asistencia */ 				
+				String funcionPermutas = UtilidadesHash.getString(hash, "FUNCIONPERMUTAS");
+				String accionSustituir = funcionPermutas.substring(0, 1);
+				String accionAnular = funcionPermutas.substring(1, 2);
+				String accionBorrar = funcionPermutas.substring(2, 3);
+				String accionPermutar = funcionPermutas.substring(3, 4);
+				String tieneAsistencias = funcionPermutas.substring(4, 5);
+				
+				if (accionPermutar!=null && accionPermutar.equalsIgnoreCase("S")) {
+%>
+					<tr class="listaNonEdit">
+						<td align="center">
+							<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_1' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idCalendarioGuardiasConfirmador%>' >
+							<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_2' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=idTurnoConfirmador%>' >
+							<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_3' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=idGuardiaConfirmador%>' >
+							<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_4' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idPersonaConfirmador%>' />
+							<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_5' name='oculto<%=String.valueOf(recordNumber)%>_5' value='<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioConfirmador)%>' />
+							<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_6' name='oculto<%=String.valueOf(recordNumber)%>_6' value='<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFinConfirmador)%>' />
+							<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_ASI' name='oculto<%=String.valueOf(recordNumber)%>_ASI' value='<%=tieneAsistencias%>' />				
+							<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioConfirmador)%>
+						</td>
+						<td align="center"><%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFinConfirmador)%></td>
+						<td align="center"><%=numeroColegiadoConfirmador%></td>
+						<td align="center"><%=nombreConfirmador%></td>								
+						<td align="center">
+							<input type="radio" name="guardiaConfirmador" id="guardiaConfirmador" value="<%=String.valueOf(recordNumber)%>" onclick="seleccionarFila('<%=String.valueOf(recordNumber)%>')" />
+						</td>
+					</tr>				
+<% 							
+				}
+				recordNumber++;
 			} 
 
 		} else { 
@@ -272,28 +290,46 @@
 			document.getElementById("idGuardiaConfirmador").value = document.getElementById(idguardia).value;
 			document.getElementById("idPersonaConfirmador").value = document.getElementById(idpersona).value;		
 			document.getElementById("fechaInicioConfirmador").value = document.getElementById(fechainicio).value;
-			document.getElementById("fechaFinConfirmador").value = document.getElementById(fechafin).value;			
+			document.getElementById("fechaFinConfirmador").value = document.getElementById(fechafin).value;
+			document.getElementById("ocultoFila").value = fila;
 		}
 	
 		//Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() {		
 			sub();
-				//Chequeo que ha seleccionado un valor de la lista:
-				if(document.getElementById("idPersonaConfirmador").value == "") {
-					alert('<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.error.seleccionar"/>');
-					fin();
-					return false;
-				} else {
-					//Valido el tamanho del textarea motivosSolicitud
-					if (validatePermutasForm(document.PermutasForm)){
+			//Chequeo que ha seleccionado un valor de la lista:
+			if(document.getElementById("idPersonaConfirmador").value == "") {
+				alert('<siga:Idioma key="gratuita.modalCambiar_PestanaCalendarioGuardias.error.seleccionar"/>');
+				fin();
+				return false;
+			} else {
+				//Valido el tamanho del textarea motivosSolicitud
+				if (validatePermutasForm(document.PermutasForm)){					
+					
+					var tieneAsistencias = 'oculto' + document.getElementById("ocultoFila").value + '_ASI';
+					var valorTieneAsistencias = document.getElementById(tieneAsistencias).value;
+					var confirmado = true;
+					
+					if (valorTieneAsistencias == 'S') {
+						confirmado = false;
+						if (confirm("<siga:Idioma key='gratuita.listadoModal_DefinirCalendarioGuardia.permutar.tieneAsistencias'/>")) {
+							confirmado = true;
+						}
+					}
+					
+					if (confirmado == true)	{											
 						document.forms[0].modo.value = "insertar";
 						document.forms[0].target = "submitArea";							
-						document.forms[0].submit();	
+						document.forms[0].submit();
 					} else {
 						fin();
 						return false;
 					}
+				} else {
+					fin();
+					return false;
 				}
+			}
 		}
 
 		//Asociada al boton Cerrar

@@ -227,36 +227,43 @@
 
 				//Botones
 				FilaExtElement[] elems=new FilaExtElement[4];
-				//Botones cambiar y confirmar:
-				elems[0]=null;
-				elems[1]=null;
-				//boton sustituir
-				elems[2]=null;
+				elems[0]=null; // Permutar
+				elems[1]=null; // Confirmar
+				elems[2]=null; // Sustituir
+				elems[3]=new FilaExtElement("masinformacion","masinformacion",SIGAConstants.ACCESS_FULL);
 				
+				/*Funcion que comprueba las acciones que puede hacer en una guardia (Sustituir, Anular, Borrar, Permutar)
+				- RETORNA SUSTITUIR(1) || ANULAR(1) || BORRAR(1) || PERMUTAR(1) || ASISTENCIA(1)
+				-- SUSTITUIR VARCHAR2(1); -- 'N': no sustituible; 'S': sustituible
+				-- ANULAR VARCHAR2(1); -- 'N': no anulable; 'S': anulable
+				-- BORRAR VARCHAR2(1); -- 'N': no borrable; 'S': borrable
+				-- PERMUTAR VARCHAR2(1); -- N': no permutable (Pendiente Solicitante); 'P': no permutable (Pendiente Confirmador); 'S': permutable
+				-- ASISTENCIA VARCHAR2(1); -- 'N': sin Asistencia; 'S': con asistencia */ 				
+				String funcionPermutas = UtilidadesHash.getString(hash, "FUNCIONPERMUTAS");
+				String accionSustituir = funcionPermutas.substring(0, 1);
+				String accionAnular = funcionPermutas.substring(1, 2);
+				String accionBorrar = funcionPermutas.substring(2, 3);
+				String accionPermutar = funcionPermutas.substring(3, 4);
+				String tieneAsistencias = funcionPermutas.substring(4, 5);				
 				
 				//SI ES LETRADO
 				if (usr.isLetrado()) {
-					//Si el Estado es pendiente de realizar (cambiar) o permutada
-					if (estado!=null && (estado.equals("5") || estado.equals("3")))  
-						elems[0]=new FilaExtElement("permutar","permutar",SIGAConstants.ACCESS_FULL);
-					
-					//Si el Estado es pendiente de confirmar
-					if (estado!=null && estado.equals("4")) 
+					if (accionPermutar!=null && accionPermutar.equalsIgnoreCase("S")) {
+						elems[0]=new FilaExtElement("permutar","permutar",SIGAConstants.ACCESS_FULL);						
+					} else if (accionPermutar!=null && accionPermutar.equalsIgnoreCase("P")) {
 						elems[1]=new FilaExtElement("confirmar","confirmar",SIGAConstants.ACCESS_FULL);
+					}
 					
-				} else {
-					if (!modopestanha.equalsIgnoreCase("VER") && estado!=null && (estado.equals("5") || estado.equals("3"))) 
-						elems[0]=new FilaExtElement("permutar","permutar",SIGAConstants.ACCESS_FULL);
-					
-					//Si el Estado es pendiente de confirmar
-					if (!modopestanha.equalsIgnoreCase("VER") && estado!=null && estado.equals("4")) 
+				} else if (!modopestanha.equalsIgnoreCase("VER")) {
+					if (accionPermutar!=null && accionPermutar.equalsIgnoreCase("S")) {
+						elems[0]=new FilaExtElement("permutar","permutar",SIGAConstants.ACCESS_FULL);						
+					} else if (accionPermutar!=null && accionPermutar.equalsIgnoreCase("P")) {
 						elems[1]=new FilaExtElement("confirmar","confirmar",SIGAConstants.ACCESS_FULL);
+					}
 					
-					if (!modopestanha.equalsIgnoreCase("VER") && estado!=null && !estado.equals("6"))
+					if (accionSustituir!=null && accionSustituir.equalsIgnoreCase("S"))
 						elems[2]=new FilaExtElement("sustituir","sustituir",SIGAConstants.ACCESS_FULL);
 				}
-				
-				elems[3]=new FilaExtElement("masinformacion","masinformacion",SIGAConstants.ACCESS_FULL);
 %>
 				
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>'
@@ -284,6 +291,7 @@
 						<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_4' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=fechaInicio%>' />
 						<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_5' name='oculto<%=String.valueOf(recordNumber)%>_5' value='<%=reserva%>' />
 						<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_6' name='oculto<%=String.valueOf(recordNumber)%>_6' value='<%=fechaFin%>' />
+						<input type="hidden" id='oculto<%=String.valueOf(recordNumber)%>_ASI' name='oculto<%=String.valueOf(recordNumber)%>_ASI' value='<%=tieneAsistencias%>' />
 						<input type="checkbox" name="chkValOld"
 							value="<%=idinstitucion+"@@"+idturno+"@@"+idguardia+"@@"+idcalendarioguardias+"@@"+idpersonapestanha+"@@"+fechaInicio+"@@"+fechaInicio %>"
 							<%=(validado.equals("1"))?"checked":""%> disabled
@@ -390,7 +398,7 @@
 			var checks = document.getElementsByName("chkVal");
 			var checksOld = document.getElementsByName("chkValOld");
 			if (checks.type != 'checkbox') {
-				for (i = 0; i < checks.length; i++){
+				for (var i = 0; i < checks.length; i++){
 					if (checks[i].disabled==false && checks[i].checked==true) {
 						if (checksOld[i].checked==false) {
 							datosvalidar += checks[i].value + "##";		
@@ -442,10 +450,23 @@
 			//Datos del elemento seleccionado:
 			seleccionarFila(fila);
 			
-			document.forms[0].modo.value = "buscarPor";
-			var salida = ventaModalGeneral(document.forms[0].name,"M"); 			
-			if (salida == "MODIFICADO"){
-				refrescarLocal();
+			var tieneAsistencias = 'oculto' + fila + '_ASI';
+			var valorTieneAsistencias = document.getElementById(tieneAsistencias).value;
+			var confirmado = true;
+			
+			if (valorTieneAsistencias == 'S') {
+				confirmado = false;
+				if (confirm("<siga:Idioma key='gratuita.listadoModal_DefinirCalendarioGuardia.sustituir.tieneAsistencias'/>")) {
+					confirmado = true;
+				}
+			}			
+			
+			if (confirmado == true)	{			
+				document.forms[0].modo.value = "buscarPor";
+				var salida = ventaModalGeneral(document.forms[0].name,"M"); 			
+				if (salida == "MODIFICADO"){
+					refrescarLocal();
+				}
 			}
 		}
 
@@ -464,11 +485,24 @@
 		function sustituir(fila) {		
 			//Datos del elemento seleccionado:
 			seleccionarFila(fila);
-
-			document.forms[0].modo.value = "sustituir";
-			var salida = ventaModalGeneral(document.forms[0].name,"M"); 			
-			if (salida == "MODIFICADO") {
-				refrescarLocal();			
+			
+			var tieneAsistencias = 'oculto' + fila + '_ASI';
+			var valorTieneAsistencias = document.getElementById(tieneAsistencias).value;
+			var confirmado = true;
+			
+			if (valorTieneAsistencias == 'S') {
+				confirmado = false;
+				if (confirm("<siga:Idioma key='gratuita.listadoModal_DefinirCalendarioGuardia.sustituir.tieneAsistencias'/>")) {
+					confirmado = true;
+				}
+			}			
+			
+			if (confirmado == true)	{			
+				document.forms[0].modo.value = "sustituir";
+				var salida = ventaModalGeneral(document.forms[0].name,"M"); 			
+				if (salida == "MODIFICADO") {
+					refrescarLocal();			
+				}
 			}
 		}
 	

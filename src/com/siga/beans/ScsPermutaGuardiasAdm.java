@@ -96,7 +96,6 @@ public class ScsPermutaGuardiasAdm extends MasterBeanAdministrador {
 		Hashtable hash = null;
 		try{
 			hash = new Hashtable();
-			String aux="";
 			ScsPermutaGuardiasBean b = (ScsPermutaGuardiasBean) bean;
 			hash.put(ScsPermutaGuardiasBean.C_IDINSTITUCION, String.valueOf(b.getIdInstitucion()));
 			hash.put(ScsPermutaGuardiasBean.C_NUMERO, String.valueOf(b.getNumero()));
@@ -410,9 +409,24 @@ public class ScsPermutaGuardiasAdm extends MasterBeanAdministrador {
 				"          CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_IDTURNO+"," +
 				"          CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_IDGUARDIA+"," +
 				"          CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_IDPERSONA+"," +
-				"          CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+"" +
-				"         ) AS ESTADO" +
-				"       ,CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_FACTURADO+
+				"          CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_FECHA_INICIO +
+				"         ) AS ESTADO";
+				
+			/*Funcion que comprueba las acciones que puede hacer en una guardia (Sustituir, Anular, Borrar, Permutar)
+			- RETORNA SUSTITUIR(1) || ANULAR(1) || BORRAR(1) || PERMUTAR(1) || ASISTENCIA(1)
+			-- SUSTITUIR VARCHAR2(1); -- 'N': no sustituible; 'S': sustituible
+			-- ANULAR VARCHAR2(1); -- 'N': no anulable; 'S': anulable
+			-- BORRAR VARCHAR2(1); -- 'N': no borrable; 'S': borrable
+			-- PERMUTAR VARCHAR2(1); -- N': no permutable (Pendiente Solicitante); 'P': no permutable (Pendiente Confirmador); 'S': permutable
+			-- ASISTENCIA VARCHAR2(1); -- 'N': sin Asistencia; 'S': con asistencia */      
+			consulta += " ,PKG_SIGA_ACCIONES_GUARDIAS.FUNC_ACCIONES_GUARDIAS(";
+			consulta +=" CABECERAGUARDIAS." + ScsCabeceraGuardiasBean.C_IDINSTITUCION;
+			consulta += ", CABECERAGUARDIAS." + ScsCabeceraGuardiasBean.C_IDTURNO;
+			consulta += ", CABECERAGUARDIAS." + ScsCabeceraGuardiasBean.C_IDGUARDIA;
+			consulta += ", CABECERAGUARDIAS." + ScsCabeceraGuardiasBean.C_IDPERSONA;
+			consulta += ", CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_FECHA_INICIO + ") AS FUNCIONPERMUTAS";
+				
+			consulta += "       ,CABECERAGUARDIAS."+ScsCabeceraGuardiasBean.C_FACTURADO+
 			     "  ,CABECERAGUARDIAS.VALIDADO,"+
 			      " F_SIGA_TIENE_ACTS_VALIDADAS(CABECERAGUARDIAS.IDINSTITUCION,  CABECERAGUARDIAS.IDTURNO, CABECERAGUARDIAS.IDGUARDIA,"+
 			       "CABECERAGUARDIAS.IDCALENDARIOGUARDIAS,  CABECERAGUARDIAS.IDPERSONA, CABECERAGUARDIAS.FECHAINICIO) AS ACT_VALIDADAS"+
@@ -473,49 +487,6 @@ public class ScsPermutaGuardiasAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Excepcion en ScsPermutaGuardiasAdm.selectGenerico(). Consulta SQL:"+consulta);
 		}
 		return datos;	
-	}
-
-	/** 
-	 * Ejecuta el PL de Permutas
-	 * 
-	 * @param String idinstitucion
-	 * @param String idturno
-	 * @param String idguardia
-	 * @param String idpersona
-	 * @param String fechaInicio
-	 * @return String con el valor devuelto por el PL
-	 * throws SIGAException
-	 */		
-	public String ejecutarFuncionPermutas(String idinstitucion,String idturno,String idguardia,String idpersona,String fechaInicio) {
-		String sql = "";	
-		Vector v = new Vector();
-		String salida = "";
-
-		//fechaInicio = "TO_DATE('"+fechaInicio+"','DD/MM/YYYY')";
-
-	    Hashtable codigos = new Hashtable();
-	    codigos.put(new Integer(1),idinstitucion);
-	    codigos.put(new Integer(2),idturno);
-	    codigos.put(new Integer(3),idguardia);
-	    codigos.put(new Integer(4),idpersona);
-	    codigos.put(new Integer(5),fechaInicio);
-	    
-		sql = "SELECT F_SIGA_NUMEROPERMUTAGUARDIAS(";
-		//sql+= idinstitucion	+","+ idturno +","+ idguardia +","+ idpersona +","+ fechaInicio+")";													       
-		sql+= ":1,:2,:3,:4,TO_DATE(:5,'DD/MM/YYYY'))";
-		sql+= " AS SALIDA FROM DUAL";
-
-		try {
-			v = this.selectGenericoBind(sql,codigos);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-					
-		if (v.size() > 0)
-			salida = (String)((Hashtable)v.get(0)).get("SALIDA");
-		
-		return salida;
 	}
 	
 	/**

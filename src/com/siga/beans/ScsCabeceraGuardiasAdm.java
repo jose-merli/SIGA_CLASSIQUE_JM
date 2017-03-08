@@ -214,11 +214,20 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			//y eliminar toda referencia a CEN_COLEGIADO
 			consulta += " F_SIGA_CALCULONCOLEGIADO(guard."+CenColegiadoBean.C_IDINSTITUCION+","+"guard."+CenColegiadoBean.C_IDPERSONA+") as "+CenColegiadoBean.C_NCOLEGIADO+", ";
 			
-			//FUNCION DE PERMUTAS: calculo su valor 
-			consulta += " F_SIGA_NUMEROPERMUTAGUARDIAS(";
-			consulta +=       " guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+", guard."+ScsCabeceraGuardiasBean.C_IDTURNO+", guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA+",";
-			consulta += 	  " guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+", guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO;
-			consulta+= 		  ") AS FUNCIONPERMUTAS";
+			/*Funcion que comprueba las acciones que puede hacer en una guardia (Sustituir, Anular, Borrar, Permutar)
+				- RETORNA SUSTITUIR(1) || ANULAR(1) || BORRAR(1) || PERMUTAR(1) || ASISTENCIA(1)
+    			-- SUSTITUIR VARCHAR2(1); -- 'N': no sustituible; 'S': sustituible
+    			-- ANULAR VARCHAR2(1); -- 'N': no anulable; 'S': anulable
+    			-- BORRAR VARCHAR2(1); -- 'N': no borrable; 'S': borrable
+    			-- PERMUTAR VARCHAR2(1); -- N': no permutable (Pendiente Solicitante); 'P': no permutable (Pendiente Confirmador); 'S': permutable
+    			-- ASISTENCIA VARCHAR2(1); -- 'N': sin Asistencia; 'S': con asistencia */        
+			consulta += " PKG_SIGA_ACCIONES_GUARDIAS.FUNC_ACCIONES_GUARDIAS(";
+			consulta +=" guard." + ScsCabeceraGuardiasBean.C_IDINSTITUCION;
+			consulta += ", guard." + ScsCabeceraGuardiasBean.C_IDTURNO;
+			consulta += ", guard." + ScsCabeceraGuardiasBean.C_IDGUARDIA;
+			consulta += ", guard." + ScsCabeceraGuardiasBean.C_IDPERSONA;
+			consulta += ", guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO + ") AS FUNCIONPERMUTAS";
+			
 			consulta += " FROM "+ScsCabeceraGuardiasBean.T_NOMBRETABLA+" guard,";
 			consulta += CenPersonaBean.T_NOMBRETABLA+" perso";
 			//consulta += ","+CenColegiadoBean.T_NOMBRETABLA+" coleg";
@@ -234,12 +243,6 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			
 			// JPT (07/02/2017): Solo se puede permutar por guardias posteriores al dia actual
 		    consulta += " AND TRUNC(guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+") > TRUNC(sysdate)";
-		    
-		    // JPT (07/02/2017): Solo se puede permutar por dias con el tipo de permuta a 3 (permutada) o 5 (pendiente de realizar)
-			consulta += " AND F_SIGA_NUMEROPERMUTAGUARDIAS(";
-			consulta +=       " guard."+ScsCabeceraGuardiasBean.C_IDINSTITUCION+", guard."+ScsCabeceraGuardiasBean.C_IDTURNO+", guard."+ScsCabeceraGuardiasBean.C_IDGUARDIA+",";
-			consulta += 	  " guard."+ScsCabeceraGuardiasBean.C_IDPERSONA+", guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO;
-		    consulta+= 		  ") IN (3,5)";
 		    
 			//ORDEN
 			consulta += " ORDER BY guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO;
