@@ -410,3 +410,7 @@ update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Los expedientes 
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.listadoModal_DefinirCalendarioGuardia.sustituir.tieneAsistencias', 'Tiene asistencias asociadas, este proceso asignará las asistencias al sustituto, ¿deseas cotinuar con el proceso de sustitución?#EU', 0, '3', sysdate, 0, '19');
  
  Nuevo paquete PKG_SIGA_ACCIONES_GUARDIAS;
+ 
+ 
+UPDATE PCAJG_ALC_ACT_INCIDENCIA I SET I.NIVEL = 'ERROR' WHERE I.NIVEL IS NOT NULL;
+UPDATE PCAJG_ALC_ACT_INCIDENCIA I SET I.NIVEL = 'WARNING' WHERE I.IDENTIFICADOR = 30;
