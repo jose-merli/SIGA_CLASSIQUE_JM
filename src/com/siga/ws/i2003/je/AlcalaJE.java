@@ -187,7 +187,7 @@ public class AlcalaJE extends InformeXML implements PCAJGConstantes {
 					}
 						
 					//aunque esté mal los datos y no cumplan los campos obligatorios debemos luego imprimirloos qp se generan los dos ficheros
-					hayErrores = hayErrores || valida(numEJG, anioEJG, desNumero, desAnio, numeroActuacion, columna, valor);
+					hayErrores = valida(numEJG, anioEJG, desNumero, desAnio, numeroActuacion, columna, valor) || hayErrores;
 					
 					if (imprimirColumna(columna)) {						
 						if ("$$".equals(valor)) {
