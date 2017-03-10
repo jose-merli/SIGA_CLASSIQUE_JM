@@ -674,6 +674,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 		ScsPermutaCabeceraAdm admPermutasCabeceras = new ScsPermutaCabeceraAdm(this.getUserBean(request));	
 		ScsCabeceraGuardiasAdm cabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm(this.getUserBean(request));
 		ScsGuardiasColegiadoAdm guardiasColegiadoAdm = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
+		ScsAsistenciasAdm admAsistencias = new ScsAsistenciasAdm(this.getUserBean(request));
 		
 		UsrBean usr;
 		UserTransaction tx = null;
@@ -848,7 +849,19 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			String resultado[] = EjecucionPLs.ejecutarPL_CrearPermutasCabeceras(idInstitucion, numeroPermuta);				
 			if (!resultado[0].equalsIgnoreCase("0")) {
 				throw new ClsExceptions(resultado[1]);
+			}							
+			
+			// Cambia las asistencias del solicitante al confirmador
+			String sFechaInicioFormateadaSolicitante = GstDate.getFormatedDateShort(usr.getLanguage(), fechaInicioSolicitante);
+			if (!admAsistencias.updateAsistenciasAccionesGuardias(idInstitucion, idTurnoSolicitante, idGuardiaSolicitante, idPersonaSolicitante, sFechaInicioFormateadaSolicitante, idPersonaConfirmador)) {
+				throw new ClsExceptions(admAsistencias.getError());
 			}
+			
+			// Cambia las asistencias del confirmador al solicitante
+			String sFechaInicioFormateadaConfirmador = GstDate.getFormatedDateShort(usr.getLanguage(), fechaInicioConfirmador);
+			if (!admAsistencias.updateAsistenciasAccionesGuardias(idInstitucion, idTurnoConfirmador, idGuardiaConfirmador, idPersonaConfirmador, sFechaInicioFormateadaConfirmador, idPersonaSolicitante)) {
+				throw new ClsExceptions(admAsistencias.getError());
+			}			
 			
 			tx.commit();
 			
