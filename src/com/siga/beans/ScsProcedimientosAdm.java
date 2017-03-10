@@ -27,7 +27,7 @@ public class ScsProcedimientosAdm extends MasterBeanAdministrador {
 							ScsProcedimientosBean.C_USUMODIFICACION, 		ScsProcedimientosBean.C_IDJURISDICCION,
 							ScsProcedimientosBean.C_CODIGO, 				ScsProcedimientosBean.C_COMPLEMENTO,
 							ScsProcedimientosBean.C_FECHADESDEVIGOR,		ScsProcedimientosBean.C_FECHAHASTAVIGOR,
-							ScsProcedimientosBean.C_PERMITIRANIADIRLETRADO};
+							ScsProcedimientosBean.C_PERMITIRANIADIRLETRADO,ScsProcedimientosBean.C_CODIGOEXT};
 		return campos;
 	}
 
@@ -53,10 +53,12 @@ public class ScsProcedimientosAdm extends MasterBeanAdministrador {
 			bean.setFechaMod		(UtilidadesHash.getString(hash,ScsProcedimientosBean.C_FECHAMODIFICACION));
 			bean.setUsuMod			(UtilidadesHash.getInteger(hash,ScsProcedimientosBean.C_USUMODIFICACION));
 			bean.setCodigo		    (UtilidadesHash.getString(hash,ScsProcedimientosBean.C_CODIGO));
+			bean.setCodigoExt(    UtilidadesHash.getString(hash,ScsProcedimientosBean.C_CODIGOEXT));
 			bean.setComplemento		(UtilidadesHash.getString(hash,ScsProcedimientosBean.C_COMPLEMENTO));
 			bean.setFechaDesdeVigor	(UtilidadesHash.getString(hash,ScsProcedimientosBean.C_FECHADESDEVIGOR));
 			bean.setFechaHastaVigor	(UtilidadesHash.getString(hash,ScsProcedimientosBean.C_FECHAHASTAVIGOR));
 			bean.setPermitirAniadirLetrado(UtilidadesHash.getString(hash,ScsProcedimientosBean.C_PERMITIRANIADIRLETRADO));
+			
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -78,6 +80,7 @@ public class ScsProcedimientosAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, ScsProcedimientosBean.C_PRECIO, b.getPrecio().toString());
 			UtilidadesHash.set(htData, ScsProcedimientosBean.C_USUMODIFICACION, b.getUsuMod().toString());
 			UtilidadesHash.set(htData, ScsProcedimientosBean.C_CODIGO, b.getCodigo().toString());
+			UtilidadesHash.set(htData, ScsProcedimientosBean.C_CODIGOEXT, b.getCodigoExt());
 			UtilidadesHash.set(htData, ScsProcedimientosBean.C_COMPLEMENTO, b.getComplemento().toString());
 			UtilidadesHash.set(htData, ScsProcedimientosBean.C_FECHADESDEVIGOR, b.getFechaDesdeVigor().toString());
 			UtilidadesHash.set(htData, ScsProcedimientosBean.C_FECHAHASTAVIGOR, b.getFechaHastaVigor().toString());

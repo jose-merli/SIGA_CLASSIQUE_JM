@@ -28,9 +28,28 @@ public class MantenimientoProcedimientosForm extends MasterForm {
 	private String permitirAniadirLetrado =  ScsProcedimientosBean.C_PERMITIRANIADIRLETRADO;
 	private String fechaDesdeVigor;
 	private String fechaHastaVigor;
+	private String codigoExt="CODIGOEXT";
+	//private String codSubtarifa="CODSUBTARIFA";
+	
 	
 
+	public String getCodExtAcreditacion() {
+		
+		return UtilidadesHash.getString(this.datos, "CODEXTACREDITACION");
+		
+	}
+	public void setCodExtAcreditacion(String codExtAcreditacion) {
+		UtilidadesHash.set (this.datos, "CODEXTACREDITACION", codExtAcreditacion);
+	}
 	
+	public String getCodSubtarifa() {
+		
+		return UtilidadesHash.getString(this.datos, "CODSUBTARIFA");
+		
+	}
+	public void setCodSubtarifa(String codSubtarifa) {
+		UtilidadesHash.set (this.datos, "CODSUBTARIFA", codSubtarifa);
+	}
 	/**
 	 * @return Returns the refresco.
 	 */
@@ -135,6 +154,13 @@ public class MantenimientoProcedimientosForm extends MasterForm {
 	}
 	public void setCodigo(String valor) {
 		this.datos.put(codigo , valor);
+	}
+	
+	public String getCodigoExt() {
+		return (String)this.datos.get(codigoExt);
+	}
+	public void setCodigoExt(String valor) {
+		this.datos.put(codigoExt , valor);
 	}
 	
 	public String getCodigoBusqueda() {

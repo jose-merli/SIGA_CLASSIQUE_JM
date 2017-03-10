@@ -37,7 +37,11 @@ public class ScsAcreditacionProcedimientoAdm extends MasterBeanAdministrador {
 							ScsAcreditacionProcedimientoBean.C_IDPROCEDIMIENTO,
 							ScsAcreditacionProcedimientoBean.C_PORCENTAJE,
 							ScsAcreditacionProcedimientoBean.C_NIG_NUMPROCEDIMIENTO,
-							ScsAcreditacionProcedimientoBean.C_USUMODIFICACION};
+							ScsAcreditacionProcedimientoBean.C_USUMODIFICACION,
+							ScsAcreditacionProcedimientoBean.C_CODIGOEXT,
+							ScsAcreditacionProcedimientoBean.C_CODSUBTARIFA
+							
+		};
 		return campos;
 	}
 
@@ -72,6 +76,8 @@ public class ScsAcreditacionProcedimientoAdm extends MasterBeanAdministrador {
 			bean.setPorcentaje(UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_PORCENTAJE));
 			bean.setNigNumeroProcedimiento(UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_NIG_NUMPROCEDIMIENTO));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_USUMODIFICACION));
+			bean.setCodigoExt(UtilidadesHash.getString(hash, ScsAcreditacionProcedimientoBean.C_CODIGOEXT));
+			bean.setCodSubtarifa(UtilidadesHash.getString(hash, ScsAcreditacionProcedimientoBean.C_CODSUBTARIFA));
 		}
 		catch(Exception e){
 			bean = null;
@@ -89,6 +95,8 @@ public class ScsAcreditacionProcedimientoAdm extends MasterBeanAdministrador {
 			hash = new Hashtable();
 			ScsAcreditacionProcedimientoBean b = (ScsAcreditacionProcedimientoBean) bean;
 			UtilidadesHash.set(hash, ScsAcreditacionProcedimientoBean.C_FECHAMODIFICACION, b.getFechaMod());
+			UtilidadesHash.set(hash, ScsAcreditacionProcedimientoBean.C_CODIGOEXT, b.getCodigoExt());
+			UtilidadesHash.set(hash, ScsAcreditacionProcedimientoBean.C_CODSUBTARIFA, b.getCodSubtarifa());
 			UtilidadesHash.set(hash, ScsAcreditacionProcedimientoBean.C_IDACREDITACION, b.getIdAcreditacion());
 			UtilidadesHash.set(hash, ScsAcreditacionProcedimientoBean.C_IDINSTITUCION, b.getIdInstitucion());
 			UtilidadesHash.set(hash, ScsAcreditacionProcedimientoBean.C_IDPROCEDIMIENTO, b.getIdProcedimiento());

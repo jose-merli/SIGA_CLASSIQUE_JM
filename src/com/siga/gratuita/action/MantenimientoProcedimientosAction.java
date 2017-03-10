@@ -215,6 +215,8 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 			procedimientoNuevo.put(ScsProcedimientosBean.C_IDINSTITUCION,(String)usr.getLocation());
 			procedimientoNuevo.put(ScsProcedimientosBean.C_IDJURISDICCION,miform.getJurisdiccion());
 			procedimientoNuevo.put(ScsProcedimientosBean.C_FECHADESDEVIGOR, GstDate.getApplicationFormatDate(usr.getLanguage(), miform.getFechaDesdeVigor()));
+			procedimientoNuevo.put(ScsProcedimientosBean.C_CODIGO,miform.getCodigo());
+			procedimientoNuevo.put(ScsProcedimientosBean.C_CODIGOEXT,miform.getCodigoExt());
 			
 			if (miform.getFechaHastaVigor()!=null && !miform.getFechaHastaVigor().equals(""))
 			    procedimientoNuevo.put(ScsProcedimientosBean.C_FECHAHASTAVIGOR, GstDate.getApplicationFormatDate(usr.getLanguage(), miform.getFechaHastaVigor()));
@@ -293,6 +295,7 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 			tramoNew.put(ScsProcedimientosBean.C_NOMBRE, (String)miform.getNombre());
 			tramoNew.put(ScsProcedimientosBean.C_PRECIO, (String)miform.getPrecio());
 			tramoNew.put(ScsProcedimientosBean.C_CODIGO, (String)miform.getCodigo());
+			tramoNew.put(ScsProcedimientosBean.C_CODIGOEXT, (String)miform.getCodigoExt());
 			tramoNew.put(ScsProcedimientosBean.C_IDJURISDICCION, miform.getJurisdiccion());
 			tramoNew.put(ScsProcedimientosBean.C_FECHADESDEVIGOR, GstDate.getApplicationFormatDate(usr.getLanguage(), miform.getFechaDesdeVigor()));
 			
@@ -484,6 +487,8 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 			bean.setIdProcedimiento(miform.getIdProcedimiento());
 			bean.setPorcentaje(miform.getPorcentaje());
 			bean.setNigNumeroProcedimiento(miform.getNigNumProcedimiento());
+			bean.setCodigoExt(miform.getCodExtAcreditacion());
+			bean.setCodSubtarifa(miform.getCodSubtarifa());
 			ScsAcreditacionProcedimientoAdm adm = new ScsAcreditacionProcedimientoAdm (this.getUserBean(request));
 			
 			if (adm.insert(bean)) {
@@ -553,6 +558,8 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 				bean = (ScsAcreditacionProcedimientoBean) v.get(0);
 				bean.setPorcentaje(miform.getPorcentaje());
 				bean.setNigNumeroProcedimiento(miform.getNigNumProcedimiento());
+				bean.setCodigoExt(miform.getCodExtAcreditacion());
+				bean.setCodSubtarifa(miform.getCodSubtarifa());
 			
 				ScsAcreditacionProcedimientoAdm adm = new ScsAcreditacionProcedimientoAdm(this.getUserBean(request));			
 				if (!adm.update(bean)) {

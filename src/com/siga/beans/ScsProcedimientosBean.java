@@ -32,6 +32,7 @@ public class ScsProcedimientosBean extends MasterBean
 	static public final String C_PRECIO				= "PRECIO";
 	static public final String C_IDJURISDICCION		= "IDJURISDICCION";
 	static public final String C_CODIGO				= "CODIGO";
+	static public final String C_CODIGOEXT			= "CODIGOEXT";
 	static public final String C_COMPLEMENTO		= "COMPLEMENTO";
 	static public final String C_VIGENTE			= "VIGENTE";
 	static public final String C_ORDEN				= "ORDEN";
@@ -49,6 +50,7 @@ public class ScsProcedimientosBean extends MasterBean
 	private Float	precio;
 	private Integer idJurisdiccion;
 	private String	codigo;
+	private String	codigoExt;
 	private String	complemento;
 	private String	vigente;
 	private String	permitirAniadirLetrado;
@@ -68,6 +70,7 @@ public class ScsProcedimientosBean extends MasterBean
 	public String	getNombre()				{return nombre;}
 	public Float	getPrecio()				{return precio;}
 	public String	getCodigo()				{return codigo;}
+	public String	getCodigoExt()				{return codigoExt;}
     public String	getComplemento()		{return complemento;}
 	public String	getVigente()			{return vigente;}
 	public String	getPermitirAniadirLetrado()			{return permitirAniadirLetrado;}
@@ -83,6 +86,7 @@ public class ScsProcedimientosBean extends MasterBean
 	public void setNombre			(String		nombre)				{this.nombre			= nombre;}
 	public void setPrecio			(Float		precio)				{this.precio			= precio;}
 	public void setCodigo			(String		codigo)				{this.codigo			= codigo;}
+	public void setCodigoExt			(String		codigoExt)				{this.codigoExt			= codigoExt;}
     public void setComplemento		(String		complemento)		{this.complemento		= complemento;}
 	public void setVigente			(String		vigente)			{this.vigente			= vigente;}
 	public void setOrden			(Integer	orden)				{this.orden				= orden;}

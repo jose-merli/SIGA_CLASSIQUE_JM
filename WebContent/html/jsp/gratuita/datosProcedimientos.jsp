@@ -40,7 +40,7 @@
 	Vector v = (Vector) request.getAttribute("acreditaciones");
 
 	//variables quese van a mostrar en la jsp
-	String nombre = "", importe = "", idProc = "", idJurisdiccion = "", codigo = "", complemento = "", permitirAniadirLetrado="";
+	String nombre = "", importe = "", idProc = "", idJurisdiccion = "", codigo = "",codigoExt = "", complemento = "", permitirAniadirLetrado="";
 	String fechaInicio="", fechaFin="";
 
 	//inicializamos los valores
@@ -50,6 +50,7 @@
 		idProc = (String) resultado.get(ScsProcedimientosBean.C_IDPROCEDIMIENTO);
 		idJurisdiccion = (String) resultado.get(ScsProcedimientosBean.C_IDJURISDICCION);
 		codigo = (String) resultado.get(ScsProcedimientosBean.C_CODIGO);
+		codigoExt = (String) resultado.get(ScsProcedimientosBean.C_CODIGOEXT);
 		complemento = (String) resultado.get(ScsProcedimientosBean.C_COMPLEMENTO);
 		permitirAniadirLetrado = (String) resultado.get(ScsProcedimientosBean.C_PERMITIRANIADIRLETRADO);
 		fechaInicio = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usr.getLanguage(),(String)resultado.get(ScsProcedimientosBean.C_FECHADESDEVIGOR)));
@@ -96,6 +97,8 @@
 			<html:hidden property = "porcentaje" value = ""/>	
 			<html:hidden property = "nigNumProcedimiento" value = ""/>			
 			<html:hidden property = "refresco" value = ""/>
+			<html:hidden property = "codExtAcreditacion" value = ""/>
+			<html:hidden property = "codSubtarifa" value = ""/>
 
 			<tr>				
 				<td>
@@ -117,13 +120,13 @@
 								<td class="labelText">
 									<html:text name="MantenimientoProcedimientosForm" property="codigo" maxlength="20" styleClass="box" readonly="false" value="<%=codigo%>" />
 								</td>
-
 								<td class="labelText">
-									<siga:Idioma key="gratuita.procedimientos.literal.complemento" />
+									<siga:Idioma key="gratuita.procedimientos.literal.codigo" />&nbsp;Ext.
 								</td>
 								<td class="labelText">
-									<input type="checkbox" name="complemento" value="<%=ClsConstants.DB_TRUE%>" <%if(complemento.equals(ClsConstants.DB_TRUE)){%> checked <%}%> />
+									<html:text name="MantenimientoProcedimientosForm" property="codigoExt" maxlength="20" size="11" styleClass="box" readonly="false" value="<%=codigoExt%>" />
 								</td>
+								
 							</tr>
 							
 							<tr>
@@ -132,6 +135,12 @@
 								</td>
 								<td class="labelText" >
 									<html:text name="MantenimientoProcedimientosForm" property="importe" maxlength="11" styleClass="boxNumber" readonly="false" value="<%=UtilidadesNumero.formatoCampo(importe)%>" />&nbsp;&euro;
+								</td>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.procedimientos.literal.complemento" />
+								</td>
+								<td class="labelText">
+									<input type="checkbox" name="complemento" value="<%=ClsConstants.DB_TRUE%>" <%if(complemento.equals(ClsConstants.DB_TRUE)){%> checked <%}%> />
 								</td>
 							</tr>
 							
@@ -145,8 +154,12 @@
 					
 								<td class="labelText">
 									<siga:Idioma key="gratuita.procedimientos.literal.fechafin" />&nbsp;
+									
+								</td>
+								<td class="labelText">
 									<siga:Fecha nombreCampo="fechaHastaVigor" valorInicial="<%=fechaFin%>" posicionX="100" posicionY="100"></siga:Fecha>
 								</td>
+								
 							</tr>
 							
 							<tr>
@@ -303,6 +316,9 @@
 				document.forms[0].idAcreditacion.value = resultado[1];
 				document.forms[0].porcentaje.value = resultado[2];
 				document.forms[0].nigNumProcedimiento.value = resultado[3];
+				document.forms[0].codExtAcreditacion.value = resultado[4];
+				document.forms[0].codSubtarifa.value = resultado[5];
+				
 				document.forms[0].modo.value = "insertarAcreditacion";
 				document.forms[0].submit();
 			}
