@@ -414,3 +414,18 @@ update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Los expedientes 
  
 UPDATE PCAJG_ALC_ACT_INCIDENCIA I SET I.NIVEL = 'ERROR' WHERE I.NIVEL IS NOT NULL;
 UPDATE PCAJG_ALC_ACT_INCIDENCIA I SET I.NIVEL = 'WARNING' WHERE I.IDENTIFICADOR = 30;
+
+ -- Add/modify columns 
+alter table SCS_ACREDITACIONPROCEDIMIENTO add CODSUBTARIFA varchar2(10);
+-- Add comments to the columns 
+comment on column SCS_ACREDITACIONPROCEDIMIENTO.CODSUBTARIFA
+  is 'Requisito de Alcala para subtarifas';
+  
+UPDATE scs_acreditacionprocedimiento AC
+SET AC.CODSUBTARIFA = (select DECODE(INSTR(codigoext,'##'),0,null,SUBSTR(codigoext,INSTR(codigoext,'##')+2)) from scs_acreditacionprocedimiento where idinstitucion = AC.IDINSTITUCION AND IDPROCEDIMIENTO = AC.IDPROCEDIMIENTO AND IDACREDITACION = AC.IDACREDITACION),
+ AC.CODIGOEXT = (select DECODE(INSTR(codigoext,'##'),0,codigoext,SUBSTR(codigoext,0,INSTR(codigoext,'##')-1)) from scs_acreditacionprocedimiento where idinstitucion = AC.IDINSTITUCION AND IDPROCEDIMIENTO = AC.IDPROCEDIMIENTO AND IDACREDITACION = AC.IDACREDITACION)
+WHERE AC.IDINSTITUCION = 2003;
+  
+
+-- Ejecutado en Integracion por AAG el 13/03 a las 10:00
+

@@ -699,19 +699,6 @@ alter table CAJG_EJGREMESA
 DELETE FROM CAJG_PROCEDIMIENTOREMESA WHERE CONSULTA = 'F_COM2003_ACT_ABO' AND IDINSTITUCION = 2003;
 
   
- -- Add/modify columns 
-alter table SCS_ACREDITACIONPROCEDIMIENTO add CODSUBTARIFA varchar2(10);
--- Add comments to the columns 
-comment on column SCS_ACREDITACIONPROCEDIMIENTO.CODSUBTARIFA
-  is 'Requisito de Alcala para subtarifas';
-  
-  
-  
-UPDATE scs_acreditacionprocedimiento AC
-SET AC.CODSUBTARIFA = (select DECODE(INSTR(codigoext,'##'),0,null,SUBSTR(codigoext,INSTR(codigoext,'##')+2)) from scs_acreditacionprocedimiento where idinstitucion = AC.IDINSTITUCION AND IDPROCEDIMIENTO = AC.IDPROCEDIMIENTO AND IDACREDITACION = AC.IDACREDITACION),
- AC.CODIGOEXT = (select DECODE(INSTR(codigoext,'##'),0,codigoext,SUBSTR(codigoext,0,INSTR(codigoext,'##')-1)) from scs_acreditacionprocedimiento where idinstitucion = AC.IDINSTITUCION AND IDPROCEDIMIENTO = AC.IDPROCEDIMIENTO AND IDACREDITACION = AC.IDACREDITACION)
-WHERE AC.IDINSTITUCION = 2003;
-  
 
   
   
