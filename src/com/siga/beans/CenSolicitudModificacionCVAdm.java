@@ -470,7 +470,8 @@ public class CenSolicitudModificacionCVAdm extends MasterBeanAdministrador{
 							cvModificado.setIdTipoCVSubtipo2("");
 						}
 						cvModificado.setFechaMovimiento((String)cvOriginal.get(CenDatosCVBean.C_FECHAMOVIMIENTO));					
-						cvModificado.setOriginalHash(cvOriginal);					
+						cvModificado.setOriginalHash(cvOriginal);	
+						cvModificado.setReflejarSolicitante("1");  //Para que en la auditoría se muestre el solicitante - Nuevo R1411_0029
 						// Fijamos los datos del Historico
 						beanHist.setMotivo((String)hash.get(CenSolicitudModificacionCVBean.C_MOTIVO));			
 						// Actualizo el registro Direcciones con historico				

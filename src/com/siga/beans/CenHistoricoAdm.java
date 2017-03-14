@@ -554,6 +554,13 @@ public class CenHistoricoAdm extends MasterBeanAdministrador {
 					beanHistorico.setIdInstitucion(beanCliente.getIdInstitucion());
 					beanHistorico.setIdPersona(beanCliente.getIdPersona());
 					beanHistorico.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_DATOS_GENERALES));
+					//Nuevo R1411_0029 
+					if(beanCliente.getReflejarSolicitante() != null && !"".equalsIgnoreCase(beanCliente.getReflejarSolicitante()) 
+							&& "1".equalsIgnoreCase(beanCliente.getReflejarSolicitante())){
+						CenPersonaAdm cenPersonaAdm = new CenPersonaAdm(this.usrbean);
+						UtilidadesHash.set(hBeanAsociado, "Solicitante", UtilidadesString.getMensajeIdioma(idioma,cenPersonaAdm.obtenerNombreApellidos(String.valueOf(beanCliente.getIdPersona()))));
+					}
+					
 					break;
 					
 				} else if (beanAsociado instanceof CenColegiadoBean) {
@@ -885,7 +892,15 @@ public class CenHistoricoAdm extends MasterBeanAdministrador {
 						
 					} 
 					catch (Exception e) {}
-
+					//Nuevo R1411_0029 
+					try {
+						if(beanCuentas.getReflejarSolicitante() != null && !"".equalsIgnoreCase(beanCuentas.getReflejarSolicitante()) 
+								&& "1".equalsIgnoreCase(beanCuentas.getReflejarSolicitante())){
+							CenPersonaAdm cenPersonaAdm = new CenPersonaAdm(this.usrbean);
+							UtilidadesHash.set(hBeanAsociado, "Solicitante", UtilidadesString.getMensajeIdioma(idioma,cenPersonaAdm.obtenerNombreApellidos(String.valueOf(beanCuentas.getIdPersona()))));
+						}
+					} 
+					catch (Exception e) {}
 					break;
 					
 				} else if (beanAsociado instanceof CenDatosColegialesEstadoBean) {
@@ -938,6 +953,15 @@ public class CenHistoricoAdm extends MasterBeanAdministrador {
 						UtilidadesHash.set(hBeanAsociadoAnterior, CenDatosCVBean.C_IDTIPOCV, UtilidadesString.getMensajeIdioma(idioma, ((CenTiposCVBean)cAdm.selectByPK(hBeanAsociadoAnterior).get(0)).getDescripcion()));
 					} 
 					catch (Exception e) {}
+					//Nuevo R1411_0029 
+					try {
+						if(beanCV.getReflejarSolicitante() != null && !"".equalsIgnoreCase(beanCV.getReflejarSolicitante()) 
+								&& "1".equalsIgnoreCase(beanCV.getReflejarSolicitante())){
+							CenPersonaAdm cenPersonaAdm = new CenPersonaAdm(this.usrbean);
+							UtilidadesHash.set(hBeanAsociado, "Solicitante", UtilidadesString.getMensajeIdioma(idioma,cenPersonaAdm.obtenerNombreApellidos(String.valueOf(beanCV.getIdPersona()))));
+						}
+					} 
+					catch (Exception e) {}
 
 					break;
 					
@@ -968,6 +992,15 @@ public class CenHistoricoAdm extends MasterBeanAdministrador {
 						CenProvinciaAdm provAdm = new CenProvinciaAdm(this.usrbean);
 						UtilidadesHash.set(hBeanAsociado, CenDireccionesBean.C_IDPROVINCIA, UtilidadesString.getMensajeIdioma(idioma, ((CenProvinciaBean)provAdm.selectByPK(hBeanAsociado).get(0)).getNombre()));
 						UtilidadesHash.set(hBeanAsociadoAnterior, CenDireccionesBean.C_IDPROVINCIA, UtilidadesString.getMensajeIdioma(idioma, ((CenProvinciaBean)provAdm.selectByPK(hBeanAsociadoAnterior).get(0)).getNombre()));
+					} 
+					catch (Exception e) {}
+					//Nuevo R1411_0029 
+					try {
+						if(beanDir.getReflejarSolicitante() != null && !"".equalsIgnoreCase(beanDir.getReflejarSolicitante()) 
+								&& "1".equalsIgnoreCase(beanDir.getReflejarSolicitante())){
+							CenPersonaAdm cenPersonaAdm = new CenPersonaAdm(this.usrbean);
+							UtilidadesHash.set(hBeanAsociado, "Solicitante", UtilidadesString.getMensajeIdioma(idioma,cenPersonaAdm.obtenerNombreApellidos(String.valueOf(beanDir.getIdPersona()))));
+						}
 					} 
 					catch (Exception e) {}
 					try {
@@ -1140,7 +1173,16 @@ public class CenHistoricoAdm extends MasterBeanAdministrador {
 						UtilidadesHash.set(hBeanAsociadoAnterior, ExpExpedienteBean.C_IDTIPOEXPEDIENTE, UtilidadesString.getMensajeIdioma(idioma, ((ExpTipoExpedienteBean)tAdm.selectByPK(h).get(0)).getNombre()));
 					} 
 					catch (Exception e) {}
-
+					//Nuevo R1411_0029 
+					try {
+						if(beanExp.getReflejarSolicitante() != null && !"".equalsIgnoreCase(beanExp.getReflejarSolicitante()) 
+								&& "1".equalsIgnoreCase(beanExp.getReflejarSolicitante())){
+							CenPersonaAdm cenPersonaAdm = new CenPersonaAdm(this.usrbean);
+							UtilidadesHash.set(hBeanAsociado, "Solicitante", UtilidadesString.getMensajeIdioma(idioma,cenPersonaAdm.obtenerNombreApellidos(String.valueOf(beanExp.getIdPersonaDenunciado()))));
+						}
+					} 
+					catch (Exception e) {}
+					
 					break;
 					
 				} else if (beanAsociado instanceof PysServiciosSolicitadosBean) {

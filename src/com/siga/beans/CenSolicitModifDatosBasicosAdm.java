@@ -613,7 +613,8 @@ public class CenSolicitModifDatosBasicosAdm extends MasterBeanAdministrador {
 						clienteModificado.setComisiones((String)clienteOriginal.get(CenClienteBean.C_COMISIONES));
 						clienteModificado.setIdTratamiento(new Integer((String)clienteOriginal.get(CenClienteBean.C_IDTRATAMIENTO)));
 						clienteModificado.setIdLenguaje((String)hash.get(CenSolicitModifDatosBasicosBean.C_IDLENGUAJE));										
-						clienteModificado.setOriginalHash(clienteOriginal);					
+						clienteModificado.setOriginalHash(clienteOriginal);	
+						clienteModificado.setReflejarSolicitante("1");    //Para que en la auditoría se muestre el solicitante - Nuevo R1411_0029 
 						// Fijamos los datos del Historico
 						beanHist.setMotivo((String)hash.get(CenSolicitModifDatosBasicosBean.C_MOTIVO));			
 						// Actualizo el registro cliente con historico				

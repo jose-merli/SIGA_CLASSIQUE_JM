@@ -328,6 +328,7 @@ public class ExpSolicitudBorradoAdm extends MasterBeanAdministrador {
 					expOriginal.setEsVisibleEnFicha("N");
 					expOriginal.setAnotacionesCanceladas("SYSDATE");
 					expOriginal.setIdPersonaDenunciado(idPersona);
+					expOriginal.setReflejarSolicitante("1");
 					beanHist.setIdPersona(idPersona);
 					beanHist.setIdInstitucion(Integer.parseInt(idInstitucion));
 					// Fijamos los datos del Historico

@@ -613,7 +613,8 @@ public class CenSolicModifExportarFotoAdm extends MasterBeanAdministrador {
 						clienteModificado.setIdInstitucion(new Integer((String)clienteOriginal.get(CenClienteBean.C_IDINSTITUCION)));
 						clienteModificado.setFechaAlta((String)clienteOriginal.get(CenClienteBean.C_FECHAALTA));					
 						clienteModificado.setExportarFoto(((String)hash.get(CenSolicModifExportarFotoBean.C_EXPORTARFOTO)));
-						clienteModificado.setOriginalHash(clienteOriginal);					
+						clienteModificado.setOriginalHash(clienteOriginal);		
+						clienteModificado.setReflejarSolicitante("1");  //Para que en la auditoría se muestre el solicitante - Nuevo R1411_0029
 						// Fijamos los datos del Historico
 						beanHist.setMotivo((String)hash.get(CenSolicModifExportarFotoBean.C_MOTIVO));			
 						// Actualizo el registro cliente con historico				

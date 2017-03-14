@@ -85,6 +85,7 @@ public class ExpExpedienteBean extends MasterBean {
 	private String identificadorDS;
 	private String idDireccion;
 	private String idDireccionDenunciante;
+	private String reflejarSolicitante;
 
 	// Nombre campos de la tabla 
 	static public final String C_NUMEROEXPEDIENTE ="NUMEROEXPEDIENTE";
@@ -533,7 +534,12 @@ public class ExpExpedienteBean extends MasterBean {
 	public void setIdDireccionDenunciante(String idDireccionDenunciante) {
 		this.idDireccionDenunciante = idDireccionDenunciante;
 	}
-    
+	public String getReflejarSolicitante() {
+		return reflejarSolicitante;
+	}
+	public void setReflejarSolicitante(String reflejarSolicitante) {
+		this.reflejarSolicitante = reflejarSolicitante;
+	}
 	public JSONObject getJSONObject() {
         JSONObject obj = new JSONObject();
         try {

@@ -491,6 +491,7 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 					cuentaModificada.setFechaBaja((String)cuentaOriginal.get(CenCuentasBancariasBean.C_FECHABAJA));
 					cuentaModificada.setCuentaContable((String)cuentaOriginal.get(CenCuentasBancariasBean.C_CUENTACONTABLE));
 					cuentaModificada.setOriginalHash(cuentaOriginal);
+					cuentaModificada.setReflejarSolicitante("1");  //Para que en la auditoría se muestre el solicitante - Nuevo R1411_0029
 					// Fijamos los datos del Historico
 					beanHist.setMotivo((String)hash.get(CenSolicModiCuentasBean.C_MOTIVO));		
 					//BEGIN BNS 11/12/12 INCIDENCIA INC_08950_SIGA

@@ -23,7 +23,7 @@ public class CenCuentasBancariasBean extends MasterBean {
 	private Long	idPersona;
 	
 	private String 	abonoCargo, abonoSJCS, cbo_Codigo, codigoSucursal, digitoControl, numeroCuenta,
-					titular, fechaBaja, cuentaContable,iban;	
+					titular, fechaBaja, cuentaContable,iban,reflejarSolicitante;	
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_CUENTASBANCARIAS";
@@ -192,4 +192,11 @@ public class CenCuentasBancariasBean extends MasterBean {
 	public void setIban(String iban) {
 		this.iban = iban;
 	}
+	public String getReflejarSolicitante() {
+		return reflejarSolicitante;
+	}
+	public void setReflejarSolicitante(String reflejarSolicitante) {
+		this.reflejarSolicitante = reflejarSolicitante;
+	}
+	
 }

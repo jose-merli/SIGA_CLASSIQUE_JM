@@ -48,7 +48,7 @@ public class CenDireccionesBean extends MasterBean
 	private String 	idPais, idProvincia, idPoblacion, domicilio, codigoPostal, 
 					telefono1, telefono2, poblacionExtranjera; 
 	private String 	movil, fax1, fax2, correoElectronico, paginaweb, 
-					fechaBaja, preferente;	
+					fechaBaja, preferente, reflejarSolicitante;	
 	
 	
 	//////////////////// GETTERS ////////////////////
@@ -72,6 +72,8 @@ public class CenDireccionesBean extends MasterBean
 	public String getTelefono2() 			{return telefono2;}
     public Integer getIdInstitucionAlta() 	{return idInstitucionAlta;}
     public Long getIdDireccionAlta() 		{return idDireccionAlta;}
+    public String getReflejarSolicitante()	{return reflejarSolicitante;}
+    
 	
 	
 	//////////////////// SETTERS ////////////////////
@@ -93,6 +95,7 @@ public class CenDireccionesBean extends MasterBean
 	public void setPreferente(String preferente) 					{this.preferente = preferente;}
 	public void setTelefono1(String telefono1) 						{this.telefono1 = telefono1;}
 	public void setTelefono2(String telefono2) 						{this.telefono2 = telefono2;}
+	public void setReflejarSolicitante(String reflejarSolicitante) 	{this.reflejarSolicitante = reflejarSolicitante;}
     public void setIdInstitucionAlta(Integer idInstitucionAlta) 	{this.idInstitucionAlta = idInstitucionAlta;}
     public void setIdDireccionAlta(Long idDireccionAlta)			{this.idDireccionAlta = idDireccionAlta;}
 }
