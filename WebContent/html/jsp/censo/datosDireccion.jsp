@@ -76,6 +76,7 @@
 	String mail = "";
 	String paginaWEB = "";
 	String desactivarCheckTipos = "";
+	String otraProvinciaString="";
 	boolean preferenteMail = false;
 	boolean preferenteCorreo = false;
 	boolean preferenteFax = false;
@@ -116,6 +117,7 @@
 			paginaWEB = String.valueOf(htData.get(CenDireccionesBean.C_PAGINAWEB));
 			idDireccion = String.valueOf(htData.get(CenDireccionesBean.C_IDDIRECCION));
 			fechaModificacion = String.valueOf(htData.get(CenDireccionesBean.C_FECHAMODIFICACION));
+			otraProvinciaString =String.valueOf( htData.get(CenDireccionesBean.C_OTRAPROVINCIA));
 			if (fechaModificacion != null)
 				fechaModificacion = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("", fechaModificacion));
 			else
@@ -261,7 +263,13 @@
 				
 				<%if(ididPais.equals(ClsConstants.ID_PAIS_ESPANA) || "".equals(ididPais)){%>	
 						document.consultaDireccionesForm.codigoPostal.value='<%=codigoPostal%>';
-						createProvince();
+						<%if(otraProvinciaString != null && !"".equalsIgnoreCase(otraProvinciaString) && otraProvinciaString.equalsIgnoreCase("1")){%>
+						  	jQuery("#provinciaEspanola").css("display","inline");
+						    jQuery("#provinciaText").hide();
+						    jQuery("#otraProvinciaCheck").attr('checked','checked');
+						<%}else{%>
+							jQuery("#provinciaText").show();
+						<%}%>
 				<%}else{%>
 					var codpostal = '<%=codigoPostal%>';
 					var poblacionExtAux = '<%=poblacionExt%>';
@@ -385,6 +393,8 @@
 				//Ocultamos la provincia
 				jQuery("#provinciaSinAsterisco").hide();
 				jQuery("#provinciaText").hide();
+				jQuery("#otraProvinciaCheck").removeAttr('checked');
+				jQuery("#tdOtraProvincia").hide();
 				jQuery("#codigoPostal").val("");	
 				jQuery("#provincia").val(jQuery("#provincia option:first").val());
 				jQuery("#provinciaText").val("");
@@ -400,6 +410,7 @@
 				//Mostramos la provincia
 				jQuery("#provinciaSinAsterisco").show();
 				jQuery("#provinciaText").show();
+				jQuery("#tdOtraProvincia").show();
 				//Para el caso de que venga null, sino se pone mostrará por pantalla en el campo codigo postal undefined
 				if((paisGlobal != "") && (paisGlobal !=idEspana))
 						jQuery("#codigoPostal").val("");				
@@ -420,6 +431,9 @@
 		   		//Ocultamos la provincia
 		   		jQuery("#provinciaSinAsterisco").hide();
 				jQuery("#provinciaText").hide();
+				document.forms[0].otraProvincia.value= "0";
+				jQuery("#tdOtraProvincia").hide();
+			
 			   	//aalg: se quita la marca de obligatoriedad
 			   	document.getElementById("provinciaSinAsterisco").className="labelText";
 				document.getElementById("poblacionEspanola").className="ocultar";
@@ -430,7 +444,12 @@
 				document.getElementById("poblacionEspanola").className="";
 				document.getElementById("poblacionExtranjera").className="ocultar";		
 				//Mostramos la provincia
+				<%if(otraProvinciaString != null && !"".equalsIgnoreCase(otraProvinciaString) && otraProvinciaString.equalsIgnoreCase("1")){%>
+			  	jQuery("#provinciaEspanola").css("display","inline");
+			    jQuery("#provinciaText").hide();
+			<%}else{%>
 				jQuery("#provinciaText").show();
+			<%}%>
 				//aalg: se restaura la marca de obligatoriedad si es pertinente
 				comprobarAsterico();
 	       }
@@ -721,6 +740,11 @@
 				<%}%>	
 				document.consultaDireccionesForm.target = "submitArea";
 				document.consultaDireccionesForm.idProvinciaHidden.value=jQuery("#provincia").val();
+				if(jQuery("#otraProvinciaCheck").is(':checked') && jQuery("#otraProvinciaCheck").is(':visible')){
+					document.forms[0].otraProvincia.value = "1";
+				} else{
+					document.forms[0].otraProvincia.value= "0";
+				}
 				document.consultaDireccionesForm.submit();
 			}else{
 				fin();
@@ -958,6 +982,11 @@
 				<%}%>
 				document.consultaDireccionesForm.target = "submitArea";
 				document.consultaDireccionesForm.idProvinciaHidden.value=jQuery("#provincia").val();
+				if(jQuery("#otraProvinciaCheck").is(':checked') && jQuery("#otraProvinciaCheck").is(':visible')){
+					document.forms[0].otraProvincia.value = "1";
+				} else{
+					document.forms[0].otraProvincia.value= "0";
+				}
 				document.consultaDireccionesForm.submit();
 			} else {
 				fin();
@@ -1011,7 +1040,19 @@
 			}
 		
 		}
-	}       
+	}   
+	
+	function otraProvinciaFuction(valor){
+		if(valor.checked ) {
+		   //Si está seleccionado
+		  	jQuery("#provinciaEspanola").css("display","inline");
+		    jQuery("#provinciaText").hide();
+		}else{
+			createProvince();
+			jQuery("#provinciaEspanola").hide();
+		    jQuery("#provinciaText").css("display","inline");
+		}
+	}
 	</script>
 </head>
 
@@ -1068,6 +1109,7 @@
 			<html:hidden property="vieneDe" styleId="vieneDe" />
 			<html:hidden styleId="tipoAcceso"  property="tipoAcceso" />
 			<html:hidden styleId="idProvinciaHidden"  property="idProvinciaHidden" />
+			<input type="hidden" id="otraProvincia" name="otraProvincia" value="">
 			
 
 			<%
@@ -1249,13 +1291,13 @@
 									<td class="ocultar" width="180px" id="cpConAsterisco" nowrap>
 										<siga:Idioma key="censo.datosDireccion.literal.cp" />&nbsp;(*)
 									</td>
-									<td>
+									<td >
 										<%
 											if (editarCampos) {
 										%>
 										<html:text name="consultaDireccionesForm" styleId="codigoPostal"
 											property="codigoPostal" value="<%=codigoPostal%>"
-											maxlength="5" size="5" styleClass="<%=clase%>"
+											maxlength="5" size="5" styleClass="<%=clase%>" 
 											onChange="createProvince()"></html:text> 
 										<%
  											} else {
@@ -1267,19 +1309,49 @@
 										<%
  											}
  										%>
-									</td>
-									<td class="labelText" id="provinciaSinAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.provincia" />&nbsp;
-									</td>
-									<td id="provinciaEspanola" style="display: none;">
 										
-										<siga:ComboBD nombre="provincia"
-											tipo="provincia" clase="boxCombo" obligatorio="false"
-											elementoSel="<%=idProvincia%>" accion="Hijo:poblacion" /> 
-									
 									</td>
-									<td>
+									<td nowrap="nowrap" id="tdOtraProvincia">
+										Otra provincia 
+										<%
+											if (editarCampos) {
+										%>
+												<%if(otraProvinciaString != null && !"".equalsIgnoreCase(otraProvinciaString) && otraProvinciaString.equalsIgnoreCase("1")){ %>
+													<input type="checkbox" id="otraProvinciaCheck" name="otraProvinciaCheck" checked="checked"  onclick="otraProvinciaFuction(this);"> &nbsp;
+												<%}else{ %>
+													<input type="checkbox" id="otraProvinciaCheck" name="otraProvinciaCheck"  onclick="otraProvinciaFuction(this);"> &nbsp;
+												<%} %>
+												<%
+ 											} else {%>
+ 												<% if(otraProvinciaString != null && !"".equalsIgnoreCase(otraProvinciaString) && otraProvinciaString.equalsIgnoreCase("1")){ %>
+													<input type="checkbox" id="otraProvinciaCheck" name="otraProvinciaCheck" checked="checked" disabled="disabled"  onclick="otraProvinciaFuction(this);"> &nbsp;
+												<%}else{ %>
+													<input type="checkbox" id="otraProvinciaCheck" name="otraProvinciaCheck"  disabled="disabled" onclick="otraProvinciaFuction(this);"> &nbsp;
+												<%} %>
+											<%
+ 											}
+ 											%> 
+									</td>
+									<td class="labelText" id="provinciaSinAsterisco" nowrap="nowrap">
+									
+										<siga:Idioma key="censo.datosDireccion.literal.provincia" />&nbsp;
+									
+									
+									<div id="provinciaEspanola" style="display: none;">
+										<%
+											if (editarCampos) {
+										%>
+											<siga:ComboBD nombre="provincia" 
+												tipo="provincia" clase="boxCombo" obligatorio="false"
+												elementoSel="<%=idProvincia%>" accion="Hijo:poblacion"  /> 
+										<%}else{ %>
+										 	<input id="provinciaText" class="boxConsulta" type="text" value="<%=provincia%>" readonly="readonly" tabindex="-1" style="width: 200px" />
+										<%} %>
+									</div>
+									
 										<input id="provinciaText" class="boxConsulta" type="text" value="<%=provincia%>" readonly="readonly" tabindex="-1" style="width: 200px" />
+							
+									
 									</td>
 									
 								</tr>

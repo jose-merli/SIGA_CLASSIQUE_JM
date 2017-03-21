@@ -54,7 +54,7 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 				CenSoliModiDireccionesBean.C_IDPAIS,			CenSoliModiDireccionesBean.C_IDPROVINCIA,
 				CenSoliModiDireccionesBean.C_IDPOBLACION,		CenSoliModiDireccionesBean.C_FECHAMODIFICACION,CenSoliModiDireccionesBean.C_POBLACIONEXTRANJERA,
 				CenSoliModiDireccionesBean.C_USUMODIFICACION,	CenSoliModiDireccionesBean.C_IDESTADOSOLIC,
-				CenSoliModiDireccionesBean.C_FECHAALTA};
+				CenSoliModiDireccionesBean.C_FECHAALTA,         CenSoliModiDireccionesBean.C_OTRAPROVINCIA };
 		return campos;
 	}
 
@@ -147,6 +147,7 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, CenSoliModiDireccionesBean.C_USUMODIFICACION, b.getUsuMod());
 			UtilidadesHash.set(hash, CenSoliModiDireccionesBean.C_IDESTADOSOLIC, b.getIdEstadoSolic());
 			UtilidadesHash.set(hash, CenSoliModiDireccionesBean.C_FECHAALTA, b.getFechaAlta());
+			UtilidadesHash.set(hash, CenSoliModiDireccionesBean.C_OTRAPROVINCIA, b.getOtraProvincia());
 		}
 		catch (Exception e){
 			hash = null;
@@ -274,6 +275,7 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 			    			CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_IDESTADOSOLIC + "," +
 							CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_FECHAMODIFICACION + "," +
 	            			CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_USUMODIFICACION + "," +
+	            			CenSoliModiDireccionesBean.T_NOMBRETABLA + "." + CenSoliModiDireccionesBean.C_OTRAPROVINCIA + "," +
 	        				CenPoblacionesBean.T_NOMBRETABLA + "." + CenPoblacionesBean.C_NOMBRE +" AS POBLACION, " + 
 							CenProvinciaBean.T_NOMBRETABLA + "." + CenProvinciaBean.C_NOMBRE +" AS PROVINCIA, " +
 							UtilidadesMultidioma.getCampoMultidiomaSimple(CenPaisBean.T_NOMBRETABLA + "." + CenPaisBean.C_NOMBRE, this.usrbean.getLanguage()) + " AS PAIS " +							
@@ -465,6 +467,7 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 					dirModificada.setIdPais((String)hash.get(CenSoliModiDireccionesBean.C_IDPAIS));
 					dirModificada.setIdProvincia((String)hash.get(CenSoliModiDireccionesBean.C_IDPROVINCIA));
 					dirModificada.setIdPoblacion((String)hash.get(CenSoliModiDireccionesBean.C_IDPOBLACION));
+					dirModificada.setOtraProvincia(Integer.valueOf((String) hash.get(CenSoliModiDireccionesBean.C_OTRAPROVINCIA)));
 					if (!dirModificada.getIdPais().equals(ClsConstants.ID_PAIS_ESPANA) && !dirModificada.getIdPais().equals("")) {
 						dirModificada.setIdProvincia("");
 						dirModificada.setIdPoblacion("");

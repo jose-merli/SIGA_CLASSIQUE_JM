@@ -429,3 +429,12 @@ WHERE AC.IDINSTITUCION = 2003;
 
 -- Ejecutado en Integracion por AAG el 13/03 a las 10:00
 
+ alter table cen_direcciones add OTRAPROVINCIA number(1) default 0;
+comment on column cen_direcciones.OTRAPROVINCIA
+  is '0: La provincia coincide con el código postal, 1: La provincia puede o no coincidir con el código postal';
+  
+  
+   alter table CEN_SOLIMODIDIRECCIONES add OTRAPROVINCIA number(1) default 0;
+comment on column CEN_SOLIMODIDIRECCIONES.OTRAPROVINCIA
+  is '0: La provincia coincide con el código postal, 1: La provincia puede o no coincidir con el código postal';
+
