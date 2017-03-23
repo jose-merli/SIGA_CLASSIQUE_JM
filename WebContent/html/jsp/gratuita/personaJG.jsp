@@ -1128,12 +1128,26 @@
 		   
 		   function selPaisInicio() {
 			   <%if(obligatorioPoblacion){%>
-			   	   jQuery("#paisDir option[value='191']").prop("selected",true);
-			   	   jQuery("#paisDir option:not(:selected)").prop('disabled',true);
+				<%if(pcajgActivo == 5){%>
+				    var valor = document.getElementById("paisDir").value;
+					if (valor!=null && valor!="" && valor!=idEspana) {
+					   jQuery("#provinciaPoblacion").hide();
+					   jQuery("#labelPoblacionExt").show();
+					   jQuery("#campoPoblacionExt").show();
+			       } else {
+			    	   jQuery("#provinciaPoblacion").show();
+			    	   jQuery("#labelPoblacionExt").hide();
+			    	   jQuery("#campoPoblacionExt").hide();
+			       }
+				<%}else{%>
+				   jQuery("#paisDir option[value='191']").attr("selected",true);
+			   	   jQuery("#paisDir option:not(:selected)").attr('disabled',true);
 				   jQuery("#provinciaPoblacion").show();
 				   jQuery("#poblacionExtranjera").val("");
 		    	   jQuery("#labelPoblacionExt").hide();
 		    	   jQuery("#campoPoblacionExt").hide();
+				<%}%>
+			   	  
 			   <%}else{%>
 					   var valor = document.getElementById("paisDir").value;
 						if (valor!=null && valor!="" && valor!=idEspana) {
@@ -1525,8 +1539,21 @@
 							<html:text name="PersonaJGForm" property="cp" size="5" maxlength="5" styleClass="<%=estiloBox%>" readonly="<%=readonly%>"  onchange="createProvince()" />
 						</td>
 						
-						<td class="labelText" id="labelPoblacionExt">
-							<siga:Idioma key="gratuita.personaJG.literal.poblacion"/>												
+						<td  colspan="2" id="labelPoblacionExt">
+							<siga:Idioma key="gratuita.personaJG.literal.poblacion"/>										
+						<% 
+							if(opcionDireccion) {
+%>
+								<div id="desaparecePr">
+									<%=asterisco%> 
+								</div>
+<%
+							} else if (obligatorioPoblacion) {
+%>
+								<%=asterisco%> 
+<%
+							}
+%>		
 						</td>
 						<td colspan="7" id="campoPoblacionExt">
 							<html:text name="PersonaJGForm" property="poblacionExt" styleId="poblacionExtranjera" size="30" maxlength="100" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" />
@@ -2956,8 +2983,20 @@
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
 						if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value=="")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-						if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value=="")
-							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+						
+						if (<%=obligatorioPoblacion%>){
+							  var valor = document.getElementById("paisDir").value;
+								if (valor!=null && valor!="" && valor!=idEspana) {
+									if(document.forms[0].poblacionExtranjera.value==""){
+										error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+									}
+								}else{
+									if(document.forms[0].poblacion.value==""){
+										error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+									}
+								}
+						}
+								
 						if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';						
 						if (<%=obligatorioIngreso%> && document.forms[0].importeIngresosAnuales.value =="")
@@ -3130,8 +3169,18 @@
 						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
 					if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
 						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-					if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
-						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+					if (<%=obligatorioPoblacion%>){
+						  var valor = document.getElementById("paisDir").value;
+							if (valor!=null && valor!="" && valor!=idEspana) {
+								if(document.forms[0].poblacionExtranjera.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N"){
+									error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+								}
+							}else{
+								if(document.forms[0].poblacion.value=="" && document.PersonaJGForm.existeDomicilio.value!= "N"){
+									error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+								}
+							}
+					}	
 					if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
 						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';						
 					if (<%=obligatorioEstadoCivil%> && document.forms[0].estadoCivil.value=="")
@@ -3414,8 +3463,19 @@
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
 			if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-			if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
-				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+			if (<%=obligatorioPoblacion%>){
+				  var valor = document.getElementById("paisDir").value;
+					if (valor!=null && valor!="" && valor!=idEspana) {
+						if(document.forms[0].poblacionExtranjera.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N"){
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+						}
+					}else{
+						if(document.forms[0].poblacion.value=="" && document.PersonaJGForm.existeDomicilio.value!= "N"){
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+						}
+					}
+			}		
+				
 			if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';					
 			
@@ -3521,9 +3581,18 @@
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
 			if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-			if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
-				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
-				
+			if (<%=obligatorioPoblacion%>){
+				  var valor = document.getElementById("paisDir").value;
+					if (valor!=null && valor!="" && valor!=idEspana) {
+						if(document.forms[0].poblacionExtranjera.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N"){
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+						}
+					}else{
+						if(document.forms[0].poblacion.value=="" && document.PersonaJGForm.existeDomicilio.value!= "N"){
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+						}
+					}
+			}	
 			if (!validaTelefonos()){
                 fin();
                 return false;
@@ -3775,9 +3844,18 @@
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
 			if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-			if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
-				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
-			    
+			if (<%=obligatorioPoblacion%>){
+				  var valor = document.getElementById("paisDir").value;
+					if (valor!=null && valor!="" && valor!=idEspana) {
+						if(document.forms[0].poblacionExtranjera.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N"){
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+						}
+					}else{
+						if(document.forms[0].poblacion.value=="" && document.PersonaJGForm.existeDomicilio.value!= "N"){
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+						}
+					}
+			}	  
 			if(error != ""){
 				alert(error);
 				fin();
@@ -3879,9 +3957,18 @@ function accionGuardarCerrar()	{
 		error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
 	if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value=="")
 		error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-	if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value=="")
-		error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
-				
+	if (<%=obligatorioPoblacion%>){
+		  var valor = document.getElementById("paisDir").value;
+			if (valor!=null && valor!="" && valor!=idEspana) {
+				if(document.forms[0].poblacionExtranjera.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N"){
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+				}
+			}else{
+				if(document.forms[0].poblacion.value=="" && document.PersonaJGForm.existeDomicilio.value!= "N"){
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+				}
+			}
+	}			
 	if (<%=obligatorioEstadoCivil%> && document.forms[0].estadoCivil.value=="")
 		error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.estadoCivil'/>"+ '\n';
 	if (<%=obligatorioRegimenConyuge%> && document.forms[0].regimenConyugal.value=="")
