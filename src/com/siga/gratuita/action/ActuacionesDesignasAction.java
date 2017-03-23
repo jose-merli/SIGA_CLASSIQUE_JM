@@ -779,6 +779,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			Hashtable<String, Object> fksActuacionHashtable = null;
 			
 			usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 			tx = usr.getTransaction();
 
 			if ((request.getParameter("deDonde")!=null) && (!request.getParameter("deDonde").equals("")))
@@ -837,23 +838,36 @@ public class ActuacionesDesignasAction extends MasterAction {
 				
 			}
 			
-			String talonario= miform.getTalonario();
-		    	
-			if (talonario!=null && !talonario.equals("")){
-					hash.put(ScsActuacionDesignaBean.C_TALONARIO, talonario);
+			String talonario="";
+			String talon="";
+			if(valorPcajgActivo !=8){ //Si no es de la comunidad valenciana se realiza como siempre
+				 talonario= miform.getTalonario();
+			    	
+				if (talonario!=null && !talonario.equals("")){
+						hash.put(ScsActuacionDesignaBean.C_TALONARIO, talonario);
+				}else{
+					hash.put(ScsActuacionDesignaBean.C_TALONARIO, "");
+				}
+				
+				 talon= miform.getTalon();
+				if (talonario!=null && !talon.equals("")){
+						hash.put(ScsActuacionDesignaBean.C_TALON, talon);
+				}else{
+					hash.put(ScsActuacionDesignaBean.C_TALON, "");
+				}
 			}else{
-				hash.put(ScsActuacionDesignaBean.C_TALONARIO, "");
+				// Para Valencia:
+				//    -Talón: Número asunto
+				//	  -Talonario: Año + código de la designa
+				
+				talon =miform.getNactuacion();
+				talonario = miform.getAnio()+miform.getCodigo();
+				
+				hash.put(ScsActuacionDesignaBean.C_TALON, talon);
+				hash.put(ScsActuacionDesignaBean.C_TALONARIO, talonario);
+		
 			}
-			
-			String talon= miform.getTalon();
-			if (talonario!=null && !talon.equals("")){
-					hash.put(ScsActuacionDesignaBean.C_TALON, talon);
-			}else{
-				hash.put(ScsActuacionDesignaBean.C_TALON, "");
-			}
-			
-			
-			
+						
 			// Obtengo el idJuzgado y la idInstitucion del Juzgado:
 			Long idJuzgado=null;
 			Integer idInstitucionJuzgado=null;

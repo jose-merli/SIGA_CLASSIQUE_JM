@@ -879,29 +879,47 @@
 						</td>
 					</tr>
 					
-					<tr>
-						<td class="labelText" nowrap>
-							<siga:Idioma key="gratuita.actuacionesDesigna.literal.talonario"/>&nbsp;/&nbsp;
-							<siga:Idioma key="gratuita.actuacionesDesigna.literal.talon"/>					     
-						</td>
-						<td  colspan="4">	
-							 <%
-								 	if (!modoAnterior.equalsIgnoreCase("VER") && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))) {
-								 %>
-								<html:text name="ActuacionesDesignasForm" property="talonario" size="20" maxlength="20" styleClass="box" />
-								&nbsp;/&nbsp;
-					     		<html:text name="ActuacionesDesignasForm" property="talon" size="20"  maxlength="20" styleClass="box" />
-						     <%
-						     	} else {
-						     %>	
-					     		<html:text name="ActuacionesDesignasForm" property="talonario" size="20" styleClass="boxConsulta" readonly="true"/>
-					     		&nbsp;/&nbsp;
-					     		<html:text name="ActuacionesDesignasForm" property="talon" size="20" styleClass="boxConsulta" readonly="true"/>
-						     <%
-						     	}
-						     %>				     
-						</td>			
-					</tr>
+					<%if(pcajgActivo != CajgConfiguracion.TIPO_CAJG_WEBSERVICE_GENERALITAT_VALENCIANA){ %>
+							<tr>
+								<td class="labelText" nowrap>
+									<siga:Idioma key="gratuita.actuacionesDesigna.literal.talonario"/>&nbsp;/&nbsp;
+									<siga:Idioma key="gratuita.actuacionesDesigna.literal.talon"/>					     
+								</td>
+								<td  colspan="4">	
+									 <%
+										 	if (!modoAnterior.equalsIgnoreCase("VER") && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))) {
+										 %>
+										<html:text name="ActuacionesDesignasForm" property="talonario" size="20" maxlength="20" styleClass="box" />
+										&nbsp;/&nbsp;
+							     		<html:text name="ActuacionesDesignasForm" property="talon" size="20"  maxlength="20" styleClass="box" />
+								     <%
+								     	} else {
+								     %>	
+							     		<html:text name="ActuacionesDesignasForm" property="talonario" size="20" styleClass="boxConsulta" readonly="true"/>
+							     		&nbsp;/&nbsp;
+							     		<html:text name="ActuacionesDesignasForm" property="talon" size="20" styleClass="boxConsulta" readonly="true"/>
+								     <%
+								     	}
+								     %>				     
+								</td>			
+							</tr>
+						<%}else{ %>
+							<%
+								if (modoAnterior.equalsIgnoreCase("VER") || (modoAnterior.equalsIgnoreCase("EDITAR"))) {
+							 %>
+							 	<tr>
+									<td class="labelText" nowrap>
+										<siga:Idioma key="gratuita.actuacionesDesigna.literal.talonario"/>&nbsp;/&nbsp;
+										<siga:Idioma key="gratuita.actuacionesDesigna.literal.talon"/>					     
+									</td>
+									<td  colspan="4">	
+									 	<html:text name="ActuacionesDesignasForm" property="talonario" size="20" styleClass="boxConsulta" readonly="true"/>
+									    &nbsp;/&nbsp;
+									    <html:text name="ActuacionesDesignasForm" property="talon" size="20" styleClass="boxConsulta" readonly="true"/>
+									</td>
+								</tr>
+							<%} %>
+						<%} %>
 				</table>
 			</siga:ConjCampos>			
 
