@@ -275,19 +275,25 @@
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js'/>"></script>    
+	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js'/>"></script>   
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
+		
 
-       <style>
-table td { vertical-align: center }
-dd { padding-bottom: 15px }
+	
+  	<link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">
 
+    <style>
+		table td { vertical-align: center }
+		dd { padding-bottom: 15px }
+		.ui-dialog-titlebar-close {visibility: hidden;}
     </style>
 
 	   
 	 <script type="text/javascript">
-    	jQuery.noConflict();
+	 jQuery.noConflict();
     	jQuery(document).ready(function() {
             jQueryTop("#idTipoResolucionEJG", window.document).dropdownchecklist({ width: 375,maxDropHeight: 150,firstItemChecksAll: true, icon: {placement: 'right' ,toOpen:'ui-icon-triangle-1-s',toClose:'ui-icon-triangle-1-s'} });
       	});
@@ -472,6 +478,7 @@ if(usr.isComision()){
 		<html:hidden property = "idTipoResolucion" />
 		<html:hidden property = "idTipoFundamento" />	
 		<html:hidden property = "valorBusquedaExactaSolicitante" />
+		<html:hidden property = "idNuevoEstado"/>
 		
 		
 		
@@ -875,6 +882,14 @@ if(usr.isComision()){
 			</tr>
 		</table>
 	</siga:ConjCampos>
+	
+	<div id="cambioEstado" title="Cambiar estado" style="display:none">
+		<div>
+		  	<p class="labelTextValue"><siga:Idioma key='gratuita.busquedaEJG.seleccioneEstado'/></p>
+			<siga:Select id="idNuevoEstado" queryId="getEstadosEjg" width="300px"/>
+		</div>
+	</div>
+
 </html:form>
 
 	<html:form action="/CEN_BusquedaClientesModal.do" method="POST" target="mainWorkArea" type="" style="display:none">
@@ -926,9 +941,9 @@ if(usr.isComision()){
 			<%} 
 		}%>
 	<%}else if(ventanaCajg.equalsIgnoreCase("1")){%> <!-- Antiguo busquedaEJG_Cajg -->
-		<siga:ConjBotonesBusqueda botones="L,le,B, CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+		<siga:ConjBotonesBusqueda botones="L,le,B,ces,CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 	<%}else if(ventanaCajg.equalsIgnoreCase("2")){%> <!-- Antiguo busquedaEJG_Listos -->
-		<siga:ConjBotonesBusqueda botones="L,B,ar, CON"  titulo="gratuita.BusquedaRemesas_CAJG.literal.Remesa.ExpedientesListos" />
+		<siga:ConjBotonesBusqueda botones="L,B,ar,CON"  titulo="gratuita.BusquedaRemesas_CAJG.literal.Remesa.ExpedientesListos" />
 	<%}%>
 <!-- FIN: BOTONES BUSQUEDA -->	
 	
@@ -1304,6 +1319,50 @@ if(usr.isComision()){
 			jQuery("#apellido1").val(""); // apellido1
 			jQuery("#apellido2").val(""); // apellido2
 	}				
+		
+	function cambiarEstado(){
+		
+		try{
+		    var datos1 = window.frames.resultado.document.<%=formulario%>.selDefinitivo;
+		    
+		    if(datos1.value!=""){
+		    	jQuery("#cambioEstado").dialog(
+						{
+						      height: 270,
+						      width: 525,
+						      modal: true,
+						      resizable: false,
+						      buttons: {
+						          	"Cambiar": function() {
+						        	  accionCambiarSeleccionados();
+						        	  jQuery( this ).dialog( "close" );
+						            },
+						            "Cerrar": function() {
+						              jQuery( this ).dialog( "close" );
+						            }
+						          }
+						    }
+					);
+					jQuery(".ui-widget-overlay").css("opacity","0");
+		    }else{
+		    	alert("<siga:Idioma key='general.message.seleccionar'/>");
+		    }
+		}
+		catch (e){
+			alert("<siga:Idioma key='general.message.seleccionar'/>");
+		}
+	}
+	
+	function accionCambiarSeleccionados(){
+		if(confirm("<siga:Idioma key='messages.cajg.confirmarCambioEstado'/>")){		
+			var datos1 = window.frames.resultado.document.<%=formulario%>.selDefinitivo;
+			document.forms[0].idNuevoEstado.value=jQuery("#idNuevoEstado").val();
+			document.forms[0].selDefinitivo.value=datos1.value;
+			document.forms[0].modo.value = "listosCambiarEstado";
+			document.forms[0].submit();
+		}	
+	}
+	
 	</script>
 <!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 <!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->

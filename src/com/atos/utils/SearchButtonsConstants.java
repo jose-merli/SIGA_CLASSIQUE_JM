@@ -29,6 +29,7 @@ public enum SearchButtonsConstants {
 	RENEGOCIAR ("rn","general.boton.renegociar","renegociar(true)",21),
 	NUEVO_GRUPOS ("ng","general.boton.nuevoGrupos","nuevoGrupos()",22),
 	CERRAR ("ce","general.boton.close","cerrar()",23),	
+	CAMBIAR_ESTADO ("ces","general.boton.cambiarEstado","cambiarEstado()",20),
 	CONSULTAS ("con","general.boton.consultas","consultas()",24),
 	OBTENER_RESOLUCIONES ("or","general.boton.obtenerResoluciones","obtenerResoluciones()",25),
 	OBTENER_DESIGNAPROCURADOR ("odp","general.boton.obtenerDesignaProcurador","obtenerDesignaProcurador()",26),
@@ -38,7 +39,7 @@ public enum SearchButtonsConstants {
 	ACTUALIZAR_CENSO ("AC","censo.boton.actualizar","actualizarCenso()",28),
 	CONGIGURAR_PERFIL ("CONP","general.configp","configurar_perfil()",29),
 	ACTUALIZAR_CENSO_PROGRAMADO ("ACP","censo.boton.actualizarProgramdo","actualizarCensoProgramado()",28),
-	INFORME_GENERAL_DUPLICADOS ("igd","censo.busquedaDuplicados.botonInforme","informeGeneralDuplicados()",33);
+	INFORME_GENERAL_DUPLICADOS ("igd","censo.busquedaDuplicados.botonInforme","informeGeneralDuplicados()",33)	;
 	
     private final String valor;   
 	private final String label;   

@@ -125,6 +125,8 @@ public class DefinirCAJGAction extends MasterAction {
 					mapDestino = abrir(mapping, miForm, request, response);						
 				}else if (accion.equalsIgnoreCase("listosParaComision")){
 					mapDestino = listosParaComision(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("listosCambiarEstado")){
+					mapDestino = listosCambiarEstado(mapping, miForm, request, response);
 				}else {
 					return super.executeInternal(mapping,
 							      formulario,
@@ -1368,6 +1370,76 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 			return numRegistrosAnterior != numRegistrosActual;
 		}
 		return false;
+	}
+	
+	
+	protected String listosCambiarEstado(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
+			throws SIGAException {
+		BusquedaCAJG_EJGForm miForm = (BusquedaCAJG_EJGForm) formulario;
+		String seleccionados = miForm.getSelDefinitivo(); 
+		String idEstado= miForm.getIdNuevoEstado();
+		Vector claves = (Vector) request.getSession().getAttribute("EJG_SELECCIONADOS");
+		Vector v_seleccionadosSesion = new Vector();
+		if (seleccionados != null && !seleccionados.equals("")) {
+			v_seleccionadosSesion = actualizarSelecionados(seleccionados, claves, request);
+			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			ScsEstadoEJGAdm admBean = new ScsEstadoEJGAdm(usr);
+			UserTransaction tx = null;
+			try {
+				tx = usr.getTransaction();
+				tx.begin();
+
+				// comprobar si se han insertado nuevos EJG con los criterios de búsqueda
+				String mensaje = "messages.inserted.success";
+				
+				String sqlMaxIdEstadoPorEJG = "SELECT NVL(MAX(IDESTADOPOREJG), 0) + 1" +
+						" FROM SCS_ESTADOEJG E" +
+						" WHERE E.IDINSTITUCION = EJG.IDINSTITUCION" +
+						" AND E.ANIO = EJG.ANIO" +
+						" AND E.NUMERO = EJG.NUMERO" +
+						" AND E.IDTIPOEJG = EJG.IDTIPOEJG";
+				
+				String sqlInsertEstadoEJG = new String("insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
+						", fechainicio, fechamodificacion, usumodificacion, observaciones, idestadoporejg, automatico)" +
+						" SELECT EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO, '" + idEstado + "'" +
+						", TRUNC(SYSDATE), SYSDATE, " + getUserBean(request).getUserName() + ", NULL, (" + sqlMaxIdEstadoPorEJG + "), 0" +
+						" FROM SCS_EJG EJG" +
+						" WHERE EJG.IDINSTITUCION = " + getIDInstitucion(request) + 
+						" AND (1 = 0");
+				
+				
+				int cuenta = 0;
+				StringBuffer sb = new StringBuffer();
+				
+				for (int i = 0; i < v_seleccionadosSesion.size(); i++) {
+
+					Hashtable miHashaux = new Hashtable();
+					miHashaux = (Hashtable) v_seleccionadosSesion.get(i);
+					String seleccionado = (String) miHashaux.get("SELECCIONADO");
+
+					if (seleccionado.equals("1")) {
+						cuenta++;
+						sb.append(" OR (EJG.ANIO = " + miHashaux.get(ScsEJGBean.C_ANIO) +
+								" AND EJG.NUMERO = " + miHashaux.get(ScsEJGBean.C_NUMERO) +
+								" AND EJG.IDTIPOEJG = " + miHashaux.get(ScsEJGBean.C_IDTIPOEJG) + ")");
+						if ((cuenta % 500) == 0) {							
+							admBean.insertSQL(sqlInsertEstadoEJG + sb.toString() + ")");
+							sb = new StringBuffer();							
+						}
+					}
+
+				}
+				admBean.insertSQL(sqlInsertEstadoEJG + sb.toString() + ")");
+				tx.commit();
+				
+				return exitoRefresco(mensaje, request);
+			
+			} catch (Exception e) {
+				throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, tx);
+			}
+
+		}
+		return exitoRefresco("messages.cajg.error.listos", request);
 	}
 	
 	

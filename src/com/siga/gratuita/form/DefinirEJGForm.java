@@ -1116,7 +1116,13 @@ import com.siga.censo.form.DatosRegTelForm;
 		public void setNotasCAJG(String notasCAJG) {
 			this.notasCAJG = notasCAJG;
 		}
-
+		public void setIdNuevoEstado(String idEstado) {
+			this.datos.put("NUEVO_ESTADO", idEstado);
+		}
+	 	
+		public String getIdNuevoEstado() {
+			return UtilidadesHash.getString(this.datos,"NUEVO_ESTADO");			
+		}
 		
 
 				

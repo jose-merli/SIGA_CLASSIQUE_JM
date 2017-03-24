@@ -438,3 +438,17 @@ comment on column cen_direcciones.OTRAPROVINCIA
 comment on column CEN_SOLIMODIDIRECCIONES.OTRAPROVINCIA
   is '0: La provincia coincide con el código postal, 1: La provincia puede o no coincidir con el código postal';
 
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('general.boton.cambiarEstado', 'Cambiar estado', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('general.boton.cambiarEstado', 'Cambiar estado#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('general.boton.cambiarEstado', 'Cambiar estado#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('general.boton.cambiarEstado', 'Cambiar estado#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('gratuita.busquedaEJG.seleccioneEstado', 'Seleccione el nuevo estado', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('gratuita.busquedaEJG.seleccioneEstado', 'Seleccione el nuevo estado#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('gratuita.busquedaEJG.seleccioneEstado', 'Seleccione el nuevo estado#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('gratuita.busquedaEJG.seleccioneEstado', 'Seleccione el nuevo estado#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('messages.cajg.confirmarCambioEstado', 'Se va a cambiar añadir el nuevo estado a los expedientes seleccionados.', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('messages.cajg.confirmarCambioEstado', 'Se va a cambiar añadir el nuevo estado a los expedientes seleccionados.#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('messages.cajg.confirmarCambioEstado', 'Se va a cambiar añadir el nuevo estado a los expedientes seleccionados.#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('messages.cajg.confirmarCambioEstado', 'Se va a cambiar añadir el nuevo estado a los expedientes seleccionados.#GL', '0', 4, Sysdate, 0, '19');
