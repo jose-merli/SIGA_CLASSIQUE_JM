@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import="com.siga.ws.CajgConfiguracion"%>
 <html>
 <head>
 <!-- busquedaDesignas.jsp -->
@@ -27,7 +28,7 @@
 	String app=request.getContextPath(); 
 	HttpSession ses=request.getSession(true);
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");
-	
+	String pcajgTipo = request.getAttribute("PCAJG_TIPO")==null?"":(String)request.getAttribute("PCAJG_TIPO");
 	boolean esComisionMultiple = usr.getInstitucionesComision()!=null &&usr.getInstitucionesComision().length>1;
 
 	String nColegiado =  request.getAttribute("nColegiado")==null?"":(String)request.getAttribute("nColegiado");
@@ -676,7 +677,11 @@
 	<%if(usr.isLetrado()){%>	
 		<siga:ConjBotonesBusqueda botones="C,L,B,IJ"  titulo="gratuita.busquedaDesignas.literal.titulo"/>
 	<%}else{%>
-		<siga:ConjBotonesBusqueda botones="C,L,B,N,IJ, CON"  titulo="gratuita.busquedaDesignas.literal.titulo"/>
+		<%if(pcajgTipo == null || !pcajgTipo.equals(""+CajgConfiguracion.TIPO_CAJG_TXT_ALCALA)){%>
+			<siga:ConjBotonesBusqueda botones="C,L,B,N,IJ, CON"  titulo="gratuita.busquedaDesignas.literal.titulo"/>
+		<%}else{%>
+			<siga:ConjBotonesBusqueda botones="C,L,B,IJ, CON"  titulo="gratuita.busquedaDesignas.literal.titulo"/>
+		<%}%>
 		<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 		<html:form action="/CON_RecuperarConsultas" method="POST" target="mainWorkArea">
 			<html:hidden property="idModulo" value="<%=ConModuloBean.IDMODULO_SJCS %>"/>

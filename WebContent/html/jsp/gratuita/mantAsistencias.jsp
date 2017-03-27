@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import="com.siga.ws.CajgConfiguracion"%>
 <html>
 <head>
 <!-- mantAsistencias.jsp -->
@@ -1327,7 +1328,10 @@
 		else if ((DESIGNA_ANIO   != null) && (!DESIGNA_ANIO.equals("")))    condicion &= false;
 		else if ((DESIGNA_NUMERO != null) && (!DESIGNA_NUMERO.equals("")))  condicion &= false;
 		if ((IDPERSONAJG != null && !IDPERSONAJG.equals("")) && condicion && accion != null && accion.equalsIgnoreCase("modificar")) {
-			botonesDesignaEJG += ",cd,rd";
+			if(PCAJG_ACTIVADO!=CajgConfiguracion.TIPO_CAJG_TXT_ALCALA)	
+				botonesDesignaEJG += ",cd,rd";
+			else
+				botonesDesignaEJG += ",rd";
 		}
 		/////////////////////////
 		
