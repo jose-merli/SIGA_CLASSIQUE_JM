@@ -12,30 +12,42 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION;
 import org.redabogacia.sigaservices.app.AppConstants.FCS_MAESTROESTADOS_ENVIO_FACT;
 import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
 import org.redabogacia.sigaservices.app.autogen.model.FcsFacturacionEstadoEnvio;
+import org.redabogacia.sigaservices.app.autogen.model.PcajgAlcActErrorCam;
+import org.redabogacia.sigaservices.app.autogen.model.VPcajgAlcActErrorCam;
 import org.redabogacia.sigaservices.app.services.caj.XuntaEnviosJEService;
+import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
+import org.redabogacia.sigaservices.app.services.fac.PcajgAlcActService;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
@@ -58,8 +70,10 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.informes.InformePersonalizable;
 import com.siga.servlets.SIGASvlProcesoAutomaticoRapido;
+import com.siga.ws.CajgConfiguracion;
 import com.siga.ws.InformeXML;
 import com.siga.ws.JustificacionEconomicaWS;
+import com.siga.ws.i2003.je.AlcalaJE;
 
 import es.satec.businessManager.BusinessManager;
 
@@ -126,6 +140,12 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			if (((String)miForm.getModo()!=null)&&(((String)miForm.getModo()).equalsIgnoreCase("accionXuntaEnvioJustificacion"))){
 				return mapping.findForward(this.accionXuntaEnvioJustificacion(mapping, miForm, request, response));
 			}
+			
+			if (((String)miForm.getModo()!=null)&&(((String)miForm.getModo()).equalsIgnoreCase("subirFicheroCAM"))){
+				return mapping.findForward(this.subirFicheroCAM(mapping, miForm, request, response));
+			}
+			
+			
 
 			return super.executeInternal(mapping, formulario, request, response);
 		}
@@ -137,6 +157,92 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		}
 	}
 	
+	private String subirFicheroCAM(ActionMapping mapping, MasterForm masterForm, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {
+			DatosGeneralesFacturacionForm miform = (DatosGeneralesFacturacionForm) masterForm;			
+			FormFile formFile = miform.getFile();
+			
+			if (formFile.getFileSize() == 0){
+				throw new SIGAException("message.cajg.ficheroValido"); 
+			}
+			
+			//creamos el registro de cola para la operación
+			EcomCola ecomCola = new EcomCola();
+			ecomCola.setIdinstitucion(Short.parseShort(miform.getIdInstitucion()));
+			ecomCola.setIdoperacion(OPERACION.PCAJG_ALCALA_JE_FICHERO_ERROR.getId());
+			
+			
+			Map<String, String> mapa = new HashMap<String, String>();
+			mapa.put(PcajgAlcActErrorCam.C_IDFACTURACION, miform.getIdFacturacion());
+			
+			File rutaAlmacen = getRutaAlmacenFichero(miform.getIdInstitucion(), miform.getIdFacturacion());
+			File file = new File(rutaAlmacen, formFile.getFileName());
+			guardaFichero(file, formFile.getInputStream());
+			
+			mapa.put(AppConstants.PCAJG_ALC_CAM_PATH, file.getAbsolutePath());
+			
+			EcomColaService ecomColaService = (EcomColaService) getBusinessManager().getService(EcomColaService.class);
+			ecomColaService.insertaColaConParametros(ecomCola, mapa);
+						
+			insertaEstadoFacturacion(request, miform.getIdInstitucion(), miform.getIdFacturacion());
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.facturacionSJCS" }, e, null);
+		}
+		
+		return exitoRefresco("messages.inserted.success.ficheroErrorActuacionesCAM", request);
+	}
+
+	private void insertaEstadoFacturacion(HttpServletRequest request, String idInstitucion, String idFacturacion) throws Exception {
+		
+		FcsFactEstadosFacturacionAdm admEstado = new FcsFactEstadosFacturacionAdm(this.getUserBean(request));
+		String estadoActualFacturacion = admEstado.getIdEstadoFacturacion(idInstitucion, idFacturacion);
+		
+		//comprobamos que la facturacion se encuentra ejecutada o no validada o rechazada
+		int estadoActualFac = Integer.parseInt(estadoActualFacturacion);
+		
+		if (estadoActualFac == ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo() ) {
+			UserTransaction tx = getUserBean(request).getTransaction();
+			tx.begin();
+			FcsFactEstadosFacturacionBean beanEstado = new FcsFactEstadosFacturacionBean();
+			beanEstado.setIdInstitucion(Integer.parseInt(idInstitucion));
+			beanEstado.setIdFacturacion(Integer.parseInt(idFacturacion));
+			beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA.getCodigo()));
+			beanEstado.setFechaEstado("SYSDATE");
+			beanEstado.setIdOrdenEstado(new Integer(admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion)));
+			//Thread.sleep(1000);
+			admEstado.insert(beanEstado);
+			tx.commit();
+		}
+		
+		
+	}
+
+	private File getRutaAlmacenFichero(String idInstitucion, String idFacturacion) {
+		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String rutaAlmacen = rp.returnProperty("gen.ficheros.path");
+		
+		File parentFile = new File(rutaAlmacen, "erroresActuacionesCAM");
+		parentFile = new File(rutaAlmacen, idInstitucion);
+		parentFile = new File(parentFile, idFacturacion);
+		parentFile.mkdirs();
+		
+		return parentFile;
+	}
+	
+	private void guardaFichero(File file, InputStream is) throws Exception {
+		OutputStream bos = new FileOutputStream(file);
+		int bytesRead = 0;
+		byte[] buffer = new byte[8192];
+		while ((bytesRead = is.read(buffer, 0, 8192)) != -1) {
+			bos.write(buffer, 0, bytesRead);
+		}
+		
+		is.close();
+		bos.flush();
+		bos.close();
+	}
+
 	private String accionXuntaEnvioJustificacion(ActionMapping mapping, MasterForm miForm, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		return accionXuntaEnvios(miForm, request, OPERACION.XUNTA_ENVIO_JUSTIFICACION);
 	}
@@ -397,6 +503,8 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			
 			request.setAttribute(FcsFacturacionEstadoEnvio.C_IDESTADOENVIOFACTURACION, ultimoEstadoEnvio);
 			
+			generarSeleccionInformeCAM(request, (DatosGeneralesFacturacionForm)formulario, idInstitucion, idFacturacion);
+			
 			// para ver si ya se ha ejecutado
 			request.setAttribute("yaHaSidoEjecutada",new Boolean(facturaAdm.yaHaSidoEjecutada(idInstitucion,idFacturacion)));
 			if(borrar !=null && borrar.equalsIgnoreCase("S"))
@@ -475,6 +583,19 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		return forward;
 	}
 	
+	private void generarSeleccionInformeCAM(HttpServletRequest request, DatosGeneralesFacturacionForm datosGeneralesFacturacionForm, String idInstitucion, String idFacturacion) throws Exception, ClsExceptions {
+		
+		if (CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
+			PcajgAlcActService pcajgAlcActService = (PcajgAlcActService) getBusinessManager().getService(PcajgAlcActService.class);
+			List<VPcajgAlcActErrorCam> listaErroresCAM = pcajgAlcActService.getListaErroresCAMporFacturacion(Short.parseShort(idInstitucion), Integer.parseInt(idFacturacion));
+			if (listaErroresCAM != null && listaErroresCAM.size() > 0) {
+				request.setAttribute(VPcajgAlcActErrorCam.T_V_PCAJG_ALC_ACT_ERROR_CAM, listaErroresCAM);
+				datosGeneralesFacturacionForm.setTipoFicheroCAMRadio(AlcalaJE.TIPO_FICHERO_CAM.NINGUNO.name());
+			}
+		}
+		
+	}
+
 	protected Vector getDetalleFacturacion (String idInstitucion, String idFacturacion, HttpServletRequest request) throws ClsExceptions
 	{
 		//resultado final, vector de Hashtables
@@ -1361,6 +1482,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 				//Si el nombre físico del dichero no se ha guardado antes, se actualiza en bbdd
 				if(fichero==null || !fichero.exists()){				
 					informePersonalizable.setIdFacturacion(idFacturacion);
+					informePersonalizable.setTipoFicheroCAM(miform.getTipoFicheroCAMRadio());
 					fichero = informePersonalizable.getFicheroGenerado(user,  InformePersonalizable.I_INFORMEFACTSJCS,null, filtrosInforme);
 					if (!informePersonalizable.isEliminarFichero()) {
 						nombreFichero = fichero.getPath();

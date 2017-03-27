@@ -1209,6 +1209,9 @@ public class ActuacionesDesignasAction extends MasterAction {
 			//Por defecto 0 ya que se elimina de la interfaz:
 			actuacionModificada.put(ScsActuacionDesignaBean.C_ACUERDOEXTRAJUDICIAL,"0");
 			
+			actuacionModificada.put(ScsActuacionDesignaBean.C_IDFACTURACION, miform.getIdfacturacion());
+			actuacionModificada.put(ScsActuacionDesignaBean.C_FACTURADO, miform.getFacturado());
+			
 			
 			// Obtengo el idPrision y la idInstitucion del Prision:
 			Long idPrision=null;
