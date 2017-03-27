@@ -306,6 +306,66 @@
 	String fechaAuto = "";
 	if (hashDesigna.containsKey("FECHAAUTO"))
 		fechaAuto = GstDate.getFormatedDateShort("", hashDesigna.get(ScsEJGBean.C_FECHAAUTO).toString()).toString();
+	
+	
+	String idPretensionParamsJSON = "";
+	String comboPretensiones = "";
+	String comboPretensionesParentQueryIds= "";
+	
+	
+	
+	String paramsJuzgadoJSON= "";
+	String fechaVigor = "";
+	String comboModulosParentQueryIds= ""; 
+	String idProcedimientoParamsJSON= "";
+	String comboAcreditacionParentQueryIds ="";
+	String idAcreditacionParamsJSON = "";
+	if(isColegioAlcala && (modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){
+		if(filtrarModulos.equals(ClsConstants.FILTRAR_MODULOS_FECHAACTUAL)) {
+			fechaVigor = GstDate.getHoyJsp();			
+		} else {
+			fechaVigor = fecha;
+		}
+		
+		
+
+		paramsJuzgadoJSON = "{\"idjuzgado\":\""+idJuzgado+"\"";
+		paramsJuzgadoJSON += ",\"idturno\":\""+idTurno+"\"";
+		paramsJuzgadoJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
+		paramsJuzgadoJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"";
+		paramsJuzgadoJSON += ",\"idpretension\":\""+idPretension+"\"";
+		paramsJuzgadoJSON += ",\"idprocedimiento\":\""+idProcedimiento+"\"}";
+		juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\",\"idpretension\":\""+idPretension+"\",\"idprocedimiento\":\""+idProcedimiento+"\"}");
+		
+		comboPretensiones = "getPretensionesAlcala";
+		comboPretensionesParentQueryIds = "idjuzgado,fechadesdevigor,fechahastavigor";
+		
+		idPretensionParamsJSON = "{\"idpretension\":\""+idPretension+"\"";
+		idPretensionParamsJSON += ",\"idjuzgado\":\""+idJuzgado+"\"";
+		idPretensionParamsJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
+		idPretensionParamsJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"";
+		idPretensionParamsJSON += ",\"idprocedimiento\":\""+idProcedimiento+"\"}";
+		String pretensionSelStr = "{\"idpretension\":\""+idPretension+"\"";
+		pretensionSelStr+= ",\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}";
+		pretensionSel.add(0,pretensionSelStr);
+		
+		comboModulosParentQueryIds = "idpretension,idjuzgado,fechadesdevigor,fechahastavigor";
+		idProcedimientoParamsJSON = "{\"idprocedimiento\":\""+idProcedimiento+"\"";
+		idProcedimientoParamsJSON += ",\"idjuzgado\":\""+idJuzgado+"\"";
+		idProcedimientoParamsJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
+		idProcedimientoParamsJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"";
+		idProcedimientoParamsJSON += ",\"idpretension\":\""+idPretension+"\"}";
+		procedimientoSel = new ArrayList();
+		procedimientoSel.add(0,"{\"idprocedimiento\":\""+idProcedimiento+"\",\"idinstitucion\":\""+idInstitucionProcedimiento+"\"}");
+		
+		comboAcreditacionParentQueryIds ="idprocedimiento";
+		idAcreditacionParamsJSON = "{\"idprocedimiento\":\""+idProcedimiento+"\"";
+		idAcreditacionParamsJSON += ",\"idinstitucion\":\""+idInstitucionProcedimiento+"\"}";
+		
+		
+	}
+	
+	
 %>
 
 <%@page import="com.siga.ws.CajgConfiguracion"%>
@@ -703,15 +763,15 @@
 	 								if (modoAnterior.equalsIgnoreCase("VER") || (modoJustificacion != null && modoJustificacion.equals("editarJustificacionFicha"))) {
 	 							%>							
 									<siga:ComboBD nombre="juzgado" ancho="500" tipo="<%=comboJuzgados%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento"/>
-							
 							<%
-															} else {
-														%>
+							} else if(isColegioAlcala && (modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){ %>
+								
+								<siga:Select id="juzgado" queryId="getJuzgadosJurisdiccionAlcala" queryParamId="idjuzgado,idturno,pretension,procedimiento" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500" childrenIds="pretension" readonly='<%=readOnlyCombo %>'/>
+							
+							<%} else { %>
 								<input type="text" name="codigoExtJuzgado" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerJuzgado();" />
 								<siga:ComboBD nombre="juzgado" ancho="400" tipo="<%=comboJuzgados%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>"  accion="Hijo:procedimiento; cambiarJuzgado(this);"/>
-							<%
-								}
-							%>
+							<%}	%>
 						</td>														
 					</tr>	
 					
@@ -723,7 +783,7 @@
 								</tr>
 							</table>
 						</td>				
-						<td > 
+						<td  colspan="2"> 
 							<%
  								if (!modoAnterior.equalsIgnoreCase("VER")) {
  							%> 
@@ -737,9 +797,9 @@
 							%>						
 						</td>
 									
-							<td id="info" style="display:none" ><img  id="imagenInfo" src="/SIGA/html/imagenes/info.gif"	style="cursor: hand;"	title="" border="0" />
+							<td  id="info" style="display:none" ><img  id="imagenInfo" src="/SIGA/html/imagenes/info.gif"	style="cursor: hand;"	title="" border="0" />
 						</td>
-						<td colspan="2"></td>
+						<td></td>
 					</tr>	
 							
 					<tr>
@@ -747,24 +807,25 @@
 							<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo"/>&nbsp;(*)			
 						</td>						
 						<td colspan="4">											
-							<%
-																			if (modoJustificacion != null && modoJustificacion.equals("nuevoJustificacion")) {
-																		%>
-			                	<siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboJuzgadosJustificacion%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
+							<% if(isColegioAlcala){
+								if(isColegioAlcala && (modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){%>
+								<siga:Select id="procedimiento" queryId="getProcedimientosEnVigenciaLetradoAlcala" parentQueryParamIds="<%=comboModulosParentQueryIds%>" params="<%=idProcedimientoParamsJSON%>" selectedIds="<%=procedimientoSel%>" childrenIds="acreditacion" disabled="<%=readOnlyCombo%>" width="750"/>
+	
+								<%} else {%>
+									<html:text name="ActuacionesDesignasForm" style="width:600px" property="procedimiento1" styleClass="boxConsulta" readonly="true" value="<%=nombreProcedimiento%>"/>
+								<%} 
+							}else{ 
+								if (modoJustificacion != null && modoJustificacion.equals("nuevoJustificacion")) {%>
+								<siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboJuzgadosJustificacion%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
+	
+								<%} else if ((esLetrado || modoAnterior.equalsIgnoreCase("VER")) || (modoJustificacion != null && modoJustificacion.equals("editarJustificacionFicha"))) {%>
+									<html:text name="ActuacionesDesignasForm" style="width:600px" property="procedimiento1" styleClass="boxConsulta" readonly="true" value="<%=nombreProcedimiento%>"/>
+								<%} else {%>				
+									<input type="text" id="codigoBusquedaAux" name="codigoBusquedaAux" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerProcedimiento();" />
+				                	<siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboModulos%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
+								<%}
+							}%>
 								
-							<%
-																} else if ((esLetrado || modoAnterior.equalsIgnoreCase("VER")) || (modoJustificacion != null && modoJustificacion.equals("editarJustificacionFicha"))) {
-															%>
-								<html:text name="ActuacionesDesignasForm" style="width:600px" property="procedimiento1" styleClass="boxConsulta" readonly="true" value="<%=nombreProcedimiento%>"/>
-								
-							<%
-																} else {
-															%>				
-								<input type="text" id="codigoBusquedaAux" name="codigoBusquedaAux" class="box" size="8"  style="margin-top:0px;" maxlength="10" onBlur="obtenerProcedimiento();" />
-			                	<siga:ComboBD ancho="600" nombre="procedimiento" tipo="<%=comboModulos%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>" hijo="t"  elementoSel="<%=procedimientoSel%>" accion="Hijo:acreditacion" />
-							<%
-								}
-							%>
 						</td>
 					</tr>		
 					
@@ -773,7 +834,11 @@
 							<siga:Idioma key="gratuita.procedimientos.literal.acreditacion"/>&nbsp;(*)
 						</td>			
 						<td  colspan="4">
+						<% if(isColegioAlcala && (modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){%>
+								<siga:Select id="acreditacion" queryId="getAcreditaciones" parentQueryParamIds="<%=comboAcreditacionParentQueryIds%>" params="<%=idAcreditacionParamsJSON%>" selectedIds="<%=acreditacionSel%>" disabled="<%=readOnlyCombo%>" width="750"/>
+	
 							<%
+							}else{ 
 								if (modoJustificacion != null && modoJustificacion.equals("nuevoJustificacion")) {
 							%>
 								<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>" accion="parent.cambiarAcreditacion();"/>
@@ -783,16 +848,15 @@
 								<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="true"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>" />	
 							<%
 									} else {
-												if (esLetrado) {
-								%>
-									<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>"  accion="parent.cambiarAcreditacion();" />
-								<%
-									} else {
-								%>	
-									<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>"  accion="parent.cambiarAcreditacion();"/>
-								<%
+											if (esLetrado) {
+										%>
+											<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"   parametro="<%=paramAcreditacion%>" elementoSel="<%=acreditacionSel%>"  accion="parent.cambiarAcreditacion();" />
+										<%} else {%>	
+										<siga:ComboBD ancho="600" nombre="acreditacion" tipo="comboAcreditaciones" estilo="true" clase="<%=estiloCombo%>"  filasMostrar="1" seleccionMultiple="false" obligatorio="false" readonly="<%=readOnlyCombo%>"  hijo="t" elementoSel="<%=acreditacionSel%>"  accion="parent.cambiarAcreditacion();"/>
+									<%
+										}
 									}
-											}
+							}
 								%>
 						</td>
 					</tr>
@@ -830,29 +894,21 @@
 							if (modoJustificacion != null && modoJustificacion.equals("editarJustificacionFicha")) {
 						%>
 								<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="boxConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />
-							<%
-								} else {
-							%>
-								<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />										 
-								<%
-										 									if (pcajgActivo == CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) {
-										 								%>
-									<font class="labelText">
-										<siga:Idioma key="gratuita.altaGuardia.literal.motivoCambio"/>
-									</font>
-									<siga:ComboBD  ancho="300" nombre="idMotivoCambio" tipo="cmbActuacionDesignaMotivoCambio"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramMotivoCambio%>" elementoSel="<%=motCambioSel%>" />
-								<%
-									} else {
-								%>
-									<html:hidden property = "idMotivoCambio" value="<%=idMotivoCambio%>"/>
-								<%
-									}
-								%>
+							<%	} else {
 								
-							<%
-																}
-															%>
-							
+									if(isColegioAlcala && (modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){%>
+										<siga:Select id="pretension" queryId="getPretensionesAlcala" parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>" queryParamId="pretension" selectedIds="<%=pretensionSel %>" childrenIds="procedimiento" width="380" readOnly='readOnlyCombo%>"' />
+										<font class="labelText">
+											<siga:Idioma key="gratuita.altaGuardia.literal.motivoCambio"/>
+										</font>
+										<siga:ComboBD  ancho="300" nombre="idMotivoCambio" tipo="cmbActuacionDesignaMotivoCambio"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramMotivoCambio%>" elementoSel="<%=motCambioSel%>" />
+									
+									<%} else {%>
+										<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />
+										<html:hidden property = "idMotivoCambio" value="<%=idMotivoCambio%>"/>
+									<%}
+								}
+								%>
 						</td>					
 					</tr>
 								
@@ -1272,11 +1328,14 @@
 					}
 					<%if (isColegioAlcala) {%>					
 						if (document.forms[0].idMotivoCambio.value=='') {
-																			
-							if ('<%=(idJuzgadoDesigna + "," + juzgadoInstitucionDesigna)%>' != document.forms[0].juzgado.value) {
+							var jSonVolverObjectJuz =  jQuery.parseJSON(document.forms[0].juzgado.value);
+							
+							if ('<%=idJuzgadoDesigna%>' != jSonVolverObjectJuz.idjuzgado) {
 								error += "<siga:Idioma key='messages.gratuita.actuacionesDesigna.distintoJuzgado' />"+ '\n';
 							}
-							if ('<%=(idPretensionDesigna != null ? idPretensionDesigna : "")%>' != document.forms[0].pretension.value) {
+							var jSonVolverObjectPret =  jQuery.parseJSON(document.forms[0].pretension.value);												
+							
+							if ('<%=(idPretensionDesigna != null ? idPretensionDesigna : "")%>' != jSonVolverObjectPret.idpretension) {
 								error += "<siga:Idioma key='messages.gratuita.actuacionesDesigna.distintoProcedimiento' />"+ '\n';
 							}
 						}

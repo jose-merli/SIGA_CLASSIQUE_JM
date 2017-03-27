@@ -18,7 +18,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.json.JSONObject;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.ScsTiporesolauto;
@@ -38,7 +38,6 @@ import com.siga.beans.FcsFacturacionJGBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsAcreditacionAdm;
 import com.siga.beans.ScsAcreditacionBean;
-import com.siga.beans.ScsAcreditacionProcedimientoAdm;
 import com.siga.beans.ScsAcreditacionProcedimientoBean;
 import com.siga.beans.ScsActuacionAsistenciaBean;
 import com.siga.beans.ScsActuacionDesignaAdm;
@@ -819,6 +818,13 @@ public class ActuacionesDesignasAction extends MasterAction {
 			}
 			String pretension = miform.getPretension();
 			if (pretension!=null && !pretension.equals("")){
+				
+				
+				if (pretension.startsWith("{")){
+					// ES UN JSON
+					HashMap<String, String> hmIdJuzgadoObtenido = new ObjectMapper().readValue(pretension, HashMap.class);
+					pretension = hmIdJuzgadoObtenido.get("idpretension");
+				}
 				hash.put(ScsActuacionDesignaBean.C_IDPRETENSION, pretension);
 //				if(usr.isLetrado()){
 					fksActuacionHashtable = new Hashtable<String, Object>();
@@ -857,10 +863,22 @@ public class ActuacionesDesignasAction extends MasterAction {
 			// Obtengo el idJuzgado y la idInstitucion del Juzgado:
 			Long idJuzgado=null;
 			Integer idInstitucionJuzgado=null;
-			String[] juzgado = miform.getJuzgado().split(",");
-			if (juzgado!=null && !juzgado.equals("")){
-				idJuzgado = new Long(juzgado[0]);
-				idInstitucionJuzgado = new Integer(juzgado[1]);
+			
+			String sJuzgado = miform.getJuzgado();
+			if (sJuzgado!=null && !sJuzgado.equals("")){
+				
+				
+				if (sJuzgado.startsWith("{")){
+					// ES UN JSON
+					HashMap<String, String> hmIdJuzgadoObtenido = new ObjectMapper().readValue(sJuzgado, HashMap.class);
+					idJuzgado = new Long(hmIdJuzgadoObtenido.get("idjuzgado"));
+					idInstitucionJuzgado = new Integer(hmIdJuzgadoObtenido.get("idinstitucion"));
+				}else{
+					String[] juzgado = miform.getJuzgado().split(",");
+					idJuzgado = new Long(juzgado[0]);
+					idInstitucionJuzgado = new Integer(juzgado[1]);
+				}
+					
 				hash.put(ScsActuacionDesignaBean.C_IDJUZGADO, idJuzgado);
 				hash.put(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO, idInstitucionJuzgado);
 //				if(usr.isLetrado()){
@@ -871,19 +889,28 @@ public class ActuacionesDesignasAction extends MasterAction {
 					fksActuacionHashtable.put(ScsJuzgadoBean.C_IDJUZGADO, idJuzgado);
 					fksActuacionMap.put(ScsActuacionDesignaBean.C_IDJUZGADO,fksActuacionHashtable);
 //				}
+					
 				
-			} else {
+				
+			}else {
 				hash.put(ScsActuacionDesignaBean.C_IDJUZGADO, "");
 				hash.put(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO, "");
 			}
-				
-			
 			// Obtengo el idProcedimiento y la idInstitucion del Procedimiento:
 			Integer idProcedimiento = null, idInstitucionProcedimiento = null;
 			String procedimiento = miform.getProcedimiento();
+			
+			
 			if (procedimiento!=null && !procedimiento.equals("")){
-				idProcedimiento = new Integer(procedimiento.substring(0,procedimiento.indexOf(",")));
-				idInstitucionProcedimiento = new Integer(procedimiento.substring(procedimiento.indexOf(",")+1));
+				if (procedimiento.startsWith("{")){
+					// ES UN JSON
+					HashMap<String, String> hmIdJuzgadoObtenido = new ObjectMapper().readValue(procedimiento, HashMap.class);
+					idProcedimiento = new Integer(hmIdJuzgadoObtenido.get("idprocedimiento"));
+					idInstitucionProcedimiento= new Integer(hmIdJuzgadoObtenido.get("idinstitucion"));
+				}else{
+					idProcedimiento = new Integer(procedimiento.substring(0,procedimiento.indexOf(",")));
+					idInstitucionProcedimiento = new Integer(procedimiento.substring(procedimiento.indexOf(",")+1));
+				}
 				hash.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO, idProcedimiento.toString());
 				hash.put(ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO, idInstitucionProcedimiento);
 //				if(usr.isLetrado()){
@@ -1199,11 +1226,23 @@ public class ActuacionesDesignasAction extends MasterAction {
 			// Obtenemos la Pretension seleccionada
 			String idPretension = miform.getPretension();
 			if (idPretension!=null && !idPretension.equals("")){
-				actuacionModificada.put(ScsActuacionDesignaBean.C_IDPRETENSION, idPretension);
 				
+				
+				if (idPretension.startsWith("{")){
+					HashMap<String, String> hmIdJuzgadoObtenido = null;
+					try {
+						hmIdJuzgadoObtenido = new ObjectMapper().readValue(idPretension, HashMap.class);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					idPretension = hmIdJuzgadoObtenido.get("idpretension");
+				}
+				actuacionModificada.put(ScsActuacionDesignaBean.C_IDPRETENSION, idPretension);
+			
 			} else {
 				actuacionModificada.put(ScsActuacionDesignaBean.C_IDPRETENSION, "");
-				
+
 			}
 			
 			String talonario = miform.getTalonario();
@@ -1237,12 +1276,29 @@ public class ActuacionesDesignasAction extends MasterAction {
 			// Obtengo el idJuzgado y la idInstitucion del Juzgado:
 			Long idJuzgado=null;
 			Integer idInstitucionJuzgado=null;
-			String[] juzgado = miform.getJuzgado().split(",");
-			if (juzgado!=null && !juzgado.equals("")){
-				idJuzgado = new Long(juzgado[0]);
-				idInstitucionJuzgado = new Integer(juzgado[1]);
+			String sJuzgado=  miform.getJuzgado();
+			if (sJuzgado!=null && !sJuzgado.equals("")){
+				
+				
+				if (sJuzgado.startsWith("{")){
+					// ES UN JSON
+					HashMap<String, String> hmIdJuzgadoObtenido = null;
+					try {
+						hmIdJuzgadoObtenido = new ObjectMapper().readValue(sJuzgado, HashMap.class);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					idJuzgado = new Long(hmIdJuzgadoObtenido.get("idjuzgado"));
+					idInstitucionJuzgado = new Integer(hmIdJuzgadoObtenido.get("idinstitucion"));
+				}else{
+					String[] juzgado = miform.getJuzgado().split(",");
+					idJuzgado = new Long(juzgado[0]);
+					idInstitucionJuzgado = new Integer(juzgado[1]);
+				}
+			
 				actuacionModificada.put(ScsActuacionDesignaBean.C_IDJUZGADO, idJuzgado);
 				actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO, idInstitucionJuzgado);
+			
 			} else {
 				actuacionModificada.put(ScsActuacionDesignaBean.C_IDJUZGADO, "");
 				actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO, "");
@@ -1251,9 +1307,26 @@ public class ActuacionesDesignasAction extends MasterAction {
 			// Obtengo el idProcedimiento y la idInstitucion del Procedimiento:
 			Integer idProcedimiento=null, idInstitucionProcedimiento=null;
 			String procedimiento = miform.getProcedimiento();
+			
+			
 			if (procedimiento!=null && !procedimiento.equals("")){
-				idProcedimiento = new Integer(procedimiento.substring(0,procedimiento.indexOf(",")));
-				idInstitucionProcedimiento = new Integer(procedimiento.substring(procedimiento.indexOf(",")+1));
+				if (procedimiento.startsWith("{")){
+					// ES UN JSON
+					HashMap<String, String> hmIdJuzgadoObtenido = null;
+					try {
+						hmIdJuzgadoObtenido = new ObjectMapper().readValue(procedimiento, HashMap.class);
+					 
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					idProcedimiento = new Integer(hmIdJuzgadoObtenido.get("idprocedimiento"));
+					idInstitucionProcedimiento= new Integer(hmIdJuzgadoObtenido.get("idinstitucion"));
+				}else{
+					idProcedimiento = new Integer(procedimiento.substring(0,procedimiento.indexOf(",")));
+					idInstitucionProcedimiento = new Integer(procedimiento.substring(procedimiento.indexOf(",")+1));
+				}
+			
 				actuacionModificada.put(ScsActuacionDesignaBean.C_IDPROCEDIMIENTO, idProcedimiento);
 				actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO, idInstitucionProcedimiento);
 			} else {
@@ -1854,7 +1927,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			}
 			return ok;
 		    
-				
+			
 		
      }
      
