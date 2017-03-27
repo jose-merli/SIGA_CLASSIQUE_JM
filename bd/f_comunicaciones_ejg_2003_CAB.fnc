@@ -496,21 +496,13 @@ begin
           SELECT SEQ_CAJG_RESPUESTA_EJGREMESA.NEXTVAL, IDEJGREMESA,
           '|| i ||', ''' || v_arrayCondiciones(i).descripcion || ''', NULL, SYSDATE, SYSDATE, 0, 1
           FROM CAJG_EJGREMESA RE
-          WHERE NOT EXISTS (SELECT 1 FROM SCS_ESTADOEJG E, CAJG_EJGREMESA ER
-                  WHERE ER.IDEJGREMESA = RE.IDEJGREMESA
-                  AND E.IDINSTITUCION = ER.IDINSTITUCION
-                  AND E.ANIO = ER.ANIO
-                  AND E.NUMERO = ER.NUMERO
-                  AND E.IDTIPOEJG = ER.IDTIPOEJG
-				  AND E.FECHABAJA IS NULL
-                  AND E.IDESTADOEJG = 17)/*Listo remitir comisión actualización designación*/
-          /*AND RE.IDEJGREMESA NOT IN (SELECT IDEJGREMESA FROM CAJG_RESPUESTA_EJGREMESA)*/
-          AND RE.IDEJGREMESA IN (SELECT ER.IDEJGREMESA
+          WHERE RE.IDEJGREMESA IN (SELECT ER.IDEJGREMESA
             FROM CAJG_EJGREMESA ER WHERE ER.IDINSTITUCION = ' || P_INSTITUCION ||
                  ' AND ER.IDREMESA = ' || P_IDREMESA || ')
             AND RE.IDEJGREMESA NOT IN (SELECT T.IDEJGREMESA FROM (SELECT ER.IDEJGREMESA, ' ||
                  SALIDA || ') T
             WHERE ' || v_arrayCondiciones(i).condicion || ')';
+            --dbms_output.put_line(substr(sentencia,0,2000));
     EXECUTE IMMEDIATE to_char(sentencia);
     condiciones := condiciones || ' AND ' || v_arrayCondiciones(i).condicion;
   end loop;
@@ -519,4 +511,3 @@ begin
   return salida;
 
 end f_comunicaciones_ejg_2003_CAB;
-/
