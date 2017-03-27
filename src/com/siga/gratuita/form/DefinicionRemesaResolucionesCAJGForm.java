@@ -13,7 +13,13 @@ public class DefinicionRemesaResolucionesCAJGForm extends MasterForm {
 	 */
 	private static final long serialVersionUID = 5790479468941009622L;
 	private FormFile file;
-	
+	private String idRemesa ;
+	public String getIdRemesa() {
+		return idRemesa;
+	}
+	public void setIdRemesa(String idRemesa) {
+		this.idRemesa = idRemesa;
+	}
 	/**
 	 * @return the file
 	 */

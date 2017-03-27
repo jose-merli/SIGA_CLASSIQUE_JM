@@ -146,6 +146,11 @@
 			document.DefinicionRemesaResolucionesCAJGForm.submit();
 		}
 		
+		function editarRemesa(fila) {
+	    	document.DefinicionRemesas_CAJG_Form.idRemesa.value=document.getElementById('idRemesa_'+fila).value;
+			document.DefinicionRemesas_CAJG_Form.submit();
+		}
+		
 		
 		
 	</script>
@@ -157,6 +162,8 @@
 		<input type="hidden" name="modo"  id="modo"  value="">
 		<input type="hidden" name="idRemesaResolucion"  id="idRemesaResolucion" value="">
 		<html:hidden property = "idTipoRemesa"  styleId = "idTipoRemesa"  value = "<%=idTipoRemesa%>"/>
+		
+		
 				
 	</html:form>	
 		
@@ -185,7 +192,7 @@
 			
 	    	
 	    	botones="C,E";
-	    	FilaExtElement[] elems = new FilaExtElement[2];
+	    	FilaExtElement[] elems = new FilaExtElement[3];
 	    	
 	    	String prefijo = (String)registro.get("PREFIJO");
     		String sufijo = (String)registro.get("SUFIJO");
@@ -193,10 +200,15 @@
 				numRemesa+=(String)registro.get("NUMERO");
 				numRemesa+=(sufijo!=null && !sufijo.trim().equals(""))?(sufijo):"";
 			
+	    	String idRemesa = registro.get("IDREMESA")!=null?(String)registro.get("IDREMESA"):"";
 	    	
 	    	elems[0]=new FilaExtElement("download", "descargar", "gratuita.BusquedaResolucionCAJG.literal.FicheroResoluciones", SIGAConstants.ACCESS_FULL);
 	    	if (registro.get("LOGGENERADO") != null && registro.get("LOGGENERADO").equals("1") ) {
 	    		elems[1]=new FilaExtElement("descargaLog", "descargarLog", "gratuita.BusquedaResolucionCAJG.literal.FicheroLog", SIGAConstants.ACCESS_FULL);
+	    	}
+	    	
+	    	if (registro.get("IDREMESA") != null && !registro.get("IDREMESA").equals("") ) {
+	    		elems[2]=new FilaExtElement("abrirFacturas","editarRemesa",  "gratuita.BusquedaRemesas_CAJG.literal.Remesa", SIGAConstants.ACCESS_FULL);
 	    	}
 	    	
 	    	String observaciones = (String)registro.get("OBSERVACIONES");
@@ -215,7 +227,11 @@
 			%>
 			
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' elementos="<%=elems%>" visibleBorrado="false" pintarEspacio="no" botones="<%=botones%>" clase="listaNonEdit">
-					<td align="center"><%=numRemesa%>&nbsp;</td>
+
+					<td align="center">
+						<input type="hidden" id="idRemesa_<%=recordNumber%>" value='<%=idRemesa%>' />
+						<%=numRemesa%>&nbsp;
+					</td>
 					<td align="center">
 					<%=registro.get("FECHACARGA").equals("")?"&nbsp;":GstDate.getFormatedDateShort("",UtilidadesString.mostrarDatoJSP(registro.get("FECHACARGA")))%></td>
 					</td>
@@ -261,7 +277,11 @@
 			alert('<%=mensajeUsuario%>');
 		</script>
 	<%}%>
-	 
+	 <html:form action="/JGR_E-Comunicaciones_Gestion.do?noReset=true" method="POST" target="mainWorkArea" >
+		<html:hidden property = "modo" value = "Editar"/>
+		<html:hidden property = "idInstitucion" value = "<%=usr.getLocation()%>"/>
+		<html:hidden property = "idRemesa"  styleId = "idRemesa"  />
+		</html:form>
 <!-- INICIO: SUBMIT AREA -->
 	<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->	
