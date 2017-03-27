@@ -189,7 +189,7 @@ public class CajgRespuestaEJGRemesaAdm extends MasterBeanAdministrador {
 	     builder.append(Integer.parseInt(idRemesa));
 	     builder.append(" AND NUMEROINTERCAMBIO = ");
 	     builder.append(Integer.parseInt(numeroIntercambio));
-	     builder.append(")");
+	     builder.append("/10)");
 		
 		try {
 			insertSQL(builder.toString());
