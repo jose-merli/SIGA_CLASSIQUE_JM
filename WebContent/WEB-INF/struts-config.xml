@@ -771,6 +771,13 @@
 			<forward name="resultado" path="/html/jsp/censo/ws/resultadoBusquedaRemesas.jsp"/>
 		</action>
 		
+		<action path="/JGR_E-Comunicaciones_Gestion" type="com.siga.censo.ws.action.BusquedaRemesasAction" name="BusquedaRemesasForm" scope="session">
+			<forward name="inicio" path="/html/jsp/censo/ws/busquedaRemesas.jsp"/>		
+			<forward name="resultado" path="/html/jsp/censo/ws/resultadoBusquedaRemesas.jsp"/>
+		</action>
+		
+		
+		
 		<action path="/CEN_NuevaRemesa" type="com.siga.censo.ws.action.NuevaRemesaAction" name="NuevaRemesaForm" scope="request">
 		</action>
 		
@@ -2999,8 +3006,10 @@
 			<forward name="listarProcedimientos" path="/html/jsp/gratuita/consultaProcedimientos.jsp"/>
 			<forward name="mantenimiento" path="/html/jsp/gratuita/datosProcedimientos.jsp"/>
 			<forward name="nuevoAcreditacion" path="/html/jsp/gratuita/datosProcedimientosAcreditacion.jsp"/>
+			<forward name="nuevoPretension" path="/html/jsp/gratuita/modalNuevoPretension.jsp"/>
 			<forward name="exitoInsercionProcedimiento" path="/html/jsp/gratuita/exitoInsercionProcedimiento.jsp"/>
-            <forward name="buscarProcedimiento" path="/html/jsp/gratuita/buscarProcedimientoOculta.jsp"/>			
+            <forward name="buscarProcedimiento" path="/html/jsp/gratuita/buscarProcedimientoOculta.jsp"/>		
+            	
 		</action>
 
 		<!-- ***** Justicia Gratuita / Mantenimiento Incompatibilidades de Guardias *****
@@ -3029,6 +3038,14 @@
 			<forward name="editar" path="/html/jsp/gratuita/pestanaEJG.jsp"/>	
 			<forward name="exitoEJG" path="/html/jsp/gratuita/exitoEJG.jsp"/>
 		</action>
+		<action path="/JGR_E-Comunicaciones_EJGPendientes" type="com.siga.gratuita.action.DefinirCAJGAction" name="BusquedaCAJG_EJGForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaEJG.jsp?ventanaCajg=3"/>
+			<forward name="listarEJG" path="/html/jsp/gratuita/listadoCAJG_EJG.jsp"/>		
+			
+		</action>
+		
+		
+		
 		<!-- ***** Justicia Gratuita / e_comunicaciones / Gestion ***** -->
 		<action path="/JGR_E-Comunicaciones_Gestion" type="com.siga.gratuita.action.DefinirRemesasCAJGAction" name="DefinicionRemesas_CAJG_Form" >
 			<forward name="inicio" path="/html/jsp/gratuita/BusquedaRemesas_CAJG.jsp"/>

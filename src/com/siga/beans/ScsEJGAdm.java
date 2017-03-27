@@ -1942,6 +1942,469 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		return hashReturn;
 	}
 	
+public Hashtable getBindWhereEJG(Hashtable miHash, DefinirEJGForm miForm, TipoVentana tipoVentana, String idInstitucion,String longitudNumEjg) throws ClsExceptions,SIGAException{
+		
+		Hashtable hashReturn = new Hashtable(); 
+
+		Hashtable codigos = new Hashtable();
+		int contador=0;
+		boolean isBusquedaExactaSolicitante = miForm.getValorBusquedaExactaSolicitante()!=null && miForm.getValorBusquedaExactaSolicitante().equals(ClsConstants.DB_TRUE);
+		miHash.put("chkBusquedaExactaSolicitante",isBusquedaExactaSolicitante);
+		
+//		String where = "SELECT * FROM (";
+		String where = "";
+		where+=	"  SELECT EJG.ANIO,	       EJG.NUMERO,     EJG.IDINSTITUCION, ";
+		where+=	" EJG.IDTIPOEJG, EJG.FECHAMODIFICACION,  F_SIGA_GET_IDULTIMOESTADOEJG(EJG.IDINSTITUCION, ";
+		where+=	" EJG.IDTIPOEJG, ";
+		where+=	" EJG.ANIO, ";
+		where+=	" EJG.NUMERO) IDESTADO, ";
+		where+=	" F_SIGA_GET_ULTIMOESTADOEJG(EJG.IDINSTITUCION, ";
+		where+=	" EJG.IDTIPOEJG, ";
+		where+=	" EJG.ANIO, ";
+		where+=	" EJG.NUMERO) DESC_ESTADO ";
+		where+=	" ,EJG.GUARDIATURNO_IDTURNO,EJG.GUARDIATURNO_IDGUARDIA " ;
+		where+=	" ,EJG.NUMEJG ";
+		where+=	" ,EJG.FECHAAPERTURA ";
+		where+=	" ,TEJ.DESCRIPCION TIPOEJG";
+		
+	                                    
+		where+=	" fROM SCS_DESIGNA DESIGNA, SCS_EJGDESIGNA EJGDES, SCS_EJG EJG, SCS_TIPOEJG TEJ ";
+		where+=	" WHERE DESIGNA.IDINSTITUCION = EJGDES.IDINSTITUCION ";
+		where+=	" AND DESIGNA.IDTURNO = EJGDES.IDTURNO ";
+		where+=	" AND DESIGNA.ANIO = EJGDES.ANIODESIGNA ";
+		where+=	" AND DESIGNA.NUMERO = EJGDES.NUMERODESIGNA ";
+		where+=	" AND EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ";
+		where+=	" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ";
+		where+=	" AND EJGDES.ANIOEJG = EJG.ANIO ";
+		where+=	" AND EJGDES.NUMEROEJG = EJG.NUMERO ";
+		where+=	" AND EJG.IDTIPOEJG = TEJ.IDTIPOEJG ";
+		
+		where+=	" AND EXISTS (SELECT * ";
+		where+=	" FROM SCS_ACTUACIONDESIGNA ACT ";
+		where+=	" WHERE ACT.IDINSTITUCION = DESIGNA.IDINSTITUCION ";
+		where+=	" AND ACT.IDTURNO = DESIGNA.IDTURNO ";
+		where+=	" AND ACT.ANIO = DESIGNA.ANIO ";
+		where+=	" AND ACT.NUMERO = DESIGNA.NUMERO ";
+		where+=	" AND ACT.VALIDADA = '1' ";
+		where+=	" AND ACT.FACTURADO IS NULL) ";
+			   
+		if (miForm.getIdRenuncia()!=null && !miForm.getIdRenuncia().trim().equalsIgnoreCase("")) {
+			contador++;
+			codigos.put(new Integer(contador),miForm.getIdRenuncia());
+			where+=	" AND ejg.idrenuncia = :" + contador +" ";
+					   
+              
+		}
+		
+			
+			 
+			if ((miHash.containsKey("IDINSTITUCION")) && (!miHash.get("IDINSTITUCION").toString().equals(""))) {
+				contador++;
+				codigos.put(new Integer(contador),UtilidadesHash.getString(miHash, "IDINSTITUCION"));
+				where += " AND EJG.IDINSTITUCION = :"+ contador;
+			}else{
+				throw new ClsExceptions("messages.comprueba.noidInstitucion");
+				
+			}				
+		// Parametros para poder reutilizar la busqueda EJG para busquedas CAJG
+		 
+		
+		// Se filtra por numero cajg
+		if (miForm.getNumeroCAJG()!=null && !miForm.getNumeroCAJG().trim().equalsIgnoreCase("")) {
+			contador++;
+			codigos.put(new Integer(contador),miForm.getNumeroCAJG());
+			where += " AND LTRIM(EJG.Numero_Cajg, '0')  = LTRIM(:" + contador + ", '0') ";
+		}
+		
+		// Se filtra por anio cajg
+		if (miForm.getAnioCAJG()!=null && !miForm.getAnioCAJG().trim().equalsIgnoreCase("")) {
+			contador++;
+			codigos.put(new Integer(contador),miForm.getAnioCAJG());
+			where += " AND EJG.Aniocajg = :" + contador;
+		}
+
+
+		// Y ahora concatenamos los criterios de búsqueda
+		if ((miForm.getFechaAperturaDesde() != null && !miForm.getFechaAperturaDesde().equals("")) ||
+			(miForm.getFechaAperturaHasta() != null && !miForm.getFechaAperturaHasta().equals(""))) {
+			Vector v = GstDate.dateBetweenDesdeAndHastaBind("EJG.FECHAAPERTURA", GstDate.getApplicationFormatDate("",miForm.getFechaAperturaDesde()), GstDate.getApplicationFormatDate("", miForm.getFechaAperturaHasta()), contador, codigos);
+			Integer in = (Integer)v.get(0);
+			String st = (String)v.get(1);
+			contador = in.intValue();
+			where += " AND " + st;                    
+		}
+
+		if ((miForm. getfechaDictamenDesde() != null && !miForm.getfechaDictamenDesde().equals("")) ||
+			(miForm.getfechaDictamenHasta() != null && !miForm.getfechaDictamenHasta().equals(""))) {
+			Vector v = GstDate.dateBetweenDesdeAndHastaBind("EJG." + ScsEJGBean.C_FECHADICTAMEN, GstDate.getApplicationFormatDate("", miForm.getfechaDictamenDesde()), GstDate.getApplicationFormatDate("", miForm.getfechaDictamenHasta()), contador, codigos);
+			Integer in = (Integer)v.get(0);
+			String st = (String)v.get(1);
+			contador = in.intValue();
+			where += " AND " + st;                    
+		}
+					
+		if ((miForm.getFechaLimitePresentacionDesde() != null && !miForm.getFechaLimitePresentacionDesde().equals("")) ||
+			(miForm.getFechaLimitePresentacionHasta() != null && !miForm.getFechaLimitePresentacionHasta().equals(""))) {
+			Vector v = GstDate.dateBetweenDesdeAndHastaBind("EJG."+ScsEJGBean.C_FECHALIMITEPRESENTACION, GstDate.getApplicationFormatDate("", miForm.getFechaLimitePresentacionDesde()), GstDate.getApplicationFormatDate("", miForm.getFechaLimitePresentacionHasta()), contador, codigos);
+			Integer in = (Integer)v.get(0);
+			String st = (String)v.get(1);
+			contador = in.intValue();
+			where += " AND " + st;                    
+		}
+
+		if ((miHash.containsKey("IDTIPOEJG")) && (!miHash.get("IDTIPOEJG").toString().equals(""))) {
+			contador++;
+			codigos.put(new Integer(contador), UtilidadesHash.getString(miHash, "IDTIPOEJG"));
+			where += " AND EJG. " + ScsEJGBean.C_IDTIPOEJG + " = :" + contador;
+		}
+
+		if ((miHash.containsKey("ANIO")) && (!miHash.get("ANIO").toString().equals(""))) {
+			contador++;
+			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"ANIO"));
+			where += " and EJG.ANIO = :" + contador;
+		}
+		if (((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals("")))|| 
+			((miHash.containsKey("ANIOACTA")) && (!miHash.get("ANIOACTA").toString().equals("")))){
+			
+			
+			where += " AND EXISTS (SELECT 1 FROM SCS_EJG_ACTA EJGACTA , SCS_ACTACOMISION AC ";
+			where += " WHERE " ;
+			where += " EJGACTA.IDINSTITUCIONACTA = AC.IDINSTITUCION " ;
+			where += " AND EJGACTA.IDACTA = AC.IDACTA " ;
+			where += " AND EJGACTA.ANIOACTA = AC.ANIOACTA " ;
+
+			where +=	" AND EJGACTA.IDINSTITUCIONEJG = EJG.IDINSTITUCION  ";
+			where += " AND EJGACTA.ANIOEJG = EJG.ANIO " ;
+			where += " AND EJGACTA.IDTIPOEJG = EJG.IDTIPOEJG ";
+			where += " AND EJGACTA.NUMEROEJG = EJG.NUMERO ";
+			
+			contador++;
+			codigos.put(new Integer(contador),usrbean.getIdInstitucionComision());
+			where += " AND AC.IDINSTITUCION = :" + contador;
+			
+			
+			if ((miHash.containsKey("ANIOACTA")) && (!miHash.get("ANIOACTA").toString().equals(""))) {
+				contador++;
+				codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"ANIOACTA"));
+				where += " AND AC.ANIOACTA = :" + contador;
+			}
+			
+			if ((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals(""))) {
+				contador++;
+				codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"NUMEROACTA"));
+				where += " AND AC.NUMEROACTA = :"+contador;
+			}
+			
+			where += " )";
+			
+			
+						        
+	
+			
+			
+			
+			
+		}
+
+		if ((miHash.containsKey("CREADODESDE")) && (!miHash.get("CREADODESDE").toString().equals(""))) {
+			if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("A")) {
+				where += " AND (" +
+					" SELECT COUNT(*) " +
+					" FROM SCS_ASISTENCIA ASIST " + 
+					" WHERE ASIST.IDINSTITUCION = EJG.IDINSTITUCION " +
+						" AND ASIST.EJGNUMERO = EJG.NUMERO " +
+						" AND ASIST.EJGANIO = EJG.ANIO " +
+						" AND ASIST.EJGIDTIPOEJG = EJG.IDTIPOEJG) > 0 ";
+			
+			} else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("D")){			
+				where += " AND (SELECT count(1) " +
+					" FROM SCS_EJGDESIGNA EDES " +
+					" WHERE EJG.IDINSTITUCION = EDES.IDINSTITUCION " + 
+						" AND EJG.NUMERO = EDES.NUMEROEJG " +
+						" AND EJG.ANIO = EDES.ANIOEJG " +
+						" AND EJG.IDTIPOEJG = EDES.IDTIPOEJG) > 0 ";
+				
+			} else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("S")) {
+				where += " AND (SELECT COUNT(*) " +
+					" FROM SCS_SOJ SOJ " +
+					" WHERE SOJ.IDINSTITUCION = EJG.IDINSTITUCION " +  
+						" AND SOJ.EJGNUMERO = EJG.NUMERO " +
+						" AND SOJ.EJGANIO = EJG.ANIO " +
+						" AND SOJ.EJGIDTIPOEJG = EJG.IDTIPOEJG) > 0 ";
+				
+			} else {
+				where+= " AND (SELECT COUNT(*) " +
+						" FROM SCS_ASISTENCIA ASIST " +
+						" WHERE ASIST.IDINSTITUCION = EJG.IDINSTITUCION " +
+							" AND ASIST.EJGNUMERO IS NULL) > 0 " +
+						
+					" AND (SELECT COUNT(*) " +
+						" FROM SCS_SOJ SOJ " +
+						" WHERE SOJ.IDINSTITUCION = EJG.IDINSTITUCION " +
+							" AND SOJ.EJGNUMERO IS NULL) > 0"; 
+			}
+		}
+
+		if ((miHash.containsKey("GUARDIATURNO_IDTURNO")) && (!miHash.get("GUARDIATURNO_IDTURNO").toString().equals(""))) {
+			contador++;
+			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"GUARDIATURNO_IDTURNO"));
+			where += " AND EJG.GUARDIATURNO_IDTURNO = :" + contador;
+		}
+
+		if ((miHash.containsKey("GUARDIATURNO_IDGUARDIA")) && (!miHash.get("GUARDIATURNO_IDGUARDIA").toString().equals(""))) {
+			contador++;
+			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"GUARDIATURNO_IDGUARDIA"));
+			where += " AND EJG.GUARDIATURNO_IDGUARDIA = :" + contador;
+		}
+		
+		if ((miHash.containsKey("IDPERSONA")) && (!miHash.get("IDPERSONA").toString().equals(""))) {
+			contador++;
+			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"IDPERSONA"));
+			where += " AND EJG.IDPERSONA = :" + contador;
+		}
+		
+		if ((miHash.containsKey("DICTAMINADO")) && (!miHash.get("DICTAMINADO").toString().equals(""))) {
+			if (miHash.get("DICTAMINADO").toString().equalsIgnoreCase("S")) {
+				where += " AND EJG.FECHADICTAMEN IS NOT NULL";
+			}
+			else if (miHash.get("DICTAMINADO").toString().equalsIgnoreCase("N")) {
+				where += " AND EJG.FECHADICTAMEN IS NULL";
+			}
+		}
+		
+		if ((miHash.containsKey("IDTIPODICTAMENEJG")) && (!miHash.get("IDTIPODICTAMENEJG").toString().equals(""))){
+			contador++;
+			codigos.put(new Integer(contador),(String)UtilidadesHash.getString(miHash, "IDTIPODICTAMENEJG"));
+			where += " AND EJG.IDTIPODICTAMENEJG = :" + contador;
+		}	
+		
+		
+		
+		if(miForm.getIdTipoResolucion()!=null && !miForm.getIdTipoResolucion().equals("")){
+			
+			//si contiene -1 es que quiere sacar lo que no tienen resolucion 
+			int resolucionesNulas = miForm.getIdTipoResolucion().indexOf("-1");
+//			Si no lo encuentra
+			miHash.put("tiposResolucionBusqueda", miForm.getIdTipoResolucion());
+			
+			if(resolucionesNulas==-1){
+				where += " AND EJG.IDTIPORATIFICACIONEJG in  ("+miForm.getIdTipoResolucion()+") ";	
+			}else{
+				if(miForm.getIdTipoResolucion().substring(resolucionesNulas+2).length()>0)
+					where += " AND (EJG.IDTIPORATIFICACIONEJG IS NULL OR EJG.IDTIPORATIFICACIONEJG in  ("+miForm.getIdTipoResolucion().substring(resolucionesNulas+3)+") ) ";
+				else
+					where += " AND EJG.IDTIPORATIFICACIONEJG IS NULL ";
+				
+			}
+			if(miForm.getIdTipoFundamento()!=null && !miForm.getIdTipoFundamento().equals("")){
+				contador++;
+				codigos.put(new Integer(contador),miForm.getIdTipoFundamento());
+				where += " AND EJG.IDFUNDAMENTOJURIDICO = :" + contador;
+				
+				
+			}
+			
+		}else{
+			miHash.put("tiposResolucionBusqueda", "");
+			if ((miHash.containsKey("IDTIPORATIFICACIONEJG")) && (!miHash.get("IDTIPORATIFICACIONEJG").toString().equals(""))){
+				contador++;
+				String ratificacion[] = UtilidadesHash.getString(miHash, "IDTIPORATIFICACIONEJG").split(",");
+				codigos.put(new Integer(contador),ratificacion[0]);
+				where += " AND EJG.IDTIPORATIFICACIONEJG = :" + contador;
+				
+				if ((miHash.containsKey("IDFUNDAMENTOJURIDICO")) && (!miHash.get("IDFUNDAMENTOJURIDICO").toString().equals(""))){
+					contador++;
+					codigos.put(new Integer(contador),UtilidadesHash.getString(miHash, "IDFUNDAMENTOJURIDICO"));
+					where += " AND EJG.IDFUNDAMENTOJURIDICO = :" + contador;
+					
+					
+				}
+			}
+			
+		}
+
+		if (UtilidadesHash.getString(miHash,"NUMEJG") != null && !UtilidadesHash.getString(miHash,"NUMEJG").equalsIgnoreCase("")) {
+			if (ComodinBusquedas.hasComodin(UtilidadesHash.getString(miHash, "NUMEJG"))) {
+				contador++;
+				where += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)UtilidadesHash.getString(miHash, "NUMEJG")).trim(), "EJG.NUMEJG", contador, codigos);
+				
+			}else if (ComodinBusquedas.hasComa(UtilidadesHash.getString(miHash, "NUMEJG")) || ComodinBusquedas.hasGuion(UtilidadesHash.getString(miHash, "NUMEJG"))) {
+				contador++;
+				
+				ComodinBusquedas comodinBusquedas = new ComodinBusquedas();
+				where += " AND " + comodinBusquedas.prepararSentenciaCompletaEJGBind(((String)UtilidadesHash.getString(miHash, "NUMEJG")).trim(), "EJG.NUMEJG", contador, codigos);
+				contador =  codigos.size();
+			}else{
+				contador++;
+			    codigos.put(new Integer(contador), (String)UtilidadesHash.getString(miHash, "NUMEJG").trim());
+				where += " AND LTRIM(EJG.NUMEJG, '0')  = LTRIM(:" + contador + ", '0') ";
+			}
+		}
+
+		if ((miHash.containsKey("IDTIPOEJGCOLEGIO")) && (!miHash.get("IDTIPOEJGCOLEGIO").toString().equals(""))) {
+			contador++;
+			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash, "IDTIPOEJGCOLEGIO"));
+			where += " AND EJG.IDTIPOEJGCOLEGIO = :" + contador;
+		}
+				
+		
+		// jbd // Consulta para el interesado
+		// Hasta ahora se estaba haciendo una consulta independiente para cada campo del nombre
+		// Lo optimo es meter todo en la misma consulta
+		if (((miHash.containsKey("NIF")) && (!miHash.get("NIF").toString().equals("")))||
+			((miHash.containsKey("NOMBRE")) && (!miHash.get("NOMBRE").toString().equals("")))||
+			((miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals("")))||
+			((miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals("")))){
+			
+			where += " AND (SELECT COUNT(1) " + 
+					" FROM SCS_UNIDADFAMILIAREJG UNIDAD, " +
+						" SCS_EJG EJG2, " +
+						" SCS_PERSONAJG PJG " + 
+					" WHERE UNIDAD.IDINSTITUCION = PJG.IDINSTITUCION " +
+						" AND UNIDAD.IDPERSONA = PJG.IDPERSONA " +
+						" AND EJG2.IDINSTITUCION = UNIDAD.IDINSTITUCION(+) " +
+						" AND EJG2.ANIO = UNIDAD.ANIO(+) " +
+						" AND EJG2.NUMERO = UNIDAD.NUMERO(+) " +
+						" AND EJG2.IDTIPOEJG = UNIDAD.IDTIPOEJG(+) " +
+						" AND UNIDAD.SOLICITANTE(+) = '1' " +
+						" AND EJG2.IDINSTITUCION = EJG.IDINSTITUCION " +
+						" AND EJG2.ANIO = EJG.ANIO " + 
+						" AND EJG2.NUMERO = EJG.NUMERO " + 
+						" AND EJG2.IDTIPOEJG = EJG.IDTIPOEJG ";
+			
+			if ((miHash.containsKey("NIF")) && (!miHash.get("NIF").toString().equals(""))){
+				contador++;
+				
+				if(isBusquedaExactaSolicitante){
+					codigos.put(new Integer(contador), ((String)miHash.get("NIF")).trim());
+					where += " AND LTRIM(UPPER(PJG.NIF), '0') = LTRIM(UPPER(:"+contador+"), '0') ";
+				}
+				else{
+					codigos.put(new Integer(contador), ((String)miHash.get("NIF")).trim() + "%");
+					where += " AND LTRIM(UPPER(PJG.NIF), '0') LIKE LTRIM(UPPER(:"+contador+"), '0') ";
+				}
+			}
+			
+			if ((miHash.containsKey("NOMBRE")) && (!miHash.get("NOMBRE").toString().equals(""))){
+				contador++;
+				if(isBusquedaExactaSolicitante){
+					codigos.put(new Integer(contador), ((String)miHash.get("NOMBRE")).trim());
+					where += " AND UPPER(PJG.NOMBRE) = :"+contador+" "; 
+				}
+				else
+					where += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("NOMBRE")).trim(), "UPPER(PJG.NOMBRE)", contador, codigos);
+			}
+			
+			if ((miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals(""))){
+				contador++; 
+				if(isBusquedaExactaSolicitante){
+					codigos.put(new Integer(contador), ((String)miHash.get("APELLIDO1")).trim());
+					where += " AND UPPER(PJG.apellido1) = :"+contador+" "; 
+				}
+				else
+					where += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("APELLIDO1")).trim(), "UPPER(PJG.apellido1)", contador, codigos);
+			}
+			
+			if ((miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals(""))){
+				contador++;
+				if(isBusquedaExactaSolicitante){
+					codigos.put(new Integer(contador), ((String)miHash.get("APELLIDO2")).trim());
+					where += " AND UPPER(PJG.apellido2) = :"+contador+" "; 
+				}
+				else
+					where += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("APELLIDO2")).trim(), "UPPER(PJG.apellido2)", contador, codigos);
+			}
+			
+			where += ") >0 ";
+		}
+
+		if ((miHash.containsKey("JUZGADO")) && (!miHash.get("JUZGADO").toString().equals(""))) {
+			/*String a[]=((String)miHash.get("JUZGADO")).split(",");
+			contador++;
+			consulta += " and "+ComodinBusquedas.prepararSentenciaCompletaBind(a[0].trim(),"ejg.JUZGADO", contador, codigos);
+			*/
+			String a[]=((String)miHash.get("JUZGADO")).split(",");
+			contador++;
+			codigos.put(new Integer(contador), a[0]);
+			where += " AND EJG.JUZGADO = :" + contador;	
+		}
+
+		//aalg: INC_08086_SIGA
+		if ((miHash.containsKey("ASUNTO")) && (!miHash.get("ASUNTO").toString().equals(""))) {
+			contador++;
+			where += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("ASUNTO")).trim(), "EJG.OBSERVACIONES", contador, codigos);
+		}
+
+		if ((miHash.containsKey("PROCEDIMIENTO")) && (!miHash.get("PROCEDIMIENTO").toString().equals(""))) {
+			contador++;
+			where += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("PROCEDIMIENTO")).trim(), "EJG.NUMEROPROCEDIMIENTO", contador, codigos);
+		}
+		// jbd // Filtramos por preceptivo
+		if ((miHash.containsKey(ScsEJGBean.C_PRECEPTIVO)) && (!miHash.get(ScsEJGBean.C_PRECEPTIVO).toString().equals(""))) {
+			contador++;
+			where += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get(ScsEJGBean.C_PRECEPTIVO)).trim(), "EJG."+ScsEJGBean.C_PRECEPTIVO, contador, codigos);
+		}
+		
+		if ((miHash.containsKey("NIG")) && (!miHash.get("NIG").toString().equals(""))) {
+			contador++;
+			where += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("NIG")).trim(), "EJG.NIG", contador, codigos);
+		}		
+
+		/*if (miForm.getCalidad()!=null && !miForm.getCalidad().trim().equalsIgnoreCase("")) {
+			contador++;
+			codigos.put(new Integer(contador),miForm.getCalidad());		
+			 consulta += " and ejg.Idtipoencalidad = :" + contador;
+		}*/
+		
+		if ((miForm.getFechaPresentacionPonenteDesde() != null && !miForm.getFechaPresentacionPonenteDesde().equals("")) ||
+				(miForm.getFechaPresentacionPonenteHasta() != null && !miForm.getFechaPresentacionPonenteHasta().equals(""))) {
+			Vector v = GstDate.dateBetweenDesdeAndHastaBind("EJG.FECHAPRESENTACIONPONENTE", GstDate.getApplicationFormatDate("", miForm.getFechaPresentacionPonenteDesde()), GstDate.getApplicationFormatDate("", miForm.getFechaPresentacionPonenteHasta()), contador, codigos);
+			Integer in = (Integer)v.get(0);
+			String st = (String)v.get(1);
+			contador = in.intValue();
+			where += " AND " + st;                    
+		}
+				
+		if ((miHash.containsKey("IDPONENTE")) && (!miHash.get("IDPONENTE").toString().equals(""))){
+			contador++;
+			codigos.put(new Integer(contador), miHash.get("IDPONENTE").toString());
+			where += " AND " +  ScsEJGBean.C_IDPONENTE + " = :" + contador;
+			contador++;
+			codigos.put(new Integer(contador), usrbean.getIdInstitucionComision());
+			where += " AND " +  ScsEJGBean.C_IDINSTITUCIONPONENTE + " = :" + contador;
+			
+			
+		}
+//		where += ")";
+		//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg 
+		if ((miHash.containsKey("ESTADOEJG")) && (!miHash.get("ESTADOEJG").toString().equals(""))) {
+			contador++;
+			codigos.put(new Integer(contador), UtilidadesHash.getString(miHash, "ESTADOEJG"));
+			where += " AND F_SIGA_GET_IDULTIMOESTADOEJG(EJG.IDINSTITUCION, ";
+			where+=	" EJG.IDTIPOEJG, ";
+			where+=	" EJG.ANIO, ";
+			where+=	" EJG.NUMERO)=:"+contador;
+			
+			
+			
+		}else{
+			if(TipoVentana.BUSQUEDA_PREPARACION_CAJG.equals(tipoVentana)){
+				where += " AND (F_SIGA_GET_IDULTIMOESTADOEJG(EJG.IDINSTITUCION,  EJG.IDTIPOEJG, EJG.ANIO,EJG.NUMERO) ";
+				where+=	"  NOT IN (" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.GENERADO_EN_REMESA.getCodigo() + ", " + ESTADOS_EJG.REMITIDO_COMISION.getCodigo() + ", " + ESTADOS_EJG.RESUELTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.ESTADO_LISTO_COMISION_ACTUALIZAR_DESIGNACION.getCodigo() + ", "  + ESTADOS_EJG.IMPUGNADO.getCodigo() + "))  ";
+			}
+			
+		}
+
+		where += " ORDER BY " + ScsEJGBean.C_ANIO + " DESC, " +
+			" TO_NUMBER(NUMERO) DESC ";
+
+		hashReturn.put(keyBindConsulta,where);
+		hashReturn.put(keyBindCodigos,codigos);
+
+		return hashReturn;
+	}
+	
+	
 	private Vector getTurnoEjgSalidaOficio (String idInstitucion, String idTurno,
 			String salidaNombre,String salidaAbrev) throws ClsExceptions  
 	{
@@ -6705,10 +7168,760 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		
 		
 	}
+	public boolean isExpedientePteEnviarCAJG(String query ,String idInstitucion, String idTipoEjg,	String anio, String numero){
+		try {
+			Hashtable codigos = new Hashtable();
+			codigos.put(new Integer(1),idInstitucion);
+			codigos.put(new Integer(2),idTipoEjg);
+			codigos.put(new Integer(3),anio);
+			codigos.put(new Integer(4),numero);
+			codigos.put(new Integer(5),idInstitucion);
+			codigos.put(new Integer(6),idTipoEjg);
+			codigos.put(new Integer(7),anio);
+			codigos.put(new Integer(8),numero);
+			Vector v = this.selectGenericoBind(query,codigos );
+			return v!=null && v.size()>0;
+			
+		}catch (Exception e) {
+			throw new BusinessException("Error en BBDD:"+e.toString());
+		}  
+	}
+	public String getQueryisExpedientePteEnviarCAJG(){
+		StringBuilder query = new StringBuilder();
+		query.append(" ( ");
+		query.append("   (SELECT T.* ");
+		query.append("   FROM (SELECT  ");
+		query.append("          EJG.IDINSTITUCION, ");
+		query.append("                 EJG.IDTIPOEJG, ");
+		query.append("                         EJG.ANIO, ");
+		query.append("                                 EJG.NUMERO,LPAD(EJG.NUMEJG, 8, '0') AS EXP1_NUM_EXPEDIENTE, ");
+		query.append("                LPAD(EJG.ANIO, 4, '0') AS EXP2_ANIO_EXPEDIENTE, ");
+		query.append("                (CASE ");
+		query.append("                  WHEN EJG.IDTIPODICTAMENEJG = 5  ");
+		query.append("                   THEN ");
+		query.append("                   'ARC' ");
+		query.append("                  WHEN EJG.IDPRECEPTIVO = 2  ");
+		query.append("                   THEN ");
+		query.append("                   'EXT' ");
+		query.append("                  WHEN EJG.IDRENUNCIA IN (1, 2)  ");
+		query.append("                   THEN ");
+		query.append("                   'EXT' ");
+		query.append("                  WHEN (SELECT COUNT(1) ");
+		query.append("                          FROM SCS_TIPOFUNDAMENTOCALIF FC ");
+		query.append("                         WHERE FC.IDINSTITUCION = EJG.IDINSTITUCION ");
+		query.append("                           AND FC.IDFUNDAMENTOCALIF = EJG.IDFUNDAMENTOCALIF ");
+		query.append("                           AND FC.CODIGO IN ('EXP', 'CSO')) > 0 THEN ");
+		query.append("                   'EXT' ");
+		query.append("                  ELSE ");
+		query.append("                   'ORD' ");
+		query.append("                END) AS EXP3_TIPO_EXPEDIENTE ");
+		query.append("               , ");
+		query.append("                RPAD(SUBSTR((CASE ");
+		query.append("                              WHEN EJG.IDTIPODICTAMENEJG = 5  ");
+		query.append("                               THEN ");
+		query.append("                               ', '  ");
+		query.append("                              ELSE ");
+		query.append("                               NVL(DECODE(EJG.IDPRECEPTIVO, 2, ',NPL', '')  ");
+		query.append("                                   || DECODE(EJG.IDRENUNCIA, 1, ',RAB', 2, ',RPR', '')  ");
+		query.append("                                   || DECODE((SELECT FC.CODIGO ");
+		query.append("                                               FROM SCS_TIPOFUNDAMENTOCALIF FC  ");
+		query.append("                                              WHERE FC.IDINSTITUCION = EJG.IDINSTITUCION ");
+		query.append("                                                AND FC.IDFUNDAMENTOCALIF = ");
+		query.append("                                                    EJG.IDFUNDAMENTOCALIF), ");
+		query.append("                                             'EXP', ");
+		query.append("                                             ',EXP', ");
+		query.append("                                             'CSO', ");
+		query.append("                                             ',CSO', ");
+		query.append("                                             ''), ");
+		query.append("                                   ', ') ");
+		query.append("                            END), ");
+		query.append("                            2), ");
+		query.append(" 27 ");
+		query.append("                     ' ') AS EXP4_TIPO_EXPEDIENTE_EXTRAORD, ");
+		query.append("                RPAD(NVL(TO_CHAR(EJG.FECHAAPERTURA, 'YYYYMMDD'), ' '), 8, ' ') AS EXP5_FECHA_SOLICITUD  ");
+		query.append("               , ");
+		query.append("                RPAD(NVL((SELECT CODIGO ");
+		query.append("                           FROM PCAJG_ICAS P, PCAJG_ICAS_CENINSTITUCION PS ");
+		query.append("                          WHERE P.IDENTIFICADOR = PS.IDENTIFICADOR ");
+		query.append("                            AND P.IDINSTITUCION = PS.IDINSTITUCION_PCAJG ");
+		query.append("                            AND PS.IDINSTITUCION_PCAJG = EJG.IDINSTITUCION ");
+		query.append("                            AND PS.IDINSTITUCION_SIGA = EJG.IDINSTITUCION), ");
+		query.append("                         ' '), ");
+		query.append(" 5 ");
+		query.append("                     ' ') AS EXP6_COLEGIO_ABOGADOS  ");
+		query.append("               , ");
+		query.append("                RPAD((CASE ");
+		query.append("                       WHEN (SELECT COUNT(1) ");
+		query.append("                               FROM SCS_TIPOFUNDAMENTOCALIF FC ");
+		query.append("                              WHERE FC.IDINSTITUCION = EJG.IDINSTITUCION ");
+		query.append("                                AND FC.IDFUNDAMENTOCALIF = EJG.IDFUNDAMENTOCALIF ");
+		query.append("                                AND FC.CODIGO IN ('EXP', 'CSO')) > 0 THEN ");
+		query.append("                        ' ' ");
+		query.append("                       ELSE ");
+		query.append("                        NVL((SELECT TD.CODIGOEXT ");
+		query.append("                              FROM SCS_TIPODICTAMENEJG TD ");
+		query.append("                             WHERE TD.IDINSTITUCION = EJG.IDINSTITUCION ");
+		query.append("                               AND TD.IDTIPODICTAMENEJG = EJG.IDTIPODICTAMENEJG), ");
+		query.append("                            ' ') ");
+		query.append("                     END), ");
+		query.append(" 3 ");
+		query.append("                     ' ') AS EXP7_CALIFICACION  ");
+		query.append("               , ");
+		query.append("                RPAD(NVL(TO_CHAR(EJG.FECHADICTAMEN, 'YYYYMMDD'), ' '), 8, ' ') AS EXP8_FECHA_DICTAMEN ");
+		query.append("               , ");
+		query.append("                RPAD((CASE ");
+		query.append("                       WHEN (SELECT COUNT(1) ");
+		query.append("                               FROM SCS_TIPOFUNDAMENTOCALIF FC ");
+		query.append("                              WHERE FC.IDINSTITUCION = EJG.IDINSTITUCION ");
+		query.append("                                AND FC.IDFUNDAMENTOCALIF = EJG.IDFUNDAMENTOCALIF ");
+		query.append("                                AND FC.CODIGO IN ('EXP', 'CSO')) > 0 THEN ");
+		query.append("                        ' ' ");
+		query.append("                       ELSE ");
+		query.append("                        NVL((SELECT P.CODIGO ");
+		query.append("                              FROM PCAJG_MOTIVO_DICTAMEN          P, ");
+		query.append("                                   PCAJG_MOTIVO_DICTAMEN_SCSTIPOF PS ");
+		query.append("                             WHERE P.IDENTIFICADOR = PS.IDENTIFICADOR ");
+		query.append("                               AND P.IDINSTITUCION = PS.IDINSTITUCION ");
+		query.append("                               AND P.IDINSTITUCION = EJG.IDINSTITUCION ");
+		query.append("                               AND PS.IDFUNDAMENTOCALIF = EJG.IDFUNDAMENTOCALIF), ");
+		query.append("                            ' ') ");
+		query.append("                     END), ");
+		query.append(" 3 ");
+		query.append("                     ' ') AS EXP9_FUNDAMENTO_CALIFICACION, ");
+		query.append("                (CASE ");
+		query.append("                  WHEN EJG.IDPRECEPTIVO IN (1, 3) THEN ");
+		query.append("                   'S' ");
+		query.append("                  ELSE ");
+		query.append("                   'N' ");
+		query.append("                END) AS EXP10_PRECISA_ABOGADO, ");
+		query.append("                (CASE ");
+		query.append("                  WHEN EJG.IDPRECEPTIVO = 1 THEN ");
+		query.append("                   'S' ");
+		query.append("                  ELSE ");
+		query.append("                   'N' ");
+		query.append("                END) AS EXP11_PRECISA_PROCURADOR, ");
+		query.append("                RPAD(' ', 100, ' ') AS EXP12_PROCEDENCIA  ");
+		query.append("               , ");
+		query.append("                RPAD(' ', 1000, ' ') AS EXP13_OBSERVACIONES  ");
+		query.append("               , ");
+		query.append("                (SELECT DECODE(COUNT(1), 0, '  ', LPAD(COUNT(1), 2, ' ')) ");
+		query.append("                   FROM SCS_EEJG_PETICIONES P ");
+		query.append("                  WHERE P.IDINSTITUCION = EJG.IDINSTITUCION ");
+		query.append("                    AND P.ANIO = EJG.ANIO ");
+		query.append("                    AND P.NUMERO = EJG.NUMERO ");
+		query.append("                    AND P.IDTIPOEJG = EJG.IDTIPOEJG ");
+		query.append("                    AND P.ESTADO = 30)  ");
+		query.append("                AS EXP14_EEJG ");
+		query.append("                , LPAD(DECODE(DL.IDPERSONA, NULL, '      ', NVL(F_SIGA_CALCULONCOLEGIADO(DL.IDINSTITUCION, DL.IDPERSONA), '      ')), 6, '0') AS PRD1_NCOLEGIADOABOGADO ");
+		query.append("           , RPAD(NVL(TO_CHAR(DL.FECHADESIGNA, 'YYYYMMDD'), ' '), 8, ' ') AS PRD2_FECHA_DESIGNA ");
+		query.append("           , LPAD(NVL(TO_CHAR(D.CODIGO), '      '), 6, '0') AS PRD3_NUMERO_DESIGNA ");
+		query.append("           , LPAD(NVL(TO_CHAR(D.ANIO), '    '), 4, '0') AS PRD4_ANIO_DESIGNA ");
+		query.append("           , LPAD(NVL((CASE ");
+		query.append("                   WHEN DP.IDPROCURADOR IS NOT NULL ");
+		query.append("                   THEN (SELECT P.NCOLEGIADO ");
+		query.append("                        FROM SCS_PROCURADOR P ");
+		query.append("                        WHERE P.IDINSTITUCION = DP.IDINSTITUCION_PROC ");
+		query.append("                        AND P.IDPROCURADOR = DP.IDPROCURADOR) ");
+		query.append("                    WHEN EJG.IDPROCURADOR IS NOT NULL ");
+		query.append("                    THEN (SELECT P.NCOLEGIADO ");
+		query.append("                         FROM SCS_PROCURADOR P ");
+		query.append("                         WHERE P.IDINSTITUCION = EJG.IDINSTITUCION_PROC ");
+		query.append("                         AND P.IDPROCURADOR = EJG.IDPROCURADOR) ");
+		query.append("                    ELSE NULL ");
+		query.append("                    END), '      '), 6, '0') AS PRD5_NCOLEGIADO_PROCURADOR ");
+		query.append("           , (CASE ");
+		query.append("              WHEN DP.FECHADESIGNA IS NOT NULL ");
+		query.append("              THEN TO_CHAR(DP.FECHADESIGNA, 'YYYY') ");
+		query.append("              WHEN EJG.FECHA_DES_PROC IS NOT NULL ");
+		query.append("              THEN TO_CHAR(EJG.FECHA_DES_PROC, 'YYYY') ");
+		query.append("              ELSE LPAD(' ' , 4, ' ') END) AS PRD6_ANIO_DESIGNA_PROCURADOR ");
+		query.append("           , (CASE ");
+		query.append("              WHEN DP.FECHADESIGNA IS NOT NULL ");
+		query.append("              THEN TO_CHAR(DP.FECHADESIGNA, 'YYYYMMDD') ");
+		query.append("              WHEN EJG.FECHA_DES_PROC IS NOT NULL ");
+		query.append("              THEN TO_CHAR(EJG.FECHA_DES_PROC, 'YYYYMMDD') ");
+		query.append("              ELSE LPAD(' ' , 8, ' ') END) AS PRD7_FECHA_DESIGNA_PROCURADOR ");
+		query.append("           , LPAD((CASE ");
+		query.append("              WHEN DP.NUMERODESIGNACION IS NOT NULL ");
+		query.append("              THEN DP.NUMERODESIGNACION ");
+		query.append("              WHEN EJG.NUMERODESIGNAPROC IS NOT NULL ");
+		query.append("              THEN EJG.NUMERODESIGNAPROC ");
+		query.append("              ELSE '      ' END), 6, '0') AS PRD8_NUMERO_DESIGNA_PROCURADOR, ");
+		query.append("                (CASE DECODE(D.IDPRETENSION, ");
+		query.append("                         NULL, ");
+		query.append("                         (SELECT P.IDJURISDICCION ");
+		query.append("                            FROM SCS_PRETENSION P ");
+		query.append("                           WHERE P.IDINSTITUCION = EJG.IDINSTITUCION ");
+		query.append("                             AND P.IDPRETENSION = EJG.IDPRETENSION), ");
+		query.append("                         (SELECT P.IDJURISDICCION ");
+		query.append("                            FROM SCS_PRETENSION P ");
+		query.append("                           WHERE P.IDINSTITUCION = D.IDINSTITUCION ");
+		query.append("                             AND P.IDPRETENSION = D.IDPRETENSION)) ");
+		query.append("                  WHEN 1 THEN ");
+		query.append("                   '1'  ");
+		query.append("                  WHEN 2 THEN ");
+		query.append("                   '2'  ");
+		query.append("                  WHEN 4 THEN ");
+		query.append("                   '4'  ");
+		query.append("                  WHEN 5 THEN ");
+		query.append("                   '3'  ");
+		query.append("                  ELSE ");
+		query.append("                   ' ' ");
+		query.append("                END) AS PRJ1_ORDEN_JURISDICCIONAL, ");
+		query.append("                LPAD((CASE DECODE(D.IDPRETENSION, ");
+		query.append("                              NULL, ");
+		query.append("                              (SELECT P.IDJURISDICCION ");
+		query.append("                                 FROM SCS_PRETENSION P ");
+		query.append("                                WHERE P.IDINSTITUCION = EJG.IDINSTITUCION ");
+		query.append("                                  AND P.IDPRETENSION = EJG.IDPRETENSION), ");
+		query.append("                              (SELECT P.IDJURISDICCION ");
+		query.append("                                 FROM SCS_PRETENSION P ");
+		query.append("                                WHERE P.IDINSTITUCION = D.IDINSTITUCION ");
+		query.append("                                  AND P.IDPRETENSION = D.IDPRETENSION)) ");
+		query.append("                       WHEN 1  ");
+		query.append("                        THEN ");
+		query.append("                        NVL((SELECT TO_CHAR(D.IDTIPODOCUMENTO) ");
+		query.append("                              FROM SCS_DOCUMENTACIONEJG D ");
+		query.append("                             WHERE D.IDINSTITUCION = EJG.IDINSTITUCION ");
+		query.append("                               AND D.IDTIPOEJG = EJG.IDTIPOEJG ");
+		query.append("                               AND D.ANIO = EJG.ANIO ");
+		query.append("                               AND D.NUMERO = EJG.NUMERO ");
+		query.append("                               AND ROWNUM <= 1 ");
+		query.append("                               AND D.IDTIPODOCUMENTO IN (1, 2, 3)), ");
+		query.append("                            '1') ");
+		query.append("                       WHEN 2 ");
+		query.append("                        THEN ");
+		query.append("                        NVL((SELECT TO_CHAR(D.IDTIPODOCUMENTO) ");
+		query.append("                              FROM SCS_DOCUMENTACIONEJG D ");
+		query.append("                             WHERE D.IDINSTITUCION = EJG.IDINSTITUCION ");
+		query.append("                               AND D.IDTIPOEJG = EJG.IDTIPOEJG ");
+		query.append("                               AND D.ANIO = EJG.ANIO ");
+		query.append("                               AND D.NUMERO = EJG.NUMERO ");
+		query.append("                               AND ROWNUM <= 1 ");
+		query.append("                               AND D.IDTIPODOCUMENTO IN (4, 5, 6, 7)), ");
+		query.append("                            '4') ");
+		query.append("                       WHEN 5  ");
+		query.append("                        THEN ");
+		query.append("                        NVL((SELECT TO_CHAR(D.IDTIPODOCUMENTO) ");
+		query.append("                              FROM SCS_DOCUMENTACIONEJG D ");
+		query.append("                             WHERE D.IDINSTITUCION = EJG.IDINSTITUCION ");
+		query.append("                               AND D.IDTIPOEJG = EJG.IDTIPOEJG ");
+		query.append("                               AND D.ANIO = EJG.ANIO ");
+		query.append("                               AND D.NUMERO = EJG.NUMERO ");
+		query.append("                               AND ROWNUM <= 1 ");
+		query.append("                               AND D.IDTIPODOCUMENTO IN (8, 9, 10, 11, 12)), ");
+		query.append("                            '8') ");
+		query.append("                       ELSE ");
+		query.append("                        ' ' ");
+		query.append("                     END), ");
+		query.append(" 3 ");
+		query.append("                     '0') AS PRJ2_CLASE_ASUNTO_TIPO_ORDEN, ");
+		query.append("                RPAD(NVL((CASE ");
+		query.append("                           WHEN D.IDJUZGADO IS NOT NULL THEN ");
+		query.append("                            (SELECT JUZ.CODIGOEXT ");
+		query.append("                               FROM SCS_JUZGADO JUZ, CEN_POBLACIONES POB ");
+		query.append("                              WHERE JUZ.IDPOBLACION = POB.IDPOBLACION ");
+		query.append("                                AND JUZ.IDJUZGADO = D.IDJUZGADO ");
+		query.append("                                AND JUZ.IDINSTITUCION = D.IDINSTITUCION_JUZG) ");
+		query.append("                           WHEN EJG.JUZGADO IS NOT NULL THEN ");
+		query.append("                            (SELECT JUZ.CODIGOEXT ");
+		query.append("                               FROM SCS_JUZGADO JUZ, CEN_POBLACIONES POB ");
+		query.append("                              WHERE JUZ.IDPOBLACION = POB.IDPOBLACION ");
+		query.append("                                AND JUZ.IDJUZGADO = EJG.JUZGADO ");
+		query.append("                                AND JUZ.IDINSTITUCION = EJG.JUZGADOIDINSTITUCION) ");
+		query.append("                           ELSE ");
+		query.append("                            ' ' ");
+		query.append("                         END), ");
+		query.append("                         ' '), ");
+		query.append(" 10 ");
+		query.append("                     ' ') AS PRJ3_ORGANO_JUDICIAL, ");
+		query.append("                RPAD((CASE ");
+		query.append("                       WHEN D.IDPRETENSION IS NOT NULL THEN ");
+		query.append("                        (SELECT NVL(PRE.CODIGOEXT, ' ') ");
+		query.append("                           FROM SCS_PRETENSION PRE ");
+		query.append("                          WHERE PRE.IDINSTITUCION = D.IDINSTITUCION ");
+		query.append("                            AND PRE.IDPRETENSION = D.IDPRETENSION) ");
+		query.append("                       ELSE ");
+		query.append("                        (SELECT NVL(PRE.CODIGOEXT, ' ') ");
+		query.append("                           FROM SCS_PRETENSION PRE ");
+		query.append("                          WHERE PRE.IDINSTITUCION = EJG.IDINSTITUCION ");
+		query.append("                            AND PRE.IDPRETENSION = EJG.IDPRETENSION) ");
+		query.append("                     END), ");
+		query.append(" 3 ");
+		query.append("                     ' ') AS PRJ4_TIPO_PROCED_JUDICIAL, ");
+		query.append("                LPAD(NVL((CASE ");
+		query.append("                           WHEN D.NUMPROCEDIMIENTO IS NOT NULL THEN ");
+		query.append("                            (CASE INSTR(D.NUMPROCEDIMIENTO,'/') ");
+		query.append("                           WHEN 0 THEN ");
+		query.append("                            NULL ");
+		query.append("                           ELSE ");
+		query.append("                            SUBSTR(D.NUMPROCEDIMIENTO, ");
+		query.append(" 0 ");
+		query.append("                                   INSTR(D.NUMPROCEDIMIENTO, '/') - 1) ");
+		query.append("                         END) WHEN INSTR(EJG.NUMEROPROCEDIMIENTO, '/') > 0 THEN ");
+		query.append("                         SUBSTR(EJG.NUMEROPROCEDIMIENTO, ");
+		query.append(" 0 ");
+		query.append("                                INSTR(EJG.NUMEROPROCEDIMIENTO, '/') - 1) ELSE NULL END), ");
+		query.append("                     '       '), 7, '0') AS PRJ5_NUM_PROCEDIMIENTO, ");
+		query.append("                LPAD(NVL((CASE ");
+		query.append("                           WHEN INSTR(D.NUMPROCEDIMIENTO, '/20') > 0 THEN ");
+		query.append("                            RPAD(SUBSTR(D.NUMPROCEDIMIENTO, ");
+		query.append("                                        INSTR(D.NUMPROCEDIMIENTO, '/') + 1, ");
+		query.append("                                        4), ");
+		query.append(" 4 ");
+		query.append("                                 '0') ");
+		query.append("                           WHEN INSTR(D.NUMPROCEDIMIENTO, '/') > 0 THEN ");
+		query.append("                            RPAD('20' || SUBSTR(D.NUMPROCEDIMIENTO, ");
+		query.append("                                                INSTR(D.NUMPROCEDIMIENTO, '/') + 1, ");
+		query.append("                                                2), ");
+		query.append(" 4 ");
+		query.append("                                 '0') ");
+		query.append("                           WHEN INSTR(EJG.NUMEROPROCEDIMIENTO, '/20') > 0 THEN ");
+		query.append("                            RPAD(SUBSTR(EJG.NUMEROPROCEDIMIENTO, ");
+		query.append("                                        INSTR(EJG.NUMEROPROCEDIMIENTO, '/') + 1, ");
+		query.append("                                        4), ");
+		query.append(" 4 ");
+		query.append("                                 '0') ");
+		query.append("                           WHEN INSTR(EJG.NUMEROPROCEDIMIENTO, '/') > 0 THEN ");
+		query.append("                            RPAD('20' || SUBSTR(EJG.NUMEROPROCEDIMIENTO, ");
+		query.append("                                                INSTR(EJG.NUMEROPROCEDIMIENTO, '/') + 1, ");
+		query.append("                                                2), ");
+		query.append(" 4 ");
+		query.append("                                 '0') ");
+		query.append("                           ELSE ");
+		query.append("                            NULL ");
+		query.append("                         END), ");
+		query.append("                         '    '), ");
+		query.append(" 4 ");
+		query.append("                     '0') AS PRJ6_ANIO_PROCEDIMIENTO, ");
+		query.append("                RPAD(NVL((SELECT P.CODIGO ");
+		query.append("                           FROM PCAJG_TIPO_EJG            P, ");
+		query.append("                                PCAJG_TIPO_EJG_SCSTIPOEJG PS ");
+		query.append("                          WHERE P.IDENTIFICADOR = PS.IDENTIFICADOR ");
+		query.append("                            AND P.IDINSTITUCION = PS.IDINSTITUCION ");
+		query.append("                            AND P.IDINSTITUCION = EJG.IDINSTITUCION ");
+		query.append("                            AND PS.IDTIPOEJG = EJG.IDTIPOEJG), ");
+		query.append("                         ' '), ");
+		query.append(" 3 ");
+		query.append("                     ' ') AS PRJ7_NATURALEZA_PROCEDIMIENTO ");
+		query.append("                 ");
+		query.append("               , ");
+		query.append("                NVL((SELECT TC.CODIGO ");
+		query.append("                      FROM SCS_TIPOENCALIDAD TC ");
+		query.append("                     WHERE TC.IDTIPOENCALIDAD = EJG.IDTIPOENCALIDAD ");
+		query.append("                       AND TC.IDINSTITUCION = EJG.CALIDADIDINSTITUCION), ");
+		query.append("                    '   ') AS PRJ8_ESTADO_PROCEDIMIENTO, ");
+		query.append("                RPAD(' ', 50, ' ') AS PRJ9_DESCRIPCION_PROCEDIMIEN ");
+		query.append("               , ");
+		query.append("                RPAD(' ', 1, ' ') AS PRJ10_ACUSACION_PARTICULAR  ");
+		query.append("               , ");
+		query.append("                RPAD(' ', 1, ' ') AS PRJ11_PETICION_PARTICULAR  ");
+		query.append("               , ");
+		query.append("                RPAD(' ', 100, ' ') AS PRJ12_PARTE_CONTRARIA  ");
+		query.append("               , ");
+		query.append("                              RPAD(NVL((CASE  ");
+		query.append("                           WHEN SOL.IDTIPOIDENTIFICACION IS NULL AND ");
+		query.append("                                SOL.TIPOPERSONAJG = 'F' AND SOL.NIF IS NULL THEN ");
+		query.append("                            'I' ");
+		query.append("                           WHEN SOL.IDTIPOIDENTIFICACION = 50 AND ");
+		query.append("                                SOL.TIPOPERSONAJG = 'F' AND SOL.NIF IS NOT NULL THEN ");
+		query.append("                            'Z' ");
+		query.append("                           WHEN SOL.IDTIPOIDENTIFICACION IS NULL AND ");
+		query.append("                                SOL.TIPOPERSONAJG = 'J' AND SOL.NIF IS NULL THEN ");
+		query.append("                            'J' ");
+		query.append("                           WHEN SOL.IDTIPOIDENTIFICACION = 50 AND ");
+		query.append("                                SOL.TIPOPERSONAJG = 'J' AND SOL.NIF IS NOT NULL THEN ");
+		query.append("                            'Y' ");
+		query.append("                           ELSE ");
+		query.append("                            (SELECT P.CODIGO ");
+		query.append("                               FROM PCAJG_TIPO_IDENTIFICACION      P, ");
+		query.append("                                    PCAJG_TIPO_IDENTIFICACION_CENT S ");
+		query.append("                              WHERE P.IDENTIFICADOR = S.IDENTIFICADOR ");
+		query.append("                                AND P.IDINSTITUCION = S.IDINSTITUCION ");
+		query.append("                                AND S.IDINSTITUCION = EJG.IDINSTITUCION ");
+		query.append("                                AND S.IDTIPOIDENTIFICACION = SOL.IDTIPOIDENTIFICACION) ");
+		query.append("                         END), ");
+		query.append("                         ' '), ");
+		query.append(" 1 ");
+		query.append("                     ' ') AS SOL1_TIPO_IDENTIFICACION, ");
+		query.append("                RPAD(NVL(SOL.NIF, ' '), 11, ' ') AS SOL2_IDENTIFICACION_SOLICIT, ");
+		query.append("                RPAD(NVL((SELECT CODIGO ");
+		query.append("                           FROM PCAJG_TIPO_PERSONA         P, ");
+		query.append("                                PCAJG_TIPO_PERSONA_TIPOPER S ");
+		query.append("                          WHERE P.IDENTIFICADOR = S.IDENTIFICADOR ");
+		query.append("                            AND P.IDINSTITUCION = S.IDINSTITUCION ");
+		query.append("                            AND P.IDINSTITUCION = EJG.IDINSTITUCION ");
+		query.append("                            AND S.IDTIPOPERSONA = SOL.TIPOPERSONAJG), ");
+		query.append("                         ' '), ");
+		query.append(" 3 ");
+		query.append("                     '0') AS SOL3_TIPOPERSONA, ");
+		query.append("                RPAD(DECODE(SOL.TIPOPERSONAJG, 'F', NVL(SOL.NOMBRE, ' '), ' '), ");
+		query.append(" 50 ");
+		query.append("                     ' ') AS SOL4_NOMBRE_SOLICITANTE, ");
+		query.append("                RPAD(DECODE(SOL.TIPOPERSONAJG, ");
+		query.append("                            'F', ");
+		query.append("                            NVL(SOL.APELLIDO1, ' '), ");
+		query.append("                            ' '), ");
+		query.append(" 50 ");
+		query.append("                     ' ') AS SOL5_APELLIDO1_SOLICITANTE, ");
+		query.append("                RPAD(DECODE(SOL.TIPOPERSONAJG, ");
+		query.append("                            'F', ");
+		query.append("                            NVL(SOL.APELLIDO2, ' '), ");
+		query.append("                            ' '), ");
+		query.append(" 50 ");
+		query.append("                     ' ') AS SOL6_APELLIDO2_SOLICITANTE, ");
+		query.append("                ' ' AS SOL7_SEXO_SOLICITANTE  ");
+		query.append("               , ");
+		query.append("                RPAD(NVL((SELECT CODIGO ");
+		query.append("                           FROM PCAJG_PAIS P, PCAJG_PAIS_CENPAIS S ");
+		query.append("                          WHERE P.IDENTIFICADOR = S.IDENTIFICADOR ");
+		query.append("                            AND P.IDINSTITUCION = S.IDINSTITUCION ");
+		query.append("                            AND P.IDINSTITUCION = EJG.IDINSTITUCION ");
+		query.append("                            AND S.IDPAIS = SOL.IDPAIS), ");
+		query.append("                         ' '), ");
+		query.append(" 3 ");
+		query.append("                     ' ') AS SOL8_NACIONALIDAD, ");
+		query.append("                ' ' AS SOL9_SITUACION_PERSONAL  ");
+		query.append("               , ");
+		query.append("                RPAD(NVL(TO_CHAR(SOL.FECHANACIMIENTO, 'YYYYMMDD'), ' '), ");
+		query.append(" 8 ");
+		query.append("                     ' ') AS SOL10_FECHA_NACIMIENTO  ");
+		query.append("               , ");
+		query.append("                RPAD(' ', 50, ' ') AS SOL11_PROFESION  ");
+		query.append("               , ");
+		query.append("                RPAD(' ', 1, ' ') AS SOL12_REGIMEN_ECONOMICO  ");
+		query.append("               , ");
+		query.append("                RPAD(NVL(DECODE(SOL.TIPOPERSONAJG, ");
+		query.append("                                'J', ");
+		query.append("                                SOL.NOMBRE || SOL.APELLIDO1, ");
+		query.append("                                NULL), ");
+		query.append("                         ' '), ");
+		query.append(" 100 ");
+		query.append("                     ' ') AS SOL13_NOMBRE_ENTIDAD_JURIDICA, ");
+		query.append("                RPAD(' ', 3, ' ') AS SOL14_USO_DOMICILIO  ");
+		query.append("               , ");
+		query.append("                RPAD(' ', 1, ' ') AS SOL15_TIPO_TELEFONO  ");
+		query.append("               , ");
+		query.append("                RPAD(' ', 15, ' ') AS SOL16_NUMERO_TELEFONO ");
+		query.append("               , ");
+		query.append("                RPAD(' ', 1, ' ') AS SOL17_PRESO  ");
+		query.append("               , ");
+		query.append("                RPAD(' ', 10, ' ') AS SOL18_CENTRO_PENITENCIARIO  ");
+		query.append("               , ");
+		query.append("                 ");
+		query.append("                RPAD('2', 1, ' ') AS DOM1_TIPO_DOMICILIO, ");
+		query.append("                RPAD(NVL((SELECT CODIGO ");
+		query.append("                           FROM PCAJG_PAIS P, PCAJG_PAIS_CENPAIS S ");
+		query.append("                          WHERE P.IDENTIFICADOR = S.IDENTIFICADOR ");
+		query.append("                            AND P.IDINSTITUCION = S.IDINSTITUCION ");
+		query.append("                            AND P.IDINSTITUCION = EJG.IDINSTITUCION ");
+		query.append("                            AND S.IDPAIS = PROV.IDPAIS), ");
+		query.append("                         ' '), ");
+		query.append(" 3 ");
+		query.append("                     ' ') AS DOM2_PAIS_DOMICILIO, ");
+		query.append("                RPAD(DECODE(PROV.CODIGOEXT, ");
+		query.append("                            NULL, ");
+		query.append("                            '88', ");
+		query.append("                            '0', ");
+		query.append("                            '88', ");
+		query.append("                            PROV.CODIGOEXT), ");
+		query.append(" 2 ");
+		query.append("                     ' ') AS DOM3_PROVINCIA_DOMICILIO, ");
+		query.append("                RPAD(NVL(PROV.NOMBRE, ' '), 50, ' ') AS DOM4_DESCRIP_PROVIN_DOMICI_EXT, ");
+		query.append("                LPAD(NVL(SUBSTR(POBL.CODIGOEXT, 3, 3), ' '), 3, ' ') AS DOM5_MUNICIPIO_DOMICILIO_NORM, ");
+		query.append("                RPAD(NVL(POBL.NOMBRE, ' '), 50, ' ') AS DOM6_DESC_MUNIC_DOM_SINNORM, ");
+		query.append("                RPAD('P', 1, ' ') AS DOM7_TIPO_NUMERACION  ");
+		query.append("               , ");
+		query.append("                RPAD(NVL(SOL.ESCALERADIR, ' ') || '/' || ");
+		query.append("                     NVL(SOL.PISODIR, ' ') || '/' || NVL(SOL.PUERTADIR, ' '), ");
+		query.append(" 50 ");
+		query.append("                     ' ') AS DOM8_PISO  ");
+		query.append("               , ");
+		query.append("                RPAD(NVL((SELECT TV.CODIGO ");
+		query.append("                           FROM CEN_TIPOVIA TV ");
+		query.append("                          WHERE TV.IDTIPOVIA = SOL.IDTIPOVIA ");
+		query.append("                            AND TV.IDINSTITUCION = SOL.IDINSTITUCION), ");
+		query.append("                         'DESC'), ");
+		query.append(" 5 ");
+		query.append("                     ' ') AS DOM9_TIPO_VIA  ");
+		query.append("               , ");
+		query.append("                RPAD(NVL((SELECT F_SIGA_GETRECURSO(TV.DESCRIPCION, 1) ");
+		query.append("                           FROM CEN_TIPOVIA TV ");
+		query.append("                          WHERE TV.IDTIPOVIA = SOL.IDTIPOVIA ");
+		query.append("                            AND TV.IDINSTITUCION = SOL.IDINSTITUCION), ");
+		query.append("                         'DESCONOCIDO'), ");
+		query.append(" 15 ");
+		query.append("                     ' ') AS DOM10_DESCRIPCION_TIPO_VIA, ");
+		query.append("                RPAD(NVL(SOL.NUMERODIR, '0'), 5, ' ') AS DOM11_NUMERO_PORTAL, ");
+		query.append("                RPAD(' ', 10, ' ') AS DOM12_DESCRIPCION_VIA_EXTRANJ, ");
+		query.append("                RPAD(DECODE(PROV.IDPAIS, ");
+		query.append(" 191 ");
+		query.append("                            NVL(SOL.DIRECCION, 'SIN DESCRIPCION DE LA VIA'), ");
+		query.append("                            ' '), ");
+		query.append(" 125 ");
+		query.append("                     ' ') AS DOM13_DESCRIPCION_VIA  ");
+		query.append(" , ");
+		query.append("                RPAD(' ', 100, ' ') AS DOM14_DESCRIPCION_VIA_COMPLETA  ");
+		query.append("               , ");
+		query.append("                RPAD(NVL(SOL.CODIGOPOSTAL, ' '), 10, ' ') AS DOM15_CODIGO_POSTAL, ");
+		query.append("                 ");
+		query.append("                RPAD('002', 3, ' ') AS ECO1_CONCEPTO_INGRESO_ANUAL, ");
+		query.append("                DECODE(UF.IMPORTEINGRESOSANUALES, ");
+		query.append("                       NULL, ");
+		query.append("                       LPAD(' ', 8, ' '), ");
+		query.append("                       LPAD(TRUNC(UF.IMPORTEINGRESOSANUALES), 8, '0')) AS ECO2_IMPORTE_INGRESO_ANUAL ");
+		query.append("  ");
+		query.append("               , ");
+		query.append("                RPAD(' ', 3, ' ') AS ECO3_CONCEPTO_INGRESO_MENSUAL, ");
+		query.append("                LPAD(' ', 8, ' ') AS ECO4_IMPORTE_INGRESO_MENSUAL, ");
+		query.append("                RPAD(' ', 3, ' ') AS ECO5_CONCEPTO_OTROS_INGRESOS  ");
+		query.append("               , ");
+		query.append("                DECODE(UF.IMPORTEOTROSBIENES, ");
+		query.append("                       NULL, ");
+		query.append("                       LPAD(' ', 8, ' '), ");
+		query.append("                       LPAD(TRUNC(UF.IMPORTEOTROSBIENES), 8, '0')) AS ECO6_IMPORTE_OTROS_INGRESOS  ");
+		query.append("               , ");
+		query.append("                RPAD(' ', 3, ' ') AS ECO7_PROPIEDADES_INMUEBLES  ");
+		query.append("               , ");
+		query.append("                DECODE(UF.IMPORTEBIENESINMUEBLES, ");
+		query.append("                       NULL, ");
+		query.append("                       LPAD(' ', 8, ' '), ");
+		query.append("                       LPAD(TRUNC(UF.IMPORTEBIENESINMUEBLES), 8, '0')) AS ECO8_IMPORTE_PROP_INMUEBLES ");
+		query.append("               , ");
+		query.append("                RPAD(' ', 3, ' ') AS ECO9_OBLIGACIONES_ECONOMICAS  ");
+		query.append("               , ");
+		query.append("                LPAD(' ', 8, ' ') AS ECO10_IMPORTE_OBLIGAC_ECONOMIC  ");
+		query.append("               , ");
+		query.append("                RPAD(' ', 1000, ' ') AS ECO11_DESCRIP_INF_ECONOMICA  ");
+		query.append("               , ");
+		query.append("                 ");
+		query.append("                '' AS DOC1_DOCUMENTACION_APORTADA  ");
+		query.append("          ");
+		query.append("           FROM SCS_EJG               EJG, ");
+		query.append("                SCS_EJGDESIGNA        ED, ");
+		query.append("                SCS_DESIGNASLETRADO   DL, ");
+		query.append("                SCS_PERSONAJG         SOL, ");
+		query.append("                CEN_PROVINCIAS        PROV, ");
+		query.append("                CEN_POBLACIONES       POBL, ");
+		query.append("                SCS_UNIDADFAMILIAREJG UF, ");
+		query.append("                SCS_DESIGNAPROCURADOR DP, ");
+		query.append("                SCS_DESIGNA           D ");
+		query.append("          ");
+		query.append("          WHERE EJG.IDINSTITUCION = ED.IDINSTITUCION(+) ");
+		query.append("            AND EJG.ANIO = ED.ANIOEJG(+) ");
+		query.append("            AND EJG.NUMERO = ED.NUMEROEJG(+) ");
+		query.append("            AND EJG.IDTIPOEJG = ED.IDTIPOEJG(+) ");
+		query.append("            AND ED.IDINSTITUCION = DL.IDINSTITUCION(+) ");
+		query.append("            AND ED.IDTURNO = DL.IDTURNO(+) ");
+		query.append("            AND ED.ANIODESIGNA = DL.ANIO(+) ");
+		query.append("            AND ED.NUMERODESIGNA = DL.NUMERO(+) ");
+		query.append("            AND ED.IDINSTITUCION = D.IDINSTITUCION(+) ");
+		query.append("            AND ED.IDTURNO = D.IDTURNO(+) ");
+		query.append("            AND ED.ANIODESIGNA = D.ANIO(+) ");
+		query.append("            AND ED.NUMERODESIGNA = D.NUMERO(+) ");
+		query.append("            AND (DL.FECHADESIGNA IS NULL OR ");
+		query.append("                DL.FECHADESIGNA = ");
+		query.append("                (SELECT MAX(D.FECHADESIGNA) ");
+		query.append("                    from SCS_DESIGNASLETRADO D ");
+		query.append("                   where D.IDINSTITUCION = DL.IDINSTITUCION ");
+		query.append("                     and D.IDTURNO = DL.IDTURNO ");
+		query.append("                     and D.ANIO = DL.ANIO ");
+		query.append("                     and D.NUMERO = DL.NUMERO ");
+		query.append("                     and TRUNC(D.FECHADESIGNA) <= TRUNC(SYSDATE))) ");
+		query.append("                ");
+		query.append("            AND EJG.IDINSTITUCION = UF.IDINSTITUCION(+) ");
+		query.append("            AND EJG.NUMERO = UF.NUMERO(+) ");
+		query.append("            AND EJG.ANIO = UF.ANIO(+) ");
+		query.append("            AND EJG.IDTIPOEJG = UF.IDTIPOEJG(+) ");
+		query.append("            AND UF.IDINSTITUCION = SOL.IDINSTITUCION(+) ");
+		query.append("            AND UF.IDPERSONA = SOL.IDPERSONA(+) ");
+		query.append("            AND UF.SOLICITANTE(+) = 1 ");
+		query.append("                ");
+		query.append("            AND SOL.IDPROVINCIA = PROV.IDPROVINCIA(+) ");
+		query.append("            AND SOL.IDPOBLACION = POBL.IDPOBLACION(+) ");
+		query.append("                ");
+		query.append("            AND ED.IDINSTITUCION = DP.IDINSTITUCION(+) ");
+		query.append("            AND ED.IDTURNO = DP.IDTURNO(+) ");
+		query.append("            AND ED.ANIODESIGNA = DP.ANIO(+) ");
+		query.append("            AND ED.NUMERODESIGNA = DP.NUMERO(+) ");
+		query.append("            AND DP.FECHARENUNCIA IS NULL ");
+		query.append("                 ");
+		query.append("            AND (ED.ANIODESIGNA IS NULL OR ");
+		query.append("                ((ED.ANIODESIGNA || LPAD(ED.NUMERODESIGNA, 10, 0)) = ");
+		query.append("                (SELECT MAX(ED2.ANIODESIGNA || ");
+		query.append("                              LPAD(ED2.NUMERODESIGNA, 10, 0)) ");
+		query.append("                     FROM SCS_EJGDESIGNA ED2 ");
+		query.append("                    WHERE ED2.IDINSTITUCION = EJG.IDINSTITUCION ");
+		query.append("                      AND ED2.ANIOEJG = EJG.ANIO ");
+		query.append("                      AND ED2.NUMEROEJG = EJG.NUMERO ");
+		query.append("                      AND ED2.IDTIPOEJG = EJG.IDTIPOEJG))) ");
+		query.append("           AND EJG.IDINSTITUCION = 2003 ");
+		query.append("           AND (EJG.IDINSTITUCION,EJG.IDTIPOEJG,EJG.ANIO, EJG.NUMERO) IN ( ");
+		query.append("           SELECT ED.IDINSTITUCION,ED.IDTIPOEJG, ED.ANIOEJG,  ED.NUMEROEJG ");
+		query.append("           FROM SCS_DESIGNA          D, ");
+		query.append("                SCS_ACTUACIONDESIGNA AD, ");
+		query.append("                FCS_FACTURACIONJG    FJG, ");
+		query.append("                SCS_EJGDESIGNA       ED ");
+		query.append("          WHERE D.IDINSTITUCION = 2003 ");
+		query.append("            AND AD.IDINSTITUCION = D.IDINSTITUCION ");
+		query.append("            AND AD.IDTURNO = D.IDTURNO ");
+		query.append("            AND AD.ANIO = D.ANIO ");
+		query.append("            AND AD.NUMERO = D.NUMERO ");
+		query.append("            AND AD.FACTURADO = 1 ");
+		query.append("            AND FJG.IDINSTITUCION = D.IDINSTITUCION ");
+		query.append("            AND FJG.IDFACTURACION = AD.IDFACTURACION ");
+		query.append("            AND FJG.FECHADESDE >= TO_DATE('01/01/2014', 'dd/mm/yyyy') ");
+		query.append("            AND ED.IDINSTITUCION = D.IDINSTITUCION ");
+		query.append("            AND ED.ANIODESIGNA = D.ANIO ");
+		query.append("            AND ED.IDTURNO = D.IDTURNO ");
+		query.append("            AND ED.NUMERODESIGNA = D.NUMERO ");
+		query.append("  ");
+		query.append("           ) ");
+		
+		query.append("           AND EJG.IDINSTITUCION =  :1 ");
+		
+		
+		query.append("    AND EJG.IDTIPOEJG = :2 ");
+		
+		query.append("    AND EJG.ANIO = :3 ");
+		
+		query.append("    AND EJG.NUMERO = :4 ");
+		
+		query.append("            ");
+		query.append("             ");
+		query.append("         ) T )  ");
+		query.append("          ");
+		query.append("         MINUS ");
+		query.append("          ");
+		query.append("          ");
+		query.append(" (SELECT  ");
+		query.append("         CAB.CAB_EJG_IDINSTITUCION, ");
+		query.append("                 CAB.CAB_EJG_IDTIPO, ");
+		query.append("                         CAB.CAB_EJG_ANIO, ");
+		query.append("                                 CAB.CAB_EJG_NUMERO, ");
+		query.append("  ");
+		query.append("         EXP.EXP1_NUM_EXPEDIENTE, ");
+		query.append("        EXP.EXP2_ANIO_EXPEDIENTE, ");
+		query.append("        EXP.EXP3_TIPO_EXPEDIENTE, ");
+		query.append("        EXP.EXP4_TIPO_EXPEDIENTE_EXTRAORD, ");
+		query.append("        EXP5_FECHA_SOLICITUD, ");
+		query.append("        EXP.EXP6_COLEGIO_ABOGADOS, ");
+		query.append("        EXP.EXP7_CALIFICACION, ");
+		query.append("        EXP.EXP8_FECHA_DICTAMEN, ");
+		query.append("        EXP.EXP9_FUNDAMENTO_CALIFICACION, ");
+		query.append("        EXP.EXP10_PRECISA_ABOGADO, ");
+		query.append("        EXP.EXP11_PRECISA_PROCURADOR, ");
+		query.append("        EXP.EXP12_PROCEDENCIA, ");
+		query.append("        EXP.EXP13_OBSERVACIONES, ");
+		query.append("        EXP.EXP14_EEJG, ");
+		query.append("        PRD.PRD1_NCOLEGIADOABOGADO, ");
+		query.append("        PRD.PRD2_FECHA_DESIGNA, ");
+		query.append("        PRD.PRD3_NUMERO_DESIGNA, ");
+		query.append("        PRD.PRD4_ANIO_DESIGNA, ");
+		query.append("        PRD.PRD5_NCOLEGIADO_PROCURADOR, ");
+		query.append("        PRD.PRD6_ANIO_DESIGNA_PROCURADOR, ");
+		query.append("        PRD.PRD7_FECHA_DESIGNA_PROCURADOR, ");
+		query.append("        PRD.PRD8_NUMERO_DESIGNA_PROCURADOR, ");
+		query.append("        PRJ.PRJ1_ORDEN_JURISDICCIONAL, ");
+		query.append("        PRJ.PRJ2_CLASE_ASUNTO_TIPO_ORDEN, ");
+		query.append("        PRJ.PRJ3_ORGANO_JUDICIAL, ");
+		query.append("        PRJ.PRJ4_TIPO_PROCED_JUDICIAL, ");
+		query.append("        PRJ.PRJ5_NUM_PROCEDIMIENTO, ");
+		query.append("        PRJ.PRJ6_ANIO_PROCEDIMIENTO, ");
+		query.append("        PRJ.PRJ7_NATURALEZA_PROCEDIMIENTO, ");
+		query.append("        PRJ.PRJ8_ESTADO_PROCEDIMIENTO, ");
+		query.append("        PRJ.PRJ9_DESCRIPCION_PROCEDIMIEN, ");
+		query.append("        PRJ.PRJ10_ACUSACION_PARTICULAR, ");
+		query.append("        PRJ.PRJ11_PETICION_PARTICULAR, ");
+		query.append("        PRJ.PRJ12_PARTE_CONTRARIA, ");
+		query.append("        SOL.SOL1_TIPO_IDENTIFICACION, ");
+		query.append("        SOL.SOL2_IDENTIFICACION_SOLICIT, ");
+		query.append("        SOL.SOL3_TIPOPERSONA, ");
+		query.append("        SOL.SOL4_NOMBRE_SOLICITANTE, ");
+		query.append("        SOL.SOL5_APELLIDO1_SOLICITANTE, ");
+		query.append("        SOL.SOL6_APELLIDO2_SOLICITANTE, ");
+		query.append("        SOL.SOL7_SEXO_SOLICITANTE, ");
+		query.append("        SOL.SOL8_NACIONALIDAD, ");
+		query.append("        SOL.SOL9_SITUACION_PERSONAL, ");
+		query.append("        SOL.SOL10_FECHA_NACIMIENTO, ");
+		query.append("        SOL.SOL11_PROFESION, ");
+		query.append("        SOL.SOL12_REGIMEN_ECONOMICO, ");
+		query.append("        SOL.SOL13_NOMBRE_ENTIDAD_JURIDICA, ");
+		query.append("        SOL.SOL14_USO_DOMICILIO, ");
+		query.append("        SOL.SOL15_TIPO_TELEFONO, ");
+		query.append("        SOL.SOL16_NUMERO_TELEFONO, ");
+		query.append("        SOL.SOL17_PRESO, ");
+		query.append("        SOL.SOL18_CENTRO_PENITENCIARIO, ");
+		query.append("        DOM.DOM1_TIPO_DOMICILIO, ");
+		query.append("        DOM.DOM2_PAIS_DOMICILIO, ");
+		query.append("        DOM.DOM3_PROVINCIA_DOMICILIO, ");
+		query.append("        DOM.DOM4_DESCRIP_PROVIN_DOMICI_EXT, ");
+		query.append("        DOM.DOM5_MUNICIPIO_DOMICILIO_NORM, ");
+		query.append("        DOM.DOM6_DESC_MUNIC_DOM_SINNORM, ");
+		query.append("        DOM.DOM7_TIPO_NUMERACION, ");
+		query.append("        DOM.DOM8_PISO, ");
+		query.append("        DOM.DOM9_TIPO_VIA, ");
+		query.append("        DOM.DOM10_DESCRIPCION_TIPO_VIA, ");
+		query.append("        DOM.DOM11_NUMERO_PORTAL, ");
+		query.append("        DOM.DOM12_DESCRIPCION_VIA_EXTRANJ, ");
+		query.append("        DOM.DOM13_DESCRIPCION_VIA, ");
+		query.append("        DOM.DOM14_DESCRIPCION_VIA_COMPLETA, ");
+		query.append("        DOM.DOM15_CODIGO_POSTAL, ");
+		query.append("        ECO.ECO1_CONCEPTO_INGRESO_ANUAL, ");
+		query.append("        ECO.ECO2_IMPORTE_INGRESO_ANUAL, ");
+		query.append("        ECO.ECO3_CONCEPTO_INGRESO_MENSUAL, ");
+		query.append("        ECO.ECO4_IMPORTE_INGRESO_MENSUAL, ");
+		query.append("        ECO.ECO5_CONCEPTO_OTROS_INGRESOS, ");
+		query.append("        ECO.ECO6_IMPORTE_OTROS_INGRESOS, ");
+		query.append("        ECO.ECO7_PROPIEDADES_INMUEBLES, ");
+		query.append("        ECO.ECO8_IMPORTE_PROP_INMUEBLES, ");
+		query.append("        ECO.ECO9_OBLIGACIONES_ECONOMICAS, ");
+		query.append("        ECO.ECO10_IMPORTE_OBLIGAC_ECONOMIC, ");
+		query.append("        ECO.ECO11_DESCRIP_INF_ECONOMICA,      DOC.DOC1_DOCUMENTACION_APORTADA ");
+		query.append("   FROM PCAJG_ALC_INT_CAB CAB, ");
+		query.append("        PCAJG_ALC_INT_EXP EXP, ");
+		query.append("        PCAJG_ALC_INT_PRD PRD, ");
+		query.append("        PCAJG_ALC_INT_PRJ PRJ, ");
+		query.append("        PCAJG_ALC_INT_SOL SOL, ");
+		query.append("        PCAJG_ALC_INT_DOM DOM, ");
+		query.append("        PCAJG_ALC_INT_ECO ECO, ");
+		query.append("        PCAJG_ALC_INT_DOC DOC ");
+		query.append("  WHERE CAB.CAB_INTERCAMBIO_ID = EXP.EXP_INTERCAMBIO_ID(+) ");
+		query.append("    AND CAB.CAB_INTERCAMBIO_ID = PRD.PRD_INTERCAMBIO_ID(+) ");
+		query.append("    AND CAB.CAB_INTERCAMBIO_ID = PRJ.PRJ_INTERCAMBIO_ID(+) ");
+		query.append("    AND CAB.CAB_INTERCAMBIO_ID = SOL.SOL_INTERCAMBIO_ID(+) ");
+		query.append("    AND CAB.CAB_INTERCAMBIO_ID = DOM.DOM_INTERCAMBIO_ID(+) ");
+		query.append("    AND CAB.CAB_INTERCAMBIO_ID = ECO.ECO_INTERCAMBIO_ID(+) ");
+		query.append("    AND CAB.CAB_INTERCAMBIO_ID = DOC.DOC_INTERCAMBIO_ID(+) ");
+		query.append("    AND CAB.CAB_FECHAENVIO = (SELECT MAX(CAB2.CAB_FECHAENVIO) FROM  PCAJG_ALC_INT_CAB CAB2, PCAJG_ALC_INT_EXP EXP2   ");
+		query.append("    WHERE CAB2.CAB_INTERCAMBIO_ID = EXP2.EXP_INTERCAMBIO_ID AND EXP2.EXP1_NUM_EXPEDIENTE = EXP.EXP1_NUM_EXPEDIENTE  ");
+		query.append("    AND EXP2.EXP2_ANIO_EXPEDIENTE = EXP.EXP2_ANIO_EXPEDIENTE  ");
+		query.append("    AND CAB.CAB_FECHARESPUESTA IS NOT NULL AND CAB.CAB_EST_ID = 1) ");
+		query.append("    AND CAB.CAB_EJG_IDINSTITUCION = :5  ");
+		query.append("    AND CAB.CAB_EJG_IDTIPO = :6 ");
+		query.append("    AND CAB.CAB_EJG_ANIO = :7 ");
+		query.append("    AND CAB.CAB_EJG_NUMERO = :8");
+		query.append("     ");
+		query.append("     ");
+		query.append("  ");
+		query.append("             ");
+		query.append("     ");
+		query.append("    ) ");
+		query.append("     ");
+		query.append("     ");
+		query.append("     ");
+		query.append("    ) ");
+				
+				
+		return query.toString();
+		
+
+		
+		
+		
+		
+		
+	}
 	
-	
-	/*
-	
-	*/
 	
 }
