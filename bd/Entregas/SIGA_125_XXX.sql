@@ -544,4 +544,127 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.generarFicheroCompleto', 'Generar fichero completo con todos los errores#EU', 0, '3', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.generarFicheroCompleto', 'Generar fichero completo con todos los errores#GL', 0, '4', sysdate, 0, '19');
 
-commit;
+
+--eliminamos de las plantillas los tipos de envio fax
+delete from adm_envioinforme ei where ei.idtipoenvios =3 ;
+
+-- Create table
+create table SCS_PRETENSIONESPROCED
+(
+  IDINSTITUCION     NUMBER(4) not null,
+  IDPRETENSION      NUMBER(3) not null,
+  IDPROCEDIMIENTO   VARCHAR2(5) not null,
+  FECHAMODIFICACION DATE not null,
+  USUMODIFICACION   NUMBER(5) not null
+)
+tablespace TS_SIGA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 1M
+    next 1M
+    minextents 1
+    maxextents unlimited
+    pctincrease 0
+  );
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table SCS_PRETENSIONESMODULO
+  add constraint PK_PRETENSIONESPROCEDIMIENTO primary key (IDINSTITUCION, IDPRETENSION, IDPROCEDIMIENTO)
+  using index 
+  tablespace TS_SIGA
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 1M
+    next 1M
+    minextents 1
+    maxextents unlimited
+    pctincrease 0
+  );
+alter table SCS_PRETENSIONESMODULO
+  add constraint FK_PRETENSION foreign key (IDINSTITUCION, IDPRETENSION)
+  references SCS_PRETENSION (IDINSTITUCION, IDPRETENSION);
+alter table SCS_PRETENSIONESMODULO
+  add constraint FK_PROCEDIMIENTO foreign key (IDINSTITUCION, IDPROCEDIMIENTO)
+  references SCS_PROCEDIMIENTOS (IDINSTITUCION, IDPROCEDIMIENTO);
+
+insert into scs_pretensionesproced
+     (idinstitucion, idpretension, idprocedimiento, fechamodificacion, usumodificacion)
+
+     (
+     Select PRE.IDINSTITUCION,pre.idpretension, pro.idprocedimiento,SYSDATE,1
+  from scs_actuaciondesigna ad, scs_pretension pre, scs_procedimientos pro
+ where ad.idinstitucion = pre.idinstitucion
+   and ad.idpretension = pre.idpretension
+   and ad.idinstitucion = pro.idinstitucion
+   and ad.idprocedimiento = pro.idprocedimiento
+   and ad.idinstitucion = 2003
+                     
+GROUP BY PRE.IDINSTITUCION,pre.idpretension,pro.idprocedimiento
+     );
+	 
+	 
+-- Add/modify columns 
+alter table CAJG_REMESARESOLUCION add IDREMESA NUMBER(10);
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table CAJG_REMESARESOLUCION
+  add constraint FK_CAJG_REMESA foreign key (IDINSTITUCION, IDREMESA)
+  references cajg_remesa (IDINSTITUCION, IDREMESA);
+  
+  -- Add/modify columns 
+alter table PCAJG_ALC_TIPOERRORINTERCAMBIO add ERROR_SOLUCION VARCHAR2(500);
+
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'No es necesario realizar ninguna acción.' WHERE ERROR_CODIGO =001;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'El expediente ya se trasladó anteriormente. Hay que incluirlo en otra remesa para que se envíe como actualización. ' WHERE ERROR_CODIGO =002;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'El expediente no se habia enviado anteriormente. Hay que incluirlo en otra remesa para que se envíe como traslado de expediente. ' WHERE ERROR_CODIGO =003;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a soporte de que hay maestros que no se han migrado correctamente. Incluirlo en otra remesa cuando soporte haya solucionado la incidencia. ' WHERE ERROR_CODIGO =004;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Modificar los datos obligatorios e incluirlo en una nueva remesa. Informar a soporte para que se modifique el desarrollo por si este error se puede detectar antes del envío. ' WHERE ERROR_CODIGO =005;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a soporte de que hay error de desarrollo. Incluirlo en otra remesa cuando se haya solucionado la incidencia. ' WHERE ERROR_CODIGO =006;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a Soporte. Error incompatible con la información enviada' WHERE ERROR_CODIGO =007;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a Soporte. Después de que encuentren la solución hay incluirlo en una nueva remesa. ' WHERE ERROR_CODIGO =008;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Avisar a Soporte. Después de que encuentren la solución hay que incluirlo en una nueva remesa. ' WHERE ERROR_CODIGO =009;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a soporte de que hay error de desarrollo. Incluirlo en otra remesa cuando se haya solucionado la incidencia. ' WHERE ERROR_CODIGO =010;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a soporte de que existe una incoherencia con los datos enviados. Incluirlo en otra remesa cuando se haya solucionado la incidencia. ' WHERE ERROR_CODIGO =011;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a soporte de que existe una incoherencia con los datos enviados. Incluirlo en otra remesa cuando se haya solucionado la incidencia. ' WHERE ERROR_CODIGO =012;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a soporte de que existe una incoherencia con los datos enviados. Es posible que sea una designación relacionada con dos expedientes. No tiene solución pero nos quedamos el error como justificante del envío. ' WHERE ERROR_CODIGO =013;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'El procedimiento judicial ya se ha informado en otro expediente (Número procedimiento/año procedimiento) . Modificarlo e incluir el expediente en otra remesa. ' WHERE ERROR_CODIGO =014;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a Soporte. Error incompatible con la información enviada' WHERE ERROR_CODIGO =015;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a Soporte. Error incompatible con la información enviada' WHERE ERROR_CODIGO =016;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a Soporte. Error incompatible con la información enviada' WHERE ERROR_CODIGO =017;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a soporte. Es posible que la CAM no haya aceptado envíos anteriores. ' WHERE ERROR_CODIGO =018;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a Soporte. Error incompatible con la información enviada' WHERE ERROR_CODIGO =019;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a Soporte. Error incompatible con la información enviada' WHERE ERROR_CODIGO =020;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a Soporte. Error incompatible con la información enviada' WHERE ERROR_CODIGO =021;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'No tiene solución pero nos quedamos el error como justificante del envío' WHERE ERROR_CODIGO =022;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a soporte. Es posible que la CAM no haya aceptado envíos anteriores. ' WHERE ERROR_CODIGO =024;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'No tiene solución pero nos quedamos el error como justificante del envío' WHERE ERROR_CODIGO =023;
+
+-- Add/modify columns 
+f_comunicaciones_ejg_2003_CAB
+PROC_RESPUESTAEJG_2003
+
+
+--Creamos el proceso que utilizara SIGA
+insert into GEN_PROCESOS (IDPROCESO, IDMODULO, TRAZA, TARGET, FECHAMODIFICACION, USUMODIFICACION, DESCRIPCION, TRANSACCION, IDPARENT, NIVEL) 
+values ('12W', 'JGR', 1, 'Y', sysdate, 0, 'EJG pendientes envio actualización', 'JGR_E-Comunicaciones_EJGPendientes', '007', 10);
+
+--Damos permiso al administrador general de Alcalá a ese proceso
+
+insert into adm_tiposacceso
+   (idproceso, idperfil, fechamodificacion, usumodificacion, derechoacceso, idinstitucion) 
+ values
+   ('12W','ADG',sysdate,0,3,2003);
+--Configuramos la opción de menú SJCS > e - Comunicaciones > EJGs: Remesa de resultados
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.EJGPteEnvioActualizacion', 'EJGs: Envio actualización', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.facturacionSJCS.EJGPteEnvioActualizacion', 'EJGs: Envio actualización#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.facturacionSJCS.EJGPteEnvioActualizacion', 'EJGs: Envio actualización#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.facturacionSJCS.EJGPteEnvioActualizacion', 'EJGs: Envio actualización#EU', 0, '3', sysdate, 0, '19');
+
+insert into GEN_MENU (IDMENU, ORDEN, TAGWIDTH, IDPARENT, FECHAMODIFICACION, USUMODIFICACION, URI_IMAGEN, IDRECURSO, GEN_MENU_IDMENU, IDPROCESO, IDLENGUAJE)
+values ('12W', 22230, 160, '606', sysdate, 0, null, 'menu.sjcs.ecomunicaciones.EJGPteEnvioActualizacion', null, '12W', '1');
+
