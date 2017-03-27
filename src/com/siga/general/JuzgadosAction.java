@@ -24,7 +24,6 @@ import com.siga.beans.ScsJuzgadoAdm;
 import com.siga.beans.ScsJuzgadoBean;
 import com.siga.beans.ScsJuzgadoProcedimientoAdm;
 import com.siga.beans.ScsProcedimientosBean;
-import com.siga.gratuita.form.MaestroDesignasForm;
 
 import es.satec.businessManager.BusinessManager;
 
@@ -224,6 +223,17 @@ public class JuzgadosAction extends MasterAction{
 		if(request.getParameter("procedimiento")!=null && !request.getParameter("procedimiento").equals("")){
 			idProcedimiento = request.getParameter("procedimiento");
 		}
+		
+		Integer idPretensionDesigna = null;
+		if(request.getParameter("idPretension")!=null && !request.getParameter("idPretension").equals("")){
+			try {
+				idPretensionDesigna = Integer.parseInt(request.getParameter("idPretension"));	
+			} catch (NumberFormatException e) {
+				idPretensionDesigna = null;
+			}
+			
+		}
+		
 		String fecha = "SYSDATE";
 		
 		//Comprobamos el valor del parametro 
@@ -248,7 +258,7 @@ public class JuzgadosAction extends MasterAction{
 		List<ScsProcedimientosBean> modulosList = null;
 		if(idJuzgado!= null && !idJuzgado.equals("-1")&& !idJuzgado.equals("")){
 			ScsJuzgadoProcedimientoAdm admModulos = new ScsJuzgadoProcedimientoAdm(usr);
-			modulosList = admModulos.getModulos(new Integer(idJuzgado),new Integer(idProcedimiento),new Integer(usr.getLocation()),true, fecha,isFichaColegial);
+			modulosList = admModulos.getModulos(new Integer(idJuzgado),new Integer(idProcedimiento),new Integer(usr.getLocation()),true, fecha,isFichaColegial,idPretensionDesigna);
 		}
 		if(modulosList==null){
 			modulosList = new ArrayList<ScsProcedimientosBean>();

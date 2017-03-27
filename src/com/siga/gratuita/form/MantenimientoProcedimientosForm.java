@@ -30,7 +30,25 @@ public class MantenimientoProcedimientosForm extends MasterForm {
 	private String fechaHastaVigor;
 	private String codigoExt="CODIGOEXT";
 	//private String codSubtarifa="CODSUBTARIFA";
+	private String datosMasivos;
 	
+	
+	
+	
+	public String getDatosMasivos() {
+		return datosMasivos;
+	}
+	public void setDatosMasivos(String datosMasivos) {
+		this.datosMasivos = datosMasivos;
+	}
+	public String getIdPretension() {
+		
+		return UtilidadesHash.getString(this.datos, "IDPRETENSION");
+		
+	}
+	public void setIdPretension(String codExtAcreditacion) {
+		UtilidadesHash.set (this.datos, "IDPRETENSION", codExtAcreditacion);
+	}
 	
 
 	public String getCodExtAcreditacion() {

@@ -236,6 +236,7 @@
 	<html:hidden name="MaestroDesignasForm" property="procedimiento"/>
 	<html:hidden name="MaestroDesignasForm" property="fichaColegial"/>
 	<html:hidden name="MaestroDesignasForm" property="idLetradoDesignado"/>
+	<html:hidden name="MaestroDesignasForm" property="idPretension"/>
 	
 	
 	<table class="tablaCentralCampos" height="420" align="center">
@@ -626,7 +627,7 @@
 
 	<ajax:select
 		baseUrl="/SIGA/GEN_Juzgados.do?modo=getAjaxModulos"
-		source="juzgados" target="modulos" parameters="idJuzgado={idJuzgado},procedimiento={procedimiento},fecha={fecha},fichaColegial={fichaColegial}"
+		source="juzgados" target="modulos" parameters="idJuzgado={idJuzgado},procedimiento={procedimiento},fecha={fecha},fichaColegial={fichaColegial},idPretension={idPretension}"
 		postFunction="postAccionJuzgados"
 		/>
 	

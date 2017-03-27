@@ -11,6 +11,7 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.ws.CajgConfiguracion;
 
 /**
  * Implementa las operaciones sobre el bean de la tabla SCS_JUZGADOPROCEDIMIENTO
@@ -215,7 +216,7 @@ public class ScsJuzgadoProcedimientoAdm extends MasterBeanAdministrador {
 		}
 		return datos;
 	}	
-	public List<ScsProcedimientosBean> getModulos(Integer idJuzgado,Integer idProcedimiento,Integer idInstitucion,boolean isCombo, String fecha, boolean isFichaColegial)throws ClsExceptions{
+	public List<ScsProcedimientosBean> getModulos(Integer idJuzgado,Integer idProcedimiento,Integer idInstitucion,boolean isCombo, String fecha, boolean isFichaColegial,Integer idPretensionDesigna)throws ClsExceptions{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
@@ -239,9 +240,23 @@ public class ScsJuzgadoProcedimientoAdm extends MasterBeanAdministrador {
 		sql.append(" ) OR ( ");
 		if(isFichaColegial)
 			sql.append(" proc.permitiraniadirletrado = 1 and");
-		sql.append(" proc.fechadesdevigor <= "+fecha+" AND(proc.fechahastavigor >= " +fecha+ " OR proc.fechahastavigor IS NULL)))");
+		sql.append(" proc.fechadesdevigor <= "+fecha+" AND(proc.fechahastavigor >= " +fecha+ " OR proc.fechahastavigor IS NULL)");
 		
-				  
+		int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(idInstitucion));
+		if(valorPcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA && idPretensionDesigna!=null ){
+			sql.append(" AND proc.Idprocedimiento IN       (SELECT PP.Idprocedimiento          FROM SCS_PRETENSIONESPROCED PP   ");
+			sql.append(" WHERE PP.IDINSTITUCION = :");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),idInstitucion); 
+			sql.append("AND PP.IDPRETENSION = :");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),idPretensionDesigna);
+			sql.append(")");
+			
+		}
+		sql.append("))");
 		
 		sql.append(" ORDER BY PROC.NOMBRE ");
 
