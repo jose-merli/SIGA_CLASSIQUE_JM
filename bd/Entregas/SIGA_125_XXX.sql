@@ -463,4 +463,85 @@ insert into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodif
 Values  ('censo.datosDireccion.literal.otraProvincia', 'Otra provincia#GL', '0', 4, Sysdate, 0, '19');
 
 
- 
+
+
+
+
+create table PCAJG_ALC_ACT_ERROR_CAM
+
+insert into ecom_operacion (idoperacion, idservicio, nombre, maxreintentos, activo, fechamodificacion, usumodificacion)
+values (56, 5, 'Carga de fichero de errores de actuaciones de la CAM', 5, 1, sysdate, 0);
+
+-- Create sequence 
+create sequence SEQ_PCAJG_ALC_ACT_ERROR_CAM
+minvalue 1
+maxvalue 9999999999
+start with 1
+increment by 1
+nocache;
+
+
+CREATE OR REPLACE VIEW V_PCAJG_ALC_ACT_ERROR_CAM AS
+SELECT
+E.IDINSTITUCION, E.IDFACTURACION, E.CODIGO_ERROR, TE.ERROR_DESCRIPCION, E.CODIGO_CAMPO_ERROR, TC.CAMPO_DESCRIPCION, COUNT(1) CUENTA
+FROM PCAJG_ALC_ACT_ERROR_CAM E, PCAJG_ALC_TIPOERRORINTERCAMBIO TE, PCAJG_ALC_TIPOCAMPOCARGA TC
+WHERE E.CODIGO_ERROR = TE.ERROR_CODIGO
+AND E.CODIGO_CAMPO_ERROR = TC.CAMPO_CODIGO(+)
+AND E.BORRADO = 0
+GROUP BY E.IDINSTITUCION, E.IDFACTURACION, E.CODIGO_ERROR, TE.ERROR_DESCRIPCION, E.CODIGO_CAMPO_ERROR, TC.CAMPO_DESCRIPCION
+ORDER BY E.CODIGO_ERROR;
+
+
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.inserted.success.ficheroErrorActuacionesCAM', 'El fichero se ha subido correctamente y será procesado en breve. Vuelva a generar los informes pasados unos instantes para ver el resumen de errores enviados por la CAM.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.inserted.success.ficheroErrorActuacionesCAM', 'El fichero se ha subido correctamente y será procesado en breve. Vuelva a generar los informes pasados unos instantes para ver el resumen de errores enviados por la CAM.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.inserted.success.ficheroErrorActuacionesCAM', 'El fichero se ha subido correctamente y será procesado en breve. Vuelva a generar los informes pasados unos instantes para ver el resumen de errores enviados por la CAM.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.inserted.success.ficheroErrorActuacionesCAM', 'El fichero se ha subido correctamente y será procesado en breve. Vuelva a generar los informes pasados unos instantes para ver el resumen de errores enviados por la CAM.#GL', 0, '4', sysdate, 0, '19');
+
+
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.fichero', 'Fichero', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.fichero', 'Fichero#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.fichero', 'Fichero#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.fichero', 'Fichero#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.aviso.ficheroErrorCAM', 'Suba el fichero de errores generado por la CAM. Pasados unos instantes el fichero será procesado y se generará un informe de errores tras pulsar el botón generar informe.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.aviso.ficheroErrorCAM', 'Suba el fichero de errores generado por la CAM. Pasados unos instantes el fichero será procesado y se generará un informe de errores tras pulsar el botón generar informe.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.aviso.ficheroErrorCAM', 'Suba el fichero de errores generado por la CAM. Pasados unos instantes el fichero será procesado y se generará un informe de errores tras pulsar el botón generar informe.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.aviso.ficheroErrorCAM', 'Suba el fichero de errores generado por la CAM. Pasados unos instantes el fichero será procesado y se generará un informe de errores tras pulsar el botón generar informe.#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.dialogo.ficheroErrorCAM', 'Fichero errores CAM', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.dialogo.ficheroErrorCAM', 'Fichero errores CAM#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.dialogo.ficheroErrorCAM', 'Fichero errores CAM#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.dialogo.ficheroErrorCAM', 'Fichero errores CAM#GL', 0, '4', sysdate, 0, '19');
+
+
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.boton.subirFicheroErrorCAM', 'Errores CAM', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.boton.subirFicheroErrorCAM', 'Errores CAM#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.boton.subirFicheroErrorCAM', 'Errores CAM#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.boton.subirFicheroErrorCAM', 'Errores CAM#GL', 0, '4', sysdate, 0, '19');
+
+
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.dialogo.ficheroSeleccionErrorCAM', 'Generar fichero CAM', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.dialogo.ficheroSeleccionErrorCAM', 'Generar fichero CAM#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.dialogo.ficheroSeleccionErrorCAM', 'Generar fichero CAM#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.dialogo.ficheroSeleccionErrorCAM', 'Generar fichero CAM#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.aviso.ficheroSeleccionErrorCAM', 'Por favor, seleccione un tipo de error que haya solucionado o seleccione opción todos para generar el fichero completo de nuevo. Si no desea generar el fichero para subir a la CAM seleccione la opción.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.aviso.ficheroSeleccionErrorCAM', 'Por favor, seleccione un tipo de error que haya solucionado o seleccione opción todos para generar el fichero completo de nuevo. Si no desea generar el fichero para subir a la CAM seleccione la opción.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.aviso.ficheroSeleccionErrorCAM', 'Por favor, seleccione un tipo de error que haya solucionado o seleccione opción todos para generar el fichero completo de nuevo. Si no desea generar el fichero para subir a la CAM seleccione la opción.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.aviso.ficheroSeleccionErrorCAM', 'Por favor, seleccione un tipo de error que haya solucionado o seleccione opción todos para generar el fichero completo de nuevo. Si no desea generar el fichero para subir a la CAM seleccione la opción.#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.noGenerarFichero', 'No generar fichero para subir a la CAM', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.noGenerarFichero', 'No generar fichero para subir a la CAM#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.noGenerarFichero', 'No generar fichero para subir a la CAM#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.noGenerarFichero', 'No generar fichero para subir a la CAM#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.generarFicheroCompleto', 'Generar fichero completo con todos los errores', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.generarFicheroCompleto', 'Generar fichero completo con todos los errores#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.generarFicheroCompleto', 'Generar fichero completo con todos los errores#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.generarFicheroCompleto', 'Generar fichero completo con todos los errores#GL', 0, '4', sysdate, 0, '19');
+
+commit;
