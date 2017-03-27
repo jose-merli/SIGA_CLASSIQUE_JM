@@ -668,3 +668,5 @@ insert into adm_tiposacceso
 insert into GEN_MENU (IDMENU, ORDEN, TAGWIDTH, IDPARENT, FECHAMODIFICACION, USUMODIFICACION, URI_IMAGEN, IDRECURSO, GEN_MENU_IDMENU, IDPROCESO, IDLENGUAJE)
 values ('12W', 22230, 160, '606', sysdate, 0, null, 'menu.sjcs.ecomunicaciones.EJGPteEnvioActualizacion', null, '12W', '1');
 
+-- Ejecutado en Integracion por AAG el 27/03 a las 16:40
+
