@@ -543,9 +543,8 @@
 								<td>
 									<html:text name="consultaDireccionesSolicForm" styleId="codigoPostal" property="codigoPostal" value="<%=String.valueOf(htData.get(CenDireccionesBean.C_CODIGOPOSTAL))%>" size="5" maxlength="5" styleClass="box" onChange="createProvince()"></html:text>
 								</td>		
-								<td nowrap="nowrap" id="tdOtraProvincia">
-										Otra provincia 
-										
+								<td nowrap="nowrap" id="tdOtraProvincia"> 
+										<siga:Idioma key="censo.datosDireccion.literal.otraProvincia" />
 											<%if(otraProvinciaString != null && !"".equalsIgnoreCase(otraProvinciaString) && otraProvinciaString.equalsIgnoreCase("1")){ %>
 												<input type="checkbox" id="otraProvinciaCheck" name="otraProvinciaCheck" checked="checked"  onclick="otraProvinciaFuction(this);"> &nbsp;
 											<%}else{ %>

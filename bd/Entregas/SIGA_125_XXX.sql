@@ -452,3 +452,15 @@ Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodif
 Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('messages.cajg.confirmarCambioEstado', 'Se va a cambiar añadir el nuevo estado a los expedientes seleccionados.#CA', '0', 2, Sysdate, 0, '19');
 Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('messages.cajg.confirmarCambioEstado', 'Se va a cambiar añadir el nuevo estado a los expedientes seleccionados.#EU', '0', 3, Sysdate, 0, '19');
 Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('messages.cajg.confirmarCambioEstado', 'Se va a cambiar añadir el nuevo estado a los expedientes seleccionados.#GL', '0', 4, Sysdate, 0, '19');
+
+insert into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('censo.datosDireccion.literal.otraProvincia', 'Otra provincia', '0', 1, Sysdate, 0, '19');
+insert into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('censo.datosDireccion.literal.otraProvincia', 'Otra provincia#CA', '0', 2, Sysdate, 0, '19');
+insert into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('censo.datosDireccion.literal.otraProvincia', 'Otra provincia#EU', '0', 3, Sysdate, 0, '19');
+insert into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('censo.datosDireccion.literal.otraProvincia', 'Otra provincia#GL', '0', 4, Sysdate, 0, '19');
+
+
+ 

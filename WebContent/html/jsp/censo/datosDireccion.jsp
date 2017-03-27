@@ -1312,7 +1312,7 @@
 										
 									</td>
 									<td nowrap="nowrap" id="tdOtraProvincia">
-										Otra provincia 
+										<siga:Idioma key="censo.datosDireccion.literal.otraProvincia" />
 										<%
 											if (editarCampos) {
 										%>
