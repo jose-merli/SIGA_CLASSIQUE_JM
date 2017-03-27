@@ -558,6 +558,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 									",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO+
 									",act."+ScsActuacionDesignaBean.C_IDACREDITACION+"||','||ap.nig_numprocedimiento IDACREDITACION"+
 									",act."+ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO+
+									",act."+ScsActuacionDesignaBean.C_IDFACTURACION+									
 									",pro.nombre nombreprocedimiento, pro.idprocedimiento idprocedimiento"+
 									",acred."+ScsAcreditacionBean.C_DESCRIPCION+" AS NOMBREACREDITACION "+
 									",act." + ScsActuacionDesignaBean.C_VALIDADA + " actuacionValidada " +
