@@ -644,11 +644,11 @@
 	} 		
 
 	function bloquearDireccion(){
-	
 		//Datos direccion
 		jQuery("#domicilio").attr("disabled","disabled");
 	   	jQuery("#codigoPostal").attr("disabled","disabled");
 	   	jQuery("#pais").attr("disabled","disabled");
+	 	jQuery("#otraProvinciaCheck").attr("disabled","disabled");
 	   	jQuery("#provincia").attr("disabled","disabled");
 	   	jQuery("#poblacion").attr("disabled","disabled");
 	   	jQuery("#poblacionFrame").contents().find("#poblacionSel").attr("disabled","disabled");	   	
@@ -688,6 +688,7 @@
 	   	jQuery("#codigoPostal").removeAttr("disabled");
 	   	
 	   	jQuery("#pais").removeAttr("disabled");
+		jQuery("#otraProvinciaCheck").removeAttr("disabled");
 	   	jQuery("#provincia").removeAttr("disabled");
 	   	jQuery("#poblacion").removeAttr("disabled");
 	   	jQuery("#poblacionFrame").contents().find("#poblacionSel").removeAttr("disabled"); 
@@ -722,7 +723,7 @@
 	}		
 
 	function limpiarDireccion(){
-
+	
 		//Combo Direccioens
 		document.getElementById("direcciones").value 		= "-1";
 		jQuery("#direcciones").attr("disabled","disabled");
@@ -732,6 +733,7 @@
 		document.getElementById("codigoPostal").value 		= "";
 		document.getElementById("pais").value 				= "";
 		jQuery("#provinciaSinAsterisco").show();
+		document.getElementById("otraProvinciaCheck").checked = "";
 		document.getElementById("provincia").value 			= "";
 		document.getElementById("provincia").onchange();
 		document.getElementById("poblacionExt").value 		= "";
@@ -765,6 +767,7 @@
 		jQuery("#domicilio").removeAttr("disabled");
 	   	jQuery("#codigoPostal").removeAttr("disabled");
 	   	jQuery("#pais").removeAttr("disabled");
+	   	jQuery("#otraProvinciaCheck").removeAttr("disabled");
 	   	jQuery("#provincia").removeAttr("disabled");
 	   	jQuery("#poblacion").removeAttr("disabled");
 	   	jQuery("#poblacionFrame").contents().find("#poblacionSel").removeAttr("disabled");
@@ -811,6 +814,11 @@
 		}else{
 			poblacionSeleccionada = document.busquedaCensoModalForm.poblacionValue.value;
 			jQuery("#provinciaText").val(jQuery( "#provincia option:selected" ).text());
+			if(document.busquedaCensoModalForm.otraProvincia.value != "" && document.busquedaCensoModalForm.otraProvincia.value==1){
+				jQuery("#otraProvinciaCheck").attr('checked','checked');
+			}else{
+				jQuery("#otraProvinciaCheck").removeAttr('checked');
+			}
 			document.getElementById("provincia").onchange();	
 			jQuery("#poblacion").attr("disabled","disabled");
 		}
@@ -1173,6 +1181,18 @@
 			
 			}
 		}       
+	
+		function otraProvinciaFuction(valor){
+			if(valor.checked ) {
+			   //Si está seleccionado
+			  	jQuery("#provinciaEspanola").css("display","inline");
+			    jQuery("#provinciaText").hide();
+			}else{
+				createProvince();
+				jQuery("#provinciaEspanola").hide();
+			    jQuery("#provinciaText").css("display","inline");
+			}
+		}
 		</script>
 
 	</head>
@@ -1440,6 +1460,11 @@
 						<td>
 							<html:text name="datosGeneralesForm" styleId="codigoPostal" property="codigoPostal" maxlength="5" size="5" styleClass="box" onChange="createProvince()"></html:text>
 						</td>
+						<td nowrap="nowrap" id="tdOtraProvincia">
+								<siga:Idioma key="censo.datosDireccion.literal.otraProvincia" />		
+							    <input type="checkbox" id="otraProvinciaCheck" name="otraProvinciaCheck"  onclick="otraProvinciaFuction(this);"> &nbsp;
+											
+						</td>
 						<td class="labelText" id="provinciaSinAsterisco">
 							<siga:Idioma key="censo.datosDireccion.literal.provincia" />&nbsp;
 						</td>
@@ -1582,6 +1607,7 @@
 	<html:hidden  name="busquedaCensoModalForm" property="direccion"/>
 	<html:hidden  name="busquedaCensoModalForm" property="codPostal"/>
 	<html:hidden  name="busquedaCensoModalForm" property="pais"/>
+	<html:hidden  name="busquedaCensoModalForm" property="otraProvincia"/>
 	<html:hidden  name="busquedaCensoModalForm" property="provincia"/>
 	<html:hidden  name="busquedaCensoModalForm" property="poblacion"/>
 	<html:hidden  name="busquedaCensoModalForm" property="poblacionExt"/>
@@ -1624,7 +1650,7 @@
 
 <ajax:updateFieldFromSelect
 	baseUrl="/SIGA/CEN_BusquedaCensoModal.do?modo=getAjaxDirecciones"
-	source="direcciones" target="fax1,fax2,mail,paginaWeb,movil,telefono,telefono2,poblacionValue,provincia,pais,direccion,preferente,tipoDireccion,codPostal,poblacionExt,idDireccion"
+	source="direcciones" target="fax1,fax2,mail,paginaWeb,movil,telefono,telefono2,poblacionValue,provincia,pais,direccion,preferente,tipoDireccion,codPostal,poblacionExt,idDireccion,otraProvincia"
 	parameters="idInstitucion={idInstitucion},idPersona={idPersona},idDireccion={idDireccion}"  postFunction="postAccionDirecciones" 
 />
 
@@ -1702,6 +1728,7 @@
 			jQuery("#domicilio").removeAttr("disabled");
 		   	jQuery("#codigoPostal").removeAttr("disabled");
 		   	jQuery("#pais").removeAttr("disabled");
+		   	jQuery("#otraProvinciaCheck").removeAttr("disabled");
 		   	jQuery("#provincia").removeAttr("disabled");
 		   	jQuery("#poblacion").removeAttr("disabled");
 		   	jQuery("#poblacionFrame").contents().find("#poblacionSel").removeAttr("disabled");
@@ -1817,6 +1844,11 @@
 					document.busquedaCensoModalForm.paginaWeb.value    =document.datosGeneralesForm.paginaWeb.value;
 					document.busquedaCensoModalForm.direcciones.value  =document.datosGeneralesForm.direcciones.value;
 					document.busquedaCensoModalForm.idDireccion.value  =document.datosGeneralesForm.idDireccion.value;
+					if(jQuery("#otraProvinciaCheck").is(':checked') && jQuery("#otraProvinciaCheck").is(':visible')){
+						document.busquedaCensoModalForm.otraProvincia.value = "1";
+					} else{
+						document.busquedaCensoModalForm.otraProvincia.value= "0";
+					}
 
 
 					//SI ES DE NUESTRO COLEGIO NO SE TOCA DIRECCIONES
@@ -1912,12 +1944,16 @@
 				document.getElementById("poblacionEspanola").className="ocultar";
 				document.getElementById("poblacionExtranjera").className="";
 				jQuery("#provinciaSinAsterisco").hide();
+				jQuery("#tdOtraProvincia").hide();
+				jQuery("#otraProvinciaCheck").removeAttr('checked');
 	       } else {
 		   		document.getElementById("poblacionExt").value="";
 				jQuery("#provincia").removeAttr("disabled");
 				document.getElementById("poblacionEspanola").className="";
 				document.getElementById("poblacionExtranjera").className="ocultar";
 				jQuery("#provinciaSinAsterisco").show();
+				jQuery("#tdOtraProvincia").show();
+				jQuery("#otraProvinciaCheck").removeAttr('disabled');
 	       }
 	    }
 		
@@ -2148,6 +2184,7 @@
 				jQuery("#poblacionEspanola").show();
 				jQuery("#poblacionExtranjera").hide();
 				jQuery("#provinciaSinAsterisco").show();
+				jQuery("#tdOtraProvincia").show();
 				
 				
 			} else {
@@ -2160,6 +2197,8 @@
 				jQuery("#poblacionExt").val("");
 				jQuery("#codigoPostal").val("");
 				jQuery("#poblacion").html("");
+				jQuery("#otraProvinciaCheck").removeAttr('checked');
+				jQuery("#tdOtraProvincia").hide();
 				
 				
 				
@@ -2175,6 +2214,7 @@
 				jQuery("#poblacionEspanola").show();
 				jQuery("#poblacionExtranjera").hide();
 				jQuery("#provinciaSinAsterisco").show();
+				jQuery("#tdOtraProvincia").show();
 				
 				
 			} else {
@@ -2185,6 +2225,8 @@
 				jQuery("#poblacionExtranjera").show();		
 				jQuery("#provinciaSinAsterisco").hide();
 				jQuery("#poblacion").html("");
+				jQuery("#otraProvinciaCheck").removeAttr('checked');
+				jQuery("#tdOtraProvincia").hide();
 				
 				
 				
