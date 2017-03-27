@@ -189,6 +189,32 @@ public class CajgRemesaAdm extends MasterBeanAdministrador {
 					  consulta +=" and f_siga_get_fechaEstadoRemesa(e.idinstitucion, e.idremesa, "+estado+") >= TO_DATE('"+miForm.getFechaInicioBuscar()+"', 'DD/MM/YYYY')";
 				  }
 		}
+		if( (miForm.getAnioEJG()!=null && !miForm.getAnioEJG().equals("")) || (miForm.getCodigoEJG()!=null && !miForm.getCodigoEJG().equals(""))){
+			consulta +=" AND (R.IDREMESA, R.IDINSTITUCION ) IN "
+					+"(                   SELECT IDREMESA, IDINSTITUCIONREMESA"
+					+" FROM CAJG_EJGREMESA ER, SCS_EJG EJG "
+                   
+					+" WHERE ER.IDINSTITUCION = EJG.IDINSTITUCION "
+                      +"AND ER.ANIO = EJG.ANIO "
+                      +"AND ER.IDTIPOEJG = EJG.IDTIPOEJG "
+                      +"AND ER.NUMERO = EJG.NUMERO "
+                      +"AND EJG.IDINSTITUCION = ";
+			consulta+= this.usrbean.getLocation()+" ";
+			
+			 
+			if(miForm.getCodigoEJG()!=null && !miForm.getCodigoEJG().equals("")){
+				consulta +=" AND EJG.NUMEJG =  ";
+				consulta += miForm.getCodigoEJG();
+			}
+			if(miForm.getAnioEJG()!=null && !miForm.getAnioEJG().equals("")){
+                      
+				consulta +=" AND EJG.ANIO = ";
+				consulta += miForm.getAnioEJG();
+			}
+            
+			consulta +=") ";
+			
+		}
 		
 		consulta += " order by r.prefijo DESC,r.numero DESC, r.sufijo DESC";		
 		return new PaginadorCaseSensitive(consulta);
