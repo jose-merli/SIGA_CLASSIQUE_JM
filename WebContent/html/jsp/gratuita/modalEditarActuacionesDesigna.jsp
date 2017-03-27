@@ -40,7 +40,7 @@
 	boolean justificacionValidada;
 
 	String anio = "", numero = "", turno = "", idTurno = "", fecha = "", ncolegiado = "", nombre = "", apellido1 = "", apellido2 = "", codigo = "", idJuzgadoDesigna = "", juzgadoInstitucionDesigna = "", idPretensionDesigna = "";
-	String nactuacion = "", fechaActuacion = "", acuerdoExtrajudicial = "";
+	String nactuacion = "", fechaActuacion = "", acuerdoExtrajudicial = "", idfacturacion = "";
 	String anulacion = "", observaciones = "", fechaJustificacion = "", observacionesJustificacion = "", modo = "", fechaComboFiltros = "";
 	String idPersona = null;
 	String numeroProcedimiento = "";
@@ -123,6 +123,7 @@
 
 		if (hashActuacion != null && hashActuacion.size() > 0) {
 			nombreFacturacion = (String) hashActuacion.get("NOMBREFACTURACION");
+			idfacturacion = (String) hashActuacion.get("IDFACTURACION");
 			//Nuevo numero de actuacion:
 			nactuacion = (String) hashActuacion.get("NUMEROASUNTO");
 			//INC_3094_SIGA el colegiado se toma de la actuación, no de la designación
@@ -582,6 +583,8 @@
 	<html:hidden property = "anio" value="<%=anio%>" />	
 	<html:hidden property = "numero" value="<%=numero%>" />
 	<html:hidden property = "nactuacion" value="<%=nactuacion%>" />
+	<html:hidden property = "idfacturacion" value="<%=idfacturacion%>" />
+	<html:hidden property = "facturado" value="<%=facturada%>" />	
 
 	
 		

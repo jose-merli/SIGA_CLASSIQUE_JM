@@ -20,6 +20,7 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="com.siga.gratuita.form.PestanaDelitoDesignaForm"%>
+<%@ page import = "org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION"%>
 <!-- JSP -->
 
 <% 
@@ -133,12 +134,17 @@
 		    	String botones = "";
 		    	Vector v = null;
 		    	ScsActuacionDesignaAdm scsActuacionDesignaAdm = new ScsActuacionDesignaAdm(usr);
+		    	FcsFactEstadosFacturacionAdm fcsFactEstadosFacturacionAdm = new FcsFactEstadosFacturacionAdm(usr);
+		    	
 				while ((recordNumber) <= obj.size()){	 
 				    modo = (String) ses.getAttribute("Modo");
 					Hashtable hash = (Hashtable)obj.get(recordNumber-1);
 					String idFacturacion = (String)hash.get("IDFACTURACION");
-					
-					boolean modificable = (idFacturacion==null||idFacturacion.equals(""));
+										
+					String estadoActualFacturacion = fcsFactEstadosFacturacionAdm.getIdEstadoFacturacion(idInstitucion, idFacturacion);
+										
+					boolean modificable = (idFacturacion==null || idFacturacion.equals("") 
+							|| (estadoActualFacturacion != null && Integer.parseInt(estadoActualFacturacion) == ESTADO_FACTURACION.ESTADO_FACTURACION_VALIDACION_NO_CORRECTA.getCodigo() ));
 
 // RGG 					String nombreProc = ((String) hash.get("NOMBREPROCEDIMIENTO")) + ((hash.get("NOMBREACREDITACION")==null)?"":(" - " + (String)hash.get("NOMBREACREDITACION")));
 					String nombreProc = (String) hash.get("NOMBREPROCEDIMIENTO");
