@@ -22,7 +22,24 @@ import com.siga.beans.ScsPersonaJGBean;
  public class DefinicionRemesas_CAJG_Form extends DefinirEJGForm{
 	 
 	 String datosSolicInformeEconomico;
-	   /**
+	 String anioEJG;
+	 String codigoEJG;
+	   public String getAnioEJG() {
+		return anioEJG;
+	}
+
+	public void setAnioEJG(String anioEJG) {
+		this.anioEJG = anioEJG;
+	}
+
+	public String getCodigoEJG() {
+		return codigoEJG;
+	}
+
+	public void setCodigoEJG(String codigoEJG) {
+		this.codigoEJG = codigoEJG;
+	}
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 660321620743286469L;

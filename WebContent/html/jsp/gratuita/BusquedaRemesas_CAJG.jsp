@@ -128,9 +128,18 @@
 					<td class="labelText">
 						<siga:Idioma key="gratuita.BusquedaRemesas_CAJG.literal.Descripcion"/>	
 					</td>		
-					<td class="labelText" colspan="5">	
+					<td class="labelText" colspan="3">	
 						<html:text  name="DefinicionRemesas_CAJG_Form" property="descripcion" size="56" maxlength="200" styleClass="box" readonly="false" value="<%=descripcion%>" />				
-					</td>					
+					</td>	
+					<td class="labelText" nowrap>
+							<siga:Idioma key="gratuita.busquedaEJG.literal.anyo" />/<siga:Idioma key="gratuita.busquedaEJG.literal.codigo" />
+					</td>
+					<td>	
+						<html:text name="DefinicionRemesas_CAJG_Form" property="anioEJG" styleId="anioEJG" style="width:40px" maxlength="4" styleClass="box"/>
+						&nbsp;/&nbsp;
+						<html:text name="DefinicionRemesas_CAJG_Form" property="codigoEJG" styleId="codigoEJG" style="width:90px" maxlength="13" styleClass="box"/> 
+					</td>
+									
 				</tr>
 				
 				<tr>
@@ -202,6 +211,23 @@
 			} else {
 				document.forms[0].idRemesa.value = ""
 			}
+			
+			if(document.forms[0].anioEJG){
+				var objRegExp  = /^([0-9]{4})?$/;
+				if(!objRegExp.test(document.forms[0].anioEJG.value)){
+					alert( "<siga:Idioma key='errors.formato' arg0='gratuita.busquedaEJG.literal.anyo'/>"+ '\n');
+					fin();
+					return false;
+				}
+			}	
+			
+			if(document.forms[0].anioEJG.value!='' && document.forms[0].codigoEJG.value ==''){
+				alert( "<siga:Idioma key='errors.required' arg0='gratuita.busquedaEJG.literal.codigo'/>"+ '\n');
+				fin();
+				return false;
+				
+			}
+			
 			
 			document.forms[0].submit();
 		}			

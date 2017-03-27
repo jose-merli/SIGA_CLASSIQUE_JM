@@ -937,11 +937,16 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		
+		
+		DefinicionRemesas_CAJG_Form miForm = (DefinicionRemesas_CAJG_Form) formulario;
+		
 		String volver = request.getParameter("volver");
 		if (volver != null && volver.equalsIgnoreCase("SI")) {
 			request.setAttribute("VOLVER", "1");			
 		} else {
 			request.setAttribute("VOLVER", "0");
+			miForm.setAnioEJG("");
+			miForm.setCodigoEJG("");
 			request.getSession().removeAttribute("DATOSBUSQUEDA");
 		}
 		request.getSession().removeAttribute("DATABACKUP");
@@ -2208,7 +2213,6 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 					expedientesActualizar.add(numeroIntercambio);
 				newIntercambiosRemesaMap.put(numeroIntercambio, row.getRow());
 			}
-
 			for (int k = 0; k < cabeceras.length; k++) {
 				String cabeceraPK = cabeceras[k];
 				String valor = row.getString(cabeceraPK);
