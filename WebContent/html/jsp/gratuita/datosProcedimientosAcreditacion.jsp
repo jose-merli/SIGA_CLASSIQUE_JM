@@ -145,6 +145,8 @@
 		<html:hidden property = "porcentaje" value = ""/>
 		<html:hidden property = "nigNumProcedimiento" value = ""/>
 		
+		
+		
 		<table class="tablaCampos" align="center">	
 			<tr>
 				<td width="25%"></td>
@@ -233,6 +235,8 @@
 				<html:text  property="codSubtarifa" styleId="codSubtarifa" size="14" maxlength="5" value="<%=codSubtarifa%>" styleClass="box"/> </td>
 				<td></td>
 			</tr>
+			<%}else{%>
+				<html:hidden  property="codSubtarifa" styleId="codSubtarifa" /> 
 			<%}%>
 		</table>
 	
