@@ -244,7 +244,7 @@ public class AlcalaJE extends InformeXML implements PCAJGConstantes {
 					
 				}
 				
-				sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, cell.getColumnIndex()+1));
+				sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, cell.getColumnIndex()));
 				sheet.createFreezePane(0,1);
 				
 			}
