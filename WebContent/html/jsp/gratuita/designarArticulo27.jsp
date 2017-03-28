@@ -1149,6 +1149,9 @@
 					jQuery("#provinciaText").val("");
 					jQuery("#provincia").change();
 					jQuery("#poblacion").html("");
+					jQuery("#otraProvinciaCheck").removeAttr('checked');
+					jQuery("#provinciaEspanola").hide();
+				    jQuery("#provinciaText").css("display","inline");
 					return;
 				} 
 				if(Primary.length<5){
@@ -1165,6 +1168,10 @@
 							jQuery("#provinciaText").val( jQuery("#provincia option:selected").text());
 							jQuery("#poblacion").val(jQuery("#poblacion option:first").val());
 							document.getElementById("provincia").onchange();
+							
+							jQuery("#otraProvinciaCheck").removeAttr('checked');
+							jQuery("#provinciaEspanola").hide();
+						    jQuery("#provinciaText").css("display","inline");
 					 	
 						} else {
 							var mensaje = "<siga:Idioma key="censo.datosDireccion.noSeEncuentraProvincia"/>";
