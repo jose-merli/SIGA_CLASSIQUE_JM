@@ -1543,10 +1543,16 @@ public class DatosGeneralesAction extends MasterAction {
 					beanDir.setIdPoblacion (miForm.getPoblacion ());
 					beanDir.setIdProvincia (miForm.getProvincia ());
 					beanDir.setPoblacionExtranjera ("");
+					if(miForm.getOtraProvincia() != null && !"".equalsIgnoreCase(miForm.getOtraProvincia()) && miForm.getOtraProvincia().equalsIgnoreCase("1")){
+						beanDir.setOtraProvincia(1);
+					}else{
+						beanDir.setOtraProvincia(0);
+					}
 				} else {
 					beanDir.setPoblacionExtranjera (miForm.getPoblacionExt ());
 					beanDir.setIdPoblacion ("");
 					beanDir.setIdProvincia ("");
+					beanDir.setOtraProvincia(0);
 				}
 				beanDir.setIdPersona (beanCli.getIdPersona());
 				beanDir.setMovil (miForm.getMovil ());

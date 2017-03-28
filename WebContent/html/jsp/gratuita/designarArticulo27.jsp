@@ -1227,6 +1227,7 @@
 			<html:hidden name="datosGeneralesForm" property="cargo" styleId="cargo" value="B" />
 			<html:hidden name="datosGeneralesForm" property="idTipoDireccion" styleId="idTipoDireccion" value=""/>
 			<html:hidden name="datosGeneralesForm" property="preferente" styleId="preferente" />
+			<html:hidden name="datosGeneralesForm" property="otraProvincia" styleId="otraProvincia" />
 			<html:hidden property="actionModal" value=""/>
 			<html:hidden property="tipo" value="<%=sTipo%>"/>
 			
@@ -1911,6 +1912,12 @@
 						document.busquedaCensoModalForm.submit();
 						window.top.returnValue="MODIFICADO";
 					}else{
+						if(jQuery("#otraProvinciaCheck").is(':checked') && jQuery("#otraProvinciaCheck").is(':visible')){
+							document.datosGeneralesForm.otraProvincia.value = "1";
+						} else{
+							document.datosGeneralesForm.otraProvincia.value= "0";
+						}
+		
 						document.datosGeneralesForm.preferente.value = preferencia;
 						document.datosGeneralesForm.idTipoDireccion.value = tipoDir;
 						document.datosGeneralesForm.modo.value = "validarNoColegiadoArt27";
