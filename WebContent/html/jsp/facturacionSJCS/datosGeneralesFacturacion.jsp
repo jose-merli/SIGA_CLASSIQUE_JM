@@ -38,7 +38,6 @@
 <%@ page import="java.util.Hashtable"%>
 <%@ page import="java.util.List"%>
 <%@ page import="org.redabogacia.sigaservices.app.autogen.model.VPcajgAlcActErrorCam"%>
-<%@ page import="com.siga.ws.i2003.je.AlcalaJE"%>
 
 
 <!-- JSP -->
@@ -577,8 +576,8 @@
 							
 							
 							<div class="labelText">
-							    <input type="radio" name="tipoFicheroCAMRadio2" value="<%=AlcalaJE.TIPO_FICHERO_CAM.NINGUNO.name()%>" checked="checked"/><bean:message key="facturacionjg.literal.noGenerarFichero"/></br>
-							    <input type="radio" name="tipoFicheroCAMRadio2" value="<%=AlcalaJE.TIPO_FICHERO_CAM.TODOS.name()%>"/><bean:message key="facturacionjg.literal.generarFicheroCompleto"/></br>
+							    <input type="radio" name="tipoFicheroCAMRadio2" value="NINGUNO" checked="checked"/><bean:message key="facturacionjg.literal.noGenerarFichero"/></br>
+							    <input type="radio" name="tipoFicheroCAMRadio2" value="TODOS"/><bean:message key="facturacionjg.literal.generarFicheroCompleto"/></br>
 							    
 							    
 								<% if (listaErroresCAM != null && listaErroresCAM.size() > 0) {
