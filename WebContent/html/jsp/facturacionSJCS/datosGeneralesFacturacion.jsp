@@ -406,8 +406,8 @@
 			jQuery("#idInformeIncidenciasCAM")[0].reset();			
 			jQuery("#dialogoSeleccionErroresCAM").dialog(
 					{
-					      height: 450,
-					      width: 600,
+					      height: 600,
+					      width: 840,
 					      modal: true,
 					      resizable: false,						      
 					      buttons: {
@@ -566,18 +566,18 @@
 		</siga:ConjCampos>		
 		
 		<%if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) { %>
-		<div id="dialogoSeleccionErroresCAM"  title='<bean:message key="facturacionjg.dialogo.ficheroSeleccionErrorCAM"/>' style="display:none">
+		<div id="dialogoSeleccionErroresCAM"  title='<siga:Idioma key="facturacionjg.dialogo.ficheroSeleccionErrorCAM"/>' style="display:none">
 			
-			<div class="labelTextArea"><bean:message key="facturacionjg.literal.aviso.ficheroSeleccionErrorCAM"/></div>
+			<div class="labelTextArea"><siga:Idioma key="facturacionjg.literal.aviso.ficheroSeleccionErrorCAM"/></div>
 			</br>	
+			</br>
 		  	<siga:ConjCampos >
 		  	
 							<html:hidden name="DatosGeneralesFacturacionForm" property ="idInstitucion" value = "<%=idInstitucion%>"/>
 							
-							
 							<div class="labelText">
-							    <input type="radio" name="tipoFicheroCAMRadio2" value="NINGUNO" checked="checked"/><bean:message key="facturacionjg.literal.noGenerarFichero"/></br>
-							    <input type="radio" name="tipoFicheroCAMRadio2" value="TODOS"/><bean:message key="facturacionjg.literal.generarFicheroCompleto"/></br>
+							    <input type="radio" name="tipoFicheroCAMRadio2" value="NINGUNO" checked="checked"/><siga:Idioma key="facturacionjg.literal.noGenerarFichero"/></br>
+							    <input type="radio" name="tipoFicheroCAMRadio2" value="TODOS"/><siga:Idioma key="facturacionjg.literal.generarFicheroCompleto"/></br>
 							    
 							    
 								<% if (listaErroresCAM != null && listaErroresCAM.size() > 0) {
@@ -596,9 +596,9 @@
 				
 	</html:form>
 	<%if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) { %>
-	<div id="dialogoInformeIncidenciasCAM"  title='<bean:message key="facturacionjg.dialogo.ficheroErrorCAM"/>' style="display:none">
+	<div id="dialogoInformeIncidenciasCAM"  title='<siga:Idioma key="facturacionjg.dialogo.ficheroErrorCAM"/>' style="display:none">
 			
-			<div class="labelTextArea"><bean:message key="facturacionjg.literal.aviso.ficheroErrorCAM"/></div>
+			<div class="labelTextArea"><siga:Idioma key="facturacionjg.literal.aviso.ficheroErrorCAM"/></div>
 			</br>	
 		  	<siga:ConjCampos >
 		  	
@@ -611,7 +611,7 @@
 							</br>
 							
 							<div class="labelText">
-								<label for="file"   style="width:140px;float:left;color: black"><bean:message key="facturacionjg.literal.fichero"/></label>
+								<label for="file"   style="width:140px;float:left;color: black"><siga:Idioma key="facturacionjg.literal.fichero"/></label>
 								<input type="file" id="file" name="file" size="35" styleClass="box" style="background-color: #FFFFFF;" accept=""/>
 								
 							</div>
