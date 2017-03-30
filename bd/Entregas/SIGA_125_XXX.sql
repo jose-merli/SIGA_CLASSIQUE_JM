@@ -674,3 +674,5 @@ values ('12W', 22230, 160, '606', sysdate, 0, null, 'menu.sjcs.ecomunicaciones.E
 alter table PCAJG_ALC_ACT_ERROR_CAM modify REGISTRO_ERROR_CAM VARCHAR2(1000);
 
 -- Ejecutado en Integracion por ACP el 28/03 a las 11:17
+
+Modificada vista V_WS_JE_2003_DESIGNA
