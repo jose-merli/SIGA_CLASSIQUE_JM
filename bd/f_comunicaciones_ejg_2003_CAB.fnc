@@ -1,15 +1,14 @@
 create or replace function f_comunicaciones_ejg_2003_CAB(P_INSTITUCION IN SCS_EJG.IDINSTITUCION%type,
                                                          P_IDREMESA    IN CAJG_REMESA.IDREMESA%type)
   return clob is
-  salida      clob;
-  sentencia   varchar(30000);
-  condiciones   clob;
+  salida          clob;
+  sentencia       varchar(30000);
+  condiciones     clob;
   cuentaCondicion integer(2);
 
   TYPE tipo_cod_desc IS RECORD(
     condicion   VARCHAR2(250),
     descripcion CAJG_RESPUESTA_EJGREMESA.DESCRIPCION%TYPE);
-
 
   TYPE tipo_array_codDesc IS TABLE OF tipo_cod_desc index by binary_integer;
   v_arrayCondiciones tipo_array_codDesc;
@@ -115,7 +114,19 @@ begin
      , ''PRD'' AS TIPO_REGISTRO_PRD
           , LPAD(DECODE(DL.IDPERSONA, NULL, ''      '', NVL(F_SIGA_CALCULONCOLEGIADO(DL.IDINSTITUCION, DL.IDPERSONA), ''      '')), 6, ''0'') AS PRD1_NCOLEGIADOABOGADO
           , RPAD(NVL(TO_CHAR(DL.FECHADESIGNA, ''YYYYMMDD''), '' ''), 8, '' '') AS PRD2_FECHA_DESIGNA
-          , LPAD(NVL(TO_CHAR(D.CODIGO), ''      ''), 6, ''0'') AS PRD3_NUMERO_DESIGNA
+          ,LPAD(  ((SELECT COUNT(1) NUMERO
+          FROM SCS_DESIGNASLETRADO DESLET2
+         WHERE ED.IDINSTITUCION = DESLET2.IDINSTITUCION
+           AND ED.IDTURNO = DESLET2.IDTURNO
+           AND ED.ANIODESIGNA = DESLET2.ANIO
+           AND ED.NUMERODESIGNA = DESLET2.NUMERO) -
+       (SELECT COUNT(1) NUMERO
+          FROM SCS_DESIGNASLETRADO DESLET2
+         WHERE DL.IDINSTITUCION = DESLET2.IDINSTITUCION
+           AND DL.IDTURNO = DESLET2.IDTURNO
+           AND DL.ANIO = DESLET2.ANIO
+           AND DL.NUMERO = DESLET2.NUMERO
+           AND DL.FECHADESIGNA < DESLET2.FECHADESIGNA) - 1 ) || NVL(TO_CHAR(D.CODIGO), ''      ''), 6, ''0'') AS PRD3_NUMERO_DESIGNA
           , LPAD(NVL(TO_CHAR(D.ANIO), ''    ''), 4, ''0'') AS PRD4_ANIO_DESIGNA
           , LPAD(NVL((CASE
                   WHEN DP.IDPROCURADOR IS NOT NULL
@@ -408,12 +419,13 @@ begin
 
 
 
-          AND R.IDREMESA = ' || P_IDREMESA || ' AND R.IDINSTITUCION = ' || P_INSTITUCION || '
+          AND R.IDREMESA = ' || P_IDREMESA ||
+            ' AND R.IDINSTITUCION = ' || P_INSTITUCION || '
           ORDER BY PRD4_ANIO_DESIGNA, TO_NUMBER(TRIM(PRD3_NUMERO_DESIGNA)), EXP2_ANIO_EXPEDIENTE, EXP1_NUM_EXPEDIENTE';
 
   cuentaCondicion := 0;
- --ELIMINADA LA OBLIGATORIEDAD DE LOS CAMPOS EXP7 Y EXP8 SEGÚN CORREO DE CARMEN DEL 23/05/2011
--- AÑADIMOS OBLIGATORIEDAD POR CORREO DE ENRIQUE DE 21-02-2017
+  --ELIMINADA LA OBLIGATORIEDAD DE LOS CAMPOS EXP7 Y EXP8 SEGÚN CORREO DE CARMEN DEL 23/05/2011
+  -- AÑADIMOS OBLIGATORIEDAD POR CORREO DE ENRIQUE DE 21-02-2017
   cuentaCondicion := cuentaCondicion + 1;
   v_arrayCondiciones(cuentaCondicion).condicion := 'TRIM(EXP7_CALIFICACION) IS NOT NULL';
   v_arrayCondiciones(cuentaCondicion).descripcion := 'Debe rellenar el tipo de dictamen';
@@ -455,11 +467,11 @@ begin
   v_arrayCondiciones(cuentaCondicion).descripcion := 'Debe rellenar el tipo de persona de los solicitantes';
 
   cuentaCondicion := cuentaCondicion + 1;
-  v_arrayCondiciones(cuentaCondicion).condicion := 'TRIM(SOL8_NACIONALIDAD) IS NOT NULL';--TODO METER EN SIGA
+  v_arrayCondiciones(cuentaCondicion).condicion := 'TRIM(SOL8_NACIONALIDAD) IS NOT NULL'; --TODO METER EN SIGA
   v_arrayCondiciones(cuentaCondicion).descripcion := 'Debe rellenar la nacionalidad de los solicitantes';
 
   cuentaCondicion := cuentaCondicion + 1;
-  v_arrayCondiciones(cuentaCondicion).condicion := 'TRIM(DOM2_PAIS_DOMICILIO) IS NOT NULL';--TODO METER EN SIGA
+  v_arrayCondiciones(cuentaCondicion).condicion := 'TRIM(DOM2_PAIS_DOMICILIO) IS NOT NULL'; --TODO METER EN SIGA
   v_arrayCondiciones(cuentaCondicion).descripcion := 'Debe rellenar el país del domicilio de los solicitantes';
 
   cuentaCondicion := cuentaCondicion + 1;
@@ -467,48 +479,52 @@ begin
   v_arrayCondiciones(cuentaCondicion).descripcion := 'Debe rellenar el municipio del domicilio de los solicitantes';
 
   cuentaCondicion := cuentaCondicion + 1;
-  v_arrayCondiciones(cuentaCondicion).condicion := 'TRIM(DOM15_CODIGO_POSTAL) IS NOT NULL';--TODO METER EN SIGA
+  v_arrayCondiciones(cuentaCondicion).condicion := 'TRIM(DOM15_CODIGO_POSTAL) IS NOT NULL'; --TODO METER EN SIGA
   v_arrayCondiciones(cuentaCondicion).descripcion := 'Debe rellenar el código postal del domicilio de los solicitantes';
 
   cuentaCondicion := cuentaCondicion + 1;
-  v_arrayCondiciones(cuentaCondicion).condicion := '(TRIM(PRJ5_NUM_PROCEDIMIENTO) IS NULL OR IS_NUMBER(PRJ5_NUM_PROCEDIMIENTO) = 1)';--TODO METER EN SIGA
+  v_arrayCondiciones(cuentaCondicion).condicion := '(TRIM(PRJ5_NUM_PROCEDIMIENTO) IS NULL OR IS_NUMBER(PRJ5_NUM_PROCEDIMIENTO) = 1)'; --TODO METER EN SIGA
   v_arrayCondiciones(cuentaCondicion).descripcion := 'Debe rellenar el número de procedimiento correctamente';
 
   cuentaCondicion := cuentaCondicion + 1;
-  v_arrayCondiciones(cuentaCondicion).condicion := '(TRIM(PRJ6_ANIO_PROCEDIMIENTO) IS NULL OR IS_NUMBER(PRJ6_ANIO_PROCEDIMIENTO) = 1)';--TODO METER EN SIGA
+  v_arrayCondiciones(cuentaCondicion).condicion := '(TRIM(PRJ6_ANIO_PROCEDIMIENTO) IS NULL OR IS_NUMBER(PRJ6_ANIO_PROCEDIMIENTO) = 1)'; --TODO METER EN SIGA
   v_arrayCondiciones(cuentaCondicion).descripcion := 'Debe rellenar el año del procedimiento correctamente';
 
---  cuentaCondicion := cuentaCondicion + 1;
---  v_arrayCondiciones(cuentaCondicion).condicion := 'TRIM(PRJ4_TIPO_PROCED_JUDICIAL) IS NOT NULL';
---  v_arrayCondiciones(cuentaCondicion).descripcion := 'Compruebe que ha rellenado el módulo en la designa y que ese módulo tiene un código asociado';
-
+  --  cuentaCondicion := cuentaCondicion + 1;
+  --  v_arrayCondiciones(cuentaCondicion).condicion := 'TRIM(PRJ4_TIPO_PROCED_JUDICIAL) IS NOT NULL';
+  --  v_arrayCondiciones(cuentaCondicion).descripcion := 'Compruebe que ha rellenado el módulo en la designa y que ese módulo tiene un código asociado';
 
   --Eliminamos primero los registros de respuesta
   --No debe haber, pero si se ha borrado manualmente por pruebas...
   DELETE FROM CAJG_RESPUESTA_EJGREMESA
-        WHERE IDEJGREMESA IN (SELECT IDEJGREMESA
-        FROM CAJG_EJGREMESA WHERE IDINSTITUCION = P_INSTITUCION
-        AND IDREMESA = P_IDREMESA);
+   WHERE IDEJGREMESA IN (SELECT IDEJGREMESA
+                           FROM CAJG_EJGREMESA
+                          WHERE IDINSTITUCION = P_INSTITUCION
+                            AND IDREMESA = P_IDREMESA);
 
   for i in v_arrayCondiciones.first .. v_arrayCondiciones.last loop
     --INSERTA EL ERROR
     sentencia := 'insert into cajg_respuesta_ejgremesa(idrespuesta, idejgremesa, codigo, descripcion, abreviatura, fecha, fechamodificacion, usumodificacion, idTipoRespuesta)
           SELECT SEQ_CAJG_RESPUESTA_EJGREMESA.NEXTVAL, IDEJGREMESA,
-          '|| i ||', ''' || v_arrayCondiciones(i).descripcion || ''', NULL, SYSDATE, SYSDATE, 0, 1
+          ' || i || ', ''' || v_arrayCondiciones(i)
+                .descripcion ||
+                 ''', NULL, SYSDATE, SYSDATE, 0, 1
           FROM CAJG_EJGREMESA RE
           WHERE RE.IDEJGREMESA IN (SELECT ER.IDEJGREMESA
-            FROM CAJG_EJGREMESA ER WHERE ER.IDINSTITUCION = ' || P_INSTITUCION ||
-                 ' AND ER.IDREMESA = ' || P_IDREMESA || ')
+            FROM CAJG_EJGREMESA ER WHERE ER.IDINSTITUCION = ' ||
+                 P_INSTITUCION || ' AND ER.IDREMESA = ' || P_IDREMESA || ')
             AND RE.IDEJGREMESA NOT IN (SELECT T.IDEJGREMESA FROM (SELECT ER.IDEJGREMESA, ' ||
                  SALIDA || ') T
-            WHERE ' || v_arrayCondiciones(i).condicion || ')';
-            --dbms_output.put_line(substr(sentencia,0,2000));
+            WHERE ' || v_arrayCondiciones(i)
+                .condicion || ')';
+    --dbms_output.put_line(substr(sentencia,0,2000));
     EXECUTE IMMEDIATE to_char(sentencia);
-    condiciones := condiciones || ' AND ' || v_arrayCondiciones(i).condicion;
+    condiciones := condiciones || ' AND ' || v_arrayCondiciones(i)
+                  .condicion;
   end loop;
 
-  salida := 'SELECT T.* FROM (SELECT ' || salida || ') T WHERE 1=1' || condiciones;
+  salida := 'SELECT T.* FROM (SELECT ' || salida || ') T WHERE 1=1' ||
+            condiciones;
   return salida;
 
 end f_comunicaciones_ejg_2003_CAB;
-/
