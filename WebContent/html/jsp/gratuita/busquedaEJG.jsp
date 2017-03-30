@@ -951,10 +951,12 @@ if(usr.isComision()){
 				<%} %>
 			<%} 
 		}%>
-	<%}else if(ventanaCajg.equalsIgnoreCase("1")||ventanaCajg.equalsIgnoreCase("3")){%> <!-- Antiguo busquedaEJG_Cajg -->
+	<%}else if(ventanaCajg.equalsIgnoreCase("1")){%> <!-- Antiguo busquedaEJG_Cajg -->
 		<siga:ConjBotonesBusqueda botones="L,le,B,ces,CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 	<%}else if(ventanaCajg.equalsIgnoreCase("2")){%> <!-- Antiguo busquedaEJG_Listos -->
 		<siga:ConjBotonesBusqueda botones="L,B,ar,CON"  titulo="gratuita.BusquedaRemesas_CAJG.literal.Remesa.ExpedientesListos" />
+	<%}else if(ventanaCajg.equalsIgnoreCase("3")){%> <!-- Antiguo busquedaEJG_Cajg -->
+		<siga:ConjBotonesBusqueda botones="L,le,B,CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
 	<%}%>
 <!-- FIN: BOTONES BUSQUEDA -->	
 	

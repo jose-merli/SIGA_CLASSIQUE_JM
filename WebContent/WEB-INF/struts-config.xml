@@ -3040,7 +3040,7 @@
 		</action>
 		<action path="/JGR_E-Comunicaciones_EJGPendientes" type="com.siga.gratuita.action.DefinirCAJGAction" name="BusquedaCAJG_EJGForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/busquedaEJG.jsp?ventanaCajg=3"/>
-			<forward name="listarEJG" path="/html/jsp/gratuita/listadoCAJG_EJG.jsp"/>		
+			<forward name="listarEJG" path="/html/jsp/gratuita/listadoEJGPendientes.jsp"/>		
 			
 		</action>
 		

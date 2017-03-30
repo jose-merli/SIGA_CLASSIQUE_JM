@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- listadoCAJG_EJG.jsp -->
+<!-- listadoEJGPendientes.jsp -->
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -37,53 +37,38 @@
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	
 	String idioma=usr.getLanguage().toUpperCase();
-	
-	//Vector obj = (Vector) ses.getAttribute("resultado");
 	ses.removeAttribute("resultado");
 	String valor="";
 	
 	/** PAGINADOR ***/
 	Vector resultado=null;
 	String paginaSeleccionada ="";
-	
 	String totalRegistros ="";
 	String regSeleccionados ="";
-	
 	String registrosPorPagina = "";
-	HashMap hm=new HashMap();
+	HashMap<String,Object> dataPaginador = (HashMap<String,Object>)request.getAttribute("DATAPAGINADOR");
 	Vector ejgSeleccionados=null;
-	
-	 if (ses.getAttribute("DATAPAGINADOR")!=null){
-		 hm = (HashMap)ses.getAttribute("DATAPAGINADOR");
-		 ejgSeleccionados=(Vector)ses.getAttribute("EJG_SELECCIONADOS");
-	
-		 if ( hm.get("datos")!=null && !hm.get("datos").equals("")){
-		  	resultado = (Vector)hm.get("datos");
-		  	PaginadorBind paginador = (PaginadorBind)hm.get("paginador");
-			paginaSeleccionada = String.valueOf(paginador.getPaginaActual());
-		 	totalRegistros = String.valueOf(paginador.getNumeroTotalRegistros());
-		 	registrosPorPagina = String.valueOf(paginador.getNumeroRegistrosPorPagina()); 
-		 	
-		 } else {
-		  	resultado =new Vector();
-		  	paginaSeleccionada = "0";
-		 	totalRegistros = "0";
-		 	registrosPorPagina = "0";
-		 }
-		 
-	} else {
-		resultado =new Vector();
-		paginaSeleccionada = "0";
-	 	totalRegistros = "0";		
-		registrosPorPagina = "0";
-	}	 
+	ejgSeleccionados=(Vector)ses.getAttribute("EJG_SELECCIONADOS");
+    if (dataPaginador!=null && dataPaginador.get("datos")!=null){
+	  	resultado = (Vector)dataPaginador.get("datos");
+		paginaSeleccionada = (String)dataPaginador.get("paginaSeleccionada");
+	 	totalRegistros = (String)dataPaginador.get("totalRegistros");
+	 	registrosPorPagina = (String)dataPaginador.get("registrosPorPagina"); 
+	 	if(ejgSeleccionados!=null)
+	 	regSeleccionados = ""+ejgSeleccionados.size();
+	 	
+	 } else {
+	  	resultado =new Vector();
+	  	regSeleccionados = "0";
+	  	paginaSeleccionada = "0";
+	 	totalRegistros = "0";
+	 	registrosPorPagina = "0";
+	 }
 		
 	 String action=app+request.getAttribute("javax.servlet.forward.servlet_path")+"?noReset=true";
 	 String accionPaginador = "buscarPor";
-	 
 	 if(request.getAttribute("javax.servlet.forward.servlet_path").toString().equals("/JGR_E-Comunicaciones_EJGPendientes.do"))
 		 accionPaginador = "buscarPorEjgPendientes";
-	//String action=app+"/JGR_E-Comunicaciones_Seleccion.do?noReset=true";
 %>
 
 <!-- HEAD -->
@@ -131,8 +116,8 @@
 	    	String botones = "";
 	    	String fRatificacion = "";
 			while (recordNumber-1 < resultado.size()) {						  
-		    	Row fila = (Row)resultado.elementAt(recordNumber-1);
-				Hashtable registro = (Hashtable) fila.getRow();
+				Hashtable registro = (Hashtable)resultado.elementAt(recordNumber-1);
+				 
 			
 				//Hashtable fila = (Hashtable)obj.get(recordNumber-1);
 				
@@ -224,23 +209,19 @@
 %>
 	</siga:Table>
 
-<%
-	if ( hm.get("datos")!=null && !hm.get("datos").equals("")){
-	  	regSeleccionados = "0";
-%>
-		<siga:Paginador totalRegistros="<%=totalRegistros%>" 
-			registrosPorPagina="<%=registrosPorPagina%>" 
-			paginaSeleccionada="<%=paginaSeleccionada%>" 
-			registrosSeleccionados="<%=regSeleccionados%>"
-			idioma="<%=idioma%>"
-			modo="<%=accionPaginador%>"								
-			clase="paginator" 
-			divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:0px; left: 0px"
-			distanciaPaginas=""
-			action="<%=action%>" />
-<%
-	}
-%>	
+		
+		<siga:Paginador 
+	totalRegistros="${totalRegistros}"
+	registrosPorPagina="${registrosPorPagina}"
+	paginaSeleccionada="${paginaSeleccionada}" idioma="${usrBean.language}"
+	registrosSeleccionados="<%=regSeleccionados%>"
+	modo="<%=accionPaginador%>"								
+	clase="paginator" 
+	divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:0px; left: 0px"
+	distanciaPaginas=""
+	action="/SIGA/JGR_E-Comunicaciones_EJGPendientes.do?noReset=true&totalRegistros=${totalRegistros}&registrosPorPagina=${registrosPorPagina}" />
+		
+
 	 
 	<script language="JavaScript">
 		ObjArray = new Array();
@@ -259,8 +240,9 @@
 		   		ObjArray.push(obj.value);
 		   		seleccionados1=ObjArray;
 		   }
-		  	
-		   document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
+		   if (document.getElementById('registrosSeleccionadosPaginador')){
+		   	document.getElementById('registrosSeleccionadosPaginador').value =ObjArray.length;
+		   }
 		   document.BusquedaCAJG_EJGForm.selDefinitivo.value=seleccionados1;
 	   }
 	   

@@ -7,6 +7,7 @@ package com.siga.gratuita.action;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -200,79 +201,69 @@ protected String buscarPorEjgPendientes(ActionMapping mapping, MasterForm formul
 					request.getSession().setAttribute("EJG_SELECCIONADOS", v_seleccionadosSesion);
 				}
 			}
-			
-		    if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
-			 		databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
-				     PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
-				     Vector datos=new Vector();
 				
-				
-				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
-				String pagina = (String)request.getParameter("pagina");
-				
-				 
-				
-			 if (paginador!=null){	
-				if (pagina!=null){
-					datos = paginador.obtenerPagina(Integer.parseInt(pagina));
-				}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
-					datos = paginador.obtenerPagina((paginador.getPaginaActual()));
-				}
-			 }	
-				
-				databackup.put("paginador",paginador);
-				databackup.put("datos",datos);
-			
-		  }else{	
-				
-			  	databackup=new HashMap();
+			  int rowNumPageSize = 0;
+			  String pagina = (String)request.getParameter("pagina");
+				int page = 1;
+				String registrosPorPagina = null;
+				String numEJGs = null;
+				Vector ejgsPtesEnviarVector = null;
+				String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
+				if(pagina ==null){
+					ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+					registrosPorPagina = properties.returnProperty("paginador.registrosPorPagina", true);
+					rowNumPageSize = Integer.parseInt(registrosPorPagina);
 					
-				//obtengo datos de la consulta 			
-				Vector datos = null;
-				PaginadorBind paginador = null;
-				if(!mapping.getPath().equals("/JGR_E-Comunicaciones_EJGPendientes")){
-					Hashtable htConsultaBind  = admBean.getBindBusquedaMantenimientoEJG(miHash,  miForm, ScsEJGAdm.TipoVentana.BUSQUEDA_PREPARACION_CAJG, idInstitucion,longitudNumEjg);
-					Vector v = admBean.getBusquedaMantenimientoEJG(htConsultaBind);
-					claves = sacarClavesEJG(v, getIDInstitucion(request));
-	
-					//	PaginadorBind paginador = new PaginadorBind(consulta);				
-					paginador = admBean.getPaginadorBusquedaMantenimientoEJG(htConsultaBind);
+					
+					ejgsPtesEnviarVector = admBean.getEJGPtesEnviar(getBusinessManager(), miHash,miForm);
+					request.getSession().setAttribute(identificadorFormularioBusqueda,ejgsPtesEnviarVector);
+					numEJGs = ""+ejgsPtesEnviarVector.size();
+					
+					request.setAttribute("paginaSeleccionada", page);
+					request.setAttribute("totalRegistros", numEJGs);
+					request.setAttribute("registrosPorPagina", registrosPorPagina);
 				}else{
-					Hashtable htConsultaBind =admBean.getBindWhereEJG(miHash,  miForm, ScsEJGAdm.TipoVentana.BUSQUEDA_PREPARACION_CAJG, idInstitucion,longitudNumEjg);
-					
-					Vector v = admBean.getBusquedaMantenimientoEJG(htConsultaBind);
-					claves = sacarClavesEJG(v, getIDInstitucion(request));
-					//	PaginadorBind paginador = new PaginadorBind(consulta);				
-					paginador = admBean.getPaginadorBusquedaMantenimientoEJG(htConsultaBind);
-					
-					
+					ejgsPtesEnviarVector = (Vector) request.getSession().getAttribute(identificadorFormularioBusqueda);
+					page = Integer.parseInt(request.getParameter("pagina"));
+					request.setAttribute("paginaSeleccionada", page);
+					numEJGs = request.getParameter("totalRegistros").toString();
+					request.setAttribute("totalRegistros", request.getParameter("totalRegistros"));
+					registrosPorPagina = request.getParameter("registrosPorPagina");
+					request.setAttribute("registrosPorPagina",registrosPorPagina );
+					rowNumPageSize = Integer.parseInt(registrosPorPagina);
 				}
-				int totalRegistros = paginador.getNumeroTotalRegistros();
 				
-				if (totalRegistros==0){					
-					paginador =null;
-				}
-		       	
-				databackup.put("paginador",paginador);
-				if (paginador!=null){ 
-				   datos = paginador.obtenerPagina(1);
-				   
-				   databackup.put("datos",datos);
-				   request.getSession().setAttribute("DATAPAGINADOR",databackup);
-				} 	
-			
-				//resultado = admBean.selectGenerico(consulta);
-				//request.getSession().setAttribute("resultado",v);
+				HashMap<String, Object> paginadorHashMap = new HashMap<String, Object>();
+				paginadorHashMap.put("pagina", String.valueOf(page));
+				paginadorHashMap.put("totalRegistros", numEJGs);
+				paginadorHashMap.put("registrosPorPagina", registrosPorPagina);
+				
+				claves = sacarClavesEJG(ejgsPtesEnviarVector, getIDInstitucion(request));
+				
 				if (claves != null) {
 					request.getSession().setAttribute("EJG_SELECCIONADOS", claves);
 				}
-		  }
-		    
-		    
-		    
-		    
-		    
-		    
+				
+				int rowNumStart = ((page - 1) * rowNumPageSize);
+				int rowNumEnd = ejgsPtesEnviarVector.size();
+				if(ejgsPtesEnviarVector!=null && rowNumEnd>Integer.parseInt(registrosPorPagina)){
+					
+					if(rowNumStart+Integer.parseInt(registrosPorPagina)<rowNumEnd)
+						rowNumEnd = rowNumStart+Integer.parseInt(registrosPorPagina);
+					
+					List list = ejgsPtesEnviarVector.subList(rowNumStart, rowNumEnd);
+					Vector ejgsPtesEnviarVectorSubList = new Vector();
+					ejgsPtesEnviarVectorSubList.addAll(list);
+					paginadorHashMap.put("datos",ejgsPtesEnviarVectorSubList );
+				}else{
+					paginadorHashMap.put("datos",ejgsPtesEnviarVector );
+				}
+				
+				
+				
+				request.setAttribute("DATAPAGINADOR", paginadorHashMap);
+			
+
   		  
 		  // En "DATOSFORMULARIO" almacenamos el identificador del letrado			 			 
 		  miHash.put("BUSQUEDAREALIZADA","1");
@@ -358,24 +349,14 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 			//obtengo datos de la consulta 			
 			Vector datos = null;
 			PaginadorBind paginador = null;
-			if(!mapping.getPath().equals("/JGR_E-Comunicaciones_EJGPendientes")){
-				Hashtable htConsultaBind  = admBean.getBindBusquedaMantenimientoEJG(miHash,  miForm, ScsEJGAdm.TipoVentana.BUSQUEDA_PREPARACION_CAJG, idInstitucion,longitudNumEjg);
-				Vector v = admBean.getBusquedaMantenimientoEJG(htConsultaBind);
-				claves = sacarClavesEJG(v, getIDInstitucion(request));
+		
+			Hashtable htConsultaBind  = admBean.getBindBusquedaMantenimientoEJG(miHash,  miForm, ScsEJGAdm.TipoVentana.BUSQUEDA_PREPARACION_CAJG, idInstitucion,longitudNumEjg);
+			Vector v = admBean.getBusquedaMantenimientoEJG(htConsultaBind);
+			claves = sacarClavesEJG(v, getIDInstitucion(request));
 
-				//	PaginadorBind paginador = new PaginadorBind(consulta);				
-				paginador = admBean.getPaginadorBusquedaMantenimientoEJG(htConsultaBind);
-			}else{
-				Hashtable htConsultaBind =admBean.getBindWhereEJG(miHash,  miForm, ScsEJGAdm.TipoVentana.BUSQUEDA_PREPARACION_CAJG, idInstitucion,longitudNumEjg);
-				
-//				Hashtable htConsultaBind  = admBean.getBindBusquedaMantenimientoEJG(miHash,  miForm, ScsEJGAdm.TipoVentana.BUSQUEDA_PREPARACION_CAJG, idInstitucion,longitudNumEjg);
-				Vector v = admBean.getBusquedaMantenimientoEJG(htConsultaBind);
-				claves = sacarClavesEJG(v, getIDInstitucion(request));
-				//	PaginadorBind paginador = new PaginadorBind(consulta);				
-				paginador = admBean.getPaginadorBusquedaMantenimientoEJG(htConsultaBind);
-				
-				
-			}
+			//	PaginadorBind paginador = new PaginadorBind(consulta);				
+			paginador = admBean.getPaginadorBusquedaMantenimientoEJG(htConsultaBind);
+			
 			int totalRegistros = paginador.getNumeroTotalRegistros();
 			
 			if (totalRegistros==0){					
@@ -1437,6 +1418,11 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 		String seleccionados = miForm.getSelDefinitivo();
 		Vector claves = (Vector) request.getSession().getAttribute("EJG_SELECCIONADOS");
 		Vector v_seleccionadosSesion = new Vector();
+		short idEstado = ESTADOS_EJG.LISTO_COMISION.getCodigo() ;
+		if(mapping.getPath().equals("/JGR_E-Comunicaciones_EJGPendientes")){
+			idEstado = ESTADOS_EJG.ESTADO_LISTO_COMISION_ACTUALIZAR_DESIGNACION.getCodigo() ;
+		}
+		
 		if (seleccionados != null && !seleccionados.equals("")) {
 			v_seleccionadosSesion = actualizarSelecionados(seleccionados, claves, request);
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -1458,7 +1444,7 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 				
 				String sqlInsertEstadoEJG = new String("insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
 						", fechainicio, fechamodificacion, usumodificacion, observaciones, idestadoporejg, automatico)" +
-						" SELECT EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO, '" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + "'" +
+						" SELECT EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO, '" + idEstado+ "'" +
 						", TRUNC(SYSDATE), SYSDATE, " + getUserBean(request).getUserName() + ", NULL, (" + sqlMaxIdEstadoPorEJG + "), 0" +
 						" FROM SCS_EJG EJG" +
 						" WHERE EJG.IDINSTITUCION = " + getIDInstitucion(request) + 
