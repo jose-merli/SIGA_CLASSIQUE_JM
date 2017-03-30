@@ -364,6 +364,11 @@
 		idAcreditacionParamsJSON += ",\"idinstitucion\":\""+idInstitucionProcedimiento+"\"}";
 		
 		
+		
+		
+		
+		
+		
 	}
 	
 	
@@ -804,6 +809,35 @@
 						</td>
 						<td></td>
 					</tr>	
+					<%if(isColegioAlcala){ %>
+					
+						<tr>
+							<td class="labelText" nowrap>
+								<siga:Idioma key="gratuita.actuacionesDesigna.literal.pretensiones"/><%=(isColegioAlcala ? asterisco : "")%>
+							</td>
+							<td colspan="4">
+							<%
+								if (modoJustificacion != null && modoJustificacion.equals("editarJustificacionFicha")) {
+							%>
+									<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="boxConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />
+								<%	} else {
+									
+										if(isColegioAlcala && (modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){%>
+											<siga:Select id="pretension" queryId="getPretensionesAlcala" parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>" queryParamId="pretension" selectedIds="<%=pretensionSel %>" childrenIds="procedimiento" width="380" readOnly='readOnlyCombo%>"' />
+											<font class="labelText">
+												<siga:Idioma key="gratuita.altaGuardia.literal.motivoCambio"/>
+											</font>
+											<siga:ComboBD  ancho="300" nombre="idMotivoCambio" tipo="cmbActuacionDesignaMotivoCambio"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramMotivoCambio%>" elementoSel="<%=motCambioSel%>" />
+										
+										<%} else {%>
+											<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />
+											<html:hidden property = "idMotivoCambio" value="<%=idMotivoCambio%>"/>
+										<%}
+									}
+									%>
+							</td>					
+						</tr>
+						<%} %>		
 							
 					<tr>
 						<td class="labelText" nowrap>
@@ -812,8 +846,10 @@
 						<td colspan="4">											
 							<% if(isColegioAlcala){
 								if(isColegioAlcala && (modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){%>
-								<siga:Select id="procedimiento" queryId="getProcedimientosEnVigenciaLetradoAlcala" parentQueryParamIds="<%=comboModulosParentQueryIds%>" params="<%=idProcedimientoParamsJSON%>" selectedIds="<%=procedimientoSel%>" childrenIds="acreditacion" disabled="<%=readOnlyCombo%>" width="750"/>
-	
+									<siga:Select id="procedimiento" queryId="getProcedimientosEnVigenciaAlcala" parentQueryParamIds="<%=comboModulosParentQueryIds%>" params="<%=idProcedimientoParamsJSON%>" selectedIds="<%=procedimientoSel%>" childrenIds="acreditacion" disabled="<%=readOnlyCombo%>" width="750"/>
+								<%} else if(modoJustificacion != null && !modoJustificacion.equals("editarJustificacionFicha")){%>
+									<siga:Select id="procedimiento" queryId="getProcedimientosEnVigenciaLetradoAlcala" parentQueryParamIds="<%=comboModulosParentQueryIds%>" params="<%=idProcedimientoParamsJSON%>" selectedIds="<%=procedimientoSel%>" childrenIds="acreditacion" disabled="<%=readOnlyCombo%>" width="750"/>
+
 								<%} else {%>
 									<html:text name="ActuacionesDesignasForm" style="width:600px" property="procedimiento1" styleClass="boxConsulta" readonly="true" value="<%=nombreProcedimiento%>"/>
 								<%} 
@@ -887,34 +923,35 @@
 							
 						</td>
 					</tr>
+					<%if(!isColegioAlcala){ %>
 					
-					<tr>
-						<td class="labelText" nowrap>
-							<siga:Idioma key="gratuita.actuacionesDesigna.literal.pretensiones"/><%=(isColegioAlcala ? asterisco : "")%>
-						</td>
-						<td colspan="4">
-						<%
-							if (modoJustificacion != null && modoJustificacion.equals("editarJustificacionFicha")) {
-						%>
-								<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="boxConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />
-							<%	} else {
-								
-									if(isColegioAlcala && (modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){%>
-										<siga:Select id="pretension" queryId="getPretensionesAlcala" parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>" queryParamId="pretension" selectedIds="<%=pretensionSel %>" childrenIds="procedimiento" width="380" readOnly='readOnlyCombo%>"' />
-										<font class="labelText">
-											<siga:Idioma key="gratuita.altaGuardia.literal.motivoCambio"/>
-										</font>
-										<siga:ComboBD  ancho="300" nombre="idMotivoCambio" tipo="cmbActuacionDesignaMotivoCambio"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramMotivoCambio%>" elementoSel="<%=motCambioSel%>" />
+						<tr>
+							<td class="labelText" nowrap>
+								<siga:Idioma key="gratuita.actuacionesDesigna.literal.pretensiones"/><%=(isColegioAlcala ? asterisco : "")%>
+							</td>
+							<td colspan="4">
+							<%
+								if (modoJustificacion != null && modoJustificacion.equals("editarJustificacionFicha")) {
+							%>
+									<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="boxConsulta" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />
+								<%	} else {
 									
-									<%} else {%>
-										<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />
-										<html:hidden property = "idMotivoCambio" value="<%=idMotivoCambio%>"/>
-									<%}
-								}
-								%>
-						</td>					
-					</tr>
-								
+										if(isColegioAlcala && (modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){%>
+											<siga:Select id="pretension" queryId="getPretensionesAlcala" parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>" queryParamId="pretension" selectedIds="<%=pretensionSel %>" childrenIds="procedimiento" width="380" readOnly='readOnlyCombo%>"' />
+											<font class="labelText">
+												<siga:Idioma key="gratuita.altaGuardia.literal.motivoCambio"/>
+											</font>
+											<siga:ComboBD  ancho="300" nombre="idMotivoCambio" tipo="cmbActuacionDesignaMotivoCambio"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramMotivoCambio%>" elementoSel="<%=motCambioSel%>" />
+										
+										<%} else {%>
+											<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />
+											<html:hidden property = "idMotivoCambio" value="<%=idMotivoCambio%>"/>
+										<%}
+									}
+									%>
+							</td>					
+						</tr>
+						<%} %>		
 					<tr>
 						<td class="labelText" nowrap style="vertical-align: middle;">
 							<siga:Idioma key="gratuita.altaGuardia.literal.observaciones"/>
