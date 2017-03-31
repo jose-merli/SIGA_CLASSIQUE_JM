@@ -676,3 +676,5 @@ alter table PCAJG_ALC_ACT_ERROR_CAM modify REGISTRO_ERROR_CAM VARCHAR2(1000);
 -- Ejecutado en Integracion por ACP el 28/03 a las 11:17
 
 Modificada vista V_WS_JE_2003_DESIGNA
+
+INSERT INTO CAJG_ERRORESREMESARESOL VALUES(18,2003,18,'La carga de ficheros de error sólo se permite para intercambios de envío o actualización. Los de actuaciones profesionales se carga desde facturación SJCS');
