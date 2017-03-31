@@ -114,7 +114,9 @@ begin
      , ''PRD'' AS TIPO_REGISTRO_PRD
           , LPAD(DECODE(DL.IDPERSONA, NULL, ''      '', NVL(F_SIGA_CALCULONCOLEGIADO(DL.IDINSTITUCION, DL.IDPERSONA), ''      '')), 6, ''0'') AS PRD1_NCOLEGIADOABOGADO
           , RPAD(NVL(TO_CHAR(DL.FECHADESIGNA, ''YYYYMMDD''), '' ''), 8, '' '') AS PRD2_FECHA_DESIGNA
-           DECODE(D.CODIGO,
+          
+          
+          , DECODE(D.CODIGO,
                       NULL,
                       ''      '',
                       
@@ -125,7 +127,7 @@ begin
                           AND DL.ANIO = DESLET2.ANIO
                           AND DL.NUMERO = DESLET2.NUMERO
                           AND DESLET2.FECHARENUNCIA IS NOT NULL) ||
-                      LPAD(TO_CHAR(D.CODIGO), 5, ''0'')) AS PRD3_NUMERO_DESIGNA,
+                      LPAD(TO_CHAR(D.CODIGO), 5, ''0'')) AS PRD3_NUMERO_DESIGNA
           , LPAD(NVL(TO_CHAR(D.ANIO), ''    ''), 4, ''0'') AS PRD4_ANIO_DESIGNA
           , LPAD(NVL((CASE
                   WHEN DP.IDPROCURADOR IS NOT NULL
