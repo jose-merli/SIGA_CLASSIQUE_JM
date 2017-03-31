@@ -7,6 +7,7 @@ CREATE OR REPLACE PROCEDURE PROC_RESPUESTAEJG_2003(P_IDINSTITUCION      IN CAJG_
  IS
 
   v_cabecera_linea     varchar2(3);
+  v_tipointercambio     varchar2(3);
   V_NUMEJG             NUMBER(8);
   V_ANIO               NUMBER(4);
   V_REF_EJG            VARCHAR(15);
@@ -31,6 +32,7 @@ CREATE OR REPLACE PROCEDURE PROC_RESPUESTAEJG_2003(P_IDINSTITUCION      IN CAJG_
   EJG_TOO_MANY_ROWS EXCEPTION;
   REMESA_NOT_FOUND EXCEPTION;
   REMESA_TOO_MANY_ROWS EXCEPTION;
+  INTERCAMBIO_NOT_ALLOWED EXCEPTION;
   EJG_ANIO           SCS_EJG.ANIO%TYPE;
   EJG_NUMERO         SCS_EJG.NUMERO%TYPE;
   EJG_IDTIPOEJG      SCS_EJG.IDTIPOEJG%TYPE;
@@ -63,6 +65,12 @@ begin
         V_ERROR  := null;
       
       ELSIF v_cabecera_linea = 'CAO' THEN
+        v_tipointercambio := substr(REG.LINEA, 14, 3);
+        
+        IF v_tipointercambio <> '002' AND v_tipointercambio <> '001' THEN
+           RAISE INTERCAMBIO_NOT_ALLOWED;
+        END IF;
+        
         V_NUMEROINTERCAMBIO := substr(REG.LINEA, 17, 7);
         -- En el envio estamos multiplicando por 10 el numero de intercambio para poder enviar mas de una actualizacion por expediente
         V_NUMINTERCAMBIOEJGREMESA := trunc(V_NUMEROINTERCAMBIO/10);
@@ -386,6 +394,12 @@ begin
         UPDATE CAJG_REMESARESOLUCIONFICHERO
            SET IDERRORESREMESARESOL = 17, PARAMETROSERROR = V_REF_EJG
          WHERE IDREMESARESOLUCIONFICHERO = REG.IDREMESARESOLUCIONFICHERO;
+      WHEN INTERCAMBIO_NOT_ALLOWED THEN
+           UPDATE CAJG_REMESARESOLUCIONFICHERO
+           SET IDERRORESREMESARESOL = 18, PARAMETROSERROR = V_REF_EJG
+         WHERE IDREMESARESOLUCIONFICHERO = REG.IDREMESARESOLUCIONFICHERO;
+      
+      
       
       WHEN OTHERS THEN
         --si ocurre cualquier otro error
@@ -401,4 +415,3 @@ begin
   END LOOP;
 
 end PROC_RESPUESTAEJG_2003;
-/
