@@ -427,8 +427,9 @@ begin
   cuentaCondicion := 0;
   --ELIMINADA LA OBLIGATORIEDAD DE LOS CAMPOS EXP7 Y EXP8 SEGÚN CORREO DE CARMEN DEL 23/05/2011
   -- AÑADIMOS OBLIGATORIEDAD POR CORREO DE ENRIQUE DE 21-02-2017
-  cuentaCondicion := cuentaCondicion + 1;
-  v_arrayCondiciones(cuentaCondicion).condicion := 'TRIM(EXP7_CALIFICACION) IS NOT NULL';
+  
+ cuentaCondicion := cuentaCondicion + 1;
+  v_arrayCondiciones(cuentaCondicion).condicion := '(TRIM(EXP7_CALIFICACION) IS NOT NULL OR EXP3_TIPO_EXPEDIENTE = ''EXT'')';
   v_arrayCondiciones(cuentaCondicion).descripcion := 'Debe rellenar el tipo de dictamen';
 
   cuentaCondicion := cuentaCondicion + 1;
