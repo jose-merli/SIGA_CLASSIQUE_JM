@@ -585,7 +585,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 	
 	private void generarSeleccionInformeCAM(HttpServletRequest request, DatosGeneralesFacturacionForm datosGeneralesFacturacionForm, String idInstitucion, String idFacturacion) throws Exception, ClsExceptions {
 		
-		if (CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
+		if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
 			PcajgAlcActService pcajgAlcActService = (PcajgAlcActService) getBusinessManager().getService(PcajgAlcActService.class);
 			List<VPcajgAlcActErrorCam> listaErroresCAM = pcajgAlcActService.getListaErroresCAMporFacturacion(Short.parseShort(idInstitucion), Integer.parseInt(idFacturacion));
 			if (listaErroresCAM != null && listaErroresCAM.size() > 0) {
