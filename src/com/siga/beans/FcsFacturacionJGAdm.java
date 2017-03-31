@@ -58,6 +58,7 @@ import com.siga.general.CenVisibilidad;
 import com.siga.general.SIGAException;
 import com.siga.informes.InformePersonalizable;
 import com.siga.informes.form.MantenimientoInformesForm;
+import com.siga.ws.CajgConfiguracion;
 
 import es.satec.businessManager.BusinessManager;
 
@@ -4476,12 +4477,13 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		Hashtable nombreFicheros = UtilidadesFacturacionSJCS.getNombreFicherosFacturacion(new Integer(idInstitucion), new Integer(idFacturacion), usr);
 		UtilidadesFacturacionSJCS.borrarFicheros(new Integer(idInstitucion), nombreFicheros, usr);
 		
-		//para alcala también debemos borrar la información de los ficheros de errores
-		BusinessManager bm = BusinessManager.getInstance();
-		bm.startTransaction();
-		
-		PcajgAlcActService pcajgAlcActService = (PcajgAlcActService) bm.getService(PcajgAlcActService.class);
-		pcajgAlcActService.deletePcajgAlcActErrorCamByExample(Short.parseShort(idInstitucion), Integer.parseInt(idFacturacion));
+		if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
+			//para alcala también debemos borrar la información de los ficheros de errores
+			BusinessManager bm = BusinessManager.getInstance();
+			bm.startTransaction();
+			PcajgAlcActService pcajgAlcActService = (PcajgAlcActService) bm.getService(PcajgAlcActService.class);
+			pcajgAlcActService.deletePcajgAlcActErrorCamByExample(Short.parseShort(idInstitucion), Integer.parseInt(idFacturacion));
+		}
 		
 	} // borrarFacturacion()
 
