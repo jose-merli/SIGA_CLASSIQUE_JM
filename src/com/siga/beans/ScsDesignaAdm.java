@@ -2844,7 +2844,9 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			        " ejgDesigna.anioDesigna = ejg.anio and "+
 			        " ejgDesigna.numeroDesigna = ejg.numero and "+
 			        " ejgDesigna.idInstitucion= ACTUACION.IDINSTITUCION and ejgDesigna.anioDesigna=ACTUACION.ANIO "+
-			        " and ejgDesigna.numeroDesigna= ACTUACION.NUMERO and ejgDesigna.idturno=ACTUACION.IDTURNO) AS SITUACION_PROCEDIMIENTO "+
+			        " and ejgDesigna.numeroDesigna= ACTUACION.NUMERO and ejgDesigna.idturno=ACTUACION.IDTURNO) AS SITUACION_PROCEDIMIENTO, "+
+			        " (select Nombre from cen_institucion where IDINSTITUCION=ACTUACION.IDINSTITUCION)AS NOMBRE_COLEGIO, "+
+			        " (select Abreviatura from cen_institucion where IDINSTITUCION=ACTUACION.IDINSTITUCION)AS NOMBRE_COLEGIO_ABREVIA "+
 			            
 			  " from scs_actuaciondesigna ACTUACION "+
 			    " LEFT JOIN SCS_PROCEDIMIENTOS PROCEDIMIENTO_ACTUACION ON ACTUACION.idInstitucion = PROCEDIMIENTO_ACTUACION.idInstitucion AND PROCEDIMIENTO_ACTUACION.IDPROCEDIMIENTO = ACTUACION.IDPROCEDIMIENTO "+
