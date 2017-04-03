@@ -1334,28 +1334,9 @@
 	</script>
 
 	<%
-		/////////////////////////
-		// DCG Si estan los tres campos a nulos o sin datos mostramos el boton
-		boolean condicion = true;
-		if ((modo != null)
-				&& ((modo.equalsIgnoreCase("consulta")) || (modo
-						.equalsIgnoreCase("ver"))))
-			condicion &= false;
-		else if ((designaAnio != null) && (!designaAnio.equals("")))
-			condicion &= false;
-		else if ((designaNumero != null) && (!designaNumero.equals("")))
-			condicion &= false;
-		else if ((designaIdTurno != null) && (!designaIdTurno.equals("")))
-			condicion &= false;
-		// DCG fin
-		/////////////////////////
 		String crearDesigna = "V";
 		if (!modo.equalsIgnoreCase("ver")) {
-			if (condicion) {
 				crearDesigna = "V,G,R,CD,RD";
-			} else {
-				crearDesigna = "V,G,R";
-			}
 		}
 	%>
 	
