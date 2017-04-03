@@ -535,14 +535,6 @@ MDB Microsoft Access Database
   public static final int ESTADO_ACREDITACION_COMPLETA       = 3;
   public static final int ESTADO_ACREDITACION_REGULARIZACION = 4;
   
-//Estado de las solicitudes de los certificados:
-  /*public static final String ESTADO_SOLCERT_PENDIENTE   = "1";
-  public static final String ESTADO_SOLCERT_APROBADO   = "2";
-  public static final String ESTADO_SOLCERT_ENVPROG = "3";
-  public static final String ESTADO_SOLCERT_FINALIZADO = "4";
-  public static final String ESTADO_SOLCERT_DENEGADO = "5";*/
- 
-  
   // Tipo del Periodo de los Días de Guardias
   public static final String TIPO_PERIODO_DIAS_GUARDIA_DIAS_NATURALES = "D";
   public static final String TIPO_PERIODO_DIAS_GUARDIA_SEMANAS_NATURALES = "S";

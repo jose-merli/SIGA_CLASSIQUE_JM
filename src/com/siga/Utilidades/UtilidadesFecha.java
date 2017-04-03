@@ -187,5 +187,18 @@ public class UtilidadesFecha {
         cal.set(Calendar.MILLISECOND, 0);
         return cal.getTime();
     }
+	
+	public static Date getToday() throws ParseException {
+		Calendar today = Calendar.getInstance();
+		today.clear(Calendar.HOUR); today.clear(Calendar.MINUTE); today.clear(Calendar.SECOND);
+		return today.getTime();
+	}
+	
+	public static String getToday(String format) throws ParseException {
+		Calendar today = Calendar.getInstance();
+		today.clear(Calendar.HOUR); today.clear(Calendar.MINUTE); today.clear(Calendar.SECOND);
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		return sdf.format(today.getTime());
+	}
 
 }

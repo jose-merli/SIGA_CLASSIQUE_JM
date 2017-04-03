@@ -80,6 +80,13 @@
 	String sError= UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usr, "messages.general.error"));
 	String sBotonCerrar = UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usr, "general.boton.close"));
 	String sBotonGuardarCerrar = UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usr, "general.boton.guardarCerrar")); 
+	
+	String botonesAccion = "GAC,ESM,FAC,FSC";
+	// Si el control de facturas esta activado, hay que eliminar el boton Facturar masivo
+	String controlFacturasSII = (String) request.getAttribute("controlFacturasSII");
+	if (controlFacturasSII.equalsIgnoreCase("1")) {
+		botonesAccion = "GAC,ESM,FSC";
+	}
 %>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -527,7 +534,7 @@
 	<iframe align="center" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" id="resultado" name="resultado" scrolling="no" frameborder="0" marginheight="0" marginwidth="0" class="frameGeneral"> </iframe>
 	
 	<!-- Esta va ActionButtonsConstants -->
-	<siga:ConjBotonesAccion botones="GAC,ESM,FAC,FSC" clase="botonesDetalle" />
+	<siga:ConjBotonesAccion botones="<%=botonesAccion%>" clase="botonesDetalle" />
 
 	<!-- Formulario para la creacion de envio -->
 	<html:form action="/ENV_DefinirEnvios.do" method="POST" target="mainWorkArea">

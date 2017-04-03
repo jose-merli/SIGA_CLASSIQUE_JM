@@ -800,6 +800,16 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.localizacion', 'SJCS > e - Comunicaciones#EU', 0, '3', sysdate, 0, '19');
 
   
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('fac.control_emision_facturas_sii.ayuda', 'Controla que no se generen facturas más que por facturación masiva. De momento sólo se aplica en el módulo de Certificados (leer especificación para más info). Valores aceptados: 0 - Desactivado, funcionamiento normal; 1 - Activado, varias restricciones en diferentes pantallas', 0, 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('fac.control_emision_facturas_sii.ayuda', 'Controla que no se generen facturas más que por facturación masiva. De momento sólo se aplica en el módulo de Certificados (leer especificación para más info). Valores aceptados: 0 - Desactivado, funcionamiento normal; 1 - Activado, varias restricciones en diferentes pantallas#CA', 0, 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('fac.control_emision_facturas_sii.ayuda', 'Controla que no se generen facturas más que por facturación masiva. De momento sólo se aplica en el módulo de Certificados (leer especificación para más info). Valores aceptados: 0 - Desactivado, funcionamiento normal; 1 - Activado, varias restricciones en diferentes pantallas#EU', 0, 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('fac.control_emision_facturas_sii.ayuda', 'Controla que no se generen facturas más que por facturación masiva. De momento sólo se aplica en el módulo de Certificados (leer especificación para más info). Valores aceptados: 0 - Desactivado, funcionamiento normal; 1 - Activado, varias restricciones en diferentes pantallas#GL', 0, 4, Sysdate, 0, '19');
+
+Insert Into gen_parametros  (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
+Values  ('FAC', 'CONTROL_EMISION_FACTURAS_SII', '0', Sysdate, 0, 0, 'fac.control_emision_facturas_sii.ayuda');
+Insert Into gen_parametros  (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
+Values  ('FAC', 'CONTROL_EMISION_FACTURAS_SII', '1', Sysdate, 0, 2000, 'fac.control_emision_facturas_sii.ayuda');
+
 
 
 

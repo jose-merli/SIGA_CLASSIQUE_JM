@@ -145,6 +145,10 @@
 		sAbreviaturaInstitucionDestino = beanInstitucionDestino.getAbreviatura();
 	}
 	
+	// Las siguientes variables controlaran que se pueda o no Facturar y Anular. Ademas, cuando el control de facturas este activo, el campo 'Siguiente estado' para 'Aprobado' siempre sera 'Finalizado'
+	String controlFacturasSII = (String) request.getAttribute("controlFacturasSII");
+	String hayFacturacionHoy = (String) request.getAttribute("hayFacturacionHoy");
+	
 	String botones = "";
 	if(modo.equalsIgnoreCase("ver")){
 		//Modo consulta
@@ -162,10 +166,18 @@
 			botones = "V,RG,AN,F,G";
 		} else if (idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR)){
 			//Pendiente de facturar
-			botones = "V,RG,AN,FAC,G";
+			if (controlFacturasSII.equalsIgnoreCase("1") && !hayFacturacionHoy.equalsIgnoreCase("1")) {
+				botones = "V,RG,AN,G"; //Si hay control de facturas por SII y hoy no toca facturar (tipicamente el ultimo dia del mes), entonces no se puede facturar
+			} else {
+				botones = "V,RG,AN,FAC,G";
+			}
 		} else if(idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)){
 			//Finalizado
-			botones = "V,RG,AN,G";
+			if (controlFacturasSII.equalsIgnoreCase("1") && !hayFacturacionHoy.equalsIgnoreCase("1")) {
+				botones = "V,RG,G"; //Si hay control de facturas por SII y hoy no toca facturar (tipicamente el ultimo dia del mes), entonces no se puede anular (ya que en este caso, la anulacion implica la emision de una factura rectificativa)
+			} else {
+				botones = "V,RG,AN,G";
+			}
 		} else {
 			botones = "V";
 		}
@@ -637,27 +649,27 @@
 			if (!SolicitudesCertificadosForm.checkCobro.checked) {
 				
 				SolicitudesCertificadosForm.fechaCobro.value="";
-				     <% if (tipoCertificado != null && tipoCertificado.equals("C")){%> 
-				       jQuery("#idInstitucionDestino").removeAttr("disabled");
-	 				 <%}%>
-					jQuery("#fechaCobro").addClass("boxConsulta").removeClass("box");	
-					jQuery("#fechaCobro-datepicker-trigger").hide();
-					jQuery("#td_1").hide();
-					jQuery("#td_2").hide();
-					jQuery("#td_3").hide();
-					jQuery("#td_4").hide();
-					jQuery("#td_5").hide();
-					jQuery("#td_gcob1").show();
-					jQuery("#td_gcob2").show();					
-					
-					<% if(idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO)) { %>
-						jQuery("#siguienteEstado").val("Finalizado");
-					<%}%>
+				<% if (tipoCertificado != null && tipoCertificado.equals("C")){%> 
+					jQuery("#idInstitucionDestino").removeAttr("disabled");
+ 				<%}%>
+				jQuery("#fechaCobro").addClass("boxConsulta").removeClass("box");	
+				jQuery("#fechaCobro-datepicker-trigger").hide();
+				jQuery("#td_1").hide();
+				jQuery("#td_2").hide();
+				jQuery("#td_3").hide();
+				jQuery("#td_4").hide();
+				jQuery("#td_5").hide();
+				jQuery("#td_gcob1").show();
+				jQuery("#td_gcob2").show();					
+				
+				<% if(idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO)) { %>
+					jQuery("#siguienteEstado").val("Finalizado");
+				<%}%>
 			} else {
-			     <% if (tipoCertificado != null && tipoCertificado.equals("C")){%> 
-			       SolicitudesCertificadosForm.idInstitucionDestino.value="";
-				   jQuery("#idInstitucionDestino").attr("disabled","disabled");
- 				 <%}%>	  
+				<% if (tipoCertificado != null && tipoCertificado.equals("C")){%> 
+					SolicitudesCertificadosForm.idInstitucionDestino.value="";
+					jQuery("#idInstitucionDestino").attr("disabled","disabled");
+ 				<%}%>	  
 
 				jQuery("#td_1").show();
 				jQuery("#td_2").show();
@@ -671,8 +683,12 @@
 				SolicitudesCertificadosForm.fechaCobro.value="<%=UtilidadesBDAdm.getFechaBD("")%>";
 				
 				<% if(idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO)) { %>
-					jQuery("#siguienteEstado").val("Pendiente de Facturar");
-				<%}%>				
+					<% if(controlFacturasSII.equals("1")) { %>
+						jQuery("#siguienteEstado").val("Finalizado");
+					<% } else { %>
+						jQuery("#siguienteEstado").val("Pendiente de Facturar");
+					<% } %>
+				<% } %>
 			}
 		}
 		

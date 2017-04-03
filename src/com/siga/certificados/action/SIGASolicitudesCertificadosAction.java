@@ -51,8 +51,10 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.PaginadorBind;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.Utilidades.paginadores.Paginador;
 import com.siga.beans.AdmUsuariosAdm;
 import com.siga.beans.AdmUsuariosBean;
 import com.siga.beans.CenBancosBean;
@@ -74,6 +76,7 @@ import com.siga.beans.CerSolicitudCertificadosTextoBean;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacSerieFacturacionAdm;
+import com.siga.beans.FacFacturacionProgramadaAdm;
 import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.PysCompraAdm;
@@ -87,6 +90,7 @@ import com.siga.beans.PysProductosSolicitadosBean;
 import com.siga.beans.PysServiciosSolicitadosBean;
 import com.siga.certificados.Certificado;
 import com.siga.certificados.form.SIGASolicitudesCertificadosForm;
+import com.siga.facturacion.form.ConfirmarFacturacionForm;
 import com.siga.facturacion.Facturacion;
 import com.siga.facturacion.action.AltaAbonosAction;
 import com.siga.general.CenVisibilidad;
@@ -210,7 +214,9 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			String idSolicitudCompra = "";
 			String idSolicitudCertificado = "";
 			String concepto = "";
-			UsrBean userBean = ((UsrBean) request.getSession().getAttribute(("USRBEAN")));
+			UsrBean userBean = this.getUserBean(request);
+			String idInstitucion = userBean.getLocation();
+			
 			if (request.getParameter("idSolicitud") != null) {
 				idSolicitudCompra = (String) request.getParameter("idSolicitud");
 			}
@@ -244,7 +250,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 					// mas de un producto certificado, la consulta no devolvia
 					// bien el idsolicitud, nos devolvia el del primer producto
 					// certificado que encontraba
-					idSolicitudCertificado = solAdm.obtenerIdSolicitudDesdeIdCompra(idSolicitudCompra, idProducto, idProductoInstitucion, idTipoProducto, userBean.getLocation());
+					idSolicitudCertificado = solAdm.obtenerIdSolicitudDesdeIdCompra(idSolicitudCompra, idProducto, idProductoInstitucion, idTipoProducto, idInstitucion);
 				}
 			}
 			request.setAttribute("idPeticion", idSolicitudCertificado);
@@ -258,6 +264,11 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			} else {
 				form.resetCamposBusqueda();
 			}
+			
+			// pasando el valor del parametro de control de facturas a la JSP para que actue en consecuencia
+			GenParametrosAdm paramAdm = new GenParametrosAdm(userBean);
+			String controlFacturasSII = paramAdm.getValor(idInstitucion, "FAC", "CONTROL_EMISION_FACTURAS_SII", "0");
+			request.setAttribute("controlFacturasSII", controlFacturasSII);
 
 			request.setAttribute("SolicitudesCertificadosForm", form);
 			request.getSession().removeAttribute("DATABACKUP");
@@ -529,13 +540,15 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 	} // contieneMasProductos ()
 
 	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
+		UsrBean userBean = this.getUserBean(request);
+		
 		try {
 			MasterForm miForm = (MasterForm) formulario;
 			String accion = miForm.getModo();
 			request.setAttribute("modo", accion);
 
 			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
-			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
+			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(userBean);
 			String idInstitucion = "", idSolicitud = "", idEstadoSolicitud = "", tipoCertificado = "";
 			Vector vOcultos = form.getDatosTablaOcultos(0);
 
@@ -559,7 +572,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			Vector vDatos = admSolicitud.selectByPK(htSolicitud);
 			CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean) vDatos.elementAt(0);
 
-			CenInstitucionAdm admInstitucion = new CenInstitucionAdm(this.getUserBean(request));
+			CenInstitucionAdm admInstitucion = new CenInstitucionAdm(userBean);
 			String idInstitucionOrigen = "" + beanSolicitud.getIdInstitucionOrigen();
 			String idInstitucionDestino = "" + beanSolicitud.getIdInstitucionDestino();
 			String idInstitucionColegiacion = "" + beanSolicitud.getIdInstitucionColegiacion();
@@ -625,6 +638,26 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 
 			request.setAttribute("sanciones", textoCertificado);
 			request.setAttribute("solicitud", beanSolicitud);
+			
+			// obteniendo el valor del parametro de control de facturas a la JSP para que actue en consecuencia
+			GenParametrosAdm paramAdm = new GenParametrosAdm(userBean);
+			String controlFacturasSII = paramAdm.getValor(idInstitucion, "FAC", "CONTROL_EMISION_FACTURAS_SII", "0");
+			request.setAttribute("controlFacturasSII", controlFacturasSII);
+			
+			// ahora hay que buscar si se han hecho facturaciones que incluyan el dia de hoy y 
+			// que petenezcan a una serie que incluya el tipo de producto de este certificado que se esta editando
+			{
+				ConfirmarFacturacionForm formFacturacion = new ConfirmarFacturacionForm();
+				formFacturacion.setFechaDesdeProductos(UtilidadesFecha.getToday(UtilidadesFecha.FORMATO_FECHA_ES));
+				formFacturacion.setFechaHastaProductos(UtilidadesFecha.getToday(UtilidadesFecha.FORMATO_FECHA_ES));
+				formFacturacion.setIdTipoProducto(beanSolicitud.getPpn_IdTipoProducto().toString());
+				formFacturacion.setIdProducto(beanSolicitud.getPpn_IdProducto().toString());
+				
+				FacFacturacionProgramadaAdm	facturacionProgramadaAdm = new FacFacturacionProgramadaAdm(userBean);
+				Paginador facturacionesEncontradas = facturacionProgramadaAdm.getProgramacioneFacturacionPaginador(formFacturacion);
+				boolean hayFacturacionHoy = (facturacionesEncontradas != null && facturacionesEncontradas.getNumeroTotalRegistros() > 0);
+				request.setAttribute("hayFacturacionHoy", hayFacturacionHoy ? "1" : "0");
+			}
 
 			/** ESTADOS SOLICITUD CERTIFICADO **/
 			if (idEstadoSolicitud == null || idEstadoSolicitud.equals("")) {
@@ -632,7 +665,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 				idEstadoSolicitud = beanSolicitud.getIdEstadoSolicitudCertificado().toString();
 			}
 
-			CerEstadoSoliCertifiAdm estAdm = new CerEstadoSoliCertifiAdm(this.getUserBean(request));
+			CerEstadoSoliCertifiAdm estAdm = new CerEstadoSoliCertifiAdm(userBean);
 			String strEstadoActual = estAdm.getNombreEstadoSolicitudCert(idEstadoSolicitud);
 			String strSiguienteEstado = "-";
 			if (idEstadoSolicitud != null) {
@@ -643,7 +676,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 
 				case 2:// Integer.parseInt(CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO)
 					Thread.sleep(2000);
-					if (beanSolicitud.getFechaCobro() != null && !beanSolicitud.getFechaCobro().trim().equals("")) {
+					if (controlFacturasSII.equalsIgnoreCase("0") && beanSolicitud.getFechaCobro() != null && !beanSolicitud.getFechaCobro().trim().equals("")) {
 						strSiguienteEstado = estAdm.getNombreEstadoSolicitudCert(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
 					} else {
 						strSiguienteEstado = estAdm.getNombreEstadoSolicitudCert(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
@@ -698,7 +731,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 
 			request.setAttribute("pintarCheckMutualidad", pintarCheckMutualidad);
 
-			PysProductosInstitucionAdm admProd = new PysProductosInstitucionAdm(this.getUserBean(request));
+			PysProductosInstitucionAdm admProd = new PysProductosInstitucionAdm(userBean);
 			Vector vector = admProd.select("WHERE " + PysProductosInstitucionBean.C_IDINSTITUCION + "=" + idInstitucion + " AND " + PysProductosInstitucionBean.C_IDTIPOPRODUCTO
 					+ "=" + idtipop + " AND " + PysProductosInstitucionBean.C_IDPRODUCTO + "=" + idp + " AND " + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION + "=" + idpi);
 			PysProductosInstitucionBean beanProd = null;
@@ -715,7 +748,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			// Contador
 			if (numContador != null && !numContador.equals("")) {
 				// obtengo el objeto contador
-				GestorContadores gc = new GestorContadores(this.getUserBean(request));
+				GestorContadores gc = new GestorContadores(userBean);
 
 				// obtenemos el contador de la FK del producto
 				String idContador = "";
@@ -741,8 +774,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			/** DATOS SOLICITANTE **/
 			if (beanSolicitud.getIdPersona_Des() != null) {
 				String idPersona = beanSolicitud.getIdPersona_Des().toString();
-				CenPersonaAdm personaAdm = new CenPersonaAdm(this.getUserBean(request));
-				CenColegiadoAdm colAdm = new CenColegiadoAdm(this.getUserBean(request));
+				CenPersonaAdm personaAdm = new CenPersonaAdm(userBean);
+				CenColegiadoAdm colAdm = new CenColegiadoAdm(userBean);
 				nidSolicitante = personaAdm.obtenerNIF(idPersona);
 				nombreSolicitante = personaAdm.obtenerNombreApellidos(idPersona);
 				nombreSoloSolicitante = personaAdm.obtenerNombre(idPersona);
@@ -755,7 +788,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			request.setAttribute("nidSolicitante", nidSolicitante);
 			request.setAttribute("ncolSolicitante", ncolSolicitante);
 
-			AdmUsuariosAdm adm = new AdmUsuariosAdm(this.getUserBean(request));
+			AdmUsuariosAdm adm = new AdmUsuariosAdm(userBean);
 			Hashtable<String, Object> h = new Hashtable<String, Object>();
 			UtilidadesHash.set(h, AdmUsuariosBean.C_IDUSUARIO, beanSolicitud.getUsuMod());
 			UtilidadesHash.set(h, AdmUsuariosBean.C_IDINSTITUCION, beanSolicitud.getIdInstitucion());
@@ -2079,13 +2112,13 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			bean.setUsuCreacion(bean.getUsuCreacion());
 			switch (origen) {
 			case 1:
-				bean.setIdEstadoSolicitudCertificado(8);
+				bean.setIdEstadoSolicitudCertificado(Integer.parseInt(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZANDO));
 				break;
 			case 2:
-				bean.setIdEstadoSolicitudCertificado(7);
+				bean.setIdEstadoSolicitudCertificado(Integer.parseInt(CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBANDO));
 				break;
 			case 10:
-				bean.setIdEstadoSolicitudCertificado(9);
+				bean.setIdEstadoSolicitudCertificado(Integer.parseInt(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FACTURANDO));
 				break;
 
 			default:
@@ -2372,331 +2405,271 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			Vector vDatos = admSolicitud.selectByPK(htSolicitud);
 			CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean) vDatos.elementAt(0);
 
-			if (!(("" + beanSolicitud.getIdEstadoSolicitudCertificado()).equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND))
-					&& !(("" + beanSolicitud.getIdEstadoSolicitudCertificado()).equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO))
-					&& !(("" + beanSolicitud.getIdEstadoSolicitudCertificado()).equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR))) {
+			if (beanSolicitud.getIdEstadoSolicitudCertificado() == null || beanSolicitud.getIdEstadoSolicitudCertificado().equals("")) {
+				throw new SIGAException("Error inesperado: no llega estado de solicitud de certificado");
+			}
+			
+			CerEstadoSoliCertifiAdm estAdm = new CerEstadoSoliCertifiAdm(userBean);
+			switch (beanSolicitud.getIdEstadoSolicitudCertificado()) {
+			case CerSolicitudCertificadosAdm.C_ESTADO_SOL_PEND:
+				throw new SIGAException("El certificado está " + estAdm.getNombreEstadoSolicitudCert(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND) + 
+						": es necesario aprobarlo y generarlo antes de finalizar.");
+			case CerSolicitudCertificadosAdm.C_ESTADO_SOL_PEND_FACTURAR:
+				throw new SIGAException("El certificado está " + estAdm.getNombreEstadoSolicitudCert(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR) + 
+						": ya no se puede finalizar más.");
+			case CerSolicitudCertificadosAdm.C_ESTADO_SOL_FINALIZADO:
+				throw new SIGAException("El certificado está " + estAdm.getNombreEstadoSolicitudCert(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO) + 
+						": ya no se puede finalizar más.");
+			}
+			
+			// RGG 05-09-2005 anhado al estado generado el de firmado ya que no parece que sea nunca generado. Pasa directamente a firmado.
+			if (!("" + beanSolicitud.getIdEstadoCertificado()).equals(CerSolicitudCertificadosAdm.K_ESTADO_CER_GENERADO)
+					&& !("" + beanSolicitud.getIdEstadoCertificado()).equals(CerSolicitudCertificadosAdm.K_ESTADO_CER_FIRMADO)) {
+				throw new SIGAException("messages.certificados.error.nogenerado");
+			}
 
-				// RGG 05-09-2005 anhado al estado generado el de firmado ya que
-				// no parece que sea nunca generado. Pasa directamente a
-				// firmado.
-				if (!("" + beanSolicitud.getIdEstadoCertificado()).equals(CerSolicitudCertificadosAdm.K_ESTADO_CER_GENERADO)
-						&& !("" + beanSolicitud.getIdEstadoCertificado()).equals(CerSolicitudCertificadosAdm.K_ESTADO_CER_FIRMADO)) {
-					throw new SIGAException("messages.certificados.error.nogenerado");
-				}
+			GenParametrosAdm paramAdm = new GenParametrosAdm(userBean);
+			boolean controlFacturasSII = paramAdm.getValor(idInstitucion, "FAC", "CONTROL_EMISION_FACTURAS_SII", "0").equalsIgnoreCase("1");
+			Hashtable<String, Object> htOld = beanSolicitud.getOriginalHash();
+			Hashtable<String, Object> htNew = (Hashtable<String, Object>) htOld.clone();
+			htNew.put(CerSolicitudCertificadosBean.C_FECHAMODIFICACION, "sysdate");
+			htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO, "sysdate");
+			if (controlFacturasSII || beanSolicitud.getFechaCobro() == null || "".equalsIgnoreCase(beanSolicitud.getFechaCobro())) {
+				htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+			} else {
+				htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
+			}
 
-				Hashtable<String, Object> htOld = beanSolicitud.getOriginalHash();
-				Hashtable<String, Object> htNew = (Hashtable<String, Object>) htOld.clone();
-				htNew.put(CerSolicitudCertificadosBean.C_FECHAMODIFICACION, "sysdate");
-				htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO, "sysdate");
-				if (beanSolicitud.getFechaCobro() != null && !"".equalsIgnoreCase(beanSolicitud.getFechaCobro())) {
-					htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
+			tx.begin();
+			if (! admSolicitud.update(htNew, htOld)) {
+				tx.rollback();
+				if (request != null) {
+					request.setAttribute("mensaje", "messages.updated.error");
 				} else {
-					htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+					ClsLogging.writeFileLog("-- SE HA PRODUCIDO UN ERROR EN LA FINALIZACIÓN--", 4);
 				}
+				return;
+			}
+			
+			// Si viene vacio quiere decir que estamos llamando a este metodo desde el demonio
+			if (request != null) {
+				request.setAttribute("mensaje", "messages.updated.success");
+			} else {
+				ClsLogging.writeFileLog("-- SE HA FINALIZADO CON EXITO --", 4);
+			}
 
-				tx.begin();
-				if (admSolicitud.update(htNew, htOld)) {
-					// Si viene vacio quiere decir que estamos llamando a este
-					// método desde el demonio
-					if (request != null) {
-						request.setAttribute("mensaje", "messages.updated.success");
-					} else {
-						ClsLogging.writeFileLog("-- SE HA FINALIZADO CON EXITO --", 4);
-					}
+			// YGE 07/09/2005 Si todo ha ido bien insertamos el registro
+			// en la tabla PysCompra
 
-					// YGE 07/09/2005 Si todo ha ido bien insertamos el registro
-					// en la tabla PysCompra
-					// MAV 13/09/2005 Resolución incidencia
+			Hashtable<String, Object> claves = new Hashtable<String, Object>();
+			UtilidadesHash.set(claves, CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
+			UtilidadesHash.set(claves, CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
+			CerSolicitudCertificadosAdm solicitudAdm = new CerSolicitudCertificadosAdm(userBean);
+			CerSolicitudCertificadosBean solicitudBean = (CerSolicitudCertificadosBean) solicitudAdm.selectByPK(claves).get(0);
 
-					Hashtable<String, Object> claves = new Hashtable<String, Object>();
-					UtilidadesHash.set(claves, CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
-					UtilidadesHash.set(claves, CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
-					CerSolicitudCertificadosAdm solicitudAdm = new CerSolicitudCertificadosAdm(userBean);
-					CerSolicitudCertificadosBean solicitudBean = (CerSolicitudCertificadosBean) solicitudAdm.selectByPK(claves).get(0);
+			claves.clear();
+			UtilidadesHash.set(claves, PysProductosInstitucionBean.C_IDINSTITUCION, idInstitucion);
+			UtilidadesHash.set(claves, PysProductosInstitucionBean.C_IDTIPOPRODUCTO, solicitudBean.getPpn_IdTipoProducto());
+			UtilidadesHash.set(claves, PysProductosInstitucionBean.C_IDPRODUCTO, solicitudBean.getPpn_IdProducto());
+			UtilidadesHash.set(claves, PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION, solicitudBean.getPpn_IdProductoInstitucion());
+			PysProductosInstitucionAdm productoAdm = new PysProductosInstitucionAdm(userBean);
 
-					claves.clear();
-					UtilidadesHash.set(claves, PysProductosInstitucionBean.C_IDINSTITUCION, idInstitucion);
-					UtilidadesHash.set(claves, PysProductosInstitucionBean.C_IDTIPOPRODUCTO, solicitudBean.getPpn_IdTipoProducto());
-					UtilidadesHash.set(claves, PysProductosInstitucionBean.C_IDPRODUCTO, solicitudBean.getPpn_IdProducto());
-					UtilidadesHash.set(claves, PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION, solicitudBean.getPpn_IdProductoInstitucion());
-					PysProductosInstitucionAdm productoAdm = new PysProductosInstitucionAdm(userBean);
+			Vector productosInstitucion = productoAdm.selectByPK(claves);
+			if (productosInstitucion.isEmpty()) {
+				tx.rollback();
+				throw new SIGAException("messages.certificado.error.noFinalizacion");
+			}
+			
+			// Se comprueba que el producto sea un certificado. Si no lo es, ya no hay nada mas que hacer
+			PysProductosInstitucionBean productoBean = (PysProductosInstitucionBean) productosInstitucion.get(0);
+			if (! productoBean.getTipoCertificado().equalsIgnoreCase("C")) {
+				tx.commit();
+				return;
+			}
+			
+			claves.clear();
+			UtilidadesHash.set(claves, PysProductosSolicitadosBean.C_IDINSTITUCION, idInstitucion);
+			UtilidadesHash.set(claves, PysProductosSolicitadosBean.C_IDTIPOPRODUCTO, solicitudBean.getPpn_IdTipoProducto());
+			UtilidadesHash.set(claves, PysProductosSolicitadosBean.C_IDPETICION, solicitudBean.getIdPeticionProducto());
+			UtilidadesHash.set(claves, PysProductosSolicitadosBean.C_IDPRODUCTO, solicitudBean.getPpn_IdProducto());
+			UtilidadesHash.set(claves, PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION, solicitudBean.getPpn_IdProductoInstitucion());
+			PysProductosSolicitadosAdm productoSolicitadoAdm = new PysProductosSolicitadosAdm(userBean);
+			Vector productosSolicitados = productoSolicitadoAdm.selectByPK(claves);
+			if (productosSolicitados.isEmpty()) {
+				tx.rollback();
+				throw new SIGAException("messages.certificado.error.noFinalizacion");
+			}
+			
+			PysProductosSolicitadosBean productoSolicitadoBean = (PysProductosSolicitadosBean) productosSolicitados.get(0);
+			PysCompraBean compraBean = new PysCompraBean();
+			compraBean.setCantidad(productoSolicitadoBean.getCantidad());
+			compraBean.setFecha("sysdate");
+			// compraBean.setIdFormaPago(productoSolicitadoBean.getIdFormaPago());
 
-					// MAV 12/9/2005 Resolucion incidencia
-					// PysProductosSolicitadosBean productoBean =
-					// (PysProductosSolicitadosBean)
-					// productoAdm.selectByPK(claves).get(0);
-					Vector productosInstitucion = productoAdm.selectByPK(claves);
-					if (productosInstitucion.isEmpty()) {
-						tx.rollback();
+			// Si el check Cobrado está activo el cliente es
+			// el que paga y se le asigna automaticamente
+			// la forma de pago en metálico
+			compraBean.setIdFormaPago(new Integer(ClsConstants.TIPO_FORMAPAGO_METALICO));
+			compraBean.setIdInstitucion(productoSolicitadoBean.getIdInstitucion());
+			compraBean.setIdPeticion(productoSolicitadoBean.getIdPeticion());
+			compraBean.setIdProducto(productoSolicitadoBean.getIdProducto());
+			compraBean.setIdProductoInstitucion(productoSolicitadoBean.getIdProductoInstitucion());
+			compraBean.setIdTipoProducto(productoSolicitadoBean.getIdTipoProducto());
+			compraBean.setImporteUnitario(productoSolicitadoBean.getValor());
+			compraBean.setIdCuenta(productoSolicitadoBean.getIdCuenta());
+			compraBean.setNoFacturable(productoSolicitadoBean.getNoFacturable());
 
-						throw new SIGAException("messages.certificado.error.noFinalizacion");
+			compraBean.setIdPersona(productoSolicitadoBean.getIdPersona());
+			// PDM: si el certificado tiene Cobrado = 0 y
+			// parametrizado la facturacion al colegio, se
+			// le factura al Colegio Destino o Facturable
+			GenParametrosAdm admParametros = new GenParametrosAdm(userBean);
+			String sFacturaColegio = admParametros.getValor(idInstitucion, "CER", "FACTURACION_COLEGIO", "");
+			if (sFacturaColegio != null && sFacturaColegio.equals("1")
+					&& (beanSolicitud.getFechaCobro() == null || beanSolicitud.getFechaCobro().equals("") || beanSolicitud.getFechaCobro().equals("0"))) {
+				if (beanSolicitud.getIdInstitucionDestino() == null || beanSolicitud.getIdInstitucionDestino().equals("")) {
+					tx.rollback();
+					throw new SIGAException("messages.certificado.error.noExisteColegioFacturable");
+				} else {
+					// obtener IDPERSONA de la Institucion
+					// Destino o Facturable
+					CenInstitucionAdm cenInstitucion = new CenInstitucionAdm(userBean);
+					Hashtable<String, Object> datosInstitucion = new Hashtable<String, Object>();
+					datosInstitucion.put(CenInstitucionBean.C_IDINSTITUCION, beanSolicitud.getIdInstitucionDestino());
+					Vector v_datosInstitucion = cenInstitucion.selectByPK(datosInstitucion);
+					CenInstitucionBean b = (CenInstitucionBean) v_datosInstitucion.get(0);
+					if (productoSolicitadoBean.getIdPersona().intValue() != b.getIdPersona().intValue()) {
+						compraBean.setIdPersonaDeudor(new Long(b.getIdPersona().intValue()));
 
-					} else {
-						PysProductosInstitucionBean productoBean = (PysProductosInstitucionBean) productosInstitucion.get(0);
-						if (productoBean.getTipoCertificado().equalsIgnoreCase("C")) {
-							claves.clear();
-							UtilidadesHash.set(claves, PysProductosSolicitadosBean.C_IDINSTITUCION, idInstitucion);
-							UtilidadesHash.set(claves, PysProductosSolicitadosBean.C_IDTIPOPRODUCTO, solicitudBean.getPpn_IdTipoProducto());
-							UtilidadesHash.set(claves, PysProductosSolicitadosBean.C_IDPETICION, solicitudBean.getIdPeticionProducto());
-							UtilidadesHash.set(claves, PysProductosSolicitadosBean.C_IDPRODUCTO, solicitudBean.getPpn_IdProducto());
-							UtilidadesHash.set(claves, PysProductosSolicitadosBean.C_IDPRODUCTOINSTITUCION, solicitudBean.getPpn_IdProductoInstitucion());
-							PysProductosSolicitadosAdm productoSolicitadoAdm = new PysProductosSolicitadosAdm(userBean);
-							Vector productosSolicitados = productoSolicitadoAdm.selectByPK(claves);
-							if (productosSolicitados.isEmpty()) {
-								tx.rollback();
-								throw new SIGAException("messages.certificado.error.noFinalizacion");
-							} else {
-								PysProductosSolicitadosBean productoSolicitadoBean = (PysProductosSolicitadosBean) productosSolicitados.get(0);
-								PysCompraBean compraBean = new PysCompraBean();
-								compraBean.setCantidad(productoSolicitadoBean.getCantidad());
-								compraBean.setFecha("sysdate");
-								// compraBean.setIdFormaPago(productoSolicitadoBean.getIdFormaPago());
+						// comprobamos que es cliente del colegio que finaliza el certificado
+						CenClienteAdm cenCliente = new CenClienteAdm(userBean);
+						Hashtable<String, Object> datosCliente = new Hashtable<String, Object>();
+						datosCliente.put(CenClienteBean.C_IDINSTITUCION, beanSolicitud.getIdInstitucion());
+						datosCliente.put(CenClienteBean.C_IDPERSONA, b.getIdPersona());
+						Vector v_datosCliente = cenCliente.selectByPK(datosCliente);
+						if (v_datosCliente.size() == 0) {
+							tx.rollback();
+							throw new SIGAException("messages.certificado.error.colegioNoEsCliente");
 
-								// Si el check Cobrado está activo el cliente es
-								// el que paga y se le asigna automaticamente
-								// la forma de pago en metálico
-								compraBean.setIdFormaPago(new Integer(ClsConstants.TIPO_FORMAPAGO_METALICO));
-								compraBean.setIdInstitucion(productoSolicitadoBean.getIdInstitucion());
-								compraBean.setIdPeticion(productoSolicitadoBean.getIdPeticion());
-								compraBean.setIdProducto(productoSolicitadoBean.getIdProducto());
-								compraBean.setIdProductoInstitucion(productoSolicitadoBean.getIdProductoInstitucion());
-								compraBean.setIdTipoProducto(productoSolicitadoBean.getIdTipoProducto());
-								compraBean.setImporteUnitario(productoSolicitadoBean.getValor());
-								compraBean.setIdCuenta(productoSolicitadoBean.getIdCuenta());
-								compraBean.setNoFacturable(productoSolicitadoBean.getNoFacturable());
-
-								compraBean.setIdPersona(productoSolicitadoBean.getIdPersona());
-								// PDM: si el certificado tiene Cobrado = 0 y
-								// parametrizado la facturacion al colegio, se
-								// le factura al Colegio Destino o Facturable
-								GenParametrosAdm admParametros = new GenParametrosAdm(userBean);
-								String sFacturaColegio = admParametros.getValor(idInstitucion, "CER", "FACTURACION_COLEGIO", "");
-								if (sFacturaColegio != null && sFacturaColegio.equals("1")
-										&& (beanSolicitud.getFechaCobro() == null || beanSolicitud.getFechaCobro().equals("") || beanSolicitud.getFechaCobro().equals("0"))) {
-									// if ( beanSolicitud.getFechaCobro() ==
-									// null ||
-									// beanSolicitud.getFechaCobro().equals("")||
-									// beanSolicitud.getFechaCobro().equals("0"))
-									// {
-									if (beanSolicitud.getIdInstitucionDestino() == null || beanSolicitud.getIdInstitucionDestino().equals("")) {
-										tx.rollback();
-										throw new SIGAException("messages.certificado.error.noExisteColegioFacturable");
-									} else {
-										// obtener IDPERSONA de la Institucion
-										// Destino o Facturable
-										CenInstitucionAdm cenInstitucion = new CenInstitucionAdm(userBean);
-										Hashtable<String, Object> datosInstitucion = new Hashtable<String, Object>();
-										datosInstitucion.put(CenInstitucionBean.C_IDINSTITUCION, beanSolicitud.getIdInstitucionDestino());
-										Vector v_datosInstitucion = cenInstitucion.selectByPK(datosInstitucion);
-										CenInstitucionBean b = (CenInstitucionBean) v_datosInstitucion.get(0);
-										// compraBean.setIdPersona(new
-										// Long(b.getIdPersona().intValue()));
-										if (productoSolicitadoBean.getIdPersona().intValue() != b.getIdPersona().intValue()) {
-											compraBean.setIdPersonaDeudor(new Long(b.getIdPersona().intValue()));
-
-											// comprobamos que es cliente del
-											// colegio que finaliza el
-											// certificado
-											CenClienteAdm cenCliente = new CenClienteAdm(userBean);
-											Hashtable<String, Object> datosCliente = new Hashtable<String, Object>();
-											datosCliente.put(CenClienteBean.C_IDINSTITUCION, beanSolicitud.getIdInstitucion());
-											datosCliente.put(CenClienteBean.C_IDPERSONA, b.getIdPersona());
-											Vector v_datosCliente = cenCliente.selectByPK(datosCliente);
-											if (v_datosCliente.size() == 0) {
-												tx.rollback();
-												throw new SIGAException("messages.certificado.error.colegioNoEsCliente");
-
-											}
-
-											//
-											// if
-											// (productoSolicitadoBean.getIdCuenta()!=null
-											// ) {// Esto significa que se ha
-											// solicitado un certificado por
-											// domiciliacion bancaria
-											// obtenemos IDCUENTA de la
-											// Institucion Presentación para
-											// cobrarle el certificado
-											// solicitado
-											RowsContainer rc = null;
-											rc = new RowsContainer();
-											int contador = 0;
-											Hashtable<Integer, Object> codigos = new Hashtable<Integer, Object>();
-											String sql = "select C." + CenCuentasBancariasBean.C_IDCUENTA + " from " + CenCuentasBancariasBean.T_NOMBRETABLA + " C, "
-													+ CenBancosBean.T_NOMBRETABLA + " B" + " where C." + CenCuentasBancariasBean.C_CBO_CODIGO + " = B." + CenBancosBean.C_CODIGO;
-											contador++;
-											codigos.put(new Integer(contador), String.valueOf(b.getIdPersona().intValue()));
-											sql += "   AND C." + CenCuentasBancariasBean.C_IDPERSONA + " = :" + contador;
-											contador++;
-											codigos.put(new Integer(contador), String.valueOf(beanSolicitud.getIdInstitucion().intValue()));
-											sql += "   AND C." + CenCuentasBancariasBean.C_IDINSTITUCION + " = :" + contador + "   AND (C." + CenCuentasBancariasBean.C_ABONOCARGO
-													+ " = 'C' OR C." + CenCuentasBancariasBean.C_ABONOCARGO + " = 'T')" + "   AND ROWNUM=1 ";
-											if (rc.queryBind(sql, codigos)) {
-												if (rc.size() > 0) {
-													Row fila = (Row) rc.get(0);
-													String idCuentaPresentador = fila.getString(CenCuentasBancariasBean.C_IDCUENTA);
-													// compraBean.setIdCuenta(new
-													// Integer(idCuentaPresentador));
-													compraBean.setIdCuentaDeudor(new Integer(idCuentaPresentador));
-												} else {// Si no existe cuenta
-													tx.rollback();
-													throw new SIGAException("messages.certificado.error.NoExisteCuentaBancaria");
-												}
-											} else {// Si no existe cuenta
-												tx.rollback();
-												throw new SIGAException("messages.certificado.error.NoExisteCuentaBancaria");
-											}
-											// }
-											// Si el check Cobrado está
-											// desactivado la forma de pago es
-											// por domiciliacion bancaria
-											compraBean.setIdFormaPago(new Integer(ClsConstants.TIPO_FORMAPAGO_FACTURA));
-										} else {
-											compraBean.setIdPersonaDeudor(null);
-											compraBean.setIdCuentaDeudor(null);
-											compraBean.setIdCuenta(null);
-											compraBean.setIdFormaPago(new Integer(ClsConstants.TIPO_FORMAPAGO_FACTURA));
-										}
-									}
-
-								} else {
-									compraBean.setIdPersonaDeudor(null);
-									compraBean.setIdCuentaDeudor(null);
-									compraBean.setIdCuenta(null);// cuando el
-																	// check de
-																	// cobrado
-																	// esta
-																	// activado
-																	// el cobro
-																	// se le
-																	// hace al
-																	// cliente
-																	// en
-																	// metalico
-																	// luego no
-																	// rellenamos
-																	// el
-																	// idcuenta.
-								}
-
-								// compraBean.setIdPersona(productoSolicitadoBean.getIdPersona());
-
-								// RGG 29-04-2005 cambio para insertar la
-								// descripcion
-								// buscamos la descripcion
-								PysProductosInstitucionAdm pyspiAdm = new PysProductosInstitucionAdm(userBean);
-								Hashtable<String, Object> claves2 = new Hashtable<String, Object>();
-								claves2.put(PysProductosInstitucionBean.C_IDINSTITUCION, productoBean.getIdInstitucion());
-								claves2.put(PysProductosInstitucionBean.C_IDTIPOPRODUCTO, productoBean.getIdTipoProducto());
-								claves2.put(PysProductosInstitucionBean.C_IDPRODUCTO, productoBean.getIdProducto());
-								claves2.put(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION, productoBean.getIdProductoInstitucion());
-								Vector vpi = pyspiAdm.selectByPK(claves2);
-								String descripcion = "";
-								// Obtenemos el nombre y apellidos del
-								// solicitante
-								CenPersonaAdm datosPersona = new CenPersonaAdm(userBean);
-								Hashtable<String, Object> hashPersona = new Hashtable<String, Object>();
-								hashPersona.put(CenPersonaBean.C_IDPERSONA, productoSolicitadoBean.getIdPersona());
-								Vector vpersona = datosPersona.selectByPK(hashPersona);
-								CenPersonaBean personaBean = (CenPersonaBean) vpersona.get(0);
-								String apellido1 = personaBean.getApellido1();
-								String apellido2 = personaBean.getApellido2();
-								String nombre = personaBean.getNombre();
-								if (vpi != null && vpi.size() > 0) {
-									PysProductosInstitucionBean b = (PysProductosInstitucionBean) vpi.get(0);
-									descripcion = b.getDescripcion();
-									// ACG en el caso de certifiados
-									// concatenamos el nºde certificado por si
-									// la facturacion se le hace al colegio
-									descripcion = descripcion + " - NºCert: " + beanSolicitud.getPrefijoCer() + beanSolicitud.getContadorCer() + beanSolicitud.getSufijoCer()
-											+ " - " + apellido1 + " " + apellido2 + ", " + nombre;
-									if (descripcion.length() > 150) {
-										descripcion = descripcion.substring(0, 149);
-									}
-								}
-								compraBean.setDescripcion(descripcion);
-
-								// Creo que el importe anticipado es cero
-								compraBean.setImporteAnticipado(new Double(0));
-
-								compraBean.setIdTipoIva(productoSolicitadoBean.getIdTipoIva());
-								PysCompraAdm compraAdm = new PysCompraAdm(userBean);
-								try {
-									if (!compraAdm.insert(compraBean)) {
-										tx.rollback();
-										if (request != null) {
-											request.setAttribute("mensaje", "messages.inserted.error");
-										} else {
-											ClsLogging.writeFileLog("-- SE HA PRODUCIDO UN ERROR EN LA FINALIZACIÓN --", 4);
-										}
-
-									} else {
-										tx.commit();
-
-										/********************************** ENVIO A LA MUTUALIDAD ******************************/
-										try {
-											if (beanSolicitud.getAceptaCesionMutualidad() != null && beanSolicitud.getAceptaCesionMutualidad().equals("1")) {
-												MutualidadService service = (MutualidadService) BusinessManager.getInstance().getService(MutualidadService.class);
-												service.insertarFinalizacionCertificado(productoSolicitadoBean.getIdPersona(), beanSolicitud.getIdInstitucionOrigen());
-											}
-										} catch (Exception e) {
-											e.printStackTrace();
-											enviarEmailResumenEnvios(nombre + " " + apellido1 + " " + apellido2, productoSolicitadoBean.getIdPersona().toString(), e);
-										}
-										/********************************** FIN ENVIO A LA MUTUALIDAD ******************************/
-									}
-								} catch (Exception e) {
-									tx.rollback();
-									throw e;
-								}
-							}
-						} else {
-							tx.commit();
 						}
+
+						RowsContainer rc = null;
+						rc = new RowsContainer();
+						int contador = 0;
+						Hashtable<Integer, Object> codigos = new Hashtable<Integer, Object>();
+						String sql = "select C." + CenCuentasBancariasBean.C_IDCUENTA + " from " + CenCuentasBancariasBean.T_NOMBRETABLA + " C, "
+								+ CenBancosBean.T_NOMBRETABLA + " B" + " where C." + CenCuentasBancariasBean.C_CBO_CODIGO + " = B." + CenBancosBean.C_CODIGO;
+						contador++;
+						codigos.put(new Integer(contador), String.valueOf(b.getIdPersona().intValue()));
+						sql += "   AND C." + CenCuentasBancariasBean.C_IDPERSONA + " = :" + contador;
+						contador++;
+						codigos.put(new Integer(contador), String.valueOf(beanSolicitud.getIdInstitucion().intValue()));
+						sql += "   AND C." + CenCuentasBancariasBean.C_IDINSTITUCION + " = :" + contador + "   AND (C." + CenCuentasBancariasBean.C_ABONOCARGO
+								+ " = 'C' OR C." + CenCuentasBancariasBean.C_ABONOCARGO + " = 'T')" + "   AND ROWNUM=1 ";
+						if (rc.queryBind(sql, codigos)) {
+							if (rc.size() > 0) {
+								Row fila = (Row) rc.get(0);
+								String idCuentaPresentador = fila.getString(CenCuentasBancariasBean.C_IDCUENTA);
+								// compraBean.setIdCuenta(new
+								// Integer(idCuentaPresentador));
+								compraBean.setIdCuentaDeudor(new Integer(idCuentaPresentador));
+							} else {// Si no existe cuenta
+								tx.rollback();
+								throw new SIGAException("messages.certificado.error.NoExisteCuentaBancaria");
+							}
+						} else {// Si no existe cuenta
+							tx.rollback();
+							throw new SIGAException("messages.certificado.error.NoExisteCuentaBancaria");
+						}
+						// }
+						// Si el check Cobrado está
+						// desactivado la forma de pago es
+						// por domiciliacion bancaria
+						compraBean.setIdFormaPago(new Integer(ClsConstants.TIPO_FORMAPAGO_FACTURA));
+					} else {
+						compraBean.setIdPersonaDeudor(null);
+						compraBean.setIdCuentaDeudor(null);
+						compraBean.setIdCuenta(null);
+						compraBean.setIdFormaPago(new Integer(ClsConstants.TIPO_FORMAPAGO_FACTURA));
 					}
-				} else {
+				}
+
+			} else {
+				// cuando el check de cobrado esta activado, el cobro se le hace al cliente en metalico, luego no se rellena la cuenta
+				compraBean.setIdPersonaDeudor(null);
+				compraBean.setIdCuentaDeudor(null);
+				compraBean.setIdCuenta(null);
+			}
+
+			// RGG 29-04-2005 cambio para insertar la
+			// descripcion
+			// buscamos la descripcion
+			PysProductosInstitucionAdm pyspiAdm = new PysProductosInstitucionAdm(userBean);
+			Hashtable<String, Object> claves2 = new Hashtable<String, Object>();
+			claves2.put(PysProductosInstitucionBean.C_IDINSTITUCION, productoBean.getIdInstitucion());
+			claves2.put(PysProductosInstitucionBean.C_IDTIPOPRODUCTO, productoBean.getIdTipoProducto());
+			claves2.put(PysProductosInstitucionBean.C_IDPRODUCTO, productoBean.getIdProducto());
+			claves2.put(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION, productoBean.getIdProductoInstitucion());
+			Vector vpi = pyspiAdm.selectByPK(claves2);
+			String descripcion = "";
+			// Obtenemos el nombre y apellidos del
+			// solicitante
+			CenPersonaAdm datosPersona = new CenPersonaAdm(userBean);
+			Hashtable<String, Object> hashPersona = new Hashtable<String, Object>();
+			hashPersona.put(CenPersonaBean.C_IDPERSONA, productoSolicitadoBean.getIdPersona());
+			Vector vpersona = datosPersona.selectByPK(hashPersona);
+			CenPersonaBean personaBean = (CenPersonaBean) vpersona.get(0);
+			String apellido1 = personaBean.getApellido1();
+			String apellido2 = personaBean.getApellido2();
+			String nombre = personaBean.getNombre();
+			if (vpi != null && vpi.size() > 0) {
+				PysProductosInstitucionBean b = (PysProductosInstitucionBean) vpi.get(0);
+				descripcion = b.getDescripcion();
+				// ACG en el caso de certifiados
+				// concatenamos el nºde certificado por si
+				// la facturacion se le hace al colegio
+				descripcion = descripcion + " - NºCert: " + beanSolicitud.getPrefijoCer() + beanSolicitud.getContadorCer() + beanSolicitud.getSufijoCer()
+						+ " - " + apellido1 + " " + apellido2 + ", " + nombre;
+				if (descripcion.length() > 150) {
+					descripcion = descripcion.substring(0, 149);
+				}
+			}
+			compraBean.setDescripcion(descripcion);
+
+			// Creo que el importe anticipado es cero
+			compraBean.setImporteAnticipado(new Double(0));
+
+			compraBean.setIdTipoIva(productoSolicitadoBean.getIdTipoIva());
+			PysCompraAdm compraAdm = new PysCompraAdm(userBean);
+			try {
+				if (!compraAdm.insert(compraBean)) {
 					tx.rollback();
 					if (request != null) {
-						request.setAttribute("mensaje", "messages.updated.error");
+						request.setAttribute("mensaje", "messages.inserted.error");
 					} else {
-						ClsLogging.writeFileLog("-- SE HA PRODUCIDO UN ERROR EN LA FINALIZACIÓN--", 4);
+						ClsLogging.writeFileLog("-- SE HA PRODUCIDO UN ERROR EN LA FINALIZACIÓN --", 4);
 					}
-				}
-			} else {
-				CerEstadoSoliCertifiAdm estAdm = new CerEstadoSoliCertifiAdm(userBean);
-				switch (beanSolicitud.getIdEstadoSolicitudCertificado()) {
-				case 1:
-					throw new SIGAException("El certificado está " + estAdm.getNombreEstadoSolicitudCert(String.valueOf(beanSolicitud.getIdEstadoSolicitudCertificado())) + ": es "
-							+ "necesario aprobarlo y generarlo antes de finalizar.");
-				case 10:
-					throw new SIGAException("El certificado está " + estAdm.getNombreEstadoSolicitudCert(String.valueOf(beanSolicitud.getIdEstadoSolicitudCertificado())) + ": ya "
-							+ "no se puede finalizar más.");
-				case 4:
-					throw new SIGAException("El certificado está " + estAdm.getNombreEstadoSolicitudCert(String.valueOf(beanSolicitud.getIdEstadoSolicitudCertificado())) + ": ya "
-							+ "no se puede finalizar más.");
-				case 7:
-					throw new SIGAException("El certificado está " + estAdm.getNombreEstadoSolicitudCert(String.valueOf(beanSolicitud.getIdEstadoSolicitudCertificado()))
-							+ ": espere a que termine.  " + "Si lleva más de una hora sin cambiar, contacte con el Administrador.");
-				case 11:
-					throw new SIGAException("El certificado está " + estAdm.getNombreEstadoSolicitudCert(String.valueOf(beanSolicitud.getIdEstadoSolicitudCertificado()))
-							+ ": espere a que termine.  " + "Si lleva más de una hora sin cambiar, contacte con el Administrador.");
-				case 8:
-					throw new SIGAException("El certificado está " + estAdm.getNombreEstadoSolicitudCert(String.valueOf(beanSolicitud.getIdEstadoSolicitudCertificado()))
-							+ ": espere a que termine.  " + "Si lleva más de una hora sin cambiar, contacte con el Administrador.");
-				case 12:
-					throw new SIGAException("El certificado está " + estAdm.getNombreEstadoSolicitudCert(String.valueOf(beanSolicitud.getIdEstadoSolicitudCertificado()))
-							+ ": espere a que termine.  " + "Si lleva más de una hora sin cambiar, contacte con el Administrador.");
-				case 9:
-					throw new SIGAException("El certificado está " + estAdm.getNombreEstadoSolicitudCert(String.valueOf(beanSolicitud.getIdEstadoSolicitudCertificado()))
-							+ ": espere a que termine.  " + "Si lleva más de una hora sin cambiar, contacte con el Administrador.");
-				case 13:
-					throw new SIGAException("El certificado está " + estAdm.getNombreEstadoSolicitudCert(String.valueOf(beanSolicitud.getIdEstadoSolicitudCertificado()))
-							+ ": espere a que termine.  " + "Si lleva más de una hora sin cambiar, contacte con el Administrador.");
 
-				}
+				} else {
+					tx.commit();
 
+					/********************************** ENVIO A LA MUTUALIDAD ******************************/
+					try {
+						if (beanSolicitud.getAceptaCesionMutualidad() != null && beanSolicitud.getAceptaCesionMutualidad().equals("1")) {
+							MutualidadService service = (MutualidadService) BusinessManager.getInstance().getService(MutualidadService.class);
+							service.insertarFinalizacionCertificado(productoSolicitadoBean.getIdPersona(), beanSolicitud.getIdInstitucionOrigen());
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						enviarEmailResumenEnvios(nombre + " " + apellido1 + " " + apellido2, productoSolicitadoBean.getIdPersona().toString(), e);
+					}
+					/********************************** FIN ENVIO A LA MUTUALIDAD ******************************/
+				}
+			} catch (Exception e) {
+				tx.rollback();
+				throw e;
 			}
-			// //////////////////////////////////////////////
+
 		} catch (Exception e) {
 			contErrores++;
 			ClsLogging.writeFileLog("----- ERROR FINALIZACION -----", 4);
