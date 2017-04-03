@@ -358,6 +358,7 @@
 		<form-bean name="SubtiposCVForm" type="com.siga.censo.form.SubtiposCVForm"/>
 		<form-bean name="CargaMasivaCVForm" type="com.siga.censo.form.CargaMasivaCVForm"/>
 		<form-bean name="CargaMasivaGFForm" type="com.siga.censo.form.CargaMasivaGFForm"/>
+		<form-bean name="CargaMasivaProcuradoresForm" type="com.siga.gratuita.form.CargaMasivaProcuradoresForm"/>
 		
 	</form-beans>
 
@@ -3534,6 +3535,14 @@
 			<forward name="listado" path="/html/jsp/censo/listadoCargaMasivaCV.jsp"/>
 			<forward name="listadoResumen" path="/html/jsp/censo/listadoResumenCargaMasivaCV.jsp"/>
 		</action>
+		
+		<action path="/JGR_CargaMasivaProcuradores" type="com.siga.gratuita.action.CargaMasivaProcuradoresAction" name="CargaMasivaProcuradoresForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/cargaMasivaProcuradores.jsp"/>
+			<forward name="listado" path="/html/jsp/gratuita/listadoCargaMasivaProcuradores.jsp"/>
+			<forward name="listadoResumen" path="/html/jsp/gratuita/listadoResumenCargaMasivaProcuradores.jsp"/>
+		</action>
+		
+		
 		<action path="/CEN_CargaMasivaGF" type="com.siga.censo.action.CargaMasivaGFAction" name="CargaMasivaGFForm" scope="request">
 			<forward name="inicio" path="/html/jsp/censo/cargaMasivaGF.jsp"/>
 			<forward name="listado" path="/html/jsp/censo/listadoCargaMasivaGF.jsp"/>

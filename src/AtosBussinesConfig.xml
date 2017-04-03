@@ -143,6 +143,11 @@
 		<service interface="org.redabogacia.sigaservices.app.services.adm.AdmLenguajesService" 				 implementation="org.redabogacia.sigaservices.app.services.adm.impl.AdmLenguajesServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.ecom.EcomCenDatosService" 				 implementation="org.redabogacia.sigaservices.app.services.ecom.impl.EcomCenDatosServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.fac.PcajgAlcActService" 				 implementation="org.redabogacia.sigaservices.app.services.fac.impl.PcajgAlcActServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsProcuradorService" 					implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsProcuradorServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.CargaMasivaProcuradores" 					implementation="org.redabogacia.sigaservices.app.services.scs.impl.CargaMasivaDatosProcuradoresImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsDatosProcuradoresService" 					implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsDatosProcuradoresServiceImpl"/>
+		
+		
 		
 		
 		

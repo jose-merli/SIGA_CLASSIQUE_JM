@@ -680,7 +680,124 @@ Modificada vista V_WS_JE_2003_DESIGNA
 INSERT INTO CAJG_ERRORESREMESARESOL VALUES(18,2003,18,'La carga de ficheros de error sólo se permite para intercambios de envío o actualización. Los de actuaciones profesionales se carga desde facturación SJCS');
 
 
- 
-insert into ADM_TIPOINFORME (IDTIPOINFORME, DESCRIPCION, IDTIPOINFORMEPADRE, TIPOFORMATO, FECHAMODIFICACION, USUMODIFICACION, CLASE, DIRECTORIO)
-values ('CADO', 'Carta de Acreditación de Oficio', null, 'W', sysdate, 0, 'G', 'actuaciones_designacion');
+
+--Creamos el proceso que utilizara SIGA
+insert into GEN_PROCESOS (IDPROCESO, IDMODULO, TRAZA, TARGET, FECHAMODIFICACION, USUMODIFICACION, DESCRIPCION, TRANSACCION, IDPARENT, NIVEL) 
+values ('12X', 'JGR', 1, 'Y', sysdate, 0, 'Carga masiva de procuradores', 'JGR_CargaMasivaProcuradores', '007', 10);
+
+--Damos permiso al administrador general de Alcalá a ese proceso
+
+insert into adm_tiposacceso
+   (idproceso, idperfil, fechamodificacion, usumodificacion, derechoacceso, idinstitucion) 
+ values
+   ('12X','ADG',sysdate,0,3,2005);
+--Configuramos la opción de menú SJCS > e - Comunicaciones > EJGs: Remesa de resultados
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.cargaMasivaProcuradores', 'Carga masiva de procuradores', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.cargaMasivaProcuradores', 'Carga masiva de procuradores#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.cargaMasivaProcuradores', 'Carga masiva de procuradores#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.cargaMasivaProcuradores', 'Carga masiva de procuradores#EU', 0, '3', sysdate, 0, '19');
+
+insert into GEN_MENU (IDMENU, ORDEN, TAGWIDTH, IDPARENT, FECHAMODIFICACION, USUMODIFICACION, URI_IMAGEN, IDRECURSO, GEN_MENU_IDMENU, IDPROCESO, IDLENGUAJE)
+values ('12X', 22240, 160, '606', sysdate, 0, null, 'menu.sjcs.ecomunicaciones.cargaMasivaProcuradores', null, '12X', '1');
+
+
+
+-- Create sequence 
+create sequence SEQ_SCSDATOSPROCURADORES
+minvalue 0
+maxvalue 9999939
+start with 1
+increment by 1
+nocache
+cycle;	
+
+-- Create table
+create table SCS_DATOSPROCURADORES
+(
+  IDDATOSPROCURADORES  NUMBER(7) not null,
+  IDINSTITUCION        NUMBER(4) not null,
+  CODIGODESIGNAABOGADO VARCHAR2(14) not null,
+  NUMEJG               VARCHAR2(14),
+  NUMCOLPROCURADOR     VARCHAR2(20) not null,
+  FECHADESIGPROCURADOR DATE,
+  NUMDESIGNAPROCURADOR VARCHAR2(14),
+  OBSERVACIONES        VARCHAR2(500),
+  FECHAMODIFICACION    DATE not null,
+  USUMODIFICACION      NUMBER(5) not null
+)
+tablespace TS_SIGA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 1M
+    next 1M
+    minextents 1
+    maxextents unlimited
+    pctincrease 0
+  );
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table SCS_DATOSPROCURADORES
+  add constraint PK_SCS_DATOSPROCURADORES primary key (IDDATOSPROCURADORES)
+  using index 
+  tablespace TS_SIGA
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 1M
+    next 1M
+    minextents 1
+    maxextents unlimited
+    pctincrease 0
+  );
+
+  
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.ejg.literal', 'Ejg', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.ejg.literal', 'Ejg#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.ejg.literal', 'Ejg#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.ejg.literal', 'Ejg#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.designaAbogado.literal', 'DesignaciÃ³n Abogado', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.designaAbogado.literal', 'DesignaciÃ³n Abogado#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.designaAbogado.literal', 'DesignaciÃ³n Abogado#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.designaAbogado.literal', 'DesignaciÃ³n Abogado#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.designaProcurador.literal', 'DesignaciÃ³n procurador', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.designaProcurador.literal', 'DesignaciÃ³n procurador#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.designaProcurador.literal', 'DesignaciÃ³n procurador#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.designaProcurador.literal', 'DesignaciÃ³n procurador#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.observaciones.literal', 'Observaciones', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.observaciones.literal', 'Observaciones#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.observaciones.literal', 'Observaciones#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.observaciones.literal', 'Observaciones#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.procurador.literal', 'Procurador', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.procurador.literal', 'Procurador#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.procurador.literal', 'Procurador#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.procurador.literal', 'Procurador#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.fechaDesignaProc.literal', 'Fecha DesignaciÃ³n', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.fechaDesignaProc.literal', 'Fecha DesignaciÃ³n#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.fechaDesignaProc.literal', 'Fecha DesignaciÃ³n#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.fechaDesignaProc.literal', 'Fecha DesignaciÃ³n#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.ncolProcurador.literal', 'N.Col Procurador', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.ncolProcurador.literal', 'N.Col Procurador#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.ncolProcurador.literal', 'N.Col Procurador#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.ncolProcurador.literal', 'N.Col Procurador#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.localizacion', 'SJCS > e - Comunicaciones' , 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.localizacion', 'SJCS > e - Comunicaciones#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.localizacion', 'SJCS > e - Comunicaciones#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.localizacion', 'SJCS > e - Comunicaciones#EU', 0, '3', sysdate, 0, '19');
+
+  
+
+
+
 
