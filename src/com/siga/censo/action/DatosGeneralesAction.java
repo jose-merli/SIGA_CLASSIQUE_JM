@@ -1543,7 +1543,7 @@ public class DatosGeneralesAction extends MasterAction {
 					beanDir.setIdPoblacion (miForm.getPoblacion ());
 					beanDir.setIdProvincia (miForm.getProvincia ());
 					beanDir.setPoblacionExtranjera ("");
-					if(miForm.getOtraProvincia() != null && !"".equalsIgnoreCase(miForm.getOtraProvincia()) && miForm.getOtraProvincia().equalsIgnoreCase("1")){
+					if(miForm.getOtraProvinciaDatos() != null && !"".equalsIgnoreCase(miForm.getOtraProvinciaDatos()) && miForm.getOtraProvinciaDatos().equalsIgnoreCase("1")){
 						beanDir.setOtraProvincia(1);
 					}else{
 						beanDir.setOtraProvincia(0);
@@ -2656,6 +2656,7 @@ public class DatosGeneralesAction extends MasterAction {
 			miForm.setTelefono2("");
 			miForm.setPoblacion("");
 			miForm.setProvincia("");
+			miForm.setOtraProvincia("");
 			miForm.setPais("");
 			miForm.setDireccion("");
 			miForm.setCodPostal("");
@@ -2672,6 +2673,7 @@ public class DatosGeneralesAction extends MasterAction {
 			miForm.setTelefono((String)direccion.get("TELEFONO1"));
 			miForm.setTelefono2((String)direccion.get("TELEFONO2"));
 			miForm.setPoblacion((String)direccion.get("IDPOBLACION"));
+			miForm.setOtraProvincia((String)direccion.get("OTRAPROVINCIA"));
 			miForm.setProvincia((String)direccion.get("IDPROVINCIA"));
 			miForm.setPais((String)direccion.get("IDPAIS"));
 			miForm.setDireccion((String)direccion.get("DOMICILIO"));
@@ -2691,6 +2693,7 @@ public class DatosGeneralesAction extends MasterAction {
 		listaParametros.add(miForm.getPais());
 		listaParametros.add(miForm.getDireccion());
 		listaParametros.add(miForm.getCodPostal());
+		listaParametros.add(miForm.getOtraProvincia());
 		
 		respuestaAjax(new AjaxXmlBuilder(), listaParametros,response);
 

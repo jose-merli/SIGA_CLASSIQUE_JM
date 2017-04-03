@@ -806,6 +806,8 @@
 		document.getElementById("telefono1").value 			= document.busquedaCensoModalForm.telefono.value;
 		document.getElementById("domicilio").value 			= document.busquedaCensoModalForm.direccion.value.replace(/\r\n|\r|\n/g, " ");
 		document.getElementById("codigoPostal").value 		= document.busquedaCensoModalForm.codPostal.value;
+		document.getElementById("otraProvincia").value 		= document.busquedaCensoModalForm.otraProvincia.value;
+		
 		selPais(document.datosGeneralesForm.pais.value);
 
 		if (document.datosGeneralesForm.pais.value != "" && document.datosGeneralesForm.pais.value != idEspana) {
@@ -814,7 +816,7 @@
 		}else{
 			poblacionSeleccionada = document.busquedaCensoModalForm.poblacionValue.value;
 			jQuery("#provinciaText").val(jQuery( "#provincia option:selected" ).text());
-			if(document.busquedaCensoModalForm.otraProvincia.value != "" && document.busquedaCensoModalForm.otraProvincia.value==1){
+			if(document.getElementById("otraProvincia").value != "" && document.getElementById("otraProvincia").value==1){
 				jQuery("#otraProvinciaCheck").attr('checked','checked');
 			}else{
 				jQuery("#otraProvinciaCheck").removeAttr('checked');
@@ -1234,7 +1236,6 @@
 			<html:hidden name="datosGeneralesForm" property="cargo" styleId="cargo" value="B" />
 			<html:hidden name="datosGeneralesForm" property="idTipoDireccion" styleId="idTipoDireccion" value=""/>
 			<html:hidden name="datosGeneralesForm" property="preferente" styleId="preferente" />
-			<html:hidden name="datosGeneralesForm" property="otraProvincia" styleId="otraProvincia" />
 			<html:hidden property="actionModal" value=""/>
 			<html:hidden property="tipo" value="<%=sTipo%>"/>
 			
@@ -1469,9 +1470,8 @@
 							<html:text name="datosGeneralesForm" styleId="codigoPostal" property="codigoPostal" maxlength="5" size="5" styleClass="box" onChange="createProvince()"></html:text>
 						</td>
 						<td nowrap="nowrap" id="tdOtraProvincia">
-								<siga:Idioma key="censo.datosDireccion.literal.otraProvincia" />		
-							    <input type="checkbox" id="otraProvinciaCheck" name="otraProvinciaCheck"  onclick="otraProvinciaFuction(this);"> &nbsp;
-											
+							<siga:Idioma key="censo.datosDireccion.literal.otraProvincia" />		
+							    <html:checkbox name="datosGeneralesForm" styleId="otraProvinciaCheck" property="otraProvinciaDatos"  onclick="otraProvinciaFuction(this);"></html:checkbox> &nbsp;					
 						</td>
 						<td class="labelText" id="provinciaSinAsterisco">
 							<siga:Idioma key="censo.datosDireccion.literal.provincia" />&nbsp;
@@ -1913,6 +1913,11 @@
 					}
 					
 					if(document.datosGeneralesForm.idPersona.value!= null && document.datosGeneralesForm.idPersona.value!=""){	
+						if(jQuery("#otraProvinciaCheck").is(':checked') && jQuery("#otraProvinciaCheck").is(':visible')){
+							document.busquedaCensoModalForm.otraProvincia.value = "1";
+						} else{
+							document.busquedaCensoModalForm.otraProvincia.value= "0";
+						}
 						document.busquedaCensoModalForm.idPersona.value    =document.datosGeneralesForm.idPersona.value;					
 						document.busquedaCensoModalForm.modo.value = "insertarNoColegiadoArticulo27";
 						document.busquedaCensoModalForm.target = "submitArea";
@@ -1920,9 +1925,9 @@
 						window.top.returnValue="MODIFICADO";
 					}else{
 						if(jQuery("#otraProvinciaCheck").is(':checked') && jQuery("#otraProvinciaCheck").is(':visible')){
-							document.datosGeneralesForm.otraProvincia.value = "1";
+							document.datosGeneralesForm.otraProvinciaDatos.value = "1";
 						} else{
-							document.datosGeneralesForm.otraProvincia.value= "0";
+							document.datosGeneralesForm.otraProvinciaDatos.value= "0";
 						}
 		
 						document.datosGeneralesForm.preferente.value = preferencia;

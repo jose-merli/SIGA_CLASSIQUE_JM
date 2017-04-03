@@ -409,8 +409,14 @@
 		   		document.getElementById("poblacionExt").value="";
 				//Mostramos la provincia
 				jQuery("#provinciaSinAsterisco").show();
-				jQuery("#provinciaText").show();
 				jQuery("#tdOtraProvincia").show();
+				if(jQuery("#otraProvinciaCheck").is(':checked') && jQuery("#otraProvinciaCheck").is(':visible')){
+					jQuery("#provinciaText").hide();
+					
+				}else{
+					jQuery("#otraProvinciaCheck").removeAttr('checked');
+					jQuery("#provinciaEspanola").hide();
+				}
 				//Para el caso de que venga null, sino se pone mostrará por pantalla en el campo codigo postal undefined
 				if((paisGlobal != "") && (paisGlobal !=idEspana))
 						jQuery("#codigoPostal").val("");				
