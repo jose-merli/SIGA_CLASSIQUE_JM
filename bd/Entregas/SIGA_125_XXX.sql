@@ -811,6 +811,5 @@ Insert Into gen_parametros  (modulo, parametro, valor, fechamodificacion, usumod
 Values  ('FAC', 'CONTROL_EMISION_FACTURAS_SII', '1', Sysdate, 0, 2000, 'fac.control_emision_facturas_sii.ayuda');
 
 
-
-
+-- Ejecutado en Integracion por AAG el 03/04 a las 18:30
 
