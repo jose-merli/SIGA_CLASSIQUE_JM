@@ -176,6 +176,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	public static final String comunicacionesOrdenDomicializacion = "OSEPA";
 	public static final String comunicacionesAnexoOrdenDomiciliacion = "ASEPA";
 	public static final String comunicacionesSancionesLetrado = "SANC";
+	public static final String comunicacionesAcreditacionDeOficio = "CADO";
 
 	public static final int tipoPlantillaWord = 1;
 	public static final int tipoPlantillaFo = 2;
@@ -306,6 +307,86 @@ public class EnvioInformesGenericos extends MasterReport {
 				htDatosInforme.put("row", vDatosInformeFinal);
 				htDatosInforme.put("componentes", vInformeCompAux);
 			}
+
+		} else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesAcreditacionDeOficio)) {
+			
+			
+			
+			ScsDesignaAdm scsDesignaAdm = new ScsDesignaAdm(usrBean);
+			CenColegiadoAdm admCenColegiado = new CenColegiadoAdm(usrBean);
+			CenPersonaAdm persAdm = new CenPersonaAdm(this.getUsuario());
+			HelperInformesAdm helperInformes = new HelperInformesAdm();
+			
+			Hashtable total = new Hashtable();
+			String idInstitucionOficio=(String) datosInforme.get("idInstitucion");
+			String idTurno=(String) datosInforme.get("idTurno");
+			String anio=(String) datosInforme.get("anio");
+			String numero=(String) datosInforme.get("numero");
+			Vector datosconsultaGeneral = scsDesignaAdm.getDesignaCartaAcreditacionOficio(idInstitucionOficio, idTurno, anio, numero);
+			
+			
+			
+			if (datosconsultaGeneral.size() > 0) {
+				Hashtable registroGeneral = (Hashtable) datosconsultaGeneral.get(0);
+				//Parseamos los ejg
+				String expedientes= (String)registroGeneral.get("DESIGNA_LISTA_EXPEDIENTES");
+				if(expedientes != null && !"".equalsIgnoreCase(expedientes)){
+					if (expedientes != null && expedientes.indexOf("##") > -1) {
+						String[] ejgs = expedientes.split(",");
+						String salida = "";
+						for (String ejg:ejgs) {
+							String[] ejgDoc = ejg.split("##");				
+							salida+=", " + ejgDoc[0].trim();				
+						}
+						expedientes=salida;
+						if (expedientes.length() > 2){
+							expedientes = expedientes.substring(1);
+						}
+						registroGeneral.put("DESIGNA_LISTA_EXPEDIENTES", expedientes);
+					}
+				}
+				total.putAll(registroGeneral);
+				
+				String idPersona  = (String)registroGeneral.get("DESIGNA_LETRADO");
+				String nombre_dest = persAdm.obtenerNombreApellidos(idPersona);
+				
+				Vector designaLetrado = scsDesignaAdm.getDireccionLetradoSalidaOficio(idPersona, idInstitucion);
+				Hashtable registro2=  (Hashtable)designaLetrado.get(0);
+				registro2.put("PROVINCIA_DESPACHO_LETRADO", helperInformes.getNombreProvinciaSalida((String)registro2.get("IDPROVINCIA_DESPACHO_LETRADO"),"PROVINCIA_DESPACHO_LETRADO"));
+				total.putAll(registro2);
+				
+				Vector designaLetradoGuardia = scsDesignaAdm.getDireccionPersonalLetradoSalidaOficio(idPersona, idInstitucion);
+				Hashtable registro3=  (Hashtable)designaLetradoGuardia.get(0);
+				registro2.put("PROVINCIA_GUARDIA_LETRADO", helperInformes.getNombreProvinciaSalida((String)registro2.get("IDPROVINCIA_GUARDIA_LETRADO"),"PROVINCIA_GUARDIA_LETRADO"));
+				total.putAll(registro3);
+				
+				Hashtable letrado =  obtenerLetrado(registro2, registro3);
+				letrado.put("NOMBRE_LETRADO", nombre_dest);
+				
+				// Obtenemos el numero de colegiado
+				Hashtable<String,Object> hCenColegiado = admCenColegiado.obtenerDatosColegiado(idInstitucion, idPersona, usrBean.getLanguage());
+				String nColegiado = "";
+				if (hCenColegiado!=null && hCenColegiado.size()>0) {
+					nColegiado =  UtilidadesHash.getString(hCenColegiado, "NCOLEGIADO_LETRADO");
+					letrado.put("NCOLEGIADO_LETRADO", nColegiado);
+				}			    
+				total.putAll(letrado);
+				//Destinatario
+				Hashtable destinatario = obtenerDestinatario(registro2, registro3);
+				destinatario.put("NOMBRE_DEST", nombre_dest);
+				registro2.put("PROVINCIA_DEST", helperInformes.getNombreProvinciaSalida((String)registro2.get("ID_PROVINCIA_DEST"),"PROVINCIA_DEST"));
+				total.putAll(destinatario);
+				
+				
+				Vector regionDefendido = scsDesignaAdm.getVectorDefendidosDesigna(idInstitucion,numero,idTurno, anio,"","", longitudNumEjg);
+				htDatosInforme.put("row", total);
+				if (regionDefendido != null)
+					htDatosInforme.put("defendido", regionDefendido); //region del defendido
+				
+			
+			}
+			
+			 
 
 		} else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesPagoColegiados)) {
 			InformeColegiadosPagos infColegiado = new InformeColegiadosPagos();
@@ -1133,10 +1214,16 @@ public class EnvioInformesGenericos extends MasterReport {
 		if (!tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesDesigna) && !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesExpedientes) 
 				&& !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesListadoGuardias) && !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesEjg) 
 				&& !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesResolucionEjg) && !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesCAJG) 
-				&& !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesCenso)) {
+				&& !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesCenso) && !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesAcreditacionDeOficio)) {
 			htDatosInformeFinal = getDatosInformeFinal(datosInforme, usrBean);
 		
 		} else if (tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesCenso)) {
+			HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
+			helperInformesAdm.setIdiomaInforme(idInstitucion, idPersona, AdmInformeBean.TIPODESTINATARIO_CENPERSONA, datosInforme, usrBean);
+			idioma = (String) datosInforme.get("idioma");
+			idiomaExt = (String) datosInforme.get("idiomaExt");
+			htDatosInformeFinal = getDatosInformeFinal(datosInforme, usrBean);
+		}else if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesAcreditacionDeOficio)){
 			HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
 			helperInformesAdm.setIdiomaInforme(idInstitucion, idPersona, AdmInformeBean.TIPODESTINATARIO_CENPERSONA, datosInforme, usrBean);
 			idioma = (String) datosInforme.get("idioma");
@@ -8730,7 +8817,96 @@ public class EnvioInformesGenericos extends MasterReport {
 		}
 
 	}
+	public Hashtable obtenerLetrado(Hashtable despacho, Hashtable Guardia){
+		
+		Hashtable letrado = new Hashtable<String, Object>();
+	
+		if (despacho.get("DOMICILIO_DESPACHO_LETRADO")!=null) {
+			letrado.put("DOMICILIO_LETRADO", despacho.get("DOMICILIO_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("CP_DESPACHO_LETRADO")!=null) {
+			letrado.put("CP_LETRADO", despacho.get("CP_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("IDPOBLACION_DESPACHO_LETRADO")!=null) {
+			letrado.put("ID_POBLACION_LETRADO", despacho.get("IDPOBLACION_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("POBLACION_DESPACHO_LETRADO")!=null) {
+			letrado.put("POBLACION_LETRADO", despacho.get("POBLACION_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("IDPROVINCIA_DESPACHO_LETRADO")!=null) {
+			letrado.put("ID_PROVINCIA_LETRADO", despacho.get("IDPROVINCIA_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("PROVINCIA_DESPACHO_LETRADO")!=null) {
+			letrado.put("PROVINCIA_LETRADO", despacho.get("PROVINCIA_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("TELEFONO1_DESPACHO_LETRADO")!=null) {
+			letrado.put("TELEFONODESPACHO_LET", despacho.get("TELEFONO1_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("FAX1_DESPACHO_LETRADO")!=null) {
+			letrado.put("FAX_LETRADO", despacho.get("FAX1_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("EMAIL_DESPACHO_LETRADO")!=null) {
+			letrado.put("EMAIL_LETRADO", despacho.get("EMAIL_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("MOVIL_DESPACHO_LETRADO")!=null) {
+			letrado.put("MOVILDESPACHO_LET", despacho.get("MOVIL_DESPACHO_LETRADO"));
+		}
+		if (Guardia.get("TELEFONO1_GUARDIA_LETRADO")!=null) {
+			letrado.put("TELEFONO1_LETRADO", Guardia.get("TELEFONO1_GUARDIA_LETRADO"));
+		}
+		if (Guardia.get("TELEFONO2_GUARDIA_LETRADO")!=null) {
+			letrado.put("TELEFONO2_LETRADO", Guardia.get("TELEFONO2_GUARDIA_LETRADO"));
+		}
+		if (Guardia.get("MOVIL_GUARDIA_LETRADO")!=null) {
+			letrado.put("MOVIL_LETRADO", Guardia.get("MOVIL_GUARDIA_LETRADO"));
+		}
+		return letrado;
 
+	}
+public Hashtable obtenerDestinatario(Hashtable despacho, Hashtable Guardia){
+		
+		Hashtable destinatario = new Hashtable<String, Object>();
+	
+		if (despacho.get("DOMICILIO_DESPACHO_LETRADO")!=null) {
+			destinatario.put("DOMICILIO_DEST", despacho.get("DOMICILIO_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("CP_DESPACHO_LETRADO")!=null) {
+			destinatario.put("CP_DEST", despacho.get("CP_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("IDPOBLACION_DESPACHO_LETRADO")!=null) {
+			destinatario.put("ID_POBLACION_DEST", despacho.get("IDPOBLACION_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("POBLACION_DESPACHO_LETRADO")!=null) {
+			destinatario.put("POBLACION_DEST", despacho.get("POBLACION_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("IDPROVINCIA_DESPACHO_LETRADO")!=null) {
+			destinatario.put("ID_PROVINCIA_DEST", despacho.get("IDPROVINCIA_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("PROVINCIA_DESPACHO_LETRADO")!=null) {
+			destinatario.put("PROVINCIA_DEST", despacho.get("PROVINCIA_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("TELEFONO1_DESPACHO_LETRADO")!=null) {
+			destinatario.put("TELEFONO_DEST", despacho.get("TELEFONO1_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("FAX1_DESPACHO_LETRADO")!=null) {
+			destinatario.put("FAX_DEST", despacho.get("FAX1_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("EMAIL_DESPACHO_LETRADO")!=null) {
+			destinatario.put("EMAIL_DEST", despacho.get("EMAIL_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("MOVIL_DESPACHO_LETRADO")!=null) {
+			destinatario.put("MOVIL_DEST", despacho.get("MOVIL_DESPACHO_LETRADO"));
+		}
+		if (Guardia.get("TELEFONO1_GUARDIA_LETRADO")!=null) {
+			destinatario.put("TELEFONO1_DEST", Guardia.get("TELEFONO1_GUARDIA_LETRADO"));
+		}
+		if (Guardia.get("TELEFONO2_GUARDIA_LETRADO")!=null) {
+			destinatario.put("TELEFONO2_DEST", Guardia.get("TELEFONO2_GUARDIA_LETRADO"));
+		}
+		
+		return destinatario;
+
+	}
 }
 
 class ComunicacionMoroso {

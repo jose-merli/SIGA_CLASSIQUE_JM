@@ -32,6 +32,7 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.administracion.SIGAConstants;
 import com.siga.beans.AdmInformeAdm;
+import com.siga.beans.AdmInformeBean;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
@@ -718,6 +719,23 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		request.setAttribute("EDITAR_DESIGNA_LETRADOS",editarDesignaLetrados);
 		AdmInformeAdm admInformeAdm = new AdmInformeAdm(this.getUserBean(request));
 		Vector informeBeans=admInformeAdm.obtenerInformesTipo(usrBean.getLocation(),EnvioInformesGenericos.comunicacionesResolucionEjg,null, null);
+		
+		//Comprobamos si el informe comunicacionesAcreditacionDeOficio está configurado para la institución y si es visible.
+		Vector informeBeansAcreditacionOficio=admInformeAdm.obtenerInformesTipo(usrBean.getLocation(),EnvioInformesGenericos.comunicacionesAcreditacionDeOficio,null, null);
+		boolean isActivarCartaAcreditacionOficio = Boolean.FALSE;
+		if(informeBeansAcreditacionOficio != null && informeBeansAcreditacionOficio.size() >0 ){
+			AdmInformeBean datoInformeAcreditacionOficio = (AdmInformeBean)informeBeansAcreditacionOficio.get(0);
+			//Si existe para la institución comprobamos que sea visible
+			if(datoInformeAcreditacionOficio.getVisible() != null && datoInformeAcreditacionOficio.getVisible().equalsIgnoreCase("S")){
+				isActivarCartaAcreditacionOficio = Boolean.TRUE;
+			}else{//No es visible
+			    isActivarCartaAcreditacionOficio = Boolean.FALSE;
+			}
+			
+		}
+		request.setAttribute("comunicacionesAcreditacionDeOficio", isActivarCartaAcreditacionOficio);
+		
+		
 		String informeUnicoResolucion = ClsConstants.DB_TRUE;
 		if(informeBeans!=null && informeBeans.size()>1){
 			informeUnicoResolucion = ClsConstants.DB_FALSE;

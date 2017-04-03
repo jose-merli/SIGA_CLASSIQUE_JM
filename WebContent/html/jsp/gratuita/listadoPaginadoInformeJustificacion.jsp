@@ -759,7 +759,7 @@ function ajusteDivListado(){
 		
 }
 function downloadDocumentoResolucion(docResolucion) {			
-	document.InformeJustificacionMasivaForm.docResolucion.value=docResolucion
+	document.InformeJustificacionMasivaForm.docResolucion.value=docResolucion;
 	document.InformeJustificacionMasivaForm.modo.value="download";
 	document.InformeJustificacionMasivaForm.target="submitArea";		   	
 	document.InformeJustificacionMasivaForm.submit();
@@ -793,12 +793,25 @@ function downloadResolucionCAJG(idInstitucion,anio,idTipo,numero) {
 			   	document.DefinirEnviosForm.submit();
 	   		}*/
 	   	}
-	}
+	}	
+}
+
+function downloadInformeActuacionesDesigna(idInstitucion,anio,numero,idPersona,idTurno) {			
+
+	var datos = "idInstitucion=="+idInstitucion +"##idPersona=="+idPersona+  "##idTurno==" +idTurno+"##anio=="+anio +"##numero==" +numero+"%%%";
+	document.Informe.datosInforme.value=datos;
+	document.Informe.idTipoInforme.value='CADO';
+	document.Informe.destinatarios.value='';
 	
 	
-	
-	
-   	
+	if(document.getElementById("informeUnicoResolucion").value=='1'){
+		document.Informe.submit();
+	}else{
+		var arrayResultado = ventaModalGeneral("Informe","M");
+		if (arrayResultado==undefined||arrayResultado[0]==undefined){
+		   		
+	   	} 
+	}	
 }
 
 function downloadInformesOficio(idInstitucion,anio,idTurno,numero) {			
@@ -1071,8 +1084,9 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		scope="request"></bean:define>
 	<bean:define id="informesOficioLetradoActivo" name="informesOficioLetradoActivo"
 		scope="request"></bean:define>
+	<bean:define id="comunicacionesAcreditacionDeOficio" name="comunicacionesAcreditacionDeOficio"
+		scope="request"></bean:define>
 		
-
 	<bean:define id="designaFormList" name="designaFormList"
 		scope="request"></bean:define>
 	<bean:define id="paginaSeleccionada" name="paginaSeleccionada"
@@ -1995,11 +2009,21 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 													<td>
 														<table>
 															<tr>
+															<td></td>
+																<span style="vertical-align: top"><c:out value="${actuacion.numero}" />
+																	<c:if test="${comunicacionesAcreditacionDeOficio==true}">
+																		 <img id="iconoboton_download1" hspace="0"
+																						src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
+																						alt="Enviar" name="iconoFila" title="Descargar" border="0" 
+																						onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno})" 
+																						onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																	</c:if>
+																</span>
 															<c:choose>
 																<c:when test="${actuacion.documentoJustificacion&&subidaJustificacionesActiva  && actuacion.fechaJustificacion!=null && actuacion.fechaJustificacion!=''}">
 																	
 																	<td style="text-align: left;  font-size: 13px; white-space: nowrap; vertical-align: top">
-																	<span style="vertical-align: top"><c:out value="${actuacion.numero}" /></span>
+																	<span style="vertical-align: top"></span>
 																	<span style='align:right; word-wrap: break-word;display: inline-block; width: 60px'>
 																	<c:if test="${empty actuacion.idFacturacion}">
 																			<img id="iconoboton_nuevaDocuemntacion" hspace="0"
@@ -2019,7 +2043,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		
 																<c:when test="${!actuacion.documentoJustificacion&&subidaJustificacionesActiva && actuacion.fechaJustificacion!=null && actuacion.fechaJustificacion!=''}">
 																	<td style="text-align: left;  font-size: 13px; white-space: nowrap; vertical-align: top">
-																	<span style="vertical-align: top"><c:out value="${actuacion.numero}" /></span>
 																	<c:if test="${empty actuacion.idFacturacion}">
 																			<img id="iconoboton_nuevaDocuemntacion" hspace="0"
 																			src="/SIGA/html/imagenes/bupload.gif" style="cursor:pointer;" 
@@ -2190,10 +2213,18 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 															
 															<table>
 															<tr>
+																<span style="vertical-align: top"><c:out value="${actuacion.numero}" />
+																	<c:if test="${comunicacionesAcreditacionDeOficio==true}">
+																		 <img id="iconoboton_download1" hspace="0"
+																						src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
+																						alt="Enviar" name="iconoFila" title="Descargar" border="0" 
+																						onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno})" 
+																						onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																		</c:if>
+																</span>
 															<c:choose>
 																<c:when test="${actuacion.documentoJustificacion&&subidaJustificacionesActiva && actuacion.fechaJustificacion!=null && actuacion.fechaJustificacion!=''}">
 																<td style="text-align: left;  font-size: 13px; white-space: nowrap; vertical-align: top">
-																	<span style="vertical-align: top"><c:out value="${actuacion.numero}" /></span>
 																	<span style='align:right; word-wrap: break-word;display: inline-block; width: 60px'>
 																	<c:if test="${empty actuacion.idFacturacion}">
 																			<img id="iconoboton_nuevaDocuemntacion" 
@@ -2214,7 +2245,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																</c:when>
 																<c:when test="${!actuacion.documentoJustificacion&&subidaJustificacionesActiva && actuacion.fechaJustificacion!=null && actuacion.fechaJustificacion!=''}">
 																	<td style="text-align: left;  font-size: 13px;">
-																	<c:out value="${actuacion.numero}" /></td>
 																	<c:if test="${empty actuacion.idFacturacion}">
 																		<td>
 																			<img id="iconoboton_nuevaDocuemntacion" 

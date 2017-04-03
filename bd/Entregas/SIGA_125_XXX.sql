@@ -678,3 +678,9 @@ alter table PCAJG_ALC_ACT_ERROR_CAM modify REGISTRO_ERROR_CAM VARCHAR2(1000);
 Modificada vista V_WS_JE_2003_DESIGNA
 
 INSERT INTO CAJG_ERRORESREMESARESOL VALUES(18,2003,18,'La carga de ficheros de error sólo se permite para intercambios de envío o actualización. Los de actuaciones profesionales se carga desde facturación SJCS');
+
+
+ 
+insert into ADM_TIPOINFORME (IDTIPOINFORME, DESCRIPCION, IDTIPOINFORMEPADRE, TIPOFORMATO, FECHAMODIFICACION, USUMODIFICACION, CLASE, DIRECTORIO)
+values ('CADO', 'Carta de Acreditación de Oficio', null, 'W', sysdate, 0, 'G', 'actuaciones_designacion');
+
