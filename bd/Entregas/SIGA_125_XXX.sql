@@ -868,3 +868,7 @@ values
    null,
    'N',
    'S');
+
+-- Ejecutado en Integracion por AAG el 04/04 a las 10:10
+
+   
