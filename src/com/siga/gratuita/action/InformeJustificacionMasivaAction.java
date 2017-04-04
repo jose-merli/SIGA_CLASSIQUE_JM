@@ -724,14 +724,17 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		Vector informeBeansAcreditacionOficio=admInformeAdm.obtenerInformesTipo(usrBean.getLocation(),EnvioInformesGenericos.comunicacionesAcreditacionDeOficio,null, null);
 		boolean isActivarCartaAcreditacionOficio = Boolean.FALSE;
 		if(informeBeansAcreditacionOficio != null && informeBeansAcreditacionOficio.size() >0 ){
-			AdmInformeBean datoInformeAcreditacionOficio = (AdmInformeBean)informeBeansAcreditacionOficio.get(0);
-			//Si existe para la institución comprobamos que sea visible
-			if(datoInformeAcreditacionOficio.getVisible() != null && datoInformeAcreditacionOficio.getVisible().equalsIgnoreCase("S")){
-				isActivarCartaAcreditacionOficio = Boolean.TRUE;
-			}else{//No es visible
-			    isActivarCartaAcreditacionOficio = Boolean.FALSE;
+			for(int i=0; i<informeBeansAcreditacionOficio.size();i++){
+				AdmInformeBean datoInformeAcreditacionOficio = (AdmInformeBean)informeBeansAcreditacionOficio.get(i);
+				if(String.valueOf(datoInformeAcreditacionOficio.getIdInstitucion()).equalsIgnoreCase(usrBean.getLocation())){
+					if(datoInformeAcreditacionOficio.getVisible() != null && datoInformeAcreditacionOficio.getVisible().equalsIgnoreCase("S")){
+						isActivarCartaAcreditacionOficio = Boolean.TRUE;
+					}else{//No es visible
+					    isActivarCartaAcreditacionOficio = Boolean.FALSE;
+					}
+					
+				}
 			}
-			
 		}
 		request.setAttribute("comunicacionesAcreditacionDeOficio", isActivarCartaAcreditacionOficio);
 		
