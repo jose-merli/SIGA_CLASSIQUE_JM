@@ -2054,8 +2054,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																</c:when>
 																<c:otherwise>
 																<td style="text-align: left;  font-size: 13px; white-space: nowrap; vertical-align: top">
-																	
-																	<span style="vertical-align: top"><c:out value="${actuacion.numero}" /></span>
 																	<span style='align:right; word-wrap: break-word;display: inline-block; width: 60px'>
 																		<div   id="div_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}" >&nbsp;</div>
 																	</span>
@@ -2258,7 +2256,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																<c:otherwise>
 																
 																<td style="text-align: left;  font-size: 13px; white-space: nowrap; vertical-align: top">
-																	<span style="vertical-align: top"><c:out value="${actuacion.numero}" /></span>
 																	<span style='align:right; word-wrap: break-word;display: inline-block; width: 60px'>
 																		<div   id="div_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}" >&nbsp;</div>
 																	</span>
