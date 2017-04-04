@@ -813,3 +813,6 @@ Values  ('FAC', 'CONTROL_EMISION_FACTURAS_SII', '1', Sysdate, 0, 2000, 'fac.cont
 
 -- Ejecutado en Integracion por AAG el 03/04 a las 18:30
 
+--f_comunicaciones_ejg_2003_CAB" 
+ --PROC_RESPUESTAEJG_2003"
+
