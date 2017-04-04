@@ -322,7 +322,8 @@ public class EnvioInformesGenericos extends MasterReport {
 			String idTurno=(String) datosInforme.get("idTurno");
 			String anio=(String) datosInforme.get("anio");
 			String numero=(String) datosInforme.get("numero");
-			Vector datosconsultaGeneral = scsDesignaAdm.getDesignaCartaAcreditacionOficio(idInstitucionOficio, idTurno, anio, numero);
+			String numeroAsunto=(String) datosInforme.get("numeroAsunto");
+			Vector datosconsultaGeneral = scsDesignaAdm.getDesignaCartaAcreditacionOficio(idInstitucionOficio, idTurno, anio, numero,numeroAsunto);
 			
 			
 			

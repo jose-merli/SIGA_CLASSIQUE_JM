@@ -2743,7 +2743,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 	} //getDesignaSalidaOficio()
 	
 	
-	public Vector getDesignaCartaAcreditacionOficio(String idInstitucion, String idTurno, String anio, String numero) throws ClsExceptions {
+	public Vector getDesignaCartaAcreditacionOficio(String idInstitucion, String idTurno, String anio, String numero,String numeroAsunto) throws ClsExceptions {
 		try {
 			Hashtable h = new Hashtable();
 
@@ -2751,6 +2751,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			h.put(new Integer(2), idTurno);
 			h.put(new Integer(3), anio);
 			h.put(new Integer(4), numero);
+			h.put(new Integer(5), numeroAsunto);
 			String sql = "select TO_CHAR(ACTUACION.FECHA,'dd/mm/yyyy') AS ACTUACION_FECHA_ACTUACION, "+
 			        " ACTUACION.NUMEROASUNTO AS ACTUACION_NUMEROASUNTO, "+
 			        " ACTUACION.NUMERO AS ACTUACION_NUMERO, "+
@@ -2879,7 +2880,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			"  ACTUACION.idInstitucion =:1 "+
 			"  and ACTUACION.idturno =:2 "+
 			"  and ACTUACION.anio =:3 "+
-			"  and ACTUACION.numero =:4";
+			"  and ACTUACION.numero =:4"+
+			"  and ACTUACION.numeroAsunto=:5";
 
 			HelperInformesAdm helperInformes = new HelperInformesAdm();
 			return helperInformes.ejecutaConsultaBind(sql, h);
