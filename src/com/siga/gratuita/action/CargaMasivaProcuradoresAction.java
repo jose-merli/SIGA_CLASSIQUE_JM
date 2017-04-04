@@ -270,7 +270,7 @@ public class CargaMasivaProcuradoresAction extends MasterAction {
 		datosHashtable.put(CargaMasivaDatosProcuradoresVo.C_CODIGODESIGNAABOGADO,"Requerido");
 		datosHashtable.put(CargaMasivaDatosProcuradoresVo.C_NUMEJG,"Opcional");
 		datosHashtable.put(CargaMasivaDatosProcuradoresVo.C_NUMCOLPROCURADOR,"Requerido");
-		datosHashtable.put(CargaMasivaDatosProcuradoresVo.C_FECHADESIGPROCURADOR,"Opcional");
+		datosHashtable.put(CargaMasivaDatosProcuradoresVo.C_FECHADESIGPROCURADOR,"Requerido");
 		datosHashtable.put(CargaMasivaDatosProcuradoresVo.C_NUMDESIGNAPROCURADOR,"Opcional");
 		datosHashtable.put(CargaMasivaDatosProcuradoresVo.C_OBSERVACIONES,"Opcional");
 		
