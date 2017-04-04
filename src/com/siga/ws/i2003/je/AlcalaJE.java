@@ -315,6 +315,7 @@ public class AlcalaJE extends InformeXML implements PCAJGConstantes {
 					" FROM PCAJG_ALC_ACT_ERROR_CAM E" +
 					" WHERE E.IDINSTITUCION = V." + IDINSTITUCION +
 					" AND E.IDFACTURACION = V." + IDFACTURACION +
+					" AND E.BORRADO = 0" +
 					" AND E.CODIGO_ERROR = '" + getTipoFicheroCAM() + "')";
 			}
 		}
