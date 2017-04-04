@@ -53,6 +53,7 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DesignaForm;
 import com.siga.gratuita.form.InformeJustificacionMasivaForm;
 import com.siga.gratuita.pcajg.resoluciones.ResolucionesFicheroAbstract;
+import com.siga.ws.CajgConfiguracion;
 
 
 public class InformeJustificacionMasivaAction extends MasterAction {
@@ -259,6 +260,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		StringBuffer msgAviso = new StringBuffer();
 		UsrBean user = (UsrBean) request.getSession().getAttribute(
 				"USRBEAN");
+		int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(user.getLocation()));
 		String obsJustificacion = UtilidadesString.getMensajeIdioma(user, "gratuita.informeJustificacionMasiva.observaciones.justificacion");
 		String obsActuacion = UtilidadesString.getMensajeIdioma(user, "gratuita.informeJustificacionMasiva.observaciones.actuacion");
 	    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
@@ -477,6 +479,19 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, scsDesignaBean.getAnioProcedimiento()!=null?scsDesignaBean.getAnioProcedimiento().toString():"");
 						
 						UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_IDPRETENSION, scsDesignaBean.getIdPretension()!=null?scsDesignaBean.getIdPretension().toString():"");
+						
+						
+						if(valorPcajgActivo ==8){
+							// Para Valencia:
+							//    -Talón: Número asunto
+							//	  -Talonario: Año + código de la designa
+							String talon=UtilidadesHash.getString(hashActuacion, ScsActuacionDesignaBean.C_NUMEROASUNTO);
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_TALON, talon);
+							String talonario=UtilidadesHash.getString(hashActuacion, ScsActuacionDesignaBean.C_ANIO) + 
+									scsDesignaBean.getCodigo();
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_TALONARIO, talonario);
+							
+						}
 						
 							List<String> ocultarClaveList = getListCamposOcultarHistorico();
 							hashActuacion.put("fks", fksActuacionMap);
