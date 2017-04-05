@@ -870,5 +870,12 @@ values
    'S');
 
 -- Ejecutado en Integracion por AAG el 04/04 a las 10:10
-
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('envios.plantillas.literal.asuntoAcreditacionOficio', 'Acreditación de Oficio', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('envios.plantillas.literal.asuntoAcreditacionOficio', 'Acreditación de Oficio#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('envios.plantillas.literal.asuntoAcreditacionOficio', 'Acreditación de Oficio#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('envios.plantillas.literal.asuntoAcreditacionOficio', 'Acreditación de Oficio#GL', '0', 4, Sysdate, 0, '19');
    

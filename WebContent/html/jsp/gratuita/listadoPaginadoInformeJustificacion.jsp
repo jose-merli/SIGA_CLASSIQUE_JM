@@ -796,15 +796,18 @@ function downloadResolucionCAJG(idInstitucion,anio,idTipo,numero) {
 	}	
 }
 
-function downloadInformeActuacionesDesigna(idInstitucion,anio,numero,idPersona,idTurno,numeroAsunto) {			
-
-	var datos = "idInstitucion=="+idInstitucion +"##idPersona=="+idPersona+  "##idTurno==" +idTurno+"##anio=="+anio +"##numero==" +numero+  "##numeroAsunto==" +numeroAsunto+"%%%";
+function downloadInformeActuacionesDesigna(idInstitucion,anio,numero,idPersona,idTurno,numeroAsunto,codigoDesigna) {			
+	var datos = "idInstitucion=="+idInstitucion +"##idPersona=="+idPersona+  "##idTurno==" +idTurno+"##anio=="+anio +"##codigoDesigna=="+codigoDesigna+"##numero==" +numero+  "##numeroAsunto==" +numeroAsunto+"%%%";
 	document.Informe.datosInforme.value=datos;
 	document.Informe.idTipoInforme.value='CADO';
-	document.Informe.destinatarios.value='';
 	
-	
-	if(document.getElementById("informeUnicoResolucion").value=='1'){
+	//Si hay envío
+	if(true){
+		document.Informe.destinatarios.value='C';
+		document.Informe.enviar.value='0';
+	}
+	//Esto permite la descarga de varios informes
+	if(document.getElementById("informeUnicoCartaAcreditacion").value=='1'){
 		document.Informe.submit();
 	}else{
 		var arrayResultado = ventaModalGeneral("Informe","M");
@@ -813,7 +816,6 @@ function downloadInformeActuacionesDesigna(idInstitucion,anio,numero,idPersona,i
 	   	} 
 	}	
 }
-
 function downloadInformesOficio(idInstitucion,anio,idTurno,numero) {			
 	
 
@@ -948,10 +950,14 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 <bean:define id="informeUnico" name="informeUnico" scope="request"></bean:define>
 <bean:define id="informeUnicoResolucion" name="informeUnicoResolucion" scope="request"></bean:define>
 <bean:define id="informeUnicoOficio" name="informeUnicoOficio" scope="request"></bean:define>
+<bean:define id="informeUnicoCartaAcreditacion" name="informeUnicoCartaAcreditacion" scope="request"></bean:define>
+
 
 <input type="hidden" id= "informeUnico" value="${informeUnico}">
 <input type="hidden" id= "informeUnicoResolucion" value="${informeUnicoResolucion}">
 <input type="hidden" id= "informeUnicoOficio" value="${informeUnicoOficio}">
+<input type="hidden" id= "informeUnicoCartaAcreditacion" value="${informeUnicoCartaAcreditacion}">
+
 
 <!-- FIN: TITULO OPCIONAL DE LA TABLA -->
 <!-- INICIO: CAMPOS -->
@@ -1155,9 +1161,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 						<tr id="fila_${status.count}" class="filaTablaImpar">
 					</c:otherwise>
 				</c:choose>
-				
-				
-				
 				
 					<td rowspan="${designa.rowSpan}" class="trAmpliado">
 						<c:choose>            
@@ -2015,7 +2018,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																		 <img id="iconoboton_download1" hspace="0"
 																						src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
 																						alt="Enviar" name="iconoFila" title="Descargar" border="0" 
-																						onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero})" 
+																						onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero},'${designa.codigoDesigna}')" 
 																						onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
 																	</c:if>
 																</span>
@@ -2216,7 +2219,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																		 <img id="iconoboton_download1" hspace="0"
 																						src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
 																						alt="Enviar" name="iconoFila" title="Descargar" border="0" 
-																						onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero})" 
+																						onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero},'${designa.codigoDesigna}')" 
 																						onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
 																		</c:if>
 																</span>

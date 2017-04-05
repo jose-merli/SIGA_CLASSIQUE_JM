@@ -1975,6 +1975,7 @@ public class InformesGenericosAction extends MasterAction {
 					miForm.setIdInforme(idInformes);
 					return download(mapping, formulario, request, response);
 				}
+				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "envios.plantillas.literal.asuntoAcreditacionOficio");
 			}else if(idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesSancionesLetrado)){
 				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
 					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);

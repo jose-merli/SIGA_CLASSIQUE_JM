@@ -2123,6 +2123,20 @@ public class EnvioInformesGenericos extends MasterReport {
 					String hoy = UtilidadesString.formatoFecha(new Date(), "yyyyMMddhhmmssSSS");
 					identificador.append(hoy);
 					fileDocumento = getInformeGenerico(beanInforme, htDatosInformeFinal, idiomaExt, identificador.toString(), usrBean, tipoPlantillaWord);
+					
+				} else if (tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesAcreditacionDeOficio)) {
+					String codigoDesigna = (String) datosInforme.get("codigoDesigna");
+					String numeroAsunto = (String) datosInforme.get("numeroAsunto");
+					identificador = new StringBuffer();
+					codigoDesigna = codigoDesigna.replaceAll("/", "");
+					identificador.append(codigoDesigna);
+					identificador.append("_");
+					identificador.append(numeroAsunto);
+					identificador.append("_");
+					String hoy = UtilidadesString.formatoFecha(new Date(), "yyyyMMddhhmmssSSS");
+					identificador.append(hoy);
+					
+					fileDocumento = getInformeGenerico(beanInforme, htDatosInformeFinal, idiomaExt, identificador.toString(), usrBean, tipoPlantillaWord);
 
 				} else {
 					if (tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesMorosos)) {

@@ -750,6 +750,12 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 					
 				}
 			}
+			//Comprobamos si tiene uno o varios informes
+			String informeUnicoCartaAcreditacion = ClsConstants.DB_TRUE;
+			if(informeBeansAcreditacionOficio.size() >1){
+				 informeUnicoCartaAcreditacion = ClsConstants.DB_FALSE;
+			}
+			request.setAttribute("informeUnicoCartaAcreditacion", informeUnicoCartaAcreditacion);
 		}
 		request.setAttribute("comunicacionesAcreditacionDeOficio", isActivarCartaAcreditacionOficio);
 		
