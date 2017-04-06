@@ -804,15 +804,29 @@ function downloadInformeActuacionesDesigna(idInstitucion,anio,numero,idPersona,i
 	//Si hay envío
 	if(true){
 		document.Informe.destinatarios.value='C';
-		document.Informe.enviar.value='0';
+		document.Informe.enviar.value='1';
 	}
 	//Esto permite la descarga de varios informes
 	if(document.getElementById("informeUnicoCartaAcreditacion").value=='1'){
+		
 		document.Informe.submit();
 	}else{
+		//InformesGenericosForm
 		var arrayResultado = ventaModalGeneral("Informe","M");
+		
 		if (arrayResultado==undefined||arrayResultado[0]==undefined){
-		   		
+		
+	   	}else{
+	   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+	   		if(confirmar){
+	   			var idEnvio = arrayResultado[0];
+			    var idTipoEnvio = arrayResultado[1];
+			    var nombreEnvio = arrayResultado[2];				    
+			    
+			   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+			   	document.DefinirEnviosForm.modo.value='editar';
+			   	document.DefinirEnviosForm.submit();
+	   		}
 	   	} 
 	}	
 }
