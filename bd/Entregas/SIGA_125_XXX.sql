@@ -878,4 +878,7 @@ Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodif
 Values  ('envios.plantillas.literal.asuntoAcreditacionOficio', 'Acreditación de Oficio#EU', '0', 3, Sysdate, 0, '19');
 Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
 Values  ('envios.plantillas.literal.asuntoAcreditacionOficio', 'Acreditación de Oficio#GL', '0', 4, Sysdate, 0, '19');
-   
+
+
+Pkg_Siga_Censo
+

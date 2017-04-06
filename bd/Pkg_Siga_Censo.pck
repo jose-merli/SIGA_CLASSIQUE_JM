@@ -390,7 +390,11 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
                   And Tipcon.Idtipodireccion = c_Tipo_Despachooojj
                   And Dircon.Idinstitucion = c_Idcgae
                   And Dircon.Idpersona = Col.Idpersona
-                  And Dircon.Fechabaja Is Null));
+                  And Dircon.Fechabaja Is Null)
+          And Not Exists (Select 1
+                 From Cen_Colacambioletrado Col2
+                Where Col.Idinstitucion = Col2.Idinstitucion
+                  And Col.Idpersona = Col2.Idpersona));
 
     p_Datoserror := 'Actualizardatosletrado: Correcto';
     p_Codretorno := To_Char(0);
