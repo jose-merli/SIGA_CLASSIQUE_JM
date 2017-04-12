@@ -316,6 +316,7 @@ public class EnvioInformesGenericos extends MasterReport {
 			CenColegiadoAdm admCenColegiado = new CenColegiadoAdm(usrBean);
 			CenPersonaAdm persAdm = new CenPersonaAdm(this.getUsuario());
 			HelperInformesAdm helperInformes = new HelperInformesAdm();
+			ScsEJGAdm scsEJGAdm = new ScsEJGAdm(usrBean);
 			
 			Hashtable total = new Hashtable();
 			String idInstitucionOficio=(String) datosInforme.get("idInstitucion");
@@ -335,9 +336,25 @@ public class EnvioInformesGenericos extends MasterReport {
 					if (expedientes != null && expedientes.indexOf("##") > -1) {
 						String[] ejgs = expedientes.split(",");
 						String salida = "";
+						Boolean favorable;
+						String idTipoRatificacion="";
+						String fechaResolucionCAJG ="";
 						for (String ejg:ejgs) {
-							String[] ejgDoc = ejg.split("##");				
-							salida+=", " + ejgDoc[0].trim();				
+							favorable = Boolean.FALSE;
+							String[] ejgDoc = ejg.split("##");	
+							//Obtenemos los datos del ejg para comprobar si tiene resolución favorable y sólo sacar aquellos que así lo son.
+							 idTipoRatificacion = ejgDoc[6];
+							 fechaResolucionCAJG = ejgDoc[7];
+							if(fechaResolucionCAJG != null && !"".equalsIgnoreCase(fechaResolucionCAJG)){
+								//Comprobamos el tipo de resolución
+								if(idTipoRatificacion!=null && !"".equalsIgnoreCase(idTipoRatificacion) 
+										&& (idTipoRatificacion.equalsIgnoreCase("1") || idTipoRatificacion.equalsIgnoreCase("2")|| idTipoRatificacion.equalsIgnoreCase("8")
+												|| idTipoRatificacion.equalsIgnoreCase("10")|| idTipoRatificacion.equalsIgnoreCase("9")|| idTipoRatificacion.equalsIgnoreCase("11"))){
+									favorable=Boolean.TRUE;
+								}
+							}
+							if(favorable)
+								salida+=", " + ejgDoc[0].trim();				
 						}
 						expedientes=salida;
 						if (expedientes.length() > 2){
@@ -383,6 +400,40 @@ public class EnvioInformesGenericos extends MasterReport {
 				htDatosInforme.put("row", total);
 				if (regionDefendido != null)
 					htDatosInforme.put("defendido", regionDefendido); //region del defendido
+				
+				
+				Vector listaInteresadosFavorablesEJG = scsEJGAdm.getDatosEjgResolucionFavorable(idInstitucion, anio, numero, idTurno);
+				Hashtable listadoEjgFavorableHashtable = new Hashtable();
+				//Si existen interesados los ponemos en forma de lista
+				if(listaInteresadosFavorablesEJG != null && listaInteresadosFavorablesEJG.size()>0){
+					String listaInteresadosFavorablesEJGString="";
+					//Si sólo hay uno lo mostramos en la lista.
+					if(listaInteresadosFavorablesEJG.size() == 1){
+						Hashtable nombreInteresado=  (Hashtable)listaInteresadosFavorablesEJG.get(0);
+						listaInteresadosFavorablesEJGString = nombreInteresado.get("NOMBRE")+ " "+nombreInteresado.get("APELLIDO1")+" "+nombreInteresado.get("APELLIDO2");
+						
+						
+					}else{
+						//Si hay más de uno construimos la lista
+						int tam = listaInteresadosFavorablesEJG.size();
+						
+						for(int i=0;i<listaInteresadosFavorablesEJG.size();i++){
+							Hashtable nombreInteresado=  (Hashtable)listaInteresadosFavorablesEJG.get(i);
+							if((tam-1)-i ==0){
+								//Es el úlimo elemento no se pone coma
+								listaInteresadosFavorablesEJGString += nombreInteresado.get("NOMBRE")+ " "+nombreInteresado.get("APELLIDO1")+" "+nombreInteresado.get("APELLIDO2");
+							}else{
+								//No es el último elemento se pone coma
+								listaInteresadosFavorablesEJGString += nombreInteresado.get("NOMBRE")+ " "+nombreInteresado.get("APELLIDO1")+" "+nombreInteresado.get("APELLIDO2")+", ";
+							}
+						}
+					}
+					listadoEjgFavorableHashtable.put("DESIGNA_LISTA_INTERESADOS", listaInteresadosFavorablesEJGString);
+					total.putAll(listadoEjgFavorableHashtable);
+				}else{
+					listadoEjgFavorableHashtable.put("DESIGNA_LISTA_INTERESADOS", "");
+					total.putAll(listadoEjgFavorableHashtable);
+				}
 				
 			
 			}

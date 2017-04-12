@@ -808,7 +808,7 @@ function downloadInformeActuacionesDesigna(idInstitucion,anio,numero,idPersona,i
 	}
 	//Esto permite la descarga de varios informes
 	if(document.getElementById("informeUnicoCartaAcreditacion").value=='1'){
-		
+		document.Informe.enviar.value='0';
 		document.Informe.submit();
 	}else{
 		//InformesGenericosForm
@@ -2028,7 +2028,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 															<tr>
 															<td></td>
 																<span style="vertical-align: top"><c:out value="${actuacion.numero}" />
-																	<c:if test="${comunicacionesAcreditacionDeOficio==true}">
+																	<c:if test="${comunicacionesAcreditacionDeOficio==true && actuacion.validada=='0'}">
 																		 <img id="iconoboton_download1" hspace="0"
 																						src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
 																						alt="Enviar" name="iconoFila" title="Descargar" border="0" 
@@ -2229,7 +2229,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 															<table>
 															<tr>
 																<span style="vertical-align: top"><c:out value="${actuacion.numero}" />
-																	<c:if test="${comunicacionesAcreditacionDeOficio==true}">
+																	<c:if test="${comunicacionesAcreditacionDeOficio==true  && actuacion.validada=='0'}">
 																		 <img id="iconoboton_download1" hspace="0"
 																						src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
 																						alt="Enviar" name="iconoFila" title="Descargar" border="0" 

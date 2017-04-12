@@ -2840,7 +2840,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			        " TO_CHAR(SYSDATE, 'dd') AS DIA_ACTUAL, "+
 			        " F_SIGA_FECHAENLETRA(DESIGNA.FECHAENTRADA, 'M', 1) AS MES_ACTUAL, "+
 			        " LOWER(F_SIGA_FECHAENLETRA(DESIGNA.FECHAENTRADA, 'M', 1)) AS MES_ACTUAL_MINUS, "+
-			        " f_siga_getinteresadosdesigna(ACTUACION.IDINSTITUCION,ACTUACION.ANIO, ACTUACION.IDTURNO,ACTUACION.NUMERO,0) AS DESIGNA_LISTA_INTERESADOS, "+
+			       // " f_siga_getinteresadosdesigna(ACTUACION.IDINSTITUCION,ACTUACION.ANIO, ACTUACION.IDTURNO,ACTUACION.NUMERO,0) AS DESIGNA_LISTA_INTERESADOS, "+
 			        " F_SIGA_GETEJG_DESIGNA(ACTUACION.IDINSTITUCION,ACTUACION.IDTURNO,ACTUACION.ANIO,ACTUACION.NUMERO) AS DESIGNA_LISTA_EXPEDIENTES, "+
 			        " (select f_siga_getrecurso(situa.DESCRIPCION, 1) as situacion from scs_ejg ejg,scs_situacion situa,scs_ejgdesigna ejgDesigna "+
 			        " where  ejg.idsituacion = situa.idsituacion and "+

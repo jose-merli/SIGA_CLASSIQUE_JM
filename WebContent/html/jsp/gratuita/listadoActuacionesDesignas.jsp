@@ -21,6 +21,12 @@
 <%@ page import="com.siga.Utilidades.*"%>
 <%@ page import="com.siga.gratuita.form.PestanaDelitoDesignaForm"%>
 <%@ page import = "org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION"%>
+<%@ page import = "com.siga.tlds.FilaExtElement"%>
+<%@ page import = "com.siga.beans.AdmInformeAdm"%>
+<%@ page import = "com.siga.envios.EnvioInformesGenericos"%>
+
+
+
 <!-- JSP -->
 
 <% 
@@ -44,8 +50,34 @@
 	
 	boolean botonNuevo = (Boolean)request.getSession().getAttribute("botonNuevo");
 	
+	ScsDesignaAdm designaAdm = new ScsDesignaAdm(usr);
+	Hashtable designaActual = new Hashtable();
+	UtilidadesHash.set(designaActual,ScsDesignaBean.C_ANIO, 			anio);
+	UtilidadesHash.set(designaActual,ScsDesignaBean.C_NUMERO, 			numero);
+	UtilidadesHash.set(designaActual,ScsDesignaBean.C_IDINSTITUCION,	idInstitucion);
+	UtilidadesHash.set(designaActual,ScsDesignaBean.C_IDTURNO,			idTurno);				
+	UtilidadesHash.set(designaActual,ScsDesignasLetradoBean.C_IDPERSONA, idPersona);
 	
+	Vector resultadoDesigna = designaAdm.selectByPK(designaActual);
+	ScsDesignaBean bean = new ScsDesignaBean();
+	bean = (ScsDesignaBean)resultadoDesigna.get(0); 
+	String codigoDesigna=anio+bean.getCodigo();
 	
+	//Comprobamos si el informe comunicacionesAcreditacionDeOficio está configurado para la institución y si es visible.
+		AdmInformeAdm admInformeAdm = new AdmInformeAdm(usr);	
+		Vector informeBeansAcreditacionOficio=admInformeAdm.obtenerInformesTipo(usr.getLocation(),EnvioInformesGenericos.comunicacionesAcreditacionDeOficio,null, null);
+		boolean isActivarCartaAcreditacionOficio = Boolean.FALSE;
+		//Comprobamos si tiene uno o varios informes
+		boolean informeUnicoCartaAcreditacion = Boolean.TRUE;
+		if(informeBeansAcreditacionOficio != null && informeBeansAcreditacionOficio.size() >0 ){
+			 isActivarCartaAcreditacionOficio = Boolean.TRUE;
+			
+			if(informeBeansAcreditacionOficio.size() >1){
+				 informeUnicoCartaAcreditacion = Boolean.FALSE;
+			}
+			
+		}
+		
 %>	
 											
 <%@page import="java.util.Vector"%>
@@ -75,6 +107,45 @@
 		function refrescarLocal (){
 			parent.buscar();
 		}
+		
+		function comunicar(fila, id) {
+			if (typeof id == 'undefined')
+				id='tablaDatos';
+			preparaDatos(fila,id);
+			var datosDesigna = "idInstitucion=="+<%=idInstitucion%> +"##idPersona=="+jQuery("#ocultoPersona"+fila+"_1").val()+  "##idTurno==" +<%=idTurno%>+"##anio=="+<%=anio%> +"##numero==" +<%=numero%>+
+			"##numeroAsunto==" +jQuery("#oculto"+fila+"_1").val()  +"##codigoDesigna=="+<%=codigoDesigna%>+"%%%";
+			document.Informe.datosInforme.value=datosDesigna;
+			
+			
+		//Si hay envío
+			if(true){
+				document.Informe.destinatarios.value='C';
+				document.Informe.enviar.value='1';
+			}
+			<%if(informeUnicoCartaAcreditacion){%>
+				document.Informe.enviar.value='0';
+				document.Informe.submit();
+			<%}else{%>
+				var arrayResultado = ventaModalGeneral("Informe","M");
+				if (arrayResultado==undefined||arrayResultado[0]==undefined){
+				   		
+			   	} 
+			   	else {
+			   		
+			   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+			   		if(confirmar){
+			   			var idEnvio = arrayResultado[0];
+					    var idTipoEnvio = arrayResultado[1];
+					    var nombreEnvio = arrayResultado[2];				    
+					    
+					   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+					   	document.DefinirEnviosForm.modo.value='editar';
+					   	document.DefinirEnviosForm.submit();
+			   		}
+			   	}
+			<%}%>
+		 }
+		 
 	</script>
 
 </head>
@@ -113,6 +184,24 @@
 			<html:hidden property = "anio" value="<%=anio%>" />	
 			<html:hidden property = "numero" value="<%=numero%>" />
 			<html:hidden property = "nactuacion"  />
+		</html:form>
+		
+		<html:form action="/INF_InformesGenericos" name="Informe" type="com.siga.informes.form.InformesGenericosForm"  method="post"	target="submitArea">
+			<html:hidden property="modo" value = "preSeleccionInformes"/>
+			<html:hidden property="idTipoInforme" value='CADO'/>
+			<html:hidden property = "idInstitucion" value="<%=idInstitucion%>"/>
+			<html:hidden property="enviar"  value="0"/>
+			<html:hidden property="descargar" value="1"/>
+			<html:hidden property="datosInforme"/>
+			<html:hidden property="destinatarios"/>
+			<input type='hidden' name='actionModal'>
+	   </html:form>
+		<!-- Formulario para la edicion del envio -->
+		<html:form action="/ENV_DefinirEnvios.do" method="POST" target="mainWorkArea">
+			<html:hidden property = "modo" value = ""/>
+			<html:hidden property = "tablaDatosDinamicosD" value = ""/>
+			<html:hidden property="idTipoInforme" value="CENSO#OSEPA#ASEPA"/>
+		
 		</html:form>
 			<!-- Campo obligatorio -->
 			<siga:Table 
@@ -182,7 +271,16 @@
 				 }
 				
 			 	%>
-				  	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit" modo="<%=modo%>" >
+			 	<%
+			 	FilaExtElement[] elems = null;
+				 	if(!validada && isActivarCartaAcreditacionOficio){
+				 		
+					 	elems = new FilaExtElement[1];
+						elems[0] = new FilaExtElement("enviar", "comunicar", SIGAConstants.ACCESS_READ);
+				 	}
+			 	%>
+			 
+				  	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit" modo="<%=modo%>" elementos="<%=elems%>" >
 						<td><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("",(String)hash.get("FECHA")))%></td>
 						<td><%=hash.get("NUMEROASUNTO")%></td>
 						<td><%=UtilidadesString.mostrarDatoJSP(nombreProc)%></td>
@@ -206,6 +304,9 @@
 						</td>
 						
 					</siga:FilaConIconos>	
+					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" id="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=hash.get("NUMEROASUNTO")%>">
+				    <input type="hidden" name="ocultoPersona<%=String.valueOf(recordNumber)%>_1" id="ocultoPersona<%=String.valueOf(recordNumber)%>_1" value="<%=hash.get("IDPERSONA")%>">
+				  		   
 				<%recordNumber++;%>
 				<%}%>	 
 		<%}%>

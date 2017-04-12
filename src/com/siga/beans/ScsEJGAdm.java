@@ -153,6 +153,80 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		}
 		return new Hashtable();
 	}
+	
+	
+	public Vector getDatosEjgResolucionFavorable (String idInstitucion, String anio, String numero, String idTurno) 
+	{
+		try {
+			StringBuffer sql = new StringBuffer();
+			StringBuffer sql2 = new StringBuffer();
+			Vector v;
+			
+			sql2.append("	 Select Per.Nombre, Per.Apellido1, Nvl(Per.Apellido2, '') Apellido2 ");
+			sql2.append("  From Scs_Defendidosdesigna Def, Scs_Personajg Per ");
+			sql2.append(" Where Def.Idinstitucion = Per.Idinstitucion ");
+			sql2.append("   And Def.Idpersona = Per.Idpersona ");
+			sql2.append("   And Def.Idinstitucion = "+idInstitucion );
+			sql2.append("   And Def.Idturno = "+idTurno);
+			sql2.append("   And Def.Anio = "+anio);
+			sql2.append("    And Def.Numero = "+numero);
+			sql2.append(" Order By Apellido1, Apellido2, Nombre ");
+			
+			v = this.selectGenerico(sql2.toString());
+			if(v == null || v.size()<1){
+			
+					sql.append(" Select Per.Nombre, Per.Apellido1, Nvl(Per.Apellido2, '') Apellido2 ");
+					sql.append("  From Scs_Ejgdesigna        Ejgdes, ");
+					sql.append("       Scs_Unidadfamiliarejg Uniejg, ");
+					sql.append("       Scs_Personajg         Per, ");
+					sql.append("       Scs_Ejg Ejg ");
+					sql.append("  Where Ejgdes.Idinstitucion = Uniejg.Idinstitucion ");
+					sql.append("   And Ejgdes.Idtipoejg = Uniejg.Idtipoejg ");
+					sql.append("   And Ejgdes.Anioejg = Uniejg.Anio ");
+					sql.append("   And Ejgdes.Numeroejg = Uniejg.Numero ");
+					sql.append("   And Uniejg.Idinstitucion = Per.Idinstitucion ");
+					sql.append("   And Uniejg.Idpersona = Per.Idpersona ");
+					sql.append("   And Ejgdes.Idinstitucion ="+idInstitucion);
+					sql.append("   And Ejgdes.Idturno ="+idTurno);
+					sql.append("   And Ejgdes.Aniodesigna ="+anio);
+					sql.append("   And Ejgdes.Numerodesigna ="+numero);
+					sql.append("   and  Ejgdes.Idinstitucion = Ejg.Idinstitucion ");
+					sql.append("   And Ejgdes.Idtipoejg = Ejg.Idtipoejg ");
+					sql.append("   And Ejgdes.Anioejg = Ejg.Anio ");
+					sql.append("   And Ejgdes.Numeroejg = Ejg.Numero ");
+					sql.append("    and Ejg.Fecharesolucioncajg is not null ");
+					sql.append("   and EJG.Idtiporatificacionejg in(1,2,8,10,9,11) ");
+				    
+					sql.append(" Union ");
+				    
+					sql.append(" Select Per.Nombre, Per.Apellido1, Nvl(Per.Apellido2, '') Apellido2 ");
+					sql.append("  From Scs_Ejgdesigna Ejgdes, Scs_Ejg Ejg, Scs_Personajg Per ");
+					sql.append(" Where Ejgdes.Idinstitucion = Ejg.Idinstitucion ");
+					sql.append("   And Ejgdes.Idtipoejg = Ejg.Idtipoejg ");
+					sql.append("   And Ejgdes.Anioejg = Ejg.Anio ");
+					sql.append("   And Ejgdes.Numeroejg = Ejg.Numero ");
+					sql.append("   And Ejg.Idinstitucion = Per.Idinstitucion ");
+					sql.append("   And Ejg.Idpersonajg = Per.Idpersona ");
+					sql.append("   And Ejgdes.Idinstitucion ="+idInstitucion);
+					sql.append("   And Ejgdes.Idturno ="+idTurno);
+					sql.append("   And Ejgdes.Aniodesigna="+anio);
+					sql.append("   And Ejgdes.Numerodesigna  ="+numero);
+					sql.append("   and Ejg.Fecharesolucioncajg is not null ");
+					sql.append("   and EJG.Idtiporatificacionejg in(1,2,8,10,9,11) ");
+					sql.append(" Order By Apellido1, Apellido2, Nombre ");
+		
+					 v = this.selectGenerico(sql.toString());
+					
+			}
+			
+			return v;
+			
+		} 
+		catch (ClsExceptions e) {
+			e.printStackTrace();
+		} 
+		return new Vector();
+	}
 
 	
 	/** Funcion select (String where). Devuele todos los campos de los registros que cumplan los criterios.
