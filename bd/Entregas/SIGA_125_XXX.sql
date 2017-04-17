@@ -882,3 +882,7 @@ Values  ('envios.plantillas.literal.asuntoAcreditacionOficio', 'Acreditación de 
 
 Pkg_Siga_Censo
 
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.designacionAdicional', 'Ya existe una designación relacionada con este EJG, ¿desea continuar?' , 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.designacionAdicional', 'Ya existe una designación relacionada con este EJG, ¿desea continuar?#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.designacionAdicional', 'Ya existe una designación relacionada con este EJG, ¿desea continuar?#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.designacionAdicional', 'Ya existe una designación relacionada con este EJG, ¿desea continuar?#EU', 0, '3', sysdate, 0, '19');
