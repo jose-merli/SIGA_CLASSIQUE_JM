@@ -890,9 +890,6 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 								hashEstado.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, formatoFecha.format(fechaEstadoActualizacionOrigen));
 								hashEstado.put(CenDatosColegialesEstadoBean.C_IDESTADO, idEstadoActualizacionOrigen);
 								listaEstadosAinsertar.add(hashEstado);
-							} else {
-								request.setAttribute("mensaje", "En el colegio de " + nombreInstitucion + ", " + beanPersonaOrigen.getNombreCompleto() + " (" + beanPersonaOrigen.getNIFCIF() + ") tiene un estado colegial que no se corresponde con la última actuación por Carga de censo. Por favor, revise la carga y/o consulte al Administrador para más información.");
-								return "exitoFusionar";
 							}
 						}
 						if (fechaEstadoActualizacionDestino != null && fechaEstadoActualizacionDestino.after(fechaUltimoEstadoDestino)) {
