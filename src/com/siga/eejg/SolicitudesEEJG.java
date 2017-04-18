@@ -248,7 +248,10 @@ public class SolicitudesEEJG {
 			scsEejgXmlBean.setIdPeticion(scsEejgPeticionesBean.getIdPeticion());
 			scsEejgXmlBean.setEstado((int)eejgEstado.getId());
 			scsEejgXmlBean.setEnvioRespuesta(envioRespuesta);
-			//scsEejgXmlBean.setXml(xml);
+			//Como hay que enviar el informe economico a la cajg de la comunidad de madrid, vamos a guardarnos los que solicita alcala(2003)
+			if(scsEejgPeticionesBean.getIdInstitucion()!=null && scsEejgPeticionesBean.getIdInstitucion().intValue()==2003)
+				scsEejgXmlBean.setXml(xml);
+
 
 			scsEejgXmlAdm.insert(scsEejgXmlBean);
 		} catch (ClsExceptions e) {
