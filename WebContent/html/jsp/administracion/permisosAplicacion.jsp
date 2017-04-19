@@ -155,6 +155,8 @@
 							}
 						});
 						limpiarSeleccion();
+					}else{
+						fin();
 					}
 				}else{
 					alert("No hay cambios pendientes");
