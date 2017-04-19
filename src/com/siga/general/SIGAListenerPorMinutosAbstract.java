@@ -69,17 +69,18 @@ public abstract class SIGAListenerPorMinutosAbstract extends SIGAContextListener
 		// obteniendo el parametro de tiempo para crear el timer
 		GenParametrosService parametersService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
 		GenParametrosExample genParametrosExample = new GenParametrosExample();
-		genParametrosExample.createCriteria()
-				.andIdinstitucionEqualTo((short) ClsConstants.INSTITUCION_CGAE)
-				.andModuloEqualTo(getModulo().name())
-				.andParametroEqualTo(getMinutosIntervaloParam().name());
-		List<GenParametros> genParametros = parametersService.getList(genParametrosExample);
-
 		// calculando el momento de lanzamiento del timer
 		Date date = null;
 		Calendar cal = Calendar.getInstance();
-
+		
 		try {
+			
+			genParametrosExample.createCriteria()
+			.andIdinstitucionEqualTo((short) ClsConstants.INSTITUCION_CGAE)
+			.andModuloEqualTo(getModulo().name())
+			.andParametroEqualTo(getMinutosIntervaloParam().name());
+			List<GenParametros> genParametros = parametersService.getList(genParametrosExample);
+
 			if (genParametros == null || genParametros.size() != 1) {
 				throw new IllegalArgumentException("No se ha encontrado el parámetro");
 			}
