@@ -467,7 +467,14 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 					dirModificada.setIdPais((String)hash.get(CenSoliModiDireccionesBean.C_IDPAIS));
 					dirModificada.setIdProvincia((String)hash.get(CenSoliModiDireccionesBean.C_IDPROVINCIA));
 					dirModificada.setIdPoblacion((String)hash.get(CenSoliModiDireccionesBean.C_IDPOBLACION));
-					dirModificada.setOtraProvincia(Integer.valueOf((String) hash.get(CenSoliModiDireccionesBean.C_OTRAPROVINCIA)));
+					//Otra provincia puede venir vacio cuando son solicitudes de cambio realizadas antes de la subida realizada el 28/03/2017
+					if(hash.get(CenSoliModiDireccionesBean.C_OTRAPROVINCIA) != null && !"".equalsIgnoreCase((String)hash.get(CenSoliModiDireccionesBean.C_OTRAPROVINCIA))){
+						dirModificada.setOtraProvincia(Integer.valueOf((String) hash.get(CenSoliModiDireccionesBean.C_OTRAPROVINCIA)));
+					}else{
+						//Si es vacio introducimos un cero por defecto en otra provincia.
+						dirModificada.setOtraProvincia(0);
+					}
+					
 					if (!dirModificada.getIdPais().equals(ClsConstants.ID_PAIS_ESPANA) && !dirModificada.getIdPais().equals("")) {
 						dirModificada.setIdProvincia("");
 						dirModificada.setIdPoblacion("");
