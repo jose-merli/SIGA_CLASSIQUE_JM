@@ -44,6 +44,9 @@ import com.siga.censo.form.DatosRegTelForm;
 	 
 	 String idInstitucionComision;
 	 
+	 String descripcionDictamenEJG;
+	 String descripcionResolucionEJG;
+	 
 	 //String bisResolucion;
 	 
 	 boolean chkBusquedaExactaSolicitante;
@@ -1122,6 +1125,22 @@ import com.siga.censo.form.DatosRegTelForm;
 	 	
 		public String getIdNuevoEstado() {
 			return UtilidadesHash.getString(this.datos,"NUEVO_ESTADO");			
+		}
+
+		public String getDescripcionDictamenEJG() {
+			return descripcionDictamenEJG;
+		}
+
+		public void setDescripcionDictamenEJG(String descripcionDictamenEJG) {
+			this.descripcionDictamenEJG = descripcionDictamenEJG;
+		}
+
+		public String getDescripcionResolucionEJG() {
+			return descripcionResolucionEJG;
+		}
+
+		public void setDescripcionResolucionEJG(String descripcionResolucionEJG) {
+			this.descripcionResolucionEJG = descripcionResolucionEJG;
 		}
 		
 

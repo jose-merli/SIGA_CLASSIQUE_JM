@@ -38,6 +38,7 @@ import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.HelperInformesAdm;
 import com.siga.beans.ScsAcreditacionBean;
 import com.siga.beans.ScsActuacionDesignaAdm;
 import com.siga.beans.ScsActuacionDesignaBean;
@@ -50,6 +51,7 @@ import com.siga.envios.EnvioInformesGenericos;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.gratuita.form.DesignaForm;
 import com.siga.gratuita.form.InformeJustificacionMasivaForm;
 import com.siga.gratuita.pcajg.resoluciones.ResolucionesFicheroAbstract;
@@ -716,6 +718,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		InformeJustificacionMasivaForm fInformeJustificacion = (InformeJustificacionMasivaForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
 		ScsDesignasLetradoAdm admDesignas = new ScsDesignasLetradoAdm(usrBean);
+		HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
 		fInformeJustificacion.setIdInstitucion(usrBean.getLocation());
 		GenParametrosAdm paramAdm = new GenParametrosAdm (usrBean);
 		if (fInformeJustificacion.getFichaColegial()){
@@ -871,6 +874,25 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						Row designaRow = (Row)datos.get(i);
 						Hashtable designaHashtable = (Hashtable) designaRow.getRow();
 						List<DesignaForm> designaList = admDesignas.getDesignaList(fInformeJustificacion, designaHashtable,null, false,isPermitidoEditarActFicha,ejisActivo.equals(AppConstants.DB_TRUE));
+						
+						//Recorremos los expedientes de la designación para obtener de los expedientes la descripción del tipo dictamen.
+						if(designaList != null && designaList.size()>0){
+							List<DefinirEJGForm> ejgForm =  designaList.get(0).getExpedientes();
+							//Recorremos la lista
+							if(ejgForm != null && ejgForm.size()>0){
+								for(int j=0;j<ejgForm.size();j++){
+									DefinirEJGForm ejg = ejgForm.get(j);
+									Vector descripcionDictamenVector = helperInformesAdm.getTipoDictamenEjg(usrBean.getLocation (),ejg.getIdTipoDictamenEJG(),usrBean.getLanguage());
+									Vector descripcionResolucionVector = helperInformesAdm.getTipoRatificacionEjg(ejg.getIdTipoRatificacionEJG(),usrBean.getLanguage());
+									Hashtable auxDictamen = (Hashtable) descripcionDictamenVector.get(0);
+									Hashtable auxResolucion = (Hashtable) descripcionResolucionVector.get(0);
+									ejg.setDescripcionDictamenEJG((String)auxDictamen.get("DESC_TIPODICTAMENEJG"));
+									ejg.setDescripcionResolucionEJG((String)auxResolucion.get("DESC_TIPORATIFICACIONEJG"));
+								}
+							}
+							
+						}
+						
 						
 						designaFormList.addAll(designaList);
 					}
