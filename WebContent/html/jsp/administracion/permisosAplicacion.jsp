@@ -130,9 +130,8 @@
 		}
 			
 			function guardarCambios(){
-				
-				
-				if(jQuery("#idPerfil").val().length>1 && nuevosPermisos.length>0){
+
+				if(jQuery("#idPerfil").val().length>=1 && nuevosPermisos.length>0){
 					
 					sub();
 					if(confirm("Se van a realizar "+nuevosPermisos.length+" cambios de permisos sobre el perfil "+jQuery("#idPerfil :selected").text())){
