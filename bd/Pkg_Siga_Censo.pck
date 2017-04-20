@@ -393,8 +393,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
                   And Dircon.Fechabaja Is Null)
           And Not Exists (Select 1
                  From Cen_Colacambioletrado Col2
-                Where Col.Idinstitucion = Col2.Idinstitucion
-                  And Col.Idpersona = Col2.Idpersona));
+                Where Col.Idpersona = Col2.Idpersona));
 
     p_Datoserror := 'Actualizardatosletrado: Correcto';
     p_Codretorno := To_Char(0);
