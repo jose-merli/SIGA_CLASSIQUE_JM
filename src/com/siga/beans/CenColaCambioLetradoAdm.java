@@ -186,9 +186,9 @@ public class CenColaCambioLetradoAdm extends MasterBeanAdministrador
        		UserTransaction t = this.usrbean.getTransaction();
 			
        		Vector vCola = this.select();
-	        for (int i = 0; i < vCola.size(); i++) {
+       		while (vCola.size() > 0) {
 	            
-	            CenColaCambioLetradoBean bean = (CenColaCambioLetradoBean)vCola.get(i);
+	            CenColaCambioLetradoBean bean = (CenColaCambioLetradoBean)vCola.get(0);
 	            UsrBean us2= UsrBean.UsrBeanAutomatico(bean.getIdInstitucion().toString());
 	            CenPersonaAdm personaAdm2 = new CenPersonaAdm (us2);
 	            
@@ -229,6 +229,8 @@ public class CenColaCambioLetradoAdm extends MasterBeanAdministrador
 		            log.write ("Error: " + e.getMessage());
 		            t.rollback();
                 }
+	            
+	       		vCola = this.select();
 	        } 
 	    }
 	    catch (Exception e) {  }
