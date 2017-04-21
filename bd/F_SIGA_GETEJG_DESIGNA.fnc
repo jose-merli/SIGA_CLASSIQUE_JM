@@ -63,3 +63,4 @@ begin
   V_RESULT := lTrim(V_RESULT, ',');
   return(V_RESULT);
 end F_SIGA_GETEJG_DESIGNA;
+/
