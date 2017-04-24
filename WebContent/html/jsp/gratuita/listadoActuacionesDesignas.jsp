@@ -117,18 +117,16 @@
 			document.Informe.datosInforme.value=datosDesigna;
 			
 			
-		//Si hay envío
-			if(true){
+		//Si no es letrado
+			if(!<%=usr.isLetrado()%>){
 				document.Informe.destinatarios.value='C';
 				document.Informe.enviar.value='1';
-			}
-			<%if(informeUnicoCartaAcreditacion){%>
-				document.Informe.enviar.value='0';
-				document.Informe.submit();
-			<%}else{%>
+				
+				
+				//Esto permite la descarga de varios informes
 				var arrayResultado = ventaModalGeneral("Informe","M");
-				if (arrayResultado==undefined||arrayResultado[0]==undefined){
-				   		
+			   	if (arrayResultado==undefined||arrayResultado[0]==undefined){
+			   				   		
 			   	} 
 			   	else {
 			   		
@@ -143,7 +141,32 @@
 					   	document.DefinirEnviosForm.submit();
 			   		}
 			   	}
-			<%}%>
+			
+			}else{//Es letrado, luego no puede enviar
+				<%if(informeUnicoCartaAcreditacion){%> //Sólo un informe configurado
+					document.Informe.enviar.value='0';
+					document.Informe.submit();
+				<%}else{%> //Más de un informe configurado pero no se envía
+					var arrayResultado = ventaModalGeneral("Informe","M");
+					if (arrayResultado==undefined||arrayResultado[0]==undefined){
+					   		
+				   	} 
+				   	else {
+				   		
+				   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+				   		if(confirmar){
+				   			var idEnvio = arrayResultado[0];
+						    var idTipoEnvio = arrayResultado[1];
+						    var nombreEnvio = arrayResultado[2];				    
+						    
+						   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+						   	document.DefinirEnviosForm.modo.value='editar';
+						   	document.DefinirEnviosForm.submit();
+				   		}
+				   	}
+				<%}%>
+			}
+		
 		 }
 		 
 	</script>

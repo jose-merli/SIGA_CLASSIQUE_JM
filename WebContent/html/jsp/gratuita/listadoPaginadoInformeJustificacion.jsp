@@ -796,27 +796,23 @@ function downloadResolucionCAJG(idInstitucion,anio,idTipo,numero) {
 	}	
 }
 
-function downloadInformeActuacionesDesigna(idInstitucion,anio,numero,idPersona,idTurno,numeroAsunto,codigoDesigna) {			
+function downloadInformeActuacionesDesigna(idInstitucion,anio,numero,idPersona,idTurno,numeroAsunto,codigoDesigna,isLetrado) {			
 	var datos = "idInstitucion=="+idInstitucion +"##idPersona=="+idPersona+  "##idTurno==" +idTurno+"##anio=="+anio +"##codigoDesigna=="+codigoDesigna+"##numero==" +numero+  "##numeroAsunto==" +numeroAsunto+"%%%";
 	document.Informe.datosInforme.value=datos;
 	document.Informe.idTipoInforme.value='CADO';
 	
-	//Si hay envío
-	if(true){
+	//Si no es letrado
+	if(!isLetrado){
 		document.Informe.destinatarios.value='C';
 		document.Informe.enviar.value='1';
-	}
-	//Esto permite la descarga de varios informes
-	if(document.getElementById("informeUnicoCartaAcreditacion").value=='1'){
-		document.Informe.enviar.value='0';
-		document.Informe.submit();
-	}else{
-		//InformesGenericosForm
+		
+		//Esto permite la descarga de varios informes
 		var arrayResultado = ventaModalGeneral("Informe","M");
-		
-		if (arrayResultado==undefined||arrayResultado[0]==undefined){
-		
-	   	}else{
+	   	if (arrayResultado==undefined||arrayResultado[0]==undefined){
+	   				   		
+	   	} 
+	   	else {
+	   		
 	   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
 	   		if(confirmar){
 	   			var idEnvio = arrayResultado[0];
@@ -827,8 +823,32 @@ function downloadInformeActuacionesDesigna(idInstitucion,anio,numero,idPersona,i
 			   	document.DefinirEnviosForm.modo.value='editar';
 			   	document.DefinirEnviosForm.submit();
 	   		}
-	   	} 
-	}	
+	   	}
+	}else{//Es letrado, luego no puede enviar
+		if(document.getElementById("informeUnicoCartaAcreditacion").value=='1'){ //Sólo un informe configurado
+			document.Informe.enviar.value='0';
+			document.Informe.submit();
+		}else{ //Más de un informe configurado pero no se envía
+			var arrayResultado = ventaModalGeneral("Informe","M");
+			if (arrayResultado==undefined||arrayResultado[0]==undefined){
+			   		
+		   	} 
+		   	else {
+		   		
+		   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+		   		if(confirmar){
+		   			var idEnvio = arrayResultado[0];
+				    var idTipoEnvio = arrayResultado[1];
+				    var nombreEnvio = arrayResultado[2];				    
+				    
+				   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+				   	document.DefinirEnviosForm.modo.value='editar';
+				   	document.DefinirEnviosForm.submit();
+		   		}
+		   	}
+		}
+  }
+
 }
 function downloadInformesOficio(idInstitucion,anio,idTurno,numero) {			
 	
@@ -2136,7 +2156,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																		 <img id="iconoboton_download1" hspace="0"
 																						src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
 																						alt="Enviar" name="iconoFila" title="Descargar" border="0" 
-																						onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero},'${designa.codigoDesigna}')" 
+																						onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero},'${designa.codigoDesigna}',${usrBean.letrado})" 
 																						onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
 																	</c:if>
 																</span>
@@ -2337,7 +2357,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																		 <img id="iconoboton_download1" hspace="0"
 																						src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
 																						alt="Enviar" name="iconoFila" title="Descargar" border="0" 
-																						onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero},'${designa.codigoDesigna}')" 
+																						onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero},'${designa.codigoDesigna}',${usrBean.letrado})" 
 																						onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
 																		</c:if>
 																</span>
