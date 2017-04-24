@@ -162,17 +162,34 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			StringBuffer sql2 = new StringBuffer();
 			Vector v;
 			
+			Hashtable h1 = new Hashtable();
+			h1.put(new Integer(1), idInstitucion);
+			h1.put(new Integer(2), idTurno);
+			h1.put(new Integer(3), anio);
+			h1.put(new Integer(4), numero);
+			
+			Hashtable h2 = new Hashtable();
+			h2.put(new Integer(1), idInstitucion);
+			h2.put(new Integer(2), idTurno);
+			h2.put(new Integer(3), anio);
+			h2.put(new Integer(4), numero);
+			
+			h2.put(new Integer(5), idInstitucion);
+			h2.put(new Integer(6), idTurno);
+			h2.put(new Integer(7), anio);
+			h2.put(new Integer(8), numero);
+			
 			sql2.append("	 Select Per.Nombre, Per.Apellido1, Nvl(Per.Apellido2, '') Apellido2 ");
 			sql2.append("  From Scs_Defendidosdesigna Def, Scs_Personajg Per ");
 			sql2.append(" Where Def.Idinstitucion = Per.Idinstitucion ");
 			sql2.append("   And Def.Idpersona = Per.Idpersona ");
-			sql2.append("   And Def.Idinstitucion = "+idInstitucion );
-			sql2.append("   And Def.Idturno = "+idTurno);
-			sql2.append("   And Def.Anio = "+anio);
-			sql2.append("    And Def.Numero = "+numero);
+			sql2.append("   And Def.Idinstitucion =:1 ");
+			sql2.append("   And Def.Idturno =:2 ");
+			sql2.append("   And Def.Anio =:3 ");
+			sql2.append("    And Def.Numero =:4 ");
 			sql2.append(" Order By Apellido1, Apellido2, Nombre ");
 			
-			v = this.selectGenerico(sql2.toString());
+			v = this.selectGenericoBind(sql2.toString(),h1);
 			if(v == null || v.size()<1){
 			
 					sql.append(" Select Per.Nombre, Per.Apellido1, Nvl(Per.Apellido2, '') Apellido2 ");
@@ -186,10 +203,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					sql.append("   And Ejgdes.Numeroejg = Uniejg.Numero ");
 					sql.append("   And Uniejg.Idinstitucion = Per.Idinstitucion ");
 					sql.append("   And Uniejg.Idpersona = Per.Idpersona ");
-					sql.append("   And Ejgdes.Idinstitucion ="+idInstitucion);
-					sql.append("   And Ejgdes.Idturno ="+idTurno);
-					sql.append("   And Ejgdes.Aniodesigna ="+anio);
-					sql.append("   And Ejgdes.Numerodesigna ="+numero);
+					sql.append("   And Ejgdes.Idinstitucion =:1");
+					sql.append("   And Ejgdes.Idturno =:2");
+					sql.append("   And Ejgdes.Aniodesigna =:3");
+					sql.append("   And Ejgdes.Numerodesigna =:4");
 					sql.append("   and  Ejgdes.Idinstitucion = Ejg.Idinstitucion ");
 					sql.append("   And Ejgdes.Idtipoejg = Ejg.Idtipoejg ");
 					sql.append("   And Ejgdes.Anioejg = Ejg.Anio ");
@@ -207,22 +224,29 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					sql.append("   And Ejgdes.Numeroejg = Ejg.Numero ");
 					sql.append("   And Ejg.Idinstitucion = Per.Idinstitucion ");
 					sql.append("   And Ejg.Idpersonajg = Per.Idpersona ");
-					sql.append("   And Ejgdes.Idinstitucion ="+idInstitucion);
-					sql.append("   And Ejgdes.Idturno ="+idTurno);
-					sql.append("   And Ejgdes.Aniodesigna="+anio);
-					sql.append("   And Ejgdes.Numerodesigna  ="+numero);
+					sql.append("   And Ejgdes.Idinstitucion =:5");
+					sql.append("   And Ejgdes.Idturno =:6");
+					sql.append("   And Ejgdes.Aniodesigna=:7");
+					sql.append("   And Ejgdes.Numerodesigna  =:8");
 					sql.append("   and Ejg.Fecharesolucioncajg is not null ");
 					sql.append("   and EJG.Idtiporatificacionejg in(1,2,8,10,9,11) ");
 					sql.append(" Order By Apellido1, Apellido2, Nombre ");
 		
-					 v = this.selectGenerico(sql.toString());
+					 v = this.selectGenericoBind(sql.toString(),h2);
 					
 			}
+			if(v != null && v.size()>1){
+				return v;
+			}else{
+				return null;
+			}
 			
-			return v;
 			
-		} 
-		catch (ClsExceptions e) {
+		}catch (SIGAException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClsExceptions e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		return new Vector();
