@@ -377,7 +377,7 @@
 							</td>
 							<td style="padding-left:25px;">
 							<% if (formulario.getModo().equalsIgnoreCase("Ver") || Integer.parseInt(idInstitucion) == 2000) { %>
-								<siga:ComboBD nombre = "nombreInstitucion" ancho="200" tipo="cmbColegiosAbreviados"  readonly="<%=readonly%>" clase="<%=estiloCombo %>" obligatorio="true" elementoSel="<%=colegioSel %>"/>
+								<siga:ComboBD nombre = "nombreInstitucion" ancho="200" tipo="cmbInstitucionesAbreviadas"  readonly="<%=readonly%>" clase="<%=estiloCombo %>" obligatorio="true" elementoSel="<%=colegioSel %>"/>
 							<% }else{ %>
 								<siga:ComboBD nombre = "nombreInstitucion" ancho="200" tipo="cmbInstitucionLocal" parametro="<%=parametroCombo%>" readonly="<%=readonly%>"  clase="<%=estiloCombo %>" obligatorio="true" elementoSel="<%=colegioSel %>"/>							
 							<% } %>	
