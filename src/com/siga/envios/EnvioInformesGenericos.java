@@ -345,13 +345,14 @@ public class EnvioInformesGenericos extends MasterReport {
 							//Obtenemos los datos del ejg para comprobar si tiene resolución favorable y sólo sacar aquellos que así lo son.
 							 idTipoRatificacion = ejgDoc[6];
 							 fechaResolucionCAJG = ejgDoc[7];
-							if(fechaResolucionCAJG != null && !"".equalsIgnoreCase(fechaResolucionCAJG)){
+							if((fechaResolucionCAJG != null && !"".equalsIgnoreCase(fechaResolucionCAJG) && idTipoRatificacion!=null && !"".equalsIgnoreCase(idTipoRatificacion) 
+									&& (idTipoRatificacion.equalsIgnoreCase("1") || idTipoRatificacion.equalsIgnoreCase("2")|| idTipoRatificacion.equalsIgnoreCase("8")
+											|| idTipoRatificacion.equalsIgnoreCase("10")|| idTipoRatificacion.equalsIgnoreCase("9")|| idTipoRatificacion.equalsIgnoreCase("11"))) 
+											|| (" ".equalsIgnoreCase(fechaResolucionCAJG) && " ".equalsIgnoreCase(idTipoRatificacion))){
 								//Comprobamos el tipo de resolución
-								if(idTipoRatificacion!=null && !"".equalsIgnoreCase(idTipoRatificacion) 
-										&& (idTipoRatificacion.equalsIgnoreCase("1") || idTipoRatificacion.equalsIgnoreCase("2")|| idTipoRatificacion.equalsIgnoreCase("8")
-												|| idTipoRatificacion.equalsIgnoreCase("10")|| idTipoRatificacion.equalsIgnoreCase("9")|| idTipoRatificacion.equalsIgnoreCase("11"))){
+								
 									favorable=Boolean.TRUE;
-								}
+								
 							}
 							if(favorable)
 								salida+=", " + ejgDoc[0].trim();				
