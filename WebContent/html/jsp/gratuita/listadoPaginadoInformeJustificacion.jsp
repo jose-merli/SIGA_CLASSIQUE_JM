@@ -1220,7 +1220,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 										<c:when test="${ejgForm.docResolucion!=null && ejgForm.docResolucion!=''}">
 											<a href='#' onclick="downloadDocumentoResolucion('${ejgForm.docResolucion}')"
 											  <c:choose>
-													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' }">
+													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!=''}">
 														title="Resolucion:${ejgForm.descripcionResolucionEJG}"
 													</c:when>
 													<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
@@ -1232,7 +1232,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 										<c:when test="${resolucionLetradoActivo==true && ejgForm.idTipoRatificacionEJG!='' && ejgForm.fechaResolucionCAJG!=''}">
 											<a href='#' onclick="downloadResolucionCAJG('${ejgForm.idInstitucion}','${ejgForm.anio}','${ejgForm.idTipoEJG}','${ejgForm.numero}')"
 											<c:choose>
-													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' }">
+													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!=''}">
 														title="Resolucion:${ejgForm.descripcionResolucionEJG}"
 													</c:when>
 													<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
@@ -1245,7 +1245,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 										<c:otherwise>
 											<span
 												<c:choose>
-													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' }">
+													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!=''}">
 														title="Resolucion:${ejgForm.descripcionResolucionEJG}"
 													</c:when>
 													<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
@@ -1271,7 +1271,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 								<c:forEach items="${designa.expedientes}" var="ejgForm" varStatus="statusSinResolucion">     
 										<span 
 										<c:choose>
-											<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' }">
+											<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!=''}">
 												title="Resolucion:${ejgForm.descripcionResolucionEJG}"
 											</c:when>
 											<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
@@ -1287,14 +1287,14 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 							</td>
 						
 						</c:when>
-						<c:when test="${designa.tipoResolucionDesigna=='PTE_CAJG'}">
+						<c:when test="${designa.tipoResolucionDesigna=='PTE_CAJG'}">	
 							<td rowspan="${designa.rowSpan}" style="${colorEJG}" title="<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaPteCAJG" />">
 								<c:forEach items="${designa.expedientes}" var="ejgForm" varStatus="statusSinEjg">     
 									<c:choose>            
 										<c:when test="${ejgForm.docResolucion!=null && ejgForm.docResolucion!=''}">
 											<a href='#' onclick="downloadDocumentoResolucion('${ejgForm.docResolucion}')"
 												<c:choose>
-													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' }">
+													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!=''}">
 														title="Resolucion:${ejgForm.descripcionResolucionEJG}"
 													</c:when>
 													<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
@@ -1306,7 +1306,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 										<c:when test="${resolucionLetradoActivo==true && ejgForm.idTipoRatificacionEJG!='' && ejgForm.fechaResolucionCAJG!=''}">
 											<a href='#' onclick="downloadResolucionCAJG('${ejgForm.idInstitucion}','${ejgForm.anio}','${ejgForm.idTipoEJG}','${ejgForm.numero}')"
 												<c:choose>
-													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' }">
+													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!=''}">
 														title="Resolucion:${ejgForm.descripcionResolucionEJG}"
 													</c:when>
 													<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
@@ -1319,7 +1319,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 										<c:otherwise>
 											<span
 												<c:choose>
-													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' }">
+													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!=''}">
 														title="Resolucion:${ejgForm.descripcionResolucionEJG}"
 													</c:when>
 													<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
@@ -1360,7 +1360,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 										<c:when test="${ejgForm.docResolucion!=null && ejgForm.docResolucion!=''}">
 											<a href='#' onclick="downloadDocumentoResolucion('${ejgForm.docResolucion}')"
 												<c:choose>
-													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' }">
+													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!='' }">
 														title="Resolucion:${ejgForm.descripcionResolucionEJG}"
 													</c:when>
 													<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
@@ -1372,7 +1372,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 										<c:when test="${resolucionLetradoActivo==true && ejgForm.idTipoRatificacionEJG!='' && ejgForm.fechaResolucionCAJG!=''}">
 											<a href='#' onclick="downloadResolucionCAJG('${ejgForm.idInstitucion}','${ejgForm.anio}','${ejgForm.idTipoEJG}','${ejgForm.numero}')"
 												<c:choose>
-													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' }">
+													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!=''}">
 														title="Resolucion:${ejgForm.descripcionResolucionEJG}"
 													</c:when>
 													<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
@@ -1385,7 +1385,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 										<c:otherwise>
 										<span
 												<c:choose>
-													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' }">
+													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!=''}">
 														title="Resolucion:${ejgForm.descripcionResolucionEJG}"
 													</c:when>
 													<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
