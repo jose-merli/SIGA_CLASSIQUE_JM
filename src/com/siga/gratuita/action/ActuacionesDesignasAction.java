@@ -845,7 +845,8 @@ public class ActuacionesDesignasAction extends MasterAction {
 			}
 			String talonario="";
 			String talon="";
-			if(valorPcajgActivo !=8){ //Si no es de la comunidad valenciana se realiza como siempre
+			if(!usr.getLocation().equalsIgnoreCase("2005") && !usr.getLocation().equalsIgnoreCase("2018") 
+					&& !usr.getLocation().equalsIgnoreCase("2023") && !usr.getLocation().equalsIgnoreCase("2051") && !usr.getLocation().equalsIgnoreCase("2068")){ //Si no es de la comunidad valenciana se realiza como siempre
 				 talonario= miform.getTalonario();
 			    	
 				if (talonario!=null && !talonario.equals("")){

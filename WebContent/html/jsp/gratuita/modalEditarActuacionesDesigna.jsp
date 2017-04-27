@@ -974,8 +974,8 @@
 							%>							
 						</td>
 					</tr>
-						<%if(usr.getLocation().equalsIgnoreCase("2005") || usr.getLocation().equalsIgnoreCase("2018") 
-								|| usr.getLocation().equalsIgnoreCase("2023") || usr.getLocation().equalsIgnoreCase("2051") || usr.getLocation().equalsIgnoreCase("2068")){ %>
+						<%if(!usr.getLocation().equalsIgnoreCase("2005") && !usr.getLocation().equalsIgnoreCase("2018") 
+								&& !usr.getLocation().equalsIgnoreCase("2023") && !usr.getLocation().equalsIgnoreCase("2051") && !usr.getLocation().equalsIgnoreCase("2068")){ %>
 							<tr>
 								<td class="labelText" nowrap>
 									<siga:Idioma key="gratuita.actuacionesDesigna.literal.talonario"/>&nbsp;/&nbsp;
