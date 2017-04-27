@@ -211,8 +211,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					sql.append("   And Ejgdes.Idtipoejg = Ejg.Idtipoejg ");
 					sql.append("   And Ejgdes.Anioejg = Ejg.Anio ");
 					sql.append("   And Ejgdes.Numeroejg = Ejg.Numero ");
-					sql.append("    and Ejg.Fecharesolucioncajg is not null ");
-					sql.append("   and EJG.Idtiporatificacionejg in(1,2,8,10,9,11) ");
+					sql.append(" and ( (EJG.Fecharesolucioncajg is not null and EJG.Idtiporatificacionejg in (1, 2, 8, 10, 9, 11)) ");
+					sql.append("  OR (EJG.Idtiporatificacionejg is null and EJG.Fecharesolucioncajg is null)) ");
 				    
 					sql.append(" Union ");
 				    
@@ -228,8 +228,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					sql.append("   And Ejgdes.Idturno =:6");
 					sql.append("   And Ejgdes.Aniodesigna=:7");
 					sql.append("   And Ejgdes.Numerodesigna  =:8");
-					sql.append("   and Ejg.Fecharesolucioncajg is not null ");
-					sql.append("   and EJG.Idtiporatificacionejg in(1,2,8,10,9,11) ");
+					sql.append(" and ( (EJG.Fecharesolucioncajg is not null and EJG.Idtiporatificacionejg in (1, 2, 8, 10, 9, 11)) ");
+					sql.append("  OR (EJG.Idtiporatificacionejg is null and EJG.Fecharesolucioncajg is null)) ");
 					sql.append(" Order By Apellido1, Apellido2, Nombre ");
 		
 					 v = this.selectGenericoBind(sql.toString(),h2);
