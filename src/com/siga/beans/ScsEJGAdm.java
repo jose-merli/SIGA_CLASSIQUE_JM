@@ -235,7 +235,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 					 v = this.selectGenericoBind(sql.toString(),h2);
 					
 			}
-			if(v != null && v.size()>1){
+			if(v != null && v.size()>0){
 				return v;
 			}else{
 				return null;
