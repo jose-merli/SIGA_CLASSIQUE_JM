@@ -118,7 +118,7 @@ public class EjecucionSancionAction extends MasterAction {
 				
 				CenDatosColegialesEstadoAdm cenDatosColegialesAdm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
 				boolean bDesdeCGAE = false;
-				estado = cenDatosColegialesAdm.insertaEstadoColegial(estadoColegialHashtable, bDesdeCGAE, this.getLenguaje(request));
+				estado = cenDatosColegialesAdm.insertaEstadoColegial(estadoColegialHashtable, bDesdeCGAE, this.getLenguaje(request),null);
 				
 				if (form.isBajaColegial() || form.isInhabilitacion() ||form.isSuspension()){
 					if(estado!=2 && estadoColegialHashtable.get("RESPUESTA_ACA")!=null){

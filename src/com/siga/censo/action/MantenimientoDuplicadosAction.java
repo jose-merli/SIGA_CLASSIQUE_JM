@@ -938,7 +938,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 			for (Hashtable<String, String> hashEstado : listaEstadosAinsertar) {
 				hashEstado.put(CenDatosColegialesEstadoBean.C_OBSERVACIONES, "Mantenimiento de duplicados: inserción automática de estado colegial por última actualización desde Carga de Censo");
 				boolean bDesdeCGAE = true;
-				admEstadoColegial.insertaEstadoColegial(hashEstado, bDesdeCGAE, user.getLanguage());
+				admEstadoColegial.insertaEstadoColegial(hashEstado, bDesdeCGAE, user.getLanguage(),null);
 			}
 			
 			// Aunque el proceso de fusion (en PL) ya se encarga de combinar las direcciones, 

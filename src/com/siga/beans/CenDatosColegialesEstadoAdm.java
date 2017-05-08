@@ -286,7 +286,7 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 	 * @throws SIGAException
 	 * @throws ClsExceptions
 	 */
-	public int insertaEstadoColegial(Hashtable<String, String> estadoColegialHashtable, boolean bDesdeCGAE, String idioma) throws SIGAException, ClsExceptions
+	public int insertaEstadoColegial(Hashtable<String, String> estadoColegialHashtable, boolean bDesdeCGAE, String idioma, String motivo) throws SIGAException, ClsExceptions
 	{
 		boolean hayQueNotificarAca = false;
 		int resultado = 0;
@@ -328,7 +328,12 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 				hayQueNotificarAca = false;
 				break;
 			}
-			beanHis.setMotivo(estadoColegialHashtable.get(CenDatosColegialesEstadoBean.C_OBSERVACIONES));
+			if(motivo != null && !"".equalsIgnoreCase(motivo)){   //Si motivo tiene valor es que viene de la interfaz y se ha rellenado el campo motivo
+				beanHis.setMotivo(motivo);
+			}else{
+				beanHis.setMotivo(estadoColegialHashtable.get(CenDatosColegialesEstadoBean.C_OBSERVACIONES));
+			}
+			
 			// si el estado se inserta desde el Consejo, el registro de auditoria debe ir en el Consejo
 			if (bDesdeCGAE) {
 				beanHis.setIdInstitucion(ClsConstants.INSTITUCION_CGAE);

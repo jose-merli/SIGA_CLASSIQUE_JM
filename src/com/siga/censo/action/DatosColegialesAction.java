@@ -475,7 +475,7 @@ public class DatosColegialesAction extends MasterAction {
 			hashEstado.put(CenDatosColegialesEstadoBean.C_IDINSTITUCION, idinstitucion);
 			hashEstado.put(CenDatosColegialesEstadoBean.C_IDPERSONA, idpersona);
 			hashEstado.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, fechaEstado);
-			hashEstado.put(CenDatosColegialesEstadoBean.C_OBSERVACIONES, hashEstado.get(CenDatosColegialesEstadoBean.C_OBSERVACIONES) + " " + motivo);
+			hashEstado.put(CenDatosColegialesEstadoBean.C_OBSERVACIONES, hashEstado.get(CenDatosColegialesEstadoBean.C_OBSERVACIONES));
 
 			boolean bDesdeCGAE = false;
 			if (this.getIDInstitucion(request) == 2000){
@@ -487,7 +487,7 @@ public class DatosColegialesAction extends MasterAction {
 			tx.begin();
 
 			// Si devuelve 2 es porque se ha relizado todo correctamente excepto la llamada al servicio web de revision de letrado.
-			int isInsercionCorrecta = admEstados.insertaEstadoColegial(hashEstado, bDesdeCGAE, idioma);
+			int isInsercionCorrecta = admEstados.insertaEstadoColegial(hashEstado, bDesdeCGAE, idioma, motivo);
 			
 			switch (isInsercionCorrecta) {
 				case 0:
