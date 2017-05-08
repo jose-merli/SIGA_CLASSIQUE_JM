@@ -490,7 +490,7 @@
 							<siga:Idioma key="gratuita.gestionInscripciones.tipo.literal"/>
 						</td>
 						<td>
-							<html:select property="tipo" styleClass="boxCombo" >
+							<html:select property="tipo" styleClass="boxCombo" styleId="comboTipoSolicitud" >
 								<html:option value="A"><siga:Idioma key="gratuita.gestionInscripciones.tipo.alta"/></html:option>
 								<html:option value="B"><siga:Idioma key="gratuita.gestionInscripciones.tipo.baja"/></html:option>							
 							</html:select>
