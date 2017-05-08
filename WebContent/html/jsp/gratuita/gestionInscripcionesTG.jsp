@@ -78,12 +78,24 @@
 				
 				document.getElementById("estadoBusqueda").value = document.InscripcionTGForm.estado.value;
 				if(!isRefrescar){
-					if(document.InscripcionTGForm.idPersona.value==''){
-						if(!confirm('<siga:Idioma key="messages.general.aviso.sinletradoseleccionado"/>')) {
-								return 'cancel';
-						 }
-						
-					}
+					if(jQuery("#comboTipoSolicitud").val()=="A"){
+						if(document.InscripcionTGForm.idPersona.value==''){
+							if(!confirm('<siga:Idioma key="messages.general.aviso.sinletradoseleccionado"/>')) {
+							return 'cancel';
+							}
+				 	}esle{
+				 		if(document.InscripcionTGForm.idPersona.value==''){
+							var mensaje = "<siga:Idioma key="gratuita.nuevaAsistencia.mensaje.alert7"/>";
+							alert (mensaje);
+							fin();					
+							return false;
+							/*if(!confirm('<siga:Idioma key="messages.general.aviso.sinletradoseleccionado"/>')) {
+									return 'cancel';
+							 }*/
+							
+						}
+				 	}
+					
 				}
 				sub();
 				isRefrescar = false;
@@ -477,7 +489,7 @@
 							<siga:Idioma key="gratuita.gestionInscripciones.tipo.literal"/>
 						</td>
 						<td>
-							<html:select property="tipo" styleClass="boxCombo" >
+							<html:select property="tipo" styleClass="boxCombo" styleId="comboTipoSolicitud" >
 								<html:option value="A"><siga:Idioma key="gratuita.gestionInscripciones.tipo.alta"/></html:option>
 								<html:option value="B"><siga:Idioma key="gratuita.gestionInscripciones.tipo.baja"/></html:option>							
 							</html:select>
