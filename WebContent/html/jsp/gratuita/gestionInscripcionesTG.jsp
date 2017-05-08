@@ -71,10 +71,10 @@
 	
 			function preAccionBusqueda(){	
 				document.getElementById("tipoBusqueda").value =  document.InscripcionTGForm.tipo.value;
-				if(document.InscripcionTGForm.clase[0].checked) 
-					document.getElementById("claseBusqueda").value = 'T';
-				else
-					document.getElementById("claseBusqueda").value = 'G';
+					if(document.InscripcionTGForm.clase[0].checked) 
+						document.getElementById("claseBusqueda").value = 'T';
+					else
+						document.getElementById("claseBusqueda").value = 'G';
 				
 				document.getElementById("estadoBusqueda").value = document.InscripcionTGForm.estado.value;
 				if(!isRefrescar){
