@@ -71,10 +71,10 @@
 	
 			function preAccionBusqueda(){	
 				document.getElementById("tipoBusqueda").value =  document.InscripcionTGForm.tipo.value;
-					if(document.InscripcionTGForm.clase[0].checked) 
-						document.getElementById("claseBusqueda").value = 'T';
-					else
-						document.getElementById("claseBusqueda").value = 'G';
+				if(document.InscripcionTGForm.clase[0].checked) 
+					document.getElementById("claseBusqueda").value = 'T';
+				else
+					document.getElementById("claseBusqueda").value = 'G';
 				
 				document.getElementById("estadoBusqueda").value = document.InscripcionTGForm.estado.value;
 				if(!isRefrescar){
@@ -83,7 +83,8 @@
 							if(!confirm('<siga:Idioma key="messages.general.aviso.sinletradoseleccionado"/>')) {
 							return 'cancel';
 							}
-				 	}esle{
+						}
+				 	}else{
 				 		if(document.InscripcionTGForm.idPersona.value==''){
 							var mensaje = "<siga:Idioma key="gratuita.nuevaAsistencia.mensaje.alert7"/>";
 							alert (mensaje);
@@ -489,7 +490,7 @@
 							<siga:Idioma key="gratuita.gestionInscripciones.tipo.literal"/>
 						</td>
 						<td>
-							<html:select property="tipo" styleClass="boxCombo" styleId="comboTipoSolicitud" >
+							<html:select property="tipo" styleClass="boxCombo" >
 								<html:option value="A"><siga:Idioma key="gratuita.gestionInscripciones.tipo.alta"/></html:option>
 								<html:option value="B"><siga:Idioma key="gratuita.gestionInscripciones.tipo.baja"/></html:option>							
 							</html:select>
