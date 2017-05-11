@@ -45,7 +45,9 @@ import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.CajgRemesa;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+import org.redabogacia.sigaservices.app.helper.AsignaVeredaHelper;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
+import org.redabogacia.sigaservices.app.helper.AsignaVeredaHelper.ASIGNA_VERSION;
 import org.redabogacia.sigaservices.app.services.caj.CajgRemesaService;
 import org.redabogacia.sigaservices.app.services.caj.PCAJGInsertaColaService;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
@@ -1892,6 +1894,13 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		
 		boolean simular = VALUE_TRUE.equals(((DefinicionRemesas_CAJG_Form) formulario).getSimular());
 		
+		ASIGNA_VERSION versionAsignaVereda = null;
+		
+		if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA == tipoCAJG) {
+			//si es asigna comprueba la version Si es la versión 2 va por ecom pq es la versión de vereda y si es 1 se deja lo antiguo como estaba en SIGA
+			versionAsignaVereda = AsignaVeredaHelper.getAsignaVersion(Short.valueOf(idInstitucion.toString()));
+		}
+		
 		if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAISVASCO == tipoCAJG) {
 			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
 			RESPUESTA_ENVIO_REMESA respuesta = null;
@@ -1927,20 +1936,21 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			}
 			
 			mensaje = getMensajeRespuesta(respuesta, request, simular);
-		}else if (CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == tipoCAJG) {
+		} else if (CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == tipoCAJG) {
 			mensaje = validaRemesaTxt(mapping, formulario, request, response);
 			
-//			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
-//			RESPUESTA_ENVIO_REMESA respuesta = null;
-//			if (simular) {
-//				respuesta = pcajgInsertaColaService.validaExpedientesEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-//						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
-//			} else {
-//				respuesta = pcajgInsertaColaService.enviaExpedientesEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-//						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
-//			}
+		} else if (versionAsignaVereda != null && ASIGNA_VERSION.VERSION_2.equals(versionAsignaVereda)) {
+			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
+			RESPUESTA_ENVIO_REMESA respuesta = null;
+			if (simular) {
+				respuesta = pcajgInsertaColaService.validaExpedientesAsignaVereda(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
+			} else {
+				respuesta = pcajgInsertaColaService.enviaExpedientesAsignaVereda(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
+			}
 			
-//			mensaje = getMensajeRespuesta(respuesta, request, simular);
+			mensaje = getMensajeRespuesta(respuesta, request, simular);
 		} else {
 			ejecutaBackground(formulario, request, 0);	
 			if (simular) {
