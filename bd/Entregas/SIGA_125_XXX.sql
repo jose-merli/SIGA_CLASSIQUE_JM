@@ -891,3 +891,5 @@ F_SIGA_GETEJG_DESIGNA
  
 -- Ejecutado en Integracion por AAG el 21/04 a las 13:20
 
+Pkg_Siga_Censo
+

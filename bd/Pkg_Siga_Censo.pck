@@ -393,7 +393,34 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
                   And Dircon.Fechabaja Is Null)
           And Not Exists (Select 1
                  From Cen_Colacambioletrado Col2
-                Where Col.Idpersona = Col2.Idpersona));
+                Where Col.Idinstitucion = Col2.Idinstitucion
+                  And Col.Idpersona = Col2.Idpersona));
+  
+    v_Datoserror := 'Actualizardatosletrado: antes de terminar, ejecutamos un parche para revisar direcciones de CorreoWeb que no se han copiado';
+    Insert Into Cen_Colacambioletrado
+      (Idpersona, Idinstitucion, Idcambio, Fechacambio, Idtipocambio, Iddireccion, Fechamodificacion, Usumodificacion)
+      (Select Col.Idpersona, Col.Idinstitucion, nvl((Select max(col2.Idcambio) From Cen_Colacambioletrado col2), 0)+rownum, Sysdate, 30, Dir.Iddireccion, Sysdate, -7
+         From Cen_Colegiado Col, Cen_Direcciones Dir, Cen_Direccion_Tipodireccion Tip
+        Where Dir.Idinstitucion = Tip.Idinstitucion
+          And Dir.Idpersona = Tip.Idpersona
+          And Dir.Iddireccion = Tip.Iddireccion
+          And Tip.Idtipodireccion = c_Tipo_Censoweb
+          And Dir.Idinstitucion = Col.Idinstitucion
+          And Dir.Idpersona = Col.Idpersona
+          And Dir.Fechabaja Is Null
+          And Not Exists (Select 1
+                 From Cen_Direcciones Dircon, Cen_Direccion_Tipodireccion Tipcon
+                Where Dircon.Idinstitucion = Tipcon.Idinstitucion
+                  And Dircon.Idpersona = Tipcon.Idpersona
+                  And Dircon.Iddireccion = Tipcon.Iddireccion
+                  And Tipcon.Idtipodireccion = c_Tipo_Censoweb
+                  And Dircon.Idinstitucion = c_Idcgae
+                  And Dircon.Idpersona = Col.Idpersona
+                  And Dircon.Fechabaja Is Null)
+          And Not Exists (Select 1
+                 From Cen_Colacambioletrado Col2
+                Where Col.Idinstitucion = Col2.Idinstitucion
+                  And Col.Idpersona = Col2.Idpersona));
 
     p_Datoserror := 'Actualizardatosletrado: Correcto';
     p_Codretorno := To_Char(0);
