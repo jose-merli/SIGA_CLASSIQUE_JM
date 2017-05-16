@@ -755,6 +755,7 @@ public class ExpDatosGeneralesAction extends MasterAction
 				form.setIdPersonaDenunciado(idpersona);
 				form.setNumColegiado((String)request.getParameter("numColDesignado"));
 				//form.setIdPersona(numCol);
+				
 				CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserBean(request));
 				Vector v = clienteAdm.getDatosPersonales(new Long(idpersona),new Integer(idInstitucion));
 				if (v!=null && v.size()>0) {
@@ -763,6 +764,19 @@ public class ExpDatosGeneralesAction extends MasterAction
 					if (registro.get("APELLIDOS1")!=null && !registro.get("APELLIDOS1").equals("#NA")) form.setPrimerApellidoDenunciado((String) registro.get("APELLIDOS1")); 
 					if (registro.get("APELLIDOS2")!=null) form.setSegundoApellidoDenunciado((String) registro.get("APELLIDOS2")); 
 					if (registro.get("NIFCIF")!=null) form.setNifDenunciado((String) registro.get("NIFCIF")); 
+					
+					// Obtenemos datos del colegiado de la institución del expediente
+					form.setnColDenunciado("");
+			        Hashtable hashCol = new Hashtable();
+			        CenColegiadoAdm colAdm = new CenColegiadoAdm (this.getUserBean(request));
+			        hashCol.put(CenColegiadoBean.C_IDINSTITUCION,this.getIDInstitucion(request).toString());
+			        hashCol.put(CenColegiadoBean.C_IDPERSONA,new Long(idpersona));
+			        Vector datosCol = colAdm.select(hashCol);			        
+			        if(datosCol!=null && datosCol.size()>0){
+			        	CenColegiadoBean cBean = (CenColegiadoBean)datosCol.elementAt(0);
+			        	form.setnColDenunciado(cBean.getNColegiado());
+			        } 
+					
 					
 				}
 				

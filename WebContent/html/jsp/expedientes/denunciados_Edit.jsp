@@ -20,7 +20,7 @@
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.ExpDenunciadoBean"%>
-<%@ page import="com.siga.expedientes.form.ExpDenunciadoForm"%>
+<%@ page import="com.siga.expedientes.form.ExpDireccionDenunciadoForm"%>
 <%@ page import="java.util.Properties"%>
 
 <!-- JSP -->
@@ -29,7 +29,7 @@
 	HttpSession ses=request.getSession();
 	UsrBean userBean = ((UsrBean)ses.getAttribute(("USRBEAN")));
 	
-	ExpDenunciadoForm form = (ExpDenunciadoForm)request.getAttribute("ExpDenunciadoForm");
+	ExpDireccionDenunciadoForm form = (ExpDireccionDenunciadoForm)request.getAttribute("ExpDireccionDenunciadoForm");
 	String pob = form.getPoblacion();
 	if (pob==null || pob.trim().equals("")) {
 		pob = form.getPoblacionExt();
@@ -73,7 +73,7 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 		
 	<!-- Validaciones en Cliente -->
-	<html:javascript formName="ExpDenunciadoForm" staticJavascript="false" />  
+	<html:javascript formName="ExpDireccionDenunciadoForm" staticJavascript="false" />  
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
     <script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
 	
@@ -90,7 +90,7 @@
 	<table class="tablaTitulo" cellspacing="0">
 		<tr>
 			<td id="titulo" class="titulosPeq">
-				<% ExpDenunciadoForm f = (ExpDenunciadoForm)request.getAttribute("ExpDenunciadoForm"); %>
+				<% ExpDireccionDenunciadoForm f = (ExpDireccionDenunciadoForm)request.getAttribute("ExpDireccionDenunciadoForm"); %>
 				<%=f.getTituloVentana()%>
 			</td>
 		</tr>
@@ -104,7 +104,7 @@
 
 	<table  class="tablaCentralCamposMedia"  align="center">
 
-	<html:form action="/EXP_Auditoria_Denunciado" method="POST" target="submitArea">
+	<html:form action="/EXP_Auditoria_Direccion_Denunciado" method="POST" target="submitArea">
 	
 	<html:hidden property = "hiddenFrame" value = "1"/>
 	
@@ -136,13 +136,13 @@
 				<siga:Idioma key="expedientes.auditoria.literal.nombre"/>&nbsp;(*)
 			</td>				
 			<td>
-				<html:text name="ExpDenunciadoForm" property="nombre" styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDireccionDenunciadoForm" property="nombre" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.primerapellido"/>&nbsp;(*)
 			</td>
 			<td>
-				<html:text name="ExpDenunciadoForm" property="primerApellido" styleClass="boxConsulta" readonly="true"></html:text>				
+				<html:text name="ExpDireccionDenunciadoForm" property="primerApellido" styleClass="boxConsulta" readonly="true"></html:text>				
 			</td>
 
 		</tr>
@@ -154,13 +154,13 @@
 				<siga:Idioma key="expedientes.auditoria.literal.segundoapellido"/>&nbsp;(*)
 			</td>
 			<td>
-				<html:text name="ExpDenunciadoForm" property="segundoApellido" styleClass="boxConsulta" readonly="true"></html:text>				
+				<html:text name="ExpDireccionDenunciadoForm" property="segundoApellido" styleClass="boxConsulta" readonly="true"></html:text>				
 			</td>	
 			<td class="labelText">
 				<siga:Idioma key="expedientes.auditoria.literal.nif"/>
 			</td>				
 			<td>				
-				<html:text name="ExpDenunciadoForm" property="nif" styleClass="boxConsulta" readonly="true"></html:text>
+				<html:text name="ExpDireccionDenunciadoForm" property="nif" styleClass="boxConsulta" readonly="true"></html:text>
 			</td>
 		</tr>
 		
@@ -200,7 +200,7 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 			<siga:Idioma key="expedientes.auditoria.literal.direccion"/>
 		</td>				
 		<td colspan="3">
-			<html:textarea cols="90" rows="2"  property="direccion"  name="ExpDenunciadoForm"  onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)" styleClass="boxConsulta" readonly="true"></html:textarea>
+			<html:textarea cols="90" rows="2"  property="direccion"  name="ExpDireccionDenunciadoForm"  onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)" styleClass="boxConsulta" readonly="true"></html:textarea>
 		</td>	
 		</tr>		
 		
@@ -211,13 +211,13 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 			<siga:Idioma key="expedientes.auditoria.literal.poblacion"/>
 		</td>				
 		<td>
-			<html:text name="ExpDenunciadoForm" property="poblacion" size="30" maxlength="100" styleClass="boxConsulta" value="<%=pob%>"> readonly="true"></html:text>
+			<html:text name="ExpDireccionDenunciadoForm" property="poblacion" size="30" maxlength="100" styleClass="boxConsulta" value="<%=pob%>"> readonly="true"></html:text>
 		</td>
 		<td class="labelText">
 			<siga:Idioma key="expedientes.auditoria.literal.codigopostal"/>
 		</td>		
 		<td>
-			<html:text name="ExpDenunciadoForm" property="cpostal" size="5" maxlength="5" styleClass="boxConsulta" readonly="true"></html:text>
+			<html:text name="ExpDireccionDenunciadoForm" property="cpostal" size="5" maxlength="5" styleClass="boxConsulta" readonly="true"></html:text>
 		</td>
 		</tr>
 				
@@ -227,13 +227,13 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 			<siga:Idioma key="expedientes.auditoria.literal.provincia"/>
 		</td>				
 		<td>
-			<html:text name="ExpDenunciadoForm" property="provincia" size="20" maxlength="100" styleClass="boxConsulta" readonly="true"></html:text>
+			<html:text name="ExpDireccionDenunciadoForm" property="provincia" size="20" maxlength="100" styleClass="boxConsulta" readonly="true"></html:text>
 		</td>
 		<td class="labelText">
 			<siga:Idioma key="expedientes.auditoria.literal.pais"/>
 		</td>				
 		<td>
-			<html:text name="ExpDenunciadoForm" property="pais" size="20" maxlength="100" styleClass="boxConsulta" readonly="true"></html:text>
+			<html:text name="ExpDireccionDenunciadoForm" property="pais" size="20" maxlength="100" styleClass="boxConsulta" readonly="true"></html:text>
 		</td>				
 		</tr>
 		
@@ -243,7 +243,7 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 			<siga:Idioma key="expedientes.auditoria.literal.telefono"/>
 		</td>				
 		<td colspan="2">
-			<html:text name="ExpDenunciadoForm" property="telefono" size="14" maxlength="20" styleClass="boxConsulta" readonly="true"></html:text>
+			<html:text name="ExpDireccionDenunciadoForm" property="telefono" size="14" maxlength="20" styleClass="boxConsulta" readonly="true"></html:text>
 		</td>
 		<td></td>
 		</tr>
@@ -326,24 +326,38 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 		{
 		
 			sub();		
-			if (validateExpDenunciadoForm(document.ExpDenunciadoForm)){
-				if(document.ExpDenunciadoForm.modal.value){
-					document.ExpDenunciadoForm.modo.value=document.ExpDenunciadoForm.modal.value;
-				}else{
-					<%if (accion.equals("nuevo")){%>
-						document.ExpDenunciadoForm.modo.value="insertar";
-					<%}else{%>
-						document.ExpDenunciadoForm.modo.value="modificar";
-					<%}%>
-				}
+			<%String origen = (String)request.getAttribute("origen");
+				if(origen != null && !"".equalsIgnoreCase(origen) && "EJG".equalsIgnoreCase(origen)){%>
 				
-				ExpDenunciadoForm.submit();
-			}else{
-			
-				fin();
-				return false;
-			
-			}									
+				
+					if (validateExpDireccionDenunciadoForm(document.ExpDireccionDenunciadoForm)){
+						document.ExpDireccionDenunciadoForm.modo.value="seleccion";
+						ExpDireccionDenunciadoForm.submit();
+					}else{
+						fin();
+						return false;
+					}						
+				
+			<%}else{%>
+					if (validateExpDireccionDenunciadoForm(document.ExpDireccionDenunciadoForm)){
+					
+						if(document.ExpDireccionDenunciadoForm.modal.value){
+							document.ExpDireccionDenunciadoForm.modo.value=document.ExpDireccionDenunciadoForm.modal.value;
+						}else{
+							<%if (accion.equals("nuevo")){%>
+								document.ExpDireccionDenunciadoForm.modo.value="insertar";
+							<%}else{%>
+								document.ExpDireccionDenunciadoForm.modo.value="modificar";
+							<%}%>
+						}
+						
+						ExpDireccionDenunciadoForm.submit();
+					}else{
+						fin();
+						return false;
+					}						
+			<%}%>
+							
 		}
 
 		//Asociada al boton Cerrar -->
@@ -355,7 +369,7 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 		//Asociada al boton Restablecer -->
 		function accionRestablecer() 
 		{		
-			document.ExpDenunciadoForm.reset();
+			document.ExpDireccionDenunciadoForm.reset();
 		}
 	
 	
@@ -369,37 +383,37 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 			
 			var resultado=ventaModalGeneral("busquedaClientesModalForm","G");
 			if (resultado!=undefined && resultado[0]!=undefined ){
-				document.ExpDenunciadoForm.idPersona.value       = resultado[0];
-				document.ExpDenunciadoForm.idInstitucion.value   = resultado[1];
-				document.ExpDenunciadoForm.numColegiado.value   =  resultado[2];
-				document.ExpDenunciadoForm.nif.value             = resultado[3];
-				document.ExpDenunciadoForm.nombre.value          = resultado[4];
-				document.ExpDenunciadoForm.primerApellido.value  = resultado[5];
-				document.ExpDenunciadoForm.segundoApellido.value = resultado[6]; 
+				document.ExpDireccionDenunciadoForm.idPersona.value       = resultado[0];
+				document.ExpDireccionDenunciadoForm.idInstitucion.value   = resultado[1];
+				document.ExpDireccionDenunciadoForm.numColegiado.value   =  resultado[2];
+				document.ExpDireccionDenunciadoForm.nif.value             = resultado[3];
+				document.ExpDireccionDenunciadoForm.nombre.value          = resultado[4];
+				document.ExpDireccionDenunciadoForm.primerApellido.value  = resultado[5];
+				document.ExpDireccionDenunciadoForm.segundoApellido.value = resultado[6]; 
 
 				document.RemitentesForm.idInstitucion.value   = resultado[1];  // para la busqueda de direcciones
 				document.RemitentesForm.idPersona.value   = resultado[0];
 				
 				// Si tiene una unica direccion, la seleccionamos. Sino resetamos la direccion
 				if (resultado[7] != undefined) {
-					document.ExpDenunciadoForm.direccion.value   = resultado[7];
-					document.ExpDenunciadoForm.poblacion.value   = resultado[8];
-					document.ExpDenunciadoForm.provincia.value   = resultado[9];
-					document.ExpDenunciadoForm.pais.value        = resultado[10];
-					document.ExpDenunciadoForm.cpostal.value     = resultado[11];
-					document.ExpDenunciadoForm.idDireccion.value = resultado[12];
+					document.ExpDireccionDenunciadoForm.direccion.value   = resultado[7];
+					document.ExpDireccionDenunciadoForm.poblacion.value   = resultado[8];
+					document.ExpDireccionDenunciadoForm.provincia.value   = resultado[9];
+					document.ExpDireccionDenunciadoForm.pais.value        = resultado[10];
+					document.ExpDireccionDenunciadoForm.cpostal.value     = resultado[11];
+					document.ExpDireccionDenunciadoForm.idDireccion.value = resultado[12];
 
-					if (trim(resultado[13])=="") document.ExpDenunciadoForm.telefono.value=resultado[14]; // el movil
-					else document.ExpDenunciadoForm.telefono.value=resultado[13];
+					if (trim(resultado[13])=="") document.ExpDireccionDenunciadoForm.telefono.value=resultado[14]; // el movil
+					else document.ExpDireccionDenunciadoForm.telefono.value=resultado[13];
 				}
 				else {
-					document.ExpDenunciadoForm.direccion.value="";
-					document.ExpDenunciadoForm.poblacion.value="";
-					document.ExpDenunciadoForm.provincia.value="";
-					document.ExpDenunciadoForm.pais.value="";
-					document.ExpDenunciadoForm.cpostal.value="";
-					document.ExpDenunciadoForm.idDireccion.value="";
-					document.ExpDenunciadoForm.telefono.value="";
+					document.ExpDireccionDenunciadoForm.direccion.value="";
+					document.ExpDireccionDenunciadoForm.poblacion.value="";
+					document.ExpDireccionDenunciadoForm.provincia.value="";
+					document.ExpDireccionDenunciadoForm.pais.value="";
+					document.ExpDireccionDenunciadoForm.cpostal.value="";
+					document.ExpDireccionDenunciadoForm.idDireccion.value="";
+					document.ExpDireccionDenunciadoForm.telefono.value="";
 				}
 			}		
 		}
@@ -408,12 +422,12 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 		function buscarDireccion() 
 		{
 		    
-		    if(document.ExpDenunciadoForm.idPersona.value.length == 0) {					
+		    if(document.ExpDireccionDenunciadoForm.idPersona.value.length == 0) {					
 				alert ('<siga:Idioma key="factSJCS.resumenPagos.literal.seleccionarPersona"/>');
 				return;
 			}
-			document.RemitentesForm.idPersona.value     = document.ExpDenunciadoForm.idPersona.value;
-			document.RemitentesForm.idInstitucion.value = document.ExpDenunciadoForm.idInstitucion.value;
+			document.RemitentesForm.idPersona.value     = document.ExpDireccionDenunciadoForm.idPersona.value;
+			document.RemitentesForm.idInstitucion.value = document.ExpDireccionDenunciadoForm.idInstitucion.value;
 			
 				
 			document.RemitentesForm.idTipoEnvio.value = "-1";		
@@ -421,16 +435,16 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 			
 			var direccion = ventaModalGeneral("RemitentesForm","G");
 			if (direccion!=undefined && direccion[0]!=undefined) {
-				document.ExpDenunciadoForm.direccion.value=direccion[0];
-				document.ExpDenunciadoForm.poblacion.value=direccion[1];
-				document.ExpDenunciadoForm.provincia.value=direccion[2];
-				document.ExpDenunciadoForm.pais.value=direccion[3];
-				document.ExpDenunciadoForm.cpostal.value=direccion[4];
-				document.ExpDenunciadoForm.idDireccion.value=direccion[11];
+				document.ExpDireccionDenunciadoForm.direccion.value=direccion[0];
+				document.ExpDireccionDenunciadoForm.poblacion.value=direccion[1];
+				document.ExpDireccionDenunciadoForm.provincia.value=direccion[2];
+				document.ExpDireccionDenunciadoForm.pais.value=direccion[3];
+				document.ExpDireccionDenunciadoForm.cpostal.value=direccion[4];
+				document.ExpDireccionDenunciadoForm.idDireccion.value=direccion[11];
 				jQuery("#direccionBaja").hide();
 
-				if (trim(direccion[13])=="") document.ExpDenunciadoForm.telefono.value=direccion[14]; // el movil
-				else document.ExpDenunciadoForm.telefono.value=direccion[13];
+				if (trim(direccion[13])=="") document.ExpDireccionDenunciadoForm.telefono.value=direccion[14]; // el movil
+				else document.ExpDireccionDenunciadoForm.telefono.value=direccion[13];
 			} 
 		//alert(document.ExpDenunciadoForm.idPersona.value.length);
 		return;
@@ -439,12 +453,12 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 		function nuevaDireccion() 
 		{
 			
-			if(document.ExpDenunciadoForm.idPersona.value.length == 0) {					
+			if(document.ExpDireccionDenunciadoForm.idPersona.value.length == 0) {					
 					alert ('<siga:Idioma key="factSJCS.resumenPagos.literal.seleccionarPersona"/>');
 					return;
 				}
-			document.consultaDireccionesForm.idPersona.value = document.ExpDenunciadoForm.idPersona.value;
-			document.consultaDireccionesForm.idInstitucion.value = document.ExpDenunciadoForm.idInstitucion.value;
+			document.consultaDireccionesForm.idPersona.value = document.ExpDireccionDenunciadoForm.idPersona.value;
+			document.consultaDireccionesForm.idInstitucion.value = document.ExpDireccionDenunciadoForm.idInstitucion.value;
 			
 			document.consultaDireccionesForm.vieneDe.value = '1';
 			
@@ -452,18 +466,18 @@ if (accion.equals("nuevo")||accion.equals("edicionDenunciado")){
 			
 	    	var direccion = ventaModalGeneral(document.consultaDireccionesForm.name, "G");
 	    	if(direccion){
-	    	document.ExpDenunciadoForm.direccion.value=direccion[0];
+	    	document.ExpDireccionDenunciadoForm.direccion.value=direccion[0];
 	    	
-	    	if (trim(direccion[1])=="") document.ExpDenunciadoForm.poblacion.value=direccion[15]; // el movil
-				else document.ExpDenunciadoForm.poblacion.value=direccion[1];
-				document.ExpDenunciadoForm.poblacion.value=direccion[1];
-				document.ExpDenunciadoForm.provincia.value=direccion[2];
-				document.ExpDenunciadoForm.pais.value=direccion[3];
-				document.ExpDenunciadoForm.cpostal.value=direccion[4];
-				document.ExpDenunciadoForm.idDireccion.value=direccion[11];
+	    	if (trim(direccion[1])=="") document.ExpDireccionDenunciadoForm.poblacion.value=direccion[15]; // el movil
+				else document.ExpDireccionDenunciadoForm.poblacion.value=direccion[1];
+				document.ExpDireccionDenunciadoForm.poblacion.value=direccion[1];
+				document.ExpDireccionDenunciadoForm.provincia.value=direccion[2];
+				document.ExpDireccionDenunciadoForm.pais.value=direccion[3];
+				document.ExpDireccionDenunciadoForm.cpostal.value=direccion[4];
+				document.ExpDireccionDenunciadoForm.idDireccion.value=direccion[11];
 
-				if (trim(direccion[13])=="") document.ExpDenunciadoForm.telefono.value=direccion[14]; // el movil
-				else document.ExpDenunciadoForm.telefono.value=direccion[13];
+				if (trim(direccion[13])=="") document.ExpDireccionDenunciadoForm.telefono.value=direccion[14]; // el movil
+				else document.ExpDireccionDenunciadoForm.telefono.value=direccion[13];
 			}else{
 				accionCerrar();
 			}

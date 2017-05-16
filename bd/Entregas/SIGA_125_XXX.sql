@@ -893,3 +893,7 @@ F_SIGA_GETEJG_DESIGNA
 
 Pkg_Siga_Censo
 
+ insert into gen_procesos 
+(IDPROCESO, IDMODULO, TRAZA, TARGET, FECHAMODIFICACION, USUMODIFICACION, DESCRIPCION,TRANSACCION,IDPARENT,NIVEL) 
+            values ('315','AUDITEXP',1,'Y',sysdate,0,'HIDDEN_Denunciado Direccion','EXP_Auditoria_Direccion_Denunciado','42',10);
+

@@ -24,14 +24,14 @@
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.Hashtable"%>
 <!-- JSP -->
-<bean:define id="idPersona" name="ExpDenunciadoForm" property="idPersona" type="java.lang.String"/>
-<bean:define id="idDireccion" name="ExpDenunciadoForm" property="idDireccion" type="java.lang.String"/>
-<bean:define id="nombre" name="ExpDenunciadoForm" property="nombre" type="java.lang.String"/>
-<bean:define id="primerApellido" name="ExpDenunciadoForm" property="primerApellido" type="java.lang.String"/>
-<bean:define id="segundoApellido" name="ExpDenunciadoForm" property="segundoApellido" type="java.lang.String"/>
-<bean:define id="nif" name="ExpDenunciadoForm" property="nif" type="java.lang.String"/>
-<bean:define id="numColegiado" name="ExpDenunciadoForm" property="numColegiado" type="java.lang.String"/>
-<bean:define id="idInstitucion" name="ExpDenunciadoForm" property="idInstitucion" type="java.lang.String"/>
+<bean:define id="idPersona" name="ExpDireccionDenunciadoForm" property="idPersona" type="java.lang.String"/>
+<bean:define id="idDireccion" name="ExpDireccionDenunciadoForm" property="idDireccion" type="java.lang.String"/>
+<bean:define id="nombre" name="ExpDireccionDenunciadoForm" property="nombre" type="java.lang.String"/>
+<bean:define id="primerApellido" name="ExpDireccionDenunciadoForm" property="primerApellido" type="java.lang.String"/>
+<bean:define id="segundoApellido" name="ExpDireccionDenunciadoForm" property="segundoApellido" type="java.lang.String"/>
+<bean:define id="nif" name="ExpDireccionDenunciadoForm" property="nif" type="java.lang.String"/>
+<bean:define id="numColegiado" name="ExpDireccionDenunciadoForm" property="numColegiado" type="java.lang.String"/>
+<bean:define id="idInstitucion" name="ExpDireccionDenunciadoForm" property="idInstitucion" type="java.lang.String"/>
 
 
 

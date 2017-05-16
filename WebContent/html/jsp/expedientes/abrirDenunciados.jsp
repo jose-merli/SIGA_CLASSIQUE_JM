@@ -26,7 +26,7 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
-<%@ page import="com.siga.expedientes.form.ExpDenunciadoForm"%>
+<%@ page import="com.siga.expedientes.form.ExpDireccionDenunciadoForm"%>
 
 <!-- JSP -->
 <% 
@@ -95,7 +95,7 @@
 	
 
 		<table class="tablaTitulo" align="center" cellspacing="0">
-		<html:form action="/EXP_Auditoria_Denunciado.do" method="POST" target="submitArea">
+		<html:form action="/EXP_Auditoria_Direccion_Denunciado" method="POST" target="submitArea">
 			<html:hidden property = "modo"/>
 			<html:hidden property = "hiddenFrame" value = "1"/>
 			
@@ -111,7 +111,7 @@
 			<html:hidden property = "idInstitucion_TipoExpediente" value = "<%=idInstitucion_TipoExpediente%>"/>
 			<tr>
 				<td id="titulo" class="titulitosDatos">
-					<% ExpDenunciadoForm f = (ExpDenunciadoForm)request.getAttribute("ExpDenunciadoForm"); %>
+					<% ExpDireccionDenunciadoForm f = (ExpDireccionDenunciadoForm)request.getAttribute("ExpDireccionDenunciadoForm"); %>
 					<%=f.getTituloVentana()%>
 					<html:hidden property = "tituloVentana" value = "<%=f.getTituloVentana()%>"/>
 				</td>
@@ -234,13 +234,13 @@
 		{		
 			var resultado=ventaModalGeneral("busquedaCensoModalForm","G");
 			if (resultado!=undefined && resultado[0]!=undefined ){
-				document.ExpDenunciadoForm.idPersona.value=resultado[0];
-				document.ExpDenunciadoForm.numColegiado.value=resultado[1];
-				document.ExpDenunciadoForm.idInstitucionOrigen.value=resultado[5];
-				document.ExpDenunciadoForm.idDireccion.value=resultado[7];
-				document.ExpDenunciadoForm.modo.value="insertar";
+				document.ExpDireccionDenunciadoForm.idPersona.value=resultado[0];
+				document.ExpDireccionDenunciadoForm.numColegiado.value=resultado[1];
+				document.ExpDireccionDenunciadoForm.idInstitucionOrigen.value=resultado[5];
+				document.ExpDireccionDenunciadoForm.idDireccion.value=resultado[7];
+				document.ExpDireccionDenunciadoForm.modo.value="insertar";
 				
-				document.ExpDenunciadoForm.submit();
+				document.ExpDireccionDenunciadoForm.submit();
 				refrescarLocal();
 			}		
 		}

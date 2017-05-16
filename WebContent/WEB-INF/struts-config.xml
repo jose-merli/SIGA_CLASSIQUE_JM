@@ -139,6 +139,7 @@
 		<form-bean name="ExpDatosGeneralesForm" type="com.siga.expedientes.form.ExpDatosGeneralesForm"/>
 		<form-bean name="ExpDenuncianteForm" type="com.siga.expedientes.form.ExpDenuncianteForm"/>
 		<form-bean name="ExpDenunciadoForm" type="com.siga.expedientes.form.ExpDenunciadoForm"/>
+		<form-bean name="ExpDireccionDenunciadoForm" type="com.siga.expedientes.form.ExpDireccionDenunciadoForm"/>
 		<form-bean name="ExpAlertaForm" type="com.siga.expedientes.form.ExpAlertaForm"/>
 		<form-bean name="ExpPartesForm" type="com.siga.expedientes.form.ExpPartesForm"/>
 		<form-bean name="ExpDocumentacionForm" type="com.siga.expedientes.form.ExpDocumentacionForm"/>
@@ -1675,6 +1676,11 @@
 		</action>
 		<action path="/EXP_Auditoria_Denunciado" type="com.siga.expedientes.action.ExpDenunciadoAction" name="ExpDenunciadoForm" scope="request">
 			<forward name="inicio" path="/html/jsp/expedientes/abrirDenunciados.jsp"/>
+			<forward name="mostrar" path="/html/jsp/expedientes/denunciados_Edit.jsp"/>
+			<forward name="seleccion" path="/html/jsp/expedientes/seleccionDenunciado.jsp"/>
+		</action>
+		
+		<action path="/EXP_Auditoria_Direccion_Denunciado" type="com.siga.expedientes.action.ExpDenunciadoDireccionAction" name="ExpDireccionDenunciadoForm" scope="request">
 			<forward name="mostrar" path="/html/jsp/expedientes/denunciados_Edit.jsp"/>
 			<forward name="seleccion" path="/html/jsp/expedientes/seleccionDenunciado.jsp"/>
 		</action>
