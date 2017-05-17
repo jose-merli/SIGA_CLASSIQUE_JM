@@ -896,4 +896,14 @@ Pkg_Siga_Censo
  insert into gen_procesos 
 (IDPROCESO, IDMODULO, TRAZA, TARGET, FECHAMODIFICACION, USUMODIFICACION, DESCRIPCION,TRANSACCION,IDPARENT,NIVEL) 
             values ('315','AUDITEXP',1,'Y',sysdate,0,'HIDDEN_Denunciado Direccion','EXP_Auditoria_Direccion_Denunciado','42',10);
+            
+            
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('gratuita.gestionInscripciones.error.baja.colegiados', 'Sólo se pueden validar solicitudes del mismo colegiado', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('gratuita.gestionInscripciones.error.baja.colegiados', 'Sólo se pueden validar solicitudes del mismo colegiado#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('gratuita.gestionInscripciones.error.baja.colegiados', 'Sólo se pueden validar solicitudes del mismo colegiado#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('gratuita.gestionInscripciones.error.baja.colegiados', 'Sólo se pueden validar solicitudes del mismo colegiado#GL', '0', 4, Sysdate, 0, '19');
 

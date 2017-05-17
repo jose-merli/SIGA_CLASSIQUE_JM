@@ -78,25 +78,12 @@
 				
 				document.getElementById("estadoBusqueda").value = document.InscripcionTGForm.estado.value;
 				if(!isRefrescar){
-					if(jQuery("#comboTipoSolicitud").val()=="A"){
-						if(document.InscripcionTGForm.idPersona.value==''){
-							if(!confirm('<siga:Idioma key="messages.general.aviso.sinletradoseleccionado"/>')) {
-							return 'cancel';
-							}
-						}
-				 	}else{
-				 		if(document.InscripcionTGForm.idPersona.value==''){
-							var mensaje = "<siga:Idioma key="gratuita.nuevaAsistencia.mensaje.alert7"/>";
-							alert (mensaje);
-							fin();					
-							return false;
-							/*if(!confirm('<siga:Idioma key="messages.general.aviso.sinletradoseleccionado"/>')) {
-									return 'cancel';
-							 }*/
-							
-						}
-				 	}
-					
+					if(document.InscripcionTGForm.idPersona.value==''){
+						if(!confirm('<siga:Idioma key="messages.general.aviso.sinletradoseleccionado"/>')) {
+								return 'cancel';
+						 }
+						
+					}
 				}
 				sub();
 				isRefrescar = false;
@@ -335,6 +322,8 @@
 				
 				var datos='';
 				var estadoFinal="";
+				var accesoPrimeraVez=true;
+				var idPersonaAux="";
 				for (fila = 0; fila < ele.length; fila++) {
 				    if(ele[fila].checked){
 						var idInstitucion = 'idInstitucion_' + fila ;
@@ -363,6 +352,16 @@
 					   	idInstitucion = document.getElementById(idInstitucion).value;
 					   	
 					   	idPersona = document.getElementById(idPersona).value;
+					   	if(accesoPrimeraVez){
+					   		accesoPrimeraVez=false;
+					   		idPersonaAux=idPersona;
+					   	}
+					   	if(jQuery("#comboTipoSolicitud").val()=="B"){
+						   	if(idPersona != idPersonaAux){ 
+						   		alert('<siga:Idioma key="gratuita.gestionInscripciones.error.baja.colegiados"/>');
+								return false;
+						   	}
+					   	}
 					   	
 					   	idTurno = document.getElementById(idTurno).value;
 					   	
