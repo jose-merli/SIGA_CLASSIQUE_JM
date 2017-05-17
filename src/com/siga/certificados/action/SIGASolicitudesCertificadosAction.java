@@ -990,6 +990,16 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 								contadorErrores++;
 								cerSolicitudCertificadosService.updateMaxivoCasoDeError(listaCerSolicitudcertificados);
 
+							}catch (Exception e) {
+								ClsLogging.writeFileLog("ERROR EN APROBAR Y GENERAR PDF MASIVO MENOS DE 20.:" + nombreSolicitud
+										+ " Error: Error genérico"+ ((Exception) e).getMessage(), 3);
+								
+								log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), e.getMessage() });
+								/** Escribiendo fichero de log **/
+								if (log != null)
+									log.flush();
+								contadorErrores++;
+								cerSolicitudCertificadosService.updateMaxivoCasoDeError(listaCerSolicitudcertificados);
 							}
 
 							((File) listaDeObjetos.get("fIn")).delete(); // Se
