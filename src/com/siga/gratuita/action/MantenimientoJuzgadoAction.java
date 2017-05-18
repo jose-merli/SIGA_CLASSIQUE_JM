@@ -248,7 +248,7 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 			else
 				hashJuzgadoModificado.put(ScsJuzgadoBean.C_VISIBLEMOVIL,"0");	
 			
-			if(miForm.getPutDecano() != null && miForm.getPutDecano().equalsIgnoreCase("S"))
+			if(miForm.getPutDecano() != null && (miForm.getPutDecano().equalsIgnoreCase("S") || miForm.getPutDecano().equalsIgnoreCase("1")))
 				hashJuzgadoModificado.put(ScsJuzgadoBean.C_ESDECANO,"1");
 			else
 				hashJuzgadoModificado.put(ScsJuzgadoBean.C_ESDECANO,"0");			
