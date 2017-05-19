@@ -356,7 +356,7 @@
 					   		accesoPrimeraVez=false;
 					   		idPersonaAux=idPersona;
 					   	}
-					   	if(jQuery("#comboTipoSolicitud").val()=="B"){
+					   	if(jQuery("#comboTipoSolicitud").val()=="B" && jQuery("#comboEstado").val()=="P"){
 						   	if(idPersona != idPersonaAux){ 
 						   		alert('<siga:Idioma key="gratuita.gestionInscripciones.error.baja.colegiados"/>');
 								return false;
@@ -499,7 +499,7 @@
 							<siga:Idioma key="gratuita.gestionInscripciones.estado"/>
 						</td>
 						<td>
-							<html:select property="estado" styleClass="boxCombo">						
+							<html:select property="estado" styleClass="boxCombo" styleId="comboEstado">						
 								<html:option value="S"><siga:Idioma key="general.combo.seleccionar"/></html:option>
 								<html:option value="P"><siga:Idioma key="gratuita.gestionInscripciones.estado.pendiente"/></html:option>
 								<html:option value="C"><siga:Idioma key="gratuita.gestionInscripciones.estado.confirmada"/></html:option>
