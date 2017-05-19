@@ -906,4 +906,6 @@ Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodif
 Values  ('gratuita.gestionInscripciones.error.baja.colegiados', 'Sólo se pueden validar solicitudes del mismo colegiado#EU', '0', 3, Sysdate, 0, '19');
 Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
 Values  ('gratuita.gestionInscripciones.error.baja.colegiados', 'Sólo se pueden validar solicitudes del mismo colegiado#GL', '0', 4, Sysdate, 0, '19');
+ 
+-- Ejecutado en Integracion por AAG el 18/05 a las 17:20
 
