@@ -148,6 +148,7 @@
 	// Las siguientes variables controlaran que se pueda o no Facturar y Anular. Ademas, cuando el control de facturas este activo, el campo 'Siguiente estado' para 'Aprobado' siempre sera 'Finalizado'
 	String controlFacturasSII = (String) request.getAttribute("controlFacturasSII");
 	String hayFacturacionHoy = (String) request.getAttribute("hayFacturacionHoy");
+	String facturado = (String) request.getAttribute("facturado");
 	
 	String botones = "";
 	if(modo.equalsIgnoreCase("ver")){
@@ -173,8 +174,8 @@
 			}
 		} else if(idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)){
 			//Finalizado
-			if (controlFacturasSII.equalsIgnoreCase("1") && !hayFacturacionHoy.equalsIgnoreCase("1")) {
-				botones = "V,RG,G"; //Si hay control de facturas por SII y hoy no toca facturar (tipicamente el ultimo dia del mes), entonces no se puede anular (ya que en este caso, la anulacion implica la emision de una factura rectificativa)
+			if (controlFacturasSII.equalsIgnoreCase("1") && !hayFacturacionHoy.equalsIgnoreCase("1") && facturado.equalsIgnoreCase("1")){ //Si tiene factura
+					botones = "V,RG,G"; //Si hay control de facturas por SII y hoy no toca facturar (tipicamente el ultimo dia del mes), entonces no se puede anular (ya que en este caso, la anulacion implica la emision de una factura rectificativa)
 			} else {
 				botones = "V,RG,AN,G";
 			}

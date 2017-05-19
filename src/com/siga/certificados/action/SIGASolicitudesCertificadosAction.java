@@ -549,6 +549,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 
 			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
 			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(userBean);
+			FacFacturaAdm admFactura = new FacFacturaAdm(userBean);
 			String idInstitucion = "", idSolicitud = "", idEstadoSolicitud = "", tipoCertificado = "";
 			Vector vOcultos = form.getDatosTablaOcultos(0);
 
@@ -638,6 +639,16 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 
 			request.setAttribute("sanciones", textoCertificado);
 			request.setAttribute("solicitud", beanSolicitud);
+			
+			//Comprobamos si el certificado tiene factura o no, esto lo realizamos para mostrar en la edicción el botón anular.
+			Vector<Hashtable<String, Object>> vFacturas = admFactura.obtenerFacturasFacturacionRapida(String.valueOf(beanSolicitud.getIdInstitucion()), null,
+					String.valueOf(beanSolicitud.getIdSolicitud()));
+			if (vFacturas == null || vFacturas.size() == 0) { // No esta facturado
+				request.setAttribute("facturado", "0");
+			}else{
+				request.setAttribute("facturado", "1");
+			}
+																
 			
 			// obteniendo el valor del parametro de control de facturas a la JSP para que actue en consecuencia
 			GenParametrosAdm paramAdm = new GenParametrosAdm(userBean);
