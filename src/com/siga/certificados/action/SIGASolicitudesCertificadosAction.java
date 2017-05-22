@@ -3466,6 +3466,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			// obteniendo registro de contador de BD
 			Hashtable<String, Object> contadorTablaHash = gc.getContador(new Integer(beanSolicitud.getIdInstitucion()), idContador);
 
+			String contadorFinalSugerido="";
 			if (!tieneContador && contadorTablaHash.get("MODO").toString().equals("0")) {
 				// MODO REGISTRO. Se suponen siempre asi estos
 
@@ -3487,7 +3488,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 				Integer longitud = new Integer((contadorTablaHash.get("LONGITUDCONTADOR").toString()));
 				int longitudContador = longitud.intValue();
 				Integer contadorSugerido = new Integer(numContador);
-				String contadorFinalSugerido = UtilidadesString.formatea(contadorSugerido, longitudContador, true);
+				contadorFinalSugerido = UtilidadesString.formatea(contadorSugerido, longitudContador, true);
 
 				// guardando contador en BD
 				gc.setContador(contadorTablaHash, contadorFinalSugerido);
@@ -3505,10 +3506,16 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 				Integer longitud = new Integer((contadorTablaHash.get("LONGITUDCONTADOR").toString()));
 				int longitudContador = longitud.intValue();
 
-				String contadorFinalSugerido = UtilidadesString.formatea(contadorTablaHash.get("CONTADOR").toString(), longitudContador, true);
-				beanSolicitud.setContadorCer(contadorFinalSugerido);
-
+				contadorFinalSugerido = UtilidadesString.formatea(contadorTablaHash.get("CONTADOR").toString(), longitudContador, true);
 			}
+			// devolviendo el contador para la continuacion del proceso
+			htNew.put(CerSolicitudCertificadosBean.C_PREFIJO_CER, (String) contadorTablaHash.get("PREFIJO"));
+			htNew.put(CerSolicitudCertificadosBean.C_SUFIJO_CER, (String) contadorTablaHash.get("SUFIJO"));
+			htNew.put(CerSolicitudCertificadosBean.C_CONTADOR_CER, contadorFinalSugerido);
+
+			beanSolicitud.setPrefijoCer((String) contadorTablaHash.get("PREFIJO"));
+			beanSolicitud.setSufijoCer((String) contadorTablaHash.get("SUFIJO"));
+			beanSolicitud.setContadorCer(contadorFinalSugerido);
 			// aalg: se añade la carga en base de datos dentro de la
 			// sincronización para evitar la pérdida de número de certificado
 			// inc_10359_siga
