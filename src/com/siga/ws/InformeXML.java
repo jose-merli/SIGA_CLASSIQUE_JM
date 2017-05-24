@@ -23,6 +23,7 @@ public abstract class InformeXML {
 	private String cabeceraLog = null;
 	
 	private BufferedWriter bw = null;
+	private String tipoFicheroCAM;
 	
 	protected String getUrlWsJE(String idInstitucion, UsrBean usrBean) throws ClsExceptions {
 		GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);		
@@ -42,12 +43,13 @@ public abstract class InformeXML {
 		return file;
 	}
 	
-	protected String getDirectorioSalida(String directorio, String idInstitucion) {
+	protected String getDirectorioSalida(String directorio, String idInstitucion, String idFacturacion) {
 		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		String rutaAlm = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")
 			+ ClsConstants.FILE_SEP
 			+ directorio + ClsConstants.FILE_SEP
-			+ (idInstitucion.equals("0") ? "2000" : idInstitucion) + ClsConstants.FILE_SEP;
+			+ (idInstitucion.equals("0") ? "2000" : idInstitucion) + ClsConstants.FILE_SEP
+			+ idFacturacion + ClsConstants.FILE_SEP; 
 		return rutaAlm;
 	}
 	
@@ -109,6 +111,14 @@ public abstract class InformeXML {
 
 	protected void setCabeceraLog(String cabeceraLog) {
 		this.cabeceraLog = cabeceraLog;
+	}
+
+	public void setTipoFicheroCAM(String tipoFicheroCAM) {
+		this.tipoFicheroCAM = tipoFicheroCAM;
+	}
+
+	public String getTipoFicheroCAM() {
+		return tipoFicheroCAM;
 	}
 
 }

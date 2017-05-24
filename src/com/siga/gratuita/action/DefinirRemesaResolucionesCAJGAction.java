@@ -105,6 +105,8 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 				mapDestino = obtenerResoluciones(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("obtenerDesignaProcurador")) {
 				mapDestino = obtenerDesignaProcurador(mapping, miForm, request, response);				
+			}else if (accion.equalsIgnoreCase("editarRemesa")) {
+				mapDestino = editarRemesa(mapping, miForm, request, response);				
 			} else {
 				return super.executeInternal(mapping, formulario, request, response);
 			}
@@ -146,7 +148,23 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 				
 		return buscarPor(mapping, formulario, request, response);
 	}
-
+	private String editarRemesa(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		request.getSession().removeAttribute("DATAPAGINADOR");
+	
+		try {
+			DesignacionProcuradorAsigna designacionProcuradorAsigna = new DesignacionProcuradorAsigna();
+			designacionProcuradorAsigna.obtenerDesignaciones(getIDInstitucion(request).shortValue());
+			String mensaje = "message.remesaDesignaProcurador.asigna.esperando";
+			request.setAttribute("mensajeUsuario", UtilidadesString.getMensajeIdioma(getUserBean(request), mensaje));
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error", e, null);
+		}
+				
+		return buscarPor(mapping, formulario, request, response);
+	}
+	
+	
 	private String obtenerResoluciones(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		request.getSession().removeAttribute("DATAPAGINADOR");
 	
@@ -263,6 +281,7 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 								"," + "R." + CajgRemesaResolucionBean.C_FECHARESOLUCION +
 								"," + "R." + CajgRemesaResolucionBean.C_LOGGENERADO +
 								"," + "R." + CajgRemesaResolucionBean.C_IDTIPOREMESA +
+								"," + "R.IDREMESA "+
 								" FROM " + CajgRemesaResolucionBean.T_NOMBRETABLA + " R" +
 								" WHERE R." + CajgRemesaResolucionBean.C_IDINSTITUCION + " = " + this.getIDInstitucion(request) +
 								" AND R." + CajgRemesaResolucionBean.C_IDTIPOREMESA + " = " + miForm.getIdTipoRemesa();						
@@ -539,6 +558,16 @@ public class DefinirRemesaResolucionesCAJGAction extends MasterAction {
 			
 				throw new SIGAException("message.cajg.ficheroValido"); 
 			}
+			//Si es remesa de resultado tiene que ser un txt
+			String nombreFile = formFile.getFileName();
+			String extension = nombreFile.substring(nombreFile.lastIndexOf(".")+1,nombreFile.length());
+			
+			/*if (miForm.getIdTipoRemesa().equals("3") && !extension.equals("txt")){
+				String mensajeString = UtilidadesString.getMensajeIdioma(usr,"messages.ficheros.tipoFicheroErroneo");
+				
+				throw new SIGAException(mensajeString+ " txt"); 
+			}
+			*/
 			
 			//Se comprueba el número de líneas del fichero
 			InputStream fis =formFile.getInputStream();

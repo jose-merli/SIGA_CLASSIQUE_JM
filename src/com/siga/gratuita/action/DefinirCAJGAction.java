@@ -4,12 +4,10 @@
 
 package com.siga.gratuita.action;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +35,6 @@ import com.siga.Utilidades.PaginadorSQLBind;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.AdmLenguajesAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.ScsAsistenciasAdm;
@@ -74,7 +71,6 @@ import com.siga.beans.ScsPersonaJGAdm;
 import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsSOJBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
-import com.siga.beans.ScsSaltosCompensacionesBean;
 import com.siga.beans.ScsUnidadFamiliarEJGAdm;
 import com.siga.beans.ScsUnidadFamiliarEJGBean;
 import com.siga.certificados.Plantilla;
@@ -83,7 +79,6 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.BusquedaCAJG_EJGForm;
 import com.siga.gratuita.form.DefinirEJGForm;
-import com.siga.informes.InformeDefinirEJG;
 
 
 
@@ -125,6 +120,20 @@ public class DefinirCAJGAction extends MasterAction {
 					mapDestino = abrir(mapping, miForm, request, response);						
 				}else if (accion.equalsIgnoreCase("listosParaComision")){
 					mapDestino = listosParaComision(mapping, miForm, request, response);
+					
+				}else if (accion.equalsIgnoreCase("listosCambiarEstado")){
+					mapDestino = listosCambiarEstado(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("buscarInit")){
+					request.getSession().removeAttribute("DATABACKUP");
+			        request.getSession().removeAttribute("DATOSFORMULARIO");
+			        request.getSession().removeAttribute("DATAPAGINADOR");
+			        request.getSession().removeAttribute("accion");
+			        if(!mapping.getPath().equals("/JGR_E-Comunicaciones_EJGPendientes"))
+			        	mapDestino = buscarPor(mapping, miForm, request, response);
+			        else
+			        	mapDestino = buscarPorEjgPendientes(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("buscarPorEjgPendientes")){
+			        	mapDestino = buscarPorEjgPendientes(mapping, miForm, request, response);
 				}else {
 					return super.executeInternal(mapping,
 							      formulario,
@@ -156,7 +165,7 @@ public class DefinirCAJGAction extends MasterAction {
 	}
 	
 	
-protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException  {		
+protected String buscarPorEjgPendientes(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException  {		
 				
 		
 		ScsEJGAdm admBean;		
@@ -192,61 +201,69 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 					request.getSession().setAttribute("EJG_SELECCIONADOS", v_seleccionadosSesion);
 				}
 			}
-			
-		    if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
-			 		databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
-				     PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
-				     Vector datos=new Vector();
 				
-				
-				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
-				String pagina = (String)request.getParameter("pagina");
-				
-				 
-				
-			 if (paginador!=null){	
-				if (pagina!=null){
-					datos = paginador.obtenerPagina(Integer.parseInt(pagina));
-				}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
-					datos = paginador.obtenerPagina((paginador.getPaginaActual()));
-				}
-			 }	
-				
-				databackup.put("paginador",paginador);
-				databackup.put("datos",datos);
-			
-		  }else{	
-				
-			  	databackup=new HashMap();
+			  int rowNumPageSize = 0;
+			  String pagina = (String)request.getParameter("pagina");
+				int page = 1;
+				String registrosPorPagina = null;
+				String numEJGs = null;
+				Vector ejgsPtesEnviarVector = null;
+				String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
+				if(pagina ==null){
+					ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+					registrosPorPagina = properties.returnProperty("paginador.registrosPorPagina", true);
+					rowNumPageSize = Integer.parseInt(registrosPorPagina);
 					
-				//obtengo datos de la consulta 			
-				Vector datos = null;
-				Hashtable htConsultaBind  = admBean.getBindBusquedaMantenimientoEJG(miHash,  miForm, ScsEJGAdm.TipoVentana.BUSQUEDA_PREPARACION_CAJG, idInstitucion,longitudNumEjg);
-				Vector v = admBean.getBusquedaMantenimientoEJG(htConsultaBind);
-				claves = sacarClavesEJG(v, getIDInstitucion(request));
-
-				//	PaginadorBind paginador = new PaginadorBind(consulta);				
-				PaginadorBind paginador = admBean.getPaginadorBusquedaMantenimientoEJG(htConsultaBind);
-				int totalRegistros = paginador.getNumeroTotalRegistros();
-				
-				if (totalRegistros==0){					
-					paginador =null;
+					
+					ejgsPtesEnviarVector = admBean.getEJGPtesEnviar(getBusinessManager(), miHash,miForm);
+					request.getSession().setAttribute(identificadorFormularioBusqueda,ejgsPtesEnviarVector);
+					numEJGs = ""+ejgsPtesEnviarVector.size();
+					
+					request.setAttribute("paginaSeleccionada", page);
+					request.setAttribute("totalRegistros", numEJGs);
+					request.setAttribute("registrosPorPagina", registrosPorPagina);
+				}else{
+					ejgsPtesEnviarVector = (Vector) request.getSession().getAttribute(identificadorFormularioBusqueda);
+					page = Integer.parseInt(request.getParameter("pagina"));
+					request.setAttribute("paginaSeleccionada", page);
+					numEJGs = request.getParameter("totalRegistros").toString();
+					request.setAttribute("totalRegistros", request.getParameter("totalRegistros"));
+					registrosPorPagina = request.getParameter("registrosPorPagina");
+					request.setAttribute("registrosPorPagina",registrosPorPagina );
+					rowNumPageSize = Integer.parseInt(registrosPorPagina);
 				}
-		       	
-				databackup.put("paginador",paginador);
-				if (paginador!=null){ 
-				   datos = paginador.obtenerPagina(1);
-				   
-				   databackup.put("datos",datos);
-				   request.getSession().setAttribute("DATAPAGINADOR",databackup);
-				} 	
-			
-				//resultado = admBean.selectGenerico(consulta);
-				//request.getSession().setAttribute("resultado",v);
+				
+				HashMap<String, Object> paginadorHashMap = new HashMap<String, Object>();
+				paginadorHashMap.put("pagina", String.valueOf(page));
+				paginadorHashMap.put("totalRegistros", numEJGs);
+				paginadorHashMap.put("registrosPorPagina", registrosPorPagina);
+				
+				claves = sacarClavesEJG(ejgsPtesEnviarVector, getIDInstitucion(request));
+				
 				if (claves != null) {
 					request.getSession().setAttribute("EJG_SELECCIONADOS", claves);
 				}
-		  }
+				
+				int rowNumStart = ((page - 1) * rowNumPageSize);
+				int rowNumEnd = ejgsPtesEnviarVector.size();
+				if(ejgsPtesEnviarVector!=null && rowNumEnd>Integer.parseInt(registrosPorPagina)){
+					
+					if(rowNumStart+Integer.parseInt(registrosPorPagina)<rowNumEnd)
+						rowNumEnd = rowNumStart+Integer.parseInt(registrosPorPagina);
+					
+					List list = ejgsPtesEnviarVector.subList(rowNumStart, rowNumEnd);
+					Vector ejgsPtesEnviarVectorSubList = new Vector();
+					ejgsPtesEnviarVectorSubList.addAll(list);
+					paginadorHashMap.put("datos",ejgsPtesEnviarVectorSubList );
+				}else{
+					paginadorHashMap.put("datos",ejgsPtesEnviarVector );
+				}
+				
+				
+				
+				request.setAttribute("DATAPAGINADOR", paginadorHashMap);
+			
+
   		  
 		  // En "DATOSFORMULARIO" almacenamos el identificador del letrado			 			 
 		  miHash.put("BUSQUEDAREALIZADA","1");
@@ -264,6 +281,119 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 		}		
 		return "listarEJG";
 	}
+
+
+protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException  {		
+	
+	
+	ScsEJGAdm admBean;		
+	
+	Hashtable miHash= new Hashtable();
+	String consulta = "";
+	
+	try {
+		String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()); 
+		Vector claves = new Vector();
+		String seleccionados = request.getParameter("Seleccion");
+		
+		BusquedaCAJG_EJGForm miForm = (BusquedaCAJG_EJGForm) formulario;		
+		admBean =  new ScsEJGAdm(this.getUserBean(request));				
+		miHash = miForm.getDatos();
+		//BNS TAG SELECT
+		if (miHash.get("GUARDIATURNO_IDTURNO") != null && !"".equals(miHash.get("GUARDIATURNO_IDTURNO").toString()) && miHash.get("GUARDIATURNO_IDTURNO").toString().startsWith("{")){
+			try {
+				miHash.put("GUARDIATURNO_IDTURNO", UtilidadesString.createHashMap(miHash.get("GUARDIATURNO_IDTURNO").toString()).get("idturno"));
+			} catch (IOException e) {
+				throw new SIGAException(e);
+			}
+		}
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		String idInstitucion= user.getLocation();		
+		HashMap databackup=new HashMap();
+		
+		claves = (Vector) request.getSession().getAttribute("EJG_SELECCIONADOS");
+		Vector v_seleccionadosSesion = new Vector();
+		if (seleccionados != null) {
+			v_seleccionadosSesion = actualizarSelecionados(seleccionados, claves, request);
+			if (v_seleccionadosSesion != null) {
+				request.getSession().setAttribute("EJG_SELECCIONADOS", v_seleccionadosSesion);
+			}
+		}
+		
+	    if (request.getSession().getAttribute("DATAPAGINADOR")!=null){ 
+		 		databackup = (HashMap)request.getSession().getAttribute("DATAPAGINADOR");
+			     PaginadorBind paginador = (PaginadorBind)databackup.get("paginador");
+			     Vector datos=new Vector();
+			
+			
+			//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+			String pagina = (String)request.getParameter("pagina");
+			
+			 
+			
+		 if (paginador!=null){	
+			if (pagina!=null){
+				datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+			}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+				datos = paginador.obtenerPagina((paginador.getPaginaActual()));
+			}
+		 }	
+			
+			databackup.put("paginador",paginador);
+			databackup.put("datos",datos);
+		
+	  }else{	
+			
+		  	databackup=new HashMap();
+				
+			//obtengo datos de la consulta 			
+			Vector datos = null;
+			PaginadorBind paginador = null;
+		
+			Hashtable htConsultaBind  = admBean.getBindBusquedaMantenimientoEJG(miHash,  miForm, ScsEJGAdm.TipoVentana.BUSQUEDA_PREPARACION_CAJG, idInstitucion,longitudNumEjg);
+			Vector v = admBean.getBusquedaMantenimientoEJG(htConsultaBind);
+			claves = sacarClavesEJG(v, getIDInstitucion(request));
+
+			//	PaginadorBind paginador = new PaginadorBind(consulta);				
+			paginador = admBean.getPaginadorBusquedaMantenimientoEJG(htConsultaBind);
+			
+			int totalRegistros = paginador.getNumeroTotalRegistros();
+			
+			if (totalRegistros==0){					
+				paginador =null;
+			}
+	       	
+			databackup.put("paginador",paginador);
+			if (paginador!=null){ 
+			   datos = paginador.obtenerPagina(1);
+			   
+			   databackup.put("datos",datos);
+			   request.getSession().setAttribute("DATAPAGINADOR",databackup);
+			} 	
+		
+			//resultado = admBean.selectGenerico(consulta);
+			//request.getSession().setAttribute("resultado",v);
+			if (claves != null) {
+				request.getSession().setAttribute("EJG_SELECCIONADOS", claves);
+			}
+	  }
+		  
+	  // En "DATOSFORMULARIO" almacenamos el identificador del letrado			 			 
+	  miHash.put("BUSQUEDAREALIZADA","1");
+	  request.getSession().setAttribute("DATOSFORMULARIO",miHash);	
+	  request.getSession().setAttribute("HORABUSQUEDA", UtilidadesBDAdm.getFechaCompletaBD("es"));
+		
+	}catch (ClsExceptions e){
+		throwExcp(e.getMessage(),e,null);
+	}
+	catch (SIGAException e1) {
+		// Excepcion procedente de obtenerPagina cuando se han borrado datos
+		 return exitoRefresco("error.messages.obtenerPagina",request);
+	} catch (Exception e) {
+	   throwExcp("messages.general.error",e,null);
+	}		
+	return "listarEJG";
+}
 	
 	
 	/**
@@ -984,8 +1114,9 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 		/* "DATABACKUP" y "DATOSFORMULARIO" se usan habitualmente así que en primero lugar las borramos esta*/
 		request.getSession().removeAttribute("DATABACKUP");
         request.getSession().removeAttribute("DATOSFORMULARIO");
-        request.getSession().removeAttribute("DATABACKUP");
+        request.getSession().removeAttribute("DATAPAGINADOR");
         request.getSession().removeAttribute("accion");
+        
         return "inicio";           
     } 
 	
@@ -1214,6 +1345,9 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 		Hashtable aux=new Hashtable();
 		
 		Vector claves= new Vector();
+		
+		
+		
 		for (int k=0;k<v.size();k++){
 			aux=null;
 			Hashtable aux2= new Hashtable();
@@ -1284,6 +1418,11 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 		String seleccionados = miForm.getSelDefinitivo();
 		Vector claves = (Vector) request.getSession().getAttribute("EJG_SELECCIONADOS");
 		Vector v_seleccionadosSesion = new Vector();
+		short idEstado = ESTADOS_EJG.LISTO_COMISION.getCodigo() ;
+		if(mapping.getPath().equals("/JGR_E-Comunicaciones_EJGPendientes")){
+			idEstado = ESTADOS_EJG.ESTADO_LISTO_COMISION_ACTUALIZAR_DESIGNACION.getCodigo() ;
+		}
+		
 		if (seleccionados != null && !seleccionados.equals("")) {
 			v_seleccionadosSesion = actualizarSelecionados(seleccionados, claves, request);
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
@@ -1305,7 +1444,7 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 				
 				String sqlInsertEstadoEJG = new String("insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
 						", fechainicio, fechamodificacion, usumodificacion, observaciones, idestadoporejg, automatico)" +
-						" SELECT EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO, '" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + "'" +
+						" SELECT EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO, '" + idEstado+ "'" +
 						", TRUNC(SYSDATE), SYSDATE, " + getUserBean(request).getUserName() + ", NULL, (" + sqlMaxIdEstadoPorEJG + "), 0" +
 						" FROM SCS_EJG EJG" +
 						" WHERE EJG.IDINSTITUCION = " + getIDInstitucion(request) + 
@@ -1368,6 +1507,76 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 			return numRegistrosAnterior != numRegistrosActual;
 		}
 		return false;
+	}
+	
+	
+	protected String listosCambiarEstado(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
+			throws SIGAException {
+		BusquedaCAJG_EJGForm miForm = (BusquedaCAJG_EJGForm) formulario;
+		String seleccionados = miForm.getSelDefinitivo(); 
+		String idEstado= miForm.getIdNuevoEstado();
+		Vector claves = (Vector) request.getSession().getAttribute("EJG_SELECCIONADOS");
+		Vector v_seleccionadosSesion = new Vector();
+		if (seleccionados != null && !seleccionados.equals("")) {
+			v_seleccionadosSesion = actualizarSelecionados(seleccionados, claves, request);
+			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			ScsEstadoEJGAdm admBean = new ScsEstadoEJGAdm(usr);
+			UserTransaction tx = null;
+			try {
+				tx = usr.getTransaction();
+				tx.begin();
+
+				// comprobar si se han insertado nuevos EJG con los criterios de búsqueda
+				String mensaje = "messages.inserted.success";
+				
+				String sqlMaxIdEstadoPorEJG = "SELECT NVL(MAX(IDESTADOPOREJG), 0) + 1" +
+						" FROM SCS_ESTADOEJG E" +
+						" WHERE E.IDINSTITUCION = EJG.IDINSTITUCION" +
+						" AND E.ANIO = EJG.ANIO" +
+						" AND E.NUMERO = EJG.NUMERO" +
+						" AND E.IDTIPOEJG = EJG.IDTIPOEJG";
+				
+				String sqlInsertEstadoEJG = new String("insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
+						", fechainicio, fechamodificacion, usumodificacion, observaciones, idestadoporejg, automatico)" +
+						" SELECT EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO, '" + idEstado + "'" +
+						", TRUNC(SYSDATE), SYSDATE, " + getUserBean(request).getUserName() + ", NULL, (" + sqlMaxIdEstadoPorEJG + "), 0" +
+						" FROM SCS_EJG EJG" +
+						" WHERE EJG.IDINSTITUCION = " + getIDInstitucion(request) + 
+						" AND (1 = 0");
+				
+				
+				int cuenta = 0;
+				StringBuffer sb = new StringBuffer();
+				
+				for (int i = 0; i < v_seleccionadosSesion.size(); i++) {
+
+					Hashtable miHashaux = new Hashtable();
+					miHashaux = (Hashtable) v_seleccionadosSesion.get(i);
+					String seleccionado = (String) miHashaux.get("SELECCIONADO");
+
+					if (seleccionado.equals("1")) {
+						cuenta++;
+						sb.append(" OR (EJG.ANIO = " + miHashaux.get(ScsEJGBean.C_ANIO) +
+								" AND EJG.NUMERO = " + miHashaux.get(ScsEJGBean.C_NUMERO) +
+								" AND EJG.IDTIPOEJG = " + miHashaux.get(ScsEJGBean.C_IDTIPOEJG) + ")");
+						if ((cuenta % 500) == 0) {							
+							admBean.insertSQL(sqlInsertEstadoEJG + sb.toString() + ")");
+							sb = new StringBuffer();							
+						}
+					}
+
+				}
+				admBean.insertSQL(sqlInsertEstadoEJG + sb.toString() + ")");
+				tx.commit();
+				
+				return exitoRefresco(mensaje, request);
+			
+			} catch (Exception e) {
+				throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, tx);
+			}
+
+		}
+		return exitoRefresco("messages.cajg.error.listos", request);
 	}
 	
 	

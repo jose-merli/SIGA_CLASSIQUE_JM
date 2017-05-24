@@ -1968,6 +1968,14 @@ public class InformesGenericosAction extends MasterAction {
 					miForm.setIdInforme(idInformes);
 					return download(mapping, formulario, request, response);
 				}
+			}else if(idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesAcreditacionDeOficio)){
+				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
+					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
+					String idInformes = informeBean.getIdPlantilla()+","+informeBean.getIdInstitucion()+"";
+					miForm.setIdInforme(idInformes);
+					return download(mapping, formulario, request, response);
+				}
+				asunto = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "envios.plantillas.literal.asuntoAcreditacionOficio");
 			}else if(idTipoInforme.equalsIgnoreCase(EnvioInformesGenericos.comunicacionesSancionesLetrado)){
 				if(informeBeans.size()==1&&miForm.getEnviar().equals(ClsConstants.DB_FALSE)){
 					AdmInformeBean informeBean = (AdmInformeBean)informeBeans.get(0);
@@ -2464,6 +2472,8 @@ public class InformesGenericosAction extends MasterAction {
 					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesEjg);
 				}else if (idTipoInforme.equals("REJG")){
 					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesResolucionEjg);
+				}else if (idTipoInforme.equals("CADO")){
+					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesAcreditacionDeOficio);
 				}else if (idTipoInforme.equals("SANC")){
 					mapDestino = informeGenerico(mapping, miForm, request, response,EnvioInformesGenericos.comunicacionesSancionesLetrado);					
 				} else {

@@ -18,9 +18,12 @@ import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.envios.service.SalidaEnviosService;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinicionRemesas_CAJG_Form;
 import com.siga.gratuita.form.DefinirEJGForm;
+
+import es.satec.businessManager.BusinessManager;
 
 //Clase: ScsEJGAdm 
 //Autor: julio.vicente@atosorigin.com
@@ -149,6 +152,104 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			e.printStackTrace();
 		}
 		return new Hashtable();
+	}
+	
+	
+	public Vector getDatosEjgResolucionFavorable (String idInstitucion, String anio, String numero, String idTurno) 
+	{
+		try {
+			StringBuffer sql = new StringBuffer();
+			StringBuffer sql2 = new StringBuffer();
+			Vector v;
+			
+			Hashtable h1 = new Hashtable();
+			h1.put(new Integer(1), idInstitucion);
+			h1.put(new Integer(2), idTurno);
+			h1.put(new Integer(3), anio);
+			h1.put(new Integer(4), numero);
+			
+			Hashtable h2 = new Hashtable();
+			h2.put(new Integer(1), idInstitucion);
+			h2.put(new Integer(2), idTurno);
+			h2.put(new Integer(3), anio);
+			h2.put(new Integer(4), numero);
+			
+			h2.put(new Integer(5), idInstitucion);
+			h2.put(new Integer(6), idTurno);
+			h2.put(new Integer(7), anio);
+			h2.put(new Integer(8), numero);
+			
+			sql2.append("	 Select Per.Nombre, Per.Apellido1, Nvl(Per.Apellido2, '') Apellido2 ");
+			sql2.append("  From Scs_Defendidosdesigna Def, Scs_Personajg Per ");
+			sql2.append(" Where Def.Idinstitucion = Per.Idinstitucion ");
+			sql2.append("   And Def.Idpersona = Per.Idpersona ");
+			sql2.append("   And Def.Idinstitucion =:1 ");
+			sql2.append("   And Def.Idturno =:2 ");
+			sql2.append("   And Def.Anio =:3 ");
+			sql2.append("    And Def.Numero =:4 ");
+			sql2.append(" Order By Apellido1, Apellido2, Nombre ");
+			
+			v = this.selectGenericoBind(sql2.toString(),h1);
+			if(v == null || v.size()<1){
+			
+					sql.append(" Select Per.Nombre, Per.Apellido1, Nvl(Per.Apellido2, '') Apellido2 ");
+					sql.append("  From Scs_Ejgdesigna        Ejgdes, ");
+					sql.append("       Scs_Unidadfamiliarejg Uniejg, ");
+					sql.append("       Scs_Personajg         Per, ");
+					sql.append("       Scs_Ejg Ejg ");
+					sql.append("  Where Ejgdes.Idinstitucion = Uniejg.Idinstitucion ");
+					sql.append("   And Ejgdes.Idtipoejg = Uniejg.Idtipoejg ");
+					sql.append("   And Ejgdes.Anioejg = Uniejg.Anio ");
+					sql.append("   And Ejgdes.Numeroejg = Uniejg.Numero ");
+					sql.append("   And Uniejg.Idinstitucion = Per.Idinstitucion ");
+					sql.append("   And Uniejg.Idpersona = Per.Idpersona ");
+					sql.append("   And Ejgdes.Idinstitucion =:1");
+					sql.append("   And Ejgdes.Idturno =:2");
+					sql.append("   And Ejgdes.Aniodesigna =:3");
+					sql.append("   And Ejgdes.Numerodesigna =:4");
+					sql.append("   and  Ejgdes.Idinstitucion = Ejg.Idinstitucion ");
+					sql.append("   And Ejgdes.Idtipoejg = Ejg.Idtipoejg ");
+					sql.append("   And Ejgdes.Anioejg = Ejg.Anio ");
+					sql.append("   And Ejgdes.Numeroejg = Ejg.Numero ");
+					sql.append(" and ( (EJG.Fecharesolucioncajg is not null and EJG.Idtiporatificacionejg in (1, 2, 8, 10, 9, 11)) ");
+					sql.append("  OR (EJG.Idtiporatificacionejg is null and EJG.Fecharesolucioncajg is null)) ");
+				    
+					sql.append(" Union ");
+				    
+					sql.append(" Select Per.Nombre, Per.Apellido1, Nvl(Per.Apellido2, '') Apellido2 ");
+					sql.append("  From Scs_Ejgdesigna Ejgdes, Scs_Ejg Ejg, Scs_Personajg Per ");
+					sql.append(" Where Ejgdes.Idinstitucion = Ejg.Idinstitucion ");
+					sql.append("   And Ejgdes.Idtipoejg = Ejg.Idtipoejg ");
+					sql.append("   And Ejgdes.Anioejg = Ejg.Anio ");
+					sql.append("   And Ejgdes.Numeroejg = Ejg.Numero ");
+					sql.append("   And Ejg.Idinstitucion = Per.Idinstitucion ");
+					sql.append("   And Ejg.Idpersonajg = Per.Idpersona ");
+					sql.append("   And Ejgdes.Idinstitucion =:5");
+					sql.append("   And Ejgdes.Idturno =:6");
+					sql.append("   And Ejgdes.Aniodesigna=:7");
+					sql.append("   And Ejgdes.Numerodesigna  =:8");
+					sql.append(" and ( (EJG.Fecharesolucioncajg is not null and EJG.Idtiporatificacionejg in (1, 2, 8, 10, 9, 11)) ");
+					sql.append("  OR (EJG.Idtiporatificacionejg is null and EJG.Fecharesolucioncajg is null)) ");
+					sql.append(" Order By Apellido1, Apellido2, Nombre ");
+		
+					 v = this.selectGenericoBind(sql.toString(),h2);
+					
+			}
+			if(v != null && v.size()>0){
+				return v;
+			}else{
+				return null;
+			}
+			
+			
+		}catch (SIGAException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClsExceptions e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return new Vector();
 	}
 
 	
@@ -1361,6 +1462,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	   return paginador;                        
 	
 	}
+	
+	
 	public Vector getBusquedaMantenimientoEJG (Hashtable htConsultaBind)  throws ClsExceptions, SIGAException 
 	{
 		Vector vDatos = null;
@@ -1941,6 +2044,502 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 
 		return hashReturn;
 	}
+	
+
+	
+	public Vector getEJGPtesEnviar(BusinessManager businessManager, Hashtable miHash, DefinirEJGForm miForm) throws BusinessException{
+		Vector datos = new Vector();
+		try {
+			Hashtable htConsultaBind = getBindWhereEJG(miHash, miForm);
+			String consulta = (String) htConsultaBind.get(keyBindConsulta);
+			Hashtable codigos = (Hashtable) htConsultaBind.get(keyBindCodigos);
+			
+			
+			// Acceso a BBDD
+			RowsContainer rc = null;
+			rc = new RowsContainer();
+			if (rc.queryBind(consulta, codigos)) {
+				
+				for (int i = 0; i < rc.size(); i++) {
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = (Hashtable) fila.getRow();
+					String idInstitucion =  (String) registro.get("IDINSTITUCION");
+					String idTipoEjg =  (String) registro.get("IDTIPOEJG");
+					String anio =  (String) registro.get("ANIO");
+					String numero =  (String) registro.get("NUMERO");
+					boolean isExpedientePteEnviarCAJG =  isExpedientePteEnviarCAJG(businessManager, idInstitucion, idTipoEjg, anio, numero);
+					if (isExpedientePteEnviarCAJG)
+						datos.add(registro);
+				}
+			}
+		} catch (Exception e) {
+			throw new BusinessException("Error al ejecutar el 'select' en B.D."
+					+ e.toString());
+		}
+		return datos;
+
+	}
+
+public Hashtable getBindWhereEJG(Hashtable miHash, DefinirEJGForm miForm) throws ClsExceptions,SIGAException{
+		
+		Hashtable hashReturn = new Hashtable(); 
+
+		Hashtable codigos = new Hashtable();
+		int contador=0;
+		boolean isBusquedaExactaSolicitante = miForm.getValorBusquedaExactaSolicitante()!=null && miForm.getValorBusquedaExactaSolicitante().equals(ClsConstants.DB_TRUE);
+		miHash.put("chkBusquedaExactaSolicitante",isBusquedaExactaSolicitante);
+		
+		String where = "";
+		
+			where+= " SELECT EJG.ANIO,	       EJG.NUMERO,     EJG.IDINSTITUCION, ";
+			where+=	" EJG.IDTIPOEJG, EJG.FECHAMODIFICACION,  F_SIGA_GET_IDULTIMOESTADOEJG(EJG.IDINSTITUCION, ";
+			where+=	" EJG.IDTIPOEJG, ";
+			where+=	" EJG.ANIO, ";
+			where+=	" EJG.NUMERO) IDESTADO, ";
+			where+=	" F_SIGA_GET_ULTIMOESTADOEJG(EJG.IDINSTITUCION, ";
+			where+=	" EJG.IDTIPOEJG, ";
+			where+=	" EJG.ANIO, ";
+			where+=	" EJG.NUMERO) DESC_ESTADO ";
+			where+=	" ,EJG.GUARDIATURNO_IDTURNO,EJG.GUARDIATURNO_IDGUARDIA " ;
+			where+=	" ,EJG.NUMEJG ";
+			where+=	" ,EJG.FECHAAPERTURA ";
+			where+=	" ,TEJ.DESCRIPCION TIPOEJG";
+		
+		
+	                                    
+		where+=	" FROM SCS_DESIGNA DESIGNA, SCS_EJGDESIGNA EJGDES, SCS_EJG EJG, SCS_TIPOEJG TEJ ";
+		where+=	" WHERE DESIGNA.IDINSTITUCION = EJGDES.IDINSTITUCION ";
+		where+=	" AND DESIGNA.IDTURNO = EJGDES.IDTURNO ";
+		where+=	" AND DESIGNA.ANIO = EJGDES.ANIODESIGNA ";
+		where+=	" AND DESIGNA.NUMERO = EJGDES.NUMERODESIGNA ";
+		where+=	" AND EJGDES.IDINSTITUCION = EJG.IDINSTITUCION ";
+		where+=	" AND EJGDES.IDTIPOEJG = EJG.IDTIPOEJG ";
+		where+=	" AND EJGDES.ANIOEJG = EJG.ANIO ";
+		where+=	" AND EJGDES.NUMEROEJG = EJG.NUMERO ";
+		where+=	" AND EJG.IDTIPOEJG = TEJ.IDTIPOEJG ";
+		
+		where+=	" AND EXISTS (SELECT * ";
+		where+=	" FROM SCS_ACTUACIONDESIGNA ACT ";
+		where+=	" WHERE ACT.IDINSTITUCION = DESIGNA.IDINSTITUCION ";
+		where+=	" AND ACT.IDTURNO = DESIGNA.IDTURNO ";
+		where+=	" AND ACT.ANIO = DESIGNA.ANIO ";
+		where+=	" AND ACT.NUMERO = DESIGNA.NUMERO ";
+		where+=	" AND ACT.VALIDADA = '1' ";
+		where+=	" AND ACT.FACTURADO IS NULL) ";
+			   
+		if (miForm.getIdRenuncia()!=null && !miForm.getIdRenuncia().trim().equalsIgnoreCase("")) {
+			contador++;
+			codigos.put(new Integer(contador),miForm.getIdRenuncia());
+			where+=	" AND ejg.idrenuncia = :" + contador +" ";
+					   
+              
+		}
+		
+			
+			 
+			if ((miHash.containsKey("IDINSTITUCION")) && (!miHash.get("IDINSTITUCION").toString().equals(""))) {
+				contador++;
+				codigos.put(new Integer(contador),UtilidadesHash.getString(miHash, "IDINSTITUCION"));
+				where += " AND EJG.IDINSTITUCION = :"+ contador;
+			}else{
+				throw new ClsExceptions("messages.comprueba.noidInstitucion");
+				
+			}				
+		// Parametros para poder reutilizar la busqueda EJG para busquedas CAJG
+		 
+		
+		// Se filtra por numero cajg
+		if (miForm.getNumeroCAJG()!=null && !miForm.getNumeroCAJG().trim().equalsIgnoreCase("")) {
+			contador++;
+			codigos.put(new Integer(contador),miForm.getNumeroCAJG());
+			where += " AND LTRIM(EJG.Numero_Cajg, '0')  = LTRIM(:" + contador + ", '0') ";
+		}
+		
+		// Se filtra por anio cajg
+		if (miForm.getAnioCAJG()!=null && !miForm.getAnioCAJG().trim().equalsIgnoreCase("")) {
+			contador++;
+			codigos.put(new Integer(contador),miForm.getAnioCAJG());
+			where += " AND EJG.Aniocajg = :" + contador;
+		}
+
+
+		// Y ahora concatenamos los criterios de búsqueda
+		if ((miForm.getFechaAperturaDesde() != null && !miForm.getFechaAperturaDesde().equals("")) ||
+			(miForm.getFechaAperturaHasta() != null && !miForm.getFechaAperturaHasta().equals(""))) {
+			Vector v = GstDate.dateBetweenDesdeAndHastaBind("EJG.FECHAAPERTURA", GstDate.getApplicationFormatDate("",miForm.getFechaAperturaDesde()), GstDate.getApplicationFormatDate("", miForm.getFechaAperturaHasta()), contador, codigos);
+			Integer in = (Integer)v.get(0);
+			String st = (String)v.get(1);
+			contador = in.intValue();
+			where += " AND " + st;                    
+		}
+
+		if ((miForm. getfechaDictamenDesde() != null && !miForm.getfechaDictamenDesde().equals("")) ||
+			(miForm.getfechaDictamenHasta() != null && !miForm.getfechaDictamenHasta().equals(""))) {
+			Vector v = GstDate.dateBetweenDesdeAndHastaBind("EJG." + ScsEJGBean.C_FECHADICTAMEN, GstDate.getApplicationFormatDate("", miForm.getfechaDictamenDesde()), GstDate.getApplicationFormatDate("", miForm.getfechaDictamenHasta()), contador, codigos);
+			Integer in = (Integer)v.get(0);
+			String st = (String)v.get(1);
+			contador = in.intValue();
+			where += " AND " + st;                    
+		}
+					
+		if ((miForm.getFechaLimitePresentacionDesde() != null && !miForm.getFechaLimitePresentacionDesde().equals("")) ||
+			(miForm.getFechaLimitePresentacionHasta() != null && !miForm.getFechaLimitePresentacionHasta().equals(""))) {
+			Vector v = GstDate.dateBetweenDesdeAndHastaBind("EJG."+ScsEJGBean.C_FECHALIMITEPRESENTACION, GstDate.getApplicationFormatDate("", miForm.getFechaLimitePresentacionDesde()), GstDate.getApplicationFormatDate("", miForm.getFechaLimitePresentacionHasta()), contador, codigos);
+			Integer in = (Integer)v.get(0);
+			String st = (String)v.get(1);
+			contador = in.intValue();
+			where += " AND " + st;                    
+		}
+
+		if ((miHash.containsKey("IDTIPOEJG")) && (!miHash.get("IDTIPOEJG").toString().equals(""))) {
+			contador++;
+			codigos.put(new Integer(contador), UtilidadesHash.getString(miHash, "IDTIPOEJG"));
+			where += " AND EJG. " + ScsEJGBean.C_IDTIPOEJG + " = :" + contador;
+		}
+
+		if ((miHash.containsKey("ANIO")) && (!miHash.get("ANIO").toString().equals(""))) {
+			contador++;
+			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"ANIO"));
+			where += " and EJG.ANIO = :" + contador;
+		}
+		if (((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals("")))|| 
+			((miHash.containsKey("ANIOACTA")) && (!miHash.get("ANIOACTA").toString().equals("")))){
+			
+			
+			where += " AND EXISTS (SELECT 1 FROM SCS_EJG_ACTA EJGACTA , SCS_ACTACOMISION AC ";
+			where += " WHERE " ;
+			where += " EJGACTA.IDINSTITUCIONACTA = AC.IDINSTITUCION " ;
+			where += " AND EJGACTA.IDACTA = AC.IDACTA " ;
+			where += " AND EJGACTA.ANIOACTA = AC.ANIOACTA " ;
+
+			where +=	" AND EJGACTA.IDINSTITUCIONEJG = EJG.IDINSTITUCION  ";
+			where += " AND EJGACTA.ANIOEJG = EJG.ANIO " ;
+			where += " AND EJGACTA.IDTIPOEJG = EJG.IDTIPOEJG ";
+			where += " AND EJGACTA.NUMEROEJG = EJG.NUMERO ";
+			
+			contador++;
+			codigos.put(new Integer(contador),usrbean.getIdInstitucionComision());
+			where += " AND AC.IDINSTITUCION = :" + contador;
+			
+			
+			if ((miHash.containsKey("ANIOACTA")) && (!miHash.get("ANIOACTA").toString().equals(""))) {
+				contador++;
+				codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"ANIOACTA"));
+				where += " AND AC.ANIOACTA = :" + contador;
+			}
+			
+			if ((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals(""))) {
+				contador++;
+				codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"NUMEROACTA"));
+				where += " AND AC.NUMEROACTA = :"+contador;
+			}
+			
+			where += " )";
+			
+			
+						        
+	
+			
+			
+			
+			
+		}
+
+		if ((miHash.containsKey("CREADODESDE")) && (!miHash.get("CREADODESDE").toString().equals(""))) {
+			if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("A")) {
+				where += " AND (" +
+					" SELECT COUNT(*) " +
+					" FROM SCS_ASISTENCIA ASIST " + 
+					" WHERE ASIST.IDINSTITUCION = EJG.IDINSTITUCION " +
+						" AND ASIST.EJGNUMERO = EJG.NUMERO " +
+						" AND ASIST.EJGANIO = EJG.ANIO " +
+						" AND ASIST.EJGIDTIPOEJG = EJG.IDTIPOEJG) > 0 ";
+			
+			} else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("D")){			
+				where += " AND (SELECT count(1) " +
+					" FROM SCS_EJGDESIGNA EDES " +
+					" WHERE EJG.IDINSTITUCION = EDES.IDINSTITUCION " + 
+						" AND EJG.NUMERO = EDES.NUMEROEJG " +
+						" AND EJG.ANIO = EDES.ANIOEJG " +
+						" AND EJG.IDTIPOEJG = EDES.IDTIPOEJG) > 0 ";
+				
+			} else if (miHash.get("CREADODESDE").toString().equalsIgnoreCase("S")) {
+				where += " AND (SELECT COUNT(*) " +
+					" FROM SCS_SOJ SOJ " +
+					" WHERE SOJ.IDINSTITUCION = EJG.IDINSTITUCION " +  
+						" AND SOJ.EJGNUMERO = EJG.NUMERO " +
+						" AND SOJ.EJGANIO = EJG.ANIO " +
+						" AND SOJ.EJGIDTIPOEJG = EJG.IDTIPOEJG) > 0 ";
+				
+			} else {
+				where+= " AND (SELECT COUNT(*) " +
+						" FROM SCS_ASISTENCIA ASIST " +
+						" WHERE ASIST.IDINSTITUCION = EJG.IDINSTITUCION " +
+							" AND ASIST.EJGNUMERO IS NULL) > 0 " +
+						
+					" AND (SELECT COUNT(*) " +
+						" FROM SCS_SOJ SOJ " +
+						" WHERE SOJ.IDINSTITUCION = EJG.IDINSTITUCION " +
+							" AND SOJ.EJGNUMERO IS NULL) > 0"; 
+			}
+		}
+
+		if ((miHash.containsKey("GUARDIATURNO_IDTURNO")) && (!miHash.get("GUARDIATURNO_IDTURNO").toString().equals(""))) {
+			contador++;
+			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"GUARDIATURNO_IDTURNO"));
+			where += " AND EJG.GUARDIATURNO_IDTURNO = :" + contador;
+		}
+
+		if ((miHash.containsKey("GUARDIATURNO_IDGUARDIA")) && (!miHash.get("GUARDIATURNO_IDGUARDIA").toString().equals(""))) {
+			contador++;
+			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"GUARDIATURNO_IDGUARDIA"));
+			where += " AND EJG.GUARDIATURNO_IDGUARDIA = :" + contador;
+		}
+		
+		if ((miHash.containsKey("IDPERSONA")) && (!miHash.get("IDPERSONA").toString().equals(""))) {
+			contador++;
+			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"IDPERSONA"));
+			where += " AND EJG.IDPERSONA = :" + contador;
+		}
+		
+		if ((miHash.containsKey("DICTAMINADO")) && (!miHash.get("DICTAMINADO").toString().equals(""))) {
+			if (miHash.get("DICTAMINADO").toString().equalsIgnoreCase("S")) {
+				where += " AND EJG.FECHADICTAMEN IS NOT NULL";
+			}
+			else if (miHash.get("DICTAMINADO").toString().equalsIgnoreCase("N")) {
+				where += " AND EJG.FECHADICTAMEN IS NULL";
+			}
+		}
+		
+		if ((miHash.containsKey("IDTIPODICTAMENEJG")) && (!miHash.get("IDTIPODICTAMENEJG").toString().equals(""))){
+			contador++;
+			codigos.put(new Integer(contador),(String)UtilidadesHash.getString(miHash, "IDTIPODICTAMENEJG"));
+			where += " AND EJG.IDTIPODICTAMENEJG = :" + contador;
+		}	
+		
+		
+		
+		if(miForm.getIdTipoResolucion()!=null && !miForm.getIdTipoResolucion().equals("")){
+			
+			//si contiene -1 es que quiere sacar lo que no tienen resolucion 
+			int resolucionesNulas = miForm.getIdTipoResolucion().indexOf("-1");
+//			Si no lo encuentra
+			miHash.put("tiposResolucionBusqueda", miForm.getIdTipoResolucion());
+			
+			if(resolucionesNulas==-1){
+				where += " AND EJG.IDTIPORATIFICACIONEJG in  ("+miForm.getIdTipoResolucion()+") ";	
+			}else{
+				if(miForm.getIdTipoResolucion().substring(resolucionesNulas+2).length()>0)
+					where += " AND (EJG.IDTIPORATIFICACIONEJG IS NULL OR EJG.IDTIPORATIFICACIONEJG in  ("+miForm.getIdTipoResolucion().substring(resolucionesNulas+3)+") ) ";
+				else
+					where += " AND EJG.IDTIPORATIFICACIONEJG IS NULL ";
+				
+			}
+			if(miForm.getIdTipoFundamento()!=null && !miForm.getIdTipoFundamento().equals("")){
+				contador++;
+				codigos.put(new Integer(contador),miForm.getIdTipoFundamento());
+				where += " AND EJG.IDFUNDAMENTOJURIDICO = :" + contador;
+				
+				
+			}
+			
+		}else{
+			miHash.put("tiposResolucionBusqueda", "");
+			if ((miHash.containsKey("IDTIPORATIFICACIONEJG")) && (!miHash.get("IDTIPORATIFICACIONEJG").toString().equals(""))){
+				contador++;
+				String ratificacion[] = UtilidadesHash.getString(miHash, "IDTIPORATIFICACIONEJG").split(",");
+				codigos.put(new Integer(contador),ratificacion[0]);
+				where += " AND EJG.IDTIPORATIFICACIONEJG = :" + contador;
+				
+				if ((miHash.containsKey("IDFUNDAMENTOJURIDICO")) && (!miHash.get("IDFUNDAMENTOJURIDICO").toString().equals(""))){
+					contador++;
+					codigos.put(new Integer(contador),UtilidadesHash.getString(miHash, "IDFUNDAMENTOJURIDICO"));
+					where += " AND EJG.IDFUNDAMENTOJURIDICO = :" + contador;
+					
+					
+				}
+			}
+			
+		}
+
+		if (UtilidadesHash.getString(miHash,"NUMEJG") != null && !UtilidadesHash.getString(miHash,"NUMEJG").equalsIgnoreCase("")) {
+			if (ComodinBusquedas.hasComodin(UtilidadesHash.getString(miHash, "NUMEJG"))) {
+				contador++;
+				where += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)UtilidadesHash.getString(miHash, "NUMEJG")).trim(), "EJG.NUMEJG", contador, codigos);
+				
+			}else if (ComodinBusquedas.hasComa(UtilidadesHash.getString(miHash, "NUMEJG")) || ComodinBusquedas.hasGuion(UtilidadesHash.getString(miHash, "NUMEJG"))) {
+				contador++;
+				
+				ComodinBusquedas comodinBusquedas = new ComodinBusquedas();
+				where += " AND " + comodinBusquedas.prepararSentenciaCompletaEJGBind(((String)UtilidadesHash.getString(miHash, "NUMEJG")).trim(), "EJG.NUMEJG", contador, codigos);
+				contador =  codigos.size();
+			}else{
+				contador++;
+			    codigos.put(new Integer(contador), (String)UtilidadesHash.getString(miHash, "NUMEJG").trim());
+				where += " AND LTRIM(EJG.NUMEJG, '0')  = LTRIM(:" + contador + ", '0') ";
+			}
+		}
+
+		if ((miHash.containsKey("IDTIPOEJGCOLEGIO")) && (!miHash.get("IDTIPOEJGCOLEGIO").toString().equals(""))) {
+			contador++;
+			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash, "IDTIPOEJGCOLEGIO"));
+			where += " AND EJG.IDTIPOEJGCOLEGIO = :" + contador;
+		}
+				
+		
+		// jbd // Consulta para el interesado
+		// Hasta ahora se estaba haciendo una consulta independiente para cada campo del nombre
+		// Lo optimo es meter todo en la misma consulta
+		if (((miHash.containsKey("NIF")) && (!miHash.get("NIF").toString().equals("")))||
+			((miHash.containsKey("NOMBRE")) && (!miHash.get("NOMBRE").toString().equals("")))||
+			((miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals("")))||
+			((miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals("")))){
+			
+			where += " AND (SELECT COUNT(1) " + 
+					" FROM SCS_UNIDADFAMILIAREJG UNIDAD, " +
+						" SCS_EJG EJG2, " +
+						" SCS_PERSONAJG PJG " + 
+					" WHERE UNIDAD.IDINSTITUCION = PJG.IDINSTITUCION " +
+						" AND UNIDAD.IDPERSONA = PJG.IDPERSONA " +
+						" AND EJG2.IDINSTITUCION = UNIDAD.IDINSTITUCION(+) " +
+						" AND EJG2.ANIO = UNIDAD.ANIO(+) " +
+						" AND EJG2.NUMERO = UNIDAD.NUMERO(+) " +
+						" AND EJG2.IDTIPOEJG = UNIDAD.IDTIPOEJG(+) " +
+						" AND UNIDAD.SOLICITANTE(+) = '1' " +
+						" AND EJG2.IDINSTITUCION = EJG.IDINSTITUCION " +
+						" AND EJG2.ANIO = EJG.ANIO " + 
+						" AND EJG2.NUMERO = EJG.NUMERO " + 
+						" AND EJG2.IDTIPOEJG = EJG.IDTIPOEJG ";
+			
+			if ((miHash.containsKey("NIF")) && (!miHash.get("NIF").toString().equals(""))){
+				contador++;
+				
+				if(isBusquedaExactaSolicitante){
+					codigos.put(new Integer(contador), ((String)miHash.get("NIF")).trim());
+					where += " AND LTRIM(UPPER(PJG.NIF), '0') = LTRIM(UPPER(:"+contador+"), '0') ";
+				}
+				else{
+					codigos.put(new Integer(contador), ((String)miHash.get("NIF")).trim() + "%");
+					where += " AND LTRIM(UPPER(PJG.NIF), '0') LIKE LTRIM(UPPER(:"+contador+"), '0') ";
+				}
+			}
+			
+			if ((miHash.containsKey("NOMBRE")) && (!miHash.get("NOMBRE").toString().equals(""))){
+				contador++;
+				if(isBusquedaExactaSolicitante){
+					codigos.put(new Integer(contador), ((String)miHash.get("NOMBRE")).trim());
+					where += " AND UPPER(PJG.NOMBRE) = :"+contador+" "; 
+				}
+				else
+					where += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("NOMBRE")).trim(), "UPPER(PJG.NOMBRE)", contador, codigos);
+			}
+			
+			if ((miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals(""))){
+				contador++; 
+				if(isBusquedaExactaSolicitante){
+					codigos.put(new Integer(contador), ((String)miHash.get("APELLIDO1")).trim());
+					where += " AND UPPER(PJG.apellido1) = :"+contador+" "; 
+				}
+				else
+					where += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("APELLIDO1")).trim(), "UPPER(PJG.apellido1)", contador, codigos);
+			}
+			
+			if ((miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals(""))){
+				contador++;
+				if(isBusquedaExactaSolicitante){
+					codigos.put(new Integer(contador), ((String)miHash.get("APELLIDO2")).trim());
+					where += " AND UPPER(PJG.apellido2) = :"+contador+" "; 
+				}
+				else
+					where += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("APELLIDO2")).trim(), "UPPER(PJG.apellido2)", contador, codigos);
+			}
+			
+			where += ") >0 ";
+		}
+
+		if ((miHash.containsKey("JUZGADO")) && (!miHash.get("JUZGADO").toString().equals(""))) {
+			/*String a[]=((String)miHash.get("JUZGADO")).split(",");
+			contador++;
+			consulta += " and "+ComodinBusquedas.prepararSentenciaCompletaBind(a[0].trim(),"ejg.JUZGADO", contador, codigos);
+			*/
+			String a[]=((String)miHash.get("JUZGADO")).split(",");
+			contador++;
+			codigos.put(new Integer(contador), a[0]);
+			where += " AND EJG.JUZGADO = :" + contador;	
+		}
+
+		//aalg: INC_08086_SIGA
+		if ((miHash.containsKey("ASUNTO")) && (!miHash.get("ASUNTO").toString().equals(""))) {
+			contador++;
+			where += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("ASUNTO")).trim(), "EJG.OBSERVACIONES", contador, codigos);
+		}
+
+		if ((miHash.containsKey("PROCEDIMIENTO")) && (!miHash.get("PROCEDIMIENTO").toString().equals(""))) {
+			contador++;
+			where += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("PROCEDIMIENTO")).trim(), "EJG.NUMEROPROCEDIMIENTO", contador, codigos);
+		}
+		// jbd // Filtramos por preceptivo
+		if ((miHash.containsKey(ScsEJGBean.C_PRECEPTIVO)) && (!miHash.get(ScsEJGBean.C_PRECEPTIVO).toString().equals(""))) {
+			contador++;
+			where += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get(ScsEJGBean.C_PRECEPTIVO)).trim(), "EJG."+ScsEJGBean.C_PRECEPTIVO, contador, codigos);
+		}
+		
+		if ((miHash.containsKey("NIG")) && (!miHash.get("NIG").toString().equals(""))) {
+			contador++;
+			where += " AND " + ComodinBusquedas.prepararSentenciaCompletaBind(((String)miHash.get("NIG")).trim(), "EJG.NIG", contador, codigos);
+		}		
+
+		/*if (miForm.getCalidad()!=null && !miForm.getCalidad().trim().equalsIgnoreCase("")) {
+			contador++;
+			codigos.put(new Integer(contador),miForm.getCalidad());		
+			 consulta += " and ejg.Idtipoencalidad = :" + contador;
+		}*/
+		
+		if ((miForm.getFechaPresentacionPonenteDesde() != null && !miForm.getFechaPresentacionPonenteDesde().equals("")) ||
+				(miForm.getFechaPresentacionPonenteHasta() != null && !miForm.getFechaPresentacionPonenteHasta().equals(""))) {
+			Vector v = GstDate.dateBetweenDesdeAndHastaBind("EJG.FECHAPRESENTACIONPONENTE", GstDate.getApplicationFormatDate("", miForm.getFechaPresentacionPonenteDesde()), GstDate.getApplicationFormatDate("", miForm.getFechaPresentacionPonenteHasta()), contador, codigos);
+			Integer in = (Integer)v.get(0);
+			String st = (String)v.get(1);
+			contador = in.intValue();
+			where += " AND " + st;                    
+		}
+				
+		if ((miHash.containsKey("IDPONENTE")) && (!miHash.get("IDPONENTE").toString().equals(""))){
+			contador++;
+			codigos.put(new Integer(contador), miHash.get("IDPONENTE").toString());
+			where += " AND " +  ScsEJGBean.C_IDPONENTE + " = :" + contador;
+			contador++;
+			codigos.put(new Integer(contador), usrbean.getIdInstitucionComision());
+			where += " AND " +  ScsEJGBean.C_IDINSTITUCIONPONENTE + " = :" + contador;
+			
+			
+		}
+//		where += ")";
+		//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg 
+		if ((miHash.containsKey("ESTADOEJG")) && (!miHash.get("ESTADOEJG").toString().equals(""))) {
+			contador++;
+			codigos.put(new Integer(contador), UtilidadesHash.getString(miHash, "ESTADOEJG"));
+			where += " AND F_SIGA_GET_IDULTIMOESTADOEJG(EJG.IDINSTITUCION, ";
+			where+=	" EJG.IDTIPOEJG, ";
+			where+=	" EJG.ANIO, ";
+			where+=	" EJG.NUMERO)=:"+contador;
+			
+			
+			
+		}else{
+				where += " AND (F_SIGA_GET_IDULTIMOESTADOEJG(EJG.IDINSTITUCION,  EJG.IDTIPOEJG, EJG.ANIO,EJG.NUMERO) ";
+				where+=	"  NOT IN (" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.GENERADO_EN_REMESA.getCodigo() + ", " + ESTADOS_EJG.RESUELTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.ESTADO_LISTO_COMISION_ACTUALIZAR_DESIGNACION.getCodigo() + ", "  + ESTADOS_EJG.IMPUGNADO.getCodigo() + "))  ";
+			
+			
+		}
+//			where += " ORDER BY " + ScsEJGBean.C_ANIO + " DESC,  TO_NUMBER(NUMERO) DESC ";
+
+		hashReturn.put(keyBindConsulta,where);
+		hashReturn.put(keyBindCodigos,codigos);
+
+		return hashReturn;
+	}
+	
 	
 	private Vector getTurnoEjgSalidaOficio (String idInstitucion, String idTurno,
 			String salidaNombre,String salidaAbrev) throws ClsExceptions  
@@ -6705,10 +7304,18 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		
 		
 	}
+	public boolean isExpedientePteEnviarCAJG(BusinessManager businessManager, String idInstitucion, String idTipoEjg, String anio,
+			String numero)throws BusinessException
+			{
+
+		SalidaEnviosService salidaEnviosService = (SalidaEnviosService) businessManager
+				.getService(SalidaEnviosService.class);
+
+		return salidaEnviosService.isExpedientePteEnviarCAJG(new Short(
+				idInstitucion), new Short(idTipoEjg), new Short(anio),
+				new Long(numero));
+
+	}
 	
-	
-	/*
-	
-	*/
 	
 }

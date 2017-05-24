@@ -193,6 +193,9 @@ public class BusquedaDesignasAction extends MasterAction {
 		miForm.setIdInstitucion(usr.getLocation().toString());
 		request.getSession().removeAttribute("DATOSFORMULARIO");
 		request.getSession().removeAttribute("BUSQUEDAREALIZADA");
+		int tipoCajg = CajgConfiguracion.getTipoCAJG(getIDInstitucion(request));
+		request.setAttribute("PCAJG_TIPO", ""+tipoCajg);
+		
 		if (usr.isLetrado()){
 			CenColegiadoAdm colegiado = new CenColegiadoAdm(this.getUserBean(request));
 			CenPersonaAdm persona = new CenPersonaAdm(this.getUserBean(request));

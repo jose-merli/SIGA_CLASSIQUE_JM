@@ -759,7 +759,7 @@ function ajusteDivListado(){
 		
 }
 function downloadDocumentoResolucion(docResolucion) {			
-	document.InformeJustificacionMasivaForm.docResolucion.value=docResolucion
+	document.InformeJustificacionMasivaForm.docResolucion.value=docResolucion;
 	document.InformeJustificacionMasivaForm.modo.value="download";
 	document.InformeJustificacionMasivaForm.target="submitArea";		   	
 	document.InformeJustificacionMasivaForm.submit();
@@ -793,14 +793,63 @@ function downloadResolucionCAJG(idInstitucion,anio,idTipo,numero) {
 			   	document.DefinirEnviosForm.submit();
 	   		}*/
 	   	}
-	}
-	
-	
-	
-	
-   	
+	}	
 }
 
+function downloadInformeActuacionesDesigna(idInstitucion,anio,numero,idPersona,idTurno,numeroAsunto,codigoDesigna,isLetrado) {			
+	var datos = "idInstitucion=="+idInstitucion +"##idPersona=="+idPersona+  "##idTurno==" +idTurno+"##anio=="+anio +"##codigoDesigna=="+codigoDesigna+"##numero==" +numero+  "##numeroAsunto==" +numeroAsunto+"%%%";
+	document.Informe.datosInforme.value=datos;
+	document.Informe.idTipoInforme.value='CADO';
+	
+	//Si no es letrado
+	if(!isLetrado){
+		document.Informe.destinatarios.value='C';
+		document.Informe.enviar.value='1';
+		
+		//Esto permite la descarga de varios informes
+		var arrayResultado = ventaModalGeneral("Informe","M");
+	   	if (arrayResultado==undefined||arrayResultado[0]==undefined){
+	   				   		
+	   	} 
+	   	else {
+	   		
+	   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+	   		if(confirmar){
+	   			var idEnvio = arrayResultado[0];
+			    var idTipoEnvio = arrayResultado[1];
+			    var nombreEnvio = arrayResultado[2];				    
+			    
+			   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+			   	document.DefinirEnviosForm.modo.value='editar';
+			   	document.DefinirEnviosForm.submit();
+	   		}
+	   	}
+	}else{//Es letrado, luego no puede enviar
+		if(document.getElementById("informeUnicoCartaAcreditacion").value=='1'){ //Sólo un informe configurado
+			document.Informe.enviar.value='0';
+			document.Informe.submit();
+		}else{ //Más de un informe configurado pero no se envía
+			var arrayResultado = ventaModalGeneral("Informe","M");
+			if (arrayResultado==undefined||arrayResultado[0]==undefined){
+			   		
+		   	} 
+		   	else {
+		   		
+		   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
+		   		if(confirmar){
+		   			var idEnvio = arrayResultado[0];
+				    var idTipoEnvio = arrayResultado[1];
+				    var nombreEnvio = arrayResultado[2];				    
+				    
+				   	document.DefinirEnviosForm.tablaDatosDinamicosD.value=idEnvio + ',' + idTipoEnvio + '%' + nombreEnvio;		
+				   	document.DefinirEnviosForm.modo.value='editar';
+				   	document.DefinirEnviosForm.submit();
+		   		}
+		   	}
+		}
+  }
+
+}
 function downloadInformesOficio(idInstitucion,anio,idTurno,numero) {			
 	
 
@@ -935,10 +984,14 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 <bean:define id="informeUnico" name="informeUnico" scope="request"></bean:define>
 <bean:define id="informeUnicoResolucion" name="informeUnicoResolucion" scope="request"></bean:define>
 <bean:define id="informeUnicoOficio" name="informeUnicoOficio" scope="request"></bean:define>
+<bean:define id="informeUnicoCartaAcreditacion" name="informeUnicoCartaAcreditacion" scope="request"></bean:define>
+
 
 <input type="hidden" id= "informeUnico" value="${informeUnico}">
 <input type="hidden" id= "informeUnicoResolucion" value="${informeUnicoResolucion}">
 <input type="hidden" id= "informeUnicoOficio" value="${informeUnicoOficio}">
+<input type="hidden" id= "informeUnicoCartaAcreditacion" value="${informeUnicoCartaAcreditacion}">
+
 
 <!-- FIN: TITULO OPCIONAL DE LA TABLA -->
 <!-- INICIO: CAMPOS -->
@@ -1071,8 +1124,9 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		scope="request"></bean:define>
 	<bean:define id="informesOficioLetradoActivo" name="informesOficioLetradoActivo"
 		scope="request"></bean:define>
+	<bean:define id="comunicacionesAcreditacionDeOficio" name="comunicacionesAcreditacionDeOficio"
+		scope="request"></bean:define>
 		
-
 	<bean:define id="designaFormList" name="designaFormList"
 		scope="request"></bean:define>
 	<bean:define id="paginaSeleccionada" name="paginaSeleccionada"
@@ -1142,22 +1196,21 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 					</c:otherwise>
 				</c:choose>
 				
-				
-				
-				
 					<td rowspan="${designa.rowSpan}" class="trAmpliado">
 						<c:choose>            
 							<c:when test="${informesOficioLetradoActivo==true}">
 								<a href='#' onclick="downloadInformesOficio('${designa.idInstitucion}','${designa.anio}','${designa.idTurno}','${designa.numero}')"><c:out value="${designa.codigoDesigna}" /></a>
 							</c:when>
 							
-							<c:otherwise><c:out
-								value="${designa.codigoDesigna}" />
+							<c:otherwise>
+							<c:out value="${designa.codigoDesigna}" />
 								</c:otherwise>
 						</c:choose>
 						(<c:out value="${designa.fecha}"/>)
 						
 						</td>
+						
+						
 						
 					<c:choose>
 						<c:when test="${ designa.tipoResolucionDesigna=='NO_FAVORABLE'}">
@@ -1165,13 +1218,46 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 								<c:forEach items="${designa.expedientes}" var="ejgForm" varStatus="statusSinEjg">     
 									<c:choose>            
 										<c:when test="${ejgForm.docResolucion!=null && ejgForm.docResolucion!=''}">
-											<a href='#' onclick="downloadDocumentoResolucion('${ejgForm.docResolucion}')"><c:out value="${ejgForm.nombre}"/></a>
+											<a href='#' onclick="downloadDocumentoResolucion('${ejgForm.docResolucion}')"
+											  <c:choose>
+													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!=''}">
+														title="Resolucion:${ejgForm.descripcionResolucionEJG}"
+													</c:when>
+													<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
+														title="Dictamen: ${ejgForm.descripcionDictamenEJG}"
+													</c:when>
+												</c:choose>
+											><c:out value="${ejgForm.nombre}"/></a>
 										</c:when>
 										<c:when test="${resolucionLetradoActivo==true && ejgForm.idTipoRatificacionEJG!='' && ejgForm.fechaResolucionCAJG!=''}">
-											<a href='#' onclick="downloadResolucionCAJG('${ejgForm.idInstitucion}','${ejgForm.anio}','${ejgForm.idTipoEJG}','${ejgForm.numero}')"><c:out value="${ejgForm.nombre}"/></a>
+											<a href='#' onclick="downloadResolucionCAJG('${ejgForm.idInstitucion}','${ejgForm.anio}','${ejgForm.idTipoEJG}','${ejgForm.numero}')"
+											<c:choose>
+													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!=''}">
+														title="Resolucion:${ejgForm.descripcionResolucionEJG}"
+													</c:when>
+													<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
+														title="Dictamen: ${ejgForm.descripcionDictamenEJG}"
+													</c:when>
+												</c:choose>
+											><c:out value="${ejgForm.nombre}"/></a>
 										</c:when>
 										
-										<c:otherwise><c:out value="${ejgForm.nombre}"/></c:otherwise>
+										<c:otherwise>
+											<span
+												<c:choose>
+													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!=''}">
+														title="Resolucion:${ejgForm.descripcionResolucionEJG}"
+													</c:when>
+													<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
+														title="Dictamen: ${ejgForm.descripcionDictamenEJG}"
+													</c:when>
+												</c:choose>
+											>
+											<c:out value="${ejgForm.nombre}"/>
+											</span>
+										</c:otherwise>
+											
+											
 									</c:choose>
 									<c:if test="${!statusSinEjg.last}">
 										,
@@ -1183,7 +1269,16 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 						<c:when test="${ designa.tipoResolucionDesigna=='SIN_RESOLUCION'}">
 							<td rowspan="${designa.rowSpan}" style="${colorEJG}" title="<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaSinResolucion" />">
 								<c:forEach items="${designa.expedientes}" var="ejgForm" varStatus="statusSinResolucion">     
-										<c:out value="${ejgForm.nombre}"/>
+										<span 
+										<c:choose>
+											<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!=''}">
+												title="Resolucion:${ejgForm.descripcionResolucionEJG}"
+											</c:when>
+											<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
+												title="Dictamen: ${ejgForm.descripcionDictamenEJG}"
+											</c:when>
+										</c:choose>
+										><c:out value="${ejgForm.nombre}" /></span>
 										<c:if test="${!statusSinResolucion.last}">
 										,
 										</c:if>
@@ -1192,18 +1287,48 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 							</td>
 						
 						</c:when>
-						<c:when test="${designa.tipoResolucionDesigna=='PTE_CAJG'}">
+						<c:when test="${designa.tipoResolucionDesigna=='PTE_CAJG'}">	
 							<td rowspan="${designa.rowSpan}" style="${colorEJG}" title="<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaPteCAJG" />">
 								<c:forEach items="${designa.expedientes}" var="ejgForm" varStatus="statusSinEjg">     
 									<c:choose>            
 										<c:when test="${ejgForm.docResolucion!=null && ejgForm.docResolucion!=''}">
-											<a href='#' onclick="downloadDocumentoResolucion('${ejgForm.docResolucion}')"><c:out value="${ejgForm.nombre}"/></a>
+											<a href='#' onclick="downloadDocumentoResolucion('${ejgForm.docResolucion}')"
+												<c:choose>
+													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!=''}">
+														title="Resolucion:${ejgForm.descripcionResolucionEJG}"
+													</c:when>
+													<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
+														title="Dictamen: ${ejgForm.descripcionDictamenEJG}"
+													</c:when>
+												</c:choose>
+											><c:out value="${ejgForm.nombre}"/></a>
 										</c:when>
 										<c:when test="${resolucionLetradoActivo==true && ejgForm.idTipoRatificacionEJG!='' && ejgForm.fechaResolucionCAJG!=''}">
-											<a href='#' onclick="downloadResolucionCAJG('${ejgForm.idInstitucion}','${ejgForm.anio}','${ejgForm.idTipoEJG}','${ejgForm.numero}')"><c:out value="${ejgForm.nombre}"/></a>
+											<a href='#' onclick="downloadResolucionCAJG('${ejgForm.idInstitucion}','${ejgForm.anio}','${ejgForm.idTipoEJG}','${ejgForm.numero}')"
+												<c:choose>
+													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!=''}">
+														title="Resolucion:${ejgForm.descripcionResolucionEJG}"
+													</c:when>
+													<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
+														title="Dictamen: ${ejgForm.descripcionDictamenEJG}"
+													</c:when>
+												</c:choose>
+											><c:out value="${ejgForm.nombre}"/></a>
 										</c:when>
 										
-										<c:otherwise><c:out value="${ejgForm.nombre}"/></c:otherwise>
+										<c:otherwise>
+											<span
+												<c:choose>
+													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!=''}">
+														title="Resolucion:${ejgForm.descripcionResolucionEJG}"
+													</c:when>
+													<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
+														title="Dictamen: ${ejgForm.descripcionDictamenEJG}"
+													</c:when>
+												</c:choose>
+												>
+												<c:out value="${ejgForm.nombre}"/></span>
+										</c:otherwise>
 									</c:choose>
 									<c:if test="${!statusSinEjg.last}">
 										,
@@ -1230,16 +1355,46 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 						
 						<c:otherwise>
 							<td rowspan="${designa.rowSpan}"  title="<siga:Idioma	key="gratuita.informeJustificacionMasiva.resolucionDesignaFavorable" />">
-								<c:forEach items="${designa.expedientes}" var="ejgForm" varStatus="statusSinEjg">     
+								<c:forEach items="${designa.expedientes}" var="ejgForm" varStatus="statusSinEjg">    
 									<c:choose>            
 										<c:when test="${ejgForm.docResolucion!=null && ejgForm.docResolucion!=''}">
-											<a href='#' onclick="downloadDocumentoResolucion('${ejgForm.docResolucion}')"><c:out value="${ejgForm.nombre}"/></a>
+											<a href='#' onclick="downloadDocumentoResolucion('${ejgForm.docResolucion}')"
+												<c:choose>
+													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!='' }">
+														title="Resolucion:${ejgForm.descripcionResolucionEJG}"
+													</c:when>
+													<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
+														title="Dictamen: ${ejgForm.descripcionDictamenEJG}"
+													</c:when>
+												</c:choose>
+											><c:out value="${ejgForm.nombre}"/></a>
 										</c:when>
 										<c:when test="${resolucionLetradoActivo==true && ejgForm.idTipoRatificacionEJG!='' && ejgForm.fechaResolucionCAJG!=''}">
-											<a href='#' onclick="downloadResolucionCAJG('${ejgForm.idInstitucion}','${ejgForm.anio}','${ejgForm.idTipoEJG}','${ejgForm.numero}')"><c:out value="${ejgForm.nombre}"/></a>
+											<a href='#' onclick="downloadResolucionCAJG('${ejgForm.idInstitucion}','${ejgForm.anio}','${ejgForm.idTipoEJG}','${ejgForm.numero}')"
+												<c:choose>
+													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!=''}">
+														title="Resolucion:${ejgForm.descripcionResolucionEJG}"
+													</c:when>
+													<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
+														title="Dictamen: ${ejgForm.descripcionDictamenEJG}"
+													</c:when>
+												</c:choose>
+											><c:out value="${ejgForm.nombre}"/></a>
 										</c:when>
 										
-										<c:otherwise><c:out value="${ejgForm.nombre}"/></c:otherwise>
+										<c:otherwise>
+										<span
+												<c:choose>
+													<c:when test="${ejgForm.descripcionResolucionEJG !=null && ejgForm.descripcionResolucionEJG !=' ' && ejgForm.fechaResolucionCAJG!=''}">
+														title="Resolucion:${ejgForm.descripcionResolucionEJG}"
+													</c:when>
+													<c:when test="${ejgForm.descripcionDictamenEJG!= null && ejgForm.descripcionDictamenEJG!=' ' }">
+														title="Dictamen: ${ejgForm.descripcionDictamenEJG}"
+													</c:when>
+												</c:choose>
+										><c:out value="${ejgForm.nombre}"/>
+										</span>
+										</c:otherwise>
 									</c:choose>
 									<c:if test="${!statusSinEjg.last}">
 										,
@@ -1995,11 +2150,21 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 													<td>
 														<table>
 															<tr>
+															<td></td>
+																<span style="vertical-align: top"><c:out value="${actuacion.numero}" />
+																	<c:if test="${comunicacionesAcreditacionDeOficio==true && actuacion.validada=='0'}">
+																		 <img id="iconoboton_download1" hspace="0"
+																						src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
+																						alt="Enviar" name="iconoFila" title="Descargar" border="0" 
+																						onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero},'${designa.codigoDesigna}',${usrBean.letrado})" 
+																						onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																	</c:if>
+																</span>
 															<c:choose>
 																<c:when test="${actuacion.documentoJustificacion&&subidaJustificacionesActiva  && actuacion.fechaJustificacion!=null && actuacion.fechaJustificacion!=''}">
 																	
 																	<td style="text-align: left;  font-size: 13px; white-space: nowrap; vertical-align: top">
-																	<span style="vertical-align: top"><c:out value="${actuacion.numero}" /></span>
+																	<span style="vertical-align: top"></span>
 																	<span style='align:right; word-wrap: break-word;display: inline-block; width: 60px'>
 																	<c:if test="${empty actuacion.idFacturacion}">
 																			<img id="iconoboton_nuevaDocuemntacion" hspace="0"
@@ -2019,7 +2184,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		
 																<c:when test="${!actuacion.documentoJustificacion&&subidaJustificacionesActiva && actuacion.fechaJustificacion!=null && actuacion.fechaJustificacion!=''}">
 																	<td style="text-align: left;  font-size: 13px; white-space: nowrap; vertical-align: top">
-																	<span style="vertical-align: top"><c:out value="${actuacion.numero}" /></span>
 																	<c:if test="${empty actuacion.idFacturacion}">
 																			<img id="iconoboton_nuevaDocuemntacion" hspace="0"
 																			src="/SIGA/html/imagenes/bupload.gif" style="cursor:pointer;" 
@@ -2031,8 +2195,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																</c:when>
 																<c:otherwise>
 																<td style="text-align: left;  font-size: 13px; white-space: nowrap; vertical-align: top">
-																	
-																	<span style="vertical-align: top"><c:out value="${actuacion.numero}" /></span>
 																	<span style='align:right; word-wrap: break-word;display: inline-block; width: 60px'>
 																		<div   id="div_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}" >&nbsp;</div>
 																	</span>
@@ -2190,10 +2352,18 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 															
 															<table>
 															<tr>
+																<span style="vertical-align: top"><c:out value="${actuacion.numero}" />
+																	<c:if test="${comunicacionesAcreditacionDeOficio==true  && actuacion.validada=='0'}">
+																		 <img id="iconoboton_download1" hspace="0"
+																						src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
+																						alt="Enviar" name="iconoFila" title="Descargar" border="0" 
+																						onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero},'${designa.codigoDesigna}',${usrBean.letrado})" 
+																						onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																		</c:if>
+																</span>
 															<c:choose>
 																<c:when test="${actuacion.documentoJustificacion&&subidaJustificacionesActiva && actuacion.fechaJustificacion!=null && actuacion.fechaJustificacion!=''}">
 																<td style="text-align: left;  font-size: 13px; white-space: nowrap; vertical-align: top">
-																	<span style="vertical-align: top"><c:out value="${actuacion.numero}" /></span>
 																	<span style='align:right; word-wrap: break-word;display: inline-block; width: 60px'>
 																	<c:if test="${empty actuacion.idFacturacion}">
 																			<img id="iconoboton_nuevaDocuemntacion" 
@@ -2214,7 +2384,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																</c:when>
 																<c:when test="${!actuacion.documentoJustificacion&&subidaJustificacionesActiva && actuacion.fechaJustificacion!=null && actuacion.fechaJustificacion!=''}">
 																	<td style="text-align: left;  font-size: 13px;">
-																	<c:out value="${actuacion.numero}" /></td>
 																	<c:if test="${empty actuacion.idFacturacion}">
 																		<td>
 																			<img id="iconoboton_nuevaDocuemntacion" 
@@ -2228,7 +2397,6 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																<c:otherwise>
 																
 																<td style="text-align: left;  font-size: 13px; white-space: nowrap; vertical-align: top">
-																	<span style="vertical-align: top"><c:out value="${actuacion.numero}" /></span>
 																	<span style='align:right; word-wrap: break-word;display: inline-block; width: 60px'>
 																		<div   id="div_${status.count}_${actuacion.numero}_${actuacion.acreditacion.idTipo}_${actuacion.acreditacion.id}_${actuacion.idProcedimiento}_${actuacion.idJuzgado}_0_${actuacion.idJurisdiccion}_nigNumProc_${actuacion.acreditacion.nigNumProcedimiento}" >&nbsp;</div>
 																	</span>

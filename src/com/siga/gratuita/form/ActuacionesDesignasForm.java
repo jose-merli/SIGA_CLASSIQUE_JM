@@ -53,6 +53,9 @@ public class ActuacionesDesignasForm extends MasterForm {
 	private boolean fichaColegial = false;
 	protected String idInstitucion="IDINSTITUCION";
 	
+	private String idfacturacion;
+	private String facturado;
+	
 	public boolean getFichaColegial() {
 		return fichaColegial;
 	}
@@ -524,6 +527,18 @@ public class ActuacionesDesignasForm extends MasterForm {
 	}
 	public void setIdInstitucion(String idInstitucion) {
 		this.datos.put(this.idInstitucion, idInstitucion);
-	}	
+	}
+	public String getIdfacturacion() {
+		return idfacturacion;
+	}
+	public void setIdfacturacion(String idfacturacion) {
+		this.idfacturacion = idfacturacion;
+	}
+	public String getFacturado() {
+		return this.facturado;
+	}
+	public void setFacturado(String facturado) {
+		this.facturado = facturado;
+	}
 
 }

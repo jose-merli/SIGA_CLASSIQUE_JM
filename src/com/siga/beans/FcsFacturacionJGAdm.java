@@ -32,6 +32,7 @@ import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.redabogacia.sigaservices.app.AppConstants.ESTADO_FACTURACION;
+import org.redabogacia.sigaservices.app.services.fac.PcajgAlcActService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -57,6 +58,9 @@ import com.siga.general.CenVisibilidad;
 import com.siga.general.SIGAException;
 import com.siga.informes.InformePersonalizable;
 import com.siga.informes.form.MantenimientoInformesForm;
+import com.siga.ws.CajgConfiguracion;
+
+import es.satec.businessManager.BusinessManager;
 
 /**
 * Administrador de Facturacion de justicia gratuita
@@ -200,7 +204,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
                 "            And Facpos.Fechadesde > Fac.Fechadesde "+
                 "            And Grupos.Idgrupofacturacion =  Gru.Idgrupofacturacion "+
                 "            And Grupos.Idhitogeneral = Gru.Idhitogeneral), 0, '1','0') BORRAPORGRUPO, "  +
-                " (Select Decode(Est.Idestadofacturacion, 10,'1',20,'1','0') "+   
+                " (Select Decode(Est.Idestadofacturacion, 10,'1',20,'1',60,'1','0') "+   
                 "         From Fcs_Fact_Estadosfacturacion Est "+
                 "          Where Fac.Idinstitucion = Est.Idinstitucion "+
                 "          And Fac.Idfacturacion = Est.Idfacturacion "+                          
@@ -4504,6 +4508,15 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		// borrado fisico de ficheros del servidor web
 		Hashtable nombreFicheros = UtilidadesFacturacionSJCS.getNombreFicherosFacturacion(new Integer(idInstitucion), new Integer(idFacturacion), usr);
 		UtilidadesFacturacionSJCS.borrarFicheros(new Integer(idInstitucion), nombreFicheros, usr);
+		
+		if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
+			//para alcala también debemos borrar la información de los ficheros de errores
+			BusinessManager bm = BusinessManager.getInstance();
+			bm.startTransaction();
+			PcajgAlcActService pcajgAlcActService = (PcajgAlcActService) bm.getService(PcajgAlcActService.class);
+			pcajgAlcActService.deletePcajgAlcActErrorCamByExample(Short.parseShort(idInstitucion), Integer.parseInt(idFacturacion));
+		}
+		
 	} // borrarFacturacion()
 
 	public void insertar(Hashtable datos, UsrBean usr, String idInstitucion, String fechaDeInicio, String fechaDeFin, String usrName) throws ClsExceptions, SIGAException {

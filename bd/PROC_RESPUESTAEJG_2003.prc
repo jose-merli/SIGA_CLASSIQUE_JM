@@ -7,6 +7,7 @@ CREATE OR REPLACE PROCEDURE PROC_RESPUESTAEJG_2003(P_IDINSTITUCION      IN CAJG_
  IS
 
   v_cabecera_linea     varchar2(3);
+  v_tipointercambio     varchar2(3);
   V_NUMEJG             NUMBER(8);
   V_ANIO               NUMBER(4);
   V_REF_EJG            VARCHAR(15);
@@ -18,9 +19,10 @@ CREATE OR REPLACE PROCEDURE PROC_RESPUESTAEJG_2003(P_IDINSTITUCION      IN CAJG_
   V_TIPOCAMPOCODIGO        PCAJG_ALC_TIPOCAMPOCARGA.CAMPO_CODIGO%TYPE;
   V_DESCRIPCIONERROR   VARCHAR(100);
   
-  V_TIPOERRORODESCRIPCION  PCAJG_ALC_TIPOERRORINTERCAMBIO.ERROR_DESCRIPCION%TYPE;
+  V_TIPOERRORDESCRIPCION  PCAJG_ALC_TIPOERRORINTERCAMBIO.ERROR_DESCRIPCION%TYPE;
+  V_TIPOERRORSOLUCION  PCAJG_ALC_TIPOERRORINTERCAMBIO.ERROR_SOLUCION%TYPE;
   V_TIPOCAMPODESCRIPCION PCAJG_ALC_TIPOCAMPOCARGA.CAMPO_DESCRIPCION%TYPE;
-  V_ERROR varchar2(200);
+  V_ERROR varchar2(700);
 
   err_num     number;
   err_msg     varchar2(255);
@@ -30,6 +32,7 @@ CREATE OR REPLACE PROCEDURE PROC_RESPUESTAEJG_2003(P_IDINSTITUCION      IN CAJG_
   EJG_TOO_MANY_ROWS EXCEPTION;
   REMESA_NOT_FOUND EXCEPTION;
   REMESA_TOO_MANY_ROWS EXCEPTION;
+  INTERCAMBIO_NOT_ALLOWED EXCEPTION;
   EJG_ANIO           SCS_EJG.ANIO%TYPE;
   EJG_NUMERO         SCS_EJG.NUMERO%TYPE;
   EJG_IDTIPOEJG      SCS_EJG.IDTIPOEJG%TYPE;
@@ -62,6 +65,12 @@ begin
         V_ERROR  := null;
       
       ELSIF v_cabecera_linea = 'CAO' THEN
+        v_tipointercambio := substr(REG.LINEA, 14, 3);
+        
+        IF v_tipointercambio <> '002' AND v_tipointercambio <> '001' THEN
+           RAISE INTERCAMBIO_NOT_ALLOWED;
+        END IF;
+        
         V_NUMEROINTERCAMBIO := substr(REG.LINEA, 17, 7);
         -- En el envio estamos multiplicando por 10 el numero de intercambio para poder enviar mas de una actualizacion por expediente
         V_NUMINTERCAMBIOEJGREMESA := trunc(V_NUMEROINTERCAMBIO/10);
@@ -91,12 +100,24 @@ begin
           WHEN TOO_MANY_ROWS THEN
             RAISE REMESA_TOO_MANY_ROWS;
         END;
-        --INSERTAMOS EL ESTADO DE LA REMESA A RECIBIDA(RESPUESTA) SOLO en el primer registro
-        IF var_num_reg IS NULL THEN
-          var_num_reg := '1';
+
+            
         
+        
+        
+        IF var_num_reg IS NULL THEN
+--          var_num_reg := '1';
+          
+          --actualizamos la remesa de resultados poniendo la remesa a la que modifica sus respuesta SOLO EN EL PRIMER REGISTRO
+           UPDATE CAJG_REMESARESOLUCION R SET R.IDREMESA = REMESA_IDREMESA
+                      WHERE R.IDINSTITUCION = P_IDINSTITUCION
+                      AND R.IDTIPOREMESA = 3
+                      AND R.IDREMESARESOLUCION = P_IDREMESARESOLUCION;
+            
+          
+          
           BEGIN
-            SELECT CAB.CAB_INTERCAMBIO_ID
+            SELECT MAX(CAB.CAB_INTERCAMBIO_ID)
               INTO V_CAB_INTERCAMBIO_ID
               FROM PCAJG_ALC_INT_CAB CAB
              WHERE CAB.CAB2_NUMERO_INTERCAMBIO = V_NUMEROINTERCAMBIO;
@@ -110,13 +131,13 @@ begin
         END IF;
       
         BEGIN
-          SELECT TE.ERROR_DESCRIPCION
-            INTO V_TIPOERRORODESCRIPCION
+          SELECT TE.ERROR_DESCRIPCION,TE.ERROR_SOLUCION
+            INTO V_TIPOERRORDESCRIPCION,V_TIPOERRORSOLUCION
             FROM PCAJG_ALC_TIPOERRORINTERCAMBIO TE
            WHERE TE.ERROR_CODIGO = V_TIPOERRORCODIGO;
         EXCEPTION
           WHEN NO_DATA_FOUND THEN
-            V_TIPOERRORODESCRIPCION := V_TIPOERRORCODIGO ||
+            V_TIPOERRORDESCRIPCION := V_TIPOERRORCODIGO ||
                                  ' Campo no definido en PCAJG_ALC_TIPOERRORINTERCAMBIO';
           
         END;
@@ -226,7 +247,7 @@ begin
                  SOL18_CENTRO_PENITENCIARIO    = NULL
            WHERE SOL_INTERCAMBIO_ID = V_CAB_INTERCAMBIO_ID;
         
-          V_ERROR := V_TIPOERRORODESCRIPCION;
+          V_ERROR := V_TIPOERRORDESCRIPCION|| ' ' ||V_TIPOERRORSOLUCION ;
         
         ELSIF V_TIPOERRORCODIGO = '003' THEN
           --Exp. No existente
@@ -245,7 +266,7 @@ begin
                             FROM CAJG_EJGREMESA
                            WHERE IDINSTITUCION = P_IDINSTITUCION
                              AND NUMEROINTERCAMBIO = V_NUMEROINTERCAMBIO));
-          V_ERROR := V_TIPOERRORODESCRIPCION;
+          V_ERROR := V_TIPOERRORDESCRIPCION|| ' ' ||V_TIPOERRORSOLUCION ;
         ELSE
           --(2 Recibida respuesta incorrecta)
           IF( TRIM(V_TIPOCAMPOCODIGO) IS NOT NULL ) THEN
@@ -260,9 +281,9 @@ begin
                                       ' Campo no definido en PCAJG_ALC_TIPOCAMPOCARGA';
             
             END;
-            V_ERROR := V_TIPOCAMPODESCRIPCION || ' ' || V_TIPOERRORODESCRIPCION ||' '||V_DESCRIPCIONERROR;  
+            V_ERROR := V_TIPOCAMPODESCRIPCION || ' ' || V_TIPOERRORDESCRIPCION ||' '||V_DESCRIPCIONERROR|| ' ' ||V_TIPOERRORSOLUCION;  
           ELSE
-             V_ERROR := V_DESCRIPCIONERROR || ' ' || V_TIPOERRORODESCRIPCION;  
+             V_ERROR := V_DESCRIPCIONERROR || ' ' || V_TIPOERRORDESCRIPCION|| ' ' ||V_TIPOERRORSOLUCION;  
           END IF;
           
         
@@ -270,10 +291,22 @@ begin
           UPDATE PCAJG_ALC_INT_CAB
              SET CAB_FECHARESPUESTA = SYSDATE, CAB_EST_ID = 2
            WHERE CAB2_NUMERO_INTERCAMBIO = V_NUMEROINTERCAMBIO;
+           
+
+           
+           UPDATE PCAJG_ALC_INT_CAB
+             SET CAB_FECHARESPUESTA = SYSDATE, CAB_EST_ID = 2
+           WHERE CAB2_NUMERO_INTERCAMBIO = V_NUMEROINTERCAMBIO;
+           
+           
         END IF;
       
       
+      IF var_num_reg IS NULL THEN
+          var_num_reg := '1';
       --mETEMOS EL ESTADO DEVUELTO AL COLEGIO
+      
+      
           INSERT INTO SCS_ESTADOEJG
             (IDINSTITUCION,
              IDTIPOEJG,
@@ -303,15 +336,16 @@ begin
              SYSDATE,
              SYSDATE,
              1,
-             'El expediente ha recibido la siguiente respuesta errónea al procesar el fichero generado en la remesa.'||chr(10)||V_ERROR||chr(10)||'Deberá incluirlo en una nueva remesa de Envio.',
+             V_ERROR,
              1,
              NULL,
              NULL);
-        
+        END IF;
         --CAMBIAMOS EL CAMPO RECIBIDA DEL EJG INCLUIDO EN LA REMESA A 2 Recibida respuesta incorrecta
         UPDATE CAJG_EJGREMESA
            SET RECIBIDA = 2
          WHERE IDEJGREMESA = REMESA_IDEJGREMESA;
+         
         --BORRAMOS LAS RESPUESTAS QUE TUVIERA
 --        DELETE FROM CAJG_RESPUESTA_EJGREMESA CR        WHERE CR.IDEJGREMESA = REMESA_IDEJGREMESA;
         -- ISERTAMOS EL ERROR QUE SE MOSTRARA AL USUARIO
@@ -360,6 +394,12 @@ begin
         UPDATE CAJG_REMESARESOLUCIONFICHERO
            SET IDERRORESREMESARESOL = 17, PARAMETROSERROR = V_REF_EJG
          WHERE IDREMESARESOLUCIONFICHERO = REG.IDREMESARESOLUCIONFICHERO;
+      WHEN INTERCAMBIO_NOT_ALLOWED THEN
+           UPDATE CAJG_REMESARESOLUCIONFICHERO
+           SET IDERRORESREMESARESOL = 18, PARAMETROSERROR = V_REF_EJG
+         WHERE IDREMESARESOLUCIONFICHERO = REG.IDREMESARESOLUCIONFICHERO;
+      
+      
       
       WHEN OTHERS THEN
         --si ocurre cualquier otro error
@@ -375,4 +415,3 @@ begin
   END LOOP;
 
 end PROC_RESPUESTAEJG_2003;
-/

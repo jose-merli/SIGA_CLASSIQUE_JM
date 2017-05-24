@@ -4,6 +4,8 @@
 
 package com.siga.facturacionSJCS.form;
 
+import org.apache.struts.upload.FormFile;
+
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.general.MasterForm;
 
@@ -29,6 +31,8 @@ public class DatosGeneralesFacturacionForm extends MasterForm {
 	private String soj = "SOJ";
 	private String idInstitucion = "IDINSTITUCION";
 	private String idEstado=null;
+	private FormFile file;
+	private String tipoFicheroCAMRadio;
 	
 	
 	/**
@@ -323,6 +327,18 @@ public class DatosGeneralesFacturacionForm extends MasterForm {
 	 */
 	public void setIdiomaDownload(String idiomaDownload) {
 		 UtilidadesHash.set(datos, "idiomaDownload", idiomaDownload);
+	}
+	public FormFile getFile() {
+		return file;
+	}
+	public void setFile(FormFile file) {
+		this.file = file;
+	}
+	public String getTipoFicheroCAMRadio() {
+		return tipoFicheroCAMRadio;
+	}
+	public void setTipoFicheroCAMRadio(String tipoFicheroCAMRadio) {
+		this.tipoFicheroCAMRadio = tipoFicheroCAMRadio;
 	}
 
 }

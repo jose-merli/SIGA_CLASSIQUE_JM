@@ -90,7 +90,7 @@
 		   border="1"
 		   columnNames="gratuita.mantenimientoTablasMaestra.literal.codigoext,gratuita.procedimientos.literal.nombre,gratuita.procedimientos.literal.fechainicio,gratuita.procedimientos.literal.fechafin,gratuita.procedimientos.literal.importe,"
 		   columnSizes="10,45,10,10,13,12"
-		   modal="M">
+		   modal="G">
 
 			<!-- INICIO: ZONA DE REGISTROS -->
 			<!-- Aqui se iteran los diferentes registros de la lista -->
@@ -128,6 +128,8 @@
 	%>			
 
 		</siga:Table>
+
+
 
 
 <!-- FIN: LISTA DE VALORES -->

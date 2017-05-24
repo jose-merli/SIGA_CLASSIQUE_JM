@@ -24,13 +24,14 @@ public class ConfirmarFacturacionForm extends MasterForm{
 	private String fechaCargo, estadoConfirmacion, estadoPDF, estadoEnvios, archivadas;
 	private String facturacionRapida, idSerieFacturacion, idProgramacion;
 	private String fechaEntrega="", fechaFRST="", fechaRCUR="", fechaCOR1="", fechaB2B="";
-	private String fechaDesdeConfirmacion,fechaHastaConfirmacion,fechaDesdeGeneracion,fechaHastaGeneracion,fechaDesdePrevistaGeneracion,fechaHastaPrevistaGeneracion;
+	private String fechaDesdeConfirmacion,fechaHastaConfirmacion,fechaDesdeGeneracion,fechaHastaGeneracion,fechaDesdePrevistaGeneracion,fechaHastaPrevistaGeneracion,fechaDesdeProductos,fechaHastaProductos,fechaDesdeServicios,fechaHastaServicios;
 	private String idTipoPlantillaMail;
 	private String fechaPresentacion;
 	private String fechaRecibosPrimeros;
 	private String fechaRecibosRecurrentes;
 	private String fechaRecibosCOR1;
 	private String fechaRecibosB2B;
+	private String idTipoProducto, idProducto;
 	
 	/**
 	 * @return the fechaDesdeConfirmacion
@@ -79,6 +80,38 @@ public class ConfirmarFacturacionForm extends MasterForm{
 	 */
 	public void setFechaHastaGeneracion(String fechaHastaGeneracion) {
 		this.fechaHastaGeneracion = fechaHastaGeneracion;
+	}
+	public String getFechaDesdeProductos()
+	{
+		return fechaDesdeProductos;
+	}
+	public void setFechaDesdeProductos(String fechaDesdeProductos)
+	{
+		this.fechaDesdeProductos = fechaDesdeProductos;
+	}
+	public String getFechaHastaProductos()
+	{
+		return fechaHastaProductos;
+	}
+	public void setFechaHastaProductos(String fechaHastaProductos)
+	{
+		this.fechaHastaProductos = fechaHastaProductos;
+	}
+	public String getFechaDesdeServicios()
+	{
+		return fechaDesdeServicios;
+	}
+	public void setFechaDesdeServicios(String fechaDesdeServicios)
+	{
+		this.fechaDesdeServicios = fechaDesdeServicios;
+	}
+	public String getFechaHastaServicios()
+	{
+		return fechaHastaServicios;
+	}
+	public void setFechaHastaServicios(String fechaHastaServicios)
+	{
+		this.fechaHastaServicios = fechaHastaServicios;
 	}
 	public String getFechaCargo() {
 		return fechaCargo;
@@ -467,6 +500,22 @@ public class ConfirmarFacturacionForm extends MasterForm{
 	}
 	public void setFechaHastaPrevistaGeneracion(String fechaHastaPrevistaGeneracion) {
 		this.fechaHastaPrevistaGeneracion = fechaHastaPrevistaGeneracion;
+	}
+	public String getIdTipoProducto()
+	{
+		return idTipoProducto;
+	}
+	public void setIdTipoProducto(String idTipoProducto)
+	{
+		this.idTipoProducto = idTipoProducto;
+	}
+	public String getIdProducto()
+	{
+		return idProducto;
+	}
+	public void setIdProducto(String idProducto)
+	{
+		this.idProducto = idProducto;
 	}
 
 }

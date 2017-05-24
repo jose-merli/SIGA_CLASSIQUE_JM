@@ -269,10 +269,16 @@ public class BusquedaCensoAction extends MasterAction {
 						beanDir.setIdPoblacion (miForm.getPoblacion ());
 						beanDir.setIdProvincia (miForm.getProvincia ());
 						beanDir.setPoblacionExtranjera ("");
+						if(miForm.getOtraProvincia() != null && !"".equalsIgnoreCase(miForm.getOtraProvincia()) && miForm.getOtraProvincia().equalsIgnoreCase("1")){
+							beanDir.setOtraProvincia(1);
+						}else{
+							beanDir.setOtraProvincia(0);
+						}
 					} else {
 						beanDir.setPoblacionExtranjera (miForm.getPoblacionExt ());
 						beanDir.setIdPoblacion ("");
 						beanDir.setIdProvincia ("");
+						beanDir.setOtraProvincia(0);
 					}
 					
 					beanDir.setIdPersona (new Long(miForm.getIdPersona()));
@@ -1193,6 +1199,7 @@ public class BusquedaCensoAction extends MasterAction {
 				miForm.setTelefono((String)direccion.get("TELEFONO"));
 				miForm.setTelefono2("");
 				miForm.setPoblacion((String)direccion.get("IDPOBLACION"));
+				miForm.setOtraProvincia((String)direccion.get("OTRAPROVINCIA"));
 				miForm.setProvincia((String)direccion.get("IDPROVINCIA"));
 				miForm.setPais((String)direccion.get("IDPAIS"));
 				miForm.setDireccion((String)direccion.get("DIR_PROFESIONAL"));
@@ -1210,6 +1217,7 @@ public class BusquedaCensoAction extends MasterAction {
 				miForm.setTelefono("");
 				miForm.setTelefono2("");
 				miForm.setPoblacion("");
+				miForm.setOtraProvincia("");
 				miForm.setProvincia("");
 				miForm.setPais("");
 				miForm.setDireccion("");
@@ -1231,6 +1239,7 @@ public class BusquedaCensoAction extends MasterAction {
 			miForm.setTelefono((String)direccion.get("TELEFONO1"));
 			miForm.setTelefono2((String)direccion.get("TELEFONO2"));
 			miForm.setPoblacion((String)direccion.get("IDPOBLACION"));
+			miForm.setOtraProvincia((String)direccion.get("OTRAPROVINCIA"));
 			miForm.setProvincia((String)direccion.get("IDPROVINCIA"));
 			miForm.setPais((String)direccion.get("IDPAIS"));
 			miForm.setDireccion((String)direccion.get("DOMICILIO"));
@@ -1250,7 +1259,7 @@ public class BusquedaCensoAction extends MasterAction {
 		listaParametros.add(miForm.getMovil());
 		listaParametros.add(miForm.getTelefono());
 		listaParametros.add(miForm.getTelefono2());
-		listaParametros.add(miForm.getPoblacion());
+		listaParametros.add(miForm.getPoblacion());	
 		listaParametros.add(miForm.getProvincia());
 		listaParametros.add(miForm.getPais());
 		listaParametros.add(miForm.getDireccion());
@@ -1259,6 +1268,7 @@ public class BusquedaCensoAction extends MasterAction {
 		listaParametros.add(miForm.getCodPostal());
 		listaParametros.add(miForm.getPoblacionExt());
 		listaParametros.add(miForm.getIdDireccion());
+		listaParametros.add(miForm.getOtraProvincia());
 
 		respuestaAjax(new AjaxXmlBuilder(), listaParametros,response);
 	}	

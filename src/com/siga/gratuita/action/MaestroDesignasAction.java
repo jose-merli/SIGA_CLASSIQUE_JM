@@ -16,6 +16,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.services.scs.ScsDesignaService;
 import org.redabogacia.sigaservices.app.vo.scs.EjgsDesignaVo;
@@ -807,21 +808,30 @@ public class MaestroDesignasAction extends MasterAction {
 							}							
 						}
 						// JBD 16/2/2009 INC-5739-SIGA
-						// Obtenemos el idPretension						
+						// Obtenemos el idPretension
+						int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 						String pretensionSel=(String)datosEntrada.get("IDPRETENSION");
-						if (pretensionSel!=null){
-							if(pretensionSel.equals("")&& designaAntigua.getEstado().equals("F")){							
-								if (designaAntigua.getIdPretension()!=null){
-									if (!designaAntigua.getIdPretension().equals("")){
-										designaNueva.put(ScsDesignaBean.C_IDPRETENSION, designaAntigua.getIdPretension());
-									}else{
-										designaNueva.put(ScsDesignaBean.C_IDPRETENSION, "");
-									}
-								}						
-							}else{
-								String pretenciaon[] = pretensionSel.split(",");
-								designaNueva.put(ScsDesignaBean.C_IDPRETENSION, pretenciaon[0]);
-							}							
+						
+						if(valorPcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA){
+							HashMap<String, String> hmPretensionSel = new ObjectMapper().readValue(pretensionSel, HashMap.class);
+							String idPretension = hmPretensionSel.get("idpretension");
+							designaNueva.put(ScsDesignaBean.C_IDPRETENSION, idPretension);
+						}else{
+						
+							if (pretensionSel!=null){
+								if(pretensionSel.equals("")&& designaAntigua.getEstado().equals("F")){							
+									if (designaAntigua.getIdPretension()!=null){
+										if (!designaAntigua.getIdPretension().equals("")){
+											designaNueva.put(ScsDesignaBean.C_IDPRETENSION, designaAntigua.getIdPretension());
+										}else{
+											designaNueva.put(ScsDesignaBean.C_IDPRETENSION, "");
+										}
+									}						
+								}else{
+									String pretenciaon[] = pretensionSel.split(",");
+									designaNueva.put(ScsDesignaBean.C_IDPRETENSION, pretenciaon[0]);
+								}							
+							}
 						}
 						
 						// jbd 8/3/2010 inc-6876						
@@ -1068,6 +1078,8 @@ public class MaestroDesignasAction extends MasterAction {
 		miform.setJuzgados(alJuzgados);
 		miform.setModulos(new ArrayList<ScsProcedimientosBean>());
 		miform.setFormulario(beanDesigna);
+		if(beanDesigna.getIdPretension()!=null)
+			miform.setIdPretension(beanDesigna.getIdPretension().toString());
 		
 		GenParametrosAdm admParametros = new GenParametrosAdm(usr);		
 		String ejisActivo = admParametros.getValor(usr.getLocation(), "ECOM", "EJIS_ACTIVO", "0");

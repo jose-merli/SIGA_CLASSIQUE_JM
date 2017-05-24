@@ -322,6 +322,8 @@
 				
 				var datos='';
 				var estadoFinal="";
+				var accesoPrimeraVez=true;
+				var idPersonaAux="";
 				for (fila = 0; fila < ele.length; fila++) {
 				    if(ele[fila].checked){
 						var idInstitucion = 'idInstitucion_' + fila ;
@@ -350,6 +352,16 @@
 					   	idInstitucion = document.getElementById(idInstitucion).value;
 					   	
 					   	idPersona = document.getElementById(idPersona).value;
+					   	if(accesoPrimeraVez){
+					   		accesoPrimeraVez=false;
+					   		idPersonaAux=idPersona;
+					   	}
+					   	if(jQuery("#comboTipoSolicitud").val()=="B" && jQuery("#comboEstado").val()=="P"){
+						   	if(idPersona != idPersonaAux){ 
+						   		alert('<siga:Idioma key="gratuita.gestionInscripciones.error.baja.colegiados"/>');
+								return false;
+						   	}
+					   	}
 					   	
 					   	idTurno = document.getElementById(idTurno).value;
 					   	
@@ -477,7 +489,7 @@
 							<siga:Idioma key="gratuita.gestionInscripciones.tipo.literal"/>
 						</td>
 						<td>
-							<html:select property="tipo" styleClass="boxCombo" >
+							<html:select property="tipo" styleClass="boxCombo" styleId="comboTipoSolicitud" >
 								<html:option value="A"><siga:Idioma key="gratuita.gestionInscripciones.tipo.alta"/></html:option>
 								<html:option value="B"><siga:Idioma key="gratuita.gestionInscripciones.tipo.baja"/></html:option>							
 							</html:select>
@@ -487,7 +499,7 @@
 							<siga:Idioma key="gratuita.gestionInscripciones.estado"/>
 						</td>
 						<td>
-							<html:select property="estado" styleClass="boxCombo">						
+							<html:select property="estado" styleClass="boxCombo" styleId="comboEstado">						
 								<html:option value="S"><siga:Idioma key="general.combo.seleccionar"/></html:option>
 								<html:option value="P"><siga:Idioma key="gratuita.gestionInscripciones.estado.pendiente"/></html:option>
 								<html:option value="C"><siga:Idioma key="gratuita.gestionInscripciones.estado.confirmada"/></html:option>

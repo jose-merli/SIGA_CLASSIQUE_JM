@@ -975,4 +975,6 @@
 			f.submit();
 		}	 			
 	}
+	
+	calcularImporte();
 </script>

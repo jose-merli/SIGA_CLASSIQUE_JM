@@ -1295,6 +1295,17 @@
 		</field> 
 	</form>
 	
+	<form name="ExpDireccionDenunciadoForm">
+		<field property = "nombre" 
+				depends = "required">
+			<arg0 key="expedientes.auditoria.literal.nombre"/> 
+		</field> 
+		<field property = "primerApellido" 
+				depends = "required">
+			<arg0 key="expedientes.auditoria.literal.primerapellido"/>
+		</field> 
+	</form>
+	
 	
 	<!-- FIN: ExpDenuncianteForm emilio.grau 25-01-2005 -->
 

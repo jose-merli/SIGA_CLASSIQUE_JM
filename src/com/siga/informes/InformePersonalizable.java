@@ -40,6 +40,7 @@ public class InformePersonalizable extends MasterReport
 		
 	private String idFacturacion = null;
 	private boolean eliminarFichero = false;
+	private String tipoFicheroCAM;
 	
 	public File getFicheroGenerado(UsrBean usr,
 								  String idtipoinforme,Vector informesList,
@@ -90,6 +91,7 @@ public class InformePersonalizable extends MasterReport
 					Object obj = clazz.newInstance();
 					if (obj instanceof InformeXML) {
 						InformeXML informeXML = (InformeXML)obj;
+						informeXML.setTipoFicheroCAM(this.tipoFicheroCAM);
 						listaFicheros.addAll(informeXML.execute(informe.getDirectorio(), informe.getNombreSalida(), idinstitucion, idFacturacion, usr));
 						setEliminarFichero(true);
 					} else {
@@ -697,5 +699,11 @@ public class InformePersonalizable extends MasterReport
 
 	public void setEliminarFichero(boolean eliminarFichero) {
 		this.eliminarFichero = eliminarFichero;
+	}
+
+
+
+	public void setTipoFicheroCAM(String tipoFicheroCAM) {
+		this.tipoFicheroCAM = tipoFicheroCAM;		
 	}
 }

@@ -176,6 +176,7 @@ public class EnvioInformesGenericos extends MasterReport {
 	public static final String comunicacionesOrdenDomicializacion = "OSEPA";
 	public static final String comunicacionesAnexoOrdenDomiciliacion = "ASEPA";
 	public static final String comunicacionesSancionesLetrado = "SANC";
+	public static final String comunicacionesAcreditacionDeOficio = "CADO";
 
 	public static final int tipoPlantillaWord = 1;
 	public static final int tipoPlantillaFo = 2;
@@ -306,6 +307,139 @@ public class EnvioInformesGenericos extends MasterReport {
 				htDatosInforme.put("row", vDatosInformeFinal);
 				htDatosInforme.put("componentes", vInformeCompAux);
 			}
+
+		} else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesAcreditacionDeOficio)) {
+			
+			
+			
+			ScsDesignaAdm scsDesignaAdm = new ScsDesignaAdm(usrBean);
+			CenColegiadoAdm admCenColegiado = new CenColegiadoAdm(usrBean);
+			CenPersonaAdm persAdm = new CenPersonaAdm(this.getUsuario());
+			HelperInformesAdm helperInformes = new HelperInformesAdm();
+			ScsEJGAdm scsEJGAdm = new ScsEJGAdm(usrBean);
+			
+			Hashtable total = new Hashtable();
+			String idInstitucionOficio=(String) datosInforme.get("idInstitucion");
+			String idTurno=(String) datosInforme.get("idTurno");
+			String anio=(String) datosInforme.get("anio");
+			String numero=(String) datosInforme.get("numero");
+			String numeroAsunto=(String) datosInforme.get("numeroAsunto");
+			Vector datosconsultaGeneral = scsDesignaAdm.getDesignaCartaAcreditacionOficio(idInstitucionOficio, idTurno, anio, numero,numeroAsunto);
+			
+			
+			
+			if (datosconsultaGeneral.size() > 0) {
+				Hashtable registroGeneral = (Hashtable) datosconsultaGeneral.get(0);
+				//Parseamos los ejg
+				String expedientes= (String)registroGeneral.get("DESIGNA_LISTA_EXPEDIENTES");
+				if(expedientes != null && !"".equalsIgnoreCase(expedientes)){
+					if (expedientes != null && expedientes.indexOf("##") > -1) {
+						String[] ejgs = expedientes.split(",");
+						String salida = "";
+						Boolean favorable;
+						String idTipoRatificacion="";
+						String fechaResolucionCAJG ="";
+						for (String ejg:ejgs) {
+							favorable = Boolean.FALSE;
+							String[] ejgDoc = ejg.split("##");	
+							//Obtenemos los datos del ejg para comprobar si tiene resolución favorable y sólo sacar aquellos que así lo son.
+							 idTipoRatificacion = ejgDoc[6];
+							 fechaResolucionCAJG = ejgDoc[7];
+							if((fechaResolucionCAJG != null && !"".equalsIgnoreCase(fechaResolucionCAJG) && idTipoRatificacion!=null && !"".equalsIgnoreCase(idTipoRatificacion) 
+									&& (idTipoRatificacion.equalsIgnoreCase("1") || idTipoRatificacion.equalsIgnoreCase("2")|| idTipoRatificacion.equalsIgnoreCase("8")
+											|| idTipoRatificacion.equalsIgnoreCase("10")|| idTipoRatificacion.equalsIgnoreCase("9")|| idTipoRatificacion.equalsIgnoreCase("11"))) 
+											|| (" ".equalsIgnoreCase(fechaResolucionCAJG) && " ".equalsIgnoreCase(idTipoRatificacion))){
+								//Comprobamos el tipo de resolución
+								
+									favorable=Boolean.TRUE;
+								
+							}
+							if(favorable)
+								salida+=", " + ejgDoc[0].trim();				
+						}
+						expedientes=salida;
+						if (expedientes.length() > 2){
+							expedientes = expedientes.substring(1);
+						}
+						registroGeneral.put("DESIGNA_LISTA_EXPEDIENTES", expedientes);
+					}
+				}
+				total.putAll(registroGeneral);
+				
+				String idPersona  = (String)registroGeneral.get("DESIGNA_LETRADO");
+				String nombre_dest = persAdm.obtenerNombreApellidos(idPersona);
+				
+				Vector designaLetrado = scsDesignaAdm.getDireccionLetradoSalidaOficio(idPersona, idInstitucion);
+				Hashtable registro2=  (Hashtable)designaLetrado.get(0);
+				registro2.put("PROVINCIA_DESPACHO_LETRADO", helperInformes.getNombreProvinciaSalida((String)registro2.get("IDPROVINCIA_DESPACHO_LETRADO"),"PROVINCIA_DESPACHO_LETRADO"));
+				total.putAll(registro2);
+				
+				Vector designaLetradoGuardia = scsDesignaAdm.getDireccionPersonalLetradoSalidaOficio(idPersona, idInstitucion);
+				Hashtable registro3=  (Hashtable)designaLetradoGuardia.get(0);
+				registro2.put("PROVINCIA_GUARDIA_LETRADO", helperInformes.getNombreProvinciaSalida((String)registro2.get("IDPROVINCIA_GUARDIA_LETRADO"),"PROVINCIA_GUARDIA_LETRADO"));
+				total.putAll(registro3);
+				
+				Hashtable letrado =  obtenerLetrado(registro2, registro3);
+				letrado.put("NOMBRE_LETRADO", nombre_dest);
+				
+				// Obtenemos el numero de colegiado
+				Hashtable<String,Object> hCenColegiado = admCenColegiado.obtenerDatosColegiado(idInstitucion, idPersona, usrBean.getLanguage());
+				String nColegiado = "";
+				if (hCenColegiado!=null && hCenColegiado.size()>0) {
+					nColegiado =  UtilidadesHash.getString(hCenColegiado, "NCOLEGIADO_LETRADO");
+					letrado.put("NCOLEGIADO_LETRADO", nColegiado);
+				}			    
+				total.putAll(letrado);
+				//Destinatario
+				Hashtable destinatario = obtenerDestinatario(registro2, registro3);
+				destinatario.put("NOMBRE_DEST", nombre_dest);
+				registro2.put("PROVINCIA_DEST", helperInformes.getNombreProvinciaSalida((String)registro2.get("ID_PROVINCIA_DEST"),"PROVINCIA_DEST"));
+				total.putAll(destinatario);
+				
+				
+				Vector regionDefendido = scsDesignaAdm.getVectorDefendidosDesigna(idInstitucion,numero,idTurno, anio,"","", longitudNumEjg);
+				htDatosInforme.put("row", total);
+				if (regionDefendido != null)
+					htDatosInforme.put("defendido", regionDefendido); //region del defendido
+				
+				
+				Vector listaInteresadosFavorablesEJG = scsEJGAdm.getDatosEjgResolucionFavorable(idInstitucion, anio, numero, idTurno);
+				Hashtable listadoEjgFavorableHashtable = new Hashtable();
+				//Si existen interesados los ponemos en forma de lista
+				if(listaInteresadosFavorablesEJG != null && listaInteresadosFavorablesEJG.size()>0){
+					String listaInteresadosFavorablesEJGString="";
+					//Si sólo hay uno lo mostramos en la lista.
+					if(listaInteresadosFavorablesEJG.size() == 1){
+						Hashtable nombreInteresado=  (Hashtable)listaInteresadosFavorablesEJG.get(0);
+						listaInteresadosFavorablesEJGString = nombreInteresado.get("NOMBRE")+ " "+nombreInteresado.get("APELLIDO1")+" "+nombreInteresado.get("APELLIDO2");
+						
+						
+					}else{
+						//Si hay más de uno construimos la lista
+						int tam = listaInteresadosFavorablesEJG.size();
+						
+						for(int i=0;i<listaInteresadosFavorablesEJG.size();i++){
+							Hashtable nombreInteresado=  (Hashtable)listaInteresadosFavorablesEJG.get(i);
+							if((tam-1)-i ==0){
+								//Es el úlimo elemento no se pone coma
+								listaInteresadosFavorablesEJGString += nombreInteresado.get("NOMBRE")+ " "+nombreInteresado.get("APELLIDO1")+" "+nombreInteresado.get("APELLIDO2");
+							}else{
+								//No es el último elemento se pone coma
+								listaInteresadosFavorablesEJGString += nombreInteresado.get("NOMBRE")+ " "+nombreInteresado.get("APELLIDO1")+" "+nombreInteresado.get("APELLIDO2")+", ";
+							}
+						}
+					}
+					listadoEjgFavorableHashtable.put("DESIGNA_LISTA_INTERESADOS", listaInteresadosFavorablesEJGString);
+					total.putAll(listadoEjgFavorableHashtable);
+				}else{
+					listadoEjgFavorableHashtable.put("DESIGNA_LISTA_INTERESADOS", "");
+					total.putAll(listadoEjgFavorableHashtable);
+				}
+				
+			
+			}
+			
+			 
 
 		} else if (idTipoInforme.equals(EnvioInformesGenericos.comunicacionesPagoColegiados)) {
 			InformeColegiadosPagos infColegiado = new InformeColegiadosPagos();
@@ -1133,10 +1267,16 @@ public class EnvioInformesGenericos extends MasterReport {
 		if (!tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesDesigna) && !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesExpedientes) 
 				&& !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesListadoGuardias) && !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesEjg) 
 				&& !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesResolucionEjg) && !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesCAJG) 
-				&& !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesCenso)) {
+				&& !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesCenso) && !tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesAcreditacionDeOficio)) {
 			htDatosInformeFinal = getDatosInformeFinal(datosInforme, usrBean);
 		
 		} else if (tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesCenso)) {
+			HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
+			helperInformesAdm.setIdiomaInforme(idInstitucion, idPersona, AdmInformeBean.TIPODESTINATARIO_CENPERSONA, datosInforme, usrBean);
+			idioma = (String) datosInforme.get("idioma");
+			idiomaExt = (String) datosInforme.get("idiomaExt");
+			htDatosInformeFinal = getDatosInformeFinal(datosInforme, usrBean);
+		}else if(tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesAcreditacionDeOficio)){
 			HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
 			helperInformesAdm.setIdiomaInforme(idInstitucion, idPersona, AdmInformeBean.TIPODESTINATARIO_CENPERSONA, datosInforme, usrBean);
 			idioma = (String) datosInforme.get("idioma");
@@ -2034,6 +2174,20 @@ public class EnvioInformesGenericos extends MasterReport {
 					identificador.append("_");
 					String hoy = UtilidadesString.formatoFecha(new Date(), "yyyyMMddhhmmssSSS");
 					identificador.append(hoy);
+					fileDocumento = getInformeGenerico(beanInforme, htDatosInformeFinal, idiomaExt, identificador.toString(), usrBean, tipoPlantillaWord);
+					
+				} else if (tipoComunicacion.equals(EnvioInformesGenericos.comunicacionesAcreditacionDeOficio)) {
+					String codigoDesigna = (String) datosInforme.get("codigoDesigna");
+					String numeroAsunto = (String) datosInforme.get("numeroAsunto");
+					identificador = new StringBuffer();
+					codigoDesigna = codigoDesigna.replaceAll("/", "");
+					identificador.append(codigoDesigna);
+					identificador.append("_");
+					identificador.append(numeroAsunto);
+					identificador.append("_");
+					String hoy = UtilidadesString.formatoFecha(new Date(), "yyyyMMddhhmmssSSS");
+					identificador.append(hoy);
+					
 					fileDocumento = getInformeGenerico(beanInforme, htDatosInformeFinal, idiomaExt, identificador.toString(), usrBean, tipoPlantillaWord);
 
 				} else {
@@ -4102,6 +4256,188 @@ public class EnvioInformesGenericos extends MasterReport {
 					claves.append("idTipoPersonas==");
 					claves.append(idTipoPersonas);
 					claves.append("##");
+
+					if (!isInformeProgramado) {
+						programInformes = new EnvProgramInformesBean();
+						// envioProgramado.setProgramInformes(programInformes);
+						programInformes.setIdProgram(programInformesAdm.getNewIdProgramInformes(idInstitucion));
+						programInformes.setIdEnvio(envioProgramado.getIdEnvio());
+						programInformes.setIdInstitucion(envioProgramado.getIdInstitucion());
+						// idioma =
+						// ((AdmLenguajesBean)admIdioma.getLenguajeInstitucion(idInstitucion)).getIdLenguaje();
+						idioma = userBean.getLanguage();
+						programInformes.setIdioma(new Integer(idioma));
+						programInformes.setEstado(ClsConstants.DB_FALSE);
+						programInformes.setClaves(claves.toString());
+						programInformes.setPlantillas("MULTIPLES");
+						programInformes.setIdTipoInforme(idTipoInforme);
+
+						programInformesAdm.insert(programInformes);
+						isInformeProgramado = true;
+
+					}
+
+					destProgramInformes = new EnvDestProgramInformesBean();
+					destProgramInformes.setIdProgram(programInformes.getIdProgram());
+					destProgramInformes.setIdEnvio(programInformes.getIdEnvio());
+					destProgramInformes.setIdInstitucion(programInformes.getIdInstitucion());
+					destProgramInformes.setIdPersona(new Long(idPersona));
+					destProgramInformes.setIdInstitucionPersona(new Integer(idInstitucion));
+
+					destProgramInformesAdm.insert(destProgramInformes);
+					countEnvios++;
+
+				}
+
+				informesBean = new EnvInformesGenericosBean();
+				informesBean.setIdProgram(programInformes.getIdProgram());
+				informesBean.setIdEnvio(programInformes.getIdEnvio());
+
+				for (int j = 0; j < informesVector.size(); j++) {
+					AdmInformeBean beanInforme = (AdmInformeBean) informesVector.get(j);
+					informesBean.setIdPlantilla(beanInforme.getIdPlantilla());
+					informesBean.setIdInstitucion(beanInforme.getIdInstitucion());
+					informesGenericoAdm.insert(informesBean);
+				}
+			}
+			setEnvioBatch(true);
+		}
+
+	}
+	
+	/**
+	 * Metodo que gestiona el envio de las comunicaciones de Censo
+	 * 
+	 * @param form
+	 * @param isEnvioBatch
+	 * @param locale
+	 * @param userBean
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	public void gestionarComunicacionAcreditacionOficio(DefinirEnviosForm form, Locale locale, UsrBean userBean) throws ClsExceptions, SIGAException {
+
+		// Obtenemos la información pertinente relacionada
+		MasterReport masterReport = new MasterReport();
+		Vector datosInformeVector = null;
+		if (form.getIdTipoInforme() != null && !form.getIdTipoInforme().equals(""))
+			datosInformeVector = masterReport.getDatosInforme(form.getDatosInforme(), form.getIdTipoInforme());
+		else
+			datosInformeVector = masterReport.getDatosInforme(form.getDatosInforme());
+
+		String idPersona = getIdColegiadoUnico(datosInformeVector);
+		String idInstitucion = userBean.getLocation();
+
+		String datosEnvios = form.getDatosEnvios();
+		String[] datosEnvio = datosEnvios.split("##");
+		Hashtable<String, List> enviosHashtable = new Hashtable<String, List>();
+		List<String> informesList = null;
+		for (int i = 0; i < datosEnvio.length; i++) {
+			String lineaEnvio = datosEnvio[i];
+			String[] parametrosEnvios = lineaEnvio.split(",");
+
+			String idTipoEnvio = parametrosEnvios[0];
+			String idPlantillaEnvio = parametrosEnvios[1];
+			String idInforme = parametrosEnvios[2];
+			String idInstitucionInforme = parametrosEnvios[3];
+			String acuseRecibo = parametrosEnvios[4];
+			String key = idTipoEnvio + "_" + idPlantillaEnvio + "_" + acuseRecibo;
+			if (enviosHashtable.containsKey(key)) {
+				informesList = enviosHashtable.get(key);
+			} else {
+				informesList = new ArrayList<String>();
+
+			}
+			informesList.add(idInforme + "," + idInstitucionInforme);
+			enviosHashtable.put(key, informesList);
+
+		}
+
+		Vector<AdmInformeBean> informesVector = null;
+		String keyEnvios = null;
+		if (idPersona != null && enviosHashtable.size() == 1) {
+
+			Vector vDocumentos = new Vector();
+			Iterator iteEnvios = enviosHashtable.keySet().iterator();
+			keyEnvios = (String) iteEnvios.next();
+			informesList = enviosHashtable.get(keyEnvios);
+			informesVector = this.getInformes(informesList, userBean);
+			Hashtable datosInforme = (Hashtable) datosInformeVector.get(0);
+			vDocumentos.addAll(this.getDocumentosAEnviar(datosInforme, informesVector, userBean, EnvioInformesGenericos.docDocument, EnvioInformesGenericos.comunicacionesAcreditacionDeOficio));
+
+			form.setIdTipoEnvio(keyEnvios.split("_")[0]);
+			form.setIdPlantillaEnvios(keyEnvios.split("_")[1]);
+			form.setAcuseRecibo(keyEnvios.split("_")[2]);
+
+			CenPersonaAdm personaAdm = new CenPersonaAdm(userBean);
+			String nombreyapellidos = personaAdm.obtenerNombreApellidos(idPersona);
+			form.setNombre(form.getNombre() + " " + nombreyapellidos);
+
+			Envio envio = getEnvio(form, true, locale, userBean);
+			// Genera el envio:
+			envio.generarEnvio(idPersona, EnvDestinatariosBean.TIPODESTINATARIO_CENPERSONA, vDocumentos,null,null);
+
+		} else {
+			Iterator iteEnvios = enviosHashtable.keySet().iterator();
+			int countEnvios = 0;
+			String idioma = null;
+			String idTipoInforme = null;
+			EnvEnvioProgramadoAdm envioProgramadoAdm = new EnvEnvioProgramadoAdm(userBean);
+			EnvProgramInformesAdm programInformesAdm = new EnvProgramInformesAdm(userBean);
+			EnvDestProgramInformesAdm destProgramInformesAdm = new EnvDestProgramInformesAdm(userBean);
+			EnvInformesGenericosAdm informesGenericoAdm = new EnvInformesGenericosAdm(userBean);
+			EnvEnvioProgramadoBean envioProgramado = null;
+			EnvProgramInformesBean programInformes = null;
+			EnvDestProgramInformesBean destProgramInformes = null;
+			EnvInformesGenericosBean informesBean = null;
+
+			while (iteEnvios.hasNext()) {
+				keyEnvios = (String) iteEnvios.next();
+				informesList = enviosHashtable.get(keyEnvios);
+				informesVector = this.getInformes(informesList, userBean);
+				String[] keysEnvio = keyEnvios.split("_");
+				String idTipoEnvio = keysEnvio[0];
+				String idPlantillaEnvio = keysEnvio[1];
+				String acuseRecibo = keysEnvio[2];
+
+				envioProgramado = new EnvEnvioProgramadoBean();
+				envioProgramado.setIdEnvio(envioProgramadoAdm.getNewIdEnvio(idInstitucion));
+				envioProgramado.setIdInstitucion(new Integer(idInstitucion));
+				envioProgramado.setIdTipoEnvios(new Integer(idTipoEnvio));
+				envioProgramado.setIdPlantillaEnvios(Integer.valueOf(idPlantillaEnvio));
+
+				envioProgramado.setAcuseRecibo(acuseRecibo);
+				envioProgramado.setNombre(form.getNombre());
+				envioProgramado.setEstado(ClsConstants.DB_FALSE);
+				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
+
+				envioProgramadoAdm.insert(envioProgramado);
+
+				boolean isInformeProgramado = false;
+
+				for (int i = 0; i < datosInformeVector.size(); i++) {
+					Hashtable ht = (Hashtable) datosInformeVector.get(i);
+					idPersona = (String) ht.get("idPersona");
+					idInstitucion = (String) ht.get("idInstitucion");
+					idTipoInforme = (String) ht.get("idTipoInforme");
+					
+					StringBuffer claves = new StringBuffer();
+					claves.append("idTurno==");
+					claves.append(ht.get("idTurno"));
+					claves.append("##");
+					claves.append("anio==");
+					claves.append(ht.get("anio"));
+					claves.append("##");
+					claves.append("numero==");
+					claves.append(ht.get("numero"));
+					claves.append("##");
+					claves.append("numeroAsunto==");
+					claves.append(ht.get("numeroAsunto"));
+					claves.append("##");
+					claves.append("codigoDesigna==");
+					claves.append(ht.get("codigoDesigna"));
+					claves.append("##");
+				
 
 					if (!isInformeProgramado) {
 						programInformes = new EnvProgramInformesBean();
@@ -8730,7 +9066,96 @@ public class EnvioInformesGenericos extends MasterReport {
 		}
 
 	}
+	public Hashtable obtenerLetrado(Hashtable despacho, Hashtable Guardia){
+		
+		Hashtable letrado = new Hashtable<String, Object>();
+	
+		if (despacho.get("DOMICILIO_DESPACHO_LETRADO")!=null) {
+			letrado.put("DOMICILIO_LETRADO", despacho.get("DOMICILIO_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("CP_DESPACHO_LETRADO")!=null) {
+			letrado.put("CP_LETRADO", despacho.get("CP_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("IDPOBLACION_DESPACHO_LETRADO")!=null) {
+			letrado.put("ID_POBLACION_LETRADO", despacho.get("IDPOBLACION_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("POBLACION_DESPACHO_LETRADO")!=null) {
+			letrado.put("POBLACION_LETRADO", despacho.get("POBLACION_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("IDPROVINCIA_DESPACHO_LETRADO")!=null) {
+			letrado.put("ID_PROVINCIA_LETRADO", despacho.get("IDPROVINCIA_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("PROVINCIA_DESPACHO_LETRADO")!=null) {
+			letrado.put("PROVINCIA_LETRADO", despacho.get("PROVINCIA_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("TELEFONO1_DESPACHO_LETRADO")!=null) {
+			letrado.put("TELEFONODESPACHO_LET", despacho.get("TELEFONO1_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("FAX1_DESPACHO_LETRADO")!=null) {
+			letrado.put("FAX_LETRADO", despacho.get("FAX1_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("EMAIL_DESPACHO_LETRADO")!=null) {
+			letrado.put("EMAIL_LETRADO", despacho.get("EMAIL_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("MOVIL_DESPACHO_LETRADO")!=null) {
+			letrado.put("MOVILDESPACHO_LET", despacho.get("MOVIL_DESPACHO_LETRADO"));
+		}
+		if (Guardia.get("TELEFONO1_GUARDIA_LETRADO")!=null) {
+			letrado.put("TELEFONO1_LETRADO", Guardia.get("TELEFONO1_GUARDIA_LETRADO"));
+		}
+		if (Guardia.get("TELEFONO2_GUARDIA_LETRADO")!=null) {
+			letrado.put("TELEFONO2_LETRADO", Guardia.get("TELEFONO2_GUARDIA_LETRADO"));
+		}
+		if (Guardia.get("MOVIL_GUARDIA_LETRADO")!=null) {
+			letrado.put("MOVIL_LETRADO", Guardia.get("MOVIL_GUARDIA_LETRADO"));
+		}
+		return letrado;
 
+	}
+public Hashtable obtenerDestinatario(Hashtable despacho, Hashtable Guardia){
+		
+		Hashtable destinatario = new Hashtable<String, Object>();
+	
+		if (despacho.get("DOMICILIO_DESPACHO_LETRADO")!=null) {
+			destinatario.put("DOMICILIO_DEST", despacho.get("DOMICILIO_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("CP_DESPACHO_LETRADO")!=null) {
+			destinatario.put("CP_DEST", despacho.get("CP_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("IDPOBLACION_DESPACHO_LETRADO")!=null) {
+			destinatario.put("ID_POBLACION_DEST", despacho.get("IDPOBLACION_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("POBLACION_DESPACHO_LETRADO")!=null) {
+			destinatario.put("POBLACION_DEST", despacho.get("POBLACION_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("IDPROVINCIA_DESPACHO_LETRADO")!=null) {
+			destinatario.put("ID_PROVINCIA_DEST", despacho.get("IDPROVINCIA_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("PROVINCIA_DESPACHO_LETRADO")!=null) {
+			destinatario.put("PROVINCIA_DEST", despacho.get("PROVINCIA_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("TELEFONO1_DESPACHO_LETRADO")!=null) {
+			destinatario.put("TELEFONO_DEST", despacho.get("TELEFONO1_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("FAX1_DESPACHO_LETRADO")!=null) {
+			destinatario.put("FAX_DEST", despacho.get("FAX1_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("EMAIL_DESPACHO_LETRADO")!=null) {
+			destinatario.put("EMAIL_DEST", despacho.get("EMAIL_DESPACHO_LETRADO"));
+		}
+		if (despacho.get("MOVIL_DESPACHO_LETRADO")!=null) {
+			destinatario.put("MOVIL_DEST", despacho.get("MOVIL_DESPACHO_LETRADO"));
+		}
+		if (Guardia.get("TELEFONO1_GUARDIA_LETRADO")!=null) {
+			destinatario.put("TELEFONO1_DEST", Guardia.get("TELEFONO1_GUARDIA_LETRADO"));
+		}
+		if (Guardia.get("TELEFONO2_GUARDIA_LETRADO")!=null) {
+			destinatario.put("TELEFONO2_DEST", Guardia.get("TELEFONO2_GUARDIA_LETRADO"));
+		}
+		
+		return destinatario;
+
+	}
 }
 
 class ComunicacionMoroso {

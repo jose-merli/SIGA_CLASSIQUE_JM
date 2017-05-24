@@ -393,3 +393,519 @@ update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Los expedientes 
 
 
 -- Ejecutado en Integracion por AAG el 06/03 a las 11:30
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.listadoModal_DefinirCalendarioGuardia.anular.tieneAsistencias', 'Tiene asistencias asociadas, ¿deseas cotinuar con el proceso de anulación?', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.listadoModal_DefinirCalendarioGuardia.anular.tieneAsistencias', 'Tiene asistencias asociadas, ¿deseas cotinuar con el proceso de anulación?#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.listadoModal_DefinirCalendarioGuardia.anular.tieneAsistencias', 'Tiene asistencias asociadas, ¿deseas cotinuar con el proceso de anulación?#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.listadoModal_DefinirCalendarioGuardia.anular.tieneAsistencias', 'Tiene asistencias asociadas, ¿deseas cotinuar con el proceso de anulación?#EU', 0, '3', sysdate, 0, '19');
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.listadoModal_DefinirCalendarioGuardia.permutar.tieneAsistencias', 'Tiene asistencias asociadas, este proceso asignará las asistencias al permutado, ¿deseas cotinuar con el proceso de permutación?', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.listadoModal_DefinirCalendarioGuardia.permutar.tieneAsistencias', 'Tiene asistencias asociadas, este proceso asignará las asistencias al permutado, ¿deseas cotinuar con el proceso de permutación?#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.listadoModal_DefinirCalendarioGuardia.permutar.tieneAsistencias', 'Tiene asistencias asociadas, este proceso asignará las asistencias al permutado, ¿deseas cotinuar con el proceso de permutación?#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.listadoModal_DefinirCalendarioGuardia.permutar.tieneAsistencias', 'Tiene asistencias asociadas, este proceso asignará las asistencias al permutado, ¿deseas cotinuar con el proceso de permutación?#EU', 0, '3', sysdate, 0, '19');
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.listadoModal_DefinirCalendarioGuardia.sustituir.tieneAsistencias', 'Tiene asistencias asociadas, este proceso asignará las asistencias al sustituto, ¿deseas cotinuar con el proceso de sustitución?', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.listadoModal_DefinirCalendarioGuardia.sustituir.tieneAsistencias', 'Tiene asistencias asociadas, este proceso asignará las asistencias al sustituto, ¿deseas cotinuar con el proceso de sustitución?#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.listadoModal_DefinirCalendarioGuardia.sustituir.tieneAsistencias', 'Tiene asistencias asociadas, este proceso asignará las asistencias al sustituto, ¿deseas cotinuar con el proceso de sustitución?#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.listadoModal_DefinirCalendarioGuardia.sustituir.tieneAsistencias', 'Tiene asistencias asociadas, este proceso asignará las asistencias al sustituto, ¿deseas cotinuar con el proceso de sustitución?#EU', 0, '3', sysdate, 0, '19');
+ 
+ Nuevo paquete PKG_SIGA_ACCIONES_GUARDIAS;
+ 
+ 
+UPDATE PCAJG_ALC_ACT_INCIDENCIA I SET I.NIVEL = 'ERROR' WHERE I.NIVEL IS NOT NULL;
+UPDATE PCAJG_ALC_ACT_INCIDENCIA I SET I.NIVEL = 'WARNING' WHERE I.IDENTIFICADOR = 30;
+
+ -- Add/modify columns 
+alter table SCS_ACREDITACIONPROCEDIMIENTO add CODSUBTARIFA varchar2(10);
+-- Add comments to the columns 
+comment on column SCS_ACREDITACIONPROCEDIMIENTO.CODSUBTARIFA
+  is 'Requisito de Alcala para subtarifas';
+  
+UPDATE scs_acreditacionprocedimiento AC
+SET AC.CODSUBTARIFA = (select DECODE(INSTR(codigoext,'##'),0,null,SUBSTR(codigoext,INSTR(codigoext,'##')+2)) from scs_acreditacionprocedimiento where idinstitucion = AC.IDINSTITUCION AND IDPROCEDIMIENTO = AC.IDPROCEDIMIENTO AND IDACREDITACION = AC.IDACREDITACION),
+ AC.CODIGOEXT = (select DECODE(INSTR(codigoext,'##'),0,codigoext,SUBSTR(codigoext,0,INSTR(codigoext,'##')-1)) from scs_acreditacionprocedimiento where idinstitucion = AC.IDINSTITUCION AND IDPROCEDIMIENTO = AC.IDPROCEDIMIENTO AND IDACREDITACION = AC.IDACREDITACION)
+WHERE AC.IDINSTITUCION = 2003;
+  
+
+-- Ejecutado en Integracion por AAG el 13/03 a las 10:00
+
+ alter table cen_direcciones add OTRAPROVINCIA number(1) default 0;
+comment on column cen_direcciones.OTRAPROVINCIA
+  is '0: La provincia coincide con el código postal, 1: La provincia puede o no coincidir con el código postal';
+  
+  
+   alter table CEN_SOLIMODIDIRECCIONES add OTRAPROVINCIA number(1) default 0;
+comment on column CEN_SOLIMODIDIRECCIONES.OTRAPROVINCIA
+  is '0: La provincia coincide con el código postal, 1: La provincia puede o no coincidir con el código postal';
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('general.boton.cambiarEstado', 'Cambiar estado', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('general.boton.cambiarEstado', 'Cambiar estado#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('general.boton.cambiarEstado', 'Cambiar estado#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('general.boton.cambiarEstado', 'Cambiar estado#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('gratuita.busquedaEJG.seleccioneEstado', 'Seleccione el nuevo estado', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('gratuita.busquedaEJG.seleccioneEstado', 'Seleccione el nuevo estado#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('gratuita.busquedaEJG.seleccioneEstado', 'Seleccione el nuevo estado#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('gratuita.busquedaEJG.seleccioneEstado', 'Seleccione el nuevo estado#GL', '0', 4, Sysdate, 0, '19');
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('messages.cajg.confirmarCambioEstado', 'Se va a cambiar añadir el nuevo estado a los expedientes seleccionados.', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('messages.cajg.confirmarCambioEstado', 'Se va a cambiar añadir el nuevo estado a los expedientes seleccionados.#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('messages.cajg.confirmarCambioEstado', 'Se va a cambiar añadir el nuevo estado a los expedientes seleccionados.#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('messages.cajg.confirmarCambioEstado', 'Se va a cambiar añadir el nuevo estado a los expedientes seleccionados.#GL', '0', 4, Sysdate, 0, '19');
+
+insert into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('censo.datosDireccion.literal.otraProvincia', 'Otra provincia', '0', 1, Sysdate, 0, '19');
+insert into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('censo.datosDireccion.literal.otraProvincia', 'Otra provincia#CA', '0', 2, Sysdate, 0, '19');
+insert into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('censo.datosDireccion.literal.otraProvincia', 'Otra provincia#EU', '0', 3, Sysdate, 0, '19');
+insert into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('censo.datosDireccion.literal.otraProvincia', 'Otra provincia#GL', '0', 4, Sysdate, 0, '19');
+
+
+
+
+
+
+create table PCAJG_ALC_ACT_ERROR_CAM
+
+insert into ecom_operacion (idoperacion, idservicio, nombre, maxreintentos, activo, fechamodificacion, usumodificacion)
+values (56, 5, 'Carga de fichero de errores de actuaciones de la CAM', 5, 1, sysdate, 0);
+
+-- Create sequence 
+create sequence SEQ_PCAJG_ALC_ACT_ERROR_CAM
+minvalue 1
+maxvalue 9999999999
+start with 1
+increment by 1
+nocache;
+
+
+CREATE OR REPLACE VIEW V_PCAJG_ALC_ACT_ERROR_CAM AS
+SELECT
+E.IDINSTITUCION, E.IDFACTURACION, E.CODIGO_ERROR, TE.ERROR_DESCRIPCION, E.CODIGO_CAMPO_ERROR, TC.CAMPO_DESCRIPCION, COUNT(1) CUENTA
+FROM PCAJG_ALC_ACT_ERROR_CAM E, PCAJG_ALC_TIPOERRORINTERCAMBIO TE, PCAJG_ALC_TIPOCAMPOCARGA TC
+WHERE E.CODIGO_ERROR = TE.ERROR_CODIGO
+AND E.CODIGO_CAMPO_ERROR = TC.CAMPO_CODIGO(+)
+AND E.BORRADO = 0
+GROUP BY E.IDINSTITUCION, E.IDFACTURACION, E.CODIGO_ERROR, TE.ERROR_DESCRIPCION, E.CODIGO_CAMPO_ERROR, TC.CAMPO_DESCRIPCION
+ORDER BY E.CODIGO_ERROR;
+
+
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.inserted.success.ficheroErrorActuacionesCAM', 'El fichero se ha subido correctamente y será procesado en breve. Vuelva a generar los informes pasados unos instantes para ver el resumen de errores enviados por la CAM.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.inserted.success.ficheroErrorActuacionesCAM', 'El fichero se ha subido correctamente y será procesado en breve. Vuelva a generar los informes pasados unos instantes para ver el resumen de errores enviados por la CAM.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.inserted.success.ficheroErrorActuacionesCAM', 'El fichero se ha subido correctamente y será procesado en breve. Vuelva a generar los informes pasados unos instantes para ver el resumen de errores enviados por la CAM.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.inserted.success.ficheroErrorActuacionesCAM', 'El fichero se ha subido correctamente y será procesado en breve. Vuelva a generar los informes pasados unos instantes para ver el resumen de errores enviados por la CAM.#GL', 0, '4', sysdate, 0, '19');
+
+
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.fichero', 'Fichero', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.fichero', 'Fichero#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.fichero', 'Fichero#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.fichero', 'Fichero#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.aviso.ficheroErrorCAM', 'Suba el fichero de errores generado por la CAM. Pasados unos instantes el fichero será procesado y se generará un informe de errores tras pulsar el botón generar informe.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.aviso.ficheroErrorCAM', 'Suba el fichero de errores generado por la CAM. Pasados unos instantes el fichero será procesado y se generará un informe de errores tras pulsar el botón generar informe.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.aviso.ficheroErrorCAM', 'Suba el fichero de errores generado por la CAM. Pasados unos instantes el fichero será procesado y se generará un informe de errores tras pulsar el botón generar informe.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.aviso.ficheroErrorCAM', 'Suba el fichero de errores generado por la CAM. Pasados unos instantes el fichero será procesado y se generará un informe de errores tras pulsar el botón generar informe.#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.dialogo.ficheroErrorCAM', 'Fichero errores CAM', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.dialogo.ficheroErrorCAM', 'Fichero errores CAM#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.dialogo.ficheroErrorCAM', 'Fichero errores CAM#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.dialogo.ficheroErrorCAM', 'Fichero errores CAM#GL', 0, '4', sysdate, 0, '19');
+
+
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.boton.subirFicheroErrorCAM', 'Errores CAM', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.boton.subirFicheroErrorCAM', 'Errores CAM#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.boton.subirFicheroErrorCAM', 'Errores CAM#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.boton.subirFicheroErrorCAM', 'Errores CAM#GL', 0, '4', sysdate, 0, '19');
+
+
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.dialogo.ficheroSeleccionErrorCAM', 'Generar fichero CAM', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.dialogo.ficheroSeleccionErrorCAM', 'Generar fichero CAM#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.dialogo.ficheroSeleccionErrorCAM', 'Generar fichero CAM#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.dialogo.ficheroSeleccionErrorCAM', 'Generar fichero CAM#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.aviso.ficheroSeleccionErrorCAM', 'Por favor, seleccione un tipo de error que haya solucionado o seleccione opción todos para generar el fichero completo de nuevo. Si no desea generar el fichero para subir a la CAM seleccione la opción.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.aviso.ficheroSeleccionErrorCAM', 'Por favor, seleccione un tipo de error que haya solucionado o seleccione opción todos para generar el fichero completo de nuevo. Si no desea generar el fichero para subir a la CAM seleccione la opción.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.aviso.ficheroSeleccionErrorCAM', 'Por favor, seleccione un tipo de error que haya solucionado o seleccione opción todos para generar el fichero completo de nuevo. Si no desea generar el fichero para subir a la CAM seleccione la opción.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.aviso.ficheroSeleccionErrorCAM', 'Por favor, seleccione un tipo de error que haya solucionado o seleccione opción todos para generar el fichero completo de nuevo. Si no desea generar el fichero para subir a la CAM seleccione la opción.#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.noGenerarFichero', 'No generar fichero para subir a la CAM', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.noGenerarFichero', 'No generar fichero para subir a la CAM#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.noGenerarFichero', 'No generar fichero para subir a la CAM#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.noGenerarFichero', 'No generar fichero para subir a la CAM#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.generarFicheroCompleto', 'Generar fichero completo con todos los errores', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.generarFicheroCompleto', 'Generar fichero completo con todos los errores#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.generarFicheroCompleto', 'Generar fichero completo con todos los errores#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('facturacionjg.literal.generarFicheroCompleto', 'Generar fichero completo con todos los errores#GL', 0, '4', sysdate, 0, '19');
+
+
+--eliminamos de las plantillas los tipos de envio fax
+delete from adm_envioinforme ei where ei.idtipoenvios =3 ;
+
+-- Create table
+create table SCS_PRETENSIONESPROCED
+(
+  IDINSTITUCION     NUMBER(4) not null,
+  IDPRETENSION      NUMBER(3) not null,
+  IDPROCEDIMIENTO   VARCHAR2(5) not null,
+  FECHAMODIFICACION DATE not null,
+  USUMODIFICACION   NUMBER(5) not null
+)
+tablespace TS_SIGA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 1M
+    next 1M
+    minextents 1
+    maxextents unlimited
+    pctincrease 0
+  );
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table SCS_PRETENSIONESMODULO
+  add constraint PK_PRETENSIONESPROCEDIMIENTO primary key (IDINSTITUCION, IDPRETENSION, IDPROCEDIMIENTO)
+  using index 
+  tablespace TS_SIGA
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 1M
+    next 1M
+    minextents 1
+    maxextents unlimited
+    pctincrease 0
+  );
+alter table SCS_PRETENSIONESMODULO
+  add constraint FK_PRETENSION foreign key (IDINSTITUCION, IDPRETENSION)
+  references SCS_PRETENSION (IDINSTITUCION, IDPRETENSION);
+alter table SCS_PRETENSIONESMODULO
+  add constraint FK_PROCEDIMIENTO foreign key (IDINSTITUCION, IDPROCEDIMIENTO)
+  references SCS_PROCEDIMIENTOS (IDINSTITUCION, IDPROCEDIMIENTO);
+
+insert into scs_pretensionesproced
+     (idinstitucion, idpretension, idprocedimiento, fechamodificacion, usumodificacion)
+
+     (
+     Select PRE.IDINSTITUCION,pre.idpretension, pro.idprocedimiento,SYSDATE,1
+  from scs_actuaciondesigna ad, scs_pretension pre, scs_procedimientos pro
+ where ad.idinstitucion = pre.idinstitucion
+   and ad.idpretension = pre.idpretension
+   and ad.idinstitucion = pro.idinstitucion
+   and ad.idprocedimiento = pro.idprocedimiento
+   and ad.idinstitucion = 2003
+                     
+GROUP BY PRE.IDINSTITUCION,pre.idpretension,pro.idprocedimiento
+     );
+	 
+	 
+-- Add/modify columns 
+alter table CAJG_REMESARESOLUCION add IDREMESA NUMBER(10);
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table CAJG_REMESARESOLUCION
+  add constraint FK_CAJG_REMESA foreign key (IDINSTITUCION, IDREMESA)
+  references cajg_remesa (IDINSTITUCION, IDREMESA);
+  
+  -- Add/modify columns 
+alter table PCAJG_ALC_TIPOERRORINTERCAMBIO add ERROR_SOLUCION VARCHAR2(500);
+
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'No es necesario realizar ninguna acción.' WHERE ERROR_CODIGO =001;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'El expediente ya se trasladó anteriormente. Hay que incluirlo en otra remesa para que se envíe como actualización. ' WHERE ERROR_CODIGO =002;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'El expediente no se habia enviado anteriormente. Hay que incluirlo en otra remesa para que se envíe como traslado de expediente. ' WHERE ERROR_CODIGO =003;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a soporte de que hay maestros que no se han migrado correctamente. Incluirlo en otra remesa cuando soporte haya solucionado la incidencia. ' WHERE ERROR_CODIGO =004;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Modificar los datos obligatorios e incluirlo en una nueva remesa. Informar a soporte para que se modifique el desarrollo por si este error se puede detectar antes del envío. ' WHERE ERROR_CODIGO =005;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a soporte de que hay error de desarrollo. Incluirlo en otra remesa cuando se haya solucionado la incidencia. ' WHERE ERROR_CODIGO =006;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a Soporte. Error incompatible con la información enviada' WHERE ERROR_CODIGO =007;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a Soporte. Después de que encuentren la solución hay incluirlo en una nueva remesa. ' WHERE ERROR_CODIGO =008;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Avisar a Soporte. Después de que encuentren la solución hay que incluirlo en una nueva remesa. ' WHERE ERROR_CODIGO =009;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a soporte de que hay error de desarrollo. Incluirlo en otra remesa cuando se haya solucionado la incidencia. ' WHERE ERROR_CODIGO =010;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a soporte de que existe una incoherencia con los datos enviados. Incluirlo en otra remesa cuando se haya solucionado la incidencia. ' WHERE ERROR_CODIGO =011;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a soporte de que existe una incoherencia con los datos enviados. Incluirlo en otra remesa cuando se haya solucionado la incidencia. ' WHERE ERROR_CODIGO =012;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a soporte de que existe una incoherencia con los datos enviados. Es posible que sea una designación relacionada con dos expedientes. No tiene solución pero nos quedamos el error como justificante del envío. ' WHERE ERROR_CODIGO =013;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'El procedimiento judicial ya se ha informado en otro expediente (Número procedimiento/año procedimiento) . Modificarlo e incluir el expediente en otra remesa. ' WHERE ERROR_CODIGO =014;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a Soporte. Error incompatible con la información enviada' WHERE ERROR_CODIGO =015;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a Soporte. Error incompatible con la información enviada' WHERE ERROR_CODIGO =016;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a Soporte. Error incompatible con la información enviada' WHERE ERROR_CODIGO =017;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a soporte. Es posible que la CAM no haya aceptado envíos anteriores. ' WHERE ERROR_CODIGO =018;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a Soporte. Error incompatible con la información enviada' WHERE ERROR_CODIGO =019;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a Soporte. Error incompatible con la información enviada' WHERE ERROR_CODIGO =020;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a Soporte. Error incompatible con la información enviada' WHERE ERROR_CODIGO =021;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'No tiene solución pero nos quedamos el error como justificante del envío' WHERE ERROR_CODIGO =022;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'Informar a soporte. Es posible que la CAM no haya aceptado envíos anteriores. ' WHERE ERROR_CODIGO =024;
+UPDATE PCAJG_ALC_TIPOERRORINTERCAMBIO SET ERROR_SOLUCION = 'No tiene solución pero nos quedamos el error como justificante del envío' WHERE ERROR_CODIGO =023;
+
+-- Add/modify columns 
+f_comunicaciones_ejg_2003_CAB
+PROC_RESPUESTAEJG_2003
+
+
+--Creamos el proceso que utilizara SIGA
+insert into GEN_PROCESOS (IDPROCESO, IDMODULO, TRAZA, TARGET, FECHAMODIFICACION, USUMODIFICACION, DESCRIPCION, TRANSACCION, IDPARENT, NIVEL) 
+values ('12W', 'JGR', 1, 'Y', sysdate, 0, 'EJG pendientes envio actualización', 'JGR_E-Comunicaciones_EJGPendientes', '007', 10);
+
+--Damos permiso al administrador general de Alcalá a ese proceso
+
+insert into adm_tiposacceso
+   (idproceso, idperfil, fechamodificacion, usumodificacion, derechoacceso, idinstitucion) 
+ values
+   ('12W','ADG',sysdate,0,3,2003);
+--Configuramos la opción de menú SJCS > e - Comunicaciones > EJGs: Remesa de resultados
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.EJGPteEnvioActualizacion', 'EJGs: Envio actualización', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.facturacionSJCS.EJGPteEnvioActualizacion', 'EJGs: Envio actualización#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.facturacionSJCS.EJGPteEnvioActualizacion', 'EJGs: Envio actualización#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.facturacionSJCS.EJGPteEnvioActualizacion', 'EJGs: Envio actualización#EU', 0, '3', sysdate, 0, '19');
+
+insert into GEN_MENU (IDMENU, ORDEN, TAGWIDTH, IDPARENT, FECHAMODIFICACION, USUMODIFICACION, URI_IMAGEN, IDRECURSO, GEN_MENU_IDMENU, IDPROCESO, IDLENGUAJE)
+values ('12W', 22230, 160, '606', sysdate, 0, null, 'menu.sjcs.ecomunicaciones.EJGPteEnvioActualizacion', null, '12W', '1');
+
+-- Ejecutado en Integracion por AAG el 27/03 a las 16:40
+
+-- Add/modify columns 
+alter table PCAJG_ALC_ACT_ERROR_CAM modify REGISTRO_ERROR_CAM VARCHAR2(1000);
+
+-- Ejecutado en Integracion por ACP el 28/03 a las 11:17
+
+Modificada vista V_WS_JE_2003_DESIGNA
+
+INSERT INTO CAJG_ERRORESREMESARESOL VALUES(18,2003,18,'La carga de ficheros de error sólo se permite para intercambios de envío o actualización. Los de actuaciones profesionales se carga desde facturación SJCS');
+
+
+ 
+insert into ADM_TIPOINFORME (IDTIPOINFORME, DESCRIPCION, IDTIPOINFORMEPADRE, TIPOFORMATO, FECHAMODIFICACION, USUMODIFICACION, CLASE, DIRECTORIO)
+values ('CADO', 'Carta de Acreditación de Oficio', null, 'W', sysdate, 0, 'G', 'actuaciones_designacion');
+
+--Creamos el proceso que utilizara SIGA
+insert into GEN_PROCESOS (IDPROCESO, IDMODULO, TRAZA, TARGET, FECHAMODIFICACION, USUMODIFICACION, DESCRIPCION, TRANSACCION, IDPARENT, NIVEL) 
+values ('12X', 'JGR', 1, 'Y', sysdate, 0, 'Carga masiva de procuradores', 'JGR_CargaMasivaProcuradores', '007', 10);
+
+--Damos permiso al administrador general de Alcalá a ese proceso
+
+insert into adm_tiposacceso
+   (idproceso, idperfil, fechamodificacion, usumodificacion, derechoacceso, idinstitucion) 
+ values
+   ('12X','ADG',sysdate,0,3,2005);
+--Configuramos la opción de menú SJCS > e - Comunicaciones > EJGs: Remesa de resultados
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.cargaMasivaProcuradores', 'Carga masiva de procuradores', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.cargaMasivaProcuradores', 'Carga masiva de procuradores#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.cargaMasivaProcuradores', 'Carga masiva de procuradores#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.cargaMasivaProcuradores', 'Carga masiva de procuradores#EU', 0, '3', sysdate, 0, '19');
+
+insert into GEN_MENU (IDMENU, ORDEN, TAGWIDTH, IDPARENT, FECHAMODIFICACION, USUMODIFICACION, URI_IMAGEN, IDRECURSO, GEN_MENU_IDMENU, IDPROCESO, IDLENGUAJE)
+values ('12X', 22240, 160, '606', sysdate, 0, null, 'menu.sjcs.ecomunicaciones.cargaMasivaProcuradores', null, '12X', '1');
+
+
+
+-- Create sequence 
+create sequence SEQ_SCSDATOSPROCURADORES
+minvalue 0
+maxvalue 9999939
+start with 1
+increment by 1
+nocache
+cycle;	
+
+-- Create table
+create table SCS_DATOSPROCURADORES
+(
+  IDDATOSPROCURADORES  NUMBER(7) not null,
+  IDINSTITUCION        NUMBER(4) not null,
+  CODIGODESIGNAABOGADO VARCHAR2(14) not null,
+  NUMEJG               VARCHAR2(14),
+  NUMCOLPROCURADOR     VARCHAR2(20) not null,
+  FECHADESIGPROCURADOR DATE,
+  NUMDESIGNAPROCURADOR VARCHAR2(14),
+  OBSERVACIONES        VARCHAR2(500),
+  FECHAMODIFICACION    DATE not null,
+  USUMODIFICACION      NUMBER(5) not null
+)
+tablespace TS_SIGA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 1M
+    next 1M
+    minextents 1
+    maxextents unlimited
+    pctincrease 0
+  );
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table SCS_DATOSPROCURADORES
+  add constraint PK_SCS_DATOSPROCURADORES primary key (IDDATOSPROCURADORES)
+  using index 
+  tablespace TS_SIGA
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 1M
+    next 1M
+    minextents 1
+    maxextents unlimited
+    pctincrease 0
+  );
+
+  
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.ejg.literal', 'Ejg', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.ejg.literal', 'Ejg#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.ejg.literal', 'Ejg#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.ejg.literal', 'Ejg#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.designaAbogado.literal', 'DesignaciÃ³n Abogado', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.designaAbogado.literal', 'DesignaciÃ³n Abogado#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.designaAbogado.literal', 'DesignaciÃ³n Abogado#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.designaAbogado.literal', 'DesignaciÃ³n Abogado#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.designaProcurador.literal', 'DesignaciÃ³n procurador', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.designaProcurador.literal', 'DesignaciÃ³n procurador#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.designaProcurador.literal', 'DesignaciÃ³n procurador#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.designaProcurador.literal', 'DesignaciÃ³n procurador#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.observaciones.literal', 'Observaciones', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.observaciones.literal', 'Observaciones#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.observaciones.literal', 'Observaciones#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.observaciones.literal', 'Observaciones#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.procurador.literal', 'Procurador', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.procurador.literal', 'Procurador#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.procurador.literal', 'Procurador#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.procurador.literal', 'Procurador#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.fechaDesignaProc.literal', 'Fecha DesignaciÃ³n', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.fechaDesignaProc.literal', 'Fecha DesignaciÃ³n#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.fechaDesignaProc.literal', 'Fecha DesignaciÃ³n#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.fechaDesignaProc.literal', 'Fecha DesignaciÃ³n#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.ncolProcurador.literal', 'N.Col Procurador', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.ncolProcurador.literal', 'N.Col Procurador#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.ncolProcurador.literal', 'N.Col Procurador#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cargaMasivaDatosProcuradores.ncolProcurador.literal', 'N.Col Procurador#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.localizacion', 'SJCS > e - Comunicaciones' , 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.localizacion', 'SJCS > e - Comunicaciones#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.localizacion', 'SJCS > e - Comunicaciones#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.localizacion', 'SJCS > e - Comunicaciones#EU', 0, '3', sysdate, 0, '19');
+
+  
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('fac.control_emision_facturas_sii.ayuda', 'Controla que no se generen facturas más que por facturación masiva. De momento sólo se aplica en el módulo de Certificados (leer especificación para más info). Valores aceptados: 0 - Desactivado, funcionamiento normal; 1 - Activado, varias restricciones en diferentes pantallas', 0, 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('fac.control_emision_facturas_sii.ayuda', 'Controla que no se generen facturas más que por facturación masiva. De momento sólo se aplica en el módulo de Certificados (leer especificación para más info). Valores aceptados: 0 - Desactivado, funcionamiento normal; 1 - Activado, varias restricciones en diferentes pantallas#CA', 0, 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('fac.control_emision_facturas_sii.ayuda', 'Controla que no se generen facturas más que por facturación masiva. De momento sólo se aplica en el módulo de Certificados (leer especificación para más info). Valores aceptados: 0 - Desactivado, funcionamiento normal; 1 - Activado, varias restricciones en diferentes pantallas#EU', 0, 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('fac.control_emision_facturas_sii.ayuda', 'Controla que no se generen facturas más que por facturación masiva. De momento sólo se aplica en el módulo de Certificados (leer especificación para más info). Valores aceptados: 0 - Desactivado, funcionamiento normal; 1 - Activado, varias restricciones en diferentes pantallas#GL', 0, 4, Sysdate, 0, '19');
+
+Insert Into gen_parametros  (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
+Values  ('FAC', 'CONTROL_EMISION_FACTURAS_SII', '0', Sysdate, 0, 0, 'fac.control_emision_facturas_sii.ayuda');
+Insert Into gen_parametros  (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
+Values  ('FAC', 'CONTROL_EMISION_FACTURAS_SII', '1', Sysdate, 0, 2000, 'fac.control_emision_facturas_sii.ayuda');
+
+
+-- Ejecutado en Integracion por AAG el 03/04 a las 18:30
+
+--f_comunicaciones_ejg_2003_CAB" 
+ --PROC_RESPUESTAEJG_2003"
+insert into adm_informe
+  (descripcion,
+   alias,
+   nombrefisico,
+   directorio,
+   idtipoinforme,
+   visible,
+   idinstitucion,
+   fechamodificacion,
+   usumodificacion,
+   nombresalida,
+   preseleccionado,
+   asolicitantes,
+   destinatarios,
+   tipoformato,
+   codigo,
+   orden,
+   clasejava,
+   idplantilla,
+   idtipoenvio,
+   idplantillaenvio,
+   idplantillageneracion,
+   idtipointercambiotelematico,
+   plantilla,
+   acontrarios,
+   generarinformesindireccion)
+values
+  ('Carta de Acreditación de Oficio',
+   'Acreditación de Oficio',
+   'acreditacionOficio',
+   'actuaciones_designacion',
+   'CADO',
+   'S',
+   '0',
+   SYSDATE,
+   0,
+   'AcreditacionOficio',
+   'N',
+   'N',
+   'C',
+   'P',
+   null,
+   '1',
+   null,
+ 
+   (select to_number(max(idplantilla)+1) from adm_informe),
+   NULL,
+   null,
+   null,
+   null,
+   null,
+   'N',
+   'S');
+
+-- Ejecutado en Integracion por AAG el 04/04 a las 10:10
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('envios.plantillas.literal.asuntoAcreditacionOficio', 'Acreditación de Oficio', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('envios.plantillas.literal.asuntoAcreditacionOficio', 'Acreditación de Oficio#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('envios.plantillas.literal.asuntoAcreditacionOficio', 'Acreditación de Oficio#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('envios.plantillas.literal.asuntoAcreditacionOficio', 'Acreditación de Oficio#GL', '0', 4, Sysdate, 0, '19');
+
+
+Pkg_Siga_Censo
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.designacionAdicional', 'Ya existe una designación relacionada con este EJG, ¿desea continuar?' , 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.designacionAdicional', 'Ya existe una designación relacionada con este EJG, ¿desea continuar?#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.designacionAdicional', 'Ya existe una designación relacionada con este EJG, ¿desea continuar?#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.designacionAdicional', 'Ya existe una designación relacionada con este EJG, ¿desea continuar?#EU', 0, '3', sysdate, 0, '19');
+
+F_SIGA_GETEJG_DESIGNA
+ 
+-- Ejecutado en Integracion por AAG el 21/04 a las 13:20
+
+Pkg_Siga_Censo
+
+ insert into gen_procesos 
+(IDPROCESO, IDMODULO, TRAZA, TARGET, FECHAMODIFICACION, USUMODIFICACION, DESCRIPCION,TRANSACCION,IDPARENT,NIVEL) 
+            values ('315','AUDITEXP',1,'Y',sysdate,0,'HIDDEN_Denunciado Direccion','EXP_Auditoria_Direccion_Denunciado','42',10);
+            
+            
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('gratuita.gestionInscripciones.error.baja.colegiados', 'Sólo se pueden validar solicitudes del mismo colegiado', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('gratuita.gestionInscripciones.error.baja.colegiados', 'Sólo se pueden validar solicitudes del mismo colegiado#CA', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('gratuita.gestionInscripciones.error.baja.colegiados', 'Sólo se pueden validar solicitudes del mismo colegiado#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('gratuita.gestionInscripciones.error.baja.colegiados', 'Sólo se pueden validar solicitudes del mismo colegiado#GL', '0', 4, Sysdate, 0, '19');
+ 
+-- Ejecutado en Integracion por AAG el 18/05 a las 17:20
+

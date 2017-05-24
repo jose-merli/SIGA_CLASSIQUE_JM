@@ -21,15 +21,20 @@ import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.administracion.SIGAConstants;
 import com.siga.beans.ScsAcreditacionAdm;
 import com.siga.beans.ScsAcreditacionProcedimientoAdm;
 import com.siga.beans.ScsAcreditacionProcedimientoBean;
+import com.siga.beans.ScsJuzgadoProcedimientoAdm;
 import com.siga.beans.ScsProcedimientosAdm;
 import com.siga.beans.ScsProcedimientosBean;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.form.MantenimientoJuzgadoForm;
 import com.siga.gratuita.form.MantenimientoProcedimientosForm;
+import com.siga.tlds.FilaExtElement;
+import com.siga.ws.CajgConfiguracion;
 
 
 public class MantenimientoProcedimientosAction extends MasterAction {
@@ -68,7 +73,16 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 				}
 				else if (accion.equalsIgnoreCase("buscarProcedimiento")){
 					mapDestino = buscarProcedimiento(mapping, miForm, request, response);
-				}				
+				}else if (accion.equalsIgnoreCase("borrarPretension")){
+					mapDestino = borrarPretension(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("borrarPretensiones")){
+					mapDestino = borrarPretensiones(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("nuevoPretensionModal")){
+					mapDestino = nuevoPretensionModal(mapping, miForm, request, response);
+				}else if (accion.equalsIgnoreCase("insertarPretensionModal")){
+					mapDestino = insertarPretension(mapping, miForm, request, response);
+				}
+				
 				else {
 					return super.executeInternal(mapping,
 							      formulario,
@@ -158,7 +172,12 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 		ScsProcedimientosBean procedimientoBean = new ScsProcedimientosBean();
 		
 		Vector vAcreditaciones = null;
+		Vector<Hashtable<String, Object>> pretensionesDeProcedimiento = null;
+		
 		try{
+			int tipoCajg = CajgConfiguracion.getTipoCAJG(getIDInstitucion(request));
+			request.setAttribute("PCAJG_TIPO", ""+tipoCajg);
+			
 			String condicion = " where " + ScsProcedimientosBean.C_IDINSTITUCION + "=" + (String)usr.getLocation() + 
 								" AND "  + ScsProcedimientosBean.C_IDPROCEDIMIENTO + "=" + idProcedimiento + " ";
 			procedimientoBean = (ScsProcedimientosBean)((Vector)procedimientoAdm.select(condicion)).get(0);
@@ -167,6 +186,9 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 			ScsAcreditacionAdm acreAdm = new ScsAcreditacionAdm (this.getUserBean(request));
 			vAcreditaciones = acreAdm.getAcreditacionDeProcedimiento(idInstitucion, idProcedimiento);
 
+			pretensionesDeProcedimiento = procedimientoAdm.getPretensionesDeProcedimiento(idInstitucion, idProcedimiento);
+			
+			
 		}catch(Exception e){
 			throwExcp("error.messages.notedited",e,null);
 		}
@@ -174,6 +196,13 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 		//pasamos el databackup or sesion para posibles futuras actualizaciones
 		request.getSession().setAttribute("DATABACKUP",procedimientoBean.getOriginalHash());
 		request.setAttribute("acreditaciones", vAcreditaciones);
+		request.setAttribute("pretensiones", pretensionesDeProcedimiento);
+		FilaExtElement[] elementosFilaPretensiones = new FilaExtElement[1];
+		elementosFilaPretensiones[0] = new FilaExtElement("borrar", "borrarPretension","general.boton.borrar",	SIGAConstants.ACCESS_READ);
+		request.setAttribute("elementosFilaPretensiones", elementosFilaPretensiones);
+		
+		
+		
 		return "mantenimiento";
 	}
 
@@ -215,6 +244,8 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 			procedimientoNuevo.put(ScsProcedimientosBean.C_IDINSTITUCION,(String)usr.getLocation());
 			procedimientoNuevo.put(ScsProcedimientosBean.C_IDJURISDICCION,miform.getJurisdiccion());
 			procedimientoNuevo.put(ScsProcedimientosBean.C_FECHADESDEVIGOR, GstDate.getApplicationFormatDate(usr.getLanguage(), miform.getFechaDesdeVigor()));
+			procedimientoNuevo.put(ScsProcedimientosBean.C_CODIGO,miform.getCodigo());
+			procedimientoNuevo.put(ScsProcedimientosBean.C_CODIGOEXT,miform.getCodigoExt());
 			
 			if (miform.getFechaHastaVigor()!=null && !miform.getFechaHastaVigor().equals(""))
 			    procedimientoNuevo.put(ScsProcedimientosBean.C_FECHAHASTAVIGOR, GstDate.getApplicationFormatDate(usr.getLanguage(), miform.getFechaHastaVigor()));
@@ -293,6 +324,7 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 			tramoNew.put(ScsProcedimientosBean.C_NOMBRE, (String)miform.getNombre());
 			tramoNew.put(ScsProcedimientosBean.C_PRECIO, (String)miform.getPrecio());
 			tramoNew.put(ScsProcedimientosBean.C_CODIGO, (String)miform.getCodigo());
+			tramoNew.put(ScsProcedimientosBean.C_CODIGOEXT, (String)miform.getCodigoExt());
 			tramoNew.put(ScsProcedimientosBean.C_IDJURISDICCION, miform.getJurisdiccion());
 			tramoNew.put(ScsProcedimientosBean.C_FECHADESDEVIGOR, GstDate.getApplicationFormatDate(usr.getLanguage(), miform.getFechaDesdeVigor()));
 			
@@ -409,6 +441,8 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 	}	
 	
 	
+	
+	
 	/** 
 	 *  Funcion que implementa la accion borrar
 	 * @param  mapping - Mapeo de los struts
@@ -484,6 +518,8 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 			bean.setIdProcedimiento(miform.getIdProcedimiento());
 			bean.setPorcentaje(miform.getPorcentaje());
 			bean.setNigNumeroProcedimiento(miform.getNigNumProcedimiento());
+			bean.setCodigoExt(miform.getCodExtAcreditacion());
+			bean.setCodSubtarifa(miform.getCodSubtarifa());
 			ScsAcreditacionProcedimientoAdm adm = new ScsAcreditacionProcedimientoAdm (this.getUserBean(request));
 			
 			if (adm.insert(bean)) {
@@ -516,6 +552,44 @@ public class MantenimientoProcedimientosAction extends MasterAction {
  
 		return exitoRefresco("messages.gratuita.error.eliminarProcedimiento",request);
 	}
+	
+	protected String borrarPretension (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
+		try {
+			MantenimientoProcedimientosForm miform = (MantenimientoProcedimientosForm)formulario;
+			
+			
+			ScsProcedimientosAdm adm = new ScsProcedimientosAdm (this.getUserBean(request));
+			adm.borraPretensionesDeProcedimiento( new Integer(this.getUserBean(request).getLocation()),miform.getIdProcedimiento(),new Integer(miform.getIdPretension()));
+			return exitoRefresco("messages.deleted.success",request);
+			
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
+		}
+ 
+		return exitoRefresco("messages.gratuita.error.eliminarProcedimiento",request);
+	}
+	
+	protected String borrarPretensiones (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
+		try {
+			MantenimientoProcedimientosForm miform = (MantenimientoProcedimientosForm)formulario;
+			
+			
+			ScsProcedimientosAdm adm = new ScsProcedimientosAdm (this.getUserBean(request));
+			adm.borraPretensionesDeProcedimiento(miform.getDatosMasivos());
+			return exitoRefresco("messages.deleted.success",request);
+			
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
+		}
+ 
+		return exitoRefresco("messages.gratuita.error.eliminarProcedimiento",request);
+	}
+	
+	
 	
 	protected String editarAcreditacion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 
@@ -553,6 +627,8 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 				bean = (ScsAcreditacionProcedimientoBean) v.get(0);
 				bean.setPorcentaje(miform.getPorcentaje());
 				bean.setNigNumeroProcedimiento(miform.getNigNumProcedimiento());
+				bean.setCodigoExt(miform.getCodExtAcreditacion());
+				bean.setCodSubtarifa(miform.getCodSubtarifa());
 			
 				ScsAcreditacionProcedimientoAdm adm = new ScsAcreditacionProcedimientoAdm(this.getUserBean(request));			
 				if (!adm.update(bean)) {
@@ -565,4 +641,33 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 		}
 		return exitoModal("messages.updated.success",request);
 	}
+	protected String nuevoPretensionModal(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException 
+	{
+		try {
+			MantenimientoProcedimientosForm form = (MantenimientoProcedimientosForm) formulario; 
+			
+			ScsProcedimientosAdm adm = new ScsProcedimientosAdm (this.getUserBean(request));
+			Vector v = adm.getPretensionesQueNoEstenEnProcedimiento("" + this.getIDInstitucion(request), form.getIdProcedimiento());
+			request.setAttribute("pretensiones", v);			
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
+		}
+
+		return "nuevoPretension";
+	}	
+	protected String insertarPretension(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException 
+	{
+		try {
+			MantenimientoProcedimientosForm miform = (MantenimientoProcedimientosForm)formulario;
+			ScsProcedimientosAdm adm = new ScsProcedimientosAdm (this.getUserBean(request));
+			adm.insertaPretensionesDeProcedimiento(miform.getDatosMasivos());
+			
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
+		}
+
+		return exitoModal("messages.inserted.success", request);
+	}	
 }

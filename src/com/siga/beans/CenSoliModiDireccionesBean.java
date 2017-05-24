@@ -20,7 +20,7 @@ public class CenSoliModiDireccionesBean extends MasterBean{
 	 */
 	private static final long serialVersionUID = -7661448978582096064L;
 	/* Variables */
-	private Integer idInstitucion, idEstadoSolic; 
+	private Integer idInstitucion, idEstadoSolic, otraProvincia;
 	private Long	idSolicitud, idPersona, idDireccion;
 	private String 	motivo, domicilio, codigoPostal, telefono1, telefono2, movil;
 	private String 	fax1, fax2, correoElectronico, paginaweb, preferente;
@@ -51,6 +51,7 @@ public class CenSoliModiDireccionesBean extends MasterBean{
 	static public final String C_POBLACIONEXTRANJERA		= "POBLACIONEXTRANJERA";	
 	static public final String C_IDESTADOSOLIC		= "IDESTADOSOLIC";
 	static public final String C_FECHAALTA			= "FECHAALTA";
+	static public final String C_OTRAPROVINCIA          = "OTRAPROVINCIA";
 
 		//	 Metodos GET
 	
@@ -75,6 +76,7 @@ public class CenSoliModiDireccionesBean extends MasterBean{
 	public String getTelefono2() 			{	return telefono2;}
 	public Integer getIdEstadoSolic()		{	return idEstadoSolic;	}	
 	public String getFechaAlta()			{	return fechaAlta;		}	
+	public Integer getOtraProvincia() 		{return otraProvincia;}
 	
 	//	 Metodos SET
 	public void setCodigoPostal(String codigoPostal) 			{this.codigoPostal = codigoPostal;}
@@ -98,6 +100,7 @@ public class CenSoliModiDireccionesBean extends MasterBean{
 	public void setTelefono2(String telefono2) 					{this.telefono2 = telefono2;}
 	public void setIdEstadoSolic(Integer idEstadoSolic) 		{this.idEstadoSolic = idEstadoSolic;}
 	public void setFechaAlta(String fechaAlta) 					{this.fechaAlta = fechaAlta;}
+	public void setOtraProvincia(Integer otraProvincia) 			{this.otraProvincia = otraProvincia;}
 	
 		
 }

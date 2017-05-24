@@ -682,8 +682,39 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		}
 		if (confirmarFacturacionForm.getFechaHastaPrevistaGeneracion()!=null && !confirmarFacturacionForm.getFechaHastaPrevistaGeneracion().trim().equals("")) {
 			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION+"<TO_DATE ('" + confirmarFacturacionForm.getFechaHastaPrevistaGeneracion() + "', 'DD/MM/YYYY')");
-		}		
-
+		}
+		
+		// filtro por fecha de productos
+		boolean hayFechaDesdeProductos = true;
+		String fechaDesdeProductos = confirmarFacturacionForm.getFechaDesdeProductos();
+		if (fechaDesdeProductos == null || fechaDesdeProductos.trim().equals("")) {
+			fechaDesdeProductos = "01/01/1900"; //inicio de los tiempos
+			hayFechaDesdeProductos = false;
+		}
+		boolean hayFechaHastaProductos = true;
+		String fechaHastaProductos = confirmarFacturacionForm.getFechaHastaProductos();
+		if (fechaHastaProductos == null || fechaHastaProductos.trim().equals("")) {
+			fechaHastaProductos = "31/12/2999"; //fin de los tiempos
+			hayFechaHastaProductos = false;
+		}
+		if (hayFechaDesdeProductos || hayFechaHastaProductos) {
+			// NOTA: para decidir si dos periodos se solapan, el inicio de uno ha de ser anterior que el fin del otro, y viceversa 
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAINICIOPRODUCTOS+"<=TO_DATE ('" + fechaHastaProductos + "', 'DD/MM/YYYY')");
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAFINPRODUCTOS+">=TO_DATE ('" + fechaDesdeProductos + "', 'DD/MM/YYYY')");
+		}
+		
+		// filtro por tipo de producto
+		if (confirmarFacturacionForm.getIdTipoProducto()!=null && !confirmarFacturacionForm.getIdTipoProducto().trim().equals("") &&
+			confirmarFacturacionForm.getIdProducto()!=null && !confirmarFacturacionForm.getIdProducto().trim().equals("")) 
+		{
+			select.append(" And Exists (Select 1 ");
+			select.append("     From "+FacTiposProduIncluEnFactuBean.T_NOMBRETABLA+" Tippro ");
+			select.append("    Where Tippro."+FacTiposProduIncluEnFactuBean.C_IDINSTITUCION+" = Facprog."+FacFacturacionProgramadaBean.C_IDINSTITUCION+" ");
+			select.append("      And Tippro."+FacTiposProduIncluEnFactuBean.C_IDSERIEFACTURACION+" = Facprog."+FacFacturacionProgramadaBean.C_IDSERIEFACTURACION+" ");
+			select.append("      And Tippro."+FacTiposProduIncluEnFactuBean.C_IDTIPOPRODUCTO+" = " +confirmarFacturacionForm.getIdTipoProducto()+" ");
+			select.append("      And Tippro."+FacTiposProduIncluEnFactuBean.C_IDPRODUCTO+" = "+confirmarFacturacionForm.getIdProducto()+") ");
+		}
+		
 		select.append( " ORDER BY "+FacFacturacionProgramadaBean.C_FECHAREALGENERACION+" DESC");
     	Paginador paginador= new Paginador(select.toString());
 		

@@ -560,7 +560,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 	            int contador = 0;	            
 	            Hashtable codigos = new Hashtable();
 	            
-	            String sql = " SELECT idpersona,nombre,apellido1,apellido2,nif FROM "+ScsPersonaJGBean.T_NOMBRETABLA +" WHERE " + ScsPersonaJGBean.T_NOMBRETABLA +"."+ ScsPersonaJGBean.C_IDINSTITUCION + "=" + formulario.getIdInstitucion();
+	            String sql = " SELECT idpersona,nombre,apellido1,apellido2,nif,fechamodificacion FROM "+ScsPersonaJGBean.T_NOMBRETABLA +" WHERE " + ScsPersonaJGBean.T_NOMBRETABLA +"."+ ScsPersonaJGBean.C_IDINSTITUCION + "=" + formulario.getIdInstitucion();
 	            
 			   if (!formulario.getNombre().trim().equals("")) {
 				contador ++;   
@@ -586,7 +586,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			   	  sql +="AND "+ComodinBusquedas.prepararSentenciaNIFBind(formulario.getNIdentificacion(),ScsPersonaJGBean.T_NOMBRETABLA+"."+ScsPersonaJGBean.C_NIF,contador,codigos);	
 			   	}
 			   }
-	           sql+=" ORDER BY "+ScsPersonaJGBean.C_IDINSTITUCION+", "+ ScsPersonaJGBean.C_IDPERSONA;
+	           sql+=" ORDER BY "+ScsPersonaJGBean.C_IDINSTITUCION+", "+ ScsPersonaJGBean.C_APELLIDO1+", "+ ScsPersonaJGBean.C_APELLIDO2+", to_char(fechamodificacion,'yyyy') desc, "+ ScsPersonaJGBean.C_NOMBRE+", "+ScsPersonaJGBean.C_NIF+", "+ScsPersonaJGBean.C_FECHAMODIFICACION + " desc";
 	           // datos = this.select(sql);
 	            PaginadorBind paginador = new PaginadorBind(sql,codigos);				
 				int totalRegistros = paginador.getNumeroTotalRegistros();

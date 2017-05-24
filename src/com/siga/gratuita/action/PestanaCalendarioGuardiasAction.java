@@ -27,6 +27,7 @@ import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsCabeceraGuardiasAdm;
 import com.siga.beans.ScsCabeceraGuardiasBean;
 import com.siga.beans.ScsGuardiasColegiadoAdm;
@@ -324,6 +325,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 		
 		CenBajasTemporalesAdm bajasTemporalescioneAdm = new CenBajasTemporalesAdm(usr);
 		DefinirPermutaGuardiasForm miForm = (DefinirPermutaGuardiasForm) formulario;
+		ScsAsistenciasAdm admAsistencias = new ScsAsistenciasAdm(usr);
 		ScsCabeceraGuardiasAdm admCabeceraGuardias = new ScsCabeceraGuardiasAdm(usr);
 		ScsGuardiasColegiadoAdm admGuardias = new ScsGuardiasColegiadoAdm(usr);
 		ScsPermutaCabeceraAdm admPermutasCabeceras = new ScsPermutaCabeceraAdm(usr);
@@ -589,6 +591,24 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				miHash.put(ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_CONFIRMAD, new Integer(miForm.getIdCalendarioSolicitante()));
 				miHash.put(ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR, sFechaInicioSolicitante);
 				miHash.put(ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR,"");
+				
+				String idInstitucion = miForm.getIdInstitucion();
+				String Idturno = miForm.getIdTurnoSolicitante();
+				String idGuardia = miForm.getIdGuardiaSolicitante();
+				String idPersonaSolicitante = miForm.getIdPersonaSolicitante();
+				String fechaSolicitante = miForm.getFechaInicioSolicitante();
+				String idPersonaConfirmador = miForm.getIdPersonaConfirmador();
+				String fechaConfirmador = miForm.getFechaInicioConfirmador();
+				
+				// Cambia las asistencias del solicitante al confirmador
+				if (!admAsistencias.updateAsistenciasAccionesGuardias(idInstitucion, Idturno, idGuardia, idPersonaSolicitante, fechaSolicitante, idPersonaConfirmador)) {
+					throw new ClsExceptions(admAsistencias.getError());
+				}
+				
+				// Cambia las asistencias del confirmador al solicitante
+				if (!admAsistencias.updateAsistenciasAccionesGuardias(idInstitucion, Idturno, idGuardia, idPersonaConfirmador, fechaConfirmador, idPersonaSolicitante)) {
+					throw new ClsExceptions(admAsistencias.getError());
+				}
 						
 			} else {
 				miHash.put(ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR,miForm.getMotivosSolicitante());
@@ -654,6 +674,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 		ScsPermutaCabeceraAdm admPermutasCabeceras = new ScsPermutaCabeceraAdm(this.getUserBean(request));	
 		ScsCabeceraGuardiasAdm cabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm(this.getUserBean(request));
 		ScsGuardiasColegiadoAdm guardiasColegiadoAdm = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
+		ScsAsistenciasAdm admAsistencias = new ScsAsistenciasAdm(this.getUserBean(request));
 		
 		UsrBean usr;
 		UserTransaction tx = null;
@@ -828,7 +849,19 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			String resultado[] = EjecucionPLs.ejecutarPL_CrearPermutasCabeceras(idInstitucion, numeroPermuta);				
 			if (!resultado[0].equalsIgnoreCase("0")) {
 				throw new ClsExceptions(resultado[1]);
+			}							
+			
+			// Cambia las asistencias del solicitante al confirmador
+			String sFechaInicioFormateadaSolicitante = GstDate.getFormatedDateShort(usr.getLanguage(), fechaInicioSolicitante);
+			if (!admAsistencias.updateAsistenciasAccionesGuardias(idInstitucion, idTurnoSolicitante, idGuardiaSolicitante, idPersonaSolicitante, sFechaInicioFormateadaSolicitante, idPersonaConfirmador)) {
+				throw new ClsExceptions(admAsistencias.getError());
 			}
+			
+			// Cambia las asistencias del confirmador al solicitante
+			String sFechaInicioFormateadaConfirmador = GstDate.getFormatedDateShort(usr.getLanguage(), fechaInicioConfirmador);
+			if (!admAsistencias.updateAsistenciasAccionesGuardias(idInstitucion, idTurnoConfirmador, idGuardiaConfirmador, idPersonaConfirmador, sFechaInicioFormateadaConfirmador, idPersonaSolicitante)) {
+				throw new ClsExceptions(admAsistencias.getError());
+			}			
 			
 			tx.commit();
 			
@@ -981,14 +1014,6 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				//Hago la busqueda de los datos necesarios de esa guardia, los guardo en el vector y mando en request:
 				registros.clear();
 				registros = cabeceraGuardiasAdm.selectGenerico(cabeceraGuardiasAdm.buscarOtrosColegiados(solicitanteHash));
-				int i = 0;
-				//Elimino los registros con el valor FUNCIONPERMUTAS distinto de 1 o 5
-				while (i < registros.size()){
-					Integer permuta = new Integer((String)((Hashtable)registros.get(i)).get("FUNCIONPERMUTAS"));
-					if (permuta.intValue()!=1 && permuta.intValue()!=3 && permuta.intValue()!=5)
-						registros.removeElementAt(i);
-					i++;
-				}
 				request.setAttribute("resultados",registros);				
 			}
 			catch (Exception e) {

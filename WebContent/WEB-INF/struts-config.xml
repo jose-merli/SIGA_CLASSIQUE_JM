@@ -139,6 +139,7 @@
 		<form-bean name="ExpDatosGeneralesForm" type="com.siga.expedientes.form.ExpDatosGeneralesForm"/>
 		<form-bean name="ExpDenuncianteForm" type="com.siga.expedientes.form.ExpDenuncianteForm"/>
 		<form-bean name="ExpDenunciadoForm" type="com.siga.expedientes.form.ExpDenunciadoForm"/>
+		<form-bean name="ExpDireccionDenunciadoForm" type="com.siga.expedientes.form.ExpDireccionDenunciadoForm"/>
 		<form-bean name="ExpAlertaForm" type="com.siga.expedientes.form.ExpAlertaForm"/>
 		<form-bean name="ExpPartesForm" type="com.siga.expedientes.form.ExpPartesForm"/>
 		<form-bean name="ExpDocumentacionForm" type="com.siga.expedientes.form.ExpDocumentacionForm"/>
@@ -358,6 +359,7 @@
 		<form-bean name="SubtiposCVForm" type="com.siga.censo.form.SubtiposCVForm"/>
 		<form-bean name="CargaMasivaCVForm" type="com.siga.censo.form.CargaMasivaCVForm"/>
 		<form-bean name="CargaMasivaGFForm" type="com.siga.censo.form.CargaMasivaGFForm"/>
+		<form-bean name="CargaMasivaProcuradoresForm" type="com.siga.gratuita.form.CargaMasivaProcuradoresForm"/>
 		
 	</form-beans>
 
@@ -770,6 +772,13 @@
 			<forward name="inicio" path="/html/jsp/censo/ws/busquedaRemesas.jsp"/>		
 			<forward name="resultado" path="/html/jsp/censo/ws/resultadoBusquedaRemesas.jsp"/>
 		</action>
+		
+		<action path="/JGR_E-Comunicaciones_Gestion" type="com.siga.censo.ws.action.BusquedaRemesasAction" name="BusquedaRemesasForm" scope="session">
+			<forward name="inicio" path="/html/jsp/censo/ws/busquedaRemesas.jsp"/>		
+			<forward name="resultado" path="/html/jsp/censo/ws/resultadoBusquedaRemesas.jsp"/>
+		</action>
+		
+		
 		
 		<action path="/CEN_NuevaRemesa" type="com.siga.censo.ws.action.NuevaRemesaAction" name="NuevaRemesaForm" scope="request">
 		</action>
@@ -1667,6 +1676,11 @@
 		</action>
 		<action path="/EXP_Auditoria_Denunciado" type="com.siga.expedientes.action.ExpDenunciadoAction" name="ExpDenunciadoForm" scope="request">
 			<forward name="inicio" path="/html/jsp/expedientes/abrirDenunciados.jsp"/>
+			<forward name="mostrar" path="/html/jsp/expedientes/denunciados_Edit.jsp"/>
+			<forward name="seleccion" path="/html/jsp/expedientes/seleccionDenunciado.jsp"/>
+		</action>
+		
+		<action path="/EXP_Auditoria_Direccion_Denunciado" type="com.siga.expedientes.action.ExpDenunciadoDireccionAction" name="ExpDireccionDenunciadoForm" scope="request">
 			<forward name="mostrar" path="/html/jsp/expedientes/denunciados_Edit.jsp"/>
 			<forward name="seleccion" path="/html/jsp/expedientes/seleccionDenunciado.jsp"/>
 		</action>
@@ -2999,8 +3013,10 @@
 			<forward name="listarProcedimientos" path="/html/jsp/gratuita/consultaProcedimientos.jsp"/>
 			<forward name="mantenimiento" path="/html/jsp/gratuita/datosProcedimientos.jsp"/>
 			<forward name="nuevoAcreditacion" path="/html/jsp/gratuita/datosProcedimientosAcreditacion.jsp"/>
+			<forward name="nuevoPretension" path="/html/jsp/gratuita/modalNuevoPretension.jsp"/>
 			<forward name="exitoInsercionProcedimiento" path="/html/jsp/gratuita/exitoInsercionProcedimiento.jsp"/>
-            <forward name="buscarProcedimiento" path="/html/jsp/gratuita/buscarProcedimientoOculta.jsp"/>			
+            <forward name="buscarProcedimiento" path="/html/jsp/gratuita/buscarProcedimientoOculta.jsp"/>		
+            	
 		</action>
 
 		<!-- ***** Justicia Gratuita / Mantenimiento Incompatibilidades de Guardias *****
@@ -3029,6 +3045,14 @@
 			<forward name="editar" path="/html/jsp/gratuita/pestanaEJG.jsp"/>	
 			<forward name="exitoEJG" path="/html/jsp/gratuita/exitoEJG.jsp"/>
 		</action>
+		<action path="/JGR_E-Comunicaciones_EJGPendientes" type="com.siga.gratuita.action.DefinirCAJGAction" name="BusquedaCAJG_EJGForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaEJG.jsp?ventanaCajg=3"/>
+			<forward name="listarEJG" path="/html/jsp/gratuita/listadoEJGPendientes.jsp"/>		
+			
+		</action>
+		
+		
+		
 		<!-- ***** Justicia Gratuita / e_comunicaciones / Gestion ***** -->
 		<action path="/JGR_E-Comunicaciones_Gestion" type="com.siga.gratuita.action.DefinirRemesasCAJGAction" name="DefinicionRemesas_CAJG_Form" >
 			<forward name="inicio" path="/html/jsp/gratuita/BusquedaRemesas_CAJG.jsp"/>
@@ -3521,6 +3545,14 @@
 			<forward name="listado" path="/html/jsp/censo/listadoCargaMasivaCV.jsp"/>
 			<forward name="listadoResumen" path="/html/jsp/censo/listadoResumenCargaMasivaCV.jsp"/>
 		</action>
+		
+		<action path="/JGR_CargaMasivaProcuradores" type="com.siga.gratuita.action.CargaMasivaProcuradoresAction" name="CargaMasivaProcuradoresForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/cargaMasivaProcuradores.jsp"/>
+			<forward name="listado" path="/html/jsp/gratuita/listadoCargaMasivaProcuradores.jsp"/>
+			<forward name="listadoResumen" path="/html/jsp/gratuita/listadoResumenCargaMasivaProcuradores.jsp"/>
+		</action>
+		
+		
 		<action path="/CEN_CargaMasivaGF" type="com.siga.censo.action.CargaMasivaGFAction" name="CargaMasivaGFForm" scope="request">
 			<forward name="inicio" path="/html/jsp/censo/cargaMasivaGF.jsp"/>
 			<forward name="listado" path="/html/jsp/censo/listadoCargaMasivaGF.jsp"/>

@@ -943,6 +943,10 @@ public class DefinirEnviosAction extends MasterAction {
 				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesIRPF)){
 					envioInformesGenericos.gestionarComunicacionIRPF(form,  request.getLocale(), userBean);
 					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
+				}else if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesAcreditacionDeOficio)){
+					envioInformesGenericos.gestionarComunicacionAcreditacionOficio(form,  request.getLocale(), userBean);
+					form.setEditarEnvio("true");
+					isEnvioBatch = envioInformesGenericos.isEnvioBatch();
 				}
 
 				tx.commit();

@@ -222,6 +222,8 @@
 		var jsEstadoViejo="";
 		var jsEstadoNuevo="";
 		
+		var identificadorDireccion ="";
+		
 		// Asociada al boton Volver
 		function accionVolver() {
 			<% if (busquedaVolver.equals("AB")) { %>
@@ -257,7 +259,11 @@
 		
 		// Asociada al boton Guardar
 		function accionGuardar() {	
-			sub();					
+			sub();	
+			if(document.forms[0].idDireccionDenunciado.value == null || document.forms[0].idDireccionDenunciado.value ==""){
+				seleccionarDireccion();
+				document.forms[0].idDireccionDenunciado.value  = identificadorDireccion;
+			}
 			if (validateExpDatosGeneralesForm(document.ExpDatosGeneralesForm)){
 				if (document.ExpDatosGeneralesForm.idPersonaDenunciado.value == ""){
 						alert('<siga:Idioma key="expedientes.auditoria.literal.denunciado"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
@@ -321,7 +327,6 @@
 						if (document.forms[0].derechosColegiales){
 							  document.forms[0].derechosColegiales.value = document.forms[0].derechosColegiales.value.replace(/,/,".");
 						}
-										
 						document.forms[0].modo.value="insertar";
 						document.forms[0].target="submitArea";	
 						document.forms[0].submit();	
@@ -389,8 +394,8 @@
 		}
 		
 		function seleccionarDenunciado() {			
-			document.datosGeneralesForm.modo.value = "designarArt27";
-			var resultado=ventaModalGeneral("datosGeneralesForm","G");
+			document.busquedaCensoModalForm.modo.value = "designarArt27";
+			var resultado=ventaModalGeneral(busquedaCensoModalForm.name,"G");
 			
 			if (resultado!=undefined && resultado[0]!=undefined ){
 				
@@ -659,12 +664,25 @@
 				}
 			}
 		}
+	
+		function seleccionarDireccion() {
+			document.expDireccionDenunciado.modo.value = "expedienteDesdeEJG";
+			document.expDireccionDenunciado.idInstitucion.value='<%=userBean.getLocation()%>';
+			document.expDireccionDenunciado.idPersona.value = document.ExpDatosGeneralesForm.idPersonaDenunciado.value;
+			var resultado=ventaModalGeneral("ExpDireccionDenunciadoForm","M");
+			if (resultado!=undefined && resultado[0]!=undefined ){
+				identificadorDireccion=resultado[7];
+			}
+			
+			
+		 }
+
 	</script>
 	
 	<!-- FIN: SCRIPTS BOTONES -->
 </head>
 
-<body class="detallePestanas" onload="<%=recargarCombos%>; calcularTotalMinuta (); calcularTotalMinutaFinal ()">
+<body  onload="<%=recargarCombos%>; calcularTotalMinuta (); calcularTotalMinutaFinal ()">
 
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 
@@ -1232,11 +1250,10 @@
 		<input type="hidden" name="idTipoExpediente" value="">	
 	</html:form>
 
-	<html:form action="/CEN_BusquedaClientesModal" method="POST" target="mainWorkArea" type="">
-		<input type="hidden" name="actionModal" value="">
-		<input type="hidden" name="modo" value="abrirBusquedaModal">
-		<input type="hidden" name="clientes"	value="1">
-	</html:form>
+	<html:form  action="/CEN_BusquedaCensoModal" method="POST" target="submitArea"  enctype="multipart/form-data">
+			<html:hidden  name="busquedaCensoModalForm" property="modo"/>
+			<html:hidden property = "actionModal" value = ""/>
+	</html:form>	
 		
 	<html:form action="/EXP_Auditoria_Denunciado" method="POST" target="mainWorkArea">
 		<html:hidden property = "actionModal" value = ""/>
@@ -1245,6 +1262,17 @@
 		<html:hidden property = "idPersona" />
 		<html:hidden property = "idDireccion"/>
 		<html:hidden property = "idInstitucion"/>
+		
+	</html:form>
+	
+	<html:form action="/EXP_Auditoria_Direccion_Denunciado" method="POST" target="mainWorkArea" styleId="expDireccionDenunciado" >
+		<html:hidden property = "actionModal" value = ""/>
+		<html:hidden property = "modo" value = ""/>
+		<html:hidden property = "modal" value = ""/>
+		<html:hidden property = "idPersona" />
+		<html:hidden property = "idDireccion"/>
+		<html:hidden property = "idInstitucion"/>
+		<html:hidden property = "origen" value="EJG"/>
 		
 	</html:form>
 

@@ -83,7 +83,8 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 				CenDireccionesBean.C_FECHAMODIFICACION,
 				CenDireccionesBean.C_USUMODIFICACION,
 				CenDireccionesBean.C_IDINSTITUCIONALTA,
-				CenDireccionesBean.C_IDDIRECCIONALTA
+				CenDireccionesBean.C_IDDIRECCIONALTA,
+				CenDireccionesBean.C_OTRAPROVINCIA
 		};
 		return campos;
 	} //getCamposBean ()
@@ -182,6 +183,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 			UtilidadesHash.set(hash, CenDireccionesBean.C_USUMODIFICACION, b.getUsuMod());
 			UtilidadesHash.set(hash, CenDireccionesBean.C_IDINSTITUCIONALTA, b.getIdInstitucionAlta());
 			UtilidadesHash.set(hash, CenDireccionesBean.C_IDDIRECCIONALTA, b.getIdDireccionAlta());			
+			UtilidadesHash.set(hash, CenDireccionesBean.C_OTRAPROVINCIA, b.getOtraProvincia());	
 		}
 		catch (Exception e){
 			hash = null;
@@ -227,6 +229,7 @@ public class CenDireccionesAdm extends MasterBeanAdmVisible
 				CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_POBLACIONEXTRANJERA,
 				CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_FECHAMODIFICACION,
 				CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_USUMODIFICACION,
+				CenDireccionesBean.T_NOMBRETABLA + "." + CenDireccionesBean.C_OTRAPROVINCIA,
 /////////////////////////////////////////////////////////////////////////////
 // DCG Cambios realizamos por el nuevo tratamiento de direcciones  //////////
 //				CenDireccionTipoDireccionBean.T_NOMBRETABLA + "." + CenDireccionTipoDireccionBean.C_IDTIPODIRECCION,

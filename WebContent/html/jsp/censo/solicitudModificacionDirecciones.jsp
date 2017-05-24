@@ -45,6 +45,7 @@
 	String pais="";
 	String poblacionExt="";
 	String codigoPostal="";
+	String otraProvinciaString="";
 //	Hashtable htData=(Hashtable)request.getAttribute("hDatos");		
 	Hashtable htData = (Hashtable)request.getSession().getAttribute("DATABACKUP");
 	String DB_TRUE=ClsConstants.DB_TRUE;
@@ -57,6 +58,7 @@
 	idProvincia.add(String.valueOf(htData.get(CenDireccionesBean.C_IDPROVINCIA)));
 	idPoblacion.add(String.valueOf(htData.get(CenDireccionesBean.C_IDPOBLACION)));
 	codigoPostal = String.valueOf(htData.get(CenDireccionesBean.C_CODIGOPOSTAL));
+	otraProvinciaString =String.valueOf( htData.get(CenDireccionesBean.C_OTRAPROVINCIA));
 	
 	poblacionExt = String.valueOf(htData.get("POBLACIONEXTRANJERA"));
 	
@@ -148,6 +150,8 @@
 					//Ocultamos la provincia
 					jQuery("#provinciaSinAsterisco").hide();
 					jQuery("#provinciaText").hide();
+					jQuery("#otraProvinciaCheck").removeAttr('checked');
+					jQuery("#tdOtraProvincia").hide();
 					jQuery("#codigoPostal").val("");	
 					jQuery("#provincia").val(jQuery("#provincia option:first").val());
 					jQuery("#provinciaText").val("");
@@ -158,10 +162,16 @@
 					document.getElementById("poblacionExtranjera").className="";
 					document.getElementById("poblacionExt").value="";
 		       } else {
-			   		document.getElementById("poblacionExt").value="";
+		    	   document.getElementById("poblacionExt").value="";
 					//Mostramos la provincia
 					jQuery("#provinciaSinAsterisco").show();
-					jQuery("#provinciaText").show();
+					jQuery("#tdOtraProvincia").show();
+					if(jQuery("#otraProvinciaCheck").is(':checked') && jQuery("#otraProvinciaCheck").is(':visible')){
+						jQuery("#provinciaText").hide();
+					}else{
+						jQuery("#otraProvinciaCheck").removeAttr('checked');
+						jQuery("#provinciaEspanola").hide();
+					}
 					//Para el caso de que venga null, sino se pone mostrar√° por pantalla en el campo codigo postal undefined
 					if((paisGlobal != "") && (paisGlobal !=idEspana))
 					jQuery("#codigoPostal").val("");				
@@ -186,13 +196,19 @@
 				   	document.getElementById("provinciaSinAsterisco").className="labelText";
 					document.getElementById("poblacionEspanola").className="ocultar";
 					document.getElementById("poblacionExtranjera").className="";
+					jQuery("#tdOtraProvincia").hide();
 		       } else {
 		    	   
 			   		document.getElementById("poblacionExt").value="";
 					document.getElementById("poblacionEspanola").className="";
 					document.getElementById("poblacionExtranjera").className="ocultar";		
 					//Mostramos la provincia
-					jQuery("#provinciaText").show();
+					<%if(otraProvinciaString != null && !"".equalsIgnoreCase(otraProvinciaString) && otraProvinciaString.equalsIgnoreCase("1")){%>
+					  	jQuery("#provinciaEspanola").css("display","inline");
+					    jQuery("#provinciaText").hide();
+					<%}else{%>
+						jQuery("#provinciaText").show();
+					<%}%>
 					//aalg: se restaura la marca de obligatoriedad si es pertinente
 					comprobarAsterico();
 		       }
@@ -208,7 +224,13 @@
 				
 				<%if(ididPais.equals(ClsConstants.ID_PAIS_ESPANA) || "".equals(ididPais)){%>	
 						document.consultaDireccionesSolicForm.codigoPostal.value='<%=codigoPostal%>';
-						createProvince();
+						<%if(otraProvinciaString != null && !"".equalsIgnoreCase(otraProvinciaString) && otraProvinciaString.equalsIgnoreCase("1")){%>
+						  	jQuery("#provinciaEspanola").css("display","inline");
+						    jQuery("#provinciaText").hide();
+						    jQuery("#otraProvinciaCheck").attr('checked','checked');
+						<%}else{%>
+							jQuery("#provinciaText").show();
+						<%}%>
 				<%}else{%>
 					var codpostal = '<%=codigoPostal%>';
 					var poblacionExtAux = '<%=poblacionExt%>';
@@ -307,13 +329,18 @@
  				 fin();
 				 return false;
 			}
-			if (validateConsultaDireccionesSolicForm(document.consultaDireccionesSolicForm)){			
-					document.all.consultaDireccionesSolicForm.modo.value="insertarModificacion";							
-					document.all.consultaDireccionesSolicForm.submit();					
+            if (validateConsultaDireccionesSolicForm(document.consultaDireccionesSolicForm)){			
+				document.all.consultaDireccionesSolicForm.modo.value="insertarModificacion";	
+				if(jQuery("#otraProvinciaCheck").is(':checked') && jQuery("#otraProvinciaCheck").is(':visible')){
+					document.forms[0].otraProvincia.value = "1";
+				} else{
+					document.forms[0].otraProvincia.value= "0";
 				}
+				document.all.consultaDireccionesSolicForm.submit();					
+			}
 			else{
 				fin();
-			}				
+			}			
 		}	
 	
 		<!-- Selecciona los valores de los campos check y combo dependiendo de los valores del Hashtable -->
@@ -390,6 +417,9 @@
 					jQuery("#provincia").val(jQuery("#provincia option:first").val());
 					jQuery("#provinciaText").val("");
 					jQuery("#provincia").change();
+					jQuery("#otraProvinciaCheck").removeAttr('checked');
+					jQuery("#provinciaEspanola").hide();
+				    jQuery("#provinciaText").css("display","inline");
 					return;
 				} 
 				if(Primary.length<5){
@@ -408,6 +438,10 @@
 							jQuery("#poblacion").val(jQuery("#poblacion option:first").val());
 						 	jQuery("#provincia").change();
 						 	
+						 	jQuery("#otraProvinciaCheck").removeAttr('checked');
+							jQuery("#provinciaEspanola").hide();
+						    jQuery("#provinciaText").css("display","inline");
+						 	
 						} else {
 							var mensaje = "<siga:Idioma key="censo.datosDireccion.noSeEncuentraProvincia"/>";
 			 				alert (mensaje+document.consultaDireccionesSolicForm.codigoPostal.value);
@@ -422,7 +456,19 @@
 				}
 			
 			}
-		}       
+		}    
+
+		function otraProvinciaFuction(valor){
+			if(valor.checked ) {
+			   //Si est· seleccionado
+			  	jQuery("#provinciaEspanola").css("display","inline");
+			    jQuery("#provinciaText").hide();
+			}else{
+				createProvince();
+				jQuery("#provinciaEspanola").hide();
+			    jQuery("#provinciaText").css("display","inline");
+			}
+		}
 	</script>	
 
 	<!-- INICIO: TITULO Y LOCALIZACION 	-->	
@@ -458,6 +504,7 @@
 		<input type="hidden" name = "modificarPreferencias" value="">
 		<input type="hidden" name = "idDireccionesPreferentes" value = ""/>
 		<input type="hidden" name = "idDireccionesCensoWeb" value = ""/>
+		<input type="hidden" id="otraProvincia" name="otraProvincia" value="">
 		<table class="tablaCentralCamposGrande" align="center">			
 			<tr>				
 					<td>
@@ -508,13 +555,26 @@
 								<td>
 									<html:text name="consultaDireccionesSolicForm" styleId="codigoPostal" property="codigoPostal" value="<%=String.valueOf(htData.get(CenDireccionesBean.C_CODIGOPOSTAL))%>" size="5" maxlength="5" styleClass="box" onChange="createProvince()"></html:text>
 								</td>		
-								<td class="labelText" id="provinciaSinAsterisco">
+								<td nowrap="nowrap" id="tdOtraProvincia"> 
+										<siga:Idioma key="censo.datosDireccion.literal.otraProvincia" />
+											<%if(otraProvinciaString != null && !"".equalsIgnoreCase(otraProvinciaString) && otraProvinciaString.equalsIgnoreCase("1")){ %>
+												<input type="checkbox" id="otraProvinciaCheck" name="otraProvinciaCheck" checked="checked"  onclick="otraProvinciaFuction(this);"> &nbsp;
+											<%}else{ %>
+												<input type="checkbox" id="otraProvinciaCheck" name="otraProvinciaCheck"  onclick="otraProvinciaFuction(this);"> &nbsp;
+											<%} %>
+								</td>
+								<td class="labelText" id="provinciaSinAsterisco" nowrap="nowrap">
+								
 									<siga:Idioma key="censo.datosDireccion.literal.provincia" />&nbsp;
-								</td>
-								<td id="provinciaEspanola" style="display: none;">
-									<siga:ComboBD nombre="provincia" tipo="provincia" clase="boxCombo" obligatorio="false" elementoSel="<%=idProvincia%>" accion="Hijo:poblacion"/>	
-								</td>
-								<td >
+								
+								
+									<div id="provinciaEspanola" style="display: none;">
+										
+											<siga:ComboBD nombre="provincia" 
+												tipo="provincia" clase="boxCombo" obligatorio="false"
+												elementoSel="<%=idProvincia%>" accion="Hijo:poblacion"  /> 
+										
+									</div>
 									<input id="provinciaText" class="boxConsulta" type="text" value="<%=provincia%>" readonly="readonly" tabindex="-1" style="width: 200px" />
 								</td>							
 							</tr>

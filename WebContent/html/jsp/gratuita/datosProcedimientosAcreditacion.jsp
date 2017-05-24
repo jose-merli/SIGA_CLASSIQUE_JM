@@ -84,7 +84,11 @@
 				return;
 			}
 			
+			
+			
 			//Comprobamos si esta checkeado
+			
+			
 			if(document.getElementById('nigNumeroProcedimientoCheck').checked){
 				document.forms[0].nigNumProcedimiento.value = 1;
 			}else{
@@ -95,6 +99,7 @@
 	<% if (modo.equalsIgnoreCase("editar")) { %>
 			document.forms[0].idAcreditacion.value = document.forms[0].acreditacion.value;
 			document.forms[0].porcentaje.value = porcentaje;
+			
 			document.forms[0].modo.value = "modificarAcreditacion";
 			document.forms[0].submit();
 //			window.top.close();
@@ -105,6 +110,10 @@
 			datos[1] = document.forms[0].acreditacion.value;
 			datos[2] = porcentaje;
 			datos[3] =  document.forms[0].nigNumProcedimiento.value;
+			datos[4] =  document.forms[0].codExtAcreditacion.value;
+			datos[5] =  document.forms[0].codSubtarifa.value;
+			
+			
 			window.top.returnValue = datos;
 			window.top.close();
 		<% } %>
@@ -135,6 +144,8 @@
 		<html:hidden property = "idAcreditacion" value = ""/>
 		<html:hidden property = "porcentaje" value = ""/>
 		<html:hidden property = "nigNumProcedimiento" value = ""/>
+		
+		
 		
 		<table class="tablaCampos" align="center">	
 			<tr>
@@ -193,8 +204,40 @@
 								<%} %>
 				</td>
 				<td></td>
+				
+			</tr>
+			<tr>
+				<td class="labelText"><siga:Idioma key="gratuita.procedimientos.literal.codigo"/>&nbsp;Ext.</td>
+				<td class="labelTextValor">
+<%										String codExtAcreditacion = "";
+								if (modo.equalsIgnoreCase("editar")) {
+									if (bean != null){
+										codExtAcreditacion = bean.getCodigoExt();
+									}
+								}
+%>
+				<html:text  id="codExtAcreditacion" property="codExtAcreditacion" size="10" maxlength="3" value="<%=codExtAcreditacion%>" styleClass="box"/></td>
 				<td></td>
 			</tr>
+			<%//Si es el colefio de alacala le mostramos la subtarifa
+			if(idInstitucion==2003){%>
+			
+			<tr>
+				<td class="labelText">Cód. subtarifa</td>
+				<td class="labelTextValor">
+<%							String codSubtarifa = "";
+							if (modo.equalsIgnoreCase("editar")) {
+								if (bean != null){
+									codSubtarifa = bean.getCodSubtarifa();
+								}
+							}
+%>
+				<html:text  property="codSubtarifa" styleId="codSubtarifa" size="14" maxlength="5" value="<%=codSubtarifa%>" styleClass="box"/> </td>
+				<td></td>
+			</tr>
+			<%}else{%>
+				<html:hidden  property="codSubtarifa" styleId="codSubtarifa" /> 
+			<%}%>
 		</table>
 	
 	</html:form>

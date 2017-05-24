@@ -83,7 +83,6 @@
 		
 		var debug = ${debug};
 
-
 		function getProcesos(){
 			json = jQuery.parseJSON('${procesos}');
 			sub();
@@ -131,9 +130,8 @@
 		}
 			
 			function guardarCambios(){
-				
-				
-				if(jQuery("#idPerfil").val().length>1 && nuevosPermisos.length>0){
+
+				if(jQuery("#idPerfil").val().length>=1 && nuevosPermisos.length>0){
 					
 					sub();
 					if(confirm("Se van a realizar "+nuevosPermisos.length+" cambios de permisos sobre el perfil "+jQuery("#idPerfil :selected").text())){
@@ -156,6 +154,8 @@
 							}
 						});
 						limpiarSeleccion();
+					}else{
+						fin();
 					}
 				}else{
 					alert("No hay cambios pendientes");
@@ -403,7 +403,7 @@
 
 		<!--siga:ConjBotonesBusqueda botones="B" titulo=""/-->
 		<div id='container' style="background-color:white;">
-		<div id='botonera' style="text-align:right;background-color:#eeeeee;height:30px;">
+		<div id='botonera' style="text-align:right;background-color:#eeeeee;height:30px">
 		
 		<div style="vertical-align: middle; float:left; padding-left:10px;">
 			<input type="button" class='botonCollapse' title='Contraer todos' onclick="collapse()"/>
@@ -415,7 +415,7 @@
 			<input type="button" id='darSinAcceso' class='miBoton botonSinAcceso' title='Sin Acceso' onclick="aplicarPermiso('sinAcceso')"/>
 		</div>
 		
-		<div style="vertical-align: middle; padding-right:10px;padding-top:4px">
+		<div id='botonesGuardar' style="vertical-align: middle; padding-right:10px;padding-top:4px;display:none">
 			<span class="labelText" style="vertical-align: middle;">Selección:</span><span id='nSeleccionados'>0</span>/<span id='nTotal'>0</span>
 			<span class="labelText" style="vertical-align: middle;">Cambios:</span><span id='nCambios'>0</span>/<span id='nTotalCambios'>0</span>
 			<input type="button" id='botonRestablecer' class='miBoton botonRestablecer' title='Restablecer' onclick="restablecerCambios()"/>
@@ -463,7 +463,12 @@
 			jQuery('#arbolProcesos').height(jQuery('#container').height()-5);
 			alert("Se está cargando el arbol de procesos de la aplicación.\nPuede tardar varios segundos dependiendo de su equipo.");
 			getProcesos();
-			
+			var perm = ${permiso};
+			if(perm){
+				jQuery('#botonesGuardar').show();
+			}else{
+				jQuery('#mensajeSeleccionarGrupo').hide();
+			}
 		});
 	</script>
 </html>

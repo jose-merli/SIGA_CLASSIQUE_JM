@@ -361,6 +361,20 @@
 			.getAttribute("tienePermisos")).booleanValue();
 	Boolean tipoExpedienteRepetido = ((Boolean) request
 			.getAttribute("tipoExpedienteRepetido")).booleanValue();
+	
+	/////////////////////////
+	// Si los 3 campos tienen valor habrá que mostrar una alrte
+	boolean tieneDesignas = false;
+	if ((designaAnio != null && !designaAnio.equals("")) && (designaNumero != null && !designaNumero.equals("")) && (designaIdTurno != null && !designaIdTurno.equals(""))) {
+		tieneDesignas = true;
+	}
+	// DCG fin
+	/////////////////////////
+	String crearDesigna = "V";
+	if (!modo.equalsIgnoreCase("ver")) {
+			crearDesigna = "V,G,R,CD,RD";
+	}
+
 %>
 
 
@@ -1207,6 +1221,9 @@
 		} 
 	
 		function accionCrearDesignacion() {  
+			<%if(tieneDesignas){%>
+				if(confirm("<siga:Idioma key='messages.designacionAdicional'/>")){
+			<%}%>
 			document.forms[1].modo.value = "nuevo";
 			
 			var resultado=ventaModalGeneral(document.forms[1].name,"M");
@@ -1220,6 +1237,9 @@
 			   		submit();
 				}
 			}
+			<%if(tieneDesignas){%>
+				}
+			<%}%>
 		}
 		
 		function redireccionar () {
@@ -1289,6 +1309,9 @@
 		}
 		
 		function relacionarConDesigna() {
+			<%if(tieneDesignas){%>
+				if(confirm("<siga:Idioma key='messages.designacionAdicional'/>")){
+			<%}%>
 			document.BusquedaPorTipoSJCSForm.tipo.value="DESIGNA";
 			var resultado = ventaModalGeneral("BusquedaPorTipoSJCSForm","G");	
 
@@ -1302,6 +1325,10 @@
 				document.forms[0].target = "submitArea";
 				document.forms[0].submit();
 			}
+			<%if(tieneDesignas){%>
+				}
+			<%}%>
+			
 		}
 		
 		function borrarRelacionConDesigna() {
@@ -1333,31 +1360,7 @@
 		}
 	</script>
 
-	<%
-		/////////////////////////
-		// DCG Si estan los tres campos a nulos o sin datos mostramos el boton
-		boolean condicion = true;
-		if ((modo != null)
-				&& ((modo.equalsIgnoreCase("consulta")) || (modo
-						.equalsIgnoreCase("ver"))))
-			condicion &= false;
-		else if ((designaAnio != null) && (!designaAnio.equals("")))
-			condicion &= false;
-		else if ((designaNumero != null) && (!designaNumero.equals("")))
-			condicion &= false;
-		else if ((designaIdTurno != null) && (!designaIdTurno.equals("")))
-			condicion &= false;
-		// DCG fin
-		/////////////////////////
-		String crearDesigna = "V";
-		if (!modo.equalsIgnoreCase("ver")) {
-			if (condicion) {
-				crearDesigna = "V,G,R,CD,RD";
-			} else {
-				crearDesigna = "V,G,R";
-			}
-		}
-	%>
+
 	
 	<!-- INICIO: BOTONES BUSQUEDA -->	
 	<siga:ConjBotonesAccion botones="<%=crearDesigna%>" clase="botonesDetalle"  />	

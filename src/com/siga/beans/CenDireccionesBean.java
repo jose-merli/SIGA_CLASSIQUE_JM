@@ -40,10 +40,11 @@ public class CenDireccionesBean extends MasterBean
 	static public final String C_POBLACIONEXTRANJERA	= "POBLACIONEXTRANJERA";
 	static public final String C_IDINSTITUCIONALTA		= "IDINSTITUCIONALTA";
 	static public final String C_IDDIRECCIONALTA		= "IDDIRECCIONALTA";
+	static public final String C_OTRAPROVINCIA          = "OTRAPROVINCIA";
 	
 	
 	//////////////////// ATRIBUTOS ////////////////////
-	private Integer idInstitucion, idInstitucionAlta;
+	private Integer idInstitucion, idInstitucionAlta, otraProvincia;
 	private Long	idPersona, idDireccion, idDireccionAlta;
 	private String 	idPais, idProvincia, idPoblacion, domicilio, codigoPostal, 
 					telefono1, telefono2, poblacionExtranjera; 
@@ -72,6 +73,7 @@ public class CenDireccionesBean extends MasterBean
 	public String getTelefono2() 			{return telefono2;}
     public Integer getIdInstitucionAlta() 	{return idInstitucionAlta;}
     public Long getIdDireccionAlta() 		{return idDireccionAlta;}
+    public Integer getOtraProvincia() 		{return otraProvincia;}
     public String getReflejarSolicitante()	{return reflejarSolicitante;}
     
 	
@@ -98,4 +100,5 @@ public class CenDireccionesBean extends MasterBean
 	public void setReflejarSolicitante(String reflejarSolicitante) 	{this.reflejarSolicitante = reflejarSolicitante;}
     public void setIdInstitucionAlta(Integer idInstitucionAlta) 	{this.idInstitucionAlta = idInstitucionAlta;}
     public void setIdDireccionAlta(Long idDireccionAlta)			{this.idDireccionAlta = idDireccionAlta;}
+    public void setOtraProvincia(Integer otraProvincia) 			{this.otraProvincia = otraProvincia;}
 }

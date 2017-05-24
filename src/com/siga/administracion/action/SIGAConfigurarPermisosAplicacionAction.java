@@ -17,6 +17,7 @@ import com.atos.utils.UsrBean;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.administracion.SIGAConstants;
 import com.siga.administracion.form.SIGAConfigurarPermisosAplicacionForm;
 import com.siga.beans.AdmGestionPermisosAdm;
 import com.siga.general.MasterAction;
@@ -65,8 +66,17 @@ public class SIGAConfigurarPermisosAplicacionAction extends MasterAction
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
 	{
 		request.setAttribute("procesos", getProcesos(this.getUserBean(request)));
+		
 		// Ponemos modo debug para los administradores
 		request.setAttribute("debug", this.getUserBean(request).isEntradaCombos());
+		UsrBean usr = this.getUserBean(request);
+		String permiso= usr.getAccessForProcessNumber("84");
+		
+		if(permiso.equalsIgnoreCase(SIGAConstants.ACCESS_FULL)){
+			request.setAttribute("permiso", true);
+		}else{
+			request.setAttribute("permiso", false);
+		}
 		return "abrir";
 	}
 

@@ -78,7 +78,12 @@
 		registrosPorPagina = "0";
 	}	 
 		
-	String action=app+"/JGR_E-Comunicaciones_Seleccion.do?noReset=true";
+	 String action=app+request.getAttribute("javax.servlet.forward.servlet_path")+"?noReset=true";
+	 String accionPaginador = "buscarPor";
+	 
+	 if(request.getAttribute("javax.servlet.forward.servlet_path").toString().equals("/JGR_E-Comunicaciones_EJGPendientes.do"))
+		 accionPaginador = "buscarPorEjgPendientes";
+	//String action=app+"/JGR_E-Comunicaciones_Seleccion.do?noReset=true";
 %>
 
 <!-- HEAD -->
@@ -228,7 +233,7 @@
 			paginaSeleccionada="<%=paginaSeleccionada%>" 
 			registrosSeleccionados="<%=regSeleccionados%>"
 			idioma="<%=idioma%>"
-			modo="buscarPor"								
+			modo="<%=accionPaginador%>"								
 			clase="paginator" 
 			divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:0px; left: 0px"
 			distanciaPaginas=""

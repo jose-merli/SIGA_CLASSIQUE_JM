@@ -19,12 +19,10 @@ import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaBean;
-import com.siga.beans.FcsFactApunteAdm;
 import com.siga.beans.HelperInformesAdm;
 import com.siga.beans.ScsCabeceraGuardiasAdm;
 import com.siga.beans.ScsCabeceraGuardiasBean;
-import com.siga.beans.ScsGuardiasColegiadoAdm;
-import com.siga.beans.ScsPermutaGuardiasAdm;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -237,15 +235,10 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 		UsrBean usr = null;
 		String forward = "buscar";
 	    ValidarVolantesGuardiasForm miForm = (ValidarVolantesGuardiasForm) formulario;
-	    FcsFactApunteAdm admApuntes = new FcsFactApunteAdm(this.getUserBean(request));
 		ScsCabeceraGuardiasAdm admCabeceraGuardia = new ScsCabeceraGuardiasAdm(this.getUserBean(request));
-		ScsGuardiasColegiadoAdm admGuardiaColegiado = new ScsGuardiasColegiadoAdm(this.getUserBean(request));
-		ScsPermutaGuardiasAdm admPermutaguardias = new ScsPermutaGuardiasAdm(this.getUserBean(request));
 		try {
 			TreeMap tmResultado = new TreeMap();
 			Vector v_guardias = new Vector ();
-			
-			String pl = ""; //Valor devuelto por el PL de Permutas
 		
 			usr = (UsrBean) request.getSession().getAttribute("USRBEAN");			
 
@@ -380,37 +373,18 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 					sFechaInicioFormateada = GstDate.getFormatedDateShort(usr.getLanguage(), fInicio);
 				} else {
 					sFechaInicioFormateada = GstDate.getFormatedDateShort(usr.getLanguage(), fInicioPermuta);
-				}					
-
-				// JPT: Obtiene si ha facturado el dia de guardia (FCS_FACT_APUNTE)
-				boolean bExisteGuardiaFacturada = admApuntes.existeGuardiaFacturada(idinstitucion, idTurno, idguardia, idpersona, sFechaInicioFormateada);
-				
-				boolean bExisteGuardiaParaBorrar = false;
-				// JPT: Si ya esta facturada, no se puede hacer nada, no merece la pena mirar si se puede borrar
-				if (!bExisteGuardiaFacturada) {
-					
-					// 	JPT: Obtiene si tiene guardias el dia y es posterior al dia actual (SCS_GUARDIASCOLEGIADO)
-					bExisteGuardiaParaBorrar = admGuardiaColegiado.existeGuardiaParaBorrar(idinstitucion, idTurno, idguardia, idpersona, sFechaInicioFormateada);
-					
-					// JPT: Si NO se puede borrar, entonces no merece la pena mirar si se puede permutar
-					if (bExisteGuardiaParaBorrar) {
-						
-						/* JPT - Ejecuto la funcion de Permutas F_SIGA_NUMEROPERMUTAGUARDIAS, que me dice el tipo de Permuta posible:
-						 * 
-						 * Futuras [>TRUNC(SYSDATE)]
-						 * - 2: Pendiente de confirmar por solicitante
-						 * - 3: Permutada
-						 * - 4: Pendiente de confirmar por confirmador
-						 * - 5: Pendiente de realizar
-						 * 
-						 * Pasadas [<=TRUNC(SYSDATE)] => Mira SCS_CABECERAGUARDIAS ... Esto no nos interesa para este codigo
-						 * - 1: Guardia realizada y NO facturada
-						 * - 5: Pendiente de realizar
-						 * - 6: Guardia realizada y FACTURADA				
-						 */
-						pl = admPermutaguardias.ejecutarFuncionPermutas(idinstitucion, idTurno, idguardia, idpersona, sFechaInicioFormateada);
-					}
 				}
+				
+				/* Obtiene las acciones de la guardia
+				 * @return String[7]
+					 * 0 - P_SUSTITUIR: 'N'=NoSustituible; 'S'=Sustituible
+					 * 1 - P_ANULAR: 'N'=NoAnulable; 'S'=Anulable
+					 * 2 - P_BORRAR: 'N'=NoBorrable; 'S'=Borrable
+					 * 3 - P_PERMUTAR: 'N'=NoPermutable(PendienteSolicitante); 'P'=NoPermutable(PendienteConfirmador); 'S'=Permutable
+					 * 4 - P_ASISTENCIA: 'N'=SinAsistencias; 'S'=ConAsistencias
+					 * 5 - P_CODRETORNO: Devuelve 0 en caso de que la ejecucion haya sido OK, en caso de error devuelve el codigo de error Oracle correspondiente.
+					 * 6 - P_DATOSERROR: Devuelve null en caso de que la ejecucion haya sido OK, en caso de error devuelve el mensaje de error Oracle correspondiente.*/
+				String[] accionesGuardia = EjecucionPLs.ejecutarPLAccionesGuardia(idinstitucion, idTurno, idguardia, idpersona, sFechaInicioFormateada);
 				
 				//Inserto los datos a visualizar en el JSP
 				Hashtable nueva = new Hashtable();
@@ -435,9 +409,7 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 				nueva.put("NOMGUARDIA",(String)registro.get("NOMGUARDIA"));
 				nueva.put("ESMODIFICABLE",(String)registro.get("ESMODIFICABLE"));
 				nueva.put("ACT_VALIDADAS",(String)registro.get("ACT_VALIDADAS"));
-				nueva.put("EXISTEGUARDIAFACTURADA", bExisteGuardiaFacturada ? "1" : "0");
-				nueva.put("EXISTEGUARDIAPARABORRAR", bExisteGuardiaParaBorrar ? "1" : "0");								
-				nueva.put("PL",pl);
+				nueva.put("ACCIONESGUARDIA", accionesGuardia);								
 				String key = fInicioPermuta+posicion+rowId;
 				tmResultado.put(key,nueva);	
 				i++;	

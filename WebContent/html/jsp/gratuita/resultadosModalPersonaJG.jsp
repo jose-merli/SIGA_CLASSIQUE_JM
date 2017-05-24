@@ -23,6 +23,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.ClsConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
+<%@ page import="com.atos.utils.GstDate"%>
 <%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.siga.beans.ScsPersonaJGBean"%>
 <%@ page import="com.siga.Utilidades.*"%>
@@ -141,8 +142,8 @@
 	String tamanosCol = "";
 	String nombresCol = "";
 	// cliente colegiado o  no
-	tamanosCol = "12,25,25,25,13";
-	nombresCol = "gratuita.personaJG.literal.nIdentificacion,gratuita.personaJG.literal.nombreDeno,gratuita.personaJG.literal.apellido1Abre,gratuita.personaJG.literal.apellido2,";
+	tamanosCol = "13,23,23,23,13,5";
+	nombresCol = "gratuita.personaJG.literal.nIdentificacion,gratuita.personaJG.literal.nombreDeno,gratuita.personaJG.literal.apellido1Abre,gratuita.personaJG.literal.apellido2,censo.datosDireccion.literal.fechaModificacion,";
 %>
 
 	<siga:Table 
@@ -196,6 +197,8 @@
 				String apellido2 = UtilidadesString.mostrarDatoJSP(registro.get(ScsPersonaJGBean.C_APELLIDO2));
 				String nombre = UtilidadesString.mostrarDatoJSP(registro.get(ScsPersonaJGBean.C_NOMBRE));
 				String nif = UtilidadesString.mostrarDatoJSP(registro.get(ScsPersonaJGBean.C_NIF));
+				String modificacion = UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort(usrbean.getLanguage(),registro.get(ScsPersonaJGBean.C_FECHAMODIFICACION)));
+
 %>
 				<!-- REGISTRO  -->
 				<!-- Esto es un ejemplo de dos columnas de datos, lo que significa
@@ -221,6 +224,7 @@
 					<td><%=nombre%></td>
 					<td><%=apellido1%></td>
 					<td><%=apellido2%></td>
+					<td><%=modificacion%></td>
 				</siga:FilaConIconos>		
 <%
 			} // for

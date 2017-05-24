@@ -29,6 +29,7 @@ import org.redabogacia.sigaservices.app.autogen.model.ScsComunicacionesExample.C
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.log4j.SatecLogger;
 import org.redabogacia.sigaservices.app.mapper.EnvEnviosExtendsMapper;
+import org.redabogacia.sigaservices.app.mapper.ScsEjgExtendsMapper;
 import org.redabogacia.sigaservices.app.services.scs.ComunicacionesService;
 import org.redabogacia.sigaservices.app.vo.env.ComunicacionesVo;
 
@@ -424,6 +425,25 @@ public  class SalidaEnviosServiceImpl extends MyBatisBusinessServiceTemplate imp
 		return salidaEnvios;
 	}
 	
+	public boolean isExpedientePteEnviarCAJG(Short idInstitucion,Short idTipoEJG,Short anio,Long numero ) throws BusinessException {
+		ScsEjgExtendsMapper scsEjgMapper = getMyBatisSqlSessionManager().getMapper(ScsEjgExtendsMapper.class);
+		Map<String, Object> params = new HashMap<String, Object>();
+		//String longitudEJG = paramAdm.getValor (this.usrbean.getLocation (), "SCS", "LONGITUD_CODEJG", "");
+		try {
+			params.put("idInstitucion", idInstitucion);
+			params.put("idTipoEJG",idTipoEJG);
+			params.put("anio",anio);
+			params.put("numero",numero);
+			Integer resultado = scsEjgMapper.getNumExpedientePteEnviarCAJG(params);
+			return resultado>0;
+			
+
+		} catch (Exception e) {
+			throw new BusinessException("Se ha producido un error al recuperar el numEJG", e);
+		}
+
+		
+	}	
 	
 	
 

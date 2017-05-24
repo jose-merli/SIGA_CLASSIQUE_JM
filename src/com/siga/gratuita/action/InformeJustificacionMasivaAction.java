@@ -32,11 +32,13 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorBind;
 import com.siga.administracion.SIGAConstants;
 import com.siga.beans.AdmInformeAdm;
+import com.siga.beans.AdmInformeBean;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.HelperInformesAdm;
 import com.siga.beans.ScsAcreditacionBean;
 import com.siga.beans.ScsActuacionDesignaAdm;
 import com.siga.beans.ScsActuacionDesignaBean;
@@ -49,9 +51,11 @@ import com.siga.envios.EnvioInformesGenericos;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.gratuita.form.DesignaForm;
 import com.siga.gratuita.form.InformeJustificacionMasivaForm;
 import com.siga.gratuita.pcajg.resoluciones.ResolucionesFicheroAbstract;
+import com.siga.ws.CajgConfiguracion;
 
 
 public class InformeJustificacionMasivaAction extends MasterAction {
@@ -258,6 +262,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		StringBuffer msgAviso = new StringBuffer();
 		UsrBean user = (UsrBean) request.getSession().getAttribute(
 				"USRBEAN");
+		int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(user.getLocation()));
 		String obsJustificacion = UtilidadesString.getMensajeIdioma(user, "gratuita.informeJustificacionMasiva.observaciones.justificacion");
 		String obsActuacion = UtilidadesString.getMensajeIdioma(user, "gratuita.informeJustificacionMasiva.observaciones.actuacion");
 	    ReadProperties rp3= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
@@ -476,6 +481,19 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, scsDesignaBean.getAnioProcedimiento()!=null?scsDesignaBean.getAnioProcedimiento().toString():"");
 						
 						UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_IDPRETENSION, scsDesignaBean.getIdPretension()!=null?scsDesignaBean.getIdPretension().toString():"");
+						
+						
+						if(valorPcajgActivo ==8){
+							// Para Valencia:
+							//    -Talón: Número asunto
+							//	  -Talonario: Año + código de la designa
+							String talon=UtilidadesHash.getString(hashActuacion, ScsActuacionDesignaBean.C_NUMEROASUNTO);
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_TALON, talon);
+							String talonario=UtilidadesHash.getString(hashActuacion, ScsActuacionDesignaBean.C_ANIO) + 
+									scsDesignaBean.getCodigo();
+							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_TALONARIO, talonario);
+							
+						}
 						
 							List<String> ocultarClaveList = getListCamposOcultarHistorico();
 							hashActuacion.put("fks", fksActuacionMap);
@@ -700,6 +718,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		InformeJustificacionMasivaForm fInformeJustificacion = (InformeJustificacionMasivaForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
 		ScsDesignasLetradoAdm admDesignas = new ScsDesignasLetradoAdm(usrBean);
+		HelperInformesAdm helperInformesAdm = new HelperInformesAdm();
 		fInformeJustificacion.setIdInstitucion(usrBean.getLocation());
 		GenParametrosAdm paramAdm = new GenParametrosAdm (usrBean);
 		if (fInformeJustificacion.getFichaColegial()){
@@ -718,6 +737,32 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		request.setAttribute("EDITAR_DESIGNA_LETRADOS",editarDesignaLetrados);
 		AdmInformeAdm admInformeAdm = new AdmInformeAdm(this.getUserBean(request));
 		Vector informeBeans=admInformeAdm.obtenerInformesTipo(usrBean.getLocation(),EnvioInformesGenericos.comunicacionesResolucionEjg,null, null);
+		
+		//Comprobamos si el informe comunicacionesAcreditacionDeOficio está configurado para la institución y si es visible.
+		Vector informeBeansAcreditacionOficio=admInformeAdm.obtenerInformesTipo(usrBean.getLocation(),EnvioInformesGenericos.comunicacionesAcreditacionDeOficio,null, null);
+		boolean isActivarCartaAcreditacionOficio = Boolean.FALSE;
+		if(informeBeansAcreditacionOficio != null && informeBeansAcreditacionOficio.size() >0 ){
+			for(int i=0; i<informeBeansAcreditacionOficio.size();i++){
+				AdmInformeBean datoInformeAcreditacionOficio = (AdmInformeBean)informeBeansAcreditacionOficio.get(i);
+				if(String.valueOf(datoInformeAcreditacionOficio.getIdInstitucion()).equalsIgnoreCase(usrBean.getLocation())){
+					if(datoInformeAcreditacionOficio.getVisible() != null && datoInformeAcreditacionOficio.getVisible().equalsIgnoreCase("S")){
+						isActivarCartaAcreditacionOficio = Boolean.TRUE;
+					}else{//No es visible
+					    isActivarCartaAcreditacionOficio = Boolean.FALSE;
+					}
+					
+				}
+			}
+			//Comprobamos si tiene uno o varios informes
+			String informeUnicoCartaAcreditacion = ClsConstants.DB_TRUE;
+			if(informeBeansAcreditacionOficio.size() >1){
+				 informeUnicoCartaAcreditacion = ClsConstants.DB_FALSE;
+			}
+			request.setAttribute("informeUnicoCartaAcreditacion", informeUnicoCartaAcreditacion);
+		}
+		request.setAttribute("comunicacionesAcreditacionDeOficio", isActivarCartaAcreditacionOficio);
+		
+		
 		String informeUnicoResolucion = ClsConstants.DB_TRUE;
 		if(informeBeans!=null && informeBeans.size()>1){
 			informeUnicoResolucion = ClsConstants.DB_FALSE;
@@ -829,6 +874,25 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						Row designaRow = (Row)datos.get(i);
 						Hashtable designaHashtable = (Hashtable) designaRow.getRow();
 						List<DesignaForm> designaList = admDesignas.getDesignaList(fInformeJustificacion, designaHashtable,null, false,isPermitidoEditarActFicha,ejisActivo.equals(AppConstants.DB_TRUE));
+						
+						//Recorremos los expedientes de la designación para obtener de los expedientes la descripción del tipo dictamen.
+						if(designaList != null && designaList.size()>0){
+							List<DefinirEJGForm> ejgForm =  designaList.get(0).getExpedientes();
+							//Recorremos la lista
+							if(ejgForm != null && ejgForm.size()>0){
+								for(int j=0;j<ejgForm.size();j++){
+									DefinirEJGForm ejg = ejgForm.get(j);
+									Vector descripcionDictamenVector = helperInformesAdm.getTipoDictamenEjg(usrBean.getLocation (),ejg.getIdTipoDictamenEJG(),usrBean.getLanguage());
+									Vector descripcionResolucionVector = helperInformesAdm.getTipoRatificacionEjg(ejg.getIdTipoRatificacionEJG(),usrBean.getLanguage());
+									Hashtable auxDictamen = (Hashtable) descripcionDictamenVector.get(0);
+									Hashtable auxResolucion = (Hashtable) descripcionResolucionVector.get(0);
+									ejg.setDescripcionDictamenEJG((String)auxDictamen.get("DESC_TIPODICTAMENEJG"));
+									ejg.setDescripcionResolucionEJG((String)auxResolucion.get("DESC_TIPORATIFICACIONEJG"));
+								}
+							}
+							
+						}
+						
 						
 						designaFormList.addAll(designaList);
 					}

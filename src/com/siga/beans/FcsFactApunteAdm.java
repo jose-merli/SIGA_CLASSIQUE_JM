@@ -127,49 +127,4 @@ public class FcsFactApunteAdm extends MasterBeanAdministrador {
 		}
 		return datos;	
 	}
-
-	/**
-	 * Obtiene si ha facturado el dia de guardia (FCS_FACT_APUNTE)
-	 * @param idInstitucion
-	 * @param idTurno
-	 * @param idGuardia
-	 * @param idPersona
-	 * @param fechaInicio
-	 * @return
-	 */
-	public boolean existeGuardiaFacturada(String idInstitucion, String idTurno, String idGuardia, String idPersona, String fechaInicio) {
-		Vector<Hashtable<String,Object>> vApuntes = new Vector<Hashtable<String,Object>>();
-	    StringBuffer consulta = new StringBuffer();
-	    consulta.append("SELECT 1 FROM ");
-	    consulta.append(FcsFactApunteBean.T_NOMBRETABLA);
-	    consulta.append(" WHERE ");
-	    consulta.append(FcsFactApunteBean.C_IDINSTITUCION);
-	    consulta.append(" = ");
-	    consulta.append(idInstitucion);
-	    consulta.append(" AND ");
-	    consulta.append(FcsFactApunteBean.C_IDTURNO);
-	    consulta.append(" = ");
-	    consulta.append(idTurno);
-	    consulta.append(" AND ");
-	    consulta.append(FcsFactApunteBean.C_IDGUARDIA);
-	    consulta.append(" = ");
-	    consulta.append(idGuardia);
-	    consulta.append(" AND ");
-	    consulta.append(FcsFactApunteBean.C_IDPERSONA);
-	    consulta.append(" = ");
-	    consulta.append(idPersona);
-		consulta.append(" AND TRUNC(");
-		consulta.append(FcsFactApunteBean.C_FECHAINICIO);
-		consulta.append(") = TO_DATE('");
-		consulta.append(fechaInicio);
-		consulta.append("','DD/MM/YYYY')");	    
-
-		try {
-			vApuntes = this.selectGenerico(consulta.toString());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-					
-		return vApuntes.size() > 0;
-	}
 }

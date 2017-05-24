@@ -40,12 +40,12 @@ import com.siga.general.SIGAException;
 public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 	public static final String K_ESTADO_SOL_PEND="1";
 	public static final String K_ESTADO_SOL_APROBADO="2";
-	public static final String K_ESTADO_SOL_APROBANDO="7";    //Nuevo estado para los certificados 15/10/2015
-	public static final String K_ESTADO_SOL_FINALIZANDO="8";  //Nuevo estado para los certificados 19/10/2015
-	public static final String K_ESTADO_SOL_FACTURANDO="9";  //Nuevo estado para los certificados 19/10/2015
-	public static final String K_ESTADO_SOL_GENERANDO_APROBADO="11";    //Nuevo estado para los certificados 16/10/2015
-	public static final String K_ESTADO_SOL_GENERANDO_PENDIENTE_DE_FACTURAR="12";  //Nuevo estado para los certificados 19/10/2015
-	public static final String K_ESTADO_SOL_GENERANDO_FINALIZADO="13";  //Nuevo estado para los certificados 19/10/2015
+	public static final String K_ESTADO_SOL_APROBANDO="7";
+	public static final String K_ESTADO_SOL_FINALIZANDO="8";
+	public static final String K_ESTADO_SOL_FACTURANDO="9";
+	public static final String K_ESTADO_SOL_GENERANDO_APROBADO="11";
+	public static final String K_ESTADO_SOL_GENERANDO_PENDIENTE_DE_FACTURAR="12";
+	public static final String K_ESTADO_SOL_GENERANDO_FINALIZADO="13";
 	public static final String K_ESTADO_SOL_ENVIOP="3";
 	public static final String K_ESTADO_SOL_FINALIZADO="4";
 	public static final String K_ESTADO_SOL_DENEGADO="5";
@@ -57,6 +57,24 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 	public static final String K_ESTADO_CER_FIRMADO="4";
 	public static final String K_ESTADO_CER_ERRORGENERANDO="5";
 	
+	public static final int C_ESTADO_SOL_PEND								=1;
+	public static final int C_ESTADO_SOL_APROBADO							=2;
+	public static final int C_ESTADO_SOL_APROBANDO							=7;
+	public static final int C_ESTADO_SOL_FINALIZANDO						=8;
+	public static final int C_ESTADO_SOL_FACTURANDO							=9;
+	public static final int C_ESTADO_SOL_GENERANDO_APROBADO					=11;
+	public static final int C_ESTADO_SOL_GENERANDO_PENDIENTE_DE_FACTURAR	=12;
+	public static final int C_ESTADO_SOL_GENERANDO_FINALIZADO				=13;
+	public static final int C_ESTADO_SOL_ENVIOP								=3;
+	public static final int C_ESTADO_SOL_FINALIZADO							=4;
+	public static final int C_ESTADO_SOL_DENEGADO							=5;
+	public static final int C_ESTADO_SOL_ANULADO							=6;
+	public static final int C_ESTADO_SOL_PEND_FACTURAR						=10;
+	public static final int C_ESTADO_CER_INICIAL							=1;
+	public static final int C_ESTADO_CER_PEND								=2;
+	public static final int C_ESTADO_CER_GENERADO							=3;
+	public static final int C_ESTADO_CER_FIRMADO							=4;
+	public static final int C_ESTADO_CER_ERRORGENERANDO						=5;
 	
 	
 	//ACCIONES

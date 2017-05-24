@@ -19,7 +19,19 @@ public class ScsAcreditacionProcedimientoBean extends MasterBean {
 	 */
 	private static final long serialVersionUID = -1626927180430121686L;
 	/* Variables */	
-	private String 	idProcedimiento;
+	private String 	idProcedimiento,codigoExt,codSubtarifa;
+	public String getCodigoExt() {
+		return codigoExt;
+	}
+	public void setCodigoExt(String codigoExt) {
+		this.codigoExt = codigoExt;
+	}
+	public String getCodSubtarifa() {
+		return codSubtarifa;
+	}
+	public void setCodSubtarifa(String codSubtarifa) {
+		this.codSubtarifa = codSubtarifa;
+	}
 	private Integer idInstitucion, idAcreditacion, porcentaje, nigNumeroProcedimiento;
 	
 	/* Nombre tabla */
@@ -31,6 +43,8 @@ public class ScsAcreditacionProcedimientoBean extends MasterBean {
 	static public final String C_IDACREDITACION		= "IDACREDITACION";
 	static public final String C_PORCENTAJE			= "PORCENTAJE";
 	static public final String C_NIG_NUMPROCEDIMIENTO = "NIG_NUMPROCEDIMIENTO";
+	static public final String C_CODIGOEXT = "CODIGOEXT";
+	static public final String C_CODSUBTARIFA = "CODSUBTARIFA";
 
 	
 	/**

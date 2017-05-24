@@ -95,6 +95,10 @@ public class DireccionesForm extends MasterForm{
 		this.datos.put(CenTipoDireccionBean.C_IDTIPODIRECCION, dato);
 	}
 	
+	public void setOtraProvincia(String otraProvincia) {
+		UtilidadesHash.set(this.datos, CenDireccionesBean.C_OTRAPROVINCIA, otraProvincia);
+	}
+	
 	public void setIdTipoDireccionAntes(Integer dato) {
 		UtilidadesHash.set(this.datos, "IDTIPODIRECCION_ANTES", dato);
 	}
@@ -259,6 +263,10 @@ public class DireccionesForm extends MasterForm{
 		return UtilidadesHash.getBoolean(this.datos, "PREFERENTE_CORREO");
 	}
 
+	public String getOtraProvincia() {
+		return (String)this.datos.get(CenDireccionesBean.C_OTRAPROVINCIA);
+	}
+	
 	public Boolean getPreferenteMail() {
 		return UtilidadesHash.getBoolean(this.datos, "PREFERENTE_MAIL");
 	}

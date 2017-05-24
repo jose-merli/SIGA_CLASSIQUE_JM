@@ -36,6 +36,9 @@
 <%@ page import = "com.siga.Utilidades.UtilidadesNumero"%>
 <%@ page import="java.util.Vector"%>
 <%@ page import="java.util.Hashtable"%>
+<%@ page import="java.util.List"%>
+<%@ page import="org.redabogacia.sigaservices.app.autogen.model.VPcajgAlcActErrorCam"%>
+
 
 <!-- JSP -->
 <% 
@@ -57,6 +60,8 @@
 	} catch(Exception e) {		
 		 bBorrar = false;
 	}
+	
+	List<VPcajgAlcActErrorCam> listaErroresCAM = (List<VPcajgAlcActErrorCam>)request.getAttribute(VPcajgAlcActErrorCam.T_V_PCAJG_ALC_ACT_ERROR_CAM);
 
 	// Para saber hacia donde volver
 	String busquedaVolver = (String) request.getSession().getAttribute("SJCSBusquedaFacturacionTipo");
@@ -132,7 +137,7 @@
 		clase = "boxConsulta";		
 		botones ="GM";
 		
-		if (CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
+		if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
 			//recuperamos el último estado de envío a la Xunta
 			FCS_MAESTROESTADOS_ENVIO_FACT ultimoEstadoEnvio = (FCS_MAESTROESTADOS_ENVIO_FACT)request.getAttribute(FcsFacturacionEstadoEnvio.C_IDESTADOENVIOFACTURACION);
 			if (ultimoEstadoEnvio != null) {
@@ -181,7 +186,7 @@
 			clase = "boxConsulta";
 			
 			//en las facturaciones ejecutadas se permite reejecutar y descargar el informe			
-			if (CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
+			if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
 				botones = "LC2,GM";
 				
 				FCS_MAESTROESTADOS_ENVIO_FACT ultimoEstadoEnvio = (FCS_MAESTROESTADOS_ENVIO_FACT)request.getAttribute(FcsFacturacionEstadoEnvio.C_IDESTADOENVIOFACTURACION);
@@ -203,7 +208,8 @@
 						|| idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO.getCodigo()) {				
 					botonesAbajo = "V,II";
 				}
-				
+			} else if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
+				botones = "LC2,GM,ecam";
 			} else {
 				botones = "LC,GM";
 			}
@@ -227,6 +233,13 @@
 	<html:javascript formName="DatosGeneralesFacturacionForm" staticJavascript="false" />  
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
  	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+ 	
+ 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	
+	
+	
+  	<link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">
+	
 
 	<% if(strutTrans.equalsIgnoreCase("FCS_MantenimientoPrevisiones")){  %>
 		<siga:Titulo titulo="factSJCS.mantenimientoFacturacion.datosGenerales" localizacion="factSJCS.previsiones.ruta.localizacion"/>
@@ -247,10 +260,10 @@
 		// Asociada al boton GuardarCerrar
 		function accionGuardar() {
 			sub();
-			if (validateDatosGeneralesFacturacionForm(document.DatosGeneralesFacturacionForm)){
+			if (validateDatosGeneralesFacturacionForm(document.forms[0])){
 
 				<% if(strutTrans.equalsIgnoreCase("CEN_MantenimientoFacturacion")) { %>
-					if (compararFecha(document.forms[0].fechaFin, document.forms[0].fechaHoy) ==1) {
+					if (false && compararFecha(document.forms[0].fechaFin, document.forms[0].fechaHoy) ==1) {
 						alert('<siga:Idioma key="factSJCS.datosFacturacion.fechas.errorPosteriorActual"/>');
 						fin();
 						return false;
@@ -353,19 +366,58 @@
 		}
 
 		function accionGenerarInforme() {
+			
+			<%if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))
+					&& listaErroresCAM != null && listaErroresCAM.size() > 0) {%>
+				generarFicheroCAM();
+			<%} else {%>
+				sub();
+				document.forms[0].modo.value="descargaFicheroFact";
+				document.forms[0].target = "submitArea2";
+				document.forms[0].submit();
+				fin();
+				/*sub();
+				var f = document.getElementById("InformesGenericosForm");
+				idFactIni = document.getElementById("idFacturacion").value;
+				idFactFin = document.getElementById("idFacturacion").value;
+				f.datosInforme.value = "idFacturacionIni" + "==" + idFactIni + "##"
+						+ "idFacturacionFin" + "==" + idFactFin;
+				f.seleccionados.value = "1";
+				f.submit();*/
+			<%}%>
+			
+		}
+		
+		function accionSeleccionFicheroCAM() {
+			
 			sub();
 			document.forms[0].modo.value="descargaFicheroFact";
 			document.forms[0].target = "submitArea2";
+			document.forms[0].tipoFicheroCAMRadio.value = jQuery('input[name=tipoFicheroCAMRadio2]:checked').val()
+						
 			document.forms[0].submit();
 			fin();
-			/*sub();
-			var f = document.getElementById("InformesGenericosForm");
-			idFactIni = document.getElementById("idFacturacion").value;
-			idFactFin = document.getElementById("idFacturacion").value;
-			f.datosInforme.value = "idFacturacionIni" + "==" + idFactIni + "##"
-					+ "idFacturacionFin" + "==" + idFactFin;
-			f.seleccionados.value = "1";
-			f.submit();*/
+			closeDialog('dialogoSeleccionErroresCAM');
+		}
+		
+		
+		function generarFicheroCAM() {
+			
+			jQuery("#idInformeIncidenciasCAM")[0].reset();			
+			jQuery("#dialogoSeleccionErroresCAM").dialog(
+					{
+					      height: 600,
+					      width: 840,
+					      modal: true,
+					      resizable: false,						      
+					      buttons: {
+					    	  "GenerarInforme": { id: 'GenerarInforme', text: '<siga:Idioma key="general.boton.generarInforme"/>', click: function(){ accionSeleccionFicheroCAM(); }},
+					          "Cerrar": { id: 'Cerrar', text: '<siga:Idioma key="general.boton.close"/>', click: function(){closeDialog("dialogoSeleccionErroresCAM");}}
+					      }
+					}
+				);
+				
+			jQuery(".ui-widget-overlay").css("opacity","0");
 		}
 
 		function accionInformeIncidencias() {
@@ -386,6 +438,62 @@
 			document.forms[0].modo.value="accionXuntaEnvioJustificacion";
 			document.forms[0].target = "submitArea2";
 			document.forms[0].submit();
+		}
+		
+		function subirFicheroErrorCAM() {
+			
+			jQuery("#idInformeIncidenciasCAM")[0].reset();			
+			jQuery("#dialogoInformeIncidenciasCAM").dialog(
+					{
+					      height: 300,
+					      width: 600,
+					      modal: true,
+					      resizable: false,						      
+					      buttons: {
+					    	  "Guardar": { id: 'Guardar', text: '<siga:Idioma key="general.boton.guardar"/>', click: function(){ accionSubirFicheroCAM(); }},
+					          "Cerrar": { id: 'Cerrar', text: '<siga:Idioma key="general.boton.close"/>', click: function(){closeDialog("dialogoInformeIncidenciasCAM");}}
+					      }
+					}
+				);
+				
+			jQuery(".ui-widget-overlay").css("opacity","0");
+		}
+		
+		function refrescarLocal(){			
+			if (jQuery("#dialogoInformeIncidenciasCAM").is(':visible')){
+				closeDialog('dialogoInformeIncidenciasCAM');
+			}
+			
+			if (jQuery("#dialogoSeleccionErroresCAM").is(':visible')){
+				closeDialog('dialogoSeleccionErroresCAM');
+			}
+		}
+		
+		
+		function accionSubirFicheroCAM(){
+			
+			//sub();
+			jQuery("#idInformeIncidenciasCAMModo").val('subirFicheroCAM');
+			var idFile=jQuery("#file").val();
+			error = '';
+			
+			if(idFile==''){
+				error += "<siga:Idioma key='errors.required' arg0='censo.ws.literal.fichero'/>"+ '\n';
+			}
+			
+			if (error!=''){
+				alert(error);
+				//fin();
+				return false;
+			} else {
+				
+				jQuery("#idInformeIncidenciasCAM").submit();
+			}
+			
+		}
+		
+		function closeDialog(dialogo){
+			 jQuery("#"+dialogo).dialog("close"); 
 		}
 	</script>	
 </head>
@@ -409,6 +517,8 @@
 		<html:hidden property ="idFacturacion" value = "<%=idFacturacion%>"/>
 		<html:hidden property ="idInstitucion" value = "<%=idInstitucion%>"/>
 		<html:hidden property ="fechaHoy"	   value = '<%=UtilidadesBDAdm.getFechaBD("")%>'/>
+		<html:hidden property ="tipoFicheroCAMRadio" value = ""/>
+		
 		
 		<siga:ConjCampos leyenda="factSJCS.datosGenerales.cabecera">				
 			<table class="tablaCampos" align="center" >	
@@ -453,8 +563,67 @@
 					</td>
 				</tr>
 			</table>
-		</siga:ConjCampos>				
+		</siga:ConjCampos>		
+		
+		<%if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) { %>
+		<div id="dialogoSeleccionErroresCAM"  title='<siga:Idioma key="facturacionjg.dialogo.ficheroSeleccionErrorCAM"/>' style="display:none">
+			
+			<div class="labelTextArea"><siga:Idioma key="facturacionjg.literal.aviso.ficheroSeleccionErrorCAM"/></div>
+			</br>	
+			</br>
+		  	<siga:ConjCampos >
+		  	
+							<html:hidden name="DatosGeneralesFacturacionForm" property ="idInstitucion" value = "<%=idInstitucion%>"/>
+							
+							<div class="labelText">
+							    <input type="radio" name="tipoFicheroCAMRadio2" value="NINGUNO" checked="checked"/><siga:Idioma key="facturacionjg.literal.noGenerarFichero"/></br>
+							    <input type="radio" name="tipoFicheroCAMRadio2" value="TODOS"/><siga:Idioma key="facturacionjg.literal.generarFicheroCompleto"/></br>
+							    
+							    
+								<% if (listaErroresCAM != null && listaErroresCAM.size() > 0) {
+										for (VPcajgAlcActErrorCam item : listaErroresCAM) {%>
+											<input type="radio" name="tipoFicheroCAMRadio2" value="<%=item.getCodigoError()%>"/>[<%=item.getCodigoError()%>] <%=item.getErrorDescripcion()%> (<%=item.getCuenta()%>)</br>
+										<%}
+									}%>
+								
+							</div>
+					
+					
+				</siga:ConjCampos>
+		
+		</div>	
+		<%} %>
+				
 	</html:form>
+	<%if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) { %>
+	<div id="dialogoInformeIncidenciasCAM"  title='<siga:Idioma key="facturacionjg.dialogo.ficheroErrorCAM"/>' style="display:none">
+			
+			<div class="labelTextArea"><siga:Idioma key="facturacionjg.literal.aviso.ficheroErrorCAM"/></div>
+			</br>	
+		  	<siga:ConjCampos >
+		  	
+				  	<html:form action="/FCS_DatosGeneralesFacturacion.do?noReset=true" method="POST" target="submitArea" styleId="idInformeIncidenciasCAM" enctype="multipart/form-data">
+							<html:hidden name="DatosGeneralesFacturacionForm" property = "modo" styleId="idInformeIncidenciasCAMModo"/>
+							
+							<html:hidden name="DatosGeneralesFacturacionForm" property ="idFacturacion" value = "<%=idFacturacion%>"/>
+							<html:hidden name="DatosGeneralesFacturacionForm" property ="idInstitucion" value = "<%=idInstitucion%>"/>
+							
+							</br>
+							
+							<div class="labelText">
+								<label for="file"   style="width:140px;float:left;color: black"><siga:Idioma key="facturacionjg.literal.fichero"/></label>
+								<input type="file" id="file" name="file" size="35" styleClass="box" style="background-color: #FFFFFF;" accept=""/>
+								
+							</div>
+					
+					</html:form>
+					
+				</siga:ConjCampos>
+		
+		</div>
+		<%} %>
+		
+		
 	
 	<siga:ConjBotonesAccion clase="botonesSeguido" botones='<%=botones%>' modo='<%=modo%>'/>	
 			

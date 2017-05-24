@@ -21,4 +21,5 @@ public interface SalidaEnviosService{
 	public Short getNumComunicacionesLetrado(Long idPersona, Short idInstitucion)throws BusinessException;
 	public List<ComunicacionesVo> getComunicacionesLetrado(Long idPersona, String codIdioma,Short idInstitucion, int rowNumStart, int rowNumPageSize)throws BusinessException;
 	public List<ScsComunicaciones> getComunicaciones(Long idEnvio, Short idInstitucion) throws BusinessException;
+	public boolean isExpedientePteEnviarCAJG(Short idInstitucion,Short idTipoEJG,Short anio,Long numero ) throws BusinessException;
 }

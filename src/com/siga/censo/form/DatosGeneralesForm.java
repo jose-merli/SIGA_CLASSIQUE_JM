@@ -671,6 +671,7 @@ import com.siga.general.ParejaNombreID;
 	String pais;
 	String poblacion;
 	String poblacionExt;
+	String otraProvinciaDatos;
 	String provincia;
 	String motivo;
 	String movil;
@@ -916,6 +917,15 @@ import com.siga.general.ParejaNombreID;
 
 	public void setProvincias(List<ParejaNombreID> provincias) {
 		this.provincias = provincias;
-	}	
+	}
+
+	public String getOtraProvinciaDatos() {
+		return otraProvinciaDatos;
+	}
+
+	public void setOtraProvinciaDatos(String otraProvinciaDatos) {
+		this.otraProvinciaDatos = otraProvinciaDatos;
+	}
+
 	
 }

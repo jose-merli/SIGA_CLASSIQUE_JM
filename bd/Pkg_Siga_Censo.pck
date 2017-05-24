@@ -351,7 +351,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
         v_Codretorno := '-23';
         Raise e_Error;
       End If;
-      
+
       v_Datoserror := 'Actualizardatosletrado: Copiando direccion de Censo Web a los consejos';
       Buscar_Actualizar_Direcciones(p_Idpersona, c_Tipo_Censoweb, v_Codretorno, v_Datoserror);
       If v_Codretorno <> 0 Then
@@ -368,6 +368,59 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
         Raise e_Error;
       End If;
     End If;
+  
+    v_Datoserror := 'Actualizardatosletrado: antes de terminar, ejecutamos un parche para revisar direcciones de Traspaso que no se han copiado';
+    Insert Into Cen_Colacambioletrado
+      (Idpersona, Idinstitucion, Idcambio, Fechacambio, Idtipocambio, Iddireccion, Fechamodificacion, Usumodificacion)
+      (Select Col.Idpersona, Col.Idinstitucion, nvl((Select max(col2.Idcambio) From Cen_Colacambioletrado col2), 0)+rownum, Sysdate, 30, Dir.Iddireccion, Sysdate, -7
+         From Cen_Colegiado Col, Cen_Direcciones Dir, Cen_Direccion_Tipodireccion Tip
+        Where Col.Situacionejercicio = '1'
+          And Dir.Idinstitucion = Tip.Idinstitucion
+          And Dir.Idpersona = Tip.Idpersona
+          And Dir.Iddireccion = Tip.Iddireccion
+          And Tip.Idtipodireccion = c_Tipo_Despachooojj
+          And Dir.Idinstitucion = Col.Idinstitucion
+          And Dir.Idpersona = Col.Idpersona
+          And Dir.Fechabaja Is Null
+          And Not Exists (Select 1
+                 From Cen_Direcciones Dircon, Cen_Direccion_Tipodireccion Tipcon
+                Where Dircon.Idinstitucion = Tipcon.Idinstitucion
+                  And Dircon.Idpersona = Tipcon.Idpersona
+                  And Dircon.Iddireccion = Tipcon.Iddireccion
+                  And Tipcon.Idtipodireccion = c_Tipo_Despachooojj
+                  And Dircon.Idinstitucion = c_Idcgae
+                  And Dircon.Idpersona = Col.Idpersona
+                  And Dircon.Fechabaja Is Null)
+          And Not Exists (Select 1
+                 From Cen_Colacambioletrado Col2
+                Where Col.Idinstitucion = Col2.Idinstitucion
+                  And Col.Idpersona = Col2.Idpersona));
+  
+    v_Datoserror := 'Actualizardatosletrado: antes de terminar, ejecutamos un parche para revisar direcciones de CorreoWeb que no se han copiado';
+    Insert Into Cen_Colacambioletrado
+      (Idpersona, Idinstitucion, Idcambio, Fechacambio, Idtipocambio, Iddireccion, Fechamodificacion, Usumodificacion)
+      (Select Col.Idpersona, Col.Idinstitucion, nvl((Select max(col2.Idcambio) From Cen_Colacambioletrado col2), 0)+rownum, Sysdate, 30, Dir.Iddireccion, Sysdate, -7
+         From Cen_Colegiado Col, Cen_Direcciones Dir, Cen_Direccion_Tipodireccion Tip
+        Where Dir.Idinstitucion = Tip.Idinstitucion
+          And Dir.Idpersona = Tip.Idpersona
+          And Dir.Iddireccion = Tip.Iddireccion
+          And Tip.Idtipodireccion = c_Tipo_Censoweb
+          And Dir.Idinstitucion = Col.Idinstitucion
+          And Dir.Idpersona = Col.Idpersona
+          And Dir.Fechabaja Is Null
+          And Not Exists (Select 1
+                 From Cen_Direcciones Dircon, Cen_Direccion_Tipodireccion Tipcon
+                Where Dircon.Idinstitucion = Tipcon.Idinstitucion
+                  And Dircon.Idpersona = Tipcon.Idpersona
+                  And Dircon.Iddireccion = Tipcon.Iddireccion
+                  And Tipcon.Idtipodireccion = c_Tipo_Censoweb
+                  And Dircon.Idinstitucion = c_Idcgae
+                  And Dircon.Idpersona = Col.Idpersona
+                  And Dircon.Fechabaja Is Null)
+          And Not Exists (Select 1
+                 From Cen_Colacambioletrado Col2
+                Where Col.Idinstitucion = Col2.Idinstitucion
+                  And Col.Idpersona = Col2.Idpersona));
 
     p_Datoserror := 'Actualizardatosletrado: Correcto';
     p_Codretorno := To_Char(0);
@@ -415,13 +468,13 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
                  And Dir.Idpersona = Tip.Idpersona
                  And Dir.Iddireccion = Tip.Iddireccion
                  And c_Tipo_Despachooojj = Tip.Idtipodireccion) For Update;
-    
+
     v_Iddireccion_Consejo Cen_Direcciones.Iddireccion%Type := Null;
     n_Insertadas          Number;
-    
+
   Begin
     p_Datoserror := 'Separar_Direcciones_CensoOOJJ: Buscando direcciones que comparten los tipos especiales';
-    
+
     -- Por cada direccion en Consejo donde se comparte los tipos de Censo Web y Traspaso OOJJ
     For r_direccionconsejo In c_direccionesConsejos Loop
 
@@ -441,7 +494,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
           Raise e_Error;
         End If;
       End;
-      
+
       p_Datoserror := 'Separar_Direcciones_CensoOOJJ: creando direccion copia de traspaso oojj:' || r_direccionconsejo.Idinstitucion || ', ' || r_direccionconsejo.iddireccion;
       Begin
         n_Insertadas := 0;
@@ -458,7 +511,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
           Raise e_Error;
         End If;
       End;
-    
+
       If r_direccionconsejo.Tieneotrostiposdiferentes = 0 Then
         p_Datoserror := 'Separar_Direcciones_CensoOOJJ: Dando de baja la direccion original si no tiene otros tipos:' || r_direccionconsejo.Idinstitucion || ', ' || r_direccionconsejo.iddireccion;
         -- Dar de baja la direccion
@@ -481,9 +534,9 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
            -- solo borramos los tipos especiales
            And Tip.Idtipodireccion In (c_Tipo_Censoweb, c_Tipo_Despachooojj);
       End If;
-      
+
     End Loop;
-    
+
     p_Codretorno := 0;
     p_Datoserror := 'Separar_Direcciones_CensoOOJJ: Correcto';
   Exception
@@ -566,13 +619,13 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
                      And Dir.Idinstitucion = Tip.Idinstitucion
                      And Dir.Idpersona = Tip.Idpersona
                      And Dir.Iddireccion = Tip.Iddireccion
-  
+
                         --... de la persona en cuestion,
                      And Dir.Idpersona = p_Idpersona
-  
+
                         --que sean de Tipo Especial
                        And Tip.Idtipodireccion = p_Tipoespecial
-  
+
                         --(Si buscamos direccion para CGAE, cualquier colegio vale,
                      And (r_Consejo.Idinstitucion = c_Idcgae Or
                          --Si buscamos direccion para ITCGAE, cualquier colegio vale
@@ -611,20 +664,20 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
                              And Trunc(Est2.Fechaestado) <= Sysdate)
                         --solo ejercientes
                      And Est.Idestado = 20
-  
+
                      And Col.Idinstitucion = Dir.Idinstitucion
                      And Col.Idpersona = Dir.Idpersona
                      And Dir.Fechabaja Is Null
                      And Dir.Idinstitucion = Tip.Idinstitucion
                      And Dir.Idpersona = Tip.Idpersona
                      And Dir.Iddireccion = Tip.Iddireccion
-  
+
                         --... de la persona en cuestion,
                      And Dir.Idpersona = p_Idpersona
-  
+
                         --que sean de Tipo Especial
                        And Tip.Idtipodireccion = p_Tipoespecial
-  
+
                         --(Si buscamos direccion para CGAE, cualquier colegio vale,
                      And (r_Consejo.Idinstitucion = c_Idcgae Or
                          --Si buscamos direccion para ITCGAE, cualquier colegio vale
@@ -754,7 +807,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
         End If;
 
       End If;
-      
+
       v_Datoserror := 'Buscar_Actualizar_Direcciones: 4a. Para otras direcciones existentes en el Consejo que tengan el tipo especial: si la direccion tiene otros tipos ademas del especial, solo borramos el tipo especial';
       Delete From Cen_Direccion_Tipodireccion Tip
        Where Tip.Idpersona = p_Idpersona
@@ -767,7 +820,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
                  And Tip.Idinstitucion = Tipotro.Idinstitucion
                  And Tip.Iddireccion = Tipotro.Iddireccion
                  And Tipotro.Idtipodireccion <> p_Tipoespecial);
-      
+
       v_Datoserror := 'Buscar_Actualizar_Direcciones: 4b. Para otras direcciones existentes en el Consejo que tengan el tipo especial: si la direccion solo tiene el tipo especial, la damos de baja';
       Update Cen_Direcciones dir
          Set Fechamodificacion = Sysdate,
@@ -804,7 +857,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
       p_Codretorno := Sqlcode;
       p_Datoserror := v_Datoserror || ': ' || Sqlerrm;
   End Buscar_Actualizar_Direcciones;
-  
+
   Procedure Insertar_Dir_En_Consejo(p_Idpersona             In Cen_Direcciones.Idpersona%Type,
                                     p_Idtipo_Copia          In Cen_Direccion_Tipodireccion.Idtipodireccion%Type,
                                     p_Idinstitucion_Colegio In Cen_Direcciones.Idinstitucion%Type,

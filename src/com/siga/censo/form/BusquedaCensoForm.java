@@ -45,6 +45,7 @@ import com.siga.general.ParejaNombreID;
 		String numeroColegiado;
 	 	String poblacion;
 	 	String poblacionExt;
+	 	String otraProvincia;
 	 	String provincia;
 	 	String pais;
 	 	String telefono2;
@@ -318,7 +319,12 @@ import com.siga.general.ParejaNombreID;
 		public void setProvincias(List<ParejaNombreID> provincias) {
 			this.provincias = provincias;
 		}		
-		
+		public String getOtraProvincia() {
+			return otraProvincia;
+		}
+		public void setOtraProvincia(String otraProvincia) {
+			this.otraProvincia = otraProvincia;
+		}
 		public void reset(){
 			
 		 	  nombre="";
@@ -344,6 +350,7 @@ import com.siga.general.ParejaNombreID;
 			  numeroColegiado="";
 		 	  poblacion="";
 		 	  poblacionExt="";
+		 	  otraProvincia="";
 		 	  provincia="";
 		 	  pais="";
 		 	  telefono2="";

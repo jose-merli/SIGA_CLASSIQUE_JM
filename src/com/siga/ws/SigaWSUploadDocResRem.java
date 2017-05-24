@@ -215,18 +215,20 @@ public class SigaWSUploadDocResRem {
 		bos.flush();
 		bos.close();
 		
-		//ver si con el tipo de remesa hay alguna clase java para ejecutar
-		String sql = "SELECT T.JAVACLASS FROM CAJG_TIPOREMESA T" +
-				" WHERE T.IDINSTITUCION = " + idInstitucion +
-				" AND T.IDTIPOREMESA = " + idTipoRemesa;
-		
-		RowsContainer rc = new RowsContainer();
-		if (rc.find(sql)) {
-			Row row = (Row) rc.get(0);
-			String javaClass = row.getString("JAVACLASS");
-			if (javaClass != null && !javaClass.trim().equals("")) {
-				Class<ResolucionesFicheroAbstract> clase = (Class<ResolucionesFicheroAbstract>) Class.forName(javaClass);
-				file = clase.newInstance().execute(idInstitucion, idRemesaResolucion, file);
+		if(!idTipoRemesa.equals("3")){
+			//ver si con el tipo de remesa hay alguna clase java para ejecutar
+			String sql = "SELECT T.JAVACLASS FROM CAJG_TIPOREMESA T" +
+					" WHERE T.IDINSTITUCION = " + idInstitucion +
+					" AND T.IDTIPOREMESA = " + idTipoRemesa;
+			
+			RowsContainer rc = new RowsContainer();
+			if (rc.find(sql)) {
+				Row row = (Row) rc.get(0);
+				String javaClass = row.getString("JAVACLASS");
+				if (javaClass != null && !javaClass.trim().equals("")) {
+					Class<ResolucionesFicheroAbstract> clase = (Class<ResolucionesFicheroAbstract>) Class.forName(javaClass);
+					file = clase.newInstance().execute(idInstitucion, idRemesaResolucion, file);
+				}
 			}
 		}
 		
@@ -235,7 +237,9 @@ public class SigaWSUploadDocResRem {
 		ArrayList ficheros = new ArrayList();
 		ficheros.add(file);
 		String nombreZip = file.getAbsolutePath();
-		nombreZip = nombreZip.substring(0, nombreZip.lastIndexOf("."));
+		if(nombreZip.lastIndexOf(".")>0){
+			nombreZip = nombreZip.substring(0, nombreZip.lastIndexOf("."));
+		}
 		MasterWords.doZip(ficheros, nombreZip);
 		
 		return generaLog;
@@ -308,7 +312,9 @@ public class SigaWSUploadDocResRem {
 		inputStreamReader.close();
 				
 		String nombreFichero = file.getName();
-		nombreFichero = nombreFichero.substring(0, nombreFichero.lastIndexOf("."));
+		if(nombreFichero.lastIndexOf(".")>0){
+			nombreFichero = nombreFichero.substring(0, nombreFichero.lastIndexOf("."));
+		}
     	
 		for (int j = 0; j < rc.size(); j++) {		
 			row = (Row) rc.get(j);
@@ -372,7 +378,7 @@ public class SigaWSUploadDocResRem {
 			Hashtable hash = new Hashtable();
 			hash.put(CajgRemesaResolucionFicheroBean.C_IDINSTITUCION, idInstitucion);
 			hash.put(CajgRemesaResolucionFicheroBean.C_IDREMESARESOLUCION, idRemesaResolucion);
-			cajgResolucionFicheroAdm.deleteDirect(hash, new String[]{CajgRemesaResolucionFicheroBean.C_IDINSTITUCION, CajgRemesaResolucionFicheroBean.C_IDREMESARESOLUCION});
+//			cajgResolucionFicheroAdm.deleteDirect(hash, new String[]{CajgRemesaResolucionFicheroBean.C_IDINSTITUCION, CajgRemesaResolucionFicheroBean.C_IDREMESARESOLUCION});
 		}
 
     	return generaLog;

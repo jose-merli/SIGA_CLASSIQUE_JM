@@ -1016,5 +1016,55 @@ public class EjecucionPLs {
 		}
 		
 		return resultado;
-	}		
+	}
+	
+	/**
+	 * Obtiene las acciones de la guardia 
+	 * @param idInstitucion
+	 * @param idTurno
+	 * @param idGuardia
+	 * @param idPersona
+	 * @param fecha
+	 * @return String[7]
+		 * 0 - P_SUSTITUIR: 'N'=NoSustituible; 'S'=Sustituible
+		 * 1 - P_ANULAR: 'N'=NoAnulable; 'S'=Anulable
+		 * 2 - P_BORRAR: 'N'=NoBorrable; 'S'=Borrable
+		 * 3 - P_PERMUTAR: 'N'=NoPermutable(PendienteSolicitante); 'P'=NoPermutable(PendienteConfirmador); 'S'=Permutable
+		 * 4 - P_ASISTENCIA: 'N'=SinAsistencias; 'S'=ConAsistencias
+		 * 5 - P_CODRETORNO: Devuelve 0 en caso de que la ejecucion haya sido OK, en caso de error devuelve el codigo de error Oracle correspondiente.
+		 * 6 - P_DATOSERROR: Devuelve null en caso de que la ejecucion haya sido OK, en caso de error devuelve el mensaje de error Oracle correspondiente.
+	 * @throws ClsExceptions
+	 */
+	public static String[] ejecutarPLAccionesGuardia(String idInstitucion, String idTurno, String idGuardia, String idPersona, String fecha) throws ClsExceptions {
+		String[] resultado = new String[7]; // Parametros de salida del PL
+
+		try {		            
+			Object[] param_in = new Object[5];
+			param_in[0] = idInstitucion; // 0 - P_IDINSTITUCION IN
+			param_in[1] = idTurno; // 1 - P_IDTURNO IN
+			param_in[2] = idGuardia; // 2 - P_IDGUARDIA IN
+			param_in[3] = idPersona; // 3 - P_IDPERSONA IN
+			param_in[4] = fecha; // 4 - P_FECHA IN
+			// 0 - P_SUSTITUIR OUT
+			// 1 - P_ANULAR OUT
+			// 2 - P_BORRAR OUT
+			// 3 - P_PERMUTAR OUT
+			// 4 - P_ASISTENCIA OUT
+			// 5 - P_CODRETORNO OUT
+			// 6 - P_DATOSERROR OUT
+			
+			// Ejecucion del PL
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_ACCIONES_GUARDIAS.PROC_ACCIONES_GUARDIAS(?,?,?,?,?,?,?,?,?,?,?,?)}", 7, param_in);
+			if (!resultado[5].equalsIgnoreCase("0")) {
+				ClsLogging.writeFileLog("Error en PL = " + (String)resultado[6], 3);
+				throw new ClsExceptions ("Ha ocurrido un error al ejecutar la gestión de acciones de guardia");
+			}
+
+		} catch (Exception e) {
+    		throw new ClsExceptions(e, "Error en la ejecución de la la gestión de acciones de guardia");
+		}
+
+		// Resultado del PL
+		return resultado;	
+	}
 }

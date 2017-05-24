@@ -225,7 +225,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 		try {		
 			List<File> listaFicheros = new ArrayList<File>();
 			
-			String rutaAlm = getDirectorioSalida(directorio, idInstitucion);			
+			String rutaAlm = getDirectorioSalida(directorio, idInstitucion, idFacturacion);			
 			File file = new File(rutaAlm);
 			file.delete();
 			file.mkdirs();

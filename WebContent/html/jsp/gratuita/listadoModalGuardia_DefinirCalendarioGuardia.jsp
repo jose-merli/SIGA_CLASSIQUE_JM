@@ -205,7 +205,7 @@
 			int recordNumber=1;
 			String fechaInicio="", fechaInicioPK="", fechaFin="", idcalendarioguardias="", idturno="", idguardia="", idinstitucion="";
 			String numerocolegiado="", nombre="", observaciones="", idpersona="", numero="", fechaInicioPermuta="", fechaFinPermuta="";
-			String pl="", orden="", validado="", activarCheck="", existeGuardiaFacturada="", existeGuardiaParaBorrar="";
+			String orden="", validado="", activarCheck="";
 			int i=0;
 			while ((recordNumber) <= obj.size()) {	 	
 				Hashtable hash = (Hashtable)obj.get(recordNumber-1);
@@ -247,23 +247,17 @@
 				fechaFinPermuta = ((String)hash.get("FECHAFINPERMUTA")).equals("")?"":(String)hash.get("FECHAFINPERMUTA");
 				orden = (hash.get("ORDEN")==null||((String)hash.get("ORDEN")).equals(""))?"&nbsp;":(String)hash.get("ORDEN");
 				validado = ((String)hash.get("VALIDADO")).equals("")?"":(String)hash.get("VALIDADO");
-				existeGuardiaFacturada = (String)hash.get("EXISTEGUARDIAFACTURADA");
-				existeGuardiaParaBorrar = (String)hash.get("EXISTEGUARDIAPARABORRAR");
 				
-				/* JPT - Ejecuto la funcion de Permutas F_SIGA_NUMEROPERMUTAGUARDIAS, que me dice el tipo de Permuta posible:
-				 * 
-				 * Futuras [>TRUNC(SYSDATE)]
-				 * - 2: Pendiente de confirmar por solicitante
-				 * - 3: Permutada
-				 * - 4: Pendiente de confirmar por confirmador
-				 * - 5: Pendiente de realizar
-				 * 
-				 * Pasadas [<=TRUNC(SYSDATE)] => Mira SCS_CABECERAGUARDIAS ... Esto no nos interesa para este codigo
-				 * - 1: Guardia realizada y NO facturada
-				 * - 5: Pendiente de realizar
-				 * - 6: Guardia realizada y FACTURADA				
-				 */				
-				pl = ((String)hash.get("PL")).equals("")?"":(String)hash.get("PL");
+				/* Obtiene las acciones de la guardia
+				 * @return String[7]
+					 * 0 - P_SUSTITUIR: 'N'=NoSustituible; 'S'=Sustituible
+					 * 1 - P_ANULAR: 'N'=NoAnulable; 'S'=Anulable
+					 * 2 - P_BORRAR: 'N'=NoBorrable; 'S'=Borrable
+					 * 3 - P_PERMUTAR: 'N'=NoPermutable(PendienteSolicitante); 'P'=NoPermutable(PendienteConfirmador); 'S'=Permutable
+					 * 4 - P_ASISTENCIA: 'N'=SinAsistencias; 'S'=ConAsistencias
+					 * 5 - P_CODRETORNO: Devuelve 0 en caso de que la ejecucion haya sido OK, en caso de error devuelve el codigo de error Oracle correspondiente.
+					 * 6 - P_DATOSERROR: Devuelve null en caso de que la ejecucion haya sido OK, en caso de error devuelve el mensaje de error Oracle correspondiente.*/
+				String[] accionesGuardia = (String[])hash.get("ACCIONESGUARDIA");
 				
 				String numeroColegiadoBusqueda="" + recordNumber + "_" + numerocolegiado;
 				
@@ -275,22 +269,24 @@
 				elems = new FilaExtElement[3];				
 				String botones="C", visibleBorrado="si";
 				
-				// JPT: Si NO es el modo consulta y NO esta facturado => Sustituir y anular
-				if (!modoOriginal.equalsIgnoreCase("VER") && existeGuardiaFacturada.equals("0")) {
+				if (!modoOriginal.equalsIgnoreCase("VER")) {
 					
-					// JPT: Si se puede borrar (existe el dia y es posterior al dia actual) => Borrar
-					if (existeGuardiaParaBorrar.equals("1")) {
-						botones+=",B";
-						visibleBorrado="";
-						
-						// Si esta pendiente de realizar (5) o permutada (3) => Permutar
-						if (pl!=null && (pl.equals("5") || pl.equals("3"))) {
-							elems[0]=new FilaExtElement("permutar","permutar",SIGAConstants.ACCESS_FULL);	
-						}
+					if (accionesGuardia[0]!=null && accionesGuardia[0].equalsIgnoreCase("S")) { // 0 - P_SUSTITUIR: 'N'=NoSustituible; 'S'=Sustituible
+						elems[1]=new FilaExtElement("sustituir","sustituir",SIGAConstants.ACCESS_FULL);
 					}
 					
-					elems[1]=new FilaExtElement("sustituir","sustituir",SIGAConstants.ACCESS_FULL);
-					elems[2]=new FilaExtElement("denegar", "anular","anular", SIGAConstants.ACCESS_FULL);
+					if (accionesGuardia[1]!=null && accionesGuardia[1].equalsIgnoreCase("S")) { // 1 - P_ANULAR: 'N'=NoAnulable; 'S'=Anulable
+						elems[2]=new FilaExtElement("denegar", "anular","anular", SIGAConstants.ACCESS_FULL);
+					}
+					
+					if (accionesGuardia[2]!=null && accionesGuardia[2].equalsIgnoreCase("S")) { // 2 - P_BORRAR: 'N'=NoBorrable; 'S'=Borrable
+						botones+=",B";
+						visibleBorrado="";
+					}
+					
+					if (accionesGuardia[3]!=null && accionesGuardia[3].equalsIgnoreCase("S")) { // 3 - P_PERMUTAR: 'N'=NoPermutable; 'S'=Permutable
+						elems[0]=new FilaExtElement("permutar","permutar",SIGAConstants.ACCESS_FULL);
+					}
 				}
 %>
 	       		<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" elementos='<%=elems%>' clase="listaNonEdit" modo="<%=modoOriginal%>" visibleEdicion="no" visibleBorrado="<%=visibleBorrado%>" pintarEspacio="no">
@@ -310,6 +306,7 @@
 						<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_9' value='<%=fechaFin%>' />
 						<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_10' value='<%=fechaInicioPermuta%>' />
 						<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_11' value='<%=fechaFinPermuta%>' />
+						<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_ASI' value='<%=accionesGuardia[4]%>' />
 						
 						<%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaInicioPermuta)%>
 					</td>
@@ -386,40 +383,79 @@
 		// Funcion asociada a boton cambiar
 		function permutar(fila) {		
 			//Datos del elemento seleccionado:
-			seleccionarFila(fila)			
+			seleccionarFila(fila);
+		
+			var tieneAsistencias = 'oculto' + fila + '_ASI';
+			var valorTieneAsistencias = document.getElementById(tieneAsistencias).value;
+			var confirmado = true;
 			
-			//Submito
-			document.forms[0].action = "<%=app%>/JGR_PestanaCalendarioGuardias.do";
-			document.forms[0].modo.value = "buscarPor";
-			var salida = ventaModalGeneral(document.forms[0].name,"M"); 			
-			if (salida == "MODIFICADO")  {
-				refrescarLocal();
+			if (valorTieneAsistencias == 'S') {
+				confirmado = false;
+				if (confirm("<siga:Idioma key='gratuita.listadoModal_DefinirCalendarioGuardia.permutar.tieneAsistencias'/>")) {
+					confirmado = true;
+				}
 			}
-			document.forms[0].action = "<%=app%>/JGR_DefinirCalendarioGuardia.do";
+			
+			if (confirmado == true)	{						
+				document.forms[0].action = "<%=app%>/JGR_PestanaCalendarioGuardias.do";
+				document.forms[0].modo.value = "buscarPor";
+				var salida = ventaModalGeneral(document.forms[0].name,"M"); 			
+				if (salida == "MODIFICADO")  {
+					refrescarLocal();
+				}
+				document.forms[0].action = "<%=app%>/JGR_DefinirCalendarioGuardia.do";
+			}
 		}			
 		
-		function sustituir(fila) {		
-			//Datos del elemento seleccionado:
-			seleccionarFila(fila)			
-            document.forms[0].action = "<%=app%>/JGR_PestanaCalendarioGuardias.do";
-			document.forms[0].modo.value = "sustituir";
-			//document.forms[0].target = "_blank";
-			//document.forms[0].submit();
-			var salida = ventaModalGeneral(document.forms[0].name,"M"); 			
-			if (salida == "MODIFICADO") 
-				refrescarLocal();	
-			document.forms[0].action = "<%=app%>/JGR_DefinirCalendarioGuardia.do";			
+		function sustituir(fila) {
+			var tieneAsistencias = 'oculto' + fila + '_ASI';
+			var valorTieneAsistencias = document.getElementById(tieneAsistencias).value;
+			var confirmado = true;
+			
+			if (valorTieneAsistencias == 'S') {
+				confirmado = false;
+				if (confirm("<siga:Idioma key='gratuita.listadoModal_DefinirCalendarioGuardia.sustituir.tieneAsistencias'/>")) {
+					confirmado = true;
+				}
+			}
+			
+			if (confirmado == true)	{	
+				//Datos del elemento seleccionado:
+				seleccionarFila(fila)			
+	            document.forms[0].action = "<%=app%>/JGR_PestanaCalendarioGuardias.do";
+				document.forms[0].modo.value = "sustituir";
+				//document.forms[0].target = "_blank";
+				//document.forms[0].submit();
+				var salida = ventaModalGeneral(document.forms[0].name,"M"); 			
+				if (salida == "MODIFICADO") 
+					refrescarLocal();	
+				document.forms[0].action = "<%=app%>/JGR_DefinirCalendarioGuardia.do";
+			}
 		}
 		
-		function anular(fila) {				
-			//Datos del elemento seleccionado:
-			seleccionarFila(fila);	
+		function anular(fila) {
+			var tieneAsistencias = 'oculto' + fila + '_ASI';
+			var valorTieneAsistencias = document.getElementById(tieneAsistencias).value;
+			var confirmado = true;
 			
-			document.forms[0].modo.value = "anular";
-			var salida = ventaModalGeneral(document.forms[0].name,"P"); 			
+			if (valorTieneAsistencias == 'S') {
+				confirmado = false;
+				if (confirm("<siga:Idioma key='gratuita.listadoModal_DefinirCalendarioGuardia.anular.tieneAsistencias'/>")) {
+					confirmado = true;
+				}
+			}
 			
-			if (salida == "MODIFICADO") 
-				refrescarLocal();	
+			if (confirmado == true)	{			
+				//Datos del elemento seleccionado:
+				seleccionarFila(fila);	
+				
+				document.forms[0].modo.value = "anular";
+				var salida = ventaModalGeneral(document.forms[0].name,"P"); 			
+				
+				if (salida == "MODIFICADO") { 
+					refrescarLocal();
+				}
+			}
 		}
 		
 		 function consultar(fila, id) {

@@ -823,6 +823,9 @@ protected String insertar (ActionMapping mapping,
 					form.getPreferenteCorreo(), form.getPreferenteFax(), form.getPreferenteSms ()));
 			bean.setIdEstadoSolic(new Integer(ClsConstants.ESTADO_SOLICITUD_MODIF_PENDIENTE));
 			bean.setFechaAlta("sysdate");
+			if(form.getOtraProvincia()!= null){
+				bean.setOtraProvincia(Integer.valueOf(form.getOtraProvincia()));
+			}
 		}
 		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
@@ -1016,6 +1019,7 @@ protected String insertar (ActionMapping mapping,
 	private void poblarObjeto(DireccionesForm miForm,CenDireccionesBean beanDir)
 			throws SIGAException {
 
+		beanDir.setOtraProvincia(Integer.valueOf(miForm.getOtraProvincia()));
 		beanDir.setIdPersona(miForm.getIDPersona());
 		beanDir.setCodigoPostal(miForm.getCodigoPostal());
 		beanDir.setCorreoElectronico(miForm.getCorreoElectronico());
