@@ -502,17 +502,25 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 		{	
 			document.forms[0].modo.value = "nuevo";
 			var resultado=ventaModalGeneral(document.forms[0].name,"M");
-
 			if (resultado){
 				if(resultado[0]=="MODIFICADO"){
-				with(document.DefinirEJGForm){
-					numero.value        = resultado[1];
-					idTipoEJG.value     = resultado[2];
-					idInstitucion.value = resultado[3];
-					anio.value          = resultado[4];
-					modo.value          = "editar";
-			   		submit();
+					if(resultado[5] != null && resultado[5] =="SI"){
+		
+					with(document.DefinirEJGForm){
+						numero.value        = resultado[1];
+						idTipoEJG.value     = resultado[2];
+						idInstitucion.value = resultado[3];
+						anio.value          = resultado[4];
+						modo.value          = "editar";
+						submit();
+					}
+					
+				}else{
+					document.forms[0].modo.value = "";
+					document.forms[0].submit();
+				
 				}
+				
 			}
 		   }	
 		}
@@ -560,9 +568,9 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 			}
 		}
 
-		function refrescarLocal() {
+	/*	function refrescarLocal() {
 			document.location.reload();
-		}
+		}*/
 	
 		//Asociada al boton Volver -->
 		function accionVolver() {	
@@ -573,8 +581,10 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 		}
 		
 		function buscar() {		
-			document.forms[0].modo.value = "abrir";
-			document.forms[0].submit();
+			document.forms[0].modo.value="";
+			document.forms[0].target="_self"; 
+			document.forms[0].submit(); 
+			
 		}
 
 		// Asociada al boton Restablecer -->

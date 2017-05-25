@@ -15,6 +15,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.form.DefinirCrearEJGForm;
 import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.gratuita.util.calendarioSJCS.LetradoInscripcion;
 
@@ -984,6 +985,24 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 	}
 
 	public void crearSaltoDesdeEjg(DefinirEJGForm miForm, String checkSalto) throws ClsExceptions, SIGAException
+	{
+		// creando salto si se pidio asi desde la pantalla
+		if (checkSalto != null && (checkSalto.equals("on") || checkSalto.equals("1"))) {
+			String idInstitucionSJCS = this.usrbean.getLocation();
+			String idTurnoSJCS = miForm.getGuardiaTurnoIdTurno();
+			String idGuardiaSJCS = miForm.getGuardiaTurnoIdGuardia();
+			String idPersonaSJCS = miForm.getIdPersona();
+			String motivoSaltoSJCS = 
+					UtilidadesString.getMensajeIdioma(this.usrbean, "gratuita.literal.insertarSaltoPor")
+					+ " "
+					+ UtilidadesString.getMensajeIdioma(this.usrbean, "general.boton.crearEJG");
+			
+			this.crearSaltoCompensacion(idInstitucionSJCS, idTurnoSJCS, idGuardiaSJCS, idPersonaSJCS, motivoSaltoSJCS,
+					ClsConstants.SALTOS);
+		}
+	}
+	
+	public void crearSaltoDesdeEjg(DefinirCrearEJGForm miForm, String checkSalto) throws ClsExceptions, SIGAException
 	{
 		// creando salto si se pidio asi desde la pantalla
 		if (checkSalto != null && (checkSalto.equals("on") || checkSalto.equals("1"))) {

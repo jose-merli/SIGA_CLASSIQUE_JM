@@ -2349,6 +2349,45 @@
         </form>
 <!-- FIN: DefinirEJGForm julio.vicente 08-03-2005 -->
 
+
+<!-- INICIO: DefinirCrearEJGForm CGP 25-05-2017 -->
+        <form name="DefinirCrearEJGForm">               
+            <field property = "idTipoEJG" depends = "required">
+                <arg0 key="gratuita.busquedaEJG.literal.tipoEJG"/>
+            </field>
+           
+<!--            <field property = "guardiaTurnoIdTurno" depends = "required">	-->
+<!--                <arg0 key="gratuita.busquedaEJG.literal.turno"/>			-->
+<!--            </field>														-->
+           
+<!--            <field property = "guardiaTurnoIdGuardia" depends = "required">	-->
+<!--                <arg0 key="gratuita.busquedaEJG.literal.guardia"/>			-->
+<!--            </field>														-->
+           
+            <field property = "idPersona" depends = "mask">
+<!--                <arg0 key="gratuita.insertarSOJ.literal.letradoTramitador"/>   -->          
+                <arg1 key="${var:maxlength}" name="maxlength" resource="false"/>
+                <var>
+                	<var-name>mask</var-name> 
+					<var-value>^[0-9]*$</var-value>
+				</var>
+                <var> 
+                	<var-name>maxlength</var-name> 
+					<var-value>10</var-value>
+				</var>
+            </field>
+           
+            <field property = "fechaApertura" depends = "required">
+                <arg0 key="gratuita.busquedaEJG.literal.fechaApertura"/>
+            </field>
+           
+<!--            <field property = "NColegiado" depends = "required">			-->	
+<!--                <arg0 key="gratuita.insertarSOJ.literal.letradoTramitador"/>-->
+<!--            </field>														-->
+
+        </form>
+<!-- FIN: DefinirCrearEJGForm CGP 28-05-2017 -->
+
 <!-- INICIO: DefinirInteresadoEJGForm julio.vicente 08-03-2005 -->
                 <form name="DefinirInteresadoEJGForm">
                         <field  property = "nombre" depends = "maxlength">              

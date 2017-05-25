@@ -908,4 +908,6 @@ Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodif
 Values  ('gratuita.gestionInscripciones.error.baja.colegiados', 'Sólo se pueden validar solicitudes del mismo colegiado#GL', '0', 4, Sysdate, 0, '19');
  
 -- Ejecutado en Integracion por AAG el 18/05 a las 17:20
-
+insert into gen_procesos 
+(IDPROCESO, IDMODULO, TRAZA, TARGET, FECHAMODIFICACION, USUMODIFICACION, DESCRIPCION,TRANSACCION,IDPARENT,NIVEL) 
+            values ('942','JGR',1,'Y',sysdate,0,'HIDDEN_Boton crear EJG','JGR_CREAR_EJG','941',10);

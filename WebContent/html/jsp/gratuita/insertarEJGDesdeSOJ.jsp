@@ -78,11 +78,11 @@
 	<!-- Incluido jquery en siga.js -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	<html:javascript formName="DefinirEJGForm" staticJavascript="false" />  
+	<html:javascript formName="DefinirCrearEJGForm" staticJavascript="false" />  
   	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<script type="text/javascript">
 		function actualizarFecha(){
-		  document.forms[0].fechaAperturaEJG.value=DefinirEJGForm.fechaApertura.value;
+		  document.forms[0].fechaAperturaEJG.value=DefinirCrearEJGForm.fechaApertura.value;
 		}
 	</script>
 </head>
@@ -102,7 +102,7 @@
 	<!-- INICIO: CAMPOS DEL REGISTRO -->
 
 	<!-- Comienzo del formulario con los campos -->
-	<html:form action = "/JGR_EJG" method="POST" target="submitArea">
+	<html:form action = "/JGR_CREAR_EJG" method="POST" target="submitArea">
 
 	<html:hidden property = "actionModal" value = ""/>
 	<html:hidden property = "modo" value = "Insertar"/>
@@ -157,13 +157,13 @@
 	</td>	
 	<td class="labelText">
 		<% if (!usr.isLetrado() ) {%>
-			<html:text name="DefinirEJGForm" property="NColegiado" size="10" maxlength="10" styleClass="box" value="<%=nColegiado%>"></html:text>
+			<html:text name="DefinirCrearEJGForm" property="NColegiado" size="10" maxlength="10" styleClass="box" value="<%=nColegiado%>"></html:text>
 		<% } else { %>
-			<html:text name="DefinirEJGForm" property="NColegiado" size="10" maxlength="10" styleClass="boxConsulta" value="<%=nColegiado%>" readOnly="true"></html:text>			
+			<html:text name="DefinirCrearEJGForm" property="NColegiado" size="10" maxlength="10" styleClass="boxConsulta" value="<%=nColegiado%>" readOnly="true"></html:text>			
 		<% } %>
 	</td>
 -->	
-	<html:hidden name="DefinirEJGForm" property="NColegiado" value="<%=nColegiado%>"></html:hidden>
+	<html:hidden name="DefinirCrearEJGForm" property="NColegiado" value="<%=nColegiado%>"></html:hidden>
 	
 <!--<td class="labelText" colspan="2">
 		<siga:Idioma key="gratuita.insertarSOJ.literal.demandante"/>
@@ -213,7 +213,7 @@
 
 			<tr>
 				<td colspan="5">
-					<siga:BusquedaSJCS nombre="DefinirEJGForm" propiedad="buscaLetrado"
+					<siga:BusquedaSJCS nombre="DefinirCrearEJGForm" propiedad="buscaLetrado"
 		 				   concepto="EJG" operacion="Asignacion" 
 						   campoTurno="identificador" campoGuardia="identificador2" campoFecha="fechaApertura"
 						   campoPersona="idPersona" campoColegiado="numeroColegiado" campoNombreColegiado="nomColegiado"  
@@ -274,10 +274,9 @@
 			/* El substring que queda a partir de ahí es el identificador del turno, que almacenamos en el formulario */			
 			document.forms[0].guardiaTurnoIdTurno.value = id.substring(posicion);
 			document.forms[0].guardiaTurnoIdGuardia.value = document.forms[0].identificador2.value;
-			if (validateDefinirEJGForm(document.forms[0])){
+			if (validateDefinirCrearEJGForm(document.forms[0])){
 //				window.top.returnValue="MODIFICADO";
-               document.DefinirEJGForm.NColegiado.value=document.DefinirEJGForm.numeroColegiado.value;
-               
+               document.DefinirCrearEJGForm.NColegiado.value=document.DefinirCrearEJGForm.numeroColegiado.value;
 				document.forms[0].submit();
 			}else{
 				fin();

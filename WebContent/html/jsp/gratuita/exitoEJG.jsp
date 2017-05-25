@@ -35,7 +35,8 @@
 	                (String)request.getAttribute("NUMERO"),
 	                (String)request.getAttribute("TIPO"),
 	                (String)request.getAttribute("INSTITUCION"),
-	                (String)request.getAttribute("ANIO")
+	                (String)request.getAttribute("ANIO"),
+	                (String)request.getAttribute("PERMISO")
 	                };
 	 
 %>
@@ -69,6 +70,7 @@
 								array[2]="<%=datos[2]%>";
 								array[3]="<%=datos[3]%>";
 								array[4]="<%=datos[4]%>";
+								array[5]="<%=datos[5]%>";
 
 								window.top.returnValue=array; 
 								
