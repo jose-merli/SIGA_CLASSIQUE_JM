@@ -8,7 +8,8 @@
 <meta http-equiv="Cache-Control" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
-
+<%@page import="org.redabogacia.sigaservices.app.helper.AsignaVeredaHelper.ASIGNA_VERSION"%>
+<%@page import="org.redabogacia.sigaservices.app.helper.AsignaVeredaHelper"%>
 <!-- IMPORTS -->
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.UsrBean"%>
@@ -92,7 +93,8 @@
 	
 	if (idEstado == 2) {//enviada
 		if (CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == cajgConfig) {
-			subirFicheroRespuesta = true;
+			ASIGNA_VERSION versionAsignaVereda = AsignaVeredaHelper.getAsignaVersion(Short.valueOf(usr.getLocation()));
+			subirFicheroRespuesta = versionAsignaVereda==null || !versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion());
 		}
 	}
 	Boolean isDatosEconomicos = (Boolean)request.getAttribute("ISDATOSECONOMICOS");
