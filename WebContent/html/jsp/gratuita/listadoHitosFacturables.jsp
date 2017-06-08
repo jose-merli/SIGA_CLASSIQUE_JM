@@ -16,6 +16,7 @@
     * Adicion de checkboxs en cabeceras
 -->
 
+
 <!------------------------------------------------------------------------->
 <!-------------------- CABECERA JSP Y TAGLIBS - INICIO -------------------->
 <!------------------------------------------------------------------------->
@@ -26,9 +27,9 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri="struts-bean.tld" prefix="bean"%>
-<%@ taglib uri="struts-html.tld" prefix="html"%>
-<%@ taglib uri="struts-logic.tld" prefix="logic"%>
+<%@ taglib uri = "struts-bean.tld" prefix="bean"%>
+<%@ taglib uri = "struts-html.tld" prefix="html"%>
+<%@ taglib uri = "struts-logic.tld" prefix="logic"%>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
@@ -37,7 +38,6 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.administracion.SIGAMasterTable"%>
 <%@ page import="com.siga.Utilidades.UtilidadesHash"%>
-<%@ page import="com.siga.Utilidades.UtilidadesString"%>
 <%@ page import="com.siga.gratuita.form.DefinirHitosFacturablesGuardiasForm"%>
 <!---------------------------------------------------------------------->
 <!-------------------- CABECERA JSP Y TAGLIBS - FIN -------------------->
@@ -72,17 +72,6 @@
   String checkControlado=(String)request.getAttribute("checkControlado");
   String importeControlado=(String)request.getAttribute("importeControlado");
   String minimoControlado=(String)request.getAttribute("minimoControlado");
-  
-  String parametroPaqueteFacturacionSJCS=(String)request.getAttribute("parametroPaqueteFacturacionSJCS");
-  String estiloPaqueteFacturacionSJCS="";
-  String estiloGuardiasInactivas="";
-  if (parametroPaqueteFacturacionSJCS==null || !parametroPaqueteFacturacionSJCS.equalsIgnoreCase("S")) {
-	  estiloPaqueteFacturacionSJCS="style='display:none'";
-	  Integer iConsejo=(Integer)request.getAttribute("iConsejo");
-	  if (iConsejo==null || !iConsejo.equals(3001)) {
-		  estiloGuardiasInactivas="style='display:none'";
-	  }
-  }   
   
   Vector<Hashtable<String,Object>> vFcsHistoricoHitoFact = (Vector<Hashtable<String,Object>>) request.getAttribute("vFcsHistoricoHitoFact");
 %>	
@@ -195,11 +184,11 @@
 					}					
 					if (document.getElementById("chGuardias").checked) {
 						document.getElementById("chGuardias").checked = false;
-						aplicaTipos();
+						aplicaGuardias();
 					}
 					if (document.getElementById("chMinAsist").checked) {
 						document.getElementById("chMinAsist").checked = false;
-						controlAsMin();
+						habilitarMinAsist();
 					}					
 					document.getElementById("hitoPrecio[1]").value = "";
 					document.getElementById("hitoPrecio[2]").value = "";
@@ -218,11 +207,11 @@
 					}	
 					if (document.getElementById("chGuardias").checked) {
 						document.getElementById("chGuardias").checked = false;
-						aplicaTipos();
+						aplicaGuardias();
 					}
 					if (!document.getElementById("chMinAsist").checked) {
 						document.getElementById("chMinAsist").checked = true;
-						controlAsMin();
+						habilitarMinAsist();
 					}					
 					document.getElementById("hitoPrecio[1]").value = "";
 					document.getElementById("hitoPrecio[2]").value = "";
@@ -241,11 +230,11 @@
 					}	
 					if (!document.getElementById("chGuardias").checked) {
 						document.getElementById("chGuardias").checked = true;
-						aplicaTipos();
+						aplicaGuardias();
 					}		
 					if (!document.getElementById("chMinAsist").checked) {
 						document.getElementById("chMinAsist").checked = true;
-						controlAsMin();
+						habilitarMinAsist();
 					}					
 					document.getElementById("hitoPrecio[1]").value = "";
 					document.getElementById("hitoPrecio[2]").value = "";
@@ -264,11 +253,11 @@
 					}	
 					if (document.getElementById("chGuardias").checked) {
 						document.getElementById("chGuardias").checked = false;
-						aplicaTipos();
+						aplicaGuardias();
 					}
 					if (document.getElementById("chMinAsist").checked) {
 						document.getElementById("chMinAsist").checked = false;
-						controlAsMin();
+						habilitarMinAsist();
 					}
 					document.getElementById("hitoPrecio[1]").value = importe;
 					if (document.getElementById("hitoPrecio[2]").value != importe) {
@@ -287,7 +276,7 @@
 	      
 	      	//para que solo inserte guardia doblada por actuacion o por asistencia
 	      	//segun este el campo activo
-	      	if (DefinirHitosFacturablesGuardiasForm.radioPG[0].checked) {
+	      	if (DefinirHitosFacturablesGuardiasForm.radioA[0].checked) {
 	        	document.getElementById("hitoPrecio[4]").value="0";
 	        	jQuery("#hitoPrecio[4]").attr("disabled","disabled");
 	      	} else {
@@ -380,7 +369,8 @@
     
 	    //////////////////// FUNCIONES DE CHECKS GENERALES - INI ////////////////////
 	    function init () {	 
-	      	initAB ();	      	
+	      	initAB ();
+	      	initC ();		      	
 	      	gestionarControlado(<%=checkControlado%>, true);
 	    } //init ()
 	    
@@ -503,13 +493,151 @@
 	     * Precio minimo de actuaciones
 	     */
 	    function initAB () {
-	      	initDiasSemana ();	      	      	   
-      		
-      		controlPagaGuardia();
-      		
-      		controlNoPagaGuardia();
-      		
-      		controlAcFg();
+	      	//Dias que se paga por guardia Y
+	      	//Dias que no se paga por guardia
+	      	initDiasSemana ();
+	      
+      		//Habilitando segun B solo
+	      	if (DefinirHitosFacturablesGuardiasForm.checkB1.checked) {
+	        	//Check de paga guardia por dia
+	        	habilitarCheck (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaPorDia);
+	        	//Precio por dia de guardia presencial
+	        	habilitarCuadroTexto (document.getElementById("hitoPrecio[1]"));
+	        
+	      	} else {
+		        //Check de paga guardia por dia
+	    	    inhabilitarCheck (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaPorDia);
+	        	//Precio por dia de guardia presencial
+		        inhabilitarCuadroTexto (document.getElementById("hitoPrecio[1]"));
+	      	}
+	      
+	      	if (DefinirHitosFacturablesGuardiasForm.checkB2.checked) {
+		        //Check de No Paga Guardia
+	    	    habilitarCheck (DefinirHitosFacturablesGuardiasForm.chGuardias);
+		        //Check de no paga guardia por dia
+		        habilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaPorDia);
+	        
+		    } else {
+		        //Check de No Paga Guardia
+	    	    inhabilitarCheck (DefinirHitosFacturablesGuardiasForm.chGuardias);
+	        	//Check de no paga guardia por dia
+       			inhabilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaPorDia);
+	      	}      
+      
+      		//Habilitando segun A y B
+      		if (DefinirHitosFacturablesGuardiasForm.radioA[0].checked) {
+        		if (DefinirHitosFacturablesGuardiasForm.checkB1.checked) {
+          			//Precio por guardia simple doblada por asistencias
+          			habilitarCuadroTexto (document.getElementById("hitoPrecio[2]"));
+          			//Maximo asistencias para doblar
+          			habilitarCuadroTexto (document.getElementById("hitoPrecio[45]"));
+          			
+        		} else //inhabilitando
+          			inhabilitarDependientesA0B1 ();
+        
+        		if (DefinirHitosFacturablesGuardiasForm.checkB2.checked) {
+          			//Check de Maximo por Asistencias
+          			habilitarCheck (DefinirHitosFacturablesGuardiasForm.chAsist);
+          			//Check de Minimo por Asistencias
+          			habilitarCheck (DefinirHitosFacturablesGuardiasForm.chMinAsist);
+          			//Precio de asistencias
+          			habilitarCuadroTexto (document.getElementById("hitoPrecio[5]"));
+          			//Boton de tipos para precio de asistencias
+          			if (DefinirHitosFacturablesGuardiasForm.chGuardias.checked)
+            			habilitarBotonLupa (document.getElementById("consultar_10"));
+          			else //inhabilitando
+            			inhabilitarBotonLupa (document.getElementById("consultar_10"));
+          
+          			//Precio maximo de asistencias Y
+          			//Boton de tipos para precio maximo de asistencias
+          			if (DefinirHitosFacturablesGuardiasForm.chAsist.checked) {
+            			habilitarCuadroTexto (document.getElementById("hitoPrecio[3]"));
+            			if (DefinirHitosFacturablesGuardiasForm.chGuardias.checked)
+              				habilitarBotonLupa (document.getElementById("consultar_11"));
+            			else //inhabilitando
+              			inhabilitarBotonLupa (document.getElementById("consultar_11"));
+            			
+          			} else { //inhabilitando
+            			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[3]"));
+            			inhabilitarBotonLupa (document.getElementById("consultar_11"));
+          			}
+          
+          			//Precio minimo de asistencias
+          			if (DefinirHitosFacturablesGuardiasForm.chMinAsist.checked)
+            			habilitarCuadroTexto (document.getElementById("hitoPrecio[10]"));
+          			else //inhabilitando
+            			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[10]"));
+          		
+        		} else //inhabilitando
+          			inhabilitarDependientesA0B2 ();
+        
+        		//inhabilitando
+        		inhabilitarDependientesA1B1 ();
+        		inhabilitarDependientesA1B2 ();
+        		inhabilitarDependientesA1C ();
+        		
+      		} else { //radioA[1]
+        		if (DefinirHitosFacturablesGuardiasForm.checkB1.checked) {
+          			//Precio por guardia simple doblada por actuaciones
+          			habilitarCuadroTexto (document.getElementById("hitoPrecio[4]"));
+          			//Maximo actuaciones para doblar
+          			habilitarCuadroTexto (document.getElementById("hitoPrecio[46]"));
+          			
+        		} else //inhabilitando
+          			inhabilitarDependientesA1B1 ();
+        
+        		if (DefinirHitosFacturablesGuardiasForm.checkB2.checked) {
+					//Check de Maximo por Actuaciones
+		          	habilitarCheck (DefinirHitosFacturablesGuardiasForm.chActuacion);
+		          	//Check de Minimo por Actuaciones
+		          	habilitarCheck (DefinirHitosFacturablesGuardiasForm.chMinActuacion);
+		          	//Precio de actuaciones
+		          	habilitarCuadroTexto (document.getElementById("hitoPrecio[7]"));
+		          	//Boton de tipos para precio de actuaciones
+		          	if (DefinirHitosFacturablesGuardiasForm.chGuardias.checked)
+		            	habilitarBotonLupa (document.getElementById("consultar_20"));
+		          	else //inhabilitando
+		            	inhabilitarBotonLupa (document.getElementById("consultar_20"));
+          
+		          	//Precio maximo de actuaciones Y
+		          	//Boton de tipos para precio maximo de actuaciones
+		          	if (DefinirHitosFacturablesGuardiasForm.chActuacion.checked) {
+            			habilitarCuadroTexto (document.getElementById("hitoPrecio[8]"));
+            			if (DefinirHitosFacturablesGuardiasForm.chGuardias.checked)
+              				habilitarBotonLupa (document.getElementById("consultar_21"));
+            			else //inhabilitando
+              				inhabilitarBotonLupa (document.getElementById("consultar_21"));
+            			
+          			} else { //inhabilitando
+            			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[8]"));
+            			inhabilitarBotonLupa (document.getElementById("consultar_21"));
+          			}
+          
+          			//Precio minimo de actuaciones
+          			if (DefinirHitosFacturablesGuardiasForm.chMinActuacion.checked)
+            			habilitarCuadroTexto (document.getElementById("hitoPrecio[19]"));
+          			else //inhabilitando
+            			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[19]"));
+          			
+        		} else //inhabilitando
+          			inhabilitarDependientesA1B2 ();
+        
+        		//Precio de actuaciones fuera de guardia Y
+        		//Boton de tipos para precio de actuaciones fuera de guardia
+        		if (DefinirHitosFacturablesGuardiasForm.checkC.checked) {
+          			habilitarCuadroTexto (document.getElementById("hitoPrecio[9]"));
+          			if (DefinirHitosFacturablesGuardiasForm.chNoGuardias.checked)
+            			habilitarBotonLupa (document.getElementById("consultar_30"));
+          			else //inhabilitando
+            			inhabilitarBotonLupa (document.getElementById("consultar_30"));
+          			
+        		} else //inhabilitando
+          			inhabilitarDependientesA1C ();
+        
+        		//inhabilitando
+        		inhabilitarDependientesA0B1 ();
+        		inhabilitarDependientesA0B2 ();
+    		}
     	} //initAB ()
     
 	    /** 
@@ -520,27 +648,14 @@
 	     */
 	    function initDiasSemana () {
 			if (DefinirHitosFacturablesGuardiasForm.checkB1.checked) {
-				
-				if (DefinirHitosFacturablesGuardiasForm.checkB2.checked) {
-					//habilitando Dias que se paga por guardia
-					habilitarCheck (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaLunes);
-					habilitarCheck (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaMartes);
-					habilitarCheck (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaMiercoles);
-					habilitarCheck (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaJueves);
-					habilitarCheck (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaViernes);
-					habilitarCheck (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaSabado);
-					habilitarCheck (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaDomingo);
-					
-				} else {
-					//activando solo todos los Dias que se paga por guardia
-			        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaLunes);
-			        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaMartes);
-			        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaMiercoles);
-			        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaJueves);
-			        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaViernes);
-			        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaSabado);
-			        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaDomingo);
-				}
+				//habilitando Dias que se paga por guardia
+				habilitarCheck (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaLunes);
+				habilitarCheck (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaMartes);
+				habilitarCheck (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaMiercoles);
+				habilitarCheck (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaJueves);
+				habilitarCheck (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaViernes);
+				habilitarCheck (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaSabado);
+				habilitarCheck (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaDomingo);
 	        
 			} else {
 				//deshabilitando Dias que se paga por guardia
@@ -554,27 +669,14 @@
 			}
       
       		if (DefinirHitosFacturablesGuardiasForm.checkB2.checked) {
-      			
-      			if (DefinirHitosFacturablesGuardiasForm.checkB1.checked) {
-	        		//habilitando Dias que no se paga por guardia
-			        habilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaLunes);
-			        habilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaMartes);
-			        habilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaMiercoles);
-			        habilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaJueves);
-			        habilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaViernes);
-			        habilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaSabado);
-			        habilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaDomingo);
-			        
-      			} else {
-      			//activando solo todos los Dias que no se paga por guardia
-      				inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaLunes);
-    		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaMartes);
-    		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaMiercoles);
-    		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaJueves);
-    		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaViernes);
-    		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaSabado);
-    		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaDomingo);
-      			}
+        		//habilitando Dias que no se paga por guardia
+		        habilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaLunes);
+		        habilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaMartes);
+		        habilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaMiercoles);
+		        habilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaJueves);
+		        habilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaViernes);
+		        habilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaSabado);
+		        habilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaDomingo);
 		        
       		} else {
 		        //deshabilitando Dias que no se paga por guardia
@@ -586,6 +688,28 @@
 		        inhabilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaSabado);
 		        inhabilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaDomingo);
       		}
+      
+      		//activando solo todos los Dias que se paga por guardia
+      		if (DefinirHitosFacturablesGuardiasForm.checkB1.checked && !DefinirHitosFacturablesGuardiasForm.checkB2.checked) {
+		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaLunes);
+		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaMartes);
+		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaMiercoles);
+		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaJueves);
+		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaViernes);
+		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaSabado);
+		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaDomingo);
+      		
+      		
+	   		//activando solo todos los Dias que no se paga por guardia
+      		} else if (!DefinirHitosFacturablesGuardiasForm.checkB1.checked && DefinirHitosFacturablesGuardiasForm.checkB2.checked) {
+		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaLunes);
+		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaMartes);
+		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaMiercoles);
+		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaJueves);
+		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaViernes);
+		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaSabado);
+		        inhabilitarCheckActivo (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaDomingo);
+	      	}
     	} //initDiasSemana ()
     
 	    function compruebaPagasGuardia () {
@@ -594,35 +718,93 @@
 	    	// de paga guardia o no paga guardia se deshabilitara
 	    	with (DefinirHitosFacturablesGuardiasForm) {
 	    	
-		    	var hayDiaPagaGuardiaChecked = chPagaGuardiaLunes.checked ||
-			    	chPagaGuardiaMartes.checked ||
-			    	chPagaGuardiaMiercoles.checked ||
-			    	chPagaGuardiaJueves.checked ||
-			    	chPagaGuardiaViernes.checked ||
-			    	chPagaGuardiaSabado.checked ||
-			    	chPagaGuardiaDomingo.checked;
+		    	hayDiaPagaGuardiaChecked = chPagaGuardiaLunes.checked ||
+		    	chPagaGuardiaMartes.checked ||
+		    	chPagaGuardiaMiercoles.checked ||
+		    	chPagaGuardiaJueves.checked ||
+		    	chPagaGuardiaViernes.checked ||
+		    	chPagaGuardiaSabado.checked ||
+		    	chPagaGuardiaDomingo.checked;
 		    	
 		    	//Si no hay ninguno seleccionado y el check esta seleccionado lo deseleccionamos
-		    	if (!hayDiaPagaGuardiaChecked && checkB1.checked){
+		    	if(!hayDiaPagaGuardiaChecked && checkB1.checked){
 		    		checkB1.checked = false;
 		    		cambiarCheckB1();
-		    	}
-		    	
-	    		var hayDiaNoPagaGuardiaChecked = chNoPagaGuardiaLunes.checked ||
+		    		
+		    	} else {		    	
+		    		//Si no es el caso puede ser el otro
+		    		hayDiaNoPagaGuardiaChecked = chNoPagaGuardiaLunes.checked ||
 			    	chNoPagaGuardiaMartes.checked ||
 			    	chNoPagaGuardiaMiercoles.checked ||
 			    	chNoPagaGuardiaJueves.checked ||
 			    	chNoPagaGuardiaViernes.checked ||
 			    	chNoPagaGuardiaSabado.checked ||
 			    	chNoPagaGuardiaDomingo.checked;
-	    		
-		    	//Si no hay ninguno seleccionado y el check esta seleccionado lo deseleccionamos			    	
-		    	if (!hayDiaNoPagaGuardiaChecked && checkB2.checked){
-		    		checkB2.checked = false;
-		    		cambiarCheckB2();
-		    	}			    	
+			    	//Si no hay ninguno seleccionado y el check esta seleccionado lo deseleccionamos
+			    	
+			    	if(!hayDiaNoPagaGuardiaChecked && checkB2.checked){
+			    		checkB2.checked = false;
+			    		cambiarCheckB2();
+			    	}		    	
+		    	}	    	 
 	    	}
+	    
 	    }
+    	
+    	function inhabilitarDependientesA0B1 () {
+      		//Precio por guardia simple doblada por asistencias
+      		inhabilitarCuadroTexto (document.getElementById("hitoPrecio[2]"));
+      		//Maximo asistencias para doblar
+      		inhabilitarCuadroTextoSinCero (document.getElementById("hitoPrecio[45]"));
+    	} //inhabilitarDependientesA0B1 ()
+    
+    	function inhabilitarDependientesA0B2 () {
+			//Check de Maximo por Asistencias
+			inhabilitarCheck (DefinirHitosFacturablesGuardiasForm.chAsist);
+			//Check de Minimo por Asistencias
+			inhabilitarCheck (DefinirHitosFacturablesGuardiasForm.chMinAsist);
+			//Precio de asistencias
+			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[5]"));
+			//Boton de tipos para precio de asistencias
+			inhabilitarBotonLupa (document.getElementById("consultar_10"));
+			//Precio maximo de asistencias Y
+			//Boton de tipos para precio maximo de asistencias
+			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[3]"));
+			inhabilitarBotonLupa (document.getElementById("consultar_11"));
+			//Precio minimo de asistencias
+			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[10]"));
+    	} //inhabilitarDependientesA0B2 ()
+    
+    	function inhabilitarDependientesA1B1 () {
+			//Precio por guardia simple doblada por actuaciones
+			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[4]"));
+			//Maximo actuaciones para doblar
+			inhabilitarCuadroTextoSinCero (document.getElementById("hitoPrecio[46]"));
+	    } //inhabilitarDependientesA1B1 ()
+    
+    	function inhabilitarDependientesA1B2 () {
+			//Check de Maximo por Actuaciones
+			inhabilitarCheck (DefinirHitosFacturablesGuardiasForm.chActuacion);
+			//Check de Minimo por Actuaciones
+			inhabilitarCheck (DefinirHitosFacturablesGuardiasForm.chMinActuacion);
+			//Precio de actuaciones
+			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[7]"));
+			//Boton de tipos para precio de actuaciones
+			inhabilitarBotonLupa (document.getElementById("consultar_20"));
+			//Precio maximo de actuaciones Y
+			//Boton de tipos para precio maximo de actuaciones
+			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[8]"));
+			inhabilitarBotonLupa (document.getElementById("consultar_21"));
+			//Precio minimo de actuaciones
+			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[19]"));
+    	} //inhabilitarDependientesA1B2 ()
+    
+    	function inhabilitarDependientesA1C () {
+			//Precio de actuaciones fuera de guardia
+			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[9]"));
+			//Boton de tipos para precio de actuaciones fuera de guardia
+			inhabilitarBotonLupa (document.getElementById("consultar_30"));
+    	} //inhabilitarDependientesA1C ()
     
 	    /**
 	     * Activa todos los checks de los dias de la semana.
@@ -646,6 +828,75 @@
 			habilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaSabado);
 			habilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaDomingo);
 	    } //activarDiasSemana ()
+    
+	    /** 
+	     * CONTROLES QUE SE COMPRUEBAN EN ESTA FUNCION:
+	     *
+	     * Check de Aplicar tipos de Fuera de Guardia
+	     * Check de Maximos de actuaciones fuera de guardia
+	     * 
+	     * Precio de actuaciones fuera de guardia
+	     * Boton de tipos para precio de actuaciones fuera de guardia
+	     * 
+	     * Precio maximo de actuaciones fuera de guardia
+	     * Boton de tipos para precio maximo de actuaciones fuera de guardia
+	     */
+	    function initC () {
+	      	//checkC activo
+	      	if (DefinirHitosFacturablesGuardiasForm.checkC.checked) {
+     			//Check de Aplicar tipos
+				jQuery("#chNoGuardias").removeAttr("disabled");
+	        	//Check de Maximos de actuaciones fuera de guardia
+	        	jQuery("#chActFG").removeAttr("disabled");	
+	        
+	        	//Si se paga por actuaciones
+		        if (DefinirHitosFacturablesGuardiasForm.radioA[1].checked) {
+		          	//Precio de actuaciones fuera de guardia
+		          	habilitarCuadroTexto (document.getElementById("hitoPrecio[9]"));
+		          	//Boton de tipos para precio de actuaciones fuera de guardia
+		          	if (DefinirHitosFacturablesGuardiasForm.chNoGuardias.checked)
+		            	habilitarBotonLupa (document.getElementById("consultar_30"));
+		          	else
+		            	inhabilitarBotonLupa (document.getElementById("consultar_30"));
+		          	
+		        } else {
+		          	//Precio de actuaciones fuera de guardia
+		          	inhabilitarCuadroTexto (document.getElementById("hitoPrecio[9]"));
+		          	//Boton de tipos para precio de actuaciones fuera de guardia
+		          	inhabilitarBotonLupa (document.getElementById("consultar_30"));
+		        }
+		        
+		        //Si hay maximo de actuaciones fuera de guardia
+		        if (DefinirHitosFacturablesGuardiasForm.chActFG.checked) {
+		          	//Precio maximo de actuaciones fuera de guardia
+		          	habilitarCuadroTexto (document.getElementById("hitoPrecio[6]"));
+		          	//Boton de tipos para precio maximo de actuaciones fuera de guardia
+		          	habilitarBotonLupa (document.getElementById("consultar_31"));
+		          	
+		        } else {
+		          	//Precio maximo de actuaciones fuera de guardia
+		          	inhabilitarCuadroTexto (document.getElementById("hitoPrecio[6]"));
+		          	//Boton de tipos para precio maximo de actuaciones fuera de guardia
+		          	inhabilitarBotonLupa (document.getElementById("consultar_31"));
+	        	}
+		        
+      		} else {//checkC inactivo
+				//Check de Aplicar tipos
+				DefinirHitosFacturablesGuardiasForm.chNoGuardias.checked=false;
+				jQuery("#chNoGuardias").attr("disabled","disabled");
+				//Check de Maximos de actuaciones fuera de guardia
+				DefinirHitosFacturablesGuardiasForm.chActFG.checked=false;
+				jQuery("#chActFG").attr("disabled","disabled");
+				//Precio actuaciones fuera de guardia
+				inhabilitarCuadroTexto (document.getElementById("hitoPrecio[9]"));
+				//Boton de tipos para precio de actuaciones fuera de guardia
+				inhabilitarBotonLupa (document.getElementById("consultar_30"));
+				//Precio maximo de actuaciones fuera de guardia
+				inhabilitarCuadroTexto (document.getElementById("hitoPrecio[6]"));
+				//Boton de tipos para preciom maximo de actuaciones fuera de guardia
+				inhabilitarBotonLupa (document.getElementById("consultar_31"));
+	      	}  
+	    } //initC ()
 	    //////////////////// FUNCIONES DE CHECKS GENERALES - FIN ////////////////////
     
     
@@ -805,33 +1056,26 @@
 	     * LLAMADO POR:
 	     * Check de Aplicar tipos
 	     */
-	    function aplicaTipos () {
-	    	// chGuardias=AplicaTipos; radioNPG[0]=Asistencias
-			if (DefinirHitosFacturablesGuardiasForm.chGuardias.checked && DefinirHitosFacturablesGuardiasForm.radioNPG[0].checked) {
-				
+	    function aplicaGuardias () {
+			if (DefinirHitosFacturablesGuardiasForm.chGuardias.checked && DefinirHitosFacturablesGuardiasForm.radioA[0].checked) {
 	        	//Boton de tipos para precio de asistencias
 	        	habilitarBotonLupa (document.getElementById("consultar_10"));
-	        	
 	        	//Boton de tipos para precio maximo de asistencias
 	        	if (DefinirHitosFacturablesGuardiasForm.chAsist.checked)
-	          		habilitarBotonLupa (document.getElementById("consultar_11"));
+	          	habilitarBotonLupa (document.getElementById("consultar_11"));
 	        	else
-	          		inhabilitarBotonLupa (document.getElementById("consultar_11"));
+	          	inhabilitarBotonLupa (document.getElementById("consultar_11"));
 	        	
 	      	} else {
 	        	//Boton de tipos para precio de asistencias
 	        	inhabilitarBotonLupa (document.getElementById("consultar_10"));
-	        	
 	        	//Boton de tipos para precio maximo de asistencias
 	        	inhabilitarBotonLupa (document.getElementById("consultar_11"));
 	      	}
 	      
-			// chGuardias=AplicaTipos; radioNPG[1]=Actuaciones
-	      	if (DefinirHitosFacturablesGuardiasForm.chGuardias.checked && DefinirHitosFacturablesGuardiasForm.radioNPG[1].checked) {
-	      		
+	      	if (DefinirHitosFacturablesGuardiasForm.chGuardias.checked && DefinirHitosFacturablesGuardiasForm.radioA[1].checked) {
 	        	//Boton de tipos para precio de actuaciones
 	        	habilitarBotonLupa (document.getElementById("consultar_20"));
-	        	
 	        	//Boton de tipos para precio maximo de actuaciones
 	        	if (DefinirHitosFacturablesGuardiasForm.chActuacion.checked)
 	          		habilitarBotonLupa (document.getElementById("consultar_21"));
@@ -841,11 +1085,10 @@
 	      	} else {
 	        	//Boton de tipos para precio de actuaciones
 	        	inhabilitarBotonLupa (document.getElementById("consultar_20"));
-	        	
 	        	//Boton de tipos para precio maximo de actuaciones
 	        	inhabilitarBotonLupa (document.getElementById("consultar_21"));
 	      	}
-    	} //aplicaTipos ()
+    	} //aplicaGuardias ()
     
 	    /**
 	     * CONTROLES QUE SE COMPRUEBAN EN ESTA FUNCION:
@@ -856,559 +1099,132 @@
 	     * LLAMADO POR:
 	     * Check de Aplicar tipos de Fuera de Guardia
 	     */
-	    function aplicaTiposFG () {
-	    	// chNoGuardias=AplicaTiposFG
+	    function aplicaFueraGuardias () {
 	      	//Boton de tipos para precio de actuaciones fuera de guardia
-	      	if (DefinirHitosFacturablesGuardiasForm.chNoGuardias.checked)
+	      	if (DefinirHitosFacturablesGuardiasForm.chNoGuardias.checked && DefinirHitosFacturablesGuardiasForm.radioA[1].checked)
 	        	habilitarBotonLupa (document.getElementById("consultar_30"));
 	      	else
 	        	inhabilitarBotonLupa (document.getElementById("consultar_30"));
 	      
-	     	// chNoGuardias=AplicaTiposFG; chActFG=MaxActFG
 	      	//Boton de tipos para precio maximo de actuaciones fuera de guardia
 	      	if (DefinirHitosFacturablesGuardiasForm.chNoGuardias.checked && DefinirHitosFacturablesGuardiasForm.chActFG.checked)
 	        	habilitarBotonLupa (document.getElementById("consultar_31"));
 	      	else
 	        	inhabilitarBotonLupa (document.getElementById("consultar_31"));
-    	} //aplicaTiposFG ()
-	    
-    	/** Datos:
-		 * - Check Aplicar Max-Min por Dia (chPagaGuardiaPorDia)
-    	 *
-    	 * - Div Importe por guardia simple por asistencias o actuaciones (DivGAs + DivGAc + DivGAsMin + DivGAcMin)
-	     * - Importe por guardia simple por asistencias o actuaciones (hitoPrecio[1])
-    	 *
-    	 * - Tr Importe por guardia doblada por asistencias (TrGDAs1 + TrGDAs2)
-	     * - Importe por guardia doblada por asistencias (hitoPrecio[2])
-	     * - Numero de asistencias para ser considerada guardia doblada (hitoPrecio[45])
-    	 *
-    	 * - Tr Importe por guardia doblada por actuaciones (TrGDAc1 + TrGDAc2)
-	     * - Importe por guardia doblada por actuaciones (hitoPrecio[4])
-	     * - Numero de actuaciones para ser considerada guardia doblada (hitoPrecio[46])
-	     */
-	    function controlPagaGuardia() {
-	    	// Si paga guardias (checkB1)
-	      	if (DefinirHitosFacturablesGuardiasForm.checkB1.checked) {
-	      		habilitarGAx();
-	      		if (DefinirHitosFacturablesGuardiasForm.radioPG[0].checked) { // Por Asistencia
-	      			habilitarGAs();
-	      			inhabilitarGAc();
-	      			habilitarGDAs();
-	      			inhabilitarGDAc();
-	      		} else { // Por Actuaciones
-	      			inhabilitarGAs();
-	      			habilitarGAc();
-	      			inhabilitarGDAs();
-	      			habilitarGDAc();
-	      		} 
-	      		
-	      	} else {	
-	      		inhabilitarGAx();
-	      		inhabilitarGAs();
-      			inhabilitarGAc();
-	      		inhabilitarGDAs();
-	      		inhabilitarGDAc();
-	      	}
-	    }
-	    
-		function habilitarGAx() {		
-   			jQuery("#TabGDAx").show();
-   			
-   			// Aplicar Max-Min por Dia 
-   			habilitarCheck (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaPorDia);
-    	}
-		
-		function inhabilitarGAx() {		
-   			jQuery("#TabGDAx").hide();
-   			
-   			// Aplicar Max-Min por Dia 
-   			inhabilitarCheck (DefinirHitosFacturablesGuardiasForm.chPagaGuardiaPorDia);
-    	}	
-		
-		function habilitarGAs() {		
-			// Importe por guardia simple As
- 			habilitarCuadroTexto (document.getElementById("hitoPrecio[1]"));
- 			jQuery("#DivGAs").show();
-   		
- 			// Importe por guardia inactiva As			
-			habilitarCuadroTexto (document.getElementById("hitoPrecio[53]"));
-			jQuery("#DivGAsMin").show();
-    	}
-		
-		function habilitarGAc() {		
-			// Importe por guardia simple Ac
- 			habilitarCuadroTexto (document.getElementById("hitoPrecio[44]"));
- 			jQuery("#DivGAc").show();
-   		
- 			// Importe por guardia inactiva Ac			
-			habilitarCuadroTexto (document.getElementById("hitoPrecio[54]"));
-			jQuery("#DivGAcMin").show();
-    	}
-		
-		function inhabilitarGAs() {		
-			// Importe por guardia simple As
- 			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[1]"));
- 			jQuery("#DivGAs").hide();
-   		
- 			// Importe por guardia inactiva As			
-			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[53]"));
-			jQuery("#DivGAsMin").hide();
-    	}
-		
-		function inhabilitarGAc() {		
-			// Importe por guardia simple Ac
- 			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[44]"));
- 			jQuery("#DivGAc").hide();
-   		
- 			// Importe por guardia inactiva Ac			
-			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[54]"));
-			jQuery("#DivGAcMin").hide();
-    	}		
-    	
-		function habilitarGDAs() {		
-			// Importe por guardia doblada por asistencias
-   			habilitarCuadroTexto (document.getElementById("hitoPrecio[2]"));
-			
-   			// Numero de asistencias para ser considerada guardia doblada
-   			habilitarCuadroTexto (document.getElementById("hitoPrecio[45]"));
-   		
-   			// Muestra tr TrGDAs1 y TrGDAs2
-   			jQuery("#TrGDAs1").show();
-   			jQuery("#TrGDAs2").show();
-    	}
-		
-		function inhabilitarGDAs() {		
-			// Importe por guardia doblada por asistencias
-   			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[2]"));
-			
-   			// Numero de asistencias para ser considerada guardia doblada
-   			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[45]"));
-   		
-   			// Oculta tr TrGDAs1 y TrGDAs2
-   			jQuery("#TrGDAs1").hide();
-   			jQuery("#TrGDAs2").hide();
-    	}
-		
-		function habilitarGDAc() {		
-			// Importe por guardia doblada por actuaciones
-   			habilitarCuadroTexto (document.getElementById("hitoPrecio[4]"));
-			
-   			// Numero de actuaciones para ser considerar guardia doblada
-   			habilitarCuadroTexto (document.getElementById("hitoPrecio[46]"));
-   		
-   			// Muestra tr TrGDAc1 y TrGDAc2
-   			jQuery("#TrGDAc1").show();
-   			jQuery("#TrGDAc2").show();
-    	}
-		
-		function inhabilitarGDAc() {		
-			// Importe por guardia doblada por actuaciones
-   			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[4]"));
-			
-   			// Numero de actuaciones para ser considerar guardia doblada
-   			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[46]"));
-   		
-   			// Oculta tr TrGDAc1 y TrGDAc2
-   			jQuery("#TrGDAc1").hide();
-   			jQuery("#TrGDAc2").hide();
-    	}
-		
-    	/** Datos:
-    	 * - Check Aplicar tipos (chGuardias)
-    	 *
-    	 * - Check Aplicar Max-Min por Dia  (chNoPagaGuardiaPorDia)
-    	 *     	     	 
-    	 * - Div de Imorte de Asistencias (DivAs)
-	     * - Importe de asistencias (hitoPrecio[5])
-	     * - Boton de tipos para importe de asistencias (consultar_10)
-		 *
-		 * - Div de Maximo por Asistencias (DivAsMax)
-    	 * - Check de Maximo por Asistencias (chAsist)		
-	     * - Importe maximo de asistencias (hitoPrecio[3])
-	     * - Boton de tipos para importe maximo de asistencias (consultar_11)
-		 *
-		 * - Div de Minimo por Asistencias (DivAsMin)
-    	 * - Check de Minimo por Asistencias (chMinAsist)		
-	     * - Importe minimo de asistencias (hitoPrecio[10])
-    	 *
-    	 * - Div de Importe de actuaciones (DivAc)
-	     * - Importe de actuaciones (hitoPrecio[7])
-	     * - Boton de tipos para importe de actuaciones (consultar_20)
+    	} //aplicaFueraGuardias ()
+    
+	    /**
+	     * CONTROLES QUE SE COMPRUEBAN EN ESTA FUNCION:
 	     *
-	     * - Div de Maximo por actuaciones (DivAcMax)
-	     * - Check de Maximo por actuaciones (chActuacion)
-	     * - Importe maximo de actuaciones (hitoPrecio[8])
-	     * - Boton de tipos para importe maximo de actuaciones (consultar_21)
-	     *
-	     * - Div de Minimo por actuaciones (DivAcMin)  
-    	 * - Check de Minimo por actuaciones (chMinActuacion)	    
-	     * - Importe minimo de actuaciones (hitoPrecio[19])
-	     */		
-		function controlNoPagaGuardia() {
-			
-			if (DefinirHitosFacturablesGuardiasForm.checkB2.checked) {
-				// Check Aplicar tipos  
-	   			habilitarCheck (DefinirHitosFacturablesGuardiasForm.chGuardias);
-				// Check Aplicar Max-Min por Dia 
-	   			habilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaPorDia);
-	   			// Radio por Asistencias o Actuaciones  
-	   			habilitarCheck (DefinirHitosFacturablesGuardiasForm.radioNPG);
-	   			
-			} else {
-				// Check Aplicar tipos  
-	   			inhabilitarCheck (DefinirHitosFacturablesGuardiasForm.chGuardias);
-				// Check Aplicar Max-Min por Dia 
-	   			inhabilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoPagaGuardiaPorDia);
-	   			// Radio por Asistencias o Actuaciones  
-	   			inhabilitarCheck (DefinirHitosFacturablesGuardiasForm.radioNPG);
-			}		
-			
-			controlAs();
-			
-			controlAc();
-		}
-    	
-    	/** Datos:
-   		 * - Div de Imorte de Asistencias (DivAs)
-	     * - Importe de asistencias (hitoPrecio[5])
-	     * - Boton de tipos para importe de asistencias (consultar_10)
-		 *
-		 * - Div de Maximo por Asistencias (DivAsMax)
-    	 * - Check de Maximo por Asistencias (chAsist)		
-	     * - Importe maximo de asistencias (hitoPrecio[3])
-	     * - Boton de tipos para importe maximo de asistencias (consultar_11)
-		 *
-		 * - Div de Minimo por Asistencias (DivAsMin)
-    	 * - Check de Minimo por Asistencias (chMinAsist)		
-	     * - Importe minimo de asistencias (hitoPrecio[10])
+	     * Precio maximo de actuaciones fuera de guardia
+	     * Boton de tipos para precio maximo de actuaciones fuera de guardia
+	     * 
+	     * LLAMADO POR:
+	     * Check de maximo de actuaciones fuera de guardia
 	     */
-	    function controlAs() {
-    		// Si NO paga guardias (checkB2) y por asistencias (radioNPG[0])
-	      	if (DefinirHitosFacturablesGuardiasForm.checkB2.checked && DefinirHitosFacturablesGuardiasForm.radioNPG[0].checked) {
-	      		habilitarAs();
-      			
-	      		controlAsMax();
-      
-	      		controlAsMin();
-	      		
-	      	} else {	      
-	      		inhabilitarAs();
-	      		
-	      		inhabilitarAsMax();
-	      		
-	      		inhabilitarAsMin();
-	      	}
-	    } 
-    	
-    	function habilitarAs() {
-    		// Check de Maximo por Asistencias
-  			habilitarCheck (DefinirHitosFacturablesGuardiasForm.chAsist);
-  			jQuery("#DivAsMax").show();
-  			
-      		// Check de Minimo por Asistencias
-  			habilitarCheck (DefinirHitosFacturablesGuardiasForm.chMinAsist);
-  			jQuery("#DivAsMin").show();
-    		
-    		// Importe de asistencias
-  			habilitarCuadroTexto (document.getElementById("hitoPrecio[5]"));
-  		
- 			// Boton de tipos para importe de asistencias
-  			if (DefinirHitosFacturablesGuardiasForm.chGuardias.checked)
-    			habilitarBotonLupa (document.getElementById("consultar_10"));
-  			else
-    			inhabilitarBotonLupa (document.getElementById("consultar_10"));
- 			
-  			jQuery("#DivAs").show();
-    	}
-    	
-    	function inhabilitarAs() {    		
-    		// Check de Maximo por Asistencias
-			inhabilitarCheck (DefinirHitosFacturablesGuardiasForm.chAsist);
-			jQuery("#DivAsMax").hide();
-    		
-			// Check de Minimo por Asistencias
-			inhabilitarCheck (DefinirHitosFacturablesGuardiasForm.chMinAsist);
-			jQuery("#DivAsMin").hide();
-    		
-			// Importe de asistencias
-			jQuery("#DivAs").hide();
-			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[5]"));
-			
-			// Boton de tipos para importe de asistencias
-			inhabilitarBotonLupa (document.getElementById("consultar_10"));
-    	}
-    	
-	    /** Datos:
-	     * - Importe minimo de asistencias (hitoPrecio[10])
-	     */
-	    function controlAsMin() {
-	      	//Precio minimo de asistencias
-	      	if (DefinirHitosFacturablesGuardiasForm.chMinAsist.checked) {
-	      		habilitarAsMin();
-	      	} else {
-	      		inhabilitarAsMin();	        
-	      	}
-	    }
-    	
-	    function habilitarAsMin() {
-	    	// Importe minimo de asistencias
-	    	habilitarCuadroTexto (document.getElementById("hitoPrecio[10]"));
-	    }
-	    
-	    function inhabilitarAsMin() {
-	    	// Importe minimo de asistencias
-	        inhabilitarCuadroTexto (document.getElementById("hitoPrecio[10]"));	
-	    }
-    	
-	    /** Datos:
-	     * - Importe maximo de asistencias (hitoPrecio[3])
-	     * - Boton de tipos para importe maximo de asistencias (consultar_11)
-	     */
-	    function controlAsMax() {
-	      	if (DefinirHitosFacturablesGuardiasForm.chAsist.checked) {
-	      		habilitarAsMax();	        	
-	      	} else {	      		
-	      		inhabilitarAsMax();
-	      	}
-	    } 
-	    
-   	    function habilitarAsMax() {
-   	  		// Importe maximo de asistencias
-        	habilitarCuadroTexto (document.getElementById("hitoPrecio[3]"));	 
-        	
-        	// Boton de tipos para importe maximo de asistencias
-        	if (DefinirHitosFacturablesGuardiasForm.chGuardias.checked)
-          		habilitarBotonLupa (document.getElementById("consultar_11"));
-        	else
-          		inhabilitarBotonLupa (document.getElementById("consultar_11"));
-	    } 	   
-	    
-		function inhabilitarAsMax() {
-	   		// Importe maximo de asistencias        	
-        	inhabilitarCuadroTexto (document.getElementById("hitoPrecio[3]"));
-        	
-        	// Boton de tipos para importe maximo de asistencias
-        	inhabilitarBotonLupa (document.getElementById("consultar_11"));
-	    }
-		
-		/** Datos:
-		 * - Div de Importe de actuaciones (DivAc)
-	     * - Importe de actuaciones (hitoPrecio[7])
-	     * - Boton de tipos para importe de actuaciones (consultar_20)
-	     *
-	     * - Div de Maximo por actuaciones (DivAcMax)
-	     * - Check de Maximo por actuaciones (chActuacion)
-	     * - Importe maximo de actuaciones (hitoPrecio[8])
-	     * - Boton de tipos para importe maximo de actuaciones (consultar_21)
-	     *
-	     * - Div de Minimo por actuaciones (DivAcMin)  
-    	 * - Check de Minimo por actuaciones (chMinActuacion)	    
-	     * - Importe minimo de actuaciones (hitoPrecio[19])
-	     */
-	    function controlAc() {
-	    	// Si NO paga guardias (checkB2) y por actuaciones (radioNPG[1])
-	      	if (DefinirHitosFacturablesGuardiasForm.checkB2.checked && DefinirHitosFacturablesGuardiasForm.radioNPG[1].checked) {
-	      		habilitarAc();
-      			
-	      		controlAcMax();
-      
-	      		controlAcMin();
-	      		
-	      	} else {
-	      		inhabilitarAc();
-	      		
-	      		inhabilitarAcMax();
-	      		
-	      		inhabilitarAcMin();
-	      	}
-	    } 
-    	
-    	function habilitarAc() {
-    		// Check de Maximo por actuaciones
-  			habilitarCheck (DefinirHitosFacturablesGuardiasForm.chActuacion);
-  			jQuery("#DivAcMax").show();
-  			
-      		// Check de Minimo por actuaciones
-  			habilitarCheck (DefinirHitosFacturablesGuardiasForm.chMinActuacion);
-  			jQuery("#DivAcMin").show();
-    		
-    		// Importe de actuaciones
-  			habilitarCuadroTexto (document.getElementById("hitoPrecio[7]"));
-  		
- 			// Boton de tipos para importe de actuaciones
-  			if (DefinirHitosFacturablesGuardiasForm.chGuardias.checked)
-    			habilitarBotonLupa (document.getElementById("consultar_20"));
-  			else
-    			inhabilitarBotonLupa (document.getElementById("consultar_20"));
- 			
-  			jQuery("#DivAc").show();
-    	}
-    	
-    	function inhabilitarAc() {  		    		
-    		// Check de Maximo por actuaciones
-			inhabilitarCheck (DefinirHitosFacturablesGuardiasForm.chActuacion);
-			jQuery("#DivAcMax").hide();
-    		
-			// Check de Minimo por actuaciones
-			inhabilitarCheck (DefinirHitosFacturablesGuardiasForm.chMinActuacion);
-			jQuery("#DivAcMin").hide();
-    		
-			// Importe de actuaciones	
-			jQuery("#DivAc").hide();
-			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[7]"));
-			
-			// Boton de tipos para importe de actuaciones
-			inhabilitarBotonLupa (document.getElementById("consultar_20"));
-    	}
-    	
-	    /** Datos:
-	     * - Importe minimo de actuaciones (hitoPrecio[19])
-	     */
-	    function controlAcMin() {
-	      	//Precio minimo de actuaciones
-	      	if (DefinirHitosFacturablesGuardiasForm.chMinActuacion.checked) {
-	      		habilitarAcMin();
-	      	} else {
-	      		inhabilitarAcMin();	        
-	      	}
-	    }
-    	
-	    function habilitarAcMin() {
-	    	// Importe minimo de actuaciones
-	    	habilitarCuadroTexto (document.getElementById("hitoPrecio[19]"));
-	    }
-	    
-	    function inhabilitarAcMin() {
-	    	// Importe minimo de actuaciones
-	        inhabilitarCuadroTexto (document.getElementById("hitoPrecio[19]"));	
-	    }
-    	
-	    /** Datos:
-	     * - Importe maximo de actuaciones (hitoPrecio[8])
-	     * - Boton de tipos para importe maximo de actuaciones (consultar_21)
-	     */
-	    function controlAcMax() {
-	      	if (DefinirHitosFacturablesGuardiasForm.chActuacion.checked) {
-	      		habilitarAcMax();	        	
-	      	} else {	      		
-	      		inhabilitarAcMax();
-	      	}
-	    } 
-	    
-   	    function habilitarAcMax() {
-   	  		// Importe maximo de actuaciones
-        	habilitarCuadroTexto (document.getElementById("hitoPrecio[8]"));	 
-        	
-        	// Boton de tipos para importe maximo de actuaciones
-        	if (DefinirHitosFacturablesGuardiasForm.chGuardias.checked)
-          		habilitarBotonLupa (document.getElementById("consultar_21"));
-        	else
-          		inhabilitarBotonLupa (document.getElementById("consultar_21"));
-	    } 	   
-	    
-		function inhabilitarAcMax() {
-	   		// Importe maximo de actuaciones        	
-        	inhabilitarCuadroTexto (document.getElementById("hitoPrecio[8]"));
-        	
-        	// Boton de tipos para importe maximo de actuaciones
-        	inhabilitarBotonLupa (document.getElementById("consultar_21"));
-	    }
-		
-		/** Datos:
-		 * - Check Aplica tipo de actuaciones fuera de guardia (checkC)			
-		 * 			
-		 * - Div de Importe de actuaciones fuera de guardia (DivAcFg) 			
-	     * - Importe de actuaciones fuera de guardia (hitoPrecio[9])
-	     * - Boton de tipos para importe de actuaciones fuera de guardia (consultar_30)
-	     *
-	     * - Div de Maximo por actuaciones fuera de guardia (DivAcFgMax)
-	     * - Check de Maximo por actuaciones fuera de guardia (chActFG)
-	     * - Importe maximo de actuaciones fuera de guardia (hitoPrecio[6])
-	     * - Boton de tipos para importe maximo de actuaciones fuera de guardia (consultar_31)
-	     */
-	    function controlAcFg() {
-      		habilitarCheck (DefinirHitosFacturablesGuardiasForm.checkC);
-			
-	    	// Si fuera de guardia (checkC)
-	      	if (DefinirHitosFacturablesGuardiasForm.checkC.checked) {
-	      		habilitarAcFg();
-      			
-	      		controlAcFgMax();      
-	      		
-	      	} else {
-	      		inhabilitarAcFg();
-	      		
-	      		inhabilitarAcFgMax();
-	      	}
-	    } 
-    	
-    	function habilitarAcFg() {
-    		// Check Aplicar tipos  
-   			habilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoGuardias);
-    		
-    		// Check de Maximo por actuaciones fuera de guardia
-  			habilitarCheck (DefinirHitosFacturablesGuardiasForm.chActFG);
-  			jQuery("#DivAcFgMax").show();
-    		
-    		// Importe de actuaciones fuera de guardia
-  			habilitarCuadroTexto (document.getElementById("hitoPrecio[9]"));
-  		
- 			// Boton de tipos para importe de actuaciones fuera de guardia
- 			if (DefinirHitosFacturablesGuardiasForm.chNoGuardias.checked)
-    			habilitarBotonLupa (document.getElementById("consultar_30"));
-  			else
-    			inhabilitarBotonLupa (document.getElementById("consultar_30"));
- 			
-  			jQuery("#DivAcFg").show();
-    	}
-    	
-    	function inhabilitarAcFg() {
-    		// Check Aplicar tipos  
-   			inhabilitarCheck (DefinirHitosFacturablesGuardiasForm.chNoGuardias);
-    		
-    		// Check de Maximo por actuaciones fuera de guardia
-			inhabilitarCheck (DefinirHitosFacturablesGuardiasForm.chActFG);
-			jQuery("#DivAcFgMax").hide();
-    		
-			// Importe de actuaciones fuera de guardia
-			jQuery("#DivAcFg").hide();
-			inhabilitarCuadroTexto (document.getElementById("hitoPrecio[9]"));
-			
-			// Boton de tipos para importe de actuaciones fuera de guardia
-			inhabilitarBotonLupa (document.getElementById("consultar_30"));
-    	}
-    	
-	    /** Datos:
-	     * - Importe maximo de actuaciones fuera de guardia (hitoPrecio[6])
-	     * - Boton de tipos para importe maximo de actuaciones fuera de guardia (consultar_31)
-	     */
-	    function controlAcFgMax() {
+	    function habilitarFG () {
 	      	if (DefinirHitosFacturablesGuardiasForm.chActFG.checked) {
-	      		habilitarAcFgMax();	        	
-	      	} else {	      		
-	      		inhabilitarAcFgMax();
+	        	//Precio maximo de actuaciones fuera de guardia
+	        	habilitarCuadroTexto (document.getElementById("hitoPrecio[6]"));
+	        	//Boton de tipos para precio maximo de actuaciones fuera de guardia
+	        	if (DefinirHitosFacturablesGuardiasForm.chNoGuardias.checked)
+	          		habilitarBotonLupa (document.getElementById("consultar_31"));
+	        	else
+	          		inhabilitarBotonLupa (document.getElementById("consultar_31"));
+	        	
+	      	} else {
+	        	//Precio maximo de actuaciones fuera de guardia
+	        	inhabilitarCuadroTexto (document.getElementById("hitoPrecio[6]"));
+	        	//Boton de tipos para precio maximo de actuaciones fuera de guardia
+	        	inhabilitarBotonLupa (document.getElementById("consultar_31"));
 	      	}
-	    } 
-	    
-   	    function habilitarAcFgMax() {
-   	  		// Importe maximo de actuaciones fuera de guardia
-        	habilitarCuadroTexto (document.getElementById("hitoPrecio[6]"));	 
-        	
-        	// Boton de tipos para importe maximo de actuaciones fuera de guardia
-        	if (DefinirHitosFacturablesGuardiasForm.chNoGuardias.checked)
-          		habilitarBotonLupa (document.getElementById("consultar_31"));
-        	else
-          		inhabilitarBotonLupa (document.getElementById("consultar_31"));
-	    } 	   
-	    
-		function inhabilitarAcFgMax() {
-	   		// Importe maximo de actuaciones fuera de guardia        	
-        	inhabilitarCuadroTexto (document.getElementById("hitoPrecio[6]"));
-        	
-        	// Boton de tipos para importe maximo de actuaciones fuera de guardia
-        	inhabilitarBotonLupa (document.getElementById("consultar_31"));
-	    }		
-	    
+	    } //habilitarFG ()
+    
+	    /**
+	     * CONTROLES QUE SE COMPRUEBAN EN ESTA FUNCION:
+	     *
+	     * Precio maximo de asistencias
+	     * Boton de tipos para precio maximo de asistencias
+	     * 
+	     * LLAMADO POR:
+	     * Check de maximo de asistencias
+	     */
+	    function habilitarAsist () {
+	      	if (DefinirHitosFacturablesGuardiasForm.chAsist.checked) {
+	        	//Precio maximo de asistencias
+	        	habilitarCuadroTexto (document.getElementById("hitoPrecio[3]"));
+	        	//Boton de tipos para precio maximo de asistencias
+	        	if (DefinirHitosFacturablesGuardiasForm.chGuardias.checked)
+	          		habilitarBotonLupa (document.getElementById("consultar_11"));
+	        	else
+	          		inhabilitarBotonLupa (document.getElementById("consultar_11"));
+	        	
+	      	} else {
+	        	//Precio maximo de asistencias
+	        	inhabilitarCuadroTexto (document.getElementById("hitoPrecio[3]"));
+	        	//Boton de tipos para precio maximo de asistencias
+	        	inhabilitarBotonLupa (document.getElementById("consultar_11"));
+	      	}
+	    } //habilitarAsist ()
+    
+	    /**
+	     * CONTROLES QUE SE COMPRUEBAN EN ESTA FUNCION:
+	     *
+	     * Precio minimo de asistencias
+	     * 
+	     * LLAMADO POR:
+	     * Check de minimo de asistencias
+	     */
+	    function habilitarMinAsist () {
+	      	//Precio minimo de asistencias
+	      	if (DefinirHitosFacturablesGuardiasForm.chMinAsist.checked)
+	        	habilitarCuadroTexto (document.getElementById("hitoPrecio[10]"));
+	      	else
+		        inhabilitarCuadroTexto (document.getElementById("hitoPrecio[10]"));
+	    } //habilitarMinAsist ()
+    
+	    /**
+	     * CONTROLES QUE SE COMPRUEBAN EN ESTA FUNCION:
+	     *
+	     * Precio maximo de actuaciones
+	     * Boton de tipos para precio maximo de actuaciones
+	     * 
+	     * LLAMADO POR:
+	     * Check de maximo de actuaciones
+	     */
+	    function habilitarAct () {
+	      	if (DefinirHitosFacturablesGuardiasForm.chActuacion.checked) {
+	        	//Precio maximo de actuaciones
+	        	habilitarCuadroTexto (document.getElementById("hitoPrecio[8]"));
+	        	//Boton de tipos para precio maximo de actuaciones
+	        	if (DefinirHitosFacturablesGuardiasForm.chGuardias.checked)
+	          		habilitarBotonLupa (document.getElementById("consultar_21"));
+	        	else
+	          		inhabilitarBotonLupa (document.getElementById("consultar_21"));
+	        	
+	      	} else {
+	        	//Precio maximo de actuaciones
+	        	inhabilitarCuadroTexto (document.getElementById("hitoPrecio[8]"));
+	        	//Boton de tipos para precio maximo de actuaciones
+	        	inhabilitarBotonLupa (document.getElementById("consultar_21"));
+	      	}
+	    } //habilitarAct ()
+    
+	    /**
+	     * CONTROLES QUE SE COMPRUEBAN EN ESTA FUNCION:
+	     *
+	     * Precio minimo de actuaciones
+	     * 
+	     * LLAMADO POR:
+	     * Check de minimo de actuaciones
+	     */
+	    function habilitarMinAct () {
+	      	//Precio minimo de actuaciones
+	      	if (DefinirHitosFacturablesGuardiasForm.chMinActuacion.checked)
+	        	habilitarCuadroTexto (document.getElementById("hitoPrecio[19]"));
+	      	else
+	        	inhabilitarCuadroTexto (document.getElementById("hitoPrecio[19]"));
+	    } //habilitarMinAct ()
 	    //////////////////// FUNCIONES DE CHECKS CONCRETOS - INI ////////////////////    
   </script>
   <!-------------------- FUNCIONES SCRIPT - FIN -------------------->  
@@ -1474,118 +1290,40 @@
 					}
 %>				
 				</html:select>
-			</div> 
+			</div>
       
       		<table width="100%" border="1" cellspacing="0" cellpadding="0">
         		<!-- Titulos de las columnas -->
         		<tr>
-        			<td colspan="2">	
-            			<table border="0" cellspacing="0" cellpadding="0">
-              				<tr>        			
-          						<td class="labelText" style="text-align:left; vertical-align:top" nowrap>
-          							<siga:Idioma key="gratuita.confGuardia.literal.guardia"/>
-								</td>
-							</tr>
-							
-							<tr <%=estiloPaqueteFacturacionSJCS%>>
-			          			<td class="labelText" style="text-align:left; vertical-align:top" nowrap
-									 title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (usr, "gratuita.confGuardia.asuntosAntiguosGuardia.titulo.info").replaceAll("\\\\n", ""))%>'>
-			          				<siga:Idioma key="gratuita.confGuardia.asuntosAntiguosGuardia.titulo.literal"/>
-								</td>
-
-        						<td class="labelText" style="text-align:left; vertical-align:top" nowrap
-        							title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (usr, "gratuita.confGuardia.asuntosAntiguosGuardia.actual.info").replaceAll("\\\\n", ""))%>'>
-    								<html:radio name="DefinirHitosFacturablesGuardiasForm" property="radioConfig" styleId="radioConfig0" value="0"/>
-    								<label for="radioConfig0"><siga:Idioma key="gratuita.confGuardia.asuntosAntiguosGuardia.actual.literal"/></label>
-    							</td>
-								        		
-			        			<td class="labelText" style="text-align:left; vertical-align:top" nowrap
-			        				title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (usr, "gratuita.confGuardia.asuntosAntiguosGuardia.antigua.info").replaceAll("\\\\n", ""))%>'>
-			        				<html:radio name="DefinirHitosFacturablesGuardiasForm" property="radioConfig" styleId="radioConfig1" value="1"/>
-			    					<label for="radioConfig1"><siga:Idioma key="gratuita.confGuardia.asuntosAntiguosGuardia.antigua.literal"/></label>
-			    				</td>
-    						</tr>
-    					</table>
-    				</td> 
+          			<td colspan="2" rowspan="4">&nbsp;</td>
           			
-          			<td rowspan="3">	
+          			<td colspan="2" class="labelText" style="text-align:center" nowrap>
+          				<siga:Idioma key="gratuita.confGuardia.literal.guardia"/>
+					</td>          			
+          			
+          			<td rowspan="4">	
             			<table width="100%" border="0" cellspacing="0" cellpadding="0">
               				<tr>
               					<td class="labelText" style="text-align:left; vertical-align:top" nowrap>
-                					<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="checkC" property="checkC" onclick="controlAcFg();"/>
+                					<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="checkC" property="checkC" onclick="initC();"/>
                 					<label for="checkC"><siga:Idioma key="gratuita.confGuardia.literal.fueraguardia"/></label>
               					</td>
               				</tr>
-              				
-			        		<tr <%=estiloPaqueteFacturacionSJCS%>>
-			          			<td class="labelText" style="text-align:left; vertical-align:top" nowrap
-									title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (usr, "gratuita.confGuardia.asuntosAntiguosFueraGuardia.titulo.info").replaceAll("\\\\n", ""))%>'>
-			          				<siga:Idioma key="gratuita.confGuardia.asuntosAntiguosFueraGuardia.titulo.literal"/>
-								</td>       
-							</tr>
-							
-			        		<tr <%=estiloPaqueteFacturacionSJCS%>>			
-			        			<td class="labelText" style="text-align:left; vertical-align:top" nowrap
-			        				 title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (usr, "gratuita.confGuardia.asuntosAntiguosFueraGuardia.facturacionActual.info").replaceAll("\\\\n", ""))%>'>
-			    					<html:radio name="DefinirHitosFacturablesGuardiasForm" property="radioConfigFg" styleId="radioConfigFg0" value="0"/>
-			    					<label for="radioConfigFg0"><siga:Idioma key="gratuita.confGuardia.asuntosAntiguosFueraGuardia.facturacionActual.literal"/></label>
-			    				</td>
-			    			</tr>                				
-							
-			        		<tr <%=estiloPaqueteFacturacionSJCS%>>			    				
-			    				<td class="labelText" style="text-align:left; vertical-align:top" nowrap
-			    					 title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (usr, "gratuita.confGuardia.asuntosAntiguosFueraGuardia.facturacionModerna.info").replaceAll("\\\\n", ""))%>'>
-			    					<html:radio name="DefinirHitosFacturablesGuardiasForm" property="radioConfigFg" styleId="radioConfigFg1" value="1"/>
-			    					<label for="radioConfigFg1"><siga:Idioma key="gratuita.confGuardia.asuntosAntiguosFueraGuardia.facturacionModerna.literal"/></label>
-			    				</td>
-			    			</tr>   							
-			        		
-			        		<tr <%=estiloPaqueteFacturacionSJCS%>>
-			        			<td class="labelText" style="text-align:left; vertical-align:top" nowrap
-			        				 title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (usr, "gratuita.confGuardia.asuntosAntiguosFueraGuardia.facturacionAntigua.info").replaceAll("\\\\n", ""))%>'>
-			    					<html:radio name="DefinirHitosFacturablesGuardiasForm" property="radioConfigFg" styleId="radioConfigFg2" value="2"/>
-			    					<label for="radioConfigFg2"><siga:Idioma key="gratuita.confGuardia.asuntosAntiguosFueraGuardia.facturacionAntigua.literal"/></label>
-			    				</td>
-			    			</tr>   		
-              				
               				<tr>
               					<td class="labelText" style="text-align:left; vertical-align:top" nowrap>                      				
-                					<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chNoGuardias" property="chNoGuardias" onclick="aplicaTiposFG()"/>
+                					<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chNoGuardias" property="chNoGuardias" onclick="aplicaFueraGuardias()"/>
                 					<label for="chNoGuardias"><siga:Idioma key="gratuita.confGuardia.literal.aplicartipos"/></label>
               					</td>
-              				</tr>              				              				
+              				</tr>
             			</table>
           			</td>
         		</tr>
         		
-				<tr>	
-					<td>	
-						<table width="100%" border="0" cellspacing="0" cellpadding="0">
-    						<tr>
-			         			<td class="labelText" style="text-align:left; vertical-align:top" nowrap> 
-     								<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="checkB1" property="checkB1" value="0" onclick="cambiarCheckB1();" />
-     								<label for="checkB1"><siga:Idioma key="gratuita.confGuardia.literal.pagaguardia"/></label>
-   								</td>
-   							</tr>
-   							
-		                	<tr>
-			                	<td class="labelText" style="text-align:left; vertical-align:top" nowrap>
-			                  		<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chPagaGuardiaPorDia" property="chPagaGuardiaPorDia"/>
-			                  		<label for="chPagaGuardiaPorDia"><siga:Idioma key="fcs.criteriosFacturacion.guardia.porDia"/></label>
-			    				</td>
-			    			</tr>
-			    			
-			        		<tr>
-			        			<td colspan="2">
-			    					<html:radio name="DefinirHitosFacturablesGuardiasForm" property="radioPG" styleId="radioPGAs" value="0" onclick="initAB();"/>          							
-			    					<label for="radioPGAs"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.porAsistencias"/></label>
-			    					&nbsp;
-			    					<html:radio name="DefinirHitosFacturablesGuardiasForm" property="radioPG" styleId="radioPGAc" value="1" onclick="initAB();"/>            						
-			      					<label for="radioPGAc"><siga:Idioma key="fcs.criteriosFacturacion.actuacion.porActuaciones"/></label>
-			    				</td>
-			    			</tr> 			    			
-			    		</table>
-			    	</td>   							   						
+				<tr>		
+					<td class="labelText" style="text-align:left; vertical-align:top" nowrap> 
+     					<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="checkB1" property="checkB1" value="0" onclick="cambiarCheckB1 ();" />
+     					<label for="checkB1"><siga:Idioma key="gratuita.confGuardia.literal.pagaguardia"/></label>
+   					</td>
    					   
    					<td>
 						<table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -1595,33 +1333,15 @@
 		                 			<label for="checkB2"><siga:Idioma key="gratuita.confGuardia.literal.nopagaguardia"/></label>
 		                 		</td>
 		                 	</tr>
-		                 	
 		                 	<tr>
-               					<td class="labelText" style="text-align:left; vertical-align:top" nowrap>                      						
-          							<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chGuardias" property="chGuardias" onclick="aplicaTipos()"/>
-              						<label for="chGuardias"><siga:Idioma key="gratuita.confGuardia.literal.aplicartipos"/></label>
-               					</td>
+		                 		<td class="labelText" style="text-align:left; vertical-align:top" nowrap>                      						
+		               				<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chGuardias" property="chGuardias" onclick="aplicaGuardias()"/>
+		                			<label for="chGuardias"><siga:Idioma key="gratuita.confGuardia.literal.aplicartipos"/></label>
+		                		</td>
 		                	</tr>
-		                	
-		                	<tr>
-			                	<td class="labelText" style="text-align:left; vertical-align:top" nowrap>
-			      					<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chNoPagaGuardiaPorDia" property="chNoPagaGuardiaPorDia"/>
-			      					<label for="chNoPagaGuardiaPorDia"><siga:Idioma key="fcs.criteriosFacturacion.guardia.porDia"/></label>
-			    				</td>
-			    			</tr>
-			    			
-			        		<tr>
-			        			<td class="labelText" style="text-align:left; vertical-align:top" nowrap>
-			    					<html:radio name="DefinirHitosFacturablesGuardiasForm" property="radioNPG" styleId="radioNPGAs" value="0" onclick="initAB();"/>          							
-			    					<label for="radioNPGAs"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.porAsistencias"/></label>
-			    					&nbsp;
-			    					<html:radio name="DefinirHitosFacturablesGuardiasForm" property="radioNPG" styleId="radioNPGAc" value="1" onclick="initAB();"/>            						
-			      					<label for="radioNPGAc"><siga:Idioma key="fcs.criteriosFacturacion.actuacion.porActuaciones"/></label>
-			    				</td>
-			    			</tr> 					    			
 		                </table>
                     </td>
-				</tr>  				
+				</tr>
                    
                 <tr>
                 	<td>
@@ -1699,322 +1419,312 @@
               				</tr>        							               		
 	                	</table>
 	                </td>                    
-                </tr>
+                </tr>                    
                 
-				<!-- Linea Minimo -->
-	            <tr>
-	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
-	                	<div id="DivGAsMin">
-	                		<table border="0" cellspacing="0" cellpadding="0" <%=estiloGuardiasInactivas%>>
-								<tr>
-									<td class="labelText" style="text-align:left; vertical-align:middle">
-										<siga:Idioma key="gratuita.confGuardia.asistencia.importeInactiva"/>
-									</td>
-									<td>
-			                			<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[53]"
-				                       		property="hitoPrecio[53]" maxlength="10" size="10"
-					                       	onkeypress="filterCharsNumberEs(this,false,true);"
-					                       	onblur="filterCharsNaN(this);" styleClass="boxNumber" />&nbsp;&euro;
-			                       	</td>
-		                       	</tr>
-	                       	</table>
-                       </div>
-                       
-						<div id="DivGAcMin">
-	                		<table border="0" cellspacing="0" cellpadding="0" <%=estiloGuardiasInactivas%>>
-								<tr>
-									<td class="labelText" style="text-align:left; vertical-align:middle">
-										<siga:Idioma key="gratuita.confGuardia.actuacion.importeInactiva"/>
-									</td>
-									<td>
-			                			<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[54]"
-				                       		property="hitoPrecio[54]" maxlength="10" size="10"
-					                       	onkeypress="filterCharsNumberEs(this,false,true);"
-					                       	onblur="filterCharsNaN(this);" styleClass="boxNumber" />&nbsp;&euro;
-			                       	</td>
-		                       	</tr>
-	                       	</table>
-                       </div>&nbsp;&nbsp;
+                <tr>
+                	<td class="labelText" style="text-align:left; vertical-align:top" nowrap>
+                  		<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chPagaGuardiaPorDia" property="chPagaGuardiaPorDia"/>
+                  		<label for="chPagaGuardiaPorDia"><siga:Idioma key="fcs.criteriosFacturacion.guardia.porDia"/></label>
+                	</td>          
+
+					<td class="labelText" style="text-align:left; vertical-align:top" nowrap>
+      					<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chNoPagaGuardiaPorDia" property="chNoPagaGuardiaPorDia"/>
+      					<label for="chNoPagaGuardiaPorDia"><siga:Idioma key="fcs.criteriosFacturacion.guardia.porDia"/></label>
+    				</td>                    		
+          		</tr>
+       
+        		<!-- Primera linea -->
+        		<tr>
+          			<td width="80px">
+            			&nbsp;
+          			</td>
+          			<td class="labelText" style="text-align:left; vertical-align:middle" width="100%">
+            			<siga:Idioma key="fcs.criteriosFacturacion.asistencia.diaGuardia"/>
+          			</td>		
+          			<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+            			<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[1]"
+	                       property="hitoPrecio[1]" maxlength="10" size="10"
+	                       onkeypress="filterCharsNumberEs(this,false,true);"
+	                       onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;
+          			</td>
+          			
+          			<td class="labelTextValue" style="text-align:center; vertical-align:middle">
+            			<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
+          			</td>
+          			<td class="labelTextValue" style="text-align:center; vertical-align:middle">
+            			<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
+          			</td>
+        		</tr>
+        
+	        	<!-- Segunda linea -->
+	        	<tr>
+	          		<td class="labelText" style="text-align:left" rowspan="5">
+	            		<html:radio name="DefinirHitosFacturablesGuardiasForm" property="radioA" styleId="radioA" value="0" onclick="initAB();"/>
+	            		<br>
+	            		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.porAsistencias"/>
+	          		</td>
+	          		
+	                <td class="labelText" style="text-align:left; vertical-align:middle">
+	                  <siga:Idioma key="fcs.criteriosFacturacion.asistencia.guardiaSimpleDoblada"/>
 	                </td>
 	                
 	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
-	                	<div id="DivAsMin">
-							<table border="0" cellspacing="0" cellpadding="0">
-								<tr>
-									<td class="labelText" style="text-align:left; vertical-align:middle">
-										<siga:Idioma key="gratuita.confGuardia.asistencia.importeMinimo"/>
-									</td>
-									<td>		                	
-				                		<html:checkbox name="DefinirHitosFacturablesGuardiasForm" property="chMinAsist" styleId="chMinAsist" onclick="controlAsMin();"/>
-				                		&nbsp;
-										<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[10]"
-											property="hitoPrecio[10]" maxlength="10" size="10"
-											onkeypress="filterCharsNumberEs(this,false,true);"
-											onblur="filterCharsNaN(this);" styleClass="boxNumber" />&nbsp;&euro;
-				                    </td>
-		                       	</tr>
-	                       	</table>											
-						</div>
-						
-						<div id="DivAcMin">
-							<table border="0" cellspacing="0" cellpadding="0">
-								<tr>
-									<td class="labelText" style="text-align:left; vertical-align:middle">
-										<siga:Idioma key="gratuita.confGuardia.actuacion.importeMinimo"/>
-									</td>
-									<td>							
-										<html:checkbox name="DefinirHitosFacturablesGuardiasForm" property="chMinActuacion" styleId="chMinActuacion" onclick="controlAcMin();"/>
-										&nbsp;
-										<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[19]"
-			                             property="hitoPrecio[19]" maxlength="10" size="10"
-			                             onkeypress="filterCharsNumberEs(this,false,true);"
-			                             onblur="filterCharsNaN(this);" styleClass="boxNumber" />&nbsp;&euro;
-				                    </td>
-		                       	</tr>
-	                       	</table>			                             
-						</div>&nbsp;
+	                  	<html:text name="DefinirHitosFacturablesGuardiasForm"
+							property="hitoPrecio[2]" styleId="hitoPrecio[2]" maxlength="10" size="10"
+							onkeypress="filterCharsNumberEs(this,false,true);"
+							onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;
 	                </td>
 	                
-	                <td>
-	                  	&nbsp;
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
+	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
 	                </td>
-				</tr>	
+	                
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
+	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
+	           		</td>
+				</tr>
               
-				<!-- Linea Importe -->
+				<!-- Tercera linea -->
 	            <tr>
-	                <td class="labelTextValue" style="text-align:left; vertical-align:middle" width="33%">
-	                	<div id="DivGAs">
-	                		<table border="0" cellspacing="0" cellpadding="0">
-								<tr>
-									<td class="labelText" style="text-align:left; vertical-align:middle">
-										<siga:Idioma key="gratuita.confGuardia.asistencia.importeGuardia"/>
-									</td>
-									<td>
-			                			<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[1]"
-				                       		property="hitoPrecio[1]" maxlength="10" size="10"
-					                       	onkeypress="filterCharsNumberEs(this,false,true);"
-					                       	onblur="filterCharsNaN(this);" styleClass="boxNumber" />&nbsp;&euro;
-			                       	</td>
-		                       	</tr>
-	                       	</table>
-                       </div>
-                       
-                       <div id="DivGAc">
-	                		<table border="0" cellspacing="0" cellpadding="0">
-								<tr>
-									<td class="labelText" style="text-align:left; vertical-align:middle">
-										<siga:Idioma key="gratuita.confGuardia.actuacion.importeGuardia"/>
-									</td>
-									<td>
-			                			<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[44]"
-				                       		property="hitoPrecio[44]" maxlength="10" size="10"
-					                       	onkeypress="filterCharsNumberEs(this,false,true);"
-					                       	onblur="filterCharsNaN(this);" styleClass="boxNumber" />&nbsp;&euro;
-			                       	</td>
-		                       	</tr>
-	                       	</table>
-                       </div>&nbsp;
+					<td class="labelText" style="text-align:left; vertical-align:middle">
+	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.asistencias"/>
+	                </td>
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
+	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
+	                </td>
+	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
+	                  	<html:text name="DefinirHitosFacturablesGuardiasForm"
+		                    property="hitoPrecio[5]" styleId="hitoPrecio[5]" maxlength="10" size="10"
+		                    onkeypress="filterCharsNumberEs(this,false,true);"
+		                    onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;&nbsp;
+	                  <img src="/SIGA/html/imagenes/bconsultar_disable.gif"
+	                       name="consultar_1" id="consultar_10" alt="Consultar"
+	                       onclick="consultarAsist(0)" onMouseOut="" onMouseOver=""
+	                       border="0" style="cursor:default; vertical-align:middle"
+	                       disabled>
 	                </td>
 	                
-	                <td class="labelTextValue" style="text-align:left; vertical-align:middle" width="33%">
-                		<div id="DivAs">
-	                		<table border="0" cellspacing="0" cellpadding="0">
-								<tr>
-									<td class="labelText" style="text-align:left; vertical-align:middle">
-										<siga:Idioma key="gratuita.confGuardia.asistencia.importe"/>
-									</td>
-									<td>
-					                	<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[5]"
-											property="hitoPrecio[5]" maxlength="10" size="10"
-						                    onkeypress="filterCharsNumberEs(this,false,true);"
-						                    onblur="filterCharsNaN(this);" styleClass="boxNumber" />&nbsp;&euro;&nbsp;
-										<img src="/SIGA/html/imagenes/bconsultar_disable.gif"
-					                       	name="consultar_1" id="consultar_10" alt="Consultar"
-					                       	onclick="consultarAsist(0)" onMouseOut="" onMouseOver=""
-					                       	border="0" style="cursor:default; vertical-align:middle"
-					                       	disabled>
-			                       	</td>
-		                       	</tr>
-	                       	</table>					                       	
-                       	</div>
-                       	
-						<div id="DivAc">
-	                		<table border="0" cellspacing="0" cellpadding="0">
-								<tr>
-									<td class="labelText" style="text-align:left; vertical-align:middle">
-										<siga:Idioma key="gratuita.confGuardia.actuacion.importe"/>
-									</td>
-									<td>
-			                  			<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[7]"
-			                             	property="hitoPrecio[7]" maxlength="10" size="10"
-			                             	onkeypress="filterCharsNumberEs(this,false,true);"
-			                             	onblur="filterCharsNaN(this);" styleClass="boxNumber" />&nbsp;&euro;&nbsp;
-			                  			<img src="/SIGA/html/imagenes/bconsultar_disable.gif"
-			                       			name="consultar_1" id="consultar_20" alt="Consultar"
-			                       			onclick="consultarAct(0)" onMouseOut="" onMouseOver=""
-			                       			border="0" style="cursor:default; vertical-align:middle"
-			                       			disabled>
-			                       	</td>
-		                       	</tr>
-	                       	</table>			                       			
-                     	</div>&nbsp;
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
+	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
 	                </td>
-	                
-	                <td class="labelTextValue" style="text-align:left; vertical-align:middle" width="33%">
-	                	<div id="DivAcFg">
-	                		<table border="0" cellspacing="0" cellpadding="0">
-								<tr>
-									<td class="labelText" style="text-align:left; vertical-align:middle">
-										<siga:Idioma key="gratuita.confGuardia.actuacionFueraGuardia.importe"/>
-									</td>
-									<td>
-					                  	<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[9]"
-				                             property="hitoPrecio[9]" maxlength="10" size="10"
-				                             onkeypress="filterCharsNumberEs(this,false,true);"
-				                             onblur="filterCharsNaN(this);" styleClass="boxNumber" />&nbsp;&euro;&nbsp;
-				                  		<img src="/SIGA/html/imagenes/bconsultar_disable.gif"
-				                       		name="consultar_1" id="consultar_30" alt="Consultar"
-				                       		onclick="consultarAct(0)" onMouseOut="" onMouseOver=""
-				                       		border="0" style="cursor:default; vertical-align:middle"
-				                       		disabled>
-			                       	</td>
-		                       	</tr>
-	                       	</table>				                       		
-                     	</div>&nbsp;
-	                </td>
-	       		</tr>	       	       	
+	       		</tr>
               
-	            <!-- Linea Maximo -->
+	            <!-- Cuarta linea -->
 	            <tr>
-	            	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
-	            		<table border="0" cellspacing="0" cellpadding="0" id="TabGDAx">
-							<tr id="TrGDAs1">
-								<td class="labelText" style="text-align:left; vertical-align:middle">
-									<siga:Idioma key="gratuita.confGuardia.asistencia.doblada.numero"/>
-								</td>
-								<td>
-				                  	>&nbsp;
-				                  	<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[45]"
-					                  property="hitoPrecio[45]" maxlength="3" size="3"
-					                  onkeypress="filterCharsNumberEs(this,false,true);"
-					                  onblur="filterCharsNaN(this);"
-					                  styleClass="boxNumber"/>
-				                </td>
-			               </tr>
-				               
-							<tr id="TrGDAs2">
-								<td class="labelText" style="text-align:left; vertical-align:middle">
-									<siga:Idioma key="gratuita.confGuardia.asistencia.doblada.importe"/>
-								</td>
-								<td>				               
-		               				<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[2]"
-										property="hitoPrecio[2]" maxlength="10" size="10"
-										onkeypress="filterCharsNumberEs(this,false,true);"
-										onblur="filterCharsNaN(this);" styleClass="boxNumber" />&nbsp;&euro;
-		                       	</td>
-	                       	</tr>																		
-						
-							<tr id="TrGDAc1">
-								<td class="labelText" style="text-align:left; vertical-align:middle">
-									<siga:Idioma key="gratuita.confGuardia.actuacion.doblada.numero"/>
-								</td>
-								<td>
-			                  		>&nbsp;
-			                  		<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[46]"
-			                             property="hitoPrecio[46]" maxlength="3" size="3"
-			                             onkeypress="filterCharsNumberEs(this,false,true);"
-			                             onblur="filterCharsNaN(this);"
-			                             styleClass="boxNumber"/>
-				                </td>
-			               </tr>
-			               
-							<tr id="TrGDAc2">
-								<td class="labelText" style="text-align:left; vertical-align:middle">
-									<siga:Idioma key="gratuita.confGuardia.actuacion.doblada.importe"/>
-								</td>
-								<td>				                             
-									<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[4]"
-			                             property="hitoPrecio[4]" maxlength="10" size="10"
-			                             onkeypress="filterCharsNumberEs(this,false,true);"
-			                             onblur="filterCharsNaN(this);" styleClass="boxNumber" />&nbsp;&euro;
-			                    </td>
-	                       	</tr>	                       	
-                        </table>&nbsp;
+	            	<td class="labelText" style="text-align:left; vertical-align:middle">
+	                	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.guardiaDobladaPorAsist"/>
+	                </td>
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
+	                  >
+	                  <html:text name="DefinirHitosFacturablesGuardiasForm"
+		                  property="hitoPrecio[45]" maxlength="3" size="3"
+		                  onkeypress="filterCharsNumberEs(this,false,true);"
+		                  onblur="filterCharsNaN(this);"
+		                  styleClass="box"/>
 	                </td>
 	                
-	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
-	                	<div id="DivAsMax">
-							<table border="0" cellspacing="0" cellpadding="0">
-								<tr>
-									<td class="labelText" style="text-align:left; vertical-align:middle">
-										<siga:Idioma key="gratuita.confGuardia.asistencia.importeMaximo"/>
-									</td>
-									<td>	                	
-				                		<html:checkbox name="DefinirHitosFacturablesGuardiasForm" property="chAsist" styleId="chAsist" onclick="controlAsMax();"/>
-				                		&nbsp;
-					                  	<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[3]"
-						                   	property="hitoPrecio[3]" maxlength="10" size="10"
-						                   	onkeypress="filterCharsNumberEs(this,false,true);"
-											onblur="filterCharsNaN(this);" styleClass="boxNumber" />&nbsp;&euro;&nbsp;
-					                  	<img src="/SIGA/html/imagenes/bconsultar_disable.gif"
-						                  	name="consultar_1" id="consultar_11" alt="Consultar"
-						                  	onclick="consultarAsist(1)" onMouseOut="" onMouseOver=""
-						                  	border="0" style="cursor:default; vertical-align:middle"
-						                  	disabled>
-				                    </td>
-		                       	</tr>
-	                       	</table>						                  	
-	                  	</div>
-	                  	
-	                  	<div id="DivAcMax">
-							<table border="0" cellspacing="0" cellpadding="0">
-								<tr>
-									<td class="labelText" style="text-align:left; vertical-align:middle">
-										<siga:Idioma key="gratuita.confGuardia.actuacion.importeMaximo"/>
-									</td>
-									<td>	                  	
-				                  		<html:checkbox name="DefinirHitosFacturablesGuardiasForm" property="chActuacion" styleId="chActuacion" onclick="controlAcMax();"/>
-				                  		&nbsp;
-						                <html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[8]"
-				                             property="hitoPrecio[8]" maxlength="10" size="10"
-				                             onkeypress="filterCharsNumberEs(this,false,true);"
-				                             onblur="filterCharsNaN(this);" styleClass="boxNumber" />&nbsp;&euro;&nbsp;
-				                  		<img src="/SIGA/html/imagenes/bconsultar_disable.gif"
-				                       		name="consultar_1" id="consultar_21" alt="Consultar"
-				                       		onclick="consultarAct(1)" onMouseOut="" onMouseOver=""
-				                       		border="0" style="cursor:default; vertical-align:middle"
-				                       		disabled>
-				                    </td>
-		                       	</tr>
-	                       	</table>				                       		
-	                  	</div>&nbsp;
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
+	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
 	                </td>
-	                
-	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
-	                	<div id="DivAcFgMax">
-							<table border="0" cellspacing="0" cellpadding="0">
-								<tr>
-									<td class="labelText" style="text-align:left; vertical-align:middle">
-										<siga:Idioma key="gratuita.confGuardia.actuacionFueraGuardia.importeMaximo"/>
-									</td>
-									<td>	                	
-				                		<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chActFG" property="chActFG" onclick="controlAcFgMax();"/>
-				                		&nbsp;
-										<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[6]"
-				                       		property="hitoPrecio[6]" maxlength="10" size="10"
-				                       		onkeypress="filterCharsNumberEs(this,false,true);"
-				                       		onblur="filterCharsNaN(this);" styleClass="boxNumber" />&nbsp;&euro;&nbsp;
-				            			<img src="/SIGA/html/imagenes/bconsultar_disable.gif"
-				                 			name="consultar_1" id="consultar_31" alt="Consultar"
-				                 			onclick="consultarAct(1)" onMouseOut="" onMouseOver=""
-				                 			border="0" style="cursor:default; vertical-align:middle"
-				                 			disabled>
-				                    </td>
-		                       	</tr>
-	                       	</table>				                 			
-               			</div>&nbsp;
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
+	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
 	                </td>
-				</tr>             
+				</tr>
+              
+	            <!-- Quinta linea -->
+	            <tr>
+	            	<td class="labelText" style="text-align:left; vertical-align:middle">
+	                	<label for="chAsist"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.maxAsistencia"/></label>
+	                  	<html:checkbox name="DefinirHitosFacturablesGuardiasForm" property="chAsist" styleId="chAsist" onclick="habilitarAsist();"/>
+	                </td>
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
+	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
+	                </td>
+	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
+	                  	<html:text name="DefinirHitosFacturablesGuardiasForm"
+		                   	property="hitoPrecio[3]" maxlength="10" size="10"
+		                   	onkeypress="filterCharsNumberEs(this,false,true);"
+							onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;&nbsp;
+	                  	<img src="/SIGA/html/imagenes/bconsultar_disable.gif"
+		                  	name="consultar_1" id="consultar_11" alt="Consultar"
+		                  	onclick="consultarAsist(1)" onMouseOut="" onMouseOver=""
+		                  	border="0" style="cursor:default; vertical-align:middle"
+		                  	disabled>
+	                </td>
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
+	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
+	                </td>
+				</tr>
+              
+	            <!-- Sexta linea -->
+	            <tr>
+	            	<td class="labelText" style="text-align:left; vertical-align:middle">
+	                	<label for="chMinAsist"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.minAsist"/></label>
+	                  	<html:checkbox name="DefinirHitosFacturablesGuardiasForm" property="chMinAsist" styleId="chMinAsist" onclick="habilitarMinAsist();"/>
+	                </td>
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
+	                  <siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
+	                </td>
+	                <td class="labelTextValue" style="text-align:left; vertical-align:middle">
+						<html:text name="DefinirHitosFacturablesGuardiasForm"
+							property="hitoPrecio[10]" maxlength="10" size="10"
+							onkeypress="filterCharsNumberEs(this,false,true);"
+							onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;
+	                </td>
+	                <td class="labelTextValue" style="text-align:center; vertical-align:middle">
+	                  	<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
+	                </td>
+				</tr>
+        
+        		<!-- Septima linea -->
+        		<tr>
+          			<td class="labelText" style="text-align:left" rowspan="5">
+            			<html:radio name="DefinirHitosFacturablesGuardiasForm" property="radioA" value="1" onclick="initAB();"/>
+            			<br>
+            			<siga:Idioma key="fcs.criteriosFacturacion.actuacion.porActuaciones"/>
+          			</td>
+                	<td class="labelText" style="text-align:left; vertical-align:middle">
+                  		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.guardiaSimpleDoblada"/>
+                	</td>
+                	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+                  		<html:text name="DefinirHitosFacturablesGuardiasForm"
+                             property="hitoPrecio[4]" maxlength="10" size="10"
+                             onkeypress="filterCharsNumberEs(this,false,true);"
+                             onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;
+                	</td>
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
+                  		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
+                	</td>
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
+                  		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
+               		</td>
+              	</tr>
+              
+              	<!-- Octava linea -->
+              	<tr>
+                	<td class="labelText" style="text-align:left; vertical-align:middle">
+                  		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.actuaciones"/>
+                	</td>
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
+                  		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
+                	</td>
+                	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+                  		<html:text name="DefinirHitosFacturablesGuardiasForm"
+                             property="hitoPrecio[7]" maxlength="10" size="10"
+                             onkeypress="filterCharsNumberEs(this,false,true);"
+                             onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;&nbsp;
+                  		<img src="/SIGA/html/imagenes/bconsultar_disable.gif"
+                       		name="consultar_1" id="consultar_20" alt="Consultar"
+                       		onclick="consultarAct(0)" onMouseOut="" onMouseOver=""
+                       		border="0" style="cursor:default; vertical-align:middle"
+                       		disabled>
+                	</td>
+                	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+                  		<html:text name="DefinirHitosFacturablesGuardiasForm"
+                             property="hitoPrecio[9]" maxlength="10" size="10"
+                             onkeypress="filterCharsNumberEs(this,false,true);"
+                             onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;&nbsp;
+                  		<img src="/SIGA/html/imagenes/bconsultar_disable.gif"
+                       		name="consultar_1" id="consultar_30" alt="Consultar"
+                       		onclick="consultarAct(0)" onMouseOut="" onMouseOver=""
+                       		border="0" style="cursor:default; vertical-align:middle"
+                       		disabled>
+                	</td>
+              	</tr>
+              
+              	<!-- Novena linea -->
+              	<tr>
+                	<td class="labelText" style="text-align:left; vertical-align:middle">
+                  		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.guardiaDobladaPorAct"/>
+                	</td>
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
+                  		>
+                  		<html:text name="DefinirHitosFacturablesGuardiasForm"
+                             property="hitoPrecio[46]" maxlength="3" size="3"
+                             onkeypress="filterCharsNumberEs(this,false,true);"
+                             onblur="filterCharsNaN(this);"
+                             styleClass="box"/>
+                	</td>
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
+                  		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
+                	</td>
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
+                  		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
+                	</td>
+              	</tr>
+              
+              	<!-- Decima linea -->
+              	<tr>
+                	<td class="labelText" style="text-align:left; vertical-align:middle">
+                  		<label for="chActuacion"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.maxActuacion"/></label>
+                    	<html:checkbox name="DefinirHitosFacturablesGuardiasForm" property="chActuacion" styleId="chActuacion" onclick="habilitarAct();"/>
+                	</td>
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
+                  		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
+                	</td>
+                	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+                  		<html:text name="DefinirHitosFacturablesGuardiasForm"
+                             property="hitoPrecio[8]" maxlength="10" size="10"
+                             onkeypress="filterCharsNumberEs(this,false,true);"
+                             onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;&nbsp;
+                  		<img src="/SIGA/html/imagenes/bconsultar_disable.gif"
+                       		name="consultar_1" id="consultar_21" alt="Consultar"
+                       		onclick="consultarAct(1)" onMouseOut="" onMouseOver=""
+                       		border="0" style="cursor:default; vertical-align:middle"
+                       		disabled>
+                	</td>
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
+                  		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
+                	</td>
+              	</tr>
+              
+              	<!-- Undecima linea -->
+              	<tr>
+                	<td class="labelText" style="text-align:left; vertical-align:middle">
+                  		<label for="chMinActuacion"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.minAct"/></label>
+                  		<html:checkbox name="DefinirHitosFacturablesGuardiasForm" property="chMinActuacion" styleId="chMinActuacion" onclick="habilitarMinAct();"/>
+                	</td>
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
+                  		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
+                	</td>
+                	<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+                  		<html:text name="DefinirHitosFacturablesGuardiasForm"
+                             property="hitoPrecio[19]" maxlength="10" size="10"
+                             onkeypress="filterCharsNumberEs(this,false,true);"
+                             onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;
+                	</td>
+                	<td class="labelTextValue" style="text-align:center; vertical-align:middle">
+                  		<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
+                	</td>
+              	</tr>
+        
+        		<!-- Duodecima linea -->
+        		<tr>
+          			<td>
+            			&nbsp;
+          			</td>
+          			<td class="labelText" style="text-align:left; vertical-align:middle">
+            			<label for="chActFG"><siga:Idioma key="fcs.criteriosFacturacion.asistencia.maxActuacionFueraGuardia"/></label>
+            			<html:checkbox name="DefinirHitosFacturablesGuardiasForm" styleId="chActFG" property="chActFG" onclick="habilitarFG();"/>
+          			</td>
+          			<td class="labelTextValue" style="text-align:center; vertical-align:middle">
+            			<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
+          			</td>
+          			<td class="labelTextValue" style="text-align:center; vertical-align:middle">
+            			<siga:Idioma key="fcs.criteriosFacturacion.asistencia.noAplica"/>
+          			</td>
+          			<td class="labelTextValue" style="text-align:left; vertical-align:middle">
+            			<html:text name="DefinirHitosFacturablesGuardiasForm"
+                       		property="hitoPrecio[6]" maxlength="10" size="10"
+                       		onkeypress="filterCharsNumberEs(this,false,true);"
+                       		onblur="filterCharsNaN(this);" styleClass="box" />&nbsp;&euro;&nbsp;
+            			<img src="/SIGA/html/imagenes/bconsultar_disable.gif"
+                 			name="consultar_1" id="consultar_31" alt="Consultar"
+                 			onclick="consultarAct(1)" onMouseOut="" onMouseOver=""
+                 			border="0" style="cursor:default; vertical-align:middle"
+                 			disabled>
+          			</td>
+        		</tr>
       		</table>
    		</div>  
    		
@@ -2116,7 +1826,7 @@
 					</td>
 					
 					<td class="labelTextValue">	
-						<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[13]"
+						<html:text name="DefinirHitosFacturablesGuardiasForm"
 							property="hitoPrecio[13]" maxlength="10" size="10"
 							onkeypress="filterCharsNumberEs(this,false,true);"
 							onblur="filterCharsNaN(this);" styleClass="boxNumber" />&nbsp;&euro;
@@ -2129,7 +1839,7 @@
 					</td>
 					
 					<td class="labelTextValue">	
-            			<html:text name="DefinirHitosFacturablesGuardiasForm" styleId="hitoPrecio[12]"
+            			<html:text name="DefinirHitosFacturablesGuardiasForm"
                        		property="hitoPrecio[12]" maxlength="10" size="10"
                        		onkeypress="filterCharsNumberEs(this,false,true);"
                        		onblur="filterCharsNaN(this);" styleClass="boxNumber" />&nbsp;&euro;

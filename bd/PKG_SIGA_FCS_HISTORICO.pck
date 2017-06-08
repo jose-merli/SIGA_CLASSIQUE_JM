@@ -51,7 +51,8 @@ CREATE OR REPLACE package PKG_SIGA_FCS_HISTORICO is
     - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER    
     - P_IDFACTURACION - IN - Identificador de la facturacion - NUMBER
     - P_IDHITO - IN - Identificador del hito - NUMBER
-    - P_IDGRUPOFACTURACION - Identificador del grupo de facturacion - NUMBER    
+    - P_IDGRUPOFACTURACION - Identificador del grupo de facturacion - NUMBER
+    - P_PRECIOHITO_GUAINACTIVAS - IN - Precio usado por el hito de guardias inactivas - NUMBER    
     - P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)
         En caso de error devuelve el codigo de error Oracle correspondiente.
     - P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400)
@@ -59,12 +60,12 @@ CREATE OR REPLACE package PKG_SIGA_FCS_HISTORICO is
 
     Versiones (Fecha - Autor - Datos):
     - 1.0 - 02/03/2016 - Jorge Paez Trivino - Adaptacion a los colegios catalanes (R1602_0089)
-    - 2.0 - 01/01/2017 - Jorge Paez Trivino - SIGA_126 - Facturacion Hitos Valencianos
   ****************************************************************************************************************/      
     PROCEDURE PROC_FCS_HISTO_HITOFACT_GUA(
         P_IDINSTITUCION IN NUMBER,
         P_IDFACTURACION IN NUMBER,
         P_IDGRUPOFACTURACION IN NUMBER,
+        P_PRECIOHITO_GUAINACTIVAS IN NUMBER,
         P_CODRETORNO OUT VARCHAR2,
         P_DATOSERROR OUT VARCHAR2);
                                             
@@ -82,7 +83,8 @@ CREATE OR REPLACE package body PKG_SIGA_FCS_HISTORICO is
         P_CODRETORNO    OUT VARCHAR2,
         P_DATOSERROR    OUT VARCHAR2) IS
 
-    BEGIN 
+    BEGIN
+
         INSERT INTO FCS_HISTORICO_HITOFACT
         SELECT 
             P_IDFACTURACION, 
@@ -126,70 +128,65 @@ CREATE OR REPLACE package body PKG_SIGA_FCS_HISTORICO is
         P_IDINSTITUCION IN NUMBER,
         P_IDFACTURACION IN NUMBER,
         P_CODRETORNO    OUT VARCHAR2,
-        P_DATOSERROR    OUT VARCHAR2
-    ) IS
+        P_DATOSERROR    OUT VARCHAR2) IS
 
-    BEGIN
-        P_DATOSERROR := 'PROCEDURE PROC_FCS_HISTORICOS_GUARDIAS: Realiza insercion en FCS_HISTORICO_TIPOASISTCOLEGIO';
-        INSERT INTO FCS_HISTORICO_TIPOASISTCOLEGIO (
-                IDINSTITUCION, IDTIPOASISTENCIACOLEGIO, IDFACTURACION, 
-                DESCRIPCION, FECHACREACION, FECHAMODIFICACION, 
-                USUMODIFICACION, IMPORTE, IMPORTEMAXIMO) 
-            SELECT P_IDINSTITUCION, -- IDINSTITUCION 
-                IDTIPOASISTENCIACOLEGIO, -- IDTIPOASISTENCIACOLEGIO
-                P_IDFACTURACION, -- IDFACTURACION
-                DESCRIPCION, -- DESCRIPCION 
-                SYSDATE, -- FECHACREACION 
-                FECHAMODIFICACION, -- FECHAMODIFICACION
-                USUMODIFICACION, -- USUMODIFICACION 
-                IMPORTE, -- IMPORTE 
-                IMPORTEMAXIMO -- IMPORTEMAXIMO
-            FROM SCS_TIPOASISTENCIACOLEGIO
-            WHERE IDINSTITUCION = P_IDINSTITUCION;
+        BEGIN
+            INSERT INTO FCS_HISTORICO_TIPOASISTCOLEGIO
+                SELECT P_IDINSTITUCION, 
+                    IDTIPOASISTENCIACOLEGIO, 
+                    P_IDFACTURACION,
+                    DESCRIPCION, 
+                    SYSDATE, 
+                    FECHAMODIFICACION, 
+                    USUMODIFICACION, 
+                    IMPORTE, 
+                    IMPORTEMAXIMO
+                FROM SCS_TIPOASISTENCIACOLEGIO
+                WHERE IDINSTITUCION = P_IDINSTITUCION;
 
-        P_DATOSERROR := 'PROCEDURE PROC_FCS_HISTORICOS_GUARDIAS: Realiza insercion en FCS_HISTORICO_TIPOACTUACION';
-        INSERT INTO FCS_HISTORICO_TIPOACTUACION (
-                IDINSTITUCION, IDTIPOASISTENCIA, IDTIPOACTUACION, 
-                IDFACTURACION, DESCRIPCION, IMPORTE, 
-                FECHACREACION, FECHAMODIFICACION, IMPORTEMAXIMO, 
-                USUMODIFICACION) 
-            SELECT P_IDINSTITUCION, -- IDINSTITUCION
-                IDTIPOASISTENCIA, -- IDTIPOASISTENCIA
-                IDTIPOACTUACION, -- IDTIPOACTUACION
-                P_IDFACTURACION, -- IDFACTURACION
-                DESCRIPCION, -- DESCRIPCION
-                IMPORTE, -- IMPORTE
-                SYSDATE, -- FECHACREACION
-                FECHAMODIFICACION, -- FECHAMODIFICACION
-                IMPORTEMAXIMO, -- IMPORTEMAXIMO
-                USUMODIFICACION -- USUMODIFICACION
-            FROM SCS_TIPOACTUACION
-            WHERE IDINSTITUCION = P_IDINSTITUCION;
+            P_DATOSERROR := 'Ejecutada la insercion en FCS_HISTORICO_TIPOASISTCOLEGIO';
 
-        P_DATOSERROR := 'PROCEDURE PROC_FCS_HISTORICOS_GUARDIAS: Realiza insercion en FCS_HISTO_TIPOACTCOSTEFIJO';
-        INSERT INTO FCS_HISTO_TIPOACTCOSTEFIJO (
-                IDINSTITUCION, IDTIPOASISTENCIA, IDTIPOACTUACION, 
-                IDCOSTEFIJO, IDFACTURACION, IMPORTE, 
-                FECHACREACION, FECHAMODIFICACION, USUMODIFICACION) 
-            SELECT P_IDINSTITUCION, -- IDINSTITUCION
-                IDTIPOASISTENCIA, -- IDTIPOASISTENCIA
-                IDTIPOACTUACION, -- IDTIPOACTUACION
-                IDCOSTEFIJO, -- IDCOSTEFIJO
-                P_IDFACTURACION, -- IDFACTURACION
-                IMPORTE, -- IMPORTE
-                SYSDATE,  -- FECHACREACION
-                FECHAMODIFICACION, -- FECHAMODIFICACION
-                USUMODIFICACION -- USUMODIFICACION
-            FROM SCS_TIPOACTUACIONCOSTEFIJO
-            WHERE IDINSTITUCION = P_IDINSTITUCION;
+            INSERT INTO FCS_HISTORICO_TIPOACTUACION
+                SELECT P_IDINSTITUCION, 
+                    IDTIPOASISTENCIA, 
+                    IDTIPOACTUACION,
+                    P_IDFACTURACION, 
+                    DESCRIPCION, 
+                    IMPORTE, 
+                    SYSDATE,
+                    FECHAMODIFICACION, 
+                    IMPORTEMAXIMO, 
+                    USUMODIFICACION
+                FROM SCS_TIPOACTUACION
+                WHERE IDINSTITUCION = P_IDINSTITUCION;
 
-        P_DATOSERROR := 'PROCEDURE PROC_FCS_HISTORICOS_GUARDIAS: Finalizado correctamente';
-        P_CODRETORNO := '0';
+            P_DATOSERROR := 'Ejecutada la insercion en FCS_HISTORICO_TIPOACTUACION';
 
-        EXCEPTION
-            WHEN OTHERS THEN
-                P_CODRETORNO := TO_CHAR(SQLCODE);
-                P_DATOSERROR := P_DATOSERROR || ' ' || SQLERRM;
+            INSERT INTO FCS_HISTO_TIPOACTCOSTEFIJO
+                SELECT P_IDINSTITUCION, 
+                    IDTIPOASISTENCIA, 
+                    IDTIPOACTUACION, 
+                    IDCOSTEFIJO,
+                    P_IDFACTURACION, 
+                    IMPORTE, 
+                    SYSDATE, 
+                    FECHAMODIFICACION, 
+                    USUMODIFICACION
+                FROM SCS_TIPOACTUACIONCOSTEFIJO
+                WHERE IDINSTITUCION = P_IDINSTITUCION;
+
+            --Actualizo para saber que el procedimiento ha finalizado correctamente:
+            P_DATOSERROR := 'PROCEDURE PROC_FCS_HISTORICOS_GUARDIAS: ha finalizado correctamente.';
+            P_CODRETORNO := TO_CHAR(0);
+
+            EXCEPTION
+                when e_error2 then
+                    P_CODRETORNO := TO_CHAR(-1);
+                    P_DATOSERROR := V_DATOSERROR2 || ' ' || SQLERRM;
+                    
+                WHEN OTHERS THEN
+                    P_CODRETORNO := TO_CHAR(SQLCODE);
+                    P_DATOSERROR := P_DATOSERROR || ' ' || SQLERRM;
     END PROC_FCS_HISTORICOS_GUARDIAS;
 
   PROCEDURE PROC_FCS_HISTORICOS_TURNOS(P_IDINSTITUCION IN NUMBER,
@@ -338,7 +335,8 @@ CREATE OR REPLACE package body PKG_SIGA_FCS_HISTORICO is
     Parametros (IN/OUT - Descripcion -Tipo de Datos)
     - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER    
     - P_IDFACTURACION - IN - Identificador de la facturacion - NUMBER
-    - P_IDGRUPOFACTURACION - Identificador del grupo de facturacion - NUMBER  
+    - P_IDGRUPOFACTURACION - Identificador del grupo de facturacion - NUMBER
+    - P_PRECIOHITO_GUAINACTIVAS - IN - Precio usado por el hito de guardias inactivas - NUMBER  
     - P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)
         En caso de error devuelve el codigo de error Oracle correspondiente.
     - P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400)
@@ -346,35 +344,30 @@ CREATE OR REPLACE package body PKG_SIGA_FCS_HISTORICO is
 
     Versiones (Fecha - Autor - Datos):
     - 1.0 - 02/03/2016 - Jorge Paez Trivino - Adaptacion a los colegios catalanes (R1602_0089)
-    - 2.0 - 01/01/2017 - Jorge Paez Trivino - SIGA_126 - Facturacion Hitos Valencianos
   ****************************************************************************************************************/      
     PROCEDURE PROC_FCS_HISTO_HITOFACT_GUA(
         P_IDINSTITUCION IN NUMBER,
         P_IDFACTURACION IN NUMBER,
         P_IDGRUPOFACTURACION IN NUMBER,
+        P_PRECIOHITO_GUAINACTIVAS IN NUMBER,
         P_CODRETORNO OUT VARCHAR2,
         P_DATOSERROR OUT VARCHAR2) IS
 
     BEGIN
-        P_DATOSERROR := 'PROCEDURE PROC_FCS_HISTO_HITOFACT_GUA: Realiza insercion en FCS_HISTORICO_HITOFACT';
         -- JPT: Guarda el historico de la configuracion de todas las guardias del grupo de facturacion para esa facturacion
-        INSERT INTO FCS_HISTORICO_HITOFACT (
-                IDINSTITUCION, IDFACTURACION, IDTURNO, 
-                IDGUARDIA, IDHITO, PRECIOHITO, 
-                FECHACREACION, FECHAMODIFICACION, USUMODIFICACION, 
-                DIASAPLICABLES, AGRUPAR) 
+        INSERT INTO FCS_HISTORICO_HITOFACT
             SELECT 
-                HFG.IDINSTITUCION, -- IDINSTITUCION
-                P_IDFACTURACION, -- IDFACTURACION                
-                HFG.IDTURNO, -- IDTURNO
-                HFG.IDGUARDIA, -- IDGUARDIA
-                HFG.IDHITO, -- IDHITO
-                HFG.PRECIOHITO, -- PRECIOHITO 
-                SYSDATE, -- FECHACREACION
-                HFG.FECHAMODIFICACION, -- FECHAMODIFICACION
-                HFG.USUMODIFICACION, -- USUMODIFICACION
-                HFG.DIASAPLICABLES, -- DIASAPLICABLES
-                HFG.AGRUPAR -- AGRUPAR
+                P_IDFACTURACION, 
+                HFG.IDINSTITUCION, 
+                HFG.IDTURNO, 
+                HFG.IDGUARDIA,
+                HFG.IDHITO, 
+                HFG.PRECIOHITO, 
+                SYSDATE,
+                HFG.FECHAMODIFICACION, 
+                HFG.USUMODIFICACION, 
+                HFG.DIASAPLICABLES,
+                HFG.AGRUPAR
             FROM SCS_HITOFACTURABLEGUARDIA HFG, SCS_TURNO TUR, SCS_GUARDIASTURNO GUA
             WHERE TUR.IDINSTITUCION = P_IDINSTITUCION
                 AND TUR.IDGRUPOFACTURACION = P_IDGRUPOFACTURACION
@@ -383,12 +376,44 @@ CREATE OR REPLACE package body PKG_SIGA_FCS_HISTORICO is
                 AND HFG.IDINSTITUCION = GUA.IDINSTITUCION
                 AND HFG.IDTURNO = GUA.IDTURNO
                 AND HFG.IDGUARDIA = GUA.IDGUARDIA
-                AND HFG.IDHITO NOT IN (HITO_EJG, HITO_SOJ);                                                          
+                AND HFG.IDHITO NOT IN (HITO_EJG, HITO_SOJ);
+                    
+        -- JPT: Guardamos el precio de GAsMin y GAcMin        
+        IF (P_PRECIOHITO_GUAINACTIVAS IS NOT NULL) THEN
+            -- JPT: Guarda el historico de la configuracion de las guardias inactivas
+            INSERT INTO FCS_HISTORICO_HITOFACT
+                SELECT 
+                    P_IDFACTURACION, 
+                    HFG.IDINSTITUCION, 
+                    HFG.IDTURNO, 
+                    HFG.IDGUARDIA,
+                    DECODE(HFG.IDHITO,HITO_GAs,HITO_GAsMin,HITO_GAc,HITO_GAcMin,NULL), 
+                    P_PRECIOHITO_GUAINACTIVAS, -- Precio puesto en constante que se pasa como parametro 
+                    SYSDATE,
+                    HFG.FECHAMODIFICACION, 
+                    HFG.USUMODIFICACION, 
+                    HFG.DIASAPLICABLES,
+                    HFG.AGRUPAR
+                FROM SCS_HITOFACTURABLEGUARDIA HFG, SCS_TURNO TUR, SCS_GUARDIASTURNO GUA
+                WHERE TUR.IDINSTITUCION = P_IDINSTITUCION
+                    AND TUR.IDGRUPOFACTURACION = P_IDGRUPOFACTURACION
+                    AND GUA.IDINSTITUCION = TUR.IDINSTITUCION
+                    AND GUA.IDTURNO = TUR.IDTURNO
+                    AND HFG.IDINSTITUCION = GUA.IDINSTITUCION
+                    AND HFG.IDTURNO = GUA.IDTURNO
+                    AND HFG.IDGUARDIA = GUA.IDGUARDIA
+                    AND HFG.IDHITO IN (HITO_GAs, HITO_GAc);
+        END IF;                                                            
 
-        P_DATOSERROR := 'PROCEDURE PROC_FCS_HISTO_HITOFACT_GUA: Finalizado correctamente';
-        P_CODRETORNO := '0';
+        --Actualizo para saber que el procedimiento ha finalizado correctamente:
+        P_DATOSERROR := 'PROCEDURE PROC_FCS_HISTO_HITOFACT_GUA: ha finalizado correctamente.';
+        P_CODRETORNO := TO_CHAR(0);
 
         EXCEPTION
+            when e_error2 then
+                P_CODRETORNO := TO_CHAR(-1);
+                P_DATOSERROR := V_DATOSERROR2 || ' ' || SQLERRM;
+                    
             WHEN OTHERS THEN
                 P_CODRETORNO := TO_CHAR(SQLCODE);
                 P_DATOSERROR := P_DATOSERROR || ' ' || SQLERRM;
