@@ -433,7 +433,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				   " (select j."+ScsJuzgadoBean.C_NOMBRE+" from "+ScsJuzgadoBean.T_NOMBRETABLA+" j where j."+ScsJuzgadoBean.C_IDINSTITUCION+"=ad."+ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO+" and j."+ScsJuzgadoBean.C_IDJUZGADO+"=ad."+ScsActuacionDesignaBean.C_IDJUZGADO+"),"+
 				   " (select p."+ScsPrisionBean.C_NOMBRE+" from "+ScsPrisionBean.T_NOMBRETABLA+" p where p."+ScsPrisionBean.C_IDINSTITUCION+"=ad."+ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION+" and p."+ScsPrisionBean.C_IDPRISION+"=ad."+ScsActuacionDesignaBean.C_IDPRISION+" )"+
 				   ") LUGAR,"+
-				   "decode(pr.nombre,null,'',pr.nombre||'('||ap."+ScsAcreditacionProcedimientoBean.C_PORCENTAJE+"||'%)') PROCEDIMIENTO,"+
+				   "decode(pr.nombre,null,'',pr.nombre||' ('||Decode(to_char(ap."+ScsAcreditacionProcedimientoBean.C_PORCENTAJE+"), to_char(Trunc(ap."+ScsAcreditacionProcedimientoBean.C_PORCENTAJE+")), to_char(ap."+ScsAcreditacionProcedimientoBean.C_PORCENTAJE+"), f_Siga_Formatonumero(to_char(ap."+ScsAcreditacionProcedimientoBean.C_PORCENTAJE+"), 2)) ||'%)') PROCEDIMIENTO,"+
 				   "ad."+ScsActuacionDesignaBean.C_OBSERVACIONES+
 				   " from "+
 				   ScsActuacionDesignaBean.T_NOMBRETABLA+" ad,"+
@@ -644,7 +644,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 	    Hashtable<Integer,String> codigos = new Hashtable<Integer,String>();
 	    int contador=0;
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION ACREDITACION,AC.IDTIPOACREDITACION,ACP.PORCENTAJE, TAC.DESCRIPCION TIPO, ");
+		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION ACREDITACION,AC.IDTIPOACREDITACION,Decode(to_char(a.Porcentaje), to_char(Trunc(a.Porcentaje)), to_char(a.Porcentaje), f_Siga_Formatonumero(to_char(a.Porcentaje), 2)) PORCENTAJE, TAC.DESCRIPCION TIPO, ");
 		sql.append(" PRO.NOMBRE PROCEDIMIENTO,PRO.CODIGO CATEGORIA, PRO.IDJURISDICCION,PRO.COMPLEMENTO,PRO.PERMITIRANIADIRLETRADO,ACT.NUMEROASUNTO,ACT.IDPROCEDIMIENTO,ACT.IDJUZGADO,");
 		sql.append(" TO_CHAR(ACT.FECHAJUSTIFICACION,'dd/mm/yyyy') FECHAJUSTIFICACION,ACT.VALIDADA,ACT.IDFACTURACION,ACT.NUMEROPROCEDIMIENTO,ACT.ANIOPROCEDIMIENTO ");
 		sql.append(" ,(SELECT NOMBRE || ' (' || FECHADESDE || '-' || FECHAHASTA || ')' ");
@@ -986,7 +986,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 	    int contador=0;
 		StringBuffer sql = new StringBuffer();
 
-		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION,TAC.IDTIPOACREDITACION,ACPRO.PORCENTAJE,PRO.IDJURISDICCION,ACPRO.NIG_NUMPROCEDIMIENTO ");
+		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION,TAC.IDTIPOACREDITACION,Decode(to_char(a.Porcentaje), to_char(Trunc(a.Porcentaje)), to_char(a.Porcentaje), f_Siga_Formatonumero(to_char(a.Porcentaje), 2)) PORCENTAJE,PRO.IDJURISDICCION,ACPRO.NIG_NUMPROCEDIMIENTO ");
 		sql.append(" FROM SCS_ACREDITACIONPROCEDIMIENTO ACPRO, ");
 		sql.append(" SCS_PROCEDIMIENTOS            PRO, ");
 		sql.append(" SCS_ACREDITACION              AC, ");

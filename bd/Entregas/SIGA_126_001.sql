@@ -151,4 +151,27 @@ create index FK_SCS_ACTUACIONDESIGNA_MOV on SCS_ACTUACIONDESIGNA (IDINSTITUCION,
     maxextents unlimited
   );
 
-  
+
+
+
+alter table FCS_FACT_ACTUACIONDESIGNA modify PORCENTAJEFACTURADO NUMBER(5,2);
+alter table SCS_ACREDITACIONPROCEDIMIENTO modify PORCENTAJE NUMBER(5,2);
+alter table FCS_HISTO_ACREDITACIONPROC modify PORCENTAJE NUMBER(5,2);
+
+alter table FCS_FACT_ACTUACIONDESIGNA add IMPORTEFACTURADO NUMBER(10,2);
+Update Fcs_Fact_Actuaciondesigna Fac Set Fac.Importefacturado = Round(Fac.Precioaplicado * Fac.Porcentajefacturado / 100, 2);
+alter table FCS_FACT_ACTUACIONDESIGNA modify IMPORTEFACTURADO not null;
+
+Delete From Adm_Tiposacceso tip Where tip.Idproceso = ‘602’;
+Delete From Gen_Procesos pro Where pro.Idproceso = ‘602’; /*Transaccion = ‘FCS_DetalleFacturacion’*/
+
+Drop Function f_siga_totalimporteacredit;
+
+PKG_SIGA_FACTURACION_SJCS
+PKG_SIGA_REGULARIZACION_SJCS
+PKG_SIGA_PAGOS_SJCS
+V_SIGA_EXCEL_FACJG_TURNOS
+V_SIGA_SJCS_FACTURACION
+V_WS_JE_2064_DESIGNA
+V_WS_JE_2064_DESIGNAPROCURADOR
+

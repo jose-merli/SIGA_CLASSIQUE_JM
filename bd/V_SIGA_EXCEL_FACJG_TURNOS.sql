@@ -21,7 +21,7 @@ CREATE OR REPLACE VIEW V_SIGA_EXCEL_FACJG_TURNOS AS
                         Fact.Acreditacion,
                         chr(9),
                         ' ') AS Acreditacion,
-                Round(Fact.Precioaplicado * Fact.Porcentajefacturado / 100, 2) AS Importe,
+                Fact.Importefacturado AS Importe,
                 REPLACE(Nvl(Des.Numprocedimiento, Des.Resumenasunto),
                         chr(9),
                         ' ') AS N_PROCEDIMIENTO,
@@ -145,8 +145,7 @@ CREATE OR REPLACE VIEW V_SIGA_EXCEL_FACJG_TURNOS AS
            NULL,
            NULL,
            NULL,
-           SUM(Round(Fact.Precioaplicado * Fact.Porcentajefacturado / 100,
-                     2)) IMPORTE_TOTAL
+           SUM(Fact.Importefacturado) IMPORTE_TOTAL
           FROM Fcs_Fact_Actuaciondesigna Fact, Cen_Persona Per
          WHERE Fact.Idpersona = per.idpersona
          GROUP BY Fact.idinstitucion,
@@ -156,5 +155,3 @@ CREATE OR REPLACE VIEW V_SIGA_EXCEL_FACJG_TURNOS AS
                   Decode(Per.Apellidos2, NULL, '', ' ' || Per.Apellidos2) || ', ' ||
                   REPLACE(Per.Nombre, chr(9), ' ')
 )
-
- 

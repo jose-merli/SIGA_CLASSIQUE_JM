@@ -12,7 +12,7 @@ CREATE OR REPLACE PACKAGE PKG_SIGA_PAGOS_SJCS IS
     PAGOACTUAL     FCS_PAGO_COLEGIADO.IMPOFICIO%TYPE);
   TYPE TAB_PAGOS IS TABLE OF MATRICE_PAGOS INDEX BY BINARY_INTEGER;
 
-
+ 
   -- Public function and procedure declarations
 
   /****************************************************************************************************************/
@@ -93,8 +93,8 @@ CREATE OR REPLACE PACKAGE PKG_SIGA_PAGOS_SJCS IS
   /****************************************************************************************************************/
  FUNCTION FUN_FCS_FACTURACION_POR_PAGAR (P_IDINSTITUCION IN VARCHAR2,
                                  P_IDFACTURACION IN VARCHAR2) RETURN VARCHAR2;
-
-
+                                 
+                                 
   /****************************************************************************************************************/
   /* Nombre:   PROC_FCS_IMPORTE_RETENC                                                                            */
   /* Descripcion: Calcula la suma del importe de las Retenciones Judiciales                                       */
@@ -114,7 +114,7 @@ CREATE OR REPLACE PACKAGE PKG_SIGA_PAGOS_SJCS IS
                                     P_CODRETORNO    OUT VARCHAR2,
                                     P_DATOSERROR    OUT VARCHAR2);
 
-
+ 
 /****************************************************************************************************************/
   /* Nombre: EXISTE_PAGO_COLEGIADO                                                                              */
   /* Descripcion: Retorna 0 si no existe el pago, 1 en caso contrario                                                             */
@@ -131,12 +131,12 @@ CREATE OR REPLACE PACKAGE PKG_SIGA_PAGOS_SJCS IS
   /* ------------------   ---------------------------------   --------------------------------------------------- */
   /****************************************************************************************************************/
 
-  FUNCTION EXISTE_PAGO_COLEGIADO(P_IDINSTITUCION in VARCHAR2,
-                                 P_IDPAGO in VARCHAR2,
+  FUNCTION EXISTE_PAGO_COLEGIADO(P_IDINSTITUCION in VARCHAR2, 
+                                 P_IDPAGO in VARCHAR2,  
                                  P_IDPERSONA in VARCHAR2) return number;
+  
 
-
-
+ 
   /****************************************************************************************************************/
   /* Nombre: FUN_FCS_IMPORTES_PAGO                                                                                */
   /* Descripcion: devuelve el total pagado.                                                                       */
@@ -186,20 +186,20 @@ CREATE OR REPLACE PACKAGE PKG_SIGA_PAGOS_SJCS IS
                                    P_IDRETENCION   OUT NUMBER,
                                    P_CODRETORNO  OUT VARCHAR2,
                                    P_DATOSERROR  OUT VARCHAR2);
-
+                                     
  PROCEDURE PROC_FCS_PAGO_TURNOS_OFI(P_IDINSTITUCION   IN VARCHAR2,
                                      P_IDPAGO          IN VARCHAR2,
                                      P_USUMODIFICACION IN VARCHAR2,
                                      P_TOTAL           OUT VARCHAR2,
                                      P_CODRETORNO      OUT VARCHAR2,
-                                     P_DATOSERROR      OUT VARCHAR2);
+                                     P_DATOSERROR      OUT VARCHAR2);                                     
 
   FUNCTION FUNC_FCS_CARGA_TURNOSOFICIO(P_IDINSTITUCION IN NUMBER,
                                        P_IDPAGO        IN NUMBER,
                                        P_CODRETORNO    OUT VARCHAR2,
                                        P_DATOSERROR    OUT VARCHAR2)
                                        return tab_pagos;
-
+                                   
   PROCEDURE PROC_FCS_PAGO_GUARDIAS(P_IDINSTITUCION   IN VARCHAR2,
                                    P_IDPAGO          IN VARCHAR2,
                                    P_USUMODIFICACION IN VARCHAR2,
@@ -223,7 +223,7 @@ CREATE OR REPLACE PACKAGE PKG_SIGA_PAGOS_SJCS IS
   FUNCTION FUNC_FCS_CARGA_SOJ(P_IDINSTITUCION IN NUMBER,
                               P_IDPAGO        IN NUMBER,
                               P_CODRETORNO    OUT VARCHAR2,
-                              P_DATOSERROR    OUT VARCHAR2)
+                              P_DATOSERROR    OUT VARCHAR2) 
                               return tab_pagos;
 
   PROCEDURE PROC_FCS_PAGO_EJG(P_IDINSTITUCION   IN VARCHAR2,
@@ -236,7 +236,7 @@ CREATE OR REPLACE PACKAGE PKG_SIGA_PAGOS_SJCS IS
   FUNCTION FUNC_FCS_CARGA_EJG(P_IDINSTITUCION IN NUMBER,
                               P_IDPAGO        IN NUMBER,
                               P_CODRETORNO    OUT VARCHAR2,
-                              P_DATOSERROR    OUT VARCHAR2)
+                              P_DATOSERROR    OUT VARCHAR2) 
                               return tab_pagos;
 
   PROCEDURE CALCULA_PAGO(M_PAGOS            IN OUT TAB_PAGOS,
@@ -283,6 +283,7 @@ CREATE OR REPLACE PACKAGE PKG_SIGA_PAGOS_SJCS IS
 
 
 END PKG_SIGA_PAGOS_SJCS;
+ 
 /
 create or replace package body PKG_SIGA_PAGOS_SJCS is
 
@@ -446,11 +447,11 @@ create or replace package body PKG_SIGA_PAGOS_SJCS is
 
       SELECT SUM (P.IMPORTEPAGADO) || '~' ||
              SUM (P.IMPORTEOFICIO) || '~' || SUM (P.IMPORTEGUARDIA) || '~' || SUM (P.IMPORTEEJG) || '~' || SUM (P.IMPORTESOJ) || '~' ||
-             round( SUM(P.IMPORTEOFICIO)  * 100 / decode(max(F.IMPORTEOFICIO),0,1,max(F.IMPORTEOFICIO))  ,2) || '~' ||
-             round( SUM(P.IMPORTEGUARDIA) * 100 / decode(max(F.IMPORTEGUARDIA),0,1,max(F.IMPORTEGUARDIA)) ,2) || '~' ||
-             round( SUM(P.IMPORTEEJG)     * 100 / decode(max(F.IMPORTEEJG),0,1,max(F.IMPORTEEJG))     ,2) || '~' ||
-             round( SUM(P.IMPORTESOJ)     * 100 / decode(max(F.IMPORTESOJ),0,1,max(F.IMPORTESOJ))     ,2)
-        INTO V_TOTALPAGADO
+             round( SUM(P.IMPORTEOFICIO)  * 100 / decode(max(F.IMPORTEOFICIO),0,1,max(F.IMPORTEOFICIO))  ,2) || '~' || 
+             round( SUM(P.IMPORTEGUARDIA) * 100 / decode(max(F.IMPORTEGUARDIA),0,1,max(F.IMPORTEGUARDIA)) ,2) || '~' || 
+             round( SUM(P.IMPORTEEJG)     * 100 / decode(max(F.IMPORTEEJG),0,1,max(F.IMPORTEEJG))     ,2) || '~' || 
+             round( SUM(P.IMPORTESOJ)     * 100 / decode(max(F.IMPORTESOJ),0,1,max(F.IMPORTESOJ))     ,2)     
+        INTO V_TOTALPAGADO            
         FROM FCS_PAGOSJG P, FCS_PAGOS_ESTADOSPAGOS E, FCS_FACTURACIONJG F
        WHERE P.IDINSTITUCION = P_IDINSTITUCION
          AND P.IDFACTURACION = P_IDFACTURACION
@@ -463,7 +464,7 @@ create or replace package body PKG_SIGA_PAGOS_SJCS is
          AND P.IDPAGOSJG = E.IDPAGOSJG
          AND F.IDINSTITUCION = P.IDINSTITUCION
          AND F.IDFACTURACION = P.IDFACTURACION;
-
+       
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
             V_TOTALPAGADO := '0~0~0~0~0~0~0~0~0';
@@ -474,7 +475,7 @@ create or replace package body PKG_SIGA_PAGOS_SJCS is
     IF (V_TOTALPAGADO = '~~~~~~~~') THEN
         V_TOTALPAGADO := '0~0~0~0~0~0~0~0~0';
     END IF;
-
+    
     IF (V_TOTALPAGADO IS NULL) THEN
         V_TOTALPAGADO := '0~0~0~0~0~0~0~0~0';
     END IF;
@@ -505,12 +506,12 @@ create or replace package body PKG_SIGA_PAGOS_SJCS is
     sumGuardias       number(10,2);
     sumEJG            number(10,2);
     sumSOJ            number(10,2);
-
+    
     factOficio        number(10,2);
     factGuardias      number(10,2);
     factEJG           number(10,2);
     factSOJ           number(10,2);
-
+              
   BEGIN
 
     BEGIN
@@ -527,8 +528,8 @@ create or replace package body PKG_SIGA_PAGOS_SJCS is
                                  AND IDESTADOPAGOSJG > PKG_SIGA_CONSTANTES.ESTADO_PAGO_EJECUTADO)
       AND P.IDINSTITUCION = E.IDINSTITUCION
       AND P.IDPAGOSJG = E.IDPAGOSJG;
-
-    SELECT F.Importeoficio, F.Importeguardia, F.Importeejg, F.Importesoj
+      
+    SELECT F.Importeoficio, F.Importeguardia, F.Importeejg, F.Importesoj 
       INTO factOficio, factGuardias, factEJG, factSOJ
       FROM FCS_FACTURACIONJG F, FCS_FACT_ESTADOSFACTURACION E
      WHERE F.IDINSTITUCION = E.IDINSTITUCION
@@ -544,15 +545,15 @@ create or replace package body PKG_SIGA_PAGOS_SJCS is
       WHEN OTHERS THEN
             return 'others';
     END;
-
-
-    IF ((factOficio is not null and factOficio > 0) and (sumOficio is null or sumOficio < factOficio)  or
-        (factGuardias is not null and factGuardias > 0) and (sumGuardias is null or sumGuardias < factGuardias)   or
-        (factEJG is not null and factEJG > 0) and (sumEJG is null or sumEJG < factEJG) or
+    
+ 
+    IF ((factOficio is not null and factOficio > 0) and (sumOficio is null or sumOficio < factOficio)  or 
+        (factGuardias is not null and factGuardias > 0) and (sumGuardias is null or sumGuardias < factGuardias)   or 
+        (factEJG is not null and factEJG > 0) and (sumEJG is null or sumEJG < factEJG) or 
         (factSOJ is not null and factSOJ > 0) and (sumSOJ is null or sumSOJ < factSOJ) ) THEN
        return '1';
     END IF;
-
+    
     RETURN 'final';
   END; --FUN_FCS_FACTURACION_POR_PAGAR
 
@@ -605,7 +606,7 @@ create or replace package body PKG_SIGA_PAGOS_SJCS is
 
 
 
-
+ 
 
 /****************************************************************************************************************/
   /* Nombre: EXISTE_PAGO_COLEGIADO                                                                              */
@@ -623,12 +624,12 @@ create or replace package body PKG_SIGA_PAGOS_SJCS is
   /* ------------------   ---------------------------------   --------------------------------------------------- */
   /****************************************************************************************************************/
 
-
+ 
 
   FUNCTION EXISTE_PAGO_COLEGIADO (P_IDINSTITUCION in VARCHAR2, P_IDPAGO in VARCHAR2,  P_IDPERSONA in VARCHAR2) return number is
-
+  
   existePagoColegiado                   number:=0;
-
+  
   begin
     Select count(1)
       into existePagoColegiado
@@ -641,10 +642,10 @@ create or replace package body PKG_SIGA_PAGOS_SJCS is
 
      return existePagoColegiado;
 
-  end EXISTE_PAGO_COLEGIADO;
-
-
-
+  end EXISTE_PAGO_COLEGIADO;  
+  
+  
+ 
 
 
 FUNCTION FUN_FCS_OBTENERIDPERSONASOCIED(P_IDPERSONA number, P_IDINSTITUCION NUMBER) return  NUMBER
@@ -682,7 +683,7 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
                                    p_Idretencion Out Number,
                                    p_Codretorno  Out Varchar2,
                                    p_Datoserror  Out Varchar2) Is
-
+  
     v_Retencion   Scs_Maestroretenciones.Retencion%Type;
     v_Idretencion Scs_Maestroretenciones.Idretencion%Type;
   Begin
@@ -726,7 +727,7 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
           p_Datoserror  := p_Datoserror || ' ' || Sqlerrm;
       End;
     End If;
-
+  
     If (v_Retencion < 0) Then
       p_Retencion   := 0;
       p_Idretencion := 0;
@@ -734,13 +735,13 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
       p_Retencion   := v_Retencion;
       p_Idretencion := v_Idretencion;
     End If;
-
+  
     --Actualizo para saber que el procedimiento ha finalizado correctamente:
     If (p_Codretorno Is Null) Then
       p_Datoserror := 'PROCEDURE PROC_FCS_CALCULAR_IRPF: ha finalizado correctamente.';
       p_Codretorno := To_Char(0);
     End If;
-
+  
   Exception
     When Others Then
       p_Codretorno := To_Char(Sqlcode);
@@ -760,7 +761,7 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
     M_PAGOS TAB_PAGOS;
 
   BEGIN
-
+       
     -- obtiene el importe a repartir
     select importeoficio
       into v_importeARepartir
@@ -782,33 +783,33 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
            -- si el registro existe, actualiza, si no, inserta
            if (PKG_SIGA_PAGOS_SJCS.EXISTE_PAGO_COLEGIADO(P_IDINSTITUCION, P_IDPAGO, M_PAGOS(I).IDPERSONA) = 0) then
               INSERT INTO FCS_PAGO_COLEGIADO
-                          (IDINSTITUCION, IDPAGOSJG, IDPERORIGEN, IDPERDESTINO,
+                          (IDINSTITUCION, IDPAGOSJG, IDPERORIGEN, IDPERDESTINO, 
                           IMPOFICIO, IMPASISTENCIA, IMPSOJ, IMPEJG,
                           IMPMOVVAR, IMPIRPF,PORCENTAJEIRPF, IMPRET,
                           FECHAMODIFICACION, USUMODIFICACION)
-                   VALUES (P_IDINSTITUCION, P_IDPAGO, M_PAGOS(I).IDPERSONA,
-                           decode(PKG_SIGA_PAGOS_SJCS.FUN_FCS_OBTENERIDPERSONASOCIED(M_PAGOS(I).IDPERSONA, P_IDINSTITUCION),'-1',M_PAGOS(I).IDPERSONA,
-                           PKG_SIGA_PAGOS_SJCS.FUN_FCS_OBTENERIDPERSONASOCIED(M_PAGOS(I).IDPERSONA, P_IDINSTITUCION)),
+                   VALUES (P_IDINSTITUCION, P_IDPAGO, M_PAGOS(I).IDPERSONA,  
+                           decode(PKG_SIGA_PAGOS_SJCS.FUN_FCS_OBTENERIDPERSONASOCIED(M_PAGOS(I).IDPERSONA, P_IDINSTITUCION),'-1',M_PAGOS(I).IDPERSONA, 
+                           PKG_SIGA_PAGOS_SJCS.FUN_FCS_OBTENERIDPERSONASOCIED(M_PAGOS(I).IDPERSONA, P_IDINSTITUCION)),   
                            M_PAGOS(I).pagoActual, 0, 0, 0,
-                           0, 0, 0, 0,
+                           0, 0, 0, 0,                          
                            SYSDATE, P_USUMODIFICACION);
            else
                UPDATE FCS_PAGO_COLEGIADO
                   SET IMPOFICIO =  IMPOFICIO + M_PAGOS(I).pagoActual,
-                      FECHAMODIFICACION = SYSDATE,
+                      FECHAMODIFICACION = SYSDATE, 
                       USUMODIFICACION = P_USUMODIFICACION
-                WHERE IDINSTITUCION = P_IDINSTITUCION
+                WHERE IDINSTITUCION = P_IDINSTITUCION 
                   and IDPAGOSJG = P_IDPAGO
                   and IDPERORIGEN = M_PAGOS(I).IDPERSONA;
           end if;
         end if;
       end loop;
     end if;
-
+    
     --salida correcta
     P_DATOSERROR := TO_CHAR('PROC_FCS_PAGO_TURNOS_OFI:Fin Correcto');
     P_CODRETORNO := TO_CHAR('0');
-
+    
   EXCEPTION
     WHEN OTHERS THEN
       P_TOTAL := 0;
@@ -821,18 +822,18 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
   FUNCTION FUNC_FCS_CARGA_TURNOSOFICIO (P_IDINSTITUCION   IN NUMBER,
                                         P_IDPAGO          IN NUMBER,
                                         P_CODRETORNO      OUT VARCHAR2,
-                                        P_DATOSERROR      OUT VARCHAR2)
+                                        P_DATOSERROR      OUT VARCHAR2) 
                                         return tab_pagos IS
     M_PAGOS TAB_PAGOS;
     v_idfacturacion NUMBER;
     indice number := 0;
-
+  
     -- Obtiene el importe total facturado y el importe total pagado en pagos anteriores
-    -- para un colegiado que tenga actuaciones de designas en una facturacion
+    -- para un colegiado que tenga actuaciones de designas en una facturacion 
     CURSOR C_ACTUACIONES (P_IDFACTURACION NUMBER) IS
       select c.idpersona,
-             sum(round(c.precioaplicado * c.porcentajefacturado / 100, 2)) totalFacturado,
-             (select nvl(sum (col.impoficio), 0)
+             sum(c.Importefacturado) totalFacturado,
+             (select nvl(sum (col.impoficio), 0) 
                 from fcs_pago_colegiado col, fcs_pagosjg pag
                where col.idpagosjg = pag.idpagosjg
                  and col.idinstitucion = pag.idinstitucion
@@ -849,20 +850,20 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
 
       --log salida
       P_DATOSERROR := 'Antes de calcular idFacturacion';
-
+      
       --Obtiene la facturacion correspondiente al pago
       select pag.idfacturacion
         into v_idfacturacion
         from FCS_PAGOSJG PAG
        where pag.idpagosjg = P_IDPAGO
          and pag.idinstitucion = P_IDINSTITUCION;
-
+          
       --calculando importe facturado y pagado por cada actuacion
       FOR Elemento IN C_ACTUACIONES (v_idfacturacion) LOOP
         IF Elemento.totalFacturado>CTE AND Elemento.totalFacturado-Elemento.totalAnterior>CTE THEN
           /* Actualizo el contador de la matriz */
           indice := indice + 1;
-
+          
           /* inserta los datos calculados en la matriz */
           M_PAGOS(indice).IDPERSONA       := Elemento.idpersona;
           M_PAGOS(indice).TOTALFACTURADO  := Elemento.totalFacturado;
@@ -870,14 +871,14 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
           M_PAGOS(indice).PAGOACTUAL      :=0;
         END IF;
       END LOOP;
-
-
+        
+    
     --salida correcta
     P_DATOSERROR := 'FUNCTION FUNC_FCS_CARGA_TURNOSOFICIO: ha finalizado correctamente.';
     P_CODRETORNO := TO_CHAR(0);
-
+    
     return M_PAGOS;
-
+    
   EXCEPTION
     WHEN OTHERS THEN
       P_CODRETORNO := TO_CHAR(SQLCODE);
@@ -890,12 +891,12 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
                                               P_USUMODIFICACION      IN VARCHAR2,
                                               P_TOTAL                OUT VARCHAR2,
                                               P_CODRETORNO           OUT VARCHAR2,
-                                              P_DATOSERROR           OUT VARCHAR2)
+                                              P_DATOSERROR           OUT VARCHAR2) 
   IS
 
     v_importeARepartir            number:=0;
     M_PAGOS TAB_PAGOS;
-
+ 
 
   BEGIN
      -- obtiene el importe a repartir
@@ -919,29 +920,29 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
              -- si el registro existe, actualiza, si no, inserta
              if (PKG_SIGA_PAGOS_SJCS.EXISTE_PAGO_COLEGIADO(P_IDINSTITUCION, P_IDPAGO, M_PAGOS(I).IDPERSONA) = 0) then
                 INSERT INTO FCS_PAGO_COLEGIADO
-                            (IDINSTITUCION, IDPAGOSJG, IDPERORIGEN, IDPERDESTINO,
+                            (IDINSTITUCION, IDPAGOSJG, IDPERORIGEN, IDPERDESTINO, 
                             IMPOFICIO, IMPASISTENCIA, IMPSOJ, IMPEJG,
                             IMPMOVVAR, IMPIRPF, PORCENTAJEIRPF, IMPRET,
                             FECHAMODIFICACION, USUMODIFICACION)
-                     VALUES (P_IDINSTITUCION, P_IDPAGO, M_PAGOS(I).IDPERSONA,
-                             decode(PKG_SIGA_PAGOS_SJCS.FUN_FCS_OBTENERIDPERSONASOCIED(M_PAGOS(I).IDPERSONA, P_IDINSTITUCION),'-1',M_PAGOS(I).IDPERSONA,
-                                    PKG_SIGA_PAGOS_SJCS.FUN_FCS_OBTENERIDPERSONASOCIED(M_PAGOS(I).IDPERSONA, P_IDINSTITUCION)),
+                     VALUES (P_IDINSTITUCION, P_IDPAGO, M_PAGOS(I).IDPERSONA,  
+                             decode(PKG_SIGA_PAGOS_SJCS.FUN_FCS_OBTENERIDPERSONASOCIED(M_PAGOS(I).IDPERSONA, P_IDINSTITUCION),'-1',M_PAGOS(I).IDPERSONA, 
+                                    PKG_SIGA_PAGOS_SJCS.FUN_FCS_OBTENERIDPERSONASOCIED(M_PAGOS(I).IDPERSONA, P_IDINSTITUCION)),   
                              0, M_PAGOS(I).pagoActual, 0, 0,
-                             0, 0, 0, 0,
+                             0, 0, 0, 0,                         
                              SYSDATE, P_USUMODIFICACION);
              else
-                 UPDATE FCS_PAGO_COLEGIADO
+                 UPDATE FCS_PAGO_COLEGIADO 
                     SET IMPASISTENCIA =  IMPASISTENCIA + M_PAGOS(I).pagoActual,
-                        FECHAMODIFICACION = SYSDATE,
+                        FECHAMODIFICACION = SYSDATE, 
                         USUMODIFICACION = P_USUMODIFICACION
-                  WHERE IDINSTITUCION = P_IDINSTITUCION
+                  WHERE IDINSTITUCION = P_IDINSTITUCION 
                     and IDPAGOSJG = P_IDPAGO
                     and IDPERORIGEN = M_PAGOS(I).IDPERSONA;
             end if;
           end if;
         end loop;
     end if;
-
+    
     --salida correcta
     P_DATOSERROR := TO_CHAR('PROC_FCS_PAGO_GUARDIAS:Fin Correcto');
     P_CODRETORNO := TO_CHAR('0');
@@ -957,7 +958,7 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
  FUNCTION FUNC_FCS_CARGA_GUARDIAS (P_IDINSTITUCION      IN NUMBER,
                                     P_IDPAGO             IN NUMBER,
                                     P_CODRETORNO         OUT VARCHAR2,
-                                    P_DATOSERROR         OUT VARCHAR2)
+                                    P_DATOSERROR         OUT VARCHAR2) 
                                     return tab_pagos IS
     M_PAGOS TAB_PAGOS;
     v_idfacturacion NUMBER;
@@ -965,12 +966,12 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
 
 
     -- Obtiene el importe total facturado y el importe total pagado en pagos anteriores
-    -- para un colegiado que tenga actuaciones de designas en una facturacion
+    -- para un colegiado que tenga actuaciones de designas en una facturacion 
   CURSOR C_GUARDIAS (P_IDFACTURACION NUMBER) IS
        select c.idpersona,
               sum(c.precioaplicado + c.preciocostesfijos) totalFacturado,
-              (select  nvl(sum(col.impasistencia),0)
-                from fcs_pago_colegiado col, fcs_pagosjg pag
+              (select  nvl(sum(col.impasistencia),0) 
+                from fcs_pago_colegiado col, fcs_pagosjg pag                
                 where col.idpagosjg = pag.idpagosjg
                   and col.idinstitucion = pag.idinstitucion
                   and col.idinstitucion = c.idinstitucion
@@ -987,20 +988,20 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
 
       --log salida
       P_DATOSERROR := 'Antes de calcular idFacturacion';
-
+      
       --Obtiene la facturacion correspondiente al pago
       select pag.idfacturacion
         into v_idfacturacion
         from FCS_PAGOSJG PAG
        where pag.idpagosjg = P_IDPAGO
          and pag.idinstitucion = P_IDINSTITUCION;
-
+                   
       --calculando importe facturado y pagado por cada actuacion
       FOR Elemento IN C_GUARDIAS (v_idfacturacion) LOOP
         IF Elemento.totalFacturado>CTE AND Elemento.totalFacturado-Elemento.totalAnterior>CTE THEN
           /* Actualizo el contador de la matriz */
           indice := indice + 1;
-
+          
           /* inserta los datos calculados en la matriz */
           M_PAGOS(indice).IDPERSONA       := Elemento.idpersona;
           M_PAGOS(indice).TOTALFACTURADO  := Elemento.totalFacturado;
@@ -1008,12 +1009,12 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
           M_PAGOS(indice).PAGOACTUAL      :=0;
         END IF;
       END LOOP;
-
-
+        
+    
     --salida correcta
     P_DATOSERROR := 'FUNCTION FUNC_FCS_CARGA_GUARDIAS: ha finalizado correctamente.';
     P_CODRETORNO := TO_CHAR(0);
-
+    
     return M_PAGOS;
 
     EXCEPTION
@@ -1035,7 +1036,7 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
     M_PAGOS TAB_PAGOS;
 
   BEGIN
-
+       
     -- obtiene el importe a repartir
     select importesoj
       into v_importeARepartir
@@ -1057,33 +1058,33 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
            -- si el registro existe, actualiza, si no, inserta
            if (PKG_SIGA_PAGOS_SJCS.EXISTE_PAGO_COLEGIADO(P_IDINSTITUCION, P_IDPAGO, M_PAGOS(I).IDPERSONA) = 0) then
               INSERT INTO FCS_PAGO_COLEGIADO
-                          (IDINSTITUCION, IDPAGOSJG, IDPERORIGEN, IDPERDESTINO,
+                          (IDINSTITUCION, IDPAGOSJG, IDPERORIGEN, IDPERDESTINO, 
                           IMPOFICIO, IMPASISTENCIA, IMPSOJ, IMPEJG,
                           IMPMOVVAR, IMPIRPF, PORCENTAJEIRPF, IMPRET,
                           FECHAMODIFICACION, USUMODIFICACION)
-                   VALUES (P_IDINSTITUCION, P_IDPAGO, M_PAGOS(I).IDPERSONA,
-                           decode(PKG_SIGA_PAGOS_SJCS.FUN_FCS_OBTENERIDPERSONASOCIED(M_PAGOS(I).IDPERSONA, P_IDINSTITUCION),'-1',M_PAGOS(I).IDPERSONA,
-                                  PKG_SIGA_PAGOS_SJCS.FUN_FCS_OBTENERIDPERSONASOCIED(M_PAGOS(I).IDPERSONA, P_IDINSTITUCION)),
+                   VALUES (P_IDINSTITUCION, P_IDPAGO, M_PAGOS(I).IDPERSONA,  
+                           decode(PKG_SIGA_PAGOS_SJCS.FUN_FCS_OBTENERIDPERSONASOCIED(M_PAGOS(I).IDPERSONA, P_IDINSTITUCION),'-1',M_PAGOS(I).IDPERSONA, 
+                                  PKG_SIGA_PAGOS_SJCS.FUN_FCS_OBTENERIDPERSONASOCIED(M_PAGOS(I).IDPERSONA, P_IDINSTITUCION)),   
                            0, 0, M_PAGOS(I).pagoActual, 0,
-                           0, 0, 0, 0,
+                           0, 0, 0, 0,                         
                            SYSDATE, P_USUMODIFICACION);
            else
-               UPDATE FCS_PAGO_COLEGIADO
+               UPDATE FCS_PAGO_COLEGIADO 
                   SET IMPSOJ =  IMPSOJ + M_PAGOS(I).pagoActual,
-                      FECHAMODIFICACION = SYSDATE,
+                      FECHAMODIFICACION = SYSDATE, 
                       USUMODIFICACION = P_USUMODIFICACION
-                WHERE IDINSTITUCION = P_IDINSTITUCION
+                WHERE IDINSTITUCION = P_IDINSTITUCION 
                   and IDPAGOSJG = P_IDPAGO
                   and IDPERORIGEN = M_PAGOS(I).IDPERSONA;
           end if;
         end if;
       end loop;
     end if;
-
+    
     --salida correcta
     P_DATOSERROR := TO_CHAR('PROC_FCS_PAGO_TURNOS_OFI:Fin Correcto');
     P_CODRETORNO := TO_CHAR('0');
-
+    
   EXCEPTION
     WHEN OTHERS THEN
       P_TOTAL := 0;
@@ -1095,18 +1096,18 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
   FUNCTION FUNC_FCS_CARGA_SOJ (P_IDINSTITUCION   IN NUMBER,
                                         P_IDPAGO          IN NUMBER,
                                         P_CODRETORNO      OUT VARCHAR2,
-                                        P_DATOSERROR      OUT VARCHAR2)
+                                        P_DATOSERROR      OUT VARCHAR2) 
                                         return tab_pagos IS
     M_PAGOS TAB_PAGOS;
     v_idfacturacion NUMBER;
     indice number := 0;
-
+  
     -- Obtiene el importe total facturado y el importe total pagado en pagos anteriores
-    -- para un colegiado que tenga actuaciones de designas en una facturacion
+    -- para un colegiado que tenga actuaciones de designas en una facturacion 
     CURSOR C_SOJ (P_IDFACTURACION NUMBER) IS
       select c.idpersona,
              sum(c.precioaplicado) totalFacturado,
-             (select nvl(sum (col.impsoj), 0)
+             (select nvl(sum (col.impsoj), 0) 
                 from fcs_pago_colegiado col, fcs_pagosjg pag
                where col.idpagosjg = pag.idpagosjg
                  and col.idinstitucion = pag.idinstitucion
@@ -1123,20 +1124,20 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
 
       --log salida
       P_DATOSERROR := 'Antes de calcular idFacturacion';
-
+      
       --Obtiene la facturacion correspondiente al pago
       select pag.idfacturacion
         into v_idfacturacion
         from FCS_PAGOSJG PAG
        where pag.idpagosjg = P_IDPAGO
          and pag.idinstitucion = P_IDINSTITUCION;
-
+          
       --calculando importe facturado y pagado por cada actuacion
       FOR Elemento IN C_SOJ (v_idfacturacion) LOOP
         IF Elemento.totalFacturado>CTE AND Elemento.totalFacturado-Elemento.totalAnterior>CTE THEN
           /* Actualizo el contador de la matriz */
           indice := indice + 1;
-
+          
           /* inserta los datos calculados en la matriz */
           M_PAGOS(indice).IDPERSONA       := Elemento.idpersona;
           M_PAGOS(indice).TOTALFACTURADO  := Elemento.totalFacturado;
@@ -1144,14 +1145,14 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
           M_PAGOS(indice).PAGOACTUAL      :=0;
         END IF;
       END LOOP;
-
-
+        
+    
     --salida correcta
     P_DATOSERROR := 'FUNCTION FUNC_FCS_CARGA_SOJ: ha finalizado correctamente.';
     P_CODRETORNO := TO_CHAR(0);
-
+    
     return M_PAGOS;
-
+    
   EXCEPTION
     WHEN OTHERS THEN
       P_CODRETORNO := TO_CHAR(SQLCODE);
@@ -1171,7 +1172,7 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
     M_PAGOS TAB_PAGOS;
 
   BEGIN
-
+       
     -- obtiene el importe a repartir
     select importeejg
       into v_importeARepartir
@@ -1193,33 +1194,33 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
            -- si el registro existe, actualiza, si no, inserta
            if (PKG_SIGA_PAGOS_SJCS.EXISTE_PAGO_COLEGIADO(P_IDINSTITUCION, P_IDPAGO, M_PAGOS(I).IDPERSONA) = 0) then
               INSERT INTO FCS_PAGO_COLEGIADO
-                          (IDINSTITUCION, IDPAGOSJG, IDPERORIGEN, IDPERDESTINO,
+                          (IDINSTITUCION, IDPAGOSJG, IDPERORIGEN, IDPERDESTINO, 
                           IMPOFICIO, IMPASISTENCIA, IMPSOJ, IMPEJG,
                           IMPMOVVAR, IMPIRPF,PORCENTAJEIRPF, IMPRET,
                           FECHAMODIFICACION, USUMODIFICACION)
-                   VALUES (P_IDINSTITUCION, P_IDPAGO, M_PAGOS(I).IDPERSONA,
-                           decode(PKG_SIGA_PAGOS_SJCS.FUN_FCS_OBTENERIDPERSONASOCIED(M_PAGOS(I).IDPERSONA, P_IDINSTITUCION),'-1',M_PAGOS(I).IDPERSONA,
-                                  PKG_SIGA_PAGOS_SJCS.FUN_FCS_OBTENERIDPERSONASOCIED(M_PAGOS(I).IDPERSONA, P_IDINSTITUCION)),
+                   VALUES (P_IDINSTITUCION, P_IDPAGO, M_PAGOS(I).IDPERSONA,  
+                           decode(PKG_SIGA_PAGOS_SJCS.FUN_FCS_OBTENERIDPERSONASOCIED(M_PAGOS(I).IDPERSONA, P_IDINSTITUCION),'-1',M_PAGOS(I).IDPERSONA, 
+                                  PKG_SIGA_PAGOS_SJCS.FUN_FCS_OBTENERIDPERSONASOCIED(M_PAGOS(I).IDPERSONA, P_IDINSTITUCION)),   
                            0, 0, 0, M_PAGOS(I).pagoActual,
-                           0, 0, 0, 0,
+                           0, 0, 0, 0,                          
                            SYSDATE, P_USUMODIFICACION);
            else
-               UPDATE FCS_PAGO_COLEGIADO
+               UPDATE FCS_PAGO_COLEGIADO 
                   SET IMPEJG =  IMPEJG + M_PAGOS(I).pagoActual,
-                      FECHAMODIFICACION = SYSDATE,
+                      FECHAMODIFICACION = SYSDATE, 
                       USUMODIFICACION = P_USUMODIFICACION
-                WHERE IDINSTITUCION = P_IDINSTITUCION
+                WHERE IDINSTITUCION = P_IDINSTITUCION 
                   and IDPAGOSJG = P_IDPAGO
                   and IDPERORIGEN = M_PAGOS(I).IDPERSONA;
           end if;
         end if;
       end loop;
     end if;
-
+    
     --salida correcta
     P_DATOSERROR := TO_CHAR('PROC_FCS_PAGO_TURNOS_OFI:Fin Correcto');
     P_CODRETORNO := TO_CHAR('0');
-
+    
   EXCEPTION
     WHEN OTHERS THEN
       P_TOTAL := 0;
@@ -1231,18 +1232,18 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
   FUNCTION FUNC_FCS_CARGA_EJG (P_IDINSTITUCION   IN NUMBER,
                                         P_IDPAGO          IN NUMBER,
                                         P_CODRETORNO      OUT VARCHAR2,
-                                        P_DATOSERROR      OUT VARCHAR2)
+                                        P_DATOSERROR      OUT VARCHAR2) 
                                         return tab_pagos IS
     M_PAGOS TAB_PAGOS;
     v_idfacturacion NUMBER;
     indice number := 0;
-
+  
     -- Obtiene el importe total facturado y el importe total pagado en pagos anteriores
-    -- para un colegiado que tenga actuaciones de designas en una facturacion
+    -- para un colegiado que tenga actuaciones de designas en una facturacion 
     CURSOR C_EJG (P_IDFACTURACION NUMBER) IS
       select c.idpersona,
              sum(c.precioaplicado) totalFacturado,
-             (select nvl(sum (col.impejg), 0)
+             (select nvl(sum (col.impejg), 0) 
                 from fcs_pago_colegiado col, fcs_pagosjg pag
                where col.idpagosjg = pag.idpagosjg
                  and col.idinstitucion = pag.idinstitucion
@@ -1259,20 +1260,20 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
 
       --log salida
       P_DATOSERROR := 'Antes de calcular idFacturacion';
-
+      
       --Obtiene la facturacion correspondiente al pago
       select pag.idfacturacion
         into v_idfacturacion
         from FCS_PAGOSJG PAG
        where pag.idpagosjg = P_IDPAGO
          and pag.idinstitucion = P_IDINSTITUCION;
-
+          
       --calculando importe facturado y pagado por cada actuacion
       FOR Elemento IN C_EJG (v_idfacturacion) LOOP
         IF Elemento.totalFacturado>CTE AND Elemento.totalFacturado-Elemento.totalAnterior>CTE THEN
           /* Actualizo el contador de la matriz */
           indice := indice + 1;
-
+          
           /* inserta los datos calculados en la matriz */
           M_PAGOS(indice).IDPERSONA       := Elemento.idpersona;
           M_PAGOS(indice).TOTALFACTURADO  := Elemento.totalFacturado;
@@ -1280,14 +1281,14 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
           M_PAGOS(indice).PAGOACTUAL      :=0;
         END IF;
       END LOOP;
-
-
+        
+    
     --salida correcta
     P_DATOSERROR := 'FUNCTION FUNC_FCS_CARGA_SOJ: ha finalizado correctamente.';
     P_CODRETORNO := TO_CHAR(0);
-
+    
     return M_PAGOS;
-
+    
   EXCEPTION
     WHEN OTHERS THEN
       P_CODRETORNO := TO_CHAR(SQLCODE);
@@ -1300,10 +1301,10 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
   /**
    Calcula el campo pagoActual de la matriz
   **/
-  PROCEDURE CALCULA_PAGO(M_PAGOS IN OUT TAB_PAGOS,
-                         v_importeARepartir IN OUT number,
+  PROCEDURE CALCULA_PAGO(M_PAGOS IN OUT TAB_PAGOS, 
+                         v_importeARepartir IN OUT number, 
                          total OUT number) is
-
+                         
     v_importeTotalFacturado       number:=0;
     v_importeTotalPagoAnterior    number:=0;
     v_importeTotalPagoActual      number:=0;
@@ -1311,7 +1312,7 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
     v_porcentajeAplicar           number:=0;
     v_importePagoPendiente        number:=0; -- importe del pago pendiente por actuacion
     v_importePagoParcialActual    number:=0; -- importe del pago parcial actual por actuacion
-
+      
     begin
       --calculando importes totales: Facturado, Pagado y Pendiente
       FOR I in 1..M_PAGOS.count LOOP
@@ -1319,8 +1320,8 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
         v_importeTotalPagoAnterior:=v_importeTotalPagoAnterior+M_PAGOS(I).totalAnterior;
       end loop;
       v_importeTotalPagoPendiente := v_importeTotalFacturado-v_importeTotalPagoAnterior;
-
-
+      
+     
       if (round(v_importeTotalPagoPendiente,2)>cte) then
         --calcula el nuevo porcentaje a aplicar sobre el importe pendiente
         v_porcentajeAplicar := v_importeARepartir/v_importeTotalPagoPendiente;
@@ -1329,16 +1330,16 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
         if (v_porcentajeAplicar > 1) then
           v_porcentajeAplicar:=1;
         end if;
-
+        
         -- Para cada colegiado calcula el importe del pago actual
         FOR J in 1..M_PAGOS.count-1 LOOP
           -- obtiene el importe pendiente por pagar para un colegiado
           v_importePagoPendiente := M_PAGOS(J).totalFacturado - M_PAGOS(J).totalAnterior;
-          -- obtiene el importe a pagar sobre el importe pendiente
+          -- obtiene el importe a pagar sobre el importe pendiente 
           v_importePagoParcialActual := v_importePagoPendiente*v_porcentajeAplicar;
-
-          -- Comprueba si el importe a repartir restante supera al importe a pagar
-          -- Si no, sólo se paga lo que quede
+          
+          -- Comprueba si el importe a repartir restante supera al importe a pagar 
+          -- Si no, sólo se paga lo que quede 
           if (v_importeARepartir < v_importePagoParcialActual) then
              v_importePagoParcialActual := v_importeARepartir;
           end if;
@@ -1354,8 +1355,8 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
                                M_PAGOS(J).totalAnterior || '  ' ||
                                M_PAGOS(J).pagoActual);*/
         END LOOP;
-
-        -- Para la última guardia se paga lo que quede
+        
+        -- Para la última guardia se paga lo que quede 
         M_PAGOS(M_PAGOS.count).pagoActual := v_importeARepartir;
         -- Actualiza el importe del total pagado
         v_importeTotalPagoActual := v_importeTotalPagoActual + round(v_importeTotalPagoPendiente,2);
@@ -1363,12 +1364,12 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
                                M_PAGOS(M_PAGOS.count).totalFacturado || '  ' ||
                                M_PAGOS(M_PAGOS.count).totalAnterior || '  ' ||
                                M_PAGOS(M_PAGOS.count).pagoActual || '  ' ||
-                               v_importeARepartir || '  ' ||
+                               v_importeARepartir || '  ' ||                               
                                v_importeTotalPagoActual);*/
         -- actualiza la variable de salida de la funcion
-        TOTAL := v_importeTotalPagoActual;
+        TOTAL := v_importeTotalPagoActual;                               
         end if;
-
+        
   end;
 
   /****************************************************************************************************************/
@@ -1388,7 +1389,7 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
                                         p_Idpago1 Number,
                                         p_Idpago2 Number)
     Return Varchar2 Is
-
+  
     Cursor c_Pagos(p_Fecha_Ini Fcs_Pagosjg.Fechadesde%Type, p_Fecha_Fin Fcs_Pagosjg.Fechadesde%Type) Is
       Select Pag.Idpagosjg, Pag.Idfacturacion
         From Fcs_Pagosjg Pag
@@ -1396,7 +1397,7 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
          And Pag.Fechadesde >= p_Fecha_Ini
          And Pag.Fechahasta <= p_Fecha_Fin
        Order By Pag.Fechadesde Asc;
-
+  
     Fecha_1   Fcs_Pagosjg.Fechadesde%Type;
     Fecha_2   Fcs_Pagosjg.Fechadesde%Type;
     Fecha_3   Fcs_Pagosjg.Fechadesde%Type;
@@ -1404,12 +1405,12 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
     Fecha_Ini Fcs_Pagosjg.Fechadesde%Type;
     Fecha_Fin Fcs_Pagosjg.Fechadesde%Type;
     Rc        Varchar2(4000);
-
+    
     v_Consejo cen_institucion.Cen_Inst_Idinstitucion%Type;
     v_Idgrupofacturacion Fcs_Fact_Grupofact_Hito.Idgrupofacturacion%Type;
-
+  
   Begin
-
+  
     -- Sacando solo un pago si solo se selecciona uno
     If (p_Idpago2 Is Null) Then
       Return p_Idpago1;
@@ -1429,7 +1430,7 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
       From Fcs_Pagosjg Pag
      Where Idinstitucion = p_Idinstitucion
        And Idpagosjg = p_Idpago2;
-
+  
     -- La primera fechadesde marca el inicio del intervalo
     If (Fecha_1 < Fecha_3) Then
       Fecha_Ini := Fecha_1;
@@ -1442,12 +1443,12 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
     Else
       Fecha_Fin := Fecha_4;
     End If;
-
+    
     Select Cen_Inst_Idinstitucion
       Into v_Consejo
       From Cen_Institucion
      Where Idinstitucion = p_Idinstitucion;
-
+  
     For v_Pago In c_Pagos(Fecha_Ini, Fecha_Fin) Loop
       If (v_Consejo = 3001) Then --Para los catalanes se limita que los pagos sean solo de lo seleccionado (Guardia, Turno, etc)
         Select Idgrupofacturacion
@@ -1456,7 +1457,7 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
          Where Idinstitucion = p_Idinstitucion
            And Idfacturacion = v_Pago.Idfacturacion
          Group By Idgrupofacturacion;
-
+        
         If (v_Idgrupofacturacion = 1) Then
           Rc := Rc || ', ' || v_Pago.IdPagosjg;
         End If;
@@ -1464,16 +1465,16 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
         Rc := Rc || ', ' || v_Pago.IdPagosjg;
       End If;
     End Loop;
-
+  
     Rc := Ltrim(Rc, ',');
     Return(Rc);
-
+  
   Exception
     When No_Data_Found Then
       Return(1);
     When Others Then
       Return(-1);
-
+    
   End Func_Pagos_Intervalo;
 
  /****************************************************************************************************************/
@@ -1494,7 +1495,7 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
                                           p_Idpago2       NUMBER,
                                           p_GrupoFact     NUMBER)
     RETURN VARCHAR2 IS
-
+  
     CURSOR c_Pagos(p_Fecha_Ini Fcs_Pagos_Estadospagos.Fechaestado%TYPE, p_Fecha_Fin Fcs_Pagos_Estadospagos.Fechaestado%TYPE) IS
       SELECT pag.Idpagosjg,gru.idgrupofacturacion
         FROM Fcs_Pagos_Estadospagos e, fcs_pagosjg pag, fcs_fact_grupofact_hito gru
@@ -1502,30 +1503,30 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
          AND pag.Idinstitucion = e.Idinstitucion
          and pag.Idinstitucion = gru.Idinstitucion
          AND pag.Idfacturacion = gru.Idfacturacion
-
+         
          AND e.Idinstitucion = p_Idinstitucion
           AND e.idestadopagosjg = 30
          AND e.Fechaestado >= p_Fecha_Ini
          AND e.Fechaestado <= p_Fecha_Fin
        ORDER BY e.Fechaestado ASC;
-
+  
     Fecha_e1   Fcs_Pagos_Estadospagos.Fechaestado%TYPE;
     Fecha_e2   Fcs_Pagos_Estadospagos.Fechaestado%TYPE;
     Fecha_Ini  Fcs_Pagos_Estadospagos.Fechaestado%TYPE;
     Fecha_Fin  Fcs_Pagos_Estadospagos.Fechaestado%TYPE;
     Rc         VARCHAR2(4000);
-
+    
     idpagosjg_anterior fcs_pagosjg.Idpagosjg%Type;
-
+  
   BEGIN
-
+  
     -- Sacando solo un pago si solo se selecciona uno
     IF (p_Idpago2 IS NULL) THEN
       RETURN p_Idpago1;
     ELSIF (p_Idpago1 = p_Idpago2) THEN
       RETURN p_Idpago1;
     END IF;
-
+  
     -- Se obtiene la fecha de estado del pirmer idpago
     SELECT e.fechaestado
       INTO Fecha_e1
@@ -1533,7 +1534,7 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
      WHERE Idinstitucion = p_Idinstitucion
        AND Idpagosjg = p_Idpago1
        AND idestadopagosjg = 30;
-
+       
     -- Se obtiene la fecha de estado del segundo idpago
     SELECT e.fechaestado
       INTO Fecha_e2
@@ -1541,7 +1542,7 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
      WHERE Idinstitucion = p_Idinstitucion
        AND Idpagosjg = p_Idpago2
        AND idestadopagosjg = 30;
-
+  
     -- La primera fechadesde marca el inicio del intervalo
     IF (Fecha_e1 < Fecha_e2) THEN
       Fecha_Ini := Fecha_e1;
@@ -1550,7 +1551,7 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
       Fecha_Ini := Fecha_e2;
       Fecha_Fin := Fecha_e1;
     END IF;
-
+  
     idpagosjg_anterior := -1;
     FOR v_Pago IN c_Pagos(Fecha_Ini, Fecha_Fin) LOOP
       IF (p_GrupoFact = -1 Or v_Pago.Idgrupofacturacion = p_GrupoFact) THEN
@@ -1561,16 +1562,16 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
         End If;
       END IF;
     END LOOP;
-
+  
     Rc := Ltrim(Rc, ',');
     RETURN(Rc);
-
+  
   EXCEPTION
     WHEN No_Data_Found THEN
       RETURN(1);
     WHEN OTHERS THEN
       RETURN(-1);
-
+    
   END Func_Pagos_Intervalo_GrupoFact;
 
 END PKG_SIGA_PAGOS_SJCS;

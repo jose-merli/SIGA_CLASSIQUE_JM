@@ -55,13 +55,13 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 
-		<!-- Asociada al boton Volver -->
+		// Asociada al boton Volver
 		function accionCerrar(){ 
 			window.top.close();
 			return;
 		}	
 		
-		<!-- Asociada al boton GuardarCerrar -->
+		// Asociada al boton GuardarCerrar
 		function accionGuardarCerrar() {
 			if (document.forms[0].acreditacion.value == "") {
 				var mensaje = "<siga:Idioma key="gratuita.procedimientos.acreditacion.literal.acreditacion"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
@@ -69,9 +69,10 @@
 				return;
 			}
 
+			document.forms[0].porcentajeTexto.value=document.forms[0].porcentajeTexto.value.replace(/,/,".");
 			porcentaje = document.forms[0].porcentajeTexto.value;
 			if (isFinite(porcentaje)) {
-				a = parseInt(porcentaje);
+				a = parseFloat(porcentaje);
 				if ((a < 0) || (a > 100)) {
 					var mensaje = "<siga:Idioma key="gratuita.procedimientos.acreditacion.porcentaje.error"/>";
 					alert (mensaje);
@@ -176,14 +177,14 @@
 			<tr>
 				<td class="labelText"><siga:Idioma key="gratuita.procedimientos.acreditacion.literal.porcentaje"/></td>
 				<td class="labelTextValor">
-<%										Integer porcentajeValor = new Integer(0);
+<%								Double porcentajeValor = new Double(0);
 								if (modo.equalsIgnoreCase("editar")) {
 									if (bean != null){
 										porcentajeValor = bean.getPorcentaje();
 									}
 								}
 %>
-				<input type="text" name="porcentajeTexto" size="10" maxlength="3" value="<%=porcentajeValor.intValue()%>" class="box"> <font class="labelText">%</font></td>
+				<input type="text" name="porcentajeTexto" size="10" maxlength="6" value="<%=UtilidadesNumero.formatoCampo(porcentajeValor.doubleValue())%>" class="box"> <font class="labelText">%</font></td>
 				<td></td>
 			</tr>
 			<tr>

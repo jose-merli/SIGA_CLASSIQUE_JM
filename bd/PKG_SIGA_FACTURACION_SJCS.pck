@@ -1804,11 +1804,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
     -- Public variable declarations
     C_FACTURACION_CONTROLADA CONSTANT BOOLEAN := TRUE; -- CONSTANTE PARA ACTIVAR LA FACTURACION CONTROLADA
     HITO_SOJ CONSTANT NUMBER := 12;
-    HITO_EJG CONSTANT NUMBER := 13;    
+    HITO_EJG CONSTANT NUMBER := 13;
 
     V_CODRETORNO2 VARCHAR2(10) := TO_CHAR(0); /* Codigo de error Oracle */
     V_DATOSERROR2 VARCHAR2(4000) := NULL; /* Mensaje de error Oracle */
-    V_COSTEFIJO NUMBER := 0;    
+    V_COSTEFIJO NUMBER := 0;
     V_IDINSTITUCION NUMBER;
     V_IDFACTURACION NUMBER;
     V_ANIO NUMBER;
@@ -1837,7 +1837,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
     E_ERROR_BF_5 EXCEPTION;
     E_ERROR_BF_6 EXCEPTION;
     E_ERROR_BF_7 EXCEPTION;
-      
+
     --INI: Cambio facturacion guardias inactivas catalanes de VG --
     C_CATALAN CEN_INSTITUCION.CEN_INST_IDINSTITUCION%TYPE := 3001;
     C_IMPORTE_GUARDIA_INACTIVA SCS_HITOFACTURABLEGUARDIA.PRECIOHITO%TYPE := 61.16;
@@ -1877,8 +1877,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         WHERE IDINSTITUCION = V_IDINSTITUCION
             AND IDTURNO = V_IDTURNO;
             --AND scs_guardiasturno.idguardiasustitucion IS NULL  -- DCG para no facturar las guardias de sustitucion
-            --AND scs_guardiasturno.idturnosustitucion IS NULL;   -- DCG              
-                  
+            --AND scs_guardiasturno.idturnosustitucion IS NULL;   -- DCG
+
     c_importeFacturado_CG varchar2(4000) := 'select sum(nvl(precioaplicado,0)) v_importeTotalCG' ||
         ' from fcs_fact_apunte' ||
         ' where fcs_fact_apunte.idinstitucion=@P_IDINSTITUCION@' ||
@@ -2358,7 +2358,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             and A.Anio = Ac.Anio
             and A.Numero = Ac.Numero
             --and (Ac.Facturado is null or Ac.Facturado = '0')
-            and not exists( 
+            and not exists(
                 select 1
                 from FCS_FACT_ACTUACIONASISTENCIA FAC
                 where fac.idinstitucion = Ac.idinstitucion
@@ -2467,8 +2467,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 and fac.numero = Ac.numero
                 and fac.idactuacion = Ac.idactuacion)
             and (Ac.Anulacion is null or Ac.Anulacion = '0')
-            and Ac.Fechajustificacion is not null 
-            and trunc(Ac.Fechajustificacion) between trunc(V_DATOS_FACTURACION.FECHADESDE) and trunc(V_DATOS_FACTURACION.FECHAHASTA) 
+            and Ac.Fechajustificacion is not null
+            and trunc(Ac.Fechajustificacion) between trunc(V_DATOS_FACTURACION.FECHADESDE) and trunc(V_DATOS_FACTURACION.FECHAHASTA)
             and Ac.Validada = '1'
             and Ac.diadespues = 'S' -- DIAS FUERA DE GUARDIA
         ORDER BY FECHA;
@@ -2495,7 +2495,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     and fac.idactuacion = Ac.idactuacion)
             and (Ac.Anulacion is null or Ac.Anulacion = '0')
             and Ac.Fechajustificacion is not null
-            and trunc(Ac.Fechajustificacion) between trunc(V_DATOS_FACTURACION.FECHADESDE) and trunc(V_DATOS_FACTURACION.FECHAHASTA) 
+            and trunc(Ac.Fechajustificacion) between trunc(V_DATOS_FACTURACION.FECHADESDE) and trunc(V_DATOS_FACTURACION.FECHAHASTA)
             and Ac.Validada = '1'
             and Ac.diadespues = 'S'
             and Ac.fecha = V_FECHA
@@ -2640,8 +2640,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     AND FAC_ACT.ANIO = ACT.ANIO -- Relacion SCS_ACTUACIONASISTENCIA => FCS_FACT_ACTUACIONASISTENCIA
                     AND FAC_ACT.NUMERO = ACT.NUMERO -- Relacion SCS_ACTUACIONASISTENCIA => FCS_FACT_ACTUACIONASISTENCIA
                     AND FAC_ACT.IDACTUACION = ACT.IDACTUACION -- Relacion SCS_ACTUACIONASISTENCIA => FCS_FACT_ACTUACIONASISTENCIA
-            );            
-            
+            );
+
   /****************************************************************************************************************
     Nombre: FUNC_ES_COLEGIO_CATALAN
     Descripcion: Funcion que nos indica si es un colegio catalan
@@ -2651,31 +2651,31 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
     Versiones (Fecha - Autor - Datos):
     - 1.0 - 02/03/2016 - Jorge Paez Trivino - Adaptacion a los colegios catalanes (R1602_0089)
-  ****************************************************************************************************************/            
+  ****************************************************************************************************************/
     FUNCTION FUNC_ES_COLEGIO_CATALAN (P_IDINSTITUCION IN CEN_INSTITUCION.IDINSTITUCION%TYPE) RETURN BOOLEAN IS
         V_CONSEJO CEN_INSTITUCION.CEN_INST_IDINSTITUCION%TYPE;
     BEGIN
-    
+
         IF (V_CONFIG_GUARDIA.CONSEJOINSTITUCION = C_CATALAN) THEN
             RETURN TRUE;
-        END IF;                            
-    
+        END IF;
+
         SELECT CEN_INST_IDINSTITUCION
             INTO V_CONSEJO
         FROM CEN_INSTITUCION
         WHERE IDINSTITUCION = P_IDINSTITUCION;
-        
+
         IF (V_CONSEJO = C_CATALAN) THEN
             RETURN TRUE;
         ELSE
             RETURN FALSE;
-        END IF;                        
-            
+        END IF;
+
         EXCEPTION
             WHEN OTHERS THEN
                 RETURN FALSE;
     END FUNC_ES_COLEGIO_CATALAN;
-    
+
   /****************************************************************************************************************
     Nombre: FUNC_OBTENER_IDFACTURACION
     Descripcion: Funcion que busca el IDFACTURACION de una cabecera de guardia (incluye regularizaciones)
@@ -2688,21 +2688,21 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
     Versiones (Fecha - Autor - Datos):
     - 1.0 - 02/03/2016 - Jorge Paez Trivino - Adaptacion a los colegios catalanes (R1602_0089)
-  ****************************************************************************************************************/    
+  ****************************************************************************************************************/
     FUNCTION FUNC_OBTENER_IDFACTURACION(
         P_IDINSTITUCION IN FCS_HISTORICO_HITOFACT.IDINSTITUCION%TYPE,
         P_IDTURNO IN FCS_HISTORICO_HITOFACT.IDTURNO%TYPE,
         P_IDGUARDIA IN FCS_HISTORICO_HITOFACT.IDGUARDIA%TYPE,
         P_FECHA IN FCS_FACTURACIONJG.FECHADESDE%TYPE) RETURN NUMBER IS
-    
+
         V_IDFACTURACION FCS_FACT_APUNTE.IDFACTURACION%TYPE := NULL;
-  
-    BEGIN    
+
+    BEGIN
         -- Comprueba si es un colegio catalan
-        IF (FUNC_ES_COLEGIO_CATALAN(P_IDINSTITUCION) = TRUE) THEN        
+        IF (FUNC_ES_COLEGIO_CATALAN(P_IDINSTITUCION) = TRUE) THEN
             BEGIN
                 -- JPT:  Obtiene el mayor de los IDFACTURACION que se han regularizado
-                SELECT MAX(FAC.IDFACTURACION) 
+                SELECT MAX(FAC.IDFACTURACION)
                     INTO V_IDFACTURACION
                 FROM  FCS_HISTORICO_HITOFACT HIST,
                     FCS_FACT_GRUPOFACT_HITO GF,
@@ -2715,8 +2715,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     AND GF.IDHITOGENERAL = PKG_SIGA_CONSTANTES.HITO_GENERAL_GUARDIA
                     AND FAC.IDINSTITUCION = HIST.IDINSTITUCION
                     AND FAC.IDFACTURACION = HIST.IDFACTURACION
-                    AND P_FECHA BETWEEN FAC.FECHADESDE AND FAC.FECHAHASTA        
-                    AND FAC.REGULARIZACION = 1; -- JPT: Indica que es una facturacion de regularizacion                    
+                    AND P_FECHA BETWEEN FAC.FECHADESDE AND FAC.FECHAHASTA
+                    AND FAC.REGULARIZACION = 1; -- JPT: Indica que es una facturacion de regularizacion
                 EXCEPTION
                   WHEN OTHERS THEN
                     V_IDFACTURACION := NULL;
@@ -2724,9 +2724,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
             IF (V_IDFACTURACION IS NULL) THEN
                 BEGIN
-                    /* JPT: En caso de no haber regularizaciones, obtiene el IDFACTURACION inicial 
+                    /* JPT: En caso de no haber regularizaciones, obtiene el IDFACTURACION inicial
                         - Puede no tener FCS_FACT_APUNTE, si se hizo una facturacion sin las cabeceras de guardias validadas ... y luego se validaron y se pusieron en una facturacion futura*/
-                    SELECT MIN(FAC.IDFACTURACION) 
+                    SELECT MIN(FAC.IDFACTURACION)
                         INTO V_IDFACTURACION
                     FROM FCS_HISTORICO_HITOFACT HIST,
                         FCS_FACT_GRUPOFACT_HITO GF,
@@ -2739,21 +2739,21 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                         AND GF.IDHITOGENERAL = PKG_SIGA_CONSTANTES.HITO_GENERAL_GUARDIA
                         AND FAC.IDINSTITUCION = HIST.IDINSTITUCION
                         AND FAC.IDFACTURACION = HIST.IDFACTURACION
-                        AND P_FECHA BETWEEN FAC.FECHADESDE AND FAC.FECHAHASTA;               
+                        AND P_FECHA BETWEEN FAC.FECHADESDE AND FAC.FECHAHASTA;
                     EXCEPTION
                       WHEN OTHERS THEN
                         V_IDFACTURACION := NULL;
                 END;
             END IF;
         END IF;
-        
+
         RETURN V_IDFACTURACION;
 
         EXCEPTION
             WHEN OTHERS THEN
                 RETURN NULL;
-    END FUNC_OBTENER_IDFACTURACION; 
-    
+    END FUNC_OBTENER_IDFACTURACION;
+
   /****************************************************************************************************************
     Nombre: FUNC_COSTEFIJO
     Descripcion: Funcion que nos devuelve el coste fijo de una actuacion
@@ -2761,7 +2761,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
     Parametros (IN/OUT - Descripcion -Tipo de Datos)
     - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER
     - P_IDTURNO - IN - Identificador del turno - NUMBER
-    - P_IDGUARDIA - IN - Identificador de la guardia - NUMBER    
+    - P_IDGUARDIA - IN - Identificador de la guardia - NUMBER
     - P_ANIO - IN - Ano de la actuacion - NUMBER
     - P_NUMERO - IN - Numero de la actuacion - NUMBER
     - P_IDACTUACION - IN - Identificador del tipo de actuacion - NUMBER
@@ -2781,21 +2781,21 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         P_IDACTUACION IN SCS_ACTUACIONASISTENCIA.IDACTUACION%TYPE,
         P_FECHA IN SCS_ASISTENCIA.FECHAHORA%TYPE,
         P_IDFACTURACION IN FCS_HISTO_TIPOACTCOSTEFIJO.IDFACTURACION%TYPE) RETURN NUMBER IS
-    
+
         V_IDFACTURACION FCS_HISTO_TIPOACTCOSTEFIJO.IDFACTURACION%TYPE := P_IDFACTURACION;
         V_COSTEFIJO FCS_HISTO_TIPOACTCOSTEFIJO.IMPORTE%TYPE := NULL;
         V_TIENEHISTORICO BOOLEAN := FALSE;
-  
-    BEGIN    
+
+    BEGIN
         IF (P_IDFACTURACION IS NULL) THEN
             -- Busca si tiene un IDFACTURACION previo (incluye tratamiento de regularizaciones)
             V_IDFACTURACION :=  FUNC_OBTENER_IDFACTURACION(P_IDINSTITUCION, P_IDTURNO, P_IDGUARDIA, P_FECHA);
-        END IF;            
-    
+        END IF;
+
         -- Si obtiene un idFacturacion, hay que obtener el coste fijo del tipo de actuacion del historico
         IF (V_IDFACTURACION IS NOT NULL) THEN
             BEGIN
-                SELECT HTACT.IMPORTE 
+                SELECT HTACT.IMPORTE
                     INTO V_COSTEFIJO
                 FROM SCS_ACTUACIONASISTCOSTEFIJO ACTCF,
                     FCS_HISTO_TIPOACTCOSTEFIJO  HTACT
@@ -2808,18 +2808,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     AND ACTCF.ANIO = P_ANIO
                     AND ACTCF.NUMERO = P_NUMERO
                     AND ACTCF.IDACTUACION = P_IDACTUACION;
-                    
-                    V_TIENEHISTORICO := TRUE;                    
-                    
+
+                    V_TIENEHISTORICO := TRUE;
+
                 EXCEPTION
                     WHEN OTHERS THEN
                         V_TIENEHISTORICO := FALSE;
-            END;                    
+            END;
         END IF;
-            
+
         -- Si no obtenemos un idFacturacion o no tenia historico, hay que obtener el coste fijo del tipo de actuacion actual
         IF (V_IDFACTURACION IS NULL OR V_TIENEHISTORICO = FALSE) THEN
-            SELECT TACT.IMPORTE 
+            SELECT TACT.IMPORTE
                 INTO V_COSTEFIJO
             FROM SCS_ACTUACIONASISTCOSTEFIJO ACTCF,
                 SCS_TIPOACTUACIONCOSTEFIJO  TACT
@@ -2830,16 +2830,16 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 AND ACTCF.IDINSTITUCION = P_IDINSTITUCION
                 AND ACTCF.ANIO = P_ANIO
                 AND ACTCF.NUMERO = P_NUMERO
-                AND ACTCF.IDACTUACION = P_IDACTUACION;                               
-        END IF;                
-            
-        RETURN V_COSTEFIJO;            
+                AND ACTCF.IDACTUACION = P_IDACTUACION;
+        END IF;
+
+        RETURN V_COSTEFIJO;
 
         EXCEPTION
             WHEN OTHERS THEN
                 RETURN 0;
-    END FUNC_COSTEFIJO;    
-    
+    END FUNC_COSTEFIJO;
+
   /****************************************************************************************************************
     Nombre: FUNC_CALCULAR_IMPORTEASIST
     Descripcion: Funcion que nos devuelve el importe de un tipo de asistencia
@@ -2847,7 +2847,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
     Parametros (IN/OUT - Descripcion -Tipo de Datos)
     - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER
     - P_IDTURNO - IN - Identificador del turno - NUMBER
-    - P_IDGUARDIA - IN - Identificador de la guardia - NUMBER    
+    - P_IDGUARDIA - IN - Identificador de la guardia - NUMBER
     - P_IDTIPOASISTENCIA - IN - Identificador del tipo de asistencia - NUMBER
     - P_FECHA - IN - Fecha de la asistencia - DATE
     - P_IDFACTURACION - IN - Identificador de la facturacion - NUMBER
@@ -2865,18 +2865,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         P_FECHA IN SCS_ASISTENCIA.FECHAHORA%TYPE,
         P_IDFACTURACION IN FCS_HISTORICO_TIPOASISTCOLEGIO.IDFACTURACION%TYPE,
         P_TIPO IN NUMBER) RETURN NUMBER IS
-    
+
         V_IDFACTURACION FCS_HISTORICO_TIPOASISTCOLEGIO.IDFACTURACION%TYPE := P_IDFACTURACION;
         V_IMPORTE FCS_HISTORICO_TIPOASISTCOLEGIO.IMPORTE%TYPE := NULL;
         V_IMPORTEMAXIMO FCS_HISTORICO_TIPOASISTCOLEGIO.IMPORTEMAXIMO%TYPE := NULL;
         V_TIENEHISTORICO BOOLEAN := FALSE;
-  
+
     BEGIN
         IF (P_IDFACTURACION IS NULL) THEN
             -- Busca si tiene un IDFACTURACION previo (incluye tratamiento de regularizaciones)
             V_IDFACTURACION :=  FUNC_OBTENER_IDFACTURACION(P_IDINSTITUCION, P_IDTURNO, P_IDGUARDIA, P_FECHA);
         END IF;
-            
+
         -- Si obtiene un idFacturacion, hay que obtener el tipo de asistencia del historico
         IF (V_IDFACTURACION IS NOT NULL) THEN
             BEGIN
@@ -2886,24 +2886,24 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 WHERE HTASI.IDINSTITUCION = P_IDINSTITUCION
                     AND HTASI.IDTIPOASISTENCIACOLEGIO = P_IDTIPOASISTENCIA
                     AND HTASI.IDFACTURACION = V_IDFACTURACION;
-                    
-                    V_TIENEHISTORICO := TRUE;                    
-                    
+
+                    V_TIENEHISTORICO := TRUE;
+
                 EXCEPTION
                     WHEN OTHERS THEN
                         V_TIENEHISTORICO := FALSE;
             END;
         END IF;
-            
+
         -- Si no obtenemos un idFacturacion o no tenia historico, hay que obtener el tipo de asistencia actual
         IF (V_IDFACTURACION IS NULL OR V_TIENEHISTORICO = FALSE) THEN
             SELECT TASI.IMPORTE, TASI.IMPORTEMAXIMO
                 INTO V_IMPORTE, V_IMPORTEMAXIMO
             FROM SCS_TIPOASISTENCIACOLEGIO TASI
             WHERE TASI.IDINSTITUCION = P_IDINSTITUCION
-                AND TASI.IDTIPOASISTENCIACOLEGIO = P_IDTIPOASISTENCIA;                    
-        END IF;                
-            
+                AND TASI.IDTIPOASISTENCIACOLEGIO = P_IDTIPOASISTENCIA;
+        END IF;
+
         IF (P_TIPO = 0) THEN
             RETURN V_IMPORTE;
         ELSE
@@ -2922,7 +2922,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
     Parametros (IN/OUT - Descripcion -Tipo de Datos)
     - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER
     - P_IDTURNO - IN - Identificador del turno - NUMBER
-    - P_IDGUARDIA - IN - Identificador de la guardia - NUMBER       
+    - P_IDGUARDIA - IN - Identificador de la guardia - NUMBER
     - P_IDTIPOASISTENCIA - IN - Identificador del tipo de asistencia - NUMBER
     - P_IDTIPOACTUACION - IN - Identificador del tipo de actuacion - NUMBER
     - P_FECHA - IN - Fecha de la asistencia o actuacion fuera de guardia - DATE
@@ -2942,18 +2942,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         P_FECHA IN SCS_ASISTENCIA.FECHAHORA%TYPE,
         P_IDFACTURACION IN FCS_HISTORICO_TIPOACTUACION.IDFACTURACION%TYPE,
         P_TIPO IN NUMBER) RETURN NUMBER IS
-    
+
         V_IDFACTURACION FCS_HISTORICO_TIPOACTUACION.IDFACTURACION%TYPE := P_IDFACTURACION;
         V_IMPORTE FCS_HISTORICO_TIPOACTUACION.IMPORTE%TYPE := NULL;
         V_IMPORTEMAXIMO FCS_HISTORICO_TIPOACTUACION.IMPORTEMAXIMO%TYPE := NULL;
         V_TIENEHISTORICO BOOLEAN := FALSE;
-  
+
     BEGIN
         IF (P_IDFACTURACION IS NULL) THEN
             -- Busca si tiene un IDFACTURACION previo (incluye tratamiento de regularizaciones)
             V_IDFACTURACION :=  FUNC_OBTENER_IDFACTURACION(P_IDINSTITUCION, P_IDTURNO, P_IDGUARDIA, P_FECHA);
         END IF;
-    
+
         -- Si obtiene un idFacturacion, hay que obtener el tipo de actuacion del historico
         IF (V_IDFACTURACION IS NOT NULL) THEN
             BEGIN
@@ -2964,15 +2964,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     AND HTACT.IDTIPOASISTENCIA = P_IDTIPOASISTENCIA
                     AND HTACT.IDTIPOACTUACION = P_IDTIPOACTUACION
                     AND HTACT.IDFACTURACION = V_IDFACTURACION;
-                    
-                    V_TIENEHISTORICO := TRUE;                    
-                    
+
+                    V_TIENEHISTORICO := TRUE;
+
                 EXCEPTION
                     WHEN OTHERS THEN
                         V_TIENEHISTORICO := FALSE;
-            END;                                
+            END;
         END IF;
-            
+
         -- Si no obtenemos un idFacturacion o no tenia historico, hay que obtener el tipo de actuacion actual
         IF (V_IDFACTURACION IS NULL OR V_TIENEHISTORICO = FALSE) THEN
             SELECT TACT.IMPORTE, TACT.IMPORTEMAXIMO
@@ -2981,22 +2981,22 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             WHERE TACT.IDINSTITUCION = P_IDINSTITUCION
                 AND TACT.IDTIPOASISTENCIA = P_IDTIPOASISTENCIA
                 AND TACT.IDTIPOACTUACION = P_IDTIPOACTUACION;
-        END IF;                
-            
+        END IF;
+
         IF (P_TIPO = 0) THEN
             RETURN V_IMPORTE;
         ELSE
             RETURN V_IMPORTEMAXIMO;
-        END IF;            
+        END IF;
 
         EXCEPTION
             WHEN OTHERS THEN
                 RETURN NULL;
-    END FUNC_CALCULAR_IMPORTEACT;    
-                    
+    END FUNC_CALCULAR_IMPORTEACT;
+
   /****************************************************************************************************************
     Nombre: PROC_CARGA_CONFIG_GUARDIA
-    Descripcion: Procedimiento para catalanes que carga V_CONFIG_GUARDIA 
+    Descripcion: Procedimiento para catalanes que carga V_CONFIG_GUARDIA
 
     Parametros (IN/OUT - Descripcion -Tipo de Datos)
     - P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER
@@ -3007,11 +3007,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
     - P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)
         En caso de error devuelve el codigo de error Oracle correspondiente.
     - P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400)
-        En caso de error devuelve el mensaje de error Oracle correspondiente.    
+        En caso de error devuelve el mensaje de error Oracle correspondiente.
 
     Versiones (Fecha - Autor - Datos):
     - 1.0 - 02/03/2016 - Jorge Paez Trivino - Adaptacion a los colegios catalanes (R1602_0089)
-  ****************************************************************************************************************/        
+  ****************************************************************************************************************/
     PROCEDURE PROC_CARGA_CONFIG_GUARDIA(
         P_IDINSTITUCION IN NUMBER,
         P_IDTURNO IN NUMBER,
@@ -3020,20 +3020,20 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         P_IDFACTURACION IN NUMBER, -- DEBE TENER SIEMPRE VALOR
         P_CODRETORNO OUT VARCHAR2,
         P_DATOSERROR OUT VARCHAR2) IS
-        
-    BEGIN             
-        IF (FUNC_ES_COLEGIO_CATALAN(P_IDINSTITUCION) = TRUE) THEN   
-        
+
+    BEGIN
+        IF (FUNC_ES_COLEGIO_CATALAN(P_IDINSTITUCION) = TRUE) THEN
+
             IF (P_IDFACTURACION IS NULL OR V_CONFIG_GUARDIA.IDFACTURACION IS NULL OR P_CONFIGGUARDIAACTUAL.IDFACTURACION IS NULL) THEN
                 P_DATOSERROR := 'PROC_CARGA_CONFIG_GUARDIA: No se encuentra el valor de IDFACTURACION';
                 RAISE E_ERROR2;
-            END IF;                
-                                
-            IF (P_IDFACTURACION = P_CONFIGGUARDIAACTUAL.IDFACTURACION) THEN 
+            END IF;
+
+            IF (P_IDFACTURACION = P_CONFIGGUARDIAACTUAL.IDFACTURACION) THEN
                 -- JPT: Es una cabecera de guardia, configurado con la guardia actual
                 -- Adri: Se trata de una guardia que se factura en el periodo actual de la facturacion y por tanto, se coge la configuracion del periodo actual, nada de historico.
-                    V_CONFIG_GUARDIA := P_CONFIGGUARDIAACTUAL; 
-                                    
+                    V_CONFIG_GUARDIA := P_CONFIGGUARDIAACTUAL;
+
             ELSE -- JPT: Como es una cabecera de guardia ya facturada, hay que obtener la configuracion de la primera facturacion de esa cabecera de guardia
                 /* JPT: Cargamos el RECORD de la Configuracion de Guardia FACTURADA (V_CONFIG_GUARDIA)
                     - Obtiene los hitos de la facturacion (tabla FCS_HISTORICO_HITOFACT) y carga los datos en V_CONFIG_GUARDIA
@@ -3045,21 +3045,21 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     P_IDGUARDIA,
                     P_IDFACTURACION,
                     P_CODRETORNO,
-                    P_DATOSERROR);            
+                    P_DATOSERROR);
                 IF (P_CODRETORNO <> '0') THEN
                     RAISE E_ERROR2;
                 END IF;
             END IF;
         END IF;
-        
+
         P_DATOSERROR := 'PROC_FCS_FACTURAR_GUARDIAS: Ha finalizado correctamente';
         P_CODRETORNO := TO_CHAR(0);
 
         EXCEPTION
             WHEN OTHERS THEN
                 P_CODRETORNO := TO_CHAR(SQLCODE);
-                P_DATOSERROR := P_DATOSERROR || ' ' || SQLERRM;        
-    END PROC_CARGA_CONFIG_GUARDIA;        
+                P_DATOSERROR := P_DATOSERROR || ' ' || SQLERRM;
+    END PROC_CARGA_CONFIG_GUARDIA;
 
     /****************************************************************************************************************/
     /* Nombre: PROC_FAC_AS_CONTROLADO */
@@ -3733,24 +3733,24 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
   --
   -- Parametros            IN/OUT   Descripcion                                                    Tipo de Datos
   -- -------------------   ------   ------------------------------------------------------------   -------------
-  -- P_IDINSTITUCION       IN       Identificador de la Institucion                                NUMBER       
-  -- P_IDFACTURACION       IN       Identificador de la Facturacion                                NUMBER       
-  -- P_USUMODIFICACION     IN       usuario que realiza la llamada                                 NUMBER       
-  -- P_TOTAL               OUT      importe total calculado                                        VARCHAR2     
-  -- P_CODRETORNO          OUT      Devuelve 0 en caso de que la ejecucion haya sido OK.           VARCHAR2(10) 
-  --                                En caso de error devuelve el codigo de error Oracle                         
-  --                                correspondiente.                                                            
+  -- P_IDINSTITUCION       IN       Identificador de la Institucion                                NUMBER
+  -- P_IDFACTURACION       IN       Identificador de la Facturacion                                NUMBER
+  -- P_USUMODIFICACION     IN       usuario que realiza la llamada                                 NUMBER
+  -- P_TOTAL               OUT      importe total calculado                                        VARCHAR2
+  -- P_CODRETORNO          OUT      Devuelve 0 en caso de que la ejecucion haya sido OK.           VARCHAR2(10)
+  --                                En caso de error devuelve el codigo de error Oracle
+  --                                correspondiente.
   -- P_DATOSERROR          OUT      Devuelve null en caso de que la ejecucion haya sido OK.        VARCHAR2(200)
-  --                                En caso de error devuelve el mensaje de error Oracle                        
-  --                                correspondiente.                                                            
-  --                                                                                                            
-  -- Fecha Modif.   Autor Modificacion       Descripcion Modificacion                          
+  --                                En caso de error devuelve el mensaje de error Oracle
+  --                                correspondiente.
+  --
+  -- Fecha Modif.   Autor Modificacion       Descripcion Modificacion
   -- ------------   ----------------------   -------------------------------------------------------------------
   --  14/03/2005    Raul Gonzalez Gonzalez   Creacion.
-  --  07/03/2006    Pilar Duran              Se obtiene ademas del precio total el valor del Punto.                               
+  --  07/03/2006    Pilar Duran              Se obtiene ademas del precio total el valor del Punto.
   --  01/10/2009    Juan antonio Saiz        Se elimina la facturacion por puntos.
   --  15/02/2017    Adrian Ayala Gomez       Para el caso especial de Alcala, se factura cada actuacion de Fin
-  --                                         a partir del 100% del modulo, restando lo facturado 
+  --                                         a partir del 100% del modulo, restando lo facturado
   --                                         por la actuacion de Inicio de la misma designacion y modulo.
   --
   Procedure Proc_Fcs_Facturar_Turnos_Ofi(p_Idinstitucion   In Number,
@@ -3759,7 +3759,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                          p_Total           Out Varchar2,
                                          p_Codretorno      Out Varchar2,
                                          p_Datoserror      Out Varchar2) Is
-  
+
     C_FACTURA_FINES_PORCENTAJE  Constant Number := 0;
     C_FACTURA_FINES_RESTOINICIO Constant Number := 1;
     C_ACREDITACION_INICIO       Constant Number := 2;
@@ -3773,18 +3773,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
     n_importe_Inicio_EstaFact   Fcs_Fact_Actuaciondesigna.Precioaplicado%Type;
     n_Importe_Inicio_Facturado  Fcs_Fact_Actuaciondesigna.Precioaplicado%Type;
     b_variosPrecios             Boolean;
-    
+
     n_Actuac_Inicio_ant2012_Nofact Number;
-    
+
     v_designas_TOOMANY_FINS     Varchar2(4000);
     v_designas_SEVERAL_INICIOS  Varchar2(4000);
-    
+
     v_Fechadesde Date;
     v_Fechahasta Date;
     v_Total      Number; -- acumulador para el total de oficio
     v_Precio     Number; -- importe a facturar por cada actuacion
     v_Porcentaje Number; -- porcentaje a aplicar al importe que se factura a cada actuacion
-  
+
     -- Cursores que obtienen el listado de actuaciones a facturar
     Cursor c_Gruposfacturacion Is
       Select Fcs_Fact_Grupofact_Hito.Idgrupofacturacion, Fcs_Fact_Grupofact_Hito.Idinstitucion
@@ -3792,13 +3792,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
        Where Fcs_Fact_Grupofact_Hito.Idinstitucion = p_Idinstitucion
          And Fcs_Fact_Grupofact_Hito.Idfacturacion = p_Idfacturacion
          And Fcs_Fact_Grupofact_Hito.Idhitogeneral = Pkg_Siga_Constantes.Hito_General_Turno;
-  
+
     Cursor c_Turno(p_Idgrupofact Number) Is
       Select Scs_Turno.Idturno, Scs_Turno.Idinstitucion
         From Scs_Turno
        Where Idinstitucion = p_Idinstitucion
          And Idgrupofacturacion = p_Idgrupofact;
-  
+
     Cursor c_Actdesigna(p_Idturno Number, p_Fechadesde Date, p_Fechahasta Date) Is
       Select Scs_Actuaciondesigna.Idinstitucion,
              Scs_Actuaciondesigna.Idturno,
@@ -3829,7 +3829,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
          And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
          And Scs_Actuaciondesigna.Idinstitucion = p_Idinstitucion
          And Scs_Actuaciondesigna.Idturno = p_Idturno
-         
+
          -- (CONDICIONES PARA ENTRAR EN ESTA FACTURACION - SIEMPRE IGUAL)
          And Scs_Actuaciondesigna.Fechajustificacion Is Not Null
          And Trunc(Scs_Actuaciondesigna.Fechajustificacion) Between Trunc(p_Fechadesde) And Trunc(p_Fechahasta)
@@ -3837,43 +3837,43 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
          And Nvl(Scs_Actuaciondesigna.Validada, '0') = '1'
          And Nvl(Scs_Actuaciondesigna.Anulacion, '0') = '0'
          And Scs_Actuaciondesigna.Idpersonacolegiado Is Not Null;
-    
+
   Begin
-  
+
     v_Datoserror2 := 'Iniciando facturacion de Oficio';
     v_Codretorno2 := 0;
-  
+
     v_Datoserror2 := 'Almacenando en los historicos';
     Pkg_Siga_Fcs_Historico.Proc_Fcs_Historicos_Turnos(p_Idinstitucion, p_Idfacturacion, v_Codretorno2, v_Datoserror2);
-    
+
     v_Datoserror2 := 'Obteniendo parametro de tipo de facturacion de las actuaciones de Fin';
     Select F_SIGA_GETPARAMETRO('FCS', 'FORMA_FACTURAR_ACTUACIONES_DESIGNA_DEFIN', p_idinstitucion)
       Into v_tipo_facturacion_fines
       From dual;
-    
+
     v_Datoserror2 := 'Obteniendo FECHADESDE y FECHAHASTA a partir de la facturacion';
     Select Fac.Fechadesde, Fac.Fechahasta
       Into v_Fechadesde, v_Fechahasta
       From Fcs_Facturacionjg Fac
      Where Fac.Idfacturacion = p_Idfacturacion
        And Fac.Idinstitucion = p_Idinstitucion;
-  
+
     v_Datoserror2 := 'Iniciando el recorrido por Grupos de facturacion';
     v_Total       := 0;
     For v_Gruposfacturacion In c_Gruposfacturacion Loop
-    
+
       v_Datoserror2 := 'Iniciando el recorrido por Turnos';
       For v_Turno In c_Turno(v_Gruposfacturacion.Idgrupofacturacion) Loop
-      
+
         v_Datoserror2 := 'Iniciando el recorrido por Actuaciones de Designa';
         For v_Actdesigna In c_Actdesigna(v_Turno.Idturno, v_Fechadesde, v_Fechahasta) Loop
-        
+
           v_Datoserror2 := 'Obteniendo el importe para la Actuacion de Designa';
           If v_tipo_facturacion_fines = C_FACTURA_FINES_RESTOINICIO And v_Actdesigna.Idacreditacion = C_ACREDITACION_FIN Then
-            
+
             Begin
               v_Datoserror2 := 'Comprobando en el caso de que haya mas de una actuacion de Fin, que se corresponden las de Inicio con las de Fin';
-              
+
               -- obteniendo numero de actuaciones ...
               Select Count(1) Into n_fines
                 From Scs_Actuaciondesigna, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
@@ -3883,16 +3883,16 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                  And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
                  And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
                  And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
-                 
+
                  -- ... para la misma designacion ...
                  And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
                  And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
                  And Scs_Actuaciondesigna.Anio = v_Actdesigna.Anio
                  And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
-                 
+
                  -- .. de fin ...
                  And Scs_Actuaciondesigna.Idacreditacion = C_ACREDITACION_FIN;
-              
+
               -- obteniendo numero de actuaciones ...
               Select Count(1) Into n_inicios_enestafacturacion
                 From Scs_Actuaciondesigna, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
@@ -3902,7 +3902,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                  And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
                  And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
                  And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
-                 
+
                  -- ... para la misma designacion y modulo ...
                  And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
                  And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
@@ -3910,10 +3910,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                  And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
                  And Scs_Actuaciondesigna.Idinstitucion_Proc = v_Actdesigna.Idinstitucion_Proc
                  And Scs_Actuaciondesigna.Idprocedimiento = v_Actdesigna.Idprocedimiento
-                 
+
                  -- .. de inicio ...
                  And Scs_Actuaciondesigna.Idacreditacion = C_ACREDITACION_INICIO
-                 
+
                  -- ... (CONDICIONES PARA ENTRAR EN ESTA FACTURACION - SIEMPRE IGUAL)
                  And Scs_Actuaciondesigna.Fechajustificacion Is Not Null
                  And Trunc(Scs_Actuaciondesigna.Fechajustificacion) Between Trunc(v_Fechadesde) And Trunc(v_Fechahasta)
@@ -3921,7 +3921,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                  And Nvl(Scs_Actuaciondesigna.Validada, '0') = '1'
                  And Nvl(Scs_Actuaciondesigna.Anulacion, '0') = '0'
                  And Scs_Actuaciondesigna.Idpersonacolegiado Is Not Null;
-                 
+
               -- obteniendo numero de actuaciones ...
               Select Count(1) Into n_inicios_facturados
                 From Scs_Actuaciondesigna, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
@@ -3931,7 +3931,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                  And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
                  And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
                  And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
-                 
+
                  -- ... para la misma designacion y modulo ...
                  And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
                  And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
@@ -3939,13 +3939,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                  And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
                  And Scs_Actuaciondesigna.Idinstitucion_Proc = v_Actdesigna.Idinstitucion_Proc
                  And Scs_Actuaciondesigna.Idprocedimiento = v_Actdesigna.Idprocedimiento
-                 
+
                  -- .. de inicio ...
                  And Scs_Actuaciondesigna.Idacreditacion = C_ACREDITACION_INICIO
-                 
+
                  -- ... ya facturadas.
                  And (Nvl(Scs_Actuaciondesigna.Facturado, 0) = 1 And Scs_Actuaciondesigna.idfacturacion <> p_Idfacturacion);
-                 
+
               -- obteniendo numero de actuaciones ...
               Select Count(1) Into n_fines_enestafacturacion
                 From Scs_Actuaciondesigna, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
@@ -3955,7 +3955,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                  And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
                  And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
                  And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
-                 
+
                  -- ... para la misma designacion y modulo ...
                  And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
                  And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
@@ -3963,10 +3963,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                  And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
                  And Scs_Actuaciondesigna.Idinstitucion_Proc = v_Actdesigna.Idinstitucion_Proc
                  And Scs_Actuaciondesigna.Idprocedimiento = v_Actdesigna.Idprocedimiento
-                 
+
                  -- .. de fin ...
                  And Scs_Actuaciondesigna.Idacreditacion = C_ACREDITACION_FIN
-                 
+
                  -- ... (CONDICIONES PARA ENTRAR EN ESTA FACTURACION - SIEMPRE IGUAL)
                  And Scs_Actuaciondesigna.Fechajustificacion Is Not Null
                  And Trunc(Scs_Actuaciondesigna.Fechajustificacion) Between Trunc(v_Fechadesde) And Trunc(v_Fechahasta)
@@ -3974,7 +3974,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                  And Nvl(Scs_Actuaciondesigna.Validada, '0') = '1'
                  And Nvl(Scs_Actuaciondesigna.Anulacion, '0') = '0'
                  And Scs_Actuaciondesigna.Idpersonacolegiado Is Not Null;
-                 
+
               -- obteniendo numero de actuaciones ...
               Select Count(1) Into n_fines_facturados
                 From Scs_Actuaciondesigna, Scs_Acreditacionprocedimiento, Scs_Procedimientos, Scs_Acreditacion
@@ -3984,7 +3984,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                  And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
                  And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
                  And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
-                 
+
                  -- ... para la misma designacion y modulo ...
                  And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
                  And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
@@ -3992,13 +3992,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                  And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
                  And Scs_Actuaciondesigna.Idinstitucion_Proc = v_Actdesigna.Idinstitucion_Proc
                  And Scs_Actuaciondesigna.Idprocedimiento = v_Actdesigna.Idprocedimiento
-                 
+
                  -- .. de fin ...
                  And Scs_Actuaciondesigna.Idacreditacion = C_ACREDITACION_FIN
-                 
+
                  -- ... ya facturadas.
                  And (Nvl(Scs_Actuaciondesigna.Facturado, 0) = 1 And Scs_Actuaciondesigna.idfacturacion <> p_Idfacturacion);
-                 
+
               -- comprobando que el numero de actuaciones de fin es menor o igual al numero de actuaciones de inicio para esta misma designacion o modulo
               If n_fines > 1 And n_inicios_facturados + n_inicios_enestafacturacion < n_fines_facturados + n_fines_enestafacturacion Then
                 If v_designas_TOOMANY_FINS is Null Then
@@ -4011,17 +4011,17 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 End If;
               End If;
             End;
-            
+
             Begin
               v_Datoserror2 := 'Buscando actuacion de Inicio correspondiente a la de Fin';
-              
+
               b_variosPrecios := False;
-              
+
               Begin
                 n_Importe_Inicio_Facturado := Null;
                 -- obteniendo importe ya facturado ...
-                Select Distinct 
-                       (Select Sum(Round(Facact_Ini.Precioaplicado * Facact_Ini.Porcentajefacturado / 100, 2))
+                Select Distinct
+                       (Select Sum(Facact_Ini.Importefacturado)
                           From Fcs_Fact_Actuaciondesigna Facact_Ini
                          Where Scs_Actuaciondesigna.Idinstitucion = Facact_Ini.Idinstitucion
                            And Scs_Actuaciondesigna.Idturno = Facact_Ini.Idturno
@@ -4036,7 +4036,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                    And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
                    And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
                    And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
-                   
+
                    -- ... para la misma designacion y modulo ...
                    And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
                    And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
@@ -4044,13 +4044,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                    And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
                    And Scs_Actuaciondesigna.Idinstitucion_Proc = v_Actdesigna.Idinstitucion_Proc
                    And Scs_Actuaciondesigna.Idprocedimiento = v_Actdesigna.Idprocedimiento
-                   
+
                    -- .. de inicio ...
                    And Scs_Actuaciondesigna.Idacreditacion = c_Acreditacion_Inicio
-                   
+
                    -- ... ya facturada.
                    And (Nvl(Scs_Actuaciondesigna.Facturado, 0) = 1 And Scs_Actuaciondesigna.Idfacturacion <> p_Idfacturacion);
-                   
+
                 If n_Importe_Inicio_Facturado = 0 Then
                   n_Importe_Inicio_Facturado := Null;
                 End If;
@@ -4060,12 +4060,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 When TOO_MANY_ROWS Then
                   b_variosPrecios := True;
               End;
-              
+
               If n_Importe_Inicio_Facturado Is Null Then
               Begin
                 -- obteniendo importe ya facturado ...
-                Select Distinct 
-                       (Select Sum(Round(Facact_Ini.Precioaplicado * Facact_Ini.Porcentajefacturado / 100, 2))
+                Select Distinct
+                       (Select Sum(Facact_Ini.Importefacturado)
                           From Fcs_Fact_Actuaciondesigna Facact_Ini
                          Where Scs_Actuaciondesigna.Idinstitucion = Facact_Ini.Idinstitucion
                            And Scs_Actuaciondesigna.Idturno = Facact_Ini.Idturno
@@ -4080,19 +4080,19 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                    And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
                    And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
                    And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
-                   
+
                    -- ... para la misma designacion (no miramos modulo) ...
                    And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
                    And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
                    And Scs_Actuaciondesigna.Anio = v_Actdesigna.Anio
                    And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
-                   
+
                    -- .. de inicio ...
                    And Scs_Actuaciondesigna.Idacreditacion = c_Acreditacion_Inicio
-                   
+
                    -- ... ya facturada.
                    And (Nvl(Scs_Actuaciondesigna.Facturado, 0) = 1 And Scs_Actuaciondesigna.Idfacturacion <> p_Idfacturacion);
-                   
+
                 If n_Importe_Inicio_Facturado = 0 Then
                   n_Importe_Inicio_Facturado := Null;
                 End If;
@@ -4103,7 +4103,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                   b_variosPrecios := True;
               End;
               End If;
-                
+
               Begin
                 n_Importe_Inicio_Estafact  := Null;
                 -- obteniendo importe de esta facturacion ...
@@ -4116,7 +4116,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                    And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
                    And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
                    And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
-                      
+
                       -- ... para la misma designacion y modulo ...
                    And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
                    And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
@@ -4124,10 +4124,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                    And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
                    And Scs_Actuaciondesigna.Idinstitucion_Proc = v_Actdesigna.Idinstitucion_Proc
                    And Scs_Actuaciondesigna.Idprocedimiento = v_Actdesigna.Idprocedimiento
-                      
+
                       -- .. de inicio ...
                    And Scs_Actuaciondesigna.Idacreditacion = c_Acreditacion_Inicio
-                      
+
                       -- ... en esta facturacion. (CONDICIONES PARA ENTRAR EN ESTA FACTURACION - SIEMPRE IGUAL)
                    And Scs_Actuaciondesigna.Fechajustificacion Is Not Null
                    And Trunc(Scs_Actuaciondesigna.Fechajustificacion) Between Trunc(v_Fechadesde) And Trunc(v_Fechahasta)
@@ -4141,7 +4141,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 When TOO_MANY_ROWS Then
                   b_variosPrecios := True;
               End;
-                
+
               If n_Importe_Inicio_Estafact Is Null Then
               Begin
                 -- obteniendo importe de esta facturacion ...
@@ -4154,16 +4154,16 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                    And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
                    And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
                    And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
-                      
+
                       -- ... para la misma designacion (no miramos modulo) ...
                    And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
                    And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
                    And Scs_Actuaciondesigna.Anio = v_Actdesigna.Anio
                    And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
-                      
+
                       -- .. de inicio ...
                    And Scs_Actuaciondesigna.Idacreditacion = c_Acreditacion_Inicio
-                      
+
                       -- ... en esta facturacion. (CONDICIONES PARA ENTRAR EN ESTA FACTURACION - SIEMPRE IGUAL)
                    And Scs_Actuaciondesigna.Fechajustificacion Is Not Null
                    And Trunc(Scs_Actuaciondesigna.Fechajustificacion) Between Trunc(v_Fechadesde) And Trunc(v_Fechahasta)
@@ -4191,18 +4191,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                    And Scs_Actuaciondesigna.Idinstitucion_Proc = Scs_Acreditacionprocedimiento.Idinstitucion
                    And Scs_Actuaciondesigna.Idprocedimiento = Scs_Acreditacionprocedimiento.Idprocedimiento
                    And Scs_Acreditacionprocedimiento.Idacreditacion = Scs_Acreditacion.Idacreditacion
-                      
+
                       -- ... para la misma designacion (no miramos modulo) ...
                    And Scs_Actuaciondesigna.Idinstitucion = v_Actdesigna.Idinstitucion
                    And Scs_Actuaciondesigna.Idturno = v_Actdesigna.Idturno
                    And Scs_Actuaciondesigna.Anio = v_Actdesigna.Anio
                    And Scs_Actuaciondesigna.Numero = v_Actdesigna.Numero
-                      
+
                       -- ... de inicio ...
                    And Scs_Actuaciondesigna.Idacreditacion = c_Acreditacion_Inicio
                       -- ... antes de 2012 ...
                    And Scs_Actuaciondesigna.Fechajustificacion < '01/01/2012'
-                      
+
                       -- ... NO facturadas
                    And (Nvl(Scs_Actuaciondesigna.Facturado, 0) <> 1);
               Exception
@@ -4211,8 +4211,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 When TOO_MANY_ROWS Then
                   b_variosPrecios := True;
               End;
-              
-              If n_Importe_Inicio_Estafact Is Null And n_Importe_Inicio_Facturado Is Null And 
+
+              If n_Importe_Inicio_Estafact Is Null And n_Importe_Inicio_Facturado Is Null And
                  0 = n_Actuac_Inicio_ant2012_Nofact Then
                 -- Si no se ha obtenido ningun importe de inicio, se da error
                 If v_designas_TOOMANY_FINS is Null Then
@@ -4223,18 +4223,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 Elsif length(v_designas_TOOMANY_FINS) > 3950 And length(v_designas_TOOMANY_FINS) < 3970 Then
                   v_designas_TOOMANY_FINS := v_designas_TOOMANY_FINS || '...';
                 End If;
-                
-              Elsif n_Importe_Inicio_Estafact Is Not Null And n_Importe_Inicio_Facturado Is Not Null And 
+
+              Elsif n_Importe_Inicio_Estafact Is Not Null And n_Importe_Inicio_Facturado Is Not Null And
                  n_Importe_Inicio_Estafact <> n_Importe_Inicio_Facturado Then
                 -- Si se han obtenido varios importes de inicio, se dara error probablemente
                 b_variosPrecios := True;
               End If;
             End;
-            
+
             If b_variosPrecios Then
               -- Si hay varias actuaciones de inicio con varios precios
               If n_inicios_facturados = n_fines_facturados And n_inicios_enestafacturacion = n_fines_enestafacturacion Then
-                -- Esta es una excepcion a la regla: en el caso de que las actuaciones de inicio facturadas 
+                -- Esta es una excepcion a la regla: en el caso de que las actuaciones de inicio facturadas
                 -- se correspondan directamente con las de fin facturadas
                 -- y aparte tb las actuaciones de inicio de esta facturacion se correspondan directamente con las de fin
                 -- solo en este caso (que realmente no es excepcion sino que es algo logico) se factura de forma normal.
@@ -4266,15 +4266,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 v_Porcentaje := v_Actdesigna.Porcentaje;
               End If;
             End If;
-            
+
           Else
             v_Precio     := v_Actdesigna.Precio;
             v_Porcentaje := v_Actdesigna.Porcentaje;
           End If;
-          
+
           v_Datoserror2 := 'Acumulando el total';
-          v_Total := v_Total + Round(v_Precio * (v_Porcentaje / 100), 2);
-        
+          v_Total := v_Total + Round(v_Precio * v_Porcentaje / 100, 2);
+
           v_Datoserror2 := 'Insertando el registro facturado';
           Insert Into Fcs_Fact_Actuaciondesigna
             (Idinstitucion,
@@ -4292,7 +4292,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
              Porcentajefacturado,
              Fechamodificacion,
              Usumodificacion,
-             Codigoprocedimiento)
+             Codigoprocedimiento,
+             IMPORTEFACTURADO)
           Values
             (p_Idinstitucion,
              p_Idfacturacion,
@@ -4309,32 +4310,33 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
              v_Porcentaje,
              Sysdate,
              p_Usumodificacion,
-             v_Actdesigna.Idprocedimiento);
-        
+             v_Actdesigna.Idprocedimiento,
+             Round(v_Precio * v_Porcentaje / 100, 2));
+
           v_Datoserror2 := 'Actualizando la actuacion a Facturada';
           Update Scs_Actuaciondesigna
              Set Facturado = Pkg_Siga_Constantes.Db_True_n, Idfacturacion = p_Idfacturacion
-          
+
            Where Idinstitucion = v_Actdesigna.Idinstitucion
              And Idturno = v_Actdesigna.Idturno
              And Anio = v_Actdesigna.Anio
              And Numero = v_Actdesigna.Numero
              And Numeroasunto = v_Actdesigna.Numeroasunto;
-        
+
         End Loop; -- Fin Actuacion Designa
       End Loop; -- Fin Turnos
     End Loop; -- Fin Grupos Facturacion
-    
+
     If v_designas_TOOMANY_FINS Is Not Null Then
-      v_Datoserror2 := 'Error al facturar una actuación de fin, no se ha encontrado su actuación de inicio correspondiente. Esto ha ocurrido en las designaciones siguientes: ' || 
+      v_Datoserror2 := 'Error al facturar una actuación de fin, no se ha encontrado su actuación de inicio correspondiente. Esto ha ocurrido en las designaciones siguientes: ' ||
                        v_designas_TOOMANY_FINS;
     End If;
     If v_designas_SEVERAL_INICIOS Is Not Null Then
       v_Datoserror2 := v_Datoserror2 || chr(10);
-      v_Datoserror2 := v_Datoserror2 || 'Error al facturar una actuación de fin, se han encontrado varias actuaciones inicio con diferentes importes. Esto ha ocurrido en las designaciones siguientes: ' || 
+      v_Datoserror2 := v_Datoserror2 || 'Error al facturar una actuación de fin, se han encontrado varias actuaciones inicio con diferentes importes. Esto ha ocurrido en las designaciones siguientes: ' ||
                        v_designas_SEVERAL_INICIOS;
     End If;
-    
+
     If v_designas_TOOMANY_FINS Is Not Null Or v_designas_SEVERAL_INICIOS Is Not Null Then
       p_Total      := To_Char(0);
       p_Codretorno := -1;
@@ -4345,7 +4347,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
       p_Codretorno := v_Codretorno2;
       p_Datoserror := v_Datoserror2;
     End If;
-    
+
   Exception
     When No_Data_Found Then
       p_Total      := To_Char(0);
@@ -4617,23 +4619,23 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         -- JPT: Obtiene los datos de la facturacion (tabla FCS_FACTURACIONJG) y carga los datos en V_DATOS_FACTURACION
         V_DATOSERROR2:= 'PROC_FCS_FACTURAR_GUARDIAS: Llamada a PROC_FCS_CARGA_FACTURACION';
         PROC_FCS_CARGA_FACTURACION(
-            P_IDINSTITUCION, 
-            P_IDFACTURACION, 
-            V_CODRETORNO2, 
+            P_IDINSTITUCION,
+            P_IDFACTURACION,
+            V_CODRETORNO2,
             V_DATOSERROR2);
         IF (V_CODRETORNO2 <> '0') THEN
             RAISE E_ERROR2;
-        END IF;            
+        END IF;
 
-        /* JPT: Se almacenan los historicos a nivel de institucion   
+        /* JPT: Se almacenan los historicos a nivel de institucion
             - FCS_HISTORICO_TIPOASISTCOLEGIO de SCS_TIPOASISTENCIACOLEGIO
             - FCS_HISTORICO_TIPOACTUACION de SCS_TIPOACTUACION
             - FCS_HISTO_TIPOACTCOSTEFIJO de SCS_TIPOACTUACIONCOSTEFIJO */
         V_DATOSERROR2:= 'PROC_FCS_FACTURAR_GUARDIAS: Llamada a PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTORICOS_GUARDIAS';
         PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTORICOS_GUARDIAS(
-            P_IDINSTITUCION, 
-            P_IDFACTURACION, 
-            V_CODRETORNO2, 
+            P_IDINSTITUCION,
+            P_IDFACTURACION,
+            V_CODRETORNO2,
             V_DATOSERROR2);
         IF (V_CODRETORNO2 <> '0') THEN
             RAISE E_ERROR2;
@@ -4642,8 +4644,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         -- JPT: Obtiene los grupos de la facturacion (tabla FCS_FACT_GRUPOFACT_HITO)
         V_DATOSERROR2 := 'PROC_FCS_FACTURAR_GUARDIAS: Cursor C_GRUPOSFACTURACION';
         FOR V_GRUPOSFACTURACION IN C_GRUPOSFACTURACION(P_IDINSTITUCION, P_IDFACTURACION) LOOP
-        
-            -- JPT: Guarda el historico de la configuracion de todas las guardias del grupo de facturacion para esa facturacion (FCS_HISTORICO_HITOFACT de SCS_HITOFACTURABLEGUARDIA)      
+
+            -- JPT: Guarda el historico de la configuracion de todas las guardias del grupo de facturacion para esa facturacion (FCS_HISTORICO_HITOFACT de SCS_HITOFACTURABLEGUARDIA)
             V_DATOSERROR2:= 'PROC_FCS_FACTURAR_GUARDIAS: Llamada a PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTO_HITOFACT_GUA';
             PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTO_HITOFACT_GUA(
                 P_IDINSTITUCION,
@@ -4651,10 +4653,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 V_GRUPOSFACTURACION.IDGRUPOFACTURACION,
                 C_IMPORTE_GUARDIA_INACTIVA,
                 V_CODRETORNO2,
-                V_DATOSERROR2);       
+                V_DATOSERROR2);
             IF (V_CODRETORNO2 <> '0') THEN
                 RAISE E_ERROR2;
-            END IF;                  
+            END IF;
 
             -- JPT: Obtiene los turnos asociados al grupo de facturacion (tabla SCS_TURNO)
             V_DATOSERROR2 := 'PROC_FCS_FACTURAR_GUARDIAS: Cursor C_TURNO';
@@ -4678,18 +4680,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     IF (V_CODRETORNO2 <> '0') THEN
                         RAISE E_ERROR2;
                     END IF;
-                                              
-                    -- JPT: Guardo una copia del RECORD de la Configuracion de Guardia ACTUAL (cambio facturacion guardias facturadas a precio facturado) 
-                    IF (FUNC_ES_COLEGIO_CATALAN(P_IDINSTITUCION) = TRUE) THEN   
+
+                    -- JPT: Guardo una copia del RECORD de la Configuracion de Guardia ACTUAL (cambio facturacion guardias facturadas a precio facturado)
+                    IF (FUNC_ES_COLEGIO_CATALAN(P_IDINSTITUCION) = TRUE) THEN
                         V_CONFIGGUARDIAACTUAL := V_CONFIG_GUARDIA;
-                    END IF;                        
+                    END IF;
 
                     /* JPT: Cargamos la MATRIZ de la Cabecera de Guardias a facturar [M_CG_FACTURABLE(++IND_CG_FACTURABLE)]
-                        - Obtiene las cabeceras de guardia validadas dentro del periodo de la facturacion y sin facturar 
-                            (tabla SCS_CABECERAGUARDIAS + FCS_FACT_APUNTE ), 
+                        - Obtiene las cabeceras de guardia validadas dentro del periodo de la facturacion y sin facturar
+                            (tabla SCS_CABECERAGUARDIAS + FCS_FACT_APUNTE ),
                             y carga los datos en M_CG_FACTURABLE(++IND_CG_FACTURABLE)
-                        - Obtiene las cabeceras de guardia validadas, que tengan por lo menos una actuacion que no sea fuera de guardia sin anular, justificada dentro del periodo de la facturacion y sin facturar 
-                            (tabla SCS_CABECERAGUARDIAS + SCS_GUARDIASCOLEGIADO + SCS_ASISTENCIA +SCS_ACTUACIONASISTENCIA +FCS_FACT_ACTUACIONASISTENCIA), 
+                        - Obtiene las cabeceras de guardia validadas, que tengan por lo menos una actuacion que no sea fuera de guardia sin anular, justificada dentro del periodo de la facturacion y sin facturar
+                            (tabla SCS_CABECERAGUARDIAS + SCS_GUARDIASCOLEGIADO + SCS_ASISTENCIA +SCS_ACTUACIONASISTENCIA +FCS_FACT_ACTUACIONASISTENCIA),
                             y carga los datos en M_CG_FACTURABLE(++IND_CG_FACTURABLE)*/
                     V_DATOSERROR2:= 'PROC_FCS_FACTURAR_GUARDIAS: Llamada a PROC_CARGAR_CABECERA_GUARDIAS';
                     PROC_CARGAR_CABECERA_GUARDIAS(
@@ -4705,11 +4707,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     -- JPT: Recorremos MATRIZ M_CG_FACTURABLE(1..IND_CG_FACTURABLE)
                     V_DATOSERROR2 := 'PROC_FCS_FACTURAR_GUARDIAS: Recorremos MATRIZ M_CG_FACTURABLE(1..IND_CG_FACTURABLE)';
                     FOR I IN 1 .. IND_CG_FACTURABLE LOOP
-                    
+
                         -- Si ha cambiado la facturacion, tenemos que volver a configurar V_CONFIG_GUARDIA
-                        IF (M_CG_FACTURABLE(I).IDFACTURACION <> V_CONFIG_GUARDIA.IDFACTURACION) THEN 
-                        
-                            -- JPT: Procedimiento para catalanes que carga V_CONFIG_GUARDIA 
+                        IF (M_CG_FACTURABLE(I).IDFACTURACION <> V_CONFIG_GUARDIA.IDFACTURACION) THEN
+
+                            -- JPT: Procedimiento para catalanes que carga V_CONFIG_GUARDIA
                             V_DATOSERROR2 := 'PROC_FCS_FACTURAR_GUARDIAS: Invocamos PROC_CARGA_CONFIG_GUARDIA';
                             PROC_CARGA_CONFIG_GUARDIA(
                                 P_IDINSTITUCION,
@@ -4722,7 +4724,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                             IF (V_CODRETORNO2 <> '0') THEN
                                 RAISE E_ERROR2;
                             END IF;
-                        END IF;                                                                                     
+                        END IF;
 
                         -- INICIALMENTE SOLO PARA EL COLEGIO DE CANTABRIA (2016)
                         V_ESFACTURACIONCONTROLADA := FALSE;
@@ -4874,8 +4876,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                 END IF;
                                 IF (V_CODRETORNO2 <> '0') THEN
                                     RAISE E_ERROR2;
-                                END IF;       
-                                                     
+                                END IF;
+
                                 -- Llamamos al procedimiento que realiza los apuntes en bb.dd y borra las matrices de memoria para la siguiente cabecera de guardia
                                 V_DATOSERROR2 := 'Apuntes en bb.dd y borrado de las matrices de memoria';
                                 PROC_FACT_DESC_MATR_GUARDIA(
@@ -4883,11 +4885,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                     P_IDFACTURACION,
                                     P_USUMODIFICACION,
                                     V_CODRETORNO,
-                                    V_DATOSERROR);                                
+                                    V_DATOSERROR);
                                 IF (V_CODRETORNO <> '0') THEN
                                     V_DATOSERROR2 := V_DATOSERROR2 || ': ' || V_DATOSERROR;
                                     RAISE E_ERROR2;
-                                END IF;                  
+                                END IF;
                             END IF;
 
                             -- Si se factura por asistencias
@@ -4907,8 +4909,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                 END IF;
                                 IF (V_CODRETORNO2 <> '0') THEN
                                     RAISE E_ERROR2;
-                                END IF;       
-                                                     
+                                END IF;
+
                                 -- Llamamos al procedimiento que realiza los apuntes en bb.dd y borra las matrices de memoria para la siguiente cabecera de guardia
                                 V_DATOSERROR2 := 'Apuntes en bb.dd y borrado de las matrices de memoria';
                                 PROC_FACT_DESC_MATR_GUARDIA(
@@ -4916,13 +4918,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                     P_IDFACTURACION,
                                     P_USUMODIFICACION,
                                     V_CODRETORNO,
-                                    V_DATOSERROR);                                
+                                    V_DATOSERROR);
                                 IF (V_CODRETORNO <> '0') THEN
                                     V_DATOSERROR2 := V_DATOSERROR2 || ': ' || V_DATOSERROR;
                                     RAISE E_ERROR2;
-                                END IF;                          
-                            
-                            ELSIF (V_CONFIG_GUARDIA.ACTUACION = PKG_SIGA_CONSTANTES.DB_TRUE_N) THEN                            
+                                END IF;
+
+                            ELSIF (V_CONFIG_GUARDIA.ACTUACION = PKG_SIGA_CONSTANTES.DB_TRUE_N) THEN
 
                                 --Si no se factura por Guardia (B2)
                                 V_DATOSERROR2 := 'Facturacion por Actuacion';
@@ -4938,8 +4940,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                 END IF;
                                 IF (V_CODRETORNO2 <> '0') THEN
                                     RAISE E_ERROR2;
-                                END IF;         
-                                                   
+                                END IF;
+
                                 -- Llamamos al procedimiento que realiza los apuntes en bb.dd y borra las matrices de memoria para la siguiente cabecera de guardia
                                 V_DATOSERROR2 := 'Apuntes en bb.dd y borrado de las matrices de memoria';
                                 PROC_FACT_DESC_MATR_GUARDIA(
@@ -4947,7 +4949,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                     P_IDFACTURACION,
                                     P_USUMODIFICACION,
                                     V_CODRETORNO,
-                                    V_DATOSERROR);                                
+                                    V_DATOSERROR);
                                 IF (V_CODRETORNO <> '0') THEN
                                     V_DATOSERROR2 := V_DATOSERROR2 || ': ' || V_DATOSERROR;
                                     RAISE E_ERROR2;
@@ -4955,16 +4957,16 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                             END IF;
                         END IF;
                     END LOOP; -- JPT: MATRIZ - M_CG_FACTURABLE(1..IND_CG_FACTURABLE)
-                    
+
                     /******************* Tratamiento de FUERAS DE GUARDIA *******************/
                     IND_CG_FACTURABLEFG := IND_CG_FACTURABLE + 1;
-                    IF (FUNC_ES_COLEGIO_CATALAN(P_IDINSTITUCION) = TRUE) THEN   
+                    IF (FUNC_ES_COLEGIO_CATALAN(P_IDINSTITUCION) = TRUE) THEN
                         V_CONFIG_GUARDIA := V_CONFIGGUARDIAACTUAL; -- Carga por defecto la guardia actual
-                    END IF;     
-                                        
+                    END IF;
+
                     /* JPT: Cargamos la MATRIZ de la Cabecera de Guardias a facturar [M_CG_FACTURABLE(++IND_CG_FACTURABLE)]
-                        - Obtiene las cabeceras de guardia validadas, que tengan por lo menos una actuacion fuera de guardia sin anular, justificada dentro del periodo de la facturacion y sin facturar 
-                            (tabla SCS_CABECERAGUARDIAS + SCS_GUARDIASCOLEGIADO + SCS_ASISTENCIA + SCS_ACTUACIONASISTENCIA + FCS_FACT_ACTUACIONASISTENCIA), 
+                        - Obtiene las cabeceras de guardia validadas, que tengan por lo menos una actuacion fuera de guardia sin anular, justificada dentro del periodo de la facturacion y sin facturar
+                            (tabla SCS_CABECERAGUARDIAS + SCS_GUARDIASCOLEGIADO + SCS_ASISTENCIA + SCS_ACTUACIONASISTENCIA + FCS_FACT_ACTUACIONASISTENCIA),
                             y carga los datos en M_CG_FACTURABLE(++IND_CG_FACTURABLE)*/
                     V_DATOSERROR2:= 'PROC_FCS_FACTURAR_GUARDIAS: Llamada a PROC_CARGAR_CABGUARDIASFG';
                     PROC_CARGAR_CABGUARDIASFG(
@@ -4975,16 +4977,16 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                         V_DATOSERROR2);
                     IF (V_CODRETORNO2 <> '0') THEN
                         RAISE E_ERROR2;
-                    END IF;                        
-                    
+                    END IF;
+
                     -- JPT: Recorremos MATRIZ M_CG_FACTURABLE(1..IND_CG_FACTURABLE)
                     V_DATOSERROR2 := 'PROC_FCS_FACTURAR_GUARDIAS: Recorremos MATRIZ M_CG_FACTURABLE(1..IND_CG_FACTURABLE)';
                     FOR I IN IND_CG_FACTURABLEFG .. IND_CG_FACTURABLE LOOP
-                    
-                        -- Si ha cambiado la facturacion, tenemos que volver a configurar V_CONFIG_GUARDIA
-                        IF (M_CG_FACTURABLE(I).IDFACTURACION <> V_CONFIG_GUARDIA.IDFACTURACION) THEN 
 
-                            -- JPT: Procedimiento para catalanes que carga V_CONFIG_GUARDIA 
+                        -- Si ha cambiado la facturacion, tenemos que volver a configurar V_CONFIG_GUARDIA
+                        IF (M_CG_FACTURABLE(I).IDFACTURACION <> V_CONFIG_GUARDIA.IDFACTURACION) THEN
+
+                            -- JPT: Procedimiento para catalanes que carga V_CONFIG_GUARDIA
                             V_DATOSERROR2 := 'PROC_FCS_FACTURAR_GUARDIAS: Invocamos PROC_CARGA_CONFIG_GUARDIA';
                             PROC_CARGA_CONFIG_GUARDIA(
                                 P_IDINSTITUCION,
@@ -4997,7 +4999,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                             IF (V_CODRETORNO2 <> '0') THEN
                                 RAISE E_ERROR2;
                             END IF;
-                        END IF;                                                      
+                        END IF;
 
                         IF (V_CONFIG_GUARDIA.ACTUACIONFG = PKG_SIGA_CONSTANTES.DB_TRUE_N) THEN
                             V_DATOSERROR2 := 'Facturacion por Actuacion Fuera de Guardia';
@@ -5009,11 +5011,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                             ELSIF (V_CONFIG_GUARDIA.TIPOACTUACIONFG = PKG_SIGA_CONSTANTES.DB_TRUE_N) THEN
                                 V_DATOSERROR2 := 'Facturacion por Actuacion Fuera de Guardia aplicando tipos';
                                 PROC_FACT_ACTFG_APLICATIPO(I, V_CODRETORNO2, V_DATOSERROR2);
-                            END IF;                            
+                            END IF;
                             IF (V_CODRETORNO2 <> '0') THEN
                                 RAISE E_ERROR2;
-                            END IF;                   
-                                     
+                            END IF;
+
                             -- Llamamos al procedimiento que realiza los apuntes en bb.dd y borra las matrices de memoria para la siguiente cabecera de guardia
                             V_DATOSERROR2 := 'Apuntes en bb.dd y borrado de las matrices de memoria';
                             PROC_FACT_DESC_MATR_GUARDIA(
@@ -5021,13 +5023,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                 P_IDFACTURACION,
                                 P_USUMODIFICACION,
                                 V_CODRETORNO,
-                                V_DATOSERROR);                                
+                                V_DATOSERROR);
                             IF (V_CODRETORNO <> '0') THEN
                                 V_DATOSERROR2 := V_DATOSERROR2 || ': ' || V_DATOSERROR;
                                 RAISE E_ERROR2;
                             END IF;
-                        END IF;                                                                 
-                    END LOOP; -- JPT: MATRIZ - M_CG_FACTURABLE(IND_CG_FACTURABLEFG..IND_CG_FACTURABLE)                    
+                        END IF;
+                    END LOOP; -- JPT: MATRIZ - M_CG_FACTURABLE(IND_CG_FACTURABLEFG..IND_CG_FACTURABLE)
                 END LOOP; -- JPT: CURSOR - V_GUARDIASTURNO IN C_GUARDIASTURNO
             END LOOP; -- JPT: CURSOR - V_TURNO IN C_TURNO
         END LOOP; -- JPT: CURSOR - V_GRUPOSFACTURACION IN C_GRUPOSFACTURACION
@@ -7270,7 +7272,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                  And Pre.Idpretension = Act.Idpretension) As Pretensionactuacion,
              Fact.Precioaplicado As Precioprocedim,
              Fact.Porcentajefacturado || '% - ' || Fact.Acreditacion As Acreditacion,
-             Round(Fact.Precioaplicado * Fact.Porcentajefacturado / 100, 2) As Importe,
+             Fact.Importefacturado As Importe,
              Nvl(Des.Numprocedimiento, Des.Resumenasunto) As Numprocedimoasunto,
              f_Siga_Nif_Litigante(Fact.Idturno,
                                   Fact.Idinstitucion,
@@ -7816,7 +7818,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
              Nvl(f_Siga_Getrecurso(Pra.Descripcion, 2),
                  f_Siga_Getrecurso(Prd.Descripcion, 2)) As Pretension,
              Pro.Nombre As Modulo,
-             Round(Fad.Precioaplicado * Fad.Porcentajefacturado / 100, 2) As Importe,
+             Fad.Importefacturado As Importe,
              To_Char(Fad.Porcentajefacturado) || '%' As Acreditacion,
              Fad.Precioaplicado As Importemodulo,
              f_Get_Lista_Asi_Designa_3001(Des.Idinstitucion,
@@ -9877,7 +9879,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         - P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400)
             En caso de error devuelve el mensaje de error Oracle correspondiente.
 
-        Versiones:            
+        Versiones:
             - 1.0 - Fecha Creacion: 20/04/2006  - Autor: Pilar Duran Munoz
             - 2.0 - Fecha Modificacion: 26/02/2016  - Autor: Jorge Paez Trivino
                 Cambios realizados para facturacion de colegios catalanes, de cabeceras de guardias facturadas, con la configuracion de la primera facturacion
@@ -9889,7 +9891,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         P_IDFACTURACION IN FCS_FACT_APUNTE.IDFACTURACION%TYPE,
         P_CODRETORNO OUT VARCHAR2,
         P_DATOSERROR OUT VARCHAR2) IS
-        
+
         -- Cursor para obtener el idHito y el precio
         CURSOR C_IDHITO(V_IDINSTITUCION NUMBER, V_IDTURNO NUMBER, V_IDGUARDIA NUMBER, V_IDFACTURACION NUMBER, V_CONSEJO CEN_INSTITUCION.CEN_INST_IDINSTITUCION%Type) IS
             SELECT HFG.IDHITO,
@@ -9901,7 +9903,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 AND HFG.IDTURNO = V_IDTURNO
                 AND HFG.IDGUARDIA = V_IDGUARDIA
                 AND (V_IDFACTURACION IS Null Or V_CONSEJO <> C_CATALAN)
-            UNION            
+            UNION
             SELECT HHTG.IDHITO,
                 NVL(HHTG.PRECIOHITO, 0) AS PRECIO,
                 HHTG.DIASAPLICABLES,
@@ -9919,7 +9921,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         b_act boolean := false;
         b_asi boolean := false;
         b_actTpMax boolean := false;
-        
+
         v_consejo CEN_INSTITUCION.CEN_INST_IDINSTITUCION%Type;
 
     BEGIN
@@ -9928,7 +9930,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
           INTO V_CONSEJO
           FROM CEN_INSTITUCION
          WHERE IDINSTITUCION = P_IDINSTITUCION;
-        
+
         -- Inicializamos el RECORD de Configuracion de Guardias
         PROC_FCS_INI_CONFIG_GUARDIA(P_CODRETORNO, P_DATOSERROR);
 
@@ -10022,9 +10024,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
                 WHEN 46 THEN -- NDAc
                    V_CONFIG_GUARDIA.NUMACTUACIONESDOBLA := V_IDHITO.PRECIO;
-                   
+
                 ELSE
-                    P_DATOSERROR := 'No recupera el hito';                                       
+                    P_DATOSERROR := 'No recupera el hito';
             END CASE;
         END LOOP; -- Fin C_IDHITO
 
@@ -10060,7 +10062,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 And idturno = P_IDTURNO
                 And idguardia = P_IDGUARDIA;
         --FIN: Cambio facturacion guardias inactivas catalanes de VG --
-        
+
         -- JPT: Indico que esta configuracion corresponde a un facturacion
         V_CONFIG_GUARDIA.IDFACTURACION := P_IDFACTURACION;
 
@@ -10101,7 +10103,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         P_IDGUARDIA     IN NUMBER,
         P_CODRETORNO    OUT VARCHAR2,
         P_DATOSERROR    OUT VARCHAR2) IS
-        
+
         -- Cursor utilizado para cargar la matriz de cabecera de guardia
         CURSOR CABECERA_GUARDIAS(V_IDINSTITUCION NUMBER, V_IDTURNO number, V_IDGUARDIA NUMBER) IS
             SELECT IDINSTITUCION,
@@ -10130,7 +10132,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 FROM SCS_CABECERAGUARDIAS CG
                 WHERE IDINSTITUCION = V_IDINSTITUCION
                     AND IDTURNO = V_IDTURNO
-                    AND IDGUARDIA = V_IDGUARDIA 
+                    AND IDGUARDIA = V_IDGUARDIA
                     AND NVL(VALIDADO, '0') = '1' -- validadas
                     AND TRUNC(NVL(FECHAVALIDACION, FECHAINICIO)) BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA) -- dentro del rango de fechas de la facturacion
                     AND NOT EXISTS ( -- sin facturar
@@ -10150,7 +10152,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                        IDPERSONA,
                        FECHAINICIO,
                        FECHA_FIN,
-                       FACTURADO, 
+                       FACTURADO,
                        FUNC_OBTENER_IDFACTURACION(IDINSTITUCION, IDTURNO, IDGUARDIA, FECHAINICIO) AS IDFACTURACION,
                        NVL(FUNC_IMPORTEFACTURADO_CG(IDINSTITUCION, IDTURNO, IDGUARDIA, IDPERSONA, FECHAINICIO), 0) AS IMPORTEFACTURADO_CG,
                        NVL(FUNC_IMPORTEFACTURADO_ASIS_CG(IDINSTITUCION, IDTURNO, IDGUARDIA, IDPERSONA, FECHAINICIO), 0) AS IMPORTEFACTURADO_ASIS_CG
@@ -10226,13 +10228,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     TRUNC(V_CABECERAGUARDIAS.FECHA_FIN),
                     V_DATOS_FACTURACION.FECHADESDE,
                     V_DATOS_FACTURACION.FECHAHASTA);
-            --FIN: Cambio para Asistencias que derivan en Designacion            
+            --FIN: Cambio para Asistencias que derivan en Designacion
         END LOOP;
 
         P_DATOSERROR := 'PROCEDURE PROC_CARGAR_CABECERA_GUARDIAS: ha finalizado correctamente.';
         P_CODRETORNO := TO_CHAR(0);
-  END PROC_CARGAR_CABECERA_GUARDIAS;  
-  
+  END PROC_CARGAR_CABECERA_GUARDIAS;
+
   /****************************************************************************************************************
     Nombre: PROC_CARGAR_CABGUARDIASFG
     Descripcion: Procedimiento que obtiene las cabeceras de guardia de actuaciones fuera de guardia
@@ -10244,18 +10246,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
     - P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)
         En caso de error devuelve el codigo de error Oracle correspondiente.
     - P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400)
-        En caso de error devuelve el mensaje de error Oracle correspondiente.    
+        En caso de error devuelve el mensaje de error Oracle correspondiente.
 
     Versiones (Fecha - Autor - Datos):
     - 1.0 - 02/03/2016 - Jorge Paez Trivino - Adaptacion a los colegios catalanes (R1602_0089)
-  ****************************************************************************************************************/  
+  ****************************************************************************************************************/
     PROCEDURE PROC_CARGAR_CABGUARDIASFG(
         P_IDINSTITUCION IN NUMBER,
         P_IDTURNO IN NUMBER,
         P_IDGUARDIA IN NUMBER,
         P_CODRETORNO OUT VARCHAR2,
         P_DATOSERROR OUT VARCHAR2) IS
-        
+
         -- Cursor utilizado para cargar la matriz de cabecera de guardia (de las actuaciones Fuera de Guardia)
         CURSOR CABECERA_GUARDIASFG(V_IDINSTITUCION NUMBER, V_IDTURNO number, V_IDGUARDIA NUMBER) IS
             -- CG con actuaciones validadas y de fuera de guardia, justificadas en el rango de fechas de la facturacion
@@ -10266,7 +10268,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                    TRUNC(ASI.FECHAHORA) FECHAINICIO,
                    TRUNC(ASI.FECHAHORA) FECHA_FIN,
                    ACT.FECHA,
-                   MAX(ASI.FACTURADO) AS FACTURADO, 
+                   MAX(ASI.FACTURADO) AS FACTURADO,
                    FUNC_OBTENER_IDFACTURACION(ASI.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.FECHA) AS IDFACTURACION
             FROM SCS_ASISTENCIA ASI,
                 SCS_ACTUACIONASISTENCIA ACT
@@ -10279,7 +10281,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 AND ASI.NUMERO = ACT.NUMERO
                 AND NVL(ACT.ANULACION, '0') = '0' -- NO anulada
                 AND TRUNC(ACT.FECHAJUSTIFICACION) BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA) -- con fecha de justificacion en el rango de fechas de la facturacion
-                AND ACT.DIADESPUES = 'S' -- actuacion del dia despues (fuera de guardia)             
+                AND ACT.DIADESPUES = 'S' -- actuacion del dia despues (fuera de guardia)
                 AND NOT EXISTS ( -- sin facturar
                     SELECT 1
                     FROM FCS_FACT_ACTUACIONASISTENCIA FAC
@@ -10294,7 +10296,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                   TRUNC(ASI.FECHAHORA),
                   TRUNC(ASI.FECHAHORA),
                   ACT.FECHA
-            ORDER BY IDFACTURACION DESC; -- JPT: Se ordena DESC para que salgan primero los IDFACTURACION con valor NULL        
+            ORDER BY IDFACTURACION DESC; -- JPT: Se ordena DESC para que salgan primero los IDFACTURACION con valor NULL
 
     BEGIN
         -- Cargamos en memoria la matriz de cabecera de guardias m_CG_facturables
@@ -10313,7 +10315,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
         P_DATOSERROR := 'PROC_CARGAR_CABGUARDIASFG: Ha finalizado correctamente.';
         P_CODRETORNO := TO_CHAR(0);
-  END PROC_CARGAR_CABGUARDIASFG;  
+  END PROC_CARGAR_CABGUARDIASFG;
 
   /****************************************************************************************************************/
   /* Nombre:        FUNC_IMPORTEFACTURADO_CG                                                                      */
@@ -10971,7 +10973,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         END;
 
         RETURN v_actuacion_justificada;
-  END FUNC_EXISTE_ACTUACION_JUSTIF;    
+  END FUNC_EXISTE_ACTUACION_JUSTIF;
 
   /****************************************************************************************************************/
   /* Nombre:        PROC_CARGA_M_APUNTE_AS                                                                           */
@@ -11727,14 +11729,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
       P_DATOSERROR := P_DATOSERROR || ' ' || sqlerrm;
   END PROC_FACT_GUARDIA_DOBLAASIST;
 
-    PROCEDURE PROC_FACT_GUARDIA_DOBLAAS_AGRU(indiceMatrizFacturable NUMBER) IS    
+    PROCEDURE PROC_FACT_GUARDIA_DOBLAAS_AGRU(indiceMatrizFacturable NUMBER) IS
         contador NUMBER;
         v_totalAsist NUMBER;
         v_totalActua NUMBER;
 
-    BEGIN          
+    BEGIN
         contador := 0; --inicializando contador
-    
+
         --POR CADA UG solo escribir en tabla (no se calcula nada por dias)
         FOR V_UNIDADES_GUARDIA IN UNIDADES_GUARDIA(
             M_CG_FACTURABLE(indiceMatrizFacturable).IDINSTITUCION,
@@ -11759,7 +11761,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             M_APUNTE_UG(IND_UG).MOTIVO := 1; --GAs
         END LOOP;
 
-        --1. CARGAR EN MATRICES LAS ASISTENCIAS Y ACTUACIONES DE CG  
+        --1. CARGAR EN MATRICES LAS ASISTENCIAS Y ACTUACIONES DE CG
         contador := 1; --inicializando contador
 
         -- cargando la matriz de apunte M_APUNTE_AS
@@ -11810,8 +11812,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         M_APUNTE_CG(IND_CG).COSTEFIJO := V_COSTEFIJO;
 
         --INI: Cambio facturacion guardias inactivas catalanes de VG --
-        IF (v_totalAsist = 0 
-            AND V_CONFIG_GUARDIA.CONSEJOINSTITUCION = C_CATALAN 
+        IF (v_totalAsist = 0
+            AND V_CONFIG_GUARDIA.CONSEJOINSTITUCION = C_CATALAN
             AND V_CONFIG_GUARDIA.ESGUARDIAVG = '1') THEN
             M_APUNTE_CG(IND_CG).IMPORTE := C_IMPORTE_GUARDIA_INACTIVA - M_CG_FACTURABLE(indiceMatrizFacturable).IMPORTEFACTURADO;
 
@@ -11823,9 +11825,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 M_APUNTE_CG(IND_CG).MOTIVO := 59; --GAsMin+
             END IF;
             --FIN: Cambio facturacion guardias inactivas catalanes de VG --
-        
-        --3. COMPROBAR SI SE DOBLA O NO EN CG    
-        ELSIF (v_totalAsist <= V_CONFIG_GUARDIA.NUMASISTENCIASDOBLA) THEN --No se dobla:      
+
+        --3. COMPROBAR SI SE DOBLA O NO EN CG
+        ELSIF (v_totalAsist <= V_CONFIG_GUARDIA.NUMASISTENCIASDOBLA) THEN --No se dobla:
             M_APUNTE_CG(IND_CG).IMPORTE := V_CONFIG_GUARDIA.IMPORTEGUARDIA - M_CG_FACTURABLE(indiceMatrizFacturable).IMPORTEFACTURADO;
 
             IF (M_CG_FACTURABLE(indiceMatrizFacturable).IMPORTEFACTURADO = 0) THEN
@@ -11833,7 +11835,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             ELSE
                 M_APUNTE_CG(IND_CG).MOTIVO := 39; --GSNoDevAs+
             END IF;
-    
+
         ELSE --Se dobla:
             M_APUNTE_CG(IND_CG).IMPORTE := V_CONFIG_GUARDIA.IMPORTEGUARDIADOBLADA - M_CG_FACTURABLE(indiceMatrizFacturable).IMPORTEFACTURADO;
 
@@ -11928,8 +11930,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
             --comprobando que importe apuntar y motivo
             --INI: Cambio facturacion guardias inactivas catalanes de VG --
-            IF (v_totalasist = 0 
-                And V_CONFIG_GUARDIA.CONSEJOINSTITUCION = C_CATALAN 
+            IF (v_totalasist = 0
+                And V_CONFIG_GUARDIA.CONSEJOINSTITUCION = C_CATALAN
                 And V_CONFIG_GUARDIA.ESGUARDIAVG = '1') THEN
                 M_APUNTE_UG(IND_UG).IMPORTE := C_IMPORTE_GUARDIA_INACTIVA - V_UNIDADES_GUARDIA.IMPORTEFACTURADO;
 
@@ -11941,7 +11943,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     M_APUNTE_UG(IND_UG).MOTIVO := 59; --GAsMin+
                 End If;
                 --FIN: Cambio facturacion guardias inactivas catalanes de VG --
-                    
+
             ELSIF (v_totalasist <= V_CONFIG_GUARDIA.NUMASISTENCIASDOBLA) THEN --No se dobla:
                 M_APUNTE_UG(IND_UG).IMPORTE := V_CONFIG_GUARDIA.IMPORTEGUARDIA - V_UNIDADES_GUARDIA.IMPORTEFACTURADO;
 
@@ -11950,7 +11952,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 ELSE
                     M_APUNTE_UG(IND_UG).MOTIVO := 39; --GSNoDevAs+
                 END IF;
-                    
+
             ELSE --Se dobla:
                 M_APUNTE_UG(IND_UG).IMPORTE := V_CONFIG_GUARDIA.IMPORTEGUARDIADOBLADA - V_UNIDADES_GUARDIA.IMPORTEFACTURADO;
 
@@ -11972,7 +11974,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             totalImporteUGs := totalImporteUGs + M_APUNTE_UG(IND_UG).IMPORTE;
         END LOOP;
 
-        --4. GENERAR APUNTE GENERICO DE CG TENIENDO EN CUENTA LOS DIFERENTES MOTIVOS    
+        --4. GENERAR APUNTE GENERICO DE CG TENIENDO EN CUENTA LOS DIFERENTES MOTIVOS
         contador := 1; --inicializando contador
 
         --Por cada recorrido de la matriz de cabecera facturable solo habra un registro en la matriz de apunte de CG por eso el indice siempre sera 1
@@ -11986,7 +11988,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         M_APUNTE_CG(IND_CG).FACTURADO := M_CG_FACTURABLE(indiceMatrizFacturable).FACTURADO;
         M_APUNTE_CG(IND_CG).IDTIPOAPUNTE := 'CG';
         M_APUNTE_CG(IND_CG).CONTADOR := contador;
-        M_APUNTE_CG(IND_CG).COSTEFIJO := costeFijoAc_CG;    
+        M_APUNTE_CG(IND_CG).COSTEFIJO := costeFijoAc_CG;
         M_APUNTE_CG(IND_CG).MOTIVO := 1;  -- GAs (Apunte generico de pago por asistencias)
 
         -- RGG cambio para restarlo a lo ya facturado (con control de negativos)
@@ -12792,7 +12794,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         indiceMatrizFacturable IN NUMBER,
         P_CODRETORNO OUT VARCHAR2,
         P_DATOSERROR OUT VARCHAR2) IS
-        
+
     -- Obtenemos las asistencias realizadas y justificadas anteriormente a la fecha fin del ciclo de facturacion para cada idtipocolegiado ordenadas por fecha de realizacion (Este cursor se utiliza para la facturacion por asistencias)
     CURSOR C_ASISTENCIASTIPO_UG (V_IDINSTITUCION NUMBER, V_IDTURNO NUMBER, V_IDGUARDIA NUMBER, V_IDPERSONA NUMBER, V_FECHAFIN DATE, V_IDTIPOASISTCOLEG NUMBER, V_DIASAPLICABLES VARCHAR2, V_IDFACTURACION NUMBER) IS (
         SELECT ASI.IDTIPOASISTENCIACOLEGIO,
@@ -12831,7 +12833,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             AND ASI.IDTIPOASISTENCIACOLEGIO = V_IDTIPOASISTCOLEG
             AND FUNC_EXISTE_ACTUACION_JUSTIF(ASI.IDINSTITUCION, ASI.ANIO, ASI.NUMERO) > 0
             AND FUN_ESDIAAPLICABLE(ASI.FECHAHORA, V_DIASAPLICABLES) = 1)
-        ORDER BY IDTIPOASISTENCIACOLEGIO, FECHAHORA;        
+        ORDER BY IDTIPOASISTENCIACOLEGIO, FECHAHORA;
 
         -- Contadores para los apuntes
         contador NUMBER;
@@ -12861,11 +12863,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         -- Inicializo variables
         IND_UG := 0;
         IND_AS := 0;
-        IND_AC := 0;        
+        IND_AC := 0;
         contador := 0;
         contadorDiaGuardia := 0;
         costeFijoCG := 0;
-        totalImporteUGs := 0;  
+        totalImporteUGs := 0;
         totalImporteUGsFacturado := 0;
 
         FOR V_UNIDADES_GUARDIA IN UNIDADES_GUARDIA_TP(
@@ -12893,7 +12895,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 V_UNIDADES_GUARDIA.FECHAINICIO,
                 V_UNIDADES_GUARDIA.FECHAFIN,
                 V_CONFIG_GUARDIA.DIASNOPAGAGUARDIA) LOOP
-                
+
                 -- Inicializo variables
                 totalImporteAsFact := 0;
                 totalImporteAsNuevas := 0;
@@ -12912,7 +12914,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     M_CG_FACTURABLE(indiceMatrizFacturable).IDFACTURACION) LOOP
 
                     -- Obtenemos el importe de la asistencia, o bien de la guardia
-                    importeTipoAsistencia := NVL(NVL(V_ASISTENCIAS_UG.importe, V_CONFIG_GUARDIA.IMPORTEASISTENCIA), 0);                    
+                    importeTipoAsistencia := NVL(NVL(V_ASISTENCIAS_UG.importe, V_CONFIG_GUARDIA.IMPORTEASISTENCIA), 0);
 
                     -- Obtenemos el importe maximo de la asistencia
                     importeTipoAsistMax := NVL(V_ASISTENCIAS_UG.importemax, 0);
@@ -12928,12 +12930,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                         M_APUNTE_AS(IND_AS).FACTURADO := V_ASISTENCIAS_UG.FACTURADO;
                         M_APUNTE_AS(IND_AS).CONTADOR := contador;
                         M_APUNTE_AS(IND_AS).MOTIVO := 20; --AsTp;
-                        M_APUNTE_AS(IND_AS).IMPORTE := importeTipoAsistencia; 
+                        M_APUNTE_AS(IND_AS).IMPORTE := importeTipoAsistencia;
 
                         totalImporteAsNuevas := totalImporteAsNuevas + importeTipoAsistencia;
-                        
+
                     ELSE
-                        totalImporteAsFact := totalImporteAsFact + importeTipoAsistencia;                        
+                        totalImporteAsFact := totalImporteAsFact + importeTipoAsistencia;
                     END IF;
                 END LOOP; -- Fin V_ASISTENCIAS_UG
 
@@ -12958,20 +12960,20 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 costeFijoUG := V_COSTEFIJO;
                 costeFijoUGDiaGuardia := costeFijoUGDiaGuardia + costeFijoUG;
                 costeFijoCG := costeFijoCG + costeFijoUG;
-                
-                /*** INICIO PROCESO CALCULO FACTURADO ***/                
+
+                /*** INICIO PROCESO CALCULO FACTURADO ***/
                 IF (NVL(importeTipoAsistMax, 0.0) > 0.0 -- Tiene importe maximo del tipo de asistencia
-                    AND totalImporteAsFact > importeTipoAsistMax) THEN -- El importe de las asistencias facturadas (total - nuevas) supera el importe maximo del tipo de asistencia 
-                    -- RGG: NO DEVENGO POR APUNTE DETIPO PORQUE YA SE DEVENGA POR DÍA                    
+                    AND totalImporteAsFact > importeTipoAsistMax) THEN -- El importe de las asistencias facturadas (total - nuevas) supera el importe maximo del tipo de asistencia
+                    -- RGG: NO DEVENGO POR APUNTE DETIPO PORQUE YA SE DEVENGA POR DÍA
                     totalImporteAsFactFinal := importeTipoAsistMax;
                 ELSE
-                    totalImporteAsFactFinal := totalImporteAsFact;                                        
-                END IF;                
-                totalImporteTiposFacturados := totalImporteTiposFacturados + totalImporteAsFactFinal;            
-                /*** INICIO PROCESO CALCULO FACTURADO ***/                
-        
+                    totalImporteAsFactFinal := totalImporteAsFact;
+                END IF;
+                totalImporteTiposFacturados := totalImporteTiposFacturados + totalImporteAsFactFinal;
+                /*** INICIO PROCESO CALCULO FACTURADO ***/
+
                 IF (totalImporteAsNuevas > 0) THEN --  Existen nuevas asistencias sin facturar
-                
+
                     -- Creo apunte en la matriz de memoria: M_APUNTE_UG (APUNTE DE TIPO)
                     IND_UG := IND_UG + 1;
                     M_APUNTE_UG(IND_UG).IDINSTITUCION := V_UNIDADES_GUARDIA.IDINSTITUCION;
@@ -12980,35 +12982,35 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     M_APUNTE_UG(IND_UG).IDPERSONA := V_UNIDADES_GUARDIA.IDPERSONA;
                     M_APUNTE_UG(IND_UG).FECHAINICIO := V_UNIDADES_GUARDIA.FECHAINICIO;
                     M_APUNTE_UG(IND_UG).FECHAFIN := V_UNIDADES_GUARDIA.FECHAFIN;
-                    M_APUNTE_UG(IND_UG).FACTURADO := V_UNIDADES_GUARDIA.FACTURADO;            
+                    M_APUNTE_UG(IND_UG).FACTURADO := V_UNIDADES_GUARDIA.FACTURADO;
                     M_APUNTE_UG(IND_UG).CONTADOR := contador;
-                    M_APUNTE_UG(IND_UG).COSTEFIJO := costeFijoUG;                        
-                
-                    IF (V_CONFIG_GUARDIA.IMPORTEMAXASISTENCIA IS NOT NULL -- Tiene configurado maximo  
+                    M_APUNTE_UG(IND_UG).COSTEFIJO := costeFijoUG;
+
+                    IF (V_CONFIG_GUARDIA.IMPORTEMAXASISTENCIA IS NOT NULL -- Tiene configurado maximo
                         AND NVL(importeTipoAsistMax, 0.0) > 0.0 -- Tiene importe maximo del tipo de asistencia
-                        AND totalImporteAsFact + totalImporteAsNuevas > importeTipoAsistMax) THEN -- El importe de todas las asistencias supera el importe maximo del tipo de asistencia 
+                        AND totalImporteAsFact + totalImporteAsNuevas > importeTipoAsistMax) THEN -- El importe de todas las asistencias supera el importe maximo del tipo de asistencia
                         -- RGG: NO DEVENGO POR APUNTE DETIPO PORQUE YA SE DEVENGA POR DÍA
 
                         IF (totalImporteAsFact >= importeTipoAsistMax) THEN -- Consulto si el importe de las asistencias facturadas supera o iguala el importe maximo del tipo de asistencia
-                            auxImporteCalculado := 0; 
+                            auxImporteCalculado := 0;
                             aplicaMaximoMas := 1; -- AsTpMax+
-                       
-                        ELSE              
+
+                        ELSE
                             auxImporteCalculado := importeTipoAsistMax - totalImporteAsFact; -- auxImporteCalculado = Maximo - Facturado
-                            IF (auxImporteCalculado < 0) THEN -- Control negativo 
-                                auxImporteCalculado := 0; 
+                            IF (auxImporteCalculado < 0) THEN -- Control negativo
+                                auxImporteCalculado := 0;
                             END IF;
-                            
+
                             IF (totalImporteAsFact > 0) THEN -- Consulta si tiene asistencias facturadas
                                 aplicaMaximoMas := 1; -- AsTpMax+
                             ELSE
                                 aplicaMaximoMas := 0; -- AsTpMax
-                            END IF;                                                                                     
+                            END IF;
                         END IF;
 
-                        IF (aplicaMaximoMas = 0) THEN 
+                        IF (aplicaMaximoMas = 0) THEN
                             M_APUNTE_UG(IND_UG).MOTIVO := 21; --AsTpMax;
-                        ELSE 
+                        ELSE
                             M_APUNTE_UG(IND_UG).MOTIVO := 41; --AsTpMax+;
                         END IF;
 
@@ -13016,9 +13018,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                             - No tiene configurado por maximo
                             - No tiene importe o es cero de maximo del tipo de asistencia
                             - El importe de todas las asistencias es inferior o igual al importe maximo del tipo de asistencia*/
-                        -- RGG: NO DEVENGO POR APUNTE DETIPO PORQUE YA SE DEVENGA POR DÍA                            
-                        
-                        auxImporteCalculado := totalImporteAsNuevas;                            
+                        -- RGG: NO DEVENGO POR APUNTE DETIPO PORQUE YA SE DEVENGA POR DÍA
+
+                        auxImporteCalculado := totalImporteAsNuevas;
 
                         IF (totalImporteAsFact > 0) THEN -- Consulta si tiene asistencias facturadas  (total - nuevas)
                             M_APUNTE_UG(IND_UG).MOTIVO := 28; --AsTp+;
@@ -13026,10 +13028,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                             M_APUNTE_UG(IND_UG).MOTIVO := 20; --AsTp;
                         END IF;
                     END IF;
-                    
+
                     totalImporteTiposNuevos := totalImporteTiposNuevos + auxImporteCalculado; -- totalImporteTiposNuevos += auxImporteCalculado
                     M_APUNTE_UG(IND_UG).IMPORTE := auxImporteCalculado;
-                END IF;          
+                END IF;
             END LOOP; -- Fin V_TIPOASISTENCIAS_UG
 
             -- Creo apunte en la matriz de memoria: M_APUNTE_UG (APUNTE DIA)
@@ -13044,60 +13046,60 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             M_APUNTE_UG(IND_UG).CONTADOR := contadorDiaGuardia;
             M_APUNTE_UG(IND_UG).COSTEFIJO := costeFijoUGDiaGuardia;
 
-            IF (V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA = '1') THEN -- Se agrupa, o sea que los Maximos y Minimos se aplican solo en la CG                
-                IF (V_UNIDADES_GUARDIA.Facturado IN ('S', '1')) THEN -- Consulto si tiene facturado la UG                    
+            IF (V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA = '1') THEN -- Se agrupa, o sea que los Maximos y Minimos se aplican solo en la CG
+                IF (V_UNIDADES_GUARDIA.Facturado IN ('S', '1')) THEN -- Consulto si tiene facturado la UG
                     M_APUNTE_UG(IND_UG).MOTIVO := 27; --As+
                 ELSE
                     M_APUNTE_UG(IND_UG).MOTIVO := 5; --As
                 END IF;
                 auxImporteCalculado := totalImporteTiposNuevos;
-      
-            ELSE -- No se agrupa, o sea que los Maximos y Minimos se aplican en la UG                
-                IF (NVL(V_CONFIG_GUARDIA.IMPORTEMAXASISTENCIA, 0.0) > 0.0 -- Tiene configurado el maximo 
+
+            ELSE -- No se agrupa, o sea que los Maximos y Minimos se aplican en la UG
+                IF (NVL(V_CONFIG_GUARDIA.IMPORTEMAXASISTENCIA, 0.0) > 0.0 -- Tiene configurado el maximo
                     AND totalImporteTiposNuevos + totalImporteTiposFacturados > V_CONFIG_GUARDIA.IMPORTEMAXASISTENCIA) THEN -- El importe de lo nuevo + lo facturado supera el maximo configurado
 
                     IF (V_UNIDADES_GUARDIA.Facturado IN ('S', '1')) THEN -- Consulto si tiene facturado la UG
                         auxImporteCalculado := V_CONFIG_GUARDIA.IMPORTEMAXASISTENCIA - V_UNIDADES_GUARDIA.IMPORTEFACTURADO; -- auxImporteCalculado = Maximo - UG_Facturado;
-                        IF (auxImporteCalculado<0) THEN -- Control negativo 
+                        IF (auxImporteCalculado<0) THEN -- Control negativo
                             auxImporteCalculado := 0;
-                        END IF;                                                                  
-                        M_APUNTE_UG(IND_UG).MOTIVO := 17; --AsMax+                        
+                        END IF;
+                        M_APUNTE_UG(IND_UG).MOTIVO := 17; --AsMax+
 
                     ELSE
                         auxImporteCalculado := V_CONFIG_GUARDIA.IMPORTEMAXASISTENCIA;
                         M_APUNTE_UG(IND_UG).MOTIVO := 3; --AsMax;
-                    END IF;               
+                    END IF;
 
-                ELSIF (NVL(V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA, 0.0) > 0.0 -- Tiene configurado el minimo  
-                        AND totalImporteTiposNuevos + totalImporteTiposFacturados < V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA) THEN -- El importe de lo nuevo + facturado es menor al minimo configurado                                     
+                ELSIF (NVL(V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA, 0.0) > 0.0 -- Tiene configurado el minimo
+                        AND totalImporteTiposNuevos + totalImporteTiposFacturados < V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA) THEN -- El importe de lo nuevo + facturado es menor al minimo configurado
 
                     IF (V_UNIDADES_GUARDIA.Facturado IN ('S', '1')) THEN -- Consulto si tiene facturado la UG
-                        auxImporteCalculado := V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA - V_UNIDADES_GUARDIA.IMPORTEFACTURADO; -- auxImporteCalculado = Minimo - UG_Facturado;               
-                        IF (auxImporteCalculado<0) THEN -- Control negativo 
+                        auxImporteCalculado := V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA - V_UNIDADES_GUARDIA.IMPORTEFACTURADO; -- auxImporteCalculado = Minimo - UG_Facturado;
+                        IF (auxImporteCalculado<0) THEN -- Control negativo
                             auxImporteCalculado := 0;
-                        END IF;                            
+                        END IF;
                         M_APUNTE_UG(IND_UG).MOTIVO := 33; --AsMin+
-                        
+
                     ELSE
                         auxImporteCalculado := V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA;
                         M_APUNTE_UG(IND_UG).MOTIVO := 10; --AsMin
                     END IF;
 
-                ELSE -- No supera el maximo, ni es menor al minimo                       
+                ELSE -- No supera el maximo, ni es menor al minimo
                     IF (V_UNIDADES_GUARDIA.Facturado IN ('S', '1')) THEN -- Consulto si tiene facturado la UG
                         M_APUNTE_UG(IND_UG).MOTIVO := 27; --As+
                         auxImporteCalculado := totalImporteTiposNuevos + totalImporteTiposFacturados - V_UNIDADES_GUARDIA.IMPORTEFACTURADO; -- auxImporteCalculado += AsisNuevo + AsisFacturados - UG_Facturado;
-                        IF (auxImporteCalculado<0) THEN -- Control negativo 
+                        IF (auxImporteCalculado<0) THEN -- Control negativo
                             auxImporteCalculado := 0;
                         END IF;
-                            
-                    ELSE                        
+
+                    ELSE
                         M_APUNTE_UG(IND_UG).MOTIVO := 5; --As
                         auxImporteCalculado := totalImporteTiposNuevos; -- auxImporteCalculado += AsisNuevo;
                     END IF;
                 END IF;
             END IF;
-            
+
             totalImporteUGsFacturado := totalImporteUGsFacturado + totalImporteTiposFacturados;
             totalImporteUGs := totalImporteUGs + auxImporteCalculado; -- totalImporteUGs += auxImporteCalculado;
             M_APUNTE_UG(IND_UG).IMPORTE := auxImporteCalculado;
@@ -13122,7 +13124,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             M_APUNTE_CG(IND_CG).IDTIPOAPUNTE := 'CG+';
         END IF;
 
-        IF (V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA = '0') THEN -- No se agrupa, o sea que los Maximos y Minimos se aplican en las UGs        
+        IF (V_CONFIG_GUARDIA.AGRUPARNOPAGAGUARDIA = '0') THEN -- No se agrupa, o sea que los Maximos y Minimos se aplican en las UGs
             M_APUNTE_CG(IND_CG).IMPORTE := totalImporteUGs;
 
             IF (M_CG_FACTURABLE(indiceMatrizFacturable).Facturado IN ('S', '1')) THEN -- Consulto si tiene facturado la CG
@@ -13131,55 +13133,55 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 M_APUNTE_CG(IND_CG).MOTIVO := 5; --As
             END IF;
 
-        ELSE -- Se agrupa, o sea que los Maximos y Minimos se aplican solo en la CG   
-            IF (NVL(V_CONFIG_GUARDIA.IMPORTEMAXASISTENCIA, 0.0) > 0.0 -- Tiene configurado el maximo 
+        ELSE -- Se agrupa, o sea que los Maximos y Minimos se aplican solo en la CG
+            IF (NVL(V_CONFIG_GUARDIA.IMPORTEMAXASISTENCIA, 0.0) > 0.0 -- Tiene configurado el maximo
                 AND totalImporteUGs + totalImporteUGsFacturado > V_CONFIG_GUARDIA.IMPORTEMAXASISTENCIA) THEN  -- El importe de lo nuevo + lo facturado supera el maximo configurado
 
                 IF (M_CG_FACTURABLE(indiceMatrizFacturable).IMPORTEFACTURADO>0) THEN -- Consulto si tiene facturado la CG
                     auxImporteCalculado := V_CONFIG_GUARDIA.IMPORTEMAXASISTENCIA - M_CG_FACTURABLE(indiceMatrizFacturable).IMPORTEFACTURADO; -- auxImporteCalculado = Maximo - Facturado;
-                    IF (auxImporteCalculado<0) THEN -- Control negativo 
+                    IF (auxImporteCalculado<0) THEN -- Control negativo
                         auxImporteCalculado := 0;
-                    END IF;                                                                  
+                    END IF;
                     M_APUNTE_CG(IND_CG).MOTIVO := 17; --AsMax+
-                    
+
                 ELSE
                     auxImporteCalculado := V_CONFIG_GUARDIA.IMPORTEMAXASISTENCIA;
-                    M_APUNTE_CG(IND_CG).MOTIVO := 3; --AsMax;                    
+                    M_APUNTE_CG(IND_CG).MOTIVO := 3; --AsMax;
                 END IF;
 
-                 M_APUNTE_CG(IND_CG).IMPORTE := auxImporteCalculado; 
+                 M_APUNTE_CG(IND_CG).IMPORTE := auxImporteCalculado;
 
-            ELSIF (NVL(V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA, 0.0) > 0.0 -- Tiene configurado el minimo   
+            ELSIF (NVL(V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA, 0.0) > 0.0 -- Tiene configurado el minimo
                     AND totalImporteUGs + totalImporteUGsFacturado < V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA) THEN -- El importe de lo nuevo + facturado es menor al minimo configurado
-                    
+
                     IF (M_CG_FACTURABLE(indiceMatrizFacturable).IMPORTEFACTURADO>0) THEN -- Consulto si tiene facturado la CG
-                        auxImporteCalculado := V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA - M_CG_FACTURABLE(indiceMatrizFacturable).IMPORTEFACTURADO; -- auxImporteCalculado = Minimo - Facturado;               
-                        IF (auxImporteCalculado<0) THEN -- Control negativo 
+                        auxImporteCalculado := V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA - M_CG_FACTURABLE(indiceMatrizFacturable).IMPORTEFACTURADO; -- auxImporteCalculado = Minimo - Facturado;
+                        IF (auxImporteCalculado<0) THEN -- Control negativo
                             auxImporteCalculado := 0;
-                        END IF;                            
+                        END IF;
                         M_APUNTE_CG(IND_CG).MOTIVO := 33; --AsMin+
-                        
+
                     ELSE
                         auxImporteCalculado := V_CONFIG_GUARDIA.IMPORTEMINASISTENCIA;
                         M_APUNTE_CG(IND_CG).MOTIVO := 10; --AsMin
                     END IF;
-                      
-                    M_APUNTE_CG(IND_CG).IMPORTE := auxImporteCalculado;    
-                    
-            ELSE -- No supera el maximo, ni es menor al minimo                       
+
+                    M_APUNTE_CG(IND_CG).IMPORTE := auxImporteCalculado;
+
+            ELSE -- No supera el maximo, ni es menor al minimo
                 IF (M_CG_FACTURABLE(indiceMatrizFacturable).IMPORTEFACTURADO>0) THEN -- Consulto si tiene facturado la CG
                     M_APUNTE_CG(IND_CG).MOTIVO := 27; --As+
-                ELSE                        
+                ELSE
                     M_APUNTE_CG(IND_CG).MOTIVO := 5; --As
                 END IF;
-                
+
                 auxImporteCalculado := totalImporteUGs + totalImporteUGsFacturado - M_CG_FACTURABLE(indiceMatrizFacturable).IMPORTEFACTURADO; -- auxImporteCalculado += Nuevo + Facturado - CG_Facturado;
-                IF (auxImporteCalculado<0) THEN -- Control negativo 
+                IF (auxImporteCalculado<0) THEN -- Control negativo
                     auxImporteCalculado := 0;
-                END IF;     
+                END IF;
                 M_APUNTE_CG(IND_CG).IMPORTE := auxImporteCalculado;
-            END IF; 
-        END IF; 
+            END IF;
+        END IF;
 
         P_DATOSERROR := 'PROCEDURE PROC_FACT_ASIST_APLICATIPO: ha finalizado correctamente.';
         P_CODRETORNO := TO_CHAR(0);
@@ -13652,7 +13654,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         Indicematrizfacturable Number,
         p_Codretorno Out Varchar2,
         p_Datoserror Out Varchar2) Is
-        
+
         -- Obtenemos las actuaciones realizadas y justificadas anteriormente a la fecha fin del ciclo de facturacion ordenadas por fecha de realizacion (Este cursor se utiliza para la facturacion por actuaciones)
         CURSOR C_ACTUACIONES_UG(V_IDINSTITUCION NUMBER, V_IDTURNO NUMBER, V_IDGUARDIA NUMBER, V_IDPERSONA NUMBER, V_FECHAFIN DATE, V_DIASAPLICABLES VARCHAR2, V_IDFACTURACION NUMBER) IS (
             SELECT ACT.IDTIPOACTUACION,
@@ -13667,7 +13669,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 F_ES_ASISTENCIA_DERIVADA(ASI.IDINSTITUCION, ASI.ANIO, ASI.NUMERO, V_DATOS_FACTURACION.FECHADESDE, V_DATOS_FACTURACION.FECHAHASTA) AS DERIVA,
                 F_ES_TIPO_DERIVACION(ACT.IDINSTITUCION, ACT.ANIO, ACT.NUMERO, ACT.IDACTUACION) AS ESJUDICIAL
                 --FIN: Cambio para Asistencias que derivan en Designacion
-            FROM SCS_ASISTENCIA ASI, 
+            FROM SCS_ASISTENCIA ASI,
                 SCS_ACTUACIONASISTENCIA ACT
             WHERE ASI.IDINSTITUCION = V_IDINSTITUCION
                 AND ASI.IDTURNO = V_IDTURNO
@@ -13676,7 +13678,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 AND TRUNC(ASI.FECHAHORA) = V_FECHAFIN
                 AND ASI.IDINSTITUCION = ACT.IDINSTITUCION
                 AND ASI.ANIO = ACT.ANIO
-                AND ASI.NUMERO = ACT.NUMERO            
+                AND ASI.NUMERO = ACT.NUMERO
                 AND EXISTS ( --and ACT.Facturado = '1'
                     SELECT 1
                     FROM FCS_FACT_ACTUACIONASISTENCIA FAC_ACT
@@ -13699,7 +13701,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 F_ES_ASISTENCIA_DERIVADA(ASI.IDINSTITUCION, ASI.ANIO, ASI.NUMERO, V_DATOS_FACTURACION.FECHADESDE, V_DATOS_FACTURACION.FECHAHASTA) AS DERIVA,
                 F_ES_TIPO_DERIVACION(ACT.IDINSTITUCION, ACT.ANIO, ACT.NUMERO, ACT.IDACTUACION) AS ESJUDICIAL
                 --FIN: Cambio para Asistencias que derivan en Designacion
-            FROM SCS_ASISTENCIA ASI, 
+            FROM SCS_ASISTENCIA ASI,
                 SCS_ACTUACIONASISTENCIA ACT
             WHERE ASI.IDINSTITUCION = V_IDINSTITUCION
                 AND ASI.IDTURNO = V_IDTURNO
@@ -13708,7 +13710,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 AND TRUNC(ASI.FECHAHORA) = V_FECHAFIN
                 AND ASI.IDINSTITUCION = ACT.IDINSTITUCION
                 AND ASI.ANIO = ACT.ANIO
-                AND ASI.NUMERO = ACT.NUMERO          
+                AND ASI.NUMERO = ACT.NUMERO
                 AND NOT EXISTS ( --and (ACT.Facturado is null or ACT.Facturado = '0')
                     SELECT  1
                     FROM FCS_FACT_ACTUACIONASISTENCIA FAC_ACT
@@ -13717,8 +13719,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                         AND FAC_ACT.NUMERO = ACT.NUMERO
                         AND FAC_ACT.IDACTUACION = ACT.IDACTUACION)
                 AND (ACT.ANULACION IS NULL OR ACT.ANULACION = '0')
-                AND ACT.FECHAJUSTIFICACION IS NOT NULL 
-                AND TRUNC(ACT.FECHAJUSTIFICACION) BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA) 
+                AND ACT.FECHAJUSTIFICACION IS NOT NULL
+                AND TRUNC(ACT.FECHAJUSTIFICACION) BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA)
                 AND ACT.VALIDADA = '1'
                 AND ACT.DIADESPUES = 'N'
                 AND FUN_ESDIAAPLICABLE(ASI.FECHAHORA, V_DIASAPLICABLES) = 1)
@@ -13798,12 +13800,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             m_Cg_Facturable(Indicematrizfacturable).Idpersona,
             m_Cg_Facturable(Indicematrizfacturable).Fechainicio,
             V_CONFIG_GUARDIA.Diasnopagaguardia) Loop
-            
+
             IF (r_Dia.Tiene_Asistquederivan <> Pkg_Siga_Constantes.Db_False_n) THEN -- Cuando un dia tenga asistencias derivadas no se aplica el importe minimo
                 Conf_Imp_Minimo := 0;
             ELSE
-                Conf_Imp_Minimo := Conf_Imp_MinimoIni;                            
-            END IF;   
+                Conf_Imp_Minimo := Conf_Imp_MinimoIni;
+            END IF;
 
             --incrementando contador de dia
             Contador_Dia := Contador_Dia + 1;
@@ -13892,7 +13894,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                         Exception
                             When no_data_found Then
                                 Fac_Act_Acumulado := 0;
-                    End;                    
+                    End;
 
                     If (Conf_SeAgrupaPorCabecera = '1') Then
                         p_Datoserror := v_mensaje || ', ' || 'Antes de segundo select';
@@ -13954,19 +13956,19 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             Imp_Dia := Imp_Dia;
             Mot_Dia := Cons_Mot_Act;
             Fac_Dia := r_Dia.Importefacturado;
-                
-            p_Datoserror := 'Antes de calcular dia';                  
+
+            p_Datoserror := 'Antes de calcular dia';
 
             IF (Conf_SeAgrupaPorCabecera <> '1') THEN -- Aplican maximos y minimos por dia
                 IF (Fac_Dia <= 0.0) THEN -- Unidad de guardia sin facturar
-                    
+
                     IF (Conf_Imp_Maximo > 0.0 And Conf_Imp_Maximo < Imp_Dia) THEN -- Supera el maximo
-                        Mot_Dia := Cons_Mot_Actmax; -- AcMax                    
-                        Imp_Dia := Conf_Imp_Maximo;                                        
-                    
+                        Mot_Dia := Cons_Mot_Actmax; -- AcMax
+                        Imp_Dia := Conf_Imp_Maximo;
+
                     ELSIF (Conf_Imp_Minimo > 0.0 AND Conf_Imp_Minimo > Imp_Dia) THEN -- No llega al minimo
                         Mot_Dia := Cons_Mot_Actmin; -- AcMin
-                        Imp_Dia := Conf_Imp_Minimo;        
+                        Imp_Dia := Conf_Imp_Minimo;
 
                     ELSE
                         Mot_Dia := Cons_Mot_Act; -- Ac
@@ -13976,31 +13978,31 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 ELSIF (Conf_Imp_Maximo > 0.0 And Conf_Imp_Maximo < Imp_Dia + Fac_Act_Acumulado) THEN -- Supera el maximo (pero puede haber cambiado)
                     Mot_Dia := Cons_Mot_Actmaxmas; -- AcMax+
                     Imp_Dia := Conf_Imp_Maximo - Fac_Dia;
-                            
+
                 ELSIF (Conf_Imp_Minimo > 0.0 AND Conf_Imp_Minimo > Imp_Dia + Fac_Act_Acumulado) THEN -- No llega al minimo (pero puede haber cambiado)
                     Mot_Dia := Cons_Mot_Actminmas; -- AcMin+
                     Imp_Dia := Conf_Imp_Minimo - Fac_Dia;
-                        
+
                 ELSIF (Fac_Dia > Fac_Act_Acumulado) THEN -- Tiene un minimo previo, donde las actuaciones facturadas tienen un importe menor a lo facturado
                     Mot_Dia := Cons_Mot_Actmas; -- Ac+
                     Imp_Dia := Imp_Dia + Fac_Act_Acumulado - Fac_Dia;
-                        
+
                 ELSE
-                     /* - Se ha facturado previamente 
+                     /* - Se ha facturado previamente
                         - No supera el maximo
-                        - Llega al minimo                        
+                        - Llega al minimo
                         - No tiene un minimo previo, donde las actuaciones facturadas tienen un importe menor a lo facturado
                      */
-                     Mot_Dia := Cons_Mot_Actmas; -- Ac+ 
-                    Imp_Dia := Imp_Dia;                
+                     Mot_Dia := Cons_Mot_Actmas; -- Ac+
+                    Imp_Dia := Imp_Dia;
                 END IF;
 
             ELSIF (Fac_Dia > 0) THEN
                 Mot_Dia := Cons_Mot_Actmas;
-            
+
             ELSE
                 Mot_Dia := Cons_Mot_Act;
-            END IF;                 
+            END IF;
 
             --controlando que el importe nunca sea negativo
             If (Imp_Dia < 0) Then
@@ -14035,19 +14037,19 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         Fac_Cab := m_Cg_Facturable(Indicematrizfacturable).Importefacturadoasis;
 
         IF (Conf_SeAgrupaPorCabecera = '1') THEN -- Aplican maximos y minimos por Cabecera de Guardia
-        
+
             IF (m_Cg_Facturable(Indicematrizfacturable).Tiene_Asistquederivan <> Pkg_Siga_Constantes.Db_False_n) THEN -- Cuando una cabecera tenga asistencias derivadas no se aplica el importe minimo
                 Conf_Imp_Minimo := 0;
             ELSE
-                Conf_Imp_Minimo := Conf_Imp_MinimoIni;                            
-            END IF;   
-            
+                Conf_Imp_Minimo := Conf_Imp_MinimoIni;
+            END IF;
+
             IF (Fac_Cab <= 0.0) THEN -- Cabecera de guardia sin facturar
-                
+
                 IF (Conf_Imp_Maximo > 0.0 And Conf_Imp_Maximo < Imp_Cab) THEN -- Supera el maximo
                     Mot_Cab := Cons_Mot_Actmax; -- AcMax
                     Imp_Cab := Conf_Imp_Maximo;
-                
+
                 ELSIF (Conf_Imp_Minimo > 0.0 AND Conf_Imp_Minimo > Imp_Cab) THEN -- No llega al minimo
                     Mot_Cab := Cons_Mot_Actmin; -- AcMin
                     Imp_Cab := Conf_Imp_Minimo;
@@ -14060,28 +14062,28 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             ELSIF (Conf_Imp_Maximo > 0.0 And Conf_Imp_Maximo < Imp_Cab + Fac_Act_Acumulado_CG) THEN -- Supera el maximo (pero puede haber cambiado)
                 Mot_Cab := Cons_Mot_Actmaxmas; -- AcMax+
                 Imp_Cab := Conf_Imp_Maximo - Fac_Cab;
-                        
+
             ELSIF (Conf_Imp_Minimo > 0.0 AND Conf_Imp_Minimo > Imp_Cab + Fac_Act_Acumulado_CG) THEN -- No llega al minimo (pero puede haber cambiado)
                 Mot_Cab := Cons_Mot_Actminmas; -- AcMin+
                 Imp_Cab := Conf_Imp_Minimo - Fac_Cab;
-                    
+
             ELSIF (Fac_Cab > Fac_Act_Acumulado_CG) THEN -- Tiene un minimo previo, donde las actuaciones facturadas tienen un importe menor a lo facturado
                 Mot_Cab := Cons_Mot_Actmas; -- Ac+
                 Imp_Cab := Imp_Cab + Fac_Act_Acumulado_CG - Fac_Cab;
-                    
+
             ELSE
-                 /* - Se ha facturado previamente 
+                 /* - Se ha facturado previamente
                     - No supera el maximo
-                    - Llega al minimo                        
+                    - Llega al minimo
                     - No tiene un minimo previo, donde las actuaciones facturadas tienen un importe menor a lo facturado
                  */
                  Mot_Cab := Cons_Mot_Actmas; -- Ac+
-                 Imp_Cab := Imp_Cab;                            
+                 Imp_Cab := Imp_Cab;
             END IF;
 
         ELSIF (Fac_Cab > 0) THEN
             Mot_Cab := Cons_Mot_Actmas;
-            
+
         ELSE
             Mot_Cab := Cons_Mot_Act;
         END IF;
@@ -14156,7 +14158,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         indiceMatrizFacturable number,
         P_CODRETORNO OUT VARCHAR2,
         P_DATOSERROR OUT VARCHAR2) IS
-        
+
         -- Obtenemos las actuaciones realizadas y justificadas anteriormente a la fecha fin del ciclo de facturacion para cada idtipoactuacion ordenadas por fecha de realizacion (Este cursor se utiliza para la facturacion por actuaciones)
         CURSOR C_ACTUACIONESTIPO_UG(V_IDINSTITUCION NUMBER, V_IDTURNO NUMBER, V_IDGUARDIA NUMBER, V_IDPERSONA NUMBER, V_FECHAFIN DATE, V_IDTIPOACTUACION NUMBER, V_ANIO NUMBER, V_NUMERO NUMBER, V_DIASAPLICABLES VARCHAR2, V_IDFACTURACION NUMBER) IS(
             SELECT ACT.IDTIPOACTUACION,
@@ -14169,7 +14171,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 NVL(FUNC_COSTEFIJO(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.ANIO, ACT.NUMERO, ACT.IDACTUACION, V_FECHAFIN, V_IDFACTURACION), 0) AS COSTEFIJO,
                 FUNC_CALCULAR_IMPORTEACT(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.IDTIPOASISTENCIA, ACT.IDTIPOACTUACION, V_FECHAFIN, V_IDFACTURACION, 0) AS IMPORTE,
                 FUNC_CALCULAR_IMPORTEACT(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.IDTIPOASISTENCIA, ACT.IDTIPOACTUACION, V_FECHAFIN, V_IDFACTURACION, 1) AS IMPORTEMAX
-            FROM SCS_ASISTENCIA ASI, 
+            FROM SCS_ASISTENCIA ASI,
                 SCS_ACTUACIONASISTENCIA ACT
             WHERE ASI.IDINSTITUCION = V_IDINSTITUCION
                 AND ASI.IDTURNO = V_IDTURNO
@@ -14178,7 +14180,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 AND TRUNC(ASI.FECHAHORA) = V_FECHAFIN
                 AND ASI.IDINSTITUCION = ACT.IDINSTITUCION
                 AND ASI.ANIO = ACT.ANIO
-                AND ASI.NUMERO = ACT.NUMERO                
+                AND ASI.NUMERO = ACT.NUMERO
                 AND EXISTS ( --and ACT.Facturado = '1'
                     SELECT 1
                     FROM FCS_FACT_ACTUACIONASISTENCIA FAC_ACT
@@ -14201,7 +14203,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 NVL(FUNC_COSTEFIJO(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.ANIO, ACT.NUMERO, ACT.IDACTUACION, V_FECHAFIN, V_IDFACTURACION), 0) AS COSTEFIJO,
                 FUNC_CALCULAR_IMPORTEACT(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.IDTIPOASISTENCIA, ACT.IDTIPOACTUACION, V_FECHAFIN, V_IDFACTURACION, 0) AS IMPORTE,
                 FUNC_CALCULAR_IMPORTEACT(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.IDTIPOASISTENCIA, ACT.IDTIPOACTUACION, V_FECHAFIN, V_IDFACTURACION, 1) AS IMPORTEMAX
-            FROM SCS_ASISTENCIA ASI, 
+            FROM SCS_ASISTENCIA ASI,
                 SCS_ACTUACIONASISTENCIA ACT
             WHERE ASI.IDINSTITUCION = V_IDINSTITUCION
                 AND ASI.IDTURNO = V_IDTURNO
@@ -14210,7 +14212,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 AND TRUNC(ASI.FECHAHORA) = V_FECHAFIN
                 AND ASI.IDINSTITUCION = ACT.IDINSTITUCION
                 AND ASI.ANIO = ACT.ANIO
-                AND ASI.NUMERO = ACT.NUMERO                
+                AND ASI.NUMERO = ACT.NUMERO
                 AND NOT EXISTS( --and (ACT.Facturado is null or ACT.Facturado = '0')
                     SELECT 1
                     FROM FCS_FACT_ACTUACIONASISTENCIA FAC_ACT
@@ -14222,12 +14224,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 AND ACT.IDTIPOACTUACION = V_IDTIPOACTUACION
                 AND ASI.ANIO = V_ANIO
                 AND ASI.NUMERO = V_NUMERO
-                AND ACT.FECHAJUSTIFICACION IS NOT NULL 
-                AND TRUNC(ACT.FECHAJUSTIFICACION) BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA) 
+                AND ACT.FECHAJUSTIFICACION IS NOT NULL
+                AND TRUNC(ACT.FECHAJUSTIFICACION) BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA)
                 AND ACT.VALIDADA = '1'
                 AND ACT.DIADESPUES = 'N'
                 AND FUN_ESDIAAPLICABLE(ASI.FECHAHORA, V_DIASAPLICABLES) = 1)
-            ORDER BY IDTIPOACTUACION, FECHA;        
+            ORDER BY IDTIPOACTUACION, FECHA;
 
         -- Matriz de donde se extrae la configuracion de la guardia
         MFACTURABLE MATRICE_CG_FACTURABLE;
@@ -14405,7 +14407,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 M_APUNTE_UG(IND_UG).FECHAFIN := V_UNIDADES_GUARDIA.FECHAFIN;
                 M_APUNTE_UG(IND_UG).FACTURADO := V_UNIDADES_GUARDIA.FACTURADO;
                 M_APUNTE_UG(IND_UG).CONTADOR := CONTADOR;
-                M_APUNTE_UG(IND_UG).COSTEFIJO := COSTEFIJOUG;               
+                M_APUNTE_UG(IND_UG).COSTEFIJO := COSTEFIJOUG;
 
                 -- Acumulador de Tipos
                 if (importeTipoActMax is not null
@@ -14762,7 +14764,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         indiceMatrizFacturable IN NUMBER,
         P_CODRETORNO OUT VARCHAR2,
         P_DATOSERROR OUT VARCHAR2) IS
-        
+
     CURSOR C_ACTUACIONES_ACFG (P_IDINSTITUCION SCS_ASISTENCIA.IDINSTITUCION%TYPE, P_ANIO SCS_ASISTENCIA.ANIO%TYPE, P_NUMERO SCS_ASISTENCIA.NUMERO%TYPE, V_IDFACTURACION NUMBER) IS (
         SELECT ACT.IDINSTITUCION,
             ACT.ANIO,
@@ -14774,7 +14776,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             '0' AS FACTURADA,
             0 AS IMPFACTURADA,
             NVL(FUNC_COSTEFIJO(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.ANIO, ACT.NUMERO, ACT.IDACTUACION, TRUNC(ACT.FECHA), V_IDFACTURACION), 0) AS IMPCOSTESFIJOS -- Los datos de Fuera de Guardia se calculan con la fecha de la actuacion
-        FROM SCS_ASISTENCIA ASI, 
+        FROM SCS_ASISTENCIA ASI,
             SCS_ACTUACIONASISTENCIA ACT
         WHERE ASI.IDINSTITUCION = P_IDINSTITUCION
             AND ASI.ANIO = P_ANIO
@@ -14824,8 +14826,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
               ACT.IDACTUACION,
               ASI.FECHAHORA,
               ACT.FECHA,
-              ACT.FECHAJUSTIFICACION);        
-        
+              ACT.FECHAJUSTIFICACION);
+
     --Acumuladores
     impActFacturadas_CABEC number;
     impActFacturadas_DIA   number;
@@ -15090,7 +15092,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         indiceMatrizFacturable IN NUMBER,
         P_CODRETORNO OUT VARCHAR2,
         P_DATOSERROR OUT VARCHAR2) IS
-                                       
+
         -- Obtenemos las actuaciones realizadas y justificadas anteriormente a la fecha fin del ciclo de facturacion fuera de la guardia y agrupadas por Tipo Actuacion y realizadas en Dia
         CURSOR C_ACTUACIONESTIPO_FG(V_IDINSTITUCION NUMBER, V_IDTURNO NUMBER, V_IDGUARDIA NUMBER, V_IDPERSONA NUMBER, V_FECHAINICIO_CG DATE, V_FECHAFIN_CG DATE, V_FECHA DATE, V_IDTIPOACT NUMBER, V_IDFACTURACION NUMBER) IS(
             SELECT ACT.IDTIPOACTUACION,
@@ -15103,7 +15105,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 NVL(FUNC_COSTEFIJO(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.ANIO, ACT.NUMERO, ACT.IDACTUACION, TRUNC(ACT.FECHA), V_IDFACTURACION), 0) AS COSTEFIJO, -- Los datos de Fuera de Guardia se calculan con la fecha de la actuacion
                 FUNC_CALCULAR_IMPORTEACT(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.IDTIPOASISTENCIA, ACT.IDTIPOACTUACION, TRUNC(ACT.FECHA), V_IDFACTURACION, 0) AS IMPORTE, -- Los datos de Fuera de Guardia se calculan con la fecha de la actuacion
                 FUNC_CALCULAR_IMPORTEACT(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.IDTIPOASISTENCIA, ACT.IDTIPOACTUACION, TRUNC(ACT.FECHA), V_IDFACTURACION, 1) AS IMPORTEMAX -- Los datos de Fuera de Guardia se calculan con la fecha de la actuacion
-            FROM SCS_ASISTENCIA ASI, 
+            FROM SCS_ASISTENCIA ASI,
                 SCS_ACTUACIONASISTENCIA ACT
             WHERE ASI.IDINSTITUCION = V_IDINSTITUCION
                 AND ASI.IDTURNO = V_IDTURNO
@@ -15112,7 +15114,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 AND TRUNC(ASI.FECHAHORA) BETWEEN TRUNC(V_FECHAINICIO_CG) AND TRUNC(V_FECHAFIN_CG)
                 AND ASI.IDINSTITUCION = ACT.IDINSTITUCION
                 AND ASI.ANIO = ACT.ANIO
-                AND ASI.NUMERO = ACT.NUMERO                
+                AND ASI.NUMERO = ACT.NUMERO
                 AND EXISTS ( --and ACT.Facturado = '1'
                     SELECT 1
                     FROM FCS_FACT_ACTUACIONASISTENCIA FAC
@@ -15134,7 +15136,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 NVL(FUNC_COSTEFIJO(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.ANIO, ACT.NUMERO, ACT.IDACTUACION, TRUNC(ACT.FECHA), V_IDFACTURACION), 0) AS COSTEFIJO, -- Los datos de Fuera de Guardia se calculan con la fecha de la actuacion
                 FUNC_CALCULAR_IMPORTEACT(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.IDTIPOASISTENCIA, ACT.IDTIPOACTUACION, TRUNC(ACT.FECHA), V_IDFACTURACION, 0) AS IMPORTE, -- Los datos de Fuera de Guardia se calculan con la fecha de la actuacion
                 FUNC_CALCULAR_IMPORTEACT(ACT.IDINSTITUCION, ASI.IDTURNO, ASI.IDGUARDIA, ACT.IDTIPOASISTENCIA, ACT.IDTIPOACTUACION, TRUNC(ACT.FECHA), V_IDFACTURACION, 1) AS IMPORTEMAX -- Los datos de Fuera de Guardia se calculan con la fecha de la actuacion
-            FROM SCS_ASISTENCIA ASI, 
+            FROM SCS_ASISTENCIA ASI,
                 SCS_ACTUACIONASISTENCIA ACT
             WHERE ASI.IDINSTITUCION = V_IDINSTITUCION
                 AND ASI.IDTURNO = V_IDTURNO
@@ -15143,7 +15145,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 AND TRUNC(ASI.FECHAHORA) BETWEEN TRUNC(V_FECHAINICIO_CG) AND TRUNC(V_FECHAFIN_CG)
                 AND ASI.IDINSTITUCION = ACT.IDINSTITUCION
                 AND ASI.ANIO = ACT.ANIO
-                AND ASI.NUMERO = ACT.NUMERO                
+                AND ASI.NUMERO = ACT.NUMERO
                 AND NOT EXISTS ( --and (ACT.Facturado is null or ACT.Facturado = '0')
                     SELECT 1
                     FROM FCS_FACT_ACTUACIONASISTENCIA FAC
@@ -15152,8 +15154,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                         AND FAC.NUMERO = ACT.NUMERO
                         AND FAC.IDACTUACION = ACT.IDACTUACION)
                 AND (ACT.ANULACION IS NULL OR ACT.ANULACION = '0')
-                AND ACT.FECHAJUSTIFICACION IS NOT NULL 
-                AND TRUNC(ACT.FECHAJUSTIFICACION) BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA) 
+                AND ACT.FECHAJUSTIFICACION IS NOT NULL
+                AND TRUNC(ACT.FECHAJUSTIFICACION) BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA)
                 AND ACT.VALIDADA = '1'
                 AND ACT.DIADESPUES = 'S'
                 AND ACT.FECHA = V_FECHA
@@ -15199,7 +15201,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
       -- Para cada Actuacion
       importeTotalActuacion := 0;
-      costeFijoCG           := 0;      
+      costeFijoCG           := 0;
       contarActuacionesCG   := 0;
       importeFacturadoUG    := 0;
 

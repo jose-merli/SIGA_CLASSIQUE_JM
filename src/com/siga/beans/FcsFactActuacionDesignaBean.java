@@ -33,9 +33,9 @@ public class FcsFactActuacionDesignaBean extends MasterBean{
 	private String		fechaActuacion;
 	private String		fechaJustificacion;
 	private Double		precioAplicado;
-	private Integer		porcentajeFacturado;
+	private Double		porcentajeFacturado;
+	private Double		importeFacturado;
 	private String		codigoProcedimiento;
-	private String      importeFacturado;
 	
 	
 	/**
@@ -56,13 +56,13 @@ public class FcsFactActuacionDesignaBean extends MasterBean{
 	static public final String 	C_IDTURNO = 				"IDTURNO";
 	static public final String 	C_PRECIOAPLICADO = 			"PRECIOAPLICADO";
 	static public final String 	C_PORCENTAJEFACTURADO = 	"PORCENTAJEFACTURADO";
+	static public final String 	C_IMPORTEFACTURADO =		"IMPORTEFACTURADO";
 	static public final String 	C_IDPERSONA = 				"IDPERSONA";
 	static public final String 	C_PROCEDIMIENTO = 			"PROCEDIMIENTO";
 	static public final String 	C_ACREDITACION = 			"ACREDITACION";
 	static public final String 	C_FECHA_ACTUACION = 		"FECHAACTUACION";
 	static public final String 	C_FECHA_JUSTIFICACION = 	"FECHAJUSTIFICACION";
 	static public final String 	C_CODIGOPROCEDIMIENTO = 	"CODIGOPROCEDIMIENTO";
-	static public final String 	C_IMPORTEFACTURADO = 	    "IMPORTEFACTURADO";
 	
 	
 	
@@ -168,13 +168,13 @@ public class FcsFactActuacionDesignaBean extends MasterBean{
 	/**
 	 * @return Returns the porcentajeFacturado.
 	 */
-	public Integer getPorcentajeFacturado() {
+	public Double getPorcentajeFacturado() {
 		return porcentajeFacturado;
 	}
 	/**
 	 * @param porcentajeFacturado The porcentajeFacturado to set.
 	 */
-	public void setPorcentajeFacturado(Integer porcentajeFacturado) {
+	public void setPorcentajeFacturado(Double porcentajeFacturado) {
 		this.porcentajeFacturado = porcentajeFacturado;
 	}
 	/**
@@ -188,6 +188,12 @@ public class FcsFactActuacionDesignaBean extends MasterBean{
 	 */
 	public void setPrecioAplicado(Double precioAplicado) {
 		this.precioAplicado = precioAplicado;
+	}
+	public Double getImporteFacturado()	{
+		return importeFacturado;
+	}
+	public void setImporteFacturado(Double importeFacturado)	{
+		this.importeFacturado = importeFacturado;
 	}
 	public String getAcreditacion() {
 		return acreditacion;
@@ -213,12 +219,5 @@ public class FcsFactActuacionDesignaBean extends MasterBean{
 	public void setFechaJustificacion(String fechaJustificacion) {
 		this.fechaJustificacion = fechaJustificacion;
 	}
-	public String getImporteFacturado() {
-		return importeFacturado;
-	}
-	public void setImporteFacturado(String importeFacturado) {
-		this.importeFacturado = importeFacturado;
-	}
-	
 
 }

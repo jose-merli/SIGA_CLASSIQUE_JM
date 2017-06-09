@@ -6,8 +6,6 @@ package com.siga.beans;
 import java.util.*;
 
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.Row;
-import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 
@@ -56,7 +54,7 @@ public class FcsFactActuacionDesignaAdm extends MasterBeanAdministrador {
 			bean.setIdTurno			(UtilidadesHash.getInteger(hash,FcsFactActuacionDesignaBean.C_IDTURNO));
 			bean.setNumero			(UtilidadesHash.getLong(hash,FcsFactActuacionDesignaBean.C_NUMERO));
 			bean.setNumeroAsunto	(UtilidadesHash.getLong(hash,FcsFactActuacionDesignaBean.C_NUMEROASUNTO));
-			bean.setPorcentajeFacturado(UtilidadesHash.getInteger(hash,FcsFactActuacionDesignaBean.C_PORCENTAJEFACTURADO));
+			bean.setPorcentajeFacturado(UtilidadesHash.getDouble(hash,FcsFactActuacionDesignaBean.C_PORCENTAJEFACTURADO));
 			bean.setPrecioAplicado	(UtilidadesHash.getDouble(hash,FcsFactActuacionDesignaBean.C_PRECIOAPLICADO));
 			bean.setUsuMod			(UtilidadesHash.getInteger(hash,FcsFactActuacionDesignaBean.C_USUMODIFICACION));
 			bean.setAcreditacion	(UtilidadesHash.getString(hash,FcsFactActuacionDesignaBean.C_ACREDITACION));
@@ -99,69 +97,7 @@ public class FcsFactActuacionDesignaAdm extends MasterBeanAdministrador {
 		}
 		return htData;	
 	}
-	
-	/**
-	 * Devuelve en un Vector de Hashtables, registros de la BD que son resultado de ejecutar la select.  
-	 * @param String select: consulta SQL del SELECT almacenada en un String.
-	 * @return Vector con Hashtables. Cada Hashtable es una fila del resultado del select en la base de datos.
-	 * @throws ClsExceptions
-	 */
-	public Vector selectGenerico(String select) throws ClsExceptions {
-		Vector datos = new Vector();
-		
-		// Acceso a BBDD
-		RowsContainer rc = null;
-		try { 
-			rc = new RowsContainer(); 
-			if (rc.query(select)) {
-				for (int i = 0; i < rc.size(); i++)	{
-					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable) fila.getRow(); 
-					if (registro != null) 
-						datos.add(registro);
-				}
-			}
-		} 
-		catch (Exception e) {
-			throw new ClsExceptions (e, "Excepcion en FcsFactActuacionDesignaAdm.selectGenerico(). Consulta SQL:"+select);
-		}
-		return datos;	
-	}
-	
-	/**
-	 * Devuelve el valor del importe aplicado que hay que facturar para un colegiado en una facturacion determinada
-	 *   
-	 * @param String idInstitucion 
-	 * @param String idFacturacion
-	 * @param String idPersona
-	 * 
-	 * @return String resultado con el importe 
-	 */
-	public String getImporteFacturado (String idInstitucion, String idFacturacion, String idPersona)
-	{
-		String resultado = "", consulta = "";
-		//query para consultar el importe 
-		consulta = 	" SELECT " + 
-					" SUM(" + FcsFactActuacionDesignaBean.C_PRECIOAPLICADO + ") AS IMPORTE " +
-					" FROM " + FcsFactActuacionDesignaBean.T_NOMBRETABLA + " " +
-					" WHERE " + FcsFactActuacionDesignaBean.C_IDINSTITUCION + "=" + idInstitucion + " " +
-					" AND " + FcsFactActuacionDesignaBean.C_IDFACTURACION + "=" + idFacturacion + " " +
-					" AND " + FcsFactActuacionDesignaBean.C_IDPERSONA + "=" + idPersona + " ";
-		
-		//Hashtable para recoger el resultado de la contulta
-		Hashtable hash = new Hashtable();
-		try{
-			hash = (Hashtable)((Vector)this.selectGenerico(consulta)).get(0);
-			//resogemos el resultado
-			resultado = (String)hash.get("IMPORTE");
-			if (resultado.equals(""))resultado="0";
-		}catch(Exception e){
-			//si no se ha obtenido resultado es porque no hay nada que facturar para el colegiado con ese idPersona
-			resultado = "0";
-		}
-		return resultado;
-	}
-	
+
 	/**
 	 * Devuelve el valor del importe que hay que facturar para un colegiado en una facturacion determinada
 	 *   
@@ -171,7 +107,7 @@ public class FcsFactActuacionDesignaAdm extends MasterBeanAdministrador {
 	 * 
 	 * @return String resultado con el importe 
 	 */
-	public String getImporteTotalFacturado (String idInstitucion, String idFacturacion, String idPersona)
+	public String getImporteFacturado (String idInstitucion, String idFacturacion, String idPersona)
 	{
 		String resultado = "", consulta = "";
 		//query para consultar el importe 
@@ -195,7 +131,6 @@ public class FcsFactActuacionDesignaAdm extends MasterBeanAdministrador {
 		}
 		return resultado;
 	}
-	
 	
 	/**
 	 * Devuelve un vector con los turnos de oficio que hay que facturar para una persona
@@ -245,7 +180,7 @@ public class FcsFactActuacionDesignaAdm extends MasterBeanAdministrador {
 		return resultado;
 		
 	}
-	
+
 }
 
 

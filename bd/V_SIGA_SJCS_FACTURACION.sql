@@ -25,7 +25,7 @@ SELECT FAC.IDINSTITUCION,
                            SELECT IDINSTITUCION,
                                   IDFACTURACION,
                                   IDPERSONA,
-                                  ROUND(PRECIOAPLICADO * PORCENTAJEFACTURADO / 100, 2) AS PRECIO
+                                  Importefacturado AS PRECIO
                              FROM FCS_FACT_ACTUACIONDESIGNA
                           UNION ALL
                            SELECT IDINSTITUCION,

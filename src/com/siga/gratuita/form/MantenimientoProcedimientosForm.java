@@ -84,13 +84,13 @@ public class MantenimientoProcedimientosForm extends MasterForm {
 	/**
 	 * @return Returns the idJurisdiccion.
 	 */
-	public Integer getPorcentaje() {
-		return UtilidadesHash.getInteger(this.datos, porcentaje);
+	public Double getPorcentaje() {
+		return UtilidadesHash.getDouble(this.datos, porcentaje);
 	}
 	/**
 	 * @param idJurisdiccion The idJurisdiccion to set.
 	 */
-	public void setPorcentaje(Integer _porcentaje) {
+	public void setPorcentaje(Double _porcentaje) {
 		UtilidadesHash.set (this.datos, this.porcentaje,_porcentaje);
 	}
 	/**

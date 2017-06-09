@@ -216,7 +216,7 @@
 				Hashtable hash = (Hashtable) v.get(i);
 				if (hash != null) {
 					String acreDescripcion = UtilidadesHash.getString(hash, ScsAcreditacionBean.C_DESCRIPCION);
-					Integer acrePorcentaje = UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_PORCENTAJE);
+					Double acrePorcentaje = UtilidadesHash.getDouble(hash, ScsAcreditacionProcedimientoBean.C_PORCENTAJE);
 					Integer idAcreditacion = UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_IDACREDITACION);
 					Integer idInstitucion = UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_IDINSTITUCION);
 					String idProcedimiento = UtilidadesHash.getString(hash, ScsAcreditacionProcedimientoBean.C_IDPROCEDIMIENTO);
@@ -230,7 +230,7 @@
 							<input type="hidden" name="oculto<%=String.valueOf(i+1)%>_4" value="detalleAcreditacion">
 							<%=UtilidadesString.mostrarDatoJSP(acreDescripcion)%>
 						</td>
-						<td align="right"><%=acrePorcentaje.intValue()%></td>
+						<td align="right"><%=UtilidadesNumero.formatoCampo(acrePorcentaje.doubleValue())%> %</td>
 						<td align="center">
 							<%		
 								if(nigNumeroProcedimiento == 1){ %>

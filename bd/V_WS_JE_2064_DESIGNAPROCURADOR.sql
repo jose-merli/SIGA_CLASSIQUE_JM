@@ -63,7 +63,7 @@ SELECT ADP.IDINSTITUCION
                    WHEN 0 THEN NULL
                    ELSE SUBSTR(D.NUMPROCEDIMIENTO, 0, INSTR(D.NUMPROCEDIMIENTO, '/')-1)
                    END) AS TO_J_NUM_PROC--ok numero procedimiento*/
-        , DECODE(APP.PORCENTAJE, 100, NULL, APP.PORCENTAJE) AS TO_J_PORCENTAJE
+        , DECODE(APP.PORCENTAJE, 100, NULL, round(APP.PORCENTAJE)) AS TO_J_PORCENTAJE
         , DECODE(APP.PORCENTAJE, 100, NULL,
                            (CASE ADP.IDACREDITACION
                                   WHEN 5  --'Extrajudic.'
