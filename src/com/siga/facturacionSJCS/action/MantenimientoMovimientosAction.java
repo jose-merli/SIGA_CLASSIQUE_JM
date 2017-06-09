@@ -445,7 +445,7 @@ public class MantenimientoMovimientosAction extends MasterAction {
 				    	request.getSession().setAttribute("hashActuacion", hashActuacion);
 				    	
 				    	//Cogemos el  importe de la facturación
-				    	String importeFactura =  factura.getImporteTotalFacturado((String)hashActuacion.get("IDINSTITUCION"), (String)hashActuacion.get("IDFACTURACION"), (String)hashActuacion.get("IDPERSONACOLEGIADO"));
+				    	String importeFactura =  factura.getImporteFacturado((String)hashActuacion.get("IDINSTITUCION"), (String)hashActuacion.get("IDFACTURACION"), (String)hashActuacion.get("IDPERSONACOLEGIADO"));
 				    	String primerCaracter =importeFactura.substring(0,1);
 				    	if(primerCaracter.equalsIgnoreCase("-")){  //La cantidad es negativa luego el importe para contrarestar debe ser positivo
 				    		importeFactura = importeFactura.replace("-", ""); 
