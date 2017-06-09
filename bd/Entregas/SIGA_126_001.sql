@@ -94,7 +94,7 @@ alter table scs_cabeceraguardias
   references fcs_movimientosvarios (IDINSTITUCION, IDMOVIMIENTO);  
   
   
-F_SIGA_MOVIMIENTOSVARIOS
+f_Siga_Asuntoasociado_MV
 
 
 create index FK_SCS_ACTUACIONDESIGNA_MOV on SCS_ACTUACIONDESIGNA (IDINSTITUCION,IDMOVIMIENTO)
