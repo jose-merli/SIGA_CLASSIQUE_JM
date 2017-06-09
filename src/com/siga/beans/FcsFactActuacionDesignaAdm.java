@@ -129,7 +129,7 @@ public class FcsFactActuacionDesignaAdm extends MasterBeanAdministrador {
 	}
 	
 	/**
-	 * Devuelve el valor del importe que hay que facturar para un colegiado en una facturacion determinada
+	 * Devuelve el valor del importe aplicado que hay que facturar para un colegiado en una facturacion determinada
 	 *   
 	 * @param String idInstitucion 
 	 * @param String idFacturacion
@@ -143,6 +143,40 @@ public class FcsFactActuacionDesignaAdm extends MasterBeanAdministrador {
 		//query para consultar el importe 
 		consulta = 	" SELECT " + 
 					" SUM(" + FcsFactActuacionDesignaBean.C_PRECIOAPLICADO + ") AS IMPORTE " +
+					" FROM " + FcsFactActuacionDesignaBean.T_NOMBRETABLA + " " +
+					" WHERE " + FcsFactActuacionDesignaBean.C_IDINSTITUCION + "=" + idInstitucion + " " +
+					" AND " + FcsFactActuacionDesignaBean.C_IDFACTURACION + "=" + idFacturacion + " " +
+					" AND " + FcsFactActuacionDesignaBean.C_IDPERSONA + "=" + idPersona + " ";
+		
+		//Hashtable para recoger el resultado de la contulta
+		Hashtable hash = new Hashtable();
+		try{
+			hash = (Hashtable)((Vector)this.selectGenerico(consulta)).get(0);
+			//resogemos el resultado
+			resultado = (String)hash.get("IMPORTE");
+			if (resultado.equals(""))resultado="0";
+		}catch(Exception e){
+			//si no se ha obtenido resultado es porque no hay nada que facturar para el colegiado con ese idPersona
+			resultado = "0";
+		}
+		return resultado;
+	}
+	
+	/**
+	 * Devuelve el valor del importe que hay que facturar para un colegiado en una facturacion determinada
+	 *   
+	 * @param String idInstitucion 
+	 * @param String idFacturacion
+	 * @param String idPersona
+	 * 
+	 * @return String resultado con el importe 
+	 */
+	public String getImporteTotalFacturado (String idInstitucion, String idFacturacion, String idPersona)
+	{
+		String resultado = "", consulta = "";
+		//query para consultar el importe 
+		consulta = 	" SELECT " + 
+					" SUM(" + FcsFactActuacionDesignaBean.C_IMPORTEFACTURADO + ") AS IMPORTE " +
 					" FROM " + FcsFactActuacionDesignaBean.T_NOMBRETABLA + " " +
 					" WHERE " + FcsFactActuacionDesignaBean.C_IDINSTITUCION + "=" + idInstitucion + " " +
 					" AND " + FcsFactActuacionDesignaBean.C_IDFACTURACION + "=" + idFacturacion + " " +

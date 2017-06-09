@@ -35,6 +35,7 @@ public class FcsFactActuacionDesignaBean extends MasterBean{
 	private Double		precioAplicado;
 	private Integer		porcentajeFacturado;
 	private String		codigoProcedimiento;
+	private String      importeFacturado;
 	
 	
 	/**
@@ -61,6 +62,7 @@ public class FcsFactActuacionDesignaBean extends MasterBean{
 	static public final String 	C_FECHA_ACTUACION = 		"FECHAACTUACION";
 	static public final String 	C_FECHA_JUSTIFICACION = 	"FECHAJUSTIFICACION";
 	static public final String 	C_CODIGOPROCEDIMIENTO = 	"CODIGOPROCEDIMIENTO";
+	static public final String 	C_IMPORTEFACTURADO = 	    "IMPORTEFACTURADO";
 	
 	
 	
@@ -211,5 +213,12 @@ public class FcsFactActuacionDesignaBean extends MasterBean{
 	public void setFechaJustificacion(String fechaJustificacion) {
 		this.fechaJustificacion = fechaJustificacion;
 	}
+	public String getImporteFacturado() {
+		return importeFacturado;
+	}
+	public void setImporteFacturado(String importeFacturado) {
+		this.importeFacturado = importeFacturado;
+	}
+	
 
 }

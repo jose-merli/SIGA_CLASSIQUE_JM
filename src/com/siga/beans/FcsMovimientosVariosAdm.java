@@ -180,7 +180,8 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 				"        M." + FcsMovimientosVariosBean.C_IDFACTURACION + " " + FcsMovimientosVariosBean.C_IDFACTURACION + ","+
 				"        M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " " + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + ","+
 				"        A." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + " CANTIDAD, "+
-				"        M." + FcsMovimientosVariosBean.C_CANTIDAD + " IMPORTEMOVIMIENTOVARIO "+
+				"        M." + FcsMovimientosVariosBean.C_CANTIDAD + " IMPORTEMOVIMIENTOVARIO, "+
+				"        f_siga_movimientosvarios(M.IDINSTITUCION,M.IDMOVIMIENTO) AS ASUNTO_ASOCIADO  "+
 							" FROM " + FcsMovimientosVariosBean.T_NOMBRETABLA + " M, " + FcsPagosJGBean.T_NOMBRETABLA + " P, " +
 							FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + " A " +
 							" WHERE M." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = A." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + " " +
@@ -715,7 +716,8 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 				" (CASE c."+CenColegiadoBean.C_COMUNITARIO+" WHEN '"+ClsConstants.DB_FALSE+"' THEN c."+CenColegiadoBean.C_NCOLEGIADO+" ELSE c."+CenColegiadoBean.C_NCOMUNITARIO+" END ) AS NUMERO, "+
 				" (select "+ FcsPagosJGBean.C_NOMBRE + 
 				   " from " +FcsPagosJGBean.T_NOMBRETABLA+ 
-				  " where " + FcsPagosJGBean.C_IDINSTITUCION +"=a."+FcsAplicaMovimientosVariosBean.C_IDINSTITUCION+" and "+ FcsPagosJGBean.C_IDPAGOSJG+"=a."+FcsAplicaMovimientosVariosBean.C_IDPAGOSJG+") as PAGO "+ 
+				  " where " + FcsPagosJGBean.C_IDINSTITUCION +"=a."+FcsAplicaMovimientosVariosBean.C_IDINSTITUCION+" and "+ FcsPagosJGBean.C_IDPAGOSJG+"=a."+FcsAplicaMovimientosVariosBean.C_IDPAGOSJG+") as PAGO, "+ 
+				" F_SIGA_MOVIMIENTOSVARIOS("+idMovimiento+","+idInstitucion+") AS ASUNTO"+
 				" from "+ FcsMovimientosVariosBean.T_NOMBRETABLA +" m,"+ CenPersonaBean.T_NOMBRETABLA +" p, "+ CenColegiadoBean.T_NOMBRETABLA +" c, " + FcsAplicaMovimientosVariosBean.T_NOMBRETABLA +" a "+
 				" where p."+ CenPersonaBean.C_IDPERSONA + " = m."+ FcsMovimientosVariosBean.C_IDPERSONA +
 				" and c."+ CenColegiadoBean.C_IDINSTITUCION + " (+) = m."+ FcsMovimientosVariosBean.C_IDINSTITUCION +

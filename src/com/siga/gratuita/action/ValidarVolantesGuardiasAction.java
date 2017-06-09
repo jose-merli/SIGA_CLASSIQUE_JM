@@ -409,7 +409,7 @@ public class ValidarVolantesGuardiasAction extends MasterAction {
 				nueva.put("NOMGUARDIA",(String)registro.get("NOMGUARDIA"));
 				nueva.put("ESMODIFICABLE",(String)registro.get("ESMODIFICABLE"));
 				nueva.put("ACT_VALIDADAS",(String)registro.get("ACT_VALIDADAS"));
-				nueva.put("ACCIONESGUARDIA", accionesGuardia);								
+				nueva.put("ACCIONESGUARDIA", accionesGuardia);		
 				String key = fInicioPermuta+posicion+rowId;
 				tmResultado.put(key,nueva);	
 				i++;	

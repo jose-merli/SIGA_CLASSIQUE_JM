@@ -65,6 +65,8 @@ public class ScsActuacionDesignaBean extends MasterBean{
 	static public final String  C_FECHACREACION			      = "FECHACREACION";
 	static public final String  C_USUCREACION         	      = "USUCREACION";
 	
+	static public final String  C_IDMOVIMIENTO                = "IDMOVIMIENTO";
+	
 	
 	
 	/*
@@ -103,6 +105,7 @@ public class ScsActuacionDesignaBean extends MasterBean{
     private String   anioProcedimiento;
     private String   nig;
     private Integer  idMotivoCambio;
+    private Integer idMovimiento;
 	
     /**
 	 * @return Returns the getTalonario.
@@ -497,6 +500,14 @@ public class ScsActuacionDesignaBean extends MasterBean{
 	 */
 	public void setAnioProcedimiento(String anioProcedimiento) {
 		this.anioProcedimiento = anioProcedimiento;
+	}
+
+	public Integer getIdMovimiento() {
+		return idMovimiento;
+	}
+
+	public void setIdMovimiento(Integer idMovimiento) {
+		this.idMovimiento = idMovimiento;
 	}
 	
 }

@@ -34,7 +34,10 @@
 	
 	String[] comboParams = {usr.getLocation()};
 	//campos a mostrar
-	String nif = "", ncolegiado="", nombre ="", descripcion = "", cantidad="", motivo="", idMovimiento="", idPersona="", pago="", idPago="";
+	String nif = "", ncolegiado="", nombre ="", descripcion = "", cantidad="", motivo="", idMovimiento="", idPersona="", 
+	pago="", idPago="",idTurno="",idInstitucion="",anio="",numero="",nactuacion="", idGuardia="",fechaInicio="",asunto="";
+	
+	
 	String fechaAlta ="";
 	String idFacturacion ="";
 	String idGrupoFacturacion ="";
@@ -61,8 +64,51 @@
 	catch(Exception e)
 	{} 
 	
-	if (modo==null || "".equals(modo) || modo.equals("nuevo") ){
-		accion = "insertar";
+	if (modo==null || "".equals(modo) || modo.equals("nuevo")){
+		String origen = (String)request.getSession().getAttribute("ORIGEN");
+		if(origen != null && !"".equalsIgnoreCase(origen) && ("ASUNTO".equalsIgnoreCase(origen) 
+				|| "ACTUACIONESASISTENCIAS".equalsIgnoreCase(origen) || "ASISTENCIAS".equalsIgnoreCase(origen) || "GUARDIAS".equalsIgnoreCase(origen))){
+			
+			nombre = (String)request.getSession().getAttribute("NOMBRE");
+			idPersona = (String)request.getSession().getAttribute("IDPERSONACOLEGIADO");
+			ncolegiado = (String)request.getSession().getAttribute("NCOLEGIADO");
+			nif =(String)request.getSession().getAttribute("NIF");
+			cantidad = (String)request.getSession().getAttribute("CANTIDAD");
+			idFacturacion=(String)request.getSession().getAttribute("IDFACTURACION");
+			comboFacturacion.add(idFacturacion);
+			idGrupoFacturacion=(String)request.getSession().getAttribute("IDGRUPOFACTURACION");
+			comboGrupoFacturacion.add(idGrupoFacturacion);
+			
+			Hashtable resultado = (Hashtable)request.getSession().getAttribute("hashActuacion");
+			if(!"GUARDIAS".equalsIgnoreCase(origen)){
+				idTurno =  (String)resultado.get("IDTURNO"); 
+				idInstitucion = (String)resultado.get("IDINSTITUCION");
+				anio =  (String)resultado.get("ANIO");
+				numero = (String)resultado.get("NUMERO");
+				nactuacion = (String)resultado.get("NUMEROASUNTO");		
+			}else{
+				idTurno =  (String)resultado.get("IDTURNO"); 
+				idInstitucion = (String)resultado.get("IDINSTITUCION");
+				idGuardia = (String)resultado.get("IDGUARDIA");
+				fechaInicio = (String)resultado.get("FECHAINICIO");
+			}
+			
+			
+			//request.getSession().removeAttribute("ORIGEN");
+			request.getSession().removeAttribute("NOMBRE");
+			request.getSession().removeAttribute("IDPERSONACOLEGIADO");
+			request.getSession().removeAttribute("NCOLEGIADO");
+			request.getSession().removeAttribute("NIF");
+			request.getSession().removeAttribute("hashActuacion");
+			request.getSession().removeAttribute("CANTIDAD");
+			request.getSession().removeAttribute("IDFACTURACION");
+			request.getSession().removeAttribute("IDGRUPOFACTURACION");
+			
+			
+			
+		}
+			accion = "insertar";
+		
 	}else{
 		//Si el modo no es nuevo, es editar o consultar para lo cual hace
 		//falta recuperar los datos del movimiento 
@@ -73,6 +119,7 @@
 			nif = (String)resultado.get("NIF");
 			//ncolegiado = (String)resultado.get("NCOLEGIADO");
 			ncolegiado = (String)resultado.get("NUMERO");
+			asunto = (String)resultado.get("ASUNTO");
 			nombre = (String)resultado.get("NOMBRE");
 			descripcion = (String)resultado.get("DESCRIPCION");
 			cantidad = (String)resultado.get("CANTIDAD");
@@ -128,7 +175,7 @@
 	<html:javascript formName="MantenimientoMovimientosForm" staticJavascript="false" />
 	<script src="<%=app%>/html/js/validacionStruts.js" type="text/javascript"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
- 	
+  	
 	<!--TITULO Y LOCALIZACION -->
 
 	<siga:Titulo 
@@ -136,7 +183,19 @@
 		localizacion="factSJCS.datosMovimientos.ruta"/>
 		
 		
-	<script language="JavaScript">	
+	<script type="text/javascript">	
+		
+	
+		jQuery.noConflict();
+		
+		jQuery(function($){
+			<%  String origen = (String)request.getSession().getAttribute("ORIGEN");
+			if(origen != null && !"".equalsIgnoreCase(origen) && ("ASUNTO".equalsIgnoreCase(origen) 
+					|| "ACTUACIONESASISTENCIAS".equalsIgnoreCase(origen) || "ASISTENCIAS".equalsIgnoreCase(origen) || "GUARDIAS".equalsIgnoreCase(origen))){%>
+			    jQuery("#tdBuscarColegiado").hide();
+			 <% }%>
+		});	
+				
 	
 		function buscarCliente () 
 		{
@@ -203,10 +262,19 @@
 	<html:hidden property = "fechaAlta" value = "<%=fechaAlta%>"/>
 	<html:hidden property = "actionModal" value = ""/>
 	
+	<html:hidden property = "idTurno" value= "<%=idTurno%>"/>
+	<html:hidden property = "idInstitucion" value="<%=idInstitucion%>"/>
+	<html:hidden property = "anio" value="<%=anio%>" />	
+	<html:hidden property = "numero" value="<%=numero%>" />
+	<html:hidden property = "nactuacion" value="<%=nactuacion%>" />
+	<html:hidden property = "idGuardia" value="<%=idGuardia%>" />
+	<html:hidden property = "fechaInicio" value="<%=fechaInicio%>" />
+	
+	
 	
 	<tr>
 	<td>
-		<siga:ConjCampos leyenda="factSJCS.datosMovimientos.leyenda" >
+		
 		<table> 
 			<tr>
 			<td colspan="4">
@@ -233,7 +301,7 @@
 						<td class="labelText" colspan="2">
 							<html:text name="MantenimientoMovimientosForm" property="nombre" size= "50" maxlength="100" styleClass="boxConsulta" readonly="true" value="<%=nombre%>"/>
 						</td>
-						<td class="labelText">
+						<td class="labelText" id="tdBuscarColegiado">
 						<%if ((modo!=null)&&(!modo.equals("consulta"))){%>
 							<input type="button" id="idButton" class="button" name="buscarColegiado" value='<siga:Idioma key="general.boton.search"/>' onClick="buscarCliente();">&nbsp;
 						<%}%>
@@ -264,6 +332,17 @@
 							</td>
 							
 						</tr>
+						<%if(asunto != null && !"".equalsIgnoreCase(asunto)){ %>
+							<tr>
+								<td class="labelText">
+									Asociado a
+								</td>
+								<td>
+									<html:text name="MantenimientoMovimientosForm" property="asunto" size= "100" maxlength="100" styleClass="boxConsulta" readonly="true" value="<%=asunto%>"/>
+								</td>
+								
+							</tr>
+					   <%} %>
 					</table>
 				</siga:ConjCampos>
 			</td>
@@ -274,62 +353,73 @@
 			
 			<tr>
 				<td colspan="4">
-					&nbsp;
-				</td>
-			</tr>
-			<tr>
-				<td class="labelText">
-					<siga:Idioma key="factSJCS.datosMovimientos.literal.descripcion"/>&nbsp;(*)
-				</td>
-				<%if ((modo!=null)&&(modo.equals("consulta"))){%>
-				<td class="labelText" width="80">
-					<html:text name="MantenimientoMovimientosForm" property="descripcion" size= "30" maxlength="100" styleClass="<%=clase%>" readonly="true" value="<%=descripcion%>"/>
-				</td>
-				<%} else {%>
-				<td class="labelText" width="80">
-					<html:text name="MantenimientoMovimientosForm" property="descripcion" size= "30" maxlength="100" styleClass="<%=clase%>" readonly="false" value="<%=descripcion%>"/>
-				</td>				
-				<%}%>
-				
-				<td class="labelText"  width="80">
-					<siga:Idioma key="factSJCS.datosMovimientos.literal.cantidad"/>&nbsp;(*)
-				</td>
-				<%if ((modo!=null)&&(modo.equals("consulta"))){%>
-				<td class="labelText">
-					<html:text name="MantenimientoMovimientosForm" property="cantidad" size= "11" maxlength="11" styleClass="<%=claseNum%>" readonly="true"  value="<%=UtilidadesNumero.formatoCampo(cantidad)%>"/>&nbsp;&euro;
-				</td>
-				<%} else {%>
-				<td class="labelText">
-					<html:text name="MantenimientoMovimientosForm" property="cantidad" size= "11" maxlength="11" styleClass="<%=claseNum%>" readonly="false"  value="<%=UtilidadesNumero.formatoCampo(cantidad)%>"/>&nbsp;&euro;
-				</td>				
-				<%}%>
-			</tr>
-			<%if ((modo!=null)&&(!modo.equals("nuevo"))){%>
-			<tr>
-				<td class="labelText">
-					<siga:Idioma key="factSJCS.datosMovimientos.literal.pago"/>
-				</td>
-				<td class="labelText" colspan="3">
-					<html:text name="MantenimientoMovimientosForm" property="idPagoJg" size= "50" maxlength="100" styleClass="boxConsulta" readonly="true" value="<%=pago%>"/>
-				</td>
-			<%}%>	
-			</tr>
-			<tr>
-				<td class="labelText">
-					<siga:Idioma key="factSJCS.datosMovimientos.literal.motivo"/>
-				</td>
-				<%if ((modo!=null)&&(modo.equals("consulta"))){%>
-				<td class="labelText" colspan="3">
-					<html:textarea name="MantenimientoMovimientosForm" property="motivo" cols="60" rows="4" onkeydown="cuenta(this,255)" onchange="cuenta(this,255)" styleClass="<%=clase%>" readonly="true" value="<%=motivo%>"/>
-				</td>
-				<%} else {%>
-				<td class="labelText" colspan="3">
-					<html:textarea name="MantenimientoMovimientosForm" property="motivo" cols="60" rows="4" onkeydown="cuenta(this,255)" onchange="cuenta(this,255)" styleClass="<%=clase%>" readonly="false" value="<%=motivo%>"/>
-				</td>				
-				<%}%>	
-			</tr>			
+				<siga:ConjCampos leyenda="factSJCS.datosMovimientos.leyenda">
+					<table>
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="factSJCS.datosMovimientos.literal.descripcion"/>&nbsp;(*)
+							</td>
+							<%if ((modo!=null)&&(modo.equals("consulta"))){%>
+							<td class="labelText" width="80">
+								<html:text name="MantenimientoMovimientosForm" property="descripcion" size= "30" maxlength="100" styleClass="<%=clase%>" readonly="true" value="<%=descripcion%>"/>
+							</td>
+							<%} else {%>
+							<td class="labelText" width="80">
+								<html:text name="MantenimientoMovimientosForm" property="descripcion" size= "30" maxlength="100" styleClass="<%=clase%>" readonly="false" value="<%=descripcion%>"/>
+							</td>				
+							<%}%>
+							
+							<td class="labelText"  width="80">
+								<siga:Idioma key="factSJCS.datosMovimientos.literal.cantidad"/>&nbsp;(*)
+							</td>
+							<%if ((modo!=null)&&(modo.equals("consulta"))){%>
+							<td class="labelText">
+								<html:text name="MantenimientoMovimientosForm" property="cantidad" size= "11" maxlength="11" styleClass="<%=claseNum%>" readonly="true"  value="<%=UtilidadesNumero.formatoCampo(cantidad)%>"/>&nbsp;&euro;
+							</td>
+							<%} else {
+									if(origen != null && !"".equalsIgnoreCase(origen) && ("ASUNTO".equalsIgnoreCase(origen) 
+										|| "ACTUACIONESASISTENCIAS".equalsIgnoreCase(origen) || "ASISTENCIAS".equalsIgnoreCase(origen) || "GUARDIAS".equalsIgnoreCase(origen))){ %>
+											<td class="labelText">
+												<html:text name="MantenimientoMovimientosForm" property="cantidad" size= "11" maxlength="11" styleClass="boxConsulta" readonly="true"  value="<%=UtilidadesNumero.formatoCampo(cantidad)%>"/>&nbsp;&euro;
+											</td>			
+									<%}else{%>
+										<td class="labelText">
+											<html:text name="MantenimientoMovimientosForm"  property="cantidad" size= "11" maxlength="11" styleClass="<%=claseNum%>" readonly="false"  value="<%=UtilidadesNumero.formatoCampo(cantidad)%>"/>&nbsp;&euro;
+										</td>	
+									<%}
+								}%>
+						</tr>
+					
+					<tr>
+						<td class="labelText">
+							<siga:Idioma key="factSJCS.datosMovimientos.literal.motivo"/>
+						</td>
+						<%if ((modo!=null)&&(modo.equals("consulta"))){%>
+						<td class="labelText" colspan="3">
+							<html:textarea name="MantenimientoMovimientosForm" property="motivo" cols="60" rows="4" onkeydown="cuenta(this,255)" onchange="cuenta(this,255)" styleClass="<%=clase%>" readonly="true" value="<%=motivo%>"/>
+						</td>
+						<%} else {%>
+						<td class="labelText" colspan="3">
+							<html:textarea name="MantenimientoMovimientosForm" property="motivo" cols="60" rows="4" onkeydown="cuenta(this,255)" onchange="cuenta(this,255)" styleClass="<%=clase%>" readonly="false" value="<%=motivo%>"/>
+						</td>				
+						<%}%>	
+					</tr>	
+					</table>
+					</siga:ConjCampos>	
+					<%if ((modo!=null)&&(!modo.equals("nuevo"))){%>
+						<siga:ConjCampos leyenda="Pago donde ha sido aplicado">
+							<table>
+								
+								<tr>
+									<td class="labelText" colspan="3">
+										<html:text name="MantenimientoMovimientosForm" property="idPagoJg" size= "50" maxlength="100" styleClass="boxConsulta" readonly="true" value="<%=pago%>"/>
+									</td>
+								</tr>
+							</table>
+						</siga:ConjCampos>	
+					<%}%>
 		</table>
-		</siga:ConjCampos>
+		
 	</td>
 	</tr>
 	

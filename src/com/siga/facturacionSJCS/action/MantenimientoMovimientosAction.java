@@ -5,34 +5,61 @@
 package com.siga.facturacionSJCS.action;
 
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.autogen.model.ScsCabeceraguardias;
+import org.redabogacia.sigaservices.app.services.scs.ScsCabeceraGuardiasService;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.paginadores.Paginador;
 import com.siga.Utilidades.paginadores.PaginadorCaseSensitive;
 import com.siga.beans.CenColegiadoBean;
+import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.FcsAplicaMovimientosVariosBean;
+import com.siga.beans.FcsFactActuacionAsistenciaAdm;
+import com.siga.beans.FcsFactActuacionDesignaAdm;
+import com.siga.beans.FcsFactApunteAdm;
+import com.siga.beans.FcsFactAsistenciaAdm;
 import com.siga.beans.FcsMovimientosVariosAdm;
 import com.siga.beans.FcsMovimientosVariosBean;
 import com.siga.beans.FcsPagosJGBean;
+import com.siga.beans.ScsActuacionAsistenciaAdm;
+import com.siga.beans.ScsActuacionAsistenciaBean;
+import com.siga.beans.ScsActuacionDesignaAdm;
+import com.siga.beans.ScsActuacionDesignaBean;
+import com.siga.beans.ScsAsistenciasAdm;
+import com.siga.beans.ScsAsistenciasBean;
+import com.siga.beans.ScsCabeceraGuardiasAdm;
+import com.siga.beans.ScsCabeceraGuardiasBean;
+import com.siga.beans.ScsDesignaBean;
+import com.siga.beans.ScsTurnoAdm;
 import com.siga.facturacionSJCS.form.MantenimientoMovimientosForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.form.ActuacionAsistenciaForm;
+import com.siga.gratuita.form.AsistenciaForm;
+
+import es.satec.businessManager.BusinessManager;
 
 
 
@@ -186,6 +213,54 @@ public class MantenimientoMovimientosAction extends MasterAction {
 			ok = movimientosAdm.insert(movimientoNew);
 	
 			if (ok) {
+				String origen = (String)request.getSession().getAttribute("ORIGEN");
+				if(origen != null && !"".equalsIgnoreCase(origen) && "ASUNTO".equalsIgnoreCase(origen)){
+					//Insertamos en la tabla scs_actuacionesDesignas el idmovimiento
+					ScsActuacionDesignaAdm designaAdm = new ScsActuacionDesignaAdm (this.getUserBean(request));	
+					
+					Hashtable hashDatosDesigna= new Hashtable();			
+					UtilidadesHash.set(hashDatosDesigna,ScsActuacionDesignaBean.C_IDINSTITUCION, miform.getIdInstitucion());
+					UtilidadesHash.set(hashDatosDesigna,ScsActuacionDesignaBean.C_ANIO, miform.getAnio());
+					UtilidadesHash.set(hashDatosDesigna,ScsActuacionDesignaBean.C_NUMERO, miform.getNumero());
+					UtilidadesHash.set(hashDatosDesigna,ScsActuacionDesignaBean.C_IDTURNO, miform.getIdTurno());
+					UtilidadesHash.set(hashDatosDesigna,ScsActuacionDesignaBean.C_NUMEROASUNTO,miform.getNactuacion());		
+					UtilidadesHash.set(hashDatosDesigna,ScsActuacionDesignaBean.C_IDMOVIMIENTO,Integer.valueOf((String)movimientoNew.get("IDMOVIMIENTO")));		
+					
+					designaAdm.actualizarActuacionesMovimientosVarios(hashDatosDesigna);
+					
+				}else if(origen != null && !"".equalsIgnoreCase(origen) && "ACTUACIONESASISTENCIAS".equalsIgnoreCase(origen)){
+					
+					ScsActuacionAsistenciaAdm actuacionAsistenciaAdm = new ScsActuacionAsistenciaAdm (this.getUserBean(request));
+					
+					Hashtable hashDatosActuacionAsistencia= new Hashtable();
+					UtilidadesHash.set(hashDatosActuacionAsistencia,ScsActuacionAsistenciaBean.C_IDINSTITUCION, miform.getIdInstitucion());
+					UtilidadesHash.set(hashDatosActuacionAsistencia,ScsActuacionAsistenciaBean.C_ANIO, miform.getAnio());
+					UtilidadesHash.set(hashDatosActuacionAsistencia,ScsActuacionAsistenciaBean.C_NUMERO, miform.getNumero());
+					UtilidadesHash.set(hashDatosActuacionAsistencia,ScsActuacionAsistenciaBean.C_IDACTUACION,miform.getNactuacion());	
+					UtilidadesHash.set(hashDatosActuacionAsistencia,ScsActuacionAsistenciaBean.C_IDMOVIMIENTO,Integer.valueOf((String)movimientoNew.get("IDMOVIMIENTO")));		
+					
+					actuacionAsistenciaAdm.actualizarActuacionesMovimientosVarios(hashDatosActuacionAsistencia);
+					
+				}else if(origen != null && !"".equalsIgnoreCase(origen) && "ASISTENCIAS".equalsIgnoreCase(origen)){
+					
+					ScsAsistenciasAdm asistenciasAdm = new ScsAsistenciasAdm (this.getUserBean(request));
+					
+					Hashtable hashDatosActuacionAsistencia= new Hashtable();
+					UtilidadesHash.set(hashDatosActuacionAsistencia,ScsActuacionAsistenciaBean.C_IDINSTITUCION, miform.getIdInstitucion());
+					UtilidadesHash.set(hashDatosActuacionAsistencia,ScsActuacionAsistenciaBean.C_ANIO, miform.getAnio());
+					UtilidadesHash.set(hashDatosActuacionAsistencia,ScsActuacionAsistenciaBean.C_NUMERO, miform.getNumero());
+					UtilidadesHash.set(hashDatosActuacionAsistencia,ScsActuacionAsistenciaBean.C_IDMOVIMIENTO,Integer.valueOf((String)movimientoNew.get("IDMOVIMIENTO")));		
+					
+					asistenciasAdm.actualizarAsistenciaMovimientosVarios(hashDatosActuacionAsistencia);
+					
+				}else if(origen != null && !"".equalsIgnoreCase(origen) && "GUARDIAS".equalsIgnoreCase(origen)){
+					
+					
+					ScsCabeceraGuardiasAdm scsCabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm(this.getUserBean(request));
+					
+					scsCabeceraGuardiasAdm.actualizarGuardiasMovimientosVarios(miform.getIdPersona(), miform.getIdTurno(), 
+						miform.getIdGuardia(), miform.getIdInstitucion(), miform.getFechaInicio().toString(),Integer.valueOf((String)movimientoNew.get("IDMOVIMIENTO")));	
+				}
 				tx.commit();
 			} else {
 				tx.rollback();
@@ -317,7 +392,285 @@ public class MantenimientoMovimientosAction extends MasterAction {
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
 	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	
+		request.getSession().removeAttribute("MantenimientoMovimientosForm"); //Eliminamos el formulario porque sino desde movimientos varios obtenemos el de session y no es correcto
+		request.getSession().removeAttribute("ORIGEN");
 		request.getSession().setAttribute("modo","nuevo");
+		MantenimientoMovimientosForm miform = (MantenimientoMovimientosForm)formulario;
+		
+		HttpSession ses = (HttpSession)request.getSession();
+		UsrBean usr = (UsrBean)ses.getAttribute("USRBEAN");
+		
+		if(miform.getOrigen() != null && !"".equalsIgnoreCase(miform.getOrigen()) && "ACTUACIONESDESIGNAS".equalsIgnoreCase(miform.getOrigen())){
+			 
+			ScsActuacionDesignaAdm designaAdm = new ScsActuacionDesignaAdm (this.getUserBean(request));	
+			CenPersonaAdm persAdm = new CenPersonaAdm(this.getUserBean(request));
+			Hashtable hashDatosDesigna= new Hashtable();			
+			UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_IDINSTITUCION, miform.getIdInstitucion());
+			UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_ANIO, miform.getAnio());
+			UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_NUMERO, miform.getNumero());
+			UtilidadesHash.set(hashDatosDesigna,ScsDesignaBean.C_IDTURNO, miform.getIdTurno());
+			UtilidadesHash.set(hashDatosDesigna,"VISIBLE",miform.getNactuacion());		
+			
+			Vector vAct;
+			try {
+				vAct = designaAdm.getConsultaActuacion(hashDatosDesigna, request);
+				
+				Hashtable hashActuacion = new Hashtable();
+			    if(vAct.size()>0){
+			    	hashActuacion = (Hashtable)(vAct).get(0);
+			    	if((String)hashActuacion.get("IDMOVIMIENTO") != null && !"".equalsIgnoreCase((String)hashActuacion.get("IDMOVIMIENTO"))){ 
+			    		//Desde Asunto y ya existe movimiento
+			    		FcsMovimientosVariosAdm movimAdm = new FcsMovimientosVariosAdm (this.getUserBean(request));
+			    		Hashtable resultado = movimAdm.getMovimientoVario((String)hashActuacion.get("IDINSTITUCION"),(String)hashActuacion.get("IDMOVIMIENTO"));
+						request.getSession().setAttribute("resultado",resultado);
+						request.getSession().setAttribute("modo","edicion");
+						request.getSession().setAttribute("ORIGEN", "ASUNTO");
+
+			    	}else{//Desde Asunto y es nuevo
+			    		FcsFactActuacionDesignaAdm factura = new FcsFactActuacionDesignaAdm(this.getUserBean(request));
+			    		ScsTurnoAdm scsTurnoAdm = new ScsTurnoAdm(this.getUserBean(request));
+			    		Hashtable infoTurno = scsTurnoAdm.getDatosTurno(miform.getIdInstitucion(), miform.getIdTurno());
+			    		
+			    		String nombre_dest = persAdm.obtenerNombreApellidos((String)hashActuacion.get("IDPERSONACOLEGIADO"));
+				    	String nif = persAdm.obtenerNIF((String)hashActuacion.get("IDPERSONACOLEGIADO"));
+				    	request.getSession().setAttribute("IDPERSONACOLEGIADO",(String)hashActuacion.get("IDPERSONACOLEGIADO"));
+				    	request.getSession().setAttribute("NOMBRE",nombre_dest);
+				    	request.getSession().setAttribute("NIF",nif);
+				    	request.getSession().setAttribute("NCOLEGIADO",(String)hashActuacion.get("NCOLEGIADO"));
+				    	request.getSession().setAttribute("IDFACTURACION",(String)hashActuacion.get("IDFACTURACION"));
+				    	request.getSession().setAttribute("IDGRUPOFACTURACION",  String.valueOf(infoTurno.get("IDGRUPOFACTURACION")));
+				    	request.getSession().setAttribute("ORIGEN", "ASUNTO");
+				    	
+				    	request.getSession().setAttribute("hashActuacion", hashActuacion);
+				    	
+				    	//Cogemos el  importe de la facturación
+				    	String importeFactura =  factura.getImporteTotalFacturado((String)hashActuacion.get("IDINSTITUCION"), (String)hashActuacion.get("IDFACTURACION"), (String)hashActuacion.get("IDPERSONACOLEGIADO"));
+				    	String primerCaracter =importeFactura.substring(0,1);
+				    	if(primerCaracter.equalsIgnoreCase("-")){  //La cantidad es negativa luego el importe para contrarestar debe ser positivo
+				    		importeFactura = importeFactura.replace("-", ""); 
+				    	}else{
+				    		if(!"0".equalsIgnoreCase(importeFactura))
+				    			importeFactura="-"+importeFactura;
+				    	}
+				    	
+				    	request.getSession().setAttribute("CANTIDAD", importeFactura);
+			    	}
+			    }
+			} catch (ClsExceptions e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			    
+		}else if(miform.getOrigen() != null && !"".equalsIgnoreCase(miform.getOrigen()) && "ACTUACIONESASISTENCIAS".equalsIgnoreCase(miform.getOrigen())){
+			
+			ScsActuacionAsistenciaAdm asistenciaAdm = new ScsActuacionAsistenciaAdm (this.getUserBean(request));	
+			CenPersonaAdm persAdm = new CenPersonaAdm(this.getUserBean(request));
+			ScsAsistenciasAdm asistenciasAdm = new ScsAsistenciasAdm (this.getUserBean(request));
+			ActuacionAsistenciaForm actuacionAsistenciaForm = new ActuacionAsistenciaForm();
+			actuacionAsistenciaForm.setIdInstitucion( miform.getIdInstitucion());
+			actuacionAsistenciaForm.setAnio(miform.getAnio());
+			actuacionAsistenciaForm.setNumero(miform.getNumero());
+			actuacionAsistenciaForm.setIdActuacion(miform.getNactuacion());
+	
+			try {
+				//Comprobamos de que exista actuación de asistencia (Si hemos llegado a este punto, siempre debe de existir)
+				ScsActuacionAsistenciaBean actuacionBean = asistenciaAdm.getActuacionAsistencia(actuacionAsistenciaForm);
+
+			    if(actuacionBean != null){
+			    	
+			    	if(actuacionBean.getIdMovimiento() != null){ 
+			    		//Desde AsuntoAsistencias y ya existe movimiento
+			    		FcsMovimientosVariosAdm movimAdm = new FcsMovimientosVariosAdm (this.getUserBean(request));
+			    		Hashtable resultado = movimAdm.getMovimientoVario(String.valueOf(actuacionBean.getIdInstitucion()),String.valueOf(actuacionBean.getIdMovimiento()));
+						request.getSession().setAttribute("resultado",resultado);
+						request.getSession().setAttribute("modo","edicion");
+						request.getSession().setAttribute("ORIGEN", "ACTUACIONESASISTENCIAS");
+
+			    	}else{//Desde AsuntoAsistencias y es nuevo
+			    		FcsFactActuacionAsistenciaAdm factura = new FcsFactActuacionAsistenciaAdm(this.getUserBean(request));
+			    		ScsTurnoAdm scsTurnoAdm = new ScsTurnoAdm(this.getUserBean(request));
+
+			    		//Necesitamos información de la asistencia por ejemplo para el idPersonaColegiado
+			    		ScsAsistenciasBean scsAsistenciasBean = new ScsAsistenciasBean();
+			    		
+			    		scsAsistenciasBean.setIdInstitucion(Integer.parseInt(miform.getIdInstitucion()));
+			    		scsAsistenciasBean.setAnio(Integer.parseInt(miform.getAnio()));
+			    		scsAsistenciasBean.setNumero(Integer.parseInt(miform.getNumero()));
+			    		
+			    		//Obtenemos los datos de las asistencia
+			    		 AsistenciaForm asistenciaForm = asistenciasAdm.getDatosAsistencia(scsAsistenciasBean);
+			    		 Hashtable infoTurno = scsTurnoAdm.getDatosTurno(asistenciaForm.getIdInstitucion(), asistenciaForm.getIdTurno());
+			    		
+			    		String nombre_dest = persAdm.obtenerNombreApellidos(asistenciaForm.getIdPersonaColegiado());
+				    	String nif = persAdm.obtenerNIF(asistenciaForm.getIdPersonaColegiado());
+				    	
+				    	request.getSession().setAttribute("IDPERSONACOLEGIADO",asistenciaForm.getIdPersonaColegiado());
+				    	request.getSession().setAttribute("NOMBRE",nombre_dest);
+				    	request.getSession().setAttribute("NIF",nif);
+				    	request.getSession().setAttribute("NCOLEGIADO",asistenciaForm.getPersonaColegiado().getColegiado().getNColegiado());
+				    	request.getSession().setAttribute("IDFACTURACION", String.valueOf(actuacionBean.getIdFacturacion()));
+				    	request.getSession().setAttribute("IDGRUPOFACTURACION",  String.valueOf(infoTurno.get("IDGRUPOFACTURACION")));
+				    	request.getSession().setAttribute("ORIGEN", "ACTUACIONESASISTENCIAS");
+				    
+				    	//Cogemos el  importe de la facturación
+				    	String importeFactura =  factura.getImporteTotalFacturado(asistenciaForm.getIdInstitucion(), String.valueOf(actuacionBean.getIdFacturacion()), asistenciaForm.getIdPersonaColegiado());
+				    	String primerCaracter =importeFactura.substring(0,1);
+				    	if(primerCaracter.equalsIgnoreCase("-")){  //La cantidad es negativa luego el importe para contrarestar debe ser positivo
+				    		importeFactura = importeFactura.replace("-", ""); 
+				    	}else{
+				    		if(!"0".equalsIgnoreCase(importeFactura))
+				    			importeFactura="-"+importeFactura;
+				    	}
+				    	Hashtable hashActuacion = new Hashtable();
+				    	hashActuacion.put("IDTURNO", asistenciaForm.getIdTurno());
+				    	hashActuacion.put("IDINSTITUCION", asistenciaForm.getIdInstitucion());
+				    	hashActuacion.put("ANIO", asistenciaForm.getAnio());
+				    	hashActuacion.put("NUMERO", asistenciaForm.getNumero());
+				    	hashActuacion.put("NUMEROASUNTO", miform.getNactuacion());
+				    	request.getSession().setAttribute("hashActuacion", hashActuacion);
+				    	request.getSession().setAttribute("CANTIDAD", importeFactura);
+			    	}
+			    }
+			} catch (ClsExceptions e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else if(miform.getOrigen() != null && !"".equalsIgnoreCase(miform.getOrigen()) && "ASISTENCIAS".equalsIgnoreCase(miform.getOrigen())){
+			 
+			ScsAsistenciasAdm asistenciasAdm = new ScsAsistenciasAdm (this.getUserBean(request));	
+			CenPersonaAdm persAdm = new CenPersonaAdm(this.getUserBean(request));
+		
+			try {
+				Hashtable hashAsistencia = asistenciasAdm.getAsistencia(miform.getAnio(), miform.getNumero(),  miform.getIdInstitucion());
+			
+			    if(hashAsistencia.size()>0){
+			    	if((String)hashAsistencia.get("IDMOVIMIENTO") != null && !"".equalsIgnoreCase((String)hashAsistencia.get("IDMOVIMIENTO"))){ 
+			    		//Desde Asunto y ya existe movimiento
+			    		FcsMovimientosVariosAdm movimAdm = new FcsMovimientosVariosAdm (this.getUserBean(request));
+			    		Hashtable resultado = movimAdm.getMovimientoVario((String)hashAsistencia.get("IDINSTITUCION"),(String)hashAsistencia.get("IDMOVIMIENTO"));
+						request.getSession().setAttribute("resultado",resultado);
+						request.getSession().setAttribute("modo","edicion");
+						request.getSession().setAttribute("ORIGEN", "ASISTENCIAS");
+
+			    	}else{//Desde Asunto y es nuevo
+			    		FcsFactAsistenciaAdm factura = new FcsFactAsistenciaAdm(this.getUserBean(request));
+			    		ScsTurnoAdm scsTurnoAdm = new ScsTurnoAdm(this.getUserBean(request));
+			    		
+			    		
+			    		 
+			    		String nombre_dest = persAdm.obtenerNombreApellidos((String)hashAsistencia.get("IDPERSONACOLEGIADO"));
+				    	String nif = persAdm.obtenerNIF((String)hashAsistencia.get("IDPERSONACOLEGIADO"));
+				    	request.getSession().setAttribute("IDPERSONACOLEGIADO",(String)hashAsistencia.get("IDPERSONACOLEGIADO"));
+				    	request.getSession().setAttribute("NOMBRE",nombre_dest);
+				    	request.getSession().setAttribute("NIF",nif);
+				    	request.getSession().setAttribute("NCOLEGIADO",(String)hashAsistencia.get("NCOLEGIADO"));
+				    	request.getSession().setAttribute("ORIGEN", "ASISTENCIAS");
+				    	
+				    	Hashtable infoTurno = scsTurnoAdm.getDatosTurno((String)hashAsistencia.get("IDINSTITUCION"), (String)hashAsistencia.get("IDTURNO"));
+				    	request.getSession().setAttribute("IDFACTURACION", String.valueOf((String)hashAsistencia.get("IDFACTURACION")));
+				    	request.getSession().setAttribute("IDGRUPOFACTURACION",  String.valueOf(infoTurno.get("IDGRUPOFACTURACION")));
+				    	
+				    	request.getSession().setAttribute("hashActuacion", hashAsistencia);
+				    	
+				    	//Cogemos el  importe de la facturación
+				    	String importeFactura =  factura.getImporteTotalFacturado((String)hashAsistencia.get("IDINSTITUCION"), (String)hashAsistencia.get("IDFACTURACION"), (String)hashAsistencia.get("IDPERSONACOLEGIADO"));
+				    	String primerCaracter =importeFactura.substring(0,1);
+				    	if(primerCaracter.equalsIgnoreCase("-")){  //La cantidad es negativa luego el importe para contrarestar debe ser positivo
+				    		importeFactura = importeFactura.replace("-", ""); 
+				    	}else{
+				    		if(!"0".equalsIgnoreCase(importeFactura))
+				    			importeFactura="-"+importeFactura;
+				    	}
+				    	
+				    	request.getSession().setAttribute("CANTIDAD", importeFactura);
+			    	}
+			    }
+			} catch (ClsExceptions e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			    
+		}else if(miform.getOrigen() != null && !"".equalsIgnoreCase(miform.getOrigen()) && "GUARDIAS".equalsIgnoreCase(miform.getOrigen())){
+			 
+			CenPersonaAdm persAdm = new CenPersonaAdm(this.getUserBean(request));
+			/** Se definen los servicios de designaciones **/
+		
+			ScsCabeceraGuardiasService scsCabeceraGuardias = (ScsCabeceraGuardiasService) BusinessManager.getInstance().getService(ScsCabeceraGuardiasService.class);
+			try {
+				ScsCabeceraguardias scsCabeceraGuadiasBean = new ScsCabeceraguardias();
+				
+				scsCabeceraGuadiasBean.setIdinstitucion(Short.valueOf(miform.getIdInstitucion()));
+				scsCabeceraGuadiasBean.setIdturno(Integer.valueOf(miform.getIdTurno()));
+				scsCabeceraGuadiasBean.setIdguardia(Integer.valueOf(miform.getIdGuardia()));
+				scsCabeceraGuadiasBean.setIdpersona(Long.valueOf(miform.getIdPersonaMovimiento()));
+				
+				try {
+					scsCabeceraGuadiasBean.setFechainicio(UtilidadesFecha.getDate(miform.getFechaInicio(),"yyyy/MM/dd 00:00:00"));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				ScsCabeceraguardias cabeceraGuardias = scsCabeceraGuardias.getCabeceraGuardia(scsCabeceraGuadiasBean.getIdpersona(), scsCabeceraGuadiasBean.getIdturno(), 
+						scsCabeceraGuadiasBean.getIdguardia(), scsCabeceraGuadiasBean.getIdinstitucion(), scsCabeceraGuadiasBean.getFechainicio());
+			
+			    if(cabeceraGuardias != null){
+			    	if(cabeceraGuardias.getIdmovimiento() != null){ 
+			    		//Desde Asunto y ya existe movimiento
+			    		FcsMovimientosVariosAdm movimAdm = new FcsMovimientosVariosAdm (this.getUserBean(request));
+			    	
+			    		Hashtable resultado = movimAdm.getMovimientoVario(String.valueOf(cabeceraGuardias.getIdinstitucion()), String.valueOf(cabeceraGuardias.getIdmovimiento()));
+						request.getSession().setAttribute("resultado",resultado);
+						request.getSession().setAttribute("modo","edicion");
+						request.getSession().setAttribute("ORIGEN", "GUARDIAS");
+
+			    	}else{//Desde Asunto y es nuevo
+			    		FcsFactApunteAdm fcsFactApunteAdm = new FcsFactApunteAdm(this.getUserBean(request));
+			    		ScsTurnoAdm scsTurnoAdm = new ScsTurnoAdm(this.getUserBean(request));
+			    		
+			    		String nombre_dest = persAdm.obtenerNombreApellidos(String.valueOf(cabeceraGuardias.getIdpersona()));
+				    	String nif = persAdm.obtenerNIF(String.valueOf(cabeceraGuardias.getIdpersona()));
+				    	request.getSession().setAttribute("IDPERSONACOLEGIADO",String.valueOf(cabeceraGuardias.getIdpersona()));
+				    	request.getSession().setAttribute("NOMBRE",nombre_dest);
+				    	request.getSession().setAttribute("NIF",nif);
+				    	request.getSession().setAttribute("NCOLEGIADO",miform.getNcolegiado());
+				    	request.getSession().setAttribute("ORIGEN", "GUARDIAS");
+				    	
+				    	Hashtable infoTurno = scsTurnoAdm.getDatosTurno(String.valueOf(cabeceraGuardias.getIdinstitucion()), String.valueOf(cabeceraGuardias.getIdturno()));
+				    	request.getSession().setAttribute("IDFACTURACION", String.valueOf(cabeceraGuardias.getIdfacturacion()));
+				    	request.getSession().setAttribute("IDGRUPOFACTURACION",  String.valueOf(infoTurno.get("IDGRUPOFACTURACION")));
+				    	
+				    	Hashtable hashActuacion = new Hashtable();
+				    	hashActuacion.put("IDTURNO", scsCabeceraGuadiasBean.getIdturno().toString());
+				    	hashActuacion.put("IDINSTITUCION", scsCabeceraGuadiasBean.getIdinstitucion().toString());
+				    	hashActuacion.put("IDGUARDIA", scsCabeceraGuadiasBean.getIdguardia().toString());
+				    	hashActuacion.put("IDPERSONA", scsCabeceraGuadiasBean.getIdpersona().toString());
+				    	DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+				    	hashActuacion.put("FECHAINICIO", df.format(scsCabeceraGuadiasBean.getFechainicio()));
+				    	
+				    	request.getSession().setAttribute("hashActuacion", hashActuacion);
+				    	
+				    	//Cogemos el  importe de la facturación
+				    	String importeFactura =  fcsFactApunteAdm.getImporteTotalFacturado(String.valueOf(cabeceraGuardias.getIdinstitucion()),String.valueOf(cabeceraGuardias.getIdfacturacion()),
+				    			String.valueOf(cabeceraGuardias.getIdpersona()));
+				    	String primerCaracter =importeFactura.substring(0,1);
+				    	if(primerCaracter.equalsIgnoreCase("-")){  //La cantidad es negativa luego el importe para contrarestar debe ser positivo
+				    		importeFactura = importeFactura.replace("-", ""); 
+				    	}else{
+				    		if(!"0".equalsIgnoreCase(importeFactura))
+				    			importeFactura="-"+importeFactura;
+				    	}
+				    	
+				    	request.getSession().setAttribute("CANTIDAD", importeFactura);
+			    	}
+			    }
+			} catch (ClsExceptions e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			    
+		}
+		
 		return "nuevo";
 	}
 

@@ -55,3 +55,100 @@ declare
    
    alter table scs_personajg add IDPAISDIR VARCHAR2(3);
    alter table scs_personajg add POBLACIONEXTRANJERA VARCHAR2(100);
+   
+   
+--añadimos la columna a la tabla DESIGNAS
+ alter table scs_actuaciondesigna add IDMOVIMIENTO number(10); 
+--creamos la FK
+
+alter table scs_actuaciondesigna
+  add constraint FK_ACTUACIONDESIG_MOVIMIENTOS foreign key (IDINSTITUCION, IDMOVIMIENTO)
+  references fcs_movimientosvarios (IDINSTITUCION, IDMOVIMIENTO);
+  
+  
+--añadimos la columna a la tabla ACTUACIONES DE UNA ASISTENCIA
+ alter table SCS_ACTUACIONASISTENCIA add IDMOVIMIENTO number(10); 
+--creamos la FK
+
+alter table SCS_ACTUACIONASISTENCIA
+  add constraint FK_ACTUACIONASIS_MOVIMIENTOS foreign key (IDINSTITUCION, IDMOVIMIENTO)
+  references fcs_movimientosvarios (IDINSTITUCION, IDMOVIMIENTO);  
+  
+  
+  --añadimos la columna a la tabla ASISTENCIA
+ alter table SCS_ASISTENCIA add IDMOVIMIENTO number(10); 
+--creamos la FK
+
+alter table SCS_ASISTENCIA
+  add constraint FK_ASISTENCIA_MOVIMIENTOS foreign key (IDINSTITUCION, IDMOVIMIENTO)
+  references fcs_movimientosvarios (IDINSTITUCION, IDMOVIMIENTO);  
+  
+  
+  
+--añadimos la columna a la tabla GUARDIAS
+ alter table scs_cabeceraguardias add IDMOVIMIENTO number(10); 
+--creamos la FK
+
+alter table scs_cabeceraguardias
+  add constraint FK_GUARDIAS_MOVIMIENTOS foreign key (IDINSTITUCION, IDMOVIMIENTO)
+  references fcs_movimientosvarios (IDINSTITUCION, IDMOVIMIENTO);  
+  
+  
+F_SIGA_MOVIMIENTOSVARIOS
+
+
+create index FK_SCS_ACTUACIONDESIGNA_MOV on SCS_ACTUACIONDESIGNA (IDINSTITUCION,IDMOVIMIENTO)
+  tablespace TS_SIGA_SCS_IDX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 59M
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+  
+  
+  create index FK_SCS_ACTUACIONASISTENCIA_MOV on SCS_ACTUACIONASISTENCIA (IDINSTITUCION, IDMOVIMIENTO)
+  tablespace TS_SIGA_SCS_IDX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 37M
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+  
+  create index FK_ASISTENCIA_MOV on SCS_ASISTENCIA (IDINSTITUCION, IDMOVIMIENTO)
+  tablespace TS_SIGA_SCS_IDX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 43M
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+  
+  create index FK_CABECERAGUARDIAS_MOV on scs_cabeceraguardias (IDINSTITUCION, IDMOVIMIENTO)
+  tablespace TS_SIGA_SCS_IDX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 43M
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+  

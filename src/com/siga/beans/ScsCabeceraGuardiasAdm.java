@@ -1029,5 +1029,23 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 		}
 		return hash;
 	}
+	//Permite actualizar la tabla añadiendo el campo de movimientos varios
+		public void actualizarGuardiasMovimientosVarios(String idPersona, String idTurno, String idGuardia, String idInstitucion, String fechaInicio, Integer idMovimiento) throws ClsExceptions{
+			String consulta = "UPDATE "+ScsCabeceraGuardiasBean.T_NOMBRETABLA;
+			consulta += " SET "+ScsCabeceraGuardiasBean.C_IDMOVIMIENTO+" = "+idMovimiento;
+			consulta += " WHERE "+ScsCabeceraGuardiasBean.C_IDINSTITUCION+" = "+ idInstitucion;
+			consulta += " and "+ScsCabeceraGuardiasBean.C_IDTURNO+" = "+idTurno;
+			consulta += " and "+ScsCabeceraGuardiasBean.C_IDGUARDIA+" =  "+ idGuardia;
+			consulta += " and "+ScsCabeceraGuardiasBean.C_IDPERSONA+" =  "+ idPersona;
+			consulta += " and trunc("+ScsGuardiasColegiadoBean.C_FECHAINICIO+")=TO_DATE('"+fechaInicio+"','DD/MM/YYYY')";
+			try{
+				if (!this.updateSQL(consulta)){
+					throw new ClsExceptions (this.getError());
+				}
+			} catch (Exception e) {
+				throw new ClsExceptions (e, "Error al ejecutar el 'actualizaMovimientosVarios' en B.D.");
+			}
+		}
+	
 
 }

@@ -168,6 +168,16 @@
 			}
 		
 		 }
+		
+		//Funcion asociada a boton nuevo
+		function anticiparImporte(fila, id) 
+		{	
+			document.movimientosVarios.modo.value="nuevo";
+			document.movimientosVarios.target="submitArea";
+			document.movimientosVarios.nactuacion.value=jQuery("#oculto"+fila+"_1").val(); 
+			var resultado=ventaModalGeneral(document.movimientosVarios.name,"M");
+			//if (resultado=="MODIFICADO")buscar2();
+		}
 		 
 	</script>
 
@@ -225,6 +235,24 @@
 			<html:hidden property = "tablaDatosDinamicosD" value = ""/>
 			<html:hidden property="idTipoInforme" value="CENSO#OSEPA#ASEPA"/>
 		
+		</html:form>
+		
+		 <html:form action="/JGR_MovimientosVariosLetrado?noReset=true" method="POST" target="submitArea" styleId="movimientosVarios">
+			<html:hidden name="MantenimientoMovimientosForm" property = "modo" value = ""/>
+			<html:hidden name="MantenimientoMovimientosForm" property = "actionModal" value = ""/>
+			<html:hidden name="MantenimientoMovimientosForm" property="checkHistorico" value=""/>
+			<html:hidden name="MantenimientoMovimientosForm" property="idPersona" value=""/>
+			<input type="hidden" name="limpiarFilaSeleccionada" value="">
+			<input type="hidden" name="botonBuscarPulsado" value="">
+			<input type="hidden" name="mostrarMovimientos" value="">
+			
+			<html:hidden property = "idTurno" value= "<%=idTurno%>"/>
+			<html:hidden property = "idInstitucion" value="<%=idInstitucion%>"/>
+			<html:hidden property = "anio" value="<%=anio%>" />	
+			<html:hidden property = "numero" value="<%=numero%>" />
+			<html:hidden property = "nactuacion"  />
+			<html:hidden property = "origen" value="ACTUACIONESDESIGNAS"  />
+			
 		</html:form>
 			<!-- Campo obligatorio -->
 			<siga:Table 
@@ -296,11 +324,14 @@
 			 	%>
 			 	<%
 			 	FilaExtElement[] elems = null;
+			 	elems = new FilaExtElement[2];
 				 	if(!validada && isActivarCartaAcreditacionOficio){
-				 		
-					 	elems = new FilaExtElement[1];
 						elems[0] = new FilaExtElement("enviar", "comunicar", SIGAConstants.ACCESS_READ);
 				 	}
+				 	if(idFacturacion != null && !"".equalsIgnoreCase(idFacturacion)){
+				 		elems[1]=new FilaExtElement("anticiparImporte", "anticiparImporte", SIGAConstants.ACCESS_FULL);
+				 	}
+				 	
 			 	%>
 			 
 				  	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit" modo="<%=modo%>" elementos="<%=elems%>" >

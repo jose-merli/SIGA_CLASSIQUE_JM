@@ -558,7 +558,8 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 									",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO+
 									",act."+ScsActuacionDesignaBean.C_IDACREDITACION+"||','||ap.nig_numprocedimiento IDACREDITACION"+
 									",act."+ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO+
-									",act."+ScsActuacionDesignaBean.C_IDFACTURACION+									
+									",act."+ScsActuacionDesignaBean.C_IDFACTURACION+
+									",act."+ScsActuacionDesignaBean.C_IDMOVIMIENTO+		
 									",pro.nombre nombreprocedimiento, pro.idprocedimiento idprocedimiento"+
 									",acred."+ScsAcreditacionBean.C_DESCRIPCION+" AS NOMBREACREDITACION "+
 									",act." + ScsActuacionDesignaBean.C_VALIDADA + " actuacionValidada " +
@@ -866,6 +867,24 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al ejecutar el 'actualizarActuacionesCambioLetrado' en B.D.");
 		}
 	}
+	
+	//Permite actualizar la tabla añadiendo el campo de movimientos varios
+		public void actualizarActuacionesMovimientosVarios(Hashtable entrada) throws ClsExceptions{
+			String consulta = "UPDATE "+ScsActuacionDesignaBean.T_NOMBRETABLA;
+			consulta += " SET "+ScsActuacionDesignaBean.C_IDMOVIMIENTO+" = "+entrada.get(ScsActuacionDesignaBean.C_IDMOVIMIENTO);
+			consulta += " WHERE "+ScsActuacionDesignaBean.C_IDINSTITUCION+" = "+ entrada.get(ScsActuacionDesignaBean.C_IDINSTITUCION);
+			consulta += " and "+ScsActuacionDesignaBean.C_IDTURNO+" = "+entrada.get(ScsActuacionDesignaBean.C_IDTURNO);
+			consulta += " and "+ScsActuacionDesignaBean.C_ANIO+" = "+entrada.get(ScsActuacionDesignaBean.C_ANIO);
+			consulta += " and "+ScsActuacionDesignaBean.C_NUMERO+" =  "+ entrada.get(ScsActuacionDesignaBean.C_NUMERO);
+			consulta += " and "+ScsActuacionDesignaBean.C_NUMEROASUNTO+" =  "+ entrada.get(ScsActuacionDesignaBean.C_NUMEROASUNTO);
+			try{
+				if (!this.updateSQL(consulta)){
+					throw new ClsExceptions (this.getError());
+				}
+			} catch (Exception e) {
+				throw new ClsExceptions (e, "Error al ejecutar el 'actualizaMovimientosVarios' en B.D.");
+			}
+		}
 		
 	public boolean hayActuacionesDesignaCambioLetradoPagadas(Hashtable entrada) throws ClsExceptions{
 		Boolean bSalida = null;

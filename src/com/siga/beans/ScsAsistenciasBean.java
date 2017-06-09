@@ -76,6 +76,7 @@ public class ScsAsistenciasBean extends MasterBean{
 	ScsEJGBean ejg;
 	AsistenciaForm asistenciaForm;
 	private String fichaColegial;
+	private Integer idMovimiento;
 
 	// Nombre de Tabla
 	static public String T_NOMBRETABLA = "SCS_ASISTENCIA";
@@ -123,6 +124,7 @@ public class ScsAsistenciasBean extends MasterBean{
 	static public final String	C_FECHASOLICITUD       	=	"FECHASOLICITUD";
 	static public final String	C_IDORIGENASISTENCIA       	=	"IDORIGENASISTENCIA";
 	static public final String	C_SEXO       	=	"SEXO";
+	static public final String	C_IDMOVIMIENTO       	=	"IDMOVIMIENTO";
 	
 	static public final String	C_IDPERSONA_REPRESENTANTE	=	"IDPERSONA_REPRESENTANTE";
 
@@ -402,5 +404,13 @@ public class ScsAsistenciasBean extends MasterBean{
 		return asistenciaForm;
 		
 	}
+	
+	public Integer getIdMovimiento() {
+		return idMovimiento;
+	}
+	public void setIdMovimiento(Integer idMovimiento) {
+		this.idMovimiento = idMovimiento;
+	}
+	
 	
 }
