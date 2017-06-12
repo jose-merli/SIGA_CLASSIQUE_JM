@@ -151,6 +151,53 @@ create index FK_SCS_ACTUACIONDESIGNA_MOV on SCS_ACTUACIONDESIGNA (IDINSTITUCION,
     maxextents unlimited
   );
 
+  
+ Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.ActuacionDesigna.titulo', 'Actuación de designación', '0', 1, Sysdate, 0, '19');
+  Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.ActuacionDesigna.titulo', 'Actuación de designación#CA', '0', 2, Sysdate, 0, '19');
+  Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.ActuacionDesigna.titulo', 'Actuación de designación#EU', '0', 3, Sysdate, 0, '19');
+  Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.ActuacionDesigna.titulo', 'Actuación de designación#GL', '0', 4, Sysdate, 0, '19');
+  
+  
+  Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.ActuacionAsistencias.titulo', 'Actuación de asistencia', '0', 1, Sysdate, 0, '19');
+  Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.ActuacionAsistencias.titulo', 'Actuación de asistencia#CA', '0', 2, Sysdate, 0, '19');
+  Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.ActuacionAsistencias.titulo', 'Actuación de asistencia#EU', '0', 3, Sysdate, 0, '19');
+  Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.ActuacionAsistencias.titulo', 'Actuación de asistencia#GL', '0', 4, Sysdate, 0, '19');
+  
+  
+  Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.asistencia.titulo', 'Asistencia', '0', 1, Sysdate, 0, '19');
+  Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.asistencia.titulo', 'Asistencia#CA', '0', 2, Sysdate, 0, '19');
+  Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.asistencia.titulo', 'Asistencia#EU', '0', 3, Sysdate, 0, '19');
+  Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.asistencia.titulo', 'Asistencia#GL', '0', 4, Sysdate, 0, '19');
+  
+  Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.guardia.titulo', 'Guardia', '0', 1, Sysdate, 0, '19');
+  Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.guardia.titulo', 'Guardia#CA', '0', 2, Sysdate, 0, '19');
+  Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.guardia.titulo', 'Guardia#EU', '0', 3, Sysdate, 0, '19');
+  Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.guardia.titulo', 'Guardia#GL', '0', 4, Sysdate, 0, '19');
+  
+  Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.movimientosVarios.titulo', 'Movimientos varios', '0', 1, Sysdate, 0, '19');
+  Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.movimientosVarios.titulo', 'Movimientos varios#CA', '0', 2, Sysdate, 0, '19');
+  Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.movimientosVarios.titulo', 'Movimientos varios#EU', '0', 3, Sysdate, 0, '19');
+  Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  Values  ('movimientosVarios.movimientosVarios.titulo', 'Movimientos varios#GL', '0', 4, Sysdate, 0, '19');
 
 
 

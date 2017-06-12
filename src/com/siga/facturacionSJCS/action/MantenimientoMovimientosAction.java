@@ -156,7 +156,7 @@ public class MantenimientoMovimientosAction extends MasterAction {
 		FcsMovimientosVariosAdm movimAdm = new FcsMovimientosVariosAdm (this.getUserBean(request));
 		try {
 			
-			Hashtable resultado = movimAdm.getMovimientoVario(usr.getLocation(),(String)ocultos.get(0));
+			Hashtable resultado = movimAdm.getMovimientoVario(usr.getLocation(),(String)ocultos.get(0),this.getUserBean(request).getLanguage());
 			request.getSession().setAttribute("resultado",resultado);
 			request.getSession().setAttribute("modo","edicion");
 			destino = "nuevo";
@@ -362,7 +362,7 @@ public class MantenimientoMovimientosAction extends MasterAction {
 		
 		try {
 			
-			Hashtable resultado = movimAdm.getMovimientoVario(usr.getLocation(),(String)ocultos.get(0));
+			Hashtable resultado = movimAdm.getMovimientoVario(usr.getLocation(),(String)ocultos.get(0),this.getUserBean(request).getLanguage());
 			request.getSession().setAttribute("resultado",resultado);
 			request.getSession().setAttribute("modo","consulta");
 			destino = "nuevo";
@@ -422,7 +422,7 @@ public class MantenimientoMovimientosAction extends MasterAction {
 			    	if((String)hashActuacion.get("IDMOVIMIENTO") != null && !"".equalsIgnoreCase((String)hashActuacion.get("IDMOVIMIENTO"))){ 
 			    		//Desde Asunto y ya existe movimiento
 			    		FcsMovimientosVariosAdm movimAdm = new FcsMovimientosVariosAdm (this.getUserBean(request));
-			    		Hashtable resultado = movimAdm.getMovimientoVario((String)hashActuacion.get("IDINSTITUCION"),(String)hashActuacion.get("IDMOVIMIENTO"));
+			    		Hashtable resultado = movimAdm.getMovimientoVario((String)hashActuacion.get("IDINSTITUCION"),(String)hashActuacion.get("IDMOVIMIENTO"),this.getUserBean(request).getLanguage());
 						request.getSession().setAttribute("resultado",resultado);
 						request.getSession().setAttribute("modo","edicion");
 						request.getSession().setAttribute("ORIGEN", "ASUNTO");
@@ -482,7 +482,7 @@ public class MantenimientoMovimientosAction extends MasterAction {
 			    	if(actuacionBean.getIdMovimiento() != null){ 
 			    		//Desde AsuntoAsistencias y ya existe movimiento
 			    		FcsMovimientosVariosAdm movimAdm = new FcsMovimientosVariosAdm (this.getUserBean(request));
-			    		Hashtable resultado = movimAdm.getMovimientoVario(String.valueOf(actuacionBean.getIdInstitucion()),String.valueOf(actuacionBean.getIdMovimiento()));
+			    		Hashtable resultado = movimAdm.getMovimientoVario(String.valueOf(actuacionBean.getIdInstitucion()),String.valueOf(actuacionBean.getIdMovimiento()),this.getUserBean(request).getLanguage());
 						request.getSession().setAttribute("resultado",resultado);
 						request.getSession().setAttribute("modo","edicion");
 						request.getSession().setAttribute("ORIGEN", "ACTUACIONESASISTENCIAS");
@@ -548,7 +548,7 @@ public class MantenimientoMovimientosAction extends MasterAction {
 			    	if((String)hashAsistencia.get("IDMOVIMIENTO") != null && !"".equalsIgnoreCase((String)hashAsistencia.get("IDMOVIMIENTO"))){ 
 			    		//Desde Asunto y ya existe movimiento
 			    		FcsMovimientosVariosAdm movimAdm = new FcsMovimientosVariosAdm (this.getUserBean(request));
-			    		Hashtable resultado = movimAdm.getMovimientoVario((String)hashAsistencia.get("IDINSTITUCION"),(String)hashAsistencia.get("IDMOVIMIENTO"));
+			    		Hashtable resultado = movimAdm.getMovimientoVario((String)hashAsistencia.get("IDINSTITUCION"),(String)hashAsistencia.get("IDMOVIMIENTO"),this.getUserBean(request).getLanguage());
 						request.getSession().setAttribute("resultado",resultado);
 						request.getSession().setAttribute("modo","edicion");
 						request.getSession().setAttribute("ORIGEN", "ASISTENCIAS");
@@ -619,7 +619,7 @@ public class MantenimientoMovimientosAction extends MasterAction {
 			    		//Desde Asunto y ya existe movimiento
 			    		FcsMovimientosVariosAdm movimAdm = new FcsMovimientosVariosAdm (this.getUserBean(request));
 			    	
-			    		Hashtable resultado = movimAdm.getMovimientoVario(String.valueOf(cabeceraGuardias.getIdinstitucion()), String.valueOf(cabeceraGuardias.getIdmovimiento()));
+			    		Hashtable resultado = movimAdm.getMovimientoVario(String.valueOf(cabeceraGuardias.getIdinstitucion()), String.valueOf(cabeceraGuardias.getIdmovimiento()),this.getUserBean(request).getLanguage());
 						request.getSession().setAttribute("resultado",resultado);
 						request.getSession().setAttribute("modo","edicion");
 						request.getSession().setAttribute("ORIGEN", "GUARDIAS");

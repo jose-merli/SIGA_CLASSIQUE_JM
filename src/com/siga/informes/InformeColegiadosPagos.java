@@ -104,7 +104,7 @@ public class InformeColegiadosPagos extends MasterReport {
 		
 		//Datos de los Movimientos Varios
 		FcsMovimientosVariosAdm movVariosAdm = new FcsMovimientosVariosAdm(usr);
-		Vector datosMovimientosVarios = movVariosAdm.getMovimientos(institucion, idPagos, idPersona);		
+		Vector datosMovimientosVarios = movVariosAdm.getMovimientos(institucion, idPagos, idPersona,usr.getLanguage());		
 		
 		// JPT - Tratamiento para poner el euro en las cantidades
 		Vector vMovimientosVarios = new Vector();
