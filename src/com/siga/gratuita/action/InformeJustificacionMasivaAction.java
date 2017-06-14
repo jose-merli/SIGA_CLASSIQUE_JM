@@ -483,7 +483,8 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_IDPRETENSION, scsDesignaBean.getIdPretension()!=null?scsDesignaBean.getIdPretension().toString():"");
 						
 						
-						if(valorPcajgActivo ==8){
+						if(!user.getLocation().equalsIgnoreCase("2005") && !user.getLocation().equalsIgnoreCase("2018") 
+								&& !user.getLocation().equalsIgnoreCase("2023") && !user.getLocation().equalsIgnoreCase("2051") && !user.getLocation().equalsIgnoreCase("2068")){
 							// Para Valencia:
 							//    -Talón: Número asunto
 							//	  -Talonario: Año + código de la designa
@@ -494,7 +495,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 							UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_TALONARIO, talonario);
 							
 						}
-						
+									
 							List<String> ocultarClaveList = getListCamposOcultarHistorico();
 							hashActuacion.put("fks", fksActuacionMap);
 							hashActuacion.put("scsDesignaBean", scsDesignaBean);
