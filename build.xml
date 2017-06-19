@@ -1054,6 +1054,9 @@ proyecto:${redeploy.name}
 		</target>
 	
 	 	<target depends="zip" name="enviar_zip_entrega">
+	    	<echo>Como no funciona bien la conexion a las carpetas de red, coge el ZIP directamente de:</echo>
+	 		<echo message="${dist}/${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}.zip" />
+	 		<!--
 	    	<echo>Copiando el fichero de entrega en H:...</echo>
 			<if>
 		    	<available filepath="${destino.fichero.entrega}/${entorno.Despliegue}/${date.anio}/${date.entrega} - ${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}" file="${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}.zip"/>
@@ -1069,6 +1072,7 @@ proyecto:${redeploy.name}
 		    		</copy>
 		    		<echo message="Zip (${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}.zip) enviado a la dirección ${destino.fichero.entrega}/${entorno.Despliegue}/${date.anio}/${date.entrega} - ${redeploy.name}_${entorno.Despliegue}_${version.Despliegue}_${subVersion.Despliegue}." />
 				</else>
-	      	</if> 					
+	      	</if>
+	      	-->
 	    </target>   
 </project>

@@ -2804,7 +2804,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			        " PROCEDIMIENTO_DESIGNA.NOMBRE AS DESIGNA_MODULO, "+
 			        " f_siga_getrecurso(PRETENSION_DESIGNA.DESCRIPCION, 1) AS DESIGNA_PROCEDIMIENTO, "+
 			        
-			        " f_siga_getnombre_persona(ACTUACION.Idpersonacolegiado,0) AS ACTUACION_PERSONA, "+
+			        " f_siga_getnombre_persona(ACTUACION.Idpersonacolegiado,0) AS ACTUACION_LETRADO, "+
 			        " f_siga_getrecurso(PRETENSION_ACTUACION.DESCRIPCION,1) AS ACTUACION_PROCEDIMIENTO, "+
 			        " PRISION.NOMBRE AS ACTUACION_PRISION, "+
 			        " COMISARIA.NOMBRE AS ACTUACION_COMISARIA, "+
@@ -2836,6 +2836,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			        " TURNO.DESCRIPCION AS DESIGNA_DESCRIPCION_TURNO, "+
 			        " TURNO.VALIDARJUSTIFICACIONES as VALIDARJUSTIFICACIONES, "+
 			        " DESIGNA_LETRADO.IDPERSONA AS DESIGNA_LETRADO, "+
+			        " ACTUACION.IDPERSONACOLEGIADO AS ACTUACION_ID_LETRADO, "+
 			        " TO_CHAR(SYSDATE, 'yyyy') AS ANIO_ACTUAL, "+
 			        " TO_CHAR(SYSDATE, 'dd') AS DIA_ACTUAL, "+
 			        " F_SIGA_FECHAENLETRA(DESIGNA.FECHAENTRADA, 'M', 1) AS MES_ACTUAL, "+
@@ -2881,7 +2882,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			"  and ACTUACION.idturno =:2 "+
 			"  and ACTUACION.anio =:3 "+
 			"  and ACTUACION.numero =:4"+
-			"  and ACTUACION.numeroAsunto=:5";
+			"  and ACTUACION.numeroAsunto=:5"+
+			" order by DESIGNA_LETRADO.fechaModificacion desc ";
 
 			HelperInformesAdm helperInformes = new HelperInformesAdm();
 			return helperInformes.ejecutaConsultaBind(sql, h);

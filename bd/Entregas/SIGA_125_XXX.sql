@@ -909,3 +909,51 @@ Values  ('gratuita.gestionInscripciones.error.baja.colegiados', 'Sólo se pueden 
  
 -- Ejecutado en Integracion por AAG el 18/05 a las 17:20
 
+-- 125_014
+insert into gen_procesos 
+(IDPROCESO, IDMODULO, TRAZA, TARGET, FECHAMODIFICACION, USUMODIFICACION, DESCRIPCION,TRANSACCION,IDPARENT,NIVEL) 
+            values ('942','JGR',1,'Y',sysdate,0,'HIDDEN_Boton crear EJG','JGR_CREAR_EJG','941',10);
+            
+ insert into ECOM_OPERACION (IDOPERACION, IDSERVICIO, NOMBRE, MAXREINTENTOS, ACTIVO, FECHAMODIFICACION, USUMODIFICACION)
+values (57, 6, 'Validación para la carga de expedientes a la Xunta de Galicia ', 1, '1', sysdate, 0);
+insert into ECOM_OPERACION (IDOPERACION, IDSERVICIO, NOMBRE, MAXREINTENTOS, ACTIVO, FECHAMODIFICACION, USUMODIFICACION)
+values (58, 6, 'Carga de expedientes a la Xunta de Galicia', 6, '1', sysdate, 0);
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.cargaexpediente.UrlWs', 'Url del servicio web de carga expedientes de la Xunta', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.cargaexpediente.UrlWs', 'Url del servicio web de carga expedientes de la Xunta#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.cargaexpediente.UrlWs', 'Url del servicio web de carga expedientes de la Xunta#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.cargaexpediente.UrlWs', 'Url del servicio web de carga expedientes de la Xunta#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_PARAMETROS (MODULO, PARAMETRO, VALOR, FECHAMODIFICACION, USUMODIFICACION, IDINSTITUCION, IDRECURSO)
+values ('ECOM', 'PCAJG_XUNTA_URL_CARGAEXPEDIENTES', 'https://axgnet.stg.xunta.local/sxpa/AXGnet/CargaSolicitudesService', sysdate, 0, 0, 'ecom.parametro.pcajg.cargaexpediente.UrlWs');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.cargaexpediente.codaplicacion', 'Código de aplicación del servicio web de carga expedientes de la Xunta', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.cargaexpediente.codaplicacion', 'Código de aplicación del servicio web de carga expedientes de la Xunta#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.cargaexpediente.codaplicacion', 'Código de aplicación del servicio web de carga expedientes de la Xunta#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.cargaexpediente.codaplicacion', 'Código de aplicación del servicio web de carga expedientes de la Xunta#GL', 0, '4', sysdate, 0, '19');
+
+
+insert into GEN_PARAMETROS (MODULO, PARAMETRO, VALOR, FECHAMODIFICACION, USUMODIFICACION, IDINSTITUCION, IDRECURSO)
+values ('ECOM', 'PCAJG_XUNTA_CE_CODAPLICACION', 'codaplicacion', sysdate, 0, 0, 'ecom.parametro.pcajg.cargaexpediente.codaplicacion');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.cargaexpediente.usuario', 'Usuario del servicio web de carga expedientes de la Xunta', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.cargaexpediente.usuario', 'Usuario del servicio web de carga expedientes de la Xunta#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.cargaexpediente.usuario', 'Usuario del servicio web de carga expedientes de la Xunta#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.cargaexpediente.usuario', 'Usuario del servicio web de carga expedientes de la Xunta#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_PARAMETROS (MODULO, PARAMETRO, VALOR, FECHAMODIFICACION, USUMODIFICACION, IDINSTITUCION, IDRECURSO)
+values ('ECOM', 'PCAJG_XUNTA_CE_USUARIO', 'usuario', sysdate, 0, 0, 'ecom.parametro.pcajg.cargaexpediente.usuario');
+
+importar certificado en cacerts C:\Users\jorgeta\Documents\Analisis\2017\Xunta\ficheros\certificadoxunta.cer
+
+insert into ECOM_OPERACION (IDOPERACION, IDSERVICIO, NOMBRE, MAXREINTENTOS, ACTIVO, FECHAMODIFICACION, USUMODIFICACION)
+values (60, 6, 'Verifica carga de expedientes de la Xunta de Galicia', 6, '1', sysdate, 0);
+
+UPDATE SCS_PROCURADOR  SET  IDCOLPROCURADOR ='P15078'  WHERE IDINSTITUCION = 2064;
+UPDATE SCS_PROCURADOR  SET  IDCOLPROCURADOR ='P15030' WHERE IDINSTITUCION = 2044;
+UPDATE SCS_PROCURADOR  SET  IDCOLPROCURADOR ='P27028' WHERE IDINSTITUCION = 2025;
+
+V_WS_2064_EJG
+V_WS_2064_PERSONA
+
+-- Ejecutado en Integracion por AAG el 01/06 a las 17:50

@@ -1637,7 +1637,13 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		}
 		// Parametros para poder reutilizar la busqueda EJG para busquedas CAJG
 		if(TipoVentana.BUSQUEDA_PREPARACION_CAJG.equals(tipoVentana)){
-			consulta += " AND (ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " NOT IN (" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.GENERADO_EN_REMESA.getCodigo() + ", " + ESTADOS_EJG.REMITIDO_COMISION.getCodigo() + ", " + ESTADOS_EJG.RESUELTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.IMPUGNADO.getCodigo() + "))  ";
+			if ((miHash.containsKey("ESTADOEJG")) && (!miHash.get("ESTADOEJG").toString().equals(""))) {
+				contador++;
+				codigos.put(new Integer(contador), UtilidadesHash.getString(miHash, "ESTADOEJG"));
+				consulta += " AND ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " = :" + contador;
+			}else{
+				consulta += " AND (ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " NOT IN (" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.GENERADO_EN_REMESA.getCodigo() + ", " + ESTADOS_EJG.REMITIDO_COMISION.getCodigo() + ", " + ESTADOS_EJG.RESUELTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.IMPUGNADO.getCodigo() + "))  ";
+			}
 			
 		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESA.equals(tipoVentana)) {
 			consulta += " AND ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " IN (" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.ESTADO_LISTO_COMISION_ACTUALIZAR_DESIGNACION.getCodigo() + ") ";
@@ -2014,9 +2020,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		
 		//aalg: INC_0644_SIGA. Modificación de la query por los estados ejg 
 		if ((miHash.containsKey("ESTADOEJG")) && (!miHash.get("ESTADOEJG").toString().equals(""))) {
-			contador++;
-			codigos.put(new Integer(contador), UtilidadesHash.getString(miHash, "ESTADOEJG"));
-			consulta += " AND ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " = :" + contador;
+			
+			if(!TipoVentana.BUSQUEDA_PREPARACION_CAJG.equals(tipoVentana)){
+				contador++;
+				codigos.put(new Integer(contador), UtilidadesHash.getString(miHash, "ESTADOEJG"));
+				consulta += " AND ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " = :" + contador;
+			}
 			
 			if ((miForm.getfechaEstadoDesde() != null && !miForm.getfechaEstadoDesde().equals("")) ||
 				(miForm.getfechaEstadoHasta() != null && !miForm.getfechaEstadoHasta().equals(""))) {

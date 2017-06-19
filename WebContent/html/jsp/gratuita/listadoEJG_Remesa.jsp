@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<%@page import="org.redabogacia.sigaservices.app.helper.AsignaVeredaHelper.ASIGNA_VERSION"%>
+<%@page import="org.redabogacia.sigaservices.app.helper.AsignaVeredaHelper"%>
 <%@page import="com.siga.Utilidades.paginadores.PaginadorBind"%>
 <html>
 <head>
@@ -50,6 +52,7 @@
 	String idioma=usr.getLanguage().toUpperCase();
 	
 	ses.removeAttribute("resultado");
+	ASIGNA_VERSION versionAsignaVereda = AsignaVeredaHelper.getAsignaVersion(Short.valueOf(usr.getLocation()));
 	
 	String idremesa=(String)request.getAttribute("idremesa");
 	
@@ -117,7 +120,11 @@
 			} else if (cajgConfig == 4) {//PAMPLONA
 				buttons+=",val,ws";//envio WebService
 			} else if (cajgConfig == 6) {
-				buttons+=",val,gxml";//generar XML			
+				if(versionAsignaVereda!=null && versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion())){
+					buttons+=",val,ws";//generar XML
+				}else
+					buttons+=",val,gxml";//generar XML			
+				
 			} else if (cajgConfig == 7) {
 				buttons+=",val,ws";//envio WebService GVasco
 			} else if (cajgConfig == 8) {
@@ -143,7 +150,10 @@
 			} else if (cajgConfig == 3 && tipoPCAJGGeneral != 1) {
 				buttons+=",d";//descargar
 			} else if (cajgConfig == 6) {
-				buttons+=",d";//descargar
+				if(versionAsignaVereda==null || !versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion()))
+					buttons+=",d";//descargar
+				
+					
 			}else if (cajgConfig == 9) {//ELIMINAR CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
 				if (tipoPCAJGGeneral == 0) {
 					buttons+=",d";//descarga envio
@@ -174,7 +184,8 @@
 			} else if (cajgConfig == 3 && tipoPCAJGGeneral != 1) {
 				buttons+=",d";//descargar
 			} else if (cajgConfig == 6) {
-				buttons+=",d";//descargar
+				if(versionAsignaVereda==null || !versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion()))
+					buttons+=",d";//descargar
 			}else if (cajgConfig == 9) {//ELIMINAR CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
 				if (tipoPCAJGGeneral == 0) {
 					buttons+=",d";//descarga envio

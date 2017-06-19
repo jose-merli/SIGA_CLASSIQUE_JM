@@ -367,7 +367,11 @@ public class EnvioInformesGenericos extends MasterReport {
 				total.putAll(registroGeneral);
 				
 				String idPersona  = (String)registroGeneral.get("DESIGNA_LETRADO");
-				String nombre_dest = persAdm.obtenerNombreApellidos(idPersona);
+				String nombre_designa_letrado = persAdm.obtenerNombreApellidos(idPersona);
+				
+				String idPersonaActuacion  = (String)registroGeneral.get("ACTUACION_ID_LETRADO");
+				String nombre_dest = persAdm.obtenerNombreApellidos(idPersonaActuacion);
+				
 				
 				Vector designaLetrado = scsDesignaAdm.getDireccionLetradoSalidaOficio(idPersona, idInstitucion);
 				Hashtable registro2=  (Hashtable)designaLetrado.get(0);
@@ -379,8 +383,9 @@ public class EnvioInformesGenericos extends MasterReport {
 				registro2.put("PROVINCIA_GUARDIA_LETRADO", helperInformes.getNombreProvinciaSalida((String)registro2.get("IDPROVINCIA_GUARDIA_LETRADO"),"PROVINCIA_GUARDIA_LETRADO"));
 				total.putAll(registro3);
 				
+				
 				Hashtable letrado =  obtenerLetrado(registro2, registro3);
-				letrado.put("NOMBRE_LETRADO", nombre_dest);
+				letrado.put("NOMBRE_LETRADO", nombre_designa_letrado);
 				
 				// Obtenemos el numero de colegiado
 				Hashtable<String,Object> hCenColegiado = admCenColegiado.obtenerDatosColegiado(idInstitucion, idPersona, usrBean.getLanguage());
@@ -390,11 +395,21 @@ public class EnvioInformesGenericos extends MasterReport {
 					letrado.put("NCOLEGIADO_LETRADO", nColegiado);
 				}			    
 				total.putAll(letrado);
+				
+				
 				//Destinatario
-				Hashtable destinatario = obtenerDestinatario(registro2, registro3);
-				destinatario.put("NOMBRE_DEST", nombre_dest);
+				Vector destinatario = scsDesignaAdm.getDireccionLetradoSalidaOficio(idPersonaActuacion, idInstitucion);
+				Hashtable registroDestinatario=  (Hashtable)destinatario.get(0);
+				
+				
+				Vector destinatarioGuardia = scsDesignaAdm.getDireccionPersonalLetradoSalidaOficio(idPersonaActuacion, idInstitucion);
+				Hashtable registroDestinatarioGuardia=  (Hashtable)designaLetradoGuardia.get(0);
+				
+				
+				Hashtable infoDestinatario = obtenerDestinatario(registroDestinatario, registroDestinatarioGuardia);
+				infoDestinatario.put("NOMBRE_DEST", nombre_dest);
 				registro2.put("PROVINCIA_DEST", helperInformes.getNombreProvinciaSalida((String)registro2.get("ID_PROVINCIA_DEST"),"PROVINCIA_DEST"));
-				total.putAll(destinatario);
+				total.putAll(infoDestinatario);
 				
 				
 				Vector regionDefendido = scsDesignaAdm.getVectorDefendidosDesigna(idInstitucion,numero,idTurno, anio,"","", longitudNumEjg);

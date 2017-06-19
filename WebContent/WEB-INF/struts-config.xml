@@ -263,6 +263,7 @@
 		<form-bean name="DefinirDocumentacionAsistenciaForm" type="com.siga.gratuita.form.DefinirDocumentacionAsistenciaForm"/>
 		<form-bean name="DefinirDocumentacionDesignaForm" type="com.siga.gratuita.form.DefinirDocumentacionDesignaForm"/>
 		<form-bean name="DefinirEJGForm" type="com.siga.gratuita.form.DefinirEJGForm"/>
+		<form-bean name="DefinirCrearEJGForm" type="com.siga.gratuita.form.DefinirCrearEJGForm"/>
 		<form-bean name="BusquedaCAJG_EJGForm" type="com.siga.gratuita.form.BusquedaCAJG_EJGForm"/>
 		<form-bean name="DefinicionRemesas_CAJG_Form" type="com.siga.gratuita.form.DefinicionRemesas_CAJG_Form"/>
 		<form-bean name="DefinicionRemesaResolucionesCAJGForm" type="com.siga.gratuita.form.DefinicionRemesaResolucionesCAJGForm"/>
@@ -2824,6 +2825,17 @@
 
 		<!-- ***** Justicia Gratuita / Configurar Turnos / EJG ***** -->
 		<action path="/JGR_EJG" type="com.siga.gratuita.action.DefinirEJGAction" name="DefinirEJGForm"  >
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaEJG.jsp?ventanaCajg=0"/>
+			<forward name="insertarEJG" path="/html/jsp/gratuita/insertarEJG.jsp"/>
+			<forward name="busquedaAutomatica" path="/html/jsp/gratuita/recargarModalInsercionEJG.jsp"/>
+			<forward name="listarEJG" path="/html/jsp/gratuita/listadoEJG.jsp"/>
+			<forward name="ver" path="/html/jsp/gratuita/pestanaEJG.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/pestanaEJG.jsp"/>
+			<forward name="exitoEJG" path="/html/jsp/gratuita/exitoEJG.jsp"/>
+		</action>
+		
+		<!-- ***** Justicia Gratuita / Configurar Turnos / EJG ***** -->
+		<action path="/JGR_CREAR_EJG" type="com.siga.gratuita.action.DefinirCrearEJGAction" name="DefinirCrearEJGForm" >
 			<forward name="inicio" path="/html/jsp/gratuita/busquedaEJG.jsp?ventanaCajg=0"/>
 			<forward name="insertarEJG" path="/html/jsp/gratuita/insertarEJG.jsp"/>
 			<forward name="busquedaAutomatica" path="/html/jsp/gratuita/recargarModalInsercionEJG.jsp"/>
