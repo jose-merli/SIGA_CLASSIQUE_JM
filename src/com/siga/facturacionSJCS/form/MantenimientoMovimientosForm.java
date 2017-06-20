@@ -32,8 +32,48 @@ public class MantenimientoMovimientosForm extends MasterForm {
 	private String idFacturacion = "IDFACTURACION";
 	private String idGrupoFacturacion = "IDGRUPOFACTURACION";
 	
-	
+	private String idTurno;
+	private String idInstitucion;
+	private String anio;
+	private String numero;
+	private String nactuacion;
+	private String origen;
+	private String idGuardia;
+	private String fechaInicio;
+	private String idPersonaMovimiento;
 
+
+	
+	public String getIdTurno() {
+		return idTurno;
+	}
+	public void setIdTurno(String idTurno) {
+		this.idTurno = idTurno;
+	}
+	public String getIdInstitucion() {
+		return idInstitucion;
+	}
+	public void setIdInstitucion(String idInstitucion) {
+		this.idInstitucion = idInstitucion;
+	}
+	public String getAnio() {
+		return anio;
+	}
+	public void setAnio(String anio) {
+		this.anio = anio;
+	}
+	public String getNumero() {
+		return numero;
+	}
+	public void setNumero(String numero) {
+		this.numero = numero;
+	}
+	public String getNactuacion() {
+		return nactuacion;
+	}
+	public void setNactuacion(String nactuacion) {
+		this.nactuacion = nactuacion;
+	}
 	/**
 	 * @return the idFacturacion
 	 */
@@ -229,6 +269,31 @@ public class MantenimientoMovimientosForm extends MasterForm {
 	}
 	public void setMostrarMovimientos(String valor) {
 		this.datos.put(mostrarMovimientos, valor);
-	}	
+	}
+	public String getOrigen() {
+		return origen;
+	}
+	public void setOrigen(String origen) {
+		this.origen = origen;
+	}
+	public String getIdGuardia() {
+		return idGuardia;
+	}
+	public void setIdGuardia(String idGuardia) {
+		this.idGuardia = idGuardia;
+	}
+	public String getFechaInicio() {
+		return fechaInicio;
+	}
+	public void setFechaInicio(String fechaInicio) {
+		this.fechaInicio = fechaInicio;
+	}
+	public String getIdPersonaMovimiento() {
+		return idPersonaMovimiento;
+	}
+	public void setIdPersonaMovimiento(String idPersonaMovimiento) {
+		this.idPersonaMovimiento = idPersonaMovimiento;
+	}
+	
 		
 }

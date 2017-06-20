@@ -127,4 +127,38 @@ public class FcsFactApunteAdm extends MasterBeanAdministrador {
 		}
 		return datos;	
 	}
+	
+	/**
+	 * Devuelve el valor del importe que hay que facturar para un colegiado en una facturacion determinada
+	 *   
+	 * @param String idInstitucion 
+	 * @param String idFacturacion
+	 * @param String idPersona
+	 * 
+	 * @return String resultado con el importe 
+	 */
+	public String getImporteTotalFacturado (String idInstitucion, String idFacturacion, String idPersona)
+	{
+		String resultado = "", consulta = "";
+		//query para consultar el importe 
+		consulta = 	" SELECT " + 
+					" SUM(" + FcsFactApunteBean.C_PRECIOAPLICADO +" + "+FcsFactApunteBean.C_PRECIO_COSTES_FIJOS+") AS IMPORTE " +
+					" FROM " + FcsFactApunteBean.T_NOMBRETABLA + " " +
+					" WHERE " + FcsFactApunteBean.C_IDINSTITUCION + "=" + idInstitucion + " " +
+					" AND " + FcsFactApunteBean.C_IDFACTURACION + "=" + idFacturacion + " " +
+					" AND " + FcsFactApunteBean.C_IDPERSONA + "=" + idPersona + " ";
+		
+		//Hashtable para recoger el resultado de la contulta
+		Hashtable hash = new Hashtable();
+		try{
+			hash = (Hashtable)((Vector)this.selectGenerico(consulta)).get(0);
+			//resogemos el resultado
+			resultado = (String)hash.get("IMPORTE");
+			if (resultado.equals(""))resultado="0";
+		}catch(Exception e){
+			//si no se ha obtenido resultado es porque no hay nada que facturar para el colegiado con ese idPersona
+			resultado = "0";
+		}
+		return resultado;
+	}
 }

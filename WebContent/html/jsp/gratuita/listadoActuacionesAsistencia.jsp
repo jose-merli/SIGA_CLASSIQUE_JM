@@ -16,7 +16,25 @@
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
 <%@ taglib uri="c.tld" prefix="c"%>
 
+<%@ page import = "com.siga.tlds.FilaExtElement"%>
+<%@ page import="com.siga.administracion.SIGAConstants"%>
+<%@ page import="com.siga.beans.*"%>
+<%@ page import="com.atos.utils.*"%>
+<%@ page import="com.siga.gratuita.form.*"%>
+<%@ page import="java.util.List"%>
+<%@ page import="com.siga.gratuita.form.ActuacionAsistenciaForm"%>
+
+
+
+
 <%
+	String app=request.getContextPath();
+	HttpSession ses=request.getSession();
+	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");	
+
+	String anio ="", numero ="", idInstitucion="";
+	List <ActuacionAsistenciaForm> listadoActuaciones =(List <ActuacionAsistenciaForm>)request.getAttribute("actuacionesAsistenciaList"); 
+
 	boolean esFichaColegial = false;
 
 	String sEsFichaColegial = (String) request.getAttribute("esFichaColegial");
@@ -24,6 +42,12 @@
 		&& (sEsFichaColegial.equalsIgnoreCase("1") || sEsFichaColegial.equalsIgnoreCase("true"))) {
 		esFichaColegial = true;
 	}
+	if(listadoActuaciones != null && listadoActuaciones.size() >0){
+		 anio = listadoActuaciones.get(0).getAnio();
+		 numero =listadoActuaciones.get(0).getNumero();
+		 idInstitucion =listadoActuaciones.get(0).getIdInstitucion();
+	}
+
 %>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -76,7 +100,17 @@
 			
 			<c:otherwise>
 				<c:forEach items="${actuacionesAsistenciaList}" var="actuacionAsistencia" varStatus="status">
-					<siga:FilaConIconos fila='${status.count}' id="trtabla_${status.count}" botones="${actuacionAsistencia.botones}" clase="listaNonEdit">							
+					<%
+						 	FilaExtElement[] elems = null;
+						 	elems = new FilaExtElement[1];
+					%>
+					<c:if test="${not empty actuacionAsistencia.idFacturacion}">
+						<%
+					 		elems[0]=new FilaExtElement("anticiparImporte", "anticiparImporte", SIGAConstants.ACCESS_FULL);
+				 		%>
+				 	</c:if>
+			 
+					<siga:FilaConIconos fila='${status.count}' id="trtabla_${status.count}" botones="${actuacionAsistencia.botones}" clase="listaNonEdit" elementos="<%=elems%>">							
 						<td align="center">
 							<input type="hidden" id="idInstitucion_${status.count}" value="${actuacionAsistencia.idInstitucion}">
 							<input type="hidden" id="anio_${status.count}" value="${actuacionAsistencia.anio}">
@@ -154,6 +188,23 @@
 		<html:hidden property="modo"/>
 		<html:hidden property="idInstitucion"/>
 		<html:hidden property="idSolicitudAceptada"/>
+	</html:form>
+	
+	<html:form action="/JGR_MovimientosVariosLetrado?noReset=true" method="POST" target="submitArea" styleId="movimientosVarios">
+			<html:hidden name="MantenimientoMovimientosForm" property = "modo" value = ""/>
+			<html:hidden name="MantenimientoMovimientosForm" property = "actionModal" value = ""/>
+			<html:hidden name="MantenimientoMovimientosForm" property="checkHistorico" value=""/>
+			<html:hidden name="MantenimientoMovimientosForm" property="idPersona" value=""/>
+			<input type="hidden" name="limpiarFilaSeleccionada" value="">
+			<input type="hidden" name="botonBuscarPulsado" value="">
+			<input type="hidden" name="mostrarMovimientos" value="">
+			
+			<html:hidden property = "idInstitucion" value="<%=idInstitucion%>"/>
+			<html:hidden property = "anio" value="<%=anio%>" />	
+			<html:hidden property = "numero" value="<%=numero%>" />
+			<html:hidden property = "nactuacion"  />
+			<html:hidden property = "origen" value="ACTUACIONESASISTENCIAS"  />
+			
 	</html:form>
 
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
@@ -266,6 +317,16 @@
 	 		}
 		}
 
+		//Funcion asociada a boton nuevo
+		function anticiparImporte(fila, id) 
+		{	
+			document.movimientosVarios.modo.value="nuevo";
+			document.movimientosVarios.target="submitArea";
+			document.movimientosVarios.nactuacion.value=jQuery("#idActuacion_"+fila).val(); 
+			var resultado=ventaModalGeneral(document.movimientosVarios.name,"M");
+			//if (resultado=="MODIFICADO")buscar2();
+		}
+		
 		var messageError='${error}';
 		if (messageError)
 			alert(messageError);

@@ -32,6 +32,7 @@ import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.administracion.SIGAConstants;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColaCambioLetradoAdm;
 import com.siga.beans.CenColegiadoAdm;
@@ -694,6 +695,10 @@ public class DatosColegiacionAction extends MasterAction {
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
 			String idInstitucion=user.getLocation();
 
+			String stPuedeModificarNCol=user.getProcessAccessTemp("12P");
+			boolean bPuedeModificarNCol = stPuedeModificarNCol!=null && (stPuedeModificarNCol.equalsIgnoreCase(SIGAConstants.ACCESS_FULL));
+			request.setAttribute("puedeModificarNCol", bPuedeModificarNCol);
+			
 			String accion;
 			accion = "editar";
 

@@ -13,6 +13,7 @@ public class AdmCertificadosBean extends MasterBean
 	private String revocacion;
 	private String fechaCad;
 	private String NIF;
+	private String email;
 	private String rol;
 	private String roles;
 
@@ -23,6 +24,7 @@ public class AdmCertificadosBean extends MasterBean
 	static public final String C_REVOCACION = "REVOCACION";
 	static public final String C_FECHACAD = "FECHACAD";
 	static public final String C_NIF = "NIF";
+	static public final String C_EMAIL = "EMAIL";
 	static public final String C_ROL = "ROL";
 	static public final String C_IDS_ROLES = "IDSROLES";
 	
@@ -91,7 +93,15 @@ public class AdmCertificadosBean extends MasterBean
         this.NIF = NIF;
     }
 
-    public String getRol() 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getRol() 
     {
         return rol;
     }

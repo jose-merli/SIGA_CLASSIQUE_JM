@@ -3013,11 +3013,6 @@
 		</action>
 		<!-- ***** Justicia Gratuita / Mantenimiento Grupos de Facturación *****
 -->
-		<action path="/JGR_MantenimientoGruposFacturacion" type="com.siga.gratuita.action.DefinirGrupoFacturacionAction" name="DefinirGrupoFacturacionForm" scope="request">
-			<forward name="inicio" path="/html/jsp/gratuita/busquedaGrupoFacturacion.jsp"/>
-			<forward name="listarGrupos" path="/html/jsp/gratuita/consultaGrupoFacturacion.jsp"/>
-			<forward name="operar" path="/html/jsp/gratuita/datosGrupoFacturacion.jsp"/>
-		</action>
 
 		<!-- ***** Administración / Mantenimiento de Procedimientos ***** -->
 		<action path="/JGR_MantenimientoProcedimientos" type="com.siga.gratuita.action.MantenimientoProcedimientosAction" name="MantenimientoProcedimientosForm">
@@ -3183,13 +3178,6 @@
 			<forward name="resultado" path="/html/jsp/facturacionSJCS/busquedaMovimientosResultados.jsp"/>
 			<forward name="nuevo" path="/html/jsp/facturacionSJCS/datosMovimientos.jsp"/>
 			<forward name="resultadoAplicacion" path="/html/jsp/facturacionSJCS/aplicacionMovimiento.jsp"/>
-		</action>
-
-		<action path="/FCS_DetalleFacturacion" type="com.siga.facturacionSJCS.action.DatosDetalleFacturacionAction" name="DatosDetalleFacturacionForm" scope="request">
-			<forward name="inicio" path="/html/jsp/facturacionSJCS/consultaDetalleFacturacion.jsp"/>
-			<!--forward name="consulta" path="/html/jsp/facturacionSJCS/datosDetalleFacturacion.jsp"/-->
-			<forward name="verDetalle" path="/html/jsp/facturacionSJCS/verDetalleFacturacion.jsp"/>
-			<forward name="descargas" path="/html/jsp/facturacionSJCS/descargasPrevision.jsp"/>
 		</action>
 
 		<!-- ***** Pestaña Facturación SJCS Pago ***** -->
@@ -3503,7 +3491,11 @@
 		</action>
 		
 		<action path="/GEN_Comisarias" type="com.siga.general.ComisariasAction" scope="request">
-		</action>			
+		</action>	
+		
+		<action path="/GEN_InformacionUsuario" type="com.siga.general.UsuariosAction" scope="request">
+		</action>	
+			
 		
 		<action path="/JGR_DatosEconomicosEJG" type="com.siga.gratuita.action.DatosEconomicosEJGAction" name="DatosEconomicosEJGForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/datosEconomicos.jsp"/>

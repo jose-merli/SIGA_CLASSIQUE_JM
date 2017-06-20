@@ -50,13 +50,13 @@
 <!-- HEAD -->
 
 
-	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
+		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	
 	<!-- Incluido jquery en siga.js -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	
+
 	<script>
 		function refrescarLocal(){
 			parent.buscar();		
@@ -81,6 +81,25 @@
 			<input type="hidden" name="validarVolantes" value="">
 		</html:form>	
 		
+		 <html:form action="/JGR_MovimientosVariosLetrado?noReset=true" method="POST" target="submitArea" styleId="movimientosVarios">
+			<html:hidden name="MantenimientoMovimientosForm" property = "modo" value = ""/>
+			<html:hidden name="MantenimientoMovimientosForm" property = "actionModal" value = ""/>
+			<html:hidden name="MantenimientoMovimientosForm" property="checkHistorico" value=""/>
+			<html:hidden name="MantenimientoMovimientosForm" property="idPersona" value=""/>
+			<input type="hidden" name="limpiarFilaSeleccionada" value="">
+			<input type="hidden" name="botonBuscarPulsado" value="">
+			<input type="hidden" name="mostrarMovimientos" value="">
+			
+			<html:hidden property = "idInstitucion" />
+			<html:hidden property = "idTurno" />	
+			<html:hidden property = "idGuardia"  />
+			<html:hidden property = "idPersonaMovimiento" />
+			<html:hidden property = "fechaInicio"  />
+			<html:hidden property = "ncolegiado"  />
+			
+			<html:hidden property = "origen" value="GUARDIAS"  />
+			
+		</html:form>	
 		
 	<!-- INICIO: RESULTADO -->
 	<!-- INICIO: BOTONES BUSQUEDA -->	
@@ -140,7 +159,6 @@
 				String nomGuardia = ((String)hash.get("NOMGUARDIA")).equals("")?"":(String)hash.get("NOMGUARDIA");
 				String validado = ((String)hash.get("VALIDADO")).equals("")?"":(String)hash.get("VALIDADO");
 				String fechaValidacion = UtilidadesHash.getString(hash,"FECHAVALIDACION").equals("")?"&nbsp;":GstDate.getFormatedDateShort("",(String)hash.get("FECHAVALIDACION"));
-				
 				/* Obtiene las acciones de la guardia
 				 * @return String[7]
 					 * 0 - P_SUSTITUIR: 'N'=NoSustituible; 'S'=Sustituible
@@ -157,7 +175,7 @@
 					numActuacionesValidadas = UtilidadesNumero.parseInt((String)hash.get("ACT_VALIDADAS"));
 				}
 				
-				elems = new FilaExtElement[2];								
+				elems = new FilaExtElement[3];								
 				if (!esModificable.equals("0")) {
 					
 					if (accionesGuardia[0]!=null && accionesGuardia[0].equalsIgnoreCase("S")) { // 0 - P_SUSTITUIR: 'N'=NoSustituible; 'S'=Sustituible
@@ -167,23 +185,27 @@
 					if (accionesGuardia[3]!=null && accionesGuardia[3].equalsIgnoreCase("S")) { // 3 - P_PERMUTAR: 'N'=NoPermutable; 'S'=Permutable
 						elems[0]=new FilaExtElement("cambiar","cambiar","general.boton.permutar", SIGAConstants.ACCESS_FULL);
 					}
+					if(accionesGuardia[0].equalsIgnoreCase("N") && accionesGuardia[3].equalsIgnoreCase("N"))
+					elems[2]=new FilaExtElement("anticiparImporte", "anticiparImporte", SIGAConstants.ACCESS_FULL);
+					
 				}				
 			
 			%>
 	       	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="C" visibleEdicion="false" visibleConsulta="false" visibleBorrado="false" elementos='<%=elems%>' clase="listaNonEdit" modo="editar" visibleEdicion="no" pintarEspacio="false">
 				<td align="center">
-					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idcalendarioguardias%>' >
-					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=idturno%>' >
-					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=idguardia%>' >
-					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idinstitucion%>' />
-					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_5' value='<%=observaciones%>' />
-					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_6' value='<%=idpersona%>' />
-					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_7' value='<%=fechaInicio%>' />
-					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_8' value='<%=numero%>' />
-					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_9' value='<%=fechaFin%>' />
-					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_10' value='<%=fechaInicioPermuta%>' />
-					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_11' value='<%=fechaFinPermuta%>' />
-					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_12' value='<%=fechaInicioPK%>' />
+					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_1' id='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idcalendarioguardias%>' >
+					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_2' id='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=idturno%>' >
+					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_3' id='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=idguardia%>' >
+					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_4' id='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idinstitucion%>' />
+					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_5' id='oculto<%=String.valueOf(recordNumber)%>_5' value='<%=observaciones%>' />
+					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_6' id='oculto<%=String.valueOf(recordNumber)%>_6' value='<%=idpersona%>' />
+					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_7' id='oculto<%=String.valueOf(recordNumber)%>_7' value='<%=fechaInicio%>' />
+					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_8' id='oculto<%=String.valueOf(recordNumber)%>_8' value='<%=numero%>' />
+					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_9' id='oculto<%=String.valueOf(recordNumber)%>_9' value='<%=fechaFin%>' />
+					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_10' id='oculto<%=String.valueOf(recordNumber)%>_10' value='<%=fechaInicioPermuta%>' />
+					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_11' id='oculto<%=String.valueOf(recordNumber)%>_11' value='<%=fechaFinPermuta%>' />
+					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_12' id='oculto<%=String.valueOf(recordNumber)%>_12' value='<%=fechaInicioPK%>' />
+					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_13' id='oculto<%=String.valueOf(recordNumber)%>_13' value='<%=numerocolegiado%>' />
 					<input type="hidden" name='oculto<%=String.valueOf(recordNumber)%>_ASI' value='<%=accionesGuardia[4]%>' />
 					<!-- checkbox -->
 					
@@ -297,7 +319,22 @@
 			}
 		}
 		
-
+		function anticiparImporte(fila, id) 
+		{	
+			document.movimientosVarios.modo.value="nuevo";
+			document.movimientosVarios.target="submitArea";
+			
+		
+			document.movimientosVarios.idInstitucion.value=jQuery("#oculto"+fila+"_4").val(); 
+			document.movimientosVarios.idTurno.value=jQuery("#oculto"+fila+"_2").val();
+			document.movimientosVarios.idGuardia.value=jQuery("#oculto"+fila+"_3").val();
+			document.movimientosVarios.idPersonaMovimiento.value=jQuery("#oculto"+fila+"_6").val();			
+			document.movimientosVarios.fechaInicio.value=jQuery("#oculto"+fila+"_7").val();
+			document.movimientosVarios.ncolegiado.value=jQuery("#oculto"+fila+"_13").val();
+			
+			var resultado=ventaModalGeneral(document.movimientosVarios.name,"M");
+			//if (resultado=="MODIFICADO")buscar2();
+		}
 	</script>
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 	<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->		

@@ -96,7 +96,8 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 				ScsAsistenciasBean.C_IDPRETENSION,
 				ScsAsistenciasBean.C_FECHAESTADOASISTENCIA,
 				ScsAsistenciasBean.C_FECHASOLICITUD,
-				ScsAsistenciasBean.C_IDORIGENASISTENCIA
+				ScsAsistenciasBean.C_IDORIGENASISTENCIA,
+				ScsAsistenciasBean.C_IDMOVIMIENTO
 				};
 		
 		return campos;
@@ -2366,6 +2367,7 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		sql.append(" ,AA.FECHAANULACION, AA.IDTIPOASISTENCIACOLEGIO,AA.IDTURNO,AA.IDGUARDIA,AA.FECHAHORA, AA.FECHASOLICITUD ");
 		sql.append(" ,AA.NUMERODILIGENCIA, AA.NUMEROPROCEDIMIENTO ");
 		sql.append(" ,AA.COMISARIA, AA.JUZGADO, AA.NIG ");
+		sql.append(" ,AA.IDPERSONACOLEGIADO ");
 		
 		sql.append(",TU.LETRADOACTUACIONES,TU.VALIDARJUSTIFICACIONES ");
 		sql.append(",TU.NOMBRE NOMBRETURNO, ");
@@ -2379,7 +2381,8 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		sql.append("COL.NCOLEGIADO CNCOLEGIADO, ");
 		sql.append("PER.NOMBRE PNOMBRE, ");
 		sql.append("PER.APELLIDOS1 PAPELLIDOS1, ");
-		sql.append("PER.APELLIDOS2 PAPELLIDOS2 ");
+		sql.append("PER.APELLIDOS2 PAPELLIDOS2, ");
+		sql.append("PER.NIFCIF PNIFCIF ");
 
 		sql.append(" FROM "); 
 		sql.append(" SCS_ASISTENCIA AA, SCS_TURNO TU,SCS_GUARDIASTURNO GU, SCS_PERSONAJG PJG,CEN_PERSONA PER, CEN_COLEGIADO COL ");
@@ -2443,6 +2446,7 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 					asistenciaForm.setJuzgado(UtilidadesHash.getString(htFila, "JUZGADO"));
 					asistenciaForm.setNig(UtilidadesHash.getString(htFila, "NIG"));
 					asistenciaForm.setValidarJustificaciones(UtilidadesHash.getString(htFila, "VALIDARJUSTIFICACIONES"));
+					asistenciaForm.setIdPersonaColegiado(UtilidadesHash.getString(htFila, "IDPERSONACOLEGIADO"));
 					turno.setNombre(UtilidadesHash.getString(htFila, "NOMBRETURNO"));
 					turno.setActivarActuacionesLetrado(UtilidadesHash.getString(htFila, "LETRADOACTUACIONES"));
 					turno.setValidarJustificaciones(UtilidadesHash.getString(htFila, "VALIDARJUSTIFICACIONES"));
@@ -2455,6 +2459,7 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 					persona.setApellido1(UtilidadesHash.getString(htFila, "PAPELLIDOS1"));
 					persona.setApellido2(UtilidadesHash.getString(htFila, "PAPELLIDOS2"));
 					persona.setNombre(UtilidadesHash.getString(htFila, "PNOMBRE"));
+					persona.setNIFCIF(UtilidadesHash.getString(htFila, "PNIFCIF"));
 					colegiado.setNColegiado(UtilidadesHash.getString(htFila, "CNCOLEGIADO"));
 				}
 			} 
@@ -2508,4 +2513,20 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		}
 		return true;		
 	}	
+	
+	//Permite actualizar la tabla añadiendo el campo de movimientos varios
+	public void actualizarAsistenciaMovimientosVarios(Hashtable entrada) throws ClsExceptions{
+		String consulta = "UPDATE "+ScsAsistenciasBean.T_NOMBRETABLA;
+		consulta += " SET "+ScsAsistenciasBean.C_IDMOVIMIENTO+" = "+entrada.get(ScsAsistenciasBean.C_IDMOVIMIENTO);
+		consulta += " WHERE "+ScsAsistenciasBean.C_IDINSTITUCION+" = "+ entrada.get(ScsAsistenciasBean.C_IDINSTITUCION);
+		consulta += " and "+ScsAsistenciasBean.C_ANIO+" = "+entrada.get(ScsAsistenciasBean.C_ANIO);
+		consulta += " and "+ScsAsistenciasBean.C_NUMERO+" =  "+ entrada.get(ScsAsistenciasBean.C_NUMERO);
+		try{
+			if (!this.updateSQL(consulta)){
+				throw new ClsExceptions (this.getError());
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar el 'actualizaMovimientosVarios' en B.D.");
+		}
+	}
 }

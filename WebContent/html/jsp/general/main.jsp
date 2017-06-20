@@ -89,7 +89,8 @@
 	
 	<title><siga:Idioma key="index.title" /></title>
 
-	<!-- ESTILOS Y JAVASCRIPT -->	
+
+<!-- ESTILOS Y JAVASCRIPT -->	
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>"/>
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
@@ -114,7 +115,7 @@
 	</style>
 	
 	<script type="text/javascript">
-	
+	jQuery.noConflict();
 	  var _gaq = _gaq || [];
 	  _gaq.push(['_setAccount', '<%=idAnalytics%>']);
 	  _gaq.push(['_trackPageview']);
@@ -152,12 +153,50 @@
 
 			function usuario()
 			{
-				MM_swapImage('AbrirUsuario','','<%=app%>/html/imagenes/botonUsuario_activo.gif',1);
-				f = "dialogHeight:250px;dialogWidth:450px;status:no;unadorned:no;scroll:no"
-				//"width=750,height=200,scrollbars=no;resizable:no;top=100;left=100;Directories=no;Location=no;Menubar=no;Status=yes;Toolbar=no;"
-				var returnValue = showModalDialog("<%=app%>/html/jsp/general/ventanaUsuario.jsp", "", f);
+			
+					jQuery.ajax({ //Comunicación jQuery hacia JSP  
+							type: "POST",
+					url: "/SIGA/GEN_InformacionUsuario.do?modo=getAjaxObtenerInfoUsuario",
+					data: "idCombo=",
+					dataType: "json",
+					success: function(json){	
+						if(json.Encontrado =="SI"){
+							$("#dialogoInsercion").html("");
+							$("#dialogoInsercion").append("<b>Nombre: </b>");
+							$("#dialogoInsercion").append(json.Nombre + "</br>");
+							$("#dialogoInsercion").append("<b>DNI: </b>");
+							$("#dialogoInsercion").append(json.DNI + "</br>");
+							$("#dialogoInsercion").append("<b>Grupo: </b>");
+							$("#dialogoInsercion").append(json.Grupo+ "</br>");
+							$("#dialogoInsercion").append("<b>Institución: </b>");
+							$("#dialogoInsercion").append(json.Institucion+ "</br>");
+							$("#dialogoInsercion").append("<b>Fecha último acceso: </b>");
+							$("#dialogoInsercion").append(json.FechaAcceso);
+							$("#dialogoInsercion").dialog(
+									{
+									      height: 270,
+									      width: 525,
+									      modal: true,
+									      resizable: false,
+									      buttons: {
+									    	  "Cerrar": function() {
+													$(this).dialog("close");
+												}
+									      }
+									}
+								);
+						}else{
+							alert('No existe Usuario de acceso en el sistema ');
+						}
+					},
+					error: function(e){
+						alert('Error de comunicación: ' + e);
+						fin();
+					}
+				});				
+				$(".ui-widget-overlay").css("opacity","0");
 				window.top.focus();
-				return returnValue;
+				return false;
 			}
 			
 			
@@ -358,6 +397,7 @@
 	<script>
 
 	function jAlert(texto, ancho, alto){
+		jQuery.noConflict();
 		$("#dialog-message").html(texto);
 		$("#dialog-message").height(alto);
 		$("#dialog-message").dialog({
@@ -375,6 +415,7 @@
 	<div id="divEspera" title="Espere por favor" style="z-index:100; position:absolute;vertical-align: center;display:none; top:45%; left:450px">
 		<span class="labelText"></span><br><img src="<%=app%>/html/imagenes/loadingBar.gif"/><span id="barraBloqueante">&nbsp;</span>
 	</div>
-	
+	<div id="dialogoInsercion"  title='Datos Usuario' style="display: none">
+	</div>
 </body>
 </html>

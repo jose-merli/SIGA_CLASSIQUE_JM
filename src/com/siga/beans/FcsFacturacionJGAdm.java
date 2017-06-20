@@ -2641,7 +2641,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			"           and ad.idfacturacion in  (" + facturaciones + ")" +
 			"           and a.idacreditacion = 5) as EXTRAJUD, " +
 			"       f_siga_formatonumero(" +
-			"         (select nvl(sum(ad.precioaplicado*(ap.porcentaje/100)), 0) " +
+			"         (select nvl(sum(ad.IMPORTEFACTURADO), 0) " +
 			"            from scs_actuaciondesigna a, " +
 			"                 scs_procedimientos p2, " +
 			"                 fcs_fact_actuaciondesigna ad, " +
@@ -2665,7 +2665,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			"           and ad.idfacturacion in  (" + facturaciones + ")" +
 			"             and acr.idtipoacreditacion in (1,2,3)" +
 			"             and a.idacreditacion <> 5), 2) as VALOR, " +
-			"       (select nvl(sum(ad.precioaplicado*(ap.porcentaje/100)), 0) " +
+			"       (select nvl(sum(ad.IMPORTEFACTURADO), 0) " +
 			"          from scs_actuaciondesigna a, " +
 			"               scs_procedimientos p2, " +
 			"               fcs_fact_actuaciondesigna ad, " +
@@ -2690,7 +2690,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			"           and acr.idtipoacreditacion in (1,2,3)" +
 			"           and a.idacreditacion <> 5) as VALOR_NUM, " +
 			"       f_siga_formatonumero(" +
-			"         (select nvl(sum(ad.precioaplicado*(ap.porcentaje/100)), 0) " +
+			"         (select nvl(sum(ad.IMPORTEFACTURADO), 0) " +
 			"            from scs_actuaciondesigna a, " +
 			"                 scs_procedimientos p2, " +
 			"                 fcs_fact_actuaciondesigna ad, " +
@@ -2713,7 +2713,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			//"             and ad.idfacturacion = "+idFacturacion+" " +
 			"           and ad.idfacturacion in  (" + facturaciones + ")" +
 			"             and a.idacreditacion = 5), 2) as VALOR_EXTRAJUD, " +
-			"       (select nvl(sum(ad.precioaplicado*(ap.porcentaje/100)), 0) " +
+			"       (select nvl(sum(ad.IMPORTEFACTURADO), 0) " +
 			"          from scs_actuaciondesigna a, " +
 			"               scs_procedimientos p2, " +
 			"               fcs_fact_actuaciondesigna ad, " +
@@ -4029,7 +4029,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 						 "                       idInstitucion, " +
 						 "                       idFacturacion, " +
 						 "                        0, " +
-						 "                        precioaplicado * porcentajefacturado / 100 impoficio, " +
+						 "                        IMPORTEFACTURADO impoficio, " +
 						 "                        0, " +
 						 "                        0 " +
 						 "                   FROM fcs_fact_actuaciondesigna " +
@@ -4131,7 +4131,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 							 		" IDINSTITUCION, " +
 							 		" IDFACTURACION, " +
 							 		" 0 AS IMPGUARDIA, " +
-							 		" PRECIOAPLICADO * PORCENTAJEFACTURADO / 100 AS IMPOFICIO, " +
+							 		" IMPORTEFACTURADO AS IMPOFICIO, " +
 							 		" 0 AS IMPEJG, " +
 							 		" 0 AS IMPSOJ " +
 						 		" FROM FCS_FACT_ACTUACIONDESIGNA " +
@@ -4209,7 +4209,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 						 "                       idInstitucion, " +
 						 "                       idFacturacion, " +
 						 "                        0, " +
-						 "                        precioaplicado * porcentajefacturado / 100 impoficio, " +
+						 "                        IMPORTEFACTURADO impoficio, " +
 						 "                        0, " +
 						 "                        0 " +
 						 "                   FROM fcs_fact_actuaciondesigna " +

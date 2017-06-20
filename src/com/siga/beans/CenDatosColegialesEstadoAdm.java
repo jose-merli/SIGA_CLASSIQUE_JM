@@ -325,7 +325,7 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 				break;
 			case ClsConstants.ESTADO_COLEGIAL_SINEJERCER:
 				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_EJERCICIO));
-				hayQueNotificarAca = false;
+				hayQueNotificarAca = true;
 				break;
 			}
 			if(motivo != null && !"".equalsIgnoreCase(motivo)){   //Si motivo tiene valor es que viene de la interfaz y se ha rellenado el campo motivo

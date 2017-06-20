@@ -36,6 +36,7 @@ public class ScsCabeceraGuardiasBean extends MasterBean{
 	private Integer posicion;
 	private Integer numeroGrupo;
 	private String observacionesAnulacion;
+	private Integer idMovimiento;
 	
 	/* Nombre de Tabla */
 	
@@ -64,6 +65,7 @@ public class ScsCabeceraGuardiasBean extends MasterBean{
 	static public final String  C_NUMEROGRUPO = 		"NUMEROGRUPO";
 	static public final String  C_USUALTA = 			"USUALTA";
 	static public final String  C_OBSERVACIONESANULACION ="OBSERVACIONESANULACION";
+	static public final String	C_IDMOVIMIENTO       	=	"IDMOVIMIENTO";
 	
 	public String getComenSustitucion() {
 		return comenSustitucion;
@@ -226,6 +228,12 @@ public class ScsCabeceraGuardiasBean extends MasterBean{
 	}
 	public void setObservacionesAnulacion(String observacionesAnulacion) {
 		this.observacionesAnulacion = observacionesAnulacion;
+	}
+	public Integer getIdMovimiento() {
+		return idMovimiento;
+	}
+	public void setIdMovimiento(Integer idMovimiento) {
+		this.idMovimiento = idMovimiento;
 	}
 	
 }

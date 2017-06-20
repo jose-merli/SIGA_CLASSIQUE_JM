@@ -99,15 +99,15 @@
 	// RGG 05-10-2005 Cambio para modificar el nColegiado si viene parametro
 	String editarNColegiado = (String) request.getAttribute("editarNColegiado");
 	
-	boolean bEditarNColegiado = false;
+	boolean nColegiadoEditable = false;
 	if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ 
-	  	bEditarNColegiado=false;
+	  	nColegiadoEditable=false;
 	} else {
 	  	if (new Integer(idInstUsuario.substring(0,1)).intValue()>=3 || idInstUsuario.equals("2000")){// Siempre dejaremos modificar el nº colegiado al CGAE y Consejos
-	    	bEditarNColegiado=true;
+	    	nColegiadoEditable=true;
 	  	} else {
 	    	if (editarNColegiado!=null && !editarNColegiado.equals("")) {
-				bEditarNColegiado = true;
+				nColegiadoEditable = true;
 	    	}
 	  	} 
 	} 
@@ -122,6 +122,12 @@
 	} else {
 		numeroColegiadoMostrar = datosCol.getNColegiado();	
 	}
+	
+	String estiloNcol="boxConsulta";
+	//boolean puedeModificarNCol=(boolean)request.getAttribute("puedeModificarNCol");
+	boolean puedeModificarNCol=((Boolean)request.getAttribute("puedeModificarNCol")).booleanValue() || nColegiadoEditable;
+	boolean readOnlyNcol=true;
+	
 %>	
 
 	<!-- HEAD -->
@@ -211,21 +217,10 @@
 									<siga:Idioma key="censo.resultadosSolicitudesModificacion.literal.nColegiado"/>&nbsp;
 								</td>				
 								<td>
-<% 
-									//if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")){ 
-									if (bEditarNColegiado){ 
-%>
-										<html:text name="DatosColegialesForm" property="numColegiado" maxlength="20" size="20" styleClass="box" value="<%=numeroColegiadoMostrar%>" readOnly="false" />
-<% 
-									} else { 
-%>
-										<!-- MAV 25/8/05 Resolucion de incidencia. Ahora NADIE puede editar el num colegiado -->
-										<!-- RGG 05-10-05 Te equivocas, YO SI PUEDO, si vengo desde solicitud de incorporación. -->
-										<!--html:text name="DatosColegialesForm" property="numColegiado" maxlength="20" size="20" styleClass="box" value="<%=numeroColegiadoMostrar%>"--><!--/html:text-->
-										<html:text name="DatosColegialesForm" property="numColegiado" maxlength="20" size="20" styleClass="boxConsulta" value="<%=numeroColegiadoMostrar%>" readOnly="true" />
-<% 
-									} 
-%>											
+									<html:text styleId="numColBox" property="numColegiado" style="width:100" maxlength="20" styleClass="<%=estiloNcol%>" value="<%=numeroColegiadoMostrar%>"  readOnly="<%=readOnlyNcol%>" onchange="existeNColegiado()" onkeypress="filterCharsNumberEs(this,true,false);"/>
+									<%if(modo.equalsIgnoreCase("editar") && puedeModificarNCol){%>
+											<img id="botonNCol" src="<html:rewrite page='/html/imagenes/candado.gif'/>" border="0" onclick="editarNumeroColegiado()" style="cursor:hand; align:left;" title="<siga:Idioma key='censo.SolicitudIncorporacion.message.desbloqueoNcolegiado'/>">
+									<%}%>
 								</td>
 								
 								<td class="labelText">
@@ -672,6 +667,41 @@
 		// Asociada al boton Restablecer
 		function accionRestablecer() {		
 			document.forms[0].reset();	
+		}
+		
+		function editarNumeroColegiado(){
+			var numeroCol = jQuery("#numColBox");
+			var botNumeroCol = jQuery("#botonNCol"); 
+			if (numeroCol.prop('readonly')) {
+				numeroCol.prop('readonly',false);
+				numeroCol.removeClass().addClass('box');
+				botNumeroCol.hide();
+			}
+		}
+		
+		function existeNColegiado(){
+			if (jQuery("#numColBox").length!=0 && jQuery("#numColBox").val()!=""){
+				jQuery.ajax({ //Comunicacion jQuery hacia JSP  
+	   				type: "POST",
+					url: "/SIGA/CEN_MantenimientoSolicitudesIncorporacion.do?modo=getAjaxExisteColegiado",
+					dataType: "json",
+					data: "nColegiado="+jQuery("#numColBox").val(),
+					success: function(json){
+						var mensaje = json.mensaje;
+						if (mensaje != null && mensaje != ""){
+							alert(mensaje);
+							if(json.limpiar){
+								jQuery("#numColBox").val("<%=numeroColegiadoMostrar%>");
+							}
+						}
+						fin();
+					},
+					error: function(e){
+						alert('Error de comunicación: ' + e);
+						fin();
+					}
+				});
+			}
 		}
 		
 		// Asociada al boton Guardar

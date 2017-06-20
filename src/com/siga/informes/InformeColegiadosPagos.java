@@ -104,7 +104,7 @@ public class InformeColegiadosPagos extends MasterReport {
 		
 		//Datos de los Movimientos Varios
 		FcsMovimientosVariosAdm movVariosAdm = new FcsMovimientosVariosAdm(usr);
-		Vector datosMovimientosVarios = movVariosAdm.getMovimientos(institucion, idPagos, idPersona);		
+		Vector datosMovimientosVarios = movVariosAdm.getMovimientos(institucion, idPagos, idPersona,usr.getLanguage());		
 		
 		// JPT - Tratamiento para poner el euro en las cantidades
 		Vector vMovimientosVarios = new Vector();
@@ -675,7 +675,7 @@ public class InformeColegiadosPagos extends MasterReport {
 				" F_SIGA_GETDEFENDIDOSDESIGNA(DES.IDINSTITUCION, DES.ANIO, DES.IDTURNO, DES.NUMERO, 9) AS INIAPE2_SOLICITANTE, " + // Lista de iniciales de segundos apellidos de solicitantes	*/
 				" F_SIGA_GETDEFENDIDOSDESIGNA(DES.IDINSTITUCION, DES.ANIO, DES.IDTURNO, DES.NUMERO, 10) AS VALORES_SOLICITANTE, " + // Lista de valores con los solicitantes
 				" F_SIGA_FORMATONUMERO(FACT.PRECIOAPLICADO, 2) AS IMPORTE_PROCEDIMIENTO, " +
-				" F_SIGA_FORMATONUMERO(FACT.PRECIOAPLICADO * FACT.PORCENTAJEFACTURADO / 100, 2) AS IMPORTE_OFICIO, " +
+				" F_SIGA_FORMATONUMERO(FACT.IMPORTEFACTURADO, 2) AS IMPORTE_OFICIO, " +
 				" ACREPROD.PORCENTAJE AS PORCENTAJE_PAGADO, " +
 				" ACRE.DESCRIPCION AS ACREDITACION, " +
 				" TURNO.NOMBRE AS NOMBRE_TURNO, " +
@@ -791,26 +791,6 @@ public class InformeColegiadosPagos extends MasterReport {
 	}		
 	
 	/**
-	 * Calcula la cantidad equivalente al cien por cien, dada una cantidad y el porcentaje al que corresponde
-	 * @param porcentaje
-	 * @param cantidad
-	 * @return
-	 */
-	protected double obtenerCienPorCien(String porcentaje, double cantidad) {
-		double result= 0;
-		try {
-			int iPorcentaje=Integer.parseInt(porcentaje);
-			if(iPorcentaje!=0 && cantidad!=0){
-				result=(cantidad*100)/iPorcentaje;
-			}
-		} catch (Exception e) {
-			//me lo trago, devuelvo 0
-		}
-
-		return result;
-	}
-	
-	/**
 	 * Obtiene el importe total bruto, el IRPF y el importe total neto 
 	 * @param totalGeneral
 	 * @return
@@ -846,8 +826,6 @@ public class InformeColegiadosPagos extends MasterReport {
 			if(rc!=null && rc.size()>0){
 				Row r=(Row)rc.get(0);
 				result=r.getRow();
-				//String pcAsistencia=(String)r.getString("PORCENTAJE_ASISTENCIA");
-				//String pcOficio=(String)r.getString("PORCENTAJE_TURNOS");
 			}
 			
 			//Obtiene el importe del compensado o pagado por caja o rectificativo
@@ -966,7 +944,7 @@ public class InformeColegiadosPagos extends MasterReport {
 			//Obtiene el IRPF,los totales y facturados de oficios
 			buf0 = new StringBuffer();
 			buf0.append("SELECT NVL(col.impoficio, 0) TOTAL_OFICIO, ");
-			buf0.append("NVL(SUM(act.PRECIOAPLICADO*act.porcentajefacturado/100), 0) TOTAL_FACTURADO_OFICIO ");
+			buf0.append("NVL(SUM(act.IMPORTEFACTURADO), 0) TOTAL_FACTURADO_OFICIO ");
 			buf0.append("FROM FCS_PAGO_COLEGIADO col, FCS_PAGOSJG pag, FCS_FACTURACIONJG fac, FCS_FACT_ACTUACIONDESIGNA act ");
 			buf0.append("WHERE col.IDPAGOSJG = "+idPago);
 			buf0.append(" and col.idinstitucion = "+idInstitucion);

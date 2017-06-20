@@ -146,10 +146,8 @@
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsProcuradorService" 					implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsProcuradorServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.CargaMasivaProcuradores" 					implementation="org.redabogacia.sigaservices.app.services.scs.impl.CargaMasivaDatosProcuradoresImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsDatosProcuradoresService" 					implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsDatosProcuradoresServiceImpl"/>
-		
-		
-		
-		
+		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsCabeceraGuardiasService" 					implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsCabeceraGuardiasServiceImpl"/>
+			
 		
 	</context>
 </configuration> 

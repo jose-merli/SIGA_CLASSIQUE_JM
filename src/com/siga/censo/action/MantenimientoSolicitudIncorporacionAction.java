@@ -1400,6 +1400,10 @@ public class MantenimientoSolicitudIncorporacionAction extends MasterAction
 		if (nColegiado==null||nColegiado.trim().equalsIgnoreCase(""))
 			throw new SIGAException("Falta el número del colegiado");	
 				
+		String institucion = (String)request.getParameter("idInstitucion");
+		if (institucion!=null&&!institucion.trim().equalsIgnoreCase(""))
+			idInstitucion=institucion;
+		
 		String colegiado = colegiadoAdm.getIdPersona(nColegiado, idInstitucion);
 		
 		JSONObject json = new JSONObject();	

@@ -177,7 +177,8 @@ public class CaracteristicasAsistenciaAction extends MasterAction
 				miform.setOtroDescripcionOrigenContacto(b.getOtroDescripcionOrigenContacto());
 				miform.setPenal(b.getPenal());
 				miform.setSolicitudMedidasCautelares(b.getSolicitudMedidasCautelares());
-				miform.setVictimaLetradoAnterioridad(b.getVictimaLetradoAnterioridad());															
+				miform.setVictimaLetradoAnterioridad(b.getVictimaLetradoAnterioridad());
+				miform.setPersonaConDiscapacidad(b.getPersonaConDiscapacidad());
 						
 				String idTurno = request.getParameter("idTurno");
 				if(idTurno==null)
@@ -236,6 +237,7 @@ public class CaracteristicasAsistenciaAction extends MasterAction
 				miform.setDescripcionContacto("");
 				miform.setDescripcionJuzgado("");
 				miform.setDescripcionPretension("");
+				miform.setPersonaConDiscapacidad("");
 							
 				String idTurno = request.getParameter("idTurno");
 				if(idTurno==null)
@@ -325,6 +327,7 @@ public class CaracteristicasAsistenciaAction extends MasterAction
 			b.setCivilesPenales(miform.getCivilesPenales());
 			b.setContraLibertadSexual(miform.getContraLibertadSexual());
 			b.setVictimaMenorAbusoMaltrato(miform.getVictimaMenorAbusoMaltrato());
+			b.setPersonaConDiscapacidad(miform.getPersonaConDiscapacidad());
 			b.setDerechosJusticiaGratuita(miform.getDerechosJusticiaGratuita());
 			b.setDerivaActuacionesJudiciales(miform.getDerivaActuacionesJudiciales());
 			b.setEntrevistaLetradoDemandante(miform.getEntrevistaLetradoDemandante());

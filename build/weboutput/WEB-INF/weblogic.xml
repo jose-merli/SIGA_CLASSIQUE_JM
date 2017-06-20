@@ -7,7 +7,7 @@
 		<wls:page-check-seconds>1</wls:page-check-seconds>
 		<wls:precompile>false</wls:precompile>
 		<wls:verbose>true</wls:verbose>
-		<wls:working-dir>C:\eclipse\workspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp3\mydomain\work\SIGA92</wls:working-dir>
+		<wls:working-dir>C:\oracle\Middleware\oepe_12.1.1.0.1\workspace_126\.metadata\.plugins\org.eclipse.wst.server.core\tmp1\base_domain\work\SIGA92</wls:working-dir>
         <wls:encoding>ISO-8859-1</wls:encoding>
 		<wls:debug>true</wls:debug>
 	</wls:jsp-descriptor>

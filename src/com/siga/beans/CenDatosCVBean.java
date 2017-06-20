@@ -21,7 +21,7 @@ public class CenDatosCVBean extends MasterBean{
 	/* Variables */
 	private Integer idInstitucion, idCV, idTipoCV,idInstitucion_subt1,idInstitucion_subt2,idInstitucionCargo;
 	private Long 	idPersona, creditos;
-	private String 	fechaInicio, fechaFin, descripcion, certificado, fechaMovimiento, fechabaja,idTipoCVSubtipo1,idTipoCVSubtipo2, nombre, apellidos, numcolegiado, cargo;	
+	private String 	fechaInicio, fechaFin, descripcion, certificado, fechaMovimiento, fechabaja,idTipoCVSubtipo1,idTipoCVSubtipo2, nombre, apellidos, numcolegiado, cargo, reflejarSolicitante;	
 	
 	public String getNombre() {
 		return nombre;
@@ -262,5 +262,12 @@ public class CenDatosCVBean extends MasterBean{
 	public Integer getIdInstitucionCargo() {
 		return idInstitucionCargo;
 	}
+	public String getReflejarSolicitante() {
+		return reflejarSolicitante;
+	}
+	public void setReflejarSolicitante(String reflejarSolicitante) {
+		this.reflejarSolicitante = reflejarSolicitante;
+	}
+	
 
 }

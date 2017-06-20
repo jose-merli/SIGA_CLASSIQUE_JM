@@ -553,43 +553,6 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 		return exitoRefresco("messages.gratuita.error.eliminarProcedimiento",request);
 	}
 	
-	protected String borrarPretension (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-
-		try {
-			MantenimientoProcedimientosForm miform = (MantenimientoProcedimientosForm)formulario;
-			
-			
-			ScsProcedimientosAdm adm = new ScsProcedimientosAdm (this.getUserBean(request));
-			adm.borraPretensionesDeProcedimiento( new Integer(this.getUserBean(request).getLocation()),miform.getIdProcedimiento(),new Integer(miform.getIdPretension()));
-			return exitoRefresco("messages.deleted.success",request);
-			
-		}
-		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
-		}
- 
-		return exitoRefresco("messages.gratuita.error.eliminarProcedimiento",request);
-	}
-	
-	protected String borrarPretensiones (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-
-		try {
-			MantenimientoProcedimientosForm miform = (MantenimientoProcedimientosForm)formulario;
-			
-			
-			ScsProcedimientosAdm adm = new ScsProcedimientosAdm (this.getUserBean(request));
-			adm.borraPretensionesDeProcedimiento(miform.getDatosMasivos());
-			return exitoRefresco("messages.deleted.success",request);
-			
-		}
-		catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
-		}
- 
-		return exitoRefresco("messages.gratuita.error.eliminarProcedimiento",request);
-	}
-	
-	
 	
 	protected String editarAcreditacion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 
@@ -631,7 +594,7 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 				bean.setCodSubtarifa(miform.getCodSubtarifa());
 			
 				ScsAcreditacionProcedimientoAdm adm = new ScsAcreditacionProcedimientoAdm(this.getUserBean(request));			
-				if (!adm.update(bean)) {
+				if (!adm.updateDirect(bean)) {
 					throw new SIGAException (adm.getError());
 				}
 			}
@@ -641,6 +604,7 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 		}
 		return exitoModal("messages.updated.success",request);
 	}
+	
 	protected String nuevoPretensionModal(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException 
 	{
 		try {
@@ -670,4 +634,42 @@ public class MantenimientoProcedimientosAction extends MasterAction {
 
 		return exitoModal("messages.inserted.success", request);
 	}	
+	
+	protected String borrarPretension (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
+		try {
+			MantenimientoProcedimientosForm miform = (MantenimientoProcedimientosForm)formulario;
+			
+			
+			ScsProcedimientosAdm adm = new ScsProcedimientosAdm (this.getUserBean(request));
+			adm.borraPretensionesDeProcedimiento( new Integer(this.getUserBean(request).getLocation()),miform.getIdProcedimiento(),new Integer(miform.getIdPretension()));
+			return exitoRefresco("messages.deleted.success",request);
+			
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
+		}
+ 
+		return exitoRefresco("messages.gratuita.error.eliminarProcedimiento",request);
+	}
+	
+	protected String borrarPretensiones (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+
+		try {
+			MantenimientoProcedimientosForm miform = (MantenimientoProcedimientosForm)formulario;
+			
+			
+			ScsProcedimientosAdm adm = new ScsProcedimientosAdm (this.getUserBean(request));
+			adm.borraPretensionesDeProcedimiento(miform.getDatosMasivos());
+			return exitoRefresco("messages.deleted.success",request);
+			
+		}
+		catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
+		}
+ 
+		return exitoRefresco("messages.gratuita.error.eliminarProcedimiento",request);
+	}
+	
+
 }

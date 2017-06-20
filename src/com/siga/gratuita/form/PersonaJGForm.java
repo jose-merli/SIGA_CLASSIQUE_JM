@@ -336,6 +336,21 @@ public class PersonaJGForm extends MasterForm {
 		UtilidadesHash.set(this.datos,"TipoVia",dato);
 	}
 	
+	public String getPaisDir() {
+		return UtilidadesHash.getString(this.datos,"PaisDir");
+	}
+	
+	public void setPaisDir(String dato) {
+		UtilidadesHash.set(this.datos,"PaisDir",dato);
+	}
+	public String getPoblacionExt() {
+		return UtilidadesHash.getString(this.datos,"PoblacionExt");
+	}
+	
+	public void setPoblacionExt(String dato) {
+		UtilidadesHash.set(this.datos,"PoblacionExt",dato);
+	}
+	
 	public String getTipoDir() {
 		return UtilidadesHash.getString(this.datos,"TipoDir");
 	}

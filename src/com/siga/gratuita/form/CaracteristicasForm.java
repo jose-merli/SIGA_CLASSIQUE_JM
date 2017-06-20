@@ -24,6 +24,7 @@ public class CaracteristicasForm extends MasterForm
 	private String		otroDescripcionOrigenContacto;
 	private String		contraLibertadSexual;
 	private String		victimaMenorAbusoMaltrato;
+	private String		personaConDiscapacidad;
 	private String		judicial;
 	private String		civil;
 	private String		penal;
@@ -347,5 +348,12 @@ public class CaracteristicasForm extends MasterForm
 	public void setViolenciaDomestica(String violenciaDomestica) {
 		this.violenciaDomestica = violenciaDomestica;
 	}
+	public String getPersonaConDiscapacidad() {
+		return personaConDiscapacidad;
+	}
+	public void setPersonaConDiscapacidad(String personaConDiscapacidad) {
+		this.personaConDiscapacidad = personaConDiscapacidad;
+	}
+	
 	
 }

@@ -120,7 +120,7 @@ public class EjecucionSancionAction extends MasterAction {
 				boolean bDesdeCGAE = false;
 				estado = cenDatosColegialesAdm.insertaEstadoColegial(estadoColegialHashtable, bDesdeCGAE, this.getLenguaje(request),null);
 				
-				if (form.isBajaColegial() || form.isInhabilitacion() ||form.isSuspension()){
+				if (form.isBajaColegial() || form.isInhabilitacion() ||form.isSuspension()||form.isBajaEjercicio()){
 					if(estado!=2 && estadoColegialHashtable.get("RESPUESTA_ACA")!=null){
 						messageLlamadaWebServiceAcaRevisionLetrado.append(estadoColegialHashtable.get("RESPUESTA_ACA"));
 						messageLlamadaWebServiceAcaRevisionLetrado.append(" ");

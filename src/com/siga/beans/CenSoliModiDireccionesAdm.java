@@ -486,7 +486,7 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 					if(hash.get(CenSoliModiDireccionesBean.C_MOTIVO)!=null){
 						motivo = ((String)hash.get(CenSoliModiDireccionesBean.C_MOTIVO));	
 					}
-
+					dirModificada.setReflejarSolicitante("1"); //Para que en la auditoría se muestre el solicitante - Nuevo R1411_0029
 					// Se llama a la interfaz Direccion para actualizar una nueva direccion
 					Direccion.actualizar(dirModificada, "", motivo,null, null, this.usrbean);
 

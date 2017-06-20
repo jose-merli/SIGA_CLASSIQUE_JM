@@ -34,6 +34,8 @@ public class ScsActuacionAsistenciaBean extends MasterBean {
 	private Long numero, idActuacion;
 	private String NIG;
 	
+	private Integer idMovimiento;
+	
 	private Integer usuCreacion;
 	private String fechaCreacion;
 
@@ -75,6 +77,8 @@ public class ScsActuacionAsistenciaBean extends MasterBean {
 	static public final String  C_IDTIPOASISTENCIA = "IDTIPOASISTENCIA";
 	static public final String  C_IDTIPOACTUACION = "IDTIPOACTUACION";
 	static public final String  C_NIG   				= 	"NIG";	
+	static public final String  C_IDMOVIMIENTO  		= 	"IDMOVIMIENTO";	
+	
 	
 	
 	
@@ -346,5 +350,12 @@ public class ScsActuacionAsistenciaBean extends MasterBean {
 	public void setUsuCreacion(Integer usuCreacion) {
 		this.usuCreacion = usuCreacion;
 	}
+	public Integer getIdMovimiento() {
+		return idMovimiento;
+	}
+	public void setIdMovimiento(Integer idMovimiento) {
+		this.idMovimiento = idMovimiento;
+	}
+	
 
 }

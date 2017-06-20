@@ -73,7 +73,7 @@ public class ScsAcreditacionProcedimientoAdm extends MasterBeanAdministrador {
 			bean.setIdAcreditacion(UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_IDACREDITACION));
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_IDINSTITUCION));
 			bean.setIdProcedimiento(UtilidadesHash.getString(hash, ScsAcreditacionProcedimientoBean.C_IDPROCEDIMIENTO));
-			bean.setPorcentaje(UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_PORCENTAJE));
+			bean.setPorcentaje(UtilidadesHash.getDouble(hash, ScsAcreditacionProcedimientoBean.C_PORCENTAJE));
 			bean.setNigNumeroProcedimiento(UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_NIG_NUMPROCEDIMIENTO));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, ScsAcreditacionProcedimientoBean.C_USUMODIFICACION));
 			bean.setCodigoExt(UtilidadesHash.getString(hash, ScsAcreditacionProcedimientoBean.C_CODIGOEXT));

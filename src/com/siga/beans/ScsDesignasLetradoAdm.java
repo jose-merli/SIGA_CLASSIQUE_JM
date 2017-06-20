@@ -1617,75 +1617,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		}
 
 	}
-	private Hashtable formatearHashInforme(Hashtable htRows,Integer idInstitucion)throws ClsExceptions{
-		
-		//Vemos si esta finalizado y le metemos el campo baja=X
-	
-	
-		String estado = (String)htRows.get(ScsDesignaBean.C_ESTADO);
-		if (estado != null && estado.equals("F"))
-			htRows.put("BAJA","X");
-		else
-			htRows.put("BAJA"," ");
-		//Sacamos la descripcion de los juzgado. Habria que preguntar si esto 
-		//es mejor que meter la join en la query. Respuesta: Seria mejor que trabaje oracle. 
-		//Lo voy a dejar asi por si hay cambios
-		
-		//Las fecha de acreditacion vienen concatenadas dd/mm/aaa|porcentaje
-		boolean isPendiente = false;
-		String fechaAcreditacioIni = (String)htRows.get("ACREDITACION_INI");
-		int porc = 0;
-		if(fechaAcreditacioIni!=null && !fechaAcreditacioIni.equalsIgnoreCase("")){
-			int index = fechaAcreditacioIni.indexOf("||");
-			String fechaRealAcreditacioIni = fechaAcreditacioIni.substring(0,index);
-			htRows.put("ACREDITACION_INI",fechaRealAcreditacioIni);
-			String porcentaje = fechaAcreditacioIni.substring(index+2);
-			porc += Integer.parseInt(porcentaje);
-			
-			isPendiente = true;
-		}
-		String fechaAcreditacioFin = (String)htRows.get("ACREDITACION_FIN");
-		if(fechaAcreditacioFin!=null && !fechaAcreditacioFin.equalsIgnoreCase("")){
-			int index = fechaAcreditacioFin.indexOf("||");
-			String fechaRealAcreditacioFin = fechaAcreditacioFin.substring(0,index);
-			htRows.put("ACREDITACION_FIN",fechaRealAcreditacioFin);
-			String porcentaje = null;
-			//pongo esto por si no viene con fecha porcentaje. Seria un error!
-			if(fechaAcreditacioFin.length()>index+2){
-				porcentaje = fechaAcreditacioFin.substring(index+2);
-				porc += Integer.parseInt(porcentaje);
-			}
-			
-			
-		}
-		String expedientes = (String)htRows.get("EXPEDIENTES");
-		if (expedientes != null && expedientes.indexOf("##") > -1) {
-			String[] ejgs = expedientes.split(",");
-			String salida = "";
-			for (String ejg:ejgs) {
-				String[] ejgDoc = ejg.split("##");				
-				salida+=", " + ejgDoc[0].trim();				
-			}
-			expedientes=salida;
-			if (expedientes.length() > 2){
-				expedientes = expedientes.substring(1);
-			}
-			htRows.put("EXPEDIENTES", expedientes);
-		}
-		//Si es de inicio y fin trae el porcentaje(100) en cada justificacion por lo que sera 200.pongo <100 y evito problemas
-		if(porc>=100)
-			htRows.put("PENDIENTE","");
-		// parche 
-		// if(100==porc)
-		//	htRows.put("PENDIENTE","");
-		else
-			htRows.put("PENDIENTE",String.valueOf(100-porc)+"% PEND");
-		if(!isPendiente)
-			htRows.put("PENDIENTE","100% PEND");
-	
-	return htRows;
-	
-}
+
 private List<DefinirEJGForm> getExpedientes(String expedientes)throws ClsExceptions{
 		//Vemos si esta finalizado y le metemos el campo baja=X
 	List<DefinirEJGForm> ejgList = new ArrayList<DefinirEJGForm>();

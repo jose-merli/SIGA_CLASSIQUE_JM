@@ -31,6 +31,7 @@ public class FcsFactActuacionAsistenciaBean extends MasterBean{
 	private Double		precioAplicado;
 	private String		fechaActuacion;
 	private String		fechaJustificacion;
+	private String      precioCostesFijos;
 	
 	
 	
@@ -54,6 +55,7 @@ public class FcsFactActuacionAsistenciaBean extends MasterBean{
 	static public final String 	C_IDAPUNTE =			 	"IDAPUNTE";
 	static public final String 	C_FECHA_ACTUACION =			"FECHAACTUACION";
 	static public final String 	C_FECHA_JUSTIFICACION =		"FECHAJUSTIFICACION";
+	static public final String 	C_PRECIO_COSTES_FIJOS =		"PRECIOCOSTESFIJOS";
 	
 	
 	
@@ -162,5 +164,12 @@ public class FcsFactActuacionAsistenciaBean extends MasterBean{
 	public void setIdApunte(Long idApunte) {
 		this.idApunte = idApunte;
 	}
+	public String getPrecioCostesFijos() {
+		return precioCostesFijos;
+	}
+	public void setPrecioCostesFijos(String precioCostesFijos) {
+		this.precioCostesFijos = precioCostesFijos;
+	}
+	
 	
 }

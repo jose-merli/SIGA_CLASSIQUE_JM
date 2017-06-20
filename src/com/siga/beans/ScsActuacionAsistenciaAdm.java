@@ -115,7 +115,8 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
 							ScsActuacionAsistenciaBean.C_NIG,
 							ScsActuacionAsistenciaBean.C_IDTIPOASISTENCIA,
 							ScsActuacionAsistenciaBean.C_FECHACREACION,
-							ScsActuacionAsistenciaBean.C_USUCREACION
+							ScsActuacionAsistenciaBean.C_USUCREACION,
+							ScsActuacionAsistenciaBean.C_IDMOVIMIENTO
 							};
 		return campos;
 	}
@@ -171,6 +172,7 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
 			bean.setPagado(UtilidadesHash.getString(hash,ScsActuacionAsistenciaBean.C_PAGADO));
 			bean.setFacturado(UtilidadesHash.getString(hash,ScsActuacionAsistenciaBean.C_FACTURADO));
 			bean.setNIG(UtilidadesHash.getString(hash,ScsActuacionAsistenciaBean.C_NIG));
+			bean.setIdMovimiento(UtilidadesHash.getInteger(hash,ScsActuacionAsistenciaBean.C_IDMOVIMIENTO));
 		} catch (Exception e){
 			 throw new ClsExceptions(e,"EXCEPCION EN TRANSFORMAR HASHTABLE A BEAN");
 		}		
@@ -604,6 +606,23 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
 		actuacionAsistenciaHashtable.put("fks", fksAsistenciaMap);
 		return actuacionAsistenciaHashtable;
 	}
+	
+	//Permite actualizar la tabla añadiendo el campo de movimientos varios
+			public void actualizarActuacionesMovimientosVarios(Hashtable entrada) throws ClsExceptions{
+				String consulta = "UPDATE "+ScsActuacionAsistenciaBean.T_NOMBRETABLA;
+				consulta += " SET "+ScsActuacionAsistenciaBean.C_IDMOVIMIENTO+" = "+entrada.get(ScsActuacionAsistenciaBean.C_IDMOVIMIENTO);
+				consulta += " WHERE "+ScsActuacionAsistenciaBean.C_IDINSTITUCION+" = "+ entrada.get(ScsActuacionAsistenciaBean.C_IDINSTITUCION);
+				consulta += " and "+ScsActuacionAsistenciaBean.C_ANIO+" = "+entrada.get(ScsActuacionAsistenciaBean.C_ANIO);
+				consulta += " and "+ScsActuacionAsistenciaBean.C_NUMERO+" =  "+ entrada.get(ScsActuacionAsistenciaBean.C_NUMERO);
+				consulta += " and "+ScsActuacionAsistenciaBean.C_IDACTUACION+" =  "+ entrada.get(ScsActuacionAsistenciaBean.C_IDACTUACION);
+				try{
+					if (!this.updateSQL(consulta)){
+						throw new ClsExceptions (this.getError());
+					}
+				} catch (Exception e) {
+					throw new ClsExceptions (e, "Error al ejecutar el 'actualizaMovimientosVarios' en B.D.");
+				}
+			}
 
 	
 

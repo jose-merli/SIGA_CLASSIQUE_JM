@@ -165,6 +165,7 @@ public class InformeCertificadosEspeciales extends MasterReport {
 		UtilidadesHash.set(hDatosFijos, "TIPOIDENTIFICACION", UtilidadesHash.getString(registro, "TIPOIDENTIFICACION"));
 		UtilidadesHash.set(hDatosFijos, "NATURALDE", UtilidadesHash.getString(registro, "NATURALDE"));
 		UtilidadesHash.set(hDatosFijos, "ESTADO_COLEGIAL", UtilidadesHash.getString(registro, "ESTADO_COLEGIAL"));
+		UtilidadesHash.set(hDatosFijos, "FECHA_ESTADO_COLEGIAL", UtilidadesHash.getString(registro, "FECHA_ESTADO_COLEGIAL"));
 
 		UtilidadesHash.set(hDatosFijos, "DIRECCION_DESPACHO", UtilidadesHash.getString(registro, "DIRECCION_DESPACHO"));
 		UtilidadesHash.set(hDatosFijos, "DOMICILIO_DESPACHO", UtilidadesHash.getString(registro, "DOMICILIO_DESPACHO"));
@@ -461,7 +462,13 @@ public class InformeCertificadosEspeciales extends MasterReport {
 		}
 		sql.append(" (select f_siga_getrecurso(es.descripcion, @idioma@) ");
 		sql.append(" from cen_estadocolegial es  ");
-		sql.append(" where es.idestado=f_siga_gettipocliente(@idpersona@,@idinstitucion@,sysdate)) AS ESTADO_COLEGIAL");
+		sql.append(" where es.idestado=f_siga_gettipocliente(@idpersona@,@idinstitucion@,sysdate)) AS ESTADO_COLEGIAL,");
+		
+		sql.append("  (select max(fechaestado) ");
+		sql.append("  from cen_datoscolegialesestado where ");
+		sql.append("  idinstitucion = @idinstitucion@  and idpersona = @idpersona@ ");
+		sql.append("  AND trunc(fechaestado) <= trunc(sysdate)) AS FECHA_ESTADO_COLEGIAL ");
+
 		return sql.toString();
 	}
 

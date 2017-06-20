@@ -21,6 +21,7 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.gui.processTree.SIGAPTConstants"%>
 <%@ page import="com.siga.Utilidades.*"%>
+<%@ page import = "com.siga.tlds.FilaExtElement"%>
 
 <% 	
 	String app=request.getContextPath();
@@ -99,6 +100,24 @@
 	
 	<!-- Incluido jquery en siga.js -->
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+
+	<script language="JavaScript">
+	//Funcion asociada a boton nuevo
+		function anticiparImporte(fila, id) 
+		{	
+			document.movimientosVarios.modo.value="nuevo";
+			document.movimientosVarios.target="submitArea";
+			
+			document.movimientosVarios.idInstitucion.value=jQuery("#oculto"+fila+"_3").val(); 
+			document.movimientosVarios.numero.value = jQuery("#oculto"+fila+"_2").val();
+			document.movimientosVarios.anio.value = jQuery("#oculto"+fila+"_1").val();
+			var resultado=ventaModalGeneral(document.movimientosVarios.name,"M");
+			//if (resultado=="MODIFICADO")buscar2();
+		}
+	 
+	</script>
+
+
 </head>
 
 <body class="tablaCentralCampos" >
@@ -149,7 +168,23 @@
 		<input type="hidden" name="modo"  id="modo" />
 		<input type="hidden" name="esFichaColegial"  id="esFichaColegial"  value="<%=sEsFichaColegial%>" />
 		<input type="hidden" name="actionModal"  id="actionModal"  value="">
-	</html:form>	
+	</html:form>
+	
+	 <html:form action="/JGR_MovimientosVariosLetrado?noReset=true" method="POST" target="submitArea" styleId="movimientosVarios">
+			<html:hidden name="MantenimientoMovimientosForm" property = "modo" value = ""/>
+			<html:hidden name="MantenimientoMovimientosForm" property = "actionModal" value = ""/>
+			<html:hidden name="MantenimientoMovimientosForm" property="checkHistorico" value=""/>
+			<html:hidden name="MantenimientoMovimientosForm" property="idPersona" value=""/>
+			<input type="hidden" name="limpiarFilaSeleccionada" value="">
+			<input type="hidden" name="botonBuscarPulsado" value="">
+			<input type="hidden" name="mostrarMovimientos" value="">
+			
+			<html:hidden property = "idInstitucion" />
+			<html:hidden property = "anio" />	
+			<html:hidden property = "numero"  />
+			<html:hidden property = "origen" value="ASISTENCIAS"  />
+			
+		</html:form>	
 		
 	<!-- campos a pasar -->
 	<siga:Table 
@@ -181,10 +216,20 @@
 				nTurno = ScsTurnoAdm.getNombreTurnoJSP(usr.getLocation(),(String)registro.get("IDTURNO"));	
 %>
 
-				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit">
+			<%
+			 	FilaExtElement[] elems = null;
+			 	elems = new FilaExtElement[1];
+			 	if(idFacturacion != null && !"".equalsIgnoreCase(idFacturacion)){
+			 		elems[0]=new FilaExtElement("anticiparImporte", "anticiparImporte", SIGAConstants.ACCESS_FULL);
+			 	}
+				 	
+			 %>
+
+				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit" elementos="<%=elems%>">
 					<td>
-						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=registro.get("ANIO")%>'> 
-						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=registro.get("NUMERO")%>'> 
+						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' id='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=registro.get("ANIO")%>'> 
+						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' id='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=registro.get("NUMERO")%>'> 
+						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' id='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=registro.get("IDINSTITUCION")%>'> 
 						<%=nTurno%>
 					</td>
 					<td><%=ScsGuardiasTurnoAdm.getNombreGuardiaJSP(usr.getLocation(),(String)registro.get("IDTURNO"),(String)registro.get("IDGUARDIA")) %></td>

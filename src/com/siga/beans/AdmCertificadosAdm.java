@@ -21,6 +21,7 @@ public class AdmCertificadosAdm extends MasterBeanAdministrador
 		        		   AdmCertificadosBean.C_REVOCACION,
 		        		   AdmCertificadosBean.C_FECHACAD,
 		        		   AdmCertificadosBean.C_NIF,
+		        		   AdmCertificadosBean.C_EMAIL,
 		        		   AdmCertificadosBean.C_ROL,
 						   AdmCertificadosBean.C_FECHAMODIFICACION, 
 						   AdmCertificadosBean.C_USUMODIFICACION,
@@ -44,6 +45,7 @@ public class AdmCertificadosAdm extends MasterBeanAdministrador
      		   			   AdmCertificadosBean.C_REVOCACION,
      		   			   AdmCertificadosBean.C_FECHACAD,
      		   			   AdmCertificadosBean.C_NIF,
+     		   			   AdmCertificadosBean.C_EMAIL,
      		   			   AdmCertificadosBean.C_ROL,
      		   			   AdmCertificadosBean.C_FECHAMODIFICACION, 
      		   			   AdmCertificadosBean.C_USUMODIFICACION};
@@ -66,6 +68,7 @@ public class AdmCertificadosAdm extends MasterBeanAdministrador
 			bean.setRevocacion(UtilidadesHash.getString(hash, AdmCertificadosBean.C_REVOCACION));
 			bean.setFechaCad(UtilidadesHash.getString(hash, AdmCertificadosBean.C_FECHACAD));
 			bean.setNIF(UtilidadesHash.getString(hash, AdmCertificadosBean.C_NIF));
+			bean.setEmail(UtilidadesHash.getString(hash, AdmCertificadosBean.C_EMAIL));
 			bean.setRol(UtilidadesHash.getString(hash, AdmCertificadosBean.C_ROL));
 			bean.setRoles(UtilidadesHash.getString(hash, AdmCertificadosBean.C_IDS_ROLES));
 			bean.setFechaMod(UtilidadesHash.getString(hash, AdmCertificadosBean.C_FECHAMODIFICACION));
@@ -98,6 +101,7 @@ public class AdmCertificadosAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, AdmCertificadosBean.C_REVOCACION, b.getRevocacion());
 			UtilidadesHash.set(htData, AdmCertificadosBean.C_FECHACAD, b.getFechaCad());
 			UtilidadesHash.set(htData, AdmCertificadosBean.C_NIF, b.getNIF());
+			UtilidadesHash.set(htData, AdmCertificadosBean.C_EMAIL, b.getEmail());
 			UtilidadesHash.set(htData, AdmCertificadosBean.C_ROL, b.getRol());
 			UtilidadesHash.set(htData, AdmCertificadosBean.C_IDS_ROLES, b.getRoles());
 			UtilidadesHash.set(htData, AdmCertificadosBean.C_FECHAMODIFICACION, b.getFechaMod());
@@ -154,6 +158,7 @@ public class AdmCertificadosAdm extends MasterBeanAdministrador
 									 "C." + AdmCertificadosBean.C_NUMSERIE + ", " +
 									 "C." + AdmCertificadosBean.C_FECHACAD + ", " +
 									 "C." + AdmCertificadosBean.C_NIF + ", " +
+									 "C." + AdmCertificadosBean.C_EMAIL + ", " +
 									 "C." + AdmCertificadosBean.C_ROL + ", " +
 									 "C." + AdmCertificadosBean.C_REVOCACION + ", " +
 									        funcionRolesParseada + ", " +

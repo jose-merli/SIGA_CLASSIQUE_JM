@@ -35,6 +35,7 @@ public class FcsFactApunteBean extends MasterBean{
 	private Double		precioAplicado;
 	private Integer		numActuacionesTotal;
 	private Integer		numAsistenciasTotal;
+	private String      precioCostesFijos;
 	
 	
 	
@@ -62,6 +63,7 @@ public class FcsFactApunteBean extends MasterBean{
 	static public final String 	C_PRECIOAPLICADO = 			"PRECIOAPLICADO";
 	static public final String 	C_NUMACTUACIONESTOTAL =		"NUMACTUACIONESTOTAL";
 	static public final String 	C_NUMASISTENCIASTOTAL =		"NUMASISTENCIASTOTAL";
+	static public final String 	C_PRECIO_COSTES_FIJOS =		"PRECIOCOSTESFIJOS";
 	
 	
 	public String getFechaInicio() {
@@ -147,6 +149,12 @@ public class FcsFactApunteBean extends MasterBean{
 	}
 	public void setPrecioAplicado(Double precioAplicado) {
 		this.precioAplicado = precioAplicado;
+	}
+	public String getPrecioCostesFijos() {
+		return precioCostesFijos;
+	}
+	public void setPrecioCostesFijos(String precioCostesFijos) {
+		this.precioCostesFijos = precioCostesFijos;
 	}
 	
 	

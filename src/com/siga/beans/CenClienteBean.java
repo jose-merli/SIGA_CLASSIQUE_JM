@@ -24,7 +24,7 @@ public class CenClienteBean extends MasterBean {
 	
 
 	private String 	abonosBanco, asientoContable, caracter, cargosBanco, comisiones, fechaAlta, fotografia, 
-					guiaJudicial, idLenguaje, publicidad,  letrado, fechaCarga,norevista,noredabogacia, exportarFoto;
+					guiaJudicial, idLenguaje, publicidad,  letrado, fechaCarga,norevista,noredabogacia, exportarFoto,reflejarSolicitante;
 	private boolean existeDatos;
 	private String sanciones = "", certificados = "", idTratamientoStr = "", idLenguajeStr = ""; //para mostrar datos en mantenimiento de duplicados
 
@@ -281,6 +281,12 @@ public class CenClienteBean extends MasterBean {
 	public void setIdTratamientoStr(String idTratamientoStr)
 	{
 		this.idTratamientoStr = idTratamientoStr;
+	}
+	public String getReflejarSolicitante() {
+		return reflejarSolicitante;
+	}
+	public void setReflejarSolicitante(String reflejarSolicitante) {
+		this.reflejarSolicitante = reflejarSolicitante;
 	}
 	
 	

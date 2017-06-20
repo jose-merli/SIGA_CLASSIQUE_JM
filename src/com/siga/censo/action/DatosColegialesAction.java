@@ -15,6 +15,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.json.JSONObject;
+import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -23,6 +24,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.administracion.SIGAConstants;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenColaCambioLetradoAdm;
 import com.siga.beans.CenColegiadoAdm;
@@ -46,6 +48,8 @@ import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+
+import es.satec.businessManager.BusinessException;
 
 
 /**
@@ -149,6 +153,10 @@ public class DatosColegialesAction extends MasterAction {
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
 			String idInstitucion=user.getLocation();
 
+			String stPuedeModificarNCol=user.getProcessAccessTemp("12P");
+			boolean bPuedeModificarNCol = stPuedeModificarNCol!=null && (stPuedeModificarNCol.equalsIgnoreCase(SIGAConstants.ACCESS_FULL));
+			request.setAttribute("puedeModificarNCol", bPuedeModificarNCol);
+			
 			String accion;
 			Long idPersona;
 			Integer idInstPers;
@@ -282,6 +290,10 @@ public class DatosColegialesAction extends MasterAction {
 			int idInstitucionPersona = new Integer(form.getIdInstitucion()).intValue();
 			long idPersona = new Long(form.getIdPersona()).longValue();
 			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
+			
+			String stPuedeModificarNCol=user.getProcessAccessTemp("12P");
+			boolean bPuedeModificarNCol = stPuedeModificarNCol!=null && (stPuedeModificarNCol.equalsIgnoreCase(SIGAConstants.ACCESS_FULL));
+			request.setAttribute("puedeModificarNCol", bPuedeModificarNCol);
 			
 			CenDatosColegialesEstadoAdm admin=new CenDatosColegialesEstadoAdm(this.getUserName(request),user,idInstitucionPersona,idPersona);			
 			
@@ -549,7 +561,6 @@ public class DatosColegialesAction extends MasterAction {
 	{
 		String result = "error";
 		UserTransaction tx = null;
-		
 		try {
 			//obteniendo datos generales y usuario
 			Hashtable hashOriginal = new Hashtable();
@@ -604,11 +615,6 @@ public class DatosColegialesAction extends MasterAction {
 			//obteniendo nuevo IDHISTORICO para auditoria			
 			hashHist.put(CenHistoricoBean.C_IDHISTORICO,adminHist.getNuevoID(hashHist).toString());
 			
-			//ejecutando la modificacion
-			if (! admin.modificacionConHistorico (hash, hashOriginal, hashHist,
-					this.getLenguaje (request)))
-				return (result);
-
 			
 			//lanzando el proceso de revision de suscripciones del colegiado
 			String resultado[] = EjecucionPLs.
@@ -667,12 +673,36 @@ public class DatosColegialesAction extends MasterAction {
 								throw new SIGAException (colaAdm.getError());
 						} //for
 					} //if (vDir != null)
+					//06/03/2017 - R1603_0029: Si se pasa de residente a no residente y viceversa llamamos al servicio de ACA para que se tenga constancia de ello.
+					if(residenteAhora.equals("0")){
+						String llamadaReport= null;
+						try {
+							CenDatosColegialesEstadoAdm cenDatosColegialesEstadoAdm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
+							llamadaReport = cenDatosColegialesEstadoAdm.llamadaWebServiceAcaRevisionLetrado(Long.valueOf(miForm.getIdPersona()), Short.valueOf(miForm.getIdInstitucion()));	
+						} catch (BusinessException e) {
+							llamadaReport = e.getMessage();
+							tx.rollback();
+							return exitoRefresco(e.getMessage() + "\n Cambios NO realizados",request);
+						}
+						hash.put("RESPUESTA_ACA", llamadaReport);
+						hashHist.put(CenHistoricoBean.C_OBSERVACIONES, llamadaReport);
+					}
 				} //if (! residenteAhora.equals(residenteAntes))
 			} //bloque
+			//ejecutando la modificacion
+			if (! admin.modificacionConHistorico (hash, hashOriginal, hashHist,
+					this.getLenguaje (request)))
+				return (result);
+
 			
 			//confirmando los cambios en BD
 			tx.commit();
-			
+			if(hash.get("RESPUESTA_ACA")!=null){
+				 request.setAttribute("mensaje",hash.get("RESPUESTA_ACA"));
+				 result = exitoRefresco((String)hash.get("RESPUESTA_ACA") + "\n Cambios realizados correctamente",request);
+			}else{
+				result = exitoRefresco("messages.updated.success",request);
+			}
 			
 			//actualizando la pantalla en funcion del cambio en 
 			//check Comunitario
@@ -686,6 +716,11 @@ public class DatosColegialesAction extends MasterAction {
 				request.setAttribute("pestanaSituacion", pestanasituacion);
 				request.setAttribute("mensaje","messages.updated.success");
 				return "exitoConEditarNColegiado"; 
+			}
+			
+			if(!original.getNColegiado().equalsIgnoreCase(miForm.getNumColegiado()) && original.getIdentificadorDS()!=null && !original.getIdentificadorDS().equalsIgnoreCase("")){
+				DocuShareHelper dsHelper = new DocuShareHelper(Short.valueOf(miForm.getIdInstitucion()));
+				dsHelper.changeCollectionTitle(original.getIdentificadorDS(), miForm.getNumColegiado());
 			}
 			
 			result = exitoRefresco("messages.updated.success",request);
