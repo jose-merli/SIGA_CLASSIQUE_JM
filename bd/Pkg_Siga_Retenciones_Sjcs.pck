@@ -9,16 +9,6 @@ CREATE OR REPLACE Package Pkg_Siga_Retenciones_Sjcs Is
                                           p_Codretorno      Out Varchar2,
                                           p_Datoserror      Out Varchar2);
 
-  Procedure Proc_Aplica_Retenciones_Nolec(p_Importenetorestante In Out Number, p_fechaMes In Date);
-  Procedure Proc_Aplica_Retenciones_Lec(p_Importenetorestante In Number, p_fechaMes In Date);
-
-  Procedure Proc_Fcs_Retencion_Persona(p_Idinstitucion    In Number,
-                                       p_Idpago           In Number,
-                                       p_Idpersona        In Number,
-                                       p_Importeretencion Out Varchar2,
-                                       p_Codretorno       Out Varchar2,
-                                       p_Datoserror       Out Varchar2);
-
 End;
  
 /
@@ -66,7 +56,6 @@ create or replace package body PKG_SIGA_RETENCIONES_SJCS is
            Importe + Nvl((Select Sum(c.Importeretenido)
                              From Fcs_Cobros_Retencionjudicial c
                             Where c.Idinstitucion = Ret.Idinstitucion
-                              And c.Idpersona = Ret.Idpersona
                               And c.Idretencion = Ret.Idretencion),
                            0) > 0)
            Or
@@ -76,7 +65,6 @@ create or replace package body PKG_SIGA_RETENCIONES_SJCS is
            Importe + Nvl((Select Sum(c.Importeretenido)
                              From Fcs_Cobros_Retencionjudicial c
                             Where c.Idinstitucion = Ret.Idinstitucion
-                              And c.Idpersona = Ret.Idpersona
                               And c.Idretencion = Ret.Idretencion),
                            0) > 0)
            Or
@@ -84,11 +72,13 @@ create or replace package body PKG_SIGA_RETENCIONES_SJCS is
     
      Order By Orden, Fechainicio, Fechaalta;
 
-  /*
-   * Hace un insert en FCS_COBROS_RETENCIONJUDICIAL en funcion de los parametros generales 
-   * establecidos y los que le pasan como parametros.
-   * Esto significa que apunta una retencion a la persona y el pago dado, por el importe pasado.
-   */
+  --
+  -- Proc_Apunta_Cobro_Retencion
+  -- 
+  -- Hace un insert en FCS_COBROS_RETENCIONJUDICIAL en funcion de los parametros generales 
+  -- establecidos y los que le pasan como parametros.
+  -- Esto significa que apunta una retencion a la persona y el pago dado, por el importe pasado.
+  --
   Procedure Proc_Apunta_Cobro_Retencion(p_Idretencion            In Fcs_Cobros_Retencionjudicial.Idretencion%Type,
                                         p_Importecobrado         In Fcs_Cobros_Retencionjudicial.Importeretenido%Type,
                                         p_Importeaplicaretencion In Fcs_Cobros_Retencionjudicial.Importeaplicaretencion%Type,
@@ -113,17 +103,134 @@ create or replace package body PKG_SIGA_RETENCIONES_SJCS is
        p_Idretencion, p_Importecobrado * -1, p_Importeaplicaretencion, p_Mes, p_Anio);
   End Proc_Apunta_Cobro_Retencion;
 
-  /* 
-   * Proceso principal de aplicacion de retenciones
-   */
+  --
+  -- Proc_Aplicar_Retenc_Judic_Mes
+  --
+  -- Proceso principal de aplicacion de retenciones
+  --
+  Procedure Proc_Aplicar_Retenc_Judic_Mes(p_Importe_Netobase In Number, p_Fechames In Date) Is
+  
+    v_Importe_Netorestante       Number; --El neto base que se va reduciendo segun se aplican retenciones
+    v_Importe_Aintentarretener   Number; --Contiene el calculo de lo que se intenta retener. Luego se mira si esto se pasa de lo posible
+    v_Importe_Retencion_Aplicada Number; --Lo retenido ya de verdad. Al final se restara al restante por si hay mas retenciones y queda algo de neto restante.
+    v_Importe_Base_Usado         Number; --El importe sobre el que se aplica la retencion: en LEC es todo el neto, en las otras es lo que va quedando
+  
+    -- Variables solo para LEC
+    v_Importesmi               Number; --El SMI correspondiente a este mes (anyo)
+    v_Importeanterior_Base     Number; --La base del mes de anteriores retenciones
+    v_Importetotal_Base        Number; --La base del mes actual con la base de anteriores retenciones
+    v_Importeanterior_Retenido Number; --Retenciones aplicadas anteriormente: se va incrementando si se aplican varias retenciones en este mes
+    v_Importe_Maximoaretener   Number; --En esta variable se calculara el importe maximo que se podra retener por tramos LEC
+    b_Retencion_Lec_Yaaplicada Boolean; --Indica si se ha aplicado en este mismo bucle otra retencion LEC. Esto se hace para que no se duplique en ambas retenciones el importe base. Como no podemos de antemano saber qué retenciones se aplicarán, lo más sencillo es poner en una todo el base y en las siguientes poner 0. Así los totales cuadran, que es lo importante.
+  
+  Begin
+  
+    -- Calculos previos para retenciones LEC
+    Begin
+      v_Datoserror := 'Obteniendo SMI del mes';
+      Select To_Number(Valor) Into v_Importesmi From Fcs_Smi Where Anio = To_Char(p_Fechames, 'yyyy');
+    
+      v_Datoserror := 'Obteniendo total retenido de los pagos anteriores';
+      Select Nvl(Abs(Sum(c.Importeretenido)), 0)
+        Into v_Importeanterior_Retenido
+        From Fcs_Cobros_Retencionjudicial c, Fcs_Retenciones_Judiciales r
+       Where c.Idretencion = r.Idretencion
+         And c.Idinstitucion = r.Idinstitucion
+            --And r.Tiporetencion = 'L' Ahora tenemos en cuenta cualquier retencion aplicada
+         And c.Idinstitucion = p_Idinstitucion
+         And c.Idpersona = p_Idpersona
+            
+         And c.Mes = To_Char(p_Fechames, 'mm')
+         And c.Anio = To_Char(p_Fechames, 'yyyy');
+    
+      v_Datoserror := 'Obteniendo base de los pagos anteriores';
+      -- No podemos obtener el importe base en retenciones no LEC porque se repite en todos los meses. Hay que obtener el importe base directamente del pago
+      Select Nvl(Abs(Sum(Round((Pag.Impoficio + Pag.Impasistencia + Pag.Impsoj + Pag.Impejg + Pag.Impmovvar +
+                               Pag.Impirpf) / (Select Count(Distinct c.Mes || '/' || c.Anio)
+                                                 From Fcs_Cobros_Retencionjudicial c
+                                                Where Pag.Idinstitucion = c.Idinstitucion
+                                                  And Pag.Idpagosjg = c.Idpagosjg
+                                                  And Pag.Idperorigen = c.Idpersona),
+                               2))),
+                 0)
+        Into v_Importeanterior_Base
+        From Fcs_Pago_Colegiado Pag
+       Where Exists (Select 1
+                From Fcs_Cobros_Retencionjudicial c
+               Where Pag.Idinstitucion = c.Idinstitucion
+                 And Pag.Idpagosjg = c.Idpagosjg
+                 And Pag.Idperorigen = c.Idpersona
+                 And c.Mes = To_Char(p_Fechames, 'mm')
+                 And c.Anio = To_Char(p_Fechames, 'yyyy'))
+            
+         And Pag.Idinstitucion = p_Idinstitucion
+         And Pag.Idperorigen = p_Idpersona;
+    
+      b_Retencion_Lec_Yaaplicada := False;
+    End;
+  
+    v_Importetotal_Base        := v_Importeanterior_Base + p_Importe_Netobase;
+    v_Importeanterior_Retenido := v_Importeanterior_Retenido; --se va aumentando en cada iteracion, pero solo se utiliza en LEC
+    v_Importe_Netorestante     := p_Importe_Netobase;
+  
+    For v_Retenciones In c_Retenciones('PFL') Loop
+    
+      If v_Retenciones.Tiporetencion = 'F' Then
+        v_Importe_Aintentarretener   := v_Retenciones.Importependiente;
+        v_Importe_Retencion_Aplicada := Least(v_Importe_Aintentarretener, v_Importe_Netorestante); -- no se puede retener mas de lo que hay
+        v_Importe_Base_Usado         := v_Importe_Netorestante;
+      
+      Elsif v_Retenciones.Tiporetencion = 'P' Then
+        v_Importe_Aintentarretener   := Round(p_Importe_Netobase * v_Retenciones.Importe / 100, 2);
+        v_Importe_Retencion_Aplicada := Least(v_Importe_Aintentarretener, v_Importe_Netorestante); -- no se puede retener mas de lo que hay
+        v_Importe_Base_Usado         := p_Importe_Netobase;
+      
+      Elsif v_Retenciones.Tiporetencion = 'L' Then
+        v_Importe_Aintentarretener := v_Retenciones.Importependiente;
+        v_Importe_Maximoaretener   := Round(f_Siga_Retencion_Lec(v_Importetotal_Base, v_Importesmi, p_Idinstitucion), 2) -
+                                      v_Importeanterior_Retenido;
+        If v_Importe_Maximoaretener <= 0 Then
+          -- ya se ha retenido el maximo
+          v_Importe_Retencion_Aplicada := 0;
+        Else
+          v_Importe_Retencion_Aplicada := Least(Least(v_Importe_Aintentarretener, v_Importe_Netorestante),
+                                                v_Importe_Maximoaretener); -- no se puede retener mas de lo que hay ni pasarse del maximo por LEC
+        End If;
+      
+        If b_Retencion_Lec_Yaaplicada Then
+          v_Importe_Base_Usado := 0;
+        Else
+          b_Retencion_Lec_Yaaplicada := True;
+          v_Importe_Base_Usado       := v_Importetotal_Base;
+        End If;
+      End If;
+    
+      v_Datoserror := 'Apuntando el cobro de la retencion';
+      Proc_Apunta_Cobro_Retencion(v_Retenciones.Idretencion,
+                                  v_Importe_Retencion_Aplicada,
+                                  v_Importe_Base_Usado,
+                                  To_Char(p_Fechames, 'mm'),
+                                  To_Char(p_Fechames, 'yyyy'));
+    
+      v_Datoserror               := 'Acumulando retenido para otra retencion posterior';
+      v_Importeanterior_Retenido := v_Importeanterior_Retenido + v_Importe_Retencion_Aplicada;
+    
+      v_Datoserror           := 'Restando el importe a retener: se sale si no se puede aplicar mas';
+      v_Importe_Netorestante := v_Importe_Netorestante - v_Importe_Retencion_Aplicada;
+      Exit When v_Importe_Netorestante = 0;
+    
+    End Loop;
+  
+  End Proc_Aplicar_Retenc_Judic_Mes;
+  
   Procedure Proc_Fcs_Aplicar_Retenc_Judic(p2_Idinstitucion   In Fcs_Pago_Colegiado.Idinstitucion%Type,
                                           p2_Idpago          In Fcs_Pago_Colegiado.Idpagosjg%Type,
                                           p2_Idpersona       In Fcs_Pago_Colegiado.Idperdestino%Type,
                                           p2_Importeneto     In Fcs_Pago_Colegiado.Impret%Type,
                                           p2_Usumodificacion In Fcs_Pago_Colegiado.Usumodificacion%Type,
                                           p2_Idioma          In Adm_Lenguajes.Idlenguaje%Type,
-                                          p_Codretorno      Out Varchar2,
-                                          p_Datoserror      Out Varchar2) Is
+                                          p_Codretorno       Out Varchar2,
+                                          p_Datoserror       Out Varchar2) Is
   
     v_Importenetorestante Number := 0;
     v_Importeultimomes    Number := 0;
@@ -164,9 +271,7 @@ create or replace package body PKG_SIGA_RETENCIONES_SJCS is
       Else
         v_Importenetorestante := v_Importemes;
       End If;
-      -- Las retenciones No LEC restan importenetorestante antes de aplicar las LEC
-      Proc_Aplica_Retenciones_Nolec(v_Importenetorestante, v_Fechames);
-      Proc_Aplica_Retenciones_Lec(v_Importenetorestante, v_Fechames);
+      Proc_Aplicar_Retenc_Judic_Mes(v_Importenetorestante, v_Fechames);
       
       v_Datoserror := 'Avanzando en el bucle de meses del periodo de retencion';
       v_Fechames   := Add_Months(v_Fechames, 1);
@@ -181,218 +286,6 @@ create or replace package body PKG_SIGA_RETENCIONES_SJCS is
       p_Codretorno := To_Char(Sqlcode);
       p_Datoserror := Sqlerrm || ' (' || v_Datoserror || ')';
   End Proc_Fcs_Aplicar_Retenc_Judic;
-
-  Procedure Proc_Aplica_Retenciones_Nolec(p_Importenetorestante In Out Number, p_fechaMes In Date) Is
-    -- Variables
-    v_Importe_Retencion_Aplicada Number;
-    v_Importeneto_mes Number;
-  
-  Begin
-  
-    -- guardando el importe del mes para calcular en las retenciones porcentuales
-    v_Importeneto_mes := p_Importenetorestante;
-  
-    v_Datoserror := 'Entrando en el cursor de retenciones Fijas y Periodicas';
-    For v_Retenciones In c_Retenciones('PF') Loop
-    
-      If (v_Retenciones.Tiporetencion = 'F') Then
-        -- SI ES RETENCION FIJO
-      
-        -- Si el importe pdte de la retencion es menor o igual que el neto restante ...
-        If (v_Retenciones.Importependiente <= p_Importenetorestante) Then
-        
-          -- entonces se puede cobrar toda la retencion ...
-          v_Importe_Retencion_Aplicada := v_Retenciones.Importependiente;
-        
-          -- y cerramos la retencion con una observacion. R1411_0024 Eliminamos el mensaje
-          /**Begin
-            Update Fcs_Retenciones_Judiciales
-               Set Observaciones = Observaciones || ' ' ||
-                                   f_Siga_Getrecurso_Etiqueta('FactSJCS.mantRetencionesJ.plAplicarRetencionesJudiciales.aviso.finRetencion',
-                                                              p_Idioma) || '(' ||
-                                   To_Char(Sysdate, 'DD-MM-YYYY') || ')'
-             Where Idinstitucion = p_Idinstitucion
-               And Idretencion = v_Retenciones.Idretencion;
-          Exception
-            When Others Then
-              Null;
-          End;**/
-        
-        Else
-          --Si no alcanza el neto para cobrar toda la retencion ...
-        
-          -- entonces se cobra todo el neto
-          v_Importe_Retencion_Aplicada := p_Importenetorestante;
-        
-        End If;
-      
-      Elsif (v_Retenciones.Tiporetencion = 'P') Then
-        -- SI ES RETENCION PORCENTUAL
-      
-        -- Calcula el importe a retener  tomando el  importe neto total
-        -- (no el restante tras aplicar otras retenciones) como base
-        v_Importe_Retencion_Aplicada := round(v_Importeneto_mes * v_Retenciones.Importe / 100, 2);
-      
-        -- Si el importe es mayor que el restante neto solo se puede retener el importenetorestante
-        If (v_Importe_Retencion_Aplicada > p_Importenetorestante) Then
-          v_Importe_Retencion_Aplicada := p_Importenetorestante;
-        End If;
-      
-      End If;
-    
-      v_Datoserror := 'Apuntando el cobro de la retencion';
-      Proc_Apunta_Cobro_Retencion(v_Retenciones.Idretencion,
-                                  v_Importe_Retencion_Aplicada,
-                                  p_Importenetorestante,
-                                  To_Char(p_Fechames, 'mm'),
-                                  To_Char(p_Fechames, 'yyyy'));
-    
-      v_Datoserror          := 'Restando el importe a retener: se sale si no se puede aplicar mas';
-      p_Importenetorestante := p_Importenetorestante - v_Importe_Retencion_Aplicada;
-      Exit When p_Importenetorestante = 0;
-    
-    End Loop;
-  End Proc_Aplica_Retenciones_Nolec;
-
-  Procedure Proc_Aplica_Retenciones_Lec(p_Importenetorestante In Number, p_fechaMes In Date) Is
-    -- Importe SMI de cada mes
-    v_Importesmi Number;
-    -- Retencion finalmente aplicada
-    v_Importe_Retencion_Aplicada Number;
-    -- Total del Importe retenido y la base sobre la que se aplico, anteriormente al pago actual
-    v_Importeanterior_Base     Number;
-    v_Importeanterior_Retenido Number;
-    -- Total del Importe retenido y la base sobre la que se aplica, incluyendo el pago actual
-    v_Importetotal_Base     Number;
-    v_Importetotal_Retenido Number;
-    -- Importe retenido y la base sobre la que se aplica, solo del pago actual
-    --v_importeActual_Base Number; Este importe nunca se usa, pero lo dejamos para que se vea que son pareados
-    v_Importeactual_Aretener Number;
-    
-    v_Importenetorestante Number;
-  
-  Begin
-    v_Importenetorestante := p_Importenetorestante;
-	
-    v_Datoserror := 'Obteniendo SMI del mes';
-    Select To_Number(Valor)
-      Into v_Importesmi
-      From Fcs_Smi
-     Where Anio = To_Char(p_Fechames, 'yyyy');
-    
-    v_Datoserror := 'Obteniendo total retenido y base de los pagos anteriores';
-    Select Nvl(Abs(Sum(c.Importeaplicaretencion)), 0),
-           Nvl(Abs(Sum(c.Importeretenido)), 0)
-      Into v_Importeanterior_Base, v_Importeanterior_Retenido
-      From Fcs_Cobros_Retencionjudicial c, Fcs_Retenciones_Judiciales r
-     Where c.Idretencion = r.Idretencion
-       And c.Idinstitucion = r.Idinstitucion
-       And r.Tiporetencion = 'L'
-       And c.Idinstitucion = p_Idinstitucion
-       And c.Idpersona = p_Idpersona
-          
-       And c.Mes = To_Char(p_Fechames, 'mm')
-       And c.Anio = To_Char(p_Fechames, 'yyyy');
-  
-    v_Datoserror             := 'Calculando retencion LEC anterior y actual';
-    v_Importetotal_Base      := v_Importeanterior_Base + v_Importenetorestante;
-    v_Importetotal_Retenido  := Round(f_Siga_Retencion_Lec(v_Importetotal_Base,
-                                                           v_Importesmi,
-                                                           p_Idinstitucion),
-                                      2);
-    v_Importeactual_Aretener := v_Importetotal_Retenido - v_Importeanterior_Retenido;
-	
-    v_Datoserror := 'Recorriendo las retenciones LEC pendientes';
-    For v_Retenciones In c_Retenciones('L') Loop
-    
-      If (v_Retenciones.Importependiente Is Not Null And v_Retenciones.Importependiente < v_Importeactual_Aretener) Then
-        -- Si el importe pendiente de la retencion es menor que el importe LEC que se puede retener, 
-        -- entonces solo se retiene el pendiente
-        v_Importe_Retencion_Aplicada := v_Retenciones.Importependiente;
-        /**** R1411_0024 Eliminamos el mensaje
-        Begin
-          Update Fcs_Retenciones_Judiciales
-             Set Observaciones = Observaciones || ' ' ||
-                                 f_Siga_Getrecurso_Etiqueta('FactSJCS.mantRetencionesJ.plAplicarRetencionesJudiciales.aviso.finRetencion',
-                                                            p_Idioma) || '(' ||
-                                 To_Char(Sysdate, 'DD-MM-YYYY') || ')'
-           Where Idinstitucion = p_Idinstitucion
-             And Idretencion = v_Retenciones.Idretencion;
-        Exception
-          When Others Then
-            Null;
-        End;
-        ****/
-      Else
-        v_Importe_Retencion_Aplicada := v_Importeactual_Aretener;
-      End If;
-    
-      v_Datoserror := 'Apuntando el cobro de la retencion';
-      Proc_Apunta_Cobro_Retencion(v_Retenciones.Idretencion,
-                                  v_Importe_Retencion_Aplicada,
-                                  v_Importenetorestante,
-                                  To_Char(p_Fechames, 'mm'),
-                                  To_Char(p_Fechames, 'yyyy'));
-      
-      -- poniendo el importe restante a 0 para que, en caso de varias retenciones, no se duplique el importe base
-      v_Importenetorestante := 0;
-
-      v_Datoserror             := 'Restando el importe a retener: se sale si no se puede aplicar mas';
-      v_Importeactual_Aretener := v_Importeactual_Aretener - v_Importe_Retencion_Aplicada;
-      Exit When(v_Importeactual_Aretener = 0);
-    
-    End Loop;
-  End Proc_Aplica_Retenciones_Lec;
-  
-  /***********************************************************************************************/
-  /* Nombre:   PROC_FCS_RETENCION_PERSONA                                                        */
-  /* Descripcion: Calcula las retenciones judiciales aplicadas a una persona para un pago        */
-  /*                                                                                             */
-  /* Parametros            IN/OUT   Descripcion                                   Tipo de Datos  */
-  /* -------------------   ------   -------------------------------------------   -------------  */
-  /*                                                                                             */
-  /* Version:        1.0                                                                         */
-  /* Fecha Creacion: 12/05/2005                                                                  */
-  /* Autor:          Raul Gonzalez Gonzalez                                                      */
-  /* Fecha Modificacion   Autor Modificacion                  Descripcion Modificacion           */
-  /* ------------------   ---------------------------------   ---------------------------------- */
-  /***********************************************************************************************/
-  PROCEDURE PROC_FCS_RETENCION_PERSONA(P_IDINSTITUCION IN NUMBER,
-                                       P_IDPAGO        IN NUMBER,
-                                       P_IDPERSONA     IN NUMBER,
-
-                                       P_IMPORTERETENCION OUT VARCHAR2,
-                                       P_CODRETORNO       OUT VARCHAR2,
-                                       P_DATOSERROR       OUT VARCHAR2) IS
-
-    -- VARIABLES
-    V_AUXIMPORTE NUMBER := 0;
-
-  BEGIN
-
-    P_IMPORTERETENCION := TO_CHAR(0);
-    P_CODRETORNO       := TO_CHAR(0);
-    P_DATOSERROR       := NULL;
-
-    -- MOVIMIENTOS VARIOS
-    SELECT SUM(IMPORTERETENIDO)
-      INTO V_AUXIMPORTE
-      FROM FCS_COBROS_RETENCIONJUDICIAL
-     WHERE IDINSTITUCION = P_IDINSTITUCION
-       AND IDPAGOSJG = P_IDPAGO
-       AND IDPERSONA = P_IDPERSONA;
-
-    IF (V_AUXIMPORTE IS NOT NULL) THEN
-      P_IMPORTERETENCION := TO_CHAR(V_AUXIMPORTE);
-    END IF;
-
-  EXCEPTION
-    WHEN OTHERS THEN
-      P_IMPORTERETENCION := 0;
-      P_CODRETORNO       := TO_CHAR(SQLCODE);
-      P_DATOSERROR       := SQLERRM;
-
-  END; -- Procedure PROC_FCS_RETENCION_PERSONA
 
 End;
 /
