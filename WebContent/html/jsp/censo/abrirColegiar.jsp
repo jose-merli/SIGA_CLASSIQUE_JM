@@ -72,6 +72,7 @@
 		
 		<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
+	<script src="<%=app%>/html/js/validation.js" type="text/javascript"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -88,13 +89,38 @@
 	<!-- FIN: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->	
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 		<script language="JavaScript">
-
+		
 		//Funcion asociada a boton Finalizar
 		function accionCerrar()
 		{
 			window.top.close();
 		}
 
+		function existeNColegiado(){
+			if (jQuery("#numColBox").length!=0 && jQuery("#numColBox").val()!=""){
+				jQuery.ajax({ //Comunicacion jQuery hacia JSP  
+	   				type: "POST",
+					url: "/SIGA/CEN_MantenimientoSolicitudesIncorporacion.do?modo=getAjaxExisteColegiado",
+					dataType: "json",
+					data: "nColegiado="+jQuery("#numColBox").val()+"&idInstitucion="+jQuery("#nombreColegios").val(),
+					success: function(json){
+						var mensaje = json.mensaje;
+						if (mensaje != null && mensaje != ""){
+							alert(mensaje);
+							if(json.limpiar){
+								jQuery("#numColBox").val("");
+							}
+						}
+						fin();
+					},
+					error: function(e){
+						alertStop('Error de comunicación: ' + e);
+						fin();
+					}
+				});
+			}
+		}
+		
 		//Asociada al boton Aceptar
 		function accionAceptar()
 		{ sub();
@@ -169,6 +195,7 @@
 										clase="boxCombo"
 										readonly="false"
 										obligatorio="true"
+										accion="existeNColegiado()"
 										parametro="<%=idInstitucion%>"
 						  />									
 						</td>
@@ -178,7 +205,7 @@
 					       <siga:Idioma key="censo.busquedaClientesAvanzada.literal.nColegiado"/>&nbsp;(*)
 				       </td>
 		               <td colspan="2">
-			                <input type="text" name="numeroColegiado" size="10" maxlength="20" class="box" value="">
+			                <input type="text" id="numColBox" name="numeroColegiado" size="10" maxlength="20" class="box" value="" onchange="existeNColegiado()" onkeypress="filterCharsNumberEs(this,true,false);">
 		               </td>
 					   
 				</tr>

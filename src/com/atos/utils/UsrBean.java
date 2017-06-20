@@ -327,6 +327,20 @@ public class UsrBean implements Serializable {
 		}
 	}
 	
+	/**
+	 * Devuelve el tipo de acceso para un proceso
+	 * @param process ID del proceso
+	 * @return
+	 */
+	public String getProcessAccessTemp(String process){
+		try {
+			return accessControl.checkAccessByProcessNumber(getProfile(),process,Integer.parseInt(getLocation()));
+		} catch (Exception e) {
+			return SIGAConstants.ACCESS_DENY;
+		}
+		
+	}
+	
 	public String getAccessForProcessName(String process) {
 		if (accessControl==null) {
 			accessControl=new AccessControl(); 
