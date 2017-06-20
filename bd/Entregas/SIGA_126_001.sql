@@ -233,3 +233,6 @@ VALUES
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('message.cambioNumColegiado.regtel', 'Al cambiar el número de colegiado se cambiará también el título de la colección relacionada con dicho colegiado en Regtel#GL', 0, '4', sysdate, 0, '19');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('message.cambioNumColegiado.regtel', 'Al cambiar el número de colegiado se cambiará también el título de la colección relacionada con dicho colegiado en Regtel#CA', 0, '2', sysdate, 0, '19');
  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('message.cambioNumColegiado.regtel', 'Al cambiar el número de colegiado se cambiará también el título de la colección relacionada con dicho colegiado en Regtel#EU', 0, '3', sysdate, 0, '19');=======
+
+Pkg_Siga_Retenciones_Sjcs
+
