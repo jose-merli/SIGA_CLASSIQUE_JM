@@ -240,3 +240,6 @@ Update Gen_Properties Pro Set Pro.Valor = '400'
  Where Parametro Like '%axBackupIndex';
 Update Gen_Properties Pro Set Pro.Valor = '100MB'
  Where Parametro Like '%axFileSize';
+
+-- Ejecutado en Integracion por AAG el 21/06 14:30
+
