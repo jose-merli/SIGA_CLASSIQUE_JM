@@ -1840,7 +1840,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
     --INI: Cambio facturacion guardias inactivas catalanes de VG --
     C_CATALAN CEN_INSTITUCION.CEN_INST_IDINSTITUCION%TYPE := 3001;
-    C_IMPORTE_GUARDIA_INACTIVA SCS_HITOFACTURABLEGUARDIA.PRECIOHITO%TYPE := 61.16;
+    C_IMPORTE_GUARDIA_INACTIVA SCS_HITOFACTURABLEGUARDIA.PRECIOHITO%TYPE := 61.96;
     --FIN: Cambio facturacion guardias inactivas catalanes de VG --
 
   -- declaracion de cursores para la facturacion de guardias
@@ -4004,7 +4004,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 If v_designas_TOOMANY_FINS is Null Then
                   v_designas_TOOMANY_FINS := chr(10);
                 End If;
-                if length(v_designas_TOOMANY_FINS) < 3950 Then
+                if v_designas_TOOMANY_FINS is Null Or length(v_designas_TOOMANY_FINS) < 3950 Then
                   v_designas_TOOMANY_FINS := v_designas_TOOMANY_FINS || v_Actdesigna.Numerodesigna || chr(10);
                 Elsif length(v_designas_TOOMANY_FINS) > 3950 And length(v_designas_TOOMANY_FINS) < 3970 Then
                   v_designas_TOOMANY_FINS := v_designas_TOOMANY_FINS || '...';
@@ -4218,7 +4218,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 If v_designas_TOOMANY_FINS is Null Then
                   v_designas_TOOMANY_FINS := chr(10);
                 End If;
-                if length(v_designas_TOOMANY_FINS) < 3950 Then
+                if v_designas_TOOMANY_FINS is Null Or length(v_designas_TOOMANY_FINS) < 3950 Then
                   v_designas_TOOMANY_FINS := v_designas_TOOMANY_FINS || v_Actdesigna.Numerodesigna || chr(10);
                 Elsif length(v_designas_TOOMANY_FINS) > 3950 And length(v_designas_TOOMANY_FINS) < 3970 Then
                   v_designas_TOOMANY_FINS := v_designas_TOOMANY_FINS || '...';
@@ -14785,6 +14785,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             AND ASI.ANIO = ACT.ANIO
             AND ASI.NUMERO = ACT.NUMERO
             AND ACT.FECHAJUSTIFICACION BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA)
+            AND ACT.VALIDADA = '1' -- Validada
             AND NVL(ACT.ANULACION, '0') = '0'
             AND ACT.DIADESPUES = 'S' -- solo las del día después
             AND NOT EXISTS ( -- solo las NO FACTURADAS

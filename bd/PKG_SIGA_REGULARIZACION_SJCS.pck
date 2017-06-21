@@ -1585,10 +1585,19 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
 
     v_idfacturacion_regulariza number;
 
-    v_totalregularizacion    number;
+    v_totalregularizacion    Number := 0;
     v_importe_regularizacion number;
 
   BEGIN
+    --
+    --
+    --
+    -- Actualmente no funciona bien la regularizacion de guardias
+    -- y ademas bloquea la BD, 
+    -- asi que de momento la eliminamos de funcionalidad
+    --
+    --
+    --
 
     --inicializando valor para retorno correcto
     P_CODRETORNO := 0;
@@ -1778,6 +1787,7 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
 
     --finalizando
     P_TOTAL      := v_totalregularizacion;
+    P_CODRETORNO := 0;
     P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: Finalizado';
 
   EXCEPTION
