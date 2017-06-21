@@ -236,3 +236,7 @@ VALUES
 
 Pkg_Siga_Retenciones_Sjcs
 
+Update Gen_Properties Pro Set Pro.Valor = '400'
+ Where Parametro Like '%axBackupIndex';
+Update Gen_Properties Pro Set Pro.Valor = '100MB'
+ Where Parametro Like '%axFileSize';
