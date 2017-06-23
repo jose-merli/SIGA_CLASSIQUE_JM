@@ -644,7 +644,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 	    Hashtable<Integer,String> codigos = new Hashtable<Integer,String>();
 	    int contador=0;
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION ACREDITACION,AC.IDTIPOACREDITACION,Decode(to_char(a.Porcentaje), to_char(Trunc(a.Porcentaje)), to_char(a.Porcentaje), f_Siga_Formatonumero(to_char(a.Porcentaje), 2)) PORCENTAJE, TAC.DESCRIPCION TIPO, ");
+		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION ACREDITACION,AC.IDTIPOACREDITACION,Decode(to_char(acp.Porcentaje), to_char(Trunc(acp.Porcentaje)), to_char(acp.Porcentaje), f_Siga_Formatonumero(to_char(acp.Porcentaje), 2)) PORCENTAJE, TAC.DESCRIPCION TIPO, ");
 		sql.append(" PRO.NOMBRE PROCEDIMIENTO,PRO.CODIGO CATEGORIA, PRO.IDJURISDICCION,PRO.COMPLEMENTO,PRO.PERMITIRANIADIRLETRADO,ACT.NUMEROASUNTO,ACT.IDPROCEDIMIENTO,ACT.IDJUZGADO,");
 		sql.append(" TO_CHAR(ACT.FECHAJUSTIFICACION,'dd/mm/yyyy') FECHAJUSTIFICACION,ACT.VALIDADA,ACT.IDFACTURACION,ACT.NUMEROPROCEDIMIENTO,ACT.ANIOPROCEDIMIENTO ");
 		sql.append(" ,(SELECT NOMBRE || ' (' || FECHADESDE || '-' || FECHAHASTA || ')' ");
@@ -986,7 +986,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 	    int contador=0;
 		StringBuffer sql = new StringBuffer();
 
-		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION,TAC.IDTIPOACREDITACION,Decode(to_char(a.Porcentaje), to_char(Trunc(a.Porcentaje)), to_char(a.Porcentaje), f_Siga_Formatonumero(to_char(a.Porcentaje), 2)) PORCENTAJE,PRO.IDJURISDICCION,ACPRO.NIG_NUMPROCEDIMIENTO ");
+		sql.append(" SELECT AC.IDACREDITACION,AC.DESCRIPCION,TAC.IDTIPOACREDITACION,Decode(to_char(acpro.Porcentaje), to_char(Trunc(acpro.Porcentaje)), to_char(acpro.Porcentaje), f_Siga_Formatonumero(to_char(acpro.Porcentaje), 2)) PORCENTAJE,PRO.IDJURISDICCION,ACPRO.NIG_NUMPROCEDIMIENTO ");
 		sql.append(" FROM SCS_ACREDITACIONPROCEDIMIENTO ACPRO, ");
 		sql.append(" SCS_PROCEDIMIENTOS            PRO, ");
 		sql.append(" SCS_ACREDITACION              AC, ");
