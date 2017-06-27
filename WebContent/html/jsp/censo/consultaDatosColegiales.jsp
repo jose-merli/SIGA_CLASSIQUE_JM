@@ -127,7 +127,7 @@
 	//boolean puedeModificarNCol=(boolean)request.getAttribute("puedeModificarNCol");
 	boolean puedeModificarNCol=((Boolean)request.getAttribute("puedeModificarNCol")).booleanValue() || nColegiadoEditable;
 	boolean readOnlyNcol=true;
-	
+	boolean tieneColeccion = datosCol.getIdentificadorDS()!=null && !datosCol.getIdentificadorDS().equalsIgnoreCase(""); 
 %>	
 
 	<!-- HEAD -->
@@ -671,12 +671,14 @@
 		
 		function editarNumeroColegiado(){
 			var numeroCol = jQuery("#numColBox");
-			var botNumeroCol = jQuery("#botonNCol"); 
-			if (numeroCol.prop('readonly')) {
-				numeroCol.prop('readonly',false);
-				numeroCol.removeClass().addClass('box');
-				botNumeroCol.hide();
-			}
+			var botNumeroCol = jQuery("#botonNCol");
+			if(( <%=tieneColeccion%> && confirm("<siga:Idioma key='message.cambioNumColegiado.regtel'/>")) || !<%=tieneColeccion%>) {
+				if (numeroCol.prop('readonly')) {
+					numeroCol.prop('readonly',false);
+					numeroCol.removeClass().addClass('box');
+					botNumeroCol.hide();
+				}
+			} 
 		}
 		
 		function existeNColegiado(){

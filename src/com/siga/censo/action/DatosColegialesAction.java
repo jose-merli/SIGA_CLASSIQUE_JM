@@ -48,6 +48,7 @@ import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.xerox.docushare.DSException;
 
 import es.satec.businessManager.BusinessException;
 
@@ -717,13 +718,18 @@ public class DatosColegialesAction extends MasterAction {
 				request.setAttribute("mensaje","messages.updated.success");
 				return "exitoConEditarNColegiado"; 
 			}
+			result = exitoRefresco("messages.updated.success",request);
 			
 			if(!original.getNColegiado().equalsIgnoreCase(miForm.getNumColegiado()) && original.getIdentificadorDS()!=null && !original.getIdentificadorDS().equalsIgnoreCase("")){
-				DocuShareHelper dsHelper = new DocuShareHelper(Short.valueOf(miForm.getIdInstitucion()));
-				dsHelper.changeCollectionTitle(original.getIdentificadorDS(), miForm.getNumColegiado());
+				try{
+					DocuShareHelper dsHelper = new DocuShareHelper(Short.valueOf(miForm.getIdInstitucion()));
+					dsHelper.changeCollectionTitle(original.getIdentificadorDS(), miForm.getNumColegiado());
+				}catch (Exception dse){
+					result = exitoRefresco("error.cambioNumColegiado.regtel",request);
+				}
 			}
 			
-			result = exitoRefresco("messages.updated.success",request);
+			
 		} catch (SIGAException es) {
 			es.setSubLiteral("");
 			throwExcp (es.getLiteral(), new String[] {"modulo.censo"}, es, tx);

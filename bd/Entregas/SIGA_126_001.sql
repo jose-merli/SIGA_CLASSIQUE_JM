@@ -229,10 +229,10 @@ VALUES
   ('12P', 'CEN', 1, 'Y', SYSDATE, 0, 'Modificar número de colegiado', 'CEN_DatosColegiales', '121', 10);
   
   
- insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('message.cambioNumColegiado.regtel', 'Al cambiar el número de colegiado se cambiará también el título de la colección relacionada con dicho colegiado en Regtel', 0, '1', sysdate, 0, '19');
- insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('message.cambioNumColegiado.regtel', 'Al cambiar el número de colegiado se cambiará también el título de la colección relacionada con dicho colegiado en Regtel#GL', 0, '4', sysdate, 0, '19');
- insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('message.cambioNumColegiado.regtel', 'Al cambiar el número de colegiado se cambiará también el título de la colección relacionada con dicho colegiado en Regtel#CA', 0, '2', sysdate, 0, '19');
- insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('message.cambioNumColegiado.regtel', 'Al cambiar el número de colegiado se cambiará también el título de la colección relacionada con dicho colegiado en Regtel#EU', 0, '3', sysdate, 0, '19');=======
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('message.cambioNumColegiado.regtel', 'Ha ocurrido un error al modificar el título de la colección delcolegiado en Regtel', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('message.cambioNumColegiado.regtel', 'Ha ocurrido un error al modificar el título de la colección delcolegiado en Regtel#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('message.cambioNumColegiado.regtel', 'Ha ocurrido un error al modificar el título de la colección delcolegiado en Regtel#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('message.cambioNumColegiado.regtel', 'Ha ocurrido un error al modificar el título de la colección delcolegiado en Regtel#EU', 0, '3', sysdate, 0, '19');=======
 
 Pkg_Siga_Retenciones_Sjcs
 
@@ -242,4 +242,10 @@ Update Gen_Properties Pro Set Pro.Valor = '100MB'
  Where Parametro Like '%axFileSize';
 
 -- Ejecutado en Integracion por AAG el 21/06 14:30
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('error.cambioNumColegiado.regtel', 'Cambios realizados correctamente. No se ha podeido modificar el título de la colección en Regtel', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('error.cambioNumColegiado.regtel', 'Cambios realizados correctamente. No se ha podeido modificar el título de la colección en Regtel#GL', 0, '4', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('error.cambioNumColegiado.regtel', 'Cambios realizados correctamente. No se ha podeido modificar el título de la colección en Regtel#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('error.cambioNumColegiado.regtel', 'Cambios realizados correctamente. No se ha podeido modificar el título de la colección en Regtel#EU', 0, '3', sysdate, 0, '19');
+
 
