@@ -30,8 +30,8 @@ create or replace package body PKG_SIGA_RETENCIONES_SJCS is
     Select Idretencion,
            Tiporetencion,
            Iddestinatario,
-           Importe,
-           Importe + Nvl((Select Sum(c.Importeretenido)
+           Nvl(Importe, 0) As Importe,
+           Nvl(Importe, 0) + Nvl((Select Sum(c.Importeretenido)
                            From Fcs_Cobros_Retencionjudicial c
                           Where c.Idinstitucion = Ret.Idinstitucion
                             And c.Idpersona = Ret.Idpersona
@@ -193,8 +193,10 @@ create or replace package body PKG_SIGA_RETENCIONES_SJCS is
           -- ya se ha retenido el maximo
           v_Importe_Retencion_Aplicada := 0;
         Else
-          v_Importe_Retencion_Aplicada := Least(Least(v_Importe_Aintentarretener, v_Importe_Netorestante),
-                                                v_Importe_Maximoaretener); -- no se puede retener mas de lo que hay ni pasarse del maximo por LEC
+          v_Importe_Retencion_Aplicada := Least(v_Importe_Maximoaretener, v_Importe_Netorestante); -- no se puede retener mas de lo que hay ni pasarse del maximo por LEC
+          If v_Retenciones.importe > 0 Then --Si la retencion LEC tiene importe (que es lo normal), entonces tampoco se puede retener mas de lo pendiente en la retencion
+            v_Importe_Retencion_Aplicada := Least(v_Importe_Aintentarretener, v_Importe_Retencion_Aplicada);
+          End If;
         End If;
       
         If b_Retencion_Lec_Yaaplicada Then
