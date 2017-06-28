@@ -4,29 +4,45 @@ CREATE OR REPLACE Function f_Siga_Asuntoasociado_MV(p_Idmovimiento In Number, p_
 
 Begin
   v_Informacion := Null;
-  Select (f_siga_getrecurso_etiqueta('movimientosVarios.ActuacionDesigna.titulo', p_IdLenguaje) || ' ' || Idturno || '/' || Numero || '/' || Numeroasunto)
+  Begin
+  Select (f_siga_getrecurso_etiqueta('movimientosVarios.ActuacionDesigna.titulo', p_IdLenguaje) || ' ' || Anio || '/' || Numero || '/' || Numeroasunto)
     Into v_Informacion
     From Scs_Actuaciondesigna Actdesig
    Where Actdesig.Idinstitucion = p_Idinstitucion
      And Actdesig.Idmovimiento = p_Idmovimiento;
+  Exception
+  When no_data_found Then
+    v_Informacion := Null;
+  End;
   
   If v_Informacion Is Null Then
+    Begin
     Select (f_siga_getrecurso_etiqueta('movimientosVarios.ActuacionAsistencias.titulo', p_IdLenguaje) || ' '  || Actdesig.Anio || '/' || Actdesig.Numero || '/' || Actdesig.Idactuacion)
       Into v_Informacion
       From Scs_Actuacionasistencia Actdesig
      Where Actdesig.Idinstitucion = p_Idinstitucion
        And Actdesig.Idmovimiento = p_Idmovimiento;
+    Exception
+    When no_data_found Then
+      v_Informacion := Null;
+    End;
   End If;
   
   If v_Informacion Is Null Then
+    Begin
     Select (f_siga_getrecurso_etiqueta('movimientosVarios.asistencia.titulo', p_IdLenguaje) || ' ' || Anio || '/' || Numero)
       Into v_Informacion
       From Scs_Asistencia Asistencia
      Where Asistencia.Idinstitucion = p_Idinstitucion
        And Asistencia.Idmovimiento = p_Idmovimiento;
+    Exception
+    When no_data_found Then
+      v_Informacion := Null;
+    End;
   End If;
   
   If v_Informacion Is Null Then
+    Begin
     Select (f_siga_getrecurso_etiqueta('movimientosVarios.guardia.titulo', p_IdLenguaje) ||' ' || Guardias.Fechainicio || ' en ' || Guardiaturno.Nombre || ' ' || Turno.Abreviatura)
       Into v_Informacion
       From Scs_Cabeceraguardias Guardias, Scs_Guardiasturno Guardiaturno, Scs_Turno Turno
@@ -37,13 +53,19 @@ Begin
        And Guardiaturno.Idguardia = Guardias.Idguardia
        And Guardiaturno.Idinstitucion = Turno.Idinstitucion
        And Guardiaturno.Idturno = Turno.Idturno;
+    Exception
+    When no_data_found Then
+      v_Informacion := Null;
+    End;
   End If;
   
   If v_Informacion Is Null Then
-   select f_siga_getrecurso_etiqueta('movimientosVarios.movimientosVarios.titulo', p_IdLenguaje) into v_Informacion from dual;
-  End If;
-  If v_Informacion Is Null Then
-   v_Informacion := 'kljklj';
+    Begin
+    select f_siga_getrecurso_etiqueta('movimientosVarios.movimientosVarios.titulo', p_IdLenguaje) into v_Informacion from dual;
+    Exception
+    When no_data_found Then
+      v_Informacion := Null;
+    End;
   End If;
   Return v_Informacion;
  
