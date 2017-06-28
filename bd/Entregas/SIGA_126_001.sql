@@ -243,10 +243,10 @@ Update Gen_Properties Pro Set Pro.Valor = '100MB'
 
 -- Ejecutado en Integracion por AAG el 21/06 14:30
 
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('error.cambioNumColegiado.regtel', 'Cambios realizados correctamente. No se ha podeido modificar el título de la colección en Regtel', 0, '1', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('error.cambioNumColegiado.regtel', 'Cambios realizados correctamente. No se ha podeido modificar el título de la colección en Regtel#GL', 0, '4', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('error.cambioNumColegiado.regtel', 'Cambios realizados correctamente. No se ha podeido modificar el título de la colección en Regtel#CA', 0, '2', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('error.cambioNumColegiado.regtel', 'Cambios realizados correctamente. No se ha podeido modificar el título de la colección en Regtel#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('error.cambioNumColegiado.regtel', 'Cambios realizados correctamente. No se ha podido modificar el título de la colección en Regtel', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('error.cambioNumColegiado.regtel', 'Cambios realizados correctamente. No se ha podido modificar el título de la colección en Regtel#GL', 0, '4', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('error.cambioNumColegiado.regtel', 'Cambios realizados correctamente. No se ha podido modificar el título de la colección en Regtel#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('error.cambioNumColegiado.regtel', 'Cambios realizados correctamente. No se ha podido modificar el título de la colección en Regtel#EU', 0, '3', sysdate, 0, '19');
 
 Cambiado PKG_SIGA_RETENCIONES_SJCS 
 
