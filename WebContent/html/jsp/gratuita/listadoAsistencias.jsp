@@ -154,7 +154,7 @@
 	String botones="C,E,B";
 	String alto="243";
   	nC="gratuita.listadoAsistencias.literal.turno,gratuita.listadoAsistencias.literal.guardia,gratuita.listadoAsistencias.literal.anio,gratuita.listadoAsistencias.literal.numero,gratuita.busquedaAsistencias.literal.fechaAsistencia,gratuita.mantAsistencias.literal.letrado,gratuita.busquedaAsistencias.literal.asistido,gratuita.mantAsistencias.literal.estado,gratuita.busquedaAsistencias.literal.validada,";
-	tC="13,13,5,8,7,15,15,8,6";
+	tC="13,14,4,6,7,17,16,8,4,11";
 
 	String target = "mainWorkArea";
 	if (esFichaColegial) { 

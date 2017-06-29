@@ -86,7 +86,7 @@
 	   				gratuita.actuacionesDesigna.literal.validada,
 	   				gratuita.procedimientos.literal.anulada,
 	   				gratuita.actuacionesDesigna.literal.facturacion,"
-	   columnSizes="8,8,11,10,14,7,6,6,20,10"
+	   columnSizes="6,8,8,12,14,8,5,5,22,12"
 	   modal="P">	
 	
 		<c:choose>
