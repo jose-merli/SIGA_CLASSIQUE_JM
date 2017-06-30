@@ -531,7 +531,8 @@ public class BusquedaDesignasAction extends MasterAction {
 	protected String volverBusqueda(ActionMapping mapping, MasterForm formulario,
 			HttpServletRequest request, HttpServletResponse response)
 			throws ClsExceptions,SIGAException  {
-		
+		int tipoCajg = CajgConfiguracion.getTipoCAJG(getIDInstitucion(request));
+		request.setAttribute("PCAJG_TIPO", ""+tipoCajg);
 		return "inicio";
 	}
 
