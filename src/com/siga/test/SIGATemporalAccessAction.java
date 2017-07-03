@@ -1,6 +1,7 @@
 package com.siga.test;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
@@ -50,6 +51,7 @@ import com.siga.beans.CenInstitucionLenguajesAdm;
 import com.siga.beans.CenInstitucionLenguajesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
+import com.siga.beans.EstUserRegistryAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.general.SIGAException;
 
@@ -141,6 +143,19 @@ public class SIGATemporalAccessAction extends Action
 //		usrbean.setUserName(user);
 
 		usrbean.setProfile(profileArray);
+		
+		// insertando registro de acceso en la tabla de estadisticas
+		String perfilParaEstadistica;
+		EstUserRegistryAdm userRegistryAdm = new EstUserRegistryAdm(usrbean);
+		if (usrbean.getProfile() != null) {
+			String perfiles = Arrays.toString(usrbean.getProfile());
+			perfilParaEstadistica = perfiles.substring(1, perfiles.length() - 1);
+		} else {
+			perfilParaEstadistica = "-";
+		}			
+		if(!userRegistryAdm.insertarRegistroUser(perfilParaEstadistica)){
+			ClsLogging.writeFileLog("***** ERROR AL REGISTRAR UN USUARIO EN EL EST_USER_REGISTRY *****",1);
+		}
 		
 		//Comprobamos si es comision multiple
 		//Comprobamos si es comision multiple
