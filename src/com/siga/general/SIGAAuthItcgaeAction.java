@@ -132,26 +132,11 @@ public class SIGAAuthItcgaeAction extends Action
 		usrbean.setIdRol("2");		
 		usrbean.setProfile(profileArray);
 		
-		
-		/****************** CR - INSERTAMOS EN LA TABLA EST_USER_REGISTRY PARA LAS ESTADISTICAS DEL BI **********************/
-//		EstUserRegistry registroUser = new EstUserRegistry();
-//		registroUser.setIdusuario(new Integer(usrbean.getUserName()));
-//		registroUser.setIdinstitucion(new Short(usrbean.getLocation()));
-//		registroUser.setIdperfil(profile);
-//		
-//		EstadisticasUserRegistryService userRegistryService = (EstadisticasUserRegistryService) BusinessManager.getInstance().getService(EstadisticasUserRegistryService.class);		
-//		userRegistryService.insert(registroUser);
-		
+		// insertando registro de acceso en la tabla de estadisticas
 		EstUserRegistryAdm userRegistryAdm = new EstUserRegistryAdm(usrbean);
-		EstUserRegistryBean userRegistryBean = new EstUserRegistryBean();
-		userRegistryBean.setIdUsuario(new Integer(usrbean.getUserName()));
-		userRegistryBean.setIdInstitucion(new Integer(usrbean.getLocation()));
-		userRegistryBean.setFechaRegistro("SYSDATE");
-		userRegistryBean.setIdPerfil(profile);
-		if(!userRegistryAdm.insertarRegistroUser(userRegistryBean)){
+		if(!userRegistryAdm.insertarRegistroUser(profile)){
 			ClsLogging.writeFileLog("***** ERROR AL REGISTRAR UN USUARIO EN EL EST_USER_REGISTRY *****",1);
 		}
-		/*****************************************************************************************************************/		
 
 		//Comprobamos si es comision multiple
 		BusinessManager bm = BusinessManager.getInstance();

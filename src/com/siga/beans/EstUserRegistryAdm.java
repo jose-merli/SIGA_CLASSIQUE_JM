@@ -99,9 +99,14 @@ public class EstUserRegistryAdm extends MasterBeanAdministrador {
 		return htData;
 	}
 
-	public boolean insertarRegistroUser(EstUserRegistryBean bean) {
+	public boolean insertarRegistroUser(String profile) {
+		EstUserRegistryBean userRegistryBean = new EstUserRegistryBean();
+		userRegistryBean.setIdUsuario(new Integer(this.usrbean.getUserName()));
+		userRegistryBean.setIdInstitucion(new Integer(this.usrbean.getLocation()));
+		userRegistryBean.setFechaRegistro("SYSDATE");
+		userRegistryBean.setIdPerfil(profile);
 		try {
-			if (!this.insert(bean)) {
+			if (!this.insert(userRegistryBean)) {
 				throw new SIGAException("Error al realizar el insert en EstUserRegistry");
 			}
 

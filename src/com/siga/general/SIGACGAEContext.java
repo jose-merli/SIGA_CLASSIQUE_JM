@@ -309,35 +309,18 @@ System.setProperties(properties);
 			
 			tx.commit();
 			
-			/****************** CR - INSERTAMOS EN LA TABLA EST_USER_REGISTRY PARA LAS ESTADISTICAS DEL BI **********************/
-			/*EstUserRegistry registroUser = new EstUserRegistry();
-			registroUser.setIdusuario(new Integer(bean.getUserName()));
-			registroUser.setIdinstitucion(new Short(bean.getLocation()));
-			if (bean.getProfile() != null) {
-				String perfiles = Arrays.toString(bean.getProfile());
-				registroUser.setIdperfil(perfiles.substring(1, perfiles.length() - 1));
-			} else {
-				registroUser.setIdperfil("-");
-			}
-			EstadisticasUserRegistryService userRegistryService = (EstadisticasUserRegistryService) bm.getService(EstadisticasUserRegistryService.class);		
-			userRegistryService.insert(registroUser);*/
-			
+			// insertando registro de acceso en la tabla de estadisticas
+			String profile;
 			EstUserRegistryAdm userRegistryAdm = new EstUserRegistryAdm(bean);
-			EstUserRegistryBean userRegistryBean = new EstUserRegistryBean();
-			userRegistryBean.setIdUsuario(new Integer(bean.getUserName()));
-			userRegistryBean.setIdInstitucion(new Integer(bean.getLocation()));
-			userRegistryBean.setFechaRegistro("SYSDATE");
 			if (bean.getProfile() != null) {
 				String perfiles = Arrays.toString(bean.getProfile());
-				userRegistryBean.setIdPerfil(perfiles.substring(1, perfiles.length() - 1));
+				profile = perfiles.substring(1, perfiles.length() - 1);
 			} else {
-				userRegistryBean.setIdPerfil("-");
+				profile = "-";
 			}			
-			
-			if(!userRegistryAdm.insertarRegistroUser(userRegistryBean)){
+			if(!userRegistryAdm.insertarRegistroUser(profile)){
 				ClsLogging.writeFileLog("***** ERROR AL REGISTRAR UN USUARIO EN EL EST_USER_REGISTRY *****",1);
 			}
-			/*****************************************************************************************************************/				
 			
 			HttpSession ses= request.getSession();
 			if(ses!=null && ses.getAttribute(PARAMETRO.LONGITUD_CODEJG.toString())==null){
@@ -461,11 +444,11 @@ System.setProperties(properties);
 			// Si el número de serie es distinto, lo actualizamos
 			//@if(!usuefectivo.getNumSerie().equalsIgnoreCase(usu.getNumeroSerie())){
 			if(!usuefectivo.getNumSerie().equalsIgnoreCase(usu.getNum_serie_cert().trim())){
-				checkCertificado(bean.getLocation(),usu,bean);
 				//@usuefectivo.setNumSerie(usu.getNumeroSerie());
 				usuefectivo.setNumSerie(usu.getNum_serie_cert().trim());
 				rolObj.update(usuefectivo);
 			}
+			checkCertificado(bean.getLocation(),usu,bean);
 
 
 		}else { // esto no se debe dar nunca
