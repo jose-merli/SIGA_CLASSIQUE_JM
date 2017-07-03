@@ -126,23 +126,46 @@ public class AdmUsuariosAdm extends MasterBeanAdministrador
 	
 	public Vector getDatosUsuario(String idUsuario, String idInstitucion)
 	{
-		StringBuffer sql = new StringBuffer();
-		sql.append(" SELECT * FROM ( ");
+		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT U." + AdmUsuariosBean.C_DESCRIPCION + " NOMBRE_USUARIO, ");
 		sql.append("        U." + AdmUsuariosBean.C_NIF + " NIF_USUARIO, ");
 		sql.append("        U." + AdmUsuariosBean.C_CODIGOEXT + " CODIGOEXT, ");
 		sql.append("        I." + CenInstitucionBean.C_NOMBRE + " NOMBRE_INSTITUCION, ");
-		sql.append("        F_SIGA_ROLES_USUARIO(u." + AdmUsuariosBean.C_IDINSTITUCION + ", ");
-		sql.append("                             u." + AdmUsuariosBean.C_IDUSUARIO + ") NOMBRE_GRUPO, ");
-		sql.append("        TO_CHAR(E." + AdmUsuariosBean.C_FECHA_REGISTRO +",'DD/MM/YYYY HH24:MI:SS') FECHA_REGISTRO, ");
-		sql.append("        ROW_NUMBER() over(order by E."+ AdmUsuariosBean.C_FECHA_REGISTRO +" desc) as RN ");
-		sql.append("   FROM " + AdmUsuariosBean.T_NOMBRETABLA + " u, " + CenInstitucionBean.T_NOMBRETABLA + " i,  Est_User_Registry e");
-		sql.append("  WHERE " + "u." + AdmUsuariosBean.C_IDUSUARIO + " = " + idUsuario);
-		sql.append("    AND " + "u." + AdmUsuariosBean.C_IDINSTITUCION + " = " + idInstitucion);
-		sql.append("    AND " + "u." + AdmUsuariosBean.C_IDINSTITUCION + " = i." + CenInstitucionBean.C_IDINSTITUCION);
-		sql.append("    AND " + "u." + AdmUsuariosBean.C_IDINSTITUCION + " = e.IDINSTITUCION");
-		sql.append("    AND " + "u." + AdmUsuariosBean.C_IDUSUARIO + " = e.IDUSUARIO)");
-		sql.append("  WHERE RN = 1");
+		sql.append("        F_SIGA_ROLES_USUARIO(u." + AdmUsuariosBean.C_IDINSTITUCION + ", u." + AdmUsuariosBean.C_IDUSUARIO + ") NOMBRE_GRUPO, ");
+		sql.append("        NULL FECHA_REGISTRO ");
+		sql.append("   FROM " + AdmUsuariosBean.T_NOMBRETABLA + " u, " + CenInstitucionBean.T_NOMBRETABLA + " i");
+		sql.append("  WHERE u." + AdmUsuariosBean.C_IDUSUARIO + " = " + idUsuario);
+		sql.append("    AND u." + AdmUsuariosBean.C_IDINSTITUCION + " = " + idInstitucion);
+		sql.append("    AND u." + AdmUsuariosBean.C_IDINSTITUCION + " = i." + CenInstitucionBean.C_IDINSTITUCION);
+		sql.append("    AND 2 > (SELECT COUNT(1) ");
+		sql.append("               FROM " + EstUserRegistryBean.T_NOMBRETABLA + " e ");
+		sql.append("              WHERE u." + AdmUsuariosBean.C_IDUSUARIO + " = e." + EstUserRegistryBean.C_IDUSUARIO);
+		sql.append("                AND u." + AdmUsuariosBean.C_IDINSTITUCION + " = e." + EstUserRegistryBean.C_IDINSTITUCION);
+		sql.append("            )");
+		sql.append(" union ");
+		sql.append(" SELECT U." + AdmUsuariosBean.C_DESCRIPCION + " NOMBRE_USUARIO, ");
+		sql.append("        U." + AdmUsuariosBean.C_NIF + " NIF_USUARIO, ");
+		sql.append("        U." + AdmUsuariosBean.C_CODIGOEXT + " CODIGOEXT, ");
+		sql.append("        I." + CenInstitucionBean.C_NOMBRE + " NOMBRE_INSTITUCION, ");
+		sql.append("        F_SIGA_ROLES_USUARIO(u." + AdmUsuariosBean.C_IDINSTITUCION + ", u." + AdmUsuariosBean.C_IDUSUARIO + ") NOMBRE_GRUPO, ");
+		sql.append("        TO_CHAR(MAX(E." + EstUserRegistryBean.C_FECHAREGISTRO +"), 'DD/MM/YYYY HH24:MI:SS') FECHA_REGISTRO ");
+		sql.append("   FROM " + AdmUsuariosBean.T_NOMBRETABLA + " u, " + CenInstitucionBean.T_NOMBRETABLA + " i, " + EstUserRegistryBean.T_NOMBRETABLA + " e");
+		sql.append("  WHERE u." + AdmUsuariosBean.C_IDUSUARIO + " = " + idUsuario);
+		sql.append("    AND u." + AdmUsuariosBean.C_IDINSTITUCION + " = " + idInstitucion);
+		sql.append("    AND u." + AdmUsuariosBean.C_IDINSTITUCION + " = i." + CenInstitucionBean.C_IDINSTITUCION);
+		sql.append("    AND u." + AdmUsuariosBean.C_IDINSTITUCION + " = e." + EstUserRegistryBean.C_IDINSTITUCION);
+		sql.append("    AND u." + AdmUsuariosBean.C_IDUSUARIO + " = e." + EstUserRegistryBean.C_IDUSUARIO);
+		sql.append("    AND e." + EstUserRegistryBean.C_FECHAREGISTRO +" < (SELECT MAX(E2." + EstUserRegistryBean.C_FECHAREGISTRO +") ");
+		sql.append("                                                          FROM " + EstUserRegistryBean.T_NOMBRETABLA + " e2 ");
+		sql.append("                                                         WHERE e2." + EstUserRegistryBean.C_IDUSUARIO + " = e." + EstUserRegistryBean.C_IDUSUARIO);
+		sql.append("                                                           AND e2." + EstUserRegistryBean.C_IDINSTITUCION + " = e." + EstUserRegistryBean.C_IDINSTITUCION);
+		sql.append("                                                        )");
+		sql.append("  Group By U." + AdmUsuariosBean.C_DESCRIPCION);
+		sql.append("         , U." + AdmUsuariosBean.C_NIF);
+		sql.append("         , U." + AdmUsuariosBean.C_CODIGOEXT);
+		sql.append("         , I." + CenInstitucionBean.C_NOMBRE);
+		sql.append("         , u." + AdmUsuariosBean.C_IDINSTITUCION);
+		sql.append("         , u." + AdmUsuariosBean.C_IDUSUARIO);
 
 		try {
 			return this.selectGenerico(sql.toString());
