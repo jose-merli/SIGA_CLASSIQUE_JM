@@ -253,7 +253,15 @@ Cambiado PKG_SIGA_RETENCIONES_SJCS
 Cambiado f_Siga_Asuntoasociado_MV
 
 -- Ejecutado en Integracion por AAG el 30/06 09:25, con cambios
+
 insert into CAJG_ERRORESREMESARESOL (IDERRORESREMESARESOL, IDINSTITUCION, CODIGO, DESCRIPCION)
 values (16, 2003, '16', 'No se ha encontrado la remesa del expediente para el numero de intercambio');
 insert into CAJG_ERRORESREMESARESOL (IDERRORESREMESARESOL, IDINSTITUCION, CODIGO, DESCRIPCION)
 values (17, 2003, '17', 'No se ha encontrado la remesa única del expediente para el numero de intercambio');
+
+
+alter table SCS_PERSONAJG
+  add constraint FK_SCS_PERSONAJG_PAISDIR foreign key (IDPAISDIR)
+  references cen_pais (IDPAIS)
+  deferrable;
+
