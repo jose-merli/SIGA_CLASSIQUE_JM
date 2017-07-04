@@ -53,9 +53,6 @@ declare
    end;
    
    
-   alter table scs_personajg add IDPAISDIR VARCHAR2(3);
-   alter table scs_personajg add POBLACIONEXTRANJERA VARCHAR2(100);
-   
    
 --añadimos la columna a la tabla DESIGNAS
  alter table scs_actuaciondesigna add IDMOVIMIENTO number(10); 

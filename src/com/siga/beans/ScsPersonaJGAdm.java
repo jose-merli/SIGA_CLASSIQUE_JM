@@ -204,8 +204,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 							ScsPersonaJGBean.C_FAX,					ScsPersonaJGBean.C_CORREOELECTRONICO,
 							ScsPersonaJGBean.C_IDTIPODIR,			ScsPersonaJGBean.C_NUMERODIR,
 							ScsPersonaJGBean.C_PISODIR,				ScsPersonaJGBean.C_PUERTADIR,
-							ScsPersonaJGBean.C_ESCALERADIR,			ScsPersonaJGBean.C_IDTIPOVIA,
-							ScsPersonaJGBean.C_IDPAISDIR,           ScsPersonaJGBean.C_POBLACIONEXTRANJERA
+							ScsPersonaJGBean.C_ESCALERADIR,			ScsPersonaJGBean.C_IDTIPOVIA
 						};
 
 		return campos;
@@ -263,8 +262,6 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			bean.setPisoDir(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_PISODIR));
 			bean.setPuertaDir(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_PUERTADIR));
 			bean.setIdTipoVia(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_IDTIPOVIA));
-			bean.setIdPaisDir(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_IDPAISDIR));
-			bean.setPoblacionExt(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_POBLACIONEXTRANJERA));
 			
 		}
 		catch(Exception e){
@@ -319,8 +316,6 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_PISODIR,miBean.getPisoDir());
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_PUERTADIR,miBean.getPuertaDir());
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_IDTIPOVIA,miBean.getIdTipoVia());
-			UtilidadesHash.set(hash,ScsPersonaJGBean.C_IDPAISDIR,miBean.getIdPaisDir());
-			UtilidadesHash.set(hash,ScsPersonaJGBean.C_POBLACIONEXTRANJERA,miBean.getPoblacionExt());
 			
 			
 		

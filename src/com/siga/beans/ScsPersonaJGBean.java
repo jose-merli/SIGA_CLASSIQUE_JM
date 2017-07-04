@@ -60,8 +60,6 @@ public class ScsPersonaJGBean extends MasterBean{
 	private String pisoDir;
 	private String puertaDir;
 	private String idTipoVia;
-	private String idPaisDir;
-	private String poblacionExt;
 
 	
 	/* Nombre de Tabla*/
@@ -111,8 +109,6 @@ public class ScsPersonaJGBean extends MasterBean{
 	static public final String  C_PISODIR		      	=			"PISODIR";
 	static public final String  C_PUERTADIR			    =			"PUERTADIR";
 	static public final String  C_IDTIPOVIA			    =			"IDTIPOVIA";
-	static public final String  C_IDPAISDIR			    =			"IDPAISDIR";
-	static public final String  C_POBLACIONEXTRANJERA	=			"POBLACIONEXTRANJERA";
 	
 	
 	/*Metodos SET*/
@@ -585,18 +581,6 @@ public class ScsPersonaJGBean extends MasterBean{
 	}
 	public void setIdTipoVia(String idTipoVia) {
 		this.idTipoVia = idTipoVia;
-	}
-	public String getIdPaisDir() {
-		return idPaisDir;
-	}
-	public void setIdPaisDir(String idPaisDir) {
-		this.idPaisDir = idPaisDir;
-	}
-	public String getPoblacionExt() {
-		return poblacionExt;
-	}
-	public void setPoblacionExt(String poblacionExt) {
-		this.poblacionExt = poblacionExt;
 	}
 	
 

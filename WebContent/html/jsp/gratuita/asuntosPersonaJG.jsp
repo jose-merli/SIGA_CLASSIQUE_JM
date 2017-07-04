@@ -154,8 +154,6 @@
 			<html:hidden property="ninstitucionOrigen"/>
 			<html:hidden property="incapacitado"/>
 			<html:hidden property="circunstanciasExcepcionales"/>
-			<html:hidden property="paisDir"/>
-			<html:hidden property="poblacionExt"/>
 			<input type="hidden" name="actionModal" value="">
 		</html:form>
 
