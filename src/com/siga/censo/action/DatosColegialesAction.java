@@ -50,7 +50,7 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.xerox.docushare.DSException;
 
-import es.satec.businessManager.BusinessException;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 
 
 /**
@@ -682,8 +682,6 @@ public class DatosColegialesAction extends MasterAction {
 							llamadaReport = cenDatosColegialesEstadoAdm.llamadaWebServiceAcaRevisionLetrado(Long.valueOf(miForm.getIdPersona()), Short.valueOf(miForm.getIdInstitucion()));	
 						} catch (BusinessException e) {
 							llamadaReport = e.getMessage();
-							tx.rollback();
-							return exitoRefresco(e.getMessage() + "\n Cambios NO realizados",request);
 						}
 						hash.put("RESPUESTA_ACA", llamadaReport);
 						hashHist.put(CenHistoricoBean.C_OBSERVACIONES, llamadaReport);
@@ -699,8 +697,7 @@ public class DatosColegialesAction extends MasterAction {
 			//confirmando los cambios en BD
 			tx.commit();
 			if(hash.get("RESPUESTA_ACA")!=null){
-				 request.setAttribute("mensaje",hash.get("RESPUESTA_ACA"));
-				 result = exitoRefresco((String)hash.get("RESPUESTA_ACA") + "\n Cambios realizados correctamente",request);
+				result = exitoRefresco((String)hash.get("RESPUESTA_ACA") + "\n Cambios realizados correctamente",request);
 			}else{
 				result = exitoRefresco("messages.updated.success",request);
 			}
@@ -715,7 +712,7 @@ public class DatosColegialesAction extends MasterAction {
 				request.setAttribute("idPersona", miForm.getIdPersona());
 				request.setAttribute("idInstitucion", miForm.getIdInstitucion());
 				request.setAttribute("pestanaSituacion", pestanasituacion);
-				request.setAttribute("mensaje","messages.updated.success");
+				exitoRefresco("messages.updated.success",request);
 				return "exitoConEditarNColegiado"; 
 			}
 			result = exitoRefresco("messages.updated.success",request);
