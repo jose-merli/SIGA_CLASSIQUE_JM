@@ -256,3 +256,5 @@ values (16, 2003, '16', 'No se ha encontrado la remesa del expediente para el nu
 insert into CAJG_ERRORESREMESARESOL (IDERRORESREMESARESOL, IDINSTITUCION, CODIGO, DESCRIPCION)
 values (17, 2003, '17', 'No se ha encontrado la remesa única del expediente para el numero de intercambio');
 
+-- Ejecutado en Integracion por AAG el 05/07 15:20
+
