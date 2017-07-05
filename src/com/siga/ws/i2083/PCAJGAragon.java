@@ -184,6 +184,9 @@ public class PCAJGAragon extends SIGAWSClientAbstract implements PCAJGConstantes
 			try {
 				rellenaDatosExpediente(expedientes, ht, tipoIntercambio);				
 			} catch (IllegalArgumentException e) {
+				if (intercambio != null && expedientes.sizeOfExpedienteArray() > 0) {
+					expedientes.removeExpediente(expedientes.sizeOfExpedienteArray()-1);
+				}
 				escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, e.getMessage(), CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
 			}
 		}
@@ -231,10 +234,12 @@ public class PCAJGAragon extends SIGAWSClientAbstract implements PCAJGConstantes
 		mapa.put(intercambioDocument.getIntercambio().getDomNode().getNamespaceURI(), "");
 		xmlOptions.setSaveSuggestedPrefixes(mapa);
 		
-		ClsLogging.writeFileLog("Guardando fichero generado xml para el colegio " + getIdInstitucion() + " en " + file.getAbsolutePath(), 3);
-		intercambioDocument.save(file, xmlOptions);
 		//comprobamos que el fichero generado sea correcto
 		StringBuffer sbErrores = SIGAWSClientAbstract.validateXML(intercambioDocument); 
+		
+		//guardamos el fichero tras validar para marcar los errores sobre el fichero
+		ClsLogging.writeFileLog("Guardando fichero generado xml para el colegio " + getIdInstitucion() + " en " + file.getAbsolutePath(), 3);
+		intercambioDocument.save(file, xmlOptions);
 		
 		//si no es correcto lo genero y lo transformo para poder ver por qué no es correcto
 		if (sbErrores != null) {
