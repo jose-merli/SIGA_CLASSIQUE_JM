@@ -329,7 +329,7 @@
 						elems[0] = new FilaExtElement("enviar", "comunicar", SIGAConstants.ACCESS_READ);
 				 	}
 				 	if(idFacturacion != null && !"".equalsIgnoreCase(idFacturacion)){
-				 		elems[1]=new FilaExtElement("anticiparImporte", "anticiparImporte", SIGAConstants.ACCESS_FULL);
+				 		elems[1]=new FilaExtElement("anticiparImporte", "anticiparImporte", "movimientosVarios.icono.alt", SIGAConstants.ACCESS_FULL);
 				 	}
 				 	
 			 	%>

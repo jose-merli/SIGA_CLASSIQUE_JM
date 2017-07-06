@@ -186,7 +186,7 @@
 						elems[0]=new FilaExtElement("cambiar","cambiar","general.boton.permutar", SIGAConstants.ACCESS_FULL);
 					}
 					if(accionesGuardia[0].equalsIgnoreCase("N") && accionesGuardia[3].equalsIgnoreCase("N"))
-					elems[2]=new FilaExtElement("anticiparImporte", "anticiparImporte", SIGAConstants.ACCESS_FULL);
+					elems[2]=new FilaExtElement("anticiparImporte", "anticiparImporte", "movimientosVarios.icono.alt", SIGAConstants.ACCESS_FULL);
 					
 				}				
 			

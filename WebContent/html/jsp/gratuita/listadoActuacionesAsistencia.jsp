@@ -106,7 +106,7 @@
 					%>
 					<c:if test="${not empty actuacionAsistencia.idFacturacion}">
 						<%
-					 		elems[0]=new FilaExtElement("anticiparImporte", "anticiparImporte", SIGAConstants.ACCESS_FULL);
+					 		elems[0]=new FilaExtElement("anticiparImporte", "anticiparImporte", "movimientosVarios.icono.alt", SIGAConstants.ACCESS_FULL);
 				 		%>
 				 	</c:if>
 			 

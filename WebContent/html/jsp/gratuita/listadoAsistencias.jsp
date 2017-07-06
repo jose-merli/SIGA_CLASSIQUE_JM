@@ -220,7 +220,7 @@
 			 	FilaExtElement[] elems = null;
 			 	elems = new FilaExtElement[1];
 			 	if(idFacturacion != null && !"".equalsIgnoreCase(idFacturacion)){
-			 		elems[0]=new FilaExtElement("anticiparImporte", "anticiparImporte", SIGAConstants.ACCESS_FULL);
+			 		elems[0]=new FilaExtElement("anticiparImporte", "anticiparImporte", "movimientosVarios.icono.alt", SIGAConstants.ACCESS_FULL);
 			 	}
 				 	
 			 %>
