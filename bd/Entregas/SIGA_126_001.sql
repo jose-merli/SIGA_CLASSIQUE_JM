@@ -258,3 +258,9 @@ values (17, 2003, '17', 'No se ha encontrado la remesa única del expediente para
 
 -- Ejecutado en Integracion por AAG el 05/07 15:20
 
+Insert Into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('movimientosVarios.icono.alt', 'Anular importe facturado (Movimientos Varios)', '0', 1, Sysdate, 0, '19');
+Insert Into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('movimientosVarios.icono.alt', 'Anul·lar l''import facturat (Movimients Diversos)', '0', 2, Sysdate, 0, '19');
+Insert Into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('movimientosVarios.icono.alt', 'Anular importe facturado (Movimientos Varios)#EU', '0', 3, Sysdate, 0, '19');
+Insert Into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('movimientosVarios.icono.alt', 'Anular importe facturado (Movimientos Varios)#GL', '0', 4, Sysdate, 0, '19');
+
+
