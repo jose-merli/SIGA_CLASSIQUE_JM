@@ -264,3 +264,5 @@ Insert Into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodifi
 Insert Into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) Values  ('movimientosVarios.icono.alt', 'Anular importe facturado (Movimientos Varios)#GL', '0', 4, Sysdate, 0, '19');
 
 
+f_Siga_Asuntoasociado_MV
+
