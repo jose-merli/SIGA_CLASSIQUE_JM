@@ -5,29 +5,33 @@ CREATE OR REPLACE Function f_Siga_Asuntoasociado_MV(p_Idmovimiento In Number, p_
 Begin
   v_Informacion := Null;
   Begin
-  Select (f_siga_getrecurso_etiqueta('movimientosVarios.ActuacionDesigna.titulo', p_IdLenguaje) || ' ' || Anio || '/' || Numero || '/' || Numeroasunto)
+  Select (f_siga_getrecurso_etiqueta('movimientosVarios.ActuacionDesigna.titulo', p_IdLenguaje) || ' ' || des.Anio || '/' || des.Codigo || '/' || Numeroasunto)
     Into v_Informacion
-    From Scs_Actuaciondesigna Actdesig
-   Where Actdesig.Idinstitucion = p_Idinstitucion
+    From Scs_Actuaciondesigna Actdesig, Scs_Designa des
+   Where actdesig.Idinstitucion = des.Idinstitucion
+     And actdesig.Idturno = des.Idturno
+     And actdesig.Anio = des.Anio
+     And actdesig.Numero = des.Numero
+     And Actdesig.Idinstitucion = p_Idinstitucion
      And Actdesig.Idmovimiento = p_Idmovimiento;
   Exception
   When no_data_found Then
     v_Informacion := Null;
   End;
-  
+
   If v_Informacion Is Null Then
     Begin
-    Select (f_siga_getrecurso_etiqueta('movimientosVarios.ActuacionAsistencias.titulo', p_IdLenguaje) || ' '  || Actdesig.Anio || '/' || Actdesig.Numero || '/' || Actdesig.Idactuacion)
+    Select (f_siga_getrecurso_etiqueta('movimientosVarios.ActuacionAsistencias.titulo', p_IdLenguaje) || ' '  || Act.Anio || '/' || Act.Numero || '/' || Act.Idactuacion)
       Into v_Informacion
-      From Scs_Actuacionasistencia Actdesig
-     Where Actdesig.Idinstitucion = p_Idinstitucion
-       And Actdesig.Idmovimiento = p_Idmovimiento;
+      From Scs_Actuacionasistencia Act
+     Where Act.Idinstitucion = p_Idinstitucion
+       And Act.Idmovimiento = p_Idmovimiento;
     Exception
     When no_data_found Then
       v_Informacion := Null;
     End;
   End If;
-  
+
   If v_Informacion Is Null Then
     Begin
     Select (f_siga_getrecurso_etiqueta('movimientosVarios.asistencia.titulo', p_IdLenguaje) || ' ' || Anio || '/' || Numero)
@@ -40,7 +44,7 @@ Begin
       v_Informacion := Null;
     End;
   End If;
-  
+
   If v_Informacion Is Null Then
     Begin
     Select (f_siga_getrecurso_etiqueta('movimientosVarios.guardia.titulo', p_IdLenguaje) ||' ' || Guardias.Fechainicio || ' en ' || Guardiaturno.Nombre || ' ' || Turno.Abreviatura)
@@ -58,7 +62,7 @@ Begin
       v_Informacion := Null;
     End;
   End If;
-  
+
   If v_Informacion Is Null Then
     Begin
     select f_siga_getrecurso_etiqueta('movimientosVarios.movimientosVarios.titulo', p_IdLenguaje) into v_Informacion from dual;
@@ -68,6 +72,6 @@ Begin
     End;
   End If;
   Return v_Informacion;
- 
+
 End f_Siga_Asuntoasociado_MV;
 /
