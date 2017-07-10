@@ -266,3 +266,5 @@ Insert Into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodifi
 
 f_Siga_Asuntoasociado_MV
 
+-- Ejecutado en Integracion por AAG el 10/07 15:40
+
