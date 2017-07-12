@@ -442,13 +442,12 @@ System.setProperties(properties);
 		}else if(vec.size()==1){
 			AdmUsuarioEfectivoBean usuefectivo=(AdmUsuarioEfectivoBean)vec.elementAt(0);
 			// Si el número de serie es distinto, lo actualizamos
-			//@if(!usuefectivo.getNumSerie().equalsIgnoreCase(usu.getNumeroSerie())){
+			checkCertificado(bean.getLocation(),usu,bean);
+			
 			if(!usuefectivo.getNumSerie().equalsIgnoreCase(usu.getNum_serie_cert().trim())){
-				//@usuefectivo.setNumSerie(usu.getNumeroSerie());
 				usuefectivo.setNumSerie(usu.getNum_serie_cert().trim());
 				rolObj.update(usuefectivo);
 			}
-			checkCertificado(bean.getLocation(),usu,bean);
 
 
 		}else { // esto no se debe dar nunca
