@@ -161,7 +161,7 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 	}
 	
 	/**
-	 * Devuelve un vector con los mivimientos varios que hay que pagar para una persona
+	 * Devuelve un vector con los movimientos varios que hay que pagar para una persona
 	 *  
 	 * @param idInstitucion
 	 * @param idPago
@@ -181,7 +181,7 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 				"        M." + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + " " + FcsMovimientosVariosBean.C_IDGRUPOFACTURACION + ","+
 				"        A." + FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO + " CANTIDAD, "+
 				"        M." + FcsMovimientosVariosBean.C_CANTIDAD + " IMPORTEMOVIMIENTOVARIO, "+
-				"        f_Siga_Asuntoasociado_MV(M.IDINSTITUCION,M.IDMOVIMIENTO,idioma) AS ASUNTO_ASOCIADO  "+
+				"        f_Siga_Asuntoasociado_MV(M.IDINSTITUCION,M.IDMOVIMIENTO,"+idioma+") AS ASUNTO_ASOCIADO  "+
 							" FROM " + FcsMovimientosVariosBean.T_NOMBRETABLA + " M, " + FcsPagosJGBean.T_NOMBRETABLA + " P, " +
 							FcsAplicaMovimientosVariosBean.T_NOMBRETABLA + " A " +
 							" WHERE M." + FcsMovimientosVariosBean.C_IDINSTITUCION + " = A." + FcsAplicaMovimientosVariosBean.C_IDINSTITUCION + " " +
