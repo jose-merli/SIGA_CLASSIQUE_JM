@@ -158,6 +158,30 @@ public class DatosGeneralesForm extends MasterForm {
  		return UtilidadesHash.getString(datos, FacSerieFacturacionBean.C_GENERARPDF);
  	}
  	
+ 	public void setTraspasoFacturas(String d) {
+ 		UtilidadesHash.set(datos, FacSerieFacturacionBean.C_TRASPASOFACTURAS, d);
+ 	}
+ 	
+ 	public String getTraspasoFacturas() {
+ 		return UtilidadesHash.getString(datos, FacSerieFacturacionBean.C_TRASPASOFACTURAS);
+ 	}
+ 	
+ 	public void setPlantillaTraspasoFacturas(String d) {
+ 		UtilidadesHash.set(datos, FacSerieFacturacionBean.C_TRASPASOPLANTILLA, d);
+ 	}
+ 	
+ 	public String getPlantillaTraspasoFacturas() {
+ 		return UtilidadesHash.getString(datos, FacSerieFacturacionBean.C_TRASPASOPLANTILLA);
+ 	}
+ 	
+ 	public void setPlantillaTraspasoAuditoria(String d) {
+ 		UtilidadesHash.set(datos, FacSerieFacturacionBean.C_TRASPASOCODAUDITORIADEF, d);
+ 	}
+ 	
+ 	public String getPlantillaTraspasoAuditoria() {
+ 		return UtilidadesHash.getString(datos, FacSerieFacturacionBean.C_TRASPASOCODAUDITORIADEF);
+ 	}
+ 	
  	public void setEnvioFacturas	(String d) 	{
  		UtilidadesHash.set(datos, FacSerieFacturacionBean.C_ENVIOFACTURA, d);
  	}

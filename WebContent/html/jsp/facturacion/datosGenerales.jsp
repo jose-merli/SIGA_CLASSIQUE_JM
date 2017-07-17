@@ -40,6 +40,7 @@
 	String idInstitucion = user.getLocation();
 	String editable = (String)ses.getAttribute("editable");
 	boolean bEditable = (editable!=null && editable.equals("1"));
+	boolean bEstaActivoElTraspasoParaEsteColegio = true;
 	
 	String idTipoEnvioCorreoElectronico = String.valueOf(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO);
 	String parametrosCmbPlantillaEnvios[] = {user.getLocation(), idTipoEnvioCorreoElectronico, "-1"};
@@ -47,15 +48,18 @@
 	ArrayList<String> aSerieSeleccionada = new ArrayList<String>();
 	Integer iPlantilla=new Integer(-1);
 	Integer nombreDescargaPDF=new Integer(1);
-	String sAbreviatura="", sDescripcion="", idSerieFacturacion="-1", idSeriePrevia="-1", enviarFacturas="", generarPDF="", observaciones="", sPlantilla="", sFechaBaja="", sTipoSerieFacturacion="",sNombreDescargaPDF="";
-	FacSerieFacturacionBean beanSerieFacturacion = (FacSerieFacturacionBean) request.getAttribute("beanSerieFacturacion");	
-	if (beanSerieFacturacion!=null) {		
+	String sAbreviatura="", sDescripcion="", idSerieFacturacion="-1", idSeriePrevia="-1", enviarFacturas="", generarPDF="", observaciones="", sPlantilla="", sFechaBaja="", sTipoSerieFacturacion="",sNombreDescargaPDF="", traspasarFacturas="", plantillaTraspasoFacturas="", plantillaTraspasoAuditoria="";
+	FacSerieFacturacionBean beanSerieFacturacion = (FacSerieFacturacionBean) request.getAttribute("beanSerieFacturacion");
+	if (beanSerieFacturacion!=null) {
 		sAbreviatura = beanSerieFacturacion.getNombreAbreviado();
 		sDescripcion = beanSerieFacturacion.getDescripcion();
 		iPlantilla = beanSerieFacturacion.getIdPlantilla();
 		idSerieFacturacion = String.valueOf(beanSerieFacturacion.getIdSerieFacturacion());
 		nombreDescargaPDF = beanSerieFacturacion.getIdNombreDescargaPDF();
 		enviarFacturas = beanSerieFacturacion.getEnvioFactura();
+		traspasarFacturas = beanSerieFacturacion.getTraspasoFacturas();
+		plantillaTraspasoFacturas = beanSerieFacturacion.getTraspasoPlantilla();
+		plantillaTraspasoAuditoria = beanSerieFacturacion.getTraspasoCodAuditoriaDef();
 		generarPDF = beanSerieFacturacion.getGenerarPDF();
 		sTipoSerieFacturacion = beanSerieFacturacion.getTipoSerie();
 		observaciones = beanSerieFacturacion.getObservaciones();
@@ -75,6 +79,10 @@
 			}
 		}	
 		sNombreDescargaPDF = (String) request.getAttribute("nombreFacturaDescarga");
+	}
+	else //Nueva serie de facturación: 
+	{
+		traspasarFacturas = "1"; //Por defecto se activa el check para que le dé error al usuario que cree una nueva serie, obligándole a pensar si se quiere traspasar o no.
 	}
 	
 	// datos seleccionados Combo
@@ -113,7 +121,12 @@
 	//En modo consulta se deshabilita el combo
 	boolean combodeshabilitado=false;
 	if (accion.equals("ver"))
-		combodeshabilitado=true;
+		combodeshabilitado = true;
+	
+	bEstaActivoElTraspasoParaEsteColegio = Boolean.parseBoolean((String)request.getAttribute("TRASPASOACTIVOPARAESTECOLEGIO"));
+	if(traspasarFacturas == null)
+		traspasarFacturas = "";
+	
 %>
 
 	<!-- HEAD -->
@@ -271,8 +284,19 @@
 							return false;
 						}
 					}
+					
+					if(document.DatosGeneralesForm.traspasoFacturas.checked){
+						if(document.DatosGeneralesForm.plantillaTraspasoFacturas.value == ""){
+							alert('<siga:Idioma key="facturacion.mensajes.obligatorio.plantillaTraspaso"/>');
+							return false;
+						}
+						if(document.DatosGeneralesForm.plantillaTraspasoAuditoria.value == ""){
+							alert('<siga:Idioma key="facturacion.mensajes.obligatorio.plantillaAuditoriaTraspaso"/>');
+							return false;
+						}
+					}
 
-						document.forms[0].ids.value = datos;
+					document.forms[0].ids.value = datos;
 					document.forms[0].submit();
 				 }
 			}
@@ -290,10 +314,34 @@
 				}	
 			}		
 		}
+		
+		function habilitarCamposTraspaso()
+		{
+			var campoCheckTraspasoFacturas = document.getElementById("traspasoFacturas");
+			var campoPlantilla = document.getElementById("plantillaTraspasoFacturas");
+			var campoPlantillaAuditoria = document.getElementById("plantillaTraspasoAuditoria");
+			
+			<% if (bEditable){ %>
+				if(campoCheckTraspasoFacturas.checked)
+				{
+					campoPlantilla.removeAttribute("disabled");
+					campoPlantillaAuditoria.removeAttribute("disabled");
+				}
+				else
+				{
+					campoPlantilla.value="";
+					campoPlantillaAuditoria.value="";
+					campoPlantilla.setAttribute("disabled", "disabled");
+					campoPlantillaAuditoria.setAttribute("disabled", "disabled");
+				}
+			<% } %>
+			
+			return false;
+		}
 	</script>
 </head>
 
-<body class="tablaCentralCampos" onLoad="configuraContador();actualiza();ediccion();">
+<body class="tablaCentralCampos" onLoad="configuraContador();actualiza();ediccion();habilitarCamposTraspaso();">
 	
 	<table class="tablaCentralCampos">
 		<html:form action="/FAC_DatosGenerales.do" method="POST" focus="nombreAbreviado" target="submitArea">
@@ -470,9 +518,9 @@
 			<tr>
 				<td style="width:100%" >		
 					<siga:ConjCampos leyenda="facturacion.serios.literal.configuracionEnvios">
-						<table align="left" border="0">
+						<table align="left" border="0" width="100%">
 							<tr>
-								<td class="labelText" style="text-align:left" colspan="4">
+								<td class="labelText" style="text-align:left" width="25%">
 									<siga:Idioma key="facturacion.datosGenerales.literal.generaPDF"/>&nbsp;&nbsp;
 <% 
 									if (enviarFacturas!=null && enviarFacturas.equals("1")) { 
@@ -489,7 +537,8 @@
 <% 
 									} 
 %>
-									&nbsp;&nbsp;&nbsp;
+								</td>
+								<td width="25%">
 									<siga:Idioma key="facturacion.datosGenerales.literal.envioFacturas"/>&nbsp;&nbsp;
 <% 
 									if (enviarFacturas!=null && enviarFacturas.equals("1")) { 
@@ -504,8 +553,8 @@
 %>
 								</td>
 								
-								<td id="titulo" class="labelText"><siga:Idioma key="envios.plantillas.literal.plantilla"/></td>
-								<td>
+								<td id="titulo" class="labelText" width="20%"><siga:Idioma key="envios.plantillas.literal.plantilla"/></td>
+								<td width="30%">
 									<siga:ComboBD  nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=aPlantillaEnviosSeleccionada%>" ancho="280" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>" />
 								</td>									
 							</tr>
@@ -514,6 +563,52 @@
 				</td>
 			</tr>
 		 </table>
+		 
+		 <% if(bEstaActivoElTraspasoParaEsteColegio){ %>
+		 <table class="tablaCentralCampos" border="0">	
+			<tr>
+				<td style="width:100%" >		
+					<siga:ConjCampos leyenda="facturacion.serios.literal.configuracionTraspasoFacturas">
+						<table align="left" border="0" width="100%">
+							<tr>
+								<td class="labelText" style="text-align:left" width="25%">
+									<siga:Idioma key="facturacion.datosGenerales.literal.traspasarFacturas"/>&nbsp;&nbsp;
+<%
+									if (traspasarFacturas.equals("1")) { 
+%>
+										<input type="checkbox" id="traspasoFacturas" name="traspasoFacturas" <%=(accion.equals("ver"))?"disabled":"" %> checked onchange="habilitarCamposTraspaso()">
+<% 
+									} else { 
+%>
+										<input type="checkbox" id="traspasoFacturas" name="traspasoFacturas" <%=(accion.equals("ver"))?"disabled":"" %> onchange="habilitarCamposTraspaso()">
+<% 
+									} 
+%>
+								</td>
+								<td width="25%" nowrap="nowrap">
+									<siga:Idioma key="facturacion.datosGenerales.literal.plantillaTraspasoFacturas"/>&nbsp;&nbsp;
+<% 									if(accion.equals("ver")){ %>
+										<html:text name="DatosGeneralesForm" id="plantillaTraspasoFacturas" styleId="plantillaTraspasoFacturas" property="plantillaTraspasoFacturas" size="30" maxlength="10" value="<%= plantillaTraspasoFacturas %>" styleClass="boxConsulta" readonly="true" />
+<%									} else { %>
+										<html:text name="DatosGeneralesForm" id="plantillaTraspasoFacturas" styleId="plantillaTraspasoFacturas" property="plantillaTraspasoFacturas" size="30" maxlength="10" value="<%= plantillaTraspasoFacturas %>" styleClass="box" readonly="false"  />
+<%									} %>
+								</td>
+								
+								<td id="titulo" class="labelText" width="20%"><siga:Idioma key="envios.plantillas.literal.plantillaTraspasoFacturasAuditoria"/></td>
+								<td width="30%">
+<% 									if(accion.equals("ver")){ %>
+										<html:text name="DatosGeneralesForm" id="plantillaTraspasoAuditoria" styleId="plantillaTraspasoAuditoria" property="plantillaTraspasoAuditoria" size="45" maxlength="10" value="<%= plantillaTraspasoAuditoria %>" styleClass="boxConsulta" readonly="true" />
+<%									} else { %>
+										<html:text name="DatosGeneralesForm" id="plantillaTraspasoAuditoria" styleId="plantillaTraspasoAuditoria" property="plantillaTraspasoAuditoria" size="45" maxlength="10" value="<%= plantillaTraspasoAuditoria %>" styleClass="box" readonly="false"  />
+<%									} %>
+								</td>									
+							</tr>
+						</table>
+					</siga:ConjCampos>
+				</td>
+			</tr>
+		 </table>
+		 <% } %>
 
 <% 
 		if (accion.equals("nuevo")) {  

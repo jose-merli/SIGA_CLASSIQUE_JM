@@ -49,8 +49,12 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 							FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM ,
 							FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION ,
 							FacFacturacionProgramadaBean.C_IDESTADOPDF ,
+							FacFacturacionProgramadaBean.C_IDESTADOTRASPASO ,
 							FacFacturacionProgramadaBean.C_IDESTADOENVIO ,
 							FacFacturacionProgramadaBean.C_GENERAPDF ,
+							FacFacturacionProgramadaBean.C_TRASPASOFACTURAS ,
+							FacFacturacionProgramadaBean.C_TRASPASOPLANTILLA ,
+							FacFacturacionProgramadaBean.C_TRASPASOCODAUDITORIADEF ,
 							FacFacturacionProgramadaBean.C_ENVIO ,
 							FacFacturacionProgramadaBean.C_ARCHIVARFACT ,
 							FacFacturacionProgramadaBean.C_FECHACARGO,
@@ -70,6 +74,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 							FacFacturacionProgramadaBean.C_FECHARECIBOSCOR1,
 							FacFacturacionProgramadaBean.C_FECHARECIBOSB2B,
 							FacFacturacionProgramadaBean.C_LOGERROR,
+							FacFacturacionProgramadaBean.C_LOGTRASPASO,
 							FacFacturacionProgramadaBean.C_NOMBREFICHERO};
 		return campos;
 	}
@@ -101,8 +106,12 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			bean.setFechaPrevistaConfirmacion(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM));
 			bean.setIdEstadoConfirmacion(UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION));
 			bean.setIdEstadoPDF(UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_IDESTADOPDF));
+			bean.setIdEstadoTraspaso(UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_IDESTADOTRASPASO));
 			bean.setIdEstadoEnvio(UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_IDESTADOENVIO));
 			bean.setGenerarPDF(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_GENERAPDF));
+			bean.setTraspasoFacturas(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_TRASPASOFACTURAS));
+			bean.setTraspasoPlantilla(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_TRASPASOPLANTILLA));
+			bean.setTraspasoCodAuditoriaDef(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_TRASPASOCODAUDITORIADEF));
 			bean.setEnvio(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_ENVIO));
 			bean.setIdTipoEnvios(UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_IDTIPOENVIOS));
 			bean.setIdTipoPlantillaMail(UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL));
@@ -124,6 +133,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			bean.setFechaRecibosCOR1		(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHARECIBOSCOR1));
 			bean.setFechaRecibosB2B			(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHARECIBOSB2B));
 			bean.setLogerror				(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_LOGERROR));
+			bean.setLogTraspaso				(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_LOGTRASPASO));
 			bean.setNombrefichero			(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_NOMBREFICHERO));		
 
 		}
@@ -157,8 +167,12 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM, b.getFechaPrevistaConfirmacion());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, b.getIdEstadoConfirmacion());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_IDESTADOPDF, b.getIdEstadoPDF());
+			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_IDESTADOTRASPASO, b.getIdEstadoTraspaso());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_IDESTADOENVIO, b.getIdEstadoEnvio());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_GENERAPDF, b.getGenerarPDF());
+			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_TRASPASOFACTURAS, b.getTraspasoFacturas());
+			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_TRASPASOPLANTILLA, b.getTraspasoPlantilla());
+			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_TRASPASOCODAUDITORIADEF, b.getTraspasoCodAuditoriaDef());
 			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_ENVIO, b.getEnvio());
 			if(b.getIdTipoPlantillaMail() != null){
 				UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL, b.getIdTipoPlantillaMail());
@@ -185,6 +199,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHARECIBOSCOR1, b.getFechaRecibosCOR1());
 			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHARECIBOSB2B, b.getFechaRecibosB2B());
 			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_LOGERROR, b.getLogerror());
+			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_LOGTRASPASO, b.getLogTraspaso());
 			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_NOMBREFICHERO, b.getNombrefichero());	
 		}
 		catch (Exception e) {
@@ -438,6 +453,20 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 					bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_NOAPLICA);
 				}
 			}
+			// TRASPASO FACTURAS
+			if (bean.getFechaPrevistaConfirmacion()!=null && !bean.getFechaPrevistaConfirmacion().trim().equals("")) {
+				if (bean!=null && bean.getTraspasoFacturas()!=null && bean.getTraspasoFacturas().equals("1")) {
+					bean.setIdEstadoTraspaso(FacEstadoConfirmFactBean.TRASPASO_PROGRAMADA);
+				} else {
+					bean.setIdEstadoTraspaso(FacEstadoConfirmFactBean.TRASPASO_NOAPLICA);
+				}
+			} else { 
+				if (bean.getTraspasoFacturas().equals("1")) {
+					bean.setIdEstadoTraspaso(FacEstadoConfirmFactBean.TRASPASO_PENDIENTE);
+				} else {
+					bean.setIdEstadoTraspaso(FacEstadoConfirmFactBean.TRASPASO_NOAPLICA);
+				}
+			}
 			// Envio
 			if (bean.getFechaPrevistaConfirmacion()!=null && !bean.getFechaPrevistaConfirmacion().trim().equals("")) {
 				if (bean.getEnvio().equals("1")) {
@@ -622,7 +651,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		select.append(FacFacturacionProgramadaBean.C_FECHAREALGENERACION);
 		select.append(",");
 		
-		select.append("IDESTADOCONFIRMACION,IDESTADOPDF,IDESTADOENVIO");
+		select.append("IDESTADOCONFIRMACION, IDESTADOPDF, IDESTADOENVIO, IDESTADOTRASPASO ");
 
 		select.append(",ARCHIVARFACT,IDPROGRAMACION");
 		select.append(",facProg.");
@@ -635,7 +664,19 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		select.append(FacFacturacionProgramadaBean.C_NOMBREFICHERO);
 		
 		select.append(",facProg.");
-		select.append(FacFacturacionProgramadaBean.C_LOGERROR);		
+		select.append(FacFacturacionProgramadaBean.C_LOGERROR);
+		
+		select.append(",facProg.");
+		select.append(FacFacturacionProgramadaBean.C_LOGTRASPASO);
+		
+		select.append(",facProg.");
+		select.append(FacFacturacionProgramadaBean.C_TRASPASOFACTURAS);
+		
+		select.append(",facProg.");
+		select.append(FacFacturacionProgramadaBean.C_TRASPASOPLANTILLA);
+		
+		select.append(",facProg.");
+		select.append(FacFacturacionProgramadaBean.C_TRASPASOCODAUDITORIADEF);
 		
 		select.append(",facProg.");
 		select.append(FacFacturacionProgramadaBean.C_DESCRIPCION);
@@ -656,6 +697,9 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		}
 		if (confirmarFacturacionForm.getEstadoPDF()!= null && !confirmarFacturacionForm.getEstadoPDF().trim().equals("")) {
 			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_IDESTADOPDF+"="+confirmarFacturacionForm.getEstadoPDF());
+		}
+		if (confirmarFacturacionForm.getEstadoTraspaso()!= null && !confirmarFacturacionForm.getEstadoTraspaso().trim().equals("")) {
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_IDESTADOTRASPASO+"="+confirmarFacturacionForm.getEstadoTraspaso());
 		}
 		if (confirmarFacturacionForm.getEstadoEnvios()!= null && !confirmarFacturacionForm.getEstadoEnvios().trim().equals("")) {
 			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_IDESTADOENVIO+"="+confirmarFacturacionForm.getEstadoEnvios());

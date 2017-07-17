@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -104,7 +105,7 @@ public class DatosGeneralesAction extends MasterAction{
 				request.setAttribute("nombreFacturaDescarga", nombreFacturaDescarga);
 				
 			} else {
-				hContador.put(AdmContadorBean.C_IDINSTITUCION,idInstitucion);
+				hContador.put(AdmContadorBean.C_IDINSTITUCION, idInstitucion);
 				hContador.put(AdmContadorBean.C_GENERAL, "1"); // Se obtiene el general de la institucion
 				vContador = admContador.select(hContador);
 			}									
@@ -114,7 +115,7 @@ public class DatosGeneralesAction extends MasterAction{
 			}
 			
 			/** ---------- 5. OBTIENE LOS BANCOS DEL COLEGIO Y LA RELACION CON LA SERIE DE FACTURACION ----------*/			
-			Vector<Hashtable<String, Object>> vBancosInstitucion = admBancoInstitucion.obtenerBancosSerieFacturacion(idInstitucion,idSerieFacturacion);
+			Vector<Hashtable<String, Object>> vBancosInstitucion = admBancoInstitucion.obtenerBancosSerieFacturacion(idInstitucion, idSerieFacturacion);
 			request.setAttribute("vBancosInstitucion", vBancosInstitucion);
 			
 			/** ---------- 6. OBTIENE LOS SUFIJOS ----------*/	
@@ -128,13 +129,18 @@ public class DatosGeneralesAction extends MasterAction{
 				FacSufijoBean sufijosBean = vsufijos.get(numSufijo);
 				lSufijos.add(sufijosBean);
 			}
-	
+			
+			//COMPROBAMOS SI ESTÁ ACTIVO EL TRASPASO DE LA FACTURACIÓN PARA ESTE COLEGIO: 
+			GenParametrosAdm admParametros = new GenParametrosAdm(user);
+			String bTraspasoActivo = (admParametros.getValor(idInstitucion, AppConstants.MODULO.ECOM.toString(), AppConstants.PARAMETRO.TRASPASO_FACTURAS_WS_ACTIVO.toString(), "false").equals("1"))?"true":"false";
+			
+			request.setAttribute("TRASPASOACTIVOPARAESTECOLEGIO", bTraspasoActivo);
 			request.setAttribute("lSufijos", lSufijos);
 			request.getSession().setAttribute("idSerieFacturacion", idSerieFacturacion);
 			
-		} catch (Exception e) { 
-		   throwExcp("messages.general.error",new String[] {"modulo.facturacion.asignacionConceptos"},e,null); 
-		} 	
+		} catch (Exception e) {
+		   throwExcp("messages.general.error",new String[] {"modulo.facturacion.asignacionConceptos"},e,null);
+		}
 
 		return "inicio";
 	}
@@ -218,6 +224,10 @@ public class DatosGeneralesAction extends MasterAction{
 				String generarPDF = formDatosGenerales.getGenerarPDF();
 				beanSerieFacturacion.setGenerarPDF(generarPDF!=null && !generarPDF.equals("") ? "1" : "0");
 			}
+			
+			beanSerieFacturacion.setTraspasoFacturas((formDatosGenerales.getTraspasoFacturas()!=null && !formDatosGenerales.getTraspasoFacturas().equals("")) ? "1" : "0");
+			beanSerieFacturacion.setTraspasoPlantilla(formDatosGenerales.getPlantillaTraspasoFacturas());
+			beanSerieFacturacion.setTraspasoCodAuditoriaDef(formDatosGenerales.getPlantillaTraspasoAuditoria());
 
 			beanSerieFacturacion.setConfigDeudor(ClsConstants.ASIGNACION_CONCEPTOS_CONTABILIDAD_CONFIGURACION_FIJO);
 			beanSerieFacturacion.setConfigIngresos(ClsConstants.ASIGNACION_CONCEPTOS_CONTABILIDAD_CONFIGURACION_FIJO);
@@ -361,7 +371,7 @@ public class DatosGeneralesAction extends MasterAction{
 				}				
 			}
 						
-			Hashtable<String,Object> hashOld =  new Hashtable<String,Object>();				
+			Hashtable<String,Object> hashOld =  new Hashtable<String,Object>();
 			hashOld.put(FacSerieFacturacionBean.C_IDINSTITUCION, idInstitucion);
 			hashOld.put(FacSerieFacturacionBean.C_IDSERIEFACTURACION, sIdSerieFacturacion);
 			hashOld.put(FacSerieFacturacionBean.C_IDPLANTILLA, beanSerieFacturacionBeanOld.getIdPlantilla());
@@ -380,6 +390,19 @@ public class DatosGeneralesAction extends MasterAction{
 			
 			String sTipoSerie = (formDatosGenerales.getTipoSerie()!=null && !formDatosGenerales.getTipoSerie().equals("") ? "G" : "");
 			hashNew.put(FacSerieFacturacionBean.C_TIPOSERIE, sTipoSerie);
+			
+			String traspasoFacturas = (formDatosGenerales.getTraspasoFacturas()!=null && !formDatosGenerales.getTraspasoFacturas().equals("") ? "1" : "0");
+			hashNew.put(FacSerieFacturacionBean.C_TRASPASOFACTURAS, traspasoFacturas);
+			if("1".equals(traspasoFacturas))
+			{
+				hashNew.put(FacSerieFacturacionBean.C_TRASPASOPLANTILLA, formDatosGenerales.getPlantillaTraspasoFacturas());
+				hashNew.put(FacSerieFacturacionBean.C_TRASPASOCODAUDITORIADEF, formDatosGenerales.getPlantillaTraspasoAuditoria());
+			}
+			else
+			{
+				hashNew.put(FacSerieFacturacionBean.C_TRASPASOPLANTILLA, "");
+				hashNew.put(FacSerieFacturacionBean.C_TRASPASOCODAUDITORIADEF, "");
+			}
 			
 			String envio = (formDatosGenerales.getEnvioFacturas()!=null && !formDatosGenerales.getEnvioFacturas().equals("") ? "1" : "0");
 			hashNew.put(FacSerieFacturacionBean.C_ENVIOFACTURA, envio);

@@ -75,6 +75,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 							PysProductosInstitucionBean.C_FECHABAJA,
 							PysProductosInstitucionBean.C_FECHAMODIFICACION,
 							PysProductosInstitucionBean.C_NOFACTURABLE,
+							PysProductosInstitucionBean.C_CODIGOTRASPASONAV,
 							PysProductosInstitucionBean.C_USUMODIFICACION};
 		return campos;
 	}
@@ -144,6 +145,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 			bean.setFechaMod(UtilidadesHash.getString(hash,PysProductosInstitucionBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,PysProductosInstitucionBean.C_USUMODIFICACION));			
 			bean.setnoFacturable (UtilidadesHash.getString(hash,PysProductosInstitucionBean.C_NOFACTURABLE ));
+			bean.setCodigoTraspasoNav(UtilidadesHash.getString(hash,PysProductosInstitucionBean.C_CODIGOTRASPASONAV ));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -184,6 +186,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_USUMODIFICACION, b.getUsuMod());
 			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_NOFACTURABLE, b.getnoFacturable());
+			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_CODIGOTRASPASONAV, b.getCodigoTraspasoNav());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -237,7 +240,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 			}
 		}	
 		catch (ClsExceptions e) {		
-			throw e;		
+			throw e;
 		}
 	    catch (Exception e) {
        		if (e instanceof SIGAException){
@@ -245,7 +248,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
        		}
        		else{
        			throw new ClsExceptions(e,"Error al ejecutar el 'prepararInsert' en B.D.");
-       		}	
+       		}
 	    }
 		
 		return entrada;
@@ -412,6 +415,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_SOLICITARALTA + "," +
 		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + "," +
 		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_NOFACTURABLE + "," +
+		            			PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_CODIGOTRASPASONAV + "," +
 		            			PysProductosBean.T_NOMBRETABLA + "." + PysProductosBean.C_DESCRIPCION + " AS CATEGORIA," +
 		            			PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_VALOR + " AS VALORIVA," +
 		            			UtilidadesMultidioma.getCampoMultidiomaSimple(PysTiposProductosBean.T_NOMBRETABLA + "." + PysTiposProductosBean.C_DESCRIPCION,this.usrbean.getLanguage()) + " AS TIPO " +								

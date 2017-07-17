@@ -27,7 +27,7 @@ public class PysServiciosInstitucionBean extends MasterBean {
 	private Long 	idServicio, idServiciosInstitucion, idConsulta;
 	private Float 	idTipoIva;
 	private String 	descripcion, cuentacontable, inicioFinalPonderado, momentoCargo, criterios;
-	private String 	solicitarBaja, solicitarAlta, automatico, fechaBaja, facturacionPonderada;
+	private String 	solicitarBaja, solicitarAlta, automatico, fechaBaja, facturacionPonderada, codigoTraspasoNav;
 	
 	
 	/* Nombre tabla */
@@ -50,26 +50,28 @@ public class PysServiciosInstitucionBean extends MasterBean {
 	static public final String C_IDCONSULTA				= "IDCONSULTA";
 	static public final String C_CRITERIOS				= "CRITERIOS";
 	static public final String C_FACTURACIONPONDERADA	= "FACTURACIONPONDERADA";
+	static public final String C_CODIGOTRASPASONAV		= "CODIGO_TRASPASONAV";
 	
 	// Metodos SET
 
-	public void setCuentacontable(String cuentacontable)	{this.cuentacontable = cuentacontable;}
-	public void setDescripcion(String descripcion) 			{this.descripcion = descripcion;}
-	public void setIdInstitucion(Integer idInstitucion) 	{this.idInstitucion = idInstitucion;}
-	public void setIdServicio(Long idServicio) 				{this.idServicio = idServicio;}
+	public void setCuentacontable(String cuentacontable)			{this.cuentacontable = cuentacontable;}
+	public void setDescripcion(String descripcion) 					{this.descripcion = descripcion;}
+	public void setIdInstitucion(Integer idInstitucion) 			{this.idInstitucion = idInstitucion;}
+	public void setIdServicio(Long idServicio) 						{this.idServicio = idServicio;}
 	public void setIdServicioInstitucion(Long idServiciosInstitucion) {this.idServiciosInstitucion = idServiciosInstitucion;}
-	public void setIdTipoServicios(Integer idTipoServicios) {this.idTipoServicios = idTipoServicios;}
+	public void setIdTipoServicios(Integer idTipoServicios) 		{this.idTipoServicios = idTipoServicios;}
 	public void setInicioFinalPonderado(String inicioFinalPonderado) {this.inicioFinalPonderado = inicioFinalPonderado;}
-	public void setMomentoCargo(String momentoCargo) 		{this.momentoCargo = momentoCargo;}
-	public void setIdTipoIva(Float idTipoIva) 				{this.idTipoIva = idTipoIva;}
-	public void setSolicitarAlta(String solicitarAlta) 		{this.solicitarAlta = solicitarAlta;}
-	public void setSolicitarBaja(String solicitarBaja) 		{this.solicitarBaja = solicitarBaja;}
-	public void setAutomatico(String automatico) 			{this.automatico = automatico;}
-	public void setFechaBaja(String aux) 					{this.fechaBaja = aux;}
-	public void setIdConsulta(Long d) 						{this.idConsulta = d;}
-	public void setCriterios(String d) 						{this.criterios = d;}
-	public void setFacturacionPonderada(String d) 						{this.facturacionPonderada = d;}
-
+	public void setMomentoCargo(String momentoCargo) 				{this.momentoCargo = momentoCargo;}
+	public void setIdTipoIva(Float idTipoIva) 						{this.idTipoIva = idTipoIva;}
+	public void setSolicitarAlta(String solicitarAlta) 				{this.solicitarAlta = solicitarAlta;}
+	public void setSolicitarBaja(String solicitarBaja) 				{this.solicitarBaja = solicitarBaja;}
+	public void setAutomatico(String automatico) 					{this.automatico = automatico;}
+	public void setFechaBaja(String aux) 							{this.fechaBaja = aux;}
+	public void setIdConsulta(Long d) 								{this.idConsulta = d;}
+	public void setCriterios(String d) 								{this.criterios = d;}
+	public void setFacturacionPonderada(String d) 					{this.facturacionPonderada = d;}
+	public void setCodigoTraspasoNav(String d)	 					{this.codigoTraspasoNav = d;}
+	
 	// Metodos GET
 		
 	public String getCuentacontable()			{return this.cuentacontable;}
@@ -80,14 +82,15 @@ public class PysServiciosInstitucionBean extends MasterBean {
 	public Integer getIdTipoServicios() 		{return this.idTipoServicios;}
 	public String getInicioFinalPonderado() 	{return this.inicioFinalPonderado;}
 	public String getMomentoCargo() 			{return this.momentoCargo;}
-	public Float getIdTipoIva() 			{return this.idTipoIva;}
+	public Float getIdTipoIva() 				{return this.idTipoIva;}
 	public String getSolicitarAlta() 			{return this.solicitarAlta;}
 	public String getSolicitarBaja() 			{return this.solicitarBaja;}
 	public String getAutomatico() 				{return this.automatico;}
 	public String getFechaBaja() 				{return this.fechaBaja;}
 	public Long getIdConsulta() 				{return this.idConsulta;}
 	public String getCriterios()				{return this.criterios;}
-	public String getFacturacionPonderada()				{return this.facturacionPonderada;}
+	public String getFacturacionPonderada()		{return this.facturacionPonderada;}
+	public String getCodigoTraspasoNav()		{return this.codigoTraspasoNav;}
 	
 
 }

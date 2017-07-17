@@ -21,7 +21,7 @@ public class ConfirmarFacturacionForm extends MasterForm{
 	 * 
 	 */
 	private static final long serialVersionUID = -5956726886950561164L;
-	private String fechaCargo, estadoConfirmacion, estadoPDF, estadoEnvios, archivadas;
+	private String fechaCargo, estadoConfirmacion, estadoPDF, estadoEnvios, archivadas, estadoTraspaso;
 	private String facturacionRapida, idSerieFacturacion, idProgramacion;
 	private String fechaEntrega="", fechaFRST="", fechaRCUR="", fechaCOR1="", fechaB2B="";
 	private String fechaDesdeConfirmacion,fechaHastaConfirmacion,fechaDesdeGeneracion,fechaHastaGeneracion,fechaDesdePrevistaGeneracion,fechaHastaPrevistaGeneracion,fechaDesdeProductos,fechaHastaProductos,fechaDesdeServicios,fechaHastaServicios;
@@ -341,7 +341,34 @@ public class ConfirmarFacturacionForm extends MasterForm{
 		catch (Exception e) {
 			//e.printStackTrace();
 		}	
-	}	
+	}
+	
+	public void setTraspasoFacturas(String dato) {				
+		try {
+			this.datos.put(FacFacturacionProgramadaBean.C_TRASPASOFACTURAS, dato);
+		}
+		catch (Exception e) {
+			//e.printStackTrace();
+		}	
+	}
+	
+	public void setTraspasoPlantilla(String dato) {				
+		try {
+			this.datos.put(FacFacturacionProgramadaBean.C_TRASPASOPLANTILLA, dato);
+		}
+		catch (Exception e) {
+			//e.printStackTrace();
+		}	
+	}
+	
+	public void setTraspasoCodAuditoriaDef(String dato) {				
+		try {
+			this.datos.put(FacFacturacionProgramadaBean.C_TRASPASOCODAUDITORIADEF, dato);
+		}
+		catch (Exception e) {
+			//e.printStackTrace();
+		}	
+	}
 
 	/**
 	 * @param 
@@ -434,6 +461,18 @@ public class ConfirmarFacturacionForm extends MasterForm{
 		return UtilidadesHash.getString(this.datos, FacFacturacionProgramadaBean.C_GENERAPDF);
 	}
 	
+	public String getTraspasoFacturas() {
+		return UtilidadesHash.getString(this.datos, FacFacturacionProgramadaBean.C_TRASPASOFACTURAS);
+	}
+	
+	public String getTraspasoPlantilla() {
+		return UtilidadesHash.getString(this.datos, FacFacturacionProgramadaBean.C_TRASPASOPLANTILLA);
+	}
+	
+	public String getTraspasoCodAuditoriaDef() {
+		return UtilidadesHash.getString(this.datos, FacFacturacionProgramadaBean.C_TRASPASOCODAUDITORIADEF);
+	}
+	
 	
 	/**
 	 * @return 
@@ -516,6 +555,14 @@ public class ConfirmarFacturacionForm extends MasterForm{
 	public void setIdProducto(String idProducto)
 	{
 		this.idProducto = idProducto;
+	}
+	public String getEstadoTraspaso()
+	{
+		return estadoTraspaso;
+	}
+	public void setEstadoTraspaso(String estadoTraspaso)
+	{
+		this.estadoTraspaso = estadoTraspaso;
 	}
 
 }

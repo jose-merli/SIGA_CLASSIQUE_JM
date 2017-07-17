@@ -58,6 +58,7 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 							PysServiciosInstitucionBean.C_USUMODIFICACION,
 							PysServiciosInstitucionBean.C_IDCONSULTA,
 							PysServiciosInstitucionBean.C_FACTURACIONPONDERADA,
+							PysServiciosInstitucionBean.C_CODIGOTRASPASONAV,
 							PysServiciosInstitucionBean.C_CRITERIOS};
 		return campos;
 	}
@@ -102,6 +103,7 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 			bean.setIdConsulta(UtilidadesHash.getLong(hash,PysServiciosInstitucionBean.C_IDCONSULTA));
 			bean.setCriterios(UtilidadesHash.getString(hash,PysServiciosInstitucionBean.C_CRITERIOS));
 			bean.setFacturacionPonderada(UtilidadesHash.getString(hash,PysServiciosInstitucionBean.C_FACTURACIONPONDERADA));
+			bean.setCodigoTraspasoNav(UtilidadesHash.getString(hash,PysServiciosInstitucionBean.C_CODIGOTRASPASONAV));
 			
 			bean.setFechaMod(UtilidadesHash.getString(hash,PysServiciosInstitucionBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,PysServiciosInstitucionBean.C_USUMODIFICACION));
@@ -141,6 +143,7 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_IDCONSULTA, b.getIdConsulta());
 			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_CRITERIOS, b.getCriterios());
 			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_FACTURACIONPONDERADA, b.getFacturacionPonderada());
+			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_CODIGOTRASPASONAV, b.getCodigoTraspasoNav());
 
 			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_FECHAMODIFICACION, b.getFechaMod());			
 			UtilidadesHash.set(htData,PysServiciosInstitucionBean.C_USUMODIFICACION, b.getUsuMod());
@@ -181,6 +184,7 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 						
 						PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_FECHABAJA + ", " +
 						PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_FACTURACIONPONDERADA + ", " +
+						PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_CODIGOTRASPASONAV + ", " +
 						PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_MOMENTOCARGO;
 
 			String from = " FROM " + 
@@ -241,6 +245,7 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA +"." + PysServiciosInstitucionBean.C_IDTIPOSERVICIOS  + "," +
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA +"." + PysServiciosInstitucionBean.C_IDSERVICIOSINSTITUCION  + "," +
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA +"." + PysServiciosInstitucionBean.C_FACTURACIONPONDERADA  + "," +
+	            			PysServiciosInstitucionBean.T_NOMBRETABLA +"." + PysServiciosInstitucionBean.C_CODIGOTRASPASONAV  + "," +
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA +"." + PysServiciosInstitucionBean.C_DESCRIPCION  + "," +
 							PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_FECHABAJA + ", " +
 							PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_AUTOMATICO + ", " +							
@@ -381,6 +386,7 @@ public class PysServiciosInstitucionAdm extends MasterBeanAdministrador {
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_IDCONSULTA + "," +
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_CRITERIOS + "," +
 	            			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_FACTURACIONPONDERADA + "," +
+	            			PysServiciosInstitucionBean.T_NOMBRETABLA + "." + PysServiciosInstitucionBean.C_CODIGOTRASPASONAV + "," +
 	            			PysServiciosBean.T_NOMBRETABLA + "." + PysServiciosBean.C_DESCRIPCION + " AS CATEGORIA," +
 	            			PysTipoIvaBean.T_NOMBRETABLA + "." + PysTipoIvaBean.C_VALOR + " AS VALORIVA," +
 	            			UtilidadesMultidioma.getCampoMultidiomaSimple(PysTipoServiciosBean.T_NOMBRETABLA + "." + PysTipoServiciosBean.C_DESCRIPCION ,this.usrbean.getLanguage())+" AS TIPO " +							

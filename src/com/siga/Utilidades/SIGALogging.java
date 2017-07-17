@@ -153,6 +153,31 @@ public class SIGALogging
 		}
 	}
 	
+	public void writeLogTraspasoFactura(String numFactura, String traspasada, String descripcionError)
+	{
+	    PrintWriter printer = null;
+		try
+		{
+			Date dat = Calendar.getInstance().getTime();
+			printer = new PrintWriter(new BufferedWriter(new FileWriter(f, true)));
+			
+			if (!iniciado) {
+				printer.println("NUM. FACTURA"+separador+"TRASPASADA"+separador+"DESCRIPCIÓN ERROR");
+				iniciado=true;
+			}
+
+			printer.print(numFactura + separador + traspasada + separador + "\"" + descripcionError + "\"\r\n");
+			printer.flush();
+			printer.close();
+
+		} catch(Exception _ex) {
+		    try {
+		        printer.close();
+		    } catch (Exception eee) {}
+			System.out.println("Error Escribiendo SIGALogging para log de facturacion: "+_ex.toString());
+		}
+	}
+	
 	public void writeLogGestorColaSincronizarDatos(int level, Integer idInstitucionOrigen, Long idPersona, String nombreCliente, String descripcion)
 	{
 	    PrintWriter printer = null;

@@ -82,69 +82,71 @@ public class ConfirmarFacturacionAction extends MasterAction{
 					return mapping.findForward(mapDestino);
 				}
 				
-				String accion = miForm.getModo();
-				
-				// La primera vez que se carga el formulario 
-				// Abrir
-				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
-					mapDestino = abrir(mapping, miForm, request, response);						
-				}else if (accion.equalsIgnoreCase("abrirVolver")){
-					request.setAttribute("volver","s");			
-					ConfirmarFacturacionForm confirmarFacturacionForm = (ConfirmarFacturacionForm) miForm;
-					request.setAttribute("estadoConfirmacion", confirmarFacturacionForm.getEstadoConfirmacion());
-					mapDestino = abrir(mapping, miForm, request, response);
-				} else if (accion.equalsIgnoreCase("descargaLog")){
-					mapDestino = descargaLog(mapping, miForm, request, response);
-				} else if (accion.equalsIgnoreCase("descargarInformeGeneracion")){
-					mapDestino = descargarInformeGeneracion(mapping, miForm, request, response);					
-				} else if (accion.equalsIgnoreCase("archivarFactura")){
-					mapDestino = archivarFactura(mapping, miForm, request, response);
-				} else if (accion.equalsIgnoreCase("enviar")){
-					mapDestino = enviarFacturas(mapping, miForm, request, response);
-				} else if (accion.equalsIgnoreCase("consultarfactura")){
-					mapDestino = consultarFacturas(mapping, miForm, request, response);
-				} else if (accion.equalsIgnoreCase("editarFechas")){
-					mapDestino = editarFechas(mapping, miForm, request, response);	
-				} else if (accion.equalsIgnoreCase("actualizarDatosSerieFacturacion")){
-					mapDestino = actualizarDatosSerieFacturacion(mapping, miForm, request, response);						
-				}else if (accion.equalsIgnoreCase("buscarInit")){
-					borrarPaginador(request, paginador);
-					mapDestino = buscarPor(mapping, miForm, request, response);
-				}else if (accion.equalsIgnoreCase("buscarPor")){
-					mapDestino = buscarPor(mapping, miForm, request, response);
-				}else if (accion.equalsIgnoreCase("borrar")){
-					mapDestino = borrar(mapping, miForm, request, response);
-				}else if (accion.equalsIgnoreCase("generarNuevoFicheroAdeudo")){
-					mapDestino = generarNuevoFicheroAdeudo (mapping, miForm, request, response);	
-				}else if (accion.equalsIgnoreCase("getAjaxFechasFicheroBancario")){
-					getAjaxFechasFicheroBancario (mapping, miForm, request, response);
-					return null;				
-				}else if (accion.equalsIgnoreCase("getAjaxFechasFicheroBancario")){
-					getAjaxFechasFicheroBancario (mapping, miForm, request, response);
-					return null;
-				} else if (accion.equalsIgnoreCase("recalcular")){
-					mapDestino = recalcular(mapping, miForm, request, response);					
-				}else {
-					return super.executeInternal(mapping, formulario, request, response);
-				}
-
+			String accion = miForm.getModo();
+			
+			// La primera vez que se carga el formulario 
+			// Abrir
+			if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
+				mapDestino = abrir(mapping, miForm, request, response);
+			}else if (accion.equalsIgnoreCase("abrirVolver")){
+				request.setAttribute("volver","s");
+				ConfirmarFacturacionForm confirmarFacturacionForm = (ConfirmarFacturacionForm) miForm;
+				request.setAttribute("estadoConfirmacion", confirmarFacturacionForm.getEstadoConfirmacion());
+				mapDestino = abrir(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("descargaLog")){
+				mapDestino = descargaLog(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("descargarInformeGeneracion")){
+				mapDestino = descargarInformeGeneracion(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("archivarFactura")){
+				mapDestino = archivarFactura(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("enviar")){
+				mapDestino = enviarFacturas(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("consultarfactura")){
+				mapDestino = consultarFacturas(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("editarFechas")){
+				mapDestino = editarFechas(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("actualizarDatosSerieFacturacion")){
+				mapDestino = actualizarDatosSerieFacturacion(mapping, miForm, request, response);
+			}else if (accion.equalsIgnoreCase("buscarInit")){
+				borrarPaginador(request, paginador);
+				mapDestino = buscarPor(mapping, miForm, request, response);
+			}else if (accion.equalsIgnoreCase("buscarPor")){
+				mapDestino = buscarPor(mapping, miForm, request, response);
+			}else if (accion.equalsIgnoreCase("borrar")){
+				mapDestino = borrar(mapping, miForm, request, response);
+			}else if (accion.equalsIgnoreCase("generarNuevoFicheroAdeudo")){
+				mapDestino = generarNuevoFicheroAdeudo (mapping, miForm, request, response);
+			}else if (accion.equalsIgnoreCase("getAjaxFechasFicheroBancario")){
+				getAjaxFechasFicheroBancario (mapping, miForm, request, response);
+				return null;
+			}else if (accion.equalsIgnoreCase("getAjaxFechasFicheroBancario")){
+				getAjaxFechasFicheroBancario (mapping, miForm, request, response);
+				return null;
+			} else if (accion.equalsIgnoreCase("recalcular")){
+				mapDestino = recalcular(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("traspasarFacturas")){
+				mapDestino = traspasarFacturas(mapping, miForm, request, response);
+			}else {
+				return super.executeInternal(mapping, formulario, request, response);
+			}
+			
 			// Redireccionamos el flujo a la JSP correspondiente
-			if (mapDestino == null) 				
-			{ 				
+			if (mapDestino == null)
+			{
 			    if (miForm.getModal().equalsIgnoreCase("TRUE"))
 			    {
 			        request.setAttribute("exceptionTarget", "parent.modal");
-			    }			    
+			    }
 			    throw new ClsExceptions("El ActionMapping no puede ser nulo","","0","GEN00","15");
-			}			
+			}
 			
-		 }catch (SIGAException es) { 
-		    throw es; 
-		 }catch (Exception e) { 
-		    throw new SIGAException("messages.general.error",e,new String[] {"modulo.facturacion"}); 
-		 } 
+		 }catch (SIGAException es) {
+		    throw es;
+		 }catch (Exception e) {
+		    throw new SIGAException("messages.general.error",e,new String[] {"modulo.facturacion"});
+		 }
 		 
-		   return mapping.findForward(mapDestino);   	
+		 return mapping.findForward(mapDestino);
 	}
 	
 	
@@ -161,14 +163,14 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		
 		try {
 			HashMap databackup=getPaginador(request, this.paginador);
-			if (databackup!=null){ 
-
+			if (databackup!=null){
+				
 				Paginador paginador = (Paginador)databackup.get("paginador");
 				//Si no es la primera llamada, obtengo la página del request y la busco con el paginador
 				String pagina = (String)request.getParameter("pagina");
-				if (paginador!=null){	
-					Vector datos=new Vector();
-					if (pagina!=null){
+				if (paginador!=null){
+					Vector datos = new Vector();
+					if (pagina != null){
 						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
 					}else{// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
 						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
@@ -181,18 +183,18 @@ public class ConfirmarFacturacionAction extends MasterAction{
 					databackup.put("datos",datos);
 					request.setAttribute("datos", datos);
 				}else{
-					databackup.put("datos",new Vector());
+					databackup.put("datos", new Vector());
 					request.setAttribute("datos", new Vector());
 					request.setAttribute("paginaSeleccionada", 1);
 					request.setAttribute("totalRegistros", 0);
 					request.setAttribute("registrosPorPagina",1);
 					setPaginador(request, this.paginador, databackup);
-				}	
-			}else{	
+				}
+			}else{
 				databackup=new HashMap();
 				 Paginador paginador = facturacionProgramadaAdm.getProgramacioneFacturacionPaginador(confirmarFacturacionForm);
-				if (paginador!=null&& paginador.getNumeroTotalRegistros()>0){
-					databackup.put("paginador",paginador);
+				if (paginador!=null && paginador.getNumeroTotalRegistros()>0){
+					databackup.put("paginador", paginador);
 					Vector datos = paginador.obtenerPagina(1);
 					request.setAttribute("paginaSeleccionada", paginador.getPaginaActual());
 					request.setAttribute("totalRegistros", paginador.getNumeroTotalRegistros());
@@ -207,15 +209,15 @@ public class ConfirmarFacturacionAction extends MasterAction{
 					request.setAttribute("totalRegistros", 0);
 					request.setAttribute("registrosPorPagina",1);
 					setPaginador(request, this.paginador, databackup);
-				} 	
+				}
 			}
 		}catch (SIGAException e1) {
 			// Excepcion procedente de obtenerPagina cuando se han borrado datos
 			 return exitoRefresco("error.messages.obtenerPagina",request);
-		}catch (Exception e) 
+		}catch (Exception e)
 		{
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
-		} 
+		}
 		return "resultados";
 	}
 	
@@ -558,34 +560,65 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String descargaLog(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		UserTransaction tx = null;	
+		UserTransaction tx = null;
 		
 		try {
-		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			String pathFichero 		= p.returnProperty("facturacion.directorioFisicoLogProgramacion");
+		    ReadProperties p = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			String pathFichero = p.returnProperty("facturacion.directorioFisicoLogProgramacion");
     		String sBarra = "";
-    		if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
-    		if (pathFichero.indexOf("\\") > -1) sBarra = "\\";        		
+    		if (pathFichero.indexOf("/") > -1) sBarra = "/";
+    		if (pathFichero.indexOf("\\") > -1) sBarra = "\\";
+    		
+    		ConfirmarFacturacionForm form 	= (ConfirmarFacturacionForm)formulario;
 			
-			ConfirmarFacturacionForm form 	= (ConfirmarFacturacionForm)formulario;
+			Vector vOcultos = form.getDatosTablaOcultos(0);
 			
-			Vector ocultos = form.getDatosTablaOcultos(0);
+			String idInstitucion = this.getIDInstitucion(request).toString();
+			String logFichero = (String)vOcultos.elementAt(5);
+			String logFicheroTraspasos = (String)vOcultos.elementAt(6);
+			String nombreFicheroDescarga = "";
+			String rutaFicheroDescarga = "";
 			
-			String idInstitucion	= this.getIDInstitucion(request).toString();
-			String logFichero = (String)ocultos.elementAt(5); 
+			pathFichero = pathFichero+sBarra+idInstitucion+sBarra;
 			
-			File fichero = new File(pathFichero+sBarra+idInstitucion+sBarra+logFichero);
-			if (!fichero.exists()) {
+			//RECOGEMOS LOS FICHEROS DE LOGS Y TRASPASO DE FACTURAS: 
+			File ficheroLog = new File(pathFichero + logFichero);
+			File ficheroTraspasos = new File(pathFichero + logFicheroTraspasos);
+			//System.out.println(ficheroLog.getAbsolutePath());
+			
+			if(ficheroLog.exists() && ficheroTraspasos.exists())
+			{
+				UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+				Facturacion facturacion = new Facturacion(user);
+				String idSerieFacturacion = (String)vOcultos.elementAt(0);
+				String idProgramacion = (String)vOcultos.elementAt(1);
+				File ficheroZip = facturacion.generarZIPLogYFacturacion(ficheroLog, ficheroTraspasos, idInstitucion, idSerieFacturacion, idProgramacion, pathFichero);
+				nombreFicheroDescarga = ficheroZip.getName();
+				rutaFicheroDescarga = ficheroZip.getPath();
+			}
+			else if(ficheroLog.exists())
+			{
+				nombreFicheroDescarga = ficheroLog.getName();
+				rutaFicheroDescarga = ficheroLog.getAbsolutePath();
+			}
+			else if(ficheroTraspasos.exists())
+			{
+				nombreFicheroDescarga = ficheroTraspasos.getName();
+				rutaFicheroDescarga = ficheroTraspasos.getAbsolutePath();
+			}
+			else
+			{
 				throw new SIGAException("messages.general.error.ficheroNoErrores");
 			}
-			request.setAttribute("nombreFichero", fichero.getName());
-			request.setAttribute("rutaFichero", fichero.getPath());
+			
+			request.setAttribute("nombreFichero", nombreFicheroDescarga);
+			request.setAttribute("rutaFichero", rutaFicheroDescarga);
 			
 		}catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, e, tx);
 		}
 
-		return "descargaFichero"; 
+		return "descargaFichero";
 	}
 	
 	/**
@@ -976,6 +1009,9 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			bean.setFechaRecibosCOR1(GstDate.getApplicationFormatDate("en", fechaRecibosCOR1));
 			bean.setFechaRecibosB2B(GstDate.getApplicationFormatDate("en", fechaRecibosB2B));
 			
+			//FacSerieFacturacionAdm admSerieFacturacion; CON EL BEAN (IDINSTITUCION, IDSERIEFACTURACION) RECUPERO TRASPASOFACTURAS, TRASPASOPLANTILLA Y TRASPASOCODAUDITORIADEF.
+			//bean.setTraspasoFacturas(id)
+			
 			if (fechaEntrega!=null && !fechaEntrega.equals("")) {
 				// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales			
 				FacDisqueteCargosAdm admDisqueteCargos = new FacDisqueteCargosAdm(this.getUserBean(request));	
@@ -1011,6 +1047,9 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			    bean.setConfIngresos(bSF.getConfigIngresos());
 			    bean.setCtaClientes(bSF.getCuentaClientes());
 			    bean.setCtaIngresos(bSF.getCuentaIngresos());
+			    bean.setTraspasoFacturas(bSF.getTraspasoFacturas());
+			    bean.setTraspasoPlantilla(bSF.getTraspasoPlantilla());
+			    bean.setTraspasoCodAuditoriaDef(bSF.getTraspasoCodAuditoriaDef());
 			}
 			
 			// Insertamos el nuevo registro.
@@ -1209,7 +1248,38 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, e, tx);
 		}
 		return salida;		
-	}		
+	}
+	
+	protected String traspasarFacturas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)	throws SIGAException {
+		try {
+			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm) formulario;
+			Vector vOcultos = form.getDatosTablaOcultos(0);
+			Long idSerieFacturacion = Long.parseLong((String)vOcultos.elementAt(0));
+			Long idProgramacion = Long.parseLong((String)vOcultos.elementAt(1));
+			Short idInstitucion = Short.valueOf(this.getIDInstitucion(request).toString());
+			
+			//CAMBIO DE ESTADO A PROGRAMADA: 
+			String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION, FacFacturacionProgramadaBean.C_IDPROGRAMACION, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
+			Hashtable<String,Object> hashNew = new Hashtable<String,Object>();
+			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDINSTITUCION, idInstitucion);
+			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
+			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, idSerieFacturacion);
+			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "sysdate");
+			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.TRASPASO_PROGRAMADA);
+			String [] camposTraspaso = {FacFacturacionProgramadaBean.C_IDESTADOTRASPASO};
+			FacFacturacionProgramadaAdm facadm = new FacFacturacionProgramadaAdm(user);
+			facadm.updateDirect(hashNew, claves, camposTraspaso);
+			
+			//LLAMADA A ENCOLAR EL TRASPASO: 
+			Facturacion facturacion = new Facturacion(user);
+			facturacion.encolarTraspasoFacturas(idInstitucion, idSerieFacturacion, idProgramacion);
+		} catch (Exception e) {
+			throwExcp("messages.general.error",	new String[] { "modulo.facturacion.traspasoFacturas" }, e, null);
+		}
+		
+		return this.exitoRefresco("messages.envioRealizadoTraspasoFacturas.success", request);
+	}
 	
 	/**
 	 * Se va a realizar la descarga del fichero (DOWNLOAD).
@@ -1482,27 +1552,27 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	 * @exception  SIGAException  Errores de aplicación
 	 */
 	protected String recalcular(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		UserTransaction tx = null;	
+		UserTransaction tx = null;
 		ConfirmarFacturacionForm form = (ConfirmarFacturacionForm)formulario;
 		Integer idInstitucion    = this.getIDInstitucion(request);
 		Long idProgramacion = Long.valueOf(form.getIdProgramacion());
-		try {			
+		try {
 			tx = this.getUserBean(request).getTransaction();
 			
 			/*********** INICIO TRANSACCION *************/
-			tx.begin();				
+			tx.begin();
 	
 			/** PRIMER PASO: Borramos la facturación, pero nos quedamos los datos de clave **/
-			accionBorrado(form.getIdSerieFacturacion(), form.getIdProgramacion(), idInstitucion.toString(), request);	
+			accionBorrado(form.getIdSerieFacturacion(), form.getIdProgramacion(), idInstitucion.toString(), request);
 			
 			/** SEGUNDO PASO: Volvemos a crear la facturacion pero con los datos anteriores **/
 			accionInsertar(idProgramacion, form, request);
 			
-			request.setAttribute("volver","s");			
-			request.setAttribute("estadoConfirmacion", FacEstadoConfirmFactBean.GENERACION_PROGRAMADA.toString());			
+			request.setAttribute("volver","s");
+			request.setAttribute("estadoConfirmacion", FacEstadoConfirmFactBean.GENERACION_PROGRAMADA.toString());
 			
 			tx.commit();
-			/************ FIN TRANSACCION *****************/	
+			/************ FIN TRANSACCION *****************/
 			
 		} catch (SIGAException e) {
 			String sms = e.getLiteral();
@@ -1510,12 +1580,12 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				sms = "messages.general.error";
 			}
 			
-			throwExcp(sms, new String[] {"modulo.facturacion"}, e, tx);				
+			throwExcp(sms, new String[] {"modulo.facturacion"}, e, tx);
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, e, tx);
 		}
 		
-		return abrir(mapping, formulario, request, response);			
-	}    
+		return abrir(mapping, formulario, request, response);
+	}
 }

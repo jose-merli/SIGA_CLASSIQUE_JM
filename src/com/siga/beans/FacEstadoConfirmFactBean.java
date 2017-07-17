@@ -29,26 +29,33 @@ public class FacEstadoConfirmFactBean extends MasterBean{
 	static public final Integer CONFIRM_PROGRAMADA = new Integer(1);	// CONFIRMACION PROGRAMADA
 	static public final Integer GENERADA = new Integer(2); 	// GENERADA
 	static public final Integer CONFIRM_FINALIZADA = new Integer(3);	// CONFIRMADA
-	static public final Integer CONFIRM_FINALIZADAERRORES = new Integer(4);  
+	static public final Integer CONFIRM_FINALIZADAERRORES = new Integer(4);
 	
-	static public final Integer PDF_NOAPLICA = new Integer(5);  
-	static public final Integer PDF_PROGRAMADA = new Integer(6);  
-	static public final Integer PDF_PENDIENTE = new Integer(7);  
-	static public final Integer PDF_PROCESANDO = new Integer(8);  
-	static public final Integer PDF_FINALIZADA = new Integer(9);  
-	static public final Integer PDF_FINALIZADAERRORES = new Integer(10);  
-
-	static public final Integer ENVIO_NOAPLICA = new Integer(11);  
-	static public final Integer ENVIO_PROGRAMADA = new Integer(12);  
-	static public final Integer ENVIO_PENDIENTE = new Integer(13);  
-	static public final Integer ENVIO_PROCESANDO = new Integer(14);  
-	static public final Integer ENVIO_FINALIZADA = new Integer(15);  
+	static public final Integer PDF_NOAPLICA = new Integer(5);
+	static public final Integer PDF_PROGRAMADA = new Integer(6);
+	static public final Integer PDF_PENDIENTE = new Integer(7);
+	static public final Integer PDF_PROCESANDO = new Integer(8);
+	static public final Integer PDF_FINALIZADA = new Integer(9);
+	static public final Integer PDF_FINALIZADAERRORES = new Integer(10);
+	
+	static public final Integer ENVIO_NOAPLICA = new Integer(11);
+	static public final Integer ENVIO_PROGRAMADA = new Integer(12);
+	static public final Integer ENVIO_PENDIENTE = new Integer(13);
+	static public final Integer ENVIO_PROCESANDO = new Integer(14);
+	static public final Integer ENVIO_FINALIZADA = new Integer(15);
 	static public final Integer ENVIO_FINALIZADAERRORES = new Integer(16);
 	static public final Integer EJECUTANDO_CONFIRMACION = new Integer(17);
-	static public final Integer GENERACION_PROGRAMADA = new Integer(18);  
-	static public final Integer EJECUTANDO_GENERACION = new Integer(19); 
-	static public final Integer ERROR_GENERACION = new Integer(20);  
-	static public final Integer ERROR_CONFIRMACION = new Integer(21); 	
+	static public final Integer GENERACION_PROGRAMADA = new Integer(18);
+	static public final Integer EJECUTANDO_GENERACION = new Integer(19);
+	static public final Integer ERROR_GENERACION = new Integer(20);
+	static public final Integer ERROR_CONFIRMACION = new Integer(21);
+	
+	static public final Integer TRASPASO_NOAPLICA = new Integer(22);
+	static public final Integer TRASPASO_PROGRAMADA = new Integer(23);
+	static public final Integer TRASPASO_PENDIENTE = new Integer(24);
+	static public final Integer TRASPASO_PROCESANDO = new Integer(25);
+	static public final Integer TRASPASO_FINALIZADA = new Integer(26);
+	static public final Integer TRASPASO_FINALIZADAERRORES = new Integer(27);
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FAC_ESTADOCONFIRMFACT";

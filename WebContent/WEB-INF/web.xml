@@ -122,11 +122,12 @@
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoCenso</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoServicios</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlInicializacionesSecundarias</listener-class></listener>
+	<listener><listener-class>com.siga.servlets.SIGASvlProcesoColaDatosLetrado</listener-class></listener>
+	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoContadores</listener-class></listener>
+ 
 	<listener><listener-class>com.siga.certificados.AccionesMasivasCertificadosListener</listener-class></listener>
 	
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoExpedientes</listener-class></listener>
-	<listener><listener-class>com.siga.servlets.SIGASvlProcesoColaDatosLetrado</listener-class></listener>
-	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoContadores</listener-class></listener>
 	
 	<listener><listener-class>com.siga.eejg.SolicitudEEJGListener</listener-class></listener>
 	
@@ -140,8 +141,9 @@
 	<listener><listener-class>com.siga.servlets.SIGASvlEnvioCorreoPeriodicoSancionesCGAEListener</listener-class></listener>
 	
 	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoGeneracionCalendarios</listener-class></listener>
-	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoFacturacionSJCS</listener-class></listener>
 	<listener><listener-class>com.siga.servlets.SIGASvlEnvioCorreoAlertasIntentosEEJGListener</listener-class></listener>
+
+	<listener><listener-class>com.siga.servlets.SIGASvlProcesoAutomaticoFacturacionSJCS</listener-class></listener>
 
 	<servlet>
 		<servlet-name>SIGASvlProcesoAutomaticoEnvios</servlet-name>

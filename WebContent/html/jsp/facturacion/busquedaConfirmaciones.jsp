@@ -34,10 +34,10 @@
 
 <!-- JSP -->
 <%
-	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
+	String app = request.getContextPath();
+	HttpSession ses = request.getSession();
 	
-	UsrBean user=(UsrBean) ses.getAttribute("USRBEAN");
+	UsrBean user = (UsrBean) ses.getAttribute("USRBEAN");
 
 	// paraemtro para consultas de estados (Combo)
 	String dato[] = new String[1];
@@ -54,7 +54,7 @@
 		}		
 	}else{
 		//La primera vez que se carga la página
-		estadoConfirmacionSel.add(FacEstadoConfirmFactBean.GENERADA.toString());	
+		//estadoConfirmacionSel.add(FacEstadoConfirmFactBean.GENERADA.toString()); //SE QUITA EL VALOR POR DEFECTO DEL COMBO.	
 	}
 %>	
 	
@@ -99,57 +99,62 @@
 		<tr><td>
 			<siga:ConjCampos leyenda="facturacion.confirmarFacturacion.literal.camposBusqueda">	
 			<table class="tablaCampos" align="center">
-				<tr>				
+				<tr>
+					<td class="labelText"><siga:Idioma key="facturacion.estado"/></td>
+					<td>
+						<siga:ComboBD nombre = "estadoConfirmacion" tipo="cmbEstadoConfirmacion" ancho="100" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" accion="accionEstado()" elementoSel="<%=estadoConfirmacionSel%>" />
+					</td>
+					
 					<td  class="labelText" width="190px"><siga:Idioma key="facturacion.mantenimnientoFacturacion.literal.fPrevistaGeneracion"/>&nbsp;<siga:Idioma key="general.literal.desde"/>&nbsp;(*)</td>
 					<td>
 						<siga:Fecha styleId="fechaDesdePrevistaGeneracion" nombreCampo="fechaDesdePrevistaGeneracion" valorInicial="${confirmarFacturacionForm.fechaDesdePrevistaGeneracion}" anchoTextField="8"/>
 					</td>
-		
 					<td class="labelText" width="80px"><siga:Idioma key="general.literal.hasta"/></td>
 					<td>
 						<siga:Fecha styleId="fechaHastaPrevistaGeneracion" nombreCampo="fechaHastaPrevistaGeneracion" anchoTextField="8"/>
 					</td>
+				</tr>
+				<tr>
+					<td class="labelText"><siga:Idioma key="facturacion.estadoTraspaso"/></td>
+					<td>
+						<siga:ComboBD nombre="estadoTraspaso" tipo="cmbEstadoTraspaso" ancho="100" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" />
+					</td>
+					
 					<td  class="labelText" width="150px"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaRealGeneracion"/>&nbsp;<siga:Idioma key="general.literal.desde"/></td>
 					<td>
 						<siga:Fecha styleId="fechaDesdeGeneracion" nombreCampo="fechaDesdeGeneracion" anchoTextField="8" />
 					</td>
-		
 					<td class="labelText" width="40px"><siga:Idioma key="general.literal.hasta"/></td>
 					<td>
 						<siga:Fecha styleId="fechaHastaGeneracion" nombreCampo="fechaHastaGeneracion"  anchoTextField="8"/>
 					</td>
 				</tr>
-		
-				<tr>				
-					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaConfirmacion"/>&nbsp;<siga:Idioma key="general.literal.desde"/></td>
-					<td>
-						<siga:Fecha styleId="fechaDesdeConfirmacion" nombreCampo="fechaDesdeConfirmacion" anchoTextField="8"/>
-					</td>
-
-					<td class="labelText"><siga:Idioma key="general.literal.hasta"/></td>
-					<td>
-						<siga:Fecha styleId="fechaHastaConfirmacion" nombreCampo="fechaHastaConfirmacion" anchoTextField="8"/>
-					</td>
-					<td colspan="4">&nbsp;</td>
-				</tr>
-				<tr>				
-					<td class="labelText"><siga:Idioma key="facturacion.estado"/></td>
-					<td>
-						<siga:ComboBD nombre = "estadoConfirmacion" tipo="cmbEstadoConfirmacion" ancho="100" clase="boxCombo" obligatorio="false" parametro="<%=dato%>" elementoSel="<%=estadoConfirmacionSel%>" accion="accionEstado()"/>						
-					</td>
-
+				<tr>
 					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.estadoPDF"/></td>
 					<td>
 						<siga:ComboBD nombre = "estadoPDF" tipo="cmbEstadoPDF"  clase="boxCombo" ancho="100" obligatorio="false" parametro="<%=dato%>" />						
 					</td>
-
+					
+					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.fechaConfirmacion"/>&nbsp;<siga:Idioma key="general.literal.desde"/></td>
+					<td>
+						<siga:Fecha styleId="fechaDesdeConfirmacion" nombreCampo="fechaDesdeConfirmacion" anchoTextField="8"/>
+					</td>
+					<td class="labelText"><siga:Idioma key="general.literal.hasta"/></td>
+					<td>
+						<siga:Fecha styleId="fechaHastaConfirmacion" nombreCampo="fechaHastaConfirmacion" anchoTextField="8"/>
+					</td>
+				</tr>
+				<tr>
 					<td class="labelText"><siga:Idioma key="facturacion.confirmarFacturacion.literal.estadoEnvio"/></td>
 					<td>
 						<siga:ComboBD nombre = "estadoEnvios" tipo="cmbEstadoEnvios"  ancho="100"  clase="boxCombo" obligatorio="false" parametro="<%=dato%>"/>						
 					</td>
+					
 					<td class="labelText" colspan="2"><siga:Idioma key="gratuita.BusquedaSancionesLetrado.literal.archivadas"/>&nbsp;<input type="checkbox" value="1" name="archivadas">
 					</td>
-				</tr>			
+					
+					<td colspan="4">&nbsp;</td>
+				</tr>
 			</table>
 		</siga:ConjCampos>	
 

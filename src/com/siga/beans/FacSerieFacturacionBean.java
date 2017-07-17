@@ -5,7 +5,7 @@ public class FacSerieFacturacionBean extends MasterBean {
 	private static final long serialVersionUID = 3143948645003008848L;
 	private Integer idInstitucion, idPlantilla, idTipoPlantillaMail, idTipoEnvios,idNombreDescargaPDF;
 	private Long idSerieFacturacion,idSerieFacturacionPrevia;
-	private String descripcion, nombreAbreviado, envioFactura,generarPDF, idContador, configDeudor, configIngresos, cuentaIngresos, cuentaClientes,tipoSerie, observaciones, fechaBaja;
+	private String descripcion, nombreAbreviado, envioFactura,generarPDF, idContador, configDeudor, configIngresos, cuentaIngresos, cuentaClientes,tipoSerie, observaciones, fechaBaja, traspasoFacturas, traspasoPlantilla, traspasoCodAuditoriaDef;
 	private String[] formaPagoAutomática;				
 
 	/* Nombre tabla */
@@ -32,6 +32,9 @@ public class FacSerieFacturacionBean extends MasterBean {
 	static public final String C_IDSERIEFACTURACIONPREVIA = "IDSERIEFACTURACIONPREVIA";
 	static public final String C_FECHABAJA = "FECHABAJA";
 	static public final String C_IDNOMBREDESCARGAPDF = "ID_NOMBRE_DESCARGA_FAC";
+	static public final String C_TRASPASOFACTURAS = "TRASPASOFACTURAS";
+	static public final String C_TRASPASOPLANTILLA = "TRASPASO_PLANTILLA";
+	static public final String C_TRASPASOCODAUDITORIADEF = "TRASPASO_CODAUDITORIA_DEF";
 	
 	
 	
@@ -40,6 +43,9 @@ public class FacSerieFacturacionBean extends MasterBean {
 	public void setIdSerieFacturacion (Long dato) {this.idSerieFacturacion = dato;}
 	public void setIdPlantilla (Integer dato) {this.idPlantilla = dato;}
 	public void setIdNombreDescargaPDF (Integer dato) {this.idNombreDescargaPDF = dato;}
+	public void setTraspasoFacturas (String dato) {this.traspasoFacturas = dato;}
+	public void setTraspasoPlantilla (String dato) {this.traspasoPlantilla = dato;}
+	public void setTraspasoCodAuditoriaDef (String dato) {this.traspasoCodAuditoriaDef = dato;}
 	public void setDescripcion (String dato) {this.descripcion = dato;}
 	public void setNombreAbreviado (String dato) {this.nombreAbreviado = dato;}
 	public void setEnvioFactura (String dato) {this.envioFactura = dato;}
@@ -63,6 +69,9 @@ public class FacSerieFacturacionBean extends MasterBean {
 	public Long getIdSerieFacturacion()	{return this.idSerieFacturacion;}
 	public Integer getIdPlantilla() {return this.idPlantilla;}
 	public Integer getIdNombreDescargaPDF() {return this.idNombreDescargaPDF;}
+	public String getTraspasoFacturas() {return this.traspasoFacturas;}
+	public String getTraspasoPlantilla() {return this.traspasoPlantilla;}
+	public String getTraspasoCodAuditoriaDef() {return this.traspasoCodAuditoriaDef;}
 	public String getDescripcion() {return this.descripcion;}
 	public String getNombreAbreviado() {return this.nombreAbreviado;}
 	public String getEnvioFactura() {return this.envioFactura;}

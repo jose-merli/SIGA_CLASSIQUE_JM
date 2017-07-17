@@ -14,6 +14,7 @@ import com.atos.utils.UsrBean;
 import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenInstitucionBean;
 import com.siga.facturacion.Facturacion;
+import com.siga.facturacion.form.ConfirmarFacturacionForm;
 
 /**
  * Recibe la llamada del proceso automatico de facturacion y reparte las tareas
@@ -117,6 +118,14 @@ public class SIGASvlProcesoFacturacion extends HttpServlet
 						ClsLogging.writeFileLogWithoutSession(" ---------- OK ENVIO DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
 					}
 					
+					
+					if (minutosQueFaltanAntesDeSiguienteAutomaticoFacturacion > duracionMediaFacturacion) {
+						ClsLogging.writeFileLogWithoutSession(" ---------- INICIO COMPROBACION TRASPASO DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
+						
+						fac.comprobacionTraspasoFacturas(request, idinstitucion);
+						
+						ClsLogging.writeFileLogWithoutSession(" ---------- OK COMPROBACION TRASPASO DE FACTURAS. INSTITUCION: " + idinstitucion, 3);
+					}
 					
 
 				} catch (Exception e) {

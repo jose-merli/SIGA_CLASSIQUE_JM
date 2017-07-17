@@ -23,10 +23,23 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.mail.MessagingException;
+import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
+import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.AppConstants.GEN_PROPERTIES;
+import org.redabogacia.sigaservices.app.AppConstants.MODULO;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
+import org.redabogacia.sigaservices.app.autogen.model.FacFactura;
+import org.redabogacia.sigaservices.app.autogen.model.FacSeriefacturacion;
+import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
+import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
+import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
+import org.redabogacia.sigaservices.app.services.helper.SigaServiceHelperService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -86,6 +99,8 @@ import com.siga.envios.Envio;
 import com.siga.general.SIGAException;
 import com.siga.informes.InformeFactura;
 import com.siga.informes.InformePersonalizable;
+
+import es.satec.businessManager.BusinessManager;
 
 public class Facturacion {
     private UsrBean usrbean=null;
@@ -211,11 +226,11 @@ public class Facturacion {
 							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " IN (" + FacEstadoConfirmFactBean.GENERADA + ", " + FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA + ") " +
    							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +
    							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +							
-   							" AND NOT EXISTS (SELECT 1 " +
-						         " FROM " + FacFacturacionProgramadaBean.T_NOMBRETABLA + " PREVIA " +
-						         " WHERE PREVIA." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + idInstitucion +
+   							" AND NOT EXISTS (SELECT 1 " + 
+						         " FROM " + FacFacturacionProgramadaBean.T_NOMBRETABLA + " PREVIA " + 
+						         " WHERE PREVIA." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + idInstitucion + 
 						           " AND PREVIA." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA +
-						           " AND PREVIA." + FacFacturacionProgramadaBean.C_VISIBLE + " = 'S' " +
+						           " AND PREVIA." + FacFacturacionProgramadaBean.C_VISIBLE + " = 'S' " + 
 						           " AND PREVIA." + FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " <> " + FacEstadoConfirmFactBean.CONFIRM_FINALIZADA + ") ";
 			String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM};
 			Vector<?> vDatos = factAdm.selectDatosFacturacionBean(sWhere, codigos, orden);
@@ -407,10 +422,10 @@ public class Facturacion {
 		UsrBean userBean = this.usrbean;
 		
 		try {
-			ClsLogging.writeFileLog("GENERAR ENVIOS DE FACTURAS POR INSTITUCION: "+idInstitucion,10);			
+			ClsLogging.writeFileLog("GENERAR ENVIOS DE FACTURAS POR INSTITUCION: " + idInstitucion, 10);
 			
    			// fichero de log
-		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		    ReadProperties p = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		    
 			// Obtencion de la propiedad que contiene el tiempo de espera que se les da a las facturaciones en ejcucion no generadas por alguna anomalía			
 		    Long tiempoEsperaBloqueosProperty = Long.valueOf(p.returnProperty("facturacion.programacionAutomatica.maxMinutosEnEjecucion"));
@@ -451,10 +466,10 @@ public class Facturacion {
 				// PROCESO PARA CADA FACTURACION PROGRAMADA
 		    	FacFacturacionProgramadaBean factBean = (FacFacturacionProgramadaBean)vDatos.elementAt(i);
 		    	
-				ClsLogging.writeFileLog("ENVIAR FACTURACION PROGRAMADA: "+idInstitucion+" " +factBean.getIdSerieFacturacion()+" " +factBean.getIdProgramacion(),10);
+				ClsLogging.writeFileLog("ENVIAR FACTURACION PROGRAMADA: " + idInstitucion + " " + factBean.getIdSerieFacturacion() + " " + factBean.getIdProgramacion(), 10);
 
 		    	// fichero de log
-				nombreFichero = "LOG_FAC_CONFIRMACION_" + factBean.getIdSerieFacturacion() +"_"+ factBean.getIdProgramacion() +".log.xls"; 
+				nombreFichero = "LOG_FAC_CONFIRMACION_" + factBean.getIdSerieFacturacion() +"_"+ factBean.getIdProgramacion() +".log.xls";
 				log = new SIGALogging(pathFichero2+sBarra2+factBean.getIdInstitucion()+sBarra2+nombreFichero);
 				try {
 		    		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION,FacFacturacionProgramadaBean.C_IDPROGRAMACION,FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
@@ -478,7 +493,7 @@ public class Facturacion {
 		    
 		} catch (Exception e) {
 			// Error general (No hacemos nada, para que continue con la siguiente institucion
-			ClsLogging.writeFileLogError("@@@ Error general al confirmar facturas (Proceso automático) INSTITUCION:"+idInstitucion ,e,3);
+			ClsLogging.writeFileLogError("@@@ Error general al confirmar facturas (Proceso automático) INSTITUCION: " + idInstitucion, e, 3);
 		}
 	}
 	
@@ -554,7 +569,7 @@ public class Facturacion {
 	 * @throws ClsExceptions
 	 */
 	public void doZip(String rutaServidorDescargasZip, String nombreFichero, ArrayList<FacFicherosDescargaBean> ficherosPDF) throws ClsExceptions	{
-		doZipGeneracionRapida(rutaServidorDescargasZip,nombreFichero,ficherosPDF);
+		doZipGeneracionRapida(rutaServidorDescargasZip, nombreFichero, ficherosPDF);
 	}
     
 	
@@ -565,7 +580,7 @@ public class Facturacion {
 	 * @param ficherosPDF
 	 * @throws ClsExceptions
 	 */
-	public void doZipGeneracionRapida(String rutaServidorDescargasZip, String nombreFichero, ArrayList<FacFicherosDescargaBean> ficherosPDF) throws ClsExceptions	{
+	public void doZipGeneracionRapida(String rutaServidorDescargasZip, String nombreFichero, ArrayList<FacFicherosDescargaBean> ficherosPDF) throws ClsExceptions {
 		// Generar Zip
 		File ficZip=null;
 		byte[] buffer = new byte[8192];
@@ -731,11 +746,11 @@ public class Facturacion {
     		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION,FacFacturacionProgramadaBean.C_IDPROGRAMACION,FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
     		String [] camposFactura = {FacFacturacionProgramadaBean.C_FECHACONFIRMACION, FacFacturacionProgramadaBean.C_ARCHIVARFACT,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION,FacFacturacionProgramadaBean.C_LOGERROR, FacFacturacionProgramadaBean.C_NOMBREFICHERO};
 
-    		if(!soloGenerarFactura){    		
+    		if(!soloGenerarFactura){
 	    		try {
 	    			//////////// INICIO TRANSACCION ////////////////
 	    			if (tx!=null && Status.STATUS_NO_TRANSACTION == tx.getStatus())
-	    				tx.begin();	    		
+	    				tx.begin();
 	    			
 	    			// Lo primero que se hace es poner la facturacion en estado EJECUTANDO CONFIRMACION
 	    			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.EJECUTANDO_CONFIRMACION);
@@ -909,7 +924,7 @@ public class Facturacion {
 	    			
 	    			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.ERROR_CONFIRMACION);
 	    			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "");
-	    			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_LOGERROR,nombreFichero);
+	    			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_LOGERROR, nombreFichero);
 	    			facadm.updateDirect(hashNew, claves, camposFactura);
 	    			
 	    			if (tx!=null)
@@ -919,12 +934,18 @@ public class Facturacion {
 	    			ClsLogging.writeFileLog("CAMBIA ESTADO A FINALIZADA ERRORES.",10);
 	    			throw new ClsExceptions("Error al confirmar facturacion rápida. " + sms);
 	    		}
+	    		
+	    		//INSERTAMOS EN LA COLA LA OPERACIÓN CREARCLIENTE(): (NO HAY PROBLEMA PORQUE SI EL CLIENTE YA EXISTE LO ACTUALIZA, Y HACE UN INTENTO DE TRASPASAR ÚNICAMENTE LAS FACTURAS QUE TENGA SIN TRASPASAR, QUE ES LO QUE NOS INTERESA).
+	    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOTRASPASO, FacEstadoConfirmFactBean.TRASPASO_PROGRAMADA);
+	    		Short idInstitucion = Short.valueOf(String.valueOf(beanP.getIdInstitucion()));
+	    		encolarTraspasoFacturas(idInstitucion, idSerieFacturacion, idProgramacion);
 
     		} else {
     			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA); //Si entramos por aqui es que ya hemos confirmado previamente
     		}// FIN IF EJECUTAR CONFIRMACION
 
     		ClsLogging.writeFileLog("ENTRA A GENERAR Y ENVIAR",10);
+    		
     		
     		boolean isGenerarPdf = beanP.getGenerarPDF() != null && beanP.getGenerarPDF().trim().equals("1") && !esFacturacionRapida;
     		boolean isGenerarEnvio = beanP.getEnvio() != null && beanP.getEnvio().trim().equals("1") && (beanP.getRealizarEnvio()==null || beanP.getRealizarEnvio().toString().equalsIgnoreCase("1"));
@@ -952,6 +973,336 @@ public class Facturacion {
     	if(msjAviso!=null)
     		throw new ClsExceptions(msjAviso);
     }
+    
+    /*private boolean isServicioTraspasoFacturasActivo(Short idInstitucion)
+	{
+    	GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);	
+		GenParametros genParametros = new GenParametros();
+		genParametros.setModulo(AppConstants.MODULO.ECOM.toString());
+		genParametros.setIdinstitucion(idInstitucion);
+		genParametros.setParametro(AppConstants.PARAMETRO.TRASPASO_FACTURAS_WS_ACTIVO.toString());
+		GenParametros parametro = genParametrosService.get(genParametros);
+		String permiso = AppConstants.DB_FALSE;
+		if(parametro!=null && parametro.getValor()!=null){
+			permiso = parametro.getValor();
+		}
+		if(permiso.equals(AppConstants.DB_FALSE))
+			return false;
+		
+		return true;
+	}*/
+    
+    private String getServicioTraspasoFacturasActivo(Short idInstitucion)
+	{
+    	String valor = "0";
+    	GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);	
+		GenParametros genParametros = new GenParametros();
+		genParametros.setModulo(AppConstants.MODULO.ECOM.toString());
+		genParametros.setIdinstitucion(idInstitucion);
+		genParametros.setParametro(AppConstants.PARAMETRO.TRASPASO_FACTURAS_WS_ACTIVO.toString());
+		GenParametros parametro = genParametrosService.get(genParametros);
+		if(parametro!=null && parametro.getValor()!=null){
+			valor = parametro.getValor();
+		}
+		
+		return valor;
+	}
+    
+    private boolean isSerieFacturacionActiva(Short idInstitucion, Long idSerieFacturacion, Long idProgramacion)
+    {
+    	boolean bResultado = false;
+    	
+    	try
+    	{
+    		Hashtable<Integer, Object> codigos = new Hashtable<Integer, Object>();
+			codigos.put(new Integer("1"), idInstitucion);
+			codigos.put(new Integer("2"), idSerieFacturacion);
+			codigos.put(new Integer("3"), idProgramacion);
+			
+			String sWhere = " WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = :1 " +
+						" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = :2 " +
+						" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDPROGRAMACION + " = :3 " +
+						" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_TRASPASOFACTURAS + " = '1'";
+	
+			FacFacturacionProgramadaAdm facturacionProgramadaAdm = new FacFacturacionProgramadaAdm(this.usrbean);
+			Vector<?> vDatos = facturacionProgramadaAdm.selectBind(sWhere, codigos);
+			
+			if(vDatos != null && vDatos.size()>0)
+				bResultado = true;
+    	}
+    	catch (Exception e)
+    	{
+    		ClsLogging.writeFileLogError("@@@ Error al tratar de recuperar si la Serie de Facturación " + idSerieFacturacion + " está activa.", e, 3);
+    	}
+    	
+    	return bResultado;
+    }
+    
+    public void encolarTraspasoFacturas(Short idInstitucion, Long idSerieFacturacion, Long idProgramacion) throws ClsExceptions
+    {
+    	int estado = 0;
+    	//CONSULTA DE LA SERIE DE FACTURACIÓN (idinstitucion e idseriefacturacion) PARA VER SI HAY QUE TRASPASARLA O NO: FAC_FACTURACION.TRASPASOFACTURAS (1, 0):
+    	//SI LA TRANSFERENCIA DE FACTURAS ACTIVA ES NAVISION Y ESTÁ ACTIVA LA SERIE DE FACTURACIÓN: 
+    	if (this.getServicioTraspasoFacturasActivo(idInstitucion).equals("1") && isSerieFacturacionActiva(idInstitucion, idSerieFacturacion, idProgramacion))
+    	{
+	    	//INSERTAMOS EN LA COLA LA OPERACIÓN CREARCLIENTE(): (NO HAY PROBLEMA PORQUE SI EL CLIENTE YA EXISTE LO ACTUALIZA, Y HACE UN INTENTO DE TRASPASAR ÚNICAMENTE LAS FACTURAS QUE TENGA SIN TRASPASAR, QUE ES LO QUE NOS INTERESA).
+			HashMap map = new HashMap<String, String>();
+			map.put(FacFactura.C_IDINSTITUCION, String.valueOf(idInstitucion));
+			map.put(FacFactura.C_IDSERIEFACTURACION, String.valueOf(idSerieFacturacion));
+			map.put(FacFactura.C_IDPROGRAMACION, String.valueOf(idProgramacion));
+			
+			EcomCola ecomColaCrearCliente = new EcomCola();
+			ecomColaCrearCliente.setIdinstitucion(idInstitucion);
+			ecomColaCrearCliente.setIdoperacion(AppConstants.OPERACION.TRASPASAR_FACTURAS_CREARCLIENTE_NAVISION.getId());
+			 
+			estado = FacEstadoConfirmFactBean.TRASPASO_PROGRAMADA;
+			
+			EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
+			ecomColaService.insertaColaConParametros(ecomColaCrearCliente, map);
+    	}
+    	else //EN CASO DE AÑADIR NUEVOS MÉTODOS DE TRASPASO, IR AÑADIENDO LLAMADAS AQUÍ.
+    	{
+    		estado = FacEstadoConfirmFactBean.TRASPASO_NOAPLICA;
+    	}
+    	
+		//CAMBIO DE ESTADO DE TRASPASO DE LA FACTURACIÓN: 
+		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION, FacFacturacionProgramadaBean.C_IDPROGRAMACION, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
+		Hashtable<String,Object> hashNew = new Hashtable<String,Object>();
+		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDINSTITUCION, idInstitucion);
+		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
+		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, idSerieFacturacion);
+		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "sysdate");
+		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOTRASPASO, estado);
+		String [] camposTraspaso = {FacFacturacionProgramadaBean.C_IDESTADOTRASPASO};
+		FacFacturacionProgramadaAdm facadm = new FacFacturacionProgramadaAdm(this.usrbean);
+		facadm.updateDirect(hashNew, claves, camposTraspaso);
+    }
+    
+    public void comprobacionTraspasoFacturas(HttpServletRequest request, String idInstitucion)
+    {
+		UsrBean userBean = this.usrbean;
+		
+		try {
+			ClsLogging.writeFileLog("FACTURAS: " + idInstitucion, 10);
+			
+   			ReadProperties p = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		    
+			// Obtencion de la propiedad que contiene el tiempo de espera
+		    Long tiempoEsperaBloqueosProperty = Long.valueOf(p.returnProperty("facturacion.programacionAutomatica.maxMinutosEnEjecucion"));
+			String tiempoMaximoEjecucionBloqueada = String.valueOf(tiempoEsperaBloqueosProperty/(24.0*60.0));
+			
+			// OBTENCIÓN DE LAS FACTURACIONES CON ESTADO PROCESANDO Y TODAS SUS FACTURAS HAN SIDO TRASPASADAS
+			Hashtable<Integer, Object> codigos = new Hashtable<Integer, Object>();
+			codigos.put(new Integer("1"), idInstitucion);
+			
+			String sWhere = " WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = :1 " +
+   							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDINSTITUCION +
+   							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " =  FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +							
+							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM + " IS NOT NULL " + // Para fechas previstas de confirmacion adecuadas 
+							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM + " <= SYSDATE " +
+							" AND " + FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " IS NOT NULL " + // Solo las que estan generadas 
+							" AND " + FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " = " + FacEstadoConfirmFactBean.CONFIRM_FINALIZADA + // Para los estados de confirmacion adecuados 
+							
+							" AND " + FacFacturacionProgramadaBean.C_IDESTADOTRASPASO + " = " + FacEstadoConfirmFactBean.TRASPASO_PROCESANDO +
+							
+							" AND (not exists (select 1 from " + FacFacturaBean.T_NOMBRETABLA +
+									" where " + FacFacturaBean.T_NOMBRETABLA + ".idinstitucion = " + FacFacturacionProgramadaBean.T_NOMBRETABLA + ".idinstitucion " +
+											"and " + FacFacturaBean.T_NOMBRETABLA + ".idseriefacturacion = " + FacFacturacionProgramadaBean.T_NOMBRETABLA + ".idseriefacturacion " +
+											"and " + FacFacturaBean.T_NOMBRETABLA + ".idprogramacion = " + FacFacturacionProgramadaBean.T_NOMBRETABLA + ".idprogramacion " +
+											"and " + FacFacturaBean.T_NOMBRETABLA + ".traspasada is null)" + 
+							
+							" OR SYSDATE - " + tiempoMaximoEjecucionBloqueada + " > " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHAMODIFICACION +" ) ";
+			
+			String[] orden = {FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION};
+			
+			FacFacturacionProgramadaAdm factAdm = new FacFacturacionProgramadaAdm(userBean);
+			Vector<?> vDatos = factAdm.selectDatosFacturacionBean(sWhere, codigos, orden);
+			
+		    for (int i=0; i<vDatos.size(); i++)
+		    {
+				// PROCESO PARA CADA FACTURACION PROGRAMADA
+		    	FacFacturacionProgramadaBean factBean = (FacFacturacionProgramadaBean)vDatos.elementAt(i);
+		    	
+				ClsLogging.writeFileLog("ENVIAR FACTURACION PROGRAMADA: " + idInstitucion + " " + factBean.getIdSerieFacturacion() + " " + factBean.getIdProgramacion(), 10);
+
+		    	try {
+		    		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION, FacFacturacionProgramadaBean.C_IDPROGRAMACION, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
+		    		Hashtable<String,Object> hashNew = new Hashtable<String,Object>();	
+		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDINSTITUCION, factBean.getIdInstitucion());
+		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDPROGRAMACION, factBean.getIdProgramacion());
+		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,factBean.getIdSerieFacturacion() );
+
+		    		UserTransaction tx = (UserTransaction) this.usrbean.getTransactionPesada();
+		    		 
+		    		this.cambiarEstadoTraspasoFacturacion(factBean, claves, hashNew, tx);
+		    		
+				} catch (ClsExceptions e) {
+					ClsLogging.writeFileLogError("@@@ Error controlado al traspasar facturas pendientes (Proceso automático): " + e.getMsg(), e, 3);
+					
+				} catch (Exception e) {
+					ClsLogging.writeFileLogError("@@@ Error al traspasar facturas pendientes (Proceso automático) Programación: ", e, 3);
+				}
+		    }// del for
+		    
+		} catch (Exception e) {
+			// Error general (No hacemos nada, para que continue con la siguiente institucion
+			ClsLogging.writeFileLogError("@@@ Error general al traspasar facturas pendientes (Proceso automático) INSTITUCION: " + idInstitucion, e, 3);
+		}
+	}
+    
+    //Método que busca si hay alguna factura que ha sido traspasada con error: 
+    private String cambiarEstadoTraspasoFacturacion(
+    		FacFacturacionProgramadaBean beanP, 
+    		String [] claves, 
+    		Hashtable<String,Object> hashFactura, 
+    		UserTransaction tx)throws ClsExceptions, SIGAException, Exception {
+    	
+    	String msjAviso = null;
+    	String [] camposTraspaso = { FacFacturacionProgramadaBean.C_IDESTADOTRASPASO, FacFacturacionProgramadaBean.C_LOGTRASPASO };
+    	
+    	// fichero de log: 
+    	ReadProperties p = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+    	String pathFicheroLog = p.returnProperty("facturacion.directorioFisicoLogProgramacion");
+		String sBarra2 = "";
+		if (pathFicheroLog.indexOf("/") > -1) sBarra2 = "/"; 
+		if (pathFicheroLog.indexOf("\\") > -1) sBarra2 = "\\";
+		String nombreFichero = "LOG_FAC_TRASPASO_" + beanP.getIdSerieFacturacion() + "_" + beanP.getIdProgramacion() + ".log.xls";
+    	String rutaFichero = pathFicheroLog + sBarra2 + beanP.getIdInstitucion() + sBarra2;
+    	File ficheroLogTraspaso = new File(rutaFichero + nombreFichero);
+    	if(ficheroLogTraspaso.exists())
+    		ficheroLogTraspaso.delete(); //Borramos el fichero de traspaso de logs si ya existe previamente.
+		SIGALogging log = new SIGALogging(rutaFichero + nombreFichero);
+		
+		// fichero de log confirmación: 
+	    String nombreFicheroLogConfirmacion = "LOG_FAC_CONFIRMACION_" + beanP.getIdSerieFacturacion() + "_" + beanP.getIdProgramacion() + ".log.xls";
+	    SIGALogging logConfirmacion = new SIGALogging(rutaFichero + nombreFicheroLogConfirmacion);
+    	
+    	try{
+    		ClsLogging.writeFileLog("TIENE QUE TRASPASAR FACTURA", 10);
+    		
+    		
+    		//SELECT QUE COMPRUEBA SI HAY ALGUNA FACTURA QUE HA SIDO TRASPADA CON ERROR: 
+	    	Hashtable<Integer, Object> codigos = new Hashtable<Integer, Object>();
+			codigos.put(new Integer("1"), beanP.getIdInstitucion());
+			codigos.put(new Integer("2"), beanP.getIdSerieFacturacion());
+			codigos.put(new Integer("3"), beanP.getIdProgramacion());
+			
+			String sWhere = " WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = :1 " +
+							" AND "   + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION + " = :2 " +
+							" AND "   + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPROGRAMACION + " = :3 " +
+							" AND "   + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_TRASPASADA + " = '" + FacFacturaBean.ESTADO_TRASPASADA_ERROR + "'";
+			
+			FacFacturaAdm fc = new FacFacturaAdm(this.usrbean);
+			Vector<?> vDatos = fc.selectBind(sWhere, codigos);
+			
+			if (tx!=null) ////////////INICIO TRANSACCION //////////////// 
+				tx.begin();
+			
+			FacFacturacionProgramadaAdm facadm = new FacFacturacionProgramadaAdm(this.usrbean);
+			
+			if(vDatos.size()>0) { //HA HABIDO ALGUNA FACTURA CON ERROR.
+				msjAviso = "messages.facturacion.confirmacion.errorPdf"; //ME VALE ESTE MISMO MENSAJE DE AVISO.
+				UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOTRASPASO, FacEstadoConfirmFactBean.TRASPASO_FINALIZADAERRORES); // cambio de estado ENVIO a FINALIZADO CON ERRORES.
+				UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_LOGTRASPASO, nombreFichero);
+				UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_LOGERROR, nombreFicheroLogConfirmacion);
+				String [] camposTraspaso2 = { FacFacturacionProgramadaBean.C_IDESTADOTRASPASO, FacFacturacionProgramadaBean.C_LOGTRASPASO, FacFacturacionProgramadaBean.C_LOGERROR };
+				facadm.updateDirect(hashFactura, claves, camposTraspaso2);
+				logConfirmacion.writeLogFactura("Traspaso", "", "", "Error en el proceso de Traspaso de Facturas");
+				ClsLogging.writeFileLog("ERROR GENERAL TRASPASO FACTURA. CAMBIO DE ESTADOS", 10);
+			} else { //SI NO HAY RESULTADOS ES QUE NO HA HABIDO NINGUNA FACTURA CON ERROR. SE ENVÍA MAIL CON EL FICHERO DE LOG.
+				msjAviso = "messages.facturacion.confirmacion.errorPdf"; //ME VALE ESTE MISMO MENSAJE DE AVISO.
+				UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_IDESTADOTRASPASO, FacEstadoConfirmFactBean.TRASPASO_FINALIZADA); // cambio de estado TRASPASO a FINALIZADO.
+				//UtilidadesHash.set(hashFactura, FacFacturacionProgramadaBean.C_LOGTRASPASO, nombreFichero);
+				facadm.updateDirect(hashFactura, claves, camposTraspaso);
+				ClsLogging.writeFileLog("OK TODO. CAMBIO DE ESTADOS", 10);
+			}
+	    	
+			if (tx!=null) //////////// FIN TRANSACCION //////////////// 
+				tx.commit();
+			
+			
+			//GENERACIÓN LOG FACTURAS: 
+			//BUSCAMOS TODAS LAS FACTURAS DE LA FACTURACIÓN: 
+			sWhere = " WHERE " + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDINSTITUCION + " = :1 " +
+					 " AND "   + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDSERIEFACTURACION + " = :2 " +
+					 " AND "   + FacFacturaBean.T_NOMBRETABLA + "." + FacFacturaBean.C_IDPROGRAMACION + " = :3 ";
+			
+			vDatos.clear();
+			vDatos = (Vector)fc.selectBind(sWhere, codigos);
+			FacFacturaBean factBean;
+			for(int i=0; i<vDatos.size(); i++)
+			{
+				factBean = (FacFacturaBean)vDatos.elementAt(i);
+				log.writeLogTraspasoFactura(factBean.getNumeroFactura(), factBean.getTraspasada(), (factBean.getErrorTraspaso()!=null)?factBean.getErrorTraspaso():"");	
+			}
+			
+			
+			//ENVÍO DE CORREO ELECTRÓNICO CON EL LOG: 
+			GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
+    	    String from = genParametrosService.getValorParametro(AppConstants.IDINSTITUCION_2000, PARAMETRO.TRASPASO_FACTURAS_MAILRESUMEN_FROM, MODULO.ECOM);
+    	    String bcc = genParametrosService.getValorParametro(AppConstants.IDINSTITUCION_2000, PARAMETRO.TRASPASO_FACTURAS_MAILRESUMEN_BCC, MODULO.ECOM);
+    	    String body = genParametrosService.getValorParametro(AppConstants.IDINSTITUCION_2000, PARAMETRO.TRASPASO_FACTURAS_MAILRESUMEN_BODY, MODULO.ECOM);
+    	    
+    	    //SELECT PARA OBTENER EL NOMBRE Y LA DESCRIPCIÓN DE LA SERIE DE FACTURACIÓN: 
+	    	codigos.clear();
+			codigos.put(new Integer("1"), beanP.getIdInstitucion());
+			codigos.put(new Integer("2"), beanP.getIdSerieFacturacion());
+			
+			sWhere = " WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION + " = :1 " +
+						" AND "   + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION + " = :2 ";
+			
+			FacSerieFacturacionAdm fcSerieFac = new FacSerieFacturacionAdm(this.usrbean);
+			String descripcionSerieFacturacion = "";
+			vDatos.clear();
+			vDatos = fcSerieFac.selectBind(sWhere, codigos);
+			if(vDatos!=null && vDatos.size()>0)
+			{
+				FacSerieFacturacionBean fAux = (FacSerieFacturacionBean)vDatos.get(0);
+				descripcionSerieFacturacion = fAux.getNombreAbreviado() + " - " + fAux.getDescripcion();
+			}
+			
+			//SELECT PARA OBTENER LA DESCRIPCIÓN DE LA PROGRAMACIÓN: 
+	    	codigos.clear();
+			codigos.put(new Integer("1"), beanP.getIdInstitucion());
+			codigos.put(new Integer("2"), beanP.getIdSerieFacturacion());
+			codigos.put(new Integer("3"), beanP.getIdProgramacion());
+			
+			sWhere = " WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = :1 " + 
+						" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = :2 " + 
+						" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDPROGRAMACION + " = :3 ";
+			
+			FacFacturacionProgramadaAdm fcFacProg = new FacFacturacionProgramadaAdm(this.usrbean);
+			String descripcionProgramacion = "";
+			vDatos.clear();
+			vDatos = fcFacProg.selectBind(sWhere, codigos);
+			if(vDatos!=null && vDatos.size()>0)
+			{
+				FacFacturacionProgramadaBean fAux = (FacFacturacionProgramadaBean)vDatos.get(0);
+				descripcionProgramacion = fAux.getDescripcion();
+			}
+    	    
+			//CONSTRUIMOS EL CUERPO DEL MENSAJE: 
+    	    StringBuilder sb = new StringBuilder();
+    	    sb.append(String.format(body, descripcionSerieFacturacion, descripcionProgramacion));
+    	    body = sb.toString();
+    	    String[] bccArray = bcc.split(";");
+    	    
+    	    String asunto = genParametrosService.getValorParametro(AppConstants.IDINSTITUCION_2000, PARAMETRO.TRASPASO_FACTURAS_MAILRESUMEN_ASUNTO, MODULO.ECOM);
+    	    SigaServiceHelperService serviceHelperService = (SigaServiceHelperService) BusinessManager.getInstance().getService(SigaServiceHelperService.class);
+    	    serviceHelperService.enviarCorreo(from, bccArray, asunto, body, new File(rutaFichero + nombreFichero), GEN_PROPERTIES.mail_smtp_actualizacioncenso_host, GEN_PROPERTIES.mail_smtp_actualizacioncenso_user, GEN_PROPERTIES.mail_smtp_actualizacioncenso_pwd);
+			
+    	} catch(Exception e) {
+    		ClsLogging.writeFileLog("ERROR GENERAL EN TRY TRASPASO FACTURAS.", 10);
+			if (tx!=null && Status.STATUS_ACTIVE  == tx.getStatus())
+				tx.rollback();
+			
+			logConfirmacion.writeLogFactura("TRASPASO", "N/A", "N/A", "Error general en el proceso de Traspaso de Facturas: " + e.toString());
+			
+			throw e;
+    	}
+    	
+		return msjAviso;
+	}
     
     /**
      * 
@@ -993,7 +1344,7 @@ public class Facturacion {
 		try {
 
 			// Se guardan las facturas impresas.
-			ClsLogging.writeFileLog("TIENE QUE GENERAR PDF",10);
+			ClsLogging.writeFileLog("TIENE QUE GENERAR PDF", 10);
 	
 			//////////// INICIO TRANSACCION ////////////////
 			if (tx!=null) 
@@ -1148,7 +1499,7 @@ public class Facturacion {
 		
 		try {
 			FacFacturaAdm admF = new FacFacturaAdm(userbean);
-			FacPlantillaFacturacionAdm plantillaAdm = new FacPlantillaFacturacionAdm(userbean);		
+			FacPlantillaFacturacionAdm plantillaAdm = new FacPlantillaFacturacionAdm(userbean);
 			FacFacturacionProgramadaAdm facProgAdm = new FacFacturacionProgramadaAdm(userbean);
 			InformeFactura inf = new InformeFactura(userbean);
 			FacSerieFacturacionAdm admSerieFacturacion = new FacSerieFacturacionAdm(userbean);
@@ -1170,8 +1521,8 @@ public class Facturacion {
 						
 		    ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 
-			//TODO Esta comprobacion de rutas no me parece correcta: deberia pasarse la ruta de o a algun metodo y no hacerlo aqui como en una isla sin relacion con nada a la vista		    
-			// Obtencion de la ruta donde se almacenan temporalmente los ficheros formato FOP			
+			//TODO Esta comprobacion de rutas no me parece correcta: deberia pasarse la ruta de o a algun metodo y no hacerlo aqui como en una isla sin relacion con nada a la vista
+			// Obtencion de la ruta donde se almacenan temporalmente los ficheros formato FOP
 		    String rutaTemporal = rp.returnProperty("facturacion.directorioFisicoTemporalFacturasJava")+rp.returnProperty("facturacion.directorioTemporalFacturasJava");
     		String barraTemporal = "";
     		if (rutaTemporal.indexOf("/") > -1){ 
@@ -2329,13 +2680,67 @@ public class Facturacion {
 		}
 	}
 	
-	public String generarInformeGeneracion(String idInstitucion, String idSerieFacturacion, String idProgramacion) throws Exception {
-		String nameFile = null;		
-		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+	public File generarZIPLogYFacturacion(File ficheroLog, File ficheroTraspasos, String idInstitucion, String idSerieFacturacion, String idProgramacion, String rutaFichero) throws Exception
+	{
+		File fichero = null;
+		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		
+		String nombreFichero = "TRASPASO_Y_GENERACION_" + idSerieFacturacion + "_" + idProgramacion;
+		try
+		{
+			if (ficheroLog.exists() && ficheroTraspasos.exists())
+			{
+				ArrayList<FacFicherosDescargaBean> lista = new ArrayList<FacFicherosDescargaBean>();
+				FacFicherosDescargaBean facFicherosDescargaBean1 = new FacFicherosDescargaBean();
+				facFicherosDescargaBean1.setFormatoDescarga(-1);
+				facFicherosDescargaBean1.setFichero(ficheroLog);
+				facFicherosDescargaBean1.setNombreFacturaFichero("");
+				lista.add(facFicherosDescargaBean1);
+				
+				FacFicherosDescargaBean facFicherosDescargaBean2 = new FacFicherosDescargaBean();
+				facFicherosDescargaBean2.setFormatoDescarga(-1);
+				facFicherosDescargaBean2.setFichero(ficheroTraspasos);
+				facFicherosDescargaBean2.setNombreFacturaFichero("");
+				lista.add(facFicherosDescargaBean2);
+				
+				this.doZip(rutaFichero, nombreFichero, lista);
+				
+				fichero = new File(rutaFichero + nombreFichero + ".zip");
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		
+		return fichero;
+	}
+	
+	
+	//SOBRA PORQUE YA NO SE CREA EL FICHERO DE LOG DE TRASPASOS DESDE AQUÍ: 
+	/*public String generarFicheroTraspasos(String idInstitucion, String idSerieFacturacion, String idProgramacion) throws Exception
+	{
+		String nameFile = null;
+		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		String sRutaJava = rp.returnProperty("facturacion.directorioPrevisionesJava");
 		String sRutaFisicaJava = rp.returnProperty("facturacion.directorioFisicoPrevisionesJava");
-		sRutaJava = sRutaFisicaJava + File.separator + sRutaJava + File.separator + idInstitucion;		
-		String nombreFichero = "GENERACION_" + idSerieFacturacion + "_" + idProgramacion;    
+		sRutaJava = sRutaFisicaJava + File.separator + sRutaJava + File.separator + idInstitucion;
+		try
+		{
+			nameFile = "TRASPASOFACTURAS_" + idSerieFacturacion + "_" + idProgramacion + ".xls";
+			
+		} catch (Exception e) {
+			throw e;
+		}
+		
+		return nameFile;
+	}*/
+	
+	public String generarInformeGeneracion(String idInstitucion, String idSerieFacturacion, String idProgramacion) throws Exception {
+		String nameFile = null;
+		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String sRutaJava = rp.returnProperty("facturacion.directorioPrevisionesJava");
+		String sRutaFisicaJava = rp.returnProperty("facturacion.directorioFisicoPrevisionesJava");
+		sRutaJava = sRutaFisicaJava + File.separator + sRutaJava + File.separator + idInstitucion;
+		String nombreFichero = "GENERACION_" + idSerieFacturacion + "_" + idProgramacion;
 		
 		// Consulto los datos de la prevision y genero el fichero
 		Hashtable<String, Object> hashWhere = new Hashtable<String, Object>();
@@ -2745,5 +3150,5 @@ public class Facturacion {
 			else
 				throw e; 
 		}			
-	}		
+	}
 }

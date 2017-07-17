@@ -41,6 +41,7 @@ public class PysProductosInstitucionBean extends MasterBean {
 	private String tipoCertificado;
 	private String 	fechaBaja;
 	private String 	nofacturable;
+	private String codigoTraspasoNav;
 	
 	private String 	idContador;
 	
@@ -65,6 +66,7 @@ public class PysProductosInstitucionBean extends MasterBean {
 	static public final String C_FECHABAJA = "FECHABAJA";
 	static public final String C_IDCONTADOR = "IDCONTADOR";
 	static public final String C_NOFACTURABLE = "NOFACTURABLE";
+	static public final String C_CODIGOTRASPASONAV = "CODIGO_TRASPASONAV";
 
 	// Metodos SET
 	public void setIdInstitucion (Integer id)	{ this.idInstitucion=id;}
@@ -84,6 +86,7 @@ public class PysProductosInstitucionBean extends MasterBean {
 	public void setFechaBaja (String aux)	{ this.fechaBaja=aux;}
 	public void setIdContador (String aux)	{ this.idContador=aux;}
 	public void setnoFacturable (String aux)	{ this.nofacturable=aux;}
+	public void setCodigoTraspasoNav(String aux)	{ this.codigoTraspasoNav=aux;}
 		
 
 	// Metodos GET
@@ -104,4 +107,5 @@ public class PysProductosInstitucionBean extends MasterBean {
 	public String getFechaBaja ()	{ return this.fechaBaja;}		
 	public String getIdContador()	{ return this.idContador;}		
 	public String getnoFacturable()	{ return this.nofacturable;}
+	public String getCodigoTraspasoNav()	{ return this.codigoTraspasoNav;}
 }

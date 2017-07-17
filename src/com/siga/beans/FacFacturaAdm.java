@@ -95,6 +95,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 							FacFacturaBean.C_IDMANDATO,
 							FacFacturaBean.C_REFMANDATOSEPA,
 							FacFacturaBean.C_COMISIONIDFACTURA,
+							FacFacturaBean.C_TRASPASADA,
+							FacFacturaBean.C_ERRORTRASPASO,
 							FacFacturaBean.C_USUMODIFICACION,
 							FacFacturaBean.C_FECHAMODIFICACION};
 		return campos;
@@ -155,6 +157,8 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			bean.setImpTotalPagadoSoloTarjeta(UtilidadesHash.getDouble(hash,FacFacturaBean.C_IMPTOTALPAGADOSOLOTARJETA));			
 			bean.setEstado(UtilidadesHash.getInteger(hash,FacFacturaBean.C_ESTADO));
 			bean.setComisionIdFactura(UtilidadesHash.getString(hash,FacFacturaBean.C_COMISIONIDFACTURA));
+			bean.setTraspasada(UtilidadesHash.getString(hash,FacFacturaBean.C_TRASPASADA));
+			bean.setErrorTraspaso(UtilidadesHash.getString(hash,FacFacturaBean.C_ERRORTRASPASO));
 			bean.setFechaMod(UtilidadesHash.getString(hash,FacFacturaBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,FacFacturaBean.C_USUMODIFICACION));
 			
@@ -177,34 +181,36 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		try {
 			htData = new Hashtable();
 			FacFacturaBean b = (FacFacturaBean) bean;
-			UtilidadesHash.set(htData,FacFacturaBean.C_IDFACTURA ,b.getIdFactura());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IDINSTITUCION,b.getIdInstitucion ()); 
-			UtilidadesHash.set(htData,FacFacturaBean.C_FECHAEMISION,b.getFechaEmision());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IDFACTURA, b.getIdFactura());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IDINSTITUCION, b.getIdInstitucion ()); 
+			UtilidadesHash.set(htData,FacFacturaBean.C_FECHAEMISION, b.getFechaEmision());
 			UtilidadesHash.set(htData,FacFacturaBean.C_NUMEROFACTURA, b.getNumeroFactura());
-			UtilidadesHash.set(htData,FacFacturaBean.C_CONTABILIZADA,b.getContabilizada());
-			UtilidadesHash.set(htData,FacFacturaBean.C_OBSERVACIONES,b.getObservaciones());
-			UtilidadesHash.set(htData,FacFacturaBean.C_OBSERVINFORME,b.getObservinforme());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IDSERIEFACTURACION ,b.getIdSerieFacturacion());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IDPROGRAMACION,b.getIdProgramacion ());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IDFORMAPAGO,b.getIdFormaPago());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IDCUENTA ,b.getIdCuenta());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IDPERSONA,b.getIdPersona ());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IDCUENTADEUDOR ,b.getIdCuentaDeudor());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IDPERSONADEUDOR,b.getIdPersonaDeudor());			
-			UtilidadesHash.set(htData,FacFacturaBean.C_CTACLIENTE,b.getCtaCliente());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTAL,b.getImpTotal());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALANTICIPADO,b.getImpTotalAnticipado());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALCOMPENSADO,b.getImpTotalCompensado());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALIVA,b.getImpTotalIva());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALNETO,b.getImpTotalNeto());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALPAGADO,b.getImpTotalPagado());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALPAGADOPORBANCO,b.getImpTotalPagadoPorBanco());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALPAGADOPORCAJA,b.getImpTotalPagadoPorCaja());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALPORPAGAR,b.getImpTotalPorPagar());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALPAGADOSOLOCAJA,b.getImpTotalPagadoSoloCaja());
-			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALPAGADOSOLOTARJETA,b.getImpTotalPagadoSoloTarjeta());
-			UtilidadesHash.set(htData,FacFacturaBean.C_ESTADO,b.getEstado());
-			UtilidadesHash.set(htData,FacFacturaBean.C_COMISIONIDFACTURA ,b.getComisionIdFactura());
+			UtilidadesHash.set(htData,FacFacturaBean.C_CONTABILIZADA, b.getContabilizada());
+			UtilidadesHash.set(htData,FacFacturaBean.C_OBSERVACIONES, b.getObservaciones());
+			UtilidadesHash.set(htData,FacFacturaBean.C_OBSERVINFORME, b.getObservinforme());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IDSERIEFACTURACION, b.getIdSerieFacturacion());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IDPROGRAMACION, b.getIdProgramacion ());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IDFORMAPAGO, b.getIdFormaPago());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IDCUENTA, b.getIdCuenta());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IDPERSONA, b.getIdPersona ());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IDCUENTADEUDOR , b.getIdCuentaDeudor());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IDPERSONADEUDOR, b.getIdPersonaDeudor());			
+			UtilidadesHash.set(htData,FacFacturaBean.C_CTACLIENTE, b.getCtaCliente());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTAL, b.getImpTotal());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALANTICIPADO, b.getImpTotalAnticipado());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALCOMPENSADO, b.getImpTotalCompensado());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALIVA, b.getImpTotalIva());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALNETO, b.getImpTotalNeto());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALPAGADO, b.getImpTotalPagado());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALPAGADOPORBANCO, b.getImpTotalPagadoPorBanco());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALPAGADOPORCAJA, b.getImpTotalPagadoPorCaja());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALPORPAGAR, b.getImpTotalPorPagar());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALPAGADOSOLOCAJA, b.getImpTotalPagadoSoloCaja());
+			UtilidadesHash.set(htData,FacFacturaBean.C_IMPTOTALPAGADOSOLOTARJETA, b.getImpTotalPagadoSoloTarjeta());
+			UtilidadesHash.set(htData,FacFacturaBean.C_ESTADO, b.getEstado());
+			UtilidadesHash.set(htData,FacFacturaBean.C_COMISIONIDFACTURA , b.getComisionIdFactura());
+			UtilidadesHash.set(htData,FacFacturaBean.C_TRASPASADA , b.getTraspasada());
+			UtilidadesHash.set(htData,FacFacturaBean.C_ERRORTRASPASO , b.getErrorTraspaso());
 			UtilidadesHash.set(htData,FacFacturaBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData,FacFacturaBean.C_USUMODIFICACION, b.getUsuMod());
 			

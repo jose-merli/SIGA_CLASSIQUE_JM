@@ -47,8 +47,10 @@ public class FacFacturaBean extends MasterBean{
 	private Double impTotalPagadoSoloTarjeta;
 	private Integer estado;
 	private String comisionIdFactura;
+	private String traspasada;
+	private String errorTraspaso;
 	private String refMandatoSepa;
-	private Integer idMandato;	
+	private Integer idMandato;
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FAC_FACTURA";
@@ -86,6 +88,12 @@ public class FacFacturaBean extends MasterBean{
 	static public final String C_IDMANDATO = "IDMANDATO";
 	static public final String C_REFMANDATOSEPA = "REFMANDATOSEPA";
 	static public final String C_COMISIONIDFACTURA = "COMISIONIDFACTURA";
+	static public final String C_TRASPASADA = "TRASPASADA";
+	static public final String C_ERRORTRASPASO = "ERRORTRASPASO";
+	
+	
+	static public final String ESTADO_TRASPASADA_ERROR = "E";
+	static public final String ESTADO_TRASPASADA_NAV_OK = "1";
 
 	// Metodos SET
 	public void setIdFactura (String id) 	{ this.idFactura = id; }
@@ -116,6 +124,8 @@ public class FacFacturaBean extends MasterBean{
 	public void setImpTotalPagadoSoloTarjeta (Double id) 	{ this.impTotalPagadoSoloTarjeta = id; }
 	public void setEstado (Integer id) 	{ this.estado = id; }
 	public void setComisionIdFactura(String comisionIdFactura) { this.comisionIdFactura = comisionIdFactura; }
+	public void setTraspasada(String traspasada) { this.traspasada = traspasada; }
+	public void setErrorTraspaso(String errorTraspaso) { this.errorTraspaso = errorTraspaso; }
 	public void setRefMandatoSepa(String refMandatoSepa) { this.refMandatoSepa = refMandatoSepa; }
 	public void setIdMandato(Integer idMandato) { this.idMandato = idMandato; }
 
@@ -148,6 +158,8 @@ public class FacFacturaBean extends MasterBean{
 	public Double getImpTotalPagadoSoloTarjeta () 	{ return this.impTotalPagadoSoloTarjeta; }
 	public Integer getEstado () 	{ return this.estado;  }
 	public String getComisionIdFactura() {return comisionIdFactura;}
+	public String getTraspasada() {return traspasada;}
+	public String getErrorTraspaso() {return errorTraspaso;}
 	public String getRefMandatoSepa() { return refMandatoSepa; }
-	public Integer getIdMandato() { return idMandato; }	
+	public Integer getIdMandato() { return idMandato; }
 }

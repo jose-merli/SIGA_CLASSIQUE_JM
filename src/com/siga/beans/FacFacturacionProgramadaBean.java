@@ -16,18 +16,19 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	private static final long serialVersionUID = -7040853546630563259L;
 
 	/* Variables */
-	private Integer idInstitucion, idEstadoConfirmacion, idEstadoPDF, idEstadoEnvio, idTipoPlantillaMail, idTipoEnvios;
+	private Integer idInstitucion, idEstadoConfirmacion, idEstadoPDF, idEstadoEnvio, idTipoPlantillaMail, idTipoEnvios, idEstadoTraspaso;
 	
 	private Long idSerieFacturacion, idProgramacion, idPrevision;
 	
 	private String 	fechaInicioProductos, fechaFinProductos, fechaInicioServicios, fechaFinServicios, 
 					fechaRealGeneracion, fechaConfirmacion, fechaProgramacion, 
-					generarPDF,envio,archivarFact,fechaPrevistaConfirmacion,fechaPrevistaGeneracion,
-					fechaCargo, confIngresos, confDeudor, ctaIngresos, ctaClientes, visible, descripcion, realizarEnvio;
+					generarPDF, traspasoFacturas, envio,archivarFact,fechaPrevistaConfirmacion,fechaPrevistaGeneracion,
+					fechaCargo, confIngresos, confDeudor, ctaIngresos, ctaClientes, visible, descripcion, realizarEnvio, 
+					traspasoPlantilla, traspasoCodAuditoriaDef;
 	
 	private String fechaPresentacion, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B;
 
-	private String logerror, nombrefichero;
+	private String logerror, nombrefichero, logTraspaso;
 	
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "FAC_FACTURACIONPROGRAMADA";
@@ -49,8 +50,12 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	static public final String C_FECHAPREVISTACONFIRM 		= "FECHAPREVISTACONFIRM";
 	static public final String C_IDESTADOCONFIRMACION 		= "IDESTADOCONFIRMACION";
 	static public final String C_IDESTADOPDF 				= "IDESTADOPDF";
+	static public final String C_IDESTADOTRASPASO			= "IDESTADOTRASPASO";
 	static public final String C_IDESTADOENVIO 				= "IDESTADOENVIO";
 	static public final String C_GENERAPDF 					= "GENERAPDF";
+	static public final String C_TRASPASOFACTURAS			= "TRASPASOFACTURAS";
+	static public final String C_TRASPASOPLANTILLA			= "TRASPASO_PLANTILLA";
+	static public final String C_TRASPASOCODAUDITORIADEF	= "TRASPASO_CODAUDITORIA_DEF";
 	static public final String C_ENVIO 						= "ENVIO";
 	static public final String C_ARCHIVARFACT 				= "ARCHIVARFACT";
 	static public final String C_FECHACARGO					= "FECHACARGO";
@@ -69,6 +74,8 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	static public final String C_FECHARECIBOSB2B			= "FECHARECIBOSB2B";
 	static public final String C_NOMBREFICHERO				= "NOMBREFICHERO";
 	static public final String C_LOGERROR					= "LOGERROR";
+	static public final String C_LOGTRASPASO				= "LOGTRASPASO";
+	
 
 	// Metodos SET
 	public void setIdInstitucion (Integer id)			{ this.idInstitucion = id; }
@@ -87,8 +94,12 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	public void setFechaPrevistaConfirmacion (String id)				{ this.fechaPrevistaConfirmacion = id; }
 	public void setIdEstadoConfirmacion (Integer id)				{ this.idEstadoConfirmacion = id; }
 	public void setIdEstadoPDF (Integer id)				{ this.idEstadoPDF = id; }
+	public void setIdEstadoTraspaso (Integer id)				{ this.idEstadoTraspaso = id; }
 	public void setIdEstadoEnvio (Integer id)				{ this.idEstadoEnvio = id; }
 	public void setGenerarPDF (String id)				{ this.generarPDF = id; }
+	public void setTraspasoFacturas (String id)				{ this.traspasoFacturas = id; }
+	public void setTraspasoPlantilla (String id)			{ this.traspasoPlantilla = id; }
+	public void setTraspasoCodAuditoriaDef (String id)		{ this.traspasoCodAuditoriaDef = id; }
 	public void setEnvio (String id)				{ this.envio = id; }
 	public void setArchivarFact (String id)				{ this.archivarFact = id; }
 
@@ -117,8 +128,12 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	public String getFechaPrevistaConfirmacion  ()				{return  this.fechaPrevistaConfirmacion;}
 	public Integer getIdEstadoConfirmacion 		()				{return  this.idEstadoConfirmacion;}
 	public Integer getIdEstadoPDF ()				{return  this.idEstadoPDF;}
+	public Integer getIdEstadoTraspaso ()				{return  this.idEstadoTraspaso;}
 	public Integer getIdEstadoEnvio ()				{return  this.idEstadoEnvio;}
 	public String getGenerarPDF ()				{return  this.generarPDF;}
+	public String getTraspasoFacturas ()				{return  this.traspasoFacturas;}
+	public String getTraspasoPlantilla ()				{return  this.traspasoPlantilla;}
+	public String getTraspasoCodAuditoriaDef ()			{return  this.traspasoCodAuditoriaDef;}
 	public String getEnvio ()				{return  this.envio;}
 	public String getArchivarFact ()				{return  this.archivarFact; }
 
@@ -197,4 +212,11 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	public void setNombrefichero(String nombrefichero) {
 		this.nombrefichero = nombrefichero;
 	}
+	public String getLogTraspaso() {
+		return logTraspaso;
+	}
+	public void setLogTraspaso(String logTraspaso) {
+		this.logTraspaso = logTraspaso;
+	}
+	
 }
