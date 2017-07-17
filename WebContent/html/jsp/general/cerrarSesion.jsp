@@ -26,13 +26,12 @@
 		  pathInicio = BotonesMenu.getPathCerrarSesion(userBean.getLocation());
 		  
 		}else{
-		  pathInicio = BotonesMenu.getPathCerrarSesion("0");//si se pierde el USERBEAN de la sesion se pasa por defecto la institucion 0
+		  pathInicio = BotonesMenu.getPathCerrarSesion("2000");
 		}	
 	%>
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 
 	<% //Invalido/borro la sesion del usuario:

@@ -29,8 +29,7 @@
 	
 	//Cogemos el path de la base de datos no del SIGA.prperties
 	
-	String pathInicio = BotonesMenu.getPathCerrarSesion("0");//Pasamos la institucion 0 por defecto porque cuando se abre esta pagina se pierde el 
-	                                                         // USERBEAN de sesion.
+	String pathInicio = BotonesMenu.getPathCerrarSesion("2000");
 	
 %>
 
@@ -41,7 +40,7 @@
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
 		<script type="text/javascript">
 			function cargarInicio() {
 				var msg1 = '<siga:Idioma key="messages.noSession"/>';
