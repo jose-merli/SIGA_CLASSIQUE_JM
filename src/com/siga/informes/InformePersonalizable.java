@@ -560,21 +560,10 @@ public class InformePersonalizable extends MasterReport
 						out.write(columna + "\t");
 						
 					}
-					out.newLine();
-					/*Hashtable hashOrdenado = vDatos.get(0);
-					Iterator ite0 = hashOrdenado.keySet().iterator();
-					while (ite0.hasNext()) {
-						String key = (String) ite0.next();
-						
-						
-					}
-					out.newLine();
-					*/
-					out.newLine();
+					out.newLine(); //Cerramos la linea de cabeceras
 
-					// escribiendo los resultados
-					
-					
+
+					// escribiendo los resultados		
 					for (int i = 0; i < vDatos.size(); i++) {
 						Hashtable hashOrdenado = vDatos.get(i);
 						for (int j = 0; j < columnas.length; j++) {
