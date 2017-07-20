@@ -683,6 +683,7 @@ public class DatosColegialesAction extends MasterAction {
 						} catch (BusinessException e) {
 							llamadaReport = e.getMessage();
 						}
+						llamadaReport = (llamadaReport == null ? "" : llamadaReport);
 						hash.put("RESPUESTA_ACA", llamadaReport);
 						hashHist.put(CenHistoricoBean.C_OBSERVACIONES, llamadaReport);
 					}
