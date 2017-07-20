@@ -314,7 +314,8 @@ public class EdicionRemesasAction extends MasterAction {
 			
 			EdicionRemesaForm edicionRemesaForm = (EdicionRemesaForm) formulario;
 			
-			if (AppConstants.ECOM_CEN_MAESESTADOENVIO.PENDIENTE.getCodigo() == edicionRemesaForm.getIdEstadoenvio()) {
+			if (AppConstants.ECOM_CEN_MAESESTADOENVIO.PENDIENTE.getCodigo() == edicionRemesaForm.getIdEstadoenvio() 
+					|| AppConstants.ECOM_CEN_MAESESTADOENVIO.PROCESADO.getCodigo() == edicionRemesaForm.getIdEstadoenvio()) {
 			
 				//creamos el mapa de parámetros
 				Map<String, String> mapa = new HashMap<String, String>();

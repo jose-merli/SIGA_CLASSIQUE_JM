@@ -326,7 +326,7 @@ String botones = "B";
 		<bean:define name="EdicionRemesaForm" property="accion" id="accion"/>
 		
 		<c:choose>
-			<c:when test='<%=(AppConstants.ECOM_CEN_MAESESTADOENVIO.PENDIENTE.getCodigo()==idEstadoenvio && !accion.equals("ver"))%>'>
+			<c:when test='<%=((AppConstants.ECOM_CEN_MAESESTADOENVIO.PENDIENTE.getCodigo()==idEstadoenvio || AppConstants.ECOM_CEN_MAESESTADOENVIO.PROCESADO.getCodigo()==idEstadoenvio) && !accion.equals("ver"))%>'>
 				<siga:ConjBotonesBusqueda botones="B,AC,ACP" titulo="censo.ws.edicionRemesa.listadoColegiados" />		
 			</c:when>
 			<c:otherwise>
