@@ -542,73 +542,76 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 	}
 	
 	  
-		public Vector getConsultaActuacion (Hashtable entrada, HttpServletRequest request)throws ClsExceptions {
-			Vector salida=null;				
-		String consultaActuacion = "  SELECT act.IDINSTITUCION idinstitucion, act.IDTURNO idturno, act.ANIO anio, act.NUMERO numero, act.NUMEROASUNTO numeroasunto, act.FECHA fechaactuacion"+
-									",act.FECHAJUSTIFICACION fechajustificacion, act.ACUERDOEXTRAJUDICIAL acuerdoextrajudicial"+ 
-									",tur.nombre turno, act.numeroasunto numeroasunto, act.observaciones observaciones,  act.observacionesjustificacion observacionesjustificacion,"+
-									" act.fechajustificacion fechajustificacion,act.acuerdoextrajudicial acuerdoextrajudicial, act.lugar lugar, act.anulacion anulacion, act.numeroasunto numeroasunto"+
-									",act."+ScsActuacionDesignaBean.C_IDCOMISARIA+
-									",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONCOMISARIA+
-									",act."+ScsActuacionDesignaBean.C_IDJUZGADO+
-									",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO+
-									",act."+ScsActuacionDesignaBean.C_IDPRISION+
-									",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION+
-									",act."+ScsActuacionDesignaBean.C_IDPROCEDIMIENTO+
-									",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO+
-									",act."+ScsActuacionDesignaBean.C_IDACREDITACION+"||','||ap.nig_numprocedimiento IDACREDITACION"+
-									",act."+ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO+
-									",act."+ScsActuacionDesignaBean.C_IDFACTURACION+
-									",act."+ScsActuacionDesignaBean.C_IDMOVIMIENTO+		
-									",pro.nombre nombreprocedimiento, pro.idprocedimiento idprocedimiento"+
-									",acred."+ScsAcreditacionBean.C_DESCRIPCION+" AS NOMBREACREDITACION "+
-									",act." + ScsActuacionDesignaBean.C_VALIDADA + " actuacionValidada " +
-									",juzgado." + ScsJuzgadoBean.C_NOMBRE+ " NOMBREJUZGADO " +
-									",act."+ScsActuacionDesignaBean.C_IDPRETENSION+
-									" ,act.facturado FACTURADO "+
-									" ,act.idpersonacolegiado IDPERSONACOLEGIADO, "+
-									" per.nombre nombre, per.apellidos1 apellido1, per.apellidos2 apellido2,"+
-								    " decode(col.comunitario, 1, col.ncomunitario, col.ncolegiado) ncolegiado, "+
-									" act."+ScsActuacionDesignaBean.C_TALONARIO+
-									" ,act."+ScsActuacionDesignaBean.C_TALON+		
-									
-									" ,act."+ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO+
-									" ,act."+ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO+
-									" ,act."+ScsActuacionDesignaBean.C_NIG+
-									",(select "+FcsFacturacionJGBean.C_NOMBRE+"||' ('||TO_CHAR("+FcsFacturacionJGBean.C_FECHADESDE+",'DD/MM/YYYY')||'-'||TO_CHAR("+FcsFacturacionJGBean.C_FECHAHASTA+",'DD/MM/YYYY')||')'"+
-									" from "+FcsFacturacionJGBean.T_NOMBRETABLA+
-								    " where "+FcsFacturacionJGBean.C_IDINSTITUCION+" = "+entrada.get("IDINSTITUCION")+
-								    "   and "+FcsFacturacionJGBean.T_NOMBRETABLA+"."+FcsFacturacionJGBean.C_IDFACTURACION+" = act."+ScsActuacionDesignaBean.C_IDFACTURACION+") nombrefacturacion"+
-									" FROM SCS_ACTUACIONDESIGNA act, scs_procedimientos pro , scs_turno tur, scs_acreditacion acred, scs_juzgado juzgado, cen_colegiado col, cen_persona per"+
-								    " ,scs_acreditacionprocedimiento ap "+
-									" WHERE act.IDINSTITUCION =  "+  entrada.get("IDINSTITUCION")+
-									" and act.IDTURNO = "+ entrada.get("IDTURNO")+
-									" and act.ANIO = "+entrada.get("ANIO")+
-									" and act.NUMERO =  "+ entrada.get("NUMERO")+
-									" and pro.idinstitucion = act.idinstitucion_proc"+ 
-									" and pro.idprocedimiento = act.IDPROCEDIMIENTO"+  
-									" and tur.idinstitucion = act.idinstitucion"+
-									" and tur.idturno = act.idturno"+
-									" and acred.idacreditacion = act.idacreditacion"+
-									" and act.numeroasunto = "+entrada.get("VISIBLE")+
-									" and act."+ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO+"=juzgado."+ScsJuzgadoBean.C_IDINSTITUCION+
-									" and act."+ScsActuacionDesignaBean.C_IDJUZGADO+"=juzgado."+ScsJuzgadoBean.C_IDJUZGADO +
-									" and act.idpersonacolegiado = per.idpersona" +    
-									" and col.idpersona = per.idpersona" +
-									" and col.idinstitucion = act.idinstitucion "+
-									" and ap.idinstitucion(+) = act.idinstitucion "+ 
-									" and ap.idacreditacion(+) = act.idacreditacion "+ 
-									" and ap.idprocedimiento(+) = act.idprocedimiento ";
-	
+	public Vector getConsultaActuacion (Hashtable entrada, UsrBean usr)throws ClsExceptions {
+		Vector salida=null;				
+	String consultaActuacion = "  SELECT act.IDINSTITUCION idinstitucion, act.IDTURNO idturno, act.ANIO anio, des.Codigo codigodesigna, act.NUMERO numero, act.NUMEROASUNTO numeroasunto, act.FECHA fechaactuacion"+
+								",act.FECHAJUSTIFICACION fechajustificacion, act.ACUERDOEXTRAJUDICIAL acuerdoextrajudicial"+ 
+								",tur.nombre turno, act.numeroasunto numeroasunto, act.observaciones observaciones,  act.observacionesjustificacion observacionesjustificacion,"+
+								" act.fechajustificacion fechajustificacion,act.acuerdoextrajudicial acuerdoextrajudicial, act.lugar lugar, act.anulacion anulacion, act.numeroasunto numeroasunto"+
+								",act."+ScsActuacionDesignaBean.C_IDCOMISARIA+
+								",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONCOMISARIA+
+								",act."+ScsActuacionDesignaBean.C_IDJUZGADO+
+								",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO+
+								",act."+ScsActuacionDesignaBean.C_IDPRISION+
+								",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONPRISION+
+								",act."+ScsActuacionDesignaBean.C_IDPROCEDIMIENTO+
+								",act."+ScsActuacionDesignaBean.C_IDINSTITUCIONPROCEDIMIENTO+
+								",act."+ScsActuacionDesignaBean.C_IDACREDITACION+"||','||ap.nig_numprocedimiento IDACREDITACION"+
+								",act."+ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO+
+								",act."+ScsActuacionDesignaBean.C_IDFACTURACION+
+								",act."+ScsActuacionDesignaBean.C_IDMOVIMIENTO+		
+								",pro.nombre nombreprocedimiento, pro.idprocedimiento idprocedimiento"+
+								",acred."+ScsAcreditacionBean.C_DESCRIPCION+" AS NOMBREACREDITACION "+
+								",act." + ScsActuacionDesignaBean.C_VALIDADA + " actuacionValidada " +
+								",juzgado." + ScsJuzgadoBean.C_NOMBRE+ " NOMBREJUZGADO " +
+								",act."+ScsActuacionDesignaBean.C_IDPRETENSION+
+								" ,act.facturado FACTURADO "+
+								" ,act.idpersonacolegiado IDPERSONACOLEGIADO, "+
+								" per.nombre nombre, per.apellidos1 apellido1, per.apellidos2 apellido2,"+
+							    " decode(col.comunitario, 1, col.ncomunitario, col.ncolegiado) ncolegiado, "+
+								" act."+ScsActuacionDesignaBean.C_TALONARIO+
+								" ,act."+ScsActuacionDesignaBean.C_TALON+		
+								
+								" ,act."+ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO+
+								" ,act."+ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO+
+								" ,act."+ScsActuacionDesignaBean.C_NIG+
+								",(select "+FcsFacturacionJGBean.C_NOMBRE+"||' ('||TO_CHAR("+FcsFacturacionJGBean.C_FECHADESDE+",'DD/MM/YYYY')||'-'||TO_CHAR("+FcsFacturacionJGBean.C_FECHAHASTA+",'DD/MM/YYYY')||')'"+
+								" from "+FcsFacturacionJGBean.T_NOMBRETABLA+
+							    " where "+FcsFacturacionJGBean.C_IDINSTITUCION+" = "+entrada.get("IDINSTITUCION")+
+							    "   and "+FcsFacturacionJGBean.T_NOMBRETABLA+"."+FcsFacturacionJGBean.C_IDFACTURACION+" = act."+ScsActuacionDesignaBean.C_IDFACTURACION+") nombrefacturacion"+
+								" FROM SCS_ACTUACIONDESIGNA act, scs_designa des, scs_procedimientos pro , scs_turno tur, scs_acreditacion acred, scs_juzgado juzgado, cen_colegiado col, cen_persona per"+
+							    " ,scs_acreditacionprocedimiento ap "+
+								" WHERE act.IDINSTITUCION =  "+  entrada.get("IDINSTITUCION")+
+								" and act.IDTURNO = "+ entrada.get("IDTURNO")+
+								" and act.ANIO = "+entrada.get("ANIO")+
+								" and act.NUMERO =  "+ entrada.get("NUMERO")+
+								" and act.IDINSTITUCION = des.IDINSTITUCION "+
+								" and act.IDTURNO = des.IDTURNO "+
+								" and act.ANIO = des.ANIO "+
+								" and act.NUMERO = des.NUMERO "+
+								" and pro.idinstitucion = act.idinstitucion_proc"+ 
+								" and pro.idprocedimiento = act.IDPROCEDIMIENTO"+  
+								" and tur.idinstitucion = act.idinstitucion"+
+								" and tur.idturno = act.idturno"+
+								" and acred.idacreditacion = act.idacreditacion"+
+								" and act.numeroasunto = "+entrada.get("VISIBLE")+
+								" and act."+ScsActuacionDesignaBean.C_IDINSTITUCIONJUZGADO+"=juzgado."+ScsJuzgadoBean.C_IDINSTITUCION+
+								" and act."+ScsActuacionDesignaBean.C_IDJUZGADO+"=juzgado."+ScsJuzgadoBean.C_IDJUZGADO +
+								" and act.idpersonacolegiado = per.idpersona" +    
+								" and col.idpersona = per.idpersona" +
+								" and col.idinstitucion = act.idinstitucion "+
+								" and ap.idinstitucion(+) = act.idinstitucion "+ 
+								" and ap.idacreditacion(+) = act.idacreditacion "+ 
+								" and ap.idprocedimiento(+) = act.idprocedimiento ";
+
 		try {	
-			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 			ScsActuacionDesignaAdm designaAdm = new ScsActuacionDesignaAdm (usr);		
 			salida=(Vector)designaAdm.ejecutaSelect(consultaActuacion);					
 		}catch (ClsExceptions e) {		
 			throw new ClsExceptions (e, "Error al ejecutar el 'getConsultaActuacion' en B.D.");		
 		}
 		return salida;
-		}
+	}
 		
 		public Vector getDesignaActuaciones(Hashtable entrada, HttpServletRequest request)throws ClsExceptions {
 		

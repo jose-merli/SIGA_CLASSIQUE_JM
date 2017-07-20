@@ -3,6 +3,8 @@ package com.siga.beans;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.redabogacia.sigaservices.app.autogen.model.ScsCabeceraguardias;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -137,21 +139,45 @@ public class FcsFactApunteAdm extends MasterBeanAdministrador {
 	 * 
 	 * @return String resultado con el importe 
 	 */
-	public String getImporteTotalFacturado (String idInstitucion, String idFacturacion, String idPersona)
+	public String getImporteTotalFacturado (ScsCabeceraguardias datosGuardia)
 	{
-		String resultado = "", consulta = "";
-		//query para consultar el importe 
-		consulta = 	" SELECT " + 
-					" SUM(" + FcsFactApunteBean.C_PRECIOAPLICADO +" + "+FcsFactApunteBean.C_PRECIO_COSTES_FIJOS+") AS IMPORTE " +
-					" FROM " + FcsFactApunteBean.T_NOMBRETABLA + " " +
-					" WHERE " + FcsFactApunteBean.C_IDINSTITUCION + "=" + idInstitucion + " " +
-					" AND " + FcsFactApunteBean.C_IDFACTURACION + "=" + idFacturacion + " " +
-					" AND " + FcsFactApunteBean.C_IDPERSONA + "=" + idPersona + " ";
+		String resultado = "";
+		StringBuilder consulta = new StringBuilder();
+		consulta.append("SELECT ");
+		consulta.append(FcsFactApunteBean.C_PRECIOAPLICADO);
+		consulta.append(" + ");
+		consulta.append(FcsFactApunteBean.C_PRECIO_COSTES_FIJOS);
+		consulta.append(" AS IMPORTE  FROM ");
+		consulta.append(FcsFactApunteBean.T_NOMBRETABLA);
+		consulta.append(" WHERE ");
+		consulta.append(FcsFactApunteBean.C_IDINSTITUCION);
+		consulta.append("=");
+		consulta.append(datosGuardia.getIdinstitucion());
+		consulta.append("   AND ");
+		consulta.append(FcsFactApunteBean.C_IDFACTURACION);
+		consulta.append("=");
+		consulta.append(datosGuardia.getIdfacturacion());
+		consulta.append("   AND ");
+		consulta.append(FcsFactApunteBean.C_IDTURNO);
+		consulta.append("=");
+		consulta.append(datosGuardia.getIdturno());
+		consulta.append("   AND ");
+		consulta.append(FcsFactApunteBean.C_IDGUARDIA);
+		consulta.append("=");
+		consulta.append(datosGuardia.getIdguardia());
+		consulta.append("   AND ");
+		consulta.append(FcsFactApunteBean.C_IDPERSONA);
+		consulta.append("=");
+		consulta.append(datosGuardia.getIdpersona());
+		consulta.append("   AND ");
+		consulta.append(FcsFactApunteBean.C_FECHAINICIO);
+		consulta.append("=");
+		consulta.append(datosGuardia.getFechainicio());
 		
 		//Hashtable para recoger el resultado de la contulta
 		Hashtable hash = new Hashtable();
 		try{
-			hash = (Hashtable)((Vector)this.selectGenerico(consulta)).get(0);
+			hash = (Hashtable)((Vector)this.selectGenerico(consulta.toString())).get(0);
 			//resogemos el resultado
 			resultado = (String)hash.get("IMPORTE");
 			if (resultado.equals(""))resultado="0";

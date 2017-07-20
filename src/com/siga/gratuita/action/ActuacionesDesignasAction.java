@@ -523,7 +523,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			Hashtable hashDesigna =  (Hashtable)(designaAdm.getConsultaDesigna(hashDatosDesigna, request)).get(0);
 			
 			//Se muestra todas las Actuaciones de la designa.
-		    Vector vAct = designaAdm.getConsultaActuacion(hashDatosDesigna, request);
+		    Vector vAct = designaAdm.getConsultaActuacion(hashDatosDesigna, usr);
 		    Hashtable hashActuacion = new Hashtable();
 		    if(vAct.size()>0){
 		    	hashActuacion = (Hashtable)(vAct).get(0);

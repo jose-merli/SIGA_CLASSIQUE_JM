@@ -207,21 +207,35 @@ public class FcsFactAsistenciaAdm extends MasterBeanAdministrador {
 	 * 
 	 * @return String resultado con el importe 
 	 */
-	public String getImporteTotalFacturado (String idInstitucion, String idFacturacion, String idPersona)
+	public String getImporteTotalFacturado (Hashtable<String, String> datosAsistencia)
 	{
-		String resultado = "", consulta = "";
-		//query para consultar el importe 
-		consulta = 	" SELECT " + 
-					" SUM(" + FcsFactAsistenciaBean.C_PRECIOAPLICADO +") AS IMPORTE " +
-					" FROM " + FcsFactAsistenciaBean.T_NOMBRETABLA + " " +
-					" WHERE " + FcsFactAsistenciaBean.C_IDINSTITUCION + "=" + idInstitucion + " " +
-					" AND " + FcsFactAsistenciaBean.C_IDFACTURACION + "=" + idFacturacion + " " +
-					" AND " + FcsFactAsistenciaBean.C_IDPERSONA + "=" + idPersona + " ";
+		String resultado = "";
+		StringBuilder consulta = new StringBuilder();
+		consulta.append("SELECT ");
+		consulta.append(FcsFactAsistenciaBean.C_PRECIOAPLICADO);
+		consulta.append(" AS IMPORTE  FROM ");
+		consulta.append(FcsFactAsistenciaBean.T_NOMBRETABLA);
+		consulta.append(" WHERE ");
+		consulta.append(FcsFactAsistenciaBean.C_IDINSTITUCION);
+		consulta.append("=");
+		consulta.append(datosAsistencia.get(ScsAsistenciasBean.C_IDINSTITUCION));
+		consulta.append("   AND ");
+		consulta.append(FcsFactAsistenciaBean.C_IDFACTURACION);
+		consulta.append("=");
+		consulta.append(datosAsistencia.get(ScsAsistenciasBean.C_IDFACTURACION));
+		consulta.append("   AND ");
+		consulta.append(FcsFactAsistenciaBean.C_ANIO);
+		consulta.append("=");
+		consulta.append(datosAsistencia.get(ScsAsistenciasBean.C_ANIO));
+		consulta.append("   AND ");
+		consulta.append(FcsFactAsistenciaBean.C_NUMERO);
+		consulta.append("=");
+		consulta.append(datosAsistencia.get(ScsAsistenciasBean.C_NUMERO));
 		
 		//Hashtable para recoger el resultado de la contulta
 		Hashtable hash = new Hashtable();
 		try{
-			hash = (Hashtable)((Vector)this.selectGenerico(consulta)).get(0);
+			hash = (Hashtable)((Vector)this.selectGenerico(consulta.toString())).get(0);
 			//resogemos el resultado
 			resultado = (String)hash.get("IMPORTE");
 			if (resultado.equals(""))resultado="0";

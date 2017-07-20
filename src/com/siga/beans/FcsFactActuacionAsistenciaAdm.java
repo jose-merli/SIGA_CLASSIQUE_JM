@@ -162,21 +162,41 @@ public class FcsFactActuacionAsistenciaAdm extends MasterBeanAdministrador {
 	 * 
 	 * @return String resultado con el importe 
 	 */
-	public String getImporteTotalFacturado (String idInstitucion, String idFacturacion, String idPersona)
+	public String getImporteTotalFacturado (ScsActuacionAsistenciaBean datosActuacion)
 	{
-		String resultado = "", consulta = "";
-		//query para consultar el importe 
-		consulta = 	" SELECT " + 
-					" SUM(" + FcsFactActuacionAsistenciaBean.C_PRECIOAPLICADO +" + "+FcsFactActuacionAsistenciaBean.C_PRECIO_COSTES_FIJOS+") AS IMPORTE " +
-					" FROM " + FcsFactActuacionAsistenciaBean.T_NOMBRETABLA + " " +
-					" WHERE " + FcsFactActuacionAsistenciaBean.C_IDINSTITUCION + "=" + idInstitucion + " " +
-					" AND " + FcsFactActuacionAsistenciaBean.C_IDFACTURACION + "=" + idFacturacion + " " +
-					" AND " + FcsFactActuacionAsistenciaBean.C_IDPERSONA + "=" + idPersona + " ";
+		String resultado = "";
+		StringBuilder consulta = new StringBuilder();
+		consulta.append("SELECT ");
+		consulta.append(FcsFactActuacionAsistenciaBean.C_PRECIOAPLICADO);
+		consulta.append(" + ");
+		consulta.append(FcsFactActuacionAsistenciaBean.C_PRECIO_COSTES_FIJOS);
+		consulta.append(" AS IMPORTE  FROM ");
+		consulta.append(FcsFactActuacionAsistenciaBean.T_NOMBRETABLA);
+		consulta.append(" WHERE ");
+		consulta.append(FcsFactActuacionAsistenciaBean.C_IDINSTITUCION);
+		consulta.append("=");
+		consulta.append(datosActuacion.getIdInstitucion());
+		consulta.append("   AND ");
+		consulta.append(FcsFactActuacionAsistenciaBean.C_IDFACTURACION);
+		consulta.append("=");
+		consulta.append(datosActuacion.getIdFacturacion());
+		consulta.append("   AND ");
+		consulta.append(FcsFactActuacionAsistenciaBean.C_ANIO);
+		consulta.append("=");
+		consulta.append(datosActuacion.getAnio());
+		consulta.append("   AND ");
+		consulta.append(FcsFactActuacionAsistenciaBean.C_NUMERO);
+		consulta.append("=");
+		consulta.append(datosActuacion.getNumero());
+		consulta.append("   AND ");
+		consulta.append(FcsFactActuacionAsistenciaBean.C_IDACTUACION);
+		consulta.append("=");
+		consulta.append(datosActuacion.getIdActuacion());
 		
 		//Hashtable para recoger el resultado de la contulta
 		Hashtable hash = new Hashtable();
 		try{
-			hash = (Hashtable)((Vector)this.selectGenerico(consulta)).get(0);
+			hash = (Hashtable)((Vector)this.selectGenerico(consulta.toString())).get(0);
 			//resogemos el resultado
 			resultado = (String)hash.get("IMPORTE");
 			if (resultado.equals(""))resultado="0";

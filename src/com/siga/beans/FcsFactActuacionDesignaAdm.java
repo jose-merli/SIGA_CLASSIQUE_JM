@@ -107,21 +107,43 @@ public class FcsFactActuacionDesignaAdm extends MasterBeanAdministrador {
 	 * 
 	 * @return String resultado con el importe 
 	 */
-	public String getImporteFacturado (String idInstitucion, String idFacturacion, String idPersona)
+	public String getImporteFacturado (Hashtable<String, String> datosActuacion)
 	{
-		String resultado = "", consulta = "";
-		//query para consultar el importe 
-		consulta = 	" SELECT " + 
-					" SUM(" + FcsFactActuacionDesignaBean.C_IMPORTEFACTURADO + ") AS IMPORTE " +
-					" FROM " + FcsFactActuacionDesignaBean.T_NOMBRETABLA + " " +
-					" WHERE " + FcsFactActuacionDesignaBean.C_IDINSTITUCION + "=" + idInstitucion + " " +
-					" AND " + FcsFactActuacionDesignaBean.C_IDFACTURACION + "=" + idFacturacion + " " +
-					" AND " + FcsFactActuacionDesignaBean.C_IDPERSONA + "=" + idPersona + " ";
+		String resultado = ""; 
+		StringBuilder consulta = new StringBuilder();
+		consulta.append("SELECT ");
+		consulta.append(FcsFactActuacionDesignaBean.C_IMPORTEFACTURADO);
+		consulta.append(" AS IMPORTE  FROM ");
+		consulta.append(FcsFactActuacionDesignaBean.T_NOMBRETABLA);
+		consulta.append(" WHERE ");
+		consulta.append(FcsFactActuacionDesignaBean.C_IDINSTITUCION);
+		consulta.append("=");
+		consulta.append(datosActuacion.get(ScsActuacionDesignaBean.C_IDINSTITUCION));
+		consulta.append("   AND ");
+		consulta.append(FcsFactActuacionDesignaBean.C_IDFACTURACION);
+		consulta.append("=");
+		consulta.append(datosActuacion.get(ScsActuacionDesignaBean.C_IDFACTURACION));
+		consulta.append("   AND ");
+		consulta.append(FcsFactActuacionDesignaBean.C_IDTURNO);
+		consulta.append("=");
+		consulta.append(datosActuacion.get(ScsActuacionDesignaBean.C_IDTURNO));
+		consulta.append("   AND ");
+		consulta.append(FcsFactActuacionDesignaBean.C_ANIO);
+		consulta.append("=");
+		consulta.append(datosActuacion.get(ScsActuacionDesignaBean.C_ANIO));
+		consulta.append("   AND ");
+		consulta.append(FcsFactActuacionDesignaBean.C_NUMERO);
+		consulta.append("=");
+		consulta.append(datosActuacion.get(ScsActuacionDesignaBean.C_NUMERO));
+		consulta.append("   AND ");
+		consulta.append(FcsFactActuacionDesignaBean.C_NUMEROASUNTO);
+		consulta.append("=");
+		consulta.append(datosActuacion.get(ScsActuacionDesignaBean.C_NUMEROASUNTO));
 		
 		//Hashtable para recoger el resultado de la contulta
 		Hashtable hash = new Hashtable();
 		try{
-			hash = (Hashtable)((Vector)this.selectGenerico(consulta)).get(0);
+			hash = (Hashtable)((Vector)this.selectGenerico(consulta.toString())).get(0);
 			//resogemos el resultado
 			resultado = (String)hash.get("IMPORTE");
 			if (resultado.equals(""))resultado="0";

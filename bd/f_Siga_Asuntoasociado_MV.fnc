@@ -47,7 +47,7 @@ Begin
 
   If v_Informacion Is Null Then
     Begin
-    Select (f_siga_getrecurso_etiqueta('movimientosVarios.guardia.titulo', p_IdLenguaje) ||' ' || Guardias.Fechainicio || ' en ' || Guardiaturno.Nombre || ' ' || Turno.Abreviatura)
+    Select (f_siga_getrecurso_etiqueta('movimientosVarios.guardia.titulo', p_IdLenguaje) ||' ' || Guardias.Fechainicio || ' en ' || Guardiaturno.Nombre || ' (' || Turno.Abreviatura || ')')
       Into v_Informacion
       From Scs_Cabeceraguardias Guardias, Scs_Guardiasturno Guardiaturno, Scs_Turno Turno
      Where Guardias.Idinstitucion = p_Idinstitucion
@@ -63,14 +63,6 @@ Begin
     End;
   End If;
 
-  If v_Informacion Is Null Then
-    Begin
-    select f_siga_getrecurso_etiqueta('movimientosVarios.movimientosVarios.titulo', p_IdLenguaje) into v_Informacion from dual;
-    Exception
-    When no_data_found Then
-      v_Informacion := Null;
-    End;
-  End If;
   Return v_Informacion;
 
 End f_Siga_Asuntoasociado_MV;
