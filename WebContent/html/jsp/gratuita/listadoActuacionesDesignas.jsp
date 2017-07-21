@@ -66,11 +66,24 @@
 	//Comprobamos si el informe comunicacionesAcreditacionDeOficio está configurado para la institución y si es visible.
 		AdmInformeAdm admInformeAdm = new AdmInformeAdm(usr);	
 		Vector informeBeansAcreditacionOficio=admInformeAdm.obtenerInformesTipo(usr.getLocation(),EnvioInformesGenericos.comunicacionesAcreditacionDeOficio,null, null);
+		
 		boolean isActivarCartaAcreditacionOficio = Boolean.FALSE;
-		//Comprobamos si tiene uno o varios informes
-		boolean informeUnicoCartaAcreditacion = Boolean.TRUE;
+		boolean informeUnicoCartaAcreditacion =Boolean.TRUE;
 		if(informeBeansAcreditacionOficio != null && informeBeansAcreditacionOficio.size() >0 ){
-			 isActivarCartaAcreditacionOficio = Boolean.TRUE;
+			for(int i=0; i<informeBeansAcreditacionOficio.size();i++){
+				AdmInformeBean datoInformeAcreditacionOficio = (AdmInformeBean)informeBeansAcreditacionOficio.get(i);
+				if(String.valueOf(datoInformeAcreditacionOficio.getIdInstitucion()).equalsIgnoreCase(usr.getLocation())){
+					if(datoInformeAcreditacionOficio.getVisible() != null && datoInformeAcreditacionOficio.getVisible().equalsIgnoreCase("S")){
+						isActivarCartaAcreditacionOficio = Boolean.TRUE;
+					}else{//No es visible
+					    isActivarCartaAcreditacionOficio = Boolean.FALSE;
+					}
+					
+				}
+				
+				
+			}
+			//Comprobamos si tiene uno o varios informes
 			
 			if(informeBeansAcreditacionOficio.size() >1){
 				 informeUnicoCartaAcreditacion = Boolean.FALSE;
