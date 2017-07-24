@@ -206,6 +206,7 @@
 				Hashtable registro = (Hashtable) fila.getRow();
 				
 				String idFacturacion = (String)registro.get("IDFACTURACION");
+				String facturacionCerrada = (String)registro.get("FACTURACIONCERRADA");
 				
 				if (usr.isLetrado()) {
 					botones = "E";
@@ -219,7 +220,7 @@
 			<%
 			 	FilaExtElement[] elems = null;
 			 	elems = new FilaExtElement[1];
-			 	if(idFacturacion != null && !"".equalsIgnoreCase(idFacturacion)){
+			 	if(idFacturacion != null && !"".equalsIgnoreCase(idFacturacion) && facturacionCerrada != null && !"".equalsIgnoreCase(facturacionCerrada)){
 			 		elems[0]=new FilaExtElement("anticiparImporte", "anticiparImporte", "movimientosVarios.icono.alt", SIGAConstants.ACCESS_FULL);
 			 	}
 				 	

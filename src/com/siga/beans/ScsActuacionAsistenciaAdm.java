@@ -433,6 +433,7 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
 		sql.append("AA.FECHA, AA.NUMEROASUNTO,  ");
 		sql.append("AA.FECHAJUSTIFICACION,       AA.VALIDADA, AA.ANULACION, ");
 		sql.append("AA.IDFACTURACION, AA.FACTURADO, ");
+		sql.append("(select distinct 1 from Fcs_Fact_Estadosfacturacion est where fjg.idinstitucion = est.idinstitucion and fjg.idfacturacion = est.idfacturacion and est.idestadofacturacion = 30) FACTURACIONCERRADA, ");
 		
 		
 		sql.append("F_SIGA_GETRECURSO(TA.DESCRIPCION, "+usrBean.getLanguage()+") DESCRIPCIONACTUACION, ");
@@ -497,6 +498,7 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
             		actuacionAsistenciaForm.setNumeroProcedimientoAsistencia(UtilidadesHash.getString(htFila, "NUMEROPROCEDIMIENTO"));
             		actuacionAsistenciaForm.setComisariaAsistencia(UtilidadesHash.getString(htFila, "COMISARIA"));
             		actuacionAsistenciaForm.setJuzgadoAsistencia(UtilidadesHash.getString(htFila, "JUZGADO"));
+            		actuacionAsistenciaForm.setFacturacionCerrada(UtilidadesHash.getString(htFila, "FACTURACIONCERRADA"));
             		actuacionAsistenciaForm.setLetrado(usrbean.isLetrado());
             		
             		alActuacionesAsistencias.add(actuacionAsistenciaForm);

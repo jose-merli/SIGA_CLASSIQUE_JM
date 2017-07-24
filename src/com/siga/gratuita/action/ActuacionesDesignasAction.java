@@ -217,6 +217,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 												     "act."+ScsActuacionDesignaBean.C_FECHAJUSTIFICACION+" fechajustificacion,"+
 												     "act."+ScsActuacionDesignaBean.C_ACUERDOEXTRAJUDICIAL+" acuerdoextrajudicial,"+
 												     "act."+ScsActuacionDesignaBean.C_IDFACTURACION+" IDFACTURACION,"+
+													 " (select distinct 1 from fcs_facturacionjg fac, Fcs_Fact_Estadosfacturacion est where fac.idinstitucion = est.idinstitucion and fac.idfacturacion = est.idfacturacion and est.idestadofacturacion = 30 and fac.idinstitucion = act.idinstitucion and fac.idfacturacion = act.idfacturacion) FACTURACIONCERRADA, "+
 												     /**pdm INC-2618**/
 														"(select "+FcsFacturacionJGBean.C_NOMBRE+"||' ('||TO_CHAR("+FcsFacturacionJGBean.C_FECHADESDE+",'DD/MM/YYYY')||'-'||TO_CHAR("+FcsFacturacionJGBean.C_FECHAHASTA+",'DD/MM/YYYY')||')'"+
 														" from "+FcsFacturacionJGBean.T_NOMBRETABLA+
@@ -264,6 +265,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 													"act."+ScsActuacionDesignaBean.C_FECHAJUSTIFICACION+" fechajustificacion,"+
 													"act."+ScsActuacionDesignaBean.C_ACUERDOEXTRAJUDICIAL+" acuerdoextrajudicial,"+
 													"act."+ScsActuacionDesignaBean.C_IDFACTURACION+" IDFACTURACION,"+
+													" (select distinct 1 from fcs_facturacionjg fac, Fcs_Fact_Estadosfacturacion est where fac.idinstitucion = est.idinstitucion and fac.idfacturacion = est.idfacturacion and est.idestadofacturacion = 30 and fac.idinstitucion = act.idinstitucion and fac.idfacturacion = act.idfacturacion) FACTURACIONCERRADA, "+
 													" acre."+ScsAcreditacionBean.C_DESCRIPCION+" AS nombreacreditacion, "+
 													"deslet."+ScsDesignasLetradoBean.C_IDPERSONA+" AS IDPERSONA,"+
 													/**pdm INC-2618**/

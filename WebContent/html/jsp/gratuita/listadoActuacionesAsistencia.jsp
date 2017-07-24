@@ -105,9 +105,11 @@
 						 	elems = new FilaExtElement[1];
 					%>
 					<c:if test="${not empty actuacionAsistencia.idFacturacion}">
+					<c:if test="${not empty actuacionAsistencia.facturacionCerrada}">
 						<%
 					 		elems[0]=new FilaExtElement("anticiparImporte", "anticiparImporte", "movimientosVarios.icono.alt", SIGAConstants.ACCESS_FULL);
 				 		%>
+				 	</c:if>
 				 	</c:if>
 			 
 					<siga:FilaConIconos fila='${status.count}' id="trtabla_${status.count}" botones="${actuacionAsistencia.botones}" clase="listaNonEdit" elementos="<%=elems%>">							

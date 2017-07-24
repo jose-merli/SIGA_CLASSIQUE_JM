@@ -72,7 +72,7 @@ public class ActuacionAsistenciaForm extends MasterForm
 	  List<ScsPrisionBean> prisiones;
 	  Integer usuCreacion;
 	  String fechaCreacion;
-	  
+	  String facturacionCerrada;
 	  
 	private String modoPestanha=null;
 		private String nig;
@@ -510,9 +510,13 @@ public class ActuacionAsistenciaForm extends MasterForm
 	public void setNig(String nig) {
 		this.nig = nig;
 	}
-	
-	
-	
-	
+	public String getFacturacionCerrada()
+	{
+		return facturacionCerrada;
+	}
+	public void setFacturacionCerrada(String facturacionCerrada)
+	{
+		this.facturacionCerrada = facturacionCerrada;
+	}
 	
 }

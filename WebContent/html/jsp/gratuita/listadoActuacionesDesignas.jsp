@@ -293,6 +293,7 @@
 				    modo = (String) ses.getAttribute("Modo");
 					Hashtable hash = (Hashtable)obj.get(recordNumber-1);
 					String idFacturacion = (String)hash.get("IDFACTURACION");
+					String facturacionCerrada = (String)hash.get("FACTURACIONCERRADA");
 										
 					String estadoActualFacturacion = fcsFactEstadosFacturacionAdm.getIdEstadoFacturacion(idInstitucion, idFacturacion);
 										
@@ -341,7 +342,7 @@
 				 	if(!validada && isActivarCartaAcreditacionOficio){
 						elems[0] = new FilaExtElement("enviar", "comunicar", SIGAConstants.ACCESS_READ);
 				 	}
-				 	if(idFacturacion != null && !"".equalsIgnoreCase(idFacturacion)){
+				 	if(idFacturacion != null && !"".equalsIgnoreCase(idFacturacion) && facturacionCerrada != null && !"".equalsIgnoreCase(facturacionCerrada)){
 				 		elems[1]=new FilaExtElement("anticiparImporte", "anticiparImporte", "movimientosVarios.icono.alt", SIGAConstants.ACCESS_FULL);
 				 	}
 				 	

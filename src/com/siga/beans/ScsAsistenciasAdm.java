@@ -1196,6 +1196,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 		" A.IDPERSONACOLEGIADO as IDPERSONA, " +
 		" D.NOMBRE||' '||D.APELLIDO1||' '||D.APELLIDO2 NOMBRE, " +
 		" A.IDTURNO IDTURNO, A.IDGUARDIA IDGUARDIA, A.FACTURADO FACTURADO, A.IDFACTURACION IDFACTURACION, "+
+		" (select distinct 1 from fcs_facturacionjg fac, Fcs_Fact_Estadosfacturacion est where fac.idinstitucion = est.idinstitucion and fac.idfacturacion = est.idfacturacion and est.idestadofacturacion = 30 and fac.idinstitucion = a.idinstitucion and fac.idfacturacion = a.idfacturacion) FACTURACIONCERRADA, "+
 		//" F_SIGA_ACTASIST_NOVALIDAR(a.idinstitucion,a.anio,a.numero) actnovalidadas,"+
 		" A.IDESTADOASISTENCIA as ESTADO ";
 		if(isFichaColegial){
