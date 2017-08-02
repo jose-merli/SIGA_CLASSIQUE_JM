@@ -1071,7 +1071,7 @@ public class Facturacion {
 		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDINSTITUCION, idInstitucion);
 		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
 		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, idSerieFacturacion);
-		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "sysdate");
+		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHAMODIFICACION, "sysdate");
 		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOTRASPASO, estado);
 		String [] camposTraspaso = {FacFacturacionProgramadaBean.C_IDESTADOTRASPASO};
 		FacFacturacionProgramadaAdm facadm = new FacFacturacionProgramadaAdm(this.usrbean);

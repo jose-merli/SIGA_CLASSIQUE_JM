@@ -1265,7 +1265,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDINSTITUCION, idInstitucion);
 			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
 			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, idSerieFacturacion);
-			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "sysdate");
+			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHAMODIFICACION, "sysdate");
 			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.TRASPASO_PROGRAMADA);
 			String [] camposTraspaso = {FacFacturacionProgramadaBean.C_IDESTADOTRASPASO};
 			FacFacturacionProgramadaAdm facadm = new FacFacturacionProgramadaAdm(user);
