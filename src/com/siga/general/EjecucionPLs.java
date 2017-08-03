@@ -3,6 +3,8 @@
  */
 package com.siga.general;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 
 import com.atos.utils.ClsExceptions;
@@ -704,7 +706,9 @@ public class EjecucionPLs {
 		StringBuffer sql = new StringBuffer("SELECT ");
 		sql.append(funcion);
 		sql.append("(");
-		for(Integer codigo:htCodigos.keySet()){
+		ArrayList<Integer> listaCodigosOrdenada = new ArrayList<Integer>(htCodigos.keySet());
+		Collections.sort(listaCodigosOrdenada);
+		for(Integer codigo:listaCodigosOrdenada){
 			sql.append(":");
 			sql.append(codigo);
 			sql.append(",");

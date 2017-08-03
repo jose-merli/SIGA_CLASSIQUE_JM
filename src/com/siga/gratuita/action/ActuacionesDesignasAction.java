@@ -245,7 +245,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 											  
 											" ORDER BY act." + ScsActuacionDesignaBean.C_FECHA + " DESC, numeroasunto asc  ";
 				
-				resultado = (Vector)actuacionDesignaAdm.ejecutaSelect(consultaActuacion);
+				resultado = (Vector)actuacionDesignaAdm.getHashSQL(consultaActuacion);
 				request.getSession().setAttribute("resultado",resultado);
 				request.getSession().setAttribute("Modo","Edicion");
 				if ((String)request.getParameter("IDTURNO")!=null)
@@ -300,7 +300,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 												" and a."+ScsAcreditacionProcedimientoBean.C_IDACREDITACION+" = acre."+ScsAcreditacionBean.C_IDACREDITACION +
 											" ORDER BY fecha , numeroasunto asc ";
 				
-				resultado = (Vector)actuacionDesignaAdm.ejecutaSelect(consultaContrarios);
+				resultado = (Vector)actuacionDesignaAdm.getHashSQL(consultaContrarios);
 				if (!resultado.isEmpty())
 					idPersona = (String)((Hashtable)resultado.get(0)).get("IDPERSONA");
 				

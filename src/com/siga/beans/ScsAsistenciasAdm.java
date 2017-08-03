@@ -2514,20 +2514,60 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		}
 		return true;		
 	}	
-	
-	//Permite actualizar la tabla añadiendo el campo de movimientos varios
+
+	/**
+	 * Permite actualizar la tabla añadiendo el campo de movimientos varios
+	 * @param entrada
+	 * @throws ClsExceptions
+	 */
 	public void actualizarAsistenciaMovimientosVarios(Hashtable entrada) throws ClsExceptions{
-		String consulta = "UPDATE "+ScsAsistenciasBean.T_NOMBRETABLA;
-		consulta += " SET "+ScsAsistenciasBean.C_IDMOVIMIENTO+" = "+entrada.get(ScsAsistenciasBean.C_IDMOVIMIENTO);
-		consulta += " WHERE "+ScsAsistenciasBean.C_IDINSTITUCION+" = "+ entrada.get(ScsAsistenciasBean.C_IDINSTITUCION);
-		consulta += " and "+ScsAsistenciasBean.C_ANIO+" = "+entrada.get(ScsAsistenciasBean.C_ANIO);
-		consulta += " and "+ScsAsistenciasBean.C_NUMERO+" =  "+ entrada.get(ScsAsistenciasBean.C_NUMERO);
+		StringBuilder consulta = new StringBuilder();
+		consulta.append("UPDATE "+ScsAsistenciasBean.T_NOMBRETABLA);
+		consulta.append("   SET "+ScsAsistenciasBean.C_IDMOVIMIENTO		+" = "+ entrada.get(ScsAsistenciasBean.C_IDMOVIMIENTO));
+		consulta.append(" WHERE "+ScsAsistenciasBean.C_IDINSTITUCION	+" = "+ entrada.get(ScsAsistenciasBean.C_IDINSTITUCION));
+		consulta.append("   and "+ScsAsistenciasBean.C_ANIO				+" = "+ entrada.get(ScsAsistenciasBean.C_ANIO));
+		consulta.append("   and "+ScsAsistenciasBean.C_NUMERO			+" = "+ entrada.get(ScsAsistenciasBean.C_NUMERO));
 		try{
-			if (!this.updateSQL(consulta)){
+			if (!this.updateSQL(consulta.toString())){
 				throw new ClsExceptions (this.getError());
 			}
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al ejecutar el 'actualizaMovimientosVarios' en B.D.");
 		}
 	}
+	
+	/**
+	 * Permite actualizar la tabla quitando el campo de movimientos varios
+	 * @param entrada
+	 * @throws ClsExceptions
+	 */
+	public void quitaMovimientoVarioAsociado(Hashtable entrada) throws ClsExceptions{
+		StringBuilder consulta = new StringBuilder();
+		consulta.append("SELECT "+ScsAsistenciasBean.C_IDINSTITUCION);
+		consulta.append("  FROM "+ScsAsistenciasBean.T_NOMBRETABLA);
+		consulta.append(" WHERE "+ScsAsistenciasBean.C_IDINSTITUCION	+" = "+ entrada.get(ScsAsistenciasBean.C_IDINSTITUCION));
+		consulta.append("   and "+ScsAsistenciasBean.C_IDMOVIMIENTO		+" = "+ entrada.get(ScsAsistenciasBean.C_IDMOVIMIENTO));
+		
+		StringBuilder actualizacion = new StringBuilder();
+		actualizacion.append("UPDATE "+ScsAsistenciasBean.T_NOMBRETABLA);
+		actualizacion.append("   SET "+ScsAsistenciasBean.C_IDMOVIMIENTO	+" = NULL ");
+		actualizacion.append(" WHERE "+ScsAsistenciasBean.C_IDINSTITUCION	+" = "+ entrada.get(ScsAsistenciasBean.C_IDINSTITUCION));
+		actualizacion.append("   and "+ScsAsistenciasBean.C_IDMOVIMIENTO	+" = "+ entrada.get(ScsAsistenciasBean.C_IDMOVIMIENTO));
+		
+		try{
+			Vector salida = this.getHashSQL(consulta.toString());
+			if (salida != null) {
+				if (salida.size() > 1) {
+					throw new ClsExceptions ("Error al intentar borrar un Movimiento Vario: tiene varios asuntos relacionados");
+				}
+					
+				if (!this.updateSQL(actualizacion.toString())){
+					throw new ClsExceptions (this.getError());
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar el 'actualizaMovimientosVarios' en B.D.");
+		}
+	}
+	
 }

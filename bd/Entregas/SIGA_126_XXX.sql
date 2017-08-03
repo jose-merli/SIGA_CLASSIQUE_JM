@@ -42,3 +42,8 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 
 -- Ejecutados en Integracion por AAG el 17/07/2017 a las 15:35
 
+-- 126_005
+
+f_Siga_Asuntoorigen_MV.fnc
+
+

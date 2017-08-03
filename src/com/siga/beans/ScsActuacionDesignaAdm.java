@@ -199,34 +199,6 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	/** Funcion ejecutaSelect(String select)
-	 *	@param select sentencia "select" sql valida, sin terminar en ";"
-	 *  @return Vector todos los registros que se seleccionen 
-	 *  en BBDD debido a la ejecucion de la sentencia select
-	 *
-	 */
-	public Vector ejecutaSelect(String select) throws ClsExceptions 
-	{
-		Vector datos = new Vector();
-		
-		// Acceso a BBDD
-		RowsContainer rc = null;
-		try { 
-			rc = new RowsContainer(); 
-			if (rc.query(select)) {
-				for (int i = 0; i < rc.size(); i++)	{
-					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable) fila.getRow(); 
-					if (registro != null) 
-						datos.add(registro);
-				}
-			}
-		} 
-		catch (Exception e) { 	
-			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
-		}
-		return datos;
-	}
 	/**
 	 * Prepara los datos, para posteriormente insertarlos en la base de datos. La preparación consiste en calcular el
 	 * identificador del turno que se va a insertar. 
@@ -534,7 +506,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		try {	
 			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 			ScsActuacionDesignaAdm designaAdm = new ScsActuacionDesignaAdm (usr);		
-			salida=(Vector)designaAdm.ejecutaSelect(consultaDesigna);					
+			salida=(Vector)designaAdm.getHashSQL(consultaDesigna);					
 		}catch (ClsExceptions e) {		
 			throw new ClsExceptions (e, "Error al ejecutar el 'getConsultaDesigna' en B.D.");		
 		}
@@ -606,7 +578,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 
 		try {	
 			ScsActuacionDesignaAdm designaAdm = new ScsActuacionDesignaAdm (usr);		
-			salida=(Vector)designaAdm.ejecutaSelect(consultaActuacion);					
+			salida=(Vector)designaAdm.getHashSQL(consultaActuacion);					
 		}catch (ClsExceptions e) {		
 			throw new ClsExceptions (e, "Error al ejecutar el 'getConsultaActuacion' en B.D.");		
 		}
@@ -633,7 +605,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		try {	
 			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 			ScsActuacionDesignaAdm designaAdm = new ScsActuacionDesignaAdm (usr);		
-			salida=(Vector)designaAdm.ejecutaSelect(consulta);		
+			salida=(Vector)designaAdm.getHashSQL(consulta);		
 			
 		}catch (ClsExceptions e) {		
 			throw new ClsExceptions (e, "Error al ejecutar el 'getDesignaActuaciones' en B.D.");		
@@ -871,24 +843,63 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		}
 	}
 	
-	//Permite actualizar la tabla añadiendo el campo de movimientos varios
-		public void actualizarActuacionesMovimientosVarios(Hashtable entrada) throws ClsExceptions{
-			String consulta = "UPDATE "+ScsActuacionDesignaBean.T_NOMBRETABLA;
-			consulta += " SET "+ScsActuacionDesignaBean.C_IDMOVIMIENTO+" = "+entrada.get(ScsActuacionDesignaBean.C_IDMOVIMIENTO);
-			consulta += " WHERE "+ScsActuacionDesignaBean.C_IDINSTITUCION+" = "+ entrada.get(ScsActuacionDesignaBean.C_IDINSTITUCION);
-			consulta += " and "+ScsActuacionDesignaBean.C_IDTURNO+" = "+entrada.get(ScsActuacionDesignaBean.C_IDTURNO);
-			consulta += " and "+ScsActuacionDesignaBean.C_ANIO+" = "+entrada.get(ScsActuacionDesignaBean.C_ANIO);
-			consulta += " and "+ScsActuacionDesignaBean.C_NUMERO+" =  "+ entrada.get(ScsActuacionDesignaBean.C_NUMERO);
-			consulta += " and "+ScsActuacionDesignaBean.C_NUMEROASUNTO+" =  "+ entrada.get(ScsActuacionDesignaBean.C_NUMEROASUNTO);
-			try{
-				if (!this.updateSQL(consulta)){
+	/**
+	 * Permite actualizar la tabla añadiendo el campo de movimientos varios
+	 * @param entrada
+	 * @throws ClsExceptions
+	 */
+	public void actualizarActuacionesMovimientosVarios(Hashtable entrada) throws ClsExceptions{
+		StringBuilder consulta = new StringBuilder();
+		consulta.append("UPDATE "+ScsActuacionDesignaBean.T_NOMBRETABLA);
+		consulta.append("   SET "+ScsActuacionDesignaBean.C_IDMOVIMIENTO	+" = "+ entrada.get(ScsActuacionDesignaBean.C_IDMOVIMIENTO));
+		consulta.append(" WHERE "+ScsActuacionDesignaBean.C_IDINSTITUCION	+" = "+ entrada.get(ScsActuacionDesignaBean.C_IDINSTITUCION));
+		consulta.append("   and "+ScsActuacionDesignaBean.C_IDTURNO			+" = "+ entrada.get(ScsActuacionDesignaBean.C_IDTURNO));
+		consulta.append("   and "+ScsActuacionDesignaBean.C_ANIO			+" = "+ entrada.get(ScsActuacionDesignaBean.C_ANIO));
+		consulta.append("   and "+ScsActuacionDesignaBean.C_NUMERO			+" = "+ entrada.get(ScsActuacionDesignaBean.C_NUMERO));
+		consulta.append("   and "+ScsActuacionDesignaBean.C_NUMEROASUNTO	+" = "+ entrada.get(ScsActuacionDesignaBean.C_NUMEROASUNTO));
+		try{
+			if (!this.updateSQL(consulta.toString())){
+				throw new ClsExceptions (this.getError());
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar el 'actualizaMovimientosVarios' en B.D.");
+		}
+	}
+	
+	/**
+	 * Permite actualizar la tabla quitando el campo de movimientos varios
+	 * @param entrada
+	 * @throws ClsExceptions
+	 */
+	public void quitaMovimientoVarioAsociado(Hashtable entrada) throws ClsExceptions{
+		StringBuilder consulta = new StringBuilder();
+		consulta.append("SELECT "+ScsActuacionDesignaBean.C_IDINSTITUCION);
+		consulta.append("  FROM "+ScsActuacionDesignaBean.T_NOMBRETABLA);
+		consulta.append(" WHERE "+ScsActuacionDesignaBean.C_IDINSTITUCION	+" = "+ entrada.get(ScsActuacionDesignaBean.C_IDINSTITUCION));
+		consulta.append("   and "+ScsActuacionDesignaBean.C_IDMOVIMIENTO	+" = "+ entrada.get(ScsActuacionDesignaBean.C_IDMOVIMIENTO));
+		
+		StringBuilder actualizacion = new StringBuilder();
+		actualizacion.append("UPDATE "+ScsActuacionDesignaBean.T_NOMBRETABLA);
+		actualizacion.append("   SET "+ScsActuacionDesignaBean.C_IDMOVIMIENTO	+" = NULL ");
+		actualizacion.append(" WHERE "+ScsActuacionDesignaBean.C_IDINSTITUCION	+" = "+ entrada.get(ScsActuacionDesignaBean.C_IDINSTITUCION));
+		actualizacion.append("   and "+ScsActuacionDesignaBean.C_IDMOVIMIENTO	+" = "+ entrada.get(ScsActuacionDesignaBean.C_IDMOVIMIENTO));
+		
+		try{
+			Vector salida = this.getHashSQL(consulta.toString());
+			if (salida != null) {
+				if (salida.size() > 1) {
+					throw new ClsExceptions ("Error al intentar borrar un Movimiento Vario: tiene varios asuntos relacionados");
+				}
+					
+				if (!this.updateSQL(actualizacion.toString())){
 					throw new ClsExceptions (this.getError());
 				}
-			} catch (Exception e) {
-				throw new ClsExceptions (e, "Error al ejecutar el 'actualizaMovimientosVarios' en B.D.");
 			}
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar el 'actualizaMovimientosVarios' en B.D.");
 		}
-		
+	}
+
 	public boolean hayActuacionesDesignaCambioLetradoPagadas(Hashtable entrada) throws ClsExceptions{
 		Boolean bSalida = null;
 		Vector salida=new Vector();
@@ -904,7 +915,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 			consulta += " and "+ScsActuacionDesignaBean.C_FECHA+ " >= TO_DATE('"+entrada.get(ScsDesignasLetradoBean.C_FECHADESIGNA)+"', 'YYYY / MM / DD HH24 :MI :SS')";
 		
 			try{
-				salida = this.ejecutaSelect(consulta);
+				salida = this.getHashSQL(consulta);
 				if (salida != null && salida.get(0) != null){
 					Integer numActuacionesPagadas = Integer.valueOf(((Hashtable)salida.get(0)).get("NUMERO").toString().trim());
 					bSalida = numActuacionesPagadas > 0;
@@ -974,7 +985,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		}
 		consulta += " Order By Idinstitucion, Idturno, Anio, Numeroasunto ";
 		try{
-			salida = this.ejecutaSelect(consulta);
+			salida = this.getHashSQL(consulta);
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al ejecutar el 'getActuacionesDesigna' en B.D.");
 		}

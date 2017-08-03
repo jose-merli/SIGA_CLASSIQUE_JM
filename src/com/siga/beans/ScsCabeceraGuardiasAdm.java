@@ -1029,23 +1029,85 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 		}
 		return hash;
 	}
-	//Permite actualizar la tabla añadiendo el campo de movimientos varios
-		public void actualizarGuardiasMovimientosVarios(String idPersona, String idTurno, String idGuardia, String idInstitucion, String fechaInicio, Integer idMovimiento) throws ClsExceptions{
-			String consulta = "UPDATE "+ScsCabeceraGuardiasBean.T_NOMBRETABLA;
-			consulta += " SET "+ScsCabeceraGuardiasBean.C_IDMOVIMIENTO+" = "+idMovimiento;
-			consulta += " WHERE "+ScsCabeceraGuardiasBean.C_IDINSTITUCION+" = "+ idInstitucion;
-			consulta += " and "+ScsCabeceraGuardiasBean.C_IDTURNO+" = "+idTurno;
-			consulta += " and "+ScsCabeceraGuardiasBean.C_IDGUARDIA+" =  "+ idGuardia;
-			consulta += " and "+ScsCabeceraGuardiasBean.C_IDPERSONA+" =  "+ idPersona;
-			consulta += " and trunc("+ScsGuardiasColegiadoBean.C_FECHAINICIO+")=TO_DATE('"+fechaInicio+"','DD/MM/YYYY')";
-			try{
-				if (!this.updateSQL(consulta)){
+
+	/**
+	 * Permite actualizar la tabla añadiendo el campo de movimientos varios
+	 * @param entrada
+	 * @throws ClsExceptions
+	 */
+	public void actualizarGuardiasMovimientosVarios(String idPersona,
+			String idTurno,
+			String idGuardia,
+			String idInstitucion,
+			String fechaInicio,
+			Integer idMovimiento) throws ClsExceptions
+	{
+		Hashtable entrada = new Hashtable();
+		UtilidadesHash.set(entrada, ScsCabeceraGuardiasBean.C_IDMOVIMIENTO, idMovimiento);
+		UtilidadesHash.set(entrada, ScsCabeceraGuardiasBean.C_IDINSTITUCION, idInstitucion);
+		UtilidadesHash.set(entrada, ScsCabeceraGuardiasBean.C_IDTURNO, idTurno);
+		UtilidadesHash.set(entrada, ScsCabeceraGuardiasBean.C_IDGUARDIA, idGuardia);
+		UtilidadesHash.set(entrada, ScsCabeceraGuardiasBean.C_IDPERSONA, idPersona);
+		UtilidadesHash.set(entrada, ScsCabeceraGuardiasBean.C_FECHA_INICIO, fechaInicio);
+		this.actualizarGuardiasMovimientosVarios(entrada);
+	}
+
+	/**
+	 * Permite actualizar la tabla añadiendo el campo de movimientos varios
+	 * @param entrada
+	 * @throws ClsExceptions
+	 */
+	public void actualizarGuardiasMovimientosVarios(Hashtable entrada) throws ClsExceptions{
+		StringBuilder consulta = new StringBuilder();
+		consulta.append("UPDATE "+ScsCabeceraGuardiasBean.T_NOMBRETABLA);
+		consulta.append("   SET "+ScsCabeceraGuardiasBean.C_IDMOVIMIENTO		+" = "+ entrada.get(ScsCabeceraGuardiasBean.C_IDMOVIMIENTO));
+		consulta.append(" WHERE "+ScsCabeceraGuardiasBean.C_IDINSTITUCION		+" = "+ entrada.get(ScsCabeceraGuardiasBean.C_IDINSTITUCION));
+		consulta.append("   and "+ScsCabeceraGuardiasBean.C_IDTURNO				+" = "+ entrada.get(ScsCabeceraGuardiasBean.C_IDTURNO));
+		consulta.append("   and "+ScsCabeceraGuardiasBean.C_IDGUARDIA			+" = "+ entrada.get(ScsCabeceraGuardiasBean.C_IDGUARDIA));
+		consulta.append("   and "+ScsCabeceraGuardiasBean.C_IDPERSONA			+" = "+ entrada.get(ScsCabeceraGuardiasBean.C_IDPERSONA));
+		consulta.append("   and trunc("+ScsCabeceraGuardiasBean.C_FECHA_INICIO	+")=TO_DATE('"+ entrada.get(ScsCabeceraGuardiasBean.C_FECHA_INICIO)+"','DD/MM/YYYY')");
+		try{
+			if (!this.updateSQL(consulta.toString())){
+				throw new ClsExceptions (this.getError());
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar el 'actualizaMovimientosVarios' en B.D.");
+		}
+	}
+	
+	/**
+	 * Permite actualizar la tabla quitando el campo de movimientos varios
+	 * @param entrada
+	 * @throws ClsExceptions
+	 */
+	public void quitaMovimientoVarioAsociado(Hashtable entrada) throws ClsExceptions{
+		StringBuilder consulta = new StringBuilder();
+		consulta.append("SELECT "+ScsCabeceraGuardiasBean.C_IDINSTITUCION);
+		consulta.append("  FROM "+ScsCabeceraGuardiasBean.T_NOMBRETABLA);
+		consulta.append(" WHERE "+ScsCabeceraGuardiasBean.C_IDINSTITUCION	+" = "+ entrada.get(ScsCabeceraGuardiasBean.C_IDINSTITUCION));
+		consulta.append("   and "+ScsCabeceraGuardiasBean.C_IDMOVIMIENTO	+" = "+ entrada.get(ScsCabeceraGuardiasBean.C_IDMOVIMIENTO));
+		
+		StringBuilder actualizacion = new StringBuilder();
+		actualizacion.append("UPDATE "+ScsCabeceraGuardiasBean.T_NOMBRETABLA);
+		actualizacion.append("   SET "+ScsCabeceraGuardiasBean.C_IDMOVIMIENTO	+" = NULL ");
+		actualizacion.append(" WHERE "+ScsCabeceraGuardiasBean.C_IDINSTITUCION	+" = "+ entrada.get(ScsCabeceraGuardiasBean.C_IDINSTITUCION));
+		actualizacion.append("   and "+ScsCabeceraGuardiasBean.C_IDMOVIMIENTO	+" = "+ entrada.get(ScsCabeceraGuardiasBean.C_IDMOVIMIENTO));
+		
+		try{
+			Vector salida = this.getHashSQL(consulta.toString());
+			if (salida != null) {
+				if (salida.size() > 1) {
+					throw new ClsExceptions ("Error al intentar borrar un Movimiento Vario: tiene varios asuntos relacionados");
+				}
+					
+				if (!this.updateSQL(actualizacion.toString())){
 					throw new ClsExceptions (this.getError());
 				}
-			} catch (Exception e) {
-				throw new ClsExceptions (e, "Error al ejecutar el 'actualizaMovimientosVarios' en B.D.");
 			}
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar el 'actualizaMovimientosVarios' en B.D.");
 		}
-	
+	}
+		
 
 }

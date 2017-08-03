@@ -738,6 +738,11 @@ MDB Microsoft Access Database
 	public static String FILTRAR_MODULOS_FECHADESIGNACION = "1";
 	public static String FILTRAR_MODULOS_FECHAACTUACION = "2";
 	
+	// Asuntos de Origen de Movimientos Varios - Recursos
+	public static final String ORIGEN_MV_RECURSO_ACTUACIONDESIGNA = "movimientosVarios.ActuacionDesigna.titulo";
+	public static final String ORIGEN_MV_RECURSO_ACTUACIONASISTENCIA = "movimientosVarios.ActuacionAsistencias.titulo";
+	public static final String ORIGEN_MV_RECURSO_ASISTENCIA = "movimientosVarios.asistencia.titulo";
+	public static final String ORIGEN_MV_RECURSO_CABECERAGUARDIA = "movimientosVarios.guardia.titulo";
 	  
   public ClsConstants() {
   }

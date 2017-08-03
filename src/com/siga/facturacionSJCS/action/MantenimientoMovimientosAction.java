@@ -46,11 +46,13 @@ import com.siga.beans.ScsActuacionDesignaBean;
 import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsAsistenciasBean;
 import com.siga.beans.ScsCabeceraGuardiasAdm;
+import com.siga.beans.ScsCabeceraGuardiasBean;
 import com.siga.beans.ScsDesignaBean;
 import com.siga.beans.ScsGuardiasTurnoAdm;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.facturacionSJCS.form.MantenimientoMovimientosForm;
+import com.siga.general.EjecucionPLs;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -792,42 +794,85 @@ public class MantenimientoMovimientosAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */	
-	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		
-		//variables
-		String result="error";
-		boolean ok = false;
-		FcsMovimientosVariosAdm movimAdm = new FcsMovimientosVariosAdm (this.getUserBean(request));
-		//recogemos el usrbean
-		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-		//recogemos el formulario
-		MantenimientoMovimientosForm miform = (MantenimientoMovimientosForm)formulario;
-		//recogemos los campos ocultos
-		Vector ocultos = (Vector)miform.getDatosTablaOcultos(0); 
-		UserTransaction tx = (UserTransaction)usr.getTransaction();
-		try{
-			//preparamos la hashtable a borrar
+	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
+	{
+		// Controles
+		FcsMovimientosVariosAdm movimAdm = new FcsMovimientosVariosAdm(this.getUserBean(request));
+		UsrBean usr = this.getUserBean(request);
+		MantenimientoMovimientosForm miform = (MantenimientoMovimientosForm) formulario;
+		Vector ocultos = (Vector) miform.getDatosTablaOcultos(0);
+		UserTransaction tx = (UserTransaction) usr.getTransaction();
+
+		boolean borradoCorrecto = false;
+
+		try {
+			// preparando la hashtable a borrar
 			Hashtable aBorrar = new Hashtable();
-			UtilidadesHash.set( aBorrar, FcsMovimientosVariosBean.C_IDINSTITUCION, usr.getLocation());
-			UtilidadesHash.set( aBorrar, FcsMovimientosVariosBean.C_IDMOVIMIENTO, (String)ocultos.get(0));
-			//borramos
+			UtilidadesHash.set(aBorrar, FcsMovimientosVariosBean.C_IDINSTITUCION, usr.getLocation());
+			UtilidadesHash.set(aBorrar, FcsMovimientosVariosBean.C_IDMOVIMIENTO, (String) ocultos.get(0));
+
+			// obteniendo el origen del movimiento
+			Hashtable<Integer, Object> pkMovimiento = new Hashtable<Integer, Object>();
+			pkMovimiento.put(1, aBorrar.get(FcsMovimientosVariosBean.C_IDMOVIMIENTO));
+			pkMovimiento.put(2, aBorrar.get(FcsMovimientosVariosBean.C_IDINSTITUCION));
+			String origen = EjecucionPLs.ejecutarFuncion(pkMovimiento, "f_Siga_Asuntoorigen_MV");
+
 			tx.begin();
-			
-			//insertar el nuevo registro
-			ok = movimAdm.delete( aBorrar);
-	
-			if (ok) {
+
+			if (origen != null && !"".equalsIgnoreCase(origen)) {
+				Hashtable hashDatosOrigen = new Hashtable();
+
+				if (ClsConstants.ORIGEN_MV_RECURSO_ACTUACIONDESIGNA.equalsIgnoreCase(origen)) {
+
+					UtilidadesHash.set(hashDatosOrigen, ScsActuacionDesignaBean.C_IDINSTITUCION, (String) aBorrar.get(FcsMovimientosVariosBean.C_IDINSTITUCION));
+					UtilidadesHash.set(hashDatosOrigen, ScsActuacionDesignaBean.C_IDMOVIMIENTO, (String) aBorrar.get(FcsMovimientosVariosBean.C_IDMOVIMIENTO));
+
+					ScsActuacionDesignaAdm designaAdm = new ScsActuacionDesignaAdm(usr);
+					designaAdm.quitaMovimientoVarioAsociado(hashDatosOrigen);
+
+				} else if (ClsConstants.ORIGEN_MV_RECURSO_ACTUACIONASISTENCIA.equalsIgnoreCase(origen)) {
+
+					UtilidadesHash.set(hashDatosOrigen, ScsActuacionAsistenciaBean.C_IDINSTITUCION, (String) aBorrar.get(FcsMovimientosVariosBean.C_IDINSTITUCION));
+					UtilidadesHash.set(hashDatosOrigen, ScsActuacionAsistenciaBean.C_IDMOVIMIENTO, (String) aBorrar.get(FcsMovimientosVariosBean.C_IDMOVIMIENTO));
+
+					ScsActuacionAsistenciaAdm actuacionAsistenciaAdm = new ScsActuacionAsistenciaAdm(usr);
+					actuacionAsistenciaAdm.quitaMovimientoVarioAsociado(hashDatosOrigen);
+
+				} else if (ClsConstants.ORIGEN_MV_RECURSO_ASISTENCIA.equalsIgnoreCase(origen)) {
+
+					UtilidadesHash.set(hashDatosOrigen, ScsAsistenciasBean.C_IDINSTITUCION, (String) aBorrar.get(FcsMovimientosVariosBean.C_IDINSTITUCION));
+					UtilidadesHash.set(hashDatosOrigen, ScsAsistenciasBean.C_IDMOVIMIENTO, (String) aBorrar.get(FcsMovimientosVariosBean.C_IDMOVIMIENTO));
+
+					ScsAsistenciasAdm asistenciasAdm = new ScsAsistenciasAdm(usr);
+					asistenciasAdm.quitaMovimientoVarioAsociado(hashDatosOrigen);
+
+				} else if (ClsConstants.ORIGEN_MV_RECURSO_CABECERAGUARDIA.equalsIgnoreCase(origen)) {
+
+					UtilidadesHash .set(hashDatosOrigen, ScsCabeceraGuardiasBean.C_IDINSTITUCION, (String) aBorrar.get(FcsMovimientosVariosBean.C_IDINSTITUCION));
+					UtilidadesHash.set(hashDatosOrigen, ScsCabeceraGuardiasBean.C_IDMOVIMIENTO, (String) aBorrar.get(FcsMovimientosVariosBean.C_IDMOVIMIENTO));
+
+					ScsCabeceraGuardiasAdm scsCabeceraGuardiasAdm = new ScsCabeceraGuardiasAdm(usr);
+					scsCabeceraGuardiasAdm.quitaMovimientoVarioAsociado(hashDatosOrigen);
+				}
+			}
+
+			// borrando el registro
+			borradoCorrecto = movimAdm.delete(aBorrar);
+			if (borradoCorrecto) {
 				tx.commit();
 			} else {
 				tx.rollback();
-			}			
-			
-		 } 	
-		 catch (Exception e) {
-			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,tx);
-	   	 }
-		 if (ok)return exitoRefresco("messages.deleted.success", request);
-		 else return exitoRefresco("messages.deleted.error",request);
+			}
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.facturacionSJCS" }, e, tx);
+		}
+		
+		if (borradoCorrecto) {
+			return exitoRefresco("messages.deleted.success", request);
+		} else {
+			return exitoRefresco("messages.deleted.error", request);
+		}
 	}
 
 }
