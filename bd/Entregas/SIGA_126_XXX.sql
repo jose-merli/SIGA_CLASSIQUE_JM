@@ -46,4 +46,12 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 
 f_Siga_Asuntoorigen_MV.fnc
 
+Update Gen_Properties Pro Set Pro.Valor = '50'
+ Where Parametro Like '%axBackupIndex'
+ And parametro In ('log4j.appender.PRA.MaxBackupIndex', 'log4j.appender.STRUTS.MaxBackupIndex', 'log4j.appender.ficheroSOAP.maxBackupIndex');
+Update Gen_Properties Pro Set Pro.Valor = '100'
+ Where Parametro Like '%axBackupIndex'
+ And parametro In ('log4j.appender.fichero.maxBackupIndex');
+
+
 
