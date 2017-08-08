@@ -74,6 +74,12 @@ public abstract class MasterBeanAdministrador {
 	public Vector select() throws ClsExceptions {
 		return this.select("");		
 	}
+	/** Funcion selectFirst
+	 *  @return vector con los registros encontrados. Devuelve un vector vacio si no hay o bien uno con un solo bean 
+	 * */
+	public Vector selectFirst() throws ClsExceptions {
+		return this.selectFirst("");		
+	}
 	
 	
 	
@@ -113,6 +119,40 @@ public abstract class MasterBeanAdministrador {
 		}
 		return datos;
 	}
+	
+	/** Funcion selectFirst (String where)
+	 * @param criteros para filtrar el select, campo where 
+	 * @return vector con los registros encontrados. Devuelve un vector vacio si no hay o bien uno con un solo bean 
+	 * */
+	public Vector selectFirst(String where) throws ClsExceptions 
+	{
+		Vector datos = new Vector();
+		
+		// Acceso a BBDD
+		RowsContainer rc = null;
+		try { 
+			rc = new RowsContainer(); 
+			StringBuilder sql = new StringBuilder();
+			sql.append(" SELECT * FROM ( ");
+			sql.append(UtilidadesBDAdm.sqlSelect(this.nombreTabla, this.getCamposBean()));
+			sql.append(where);
+			sql.append(this.getOrdenCampos()!=null ? UtilidadesBDAdm.sqlOrderBy(this.getOrdenCampos()) : UtilidadesBDAdm.sqlOrderBy(this.getClavesBean()));
+			sql.append(") WHERE ROWNUM = 1 ");
+			if (rc.query(sql.toString())) {
+				if (rc.size() > 0)	{
+					Row fila = (Row) rc.get(0);
+					MasterBean registro = (MasterBean) this.hashTableToBeanInicial(fila.getRow()); 
+					if (registro != null) 
+						datos.add(registro);
+				}
+			}
+		} 
+		catch (Exception e) { 	
+			throw new ClsExceptions (e, e.getMessage()); 
+		}
+		return datos;
+	}
+	
 	public Vector selectSQL(String sql) throws ClsExceptions 
 	{
 		Vector datos = new Vector();
