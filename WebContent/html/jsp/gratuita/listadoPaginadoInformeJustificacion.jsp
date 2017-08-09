@@ -1649,10 +1649,17 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 													<td>&nbsp;</td>
 												</c:otherwise>
 											</c:choose>
-											<td style="text-align: left;  font-size: 13px;">
-												
-															<c:out value="${actuacion.numero}" />
+											<td style="text-align: left;  font-size: 13px;">		
+												<span style="vertical-align: top"><c:out value="${actuacion.numero}" />
 													
+														<c:if test="${comunicacionesAcreditacionDeOficio==true  && (actuacion.validada=='0' || empty actuacion.validada)}">
+															 <img id="iconoboton_download1" hspace="0"
+																			src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
+																			alt="Enviar" name="iconoFila" title="Descargar" border="0" 
+																			onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero},'${designa.codigoDesigna}',${usrBean.letrado})" 
+																			onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+															</c:if>
+													</span>		
 											</td>
 											<td>
 													<c:out value="${actuacion.descripcion}" />
@@ -1729,10 +1736,20 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 													<tr>
 													
 														<td style="text-align: left;  font-size: 13px;">
-															<c:out value="${actuacion.numero}" /></td>
-															<td>
-																
-															</td>
+															<span style="vertical-align: top"><c:out value="${actuacion.numero}" />
+													
+																<c:if test="${comunicacionesAcreditacionDeOficio==true  && (actuacion.validada=='0' || empty actuacion.validada)}">
+																	 <img id="iconoboton_download1" hspace="0"
+																					src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
+																					alt="Enviar" name="iconoFila" title="Descargar" border="0" 
+																					onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero},'${designa.codigoDesigna}',${usrBean.letrado})" 
+																					onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('download_1','','/SIGA/html/imagenes/bdownload_on.gif',1)">
+																	</c:if>
+															</span>
+														</td>
+														<td>
+															
+														</td>
 														
 													</tr>
 												</table>
@@ -2152,7 +2169,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 															<tr>
 															<td></td>
 																<span style="vertical-align: top"><c:out value="${actuacion.numero}" />
-																	<c:if test="${comunicacionesAcreditacionDeOficio==true && actuacion.validada=='0'}">
+																	<c:if test="${comunicacionesAcreditacionDeOficio==true && (actuacion.validada=='0' || empty actuacion.validada) }">
 																		 <img id="iconoboton_download1" hspace="0"
 																						src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
 																						alt="Enviar" name="iconoFila" title="Descargar" border="0" 
@@ -2353,7 +2370,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 															<table>
 															<tr>
 																<span style="vertical-align: top"><c:out value="${actuacion.numero}" />
-																	<c:if test="${comunicacionesAcreditacionDeOficio==true  && actuacion.validada=='0'}">
+																
+																	<c:if test="${comunicacionesAcreditacionDeOficio==true  && (actuacion.validada=='0' || empty actuacion.validada)}">
 																		 <img id="iconoboton_download1" hspace="0"
 																						src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
 																						alt="Enviar" name="iconoFila" title="Descargar" border="0" 
