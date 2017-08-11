@@ -491,28 +491,28 @@ public class BusquedaFacturaAction extends MasterAction {
 						
 							switch (beanSerieFacturacion.getIdNombreDescargaPDF()) {
 							case 1:
-								nombreFicherosarrays = documento.getDescripcion().split("-");
+								nombreFicherosarrays = documento.getDescripcion().split("-",2);
 								documento.setDescripcion(nombreFicherosarrays[1]);
 								break;
 							case 2:
 								//Quitamos la extensión y añadimos el nombre más la extensión
 								String[] separacionExtensionDelFichero = documento.getDescripcion().split(Pattern.quote("."));
 								String[] separacionNombreColegiado = nombreColegiado.split("-");
-								nombreFicherosarrays = separacionExtensionDelFichero[0].split("-");
+								nombreFicherosarrays = separacionExtensionDelFichero[0].split("-",2);
 								documento.setDescripcion(nombreFicherosarrays[1] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
 								break;
 							case 3:
-								nombreFicherosarrays = documento.getDescripcion().split("-");
+								nombreFicherosarrays = documento.getDescripcion().split("-",2);
 								documento.setDescripcion(nombreColegiado+nombreFicherosarrays[1]);
 								break;
 		
 							default:
-								nombreFicherosarrays = documento.getDescripcion().split("-");
+								nombreFicherosarrays = documento.getDescripcion().split("-",2);
 								documento.setDescripcion(nombreColegiado+nombreFicherosarrays[1]);
 								break;
 							}
 						}else{
-							nombreFicherosarrays = documento.getDescripcion().split("-");
+							nombreFicherosarrays = documento.getDescripcion().split("-",2);
 							documento.setDescripcion(nombreColegiado+nombreFicherosarrays[1]);
 						}
 						documentosList.add(documento);

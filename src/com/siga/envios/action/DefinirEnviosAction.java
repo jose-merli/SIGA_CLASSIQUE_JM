@@ -2532,30 +2532,30 @@ public class DefinirEnviosAction extends MasterAction {
 												
 												switch (beanSerieFacturacion.getIdNombreDescargaPDF()) {
 												case 1:
-													nombreFicherosarrays = fichero.getName().split("-");
+													nombreFicherosarrays = fichero.getName().split("-",2);
 													factura = new Documento(fichero,nombreFicherosarrays[1]);
 													break;
 												case 2:
 													//Quitamos la extensión del fichero y añadimos el nombre más la extensión
 													String[] separacionExtensionDelFichero = fichero.getName().split(Pattern.quote("."));
 													String[] separacionNombreColegiado = nombreColegiado.split("-");
-													nombreFicherosarrays = separacionExtensionDelFichero[0].split("-");
+													nombreFicherosarrays = separacionExtensionDelFichero[0].split("-",2);
 													factura = new Documento(fichero,nombreFicherosarrays[1] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
 													
 													break;
 												case 3:
-													nombreFicherosarrays = fichero.getName().split("-");
+													nombreFicherosarrays = fichero.getName().split("-",2);
 													factura = new Documento(fichero,nombreColegiado+ nombreFicherosarrays[1]);
 													
 													break;
 							
 												default:
-													nombreFicherosarrays = fichero.getName().split("-");
+													nombreFicherosarrays = fichero.getName().split("-",2);
 													factura = new Documento(fichero,nombreColegiado+ nombreFicherosarrays[1]);
 													break;
 												}
 											}else{
-												nombreFicherosarrays = fichero.getName().split("-");
+												nombreFicherosarrays = fichero.getName().split("-",2);
 												factura = new Documento(fichero,nombreFicherosarrays[1]);
 											}
 							    			
@@ -3119,28 +3119,28 @@ public class DefinirEnviosAction extends MasterAction {
 										
 										switch (beanSerieFacturacion.getIdNombreDescargaPDF()) {
 										case 1:
-											nombreFicherosarrays = fichero.getName().split("-");
+											nombreFicherosarrays = fichero.getName().split("-",2);
 											certificado = new Documento(fichero,nombreFicherosarrays[1]);
 											break;
 										case 2:
 											//Quitamos la extensión y añadimos el nombre más la extensión
 											String[] separacionExtensionDelFichero = fichero.getName().split(Pattern.quote("."));
 											String[] separacionNombreColegiado = nombreColegiado.split("-");
-											nombreFicherosarrays = separacionExtensionDelFichero[0].split("-");
+											nombreFicherosarrays = separacionExtensionDelFichero[0].split("-",2);
 											certificado = new Documento(fichero,nombreFicherosarrays[1] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
 											break;
 										case 3:
-											nombreFicherosarrays = fichero.getName().split("-");
+											nombreFicherosarrays = fichero.getName().split("-",2);
 											certificado = new Documento(fichero,nombreColegiado+ nombreFicherosarrays[1]);
 											break;
 					
 										default:
-											nombreFicherosarrays = fichero.getName().split("-");
+											nombreFicherosarrays = fichero.getName().split("-",2);
 											certificado = new Documento(fichero,nombreColegiado+ nombreFicherosarrays[1]);
 											break;
 										}
 									}else{
-										nombreFicherosarrays = fichero.getName().split("-");
+										nombreFicherosarrays = fichero.getName().split("-",2);
 										certificado = new Documento(fichero,nombreColegiado+ nombreFicherosarrays[1]);
 									}
 									

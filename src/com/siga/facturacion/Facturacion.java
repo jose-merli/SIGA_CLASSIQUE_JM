@@ -613,19 +613,19 @@ public class Facturacion {
 						
 						switch (ficherosPDF.get(i).getFormatoDescarga()) {
 						case 1:
-								 nombreFicherosarrays = auxFile.getName().split("-");
+								 nombreFicherosarrays = auxFile.getName().split("-",2);
 								 ze = new ZipEntry(nombreFicherosarrays[1]);
 							break;
 						case 2:
 							//Quitamos la extensión y añadimos el nombre más la extensión
 								String[] separacionExtensionDelFichero = auxFile.getName().split(Pattern.quote("."));
 								String[] separacionNombreColegiado = ficherosPDF.get(i).getNombreFacturaFichero().split("-");
-								nombreFicherosarrays = separacionExtensionDelFichero[0].split("-");
+								nombreFicherosarrays = separacionExtensionDelFichero[0].split("-",2);
 								
 								ze = new ZipEntry(nombreFicherosarrays[1] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
 							break;
 						case 3:
-								nombreFicherosarrays = auxFile.getName().split("-");
+								nombreFicherosarrays = auxFile.getName().split("-",2);
 								ze = new ZipEntry(ficherosPDF.get(i).getNombreFacturaFichero()+ nombreFicherosarrays[1]);
 							break;
 						case -1: //Tipos de ficheros especiales cuyo nombre no se ha de modificar
@@ -633,7 +633,7 @@ public class Facturacion {
 						break;
 	
 						default:
-							nombreFicherosarrays = auxFile.getName().split("-");
+							nombreFicherosarrays = auxFile.getName().split("-",2);
 							ze = new ZipEntry(ficherosPDF.get(i).getNombreFacturaFichero()+  nombreFicherosarrays[1]);
 							break;
 						}
@@ -3080,29 +3080,29 @@ public class Facturacion {
 							FacSerieFacturacionBean beanSerieFacturacion = vSeriesFacturacion.get(0);
 							switch (beanSerieFacturacion.getIdNombreDescargaPDF()) {
 							case 1:
-									 nombreFicherosarrays = fichero.getName().split("-");
+									 nombreFicherosarrays = fichero.getName().split("-",2);
 									 request.setAttribute("nombreFichero",nombreFicherosarrays[1]);
 								break;
 							case 2:
 								//Quitamos la extensión y añadimos el nombre más la extensión
 								String[] separacionExtensionDelFichero = fichero.getName().split(Pattern.quote("."));
 								String[] separacionNombreColegiado = nombreColegiado.split("-");
-								nombreFicherosarrays = separacionExtensionDelFichero[0].split("-");
+								nombreFicherosarrays = separacionExtensionDelFichero[0].split("-",2);
 								
 								request.setAttribute("nombreFichero",nombreFicherosarrays[1] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
 								break;
 							case 3:
-								nombreFicherosarrays = fichero.getName().split("-");
+								nombreFicherosarrays = fichero.getName().split("-",2);
 								request.setAttribute("nombreFichero",nombreColegiado+ nombreFicherosarrays[1]);
 								break;
 		
 							default:
-								nombreFicherosarrays = fichero.getName().split("-");
+								nombreFicherosarrays = fichero.getName().split("-",2);
 								request.setAttribute("nombreFichero",nombreColegiado+  nombreFicherosarrays[1]);
 								break;
 							}
 						}else{
-							nombreFicherosarrays = fichero.getName().split("-");
+							nombreFicherosarrays = fichero.getName().split("-",2);
 							request.setAttribute("nombreFichero",nombreColegiado+ nombreFicherosarrays[1]);
 						}
 					}

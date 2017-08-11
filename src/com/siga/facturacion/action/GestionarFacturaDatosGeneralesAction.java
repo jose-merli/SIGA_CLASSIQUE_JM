@@ -228,28 +228,28 @@ public class GestionarFacturaDatosGeneralesAction extends MasterAction{
 				
 					switch (beanSerieFacturacion.getIdNombreDescargaPDF()) {
 					case 1:
-						nombreFicherosarrays = filePDF.getName().split("-");
+						nombreFicherosarrays = filePDF.getName().split("-",2);
 						request.setAttribute("nombreFichero",nombreFicherosarrays[1]);
 						break;
 					case 2:
 						//Quitamos la extensión y añadimos el nombre más la extensión
 						String[] separacionExtensionDelFichero = filePDF.getName().split(Pattern.quote("."));
 						String[] separacionNombreColegiado = nombreColegiado.split("-");
-						nombreFicherosarrays = separacionExtensionDelFichero[0].split("-");
+						nombreFicherosarrays = separacionExtensionDelFichero[0].split("-",2);
 						request.setAttribute("nombreFichero",nombreFicherosarrays[1] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
 						break;
 					case 3:
-						nombreFicherosarrays =filePDF.getName().split("-");
+						nombreFicherosarrays =filePDF.getName().split("-",2);
 						request.setAttribute("nombreFichero",nombreColegiado+nombreFicherosarrays[1]);
 						break;
 
 					default:
-						nombreFicherosarrays =filePDF.getName().split("-");
+						nombreFicherosarrays =filePDF.getName().split("-",2);
 						request.setAttribute("nombreFichero",nombreColegiado+ nombreFicherosarrays[1]);
 						break;
 					}
 				}else{
-					nombreFicherosarrays =filePDF.getName().split("-");
+					nombreFicherosarrays =filePDF.getName().split("-",2);
 					request.setAttribute("nombreFichero",nombreColegiado+ nombreFicherosarrays[1]);
 				}
 				
