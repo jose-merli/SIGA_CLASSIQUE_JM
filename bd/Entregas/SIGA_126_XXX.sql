@@ -53,5 +53,7 @@ Update Gen_Properties Pro Set Pro.Valor = '100'
  Where Parametro Like '%axBackupIndex'
  And parametro In ('log4j.appender.fichero.maxBackupIndex');
 
+-- Ejecutados en Integracion por AAG el 11/08/2017 a las 10:30
+
 
 
