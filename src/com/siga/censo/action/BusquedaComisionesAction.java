@@ -391,134 +391,127 @@ public class BusquedaComisionesAction extends MasterAction {
 		
 		return modo;
 	}
-	/* (non-Javadoc)
+	
+	/**
+	 * Esta funcion se encarga de guardar las altas y las actualizaciones de registros de cargos.
+	 * Recibe una cadena con todos los registros y la procesa
+	 * 
 	 * @see com.siga.general.MasterAction#editar(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 *
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
 	 */
 	@SuppressWarnings("unchecked")
-	protected String getAjaxGuardarCargos(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		String modo = "editar";
+	protected String getAjaxGuardarCargos(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
+	{
+		// Controles
+		UsrBean user = this.getUserBean(request);
+		CenDatosCVAdm admDatosCV = new CenDatosCVAdm(user);
 		
-		try{
-			//Vector ocultos = new Vector();
-			UsrBean user = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
-			SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
-			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-			BusquedaComisionesForm form = (BusquedaComisionesForm) formulario;
-			CenDatosCVAdm adm = new CenDatosCVAdm(user);
-			String ocultos = form.getDatosCargos();	
-			StringTokenizer subelementos,subelementos2,subelementos3;
-			String [] elementos= null;
-			elementos = ocultos.split("#@#");   
-			if(elementos[0]!=null){   
-				String word = elementos[0];   
-				subelementos = new StringTokenizer(word,"%%%");
-				while(subelementos.hasMoreTokens()){   // Actualiza
-					String word2 = subelementos.nextToken();   
-					subelementos2 = new StringTokenizer(word2,",");
-					String colegiado = subelementos2.nextToken();  
-					String IDCV = subelementos2.nextToken();  
-					String idpersona = subelementos2.nextToken();
-					String actualiza = (String)subelementos2.nextToken();
+		SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		BusquedaComisionesForm form = (BusquedaComisionesForm) formulario;
+		UserTransaction tx = user.getTransaction();
+		Calendar fecha = Calendar.getInstance();
+		
+		try {
+			GenParametrosAdm paramAdm = new GenParametrosAdm(user);
+			final String IDTIPOCV_JUNTASGOBIERNO = paramAdm.getValor(user.getLocation(), "CEN", ClsConstants.GEN_PARAM_IDTIPOCV_JUNTASGOBIERNO, "");
+			String todosLosDatos = form.getDatosCargos();
+			String[] elementos = todosLosDatos.split("#@#");
+			
+			// Actualizacion de cargos
+			if (elementos[0] != null) {
+				StringTokenizer listaCargosParaActualizar = new StringTokenizer(elementos[0], "%%%");
+				while (listaCargosParaActualizar.hasMoreTokens()) {
 					
-						CenDatosCVBean beanCV = new CenDatosCVBean();
+					// obteniendo los datos del cargo desde la estructura
+					StringTokenizer cargoParaActualizar = new StringTokenizer(listaCargosParaActualizar.nextToken(), ",");
+					String colegiado = cargoParaActualizar.nextToken();
+					String IDCV = cargoParaActualizar.nextToken();
+					String fechaFin = cargoParaActualizar.nextToken();
+					String idpersona = cargoParaActualizar.nextToken();
+					String actualiza = (String) cargoParaActualizar.nextToken();
 
-							UserTransaction t = null;
-							try {
-								t = this.getUserBean(request).getTransaction();
-								CenDatosCVAdm admDatosCV = new CenDatosCVAdm (this.getUserBean(request));
-								Hashtable bean = new Hashtable();
-								bean=admDatosCV.selectDatosCVJunta(new Long(idpersona),  new Integer(user.getLocation()), new Integer(form.getIdInstitucionCargo()), new Integer(IDCV));
-								
-								
-								beanCV.setOriginalHash(bean);
-								beanCV.setIdCV(new Integer(IDCV));
-								beanCV.setIdInstitucion(new Integer(user.getLocation()));
-								Calendar hoy = Calendar.getInstance();
-								hoy.setTime(dateFormat.parse(form.getFechaCargo()));
-								hoy.add(Calendar.DATE, -1);
-								if(actualiza.equalsIgnoreCase("S"))
-									beanCV.setFechaFin(sdf.format(hoy.getTime()));
-								
-								beanCV.setIdPersona(new Long(idpersona));
-								beanCV.setIdInstitucionCargo(new Integer(form.getIdInstitucionCargo()));
-								
-								
-								CenHistoricoBean beanHis = new CenHistoricoBean();
-								beanHis.setMotivo("");
-								t.begin();
-								if (!admDatosCV.updatefecha(beanCV)) {
-									throw new SIGAException (admDatosCV.getError());
-								}
-								t.commit();
-							}
-							catch (Exception e) {
-								
-							}
-						//}// hay fecha fin
-					
-					   
-				}//while -->%%%
-			}//%$%
-			if(elementos.length>1 && elementos[1]!=null){     //Alta de cargos
-				String wordAlta = elementos[1];   
-				subelementos = new StringTokenizer(wordAlta,"%%%");
-				GenParametrosAdm paramAdm = new GenParametrosAdm (user);
-				final String IDTIPOCV_JUNTASGOBIERNO = paramAdm.getValor (user.getLocation (), "CEN", ClsConstants.GEN_PARAM_IDTIPOCV_JUNTASGOBIERNO, "");
-				while(subelementos.hasMoreTokens()){ 
-					String word2 = subelementos.nextToken();   
-					subelementos2 = new StringTokenizer(word2,",");
-					String cargo = (String)subelementos2.nextToken();
-					subelementos3 = new StringTokenizer(cargo,"@");
-					String idtipocvsubtipo1 = subelementos3.nextToken();
-					String idinstitucion1 = subelementos3.nextToken(); 
-					String colegiado = subelementos2.nextToken();
-					String idPersona = subelementos2.nextToken();
-					UserTransaction t = null;
 					try {
-						t = this.getUserBean(request).getTransaction();
-						Integer idInstitucionSubtipo2=null;
-						Integer idTipoCVSubtipo2=null;
-						
-						 String[] datosCVSubtipo1;
-						  idTipoCVSubtipo2=new Integer(idtipocvsubtipo1);
-						  idInstitucionSubtipo2=new Integer(idinstitucion1);
-						// Fijamos los datos del C.V.
-						CenDatosCVBean beanCV  = new CenDatosCVBean ();
+						// cargando los datos para actualizar
+						CenDatosCVBean beanCV = new CenDatosCVBean();
+						Hashtable datosOriginales = admDatosCV.selectDatosCVJunta(new Long(idpersona), new Integer(user.getLocation()), new Integer(form.getIdInstitucionCargo()), new Integer(IDCV));
+						beanCV.setOriginalHash(datosOriginales);
+						beanCV.setIdCV(new Integer(IDCV));
+						beanCV.setIdInstitucion(new Integer(user.getLocation()));
+						beanCV.setIdPersona(new Long(idpersona));
+						beanCV.setIdInstitucionCargo(new Integer(form.getIdInstitucionCargo()));
+						if (actualiza.equalsIgnoreCase("S")) {
+							fecha.setTime(dateFormat.parse(fechaFin));
+							beanCV.setFechaFin(sdf.format(fecha.getTime()));
+						}
+
+						// actualizando en BD
+						tx = user.getTransaction();
+						tx.begin();
+						if (!admDatosCV.updatefecha(beanCV)) {
+							throw new SIGAException(admDatosCV.getError());
+						}
+						tx.commit();
+					} catch (Exception e) { // si falla un cargo, seguimos con los demas
+						throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, tx);
+					}
+				}
+			}
+			
+			// Alta de cargos
+			if (elementos.length > 1 && elementos[1] != null) {
+				StringTokenizer listaCargosParaAlta = new StringTokenizer(elementos[1], "%%%");
+				while (listaCargosParaAlta.hasMoreTokens()) {
+					
+					// obteniendo los datos del cargo desde la estructura
+					StringTokenizer cargoParaAlta = new StringTokenizer(listaCargosParaAlta.nextToken(), ",");
+					StringTokenizer tipoCargo = new StringTokenizer(cargoParaAlta.nextToken(), "@");
+					String idtipocvsubtipo1 = tipoCargo.nextToken();
+					String idinstitucion1 = tipoCargo.nextToken();
+					String fechaInicio = cargoParaAlta.nextToken();
+					String idPersona = cargoParaAlta.nextToken();
+					
+					try {
+						// cargando los datos para el alta
+						CenDatosCVBean beanCV = new CenDatosCVBean();
 						beanCV.setIdInstitucion(new Integer(user.getLocation()));
 						beanCV.setIdInstitucionCargo(new Integer(form.getIdInstitucionCargo()));
 						beanCV.setCertificado(ClsConstants.DB_FALSE);
 						beanCV.setFechaFin("");
-						Calendar fecha = Calendar.getInstance();
-						fecha.setTime(dateFormat.parse(form.getFechaCargo()));
-						beanCV.setFechaInicio(sdf.format(fecha.getTime()));//miForm.getFechaInicio());
+						fecha.setTime(dateFormat.parse(fechaInicio));
+						beanCV.setFechaInicio(sdf.format(fecha.getTime()));
 						beanCV.setFechaMovimiento(sdf.format(fecha.getTime()));
-						beanCV.setIdTipoCV(new Integer(IDTIPOCV_JUNTASGOBIERNO));						
-						CenColegiadoAdm admCol = new CenColegiadoAdm(this.getUserBean(request));
+						beanCV.setIdTipoCV(new Integer(IDTIPOCV_JUNTASGOBIERNO));
 						beanCV.setIdPersona(new Long(idPersona));
 						beanCV.setIdTipoCVSubtipo1(idtipocvsubtipo1);
 						beanCV.setIdInstitucion_subt1(new Integer(idinstitucion1));
-						// Fijamos los datos del Historico
-						CenHistoricoBean beanHis = new CenHistoricoBean();
-						CenDatosCVAdm admDatosCV = new CenDatosCVAdm (this.getUserBean(request));
-						t.begin();
-						if (!admDatosCV.insertar(beanCV, beanHis, this.getLenguaje(request))) {
-							throw new SIGAException (admDatosCV.getError());
+						
+						// insertando en BD
+						tx = user.getTransaction();
+						tx.begin();
+						if (!admDatosCV.insertar(beanCV, new CenHistoricoBean(), user.getLanguage())) {
+							throw new SIGAException(admDatosCV.getError());
 						}
-						t.commit();
+						tx.commit();
+					} catch (Exception e) { // si falla un cargo, seguimos con los demas
+						throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, tx);
 					}
-					catch (Exception e) {
-						throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, t);
-					}
-				}   
+				}
 			}
-		}
-		catch (Exception e) {
 			
-			throwExcp("messages.general.error",new String[] {"modulo.censo"}, e, null);
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, null);
 		}
+		
 		return "busquedaJunta";
-
-	}
+	} //getAjaxGuardarCargos()
+	
 	@SuppressWarnings("unchecked")
 	protected String getAjaxBusquedaCargos (ActionMapping mapping, 		
 			MasterForm formulario, 

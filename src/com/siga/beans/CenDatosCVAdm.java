@@ -615,207 +615,159 @@ public class CenDatosCVAdm extends MasterBeanAdmVisible{
 		return false;
 	}
 	
-	public Vector buscarComisiones (BusquedaComisionesForm formulario/* , String language*/) throws ClsExceptions , SIGAException 
+	public String getConsultaObtencionCargos (BusquedaComisionesForm formulario) throws ClsExceptions
 	{
+		// Controles
+	    String idInstitucion=this.usrbean.getLocation();
+		
+	    // Variables generales
+		int tipoBusqueda;
+		String idtipoCV_Busqueda;
+		if(ClsConstants.INSTITUCION_CGAE == Integer.parseInt(idInstitucion)) {
+			tipoBusqueda = ClsConstants.BUSQUEDA_CARGOS_COMO_JUNTAS;
+			GenParametrosAdm paramAdm = new GenParametrosAdm (this.usrbean);
+			idtipoCV_Busqueda = paramAdm.getValor (idInstitucion, "CEN", ClsConstants.GEN_PARAM_IDTIPOCV_JUNTASGOBIERNO, "");
+		} else {
+			tipoBusqueda = ClsConstants.BUSQUEDA_CARGOS_COMO_COMISIONES;
+			idtipoCV_Busqueda = Integer.toString(ClsConstants.TIPOCV_COMISIONES);
+		}
+		
+		StringBuilder consulta = new StringBuilder();
+		
+		consulta.append(" select ");
+		
+		consulta.append(" (select per.nombre");
+		consulta.append("    from "+CenPersonaBean.T_NOMBRETABLA+" per");
+		consulta.append("   where per."+CenPersonaBean.C_IDPERSONA+" = t."+CenDatosCVBean.C_IDPERSONA);
+		consulta.append(" ) NOMBRE, ");
+		consulta.append(" (select per."+CenPersonaBean.C_APELLIDOS1+"||' '||"+CenPersonaBean.C_APELLIDOS2);
+		consulta.append("    from "+CenPersonaBean.T_NOMBRETABLA+" per");
+		consulta.append("   where per."+CenPersonaBean.C_IDPERSONA+" = t."+CenDatosCVBean.C_IDPERSONA);
+		consulta.append(" ) APELLIDOS, ");
+		
+		consulta.append(" f_siga_calculoncolegiado(t.");
+		consulta.append(    (formulario.getIdInstitucionCargo()!=null && !formulario.getIdInstitucionCargo().trim().equals("") ? CenDatosCVBean.C_IDINSTITUCIONCARGO : CenDatosCVBean.C_IDINSTITUCION));
+		consulta.append("   , t."+CenDatosCVBean.C_IDPERSONA+") NCOLEGIADO,");
+
+		consulta.append(" tipo1.CODIGOEXT,");
+		consulta.append(" t."+CenDatosCVBean.C_IDTIPOCVSUBTIPO1+",");
+		consulta.append(" t."+CenDatosCVBean.C_IDTIPOCVSUBTIPO2+",");
+		consulta.append(" t."+CenDatosCVBean.C_IDCV+",");
+		consulta.append(" t."+CenDatosCVBean.C_IDPERSONA+",");
+		consulta.append(" t."+CenDatosCVBean.C_IDINSTITUCION+",");
+		consulta.append(" t."+CenDatosCVBean.C_IDINSTITUCIONCARGO+",");
+		consulta.append(" t."+CenDatosCVBean.C_IDTIPOCV+",");
+
+		switch (tipoBusqueda) {
+		case ClsConstants.BUSQUEDA_CARGOS_COMO_JUNTAS: 
+			consulta.append(  UtilidadesMultidioma.getCampoMultidiomaSimple("tipo1."+CenTiposCVSubtipo1Bean.C_DESCRIPCION, this.usrbean.getLanguage())+" CARGO,");
 			
+			consulta.append(" TO_CHAR(T."+CenDatosCVBean.C_FECHAINICIO+",'DD/MM/YYYY') AS FECHAINICIO, ");
+			consulta.append(" TO_CHAR(T."+CenDatosCVBean.C_FECHAFIN+",'DD/MM/YYYY')  AS FECHAFIN ");
+			break;
+		case ClsConstants.BUSQUEDA_CARGOS_COMO_COMISIONES:
+			consulta.append(  UtilidadesMultidioma.getCampoMultidiomaSimple("tipo1."+CenTiposCVSubtipo1Bean.C_DESCRIPCION, this.usrbean.getLanguage())+" COMISION,");
+			consulta.append(" (select " + UtilidadesMultidioma.getCampoMultidiomaSimple("p."+CenTiposCVSubtipo2Bean.C_DESCRIPCION, this.usrbean.getLanguage()) + " ");
+			consulta.append("    from "+CenTiposCVSubtipo2Bean.T_NOMBRETABLA+" p");
+			consulta.append("   where p."+CenTiposCVSubtipo2Bean.C_IDTIPOCV+"=t."+CenDatosCVBean.C_IDTIPOCV);
+			consulta.append("     and p."+CenTiposCVSubtipo2Bean.C_IDINSTITUCION+"=t."+CenDatosCVBean.C_IDINSTITUCION_SUBT2);
+			consulta.append("     and p."+CenTiposCVSubtipo2Bean.C_IDTIPOCVSUBTIPO2+"=t."+CenDatosCVBean.C_IDTIPOCVSUBTIPO2+") CARGO,");
+			
+			consulta.append(" t."+CenDatosCVBean.C_FECHAINICIO+",");
+			consulta.append(" t."+CenDatosCVBean.C_FECHAFIN);
+		}
+		
+		consulta.append("   from "+CenDatosCVBean.T_NOMBRETABLA+" t ");
+		consulta.append("        , "+CenTiposCVSubtipo1Bean.T_NOMBRETABLA + " TIPO1 ");
+		consulta.append("  where T."+CenDatosCVBean.C_IDTIPOCV+"="+idtipoCV_Busqueda+ "");
+		consulta.append("    AND T."+CenDatosCVBean.C_FECHABAJA+" IS NULL "); 
+
+		if ((formulario.getIdInstitucion() != null) && (!formulario.getIdInstitucion().trim().equals(""))) {
+			consulta.append("    and T." + CenDatosCVBean.C_IDINSTITUCION + "=" + formulario.getIdInstitucion());
+		}
+		if ((formulario.getIdInstitucionCargo() != null) && (!formulario.getIdInstitucionCargo().trim().equals(""))) {
+			consulta.append("    and T." + CenDatosCVBean.C_IDINSTITUCIONCARGO + "=" + formulario.getIdInstitucionCargo());
+		}
+		if ((formulario.getIdPersona() != null) && (!formulario.getIdPersona().trim().equals(""))) {
+			consulta.append("    and T." + CenDatosCVBean.C_IDPERSONA + "=" + formulario.getIdPersona());
+		}		
+		if (formulario.getFechaCargo() != null && !formulario.getFechaCargo().equals("")) {
+			consulta.append("    AND to_date('" + formulario.getFechaCargo() + "','DD/MM/YYYY')");
+			consulta.append("        between trunc(nvl(" + CenDatosCVBean.C_FECHAINICIO + ", to_date('01/01/1900', 'dd/mm/yyyy')))");
+			consulta.append("            and trunc(nvl(" + CenDatosCVBean.C_FECHAFIN + ", to_date('31/12/2999', 'dd/mm/yyyy')))");
+		}		
+		
+		switch (tipoBusqueda) {
+		case ClsConstants.BUSQUEDA_CARGOS_COMO_JUNTAS: 
+			if (formulario.getCargos() != null && !formulario.getCargos().equals("")) {
+				String[] datosCVSubtipo1;
+				datosCVSubtipo1 = formulario.getCargos().toString().split("@");
+				String idTipoCVSubtipo1 = datosCVSubtipo1[0];
+				String idInstitucionSubtipo1 = datosCVSubtipo1[1];
+
+				consulta.append("    AND T." + CenDatosCVBean.C_IDTIPOCVSUBTIPO1 + " = " + idTipoCVSubtipo1);
+				consulta.append("    AND T." + CenDatosCVBean.C_IDINSTITUCION_SUBT1 + " = " + idInstitucionSubtipo1);
+			}
+			break;
+		case ClsConstants.BUSQUEDA_CARGOS_COMO_COMISIONES:
+			if (formulario.getComision() != null && !formulario.getComision().equals("")) {
+				String[] datosCVSubtipo1;
+				datosCVSubtipo1 = formulario.getComision().toString().split("@");
+				String idTipoCVSubtipo1 = datosCVSubtipo1[0];
+				String idInstitucionSubtipo1 = datosCVSubtipo1[1];
+	
+				consulta.append("    AND T." + CenDatosCVBean.C_IDTIPOCVSUBTIPO1 + " = " + idTipoCVSubtipo1);
+				consulta.append("    AND T." + CenDatosCVBean.C_IDINSTITUCION_SUBT1 + " = " + idInstitucionSubtipo1);
+	
+			}
+			if (formulario.getCargos() != null && !formulario.getCargos().equals("")) {
+				String[] datosCVSubtipo2;
+				datosCVSubtipo2 = formulario.getCargos().toString().split("@");
+				String idTipoCVSubtipo2 = datosCVSubtipo2[0];
+				String idInstitucionSubtipo2 = datosCVSubtipo2[1];
+	
+				consulta.append("    AND T." + CenDatosCVBean.C_IDTIPOCVSUBTIPO2 + " = " + idTipoCVSubtipo2);
+				consulta.append("    AND T." + CenDatosCVBean.C_IDINSTITUCION_SUBT2 + " = " + idInstitucionSubtipo2);
+			}
+		}
+		
+		consulta.append("    AND TIPO1."+CenTiposCVSubtipo1Bean.C_IDTIPOCV+"(+)= T."+CenDatosCVBean.C_IDTIPOCV);
+		consulta.append("    AND TIPO1."+CenTiposCVSubtipo1Bean.C_IDTIPOCVSUBTIPO1+"(+)= T."+CenDatosCVBean.C_IDTIPOCVSUBTIPO1);
+		consulta.append("    AND TIPO1."+CenTiposCVSubtipo1Bean.C_IDINSTITUCION+"(+)= T."+CenDatosCVBean.C_IDINSTITUCION_SUBT1);
+		
+		consulta.append("  ORDER BY TIPO1."+CenTiposCVSubtipo1Bean.C_CODIGOEXT+" ASC, T."+CenDatosCVBean.C_FECHAINICIO+" DESC");	
+		
+		return consulta.toString();
+	}
+
+	public Vector buscarComisiones(BusquedaComisionesForm formulario) throws ClsExceptions, SIGAException
+	{
 		Vector registros = null;
-		
-		String select="";
-		Integer idTipoCVSubtipo1 = null;
-		Integer idTipoCVSubtipo2 = null;
-		Integer idInstitucionSubtipo1=null;
-		Integer idInstitucionSubtipo2=null;
-		try 
-		{
-			    select=" select (select per.nombre"+
-			           "          from "+CenPersonaBean.T_NOMBRETABLA+" per"+
-				       "          where  per."+CenPersonaBean.C_IDPERSONA+" = t."+CenDatosCVBean.C_IDPERSONA+
-				       "         ) NOMBRE,"+
-				       "         (select per."+CenPersonaBean.C_APELLIDOS1+"||' '||"+CenPersonaBean.C_APELLIDOS2+
-				       "          from "+CenPersonaBean.T_NOMBRETABLA+" per"+
-				       "          where  per."+CenPersonaBean.C_IDPERSONA+" = t."+CenDatosCVBean.C_IDPERSONA+
-				       "          ) APELLIDOS,";
-			    
-			    if((formulario.getIdInstitucionCargo()!=null)&&(!formulario.getIdInstitucionCargo().trim().equals(""))){
-				    select+=" f_siga_calculoncolegiado(t."+CenDatosCVBean.C_IDINSTITUCIONCARGO+",t."+CenDatosCVBean.C_IDPERSONA+") NCOLEGIADO,";
-			    }else  {
-				    select+=" f_siga_calculoncolegiado(t."+CenDatosCVBean.C_IDINSTITUCION+",t."+CenDatosCVBean.C_IDPERSONA+") NCOLEGIADO,";
-			    }    
-			    
-			    select+=" (select " + UtilidadesMultidioma.getCampoMultidioma("p."+CenTiposCVSubtipo1Bean.C_DESCRIPCION, this.usrbean.getLanguage()) + " " + 
-				       "  from "+CenTiposCVSubtipo1Bean.T_NOMBRETABLA+" p"+
-				       "  where p."+CenTiposCVSubtipo1Bean.C_IDTIPOCV+"=t."+CenDatosCVBean.C_IDTIPOCV+
-				       "    and p."+CenTiposCVSubtipo1Bean.C_IDINSTITUCION+"=t."+CenDatosCVBean.C_IDINSTITUCION_SUBT1+
-				       "    and p."+CenTiposCVSubtipo1Bean.C_IDTIPOCVSUBTIPO1+"=t."+CenDatosCVBean.C_IDTIPOCVSUBTIPO1+") COMISION,"+
-				       
-				       
-				       
-				       " (select CODIGOEXT " + 
-				       "  from "+CenTiposCVSubtipo1Bean.T_NOMBRETABLA+" p"+
-				       "  where p."+CenTiposCVSubtipo1Bean.C_IDTIPOCV+"=t."+CenDatosCVBean.C_IDTIPOCV+
-				       "    and p."+CenTiposCVSubtipo1Bean.C_IDINSTITUCION+"=t."+CenDatosCVBean.C_IDINSTITUCION_SUBT1+
-				       "    and p."+CenTiposCVSubtipo1Bean.C_IDTIPOCVSUBTIPO1+"=t."+CenDatosCVBean.C_IDTIPOCVSUBTIPO1+") CODIGOEXT,"+
-				       
-				       
-				           
-				       "  (select " + UtilidadesMultidioma.getCampoMultidioma("p."+CenTiposCVSubtipo2Bean.C_DESCRIPCION, this.usrbean.getLanguage()) + " " +
-				       "   from "+CenTiposCVSubtipo2Bean.T_NOMBRETABLA+" p"+
-				       "   where p."+CenTiposCVSubtipo2Bean.C_IDTIPOCV+"=t."+CenDatosCVBean.C_IDTIPOCV+
-				       "     and p."+CenTiposCVSubtipo2Bean.C_IDINSTITUCION+"=t."+CenDatosCVBean.C_IDINSTITUCION_SUBT2+
-				       "     and p."+CenTiposCVSubtipo2Bean.C_IDTIPOCVSUBTIPO2+"=t."+CenDatosCVBean.C_IDTIPOCVSUBTIPO2+") CARGO,"+
-				       "    t."+CenDatosCVBean.C_IDTIPOCVSUBTIPO1+","+
-				       "    t."+CenDatosCVBean.C_IDTIPOCVSUBTIPO2+","+
-				       "    t."+CenDatosCVBean.C_IDCV+","+
-				       "    t."+CenDatosCVBean.C_IDPERSONA+","+
-				       "    t."+CenDatosCVBean.C_IDINSTITUCION+","+
-				       "    t."+CenDatosCVBean.C_IDINSTITUCIONCARGO+","+
-				       "    t."+CenDatosCVBean.C_IDTIPOCV+","+
-				       "    t."+CenDatosCVBean.C_FECHAINICIO+","+
-				       "    t."+CenDatosCVBean.C_FECHAFIN+
-				       "  from "+CenDatosCVBean.T_NOMBRETABLA+" t "+
-			           " where T."+CenDatosCVBean.C_IDTIPOCV+"="+ClsConstants.TIPOCV_COMISIONES+ "" +
-			           "   AND T."+CenDatosCVBean.C_FECHABAJA+" IS NULL "; 
-			           // Aqui metemos el if institucion no vacio
-			           if((formulario.getIdInstitucion()!=null)&&(!formulario.getIdInstitucion().trim().equals(""))){
-			        	    select+= "  and T."+CenDatosCVBean.C_IDINSTITUCION+"="+formulario.getIdInstitucion();
-			           }  
-			           if((formulario.getIdInstitucionCargo()!=null)&&(!formulario.getIdInstitucionCargo().trim().equals(""))){
-			        	    select+= "  and T."+CenDatosCVBean.C_IDINSTITUCIONCARGO+"="+formulario.getIdInstitucionCargo();
-			           } 			           
-			           if((formulario.getIdPersona()!=null)&&(!formulario.getIdPersona().trim().equals(""))){
-			        	    select+= "  and T."+CenDatosCVBean.C_IDPERSONA+"="+formulario.getIdPersona();
-			           } 
-			 
-			    if (formulario.getComision()!=null && !formulario.getComision().equals("")){
-			    	String[] datosCVSubtipo1;
-					  datosCVSubtipo1=formulario.getComision().toString().split("@");
-					  idTipoCVSubtipo1=new Integer(datosCVSubtipo1[0]);
-					  idInstitucionSubtipo1=new Integer(datosCVSubtipo1[1]);
-					 
-					
-			    	
-			    	select+=" AND T."+CenDatosCVBean.C_IDTIPOCVSUBTIPO1+" = "+idTipoCVSubtipo1+
-					        " AND T."+CenDatosCVBean.C_IDINSTITUCION_SUBT1+" = "+idInstitucionSubtipo1;
-			    	
-			    }
-			    if (formulario.getCargos()!=null && !formulario.getCargos().equals("")){
-			    		 String[] datosCVSubtipo2;
-						 datosCVSubtipo2=formulario.getCargos().toString().split("@");
-						 idTipoCVSubtipo2=new Integer(datosCVSubtipo2[0]);
-						 idInstitucionSubtipo2=new Integer(datosCVSubtipo2[1]);
-						
-			    	select+=" AND T."+CenDatosCVBean.C_IDTIPOCVSUBTIPO2+" = "+idTipoCVSubtipo2+
-			    	        " AND T."+CenDatosCVBean.C_IDINSTITUCION_SUBT1+" = "+idInstitucionSubtipo2;
-			    }
-			    if (formulario.getFechaCargo()!=null && !formulario.getFechaCargo().equals("")){
-			    	String fechaCargo="to_date('"+formulario.getFechaCargo()+"','DD/MM/YYYY')";
-			    	select+=" AND (("+fechaCargo+" between TO_DATE(TO_CHAR(T."+CenDatosCVBean.C_FECHAINICIO+",'DD/MM/YYYY'),'DD/MM/YYYY') and TO_DATE(TO_CHAR(T."+CenDatosCVBean.C_FECHAFIN+",'DD/MM/YYYY'),'DD/MM/YYYY')) OR (T."+CenDatosCVBean.C_FECHAFIN+" IS NULL AND TO_DATE(TO_CHAR(T."+CenDatosCVBean.C_FECHAINICIO+",'DD/MM/YYYY'),'DD/MM/YYYY') <= "+fechaCargo+"))";
-			    }
-			    
-			    select+= " ORDER BY CODIGOEXT, FECHAINICIO";
-				CenTiposCVSubtipo1Adm admCV = new CenTiposCVSubtipo1Adm(this.usrbean);
-				Hashtable datosCV= new Hashtable();
-			
-				registros = admCV.selectGenerico(select);
-						
-	    } catch (Exception e) {
-	    	throw new ClsExceptions(e,"Error obteniendo la comisiones y los cargos."); 
-   	    }
+
+		try {
+			String select = getConsultaObtencionCargos(formulario);
+			registros = selectGenerico(select);
+
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error obteniendo la comisiones y los cargos.");
+		}
 		return registros;
 	}
 
-	public List<CenDatosCVBean> buscarComisionesJunta (BusquedaComisionesForm formulario/* , String language*/) throws ClsExceptions , SIGAException 
+	public List<CenDatosCVBean> buscarComisionesJunta(BusquedaComisionesForm formulario) throws ClsExceptions, SIGAException
 	{
-			
-				
 		List<CenDatosCVBean> registros = null;
-		
-		String select="";
-		Integer idTipoCVSubtipo1 = null;
-		Integer idTipoCVSubtipo2 = null;
-		Integer idInstitucionSubtipo1=null;
-		Integer idInstitucionSubtipo2=null;
-		GenParametrosAdm paramAdm = new GenParametrosAdm (this.usrbean);
-		final String IDTIPOCV_JUNTASGOBIERNO = paramAdm.getValor (this.usrbean.getLocation (), "CEN", ClsConstants.GEN_PARAM_IDTIPOCV_JUNTASGOBIERNO, "");
-		try 
-		{
-			    select=" select (select per.nombre"+
-			           "          from "+CenPersonaBean.T_NOMBRETABLA+" per"+
-				       "          where  per."+CenPersonaBean.C_IDPERSONA+" = t."+CenDatosCVBean.C_IDPERSONA+
-				       "         ) NOMBRE,"+
-				       "         (select per."+CenPersonaBean.C_APELLIDOS1+"||' '||"+CenPersonaBean.C_APELLIDOS2+
-				       "          from "+CenPersonaBean.T_NOMBRETABLA+" per"+
-				       "          where  per."+CenPersonaBean.C_IDPERSONA+" = t."+CenDatosCVBean.C_IDPERSONA+
-				       "          ) APELLIDOS,";
-					    if((formulario.getIdInstitucionCargo()!=null)&&(!formulario.getIdInstitucionCargo().trim().equals(""))){
-						    select+=" f_siga_calculoncolegiado(t."+CenDatosCVBean.C_IDINSTITUCIONCARGO+",t."+CenDatosCVBean.C_IDPERSONA+") NCOLEGIADO,";
-					    }else  {
-						    select+=" f_siga_calculoncolegiado(t."+CenDatosCVBean.C_IDINSTITUCION+",t."+CenDatosCVBean.C_IDPERSONA+") NCOLEGIADO,";
-					    }   
 
-			  select+= " (select " + UtilidadesMultidioma.getCampoMultidioma("p."+CenTiposCVSubtipo1Bean.C_DESCRIPCION, this.usrbean.getLanguage()) + " " + 
-				       "  from "+CenTiposCVSubtipo1Bean.T_NOMBRETABLA+" p"+
-				       "  where p."+CenTiposCVSubtipo1Bean.C_IDTIPOCV+"=t."+CenDatosCVBean.C_IDTIPOCV+
-				       "    and p."+CenTiposCVSubtipo1Bean.C_IDINSTITUCION+"=t."+CenDatosCVBean.C_IDINSTITUCION_SUBT1+
-				       "    and p."+CenTiposCVSubtipo1Bean.C_IDTIPOCVSUBTIPO1+"=t."+CenDatosCVBean.C_IDTIPOCVSUBTIPO1+") CARGO,"+
-				       "    t."+CenDatosCVBean.C_IDTIPOCVSUBTIPO1+" AS IDTIPOCVSUBTIPO1,"+
-				       "    t."+CenDatosCVBean.C_IDTIPOCVSUBTIPO2+"  AS IDTIPOCVSUBTIPO2,"+
-				       "    t."+CenDatosCVBean.C_IDCV+" AS IDCV,"+
-				       "    t."+CenDatosCVBean.C_IDPERSONA+" AS IDPERSONA,"+
-				       "    t."+CenDatosCVBean.C_IDINSTITUCION+","+
-				       "    t."+CenDatosCVBean.C_IDINSTITUCIONCARGO+","+
-				       "    t."+CenDatosCVBean.C_IDTIPOCV+","+
-				       "    TO_CHAR(T."+CenDatosCVBean.C_FECHAINICIO+",'DD/MM/YYYY') AS FECHAINICIO, "+
-				       "    TO_CHAR(T."+CenDatosCVBean.C_FECHAFIN+",'DD/MM/YYYY')  AS FECHAFIN "+
-				       "  from "+CenDatosCVBean.T_NOMBRETABLA+" t, "+
-				       		CenTiposCVSubtipo1Bean.T_NOMBRETABLA + " TIPO1 "+
-			           " where T."+CenDatosCVBean.C_IDTIPOCV+"="+IDTIPOCV_JUNTASGOBIERNO+" "+
-			           "   AND T."+CenDatosCVBean.C_FECHABAJA+" IS NULL ";
-			          // "   AND T."+CenDatosCVBean.C_FECHAFIN+" IS NULL ";//+
-			    	   //"   AND T."+CenDatosCVBean.C_FECHAINICIO+" = "+" TO_DATE('" + formulario.getFechaCargo() + "', '"
-					//	+ ClsConstants.DATE_FORMAT_SQL + "') "; 
-			           // Aqui metemos el if institucion no vacio
-			           if((formulario.getIdInstitucion()!=null)&&(!formulario.getIdInstitucion().trim().equals(""))){
-			        	    select+= "  and T."+CenDatosCVBean.C_IDINSTITUCION+"="+formulario.getIdInstitucion();
-			           }   
-			           if((formulario.getIdInstitucionCargo()!=null)&&(!formulario.getIdInstitucionCargo().trim().equals(""))){
-			        	    select+= "  and T."+CenDatosCVBean.C_IDINSTITUCIONCARGO+"="+formulario.getIdInstitucionCargo();
-			           }
-					   if (formulario.getFechaCargo()!=null && !formulario.getFechaCargo().equals("")){
-					    	String fechaCargo="to_date('"+formulario.getFechaCargo()+"','DD/MM/YYYY')";
-					    	select+=" AND (T."+CenDatosCVBean.C_FECHAFIN+" IS NULL OR TO_DATE(TO_CHAR(T."+CenDatosCVBean.C_FECHAFIN+",'DD/MM/YYYY'),'DD/MM/YYYY') >= "+fechaCargo+")";
-					   }
-					   if (formulario.getIdPersona()!=null && !formulario.getIdPersona().equals("")){
-						   select+= "  and T."+CenDatosCVBean.C_IDPERSONA+"="+formulario.getIdPersona();
-					   }
-			 
-			    if (formulario.getCargos()!=null && !formulario.getCargos().equals("")){
-			    	String[] datosCVSubtipo1;
-					  datosCVSubtipo1=formulario.getCargos().toString().split("@");
-					  idTipoCVSubtipo1=new Integer(datosCVSubtipo1[0]);
-					  idInstitucionSubtipo1=new Integer(datosCVSubtipo1[1]);
+		try {
+			String select = getConsultaObtencionCargos(formulario);
+			registros = selectGenericoList(select);
 
-					  select+=" AND T."+CenDatosCVBean.C_IDTIPOCVSUBTIPO1+" = "+idTipoCVSubtipo1+
-					        " AND T."+CenDatosCVBean.C_IDINSTITUCION_SUBT1+" = "+idInstitucionSubtipo1;
-			    	
-			    }
-			    
-			   //if (formulario.getIdInstitucionCargo()!=null && !formulario.getIdInstitucionCargo().equals("")){
-			   // 	 select+= "  and T."+CenDatosCVBean.C_IDINSTITUCIONCARGO+"="+formulario.getIdInstitucionCargo();
-			   //}
-			    
-			   select +=" AND TIPO1."+CenTiposCVSubtipo1Bean.C_IDTIPOCV+"(+)= T."+CenDatosCVBean.C_IDTIPOCV+
-				   " AND TIPO1."+CenTiposCVSubtipo1Bean.C_IDTIPOCVSUBTIPO1+"(+)= T."+CenDatosCVBean.C_IDTIPOCVSUBTIPO1+
-				   " AND TIPO1."+CenTiposCVSubtipo1Bean.C_IDINSTITUCION+"(+)= T."+CenDatosCVBean.C_IDINSTITUCION_SUBT1+
-				   " ORDER BY TIPO1."+CenTiposCVSubtipo1Bean.C_CODIGOEXT+" ASC, T."+CenDatosCVBean.C_FECHAINICIO+" DESC";	
-			
-				registros = selectGenericoList(select);
-			
-	    } catch (Exception e) {
-	    	throw new ClsExceptions(e,"Error obteniendo la comisiones y los cargos."); 
-   	    }
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error obteniendo la comisiones y los cargos.");
+		}
 		return registros;
 	}
+	
 	public boolean eliminarCargo(Hashtable hash)throws ClsExceptions, SIGAException {
 		
 	

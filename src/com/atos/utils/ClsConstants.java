@@ -564,8 +564,10 @@ MDB Microsoft Access Database
   public static final String SOCIEDADSP="SSPP";
   public static final String FAC_ABONOS="FAC_ABONOS";
   
+  // Diferentes formas de Pantalla de Cargos (si, esto deberia ser un parametro, pero el MASTER que creo la funcionalidad lo diferencia directamente con "2000"
+  public static final int BUSQUEDA_CARGOS_COMO_COMISIONES = 1;
+  public static final int BUSQUEDA_CARGOS_COMO_JUNTAS = 2;
   
-    
   // Tipos de Cambio ColaCambioLetrado
   public static final int COLA_CAMBIO_LETRADO_APROBACION_COLEGIACION = 10;
   public static final int COLA_CAMBIO_LETRADO_ACTIVACION_RESIDENCIA  = 20;
