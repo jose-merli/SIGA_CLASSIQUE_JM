@@ -675,7 +675,9 @@
 		
 		// obteniendo y cargando los datos de cada fila
 		var yaTerminamosRegistrosAntiguosEmpezamosConRegistrosNuevos = "";
-		for (var a = 0; a < numeroFilas-1 ; a++) { //hasta la penultima fila, pq la ultima fila nunca esta rellena (siempre se crea otra nueva cuando se rellena una)
+		for (var a = 0; a < numeroFilas-1 || (a == numeroFilas-1 && yaTerminamosRegistrosAntiguosEmpezamosConRegistrosNuevos=="") ; a++) {
+			//hasta la penultima fila cuando hay nuevos registros, pq la ultima fila nunca esta rellena (siempre se crea otra nueva cuando se rellena una)
+			//o bien hasta la ultima si no hay nuevos registros
 			i = table.rows[a].id.split("_")[1];
 			
 			// comprobando que cada fila tiene todos los datos necesarios rellenos
