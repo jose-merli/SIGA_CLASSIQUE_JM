@@ -15,7 +15,9 @@ import java.io.Reader;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
@@ -25,6 +27,11 @@ import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.upload.FormFile;
+import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
+import org.redabogacia.sigaservices.app.autogen.model.CajgRemesaresolucion;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
+import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsExceptions;
@@ -43,6 +50,8 @@ import com.siga.beans.GenParametrosAdm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.pcajg.resoluciones.ResolucionesFicheroAbstract;
 import com.siga.informes.MasterWords;
+
+import es.satec.businessManager.BusinessManager;
 
 /**
  * @author mjm
@@ -139,6 +148,19 @@ public class SigaWSUploadDocResRem {
 			
 			tx.commit();
 			
+			if(idTipoRemesa == 4) {
+				//si todo ha ido bien inserto en la cola con la operación de envío de reintegros a la xunta
+				EcomCola ecomCola = new EcomCola();
+				ecomCola.setIdinstitucion((short) idInstitucion);
+				ecomCola.setIdoperacion(OPERACION.XUNTA_ENVIO_REINTEGROS.getId());			
+				EcomColaService ecomColaService = (EcomColaService)BusinessManager.getInstance().getService(EcomColaService.class);
+					
+				Map<String, String> mapa = new HashMap<String, String>();
+				mapa.put(CajgRemesaresolucion.C_IDREMESARESOLUCION, idRemesaResolucion);
+				
+				ecomColaService.insertaColaConParametros(ecomCola, mapa);
+			}
+			
 		} catch (Exception e) {
 			
 			try {
@@ -231,8 +253,11 @@ public class SigaWSUploadDocResRem {
 				}
 			}
 		}
-		
-		boolean generaLog = callProcedure(usr, idInstitucion, idTipoRemesa, idRemesaResolucion, file);		
+		boolean generaLog = false;
+		// EL TIPO 4 ES de envío de reintegros a la xunta que se hace en Java. No hay que llamar a ningún procedure
+		if(!idTipoRemesa.equals("4")) {
+			generaLog = callProcedure(usr, idInstitucion, idTipoRemesa, idRemesaResolucion, file);
+		}
 		
 		ArrayList ficheros = new ArrayList();
 		ficheros.add(file);
@@ -385,10 +410,10 @@ public class SigaWSUploadDocResRem {
 	}
 	
 	public static File getLogFile(File parentFile, String nombreFichero) {
-		File logFile = new File(parentFile, "log");
+		File logFile = new File(parentFile, AppConstants.DIRECTORIO_CAJG_REMESARESOLUCIONES_LOG);
 		deleteFiles(logFile);
 		logFile.mkdirs();
-		logFile = new File(logFile, nombreFichero + "_errores.txt");
+		logFile = new File(logFile, nombreFichero + AppConstants.REMESARESOLUCIONES_SUFIJO_LOG);
 		return logFile;
 	}
 	

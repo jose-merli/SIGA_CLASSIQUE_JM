@@ -3100,6 +3100,10 @@
 			<forward name="inicio" path="/html/jsp/gratuita/busquedaRemesaResoluciones_CAJG.jsp?idTipoRemesa=3"/>						
 		</action>
 		
+		<action path="/JGR_EnvioReintegrosXunta" type="com.siga.gratuita.action.DefinirRemesaResolucionesCAJGAction" name="DefinicionRemesaResolucionesCAJGForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/busquedaRemesaResoluciones_CAJG.jsp?idTipoRemesa=4"/>						
+		</action>
+		
 		<!-- ***** Consultas / Recuperar Consultas ***** -->
 		<action path="/CON_RecuperarConsultas" type="com.siga.consultas.action.RecuperarConsultasAction" name="RecuperarConsultasForm" scope="request">
 			<forward name="inicio" path="/html/jsp/consultas/recuperarConsultas.jsp"/>
