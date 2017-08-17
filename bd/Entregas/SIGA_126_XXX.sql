@@ -68,3 +68,45 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 
 -- Ejecutados en Integracion por AAG el 14/08/2017 a las 09:40
 
+insert into ADM_CONTADOR (IDINSTITUCION, IDCONTADOR, NOMBRE, DESCRIPCION, MODIFICABLECONTADOR, MODO, CONTADOR, PREFIJO
+, SUFIJO, LONGITUDCONTADOR, 
+FECHARECONFIGURACION, RECONFIGURACIONCONTADOR, RECONFIGURACIONPREFIJO, RECONFIGURACIONSUFIJO
+, IDTABLA, IDCAMPOCONTADOR, IDCAMPOPREFIJO, IDCAMPOSUFIJO
+, IDMODULO, GENERAL, FECHAMODIFICACION
+, USUMODIFICACION, FECHACREACION, USUCREACION) 
+SELECT I.IDINSTITUCION, 'REINTEGROSXUNTA', 'ENVIO DE REINTEGROS A LA XUNTA'
+, 'Contador para el envío de reintegros a la Xunta', '1', 0, 0, '2017', null, 5
+, to_date('01-01-2018', 'dd-mm-yyyy'), '0', '2018', null
+, 'CAJG_REMESARESOLUCION', 'NUMERO', 'PREFIJO', 'SUFIJO'
+, 10, '0', SYSDATE, 0, SYSDATE, -1 
+FROM CEN_INSTITUCION I WHERE I.IDINSTITUCION IN (2025, 2044, 2064);
+
+--Insertar una nueva línea en CAJG_TIPOREMESA 
+insert into CAJG_TIPOREMESA (IDINSTITUCION, IDTIPOREMESA, NOMBRE, IDCONTADOR, FECHAMODIFICACION, USUMODIFICACION, JAVACLASS) 
+SELECT I.IDINSTITUCION, 4, 'Envío de reintegros a la Xunta', 'REINTEGROSXUNTA', sysdate, 0, null--'com.siga.gratuita.pcajg.resoluciones.XuntaSolicitudEnvioReintegros'
+FROM CEN_INSTITUCION I WHERE I.IDINSTITUCION IN (2025, 2044, 2064);
+
+
+--Creamos el proceso que utilizara SIGA
+insert into GEN_PROCESOS (IDPROCESO, IDMODULO, TRAZA, TARGET, FECHAMODIFICACION, USUMODIFICACION, DESCRIPCION, TRANSACCION, IDPARENT, NIVEL) 
+values ('12U', 'JGR', 1, 'Y', sysdate, 0, 'Envío reintegros Xunta', 'JGR_EnvioReintegrosXunta', '004', 10);
+
+--Damos permiso al administrador general 
+
+insert into adm_tiposacceso(idproceso, idperfil, fechamodificacion, usumodificacion, derechoacceso, idinstitucion) 
+SELECT '12U','ADG',sysdate,0,3,I.IDINSTITUCION
+FROM CEN_INSTITUCION I WHERE I.IDINSTITUCION IN (2025, 2044, 2064);
+
+--Configuramos la opción de menú SJCS > e - Comunicaciones > Envío reintegros Xunta
+
+ 
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.envioReintegrosXunta', 'Envío reintegros Xunta', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.envioReintegrosXunta', 'Envío reintegros Xunta#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.envioReintegrosXunta', 'Envío reintegros Xunta#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.envioReintegrosXunta', 'Envío reintegros Xunta#GL', 0, '4', sysdate, 0, '19');
+
+
+insert into GEN_MENU (IDMENU, ORDEN, TAGWIDTH, IDPARENT, FECHAMODIFICACION, USUMODIFICACION, URI_IMAGEN, IDRECURSO, GEN_MENU_IDMENU, IDPROCESO, IDLENGUAJE)
+values ('12U', 22220, 160, '605', sysdate, 0, null, 'menu.sjcs.ecomunicaciones.envioReintegrosXunta', null, '12U', '1');
+
+COMMIT;
