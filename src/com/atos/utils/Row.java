@@ -322,7 +322,12 @@ public class Row implements Serializable {
 	public void load(ResultSet rs) throws ClsExceptions 
 	{
 		this.row = new Hashtable();
-		ArrayList columns = this.getColumnNames(rs);
+		ArrayList columns;
+		try {
+			columns = this.getColumnNames(rs);
+		} catch (SQLException e) {
+			columns = null;
+		}
 		int puntero = 0;
 		if (columns!=null){
 		for(;puntero < columns.size(); puntero++) 
@@ -354,21 +359,17 @@ public class Row implements Serializable {
 	/**
 	 * Devuelve un ArrayList con los nombres de las columnas del Resultset.
 	 * @param rs Resultset para obtener los nombre de sus columnas.
+	 * @throws SQLException 
 	 */
-	public ArrayList getColumnNames(ResultSet rs) 
+	public ArrayList getColumnNames(ResultSet rs) throws SQLException 
 	{
 		int counter = 1;
 		ArrayList list = new ArrayList();
-		try		{
-			ResultSetMetaData meta = rs.getMetaData();
-			for (;counter <= meta.getColumnCount(); counter++)	{
-				list.add(counter -1, meta.getColumnName(counter));
-			}
-			return list;
-		} catch (SQLException ex)	{
-			return null;
-			
+		ResultSetMetaData meta = rs.getMetaData();
+		for (;counter <= meta.getColumnCount(); counter++)	{
+			list.add(counter -1, meta.getColumnName(counter));
 		}
+		return list;
 	}
 	
 	/**
