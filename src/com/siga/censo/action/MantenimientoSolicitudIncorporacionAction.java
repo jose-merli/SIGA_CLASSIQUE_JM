@@ -121,6 +121,9 @@ public class MantenimientoSolicitudIncorporacionAction extends MasterAction
 				}else if (accion.equalsIgnoreCase("getAjaxExisteColegiado")){
 					getAjaxExisteColegiado(mapping, miForm, request, response);
 					return null;
+				}else if (accion.equalsIgnoreCase("getAjaxExisteNColegiado")){
+					getAjaxExisteNColegiado(mapping, miForm, request, response);
+					return null;
 				} else {
 					return super.executeInternal(mapping,
 							      formulario,
@@ -1409,6 +1412,42 @@ public class MantenimientoSolicitudIncorporacionAction extends MasterAction
 		JSONObject json = new JSONObject();	
 		String mensaje ="";
 		if (colegiado != null)
+			mensaje = UtilidadesString.getMensajeIdioma (user, "error.message.NumColegiadoRepetido");
+		json.put("mensaje", mensaje);
+		// json.
+		response.setContentType("text/x-json;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+	    response.setHeader("X-JSON", json.toString());
+		response.getWriter().write(json.toString()); 
+	}
+	
+	
+	protected void getAjaxExisteNColegiado (ActionMapping mapping, 		
+			MasterForm formulario, 
+			HttpServletRequest request, 
+			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception {
+		
+		// obtener institucion
+		UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+		String idInstitucion=user.getLocation();
+		CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
+		
+		String nColegiado = (String)request.getParameter("nColegiado");
+		boolean comunitario = ((String)request.getParameter("comunitario")).equalsIgnoreCase("true");
+		
+		if (nColegiado==null||nColegiado.trim().equalsIgnoreCase(""))
+			throw new SIGAException("Falta el número del colegiado");	
+				
+		String institucion = (String)request.getParameter("idInstitucion");
+		if (institucion!=null&&!institucion.trim().equalsIgnoreCase(""))
+			idInstitucion=institucion;
+
+		boolean existe = colegiadoAdm.existe(nColegiado, idInstitucion, comunitario);
+		
+		JSONObject json = new JSONObject();	
+		String mensaje ="";
+		if (existe)
 			mensaje = UtilidadesString.getMensajeIdioma (user, "error.message.NumColegiadoRepetido");
 		json.put("mensaje", mensaje);
 		// json.
