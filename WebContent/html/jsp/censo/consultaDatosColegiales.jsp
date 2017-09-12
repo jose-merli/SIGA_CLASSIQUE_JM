@@ -134,7 +134,7 @@
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
 	<!-- Incluido jquery en siga.js -->
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>			
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>			
 
 	<!-- INICIO: VALIDACIONES DE CAMPOS MEDIANTE STRUTS -->
 	<!-- Validaciones en Cliente -->
@@ -359,22 +359,22 @@
 									if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")) { 
 										if (datosCol.getComunitario().equalsIgnoreCase(ClsConstants.DB_TRUE)) { 
 %>
-											<input type="checkbox" id="comunitario" name="comunitario" value="1" checked disabled>
+											<input type="checkbox" name="comunitario" value="1" checked disabled>
 <% 
 										} else { 
 %>
-											<input type="checkbox" id="comunitario" name="comunitario" value="1" disabled>
+											<input type="checkbox" name="comunitario" value="1" disabled>
 <% 
 										}
 										
 									} else {
 										if (datosCol.getComunitario().equalsIgnoreCase(ClsConstants.DB_TRUE)) { 
 %>										
-			  								<input type="checkbox" id="comunitario" name="comunitario" value="1" checked>
+			  								<input type="checkbox" name="comunitario" value="1" checked>
 <% 
 										} else { 
 %>
-			  								<input type="checkbox" id="comunitario" name="comunitario" value="1" disabled>
+			  								<input type="checkbox" name="comunitario" value="1" disabled>
 <% 
 										}
 									} 
@@ -676,7 +676,7 @@
 				if (numeroCol.prop('readonly')) {
 					numeroCol.prop('readonly',false);
 					numeroCol.removeClass().addClass('box');
-					botNumeroCol.css('visibility','hidden');
+					botNumeroCol.hide();
 				}
 			} 
 		}
@@ -685,9 +685,9 @@
 			if (jQuery("#numColBox").length!=0 && jQuery("#numColBox").val()!=""){
 				jQuery.ajax({ //Comunicacion jQuery hacia JSP  
 	   				type: "POST",
-					url: "/SIGA/CEN_MantenimientoSolicitudesIncorporacion.do?modo=getAjaxExisteNColegiado",
+					url: "/SIGA/CEN_MantenimientoSolicitudesIncorporacion.do?modo=getAjaxExisteColegiado",
 					dataType: "json",
-					data: "nColegiado="+jQuery("#numColBox").val()+"&comunitario="+jQuery("#comunitario").prop('checked'),
+					data: "nColegiado="+jQuery("#numColBox").val(),
 					success: function(json){
 						var mensaje = json.mensaje;
 						if (mensaje != null && mensaje != ""){
