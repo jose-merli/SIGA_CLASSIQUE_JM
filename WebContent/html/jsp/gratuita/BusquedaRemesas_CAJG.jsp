@@ -14,6 +14,7 @@
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
 <%@ taglib uri="struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="struts-html.tld" prefix="html"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import="java.util.*"%>
@@ -94,22 +95,36 @@
 			}
 		</script>
 		
-		<!-- INICIO: TITULO Y LOCALIZACION -->
-		<siga:Titulo titulo="gratuita.BusquedaRemesas_CAJG.literal.Remesa" localizacion="gratuita.BusquedaRemesas.localizacion"/>
-		<!-- FIN: TITULO Y LOCALIZACION -->
+		
 	</head>
 
 <body  onload="inicio(); ajusteAlto('resultado');">
 
+
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 	
+	<!-- INICIO: TITULO Y LOCALIZACION -->
+	
+	
+	
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
-	<html:form action="/JGR_E-Comunicaciones_Gestion.do?noReset=true" method="POST" target="resultado">
+	<html:form action="${path}?noReset=true" method="POST" target="resultado">
 		<html:hidden property = "modo" value = "inicio"/>
 		<html:hidden property = "idInstitucion" value = "<%=usr.getLocation()%>"/>
 		<html:hidden property = "actionModal" value = ""/>
 		<html:hidden property = "idRemesa" value = ""/>
-
+		<html:hidden property = "idTipoRemesa" />
+<c:choose>
+	<c:when test="${DefinicionRemesas_CAJG_Form.idTipoRemesa==1 }">
+	<siga:Titulo titulo="menu.sjcs.ecomunicaciones.InfEconomico" localizacion="gratuita.BusquedaRemesas.localizacion"/>
+	</c:when>
+	<c:otherwise>
+		<siga:Titulo titulo="gratuita.BusquedaRemesas_CAJG.literal.Remesa" localizacion="gratuita.BusquedaRemesas.localizacion"/>
+	</c:otherwise>
+	</c:choose>
+	
+		
+		<!-- FIN: TITULO Y LOCALIZACION -->
 <siga:ConjCampos leyenda="gratuita.BusquedaRemesas_CAJG.literal.datos">
 
 		

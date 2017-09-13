@@ -90,7 +90,7 @@
 </head>
 
 <body>
-
+<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
 	<table class="tablaTitulo" align="center" cellspacing="0">
 		<tr>
@@ -107,7 +107,7 @@
 
 	
 	
-	<html:form action="/JGR_E-Comunicaciones_Gestion.do" method="POST" target="submitArea" type="">
+	<html:form action="${path}" method="POST" target="submitArea" type="">
 	
 	<!-- Para seleccion automatica -->
 	
@@ -118,6 +118,7 @@
 	<html:hidden property = "idInstitucion" value ="<%=usr.getLocation()%>"/>
 	<html:hidden property = "usuMod" value = "<%=usr.getUserName()%>"/>
 	<html:hidden property = "modoContador" />
+	<html:hidden property = "idTipoRemesa" />
 	
 	
 	

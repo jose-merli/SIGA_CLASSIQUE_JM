@@ -780,7 +780,6 @@
 		</action>
 		
 		
-		
 		<action path="/CEN_NuevaRemesa" type="com.siga.censo.ws.action.NuevaRemesaAction" name="NuevaRemesaForm" scope="request">
 		</action>
 		
@@ -3076,6 +3075,23 @@
 			<forward name="export" path="/SIGASvlVectorToClientFileConExtension.svrl"/>
 			<forward name="erroresResultadoCAJG" path="/html/jsp/gratuita/erroresResultadoCAJG.jsp"/>
 		</action>
+		
+		<action path="/JGR_E-Comunicaciones_InfEconomico" type="com.siga.gratuita.action.DefinirRemesasCAJGAction" name="DefinicionRemesas_CAJG_Form" >
+			<forward name="inicio" path="/html/jsp/gratuita/BusquedaRemesas_CAJG.jsp"/>
+			<forward name="insertarRemesa" path="/html/jsp/gratuita/insertarRemesa.jsp"/>
+			<forward name="busquedaAutomatica" path="/html/jsp/gratuita/recargarModalInsercionEJG.jsp"/>
+			<forward name="listarRemesas" path="/html/jsp/gratuita/listadoRemesas.jsp"/>
+			<forward name="ver" path="/html/jsp/gratuita/pestanaEJG.jsp"/>
+			<forward name="editar" path="/html/jsp/gratuita/remesa_EJG.jsp"/>
+			<forward name="recogidaDatos" path="/html/jsp/gratuita/datosCartaEJG.jsp"/>
+			<forward name="exitoRemesa" path="/html/jsp/gratuita/exitoRemesa.jsp"/>
+			<forward name="listarEJG" path="/html/jsp/gratuita/listadoEJG_Remesa.jsp"/>
+			<forward name="listarEJGListos" path="/html/jsp/gratuita/listadoEJG_RemesaListos.jsp"/>
+			<forward name="aniadirBusqueda" path="/html/jsp/gratuita/busquedaEJG.jsp?ventanaCajg=4"/>
+			<forward name="export" path="/SIGASvlVectorToClientFileConExtension.svrl"/>
+			<forward name="erroresResultadoCAJG" path="/html/jsp/gratuita/erroresResultadoCAJG.jsp"/>
+		</action>
+		
 		
 		<action path="/JGR_EstadosRemesa" type="com.siga.gratuita.action.EstadosRemesaAction" name="EstadosRemesaForm" scope="request">
 			<forward name="listado" path="/html/jsp/gratuita/listadoEstadosRemesa.jsp"/>

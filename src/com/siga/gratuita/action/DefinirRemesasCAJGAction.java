@@ -37,26 +37,35 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.FormFile;
 import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.AppConstants.GEN_RECURSOS;
 import org.redabogacia.sigaservices.app.AppConstants.MODULO;
 import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+import org.redabogacia.sigaservices.app.autogen.model.CajgEjgremesa;
+import org.redabogacia.sigaservices.app.autogen.model.CajgEjgremesaExample;
 import org.redabogacia.sigaservices.app.autogen.model.CajgRemesa;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.helper.AsignaVeredaHelper;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.helper.AsignaVeredaHelper.ASIGNA_VERSION;
+import org.redabogacia.sigaservices.app.mapper.ScsEjgExtendsMapper;
+import org.redabogacia.sigaservices.app.services.caj.CajgEjgRemesaService;
 import org.redabogacia.sigaservices.app.services.caj.CajgRemesaService;
 import org.redabogacia.sigaservices.app.services.caj.PCAJGInsertaColaService;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService.RESPUESTA_ENVIO_REMESA;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
+import org.redabogacia.sigaservices.app.services.scs.EjgService;
+import org.redabogacia.sigaservices.app.services.scs.ScsEjgService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import org.redabogacia.sigaservices.app.vo.scs.CajgEjgRemesaVo;
 import org.redabogacia.sigaservices.app.vo.scs.CajgRemesaVo;
+import org.redabogacia.sigaservices.app.vo.scs.EejgXmlVo;
+import org.redabogacia.sigaservices.app.vo.scs.EjgVo;
 
 import weblogic.management.timer.Timer;
 
@@ -80,15 +89,20 @@ import com.siga.beans.CajgEJGRemesaBean;
 import com.siga.beans.CajgProcedimientoRemesaBean;
 import com.siga.beans.CajgRemesaAdm;
 import com.siga.beans.CajgRemesaBean;
+import com.siga.beans.CajgRemesaBean.TIPOREMESA;
 import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRemesaEstadosBean;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsEJGAdm;
+import com.siga.beans.ScsEJGAdm.TipoVentana;
+import com.siga.beans.eejg.ScsEejgPeticionesAdm;
+import com.siga.beans.eejg.ScsEejgPeticionesBean;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsEstadoEJGAdm;
 import com.siga.beans.ScsEstadoEJGBean;
+import com.siga.eejg.SolicitudesEEJGInformacionCompleta;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
@@ -144,7 +158,6 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			}
 
 			String accion = miForm.getModo();
-
 			// La primera vez que se carga el formulario
 			// Abrir
 			if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")) {
@@ -190,9 +203,6 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				mapDestino = descargarLog(mapping, miForm, request, response);	
 			} else if (accion.equalsIgnoreCase("generaXML")) {
 				mapDestino = generaXML(mapping, miForm, request, response);			
-			} else if (accion.equalsIgnoreCase("comunicarInfEconomico")) {
-				mapDestino = comunicarInfEconomico(mapping, miForm, request, response);		
-			
 			} else if (accion.equalsIgnoreCase("marcarRespuestaIncorrectaManual")) {
 				mapDestino = marcarRespuestaIncorrectaManual(mapping, miForm, request, response);		
 			
@@ -263,17 +273,24 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		CajgRemesaAdm cajgRemesaAdm = new CajgRemesaAdm(usr);
 		try {
 			
-			boolean isDatosEconomicos = false;
-			GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
-			//Niramos si esta configurada la url de envio de informe economico
-			if(usr.getLocation().equals("2003")){
-				String urlEnvioInformeEconomico = genParametrosService.getValorParametroWithNull((short)2003,PARAMETRO.INFORMEECONOMICO_WS_URL,MODULO.ECOM);
-				isDatosEconomicos = urlEnvioInformeEconomico!=null && !urlEnvioInformeEconomico.equalsIgnoreCase(""); 
-				request.setAttribute("ISDATOSECONOMICOS", Boolean.valueOf(isDatosEconomicos) );
-			}
+			
+			
+		
 
 			DefinicionRemesas_CAJG_Form miForm = (DefinicionRemesas_CAJG_Form) formulario;
 			
+			
+			TIPOREMESA tipoRemesa = CajgRemesaBean.TIPOREMESA.REMESA_EJGS;
+			if(mapping.getPath().equals("/JGR_E-Comunicaciones_InfEconomico")){
+				GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
+				String urlEnvioInformeEconomico = genParametrosService.getValorParametroWithNull(Short.valueOf(usr.getLocation()),PARAMETRO.INFORMEECONOMICO_WS_URL,MODULO.ECOM);
+				boolean isActivadoIntercambioEconomico = urlEnvioInformeEconomico!=null && !urlEnvioInformeEconomico.equalsIgnoreCase("");
+				if(!isActivadoIntercambioEconomico)
+					throw new BusinessException("La institucion no tiene activa la URL de envio del informe económico.");
+				tipoRemesa = CajgRemesaBean.TIPOREMESA.REMESA_ECONOMICA;
+			}
+			miForm.setIdTipoRemesa(tipoRemesa.getIdTipo());
+			 
 			miHash = miForm.getDatos();
 
 			HashMap databackup = new HashMap();
@@ -296,7 +313,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 					}
 				}
 				
-				actualizarPagina( datos,isDatosEconomicos,usr);
+				actualizarPagina( datos,usr);
 				databackup.put("paginador", paginador);
 				databackup.put("datos", datos);
 
@@ -329,7 +346,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				if (paginador != null) {
 					datos = paginador.obtenerPagina(1);
 					databackup.put("datos", datos);
-					actualizarPagina(datos,isDatosEconomicos, usr);
+					actualizarPagina(datos, usr);
 					request.getSession().setAttribute("DATAPAGINADOR", databackup);
 					request.getSession().setAttribute("HORABUSQUEDA", UtilidadesBDAdm.getFechaCompletaBD("es"));
 				}
@@ -340,7 +357,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			}
 			// En "DATOSBUSQUEDA" almacenamos el identificador del letrado
 			miHash.put("BUSQUEDAREALIZADA", "1");
-			request.setAttribute("ISDATOSECONOMICOS", Boolean.valueOf(isDatosEconomicos) );
+
 			request.getSession().setAttribute("DATOSBUSQUEDA", miHash);
 
 		} catch (Exception e) {
@@ -375,6 +392,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			Vector visibles = miForm.getDatosTablaVisibles(0);
 			Hashtable miHash = new Hashtable();
 
+			Integer idInstitucion=  this.getIDInstitucion(request);
 			if ((ocultos != null && visibles != null)) {
 				miHash.put(CajgRemesaBean.C_IDREMESA, ocultos.get(0));
 				miHash.put(CajgRemesaBean.C_IDINSTITUCION, ocultos.get(1));
@@ -383,7 +401,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			} else {
 				session.removeAttribute("DATAPAGINADOR");
 				miHash.put(CajgRemesaBean.C_IDREMESA, miForm.getIdRemesa());
-				miHash.put(CajgRemesaBean.C_IDINSTITUCION, this.getIDInstitucion(request).toString());
+				miHash.put(CajgRemesaBean.C_IDINSTITUCION, idInstitucion.toString());
 
 			}
 			CajgRemesaAdm remesaAdm = new CajgRemesaAdm(this.getUserBean(request));
@@ -394,15 +412,12 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 			// Entramos al formulario en modo 'modificación'
 			session.setAttribute("accion", "editar");
-			boolean isDatosEconomicos = false;
-			GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
-			//Niramos si esta configurada la url de envio de informe economico
-			if(this.getUserBean(request).getLocation().equals("2003")){
-				String urlEnvioInformeEconomico = genParametrosService.getValorParametroWithNull((short)2003,PARAMETRO.INFORMEECONOMICO_WS_URL,MODULO.ECOM);
-				isDatosEconomicos = urlEnvioInformeEconomico!=null && !urlEnvioInformeEconomico.equalsIgnoreCase(""); 
-				
-			}
-			request.setAttribute("ISDATOSECONOMICOS", Boolean.valueOf(isDatosEconomicos) );
+//			GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
+//			String urlEnvioInformeEconomico = genParametrosService.getValorParametroWithNull(idInstitucion.shortValue(),PARAMETRO.INFORMEECONOMICO_WS_URL,MODULO.ECOM);
+//			boolean isActivadoIntercambioEconomico = urlEnvioInformeEconomico!=null && !urlEnvioInformeEconomico.equalsIgnoreCase("");
+//			
+//			
+//			request.setAttribute("ISDATOSECONOMICOS", Boolean.valueOf(isActivadoIntercambioEconomico) );
 			request.setAttribute("REMESA", h);
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
@@ -495,7 +510,14 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		try {
 			Integer idinstitucion = new Integer(usr.getLocation());
 			GestorContadores gcRemesa = new GestorContadores(this.getUserBean(request));
-			Hashtable contadorTablaHashRemesa = gcRemesa.getContador(idinstitucion, "REMESA");
+			
+			
+			TIPOREMESA tipoRemesa = CajgRemesaBean.TIPOREMESA.REMESA_EJGS;
+			if(miForm.getIdTipoRemesa()!=null && !miForm.getIdTipoRemesa().equalsIgnoreCase(CajgRemesaBean.TIPOREMESA.REMESA_EJGS.getIdTipo())){
+				tipoRemesa = CajgRemesaBean.TIPOREMESA.getEnum(miForm.getIdTipoRemesa());
+			}
+			
+			Hashtable contadorTablaHashRemesa = gcRemesa.getContador(idinstitucion, tipoRemesa.getContador());
 			
 			String siguiente = gcRemesa.getNuevoContador(contadorTablaHashRemesa);
   		
@@ -562,13 +584,23 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			tx.begin();
 			GestorContadores gcRemesa = new GestorContadores(this.getUserBean(request));
 			
-			Hashtable contadorTablaHashRemesa = gcRemesa.getContador(this.getIDInstitucion(request), "REMESA");
+			
+			
+			TIPOREMESA tipoRemesa = CajgRemesaBean.TIPOREMESA.REMESA_EJGS;;
+			if(miForm.getIdTipoRemesa()!=null && !miForm.getIdTipoRemesa().equalsIgnoreCase(CajgRemesaBean.TIPOREMESA.REMESA_EJGS.getIdTipo())){
+				tipoRemesa = CajgRemesaBean.TIPOREMESA.getEnum(miForm.getIdTipoRemesa());
+			}
+			miHash.put(CajgRemesaBean.C_IDTIPOREMESA, tipoRemesa.getIdTipo()) ;
+			
+			Hashtable contadorTablaHashRemesa = gcRemesa.getContador(this.getIDInstitucion(request),tipoRemesa.getContador() );
 			String siguiente = gcRemesa.getNuevoContador(contadorTablaHashRemesa);			
 						
 			miForm.setNumero(siguiente);
 			miHash.put(CajgRemesaBean.C_PREFIJO, contadorTablaHashRemesa.get("PREFIJO"));
 			miHash.put(CajgRemesaBean.C_SUFIJO, contadorTablaHashRemesa.get("SUFIJO"));
 			miHash.put(CajgRemesaBean.C_NUMERO, siguiente);
+			  
+			
 
 			gcRemesa.setContador(contadorTablaHashRemesa, siguiente);
 
@@ -941,7 +973,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		
 		
 		DefinicionRemesas_CAJG_Form miForm = (DefinicionRemesas_CAJG_Form) formulario;
-		
+		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		String volver = request.getParameter("volver");
 		if (volver != null && volver.equalsIgnoreCase("SI")) {
 			request.setAttribute("VOLVER", "1");			
@@ -955,6 +987,19 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		request.getSession().removeAttribute("DATOSFORMULARIO");		
 		request.getSession().removeAttribute("DATABACKUP");
 		request.getSession().removeAttribute("accion");
+		TIPOREMESA tipoRemesa = CajgRemesaBean.TIPOREMESA.REMESA_EJGS;
+		
+		
+		if(mapping.getPath().equals("/JGR_E-Comunicaciones_InfEconomico")){
+			GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
+			String urlEnvioInformeEconomico = genParametrosService.getValorParametroWithNull(Short.valueOf(usr.getLocation()),PARAMETRO.INFORMEECONOMICO_WS_URL,MODULO.ECOM);
+			boolean isActivadoIntercambioEconomico = urlEnvioInformeEconomico!=null && !urlEnvioInformeEconomico.equalsIgnoreCase("");
+			if(!isActivadoIntercambioEconomico)
+				throw new BusinessException("La institucion no tiene activa la URL de envio del informe económico.");
+			tipoRemesa = CajgRemesaBean.TIPOREMESA.REMESA_ECONOMICA;
+		}
+		miForm.setIdTipoRemesa(tipoRemesa.getIdTipo());
+		
 		return "inicio";
 	}
 
@@ -1081,11 +1126,13 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						" AND E.ANIO = EJG.ANIO" +
 						" AND E.NUMERO = EJG.NUMERO" +
 						" AND E.IDTIPOEJG = EJG.IDTIPOEJG";
-				
+				StringBuilder observaciones = new StringBuilder(numRemesa);
+				if(mapping.getPath()!=null && mapping.getPath().equals("/JGR_E-Comunicaciones_InfEconomico"))
+					observaciones.append(" Información económica.");
 				String sqlInsertEstadoEJG = new String("insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
 						", fechainicio, fechamodificacion, usumodificacion, observaciones, idestadoporejg, automatico)" +
 						" SELECT EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO, '" + ESTADOS_EJG.GENERADO_EN_REMESA.getCodigo() + "'" +
-						", TRUNC(SYSDATE), SYSDATE, " + getUserBean(request).getUserName() + ", '" + numRemesa + "', (" + sqlMaxIdEstadoPorEJG + "), 1" +
+						", TRUNC(SYSDATE), SYSDATE, " + getUserBean(request).getUserName() + ", '" + observaciones.toString() + "', (" + sqlMaxIdEstadoPorEJG + "), 1" +
 						" FROM CAJG_EJGREMESA EJG" +
 						" WHERE EJG.IDINSTITUCION = " + getIDInstitucion(request) +
 						" AND EJG.IDREMESA = " + miForm.getIdRemesa() +
@@ -1179,17 +1226,6 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			String idremesa = miForm.getIdRemesa();
 			String idinstitucion = this.getIDInstitucion(request).toString();
 			request.setAttribute("idremesa", idremesa);
-			boolean isDatosEconomicos = false;
-			GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
-			//Niramos si esta configurada la url de envio de informe economico
-			if(idinstitucion.equals("2003")){
-				String urlEnvioInformeEconomico = genParametrosService.getValorParametroWithNull((short)2003,PARAMETRO.INFORMEECONOMICO_WS_URL,MODULO.ECOM);
-				isDatosEconomicos = urlEnvioInformeEconomico!=null && !urlEnvioInformeEconomico.equalsIgnoreCase(""); 
-				
-			}
-			request.setAttribute("ISDATOSECONOMICOS", Boolean.valueOf(isDatosEconomicos) );
-			
-			
 
 			//Si es seleccionar todos esta variable no vandra nula y ademas nos traera el numero de pagina 
 			//donde nos han marcado el seleccionar todos(asi evitamos meter otra variable)
@@ -1250,7 +1286,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 
 				//obtengo datos de la consulta 			
 				com.siga.Utilidades.paginadores.PaginadorBind resultado = null;
-				resultado = admBean.getPaginadorEJGRemesas(miHash, miForm,miForm.getIdInstitucion(),longitudNumEjg,isDatosEconomicos);
+				resultado = admBean.getPaginadorEJGRemesas(miHash, miForm,miForm.getIdInstitucion(),longitudNumEjg);
 //				resultado=desigAdm.getBusquedaDesigna((String)usr.getLocation(),miHash);
 				Vector datos = null;
 
@@ -1328,17 +1364,9 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			String idinstitucion = this.getIDInstitucion(request).toString();
 			request.setAttribute("idremesa", idremesa);
 
-			boolean isDatosEconomicos = false;
-			GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
-			//Niramos si esta configurada la url de envio de informe economico
-			if(this.getUserBean(request).getLocation().equals("2003")){
-				String urlEnvioInformeEconomico = genParametrosService.getValorParametroWithNull((short)2003,PARAMETRO.INFORMEECONOMICO_WS_URL,MODULO.ECOM);
-				isDatosEconomicos = urlEnvioInformeEconomico!=null && !urlEnvioInformeEconomico.equalsIgnoreCase(""); 
-				
-			}
-			request.setAttribute("ISDATOSECONOMICOS", Boolean.valueOf(isDatosEconomicos) );
+			request.setAttribute("ISDATOSECONOMICOS", Boolean.valueOf(true) );
 			
-			com.siga.Utilidades.paginadores.PaginadorBind resultado = admBean.getPaginadorEJGRemesas(miHash, miForm, miForm.getIdInstitucion(), longitudNumEjg,isDatosEconomicos);
+			com.siga.Utilidades.paginadores.PaginadorBind resultado = admBean.getPaginadorEJGRemesas(miHash, miForm, miForm.getIdInstitucion(), longitudNumEjg);
 			HashMap databackup = new HashMap();
 			databackup.put("paginador", resultado);
 			if (resultado != null && resultado.getNumeroTotalRegistros() > 0) {
@@ -1441,7 +1469,11 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				// obtengo datos de la consulta
 				
 				Vector datos = null;
-				Hashtable htConsultaBind  = admBean.getBindBusquedaMantenimientoEJG(miHash,  miForm, ScsEJGAdm.TipoVentana.BUSQUEDA_ANIADIR_REMESA, idInstitucion,longitudNumEjg);
+				TipoVentana tipoVentana = TipoVentana.BUSQUEDA_ANIADIR_REMESA;
+				if(miForm.getIdTipoRemesa()!=null && miForm.getIdTipoRemesa().equals(CajgRemesaBean.TIPOREMESA.REMESA_ECONOMICA.getIdTipo()))
+					tipoVentana = TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA;
+				
+				Hashtable htConsultaBind  = admBean.getBindBusquedaMantenimientoEJG(miHash,  miForm, tipoVentana, idInstitucion,longitudNumEjg);
 				v = admBean.getBusquedaMantenimientoEJG(htConsultaBind);
 
 				// Rellena un vector de Hastable con la claves primarias de la
@@ -1892,6 +1924,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		String idRemesa = formulario.getIdRemesa();
 		String mensaje = null;
 		
+		
 		boolean simular = VALUE_TRUE.equals(((DefinicionRemesas_CAJG_Form) formulario).getSimular());
 		
 		ASIGNA_VERSION versionAsignaVereda = null;
@@ -1937,7 +1970,80 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			
 			mensaje = getMensajeRespuesta(respuesta, request, simular);
 		} else if (CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == tipoCAJG) {
-			mensaje = validaRemesaTxt(mapping, formulario, request, response);
+			if(formulario.getIdTipoRemesa()!=null && !formulario.getIdTipoRemesa().equalsIgnoreCase(CajgRemesaBean.TIPOREMESA.REMESA_EJGS.getIdTipo())){
+				PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
+				RESPUESTA_ENVIO_REMESA respuesta = null;
+				CajgEjgremesaExample cajgEjgremesaExample = new CajgEjgremesaExample();
+				cajgEjgremesaExample.createCriteria().andIdinstitucionEqualTo(Short.valueOf(formulario.getIdinstitucion())).andIdremesaEqualTo(Long.valueOf(formulario.getIdRemesa()));
+				CajgEjgRemesaService ejgRemesaService = (CajgEjgRemesaService) getBusinessManager().getService(CajgEjgRemesaService.class);
+				List<CajgEjgremesa> cajgEjgremesas =  ejgRemesaService.getList(cajgEjgremesaExample);
+				
+				// Otenemos los informes economicos que se solicitaron y recibieron correctamente
+				
+				
+				Map<String, String> mapa = new HashMap<String, String>();
+				SolicitudesEEJGInformacionCompleta solicitudesEEJGInformacionCompleta = new SolicitudesEEJGInformacionCompleta();
+				ScsEjgService scsEjgService = (ScsEjgService) getBusinessManager().getService(ScsEjgService.class);
+				ScsEejgPeticionesAdm scsPeticionesAdm = new ScsEejgPeticionesAdm(this.getUserBean(request));
+				for (CajgEjgremesa cajgEjgremesa : cajgEjgremesas) {
+					mapa.put(CajgEjgremesa.C_IDINSTITUCION, idInstitucion.toString());
+					mapa.put(CajgEjgremesa.C_ANIO, cajgEjgremesa.getAnio().toString());
+					mapa.put( CajgEjgremesa.C_IDTIPOEJG, cajgEjgremesa.getIdtipoejg().toString());
+					mapa.put(CajgEjgremesa.C_NUMERO, cajgEjgremesa.getNumero().toString());
+					//Vamos a recuperar los expedientes economicos devueltos por EEJG para trasformarlos en como quiere la CAM
+					
+					List<EejgXmlVo> scsEejgXmls = scsEjgService.getInformesEconomicoEjg(mapa);
+					
+					for (EejgXmlVo eejgXmlVo : scsEejgXmls) {
+						if(eejgXmlVo.getXml()==null && eejgXmlVo.getEejgPeticiones()!=null && eejgXmlVo.getEejgPeticiones().getCsv()!=null){
+							ScsEejgPeticionesBean scsEejgPeticionesBean = new ScsEejgPeticionesBean();
+							scsEejgPeticionesBean.setIdInstitucion(eejgXmlVo.getEejgPeticiones().getIdinstitucion().intValue());
+							scsEejgPeticionesBean.setIdSolicitud(eejgXmlVo.getEejgPeticiones().getIdsolicitud());
+							scsEejgPeticionesBean.setIdPeticion(eejgXmlVo.getEejgPeticiones().getIdpeticion().longValue());
+							scsEejgPeticionesBean.setIdioma(eejgXmlVo.getEejgPeticiones().getIdioma());
+							try {
+								int idXML = solicitudesEEJGInformacionCompleta.consultaInformacionCompletaAAPP( scsEejgPeticionesBean);
+								if (idXML > -1) {	
+									scsEejgPeticionesBean.setIdXml(idXML);						
+									scsEejgPeticionesBean.setFechaMod("SYSDATE");
+									String[] claves = {ScsEejgPeticionesBean.C_IDPETICION};
+									String[] campos = {ScsEejgPeticionesBean.C_IDXML,										
+											ScsEejgPeticionesBean.C_USUMODIFICACION,
+											ScsEejgPeticionesBean.C_FECHAMODIFICACION};
+									scsPeticionesAdm.updateDirect(scsEejgPeticionesBean,claves,campos);
+								}	
+							} catch (Exception e) {
+								log.debug("El expediente "+cajgEjgremesa.getNumero().toString()+" no tiene cargado el informe economico. Debera solicitarlo de nuevo");
+								//lO PONEMOS EN ESTADO CADUCADO PARA QUWE PUEDA VOLVER A SOLICITARLO
+//								scsEejgPeticionesBean.setEstado(EEJG_ESTADO.CADUCADO);						
+								scsEejgPeticionesBean.setEstado(40);
+								scsEejgPeticionesBean.setFechaMod("SYSDATE");
+								String[] claves = {ScsEejgPeticionesBean.C_IDPETICION};
+								String[] campos = {ScsEejgPeticionesBean.C_ESTADO,										
+										ScsEejgPeticionesBean.C_USUMODIFICACION,
+										ScsEejgPeticionesBean.C_FECHAMODIFICACION};
+								scsPeticionesAdm.updateDirect(scsEejgPeticionesBean,claves,campos);
+							}
+							
+						}
+						
+					}
+				}
+				if (simular) {
+					respuesta = pcajgInsertaColaService.validaExpedientesEconomicosAlcala(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
+				} else {
+					respuesta = pcajgInsertaColaService.enviaExpedientesEconomicosAlcala(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
+				}
+				
+				mensaje = getMensajeRespuesta(respuesta, request, simular);		
+			}else{
+				mensaje = validaRemesaTxt(mapping, formulario, request, response);	
+			}
+			
+			
+			
 //			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
 //			RESPUESTA_ENVIO_REMESA respuesta = null;
 //			if (simular) {
@@ -2524,49 +2630,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		return exitoRefresco("messages.updated.success", request);
 	}
 	
-	protected String comunicarInfEconomico(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 
-		UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-		DefinicionRemesas_CAJG_Form miForm = (DefinicionRemesas_CAJG_Form) formulario;
-		try {
-			CajgRemesaVo cajgRemesaVo = new CajgRemesaVo();
-			cajgRemesaVo.setIdInstitucion(Short.valueOf(usr.getLocation()));
-			cajgRemesaVo.setIdRemesa(Long.valueOf(miForm.getIdRemesa()));
-			cajgRemesaVo.setUsuModificacion(Integer.valueOf(usr.getUserName()));
-			String datosSolicInformeEconomico = (String) miForm.getDatosSolicInformeEconomico();
-			String [] datosSolicInformeEconomicoStrings = datosSolicInformeEconomico.split("%%%");
-			CajgEjgRemesaVo ejgVo = null;
-			List<CajgEjgRemesaVo> ejgVos = new ArrayList<CajgEjgRemesaVo>();
-			for (int i = 0; i < datosSolicInformeEconomicoStrings.length; i++) {
-				ejgVo = new CajgEjgRemesaVo();
-				String datosSolicInformeEconomicoString = datosSolicInformeEconomicoStrings[i];
-				String[] clavesEjgSolicInformeEconomicoStrings =  datosSolicInformeEconomicoString.split("##");
-				String idInstitucion = clavesEjgSolicInformeEconomicoStrings[0];
-				String idTipoEjg = clavesEjgSolicInformeEconomicoStrings[1];
-				String anio = clavesEjgSolicInformeEconomicoStrings[2];
-				String numero = clavesEjgSolicInformeEconomicoStrings[3];
-				String idEjgRemesa = clavesEjgSolicInformeEconomicoStrings[4];
-				
-				ejgVo.setIdejgremesa(Long.valueOf(idEjgRemesa));
-				ejgVo.setIdinstitucion(Short.valueOf(idInstitucion));
-				ejgVo.setAnio(Short.valueOf(anio));
-				ejgVo.setIdtipoejg(Short.valueOf(idTipoEjg));
-				ejgVo.setNumero(Long.valueOf(numero));
-				ejgVos.add(ejgVo);
-			}
-			
-			cajgRemesaVo.setEjgRemesaVo(ejgVos);
-			BusinessManager bm = getBusinessManager();
-			CajgRemesaService cajgRemesaService = (CajgRemesaService)bm.getService(CajgRemesaService.class);
-			cajgRemesaService.comunicaInformeEconomicoEjg(cajgRemesaVo,OPERACION.ENVIO_INFORME_ECONOMICO);
-		} catch (Exception e) {
-			throw new SIGAException("No se puede borrar la remesa"+e.toString(),e);
-		}
-
-
-		return exitoRefresco("messages.updated.success", request);
-	}
-	private Vector actualizarPagina(Vector datos,boolean isDatosEconomicos,UsrBean usrBean) throws ClsExceptions, SIGAException{
+	private Vector actualizarPagina(Vector datos,UsrBean usrBean) throws ClsExceptions, SIGAException{
 		CajgRemesaAdm scsEJGAdm = new CajgRemesaAdm(usrBean);
 		
 		
@@ -2575,7 +2640,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				
 				Row fila = (Row)datos.get(i);
 				Hashtable registro = (Hashtable) fila.getRow();
-				Hashtable datosRemesa  = scsEJGAdm.getDatosRemesa((String) registro.get("IDREMESA"),(String) registro.get("IDINSTITUCION"),isDatosEconomicos);
+				Hashtable datosRemesa  = scsEJGAdm.getDatosRemesa((String) registro.get("IDREMESA"),(String) registro.get("IDINSTITUCION"));
 				registro.putAll(datosRemesa);
 			}
 		} catch (Exception e) {

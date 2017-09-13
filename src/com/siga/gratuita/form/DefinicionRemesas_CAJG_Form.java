@@ -21,7 +21,10 @@ import com.siga.beans.ScsPersonaJGBean;
 
  public class DefinicionRemesas_CAJG_Form extends DefinirEJGForm{
 	 
-	 String datosSolicInformeEconomico;
+	 
+	 String idTipoRemesa; 
+	 
+	String datosSolicInformeEconomico;
 	 String anioEJG;
 	 String codigoEJG;
 	   public String getAnioEJG() {
@@ -992,5 +995,11 @@ import com.siga.beans.ScsPersonaJGBean;
 			public void setDatosSolicInformeEconomico(String datosSolicInformeEconomico) {
 				this.datosSolicInformeEconomico = datosSolicInformeEconomico;
 			}
-		
+			public String getIdTipoRemesa() {
+				return idTipoRemesa;
+			}
+
+			public void setIdTipoRemesa(String idTipoRemesa) {
+				this.idTipoRemesa = idTipoRemesa;
+			}
 }

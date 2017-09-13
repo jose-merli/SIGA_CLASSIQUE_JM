@@ -54,13 +54,22 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	FilaExtElement[] elementosFila;
 	
 	private boolean personaUnidadFamiliar;
+	private boolean  activadoIntercambioEconomico=false;
+	
 	
 	/* Nombre de Tabla*/
+	
 	
 	static public String T_NOMBRETABLA = "SCS_EEJG_PETICIONES";
 	
 	
 	
+	public boolean isActivadoIntercambioEconomico() {
+		return activadoIntercambioEconomico;
+	}
+	public void setActivadoIntercambioEconomico(boolean activadoIntercambioEconomico) {
+		this.activadoIntercambioEconomico = activadoIntercambioEconomico;
+	}
 	/*Nombre de campos de la tabla*/
 	static public final String 	C_IDPETICION = "IDPETICION";
 	static public final String 	C_IDUSUARIOPETICION = "IDUSUARIOPETICION";

@@ -114,7 +114,13 @@ values ('12U', 22220, 160, '605', sysdate, 0, null, 'menu.sjcs.ecomunicaciones.e
 
 -- Ejecutados en Integracion por AAG el 17/08/2017 a las 14:15
 
+
+
+
+=======
 update gen_parametros p set p.valor = REPLACE(P.VALOR, 'angel.corral@redabogacia.org', 'extdes1@redabogacia.org') WHERE P.VALOR LIKE '%angel.corral@redabogacia.org%';
+
+
 
 UPDATE SCS_PROCURADOR P SET P.IDCOLPROCURADOR = 'P50297' WHERE P.IDINSTITUCION = 2083 AND P.IDCOLPROCURADOR IS NULL;
 UPDATE SCS_PROCURADOR P SET P.IDCOLPROCURADOR = 'P22125' WHERE P.IDINSTITUCION = 2034 AND P.IDCOLPROCURADOR IS NULL;
@@ -124,4 +130,40 @@ UPDATE SCS_PROCURADOR P SET P.IDCOLPROCURADOR = 'P44216' WHERE P.IDINSTITUCION =
 ACTUALIZAR VISTA DE DESARROLLO (LOCAL) LLAMADA V_PCAJG_EJG
 
 -- Ejecutados en Integracion por AAG el 11/09/2017 a las 14:15
+
+--Informe iconómico de alcala
+
+-- Create/Recreate indexes 
+create index SI_403_SCS_EJG_ANIO on SCS_EJG (idinstitucion, anio);
+
+insert into GEN_PROCESOS (IDPROCESO, IDMODULO, TRAZA, TARGET, FECHAMODIFICACION, USUMODIFICACION, DESCRIPCION, TRANSACCION, IDPARENT, NIVEL) 
+values ('12Y', 'JGR', 1, 'Y', sysdate, 0, 'EJG informacion económica', 'JGR_E-Comunicaciones_InfEconomico', '007', 10);
+
+--Damos permiso al administrador general de Alcalá a ese proceso
+
+insert into adm_tiposacceso
+   (idproceso, idperfil, fechamodificacion, usumodificacion, derechoacceso, idinstitucion) 
+ values
+   ('12Y','ADG',sysdate,0,3,2003);
+--Configuramos la opción de menú SJCS > e - Comunicaciones > EJGs: Remesas de información económica
+
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.InfEconomico', 'EJGs: Remesas informacion económica', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.InfEconomico', 'EJGs: Remesas informacion económica', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.InfEconomico', 'EJGs: Remesas informacion económica#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.InfEconomico', 'EJGs: Remesas informacion económica#EU', 0, '3', sysdate, 0, '19');
+
+insert into GEN_MENU (IDMENU, ORDEN, TAGWIDTH, IDPARENT, FECHAMODIFICACION, USUMODIFICACION, URI_IMAGEN, IDRECURSO, GEN_MENU_IDMENU, IDPROCESO, IDLENGUAJE)
+values ('12Y', 22233, 160, '606', sysdate, 0, null, 'menu.sjcs.ecomunicaciones.InfEconomico', null, '12Y', '1');
+
+-- Add/modify columns 
+alter table CAJG_REMESA add IDTIPOREMESA number(1) default 0;
+
+
+insert into ECOM_OPERACION (IDOPERACION, IDSERVICIO, NOMBRE, MAXREINTENTOS, ACTIVO, FECHAMODIFICACION, USUMODIFICACION)
+values (59, 5, 'Validación para el envío de informe económico a la CAM', 1, '1', sysdate, 0);
+
+insert into ECOM_OPERACION (IDOPERACION, IDSERVICIO, NOMBRE, MAXREINTENTOS, ACTIVO, FECHAMODIFICACION, USUMODIFICACION)
+values (68, 1, 'Solicitar información completa expediente económico', 1, '1', sysdate, 0);
+
+
 

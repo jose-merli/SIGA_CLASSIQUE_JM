@@ -98,7 +98,7 @@
 		String action=app+"/JGR_E-Comunicaciones_Gestion.do?noReset=true";
     /**************/
 
-    Boolean isDatosEconomicos = (Boolean)request.getAttribute("ISDATOSECONOMICOS");
+    
     Integer idInstitucion = new Integer(usr.getLocation());
 	int cajgConfig = CajgConfiguracion.getTipoCAJG(idInstitucion);
 	
@@ -207,19 +207,17 @@
 </head>
 
 <body onload="inicio()">
-
-	<html:form action="/JGR_E-Comunicaciones_Gestion.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
+<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
+	<html:form action="${path}?noReset=true" method="post" target="mainWorkArea" style="display:none">
 		<input type="hidden" name="modo" id="modo" value="">
 		<input type="hidden" name="actionModal"  id="actionModal" value="">
 		<input type="hidden" name="idRemesa" id="idRemesa" value="">
 		<input type="hidden" name="idEstado" id="idEstado" value="">
+		<html:hidden property = "idTipoRemesa" />
 	</html:form>	
 <c:set var="columnNames" value="gratuita.BusquedaRemesas_CAJG.literal.nRegistro, gratuita.BusquedaRemesas_CAJG.literal.Descripcion, gratuita.BusquedaRemesas_CAJG.literal.fGeneracion, gratuita.BusquedaRemesas_CAJG.literal.fEnvio, gratuita.BusquedaRemesas_CAJG.literal.fRecepcion,gratuita.BusquedaRemesas_CAJG.literal.estado,gratuita.BusquedaRemesas_CAJG.literal.incidencias,"/>
 <c:set var="columnSizes" value="7,13,4,4,4,3,3,6" />		
-<% if (isDatosEconomicos.booleanValue()) {%>
-		<c:set var="columnNames" value="gratuita.BusquedaRemesas_CAJG.literal.nRegistro, gratuita.BusquedaRemesas_CAJG.literal.Descripcion, gratuita.BusquedaRemesas_CAJG.literal.fGeneracion, gratuita.BusquedaRemesas_CAJG.literal.fEnvio, gratuita.BusquedaRemesas_CAJG.literal.fRecepcion,gratuita.BusquedaRemesas_CAJG.literal.estado,gratuita.BusquedaRemesas_CAJG.literal.incidencias,I.Econ,gratuita.BusquedaRemesas_CAJG.literal.incidencias," />
-		<c:set var="columnSizes" value="7,13,4,4,4,3,3,4,4,4" />
-<%} %>
+
 
 
 		<siga:Table 		   
@@ -292,27 +290,7 @@
 					<td style="text-align: center;"><%=UtilidadesString.mostrarDatoJSP(registro.get("FECHARECEPCION"))%></td>
 					<td><%=UtilidadesString.mostrarDatoJSP(registro.get("ESTADO"))%></td>
 					<td style="text-align: right;"><%=UtilidadesString.mostrarDatoJSP(incidencias)%></td>
-					<% if (isDatosEconomicos.booleanValue()) {%>
 					
-						<%if(registro.get("CUENTA_INFORMESECONOMICOS")!=null && !((String)registro.get("CUENTA_INFORMESECONOMICOS")).equals("0")){%>
-							<td>	
-							Enviado
-							</td>
-							<td style="text-align: right;"> 
-								<%if(registro.get("INCIDENCIAS_INFORMESECONOMICOS")!=null &&!registro.get("INCIDENCIAS_INFORMESECONOMICOS").toString().equals("0")){
-									String descripcionInfEcon =  "";
-									descripcionInfEcon +=registro.get("INCIDENCIAS_INFORMESECONOMICOS")!=null?registro.get("INCIDENCIAS_INFORMESECONOMICOS").toString():"0";
-									descripcionInfEcon += " / "+registro.get("CUENTA_INFORMESECONOMICOS").toString();%>
-									<%=descripcionInfEcon%>
-								<%}else{ %>
-								 	&nbsp;
-								<%}%>
-							</td>
-						<%}else{ %>
-							 <td> &nbsp; </td>
-							 <td> &nbsp; </td>
-						<%} %>
-					<% }%>
 				</siga:FilaConIconos>		
 			<% 	recordNumber++;		   
 			} %>

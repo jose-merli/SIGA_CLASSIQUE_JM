@@ -28,7 +28,6 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.AxisObjectSerializerDeserializer;
 import com.siga.beans.AdmUsuariosAdm;
 import com.siga.beans.AdmUsuariosBean;
 import com.siga.beans.GenParametrosAdm;
@@ -42,7 +41,6 @@ import com.siga.pfd.ws.ResultSolicitudDocumentoTO;
 import com.siga.pfd.ws.ServiciosPFDServiceServiceSoapBindingStub;
 import com.siga.pfd.ws.ServiciosPFDService_ServiceLocator;
 import com.siga.pfd.ws.SolicitudDocumentoTO;
-import com.sis.firma.core.B64.Base64CODEC;
 
 public class SolicitudesEEJG {
 	private String urlWS;

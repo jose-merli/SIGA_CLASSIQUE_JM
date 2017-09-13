@@ -450,6 +450,11 @@
 			formulario="BusquedaCAJG_EJGForm";
 		%>
 		<siga:Titulo titulo="menu.sjcs.ecomunicaciones.EJGPteEnvioActualizacion" localizacion="gratuita.busquedaEJG_CAJG.localizacion"/>
+	<%	} else if(ventanaCajg.equalsIgnoreCase("4")) {
+			accion="/JGR_E-Comunicaciones_InfEconomico.do?noReset=true";
+			formulario="DefinicionRemesas_CAJG_Form";
+		%>
+		<siga:Titulo titulo="menu.sjcs.ecomunicaciones.InfEconomico" localizacion="gratuita.busquedaEJG_CAJG.localizacion"/>
 	<% }%>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 </head>
@@ -957,6 +962,8 @@ if(usr.isComision()){
 		<siga:ConjBotonesBusqueda botones="L,B,ar,CON"  titulo="gratuita.BusquedaRemesas_CAJG.literal.Remesa.ExpedientesListos" />
 	<%}else if(ventanaCajg.equalsIgnoreCase("3")){%> <!-- Antiguo busquedaEJG_Cajg -->
 		<siga:ConjBotonesBusqueda botones="L,le,B,CON"  titulo="gratuita.busquedaEJG.literal.expedientesEJG" />
+	<%}else if(ventanaCajg.equalsIgnoreCase("4")){%> <!-- Antiguo busquedaEJG_Cajg -->
+		<siga:ConjBotonesBusqueda botones="L,B,ar,CON"  titulo="gratuita.BusquedaRemesas_CAJG.literal.Remesa.ExpedientesListos" />
 	<%}%>
 <!-- FIN: BOTONES BUSQUEDA -->	
 	
@@ -983,7 +990,7 @@ if(usr.isComision()){
 	function buscarPaginador(){		
 		
 			document.forms[0].modo.value = "buscarPor";				
-			<%if(ventanaCajg.equalsIgnoreCase("2")){%>
+			<%if(ventanaCajg.equalsIgnoreCase("2")||ventanaCajg.equalsIgnoreCase("4")){%>
 				document.forms[0].modo.value = "buscarListos";
 				document.forms[0].idRemesa.value=<%=idremesa%>;
 			<%}%>
@@ -1089,7 +1096,7 @@ if(usr.isComision()){
 			sub();
 			document.forms[0].modo.value = "buscarInit";
 					
-			<%if(ventanaCajg.equalsIgnoreCase("2")){%>
+			<%if(ventanaCajg.equalsIgnoreCase("2")||ventanaCajg.equalsIgnoreCase("4")){%>
 					document.forms[0].modo.value = "buscarListosInicio";
 					document.forms[0].idRemesa.value=<%=idremesa%>;			
 			<%}%>
@@ -1208,7 +1215,7 @@ if(usr.isComision()){
 		}
 		
 		function aniadirARemesa(){
-			<%if(ventanaCajg.equalsIgnoreCase("2")){%>
+			<%if(ventanaCajg.equalsIgnoreCase("2")||ventanaCajg.equalsIgnoreCase("4")){%>
 				if( window.frames.resultado.document.<%=formulario%>) {
 					var datos1 =  window.frames.resultado.document.<%=formulario%>.selDefinitivo;
 					if(datos1.value) {
@@ -1230,7 +1237,17 @@ if(usr.isComision()){
 				document.forms[0].idRemesa.value=<%=idremesa%>;
 				document.forms[0].target="mainWorkArea"; 
 				document.forms[0].submit(); 
+			<%}else if(ventanaCajg.equalsIgnoreCase("4")){%>
+				document.forms[0].action="./JGR_E-Comunicaciones_InfEconomico.do";	
+				document.forms[0].modo.value="editar";
+				document.forms[0].volver.value="SI";
+				document.forms[0].idRemesa.value=<%=idremesa%>;
+				document.forms[0].target="mainWorkArea"; 
+				document.forms[0].submit();
+			
+			
 			<%}%>
+			
 		}
 		
 		//<!-- Accion de la busqueda CAJG -->
@@ -1384,7 +1401,7 @@ if(usr.isComision()){
 	<iframe align="center" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" id="resultado" name="resultado" scrolling="no" frameborder="0" marginheight="0" marginwidth="0" class="frameGeneral"></iframe>
 	<!-- FIN: IFRAME LISTA RESULTADOS -->	
 
-	<%if(ventanaCajg.equalsIgnoreCase("2")){%>
+	<%if(ventanaCajg.equalsIgnoreCase("2") || ventanaCajg.equalsIgnoreCase("4")){%>
 		<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
 	<%} %>
 			

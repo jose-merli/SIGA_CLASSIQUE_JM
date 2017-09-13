@@ -37,7 +37,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	public static enum TipoVentana {
 		BUSQUEDA_EJG,
 		BUSQUEDA_PREPARACION_CAJG,
-		BUSQUEDA_ANIADIR_REMESA		
+		BUSQUEDA_ANIADIR_REMESA,	
+		BUSQUEDA_ANIADIR_REMESARECONOMICA
 	}
 	
 	private final String keyBindConsulta="keyBindConsulta";
@@ -1252,7 +1253,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		return fechaApertura;
 	}
 	
-	public Hashtable getBindEjgRemesas(Hashtable miHash, DefinicionRemesas_CAJG_Form miForm, String idInstitucion, String longitudNumEjg,boolean isDatosEconomicos) throws ClsExceptions, SIGAException {
+	public Hashtable getBindEjgRemesas(Hashtable miHash, DefinicionRemesas_CAJG_Form miForm, String idInstitucion, String longitudNumEjg) throws ClsExceptions, SIGAException {
 
 		// A raiz de la INC_07042_SIGA se revisan los criterios de busqueda eliminado el codigo comentado.
 		// Estamos a 08/04/2010 version 1.4.2.3 del CVS
@@ -1274,37 +1275,23 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 
 			if (idIncidenciasEnvio.equals(AppConstants.DB_TRUE)) {// con errores
 				filtrado = " and (" + cuentaErrores + ") > 0";
-				isDatosEconomicos = false;
 			} else if (idIncidenciasEnvio.equals("2")) {// sin errores
 				filtrado = " and (" + cuentaErrores + ") = 0";
 			} else if (idIncidenciasEnvio.equals("3")) {// con errores antes del envío a comisión
 				filtrado = " and (" + cuentaErrores + " AND ER." + CajgRespuestaEJGRemesaBean.C_IDTIPORESPUESTA + " = " + CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA + ") > 0";
-				isDatosEconomicos = false;
 			} else if (idIncidenciasEnvio.equals("4")) {// con errores después del envío a comisión
 				filtrado = " and (" + cuentaErrores + " AND ER." + CajgRespuestaEJGRemesaBean.C_IDTIPORESPUESTA + " = " + CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_COMISION + ") > 0";
-				isDatosEconomicos = false;
 			} else if (idIncidenciasEnvio.equals("5")) {// con errores no en nueva remesa
-				filtrado = " and (" + cuentaErrores + ") > 0 AND 0 = (SELECT COUNT(1) FROM CAJG_EJGREMESA ER2" + " WHERE ER2.IDINSTITUCION = EJGREMESA.IDINSTITUCION AND ER2.ANIO = EJGREMESA.ANIO" + " AND ER2.NUMERO = EJGREMESA.NUMERO AND ER2.IDTIPOEJG = EJGREMESA.IDTIPOEJG" + " AND ER2.IDREMESA > EJGREMESA.IDREMESA)";
-				isDatosEconomicos = false;
-			}  else if (idIncidenciasEnvio.equals("6")) {// Solicitada envio comunicaione informe economico a la CAJG
-				filtrado = " and ejgremesa.recibida in (" +
-						AppConstants.EstadosEjgRemesa.INFORMACIOECONOMICANENVIADA.getId() +"," +
-						AppConstants.EstadosEjgRemesa.INFORMACIOECONOMICANRESPUESTACORRECTA.getId()+"," +
-						AppConstants.EstadosEjgRemesa.INFORMACIOECONOMICANRESPUESTAINCORRECTA.getId() +	")";
-				isDatosEconomicos = false;
-			}else if (idIncidenciasEnvio.equals("7")) {// Solicitada envio comunicaione informe economico a la CAJG
-				filtrado = " and nvl(ejgremesa.recibida,1) =1 ";
-				isDatosEconomicos = false;
-			} else if (idIncidenciasEnvio.equals("8")) {// Respueta servicio web inform economico ok
-				filtrado = " and ejgremesa.recibida =  ";
-				filtrado += AppConstants.EstadosEjgRemesa.INFORMACIOECONOMICANRESPUESTACORRECTA.getId();
-				isDatosEconomicos = false;
-			} else if (idIncidenciasEnvio.equals("9")) {// Respueta servicio web inform economico ko
-				filtrado = " and ejgremesa.recibida =  ";
-				filtrado += AppConstants.EstadosEjgRemesa.INFORMACIOECONOMICANRESPUESTAINCORRECTA.getId();
+				
+				filtrado = " and (" + cuentaErrores + ") > 0 AND 0 = (SELECT COUNT(1)        FROM CAJG_EJGREMESA ER2,CAJG_REMESA REM2   WHERE ";
+				filtrado += "ER2.IDINSTITUCION = REM2.IDINSTITUCION AND ER2.IDREMESA = REM2.IDREMESA AND REM2.IDTIPOREMESA = remesa.IDTIPOREMESA ";
+				filtrado += "AND ER2.IDINSTITUCION = EJGREMESA.IDINSTITUCION AND ER2.ANIO = EJGREMESA.ANIO AND ER2.NUMERO = EJGREMESA.NUMERO AND ER2.IDTIPOEJG = EJGREMESA.IDTIPOEJG ";
+				filtrado += "AND ER2.IDREMESA > EJGREMESA.IDREMESA) ";
+				
+				 
 				
 				
-			}
+			} 
 
 		}
 		
@@ -1318,84 +1305,16 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		consulta += " F_SIGA_GETRECURSO(f_siga_get_ultimoestadoejg(ejg.idinstitucion,ejg.idtipoejg, ejg.anio, ejg.numero), " + this.usrbean.getLanguage() + ") as estado" + ", ejg." + ScsEJGBean.C_NUMERO + ", (" + cuentaErrores + ") AS ERRORES" + " , (SELECT COUNT(1) FROM CAJG_EJGREMESA ER2 WHERE ER2.IDINSTITUCION = EJGREMESA.IDINSTITUCION AND ER2.ANIO = EJGREMESA.ANIO AND ER2.NUMERO = EJGREMESA.NUMERO AND ER2.IDTIPOEJG = EJGREMESA.IDTIPOEJG AND ER2.IDREMESA > EJGREMESA.IDREMESA) EN_NUEVA_REMESA" + " " ;
 		//Añadiremos en campo para ver si esta permitido comunicar el informe economico cuando sea Alcala y cuando
 				
-		if(isDatosEconomicos){	
-//			 SOLO ES TRUE(1) SI NO HAY ERRORES, RECIBIDA NOT IN (2,3) Y HAY INFORMACION ECONOMICA QUE ENVIAR
-			consulta += ",DECODE(EJGREMESA.RECIBIDA,"
-					+ " 2,"
-					+ " (SELECT ECOM_COLA.IDESTADOCOLA "
-					+ " FROM ECOM_COLA  WHERE "
-					+ " IDECOMCOLA = (SELECT max(CPIDREMESA.IDECOMCOLA) "
-					+ " FROM ECOM_COLA_PARAMETROS CPIDREMESA, "
-					+ " ECOM_COLA_PARAMETROS CPIDINSTITUCION, "
-					+ " ECOM_COLA_PARAMETROS CPANIO, "
-					+ " ECOM_COLA_PARAMETROS CPIDTIPOEJG, "
-					+ " ECOM_COLA_PARAMETROS CPNUMERO "
-					+ " WHERE CPIDREMESA.IDECOMCOLA = CPIDINSTITUCION.IDECOMCOLA "
-					+ " AND CPIDREMESA.IDECOMCOLA = CPANIO.IDECOMCOLA "
-					+ " AND CPIDREMESA.IDECOMCOLA = CPIDTIPOEJG.IDECOMCOLA "
-					+ " AND CPIDREMESA.IDECOMCOLA = CPNUMERO.IDECOMCOLA "
-					+ " AND CPIDINSTITUCION.IDECOMCOLA = CPANIO.IDECOMCOLA "
-					+ " AND CPIDINSTITUCION.IDECOMCOLA = CPIDTIPOEJG.IDECOMCOLA "
-					+ " AND CPIDINSTITUCION.IDECOMCOLA = CPNUMERO.IDECOMCOLA "
-					+ " AND CPANIO.IDECOMCOLA = CPIDTIPOEJG.IDECOMCOLA "
-					+ " AND CPANIO.IDECOMCOLA = CPNUMERO.IDECOMCOLA "
-         
-					+ " AND CPIDTIPOEJG.IDECOMCOLA = CPNUMERO.IDECOMCOLA "
-					         
-					+ " AND CPIDREMESA.CLAVE = 'IDREMESA' "
-					+ " AND CPIDREMESA.VALOR = TO_CHAR(EJGREMESA.IDREMESA) "
-					         
-					+ " AND CPIDINSTITUCION.CLAVE = 'IDINSTITUCION' "
-					+ " AND CPIDINSTITUCION.VALOR = TO_CHAR(EJGREMESA.IDINSTITUCION) "
-					         
-					+ " AND CPANIO.CLAVE = 'ANIO' "
-					+ " AND CPANIO.VALOR = TO_CHAR(EJGREMESA.ANIO) "
-					         
-					+ " AND CPIDTIPOEJG.CLAVE = 'IDTIPOEJG' "
-					+ " AND CPIDTIPOEJG.VALOR = TO_CHAR(EJGREMESA.IDTIPOEJG) "
-					         
-					+ " AND CPNUMERO.CLAVE = 'NUMERO' "
-					+ " AND CPNUMERO.VALOR = TO_CHAR(EJGREMESA.NUMERO) "
-					   
-					+ " )) , "
-					+ " 4,"
-					+ " 4,"
-					+ " 6,"
-					+ " 4,"
-					+ " 2,"
-					+ " EJGREMESA.RECIBIDA) IDESTADOEJGREMESA"
-			
-			
-			 +  ", DECODE((SELECT COUNT(1) "
-					+ " FROM CAJG_RESPUESTA_EJGREMESA ER "
-					+ " WHERE ER.IDEJGREMESA = EJGREMESA.IDEJGREMESA), "
-					+ " 0, "
-					+ " DECODE(NVL(RECIBIDA, 1), "
-					+ " 2, "
-					+ " 0, "
-					+ " 3, "
-					+ " 0, "
-					+ " DECODE((SELECT COUNT(1) "
-					+ " FROM SCS_EEJG_PETICIONES P, SCS_EEJG_XML X "
-					+ " WHERE P.IDPETICION = X.IDPETICION "
-					+ " AND P.IDINSTITUCION = EJG.IDINSTITUCION "
-					+ " AND P.IDTIPOEJG = EJG.IDTIPOEJG "
-					+ " AND P.ANIO = EJG.ANIO "
-					+ " AND P.NUMERO = EJG.NUMERO "
-					+ " AND P.ESTADO = 30), "
-					+ " 0, "
-					+ " 0, "
-					+ " 1)), "
-					+ " 0) PERMITIRSOLINFECONOMICO,EJGREMESA.NUMEROINTERCAMBIO ";
 		
-		}else{
-			consulta += ",EJGREMESA.RECIBIDA IDESTADOEJGREMESA , 0 PERMITIRSOLINFECONOMICO,EJGREMESA.NUMEROINTERCAMBIO ";
+		consulta += ",EJGREMESA.RECIBIDA IDESTADOEJGREMESA , 0 PERMITIRSOLINFECONOMICO,EJGREMESA.NUMEROINTERCAMBIO ";
 			
-		}
 		
 		consulta +=" from " + ScsEJGBean.T_NOMBRETABLA + " ejg," + ScsGuardiasTurnoBean.T_NOMBRETABLA + " guardia," + ScsTipoEJGBean.T_NOMBRETABLA + " tipoejg," + CenColegiadoBean.T_NOMBRETABLA + " colegiado, " + CajgEJGRemesaBean.T_NOMBRETABLA + " ejgremesa";
+		consulta +=" , CAJG_REMESA remesa ";
 		/* realizamos la join con de las tablas que necesitamos */
-		consulta += " where ejg." + ScsEJGBean.C_IDTIPOEJG + " = tipoejg." + ScsTipoEJGBean.C_IDTIPOEJG + " and " + " ejg." + ScsEJGBean.C_IDINSTITUCION + " = guardia." + ScsGuardiasTurnoBean.C_IDINSTITUCION + "(+) and " + " ejg." + ScsEJGBean.C_GUARDIATURNO_IDTURNO + " = guardia." + ScsGuardiasTurnoBean.C_IDTURNO + "(+) and " + " ejg." + ScsEJGBean.C_GUARDIATURNO_IDGUARDIA + " = guardia." + ScsGuardiasTurnoBean.C_IDGUARDIA + "(+) and " + " ejg." + ScsEJGBean.C_IDINSTITUCION + " = colegiado." + CenColegiadoBean.C_IDINSTITUCION + "(+) and " + " ejg." + ScsEJGBean.C_IDPERSONA + " = colegiado." + CenColegiadoBean.C_IDPERSONA + "(+)" + " and ejg.idinstitucion=ejgremesa.idinstitucion" + " and ejg.anio=ejgremesa.anio" + " and ejg.numero=ejgremesa.numero" + " and ejg.idtipoejg=ejgremesa.idtipoejg" + " and ejgremesa.idremesa=";
+		consulta += " where ejg." + ScsEJGBean.C_IDTIPOEJG + " = tipoejg." + ScsTipoEJGBean.C_IDTIPOEJG + " and " + " ejg." + ScsEJGBean.C_IDINSTITUCION + " = guardia." + ScsGuardiasTurnoBean.C_IDINSTITUCION + "(+) and " + " ejg." + ScsEJGBean.C_GUARDIATURNO_IDTURNO + " = guardia." + ScsGuardiasTurnoBean.C_IDTURNO + "(+) and " + " ejg." + ScsEJGBean.C_GUARDIATURNO_IDGUARDIA + " = guardia." + ScsGuardiasTurnoBean.C_IDGUARDIA + "(+) and " + " ejg." + ScsEJGBean.C_IDINSTITUCION + " = colegiado." + CenColegiadoBean.C_IDINSTITUCION + "(+) and " + " ejg." + ScsEJGBean.C_IDPERSONA + " = colegiado." + CenColegiadoBean.C_IDPERSONA + "(+)  and ejg.idinstitucion=ejgremesa.idinstitucion and ejg.anio=ejgremesa.anio  and ejg.numero=ejgremesa.numero and ejg.idtipoejg=ejgremesa.idtipoejg ";
+		consulta += " and ejgremesa.idremesa = remesa.idremesa and ejgremesa.idinstitucion = remesa.idinstitucion ";
+		consulta += " and ejgremesa.idremesa=";
 		contador++;
 		codigos.put(new Integer(contador), miForm.getIdRemesa());
 		consulta += ":" + contador;
@@ -1415,10 +1334,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	}
 	
 	
-	public com.siga.Utilidades.paginadores.PaginadorBind getPaginadorEJGRemesas(Hashtable miHash, DefinicionRemesas_CAJG_Form miForm, String idInstitucion,String longitudNumEjg,boolean isDatosEconomicos)throws ClsExceptions,SIGAException {
+	public com.siga.Utilidades.paginadores.PaginadorBind getPaginadorEJGRemesas(Hashtable miHash, DefinicionRemesas_CAJG_Form miForm, String idInstitucion,String longitudNumEjg)throws ClsExceptions,SIGAException {
 	    com.siga.Utilidades.paginadores.PaginadorBind paginador=null;
 	   try {
-	        Hashtable htConsultaBind  = getBindEjgRemesas(miHash,  miForm, idInstitucion,longitudNumEjg,isDatosEconomicos);
+	        Hashtable htConsultaBind  = getBindEjgRemesas(miHash,  miForm, idInstitucion,longitudNumEjg);
 	        String consulta = (String) htConsultaBind.get(keyBindConsulta);
 	        Hashtable codigos = (Hashtable) htConsultaBind.get(keyBindCodigos);
 					
@@ -1493,6 +1412,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		miHash.put("chkBusquedaExactaSolicitante",isBusquedaExactaSolicitante);
 		boolean esComision=(miHash.containsKey("ESCOMISION") && UtilidadesString.stringToBoolean(miHash.get("ESCOMISION").toString()));
 		boolean isAñadirJoinEstados = TipoVentana.BUSQUEDA_PREPARACION_CAJG.equals(tipoVentana) ||TipoVentana.BUSQUEDA_ANIADIR_REMESA.equals(tipoVentana)
+				||TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)
 				||(miHash.containsKey("ESTADOEJG")) && (!miHash.get("ESTADOEJG").toString().equals(""))
 				||(miHash.containsKey("DESCRIPCIONESTADO")) && (!miHash.get("DESCRIPCIONESTADO").toString().equals(""))
 				;
@@ -1532,7 +1452,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += ","+ScsEstadoEJGBean.T_NOMBRETABLA + " ESTADO, " +
 			ScsMaestroEstadosEJGBean.T_NOMBRETABLA + " MEE ";
 		}
-		
+//		if (TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)) {
+//			consulta += ",SCS_EEJG_PETICIONES P, SCS_EEJG_XML X ";
+//		}
 		// Si se filtra por acta necesitamos la tabla
 //		if (((miHash.containsKey("NUMEROACTA")) && (!miHash.get("NUMEROACTA").toString().equals(""))) || 
 //			((miHash.containsKey("ANIOACTA")) && (!miHash.get("ANIOACTA").toString().equals("")))){
@@ -1646,10 +1568,24 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			}
 			
 		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESA.equals(tipoVentana)) {
+//		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESA.equals(tipoVentana)||TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)) {
 			consulta += " AND ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " IN (" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.ESTADO_LISTO_COMISION_ACTUALIZAR_DESIGNACION.getCodigo() + ") ";
+		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)) {
+			consulta += " AND (ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " NOT IN ( "+ ESTADOS_EJG.GENERADO_EN_REMESA.getCodigo() + ", " + ESTADOS_EJG.REMITIDO_COMISION.getCodigo() + ", " + ESTADOS_EJG.RESUELTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.IMPUGNADO.getCodigo() + "))  ";
 		}
-		
-		
+		if (TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)) {
+//			consulta += " AND EXISTS (SELECT 1 FROM SCS_EEJG_PETICIONES P, SCS_EEJG_XML X "; 
+			consulta += " AND EXISTS (SELECT 1 FROM SCS_EEJG_PETICIONES P ";
+			consulta += " WHERE  P.IDINSTITUCION = EJG.IDINSTITUCION ";
+			consulta += " AND P.IDTIPOEJG = EJG.IDTIPOEJG ";
+			consulta += " AND P.ANIO = EJG.ANIO ";
+			consulta += " AND P.NUMERO = EJG.NUMERO ";
+			consulta += " AND P.ESTADO = 30 ";
+//			consulta += " AND P.IDPETICION = X.IDPETICION ";
+//			consulta += " AND X.XML IS NOT NULL) ";
+			consulta += " AND P.CSV IS NOT NULL) ";
+			
+		}
 		
 		// Se filtra por numero cajg
 		if (miForm.getNumeroCAJG()!=null && !miForm.getNumeroCAJG().trim().equalsIgnoreCase("")) {
@@ -7173,7 +7109,7 @@ public Hashtable getBindWhereEJG(Hashtable miHash, DefinirEJGForm miForm) throws
 		sqlBuffer.append("DECODE(EJG.ANIOPROCEDIMIENTO, ");
 		sqlBuffer.append("NULL, ");
 		sqlBuffer.append("EJG.NUMEROPROCEDIMIENTO, ");
-		sqlBuffer.append("EJG.NUMEROPROCEDIMIENTO || '/' || EJG.ANIOPROCEDIMIENTO) NUMPROCEDIMINETO, ");
+		sqlBuffer.append("EJG.NUMEROPROCEDIMIENTO || EJG.ANIOPROCEDIMIENTO) NUMPROCEDIMINETO, ");
 		sqlBuffer.append("(SELECT DECODE(JUZ.CODIGOEJIS,'','',JUZ.CODIGOEJIS||'-')|| JUZ.NOMBRE || ' (' || P.NOMBRE || ')' ");
 		sqlBuffer.append("FROM SCS_JUZGADO JUZ, CEN_POBLACIONES P ");
 		sqlBuffer.append("WHERE JUZ.IDPOBLACION = P.IDPOBLACION(+) ");

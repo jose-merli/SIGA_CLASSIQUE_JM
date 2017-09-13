@@ -18,6 +18,7 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.beans.CajgRemesaBean.TIPOREMESA;
 import com.siga.gratuita.form.DefinicionRemesas_CAJG_Form;
 
 /**
@@ -38,6 +39,7 @@ public class CajgRemesaAdm extends MasterBeanAdministrador {
 							CajgRemesaBean.C_PREFIJO, 		CajgRemesaBean.C_NUMERO,
 							CajgRemesaBean.C_SUFIJO,		CajgRemesaBean.C_DESCRIPCION,
 							CajgRemesaBean.C_IDINTERCAMBIO, CajgRemesaBean.C_IDECOMCOLA,
+							CajgRemesaBean.C_IDTIPOREMESA, 
 							CajgRemesaBean.C_FECHAMODIFICACION,	CajgRemesaBean.C_USUMODIFICACION};
 		return campos;
 	}
@@ -68,6 +70,7 @@ public class CajgRemesaAdm extends MasterBeanAdministrador {
 			bean.setSufijo(UtilidadesHash.getString(hash, CajgRemesaBean.C_SUFIJO));
 			bean.setDescripcion(UtilidadesHash.getString(hash, CajgRemesaBean.C_DESCRIPCION));
 			bean.setIdIntercambio(UtilidadesHash.getInteger(hash,CajgRemesaBean.C_IDINTERCAMBIO));
+			bean.setIdTipoRemesa(UtilidadesHash.getShort(hash,CajgRemesaBean.C_IDTIPOREMESA));
 			bean.setIdecomcola(UtilidadesHash.getLong(hash,CajgRemesaBean.C_IDECOMCOLA));
 			
 			bean.setFechaMod(UtilidadesHash.getString (hash,CajgRemesaBean.C_FECHAMODIFICACION));
@@ -96,6 +99,7 @@ public class CajgRemesaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, CajgRemesaBean.C_SUFIJO, b.getSufijo());
 			UtilidadesHash.set(hash, CajgRemesaBean.C_DESCRIPCION, b.getDescripcion());
 			UtilidadesHash.set(hash, CajgRemesaBean.C_IDINTERCAMBIO, b.getIdIntercambio());
+			UtilidadesHash.set(hash, CajgRemesaBean.C_IDTIPOREMESA, b.getIdTipoRemesa());
 			UtilidadesHash.set(hash, CajgRemesaBean.C_IDECOMCOLA, b.getIdecomcola());
 			
 			UtilidadesHash.set(hash, CajgRemesaBean.C_FECHAMODIFICACION, b.getFechaMod());	
@@ -148,7 +152,15 @@ public class CajgRemesaAdm extends MasterBeanAdministrador {
 				+ "" + " and r.idinstitucion = e.idinstitucion" + " and r.idremesa = e.idremesa" + " and e.idestado = t.idestado"
 				+ " and e.idestado = (select max(idestado)" + " from cajg_remesaestados" + " where idinstitucion = e.idinstitucion"
 				+ " and idremesa = e.idremesa) ";
-						
+			
+		
+		if(miForm.getIdTipoRemesa()!=null && !miForm.getIdTipoRemesa().equalsIgnoreCase(CajgRemesaBean.TIPOREMESA.REMESA_EJGS.getIdTipo())){
+			consulta += " AND IDTIPOREMESA = "+miForm.getIdTipoRemesa();
+		}else{
+			consulta += " AND (IDTIPOREMESA IS NULL OR  IDTIPOREMESA = "+CajgRemesaBean.TIPOREMESA.REMESA_EJGS.getIdTipo()+") ";
+		}
+		
+		
 		if ((String) miHash.get(CajgRemesaBean.C_PREFIJO) != null && (!((String) miHash.get(CajgRemesaBean.C_PREFIJO)).equals(""))) {					
 			consulta += " AND " + ComodinBusquedas.prepararSentenciaNLS(((String) miHash.get(CajgRemesaBean.C_PREFIJO)).trim(), "r." + CajgRemesaBean.C_PREFIJO);
 		}
@@ -212,6 +224,8 @@ public class CajgRemesaAdm extends MasterBeanAdministrador {
 				consulta += miForm.getAnioEJG();
 			}
             
+			
+			
 			consulta +=") ";
 			
 		}
@@ -220,7 +234,7 @@ public class CajgRemesaAdm extends MasterBeanAdministrador {
 		return new PaginadorCaseSensitive(consulta);
 	} 
 	
-	public Hashtable getDatosRemesa(String idRemesa, String idInstitucion, boolean isDatosEconomicos) throws ClsExceptions {
+	public Hashtable getDatosRemesa(String idRemesa, String idInstitucion) throws ClsExceptions {
 		Hashtable salida = new Hashtable();
 		
 		try {
@@ -232,56 +246,22 @@ public class CajgRemesaAdm extends MasterBeanAdministrador {
 			stringBuilder.append("WHERE ER.IDEJGREMESA IN ");
 			stringBuilder.append("(SELECT RE.IDEJGREMESA ");
 			stringBuilder.append("FROM CAJG_RESPUESTA_EJGREMESA RE ");
-			stringBuilder.append("WHERE NVL(RE.IDTIPORESPUESTA, 1) NOT IN (3, 4)) ");
+			stringBuilder.append(") ");
 			stringBuilder.append("AND (ER.ANIO, ER.NUMERO, ER.IDTIPOEJG, ER.IDINSTITUCION) NOT IN ");
 			stringBuilder.append("(SELECT ER2.ANIO, ER2.NUMERO, ER2.IDTIPOEJG, ER2.IDINSTITUCION ");
-			stringBuilder.append("FROM CAJG_EJGREMESA ER2 ");
-			stringBuilder.append("WHERE ER2.IDINSTITUCION = ER.IDINSTITUCION ");
+			stringBuilder.append("FROM CAJG_EJGREMESA ER2, CAJG_REMESA REM2 ");
+			stringBuilder.append("WHERE ER2.IDINSTITUCION = REM2.IDINSTITUCION ");
+			stringBuilder.append("AND ER2.IDREMESA = REM2.IDREMESA ");
+			stringBuilder.append("AND REM2.IDTIPOREMESA = REM.IDTIPOREMESA ");
+			stringBuilder.append("AND ER2.IDINSTITUCION = ER.IDINSTITUCION ");
 			stringBuilder.append("AND ER.IDREMESA < ER2.IDREMESA) ");
 			stringBuilder.append("AND ER.IDREMESA = REM.IDREMESA ");
 			stringBuilder.append("AND ER.IDINSTITUCION =  REM.IDINSTITUCION) CUENTA_INCIDENCIAS, ");
 			stringBuilder.append("(SELECT COUNT(1) ");
 			stringBuilder.append("FROM CAJG_EJGREMESA ER ");
 			stringBuilder.append("WHERE ER.IDINSTITUCION =  REM.IDINSTITUCION ");
-			stringBuilder.append("AND ER.IDREMESA = REM.IDREMESA) CUENTA_EXPEDIENTES ");
-			if(isDatosEconomicos){
-				
-				
-				
-				
-					
-					stringBuilder.append(",(SELECT COUNT(1) ");
-					stringBuilder.append("FROM ECOM_COLA_PARAMETROS A, ECOM_COLA_PARAMETROS B, ECOM_COLA C ");
-					stringBuilder.append("WHERE A.CLAVE = 'IDREMESA' ");
-					stringBuilder.append("AND B.CLAVE = 'IDINSTITUCION' ");
-					stringBuilder.append("AND A.VALOR = REM.IDREMESA ");
-					stringBuilder.append("AND B.VALOR =  REM.IDINSTITUCION ");
-					stringBuilder.append("AND A.IDECOMCOLA = B.IDECOMCOLA ");
-					stringBuilder.append("AND C.IDECOMCOLA = A.IDECOMCOLA ");
-					stringBuilder.append("AND C.IDOPERACION = 48 ");
-					stringBuilder.append("AND C.IDINSTITUCION =  REM.IDINSTITUCION ");
-				  
-					stringBuilder.append(") CUENTA_INFORMESECONOMICOS, ");
-					stringBuilder.append("(SELECT COUNT(1) ");
-					stringBuilder.append("FROM CAJG_EJGREMESA ER ");
-					stringBuilder.append("WHERE ER.IDEJGREMESA IN  (SELECT RE.IDEJGREMESA ");
-					stringBuilder.append("FROM CAJG_RESPUESTA_EJGREMESA RE ");
-					stringBuilder.append("WHERE NVL(RE.IDTIPORESPUESTA, 1) IN (");
-					stringBuilder.append(AppConstants.TIPO_RESPUESTA_EJGREMESA.RESPUESTA_COMISION_INF_ECON.getCodigo());
-					stringBuilder.append(",");
-					stringBuilder.append(AppConstants.TIPO_RESPUESTA_EJGREMESA.RESPUESTA_SIGA_INF_ECON.getCodigo());
-					stringBuilder.append(") ");
-					stringBuilder.append(") ");
-					stringBuilder.append("AND ER.IDREMESA = REM.IDREMESA ");
-					stringBuilder.append("AND ER.IDINSTITUCION = REM.IDINSTITUCION ");
-					stringBuilder.append(") ");
-					stringBuilder.append("INCIDENCIAS_INFORMESECONOMICOS, ");
-				
-			}else{
-				stringBuilder.append(",0 CUENTA_INFORMESECONOMICOS ");
-				stringBuilder.append(",0 INCIDENCIAS_INFORMESECONOMICOS, ");
-				
-			}
+			stringBuilder.append("AND ER.IDREMESA = REM.IDREMESA) CUENTA_EXPEDIENTES, ");
+			
 		 
 			stringBuilder.append("F_SIGA_GET_FECHAESTADOREMESA( REM.IDINSTITUCION, REM.IDREMESA, 1) AS FECHAGENERACION, ");
 			stringBuilder.append("F_SIGA_GET_FECHAESTADOREMESA( REM.IDINSTITUCION, REM.IDREMESA, 2) AS FECHAENVIO, ");
