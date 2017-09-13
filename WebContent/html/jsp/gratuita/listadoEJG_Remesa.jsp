@@ -144,6 +144,10 @@
 					//ELIMINAR ,gf CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
 					
 				}
+			}else if (cajgConfig == 10 ) {
+				buttons+=",val,gxml";//envio WebService EJIS de Canarias
+					//buttons+=",val,ws";//envio WebService EJIS de Canarias
+					//ELIMINAR ,gxml CUANDO LA INTEGRACION DE CANARIAS SEA COMPLETA
 			}
 		}
 	} else if (idEstado == 1) {//GENERADA
@@ -165,6 +169,8 @@
 							
 					}
 				}
+			}else if (cajgConfig == 10) {//DESCARGAR XML DE CANARIAS
+				buttons+=",ftp";//descarga envio
 			}
 		}
 	} else if (idEstado == 2) {//enviada
@@ -200,17 +206,19 @@
 							
 					}
 				}
+			}else if (cajgConfig == 10) {//DESCARGAR XML DE CANARIAS
+				//buttons+=",d";//descarga envio
 			}
 		}
 		
 	}else if (idEstado == 3) {
-		
-			buttons="g";//guardar
-			if (cajgConfig == 5) {
-				if(!path.equals("/JGR_E-Comunicaciones_InfEconomico") )
-					buttons+=",d,mri";
-			}
-			
+		buttons="g";//guardar
+		if (cajgConfig == 5) {
+			if(!path.equals("/JGR_E-Comunicaciones_InfEconomico") )
+				buttons+=",d,mri";
+		}else if (cajgConfig == 10) {//DESCARGAR XML DE CANARIAS
+			buttons+=",d";//descarga envio
+		}
 		
 	}
 %>

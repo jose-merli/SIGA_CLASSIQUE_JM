@@ -166,4 +166,94 @@ insert into ECOM_OPERACION (IDOPERACION, IDSERVICIO, NOMBRE, MAXREINTENTOS, ACTI
 values (68, 1, 'Solicitar información completa expediente económico', 1, '1', sysdate, 0);
 
 
+--CAJG canarias
+
+insert into ECOM_OPERACION (IDOPERACION, IDSERVICIO, NOMBRE, MAXREINTENTOS, ACTIVO, FECHAMODIFICACION, USUMODIFICACION)
+values (63, 1, 'Valida envío expedientes(EJIS)', 1, '1', sysdate, 0);
+insert into ECOM_OPERACION (IDOPERACION, IDSERVICIO, NOMBRE, MAXREINTENTOS, ACTIVO, FECHAMODIFICACION, USUMODIFICACION)
+values (64, 1, 'Generacion xml Envío expedientes(EJIS)', 1, '1', sysdate, 0);
+insert into ECOM_OPERACION (IDOPERACION, IDSERVICIO, NOMBRE, MAXREINTENTOS, ACTIVO, FECHAMODIFICACION, USUMODIFICACION)
+values (66, 1, 'Recibir acuses erróneos(Atlante)', 5, '1', sysdate, 0);
+insert into ECOM_OPERACION (IDOPERACION, IDSERVICIO, NOMBRE, MAXREINTENTOS, ACTIVO, FECHAMODIFICACION, USUMODIFICACION)
+values (67, 1, 'Recibir acuses no erróneos(Atlante)', 5, '1', sysdate, 0);
+
+insert into GEN_RECURSOS (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+values ('messages.cajg.generacionXML', 'La generación del fichero xml se ha programado correctamente. Vuelva a consultar la remesa pasados unos minutos.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+values ('messages.cajg.generacionXML', 'La generación del fichero xml se ha programado correctamente. Vuelva a consultar la remesa pasados unos minutos.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+values ('messages.cajg.generacionXML', 'La generación del fichero xml se ha programado correctamente. Vuelva a consultar la remesa pasados unos minutos.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+values ('messages.cajg.generacionXML', 'La generación del fichero xml se ha programado correctamente. Vuelva a consultar la remesa pasados unos minutos.#GL', 0, '4', sysdate, 0, '19');
+
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Tipo de PCAJG que usa el colegio: 
+0	PCAJG no activo. 
+1	PCAJG activo en modo TXT. 
+2	PCAJG activo en modo FTP para colegios catalanes. 
+3	PCAJG activo para colegios de Aragón. 
+4	PCAJG activo en modo WebService para el envío de expedientes a Pamplona y Cantabria. Integración SIGA-Asigna o SIGA-Vereda. 
+5	PCAJG activo envío expedientes para Alcalá de Henares. 
+6 PCAJG activo para la integración con la Xunta de Galicia. 
+7 PCAJG activo para la integración con el Gobierno Vasco. 
+8 PCAJG activo para la integración con la Generalitat Valenciana. 
+9 PCAJG activo para la Junta de Andalucía.
+10 PCAJG activo para la integracion con Gobierno de Canarias' where idrecurso='scs.parametro.pcajg.tipo' and idlenguaje='1';
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Tipo de PCAJG que usa el colegio: 
+0	PCAJG no activo. 
+1	PCAJG activo en modo TXT. 
+2	PCAJG activo en modo FTP para colegios catalanes. 
+3	PCAJG activo para colegios de Aragón. 
+4	PCAJG activo en modo WebService para el envío de expedientes a Pamplona y Cantabria. Integración SIGA-Asigna o SIGA-Vereda. 
+5	PCAJG activo envío expedientes para Alcalá de Henares. 
+6 PCAJG activo para la integración con la Xunta de Galicia. 
+7 PCAJG activo para la integración con el Gobierno Vasco. 
+8 PCAJG activo para la integración con la Generalitat Valenciana. 
+9 PCAJG activo para la Junta de Andalucía.
+10 PCAJG activo para la integracion con Gobierno de Canarias#CA' where idrecurso='scs.parametro.pcajg.tipo' and idlenguaje='2';
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Tipo de PCAJG que usa el colegio: 
+0	PCAJG no activo. 
+1	PCAJG activo en modo TXT. 
+2	PCAJG activo en modo FTP para colegios catalanes. 
+3	PCAJG activo para colegios de Aragón. 
+4	PCAJG activo en modo WebService para el envío de expedientes a Pamplona y Cantabria. Integración SIGA-Asigna o SIGA-Vereda. 
+5	PCAJG activo envío expedientes para Alcalá de Henares. 
+6 PCAJG activo para la integración con la Xunta de Galicia. 
+7 PCAJG activo para la integración con el Gobierno Vasco. 
+8 PCAJG activo para la integración con la Generalitat Valenciana. 
+9 PCAJG activo para la Junta de Andalucía.
+10 PCAJG activo para la integracion con Gobierno de Canarias#EU' where idrecurso='scs.parametro.pcajg.tipo' and idlenguaje='3';
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Tipo de PCAJG que usa el colegio: 
+0	PCAJG no activo. 
+1	PCAJG activo en modo TXT. 
+2	PCAJG activo en modo FTP para colegios catalanes. 
+3	PCAJG activo para colegios de Aragón. 
+4	PCAJG activo en modo WebService para el envío de expedientes a Pamplona y Cantabria. Integración SIGA-Asigna o SIGA-Vereda. 
+5	PCAJG activo envío expedientes para Alcalá de Henares. 
+6 PCAJG activo para la integración con la Xunta de Galicia. 
+7 PCAJG activo para la integración con el Gobierno Vasco. 
+8 PCAJG activo para la integración con la Generalitat Valenciana. 
+9 PCAJG activo para la Junta de Andalucía.
+10 PCAJG activo para la integracion con Gobierno de Canarias#GL' where idrecurso='scs.parametro.pcajg.tipo' and idlenguaje='4';
+
+-- Alter table 
+alter table SCS_PERSONAJG
+  storage
+  (
+    next 1
+  )
+;
+-- Create/Recreate indexes 
+drop index SI_PERSONAJG_NIF;
+create index SI_PERSONAJG_NIF on SCS_PERSONAJG (NIF, IDINSTITUCION)
+  tablespace TS_SIGA_SCS_IDX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 52M
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
 

@@ -4,6 +4,7 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.ws.c3009.PCAJGEnviaXmlFTP;
 import com.siga.ws.cat.PCAJGGeneraXML;
 import com.siga.ws.cat.PCAJGxmlResponse;
 import com.siga.ws.i2055.SIGAWSClient;
@@ -25,6 +26,7 @@ public class CajgConfiguracion  {
 	public static final int TIPO_CAJG_WEBSERVICE_PAISVASCO = 7;
 	public static final int TIPO_CAJG_WEBSERVICE_GENERALITAT_VALENCIANA = 8;
 	public static final int TIPO_CAJG_WEBSERVICE_EJIS_ANDALUCIA = 9;
+	public static final int TIPO_CAJG_WEBSERVICE_EJIS_CANARIAS = 10;
 	
 	
 	private static final String PCAJG_ENVIO_WEBSERVICE_TIPO_CAJG3 = "PCAJG_ENVIO_WEBSERVICE_TIPO_CAJG3";
@@ -38,7 +40,15 @@ public class CajgConfiguracion  {
 			} else if (respuesta == 1) {
 				obj = new PCAJGxmlResponse();
 			}
-		} else if (tipoCAJG == TIPO_CAJG_PCAJG_GENERAL) {
+		}else if (tipoCAJG == TIPO_CAJG_WEBSERVICE_EJIS_CANARIAS) {
+			if (respuesta == 0) {
+				obj = new PCAJGEnviaXmlFTP();
+			} else if (respuesta == 1) {
+				obj = new PCAJGxmlResponse();
+			}
+		}
+		
+		else if (tipoCAJG == TIPO_CAJG_PCAJG_GENERAL) {
 			GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);		
 			String paramEnvioWS = admParametros.getValor(idInstitucion.toString(), "SCS", PCAJG_ENVIO_WEBSERVICE_TIPO_CAJG3, "");
 			

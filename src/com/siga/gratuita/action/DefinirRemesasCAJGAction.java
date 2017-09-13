@@ -1547,7 +1547,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		File file = null;
 		int tipoCajg = CajgConfiguracion.getTipoCAJG(getIDInstitucion(request));
 		if (tipoCajg == CajgConfiguracion.TIPO_CAJG_PCAJG_GENERAL
-				|| tipoCajg == CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO) {
+				|| tipoCajg == CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO ) {
 			file = getFicheroXML(getIDInstitucion(request).toString(), miForm.getIdRemesa());
 		} else {
 			file = getFichero(getIDInstitucion(request).toString(), miForm.getIdRemesa());
@@ -1961,10 +1961,10 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
 			RESPUESTA_ENVIO_REMESA respuesta = null;
 			if (simular) {
-				respuesta = pcajgInsertaColaService.validaExpedientesEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+				respuesta = pcajgInsertaColaService.validaExpedientesAndaluciaEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
 						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
 			} else {
-				respuesta = pcajgInsertaColaService.enviaExpedientesEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+				respuesta = pcajgInsertaColaService.enviaExpedientesAndaluciaEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
 						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
 			}
 			
@@ -2079,6 +2079,23 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			}
 			
 			mensaje = getMensajeRespuesta(respuesta, request, simular);		
+		}else if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_EJIS_CANARIAS == tipoCAJG) {
+			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
+			RESPUESTA_ENVIO_REMESA respuesta = null;
+			if (simular) {
+				respuesta = pcajgInsertaColaService.validaEnvioExpedientesEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
+				mensaje = getMensajeRespuesta(respuesta, request, simular);
+			} else {
+				respuesta = pcajgInsertaColaService.envioExpedientesEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
+				if (RESPUESTA_ENVIO_REMESA.OK.equals(respuesta)) 
+					mensaje = exitoRefresco("messages.cajg.generacionXML",request);
+				else
+					mensaje = getMensajeRespuesta(respuesta, request, simular);
+				
+			}
+
 		} else {
 			ejecutaBackground(formulario, request, 0);	
 			if (simular) {
@@ -2123,8 +2140,16 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 	}
 
 	private String generaXML(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {		
-		ejecutaBackground(formulario, request, 0);		
-		return exitoRefresco("messages.cajg.generandoXML", request);
+		Integer idInstitucion = getIDInstitucion(request);
+		int tipoCAJG = CajgConfiguracion.getTipoCAJG(idInstitucion);
+		if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_EJIS_CANARIAS == tipoCAJG) {
+			return envioWS(mapping, formulario, request, response);
+		}else{
+			ejecutaBackground(formulario, request, 0);		
+			return exitoRefresco("messages.cajg.generandoXML", request);
+		}
+		
+		
 	}
 	
 	
@@ -2140,13 +2165,10 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 	 * @throws Exception
 	 */
 	private String envioFTP(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws Exception {				
-		ejecutaBackground(formulario, request, 0);		
+		Integer idInstitucion = getIDInstitucion(request);
+		ejecutaBackground(formulario, request, 0);
 		return exitoRefresco("messages.cajg.envioFTP.correcto", request);
 	}
-	
-	
-	
-	
 
 
 	/**
