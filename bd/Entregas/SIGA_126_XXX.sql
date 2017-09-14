@@ -235,13 +235,6 @@ update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Tipo de PCAJG qu
 9 PCAJG activo para la Junta de Andalucía.
 10 PCAJG activo para la integracion con Gobierno de Canarias#GL' where idrecurso='scs.parametro.pcajg.tipo' and idlenguaje='4';
 
--- Alter table 
-alter table SCS_PERSONAJG
-  storage
-  (
-    next 1
-  )
-;
 -- Create/Recreate indexes 
 drop index SI_PERSONAJG_NIF;
 create index SI_PERSONAJG_NIF on SCS_PERSONAJG (NIF, IDINSTITUCION)
@@ -256,4 +249,7 @@ create index SI_PERSONAJG_NIF on SCS_PERSONAJG (NIF, IDINSTITUCION)
     minextents 1
     maxextents unlimited
   );
+
+
+-- 126_007: Ejecutados en Integracion por AAG el 14/09/2017 a las 10:45
 
