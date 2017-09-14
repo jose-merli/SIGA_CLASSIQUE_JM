@@ -250,6 +250,18 @@ create index SI_PERSONAJG_NIF on SCS_PERSONAJG (NIF, IDINSTITUCION)
     maxextents unlimited
   );
 
-
 -- 126_007: Ejecutados en Integracion por AAG el 14/09/2017 a las 10:45
+  
+  -- 126_007: Ejecutados en Integracion por AAG el 14/09/2017 a las 10:45
+  
+  insert into GEN_PARAMETROS (MODULO, PARAMETRO, VALOR, FECHAMODIFICACION, USUMODIFICACION, IDINSTITUCION, IDRECURSO)
+values ('ECOM', 'INFORMEECONOMICO_WS_URL', 'personalizar por intitucion', sysdate, 0, 0, 'ecom.parametro.pcajg.informeeconomico.UrlWs');
 
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.informeeconomico.UrlWs', 'Url del servicio web de envío económico a la CAM', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.informeeconomico.UrlWs', 'Url del servicio web de envío económico a la CAM#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.informeeconomico.UrlWs', 'Url del servicio web de envío económico a la CAM#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.informeeconomico.UrlWs', 'Url del servicio web de envío económico a la CAM#GL', 0, '4', sysdate, 0, '19');
+
+
+  
+  
