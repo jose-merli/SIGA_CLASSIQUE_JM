@@ -262,6 +262,7 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.informeeconomico.UrlWs', 'Url del servicio web de envío económico a la CAM#EU', 0, '3', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.informeeconomico.UrlWs', 'Url del servicio web de envío económico a la CAM#GL', 0, '4', sysdate, 0, '19');
 
+--126_007: Ejecutados en Integracion por JTA el 14/09/2017 a las 14:07
 
   
   
