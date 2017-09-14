@@ -2895,7 +2895,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			"  and ACTUACION.anio =:3 "+
 			"  and ACTUACION.numero =:4"+
 			"  and ACTUACION.numeroAsunto=:5"+
-			" order by DESIGNA_LETRADO.fechaModificacion desc ";
+			" order by DESIGNA_LETRADO.fechaDesigna desc ";
 
 			HelperInformesAdm helperInformes = new HelperInformesAdm();
 			return helperInformes.ejecutaConsultaBind(sql, h);
