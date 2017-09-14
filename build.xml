@@ -669,6 +669,8 @@
     <path id="EAR Libraries.libraryclasspath"/>
     <path id="Web App Libraries.libraryclasspath">
         <pathelement location="../../../SIGAServices"/>
+    	<pathelement location="WebContent/WEB-INF/lib/InterfazSistemaInteroperabilidad-test-client.jar"/>
+    	<pathelement location="WebContent/WEB-INF/lib/ServiciosJGExpediente_v2.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/Aspose.Words.14.2.jdk16.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/BusinessDelegate-1.1.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/BusinessDelegate-optional-1.1.jar"/>
