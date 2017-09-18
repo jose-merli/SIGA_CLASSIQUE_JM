@@ -1289,7 +1289,7 @@ public class Facturacion {
     	    
     	    String asunto = genParametrosService.getValorParametro(AppConstants.IDINSTITUCION_2000, PARAMETRO.TRASPASO_FACTURAS_MAILRESUMEN_ASUNTO, MODULO.ECOM);
     	    SigaServiceHelperService serviceHelperService = (SigaServiceHelperService) BusinessManager.getInstance().getService(SigaServiceHelperService.class);
-    	    serviceHelperService.enviarCorreo(from, bccArray, asunto, body, new File(rutaFichero + nombreFichero), GEN_PROPERTIES.mail_smtp_actualizacioncenso_host, GEN_PROPERTIES.mail_smtp_actualizacioncenso_user, GEN_PROPERTIES.mail_smtp_actualizacioncenso_pwd);
+    	    serviceHelperService.enviarCorreo(from, bccArray, asunto, body, new File(rutaFichero + nombreFichero), GEN_PROPERTIES.mail_smtp_actualizacioncenso_host, GEN_PROPERTIES.mail_smtp_actualizacioncenso_port, GEN_PROPERTIES.mail_smtp_actualizacioncenso_user, GEN_PROPERTIES.mail_smtp_actualizacioncenso_pwd);
 			
     	} catch(Exception e) {
     		ClsLogging.writeFileLog("ERROR GENERAL EN TRY TRASPASO FACTURAS.", 10);

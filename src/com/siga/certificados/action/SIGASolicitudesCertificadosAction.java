@@ -2746,7 +2746,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			SIGAServicesHelper.saltoLinea(sb);
 			sb.append("Causa: " + e.getCause());
 
-			serviceHelperService.enviarCorreo(from, bccArray, asunto, sb.toString(), null, GEN_PROPERTIES.mail_smtp_host, GEN_PROPERTIES.mail_smtp_user,
+			serviceHelperService.enviarCorreo(from, bccArray, asunto, sb.toString(), null, GEN_PROPERTIES.mail_smtp_host, GEN_PROPERTIES.mail_smtp_port, GEN_PROPERTIES.mail_smtp_user,
 					GEN_PROPERTIES.mail_smtp_pwd);
 
 		} catch (Exception ex) {
