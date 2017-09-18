@@ -273,3 +273,7 @@ insert into gen_properties (fichero, parametro, valor) values ('SIGA', 'mail.smt
 
 --126_007: Ejecutados en Integracion por AAG el 18/09/2017 a las 12:42
 
+insert into ECOM_OPERACION (IDOPERACION, IDSERVICIO, NOMBRE, MAXREINTENTOS, ACTIVO, FECHAMODIFICACION, USUMODIFICACION)
+values (48, 5, 'Envío de informe económico a la CAM', 1, '1', sysdate, 0);
+
+--126_007: Ejecutados en Integracion por JTA el 18/09/2017 a las 14:55
