@@ -995,7 +995,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			String urlEnvioInformeEconomico = genParametrosService.getValorParametroWithNull(Short.valueOf(usr.getLocation()),PARAMETRO.INFORMEECONOMICO_WS_URL,MODULO.ECOM);
 			boolean isActivadoIntercambioEconomico = urlEnvioInformeEconomico!=null && !urlEnvioInformeEconomico.equalsIgnoreCase("");
 			if(!isActivadoIntercambioEconomico)
-				throw new BusinessException("La institucion no tiene activa la URL de envio del informe económico.");
+				throw new SIGAException("La institucion no tiene activa la URL de envio del informe económico.");
 			tipoRemesa = CajgRemesaBean.TIPOREMESA.REMESA_ECONOMICA;
 		}
 		miForm.setIdTipoRemesa(tipoRemesa.getIdTipo());
