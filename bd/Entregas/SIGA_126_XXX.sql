@@ -277,3 +277,11 @@ insert into ECOM_OPERACION (IDOPERACION, IDSERVICIO, NOMBRE, MAXREINTENTOS, ACTI
 values (48, 5, 'Envío de informe económico a la CAM', 1, '1', sysdate, 0);
 
 --126_007: Ejecutados en Integracion por JTA el 18/09/2017 a las 14:55
+
+update cajg_ejgremesa set recibida = 0 where recibida = 3;
+update cajg_ejgremesa set recibida = 1 where recibida = 2;
+update cajg_ejgremesa set recibida = 1 where recibida = 4;
+update cajg_ejgremesa set recibida = 1 where recibida = 5;
+delete cajg_ejgremesaestado where idestado in (2,3,4,5);
+
+--126_007: Ejecutados en Integracion por JTA el 19/09/2017 a las 11:40
