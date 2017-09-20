@@ -1422,6 +1422,7 @@
 		<input type="hidden" name="fechaSolicitud" value="${SolicitudesCertificadosForm.fechaSolicitud}">
 		<input type="hidden" name="idInstitucionColegiacion" value="${SolicitudesCertificadosForm.idInstitucionColegiacion}">
 		<input type="hidden" name="aceptaCesionMutualidad" value="${SolicitudesCertificadosForm.aceptaCesionMutualidad}">
+		<input type="hidden" name="idBoton" value="2">
 	</html:form>
 	
 	<% String busquedaVolver = null; /* la vuelta no se trata de forma generica */ %>
