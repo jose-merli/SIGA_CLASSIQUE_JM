@@ -297,6 +297,8 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 			String fechaEstado = estadoColegialHashtable.get(CenDatosColegialesEstadoBean.C_FECHAESTADO);
 			String idEstadocolegial = estadoColegialHashtable.get(CenDatosColegialesEstadoBean.C_IDESTADO);
 			int idEstadocolegial_int = Integer.parseInt(idEstadocolegial);
+            int idEstadoColedialOld = 	Integer.parseInt(estadoColegialHashtable.get("IDESTADO_OLD"));
+            String residente =estadoColegialHashtable.get("RESIDENCIA");
 
 			// Compruebo que existan datos colegiales asociados a esos identificadores
 			CenColegiadoAdm admCol = new CenColegiadoAdm(this.usrbean);
@@ -306,28 +308,81 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 
 			// construyendo el registro de auditoria
 			CenHistoricoBean beanHis = new CenHistoricoBean();
-			switch (idEstadocolegial_int) {
-			case ClsConstants.ESTADO_COLEGIAL_EJERCIENTE:
-				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_ALTA_EJERCICIO));
-				hayQueNotificarAca = false;
-				break;
-			case ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL:
-				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_COLEGIAL));
-				hayQueNotificarAca = true;
-				break;
-			case ClsConstants.ESTADO_COLEGIAL_INHABILITACION:
-				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_INHABILITACION));
-				hayQueNotificarAca = true;
-				break;
-			case ClsConstants.ESTADO_COLEGIAL_SUSPENSION:
-				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_SUSPENSION));
-				hayQueNotificarAca = true;
-				break;
-			case ClsConstants.ESTADO_COLEGIAL_SINEJERCER:
-				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_EJERCICIO));
-				hayQueNotificarAca = true;
-				break;
+			
+			
+			if(idEstadoColedialOld == AppConstants.ESTADO_COLEGIAL_EJERCIENTE && AppConstants.DB_TRUE.equalsIgnoreCase(residente)){
+				switch (idEstadocolegial_int) {
+				case ClsConstants.ESTADO_COLEGIAL_EJERCIENTE:
+					beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_ALTA_EJERCICIO));
+					hayQueNotificarAca = false;
+					break;
+				case ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL:
+					beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_COLEGIAL));
+					hayQueNotificarAca = true;
+					break;
+				case ClsConstants.ESTADO_COLEGIAL_INHABILITACION:
+					beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_INHABILITACION));
+					hayQueNotificarAca = true;
+					break;
+				case ClsConstants.ESTADO_COLEGIAL_SUSPENSION:
+					beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_SUSPENSION));
+					hayQueNotificarAca = true;
+					break;
+				case ClsConstants.ESTADO_COLEGIAL_SINEJERCER:
+					beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_EJERCICIO));
+					hayQueNotificarAca = true;
+					break;
+				}
+			}else{
+				if(idEstadoColedialOld == AppConstants.ESTADO_COLEGIAL_SINEJERCER && AppConstants.DB_TRUE.equalsIgnoreCase(residente)){
+					switch (idEstadocolegial_int) {
+					case ClsConstants.ESTADO_COLEGIAL_EJERCIENTE:
+						beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_ALTA_EJERCICIO));
+						hayQueNotificarAca = false;
+						break;
+					case ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL:
+						beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_COLEGIAL));
+						hayQueNotificarAca = true;
+						break;
+					case ClsConstants.ESTADO_COLEGIAL_INHABILITACION:
+						beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_INHABILITACION));
+						hayQueNotificarAca = true;
+						break;
+					case ClsConstants.ESTADO_COLEGIAL_SUSPENSION:
+						beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_SUSPENSION));
+						hayQueNotificarAca = true;
+						break;
+					case ClsConstants.ESTADO_COLEGIAL_SINEJERCER:
+						beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_EJERCICIO));
+						hayQueNotificarAca = false;
+						break;
+					}
+				}else{
+					switch (idEstadocolegial_int) {
+					case ClsConstants.ESTADO_COLEGIAL_EJERCIENTE:
+						beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_ALTA_EJERCICIO));
+						hayQueNotificarAca = false;
+						break;
+					case ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL:
+						beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_COLEGIAL));
+						hayQueNotificarAca = false;
+						break;
+					case ClsConstants.ESTADO_COLEGIAL_INHABILITACION:
+						beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_INHABILITACION));
+						hayQueNotificarAca = false;
+						break;
+					case ClsConstants.ESTADO_COLEGIAL_SUSPENSION:
+						beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_SUSPENSION));
+						hayQueNotificarAca = false;
+						break;
+					case ClsConstants.ESTADO_COLEGIAL_SINEJERCER:
+						beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_EJERCICIO));
+						hayQueNotificarAca = false;
+						break;
+					}
+				}
 			}
+			
 			if(motivo != null && !"".equalsIgnoreCase(motivo)){   //Si motivo tiene valor es que viene de la interfaz y se ha rellenado el campo motivo
 				beanHis.setMotivo(motivo);
 			}else{

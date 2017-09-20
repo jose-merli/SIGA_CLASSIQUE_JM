@@ -20,7 +20,8 @@ public class CenDatosColegialesEstadoBean extends MasterBean {
 	private Long idPersona;
 	private Integer idInstitucion, idEstado;
 	
-	private String 	fechaEstado, observaciones;
+	private String 	fechaEstado, observaciones, idEstadoOld;
+	private boolean residente;
 
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_DATOSCOLEGIALESESTADO";
@@ -92,4 +93,17 @@ public class CenDatosColegialesEstadoBean extends MasterBean {
 	public void setObservaciones(String observaciones) {
 		this.observaciones = observaciones;
 	}
+	public String getIdEstadoOld() {
+		return idEstadoOld;
+	}
+	public void setIdEstadoOld(String idEstadoOld) {
+		this.idEstadoOld = idEstadoOld;
+	}
+	public boolean isResidente() {
+		return residente;
+	}
+	public void setResidente(boolean residente) {
+		this.residente = residente;
+	}
+	
 }
