@@ -285,3 +285,37 @@ update cajg_ejgremesa set recibida = 1 where recibida = 5;
 delete cajg_ejgremesaestado where idestado in (2,3,4,5);
 
 --126_007: Ejecutados en Integracion por JTA el 19/09/2017 a las 11:40
+
+--126_008
+
+F_SIGA_GETDIRECCIONCLIENTE
+
+Insert Into cer_camposcertificados (idcampocertificado, nombre, tipocampo, nombresalida, capturardatos, fechamodificacion, usumodificacion)
+Values (90, 'DIRECCION_FACTURACION', 'A', 'DIRECCION_FACTURACION (o de otra si no hay de Facturación)', 'N', Sysdate, 0);
+Insert Into cer_camposcertificados (idcampocertificado, nombre, tipocampo, nombresalida, capturardatos, fechamodificacion, usumodificacion)
+Values (91, 'DOMICILIO_FACTURACION', 'A', 'DOMICILIO_FACTURACION (o de otra si no hay de Facturación)', 'N', Sysdate, 0);
+Insert Into cer_camposcertificados (idcampocertificado, nombre, tipocampo, nombresalida, capturardatos, fechamodificacion, usumodificacion)
+Values (92, 'CODIGOPOSTAL_FACTURACION', 'A', 'CODIGOPOSTAL_FACTURACION (o de otra si no hay de Facturación)', 'N', Sysdate, 0);
+Insert Into cer_camposcertificados (idcampocertificado, nombre, tipocampo, nombresalida, capturardatos, fechamodificacion, usumodificacion)
+Values (93, 'POBLACION_FACTURACION', 'A', 'POBLACION_FACTURACION (o de otra si no hay de Facturación)', 'N', Sysdate, 0);
+Insert Into cer_camposcertificados (idcampocertificado, nombre, tipocampo, nombresalida, capturardatos, fechamodificacion, usumodificacion)
+Values (94, 'PROVINCIA_FACTURACION', 'A', 'PROVINCIA_FACTURACION (o de otra si no hay de Facturación)', 'N', Sysdate, 0);
+Insert Into cer_camposcertificados (idcampocertificado, nombre, tipocampo, nombresalida, capturardatos, fechamodificacion, usumodificacion)
+Values (95, 'TELEFONO_FACTURACION', 'A', 'TELEFONO_FACTURACION (o de otra si no hay de Facturación)', 'N', Sysdate, 0);
+Insert Into cer_camposcertificados (idcampocertificado, nombre, tipocampo, nombresalida, capturardatos, fechamodificacion, usumodificacion)
+Values (96, 'MOVIL_FACTURACION', 'A', 'MOVIL_FACTURACION (o de otra si no hay de Facturación)', 'N', Sysdate, 0);
+Insert Into cer_camposcertificados (idcampocertificado, nombre, tipocampo, nombresalida, capturardatos, fechamodificacion, usumodificacion)
+Values (97, 'F_FACTURACION', 'A', 'FAX_FACTURACION (o de otra si no hay de Facturación)', 'N', Sysdate, 0);
+Insert Into cer_camposcertificados (idcampocertificado, nombre, tipocampo, nombresalida, capturardatos, fechamodificacion, usumodificacion)
+Values (98, 'EMAIL_FACTURACION', 'A', 'EMAIL_FACTURACION (o de otra si no hay de Facturación)', 'N', Sysdate, 0);
+
+Declare
+  p_Codretorno Varchar2(4000);
+  p_Datoserror Varchar2(4000);
+Begin
+  Update Gen_Catalogos_Multiidioma
+     Set Migrado = 'N'
+   Where Nombretabla = 'CER_CAMPOSCERTIFICADOS'; --Marcar la tabla como No traducida
+  Proc_Act_Recursos(p_Codretorno, p_Datoserror);
+  Dbms_Output.Put_Line(p_Codretorno || ': ' || p_Datoserror);
+End;
