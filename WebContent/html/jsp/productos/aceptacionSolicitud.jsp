@@ -510,12 +510,13 @@
 					if (!isNaN(parseFloat(precio.value))) {
 						vCantidadTotal = vCantidadTotal + eval(cantidad.value);
 						vNetoTotal = vNetoTotal + cantidad.value * precio.value;
-						vIvaTotal = vIvaTotal + roundNumber(cantidad.value * precio.value * iva.value / 100, 2);
-						vPrecioTotal = vPrecioTotal + roundNumber(cantidad.value * precio.value * (1 + (iva.value / 100)), 2);
+						vIvaTotal = vIvaTotal + (cantidad.value * precio.value * iva.value / 100);
 					}					
 	 			}
-
  			}
+ 			vIvaTotal = Math.round(vIvaTotal * 100) / 100;
+ 			vPrecioTotal = vNetoTotal + vIvaTotal;
+
  			f.cantidadTotal.value = vCantidadTotal;
  			f.netoTotal.value = convertirAFormato(vNetoTotal) + " ¤"; 	
  			f.ivaTotal.value = convertirAFormato(vIvaTotal) + " ¤";
@@ -698,13 +699,6 @@
 						}
 					}
 
-					if (datos == null || (datos!=null && nofacturable.equals(DB_FALSE))) {
-						iCantidadTotal += a.getCantidad(); 
-						dNetoTotal += a.getCantidad() * precio;  
-						dIvaTotal += UtilidadesNumero.redondea(a.getCantidad() * precio * iva / 100, 2);
-						dPrecioTotal += UtilidadesNumero.redondea(a.getCantidad() * precio * (1 + (iva / 100)), 2);	
-					}				
-									
 					fila=i+1;	
 					parametroFuncion = "obtenerCuenta(" + fila + ")";
 					formaPagoNombre = "formaPago" + fila; 	
@@ -878,8 +872,6 @@
 <%		
 				} // for
 				
-				dIvaTotal = UtilidadesNumero.redondea (dIvaTotal, 2);
-				dPrecioTotal = UtilidadesNumero.redondea (dPrecioTotal, 2);		
 %>
 				<tr class="listaNonEditSelected" style="height:30px">
 					<td>&nbsp;</td>
