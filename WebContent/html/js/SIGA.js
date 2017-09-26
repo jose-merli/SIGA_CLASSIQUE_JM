@@ -2392,7 +2392,7 @@ function datepickerMaskValueChanged(datepickerInput){
 		if (!date){
 			error = true;
 			datepickerInput.val("");
-			alert("La fecha "+dateValue+" no es v�lida. Introduzca una fecha v�lida: " + datepickerInput.data("format"));		
+			alert("La fecha "+dateValue+" no es válida. Introduzca una fecha válida: " + datepickerInput.data("format"));		
 		} else {
 			var fecha = datepickerInput.val();
 			if (fecha){
