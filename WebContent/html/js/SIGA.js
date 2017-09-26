@@ -20,7 +20,7 @@
         }
     }
     
-    // Para los navegadores que no soportan la funci�n trim
+    // Para los navegadores que no soportan la función trim
     if(typeof String.prototype.trim !== 'function') {
     	  String.prototype.trim = function() {
     	    return this.replace(/^\s+|\s+$/g, ''); 
@@ -77,9 +77,9 @@ if (typeof jQuery == "undefined"){
 	} else {
 		headElement.appendChild(jqueryScript);
 	}
-	// Se establecen un n�mero m�ximo de intentos
+	// Se establecen un número máximo de intentos
 	// El primer intento espera un segundo y luego hace pool cada 500ms
-	var maxIntentos = 38; // unos 20 segundos como m�ximo para dar error
+	var maxIntentos = 38; // unos 20 segundos como máximo para dar error
 	var intento = 0;
 	var waitForLoad = function () {
 	    if (typeof jQuery != "undefined") {
@@ -89,7 +89,7 @@ if (typeof jQuery == "undefined"){
 	    	intento++;
 	        window.setTimeout(waitForLoad, 500);
 	    } else {
-	    	alert("Se ha producido un error al cargar la p�gina, por favor, intentelo de nuevo m�s tarde...");
+	    	alert("Se ha producido un error al cargar la página, por favor, intentelo de nuevo más tarde...");
 	    }
 	};
 	window.setTimeout(waitForLoad, 1000);
@@ -1844,7 +1844,7 @@ function jQueryLoaded(){
 				
 				//PAGINACION
 				if (tagSelect_select.data("paginated")){
-					console.debug("[tagSelect] construyendo paginaci�n...");					
+					console.debug("[tagSelect] construyendo paginación...");					
 					var paginatedDiv = jQuery(this).find("div.tagSelectPaginatedDiv");					
 					var page = tagSelect_select.data("page");
 					var pageSize = tagSelect_select.data("pagesize");
@@ -2163,7 +2163,7 @@ function searchPaginatedSelect(paginatedDiv, lastPage, loadNextPageUrl){
 			}
 		} else {
 			jQueryTop.unblockUI();
-			alert("Ning�n elemento encontrado por: " + searchText);
+			alert("Ningún elemento encontrado por: " + searchText);
 		}
 	}
 }
@@ -2218,7 +2218,7 @@ function cargarJqueryUI(){
 		    	intento++;
 		        window.setTimeout(waitForLoad, 500);
 		    } else {
-		    	alert("Se ha producido un error al cargar la p�gina, por favor, intentelo de nuevo m�s tarde...");
+		    	alert("Se ha producido un error al cargar la página, por favor, intentelo de nuevo más tarde...");
 		    }
 		};
 		window.setTimeout(waitForLoad, 1000);
@@ -2456,7 +2456,7 @@ function ajaxSubmit(form, iFrame){
 		iFrame.replaceWith("<div data-iframe='true' id="+iFrame.attr("id")+" name="+iFrame.attr("name")+" class="+iFrame.attr("class")+">" + data + "</div>");
 	}).fail(function(jqXHR, textStatus, errorThrown) {
 		console.error("Se ha producido un error al enviar el formulario: " + errorThrown);
-		alert("Se ha producido un error, por favor, int�ntelo de nuevo m�s tarde.");
+		alert("Se ha producido un error, por favor, inténtelo de nuevo más tarde.");
 	}).always(function(data_jqXHR, textStatus, jqXHR_errorThrown) {
 		
 	});
@@ -2758,7 +2758,7 @@ function tagSelectLoadNextPage(select, page, callSearch, loadNextPageUrl){
 						try{
 							dataObject[param.key] = param.value || '';
 						} catch (e){
-							console.error("Error al incluir alg�n par�metro en la carga del select");
+							console.error("Error al incluir algún parámetro en la carga del select");
 						}
 					});
 				}
@@ -2787,7 +2787,7 @@ function tagSelectLoadNextPage(select, page, callSearch, loadNextPageUrl){
 				console.debug("[tagSelect]" + select.attr("id")+" load page "+page+" FAIL! ERROR: " + errorThrown);
 				//alert("Se ha producido un error al cargar los datos");
 				tagSelectPaginatedDiv.find(".loading").remove();
-				tagSelectPaginatedDiv.find("ul").append("<li class='selectOption loading'><span class='selectOptionText'>Error, int�ntelo de nuevo</span></li>");
+				tagSelectPaginatedDiv.find("ul").append("<li class='selectOption loading'><span class='selectOptionText'>Error, inténtelo de nuevo</span></li>");
 			}).always(function(data_jqXHR, textStatus, jqXHR_errorThrown) {
 				select.data("loadingpage", false);
 				if (tagSelectPaginatedDiv.find("li.notFound").exists()){
@@ -2844,7 +2844,7 @@ function loadSelect(parentSelects, childrenId, setInitialValue, params){
 					dataObject[param.key] = param.value || '';
 					console.debug("ADDED param "+ param.key + " = " + dataObject[param.key]);
 				} catch (e){
-					console.error("Error al incluir alg�n par�metro en la carga del select");
+					console.error("Error al incluir algún parámetro en la carga del select");
 				}
 			});
 		}
@@ -3035,7 +3035,7 @@ function confirm(message, title, acceptText, cancelText) {
 */
 
 //Disable right mouse click Script
-var message = "Funci�n Deshabilitada!";
+var message = "Función Deshabilitada!";
 
 var semaforoPestana = true;
 
