@@ -319,3 +319,14 @@ Begin
   Proc_Act_Recursos(p_Codretorno, p_Datoserror);
   Dbms_Output.Put_Line(p_Codretorno || ': ' || p_Datoserror);
 End;
+
+
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('censo.fichaCliente.facturacion.servicios.avisobaja', '¡DE BAJA! - ', '0', 1, Sysdate, 0, '15');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('censo.fichaCliente.facturacion.servicios.avisobaja', 'DE BAIXA! - ', '0', 2, Sysdate, 0, '15');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('censo.fichaCliente.facturacion.servicios.avisobaja', '¡DE BAJA! - #EU', '0', 3, Sysdate, 0, '15');
+Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+Values  ('censo.fichaCliente.facturacion.servicios.avisobaja', '¡DE BAJA! - #GL', '0', 4, Sysdate, 0, '15');
+
