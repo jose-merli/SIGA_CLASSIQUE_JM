@@ -2850,11 +2850,11 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			        " ejgDesigna.Anioejg = ejg.anio and "+
 			        " ejgDesigna.Numeroejg = ejg.numero and "+
 			        " ejgDesigna.idInstitucion= ACTUACION.IDINSTITUCION and ejgDesigna.anioDesigna=ACTUACION.ANIO "+
-			        " and ejgDesigna.numeroDesigna= ACTUACION.NUMERO and ejgDesigna.idturno=ACTUACION.IDTURNO) AS SITUACION_PROCEDIMIENTO, "+
+			        " and ejgDesigna.numeroDesigna= ACTUACION.NUMERO and ejgDesigna.idturno=ACTUACION.IDTURNO and rownum = 1) AS SITUACION_PROCEDIMIENTO, "+
 			        " (select Nombre from cen_institucion where IDINSTITUCION=ACTUACION.IDINSTITUCION)AS NOMBRE_COLEGIO, "+
 			        " (select Abreviatura from cen_institucion where IDINSTITUCION=ACTUACION.IDINSTITUCION)AS NOMBRE_COLEGIO_ABREVIA, "+
 			        
-					" (select  f_siga_getsolicitantesejg(ejg.Idinstitucion, ejg.anio, ejg.numero, ejg.idtipoejg) "+
+					" replace((select wm_concat(f_siga_getsolicitantesejg(ejg.Idinstitucion, ejg.anio, ejg.numero, ejg.idtipoejg)) "+
 					" from scs_ejg ejg,scs_ejgdesigna ejgDesigna "+
 					" where ejgDesigna.Idtipoejg = ejg.idtipoejg "+
 					" and ejgDesigna.Idinstitucion = ejg.idinstitucion "+
@@ -2863,7 +2863,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 					" and ejgDesigna.idInstitucion =ACTUACION.idInstitucion "+
                     " and ejgDesigna.anioDesigna = ACTUACION.anio  "+    
                     " and ejgDesigna.numeroDesigna = ACTUACION.numero "+
-                    " and ejgDesigna.idturno = ACTUACION.idturno) AS DESIGNA_LISTA_SOLICITANTES_EJG "+
+                    " and ejgDesigna.idturno = ACTUACION.idturno),';',',') AS DESIGNA_LISTA_SOLICITANTES_EJG "+
 			            
 			  " from scs_actuaciondesigna ACTUACION "+
 			    " LEFT JOIN SCS_PROCEDIMIENTOS PROCEDIMIENTO_ACTUACION ON ACTUACION.idInstitucion = PROCEDIMIENTO_ACTUACION.idInstitucion AND PROCEDIMIENTO_ACTUACION.IDPROCEDIMIENTO = ACTUACION.IDPROCEDIMIENTO "+
