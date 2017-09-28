@@ -1,15 +1,9 @@
 package com.siga.beans;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Enumeration;
-import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -21,9 +15,6 @@ import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfSignatureAppearance;
-import com.lowagie.text.pdf.PdfStamper;
 import com.siga.Utilidades.FirmaPdfHelper;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.PaginadorCaseSensitiveBind;
@@ -33,6 +24,7 @@ import com.siga.Utilidades.UtilidadesString;
 import com.siga.facturacion.form.BusquedaFacturaForm;
 import com.siga.facturacion.form.ConsultaMorososForm;
 import com.siga.general.SIGAException;
+import com.siga.informes.InformeFactura;
 
 
 /**
@@ -2753,7 +2745,14 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 //		}
 //		return v;
 	}
-
+/**
+ * Este método aunque se llama consulta, también MODIFICA la tabla FAC_FACTURAS dependiendo del valor del parámetro actualizar
+ * @param facturaBean
+ * @param usuario
+ * @param actualizar ->> si es true modifica la tabla FAC_FACTURAS sino no.
+ * @return
+ * @throws ClsExceptions
+ */
 	public String consultarActNuevoEstadoFactura(FacFacturaBean facturaBean, Integer usuario, boolean actualizar) throws ClsExceptions{
 		
 		String nuevoEstado="";
@@ -2805,6 +2804,13 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			        if (!this.update(facturaLocalBean)) {
 			            throw new ClsExceptions("Error al actualizar el estado: "+this.getError());
 			        }
+			        try {
+			        //TODO: Si no se produce error regeneramos el pdf
+			        	InformeFactura infFactura = new InformeFactura(this.usrbean);
+			        	infFactura.generarPdfFacturaFirmada(null, facturaLocalBean, Boolean.TRUE);
+	    			}catch(Exception e){
+	    				
+	    			}
 			    }
 		    }
 		   
@@ -3039,7 +3045,18 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 						" WHERE " + facturaBean.C_IDINSTITUCION + " = " + facturaBean.getIdInstitucion() + 
 							" AND " + facturaBean.C_IDFACTURA + " = " + facturaBean.getIdFactura();
 			
-			return this.insertSQL(sql);					
+	
+			boolean respuesta = this.insertSQL(sql);	
+			
+			//Regeneramos factura
+			 try {
+	        	InformeFactura infFactura = new InformeFactura(this.usrbean);
+	        	infFactura.generarPdfFacturaFirmada(null, facturaBean, Boolean.TRUE);
+			}catch(Exception e){
+				//No ponemos nada, la ejecución debe de continuar
+			}
+			
+			return 	respuesta;		
 
 		} catch (Exception e) {
 			throw new ClsExceptions (e, "Error al actualizar la factura renegociada");
