@@ -330,3 +330,14 @@ Values  ('censo.fichaCliente.facturacion.servicios.avisobaja', '¡DE BAJA! - #EU'
 Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
 Values  ('censo.fichaCliente.facturacion.servicios.avisobaja', '¡DE BAJA! - #GL', '0', 4, Sysdate, 0, '15');
 
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.cen.cargaWS.manual.activo', 'Parámetro que indica si está disponible el colegio para seleccionarlo en el combo para una sincronización manual del censo.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.cen.cargaWS.manual.activo', 'Parámetro que indica si está disponible el colegio para seleccionarlo en el combo para una sincronización manual del censo.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.cen.cargaWS.manual.activo', 'Parámetro que indica si está disponible el colegio para seleccionarlo en el combo para una sincronización manual del censo.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.cen.cargaWS.manual.activo', 'Parámetro que indica si está disponible el colegio para seleccionarlo en el combo para una sincronización manual del censo.#GL', 0, '4', sysdate, 0, '19');
+
+
+insert into gen_parametros (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
+values ('CEN', 'CEN_WS_CARGA_MANUAL_ACTIVO', '0', sysdate, 0, 0, 'scs.parametro.cen.cargaWS.activo');
+insert into gen_parametros (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
+SELECT 'CEN', 'CEN_WS_CARGA_MANUAL_ACTIVO', '1', sysdate, 0, I.IDINSTITUCION, 'scs.parametro.cen.cargaWS.activo'
+FROM CEN_INSTITUCION I WHERE I.IDINSTITUCION IN (2001,2012,2033,2037,2045,2046,2052,2056,2066,2080,2081);
