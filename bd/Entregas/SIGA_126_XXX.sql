@@ -345,3 +345,4 @@ FROM CEN_INSTITUCION I WHERE I.IDINSTITUCION IN (2001,2012,2033,2037,2045,2046,2
 
 Pkg_Siga_Retenciones_Sjcs
 
+--126_008: Ejecutados en Integracion por AAG el 02/10/2017 a las 09:25
