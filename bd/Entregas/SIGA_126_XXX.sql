@@ -341,3 +341,7 @@ values ('CEN', 'CEN_WS_CARGA_MANUAL_ACTIVO', '0', sysdate, 0, 0, 'scs.parametro.
 insert into gen_parametros (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
 SELECT 'CEN', 'CEN_WS_CARGA_MANUAL_ACTIVO', '1', sysdate, 0, I.IDINSTITUCION, 'scs.parametro.cen.cargaWS.activo'
 FROM CEN_INSTITUCION I WHERE I.IDINSTITUCION IN (2001,2012,2033,2037,2045,2046,2052,2056,2066,2080,2081);
+
+
+Pkg_Siga_Retenciones_Sjcs
+
