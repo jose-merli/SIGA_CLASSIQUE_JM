@@ -710,22 +710,22 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_ARCHIVARFACT+"='0'");
 		} 
 		if (confirmarFacturacionForm.getFechaDesdeConfirmacion()!=null && !confirmarFacturacionForm.getFechaDesdeConfirmacion().trim().equals("")) {
-			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHACONFIRMACION+">=TO_DATE ('" + confirmarFacturacionForm.getFechaDesdeConfirmacion() + "', 'DD/MM/YYYY')");
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHACONFIRMACION+">=TO_DATE ('" + confirmarFacturacionForm.getFechaDesdeConfirmacion() + " 00:00:00', 'DD/MM/YYYY hh24:mi:ss')");
 		}
 		if (confirmarFacturacionForm.getFechaHastaConfirmacion()!=null && !confirmarFacturacionForm.getFechaHastaConfirmacion().trim().equals("")) {
-			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHACONFIRMACION+"<TO_DATE ('" + confirmarFacturacionForm.getFechaHastaConfirmacion() + "', 'DD/MM/YYYY')");
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHACONFIRMACION+"<TO_DATE ('" + confirmarFacturacionForm.getFechaHastaConfirmacion() + " 23:59:59', 'DD/MM/YYYY hh24:mi:ss')");
 		}
 		if (confirmarFacturacionForm.getFechaDesdeGeneracion()!=null && !confirmarFacturacionForm.getFechaDesdeGeneracion().trim().equals("")) {
-			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAREALGENERACION+">=TO_DATE ('" + confirmarFacturacionForm.getFechaDesdeGeneracion() + "', 'DD/MM/YYYY')");
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAREALGENERACION+">=TO_DATE ('" + confirmarFacturacionForm.getFechaDesdeGeneracion() + " 00:00:00', 'DD/MM/YYYY hh24:mi:ss')");
 		}
 		if (confirmarFacturacionForm.getFechaHastaGeneracion()!=null && !confirmarFacturacionForm.getFechaHastaGeneracion().trim().equals("")) {
-			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAREALGENERACION+"<TO_DATE ('" + confirmarFacturacionForm.getFechaHastaGeneracion() + "', 'DD/MM/YYYY')");
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAREALGENERACION+"<TO_DATE ('" + confirmarFacturacionForm.getFechaHastaGeneracion() + " 23:59:59', 'DD/MM/YYYY hh24:mi:ss')");
 		}
 		if (confirmarFacturacionForm.getFechaDesdePrevistaGeneracion()!=null && !confirmarFacturacionForm.getFechaDesdePrevistaGeneracion().trim().equals("")) {
-			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION+">=TO_DATE ('" + confirmarFacturacionForm.getFechaDesdePrevistaGeneracion() + "', 'DD/MM/YYYY')");
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION+">=TO_DATE ('" + confirmarFacturacionForm.getFechaDesdePrevistaGeneracion() + " 00:00:00', 'DD/MM/YYYY hh24:mi:ss')");
 		}
 		if (confirmarFacturacionForm.getFechaHastaPrevistaGeneracion()!=null && !confirmarFacturacionForm.getFechaHastaPrevistaGeneracion().trim().equals("")) {
-			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION+"<TO_DATE ('" + confirmarFacturacionForm.getFechaHastaPrevistaGeneracion() + "', 'DD/MM/YYYY')");
+			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION+"<TO_DATE ('" + confirmarFacturacionForm.getFechaHastaPrevistaGeneracion() + " 23:59:59', 'DD/MM/YYYY hh24:mi:ss')");
 		}
 		
 		// filtro por fecha de productos
