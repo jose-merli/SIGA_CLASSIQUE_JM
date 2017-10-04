@@ -1098,9 +1098,7 @@ public class Facturacion {
 			String sWhere = " WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = :1 " +
    							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDINSTITUCION +
    							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " =  FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +							
-							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM + " IS NOT NULL " + // Para fechas previstas de confirmacion adecuadas 
-							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM + " <= SYSDATE " +
-							" AND " + FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " IS NOT NULL " + // Solo las que estan generadas 
+							" AND " + FacFacturacionProgramadaBean.C_FECHACONFIRMACION + " IS NOT NULL " + // Solo las que estan confirmadas 
 							" AND " + FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " = " + FacEstadoConfirmFactBean.CONFIRM_FINALIZADA + // Para los estados de confirmacion adecuados 
 							
 							" AND " + FacFacturacionProgramadaBean.C_IDESTADOTRASPASO + " = " + FacEstadoConfirmFactBean.TRASPASO_PROCESANDO +
