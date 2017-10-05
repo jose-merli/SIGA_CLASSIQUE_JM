@@ -176,8 +176,8 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 				idXML = -1;
 				try {					
 					if (numeroErrores < NUM_ERROR_CONEXION) {
-//						if(isActivadoIntercambioEconomico){
-						if(scsEejgPeticionesBean.getIdInstitucion()!=null && scsEejgPeticionesBean.getIdInstitucion().intValue()==2003){
+						if(isActivadoIntercambioEconomico){
+//						if(scsEejgPeticionesBean.getIdInstitucion()!=null && scsEejgPeticionesBean.getIdInstitucion().intValue()==2003){
 							idXML = solicitudesEEJGInformacionCompleta.consultaInformacionCompletaAAPP(scsEejgPeticionesBean);
 						}else{
 							idXML = solicitudesEEJG.consultaInfoAAPP(scsEejgPeticionesBean);
