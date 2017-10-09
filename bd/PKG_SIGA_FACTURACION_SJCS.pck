@@ -2365,13 +2365,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 and fac.anio = Ac.anio
                 and fac.numero = Ac.numero
                 and fac.idactuacion = Ac.idactuacion)
-                and (Ac.Anulacion is null or Ac.Anulacion = '0')
-                and Ac.Fechajustificacion is not null
-                and trunc(Ac.Fechajustificacion) between trunc(V_DATOS_FACTURACION.FECHADESDE) and trunc(V_DATOS_FACTURACION.FECHAHASTA)
-                and Ac.Validada = '1'
-                and Ac.diadespues = 'N'
-                and FUN_ESDIAAPLICABLE(A.Fechahora, V_DIASAPLICABLES) = 1)
-            ORDER BY TIPOACTUACION;
+            and (Ac.Anulacion is null or Ac.Anulacion = '0')
+            and Ac.Fechajustificacion is not null
+            and trunc(Ac.Fechajustificacion) between trunc(V_DATOS_FACTURACION.FECHADESDE) and trunc(V_DATOS_FACTURACION.FECHAHASTA)
+            and Ac.Validada = '1'
+            and Ac.diadespues = 'N'
+            and FUN_ESDIAAPLICABLE(A.Fechahora, V_DIASAPLICABLES) = 1)
+        ORDER BY TIPOACTUACION;
 
     -- CURSORES PARA ACFG (no aplica tipos)
     cursor C_GUARDIAS_ACFG (
@@ -2404,6 +2404,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     and guacol.fechafin = trunc(asi.fechahora)
                     and guacol.idpersona = asi.idpersonacolegiado
                     and actasi.fechajustificacion between trunc(V_DATOS_FACTURACION.FECHADESDE) and trunc(V_DATOS_FACTURACION.FECHAHASTA)
+                    And actasi.Validada = '1'
                     and nvl(actasi.anulacion, '0') = '0'
                     and actasi.diadespues = 'S'
                     and not exists(
@@ -2436,6 +2437,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     and asi.anio = actasi.anio
                     and asi.numero = actasi.numero
                     and actasi.fechajustificacion between trunc(V_DATOS_FACTURACION.FECHADESDE) and trunc(V_DATOS_FACTURACION.FECHAHASTA)
+                    And actasi.Validada = '1'
                     and nvl(actasi.anulacion, '0') = '0'
                     and actasi.diadespues = 'S' -- solo las del día después.
                     and not exists( -- solo las NO FACTURADAS
@@ -4004,7 +4006,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 If v_designas_TOOMANY_FINS is Null Then
                   v_designas_TOOMANY_FINS := chr(10);
                 End If;
-                if v_designas_TOOMANY_FINS is Null Or length(v_designas_TOOMANY_FINS) < 3950 Then
+                if length(v_designas_TOOMANY_FINS) < 3950 Then
                   v_designas_TOOMANY_FINS := v_designas_TOOMANY_FINS || v_Actdesigna.Numerodesigna || chr(10);
                 Elsif length(v_designas_TOOMANY_FINS) > 3950 And length(v_designas_TOOMANY_FINS) < 3970 Then
                   v_designas_TOOMANY_FINS := v_designas_TOOMANY_FINS || '...';
@@ -4218,7 +4220,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 If v_designas_TOOMANY_FINS is Null Then
                   v_designas_TOOMANY_FINS := chr(10);
                 End If;
-                if v_designas_TOOMANY_FINS is Null Or length(v_designas_TOOMANY_FINS) < 3950 Then
+                if length(v_designas_TOOMANY_FINS) < 3950 Then
                   v_designas_TOOMANY_FINS := v_designas_TOOMANY_FINS || v_Actdesigna.Numerodesigna || chr(10);
                 Elsif length(v_designas_TOOMANY_FINS) > 3950 And length(v_designas_TOOMANY_FINS) < 3970 Then
                   v_designas_TOOMANY_FINS := v_designas_TOOMANY_FINS || '...';
@@ -10181,6 +10183,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                            AND ASI.NUMERO = ACT.NUMERO
                             AND NVL(ACT.ANULACION, '0') = '0' -- NO anulada
                             AND TRUNC(ACT.FECHAJUSTIFICACION)  BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA) -- con fecha de justificacion en el rango de fechas de la facturacion
+                            And ACT.Validada = '1'
                             AND ACT.DIADESPUES = 'N' -- actuacion que NO es del dia despues (NO es fuera de guardia)
                             AND NOT EXISTS ( -- sin facturar
                                 SELECT 1
@@ -13266,6 +13269,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
           --esta justificada,
        And Trunc(Act.Fechajustificacion) <= p_Fechahasta
+       And Act.Validada = '1'
 
           --no esta anulada,
        And Asi.Idestadoasistencia <> c_Estado_Asistencia_Anulada
@@ -13404,6 +13408,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
           --esta justificada,
        And Trunc(Act.Fechajustificacion) <= p_Fechahasta
+       And Act.Validada = '1'
 
           --no esta anulada,
        And Asi.Idestadoasistencia <> c_Estado_Asistencia_Anulada
@@ -13522,6 +13527,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
           --esta justificada,
        And Trunc(Act.Fechajustificacion) <= p_Fechahasta
+       And Act.Validada = '1'
 
           --no esta anulada,
        And Asi.Idestadoasistencia <> c_Estado_Asistencia_Anulada
@@ -14785,7 +14791,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             AND ASI.ANIO = ACT.ANIO
             AND ASI.NUMERO = ACT.NUMERO
             AND ACT.FECHAJUSTIFICACION BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA)
-            AND ACT.VALIDADA = '1' -- Validada
+            And act.Validada = '1'
             AND NVL(ACT.ANULACION, '0') = '0'
             AND ACT.DIADESPUES = 'S' -- solo las del día después
             AND NOT EXISTS ( -- solo las NO FACTURADAS
