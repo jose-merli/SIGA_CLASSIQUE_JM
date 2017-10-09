@@ -613,19 +613,19 @@ public class Facturacion {
 						
 						switch (ficherosPDF.get(i).getFormatoDescarga()) {
 						case 1:
-								 nombreFicherosarrays = auxFile.getName().split("-");
+								 nombreFicherosarrays = auxFile.getName().split("-",2);
 								 ze = new ZipEntry(nombreFicherosarrays[1]);
 							break;
 						case 2:
 							//Quitamos la extensión y añadimos el nombre más la extensión
 								String[] separacionExtensionDelFichero = auxFile.getName().split(Pattern.quote("."));
 								String[] separacionNombreColegiado = ficherosPDF.get(i).getNombreFacturaFichero().split("-");
-								nombreFicherosarrays = separacionExtensionDelFichero[0].split("-");
+								nombreFicherosarrays = separacionExtensionDelFichero[0].split("-",2);
 								
 								ze = new ZipEntry(nombreFicherosarrays[1] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
 							break;
 						case 3:
-								nombreFicherosarrays = auxFile.getName().split("-");
+								nombreFicherosarrays = auxFile.getName().split("-",2);
 								ze = new ZipEntry(ficherosPDF.get(i).getNombreFacturaFichero()+ nombreFicherosarrays[1]);
 							break;
 						case -1: //Tipos de ficheros especiales cuyo nombre no se ha de modificar
@@ -633,7 +633,7 @@ public class Facturacion {
 						break;
 	
 						default:
-							nombreFicherosarrays = auxFile.getName().split("-");
+							nombreFicherosarrays = auxFile.getName().split("-",2);
 							ze = new ZipEntry(ficherosPDF.get(i).getNombreFacturaFichero()+  nombreFicherosarrays[1]);
 							break;
 						}
@@ -1071,7 +1071,7 @@ public class Facturacion {
 		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDINSTITUCION, idInstitucion);
 		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
 		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, idSerieFacturacion);
-		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "sysdate");
+		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHAMODIFICACION, "sysdate");
 		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOTRASPASO, estado);
 		String [] camposTraspaso = {FacFacturacionProgramadaBean.C_IDESTADOTRASPASO};
 		FacFacturacionProgramadaAdm facadm = new FacFacturacionProgramadaAdm(this.usrbean);
@@ -1098,9 +1098,7 @@ public class Facturacion {
 			String sWhere = " WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = :1 " +
    							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDINSTITUCION +
    							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " =  FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +							
-							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM + " IS NOT NULL " + // Para fechas previstas de confirmacion adecuadas 
-							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM + " <= SYSDATE " +
-							" AND " + FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " IS NOT NULL " + // Solo las que estan generadas 
+							" AND " + FacFacturacionProgramadaBean.C_FECHACONFIRMACION + " IS NOT NULL " + // Solo las que estan confirmadas 
 							" AND " + FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " = " + FacEstadoConfirmFactBean.CONFIRM_FINALIZADA + // Para los estados de confirmacion adecuados 
 							
 							" AND " + FacFacturacionProgramadaBean.C_IDESTADOTRASPASO + " = " + FacEstadoConfirmFactBean.TRASPASO_PROCESANDO +
@@ -1289,7 +1287,7 @@ public class Facturacion {
     	    
     	    String asunto = genParametrosService.getValorParametro(AppConstants.IDINSTITUCION_2000, PARAMETRO.TRASPASO_FACTURAS_MAILRESUMEN_ASUNTO, MODULO.ECOM);
     	    SigaServiceHelperService serviceHelperService = (SigaServiceHelperService) BusinessManager.getInstance().getService(SigaServiceHelperService.class);
-    	    serviceHelperService.enviarCorreo(from, bccArray, asunto, body, new File(rutaFichero + nombreFichero), GEN_PROPERTIES.mail_smtp_actualizacioncenso_host, GEN_PROPERTIES.mail_smtp_actualizacioncenso_user, GEN_PROPERTIES.mail_smtp_actualizacioncenso_pwd);
+    	    serviceHelperService.enviarCorreo(from, bccArray, asunto, body, new File(rutaFichero + nombreFichero), GEN_PROPERTIES.mail_smtp_actualizacioncenso_host, GEN_PROPERTIES.mail_smtp_actualizacioncenso_port, GEN_PROPERTIES.mail_smtp_actualizacioncenso_user, GEN_PROPERTIES.mail_smtp_actualizacioncenso_pwd);
 			
     	} catch(Exception e) {
     		ClsLogging.writeFileLog("ERROR GENERAL EN TRY TRASPASO FACTURAS.", 10);
@@ -3080,29 +3078,29 @@ public class Facturacion {
 							FacSerieFacturacionBean beanSerieFacturacion = vSeriesFacturacion.get(0);
 							switch (beanSerieFacturacion.getIdNombreDescargaPDF()) {
 							case 1:
-									 nombreFicherosarrays = fichero.getName().split("-");
+									 nombreFicherosarrays = fichero.getName().split("-",2);
 									 request.setAttribute("nombreFichero",nombreFicherosarrays[1]);
 								break;
 							case 2:
 								//Quitamos la extensión y añadimos el nombre más la extensión
 								String[] separacionExtensionDelFichero = fichero.getName().split(Pattern.quote("."));
 								String[] separacionNombreColegiado = nombreColegiado.split("-");
-								nombreFicherosarrays = separacionExtensionDelFichero[0].split("-");
+								nombreFicherosarrays = separacionExtensionDelFichero[0].split("-",2);
 								
 								request.setAttribute("nombreFichero",nombreFicherosarrays[1] + "-"+separacionNombreColegiado[0]+"."+separacionExtensionDelFichero[1]);
 								break;
 							case 3:
-								nombreFicherosarrays = fichero.getName().split("-");
+								nombreFicherosarrays = fichero.getName().split("-",2);
 								request.setAttribute("nombreFichero",nombreColegiado+ nombreFicherosarrays[1]);
 								break;
 		
 							default:
-								nombreFicherosarrays = fichero.getName().split("-");
+								nombreFicherosarrays = fichero.getName().split("-",2);
 								request.setAttribute("nombreFichero",nombreColegiado+  nombreFicherosarrays[1]);
 								break;
 							}
 						}else{
-							nombreFicherosarrays = fichero.getName().split("-");
+							nombreFicherosarrays = fichero.getName().split("-",2);
 							request.setAttribute("nombreFichero",nombreColegiado+ nombreFicherosarrays[1]);
 						}
 					}

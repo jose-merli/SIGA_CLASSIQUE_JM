@@ -1,5 +1,7 @@
 package com.siga.beans;
 
+import org.redabogacia.sigaservices.app.AppConstants.TiposEnvioEnum;
+
 /**
  * Implementa las operaciones sobre el bean de la tabla CAJG_REMESA
  * 
@@ -8,6 +10,7 @@ package com.siga.beans;
  */
 
 public class CajgRemesaBean extends MasterBean{
+	
 	
 	/**
 	 * 
@@ -23,10 +26,9 @@ public class CajgRemesaBean extends MasterBean{
 	private String descripcion;
 	private Integer idIntercambio;
 	private Long idecomcola;
+	private Short idTipoRemesa;  
 	
 	
-	/*
-	 *  Nombre de Tabla*/
 	
 	static public String T_NOMBRETABLA = "CAJG_REMESA";
 	
@@ -40,6 +42,7 @@ public class CajgRemesaBean extends MasterBean{
 	static public final String	C_DESCRIPCION	=				"DESCRIPCION";
 	static public final String	C_IDINTERCAMBIO	=				"IDINTERCAMBIO";
 	static public final String	C_IDECOMCOLA	=				"IDECOMCOLA";
+	static public final String	C_IDTIPOREMESA	=				"IDTIPOREMESA";
 	
 	
 	public Integer getIdInstitucion() {
@@ -90,7 +93,53 @@ public class CajgRemesaBean extends MasterBean{
 	public void setIdecomcola(Long idecomcola) {
 		this.idecomcola = idecomcola;
 	}
+	/*
+	 *  Nombre de Tabla*/
 	
+	public Short getIdTipoRemesa() {
+		return idTipoRemesa;
+	}
+	public void setIdTipoRemesa(Short idTipoRemesa) {
+		this.idTipoRemesa = idTipoRemesa;
+	}
+	
+	public static enum TIPOREMESA {
+		
+		REMESA_EJGS ("0","REMESA"),
+		REMESA_ECONOMICA ("1", "REMESAECONOMICA");
+		
+		
 
+
+	    private final String idTipo;   
+		private final String contador;   
+	    
+	    
+		TIPOREMESA(String idTipo, String contador) {
+	    	this.idTipo = idTipo;
+	        this.contador = contador;
+	    }
+		
+		public String getIdTipo() {
+			return idTipo;
+		}
+
+		public String getContador() {
+			return contador;
+		}
+		public static TIPOREMESA getEnum(String idTipo){
+			for(TIPOREMESA sc : values()){
+				if (sc.getIdTipo().equalsIgnoreCase(idTipo)){
+					return sc;
+				}
+			}
+			return null;
+		}
+		
+		
+		
+
+	}
+	
 	
 }

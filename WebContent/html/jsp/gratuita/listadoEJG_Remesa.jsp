@@ -43,6 +43,7 @@
 
 <bean:define id="registrosSeleccionados" name="DefinicionRemesas_CAJG_Form" property="registrosSeleccionados" type="java.util.ArrayList"/>
 <bean:define id="datosPaginador" name="DefinicionRemesas_CAJG_Form" property="datosPaginador" type="java.util.HashMap"/>
+<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 
 <% 
 	String app=request.getContextPath(); 
@@ -57,7 +58,7 @@
 	String idremesa=(String)request.getAttribute("idremesa");
 	
 	
-	Boolean isDatosEconomicos = (Boolean)request.getAttribute("ISDATOSECONOMICOS");
+	
 	
 	/** PAGINADOR ***/
 	Vector resultado=null;
@@ -84,7 +85,7 @@
 		totalRegistros = "0";
 		registrosPorPagina = "0";
 	}	 
-	String action=app+"/JGR_E-Comunicaciones_Gestion.do?noReset=true&idRemesa=" + idremesa;
+	String parametrosAction=app+path+".do?noReset=true&idRemesa=" + idremesa;
 	String modo=(String)request.getSession().getAttribute("accion");
 	CajgRemesaEstadosAdm admBean =  new CajgRemesaEstadosAdm(usr);	
 	int idEstado = admBean.UltimoEstadoRemesa(usr.getLocation(), idremesa);
@@ -105,91 +106,107 @@
 		buttons="";	
 		
 	} else if (idEstado == 0) {//INICIADA
-		if (cajgConfig != 0) {
-			buttons="g,ae";//guardar y añadir expedientes
-			if (isPCajgTXT) {
-				buttons+=",val,gf";//generar fichero txt
-			} else if (cajgConfig == 2) {				
-				buttons+=",val,ftp";//validar remesa, envio ftp
-			} else if (cajgConfig == 3) {
-				if (tipoPCAJGGeneral == 1) {
-					buttons+=",ws";//envio WebService
-				} else {
-					buttons+=",val,gxml";//generar XML	
-				}
-			} else if (cajgConfig == 4) {//PAMPLONA
-				buttons+=",val,ws";//envio WebService
-			} else if (cajgConfig == 6) {
-				if(versionAsignaVereda!=null && versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion())){
-					buttons+=",val,ws";//generar XML
-				}else
-					buttons+=",val,gxml";//generar XML			
-				
-			} else if (cajgConfig == 7) {
-				buttons+=",val,ws";//envio WebService GVasco
-			} else if (cajgConfig == 8) {
-				buttons+=",val,ws";//envio WebService GenValenciana
-			} else if (cajgConfig == 9 ) {
-				if (tipoPCAJGGeneral == 1) {
-					buttons+=",val,ws";//envio WebService EJIS
-					
-				} else {
-					buttons+=",gf";//genera fichero
+		
+		if(path.equals("/JGR_E-Comunicaciones_InfEconomico") ){
+			buttons+="g,ae,val,ws";//envio WebService
+		}else{
+			if (cajgConfig != 0) {
+				buttons="g,ae";//guardar y añadir expedientes
+				if (isPCajgTXT) {
+					buttons+=",val,gf";//generar fichero txt
+				} else if (cajgConfig == 2) {				
+					buttons+=",val,ftp";//validar remesa, envio ftp
+				} else if (cajgConfig == 3) {
+					if (tipoPCAJGGeneral == 1) {
+						buttons+=",ws";//envio WebService
+					} else {
+						buttons+=",val,gxml";//generar XML	
+					}
+				} else if (cajgConfig == 4) {//PAMPLONA
+					buttons+=",val,ws";//envio WebService
+				} else if (cajgConfig == 6) {
+					if(versionAsignaVereda!=null && versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion())){
+						buttons+=",val,ws";//generar XML
+					}else
+						buttons+=",val,gxml";//generar XML			
+				} else if (cajgConfig == 7) {
+					buttons+=",val,ws";//envio WebService GVasco
+				} else if (cajgConfig == 8) {
+					buttons+=",val,ws";//envio WebService GenValenciana
+				} else if (cajgConfig == 9 ) {
+					if (tipoPCAJGGeneral == 1) {
+						buttons+=",val,ws";//envio WebService EJIS
 						
+					} else {
+						buttons+=",gf";//genera fichero
+							
+					}
+					//ELIMINAR ,gf CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
+					
+				}else if (cajgConfig == 10 ) {
+					buttons+=",val,gxml";//envio WebService EJIS de Canarias
+						//buttons+=",val,ws";//envio WebService EJIS de Canarias
+						//ELIMINAR ,gxml CUANDO LA INTEGRACION DE CANARIAS SEA COMPLETA
 				}
-				//ELIMINAR ,gf CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
-				
 			}
 		}
-	
 	} else if (idEstado == 1) {//GENERADA
-		if (cajgConfig != 0) {
+		if(path.equals("/JGR_E-Comunicaciones_InfEconomico") ){
 			buttons="g";//guardar
-			if (isPCajgTXT || cajgConfig == 2) {//QUITAR EL == 2 CUANDO SEA DEFINITIVO EL ENVIO XML
-				buttons+=",d";//descargar
-			} else if (cajgConfig == 3 && tipoPCAJGGeneral != 1) {
-				buttons+=",d";//descargar
-			} else if (cajgConfig == 6) {
-				if(versionAsignaVereda==null || !versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion()))
+		}else{
+			if (cajgConfig != 0) {
+				buttons="g";//guardar
+				if (isPCajgTXT || cajgConfig == 2) {//QUITAR EL == 2 CUANDO SEA DEFINITIVO EL ENVIO XML
 					buttons+=",d";//descargar
-				
-					
-			}else if (cajgConfig == 9) {//ELIMINAR CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
-				if (tipoPCAJGGeneral == 0) {
-					buttons+=",d";//descarga envio
-						
+				} else if (cajgConfig == 3 && tipoPCAJGGeneral != 1) {
+					buttons+=",d";//descargar
+				} else if (cajgConfig == 6) {
+					if(versionAsignaVereda==null || !versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion()))
+						buttons+=",d";//descargar
+				}else if (cajgConfig == 9) {//ELIMINAR CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
+					if (tipoPCAJGGeneral == 0) {
+						buttons+=",d";//descarga envio
+							
+					}
+				}else if (cajgConfig == 10) {//DESCARGAR XML DE CANARIAS
+					buttons+=",ftp";//descarga envio
 				}
 			}
 		}
-	
 	} else if (idEstado == 2) {//enviada
-		if (cajgConfig != 0) {
-			buttons="g";//guardar
-			if (cajgConfig == 5) {
-				buttons+=",d,mri";//descargar//marcar como respondidos con errores
-			}else if (isPCajgTXT) {
-				buttons+=",d";//descargar
-			} else if (cajgConfig == 2 && !SIGAWSClientAbstract.isRespondida(idInstitucion, Integer.parseInt(idremesa))) {
-				if (tieneTXT){
-					buttons+=",d";//descargar //QUITAR EL d y el tieneTXT CUANDO SEA DEFINITIVO EL ENVIO XML	
-				} else {
-					buttons+=",respFTP";//obtener respuesta
-				}				
-			} else if (cajgConfig == 2 && SIGAWSClientAbstract.isRespondida(idInstitucion, Integer.parseInt(idremesa))) {
-				if (tieneTXT){
-					buttons+=",d";//descargar //QUITAR EL d y el tieneTXT CUANDO SEA DEFINITIVO EL ENVIO XML	
-				} else {
-					buttons+=",resolucionFTP";//obtener resoluciones
-				}
-			} else if (cajgConfig == 3 && tipoPCAJGGeneral != 1) {
-				buttons+=",d";//descargar
-			} else if (cajgConfig == 6) {
-				if(versionAsignaVereda==null || !versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion()))
+		if(path.equals("/JGR_E-Comunicaciones_InfEconomico") ){
+			buttons+="g";//hA HABIDO UN ERROR EN LA RESPUESTA
+		}else{
+			if (cajgConfig != 0) {
+				buttons="g";//guardar
+				if (cajgConfig == 5) {
+					buttons+=",d,mri";//descargar//marcar como respondidos con errores
+				}else if (isPCajgTXT) {
 					buttons+=",d";//descargar
-			}else if (cajgConfig == 9) {//ELIMINAR CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
-				if (tipoPCAJGGeneral == 0) {
-					buttons+=",d";//descarga envio
-						
+				} else if (cajgConfig == 2 && !SIGAWSClientAbstract.isRespondida(idInstitucion, Integer.parseInt(idremesa))) {
+					if (tieneTXT){
+						buttons+=",d";//descargar //QUITAR EL d y el tieneTXT CUANDO SEA DEFINITIVO EL ENVIO XML	
+					} else {
+						buttons+=",respFTP";//obtener respuesta
+					}				
+				} else if (cajgConfig == 2 && SIGAWSClientAbstract.isRespondida(idInstitucion, Integer.parseInt(idremesa))) {
+					if (tieneTXT){
+						buttons+=",d";//descargar //QUITAR EL d y el tieneTXT CUANDO SEA DEFINITIVO EL ENVIO XML	
+					} else {
+						buttons+=",resolucionFTP";//obtener resoluciones
+					}
+				} else if (cajgConfig == 3 && tipoPCAJGGeneral != 1) {
+					buttons+=",d";//descargar
+				} else if (cajgConfig == 6) {
+					if(versionAsignaVereda==null || !versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion()))
+						buttons+=",d";//descargar
+				}else if (cajgConfig == 9) {//ELIMINAR CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
+					if (tipoPCAJGGeneral == 0) {
+						buttons+=",d";//descarga envio
+							
+					}
+				}else if (cajgConfig == 10) {//DESCARGAR XML DE CANARIAS
+					//buttons+=",d";//descarga envio
 				}
 			}
 		}
@@ -197,10 +214,12 @@
 	}else if (idEstado == 3) {
 		buttons="g";//guardar
 		if (cajgConfig == 5) {
-			buttons+=",d,mri";
+			if(!path.equals("/JGR_E-Comunicaciones_InfEconomico") )
+				buttons+=",d,mri";
+		}else if (cajgConfig == 10) {//DESCARGAR XML DE CANARIAS
+			buttons+=",d";//descarga envio
 		}
-		if(isDatosEconomicos.booleanValue())
-			buttons+=",com";//comunicar
+		
 	}
 %>
 
@@ -233,8 +252,8 @@
 		
 		function accionVolver(){
 			sub();	
+			
 			var miForm = document.forms[0];
-			miForm.action="./JGR_E-Comunicaciones_Gestion.do";	
 			miForm.modo.value="abrir";
 			miForm.volver.value="SI";
 			miForm.idRemesa.value=<%=idremesa%>;
@@ -330,7 +349,9 @@
 </head>
 
 <body onload="inicio();cargarChecks();checkTodos();">
-	<html:form action="/JGR_E-Comunicaciones_Gestion.do?noReset=true" method="post" target="mainWorkArea" style="display:none">
+
+
+	<html:form action="${path}?noReset=true" method="post" target="mainWorkArea" style="display:none">
 		<input type="hidden" name="modo" value="">
 		<!-- RGG: cambio a formularios ligeros -->
 		<input type="hidden" name="actionModal" value="">
@@ -346,6 +367,7 @@
 		<html:hidden property="datosPaginador"  styleId="datosPaginador" />
 		<html:hidden property="seleccionarTodos"  styleId="seleccionarTodos" />
 		<html:hidden property="datosSolicInformeEconomico"  styleId="datosSolicInformeEconomico" />
+		<html:hidden property = "idTipoRemesa" />
 		
 		
 	</html:form>	
@@ -374,18 +396,7 @@
 			gratuita.busquedaEJG.literal.solicitante, 
 			gratuita.pcajg.listadoEJGremesa.enNuevaRemesa," />
 	<c:set var="columnSizes" value="22,5,5,8,20,22,8,10" />
-	<%	if(isDatosEconomicos.booleanValue()&&idEstado==3){ %>
-	
-		<c:set var="columnNames" value="<input type='checkbox' name='chkGeneral' id='chkGeneral' onclick='cargarChecksTodos(this);'/>,
-			gratuita.busquedaEJG.literal.turnoGuardiaEJG,
-			gratuita.busquedaEJG.literal.anyo, 
-			gratuita.busquedaEJG.literal.codigo, 
-			gratuita.listadoActuacionesAsistencia.literal.fecha, 
-			gratuita.busquedaEJG.literal.estadoEJG, 
-			gratuita.busquedaEJG.literal.solicitante, 
-			gratuita.pcajg.listadoEJGremesa.enNuevaRemesa,Estado I.Ec," />
-		<c:set var="columnSizes" value="5,18,5,5,8,15,18,8,8,10" />
-	<%} else if((idEstado==2 ||idEstado==3)&& cajgConfig==5 ){%>
+	<%	 if((idEstado==2 ||idEstado==3)&& cajgConfig==5 ){%>
 		<c:set var="columnNames" value="<input type='checkbox' name='chkGeneral' id='chkGeneral' onclick='cargarChecksTodos(this);'/>,
 			gratuita.busquedaEJG.literal.turnoGuardiaEJG,
 			gratuita.busquedaEJG.literal.anyo, 
@@ -424,13 +435,11 @@
 		    	Row fila = (Row)resultado.elementAt(recordNumber-1);
 				Hashtable registro = (Hashtable) fila.getRow();
 				String idEstadoEJGRemesa = registro.get("IDESTADOEJGREMESA")!=null?(String)registro.get("IDESTADOEJGREMESA"):""; 
-				// String permitirSolInfEconomico = registro.get("PERMITIRSOLINFECONOMICO")!=null?(String)registro.get("PERMITIRSOLINFECONOMICO"):"0";
-				String permitirSolInfEconomico = "1";
+				 String permitirSolInfEconomico = registro.get("PERMITIRSOLINFECONOMICO")!=null?(String)registro.get("PERMITIRSOLINFECONOMICO"):"0";
+				//String permitirSolInfEconomico = "1";
 				String registroError = registro.get("ERRORES")!=null&&!registro.get("ERRORES").toString().equals("")?registro.get("ERRORES").toString():"0"; 
 				String deshabilitarCheck = "disabled";
-				if(isDatosEconomicos.booleanValue() && idEstado==3)
-					deshabilitarCheck = permitirSolInfEconomico.equals("1")?"":"disabled='disabled'";
-				else if(idEstado==2 ||idEstado==3)
+				if(idEstado==2 ||idEstado==3)
 					deshabilitarCheck = registroError.equals("0")?"":"disabled='disabled'";
 					
 				
@@ -458,27 +467,7 @@
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' elementos="<%=elems%>" botones="<%=botones%>" visibleconsulta="false" visibleEdicion="false" pintarespacio="false" clase="listaNonEdit" modo="<%=modo%>">
 					
 					<%
-					if(isDatosEconomicos.booleanValue()&&idEstado==3){ %>
-					<td align="center">
-						<%String valorCheck = registro.get("IDINSTITUCION")+"||"+registro.get("IDTIPOEJG")+"||"+registro.get("ANIO")+"||"+registro.get("NUMERO")+"||"+registro.get("IDEJGREMESA")+"||"+registro.get("NUMEROINTERCAMBIO")+"||"+registro.get("PERMITIRSOLINFECONOMICO");
-						boolean isChecked = false;
-						for (int z = 0; z < registrosSeleccionados.size(); z++) {
-							Hashtable clavesRegistro = (Hashtable) registrosSeleccionados.get(z);
-							String clave = (String)clavesRegistro.get("CLAVE");
-							if (valorCheck.equals(clave) && permitirSolInfEconomico.equals("1")) {
-								isChecked = true;
-								break;
-							}
-						}if (isChecked) {%>
-								<input type="checkbox" value="<%=valorCheck%>"  id="<%=valorCheck%>" name="chkPersona" checked <%=deshabilitarCheck%> onclick="pulsarCheck(this)">
-							<%} else {%>
-								<input type="checkbox" value="<%=valorCheck%>" id="<%=valorCheck%>"   name="chkPersona" <%=deshabilitarCheck%> onclick="pulsarCheck(this)" >
-						<%}%>
-					
-					
-					
-					</td>	
-					<%}else if((idEstado==2 ||idEstado==3)&& cajgConfig==5){%>
+					 if((idEstado==2 ||idEstado==3)&& cajgConfig==5){%>
 						
 						<td align="center">
 						<%String valorCheck = registro.get("IDINSTITUCION")+"||"+registro.get("IDTIPOEJG")+"||"+registro.get("ANIO")+"||"+registro.get("NUMERO")+"||"+registro.get("IDEJGREMESA")+"||"+registro.get("NUMEROINTERCAMBIO")+"||"+registro.get("PERMITIRSOLINFECONOMICO");
@@ -527,20 +516,7 @@
 					<td><%=(String)registro.get(ScsPersonaJGBean.C_NOMBRE) + " " + (String)registro.get(ScsPersonaJGBean.C_APELLIDO1) + " " + (String)registro.get(ScsPersonaJGBean.C_APELLIDO2)%>&nbsp;</td>
 					<td><%=enNuevaRemesa%></td>
 					
-					<%
-					if(isDatosEconomicos.booleanValue()&&idEstado>=2){ %>
-						<td>
-						<% if(idEstadoEJGRemesa.equals("")) {%>
-							&nbsp;
-							<% }else if(idEstadoEJGRemesa.equals("2")) {%>
-								Envío solicitado
-							<% }else if(idEstadoEJGRemesa.equals("3")) {%>
-								Entregado correctamnte
-							<% }else if(idEstadoEJGRemesa.equals("4")) {%>
-								Entregado con errores 
-							<% } %>
-						</td>
-						<%} %>
+					
 				</siga:FilaConIconos>		
 <% 	
 				recordNumber++;
@@ -569,7 +545,7 @@ if (  datosPaginador!=null && datosPaginador.get("datos")!=null && !datosPaginad
 						clase="paginator" 
 						divStyle="position:absolute; width:100%; height:20; z-index:3; bottom:28px; left: 0px"
 						distanciaPaginas=""
-						action="<%=action%>" />
+						action="<%=parametrosAction%>" />
 <%
 	}
 %>

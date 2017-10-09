@@ -50,8 +50,13 @@ public class InformeEejg extends MasterReport
 			//AQUI SE CAMBIA LA LLAMADA A LA PLATAFORMA DE FIRMA (PFD)
 			csv = mapParameters.get("csv");
 			if(csv != null && !csv.equals("")){
+				String contenidoPDF = null;
+				//LLamamos al servico de EEJG para obtener el PDF a traves de la PFD
+				
 				SolicitudesEEJG solicitudesEEJG = new SolicitudesEEJG();
-				String contenidoPDF = solicitudesEEJG.getDocumentoTO(csv);
+				contenidoPDF = solicitudesEEJG.getDocumentoTO(csv);
+			
+				
 				file = generarInformeEejg(contenidoPDF,mapParameters);
 			
 			} else {

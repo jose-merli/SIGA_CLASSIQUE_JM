@@ -93,6 +93,9 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 			//forward =this.abrir(mapping,miForm,request,response);
 			String accion = miForm.getModo();
 			String fechaConsultaTurno =  (String)request.getSession().getAttribute("fechaConsultaInscripcionTurno");
+			if(accion == null){
+				fechaConsultaTurno=null;
+			}
 			
 //			if(fechaConsultaTurno!=null){
 //				if(miForm.getFechaConsulta()==null || miForm.getFechaConsulta().equals(fechaConsultaTurno)){
@@ -101,7 +104,7 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 //			}
 			if(fechaConsultaTurno!=null){
 				if(miForm.getFechaConsulta()==null){
-					miForm.setFechaConsulta("sysdate");
+					miForm.setFechaConsulta(fechaConsultaTurno);
 				}
 			}
 			else{
@@ -109,7 +112,6 @@ public class DefinirTurnosLetradoAction extends MasterAction {
 			}
 			if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir") || accion.equalsIgnoreCase("abrirTurnosLimpiar")){
 				borrarPaginador(request, paginadorPenstania);
-				
 				forward =this.abrirTurnosPaginados(mapping,miForm,request,response);
 			}else if (accion.equalsIgnoreCase("abrirTurnosPaginados")){
 				forward =this.abrirTurnosPaginados(mapping,miForm,request,response);

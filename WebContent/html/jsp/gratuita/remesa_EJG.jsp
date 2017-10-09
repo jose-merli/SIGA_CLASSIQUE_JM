@@ -97,7 +97,7 @@
 			subirFicheroRespuesta = versionAsignaVereda==null || !versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion());
 		}
 	}
-	Boolean isDatosEconomicos = (Boolean)request.getAttribute("ISDATOSECONOMICOS");
+	
 	
 %>
 
@@ -282,8 +282,8 @@
 </head>
 
 <body onload="buscarGrupos();cargadatosRemesa();ajusteAlto('resultado1');">
-	
-	<html:form action="/JGR_E-Comunicaciones_Gestion.do?noReset=true" method="POST" target="resultado" enctype="multipart/form-data">
+	<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
+	<html:form action="${path}?noReset=true" method="POST" target="resultado" enctype="multipart/form-data">
 		<html:hidden property = "modo" value = "inicio"/>
 		<html:hidden property = "idInstitucion" value = "<%=usr.getLocation()%>"/>
 		<html:hidden property = "actionModal" value = ""/>
@@ -292,6 +292,7 @@
 		<html:hidden property = "idEstado" value = "<%=String.valueOf(idEstado)%>"/>
 		<html:hidden property="seleccionarTodos" />
 		<html:hidden property="datosSolicInformeEconomico" />
+		<html:hidden property = "idTipoRemesa" />
 		
 		<html:hidden  name="DefinicionRemesas_CAJG_Form" property="accion"/>
 	
@@ -341,12 +342,7 @@
 								<option value="3"><siga:Idioma key="cajg.opcion.conErroresAntesEnvio"/></option>
 								<option value="4"><siga:Idioma key="cajg.opcion.conErroresDespuesEnvio"/></option>
 								<option value="5"><siga:Idioma key="cajg.opcion.conErroresNoEnNuevaRemesa"/></option>
-								<%if(isDatosEconomicos!=null && isDatosEconomicos.booleanValue() && idEstado==2){ %>
-									<option value="6"><siga:Idioma key="cajg.opcion.informeEconomicoSol"/></option>
-									<option value="7"><siga:Idioma key="cajg.opcion.informeEconomicoNoSol"/></option>
-									<option value="8"><siga:Idioma key="cajg.opcion.informeEconomicoOk"/></option>
-									<option value="9"><siga:Idioma key="cajg.opcion.informeEconomicoKo"/></option>
-								<%} %>
+								
 	
 								
 								

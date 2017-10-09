@@ -1,5 +1,8 @@
 package com.siga.beans;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 import javax.transaction.UserTransaction;
@@ -8,6 +11,7 @@ import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -174,65 +178,60 @@ public class CenColaCambioLetradoAdm extends MasterBeanAdministrador
 		}
 	} //getNuevoId()
 	
-	public void chequearCola() 
+	/**
+	 * Revisa si hay algun registro en la cola de cambios de letrado, lo trata y lo elimina de la cola.
+	 * Se consulta la cola despues de cada tratamiento, para evitar asi historico masivo de registros.
+	 */
+	public void chequearCola()
 	{
-	    try {
-		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//		    ReadProperties rp = new ReadProperties("SIGA.properties");			       
+		// Controles
+		CenPersonaAdm personaAdm2 = new CenPersonaAdm(this.usrbean);
+		UserTransaction tx;
+		
+		try {
+			// obteniendo ruta de log de cola
+			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 			String pathFicheroLog = rp.returnProperty("LogAdmin.archivo");
 			String nombreFichero = rp.returnProperty("LogAdmin.archivo.gestionColas");
 			SIGALogging log = new SIGALogging(pathFicheroLog + nombreFichero);
-	        
-       		UserTransaction t = this.usrbean.getTransaction();
-			
-       		Vector vCola = this.select();
-       		while (vCola.size() > 0) {
-	            
-	            CenColaCambioLetradoBean bean = (CenColaCambioLetradoBean)vCola.get(0);
-	            UsrBean us2= UsrBean.UsrBeanAutomatico(bean.getIdInstitucion().toString());
-	            CenPersonaAdm personaAdm2 = new CenPersonaAdm (us2);
-	            
-	            try {
-	                String nombreCliente = personaAdm2.obtenerNombreApellidos
-	                		("" + bean.getIdPersona());
 
-		            t.begin();
-		            
-		            String rc[] = EjecucionPLs.ejecutarPL_ActualizarDatosLetrado
-							(bean.getIdInstitucion(), bean.getIdPersona(), 
-							bean.getIdTipoCambio(), bean.getIdDireccion(), 
-							this.usuModificacion);
+			tx = this.usrbean.getTransaction();
+
+			Vector vCola = this.selectFirst();
+			while (vCola.size() > 0) {
+
+				CenColaCambioLetradoBean bean = (CenColaCambioLetradoBean) vCola.get(0);
+				vCola.remove(0);
+				String nombreCliente = personaAdm2.obtenerNombreApellidos("" + bean.getIdPersona());
+
+				try {
+
+					tx.begin();
+
+					String rc[] = EjecucionPLs.ejecutarPL_ActualizarDatosLetrado(bean.getIdInstitucion(), bean.getIdPersona(), bean.getIdTipoCambio(), bean.getIdDireccion(), this.usuModificacion);
+
+					if (!this.delete(bean)) { //si falla el borrado del registro en BD
+						log.writeLogGestorColaSincronizarDatos(SIGALogging.ERROR, bean.getIdInstitucion(), bean.getIdPersona(), nombreCliente, "Error borrando elemento de la cola");
+					} else if ((new Integer(rc[0])).intValue() < 0) { //si falla la ejecucion del paquete de actualizacion
+						log.writeLogGestorColaSincronizarDatos(SIGALogging.ERROR, bean.getIdInstitucion(), bean.getIdPersona(), nombreCliente, rc[1]);
+					} else { //si todo va bien
+						log.writeLogGestorColaSincronizarDatos(SIGALogging.INFO, bean.getIdInstitucion(), bean.getIdPersona(), nombreCliente, rc[1]);
+					}
 					
-		            if (!this.delete(bean)) {
-		                log.writeLogGestorColaSincronizarDatos(SIGALogging.ERROR, 
-		                		bean.getIdInstitucion(), bean.getIdPersona(), 
-		                		nombreCliente, "Error borrando elemento de la cola");
-	                    t.rollback();
-	                	continue;
-                	}
-	                else {
-		                if ((new Integer(rc[0])).intValue() < 0) { 
-			                log.writeLogGestorColaSincronizarDatos
-			                		(SIGALogging.ERROR, bean.getIdInstitucion(), 
-			                		bean.getIdPersona(), nombreCliente, rc[1]);
-		                }else{
-		                	 log.writeLogGestorColaSincronizarDatos
-		                	 		(SIGALogging.INFO, bean.getIdInstitucion(), 
-		                	 		bean.getIdPersona(), nombreCliente, rc[1]); 	
-		                }
-                	}
-	                
-	                t.commit();
+					tx.commit();
 
-	            }
-	            catch (Exception e) {
-		            log.write ("Error: " + e.getMessage());
-		            t.rollback();
-                }
-	            
-	       		vCola = this.select();
-	        } 
-	    }
-	    catch (Exception e) {  }
+				} catch (Exception e) {
+					log.write("Error: " + e.getMessage());
+					tx.rollback();
+				} finally {
+					vCola = this.selectFirst();
+				}
+			}
+		} catch (Exception e) {
+			Date dat = Calendar.getInstance().getTime();
+			SimpleDateFormat sdfLong = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); 
+			String fecha = sdfLong.format(dat);
+			ClsLogging.writeFileLog(fecha + ": Error al configurar el tratamiento de la cola de cambio de letrado", 0);
+		}
 	} //chequearCola()
 }

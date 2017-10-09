@@ -36,6 +36,8 @@ import com.siga.beans.GenParametrosAdm;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument;
 import com.siga.ws.pcajg.cat.xsd.TipoIdentificacionIntercambio;
 
+import es.satec.businessManager.BusinessException;
+
 /**
  * @author angelcpe
  *
@@ -548,5 +550,27 @@ public abstract class SIGAWSClientAbstract {
 		file.mkdirs();
 		file = new File(file, fileName);
 		return file;
+	}
+	public static List<File> getXmlFile(int idInstitucion, int idRemesa) throws BusinessException {
+		List<File> xmlFiles = new ArrayList<File>();
+		String pathFichero = getDirXML(idInstitucion, idRemesa);
+		File file = new File(pathFichero);
+		String[] files = file.list();
+		if(files.length>0){
+			if(files.length>1){
+				for (String pathFile : files) {
+					File xmlFile = new File(pathFichero+File.separator+pathFile);	
+					xmlFiles.add(xmlFile);
+					
+				}
+			}else{
+				File xmlFile = new File(pathFichero+File.separator+files[0]);
+				xmlFiles.add(xmlFile);
+				
+			}
+		}else
+			throw new BusinessException("Lista vacia");
+		return xmlFiles;
+		
 	}
 }

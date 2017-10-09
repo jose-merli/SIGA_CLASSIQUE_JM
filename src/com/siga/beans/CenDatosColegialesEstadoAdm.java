@@ -288,7 +288,10 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 	 */
 	public int insertaEstadoColegial(Hashtable<String, String> estadoColegialHashtable, boolean bDesdeCGAE, String idioma, String motivo) throws SIGAException, ClsExceptions
 	{
-		boolean hayQueNotificarAca = false;
+		// Controles
+		CenColegiadoAdm admCol = new CenColegiadoAdm(this.usrbean);
+		
+		// Variables generales
 		int resultado = 0;
 
 		try {
@@ -297,37 +300,35 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 			String fechaEstado = estadoColegialHashtable.get(CenDatosColegialesEstadoBean.C_FECHAESTADO);
 			String idEstadocolegial = estadoColegialHashtable.get(CenDatosColegialesEstadoBean.C_IDESTADO);
 			int idEstadocolegial_int = Integer.parseInt(idEstadocolegial);
+			int idEstadocolegial_old = Integer.parseInt((String) (admCol.getEstadoColegial(new Long(idPersona), new Integer(idInstitucion)).get(CenDatosColegialesEstadoBean.C_IDESTADO)));
+			boolean esResidente=admCol.getResidenciaColegio(idPersona,idInstitucion);
 
 			// Compruebo que existan datos colegiales asociados a esos identificadores
-			CenColegiadoAdm admCol = new CenColegiadoAdm(this.usrbean);
 			if (admCol.getDatosColegiales(new Long(idPersona), new Integer(idInstitucion)) == null) {
 				throw new SIGAException("messages.censo.estadosColegiales.errorNoEsColegiado", new String[] { "modulo.censo" });
 			}
 
 			// construyendo el registro de auditoria
 			CenHistoricoBean beanHis = new CenHistoricoBean();
+			
 			switch (idEstadocolegial_int) {
 			case ClsConstants.ESTADO_COLEGIAL_EJERCIENTE:
 				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_ALTA_EJERCICIO));
-				hayQueNotificarAca = false;
 				break;
 			case ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL:
 				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_COLEGIAL));
-				hayQueNotificarAca = true;
 				break;
 			case ClsConstants.ESTADO_COLEGIAL_INHABILITACION:
 				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_INHABILITACION));
-				hayQueNotificarAca = true;
 				break;
 			case ClsConstants.ESTADO_COLEGIAL_SUSPENSION:
 				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_SUSPENSION));
-				hayQueNotificarAca = true;
 				break;
 			case ClsConstants.ESTADO_COLEGIAL_SINEJERCER:
 				beanHis.setIdTipoCambio(new Integer(ClsConstants.TIPO_CAMBIO_HISTORICO_ESTADO_BAJA_EJERCICIO));
-				hayQueNotificarAca = true;
 				break;
 			}
+			
 			if(motivo != null && !"".equalsIgnoreCase(motivo)){   //Si motivo tiene valor es que viene de la interfaz y se ha rellenado el campo motivo
 				beanHis.setMotivo(motivo);
 			}else{
@@ -353,19 +354,41 @@ public class CenDatosColegialesEstadoAdm extends MasterBeanAdmVisible {
 			this.revisionesPorCambioEstadoColegial(idInstitucion, idPersona, idEstadocolegial,fechaEstado, this.usrbean); // OJO: se pasa la fecha sin hora
 			
 			
-			// llamando al servicio de notificacion ACA
-			if (hayQueNotificarAca){
-				String llamadaReport;
-				try {
-					llamadaReport = llamadaWebServiceAcaRevisionLetrado(Long.valueOf(idPersona), Short.valueOf(idInstitucion));	
-				} catch (BusinessException e) {
-					resultado = 2;
-					llamadaReport = e.getMessage();
+			{ // llamando al servicio de notificacion ACA
+				boolean hayQueNotificarAca = false;
+	
+				if (esResidente && (idEstadocolegial_old == AppConstants.ESTADO_COLEGIAL_EJERCIENTE || idEstadocolegial_old == AppConstants.ESTADO_COLEGIAL_SINEJERCER)) {
+					switch (idEstadocolegial_int) {
+					case ClsConstants.ESTADO_COLEGIAL_EJERCIENTE:
+						hayQueNotificarAca = false;
+						break;
+					case ClsConstants.ESTADO_COLEGIAL_BAJACOLEGIAL:
+					case ClsConstants.ESTADO_COLEGIAL_INHABILITACION:
+					case ClsConstants.ESTADO_COLEGIAL_SUSPENSION:
+						hayQueNotificarAca = true;
+						break;
+					case ClsConstants.ESTADO_COLEGIAL_SINEJERCER:
+						if (idEstadocolegial_old == AppConstants.ESTADO_COLEGIAL_EJERCIENTE) {
+							hayQueNotificarAca = true;
+						} else {
+							hayQueNotificarAca = false;
+						}
+						break;
+					}
 				}
-				
-				if (llamadaReport != null && !llamadaReport.equalsIgnoreCase("")) {
-					estadoColegialHashtable.put("RESPUESTA_ACA", llamadaReport);
-					beanHis.setObservaciones(llamadaReport);
+				if (hayQueNotificarAca){
+					String llamadaReport;
+					try {
+						llamadaReport = llamadaWebServiceAcaRevisionLetrado(Long.valueOf(idPersona), Short.valueOf(idInstitucion));	
+					} catch (BusinessException e) {
+						resultado = 2;
+						llamadaReport = e.getMessage();
+					}
+					
+					if (llamadaReport != null && !llamadaReport.equalsIgnoreCase("")) {
+						estadoColegialHashtable.put("RESPUESTA_ACA", llamadaReport);
+						beanHis.setObservaciones(llamadaReport);
+					}
 				}
 			}
 			

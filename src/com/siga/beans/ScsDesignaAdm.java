@@ -2781,7 +2781,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			        " ACTUACION.TALONARIO AS ACTUACION_TALONARIO, "+
 			        " ACTUACION.TALON AS ACTUACION_TALON, "+
 			        " ACTUACION.ANIOPROCEDIMIENTO AS ACTUACION_ANIOPROCEDIMIENTO, "+
-			        
+			        " ACTUACION_COLEGIADO.NCOLEGIADO AS ACTUACION_NUMERO_COLEGIADO, "+
 			        
 			        " DESIGNA.RESUMENASUNTO AS DESIGNA_ASUNTO, "+
 			        " DESIGNA.NUMPROCEDIMIENTO AS DESIGNA_AUTOS, "+
@@ -2850,9 +2850,20 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			        " ejgDesigna.Anioejg = ejg.anio and "+
 			        " ejgDesigna.Numeroejg = ejg.numero and "+
 			        " ejgDesigna.idInstitucion= ACTUACION.IDINSTITUCION and ejgDesigna.anioDesigna=ACTUACION.ANIO "+
-			        " and ejgDesigna.numeroDesigna= ACTUACION.NUMERO and ejgDesigna.idturno=ACTUACION.IDTURNO) AS SITUACION_PROCEDIMIENTO, "+
+			        " and ejgDesigna.numeroDesigna= ACTUACION.NUMERO and ejgDesigna.idturno=ACTUACION.IDTURNO and rownum = 1) AS SITUACION_PROCEDIMIENTO, "+
 			        " (select Nombre from cen_institucion where IDINSTITUCION=ACTUACION.IDINSTITUCION)AS NOMBRE_COLEGIO, "+
-			        " (select Abreviatura from cen_institucion where IDINSTITUCION=ACTUACION.IDINSTITUCION)AS NOMBRE_COLEGIO_ABREVIA "+
+			        " (select Abreviatura from cen_institucion where IDINSTITUCION=ACTUACION.IDINSTITUCION)AS NOMBRE_COLEGIO_ABREVIA, "+
+			        
+					" replace((select wm_concat(f_siga_getsolicitantesejg(ejg.Idinstitucion, ejg.anio, ejg.numero, ejg.idtipoejg)) "+
+					" from scs_ejg ejg,scs_ejgdesigna ejgDesigna "+
+					" where ejgDesigna.Idtipoejg = ejg.idtipoejg "+
+					" and ejgDesigna.Idinstitucion = ejg.idinstitucion "+
+					" and ejgDesigna.Anioejg = ejg.anio "+
+					" and ejgDesigna.Numeroejg = ejg.numero "+
+					" and ejgDesigna.idInstitucion =ACTUACION.idInstitucion "+
+                    " and ejgDesigna.anioDesigna = ACTUACION.anio  "+    
+                    " and ejgDesigna.numeroDesigna = ACTUACION.numero "+
+                    " and ejgDesigna.idturno = ACTUACION.idturno),';',',') AS DESIGNA_LISTA_SOLICITANTES_EJG "+
 			            
 			  " from scs_actuaciondesigna ACTUACION "+
 			    " LEFT JOIN SCS_PROCEDIMIENTOS PROCEDIMIENTO_ACTUACION ON ACTUACION.idInstitucion = PROCEDIMIENTO_ACTUACION.idInstitucion AND PROCEDIMIENTO_ACTUACION.IDPROCEDIMIENTO = ACTUACION.IDPROCEDIMIENTO "+
@@ -2876,14 +2887,15 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			    " LEFT JOIN SCS_PRETENSION PRETENSION_DESIGNA ON DESIGNA.idInstitucion = PRETENSION_DESIGNA.idInstitucion AND DESIGNA.IDPRETENSION = PRETENSION_DESIGNA.IDPRETENSION "+
 			    " LEFT JOIN CEN_PROVINCIAS PROVINCIA_DESIGNA ON JUZGADO_DESIGNA.IDPROVINCIA = PROVINCIA_DESIGNA.IDPROVINCIA   "+
 			    " LEFT JOIN SCS_DESIGNASLETRADO DESIGNA_LETRADO ON ACTUACION.IDINSTITUCION = DESIGNA_LETRADO.IDINSTITUCION AND ACTUACION.IDTURNO= DESIGNA_LETRADO.IDTURNO AND ACTUACION.ANIO = DESIGNA_LETRADO.ANIO AND "+
-                          " ACTUACION.NUMERO = DESIGNA_LETRADO.NUMERO "+                                                                                                                                                                                                   
+                          " ACTUACION.NUMERO = DESIGNA_LETRADO.NUMERO "+   
+                " LEFT JOIN CEN_COLEGIADO ACTUACION_COLEGIADO ON ACTUACION.IDINSTITUCION = ACTUACION_COLEGIADO.IDINSTITUCION AND ACTUACION.IDPERSONACOLEGIADO = ACTUACION_COLEGIADO.IDPERSONA "+
 			"  where "+
 			"  ACTUACION.idInstitucion =:1 "+
 			"  and ACTUACION.idturno =:2 "+
 			"  and ACTUACION.anio =:3 "+
 			"  and ACTUACION.numero =:4"+
 			"  and ACTUACION.numeroAsunto=:5"+
-			" order by DESIGNA_LETRADO.fechaModificacion desc ";
+			" order by DESIGNA_LETRADO.fechaDesigna desc ";
 
 			HelperInformesAdm helperInformes = new HelperInformesAdm();
 			return helperInformes.ejecutaConsultaBind(sql, h);
@@ -2970,9 +2982,10 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" WHERE TEL2.IDINSTITUCION = PERJG.IDINSTITUCION ");
 		sql.append(" AND TEL2.IDPERSONA = PERJG.IDPERSONA ");
 		sql.append(" AND ROWNUM < 2) AS TELEFONO1_DEFENDIDO, ");
-		sql.append("(SELECT WMSYS.WM_CONCAT(LTEL.NOMBRETELEFONO||':'||LTEL.NUMEROTELEFONO) from SCS_TELEFONOSPERSONA LTEL WHERE LTEL.IDINSTITUCION = PERJG.IDINSTITUCION AND LTEL.IDPERSONA = PERJG.IDPERSONA) AS LISTA_TELEFONOS_INTERESADO,");
+		sql.append(" replace((SELECT WMSYS.WM_CONCAT(LTEL.NOMBRETELEFONO||':'||LTEL.NUMEROTELEFONO) from SCS_TELEFONOSPERSONA LTEL WHERE LTEL.IDINSTITUCION = PERJG.IDINSTITUCION AND LTEL.IDPERSONA = PERJG.IDPERSONA),',',', ') AS LISTA_TELEFONOS_INTERESADO,");
 		sql.append(" PERJG.NIF AS NIF_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO,  null,  null,  'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_DEFENDIDO, ");
+		sql.append(" DECODE(PERJG.SEXO,  null,  null,  'M',f_siga_getrecurso_etiqueta('gratuita.personaEJG.sexo.mujer',"+this.usrbean.getLanguage()+"),f_siga_getrecurso_etiqueta('gratuita.personaEJG.sexo.hombre',"+this.usrbean.getLanguage()+")) AS SEXO_DEFENDIDO_DESCRIPCION, ");
 		sql.append(" DECODE(PERJG.SEXO, 'H','o','a') AS O_A_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO, 'H','el','la') AS EL_LA_DEFENDIDO, ");
 		sql.append(" PERJG.IDLENGUAJE AS IDLENGUAJE_DEFENDIDO, ");
@@ -3112,6 +3125,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append("(SELECT WMSYS.WM_CONCAT(LTEL.NOMBRETELEFONO||':'||LTEL.NUMEROTELEFONO) from SCS_TELEFONOSPERSONA LTEL WHERE LTEL.IDINSTITUCION = PERJG.IDINSTITUCION AND LTEL.IDPERSONA = PERJG.IDPERSONA) AS LISTA_TELEFONOS_INTERESADO,");
 		sql.append(" PERJG.NIF AS NIF_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO,  null,  null,  'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_DEFENDIDO, ");
+		sql.append(" DECODE(PERJG.SEXO,  null,  null,  'M',f_siga_getrecurso_etiqueta('gratuita.personaEJG.sexo.mujer',"+this.usrbean.getLanguage()+"),f_siga_getrecurso_etiqueta('gratuita.personaEJG.sexo.hombre',"+this.usrbean.getLanguage()+")) AS SEXO_DEFENDIDO_DESCRIPCION, ");
 		sql.append(" DECODE(PERJG.SEXO, 'H','o','a') AS O_A_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO, 'H','el','la') AS EL_LA_DEFENDIDO, ");
 		sql.append(" PERJG.IDLENGUAJE AS IDLENGUAJE_DEFENDIDO, ");		

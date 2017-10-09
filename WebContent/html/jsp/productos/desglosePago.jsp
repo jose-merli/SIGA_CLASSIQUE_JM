@@ -133,8 +133,7 @@
 				double iva = a.getValorIva().doubleValue();
 				iCantidadTotalTarjeta += a.getCantidad();
 				dNetoTotalTarjeta += a.getCantidad() * precio;
-				dIvaTotalTarjeta += UtilidadesNumero.redondea(a.getCantidad() * precio * iva / 100, 2);
-				dPrecioTotalTarjeta += UtilidadesNumero.redondea(a.getCantidad() * precio * (1 + (iva / 100)), 2);
+				dIvaTotalTarjeta += a.getCantidad() * precio * iva / 100;
 				
 				sPeriodicidad = "";
 				sPrecio = "-";
@@ -164,7 +163,7 @@
 		if (tieneArticulo) {
 			
 			dIvaTotalTarjeta = UtilidadesNumero.redondea (dIvaTotalTarjeta, 2);
-			dPrecioTotalTarjeta = UtilidadesNumero.redondea (dPrecioTotalTarjeta, 2);
+			dPrecioTotalTarjeta = dNetoTotalTarjeta + dIvaTotalTarjeta;
 %>
 			<tr class="listaNonEditSelected" style="height:30px">
 				<td>&nbsp;</td>
@@ -271,8 +270,7 @@
 				if(a.getIdFormaPago() != null){
 					iCantidadTotalOtro += a.getCantidad();
 					dNetoTotalOtro += a.getCantidad() * precio;
-					dIvaTotalOtro += UtilidadesNumero.redondea(a.getCantidad() * precio * iva / 100, 2);
-					dPrecioTotalOtro += UtilidadesNumero.redondea(a.getCantidad() * precio * (1 + (iva / 100)), 2);
+					dIvaTotalOtro += a.getCantidad() * precio * iva / 100;
 				}
 				
 				sPeriodicidad = "";
@@ -308,7 +306,7 @@
 
 		if (tieneArticulo) {
 			dIvaTotalOtro = UtilidadesNumero.redondea (dIvaTotalOtro, 2);
-			dPrecioTotalOtro = UtilidadesNumero.redondea (dPrecioTotalOtro, 2);
+			dPrecioTotalOtro = dNetoTotalOtro + dIvaTotalOtro;
 %>
 			<tr class="listaNonEditSelected" style="height:30px">
 				<td>&nbsp;</td>

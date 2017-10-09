@@ -479,10 +479,13 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 			if(envios!= null && envios.size()>0){
 				EnvEnviosBean bean = (EnvEnviosBean) envios.get(0);
 				
+				String contenidoPDF = null;
 				//LLamamos al servico de EEJG para obtener el PDF a traves de la PFD
+			
 				SolicitudesEEJG solicitudesEEJG = new SolicitudesEEJG();
-				String contenidoPDF = solicitudesEEJG.getDocumentoTO(bean.getCSV());
-				
+				contenidoPDF = solicitudesEEJG.getDocumentoTO(bean.getCSV());
+
+
 				//Construimos nuestro fichero
 				String pathFile = "CertificadoRecepcionBuroSMS_" + idInstitucion + "_" + idEnvio+ ".pdf";
 				fileFirmado = new File(pathFile);

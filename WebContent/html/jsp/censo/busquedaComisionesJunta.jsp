@@ -90,7 +90,7 @@
 	<siga:TituloExt titulo="censo.comisiones.literal.comisiones" localizacion="censo.comisiones.localizacion"/>
 </head>
 
-<body onload="calcularAltura();validarAnchoTabla();" >
+<body onload="calcularAltura();" >
 
 	<!-- ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
@@ -106,7 +106,7 @@
 		<html:hidden styleId="datosCargos" property="datosCargos" value=""/>
 		<html:hidden property="idInstitucion" value="${BusquedaComisionesForm.idInstitucion}"/>
 		
-		<fieldset>
+		<siga:ConjCampos leyenda="Filtros de búsqueda">
 			<table class="tablaCentralCampos" align="center">
 	
 				<!-- FILA -->
@@ -168,7 +168,25 @@
 					</td>
 				</tr>
 			</table>
-		</fieldset>	
+		</siga:ConjCampos>
+		
+		<div id="fechasParaInsertar" style="display:none">
+		<siga:ConjCampos leyenda="Fechas para insertar" desplegable="true">
+			<table width="100%" align="center" >
+				<tr>
+					<td style="text-align: center; width: 10%;"><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.fechaInicio" /></td>
+					<td style="text-align: right; width: 60%; vertical-align: middle" colspan="3" rowspan="2" id="mensajeFechaFinCargos">La Fecha de Fin sólo se usa para dar de baja a los cargos existentes. <br>Para añadirla en un nuevo cargo, primero pulse en Guardar.</td>
+					<td style="text-align: center; width: 20%;"><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.fechaFin" /></td>
+					<td style="text-align: center; width: 10%;">&nbsp;</td>
+				</tr>
+				<tr>
+					<td style="text-align: center; width: 10%;"><siga:Fecha nombreCampo="fechaInicioCargos"/></td>
+					<td style="text-align: center; width: 20%;"><siga:Fecha nombreCampo="fechaFinCargos"/></td>
+					<td style="text-align: center; width: 10%;">&nbsp;</td>
+				</tr>
+			</table>
+		</siga:ConjCampos>
+		</div>
 	<!-- FIN: CAMPOS DE BUSQUEDA-->	
 	
 	
@@ -188,6 +206,7 @@
 				</td>
 			</tr>	 
 		</table>	
+		
 	<!-- FIN: BOTONES BUSQUEDA -->
 		
 		<div>
@@ -196,16 +215,11 @@
 				style='table-layout: fixed; border-spacing: 0px;'>
 				<thead class='Cabeceras' style='text-align: center;'>
 					<tr class='tableTitle'>
-						<th style="text-align: center; width: 10%;"><siga:Idioma
-								key="FactSJCS.mantRetencionesJ.literal.fechaInicio" /></th>
-
-						<th id="cargo" style="text-align: center; width: 15%"><siga:Idioma
-								key="censo.datosCV.literal.cargo" /></th>
-						<th style="text-align: center; width: 10%"><siga:Idioma
-								key="censo.busquedaClientes.literal.nColegiado" /></th>
-						<th style="text-align: center; width: 35%"><siga:Idioma
-								key="censo.busquedaClientes.literal.nombre" /></th>
-						<th style="text-align: center; width: 20%">&nbsp;</th>
+						<th style="text-align: center; width: 10%;"><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.fechaInicio" /></th>
+						<th style="text-align: center; width: 15%" id="cargo"><siga:Idioma key="censo.datosCV.literal.cargo" /></th>
+						<th style="text-align: center; width: 10%"><siga:Idioma key="censo.busquedaClientes.literal.nColegiado" /></th>
+						<th style="text-align: center; width: 35%"><siga:Idioma key="censo.busquedaClientes.literal.nombre" /></th>
+						<th style="text-align: center; width: 20%"><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.fechaFin" /></th>
 						<th style="text-align: center; width: 10%">&nbsp;</th>
 					</tr>
 				</thead>
@@ -280,7 +294,8 @@
 		jQuery("#cargos").removeAttr("disabled");
 		jQuery("#idInstitucionCargo").removeAttr("disabled");
 		jQuery("#fechaCargo").removeAttr("disabled");
-		jQuery("#invokefechaCargo").show();		
+		jQuery("#fechaCargo-datepicker-trigger").removeAttr("disabled");
+		jQuery("#invokefechaCargo").show();
 			
 		if(document.getElementById("idInstitucionCargo").value==null || document.getElementById("idInstitucionCargo").value==""){
 			alert("<siga:Idioma key='censo.comisiones.colObligatorio'/>");
@@ -297,6 +312,7 @@
 		table = document.getElementById("cargostabla");
 		indice= table.rows.length;
 		jQuery("#idInsertarCargo").removeAttr("disabled");
+		jQuery("#fechasParaInsertar").show();
 		validarAnchoTabla ();
 		fin();
 		
@@ -316,7 +332,6 @@
 		
 			var resultado=ventaModalGeneral("busquedaClientesModalForm","G");
 			if (resultado!=undefined && resultado[0]!=undefined ){
-				
 				document.getElementById("idPersona").value     = resultado[0];
 				document.BusquedaComisionesForm.numeroColegiado.value    = resultado[2];
 				document.BusquedaComisionesForm.nombreColegiado.value   = resultado[4]+' '+resultado[5]+' '+resultado[6];
@@ -336,6 +351,12 @@
 	}
 
 	function accionInsertarRegistroTabla () {
+		//validando que exista fecha de inicio, que se usara en los nuevos registros
+		if(document.getElementById("fechaInicioCargos").value==null || document.getElementById("fechaInicioCargos").value==""){
+			alert("<siga:Idioma key='censo.comisiones.inicioObligatorio'/>");
+			return false;	
+		}		
+		
 		var validado = validarDatosMinimos (); 
 		if(!validado){
 			return;
@@ -348,7 +369,7 @@
 	   	jQuery("#cargos").attr("disabled","disabled");
 	   	jQuery("#idInstitucionCargo").attr("disabled","disabled");
 	   	jQuery("#fechaCargo").attr("disabled","disabled");
-	   	//jQuery('#fechaCargo').datepicker("disable");
+	   	jQuery('#fechaCargo-datepicker-trigger').attr("disabled","disabled");
 	   	jQuery("#invokefechaCargo").hide();
 		crearFila();
 		jQuery("#idInsertarCargo").attr("disabled","disabled");
@@ -360,18 +381,13 @@
 			return false;
 		} 	
 		
-		if(document.getElementById("fechaCargo").value==null || document.getElementById("fechaCargo").value==""){
-			alert("<siga:Idioma key='censo.comisiones.cargoObligatorio'/>");
-			return false;	
-		}		
-		
 		if(document.getElementById ("vacio")!=null)
 			document.getElementById ("vacio").style.display="none";
 		
 		return true;
 	}
 	
-	function crearFila() {  
+	function crearFila() { 
 		table = document.getElementById("cargostabla");
 		numFila = indice;
 		indice++;
@@ -387,7 +403,10 @@
 		tr.id = "fila_" + numFila;
 		
 		td = tr.insertCell(0);
-		td.innerHTML ='';
+		td.setAttribute("width", "15%");
+		td.setAttribute("align", "center");
+		td.innerHTML ='<input type="hidden" id="fechaInicio_' + numFila + '" value="' + document.getElementById("fechaInicioCargos").value + '"/>';
+		td.innerHTML+=document.getElementById("fechaInicioCargos").value;
 		td.setAttribute("width", "10%");
 		
 		td = tr.insertCell(1); 
@@ -398,27 +417,31 @@
 		td = tr.insertCell(2); 
 		td.setAttribute("width", "10%");
 		td.setAttribute("align", "center");
-		td.innerHTML ='<input type="text" onmousedown="bloquearBuscar(\''+ numFila +'\');" onChange="buscarColegiadoN(\''+ numFila +'\');"  id="numeroColegiado_' + numFila + '" class="box" size="4" maxlength="9" style="width:70;margin-top:5px;" value=""/><input type="hidden" id="idPerson_' + numFila + '" class="box" size="4" maxlength="9" style="width:70;margin-top:2px;" value=""/>';
+		td.innerHTML ='<input type="text" onmousedown="bloquearBuscar(\''+ numFila +'\');" onChange="buscarColegiadoN(\''+ numFila +'\');"  id="numeroColegiado_' + numFila + '" class="box" size="4" maxlength="9" style="width:70;margin-top:5px;" value=""/>';
+		td.innerHTML+='<input type="hidden" id="idPerson_' + numFila + '" class="box" size="4" maxlength="9" style="width:70;margin-top:2px;" value=""/>';
 		
 		td = tr.insertCell(3); 
 		td.setAttribute("width", "35%");
 		//td.innerHTML ='<input type="text" id="numeroColegiado_' + numFila + '" class="box" size="4" maxlength="9" style="width:70;margin-top:2px;" value=""/>';
-		td.innerHTML ='<table><tr>' +
-        '<td><input type="text" id="nombreColegiado_' + numFila + '" class="box" style="width:120;margin-top:2px;margin-rigth:1px;" value="" maxlength="35"/>' + " "+'<input type="text" onChange="buscarNumColegiadoN(\''+ numFila +'\');" id="apellidosColegiado_' + numFila + '" class="box" style="width:200;margin-top:2px;margin-rigth:1px;" value="" maxlength="40"/></td>' +         
-        '</tr></table>';
+		td.innerHTML ='<table><tr>';
+		td.innerHTML+='<td><input type="text" id="nombreColegiado_' + numFila + '" class="box" style="width:120;margin-top:2px;margin-rigth:1px;" value="" maxlength="35"/>' + ' ';
+		td.innerHTML+='<input type="text" onChange="buscarNumColegiadoN(\''+ numFila +'\');" id="apellidosColegiado_' + numFila + '" class="box" style="width:200;margin-top:2px;margin-rigth:1px;" value="" maxlength="40"/></td>';         
+		td.innerHTML+='</tr></table>';
         
 		td = tr.insertCell(4); 	
 		//td.setAttribute("colspan", "2");
 		td.setAttribute("align", "center");
 		td.className = "";
 		td.setAttribute("width", "20%");
-		td.innerHTML ='<input type="button" class="button" style="margin:4px;" name="Buscar_'  + numFila +  '" id="idButtonB__' + numFila + '" value="<siga:Idioma key="general.boton.search" />" onClick="buscarColegiadoNBoton(' + numFila + ');">' +
-					  '<input type="button" class="button" style="margin:4px;" name="Limpiar_' + numFila + '"  id="idButton_'   + numFila + '" value="<siga:Idioma key="general.boton.clear" />"  onClick="limpiarColegiadoN(' + numFila + ');">';
+		td.innerHTML ='<input type="button" class="button" style="margin:4px;" name="Buscar_'  + numFila +  '" id="idButtonB__' + numFila + '" value="<siga:Idioma key="general.boton.search" />" onClick="buscarColegiadoNBoton(' + numFila + ');">';
+		td.innerHTML+='<input type="button" class="button" style="margin:4px;" name="Limpiar_' + numFila + '"  id="idButton_'   + numFila + '" value="<siga:Idioma key="general.boton.clear" />"  onClick="limpiarColegiadoN(' + numFila + ');">';
 		
 		td = tr.insertCell(5); 
 		td.setAttribute("width", "10%");
 		td.setAttribute("align", "center");
-		td.innerHTML= '<img id="iconoboton_consultar1"  src="/SIGA/html/imagenes/bconsultar_disable.gif" alt="<siga:Idioma key='general.boton.consultar'/>" title="<siga:Idioma key='general.boton.consultar'/>" name="consultar_1" border="0"> <img id="iconoboton_editar1"  src="/SIGA/html/imagenes/beditar_disable.gif" alt="<siga:Idioma key='general.boton.editar'/>" title="<siga:Idioma key='general.boton.editar'/>" name="editar_1" border="0"> <img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:pointer;" title="<siga:Idioma key='general.boton.borrar'/>" alt="<siga:Idioma key='general.boton.borrar'/>" name="borrar_1" border="0" onclick="borrarFila( ' + numFila + ',\''+ tr.id +'\')">';
+		td.innerHTML= '<img id="iconoboton_consultar1"  src="/SIGA/html/imagenes/bconsultar_disable.gif" alt="<siga:Idioma key='general.boton.consultar'/>" title="<siga:Idioma key='general.boton.consultar'/>" name="consultar_1" border="0"> ';
+		td.innerHTML+='<img id="iconoboton_editar1"  src="/SIGA/html/imagenes/beditar_disable.gif" alt="<siga:Idioma key='general.boton.editar'/>" title="<siga:Idioma key='general.boton.editar'/>" name="editar_1" border="0"> ';
+		td.innerHTML+='<img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:pointer;" title="<siga:Idioma key='general.boton.borrar'/>" alt="<siga:Idioma key='general.boton.borrar'/>" name="borrar_1" border="0" onclick="borrarFila( ' + numFila + ',\''+ tr.id +'\')">';
 
 		disablebuttons();
 		var cargo='cargos_' + numFila + '';
@@ -440,6 +463,27 @@
 				document.getElementById("borradoLogico_"+x).style.cursor="default";
 				document.getElementById("editaCargo_"+x).style.cursor="default";
 			}
+		}
+	}
+
+	function finalizarFila(num){
+		if (jQuery("#editar_"+num)[0].checked) {
+			//validando que exista fecha de fin
+			if (!jQuery("#fechaFinCargos")[0].value) {
+				jQuery("#editar_"+num)[0].checked = false;
+				alert ("<siga:Idioma key='censo.comisiones.finObligatorio'/>");
+				return false;
+			}
+			
+			jQuery("#textoFinalizar_"+num)[0].style.display="none";
+			jQuery("#fechaFinalizar_"+num)[0].innerHTML=jQuery("#fechaFinCargos")[0].value;
+			jQuery("#fechaFinalizar_"+num)[0].style.display="inline";
+			jQuery("#fechaFin_"+num)[0].value=jQuery("#fechaFinCargos")[0].value;
+		} else {
+			jQuery("#textoFinalizar_"+num)[0].style.display="inline";
+			jQuery("#fechaFinalizar_"+num)[0].innerHTML="";
+			jQuery("#fechaFinalizar_"+num)[0].style.display="none";
+			jQuery("#fechaFin_"+num)[0].value="";
 		}
 	}
 
@@ -617,58 +661,72 @@
 		return isValidado;
 	}
 	
-	function getDatos(idTabla) {	
+	// getDatos(): A partir de la tabla que contiene en HTML todos los datos, los va recogiendo en una cadena, que se entregara al Servidor para que la procese
+	// En vez de pasar los datos en un formulario, los va concatenando en una cadena: La persona que construyo esta página, se salto la asignatura de estructuras y la de aplicaciones Web en la Universidad, o bien es fisic@, quimic@ o biolog@ 
+	function getDatos(idTabla)
+	{
+		// obteniendo la tabla HTML a partir del ID pasado
 		table = document.getElementById(idTabla);
-		filas = table.rows.length;
-		// Datos Dinamicos Asistencias
-		var datos = "", accion = "";
-		var actualiza="";	
-		if(filas!=0){
-		for (a = 0; a < filas-1 ; a++) {
+		numeroFilas = table.rows.length;
+		if (numeroFilas==0)
+			return null;
+		
+		var datos = "";
+		
+		// obteniendo y cargando los datos de cada fila
+		var yaTerminamosRegistrosAntiguosEmpezamosConRegistrosNuevos = "";
+		for (var a = 0; a < numeroFilas-1 || (a == numeroFilas-1 && yaTerminamosRegistrosAntiguosEmpezamosConRegistrosNuevos=="") ; a++) {
+			//hasta la penultima fila cuando hay nuevos registros, pq la ultima fila nunca esta rellena (siempre se crea otra nueva cuando se rellena una)
+			//o bien hasta la ultima si no hay nuevos registros
 			i = table.rows[a].id.split("_")[1];
+			
+			// comprobando que cada fila tiene todos los datos necesarios rellenos
 			var validado = validarDatosFila (i);
-						  
 			if (!validado) {
 				fin();
 				return 'cancel';
 			}
-			if(document.getElementById("idPersona_" + i)!=null){
-				if(document.getElementById("editar_" + i)!=null && document.getElementById("editar_" + i).checked){
+			
+			if(yaTerminamosRegistrosAntiguosEmpezamosConRegistrosNuevos=="" && document.getElementById("idPersona_" + i) != null) { //hay idPersona: registros existentes que se actualizan
+				// comprobando que se edita el cargo-persona existente
+				if(document.getElementById("editar_" + i) != null && document.getElementById("editar_" + i).checked && document.getElementById("editar_" + i).disabled == "") {
+			        ncolegiado = document.getElementById("ncolegiado_" + i).value;
+			        if(ncolegiado=="")
+			        	datos += "0";
+			        else
+						datos += ncolegiado;
+					datos += ',';
 					
-					if(document.getElementById("editar_" + i).disabled==""){
-				        ncolegiado = document.getElementById("ncolegiado_" + i).value;
-				        if(ncolegiado=="")
-				        	datos += "0";
-				        else
-							datos += ncolegiado;
-						datos += ',';
-						
-						IDCV = document.getElementById("IDCV_" + i).value;
-						datos += IDCV;
-						datos += ',';
-		
-						idPersona = document.getElementById("idPersona_" + i).value;
-						datos += idPersona;
-						datos += ",";
-						
-						editar = document.getElementById("editar_" + i).checked;
-						if(editar)
-							datos +="S";
-						else
-							datos +="N";
-						datos += "%%%";
-					}
+					IDCV = document.getElementById("IDCV_" + i).value;
+					datos += IDCV;
+					datos += ',';
+	
+					numero = document.getElementById("fechaFin_" + i).value;
+					datos += numero;
+					datos += ',';
+					
+					idPersona = document.getElementById("idPersona_" + i).value;
+					datos += idPersona;
+					datos += ",";
+					
+					editar = document.getElementById("editar_" + i).checked;
+					if(editar)
+						datos +="S";
+					else
+						datos +="N";
+					datos += "%%%";
 				}
-			}else{
-				if(actualiza==""){
-					actualiza="S";
-					datos += "#@#";
+			} else { //no hay idPersona: altas de registros
+				if (yaTerminamosRegistrosAntiguosEmpezamosConRegistrosNuevos==""){
+					datos += "#@#"; //separador de registros existentes que se actualizan de los registros nuevos a insertar
+					yaTerminamosRegistrosAntiguosEmpezamosConRegistrosNuevos = "S";
 				}
+				
 				carg = document.getElementById("cargos_" + i).options[document.getElementById("cargos_" + i).selectedIndex].value;
 				datos += carg;
 				datos += ',';
 					
-				numero = document.getElementById("numeroColegiado_" + i).value;
+				numero = document.getElementById("fechaInicio_" + i).value;
 				datos += numero;
 				datos += ',';
 				
@@ -678,36 +736,9 @@
 				datos += "%%%";
 			}
 		}
-		i = table.rows[filas-1].id.split("_")[1];
-		if(document.getElementById("idPersona_" + i)!=null){
-			if(document.getElementById("editar_" + i)!=null && document.getElementById("editar_" + i).checked){
-
-		        ncolegiado = document.getElementById("ncolegiado_" + i).value;
-		        if(ncolegiado=="")
-		        	datos += "0";
-		        else
-					datos += ncolegiado;
-				datos += ',';
-				
-				IDCV = document.getElementById("IDCV_" + i).value;
-				datos += IDCV;
-				datos += ',';
-
-				idPersona = document.getElementById("idPersona_" + i).value;
-				datos += idPersona;
-				datos += ",";
-				
-				editar = document.getElementById("editar_" + i).checked;
-				if(editar)
-					datos +="S";
-				else
-					datos +="N";
-				datos += "%%%";
-			}
-		}
+		
 		return datos;
-	   } else return null;		
-	}
+	} //getDatos()
 
 	function preAccionGuardarCargos(){
 		var validado = validarDatosMinimos ();
@@ -751,9 +782,7 @@
 			var posTablaDatos = tablaDatos.offsetTop;
 			
 			jQuery('#divCargos').height(posTablaBotones - posTablaDatos);
-		}		
-		
-		validarAnchoTabla();
+		}
 	}			
 
 	function validarAnchoTabla() {

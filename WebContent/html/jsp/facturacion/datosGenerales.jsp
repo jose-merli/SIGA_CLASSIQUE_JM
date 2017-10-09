@@ -285,14 +285,16 @@
 						}
 					}
 					
-					if(document.DatosGeneralesForm.traspasoFacturas.checked){
-						if(document.DatosGeneralesForm.plantillaTraspasoFacturas.value == ""){
-							alert('<siga:Idioma key="facturacion.mensajes.obligatorio.plantillaTraspaso"/>');
-							return false;
-						}
-						if(document.DatosGeneralesForm.plantillaTraspasoAuditoria.value == ""){
-							alert('<siga:Idioma key="facturacion.mensajes.obligatorio.plantillaAuditoriaTraspaso"/>');
-							return false;
+					if(document.DatosGeneralesForm.traspasoFacturas != null) {
+						if(document.DatosGeneralesForm.traspasoFacturas.checked){
+							if(document.DatosGeneralesForm.plantillaTraspasoFacturas.value == ""){
+								alert('<siga:Idioma key="facturacion.mensajes.obligatorio.plantillaTraspaso"/>');
+								return false;
+							}
+							if(document.DatosGeneralesForm.plantillaTraspasoAuditoria.value == ""){
+								alert('<siga:Idioma key="facturacion.mensajes.obligatorio.plantillaAuditoriaTraspaso"/>');
+								return false;
+							}
 						}
 					}
 
@@ -322,6 +324,8 @@
 			var campoPlantillaAuditoria = document.getElementById("plantillaTraspasoAuditoria");
 			
 			<% if (bEditable){ %>
+			if(campoCheckTraspasoFacturas != null)
+			{
 				if(campoCheckTraspasoFacturas.checked)
 				{
 					campoPlantilla.removeAttribute("disabled");
@@ -334,6 +338,7 @@
 					campoPlantilla.setAttribute("disabled", "disabled");
 					campoPlantillaAuditoria.setAttribute("disabled", "disabled");
 				}
+			}
 			<% } %>
 			
 			return false;

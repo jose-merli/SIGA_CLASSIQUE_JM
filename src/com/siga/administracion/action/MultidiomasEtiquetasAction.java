@@ -9,6 +9,9 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
+import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
+import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 import org.redabogacia.sigaservices.app.util.PropertyReader;
 
 import com.atos.utils.ClsExceptions;
@@ -22,6 +25,8 @@ import com.siga.beans.MasterBeanAdministrador;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+
+import es.satec.businessManager.BusinessManager;
 
 public class MultidiomasEtiquetasAction extends MasterAction {
 	protected ActionForward executeInternal(ActionMapping mapping,
@@ -136,6 +141,13 @@ public class MultidiomasEtiquetasAction extends MasterAction {
 		PropertyReader.cleanProperties();
 		ClsLogging.reset();
 		UtilidadesString.recargarFicherosIdiomasEnCaliente();
+		
+		//refrescamos también las propiedades de ecom
+		EcomCola ecomCola = new EcomCola();
+		ecomCola.setIdoperacion(OPERACION.INIT_PARAMETROS_GENERALES.getId());
+		EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
+		ecomColaService.insert(ecomCola);
+		
 		return this.exito("messages.updated.success", request);
 	}
 }

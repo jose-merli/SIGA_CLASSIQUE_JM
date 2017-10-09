@@ -1,6 +1,7 @@
 package com.siga.eejg;
 
 import java.net.ConnectException;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.axis.AxisFault;
@@ -135,13 +136,14 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 	 * @throws Exception 
 	 */
 	private void trataSolicitudesPendientes(UsrBean usrBean) throws Exception {
-		GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);		
+		GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);	
+		GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
 		double horas = Double.parseDouble(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_HORAS_PETICION_CONSULTA", ""));		
 		
 		ScsEejgPeticionesAdm scsPeticionesAdm = new ScsEejgPeticionesAdm(usrBean);		
 		List<ScsEejgPeticionesBean> listaPeticiones = scsPeticionesAdm.getSolicitudesPendientes(horas);
 		int numeroErrores = 0;
-		
+		HashMap<Integer, Boolean> intercambioEconomicoActivadoHash = new HashMap<Integer, Boolean>();
 		if (listaPeticiones != null && listaPeticiones.size()>0) {
 			
 			int NUM_ERROR_CONEXION = Integer.parseInt(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_NUMERO_ERRORES_CONEXION", ""));
@@ -150,13 +152,36 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 			
 			//Iniciamos cambiando a estado pendiente
 			scsPeticionesAdm.updatePeticionesIniciadas();
+			
+			
 			SolicitudesEEJG solicitudesEEJG = new SolicitudesEEJG();		
+			SolicitudesEEJGInformacionCompleta solicitudesEEJGInformacionCompleta = new SolicitudesEEJGInformacionCompleta();
 			int idXML = -1;
 			for (ScsEejgPeticionesBean scsEejgPeticionesBean : listaPeticiones) {
+				
+				boolean isActivadoIntercambioEconomico = false;
+				if(!intercambioEconomicoActivadoHash.containsKey(scsEejgPeticionesBean.getIdInstitucion())){
+					String urlEnvioInformeEconomico = genParametrosService.getValorParametroWithNull(scsEejgPeticionesBean.getIdInstitucion().shortValue(),PARAMETRO.INFORMEECONOMICO_WS_URL,MODULO.ECOM);
+					isActivadoIntercambioEconomico = urlEnvioInformeEconomico!=null && !urlEnvioInformeEconomico.equalsIgnoreCase("");
+					
+				}else{
+					isActivadoIntercambioEconomico = intercambioEconomicoActivadoHash.get(scsEejgPeticionesBean.getIdInstitucion());
+					
+				}
+				intercambioEconomicoActivadoHash.put(scsEejgPeticionesBean.getIdInstitucion(), isActivadoIntercambioEconomico);
+				scsEejgPeticionesBean.setActivadoIntercambioEconomico(isActivadoIntercambioEconomico);
+				
+				
+				
 				idXML = -1;
 				try {					
 					if (numeroErrores < NUM_ERROR_CONEXION) {
-						idXML = solicitudesEEJG.consultaInfoAAPP(scsEejgPeticionesBean);
+						if(isActivadoIntercambioEconomico){
+//						if(scsEejgPeticionesBean.getIdInstitucion()!=null && scsEejgPeticionesBean.getIdInstitucion().intValue()==2003){
+							idXML = solicitudesEEJGInformacionCompleta.consultaInformacionCompletaAAPP(scsEejgPeticionesBean);
+						}else{
+							idXML = solicitudesEEJG.consultaInfoAAPP(scsEejgPeticionesBean);
+						}
 						numeroErrores = 0;
 					}	
 				} catch (AxisFault e) {

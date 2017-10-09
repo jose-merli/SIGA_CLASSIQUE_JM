@@ -26,7 +26,7 @@ create or replace package body PKG_SIGA_RETENCIONES_SJCS is
   p_idioma          Adm_Lenguajes.Idlenguaje%Type;
 
   -- Cursor de retenciones variable, segun el tipo pasado como parametro
-  CURSOR C_RETENCIONES (p_tiporetencion Varchar2) IS
+  CURSOR C_RETENCIONES (p_tiporetencion Varchar2, p_fechames Date) IS
     Select Idretencion,
            Tiporetencion,
            Iddestinatario,
@@ -44,8 +44,9 @@ create or replace package body PKG_SIGA_RETENCIONES_SJCS is
       From Fcs_Retenciones_Judiciales Ret
      Where Idinstitucion = P_Idinstitucion
        And (Idpersona Is Null Or Idpersona = P_Idpersona)
-       And Trunc(Fechainicio) <= Trunc(Sysdate)
-       And (Fechafin Is Null Or Trunc(Fechafin) >= Trunc(Sysdate))
+       And Trunc(Fechainicio) < To_Date('01' || To_Char(Add_Months(p_fechames, 1), '/mm/yyyy'), 'dd/mm/yyyy')
+       And Nvl(Fechafin, 
+               '31/12/2999') >= To_Date('01' || To_Char(p_fechames, '/mm/yyyy'), 'dd/mm/yyyy')
           
        And p_Tiporetencion Like '%' || Tiporetencion || '%'
           -- las retenciones periodicas no se terminan nunca por importe
@@ -173,7 +174,7 @@ create or replace package body PKG_SIGA_RETENCIONES_SJCS is
     v_Importeanterior_Retenido := v_Importeanterior_Retenido; --se va aumentando en cada iteracion, pero solo se utiliza en LEC
     v_Importe_Netorestante     := p_Importe_Netobase;
   
-    For v_Retenciones In c_Retenciones('PFL') Loop
+    For v_Retenciones In c_Retenciones('PFL', p_Fechames) Loop
     
       If v_Retenciones.Tiporetencion = 'F' Then
         v_Importe_Aintentarretener   := v_Retenciones.Importependiente;

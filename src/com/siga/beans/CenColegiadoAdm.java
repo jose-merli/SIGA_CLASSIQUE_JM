@@ -1517,6 +1517,43 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 		return numColegiado;
 		
 	}
+
+	public boolean existe(String nColegiado, String idInstitucion, boolean comunitario) throws ClsExceptions {
+		try
+		{
+            
+	        GenParametrosAdm parametrosAdm = new GenParametrosAdm(this.usrbean);
+	        String sContadorUnico = parametrosAdm.getValor("" + idInstitucion, ClsConstants.MODULO_CENSO, "CONTADOR_UNICO_NCOLEGIADO_NCOMUNIT", "0");
+	        boolean bContadorUnico=false;
+	        if (sContadorUnico != null && sContadorUnico.equals("1")) {
+	            bContadorUnico=true;
+	        }
+	        
+            String where=" WHERE "+CenColegiadoBean.C_IDINSTITUCION+"="+idInstitucion;
+            
+            if(bContadorUnico){
+            	where+="   AND ("+CenColegiadoBean.C_NCOMUNITARIO+"="+nColegiado;
+            	where+="   OR "+CenColegiadoBean.C_NCOLEGIADO+"="+nColegiado+")";
+            }else{
+	           	if(comunitario){
+	           		where+="   AND "+CenColegiadoBean.C_NCOMUNITARIO+"="+nColegiado;
+	           		where+="   AND "+CenColegiadoBean.C_COMUNITARIO+"=1";
+	           	}else{
+	           		where+="   AND "+CenColegiadoBean.C_NCOLEGIADO+"="+nColegiado;
+	           		where+="   AND "+CenColegiadoBean.C_COMUNITARIO+"=0";
+	           	}
+            }
+           	
+           	Vector v=this.select(where);
+			if (v != null && v.size () > 0)
+				return true;
+			else
+				return false;
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al consultar datos en B.D.");
+		}
+	}
 	
 	
 }

@@ -608,24 +608,61 @@ public class ScsActuacionAsistenciaAdm extends MasterBeanAdministrador {
 		actuacionAsistenciaHashtable.put("fks", fksAsistenciaMap);
 		return actuacionAsistenciaHashtable;
 	}
+
+	/**
+	 * Permite actualizar la tabla añadiendo el campo de movimientos varios
+	 * @param entrada
+	 * @throws ClsExceptions
+	 */
+	public void actualizarActuacionesMovimientosVarios(Hashtable entrada) throws ClsExceptions{
+		StringBuilder consulta = new StringBuilder();
+		consulta.append("UPDATE "+ScsActuacionAsistenciaBean.T_NOMBRETABLA);
+		consulta.append("   SET "+ScsActuacionAsistenciaBean.C_IDMOVIMIENTO		+" = "+ entrada.get(ScsActuacionAsistenciaBean.C_IDMOVIMIENTO));
+		consulta.append(" WHERE "+ScsActuacionAsistenciaBean.C_IDINSTITUCION	+" = "+ entrada.get(ScsActuacionAsistenciaBean.C_IDINSTITUCION));
+		consulta.append("   and "+ScsActuacionAsistenciaBean.C_ANIO				+" = "+ entrada.get(ScsActuacionAsistenciaBean.C_ANIO));
+		consulta.append("   and "+ScsActuacionAsistenciaBean.C_NUMERO			+" = "+ entrada.get(ScsActuacionAsistenciaBean.C_NUMERO));
+		consulta.append("   and "+ScsActuacionAsistenciaBean.C_IDACTUACION		+" = "+ entrada.get(ScsActuacionAsistenciaBean.C_IDACTUACION));
+		try{
+			if (!this.updateSQL(consulta.toString())){
+				throw new ClsExceptions (this.getError());
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar el 'actualizaMovimientosVarios' en B.D.");
+		}
+	}
 	
-	//Permite actualizar la tabla añadiendo el campo de movimientos varios
-			public void actualizarActuacionesMovimientosVarios(Hashtable entrada) throws ClsExceptions{
-				String consulta = "UPDATE "+ScsActuacionAsistenciaBean.T_NOMBRETABLA;
-				consulta += " SET "+ScsActuacionAsistenciaBean.C_IDMOVIMIENTO+" = "+entrada.get(ScsActuacionAsistenciaBean.C_IDMOVIMIENTO);
-				consulta += " WHERE "+ScsActuacionAsistenciaBean.C_IDINSTITUCION+" = "+ entrada.get(ScsActuacionAsistenciaBean.C_IDINSTITUCION);
-				consulta += " and "+ScsActuacionAsistenciaBean.C_ANIO+" = "+entrada.get(ScsActuacionAsistenciaBean.C_ANIO);
-				consulta += " and "+ScsActuacionAsistenciaBean.C_NUMERO+" =  "+ entrada.get(ScsActuacionAsistenciaBean.C_NUMERO);
-				consulta += " and "+ScsActuacionAsistenciaBean.C_IDACTUACION+" =  "+ entrada.get(ScsActuacionAsistenciaBean.C_IDACTUACION);
-				try{
-					if (!this.updateSQL(consulta)){
-						throw new ClsExceptions (this.getError());
-					}
-				} catch (Exception e) {
-					throw new ClsExceptions (e, "Error al ejecutar el 'actualizaMovimientosVarios' en B.D.");
+	/**
+	 * Permite actualizar la tabla quitando el campo de movimientos varios
+	 * @param entrada
+	 * @throws ClsExceptions
+	 */
+	public void quitaMovimientoVarioAsociado(Hashtable entrada) throws ClsExceptions{
+		StringBuilder consulta = new StringBuilder();
+		consulta.append("SELECT "+ScsActuacionAsistenciaBean.C_IDINSTITUCION);
+		consulta.append("  FROM "+ScsActuacionAsistenciaBean.T_NOMBRETABLA);
+		consulta.append(" WHERE "+ScsActuacionAsistenciaBean.C_IDINSTITUCION	+" = "+ entrada.get(ScsActuacionAsistenciaBean.C_IDINSTITUCION));
+		consulta.append("   and "+ScsActuacionAsistenciaBean.C_IDMOVIMIENTO		+" = "+ entrada.get(ScsActuacionAsistenciaBean.C_IDMOVIMIENTO));
+		
+		StringBuilder actualizacion = new StringBuilder();
+		actualizacion.append("UPDATE "+ScsActuacionAsistenciaBean.T_NOMBRETABLA);
+		actualizacion.append("   SET "+ScsActuacionAsistenciaBean.C_IDMOVIMIENTO	+" = NULL ");
+		actualizacion.append(" WHERE "+ScsActuacionAsistenciaBean.C_IDINSTITUCION	+" = "+ entrada.get(ScsActuacionAsistenciaBean.C_IDINSTITUCION));
+		actualizacion.append("   and "+ScsActuacionAsistenciaBean.C_IDMOVIMIENTO	+" = "+ entrada.get(ScsActuacionAsistenciaBean.C_IDMOVIMIENTO));
+		
+		try{
+			Vector salida = this.getHashSQL(consulta.toString());
+			if (salida != null) {
+				if (salida.size() > 1) {
+					throw new ClsExceptions ("Error al intentar borrar un Movimiento Vario: tiene varios asuntos relacionados");
+				}
+					
+				if (!this.updateSQL(actualizacion.toString())){
+					throw new ClsExceptions (this.getError());
 				}
 			}
-
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar el 'actualizaMovimientosVarios' en B.D.");
+		}
+	}
 	
-
 }

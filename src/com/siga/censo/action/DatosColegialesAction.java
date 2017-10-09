@@ -15,6 +15,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.json.JSONObject;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
 
 import com.atos.utils.ClsConstants;
@@ -437,10 +438,13 @@ public class DatosColegialesAction extends MasterAction {
 			// obteniendo los valores originales del registro de estado colegial anterior
 			Hashtable original;
 			String fechaEstadoOrigen = "";
+			String idEstadoColegialOld = "";
 			if (request.getSession().getAttribute("DATABACKUP_EST") != null) {
 				original = ((Row) request.getSession().getAttribute("DATABACKUP_EST")).getRow();
-				if (original != null)
+				if (original != null){
 					fechaEstadoOrigen = (String) original.get(CenDatosColegialesEstadoBean.C_FECHAESTADO);
+					idEstadoColegialOld = (String) original.get(CenDatosColegialesEstadoBean.C_IDESTADO);
+				}
 			} else {
 				original = new Hashtable();
 			}
@@ -489,7 +493,6 @@ public class DatosColegialesAction extends MasterAction {
 			hashEstado.put(CenDatosColegialesEstadoBean.C_IDPERSONA, idpersona);
 			hashEstado.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, fechaEstado);
 			hashEstado.put(CenDatosColegialesEstadoBean.C_OBSERVACIONES, hashEstado.get(CenDatosColegialesEstadoBean.C_OBSERVACIONES));
-
 			boolean bDesdeCGAE = false;
 			if (this.getIDInstitucion(request) == 2000){
 				bDesdeCGAE = true;
@@ -675,7 +678,11 @@ public class DatosColegialesAction extends MasterAction {
 						} //for
 					} //if (vDir != null)
 					//06/03/2017 - R1603_0029: Si se pasa de residente a no residente y viceversa llamamos al servicio de ACA para que se tenga constancia de ello.
-					if(residenteAhora.equals("0")){
+					//Se comprueba también el estado colegial y en función de ello se comunica.
+					Hashtable hashEstadosColegiales = admin.getEstadoColegial(Long.valueOf(miForm.getIdPersona()), Integer.valueOf(miForm.getIdInstitucion()));
+					Integer idEstadoColegial = Integer.valueOf((String)hashEstadosColegiales.get("IDESTADO"));
+					if(idEstadoColegial != null && (idEstadoColegial==AppConstants.ESTADO_COLEGIAL_EJERCIENTE || idEstadoColegial==AppConstants.ESTADO_COLEGIAL_SINEJERCER) 
+							&& AppConstants.DB_TRUE.equalsIgnoreCase(residenteAntes)){
 						String llamadaReport= null;
 						try {
 							CenDatosColegialesEstadoAdm cenDatosColegialesEstadoAdm = new CenDatosColegialesEstadoAdm(this.getUserBean(request));
@@ -716,7 +723,7 @@ public class DatosColegialesAction extends MasterAction {
 				exitoRefresco("messages.updated.success",request);
 				return "exitoConEditarNColegiado"; 
 			}
-			result = exitoRefresco("messages.updated.success",request);
+			//result = exitoRefresco("messages.updated.success",request); Se encuentra repetido con el result de la línea 726
 			
 			if(!original.getNColegiado().equalsIgnoreCase(miForm.getNumColegiado()) && original.getIdentificadorDS()!=null && !original.getIdentificadorDS().equalsIgnoreCase("")){
 				try{
