@@ -493,24 +493,6 @@ public class DatosColegialesAction extends MasterAction {
 			hashEstado.put(CenDatosColegialesEstadoBean.C_IDPERSONA, idpersona);
 			hashEstado.put(CenDatosColegialesEstadoBean.C_FECHAESTADO, fechaEstado);
 			hashEstado.put(CenDatosColegialesEstadoBean.C_OBSERVACIONES, hashEstado.get(CenDatosColegialesEstadoBean.C_OBSERVACIONES));
-			//Anyadimos el estado anterior, para tenerlo a la hora de comunicar con ACA o no
-			// Comprueba si el usuario reside en algun otro colegio
-			CenColegiadoAdm colegiadoAdm = new CenColegiadoAdm(this.getUserName(request),usr,new Integer(idinstitucion),new Long(idpersona));
-			boolean esResidente=Boolean.FALSE;
-			if (idpersona != null){
-				 esResidente=colegiadoAdm.getResidenciaColegio(idpersona.toString(),idinstitucion);
-			}	
-			if(esResidente){
-				hashEstado.put("RESIDENCIA", "1");
-			}else{
-				hashEstado.put("RESIDENCIA", "0");
-			}
-			if(idEstadoColegialOld != null && !"".equalsIgnoreCase(idEstadoColegialOld)){
-				hashEstado.put("IDESTADO_OLD", idEstadoColegialOld);
-			}
-			//////
-			
-			
 			boolean bDesdeCGAE = false;
 			if (this.getIDInstitucion(request) == 2000){
 				bDesdeCGAE = true;
