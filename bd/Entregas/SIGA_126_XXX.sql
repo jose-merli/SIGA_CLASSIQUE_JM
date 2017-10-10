@@ -351,3 +351,13 @@ Pkg_Siga_Retenciones_Sjcs
 
 PKG_SIGA_FACTURACION_SJCS
 
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.censo.ws.horaEjecucion', 'Indica la hora de ejecución de la petición de censo por WebService al colegio. Debería ser posterior al parámetro CEN_WS_CARGA_DIA_HORA porque si no se ejecuta mañana.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.censo.ws.horaEjecucion', 'Indica la hora de ejecución de la petición de censo por WebService al colegio. Debería ser posterior al parámetro CEN_WS_CARGA_DIA_HORA porque si no se ejecuta mañana.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.censo.ws.horaEjecucion', 'Indica la hora de ejecución de la petición de censo por WebService al colegio. Debería ser posterior al parámetro CEN_WS_CARGA_DIA_HORA porque si no se ejecuta mañana.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.censo.ws.horaEjecucion', 'Indica la hora de ejecución de la petición de censo por WebService al colegio. Debería ser posterior al parámetro CEN_WS_CARGA_DIA_HORA porque si no se ejecuta mañana.#GL', 0, '4', sysdate, 0, '19');
+
+
+insert into gen_parametros (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
+values('CEN', 'CENSO_WS_HORA_PETICION', '22:05', SYSDATE, 0, 0, 'cen.parametro.censo.ws.horaEjecucion');
+insert into gen_parametros (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
+values('CEN', 'CENSO_WS_HORA_PETICION', '0:10', SYSDATE, 0, 2081, 'cen.parametro.censo.ws.horaEjecucion');
