@@ -361,3 +361,4 @@ insert into gen_parametros (modulo, parametro, valor, fechamodificacion, usumodi
 values('CEN', 'CENSO_WS_HORA_PETICION', '22:05', SYSDATE, 0, 0, 'cen.parametro.censo.ws.horaEjecucion');
 insert into gen_parametros (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
 values('CEN', 'CENSO_WS_HORA_PETICION', '0:10', SYSDATE, 0, 2081, 'cen.parametro.censo.ws.horaEjecucion');
+
