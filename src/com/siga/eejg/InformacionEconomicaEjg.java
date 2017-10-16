@@ -5,19 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.axis.AxisFault;
-import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
-import org.redabogacia.sigaservices.app.AppConstants.GEN_PROPERTIES;
 import org.redabogacia.sigaservices.app.AppConstants.MODULO;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
-import org.redabogacia.sigaservices.app.services.helper.SigaServiceHelperService;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
-import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.eejg.ScsEejgPeticionesAdm;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
@@ -177,7 +173,6 @@ private static Boolean alguienEjecutando=Boolean.FALSE;
 				try {					
 					if (numeroErrores < NUM_ERROR_CONEXION) {
 						if(isActivadoIntercambioEconomico){
-//						if(scsEejgPeticionesBean.getIdInstitucion()!=null && scsEejgPeticionesBean.getIdInstitucion().intValue()==2003){
 							idXML = solicitudesEEJGInformacionCompleta.consultaInformacionCompletaAAPP(scsEejgPeticionesBean);
 						}else{
 							idXML = solicitudesEEJG.consultaInfoAAPP(scsEejgPeticionesBean);
