@@ -362,3 +362,5 @@ values('CEN', 'CENSO_WS_HORA_PETICION', '22:05', SYSDATE, 0, 0, 'cen.parametro.c
 insert into gen_parametros (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
 values('CEN', 'CENSO_WS_HORA_PETICION', '0:10', SYSDATE, 0, 2081, 'cen.parametro.censo.ws.horaEjecucion');
 
+--126_009: Ejecutados en Integracion por AAG el 13/10/2017 a las 13:50
+
