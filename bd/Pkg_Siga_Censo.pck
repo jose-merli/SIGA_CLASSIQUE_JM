@@ -368,7 +368,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
         Raise e_Error;
       End If;
     End If;
-  
+
     v_Datoserror := 'Actualizardatosletrado: antes de terminar, ejecutamos un parche para revisar direcciones de Traspaso que no se han copiado';
     Insert Into Cen_Colacambioletrado
       (Idpersona, Idinstitucion, Idcambio, Fechacambio, Idtipocambio, Iddireccion, Fechamodificacion, Usumodificacion)
@@ -382,6 +382,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
           And Dir.Idinstitucion = Col.Idinstitucion
           And Dir.Idpersona = Col.Idpersona
           And Dir.Fechabaja Is Null
+          -- que no exista direccion copiada en el Consejo
           And Not Exists (Select 1
                  From Cen_Direcciones Dircon, Cen_Direccion_Tipodireccion Tipcon
                 Where Dircon.Idinstitucion = Tipcon.Idinstitucion
@@ -390,12 +391,14 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
                   And Tipcon.Idtipodireccion = c_Tipo_Despachooojj
                   And Dircon.Idinstitucion = c_Idcgae
                   And Dircon.Idpersona = Col.Idpersona
-                  And Dircon.Fechabaja Is Null)
+                  And Dircon.Fechabaja Is Null
+                  -- si ya se ha copiado la direccion al Consejo, en este sera posterior a la del colegio
+                  And dircon.Fechamodificacion >= dir.Fechamodificacion)
           And Not Exists (Select 1
                  From Cen_Colacambioletrado Col2
                 Where Col.Idinstitucion = Col2.Idinstitucion
                   And Col.Idpersona = Col2.Idpersona));
-  
+
     v_Datoserror := 'Actualizardatosletrado: antes de terminar, ejecutamos un parche para revisar direcciones de CorreoWeb que no se han copiado';
     Insert Into Cen_Colacambioletrado
       (Idpersona, Idinstitucion, Idcambio, Fechacambio, Idtipocambio, Iddireccion, Fechamodificacion, Usumodificacion)
@@ -408,6 +411,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
           And Dir.Idinstitucion = Col.Idinstitucion
           And Dir.Idpersona = Col.Idpersona
           And Dir.Fechabaja Is Null
+          -- que no exista direccion copiada en el Consejo
           And Not Exists (Select 1
                  From Cen_Direcciones Dircon, Cen_Direccion_Tipodireccion Tipcon
                 Where Dircon.Idinstitucion = Tipcon.Idinstitucion
@@ -416,7 +420,9 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
                   And Tipcon.Idtipodireccion = c_Tipo_Censoweb
                   And Dircon.Idinstitucion = c_Idcgae
                   And Dircon.Idpersona = Col.Idpersona
-                  And Dircon.Fechabaja Is Null)
+                  And Dircon.Fechabaja Is Null
+                  -- si ya se ha copiado la direccion al Consejo, en este sera posterior a la del colegio
+                  And dircon.Fechamodificacion >= dir.Fechamodificacion)
           And Not Exists (Select 1
                  From Cen_Colacambioletrado Col2
                 Where Col.Idinstitucion = Col2.Idinstitucion

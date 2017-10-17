@@ -364,3 +364,8 @@ values('CEN', 'CENSO_WS_HORA_PETICION', '0:10', SYSDATE, 0, 2081, 'cen.parametro
 
 --126_009: Ejecutados en Integracion por AAG el 13/10/2017 a las 13:50
 
+--126_010
+
+Pkg_Siga_Censo
+
+
