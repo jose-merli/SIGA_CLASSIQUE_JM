@@ -37,7 +37,7 @@ public class CargaCensoWSListener extends SIGAListenerAbstract {
 	protected void execute(Short idInstitucion) {
 		try {
 			EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
-			if (ecomColaService.insertaColaCargaCenso(idInstitucion) != 1) {
+			if (ecomColaService.insertaColaCargaCenso(idInstitucion, true) != 1) {
 				throw new Exception("No se ha podido insertar correctamente en la cola de carga de censo para el colegio " + idInstitucion);
 			}
 		} catch (Exception e) {
