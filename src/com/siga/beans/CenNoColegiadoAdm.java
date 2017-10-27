@@ -477,4 +477,21 @@ public class CenNoColegiadoAdm extends MasterBeanAdministrador {
 		return rc;
 	}
 	
+	/**
+	 * Obtiene el tipo de persona (fisica u otra) sobre un no colegiado.
+	 * Si no existe dicha persona, entonces devuelve un String vacio. Si no es no colegiado, tambien devuelve el String vacio.
+	 * @return
+	 * @throws SIGAException 
+	 * @throws ClsExceptions 
+	 */
+	public String getTipoPersonaNoColegiado(Long idPersona, Integer idInstitucionPersona) throws ClsExceptions, SIGAException {
+		String tipoCliente = "";
+		CenNoColegiadoBean noColBean = this.existeNoColegiadoInstitucion(idPersona, idInstitucionPersona);
+		if (noColBean != null) {
+			tipoCliente = noColBean.getTipo();
+		}
+		
+		return tipoCliente;
+	}
+	
 }		

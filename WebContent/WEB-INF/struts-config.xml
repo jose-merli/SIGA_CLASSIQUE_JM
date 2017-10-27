@@ -762,6 +762,7 @@
 			<forward name="editar" path="/html/jsp/censo/datosDireccion.jsp"/>
 			<forward name="borrar" path="/html/jsp/censo/datosDireccion.jsp"/>
 			<forward name="nuevo" path="/html/jsp/censo/datosDireccion.jsp"/>
+			<forward name="duplicar" path="/html/jsp/censo/datosDireccion.jsp"/>
 			<forward name="preguntaCambioPreferencia" path="/html/jsp/censo/preguntaCambioPreferencia.jsp"/>
 			<forward name="preguntaCambioTipoDireccion" path="/html/jsp/censo/preguntaTipoDireccion.jsp"/>			
 			<forward name="solicitarModificacion" path="/CEN_SolicitudDirecciones.do"/>
