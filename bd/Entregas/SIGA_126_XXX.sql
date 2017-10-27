@@ -374,3 +374,6 @@ Drop materialized view V_CENSO_LETRADOS_OOJJ;
 
 V_CENSO_COLEGIACIONES;
 V_CENSO_LETRADOS_OOJJ;
+
+--126_010: Ejecutados en Integracion por AAG el 27/10/2017 a las 14:40
+
