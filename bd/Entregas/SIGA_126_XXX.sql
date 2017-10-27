@@ -369,3 +369,8 @@ values('CEN', 'CENSO_WS_HORA_PETICION', '0:10', SYSDATE, 0, 2081, 'cen.parametro
 Pkg_Siga_Censo
 
 
+Drop materialized view V_CENSO_COLEGIACIONES;
+Drop materialized view V_CENSO_LETRADOS_OOJJ;
+
+V_CENSO_COLEGIACIONES;
+V_CENSO_LETRADOS_OOJJ;
