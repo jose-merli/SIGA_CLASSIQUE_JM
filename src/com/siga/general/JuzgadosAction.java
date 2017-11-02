@@ -17,6 +17,7 @@ import org.redabogacia.sigaservices.app.services.scs.ScsTipoFundamentosService;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.beans.GenParametrosAdm;
@@ -189,14 +190,17 @@ public class JuzgadosAction extends MasterAction{
 		//Esto de abajo seria lo optimo pero no tengo tiempo para ver porque da error cuando hay mas de un registro(me puedo imaginar que la capa de mybatis trate el dato como un short y cumo se le pasauna cadena...)
 //		List<ScsTipofundamentos> tiposFundamentos = (ArrayList<ScsTipofundamentos>) tipoFundamentosService.getTiposFundamentoResolucionesMultiples(Integer.parseInt(usrBean.getLanguage()),idCombo,new Integer(usrBean.getLocation()));
 		
-		
+		ClsLogging.writeFileLogWithoutSession("Antes de construir el JSON");
 		JSONArray jsonArray = new JSONArray();
 		for (ScsTipofundamentos tipoFundamento : tiposFundamentos) {
 			JSONObject json = new JSONObject();	
+			ClsLogging.writeFileLogWithoutSession(tipoFundamento.getIdfundamento() + " " + tipoFundamento.getIdfundamento().toString());
 			json.put("idFundamento",tipoFundamento.getIdfundamento().toString());
+			ClsLogging.writeFileLogWithoutSession(tipoFundamento.getDescripcion() + " " + tipoFundamento.getDescripcion().toString());
 			json.put("descripcion", tipoFundamento.getDescripcion());
 			jsonArray.put(json);
 		}
+		ClsLogging.writeFileLogWithoutSession("Antes de meter el array: " + jsonArray.toString());
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("fundamentos", jsonArray);
 		
@@ -206,6 +210,7 @@ public class JuzgadosAction extends MasterAction{
 		response.setHeader("Content-Type", "application/json");
 	    response.setHeader("X-JSON", jsonObject.toString());
 		response.getWriter().write(jsonObject.toString()); 		
+		ClsLogging.writeFileLogWithoutSession("Termina la llamada en el Action");
 	}
 	protected void getAjaxModulos (
 			HttpServletRequest request, 
