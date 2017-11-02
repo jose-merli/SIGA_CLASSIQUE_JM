@@ -377,3 +377,8 @@ V_CENSO_LETRADOS_OOJJ;
 
 --126_010: Ejecutados en Integracion por AAG el 27/10/2017 a las 14:40
 
+
+--126_011
+
+Update Gen_Procesos pro Set pro.Transaccion = 'CEN_ModificarNumeroColegiado' Where pro.Idproceso = '12P';
+
