@@ -92,7 +92,7 @@ public class NuevaRemesaAction extends MasterAction {
 				idcol=Short.valueOf(idColegio);
 			}
 			EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
-			if (ecomColaService.insertaColaCargaCenso(idcol) != 1) {
+			if (ecomColaService.insertaColaCargaCenso(idcol, false) != 1) {
 					throw new Exception("No se ha podido insertar correctamente en la cola para el colegio " + idcol);
 			}
 		} catch (Exception e) {

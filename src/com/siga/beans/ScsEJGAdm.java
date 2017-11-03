@@ -1412,10 +1412,9 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		miHash.put("chkBusquedaExactaSolicitante",isBusquedaExactaSolicitante);
 		boolean esComision=(miHash.containsKey("ESCOMISION") && UtilidadesString.stringToBoolean(miHash.get("ESCOMISION").toString()));
 		boolean isAñadirJoinEstados = TipoVentana.BUSQUEDA_PREPARACION_CAJG.equals(tipoVentana) ||TipoVentana.BUSQUEDA_ANIADIR_REMESA.equals(tipoVentana)
-				||TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)
+				//||TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)
 				||(miHash.containsKey("ESTADOEJG")) && (!miHash.get("ESTADOEJG").toString().equals(""))
-				||(miHash.containsKey("DESCRIPCIONESTADO")) && (!miHash.get("DESCRIPCIONESTADO").toString().equals(""))
-				;
+				||(miHash.containsKey("DESCRIPCIONESTADO")) && (!miHash.get("DESCRIPCIONESTADO").toString().equals(""));
 		Short[] idInstitucionesComision = usrbean.getInstitucionesComision();
 		
 		// Estos son los campos que devuelve la select
@@ -1571,19 +1570,42 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 //		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESA.equals(tipoVentana)||TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)) {
 			consulta += " AND ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " IN (" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.ESTADO_LISTO_COMISION_ACTUALIZAR_DESIGNACION.getCodigo() + ") ";
 		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)) {
-			consulta += " AND (ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " NOT IN ( "+ ESTADOS_EJG.GENERADO_EN_REMESA.getCodigo() + ", " + ESTADOS_EJG.REMITIDO_COMISION.getCodigo() + ", " + ESTADOS_EJG.RESUELTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.IMPUGNADO.getCodigo() + "))  ";
-		}
-		if (TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)) {
-//			consulta += " AND EXISTS (SELECT 1 FROM SCS_EEJG_PETICIONES P, SCS_EEJG_XML X "; 
-			consulta += " AND EXISTS (SELECT 1 FROM SCS_EEJG_PETICIONES P ";
+		// QUITAMOS LOS QUE YA ESTAN INCLUIDOS EN UNA REMESA
+			consulta += " and F_SIGA_GET_IDULTIMOESTADOEJG(EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO)<>"+ESTADOS_EJG.GENERADO_EN_REMESA.getCodigo()+" ";
+			
+			consulta += " AND EXISTS (SELECT 1 FROM SCS_EEJG_PETICIONES P, SCS_EEJG_XML X "; 
+//			consulta += " AND EXISTS (SELECT 1 FROM SCS_EEJG_PETICIONES P ";
 			consulta += " WHERE  P.IDINSTITUCION = EJG.IDINSTITUCION ";
 			consulta += " AND P.IDTIPOEJG = EJG.IDTIPOEJG ";
 			consulta += " AND P.ANIO = EJG.ANIO ";
 			consulta += " AND P.NUMERO = EJG.NUMERO ";
+			consulta += " AND P.IDPETICION = X.IDPETICION ";
+			consulta += " AND P.IDXML = X.IDXML ";
 			consulta += " AND P.ESTADO = 30 ";
-//			consulta += " AND P.IDPETICION = X.IDPETICION ";
-//			consulta += " AND X.XML IS NOT NULL) ";
-			consulta += " AND P.CSV IS NOT NULL) ";
+			consulta += " AND P.CSV IS NOT NULL ";
+			consulta += " AND P.IDPETICION >=1586644 ";//eSTO LO PONEMOS YA QUE EN ESE REGISTRO ES DONDE HA EMPEZADO A FUNCIONAR LOS DATOS COMPLETOS
+			consulta += " AND X.XML IS NOT NULL )";
+			
+			//Sacamos los  ejgs que hyan sido remitikdos a comision perro que no tienen un estado posterio devueltio al colegio
+			consulta += " AND "+ESTADOS_EJG.DEVUELTO_AL_COLEGIO.getCodigo()+" <> ";
+			consulta += " (SELECT DISTINCT FIRST_VALUE(EST.IDESTADOEJG) OVER(ORDER BY EST.FECHAINICIO DESC, EST.IDESTADOPOREJG DESC) ";
+			consulta += " FROM SCS_ESTADOEJG EST ";
+			consulta += " WHERE EST.IDINSTITUCION = EJG.IDINSTITUCION ";
+			consulta += " AND EST.IDTIPOEJG = EJG.IDTIPOEJG ";
+			consulta += " AND EST.ANIO = EJG.ANIO ";
+			consulta += " AND EST.NUMERO = EJG.NUMERO ";
+			consulta += " AND EST.FECHABAJA IS NULL ";
+			consulta += " AND EST.IDESTADOEJG IN ("+ESTADOS_EJG.REMITIDO_COMISION.getCodigo()+", "+ESTADOS_EJG.DEVUELTO_AL_COLEGIO.getCodigo()+")) ";
+	      
+			consulta += " AND EXISTS (SELECT 1 ";
+			consulta += " FROM SCS_ESTADOEJG EREM ";
+			consulta += " WHERE EREM.IDINSTITUCION = EJG.IDINSTITUCION ";
+	              
+			consulta += " AND EREM.IDTIPOEJG = EJG.IDTIPOEJG ";
+			consulta += " AND EREM.ANIO = EJG.ANIO ";
+			consulta += " AND EREM.NUMERO = EJG.NUMERO ";
+			consulta += " AND EREM.FECHABAJA IS NULL ";
+			consulta += " AND EREM.IDESTADOEJG = "+ESTADOS_EJG.REMITIDO_COMISION.getCodigo()+" ) ";
 			
 		}
 		

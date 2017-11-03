@@ -88,6 +88,8 @@ public class DireccionesAction extends MasterAction
 				mapDestino = borrarInsertar(mapping, miForm, request, response);	
 			} else if (accion.equalsIgnoreCase("modificarDireccion")) {
 				mapDestino = modificarDireccion(mapping, miForm, request, response);
+			} else if (accion.equalsIgnoreCase("duplicar")) {
+				mapDestino = duplicarDireccion(mapping, miForm, request, response);
 			}
 			else {
 				return super.executeInternal(mapping, formulario, request, response);
@@ -109,7 +111,7 @@ public class DireccionesAction extends MasterAction
 			throw new SIGAException("Error en la Aplicación",e);
 		}
 	} //executeInternal()
-	
+
 	/** 
 	 * Funcion que atiende la accion abrir. 
 	 *   Por defecto se abre el forward 'inicio'
@@ -173,6 +175,99 @@ public class DireccionesAction extends MasterAction
 		}
 		return "inicio";
 	} //abrir()
+
+	protected String editarYver(MasterForm formulario, HttpServletRequest request, String modo) throws SIGAException
+	{
+		// Controles y variables generales
+		UsrBean user = this.getUserBean(request);
+		DireccionesForm form = (DireccionesForm) formulario;
+
+		try {
+			// obteniendo identificacion de la direccion desde el formulario
+			Vector ocultos = form.getDatosTablaOcultos(0);
+			Long idPersona = form.getIDPersona();
+			Long idDireccion = Long.valueOf((String) ocultos.elementAt(0));
+			Integer idInstitucionPersona = form.getIDInstitucion();
+
+			// Controles generales
+			CenDireccionTipoDireccionAdm tipoDirAdm = new CenDireccionTipoDireccionAdm(this.getUserName(request), user, idInstitucionPersona, idPersona);
+			CenTipoDireccionAdm cenTipoDirAdm = new CenTipoDireccionAdm(user);
+			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request), user, idInstitucionPersona, idPersona);
+			Hashtable hDatosDireccion = clienteAdm.getDirecciones(idPersona, idInstitucionPersona, idDireccion, modo.equalsIgnoreCase("ver"));
+
+			// obteniendo todos los tipos existentes en SIGA
+			Vector vTipos = cenTipoDirAdm.select("");
+			Hashtable hTipoDir = new Hashtable();
+			if (vTipos != null && vTipos.size() > 0) {
+				for (int i = 0; i < vTipos.size(); i++) {
+					CenTipoDireccionBean tipoDir = (CenTipoDireccionBean) vTipos.get(i);
+					hTipoDir.put(tipoDir.getIdTipoDireccion(), "N");
+				}
+			}
+			request.setAttribute("vTipos", vTipos);
+
+			// obteniendo los tipos de esta direccion
+			Vector vTiposDireccion = new Vector();
+			Hashtable hTipoDirSel = new Hashtable();
+			// compruebo al visibilidad con CenClienteAdm que ha utilizado su constructor de visibilidad
+			if (clienteAdm.compruebaVisibilidadCampo(CenDireccionTipoDireccionBean.T_NOMBRETABLA, CenDireccionTipoDireccionBean.C_IDTIPODIRECCION)) {
+				Hashtable pkDireccion = new Hashtable();
+				UtilidadesHash.set(pkDireccion, CenDireccionTipoDireccionBean.C_IDINSTITUCION, idInstitucionPersona);
+				UtilidadesHash.set(pkDireccion, CenDireccionTipoDireccionBean.C_IDPERSONA, idPersona);
+				UtilidadesHash.set(pkDireccion, CenDireccionTipoDireccionBean.C_IDDIRECCION, idDireccion);
+				vTiposDireccion = tipoDirAdm.select(pkDireccion);
+				if (vTiposDireccion != null) {
+					for (int i = 0; i < vTiposDireccion.size(); i++) {
+						CenDireccionTipoDireccionBean tipoDirSel = (CenDireccionTipoDireccionBean) vTiposDireccion.get(i);
+						hTipoDirSel.put(tipoDirSel.getIdTipoDireccion(), "S");
+					}
+				}
+			}
+			hDatosDireccion.put(CenTipoDireccionBean.C_IDTIPODIRECCION, vTiposDireccion);
+
+			// pasando los tipos de esta direccion
+			Enumeration clavesDir = hTipoDirSel.keys();
+			while (clavesDir.hasMoreElements()) {
+				Integer clave = (Integer) clavesDir.nextElement();
+				if (hTipoDir.containsKey(clave))
+					hTipoDir.put(clave, "S");
+			}
+			request.setAttribute("TipoDirecciones", hTipoDir);
+
+			// pasando las preferencias de la direccion
+			String fax = "false", mail = "false", correo = "false", sms = "false";
+			String preferente = UtilidadesHash.getString(hDatosDireccion, CenDireccionesBean.C_PREFERENTE);
+			if (preferente.indexOf("E") >= 0)
+				mail = "true";
+			if (preferente.indexOf("F") >= 0)
+				fax = "true";
+			if (preferente.indexOf("C") >= 0)
+				correo = "true";
+			if (preferente.indexOf("S") >= 0)
+				sms = "true";
+			request.setAttribute("preferenteFax", fax);
+			request.setAttribute("preferenteCorreo", correo);
+			request.setAttribute("preferenteMail", mail);
+			request.setAttribute("preferenteSms", sms);
+
+			// pasando el tipo de persona de no colegiado ("1": Persona fisica)
+			CenNoColegiadoAdm noColAdm = new CenNoColegiadoAdm(user);
+			String tipoCliente = noColAdm.getTipoPersonaNoColegiado(idPersona, idInstitucionPersona);
+			request.setAttribute("tipoCliente", tipoCliente);
+
+			// pasando los datos de la direccion y otros parametros
+			request.getSession().setAttribute("DATABACKUP", hDatosDireccion);
+			request.setAttribute("accion", request.getParameter("accion"));
+			request.setAttribute("nombrePersona", request.getParameter("nombreUsuario"));
+			request.setAttribute("numero", request.getParameter("numeroUsuario"));
+			request.setAttribute("idPersona", idPersona);
+			request.setAttribute("modoConsulta", modo);
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, null);
+		}
+		return modo;
+	} // editarYver()
 	
 	/** 
 	 * Funcion que atiende la accion editar
@@ -190,96 +285,7 @@ public class DireccionesAction extends MasterAction
 							 HttpServletResponse response)
 			throws SIGAException
 	{
-		String modo = "editar";
-		
-		try 
-		{
-			DireccionesForm form = (DireccionesForm) formulario;
-			Vector ocultos = form.getDatosTablaOcultos(0);	
-			String accion = (String)request.getParameter("accion");				
-			Long idPersona = form.getIDPersona();
-			Long idDireccion = Long.valueOf((String)ocultos.elementAt(0));
-			Integer idInstitucionPersona = form.getIDInstitucion();
-			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
-			
-			CenClienteAdm clienteAdm =  new CenClienteAdm(this.getUserName(request),
-					user,idInstitucionPersona.intValue(), idPersona.longValue());
-			Hashtable hash = clienteAdm.getDirecciones(idPersona, idInstitucionPersona, idDireccion);
-			
-			CenDireccionTipoDireccionAdm tipoDirAdm = new CenDireccionTipoDireccionAdm (this.getUserName(request),
-					this.getUserBean(request),idInstitucionPersona.intValue(),idPersona.longValue());
-			CenTipoDireccionAdm cenTipoDirAdm = new CenTipoDireccionAdm (this.getUserBean(request));
-			Vector vTipos = new Vector();
-			vTipos=cenTipoDirAdm.select("");
-			Hashtable hTipoDir=new Hashtable();
-			Hashtable hTipoDirSel=new Hashtable();
-			if ( (vTipos != null) && (vTipos.size() > 0) )
-				for (int i = 1; i <= vTipos.size(); i++) {
-					CenTipoDireccionBean tipoDir = (CenTipoDireccionBean) vTipos.get(i-1);
-					hTipoDir.put(tipoDir.getIdTipoDireccion(),"N");
-				}
-			request.setAttribute("vTipos",vTipos);
-		    
-			Hashtable claves = new Hashtable();
-			
-			Vector v = new Vector();
-			// compruebo al visibilidad con CenClienteAdm que ha utilizado su constructor de visibilidad
-			if (clienteAdm.compruebaVisibilidadCampo(CenDireccionTipoDireccionBean.T_NOMBRETABLA, CenDireccionTipoDireccionBean.C_IDTIPODIRECCION)) {
-				UtilidadesHash.set(claves, CenDireccionTipoDireccionBean.C_IDINSTITUCION, idInstitucionPersona);
-				UtilidadesHash.set(claves, CenDireccionTipoDireccionBean.C_IDPERSONA, idPersona);
-				UtilidadesHash.set(claves, CenDireccionTipoDireccionBean.C_IDDIRECCION, idDireccion);
-				v = tipoDirAdm.select(claves);
-				if ( (v != null) && (v.size() > 0) ) {
-	   			    for (int i = 1; i <= v.size(); i++) {
-	   			    	CenDireccionTipoDireccionBean tipoDirSel = (CenDireccionTipoDireccionBean) v.get(i-1);
-				     	hTipoDirSel.put(tipoDirSel.getIdTipoDireccion(),"S");
-	   			    }
-				}    
-			}
-			hash.put(CenTipoDireccionBean.C_IDTIPODIRECCION, v);
-			Integer clave=null;
-			
-			Enumeration clavesDir = hTipoDirSel.keys();
-		    while (clavesDir.hasMoreElements()) {
-		    	clave = (Integer)clavesDir.nextElement();
-		    	if (hTipoDir.containsKey(clave))
-					hTipoDir.put(clave,"S");
-		    }
-			
-			request.setAttribute("TipoDirecciones",hTipoDir);
-			
-			String fax = "false", mail = "false", correo  = "false", sms = "false";
-			String preferente = UtilidadesHash.getString(hash, CenDireccionesBean.C_PREFERENTE);
-			if (preferente.indexOf("E") >= 0) mail   = "true";
-			if (preferente.indexOf("F") >= 0) fax    = "true";
-			if (preferente.indexOf("C") >= 0) correo = "true";
-			if (preferente.indexOf("S") >= 0) sms    = "true";
-			
-			request.getSession().setAttribute("DATABACKUP", hash);
-			request.setAttribute("accion", accion);	
-			request.setAttribute("nombrePersona", request.getParameter("nombreUsuario"));
-			request.setAttribute("numero", request.getParameter("numeroUsuario"));
-			request.setAttribute("idPersona", idPersona);
-			request.setAttribute("modoConsulta", modo);
-			request.setAttribute("preferenteFax", fax);
-			request.setAttribute("preferenteCorreo", correo);
-			request.setAttribute("preferenteMail", mail);
-			request.setAttribute("preferenteSms", sms);
-			
-			//CR - Queremos saber si se trata de un Colegiadoo de un No Colegiado. Y si es No colegiado si es tipo Personal (1) o Sociedad (0).
-			String tipoCliente = "";
-			CenNoColegiadoAdm noColAdm = new CenNoColegiadoAdm(user);
-			CenNoColegiadoBean noColBean = noColAdm.existeNoColegiadoInstitucion(idPersona, idInstitucionPersona);
-			if(noColBean!=null){
-				tipoCliente = noColBean.getTipo();
-			}
-			request.setAttribute("tipoCliente", tipoCliente);
-			
-		}
-		catch(Exception e){
-			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
-		}
-		return modo;
+		return editarYver(formulario, request, "editar");
 	} //editar()
 	
 	/** 
@@ -298,98 +304,54 @@ public class DireccionesAction extends MasterAction
 						  HttpServletResponse response)
 			throws SIGAException
 	{
-		String modo = "ver";
-		
+		return editarYver(formulario, request, "ver");
+	} //ver()
+	
+	/**
+	 * Saca la ventana de una nueva direccion con los datos de otra direccion cargados
+	 * 
+	 * @param mapping
+	 * @param miForm
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
+	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
+	{
+		// Controles y variables generales
+		UsrBean user = this.getUserBean(request);			
+		DireccionesForm miForm = (DireccionesForm) formulario;
+		String modo = "nuevo";
+ 		
 		try
 		{
-			Vector ocultos = new Vector();
-			DireccionesForm form = (DireccionesForm) formulario;
-			ocultos = (Vector)form.getDatosTablaOcultos(0);	
-			Long idPersona = form.getIDPersona();
-			Integer idInstitucionPersona = form.getIDInstitucion();
-			String accion = (String)request.getParameter("accion");				
-			Long idDireccion = Long.valueOf((String)ocultos.elementAt(0));
-			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");			
+			// obteniendo los datos del formulario
+			Long idPersona = miForm.getIDPersona();
+			Integer idInstitucionPersona = miForm.getIDInstitucion();
 			
-			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request), user, 
-					idInstitucionPersona.intValue(), idPersona.longValue());
-			Hashtable hash = clienteAdm.getDirecciones(idPersona,idInstitucionPersona,idDireccion,true);
+			// pasando todos los tipos existentes en SIGA
+			CenTipoDireccionAdm cenTipoDirAdm = new CenTipoDireccionAdm (user);
+			Vector vTipos = cenTipoDirAdm.select("");
+			request.setAttribute("vTipos", vTipos);
 			
-			CenDireccionTipoDireccionAdm tipoDirAdm = new CenDireccionTipoDireccionAdm (user);
-			CenTipoDireccionAdm cenTipoDirAdm = new CenTipoDireccionAdm (this.getUserBean(request));
-			Vector vTipos = new Vector();
-			vTipos=cenTipoDirAdm.select("");
-			Hashtable hTipoDir=new Hashtable();
-			Hashtable hTipoDirSel=new Hashtable();
-			if ( (vTipos != null) && (vTipos.size() > 0) ) {
-				for (int i = 1; i <= vTipos.size(); i++) {
-					CenTipoDireccionBean tipoDir = (CenTipoDireccionBean) vTipos.get(i-1);
-					hTipoDir.put(tipoDir.getIdTipoDireccion(),"N");
-				}
-			}   
-			request.setAttribute("vTipos",vTipos);
-			Hashtable claves = new Hashtable();
-			Vector v = new Vector();
-			// compruebo al visibilidad con CenClienteAdm que ha utilizado su constructor de visibilidad
-			if (clienteAdm.compruebaVisibilidadCampo(CenDireccionTipoDireccionBean.T_NOMBRETABLA, 
-					CenDireccionTipoDireccionBean.C_IDTIPODIRECCION))
-			{
-				UtilidadesHash.set(claves, CenDireccionTipoDireccionBean.C_IDINSTITUCION, idInstitucionPersona);
-				UtilidadesHash.set(claves, CenDireccionTipoDireccionBean.C_IDPERSONA, idPersona);
-				UtilidadesHash.set(claves, CenDireccionTipoDireccionBean.C_IDDIRECCION, idDireccion);
-				v = tipoDirAdm.select(claves);
-				if ( (v != null) && (v.size() > 0) ) {
-	   			    for (int i = 1; i <= v.size(); i++) {
-	   			    	CenDireccionTipoDireccionBean tipoDirSel = (CenDireccionTipoDireccionBean) v.get(i-1);
-				     	hTipoDirSel.put(tipoDirSel.getIdTipoDireccion(),"S");
-	   			    }
-				}    
-			}
-			hash.put(CenTipoDireccionBean.C_IDTIPODIRECCION, v);
-			Integer clave=null;
-			
-			Enumeration clavesDir = hTipoDirSel.keys();
-		    while (clavesDir.hasMoreElements()) {
-		    	clave = (Integer)clavesDir.nextElement();
-		    	if (hTipoDir.containsKey(clave)){
-					hTipoDir.put(clave,"S");
-				}
-		    }
-			
-			request.setAttribute("TipoDirecciones",hTipoDir);
-			
-			String fax = "false", mail = "false", correo  = "false", sms  = "false";
-			String preferente = UtilidadesHash.getString(hash, CenDireccionesBean.C_PREFERENTE);
-			if (preferente.indexOf("E") >= 0) mail   = "true";
-			if (preferente.indexOf("F") >= 0) fax    = "true";
-			if (preferente.indexOf("C") >= 0) correo = "true";
-			if (preferente.indexOf("S") >= 0) sms    = "true";
-			
-			request.getSession().setAttribute("DATABACKUP", hash);
-			request.setAttribute("accion", accion);	
-			request.setAttribute("nombrePersona", request.getParameter("nombreUsuario"));
-			request.setAttribute("numero", request.getParameter("numeroUsuario"));
-			request.setAttribute("idPersona", idPersona);
-			request.setAttribute("modoConsulta", modo);
-			request.setAttribute("preferenteFax", fax);
-			request.setAttribute("preferenteCorreo", correo);
-			request.setAttribute("preferenteMail", mail);
-			request.setAttribute("preferenteSms", sms);
-			
-			//CR - Queremos saber si se trata de un Colegiadoo de un No Colegiado. Y si es No colegiado si es tipo Personal (1) o Sociedad (0).
-			String tipoCliente = "";
+			// pasando el tipo de persona de no colegiado ("1": Persona fisica)
 			CenNoColegiadoAdm noColAdm = new CenNoColegiadoAdm(user);
-			CenNoColegiadoBean noColBean = noColAdm.existeNoColegiadoInstitucion(idPersona, idInstitucionPersona);
-			if(noColBean!=null){
-				tipoCliente = noColBean.getTipo();
-			}
+			String tipoCliente = noColAdm.getTipoPersonaNoColegiado(idPersona, idInstitucionPersona);
 			request.setAttribute("tipoCliente", tipoCliente);
-
-		} catch(Exception e) {
+			
+			// pasando los parametros generales de la direccion
+			request.setAttribute("modoConsulta", modo);			
+			request.setAttribute("nombrePersona", request.getParameter("nombreUsuario"));
+			request.setAttribute("idPersona", idPersona);
+			request.setAttribute("idInstitucion", idInstitucionPersona);
+			request.setAttribute("numero", request.getParameter("numeroUsuario"));
+		}
+		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e, null);
 		}
 		return modo;
-	} //ver()
+	} //nuevo()
 	
 	/** 
 	 * Funcion que atiende la accion nuevo
@@ -401,52 +363,56 @@ public class DireccionesAction extends MasterAction
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-	protected String nuevo (ActionMapping mapping, 
+	protected String duplicarDireccion (ActionMapping mapping, 
 							MasterForm formulario, 
 							HttpServletRequest request, 
 							HttpServletResponse response)
 			throws SIGAException
 	{
-		String modo = "nuevo";
+		// Controles y variables generales
+		UsrBean user = this.getUserBean(request);			
+		DireccionesForm miForm = (DireccionesForm) formulario;
+		String modo = "duplicar";
  		
 		try
 		{
- 			DireccionesForm miForm = (DireccionesForm) formulario;
+			// obteniendo los datos del formulario
+			Vector ocultos = miForm.getDatosTablaOcultos(0);
+			Long idPersona = miForm.getIDPersona();
+			Long idDireccion = Long.valueOf((String) ocultos.elementAt(0));
+			Integer idInstitucionPersona = miForm.getIDInstitucion();
+			
+			// pasando todos los tipos existentes en SIGA
+			CenTipoDireccionAdm cenTipoDirAdm = new CenTipoDireccionAdm (user);
+			Vector vTipos = cenTipoDirAdm.select("");
+			request.setAttribute("vTipos", vTipos);
+			
+			// pasando el tipo de persona de no colegiado ("1": Persona fisica)
+			CenNoColegiadoAdm noColAdm = new CenNoColegiadoAdm(user);
+			String tipoCliente = noColAdm.getTipoPersonaNoColegiado(idPersona, idInstitucionPersona);
+			request.setAttribute("tipoCliente", tipoCliente);
+
+			// pasando los datos de la direccion y otros parametros
+			CenClienteAdm clienteAdm = new CenClienteAdm(this.getUserName(request), user, idInstitucionPersona, idPersona);
+			Hashtable hDatosDireccion = clienteAdm.getDirecciones(idPersona, idInstitucionPersona, idDireccion, modo.equalsIgnoreCase("ver"));
+			request.getSession().setAttribute("DATABACKUP", hDatosDireccion);
+			
+			// pasando los parametros generales de la direccion
 			request.setAttribute("modoConsulta", modo);			
 			request.setAttribute("nombrePersona", request.getParameter("nombreUsuario"));
-			request.setAttribute("idPersona", miForm.getIDPersona());
-			request.setAttribute("idInstitucion", miForm.getIDInstitucion());
+			request.setAttribute("idPersona", idPersona);
+			request.setAttribute("idInstitucion", idInstitucionPersona);
 			request.setAttribute("numero", request.getParameter("numeroUsuario"));
-			CenTipoDireccionAdm cenTipoDirAdm = new CenTipoDireccionAdm (this.getUserBean(request));
-			Vector vTipos = new Vector();
-			vTipos=cenTipoDirAdm.select("");
-			Hashtable hTipoDir=new Hashtable();
-			if ( (vTipos != null) && (vTipos.size() > 0) ) {
-   				for (int i = 1; i <= vTipos.size(); i++) {
-   					CenTipoDireccionBean tipoDir = (CenTipoDireccionBean) vTipos.get(i-1);
-   					hTipoDir.put(tipoDir.getIdTipoDireccion(),"N");
-   				}
-   			}   
-			request.setAttribute("vTipos",vTipos);
-			
-			//CR7 - Queremos saber si se trata de un Colegiadoo de un No Colegiado
-			UsrBean user=(UsrBean)request.getSession().getAttribute("USRBEAN");		
-			Long idPersona = miForm.getIDPersona();
-			Integer idInstitucionPersona = miForm.getIDInstitucion();			
-			//CR - Queremos saber si se trata de un Colegiadoo de un No Colegiado. Y si es No colegiado si es tipo Personal (1) o Sociedad (0).
-			String tipoCliente = "";
-			CenNoColegiadoAdm noColAdm = new CenNoColegiadoAdm(user);
-			CenNoColegiadoBean noColBean = noColAdm.existeNoColegiadoInstitucion(idPersona, idInstitucionPersona);
-			if(noColBean!=null){
-				tipoCliente = noColBean.getTipo();
-			}
-			request.setAttribute("tipoCliente", tipoCliente);
 		}
 		catch(Exception e){
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e, null);
 		}
 		return modo;
-	} //nuevo()
+	} //duplicarDireccion()
+	
+	////////// INI - Metodos de apoyo a editar, ver, nuevo y duplicar //////////
+	
+	////////// FIN - Metodos de apoyo a editar, ver, nuevo y duplicar //////////
 	
 	/** 
 	 * Funcion que anyade una direccion de cliente
@@ -458,7 +424,7 @@ public class DireccionesAction extends MasterAction
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */
-protected String insertar (ActionMapping mapping, 
+	protected String insertar (ActionMapping mapping, 
 							   MasterForm formulario, 
 							   HttpServletRequest request, 
 							   HttpServletResponse response)

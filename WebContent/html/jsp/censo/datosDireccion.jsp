@@ -97,7 +97,7 @@
 	if (modo != null && modo.equals("editar")) {
 		botones += ",GAH";
 	}
-	if (modo.equals("ver") || modo.equals("editar")) {
+	if (modo.equalsIgnoreCase("ver") || modo.equalsIgnoreCase("editar") || modo.equalsIgnoreCase("duplicar")) {
 		htData = (Hashtable) request.getSession().getAttribute("DATABACKUP");
 		if (htData != null) {
 			domicilio = String.valueOf(htData.get(CenDireccionesBean.C_DOMICILIO));
@@ -145,17 +145,7 @@
 			if ((aux != null) && (aux.equals("true")))
 				preferenteSms = true;
 
-			Vector vTiposDirecciones = (Vector) htData.get(CenTipoDireccionBean.C_IDTIPODIRECCION);
-			if (vTiposDirecciones != null) {
-				for (int i = 0; i < vTiposDirecciones.size(); i++) {
-					CenDireccionTipoDireccionBean tipoDirBean = (CenDireccionTipoDireccionBean) vTiposDirecciones.get(i);
-					if (tipoDirBean != null) {
-						idTipoDireccionArrayList.add(String.valueOf(tipoDirBean.getIdTipoDireccion()));
-					}
-				}
-			}
-
-			if (modo.equals("editar")) {
+			if (modo.equalsIgnoreCase("editar") || modo.equalsIgnoreCase("duplicar")) {
 				desactivado = false;
 				editarCampos = true;
 			} else { // Ver
@@ -173,7 +163,7 @@
 			idPais.add(ididPais);
 		}
 	} else {
-		if (modo.equals("nuevo")) {
+		if (modo.equalsIgnoreCase("nuevo")) {
 			idPais.add("");
 			editarCampos = true;
 			desactivado = false;
@@ -183,7 +173,7 @@
 	}
 
 	//Se ha añadido para crear bien la dirección del enlace la pagina web
-	String EnlaceWEb = "";
+	String enlaceWEB = "";
 	String quitar;
 	String lista = "";
 
@@ -191,16 +181,16 @@
 
 		lista = paginaWEB.substring(0, 7);
 		if (lista.equalsIgnoreCase("http://")) {
-			EnlaceWEb = paginaWEB;
+			enlaceWEB = paginaWEB;
 		}
 
 		if (!lista.equalsIgnoreCase("http://") && (!lista.equalsIgnoreCase("http:\\\\"))) {
-			EnlaceWEb = "http://" + paginaWEB;
+			enlaceWEB = "http://" + paginaWEB;
 		}
 
 		if (lista.equalsIgnoreCase("http:\\\\")) {
 			quitar = paginaWEB.substring(7);
-			EnlaceWEb = "http://" + quitar;
+			enlaceWEB = "http://" + quitar;
 		}
 
 	}
@@ -264,7 +254,7 @@
 				<%if(ididPais.equals(ClsConstants.ID_PAIS_ESPANA) || "".equals(ididPais)){%>	
 						document.consultaDireccionesForm.codigoPostal.value='<%=codigoPostal%>';
 						<%if(otraProvinciaString != null && !"".equalsIgnoreCase(otraProvinciaString) && otraProvinciaString.equalsIgnoreCase("1")){%>
-						  	jQuery("#provinciaEspanola").css("display","inline");
+						  	jQuery("#provinciaDiv").show()
 						    jQuery("#provinciaText").hide();
 						    jQuery("#otraProvinciaCheck").attr('checked','checked');
 						<%}else{%>
@@ -384,81 +374,59 @@
 		}
 	    
 	    
-	    function selPais(valor) {
-	    	
-		   if (valor!=null && valor!="" && valor!=idEspana) {
-			  
-		   		document.getElementById("poblacion").value="";
-		   		document.getElementById("provincia").value="";
-				//Ocultamos la provincia
-				jQuery("#provinciaSinAsterisco").hide();
-				jQuery("#provinciaText").hide();
+		function selPais(valor) {
+			if (valor!=null && valor!="" && valor!=idEspana) {
+				// Pais distinto a Espana. Hay que mostrar el texto de poblacion extranjera y ocultar la seleccion de provincia y poblacion espanolas
+				
+				if((paisGlobal != "") && (paisGlobal ==idEspana)) { //no se borra el codigo postal al inicio
+					jQuery("#codigoPostal").val("");
+				}
+				
+				jQuery("#provinciaLabel").hide();
+				
 				jQuery("#otraProvinciaCheck").removeAttr('checked');
 				jQuery("#tdOtraProvincia").hide();
-				jQuery("#codigoPostal").val("");	
-				jQuery("#provincia").val(jQuery("#provincia option:first").val());
 				jQuery("#provinciaText").val("");
-				jQuery("#provincia").change();	
-			   	//aalg: se quita la marca de obligatoriedad
-			   	document.getElementById("provinciaSinAsterisco").className="labelText";
-				document.getElementById("poblacionEspanola").className="ocultar";
-				document.getElementById("poblacionExtranjera").className="";
-				document.getElementById("poblacionExt").value="";
-	       } else {
-	    	 
-		   		document.getElementById("poblacionExt").value="";
-				//Mostramos la provincia
-				jQuery("#provinciaSinAsterisco").show();
+				jQuery("#provinciaText").hide();
+				jQuery("#provincia").val(jQuery("#provincia option:first").val());
+				jQuery("#provincia").val("");
+				jQuery("#provincia").change();
+				jQuery("#provinciaDiv").hide();
+				
+				jQuery("#poblacion").val("");
+				jQuery("#poblacionEspanola").hide();
+				jQuery("#poblacionExtranjera").show();
+				
+			} else {
+				// ¡ESTO ES ESPANAAAAA!. Hay que ocultar el texto de poblacion extranjera y mostrar la seleccion de provincia y poblacion espanolas
+				
+				if((paisGlobal != "") && (paisGlobal !=idEspana)) { //no se borra el codigo postal al inicio
+					jQuery("#codigoPostal").val("");
+				}
+				
+				jQuery("#provinciaLabel").show();
+				
 				jQuery("#tdOtraProvincia").show();
 				if(jQuery("#otraProvinciaCheck").is(':checked') && jQuery("#otraProvinciaCheck").is(':visible')){
 					jQuery("#provinciaText").hide();
-					
-				}else{
+					jQuery("#provinciaDiv").show();
+				} else {
 					jQuery("#otraProvinciaCheck").removeAttr('checked');
-					jQuery("#provinciaEspanola").hide();
+					jQuery("#provinciaDiv").hide();
 				}
-				//Para el caso de que venga null, sino se pone mostrará por pantalla en el campo codigo postal undefined
-				if((paisGlobal != "") && (paisGlobal !=idEspana))
-						jQuery("#codigoPostal").val("");				
-				document.getElementById("poblacionEspanola").className="";
-				document.getElementById("poblacionExtranjera").className="ocultar";
-				//aalg: se restaura la marca de obligatoriedad si es pertinente
-				comprobarAsterico();
 				
-	       }
-		   paisGlobal=jQuery("#pais").val();
-	    }
+				jQuery("#poblacionExt").val("");
+				jQuery("#poblacionExtranjera").hide();
+				jQuery("#poblacionEspanola").show();
+				
+				comprobarAsterico();
+			}
+			paisGlobal=jQuery("#pais").val();
+		}
 		
 		function selPaisInicio() {
 			var valor = document.getElementById("pais").value;
-			if (valor!=null && valor!="" && valor!=idEspana) {
-		   		document.getElementById("poblacion").value="";
-		   		document.getElementById("provincia").value="";
-		   		//Ocultamos la provincia
-		   		jQuery("#provinciaSinAsterisco").hide();
-				jQuery("#provinciaText").hide();
-				document.forms[0].otraProvincia.value= "0";
-				jQuery("#tdOtraProvincia").hide();
-			
-			   	//aalg: se quita la marca de obligatoriedad
-			   	document.getElementById("provinciaSinAsterisco").className="labelText";
-				document.getElementById("poblacionEspanola").className="ocultar";
-				document.getElementById("poblacionExtranjera").className="";
-	       } else {
-	    	   
-		   		document.getElementById("poblacionExt").value="";
-				document.getElementById("poblacionEspanola").className="";
-				document.getElementById("poblacionExtranjera").className="ocultar";		
-				//Mostramos la provincia
-				<%if(otraProvinciaString != null && !"".equalsIgnoreCase(otraProvinciaString) && otraProvinciaString.equalsIgnoreCase("1")){%>
-			  	jQuery("#provinciaEspanola").css("display","inline");
-			    jQuery("#provinciaText").hide();
-			<%}else{%>
-				jQuery("#provinciaText").show();
-			<%}%>
-				//aalg: se restaura la marca de obligatoriedad si es pertinente
-				comprobarAsterico();
-	       }
+			selPais(valor);
 		}
 		
 		function comprobarAsterico() {
@@ -466,46 +434,43 @@
 			var checkPostal = false;
 			var oCheck = document.getElementsByName("checkTipoDireccion");
 			
-			for(i=0; i<oCheck.length; i++){			 
-				if (oCheck[i].checked){
-					  var tipoDir = oCheck[i].value;
-					  if (tipoDir==6){
-			            checkGuardia = true;
-			          }
-			          if (tipoDir==3||tipoDir==2||tipoDir==5||tipoDir==8||tipoDir==9){					  
-					    checkPostal=true;						
-			          }
+			for (i=0; i < oCheck.length; i++) {			 
+				if (oCheck[i].checked) {
+					var tipoDir = oCheck[i].value;
+					if (tipoDir==6) {
+						checkGuardia = true;
+					} else if (tipoDir==3||tipoDir==2||tipoDir==5||tipoDir==8||tipoDir==9) {
+						checkPostal = true;
+					}
 				}
 			}		
-					
 			
-			if(checkGuardia) {
-				document.getElementById("telefonoSinAsterisco").className="ocultar";
-				document.getElementById("telefonoConAsterisco").className="labelText";
-			}
-			else {
-				document.getElementById("telefonoSinAsterisco").className="labelText";
-				document.getElementById("telefonoConAsterisco").className="ocultar";
+			if (checkGuardia) {
+				$('#telefonoSinAsterisco').hide();
+				$('#telefonoConAsterisco').show();
+			} else {
+				$('#telefonoSinAsterisco').show();
+				$('#telefonoConAsterisco').hide();
 	    	}
-			if(checkPostal) {
-				document.getElementById("direccionSinAsterisco").className="ocultar";
-				document.getElementById("direccionConAsterisco").className="labelText";
-				document.getElementById("cpSinAsterisco").className="ocultar";
-				document.getElementById("cpConAsterisco").className="labelText";
-				document.getElementById("poblacionSinAsterisco").className="ocultar";
-				document.getElementById("poblacionConAsterisco").className="labelText";
-				document.getElementById("paisSinAsterisco").className="ocultar";
-				document.getElementById("paisConAsterisco").className="labelText";
-			}
-			else {
-				document.getElementById("direccionSinAsterisco").className="labelText";
-				document.getElementById("direccionConAsterisco").className="ocultar";
-				document.getElementById("cpSinAsterisco").className="labelText";
-				document.getElementById("cpConAsterisco").className="ocultar";
-				document.getElementById("poblacionSinAsterisco").className="labelText";
-				document.getElementById("poblacionConAsterisco").className="ocultar";
-				document.getElementById("paisSinAsterisco").className="labelText";
-				document.getElementById("paisConAsterisco").className="ocultar";
+			
+			if (checkPostal) {
+				$('#direccionSinAsterisco').hide();
+				$('#direccionConAsterisco').show();
+				$('#cpSinAsterisco').hide();
+				$('#cpConAsterisco').show();
+				$('#poblacionSinAsterisco').hide();
+				$('#poblacionConAsterisco').show();
+				$('#paisSinAsterisco').hide();
+				$('#paisConAsterisco').show();
+			} else {
+				$('#direccionSinAsterisco').show();
+				$('#direccionConAsterisco').hide();
+				$('#cpSinAsterisco').show();
+				$('#cpConAsterisco').hide();
+				$('#poblacionSinAsterisco').show();
+				$('#poblacionConAsterisco').hide();
+				$('#paisSinAsterisco').show();
+				$('#paisConAsterisco').hide();
 	    	}
 	    } 
 
@@ -1015,8 +980,8 @@
 				jQuery("#provinciaText").val("");
 				jQuery("#provincia").change();
 				jQuery("#otraProvinciaCheck").removeAttr('checked');
-				jQuery("#provinciaEspanola").hide();
-			    jQuery("#provinciaText").css("display","inline");
+				jQuery("#provinciaDiv").hide();
+			    jQuery("#provinciaText").show();
 				return;
 			} 
 			if(Primary.length<5){
@@ -1036,8 +1001,8 @@
 					 	jQuery("#provincia").change();
 					 	
 						jQuery("#otraProvinciaCheck").removeAttr('checked');
-						jQuery("#provinciaEspanola").hide();
-					    jQuery("#provinciaText").css("display","inline");
+						jQuery("#provinciaDiv").hide();
+					    jQuery("#provinciaText").show();
 						
 					 	
 					} else {
@@ -1057,14 +1022,14 @@
 	}   
 	
 	function otraProvinciaFuction(valor){
+		createProvince();
 		if(valor.checked ) {
 		   //Si está seleccionado
-		  	jQuery("#provinciaEspanola").css("display","inline");
+		  	jQuery("#provinciaDiv").show();
 		    jQuery("#provinciaText").hide();
 		}else{
-			createProvince();
-			jQuery("#provinciaEspanola").hide();
-		    jQuery("#provinciaText").css("display","inline");
+			jQuery("#provinciaDiv").hide();
+		    jQuery("#provinciaText").show();
 		}
 	}
 	</script>
@@ -1143,445 +1108,353 @@
 			%>
 
 			<table class="tablaCentralCamposGrande" align="center" border="0">
-				<tr>
-					<td>
-						<siga:ConjCampos leyenda="censo.consultaDirecciones.cabecera">
-							<table class="tablaCampos" align="center" border="0">
-								<tr>
-									<td class="labelText">
-										<siga:Idioma key="censo.datosDireccion.literal.tipoDireccion" />&nbsp;(*)
-									</td>
-									<td class="labelText" colspan="2">
-										<div style='height: 250px; width: 260px; overflow-x: auto; overflow-y: auto'>
-											<table align="left" border="0" width="100%">
-												
-													
-														<%
-															String valorCheck = "";
-															if ((vTipos != null) && (vTipos.size() > 0)) {
-																for (int i = 1; i <= vTipos.size(); i++) {
-																	String activarCheck = "";
-																	CenTipoDireccionBean recurso = (CenTipoDireccionBean) vTipos.get(i - 1);
-																	Integer idTipoDireccion1 = (Integer) recurso.getIdTipoDireccion();
-																	
-																	if((idTipoDireccion1 == ClsConstants.TIPO_DIRECCION_CENSOWEB || idTipoDireccion1 == ClsConstants.TIPO_DIRECCION_TRASPASO_OJ)&& tipoCliente.equals("1")){
-																		//NO SE PINTA EL CHECK DE TIPO DIRECCION CENSO WEB ni de traspaso a organos judiciales PARA NO COLEGIADOS TIPO PERSONAL (1)
-																		
-																	} else {
-																	
-																		String descripcion = (String) recurso.getDescripcion();
-	
-																		if (modo.equals("editar") || modo.equals("ver")) {
-																			valorCheck = (String) hTiposDir.get(recurso.getIdTipoDireccion());
-																			if (valorCheck.equals("S")) {
-																				activarCheck = "checked";
-																			}
-																		}
-															%> 
-																		<tr>
-																			<td class="labelText" align="left" width="100%">
-																				<input type=checkbox name="checkTipoDireccion" id="checkTipoDireccion" value="<%=idTipoDireccion1%>"
-																					<%=activarCheck%> onclick="comprobarAsterico()"
-																					<%=desactivarCheckTipos%> /> 
-																				<%=UtilidadesString.mostrarDatoJSP(descripcion)%>
-																			</td>
-																			
-																		</tr>
-													 
-															<%
-																	}
-													 			}
-														 	}
-														 %>
+			<tr>
+			<td>
+				<siga:ConjCampos leyenda="censo.datosDireccion.literal.tipoDireccion">
+					<table class="tablaCampos" align="center">
 
-													
-													
-												</tr>
-											</table>
-										</div>
-									</td>
-									<td valign="top">
-										<table>
-											<tr>
-												<td class="labelText">
-													<p align="right">
-														<siga:Idioma key="censo.datosDireccion.literal.fechaModificacion" />
-													</p>
-												</td>
-												<td class="labelText">
-													<p align="right">
-														&nbsp;&nbsp;<%=fechaModificacion%>
-													</p>
-												</td>
-											</tr>
-											<%
-												if (!fechaBaja.equals("")) {
-											%>
-											<tr>
-												<td class="labelText">
-													<p align="right">
-														<siga:Idioma key="censo.consultaDatos.literal.fechaBaja" />
-													</p>
-												</td>
-												<td class="labelText">
-													<p align="right">
-														&nbsp;&nbsp;<%=fechaBaja%>
-													</p>
-												</td>
-											</tr>
-											<%
-												}
-											%>
-											<%
-												if (!colegioOrigen.equals("")) {
-											%>
-											<tr>
-												<td class="labelText">
-													<p align="right">
-														<siga:Idioma key="envios.definir.literal.institucionOrigen" />
-													</p>
-												</td>
-												<td class="labelText">
-													<p align="left">
-														&nbsp;&nbsp;<%=colegioOrigen%>
-													</p>
-												</td>
-											</tr>
-											<%
-												}
-											%>
-										</table>
-									</td>
-								</tr>
+						<!-- Tipos de direccion -->
+						<tr>
+						<%
+							String valorCheck = "";
+							if (vTipos == null) vTipos = new Vector();
+							for (int i = 1; i <= vTipos.size(); i++) {
+								CenTipoDireccionBean recurso = (CenTipoDireccionBean) vTipos.get(i - 1);
+								String descripcion = (String) recurso.getDescripcion();
+								Integer idTipoDireccion1 = (Integer) recurso.getIdTipoDireccion();
+								String activarCheck = "";
 
-								<tr>
-									<td class="labelText" width="180px" id="direccionSinAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.direccion" />&nbsp;
+								if (modo.equals("editar") || modo.equals("ver")) {
+									valorCheck = (String) hTiposDir.get(idTipoDireccion1);
+									if (valorCheck.equals("S")) {
+										activarCheck = "checked";
+									}
+								}
+								
+								if(! tipoCliente.equals("1") || 
+								   ! (idTipoDireccion1 == ClsConstants.TIPO_DIRECCION_CENSOWEB || idTipoDireccion1 == ClsConstants.TIPO_DIRECCION_TRASPASO_OJ))
+								{
+									//NO SE PINTA EL CHECK DE TIPO DIRECCION CENSO WEB ni de traspaso a organos judiciales PARA NO COLEGIADOS TIPO PERSONAL (1)
+						%> 
+									<td valign="middle" width="1%">
+										<input type=checkbox name="checkTipoDireccion" id="checkTipoDireccion<%=idTipoDireccion1%>" value="<%=idTipoDireccion1%>"
+											<%=activarCheck%> onclick="comprobarAsterico()"
+											<%=desactivarCheckTipos%>
 									</td>
-									<td class="ocultar" width="180px" id="direccionConAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.direccion" />&nbsp;(*)
+									<td class="labelText" valign="middle">
+										<label for="checkTipoDireccion<%=idTipoDireccion1%>"><%=UtilidadesString.mostrarDatoJSP(descripcion)%></label>
 									</td>
-									<td>
-										<html:textarea name="consultaDireccionesForm" property="domicilio" styleId="domicilio"
-											onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)"
-											style="overflow-y:auto; overflow-x:hidden; width:350px; height:50px; resize:none;"
-											value="<%=domicilio%>" styleClass="<%=clase%>"
-											readOnly="<%=desactivado%>"></html:textarea>
-									</td>
-									
-								</tr>
-
-								<tr>
-									
-									<td class="labelText" width="180px" id="paisSinAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.pais2" />&nbsp;
-									</td>
-									<td class="ocultar" width="180px" id="paisConAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.pais2" />&nbsp;(*)
-									</td>
-									<td>
-										<%
-											if (editarCampos) {
-										%> 
-										<siga:ComboBD nombre="pais" tipo="pais"
-											clase="boxCombo" obligatorio="false"
-											elementoSel="<%=idPais%>" accion="selPais(this.value);" /> 
-										<%
- 											} else {
- 										%>
-										<html:hidden property="pais" styleId="pais" value='<%=ididPais%>'></html:hidden>
-										<html:text name="consultaDireccionesForm" property="pais2" styleId="pais2"
-											value='<%=pais%>' size="40" styleClass="<%=clase%>"
-											readOnly="<%=desactivado%>"></html:text> <%
-										 	}
- 										%>
-									</td>
-								</tr>
-
-								<tr>
-									<td class="labelText" width="180px" id="cpSinAsterisco" nowrap>
-										<siga:Idioma key="censo.datosDireccion.literal.cp" />&nbsp;
-									</td>
-									<td class="ocultar" width="180px" id="cpConAsterisco" nowrap>
-										<siga:Idioma key="censo.datosDireccion.literal.cp" />&nbsp;(*)
-									</td>
-									<td >
-										<%
-											if (editarCampos) {
-										%>
-										<html:text name="consultaDireccionesForm" styleId="codigoPostal"
-											property="codigoPostal" value="<%=codigoPostal%>"
-											maxlength="5" size="5" styleClass="<%=clase%>" 
-											onChange="createProvince()"></html:text> 
-										<%
- 											} else {
- 										%> 
- 										<html:text name="consultaDireccionesForm" styleId="codigoPostal"
-											property="codigoPostal" value="<%=codigoPostal%>"
-											maxlength="5" size="5" styleClass="<%=clase%>"
-											readOnly="<%=desactivado%>"></html:text> 
-										<%
- 											}
- 										%>
-										
-									</td>
-									<td nowrap="nowrap" id="tdOtraProvincia">
-										<siga:Idioma key="censo.datosDireccion.literal.otraProvincia" />
-										<%
-											if (editarCampos) {
-										%>
-												<%if(otraProvinciaString != null && !"".equalsIgnoreCase(otraProvinciaString) && otraProvinciaString.equalsIgnoreCase("1")){ %>
-													<input type="checkbox" id="otraProvinciaCheck" name="otraProvinciaCheck" checked="checked"  onclick="otraProvinciaFuction(this);"> &nbsp;
-												<%}else{ %>
-													<input type="checkbox" id="otraProvinciaCheck" name="otraProvinciaCheck"  onclick="otraProvinciaFuction(this);"> &nbsp;
-												<%} %>
-												<%
- 											} else {%>
- 												<% if(otraProvinciaString != null && !"".equalsIgnoreCase(otraProvinciaString) && otraProvinciaString.equalsIgnoreCase("1")){ %>
-													<input type="checkbox" id="otraProvinciaCheck" name="otraProvinciaCheck" checked="checked" disabled="disabled"  onclick="otraProvinciaFuction(this);"> &nbsp;
-												<%}else{ %>
-													<input type="checkbox" id="otraProvinciaCheck" name="otraProvinciaCheck"  disabled="disabled" onclick="otraProvinciaFuction(this);"> &nbsp;
-												<%} %>
-											<%
- 											}
- 											%> 
-									</td>
-									<td class="labelText" id="provinciaSinAsterisco" nowrap="nowrap">
-									
-										<siga:Idioma key="censo.datosDireccion.literal.provincia" />&nbsp;
-									
-									
-									<div id="provinciaEspanola" style="display: none;">
-										<%
-											if (editarCampos) {
-										%>
-											<siga:ComboBD nombre="provincia" 
-												tipo="provincia" clase="boxCombo" obligatorio="false"
-												elementoSel="<%=idProvincia%>" accion="Hijo:poblacion"  /> 
-										<%}else{ %>
-										 	<input id="provinciaText" class="boxConsulta" type="text" value="<%=provincia%>" readonly="readonly" tabindex="-1" style="width: 200px" />
-										<%} %>
-									</div>
-									
-										<input id="provinciaText" class="boxConsulta" type="text" value="<%=provincia%>" readonly="readonly" tabindex="-1" style="width: 200px" />
-							
-									
-									</td>
-									
-								</tr>
+						<%
+								}
+							}
+						%>
+						</tr>
+					</table>
+				</siga:ConjCampos>
+					
+				<siga:ConjCampos leyenda="censo.consultaDirecciones.cabecera">
+					<table class="tablaCampos" align="center">
+					
+						<!-- Fechas de control y colegio de origen -->
+						<tr>
+						<%	if (fechaBaja.equals("")) { %>
+							<td class="labelText"">
+								<siga:Idioma key="censo.datosDireccion.literal.fechaModificacion" />
+							</td>
+							<td class="labelText">
+								<%=fechaModificacion%>
+							</td>
+						<%	} else { %>
+							<td class="labelText">
+								<siga:Idioma key="censo.consultaDatos.literal.fechaBaja" />
+							</td>
+							<td class="labelText">
+								<%=fechaBaja%>
+							</td>
+						<%	} %>
+						</tr>
 						
-								<tr>
-									<td class="labelText" id="poblacionSinAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.poblacion" />&nbsp;
-									</td>
-									<td class="ocultar" id="poblacionConAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.poblacion" />&nbsp;(*)
-									</td>
-									<td id="poblacionEspanola">
-										<%
-											if (editarCampos) {
-										%> 
-										<siga:ComboBD nombre="poblacion"
-											tipo="poblacion" clase="boxCombo"
-											elementoSel="<%=idPoblacion%>" hijo="t" /> <%
-										 	} else {
-										 %> 
- 										<html:text property="poblacion" value="<%=poblacion%>" styleId="poblacion"
-											size="40" styleClass="<%=clase%>" readOnly="<%=desactivado%>"></html:text>
-										<%
-											}
-										%>
-									</td>
-									<td class="ocultar" id="poblacionExtranjera">
-										<html:text name="consultaDireccionesForm" property="poblacionExt" styleId="poblacionExt"
-												value='<%=poblacionExt%>' size="30" styleClass="<%=clase%>"
-												readOnly="<%=desactivado%>">
-										</html:text>
-									</td>
-								</tr>
-								<tr>
-									<td class="labelText" id="telefonoSinAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.telefono1" />&nbsp;
-									</td>
-									<td class="ocultar" id="telefonoConAsterisco">
-										<siga:Idioma key="censo.datosDireccion.literal.telefono1" />&nbsp;(*)
-									</td>
-									<td>
-										<html:text name="consultaDireccionesForm" styleId="telefono1"
-											property="telefono1" value="<%=telefono1%>" maxlength="20"
-											size="10" styleClass="<%=clase%>" readOnly="<%=desactivado%>">
-										</html:text>
-									</td>
+						<%	if (!colegioOrigen.equals("")) { %>
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="envios.definir.literal.institucionOrigen" />
+							</td>
+							<td class="labelText">
+								<%=colegioOrigen%>
+							</td>
+						</tr>
+						<%	} %>
+						
+						<!-- Domicilio -->
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="censo.datosDireccion.literal.direccion" />
+								<div style="display:inline" id="direccionSinAsterisco">&nbsp;</div>
+								<div style="display:inline" id="direccionConAsterisco">(*)</div>
+							</td>
+							<td colspan="3">
+								<html:textarea name="consultaDireccionesForm" property="domicilio" styleId="domicilio"
+									onKeyDown="cuenta(this,100)" onChange="cuenta(this,100)"
+									style="overflow-y:auto; overflow-x:hidden; width:95%; height:50px; resize:none;"
+									value="<%=domicilio%>" styleClass="<%=clase%>"
+									readOnly="<%=desactivado%>"></html:textarea>
+							</td>
+						</tr>
 
-									<td class="labelText">
-										<siga:Idioma key="censo.datosDireccion.literal.telefono2" />&nbsp;
-									</td>
-									<td>
-										<html:text name="consultaDireccionesForm" styleId="telefono2"
-											property="telefono2" value="<%=telefono2%>" maxlength="20"
-											size="10" styleClass="<%=clase%>" readOnly="<%=desactivado%>">
-										</html:text>
-									</td>
-								</tr>
+						<!-- Pais y Otra provincia -->
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="censo.datosDireccion.literal.pais2" />
+								<div style="display:inline" id="paisSinAsterisco">&nbsp;</div>
+								<div style="display:inline" id="paisConAsterisco">(*)</div>
+							</td>
+							<td>
+							<%	if (editarCampos) { %> 
+								<siga:ComboBD nombre="pais" tipo="pais"
+									clase="boxCombo" obligatorio="false"
+									elementoSel="<%=idPais%>" accion="selPais(this.value);" /> 
+							<%	} else { %>
+								<html:hidden property="pais" styleId="pais" value='<%=ididPais%>'></html:hidden>
+								<html:text name="consultaDireccionesForm" property="pais2" styleId="pais2"
+									value='<%=pais%>' size="40" styleClass="<%=clase%>"
+									readOnly="<%=desactivado%>"></html:text>
+							<%	} %>
+							</td>
+							
+							<td class="labelText" nowrap="nowrap" id="tdOtraProvincia">
+								<siga:Idioma key="censo.datosDireccion.literal.otraProvincia" />
+								
+							<%	if (editarCampos) { %>
+							<%		if(otraProvinciaString != null && !"".equalsIgnoreCase(otraProvinciaString) && otraProvinciaString.equalsIgnoreCase("1")) { %>
+								<input type="checkbox" id="otraProvinciaCheck" name="otraProvinciaCheck" checked="checked"  onclick="otraProvinciaFuction(this);"> &nbsp;
+							<%		} else { %>
+								<input type="checkbox" id="otraProvinciaCheck" name="otraProvinciaCheck" onclick="otraProvinciaFuction(this);"> &nbsp;
+							<%		} %>
+							<%	} else {%>
+							<%		if(otraProvinciaString != null && !"".equalsIgnoreCase(otraProvinciaString) && otraProvinciaString.equalsIgnoreCase("1")) { %>
+								<input type="checkbox" id="otraProvinciaCheck" name="otraProvinciaCheck" checked="checked" disabled="disabled" onclick="otraProvinciaFuction(this);"> &nbsp;
+							<%		} else { %>
+								<input type="checkbox" id="otraProvinciaCheck" name="otraProvinciaCheck" disabled="disabled" onclick="otraProvinciaFuction(this);"> &nbsp;
+							<%		} %>
+							<%	} %> 
+							</td>
+						</tr>
 
-								<tr>
-									<td class="labelText">
-										<siga:Idioma key="censo.datosDireccion.literal.movil" />&nbsp;
-									</td>
-									<td>
-										<html:text name="consultaDireccionesForm" styleId="movil"
-											property="movil" value="<%=movil%>" maxlength="20" size="10"
-											styleClass="<%=clase%>" readOnly="<%=desactivado%>">
-										</html:text>
-									</td>
-								</tr>
+						<!-- Codigo postal y Provincia -->
+						<tr>
+							<td class="labelText" nowrap>
+								<siga:Idioma key="censo.datosDireccion.literal.cp"/>
+								<div style="display:inline" id="cpSinAsterisco">&nbsp;</div>
+								<div style="display:inline" id="cpConAsterisco">(*)</div>
+							</td>
+							<td >
+							<% if (editarCampos) { %>
+								<html:text name="consultaDireccionesForm" styleId="codigoPostal"
+									property="codigoPostal" value="<%=codigoPostal%>"
+									maxlength="5" size="5" styleClass="<%=clase%>" 
+									onChange="createProvince()" /> 
+							<% } else { %> 
+									<html:text name="consultaDireccionesForm" styleId="codigoPostal"
+									property="codigoPostal" value="<%=codigoPostal%>"
+									maxlength="5" size="5" styleClass="<%=clase%>"
+									readOnly="<%=desactivado%>" /> 
+							<% } %>
+							</td>
+							
+							<td id="provinciaLabel" class="labelText" nowrap="nowrap">
+								<siga:Idioma key="censo.datosDireccion.literal.provincia" />
+							</td>
+							
+							<td class="labelText" nowrap="nowrap">
+							<%
+								if (editarCampos) {
+							%>
+								<div id="provinciaDiv" style="display:none;">
+									<siga:ComboBD nombre="provincia" tipo="provincia" clase="boxCombo" obligatorio="false" elementoSel="<%=idProvincia%>" accion="Hijo:poblacion" />
+								</div> 
+							<%
+								}
+							%>
+								<input id="provinciaText" class="boxConsulta" type="text" value="<%=provincia%>" readonly="readonly" tabindex="-1" style="width: 200px" />
+							</td>
+						</tr>
+						
+						<!-- Poblacion -->
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="censo.datosDireccion.literal.poblacion" />
+								<div style="display:inline" id="poblacionSinAsterisco">&nbsp;</div>
+								<div style="display:inline" id="poblacionConAsterisco">(*)</div>
+							</td>
+							<td id="poblacionEspanola">
+							<%
+								if (editarCampos) {
+							%> 
+								<siga:ComboBD nombre="poblacion" tipo="poblacion" clase="boxCombo" elementoSel="<%=idPoblacion%>" hijo="t" />
+							<%
+								} else {
+							%> 
+								<html:text property="poblacion" value="<%=poblacion%>" styleId="poblacion" size="40" styleClass="<%=clase%>" readOnly="<%=desactivado%>"/>
+							<%
+								}
+							%>
+							</td>
+							<td class="ocultar" id="poblacionExtranjera">
+								<html:text name="consultaDireccionesForm" property="poblacionExt" styleId="poblacionExt"
+										value='<%=poblacionExt%>' size="30" styleClass="<%=clase%>"
+										readOnly="<%=desactivado%>">
+								</html:text>
+							</td>
+						</tr>
+						
+						<!-- Telefonos -->
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="censo.datosDireccion.literal.telefono1" />
+								<div style="display:inline" id="telefonoSinAsterisco">&nbsp;</div>
+								<div style="display:inline" id="telefonoConAsterisco">(*)</div>
+							</td>
+							<td>
+								<html:text name="consultaDireccionesForm" styleId="telefono1"
+									property="telefono1" value="<%=telefono1%>" maxlength="20"
+									size="10" styleClass="<%=clase%>" readOnly="<%=desactivado%>">
+								</html:text>
+							</td>
 
-								<tr>
-									<td class="labelText">
-										<siga:Idioma key="censo.datosDireccion.literal.fax1" />&nbsp;
-									</td>
-									<td>
-										<html:text name="consultaDireccionesForm" styleId="fax1"
-											property="fax1" value="<%=fax1%>" maxlength="20" size="10"
-											styleClass="<%=clase%>" readOnly="<%=desactivado%>">
-										</html:text>
-									</td>
-									<td class="labelText">
-										<siga:Idioma key="censo.datosDireccion.literal.fax2" />&nbsp;
-									</td>
-									<td>
-										<html:text name="consultaDireccionesForm" styleId="fax2"
-											property="fax2" value="<%=fax2%>" maxlength="20" size="10"
-											styleClass="<%=clase%>" readOnly="<%=desactivado%>">
-										</html:text>
-									</td>
-								</tr>
+							<td class="labelText">
+								<siga:Idioma key="censo.datosDireccion.literal.telefono2" />&nbsp;
+							</td>
+							<td>
+								<html:text name="consultaDireccionesForm" styleId="telefono2"
+									property="telefono2" value="<%=telefono2%>" maxlength="20"
+									size="10" styleClass="<%=clase%>" readOnly="<%=desactivado%>">
+								</html:text>
+							</td>
+						</tr>
 
-								<tr>
-									<td class="labelText">
-										<siga:Idioma key="censo.datosDireccion.literal.correo" />&nbsp;
-									</td>
-									<%
-										if (!modo.equals("editar")) {
-									%>
-									<%
-										if (!mail.equalsIgnoreCase("")) {
-									%>
-									<td nowrap>
-										<a href="mailto:<%=mail%>">
-											<html:text
-												name="consultaDireccionesForm" styleId="correoElectronico"
-												style="cursor:hand;color:blue;" property="correoElectronico"
-												value="<%=mail%>" maxlength="100" size="50"
-												styleClass="<%=clase%>" readOnly="<%=desactivado%>">
-											</html:text>
-										</a>
-									</td>
-									<%
-										} else {
-									%>
-									<td nowrap>
-										<html:text name="consultaDireccionesForm" styleId="correoElectronico"
-											property="correoElectronico" value="<%=mail%>"
-											maxlength="100" size="50" styleClass="<%=clase%>"
-											readOnly="<%=desactivado%>">
-										</html:text>
-									</td>
-									<%
-										}
-									%>
-									<%
-										} else {
-									%>
-									<td nowrap>
-										<html:text name="consultaDireccionesForm" styleId="correoElectronico"
-											property="correoElectronico" value="<%=mail%>"
-											maxlength="100" size="50" styleClass="<%=clase%>"
-											readOnly="<%=desactivado%>">
-										</html:text>
-									</td>
-									<%
-										}
-									%>
-									<td class="labelText">
-										<siga:Idioma key="censo.datosDireccion.literal.paginaWeb" />&nbsp;
-									</td>
-									<%
-										if (!modo.equals("editar")) {
-									%>
-									<%
-										if (!EnlaceWEb.equalsIgnoreCase("")) {
-									%>
-									<td>
-										<a href="<%=EnlaceWEb%>" target="_blank">
-											<html:text name="consultaDireccionesForm" styleId="paginaWeb"
-												style="cursor:hand;color:blue;" property="paginaWeb"
-												value="<%=paginaWEB%>" maxlength="100" size="25"
-												styleClass="<%=clase%>" readOnly="<%=desactivado%>">
-											</html:text>
-										</a>
-									</td>
-									<%
-										} else {
-									%>
-									<td>
-										<html:text name="consultaDireccionesForm" styleId="paginaWeb"
-											property="paginaWeb" value="<%=paginaWEB%>" maxlength="100"
-											size="25" styleClass="<%=clase%>" readOnly="<%=desactivado%>">
-										</html:text>
-									</td>
-									<%
-										}
-									%>
-									<%
-										} else {
-									%>
-									<td>
-										<html:text name="consultaDireccionesForm" styleId="paginaWeb"
-											property="paginaWeb" value="<%=paginaWEB%>" maxlength="100"
-											size="25" styleClass="<%=clase%>" readOnly="<%=desactivado%>">
-										</html:text>
-									</td>
-									<%
-										}
-									%>
-								</tr>
+						<!-- Movil -->
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="censo.datosDireccion.literal.movil" />&nbsp;
+							</td>
+							<td>
+								<html:text name="consultaDireccionesForm" styleId="movil"
+									property="movil" value="<%=movil%>" maxlength="20" size="10"
+									styleClass="<%=clase%>" readOnly="<%=desactivado%>">
+								</html:text>
+							</td>
+						</tr>
 
-								<tr>
-									<td class="labelText">
-										<siga:Idioma key="censo.datosDireccion.literal.preferente" />
-									</td>
-									<td colspan="2" class="labelText">
-										<siga:Idioma key="censo.preferente.mail" />
-										<input type="checkbox" name="preferenteMail" id="preferenteMail"
-										<%if (desactivado)
-										out.print("disabled");%>
-										<%if(preferenteMail)
-										out.println("checked");%>>&nbsp;&nbsp;&nbsp;
-										<siga:Idioma key="censo.preferente.correo" />
-										<input type="checkbox" name="preferenteCorreo" id="preferenteCorreo"
-										<%if (desactivado)
-										out.print("disabled");%>
-										<%if (preferenteCorreo)
-										out.print(" checked");%>>&nbsp;&nbsp;&nbsp;
-										<siga:Idioma key="censo.preferente.fax" />
-										<input type="checkbox" name="preferenteFax" id="preferenteFax"
-										<%if (desactivado)
-										out.print("disabled");%>
-										<%if (preferenteFax)
-										out.print(" checked");%>>&nbsp;&nbsp;&nbsp;
-										<siga:Idioma key="censo.preferente.sms" />
-										<input type="checkbox" name="preferenteSms" id="preferenteSms"
-										<%if (desactivado)
-										out.print("disabled");%>
-										<%if (preferenteSms)
-										out.print(" checked");%>>
-									</td>
-								</tr>
-							</table>
-						</siga:ConjCampos>
-					</td>
-				</tr>
+						<!-- Faxes -->
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="censo.datosDireccion.literal.fax1" />&nbsp;
+							</td>
+							<td>
+								<html:text name="consultaDireccionesForm" styleId="fax1"
+									property="fax1" value="<%=fax1%>" maxlength="20" size="10"
+									styleClass="<%=clase%>" readOnly="<%=desactivado%>">
+								</html:text>
+							</td>
+							<td class="labelText">
+								<siga:Idioma key="censo.datosDireccion.literal.fax2" />&nbsp;
+							</td>
+							<td>
+								<html:text name="consultaDireccionesForm" styleId="fax2"
+									property="fax2" value="<%=fax2%>" maxlength="20" size="10"
+									styleClass="<%=clase%>" readOnly="<%=desactivado%>">
+								</html:text>
+							</td>
+						</tr>
+
+						<!-- Email y Pagina web -->
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="censo.datosDireccion.literal.correo" />&nbsp;
+							</td>
+							<td>
+							<%
+								if (modo.equals("editar") || modo.equals("duplicar") || mail.equalsIgnoreCase("")) {
+							%>
+								<html:text name="consultaDireccionesForm" styleId="correoElectronico"
+									property="correoElectronico" value="<%=mail%>"
+									maxlength="100" size="50" styleClass="<%=clase%>"
+									readOnly="<%=desactivado%>">
+								</html:text>
+							<%
+								} else {
+							%>
+								<a href="mailto:<%=mail%>">
+									<html:text
+										name="consultaDireccionesForm" styleId="correoElectronico"
+										style="cursor:hand;color:blue;" property="correoElectronico"
+										value="<%=mail%>" maxlength="100" size="50"
+										styleClass="<%=clase%>" readOnly="<%=desactivado%>">
+									</html:text>
+								</a>
+							<%
+								}
+							%>
+							</td>
+							
+							<td class="labelText">
+								<siga:Idioma key="censo.datosDireccion.literal.paginaWeb" />&nbsp;
+							</td>
+							<td>
+							<%
+								if (modo.equals("editar") || modo.equals("duplicar") || enlaceWEB.equalsIgnoreCase("")) {
+							%>
+								<html:text name="consultaDireccionesForm" styleId="paginaWeb"
+									property="paginaWeb" value="<%=paginaWEB%>" maxlength="100"
+									size="25" styleClass="<%=clase%>" readOnly="<%=desactivado%>">
+								</html:text>
+							<%
+								} else {
+							%>
+								<a href="<%=enlaceWEB%>" target="_blank">
+									<html:text name="consultaDireccionesForm" styleId="paginaWeb"
+										style="cursor:hand;color:blue;" property="paginaWeb"
+										value="<%=paginaWEB%>" maxlength="100" size="25"
+										styleClass="<%=clase%>" readOnly="<%=desactivado%>">
+									</html:text>
+								</a>
+							<%
+								}
+							%>
+							</td>
+						</tr>
+
+						<!-- Preferencias -->
+						<tr>
+							<td class="labelText">
+								<siga:Idioma key="censo.datosDireccion.literal.preferente" />
+							</td>
+							<td class="labelText">
+								<siga:Idioma key="censo.preferente.mail" />
+								<input type="checkbox" name="preferenteMail" id="preferenteMail"
+								<%if (desactivado)		out.print("disabled");%>
+								<%if (preferenteMail)	out.println("checked");%>>&nbsp;&nbsp;&nbsp;
+								
+								<siga:Idioma key="censo.preferente.correo" />
+								<input type="checkbox" name="preferenteCorreo" id="preferenteCorreo"
+								<%if (desactivado)		out.print("disabled");%>
+								<%if (preferenteCorreo)	out.print(" checked");%>>&nbsp;&nbsp;&nbsp;
+								
+								<siga:Idioma key="censo.preferente.fax" />
+								<input type="checkbox" name="preferenteFax" id="preferenteFax"
+								<%if (desactivado)		out.print("disabled");%>
+								<%if (preferenteFax)	out.print(" checked");%>>&nbsp;&nbsp;&nbsp;
+								
+								<siga:Idioma key="censo.preferente.sms" />
+								<input type="checkbox" name="preferenteSms" id="preferenteSms"
+								<%if (desactivado)		out.print("disabled");%>
+								<%if (preferenteSms)	out.print(" checked");%>>
+							</td>
+						</tr>
+					</table>
+				</siga:ConjCampos>
+			</td>
+			</tr>
 			</table>
 		</html:form>
 		<script>	

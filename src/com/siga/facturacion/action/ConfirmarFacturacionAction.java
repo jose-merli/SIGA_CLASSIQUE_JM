@@ -1253,26 +1253,14 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	protected String traspasarFacturas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)	throws SIGAException {
 		try {
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			Facturacion facturacion = new Facturacion(user);
 			ConfirmarFacturacionForm form = (ConfirmarFacturacionForm) formulario;
 			Vector vOcultos = form.getDatosTablaOcultos(0);
 			Long idSerieFacturacion = Long.parseLong((String)vOcultos.elementAt(0));
 			Long idProgramacion = Long.parseLong((String)vOcultos.elementAt(1));
 			Short idInstitucion = Short.valueOf(this.getIDInstitucion(request).toString());
 			
-			//CAMBIO DE ESTADO A PROGRAMADA: 
-			String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION, FacFacturacionProgramadaBean.C_IDPROGRAMACION, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
-			Hashtable<String,Object> hashNew = new Hashtable<String,Object>();
-			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDINSTITUCION, idInstitucion);
-			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
-			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, idSerieFacturacion);
-			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHAMODIFICACION, "sysdate");
-			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.TRASPASO_PROGRAMADA);
-			String [] camposTraspaso = {FacFacturacionProgramadaBean.C_IDESTADOTRASPASO};
-			FacFacturacionProgramadaAdm facadm = new FacFacturacionProgramadaAdm(user);
-			facadm.updateDirect(hashNew, claves, camposTraspaso);
-			
 			//LLAMADA A ENCOLAR EL TRASPASO: 
-			Facturacion facturacion = new Facturacion(user);
 			facturacion.encolarTraspasoFacturas(idInstitucion, idSerieFacturacion, idProgramacion);
 		} catch (Exception e) {
 			throwExcp("messages.general.error",	new String[] { "modulo.facturacion.traspasoFacturas" }, e, null);

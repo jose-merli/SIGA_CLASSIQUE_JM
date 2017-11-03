@@ -87,10 +87,8 @@
 		var datos;
 		datos = document.getElementById('tablaDatosDinamicosD');
 		datos.value = ""; 
-		var j;
-		var tabla;
-		tabla = document.getElementById('tablaDatos');
 		var flag = true;
+		var j;
 		j = 1;
 		while (flag) {
 			var aux = 'oculto' + fila + '_' + j;
@@ -131,6 +129,33 @@
 		}
 		document.consultaDireccionesForm.modo.value = "abrir";
 		document.consultaDireccionesForm.submit();
+	}
+
+	function duplicar(fila) {
+		// guardando los datos de la fila
+		var datos;
+		datos = document.getElementById('tablaDatosDinamicosD');
+		datos.value = ""; 
+		var j;
+		j = 1;
+		do {
+			var aux = 'oculto' + fila + '_' + j;
+			var oculto = document.getElementById(aux);
+			if (oculto != null)  {
+				datos.value = datos.value + oculto.value + ',';
+				j++;
+			}
+		} while (oculto != null)
+		datos.value = datos.value + "%";
+		
+		// abriendo la ventana
+		document.consultaDireccionesForm.modo.value = "duplicar";
+		var rc = ventaModalGeneral(document.consultaDireccionesForm.name, "G");
+		if (rc != null) {
+			if (rc == "MODIFICADO") {
+				refrescarLocal();
+			}
+		}
 	}
 		
 	</script>
@@ -204,8 +229,10 @@
 				if (htData == null) continue;
 				i++;
 				FilaExtElement[] elems=new FilaExtElement[1];
-				if((String.valueOf((Long)request.getAttribute("idPersona"))).equals(idUsr)  && usr.isLetrado()){		 
+				if ((String.valueOf((Long)request.getAttribute("idPersona"))).equals(idUsr)  && usr.isLetrado()){		 
   		 			elems[0]=new FilaExtElement("solicitar","solicitar",SIGAConstants.ACCESS_READ);  	
+				} else {
+					elems[0]=new FilaExtElement("duplicar","duplicar",SIGAConstants.ACCESS_FULL);
 				}
 				String poblacion=(String)htData.get("POBLACION");
 				String poblacionExtranjera=(String)htData.get("POBLACIONEXTRANJERA");

@@ -9,12 +9,14 @@ select cen_colegiado.idpersona id_letrado,
        replace(replace(cen_colegiado.situacionresidente, 1, 's'), 0, 'n') as residencia,
        decode((select 1
                 from CEN_SANCION
-               where idtiposancion in (7)
-                 and rownum = 1
-                 and cen_sancion.idpersona = cen_cliente.idpersona
-                 And cen_sancion.Fechainicio is not null
-                 And cen_sancion.Fechafin is not Null
-                 And Trunc(Sysdate) Between Trunc(cen_sancion.Fechainicio) And Trunc(cen_sancion.Fechafin)),
+               where idtiposancion in (4, 6, 7)
+                 and Cen_Sancion.Idpersona = cen_cliente.idpersona
+                 And Nvl(Cen_Sancion.Chkrehabilitado, '0') = '0'
+                 And Trunc(Nvl(Cen_Sancion.Fecharehabilitado, '31/12/9999')) >= Trunc(Sysdate)
+                 And Cen_Sancion.Fechainicio is not null
+                 And Cen_Sancion.Fechafin is not Null
+                 And Trunc(Sysdate) Between Trunc(Cen_Sancion.Fechainicio) And Trunc(Cen_Sancion.Fechafin)
+                 and rownum = 1),
               1,
               'n',
               replace(replace(cen_datoscolegialesestado.idestado, 10, 'n'),

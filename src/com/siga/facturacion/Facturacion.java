@@ -1040,6 +1040,8 @@ public class Facturacion {
     
     public void encolarTraspasoFacturas(Short idInstitucion, Long idSerieFacturacion, Long idProgramacion) throws ClsExceptions
     {
+		FacFacturacionProgramadaAdm facadm = new FacFacturacionProgramadaAdm(this.usrbean);
+		
     	int estado = 0;
     	//CONSULTA DE LA SERIE DE FACTURACIÓN (idinstitucion e idseriefacturacion) PARA VER SI HAY QUE TRASPASARLA O NO: FAC_FACTURACION.TRASPASOFACTURAS (1, 0):
     	//SI LA TRANSFERENCIA DE FACTURAS ACTIVA ES NAVISION Y ESTÁ ACTIVA LA SERIE DE FACTURACIÓN: 
@@ -1066,16 +1068,15 @@ public class Facturacion {
     	}
     	
 		//CAMBIO DE ESTADO DE TRASPASO DE LA FACTURACIÓN: 
-		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION, FacFacturacionProgramadaBean.C_IDPROGRAMACION, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
 		Hashtable<String,Object> hashNew = new Hashtable<String,Object>();
 		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDINSTITUCION, idInstitucion);
 		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
 		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, idSerieFacturacion);
+		
 		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHAMODIFICACION, "sysdate");
 		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOTRASPASO, estado);
-		String [] camposTraspaso = {FacFacturacionProgramadaBean.C_IDESTADOTRASPASO};
-		FacFacturacionProgramadaAdm facadm = new FacFacturacionProgramadaAdm(this.usrbean);
-		facadm.updateDirect(hashNew, claves, camposTraspaso);
+		String [] camposParaActualizar = {FacFacturacionProgramadaBean.C_IDESTADOTRASPASO, FacFacturacionProgramadaBean.C_FECHAMODIFICACION};
+		facadm.updateDirect(hashNew, null, camposParaActualizar);
     }
     
     public void comprobacionTraspasoFacturas(HttpServletRequest request, String idInstitucion)

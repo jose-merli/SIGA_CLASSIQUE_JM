@@ -220,6 +220,8 @@
 		
 	} else if (pcajgActivo == 7) {
 		obligatorioMinusvalia = true;
+	} else if (pcajgActivo == 8) {
+		obligatorioParentesco = true;
 	}else if ((pcajgActivo == 9) && ((conceptoE.equals(PersonaJGAction.ASISTENCIA_ASISTIDO) || conceptoE.equals(PersonaJGAction.EJG) 
 			||  conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR) || conceptoE.equals(PersonaJGAction.DESIGNACION_INTERESADO)))) {
 		obligatorioSexo = true;

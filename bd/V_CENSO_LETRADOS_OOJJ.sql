@@ -60,7 +60,7 @@ Select Cen_Persona.Idpersona As Id_Letrado,
  (Select 1
           From Cen_Sancion
          Where Cen_Sancion.Idpersona = Cen_Cliente.Idpersona
-           And Idtiposancion In (4, 7)
+           And Idtiposancion In (4, 6, 7)
            And Nvl(Cen_Sancion.Chkrehabilitado, '0') = '0'
            And Trunc(Nvl(Cen_Sancion.Fecharehabilitado, '31/12/9999')) >= Trunc(Sysdate)
            And Fechainicio is not null
@@ -107,7 +107,7 @@ Select Cen_Persona.Idpersona As Id_Letrado,
  (Select 1
           From Cen_Sancion
          Where Cen_Sancion.Idpersona = Cen_Cliente.Idpersona
-           And Idtiposancion In (4, 7)
+           And Idtiposancion In (4, 6, 7)
            And Nvl(Cen_Sancion.Chkrehabilitado, '0') = '0'
            And Trunc(Nvl(Cen_Sancion.Fecharehabilitado, '31/12/9999')) >= Trunc(Sysdate)
            And Fechainicio is not null
