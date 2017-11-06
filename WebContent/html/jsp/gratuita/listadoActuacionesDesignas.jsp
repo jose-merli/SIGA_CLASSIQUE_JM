@@ -125,8 +125,8 @@
 			if (typeof id == 'undefined')
 				id='tablaDatos';
 			preparaDatos(fila,id);
-			var datosDesigna = "idInstitucion=="+<%=idInstitucion%> +"##idPersona=="+jQuery("#ocultoPersona"+fila+"_1").val()+  "##idTurno==" +<%=idTurno%>+"##anio=="+<%=anio%> +"##numero==" +<%=numero%>+
-			"##numeroAsunto==" +jQuery("#oculto"+fila+"_1").val()  +"##codigoDesigna=="+<%=codigoDesigna%>+"%%%";
+			var datosDesigna = "idInstitucion=="+<%=idInstitucion%> +"##idPersona=="+jQuery("#ocultoHidden"+fila+"_2").val()+  "##idTurno==" +<%=idTurno%>+"##anio=="+<%=anio%> +"##numero==" +<%=numero%>+
+			"##numeroAsunto==" +jQuery("#ocultoHidden"+fila+"_1").val()  +"##codigoDesigna=="+<%=codigoDesigna%>+"%%%";
 			document.Informe.datosInforme.value=datosDesigna;
 			
 			
@@ -349,7 +349,11 @@
 			 	%>
 			 
 				  	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit" modo="<%=modo%>" elementos="<%=elems%>" >
-						<td><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("",(String)hash.get("FECHA")))%></td>
+						<td>
+							<input type="hidden" name="ocultoHidden<%=String.valueOf(recordNumber)%>_1" id="ocultoHidden<%=String.valueOf(recordNumber)%>_1" value="<%=hash.get("NUMEROASUNTO")%>">
+							<input type="hidden" name="ocultoHidden<%=String.valueOf(recordNumber)%>_2" id="ocultoHidden<%=String.valueOf(recordNumber)%>_2" value="<%=hash.get("IDPERSONA")%>">
+							<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("",(String)hash.get("FECHA")))%>
+						</td>
 						<td><%=hash.get("NUMEROASUNTO")%></td>
 						<td><%=UtilidadesString.mostrarDatoJSP(nombreProc)%></td>
 						<td>
@@ -371,10 +375,7 @@
 						<td><%=((String) hash.get("NOMBREFACTURACION")==null?"":(String) hash.get("NOMBREFACTURACION"))%>&nbsp;
 						</td>
 						
-					</siga:FilaConIconos>	
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" id="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=hash.get("NUMEROASUNTO")%>">
-				    <input type="hidden" name="ocultoPersona<%=String.valueOf(recordNumber)%>_1" id="ocultoPersona<%=String.valueOf(recordNumber)%>_1" value="<%=hash.get("IDPERSONA")%>">
-				  		   
+					</siga:FilaConIconos>	 
 				<%recordNumber++;%>
 				<%}%>	 
 		<%}%>
