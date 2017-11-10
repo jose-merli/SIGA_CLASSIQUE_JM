@@ -402,7 +402,8 @@
 			                    });
 						},
 						error: function(e){
-							alert('Error de comunicación: ' + e);
+							alert('Error de comunicación:eval(e):' + eval(e));
+							alert('Error de comunicación:e.responseText ' + e.responseText);
 							fin();
 						}
 					});
