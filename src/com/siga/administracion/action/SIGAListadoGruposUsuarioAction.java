@@ -320,40 +320,58 @@ public class SIGAListadoGruposUsuarioAction extends MasterAction
         return "exito";
 	}
 
-	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions
+	/**
+	 * Borra un perfil o grupo completamente (al menos lo intenta, porque puede fallar si está siendo usado)
+	 */
+	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException
 	{
-	    SIGAListadoGruposUsuarioForm form = (SIGAListadoGruposUsuarioForm)formulario;
-	    
-	    form.setModal("false");
-	    
-	    UsrBean userBean = ((UsrBean)request.getSession().getAttribute(("USRBEAN")));
-	    AdmPerfilAdm gruposUsuarioAdm = new AdmPerfilAdm (this.getUserBean(request));
-	    
-	    Vector vOcultos = form.getDatosTablaOcultos(0);
-	    
-	    Hashtable hash = new Hashtable();
-	    
-	    hash.put(AdmPerfilBean.C_IDPERFIL, (String)vOcultos.elementAt(0));
-	    hash.put(AdmPerfilBean.C_IDINSTITUCION, userBean.getLocation());
-	    
-	    if (gruposUsuarioAdm.delete(hash))
-	    {
-	        request.setAttribute("mensaje","messages.deleted.success");
-	        
-            String mensaje = "El Grupo \"" + (String)vOcultos.elementAt(1) + "\"" + " ha sido borrado";	
+		// Controles y variables generales
+		UsrBean userBean = this.getUserBean(request);
+		SIGAListadoGruposUsuarioForm form = (SIGAListadoGruposUsuarioForm) formulario;
+		AdmPerfilAdm gruposUsuarioAdm = new AdmPerfilAdm(userBean);
+		AdmPerfilRolAdm rolesGrupoAdm = new AdmPerfilRolAdm(userBean);
+		AdmGestionPermisosAdm gestionPermisosAdm = new AdmGestionPermisosAdm(userBean);
 
-            CLSAdminLog.escribirLogAdmin(request,mensaje);
-	    }
-	    
-	    else
-	    {
-	        request.setAttribute("mensaje","error.messages.deleted");
-	    }
+		// obteniendo los datos del perfil a borrar
+		Vector vOcultos = form.getDatosTablaOcultos(0);
+		String idPerfil = "";
+		String idInstitucion = "";
+		try {
+			idPerfil = (String) vOcultos.elementAt(0);
+			idInstitucion = userBean.getLocation();
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al abrir la transacción");
+		}
 
-	    request.setAttribute("urlAction", "/SIGA/ADM_GestionarGruposUsuario.do?modo=buscar");
-        request.setAttribute("hiddenFrame", "1");
-	    
-	    return "exito";
+		UserTransaction tx = userBean.getTransaction();
+		try {
+			tx.begin();
+			form.setModal("false");
+
+			Hashtable hash = new Hashtable();
+			hash.put(AdmPerfilBean.C_IDPERFIL, idPerfil);
+			hash.put(AdmPerfilBean.C_IDINSTITUCION, idInstitucion);
+			String [] claves = { AdmPerfilBean.C_IDINSTITUCION, AdmPerfilBean.C_IDPERFIL };
+
+			rolesGrupoAdm.deleteDirect(hash, claves); // borra los roles asignados a este grupo/perfil
+			gestionPermisosAdm.borrarPermisos(idInstitucion, idPerfil); // borra los permisos asignados a este grupo/perfil
+			if (gruposUsuarioAdm.delete(hash)) { // borra el grupo/perfil
+				request.setAttribute("mensaje", "messages.deleted.success");
+				String mensaje = "El Grupo \"" + (String) vOcultos.elementAt(1) + "\"" + " ha sido borrado";
+				CLSAdminLog.escribirLogAdmin(request, mensaje);
+				tx.commit();
+			} else {
+				request.setAttribute("mensaje", "error.messages.deleted");
+			}
+
+			request.setAttribute("urlAction", "/SIGA/ADM_GestionarGruposUsuario.do?modo=buscar");
+			request.setAttribute("hiddenFrame", "1");
+
+		} catch (Exception e) {
+			throwExcp("Error desconocido", new String[] { "modulo.administracion" }, e, tx);
+		}
+
+		return "exito";
 	}
 
 	protected String mostrarRegistro(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response, boolean bEditable, boolean bNuevo) throws ClsExceptions
