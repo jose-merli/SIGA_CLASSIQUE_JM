@@ -1651,8 +1651,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 											</c:choose>
 											<td style="text-align: left;  font-size: 13px;">		
 												<span style="vertical-align: top"><c:out value="${actuacion.numero}" />
-													
-														<c:if test="${comunicacionesAcreditacionDeOficio==true  && (actuacion.validada=='0' || empty actuacion.validada)}">
+														<c:if test="${comunicacionesAcreditacionDeOficio==true  && (actuacion.validada=='0' || empty actuacion.validada) && actuacion.anulada !='1'}">
 															 <img id="iconoboton_download1" hspace="0"
 																			src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
 																			alt="Enviar" name="iconoFila" title="Descargar" border="0" 
@@ -1738,7 +1737,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 														<td style="text-align: left;  font-size: 13px;">
 															<span style="vertical-align: top"><c:out value="${actuacion.numero}" />
 													
-																<c:if test="${comunicacionesAcreditacionDeOficio==true  && (actuacion.validada=='0' || empty actuacion.validada)}">
+																<c:if test="${comunicacionesAcreditacionDeOficio==true  && (actuacion.validada=='0' || empty actuacion.validada)  && actuacion.anulada !='1'}">
+																	
 																	 <img id="iconoboton_download1" hspace="0"
 																					src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
 																					alt="Enviar" name="iconoFila" title="Descargar" border="0" 
@@ -2169,7 +2169,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 															<tr>
 															<td></td>
 																<span style="vertical-align: top"><c:out value="${actuacion.numero}" />
-																	<c:if test="${comunicacionesAcreditacionDeOficio==true && (actuacion.validada=='0' || empty actuacion.validada) }">
+																	<c:if test="${comunicacionesAcreditacionDeOficio==true && (actuacion.validada=='0' || empty actuacion.validada)  && actuacion.anulada !='1'}">
+																		
 																		 <img id="iconoboton_download1" hspace="0"
 																						src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
 																						alt="Enviar" name="iconoFila" title="Descargar" border="0" 
@@ -2371,7 +2372,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 															<tr>
 																<span style="vertical-align: top"><c:out value="${actuacion.numero}" />
 																
-																	<c:if test="${comunicacionesAcreditacionDeOficio==true  && (actuacion.validada=='0' || empty actuacion.validada)}">
+																	<c:if test="${comunicacionesAcreditacionDeOficio==true  && (actuacion.validada=='0' || empty actuacion.validada)  && actuacion.anulada !='1'}">
+																		
 																		 <img id="iconoboton_download1" hspace="0"
 																						src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
 																						alt="Enviar" name="iconoFila" title="Descargar" border="0" 
