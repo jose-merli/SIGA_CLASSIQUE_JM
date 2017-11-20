@@ -273,7 +273,8 @@
 			   border="1"
 			   columnNames="gratuita.actuacionesAsistencia.literal.fechaActuacion,gratuita.busquedaAsistencias.literal.numero,gratuita.actuacionesDesigna.literal.modulo,gratuita.procedimientos.literal.acreditacion,gratuita.actuacionesDesigna.literal.justificacion,gratuita.actuacionesDesigna.literal.validada,gratuita.procedimientos.literal.anulada,gratuita.actuacionesDesigna.literal.facturacion,"
 			   columnSizes="8,4,26,10,8,6,6,20,12"
-			   modal="G">
+			   modal="G"
+			   fixedHeight="auto">
 
 		<% if (obj==null || obj.size()==0) { %>
 					<tr class="notFound">
