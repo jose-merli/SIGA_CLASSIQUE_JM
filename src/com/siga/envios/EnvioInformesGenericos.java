@@ -2073,9 +2073,9 @@ public class EnvioInformesGenericos extends MasterReport {
 						String pathDocumento = fileDocumento.getPath();
 						// Creacion documentos
 						int indice = pathDocumento.lastIndexOf(ClsConstants.FILE_SEP);
-						String descDocumento = "";
-						if (indice > 0)
-							descDocumento = pathDocumento.substring(indice + 1);
+						String descDocumento = beanInforme.getDescripcion()+"_"+hoy;
+//						if (indice > 0)
+//							descDocumento = pathDocumento.substring(indice + 1);
 
 						switch (tipoDocumento) {
 						case 1:
