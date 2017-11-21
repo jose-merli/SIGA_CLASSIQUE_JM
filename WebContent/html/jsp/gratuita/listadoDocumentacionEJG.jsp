@@ -71,6 +71,7 @@
 		<html:hidden styleId="anio" property = "anio" />
 		<html:hidden styleId="numero" property = "numero"  />
 		<html:hidden styleId="numEjg" property = "numEjg" />
+		<html:hidden styleId="jsonVolver" property = "jsonVolver"  />
 		
 	</html:form>	
 		
@@ -165,10 +166,26 @@
 		//Asociada al boton Volver
 		function accionVolver()
 		{
-			document.forms[0].action="./JGR_EJG.do";	
-			document.forms[0].modo.value="buscar";
-			document.forms[0].target="mainWorkArea"; 
-			document.forms[0].submit(); 
+			if(document.forms[0].jsonVolver && document.forms[0].jsonVolver.value!=''){
+				
+				jSonVolverValue = document.forms[0].jsonVolver.value;
+				jSonVolverValue = replaceAll(jSonVolverValue,"'", "\"");
+				var jSonVolverObject =  jQuery.parseJSON(jSonVolverValue);
+				nombreFormulario = jSonVolverObject.nombreformulario;
+				if(nombreFormulario != ''){
+					parent.document.forms[nombreFormulario].idRemesa.value =  jSonVolverObject.idremesa;
+					parent.document.forms[nombreFormulario].idinstitucion.value = jSonVolverObject.idinstitucion;
+					parent.document.forms[nombreFormulario].modo.value="editar";
+					parent.document.forms[nombreFormulario].target = "mainWorkArea";
+					parent.document.forms[nombreFormulario].submit();
+					
+				}
+			}else{
+				document.forms[0].action="./JGR_EJG.do";	
+				document.forms[0].modo.value="buscar";
+				document.forms[0].target="mainWorkArea"; 
+				document.forms[0].submit(); 
+			}
 
 		}
 		

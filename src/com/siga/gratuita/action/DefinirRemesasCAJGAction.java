@@ -392,33 +392,36 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			Vector visibles = miForm.getDatosTablaVisibles(0);
 			Hashtable miHash = new Hashtable();
 
-			Integer idInstitucion=  this.getIDInstitucion(request);
+			String idInstitucion=  this.getIDInstitucion(request).toString();
+			String idRemesa = null;
 			if ((ocultos != null && visibles != null)) {
-				miHash.put(CajgRemesaBean.C_IDREMESA, ocultos.get(0));
-				miHash.put(CajgRemesaBean.C_IDINSTITUCION, ocultos.get(1));
-				session.removeAttribute("DATAPAGINADOR");
-
-			} else {
-				session.removeAttribute("DATAPAGINADOR");
-				miHash.put(CajgRemesaBean.C_IDREMESA, miForm.getIdRemesa());
-				miHash.put(CajgRemesaBean.C_IDINSTITUCION, idInstitucion.toString());
-
+				idRemesa =  ocultos.get(0).toString();
+			}else {
+				idRemesa = miForm.getIdRemesa();
 			}
+			
+			session.removeAttribute("DATAPAGINADOR");
+			miHash.put(CajgRemesaBean.C_IDREMESA, idRemesa);
+			miHash.put(CajgRemesaBean.C_IDINSTITUCION, idInstitucion);
+			
+			
+			Map<String, String> clavesJsonVolverMap = new HashMap<String, String>();
+			if(mapping.getPath().equals("/JGR_E-Comunicaciones_InfEconomico"))
+				clavesJsonVolverMap.put("nombreformulario", "DefinicionRemesasInfEcon_CAJG_Form");
+				
+			else
+				clavesJsonVolverMap.put("nombreformulario", "DefinicionRemesas_CAJG_Form");
+			clavesJsonVolverMap.put("idinstitucion", idInstitucion);
+			clavesJsonVolverMap.put("idremesa", idRemesa);
+			String idJsonVolver = UtilidadesString.createJsonString(clavesJsonVolverMap);
+			miForm.setJsonVolver(idJsonVolver);
+			
 			CajgRemesaAdm remesaAdm = new CajgRemesaAdm(this.getUserBean(request));
-			CajgRemesaBean b = new CajgRemesaBean();
-			Vector a = remesaAdm.selectByPK(miHash);
-			b = (CajgRemesaBean) a.get(0);
-			Hashtable h = b.getOriginalHash();
-
+			Vector remesaVector = remesaAdm.selectByPK(miHash);
+			CajgRemesaBean remesaBean = (CajgRemesaBean) remesaVector.get(0);
 			// Entramos al formulario en modo 'modificación'
 			session.setAttribute("accion", "editar");
-//			GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
-//			String urlEnvioInformeEconomico = genParametrosService.getValorParametroWithNull(idInstitucion.shortValue(),PARAMETRO.INFORMEECONOMICO_WS_URL,MODULO.ECOM);
-//			boolean isActivadoIntercambioEconomico = urlEnvioInformeEconomico!=null && !urlEnvioInformeEconomico.equalsIgnoreCase("");
-//			
-//			
-//			request.setAttribute("ISDATOSECONOMICOS", Boolean.valueOf(isActivadoIntercambioEconomico) );
-			request.setAttribute("REMESA", h);
+			request.setAttribute("REMESA", remesaBean.getOriginalHash());
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
 		}

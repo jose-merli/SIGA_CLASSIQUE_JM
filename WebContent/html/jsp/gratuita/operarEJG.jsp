@@ -570,7 +570,8 @@
 		<!-- html:hidden property = "fechaAperturaEJG" value = "<%=FECHAAPERTURA%>"/-->
 		<html:hidden property = "idProcurador" value="<%=idProcurador%>"/>
 		<html:hidden property = "idInstitucionProcurador" value="<%=idInstitucionProcurador%>"/>
-	
+		<html:hidden styleId="jsonVolver" property = "jsonVolver"  />
+		
 		<table>
 			<tr>				
 				<td width="100%" align="center">
@@ -1122,6 +1123,8 @@
 		<html:hidden property ="solicitanteEjgApellido1"     value = "<%=APELLIDO1ASISTIDO%>" />
 		<html:hidden property ="solicitanteEjgApellido2"     value = "<%=APELLIDO2ASISTIDO%>" />
 	</html:form>	
+	
+	
 	<!-- FIN: CAMPOS DE BUSQUEDA-->	
 
 	
@@ -1134,19 +1137,37 @@
 		}
 		
 		function accionVolver() {
-			<%String modoVolverSOJ = (String) request.getSession().getAttribute(
-					"modoVolverSOJ");
-			if (modoVolverSOJ == null) {%>
-					document.forms[0].idInstitucion.value = "<%=idInstitucionLocation%>";
-					document.forms[0].action="./JGR_EJG.do";	
-					document.forms[0].modo.value="buscar";
-					document.forms[0].target="mainWorkArea"; 
-					document.forms[0].submit(); 
-			<%} else {
-				request.getSession().removeAttribute("modoVolverSOJ");%>
-					document.forms[4].modo.value="<%=modoVolverSOJ%>";
-				   	document.forms[4].submit();
-		   <%}%>
+			
+			if(document.forms[0].jsonVolver && document.forms[0].jsonVolver.value!=''){
+				
+				jSonVolverValue = document.forms[0].jsonVolver.value;
+				jSonVolverValue = replaceAll(jSonVolverValue,"'", "\"");
+				var jSonVolverObject =  jQuery.parseJSON(jSonVolverValue);
+				nombreFormulario = jSonVolverObject.nombreformulario;
+				if(nombreFormulario != ''){
+					parent.document.forms[nombreFormulario].idRemesa.value =  jSonVolverObject.idremesa;
+					parent.document.forms[nombreFormulario].idinstitucion.value = jSonVolverObject.idinstitucion;
+					parent.document.forms[nombreFormulario].modo.value="editar";
+					parent.document.forms[nombreFormulario].target = "mainWorkArea";
+					parent.document.forms[nombreFormulario].submit();
+					
+				}
+			}else{
+			
+				<%String modoVolverSOJ = (String) request.getSession().getAttribute(
+						"modoVolverSOJ");
+				if (modoVolverSOJ == null) {%>
+						document.forms[0].idInstitucion.value = "<%=idInstitucionLocation%>";
+						document.forms[0].action="./JGR_EJG.do";	
+						document.forms[0].modo.value="buscar";
+						document.forms[0].target="mainWorkArea"; 
+						document.forms[0].submit(); 
+				<%} else {
+					request.getSession().removeAttribute("modoVolverSOJ");%>
+						document.forms[4].modo.value="<%=modoVolverSOJ%>";
+					   	document.forms[4].submit();
+			   <%}%>
+			}
 		}
 		
 		function accionRestablecer() {		

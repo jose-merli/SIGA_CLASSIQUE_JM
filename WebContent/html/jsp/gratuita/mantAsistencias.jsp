@@ -977,6 +977,7 @@
 		<html:hidden property = "idTipoEJG" 	value= "<%=IDTIPOEJG%>"/>
 		<html:hidden property = "idInstitucion" value= "<%=usr.getLocation()%>"/>
 		<html:hidden property = "desdeEjg"		value= "si"/>
+		<html:hidden styleId="jsonVolver" property = "jsonVolver"  value =""/>
 	</html:form>		
 
 	<!-- formulario para buscar Tipo SJCS -->

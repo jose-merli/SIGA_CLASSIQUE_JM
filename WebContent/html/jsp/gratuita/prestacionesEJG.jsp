@@ -42,6 +42,7 @@
 	<html:hidden property="ejgNumEjg" />
 	<html:hidden property="idsInsertarRechazadas" value = '' />
 	<html:hidden property="idsBorrarRechazadas" value = ''/>
+	<html:hidden styleId="jsonVolver" property = "jsonVolver"  />
 
 <table class="tablaTitulo" cellspacing="0">
 	<tr>
@@ -100,10 +101,26 @@
 <script type="text/javascript">
 function accionVolver()
 {
-	document.PrestacionRechazadaEjgForm.action="./JGR_EJG.do";	
-	document.PrestacionRechazadaEjgForm.modo.value="buscar";
-	document.PrestacionRechazadaEjgForm.target="mainWorkArea"; 
-	document.PrestacionRechazadaEjgForm.submit(); 
+	if(document.PrestacionRechazadaEjgForm.jsonVolver && document.PrestacionRechazadaEjgForm.jsonVolver.value!=''){
+		
+		jSonVolverValue = document.PrestacionRechazadaEjgForm.jsonVolver.value;
+		jSonVolverValue = replaceAll(jSonVolverValue,"'", "\"");
+		var jSonVolverObject =  jQuery.parseJSON(jSonVolverValue);
+		nombreFormulario = jSonVolverObject.nombreformulario;
+		if(nombreFormulario != ''){
+			parent.document.forms[nombreFormulario].idRemesa.value =  jSonVolverObject.idremesa;
+			parent.document.forms[nombreFormulario].idinstitucion.value = jSonVolverObject.idinstitucion;
+			parent.document.forms[nombreFormulario].modo.value="editar";
+			parent.document.forms[nombreFormulario].target = "mainWorkArea";
+			parent.document.forms[nombreFormulario].submit();
+			
+		}
+	}else{
+		document.PrestacionRechazadaEjgForm.action="./JGR_EJG.do";	
+		document.PrestacionRechazadaEjgForm.modo.value="buscar";
+		document.PrestacionRechazadaEjgForm.target="mainWorkArea"; 
+		document.PrestacionRechazadaEjgForm.submit();
+	}
 
 }
 function refrescarLocal()

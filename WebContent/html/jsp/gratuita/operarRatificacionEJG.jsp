@@ -254,7 +254,7 @@
 				<html:hidden property = "idActa" value =""/>
 				<html:hidden property = "idInstitucionActa" value =""/>
 				<html:hidden property = "idInstitucionComision" value ="<%=idInstitucionComision%>"/>
-				
+				<html:hidden styleId="jsonVolver" property = "jsonVolver"  />
 	
 				<!-- FILA -->
 				<tr>
@@ -551,19 +551,35 @@
 		//Asociada al boton Volver
 		function accionVolver()
 		{
-			document.forms[0].reset();
-			document.forms[0].numeroCAJG.value = "";
-			if(document.getElementById("idPonente"))
-				document.forms[0].idPonente.value = "";
-			if(document.getElementById("idTipoRatificacionEJG"))
-				document.forms[0].idTipoRatificacionEJG.value = "";
-			document.forms[0].idInstitucion.value = "<%=idInstitucion%>";
-			document.forms[0].idFundamentoJuridico.value = "";
-			document.forms[0].fechaResolucionCAJG.value = "";
-			document.forms[0].action="./JGR_EJG.do";	
-			document.forms[0].modo.value="buscar";
-			document.forms[0].target="mainWorkArea"; 
-			document.forms[0].submit(); 
+			if(document.forms[0].jsonVolver && document.forms[0].jsonVolver.value!=''){
+				
+				jSonVolverValue = document.forms[0].jsonVolver.value;
+				jSonVolverValue = replaceAll(jSonVolverValue,"'", "\"");
+				var jSonVolverObject =  jQuery.parseJSON(jSonVolverValue);
+				nombreFormulario = jSonVolverObject.nombreformulario;
+				if(nombreFormulario != ''){
+					parent.document.forms[nombreFormulario].idRemesa.value =  jSonVolverObject.idremesa;
+					parent.document.forms[nombreFormulario].idinstitucion.value = jSonVolverObject.idinstitucion;
+					parent.document.forms[nombreFormulario].modo.value="editar";
+					parent.document.forms[nombreFormulario].target = "mainWorkArea";
+					parent.document.forms[nombreFormulario].submit();
+					
+				}
+			}else{
+				document.forms[0].reset();
+				document.forms[0].numeroCAJG.value = "";
+				if(document.getElementById("idPonente"))
+					document.forms[0].idPonente.value = "";
+				if(document.getElementById("idTipoRatificacionEJG"))
+					document.forms[0].idTipoRatificacionEJG.value = "";
+				document.forms[0].idInstitucion.value = "<%=idInstitucion%>";
+				document.forms[0].idFundamentoJuridico.value = "";
+				document.forms[0].fechaResolucionCAJG.value = "";
+				document.forms[0].action="./JGR_EJG.do";	
+				document.forms[0].modo.value="buscar";
+				document.forms[0].target="mainWorkArea"; 
+				document.forms[0].submit(); 
+			}
 		}
 		
 		//Asociada al boton Cerrar

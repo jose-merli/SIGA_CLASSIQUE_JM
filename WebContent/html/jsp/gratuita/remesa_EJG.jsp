@@ -25,6 +25,7 @@
 <%@taglib uri 	= 	"struts-html.tld" 			prefix="html" 		%>
 <%@taglib uri	= 	"libreria_SIGA.tld" 		prefix="siga"		%>
 <%@taglib uri	=	"struts-logic.tld" 			prefix="logic" 		%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- JSP -->
 <% 
@@ -113,7 +114,18 @@
 	<!-- Incluido jquery en siga.js -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	<title><siga:Idioma key="gratuita.busquedaEJG.literal.EJG"/></title>
+	
+	<c:choose>
+		<c:when test="${DefinicionRemesas_CAJG_Form.idTipoRemesa==1 }">
+			<siga:Titulo titulo="menu.sjcs.ecomunicaciones.InfEconomico" localizacion="gratuita.BusquedaRemesas.localizacion"/>
+		</c:when>
+		<c:otherwise>
+			<siga:Titulo titulo="gratuita.BusquedaRemesas_CAJG.literal.Remesa" localizacion="gratuita.BusquedaRemesas.localizacion"/>
+		</c:otherwise>
+	</c:choose>
+	
+	
+	<title><siga:Idioma key="gratuita.busquedaEJG.literal.EJG"/>pepe</title>
 	<script type="text/javascript">
 		
 		var descargar = false;

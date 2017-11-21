@@ -2769,10 +2769,27 @@
 		//Asociada al boton Volver -->
 		function accionVolver()   
 		{	
-		 	document.forms[0].action="<%=app%>/JGR_EJG.do";	
-			document.forms[0].modo.value="buscar";
-			document.forms[0].target="mainWorkArea"; 
-			document.forms[0].submit(); 
+		 	
+			if(document.PersonaJGForm.jsonVolver && document.PersonaJGForm.jsonVolver.value!=''){
+				
+				jSonVolverValue = document.PersonaJGForm.jsonVolver.value;
+				jSonVolverValue = replaceAll(jSonVolverValue,"'", "\"");
+				var jSonVolverObject =  jQuery.parseJSON(jSonVolverValue);
+				nombreFormulario = jSonVolverObject.nombreformulario;
+				if(nombreFormulario != ''){
+					parent.document.forms[nombreFormulario].idRemesa.value =  jSonVolverObject.idremesa;
+					parent.document.forms[nombreFormulario].idinstitucion.value = jSonVolverObject.idinstitucion;
+					parent.document.forms[nombreFormulario].modo.value="editar";
+					parent.document.forms[nombreFormulario].target = "mainWorkArea";
+					parent.document.forms[nombreFormulario].submit();
+					
+				}
+			}else{
+				document.forms[0].action="<%=app%>/JGR_EJG.do";	
+				document.forms[0].modo.value="buscar";
+				document.forms[0].target="mainWorkArea"; 
+				document.forms[0].submit(); 
+			}
 		}	
 		
 		//Asociada al boton Guardar -->

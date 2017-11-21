@@ -71,6 +71,7 @@
 
 		<html:hidden property="modo" value = ""/>
 		<html:hidden property="desdeDesigna" value= "si"/>
+		<html:hidden styleId="jsonVolver" property = "jsonVolver"  value =""/>
 
 		<!-- Campo obligatorio -->
 		<!-- RGG: cambio a formularios ligeros -->

@@ -58,6 +58,7 @@
 		<html:hidden property="numero" value="${DefinirUnidadFamiliarEJGForm.numero}"/>
 		<html:hidden property="idInstitucion" value="${DefinirUnidadFamiliarEJGForm.idInstitucion}"/>
 		<input type="hidden" name="tablaDatosDinamicosD"/>		
+		<html:hidden styleId="jsonVolver" property = "jsonVolver"  />
 	</html:form>
 
 	<html:form action="/JGR_UnidadFamiliarEEJG" name="EEJG" method="post" target="submitArea" type ="com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm">
@@ -67,6 +68,7 @@
 		<html:hidden property="numero" value="${DefinirUnidadFamiliarEJGForm.numero}"/>
 		<html:hidden property="idInstitucion" value="${DefinirUnidadFamiliarEJGForm.idInstitucion}"/>
 		<input type="hidden" name="tablaDatosDinamicosD"/>
+		
 	</html:form>
 
 	<table class="tablaTitulo" cellspacing="0">
@@ -433,11 +435,28 @@
 				
 	//Asociada al boton Cerrar
 	function accionVolver() {
-		document.DefinirUnidadFamiliarEJGForm.idInstitucion.value = "<%=usrBean.getLocation()%>";
-		document.DefinirUnidadFamiliarEJGForm.action="./JGR_EJG.do";	
-		document.DefinirUnidadFamiliarEJGForm.modo.value="buscar";
-		document.DefinirUnidadFamiliarEJGForm.target="mainWorkArea"; 
-		document.DefinirUnidadFamiliarEJGForm.submit(); 
+		
+		if(document.DefinirUnidadFamiliarEJGForm.jsonVolver && document.DefinirUnidadFamiliarEJGForm.jsonVolver.value!=''){
+			
+			jSonVolverValue = document.DefinirUnidadFamiliarEJGForm.jsonVolver.value;
+			jSonVolverValue = replaceAll(jSonVolverValue,"'", "\"");
+			var jSonVolverObject =  jQuery.parseJSON(jSonVolverValue);
+			nombreFormulario = jSonVolverObject.nombreformulario;
+			if(nombreFormulario != ''){
+				parent.document.forms[nombreFormulario].idRemesa.value =  jSonVolverObject.idremesa;
+				parent.document.forms[nombreFormulario].idinstitucion.value = jSonVolverObject.idinstitucion;
+				parent.document.forms[nombreFormulario].modo.value="editar";
+				parent.document.forms[nombreFormulario].target = "mainWorkArea";
+				parent.document.forms[nombreFormulario].submit();
+				
+			}
+		}else{
+			document.DefinirUnidadFamiliarEJGForm.idInstitucion.value = "<%=usrBean.getLocation()%>";
+			document.DefinirUnidadFamiliarEJGForm.action="./JGR_EJG.do";	
+			document.DefinirUnidadFamiliarEJGForm.modo.value="buscar";
+			document.DefinirUnidadFamiliarEJGForm.target="mainWorkArea"; 
+			document.DefinirUnidadFamiliarEJGForm.submit(); 
+		}
 	}
 	
 	function accionNuevo() {		

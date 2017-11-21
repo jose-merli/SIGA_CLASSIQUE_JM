@@ -361,7 +361,7 @@
 		<input type="hidden" name="anio" value="">
 		<input type="hidden" name="numero" value="">
 		<input type="hidden" name="idEjgRemesa" value="">
-		
+		<html:hidden property="jsonVolver"/>
 		<input type="hidden" name="volver" value="">		
 		<html:hidden property="registrosSeleccionados"  styleId="registrosSeleccionados"/>
 		<html:hidden property="datosPaginador"  styleId="datosPaginador" />
@@ -378,7 +378,7 @@
 		<html:hidden property="numero"        value = ""/>
 		<html:hidden property="idTipoEJG"     value = ""/>
 		<html:hidden property="idInstitucion" value = ""/>
-
+	    <html:hidden property="jsonVolver" value="${DefinicionRemesas_CAJG_Form.jsonVolver}"/>
 		<!-- Campo obligatorio -->
 		<!-- RGG: cambio a formularios ligeros -->
 		<input type="hidden" name="tablaDatosDinamicosD">

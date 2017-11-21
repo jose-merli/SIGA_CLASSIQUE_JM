@@ -55,7 +55,6 @@
 	<!-- INICIO: CONJUNTO DE PESTAÑAS (LINEA) -->
 	<!-- TAG DE CONJUNTO DE PESTANAS -->
 	
-	
 		<siga:PestanasExt 
 				pestanaId="SOLEJG" 
 				target="mainPestanas"
@@ -66,6 +65,16 @@
 	
 <!-- FIN: CONJUNTO DE PESTAÑAS (LINEA) -->
 
+<html:form action="/JGR_E-Comunicaciones_Gestion.do"  method="POST" target="mainWorkArea" >
+		<html:hidden property="modo"/>
+		<html:hidden property="idinstitucion"/>
+		<html:hidden property="idRemesa"/>
+	</html:form>
+<html:form action="/JGR_E-Comunicaciones_InfEconomico.do"  method="POST" target="mainWorkArea" type ="com.siga.gratuita.form.DefinicionRemesas_CAJG_Form"  name="DefinicionRemesasInfEcon_CAJG_Form">
+	<html:hidden property="modo"/>
+	<html:hidden property="idinstitucion"/>
+	<html:hidden property="idRemesa"/>
+</html:form>
 
 </div>
 	<!-- INICIO: IFRAME GESTION PRINCIPAL -->
