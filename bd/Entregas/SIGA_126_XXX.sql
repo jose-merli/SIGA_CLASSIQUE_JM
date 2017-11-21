@@ -383,3 +383,29 @@ V_CENSO_LETRADOS_OOJJ;
 Update Gen_Procesos pro Set pro.Transaccion = 'CEN_ModificarNumeroColegiado' Where pro.Idproceso = '12P';
 
 --126_011: Ejecutados en Integracion por AAG el 13/11/2017 a las 13:00
+
+update gen_procesos set descripcion = 'Solicitar Alta Turno' where idproceso = '9A1';
+
+insert into adm_tiposacceso
+  (idproceso,
+   idperfil,
+   fechamodificacion,
+   usumodificacion,
+   derechoacceso,
+   idinstitucion)
+  (select '9A1', idperfil, sysdate, 0, derechoacceso, idinstitucion
+     from adm_tiposacceso padre
+    where idproceso = '9S1'
+      and not exists (select 1
+             from adm_tiposacceso hijo
+            where hijo.idproceso = '9A1'
+              and hijo.idperfil = padre.idperfil
+              and hijo.idinstitucion = padre.idinstitucion
+           
+           ));
+
+update adm_tiposacceso hijo set hijo.derechoacceso  = (select padre.derechoacceso
+             from adm_tiposacceso padre
+            where padre.idproceso = '9S1'
+              and hijo.idperfil = padre.idperfil
+              and hijo.idinstitucion = padre.idinstitucion) where hijo.idproceso = '9A1' and (hijo.idinstitucion,hijo.idperfil) not in ((2014,'ABG'));
