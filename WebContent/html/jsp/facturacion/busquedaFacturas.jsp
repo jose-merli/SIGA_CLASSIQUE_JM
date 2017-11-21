@@ -180,6 +180,7 @@
 					return false;
 				}				
 				
+				document.BusquedaFacturaForm.target = "resultado";
 				document.BusquedaFacturaForm.modo.value = "buscarInit";
 				document.BusquedaFacturaForm.submit();
 			}else{
@@ -454,7 +455,15 @@
 	</div>
 
 	<!-- INICIO: IFRAME LISTA RESULTADOS -->
-	<iframe align="center" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" id="resultado" name="resultado" scrolling="no" frameborder="0" marginheight="0" marginwidth="0" class="frameGeneral"></iframe>
+		<iframe align="center" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>"
+					id="resultado"
+					name="resultado" 
+					scrolling="no"
+					frameborder="0"
+					marginheight="0"
+					marginwidth="0"					 
+					class="frameGeneral">
+	</iframe>
 	
 	<!-- BOTONES ACCION: an: "Anular" -->	 
 	<siga:ConjBotonesAccion botones="an,dse"/>
