@@ -33,6 +33,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.LogFileWriter;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenBajasTemporalesAdm;
@@ -134,9 +135,10 @@ public class CalendarioSJCS
 
 	/**
 	 * Constructor
+	 * @throws ClsExceptions 
 	 */
 	public void inicializaParaMatriz(Integer idInstitucion, Integer idTurno, Integer idGuardia, Integer idCalendarioGuardias,
-			Vector<ScsCalendarioGuardiasBean> calendariosVinculados, UsrBean usr, LogFileWriter log)
+			Vector<ScsCalendarioGuardiasBean> calendariosVinculados, UsrBean usr, LogFileWriter log) throws ClsExceptions
 	{
 		// Controles
 		ScsGuardiasTurnoAdm admGuardiasTurno = new ScsGuardiasTurnoAdm(this.usrBean);
@@ -196,8 +198,12 @@ public class CalendarioSJCS
 		}
 
 		// 3. CALENDARIO FESTIVOS:
-		this.vDiasFestivos = (Vector) admCalendarioLaboral.obtenerFestivosTurno(idInstitucion, idTurno,
-				this.fechaInicio, this.fechaFin).clone();
+		Calendar calFechaFin = UtilidadesFecha.stringToCalendar(this.fechaFin);
+		calFechaFin.add(Calendar.MONTH, 1);
+		// esto se hace por si la generacion llega a otros dias posteriores a la fecha de fin; esto es, 
+		// cuando la configuracion es por semanas/quincenas/meses 
+		// pero el calendario termina antes del ultimo dia de la semana/quincena/mes
+		this.vDiasFestivos = (Vector) admCalendarioLaboral.obtenerFestivosTurno(idInstitucion, idTurno, this.fechaInicio, calFechaFin.getTime()).clone();
 
 		// 4. INICIALIZACION DE LOS 2 ARRAYS:
 		this.arrayPeriodosDiasGuardiaSJCS = new ArrayList();

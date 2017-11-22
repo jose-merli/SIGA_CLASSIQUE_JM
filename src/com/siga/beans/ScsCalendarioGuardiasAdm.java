@@ -189,9 +189,7 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 			consulta += "WHERE S."+ScsCalendarioGuardiasBean.C_IDINSTITUCION+"="+idinstitucion_pestanha;
 			consulta += "  AND S."+ScsCalendarioGuardiasBean.C_IDTURNO+"="+idturno_pestanha;
 			consulta += "  AND S."+ScsCalendarioGuardiasBean.C_IDGUARDIA+"="+idguardia_pestanha;
-			/** Modificado por PDM: Se añade la ordenacion por fecha inicio */
-			consulta += " ORDER BY S."+ ScsCalendarioGuardiasBean.C_FECHAINICIO+" asc";
-			/**/
+			consulta += " ORDER BY S."+ ScsCalendarioGuardiasBean.C_FECHAINICIO+" desc";
 		}
 		catch (Exception e){
 			throw new ClsExceptions(e,"Excepcion en ScsCalendarioGuardiasAdm.getDatosCalendario(). Consulta SQL:"+consulta);
