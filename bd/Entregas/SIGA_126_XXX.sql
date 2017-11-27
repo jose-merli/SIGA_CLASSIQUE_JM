@@ -409,3 +409,6 @@ update adm_tiposacceso hijo set hijo.derechoacceso  = (select padre.derechoacces
             where padre.idproceso = '9S1'
               and hijo.idperfil = padre.idperfil
               and hijo.idinstitucion = padre.idinstitucion) where hijo.idproceso = '9A1' and (hijo.idinstitucion,hijo.idperfil) not in ((2014,'ABG'));
+
+--126_012: Ejecutados en Integracion por AAG el 27/11/2017 a las 09:30
+
