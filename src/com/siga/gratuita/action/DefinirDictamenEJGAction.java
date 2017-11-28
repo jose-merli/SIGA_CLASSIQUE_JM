@@ -4,21 +4,41 @@
 
 package com.siga.gratuita.action;
 
-import javax.servlet.http.*;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.redabogacia.sigaservices.app.services.gen.SelectDataService;
+import org.redabogacia.sigaservices.app.util.KeyValue;
+
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
+import com.atos.utils.UsrBean;
+import com.siga.beans.AdmInformeAdm;
+import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.ScsEJGAdm;
+import com.siga.beans.ScsEJGBean;
+import com.siga.beans.ScsEstadoEJGAdm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.form.*;
+import com.siga.gratuita.form.DefinirDictamenEJGForm;
 import com.siga.ws.CajgConfiguracion;
-import com.atos.utils.*;
 
-import org.apache.struts.action.*;
-
-import java.util.*;
-
-import com.siga.beans.*;
+import es.satec.businessManager.BusinessManager;
 
 /**
 * Maneja las acciones que se pueden realizar sobre la tabla SCS_SOJ
@@ -31,15 +51,65 @@ public class DefinirDictamenEJGAction extends MasterAction {
 		      HttpServletResponse response) throws SIGAException {
 		
 		MasterForm miForm = (MasterForm) formulario;
-		if (miForm == null)
+		String modo = (String) request.getParameter("modo");
+		if (miForm == null){
 			try {
 				return mapping.findForward(this.abrir(mapping, miForm, request, response));
 			}catch(Exception e){
 				return mapping.findForward("exception");
 			}
-		else return super.executeInternal(mapping, formulario, request, response); 
+		}
+		else if (modo != null && modo.equalsIgnoreCase("getFundamentosDictamen")){
+			try {
+				getFundamentosDictamen(mapping, formulario, request, response);
+			} catch (Exception e) {
+				throw new SIGAException(e);
+			}
+			return null;
+		} else
+			return super.executeInternal(mapping, formulario, request, response);
+		
 	}
 	
+	private void getFundamentosDictamen(ActionMapping mapping,
+			ActionForm formulario, HttpServletRequest request,
+			HttpServletResponse response) throws JSONException, IOException {
+		//Declaración de atributos
+				HashMap<String, String> params = new HashMap<String, String>();
+				JSONObject objetoJSON = new JSONObject();
+				JSONArray listaArrayJSON = new JSONArray();
+		    	
+				//Obtenemos el usuario de sesión
+				UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+				//Recogemos el parametro enviado por ajax
+				String idTipoDictamenEJG = request.getParameter("idTipoDictamenEJG");
+				
+				//Introducimos los parametros necesarios para la query
+				params.put("idioma", user.getLanguage());
+				params.put("idtipodictamenejg", idTipoDictamenEJG);
+				params.put("idinstitucion", user.getLocation());
+				
+				//Llamada al servicio
+				SelectDataService service = (SelectDataService) BusinessManager.getInstance().getService(SelectDataService.class);
+				List<KeyValue> tratamientos = service.getFundamentosCalificacion(params);
+				
+				//Obtenemos los datos y lo convertimos en objeto json
+				for(int i=0;i<tratamientos.size();i++){
+					KeyValue tratamientoAux = (KeyValue) tratamientos.get(i);
+					objetoJSON.put("id",tratamientoAux.getKey());
+					objetoJSON.put("descripcion",tratamientoAux.getValue());
+				
+					listaArrayJSON.put(objetoJSON);
+					objetoJSON = new JSONObject();
+					
+				}
+				
+				 response.setHeader("Cache-Control", "no-cache");
+				 response.setHeader("Content-Type", "application/json;charset=utf-8"); 
+			     response.setHeader("X-JSON", listaArrayJSON.toString());
+				 response.getWriter().write(listaArrayJSON.toString());
+	}
+
 	/**
 	 * No implementado 
 	 */
@@ -177,7 +247,7 @@ public class DefinirDictamenEJGAction extends MasterAction {
 			
 		}
 		
-			
+		
 		
 		ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
 		
@@ -209,6 +279,23 @@ public class DefinirDictamenEJGAction extends MasterAction {
 					
 				}
 					
+//				ScsTipoDictamenEjgService scsTipoDictamenEjgService  = (ScsTipoDictamenEjgService)BusinessManager.getInstance().getService(ScsTipoDictamenEjgService.class);
+//				List<ScsTipodictamenejg> listTipodictamenejgs = scsTipoDictamenEjgService.getList(usr.getLanguage(), Short.valueOf(idInstitucion));
+//				if(listTipodictamenejgs==null)
+//					listTipodictamenejgs = new ArrayList<ScsTipodictamenejg>();
+//				request.setAttribute("dictamenEjgList", listTipodictamenejgs);
+				
+				SelectDataService service = (SelectDataService) BusinessManager.getInstance().getService(SelectDataService.class);
+				HashMap<String, String> params = new HashMap<String, String>();
+				
+				//Obtenemos el usuario de sesión
+				UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+				//Introducimos los parametros necesarios para la query
+				params.put("idioma", user.getLanguage());
+				params.put("idinstitucion", user.getLocation());
+				List<KeyValue> listTipodictamenejgs = service.getTiposDictamenEjg(params);
+				request.setAttribute("dictamenEjgList", listTipodictamenejgs);
+				
 				GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
 				String prefijoExpedienteCajg = paramAdm.getValor (idInstitucion, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_PREFIJO_EXPEDIENTES_CAJG, " ");
 				request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
