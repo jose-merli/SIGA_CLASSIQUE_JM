@@ -1843,6 +1843,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
     C_IMPORTE_GUARDIA_INACTIVA SCS_HITOFACTURABLEGUARDIA.PRECIOHITO%TYPE := 61.96;
     --FIN: Cambio facturacion guardias inactivas catalanes de VG --
 
+    c_Id_Gijon       Constant Scs_Asistencia.Idinstitucion%Type := 2027;
+    c_Id_Albacete    Constant Scs_Asistencia.Idinstitucion%Type := 2002;
+    c_Id_Ciudad_Real Constant Scs_Asistencia.Idinstitucion%Type := 2020;
+    c_Id_La_Rioja    Constant Scs_Asistencia.Idinstitucion%Type := 2058;
+    c_Id_Valladolid  Constant Scs_Asistencia.Idinstitucion%Type := 2078;
+    c_Id_Toledo      Constant Scs_Asistencia.Idinstitucion%Type := 2074;
+
   -- declaracion de cursores para la facturacion de guardias
     -- Cursor para cargar el RECORD de Facturacion
     CURSOR C_FACTURACION(V_IDINSTITUCION NUMBER, V_IDFACTURACION NUMBER) is
@@ -13206,12 +13213,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                    p_Fechahasta    In Scs_Designa.Fechaentrada%Type)
     Return Varchar2 Is
 
-    c_Id_Gijon       Constant Scs_Asistencia.Idinstitucion%Type := 2027;
-    c_Id_Albacete Constant Scs_Asistencia.Idinstitucion%Type := 2002;
-    c_Id_Ciudad_Real Constant Scs_Asistencia.Idinstitucion%Type := 2020;
-    c_Id_La_Rioja    Constant Scs_Asistencia.Idinstitucion%Type := 2058;
-    c_Id_Valladolid  Constant Scs_Asistencia.Idinstitucion%Type := 2078;
-
   Begin
     If p_Idinstitucion = c_Id_Gijon Then
       Return f_Tiene_Asist_Derivadas_Gijon(p_Idinstitucion,
@@ -13222,7 +13223,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                            p_Fechafin,
                                            p_Fechadesde,
                                            p_Fechahasta);
-    Elsif p_Idinstitucion in (c_Id_Albacete, c_Id_Ciudad_Real, c_Id_La_Rioja, c_Id_Valladolid) Then
+    Elsif p_Idinstitucion in (c_Id_Albacete, c_Id_Ciudad_Real, c_Id_La_Rioja, c_Id_Valladolid, c_Id_Toledo) Then
       Return f_Tiene_Asist_Derivadas_Cr(p_Idinstitucion,
                                         p_Idturno,
                                         p_Idguardia,
@@ -13358,12 +13359,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                     p_Fechahasta    In Scs_Designa.Fechaentrada%Type)
     Return Varchar2 Is
 
-    c_Id_Gijon       Constant Scs_Asistencia.Idinstitucion%Type := 2027;
-    c_Id_Albacete Constant Scs_Asistencia.Idinstitucion%Type := 2002;
-    c_Id_Ciudad_Real Constant Scs_Asistencia.Idinstitucion%Type := 2020;
-    c_Id_La_Rioja    Constant Scs_Asistencia.Idinstitucion%Type := 2058;
-    c_Id_Valladolid  Constant Scs_Asistencia.Idinstitucion%Type := 2078;
-
   Begin
     If p_Idinstitucion = c_Id_Gijon Then
       Return f_Es_Asistencia_Derivada_Gijon(p_Idinstitucion,
@@ -13371,7 +13366,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                             p_Numero,
                                             p_Fechadesde,
                                             p_Fechahasta);
-    Elsif p_Idinstitucion in (c_Id_Albacete, c_Id_Ciudad_Real, c_Id_La_Rioja, c_Id_Valladolid) Then
+    Elsif p_Idinstitucion in (c_Id_Albacete, c_Id_Ciudad_Real, c_Id_La_Rioja, c_Id_Valladolid, c_Id_Toledo) Then
       Return f_Es_Asistencia_Derivada_Cr(p_Idinstitucion,
                                          p_Anio,
                                          p_Numero,
@@ -13578,12 +13573,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                 p_Idactuacion   Scs_Actuacionasistencia.Idactuacion%Type)
     Return Varchar2 Is
 
-    c_Id_Gijon       Constant Scs_Asistencia.Idinstitucion%Type := 2027;
-    c_Id_Albacete Constant Scs_Asistencia.Idinstitucion%Type := 2002;
-    c_Id_Ciudad_Real Constant Scs_Asistencia.Idinstitucion%Type := 2020;
-    c_Id_La_Rioja    Constant Scs_Asistencia.Idinstitucion%Type := 2058;
-    c_Id_Valladolid  Constant Scs_Asistencia.Idinstitucion%Type := 2078;
-
     c_Tipoactuacion_Judicial Constant Scs_Actuacionasistencia.Idtipoactuacion%Type := 2;
     c_Tipoasistencia_Jr      Constant Scs_Asistencia.Idtipoasistenciacolegio%Type := 3;
     v_Idtipo_Actuacion  Scs_Actuacionasistencia.Idtipoactuacion%Type;
@@ -13605,7 +13594,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         Return Pkg_Siga_Constantes.Db_False_n;
       End If;
 
-    Elsif p_Idinstitucion in (c_Id_Albacete, c_Id_Ciudad_Real, c_Id_La_Rioja, c_Id_Valladolid) Then
+    Elsif p_Idinstitucion in (c_Id_Albacete, c_Id_Ciudad_Real, c_Id_La_Rioja, c_Id_Valladolid, c_Id_Toledo) Then
       Select Idtipoasistenciacolegio
         Into v_Idtipo_Asistencia
         From Scs_Asistencia
