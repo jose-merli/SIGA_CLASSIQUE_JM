@@ -5232,12 +5232,8 @@ function sumarDias(fechaInput,dias){
 }	
 function validarNombreApellido( nombre ) 
 {
-	
-	
 	patronNombre = /^([A-ZÑÇÁÉÍÓÚÄËÏÖÜÀÈÌÒÙÂÊÎÔÛa-zñçáéíóúäëïöüàèìòùâêîôû^'·\-]+[\s]*)+$/;
-	return  patronNombre.test(nombre);
-	
-	
+	return  patronNombre.test(replaceAll(nombre,'.',''));
 	
 }
 
