@@ -2762,6 +2762,9 @@
 <script language="JavaScript">
 
 function validaNombreApellidos() {
+	document.forms[0].nombre.value = trim(document.forms[0].nombre.value);
+	document.forms[0].apellido1.value = trim(document.forms[0].apellido1.value);
+	document.forms[0].apellido2.value = trim(document.forms[0].apellido2.value);
 	error = '';
 	if(!validarNombreApellido(document.forms[0].nombre.value)){
 		error += "<siga:Idioma key='errors.formato' arg0='gratuita.personaJG.literal.nombre'/>"+ '\n';
