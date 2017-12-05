@@ -5230,11 +5230,18 @@ function sumarDias(fechaInput,dias){
 	
 	return (dia+"/"+mes+"/"+anyo); 
 }	
-function validarNombreApellido( nombre ) 
-{
-	patronNombre = /^([A-ZÑÇÁÉÍÓÚÄËÏÖÜÀÈÌÒÙÂÊÎÔÛa-zñçáéíóúäëïöüàèìòùâêîôû^'·\-]+[\s]*)+$/;
-	return  patronNombre.test(nombre);
-	
+
+var letras=" abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZÇÁÉÍÓÚÄËÏÖÜÀÈÌÒÙÂÊÎÔÛçáéíóúäëïöüàèìòùâêîôû^'·\-";
+
+function validarNombreApellido(nombre){
+   for(i=0; i<nombre.length; i++){
+      if (letras.indexOf(nombre.charAt(i))==-1){
+         return false;
+      }
+   }
+   return true;
 }
+
+
 
 fin();
