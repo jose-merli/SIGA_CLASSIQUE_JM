@@ -259,7 +259,14 @@
 			document.DefinicionRemesas_CAJG_Form.submit();
 			
 		}
-		
+		function limpiarReferenciasEnvioCAJG(datos) {
+			sub();
+			document.DefinicionRemesas_CAJG_Form.datosSolicInformeEconomico.value = datos;
+			document.DefinicionRemesas_CAJG_Form.modo.value = "limpiarReferenciasEnvioCAJG";
+			document.DefinicionRemesas_CAJG_Form.target="submitArea";
+			document.DefinicionRemesas_CAJG_Form.submit();
+			
+		}
 		
 		function filtrado() {	
 			sub();
