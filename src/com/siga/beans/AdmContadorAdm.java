@@ -3,6 +3,9 @@ package com.siga.beans;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.UsrBean;
@@ -245,5 +248,61 @@ public class AdmContadorAdm extends MasterBeanAdministrador
 
 		return this.deleteSQL(delete);
 	}
+	
+	public void insertaNuevoContador(AdmContadorBean contadorBean,boolean isModificacleContador,
+			boolean isReconfiguracionContador,boolean isGeneral,UsrBean usrBean)throws BusinessException {
+		
+		// Lo damos de alta en contadores y lo relacionamos.
+		Hashtable<String,Object> htContador = new Hashtable<String,Object>();
+		htContador.put(AdmContadorBean.C_IDINSTITUCION,contadorBean.getIdinstitucion());
+		htContador.put(AdmContadorBean.C_IDCONTADOR,contadorBean.getIdContador());
+		htContador.put(AdmContadorBean.C_NOMBRE,contadorBean.getNombre());
+		htContador.put(AdmContadorBean.C_DESCRIPCION,contadorBean.getDescripcion());
+		htContador.put(AdmContadorBean.C_CONTADOR,contadorBean.getContador());
+		htContador.put(AdmContadorBean.C_PREFIJO,contadorBean.getPrefijo());
+		htContador.put(AdmContadorBean.C_SUFIJO,contadorBean.getSufijo());
+		htContador.put(AdmContadorBean.C_LONGITUDCONTADOR,contadorBean.getLongitudContador());
+		htContador.put(AdmContadorBean.C_MODO,contadorBean.getModoContador());
+		
+		htContador.put(AdmContadorBean.C_MODIFICABLECONTADOR,isModificacleContador?ClsConstants.DB_TRUE:ClsConstants.DB_FALSE);
+		
+		if(isReconfiguracionContador){
+			if(contadorBean.getFechaReconfiguracion()==null)
+				throw new BusinessException("Faltan parametros de reconfiguración");
+			htContador.put(AdmContadorBean.C_FECHARECONFIGURACION,contadorBean.getFechaReconfiguracion());
+			htContador.put(AdmContadorBean.C_RECONFIGURACIONPREFIJO,contadorBean.getReconfiguracionPrefijo());
+			htContador.put(AdmContadorBean.C_RECONFIGURACIONSUFIJO,contadorBean.getReconfiguracionSufijo());
+			htContador.put(AdmContadorBean.C_RECONFIGURACIONCONTADOR,contadorBean.getReconfiguracionContador());				
+						
+		}else{
+			htContador.put(AdmContadorBean.C_RECONFIGURACIONCONTADOR,"0");
+			
+		}
+		
+		htContador.put(AdmContadorBean.C_GENERAL,isGeneral?ClsConstants.DB_TRUE:ClsConstants.DB_FALSE);
+		
+		
+		htContador.put(AdmContadorBean.C_IDMODULO,contadorBean.getIdModulo());
+		htContador.put(AdmContadorBean.C_IDTABLA,contadorBean.getIdTabla());
+		htContador.put(AdmContadorBean.C_IDCAMPOCONTADOR,contadorBean.getIdCampoContador());
+		htContador.put(AdmContadorBean.C_IDCAMPOPREFIJO,contadorBean.getIdCampoPrefijo());
+		htContador.put(AdmContadorBean.C_IDCAMPOSUFIJO,contadorBean.getIdCampoSufijo());
+		
+		htContador.put(AdmContadorBean.C_FECHAMODIFICACION,"SYSDATE");
+        htContador.put(AdmContadorBean.C_USUMODIFICACION,(new Integer(usrBean.getUserName())));
+        htContador.put(AdmContadorBean.C_FECHACREACION,"SYSDATE");
+        htContador.put(AdmContadorBean.C_USUCREACION,(new Integer(usrBean.getUserName())));			
+        
+        try {
+			if (!this.insert(htContador)){
+				throw new BusinessException("messages.inserted.error");
+			}
+		} catch (Exception e) {
+			throw new BusinessException("messages.inserted.error",e);
+		}
+        
+		
+	}
+	
 
 }

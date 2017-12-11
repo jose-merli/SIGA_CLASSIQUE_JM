@@ -21,6 +21,7 @@ import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -322,6 +323,9 @@ public class DatosGeneralesAction extends MasterAction{
 
 	/**
 	   * Ejecuta un sentencia UPDATE en la Base de Datos para series de facturación.
+	 * @param idInstitucion 
+	 * @param nuevoIdContador 
+	 * @param beanSerieFacturacionBeanOld 
 	   *    
 	   * @param  mapping - Mapeo de los struts
 	   * @param  formulario -  Action Form asociado a este Action
@@ -332,6 +336,9 @@ public class DatosGeneralesAction extends MasterAction{
 	   *   
 	   * @exception  ClsExceptions  En cualquier caso de error
 	   */
+	
+	
+	
 	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		UserTransaction tx = null;
 		try {
@@ -434,40 +441,33 @@ public class DatosGeneralesAction extends MasterAction{
 				if (formDatosGenerales.getContadorExistente().equals("")) {
 					
 					/** ---------- 3. OBTIENE NUEVO CONTADOR ----------*/
-					// cogemos el nuevo. (de los tres campos)						
-					String nuevoIdContador = "FAC_" + sIdSerieFacturacion + "_" + admContador.obtenerNuevoMax(idInstitucion);
-
-					// Lo damos de alta en contadores y lo relacionamos.
-					Hashtable<String,Object> htContador = new Hashtable<String,Object>();
-					htContador.put(AdmContadorBean.C_IDINSTITUCION,idInstitucion);
-					htContador.put(AdmContadorBean.C_IDCONTADOR,nuevoIdContador);
-					htContador.put(AdmContadorBean.C_NOMBRE,beanSerieFacturacionBeanOld.getNombreAbreviado());
-					htContador.put(AdmContadorBean.C_DESCRIPCION,beanSerieFacturacionBeanOld.getNombreAbreviado());
-					htContador.put(AdmContadorBean.C_MODIFICABLECONTADOR,"1");
-					htContador.put(AdmContadorBean.C_MODO,"0");
-					htContador.put(AdmContadorBean.C_CONTADOR,formDatosGenerales.getContador_nuevo());
-					htContador.put(AdmContadorBean.C_PREFIJO,formDatosGenerales.getPrefijo_nuevo());
-					htContador.put(AdmContadorBean.C_SUFIJO,formDatosGenerales.getSufijo_nuevo());
-					htContador.put(AdmContadorBean.C_LONGITUDCONTADOR,(formDatosGenerales.getContador_nuevo().length()<=5) ? "5" : "10");
-					//htContador.put(AdmContadorBean.C_FECHARECONFIGURACION,NULL);
-					htContador.put(AdmContadorBean.C_RECONFIGURACIONCONTADOR,"0");
-					//htContador.put(AdmContadorBean.C_RECONFIGURACIONPREFIJO,NULL);
-					//htContador.put(AdmContadorBean.C_RECONFIGURACIONSUFIJO,NULL);
-					htContador.put(AdmContadorBean.C_IDMODULO,ClsConstants.IDMODULOFACTURACION);//Modulo facturacion.
-					htContador.put(AdmContadorBean.C_IDTABLA,"FAC_FACTURA");
-					htContador.put(AdmContadorBean.C_IDCAMPOCONTADOR,"NUMEROFACTURA");
-					htContador.put(AdmContadorBean.C_IDCAMPOPREFIJO,"NUMEROFACTURA");
-					htContador.put(AdmContadorBean.C_IDCAMPOSUFIJO,"NUMEROFACTURA");
-					htContador.put(AdmContadorBean.C_GENERAL,"0");
-					htContador.put(AdmContadorBean.C_FECHAMODIFICACION,"SYSDATE");
-			        htContador.put(AdmContadorBean.C_USUMODIFICACION,(new Integer(user.getUserName())));
-			        htContador.put(AdmContadorBean.C_FECHACREACION,"SYSDATE");
-			        htContador.put(AdmContadorBean.C_USUCREACION,(new Integer(user.getUserName())));			
+					
 			        
-			        /** ---------- 4. INSERTA ADM_CONTADOR ----------*/
-			        if (!admContador.insert(htContador)){
-			        	throw new SIGAException("messages.updated.error");
-					}
+					String nuevoIdContador = "FAC_" + sIdSerieFacturacion + "_" + admContador.obtenerNuevoMax(idInstitucion);
+			        
+			        AdmContadorBean contadorBean = new AdmContadorBean();
+					contadorBean.setIdinstitucion(Integer.valueOf(idInstitucion));
+					contadorBean.setIdContador(nuevoIdContador);
+					contadorBean.setDescripcion(beanSerieFacturacionBeanOld.getNombreAbreviado());
+					contadorBean.setNombre(beanSerieFacturacionBeanOld.getNombreAbreviado());
+					
+					contadorBean.setContador(Long.valueOf(formDatosGenerales.getContador_nuevo()));
+					contadorBean.setPrefijo(formDatosGenerales.getPrefijo_nuevo());
+					contadorBean.setSufijo(formDatosGenerales.getSufijo_nuevo());
+					contadorBean.setLongitudContador(formDatosGenerales.getContador_nuevo().length()<=5 ? 5 : 10);
+					
+					contadorBean.setIdModulo(ClsConstants.IDMODULOFACTURACION);
+					
+					contadorBean.setIdTabla("FAC_FACTURA");
+					contadorBean.setIdCampoContador("NUMEROFACTURA");
+					contadorBean.setIdCampoPrefijo("NUMEROFACTURA");
+					contadorBean.setIdCampoSufijo("NUMEROFACTURA");
+					
+					contadorBean.setModoContador(Integer.valueOf(0));
+			        
+					admContador.insertaNuevoContador(contadorBean, true, false,	false,  user);
+			        
+			        
 			        
 					hashNew.put(FacSerieFacturacionBean.C_IDCONTADOR, nuevoIdContador);
 					eliminarContador = true;
@@ -577,7 +577,10 @@ public class DatosGeneralesAction extends MasterAction{
 			UtilidadesHash.set(backupSerFac, "OBSERVACIONES", formDatosGenerales.getObservaciones());
 			request.getSession().setAttribute("DATABACKUP",backupSerFac);
 			
-		} catch (Exception e) { 
+		}catch (BusinessException e) { 
+		   throw new SIGAException(e.getMessage()); 
+		}
+		catch (Exception e) { 
 		   throwExcp("messages.general.error", new String[] {"modulo.facturacion.asignacionConceptos"}, e, tx); 
 		} 
 		
