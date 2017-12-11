@@ -420,3 +420,6 @@ PKG_SIGA_FACTURACION_SJCS
 --126_013: Ejecutados en Integracion por AAG el 04/12/2017 a las 10:30
 
 update scs_personajg set nombre = trim(nombre),apellido1 = trim(apellido1),apellido2 = trim(apellido2) where idinstitucion = &idinstitucion;
+
+--126_014: Ejecutados en Integracion por AAG el 11/12/2017 a las 10:30
+
