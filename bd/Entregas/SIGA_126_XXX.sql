@@ -423,3 +423,10 @@ update scs_personajg set nombre = trim(nombre),apellido1 = trim(apellido1),apell
 
 --126_014: Ejecutados en Integracion por AAG el 11/12/2017 a las 10:30
 
+alter table SCS_GRUPOGUARDIACOLEGIADO_HIST
+  drop constraint FK_SCS_GRUPOGUARDIA;
+alter table SCS_GRUPOGUARDIACOLEGIADO_HIST
+  drop constraint FK_SCS_GRUPOGUARDIACOLEGIADO;
+
+
+--126_014: Ejecutados en Integracion por AAG el 11/12/2017 a las 12:30
