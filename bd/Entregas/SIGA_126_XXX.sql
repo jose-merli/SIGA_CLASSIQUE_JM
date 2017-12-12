@@ -429,3 +429,5 @@ alter table SCS_GRUPOGUARDIACOLEGIADO_HIST
   drop constraint FK_SCS_GRUPOGUARDIACOLEGIADO;
 
 --126_014: Ejecutados en Integracion por AAG el 11/12/2017 a las 12:30
+
+  coger PKG_SIGA_FACTURACION 
