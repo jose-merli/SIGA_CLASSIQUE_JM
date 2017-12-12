@@ -2766,17 +2766,30 @@ function validaNombreApellidos() {
 	document.forms[0].apellido1.value = trim(document.forms[0].apellido1.value);
 	document.forms[0].apellido2.value = trim(document.forms[0].apellido2.value);
 	error = '';
-	if(!validarNombreApellido(document.forms[0].nombre.value)){
-		error += "<siga:Idioma key='errors.formato' arg0='gratuita.personaJG.literal.nombre'/>"+ '\n';
-	
-	}
-	if(!validarNombreApellido(document.forms[0].apellido1.value)){
-		error += "<siga:Idioma key='errors.formato' arg0='gratuita.busquedaEJG.literal.apellido1'/>"+ '\n';
-	
-	}
-	if(document.forms[0].apellido2.value!='' && !validarNombreApellido(document.forms[0].apellido2.value)){
-		error += "<siga:Idioma key='errors.formato' arg0='gratuita.busquedaEJG.literal.apellido2'/>"+ '\n';
-	
+	var tipoPersona =  document.forms[0].idTipoPersona.value; 
+	if(tipoPersona=='F'){
+		if(!validarNombreApellido(document.forms[0].nombre.value)){
+			error += "<siga:Idioma key='errors.formato' arg0='gratuita.personaJG.literal.nombre'/>"+ '\n';
+		
+		}
+		if(!validarNombreApellido(document.forms[0].apellido1.value)){
+			error += "<siga:Idioma key='errors.formato' arg0='gratuita.busquedaEJG.literal.apellido1'/>"+ '\n';
+		
+		}
+		if(document.forms[0].apellido2.value!='' && !validarNombreApellido(document.forms[0].apellido2.value)){
+			error += "<siga:Idioma key='errors.formato' arg0='gratuita.busquedaEJG.literal.apellido2'/>"+ '\n';
+		
+		}
+	}else{
+		
+		if(!validarDenominacion(document.forms[0].nombre.value)){
+			error += "<siga:Idioma key='errors.formato' arg0='gratuita.personaJG.literal.nombreDenoApe1'/>"+ '\n';
+		
+		}
+		if(!validarDenominacion(document.forms[0].apellido1.value)){
+			error += "<siga:Idioma key='errors.formato' arg0='gratuita.personaJG.literal.abreviatura(*)'/>"+ '\n';
+		
+		}	
 	}
 	return error;
 }
