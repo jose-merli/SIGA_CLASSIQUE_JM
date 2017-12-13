@@ -297,12 +297,14 @@
 		<table align="center">
 			<tr>
 				<% if ((new Double(pendiente).doubleValue()>0)&&(modo.equalsIgnoreCase("editar"))){ %>
-					<td class="misBotones" width="10%">
-						<input type="button" alt="compensarFactura"  id="idButton" onclick="compensacionFacturaManual()" class="button" value='<siga:Idioma key="facturacion.abonosPagos.boton.compensacionManual"/>'>
-					</td>
-					<td class="misBotones" width="10%">
-						<input type="button" alt="compensarFactura"  id="idButton" onclick="return compensarFactura()" class="button" value='<siga:Idioma key="facturacion.abonosPagos.boton.compensacion"/>'>
-					</td>
+					<% if(idFactura ==null || "".equalsIgnoreCase(idFactura)){ %>
+						<td class="misBotones" width="10%">
+							<input type="button" alt="compensarFactura"  id="idButton" onclick="compensacionFacturaManual()" class="button" value='<siga:Idioma key="facturacion.abonosPagos.boton.compensacionManual"/>'>
+						</td>
+						<td class="misBotones" width="10%">
+							<input type="button" alt="compensarFactura"  id="idButton" onclick="return compensarFactura()" class="button" value='<siga:Idioma key="facturacion.abonosPagos.boton.compensacion"/>'>
+						</td>
+					<%} %>
 					<td class="misBotones" width="10%">
 						<input type="button" alt="pagarCaja"  id="idButton" onclick="pagarCaja()" class="button" value='<siga:Idioma key="facturacion.abonosPagos.boton.pagoCaja"/>'>
 					</td>

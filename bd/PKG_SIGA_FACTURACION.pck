@@ -1,149 +1,3 @@
-create or replace package PKG_SIGA_FACTURACION is
-
-    TYPE MATRICE_FACTURA IS RECORD (
-        IDFACTURA FAC_FACTURA.IDFACTURA%TYPE,
-        IDPERSONA FAC_FACTURA.IDPERSONA%TYPE,
-        IDFORMAPAGO FAC_FACTURA.IDFORMAPAGO%TYPE,
-        IDCUENTA FAC_FACTURA.IDCUENTA%TYPE,
-        IDPERSONADEUDOR FAC_FACTURA.IDPERSONADEUDOR%TYPE,
-        IDCUENTADEUDOR FAC_FACTURA.IDCUENTADEUDOR%TYPE,
-        OBSERVACIONES FAC_FACTURA.OBSERVACIONES%TYPE,
-        CTACLIENTE FAC_FACTURA.CTACLIENTE%TYPE,
-        IMPTOTALNETO FAC_FACTURA.IMPTOTALNETO%TYPE,
-        IMPTOTALIVA FAC_FACTURA.IMPTOTALIVA%TYPE,
-        IMPTOTAL FAC_FACTURA.IMPTOTAL%TYPE,
-        IMPTOTALANTICIPADO FAC_FACTURA.IMPTOTALANTICIPADO%TYPE,
-        IMPTOTALPORPAGAR FAC_FACTURA.IMPTOTALPORPAGAR%TYPE,
-        IDMANDATO FAC_FACTURA.IDMANDATO%TYPE,
-        DEUDOR_ID CEN_PERSONA.NIFCIF%TYPE,
-        DEUDOR_NOMBRE VARCHAR2(302));
-  TYPE TAB_FACTURA IS TABLE OF MATRICE_FACTURA INDEX BY BINARY_INTEGER;
-
-    /* Matriz de Lineas de Facturas */
-    TYPE MATRICE_LINEAFACTURA IS RECORD (
-        IDFACTURA               FAC_LINEAFACTURA.IDFACTURA%TYPE,
-        NUMEROLINEA             FAC_LINEAFACTURA.NUMEROLINEA%TYPE,
-        NUMEROORDEN             FAC_LINEAFACTURA.NUMEROORDEN%TYPE,
-        DESCRIPCION             FAC_LINEAFACTURA.DESCRIPCION%TYPE,
-        CANTIDAD                FAC_LINEAFACTURA.CANTIDAD%TYPE,
-        PRECIOUNITARIO          number(14,6),
-        IMPORTEANTICIPADO       FAC_LINEAFACTURA.IMPORTEANTICIPADO%TYPE,
-        IVA                     FAC_LINEAFACTURA.IVA%TYPE,
-        IDTIPOIVA FAC_LINEAFACTURA.IDTIPOIVA%TYPE,
-        IDPETICION              PYS_COMPRA.IDPETICION%TYPE,
-        IDTIPOPRODUCTO          PYS_COMPRA.IDTIPOPRODUCTO%TYPE,
-        IDPRODUCTO              PYS_COMPRA.IDPRODUCTO%TYPE,
-        IDPRODUCTOINSTITUCION   PYS_COMPRA.IDPRODUCTOINSTITUCION%TYPE,
-        CTAPRODUCTOSERVICIO     FAC_LINEAFACTURA.CTAPRODUCTOSERVICIO%TYPE,
-        CTAIVA                  FAC_LINEAFACTURA.CTAIVA%TYPE,
-        IDFORMAPAGO             FAC_LINEAFACTURA.IDFORMAPAGO%TYPE);
-  TYPE TAB_LINEAFACTURA IS TABLE OF MATRICE_LINEAFACTURA INDEX BY BINARY_INTEGER;
-
-  /* Matriz de Facturas Suscripciones */
-  TYPE MATRICE_FACTURACIONSUSCRIPCION IS RECORD
-   (IDFACTURA                 FAC_FACTURACIONSUSCRIPCION.IDFACTURA%TYPE,
-    NUMEROLINEA               FAC_FACTURACIONSUSCRIPCION.NUMEROLINEA%TYPE,
-    IDTIPOSERVICIOS           FAC_FACTURACIONSUSCRIPCION.IDTIPOSERVICIOS%TYPE,
-    IDSERVICIO                FAC_FACTURACIONSUSCRIPCION.IDSERVICIO%TYPE,
-    IDSERVICIOSINSTITUCION    FAC_FACTURACIONSUSCRIPCION.IDSERVICIOSINSTITUCION%TYPE,
-    IDSUSCRIPCION             FAC_FACTURACIONSUSCRIPCION.IDSUSCRIPCION%TYPE,
-    IDFACTURACIONSUSCRIPCION  FAC_FACTURACIONSUSCRIPCION.IDFACTURACIONSUSCRIPCION%TYPE,
-    DESCRIPCION               FAC_FACTURACIONSUSCRIPCION.DESCRIPCION%TYPE,
-    FECHAINICIO               FAC_FACTURACIONSUSCRIPCION.FECHAINICIO%TYPE,
-    FECHAFIN                  FAC_FACTURACIONSUSCRIPCION.FECHAFIN%TYPE,
-    IDPERSONA FAC_FACTURA.IDPERSONA%TYPE,
-    IMPORTE NUMBER(10,2),
-    CONT_ANTICIPOS NUMBER);
-  TYPE TAB_FACTURACIONSUSCRIPCION IS TABLE OF MATRICE_FACTURACIONSUSCRIPCION INDEX BY BINARY_INTEGER;
-
-    /****************************************************************************************************************/
-    /* Nombre: OBTENCIONPOBLACIONCLIENTES */
-    /* Descripcion: Obtencion de la poblacion de clientes incluidos en la serie de facturacion */
-    /* */
-    /* P_IDINSTITUCION - IN - Identificador del colegio - NUMBER */
-    /* P_IDSERIEFACTURACION - IN - Identificador de la serie de facturacion - NUMBER */
-    /* */
-    /* Version: 1.0 - Fecha Creacion: 10/11/2004 - Autor: Yolanda Garcia Espino */
-    /* Version: 2.0 - Fecha Modificacion: 01/11/2014 - Autor: Jorge Paez Trivino */
-    /*****************************************************************************************************************************/
-    FUNCTION OBTENCIONPOBLACIONCLIENTES(P_IDINSTITUCION IN NUMBER, P_IDSERIEFACTURACION IN NUMBER) RETURN PERSONA_TBL;
-
-    /*****************************************************************************************************************************/
-    /* Nombre: GENERACIONFACTURACION  */
-    /* Descripcion:   Generacion de facturas */
-    /* */
-    /* P_IDINSTITUCION - IN - Identificador del colegio - NUMBER */
-    /* P_IDSERIEFACTURACION - IN - Identificador de la serie de facturacion - NUMBER */
-    /* P_IDPROGRAMACION - IN  Identificador de la programacion - NUMBER */
-    /* P_USUMODIFICACION - IN - Usuario de modificacion - NUMBER */
-    /* P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)   */
-    /*      En caso de error devuelve el codigo de error Oracle correspondiente. */
-    /* P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400) */
-    /*      En caso de error devuelve el mensaje de error Oracle correspondiente. */
-    /* */
-    /* Version: 1.0 - Fecha Creacion: 10/11/2004 - Autor: Yolanda Garcia Espino */
-    /* Version: 2.0 - Fecha Modificacion: 01/11/2014 - Autor: Jorge Paez Trivino */
-    /* Version: 3.0 - Fecha Modificacion: 01/09/2015 - Autor Jorge Paez Trivino - Cambios encontrados al realizar la documentacion del proceso de facturacion */
-    /*****************************************************************************************************************************/
-    PROCEDURE GENERACIONFACTURACION(
-        P_IDINSTITUCION IN NUMBER,
-        P_IDSERIEFACTURACION IN NUMBER,
-        P_IDPROGRAMACION IN NUMBER,
-        P_IDIOMA IN NUMBER,
-        P_IDPETICION IN NUMBER, -- Cuendo tiene dato es porque viene de facturacion rapida
-        P_USUMODIFICACION IN NUMBER,
-        P_CODRETORNO OUT VARCHAR2,
-        P_DATOSERROR OUT VARCHAR2);
-
-    /****************************************************************************************************************/
-    /* Nombre: CONFIRMACIONFACTURACION */
-    /* Descripcion: Confirmacion de la factura */
-    /* */
-    /* P_IDINSTITUCION - IN - Identificador del colegio - NUMBER */
-    /* P_IDSERIEFACTURACION - IN - Identificador de la serie de facturacion - NUMBER */
-    /* P_IDPROGRAMACION - IN  Identificador de la programacion - NUMBER */
-    /* P_USUMODIFICACION - IN - Usuario de modificacion - NUMBER */
-    /* P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)   */
-    /*      En caso de error devuelve el codigo de error Oracle correspondiente. */
-    /* P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400) */
-    /*      En caso de error devuelve el mensaje de error Oracle correspondiente. */
-    /* */
-    /* Version: 1.0 - Fecha Creacion: 10/11/2004 - Autor: Yolanda Garcia Espino */
-    /* Version: 2.0 - Fecha Modificacion: 04/10/2005 - Autor: Yolanda Garcia Espino - Configuracion del numero de factura */
-    /* Version: 3.0 - Fecha Modificacion: 01/11/2014 - Autor: Jorge Paez Trivino */
-    /*****************************************************************************************************************************/
-    PROCEDURE CONFIRMACIONFACTURACION(
-        P_IDINSTITUCION IN NUMBER,
-        P_IDSERIEFACTURACION IN NUMBER,
-        P_IDPROGRAMACION IN NUMBER,
-        P_USUMODIFICACION IN NUMBER,
-        P_CODRETORNO OUT VARCHAR2,
-        P_DATOSERROR OUT VARCHAR2);
-
-    /*****************************************************************************************************************************/
-    /* Nombre: ELIMINARFACTURACION  */
-    /* Descripcion: Eliminacion de una facturacion */
-    /* */
-    /* P_IDINSTITUCION - IN - Identificador del colegio - NUMBER */
-    /* P_IDSERIEFACTURACION - IN - Identificador de la serie de facturacion - NUMBER */
-    /* P_IDPROGRAMACION - IN  Identificador de la programacion - NUMBER */
-    /* P_USUMODIFICACION - IN - Usuario de modificacion - NUMBER */
-    /* P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)   */
-    /*      En caso de error devuelve el codigo de error Oracle correspondiente. */
-    /* P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400) */
-    /*      En caso de error devuelve el mensaje de error Oracle correspondiente. */
-    /* */
-    /* Version: 1.0 - Fecha Modificacion: 01/09/2015 - Autor Jorge Paez Trivino - Cambios encontrados al realizar la documentacion del proceso de facturacion */
-    /*****************************************************************************************************************************/
-    PROCEDURE ELIMINARFACTURACION   (
-        P_IDINSTITUCION IN NUMBER,
-        P_IDSERIEFACTURACION IN NUMBER,
-        P_IDPROGRAMACION IN NUMBER,
-        P_USUMODIFICACION IN NUMBER,
-        P_CODRETORNO OUT VARCHAR2,
-        P_DATOSERROR OUT VARCHAR2);
-END PKG_SIGA_FACTURACION;
-/
 CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
 
     M_FACTURA TAB_FACTURA;
@@ -199,6 +53,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
         V_ImporteAnticipoUsado NUMBER(10,2);
         V_IDLINEA_ANTICIPO PYS_LINEAANTICIPO.IDLINEA%TYPE;
 
+
     CURSOR C_ANTICIPOS(PP_IDPERSONA IN NUMBER) IS
         SELECT *
         FROM (
@@ -227,6 +82,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
             )
         WHERE IMPORTERESTANTE > 0
         ORDER BY FECHA;
+
 
     BEGIN
         V_DATOSERROR := 'PROCESOANTICIPOSLETRADO: COMIENZA EL PROCESO POR LINEA';
@@ -258,12 +114,25 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                     AND NUMEROLINEA = P_NUMEROLINEA;
 
                 V_DATOSERROR := 'PROCESOANTICIPOSLETRADO: Actualiza FAC_FACTURA';
-                UPDATE FAC_FACTURA
-                SET IMPTOTALANTICIPADO = IMPTOTALANTICIPADO + V_ImporteAnticipoUsado,
-                    IMPTOTALPAGADO = IMPTOTALPAGADO + V_ImporteAnticipoUsado,
-                    IMPTOTALPORPAGAR = IMPTOTALPORPAGAR - V_ImporteAnticipoUsado
+
+               UPDATE FAC_FACTURA
+               SET IMPTOTALANTICIPADO = IMPTOTALANTICIPADO + V_ImporteAnticipoUsado,
+                   IMPTOTALPAGADO = IMPTOTALPAGADO + V_ImporteAnticipoUsado,
+                   IMPTOTALPORPAGAR = IMPTOTALPORPAGAR - V_ImporteAnticipoUsado
                 WHERE IDINSTITUCION = P_IDINSTITUCION
-                    AND IDFACTURA = P_IDFACTURA;
+                  AND IDFACTURA = P_IDFACTURA;
+
+                -- CGP (09/10/2017) Insertamos en el histórico de la facturacion INICIO
+                 
+              INSERT INTO FAC_HISTORICOFACTURA (IDINSTITUCION,IDFACTURA, IDHISTORICO,FECHAMODIFICACION, USUMODIFICACION, IDTIPOACCION, IDFORMAPAGO,
+  						IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA,
+  						IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO, IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, ESTADO)
+  						SELECT IDINSTITUCION, IDFACTURA,SEQ_FAC_HISTORIAL.NEXTVAL,SYSDATE,USUMODIFICACION,3,IDFORMAPAGO,
+  						IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA,
+  						IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO,IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, ESTADO
+  						FROM FAC_FACTURA WHERE IDINSTITUCION=P_IDINSTITUCION AND IDFACTURA=P_IDFACTURA;
+
+                --CGP FIN
 
                 -- CREO UNA LINEA EN PYS_LINEAANTICIPO CON LA LINEA DE FACTURA Y EL IMPORTE USADO
                 V_DATOSERROR := 'PROCESOANTICIPOSLETRADO: Obtiene una nueva linea de anticipo';
@@ -679,7 +548,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
         P_IDPERSONA IN NUMBER,
         P_FECHAINICIALPERIODO IN DATE,
         P_FECHAFINALPERIODO IN DATE,
-        P_IDFACTURA IN VARCHAR2,        
+        P_IDFACTURA IN VARCHAR2,
         P_IDIOMA IN NUMBER,
         P_ORDEN IN NUMBER,
         P_IDFORMAPAGO_LINEA IN NUMBER,
@@ -725,12 +594,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
             FROM FAC_LINEAFACTURA
             WHERE IDINSTITUCION = P_IDINSTITUCION
                 AND IDFACTURA = P_IDFACTURA;
-        
+
             P_PRIMERALINEAFACTURA := 'N';
         ELSE
             P_NUMEROLINEA := P_NUMEROLINEA + 1;
         END IF;
-    
+
         -- Vamos a comprobar si el precio a aplicar a ese cliente es el mismo al principio de ese periodo que al final
 
         -- Obtenemos el precio del servicio correspondiente a la fecha inicial del periodo
@@ -931,12 +800,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                         V_PERIODO := V_PERIODOFIN;
                         V_DESCRIPCIONPRECIO := V_DESCRIPCIONPRECIOFIN;
                         V_VALOR_TIPOIVA := V_VALOR_TIPOIVA_FIN;
-                        V_FECHAINICIALPERIODO := V_FECHA;                              
+                        V_FECHAINICIALPERIODO := V_FECHA;
                         IF (P_FACTURACIONPROPORCIONAL='1') THEN
                             V_FECHAFINALPERIODO := P_FECHAFINALPERIODO;
                         ELSE
-                            V_FECHAFINALPERIODO := V_FECHAFIN;                                                        
-                        END IF;                            
+                            V_FECHAFINALPERIODO := V_FECHAFIN;
+                        END IF;
                         P_NUMEROLINEA := P_NUMEROLINEA + 1;
                         P_IDFACTURACIONSUSCRIPCION := P_IDFACTURACIONSUSCRIPCION + 1;
                     END IF;
@@ -1057,10 +926,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
         IND_LINEAFACTURA_ANTERIOR BINARY_INTEGER;
         v_neto FAC_FACTURA.IMPTOTALNETO%TYPE;
         v_iva FAC_FACTURA.IMPTOTALIVA%TYPE;
-        v_CambioProductosServicios BOOLEAN := FALSE;            
+        v_CambioProductosServicios BOOLEAN := FALSE;
         v_TipoSerieFacturacion FAC_SERIEFACTURACION.TIPOSERIE%TYPE;
         v_ComprobarPoblacion NUMBER := 0;
-        
+
         CURSOR C_FacturacionProductos(
                 v_idInstitucion NUMBER,
                 v_idSerieFacturacion NUMBER,
@@ -1092,7 +961,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                             AND CUENTA.IDPERSONA = COMPRAS.IDPERSONA
                             AND CUENTA.IDCUENTA = COMPRAS.IDCUENTA
                             AND CUENTA.FECHABAJA IS NULL
-                    ) AS IDCUENTA,                    
+                    ) AS IDCUENTA,
                     (-- Solo tiene cuenta cuando no es de baja
                         SELECT COMPRAS.IDCUENTADEUDOR
                         FROM CEN_CUENTASBANCARIAS CUENTA
@@ -1103,7 +972,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                     ) AS IDCUENTADEUDOR,
                     PPS.ORDEN,
                     SUBSTR(PER.NIFCIF, 1, 9) AS DEUDOR_ID,
-                    PER.NOMBRE || ' ' ||PER.APELLIDOS1 || ' ' ||  PER.APELLIDOS2 AS DEUDOR_NOMBRE                    
+                    PER.NOMBRE || ' ' ||PER.APELLIDOS1 || ' ' ||  PER.APELLIDOS2 AS DEUDOR_NOMBRE
                 FROM PYS_COMPRA COMPRAS,
                     FAC_TIPOSPRODUINCLUENFACTU TIPOPROD,
                     PYS_PRODUCTOSSOLICITADOS PPS,
@@ -1114,9 +983,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                             SELECT 1
                             FROM TABLE(v_PoblacionSerieFacturacion) CLI
                             WHERE CLI.IDINSTITUCION = COMPRAS.IDINSTITUCION
-                                AND CLI.IDPERSONA = COMPRAS.IDPERSONA   
-                        ) 
-                    )                                                    
+                                AND CLI.IDPERSONA = COMPRAS.IDPERSONA
+                        )
+                    )
                     AND TIPOPROD.IDINSTITUCION = COMPRAS.IDINSTITUCION
                     AND TIPOPROD.IDTIPOPRODUCTO = COMPRAS.IDTIPOPRODUCTO
                     AND TIPOPROD.IDPRODUCTO = COMPRAS.IDPRODUCTO
@@ -1144,7 +1013,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
             CEN_CLIENTE CLIENTE
         WHERE  CLIENTE.IDINSTITUCION = PYS.IDINSTITUCION
             AND CLIENTE.IDPERSONA = NVL(PYS.IDPERSONADEUDOR, PYS.IDPERSONA)
-        ORDER BY PYS.IDPERSONA, PYS.IDCUENTA;
+        ORDER BY PYS.IDPERSONA, PYS.IDCUENTA, PYS.IDPETICION, PYS.ORDEN;
 
         CURSOR C_FacturacionServicios(
                 v_idInstitucion NUMBER,
@@ -1162,7 +1031,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                     SUSCRIP.IDTIPOSERVICIOS,
                     SUSCRIP.IDSERVICIO,
                     SUSCRIP.IDSERVICIOSINSTITUCION,
-                    SUSCRIP.IDSUSCRIPCION,                    
+                    SUSCRIP.IDSUSCRIPCION,
                     SUSCRIP.CANTIDAD,
                     SUSCRIP.FECHASUSCRIPCION,
                     SUSCRIP.FECHABAJAFACTURACION,
@@ -1170,8 +1039,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                     SERVICIO.DESCRIPCION,
                     SERVICIO.FACTURACIONPONDERADA AS FACTURACIONPROPORCIONAL,
                     SUBSTR(PER.NIFCIF, 1, 9) AS DEUDOR_ID,
-                    PER.NOMBRE || ' ' ||PER.APELLIDOS1 || ' ' ||  PER.APELLIDOS2 AS DEUDOR_NOMBRE,                    
-                    PSS.ORDEN,                                        
+                    PER.NOMBRE || ' ' ||PER.APELLIDOS1 || ' ' ||  PER.APELLIDOS2 AS DEUDOR_NOMBRE,
+                    PSS.ORDEN,
                     ( -- Solo tiene cuenta cuando no es de baja
                         SELECT SUSCRIP.IDCUENTA
                         FROM CEN_CUENTASBANCARIAS CUENTA
@@ -1179,7 +1048,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                             AND CUENTA.IDPERSONA = SUSCRIP.IDPERSONA
                             AND CUENTA.IDCUENTA = SUSCRIP.IDCUENTA
                             AND CUENTA.FECHABAJA IS NULL
-                    ) AS IDCUENTA                                                                                                    
+                    ) AS IDCUENTA
                 FROM PYS_SUSCRIPCION SUSCRIP,
                     FAC_TIPOSSERVINCLSENFACT TIPOSERV,
                     PYS_SERVICIOSINSTITUCION SERVICIO,
@@ -1191,9 +1060,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                             SELECT 1
                             FROM TABLE(v_PoblacionSerieFacturacion) CLI
                             WHERE CLI.IDINSTITUCION = SUSCRIP.IDINSTITUCION
-                                AND CLI.IDPERSONA = SUSCRIP.IDPERSONA   
-                        ) 
-                    )                      
+                                AND CLI.IDPERSONA = SUSCRIP.IDPERSONA
+                        )
+                    )
                     AND TIPOSERV.IDINSTITUCION = SUSCRIP.IDINSTITUCION
                     AND TIPOSERV.IDTIPOSERVICIOS = SUSCRIP.IDTIPOSERVICIOS
                     AND TIPOSERV.IDSERVICIO = SUSCRIP.IDSERVICIO
@@ -1256,26 +1125,26 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                 TIPOSERIE
             INTO V_OBSERVACIONESSF,
                 V_DATOSERROR,
-                v_TipoSerieFacturacion    
+                v_TipoSerieFacturacion
         FROM FAC_SERIEFACTURACION
         WHERE IDINSTITUCION = P_IDINSTITUCION
-            AND IDSERIEFACTURACION = P_IDSERIEFACTURACION;     
-        
+            AND IDSERIEFACTURACION = P_IDSERIEFACTURACION;
+
          -- Cuando idPeticion tiene valor es una facturacion rapida, y por lo tanto, ya se ha comprobado la poblacion al obtener las series de facturacion de la peticion
-         -- Cuando el tipo de la serie es generico, se considera que la serie de facturacion contiene a todo el censo como poblacion, y por lo tanto, no hay que comprobar la poblacion         
+         -- Cuando el tipo de la serie es generico, se considera que la serie de facturacion contiene a todo el censo como poblacion, y por lo tanto, no hay que comprobar la poblacion
         IF (P_IDPETICION IS NULL OR v_TipoSerieFacturacion <> 'G') THEN
             v_ComprobarPoblacion := 1;
-        
+
             -- Seleccionamos los clientes que se van a facturar
             V_DATOSERROR := 'CARGATABLASMEMORIA: Llamada al procedimiento OBTENCIONPOBLACIONCLIENTES (' || P_IDINSTITUCION || ', '|| P_IDSERIEFACTURACION || ')';
             M_PoblacionSerieFacturacion := OBTENCIONPOBLACIONCLIENTES(P_IDINSTITUCION, P_IDSERIEFACTURACION);
             IF (M_PoblacionSerieFacturacion IS NULL OR M_PoblacionSerieFacturacion.COUNT = 0) THEN
-                V_CODRETORNO:='-201';            
+                V_CODRETORNO:='-201';
                 RAISE E_ERROR;
             END IF;
-       END IF;            
+       END IF;
 
-        -- Tratamiento de las matrices 
+        -- Tratamiento de las matrices
         V_DATOSERROR := 'CARGATABLASMEMORIA: Borrado de las matrices';
         M_FACTURA.DELETE;
         M_LINEAFACTURA.DELETE;
@@ -1285,10 +1154,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
         IND_FACTURACIONSUSCRIPCION := 0;
 
         IF (V_FECHAINICIOPRODUCTOS IS NOT NULL AND V_FECHAFINPRODUCTOS IS NOT NULL) THEN -- Solo se obtienen compras cuando se ha introducido el periodo de los productos
-        
+
             V_DATOSERROR := 'CARGATABLASMEMORIA(Productos): Apertura del cursor de facturacion de productos';
             FOR V_FacturacionProductos IN C_FacturacionProductos(P_IDINSTITUCION, P_IDSERIEFACTURACION, P_IDPETICION, V_FECHAINICIOPRODUCTOS, V_FECHAFINPRODUCTOS, M_PoblacionSerieFacturacion, v_ComprobarPoblacion) LOOP
-                V_PRIMERAVEZ := 'S';                                
+                V_PRIMERAVEZ := 'S';
 
                 V_DATOSERROR := 'CARGATABLASMEMORIA(Productos): Paso la cuenta a NUMBER';
                 IF V_FacturacionProductos.IDCUENTA IS NULL THEN
@@ -1315,7 +1184,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                     WHERE IDINSTITUCION = P_IDINSTITUCION;
 
                     -- Indicamos que se va a tratar la primera linea de la factura
-                    V_PRIMERALINEAFACTURA := 'S';                
+                    V_PRIMERALINEAFACTURA := 'S';
 
                 ELSIF (NVL(V_FACT_IDCUENTA, -1) <> NVL(V_IDCUENTA, -1) -- Cambio de cuenta
                         OR V_IDPERSONA <> V_FacturacionProductos.IDPERSONA) THEN -- Cambio de cliente
@@ -1324,9 +1193,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                     V_IDFACTURA := V_IDFACTURA + 1;
 
                     -- Indicamos que se va a tratar la primera linea de la factura
-                    V_PRIMERALINEAFACTURA := 'S';                   
+                    V_PRIMERALINEAFACTURA := 'S';
                 END IF;
-                
+
                 V_DATOSERROR := 'CARGATABLASMEMORIA(Productos): Obtencion de un nuevo identificador de linea de factura';
                 IF V_PRIMERALINEAFACTURA = 'S' THEN
                     SELECT NVL(MAX(NUMEROLINEA), 0) + 1
@@ -1349,7 +1218,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                     AND P.IDTIPOPRODUCTO = V_FacturacionProductos.IDTIPOPRODUCTO
                     AND P.IDPRODUCTO = V_FacturacionProductos.IDPRODUCTO
                     AND P.IDPRODUCTOINSTITUCION = V_FacturacionProductos.IDPRODUCTOINSTITUCION;
-                
+
                 /*********************** MATRIZ DE LINEAS DE FACTURAS *************************/
                 V_DATOSERROR := 'CARGATABLASMEMORIA(Productos): Insercion en la matriz de Lineas de Facturas del producto';
                 IND_LINEAFACTURA := IND_LINEAFACTURA + 1;
@@ -1368,12 +1237,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                 M_LINEAFACTURA(IND_LINEAFACTURA).IVA := TO_NUMBER(TO_CHAR(V_VALOR_TIPOIVA, '990D00'));
                 M_LINEAFACTURA(IND_LINEAFACTURA).IDTIPOIVA := V_IDTIPOIVA;
                 M_LINEAFACTURA(IND_LINEAFACTURA).CTAPRODUCTOSERVICIO := V_CTACONTABLEP;
-                M_LINEAFACTURA(IND_LINEAFACTURA).CTAIVA := F_SIGA_GETPARAMETRO('FAC','CONTABILIDAD_IVA',P_IDINSTITUCION) || V_CTATIPOIVAP;         
+                M_LINEAFACTURA(IND_LINEAFACTURA).CTAIVA := F_SIGA_GETPARAMETRO('FAC','CONTABILIDAD_IVA',P_IDINSTITUCION) || V_CTATIPOIVAP;
 
                 /*********************** MATRIZ DE FACTURAS *************************/
                 /* Inserta los datos extraidos en la matriz de facturas solo si se han insertado datos en la matriz de lineas de facturas para esa factura */
                 V_DATOSERROR := 'CARGATABLASMEMORIA(Productos): Insercion en la matriz de Facturas de la factura '||V_IDFACTURA;
-                IF (V_PRIMERAFACTURA = 'S' 
+                IF (V_PRIMERAFACTURA = 'S'
                         OR NVL(V_IDCUENTA, -1) <> NVL(V_FACT_IDCUENTA, -1) -- Cambio de cuenta
                         OR V_IDPERSONA <> V_FacturacionProductos.IDPERSONA) THEN -- Cambio de cliente
 
@@ -1383,7 +1252,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                     M_FACTURA(IND_FACTURA).IDPERSONADEUDOR := V_FacturacionProductos.IDPERSONADEUDOR;
                     M_FACTURA(IND_FACTURA).IDFORMAPAGO := V_FacturacionProductos.IDFORMAPAGO;
                     M_FACTURA(IND_FACTURA).IDCUENTA:= V_FACT_IDCUENTA;
-                    M_FACTURA(IND_FACTURA).IDCUENTADEUDOR:= V_FACT_IDCUENTADEUDOR;                   
+                    M_FACTURA(IND_FACTURA).IDCUENTADEUDOR:= V_FACT_IDCUENTADEUDOR;
                     M_FACTURA(IND_FACTURA).OBSERVACIONES := V_OBSERVACIONESSF;
                     M_FACTURA(IND_FACTURA).CTACLIENTE := V_FacturacionProductos.ASIENTOCONTABLE;
                     M_FACTURA(IND_FACTURA).DEUDOR_ID := V_FacturacionProductos.DEUDOR_ID;
@@ -1408,18 +1277,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                 M_FACTURA(IND_FACTURA).IMPTOTALANTICIPADO := NVL(M_FACTURA(IND_FACTURA).IMPTOTALANTICIPADO,0) + M_LINEAFACTURA(IND_LINEAFACTURA).IMPORTEANTICIPADO;
                 M_FACTURA(IND_FACTURA).IMPTOTALPORPAGAR := M_FACTURA(IND_FACTURA).IMPTOTAL - M_FACTURA(IND_FACTURA).IMPTOTALANTICIPADO;
             END LOOP; -- FOR V_FacturacionProductos IN C_FacturacionProductos
-        END IF;            
-        
+        END IF;
+
         IF (V_FECHAINICIOSERVICIOS IS NOT NULL -- Solo se obtienen suscripciones cuando se ha introducido el periodo de los servicios
                 AND V_FECHAFINSERVICIOS IS NOT NULL -- Solo se obtienen suscripciones cuando se ha introducido el periodo de los servicios
                 AND P_IDPETICION IS NULL -- Cuando idPeticion no es nulo es facturacion rapida y no se facturan servicios
-            ) THEN                                             
-        
+            ) THEN
+
             V_DATOSERROR := 'CARGATABLASMEMORIA(Servicios): Apertura del cursor de facturacion de servicios';
             FOR V_FacturacionServicios IN C_FacturacionServicios(P_IDINSTITUCION, P_IDSERIEFACTURACION, V_FECHAINICIOSERVICIOS, V_FECHAFINSERVICIOS, M_PoblacionSerieFacturacion, v_ComprobarPoblacion) LOOP
-                V_PRIMERAVEZ := 'S';      
+                V_PRIMERAVEZ := 'S';
                 V_FECHAFINSERV := V_FECHAFINSERVICIOS; -- Copia la fecha final del servicio
-                IND_LINEAFACTURA_ANTERIOR := IND_LINEAFACTURA; -- Copia el indice que indica hasta donde llegaba el PYS anterior     
+                IND_LINEAFACTURA_ANTERIOR := IND_LINEAFACTURA; -- Copia el indice que indica hasta donde llegaba el PYS anterior
 
                 V_DATOSERROR := 'CARGATABLASMEMORIA(Servicios): Paso la cuenta a NUMBER';
                 IF V_FacturacionServicios.IDCUENTA IS NULL THEN
@@ -1438,7 +1307,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                     WHERE IDINSTITUCION = P_IDINSTITUCION;
 
                     -- Indicamos que se va a tratar la primera linea de la factura
-                    V_PRIMERALINEAFACTURA := 'S';           
+                    V_PRIMERALINEAFACTURA := 'S';
 
                 ELSIF (NVL(V_FACT_IDCUENTA, -1) <> NVL(V_IDCUENTA, -1) -- Cambio de cuenta
                         OR V_IDPERSONA <> V_FacturacionServicios.IDPERSONA -- Cambio de cliente
@@ -1448,7 +1317,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                     V_IDFACTURA := V_IDFACTURA + 1;
 
                     -- Indicamos que se va a tratar la primera linea de la factura
-                    V_PRIMERALINEAFACTURA := 'S';                     
+                    V_PRIMERALINEAFACTURA := 'S';
                 END IF;
 
                 V_DATOSERROR := 'CARGATABLASMEMORIA(Servicios): Obtencion de un nuevo identificador de la facturacion de suscripcion';
@@ -1470,10 +1339,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                 END IF;
 
                 /* Si la fecha de fin del servicio es posterior o igual a la fecha de baja, consideramos como fecha de fin del servicio el dia anterior de la fecha de baja.*/
-                V_DATOSERROR := 'CARGATABLASMEMORIA(Servicios): Obtencion de la fecha final del servicio';                
+                V_DATOSERROR := 'CARGATABLASMEMORIA(Servicios): Obtencion de la fecha final del servicio';
                 IF V_FECHAFINSERV > TRUNC(V_FacturacionServicios.FECHABAJAFACTURACION) THEN
                     V_FECHAFINSERV := TRUNC(V_FacturacionServicios.FECHABAJAFACTURACION);
-                END IF;           
+                END IF;
 
                 V_DATOSERROR := 'CARGATABLASMEMORIA(Servicios): Bucle para el calculo de los periodos del servicio';
                 LOOP
@@ -1516,7 +1385,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                         IF (V_FECHAFINALPERIODO > TRUNC(V_FacturacionServicios.FECHABAJAFACTURACION)) THEN
                             V_FECHAFINALPERIODO := TRUNC(V_FacturacionServicios.FECHABAJAFACTURACION);
                         END IF;
-                    END IF;                        
+                    END IF;
 
                     V_DATOSERROR := 'CARGATABLASMEMORIA(Servicios): Apertura del cursor de periodos intermedios facturados';
                     v_tienePeriodosIntermedios := FALSE;
@@ -1572,7 +1441,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                         V_DATOSERROR := 'CARGATABLASMEMORIA(PeriodosIntermedios): Actualizacion de la fecha inicial del periodo a incluir en la facturacion';
                         V_FECHAINICIAL := NVL(V_FECHAFIN, V_FECHAFINALPERIODO) + 1;
                     END LOOP;
-                    
+
                     IF (NOT v_tienePeriodosIntermedios) THEN -- Si no hay periodos intermedios facturados, incluimos el periodo completo
 
                         V_DATOSERROR := 'CARGATABLASMEMORIA(SinPeriodosIntermedios): Llamada al procedimiento INCLUIRPERIODO';
@@ -1632,7 +1501,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                             RAISE E_ERROR;
                         END IF;
 
-                        V_IDFACTURACIONSUSCRIPCION := V_IDFACTURACIONSUSCRIPCION + 1;                                                
+                        V_IDFACTURACIONSUSCRIPCION := V_IDFACTURACIONSUSCRIPCION + 1;
                     END IF;
 
                     V_DATOSERROR := 'CARGATABLASMEMORIA(Servicios): Inicializacion de la fecha para la que se va a calcular el periodo';
@@ -1642,16 +1511,16 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                     V_DATOSERROR := 'CARGATABLASMEMORIA(Servicios): Comprobacion de salida del bucle para el calculo de los periodos del servicio';
                     EXIT WHEN V_FECHAFINSERV < V_FECHA;
                 END LOOP;
-                
+
                 /*********************** MATRIZ DE FACTURAS *************************/
                 /* Inserta los datos extraidos en la matriz de facturas solo si se han insertado datos en la matriz de lineas de facturas para esa factura */
                 V_DATOSERROR := 'CARGATABLASMEMORIA(Servicios): Insercion en la matriz de Facturas de la factura '||V_IDFACTURA;
                 IF IND_LINEAFACTURA <> 0 AND M_LINEAFACTURA(IND_LINEAFACTURA).IDFACTURA = V_IDFACTURA THEN
                     IF (
-                            V_PRIMERAFACTURA = 'S' 
+                            V_PRIMERAFACTURA = 'S'
                             OR NVL(V_IDCUENTA, -1) <> NVL(V_FACT_IDCUENTA, -1) -- Cambio de cuenta
                             OR V_IDPERSONA <> V_FacturacionServicios.IDPERSONA -- Cambio de cliente
-                            OR v_CambioProductosServicios = TRUE) THEN -- Cambio de productos a servicios 
+                            OR v_CambioProductosServicios = TRUE) THEN -- Cambio de productos a servicios
 
                         IND_FACTURA := IND_FACTURA + 1;
                         M_FACTURA(IND_FACTURA).IDFACTURA := V_IDFACTURA;
@@ -1659,7 +1528,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                         M_FACTURA(IND_FACTURA).IDPERSONADEUDOR := NULL;
                         M_FACTURA(IND_FACTURA).IDFORMAPAGO := V_FacturacionServicios.IDFORMAPAGO;
                         M_FACTURA(IND_FACTURA).IDCUENTA:= V_FACT_IDCUENTA;
-                        M_FACTURA(IND_FACTURA).IDCUENTADEUDOR:= NULL;                      
+                        M_FACTURA(IND_FACTURA).IDCUENTADEUDOR:= NULL;
                         M_FACTURA(IND_FACTURA).OBSERVACIONES := V_OBSERVACIONESSF;
                         M_FACTURA(IND_FACTURA).CTACLIENTE := V_FacturacionServicios.ASIENTOCONTABLE;
                         M_FACTURA(IND_FACTURA).DEUDOR_ID := V_FacturacionServicios.DEUDOR_ID;
@@ -1679,7 +1548,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
 
                         -- Hay que hacer una redondeo por cada pys con su iva
                         v_iva := ROUND(M_LINEAFACTURA(ILF).CANTIDAD * M_LINEAFACTURA(ILF).PRECIOUNITARIO * M_LINEAFACTURA(ILF).IVA / 100, 2);
-                                                
+
                         -- Calcula los importes finales de la factura
                         M_FACTURA(IND_FACTURA).IMPTOTALNETO := NVL(M_FACTURA(IND_FACTURA).IMPTOTALNETO,0) + v_neto;
                         M_FACTURA(IND_FACTURA).IMPTOTALIVA := NVL(M_FACTURA(IND_FACTURA).IMPTOTALIVA,0) + v_iva;
@@ -1693,10 +1562,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                     V_IDFACTURA := V_IDFACTURA - 1;
 
                     -- Indicamos que se ya se ha tratado anteriormente la primera linea de la factura
-                    V_PRIMERALINEAFACTURA := 'N';               
+                    V_PRIMERALINEAFACTURA := 'N';
                 END IF;
             END LOOP; -- FOR V_FacturacionServicios IN C_FacturacionServicios
-        END IF;            
+        END IF;
 
         V_DATOSERROR := 'CARGATABLASMEMORIA: Actualizacion de los parametros de salida';
         P_CODRETORNO := TO_CHAR(0);
@@ -1780,7 +1649,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                        AND PYS_LINEAANTICIPO.NUMEROLINEA = FAC_LINEAFACTURA.NUMEROLINEA);
             IF (v_controlAnticipos > 0) THEN
                 V_CODRETORNO:='-202';
-                P_DATOSERROR := F_SIGA_GETRECURSO_ETIQUETA('facturacion.generarFacturacion.mensaje.errorServiciosAnticipados', p_Idioma);                
+                P_DATOSERROR := F_SIGA_GETRECURSO_ETIQUETA('facturacion.generarFacturacion.mensaje.errorServiciosAnticipados', p_Idioma);
                 RAISE E_ERROR;
             END IF;
         END IF;
@@ -1829,7 +1698,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
 
         P_DATOSERROR :=  'GENERACIONFACTURACION: Lectura de la matriz de facturas';
         FOR IND_F IN 1..IND_FACTURA LOOP
-        
+
             -- Nuevo control que garantiza que el importe de una factura nunca puede ser negativo
             IF (M_FACTURA(IND_FACTURA).IMPTOTAL < 0) THEN
                 V_CODRETORNO:='-203';
@@ -1837,9 +1706,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                                                 ' ' || M_FACTURA(IND_F).DEUDOR_NOMBRE ||
                                                 ' ' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.errorMandatos.mensajeIdentificacion', p_Idioma) ||
                                                 ' ' || M_FACTURA(IND_F).DEUDOR_ID;
-                RAISE E_ERROR;            
+                RAISE E_ERROR;
             END IF;
-        
+
             BEGIN
                 P_DATOSERROR :=  'GENERACIONFACTURACION: Insercion en FAC_FACTURA';
                 INSERT INTO FAC_FACTURA (
@@ -1902,6 +1771,29 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                     M_FACTURA(IND_F).CTACLIENTE,
                     7, -- EN REVISION
                     M_FACTURA(IND_F).IDMANDATO); -- 1: FacturaServicios; 2: FacturaProductos
+
+                   --CGP (06-10-2017): Añadimos histórico
+                    P_DATOSERROR :=  'GENERACIONFACTURACION: Insercion en el histórico FAC_HISTORICOFACTURA';
+                    INSERT INTO FAC_HISTORICOFACTURA (IDINSTITUCION,IDFACTURA, IDHISTORICO,FECHAMODIFICACION, USUMODIFICACION, IDTIPOACCION, IDFORMAPAGO,
+											  IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA,
+											  IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO, IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, ESTADO)
+										  SELECT IDINSTITUCION, IDFACTURA,SEQ_FAC_HISTORIAL.NEXTVAL,SYSDATE,USUMODIFICACION,1,IDFORMAPAGO,
+										  IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA,
+										  IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO,IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, ESTADO
+										  FROM FAC_FACTURA WHERE IDINSTITUCION=P_IDINSTITUCION AND IDFACTURA=M_FACTURA(IND_F).IDFACTURA;
+                      
+                      --CGP (15-11-2017): Añadimos histórico de anticipos 
+                      IF(M_FACTURA(IND_F).IMPTOTALANTICIPADO >0) THEN
+                           INSERT INTO FAC_HISTORICOFACTURA (IDINSTITUCION,IDFACTURA, IDHISTORICO,FECHAMODIFICACION, USUMODIFICACION, IDTIPOACCION, IDFORMAPAGO,
+      										 IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA,
+      										 IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO, IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, ESTADO)
+      										 SELECT IDINSTITUCION, IDFACTURA,SEQ_FAC_HISTORIAL.NEXTVAL,SYSDATE,USUMODIFICACION,3,IDFORMAPAGO,
+      										 IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA,
+      										 IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO,IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, 9
+      										 FROM FAC_FACTURA WHERE IDINSTITUCION=P_IDINSTITUCION AND IDFACTURA=M_FACTURA(IND_F).IDFACTURA;
+                      END IF;
+                      
+                    --CGP Fin
 
                     -- JPT (08-01-2014): Esta insercion puede fallar cuando no exista el mandato (ya que tiene una foreign)
                     EXCEPTION WHEN OTHERS THEN
@@ -2093,7 +1985,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
 
         -- Cursor de Facturas que se van a confirmar
         CURSOR C_FACTURAS IS
-            SELECT IDFACTURA, IDPERSONA, IMPTOTALPORPAGAR, IDCUENTA, FECHAEMISION
+            SELECT IDFACTURA, IDPERSONA, IMPTOTALPORPAGAR, IDCUENTA, FECHAEMISION,IDFORMAPAGO,IDPERSONADEUDOR,IDCUENTADEUDOR,IMPTOTALANTICIPADO,
+            IMPTOTALPAGADOPORCAJA,IMPTOTALPAGADOSOLOCAJA,IMPTOTALPAGADO,IMPTOTAL
             FROM FAC_FACTURA
             WHERE IDINSTITUCION = P_IDINSTITUCION
                 AND IDSERIEFACTURACION = P_IDSERIEFACTURACION
@@ -2168,13 +2061,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                 AND FAC_FORMAPAGOSERIE.IDFORMAPAGO = FAC_LINEAFACTURA.IDFORMAPAGO;
 
             BEGIN
-                IF (V_IMPORTE_POR_CAJA > 0) THEN
-                    V_DATOSERROR := 'CONFIRMACIONFACTURACION: Inserta los pagos por caja (pagos por caja automatico)';
-                    INSERT INTO FAC_PAGOSPORCAJA (IDINSTITUCION, IDFACTURA, IDPAGOPORCAJA, FECHA, CONTABILIZADO, FECHAMODIFICACION, USUMODIFICACION, IMPORTE, TARJETA)
-                    VALUES (P_IDINSTITUCION, V_FACTURAS.IDFACTURA, 1, V_FACTURAS.FECHAEMISION, 'N', SYSDATE, 0, V_IMPORTE_POR_CAJA, 'N');
-                END IF;
 
-                IF V_FACTURAS.IMPTOTALPORPAGAR <= NVL(V_IMPORTE_POR_CAJA,0) THEN
+                IF (V_IMPORTE_POR_CAJA > 0) THEN
+                    V_AUX_ESTADO := 9; -- PENDIENTE COBRO
+                ELSIF V_FACTURAS.IMPTOTALPORPAGAR <= NVL(V_IMPORTE_POR_CAJA,0) THEN
                     V_AUX_ESTADO := 1; -- LA FACTURA ESTA PAGADA
 
                 ELSIF (V_FACTURAS.IDCUENTA IS NOT NULL) THEN
@@ -2196,7 +2086,45 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
                     USUMODIFICACION = NVL(P_USUMODIFICACION, 1)
                 WHERE IDINSTITUCION = P_IDINSTITUCION
                     AND IDFACTURA = V_FACTURAS.IDFACTURA;
+                  -- CGP-INICIO (16/10/2017) pagos por caja, añadimos el estado y el histórico.
+                   P_DATOSERROR :=  'CONFIRMACIONFACTURACION: Insercion en el histórico FAC_HISTORICOFACTURA';
 
+                  INSERT INTO FAC_HISTORICOFACTURA (IDINSTITUCION,IDFACTURA, IDHISTORICO,FECHAMODIFICACION, USUMODIFICACION, IDTIPOACCION, IDFORMAPAGO,
+							    IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA,
+							    IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO, IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, ESTADO)
+						      SELECT IDINSTITUCION, IDFACTURA,SEQ_FAC_HISTORIAL.NEXTVAL,SYSDATE,USUMODIFICACION,2,IDFORMAPAGO,
+						      IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA,
+						      IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO,IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, ESTADO
+						      FROM FAC_FACTURA WHERE IDINSTITUCION=P_IDINSTITUCION AND IDFACTURA=V_FACTURAS.IDFACTURA;
+
+
+                  IF (V_IMPORTE_POR_CAJA > 0) THEN
+                    V_DATOSERROR := 'CONFIRMACIONFACTURACION: Inserta los pagos por caja (pagos por caja automatico)';
+                    INSERT INTO FAC_PAGOSPORCAJA (IDINSTITUCION, IDFACTURA, IDPAGOPORCAJA, FECHA, CONTABILIZADO, FECHAMODIFICACION, USUMODIFICACION, IMPORTE, TARJETA)
+                    VALUES (P_IDINSTITUCION, V_FACTURAS.IDFACTURA, 1, V_FACTURAS.FECHAEMISION, 'N', SYSDATE, 0, V_IMPORTE_POR_CAJA, 'N');
+
+                        IF V_FACTURAS.IMPTOTALPORPAGAR <= NVL(V_IMPORTE_POR_CAJA,0) THEN
+                           V_AUX_ESTADO := 1; -- LA FACTURA ESTA PAGADA
+                        ELSE
+                           V_AUX_ESTADO := 2; -- PENDIENTE PAGAR POR CAJA
+                      END IF;
+
+                       UPDATE FAC_FACTURA
+                       SET NUMEROFACTURA = V_NUMEROFACTURA,
+                       ESTADO = V_AUX_ESTADO
+                      WHERE IDINSTITUCION = P_IDINSTITUCION
+                          AND IDFACTURA = V_FACTURAS.IDFACTURA;
+
+                      INSERT INTO FAC_HISTORICOFACTURA (IDINSTITUCION,IDFACTURA, IDHISTORICO,FECHAMODIFICACION, USUMODIFICACION, IDTIPOACCION, IDFORMAPAGO,
+									    IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA,
+									    IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO, IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, ESTADO,IDPAGOPORCAJA)
+								      SELECT IDINSTITUCION, IDFACTURA,SEQ_FAC_HISTORIAL.NEXTVAL,SYSDATE,USUMODIFICACION,4,IDFORMAPAGO,
+								      IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA,
+								      IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO,IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, ESTADO,1
+								      FROM FAC_FACTURA WHERE IDINSTITUCION=P_IDINSTITUCION AND IDFACTURA=V_FACTURAS.IDFACTURA;
+
+                END IF;
+                       --CGP FIN
                 EXCEPTION
                     WHEN OTHERS THEN
                         V_CODRETORNO:='-205';
@@ -2369,7 +2297,20 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
       -- LA FACTURACION ESTA EN EJECUCION
       Raise e_Error2;
     End If;
-
+     -- CGP - R1709_0035
+     v_Datoserror := 'ELIMINARFACTURACION: Se elimina histórico de la factura institucion ' ||
+                    To_Char(p_Idinstitucion) || ', serie de facturacion ' ||
+                    To_Char(p_Idseriefacturacion) || ' y programacion ' ||
+                    To_Char(p_Idprogramacion);
+    DELETE FAC_HISTORICOFACTURA 
+           WHERE IDINSTITUCION=p_Idinstitucion 
+                 AND  Idfactura In
+                 (Select Idfactura
+                    From Fac_Factura
+                   Where Idinstitucion = p_Idinstitucion
+                     And Idseriefacturacion = p_Idseriefacturacion
+                     And Idprogramacion = p_Idprogramacion); 
+    -- CGP -FIN                               
     v_Datoserror := 'ELIMINARFACTURACION: Liberar Compra de la institucion ' ||
                     To_Char(p_Idinstitucion) || ', serie de facturacion ' ||
                     To_Char(p_Idseriefacturacion) || ' y programacion ' ||

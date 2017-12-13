@@ -34,6 +34,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.bea.common.security.xacml.IOException;
@@ -47,6 +48,7 @@ import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
+import com.siga.beans.FacHistoricoFacturaAdm;
 import com.siga.beans.FacPagosPorCajaAdm;
 import com.siga.beans.FacPagosPorCajaBean;
 import com.siga.facturacion.Facturacion;
@@ -312,6 +314,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 		try {
 			GestionarFacturaForm miForm = (GestionarFacturaForm) formulario;
 			FacPagosPorCajaAdm pagosAdm = new FacPagosPorCajaAdm(this.getUserBean(request));
+			FacHistoricoFacturaAdm historicoFacturaAdm = new FacHistoricoFacturaAdm (this.getUserBean(request));
 			FacPagosPorCajaBean pagoBean = new FacPagosPorCajaBean();
 			pagoBean.setContabilizado("N");
 			pagoBean.setFecha(miForm.getDatosPagosCajaFecha());
@@ -359,6 +362,18 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			        		if (facturaAdm.update(facturaBean)) {
 			        			// Vamos a modificar el valor de estado
 			        			facturaAdm.consultarActNuevoEstadoFactura(facturaBean, this.getUserName(request),true);
+			        			boolean resultado = Boolean.FALSE;
+			        			try{
+			        				
+			        				resultado=historicoFacturaAdm.insertarHistoricoFacParametros(String.valueOf(facturaBean.getIdInstitucion()),facturaBean.getIdFactura(),4,pagoBean.getIdPagoPorCaja(), 
+			        								null, null,null,null, null, null, null);
+
+			        				 if(!resultado){
+			        						ClsLogging.writeFileLog("### No se ha insertado en el histórico de la facturación ", 7);
+			        				 }
+			        			} catch (Exception e) {
+			        				ClsLogging.writeFileLogError("@@@ ERROR: No se ha insertado el histórico de la facturación",e,3);
+			        			}
 			        			t.commit();
 			        			
 			        		} else {

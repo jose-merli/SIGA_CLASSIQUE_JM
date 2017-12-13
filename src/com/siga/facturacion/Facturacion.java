@@ -23,8 +23,6 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.mail.MessagingException;
-import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
@@ -35,7 +33,6 @@ import org.redabogacia.sigaservices.app.AppConstants.MODULO;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
 import org.redabogacia.sigaservices.app.autogen.model.FacFactura;
-import org.redabogacia.sigaservices.app.autogen.model.FacSeriefacturacion;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
@@ -78,6 +75,8 @@ import com.siga.beans.FacFacturaIncluidaEnDisqueteBean;
 import com.siga.beans.FacFacturacionProgramadaAdm;
 import com.siga.beans.FacFacturacionProgramadaBean;
 import com.siga.beans.FacFicherosDescargaBean;
+import com.siga.beans.FacHistoricoFacturaAdm;
+import com.siga.beans.FacHistoricoFacturaBean;
 import com.siga.beans.FacLineaDevoluDisqBancoAdm;
 import com.siga.beans.FacLineaDevoluDisqBancoBean;
 import com.siga.beans.FacLineaFacturaAdm;
@@ -2134,7 +2133,7 @@ public class Facturacion {
 		boolean actualizarFacturaEnDisco = false;
 		int estadoFactura = facturaBean.getEstado().intValue();
 		FacFacturaAdm facturaAdm = new FacFacturaAdm (this.usrbean);
-		
+		FacHistoricoFacturaAdm historicoFacturaAdm = new FacHistoricoFacturaAdm (this.usrbean);
 		do {
 			if (estadoFactura == Integer.parseInt(ClsConstants.ESTADO_FACTURA_CAJA) ||
 				estadoFactura == Integer.parseInt(ClsConstants.ESTADO_FACTURA_BANCO) ||
@@ -2296,6 +2295,21 @@ public class Facturacion {
 			throw new ClsExceptions("Error al actualizar la factura renegociada: " + facturaAdm.getError());        
 		}
 		
+		// CGP (20/10/2017 - R1709_0035) -- Añadimos al histórico de facturas. --
+
+		boolean resultado = Boolean.FALSE;
+		try{
+			
+			resultado=historicoFacturaAdm.insertarHistoricoFacParametros(String.valueOf(facturaBean.getIdInstitucion()),facturaBean.getIdFactura(), 7,null, 
+							null, null,null,null, idNuevaRenegociacion, null, null);
+
+			 if(!resultado){
+					ClsLogging.writeFileLog("### No se ha insertado en el histórico de la facturación ", 7);
+			 }
+		} catch (Exception e) {
+			ClsLogging.writeFileLogError("@@@ ERROR: No se ha insertado el histórico de la facturación",e,3);
+		}
+		
 		return 0;
     }
     
@@ -2311,7 +2325,7 @@ public class Facturacion {
      */
 	public FacFacturaBean aplicarComisionAFactura (String institucion, FacLineaDevoluDisqBancoBean lineaDevolucion, String aplicaComisionesCliente, UsrBean userBean, String fechaDevolucion) throws Exception {
 		FacLineaDevoluDisqBancoAdm admLDDB= new FacLineaDevoluDisqBancoAdm(userBean);
-		
+		FacHistoricoFacturaAdm historicoFacturaAdm = new FacHistoricoFacturaAdm (userBean);
 		// Obtenemos la factura incluida en disquete		
 		Hashtable<String,Object> criteriosFactura = new Hashtable<String,Object>();
 		if(lineaDevolucion.getIdInstitucion()!= null)
@@ -2420,7 +2434,26 @@ public class Facturacion {
 			// JPT - Devoluciones 117 - Actualizo la factura actual			
 			if (!admFacFactura.update(beanFacFactura)) {
 				throw new ClsExceptions("Error porque no anula la factura de devoluciones actual");
-			}				
+			}
+			// CGP - (06/11/2017) INICIO Añadimos al histórico de la facturación
+	        
+	    	boolean resultado = Boolean.FALSE;
+			try{
+				resultado=historicoFacturaAdm.insertarHistoricoFacParametros(String.valueOf(beanFacFactura.getIdInstitucion()),beanFacFactura.getIdFactura(), 9,null, 
+						null, null,null,null, null, null, beanFacFactura.getIdFactura());
+				 if(!resultado){
+						ClsLogging.writeFileLog("### No se ha insertado en el histórico de la facturación ", 7);
+				 }
+			} catch (Exception e) {
+				ClsLogging.writeFileLogError("@@@ ERROR: No se ha insertado el histórico de la facturación",e,3);
+			}
+		
+	        // CGP (06/11/2017) FIN
+			try {
+		        //TODO: Si no se produce error regeneramos el pdf con la información de la factura
+		        	InformeFactura infFactura = new InformeFactura(userBean);
+		        	infFactura.generarPdfFacturaFirmada(null, beanFacFactura, Boolean.TRUE);
+    		}catch(Exception e){}
 			
 			// JPT - Devoluciones 117 - Indico la fecha de devolucion
 			beanFacFactura.setFechaEmision(fechaDevolucion);
@@ -2430,7 +2463,7 @@ public class Facturacion {
 			
 			// JPT - Devoluciones 117 - Pone en FAC_FACTURA.COMISIONIDFACTURA el identificador de la factura original  
 			beanFacFactura.setComisionIdFactura(beanFacFactura.getIdFactura());
-			
+			String idFacturaAnterior=beanFacFactura.getIdFactura();  //Necesitamos esta variable porque sino perdemos el valor de la factura anterior para el histórico
 			// JPT - Devoluciones 117 - Obtiene nuevo identificador de factura
 			String sNuevoIdFactura = admFacFactura.getNuevoID(beanFacFactura.getIdInstitucion().toString()).toString();
 			
@@ -2468,7 +2501,30 @@ public class Facturacion {
 			// JPT - Devoluciones 117 - Inserta la nueva factura
 			if (!admFacFactura.insert(beanFacFactura)) {
 				throw new ClsExceptions("Error porque no inserta la nueva factura con la comisión");
-			}						
+			}			
+			// CGP - (06/11/2017) INICIO Añadimos al histórico de la facturación
+	        // Rellenamos los datos para insercción EMISIÓN Y CONFIRMACIÓN
+	        FacHistoricoFacturaBean facHistoricoFacturaDevuelta;
+	        facHistoricoFacturaDevuelta = Facturacion.rellenarHistoricoFactura(beanFacFactura,userBean);
+			facHistoricoFacturaDevuelta.setEstado(7);
+			facHistoricoFacturaDevuelta.setIdTipoAccion(1);
+			facHistoricoFacturaDevuelta.setComisionIdFactura(idFacturaAnterior);
+	      //Insertamos en el histórico.
+			boolean resultadoFacturaDevuelta = Boolean.FALSE;
+			try{
+				resultadoFacturaDevuelta= historicoFacturaAdm.insertarHistoricoFacturacion(facHistoricoFacturaDevuelta);
+				 //Ponemos la información de la confirmación	
+				 facHistoricoFacturaDevuelta.setEstado(9);
+					facHistoricoFacturaDevuelta.setIdTipoAccion(2);
+				resultadoFacturaDevuelta= historicoFacturaAdm.insertarHistoricoFacturacion(facHistoricoFacturaDevuelta);
+				 if(!resultadoFacturaDevuelta){
+						ClsLogging.writeFileLog("### No se ha insertado en el histórico de la facturación ", 7);
+				 }
+			} catch (Exception e) {
+				ClsLogging.writeFileLogError("@@@ ERROR: No se ha insertado el histórico de la facturación",e,3);
+			}
+		
+	        // CGP (06/11/2017) FIN
 				
 			// JPT - Devoluciones 117 - Obtenemos las lineas de la factura
 			FacLineaFacturaAdm admLineaFactura = new FacLineaFacturaAdm(userBean);
@@ -3020,9 +3076,11 @@ public class Facturacion {
 
 			    // FACTURACION RAPIDA DESDE SERIE CANDIDATA (GENERACION)
 	        	FacFacturacionProgramadaBean programacion = this.procesarFacturacionRapidaCompras(beanPeticionCompraSuscripcion, vCompras, beanSerieCandidata);
-
+	       
+	        	
 	        	// CONFIRMACION RAPIDA (en este caso la transacción se gestiona dentro la transaccion)
 			    this.confirmarProgramacionFactura(programacion, request, false, null, false, false, 0, true);
+			  	
 			    
 			    if (idSolicitudCertificado!=null) { // CERTIFICADO
 			    	
@@ -3149,5 +3207,48 @@ public class Facturacion {
 			else
 				throw e; 
 		}			
+	}
+	
+	public static FacHistoricoFacturaBean rellenarHistoricoFactura(FacFacturaBean facturaBean, UsrBean usr){
+		FacHistoricoFacturaBean facHistoricofactura = new FacHistoricoFacturaBean();
+		
+		if(facturaBean.getIdInstitucion() != null)
+			facHistoricofactura.setIdInstitucion(facturaBean.getIdInstitucion());
+
+		if(facturaBean.getIdFactura() != null)
+			facHistoricofactura.setIdFactura(facturaBean.getIdFactura());
+
+		facHistoricofactura.setFechaModificacion("SYSDATE");
+		facHistoricofactura.setUsuModificacion(Integer.valueOf(usr.getUserName()));
+		
+		
+		if(facturaBean.getIdFormaPago() != null)
+			facHistoricofactura.setIdFormaPago(Integer.valueOf(facturaBean.getIdFormaPago()));
+		if(facturaBean.getIdPersona() != null)
+			facHistoricofactura.setIdPersona(facturaBean.getIdPersona().intValue());
+		if(facturaBean.getIdCuenta() != null)
+			facHistoricofactura.setIdCuenta(facturaBean.getIdCuenta());
+		if(facturaBean.getIdPersonaDeudor() != null)
+			facHistoricofactura.setIdPersonaDeudor(facturaBean.getIdPersonaDeudor().intValue());
+		if(facturaBean.getIdCuentaDeudor() != null)
+			facHistoricofactura.setIdCuentaDeudor(facturaBean.getIdCuentaDeudor());
+		if(facturaBean.getImpTotalAnticipado() != null)
+			facHistoricofactura.setImpTotalAnticipado(facturaBean.getImpTotalAnticipado());
+		if(facturaBean.getImpTotalPagadoPorCaja() != null)
+			facHistoricofactura.setImpTotalPagadoPorCaja(facturaBean.getImpTotalPagadoPorCaja());
+		if(facturaBean.getImpTotalPagadoSoloCaja() != null)	
+			facHistoricofactura.setImpTotalPagadoSoloCaja(facturaBean.getImpTotalPagadoSoloCaja());
+		if(facturaBean.getImpTotalPagadoSoloTarjeta() != null)	
+			facHistoricofactura.setImpTotalPagadoSoloTarjeta(facturaBean.getImpTotalPagadoSoloTarjeta());
+		if(facturaBean.getImpTotalPagadoPorBanco() != null)	
+			facHistoricofactura.setImpTotalPagadoPorBanco(facturaBean.getImpTotalPagadoPorBanco());
+		if(facturaBean.getImpTotalPagado() != null)	
+			facHistoricofactura.setImpTotalPagado(facturaBean.getImpTotalPagado());
+		if(facturaBean.getImpTotalPorPagar() != null)	
+			facHistoricofactura.setImpTotalPorPagar(facturaBean.getImpTotalPorPagar());
+		if(facturaBean.getImpTotalCompensado() != null)	
+			facHistoricofactura.setImpTotalCompensado(facturaBean.getImpTotalCompensado());
+	    
+		return facHistoricofactura;
 	}
 }

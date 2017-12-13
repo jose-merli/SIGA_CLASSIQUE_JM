@@ -317,6 +317,7 @@ public class GenerarAbonosAction extends MasterAction {
 		FacLineaAbonoAdm admLineaAbono=new FacLineaAbonoAdm(usr);
 		FacPagosPorCajaAdm admPagosPorCaja = new FacPagosPorCajaAdm(usr);
 		FacPagoAbonoEfectivoAdm admPagoAbonoefectivo = new FacPagoAbonoEfectivoAdm(usr);
+		FacHistoricoFacturaAdm historicoFacturaAdm = new FacHistoricoFacturaAdm (usr);
 		FacFacturaAdm facturaAdm = new FacFacturaAdm(usr);
 		// Comienzo control de transacciones
 		tx = usr.getTransaction(); 			
@@ -440,7 +441,18 @@ public class GenerarAbonosAction extends MasterAction {
 			        throw new ClsExceptions("No se ha encontrado la factura buscada: "+idInstitucion+ " "+abonoBean.getIdFactura());
 			    }
 			}	
+			//CGP - R1709_0035 Borramos del histórico los registros con el abono relacionado.
+			boolean resultado = Boolean.FALSE;
+			try{
+				 resultado=historicoFacturaAdm.borrarHistoricoFacturas (idInstitucion,null,Integer.valueOf(idAbono),null);
 
+				 if(!resultado){
+						ClsLogging.writeFileLog("### No se ha borrado el histórico de la factura ", 7);
+				 }
+				 
+			} catch (Exception e) {
+				ClsLogging.writeFileLogError("@@@ ERROR: No se ha borrado el histórico de la factura",e,3);
+			}
 			htRegistro.remove(FacPagosPorCajaBean.C_TIPOAPUNTE);
 			String clavesPagoAbonoEfectivo[]= new String[]{FacPagoAbonoEfectivoBean.C_IDINSTITUCION,FacPagoAbonoEfectivoBean.C_IDABONO};
 			correcto = admPagoAbonoefectivo.deleteDirect(htRegistro, clavesPagoAbonoEfectivo);
