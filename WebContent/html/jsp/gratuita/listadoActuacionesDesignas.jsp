@@ -187,7 +187,7 @@
 		{	
 			document.movimientosVarios.modo.value="nuevo";
 			document.movimientosVarios.target="submitArea";
-			document.movimientosVarios.nactuacion.value=jQuery("#oculto"+fila+"_1").val(); 
+			document.movimientosVarios.nactuacion.value=jQuery("#ocultoHidden"+fila+"_1").val(); 
 			var resultado=ventaModalGeneral(document.movimientosVarios.name,"M");
 			//if (resultado=="MODIFICADO")buscar2();
 		}
