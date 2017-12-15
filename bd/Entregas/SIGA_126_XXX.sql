@@ -431,3 +431,17 @@ alter table SCS_GRUPOGUARDIACOLEGIADO_HIST
 --126_014: Ejecutados en Integracion por AAG el 11/12/2017 a las 12:30
 
   coger PKG_SIGA_FACTURACION 
+
+  alter table ENV_LISTACORREOS modify nombre VARCHAR2(130);
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.grupos.confirmar.listacorreo', '¿Desea crear una lista de correo cuyos destinatarios sean las personas que pertenezcan a este grupo fijo? Pulse ACEPTAR para crear el grupo fijo y la lista de correo y CANCELAR para crear únicamente el grupo fijo.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.grupos.confirmar.listacorreo', '¿Desea crear una lista de correo cuyos destinatarios sean las personas que pertenezcan a este grupo fijo? Pulse ACEPTAR para crear el grupo fijo y la lista de correo y CANCELAR para crear únicamente el grupo fijo.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.grupos.confirmar.listacorreo', '¿Desea crear una lista de correo cuyos destinatarios sean las personas que pertenezcan a este grupo fijo? Pulse ACEPTAR para crear el grupo fijo y la lista de correo y CANCELAR para crear únicamente el grupo fijo.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.grupos.confirmar.listacorreo', '¿Desea crear una lista de correo cuyos destinatarios sean las personas que pertenezcan a este grupo fijo? Pulse ACEPTAR para crear el grupo fijo y la lista de correo y CANCELAR para crear únicamente el grupo fijo.#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.listacorreo.descripcion.automatica', 'Lista de correo creada automáticamente al crear el grupo fijo', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.listacorreo.descripcion.automatica', 'Lista de correo creada automáticamente al crear el grupo fijo#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.listacorreo.descripcion.automatica', 'Lista de correo creada automáticamente al crear el grupo fijo#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.listacorreo.descripcion.automatica', 'Lista de correo creada automáticamente al crear el grupo fijo#GL', 0, '4', sysdate, 0, '19');
+
+  

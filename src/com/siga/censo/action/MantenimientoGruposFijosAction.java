@@ -41,6 +41,7 @@ import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import org.redabogacia.sigaservices.app.vo.cen.CenGruposFicherosVo;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
@@ -308,67 +309,30 @@ public class MantenimientoGruposFijosAction extends MasterAction {
 	 * @see com.siga.general.MasterAction#insertar(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		UserTransaction tx = null;
+		
 
 		try {
-			tx = this.getUserBean(request).getTransaction();
+			
 			MantenimientoGruposFijosForm miForm = (MantenimientoGruposFijosForm) formulario;
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 
 			CenGruposClienteBean beanGrupos = new CenGruposClienteBean();
 			CenGruposClienteAdm gruposFijosAdm = new CenGruposClienteAdm(this.getUserBean(request));
-
-			String idInstitucion = user.getLocation();
-			String nombre = miForm.getNombre();
-
-			beanGrupos.setIdInstitucion(new Integer(idInstitucion));
-
-			String nombreTabla = CenGruposClienteBean.T_NOMBRETABLA;
-			String nombreCampoDescripcion = CenGruposClienteBean.C_NOMBRE;
-
-			Integer pkRecursoGrupo = gruposFijosAdm.getNuevoIdGrupo(user.getLocation());
-			beanGrupos.setIdGrupo(pkRecursoGrupo);
-			String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(nombreTabla, nombreCampoDescripcion, new Integer(idInstitucion), pkRecursoGrupo.toString());
-			if (idRecurso == null)
-				throw new SIGAException("error.messages.sinConfiguracionMultiIdioma");
-			beanGrupos.setNombre(idRecurso.toString());
-
-			Hashtable htPkTabl = new Hashtable();
-			htPkTabl.put(CenGruposClienteBean.C_IDGRUPO, pkRecursoGrupo);
-			Hashtable htSignos = new Hashtable();
-			htSignos.put(CenGruposClienteBean.C_IDGRUPO, "<>");
-
-			boolean isClaveUnicaMultiIdioma = UtilidadesBDAdm.isClaveUnicaMultiIdioma(idInstitucion, nombre, nombreCampoDescripcion, htPkTabl, htSignos, nombreTabla, 4, user.getLanguage());
-
-			if (isClaveUnicaMultiIdioma) {
-				tx.begin();
-
-				String idRecursoAlias = GenRecursosCatalogosAdm.getNombreIdRecursoAlias(nombreTabla, nombreCampoDescripcion, new Integer(idInstitucion), pkRecursoGrupo.toString());
-				GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm(this.getUserBean(request));
-				GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean();
-				recCatalogoBean.setCampoTabla(nombreCampoDescripcion);
-				recCatalogoBean.setDescripcion(nombre);
-				recCatalogoBean.setIdInstitucion(this.getIDInstitucion(request));
-				recCatalogoBean.setIdRecurso(idRecurso);
-				recCatalogoBean.setIdRecursoAlias(idRecursoAlias);
-				recCatalogoBean.setNombreTabla(nombreTabla);
-				if (!admRecCatalogos.insert(recCatalogoBean, user.getLanguageInstitucion()))
-					throw new SIGAException("messages.inserted.error");
-
-				gruposFijosAdm.insert(beanGrupos);
-				tx.commit();
-
-			} else {
-				throw new SIGAException("gratuita.mantenimientoTablasMaestra.mensaje.grupoFijoDuplicado");
-			}
-
+			beanGrupos.setIdInstitucion(new Integer(user.getLocation()));
+			beanGrupos.setNombre(miForm.getNombre());
+			String crearListaCorreoGrupoFijo = "0";
+			if(miForm.getCrearListaCorreoGrupoFijo()!=null && !miForm.getCrearListaCorreoGrupoFijo().equals(""))
+				crearListaCorreoGrupoFijo = miForm.getCrearListaCorreoGrupoFijo();
+			gruposFijosAdm.insertar(beanGrupos,crearListaCorreoGrupoFijo.equalsIgnoreCase(ClsConstants.DB_TRUE)); 
 			Hashtable<String, Object> hashGrupos = new Hashtable<String, Object>();
 			hashGrupos.put(CenGruposClienteBean.C_IDGRUPO, beanGrupos.getIdGrupo().toString());
 			hashGrupos.put(CenGruposClienteBean.C_IDINSTITUCION, beanGrupos.getIdInstitucion().toString());
 			request.getSession().setAttribute("DATABACKUP", hashGrupos);
 			request.setAttribute("modo", "editar");
+		}catch (BusinessException e) {
+			throw new SIGAException(e.getMessage());
 		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, tx);
+			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
 		
 		return exitoRefresco("messages.inserted.success", request);
