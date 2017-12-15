@@ -444,4 +444,5 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.listacorreo.descripcion.automatica', 'Lista de correo creada automáticamente al crear el grupo fijo#EU', 0, '3', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.listacorreo.descripcion.automatica', 'Lista de correo creada automáticamente al crear el grupo fijo#GL', 0, '4', sysdate, 0, '19');
 
-  
+--126_015: Ejecutados en Integracion por AAG el 15/12/2017 a las 14:45
+
