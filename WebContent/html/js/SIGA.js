@@ -5243,13 +5243,6 @@ function validarNombreApellido(nombre){
 }
 
 function validarDenominacion(nombre){
- //  for(i=0; i<nombre.length; i++){
-	//  var letrasValidar =  letras+"."; 
-      //if (letrasValidar.indexOf(nombre.charAt(i))==-1){
-       //  return false;
-     // }
-   //}
- 
    return true;
 }
 
