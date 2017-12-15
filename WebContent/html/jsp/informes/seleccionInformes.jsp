@@ -164,15 +164,17 @@
 		
 			<table>
 				<tr>
-					<td width="25%"> </td>
-					<td width="75%"> </td>
+					<td width="25%"></td>
+					<td width="25%"></td>
+					<td width="10%"></td>
+					<td width="40%"></td>
 				</tr>
 				
 				<tr>
 					<td class="labelText">
 						<siga:Idioma key="informes.genericos.comunicacion" />
 					</td>
-					<td class="labelTextValor">
+					<td class="labelTextValor" colspan="3">
 						<html:text name="DefinirEnviosForm" property="nombre" value="${asunto}" size="50" maxlength="50" styleClass="box" />
 					</td>
 				</tr>
@@ -184,6 +186,12 @@
 					<td class="labelTextValor">
 						<siga:Fecha nombreCampo="fechaProgramada" valorInicial="${fecha}" posicionX="30"  posicionY="30"></siga:Fecha>
 					</td>
+					<td class="labelText">
+						<html:text name="DefinirEnviosForm" property="horas" size="2" maxlength="2" styleClass="box"  value="${horas}" style="text-align:center"/>&nbsp;:&nbsp;<html:text name="DefinirEnviosForm" property="minutos"  size="2" maxlength="2" styleClass="box" value="${minutos}" style="text-align:center"/>
+					</td>
+					<td>&nbsp;</td>
+					
+					
 				</tr>
 			</table>
 		</html:form>
@@ -372,7 +380,30 @@
 	function accionCerrar() {			
 		window.top.close();
 	}
-
+	
+	function isHora (o) {
+		var horas = trim(o.value);
+		if (horas.length==1) {
+			o.value = "0" + horas;
+		}
+		if (horas!="" && (horas>23 || horas<0 || !isNumero(horas))) {
+			return false;
+		}
+		return true;
+	}
+	
+	function isMinuto (o) {
+		var minutos = trim(o.value);
+		if (minutos.length==1) {
+			o.value = "0" + minutos;
+		}
+		
+		if (minutos!="" && (minutos>59 || minutos<0 || !isNumero(minutos) )) {
+			return false;
+		}
+		return true;
+	}
+	
 	function accionEnviar() {
 		sub();
 		var oCheck = document.getElementsByName("chkPL");
@@ -390,6 +421,16 @@
 		
 		if (DefinirEnviosForm.fechaProgramada.value == "") {   			
 			error += "<siga:Idioma key='envios.definir.literal.fechaprogramada'/> <siga:Idioma key='messages.campoObligatorio.error'/>\n";
+		}		
+		if (DefinirEnviosForm.horas.value == "" ) {   			
+			error += "<siga:Idioma key='envios.definir.literal.horas'/> <siga:Idioma key='messages.campoObligatorio.error'/>\n";
+		}else if (!isHora(DefinirEnviosForm.horas)) {
+			error += "<siga:Idioma key='messages.programarFacturacionForm.mensajeHoras'/>\n";
+		}		
+		if (DefinirEnviosForm.minutos.value == "") {   			
+			error += "<siga:Idioma key='envios.definir.literal.minutos'/> <siga:Idioma key='messages.campoObligatorio.error'/>\n";
+		}else if (!isMinuto(DefinirEnviosForm.minutos)) {
+			error += "<siga:Idioma key='messages.programarFacturacionForm.mensajeMinutos'/>\n";
 		}		
 		
 		for (i = 0; i < oCheck.length; i++) {

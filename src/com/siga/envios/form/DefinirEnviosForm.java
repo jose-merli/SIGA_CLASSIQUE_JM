@@ -42,9 +42,23 @@ public class DefinirEnviosForm extends MasterForm
 	private String origen;
 	private String conArchivados;
 	private String comunicacionAsunto;
+	private String horas;
+	private String minutos;
 	
 	
 
+	public String getHoras() {
+		return horas;
+	}
+	public void setHoras(String horas) {
+		this.horas = horas;
+	}
+	public String getMinutos() {
+		return minutos;
+	}
+	public void setMinutos(String minutos) {
+		this.minutos = minutos;
+	}
 	List<EnvPlantillasEnviosBean> plantillasEnvio;
 	// GETTERS
 	public String getTipoFecha() { return tipoFecha; }
