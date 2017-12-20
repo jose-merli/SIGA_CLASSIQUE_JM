@@ -147,39 +147,22 @@
 							break;
 						}				
 					}		
-
-					var lista_cole_1 = document.createElement('select'); 
+					
+					
 					var miArray  =new Array(); 
 					miArray =<%=colegios%>; 	
-					
-					var obj = window.parent.document.getElementById("clienteIdInstitucion");
-					elemens = obj.options.length;
-
-					for (var i=0; i<elemens; i++) { 						
-						if(obj.options[i] != null && miArray.indexOf(obj.options[i].value)){
-							lista_cole_1.appendChild(obj.options[i]);
-						}
-					} 
-					
-					// Borro los valores
-					var obj2 = window.parent.document.getElementById("clienteIdInstitucion");
-					elemens2 = obj.options.length;					
-					for (var i=0; i<elemens2; i++) { 
-						obj2.removeChild(obj2.firstChild); 
-					} 
-										
-					elemens3 = lista_cole_1.options.length;					
-					for (var j=0; j<elemens3; j++) {
-						obj.appendChild(lista_cole_1.options[0]); 
-					} 					
-					
-					lista_cole_2 = lista_cole_1;					
-					for (i = 0; i < lista_cole_2.length; i++) {
-						if (lista_cole_2.options[i].value == idinstitucion ) {
-							lista_cole_2.options[i].selected = true;
-							break;
-						}
-					}
+					var sel = window.parent.document.getElementById("clienteIdInstitucion");
+					len = sel.options.length;
+				    for (var i=len; i; i--) {
+				        par = sel.options[i-1].parentNode;
+				        if(!miArray.indexOf(sel.options[i-1].value)){
+				        	par.removeChild( sel.options[i-1] );
+				        }else{
+				        	if (sel.options[i-1].value == idinstitucion ) {
+				        		sel.options[i-1].selected = true;
+							}
+				        }
+				    }
 					
 					window.parent.document.getElementById("numColegiado").value=ncolegiado;
 					window.parent.document.getElementById("colegiadoabogacia").style.display="block";
