@@ -446,3 +446,5 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 
 --126_015: Ejecutados en Integracion por AAG el 15/12/2017 a las 14:45
 
+Pkg_Siga_Retenciones_Sjcs
+
