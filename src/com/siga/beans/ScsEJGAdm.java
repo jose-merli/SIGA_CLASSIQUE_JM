@@ -1586,8 +1586,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += " AND P.IDPETICION >=1586644 ";//eSTO LO PONEMOS YA QUE EN ESE REGISTRO ES DONDE HA EMPEZADO A FUNCIONAR LOS DATOS COMPLETOS
 			consulta += " AND X.XML IS NOT NULL )";
 			
-			//Sacamos los  ejgs que hyan sido remitikdos a comision perro que no tienen un estado posterio devueltio al colegio
-			consulta += " AND "+ESTADOS_EJG.DEVUELTO_AL_COLEGIO.getCodigo()+" <> ";
+			//Sacamos los  ejgs que hyan sido remitidos a comision perro que no tienen un estado posterior devuelto al colegio
+			consulta += " AND "+ESTADOS_EJG.DEVUELTO_AL_COLEGIO.getCodigo()+" = ";
 			consulta += " (SELECT DISTINCT FIRST_VALUE(EST.IDESTADOEJG) OVER(ORDER BY EST.FECHAINICIO DESC, EST.IDESTADOPOREJG DESC) ";
 			consulta += " FROM SCS_ESTADOEJG EST ";
 			consulta += " WHERE EST.IDINSTITUCION = EJG.IDINSTITUCION ";
