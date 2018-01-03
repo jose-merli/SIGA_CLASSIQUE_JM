@@ -308,8 +308,15 @@ VERSIONES: -->
 						data: "iban="+iban,
 						dataType: "json",
 						contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-						success: function(json){	
-							if(json!=null && json.pais != null){
+						success: function(json){
+							
+							if(json.error!=null && json.error!=""){
+								document.getElementById("BIC").value="";
+								document.getElementById("banco").value="";
+								document.getElementById("BIC").readOnly = true;
+								document.getElementById("BIC").className = "boxConsulta";
+								alert(json.error,'error');
+							}else if(json!=null && json.pais != null){
 								if(json.pais == "ES"){
 									//Se comprueba si el banco existe
 									if(json.banco != null){
@@ -379,7 +386,9 @@ VERSIONES: -->
 					dataType: "json",
 					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 					success: function(json){	
-						if(json.banco!=null && json.banco!=""){
+						if(json.error!=null && json.error!=""){
+							alert(json.error,'error');
+						}else	if(json.banco!=null && json.banco!=""){
 							document.getElementById("BIC").value=json.banco.bic;
 							document.getElementById("banco").value=json.banco.nombre;
 						}

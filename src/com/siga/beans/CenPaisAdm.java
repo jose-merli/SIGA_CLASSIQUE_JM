@@ -9,6 +9,8 @@ package com.siga.beans;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -16,6 +18,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 
 /**
@@ -232,7 +235,7 @@ public class CenPaisAdm extends MasterBeanAdministrador {
 		return sepa;
 	}
 
-	public boolean isLongitudCorrectaIBAN(String codPais, int longitud) throws ClsExceptions{
+	public boolean isLongitudCorrectaIBAN(String codPais, int longitud) throws SIGAException{
 		boolean correcto = false;
 		RowsContainer rc = null;
 		
@@ -242,13 +245,29 @@ public class CenPaisAdm extends MasterBeanAdministrador {
 			sql += "  WHERE COD_ISO = '" + codPais+"'";
 			if (rc.query(sql)) {
 				Row fila = (Row) rc.get(0);
-				if(fila.getValue("LONGITUDCUENTABANCARIA")!= null && Integer.valueOf((String) fila.getValue("LONGITUDCUENTABANCARIA"))== longitud){
+				if(fila.getValue("LONGITUDCUENTABANCARIA")== null || fila.getString("LONGITUDCUENTABANCARIA").equalsIgnoreCase(""))
 					correcto = true;
+				else{
+					if(fila.getValue("LONGITUDCUENTABANCARIA")!= null && !fila.getString("LONGITUDCUENTABANCARIA").equalsIgnoreCase("")&& Integer.valueOf((String) fila.getValue("LONGITUDCUENTABANCARIA"))== longitud){
+					
+						correcto = true;
+					}else{
+						String error = UtilidadesString.getMensajeIdioma(this.usrbean,"errors.minlength",new String[]{"factSJCS.abonos.configuracion.literal.cuentas",fila.getString("LONGITUDCUENTABANCARIA")});
+						throw new SIGAException(error);
+					}
+					
 				}
+					
+			}else{
+				String error = UtilidadesString.getMensajeIdioma(this.usrbean,"errors.invalid",new String[]{"censo.alterMutua.literal.paisCuentaBancaria"})+" "+codPais;
+				throw new SIGAException(error);
 			}
-		} 
+		}
+		catch (SIGAException e) { 	
+			throw e; 
+		}
 		catch (Exception e) { 	
-			throw new ClsExceptions (e, "Error al ejecutar el metodo lonigitudCorrectaIBAN()"); 
+			throw new SIGAException ("Error al ejecutar el metodo lonigitudCorrectaIBAN",e); 
 		}		
 		
 		return correcto;
