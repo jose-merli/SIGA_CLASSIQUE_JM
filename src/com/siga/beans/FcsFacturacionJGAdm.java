@@ -1293,7 +1293,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 			linea += formatea(valor.get(1),13,true); //161-173: entera
 			linea += formatea(valor.get(2),2,true); //174-175: decimal
 			
-			linea += rellenoPosiciones(" ",176,487); //176-487: relleno
+			linea += rellenoPosiciones(" ",176,225); //176-225: correo electronico de contacto (ahora mismo no lo tenemos, pero en el cambio de 2017 dejaron este hueco que se puede usar)
+			linea += rellenoPosiciones(" ",226,487); //226-487: relleno
 			linea += rellenoPosiciones(" ",488,500); //488-500: sello electronico
 			
 			// escribo
@@ -1378,16 +1379,14 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 					linea += rellenoPosiciones("0",251,253); //251-253: nº de hijos
 					linea += "0"; //254: prestamo vivienda
 					
-					//255-294: percepciones derivadas de incapacidad laboral (no aplican)
-					linea += " "; //255: Signo de la percepcion integra/valoracion derivada de incapacidad laboral
-					linea += rellenoPosiciones("0",256,266); //256-266: Parte entera del importe de la percepcion integra
-					linea += rellenoPosiciones("0",267,268); //267-268: Parte decimal del importe de la percepcion integra
-					linea += rellenoPosiciones("0",269,279); //269-279: Parte entera del importe de las retenciones practicadas
-					linea += rellenoPosiciones("0",280,281); //280-281: Parte decimal del importe de las retenciones practicadas
-					linea += rellenoPosiciones("0",282,292); //282-292: Parte entera del importe de los ingresos a cuenta repercutidos
-					linea += rellenoPosiciones("0",293,294); //293-294: Parte decimal del importe de los ingresos a cuenta repercutidos
+					//255-281: percepciones dinerarias derivadas de incapacidad laboral (no aplican)
+					linea += " "; //255: Signo de las percepciones dinerarias derivadas de incapacidad laboral
+					linea += rellenoPosiciones("0",256,281); //256-281: importe de las percepciones dinerarias derivadas de incapacidad laboral
+					//282-321: percepciones en especie derivadas de incapacidad laboral (no aplican)
+					linea += " "; //282: Signo de las percepciones en especie derivadas de incapacidad laboral
+					linea += rellenoPosiciones("0",283,321); //283-321: importe de las percepciones en especie derivadas de incapacidad laboral
 					
-					linea += rellenoPosiciones(" ",295,500); //295-500: blancos 
+					linea += rellenoPosiciones(" ",322,500); //322-500: blancos 
 					
 					// cambio a formato DOS
 					linea += "\r\n";
