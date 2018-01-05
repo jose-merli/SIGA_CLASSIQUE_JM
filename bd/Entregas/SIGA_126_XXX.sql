@@ -455,3 +455,5 @@ Update Gen_Recursos rec Set descripcion = 'La data efectiva de baixa ha de ser i
 Update Gen_Recursos rec Set descripcion = 'La fecha efectiva de baja debe ser igual o posterior a la fecha de fin del último periodo facturado de dicho servicio ({0}).#EU', fechamodificacion = Sysdate, usumodificacion = 0 Where rec.Idrecurso = 'messages.Servicios.GestionSolicitudes.FechaEfectivaMenorFacturacion' And rec.Idlenguaje = 3;
 Update Gen_Recursos rec Set descripcion = 'La fecha efectiva de baja debe ser igual o posterior a la fecha de fin del último periodo facturado de dicho servicio ({0}).#GL', fechamodificacion = Sysdate, usumodificacion = 0 Where rec.Idrecurso = 'messages.Servicios.GestionSolicitudes.FechaEfectivaMenorFacturacion' And rec.Idlenguaje = 4;
 
+--126_016: Ejecutados en Integracion por AAG el 05/01/2018 a las 13:45
+
