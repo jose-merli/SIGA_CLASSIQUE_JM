@@ -450,3 +450,8 @@ Pkg_Siga_Retenciones_Sjcs
 
 --126_016: Ejecutados en Integracion por AAG el 05/01/2018 a las 09:45
 
+Update Gen_Recursos rec Set descripcion = 'La fecha efectiva de baja debe ser igual o posterior a la fecha de fin del último periodo facturado de dicho servicio ({0}).', fechamodificacion = Sysdate, usumodificacion = 0 Where rec.Idrecurso = 'messages.Servicios.GestionSolicitudes.FechaEfectivaMenorFacturacion' And rec.Idlenguaje = 1;
+Update Gen_Recursos rec Set descripcion = 'La data efectiva de baixa ha de ser igual o posterior a la data de fi de l''últim període facturat de dit servei ({0}).', fechamodificacion = Sysdate, usumodificacion = 0 Where rec.Idrecurso = 'messages.Servicios.GestionSolicitudes.FechaEfectivaMenorFacturacion' And rec.Idlenguaje = 2;
+Update Gen_Recursos rec Set descripcion = 'La fecha efectiva de baja debe ser igual o posterior a la fecha de fin del último periodo facturado de dicho servicio ({0}).#EU', fechamodificacion = Sysdate, usumodificacion = 0 Where rec.Idrecurso = 'messages.Servicios.GestionSolicitudes.FechaEfectivaMenorFacturacion' And rec.Idlenguaje = 3;
+Update Gen_Recursos rec Set descripcion = 'La fecha efectiva de baja debe ser igual o posterior a la fecha de fin del último periodo facturado de dicho servicio ({0}).#GL', fechamodificacion = Sysdate, usumodificacion = 0 Where rec.Idrecurso = 'messages.Servicios.GestionSolicitudes.FechaEfectivaMenorFacturacion' And rec.Idlenguaje = 4;
+
