@@ -2281,6 +2281,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             ASI.ANIO,
             ASI.NUMERO,
             1 AS FACTURADO,
+            (Select Sum(facasi.Precioaplicado)
+               From Fcs_Fact_Asistencia facasi
+              Where facasi.Idinstitucion = asi.Idinstitucion
+                And facasi.Anio = asi.Anio
+                And facasi.Numero = asi.Numero) As IMPORTEFACTURADO,
             ( -- COMPRUEBO SI TIENE ACTUACIONES SIN FACTURAR
                 SELECT COUNT(*)
                 FROM SCS_ACTUACIONASISTENCIA ACT
@@ -2311,6 +2316,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
            ASI.ANIO,
            ASI.NUMERO,
            0 AS FACTURADO,
+           0 AS IMPORTEFACTURADO,
             ( -- COMPRUEBO SI TIENE ACTUACIONES SIN FACTURAR
                 SELECT COUNT(*)
                 FROM SCS_ACTUACIONASISTENCIA ACT
@@ -12476,6 +12482,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 contadorAsistenciasCG := contadorAsistenciasCG + 1;
 
                 IF (V_ASISTENCIAS_UG.FACTURADO<>PKG_SIGA_CONSTANTES.DB_TRUE_N) THEN -- Asistencia no facturada
+                    importeTotalAsistenciaUG := importeTotalAsistenciaUG + V_CONFIG_GUARDIA.IMPORTEASISTENCIA;
+
                     IND_AS := IND_AS + 1; -- Nuevo apunte M_APUNTE_AS
                     M_APUNTE_AS(IND_AS).IDINSTITUCION := V_ASISTENCIAS_UG.IDINSTITUCION;
                     M_APUNTE_AS(IND_AS).ANIO := V_ASISTENCIAS_UG.ANIO;
@@ -12484,8 +12492,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     M_APUNTE_AS(IND_AS).CONTADOR := contadorUnidades;
                     M_APUNTE_AS(IND_AS).MOTIVO := 5; --As
                     M_APUNTE_AS(IND_AS).IMPORTE := V_CONFIG_GUARDIA.IMPORTEASISTENCIA;
-
+                    
                 ELSE -- Asistencia facturada
+                    importeTotalAsistenciaUG := importeTotalAsistenciaUG + V_ASISTENCIAS_UG.IMPORTEFACTURADO;
+
                     IF (V_UNIDADES_GUARDIA.facturado IS NOT NULL AND V_UNIDADES_GUARDIA.facturado <> '0') THEN -- UG facturada
                         contadorAsistenciasFactUG := contadorAsistenciasFactUG + 1;
                         contadorAsistenciasFactCG := contadorAsistenciasFactCG + 1;
@@ -12503,8 +12513,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     END IF;
                 END IF;
 
-                importeTotalAsistenciaUG := importeTotalAsistenciaUG + V_CONFIG_GUARDIA.IMPORTEASISTENCIA;
-                importeTotalAsistenciaCG := importeTotalAsistenciaCG + V_CONFIG_GUARDIA.IMPORTEASISTENCIA;
             END LOOP; -- Fin asistencias
 
             -- CARGA LA MATRIZ M_APUNTE_AC (carga las actuaciones no facturadas)
