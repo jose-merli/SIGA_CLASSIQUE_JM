@@ -120,8 +120,7 @@
 	Integer PCAJG_ACTIVADO =(Integer) (request.getAttribute("PCAJG_ACTIVO"));
 	
 	// Seleccion.
-	ArrayList TIPOASISTENCIACOLEGIOSEL = new ArrayList();
-	TIPOASISTENCIACOLEGIOSEL.add(TIPOASISTENCIACOLEGIO);
+	
 	ArrayList TIPOASISTENCIASEL = new ArrayList();
 	TIPOASISTENCIASEL.add(TIPOASISTENCIA);
 	// Obtenemos la descripcion del tipoasistencia y tipoasistenciacolegio
@@ -374,8 +373,8 @@
 	</script>	
 </head>
 
-<body onload="cargarComboModulo();">
-
+<body onload="cargarComboModulo();rellenaTipoAsistencia();">
+<input type="hidden" id = "idTipoAsistenciaColegioSelected" value = "<%=TIPOASISTENCIACOLEGIO%>"/>
     <table class="tablaTitulo" align="center" border="0" cellpadding="0" cellspacing="0">
 		<tr>
 			<td class="titulitosDatos">
@@ -485,14 +484,17 @@
 								<td class="labelTextValor" width="80%">					
 									<% 
 										boolean tipoasistenciaColegioDisabled = false;
-										if((modo.equals("ver"))||(!idfacturacion.equals("")))
-											tipoasistenciaColegioDisabled = true;
+										if((modo.equals("ver"))||(!idfacturacion.equals(""))){%>
+										<select disabled id="idTipoAsistenciaColegio"  name="idTipoAsistenciaColegio" style="width:700px;" class="${estiloSelect}" >
+										</select>
+											
+										<% }else{%>
+											<select id="idTipoAsistenciaColegio"  name="idTipoAsistenciaColegio" style="width:700px;" class="${estiloSelect}" >
+												<option  value="-1"><siga:Idioma key="general.boton.seleccionar"/></option>
+											</select>
+										<%}
 									%>
-									<siga:Select id="idTipoAsistenciaColegio" 
-										queryId="getTiposAsistenciaDeColegio" 
-										selectedIds="<%=TIPOASISTENCIACOLEGIOSEL%>" 
-										disabled="<%=String.valueOf(tipoasistenciaColegioDisabled)%>" 
-										width="700"/>
+									
 								</td>				
 							</tr>
 						</table>
@@ -1139,18 +1141,11 @@
 				fin();
 				return false;
 			}
-			
 			if(document.forms[0].idTipoAsistenciaColegio.value == "") {
 				alert("<siga:Idioma key='gratuita.nuevaAsistencia.mensaje.alert8' />");
 				fin();
 				return false;
 			}
-			
-			/*if(document.forms[0].idTipoAsistenciaColegio.value == "")
-			{
-				alert("<siga:Idioma key='gratuita.mantAsistencias.mensaje.alert3'/>");
-				return false;
-			}*/
 			
 			var nigAux = document.getElementById("nig").value;
 			nigAux = formateaNig(nigAux);
@@ -1305,9 +1300,45 @@
 			<% } %>	
 		}	
 		
-		actualizarTdNumeroDiligencia();
+	function rellenaTipoAsistencia() {
+		var idGuardia = document.getElementById('idGuardia').value;
+		var idTurno = document.getElementById('idTurno').value;
+		var idTipoAsistenciaColegioSelected = document.getElementById("idTipoAsistenciaColegioSelected").value
+		var comboTipoAsistenciaColegio = document.getElementById('idTipoAsistenciaColegio');
+		var optionTipoAsistenciaColegio = comboTipoAsistenciaColegio.options;
+		if(idGuardia!='' &&idGuardia!='-1' && idTurno!=''){
+			var txtSelect = '<siga:Idioma key="general.boton.seleccionar"/>';
+			jQuery.ajax({   
+		           type: "POST",
+		           url: "/SIGA/GEN_Juzgados.do?modo=getAjaxTiposAsistencia",
+		           data: "idGuardia="+idGuardia+"&idTurno="+idTurno+"&idTipoAsistenciaColegioSelec="+idTipoAsistenciaColegioSelected,
+		           dataType: "json",
+		           success:  function(json) {
+		        	    optionTipoAsistenciaColegio.length = 0;
+						jQuery("#idTipoAsistenciaColegio").append("<option  value=''>"+txtSelect+"</option>");
+						var tiposAsistenciaColegio = json.tiposAsistenciaColegio;
+	         				jQuery.each(tiposAsistenciaColegio, function(i,tipoAsistenciaColegio){
+	         					var selected = ""; 
+	         					if(tipoAsistenciaColegio.idTipoAsistenciaColegio==idTipoAsistenciaColegioSelected)
+	         						selected = 'selected';
+	                        	jQuery("#idTipoAsistenciaColegio").append("<option "+selected+" value='"+tipoAsistenciaColegio.idTipoAsistenciaColegio+"'>"+tipoAsistenciaColegio.descripcion+"</option>");
+	                        
+	                    });
+		       			
+		           },
+		           error: function(xml,msg){
+		        	   alert("Error: "+msg+xml);
+		           }
+		   	});
+		}else{
+			optionTipoAsistenciaColegio.length = 0;
+			
+		}
+	}
 		
-		actualizarTdNumeroProcedimiento();
+		
+	actualizarTdNumeroDiligencia();
+	actualizarTdNumeroProcedimiento();
 	</script>
 
 	

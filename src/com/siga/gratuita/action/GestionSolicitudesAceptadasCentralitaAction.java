@@ -438,11 +438,7 @@ public class GestionSolicitudesAceptadasCentralitaAction extends MasterAction {
 			request.setAttribute("idJuzgadoSelected",idJuzgadoSelected);
 			
 			
-			
-			List<String> idTipoAsitenciaSelected = new ArrayList<String>();
-			idTipoAsitenciaSelected.add(scsSolicitudesAcpetadasService.getTipoAsistenciaColegioDefecto(solicitudAceptadaCentralitaVo.getIdTipoGuardia()!=null?Short.parseShort(solicitudAceptadaCentralitaVo.getIdTipoGuardia()):null,solicitudAceptadaCentralitaVo.getIdinstitucion()));
-			
-			request.setAttribute("idTipoAsitenciaSelected",idTipoAsitenciaSelected);
+			request.setAttribute("idTipoAsitenciaSelected",scsSolicitudesAcpetadasService.getTipoAsistenciaColegioDefecto(solicitudAceptadaCentralitaVo.getIdTipoGuardia()!=null?Short.parseShort(solicitudAceptadaCentralitaVo.getIdTipoGuardia()):null,solicitudAceptadaCentralitaVo.getIdinstitucion()));
 			
 			Map jsonMap = new HashMap<String, String>();
 			jsonMap.put("idTurno", idTurnoLlamada);

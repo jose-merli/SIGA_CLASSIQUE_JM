@@ -448,6 +448,8 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 
 Pkg_Siga_Retenciones_Sjcs
 
+
+
 --126_016: Ejecutados en Integracion por AAG el 05/01/2018 a las 09:45
 
 Update Gen_Recursos rec Set descripcion = 'La fecha efectiva de baja debe ser igual o posterior a la fecha de fin del último periodo facturado de dicho servicio ({0}).', fechamodificacion = Sysdate, usumodificacion = 0 Where rec.Idrecurso = 'messages.Servicios.GestionSolicitudes.FechaEfectivaMenorFacturacion' And rec.Idlenguaje = 1;
@@ -460,4 +462,123 @@ Update Gen_Recursos rec Set descripcion = 'La fecha efectiva de baja debe ser ig
 --126_017:
 
 PKG_SIGA_FACTURACION_SJCS
+
+
+insert into GEN_PROCESOS (IDPROCESO, IDMODULO, TRAZA, TARGET, FECHAMODIFICACION, USUMODIFICACION, DESCRIPCION, TRANSACCION, IDPARENT, NIVEL)
+ values ('99J', 'JGR', 1, 'Y', sysdate, 0, 'Gestión de Tipos de Asistencia', 'JGR_TipoAsistenciaColegio', '004', 10);
+ 
+-- carga de permisos para colegios
+declare
+
+cursor c_aux is
+ select idinstitucion
+from cen_institucion
+Where idinstitucion between 2001 and 2099;
+
+begin
+ 
+ for rec in c_aux loop
+  begin
+   insert into adm_tiposacceso
+   (idproceso, idperfil, fechamodificacion, usumodificacion, derechoacceso, idinstitucion) 
+ values
+   ('99J','ADG',sysdate,0,3,rec.idinstitucion);
+
+ exception
+  when others then
+       dbms_output.put_line('Error='||sqlerrm);  
+       rollback;
+ end;   
+ commit;
+ end loop;
+
+end;  
+/
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.tiposAsistencia', 'Tipos de Asistencia', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.tiposAsistencia', 'Tipos de Asistencia#GL', 0, '4', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.tiposAsistencia', 'Tipos de Asistencia#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.tiposAsistencia', 'Tipos de Asistencia#EU', 0, '3', sysdate, 0, '19');
+
+
+insert into GEN_MENU (IDMENU, ORDEN, TAGWIDTH, IDPARENT, FECHAMODIFICACION, USUMODIFICACION, URI_IMAGEN, IDRECURSO, GEN_MENU_IDMENU, IDPROCESO, IDLENGUAJE)
+values ('99J', 21810, 160, '128', sysdate, 0, null, 'menu.sjcs.tiposAsistencia', null, '99J', '1');
+
+-- Create table
+create table SCS_TIPOASISTENCIAGUARDIA
+(
+  idtipoguardia           NUMBER(2) not null,
+  idinstitucion           NUMBER(4) not null,
+  idtipoasistenciacolegio NUMBER(3) not null,
+  fechamodificacion       DATE not null,
+  usumodificacion         NUMBER(5) not null
+)
+tablespace TS_SIGA_SCS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 16K
+    next 8K
+    minextents 1
+    maxextents unlimited
+  );
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table SCS_TIPOASISTENCIAGUARDIA
+  add constraint PK_SCS_TIPOAISTENCIAGUARDIA primary key (IDTIPOGUARDIA, IDINSTITUCION, IDTIPOASISTENCIACOLEGIO)
+  using index 
+  tablespace TS_SIGA
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 1M
+    next 1M
+    minextents 1
+    maxextents unlimited
+    pctincrease 0
+  );
+alter table SCS_TIPOASISTENCIAGUARDIA
+  add constraint FK_SCSTIPOASISTENCIA foreign key (IDINSTITUCION, IDTIPOASISTENCIACOLEGIO)
+  references SCS_TIPOASISTENCIACOLEGIO (IDINSTITUCION, IDTIPOASISTENCIACOLEGIO);
+alter table SCS_TIPOASISTENCIAGUARDIA
+  add constraint FK_SCSTIPOGUARDIAS foreign key (IDTIPOGUARDIA)
+  references SCS_TIPOSGUARDIAS (IDTIPOGUARDIA);
+
+-- carga de guardias para tipos de  aistencia colegio
+declare
+
+cursor c_aux is
+ select tg.idtipoguardia,
+       tac.idinstitucion,
+       tac.idtipoasistenciacolegio
+  from scs_tipoasistenciacolegio tac,
+       scs_tiposguardias         tg,
+       cen_institucion           i
+ where tac.idinstitucion = i.idinstitucion
+   and i.idinstitucion between 2001 and 2099;
+
+begin
+ 
+ for rec in c_aux loop
+  begin
+  insert into scs_tipoasistenciaguardia
+  (idtipoguardia, idinstitucion, idtipoasistenciacolegio, fechamodificacion, usumodificacion)
+values
+  (rec.idtipoguardia, rec.idinstitucion, rec.idtipoasistenciacolegio, sysdate, 0) ;
+  
+
+
+ exception
+  when others then
+       dbms_output.put_line('Error='||sqlerrm);  
+       rollback;
+ end;   
+ commit;
+ end loop;
+
+end;  
+/
 

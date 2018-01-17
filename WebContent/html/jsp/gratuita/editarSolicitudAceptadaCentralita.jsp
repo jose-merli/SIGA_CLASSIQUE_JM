@@ -296,6 +296,7 @@
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 	<html:javascript formName="SolicitudAceptadaCentralitaForm" staticJavascript="false" />
+	<input type="hidden" id = "idTipoAsistenciaColegioSelected" value = "${idTipoAsitenciaSelected}"/>
 	<html:form action="${path}"  method="POST" target="mainWorkArea">
 		<input type="hidden" id ="idColegiadoGuardiaSeleccionado" name="idColegiadoGuardiaSeleccionado" value="${idColegiadoGuardiaSeleccionado}">
 		<input type="hidden" id ="nombreColegiadoGuardiaSeleccionado" name="nombreColegiadoGuardiaSeleccionado" value="${nombreColegiadoGuardiaSeleccionado}">
@@ -427,7 +428,7 @@
 							<siga:Idioma key="gratuita.busquedaAsistencias.literal.guardia" />&nbsp;(*)
 						</td>
 						<td>
-							<siga:Select queryId="getGuardiasConColegGuardia"  id="idGuardia"  parentQueryParamIds="idturno" queryParamId="idGuardia" params="${paramsGuardiasDeTurno}" selectedIds="${idGuardiaSelected}" required="true" width="300" childrenIds="idPersona"  cssClass="${estiloSelect}" disabled="${disabledSelect}"/>
+							<siga:Select queryId="getGuardiasConColegGuardia"  id="idGuardia"  parentQueryParamIds="idturno" queryParamId="idGuardia" params="${paramsGuardiasDeTurno}" selectedIds="${idGuardiaSelected}" required="true" width="300" childrenIds="idPersona" cssClass="${estiloSelect}" disabled="${disabledSelect}"/>
 						</td>
 					</tr>
 
@@ -450,10 +451,9 @@
 							</td>
 													
 							<td colspan="3">
-								
-								<siga:Select queryId="getTiposAsistenciaDeColegio" id="idTipoAsistenciaColegio" selectedIds="${idTipoAsitenciaSelected}" width="498" cssClass="${estiloSelect}" disabled="${disabledSelect}"/>
-							
-								
+								<select id="idTipoAsistenciaColegio"  name="idTipoAsistenciaColegio" style="width:498px;" class="${estiloSelect}" >
+									<option  value="-1"><siga:Idioma key="general.boton.seleccionar"/></option>
+								</select>
 							</td>
 						</tr>
 					</c:if>
@@ -897,7 +897,51 @@
 			}
 			jQuery('#idPersona > option[value='+idpersonaaniadircombo+']').attr('selected', 'selected');
 		}
+		rellenaTipoAsistencia();
+		
+		
 	}
+	function rellenaTipoAsistencia() {
+		if(document.getElementById('idGuardia')){
+			var idGuardia = document.getElementById('idGuardia').value;
+			var idTurno = document.getElementById('idTurno').value;
+			var comboTipoAsistenciaColegio = document.getElementById('idTipoAsistenciaColegio');
+			var optionTipoAsistenciaColegio = comboTipoAsistenciaColegio.options;
+			var idTipoAsistenciaColegioSelected = document.getElementById("idTipoAsistenciaColegioSelected").value
+			if(idGuardia!='' &&idGuardia!='-1' && idTurno!=''){
+				var txtSelect = '<siga:Idioma key="general.boton.seleccionar"/>';
+				jQuery.ajax({   
+			           type: "POST",
+			           url: "/SIGA/GEN_Juzgados.do?modo=getAjaxTiposAsistencia",
+			           data: "idGuardia="+idGuardia+"&idTurno="+idTurno+"&idTipoAsistenciaColegioSelec="+idTipoAsistenciaColegioSelected,
+			           dataType: "json",
+			           success:  function(json) {
+			        	    optionTipoAsistenciaColegio.length = 0;
+							jQuery("#idTipoAsistenciaColegio").append("<option  value=''>"+txtSelect+"</option>");
+							var tiposAsistenciaColegio = json.tiposAsistenciaColegio;
+		         				jQuery.each(tiposAsistenciaColegio, function(i,tipoAsistenciaColegio){
+		         					var selected = ""; 
+		         					if(tipoAsistenciaColegio.idTipoAsistenciaColegio==idTipoAsistenciaColegioSelected)
+		         						selected = 'selected';
+		         					
+		                        jQuery("#idTipoAsistenciaColegio").append("<option "+selected+" value='"+tipoAsistenciaColegio.idTipoAsistenciaColegio+"'>"+tipoAsistenciaColegio.descripcion+"</option>");
+		                        
+		                    });
+			       			
+			           },
+			           error: function(xml,msg){
+			        	   alert("Error: "+msg+xml);
+			           }
+			   	});
+			}else{
+				optionTipoAsistenciaColegio.length = 0;
+				
+			}
+		}
+	}
+	
+	
+	
 	function inicio() {
 		if(document.getElementById("mensajeSuccess") && document.getElementById("mensajeSuccess").value!=''){
 			alert(document.getElementById("mensajeSuccess").value,'success');
@@ -913,6 +957,9 @@
 			}));
 			
 		}
+		rellenaTipoAsistencia();
+		
+		
 		
 	}	
 	

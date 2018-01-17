@@ -120,6 +120,10 @@
 	<!-- Incluido jquery en siga.js -->
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
+  	<link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">
+	
+	
 </head>
 
 <body onload="cargarColegiado();">
@@ -187,7 +191,9 @@
 					<siga:Idioma key='gratuita.nuevaAsistencia.literal.tasistenciacolegio'/>&nbsp;(*)
 				</td>	
 				<td colspan="3">
-					<siga:ComboBD nombre="idTipoAsistenciaColegio" tipo="scstipoasistenciacolegio" estilo="true"  clase="boxCombo" ancho="480" parametro="<%=dato%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false" elementoSel="<%=tAsistenciaColegio%>" />
+					<select id="idTipoAsistenciaColegio"  name="idTipoAsistenciaColegio" style="width:480px;" class="boxCombo">
+						<option  value="-1"><siga:Idioma key="general.boton.seleccionar"/></option>
+					</select>
 				</td>	
 			</tr>
 
@@ -347,6 +353,7 @@
 		function rellenarComboLetrado(){
 			//Cuando es de ficha colegial no crea las funciones javascript que si genera el tag siga:BusquedaSJCS
 			fin();
+			rellenaTipoAsistencia();
 			<%if(bEsFichaColegial){%>
 				return true;
 			<%}else if(bEsClonacion){%>
@@ -359,8 +366,42 @@
 			<%}else{%>
 				rellenarComboGuardia();
 			<%}%>
+			
+			
+		}
+	jQuery.noConflict();
+	function rellenaTipoAsistencia() {
+		var idGuardia = document.getElementById('guardias').value;
+		var idTurno = document.getElementById('turnos').value;
+		var comboTipoAsistenciaColegio = document.getElementById('idTipoAsistenciaColegio');
+		var optionTipoAsistenciaColegio = comboTipoAsistenciaColegio.options;
+		if(idGuardia!='' && idTurno!=''){
+			var txtSelect = '<siga:Idioma key="general.boton.seleccionar"/>';
+			jQuery.ajax({   
+		           type: "POST",
+		           url: "/SIGA/GEN_Juzgados.do?modo=getAjaxTiposAsistencia",
+		           data: "idGuardia="+idGuardia+"&idTurno="+idTurno,
+		           dataType: "json",
+		           success:  function(json) {
+		        	    optionTipoAsistenciaColegio.length = 0;
+						jQuery("#idTipoAsistenciaColegio").append("<option  value=''>"+txtSelect+"</option>");
+						var tiposAsistenciaColegio = json.tiposAsistenciaColegio;
+	         				jQuery.each(tiposAsistenciaColegio, function(i,tipoAsistenciaColegio){
+	                        jQuery("#idTipoAsistenciaColegio").append("<option value='"+tipoAsistenciaColegio.idTipoAsistenciaColegio+"'>"+tipoAsistenciaColegio.descripcion+"</option>");
+	                        
+	                    });
+		       			
+		           },
+		           error: function(xml,msg){
+		        	   alert("Error: "+msg+xml);
+		           }
+		   	});
+		}else{
+			optionTipoAsistenciaColegio.length = 0;
+			
 		}
 		
+	}
 		function accionCerrar() {		
 			window.top.close();
 		}
