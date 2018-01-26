@@ -459,6 +459,10 @@ Update Gen_Recursos rec Set descripcion = 'La fecha efectiva de baja debe ser ig
 
 --126_016: Ejecutados en Integracion por AAG el 05/01/2018 a las 13:45
 
+<<<<<<< .mine
+F_SIGA_ROLES_CERTIFICADO.fnc
+
+=======
 --126_017:
 
 PKG_SIGA_FACTURACION_SJCS
@@ -582,5 +586,5 @@ values
 end;  
 /
 
---126_017: Ejecutados en Integracion por AAG el 26/01/2018 a las 12:55
 
+F_SIGA_ROLES_CERTIFICADO.fnc
