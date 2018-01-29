@@ -46,7 +46,6 @@ public class TipoAsistenciaColegioVoService implements VoUiService<TipoAsistenci
 		if(objectForm.getIdTipoAsistenciaColegio()!=null&& !objectForm.getIdTipoAsistenciaColegio().equalsIgnoreCase(""))
 			objectVo.setIdTipoAsistenciaColegio(Short.valueOf(objectForm.getIdTipoAsistenciaColegio()));
 		objectVo.setDescripcion(objectForm.getDescripcion());
-		objectVo.setBloqueado(objectForm.getBloqueado());
 		if(objectForm.getImporte()!=null&& !objectForm.getImporte().equalsIgnoreCase(""))
 			objectVo.setImporte(UtilidadesNumero.getDouble(objectForm.getImporte()));
 		if(objectForm.getImporteMaximo()!=null && !objectForm.getImporteMaximo().equalsIgnoreCase(""))
@@ -85,7 +84,6 @@ public class TipoAsistenciaColegioVoService implements VoUiService<TipoAsistenci
 		objectForm.setIdInstitucion(objectVo.getIdInstitucion().toString());
 		objectForm.setIdTipoAsistenciaColegio(objectVo.getIdTipoAsistenciaColegio().toString());
 		objectForm.setDescripcion(objectVo.getDescripcion());
-		objectForm.setBloqueado(objectVo.getBloqueado());
 		if(objectVo.getImporte()!=null)
 			objectForm.setImporte(UtilidadesString.formatoImporte(objectVo.getImporte()));
 		if(objectVo.getImporteMaximo()!=null)
