@@ -2,7 +2,7 @@ Carpeta con script SIGA_126_002, aunque ahora es para la 126_003, porque hubo un
 
 -- Ejecutados en Integracion por AAG el 17/07/2017 a las 11:35
 
-UPDATE ECOM_CEN_EX_COLUMN C SET C.NORMALIZACION = 'DOÑA.\s|D\.\s|Dº\s|D\u00aa\s|\p{Punct}|^(\u00A0)|(\u00A0)$' WHERE C.NOM_COL = 'NOMBRE';
+UPDATE ECOM_CEN_EX_COLUMN C SET C.NORMALIZACION = 'DOï¿½A.\s|D\.\s|Dï¿½\s|D\u00aa\s|\p{Punct}|^(\u00A0)|(\u00A0)$' WHERE C.NOM_COL = 'NOMBRE';
 UPDATE ECOM_CEN_EX_COLUMN C SET C.NORMALIZACION = '[[\p{Punct}]&&[-]&&[.]]|^(\u00A0)|(\u00A0)$' WHERE C.NOM_COL IN ('APELLIDO1', 'APELLIDO2');
 
 -- Ejecutados en Integracion por AAG el 17/07/2017 a las 15:35
@@ -16,7 +16,7 @@ Update Gen_Recursos rec Set descripcion = 'Aplicado en Pago#EU' Where idrecurso 
 Update Gen_Recursos rec Set descripcion = 'Aplicado en Pago#GL' Where idrecurso = 'factSJCS.datosMovimientos.literal.pago' And rec.Idlenguaje = 4;
 
 
-Incluir en la siguiente versión R1707_0027 y R1707_0029. Estas dos incidencias deben además ir acompañadas de subida de ecom.
+Incluir en la siguiente versiï¿½n R1707_0027 y R1707_0029. Estas dos incidencias deben ademï¿½s ir acompaï¿½adas de subida de ecom.
 
 insert into gen_parametros (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
 SELECT P.MODULO, P.PARAMETRO, P.VALOR, SYSDATE, 0, 3004, P.IDRECURSO
@@ -57,12 +57,12 @@ Update Gen_Properties Pro Set Pro.Valor = '100'
 
 
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.comisiones.inicioObligatorio', 'Es necesario rellenar fecha de Inicio', 0, '1', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.comisiones.inicioObligatorio', 'És necessari omplir data d''inici', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.comisiones.inicioObligatorio', 'ï¿½s necessari omplir data d''inici', 0, '2', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.comisiones.inicioObligatorio', 'Es necesario rellenar fecha de Inicio#EU', 0, '3', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.comisiones.inicioObligatorio', 'Es necesario rellenar fecha de Inicio#GL', 0, '4', sysdate, 0, '19');
 
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.comisiones.finObligatorio', 'Es necesario rellenar fecha de Fin', 0, '1', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.comisiones.finObligatorio', 'És necessari omplir data de final', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.comisiones.finObligatorio', 'ï¿½s necessari omplir data de final', 0, '2', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.comisiones.finObligatorio', 'Es necesario rellenar fecha de fin#EU', 0, '3', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.comisiones.finObligatorio', 'Es necesario rellenar fecha de fin#GL', 0, '4', sysdate, 0, '19');
 
@@ -77,21 +77,21 @@ FECHARECONFIGURACION, RECONFIGURACIONCONTADOR, RECONFIGURACIONPREFIJO, RECONFIGU
 , IDMODULO, GENERAL, FECHAMODIFICACION
 , USUMODIFICACION, FECHACREACION, USUCREACION) 
 SELECT I.IDINSTITUCION, 'REINTEGROSXUNTA', 'ENVIO DE REINTEGROS A LA XUNTA'
-, 'Contador para el envío de reintegros a la Xunta', '1', 0, 0, '2017', null, 5
+, 'Contador para el envï¿½o de reintegros a la Xunta', '1', 0, 0, '2017', null, 5
 , to_date('01-01-2018', 'dd-mm-yyyy'), '0', '2018', null
 , 'CAJG_REMESARESOLUCION', 'NUMERO', 'PREFIJO', 'SUFIJO'
 , 10, '0', SYSDATE, 0, SYSDATE, -1 
 FROM CEN_INSTITUCION I WHERE I.IDINSTITUCION IN (2025, 2044, 2064);
 
---Insertar una nueva línea en CAJG_TIPOREMESA 
+--Insertar una nueva lï¿½nea en CAJG_TIPOREMESA 
 insert into CAJG_TIPOREMESA (IDINSTITUCION, IDTIPOREMESA, NOMBRE, IDCONTADOR, FECHAMODIFICACION, USUMODIFICACION, JAVACLASS) 
-SELECT I.IDINSTITUCION, 4, 'Envío de reintegros a la Xunta', 'REINTEGROSXUNTA', sysdate, 0, null--'com.siga.gratuita.pcajg.resoluciones.XuntaSolicitudEnvioReintegros'
+SELECT I.IDINSTITUCION, 4, 'Envï¿½o de reintegros a la Xunta', 'REINTEGROSXUNTA', sysdate, 0, null--'com.siga.gratuita.pcajg.resoluciones.XuntaSolicitudEnvioReintegros'
 FROM CEN_INSTITUCION I WHERE I.IDINSTITUCION IN (2025, 2044, 2064);
 
 
 --Creamos el proceso que utilizara SIGA
 insert into GEN_PROCESOS (IDPROCESO, IDMODULO, TRAZA, TARGET, FECHAMODIFICACION, USUMODIFICACION, DESCRIPCION, TRANSACCION, IDPARENT, NIVEL) 
-values ('12U', 'JGR', 1, 'Y', sysdate, 0, 'Envío reintegros Xunta', 'JGR_EnvioReintegrosXunta', '004', 10);
+values ('12U', 'JGR', 1, 'Y', sysdate, 0, 'Envï¿½o reintegros Xunta', 'JGR_EnvioReintegrosXunta', '004', 10);
 
 --Damos permiso al administrador general 
 
@@ -99,13 +99,13 @@ insert into adm_tiposacceso(idproceso, idperfil, fechamodificacion, usumodificac
 SELECT '12U','ADG',sysdate,0,3,I.IDINSTITUCION
 FROM CEN_INSTITUCION I WHERE I.IDINSTITUCION IN (2025, 2044, 2064);
 
---Configuramos la opción de menú SJCS > e - Comunicaciones > Envío reintegros Xunta
+--Configuramos la opciï¿½n de menï¿½ SJCS > e - Comunicaciones > Envï¿½o reintegros Xunta
 
  
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.envioReintegrosXunta', 'Envío reintegros Xunta', 0, '1', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.envioReintegrosXunta', 'Envío reintegros Xunta#CA', 0, '2', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.envioReintegrosXunta', 'Envío reintegros Xunta#EU', 0, '3', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.envioReintegrosXunta', 'Envío reintegros Xunta#GL', 0, '4', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.envioReintegrosXunta', 'Envï¿½o reintegros Xunta', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.envioReintegrosXunta', 'Envï¿½o reintegros Xunta#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.envioReintegrosXunta', 'Envï¿½o reintegros Xunta#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.envioReintegrosXunta', 'Envï¿½o reintegros Xunta#GL', 0, '4', sysdate, 0, '19');
 
 
 insert into GEN_MENU (IDMENU, ORDEN, TAGWIDTH, IDPARENT, FECHAMODIFICACION, USUMODIFICACION, URI_IMAGEN, IDRECURSO, GEN_MENU_IDMENU, IDPROCESO, IDLENGUAJE)
@@ -131,26 +131,26 @@ ACTUALIZAR VISTA DE DESARROLLO (LOCAL) LLAMADA V_PCAJG_EJG
 
 -- Ejecutados en Integracion por AAG el 11/09/2017 a las 14:15
 
---Informe iconómico de alcala
+--Informe iconï¿½mico de alcala
 
 -- Create/Recreate indexes 
 create index SI_403_SCS_EJG_ANIO on SCS_EJG (idinstitucion, anio);
 
 insert into GEN_PROCESOS (IDPROCESO, IDMODULO, TRAZA, TARGET, FECHAMODIFICACION, USUMODIFICACION, DESCRIPCION, TRANSACCION, IDPARENT, NIVEL) 
-values ('12Y', 'JGR', 1, 'Y', sysdate, 0, 'EJG informacion económica', 'JGR_E-Comunicaciones_InfEconomico', '007', 10);
+values ('12Y', 'JGR', 1, 'Y', sysdate, 0, 'EJG informacion econï¿½mica', 'JGR_E-Comunicaciones_InfEconomico', '007', 10);
 
---Damos permiso al administrador general de Alcalá a ese proceso
+--Damos permiso al administrador general de Alcalï¿½ a ese proceso
 
 insert into adm_tiposacceso
    (idproceso, idperfil, fechamodificacion, usumodificacion, derechoacceso, idinstitucion) 
  values
    ('12Y','ADG',sysdate,0,3,2003);
---Configuramos la opción de menú SJCS > e - Comunicaciones > EJGs: Remesas de información económica
+--Configuramos la opciï¿½n de menï¿½ SJCS > e - Comunicaciones > EJGs: Remesas de informaciï¿½n econï¿½mica
 
- insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.InfEconomico', 'EJGs: Remesas informacion económica', 0, '1', sysdate, 0, '19');
- insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.InfEconomico', 'EJGs: Remesas informacion económica', 0, '4', sysdate, 0, '19');
- insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.InfEconomico', 'EJGs: Remesas informacion económica#CA', 0, '2', sysdate, 0, '19');
- insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.InfEconomico', 'EJGs: Remesas informacion económica#EU', 0, '3', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.InfEconomico', 'EJGs: Remesas informacion econï¿½mica', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.InfEconomico', 'EJGs: Remesas informacion econï¿½mica', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.InfEconomico', 'EJGs: Remesas informacion econï¿½mica#CA', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecomunicaciones.InfEconomico', 'EJGs: Remesas informacion econï¿½mica#EU', 0, '3', sysdate, 0, '19');
 
 insert into GEN_MENU (IDMENU, ORDEN, TAGWIDTH, IDPARENT, FECHAMODIFICACION, USUMODIFICACION, URI_IMAGEN, IDRECURSO, GEN_MENU_IDMENU, IDPROCESO, IDLENGUAJE)
 values ('12Y', 22233, 160, '606', sysdate, 0, null, 'menu.sjcs.ecomunicaciones.InfEconomico', null, '12Y', '1');
@@ -160,79 +160,79 @@ alter table CAJG_REMESA add IDTIPOREMESA number(1) default 0;
 
 
 insert into ECOM_OPERACION (IDOPERACION, IDSERVICIO, NOMBRE, MAXREINTENTOS, ACTIVO, FECHAMODIFICACION, USUMODIFICACION)
-values (59, 5, 'Validación para el envío de informe económico a la CAM', 1, '1', sysdate, 0);
+values (59, 5, 'Validaciï¿½n para el envï¿½o de informe econï¿½mico a la CAM', 1, '1', sysdate, 0);
 
 insert into ECOM_OPERACION (IDOPERACION, IDSERVICIO, NOMBRE, MAXREINTENTOS, ACTIVO, FECHAMODIFICACION, USUMODIFICACION)
-values (68, 1, 'Solicitar información completa expediente económico', 1, '1', sysdate, 0);
+values (68, 1, 'Solicitar informaciï¿½n completa expediente econï¿½mico', 1, '1', sysdate, 0);
 
 
 --CAJG canarias
 
 insert into ECOM_OPERACION (IDOPERACION, IDSERVICIO, NOMBRE, MAXREINTENTOS, ACTIVO, FECHAMODIFICACION, USUMODIFICACION)
-values (63, 1, 'Valida envío expedientes(EJIS)', 1, '1', sysdate, 0);
+values (63, 1, 'Valida envï¿½o expedientes(EJIS)', 1, '1', sysdate, 0);
 insert into ECOM_OPERACION (IDOPERACION, IDSERVICIO, NOMBRE, MAXREINTENTOS, ACTIVO, FECHAMODIFICACION, USUMODIFICACION)
-values (64, 1, 'Generacion xml Envío expedientes(EJIS)', 1, '1', sysdate, 0);
+values (64, 1, 'Generacion xml Envï¿½o expedientes(EJIS)', 1, '1', sysdate, 0);
 insert into ECOM_OPERACION (IDOPERACION, IDSERVICIO, NOMBRE, MAXREINTENTOS, ACTIVO, FECHAMODIFICACION, USUMODIFICACION)
-values (66, 1, 'Recibir acuses erróneos(Atlante)', 5, '1', sysdate, 0);
+values (66, 1, 'Recibir acuses errï¿½neos(Atlante)', 5, '1', sysdate, 0);
 insert into ECOM_OPERACION (IDOPERACION, IDSERVICIO, NOMBRE, MAXREINTENTOS, ACTIVO, FECHAMODIFICACION, USUMODIFICACION)
-values (67, 1, 'Recibir acuses no erróneos(Atlante)', 5, '1', sysdate, 0);
+values (67, 1, 'Recibir acuses no errï¿½neos(Atlante)', 5, '1', sysdate, 0);
 
 insert into GEN_RECURSOS (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
-values ('messages.cajg.generacionXML', 'La generación del fichero xml se ha programado correctamente. Vuelva a consultar la remesa pasados unos minutos.', 0, '1', sysdate, 0, '19');
+values ('messages.cajg.generacionXML', 'La generaciï¿½n del fichero xml se ha programado correctamente. Vuelva a consultar la remesa pasados unos minutos.', 0, '1', sysdate, 0, '19');
 insert into GEN_RECURSOS (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
-values ('messages.cajg.generacionXML', 'La generación del fichero xml se ha programado correctamente. Vuelva a consultar la remesa pasados unos minutos.#CA', 0, '2', sysdate, 0, '19');
+values ('messages.cajg.generacionXML', 'La generaciï¿½n del fichero xml se ha programado correctamente. Vuelva a consultar la remesa pasados unos minutos.#CA', 0, '2', sysdate, 0, '19');
 insert into GEN_RECURSOS (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
-values ('messages.cajg.generacionXML', 'La generación del fichero xml se ha programado correctamente. Vuelva a consultar la remesa pasados unos minutos.#EU', 0, '3', sysdate, 0, '19');
+values ('messages.cajg.generacionXML', 'La generaciï¿½n del fichero xml se ha programado correctamente. Vuelva a consultar la remesa pasados unos minutos.#EU', 0, '3', sysdate, 0, '19');
 insert into GEN_RECURSOS (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
-values ('messages.cajg.generacionXML', 'La generación del fichero xml se ha programado correctamente. Vuelva a consultar la remesa pasados unos minutos.#GL', 0, '4', sysdate, 0, '19');
+values ('messages.cajg.generacionXML', 'La generaciï¿½n del fichero xml se ha programado correctamente. Vuelva a consultar la remesa pasados unos minutos.#GL', 0, '4', sysdate, 0, '19');
 
 update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Tipo de PCAJG que usa el colegio: 
 0	PCAJG no activo. 
 1	PCAJG activo en modo TXT. 
 2	PCAJG activo en modo FTP para colegios catalanes. 
-3	PCAJG activo para colegios de Aragón. 
-4	PCAJG activo en modo WebService para el envío de expedientes a Pamplona y Cantabria. Integración SIGA-Asigna o SIGA-Vereda. 
-5	PCAJG activo envío expedientes para Alcalá de Henares. 
-6 PCAJG activo para la integración con la Xunta de Galicia. 
-7 PCAJG activo para la integración con el Gobierno Vasco. 
-8 PCAJG activo para la integración con la Generalitat Valenciana. 
-9 PCAJG activo para la Junta de Andalucía.
+3	PCAJG activo para colegios de Aragï¿½n. 
+4	PCAJG activo en modo WebService para el envï¿½o de expedientes a Pamplona y Cantabria. Integraciï¿½n SIGA-Asigna o SIGA-Vereda. 
+5	PCAJG activo envï¿½o expedientes para Alcalï¿½ de Henares. 
+6 PCAJG activo para la integraciï¿½n con la Xunta de Galicia. 
+7 PCAJG activo para la integraciï¿½n con el Gobierno Vasco. 
+8 PCAJG activo para la integraciï¿½n con la Generalitat Valenciana. 
+9 PCAJG activo para la Junta de Andalucï¿½a.
 10 PCAJG activo para la integracion con Gobierno de Canarias' where idrecurso='scs.parametro.pcajg.tipo' and idlenguaje='1';
 update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Tipo de PCAJG que usa el colegio: 
 0	PCAJG no activo. 
 1	PCAJG activo en modo TXT. 
 2	PCAJG activo en modo FTP para colegios catalanes. 
-3	PCAJG activo para colegios de Aragón. 
-4	PCAJG activo en modo WebService para el envío de expedientes a Pamplona y Cantabria. Integración SIGA-Asigna o SIGA-Vereda. 
-5	PCAJG activo envío expedientes para Alcalá de Henares. 
-6 PCAJG activo para la integración con la Xunta de Galicia. 
-7 PCAJG activo para la integración con el Gobierno Vasco. 
-8 PCAJG activo para la integración con la Generalitat Valenciana. 
-9 PCAJG activo para la Junta de Andalucía.
+3	PCAJG activo para colegios de Aragï¿½n. 
+4	PCAJG activo en modo WebService para el envï¿½o de expedientes a Pamplona y Cantabria. Integraciï¿½n SIGA-Asigna o SIGA-Vereda. 
+5	PCAJG activo envï¿½o expedientes para Alcalï¿½ de Henares. 
+6 PCAJG activo para la integraciï¿½n con la Xunta de Galicia. 
+7 PCAJG activo para la integraciï¿½n con el Gobierno Vasco. 
+8 PCAJG activo para la integraciï¿½n con la Generalitat Valenciana. 
+9 PCAJG activo para la Junta de Andalucï¿½a.
 10 PCAJG activo para la integracion con Gobierno de Canarias#CA' where idrecurso='scs.parametro.pcajg.tipo' and idlenguaje='2';
 update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Tipo de PCAJG que usa el colegio: 
 0	PCAJG no activo. 
 1	PCAJG activo en modo TXT. 
 2	PCAJG activo en modo FTP para colegios catalanes. 
-3	PCAJG activo para colegios de Aragón. 
-4	PCAJG activo en modo WebService para el envío de expedientes a Pamplona y Cantabria. Integración SIGA-Asigna o SIGA-Vereda. 
-5	PCAJG activo envío expedientes para Alcalá de Henares. 
-6 PCAJG activo para la integración con la Xunta de Galicia. 
-7 PCAJG activo para la integración con el Gobierno Vasco. 
-8 PCAJG activo para la integración con la Generalitat Valenciana. 
-9 PCAJG activo para la Junta de Andalucía.
+3	PCAJG activo para colegios de Aragï¿½n. 
+4	PCAJG activo en modo WebService para el envï¿½o de expedientes a Pamplona y Cantabria. Integraciï¿½n SIGA-Asigna o SIGA-Vereda. 
+5	PCAJG activo envï¿½o expedientes para Alcalï¿½ de Henares. 
+6 PCAJG activo para la integraciï¿½n con la Xunta de Galicia. 
+7 PCAJG activo para la integraciï¿½n con el Gobierno Vasco. 
+8 PCAJG activo para la integraciï¿½n con la Generalitat Valenciana. 
+9 PCAJG activo para la Junta de Andalucï¿½a.
 10 PCAJG activo para la integracion con Gobierno de Canarias#EU' where idrecurso='scs.parametro.pcajg.tipo' and idlenguaje='3';
 update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Tipo de PCAJG que usa el colegio: 
 0	PCAJG no activo. 
 1	PCAJG activo en modo TXT. 
 2	PCAJG activo en modo FTP para colegios catalanes. 
-3	PCAJG activo para colegios de Aragón. 
-4	PCAJG activo en modo WebService para el envío de expedientes a Pamplona y Cantabria. Integración SIGA-Asigna o SIGA-Vereda. 
-5	PCAJG activo envío expedientes para Alcalá de Henares. 
-6 PCAJG activo para la integración con la Xunta de Galicia. 
-7 PCAJG activo para la integración con el Gobierno Vasco. 
-8 PCAJG activo para la integración con la Generalitat Valenciana. 
-9 PCAJG activo para la Junta de Andalucía.
+3	PCAJG activo para colegios de Aragï¿½n. 
+4	PCAJG activo en modo WebService para el envï¿½o de expedientes a Pamplona y Cantabria. Integraciï¿½n SIGA-Asigna o SIGA-Vereda. 
+5	PCAJG activo envï¿½o expedientes para Alcalï¿½ de Henares. 
+6 PCAJG activo para la integraciï¿½n con la Xunta de Galicia. 
+7 PCAJG activo para la integraciï¿½n con el Gobierno Vasco. 
+8 PCAJG activo para la integraciï¿½n con la Generalitat Valenciana. 
+9 PCAJG activo para la Junta de Andalucï¿½a.
 10 PCAJG activo para la integracion con Gobierno de Canarias#GL' where idrecurso='scs.parametro.pcajg.tipo' and idlenguaje='4';
 
 -- Create/Recreate indexes 
@@ -257,14 +257,14 @@ create index SI_PERSONAJG_NIF on SCS_PERSONAJG (NIF, IDINSTITUCION)
   insert into GEN_PARAMETROS (MODULO, PARAMETRO, VALOR, FECHAMODIFICACION, USUMODIFICACION, IDINSTITUCION, IDRECURSO)
 values ('ECOM', 'INFORMEECONOMICO_WS_URL', 'personalizar por intitucion', sysdate, 0, 0, 'ecom.parametro.pcajg.informeeconomico.UrlWs');
 
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.informeeconomico.UrlWs', 'Url del servicio web de envío económico a la CAM', 0, '1', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.informeeconomico.UrlWs', 'Url del servicio web de envío económico a la CAM#CA', 0, '2', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.informeeconomico.UrlWs', 'Url del servicio web de envío económico a la CAM#EU', 0, '3', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.informeeconomico.UrlWs', 'Url del servicio web de envío económico a la CAM#GL', 0, '4', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.informeeconomico.UrlWs', 'Url del servicio web de envï¿½o econï¿½mico a la CAM', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.informeeconomico.UrlWs', 'Url del servicio web de envï¿½o econï¿½mico a la CAM#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.informeeconomico.UrlWs', 'Url del servicio web de envï¿½o econï¿½mico a la CAM#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('ecom.parametro.pcajg.informeeconomico.UrlWs', 'Url del servicio web de envï¿½o econï¿½mico a la CAM#GL', 0, '4', sysdate, 0, '19');
 
 --126_007: Ejecutados en Integracion por JTA el 14/09/2017 a las 14:07
 
-insert into ADM_CONTADOR (IDINSTITUCION, IDCONTADOR, NOMBRE, DESCRIPCION, MODIFICABLECONTADOR, MODO, CONTADOR, PREFIJO, SUFIJO, LONGITUDCONTADOR, FECHARECONFIGURACION, RECONFIGURACIONCONTADOR, RECONFIGURACIONPREFIJO, RECONFIGURACIONSUFIJO, IDTABLA, IDCAMPOCONTADOR, IDCAMPOPREFIJO, IDCAMPOSUFIJO, IDMODULO, GENERAL, FECHAMODIFICACION, USUMODIFICACION, FECHACREACION, USUCREACION) values (2003, 'REMESAECONOMICA', 'REMESA DE INFORMACION ECÓNOMICA DE EJGS', 'Contador para las remesas de informacion economica de EJGs', '1', 0, 0, '2017', null, 5, to_date('01-01-2018', 'dd-mm-yyyy'), '0', '2018', null, 'CAJG_REMESA', 'NUMERO', 'PREFIJO', 'SUFIJO', 10, '0', SYSDATE, 0, SYSDATE, -1);
+insert into ADM_CONTADOR (IDINSTITUCION, IDCONTADOR, NOMBRE, DESCRIPCION, MODIFICABLECONTADOR, MODO, CONTADOR, PREFIJO, SUFIJO, LONGITUDCONTADOR, FECHARECONFIGURACION, RECONFIGURACIONCONTADOR, RECONFIGURACIONPREFIJO, RECONFIGURACIONSUFIJO, IDTABLA, IDCAMPOCONTADOR, IDCAMPOPREFIJO, IDCAMPOSUFIJO, IDMODULO, GENERAL, FECHAMODIFICACION, USUMODIFICACION, FECHACREACION, USUCREACION) values (2003, 'REMESAECONOMICA', 'REMESA DE INFORMACION ECï¿½NOMICA DE EJGS', 'Contador para las remesas de informacion economica de EJGs', '1', 0, 0, '2017', null, 5, to_date('01-01-2018', 'dd-mm-yyyy'), '0', '2018', null, 'CAJG_REMESA', 'NUMERO', 'PREFIJO', 'SUFIJO', 10, '0', SYSDATE, 0, SYSDATE, -1);
 
 --126_007: Ejecutados en Integracion por JTA el 14/09/2017 a las 14:27
   
@@ -274,7 +274,7 @@ insert into gen_properties (fichero, parametro, valor) values ('SIGA', 'mail.smt
 --126_007: Ejecutados en Integracion por AAG el 18/09/2017 a las 12:42
 
 insert into ECOM_OPERACION (IDOPERACION, IDSERVICIO, NOMBRE, MAXREINTENTOS, ACTIVO, FECHAMODIFICACION, USUMODIFICACION)
-values (48, 5, 'Envío de informe económico a la CAM', 1, '1', sysdate, 0);
+values (48, 5, 'Envï¿½o de informe econï¿½mico a la CAM', 1, '1', sysdate, 0);
 
 --126_007: Ejecutados en Integracion por JTA el 18/09/2017 a las 14:55
 
@@ -291,23 +291,23 @@ delete cajg_ejgremesaestado where idestado in (2,3,4,5);
 F_SIGA_GETDIRECCIONCLIENTE
 
 Insert Into cer_camposcertificados (idcampocertificado, nombre, tipocampo, nombresalida, capturardatos, fechamodificacion, usumodificacion)
-Values (90, 'DIRECCION_FACTURACION', 'A', 'DIRECCION_FACTURACION (o de otra si no hay de Facturación)', 'N', Sysdate, 0);
+Values (90, 'DIRECCION_FACTURACION', 'A', 'DIRECCION_FACTURACION (o de otra si no hay de Facturaciï¿½n)', 'N', Sysdate, 0);
 Insert Into cer_camposcertificados (idcampocertificado, nombre, tipocampo, nombresalida, capturardatos, fechamodificacion, usumodificacion)
-Values (91, 'DOMICILIO_FACTURACION', 'A', 'DOMICILIO_FACTURACION (o de otra si no hay de Facturación)', 'N', Sysdate, 0);
+Values (91, 'DOMICILIO_FACTURACION', 'A', 'DOMICILIO_FACTURACION (o de otra si no hay de Facturaciï¿½n)', 'N', Sysdate, 0);
 Insert Into cer_camposcertificados (idcampocertificado, nombre, tipocampo, nombresalida, capturardatos, fechamodificacion, usumodificacion)
-Values (92, 'CODIGOPOSTAL_FACTURACION', 'A', 'CODIGOPOSTAL_FACTURACION (o de otra si no hay de Facturación)', 'N', Sysdate, 0);
+Values (92, 'CODIGOPOSTAL_FACTURACION', 'A', 'CODIGOPOSTAL_FACTURACION (o de otra si no hay de Facturaciï¿½n)', 'N', Sysdate, 0);
 Insert Into cer_camposcertificados (idcampocertificado, nombre, tipocampo, nombresalida, capturardatos, fechamodificacion, usumodificacion)
-Values (93, 'POBLACION_FACTURACION', 'A', 'POBLACION_FACTURACION (o de otra si no hay de Facturación)', 'N', Sysdate, 0);
+Values (93, 'POBLACION_FACTURACION', 'A', 'POBLACION_FACTURACION (o de otra si no hay de Facturaciï¿½n)', 'N', Sysdate, 0);
 Insert Into cer_camposcertificados (idcampocertificado, nombre, tipocampo, nombresalida, capturardatos, fechamodificacion, usumodificacion)
-Values (94, 'PROVINCIA_FACTURACION', 'A', 'PROVINCIA_FACTURACION (o de otra si no hay de Facturación)', 'N', Sysdate, 0);
+Values (94, 'PROVINCIA_FACTURACION', 'A', 'PROVINCIA_FACTURACION (o de otra si no hay de Facturaciï¿½n)', 'N', Sysdate, 0);
 Insert Into cer_camposcertificados (idcampocertificado, nombre, tipocampo, nombresalida, capturardatos, fechamodificacion, usumodificacion)
-Values (95, 'TELEFONO_FACTURACION', 'A', 'TELEFONO_FACTURACION (o de otra si no hay de Facturación)', 'N', Sysdate, 0);
+Values (95, 'TELEFONO_FACTURACION', 'A', 'TELEFONO_FACTURACION (o de otra si no hay de Facturaciï¿½n)', 'N', Sysdate, 0);
 Insert Into cer_camposcertificados (idcampocertificado, nombre, tipocampo, nombresalida, capturardatos, fechamodificacion, usumodificacion)
-Values (96, 'MOVIL_FACTURACION', 'A', 'MOVIL_FACTURACION (o de otra si no hay de Facturación)', 'N', Sysdate, 0);
+Values (96, 'MOVIL_FACTURACION', 'A', 'MOVIL_FACTURACION (o de otra si no hay de Facturaciï¿½n)', 'N', Sysdate, 0);
 Insert Into cer_camposcertificados (idcampocertificado, nombre, tipocampo, nombresalida, capturardatos, fechamodificacion, usumodificacion)
-Values (97, 'F_FACTURACION', 'A', 'FAX_FACTURACION (o de otra si no hay de Facturación)', 'N', Sysdate, 0);
+Values (97, 'F_FACTURACION', 'A', 'FAX_FACTURACION (o de otra si no hay de Facturaciï¿½n)', 'N', Sysdate, 0);
 Insert Into cer_camposcertificados (idcampocertificado, nombre, tipocampo, nombresalida, capturardatos, fechamodificacion, usumodificacion)
-Values (98, 'EMAIL_FACTURACION', 'A', 'EMAIL_FACTURACION (o de otra si no hay de Facturación)', 'N', Sysdate, 0);
+Values (98, 'EMAIL_FACTURACION', 'A', 'EMAIL_FACTURACION (o de otra si no hay de Facturaciï¿½n)', 'N', Sysdate, 0);
 
 Declare
   p_Codretorno Varchar2(4000);
@@ -322,18 +322,18 @@ End;
 
 
 Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
-Values  ('censo.fichaCliente.facturacion.servicios.avisobaja', '¡DE BAJA! - ', '0', 1, Sysdate, 0, '15');
+Values  ('censo.fichaCliente.facturacion.servicios.avisobaja', 'ï¿½DE BAJA! - ', '0', 1, Sysdate, 0, '15');
 Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
 Values  ('censo.fichaCliente.facturacion.servicios.avisobaja', 'DE BAIXA! - ', '0', 2, Sysdate, 0, '15');
 Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
-Values  ('censo.fichaCliente.facturacion.servicios.avisobaja', '¡DE BAJA! - #EU', '0', 3, Sysdate, 0, '15');
+Values  ('censo.fichaCliente.facturacion.servicios.avisobaja', 'ï¿½DE BAJA! - #EU', '0', 3, Sysdate, 0, '15');
 Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
-Values  ('censo.fichaCliente.facturacion.servicios.avisobaja', '¡DE BAJA! - #GL', '0', 4, Sysdate, 0, '15');
+Values  ('censo.fichaCliente.facturacion.servicios.avisobaja', 'ï¿½DE BAJA! - #GL', '0', 4, Sysdate, 0, '15');
 
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.cen.cargaWS.manual.activo', 'Parámetro que indica si está disponible el colegio para seleccionarlo en el combo para una sincronización manual del censo.', 0, '1', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.cen.cargaWS.manual.activo', 'Parámetro que indica si está disponible el colegio para seleccionarlo en el combo para una sincronización manual del censo.#CA', 0, '2', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.cen.cargaWS.manual.activo', 'Parámetro que indica si está disponible el colegio para seleccionarlo en el combo para una sincronización manual del censo.#EU', 0, '3', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.cen.cargaWS.manual.activo', 'Parámetro que indica si está disponible el colegio para seleccionarlo en el combo para una sincronización manual del censo.#GL', 0, '4', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.cen.cargaWS.manual.activo', 'Parï¿½metro que indica si estï¿½ disponible el colegio para seleccionarlo en el combo para una sincronizaciï¿½n manual del censo.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.cen.cargaWS.manual.activo', 'Parï¿½metro que indica si estï¿½ disponible el colegio para seleccionarlo en el combo para una sincronizaciï¿½n manual del censo.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.cen.cargaWS.manual.activo', 'Parï¿½metro que indica si estï¿½ disponible el colegio para seleccionarlo en el combo para una sincronizaciï¿½n manual del censo.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.cen.cargaWS.manual.activo', 'Parï¿½metro que indica si estï¿½ disponible el colegio para seleccionarlo en el combo para una sincronizaciï¿½n manual del censo.#GL', 0, '4', sysdate, 0, '19');
 
 
 insert into gen_parametros (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
@@ -351,10 +351,10 @@ Pkg_Siga_Retenciones_Sjcs
 
 PKG_SIGA_FACTURACION_SJCS
 
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.censo.ws.horaEjecucion', 'Indica la hora de ejecución de la petición de censo por WebService al colegio. Debería ser posterior al parámetro CEN_WS_CARGA_DIA_HORA porque si no se ejecuta mañana.', 0, '1', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.censo.ws.horaEjecucion', 'Indica la hora de ejecución de la petición de censo por WebService al colegio. Debería ser posterior al parámetro CEN_WS_CARGA_DIA_HORA porque si no se ejecuta mañana.#CA', 0, '2', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.censo.ws.horaEjecucion', 'Indica la hora de ejecución de la petición de censo por WebService al colegio. Debería ser posterior al parámetro CEN_WS_CARGA_DIA_HORA porque si no se ejecuta mañana.#EU', 0, '3', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.censo.ws.horaEjecucion', 'Indica la hora de ejecución de la petición de censo por WebService al colegio. Debería ser posterior al parámetro CEN_WS_CARGA_DIA_HORA porque si no se ejecuta mañana.#GL', 0, '4', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.censo.ws.horaEjecucion', 'Indica la hora de ejecuciï¿½n de la peticiï¿½n de censo por WebService al colegio. Deberï¿½a ser posterior al parï¿½metro CEN_WS_CARGA_DIA_HORA porque si no se ejecuta maï¿½ana.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.censo.ws.horaEjecucion', 'Indica la hora de ejecuciï¿½n de la peticiï¿½n de censo por WebService al colegio. Deberï¿½a ser posterior al parï¿½metro CEN_WS_CARGA_DIA_HORA porque si no se ejecuta maï¿½ana.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.censo.ws.horaEjecucion', 'Indica la hora de ejecuciï¿½n de la peticiï¿½n de censo por WebService al colegio. Deberï¿½a ser posterior al parï¿½metro CEN_WS_CARGA_DIA_HORA porque si no se ejecuta maï¿½ana.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('cen.parametro.censo.ws.horaEjecucion', 'Indica la hora de ejecuciï¿½n de la peticiï¿½n de censo por WebService al colegio. Deberï¿½a ser posterior al parï¿½metro CEN_WS_CARGA_DIA_HORA porque si no se ejecuta maï¿½ana.#GL', 0, '4', sysdate, 0, '19');
 
 
 insert into gen_parametros (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso)
@@ -434,15 +434,15 @@ alter table SCS_GRUPOGUARDIACOLEGIADO_HIST
 
   alter table ENV_LISTACORREOS modify nombre VARCHAR2(130);
 
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.grupos.confirmar.listacorreo', '¿Desea crear una lista de correo cuyos destinatarios sean las personas que pertenezcan a este grupo fijo? Pulse ACEPTAR para crear el grupo fijo y la lista de correo y CANCELAR para crear únicamente el grupo fijo.', 0, '1', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.grupos.confirmar.listacorreo', '¿Desea crear una lista de correo cuyos destinatarios sean las personas que pertenezcan a este grupo fijo? Pulse ACEPTAR para crear el grupo fijo y la lista de correo y CANCELAR para crear únicamente el grupo fijo.#CA', 0, '2', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.grupos.confirmar.listacorreo', '¿Desea crear una lista de correo cuyos destinatarios sean las personas que pertenezcan a este grupo fijo? Pulse ACEPTAR para crear el grupo fijo y la lista de correo y CANCELAR para crear únicamente el grupo fijo.#EU', 0, '3', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.grupos.confirmar.listacorreo', '¿Desea crear una lista de correo cuyos destinatarios sean las personas que pertenezcan a este grupo fijo? Pulse ACEPTAR para crear el grupo fijo y la lista de correo y CANCELAR para crear únicamente el grupo fijo.#GL', 0, '4', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.grupos.confirmar.listacorreo', 'ï¿½Desea crear una lista de correo cuyos destinatarios sean las personas que pertenezcan a este grupo fijo? Pulse ACEPTAR para crear el grupo fijo y la lista de correo y CANCELAR para crear ï¿½nicamente el grupo fijo.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.grupos.confirmar.listacorreo', 'ï¿½Desea crear una lista de correo cuyos destinatarios sean las personas que pertenezcan a este grupo fijo? Pulse ACEPTAR para crear el grupo fijo y la lista de correo y CANCELAR para crear ï¿½nicamente el grupo fijo.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.grupos.confirmar.listacorreo', 'ï¿½Desea crear una lista de correo cuyos destinatarios sean las personas que pertenezcan a este grupo fijo? Pulse ACEPTAR para crear el grupo fijo y la lista de correo y CANCELAR para crear ï¿½nicamente el grupo fijo.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.grupos.confirmar.listacorreo', 'ï¿½Desea crear una lista de correo cuyos destinatarios sean las personas que pertenezcan a este grupo fijo? Pulse ACEPTAR para crear el grupo fijo y la lista de correo y CANCELAR para crear ï¿½nicamente el grupo fijo.#GL', 0, '4', sysdate, 0, '19');
 
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.listacorreo.descripcion.automatica', 'Lista de correo creada automáticamente al crear el grupo fijo', 0, '1', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.listacorreo.descripcion.automatica', 'Lista de correo creada automáticamente al crear el grupo fijo#CA', 0, '2', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.listacorreo.descripcion.automatica', 'Lista de correo creada automáticamente al crear el grupo fijo#EU', 0, '3', sysdate, 0, '19');
-insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.listacorreo.descripcion.automatica', 'Lista de correo creada automáticamente al crear el grupo fijo#GL', 0, '4', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.listacorreo.descripcion.automatica', 'Lista de correo creada automï¿½ticamente al crear el grupo fijo', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.listacorreo.descripcion.automatica', 'Lista de correo creada automï¿½ticamente al crear el grupo fijo#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.listacorreo.descripcion.automatica', 'Lista de correo creada automï¿½ticamente al crear el grupo fijo#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.gestion.listacorreo.descripcion.automatica', 'Lista de correo creada automï¿½ticamente al crear el grupo fijo#GL', 0, '4', sysdate, 0, '19');
 
 --126_015: Ejecutados en Integracion por AAG el 15/12/2017 a las 14:45
 
@@ -452,24 +452,20 @@ Pkg_Siga_Retenciones_Sjcs
 
 --126_016: Ejecutados en Integracion por AAG el 05/01/2018 a las 09:45
 
-Update Gen_Recursos rec Set descripcion = 'La fecha efectiva de baja debe ser igual o posterior a la fecha de fin del último periodo facturado de dicho servicio ({0}).', fechamodificacion = Sysdate, usumodificacion = 0 Where rec.Idrecurso = 'messages.Servicios.GestionSolicitudes.FechaEfectivaMenorFacturacion' And rec.Idlenguaje = 1;
-Update Gen_Recursos rec Set descripcion = 'La data efectiva de baixa ha de ser igual o posterior a la data de fi de l''últim període facturat de dit servei ({0}).', fechamodificacion = Sysdate, usumodificacion = 0 Where rec.Idrecurso = 'messages.Servicios.GestionSolicitudes.FechaEfectivaMenorFacturacion' And rec.Idlenguaje = 2;
-Update Gen_Recursos rec Set descripcion = 'La fecha efectiva de baja debe ser igual o posterior a la fecha de fin del último periodo facturado de dicho servicio ({0}).#EU', fechamodificacion = Sysdate, usumodificacion = 0 Where rec.Idrecurso = 'messages.Servicios.GestionSolicitudes.FechaEfectivaMenorFacturacion' And rec.Idlenguaje = 3;
-Update Gen_Recursos rec Set descripcion = 'La fecha efectiva de baja debe ser igual o posterior a la fecha de fin del último periodo facturado de dicho servicio ({0}).#GL', fechamodificacion = Sysdate, usumodificacion = 0 Where rec.Idrecurso = 'messages.Servicios.GestionSolicitudes.FechaEfectivaMenorFacturacion' And rec.Idlenguaje = 4;
+Update Gen_Recursos rec Set descripcion = 'La fecha efectiva de baja debe ser igual o posterior a la fecha de fin del ï¿½ltimo periodo facturado de dicho servicio ({0}).', fechamodificacion = Sysdate, usumodificacion = 0 Where rec.Idrecurso = 'messages.Servicios.GestionSolicitudes.FechaEfectivaMenorFacturacion' And rec.Idlenguaje = 1;
+Update Gen_Recursos rec Set descripcion = 'La data efectiva de baixa ha de ser igual o posterior a la data de fi de l''ï¿½ltim perï¿½ode facturat de dit servei ({0}).', fechamodificacion = Sysdate, usumodificacion = 0 Where rec.Idrecurso = 'messages.Servicios.GestionSolicitudes.FechaEfectivaMenorFacturacion' And rec.Idlenguaje = 2;
+Update Gen_Recursos rec Set descripcion = 'La fecha efectiva de baja debe ser igual o posterior a la fecha de fin del ï¿½ltimo periodo facturado de dicho servicio ({0}).#EU', fechamodificacion = Sysdate, usumodificacion = 0 Where rec.Idrecurso = 'messages.Servicios.GestionSolicitudes.FechaEfectivaMenorFacturacion' And rec.Idlenguaje = 3;
+Update Gen_Recursos rec Set descripcion = 'La fecha efectiva de baja debe ser igual o posterior a la fecha de fin del ï¿½ltimo periodo facturado de dicho servicio ({0}).#GL', fechamodificacion = Sysdate, usumodificacion = 0 Where rec.Idrecurso = 'messages.Servicios.GestionSolicitudes.FechaEfectivaMenorFacturacion' And rec.Idlenguaje = 4;
 
 --126_016: Ejecutados en Integracion por AAG el 05/01/2018 a las 13:45
 
-<<<<<<< .mine
-F_SIGA_ROLES_CERTIFICADO.fnc
-
-=======
 --126_017:
 
 PKG_SIGA_FACTURACION_SJCS
 
 
 insert into GEN_PROCESOS (IDPROCESO, IDMODULO, TRAZA, TARGET, FECHAMODIFICACION, USUMODIFICACION, DESCRIPCION, TRANSACCION, IDPARENT, NIVEL)
- values ('99J', 'JGR', 1, 'Y', sysdate, 0, 'Gestión de Tipos de Asistencia', 'JGR_TipoAsistenciaColegio', '004', 10);
+ values ('99J', 'JGR', 1, 'Y', sysdate, 0, 'Gestiï¿½n de Tipos de Asistencia', 'JGR_TipoAsistenciaColegio', '004', 10);
  
 -- carga de permisos para colegios
 declare
@@ -588,3 +584,6 @@ end;
 
 
 F_SIGA_ROLES_CERTIFICADO.fnc
+
+--126_017: Ejecutados en Integracion por AAG el 29/01/2018 a las 09:40
+
