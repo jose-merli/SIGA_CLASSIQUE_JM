@@ -66,8 +66,8 @@
 												
 							<c:out value="${tipoAsistencia.descripcion}"/>&nbsp;
 						</td>
-						<td align="right"><c:out  value="${tipoAsistencia.importe}"/>&nbsp;</td>
-						<td align="right"><c:out value="${tipoAsistencia.importeMaximo}"/>&nbsp;</td>
+						<td align="right"><c:out  value="${tipoAsistencia.importeNoEditable}"/>&nbsp;</td>
+						<td align="right"><c:out value="${tipoAsistencia.importeMaximoNoEditable}"/>&nbsp;</td>
 						<td><c:out value="${tipoAsistencia.descripcionTiposGuardia}"/>&nbsp;</td>
 						
 					</siga:FilaConIconos>

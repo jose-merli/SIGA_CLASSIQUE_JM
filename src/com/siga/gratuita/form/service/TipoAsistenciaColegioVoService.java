@@ -84,10 +84,15 @@ public class TipoAsistenciaColegioVoService implements VoUiService<TipoAsistenci
 		objectForm.setIdInstitucion(objectVo.getIdInstitucion().toString());
 		objectForm.setIdTipoAsistenciaColegio(objectVo.getIdTipoAsistenciaColegio().toString());
 		objectForm.setDescripcion(objectVo.getDescripcion());
-		if(objectVo.getImporte()!=null)
-			objectForm.setImporte(UtilidadesString.formatoImporte(objectVo.getImporte()));
-		if(objectVo.getImporteMaximo()!=null)
-			objectForm.setImporteMaximo(UtilidadesString.formatoImporte(objectVo.getImporteMaximo()));
+		if(objectVo.getImporte()!=null){
+			objectForm.setImporte(UtilidadesNumero.formatoCampo(objectVo.getImporte()));
+			objectForm.setImporteNoEditable(UtilidadesString.formatoImporte(objectVo.getImporte()));
+		}
+		if(objectVo.getImporteMaximo()!=null){
+			objectForm.setImporteMaximo(UtilidadesNumero.formatoCampo(objectVo.getImporteMaximo()));
+			objectForm.setImporteMaximoNoEditable(UtilidadesString.formatoImporte(objectVo.getImporteMaximo()));
+		}
+		
 		if(objectVo.getVisibleMovil()!=null)
 			objectForm.setVisibleMovil(objectVo.getVisibleMovil().toString());
 		if(objectVo.getUsuModificacion()!=null)

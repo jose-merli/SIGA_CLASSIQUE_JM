@@ -74,7 +74,7 @@
 				<tr>	
 					
 					<td class="labelText">
-						<siga:Idioma key="gratuita.confGuardia.asistencia.importe"/>
+						<siga:Idioma key="gratuita.confGuardia.asistencia.importe"/>(*)
 					</td>
 					<td >	
 						<html:text name="formEdicion" styleId="importe" property="importe" styleClass="box" disabled="${disabled}"></html:text>
@@ -184,10 +184,23 @@
 		function accionGuardar() 
 		{
 			
-			document.forms.formEdicion.importeMaximo.value = replaceAll(document.forms.formEdicion.importeMaximo.value,'.','');
+			document.forms.formEdicion.importeMaximo.value = replaceAll(document.forms.formEdicion.importeMaximo.value,'.',',');
 			document.forms['formEdicion'].importeMaximo.value = replaceAll(document.forms['formEdicion'].importeMaximo.value,',','.');
-			document.forms['formEdicion'].importe.value = replaceAll(document.forms['formEdicion'].importe.value,'.','');
+			document.forms['formEdicion'].importe.value = replaceAll(document.forms['formEdicion'].importe.value,'.',',');
 			document.forms['formEdicion'].importe.value = replaceAll(document.forms['formEdicion'].importe.value,',','.');
+			error = ''
+			if(document.forms['formEdicion'].importe.value.split('.').length>2){
+				error += '<siga:Idioma key="errors.formato" arg0="gratuita.confGuardia.asistencia.importe" />'+'\n'; 
+				
+				
+			}
+			if(document.forms['formEdicion'].importeMaximo.value.split('.').length>2){
+				error += '<siga:Idioma key="errors.formato" arg0="gratuita.confGuardia.asistencia.importeMaximo" />'+'\n';
+			}
+			if(error!=''){
+				alert(error);
+				return false;
+			}
 			sub();
 			if (!validateTipoAsistenciaColegioForm(document.forms['formEdicion'])){
 			   	 fin();	 

@@ -22,7 +22,21 @@ public class TipoAsistenciaColegioForm extends MasterForm{
 	private String descripcion;             
 	private String importe;                 
 	private String importeMaximo;           
-    private String visibleMovil;            
+	private String importeNoEditable;                 
+	private String importeMaximoNoEditable;
+    public String getImporteNoEditable() {
+		return importeNoEditable;
+	}
+	public void setImporteNoEditable(String importeNoEditable) {
+		this.importeNoEditable = importeNoEditable;
+	}
+	public String getImporteMaximoNoEditable() {
+		return importeMaximoNoEditable;
+	}
+	public void setImporteMaximoNoEditable(String importeMaximoNoEditable) {
+		this.importeMaximoNoEditable = importeMaximoNoEditable;
+	}
+	private String visibleMovil;            
     private String bloqueado;
     private String usuModificacion;
     private String fechaModificacion;
