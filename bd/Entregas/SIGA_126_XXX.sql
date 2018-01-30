@@ -598,3 +598,9 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.confGuardia.asistencia.importeMaximo', 'Máximo As#GL', 0, '4', sysdate, 0, '19');
 
 --126_017: Ejecutados en Integracion por AAG el 29/01/2018 a las 12:40
+
+update gen_parametros set idinstitucion = 0 where parametro = 'CERT_WS_IPS_CLIENTE' and modulo = 'CER' and idinstitucion = 2000;
+update gen_parametros set idinstitucion = 0 where parametro = 'CERT_WS_ACTIVAR_CLIENTE' and modulo = 'CER' and idinstitucion = 2000;
+
+--126_017: Ejecutados en Integracion por Angel el 30/01/2018 a las 13:45
+
