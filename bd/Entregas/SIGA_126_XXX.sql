@@ -604,3 +604,12 @@ update gen_parametros set idinstitucion = 0 where parametro = 'CERT_WS_ACTIVAR_C
 
 --126_017: Ejecutados en Integracion por Angel el 30/01/2018 a las 13:45
 
+--126_018:
+
+El siguiente script solo ha de ejecutarse en PRO.
+Hay que pedir parada de SIGA y de ECOM previo a ejecutar este script, porque si no Falla : ORA-00054: recurso ocupado y obtenido con NOWAIT especificado o timeout vencido
+alter table ECOM_CEN_NOCOLEGIADO
+  add constraint FK_ECOM_CENSO_CEN_NOCOLEGIADO foreign key (IDINSTITUCION, IDPERSONA)
+  references CEN_NOCOLEGIADO (IDINSTITUCION, IDPERSONA)
+  deferrable
+
