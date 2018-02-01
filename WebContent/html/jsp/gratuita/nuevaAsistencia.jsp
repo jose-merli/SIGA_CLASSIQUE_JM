@@ -353,24 +353,27 @@
 		function rellenarComboLetrado(){
 			//Cuando es de ficha colegial no crea las funciones javascript que si genera el tag siga:BusquedaSJCS
 			fin();
-			rellenaTipoAsistencia();
 			<%if(bEsFichaColegial){%>
+				rellenaTipoAsistencia(document.getElementById('idTipoAsistenciaColegio').value);
 				return true;
 			<%}else if(bEsClonacion){%>
 				if (contador<=0){
+					rellenaTipoAsistencia(document.getElementById('idTipoAsistenciaColegio').value);
 					contador++;
 					return true;
 				}else{
 					rellenarComboGuardia();
+					rellenaTipoAsistencia(document.getElementById('idTipoAsistenciaColegio').value);
 				}
 			<%}else{%>
 				rellenarComboGuardia();
+				rellenaTipoAsistencia(document.getElementById('idTipoAsistenciaColegio').value);
 			<%}%>
 			
 			
 		}
 	jQuery.noConflict();
-	function rellenaTipoAsistencia() {
+	function rellenaTipoAsistencia(idtipoAsistenciaSelecionado) {
 		var idGuardia = document.getElementById('guardias').value;
 		var idTurno = document.getElementById('turnos').value;
 		var comboTipoAsistenciaColegio = document.getElementById('idTipoAsistenciaColegio');
@@ -387,7 +390,11 @@
 						jQuery("#idTipoAsistenciaColegio").append("<option  value=''>"+txtSelect+"</option>");
 						var tiposAsistenciaColegio = json.tiposAsistenciaColegio;
 	         				jQuery.each(tiposAsistenciaColegio, function(i,tipoAsistenciaColegio){
-	                        jQuery("#idTipoAsistenciaColegio").append("<option value='"+tipoAsistenciaColegio.idTipoAsistenciaColegio+"'>"+tipoAsistenciaColegio.descripcion+"</option>");
+	         					selected = "";
+	         					if(idtipoAsistenciaSelecionado && idtipoAsistenciaSelecionado==tipoAsistenciaColegio.idTipoAsistenciaColegio)
+	         						selected = 'selected';
+	         						
+	                        jQuery("#idTipoAsistenciaColegio").append("<option value='"+tipoAsistenciaColegio.idTipoAsistenciaColegio+"' "+selected+" >"+tipoAsistenciaColegio.descripcion+"</option>");
 	                        
 	                    });
 		       			
