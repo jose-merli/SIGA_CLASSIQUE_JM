@@ -613,3 +613,5 @@ alter table ECOM_CEN_NOCOLEGIADO
   references CEN_NOCOLEGIADO (IDINSTITUCION, IDPERSONA)
   deferrable
 
+--126_018: Oido
+
