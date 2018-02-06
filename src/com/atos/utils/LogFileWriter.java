@@ -3,8 +3,10 @@ package com.atos.utils;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.text.ParseException;
 import java.util.ArrayList;
-
+import com.siga.Utilidades.UtilidadesFecha;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 
 public class LogFileWriter
@@ -103,6 +105,29 @@ public class LogFileWriter
 				line.add(col);
 		}
 		this.addLog(line);
+	}
+	/**
+	 * This method adds a line to a buffer. If a column is an idrecurso, then it uses the language parameter to write the proper translation.
+	 * Note: it doesn't write to file: to do this, use flush()
+	 */
+	public void addLog(String[] cols, String language) throws SIGAException
+	{
+		ArrayList<String> line = new ArrayList<String>();
+		for (String col : cols) {
+			if (col != null)
+				line.add(UtilidadesString.getMensajeIdioma(language, col));
+		}
+		this.addLog(line);
+	}
+	/**
+	 * This method adds a line to a buffer. If a column is an idrecurso, then it uses the language parameter to write the proper translation.
+	 * Finally it writes all to file
+	 * @throws ParseException 
+	 */
+	public void addLogWithDateAndFlush(String message, String language) throws SIGAException, ParseException
+	{
+		this.addLog(new String[] { UtilidadesFecha.getToday(ClsConstants.DATE_FORMAT_LONG_SPANISH), message }, language);
+		this.flush();
 	}
 	
 	/**

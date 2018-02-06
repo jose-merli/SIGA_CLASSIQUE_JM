@@ -168,6 +168,7 @@
 		<form-bean name="MantenimientoCertificadosForm" type="com.siga.certificados.form.SIGAMantenimientoCertificadosForm"/>
 		<form-bean name="MantenimientoCertificadosCamposForm" type="com.siga.certificados.form.SIGAMantenimientoCertificadosCamposForm"/>
 		<form-bean name="MantenimientoCertificadosPlantillasForm" type="com.siga.certificados.form.SIGAMantenimientoCertificadosPlantillasForm"/>
+		<form-bean name="MantenimientoCertificadosIncompatibilidadesForm" type="com.siga.certificados.form.SIGAMantenimientoCertificadosIncompatibilidadesForm"/>
 		<form-bean name="SolicitudesCertificadosForm" type="com.siga.certificados.form.SIGASolicitudesCertificadosForm"/>
 		<form-bean name="SolicitudCertificadoForm" type="com.siga.certificados.form.SIGASolicitudCertificadoForm"/>
 
@@ -1834,21 +1835,22 @@
 			<forward name="buscar" path="/html/jsp/certificados/buscarListadoCertificados.jsp"/>
 			<forward name="abrirPestanas" path="/html/jsp/certificados/abrirPestanasCertificados.jsp"/>
 		</action>
-
-		<!-- ***** Certificados / Mantenimiento de Certificados / Campos *****
--->
+		<!-- ***** Certificados / Mantenimiento de Certificados / Campos ***** -->
 		<action path="/CER_Campos" type="com.siga.certificados.action.SIGAMantenimientoCertificadosCamposAction" name="MantenimientoCertificadosCamposForm" scope="request">
 			<forward name="abrir" path="/html/jsp/certificados/pestanaCampos.jsp"/>
 			<forward name="mostrar" path="/html/jsp/certificados/detalleRegistroCamposCertificado.jsp"/>
 			<forward name="cargar" path="/html/jsp/certificados/detalleRegistroCamposCertificadoTodos.jsp"/>
 		</action>
-
-		<!-- ***** Certificados / Mantenimiento de Certificados / Plantillas *****
--->
+		<!-- ***** Certificados / Mantenimiento de Certificados / Plantillas ***** -->
 		<action path="/CER_Plantillas" type="com.siga.certificados.action.SIGAMantenimientoCertificadosPlantillasAction" name="MantenimientoCertificadosPlantillasForm" scope="request">
 			<forward name="abrir" path="/html/jsp/certificados/pestanaPlantillas.jsp"/>
 			<forward name="mostrar" path="/html/jsp/certificados/detalleRegistroPlantillasCertificado.jsp"/>
 			<forward name="mostrarPestanas" path="/html/jsp/certificados/pestanasRelacionPlantillas.jsp"/>	
+		</action>
+		<!-- ***** Certificados / Mantenimiento de Certificados / Incompatibilidades ***** -->
+		<action path="/CER_Incompatibilidades" type="com.siga.certificados.action.SIGAMantenimientoCertificadosIncompatibilidadesAction" name="MantenimientoCertificadosIncompatibilidadesForm" scope="request">
+			<forward name="abrir" path="/html/jsp/certificados/pestanaIncompatibilidades.jsp"/>
+			<forward name="mostrar" path="/html/jsp/certificados/detalleRegistroIncompatibilidadCertificado.jsp"/>
 		</action>
 
 		<!-- ***** Certificados / Informes ***** -->

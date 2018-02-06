@@ -1451,7 +1451,23 @@ public class CenColegiadoAdm extends MasterBeanAdmVisible
 		}
 		return colegiaciones;
 	}
-	
+
+	public CenColegiadoBean getPrimeraColegiacion(String idPersona) throws ClsExceptions, SIGAException
+	{
+		CenColegiadoBean colegiacion = null;
+		try {
+			Hashtable<String, String> hash = new Hashtable<String, String>();
+			UtilidadesHash.set(hash, CenColegiadoBean.C_IDPERSONA, idPersona);
+			Vector<CenColegiadoBean> v = this.selectBindSorted(hash, new String[] { CenColegiadoBean.C_FECHAINCORPORACION });
+			if ((v != null) && (v.size() > 0)) {
+				colegiacion = v.firstElement();
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error al recuperar los datos");
+		}
+		return colegiacion;
+	}
+
 	/** 
 	 * aalg. inc 504
 	 * Procesa la actualización del campo SITUACIONEJERCICIO según la fecha actual y los estados

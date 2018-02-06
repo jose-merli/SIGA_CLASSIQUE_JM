@@ -37,39 +37,8 @@ import com.siga.administracion.SIGAConstants;
 import com.siga.certificados.form.SIGASolicitudesCertificadosForm;
 import com.siga.general.SIGAException;
 
-public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
-	public static final String K_ESTADO_SOL_PEND="1";
-	public static final String K_ESTADO_SOL_APROBADO="2";
-	public static final String K_ESTADO_SOL_APROBANDO="7";
-	public static final String K_ESTADO_SOL_FINALIZANDO="8";
-	public static final String K_ESTADO_SOL_FACTURANDO="9";
-	public static final String K_ESTADO_SOL_GENERANDO_APROBADO="11";
-	public static final String K_ESTADO_SOL_GENERANDO_PENDIENTE_DE_FACTURAR="12";
-	public static final String K_ESTADO_SOL_GENERANDO_FINALIZADO="13";
-	public static final String K_ESTADO_SOL_ENVIOP="3";
-	public static final String K_ESTADO_SOL_FINALIZADO="4";
-	public static final String K_ESTADO_SOL_DENEGADO="5";
-	public static final String K_ESTADO_SOL_ANULADO="6";
-	public static final String K_ESTADO_SOL_PEND_FACTURAR="10";
-	public static final String K_ESTADO_CER_INICIAL="1";
-	public static final String K_ESTADO_CER_PEND="2";
-	public static final String K_ESTADO_CER_GENERADO="3";
-	public static final String K_ESTADO_CER_FIRMADO="4";
-	public static final String K_ESTADO_CER_ERRORGENERANDO="5";
-	
-	public static final int C_ESTADO_SOL_PEND								=1;
-	public static final int C_ESTADO_SOL_APROBADO							=2;
-	public static final int C_ESTADO_SOL_APROBANDO							=7;
-	public static final int C_ESTADO_SOL_FINALIZANDO						=8;
-	public static final int C_ESTADO_SOL_FACTURANDO							=9;
-	public static final int C_ESTADO_SOL_GENERANDO_APROBADO					=11;
-	public static final int C_ESTADO_SOL_GENERANDO_PENDIENTE_DE_FACTURAR	=12;
-	public static final int C_ESTADO_SOL_GENERANDO_FINALIZADO				=13;
-	public static final int C_ESTADO_SOL_ENVIOP								=3;
-	public static final int C_ESTADO_SOL_FINALIZADO							=4;
-	public static final int C_ESTADO_SOL_DENEGADO							=5;
-	public static final int C_ESTADO_SOL_ANULADO							=6;
-	public static final int C_ESTADO_SOL_PEND_FACTURAR						=10;
+public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
+{
 	public static final int C_ESTADO_CER_INICIAL							=1;
 	public static final int C_ESTADO_CER_PEND								=2;
 	public static final int C_ESTADO_CER_GENERADO							=3;
@@ -123,6 +92,8 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 		        		   CerSolicitudCertificadosBean.C_FECHAENTREGAINFO,
 		        		   CerSolicitudCertificadosBean.C_FECHAMODIFICACION,
 		        		   CerSolicitudCertificadosBean.C_IDMETODOSOLICITUD,
+		        		   CerSolicitudCertificadosBean.C_IDMOTIVOSOLICITUD,
+		        		   CerSolicitudCertificadosBean.C_IDMOTIVOANULACION,
 		        		   CerSolicitudCertificadosBean.C_USUMODIFICACION,
 		        		   CerSolicitudCertificadosBean.C_CBO_CODIGO,
 		        		   CerSolicitudCertificadosBean.C_ACEPTACESIONMUTUALIDAD,
@@ -164,6 +135,8 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 		        		   CerSolicitudCertificadosBean.C_FECHAENTREGAINFO,
 		        		   CerSolicitudCertificadosBean.C_FECHAMODIFICACION,
 		        		   CerSolicitudCertificadosBean.C_IDMETODOSOLICITUD,
+		        		   CerSolicitudCertificadosBean.C_IDMOTIVOSOLICITUD,
+		        		   CerSolicitudCertificadosBean.C_IDMOTIVOANULACION,
 		        		   CerSolicitudCertificadosBean.C_USUMODIFICACION,
 		        		   CerSolicitudCertificadosBean.C_FECHACREACION,
 		        		   CerSolicitudCertificadosBean.C_USUCREACION,
@@ -220,6 +193,8 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 			bean.setFechaEnvio(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_FECHAENVIO));
 			bean.setComentario(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_COMENTARIO));
 			bean.setMetodoSolicitud(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_IDMETODOSOLICITUD));
+			bean.setIdMotivoSolicitud(UtilidadesHash.getInteger(hash, CerSolicitudCertificadosBean.C_IDMOTIVOSOLICITUD));
+			bean.setIdMotivoAnulacion(UtilidadesHash.getInteger(hash, CerSolicitudCertificadosBean.C_IDMOTIVOANULACION));
 			bean.setFechaMod(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, CerSolicitudCertificadosBean.C_USUMODIFICACION));
 			bean.setFechaCreacion(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_FECHACREACION));
@@ -280,6 +255,8 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_FECHAENVIO, b.getFechaEnvio());
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_COMENTARIO, b.getComentario());
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_IDMETODOSOLICITUD, b.getMetodoSolicitud());
+			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_IDMOTIVOSOLICITUD, b.getIdMotivoSolicitud());
+			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_IDMOTIVOANULACION, b.getIdMotivoAnulacion());
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_USUMODIFICACION, b.getUsuMod());
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_FECHACREACION, b.getFechaCreacion());
@@ -737,6 +714,18 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 			sql.append(", ");
 			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
 			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_PREFIJO_CER);
+			sql.append(", ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_CONTADOR_CER);
+			sql.append(", ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_SUFIJO_CER);
+			sql.append(", ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
 			sql.append(CerSolicitudCertificadosBean.C_IDINSTITUCION);
 			sql.append(", ");
 			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
@@ -798,39 +787,79 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 			sql.append(CenPersonaBean.T_NOMBRETABLA);
 			sql.append(".");
 			sql.append(CenPersonaBean.C_NOMBRE);
-			sql.append(" AS CLIENTE, INSO.");
+			sql.append(" AS CLIENTE, ");
+			
+			sql.append(" (Select INSO.");
 			sql.append(CenInstitucionBean.C_ABREVIATURA);
-			sql.append(" AS INSTITUCIONORIGEN, INSD.");
+			sql.append("    From ");
+			sql.append(CenInstitucionBean.T_NOMBRETABLA);
+			sql.append(" INSO Where ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN);
+			sql.append(" = INSO.");
+			sql.append(CenInstitucionBean.C_IDINSTITUCION);
+			sql.append(" ) AS INSTITUCIONORIGEN, ");
+			
+			sql.append(" (Select INSD.");
 			sql.append(CenInstitucionBean.C_ABREVIATURA);
-			sql.append(" AS INSTITUCIONDESTINO, ");					 
+			sql.append("    From ");
+			sql.append(CenInstitucionBean.T_NOMBRETABLA);
+			sql.append(" INSD Where ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO);
+			sql.append(" = INSD.");
+			sql.append(CenInstitucionBean.C_IDINSTITUCION);
+			sql.append(" ) AS INSTITUCIONDESTINO, ");
+			
+			sql.append(" (Select ");
 			sql.append(CerEstadoSoliCertifiBean.T_NOMBRETABLA);
 			sql.append(".");
 			sql.append(CerEstadoSoliCertifiBean.C_DESCRIPCION);
-			sql.append(" AS ESTADOSOLICITUD, "); 					
+			sql.append("    From ");
+			sql.append(CerEstadoSoliCertifiBean.T_NOMBRETABLA);
+			sql.append("   Where ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO);
+			sql.append(" = ");
+			sql.append(CerEstadoSoliCertifiBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerEstadoSoliCertifiBean.C_IDESTADOSOLICITUDCERTIFICADO);
+			sql.append(" ) AS ESTADOSOLICITUD, ");
+			
+			sql.append(" (Select ");
 			sql.append(CerEstadoCertificadoBean.T_NOMBRETABLA);
 			sql.append(".");
 			sql.append(CerEstadoCertificadoBean.C_DESCRIPCION);
-			sql.append(" AS ESTADOCERTIFICADO FROM ");
+			sql.append("    From ");
+			sql.append(CerEstadoCertificadoBean.T_NOMBRETABLA);
+			sql.append("   Where ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO);
+			sql.append(" = ");
+			sql.append(CerEstadoCertificadoBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerEstadoCertificadoBean.C_IDESTADOCERTIFICADO);
+			sql.append(" ) AS ESTADOCERTIFICADO ");
+			
+			
+			sql.append("  FROM ");
 			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
 			sql.append(", "); 
 			sql.append(PysProductosInstitucionBean.T_NOMBRETABLA);
 			sql.append(", "); 
 			sql.append(CenPersonaBean.T_NOMBRETABLA);
-			sql.append(", ");
-			sql.append(CenInstitucionBean.T_NOMBRETABLA);
-			sql.append(" INSO, ");
-			sql.append(CenInstitucionBean.T_NOMBRETABLA);
-			sql.append(" INSD, ");
-			sql.append(CerEstadoSoliCertifiBean.T_NOMBRETABLA);
-			sql.append(", ");
-			sql.append(CerEstadoCertificadoBean.T_NOMBRETABLA);
 
 			String numeroColegiado = form.getBusquedaNumCol();
 			if (numeroColegiado != null && !numeroColegiado.equals("")) {
 				sql.append(", ");
-				sql.append(CenColegiadoBean.T_NOMBRETABLA);;
+				sql.append(CenColegiadoBean.T_NOMBRETABLA);
 			}
 
+			
 			sql.append(" WHERE ");
 			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
 			sql.append(".");
@@ -877,34 +906,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 			sql.append(PysProductosInstitucionBean.T_NOMBRETABLA);
 			sql.append(".");
 			sql.append(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION);
-			sql.append(" AND ");
-			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
-			sql.append(".");
-			sql.append(CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN);
-			sql.append(" = INSO.");
-			sql.append(CenInstitucionBean.C_IDINSTITUCION);
-			sql.append("(+) AND ");
-			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
-			sql.append(".");
-			sql.append(CerSolicitudCertificadosBean.C_IDINSTITUCIONDESTINO);
-			sql.append(" = INSD.");
-			sql.append(CenInstitucionBean.C_IDINSTITUCION);
-			sql.append("(+) AND ");
-			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
-			sql.append(".");
-			sql.append(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO);
-			sql.append(" = ");
-			sql.append(CerEstadoSoliCertifiBean.T_NOMBRETABLA);
-			sql.append(".");
-			sql.append(CerEstadoSoliCertifiBean.C_IDESTADOSOLICITUDCERTIFICADO);
-			sql.append(" AND ");
-			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
-			sql.append(".");
-			sql.append(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO);
-			sql.append(" = ");
-			sql.append(CerEstadoCertificadoBean.T_NOMBRETABLA);
-			sql.append(".");
-			sql.append(CerEstadoCertificadoBean.C_IDESTADOCERTIFICADO);
+
 			
 			String fDesde = form.getFechaDesde(); 
 			String fHasta = form.getFechaHasta(); 
@@ -939,9 +941,9 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 				sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
 				sql.append(".");
 				sql.append(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO);
-				sql.append(" = ");
+				sql.append(" in ( ");
 				sql.append(estadoSolicitud.trim());
-				
+				sql.append(" ) ");
 			} 
 
 			String tipoCertificado = form.getBusquedaTipoCertificado();
@@ -1098,11 +1100,11 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 				sqlAux.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
 				sqlAux.append(".");
 				sqlAux.append(CerSolicitudCertificadosBean.C_CONTADOR_CER);
-				sqlAux.append(", (SELECT NVL(");
+				sqlAux.append(", NVL((SELECT ");
 				sqlAux.append(AdmContadorBean.T_NOMBRETABLA);
 				sqlAux.append(".");
 				sqlAux.append(AdmContadorBean.C_LONGITUDCONTADOR);
-				sqlAux.append(", 1) FROM ");
+				sqlAux.append(" FROM ");
 				sqlAux.append(AdmContadorBean.T_NOMBRETABLA); 
 				sqlAux.append(" WHERE ");
 				sqlAux.append(PysProductosInstitucionBean.T_NOMBRETABLA);
@@ -1120,7 +1122,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 				sqlAux.append(AdmContadorBean.T_NOMBRETABLA);
 				sqlAux.append(".");
 				sqlAux.append(AdmContadorBean.C_IDINSTITUCION); 
-				sqlAux.append("), '0'), '') || NVL(");
+				sqlAux.append("), 1), '0'), '') || NVL(");
 				sqlAux.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
 				sqlAux.append(".");
 				sqlAux.append(CerSolicitudCertificadosBean.C_SUFIJO_CER);
@@ -1260,7 +1262,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 				solicConsejoBean.setIdPersona_Des(Long.valueOf(idPersona));
 				solicConsejoBean.setIdInstitucionOrigen(Integer.valueOf(idInstOrigen));
 				solicConsejoBean.setIdInstitucionDestino(Integer.valueOf(idInstDestino));
-				solicConsejoBean.setIdEstadoSolicitudCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND));
+				solicConsejoBean.setIdEstadoSolicitudCertificado(Integer.valueOf(CerEstadoSoliCertifiAdm.C_ESTADO_SOL_PEND));
 				solicConsejoBean.setDescripcion(descripcion);
 				if (fechaSolicitud.equalsIgnoreCase("")) {
 					solicConsejoBean.setFechaSolicitud("SYSDATE");
@@ -1272,7 +1274,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 				}
 				solicConsejoBean.setFechaEstado("SYSDATE");
 				solicConsejoBean.setIdInstitucion_Sol(Integer.valueOf(idInstitucion));
-				solicConsejoBean.setIdEstadoCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));
+				solicConsejoBean.setIdEstadoCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.C_ESTADO_CER_INICIAL));
 
 				solicConsejoBean.setFechaCreacion("SYSDATE");
 				solicConsejoBean.setUsuCreacion(new Integer(user.getUserName()));		
@@ -1313,12 +1315,12 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 						solicColegioBean.setIdPersona_Des(Long.valueOf(idPersona));
 						solicColegioBean.setIdInstitucionOrigen(Integer.valueOf(idInstOrigen));
 						solicColegioBean.setIdInstitucionDestino(Integer.valueOf(idInstDestino));
-						solicColegioBean.setIdEstadoSolicitudCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND));
+						solicColegioBean.setIdEstadoSolicitudCertificado(Integer.valueOf(CerEstadoSoliCertifiAdm.C_ESTADO_SOL_PEND));
 						solicColegioBean.setDescripcion(descripcion);
 						solicColegioBean.setFechaSolicitud("SYSDATE");
 						solicColegioBean.setFechaEstado("SYSDATE");
 						solicColegioBean.setIdInstitucion_Sol(Integer.valueOf(idInstitucion));
-						solicColegioBean.setIdEstadoCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));
+						solicColegioBean.setIdEstadoCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.C_ESTADO_CER_INICIAL));
 						solicColegioBean.setFechaCreacion("SYSDATE");
 						solicColegioBean.setUsuCreacion(new Integer(user.getUserName()));	
 						this.insertCertificado(this.beanToHashTable(solicColegioBean));
@@ -1334,13 +1336,13 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 						solicBean.setIdInstitucionOrigen(Integer.valueOf(idInstOrigen));
 						solicBean.setIdInstitucionDestino(Integer.valueOf(idInstDestino));
 						solicBean.setDescripcion(descripcion);
-						String estado = instAdm.tieneSIGA(Integer.valueOf(idInstOrigen)) ? CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO
-								: CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND;
+						String estado = ""+ (instAdm.tieneSIGA(Integer.valueOf(idInstOrigen)) ? CerEstadoSoliCertifiAdm.C_ESTADO_SOL_FINALIZADO
+								: CerEstadoSoliCertifiAdm.C_ESTADO_SOL_PEND);
 						solicBean.setIdEstadoSolicitudCertificado(Integer.valueOf(estado));
 						solicBean.setFechaSolicitud("SYSDATE");
 						solicBean.setFechaEstado("SYSDATE");
 						solicBean.setIdInstitucion_Sol(Integer.valueOf(idInstitucion));
-						solicBean.setIdEstadoCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_CER_INICIAL));
+						solicBean.setIdEstadoCertificado(Integer.valueOf(CerSolicitudCertificadosAdm.C_ESTADO_CER_INICIAL));
 						solicBean.setFechaCreacion("SYSDATE");
 						solicBean.setUsuCreacion(new Integer(user.getUserName()));	
 						this.insertCertificado(this.beanToHashTable(solicBean));
@@ -1597,38 +1599,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
     	}
 		return salida;
     }
-/*
-    public String obtenerTextoHistoricoParaCertificado(String idInstitucion, String idPersona, UsrBean user) throws ClsExceptions 
-	{
-    	String salida = "";
-    	try {
-    		String sql = " SELECT TO_CHAR (d." + CenDatosColegialesEstadoBean.C_FECHAESTADO + ",'dd-mm-yyyy') FECHA, " + UtilidadesMultidioma.getCampoMultidiomaSimple("e." + CenEstadoColegialBean.C_DESCRIPCION, user.getLanguage()) + " DESCRIPCION " + 
-    				       " FROM " + CenDatosColegialesEstadoBean.T_NOMBRETABLA + " d, " + CenEstadoColegialBean.T_NOMBRETABLA + " e " +
-    				      " WHERE " + CenDatosColegialesEstadoBean.C_IDPERSONA + " = " + idPersona +
-    				        " AND " + CenDatosColegialesEstadoBean.C_IDINSTITUCION + " = " + idInstitucion +
-    				        " AND d." + CenDatosColegialesEstadoBean.C_IDESTADO + " = e." + CenEstadoColegialBean.C_IDESTADO +
-						  " ORDER BY d." + CenDatosColegialesEstadoBean.C_FECHAESTADO + " ASC ";
-    			// NO SE METE LA CONDICION DE QUE  "AND CEN_DATOSCOLEGIALESESTADO.FECHAESTADO <= SYSDATE"
-    			// PARA QUE SALGAN TODOS, INCLUSO LOS FUTUROS.
-    		
-    		Vector v = this.selectGenerico(sql);
-    		for (int i = 0; i < v.size(); i++) {
-    			Hashtable h = (Hashtable) v.get(i);
-    			
-    			salida += UtilidadesHash.getString(h, "FECHA") + " " + 
-				          UtilidadesString.getMensajeIdioma(user, "certificados.solicitudes.literal.copiarHistorico.pasaA") + " " + 
-						  UtilidadesHash.getString(h, "DESCRIPCION") + "\n\r"; 
-    		}
-    		
-    		if (salida.length() > 1) salida = salida.substring(0, salida.length() - 1);
-    		
-    		salida = UtilidadesString.escape(salida);
-    	} 
-    	catch (Exception e) {
-    		throw new ClsExceptions(e,"Error al obtener Historico.");
-    	}
-		return salida;
-    }*/
+
     public String getTextoHistoricoEstados(String idInstitucion, String idPersona, UsrBean user, boolean isIncluirLiteratura) throws ClsExceptions{
 	    StringBuffer sql = new StringBuffer();
 	    sql.append(" SELECT ");
@@ -1671,9 +1642,8 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 	    sql.append(" ORDER BY d."); 
 	    sql.append( CenDatosColegialesEstadoBean.C_FECHAESTADO); 
 	    sql.append( " ASC ");
-	//  NO SE METE LA CONDICION DE QUE "AND CEN_DATOSCOLEGIALESESTADO.FECHAESTADO <=
-	//  SYSDATE"
-	//  PARA QUE SALGAN TODOS, INCLUSO LOS FUTUROS.
+	    //  NO SE METE LA CONDICION "AND CEN_DATOSCOLEGIALESESTADO.FECHAESTADO <= SYSDATE"
+	    //  PARA QUE SALGAN TODOS, INCLUSO LOS FUTUROS.
                             
 	    Vector v;
 	    String sTexto = null;
@@ -2068,6 +2038,70 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador {
 		return correcto;
 
 	}		
+	
+	/**
+	 * Este metodo obtiene los certificados que tiene una persona en una institucion que no sean el pasado como parametro y que esten activos, 
+	 * es decir por ejemplo no devuelve los anulados
+	 * 
+	 * @param idInstitucion
+	 * @param idPersona
+	 * @param idSolicitud
+	 * @return
+	 * @throws ClsExceptions
+	 */
+	public Vector getCertificadosActivosPersonaInstitucionOrdenados(String idInstitucion, String idPersona, String idSolicitud) throws ClsExceptions {
+		StringBuffer sql = new StringBuffer();
+		sql.append("select Cer.* from ");
+		sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+		sql.append(" Cer, ");
+		sql.append(PysProductosInstitucionBean.T_NOMBRETABLA);
+		sql.append(" Pro");
+		sql.append(" where Cer.");
+		sql.append(CerSolicitudCertificadosBean.C_IDINSTITUCION);
+		sql.append(" = ");
+		sql.append(idInstitucion);
+		sql.append("   and Cer.");
+		sql.append(CerSolicitudCertificadosBean.C_IDPERSONA_DES);
+		sql.append(" = ");
+		sql.append(idPersona);	
+		sql.append("   And Cer.");
+		sql.append(CerSolicitudCertificadosBean.C_IDSOLICITUD);
+		sql.append(" <> ");
+		sql.append(idSolicitud);
+		sql.append("   and Cer.");
+		sql.append(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO);
+		sql.append(" in ( ");
+		sql.append(CerEstadoSoliCertifiAdm.K_ESTADOS_SOL_DESDEAPROBADO);	
+		sql.append(" ) ");
+		
+		sql.append("   and Cer.");
+		sql.append(CerSolicitudCertificadosBean.C_IDINSTITUCION);
+		sql.append(" = Pro.");
+		sql.append(PysProductosInstitucionBean.C_IDINSTITUCION);	
+		sql.append("   and Cer.");
+		sql.append(CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO);
+		sql.append(" = Pro.");
+		sql.append(PysProductosInstitucionBean.C_IDTIPOPRODUCTO);	
+		sql.append("   and Cer.");
+		sql.append(CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO);
+		sql.append(" = Pro.");
+		sql.append(PysProductosInstitucionBean.C_IDPRODUCTO);	
+		sql.append("   and Cer.");
+		sql.append(CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION);
+		sql.append(" = Pro.");
+		sql.append(PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION);
+		sql.append(" order by Pro.");
+		sql.append(PysProductosInstitucionBean.C_ORDEN);
+		
+		Vector registros;
+		try {
+			registros = this.selectGenerico(sql.toString());
+		} catch (SIGAException e) {
+			throw new ClsExceptions(e,"Error al buscar los certificado de una persona en una institución. ");
+		}
+		return registros;
+	}
+
 	
 	public String getContador(String idInstitucion) throws ClsExceptions
 	{    	

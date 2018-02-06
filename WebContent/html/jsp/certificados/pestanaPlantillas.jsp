@@ -104,6 +104,7 @@
 		<tr>		
 			<td class="titulitosDatos">
 				<siga:Idioma key="certificados.mantenimiento.literal.certificado"/>:&nbsp;<%=descCertificado%>
+			</td>
 		</tr>
 	</table>		
 

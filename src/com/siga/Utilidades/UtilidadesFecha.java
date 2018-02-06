@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -11,6 +12,21 @@ import com.atos.utils.ClsExceptions;
 public class UtilidadesFecha {
 
 	public static String FORMATO_FECHA_ES = "dd/MM/yyyy";
+
+	/**
+	 * Turns a date into an string, using the format as parameter.
+	 * @param date
+	 * @param format
+	 * @return
+	 * @throws ParseException
+	 */
+	public static String getString(Date date, String format) {
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		if (null != date)
+			return sdf.format(date);
+		else
+			return null;
+	}
 
 	public static Date getDate(String sDate, String format) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
@@ -188,17 +204,64 @@ public class UtilidadesFecha {
         return cal.getTime();
     }
 	
+	public static Date getFirstDayOfMonth(Date date) {
+		Calendar cal = GregorianCalendar.getInstance();
+		cal.setTime((Date)date.clone());
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		return cal.getTime();
+	}
+	
+	public static Date getLastDayOfMonth(Date date) {
+		Calendar cal = GregorianCalendar.getInstance();
+		cal.setTime((Date)date.clone());
+		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		return cal.getTime();
+	}
+	
+	public static Date getDaysOfMonthBackwards(Date date) {
+		Calendar cal = GregorianCalendar.getInstance();
+		cal.setTime((Date)date.clone());
+		cal.add(Calendar.DATE, (-1) * cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		return cal.getTime();
+	}
+	
 	public static Date getToday() throws ParseException {
 		Calendar today = Calendar.getInstance();
-		today.clear(Calendar.HOUR); today.clear(Calendar.MINUTE); today.clear(Calendar.SECOND);
+		today.set(Calendar.HOUR_OF_DAY, 0);
+		today.set(Calendar.MINUTE, 0);
+		today.set(Calendar.SECOND, 0);
 		return today.getTime();
 	}
 	
 	public static String getToday(String format) throws ParseException {
-		Calendar today = Calendar.getInstance();
-		today.clear(Calendar.HOUR); today.clear(Calendar.MINUTE); today.clear(Calendar.SECOND);
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
-		return sdf.format(today.getTime());
+		return sdf.format(getToday());
+	}
+	
+	/**
+	 * Returns a date which is previous in a 'number of days' to the 'date' provided
+	 * @param date
+	 * @param numberOfDays
+	 * @return
+	 */
+	public static Date subDays(Date date, int numberOfDays) {
+		Calendar cal = GregorianCalendar.getInstance();
+		cal.setTime((Date)date.clone());
+		cal.add(Calendar.DATE, (-1) * numberOfDays);
+		return cal.getTime();
+	}
+	
+	/**
+	 * Returns a date which is later in a 'number of days' to the 'date' provided
+	 * @param date
+	 * @param numberOfDays
+	 * @return
+	 */
+	public static Date addDays(Date date, int numberOfDays) {
+		Calendar cal = GregorianCalendar.getInstance();
+		cal.setTime((Date)date.clone());
+		cal.add(Calendar.DATE, numberOfDays);
+		return cal.getTime();
 	}
 
 }

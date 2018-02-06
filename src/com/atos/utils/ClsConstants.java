@@ -720,6 +720,12 @@ MDB Microsoft Access Database
 	public static final int TIPO_SANCION_SUSPENSIÓN = 8;
 	public static final int TIPO_SANCION_DESCONOCIDA = 9;
 	
+	// Certificados de NI CGAE
+	//TODO Deberian ser parametros en CGAE, pero es que ya existen unos para los productos. ¿Se pueden sustituir? CONTROL_CUOTA_NUEVA_INCORPORACION, CONTROL_CNI_NOEJERCIENTE, CONTROL_CNI_CAMBIO_ABOGADO
+	public static final int CERT_CGAE_LONGITUD_CODIGO = 2;
+	public static final String CERT_CGAE_NUEVA_INCORPORACION = "NI";
+	public static final String CERT_CGAE_NOEJERCIENTE = "NE";
+	public static final String CERT_CGAE_CAMBIO_ABOGADO = "CA";
 	
 	//28052015 Tamaño codigo postal
 	public static final int TAM_MAX_CODIGO_POSTAL = 5;
