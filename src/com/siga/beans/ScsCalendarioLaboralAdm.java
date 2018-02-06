@@ -267,57 +267,55 @@ public class ScsCalendarioLaboralAdm extends MasterBeanAdministrador {
 	 * @param fechaInicio
 	 * @param fechaFin
 	 * @return
+	 * @throws ClsExceptions 
 	 */
-	public Vector obtenerFestivosTurno(Integer idInstitucion, Integer idTurno, String fechaInicio, String fechaFin)
+	public Vector obtenerFestivosTurno(Integer idInstitucion, Integer idTurno, String fechaInicio, Date fechaFin) throws ClsExceptions
 	{
 		Vector vFestivos = new Vector();
 
-		try {
-			String fechaInicioFormateada = GstDate.getFormatedDateShort("ES", fechaInicio);
-			String fechaFinFormateada = GstDate.getFormatedDateShort("ES", fechaFin);
+		String fechaInicioFormateada = GstDate.getFormatedDateShort("ES", fechaInicio);
+		String fechaFinFormateada = GstDate.getFormatedDateShort(fechaFin);
 
-			StringBuilder consulta = new StringBuilder();
-			consulta.append(" SELECT cal." + ScsCalendarioLaboralBean.C_FECHA);
-			consulta.append("   FROM " + ScsCalendarioLaboralBean.T_NOMBRETABLA + " cal ");
-			consulta.append("  WHERE cal." + ScsCalendarioLaboralBean.C_FECHA);
-			consulta.append("             between TO_DATE('");
-			consulta.append(fechaInicioFormateada);
-			consulta.append("', 'DD/MM/YYYY') AND TO_DATE('");
-			consulta.append(fechaFinFormateada);
-			consulta.append("', 'DD/MM/YYYY') ");
-			consulta.append("    AND (cal." + ScsCalendarioLaboralBean.C_IDINSTITUCION + " = ");
-			consulta.append(idInstitucion);
-			consulta.append("         OR cal." + ScsCalendarioLaboralBean.C_IDINSTITUCION + " = ");
-			consulta.append(ClsConstants.INSTITUCION_CGAE);
-			consulta.append("        ) ");
-			consulta.append("    AND (cal." + ScsCalendarioLaboralBean.C_IDPARTIDO + " IS NULL ");
-			consulta.append("         OR cal." + ScsCalendarioLaboralBean.C_IDPARTIDO + " IN  ");
-			consulta.append("               (SELECT p." + ScsSubZonaPartidoBean.C_IDPARTIDO);
-			consulta.append("                  FROM " + ScsTurnoBean.T_NOMBRETABLA + " t, ");
-			consulta.append("      	                " + ScsSubZonaPartidoBean.T_NOMBRETABLA + " p ");
-			consulta.append("                 WHERE p." + ScsSubZonaPartidoBean.C_IDINSTITUCION + " = t." + ScsTurnoBean.C_IDINSTITUCION);
-			consulta.append("                   AND p." + ScsSubZonaPartidoBean.C_IDZONA + " = t." + ScsTurnoBean.C_IDZONA);
-			consulta.append("                   AND p." + ScsSubZonaPartidoBean.C_IDSUBZONA + " = t." + ScsTurnoBean.C_IDSUBZONA);
-			consulta.append("                   AND t." + ScsTurnoBean.C_IDINSTITUCION + " = " + idInstitucion);
-			consulta.append("                   AND t." + ScsTurnoBean.C_IDTURNO + " = " + idTurno);
-			consulta.append("               )");
-			consulta.append("        )");
+		StringBuilder consulta = new StringBuilder();
+		consulta.append(" SELECT cal." + ScsCalendarioLaboralBean.C_FECHA);
+		consulta.append("   FROM " + ScsCalendarioLaboralBean.T_NOMBRETABLA + " cal ");
+		consulta.append("  WHERE cal." + ScsCalendarioLaboralBean.C_FECHA);
+		consulta.append("             between TO_DATE('");
+		consulta.append(fechaInicioFormateada);
+		consulta.append("', 'DD/MM/YYYY') AND TO_DATE('");
+		consulta.append(fechaFinFormateada);
+		consulta.append("', 'DD/MM/YYYY') ");
+		consulta.append("    AND (cal." + ScsCalendarioLaboralBean.C_IDINSTITUCION + " = ");
+		consulta.append(idInstitucion);
+		consulta.append("         OR cal." + ScsCalendarioLaboralBean.C_IDINSTITUCION + " = ");
+		consulta.append(ClsConstants.INSTITUCION_CGAE);
+		consulta.append("        ) ");
+		consulta.append("    AND (cal." + ScsCalendarioLaboralBean.C_IDPARTIDO + " IS NULL ");
+		consulta.append("         OR cal." + ScsCalendarioLaboralBean.C_IDPARTIDO + " IN  ");
+		consulta.append("               (SELECT p." + ScsSubZonaPartidoBean.C_IDPARTIDO);
+		consulta.append("                  FROM " + ScsTurnoBean.T_NOMBRETABLA + " t, ");
+		consulta.append("      	                " + ScsSubZonaPartidoBean.T_NOMBRETABLA + " p ");
+		consulta.append("                 WHERE p." + ScsSubZonaPartidoBean.C_IDINSTITUCION + " = t." + ScsTurnoBean.C_IDINSTITUCION);
+		consulta.append("                   AND p." + ScsSubZonaPartidoBean.C_IDZONA + " = t." + ScsTurnoBean.C_IDZONA);
+		consulta.append("                   AND p." + ScsSubZonaPartidoBean.C_IDSUBZONA + " = t." + ScsTurnoBean.C_IDSUBZONA);
+		consulta.append("                   AND t." + ScsTurnoBean.C_IDINSTITUCION + " = " + idInstitucion);
+		consulta.append("                   AND t." + ScsTurnoBean.C_IDTURNO + " = " + idTurno);
+		consulta.append("               )");
+		consulta.append("        )");
 
-			RowsContainer rc = new RowsContainer();
-			Row fila;
-			Hashtable registro;
-			if (rc.query(consulta.toString())) {
-				for (int i = 0; i < rc.size(); i++) {
-					fila = (Row) rc.get(i);
-					registro = (Hashtable) fila.getRow();
-					// anyadiendo la fecha en formato corto
-					if (registro != null)
-						vFestivos.add(GstDate.getFormatedDateShort("ES", (String) registro.get(ScsCalendarioLaboralBean.C_FECHA)));
-				}
+		RowsContainer rc = new RowsContainer();
+		Row fila;
+		Hashtable registro;
+		if (rc.query(consulta.toString())) {
+			for (int i = 0; i < rc.size(); i++) {
+				fila = (Row) rc.get(i);
+				registro = (Hashtable) fila.getRow();
+				// anyadiendo la fecha en formato corto
+				if (registro != null)
+					vFestivos.add(GstDate.getFormatedDateShort("ES", (String) registro.get(ScsCalendarioLaboralBean.C_FECHA)));
 			}
-		} catch (Exception e) {
-			vFestivos.clear();
 		}
+		
 		return vFestivos;
 	}
 	

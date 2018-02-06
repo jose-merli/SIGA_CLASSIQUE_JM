@@ -125,8 +125,8 @@
 			if (typeof id == 'undefined')
 				id='tablaDatos';
 			preparaDatos(fila,id);
-			var datosDesigna = "idInstitucion=="+<%=idInstitucion%> +"##idPersona=="+jQuery("#ocultoPersona"+fila+"_1").val()+  "##idTurno==" +<%=idTurno%>+"##anio=="+<%=anio%> +"##numero==" +<%=numero%>+
-			"##numeroAsunto==" +jQuery("#oculto"+fila+"_1").val()  +"##codigoDesigna=="+<%=codigoDesigna%>+"%%%";
+			var datosDesigna = "idInstitucion=="+<%=idInstitucion%> +"##idPersona=="+jQuery("#ocultoHidden"+fila+"_2").val()+  "##idTurno==" +<%=idTurno%>+"##anio=="+<%=anio%> +"##numero==" +<%=numero%>+
+			"##numeroAsunto==" +jQuery("#ocultoHidden"+fila+"_1").val()  +"##codigoDesigna=="+<%=codigoDesigna%>+"%%%";
 			document.Informe.datosInforme.value=datosDesigna;
 			
 			
@@ -187,7 +187,7 @@
 		{	
 			document.movimientosVarios.modo.value="nuevo";
 			document.movimientosVarios.target="submitArea";
-			document.movimientosVarios.nactuacion.value=jQuery("#oculto"+fila+"_1").val(); 
+			document.movimientosVarios.nactuacion.value=jQuery("#ocultoHidden"+fila+"_1").val(); 
 			var resultado=ventaModalGeneral(document.movimientosVarios.name,"M");
 			//if (resultado=="MODIFICADO")buscar2();
 		}
@@ -273,7 +273,8 @@
 			   border="1"
 			   columnNames="gratuita.actuacionesAsistencia.literal.fechaActuacion,gratuita.busquedaAsistencias.literal.numero,gratuita.actuacionesDesigna.literal.modulo,gratuita.procedimientos.literal.acreditacion,gratuita.actuacionesDesigna.literal.justificacion,gratuita.actuacionesDesigna.literal.validada,gratuita.procedimientos.literal.anulada,gratuita.actuacionesDesigna.literal.facturacion,"
 			   columnSizes="8,4,26,10,8,6,6,20,12"
-			   modal="G">
+			   modal="G"
+			   fixedHeight="auto">
 
 		<% if (obj==null || obj.size()==0) { %>
 					<tr class="notFound">
@@ -339,7 +340,7 @@
 			 	<%
 			 	FilaExtElement[] elems = null;
 			 	elems = new FilaExtElement[2];
-				 	if(!validada && isActivarCartaAcreditacionOficio){
+				 	if(!validada && isActivarCartaAcreditacionOficio && !"1".equalsIgnoreCase(anulacion)){
 						elems[0] = new FilaExtElement("enviar", "comunicar", SIGAConstants.ACCESS_READ);
 				 	}
 				 	if(idFacturacion != null && !"".equalsIgnoreCase(idFacturacion) && facturacionCerrada != null && !"".equalsIgnoreCase(facturacionCerrada)){
@@ -349,7 +350,11 @@
 			 	%>
 			 
 				  	<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit" modo="<%=modo%>" elementos="<%=elems%>" >
-						<td><%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("",(String)hash.get("FECHA")))%></td>
+						<td>
+							<input type="hidden" name="ocultoHidden<%=String.valueOf(recordNumber)%>_1" id="ocultoHidden<%=String.valueOf(recordNumber)%>_1" value="<%=hash.get("NUMEROASUNTO")%>">
+							<input type="hidden" name="ocultoHidden<%=String.valueOf(recordNumber)%>_2" id="ocultoHidden<%=String.valueOf(recordNumber)%>_2" value="<%=hash.get("IDPERSONA")%>">
+							<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("",(String)hash.get("FECHA")))%>
+						</td>
 						<td><%=hash.get("NUMEROASUNTO")%></td>
 						<td><%=UtilidadesString.mostrarDatoJSP(nombreProc)%></td>
 						<td>
@@ -371,10 +376,7 @@
 						<td><%=((String) hash.get("NOMBREFACTURACION")==null?"":(String) hash.get("NOMBREFACTURACION"))%>&nbsp;
 						</td>
 						
-					</siga:FilaConIconos>	
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" id="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=hash.get("NUMEROASUNTO")%>">
-				    <input type="hidden" name="ocultoPersona<%=String.valueOf(recordNumber)%>_1" id="ocultoPersona<%=String.valueOf(recordNumber)%>_1" value="<%=hash.get("IDPERSONA")%>">
-				  		   
+					</siga:FilaConIconos>	 
 				<%recordNumber++;%>
 				<%}%>	 
 		<%}%>

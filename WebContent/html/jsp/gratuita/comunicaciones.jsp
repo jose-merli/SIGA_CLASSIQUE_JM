@@ -92,6 +92,8 @@
 		<html:hidden styleId = "numero" property="numero" value="${ComunicacionesForm.ejgNumero}"/>
 		
 		<html:hidden styleId = "origen" property="origen" value ="${path}"/>
+		<html:hidden styleId="jsonVolver" property = "jsonVolver"  />
+		
 	</html:form>
 
 	<html:form action="/JGR_MantenimientoDesignas" method="post" target="mainWorkArea" style="display:none">

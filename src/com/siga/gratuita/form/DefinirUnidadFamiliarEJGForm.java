@@ -752,9 +752,10 @@ import com.siga.tlds.FilaExtElement;
 								//elementosFila[4] = new FilaExtElement("descargaLog", "errorEejg","general.boton.errorEejg",SIGAConstants.ACCESS_READ);
 								elementosFila[4] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
 						} else if (estado ==  EEJG_ESTADO.FINALIZADO.getId()) {
-								elementosFila = new FilaExtElement[4];
+								elementosFila = new FilaExtElement[5];
+								elementosFila[3] = new FilaExtElement(null, "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ,"general.boton.solicitudEejg","90");
 								//elementosFila[3] = new FilaExtElement("download", "descargarEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
-								elementosFila[3] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
+								elementosFila[4] = new FilaExtElement("comunicar", "comunicar",	SIGAConstants.ACCESS_READ);
 						} else {
 							elementosFila = new FilaExtElement[5];
 							elementosFila[3] = new FilaExtElement(null, "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ,"general.boton.solicitudEejg","90");

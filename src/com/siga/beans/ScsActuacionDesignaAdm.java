@@ -628,6 +628,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" AND FJG.IDFACTURACION = ACT.IDFACTURACION) AS ");
 		sql.append(" DESCRIPCIONFACTURACION ");
 		sql.append(" ,ACT.DOCJUSTIFICACION ");
+		sql.append(" ,ACT.ANULACION ");
 		sql.append(" ,ACP.NIG_NUMPROCEDIMIENTO ");
 		sql.append(" ,ACT.NIG,ACT.FECHA");
 		
@@ -730,6 +731,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 				actuacionDesigna.setAnioProcedimiento((String)registro.get("ANIOPROCEDIMIENTO"));
 				actuacionDesigna.setFecha(GstDate.getFormatedDateShort(sdf.parse((String)registro.get("FECHA"))));
 				actuacionDesigna.setNig((String)registro.get("NIG"));
+				actuacionDesigna.setAnulada((String)registro.get("ANULACION"));
 				
 				actuacionDesigna.setDocumentoJustificacion(registro.get("DOCJUSTIFICACION")!=null && ((String)registro.get("DOCJUSTIFICACION")).equals(AppConstants.DB_TRUE));
 				

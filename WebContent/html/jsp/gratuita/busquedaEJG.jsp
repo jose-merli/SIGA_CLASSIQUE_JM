@@ -402,7 +402,7 @@
 			                    });
 						},
 						error: function(e){
-							alert('Error de comunicación: ' + e);
+							alert('Error de comunicación:eval(e):' + eval(e));
 							fin();
 						}
 					});

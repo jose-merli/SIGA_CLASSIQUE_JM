@@ -523,23 +523,23 @@
 				</tr>
 			</table>	
 		</siga:ConjCampos>
-	
-		<table class="tablaCampos" align="center" border="0">
-			<tr>			
-				<td width="20px">
-					<html:checkbox name="componentesJuridicosForm" styleId="profesional" property="profesional" disabled="<%=desactivado%>" onclick="profesionalCol()"/>
-				</td>
-				<td class="labelText" >
-					<siga:Idioma key="censo.consultaComponentesJuridicos.literal.esProfesionalColegiado"/>
-				</td>
-				<%if (modo.equals("nuevo")) {%>
-					<td class="tdBotones">
-						<input type="button" alt="<siga:Idioma key="general.boton.search"/>"  id="buscar" onclick="return buscarCliente();" class="button" value="<siga:Idioma key="general.boton.search"/>">
+		<siga:ConjCampos leyenda="">
+			<table class="tablaCampos" align="center" border="0">
+				<tr>			
+					<td width="10px">
+						<html:checkbox name="componentesJuridicosForm" styleId="profesional" property="profesional" disabled="<%=desactivado%>" onclick="profesionalCol()"/>
 					</td>
-				<% } %>
-			</tr>
-		</table>
-	
+					<td class="labelText" width="85%">
+						<siga:Idioma key="censo.consultaComponentesJuridicos.literal.esProfesionalColegiado"/>
+					</td>
+					<%if (modo.equals("nuevo")) {%>
+						<td >
+							<input type="button" alt="<siga:Idioma key="general.boton.search"/>"  id="buscar" onclick="return buscarCliente();" class="button" value="<siga:Idioma key="general.boton.search"/>">
+						</td>
+					<% } %>
+				</tr>
+			</table>
+		</siga:ConjCampos>
 	 
 		<table id="colegiado" style="display:none" class="tablaCampos" align="center" border="0">
 		  	<tr>

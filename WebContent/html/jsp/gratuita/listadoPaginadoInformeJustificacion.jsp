@@ -1555,8 +1555,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 														</c:choose>
 														<td style="text-align: left; font-size: 13px;">
 															<span style="vertical-align: top"><c:out value="${actuacion.numero}" />
-													
-															<c:if test="${comunicacionesAcreditacionDeOficio==true  && (actuacion.validada=='0' || empty actuacion.validada)}">
+														<c:if test="${comunicacionesAcreditacionDeOficio==true  && (actuacion.validada=='0' || empty actuacion.validada) && actuacion.anulada !='1'}">
 																<img id="iconoboton_download1" hspace="0"
 																			src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
 																			alt="Enviar" name="iconoFila" title="Descargar" border="0" 
@@ -1624,7 +1623,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 
 														<td style="text-align: left; font-size: 13px;">
 															<span style="vertical-align: top"><c:out value="${actuacion.numero}" />
-																<c:if test="${comunicacionesAcreditacionDeOficio==true  && (actuacion.validada=='0' || empty actuacion.validada)}">
+																<c:if test="${comunicacionesAcreditacionDeOficio==true  && (actuacion.validada=='0' || empty actuacion.validada)  && actuacion.anulada !='1'}">
+																	
 																	<img id="iconoboton_download1" hspace="0"
 																			src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
 																			alt="Enviar" name="iconoFila" title="Descargar" border="0" 
@@ -1911,7 +1911,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																<tr>
 																	<td></td>
 																	<span style="vertical-align: top"><c:out value="${actuacion.numero}" />
-																	<c:if test="${comunicacionesAcreditacionDeOficio==true  && (actuacion.validada=='0' || empty actuacion.validada)}">
+																	<c:if test="${comunicacionesAcreditacionDeOficio==true && (actuacion.validada=='0' || empty actuacion.validada)  && actuacion.anulada !='1'}">
+																		
 																		<img id="iconoboton_download1" hspace="0"
 																					src="/SIGA/html/imagenes/benviar_off.gif" style="cursor:pointer;" 
 																					alt="Enviar" name="iconoFila" title="Descargar" border="0" 
@@ -2099,7 +2100,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 															<table>
 																<tr>
 																	<span style="vertical-align: top"><c:out value="${actuacion.numero}" />
-																	<c:if test="${comunicacionesAcreditacionDeOficio==true && (actuacion.validada=='0' || empty actuacion.validada) }">
+																	<c:if test="${comunicacionesAcreditacionDeOficio==true  && (actuacion.validada=='0' || empty actuacion.validada)  && actuacion.anulada !='1'}">
+																		
 																			<img id="iconoboton_download1" hspace="0" src="/SIGA/html/imagenes/benviar_off.gif" style="cursor: pointer;" alt="Enviar" name="iconoFila"
 																				title="Descargar" border="0"
 																				onClick="downloadInformeActuacionesDesigna(${designa.idInstitucion},${designa.anio},${designa.numero},${designa.idPersona},${designa.idTurno},${actuacion.numero},'${designa.codigoDesigna}',${usrBean.letrado})"
@@ -2282,8 +2284,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 
 											</c:if>
 										</c:forEach>
-										<c:if
-											test="${permitirBotones==true &&designa.estado!=null && designa.estado=='V'&& designa.cambioLetrado=='N' && ((designa.actuacionPermitidaLetrado=='1'&&InformeJustificacionMasivaForm.fichaColegial==true && designa.idProcedimiento!='')||(InformeJustificacionMasivaForm.fichaColegial==false)) }">
+										<c:if test="${designa.estado!=null && designa.estado=='V'&& designa.cambioLetrado=='N' && ((designa.actuacionPermitidaLetrado=='1'&&InformeJustificacionMasivaForm.fichaColegial==true && designa.idProcedimiento!='')||(InformeJustificacionMasivaForm.fichaColegial==false)) }">
 											<c:choose>
 												<c:when test="${status.count%2==0}">
 													<tr class="filaTablaPar">

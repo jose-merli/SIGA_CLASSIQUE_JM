@@ -2761,6 +2761,40 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 <script language="JavaScript">
 
+function validaNombreApellidos() {
+	document.forms[0].nombre.value = trim(document.forms[0].nombre.value);
+	document.forms[0].apellido1.value = trim(document.forms[0].apellido1.value);
+	document.forms[0].apellido2.value = trim(document.forms[0].apellido2.value);
+	error = '';
+	var tipoPersona =  document.forms[0].idTipoPersona.value; 
+	if(tipoPersona=='F'){
+		if(!validarNombreApellido(document.forms[0].nombre.value)){
+			error += "<siga:Idioma key='errors.formato' arg0='gratuita.personaJG.literal.nombre'/>"+ '\n';
+		
+		}
+		if(!validarNombreApellido(document.forms[0].apellido1.value)){
+			error += "<siga:Idioma key='errors.formato' arg0='gratuita.busquedaEJG.literal.apellido1'/>"+ '\n';
+		
+		}
+		if(document.forms[0].apellido2.value!='' && !validarNombreApellido(document.forms[0].apellido2.value)){
+			error += "<siga:Idioma key='errors.formato' arg0='gratuita.busquedaEJG.literal.apellido2'/>"+ '\n';
+		
+		}
+	}else{
+		
+		if(!validarDenominacion(document.forms[0].nombre.value)){
+			error += "<siga:Idioma key='errors.formato' arg0='gratuita.personaJG.literal.nombreDenoApe1'/>"+ '\n';
+		
+		}
+		if(!validarDenominacion(document.forms[0].apellido1.value)){
+			error += "<siga:Idioma key='errors.formato' arg0='gratuita.personaJG.literal.abreviatura(*)'/>"+ '\n';
+		
+		}	
+	}
+	return error;
+}
+	
+
 
 	
 <%// VOLVER PARA CADA CASO
@@ -2769,10 +2803,27 @@
 		//Asociada al boton Volver -->
 		function accionVolver()   
 		{	
-		 	document.forms[0].action="<%=app%>/JGR_EJG.do";	
-			document.forms[0].modo.value="buscar";
-			document.forms[0].target="mainWorkArea"; 
-			document.forms[0].submit(); 
+		 	
+			if(document.PersonaJGForm.jsonVolver && document.PersonaJGForm.jsonVolver.value!=''){
+				
+				jSonVolverValue = document.PersonaJGForm.jsonVolver.value;
+				jSonVolverValue = replaceAll(jSonVolverValue,"'", "\"");
+				var jSonVolverObject =  jQuery.parseJSON(jSonVolverValue);
+				nombreFormulario = jSonVolverObject.nombreformulario;
+				if(nombreFormulario != ''){
+					parent.document.forms[nombreFormulario].idRemesa.value =  jSonVolverObject.idremesa;
+					parent.document.forms[nombreFormulario].idinstitucion.value = jSonVolverObject.idinstitucion;
+					parent.document.forms[nombreFormulario].modo.value="editar";
+					parent.document.forms[nombreFormulario].target = "mainWorkArea";
+					parent.document.forms[nombreFormulario].submit();
+					
+				}
+			}else{
+				document.forms[0].action="<%=app%>/JGR_EJG.do";	
+				document.forms[0].modo.value="buscar";
+				document.forms[0].target="mainWorkArea"; 
+				document.forms[0].submit(); 
+			}
 		}	
 		
 		//Asociada al boton Guardar -->
@@ -2780,11 +2831,19 @@
 
  			document.PersonaJGForm.existeDomicilio.value = "S";
  		
+ 			
 			if (!validaTelefonos()){
                  fin();
                  return false;
 			}			
 			sub();
+			error = validaNombreApellidos();
+			if (error!=''){
+		       fin();
+		       alert(error);
+		       return false;
+			}
+			
 			var tipoIdent=document.forms[0].tipoId.value;
 			
 			//Se eliminan los espacios en el num. identificacion
@@ -2925,6 +2984,8 @@
 						fin();
 						return false;
 					}
+					
+					
 						jQuery ("#nacionalidad").removeAttr("disabled");
 				    	document.forms[0].submit();
 					}else{
@@ -2958,6 +3019,12 @@
 			}		
 				
 		   	sub();
+		   	error = validaNombreApellidos();
+			if (error!=''){
+		       fin();
+		       alert(error);
+		       return false;
+			}
 
 		   	var tipoIdent=document.forms[0].tipoId.value;
 			//Se eliminan los espacios en el num. identificacion
@@ -3144,6 +3211,12 @@
                 return false;
 			}		
 			sub();
+			error = validaNombreApellidos();
+			if (error!=''){
+		       fin();
+		       alert(error);
+		       return false;
+			}
 			var tipoIdent=document.forms[0].tipoId.value;
 			//Se eliminan los espacios en el num. identificacion
 			document.forms[0].NIdentificacion.value = trim(document.forms[0].NIdentificacion.value);			
@@ -3253,6 +3326,12 @@
                 return false;
 			}	
 			sub();
+			error = validaNombreApellidos();
+			if (error!=''){
+		       fin();
+		       alert(error);
+		       return false;
+			}
 			var tipoIdent=document.forms[0].tipoId.value;
 			//Se eliminan los espacios en el num. identificacion
 			document.forms[0].NIdentificacion.value = trim(document.forms[0].NIdentificacion.value);			
@@ -3361,6 +3440,12 @@
 			}				
 					
             sub();
+            error = validaNombreApellidos();
+			if (error!=''){
+		       fin();
+		       alert(error);
+		       return false;
+			}
             var tipoIdent=document.forms[0].tipoId.value;
 			//Se eliminan los espacios en el num. identificacion
 			document.forms[0].NIdentificacion.value = trim(document.forms[0].NIdentificacion.value);			
@@ -3466,6 +3551,12 @@
 			}			
 						
             sub();
+            error = validaNombreApellidos();
+			if (error!=''){
+		       fin();
+		       alert(error);
+		       return false;
+			}
             var tipoIdent=document.forms[0].tipoId.value;
 			//Se eliminan los espacios en el num. identificacion
 			document.forms[0].NIdentificacion.value = trim(document.forms[0].NIdentificacion.value);			
@@ -3559,6 +3650,12 @@
 
 			
 			sub();
+			error = validaNombreApellidos();
+			if (error!=''){
+		       fin();
+		       alert(error);
+		       return false;
+			}
 			var tipoIdent=document.forms[0].tipoId.value;
 			//Se eliminan los espacios en el num. identificacion
 			document.forms[0].NIdentificacion.value = trim(document.forms[0].NIdentificacion.value);			
@@ -3674,6 +3771,12 @@
 
 			
 			sub();
+			error = validaNombreApellidos();
+			if (error!=''){
+		       fin();
+		       alert(error);
+		       return false;
+			}
 			var tipoIdent=document.forms[0].tipoId.value;
 			//Se eliminan los espacios en el num. identificacion
 			document.forms[0].NIdentificacion.value = trim(document.forms[0].NIdentificacion.value);			
@@ -3784,6 +3887,12 @@ function accionGuardarCerrar()	{
 
 	
 	sub();
+	error = validaNombreApellidos();
+	if (error!=''){
+       fin();
+       alert(error);
+       return false;
+	}
 	var tipoIdent=document.forms[0].tipoId.value;
 	//Se eliminan los espacios en el num. identificacion
 	document.forms[0].NIdentificacion.value = trim(document.forms[0].NIdentificacion.value);			

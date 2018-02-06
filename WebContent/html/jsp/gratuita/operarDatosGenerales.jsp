@@ -645,6 +645,7 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 		<input type="hidden" name="origen" value="SOJ"/>
 		<input type="hidden" name="modo" />
 		<input type="hidden" name="modoActualSOJParaVolver" value="<%=accion%>"/>
+		<html:hidden styleId="jsonVolver" property = "jsonVolver"  value =""/>
 	</html:form>
 
 	</body>

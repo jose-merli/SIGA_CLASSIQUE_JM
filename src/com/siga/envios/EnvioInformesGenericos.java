@@ -1,6 +1,7 @@
 package com.siga.envios;
 
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,6 +39,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.GstStringTokenizer;
 import com.atos.utils.LogFileWriter;
 import com.atos.utils.UsrBean;
+import com.ibm.icu.text.DateFormat;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
@@ -2073,9 +2075,9 @@ public class EnvioInformesGenericos extends MasterReport {
 						String pathDocumento = fileDocumento.getPath();
 						// Creacion documentos
 						int indice = pathDocumento.lastIndexOf(ClsConstants.FILE_SEP);
-						String descDocumento = "";
-						if (indice > 0)
-							descDocumento = pathDocumento.substring(indice + 1);
+						String descDocumento = beanInforme.getDescripcion()+"_"+hoy;
+//						if (indice > 0)
+//							descDocumento = pathDocumento.substring(indice + 1);
 
 						switch (tipoDocumento) {
 						case 1:
@@ -4046,24 +4048,22 @@ public class EnvioInformesGenericos extends MasterReport {
 	 * @param userBean
 	 * @return
 	 * @throws ClsExceptions
+	 * @throws ParseException 
 	 */
-	private String getFechaProgramada(String fechaFormulario, Locale locale, UsrBean userBean) throws ClsExceptions {
-		// obtener fechaProgramada
+	private String getFechaProgramada(String fechaFormulario, String horas,String minutos,Locale locale, UsrBean userBean) throws ClsExceptions {
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyyHHmm");
 		String fechaProgramada = null;
-		String fechaProg = fechaFormulario + " " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
-
-		String language = userBean.getLanguage();
-		String format = language.equalsIgnoreCase("EN") ? ClsConstants.DATE_FORMAT_LONG_ENGLISH : ClsConstants.DATE_FORMAT_LONG_SPANISH;
-		GstDate gstDate = new GstDate();
-		if (fechaProg != null && !fechaProg.equals("")) {
-			Date date = gstDate.parseStringToDate(fechaProg, format, locale);
-			// A peticion de Luis pedro retraso 15 minutos el envio
-			date.setTime(date.getTime() + 900000);
-			// date.
+		if (fechaFormulario != null && !fechaFormulario.equals("")) {
+			Date date;
+			try {
+				date = dateFormat.parse(fechaFormulario+horas+minutos);
+			} catch (ParseException e) {
+				throw new ClsExceptions(e.toString());
+			}
 			SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
 			fechaProgramada = sdf.format(date);
-		} else
-			fechaProgramada = null;
+		} 
 		return fechaProgramada;
 	}
 
@@ -4093,7 +4093,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		String idPlantillaGeneracion = form.getIdPlantillaGeneracion();
 		String acuseRecibo = form.getAcuseRecibo();
 		// obtener fechaProgramada
-		String fechaProgramada = getFechaProgramada(form.getFechaProgramada(), locale, userBean);
+		String fechaProgramada = getFechaProgramada(form.getFechaProgramada(),form.getHoras(),form.getMinutos(), locale, userBean);
 		EnvEnviosAdm envioAdm = new EnvEnviosAdm(userBean);
 
 		enviosBean.setIdInstitucion(Integer.valueOf(idInstitucion));
@@ -4255,7 +4255,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				envioProgramado.setAcuseRecibo(acuseRecibo);
 				envioProgramado.setNombre(form.getNombre());
 				envioProgramado.setEstado(ClsConstants.DB_FALSE);
-				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
+				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(),form.getHoras(),form.getMinutos(), locale, userBean));
 
 				envioProgramadoAdm.insert(envioProgramado);
 
@@ -4424,7 +4424,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				envioProgramado.setAcuseRecibo(acuseRecibo);
 				envioProgramado.setNombre(form.getNombre());
 				envioProgramado.setEstado(ClsConstants.DB_FALSE);
-				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
+				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(),form.getHoras(),form.getMinutos(), locale, userBean));
 
 				envioProgramadoAdm.insert(envioProgramado);
 
@@ -4614,7 +4614,7 @@ public class EnvioInformesGenericos extends MasterReport {
 					// envioProgramado.setNombre(form.getNombre());
 
 					envioProgramado.setEstado(ClsConstants.DB_FALSE);
-					envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
+					envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(),form.getHoras(),form.getMinutos(), locale, userBean));
 
 					programIRPF = new EnvProgramIRPFBean();
 					programIRPF.setIdProgram(programIRPFAdm.getNewIdProgramIrpf(idInstitucion));
@@ -4708,7 +4708,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 			envioProgramado.setNombre(form.getNombre());
 			envioProgramado.setEstado(ClsConstants.DB_FALSE);
-			envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
+			envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(),form.getHoras(),form.getMinutos(), locale, userBean));
 
 			envioProgramadoAdm.insert(envioProgramado);
 
@@ -4918,7 +4918,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 				envioProgramado.setNombre(form.getNombre());
 				envioProgramado.setEstado(ClsConstants.DB_FALSE);
-				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
+				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(),form.getHoras(),form.getMinutos(), locale, userBean));
 
 				envioProgramadoAdm.insert(envioProgramado);
 
@@ -5171,7 +5171,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 				envioProgramado.setNombre(form.getNombre());
 				envioProgramado.setEstado(ClsConstants.DB_FALSE);
-				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
+				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(),form.getHoras(),form.getMinutos(), locale, userBean));
 
 				envioProgramadoAdm.insert(envioProgramado);
 
@@ -5382,7 +5382,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 				envioProgramado.setNombre(form.getNombre());
 				envioProgramado.setEstado(ClsConstants.DB_FALSE);
-				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
+				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(),form.getHoras(),form.getMinutos(), locale, userBean));
 				envioProgramadoAdm.insert(envioProgramado);
 				boolean isInformeProgramado = false;
 
@@ -6261,7 +6261,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 				envioProgramado.setNombre(form.getNombre());
 				envioProgramado.setEstado(ClsConstants.DB_FALSE);
-				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
+				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(),form.getHoras(),form.getMinutos(), locale, userBean));
 
 				envioProgramadoAdm.insert(envioProgramado);
 
@@ -6696,7 +6696,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				envioProgramado.setAcuseRecibo(acuseRecibo);
 				envioProgramado.setNombre(form.getNombre());
 				envioProgramado.setEstado(ClsConstants.DB_FALSE);
-				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
+				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(),form.getHoras(),form.getMinutos(), locale, userBean));
 
 				envioProgramadoAdm.insert(envioProgramado);
 
@@ -7130,7 +7130,7 @@ public class EnvioInformesGenericos extends MasterReport {
 					envioProgramado.setAcuseRecibo(acuseRecibo);
 					envioProgramado.setNombre(form.getNombre());
 					envioProgramado.setEstado(ClsConstants.DB_FALSE);
-					envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
+					envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(),form.getHoras(),form.getMinutos(), locale, userBean));
 
 					envioProgramadoAdm.insert(envioProgramado);
 
@@ -7408,7 +7408,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				envioProgramado.setAcuseRecibo(acuseRecibo);
 				envioProgramado.setNombre(form.getNombre());
 				envioProgramado.setEstado(ClsConstants.DB_FALSE);
-				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
+				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(),form.getHoras(),form.getMinutos(), locale, userBean));
 
 				envioProgramadoAdm.insert(envioProgramado);
 
@@ -8206,7 +8206,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				envioProgramado.setAcuseRecibo(acuseRecibo);
 				envioProgramado.setNombre(form.getNombre());
 				envioProgramado.setEstado(ClsConstants.DB_FALSE);
-				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
+				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(),form.getHoras(),form.getMinutos(), locale, userBean));
 
 				envioProgramadoAdm.insert(envioProgramado);
 
@@ -8828,7 +8828,7 @@ public class EnvioInformesGenericos extends MasterReport {
 
 				envioProgramado.setNombre(form.getNombre());
 				envioProgramado.setEstado(ClsConstants.DB_FALSE);
-				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
+				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(),form.getHoras(),form.getMinutos(), locale, userBean));
 
 				envioProgramadoAdm.insert(envioProgramado);
 
@@ -9017,7 +9017,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				envioProgramado.setAcuseRecibo(acuseRecibo);
 				envioProgramado.setNombre(form.getNombre());
 				envioProgramado.setEstado(ClsConstants.DB_FALSE);
-				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(), locale, userBean));
+				envioProgramado.setFechaProgramada(getFechaProgramada(form.getFechaProgramada(),form.getHoras(),form.getMinutos(), locale, userBean));
 
 				envioProgramadoAdm.insert(envioProgramado);
 

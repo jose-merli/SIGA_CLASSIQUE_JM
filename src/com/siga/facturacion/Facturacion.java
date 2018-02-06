@@ -785,7 +785,7 @@ public class Facturacion {
 	    			}	
 	    			
 	    			if (!codretorno.equals("0")){
-	    				throw new ClsExceptions ("Error al generar números de facturación: "+resultadoConfirmar[1]);
+	    				throw new ClsExceptions (UtilidadesString.getMensajeIdioma(this.usrbean, "facturacion.confirmarFacturacion.mensaje.generacionDisquetesERROR") +resultadoConfirmar[1]);
 	    			}
 	
 	    			// RGG 05/05/2009 Cambio (solo se generan los pagos por banco cuando se indica por parámetro)
@@ -810,7 +810,7 @@ public class Facturacion {
 		    			
 		    			codretorno = resultado[1];
 		    			if (!codretorno.equals("0")){
-		    				throw new ClsExceptions ("Error al generar disquetes bancarios: " + resultado[2]);
+		    				throw new ClsExceptions (UtilidadesString.getMensajeIdioma(this.usrbean, "facturacion.confirmarFacturacion.mensaje.generacionDisquetesERROR") + resultado[2]);
 		    			}
 	    			}
 	    			
@@ -878,7 +878,7 @@ public class Facturacion {
 	    						// Si no se generan los informes de confirmacion
 	    						if (listaFicherosConfirmacion==null || listaFicherosConfirmacion.size()==0) {
 	    							ClsLogging.writeFileLog("### Error al generar el informe de la confirmacion. Inicio creación fichero log CONFIRMACION sin datos",7);
-	    							throw new ClsExceptions("message.facturacion.error.fichero.nulo");						
+	    							throw new SIGAException("message.facturacion.error.fichero.nulo");						
 	    						}
 	    						
 	    						File ficheroXls = listaFicherosConfirmacion.get(0);
@@ -912,7 +912,10 @@ public class Facturacion {
 	    				sms = UtilidadesString.getMensajeIdioma(this.usrbean.getLanguage(), e2.getLiteral());	    				
 	    				
 	    			} else {
-	    				sms = e.toString();
+	    				if(e.getMessage()!=null)
+	    					sms = e.getMessage();
+	    				else
+	    					sms = e.toString();
 	    			}
 	    			ClsLogging.writeFileLog("ERROR AL CONFIRMAR Y PRESENTAR: " + sms, 10);
     				log.writeLogFactura("CONFIRMACION","N/A","N/A","Error en proceso de confirmación: " + sms);
@@ -931,7 +934,7 @@ public class Facturacion {
 	    			//////////// FIN TRANSACCION ////////////////
 	
 	    			ClsLogging.writeFileLog("CAMBIA ESTADO A FINALIZADA ERRORES.",10);
-	    			throw new ClsExceptions("Error al confirmar facturacion rápida. " + sms);
+	    			throw new ClsExceptions(UtilidadesString.getMensajeIdioma(this.usrbean, "messages.facturacion.confirmacion.error") + sms);
 	    		}
 	    		
 	    		//INSERTAMOS EN LA COLA LA OPERACIÓN CREARCLIENTE(): (NO HAY PROBLEMA PORQUE SI EL CLIENTE YA EXISTE LO ACTUALIZA, Y HACE UN INTENTO DE TRASPASAR ÚNICAMENTE LAS FACTURAS QUE TENGA SIN TRASPASAR, QUE ES LO QUE NOS INTERESA).
@@ -966,7 +969,7 @@ public class Facturacion {
     			throw (ClsExceptions) e;
 			}
 			
-    		throw new SIGAException("Error al confirmar facturacion rápida.");
+    		throw new SIGAException("messages.facturacion.confirmacion.error");
     	}
 
     	if(msjAviso!=null)

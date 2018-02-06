@@ -191,7 +191,9 @@ public class EnvTipoEnviosAdm extends MasterBeanAdministrador {
 		GenParametrosAdm param = new GenParametrosAdm(usrBean);
 		boolean isEnvioSmsConfigurado = UtilidadesString.stringToBoolean(param.getValor(usrBean.getLocation(), "ENV", "HABILITAR_SMS_BUROSMS", "N"));
 		if(!isEnvioSmsConfigurado){
-			sql.append(" and te.idtipoenvios not in (4,5)");
+			sql.append(" and te.idtipoenvios not in (3,4,5)");
+		}else{
+			sql.append(" and te.idtipoenvios not in (3)");
 		}
 		sql.append(" ORDER  BY IDTIPOENVIOS");
 		List<EnvTipoEnviosBean> tipoEnviosBeans = null;

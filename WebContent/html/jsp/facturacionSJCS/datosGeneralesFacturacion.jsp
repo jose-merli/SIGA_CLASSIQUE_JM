@@ -260,6 +260,7 @@
 		// Asociada al boton GuardarCerrar
 		function accionGuardar() {
 			sub();
+			
 			if (validateDatosGeneralesFacturacionForm(document.forms[0])){
 
 				<% if(strutTrans.equalsIgnoreCase("CEN_MantenimientoFacturacion")) { %>
@@ -299,10 +300,6 @@
 			document.forms[0].modo.value = "abrir";
 			document.forms[0].target = "mainPestanas";
 			document.forms[0].submit();
-		}
-		
-		function refrescarLocal() {
-			buscar();
 		}
 		
 		function accionListaConsejo() {
@@ -459,13 +456,15 @@
 			jQuery(".ui-widget-overlay").css("opacity","0");
 		}
 		
-		function refrescarLocal(){			
+		function refrescarLocal(){		
+			
 			if (jQuery("#dialogoInformeIncidenciasCAM").is(':visible')){
 				closeDialog('dialogoInformeIncidenciasCAM');
-			}
-			
-			if (jQuery("#dialogoSeleccionErroresCAM").is(':visible')){
+			}else if (jQuery("#dialogoSeleccionErroresCAM").is(':visible')){
 				closeDialog('dialogoSeleccionErroresCAM');
+			}else{
+				buscar();
+				
 			}
 		}
 		

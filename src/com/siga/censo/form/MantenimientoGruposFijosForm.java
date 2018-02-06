@@ -24,6 +24,17 @@ public class MantenimientoGruposFijosForm extends MasterForm {
 	private String nombrefichero;
 	private String directorio;
 	private String busquedaNombre;
+	private String crearListaCorreoGrupoFijo="0";
+
+	
+
+	public String getCrearListaCorreoGrupoFijo() {
+		return crearListaCorreoGrupoFijo;
+	}
+
+	public void setCrearListaCorreoGrupoFijo(String crearListaCorreoGrupoFijo) {
+		this.crearListaCorreoGrupoFijo = crearListaCorreoGrupoFijo;
+	}
 
 	// METODOS SET
 	public void setIdInstitucion(String dato) {

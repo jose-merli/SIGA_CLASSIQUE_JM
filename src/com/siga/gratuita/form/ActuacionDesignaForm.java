@@ -36,6 +36,7 @@ public class ActuacionDesignaForm extends MasterForm
 	private String anioProcedimiento;
 	private String fecha;
 	private String nig;
+	private String anulada;
 	 
 
 	
@@ -197,6 +198,12 @@ public class ActuacionDesignaForm extends MasterForm
 	 */
 	public void setNig(String nig) {
 		this.nig = nig;
+	}
+	public String getAnulada() {
+		return anulada;
+	}
+	public void setAnulada(String anulada) {
+		this.anulada = anulada;
 	}
 	
 	

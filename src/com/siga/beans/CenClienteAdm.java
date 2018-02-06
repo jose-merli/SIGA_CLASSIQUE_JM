@@ -4912,42 +4912,51 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 		    codigos.put(new Integer(6),nifcif.toUpperCase());
 		    codigos.put(new Integer(7),this.usrbean.getLocation());
 		    codigos.put(new Integer(8),nifcif.toUpperCase());
-		    
-            String sql ="SELECT 1 AS TIPO, p.nifcif as NIFCIF, c.idpersona AS IDPERSONA, C.IDINSTITUCION AS IDINSTITUCION,";
+            String sql = "SELECT * FROM (";
+		    sql=sql + "SELECT 1 AS TIPO, p.nifcif as NIFCIF, c.idpersona AS IDPERSONA, C.IDINSTITUCION AS IDINSTITUCION,";
             sql=sql + "P.NOMBRE AS NOMBRE, P.APELLIDOS1 AS APELLIDOS1, P.APELLIDOS2 AS APELLIDOS2,";
             sql=sql + "f_siga_calculoncolegiado(C.IDINSTITUCION,C.IDPERSONA) AS NCOLEGIADO, ";
-            sql=sql + "f_siga_gettipocliente(C.IDPERSONA,2040,sysdate) AS ESTADO ";
+            sql=sql + "f_siga_gettipocliente(C.IDPERSONA,C.IDINSTITUCION,sysdate) AS ESTADO ";
+            sql=sql + ",1 AS ORDEN ";
             sql=sql + "from cen_persona p, cen_cliente c, cen_colegiado col";
             sql=sql + " where p.idpersona = c.idpersona";
             sql=sql + " and c.idpersona = col.idpersona";
             sql=sql + " and c.idinstitucion = col.idinstitucion";
             sql=sql + " and c.idinstitucion = :1";            
             sql=sql + " and UPPER(p.NIFCIF)=:2";
+            
             sql=sql + " union";            
             sql=sql + " select 2 AS TIPO, p.nifcif as NIFCIF, c.idpersona AS IDPERSONA, C.IDINSTITUCION AS IDINSTITUCION,";
             sql=sql + "P.NOMBRE AS NOMBRE, P.APELLIDOS1 AS APELLIDOS1, P.APELLIDOS2 AS APELLIDOS2,";
             sql=sql + "f_siga_calculoncolegiado(C.IDINSTITUCION,C.IDPERSONA) AS NCOLEGIADO, ";
             sql=sql + "f_siga_gettipocliente(C.IDPERSONA,C.IDINSTITUCION,sysdate) AS ESTADO ";
+            sql=sql + ",3 AS ORDEN ";
             sql=sql + " from cen_persona p, cen_cliente c, cen_colegiado col";
             sql=sql + " where p.idpersona = c.idpersona";
             sql=sql + " and c.idpersona = col.idpersona";
             sql=sql + " and c.idinstitucion = col.idinstitucion";
             sql=sql + " and c.idinstitucion != :3";            
-            sql=sql + " and UPPER(p.NIFCIF)=:4";          
+            sql=sql + " and UPPER(p.NIFCIF)=:4";      
+            
             sql=sql + " union";
             sql=sql + " select 3 AS TIPO, p.nifcif as NIFCIF, c.idpersona AS IDPERSONA, C.IDINSTITUCION AS IDINSTITUCION, ";
             sql=sql + " P.NOMBRE AS NOMBRE, P.APELLIDOS1 AS APELLIDOS1, P.APELLIDOS2 AS APELLIDOS2, '' AS NCOLEGIADO, ";
             sql=sql + " 0 AS ESTADO ";
+            sql=sql + ",2 AS ORDEN ";
             sql=sql + " from cen_persona p, cen_nocolegiado c" ;
             sql=sql + " where p.idpersona = c.idpersona" ;
             sql=sql + " and c.idinstitucion =:5 and UPPER(p.NIFCIF)=:6";
+            
             sql=sql + " union";            
             sql=sql + " select 4 AS TIPO, p.nifcif as NIFCIF, c.idpersona AS IDPERSONA, C.IDINSTITUCION AS IDINSTITUCION, ";
             sql=sql + " P.NOMBRE AS NOMBRE, P.APELLIDOS1 AS APELLIDOS1, P.APELLIDOS2 AS APELLIDOS2, '' AS NCOLEGIADO, ";
             sql=sql + " 0 AS ESTADO ";
+            sql=sql + ",4 AS ORDEN ";
             sql=sql + " from cen_persona p, cen_nocolegiado c" ;
             sql=sql + " where p.idpersona = c.idpersona" ;
-            sql=sql + " and c.idinstitucion !=:7 and UPPER(p.NIFCIF)=:8";            
+            sql=sql + " and c.idinstitucion !=:7 and UPPER(p.NIFCIF)=:8";
+            
+            sql=sql + ") ORDER BY ORDEN";
 
 
 													

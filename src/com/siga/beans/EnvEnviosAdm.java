@@ -5019,6 +5019,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			envioBean.setIdEstado(new Integer(EnvEnviosAdm.ESTADO_INICIAL));
 			envioBean.setFechaCreacion("SYSDATE");
 			envioBean.setFechaProgramada(null);
+			envioBean.setCSV(null);
 			
 			// Obtenemos todos los campos configurados para el envio 
 			Vector<EnvCamposEnviosBean> envCamposEnviosVector = envCamposEnviosAdm.select(pkEnvioHashtable);

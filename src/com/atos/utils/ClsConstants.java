@@ -319,6 +319,7 @@ public class ClsConstants {
 	
 	//El idmodulo de facturacion en numero
 	public static final int IDMODULOFACTURACION = 6;
+	public static final int IDMODULOPRODUCTOSYSERVICIOS = 9;
 
 	// tipos preferente RGG 04-02-2005
 	public static final String TIPO_PREFERENTE_CORREO = "C";  

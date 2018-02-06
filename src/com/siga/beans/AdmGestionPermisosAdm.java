@@ -119,6 +119,19 @@ public class AdmGestionPermisosAdm extends MasterBeanAdministrador{
 		return hash;
 	}
 
+	public void borrarPermisos(String idInstitucion, String idPerfil) throws ClsExceptions
+	{
+		StringBuilder sqlDelete = new StringBuilder();
+		sqlDelete.append("delete from adm_tiposacceso ");
+		sqlDelete.append(" where idinstitucion = ");
+		sqlDelete.append(idInstitucion);
+		sqlDelete.append("   and idperfil = '");
+		sqlDelete.append(idPerfil);
+		sqlDelete.append("'");
+		
+		this.updateSQL(sqlDelete.toString());
+	}
+
 
 	
 }

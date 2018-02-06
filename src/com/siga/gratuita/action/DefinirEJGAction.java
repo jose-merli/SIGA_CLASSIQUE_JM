@@ -273,6 +273,7 @@ public class DefinirEJGAction extends MasterAction
 		ScsEJGAdm admBean =new ScsEJGAdm(this.getUserBean(request));
 		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 		DefinirEJGForm miFormulario =(DefinirEJGForm)formulario;
+		miFormulario.setJsonVolver("");
 		Hashtable miHash= new Hashtable();
 		miHash = miFormulario.getDatos();
 		//BNS TAG SELECT
@@ -522,6 +523,9 @@ public class DefinirEJGAction extends MasterAction
 			miHash.put("accionE","editar");
 			// action
 			miHash.put("actionE","/JGR_InteresadoEJG.do");
+			if(miForm.getJsonVolver()!=null && !miForm.getJsonVolver().equals(""))
+				miHash.put("jsonVolver",miForm.getJsonVolver());
+			
 			
 			GenParametrosAdm parametrosAdm = new GenParametrosAdm(this.getUserBean(request));
 	 		String valor = parametrosAdm.getValor(idInstitucion, ClsConstants.MODULO_GENERAL, "REGTEL", "0");
@@ -656,7 +660,8 @@ public class DefinirEJGAction extends MasterAction
 			miHash.put("accionE","ver");
 			// action
 			miHash.put("actionE","/JGR_InteresadoEJG.do");
-			
+			if(miForm.getJsonVolver()!=null && !miForm.getJsonVolver().equals(""))
+				miHash.put("jsonVolver",miForm.getJsonVolver());
 			
 			GenParametrosAdm parametrosAdm = new GenParametrosAdm(this.getUserBean(request));
 	 		String valor = parametrosAdm.getValor(idInstitucion, ClsConstants.MODULO_GENERAL, "REGTEL", "0");
@@ -736,6 +741,7 @@ public class DefinirEJGAction extends MasterAction
 			} 
 		}
 		DefinirEJGForm miform = (DefinirEJGForm)formulario;
+		miform.setJsonVolver("");
 		try{
 			
 						
@@ -784,7 +790,7 @@ public class DefinirEJGAction extends MasterAction
 
 			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
 			DefinirEJGForm miForm = (DefinirEJGForm) formulario;	
-			
+			miForm.setJsonVolver("");
 			miHash = miForm.getDatos();
 			Hashtable miHashSOJ=new Hashtable(); 
 			Hashtable miHashSOJDocu=new Hashtable(); 
@@ -1418,6 +1424,8 @@ public class DefinirEJGAction extends MasterAction
 		try {
 //			SCS
 			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+			DefinirEJGForm miFormulario =(DefinirEJGForm)formulario;
+			miFormulario.setJsonVolver("");
 			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
 			String eejg = paramAdm.getValor (usr.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_EEJG, "");
 			Boolean isPermisoEejg = new Boolean((eejg!=null && eejg.equalsIgnoreCase(ClsConstants.DB_TRUE)));
@@ -1471,6 +1479,8 @@ public class DefinirEJGAction extends MasterAction
         request.getSession().removeAttribute("DATABACKUP");
         request.getSession().removeAttribute("accion");
         try {
+        	DefinirEJGForm miFormulario =(DefinirEJGForm)formulario;
+    		miFormulario.setJsonVolver("");
         	GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
      		String eejg = paramAdm.getValor (usr.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_EEJG, "");
      		Boolean isPermisoEejg = new Boolean((eejg!=null && eejg.equalsIgnoreCase(ClsConstants.DB_TRUE)));

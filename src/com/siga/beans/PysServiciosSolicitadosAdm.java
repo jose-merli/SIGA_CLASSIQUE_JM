@@ -1234,7 +1234,7 @@ public class PysServiciosSolicitadosAdm extends MasterBeanAdministrador {
 					    if (sFechaFacMayor!=null && !sFechaFacMayor.equals("")){
 						    Date dFechaFacMayor = formato.parse(sFechaFacMayor);
 						    Date dFecha = formato.parse(fechaEfectiva);
-						    if (dFecha.compareTo(dFechaFacMayor)<=0) {
+						    if (dFecha.compareTo(dFechaFacMayor)<0) {
 						    	// la fecha de baja es menor o igual que la fecha de facturacion mayor
 						    	formato.applyPattern("dd/MM/yyyy");
 						    	String [] datos = {formato.format(dFechaFacMayor)};

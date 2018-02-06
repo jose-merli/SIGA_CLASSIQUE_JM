@@ -1,3 +1,149 @@
+create or replace package PKG_SIGA_FACTURACION is
+
+    TYPE MATRICE_FACTURA IS RECORD (
+        IDFACTURA FAC_FACTURA.IDFACTURA%TYPE,
+        IDPERSONA FAC_FACTURA.IDPERSONA%TYPE,
+        IDFORMAPAGO FAC_FACTURA.IDFORMAPAGO%TYPE,
+        IDCUENTA FAC_FACTURA.IDCUENTA%TYPE,
+        IDPERSONADEUDOR FAC_FACTURA.IDPERSONADEUDOR%TYPE,
+        IDCUENTADEUDOR FAC_FACTURA.IDCUENTADEUDOR%TYPE,
+        OBSERVACIONES FAC_FACTURA.OBSERVACIONES%TYPE,
+        CTACLIENTE FAC_FACTURA.CTACLIENTE%TYPE,
+        IMPTOTALNETO FAC_FACTURA.IMPTOTALNETO%TYPE,
+        IMPTOTALIVA FAC_FACTURA.IMPTOTALIVA%TYPE,
+        IMPTOTAL FAC_FACTURA.IMPTOTAL%TYPE,
+        IMPTOTALANTICIPADO FAC_FACTURA.IMPTOTALANTICIPADO%TYPE,
+        IMPTOTALPORPAGAR FAC_FACTURA.IMPTOTALPORPAGAR%TYPE,
+        IDMANDATO FAC_FACTURA.IDMANDATO%TYPE,
+        DEUDOR_ID CEN_PERSONA.NIFCIF%TYPE,
+        DEUDOR_NOMBRE VARCHAR2(302));
+  TYPE TAB_FACTURA IS TABLE OF MATRICE_FACTURA INDEX BY BINARY_INTEGER;
+
+    /* Matriz de Lineas de Facturas */
+    TYPE MATRICE_LINEAFACTURA IS RECORD (
+        IDFACTURA               FAC_LINEAFACTURA.IDFACTURA%TYPE,
+        NUMEROLINEA             FAC_LINEAFACTURA.NUMEROLINEA%TYPE,
+        NUMEROORDEN             FAC_LINEAFACTURA.NUMEROORDEN%TYPE,
+        DESCRIPCION             FAC_LINEAFACTURA.DESCRIPCION%TYPE,
+        CANTIDAD                FAC_LINEAFACTURA.CANTIDAD%TYPE,
+        PRECIOUNITARIO          number(14,6),
+        IMPORTEANTICIPADO       FAC_LINEAFACTURA.IMPORTEANTICIPADO%TYPE,
+        IVA                     FAC_LINEAFACTURA.IVA%TYPE,
+        IDTIPOIVA FAC_LINEAFACTURA.IDTIPOIVA%TYPE,
+        IDPETICION              PYS_COMPRA.IDPETICION%TYPE,
+        IDTIPOPRODUCTO          PYS_COMPRA.IDTIPOPRODUCTO%TYPE,
+        IDPRODUCTO              PYS_COMPRA.IDPRODUCTO%TYPE,
+        IDPRODUCTOINSTITUCION   PYS_COMPRA.IDPRODUCTOINSTITUCION%TYPE,
+        CTAPRODUCTOSERVICIO     FAC_LINEAFACTURA.CTAPRODUCTOSERVICIO%TYPE,
+        CTAIVA                  FAC_LINEAFACTURA.CTAIVA%TYPE,
+        IDFORMAPAGO             FAC_LINEAFACTURA.IDFORMAPAGO%TYPE);
+  TYPE TAB_LINEAFACTURA IS TABLE OF MATRICE_LINEAFACTURA INDEX BY BINARY_INTEGER;
+
+  /* Matriz de Facturas Suscripciones */
+  TYPE MATRICE_FACTURACIONSUSCRIPCION IS RECORD
+   (IDFACTURA                 FAC_FACTURACIONSUSCRIPCION.IDFACTURA%TYPE,
+    NUMEROLINEA               FAC_FACTURACIONSUSCRIPCION.NUMEROLINEA%TYPE,
+    IDTIPOSERVICIOS           FAC_FACTURACIONSUSCRIPCION.IDTIPOSERVICIOS%TYPE,
+    IDSERVICIO                FAC_FACTURACIONSUSCRIPCION.IDSERVICIO%TYPE,
+    IDSERVICIOSINSTITUCION    FAC_FACTURACIONSUSCRIPCION.IDSERVICIOSINSTITUCION%TYPE,
+    IDSUSCRIPCION             FAC_FACTURACIONSUSCRIPCION.IDSUSCRIPCION%TYPE,
+    IDFACTURACIONSUSCRIPCION  FAC_FACTURACIONSUSCRIPCION.IDFACTURACIONSUSCRIPCION%TYPE,
+    DESCRIPCION               FAC_FACTURACIONSUSCRIPCION.DESCRIPCION%TYPE,
+    FECHAINICIO               FAC_FACTURACIONSUSCRIPCION.FECHAINICIO%TYPE,
+    FECHAFIN                  FAC_FACTURACIONSUSCRIPCION.FECHAFIN%TYPE,
+    IDPERSONA FAC_FACTURA.IDPERSONA%TYPE,
+    IMPORTE NUMBER(10,2),
+    CONT_ANTICIPOS NUMBER);
+  TYPE TAB_FACTURACIONSUSCRIPCION IS TABLE OF MATRICE_FACTURACIONSUSCRIPCION INDEX BY BINARY_INTEGER;
+
+    /****************************************************************************************************************/
+    /* Nombre: OBTENCIONPOBLACIONCLIENTES */
+    /* Descripcion: Obtencion de la poblacion de clientes incluidos en la serie de facturacion */
+    /* */
+    /* P_IDINSTITUCION - IN - Identificador del colegio - NUMBER */
+    /* P_IDSERIEFACTURACION - IN - Identificador de la serie de facturacion - NUMBER */
+    /* */
+    /* Version: 1.0 - Fecha Creacion: 10/11/2004 - Autor: Yolanda Garcia Espino */
+    /* Version: 2.0 - Fecha Modificacion: 01/11/2014 - Autor: Jorge Paez Trivino */
+    /*****************************************************************************************************************************/
+    FUNCTION OBTENCIONPOBLACIONCLIENTES(P_IDINSTITUCION IN NUMBER, P_IDSERIEFACTURACION IN NUMBER) RETURN PERSONA_TBL;
+
+    /*****************************************************************************************************************************/
+    /* Nombre: GENERACIONFACTURACION  */
+    /* Descripcion:   Generacion de facturas */
+    /* */
+    /* P_IDINSTITUCION - IN - Identificador del colegio - NUMBER */
+    /* P_IDSERIEFACTURACION - IN - Identificador de la serie de facturacion - NUMBER */
+    /* P_IDPROGRAMACION - IN  Identificador de la programacion - NUMBER */
+    /* P_USUMODIFICACION - IN - Usuario de modificacion - NUMBER */
+    /* P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)   */
+    /*      En caso de error devuelve el codigo de error Oracle correspondiente. */
+    /* P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400) */
+    /*      En caso de error devuelve el mensaje de error Oracle correspondiente. */
+    /* */
+    /* Version: 1.0 - Fecha Creacion: 10/11/2004 - Autor: Yolanda Garcia Espino */
+    /* Version: 2.0 - Fecha Modificacion: 01/11/2014 - Autor: Jorge Paez Trivino */
+    /* Version: 3.0 - Fecha Modificacion: 01/09/2015 - Autor Jorge Paez Trivino - Cambios encontrados al realizar la documentacion del proceso de facturacion */
+    /*****************************************************************************************************************************/
+    PROCEDURE GENERACIONFACTURACION(
+        P_IDINSTITUCION IN NUMBER,
+        P_IDSERIEFACTURACION IN NUMBER,
+        P_IDPROGRAMACION IN NUMBER,
+        P_IDIOMA IN NUMBER,
+        P_IDPETICION IN NUMBER, -- Cuendo tiene dato es porque viene de facturacion rapida
+        P_USUMODIFICACION IN NUMBER,
+        P_CODRETORNO OUT VARCHAR2,
+        P_DATOSERROR OUT VARCHAR2);
+
+    /****************************************************************************************************************/
+    /* Nombre: CONFIRMACIONFACTURACION */
+    /* Descripcion: Confirmacion de la factura */
+    /* */
+    /* P_IDINSTITUCION - IN - Identificador del colegio - NUMBER */
+    /* P_IDSERIEFACTURACION - IN - Identificador de la serie de facturacion - NUMBER */
+    /* P_IDPROGRAMACION - IN  Identificador de la programacion - NUMBER */
+    /* P_USUMODIFICACION - IN - Usuario de modificacion - NUMBER */
+    /* P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)   */
+    /*      En caso de error devuelve el codigo de error Oracle correspondiente. */
+    /* P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400) */
+    /*      En caso de error devuelve el mensaje de error Oracle correspondiente. */
+    /* */
+    /* Version: 1.0 - Fecha Creacion: 10/11/2004 - Autor: Yolanda Garcia Espino */
+    /* Version: 2.0 - Fecha Modificacion: 04/10/2005 - Autor: Yolanda Garcia Espino - Configuracion del numero de factura */
+    /* Version: 3.0 - Fecha Modificacion: 01/11/2014 - Autor: Jorge Paez Trivino */
+    /*****************************************************************************************************************************/
+    PROCEDURE CONFIRMACIONFACTURACION(
+        P_IDINSTITUCION IN NUMBER,
+        P_IDSERIEFACTURACION IN NUMBER,
+        P_IDPROGRAMACION IN NUMBER,
+        P_USUMODIFICACION IN NUMBER,
+        P_CODRETORNO OUT VARCHAR2,
+        P_DATOSERROR OUT VARCHAR2);
+
+    /*****************************************************************************************************************************/
+    /* Nombre: ELIMINARFACTURACION  */
+    /* Descripcion: Eliminacion de una facturacion */
+    /* */
+    /* P_IDINSTITUCION - IN - Identificador del colegio - NUMBER */
+    /* P_IDSERIEFACTURACION - IN - Identificador de la serie de facturacion - NUMBER */
+    /* P_IDPROGRAMACION - IN  Identificador de la programacion - NUMBER */
+    /* P_USUMODIFICACION - IN - Usuario de modificacion - NUMBER */
+    /* P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)   */
+    /*      En caso de error devuelve el codigo de error Oracle correspondiente. */
+    /* P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400) */
+    /*      En caso de error devuelve el mensaje de error Oracle correspondiente. */
+    /* */
+    /* Version: 1.0 - Fecha Modificacion: 01/09/2015 - Autor Jorge Paez Trivino - Cambios encontrados al realizar la documentacion del proceso de facturacion */
+    /*****************************************************************************************************************************/
+    PROCEDURE ELIMINARFACTURACION   (
+        P_IDINSTITUCION IN NUMBER,
+        P_IDSERIEFACTURACION IN NUMBER,
+        P_IDPROGRAMACION IN NUMBER,
+        P_USUMODIFICACION IN NUMBER,
+        P_CODRETORNO OUT VARCHAR2,
+        P_DATOSERROR OUT VARCHAR2);
+END PKG_SIGA_FACTURACION;
+/
 CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION IS
 
     M_FACTURA TAB_FACTURA;

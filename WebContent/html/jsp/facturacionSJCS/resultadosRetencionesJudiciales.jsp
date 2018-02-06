@@ -86,16 +86,7 @@
 					botones = "C,E";
 				}
 				
-				fechaNotificacionFin = GstDate.getFormatedDateShort("",UtilidadesHash.getString(fila, "FECHAFIN"));
-				if (fechaNotificacionFin!=null && !fechaNotificacionFin.equals("")){
-	 				java.text.SimpleDateFormat sdfNew = new java.text.SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);			
-					 Date dateHoy = sdfNew.parse(fechaHoy);	
-					 Date dateFin = sdfNew.parse(fechaNotificacionFin);
-					
-					 if (!dateHoy.before(dateFin) && !dateHoy.equals(dateFin)){					     
-						 botones = "C";
-					 }
-				} 
+				
 				
 				//aalg:controlar el acceso en modo consulta
 				if (accion.equalsIgnoreCase("ver"))

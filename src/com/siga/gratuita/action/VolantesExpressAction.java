@@ -200,8 +200,8 @@ public class VolantesExpressAction extends MasterAction
 		ScsTipoAsistenciaColegioAdm admTiposAsis = new ScsTipoAsistenciaColegioAdm(miForm.getUsrBean());
 		Hashtable<String, Object> ht = new Hashtable<String, Object>();
 		ht.put(ScsTipoAsistenciaColegioBean.C_IDINSTITUCION, miForm.getIdInstitucion());
-		Vector<ScsTipoAsistenciaColegioBean> vTiposAsistenciaColegio = (Vector<ScsTipoAsistenciaColegioBean>)admTiposAsis.selectCombo(ht,true);
-		miForm.setTiposAsistenciaColegio(vTiposAsistenciaColegio);
+//		Vector<ScsTipoAsistenciaColegioBean> vTiposAsistenciaColegio = (Vector<ScsTipoAsistenciaColegioBean>)admTiposAsis.selectCombo(ht,true);
+//		miForm.setTiposAsistenciaColegio(vTiposAsistenciaColegio);
 		// Por defecto marcamos "Guardia 24h. Asistencia al detenido. Procedimiento general"
 		miForm.setIdTipoAsistenciaColegio(String.valueOf(ScsTipoAsistenciaColegioBean.TIPO_ASISTENCIA_DETENIDO_PROC_GENERAL));
 		 

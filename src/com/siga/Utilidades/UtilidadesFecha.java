@@ -82,40 +82,6 @@ public class UtilidadesFecha {
 		return fechaFormateada;
 	}
 	
-	/** Suma dias a la fecha pasada como argumento */
-	public static String sumarDias(String fecha, int dias){
-		String salida = "";
-
-		try {
-			//Recupero del String fechaInicial con formato dd/mm/yyyy la fecha como Date
-			String jsdf = ClsConstants.DATE_FORMAT_SHORT_SPANISH;//"dd/MM/yyyy";//Java Short Date Format
-			SimpleDateFormat formateo = new SimpleDateFormat(jsdf);
-			//Calendario
-			Calendar calendario = Calendar.getInstance();
-			if(fecha!=null && !fecha.equals("")){
-				Date date = new Date();
-				date = formateo.parse(fecha);
-				calendario.setTime(date);
-			}
-
-			//Nueva fecha calculada
-			Date siguiente = new Date();
-			int dia = 0;
-			for (int i=0; i<dias; i++) {
-				dia = calendario.get(Calendar.DAY_OF_MONTH);
-				calendario.set(Calendar.DAY_OF_MONTH,dia+1);
-			}
-			siguiente = calendario.getTime();
-			
-			//Formateo la fecha como un String
-			salida = formateo.format(siguiente);
-			
-		}
-		catch (Exception e) {
-		}
-
-		return salida;
-	}
 	/**
 	 * Convierte un string con formato dd/MM/yyyy o yyyy/MM/dd HH:mm:ss a calendar
 	 * @param strDate dd/MM/yyyy o yyyy/MM/dd HH:mm:ss
@@ -138,25 +104,6 @@ public class UtilidadesFecha {
 		}
 		return cal;
 	}
-	
-	/**
-	 * Devuelve la fecha Fin a partir de la fecha de inicio y los dias de margen.
-	 * Devuelve true si es Laborable y false si es Festivo.
-	 * 
-	 * @param String fechaInicio: Fecha de Inicio en el formato DD/MM/YYYY.
-	 * @param String dias: dias de margen entre la Fecha de Inicio y la Fecha Fin. Si es 0 devuelve la Fecha de Inicio.
-	 * @return String con la Fecha Fin en el formato DD/MM/YYYY. 
-	 */
-	public static String obtenerFechaFinLaborable(String fechaFin, int diasRestantes) {
-		//Busco la fecha fin a partir de la fecha inicio seleccionada. Sigo buscando mientras tenga diasRestantes > 0
-		while (diasRestantes > 0) {				
-			fechaFin = UtilidadesFecha.sumarDias(fechaFin,1);
-			if (esFechaLaborable(fechaFin)) 
-				diasRestantes--;				
-		}
-		
-		return fechaFin;
-	}	
 	
 	/**
 	 * Valida si una fecha es laborable .

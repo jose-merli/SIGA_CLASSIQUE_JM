@@ -150,6 +150,7 @@
 		}
 		
 		function postAccionGuardia(){
+			
 			if((document.VolantesExpressForm.idGuardia && document.VolantesExpressForm.idGuardia.value != ''&& document.VolantesExpressForm.idGuardia.value != '-1')){
 				//Ahora mismo si hay seleccionado un letrado no se va a borrar aunque haya cambio de guardia 
 				if(document.VolantesExpressForm.idColegiado&&document.VolantesExpressForm.idColegiado.value!=''){
@@ -164,10 +165,46 @@
 						actualizarResultados();
 					}
 				}
+			
 			}else{
 				actualizarResultados();
 			}
+			rellenaTipoAsistencia();
+			
 		}
+		function rellenaTipoAsistencia() {
+			var idGuardia = document.getElementById('guardias').value;
+			var idTurno = document.getElementById('turnos').value;
+			var comboTipoAsistenciaColegio = document.getElementById('idTipoAsistenciaColegio');
+			var optionTipoAsistenciaColegio = comboTipoAsistenciaColegio.options;
+			if(idGuardia!='' &&idGuardia!='-1' && idTurno!=''){
+				var txtSelect = '<siga:Idioma key="general.boton.seleccionar"/>';
+				jQuery.ajax({   
+			           type: "POST",
+			           url: "/SIGA/GEN_Juzgados.do?modo=getAjaxTiposAsistencia",
+			           data: "idGuardia="+idGuardia+"&idTurno="+idTurno,
+			           dataType: "json",
+			           success:  function(json) {
+			        	    optionTipoAsistenciaColegio.length = 0;
+							jQuery("#idTipoAsistenciaColegio").append("<option  value=''>"+txtSelect+"</option>");
+							var tiposAsistenciaColegio = json.tiposAsistenciaColegio;
+		         				jQuery.each(tiposAsistenciaColegio, function(i,tipoAsistenciaColegio){
+		                        jQuery("#idTipoAsistenciaColegio").append("<option value='"+tipoAsistenciaColegio.idTipoAsistenciaColegio+"'>"+tipoAsistenciaColegio.descripcion+"</option>");
+		                        
+		                    });
+			       			
+			           },
+			           error: function(xml,msg){
+			        	   alert("Error: "+msg+xml);
+			           }
+			   	});
+			}else{
+				optionTipoAsistenciaColegio.length = 0;
+				
+			}
+			
+		}
+		
 		
 		function actualizarResultados(){
 			if((document.VolantesExpressForm.fechaGuardia && document.VolantesExpressForm.fechaGuardia.value != '')&&
@@ -285,6 +322,7 @@
 				fin();
 				return 'cancel';
 			}
+			
 			document.VolantesExpressForm.datosAsistencias.value = datosAsistencias;
 		}
 
@@ -303,9 +341,13 @@
 
 		function preAccionBuscarAsistencias(){
 			sub();
+			document.getElementById("idTipoAsistenciaColegioSelected").value = document.VolantesExpressForm.idTipoAsistenciaColegio.value;
 		}
 		
+		
 		function postAccionBuscarAsistencias(){
+			var idTipoAsistenciaColegioSelected = document.getElementById("idTipoAsistenciaColegioSelected").value;
+			jQuery("#idTipoAsistenciaColegio option[value='" + idTipoAsistenciaColegioSelected + "']").attr("selected", "selected");
 			fin();
 		}
 		
@@ -802,6 +844,7 @@
 
 <bean:define id="fechaJustificacion" name="VolantesExpressForm" property="fechaJustificacion" type="String" />
 <!-- INICIO: CAMPOS DE BUSQUEDA-->
+<input type="hidden" id = "idTipoAsistenciaColegioSelected" value = ""/>
 <html:form action="/JGR_VolantesExpres" method="POST"
 	target="mainWorkArea">
 	<html:hidden property="tipoPcajg" styleId="tipoPcajg" />
@@ -941,10 +984,9 @@
 								<siga:Idioma key="gratuita.volantesExpres.literal.tipoAsistenciaColegio" />&nbsp;(*)
 							</td>
 							<td>
-								<html:select styleClass="boxCombo" style="width:720px;" property="idTipoAsistenciaColegio" onchange="actualizarResultados();">
-									<bean:define id="tiposAsistenciaColegio" name="VolantesExpressForm" property="tiposAsistenciaColegio" type="java.util.Collection" />
-									<html:optionsCollection name="tiposAsistenciaColegio" value="idTipoAsistenciaColegio" label="descripcion" />
-								</html:select>
+								<select id="idTipoAsistenciaColegio"  name="idTipoAsistenciaColegio" style="width:720px;" class="boxCombo" onchange="actualizarResultados();">
+									<option  value="-1"><siga:Idioma key="general.boton.seleccionar"/></option>
+								</select>
 							</td>
 						</tr>
 					</table> 
@@ -1187,7 +1229,7 @@
 			document.getElementById("nombre_" + fila).value = resultado[3];
 			document.getElementById("apellido1_" + fila).value = resultado[4];
 			document.getElementById("apellido2_" + fila).value = resultado[5];
-			if(resultado[19] != null && resultado[19] != ""){
+			if(resultado[19] != null && resultado[19] != "" && document.getElementById("comboSexo_" + fila)){
 				document.getElementById("comboSexo_" + fila).value = resultado[19];
 				jQuery("#comboSexo_" + fila).prop("disabled", true);
 			}

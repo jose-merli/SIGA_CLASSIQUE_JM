@@ -1994,8 +1994,14 @@ public class InformesGenericosAction extends MasterAction {
 			sdf.applyPattern(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 			Calendar cal = Calendar.getInstance();   
 			String fecha;
-			fecha = sdf.format(cal.getTime()).toString();
+			Date date = new Date();
+			date.setTime(date.getTime() + 900000);
+			cal.setTime(date);
+			fecha = sdf.format(date.getTime()).toString();
+			
 			request.setAttribute("fecha", fecha);
+			request.setAttribute("horas", cal.get(cal.HOUR_OF_DAY));
+			request.setAttribute("minutos", cal.get(cal.MINUTE));
 			
 			return mapping.findForward("seleccionInformes");
 

@@ -13,13 +13,18 @@ import org.apache.struts.action.ActionMapping;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.autogen.model.ScsTipofundamentos;
+import org.redabogacia.sigaservices.app.business.services.scs.TipoAsistenciaColegioService;
+import org.redabogacia.sigaservices.app.business.services.scs.impl.TipoAsistenciaColegioServiceImpl;
 import org.redabogacia.sigaservices.app.services.scs.ScsTipoFundamentosService;
+import org.redabogacia.sigaservices.app.vo.scs.TipoAsistenciaColegioVo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.beans.ScsGuardiasTurnoAdm;
+import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsJuzgadoAdm;
 import com.siga.beans.ScsJuzgadoBean;
 import com.siga.beans.ScsJuzgadoProcedimientoAdm;
@@ -53,7 +58,9 @@ public class JuzgadosAction extends MasterAction{
 				getAjaxJuzgado4 (request, response);
 			} else if (modo!=null && modo.equalsIgnoreCase("getAjaxTiposFundamento")){
 				getAjaxTiposFundamento (request, response);
-			}  else if (modo!=null && modo.equalsIgnoreCase("getAjaxModulos")){
+			}  else if (modo!=null && modo.equalsIgnoreCase("getAjaxTiposAsistencia")){
+				getAjaxTiposAsistencia(request, response) ;
+			} else if (modo!=null && modo.equalsIgnoreCase("getAjaxModulos")){
 				getAjaxModulos(request, response) ;
 			} 
 		} catch (SIGAException es) {
@@ -207,6 +214,52 @@ public class JuzgadosAction extends MasterAction{
 	    response.setHeader("X-JSON", jsonObject.toString());
 		response.getWriter().write(jsonObject.toString()); 		
 	}
+	protected void getAjaxTiposAsistencia (HttpServletRequest request, HttpServletResponse response) throws Exception {
+		UsrBean usrBean = this.getUserBean(request);
+		String idGuardia = request.getParameter("idGuardia");
+		String idTurno = request.getParameter("idTurno");
+		if(idTurno.indexOf(",")>0){
+			idTurno =idTurno.split(",")[1];
+			if(idTurno.indexOf(":")>0){
+				JSONObject json = new JSONObject(request.getParameter("idTurno"));
+				idTurno = (String) json.get("idturno");
+			}
+		}
+		String idTipoAsistenciaSelec = request.getParameter("idTipoAsistenciaColegioSelec");
+		
+		String idInstitucion = usrBean.getLocation();
+		BusinessManager bm = getBusinessManager();
+		ScsGuardiasTurnoAdm scsGuardiasTurnoAdm = new ScsGuardiasTurnoAdm(usrBean);
+		ScsGuardiasTurnoBean scsGuardiasTurnoBean =  scsGuardiasTurnoAdm.getGuardiaTurno(idInstitucion, idTurno, idGuardia);
+		TipoAsistenciaColegioService tipoAsistenciaColegioService = (TipoAsistenciaColegioService)bm.getService(TipoAsistenciaColegioService.class);
+		TipoAsistenciaColegioVo tipoAsistenciaColegioVo = new TipoAsistenciaColegioVo(); 
+		tipoAsistenciaColegioVo.setIdInstitucion(Short.valueOf(idInstitucion));
+		if(scsGuardiasTurnoBean.getIdTipoGuardiaSeleccionado() != null)
+			tipoAsistenciaColegioVo.setTipoGuardia(scsGuardiasTurnoBean.getIdTipoGuardiaSeleccionado().toString());
+		if(idTipoAsistenciaSelec!=null && !idTipoAsistenciaSelec.equalsIgnoreCase(""))
+			tipoAsistenciaColegioVo.setIdTipoAsistenciaColegio(Short.valueOf(idTipoAsistenciaSelec));
+		
+		 List<TipoAsistenciaColegioVo> tipoAsistenciaColegioVos = tipoAsistenciaColegioService.getList(tipoAsistenciaColegioVo, usrBean.getLanguage());
+		
+		
+		JSONArray jsonArray = new JSONArray();
+		for (TipoAsistenciaColegioVo vo : tipoAsistenciaColegioVos) {
+			JSONObject json = new JSONObject();	
+			json.put("idTipoAsistenciaColegio",vo.getIdTipoAsistenciaColegio().toString());
+			json.put("descripcion", vo.getDescripcion());
+			jsonArray.put(json);
+		}
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("tiposAsistenciaColegio", jsonArray);
+		
+		
+		response.setContentType("text/x-json;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+	    response.setHeader("X-JSON", jsonObject.toString());
+		response.getWriter().write(jsonObject.toString()); 		
+	}
+	
 	protected void getAjaxModulos (
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception

@@ -5,11 +5,24 @@
 
 package com.siga.beans;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Vector;
 
-import com.atos.utils.*;
+import javax.transaction.UserTransaction;
+
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.Row;
+import com.atos.utils.RowsContainer;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
+import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 
 
 public class CenGruposClienteAdm extends MasterBeanAdministrador {
@@ -260,5 +273,142 @@ public class CenGruposClienteAdm extends MasterBeanAdministrador {
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D."); 
 		}
 		return nuevoId;
+	}
+	private String getConsultaExperta(Integer idGrupoFijo){
+		StringBuilder builder = new StringBuilder();
+		builder.append(" <SELECT> ");
+		builder.append(" SELECT CEN_CLIENTE.IDINSTITUCION         AS \"IDINSTITUCION\", ");
+		builder.append(" CEN_CLIENTE.IDPERSONA             AS \"IDPERSONA\", ");
+		builder.append(" CEN_DIRECCIONES.CODIGOPOSTAL      AS \"CODIGOPOSTAL\", ");
+		builder.append(" CEN_DIRECCIONES.CORREOELECTRONICO AS \"CORREOELECTRONICO\", ");
+		builder.append(" CEN_DIRECCIONES.DOMICILIO         AS \"DOMICILIO\", ");
+		builder.append(" CEN_DIRECCIONES.MOVIL             AS \"MOVIL\", ");
+		builder.append(" CEN_DIRECCIONES.FAX1              AS \"FAX1\", ");
+		builder.append(" CEN_DIRECCIONES.FAX2              AS \"FAX2\", ");
+		builder.append(" CEN_DIRECCIONES.IDPAIS            AS \"IDPAIS\", ");
+		builder.append(" CEN_DIRECCIONES.IDPROVINCIA       AS \"IDPROVINCIA\", ");
+		builder.append(" CEN_DIRECCIONES.IDPOBLACION       AS \"IDPOBLACION\" ");
+		builder.append(" </SELECT> ");
+		builder.append(" <FROM> ");
+		builder.append(" FROM CEN_CLIENTE, CEN_DIRECCIONES, CEN_GRUPOSCLIENTE_CLIENTE ");
+		builder.append(" </FROM> ");
+		builder.append(" <WHERE> ");
+		builder.append(" WHERE CEN_CLIENTE.IDPERSONA = CEN_DIRECCIONES.IDPERSONA ");
+		builder.append(" AND CEN_CLIENTE.IDINSTITUCION = CEN_DIRECCIONES.IDINSTITUCION ");
+		builder.append(" AND CEN_GRUPOSCLIENTE_CLIENTE.IDINSTITUCION = CEN_CLIENTE.IDINSTITUCION ");
+		builder.append(" AND CEN_GRUPOSCLIENTE_CLIENTE.IDPERSONA = CEN_CLIENTE.IDPERSONA ");
+		builder.append(" AND CEN_CLIENTE.IDINSTITUCION = %%IDINSTITUCION%% ");
+		builder.append(" AND CEN_GRUPOSCLIENTE_CLIENTE.IDGRUPO =  ");
+		builder.append(idGrupoFijo);
+		builder.append(" </WHERE> ");
+		return builder.toString();
+	}
+	public void insertar(CenGruposClienteBean beanGrupos,boolean isInsertarListaCorreo)throws BusinessException{
+		 
+		
+		UserTransaction tx = null;
+		
+		try {
+			tx = this.usrbean.getTransaction();
+			String nombreTabla = CenGruposClienteBean.T_NOMBRETABLA;
+			String nombreCampoDescripcion = CenGruposClienteBean.C_NOMBRE;
+			String idInstitucion = beanGrupos.getIdInstitucion().toString();
+			String nombre = beanGrupos.getNombre()+" ("+UtilidadesString.getMensajeIdioma(usrbean,"general.automatico")+")";
+			Integer idGrupoFijo = this.getNuevoIdGrupo(idInstitucion);
+			beanGrupos.setIdGrupo(idGrupoFijo);
+			String idRecurso = GenRecursosCatalogosAdm.getNombreIdRecurso(nombreTabla, nombreCampoDescripcion, beanGrupos.getIdInstitucion(), idGrupoFijo.toString());
+			if (idRecurso == null)
+				throw new BusinessException("error.messages.sinConfiguracionMultiIdioma");
+			
+
+			Hashtable htPkTabl = new Hashtable();
+			htPkTabl.put(CenGruposClienteBean.C_IDGRUPO, idGrupoFijo);
+			Hashtable htSignos = new Hashtable();
+			htSignos.put(CenGruposClienteBean.C_IDGRUPO, "<>");
+			
+			boolean isClaveUnicaMultiIdioma = UtilidadesBDAdm.isClaveUnicaMultiIdioma(idInstitucion, beanGrupos.getNombre(), nombreCampoDescripcion, htPkTabl, htSignos, nombreTabla, 4, usrbean.getLanguage());
+
+			if (isClaveUnicaMultiIdioma) {
+				tx.begin();
+
+				String idRecursoAlias = GenRecursosCatalogosAdm.getNombreIdRecursoAlias(nombreTabla, nombreCampoDescripcion,beanGrupos.getIdInstitucion(), idGrupoFijo.toString());
+				GenRecursosCatalogosAdm admRecCatalogos = new GenRecursosCatalogosAdm(this.usrbean);
+				GenRecursosCatalogosBean recCatalogoBean = new GenRecursosCatalogosBean();
+				recCatalogoBean.setCampoTabla(nombreCampoDescripcion);
+				recCatalogoBean.setDescripcion(beanGrupos.getNombre());
+				recCatalogoBean.setIdInstitucion(beanGrupos.getIdInstitucion());
+				recCatalogoBean.setIdRecurso(idRecurso);
+				recCatalogoBean.setIdRecursoAlias(idRecursoAlias);
+				recCatalogoBean.setNombreTabla(nombreTabla);
+				//Insertmos los catalogos multidioma
+				if (!admRecCatalogos.insert(recCatalogoBean, usrbean.getLanguageInstitucion()))
+					throw new BusinessException("messages.inserted.error");
+				//Insertmos el grupo
+				beanGrupos.setNombre(idRecurso.toString());
+				insert(beanGrupos);
+				if(isInsertarListaCorreo){
+					//Insertamos la lista de correo
+					EnvListaCorreosAdm envListaCorreosAdm = new EnvListaCorreosAdm(usrbean);
+				    EnvListaCorreosBean envListaCorreosBean = new EnvListaCorreosBean();	    
+				    Integer idListaCorreo =  envListaCorreosAdm.getNewIdListaCorreos(usrbean);	    
+				    envListaCorreosBean.setIdInstitucion(beanGrupos.getIdInstitucion());
+				    envListaCorreosBean.setIdListaCorreo(idListaCorreo);
+				    envListaCorreosBean.setNombre(nombre);
+				    envListaCorreosBean.setDescripcion(UtilidadesString.getMensajeIdioma(usrbean,"censo.gestion.listacorreo.descripcion.automatica"));
+				    envListaCorreosBean.setDinamica("S");		    
+				    envListaCorreosAdm.insert(envListaCorreosBean);
+					
+			        //Insertamos la consulta experta
+			        ConConsultaAdm conConsultaAdm = new ConConsultaAdm(usrbean);
+					ConConsultaBean conConsultaBean = new ConConsultaBean();
+					String idConsulta = String.valueOf(conConsultaAdm.getNewIdConsulta(idInstitucion));
+					String sentencia = getConsultaExperta(idGrupoFijo);
+				    conConsultaBean.setDescripcion(nombre);
+					conConsultaBean.setGeneral(ConConsultaAdm.CONS_GENERAL_NO);
+			    	conConsultaBean.setIdModulo(new Integer(4));//Envios a grupos
+			    	conConsultaBean.setIdTabla(null);
+				    conConsultaBean.setIdInstitucion(beanGrupos.getIdInstitucion());
+				    conConsultaBean.setIdConsulta(Long.valueOf(idConsulta));
+				    conConsultaBean.setTipoConsulta("E");
+				    conConsultaBean.setSentencia(sentencia);
+				    conConsultaBean.setEsExperta(ClsConstants.DB_TRUE);
+				    conConsultaAdm.insert(conConsultaBean);
+			        
+				    //Asociamos la consulta experta a la lista de correo
+				    EnvListaCorreoConsultaAdm envListaCorreoConsultaAdm = new EnvListaCorreoConsultaAdm(usrbean);
+				    //Rellenamos el nuevo Bean de componente lista de correos
+				    EnvListaCorreoConsultaBean envListaCorreoConsultaBean = new EnvListaCorreoConsultaBean();	    
+				    envListaCorreoConsultaBean.setIdInstitucion(beanGrupos.getIdInstitucion());
+				    envListaCorreoConsultaBean.setIdListaCorreo(idListaCorreo);
+				    envListaCorreoConsultaBean.setIdConsulta(Long.valueOf(idConsulta));
+				    envListaCorreoConsultaBean.setIdInstitucionCon(beanGrupos.getIdInstitucion());
+			    	envListaCorreoConsultaAdm.insert(envListaCorreoConsultaBean);
+					
+			    	
+			    	ConConsultaPerfilAdm cpAdm = new ConConsultaPerfilAdm (usrbean);
+			    	ConConsultaPerfilBean cpBean = new ConConsultaPerfilBean();
+			    	cpBean.setIdConsulta(Long.valueOf(idConsulta));
+			    	cpBean.setIdInstitucion(beanGrupos.getIdInstitucion());
+			    	cpBean.setIdInstitucion_Consulta(beanGrupos.getIdInstitucion());
+			    	cpBean.setIdPerfil("ADG");
+     	            cpAdm.insert(cpBean);
+			    	
+				}
+				
+				
+				tx.commit();
+
+			} else {
+				throw new BusinessException("gratuita.mantenimientoTablasMaestra.mensaje.grupoFijoDuplicado");
+			}
+		}catch (BusinessException e) {
+			try {tx.rollback();} catch (Exception e1) {}
+			throw e;
+		} catch (Exception e) {
+			try {tx.rollback();} catch (Exception e1) {}
+			throw new BusinessException("messages.inserted.error");
+		}
+		
+		
 	}
 }

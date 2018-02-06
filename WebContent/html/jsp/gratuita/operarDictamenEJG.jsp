@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<%@page import="org.redabogacia.sigaservices.app.util.KeyValue"%>
+<%@page import="org.redabogacia.sigaservices.app.autogen.model.ScsTipodictamenejg"%>
 <html>
 <head>
 <!-- operarDictamenEJG.jsp -->
@@ -36,52 +38,21 @@
 	//aalg: INC_10624
 	if(usr.getAccessType().equals(SIGAConstants.ACCESS_READ)) accion="ver";
 	String modo = (String)request.getAttribute("MODO");
-	String dato[] = new String[2];
 	
 	
-	String anio= "", numero="", idTipoEJG = "", dictamen = "", fechaDictamen = "",idInstitucion = "";
-	ArrayList vIntFDict = new ArrayList();
-	ArrayList vIntFCalf = new ArrayList();
-	Object obj=null;
-	try {
-		anio = miHash.get("ANIO").toString();
-		numero = miHash.get("NUMERO").toString();
-		idTipoEJG = miHash.get("IDTIPOEJG").toString();
-		idInstitucion =miHash.get("IDINSTITUCION").toString();
-		if (miHash.containsKey("DICTAMEN")) dictamen = miHash.get("DICTAMEN").toString();
-		if (miHash.containsKey("FECHADICTAMEN")) fechaDictamen = GstDate.getFormatedDateShort("",miHash.get("FECHADICTAMEN").toString()).toString();
-	}catch(Exception e){};
+	String anio= "", numero="", idTipoEJG = "", fechaDictamen = "",dictamen ="",idInstitucion = "",idTipoDictamenEJGSelected = "",idFundamentoCalifSelected = "";
+
 	
-	String datos[] = new String[3];
-	dato[1] = idInstitucion;
-	
-	if (miHash.containsKey("IDTIPODICTAMENEJG")){
-		try {
-			obj=miHash.get("IDTIPODICTAMENEJG");
-			vIntFDict.add(obj.equals("")? "0":obj.toString() + "," + idInstitucion);
-			datos[0]=(String) obj.toString();
-			datos[1]=idInstitucion;
-		} catch (Exception e) {}
-	}
-	if (miHash.containsKey("IDFUNDAMENTOCALIF")){
-		try {
-			obj=miHash.get("IDFUNDAMENTOCALIF");
-			if(!obj.toString().equals("")){
-			vIntFCalf.add(obj.equals("")? "0":obj.toString());
-			vIntFDict.add(obj.equals("")? "0":obj.toString());
-			dato[0]=(String) obj.toString();
-			datos[2]=(String) obj.toString();
-			}else{
-				vIntFDict.add("-1");
-				datos[2]="-1";
-				dato[0]="-1";
-			}
-		} catch (Exception e) {		
-		}
-	}else{
-		datos[2]="-1";
-		dato[0]="-1";
-		vIntFDict.add("-1");
+	if(miHash!=null){
+		if (miHash.get("ANIO")!=null)anio = miHash.get("ANIO").toString();
+		if (miHash.get("NUMERO")!=null)	numero = miHash.get("NUMERO").toString();
+		if (miHash.get("IDTIPOEJG")!=null)idTipoEJG = miHash.get("IDTIPOEJG").toString();
+		if (miHash.get("IDINSTITUCION")!=null)idInstitucion = miHash.get("IDINSTITUCION").toString();
+		if (miHash.get("FECHADICTAMEN")!=null)fechaDictamen = GstDate.getFormatedDateShort("",miHash.get("FECHADICTAMEN").toString()).toString();
+		if (miHash.get("IDTIPODICTAMENEJG")!=null)idTipoDictamenEJGSelected = miHash.get("IDTIPODICTAMENEJG").toString();
+		if (miHash.get("IDFUNDAMENTOCALIF")!=null) idFundamentoCalifSelected = miHash.get("IDFUNDAMENTOCALIF").toString();
+		if (miHash.get("DICTAMEN")!=null) dictamen = miHash.get("DICTAMEN").toString();
+		
 	}
 		
 	int pcajgActivo = 0;
@@ -91,9 +62,7 @@
 	boolean obligatorioFecha = false;
 	boolean obligatorioTipoDictamen = false;
 	boolean obligatorioFundamento = false;
-	if (pcajgActivo==1){
-		
-	}else if (pcajgActivo==2){
+	 if (pcajgActivo==2){
 		obligatorioFecha = true;
 		obligatorioTipoDictamen = true;
 		obligatorioFundamento = true;
@@ -106,25 +75,12 @@
 	String informeUnico =(String) request.getAttribute("informeUnico");
 %>
 
-
 <!-- HEAD -->
-
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
-	
-		
-	
 	<script src="<%=app%>/html/js/SIGA.js?v=${sessionScope.VERSIONJS}" type="text/javascript"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.js"></script><script type="text/javascript" src="<%=app%>/html/js/jquery.custom.js"></script>
 	<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>	
 	<script src="<%=app%>/html/js/calendarJs.jsp" type="text/javascript"></script>
-	<script type="text/javascript">
-			function refrescarLocal()
-			{
-				document.forms[0].modo.value="abrir";
-				document.forms[0].target="mainPestanas";		   	
-				document.forms[0].submit();
-			}
-			
-	</script>
+	
 	<siga:Titulo titulo="pestana.justiciagratuitaejg.dictamen"
 		localizacion="gratuita.busquedaEJG.localizacion" />
 </head>
@@ -136,9 +92,7 @@
 			<td id="titulo" class="titulitosDatos">
 			<%
 				String t_nombre = "", t_apellido1 = "", t_apellido2 = "", t_anio = "", t_numero = "", t_tipoEJG = "";
-				;
 				ScsEJGAdm adm = new ScsEJGAdm(usr);
-
 				Hashtable hTitulo = adm.getTituloPantallaEJG(idInstitucion,
 						anio, numero, idTipoEJG,(String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString()));
 
@@ -168,6 +122,12 @@
 	</table>
 
 	<div id="campos" align="center">
+<c:set var="comboDisabled" value="" />
+<c:set var="classCombo" value="boxCombo" />
+<%if (accion.equalsIgnoreCase("ver")) {%>
+<c:set var="comboDisabled" value="disabled" />
+<c:set var="classCombo" value="boxComboConsulta" />
+<%}%>
 
 	<table align="center" width="100%" height="430"
 		class="tablaCentralCampos">
@@ -184,10 +144,19 @@
 						<html:hidden property="idTipoEJG" value="<%=idTipoEJG%>" />
 						<html:hidden property="anio" value="<%=anio%>" />
 						<html:hidden property="numero" value="<%=numero%>" />
+						<html:hidden styleId="jsonVolver" property = "jsonVolver"  />
 
 						<tr>
-							<td><!-- FILA -->
+							<td width="5%"></td>
+							<td width="25%"></td>
+							<td width="35%"></td>
+							<td width="10%"></td>
+							<td width="10%"></td>
+							<td width="15%"></td>
+						</tr>
+
 						<tr>
+							<td></td>
 							<td class="labelText"><siga:Idioma key="gratuita.busquedaContabilidad.literal.fecha" />
 								<%if (obligatorioFecha) {%>
 									<%=asterisco%> 
@@ -207,45 +176,39 @@
 									<%=asterisco%> 
 								<%}%>
 							</td>
-							<td class="labelText">
-								<%if (accion.equalsIgnoreCase("ver")) {%> 
-									<siga:ComboBD
-										nombre="idTipoDictamenEJG" tipo="dictamenEJGCalif" clase="boxConsulta"  pestana="t" accion="Hijo:idFundamentoCalif"
-										filasMostrar="1" seleccionMultiple="false" obligatorio="false" parametro="<%=dato%>"
-										elementoSel="<%=vIntFDict%>" readonly="true"  /> 
-								<%}else{%> 
-									<siga:ComboBD
-										nombre="idTipoDictamenEJG" tipo="dictamenEJGCalif" clase="boxCombo"
-										filasMostrar="1" seleccionMultiple="false" obligatorio="false" pestana="t" accion="Hijo:idFundamentoCalif"
-										elementoSel="<%=vIntFDict%>" parametro="<%=dato%>" /> 
-								<%}%>
+							<td class="labelText" style="vertical-align: rigth">
+								 
+									<select id="idTipoDictamenEJG" name="idTipoDictamenEJG" ${comboDisabled} onchange="onChangeDictamenEJG(this.value);"  class="${classCombo}">
+									<option  value=""></option>
+									<% 
+									List<KeyValue> dictamenEjgList = (List<KeyValue>) request.getAttribute("dictamenEjgList");
+									for (KeyValue scsTipodictamenejg : dictamenEjgList) {
+										String dictamenEJGSeleccionado = "";
+										if(scsTipodictamenejg.getKey().toString().equals(idTipoDictamenEJGSelected))
+											dictamenEJGSeleccionado = "selected";
+										%>
+										<option <%=dictamenEJGSeleccionado%> value="<%=scsTipodictamenejg.getKey()%>" ><%=scsTipodictamenejg.getValue()%></option>
+										
+									<%} %>
+								</select> 
+								
 							</td>
+							<td></td>
 						</tr>
 						<tr>
+							<td></td>
 							<td class="labelText"><siga:Idioma key="gratuita.operarDictamen.literal.fundamentoclf" />
 								<%if (obligatorioFecha) {%>
 									<%=asterisco%> 
 								<%}%>
 							</td>
 							<td class="labelText" colspan="3">
-							<%
-								if (accion.equalsIgnoreCase("ver")) {
-							%> <siga:ComboBD
-								nombre="idFundamentoCalif" ancho="815"
-								tipo="tipoFundamentosCalifActivosConParametroBaja" pestana="t" parametro="<%=datos%>"  hijo="t" 
-								clase="boxConsulta" filasMostrar="1" seleccionMultiple="false"
-								obligatorio="false" elementoSel="<%=vIntFCalf%>" readonly="true" />
-							<%
-								} else {
-							%> <siga:ComboBD nombre="idFundamentoCalif"
-								ancho="815" tipo="tipoFundamentosCalifActivosConParametroBaja" pestana="t" hijo="t" parametro="<%=datos%>"
-								clase="boxCombo" filasMostrar="1" seleccionMultiple="false"
-								obligatorio="false" elementoSel="<%=vIntFCalf%>" /> <%
-							 	}
-							 %>
+								<select id="idFundamentoCalif" name="idFundamentoCalif" style="width:815px;" ${comboDisabled}  class="${classCombo}"/>
 							</td>
+							<td></td>
 						</tr>
 						<tr>
+							<td></td>
 							<td class="labelText"><siga:Idioma key="gratuita.operarDictamen.literal.dictamen" /></td>
 							<td class="labelText" colspan="4">
 							<%if (accion.equalsIgnoreCase("ver")) {%> 
@@ -258,6 +221,7 @@
 									rows="20"><%=dictamen%></textarea>
 							<%}%>
 							</td>
+							<td></td>
 						</tr>
 
 					</html:form>
@@ -301,9 +265,14 @@
 	<!-- INICIO: SCRIPTS BOTONES --> 
 	<script
 		language="JavaScript">	
-	
+	function refrescarLocal()
+	{
+		document.forms[0].modo.value="abrir";
+		document.forms[0].target="mainPestanas";		   	
+		document.forms[0].submit();
+	}
 		//Asociada al boton Restablecer
-		function accionRestablecer() 
+	function accionRestablecer() 
 		{		
 			document.forms[0].reset();
 		}
@@ -311,11 +280,27 @@
 		//Asociada al boton Volver
 		function accionVolver()
 		{
-			document.forms[0].idInstitucion.value = "<%=usr.getLocation()%>";
-			document.forms[0].action="./JGR_EJG.do";	
-			document.forms[0].modo.value="buscar";
-			document.forms[0].target="mainWorkArea"; 
-			document.forms[0].submit(); 
+			if(document.forms[0].jsonVolver && document.forms[0].jsonVolver.value!=''){
+				
+				jSonVolverValue = document.forms[0].jsonVolver.value;
+				jSonVolverValue = replaceAll(jSonVolverValue,"'", "\"");
+				var jSonVolverObject =  jQuery.parseJSON(jSonVolverValue);
+				nombreFormulario = jSonVolverObject.nombreformulario;
+				if(nombreFormulario != ''){
+					parent.document.forms[nombreFormulario].idRemesa.value =  jSonVolverObject.idremesa;
+					parent.document.forms[nombreFormulario].idinstitucion.value = jSonVolverObject.idinstitucion;
+					parent.document.forms[nombreFormulario].modo.value="editar";
+					parent.document.forms[nombreFormulario].target = "mainWorkArea";
+					parent.document.forms[nombreFormulario].submit();
+					
+				}
+			}else{
+				document.forms[0].idInstitucion.value = "<%=usr.getLocation()%>";
+				document.forms[0].action="./JGR_EJG.do";	
+				document.forms[0].modo.value="buscar";
+				document.forms[0].target="mainWorkArea"; 
+				document.forms[0].submit();
+			}
 
 		}
 		
@@ -388,6 +373,38 @@
 			
 
 		}
+		
+		function onChangeDictamenEJG(idTipoDictamenEJG){
+			//Limpiamos el combo tratamiento para que no se sumen los resultados
+			jQuery("#idFundamentoCalif").html("");
+	
+			jQuery.ajax({  
+	           type: "POST",
+	           url: "/SIGA/JGR_DictamenEJG.do?modo=getFundamentosDictamen",
+	           data: "idTipoDictamenEJG="+idTipoDictamenEJG,
+	           dataType: "json",
+	           success:  function(json) {
+	        	   jQuery("#idFundamentoCalif").append('<option value="">'+" "+'</option>');
+	           
+	        		jQuery.each(json, function(index, value) {
+	        			seleccionado = '';
+       					if('<%=idFundamentoCalifSelected%>'==value.id)
+       						seleccionado = 'selected';
+	        			
+	        			jQuery("#idFundamentoCalif").append('<option '+seleccionado+' value='+value.id+'>'+value.descripcion+'</option>');
+	        		   });
+	        		
+	
+	     		
+	           },
+	           error: function(xml,msg){
+	        	   alert("Error: "+msg);
+	           }
+	        }); 
+		}
+		onChangeDictamenEJG('<%=idTipoDictamenEJGSelected%>');
+		jQuery('#idFundamentoCalif option[value=<%=idFundamentoCalifSelected%>]').attr('selected','selected');
+		
 		
 	</script> <!-- FIN: SCRIPTS BOTONES --> <!-- FIN ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 

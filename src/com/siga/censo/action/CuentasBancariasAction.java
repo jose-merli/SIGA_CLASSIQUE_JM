@@ -810,19 +810,33 @@ public class CuentasBancariasAction extends MasterAction{
 		CenPaisAdm paisAdm = new CenPaisAdm(this.getUserBean(request));
 		JSONObject json = new JSONObject();	
 		String iban = (String)request.getParameter("iban");
-		if (iban==null || iban.trim().equalsIgnoreCase(""))
-			throw new SIGAException("El codigo IBAN es incorrecto");
-		
-		if(iban.length() >= 2 && paisAdm.isLongitudCorrectaIBAN(iban.substring(0,2),iban.length())){
-			json.put("pais", iban.substring(0,2));
+		if (iban==null || iban.trim().equalsIgnoreCase("")){
+			//throw new SIGAException("El codigo IBAN es incorrecto");
+			json.put("error","Debe introducir cuenta bancaria");
+		}
+		if(iban.length() >= 2){
 			
-			//Comprobamos si es Español
-			if(iban.substring(0,2).equals("ES")){
-				CenBancosBean bancoBean = bancosAdm.getBancoIBAN(iban.substring(4,8));	
-				if(bancoBean!=null){
-					json.put("banco", bancoBean.getJSONObject());
-				}
-			} 
+			boolean isLongitudCorrecta = false;
+			try {
+				isLongitudCorrecta = paisAdm.isLongitudCorrectaIBAN(iban.substring(0,2),iban.length());	
+				if(isLongitudCorrecta){
+					json.put("pais", iban.substring(0,2));
+					
+					//Comprobamos si es Español
+					if(iban.substring(0,2).equals("ES")){
+						CenBancosBean bancoBean = bancosAdm.getBancoIBAN(iban.substring(4,8));	
+						if(bancoBean!=null){
+							json.put("banco", bancoBean.getJSONObject());
+						}
+					} 
+				 }else{
+					 json.put("error",UtilidadesString.getMensajeIdioma((UsrBean)request.getSession().getAttribute("USRBEAN"),"errors.maxlength",new String[]{"¿?"}));
+				 }
+			} catch (SIGAException e) {
+				json.put("error",e.getLiteral());
+			}
+			
+			 
 		}
 		
 		// json.
@@ -853,16 +867,21 @@ public class CuentasBancariasAction extends MasterAction{
 		String iban = (String)request.getParameter("iban");
 		String cbo = (String)request.getParameter("codigo");
 		if (iban==null || iban.trim().equalsIgnoreCase(""))
-			throw new SIGAException("El codigo IBAN es incorrecto");
+			json.put("error","Debe introducir cuenta bancaria");
 
-		if(iban.substring(0,2).equals("ES")){
-			bancoBean = bancosAdm.getBancoIBAN(iban.substring(4,8));	
-		} else{			
-			bancoBean = bancosAdm.getBancoIBAN(cbo);
-		}
-				
-		if(bancoBean!=null){
-			json.put("banco", bancoBean.getJSONObject());
+		try {
+		
+			if(iban.substring(0,2).equals("ES")){
+				bancoBean = bancosAdm.getBancoIBAN(iban.substring(4,8));	
+			} else{			
+				bancoBean = bancosAdm.getBancoIBAN(cbo);
+			}
+					
+			if(bancoBean!=null){
+				json.put("banco", bancoBean.getJSONObject());
+			}
+		} catch (SIGAException e) {
+			json.put("error",e.getMessage());
 		}
 		
 		// json.

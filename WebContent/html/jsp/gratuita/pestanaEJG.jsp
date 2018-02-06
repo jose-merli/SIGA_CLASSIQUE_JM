@@ -58,7 +58,7 @@
 
 	<!-- Campo obligatorio -->
 	<html:hidden property = "modo" value = ""/>
-	
+	<html:hidden styleId="jsonVolver" property = "jsonVolver"  />
 	<!-- INICIO: CONJUNTO DE PESTAÑAS (LINEA) -->
 	<!-- TAG DE CONJUNTO DE PESTANAS -->
 	
@@ -77,6 +77,17 @@
 <!-- FIN: CONJUNTO DE PESTAÑAS (LINEA) -->
 
 	</html:form> 
+	
+	<html:form action="/JGR_E-Comunicaciones_Gestion.do"  method="POST" target="mainWorkArea" >
+		<html:hidden property="modo"/>
+		<html:hidden property="idinstitucion"/>
+		<html:hidden property="idRemesa"/>
+	</html:form>
+	<html:form action="/JGR_E-Comunicaciones_InfEconomico.do"  method="POST" target="mainWorkArea" type ="com.siga.gratuita.form.DefinicionRemesas_CAJG_Form"  name="DefinicionRemesasInfEcon_CAJG_Form">
+		<html:hidden property="modo"/>
+		<html:hidden property="idinstitucion"/>
+		<html:hidden property="idRemesa"/>
+	</html:form>
 
 </div>
 	<!-- INICIO: IFRAME GESTION PRINCIPAL -->

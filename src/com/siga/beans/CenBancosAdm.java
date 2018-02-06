@@ -7,6 +7,7 @@ import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 
 public class CenBancosAdm extends MasterBeanAdministrador
@@ -115,7 +116,7 @@ public class CenBancosAdm extends MasterBeanAdministrador
 		return bancoBean;
 	}     	
  	
- 	public CenBancosBean getBancoIBAN(String codBanco) throws ClsExceptions{ 		
+ 	public CenBancosBean getBancoIBAN(String codBanco) throws SIGAException{ 		
 		RowsContainer rc = null;
 		CenBancosBean bancoBean = null;
 		
@@ -135,11 +136,15 @@ public class CenBancosAdm extends MasterBeanAdministrador
 					bancoBean.setNombre(UtilidadesHash.getString(registro,CenBancosBean.C_NOMBRE));
 					bancoBean.setBic(UtilidadesHash.getString(registro,CenBancosBean.C_BIC));
 					bancoBean.setIdPais(UtilidadesHash.getString(registro,CenBancosBean.C_IDPAIS));
+				}else{
+					String error = UtilidadesString.getMensajeIdioma(this.usrbean,"messages.certificado.error.banco.obligatorio")+" "+codBanco;
+					throw new SIGAException(error);
 				}
 			}
 		}
 		catch(Exception e) {
-			throw new ClsExceptions (e, "Error en getBancoIBAN");
+			e.printStackTrace();
+			throw new SIGAException ("Error en getBancoIBAN");
 		}
 		return bancoBean;
 	}

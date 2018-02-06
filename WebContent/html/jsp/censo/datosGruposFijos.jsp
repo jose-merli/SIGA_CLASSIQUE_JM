@@ -93,8 +93,14 @@
 			fin();
 			
 		}
-
 		function accionGuardar(){
+			if(document.MantenimientoGruposFijosForm.modo.value =='nuevo'){
+				if (confirm("<siga:Idioma key='censo.gestion.grupos.confirmar.listacorreo'/>")){
+					document.MantenimientoGruposFijosForm.crearListaCorreoGrupoFijo.value = "1";
+				}else{
+					document.MantenimientoGruposFijosForm.crearListaCorreoGrupoFijo.value = "0";
+				}
+			}
 			sub();
 			if (validateMantenimientoGruposFijosForm(document.getElementById("MantenimientoGruposFijosForm"))) {
 				document.getElementById("MantenimientoGruposFijosForm").modo.value = "<%=accion%>";
@@ -117,6 +123,8 @@
 		<html:hidden property = "directorio" />
 		<html:hidden property = "nombrefichero" />
 		<html:hidden property = "busquedaNombre" />
+		<html:hidden property = "crearListaCorreoGrupoFijo" value ="0"/>
+		
 		<table class="tablaCentralCampos" align="center">
 			<tr>
 				<td>

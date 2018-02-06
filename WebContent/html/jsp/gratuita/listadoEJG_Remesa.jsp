@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<%@page import="org.redabogacia.sigaservices.app.helper.AsignaVeredaHelper.ASIGNA_VERSION"%>
-<%@page import="org.redabogacia.sigaservices.app.helper.AsignaVeredaHelper"%>
-<%@page import="com.siga.Utilidades.paginadores.PaginadorBind"%>
+
 <html>
 <head>
 <!-- listadoEJG_Remesa.jsp -->
@@ -14,6 +12,9 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- IMPORTS -->
+<%@ page import="org.redabogacia.sigaservices.app.helper.AsignaVeredaHelper.ASIGNA_VERSION"%>
+<%@ page import="org.redabogacia.sigaservices.app.helper.AsignaVeredaHelper"%>
+<%@ page import="com.siga.Utilidades.paginadores.PaginadorBind"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.siga.beans.ScsEJGBean"%>
@@ -114,6 +115,7 @@
 				buttons="g,ae";//guardar y añadir expedientes
 				if (isPCajgTXT) {
 					buttons+=",val,gf";//generar fichero txt
+					if (cajgConfig == 5)buttons+=",r";
 				} else if (cajgConfig == 2) {				
 					buttons+=",val,ftp";//validar remesa, envio ftp
 				} else if (cajgConfig == 3) {
@@ -361,7 +363,7 @@
 		<input type="hidden" name="anio" value="">
 		<input type="hidden" name="numero" value="">
 		<input type="hidden" name="idEjgRemesa" value="">
-		
+		<html:hidden property="jsonVolver"/>
 		<input type="hidden" name="volver" value="">		
 		<html:hidden property="registrosSeleccionados"  styleId="registrosSeleccionados"/>
 		<html:hidden property="datosPaginador"  styleId="datosPaginador" />
@@ -378,7 +380,7 @@
 		<html:hidden property="numero"        value = ""/>
 		<html:hidden property="idTipoEJG"     value = ""/>
 		<html:hidden property="idInstitucion" value = ""/>
-
+	    <html:hidden property="jsonVolver" value="${DefinicionRemesas_CAJG_Form.jsonVolver}"/>
 		<!-- Campo obligatorio -->
 		<!-- RGG: cambio a formularios ligeros -->
 		<input type="hidden" name="tablaDatosDinamicosD">
@@ -396,7 +398,7 @@
 			gratuita.busquedaEJG.literal.solicitante, 
 			gratuita.pcajg.listadoEJGremesa.enNuevaRemesa," />
 	<c:set var="columnSizes" value="22,5,5,8,20,22,8,10" />
-	<%	 if((idEstado==2 ||idEstado==3)&& cajgConfig==5 ){%>
+	<%	 if((idEstado==0 || idEstado==2 ||idEstado==3)&& cajgConfig==5 ){%>
 		<c:set var="columnNames" value="<input type='checkbox' name='chkGeneral' id='chkGeneral' onclick='cargarChecksTodos(this);'/>,
 			gratuita.busquedaEJG.literal.turnoGuardiaEJG,
 			gratuita.busquedaEJG.literal.anyo, 
@@ -441,6 +443,8 @@
 				String deshabilitarCheck = "disabled";
 				if(idEstado==2 ||idEstado==3)
 					deshabilitarCheck = registroError.equals("0")?"":"disabled='disabled'";
+				else if(idEstado==0)
+					deshabilitarCheck = "";
 					
 				
 				//Hashtable fila = (Hashtable)obj.get(recordNumber-1);
@@ -467,7 +471,7 @@
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' elementos="<%=elems%>" botones="<%=botones%>" visibleconsulta="false" visibleEdicion="false" pintarespacio="false" clase="listaNonEdit" modo="<%=modo%>">
 					
 					<%
-					 if((idEstado==2 ||idEstado==3)&& cajgConfig==5){%>
+					 if((idEstado==0 ||idEstado==2 ||idEstado==3)&& cajgConfig==5){%>
 						
 						<td align="center">
 						<%String valorCheck = registro.get("IDINSTITUCION")+"||"+registro.get("IDTIPOEJG")+"||"+registro.get("ANIO")+"||"+registro.get("NUMERO")+"||"+registro.get("IDEJGREMESA")+"||"+registro.get("NUMEROINTERCAMBIO")+"||"+registro.get("PERMITIRSOLINFECONOMICO");
@@ -806,6 +810,32 @@ function cargarChecksTodos(o){
 		}
 		parent.marcarRespuestaIncorrecta(datos);
 	}
+	function accionRestablecer() {
+		var conf = confirm("Se va a eliminar toda relación con envios a la comisión de los elementos seleccionados. La proxima vez que se genere una remesa con estos expedientes se enviara como nuevo traslado, NO como actualización.¿Desea continuar?"); 
+	   	if (conf){
+	   		sub();
+			datos = "";
+			for (i = 0; i < ObjArray.length; i++) {
+				var idRegistros = ObjArray[i];
+				
+				claves =  idRegistros.split("||");
+				idInstitucion  = claves[0];
+				idTipoEJG  = claves[1];
+				anio  = claves[2];
+				numero  = claves[3];
+				idejgremesa  = claves[4];
+				numeroIntercambio  = claves[5];
+				permitirSolInfo  = claves[6];
+				var idCheck = idInstitucion+"||"+idTipoEJG+"||"+anio+"||"+numero+"||"+idejgremesa+"||"+numeroIntercambio+"||"+permitirSolInfo;
+				if(document.getElementById(idCheck).checked){
+			   			datos = datos +idInstitucion + "##" +idTipoEJG+"##" +anio+"##" +numero+"##"+idejgremesa+"##" +numeroIntercambio+"%%%";
+				}
+			}
+	   		
+			parent.limpiarReferenciasEnvioCAJG(datos);
+	   	}
+	}
+	
 	
 	function marcarRespuestaIncorrecta() {
 		var conf = confirm("<siga:Idioma key='e_comunicaciones.confirmar.marcarRespuestaIncorrecta'/>"); 

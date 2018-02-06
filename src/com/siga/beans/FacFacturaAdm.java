@@ -1328,11 +1328,16 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    }
 		    
 		    if(isFacturasPendientes){
+		    	 String idEstado = form.getCmbEstadosFactura();
 		    	 sql.append(", (SELECT count(F2.");
 		    	 sql.append(FacFacturaBean.C_IDINSTITUCION);
 		    	 sql.append(") FROM ");
 		    	 sql.append(FacFacturaBean.T_NOMBRETABLA);
-		    	 sql.append(" F2 WHERE F2.");
+		    	 sql.append(" F2 ");
+		    	 if (idEstado!=null && !idEstado.equals("")) {
+					    sql.append(" , FAC_ESTADOFACTURA EF");
+				  }
+		    	 sql.append(" WHERE F2.");
 		    	 sql.append(FacFacturaBean.C_IDINSTITUCION);
 		    	 sql.append(" = F.");
 		    	 sql.append(FacFacturaBean.C_IDINSTITUCION);
@@ -1344,7 +1349,67 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 		    	 sql.append(FacFacturaBean.C_NUMEROFACTURA);
 		    	 sql.append(" IS NOT NULL AND F2.");
 		    	 sql.append(FacFacturaBean.C_IMPTOTALPORPAGAR);
-		    	 sql.append(" > 0) AS FACTURASPENDIENTES ");
+		    	 sql.append(" > 0"); 
+		    	 sql.append(" AND F2.");
+		    	 sql.append(FacFacturaBean.C_ESTADO);
+		    	 sql.append("<> 8");
+		    	 if (idEstado!=null && !idEstado.equals("")) {
+					    sql.append(" AND EF.IDESTADO = F2.ESTADO");
+					    sql.append(" AND EF.IDESTADO =");
+					    sql.append(idEstado);
+				 }
+		    	 String fDesde = form.getFechaDesde(); 
+					String fHasta = form.getFechaHasta();
+				    if ((fDesde!=null && !fDesde.trim().equals("")) || (fHasta!=null && !fHasta.trim().equals(""))) {
+						if (!fDesde.equals(""))
+							fDesde = GstDate.getApplicationFormatDate("", fDesde); 
+						if (!fHasta.equals(""))
+							fHasta = GstDate.getApplicationFormatDate("", fHasta);
+							
+					    Vector v = GstDate.dateBetweenDesdeAndHastaBind("F2." + FacFacturaBean.C_FECHAEMISION, fDesde, fHasta, contador, codigos);
+					    Integer in = (Integer)v.get(0);
+					    String st = (String)v.get(1);
+					    contador = in.intValue();
+
+					    sql.append(" AND ");
+					    sql.append(st);
+					}
+				    String numeroFactura = form.getNumeroFactura();
+				    if (numeroFactura!=null && !numeroFactura.equals("")) {
+					    sql.append(" AND F2.");
+					    sql.append(FacFacturaBean.C_NUMEROFACTURA);
+					    sql.append(" = '");
+					    sql.append(numeroFactura);
+					    sql.append("'");
+				    } else {
+				    	sql.append(" AND F2.");
+					    sql.append(FacFacturaBean.C_NUMEROFACTURA);
+					    sql.append(" IS NOT NULL ");
+				    }
+				    if ((nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")) || 
+				    		(nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase(""))) {
+				    	 sql.append("AND (SELECT COUNT(");
+				    	 sql.append(EnvComunicacionMorososBean.C_IDINSTITUCION);
+				    	 sql.append(") FROM ");
+				    	 sql.append(EnvComunicacionMorososBean.T_NOMBRETABLA);
+				    	 sql.append(" ECM WHERE ECM.");
+				    	 sql.append(EnvComunicacionMorososBean.C_IDINSTITUCION);
+				    	 sql.append(" = F2.");
+				    	 sql.append(FacFacturaBean.C_IDINSTITUCION);
+				    	 sql.append(" AND ECM.");
+				    	 sql.append(EnvComunicacionMorososBean.C_IDPERSONA);
+				    	 sql.append(" = F2.");
+				    	 sql.append(FacFacturaBean.C_IDPERSONA);
+				    	 sql.append(" AND ECM.");
+				    	 sql.append(EnvComunicacionMorososBean.C_IDFACTURA);
+				    	 sql.append(" = F2.");
+				    	 sql.append(FacFacturaBean.C_IDFACTURA);
+				    	 sql.append(")");
+				    	  sql.append( " between nvl("+((nComunicacionesDesde!= null && !"".equalsIgnoreCase(nComunicacionesDesde))?nComunicacionesDesde:null)+", 0) " +
+                                  	" and nvl("+((nComunicacionesHasta!= null && !"".equalsIgnoreCase(nComunicacionesHasta))?nComunicacionesHasta:null)+", 9999999999)");
+				    }
+				    
+		    	 sql.append(") AS FACTURASPENDIENTES ");
 		    }
 		    
 		    sql.append(" FROM ");
@@ -1500,7 +1565,77 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 			    sql.append(FacFacturaBean.C_NUMEROFACTURA);
 			    sql.append(" IS NOT NULL ");
 		    }
-	    	
+	    	//Aqui
+		    String importeAdeudadoDesde = form.getImporteAdeudadoDesde();
+		    String importeAdeudadoHasta = form.getImporteAdeudadoHasta();		
+		    if((importeAdeudadoDesde!=null && !importeAdeudadoDesde.equals("")) ||
+			(importeAdeudadoHasta!=null && !importeAdeudadoHasta.equals(""))){
+		    	sql.append(" AND (select sum(totcli.IMPTOTALPORPAGAR) "+
+                                      " from fac_factura totcli "+
+                                      " where totcli.idinstitucion = f.idinstitucion "+ 
+                                      " and totcli.idpersona = f.idpersona" +
+                                      " and totcli.Estado <> 8");
+		    	
+				    	 if (idEstado!=null && !idEstado.equals("")) {
+							    sql.append(" AND EF.IDESTADO = totcli.ESTADO");
+							    sql.append(" AND EF.IDESTADO =");
+							    sql.append(idEstado);
+						 }
+				    	  String fDesde2 = form.getFechaDesde(); 
+							String fHasta2 = form.getFechaHasta();
+						    if ((fDesde2!=null && !fDesde2.trim().equals("")) || (fHasta2!=null && !fHasta2.trim().equals(""))) {
+								if (!fDesde2.equals(""))
+									fDesde2 = GstDate.getApplicationFormatDate("", fDesde2); 
+								if (!fHasta2.equals(""))
+									fHasta2 = GstDate.getApplicationFormatDate("", fHasta2);
+									
+							    Vector v = GstDate.dateBetweenDesdeAndHastaBind("totcli." + FacFacturaBean.C_FECHAEMISION, fDesde2, fHasta2, contador, codigos);
+							    Integer in = (Integer)v.get(0);
+							    String st = (String)v.get(1);
+							    contador = in.intValue();
+
+							    sql.append(" AND ");
+							    sql.append(st);
+							}
+						    if (numeroFactura!=null && !numeroFactura.equals("")) {
+							    sql.append(" AND totcli.");
+							    sql.append(FacFacturaBean.C_NUMEROFACTURA);
+							    sql.append(" = '");
+							    sql.append(numeroFactura);
+							    sql.append("'");
+						    } else {
+						    	sql.append(" AND totcli.");
+							    sql.append(FacFacturaBean.C_NUMEROFACTURA);
+							    sql.append(" IS NOT NULL ");
+						    }
+						    if ((nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")) || 
+						    		(nComunicacionesHasta!=null && !nComunicacionesHasta.equalsIgnoreCase(""))) {
+						    	 sql.append("AND (SELECT COUNT(");
+						    	 sql.append(EnvComunicacionMorososBean.C_IDINSTITUCION);
+						    	 sql.append(") FROM ");
+						    	 sql.append(EnvComunicacionMorososBean.T_NOMBRETABLA);
+						    	 sql.append(" ECM WHERE ECM.");
+						    	 sql.append(EnvComunicacionMorososBean.C_IDINSTITUCION);
+						    	 sql.append(" = totcli.");
+						    	 sql.append(FacFacturaBean.C_IDINSTITUCION);
+						    	 sql.append(" AND ECM.");
+						    	 sql.append(EnvComunicacionMorososBean.C_IDPERSONA);
+						    	 sql.append(" = totcli.");
+						    	 sql.append(FacFacturaBean.C_IDPERSONA);
+						    	 sql.append(" AND ECM.");
+						    	 sql.append(EnvComunicacionMorososBean.C_IDFACTURA);
+						    	 sql.append(" = totcli.");
+						    	 sql.append(FacFacturaBean.C_IDFACTURA);
+						    	 sql.append(")");
+						    	  sql.append( " between nvl("+((nComunicacionesDesde!= null && !"".equalsIgnoreCase(nComunicacionesDesde))?nComunicacionesDesde:null)+", 0) " +
+		                                  	" and nvl("+((nComunicacionesHasta!= null && !"".equalsIgnoreCase(nComunicacionesHasta))?nComunicacionesHasta:null)+", 9999999999)");
+						    }
+		    	
+						    sql.append( ") "+
+                                      " between nvl("+((importeAdeudadoDesde!= null && !"".equalsIgnoreCase(importeAdeudadoDesde))?importeAdeudadoDesde:null)+", 0) " +
+                                      	" and nvl("+((importeAdeudadoHasta!= null && !"".equalsIgnoreCase(importeAdeudadoHasta))?importeAdeudadoHasta:null)+", 9999999999)");
+		    }
+
 	    	if ((nComunicacionesDesde!=null && !nComunicacionesDesde.equals("")) || 
 	    		(nComunicacionesHasta!=null && !nComunicacionesHasta.equals("")) || 
 				isFacturasPendientes ||
@@ -1509,7 +1644,7 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 	    		sql.append(") WHERE 1 = 1 ");
 	    		
 		    	// fin modificacion			   	   
-			    if (nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")) {
+	    		if (nComunicacionesDesde!=null && !nComunicacionesDesde.equalsIgnoreCase("")) {
 				    sql.append(" AND NCOMUNICACIONES >= ");
 				    sql.append(nComunicacionesDesde);
 			    }
@@ -1532,18 +1667,6 @@ public class FacFacturaAdm extends MasterBeanAdministrador {
 					    sql.append(nFacturasImpagadasHasta);
 			    	}			    	
 			    }
-			    
-			    String importeAdeudadoDesde = form.getImporteAdeudadoDesde();			    
-		    	if (importeAdeudadoDesde!=null && !importeAdeudadoDesde.equals("")) {
-				    sql.append(" AND DEUDA >= ");
-				    sql.append(importeAdeudadoDesde);
-		    	}
-		    	
-			    String importeAdeudadoHasta = form.getImporteAdeudadoHasta();			    
-		    	if (importeAdeudadoHasta!=null && !importeAdeudadoHasta.equals("")) {
-				    sql.append(" AND DEUDA <= ");
-				    sql.append(importeAdeudadoHasta);
-		    	}		    	
 	    	}
 		    
 	    	sql.append(" ORDER BY TO_NUMBER(");

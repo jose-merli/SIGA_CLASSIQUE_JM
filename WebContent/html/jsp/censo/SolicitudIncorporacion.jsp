@@ -107,6 +107,14 @@
 				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.FNacimiento'/>" + '\n';
 			} else if (esFechaNacimientoInvalida(document.getElementById("fechaNacimiento").value)) {
 				errores += "<siga:Idioma key='errors.date.past' arg0='censo.SolicitudIncorporacion.literal.FNacimiento'/>" + '\n';			
+			}else{
+				edad = calcularEdad(document.getElementById("fechaNacimiento").value);
+				literalEdad = "<siga:Idioma key='censo.consultaDatosGenerales.literal.edad'/>";
+				 if(edad<21||edad>99){
+					 errores += "<bean:message key='errors.range' arg0='"+literalEdad+"'  arg1='21' arg2='99' />"+ '\n';
+					 
+				 }
+				
 			}
 			if(document.getElementById("domicilio").value==""){
 				errores += "<siga:Idioma key='errors.required' arg0='censo.SolicitudIncorporacion.literal.domicilio'/>" + '\n';

@@ -131,6 +131,9 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
                 contador++;
                 codigos.put(new Integer(contador),idTipoEnvios);
                 sSQL += " AND P." + EnvPlantillasEnviosBean.C_IDTIPOENVIOS + "=:" + contador;
+            }else{
+            	sSQL += " AND P." + EnvPlantillasEnviosBean.C_IDTIPOENVIOS + "<>3";
+            	
             }
             if (nombre!=null && !nombre.equals("")) {
                 contador++;
