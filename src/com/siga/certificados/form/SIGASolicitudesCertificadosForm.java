@@ -58,6 +58,8 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
     private String idProducto="";
     private String idProductoInstitucion="";
     private String metodoSolicitud="";
+    private String idMotivoSolicitud="";
+    private String idMotivoAnulacion="";
     
     private String codigoBanco;
     private String sucursalBanco;
@@ -638,5 +640,21 @@ public class SIGASolicitudesCertificadosForm extends MasterForm
 		this.busquedaIdInstitucionDestino = "";		
 		this.buscarNumCertificadoCompra = "";
 		this.busquedaIdInstitucionOrigen = "";
+	}
+	public String getIdMotivoSolicitud()
+	{
+		return idMotivoSolicitud;
+	}
+	public void setIdMotivoSolicitud(String idMotivoSolicitud)
+	{
+		this.idMotivoSolicitud = idMotivoSolicitud;
+	}
+	public String getIdMotivoAnulacion()
+	{
+		return idMotivoAnulacion;
+	}
+	public void setIdMotivoAnulacion(String idMotivoAnulacion)
+	{
+		this.idMotivoAnulacion = idMotivoAnulacion;
 	}
 }

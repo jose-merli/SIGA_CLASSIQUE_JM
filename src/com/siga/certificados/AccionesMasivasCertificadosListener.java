@@ -23,11 +23,14 @@ import org.redabogacia.sigaservices.app.services.cer.CerSolicitudCertificadosAcc
 import org.redabogacia.sigaservices.app.services.cer.CerSolicitudCertificadosEnviosService;
 import org.redabogacia.sigaservices.app.services.cer.CerSolicitudCertificadosService;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.LogFileWriter;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CerEstadoSoliCertifiAdm;
 import com.siga.beans.CerPlantillasAdm;
 import com.siga.beans.CerSolicitudCertificadosAdm;
@@ -116,187 +119,231 @@ public class AccionesMasivasCertificadosListener extends SIGAListenerPorMinutosA
 		    	ClsLogging.writeFileLog("NO HAY SOLICITUDES PARA APROBAR Y GENERAR",4);
 		}	
 	}
+	
 	/**
 	 * Método encargado de realizar la aprobación y generación de un certificado
+	 * 
 	 * @param cerSolicitudcertificados
 	 */
-	private void aprobarYgenerar (CerSolicitudcertificados cerSolicitudcertificados){
-		
-		 CerSolicitudCertificadosAccionService  cerSolicitudCertificadosAccionService = (CerSolicitudCertificadosAccionService) BusinessManager.getInstance().getService(CerSolicitudCertificadosAccionService.class);
-		 CerSolicitudCertificadosService  cerSolicitudCertificadosService = (CerSolicitudCertificadosService) BusinessManager.getInstance().getService(CerSolicitudCertificadosService.class);
-		 List <CerSolicitudcertificados>  listaCerSolicitudcertificados = new ArrayList<CerSolicitudcertificados>();
-		 UsrBean usr = null;
-		 CerPlantillasAdm admPlantillas = null;
-		 LogFileWriter log = null;
-			
-	  	 //Obtenemos el UsrBean 
-		 usr = new UsrBean(String.valueOf(cerSolicitudcertificados.getUsumodificacion()), String.valueOf(cerSolicitudcertificados.getIdinstitucion()),"1");
-		
-		try{
-				
-				admPlantillas = new CerPlantillasAdm(usr);	
-				//Construimos el nombre de la solicitud
-				String nombreSolicitud="[Institucion:"+cerSolicitudcertificados.getIdinstitucion()+"][Solicitud:"+cerSolicitudcertificados.getIdsolicitud()+ "][fecha:"+cerSolicitudcertificados.getFechasolicitud()+"]";
-		        
-				//Obtenemos el CerSolicitudCertificadosBean a partir del cerSolicitudcertificados
-			    Hashtable<String,Object> htSolicitud = new Hashtable<String,Object>();
-			    htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, cerSolicitudcertificados.getIdinstitucion());
-			    htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, cerSolicitudcertificados.getIdsolicitud());
-			    CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(usr);
-			    Vector vDatos = admSolicitud.selectByPK(htSolicitud);
-			    CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean)vDatos.elementAt(0);
-		    	//Creamos el log de error
-		        log = LogFileWriter.getLogFileWriter(admSolicitud.obtenerRutaLogError(beanSolicitud),cerSolicitudcertificados.getIdsolicitud()+"-LogError");
-				log.clear();
-				
-				
-		       //Obetenemos el id de plantilla de cada uno de los certificados
-		        String idPlantilla = admPlantillas.obtenerPlantillaDefecto(String.valueOf(cerSolicitudcertificados.getIdinstitucion()),String.valueOf(cerSolicitudcertificados.getPpnIdtipoproducto()),
-		        		String.valueOf(cerSolicitudcertificados.getPpnIdproducto()), String.valueOf(cerSolicitudcertificados.getPpnIdproductoinstitucion()));	
+	private void aprobarYgenerar(CerSolicitudcertificados cerSolicitudcertificados)
+	{
 
-		       //Obtenemos los valores de colegiadoEnOrigen, usarIdInstitucion, beanProd
-		        HashMap<String, Object> listadoColegiado = SIGASolicitudesCertificadosAction.obtenerPersonaCertificado(usr,String.valueOf(cerSolicitudcertificados.getIdinstitucion()),
-		        		String.valueOf(cerSolicitudcertificados.getPpnIdtipoproducto()),String.valueOf(cerSolicitudcertificados.getPpnIdproducto()),
-		        		String.valueOf(cerSolicitudcertificados.getPpnIdproductoinstitucion()),String.valueOf(cerSolicitudcertificados.getIdsolicitud()));
-		    	
-		        if ( beanSolicitud.getIdEstadoSolicitudCertificado()!= Integer.parseInt(CerSolicitudCertificadosAdm.K_ESTADO_SOL_DENEGADO) 
-						&& beanSolicitud.getIdEstadoSolicitudCertificado()!=Integer.parseInt(CerSolicitudCertificadosAdm.K_ESTADO_SOL_ANULADO)) { 
-		        
-				        if ((Boolean)listadoColegiado.get("colegiadoEnOrigen")) {
-				        	// Para los certificados normales, este valor siempre es verdadero
-				        	// Para las comunicaciones/diligencias, entra por aqui cuando ES colegiadoEnOrigen
-				        	
-				        	
-				        	GenParametrosAdm admParametros = new GenParametrosAdm(usr);
-				        	HashMap<String, Object> listaDeObjetos = SIGASolicitudesCertificadosAction.obtenerPathBD(admParametros,String.valueOf(cerSolicitudcertificados.getIdinstitucion()),String.valueOf(cerSolicitudcertificados.getIdsolicitud()));
-					     
-					        
-					        try {
-					        	//Se realiza el proceso de aprobar y generar o de sólamente generar
-					        	SIGASolicitudesCertificadosAction.almacenarCertificado (String.valueOf(cerSolicitudcertificados.getIdinstitucion()), String.valueOf(cerSolicitudcertificados.getIdsolicitud()), usr,  (PysProductosInstitucionBean)listadoColegiado.get("beanProd") ,
-					        			 idPlantilla,(Boolean)listadoColegiado.get("usarIdInstitucion"),listaDeObjetos);
-					        
-					        } catch (Exception e) {
-					    		ClsLogging.writeFileLogError("ERROR EN APROBAR Y GENERAR PDF MASIVO. SOLICITUD:" +nombreSolicitud+ " Error:" + ((SIGAException) e).getLiteral(usr.getLanguage()),e, 3);
-					    		log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),  ((SIGAException) e).getLiteral(usr.getLanguage())});
-						    	  /** Escribiendo fichero de log **/
-								if (log != null)
-									log.flush();
-								
-								//Si se produce fallo volvemos a ponerle en el estado anterior al producirse un fallo
-								listaCerSolicitudcertificados.add(cerSolicitudcertificados);	
-						        cerSolicitudCertificadosService.updateMaxivoCasoDeError(listaCerSolicitudcertificados);
-								
-				            }
-					      
-					        ((File) listaDeObjetos.get("fIn")).delete(); // comprobar si se podría borrar esta linea ya que los ficheros temporales de obtenerPathBD se deberian haber autoborrado ya o cuando termine el proceso
-				        } else {
-				        	
-				        	// Para las comunicaciones/diligencias, entra por aqui cuando NO ES colegiadoEnOrigen
-					        ClsLogging.writeFileLog("ERROR EN APROBAR Y GENERAR PDF MASIVO. NO ES colegiadoEnOrigen:"+nombreSolicitud+" Error: El cliente no es colegiadoEnOrigen, idpersona=" + String.valueOf(cerSolicitudcertificados.getIdpersonaDes()),3);
-					    	log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), "Error: El cliente no es colegiadoEnOrigen"});
-					    	  /** Escribiendo fichero de log **/
-							if (log != null)
-								log.flush();
-							
-				        }
-		    	}else{
-		        	ClsLogging.writeFileLog("----- ERROR APROBAR Y GENERAR PDF -----",4);
-		        	CerEstadoSoliCertifiAdm estAdm = new CerEstadoSoliCertifiAdm(usr);
-		        	log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), "El certificado está "+estAdm.getNombreEstadoSolicitudCert(String.valueOf(beanSolicitud.getIdEstadoSolicitudCertificado()))+": no es " +
-    				"posible procesarlo. Tendrá que crear otro nuevo certificado si es necesario."});
-			    	  /** Escribiendo fichero de log **/
+		CerSolicitudCertificadosAccionService cerSolicitudCertificadosAccionService = (CerSolicitudCertificadosAccionService) BusinessManager.getInstance()
+				.getService(CerSolicitudCertificadosAccionService.class);
+		CerSolicitudCertificadosService cerSolicitudCertificadosService = (CerSolicitudCertificadosService) BusinessManager.getInstance().getService(
+				CerSolicitudCertificadosService.class);
+		UsrBean usr = null;
+		CerPlantillasAdm admPlantillas = null;
+		LogFileWriter log = null;
+
+		// Obtenemos el UsrBean
+		usr = new UsrBean(String.valueOf(cerSolicitudcertificados.getUsumodificacion()), String.valueOf(cerSolicitudcertificados.getIdinstitucion()), "1");
+		GenParametrosAdm parametrosAdm = new GenParametrosAdm(usr);
+
+		try {
+
+			admPlantillas = new CerPlantillasAdm(usr);
+			// Construimos el nombre de la solicitud
+			String nombreSolicitud = "[Institucion:" + cerSolicitudcertificados.getIdinstitucion() + "][Solicitud:" + cerSolicitudcertificados.getIdsolicitud()
+					+ "][fecha:" + cerSolicitudcertificados.getFechasolicitud() + "]";
+
+			// Obtenemos el CerSolicitudCertificadosBean a partir del cerSolicitudcertificados
+			Hashtable<String, Object> htSolicitud = new Hashtable<String, Object>();
+			htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, cerSolicitudcertificados.getIdinstitucion());
+			htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, cerSolicitudcertificados.getIdsolicitud());
+			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(usr);
+			Vector vDatos = admSolicitud.selectByPK(htSolicitud);
+			CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean) vDatos.elementAt(0);
+			// Creamos el log de error
+			log = LogFileWriter.getLogFileWriter(admSolicitud.obtenerRutaLogError(beanSolicitud), cerSolicitudcertificados.getIdsolicitud() + "-LogError");
+			log.clear();
+
+			// Obetenemos el id de plantilla de cada uno de los certificados
+			String idPlantilla = admPlantillas.obtenerPlantillaDefecto(String.valueOf(cerSolicitudcertificados.getIdinstitucion()),
+					String.valueOf(cerSolicitudcertificados.getPpnIdtipoproducto()), String.valueOf(cerSolicitudcertificados.getPpnIdproducto()),
+					String.valueOf(cerSolicitudcertificados.getPpnIdproductoinstitucion()));
+
+			// Obtenemos los valores de colegiadoEnOrigen, usarIdInstitucion, beanProd
+			HashMap<String, Object> listadoColegiado = SIGASolicitudesCertificadosAction.obtenerPersonaCertificado(usr,
+					String.valueOf(cerSolicitudcertificados.getIdinstitucion()), String.valueOf(cerSolicitudcertificados.getPpnIdtipoproducto()),
+					String.valueOf(cerSolicitudcertificados.getPpnIdproducto()), String.valueOf(cerSolicitudcertificados.getPpnIdproductoinstitucion()),
+					String.valueOf(cerSolicitudcertificados.getIdsolicitud()));
+
+			if (beanSolicitud.getIdEstadoSolicitudCertificado() != CerEstadoSoliCertifiAdm.C_ESTADO_SOL_DENEGADO
+					&& beanSolicitud.getIdEstadoSolicitudCertificado() != CerEstadoSoliCertifiAdm.C_ESTADO_SOL_ANULADO) {
+
+				if ((Boolean) listadoColegiado.get("colegiadoEnOrigen")) {
+					// Para los certificados normales, este valor siempre es verdadero
+					// Para las comunicaciones/diligencias, entra por aqui cuando ES colegiadoEnOrigen
+
+					GenParametrosAdm admParametros = new GenParametrosAdm(usr);
+					HashMap<String, Object> listaDeObjetos = SIGASolicitudesCertificadosAction.obtenerPathBD(admParametros,
+							String.valueOf(cerSolicitudcertificados.getIdinstitucion()), String.valueOf(cerSolicitudcertificados.getIdsolicitud()));
+
+					try {
+						if (! (SIGASolicitudesCertificadosAction.comprobarCompatibilidadNuevoCertificado(usr, beanSolicitud) || beanSolicitud.getIdMotivoSolicitud() != null)) {
+							throw new SIGAException("certificados.solicitudes.mensaje.certificadoIncompatible");
+						}
+						
+						// comprobando que la fecha de solicitud es anterior al dia de hoy
+						Date fechaSolicitudReal = UtilidadesFecha.getDate(beanSolicitud.getFechaSolicitud(), ClsConstants.DATE_FORMAT_JAVA);
+						Date fechaHoy = UtilidadesFecha.getToday();
+						if (fechaSolicitudReal.after(fechaHoy)) {
+							throw new SIGAException("certificados.solicitudes.mensaje.fechaSolicitudFutura");
+						}
+						// comprobando limite de fecha de solicitud
+						int maximoDiasAntelacionSolicitud = Integer.parseInt(parametrosAdm.getValor(
+								String.valueOf(ClsConstants.INSTITUCION_CGAE),
+								ClsConstants.MODULO_CERTIFICADOS, 
+								"MAXIMO_DIAS_ANTELACION_SOLICITUD", 
+								"365"));
+						Date fechaLimiteSolicitud = UtilidadesFecha.subDays(fechaHoy, maximoDiasAntelacionSolicitud);
+						if (fechaSolicitudReal.before(fechaLimiteSolicitud)) {
+							String [] parametrosMensaje = new String[1];
+							parametrosMensaje[0] = Integer.toString(maximoDiasAntelacionSolicitud);
+							throw new SIGAException(UtilidadesString.getMensaje("certificados.solicitudes.mensaje.fechaSolicitudFueraDePlazo", parametrosMensaje, usr.getLanguage()));
+						}
+
+						
+						// Se realiza el proceso de aprobar y generar o de sólamente generar
+						SIGASolicitudesCertificadosAction.almacenarCertificado(String.valueOf(cerSolicitudcertificados.getIdinstitucion()),
+								String.valueOf(cerSolicitudcertificados.getIdsolicitud()), usr, (PysProductosInstitucionBean) listadoColegiado.get("beanProd"),
+								idPlantilla, (Boolean) listadoColegiado.get("usarIdInstitucion"), listaDeObjetos);
+
+					} catch (Exception e) {
+						ClsLogging.writeFileLogError(
+								"ERROR EN APROBAR Y GENERAR PDF MASIVO. SOLICITUD:" + nombreSolicitud + " Error:"
+										+ ((SIGAException) e).getLiteral(usr.getLanguage()), e, 3);
+						log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),
+								((SIGAException) e).getLiteral(usr.getLanguage()) });
+						/** Escribiendo fichero de log **/
+						if (log != null)
+							log.flush();
+
+					}
+
+					((File) listaDeObjetos.get("fIn")).delete(); // comprobar si se podría borrar esta linea ya que los ficheros temporales de obtenerPathBD se
+																	// deberian haber autoborrado ya o cuando termine el proceso
+				} else {
+
+					// Para las comunicaciones/diligencias, entra por aqui cuando NO ES colegiadoEnOrigen
+					ClsLogging.writeFileLog("ERROR EN APROBAR Y GENERAR PDF MASIVO. NO ES colegiadoEnOrigen:" + nombreSolicitud
+							+ " Error: El cliente no es colegiadoEnOrigen, idpersona=" + String.valueOf(cerSolicitudcertificados.getIdpersonaDes()), 3);
+					log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), "Error: El cliente no es colegiadoEnOrigen" });
+					/** Escribiendo fichero de log **/
 					if (log != null)
 						log.flush();
-		        
+
 				}
-		   
-		}catch (Exception e) { 
-			ClsLogging.writeFileLog("-----ERROR APROBAR Y GENERAR PDF  -----",4);
-		    e.printStackTrace();
-		}finally{
-			 // Una vez realizada la acción se da de baja en base de datos.
-	        cerSolicitudCertificadosAccionService.darDeBajaAccionMasiva(String.valueOf(cerSolicitudcertificados.getIdinstitucion()), String.valueOf(cerSolicitudcertificados.getIdsolicitud()), 
-	        		CerSolicitudCertificadosAdm.A_ABROBAR_GENERAR, usr.getUserName());
+			} else {
+				ClsLogging.writeFileLog("----- ERROR APROBAR Y GENERAR PDF -----", 4);
+				CerEstadoSoliCertifiAdm estAdm = new CerEstadoSoliCertifiAdm(usr);
+				log.addLog(new String[] {
+						new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),
+						"El certificado está " + estAdm.getNombreEstadoSolicitudCert(String.valueOf(beanSolicitud.getIdEstadoSolicitudCertificado()))
+								+ ": no es " + "posible procesarlo. Tendrá que crear otro nuevo certificado si es necesario." });
+				/** Escribiendo fichero de log **/
+				if (log != null)
+					log.flush();
+
+			}
+
+		} catch (Exception e) {
+			ClsLogging.writeFileLog("-----ERROR APROBAR Y GENERAR PDF  -----", 4);
+			e.printStackTrace();
+		} finally {
+			// Si se produce fallo volvemos a ponerle en el estado anterior al producirse un fallo
+			List<CerSolicitudcertificados> listaCerSolicitudcertificados = new ArrayList<CerSolicitudcertificados>();
+			listaCerSolicitudcertificados.add(cerSolicitudcertificados);
+			cerSolicitudCertificadosService.updateMasivoCasoDeError(listaCerSolicitudcertificados);
+
+			// Una vez realizada la acción se da de baja en base de datos.
+			cerSolicitudCertificadosAccionService.darDeBajaAccionMasiva(String.valueOf(cerSolicitudcertificados.getIdinstitucion()),
+					String.valueOf(cerSolicitudcertificados.getIdsolicitud()), CerSolicitudCertificadosAdm.A_ABROBAR_GENERAR, usr.getUserName());
 		}
-			 
-					 
-	 }
+
+	}
 	
 	/**
 	 * Método encargado de realizar la finalización
 	 * @param cerSolicitudcertificados
 	 */
 	
-	private void finalizar (CerSolicitudcertificados cerSolicitudcertificados){
-		
-		LogFileWriter log = null;
-		List <CerSolicitudcertificados>  listaCerSolicitudcertificados = new ArrayList<CerSolicitudcertificados>();
-		CerSolicitudCertificadosAccionService  cerSolicitudCertificadosAccionService = (CerSolicitudCertificadosAccionService) BusinessManager.getInstance().getService(CerSolicitudCertificadosAccionService.class);
-		CerSolicitudCertificadosService  cerSolicitudCertificadosService = (CerSolicitudCertificadosService) BusinessManager.getInstance().getService(CerSolicitudCertificadosService.class);
-		UsrBean usr = null;
-		//Obtenemos el UsrBean 
-		usr = new UsrBean(String.valueOf(cerSolicitudcertificados.getUsumodificacion()), String.valueOf(cerSolicitudcertificados.getIdinstitucion()),"1");
-		try{
+	private void finalizar(CerSolicitudcertificados cerSolicitudcertificados)
+	{
 
-				 CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(usr);
-				 Hashtable<String,Object> htSolicitud = new Hashtable<String,Object>();
-				 htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, String.valueOf(cerSolicitudcertificados.getIdinstitucion()));
-				 htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, String.valueOf(cerSolicitudcertificados.getIdsolicitud()));
-				 
-				 Vector vDatos = admSolicitud.selectByPK(htSolicitud);
-				 CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean)vDatos.elementAt(0);
-				 
-				//Creamos la ruta del log de error 
-				 String formattedDate = new SimpleDateFormat("yyyy/MM/dd",Locale.getDefault()).format(cerSolicitudcertificados.getFechasolicitud());
-				 beanSolicitud.setFechaSolicitud(formattedDate);
-				 log = LogFileWriter.getLogFileWriter(admSolicitud.obtenerRutaLogError(beanSolicitud),cerSolicitudcertificados.getIdsolicitud()+"-LogError");
-				 log.clear();
-				
-				   if ( beanSolicitud.getIdEstadoSolicitudCertificado()!= Integer.parseInt(CerSolicitudCertificadosAdm.K_ESTADO_SOL_DENEGADO) 
-							&& beanSolicitud.getIdEstadoSolicitudCertificado()!=Integer.parseInt(CerSolicitudCertificadosAdm.K_ESTADO_SOL_ANULADO)) { 
-				 
-							 //LLamamos al método finalizar
-							 SIGASolicitudesCertificadosAction.finalizarCertificado(htSolicitud, null, null,0,usr);
-				 
-				   }else{
-			        	ClsLogging.writeFileLog("----- ERROR AL FINALIZAR PDF -----",4);
-			        	CerEstadoSoliCertifiAdm estAdm = new CerEstadoSoliCertifiAdm(usr);
-						log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), "El certificado está "+estAdm.getNombreEstadoSolicitudCert(String.valueOf(beanSolicitud.getIdEstadoSolicitudCertificado()))+": no es " +
-	    				"posible procesarlo. Tendrá que crear otro nuevo certificado si es necesario."});
-						if (log != null)
-							log.flush();
-			        
-				   }
-				    
-		}catch (Exception e) { 
-			try {
-				log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), ((SIGAException) e).getLiteral(usr.getLanguage())});
-				  /** Escribiendo fichero de log **/
+		LogFileWriter log = null;
+		CerSolicitudCertificadosAccionService cerSolicitudCertificadosAccionService = (CerSolicitudCertificadosAccionService) BusinessManager.getInstance()
+				.getService(CerSolicitudCertificadosAccionService.class);
+		CerSolicitudCertificadosService cerSolicitudCertificadosService = (CerSolicitudCertificadosService) BusinessManager.getInstance().getService(
+				CerSolicitudCertificadosService.class);
+		UsrBean usr = null;
+		// Obtenemos el UsrBean
+		usr = new UsrBean(String.valueOf(cerSolicitudcertificados.getUsumodificacion()), String.valueOf(cerSolicitudcertificados.getIdinstitucion()), "1");
+		try {
+
+			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(usr);
+			Hashtable<String, Object> htSolicitud = new Hashtable<String, Object>();
+			htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, String.valueOf(cerSolicitudcertificados.getIdinstitucion()));
+			htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, String.valueOf(cerSolicitudcertificados.getIdsolicitud()));
+
+			Vector vDatos = admSolicitud.selectByPK(htSolicitud);
+			CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean) vDatos.elementAt(0);
+
+			// Creamos la ruta del log de error
+			String formattedDate = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(cerSolicitudcertificados.getFechasolicitud());
+			beanSolicitud.setFechaSolicitud(formattedDate);
+			log = LogFileWriter.getLogFileWriter(admSolicitud.obtenerRutaLogError(beanSolicitud), cerSolicitudcertificados.getIdsolicitud() + "-LogError");
+			log.clear();
+
+			if (beanSolicitud.getIdEstadoSolicitudCertificado() != CerEstadoSoliCertifiAdm.C_ESTADO_SOL_DENEGADO
+					&& beanSolicitud.getIdEstadoSolicitudCertificado() != CerEstadoSoliCertifiAdm.C_ESTADO_SOL_ANULADO) {
+
+				// LLamamos al método finalizar
+				SIGASolicitudesCertificadosAction.finalizarCertificado(htSolicitud, null, null, 0, usr);
+
+			} else {
+				ClsLogging.writeFileLog("----- ERROR AL FINALIZAR PDF -----", 4);
+				CerEstadoSoliCertifiAdm estAdm = new CerEstadoSoliCertifiAdm(usr);
+				log.addLog(new String[] {
+						new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()),
+						"El certificado está " + estAdm.getNombreEstadoSolicitudCert(String.valueOf(beanSolicitud.getIdEstadoSolicitudCertificado()))
+								+ ": no es " + "posible procesarlo. Tendrá que crear otro nuevo certificado si es necesario." });
 				if (log != null)
 					log.flush();
-				ClsLogging.writeFileLog("-----ERROR AL FINALIZAR PDF: Institución:"+cerSolicitudcertificados.getIdinstitucion()
-						+",idSolicitud:"+ cerSolicitudcertificados.getIdsolicitud(),4);
-			    
-			   //Volvemos a ponerle en el estado anterior al producirse un fallo
-				listaCerSolicitudcertificados.add(cerSolicitudcertificados);	
-		        cerSolicitudCertificadosService.updateMaxivoCasoDeError(listaCerSolicitudcertificados);
-				
-			    
+
+			}
+
+		} catch (Exception e) {
+			try {
+				log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), ((SIGAException) e).getLiteral(usr.getLanguage()) });
+				/** Escribiendo fichero de log **/
+				if (log != null)
+					log.flush();
+				ClsLogging.writeFileLog("-----ERROR AL FINALIZAR PDF: Institución:" + cerSolicitudcertificados.getIdinstitucion() + ",idSolicitud:"
+						+ cerSolicitudcertificados.getIdsolicitud(), 4);
+
 			} catch (SIGAException e1) {
 				e1.printStackTrace();
 			}
-	    	
-		}finally{
-			 // Una vez realizada la acción se da de baja en base de datos.
-		     cerSolicitudCertificadosAccionService.darDeBajaAccionMasiva(String.valueOf(cerSolicitudcertificados.getIdinstitucion()), String.valueOf(cerSolicitudcertificados.getIdsolicitud()), 
-		        		CerSolicitudCertificadosAdm.A_FINALIZAR, usr.getUserName());
+
+		} finally {
+			// Volvemos a ponerle en el estado anterior, solo en el caso de producirse un fallo
+			List<CerSolicitudcertificados> listaCerSolicitudcertificados = new ArrayList<CerSolicitudcertificados>();
+			listaCerSolicitudcertificados.add(cerSolicitudcertificados);
+			cerSolicitudCertificadosService.updateMasivoCasoDeError(listaCerSolicitudcertificados);
+
+			// Una vez realizada la acción se da de baja en base de datos.
+			cerSolicitudCertificadosAccionService.darDeBajaAccionMasiva(String.valueOf(cerSolicitudcertificados.getIdinstitucion()),
+					String.valueOf(cerSolicitudcertificados.getIdsolicitud()), CerSolicitudCertificadosAdm.A_FINALIZAR, usr.getUserName());
 		}
 	}
-	
+
 	private void facturar (CerSolicitudcertificados cerSolicitudcertificados, String idSerieFacturacionSeleccionada,HttpServletRequest request){
-		 LogFileWriter log = null;
-		 CerSolicitudCertificadosAccionService  cerSolicitudCertificadosAccionService = (CerSolicitudCertificadosAccionService) BusinessManager.getInstance().getService(CerSolicitudCertificadosAccionService.class);
+		LogFileWriter log = null;
+		CerSolicitudCertificadosAccionService  cerSolicitudCertificadosAccionService = (CerSolicitudCertificadosAccionService) BusinessManager.getInstance().getService(CerSolicitudCertificadosAccionService.class);
+		CerSolicitudCertificadosService cerSolicitudCertificadosService = (CerSolicitudCertificadosService) BusinessManager.getInstance().getService(
+					CerSolicitudCertificadosService.class);
 		 UsrBean usr = null;
 		//Obtenemos el UsrBean 
 		 usr = new UsrBean(String.valueOf(cerSolicitudcertificados.getUsumodificacion()), 
@@ -326,15 +373,15 @@ public class AccionesMasivasCertificadosListener extends SIGAListenerPorMinutosA
 				  Hashtable<String,Object> htNew = beanSolicitud.getOriginalHash();	
 				 Facturacion facturacion = new Facturacion(usr);
 				 //Si el estado es facturando se realizará la facturación, se comprueba antes porque en el método facturación rápida no se realiza
-				 if(String.valueOf(cerSolicitudcertificados.getIdestadosolicitudcertificado()).equalsIgnoreCase(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FACTURANDO) || 
-						 String.valueOf(cerSolicitudcertificados.getIdestadosolicitudcertificado()).equalsIgnoreCase(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR)){
+				 if(cerSolicitudcertificados.getIdestadosolicitudcertificado().equals(Short.valueOf(""+CerEstadoSoliCertifiAdm.C_ESTADO_SOL_FACTURANDO)) || 
+					cerSolicitudcertificados.getIdestadosolicitudcertificado().equals(Short.valueOf(""+CerEstadoSoliCertifiAdm.C_ESTADO_SOL_PEND_FACTURAR))) {
 					 try{
 						 Vector<Hashtable<String,Object>> vFacturas = admFactura.obtenerFacturasFacturacionRapida(String.valueOf(cerSolicitudcertificados.getIdinstitucion()), null, String.valueOf(cerSolicitudcertificados.getIdsolicitud()));	
 			    		 if (vFacturas==null ||  vFacturas.size()==0) { // No esta facturado 
 							 facturacion.facturacionRapidaProductosCertificados(String.valueOf(cerSolicitudcertificados.getIdinstitucion()), null, idSerieFacturacionSeleccionada,String.valueOf(cerSolicitudcertificados.getIdsolicitud()), request);
 							//Pasamos a facturado
 							    htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
-						    	htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+						    	htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, ""+ CerEstadoSoliCertifiAdm.C_ESTADO_SOL_FINALIZADO);
 						    	admSolicitud.updateDirect(htNew, claves, campos );
 			    		 }else{
 			    			 //Está facturado, se comprueba si la factura está en revisión o no
@@ -345,7 +392,7 @@ public class AccionesMasivasCertificadosListener extends SIGAListenerPorMinutosA
 					        		if(Integer.parseInt(estadoFacturacion) != 7){
 					        			//Pasamos a finalizado, la factura está confirmada
 								    	htNew.put(CerSolicitudCertificadosBean.C_FECHAESTADO,"sysdate");
-								    	htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+								    	htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, ""+ CerEstadoSoliCertifiAdm.C_ESTADO_SOL_FINALIZADO);
 								    	admSolicitud.updateDirect(htNew, claves, campos );
 					        		}else{
 					        			//La factura está en revisión introducimos mensaje 
@@ -357,7 +404,7 @@ public class AccionesMasivasCertificadosListener extends SIGAListenerPorMinutosA
 											log.flush();
 										
 										String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
-							    		htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
+							    		htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, ""+ CerEstadoSoliCertifiAdm.C_ESTADO_SOL_PEND_FACTURAR);
 							    		admSolicitud.updateDirect(htNew, claves, camposAux );
 					        		}
 					        		
@@ -366,7 +413,7 @@ public class AccionesMasivasCertificadosListener extends SIGAListenerPorMinutosA
 						}catch(SIGAException se){
 				    		if((se.getErrorCode() != null && !"".equalsIgnoreCase(se.getErrorCode())) && (se.getErrorCode().equalsIgnoreCase("1")||se.getErrorCode().equalsIgnoreCase("2"))){
 								String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
-								htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+								htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, ""+ CerEstadoSoliCertifiAdm.C_ESTADO_SOL_FINALIZADO);
 								admSolicitud.updateDirect(htNew, claves, camposAux);
 								log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), (se.getLiteral(usr.getLanguage()))});
 							
@@ -376,7 +423,7 @@ public class AccionesMasivasCertificadosListener extends SIGAListenerPorMinutosA
 								
 							}else{
 								String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
-								htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
+								htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, ""+ CerEstadoSoliCertifiAdm.C_ESTADO_SOL_PEND_FACTURAR);
 								admSolicitud.updateDirect(htNew, claves, camposAux);
 								
 								log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), (se.getLiteral(usr.getLanguage()))});
@@ -388,7 +435,7 @@ public class AccionesMasivasCertificadosListener extends SIGAListenerPorMinutosA
 				    	}catch(ClsExceptions se){
 				    		if((se.getErrorCode() != null && !"".equalsIgnoreCase(se.getErrorCode())) && (se.getErrorCode().equalsIgnoreCase("1")||se.getErrorCode().equalsIgnoreCase("2"))){
 								String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
-								htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO);
+								htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, ""+ CerEstadoSoliCertifiAdm.C_ESTADO_SOL_FINALIZADO);
 								admSolicitud.updateDirect(htNew, claves, camposAux);
 								log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), se.getMessage()});
 						    	  /** Escribiendo fichero de log **/
@@ -397,7 +444,7 @@ public class AccionesMasivasCertificadosListener extends SIGAListenerPorMinutosA
 								
 							}else{
 								String[] camposAux = {CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO};
-								htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR);
+								htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, ""+ CerEstadoSoliCertifiAdm.C_ESTADO_SOL_PEND_FACTURAR);
 								admSolicitud.updateDirect(htNew, claves, camposAux);
 								
 								log.addLog(new String[] { new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date()), se.getMessage()});
@@ -460,7 +507,12 @@ public class AccionesMasivasCertificadosListener extends SIGAListenerPorMinutosA
 				e1.printStackTrace();
 			}
 		}finally{
-			  // Una vez realizada la acción se da de baja en base de datos.
+			// Volvemos a ponerle en el estado anterior, solo en el caso de producirse un fallo
+			List<CerSolicitudcertificados> listaCerSolicitudcertificados = new ArrayList<CerSolicitudcertificados>();
+			listaCerSolicitudcertificados.add(cerSolicitudcertificados);
+			cerSolicitudCertificadosService.updateMasivoCasoDeError(listaCerSolicitudcertificados);
+
+			// Una vez realizada la acción se da de baja en base de datos.
 	        cerSolicitudCertificadosAccionService.darDeBajaAccionMasiva(String.valueOf(cerSolicitudcertificados.getIdinstitucion()), String.valueOf(cerSolicitudcertificados.getIdsolicitud()), 
 	        		CerSolicitudCertificadosAdm.A_FACTURAR, usr.getUserName());
 		}
