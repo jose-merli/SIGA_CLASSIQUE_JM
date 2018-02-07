@@ -17,10 +17,8 @@ import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants.MODULO;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.CenInstitucion;
-import org.redabogacia.sigaservices.app.autogen.model.EstUserRegistry;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
-import org.redabogacia.sigaservices.app.services.est.EstadisticasUserRegistryService;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.util.PropertyReader;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -49,7 +47,6 @@ import com.siga.beans.CenInstitucionLenguajesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.EstUserRegistryAdm;
-import com.siga.beans.EstUserRegistryBean;
 import com.siga.beans.GenParametrosAdm;
 
 import es.satec.businessManager.BusinessManager;
@@ -170,11 +167,13 @@ public class SIGAAuthItcgaeAction extends Action
 		ht2.put(CenInstitucionBean.C_IDINSTITUCION,location);
 		CenInstitucionAdm ins = new CenInstitucionAdm(usrbean);
 		Vector v4 = ins.selectByPK(ht2);
+		Integer idConsejo = ClsConstants.INSTITUCION_CGAE; 
 		if (v4!=null && v4.size()>0) {
 		    CenInstitucionBean in = (CenInstitucionBean) v4.get(0);
 		    idLenguajeInstitucion=in.getIdLenguaje();
+		    idConsejo = in.getCen_inst_idInstitucion();
 		}		
-		
+		usrbean.setIdConsejo(idConsejo);
 		//		 obtengo el idioma del usuario
 		String sInsti="";
 		String idLenguaje = null; 
