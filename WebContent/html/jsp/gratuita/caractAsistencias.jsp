@@ -526,12 +526,19 @@ function accionGuardar()
 	
 	var nigAux = document.getElementById("nig").value;
 	nigAux = formateaNig(nigAux);
-	if(!validarNig(nigAux)){	
-		alert("<siga:Idioma key='gratuita.nig.formato'/>");
+	var idConsejo = '';
+	if(document.getElementById("idConsejo"))
+		idConsejo = document.getElementById("idConsejo").value;
+	if(!validarNig(nigAux,idConsejo)){	
+		formato = '<siga:Idioma key="gratuita.nig.formato.general"/>';
+		if(idConsejo==IDINSTITUCION_CONSEJO_ANDALUZ){
+			formato = '<siga:Idioma key="gratuita.nig.formato.cadeca"/>';
+		}
 		fin();
+		alert("<siga:Idioma key='gratuita.nig.formato' arg0='"+formato+"' />");
 		return false;
 			
-	}
+ 	}
 	document.forms[0].nig.value = nigAux; 
 	
 	document.forms[0].modo.value = "guardar";
@@ -622,6 +629,8 @@ function bloquearDesbloquear(o)
 	</table>
 
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+<bean:define id="userBean" name="USRBEAN"  scope="session" />
+<input type="hidden" id ="idConsejo" value = "${userBean.idConsejo}"/>
 
 <table align="center"  border="0" width="100%" class="tablaCampos" >
 <html:form action="/JGR_CaracteristicasAsistenciaLetrado" method="POST" target="mainWorkArea">

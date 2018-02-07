@@ -5169,15 +5169,7 @@ function getElementAbsolutePos(element) {
 	
     return res;
 }
-function validarNig( nig ) 
-{
-	if (nig.length == 19){
-		var objRegExp  = /^([a-zA-Z0-9]{19})?$/;
-		return objRegExp.test(nig);
-	}else{
-		return true;
-	}
-}	
+	
 function formateaNig(strValue) 
 {
 	strValue = replaceAll(strValue,' ','');
@@ -5273,7 +5265,18 @@ function calcularEdad(fecha){
 		edad = 0;
 	}
 	return edad;
+
 }
 
+function pad (n, length,derecha) {
+    var  n = n.toString();
+    while(n.length < length){
+    	if(derecha)
+    		n =  n +"0";
+    	else
+    		n = "0" + n;
+    }
+    return n;
+}
 
 fin();

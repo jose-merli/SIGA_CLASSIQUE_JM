@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- busquedaEJG.jsp -->
+<!-- busquedaEJGActualizados.jsp -->
 
 <!-- CABECERA JSP -->
 <%@page import="com.siga.gratuita.form.DefinirEJGForm"%>
@@ -278,6 +278,7 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js'/>"></script>    
+	<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>
 
        <style>
 table td { vertical-align: center }

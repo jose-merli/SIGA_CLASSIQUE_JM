@@ -28,6 +28,7 @@
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@page import="org.redabogacia.sigaservices.app.AppConstants.PARAMETRO"%>
+<%@page import="org.redabogacia.sigaservices.app.AppConstants"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath(); 
@@ -235,6 +236,7 @@
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 	<bean:define id="ProcuradoresDESVector" name="ProcuradoresDES" scope="request" />
+	
 	<style>
 		.literalRelacion{display:inline-block;width:100px;padding:0px;padding-left:10px;}
 		.literalNombreProc{display:inline-block;width:67px;padding:0px}
@@ -349,7 +351,14 @@
 			}
 			jQuery("#nig2").mask("AAAAA AA A AAAA AAAAAAA");
 			jQuery("#nig2").keyup();	
-			
+			if(document.getElementById("idConsejo") && document.getElementById("idConsejo").value==IDINSTITUCION_CONSEJO_ANDALUZ){
+				jQuery("#numeroProcedimiento2").mask("99999.99");
+				jQuery("#numeroProcedimiento2").keyup();	
+			}else if(document.getElementById("ejisActivo").value=='1'){
+				jQuery("#numeroProcedimiento2").mask("9999999");
+				jQuery("#numeroProcedimiento2").keyup();
+				
+			}
 			<%if (pcajgActivo==2) { %>
 			jQuery("#numDesignaProc").mask("999999");
 			<%}%>
@@ -372,7 +381,10 @@
 </head>
 
 <body onload="cargarListados();calcularAltura();">
-	
+<c:set var="IDINSTITUCION_CONSEJO_ANDALUZ" value="<%=AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ%>" />
+<bean:define id="usrBean" name="USRBEAN" scope="session" type="com.atos.utils.UsrBean" />
+<input type="hidden" id ="ejisActivo" value = "${EJIS_ACTIVO}"/>
+<input type="hidden" id ="idConsejo" value = "${usrBean.idConsejo}"/>
 <table class="tablaTitulo" cellspacing="0">
 
 	<html:form action = "/JGR_DelitosEJG.do" method="POST" target="resultado" style="display:none">
@@ -582,45 +594,60 @@
 							}
 %>
 						</td>
-						
-<%
-						if (ejisActivo>0) {
-%>									
-							<td> 
-<%
+						<td> 
+						<c:choose>
+							<c:when	test="${EJIS_ACTIVO=='1'}">
+										
+								<%
 								if(modopestanha.equals("editar")) {
-%>	
-								 	<input name="numeroProcedimiento2" size="7" maxlength="7" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>" />/
+								%>	
+								 	<input name="numeroProcedimiento2" id="numeroProcedimiento2" size="7" maxlength="7" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>" />/
 								 	<input name="anioProcedimiento2" size="4" maxlength="4" type="text" value="<%=anioProcedimientoAsi%>" class="<%=estilo%>" />
-<%
+								<%
 								} else { 
-%>
-								 	<input name="numeroProcedimiento2" size="7" maxlength="7" type="text" value="<%=numeroProcedimientoAsi%>" class="boxConsulta" />/
-								 	<input name="anioProcedimiento2" size="4" maxlength="4" type="text" value="<%=anioProcedimientoAsi%>" class="boxConsulta" />
-<%
+								%>
+								 	<input name="numeroProcedimiento2" id="numeroProcedimiento2"  size="7" maxlength="7" type="text" value="<%=numeroProcedimientoAsi%>" class="boxConsulta" />/
+								 	<input name="anioProcedimiento2" name="anioProcedimiento2" size="4" maxlength="4" type="text" value="<%=anioProcedimientoAsi%>" class="boxConsulta" />
+								<%
 								}
-%>						
-							</td>
-						
-<%
-						} else { 
-%>								
-							<td> 
-<%
+								%>		
+		
+							</c:when>
+							<c:when	test="${usrBean.idConsejo==IDINSTITUCION_CONSEJO_ANDALUZ}">
+										
+								<%
 								if(modopestanha.equals("editar")) {
-%>
-								 	<input name="numeroProcedimiento2" size="10" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>" maxlength="<%=maximaLongitud%>"/>
-<%
+								%>	
+								 	<input name="numeroProcedimiento2" id="numeroProcedimiento2" size="7" maxlength="8" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>" />/
+								 	<input name="anioProcedimiento2" size="4" maxlength="4" type="text" value="<%=anioProcedimientoAsi%>" class="<%=estilo%>" />
+								<%
 								} else { 
-%>
-									<input name="numeroProcedimiento2" size="10" type="text" value="<%=numeroProcedimientoAsi%>" class="boxConsulta"/>
-<%
+								%>
+								 	<input name="numeroProcedimiento2"id="numeroProcedimiento2"  size="7" maxlength="8" type="text" value="<%=numeroProcedimientoAsi%>" class="boxConsulta" />/
+								 	<input name="anioProcedimiento2" size="4" maxlength="4" type="text" value="<%=anioProcedimientoAsi%>" class="boxConsulta" />
+								<%
 								}
-%>						
-							</td>									
-<%
-						}
-%>									
+								%>	
+		
+							</c:when>
+									
+							<c:otherwise>
+								<%
+								if(modopestanha.equals("editar")) {
+								%>
+									<input name="numeroProcedimiento2" size="10" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>" maxlength="<%=maximaLongitud%>"/>
+								<%
+								} else {
+								%>
+									<input name="numeroProcedimiento2" size="10" type="text" value="<%=numeroProcedimientoAsi%>" class="boxConsulta"/>
+								<%
+								}
+								%>	
+							</c:otherwise>
+						</c:choose>
+						
+						</td>
+								
 						<td class="labelText">
 							<siga:Idioma key="gratuita.mantenimientoTablasMaestra.literal.juzgado"/>
 <% 
@@ -1060,17 +1087,12 @@
 			if (<%=obligatorioNumDesignaProcurador%> && document.getElementById("numDesignaProc").value=="" && document.getElementById("idProcurador").value != null && document.getElementById("idProcurador").value != '')
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.operarEJG.literal.numDesigProc'/>"+ '\n';
 					
-<%
-			if (ejisActivo==0) {
-%>
+			if(!document.getElementById("idConsejo") || document.getElementById("idConsejo").value !=IDINSTITUCION_CONSEJO_ANDALUZ || document.getElementById("ejisActivo").value=='0'){
 				if (<%=validarProcedimiento%>) {
 					if(!validaProcedimiento(document.getElementById("numeroProcedimiento2").value))
 						error += "<siga:Idioma key='gratuita.procedimientos.numero.formato'/>"+ '\n';
 				}
-<%
-			}
-%>				
-				
+			}				
 			if(document.getElementById("calidad2").value=="")
 				  error += "<siga:Idioma key='gratuita.personaJG.literal.mensajecalidad'/>"+ '\n';
 
@@ -1088,29 +1110,33 @@
 <%
 		}
 %> 		 	
-		 	
-<%
-		if (ejisActivo>0) {
-%>		 	
-			if(document.getElementById("numeroProcedimiento2").value != "" || document.getElementById("anioProcedimiento2").value != ""){
-				if(document.getElementById("numeroProcedimiento2").value == "" || !validaProcedimiento(document.getElementById("numeroProcedimiento2").value))
-					error += "<siga:Idioma key='gratuita.procedimientos.numero.formato.ejis'/>"+ '\n';
-					
-				if(document.getElementById("anioProcedimiento2").value == "" || !validarAnioProcedimiento(document.getElementById("anioProcedimiento2").value))	
-					error += "<siga:Idioma key='gratuita.procedimientos.anio.formato'/>"+ '\n';
-					
-				if(error!=""){
-					alert(error);
-					fin();
-					return false;
-				}	
-			}		
-			
-			
-			
-<%
+		var nigAux = document.getElementById("nig2").value;
+
+
+		nigAux = formateaNig(nigAux);
+
+
+		valueNumProcedimiento = document.getElementById("numeroProcedimiento2").value;
+		objectConsejo = document.getElementById("idConsejo");
+		valueEjisActivo = document.getElementById("ejisActivo").value;
+		if((objectConsejo && objectConsejo.value ==IDINSTITUCION_CONSEJO_ANDALUZ) || valueEjisActivo=='1'){
+			error = validarFormatosNigNumProc(nigAux,valueNumProcedimiento,document.getElementById("anioProcedimiento2"),valueEjisActivo,objectConsejo);
+			if(valueNumProcedimiento!='' && document.getElementById("anioProcedimiento2").value ==''){
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.operarEJG.literal.anio' />"+"\n";
+				
+			}
+			if(valueNumProcedimiento=='' && document.getElementById("anioProcedimiento2").value !=''){
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.informeJustificacionMasiva.literal.numeroProcedimiento' />"+"\n";
+			}
+			if(error!=''){
+				fin();
+				alert(error);
+				return false;
+				
+			}
+			formateaNumProcedimiento(valueNumProcedimiento,valueEjisActivo,objectConsejo);
 		}
-%>
+
 
 		if (observaciones.length <= 1024) {
 			document.DefinirMantenimientoEJGForm.modo.value = "modificarDefensa";
@@ -1124,36 +1150,19 @@
 			document.DefinirMantenimientoEJGForm.juzgado.value = document.getElementById("juzgado").value	;				
 			document.DefinirMantenimientoEJGForm.numeroDilegencia.value = document.getElementById("numeroDilegencia2").value	;
 			document.DefinirMantenimientoEJGForm.numeroProcedimiento.value = document.getElementById("numeroProcedimiento2").value;
-<%
-			if (ejisActivo>0) { 
-%>
+			if(document.getElementById("anioProcedimiento2"))
 				document.DefinirMantenimientoEJGForm.anioProcedimiento.value = document.getElementById("anioProcedimiento2").value;
-<%
-			}
-%> 		
+ 		
 			document.DefinirMantenimientoEJGForm.observaciones.value = document.getElementById("observaciones2").value;
 			document.DefinirMantenimientoEJGForm.delitos.value = document.getElementById("delitos2").value;
 			document.DefinirMantenimientoEJGForm.pretension.value = document.getElementById("pretensiones2").value;
 			document.DefinirMantenimientoEJGForm.fechaProc.value = document.getElementById("fechaProc1").value;				
 			document.DefinirMantenimientoEJGForm.idRenuncia.value = document.getElementById("renuncia").value;
 			document.DefinirMantenimientoEJGForm.numeroDesignaProc.value = document.getElementById("numDesignaProc").value;
-			
-			var nigAux = document.getElementById("nig2").value;
-			nigAux = formateaNig(nigAux);
-			if(!validarNig(nigAux)){	
-				alert("<siga:Idioma key='gratuita.nig.formato'/>");
-				fin();
-				return false;
-					
-			}
 			document.DefinirMantenimientoEJGForm.NIG.value = nigAux;
 			
 
-//				alert("observaciones->"+document.DefinirMantenimientoEJGForm.observaciones.value+"<observaciones2->"+document.getElementById("observaciones").value);							
-//				alert("Procedimiento->"+document.DefinirMantenimientoEJGForm.numeroProcedimiento.value+"<Procedimiento2->"+document.getElementById("numeroProcedimiento").value);											
-//				alert("Diligencia->"+document.DefinirMantenimientoEJGForm.numeroDilegencia.value+"<Diligencia->"+document.getElementById("numeroDilegencia").value);											
-//				alert("procurador->"+document.DefinirMantenimientoEJGForm.procurador.value+"<procurador2->"+document.getElementById("procurador").value);											
-//				alert("Pretensiones->"+document.DefinirMantenimientoEJGForm.pretensiones.value+"<pretensiones22->"+document.getElementById("pretensiones2").value);											
+											
                
 			if (document.DefinirMantenimientoEJGForm.fechaProc.value!="" &&	document.getElementById("nombreCompleto").value==""){
 				 alert('<siga:Idioma key="gratuita.operarEJG.message.fechaDesigProc"/>');
@@ -1180,7 +1189,27 @@
 			return false;
 		}
 	}
+	function formateaNumProcedimiento(valueNumProcedimiento,valueEjisActivo,objectConsejo){
+		if(objectConsejo && objectConsejo.value==IDINSTITUCION_CONSEJO_ANDALUZ){
+			var numProcedimientoArray = valueNumProcedimiento.split('.');
+			numProcedimiento = numProcedimientoArray[0];
+			if(numProcedimiento && numProcedimiento!=''){
+				numProcedimiento = pad(numProcedimiento,5,false);
+				finNumProcedimiento = numProcedimientoArray[1]; 
+				if(finNumProcedimiento){
+					numProcedimiento = numProcedimiento+"."+pad(finNumProcedimiento,2,false);
+				}
+				document.getElementById("numeroProcedimiento2").value = numProcedimiento;
+			}
+			
+		}else if(valueEjisActivo=='1'){
+			if(valueNumProcedimiento!=''){
+				numProcedimiento = pad(valueNumProcedimiento,7,false);
+				document.getElementById("numeroProcedimiento2").value = numProcedimiento;
+			}
 		
+		}
+	}
 	function limpiarProcurador() {
 		document.getElementById("nombreCompleto").value = '';
 		document.getElementById("nColegiadoProcurador").value     = '';
@@ -1190,35 +1219,13 @@
 		document.getElementById("numDesignaProc").value = '';
 	}
 		
-<%
-	if (ejisActivo>0) {
-%>
-			
 	
-		// Valida el numero de procedimiento (n/aaaa)
-		function validaProcedimiento (strValue) {
-			var objRegExp  = /^([0-9]{7})?$/;
-			return objRegExp.test(strValue);
-		}
-		
-		function validarAnioProcedimiento (strValue) {
-			var objRegExp  = /^([0-9]{4})?$/;
-			return objRegExp.test(strValue);
-		}	
-		
-						
-		
-<%
-	} else {
-%>
 		// Valida el numero de procedimiento (n/aaaa)
 		function validaProcedimiento (strValue) {
 			var objRegExp  = /^([0-9]+\/[0-9]{4})?$/;
 			return objRegExp.test(strValue);
 		}				
-<%
-	}
-%>
+
 			
 	function buscarProcurador() {
 		var resultado = ventaModalGeneral("busquedaClientesModalForm","G");

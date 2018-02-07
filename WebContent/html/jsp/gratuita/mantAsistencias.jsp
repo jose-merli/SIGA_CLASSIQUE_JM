@@ -256,8 +256,9 @@
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	<script type="text/javascript" src="<%=app%>/html/jsp/general/validacionSIGA.jsp" ></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<% if(esFichaColegial){ %>
@@ -369,11 +370,14 @@
 			}
 			jQuery("#nig").mask("AAAAA AA A AAAA AAAAAAA");
 			jQuery("#nig").keyup();	
+			
 		});	
 	</script>	
 </head>
 
 <body onload="cargarComboModulo();rellenaTipoAsistencia();">
+	<bean:define id="usrBean" name="USRBEAN" scope="session" type="com.atos.utils.UsrBean" />
+	<input type="hidden" id ="idConsejo" value = "${usrBean.idConsejo}"/>
 <input type="hidden" id = "idTipoAsistenciaColegioSelected" value = "<%=TIPOASISTENCIACOLEGIO%>"/>
     <table class="tablaTitulo" align="center" border="0" cellpadding="0" cellspacing="0">
 		<tr>
@@ -657,8 +661,8 @@
    									<siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>&nbsp;
    								</td>			   	
    								<td>
-   									<% if (!modo.equalsIgnoreCase("ver")) { %>
-   										<input name="numeroProcedimiento" maxLength="<%=maxLenghtProc%>" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>"/>
+   								<% if (!modo.equalsIgnoreCase("ver")) { %>
+   										<input name="numeroProcedimiento" id='numeroProcedimiento' maxLength="<%=maxLenghtProc%>" type="text" value="<%=numeroProcedimientoAsi%>" class="<%=estilo%>"/>
    									<% } else { %>
 										<input name="numeroProcedimiento" maxLength="<%=maxLenghtProc%>" type="text" value="<%=numeroProcedimientoAsi%>" class="boxConsulta" readonly/>
 									<% } %>	
@@ -1149,12 +1153,47 @@
 			
 			var nigAux = document.getElementById("nig").value;
 			nigAux = formateaNig(nigAux);
-			if(!validarNig(nigAux)){	
-				alert("<siga:Idioma key='gratuita.nig.formato'/>");
-				fin();
-				return false;
+			
+			valueNumProcedimiento = document.getElementById("numeroProcedimiento").value;
+			objectConsejo = document.getElementById("idConsejo");
+			if((objectConsejo && objectConsejo.value ==IDINSTITUCION_CONSEJO_ANDALUZ)){
+				var objectAnioProcedimiento =  new Object();
+				if(valueNumProcedimiento!=''){ 
+					arrayNumProcedimiento = valueNumProcedimiento.split("/");
+					if(arrayNumProcedimiento.length<2){
+						error = "<siga:Idioma key='gratuita.numProcedimiento.formato' arg0='gratuita.numProcedimiento.formato.numeroanio' />";
+						fin();
+						alert(error);
+						return false;
+						
+					}
+					valueNumProcedimiento = arrayNumProcedimiento[0];
+					objectAnioProcedimiento.value = arrayNumProcedimiento[1];
+					error = validarFormatosNigNumProc(nigAux,valueNumProcedimiento,objectAnioProcedimiento,'0',objectConsejo);
+				}else{
+					error = validarFormatosNigNumProc(nigAux,'','','0',objectConsejo);
 					
+				}
+				
+				
+				
+				if(error!=''){
+					fin();
+					alert(error);
+					return false;
+					
+				}
+				formateaNumProcedimiento(valueNumProcedimiento,objectAnioProcedimiento.value,objectConsejo);
+				
+			}else{
+				error = validarFormatosNigNumProc(nigAux,'','','0',objectConsejo);
+				if(error!=''){
+					fin();
+					alert(error);
+					return false;
+				}
 			}
+
 			document.forms[0].nig.value = nigAux; 
 			
 			document.forms[0].idTipoAsistenciaColegio.disabled="";
@@ -1162,7 +1201,23 @@
 			document.forms[0].target = "submitArea";
 			document.forms[0].submit();
 		}
-
+		function formateaNumProcedimiento(valueNumProcedimiento,valueAnioProcedimiento,objectConsejo){
+			if(objectConsejo && objectConsejo.value==IDINSTITUCION_CONSEJO_ANDALUZ){
+				var numProcedimientoArray = valueNumProcedimiento.split('.');
+				numProcedimiento = numProcedimientoArray[0];
+				if(numProcedimiento && numProcedimiento!=''){
+					numProcedimiento = pad(numProcedimiento,5,false);
+					finNumProcedimiento = numProcedimientoArray[1]; 
+					if(finNumProcedimiento){
+						numProcedimiento = numProcedimiento+"."+pad(finNumProcedimiento,2,false);
+					}
+					document.getElementById("numeroProcedimiento").value = numProcedimiento+"/"+valueAnioProcedimiento;
+				}
+				
+			}
+		}
+		
+		
 		function accionVolver() {
 			
 			// if(document.forms[0].solicIdentCentralita && document.forms[0].solicIdentCentralita.value!=''){

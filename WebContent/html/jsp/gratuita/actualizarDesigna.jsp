@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <%@page import="java.util.ArrayList"%>
+<%@page import="org.redabogacia.sigaservices.app.AppConstants"%>
 <html>
 <head>
 <!-- actualizarDesigna.jsp -->
@@ -31,13 +32,13 @@
 <%@page import="com.siga.gratuita.form.MaestroDesignasForm"%>
 
 
+
 <!-- JSP -->
 <%
 	String app = request.getContextPath();
 	HttpSession ses = request.getSession();
 
 	UsrBean usrbean = (UsrBean) session.getAttribute(ClsConstants.USERBEAN);
-
 	String dato[] = { (String) usrbean.getLocation() };
 %>
 
@@ -117,18 +118,55 @@
 	{		
 		top.cierraConParametros("NORMAL");
 	}		
+	
+	function formateaNumProcedimiento(valueNumProcedimiento,valueEjisActivo,objectConsejo){
+		if(objectConsejo && objectConsejo.value==IDINSTITUCION_CONSEJO_ANDALUZ){
+			var numProcedimientoArray = valueNumProcedimiento.split('.');
+			numProcedimiento = numProcedimientoArray[0];
+			if(numProcedimiento && numProcedimiento!=''){
+				numProcedimiento = pad(numProcedimiento,5,false);
+				finNumProcedimiento = numProcedimientoArray[1]; 
+				if(finNumProcedimiento){
+					numProcedimiento = numProcedimiento+"."+pad(finNumProcedimiento,2,false);
+				}
+				document.getElementById("numeroProcedimiento").value = numProcedimiento;
+			}
+			
+		}else if(valueEjisActivo=='1'){
+			if(valueNumProcedimiento!=''){
+				numProcedimiento = pad(valueNumProcedimiento,7,false);
+				document.getElementById("numeroProcedimiento").value = numProcedimiento;
+			}
 		
+		}
+	}
 	function accionGuardar() 
 	{
+		sub();
 		var nigAux = document.getElementById("nig").value;
 		nigAux = formateaNig(nigAux);
-		if(!validarNig(nigAux)){	
-			alert("<siga:Idioma key='gratuita.nig.formato'/>");
-			return false;
+		valueNumProcedimiento = document.getElementById("numeroProcedimiento").value;
+		objectConsejo = document.getElementById("idConsejo");
+		valueEjisActivo = document.getElementById("ejisActivo").value;
+		error = validarFormatosNigNumProc(nigAux,valueNumProcedimiento,document.getElementById("anioProcedimiento"),valueEjisActivo,objectConsejo);
+		if(document.getElementById("anioProcedimiento")){
+			if(valueNumProcedimiento!='' && document.getElementById("anioProcedimiento").value ==''){
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.operarEJG.literal.anio' />"+"\n";
 				
-	 	}
+			}
+			if(valueNumProcedimiento=='' && document.getElementById("anioProcedimiento").value !=''){
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.informeJustificacionMasiva.literal.numeroProcedimiento' />"+"\n";
+			}
+		}
+		if(error!=''){
+			fin();
+			alert(error);
+			return false;
+		}
+		
+		formateaNumProcedimiento(valueNumProcedimiento,valueEjisActivo,objectConsejo);
+		
 		document.MaestroDesignasForm.nig.value = nigAux; 
-		sub();
 		document.MaestroDesignasForm.modo.value = 'actualizaDesigna';
 		document.MaestroDesignasForm.submit();
 	}
@@ -211,6 +249,14 @@
 		}
 		jQuery("#nig").mask("AAAAA AA A AAAA AAAAAAA");
 		jQuery("#nig").keyup();	
+		if(document.getElementById("idConsejo") && document.getElementById("idConsejo").value==IDINSTITUCION_CONSEJO_ANDALUZ){
+			jQuery("#numeroProcedimiento").mask("99999.99");
+			jQuery("#numeroProcedimiento").keyup();	
+		}else if(document.getElementById("ejisActivo").value=='1'){
+			jQuery("#numeroProcedimiento").mask("9999999");
+			jQuery("#numeroProcedimiento").keyup();
+			
+		}
 	});	
 </script>
 </head>
@@ -227,6 +273,11 @@
 
 
 <!-- INICIO: CAMPOS DE BUSQUEDA-->
+
+<bean:define id="userBean" name="USRBEAN"  scope="session" />
+<c:set var="IDINSTITUCION_CONSEJO_ANDALUZ" value="<%=AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ%>" />
+<input type="hidden" id ="idConsejo" value = "${userBean.idConsejo}"/>
+<input type="hidden" id ="ejisActivo" value = "${EJIS_ACTIVO}"/>
 <html:form action="/JGR_ActualizarInformeJustificacion" method="POST" target="submitArea">
 	<html:hidden name="MaestroDesignasForm" property="modo" value="" />
 	<html:hidden name="MaestroDesignasForm" property="anio"  />
@@ -291,22 +342,32 @@
 								<td width="20%" class="labelText"><siga:Idioma
 										key='gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento' /></td>
 								
-							<c:choose>
-								<c:when	test="${EJIS_ACTIVO=='1'}">
-								
-									<td width="20%"><html:text
-										name="MaestroDesignasForm" property="numeroProcedimiento"
-										size="7" maxlength="7" styleClass="box" />/<html:text
-										name="MaestroDesignasForm" property="anioProcedimiento"
-										size="4" maxlength="4" styleClass="box" /></td>
-
-								</c:when>
-								<c:otherwise>
-									<td width="20%"><html:text name="MaestroDesignasForm"
-										property="numeroProcedimiento" maxlength="15" styleClass="box"
-										style="width: 100" /></td>
-								</c:otherwise>
-							</c:choose>
+								<c:choose>
+									<c:when	test="${EJIS_ACTIVO=='1'}">
+									
+										<td width="20%"><html:text
+											name="MaestroDesignasForm" property="numeroProcedimiento" styleId="numeroProcedimiento"
+											size="7" maxlength="7" styleClass="box" />/<html:text
+											name="MaestroDesignasForm" property="anioProcedimiento"
+											size="4" maxlength="4" styleClass="box" /></td>
+	
+									</c:when>
+									<c:when	test="${userBean.idConsejo==IDINSTITUCION_CONSEJO_ANDALUZ}">
+									
+										<td width="20%"><html:text styleId="numeroProcedimiento" 
+											name="MaestroDesignasForm" property="numeroProcedimiento"
+											size="8" maxlength="8" styleClass="box" />/<html:text
+											name="MaestroDesignasForm" property="anioProcedimiento"
+											size="4" maxlength="4" styleClass="box" /></td>
+	
+									</c:when>
+									
+									<c:otherwise>
+										<td width="20%"><html:text name="MaestroDesignasForm"
+											property="numeroProcedimiento" maxlength="15" styleClass="box"
+											style="width: 100" /></td>
+									</c:otherwise>
+								</c:choose>
 
 								<td width="10%" class="labelText" width="10%"><siga:Idioma
 										key="gratuita.mantenimientoTablasMaestra.literal.juzgado" />

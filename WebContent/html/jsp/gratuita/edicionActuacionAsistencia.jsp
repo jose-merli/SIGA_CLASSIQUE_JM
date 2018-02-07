@@ -270,6 +270,7 @@
 <body onload="ajusteAltoMain('datosModal',0);inicio();cambioComisaria();cambioJuzgado();">
 
 	<bean:define id="usrBean" name="USRBEAN" scope="session" type="com.atos.utils.UsrBean" />
+	<input type="hidden" id ="idConsejo" value = "${usrBean.idConsejo}"/>
 	<bean:define id="botones" name="botones" scope="request" />
 	<bean:define id="tipoPcajg" name="tipoPcajg" scope="request" />
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request" />
@@ -948,12 +949,51 @@
 			}
 			var nigAux = document.getElementById("nig").value;
 			nigAux = formateaNig(nigAux);
-			if(!validarNig(nigAux)){	
-				alert("<siga:Idioma key='gratuita.nig.formato'/>");
-				fin();
-				return false;
+			
+			
+			valueNumProcedimiento = document.getElementById("numeroAsunto").value;
+			objectConsejo = document.getElementById("idConsejo");
+			
+			if((objectConsejo && objectConsejo.value ==IDINSTITUCION_CONSEJO_ANDALUZ)){
+				var objectAnioProcedimiento =  new Object();
+				if(valueNumProcedimiento!=''){ 
+					arrayNumProcedimiento = valueNumProcedimiento.split("/");
+					if(arrayNumProcedimiento.length<2){
+						error = "<siga:Idioma key='gratuita.numProcedimiento.formato' arg0='gratuita.numProcedimiento.formato.numeroanio' />";
+						fin();
+						alert(error);
+						return false;
+						
+					}
+					valueNumProcedimiento = arrayNumProcedimiento[0];
+					objectAnioProcedimiento.value = arrayNumProcedimiento[1];
+					error = validarFormatosNigNumProc(nigAux,valueNumProcedimiento,objectAnioProcedimiento,'0',objectConsejo);
+				}else{
+					error = validarFormatosNigNumProc(nigAux,'','','0',objectConsejo);
 					
+				}
+				
+				
+				
+				if(error!=''){
+					fin();
+					alert(error);
+					return false;
+					
+				}
+				formateaNumProcedimiento(valueNumProcedimiento,objectAnioProcedimiento.value,objectConsejo);
+				
+			}else{
+				error = validarFormatosNigNumProc(nigAux,'','','0',objectConsejo);
+				if(error!=''){
+					fin();
+					alert(error);
+					return false;
+					
+				}
 			}
+			
+			
 			document.ActuacionAsistenciaFormEdicion.nig.value = nigAux;
 			
 			
@@ -978,7 +1018,24 @@
 				 fin();
 		 	}		
 		}
-	
+		
+		function formateaNumProcedimiento(valueNumProcedimiento,valueAnioProcedimiento,objectConsejo){
+			if(objectConsejo && objectConsejo.value==IDINSTITUCION_CONSEJO_ANDALUZ){
+				var numProcedimientoArray = valueNumProcedimiento.split('.');
+				numProcedimiento = numProcedimientoArray[0];
+				if(numProcedimiento && numProcedimiento!=''){
+					numProcedimiento = pad(numProcedimiento,5,false);
+					finNumProcedimiento = numProcedimientoArray[1]; 
+					if(finNumProcedimiento){
+						numProcedimiento = numProcedimiento+"."+pad(finNumProcedimiento,2,false);
+					}
+					document.getElementById("numeroAsunto").value = numProcedimiento+"/"+valueAnioProcedimiento;
+				}
+				
+			}
+		}
+		
+		
 		function compruebaDiaDespues(fecha2){
 			var fechaAct=document.getElementById("fecha").value;
 			var fechaHora=fecha2;
