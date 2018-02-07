@@ -281,6 +281,8 @@ System.setProperties(properties);
 			CenInstitucionService cenInstitucionService = (CenInstitucionService)bm.getService(CenInstitucionService.class);
 			CenInstitucion cenInstitucion = new CenInstitucion();
 			cenInstitucion.setIdinstitucion(Short.valueOf(bean.getLocation()));
+			cenInstitucion = cenInstitucionService.get(cenInstitucion);
+			bean.setIdConsejo(cenInstitucion.getCenInstIdinstitucion().intValue());
 			CenInstitucion comision =  cenInstitucionService.getComision(cenInstitucion);
 			bean.setIdInstitucionComision(comision.getIdinstitucion());
 			if(bean.isComision()){
