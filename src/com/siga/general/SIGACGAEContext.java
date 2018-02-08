@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionServlet;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.MODULO;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.CenInstitucion;
@@ -279,7 +280,10 @@ System.setProperties(properties);
 			CenInstitucion cenInstitucion = new CenInstitucion();
 			cenInstitucion.setIdinstitucion(Short.valueOf(bean.getLocation()));
 			cenInstitucion = cenInstitucionService.get(cenInstitucion);
-			bean.setIdConsejo(cenInstitucion.getCenInstIdinstitucion().intValue());
+			Integer idConsejo = AppConstants.IDINSTITUCION_2000;
+			if(cenInstitucion.getCenInstIdinstitucion()!=null)
+				idConsejo = cenInstitucion.getCenInstIdinstitucion().intValue();
+			bean.setIdConsejo(idConsejo);
 			CenInstitucion comision =  cenInstitucionService.getComision(cenInstitucion);
 			bean.setIdInstitucionComision(comision.getIdinstitucion());
 			if(bean.isComision()){
