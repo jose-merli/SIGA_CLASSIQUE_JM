@@ -163,9 +163,9 @@ public class CerEstadoSoliCertifiAdm extends MasterBeanAdministrador
 		sql.append(                           CerEstadoSoliCertifiBean.C_IDESTADOSOLICITUDCERTIFICADO);
 		sql.append("               )) ");
 		sql.append(         CerEstadoSoliCertifiBean.C_LISTAIDESTADOSOLICITUDCERTIFICADO);
-		sql.append("      , f_Siga_Getrecurso('certificados.solicitudes.literal.estado.activo', ");
-		sql.append(                           this.usrbean.getLanguage());
-		sql.append("                         ) ");
+		sql.append("      , f_siga_getrecurso_etiqueta('certificados.solicitudes.literal.estado.activo', ");
+		sql.append(                                    this.usrbean.getLanguage());
+		sql.append("                                  ) ");
 		sql.append(         CerEstadoSoliCertifiBean.C_DESCRIPCION);
 		sql.append("   From ");
 		sql.append(         CerEstadoSoliCertifiBean.T_NOMBRETABLA);
@@ -182,9 +182,9 @@ public class CerEstadoSoliCertifiAdm extends MasterBeanAdministrador
 		sql.append(                           CerEstadoSoliCertifiBean.C_IDESTADOSOLICITUDCERTIFICADO);
 		sql.append("               )) ");
 		sql.append(         CerEstadoSoliCertifiBean.C_LISTAIDESTADOSOLICITUDCERTIFICADO);
-		sql.append("      , f_Siga_Getrecurso('certificados.solicitudes.literal.estado.automatico', ");
-		sql.append(                           this.usrbean.getLanguage());
-		sql.append("                         ) ");
+		sql.append("      , f_siga_getrecurso_etiqueta('certificados.solicitudes.literal.estado.automatico', ");
+		sql.append(                                    this.usrbean.getLanguage());
+		sql.append("                                  ) ");
 		sql.append(         CerEstadoSoliCertifiBean.C_DESCRIPCION);
 		sql.append("   From ");
 		sql.append(         CerEstadoSoliCertifiBean.T_NOMBRETABLA);

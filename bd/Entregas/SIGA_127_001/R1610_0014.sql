@@ -347,3 +347,19 @@ Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodif
 Values  ('certificados.solicitudes.literal.titulo.personacolegio', 'Datos personales y de colegio#EU', 0, 3, Sysdate, 0, 22);
 Insert Into gen_recursos  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
 Values  ('certificados.solicitudes.literal.titulo.personacolegio', 'Datos personales y de colegio#GL', 0, 4, Sysdate, 0, 22);
+
+Insert Into adm_botonaccion
+  (idinstitucion, idboton, descripcion, nombreboton, lenguaje, transaccion, modo, activo, modal, fechamodificacion, usumodificacion, nombreparametro, valorparametro)
+  (Select ins.idinstitucion, bot.idboton, bot.descripcion, bot.nombreboton, bot.lenguaje, bot.transaccion, bot.modo, bot.activo, bot.modal, Sysdate, 0, bot.nombreparametro, bot.valorparametro
+     From Adm_Botonaccion bot, Cen_Institucion ins
+    Where Not Exists (Select 1 From adm_botonaccion bot2 Where bot2.idinstitucion = ins.idinstitucion And bot2.idboton = bot.idboton)
+      And bot.idinstitucion = 2000
+      And bot.idboton = 2);
+Insert Into adm_valorpreferente
+  (idboton, idinstitucion, campo, valor)
+  (Select bot.idboton, ins.idinstitucion, bot.campo, bot.valor
+     From Adm_Valorpreferente bot, Cen_Institucion ins
+    Where Not Exists (Select 1 From Adm_Valorpreferente bot2 Where bot2.idinstitucion = ins.idinstitucion And bot2.idboton = bot.idboton)
+      And bot.idinstitucion = 2000
+      And bot.idboton = 2);
+  

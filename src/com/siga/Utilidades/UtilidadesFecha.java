@@ -140,6 +140,18 @@ public class UtilidadesFecha {
 		
 		return laborable;
 	}
+	
+	/**
+	 * Returns true if the passed date is after the current day. It doesn't care about time in both dates.
+	 * @param date
+	 * @return
+	 * @throws ParseException 
+	 */
+	public static boolean afterToday(Date date) throws ParseException {
+		Date dateWithoutTime = removeTime(date);
+		Date today = getToday();
+		return (dateWithoutTime.after(today));
+	}
 
     public static Date removeTime(Date date) {
         Calendar cal = Calendar.getInstance();

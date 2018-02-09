@@ -185,25 +185,18 @@ public class AccionesMasivasCertificadosListener extends SIGAListenerPorMinutosA
 							throw new SIGAException("certificados.solicitudes.mensaje.certificadoIncompatible");
 						}
 						
-						// comprobando que la fecha de solicitud es anterior al dia de hoy
 						Date fechaSolicitudReal = UtilidadesFecha.getDate(beanSolicitud.getFechaSolicitud(), ClsConstants.DATE_FORMAT_JAVA);
-						Date fechaHoy = UtilidadesFecha.getToday();
-						if (fechaSolicitudReal.after(fechaHoy)) {
+						// comprobando que la fecha de solicitud es anterior al dia de hoy
+						if (UtilidadesFecha.afterToday(fechaSolicitudReal)) {
 							throw new SIGAException("certificados.solicitudes.mensaje.fechaSolicitudFutura");
 						}
 						// comprobando limite de fecha de solicitud
-						int maximoDiasAntelacionSolicitud = Integer.parseInt(parametrosAdm.getValor(
-								String.valueOf(ClsConstants.INSTITUCION_CGAE),
-								ClsConstants.MODULO_CERTIFICADOS, 
-								"MAXIMO_DIAS_ANTELACION_SOLICITUD", 
-								"365"));
-						Date fechaLimiteSolicitud = UtilidadesFecha.subDays(fechaHoy, maximoDiasAntelacionSolicitud);
-						if (fechaSolicitudReal.before(fechaLimiteSolicitud)) {
+						int maximoDiasAntelacionSolicitud = SIGASolicitudesCertificadosAction.getDiasLimiteSolicitud(Integer.valueOf(cerSolicitudcertificados.getIdinstitucion()), usr);
+						if (SIGASolicitudesCertificadosAction.antesDelLimiteSolicitud(fechaSolicitudReal, maximoDiasAntelacionSolicitud)) {
 							String [] parametrosMensaje = new String[1];
 							parametrosMensaje[0] = Integer.toString(maximoDiasAntelacionSolicitud);
 							throw new SIGAException(UtilidadesString.getMensaje("certificados.solicitudes.mensaje.fechaSolicitudFueraDePlazo", parametrosMensaje, usr.getLanguage()));
 						}
-
 						
 						// Se realiza el proceso de aprobar y generar o de sólamente generar
 						SIGASolicitudesCertificadosAction.almacenarCertificado(String.valueOf(cerSolicitudcertificados.getIdinstitucion()),

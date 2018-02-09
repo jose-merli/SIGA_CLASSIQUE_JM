@@ -20,6 +20,7 @@
 <%@ page import="com.siga.beans.CerEstadoCertificadoBean"%> 
 <%@ page import="com.siga.beans.CerSolicitudCertificadosBean"%>
 <%@ page import="com.siga.beans.CerSolicitudCertificadosAdm"%>
+<%@ page import="com.siga.beans.CerEstadoSoliCertifiAdm"%>
 <%@ page import="com.siga.beans.FacFacturaBean"%>
 <%@ page import="com.siga.beans.PysProductosInstitucionAdm"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>

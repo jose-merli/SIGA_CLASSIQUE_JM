@@ -961,10 +961,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 		try {
 			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
 
-			// Si viene de regenerar (es decir desde pantalla de edicion) hay que guardar las modificaciones.
-			if (form.getRegenerar() != null && !"".equalsIgnoreCase(form.getRegenerar()) && "1".equalsIgnoreCase(form.getRegenerar())) {
-				this.guardarInfoSolicitudCertificado(form, userBean, 0);
-			}
+			// guardando las modificaciones
+			this.guardarInfoSolicitudCertificado(form, userBean, 0);
 
 			int contador = 0;
 			int contadorErrores = 0;
@@ -1061,11 +1059,10 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 
 				// comprobando que la fecha de solicitud es anterior al dia de hoy
 				Date fechaSolicitudReal = UtilidadesFecha.getDate(beanSolicitud.getFechaSolicitud(), ClsConstants.DATE_FORMAT_JAVA);
-				Date fechaHoy = UtilidadesFecha.getToday();
-				if (fechaSolicitudReal.after(fechaHoy)) {
+				if (UtilidadesFecha.afterToday(fechaSolicitudReal)) {
 					contadorErrores++;
 
-					ClsLogging.writeFileLog("Error al generar el certificado PDF: El certificado no es compatible con los existentes, idpersona=" + idPersona,
+					ClsLogging.writeFileLog("Error al generar el certificado PDF: La fecha de solicitud es del futuro, idpersona=" + idPersona,
 							3);
 					if (contadorReg == 1) {
 						String mensaje = "certificados.solicitudes.mensaje.fechaSolicitudFutura";
@@ -1079,13 +1076,11 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 				}
 				
 				// comprobando limite de fecha de solicitud
-				int maximoDiasAntelacionSolicitud = Integer.parseInt(admParametros.getValor(String.valueOf(ClsConstants.INSTITUCION_CGAE),
-						ClsConstants.MODULO_CERTIFICADOS, "MAXIMO_DIAS_ANTELACION_SOLICITUD", "365"));
-				Date fechaLimiteSolicitud = UtilidadesFecha.subDays(fechaHoy, maximoDiasAntelacionSolicitud);
-				if (fechaSolicitudReal.before(fechaLimiteSolicitud)) {
+				int maximoDiasAntelacionSolicitud = getDiasLimiteSolicitud(Integer.valueOf(idInstitucion), userBean);
+				if (antesDelLimiteSolicitud(fechaSolicitudReal, maximoDiasAntelacionSolicitud)) {
 					contadorErrores++;
 
-					ClsLogging.writeFileLog("Error al generar el certificado PDF: El certificado no es compatible con los existentes, idpersona=" + idPersona,
+					ClsLogging.writeFileLog("Error al generar el certificado PDF: La fecha de solicitud es demasiado antigua (ver parámetro), idpersona=" + idPersona,
 							3);
 					if (contadorReg == 1) {
 						String[] parametrosMensaje = new String[1];
@@ -1260,10 +1255,9 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 						continue; // saltando al siguiente registro porque este da error
 					}
 
-					// comprobando que la fecha de solicitud es anterior al dia de hoy
 					Date fechaSolicitudReal = UtilidadesFecha.getDate(beanSolicitud.getFechaSolicitud(), ClsConstants.DATE_FORMAT_JAVA);
-					Date fechaHoy = UtilidadesFecha.getToday();
-					if (fechaSolicitudReal.after(fechaHoy)) {
+					// comprobando que la fecha de solicitud es anterior al dia de hoy
+					if (UtilidadesFecha.afterToday(fechaSolicitudReal)) {
 						log.addLogWithDateAndFlush("certificados.solicitudes.mensaje.fechaSolicitudFutura", userBeanLanguage);
 
 						contadorErrores++;
@@ -1271,10 +1265,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 					}
 					
 					// comprobando limite de fecha de solicitud
-					int maximoDiasAntelacionSolicitud = Integer.parseInt(admParametros.getValor(String.valueOf(ClsConstants.INSTITUCION_CGAE),
-							ClsConstants.MODULO_CERTIFICADOS, "MAXIMO_DIAS_ANTELACION_SOLICITUD", "365"));
-					Date fechaLimiteSolicitud = UtilidadesFecha.subDays(fechaHoy, maximoDiasAntelacionSolicitud);
-					if (fechaSolicitudReal.before(fechaLimiteSolicitud)) {
+					int maximoDiasAntelacionSolicitud = getDiasLimiteSolicitud(Integer.valueOf(idInstitucion), userBean);
+					if (antesDelLimiteSolicitud(fechaSolicitudReal, maximoDiasAntelacionSolicitud)) {
 						String[] parametrosMensaje = new String[1];
 						parametrosMensaje[0] = Integer.toString(maximoDiasAntelacionSolicitud);
 						String mensajeLog = UtilidadesString.getMensaje("certificados.solicitudes.mensaje.fechaSolicitudFueraDePlazo", parametrosMensaje, userBeanLanguage);
@@ -2351,7 +2343,39 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 		
 		return "exitoConString";
 	}
-
+	
+	/**
+	 * Obtiene el valor del parametro de dias limite de antelacion de la fecha de solicitud de un certificado
+	 * @param idInstitucion
+	 * @param userBean
+	 * @return
+	 * @throws NumberFormatException
+	 * @throws ClsExceptions
+	 */
+	public static int getDiasLimiteSolicitud(Integer idInstitucion, UsrBean userBean) throws NumberFormatException, ClsExceptions {
+		GenParametrosAdm parametrosAdm = new GenParametrosAdm(userBean);
+		return Integer.parseInt(parametrosAdm.getValor(
+				String.valueOf(idInstitucion),
+				ClsConstants.MODULO_CERTIFICADOS, 
+				"MAXIMO_DIAS_ANTELACION_SOLICITUD", 
+				"365"));
+	}
+	
+	/**
+	 * Devuelve verdadero si la fecha pasada sin hora es anterior de la fecha limite dada para la institucion
+	 * @param userBean
+	 * @param fecha
+	 * @return
+	 * @throws NumberFormatException
+	 * @throws ClsExceptions
+	 * @throws ParseException
+	 */
+	public static boolean antesDelLimiteSolicitud(Date fecha, int maximoDiasAntelacionSolicitud) throws ParseException {
+		Date fechaLimiteSolicitud = UtilidadesFecha.subDays(UtilidadesFecha.getToday(), maximoDiasAntelacionSolicitud);
+		Date fechaRealSinHora = UtilidadesFecha.removeTime(fecha);
+		return (fechaRealSinHora.before(fechaLimiteSolicitud));
+	}
+	
 	// aalg: INC_10287_SIGA. Se unifica la manera de finalizar las solicitudes
 	// de certificados
 	public static void finalizarCertificado(Hashtable<String, Object> htSolicitud, HttpServletRequest request, HttpServletResponse response, int contErrores, UsrBean userBean)
@@ -2395,28 +2419,20 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 				throw new SIGAException("certificados.solicitudes.mensaje.certificadoIncompatible");
 			}
 			
-			// comprobando que la fecha de solicitud es anterior al dia de hoy
 			Date fechaSolicitudReal = UtilidadesFecha.getDate(beanSolicitud.getFechaSolicitud(), ClsConstants.DATE_FORMAT_JAVA);
-			Date fechaHoy = UtilidadesFecha.getToday();
-			if (fechaSolicitudReal.after(fechaHoy)) {
+			// comprobando que la fecha de solicitud es anterior al dia de hoy
+			if (UtilidadesFecha.afterToday(fechaSolicitudReal)) {
 				throw new SIGAException("certificados.solicitudes.mensaje.fechaSolicitudFutura");
 			}
 			// comprobando limite de fecha de solicitud
-			int maximoDiasAntelacionSolicitud = Integer.parseInt(parametrosAdm.getValor(
-					String.valueOf(ClsConstants.INSTITUCION_CGAE),
-					ClsConstants.MODULO_CERTIFICADOS, 
-					"MAXIMO_DIAS_ANTELACION_SOLICITUD", 
-					"365"));
-			Date fechaLimiteSolicitud = UtilidadesFecha.subDays(fechaHoy, maximoDiasAntelacionSolicitud);
-			if (fechaSolicitudReal.before(fechaLimiteSolicitud)) {
+			int maximoDiasAntelacionSolicitud = getDiasLimiteSolicitud(Integer.valueOf(idInstitucion), userBean);
+			if (antesDelLimiteSolicitud(fechaSolicitudReal, maximoDiasAntelacionSolicitud)) {
 				String [] parametrosMensaje = new String[1];
 				parametrosMensaje[0] = Integer.toString(maximoDiasAntelacionSolicitud);
 				throw new SIGAException(UtilidadesString.getMensaje("certificados.solicitudes.mensaje.fechaSolicitudFueraDePlazo", parametrosMensaje, userBean.getLanguage()));
 			}
 
-
-			GenParametrosAdm paramAdm = new GenParametrosAdm(userBean);
-			boolean controlFacturasSII = paramAdm.getValor(idInstitucion, "FAC", "CONTROL_EMISION_FACTURAS_SII", "0").equalsIgnoreCase("1");
+			boolean controlFacturasSII = parametrosAdm.getValor(idInstitucion, "FAC", "CONTROL_EMISION_FACTURAS_SII", "0").equalsIgnoreCase("1");
 			Hashtable<String, Object> htOld = beanSolicitud.getOriginalHash();
 			Hashtable<String, Object> htNew = (Hashtable<String, Object>) htOld.clone();
 			htNew.put(CerSolicitudCertificadosBean.C_FECHAMODIFICACION, "sysdate");
