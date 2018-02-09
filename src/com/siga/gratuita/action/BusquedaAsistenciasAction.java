@@ -271,6 +271,7 @@ public class BusquedaAsistenciasAction extends MasterAction {
 
 		AsistenciasForm miForm = (AsistenciasForm)formulario;
 		Vector ocultos = miForm.getDatosTablaOcultos(0);
+		Short comision =  usr.getIdInstitucionComision();
 		
 		String anio = "", numeroAsist = "",jsonVolver = "";
 		if (ocultos != null && ocultos.size() >= 2) {

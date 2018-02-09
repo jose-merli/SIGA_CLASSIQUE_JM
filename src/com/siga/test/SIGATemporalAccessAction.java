@@ -176,10 +176,13 @@ public class SIGATemporalAccessAction extends Action
 		ht2.put(CenInstitucionBean.C_IDINSTITUCION,location);
 		CenInstitucionAdm ins = new CenInstitucionAdm(usrbean);
 		Vector v4 = ins.selectByPK(ht2);
+		Integer idConsejo = ClsConstants.INSTITUCION_CGAE;
 		if (v4!=null && v4.size()>0) {
 			CenInstitucionBean in = (CenInstitucionBean) v4.get(0);
-			idLenguajeInstitucion=in.getIdLenguaje();
-		}
+			idLenguajeInstitucion=in.getIdLenguaje(); 
+			idConsejo = in.getCen_inst_idInstitucion();
+		}		
+		usrbean.setIdConsejo(idConsejo);
 		// Marcamos que ha entrado por combos (superusuarios)
 		usrbean.setEntradaCombos(true);
 		

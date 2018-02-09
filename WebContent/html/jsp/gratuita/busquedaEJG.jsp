@@ -277,9 +277,11 @@
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js'/>"></script>   
+	<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	
 		
 
 	

@@ -1,5 +1,4 @@
 <!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
-<%@page import="com.siga.ws.CajgConfiguracion"%>
 <html>
 <head>
 <!-- editarDesigna.jsp -->
@@ -16,6 +15,7 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <%@ page import="com.siga.general.*"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
@@ -24,12 +24,13 @@
 <%@ page import="com.atos.utils.*"%>
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
+<%@page import="org.redabogacia.sigaservices.app.AppConstants"%>
+<%@page import="com.siga.ws.CajgConfiguracion"%>
 
 <!-- JSP -->
 <%
 	HttpSession ses = request.getSession();
 	UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-
 	Hashtable resultado = (Hashtable) ses.getAttribute("resultado");
 	ses.removeAttribute("resultado");
 
@@ -318,7 +319,7 @@
 	String idPretensionParamsJSON = "";
 	String comboPretensiones = "getPretensiones";
 	String comboPretensionesParentQueryIds = null;
-	if(pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA){
+	if(pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA || usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ){
 		comboPretensiones = "getPretensionesAlcala";
 		idPretension = "-2";
 		if(beanDesigna.getIdPretension()!=null&& !beanDesigna.getIdPretension().equals("")){
@@ -409,28 +410,14 @@
 	</style>	 
 	<script language="JavaScript">
 	
-		<% if (ejisActivo>0) { %>
-			// Valida el numero de procedimiento (n/aaaa)
-			function validaProcedimiento (strValue) {
-				var objRegExp  = /^([0-9]{7})?$/;
-				return objRegExp.test(strValue);
-			}
+		
+		// Valida el numero de procedimiento (n/aaaa)
+		function validaProcedimiento (strValue)	{
+			var objRegExp  = /^([0-9]+\/[0-9]{4})?$/;
+			return objRegExp.test(strValue);
+		}		
 			
-			function validarAnioProcedimiento (strValue) {
-				var objRegExp  = /^([0-9]{4})?$/;
-				return objRegExp.test(strValue);
-			}	
-			
-				
-			
-		<% } else { %>
-			// Valida el numero de procedimiento (n/aaaa)
-			function validaProcedimiento (strValue)	{
-				var objRegExp  = /^([0-9]+\/[0-9]{4})?$/;
-				return objRegExp.test(strValue);
-			}		
-			
-		<%}%>
+		
 				
 		// Asociada al boton Volver
 		function accionVolver() {	
@@ -473,12 +460,13 @@
 				if (<%=obligatorioProcedimiento%> && document.getElementById("idPretension").value=="")
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.actuacionesDesigna.literal.pretensiones'/>"+ '\n';
 				
-				<% if (ejisActivo==0) { %>
+				
+				if(!document.getElementById("idConsejo") || document.getElementById("idConsejo").value !=IDINSTITUCION_CONSEJO_ANDALUZ || document.getElementById("ejisActivo").value=='0'){
 					if (<%=validarProcedimiento%>) {
 						if(!validaProcedimiento(document.getElementById("numeroProcedimiento").value))
 							error += "<siga:Idioma key='gratuita.procedimientos.numero.formato'/>"+ '\n';
 					}
-				<% } %>
+				}
 				
 				
 				if(error!=""){
@@ -488,28 +476,9 @@
 				}
 		 	<% } %>
 		 	
-		 		
+
 		 	
-		 	<% if (ejisActivo>0) { %>		 	
-				if(document.getElementById("numeroProcedimiento").value != "" || document.getElementById("anioProcedimiento").value != "") {
-					if(document.getElementById("numeroProcedimiento").value == "" || !validaProcedimiento(document.getElementById("numeroProcedimiento").value))
-						error += "<siga:Idioma key='gratuita.procedimientos.numero.formato.ejis'/>"+ '\n';
-						
-					if(document.getElementById("anioProcedimiento").value == "" || !validarAnioProcedimiento(document.getElementById("anioProcedimiento").value))	
-						error += "<siga:Idioma key='gratuita.procedimientos.anio.formato'/>"+ '\n';
-						
-					if(error!="" && document.forms[0].estadoOriginal.value != 'F'){
-						alert(error);
-						fin();
-						return false;
-					}	
-				}
-				
-				
-				
-				
-			
-		 	<% } %>
+		 	
 		 	
 			var estado = trim(document.forms[0].estado.value); // Cogemos el estado de la designa del formulario
 			var estadoOriginal = trim(document.forms[0].estadoOriginal.value); // Cogemos el estado original 
@@ -579,12 +548,29 @@
 		 	}
 			var nigAux = document.getElementById("nig").value;
 			nigAux = formateaNig(nigAux);
-			if(!validarNig(nigAux)&& document.forms[0].estadoOriginal.value != 'F'){	
-				alert("<siga:Idioma key='gratuita.nig.formato'/>");
-				fin();
-				return false;
+			
+			valueNumProcedimiento = document.getElementById("numeroProcedimiento").value;
+			objectConsejo = document.getElementById("idConsejo");
+			valueEjisActivo = document.getElementById("ejisActivo").value;
+			if((objectConsejo && objectConsejo.value ==IDINSTITUCION_CONSEJO_ANDALUZ) || valueEjisActivo=='1'){
+				error = validarFormatosNigNumProc(nigAux,valueNumProcedimiento,document.getElementById("anioProcedimiento"),valueEjisActivo,objectConsejo);
+				if(valueNumProcedimiento!='' && document.getElementById("anioProcedimiento").value ==''){
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.operarEJG.literal.anio' />"+"\n";
 					
+				}
+				if(valueNumProcedimiento=='' && document.getElementById("anioProcedimiento").value !=''){
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.informeJustificacionMasiva.literal.numeroProcedimiento' />"+"\n";
+				}
+				if(error!=''){
+					if(valueEjisActivo=='0' || document.forms[0].estadoOriginal.value != 'F'){
+						fin();
+						alert(error);
+						return false;
+					}
+				}
+				formateaNumProcedimiento(valueNumProcedimiento,valueEjisActivo,objectConsejo);
 			}
+			
 			document.getElementById("nig").value = nigAux;
 			document.forms[0].nig.value = nigAux; 
 			
@@ -593,6 +579,27 @@
 			document.forms[0].modo.value="modificar";
 			document.forms[0].target="submitArea";
 			document.forms[0].submit();
+		}
+		function formateaNumProcedimiento(valueNumProcedimiento,valueEjisActivo,objectConsejo){
+			if(objectConsejo && objectConsejo.value==IDINSTITUCION_CONSEJO_ANDALUZ){
+				var numProcedimientoArray = valueNumProcedimiento.split('.');
+				numProcedimiento = numProcedimientoArray[0];
+				if(numProcedimiento && numProcedimiento!=''){
+					numProcedimiento = pad(numProcedimiento,5,false);
+					finNumProcedimiento = numProcedimientoArray[1]; 
+					if(finNumProcedimiento){
+						numProcedimiento = numProcedimiento+"."+pad(finNumProcedimiento,2,false);
+					}
+					document.getElementById("numeroProcedimiento").value = numProcedimiento;
+				}
+				
+			}else if(valueEjisActivo=='1'){
+				if(valueNumProcedimiento!=''){
+					numProcedimiento = pad(valueNumProcedimiento,7,false);
+					document.getElementById("numeroProcedimiento").value = numProcedimiento;
+				}
+			
+			}
 		}
 		
 		function accionAnular() {	
@@ -684,6 +691,16 @@
 			}
 			jQuery("#nig").mask("AAAAA AA A AAAA AAAAAAA");
 			jQuery("#nig").keyup();	
+			
+			if(document.getElementById("idConsejo") && document.getElementById("idConsejo").value==IDINSTITUCION_CONSEJO_ANDALUZ){
+				jQuery("#numeroProcedimiento").mask("99999.99");
+				jQuery("#numeroProcedimiento").keyup();	
+			}else if(document.getElementById("ejisActivo").value=='1'){
+				jQuery("#numeroProcedimiento").mask("9999999");
+				jQuery("#numeroProcedimiento").keyup();
+				
+			}
+			
 		});	
 		
 		function accionCerrar() {
@@ -771,6 +788,10 @@
 
 <!-- Comienzo del formulario con los campos -->
 <table class="tablaCentralCampos" height="420" align="center" >
+	<bean:define id="usrBean" name="USRBEAN" scope="session" type="com.atos.utils.UsrBean" />
+	<c:set var="IDINSTITUCION_CONSEJO_ANDALUZ" value="<%=AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ%>" />
+	<input type="hidden" id ="idConsejo" value = "${usrBean.idConsejo}"/>
+	<input type="hidden" id ="ejisActivo" value = "${EJIS_ACTIVO}"/>
 	<html:form action="JGR_Designas.do" method="POST" target="mainWorkArea">
 		<html:hidden name="MaestroDesignasForm" property="modo"  styleId="modo" />
 		<html:hidden name="MaestroDesignasForm" property="idInstitucion"  styleId="idInstitucion" value="<%=idInstitucion%>"/>
@@ -810,9 +831,7 @@
 								<input type="text" class="boxConsulta" value="<%=nume_colegiado%>  <%=nombre_letrado%>" readOnly style="width:500px">
 							</td>
 						</tr>
-					</table>
 					
-					<table class="tablaCampos" align="center" cellpadding="0" cellpadding="0" width="100%" border="0">
 						<tr>
 							<td class="labelText">
 								<siga:Idioma key="gratuita.busquedaSOJ.literal.turno" />
@@ -950,30 +969,51 @@
 							<td colspan="7">
 								<table align="center" cellpadding="0" cellpadding="0" width="100%" border="0">
 									<tr>
-										 <%if (ejisActivo>0){%>																				
-												<td style="vertical-align: middle;" class="labelText">						
-													<% if (!modo.equalsIgnoreCase("ver")) { %> 
-														<html:text name="MaestroDesignasForm" 
-														property="numeroProcedimiento" size="7" maxlength="7" styleClass="box" value="<%=numeroProcedimiento%>" />/<html:text
-														 name="MaestroDesignasForm" property="anioProcedimiento" size="4" maxlength="4" styleClass="box" value="<%=anioProcedimiento%>" />
-														 
-													<% } else { %> 
-														<html:text
-														 name="MaestroDesignasForm" property="numeroProcedimiento"  size="7" maxlength="7" 
-														 styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true" />/<html:text name="MaestroDesignasForm" property="anioProcedimiento" size="4" maxlength="4" styleClass="boxConsulta" value="<%=anioProcedimiento%>"  readonly="true" />
-													<% } %>	
-												</td>
-												
-										<% } else { %> 	
+										 <c:choose>
+										<c:when	test="${EJIS_ACTIVO=='1'}">
 										
-												<td style="vertical-align: middle;">
-													<% if (!modo.equalsIgnoreCase("ver")) { %> 
-														<html:text name="MaestroDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="<%=maxLenghtProc%>" styleClass="box" value="<%=numeroProcedimiento%>" /> 
-													<% } else { %> 
-														<html:text name="MaestroDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="<%=maxLenghtProc%>" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true" /> 
-													<% } %>	
-												</td>									
-										<% } %>		
+											<td style="vertical-align: middle;" class="labelText">						
+														<% if (!modo.equalsIgnoreCase("ver")) { %> 
+															<html:text name="MaestroDesignasForm" 
+															property="numeroProcedimiento" styleId="numeroProcedimiento" size="7" maxlength="7" styleClass="box" value="<%=numeroProcedimiento%>" />/<html:text
+															 name="MaestroDesignasForm" property="anioProcedimiento" size="4" maxlength="4" styleClass="box" value="<%=anioProcedimiento%>" />
+															 
+														<% } else { %> 
+															<html:text
+															 name="MaestroDesignasForm" styleId="numeroProcedimiento" property="numeroProcedimiento"  size="7" maxlength="7" 
+															 styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true" />/<html:text name="MaestroDesignasForm" property="anioProcedimiento" size="4" maxlength="4" styleClass="boxConsulta" value="<%=anioProcedimiento%>"  readonly="true" />
+														<% } %>	
+													</td>
+		
+										</c:when>
+										<c:when	test="${usrBean.idConsejo==IDINSTITUCION_CONSEJO_ANDALUZ}">
+										
+											<td style="vertical-align: middle;" class="labelText">						
+														<% if (!modo.equalsIgnoreCase("ver")) { %> 
+															<html:text name="MaestroDesignasForm" 
+															property="numeroProcedimiento" styleId="numeroProcedimiento" size="8" maxlength="8" styleClass="box" value="<%=numeroProcedimiento%>" />/<html:text
+															 name="MaestroDesignasForm" property="anioProcedimiento" size="4" maxlength="4" styleClass="box" value="<%=anioProcedimiento%>" />
+															 
+														<% } else { %> 
+															<html:text
+															 name="MaestroDesignasForm" styleId="numeroProcedimiento" property="numeroProcedimiento"  size="7" maxlength="8" 
+															 styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true" />/<html:text name="MaestroDesignasForm" property="anioProcedimiento" size="4" maxlength="4" styleClass="boxConsulta" value="<%=anioProcedimiento%>"  readonly="true" />
+														<% } %>	
+													</td>
+		
+										</c:when>
+									
+										<c:otherwise>
+											<td style="vertical-align: middle;">
+														<% if (!modo.equalsIgnoreCase("ver")) { %> 
+															<html:text name="MaestroDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="<%=maxLenghtProc%>" styleClass="box" value="<%=numeroProcedimiento%>" /> 
+														<% } else { %> 
+															<html:text name="MaestroDesignasForm" property="numeroProcedimiento" style="width:100" maxlength="<%=maxLenghtProc%>" styleClass="boxConsulta" value="<%=numeroProcedimiento%>" readonly="true" /> 
+														<% } %>	
+												</td>	
+										</c:otherwise>
+									</c:choose>
+									
 							
 										<td colspan="6"><!-- Busqueda automatica de juzgados--> 						
 											<siga:ConjCampos leyenda="gratuita.mantenimientoTablasMaestra.literal.juzgado">
@@ -993,7 +1033,7 @@
 																		<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado,idturno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500" childrenIds="idProcedimiento,idPretension" readonly="<%=modoVerReadOnly%>"/>
 																	</td> 
 															</tr>
-													<% } else if(pcajgActivo == CajgConfiguracion.TIPO_CAJG_TXT_ALCALA){ %>														
+													<% } else if(pcajgActivo == CajgConfiguracion.TIPO_CAJG_TXT_ALCALA|| usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ){ %>														
 															<tr>
 																<% if (!modo.equalsIgnoreCase("ver")) { %>
 																	<td class="labelText">
@@ -1055,7 +1095,7 @@
 						<tr>
 							<td class="labelText">
 							
-							<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) { %>
+							<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA|| usr.getIdConsejo()== AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ) { %>
 								 	<siga:Idioma key='gratuita.actuacionesDesigna.literal.pretensiones'/>
 									<% if (obligatorioProcedimiento){ %>
 										<%= asterisco %>
@@ -1073,7 +1113,7 @@
 							
 							<td colspan="7">
 								<%-- Procedimiento --%> 
-								<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) { %>
+								<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA|| usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ) { %>
 								 	<siga:Select id="idPretension" queryId="getPretensionesAlcala" parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>" queryParamId="idpretension" selectedIds="<%=pretensionesSel %>" childrenIds="idProcedimiento" width="380" readOnly="<%=modoVerReadOnly%>"  />
 								<%}else{%>
 									<siga:Select id="idProcedimiento" queryId="<%=comboModulos%>" parentQueryParamIds="<%=comboModulosParentQueryIds%>" params="<%=idProcedimientoParamsJSON%>" selectedIds="<%=procedimientoSel%>" disabled="<%=modoVerReadOnly%>" width="750"/>
@@ -1106,7 +1146,7 @@
 								
 							
 								
-								<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) { %>
+								<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA|| usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ) { %>
 								 	<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo" />
 									<%if (obligatorioModulo){ %>
 										<%= asterisco %>
@@ -1122,7 +1162,7 @@
 							</td>				
 					
 							<td  colspan="7">
-							<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA) { %>
+							<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA|| usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ) { %>
 								<siga:Select id="idProcedimiento" queryId="getProcedimientosEnVigenciaAlcala" parentQueryParamIds="<%=comboModulosParentQueryIds%>" params="<%=idProcedimientoParamsJSON%>" selectedIds="<%=procedimientoSel%>" disabled="<%=modoVerReadOnly%>" width="750"/>
 								 	
 								<%}else{%>

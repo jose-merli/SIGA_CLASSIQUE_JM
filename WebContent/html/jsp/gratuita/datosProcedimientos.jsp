@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import="org.redabogacia.sigaservices.app.AppConstants"%>
 <%@page import="com.siga.ws.CajgConfiguracion"%>
 <html>
 <head>
@@ -80,6 +81,9 @@
 </head>
 
 <body>
+<bean:define id="usrBean" name="USRBEAN" scope="session" type="com.atos.utils.UsrBean" />
+<input type="hidden" id ="idConsejo" value = "${usrBean.idConsejo}"/>
+
 	<table class="tablaTitulo" cellspacing="0">
 		<tr>
 			<td id="titulo" class="titulosPeq">
@@ -196,7 +200,7 @@
 	<siga:ConjBotonesAccion botones="G,C" clase="botonesSeguido" modal="M" titulo="gratuita.procedimientos.literal.acreditaciones"/>
 <c:set var="fixedHeight" value="92%" />
 <%
- 	if (request.getAttribute("PCAJG_TIPO")!= null && request.getAttribute("PCAJG_TIPO").toString().equals(""+CajgConfiguracion.TIPO_CAJG_TXT_ALCALA)) {
+ 	if (usrBean.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ ||( request.getAttribute("PCAJG_TIPO")!= null && request.getAttribute("PCAJG_TIPO").toString().equals(""+CajgConfiguracion.TIPO_CAJG_TXT_ALCALA))) {
 %>
 	<c:set var="fixedHeight" value="50%" />
 <%} %>
@@ -273,7 +277,7 @@
 %>
 
 <%
- 	if (request.getAttribute("PCAJG_TIPO")!= null && request.getAttribute("PCAJG_TIPO").toString().equals(""+CajgConfiguracion.TIPO_CAJG_TXT_ALCALA)) {
+ 	if (usrBean.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ ||( request.getAttribute("PCAJG_TIPO")!= null && request.getAttribute("PCAJG_TIPO").toString().equals(""+CajgConfiguracion.TIPO_CAJG_TXT_ALCALA))) {
 %>
 
 <table  class="tablaCentralCamposMedia" cellspacing=0 cellpadding=0 align="center" border="0">

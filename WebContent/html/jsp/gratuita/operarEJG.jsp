@@ -389,6 +389,7 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validacionStruts.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/validation.js'/>"></script>  
+	<script type="text/javascript" src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>"></script>
 	
 	<script type="text/javascript">
 
@@ -482,7 +483,8 @@
 
 
 <body onload="cargarComboTipoColegio();">
-
+	<bean:define id="usrBean" name="USRBEAN" scope="session" type="com.atos.utils.UsrBean" />
+	<input type="hidden" id ="idConsejo" value = "${usrBean.idConsejo}"/>
 <table class="tablaTitulo" cellspacing="0">
 	<tr>
 		<td id="titulo" class="titulitosDatos">
@@ -1207,12 +1209,19 @@
 		 	
 		  	var nigAux = document.getElementById("nig2").value;
 		  	nigAux = formateaNig(nigAux);
-		  	if(!validarNig(nigAux)){	
-		  		alert("<siga:Idioma key='gratuita.nig.formato'/>");
-		  		fin();
-		  		return false;
-		  			
-		  	}
+		  	var idConsejo = '';
+			if(document.getElementById("idConsejo"))
+				idConsejo = document.getElementById("idConsejo").value;
+			if(!validarNig(nigAux,idConsejo)){	
+				formato = '<siga:Idioma key="gratuita.nig.formato.general"/>';
+				if(idConsejo==IDINSTITUCION_CONSEJO_ANDALUZ){
+					formato = '<siga:Idioma key="gratuita.nig.formato.cadeca"/>';
+				}
+				fin();
+				alert("<siga:Idioma key='gratuita.nig.formato' arg0='"+formato+"' />");
+				return false;
+					
+		 	}
 		  	document.forms[0].nig2.value = nigAux; 
 		  	
 		 	if(document.forms[0].fechaAperturaEJG.value!=""){

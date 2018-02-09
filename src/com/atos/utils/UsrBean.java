@@ -64,6 +64,15 @@ public class UsrBean implements Serializable {
 	private Short[] institucionesComision;
 	private Short idInstitucionComision;
 	private boolean entradaCombos=false;
+	private Integer idConsejo;
+
+	public Integer getIdConsejo() {
+		return idConsejo;
+	}
+
+	public void setIdConsejo(Integer idConsejo) {
+		this.idConsejo = idConsejo;
+	}
 
 	/**
 	 * @return the idInstitucionComision

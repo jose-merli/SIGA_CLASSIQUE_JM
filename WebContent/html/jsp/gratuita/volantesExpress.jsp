@@ -281,6 +281,8 @@
 				alert ('<siga:Idioma key="gratuita.volantesExpres.mensaje.seleccionarColegiado"/>');
 				return false;
 			}
+			
+			
 			return true;
 		}
 		
@@ -694,6 +696,32 @@
 					alert ("'"+ campo + "' " + obligatorio);
 					return false;
 				}
+			    valueNumProcedimiento = document.getElementById("diligencia_"+fila).value;
+				objectConsejo = document.getElementById("idConsejo");
+				
+				if((objectConsejo && objectConsejo.value ==IDINSTITUCION_CONSEJO_ANDALUZ)){
+					var objectAnioProcedimiento =  new Object();
+					if(valueNumProcedimiento!=''){ 
+						arrayNumProcedimiento = valueNumProcedimiento.split("/");
+						if(arrayNumProcedimiento.length<2){
+							error = "<siga:Idioma key='gratuita.numProcedimiento.formato' arg0='gratuita.numProcedimiento.formato.numeroanio' />";
+							fin();
+							alert(error);
+							return false;
+							
+						}
+						valueNumProcedimiento = arrayNumProcedimiento[0];
+						objectAnioProcedimiento.value = arrayNumProcedimiento[1];
+						error = validarFormatosNigNumProc('',valueNumProcedimiento,objectAnioProcedimiento,'0',objectConsejo);
+					}
+					if(error!=''){
+						fin();
+						alert(error);
+						return false;
+						
+					}
+					formateaNumProcedimiento(fila,valueNumProcedimiento,objectAnioProcedimiento.value,objectConsejo);
+				}
 			}
 			if (!document.getElementById("nombre_" + fila).value) {
 				campo = "<siga:Idioma key='gratuita.volantesExpres.literal.asistido'/>";
@@ -721,6 +749,21 @@
 				}
 	
 			return isValidado;
+		}
+		
+		function formateaNumProcedimiento(fila,valueNumProcedimiento,valueAnioProcedimiento,objectConsejo){
+			if(objectConsejo && objectConsejo.value==IDINSTITUCION_CONSEJO_ANDALUZ){
+				var numProcedimientoArray = valueNumProcedimiento.split('.');
+				numProcedimiento = numProcedimientoArray[0];
+				if(numProcedimiento && numProcedimiento!=''){
+					numProcedimiento = pad(numProcedimiento,5,false);
+					finNumProcedimiento = numProcedimientoArray[1]; 
+					if(finNumProcedimiento){
+						numProcedimiento = numProcedimiento+"."+pad(finNumProcedimiento,2,false);
+					}
+					document.getElementById("diligencia_"+fila).value = numProcedimiento+"/"+valueAnioProcedimiento;
+				}
+			}
 		}
 		
 		function cambiarComisaria(fila) {
@@ -841,7 +884,8 @@
 </head>
 
 <body onload="init();">
-
+<bean:define id="usrBean" name="USRBEAN" scope="session" type="com.atos.utils.UsrBean" />
+<input type="hidden" id ="idConsejo" value = "${usrBean.idConsejo}"/>
 <bean:define id="fechaJustificacion" name="VolantesExpressForm" property="fechaJustificacion" type="String" />
 <!-- INICIO: CAMPOS DE BUSQUEDA-->
 <input type="hidden" id = "idTipoAsistenciaColegioSelected" value = ""/>

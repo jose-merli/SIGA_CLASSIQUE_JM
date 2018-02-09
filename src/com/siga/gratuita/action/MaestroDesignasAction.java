@@ -812,10 +812,12 @@ public class MaestroDesignasAction extends MasterAction {
 						int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 						String pretensionSel=(String)datosEntrada.get("IDPRETENSION");
 						
-						if(valorPcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA){
-							HashMap<String, String> hmPretensionSel = new ObjectMapper().readValue(pretensionSel, HashMap.class);
-							String idPretension = hmPretensionSel.get("idpretension");
-							designaNueva.put(ScsDesignaBean.C_IDPRETENSION, idPretension);
+						if(valorPcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA || usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ){
+							if(pretensionSel!=null && !pretensionSel.equals("")){
+								HashMap<String, String> hmPretensionSel = new ObjectMapper().readValue(pretensionSel, HashMap.class);
+								String idPretension = hmPretensionSel.get("idpretension");
+								designaNueva.put(ScsDesignaBean.C_IDPRETENSION, idPretension);
+							}
 						}else{
 						
 							if (pretensionSel!=null){

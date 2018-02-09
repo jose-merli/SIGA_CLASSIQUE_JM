@@ -1,4 +1,5 @@
 <!-- validacionSIGA.jsp -->
+<%@page import="org.redabogacia.sigaservices.app.AppConstants"%>
 <%@ page contentType="text/javascript" language="java" errorPage=""%>
 <%@ page pageEncoding="ISO-8859-1"%>
 
@@ -31,7 +32,11 @@
 	// mensajes
 	String mensajeCifNif = UtilidadesString.getMensajeIdioma(usrbean, "messages.nif.comprobacion.digitos.error");
 	String mensajeNIE = UtilidadesString.getMensajeIdioma(usrbean, "messages.nie.comprobacion.digitos.error");
+	
+	
 %>
+var IDINSTITUCION_CONSEJO_VALENCIANO = "<%=AppConstants.IDINSTITUCION_CONSEJO_VALENCIANO%>";
+var IDINSTITUCION_CONSEJO_ANDALUZ = "<%=AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ%>";
 var mensajeCifNif="<%=mensajeCifNif %>";
 var mensajeNIE="<%=mensajeNIE%>";
 var mensajetelef1="<siga:Idioma key="certificados.solicitudes.literal.longitudTelef"/>";
@@ -728,5 +733,91 @@ function getDigitoControl(valor){
 		
 		return true;  
 	}	
+	
+function validarNig(nig,consejo){
+	//Esto es para la validacion de CADECA
+	if(consejo && consejo==IDINSTITUCION_CONSEJO_ANDALUZ){
+		if(nig!=''){
+			var objRegExp  = /^[0-9]{7}[S,C,P,O,I,V,6,8,1,2]{1}(19|20)\d{2}[0-9]{7}$/;
+			var ret = objRegExp.test(nig);
+			return ret;
+		}
+		else
+			return true;
+	}else{
+		if (nig.length == 19){
+			var objRegExp  = /^([a-zA-Z0-9]{19})?$/;
+			var ret = objRegExp.test(nig);
+			return ret;
+		}else{
+			return true;
+		}
+	}
+}
+function validarAnio(anio){
+	if(anio!=''){
+		var objRegExp  = /^(19|20)\d{2}$/;
+		var ret = objRegExp.test(anio);
+		return ret;
+	}else
+		return true;
+	
+	
+}
+function validaNumerico(numero, tamanio){
+	expresion = "^[0-9]{0,";
+	expresion += tamanio;
+	expresion += "}$"; 
+	var objRegExp  = new RegExp(expresion);
+	var ret = objRegExp.test(numero);
+	return ret;
+	
+}
+function validarNumeroProcedimiento(valueNumProcedimiento,valueEjisActivo,objectConsejo){
+	validar = true;
+	
+	if(objectConsejo && objectConsejo.value==IDINSTITUCION_CONSEJO_ANDALUZ){
+		var numProcedimientoArray = valueNumProcedimiento.split('.');
+		if(validaNumerico(numProcedimientoArray[0], 5)){
+			resto = numProcedimientoArray[1]; 
+			if(resto){
+				validar = validaNumerico(resto, 2);
+			}
+		}else{
+			validar = false;
+		}
+	}else if(valueEjisActivo=='1'){
+		validar = validaNumerico(valueNumProcedimiento,7);
+	
+	}
+	return validar;
+}
+function validarFormatosNigNumProc(valueNig,valueNumProcedimiento,objectAnioProcedimiento,valueEjisActivo,objectIdConsejo){
+	error = '';
+	formatoNig = '<siga:Idioma key="gratuita.nig.formato.general"/>';
+	formatoNumProcedimiento = '<siga:Idioma key="gratuita.numProcedimiento.formato.ejis"/>';
+	var idConsejo = '';
+	if(objectIdConsejo){
+		idConsejo = objectIdConsejo.value;
+		if(idConsejo==IDINSTITUCION_CONSEJO_ANDALUZ){
+			formatoNig = '<siga:Idioma key="gratuita.nig.formato.cadeca"/>';
+			formatoNumProcedimiento = '<siga:Idioma key="gratuita.numProcedimiento.formato.cadeca"/>';
+			
+		}
+	}
+	//avlidamos el nig
+	if(!validarNig(valueNig,idConsejo)){	
+		error += "<siga:Idioma key='gratuita.nig.formato' arg0='"+formatoNig+"' />"+"\n"; 
+ 	}
+	//Validamos el año de priocedimineto si esta visible
+	if(objectAnioProcedimiento && !validarAnio(objectAnioProcedimiento.value)){
+		error += "<siga:Idioma key='fecha.error.anio' />"+"\n";
+	}
+	
+	if(!validarNumeroProcedimiento(valueNumProcedimiento,valueEjisActivo,objectIdConsejo)){
+		error += "<siga:Idioma key='gratuita.numProcedimiento.formato' arg0='"+formatoNumProcedimiento+"' />"+"\n";
+	}
+	return error;
+}
 
   

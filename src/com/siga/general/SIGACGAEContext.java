@@ -15,13 +15,12 @@ import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.action.ActionServlet;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.MODULO;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.CenInstitucion;
-import org.redabogacia.sigaservices.app.autogen.model.EstUserRegistry;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
-import org.redabogacia.sigaservices.app.services.est.EstadisticasUserRegistryService;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.util.PropertyReader;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
@@ -60,7 +59,6 @@ import com.siga.beans.CenInstitucionLenguajesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.EstUserRegistryAdm;
-import com.siga.beans.EstUserRegistryBean;
 import com.siga.beans.GenParametrosAdm;
 
 import es.satec.businessManager.BusinessManager;
@@ -281,6 +279,11 @@ System.setProperties(properties);
 			CenInstitucionService cenInstitucionService = (CenInstitucionService)bm.getService(CenInstitucionService.class);
 			CenInstitucion cenInstitucion = new CenInstitucion();
 			cenInstitucion.setIdinstitucion(Short.valueOf(bean.getLocation()));
+			cenInstitucion = cenInstitucionService.get(cenInstitucion);
+			Integer idConsejo = AppConstants.IDINSTITUCION_2000;
+			if(cenInstitucion.getCenInstIdinstitucion()!=null)
+				idConsejo = cenInstitucion.getCenInstIdinstitucion().intValue();
+			bean.setIdConsejo(idConsejo);
 			CenInstitucion comision =  cenInstitucionService.getComision(cenInstitucion);
 			bean.setIdInstitucionComision(comision.getIdinstitucion());
 			if(bean.isComision()){

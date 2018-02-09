@@ -1,5 +1,5 @@
 <!DOCTYPE html >
-
+<%@page import="org.redabogacia.sigaservices.app.AppConstants"%>
 <html>
 <head>
 <!--listadoPaginadoInformeJustificacion.jsp -->
@@ -977,6 +977,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 
 <body onload="inicio();ajustarAltoResultados();">
 
+	<c:set var="IDINSTITUCION_CONSEJO_ANDALUZ" value="<%=AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ%>" />
+	<input type="hidden" id ="idConsejo" value = "${usrBean.idConsejo}"/>
 	<bean:define id="usrBean" name="USRBEAN" scope="session" type="com.atos.utils.UsrBean"></bean:define>
 	<bean:define id="informeUnico" name="informeUnico" scope="request"></bean:define>
 	<bean:define id="informeUnicoResolucion" name="informeUnicoResolucion" scope="request"></bean:define>
@@ -1031,7 +1033,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		<input type="hidden" name="tablaDatosDinamicosD" id="tablaDatosDinamicosD" />
 		<input type="hidden" name="actionModal" value="" />
 		<bean:define id="EJIS_ACTIVO" name="EJIS_ACTIVO" scope="request" />
-		<input type="hidden" id="EJIS_ACTIVO" value="${EJIS_ACTIVO}" />
+		<input type="hidden" id="ejisActivo" value="${EJIS_ACTIVO}"/>
 
 		<c:choose>
 			<c:when test="${InformeJustificacionMasivaForm.fichaColegial==true}">
@@ -2384,6 +2386,9 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 						<label>/</label>
 						<input type="text" id="dialogAnioProc" maxlength="4" size="4" />
 					</c:when>
+	   				<c:when test="${usrBean.idConsejo==IDINSTITUCION_CONSEJO_ANDALUZ}">
+	   					<input type="text" id="dialogNumProc" maxlength="8" size="8" /><label>/</label><input type="text" id="dialogAnioProc" maxlength="4" size="4" />
+	   				</c:when>
 					<c:otherwise>
 						<input type="text" id="dialogNumProc" maxlength="20" size="20" />
 					</c:otherwise>
@@ -2464,7 +2469,16 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 	<script type="text/javascript">
 	
 	jQuery("#dialogNig").mask("AAAAA AA A AAAA AAAAAAA");
-	jQuery("#dialogNig").keyup();	
+	jQuery("#dialogNig").keyup();
+	if(document.getElementById("idConsejo") && document.getElementById("idConsejo").value==IDINSTITUCION_CONSEJO_ANDALUZ){
+		jQuery("#dialogNumProc").mask("99999.99");
+		jQuery("#dialogNumProc").keyup();	
+	}else if(document.getElementById("ejisActivo").value=='1'){
+		jQuery("#dialogNumProc").mask("9999999");
+		jQuery("#dialogNumProc").keyup();
+		
+	}
+	
 	
 	function accionEditarPreActuacion(imgDivActuacion,mostrarDatosDesigna){
 
@@ -2683,33 +2697,46 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 		if(compararFecha(valFechaActuacion,fechaDesigna) ==2){
 			error += "<siga:Idioma key='messages.error.acreditacionFechaNoValida' />"+ '\n';
 		}
+		valNig = formateaNig(valNig);
 		if(valNigNumProcRequired=='1'){
 			if (valNumProc=='') {
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento'/>"+ '\n';
 			}
-			if(valNumProc!='' &&  valAnioProc &&  valAnioProc==""){
+			if(valNumProc!='' &&  document.getElementById("dialogAnioProc") &&  valAnioProc==""){
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.mantenimientoTablasMaestra.literal.numeroProcedimiento'/>"+ '\n';
 				
 			}
-			valNig = formateaNig(valNig);
 			if (valNig=='') {
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.mantAsistencias.literal.NIG'/>"+ '\n';
 			}
-			if(!validarNig(valNig)){	
-				error += "<siga:Idioma key='gratuita.nig.formato'/>"+ '\n';
-			}
+			
 		}
-		//var fechaDesigna = document.getElementById("fechaDesigna_"+index).value;
-		
-		
-		
-		
+		valueNumProcedimiento = valNumProc;
+		objectConsejo = document.getElementById("idConsejo");
+		valueEjisActivo = document.getElementById("ejisActivo").value;
+		if((objectConsejo && objectConsejo.value ==IDINSTITUCION_CONSEJO_ANDALUZ) || valueEjisActivo=='1'){
+			error += validarFormatosNigNumProc(valNig,valueNumProcedimiento,document.getElementById("dialogAnioProc"),valueEjisActivo,objectConsejo);
+			if(valNigNumProcRequired!='1' && valueNumProcedimiento!='' && document.getElementById("dialogAnioProc").value ==''){
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.operarEJG.literal.anio' />"+"\n";
+				
+			}
+			if(valNigNumProcRequired!='1' && valueNumProcedimiento=='' && document.getElementById("dialogAnioProc").value !=''){
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.informeJustificacionMasiva.literal.numeroProcedimiento' />"+"\n";
+			}
+			if(error!=''){
+				fin();
+				alert(error);
+				return false;
+				
+			}
+			formateaNumProcedimiento(valueNumProcedimiento,valueEjisActivo,objectConsejo);
+			valNumProc = jQuery('#dialogNumProc').val();
+		}
 		if (error!=''){
 			fin();
 			alert(error);
 			return false;
 		}
-		
 		
 		
 		jQuery("#fechaact_"+cadenaAcreditacion).val(valFechaActuacion);
@@ -2724,6 +2751,29 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 
 	
 	}
+	
+	function formateaNumProcedimiento(valueNumProcedimiento,valueEjisActivo,objectConsejo){
+		if(objectConsejo && objectConsejo.value==IDINSTITUCION_CONSEJO_ANDALUZ){
+			var numProcedimientoArray = valueNumProcedimiento.split('.');
+			numProcedimiento = numProcedimientoArray[0];
+			if(numProcedimiento && numProcedimiento!=''){
+				numProcedimiento = pad(numProcedimiento,5,false);
+				finNumProcedimiento = numProcedimientoArray[1]; 
+				if(finNumProcedimiento){
+					numProcedimiento = numProcedimiento+"."+pad(finNumProcedimiento,2,false);
+				}
+				document.getElementById("dialogNumProc").value = numProcedimiento;
+			}
+			
+		}else if(valueEjisActivo=='1'){
+			if(valueNumProcedimiento!=''){
+				numProcedimiento = pad(valueNumProcedimiento,7,false);
+				document.getElementById("dialogNumProc").value = numProcedimiento;
+			}
+		
+		}
+	}
+	
 	function closeDialog(dialogo){
 		jQuery("#"+dialogo).dialog("close"); 
 	}
