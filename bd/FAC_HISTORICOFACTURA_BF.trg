@@ -1,4 +1,3 @@
--- Revisa si se han introducido correctamente los datos en la tabla Fac_Factura
 CREATE OR REPLACE TRIGGER FAC_HISTORICOFACTURA_BF
   BEFORE Insert ON USCGAE_DESA.FAC_HISTORICOFACTURA
   REFERENCING NEW AS NEW
@@ -56,8 +55,7 @@ Begin
         Raise_Application_Error(-20005, 'La forma de pago debería ser por banco');
       Elsif (:New.Idcuenta Is Null And :New.Idcuentadeudor Is Null) Then
         Raise_Application_Error(-20005, 'En un pago por banco debe añadirse cuenta');
-      Elsif ((:New.Idcuentadeudor Is Not Null And :New.Idpersonadeudor Is Null) Or
-            (:New.Idcuentadeudor Is Null And :New.Idpersonadeudor Is Not Null)) Then
+      Elsif (:New.Idcuentadeudor Is Not Null And :New.Idpersonadeudor Is Null) Then
         Raise_Application_Error(-20005, 'En un pago por banco con deudor debe añadirse persona y cuenta');
       Elsif (:New.Imptotalpagadoporbanco <= 0 Or :New.Imptotalpagado <= 0) Then
         Raise_Application_Error(-20005, 'Debe indicarse importe de pago por banco');

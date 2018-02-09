@@ -184,7 +184,7 @@ public class FacHistoricoFacturaAdm extends MasterBeanAdministrador {
 			sql="  INSERT INTO "+nombreTabla+" (IDINSTITUCION,IDFACTURA, IDHISTORICO,FECHAMODIFICACION, USUMODIFICACION, IDTIPOACCION, IDFORMAPAGO, "+
 											 "IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA," +
 											 " IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO, IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, ESTADO,IDRENEGOCIACION,IDABONO,COMISIONIDFACTURA) " +
-											 " VALUES ("+factura.getIdInstitucion()+","+factura.getIdFactura()+","+"SEQ_FAC_HISTORIAL.NEXTVAL,"+factura.getFechaModificacion()+","+
+											 " VALUES ("+factura.getIdInstitucion()+","+factura.getIdFactura()+","+"nvl((select max(his2.IDHISTORICO) from "+nombreTabla+" his2 where his2.IDINSTITUCION = "+factura.getIdInstitucion()+" and his2.IDFACTURA = "+factura.getIdFactura()+"), 0)+1,"+factura.getFechaModificacion()+","+
 											 factura.getUsuModificacion()+","+factura.getIdTipoAccion()+","+factura.getIdFormaPago()+","+factura.getIdPersona()+","+factura.getIdCuenta()+","+
 											 factura.getIdPersonaDeudor()+","+factura.getIdCuentaDeudor()+","+factura.getImpTotalAnticipado()+","+factura.getImpTotalPagadoPorCaja()+","+
 											 factura.getImpTotalPagadoSoloCaja()+","+factura.getImpTotalPagadoSoloTarjeta()+","+factura.getImpTotalPagadoPorBanco()+","+
@@ -239,7 +239,7 @@ public class FacHistoricoFacturaAdm extends MasterBeanAdministrador {
 											 if(comisionIdFactura !=null && !"".equalsIgnoreCase(comisionIdFactura)){
 												 sql+=",COMISIONIDFACTURA";
 											 }
-								   sql+= " )SELECT IDINSTITUCION, IDFACTURA,SEQ_FAC_HISTORIAL.NEXTVAL,SYSDATE,USUMODIFICACION,"+idTipoAccion+",IDFORMAPAGO, " +
+								   sql+= " )SELECT IDINSTITUCION, IDFACTURA,nvl((select max(his2.IDHISTORICO) from "+nombreTabla+" his2 where his2.IDINSTITUCION = FAC_FACTURA.IdInstitucion and his2.IDFACTURA = FAC_FACTURA.IdFactura), 0)+1,SYSDATE,USUMODIFICACION,"+idTipoAccion+",IDFORMAPAGO, " +
 										 " IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA, "+
 										 " IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO,IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, ESTADO";
 										   if(idPagoPorCaja !=null && idPagoPorCaja>0){

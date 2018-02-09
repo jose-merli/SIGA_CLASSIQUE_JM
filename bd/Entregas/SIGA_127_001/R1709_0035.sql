@@ -160,15 +160,6 @@ alter table FAC_HISTORICOFACTURA
   deferrable;
   
   
-create sequence SEQ_FAC_HISTORIAL
-minvalue 1
-maxvalue 9999
-increment by 1
-nocache
-cycle;
-  
-
-
 
 INSERT INTO Fac_Estadofactura (IDESTADO, DESCRIPCION,LENGUAJE) 
 VALUES (9,'facturacion.pagosFactura.estado.pendienteCobro',1);
@@ -221,8 +212,14 @@ alter table FAC_HISTORICOFACTURA
   references FAC_FACTURA (IDINSTITUCION, IDFACTURA)
   deferrable;
   
-  
-  
+create index SI_FAC_HISTORICOFACTURA on FAC_HISTORICOFACTURA (IDINSTITUCION, IDFACTURA);  
+create index SI_FAC_HISTORICOFACTURA2 on FAC_HISTORICOFACTURA (IDINSTITUCION, COMISIONIDFACTURA);
+
   PKG_SIGA_CARGOS
   PKG_SIGA_FACTURACION
   TRIGGER FAC_HISTORICOFACTURA_BF
+  
+Update Fac_Factura Fac Set Fac.Idcuentadeudor = Null
+ Where (Fac.Idcuentadeudor Is Not Null And Fac.Idpersonadeudor Is Null);
+
+  FAC_HISTORICOFACTURA_BF

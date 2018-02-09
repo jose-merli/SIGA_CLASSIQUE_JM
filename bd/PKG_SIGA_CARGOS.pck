@@ -1,3 +1,364 @@
+CREATE OR REPLACE PACKAGE PKG_SIGA_CARGOS IS
+
+    TYPE REG_DIRECCION IS RECORD(
+        DOMICILIO CEN_DIRECCIONES.DOMICILIO%TYPE,
+        CODIGOPOSTAL CEN_DIRECCIONES.CODIGOPOSTAL%TYPE,
+        PAIS_NOMBRE CEN_PAIS.NOMBRE%TYPE,
+        PAIS_ISO CEN_PAIS.COD_ISO%TYPE,
+        PAIS_ID CEN_PAIS.IDPAIS%TYPE,
+        PROVINCIA_NOMBRE CEN_PROVINCIAS.NOMBRE%TYPE,
+        PROVINCIA_ID CEN_PROVINCIAS.IDPROVINCIA%TYPE,
+        POBLACION_NOMBRE CEN_POBLACIONES.NOMBRE%TYPE,
+        POBLACION_ID CEN_POBLACIONES.IDPOBLACION%TYPE
+    );
+
+    TYPE REG_ACREEDOR IS RECORD(
+        NOMBRE CEN_INSTITUCION.NOMBRE%TYPE,
+        IDPERSONA CEN_INSTITUCION.IDPERSONA%TYPE,
+        NIF CEN_PERSONA.NIFCIF%TYPE,
+        CODIGOBANCO FAC_BANCOINSTITUCION.BANCOS_CODIGO%TYPE, -- CODIGOBANCO
+        ENTIDADBANCO FAC_BANCOINSTITUCION.COD_BANCO%TYPE, -- ENTIDADBANCO
+        OFICINABANCO FAC_BANCOINSTITUCION.COD_SUCURSAL%TYPE,
+        BANCO_IBAN FAC_BANCOINSTITUCION.IBAN%TYPE,
+        BANCO_BIC CEN_BANCOS.BIC%TYPE,
+        SUFIJO FAC_SUFIJO.SUFIJO%TYPE,
+        IDSUFIJO FAC_SUFIJO.IDSUFIJO%TYPE,
+        CONFIGFICHEROSESQUEMA FAC_BANCOINSTITUCION.CONFIGFICHEROSESQUEMA%TYPE, -- 0=ficheroCORE+COR1+B2B; 1=ficheroCORE+COR1 + ficheroB2B; 2=ficheroCORE + ficheroCOR1 + ficheroB2B
+        CONFIGFICHEROSSECUENCIA FAC_BANCOINSTITUCION.CONFIGFICHEROSSECUENCIA%TYPE, -- 0=ficheroFRST+RCUR; 1=ficheroFRST + ficheroRCUR; 2=ficheroTodoRCUR
+        CONFIGLUGARESQUEMASECUENCIA FAC_BANCOINSTITUCION.CONFIGLUGARESQUEMASECUENCIA%TYPE, -- 0=bloqueAcreedor; 1=registrosIndividuales
+        CONFIGCONCEPTOAMPLIADO FAC_BANCOINSTITUCION.CONFIGCONCEPTOAMPLIADO%TYPE,-- 0=Concepto140; 1=concepto640
+        TIPOSFICHEROS NUMBER,-- -1=Error; 0=Txt; 1=Txt+Xml; 2=Xml
+        IDPERSONASEPAINSTITUCION VARCHAR2(35), -- Identificador SEPA de la institucion
+        DIRECCION REG_DIRECCION
+    );
+
+    TYPE REG_FACTURA IS RECORD(
+        IDINSTITUCION CEN_MANDATOS_CUENTASBANCARIAS.IDINSTITUCION%TYPE,
+        IDMANDATO CEN_MANDATOS_CUENTASBANCARIAS.IDMANDATO%TYPE,
+        IDPERSONA FAC_FACTURA.IDPERSONA%TYPE,
+        IDCUENTA FAC_FACTURA.IDCUENTA%TYPE,
+        IDFACTURA FAC_FACTURA.IDFACTURA%TYPE,
+        BANCO_IBAN CEN_CUENTASBANCARIAS.IBAN%TYPE,
+        BANCO_BIC CEN_BANCOS.BIC%TYPE,
+        CODIGOREFERENCIA FAC_FACTURA.IDFACTURA%TYPE,
+        NUMEROFACTURA FAC_FACTURA.NUMEROFACTURA%TYPE,
+        IMPORTE NUMBER,
+        REFMANDATOSEPA CEN_MANDATOS_CUENTASBANCARIAS.REFMANDATOSEPA%TYPE,
+        ESQUEMA CEN_MANDATOS_CUENTASBANCARIAS.ESQUEMA%TYPE, -- 0:CORE; 1:COR1; 2:B2B
+        FECHAUSO CEN_MANDATOS_CUENTASBANCARIAS.FECHAUSO%TYPE,
+        AUTORIZACIONB2B CEN_MANDATOS_CUENTASBANCARIAS.AUTORIZACIONB2B%TYPE,
+        DEUDOR_ID CEN_MANDATOS_CUENTASBANCARIAS.DEUDOR_ID%TYPE,
+        DEUDOR_NOMBRE CEN_CUENTASBANCARIAS.TITULAR%TYPE,
+        DEUDOR_DIRECCION REG_DIRECCION,
+        FIRMA_FECHA CEN_MANDATOS_CUENTASBANCARIAS.FIRMA_FECHA%TYPE,
+        SECUENCIA NUMBER, -- 0:FRST; 1:RCUR
+        SECUENCIAREAL NUMBER -- 0:FRST; 1:RCUR
+    );
+    TYPE TAB_FACTURA IS TABLE OF REG_FACTURA INDEX BY BINARY_INTEGER;
+
+    TYPE REG_FACTURAS IS RECORD(
+        CONTADORFACTURASCOREFRST NUMBER := 0,
+        CONTADORFACTURASCORERCUR NUMBER := 0,
+        CONTADORFACTURASCOR1FRST NUMBER := 0,
+        CONTADORFACTURASCOR1RCUR NUMBER := 0,
+        CONTADORFACTURASB2BFRST NUMBER := 0,
+        CONTADORFACTURASB2BRCUR NUMBER := 0,
+        M_FACTURASCOREFRST TAB_FACTURA,
+        M_FACTURASCORERCUR TAB_FACTURA,
+        M_FACTURASCOR1FRST TAB_FACTURA,
+        M_FACTURASCOR1RCUR TAB_FACTURA,
+        M_FACTURASB2BFRST TAB_FACTURA,
+        M_FACTURASB2BRCUR TAB_FACTURA,
+        FECHAPRESENTACION DATE,
+        FECHACARGO_COREFRST DATE,
+        FECHACARGO_CORERCUR DATE,
+        FECHACARGO_COR1 DATE,
+        FECHACARGO_B2B DATE,
+        IDDISQUETECARGOS FAC_DISQUETECARGOS.IDDISQUETECARGOS%TYPE
+    );
+
+    TYPE REG_BLOQUEACREEDOR IS RECORD(
+        CONTADORFACTURAS NUMBER := 0,
+        IMPORTETOTAL NUMBER := 0,
+        CONTADORFACTURASTXT NUMBER := 0,
+        IMPORTETOTALTXT NUMBER := 0,
+        M_FACTURAS TAB_FACTURA,
+        IDDISQUETECARGOS FAC_DISQUETECARGOS.IDDISQUETECARGOS%TYPE,
+        FECHAPRESENTACION VARCHAR2(8), -- YYYYMMDD
+        FECHACARGO VARCHAR2(8) -- YYYYMMDD
+    );
+    TYPE TAB_BLOQUEACREEDOR IS TABLE OF REG_BLOQUEACREEDOR INDEX BY BINARY_INTEGER;
+
+    TYPE REG_FICHERO IS RECORD(
+        FECHAPRESENTACION VARCHAR2(8), -- YYYYMMDD
+        IDFICHERO VARCHAR2(35),
+        IDDISQUETECARGOS FAC_DISQUETECARGOS.IDDISQUETECARGOS%TYPE,
+        NOMBREFICHEROTXT FAC_DISQUETECARGOS.NOMBREFICHERO%TYPE,
+        NOMBREFICHEROXML FAC_DISQUETECARGOS.NOMBREFICHERO%TYPE,
+        CONTADORBLOQUESACREEDOR NUMBER := 0,
+        M_BLOQUEACREEDOR TAB_BLOQUEACREEDOR,
+        CONTADORBLOQUESACREEDORTXT NUMBER := 0,
+        M_BLOQUEACREEDORTXT TAB_BLOQUEACREEDOR
+    );
+    TYPE TAB_FICHERO IS TABLE OF REG_FICHERO INDEX BY BINARY_INTEGER;
+
+    TYPE REG_FIED_DEVO IS RECORD(
+        ID_FACTURA FAC_FACTURA.IDFACTURA%TYPE,
+        ID_RECIBO FAC_FACTURAINCLUIDAENDISQUETE.IDRECIBO%TYPE,
+        IMPORTE_DEVO FAC_FACTURAINCLUIDAENDISQUETE.IMPORTE%TYPE,
+        MOTIVO_DEVO FAC_MOTIVODEVOLUCION.CODIGO%TYPE,
+        IDDISQUETECARGOS FAC_FACTURAINCLUIDAENDISQUETE.IDDISQUETECARGOS%TYPE,
+        IDFACTURAINCLUIDAENDISQUETE FAC_FACTURAINCLUIDAENDISQUETE.IDFACTURAINCLUIDAENDISQUETE%TYPE
+    );
+    TYPE TAB_FIED_DEVO IS TABLE OF REG_FIED_DEVO INDEX BY BINARY_INTEGER;
+
+    TYPE REG_DISQ_DEVO IS RECORD(
+        CODIGO_BANCO FAC_DISQUETEDEVOLUCIONES.BANCOS_CODIGO%TYPE,
+        ID_DISQUETE_DEVO FAC_DISQUETEDEVOLUCIONES.IDDISQUETEDEVOLUCIONES%TYPE,
+        M_FIED_DEVO TAB_FIED_DEVO,
+        CONT_M_FIED_DEVO NUMBER
+    );
+  TYPE TAB_DISQ_DEVO IS TABLE OF REG_DISQ_DEVO INDEX BY BINARY_INTEGER;
+
+  TYPE TAB_REGISTROS IS TABLE OF VARCHAR2(1000) INDEX BY BINARY_INTEGER;
+
+    /****************************************************************************************************************/
+    /* Nombre: Presentacion */
+    /* Descripcion: Generacion del fichero para Adeudo de Domiciliaciones */
+    /* */
+    /* P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER */
+    /* P_IDSERIEFACTURACION - IN - Identificador de la serie de facturacion - NUMBER */
+    /* P_IDPROGRAMACION - IN - Identificador de la programacion - NUMBER */
+    /* P_FECHAPRESENTACION - IN - Fecha de presentacion del fichero en el banco (YYYYMMDD) - VARCHAR2 (8) */
+    /* P_FECHACARGOFRST - IN - Fecha de cargo del fichero para facturas FRST (YYYYMMDD) - VARCHAR2 (8) */
+    /* P_FECHACARGORCUR - IN - Fecha de cargo del fichero para facturas RCUR (YYYYMMDD) - VARCHAR2 (8) */
+    /* P_FECHACARGOCOR1 - IN - Fecha de cargo del fichero para facturas COR1 (YYYYMMDD) - VARCHAR2 (8) */
+    /* P_FECHACARGOB2B - IN - Fecha de cargo del fichero para facturas B2B (YYYYMMDD) - VARCHAR2 (8) */
+    /* P_PATHFICHERO - IN - Localizacion del fichero - VARCHAR2(150) */
+    /* P_USUMODIFICACION - IN - Usuario que realiza la modificacion - NUMBER */
+    /* P_IDIOMA - IN - Identificador del idioma - NUMBER */
+    /* P_NFICHEROS - OUT - Devuelve el numero de ficheros bancarios generados - VARCHAR2(10)   */
+    /* P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)   */
+    /*      En caso de error devuelve el codigo de error Oracle correspondiente. */
+    /* P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400) */
+    /*      En caso de error devuelve el mensaje de error Oracle correspondiente. */
+    /* */
+    /* Version: 1.0 - Fecha Creacion: 18/10/2004 - Autor: Yolanda Garcia Espino */
+    /* Version: 2.0 - Fecha Modificacion: 20/01/2014 - Autor: Jorge Paez Trivino */
+    /* Version: 3.0 - Fecha Modificacion: 24/03/2014 - Autor: Jorge Paez Trivino */
+    /* Version: 4.0 - Fecha Modificacion: 11/03/2015 - Autor: Jorge Paez Trivino - Cambios: Adaptacion a XML */
+  /****************************************************************************************************************/
+     PROCEDURE Presentacion(
+        p_Idinstitucion IN Number,
+        p_Idseriefacturacion IN Number,
+        p_Idprogramacion IN Number,
+        p_FechaPresentacion IN Varchar2,
+        p_FechaCargoFRST IN Varchar2,
+        p_FechaCargoRCUR IN Varchar2,
+        p_FechaCargoCOR1 IN Varchar2,
+        p_FechaCargoB2B IN Varchar2,
+        p_Pathfichero IN Varchar2,
+        p_Usumodificacion IN Number,
+        p_Idioma IN Number,
+        p_Nficheros OUT Varchar2,
+        p_Codretorno OUT Varchar2,
+        p_Datoserror OUT Varchar2);
+
+ /****************************************************************************************************************/
+    /* Nombre: Regenerar_Presentacion */
+    /* Descripcion: Regeneracion de los ficheros de adeudo (SEPA) */
+    /* */
+    /* P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER */
+    /* P_IDDISQUETECARGOS - IN - Identificador del disquete de cargos - NUMBER */
+    /* P_FECHAPRESENTACION - IN - Fecha de presentacion del fichero en el banco (YYYYMMDD) - VARCHAR2 (8) */
+    /* P_FECHACARGOFRST - IN - Fecha de cargo del fichero para facturas FRST (YYYYMMDD) - VARCHAR2 (8) */
+    /* P_FECHACARGORCUR - IN - Fecha de cargo del fichero para facturas RCUR (YYYYMMDD) - VARCHAR2 (8) */
+    /* P_FECHACARGOCOR1 - IN - Fecha de cargo del fichero para facturas COR1 (YYYYMMDD) - VARCHAR2 (8) */
+    /* P_FECHACARGOB2B - IN - Fecha de cargo del fichero para facturas B2B (YYYYMMDD) - VARCHAR2 (8) */
+    /* P_PATHFICHERO - IN - Localizacion del fichero - VARCHAR2(150) */
+    /* P_IDIOMA - IN - Identificador del idioma - NUMBER */
+    /* P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)   */
+    /*      En caso de error devuelve el codigo de error Oracle correspondiente. */
+    /* P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400) */
+    /*      En caso de error devuelve el mensaje de error Oracle correspondiente. */
+    /* */
+    /* Version: 1.0 - Fecha Creacion: 11/03/2015 - Autor: Jorge Paez Trivino - Cambios: Adaptacion a XML */
+  /****************************************************************************************************************/
+     PROCEDURE Regenerar_Presentacion(
+        p_Idinstitucion IN NUMBER,
+        p_IdDisqueteCargos IN NUMBER,
+        p_FechaPresentacion IN VARCHAR2,
+        p_FechaCargoFRST IN VARCHAR2,
+        p_FechaCargoRCUR IN VARCHAR2,
+        p_FechaCargoCOR1 IN VARCHAR2,
+        p_FechaCargoB2B IN VARCHAR2,
+        p_Pathfichero IN VARCHAR2,
+        p_Idioma IN NUMBER,
+        p_Codretorno OUT VARCHAR2,
+        p_Datoserror OUT VARCHAR2);
+
+    /****************************************************************************************************************/
+    /* Nombre: DEVOLUCIONES */
+    /* Descripcion: Generacion del fichero para Presentacion de Devoluciones */
+    /* */
+    /* P_IDINSTITUCION - IN - Identificador de la institucion - DATE */
+    /* P_PATHFICHERO - IN - Localizacion del fichero - VARCHAR2(150) */
+    /* P_NOMBREFICHERO - IN - Nombre del fichero - VARCHAR2(80) */
+    /* P_IDIOMA - IN - Identificador del idioma - NUMBER */
+    /* P_USUMODIFICACION - IN - Usuario que realiza la modificacion - NUMBER */
+    /* P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10) */
+    /*    En caso de error devuelve el codigo de error Oracle correspondiente */
+    /* P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400) */
+    /*    En caso de error devuelve el mensaje de error Oracle correspondiente */
+    /* P_FECHADEVOLUCION - OUT - Devuelve la fecha de devolucion con formato YYYY/MM/DD HH24:MI:SS - VARCHAR2(19) */
+    /* */
+    /* Version: 1.0 - Fecha Creacion: 25/10/2004 - Autor: Yolanda Garcia Espino */
+    /* Version: 2.0 - Fecha Modificacion: 17/01/2014 - Autor: Jorge Paez Trivino */
+  /****************************************************************************************************************/
+  Procedure Devoluciones(p_Idinstitucion   In Number,
+                         p_Pathfichero     In Varchar2,
+                         p_Nombrefichero   In Varchar2,
+                         p_Idioma          In Number,
+                         p_Usumodificacion In Number,
+                         p_Codretorno      Out Varchar2,
+                         p_Datoserror      Out Varchar2,
+                        p_FechaDevolucion Out VARCHAR2);
+
+    /****************************************************************************************************************/
+    /* Nombre: InsertarMandatos */
+    /* Descripcion: Procedimiento que inserta dos mandatos nuevos para una cuenta de cargo, uno para productos y otro para servicios */
+    /* */
+    /* P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER */
+    /* P_IDPERSONA - IN - Identificador de la persona - NUMBER */
+    /* P_IDCUENTA - IN - Identificador de la cuenta - NUMBER */
+    /* P_USUMODIFICACION - IN - Usuario que realiza la modificacion - NUMBER */
+    /* P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)   */
+    /*      En caso de error devuelve el codigo de error Oracle correspondiente. */
+    /* P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400) */
+    /*      En caso de error devuelve el mensaje de error Oracle correspondiente. */
+    /* */
+    /* Version: 1.0 - Fecha Creacion: 07/04/2014 - Autor: Jorge Paez Trivino */
+    /* Version: - Fecha Modificacion: - Autor: */
+  /****************************************************************************************************************/
+    Procedure InsertarMandatos (
+        p_idInstitucion IN NUMBER,
+        p_idPersona IN NUMBER,
+        p_idCuenta IN NUMBER,
+        p_Usumodificacion IN NUMBER,
+        p_Codretorno OUT VARCHAR2,
+        p_Datoserror OUT VARCHAR2);
+
+    /****************************************************************************************************************/
+    /* Nombre: RevisarAnexos */
+    /* Descripcion: Procedimiento que revisa los anexos y mandatos de SEPA */
+    /* */
+    /* P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER */
+    /* P_IDPERSONA - IN - Identificador de la persona - NUMBER */
+    /* P_USUMODIFICACION - IN - Usuario que realiza la modificacion - NUMBER */
+    /* P_IDIOMA - IN - Identificador del idioma - NUMBER */
+    /* P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)   */
+    /*      En caso de error devuelve el codigo de error Oracle correspondiente. */
+    /* P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400) */
+    /*      En caso de error devuelve el mensaje de error Oracle correspondiente. */
+    /* */
+    /* Version: 1.0 - Fecha Creacion: 07/04/2014 - Autor: Jorge Paez Trivino */
+    /* Version: - Fecha Modificacion: - Autor: */
+  /****************************************************************************************************************/
+    Procedure RevisarAnexos (
+        p_idInstitucion IN NUMBER,
+        p_idPersona IN NUMBER,
+        p_Usumodificacion IN NUMBER,
+        p_idioma IN NUMBER,
+        p_Codretorno OUT VARCHAR2,
+        p_Datoserror OUT VARCHAR2);
+
+    /****************************************************************************************************************/
+    /* Nombre: RevisarErroresSEPA */
+    /* Descripcion: Procedimiento que revisa todos los posibles errores de facturacion de SEPA */
+    /* */
+    /* P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER */
+    /* P_IDPERSONA - IN - Identificador de la persona - NUMBER */
+    /* P_PATHFICHERO - IN - Localizacion del fichero - VARCHAR2(150) */
+    /* P_TOTALERROR - OUT - Retorno con todos los mensajes de error - VARCHAR2(4000) */
+    /* P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10)   */
+    /*      En caso de error devuelve el codigo de error Oracle correspondiente. */
+    /* P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400) */
+    /*      En caso de error devuelve el mensaje de error Oracle correspondiente. */
+    /* */
+    /* Version: 1.0 - Fecha Creacion: 29/04/2014 - Autor: Jorge Paez Trivino */
+    /* Version: - Fecha Modificacion: - Autor: */
+  /****************************************************************************************************************/
+    PROCEDURE RevisarErroresSEPA (
+        p_idInstitucion IN NUMBER,
+        p_idPersona IN NUMBER,
+        p_Pathfichero IN VARCHAR2,
+        p_totalError OUT VARCHAR2,
+        p_Codretorno OUT VARCHAR2,
+        p_Datoserror OUT VARCHAR2);
+
+    /****************************************************************************************************************/
+    /* Nombre: F_RevisarErroresPersonaSEPA */
+    /* Descripcion: Funcion que revisa todos los posibles errores de facturacion de SEPA */
+    /* */
+    /* P_IDINSTITUCION - IN - Identificador de la institucion - NUMBER */
+    /* P_IDPERSONA - IN - Identificador de la persona - NUMBER */
+    /* */
+    /* Version: 1.0 - Fecha Creacion: 30/04/2014 - Autor: Jorge Paez Trivino */
+    /* Version: - Fecha Modificacion: - Autor: */
+  /****************************************************************************************************************/
+    FUNCTION F_RevisarErroresPersonaSEPA (
+            p_idInstitucion IN NUMBER,
+            p_idPersona IN NUMBER
+        ) RETURN VARCHAR2;
+
+    /****************************************************************************************************************/
+    /* Nombre: F_RevisarCaracteresSEPA*/
+    /* Descripcion: Revisar y transformar los caracteres del registro, para mostrar solo los caracteres permitidos por SEPA */
+    /* */
+    /* P_REGISTRO - IN - Registro que se va a insertar en el fichero - VARCHAR2(601) */
+    /* */
+    /* Version: 1.0 - Fecha Creacion: 27/03/2014 - Autor: Jorge Paez Trivino */
+    /* Version: - Fecha Modificacion: - Autor: */
+  /****************************************************************************************************************/
+    Function F_RevisarCaracteresSEPA(
+        p_Registro IN VARCHAR2
+    ) RETURN VARCHAR2;
+
+
+    /****************************************************************************************************************/
+    /* Nombre: DevolucionesManuales */
+    /* Descripcion: Generacion de devoluciones manuales */
+    /* */
+    /* P_IDINSTITUCION - IN - Identificador de la institucion - DATE */
+    /* P_LISTAFACTURAS - IN - Lista de facturas devueltas manualmente (idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo, ...) - CLOB */
+    /* P_FECHADEVOLUCION - IN - Fecha de devolucion manual (YYYYMMDD) - VARCHAR2(8) */
+    /* P_IDIOMA - IN - Identificador del idioma - NUMBER */
+    /* P_USUMODIFICACION - IN - Usuario que realiza la modificacion - NUMBER */
+    /* P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10) */
+    /*    En caso de error devuelve el codigo de error Oracle correspondiente */
+    /* P_DATOSERROR - OUT - Devuelve null en caso de que la ejecucion haya sido OK - VARCHAR2(400) */
+    /*    En caso de error devuelve el mensaje de error Oracle correspondiente */
+    /* P_LISTAIDDISQUETESDEVOLUCION - OUT - Lista de identificadores de los disquetes de devoluciones generados - VARCHAR2(4000) */
+    /* */
+    /* Version: 1.0 - Fecha Modificacion: 23/06/2014 - Autor: Jorge Paez Trivino */
+  /****************************************************************************************************************/
+    Procedure DevolucionesManuales (
+        p_Idinstitucion IN NUMBER,
+        p_ListaFacturas IN CLOB,
+        p_FechaDevolucion IN VARCHAR2,
+        p_Idioma IN NUMBER,
+        p_Usumodificacion IN NUMBER,
+        p_Codretorno OUT VARCHAR2,
+        p_Datoserror OUT VARCHAR2,
+        p_ListaIdDisquetesDevolucion OUT VARCHAR2);
+
+    FUNCTION ObtenerDireccionFacturacion(
+        p_IdInstitucion IN CEN_DIRECCIONES.IDINSTITUCION%type,
+        p_idPersona IN CEN_DIRECCIONES.IDPERSONA%type
+    ) RETURN REG_DIRECCION;
+
+END PKG_SIGA_CARGOS;
+/
 CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
 
     /****************************************************************************************************************/
@@ -2454,7 +2815,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         INSERT INTO FAC_HISTORICOFACTURA (IDINSTITUCION,IDFACTURA, IDHISTORICO,FECHAMODIFICACION, USUMODIFICACION, IDTIPOACCION, IDFORMAPAGO, 
           									    IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA,
           									    IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO, IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, ESTADO,IDDISQUETECARGOS, IDFACTURAINCLUIDAENDISQUETE)
-          								      SELECT IDINSTITUCION, IDFACTURA,SEQ_FAC_HISTORIAL.NEXTVAL,SYSDATE,USUMODIFICACION,5,IDFORMAPAGO, 
+          								      SELECT IDINSTITUCION, IDFACTURA,nvl((select max(his2.IDHISTORICO) from FAC_HISTORICOFACTURA his2 where his2.IDINSTITUCION = FAC_FACTURA.IdInstitucion and his2.IDFACTURA = FAC_FACTURA.IdFactura), 0)+1,SYSDATE,USUMODIFICACION,5,IDFORMAPAGO, 
           								      IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA, 
           								      IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO,IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, ESTADO,p_RegBloqueAcreedor.IDDISQUETECARGOS,v_Idfacturaincluidaendisquete 
           								      FROM FAC_FACTURA WHERE IDINSTITUCION=p_RegBloqueAcreedor.M_FACTURAS(v_contadorFactura).IDINSTITUCION AND IDFACTURA= p_RegBloqueAcreedor.M_FACTURAS(v_contadorFactura).IDFACTURA;
@@ -3925,7 +4286,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
              INSERT INTO FAC_HISTORICOFACTURA (IDINSTITUCION,IDFACTURA, IDHISTORICO,FECHAMODIFICACION, USUMODIFICACION, IDTIPOACCION, IDFORMAPAGO, 
 									    IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA,
 									    IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO, IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, ESTADO, IDDISQUETEDEVOLUCIONES, IDRECIBO)
-								      SELECT IDINSTITUCION, IDFACTURA,SEQ_FAC_HISTORIAL.NEXTVAL,SYSDATE,USUMODIFICACION,6,IDFORMAPAGO, 
+								      SELECT IDINSTITUCION, IDFACTURA,nvl((select max(his2.IDHISTORICO) from FAC_HISTORICOFACTURA his2 where his2.IDINSTITUCION = FAC_FACTURA.IdInstitucion and his2.IDFACTURA = FAC_FACTURA.IdFactura), 0)+1,SYSDATE,USUMODIFICACION,6,IDFORMAPAGO, 
 								      IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA, 
 								      IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO,IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, ESTADO,p_Iddisquetedevoluciones,p_Codigoreferencia 
 								      FROM FAC_FACTURA WHERE IDINSTITUCION=p_Idinstitucion AND IDFACTURA= V_IDFACTURA;
