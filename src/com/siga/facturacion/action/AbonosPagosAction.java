@@ -30,6 +30,7 @@ import org.json.JSONObject;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
@@ -43,6 +44,7 @@ import com.siga.beans.FacAbonoAdm;
 import com.siga.beans.FacAbonoBean;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
+import com.siga.beans.FacHistoricoFacturaAdm;
 import com.siga.beans.FacPagoAbonoEfectivoAdm;
 import com.siga.beans.FacPagoAbonoEfectivoBean;
 import com.siga.beans.FacPagosPorCajaAdm;
@@ -718,6 +720,7 @@ public class AbonosPagosAction extends MasterAction {
 			FacFacturaAdm adminFactura=new FacFacturaAdm(userBean);
 			FacPagoAbonoEfectivoAdm adminPAE=new FacPagoAbonoEfectivoAdm(userBean);
 			FacPagosPorCajaAdm adminPPC=new FacPagosPorCajaAdm(userBean);
+			FacHistoricoFacturaAdm historicoFacturaAdm = new FacHistoricoFacturaAdm (userBean);
 			
 			// Obtengo datos generales del abono
 			datosAbono=((Row)adminAbono.getTotalesPagos(institucion,abono).firstElement()).getRow();
@@ -842,6 +845,19 @@ public class AbonosPagosAction extends MasterAction {
 					        if (facturaAdm.update(facturaBean)) {
 						        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
 								facturaAdm.consultarActNuevoEstadoFactura(facturaBean, new Integer(userBean.getUserName()),true);
+								//CGP - INICIO (07/11/2017) - R1709_0035 - Añadimos registro en el histórico de la facturación.
+									boolean resultadoHistorico = Boolean.FALSE;
+									try{
+										resultadoHistorico= historicoFacturaAdm.insertarHistoricoFacParametros (institucion,(String)temporal.get(FacFacturaBean.C_IDFACTURA), 10,
+												Integer.valueOf((String)datosPagoFactura.get(FacPagosPorCajaBean.C_IDPAGOPORCAJA).toString()), 
+												null, null,null,null, null, Integer.valueOf(abono), null);
+										 if(!resultadoHistorico){
+												ClsLogging.writeFileLog("### No se ha insertado en el histórico de la facturación ", 7);
+										 }
+									} catch (Exception e) {
+										ClsLogging.writeFileLogError("@@@ ERROR: No se ha insertado el histórico de la facturación",e,3);
+									}
+								//CGP - FIN
 					        } else {
 					            throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
 					        }
@@ -880,6 +896,7 @@ public class AbonosPagosAction extends MasterAction {
 			FacAbonoAdm adminAbono=new FacAbonoAdm(userBean);
 			FacPagoAbonoEfectivoAdm adminPAE=new FacPagoAbonoEfectivoAdm(userBean);
 			FacPagosPorCajaAdm adminPPC=new FacPagosPorCajaAdm(userBean);
+			FacHistoricoFacturaAdm historicoFacturaAdm = new FacHistoricoFacturaAdm (userBean);
 			
 			// Obtengo datos generales del abono
 			datosAbono=((Row)adminAbono.getTotalesPagos(institucion,abono).firstElement()).getRow();
@@ -996,6 +1013,18 @@ public class AbonosPagosAction extends MasterAction {
 					        if (facturaAdm.update(facturaBean)) {
 						        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO
 								facturaAdm.consultarActNuevoEstadoFactura(facturaBean, new Integer(userBean.getUserName()),true);
+								//CGP - INICIO (07/11/2017) - R1709_0035 - Añadimos registro en el histórico de la facturación.
+								boolean resultadoHistorico = Boolean.FALSE;
+								try{
+									resultadoHistorico= historicoFacturaAdm.insertarHistoricoFacParametros (institucion,idFactura, 10,(Integer)datosPagoFactura.get(FacPagosPorCajaBean.C_IDPAGOPORCAJA), 
+											null, null,null,null, null, Integer.valueOf(abono), null);
+									 if(!resultadoHistorico){
+											ClsLogging.writeFileLog("### No se ha insertado en el histórico de la facturación ", 7);
+									 }
+								} catch (Exception e) {
+									ClsLogging.writeFileLogError("@@@ ERROR: No se ha insertado el histórico de la facturación",e,3);
+								}
+							//CGP - FIN
 					        } else {
 					            throw new ClsExceptions("Error al actualizar los importes de la factura: "+facturaAdm.getError());
 					        }

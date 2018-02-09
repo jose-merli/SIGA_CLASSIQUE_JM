@@ -368,7 +368,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
     /* P_REGISTRO - IN - Registro que se va a insertar en el fichero - VARCHAR2(600) */
     /* */
     /* Version: 1.0 - Fecha Creacion: 27/03/2014 - Autor: Jorge Paez Trivino */
-    /* Version: 2.0 - Fecha Modificacion: 23/06/2015 - Autor: Jorge Paez Trivino 
+    /* Version: 2.0 - Fecha Modificacion: 23/06/2015 - Autor: Jorge Paez Trivino
         - Se elimina la comilla simple, porque en la gestion del xml se traduce automaticamente y hay problemas de dimension en los campos.
     /* Version: - Fecha Modificacion: - Autor: */
   /****************************************************************************************************************/
@@ -578,7 +578,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         -- Devuelvo el resultado con dos digitos
         RETURN LPAD(v_resultado, 2, 0);
   END CalcularDCPersonaSepa;
-  
+
     /****************************************************************************************************************/
     /* Nombre: CargarFechasSEPA */
     /* Descripcion: Carga las fechas de SEPA */
@@ -598,7 +598,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
     /*      En caso de error devuelve el mensaje de error Oracle correspondiente. */
     /* */
     /* Version: 1.0 - Fecha Creacion: 11/03/2015 - Autor: Jorge Paez Trivino */
-    /****************************************************************************************************************/    
+    /****************************************************************************************************************/
     PROCEDURE CargarFechasSEPA(
         p_Idinstitucion IN NUMBER,
         p_IdSerieFacturacion IN NUMBER,
@@ -612,10 +612,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         p_CodRetorno OUT VARCHAR2,
         p_DatosError OUT VARCHAR2
     ) IS
-        
+
         v_Datoserror VARCHAR2(4000) := Null;
-        
-    BEGIN            
+
+    BEGIN
         -- Compruebo si es una facturacion programada
         IF (p_IdSerieFacturacion IS NOT NULL AND p_IdProgramacion IS NOT NULL) THEN
             v_Datoserror := 'CargarFechasSEPA: Obtiene datos de FAC_FACTURACIONPROGRAMADA';
@@ -632,7 +632,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             FROM FAC_FACTURACIONPROGRAMADA
             WHERE IDINSTITUCION = p_Idinstitucion
                 AND IDSERIEFACTURACION = p_IdSerieFacturacion
-                AND IDPROGRAMACION = p_IdProgramacion;          
+                AND IDPROGRAMACION = p_IdProgramacion;
 
         ELSE
             v_Datoserror := 'CargarFechasSEPA: Transformacion de fechas a To_Date';
@@ -706,7 +706,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         v_idMandato CEN_MANDATOS_CUENTASBANCARIAS.IDMANDATO%TYPE := NULL;
         v_IdFacturaOriginal FAC_FACTURA.IDFACTURA%TYPE;
         contadorFactura NUMBER;
-        
+
         v_Codretorno VARCHAR2(10) := To_Char(0);
         v_Datoserror VARCHAR2(4000) := Null;
         e_Error EXCEPTION;
@@ -786,7 +786,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
 
             -- Compruebo si el mandato esta firmado
             IF (p_RegFactura.FIRMA_FECHA IS NOT NULL) THEN
-            
+
                 -- JPT (19-02-2015): Comprueba la vigencia del mandato
                 IF (F_ADD_YEARS(NVL(p_RegFactura.FECHAUSO, p_RegFactura.FIRMA_FECHA), 3) < p_RegFacturas.FECHAPRESENTACION) THEN
                     v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.errorMandatos.mensajeCondicionesIncumplidas', p_Idioma) ||
@@ -834,7 +834,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             v_Codretorno := To_Char(5415);
             RAISE e_Error;
         END IF;
-        
+
         -- En caso de regenerar una factura con secuencia FRST, se considera que no tiene fecha de uso
         IF (p_RegFactura.SECUENCIAREAL = 0) THEN -- 0:FRST; 1:RCUR
             p_RegFactura.FECHAUSO := NULL;
@@ -844,18 +844,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         IF (p_RegAcreedor.CONFIGFICHEROSSECUENCIA<2 AND p_RegFactura.FECHAUSO IS NULL) THEN -- 0=ficheroFRST+RCUR; 1=ficheroFRST + ficheroRCUR
             p_RegFactura.SECUENCIA := 0; -- 0:FRST; 1:RCUR
             p_RegFactura.SECUENCIAREAL := 0; -- 0:FRST; 1:RCUR
-                
+
             -- Recorro todas las facturas FRST del esquema correspondiente, para ver si se ha usado el mandato
             IF (p_RegFactura.ESQUEMA = 0) THEN -- 0:CORE; 1:COR1; 2:B2B
-                FOR contadorFactura IN 1..p_RegFacturas.CONTADORFACTURASCOREFRST LOOP 
+                FOR contadorFactura IN 1..p_RegFacturas.CONTADORFACTURASCOREFRST LOOP
                     IF (p_RegFacturas.M_FACTURASCOREFRST(contadorFactura).REFMANDATOSEPA = p_RegFactura.REFMANDATOSEPA) THEN
                         p_RegFactura.SECUENCIA := 1; -- 0:FRST; 1:RCUR
                         p_RegFactura.SECUENCIAREAL := 1; -- 0:FRST; 1:RCUR
                         EXIT; -- Salgo del bucle
                     END IF;
                 END LOOP;
-                    
-            ELSIF (p_RegFactura.ESQUEMA = 1) THEN -- 0:CORE; 1:COR1; 2:B2B    
+
+            ELSIF (p_RegFactura.ESQUEMA = 1) THEN -- 0:CORE; 1:COR1; 2:B2B
                 FOR contadorFactura IN 1..p_RegFacturas.CONTADORFACTURASCOR1FRST LOOP
                     IF (p_RegFacturas.M_FACTURASCOR1FRST(contadorFactura).REFMANDATOSEPA = p_RegFactura.REFMANDATOSEPA) THEN
                         p_RegFactura.SECUENCIA := 1; -- 0:FRST; 1:RCUR
@@ -863,8 +863,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         EXIT; -- Salgo del bucle
                     END IF;
                 END LOOP;
-                    
-            ELSIF (p_RegFactura.ESQUEMA = 2) THEN -- 0:CORE; 1:COR1; 2:B2B     
+
+            ELSIF (p_RegFactura.ESQUEMA = 2) THEN -- 0:CORE; 1:COR1; 2:B2B
                 FOR contadorFactura IN 1..p_RegFacturas.CONTADORFACTURASB2BFRST LOOP
                     IF (p_RegFacturas.M_FACTURASB2BFRST(contadorFactura).REFMANDATOSEPA = p_RegFactura.REFMANDATOSEPA) THEN
                         p_RegFactura.SECUENCIA := 1; -- 0:FRST; 1:RCUR
@@ -875,7 +875,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             END IF;
 
         ELSE
-            p_RegFactura.SECUENCIA := 1; -- 0:FRST; 1:RCUR                        
+            p_RegFactura.SECUENCIA := 1; -- 0:FRST; 1:RCUR
             IF (p_RegFactura.FECHAUSO IS NULL) THEN
                 p_RegFactura.SECUENCIAREAL := 0; -- 0:FRST; 1:RCUR
             ELSE
@@ -885,27 +885,27 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
 
         v_Datoserror := 'CargarFacturaEnArrayDeudor: Carga los datos de la factura en el array correspondiente del deudor';
         IF (p_RegFactura.ESQUEMA = 0 -- 0:CORE; 1:COR1; 2:B2B
-                AND p_RegFactura.SECUENCIA = 0) THEN -- 0:FRST; 1:RCUR     
+                AND p_RegFactura.SECUENCIA = 0) THEN -- 0:FRST; 1:RCUR
             p_RegFacturas.CONTADORFACTURASCOREFRST := p_RegFacturas.CONTADORFACTURASCOREFRST + 1;
             p_RegFacturas.M_FACTURASCOREFRST(p_RegFacturas.CONTADORFACTURASCOREFRST) := p_RegFactura;
 
         ELSIF (p_RegFactura.ESQUEMA = 0 -- 0:CORE; 1:COR1; 2:B2B
-                    AND p_RegFactura.SECUENCIA = 1) THEN -- 0:FRST; 1:RCUR     
+                    AND p_RegFactura.SECUENCIA = 1) THEN -- 0:FRST; 1:RCUR
             p_RegFacturas.CONTADORFACTURASCORERCUR := p_RegFacturas.CONTADORFACTURASCORERCUR + 1;
             p_RegFacturas.M_FACTURASCORERCUR(p_RegFacturas.CONTADORFACTURASCORERCUR) := p_RegFactura;
-            
+
         ELSIF (p_RegAcreedor.TIPOSFICHEROS>0) THEN -- 1=Txt+Xml; 2=Xml
             IF (p_RegFactura.ESQUEMA = 1 -- 0:CORE; 1:COR1; 2:B2B
-                    AND p_RegFactura.SECUENCIA = 0) THEN -- 0:FRST; 1:RCUR      
+                    AND p_RegFactura.SECUENCIA = 0) THEN -- 0:FRST; 1:RCUR
                 p_RegFacturas.CONTADORFACTURASCOR1FRST := p_RegFacturas.CONTADORFACTURASCOR1FRST + 1;
                 p_RegFacturas.M_FACTURASCOR1FRST(p_RegFacturas.CONTADORFACTURASCOR1FRST) := p_RegFactura;
-            
+
             ELSIF (p_RegFactura.ESQUEMA = 1 -- 0:CORE; 1:COR1; 2:B2B
                         AND p_RegFactura.SECUENCIA = 1) THEN -- 0:FRST; 1:RCUR
                 p_RegFacturas.CONTADORFACTURASCOR1RCUR := p_RegFacturas.CONTADORFACTURASCOR1RCUR + 1;
                 p_RegFacturas.M_FACTURASCOR1RCUR(p_RegFacturas.CONTADORFACTURASCOR1RCUR) := p_RegFactura;
 
-            ELSIF (p_RegFactura.ESQUEMA = 2) THEN -- 0:CORE; 1:COR1; 2:B2B    
+            ELSIF (p_RegFactura.ESQUEMA = 2) THEN -- 0:CORE; 1:COR1; 2:B2B
                 IF (p_RegFactura.AUTORIZACIONB2B=0) THEN
                     v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.errorMandatos.mensajeCondicionesIncumplidas', p_Idioma) ||
                                             ' ' || p_RegFactura.DEUDOR_NOMBRE ||
@@ -916,11 +916,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     v_Codretorno := To_Char(5416);
                     RAISE e_Error;
                 END IF;
-            
+
                 IF (p_RegFactura.SECUENCIA = 0) THEN -- 0:FRST; 1:RCUR
                     p_RegFacturas.CONTADORFACTURASB2BFRST := p_RegFacturas.CONTADORFACTURASB2BFRST + 1;
                     p_RegFacturas.M_FACTURASB2BFRST(p_RegFacturas.CONTADORFACTURASB2BFRST) := p_RegFactura;
-            
+
                 ELSIF (p_RegFactura.SECUENCIA = 1) THEN -- 0:FRST; 1:RCUR
                     p_RegFacturas.CONTADORFACTURASB2BRCUR := p_RegFacturas.CONTADORFACTURASB2BRCUR + 1;
                     p_RegFacturas.M_FACTURASB2BRCUR(p_RegFacturas.CONTADORFACTURASB2BRCUR) := p_RegFactura;
@@ -941,7 +941,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 p_Codretorno := To_Char(Sqlcode);
                 p_Datoserror := v_Datoserror || ', ' || Sqlerrm;
     END CargarFacturaEnArrayDeudor;
-    
+
     /****************************************************************************************************************/
     /* Nombre: CalcularBloqueAcreedor */
     /* Descripcion: Calcula los bloques de acreedor */
@@ -954,53 +954,53 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
     /* P_REGFICHERO - IN OUT - Registro con los datos del fichero - REG_FICHERO */
     /* */
     /* Version: 1.0 - Fecha Creacion: 11/03/2015 - Autor: Jorge Paez Trivino */
-    /****************************************************************************************************************/          
+    /****************************************************************************************************************/
     PROCEDURE CalcularBloqueAcreedor(
         p_RegAcreedor IN REG_ACREEDOR,
         p_ContadorFacturas IN NUMBER,
-        M_Facturas IN TAB_FACTURA, 
+        M_Facturas IN TAB_FACTURA,
         p_FechaCargo IN DATE,
         p_Txt IN BOOLEAN,
         p_RegFichero IN OUT REG_FICHERO
-    ) IS        
-        
+    ) IS
+
         v_ContadorBloques NUMBER;
         v_BloqueActual NUMBER;
         v_contadorFacturas NUMBER;
         v_fechaCargo VARCHAR2(8);
-    
+
     BEGIN
-        
-        -- Miro que tenga facturas 
+
+        -- Miro que tenga facturas
         IF (p_ContadorFacturas > 0) THEN
-        
+
             -- Cargo la fecha de cargo en formato YYYYMMDD
             v_fechaCargo := TO_CHAR(p_FechaCargo, 'YYYYMMDD');
-        
+
             -- Calculos de bloques para fichero enformato n1914
             IF (p_Txt = TRUE AND p_RegAcreedor.TIPOSFICHEROS<2) THEN  -- 0=Txt; 1=Txt+Xml
-                
+
                 -- Miro si ya existe la fecha de cargo
                 v_BloqueActual := NULL;
                 FOR v_ContadorBloques IN 1..p_RegFichero.CONTADORBLOQUESACREEDORTXT LOOP
-                    IF (p_RegFichero.M_BLOQUEACREEDORTXT(v_ContadorBloques).FECHACARGO = v_fechaCargo) THEN 
+                    IF (p_RegFichero.M_BLOQUEACREEDORTXT(v_ContadorBloques).FECHACARGO = v_fechaCargo) THEN
                         v_BloqueActual := v_ContadorBloques;
                         EXIT; -- Salgo del bucle
                     END IF;
                 END LOOP;
-                
+
                 -- Si existe la fecha de cargo, hay que incluir las nuevas facturas
                 IF (v_BloqueActual IS NOT NULL) THEN
-                    FOR v_contadorFacturas IN 1..p_ContadorFacturas LOOP                        
+                    FOR v_contadorFacturas IN 1..p_ContadorFacturas LOOP
                         p_RegFichero.M_BLOQUEACREEDORTXT(v_BloqueActual).CONTADORFACTURASTXT := p_RegFichero.M_BLOQUEACREEDORTXT(v_BloqueActual).CONTADORFACTURASTXT + 1;
                         p_RegFichero.M_BLOQUEACREEDORTXT(v_BloqueActual).IMPORTETOTALTXT := p_RegFichero.M_BLOQUEACREEDORTXT(v_BloqueActual).IMPORTETOTALTXT + M_Facturas(v_contadorFacturas).IMPORTE;
                         p_RegFichero.M_BLOQUEACREEDORTXT(v_BloqueActual).M_FACTURAS(p_RegFichero.M_BLOQUEACREEDORTXT(v_BloqueActual).CONTADORFACTURASTXT) := M_Facturas(v_contadorFacturas);
                     END LOOP;
-                
+
                 ELSE -- No existe la fecha de cargo, con lo que hay que crear un nuevo bloque de acreedor
                     p_RegFichero.CONTADORBLOQUESACREEDORTXT := p_RegFichero.CONTADORBLOQUESACREEDORTXT + 1;
                     p_RegFichero.M_BLOQUEACREEDORTXT(p_RegFichero.CONTADORBLOQUESACREEDORTXT).FECHACARGO := v_fechaCargo;
-                
+
                     FOR v_contadorFacturas IN 1..p_ContadorFacturas LOOP
                         p_RegFichero.M_BLOQUEACREEDORTXT(p_RegFichero.CONTADORBLOQUESACREEDORTXT).CONTADORFACTURASTXT := p_RegFichero.M_BLOQUEACREEDORTXT(p_RegFichero.CONTADORBLOQUESACREEDORTXT).CONTADORFACTURASTXT + 1;
                         p_RegFichero.M_BLOQUEACREEDORTXT(p_RegFichero.CONTADORBLOQUESACREEDORTXT).IMPORTETOTALTXT := p_RegFichero.M_BLOQUEACREEDORTXT(p_RegFichero.CONTADORBLOQUESACREEDORTXT).IMPORTETOTALTXT + M_Facturas(v_contadorFacturas).IMPORTE;
@@ -1008,32 +1008,32 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     END LOOP;
                 END IF;
             END IF;
-            
+
             -- Calculos de bloques para fichero en formato xml
-            IF (p_RegAcreedor.TIPOSFICHEROS>0) THEN -- 1=Txt+Xml; 2=Xml            
-            
+            IF (p_RegAcreedor.TIPOSFICHEROS>0) THEN -- 1=Txt+Xml; 2=Xml
+
                 -- Miro si ya existe la fecha de cargo
                 v_BloqueActual := NULL;
                 FOR v_ContadorBloques IN 1..p_RegFichero.CONTADORBLOQUESACREEDOR LOOP
-                    IF (p_RegFichero.M_BLOQUEACREEDOR(v_ContadorBloques).FECHACARGO = v_fechaCargo) THEN 
+                    IF (p_RegFichero.M_BLOQUEACREEDOR(v_ContadorBloques).FECHACARGO = v_fechaCargo) THEN
                         v_BloqueActual := v_ContadorBloques;
                         EXIT; -- Salgo del bucle
                     END IF;
                 END LOOP;
-            
+
                 -- Si existe la fecha de cargo, hay que incluir las nuevas facturas
                 IF (v_BloqueActual IS NOT NULL AND p_RegAcreedor.CONFIGLUGARESQUEMASECUENCIA=1) THEN -- 0=bloqueAcreedor; 1=registrosIndividuales
-                    FOR v_contadorFacturas IN 1..p_ContadorFacturas LOOP                                                     
+                    FOR v_contadorFacturas IN 1..p_ContadorFacturas LOOP
                         p_RegFichero.M_BLOQUEACREEDOR(v_BloqueActual).CONTADORFACTURAS := p_RegFichero.M_BLOQUEACREEDOR(v_BloqueActual).CONTADORFACTURAS + 1;
                         p_RegFichero.M_BLOQUEACREEDOR(v_BloqueActual).IMPORTETOTAL := p_RegFichero.M_BLOQUEACREEDOR(v_BloqueActual).IMPORTETOTAL + M_Facturas(v_contadorFacturas).IMPORTE;
                         p_RegFichero.M_BLOQUEACREEDOR(v_BloqueActual).M_FACTURAS(p_RegFichero.M_BLOQUEACREEDOR(v_BloqueActual).CONTADORFACTURAS) := M_Facturas(v_contadorFacturas);
                     END LOOP;
-                
-                ELSE -- No existe la fecha de cargo, con lo que hay que crear un nuevo bloque de acreedor                                         
+
+                ELSE -- No existe la fecha de cargo, con lo que hay que crear un nuevo bloque de acreedor
                     p_RegFichero.CONTADORBLOQUESACREEDOR := p_RegFichero.CONTADORBLOQUESACREEDOR + 1;
                     p_RegFichero.M_BLOQUEACREEDOR(p_RegFichero.CONTADORBLOQUESACREEDOR).FECHACARGO := v_fechaCargo;
-                                
-                    FOR v_contadorFacturas IN 1..p_ContadorFacturas LOOP                                    
+
+                    FOR v_contadorFacturas IN 1..p_ContadorFacturas LOOP
                         p_RegFichero.M_BLOQUEACREEDOR(p_RegFichero.CONTADORBLOQUESACREEDOR).CONTADORFACTURAS := p_RegFichero.M_BLOQUEACREEDOR(p_RegFichero.CONTADORBLOQUESACREEDOR).CONTADORFACTURAS + 1;
                         p_RegFichero.M_BLOQUEACREEDOR(p_RegFichero.CONTADORBLOQUESACREEDOR).IMPORTETOTAL := p_RegFichero.M_BLOQUEACREEDOR(p_RegFichero.CONTADORBLOQUESACREEDOR).IMPORTETOTAL + M_Facturas(v_contadorFacturas).IMPORTE;
                         p_RegFichero.M_BLOQUEACREEDOR(p_RegFichero.CONTADORBLOQUESACREEDOR).M_FACTURAS(p_RegFichero.M_BLOQUEACREEDOR(p_RegFichero.CONTADORBLOQUESACREEDOR).CONTADORFACTURAS) := M_Facturas(v_contadorFacturas);
@@ -1042,7 +1042,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             END IF;
         END IF;
     END CalcularBloqueAcreedor;
-    
+
     /****************************************************************************************************************/
     /* Nombre: CalcularFicherosGenerados */
     /* Descripcion: Calcula los fichero a generar */
@@ -1057,31 +1057,31 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
     /*      En caso de error devuelve el mensaje de error Oracle correspondiente. */
     /* */
     /* Version: 1.0 - Fecha Creacion: 11/03/2015 - Autor: Jorge Paez Trivino */
-    /****************************************************************************************************************/    
+    /****************************************************************************************************************/
     PROCEDURE CalcularFicherosGenerados(
         p_RegAcreedor IN REG_ACREEDOR,
-        p_RegFacturas IN REG_FACTURAS, 
+        p_RegFacturas IN REG_FACTURAS,
         p_numFicheros IN OUT NUMBER,
-        M_Ficheros IN OUT TAB_FICHERO, 
+        M_Ficheros IN OUT TAB_FICHERO,
         p_CodRetorno OUT VARCHAR2,
         p_DatosError OUT VARCHAR2
     ) IS
-        
+
         v_Datoserror VARCHAR2(4000) := Null;
-        
-    BEGIN                
+
+    BEGIN
          -- Obtengo todos los disquetes de cargos
         IF (p_RegAcreedor.CONFIGFICHEROSESQUEMA=0) THEN -- 0=ficheroCORE+COR1+B2B
             IF (p_RegAcreedor.CONFIGFICHEROSSECUENCIA=0) THEN -- 0=ficheroFRST+RCUR
-            
+
                 -- Compruebo que tiene facturas
-                IF (p_RegFacturas.CONTADORFACTURASCOREFRST + p_RegFacturas.CONTADORFACTURASCORERCUR + 
+                IF (p_RegFacturas.CONTADORFACTURASCOREFRST + p_RegFacturas.CONTADORFACTURASCORERCUR +
                     p_RegFacturas.CONTADORFACTURASCOR1FRST + p_RegFacturas.CONTADORFACTURASCOR1RCUR +
-                    p_RegFacturas.CONTADORFACTURASB2BFRST + p_RegFacturas.CONTADORFACTURASB2BRCUR > 0) THEN                    
+                    p_RegFacturas.CONTADORFACTURASB2BFRST + p_RegFacturas.CONTADORFACTURASB2BRCUR > 0) THEN
                     p_numFicheros := p_numFicheros + 1;
                     M_Ficheros(p_numFicheros).NOMBREFICHEROXML := 'CORE_COR1_B2B(FRST_RCUR)';
                     M_Ficheros(p_numFicheros).NOMBREFICHEROTXT := 'CORE(FRST_RCUR)';
-                    v_Datoserror := 'CalcularFicherosGenerados: Llamadas a la funcion CalcularBloqueAcreedor'; 
+                    v_Datoserror := 'CalcularFicherosGenerados: Llamadas a la funcion CalcularBloqueAcreedor';
                     CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASCOREFRST, p_RegFacturas.M_FACTURASCOREFRST, p_RegFacturas.FECHACARGO_COREFRST, TRUE, M_Ficheros(p_numFicheros));
                     CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASCORERCUR, p_RegFacturas.M_FACTURASCORERCUR, p_RegFacturas.FECHACARGO_CORERCUR, TRUE, M_Ficheros(p_numFicheros));
                     CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASCOR1FRST, p_RegFacturas.M_FACTURASCOR1FRST, p_RegFacturas.FECHACARGO_COR1, FALSE, M_Ficheros(p_numFicheros));
@@ -1092,9 +1092,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
 
             ELSE -- 1=ficheroCORE+COR1 + ficheroB2B; 2=ficheroCORE + ficheroCOR1 + ficheroB2B
                 IF (p_RegAcreedor.CONFIGFICHEROSSECUENCIA=1) THEN -- 1=ficheroFRST + ficheroRCUR
-                
+
                     -- Compruebo que tiene facturas
-                    IF (p_RegFacturas.CONTADORFACTURASCOREFRST + p_RegFacturas.CONTADORFACTURASCOR1FRST + p_RegFacturas.CONTADORFACTURASB2BFRST > 0) THEN                    
+                    IF (p_RegFacturas.CONTADORFACTURASCOREFRST + p_RegFacturas.CONTADORFACTURASCOR1FRST + p_RegFacturas.CONTADORFACTURASB2BFRST > 0) THEN
                         p_numFicheros := p_numFicheros + 1;
                         M_Ficheros(p_numFicheros).NOMBREFICHEROXML := 'CORE_COR1_B2B(FRST)';
                         M_Ficheros(p_numFicheros).NOMBREFICHEROTXT := 'CORE(FRST)';
@@ -1104,9 +1104,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASB2BFRST, p_RegFacturas.M_FACTURASB2BFRST, p_RegFacturas.FECHACARGO_B2B, FALSE, M_Ficheros(p_numFicheros));
                     END IF;
                 END IF;
-                
+
                 -- Compruebo que tiene facturas
-                IF (p_RegFacturas.CONTADORFACTURASCORERCUR + p_RegFacturas.CONTADORFACTURASCOR1RCUR + p_RegFacturas.CONTADORFACTURASB2BRCUR > 0) THEN                
+                IF (p_RegFacturas.CONTADORFACTURASCORERCUR + p_RegFacturas.CONTADORFACTURASCOR1RCUR + p_RegFacturas.CONTADORFACTURASB2BRCUR > 0) THEN
                     p_numFicheros := p_numFicheros + 1;
                     M_Ficheros(p_numFicheros).NOMBREFICHEROXML := 'CORE_COR1_B2B(RCUR)';
                     M_Ficheros(p_numFicheros).NOMBREFICHEROTXT := 'CORE(RCUR)';
@@ -1116,13 +1116,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASB2BRCUR, p_RegFacturas.M_FACTURASB2BRCUR, p_RegFacturas.FECHACARGO_B2B, FALSE, M_Ficheros(p_numFicheros));
                 END IF;
             END IF;
-                                                
+
         ELSIF (p_RegAcreedor.CONFIGFICHEROSESQUEMA=1) THEN -- 1=ficheroCORE+COR1 + ficheroB2B
             IF (p_RegAcreedor.CONFIGFICHEROSSECUENCIA=0) THEN -- 0=ficheroFRST+RCUR
-            
+
                 -- Compruebo que tiene facturas
-                IF (p_RegFacturas.CONTADORFACTURASCOREFRST + p_RegFacturas.CONTADORFACTURASCORERCUR + 
-                    p_RegFacturas.CONTADORFACTURASCOR1FRST + p_RegFacturas.CONTADORFACTURASCOR1RCUR > 0) THEN                                        
+                IF (p_RegFacturas.CONTADORFACTURASCOREFRST + p_RegFacturas.CONTADORFACTURASCORERCUR +
+                    p_RegFacturas.CONTADORFACTURASCOR1FRST + p_RegFacturas.CONTADORFACTURASCOR1RCUR > 0) THEN
                     p_numFicheros := p_numFicheros + 1;
                     M_Ficheros(p_numFicheros).NOMBREFICHEROXML := 'CORE_COR1(FRST_RCUR)';
                     M_Ficheros(p_numFicheros).NOMBREFICHEROTXT := 'CORE(FRST_RCUR)';
@@ -1132,9 +1132,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASCOR1FRST, p_RegFacturas.M_FACTURASCOR1FRST, p_RegFacturas.FECHACARGO_COR1, FALSE, M_Ficheros(p_numFicheros));
                     CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASCOR1RCUR, p_RegFacturas.M_FACTURASCOR1RCUR, p_RegFacturas.FECHACARGO_COR1,FALSE, M_Ficheros(p_numFicheros));
                 END IF;
-                
+
                 -- Compruebo que tiene facturas
-                IF (p_RegFacturas.CONTADORFACTURASB2BFRST + p_RegFacturas.CONTADORFACTURASB2BRCUR > 0) THEN                                    
+                IF (p_RegFacturas.CONTADORFACTURASB2BFRST + p_RegFacturas.CONTADORFACTURASB2BRCUR > 0) THEN
                     p_numFicheros := p_numFicheros + 1;
                     M_Ficheros(p_numFicheros).NOMBREFICHEROXML := 'B2B(FRST_RCUR)';
                     M_Ficheros(p_numFicheros).NOMBREFICHEROTXT := '';
@@ -1142,12 +1142,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASB2BFRST, p_RegFacturas.M_FACTURASB2BFRST, p_RegFacturas.FECHACARGO_B2B, FALSE, M_Ficheros(p_numFicheros));
                     CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASB2BRCUR, p_RegFacturas.M_FACTURASB2BRCUR, p_RegFacturas.FECHACARGO_B2B, FALSE, M_Ficheros(p_numFicheros));
                 END IF;
-            
+
             ELSE -- 1=ficheroFRST + ficheroRCUR; 2=ficheroTodoRCUR
                 IF (p_RegAcreedor.CONFIGFICHEROSSECUENCIA=1) THEN -- 1=ficheroFRST + ficheroRCUR
-                
+
                     -- Compruebo que tiene facturas
-                    IF (p_RegFacturas.CONTADORFACTURASCOREFRST + p_RegFacturas.CONTADORFACTURASCOR1FRST > 0) THEN                                            
+                    IF (p_RegFacturas.CONTADORFACTURASCOREFRST + p_RegFacturas.CONTADORFACTURASCOR1FRST > 0) THEN
                         p_numFicheros := p_numFicheros + 1;
                         M_Ficheros(p_numFicheros).NOMBREFICHEROXML := 'CORE_COR1(FRST)';
                         M_Ficheros(p_numFicheros).NOMBREFICHEROTXT := 'CORE(FRST)';
@@ -1155,9 +1155,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASCOREFRST, p_RegFacturas.M_FACTURASCOREFRST, p_RegFacturas.FECHACARGO_COREFRST, TRUE, M_Ficheros(p_numFicheros));
                         CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASCOR1FRST, p_RegFacturas.M_FACTURASCOR1FRST, p_RegFacturas.FECHACARGO_COR1, FALSE, M_Ficheros(p_numFicheros));
                     END IF;
-                    
+
                     -- Compruebo que tiene facturas
-                    IF (p_RegFacturas.CONTADORFACTURASB2BFRST > 0) THEN                    
+                    IF (p_RegFacturas.CONTADORFACTURASB2BFRST > 0) THEN
                         p_numFicheros := p_numFicheros + 1;
                         M_Ficheros(p_numFicheros).NOMBREFICHEROXML := 'B2B(FRST)';
                         M_Ficheros(p_numFicheros).NOMBREFICHEROTXT := '';
@@ -1165,9 +1165,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASB2BFRST, p_RegFacturas.M_FACTURASB2BFRST, p_RegFacturas.FECHACARGO_B2B, FALSE, M_Ficheros(p_numFicheros));
                     END IF;
                 END IF;
-            
+
                 -- Compruebo que tiene facturas
-                IF (p_RegFacturas.CONTADORFACTURASCORERCUR + p_RegFacturas.CONTADORFACTURASCOR1RCUR > 0) THEN                                    
+                IF (p_RegFacturas.CONTADORFACTURASCORERCUR + p_RegFacturas.CONTADORFACTURASCOR1RCUR > 0) THEN
                     p_numFicheros := p_numFicheros + 1;
                     M_Ficheros(p_numFicheros).NOMBREFICHEROXML := 'CORE_COR1(RCUR)';
                     M_Ficheros(p_numFicheros).NOMBREFICHEROTXT := 'CORE(RCUR)';
@@ -1175,9 +1175,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASCORERCUR, p_RegFacturas.M_FACTURASCORERCUR, p_RegFacturas.FECHACARGO_CORERCUR, TRUE, M_Ficheros(p_numFicheros));
                     CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASCOR1RCUR, p_RegFacturas.M_FACTURASCOR1RCUR, p_RegFacturas.FECHACARGO_COR1, FALSE, M_Ficheros(p_numFicheros));
                 END IF;
-                
+
                 -- Compruebo que tiene facturas
-                IF (p_RegFacturas.CONTADORFACTURASB2BRCUR > 0) THEN                    
+                IF (p_RegFacturas.CONTADORFACTURASB2BRCUR > 0) THEN
                     p_numFicheros := p_numFicheros + 1;
                     M_Ficheros(p_numFicheros).NOMBREFICHEROXML := 'B2B(RCUR)';
                     M_Ficheros(p_numFicheros).NOMBREFICHEROTXT := '';
@@ -1185,12 +1185,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASB2BRCUR, p_RegFacturas.M_FACTURASB2BRCUR, p_RegFacturas.FECHACARGO_B2B, FALSE, M_Ficheros(p_numFicheros));
                 END IF;
             END IF;
-                        
+
         ELSIF (p_RegAcreedor.CONFIGFICHEROSESQUEMA=2) THEN -- 2=ficheroCORE + ficheroCOR1 + ficheroB2B
             IF (p_RegAcreedor.CONFIGFICHEROSSECUENCIA=0) THEN -- 0=ficheroFRST+RCUR
-            
+
                 -- Compruebo que tiene facturas
-                IF (p_RegFacturas.CONTADORFACTURASCOREFRST + p_RegFacturas.CONTADORFACTURASCORERCUR > 0) THEN                                            
+                IF (p_RegFacturas.CONTADORFACTURASCOREFRST + p_RegFacturas.CONTADORFACTURASCORERCUR > 0) THEN
                     p_numFicheros := p_numFicheros + 1;
                     M_Ficheros(p_numFicheros).NOMBREFICHEROXML := 'CORE(FRST_RCUR)';
                     M_Ficheros(p_numFicheros).NOMBREFICHEROTXT := 'CORE(FRST_RCUR)';
@@ -1198,85 +1198,85 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASCOREFRST, p_RegFacturas.M_FACTURASCOREFRST, p_RegFacturas.FECHACARGO_COREFRST, TRUE, M_Ficheros(p_numFicheros));
                     CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASCORERCUR, p_RegFacturas.M_FACTURASCORERCUR, p_RegFacturas.FECHACARGO_CORERCUR, TRUE, M_Ficheros(p_numFicheros));
                 END IF;
-                
+
                 -- Compruebo que tiene facturas
-                IF (p_RegFacturas.CONTADORFACTURASCOR1FRST + p_RegFacturas.CONTADORFACTURASCOR1RCUR > 0) THEN                                            
-                    p_numFicheros := p_numFicheros + 1; 
+                IF (p_RegFacturas.CONTADORFACTURASCOR1FRST + p_RegFacturas.CONTADORFACTURASCOR1RCUR > 0) THEN
+                    p_numFicheros := p_numFicheros + 1;
                     M_Ficheros(p_numFicheros).NOMBREFICHEROXML := 'COR1(FRST_RCUR)';
                     M_Ficheros(p_numFicheros).NOMBREFICHEROTXT := '';
                     v_Datoserror := 'CalcularFicherosGenerados: Llamadas a la funcion CalcularBloqueAcreedor';
                     CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASCOR1FRST, p_RegFacturas.M_FACTURASCOR1FRST, p_RegFacturas.FECHACARGO_COR1, FALSE, M_Ficheros(p_numFicheros));
                     CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASCOR1RCUR, p_RegFacturas.M_FACTURASCOR1RCUR, p_RegFacturas.FECHACARGO_COR1, FALSE, M_Ficheros(p_numFicheros));
                 END IF;
-                
+
                 -- Compruebo que tiene facturas
-                IF (p_RegFacturas.CONTADORFACTURASB2BFRST + p_RegFacturas.CONTADORFACTURASB2BRCUR > 0) THEN                                            
-                    p_numFicheros := p_numFicheros + 1; 
+                IF (p_RegFacturas.CONTADORFACTURASB2BFRST + p_RegFacturas.CONTADORFACTURASB2BRCUR > 0) THEN
+                    p_numFicheros := p_numFicheros + 1;
                     M_Ficheros(p_numFicheros).NOMBREFICHEROXML := 'B2B(FRST_RCUR)';
-                    M_Ficheros(p_numFicheros).NOMBREFICHEROTXT := ''; 
+                    M_Ficheros(p_numFicheros).NOMBREFICHEROTXT := '';
                     v_Datoserror := 'CalcularFicherosGenerados: Llamadas a la funcion CalcularBloqueAcreedor';
                     CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASB2BFRST, p_RegFacturas.M_FACTURASB2BFRST, p_RegFacturas.FECHACARGO_B2B, FALSE, M_Ficheros(p_numFicheros));
-                    CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASB2BRCUR, p_RegFacturas.M_FACTURASB2BRCUR, p_RegFacturas.FECHACARGO_B2B, FALSE, M_Ficheros(p_numFicheros)); 
+                    CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASB2BRCUR, p_RegFacturas.M_FACTURASB2BRCUR, p_RegFacturas.FECHACARGO_B2B, FALSE, M_Ficheros(p_numFicheros));
                 END IF;
-            
+
             ELSE -- 1=ficheroFRST + ficheroRCUR; 2=ficheroTodoRCUR
                 IF (p_RegAcreedor.CONFIGFICHEROSSECUENCIA=1) THEN -- 1=ficheroFRST + ficheroRCUR
-                
+
                     -- Compruebo que tiene facturas
-                    IF (p_RegFacturas.CONTADORFACTURASCOREFRST > 0) THEN                                            
-                        p_numFicheros := p_numFicheros + 1; 
+                    IF (p_RegFacturas.CONTADORFACTURASCOREFRST > 0) THEN
+                        p_numFicheros := p_numFicheros + 1;
                         M_Ficheros(p_numFicheros).NOMBREFICHEROXML := 'CORE(FRST)';
                         M_Ficheros(p_numFicheros).NOMBREFICHEROTXT := 'CORE(FRST)';
                         v_Datoserror := 'CalcularFicherosGenerados: Llamadas a la funcion CalcularBloqueAcreedor';
                         CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASCOREFRST, p_RegFacturas.M_FACTURASCOREFRST, p_RegFacturas.FECHACARGO_COREFRST, TRUE, M_Ficheros(p_numFicheros));
-                    END IF; 
-                    
+                    END IF;
+
                     -- Compruebo que tiene facturas
-                    IF (p_RegFacturas.CONTADORFACTURASCOR1FRST > 0) THEN                                            
-                        p_numFicheros := p_numFicheros + 1; 
+                    IF (p_RegFacturas.CONTADORFACTURASCOR1FRST > 0) THEN
+                        p_numFicheros := p_numFicheros + 1;
                         M_Ficheros(p_numFicheros).NOMBREFICHEROXML := 'COR1(FRST)';
                         M_Ficheros(p_numFicheros).NOMBREFICHEROTXT := '';
                         v_Datoserror := 'CalcularFicherosGenerados: Llamadas a la funcion CalcularBloqueAcreedor';
                         CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASCOR1FRST, p_RegFacturas.M_FACTURASCOR1FRST, p_RegFacturas.FECHACARGO_COR1, FALSE, M_Ficheros(p_numFicheros));
-                    END IF; 
-                    
+                    END IF;
+
                     -- Compruebo que tiene facturas
-                    IF (p_RegFacturas.CONTADORFACTURASB2BFRST > 0) THEN                    
-                        p_numFicheros := p_numFicheros + 1; 
+                    IF (p_RegFacturas.CONTADORFACTURASB2BFRST > 0) THEN
+                        p_numFicheros := p_numFicheros + 1;
                         M_Ficheros(p_numFicheros).NOMBREFICHEROXML := 'B2B(FRST)';
                         M_Ficheros(p_numFicheros).NOMBREFICHEROTXT := '';
                         v_Datoserror := 'CalcularFicherosGenerados: Llamadas a la funcion CalcularBloqueAcreedor';
                         CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASB2BFRST, p_RegFacturas.M_FACTURASB2BFRST, p_RegFacturas.FECHACARGO_B2B, FALSE, M_Ficheros(p_numFicheros));
-                    END IF; 
-                END IF; 
-                
+                    END IF;
+                END IF;
+
                 -- Compruebo que tiene facturas
-                IF (p_RegFacturas.CONTADORFACTURASCORERCUR > 0) THEN                                            
-                    p_numFicheros := p_numFicheros + 1; 
+                IF (p_RegFacturas.CONTADORFACTURASCORERCUR > 0) THEN
+                    p_numFicheros := p_numFicheros + 1;
                     M_Ficheros(p_numFicheros).NOMBREFICHEROXML := 'CORE(RCUR)';
                     M_Ficheros(p_numFicheros).NOMBREFICHEROTXT := 'CORE(RCUR)';
                     v_Datoserror := 'CalcularFicherosGenerados: Llamadas a la funcion CalcularBloqueAcreedor';
                     CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASCORERCUR, p_RegFacturas.M_FACTURASCORERCUR, p_RegFacturas.FECHACARGO_CORERCUR, TRUE, M_Ficheros(p_numFicheros));
-                END IF; 
-                    
+                END IF;
+
                 -- Compruebo que tiene facturas
-                IF (p_RegFacturas.CONTADORFACTURASCOR1RCUR > 0) THEN                                            
-                    p_numFicheros := p_numFicheros + 1; 
+                IF (p_RegFacturas.CONTADORFACTURASCOR1RCUR > 0) THEN
+                    p_numFicheros := p_numFicheros + 1;
                     M_Ficheros(p_numFicheros).NOMBREFICHEROXML := 'COR1(RCUR)';
                     M_Ficheros(p_numFicheros).NOMBREFICHEROTXT := '';
                     v_Datoserror := 'CalcularFicherosGenerados: Llamadas a la funcion CalcularBloqueAcreedor';
                     CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASCOR1RCUR, p_RegFacturas.M_FACTURASCOR1RCUR, p_RegFacturas.FECHACARGO_COR1, FALSE, M_Ficheros(p_numFicheros));
-                END IF; 
-                    
+                END IF;
+
                 -- Compruebo que tiene facturas
-                IF (p_RegFacturas.CONTADORFACTURASB2BRCUR > 0) THEN                    
-                    p_numFicheros := p_numFicheros + 1; 
+                IF (p_RegFacturas.CONTADORFACTURASB2BRCUR > 0) THEN
+                    p_numFicheros := p_numFicheros + 1;
                     M_Ficheros(p_numFicheros).NOMBREFICHEROXML := 'B2B(RCUR)';
                     M_Ficheros(p_numFicheros).NOMBREFICHEROTXT := '';
                     v_Datoserror := 'CalcularFicherosGenerados: Llamadas a la funcion CalcularBloqueAcreedor';
                     CalcularBloqueAcreedor(p_RegAcreedor, p_RegFacturas.CONTADORFACTURASB2BRCUR, p_RegFacturas.M_FACTURASB2BRCUR, p_RegFacturas.FECHACARGO_B2B, FALSE, M_Ficheros(p_numFicheros));
                 END IF;
-            END IF; 
+            END IF;
         END IF;
 
         v_Datoserror := 'CalcularFicherosGenerados: Actualizacion de los parametros de salida';
@@ -1286,7 +1286,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         EXCEPTION
             WHEN OTHERS THEN
                 p_Codretorno := To_Char(Sqlcode);
-                p_Datoserror := v_Datoserror || ', ' || Sqlerrm; 
+                p_Datoserror := v_Datoserror || ', ' || Sqlerrm;
     END CalcularFicherosGenerados;
 
     /****************************************************************************************************************/
@@ -1329,7 +1329,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         SELECT NVL(MAX(IDDISQUETECARGOS), 0) + 1
             INTO p_IdDisqueteCargos
         FROM FAC_DISQUETECARGOS
-        WHERE IDINSTITUCION = p_Idinstitucion; 
+        WHERE IDINSTITUCION = p_Idinstitucion;
 
         v_Datoserror := 'InsertarDisqueteCargos: Insercion en FAC_DISQUETECARGOS';
         INSERT INTO FAC_DISQUETECARGOS (
@@ -1383,7 +1383,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
     /* Nombre: insertarFIED*/
     /* Descripcion: Inserta un registro en FAC_FACTURAINCLUIDAENDISQUETE */
     /* */
-    /* P_IDDISQUETECARGOS - IN - Identificador del disquete de cargos - NUMBER(10) */    
+    /* P_IDDISQUETECARGOS - IN - Identificador del disquete de cargos - NUMBER(10) */
     /* P_REGFACTURA - IN - Registro con los datos de la factura - REG_FACTURA */
     /* P_USUMODIFICACION - IN - Usuario que realiza la modificacion - NUMBER */
     /* P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10) */
@@ -1415,7 +1415,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             AND IDDISQUETECARGOS = p_idDisqueteCargos;
 
         v_Datoserror := 'insertarFIED: Insercion en la tabla FAC_FACTURAINCLUIDAENDISQUETE';
-        INSERT INTO FAC_FACTURAINCLUIDAENDISQUETE(
+        INSERT INTO FAC_FACTURAINCLUIDAENDISQUETE( 
             IDINSTITUCION,
             IDDISQUETECARGOS,
             IDFACTURAINCLUIDAENDISQUETE,
@@ -1545,48 +1545,49 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         v_Direccion2 VARCHAR2(1000);
         v_Direccion3 VARCHAR2(1000);
         v_Pais CEN_PAIS.COD_ISO%TYPE;
-        
+
         v_Datoserror VARCHAR2(4000) := Null;
         e_Error EXCEPTION;
 
     BEGIN
-        v_Datoserror := 'CrearCabeceraAcreedorFecha: Compruebo si no ha obtenido la fecha de cargo para el fichero';
+        p_Datoserror := 'Generando fichero de adeudos TXT: CrearCabeceraAcreedorFecha: Compruebo si no ha obtenido la fecha de cargo para el fichero';
         IF (p_RegBloqueAcreedor.FECHACARGO IS NULL) THEN
             RAISE e_Error;
         END IF;
 
-        v_Datoserror := 'CrearCabeceraAcreedorFecha: Transformo las variables de direccion de facturacion del acreedor';
+        p_Datoserror := 'Generando fichero de adeudos TXT: CrearCabeceraAcreedorFecha: Transformo las variables de direccion de facturacion del acreedor';
         v_Direccion1 := NVL(p_RegAcreedor.DIRECCION.DOMICILIO, '');
         v_Direccion2 := NVL(p_RegAcreedor.DIRECCION.CODIGOPOSTAL, '') || ' ' || NVL(p_RegAcreedor.DIRECCION.POBLACION_NOMBRE, '');
         v_Direccion3 := NVL(p_RegAcreedor.DIRECCION.PROVINCIA_NOMBRE, '');
         v_Pais := NVL(p_RegAcreedor.DIRECCION.PAIS_ISO, '');
 
-        v_Datoserror := 'CrearCabeceraAcreedorFecha: Actualizacion del registro';
-        p_Registro :=
-            Lpad(Nvl(c_CodRegistro, 0), 2, 0) || -- 1. CodigoRegistro NUMBER (2)
-            Lpad(Nvl(PKG_SIGA_CONSTANTES.c_IdCuaderno, 0), 4, 0) || MOD(PKG_SIGA_CONSTANTES.c_IdCuaderno, 7) ||-- 2. VersionCuaderno NUMBER (5)
-            Lpad(Nvl(c_CodDato, 0), 3, 0) || -- 3. CodigoDato NUMBER (3)
-            Rpad(Nvl(p_RegAcreedor.IDPERSONASEPAINSTITUCION, ' '), 35, ' ') || -- 4. IdentificadorAcreedor VARCHAR2(35)
-            Rpad(Nvl(p_RegBloqueAcreedor.FECHACARGO, '0'), 8, '0') ||-- 5. FechaCobro NUMBER(8)
-            Rpad(Nvl(p_RegAcreedor.NOMBRE, ' '), 70, ' ') ||-- 6. NombreAcreedor VARCHAR2(70)
-            Rpad(Nvl(v_Direccion1, ' '), 50, ' ') || -- 7. DireccionAcreedor [tipo vía + nombre vía + número + piso] VARCHAR2(50) OPCIONAL
-            Rpad(Nvl(v_Direccion2, ' '), 50, ' ') || -- 8. DireccionAcreedor [código postal + nombre localidad] VARCHAR2(50) OPCIONAL
-            Rpad(Nvl(v_Direccion3, ' '), 40, ' ') || -- 9. DireccionAcreedor [nombre provincia] VARCHAR2(40) OPCIONAL
-            Rpad(Nvl(v_Pais, ' '), 2, ' ') || -- 10. PaisDireccionAcreedor [ISO 3166] VARCHAR2(2) OPCIONAL
-            Rpad(Nvl(p_RegAcreedor.BANCO_IBAN, ' '), 34, ' ') || -- 11. IBANAcreedor VARCHAR2(34)
-            Rpad(' ', 301, ' '); -- 12. Libre VARCHAR2(301)
+        p_Datoserror := 'Generando fichero de adeudos TXT: CrearCabeceraAcreedorFecha: Actualizacion del registro';
+        p_Registro := '';
+        p_Registro := p_Registro || Lpad(Nvl(c_CodRegistro, 0), 2, 0); -- 1. CodigoRegistro NUMBER (2)
+        p_Registro := p_Registro || Lpad(Nvl(PKG_SIGA_CONSTANTES.c_IdCuaderno, 0), 4, 0) || MOD(PKG_SIGA_CONSTANTES.c_IdCuaderno, 7); -- 2. VersionCuaderno NUMBER (5)
+        p_Registro := p_Registro || Lpad(Nvl(c_CodDato, 0), 3, 0); -- 3. CodigoDato NUMBER (3)
+        p_Registro := p_Registro || Rpad(Nvl(p_RegAcreedor.IDPERSONASEPAINSTITUCION, ' '), 35, ' '); -- 4. IdentificadorAcreedor VARCHAR2(35)
+        p_Registro := p_Registro || Rpad(Nvl(p_RegBloqueAcreedor.FECHACARGO, '0'), 8, '0'); -- 5. FechaCobro NUMBER(8)
+        p_Registro := p_Registro || Rpad(Nvl(p_RegAcreedor.NOMBRE, ' '), 70, ' '); -- 6. NombreAcreedor VARCHAR2(70)
+        p_Registro := p_Registro || Rpad(Nvl(v_Direccion1, ' '), 50, ' '); -- 7. DireccionAcreedor [tipo vía + nombre vía + número + piso] VARCHAR2(50) OPCIONAL
+        p_Registro := p_Registro || Rpad(Nvl(v_Direccion2, ' '), 50, ' '); -- 8. DireccionAcreedor [código postal + nombre localidad] VARCHAR2(50) OPCIONAL
+        p_Registro := p_Registro || Rpad(Nvl(v_Direccion3, ' '), 40, ' '); -- 9. DireccionAcreedor [nombre provincia] VARCHAR2(40) OPCIONAL
+        p_Registro := p_Registro || Rpad(Nvl(v_Pais, ' '), 2, ' '); -- 10. PaisDireccionAcreedor [ISO 3166] VARCHAR2(2) OPCIONAL
 
-        v_Datoserror := 'CrearCabeceraAcreedorFecha: Llamada a la funcion RevisarCaracteresRegistro';
+        p_Registro := p_Registro || Rpad(Nvl(p_RegAcreedor.BANCO_IBAN, ' '), 34, ' '); -- 11. IBANAcreedor VARCHAR2(34)
+        p_Registro := p_Registro || Rpad(' ', 301, ' '); -- 12. Libre VARCHAR2(301)
+
+        p_Datoserror := 'CrearCabeceraAcreedorFecha: Llamada a la funcion RevisarCaracteresRegistro';
         p_Registro := F_RevisarCaracteresSEPA(p_Registro);
 
-        v_Datoserror := 'CrearCabeceraAcreedorFecha: Actualizacion de los parametros de error';
+        p_Datoserror := 'CrearCabeceraAcreedorFecha: Actualizacion de los parametros de error';
         p_Codretorno := To_Char(0);
         p_Datoserror := Null;
 
         EXCEPTION
             WHEN OTHERS THEN
                 p_Codretorno := To_Char(Sqlcode);
-                p_Datoserror := v_Datoserror || ', ' || Sqlerrm;
+                p_Datoserror := p_Datoserror || ', ' || Sqlerrm;
     END CrearCabeceraAcreedorFecha;
 
     /****************************************************************************************************************/
@@ -1677,7 +1678,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 EXIT; --Salgo del bucle:
             END IF;
         END LOOP;
-        
+
         IF (p_RegFactura.SECUENCIA = 0) THEN -- 0:FRST; 1:RCUR
             v_Secuencia := 'FRST';
         ELSE
@@ -1881,12 +1882,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 p_Codretorno := To_Char(Sqlcode);
                 p_Datoserror := v_Datoserror || ', ' || Sqlerrm;
     END CrearTotalFichero;
-    
+
     /****************************************************************************************************************/
     /* Nombre: CabPresentadorXML */
     /* Descripcion: Crea un bloque de registros del Presentador en formato xml (SEPA) */
     /* l_sepa - IN OUT - Contenedor del documento xml a generar */
-    /* l_CstmrDrctDbtInitn_node - IN - Nodo raiz del mensaje apartir del cual sigue la Cabezera Presentador */  
+    /* l_CstmrDrctDbtInitn_node - IN - Nodo raiz del mensaje apartir del cual sigue la Cabezera Presentador */
     /* P_REGACREEDOR - IN - Registro con los datos del Presentador-acreedor - REG_ACREEDOR */
     /* P_REGFICHERO - IN - Registro con los datos del fichero - REG_FICHERO */
     /* P_CODRETORNO - OUT - Devuelve 0 en caso de que la ejecucion haya sido OK - VARCHAR2(10) */
@@ -1895,7 +1896,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
     /*      En caso de error devuelve el mensaje de error Oracle correspondiente. */
     /* */
     /* Version: 1.0 - Fecha Creacion: 10/06/2015 - Autor: Oscar de la Torre Noheda */
-    /* Version: 2.0 - Fecha Modificacion: 23/06/2015 - Autor: Jorge Paez Trivino 
+    /* Version: 2.0 - Fecha Modificacion: 23/06/2015 - Autor: Jorge Paez Trivino
     - Revision de codigo XML SEPA */
     /****************************************************************************************************************/
 
@@ -1908,7 +1909,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         p_DatosError OUT VARCHAR2
     ) IS
 
-        l_GrpHdr_node DBMS_XMLDOM.DomNode; 
+        l_GrpHdr_node DBMS_XMLDOM.DomNode;
         l_MsgId_node DBMS_XMLDOM.DomNode;
         l_CreDtTm_node DBMS_XMLDOM.DomNode;
         l_NbOfTxs_node DBMS_XMLDOM.DomNode;
@@ -1918,8 +1919,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         l_Id_node DBMS_XMLDOM.DomNode;
         l_Id2_node DBMS_XMLDOM.DomNode;
         l_OrgId_node DBMS_XMLDOM.DomNode;
-        l_Othr_node DBMS_XMLDOM.DomNode; 
-        l_node DBMS_XMLDOM.DomNode; 
+        l_Othr_node DBMS_XMLDOM.DomNode;
+        l_node DBMS_XMLDOM.DomNode;
         v_IdMensaje VARCHAR2(35); --MsgId - Identificacion del mensaje
         v_FechaCreacion VARCHAR2(19); --CreDtTm - Fecha y hora de creacion
         v_NombrePresentador VARCHAR2(70); --Nm - Nombre
@@ -2008,7 +2009,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
     /*      En caso de error devuelve el mensaje de error Oracle correspondiente. */
     /* */
     /* Version: 1.0 - Fecha Creacion: 10/06/2015 - Autor: Oscar de la Torre Noheda */
-    /* Version: 2.0 - Fecha Modificacion: 23/06/2015 - Autor: Jorge Paez Trivino 
+    /* Version: 2.0 - Fecha Modificacion: 23/06/2015 - Autor: Jorge Paez Trivino
     - Revision de codigo XML SEPA */
     /****************************************************************************************************************/
     PROCEDURE CabAcreedorXML(
@@ -2023,7 +2024,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
     ) IS
 
         l_PmtInfId_node DBMS_XMLDOM.DomNode;
-        l_PmtMtd_node DBMS_XMLDOM.DomNode; 
+        l_PmtMtd_node DBMS_XMLDOM.DomNode;
         l_NbOfTxs_node DBMS_XMLDOM.DomNode;
         l_CtrlSum_node DBMS_XMLDOM.DomNode;
         l_PmtTpInf_node DBMS_XMLDOM.DomNode;
@@ -2049,15 +2050,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         l_BIC_node DBMS_XMLDOM.DomNode;
         l_CdtrSchmeId_node DBMS_XMLDOM.DomNode;
         l_PrvtId_node DBMS_XMLDOM.DomNode;
-        l_Othr_node DBMS_XMLDOM.DomNode; 
+        l_Othr_node DBMS_XMLDOM.DomNode;
         l_node DBMS_XMLDOM.DomNode;
         l_MsgId DBMS_XMLDOM.DomNode;
         l_child_MsgId DBMS_XMLDOM.DomNode;
         v_MetodoPago CONSTANT VARCHAR2(2) := 'DD'; --PmtMtd - Metodo de pago
         v_CodMensaje CONSTANT VARCHAR2(4) := 'SEPA'; --Cd - Codigo del mensaje
         v_MsgId VARCHAR2(35); --MsgId - Identificacion del mensaje
-        v_IdPago VARCHAR2(35); --PmtInfId - Identificacion de la informacion del pago        
-        v_SumaFacturas VARCHAR2(19); --CtrlSum - Suma de importe de facturas        
+        v_IdPago VARCHAR2(35); --PmtInfId - Identificacion de la informacion del pago
+        v_SumaFacturas VARCHAR2(19); --CtrlSum - Suma de importe de facturas
         v_Esquema VARCHAR2(4); --Cd - Codigo esquema
         v_Secuencia VARCHAR2(4); --SeqTv - Secuencia adeudo
         v_NomAcreedor VARCHAR2(70); --Nm - Nombre
@@ -2067,7 +2068,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         v_DireccionResto VARCHAR2(70); --AdrLine - Direccion2
         v_Iban VARCHAR2(34); --IBAN - IBAN banco acreedor
         v_Bic VARCHAR2(11); --BIC - BIC banco acreedor
-        v_Identificacion VARCHAR2(35); --Id - Identificacion del acreedor        
+        v_Identificacion VARCHAR2(35); --Id - Identificacion del acreedor
         v_Datoserror VARCHAR2(4000) := Null;
         e_Error EXCEPTION;
 
@@ -2113,7 +2114,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         v_Bic := F_RevisarCaracteresSEPA(NVL(TRIM(p_RegAcreedor.BANCO_BIC), ' ')); --BIC - BIC banco acreedor
         v_Iban := F_RevisarCaracteresSEPA(NVL(TRIM(p_RegAcreedor.BANCO_IBAN), ' ')); --IBAN - IBAN banco acreedor
         v_Identificacion := F_RevisarCaracteresSEPA(NVL(TRIM(p_RegAcreedor.IDPERSONASEPAINSTITUCION), ' ')); --Id - Identificacion del acreedor
-        
+
         -- 2.0 [1..n] + Informacion del pago <PmtInf> - Localizacion /Document/CstmrDrctDbtInitn/PmtInf
         v_Datoserror := 'CabAcreedorXML: Creo Nodo PmtInf (Información del pago) - Localización /Document/CstmrDrctDbtInitn/PmtInf';
         l_PmtInf_node := DBMS_XMLDOM.appendChild(l_CstmrDrctDbtInitn_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'PmtInf')));
@@ -2121,11 +2122,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         -- 2.1 [1..1] ++ Identificacion de la informacion del pago <PmtInfId> 35 - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/PmtInfId
         v_Datoserror := 'CabAcreedorXML: Creo Nodo PmtInfId (35 - Identificación de la información del pago) - Localización /Document/CstmrDrctDbtInitn/PmtInf/PmtInfId';
         l_PmtInfId_node := DBMS_XMLDOM.appendChild(l_PmtInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'PmtInfId')));
-        l_node := DBMS_XMLDOM.appendChild(l_PmtInfId_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, v_IdPago))); 
+        l_node := DBMS_XMLDOM.appendChild(l_PmtInfId_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, v_IdPago)));
 
         -- 2.2 [1..1] ++ Metodo de pago <PmtMtd> 2 - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/PmtMtd
         v_Datoserror := 'CabAcreedorXML: Creo Nodo PmtMtd (2 - Método de pago) - Localización /Document/CstmrDrctDbtInitn/PmtInf/PmtMtd';
-        l_PmtMtd_node := DBMS_XMLDOM.appendChild(l_PmtInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'PmtMtd'))); 
+        l_PmtMtd_node := DBMS_XMLDOM.appendChild(l_PmtInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'PmtMtd')));
         l_node := DBMS_XMLDOM.appendChild(l_PmtMtd_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, v_MetodoPago)));
 
         -- 2.4 [0..1] ++ Numero de operaciones <NbOfTxs> 15 - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/NbOfTxs
@@ -2197,7 +2198,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         v_Datoserror := 'CabAcreedorXML: Creo Nodo AdrLine (70 - Dirección en texto libre) - Localización /Document/CstmrDrctDbtInitn/PmtInf/Cdtr/PstlAdr/AdrLine[1]';
         l_AdrLine_node := DBMS_XMLDOM.appendChild(l_PstlAdr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'AdrLine')));
         l_node := DBMS_XMLDOM.appendChild(l_AdrLine_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, v_Direccion)));
-        
+
         IF v_DireccionResto IS NOT NULL THEN
             v_Datoserror := 'CabAcreedorXML: Creo Nodo AdrLine (70 - Dirección en texto libre) - Localización /Document/CstmrDrctDbtInitn/PmtInf/Cdtr/PstlAdr/AdrLine[2]';
             l_AdrLine2_node := DBMS_XMLDOM.appendChild(l_PstlAdr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'AdrLine')));
@@ -2274,7 +2275,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
     /*      En caso de error devuelve el mensaje de error Oracle correspondiente. */
     /* */
     /* Version: 1.0 - Fecha Creacion: 10/06/2015 - Autor: Oscar de la Torre Noheda */
-    /* Version: 2.0 - Fecha Modificacion: 23/06/2015 - Autor: Jorge Paez Trivino 
+    /* Version: 2.0 - Fecha Modificacion: 23/06/2015 - Autor: Jorge Paez Trivino
     - Revision de codigo XML SEPA */
     /****************************************************************************************************************/
    PROCEDURE DeudorIndividualXML(
@@ -2285,7 +2286,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         p_CodRetorno OUT VARCHAR2,
         p_DatosError OUT VARCHAR2
     ) IS
-    
+
         l_DrctDbtTxInf_node DBMS_XMLDOM.DomNode;
         l_PmtId_node DBMS_XMLDOM.DomNode;
         l_EndToEndId_node DBMS_XMLDOM.DomNode;
@@ -2327,7 +2328,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         l_node DBMS_XMLDOM.DomNode;
         v_CodMensaje CONSTANT Varchar2(4) := 'SEPA'; --Cd - Codigo de mensaje
         v_EsColegiado NUMBER(1);
-        v_IdenExtremo VARCHAR2(35); --EndToEndId - Identificacion de extremo a extremo        
+        v_IdenExtremo VARCHAR2(35); --EndToEndId - Identificacion de extremo a extremo
         v_Esquema VARCHAR2(4); --Cd - Codigo de esquema
         v_Secuencia VARCHAR2(4); --SeqTp - Secuencia adeudo
         v_Importe VARCHAR2(19); --InstdAmt - Importe ordenado
@@ -2344,7 +2345,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         v_Concepto VARCHAR2(640); --Ustrd - Concepto
         v_conceptoFinal VARCHAR2(4000);
         v_conceptoActual VARCHAR2(4000);
-        v_Datoserror VARCHAR2(4000) := NULL; 
+        v_Datoserror VARCHAR2(4000) := NULL;
 
         CURSOR C_DatosLineaFactura(P_IDINSTITUCION FAC_LINEAFACTURA.IDINSTITUCION%TYPE, P_IDFACTURA FAC_LINEAFACTURA.IDFACTURA%TYPE) IS
                 SELECT REPLACE(LF.DESCRIPCION, CHR(13) || CHR(10), '') AS Descripcion,
@@ -2361,14 +2362,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             ORDER BY LF.NUMEROORDEN ASC, ImporteTotal DESC, Descripcion ASC;
 
     BEGIN
-    
+
         v_DatosError := 'DeudorIndividualXML: Consulto si es colegiado';
         SELECT COUNT(*)
              INTO v_EsColegiado
         FROM CEN_COLEGIADO
         WHERE IDINSTITUCION = p_RegFactura.IDINSTITUCION
             AND IDPERSONA = p_RegFactura.IDPERSONA;
-    
+
         v_Datoserror := 'DeudorIndividualXML: Calculo el concepto';
         v_conceptoFinal := 'Factura ' || p_RegFactura.NUMEROFACTURA;
         FOR v_DatosLineaFactura IN C_DatosLineaFactura(p_RegFactura.IDINSTITUCION, p_RegFactura.IDFACTURA) LOOP
@@ -2378,19 +2379,19 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                                             ' ' || v_DatosLineaFactura.DESCRIPCIONTIPO ||
                                             ' ' || F_SIGA_FORMATONUMERO(v_DatosLineaFactura.ImporteIVA, 2);
             v_conceptoFinal := v_conceptoFinal || v_conceptoActual;
-            
-            IF p_RegAcreedor.CONFIGCONCEPTOAMPLIADO = 1 THEN -- 0=Concepto140; 1=concepto640 
+
+            IF p_RegAcreedor.CONFIGCONCEPTOAMPLIADO = 1 THEN -- 0=Concepto140; 1=concepto640
                 IF (LENGTH(v_conceptoFinal) > 640) THEN
                     v_conceptoFinal := SUBSTR(v_conceptoFinal, 1, 637) || '...';
                     EXIT; --Salgo del bucle:
                 END IF;
-            
+
             ELSE
                 IF (LENGTH(v_conceptoFinal) > 140) THEN
                     v_conceptoFinal := SUBSTR(v_conceptoFinal, 1, 137) || '...';
                     EXIT; --Salgo del bucle:
                 END IF;
-            END IF;                            
+            END IF;
         END LOOP;
 
         v_Datoserror := 'DeudorIndividualXML: Extraer codigo referencia';
@@ -2427,15 +2428,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         v_Direccion := F_RevisarCaracteresSEPA(NVL(SUBSTR(v_Direccion_Total, 1, 70), ' ')); --AdrLine - Direccion1
         v_DireccionResto := F_RevisarCaracteresSEPA(SUBSTR(TRIM(v_Direccion_Total), 71, 70)); --AdrLine - Direccion2
         v_IdenDeudor := F_RevisarCaracteresSEPA(NVL(TRIM(p_RegFactura.DEUDOR_ID), ' ')); --Id - Identificacion deudor
-        v_Iban := F_RevisarCaracteresSEPA(NVL(TRIM(p_RegFactura.BANCO_IBAN), ' ')); --IBAN - IBAN       
-        v_Concepto := F_RevisarCaracteresSEPA(v_conceptoFinal); --Ustrd - Concepto                 
-        
+        v_Iban := F_RevisarCaracteresSEPA(NVL(TRIM(p_RegFactura.BANCO_IBAN), ' ')); --IBAN - IBAN
+        v_Concepto := F_RevisarCaracteresSEPA(v_conceptoFinal); --Ustrd - Concepto
+
         -- 2.28 [1..n] ++ Informacion de la operacion de adeudo directo <DrctDbtTxInf> - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf
-        v_Datoserror := 'DeudorIndividualXML: Creo Nodo DrctDbtTxInf (Información de la operación de adeudo directo) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf'; 
+        v_Datoserror := 'DeudorIndividualXML: Creo Nodo DrctDbtTxInf (Información de la operación de adeudo directo) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf';
         l_DrctDbtTxInf_node := DBMS_XMLDOM.appendChild(l_PmtInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'DrctDbtTxInf')));
 
         -- 2.29 [1..1] +++ Identificacion del pago <PmtId> - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/PmtId
-        v_Datoserror := 'DeudorIndividualXML: Creo Nodo PmtId (Identificacion del pago) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/PmtId'; 
+        v_Datoserror := 'DeudorIndividualXML: Creo Nodo PmtId (Identificacion del pago) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/PmtId';
         l_PmtId_node := DBMS_XMLDOM.appendChild(l_DrctDbtTxInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'PmtId')));
 
         -- 2.31 [1..1] ++++ Identificacion de extremo a extremo <EndToEndId> 35 - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/PmtId/EndToEndId
@@ -2489,7 +2490,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         -- 2.47 [0..1] ++++ Informacion del mandato <MndtRltdInf> - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/DrctDbtTx/MndtRltdInf
         v_Datoserror := 'DeudorIndividualXML: Creo Nodo MndtRltdInf (Información del mandato) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/DrctDbtTx/MndtRltdInf';
         l_MndtRltdInf_node := DBMS_XMLDOM.appendChild(l_DrctDbtTx_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'MndtRltdInf')));
-        
+
         -- 2.48 [0..1] +++++ Identificacion del mandato <MndtId> 35 - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/DrctDbtTx/MndtRltdInf/MndtId
         v_Datoserror := 'DeudorIndividualXML: Creo Nodo MndtId (Identificación del mandato) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/DrctDbtTx/MndtRltdInf/MndtId';
         l_MndtId_node := DBMS_XMLDOM.appendChild(l_MndtRltdInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'MndtId')));
@@ -2516,7 +2517,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         -- 2.72 [1..1] +++ Deudor <Dbtr> - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr
         v_Datoserror := 'DeudorIndividualXML: Creo Nodo Dbtr (Deudor) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr';
         l_Dbtr_node := DBMS_XMLDOM.appendChild(l_DrctDbtTxInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Dbtr')));
- 
+
         -- 2.72 [0..1] ++++ Nombre <Nm> 70 - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr/Nm
         v_Datoserror := 'DeudorIndividualXML: Creo Nodo Nm (70 - Nombre) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr/Nm';
         l_Nm_node := DBMS_XMLDOM.appendChild(l_Dbtr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Nm')));
@@ -2525,12 +2526,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         -- 2.72 [0..1] ++++ Direccion postal <PstlAdr> - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr/PstlAdr
         v_Datoserror := 'DeudorIndividualXML: Creo Nodo PstlAdr (Dirección postal) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr/PstlAdr';
         l_PstlAdr_node := DBMS_XMLDOM.appendChild(l_Dbtr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'PstlAdr')));
-        
+
         -- 2.72 [0..1] +++++ Pais <Ctry> 2 - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr/PstlAdr/Ctry
         v_Datoserror := 'DeudorIndividualXML: Creo Nodo Ctry (2 - País) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr/PstlAdr/Ctry';
         l_Ctry_node := DBMS_XMLDOM.appendChild(l_PstlAdr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Ctry')));
         l_node := DBMS_XMLDOM.appendChild(l_Ctry_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, v_CodPais)));
-        
+
         -- 2.72 [0..2] +++++ Direccion en texto libre <AdrLine> 70 - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr/PstlAdr/AdrLine
         v_Datoserror := 'DeudorIndividualXML: Creo Nodo AdrLine (70 - Dirección en texto libre) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr/PstlAdr/AdrLine[1]';
         l_AdrLine_node := DBMS_XMLDOM.appendChild(l_PstlAdr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'AdrLine')));
@@ -2541,9 +2542,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             l_AdrLine2_node := DBMS_XMLDOM.appendChild(l_PstlAdr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'AdrLine')));
             l_node := DBMS_XMLDOM.appendChild(l_AdrLine2_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, v_DireccionResto)));
         END IF;
-        
+
         IF v_IdenDeudor IS NOT NULL THEN
-        
+
             -- 2.72 [0..1] ++++ Identificacion <Id> - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr/Id
             v_Datoserror := 'DeudorIndividualXML: Creo Nodo Id (Identificación) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr/Id';
             l_Id_node := DBMS_XMLDOM.appendChild(l_Dbtr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Id')));
@@ -2552,7 +2553,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 -- 2.72 [1..1]{Or +++++ Persona juridica <OrgId> - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr/Id/OrgId
                 v_Datoserror := 'DeudorIndividualXML: Creo Nodo OrgId (Persona jurídica) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr/Id/OrgId';
                 l_OrgId_node := DBMS_XMLDOM.appendChild(l_Id_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'OrgId')));
-                
+
                 -- [0..1] ++++++ Otra <Othr> - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr/Id/OrgId/Othr
                 v_Datoserror := 'DeudorIndividualXML: Creo Nodo Othr (Otra) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr/Id/OrgId/Othr';
                 l_Othr_node := DBMS_XMLDOM.appendChild(l_OrgId_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Othr')));
@@ -2561,12 +2562,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 v_Datoserror := 'DeudorIndividualXML: Creo Nodo Id (35 - Identificación) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr/Id/OrgId/Othr/Id';
                 l_Id2_node := DBMS_XMLDOM.appendChild(l_Othr_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Id')));
                 l_node := DBMS_XMLDOM.appendChild(l_Id2_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, v_IdenDeudor)));
-                
+
             ELSE
                 -- 2.72 [1..1]{Or +++++ Persona fisica <PrvtId> - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr/Id/PrvtId
                 v_Datoserror := 'DeudorIndividualXML: Creo Nodo PrvtId (Persona física) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr/Id/PrvtId';
                 l_PrvtId_node := DBMS_XMLDOM.appendChild(l_Id_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'PrvtId')));
-                
+
                 -- [0..1] ++++++ Otra <Othr> - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr/Id/PrvtId/Othr
                 v_Datoserror := 'DeudorIndividualXML: Creo Nodo Othr (Otra) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/Dbtr/Id/PrvtId/Othr';
                 l_Othr_node := DBMS_XMLDOM.appendChild(l_PrvtId_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Othr')));
@@ -2594,30 +2595,30 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         -- 2.88 [0..1] +++ Concepto <RmtInf> - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/RmtInf
         v_Datoserror := 'DeudorIndividualXML: Creo Nodo RmtInf (Concepto) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/RmtInf';
         l_RmtInf_node := DBMS_XMLDOM.appendChild(l_DrctDbtTxInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'RmtInf')));
-        
+
         -- 2.89 [1..1]{Or ++++ No estructurado <Ustrd> 140 - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/RmtInf/Ustrd[1]
         v_Datoserror := 'DeudorIndividualXML: Creo Nodo Ustrd (140 - No estructurado) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/RmtInf/Ustrd[1]';
         l_Ustrd_node := DBMS_XMLDOM.appendChild(l_RmtInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Ustrd')));
         l_node := DBMS_XMLDOM.appendChild(l_Ustrd_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, SUBSTR(v_Concepto, 1, 140))));
-        
+
         IF (LENGTH(v_Concepto) > 140) THEN
             -- 2.89 [1..1]{Or ++++ No estructurado <Ustrd> 140 - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/RmtInf/Ustrd[2]
             v_Datoserror := 'DeudorIndividualXML: Creo Nodo Ustrd (140 - No estructurado) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/RmtInf/Ustrd[2]';
             l_Ustrd_node2 := DBMS_XMLDOM.appendChild(l_RmtInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Ustrd')));
             l_node := DBMS_XMLDOM.appendChild(l_Ustrd_node2, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, SUBSTR(v_Concepto, 140, 140)))); -- Concepto Ampliado (Ustrd = 1..640 caracteres)
-            
+
             IF (LENGTH(v_Concepto) > 280) THEN
                 -- 2.89 [1..1]{Or ++++ No estructurado <Ustrd> 140 - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/RmtInf/Ustrd[3]
                 v_Datoserror := 'DeudorIndividualXML: Creo Nodo Ustrd (140 - No estructurado) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/RmtInf/Ustrd[3]';
                 l_Ustrd_node3 := DBMS_XMLDOM.appendChild(l_RmtInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Ustrd')));
                 l_node := DBMS_XMLDOM.appendChild(l_Ustrd_node3, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, SUBSTR(v_Concepto, 280, 140)))); -- Concepto Ampliado (Ustrd = 1..640 caracteres)
-                
+
                 IF (LENGTH(v_Concepto) > 420) THEN
                     -- 2.89 [1..1]{Or ++++ No estructurado <Ustrd> 140 - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/RmtInf/Ustrd[4]
                     v_Datoserror := 'DeudorIndividualXML: Creo Nodo Ustrd (140 - No estructurado) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/RmtInf/Ustrd[4]';
                     l_Ustrd_node4 := DBMS_XMLDOM.appendChild(l_RmtInf_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'Ustrd')));
                     l_node := DBMS_XMLDOM.appendChild(l_Ustrd_node4, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createTextNode(l_sepa, SUBSTR(v_Concepto, 420, 140)))); -- Concepto Ampliado (Ustrd = 1..640 caracteres)
-                    
+
                     IF (LENGTH(v_Concepto) > 560) THEN
                         -- 2.89 [1..1]{Or ++++ No estructurado <Ustrd> 140 - Localizacion /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/RmtInf/Ustrd[5]
                         v_Datoserror := 'DeudorIndividualXML: Creo Nodo Ustrd (140 - No estructurado) - Localización /Document/CstmrDrctDbtInitn/PmtInf/DrctDbtTxInf/RmtInf/Ustrd[5]';
@@ -2657,7 +2658,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
     /* Version: 1.0 - Fecha Creacion: 25/03/2014 - Autor: Jorge Paez Trivino */
     /* Version: 2.0 - Fecha Modificacion: 11/03/2015 - Autor: Jorge Paez Trivino - Cambios: Adaptacion a XML */
     /* Version: 3.0 - Fecha Modificacion: 10/06/2015 - Autor: Oscar de la Torre Noheda - Cambios: Adaptacion a XML */
-    /* Version: 4.0 - Fecha Modificacion: 23/06/2015 - Autor: Jorge Paez Trivino 
+    /* Version: 4.0 - Fecha Modificacion: 23/06/2015 - Autor: Jorge Paez Trivino
     - Revision de codigo XML SEPA */
   /****************************************************************************************************************/
     Procedure TratarFacturasAcreedor(
@@ -2672,24 +2673,25 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         p_UsuModificacion IN NUMBER,
         p_CodRetorno OUT VARCHAR2,
         p_DatosError OUT VARCHAR2
-    ) IS 
-    
+    ) IS
+
         -- variable nodo bloque acreedor
         l_PmtInf_node DBMS_XMLDOM.DomNode;
 
         v_Registro VARCHAR2(600);
         v_contadorFactura NUMBER;
         v_estado FAC_FACTURA.ESTADO%TYPE;
-        
+
         v_Codretorno VARCHAR2(10) := To_Char(0);
         v_Datoserror VARCHAR2(4000) := Null;
+        v_Idfacturaincluidaendisquete FAC_FACTURAINCLUIDAENDISQUETE.IDFACTURAINCLUIDAENDISQUETE%TYPE;
         e_Error EXCEPTION;
 
     BEGIN
         /**************************** CABECERA DEL ACREEDOR ******************************************/
         -- Realizo un tratamiento del fichero txt
-        IF (p_RegBloqueAcreedor.CONTADORFACTURASTXT>0) THEN 
-       
+        IF (p_RegBloqueAcreedor.CONTADORFACTURASTXT>0) THEN
+
             v_Datoserror := 'TratarFacturasAcreedor: Llamada al procedimiento CrearCabeceraAcreedorFecha';
             CrearCabeceraAcreedorFecha(
                 p_RegAcreedor,
@@ -2699,14 +2701,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 v_Datoserror);
             IF v_Codretorno <> To_Char(0) THEN
                 RAISE e_Error;
-            END IF; 
+            END IF;
 
             /* Grabar registro en el fichero */
             v_Datoserror := 'TratarFacturasAcreedor: Grabacion de la cabecera del acreedor SEPA';
             Utl_File.Putf(f_Salida, Substr(Rpad(v_Registro, PKG_SIGA_CONSTANTES.c_LongitudRegistroSEPA), 1, PKG_SIGA_CONSTANTES.c_LongitudRegistroSEPA) || Chr(13) || Chr(10));
             Utl_File.Fflush(f_Salida);
-        END IF; 
-        
+        END IF;
+
         -- Realizo un tratamiento del fichero xml
         IF (p_RegBloqueAcreedor.CONTADORFACTURAS > 0) THEN
             -------------------------------XML-------------------------------------
@@ -2724,13 +2726,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 RAISE e_Error;
             END IF;
             -------------------------------XML-------------------------------------
-        END IF; 
+        END IF;
 
         /****************************************** INDIVIDUAL OBLIGATORIO ******************************************/
         FOR v_contadorFactura IN 1..p_RegBloqueAcreedor.CONTADORFACTURAS+p_RegBloqueAcreedor.CONTADORFACTURASTXT LOOP
-        
+
             -- Realizo un tratamiento del fichero txt
-            IF (p_RegBloqueAcreedor.CONTADORFACTURASTXT>0 AND p_RegBloqueAcreedor.M_FACTURAS(v_contadorFactura).ESQUEMA = 0) THEN -- 0:CORE; 1:COR1; 2:B2B    
+            IF (p_RegBloqueAcreedor.CONTADORFACTURASTXT>0 AND p_RegBloqueAcreedor.M_FACTURAS(v_contadorFactura).ESQUEMA = 0) THEN -- 0:CORE; 1:COR1; 2:B2B
                 v_Datoserror := 'TratarFacturasAcreedor: Llamada al procedimiento CrearRegistroIndividual';
                 CrearRegistroIndividual(
                     p_RegBloqueAcreedor.M_FACTURAS(v_contadorFactura),
@@ -2745,8 +2747,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 v_Datoserror := 'TratarFacturasAcreedor: Grabacion del registro individual';
                 Utl_File.Putf(f_Salida, Substr(Rpad(v_Registro, PKG_SIGA_CONSTANTES.c_LongitudRegistroSEPA), 1, PKG_SIGA_CONSTANTES.c_LongitudRegistroSEPA) || Chr(13) || Chr(10));
                 Utl_File.Fflush(f_Salida);
-            END IF; 
-            
+            END IF;
+
             -- Realizo un tratamiento del fichero xml
             IF (p_RegBloqueAcreedor.CONTADORFACTURAS > 0) THEN
                 -------------------------------XML-------------------------------------
@@ -2762,21 +2764,21 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     RAISE e_Error;
                 END IF;
                 -------------------------------XML-------------------------------------
-            END IF; 
+            END IF;
 
             -- p_UsuModificacion es nulo cuando se regenera el disquete de cargos (ya existen los datos FIED)
             IF (p_UsuModificacion IS NOT NULL) THEN
-            
+
                 -- Compruebo el estado actual de la factura
                 SELECT ESTADO
                     INTO v_estado
-                FROM FAC_FACTURA    
+                FROM FAC_FACTURA
                 WHERE IDINSTITUCION = p_RegBloqueAcreedor.M_FACTURAS(v_contadorFactura).IDINSTITUCION
                     AND IDFACTURA = p_RegBloqueAcreedor.M_FACTURAS(v_contadorFactura).IDFACTURA;
-                
-                -- Comprueba que no esta pagada la factura     
-                IF (v_estado > 1) THEN                     
-                           
+
+                -- Comprueba que no esta pagada la factura
+                IF (v_estado > 1) THEN
+
                     /* Carga en BBDD de la factura a incluir en el disquete */
                     v_Datoserror := 'TratarFacturasAcreedor: Llamada al procedimiento insertarFIED';
                     insertarFIED(
@@ -2788,7 +2790,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     IF v_Codretorno <> To_Char(0) THEN
                         RAISE e_Error;
                     END IF;
-
+                     
                     v_Datoserror := 'TratarFacturasAcreedor: Actualiza los importes de FAC_FACTURA';
                     UPDATE FAC_FACTURA
                     SET IMPTOTALPAGADOPORBANCO = IMPTOTALPAGADOPORBANCO + (p_RegBloqueAcreedor.M_FACTURAS(v_contadorFactura).IMPORTE / 100),
@@ -2801,7 +2803,25 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         USUMODIFICACION = p_Usumodificacion
                     WHERE IDINSTITUCION = p_RegBloqueAcreedor.M_FACTURAS(v_contadorFactura).IDINSTITUCION
                         AND IDFACTURA = p_RegBloqueAcreedor.M_FACTURAS(v_contadorFactura).IDFACTURA;
-                            
+
+
+                    -- CGP (27/10/2017) Insertamos en el histórico de la facturacion INICIO
+                        SELECT NVL(MAX(IDFACTURAINCLUIDAENDISQUETE), 0)
+                            INTO v_Idfacturaincluidaendisquete
+                          FROM FAC_FACTURAINCLUIDAENDISQUETE
+                          WHERE IDINSTITUCION = p_RegBloqueAcreedor.M_FACTURAS(v_contadorFactura).IDINSTITUCION
+                              AND IDDISQUETECARGOS =  p_RegBloqueAcreedor.IDDISQUETECARGOS;
+                       
+                        INSERT INTO FAC_HISTORICOFACTURA (IDINSTITUCION,IDFACTURA, IDHISTORICO,FECHAMODIFICACION, USUMODIFICACION, IDTIPOACCION, IDFORMAPAGO, 
+          									    IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA,
+          									    IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO, IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, ESTADO,IDDISQUETECARGOS, IDFACTURAINCLUIDAENDISQUETE)
+          								      SELECT IDINSTITUCION, IDFACTURA,nvl((select max(his2.IDHISTORICO) from FAC_HISTORICOFACTURA his2 where his2.IDINSTITUCION = FAC_FACTURA.IdInstitucion and his2.IDFACTURA = FAC_FACTURA.IdFactura), 0)+1,SYSDATE,USUMODIFICACION,5,IDFORMAPAGO, 
+          								      IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA, 
+          								      IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO,IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, ESTADO,p_RegBloqueAcreedor.IDDISQUETECARGOS,v_Idfacturaincluidaendisquete 
+          								      FROM FAC_FACTURA WHERE IDINSTITUCION=p_RegBloqueAcreedor.M_FACTURAS(v_contadorFactura).IDINSTITUCION AND IDFACTURA= p_RegBloqueAcreedor.M_FACTURAS(v_contadorFactura).IDFACTURA;
+                     -- CGP FIN
+
+
                     v_Datoserror := 'TratarFacturasAcreedor: Actualiza la fecha de uso de CEN_MANDATOS_CUENTASBANCARIAS';
                     UPDATE CEN_MANDATOS_CUENTASBANCARIAS
                     SET FECHAUSO = TO_DATE(p_RegBloqueAcreedor.FECHAPRESENTACION, 'YYYYMMDD'), -- JPT (19-02-2015): Actualiza la fecha de uso con la fecha de presentacion
@@ -2810,15 +2830,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     WHERE IDINSTITUCION = p_RegBloqueAcreedor.M_FACTURAS(v_contadorFactura).IDINSTITUCION
                         AND IDPERSONA = p_RegBloqueAcreedor.M_FACTURAS(v_contadorFactura).IDPERSONA
                         AND IDCUENTA = p_RegBloqueAcreedor.M_FACTURAS(v_contadorFactura).IDCUENTA
-                        AND REFMANDATOSEPA = p_RegBloqueAcreedor.M_FACTURAS(v_contadorFactura).REFMANDATOSEPA;                             
-                END IF; 
-            END IF; 
+                        AND REFMANDATOSEPA = p_RegBloqueAcreedor.M_FACTURAS(v_contadorFactura).REFMANDATOSEPA;
+                END IF;
+            END IF;
         END LOOP;
 
          /******************************************* TOTAL ACREEDOR Y FECHA ************************************************/
          -- Realizo un tratamiento del fichero txt
         IF (p_RegBloqueAcreedor.CONTADORFACTURASTXT>0) THEN
-                    
+
             v_Datoserror := 'TratarFacturasAcreedor: Llamada al procedimiento CrearTotalAcreedorFecha';
             CrearTotalAcreedorFecha(
                 p_RegAcreedor,
@@ -2837,7 +2857,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             v_Datoserror := 'TratarFacturasAcreedor: Grabacion del total del acreedor';
             Utl_File.Putf(f_Salida, Substr(Rpad(v_Registro, PKG_SIGA_CONSTANTES.c_LongitudRegistroSEPA), 1, PKG_SIGA_CONSTANTES.c_LongitudRegistroSEPA) || Chr(13) || Chr(10));
             Utl_File.Fflush(f_Salida);
-        END IF; 
+        END IF;
 
         v_Datoserror := 'TratarFacturasAcreedor: Actualizacion de los parametros de salida';
         p_Codretorno := To_Char(0);
@@ -2852,7 +2872,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 p_Codretorno := To_Char(Sqlcode);
                 p_Datoserror := v_Datoserror || ', ' || Sqlerrm;
     END TratarFacturasAcreedor;
-    
+
     /****************************************************************************************************************/
     /* Nombre: GestionarFicheros */
     /* Descripcion: Gestiona los ficheros de adeudos a generar en formato n1914 y/o xml */
@@ -2872,9 +2892,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
     /* */
     /* Version: 1.0 - Fecha Creacion: 25/03/2015 - Autor: Jorge Paez Trivino */
     /* Version: 2.0 - Fecha Modificacion: 10/06/2015 - Autor: Oscar de la Torre Noheda - Cambios: Adaptacion a XML */
-    /* Version: 3.0 - Fecha Modificacion: 23/06/2015 - Autor: Jorge Paez Trivino 
+    /* Version: 3.0 - Fecha Modificacion: 23/06/2015 - Autor: Jorge Paez Trivino
     - Revision de codigo XML SEPA */
-  /****************************************************************************************************************/    
+  /****************************************************************************************************************/
     Procedure GestionarFicheros (
         p_IdInstitucion IN NUMBER,
         p_IdSerieFacturacion IN NUMBER,
@@ -2885,9 +2905,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         p_RegFacturas IN REG_FACTURAS,
         p_NumFicheros IN OUT VARCHAR2,
         p_CodRetorno OUT VARCHAR2,
-        p_DatosError OUT VARCHAR2                    
+        p_DatosError OUT VARCHAR2
     ) IS
-    
+
         f_SalidaTxt Utl_File.File_Type; -- Fichero de salida
         v_Registro Varchar2(600); -- Registro para los ficheros de salida
         v_SumaImportesTxt NUMBER; -- Suma de los importes de los registros individuales txt
@@ -2895,11 +2915,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         v_NumRegIndividualesTxt NUMBER; -- Numero de registros individuales txt
         v_NumRegIndividualesXml NUMBER; -- Numero de registros individuales xml
         v_NumRegTotalTxt NUMBER; -- Numero de registros totales txt
-        v_NumRegTotalXml NUMBER; -- Numero de registros totales xml         
+        v_NumRegTotalXml NUMBER; -- Numero de registros totales xml
         v_contadorFichero NUMBER;
         v_contadorBloque NUMBER;
         v_Nombrefichero FAC_DISQUETECARGOS.NOMBREFICHERO%TYPE; -- Nombre del fichero
-        v_IdDisqueteCargos FAC_DISQUETECARGOS.IDDISQUETECARGOS%TYPE; 
+        v_IdDisqueteCargos FAC_DISQUETECARGOS.IDDISQUETECARGOS%TYPE;
         v_numFicheros NUMBER := 0;
         M_Ficheros TAB_FICHERO;
         -------------------------------XML-------------------------------------
@@ -2919,8 +2939,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         -------------------------------XML-------------------------------------
         v_Codretorno VARCHAR2(10) := To_Char(0);
         v_Datoserror VARCHAR2(4000) := Null;
-        e_Error EXCEPTION; 
-    
+        e_Error EXCEPTION;
+
     BEGIN
         v_Datoserror := 'GestionarFicheros: Llamada al procedimiento CalcularFicherosGenerados';
         CalcularFicherosGenerados(
@@ -2932,11 +2952,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             v_Datoserror);
         IF v_Codretorno <> To_Char(0) THEN
             RAISE e_Error;
-        END IF; 
-    
+        END IF;
+
         -- Comprueba que tiene que generar ficheros
-        IF (v_numFicheros > 0) THEN   
-        
+        IF (v_numFicheros > 0) THEN
+
             -- p_UsuModificacion es nulo cuando se regenera el disquete de cargos (ya existen los datos)
             IF (p_UsuModificacion IS NOT NULL) THEN
                 -- Solo se va a generar un disquete de cargos por cada banco + sufijo (independientemente del numero de ficheros que se generen con la configuracion)
@@ -2953,40 +2973,40 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     v_Datoserror);
                 IF v_Codretorno <> To_Char(0) THEN
                     RAISE e_Error;
-                END IF; 
-                
+                END IF;
+
             ELSE
-                v_IdDisqueteCargos := p_RegFacturas.IDDISQUETECARGOS; 
-            END IF; 
-            
+                v_IdDisqueteCargos := p_RegFacturas.IDDISQUETECARGOS;
+            END IF;
+
             -- Recorre los ficheros a generar
             FOR v_contadorFichero IN 1..v_numFicheros LOOP
-            
+
                 v_SumaImportesTxt := 0; -- Inicializo los importes de los registros individuales txt
                 v_SumaImportesXml := 0; -- Inicializo los importes de los registros individuales xml
                 v_NumRegIndividualesTxt := 0; -- Inicializo el numero de registros individuales txt
                 v_NumRegIndividualesXml := 0; -- Inicializo el numero de registros individuales xml
                 v_NumRegTotalTxt := 0; -- Inicializo el numero de registros totales txt
-                v_NumRegTotalXml := 0; -- Inicializo el numero de registros totales xml                                   
-            
+                v_NumRegTotalXml := 0; -- Inicializo el numero de registros totales xml
+
                 v_Datoserror := 'GestionarFicheros: Cargo el identificador del disquete de cargos al fichero';
-                M_Ficheros(v_contadorFichero).IDDISQUETECARGOS := v_IdDisqueteCargos; 
-                
+                M_Ficheros(v_contadorFichero).IDDISQUETECARGOS := v_IdDisqueteCargos;
+
                 v_Datoserror := 'GestionarFicheros: Cargo la fecha de presentacion al fichero';
                 M_Ficheros(v_contadorFichero).FECHAPRESENTACION := TO_CHAR(p_RegFacturas.FECHAPRESENTACION, 'YYYYMMDD');
-                
+
                 v_Datoserror := 'GestionarFicheros: Calculo el identificador del fichero';
-                M_Ficheros(v_contadorFichero).IDFICHERO := 'PRE' ||  RPAD(NVL(M_Ficheros(v_contadorFichero).FECHAPRESENTACION, '0'), 19, '0') || LPAD(v_contadorFichero, 3, 0) || LPAD(NVL(v_IdDisqueteCargos, 0), 10, 0); 
-                                                               
+                M_Ficheros(v_contadorFichero).IDFICHERO := 'PRE' ||  RPAD(NVL(M_Ficheros(v_contadorFichero).FECHAPRESENTACION, '0'), 19, '0') || LPAD(v_contadorFichero, 3, 0) || LPAD(NVL(v_IdDisqueteCargos, 0), 10, 0);
+
                 -- Realizo un tratamiento para los ficheros en formato n1914
-                IF (p_RegAcreedor.TIPOSFICHEROS<2 AND M_Ficheros(v_contadorFichero).CONTADORBLOQUESACREEDORTXT > 0) THEN -- 0=Txt; 1=Txt+Xml 
-                
-                    v_Datoserror := 'GestionarFicheros: Calculo el nombre del fichero txt'; 
+                IF (p_RegAcreedor.TIPOSFICHEROS<2 AND M_Ficheros(v_contadorFichero).CONTADORBLOQUESACREEDORTXT > 0) THEN -- 0=Txt; 1=Txt+Xml
+
+                    v_Datoserror := 'GestionarFicheros: Calculo el nombre del fichero txt';
                     v_Nombrefichero := v_IdDisqueteCargos || '.' || M_Ficheros(v_contadorFichero).NOMBREFICHEROTXT || '.n' || LPAD(NVL(PKG_SIGA_CONSTANTES.c_IdCuaderno, 0), 4, 0);
-                
+
                     v_Datoserror := 'GestionarFicheros: Apertura del fichero txt ' || v_Nombrefichero;
                     f_SalidaTxt := Utl_File.Fopen(p_PathFichero, v_Nombrefichero, 'W');
-                    
+
                      /**************************************** CABECERA DEL PRESENTADOR ******************************************/
                     v_Datoserror := 'GestionarFicheros: Llamada al procedimiento CrearCabeceraPresentador txt';
                     CrearCabeceraPresentador(
@@ -2997,43 +3017,43 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         v_Datoserror);
                     IF v_Codretorno <> To_Char(0) THEN
                         RAISE e_Error;
-                    END IF; 
+                    END IF;
 
                     -- Grabar registro en el fichero
                     v_Datoserror := 'GestionarFicheros: Grabacion de la cabecera del presentador SEPA en el fichero txt';
                     Utl_File.Putf(f_SalidaTxt, Substr(Rpad(v_Registro, PKG_SIGA_CONSTANTES.c_LongitudRegistroSEPA, ' '), 1, PKG_SIGA_CONSTANTES.c_LongitudRegistroSEPA) || Chr(13) || Chr(10));
                     Utl_File.Fflush(f_SalidaTxt);
-                    
+
                     /**************************************** DATOS ACREEDOR ******************************************/
-                    -- Recorre todos los bloques de acreedor por fecha de cargo    
+                    -- Recorre todos los bloques de acreedor por fecha de cargo
                     FOR v_contadorBloque IN 1..M_Ficheros(v_contadorFichero).CONTADORBLOQUESACREEDORTXT LOOP
-                    
+
                         -- Cargo el disquete de cargos y la fecha de presentacion
                         M_Ficheros(v_contadorFichero).M_BLOQUEACREEDORTXT(v_contadorBloque).IDDISQUETECARGOS := M_Ficheros(v_contadorFichero).IDDISQUETECARGOS;
-                        M_Ficheros(v_contadorFichero).M_BLOQUEACREEDORTXT(v_contadorBloque).FECHAPRESENTACION := M_Ficheros(v_contadorFichero).FECHAPRESENTACION; 
-                    
+                        M_Ficheros(v_contadorFichero).M_BLOQUEACREEDORTXT(v_contadorBloque).FECHAPRESENTACION := M_Ficheros(v_contadorFichero).FECHAPRESENTACION;
+
                         v_Datoserror := 'GestionarFicheros: Llamada al procedimiento TratarFacturasAcreedor';
                         TratarFacturasAcreedor(
                             p_RegAcreedor,
                             M_Ficheros(v_contadorFichero).M_BLOQUEACREEDORTXT(v_contadorBloque),
-                            f_SalidaTxt, 
+                            f_SalidaTxt,
                         -------------------------------XML-------------------------------------
                             l_sepa, -- Contenedor documento xml
                             null, --l_CstmrDrctDbtInitn_node (Raiz del mensaje adeudos xml)
                             null, --v_contadorBloque (contar bloques acreedor xml)
                         -------------------------------XML-------------------------------------
-                            p_UsuModificacion, 
-                            v_Codretorno, 
+                            p_UsuModificacion,
+                            v_Codretorno,
                             v_Datoserror);
                         IF v_Codretorno <> To_Char(0) THEN
                             RAISE e_Error;
-                        END IF; 
-                        
+                        END IF;
+
                         v_SumaImportesTxt := v_SumaImportesTxt + M_Ficheros(v_contadorFichero).M_BLOQUEACREEDORTXT(v_contadorBloque).IMPORTETOTALTXT;
-                        v_NumRegIndividualesTxt := v_NumRegIndividualesTxt + M_Ficheros(v_contadorFichero).M_BLOQUEACREEDORTXT(v_contadorBloque).CONTADORFACTURASTXT; 
+                        v_NumRegIndividualesTxt := v_NumRegIndividualesTxt + M_Ficheros(v_contadorFichero).M_BLOQUEACREEDORTXT(v_contadorBloque).CONTADORFACTURASTXT;
                         v_NumRegTotalTxt := v_NumRegTotalTxt + M_Ficheros(v_contadorFichero).M_BLOQUEACREEDORTXT(v_contadorBloque).CONTADORFACTURASTXT + 2; -- Registros individuales +  cabecera + total
-                    END LOOP; 
-                    
+                    END LOOP;
+
                      /******************************************* TOTAL ACREEDOR ************************************************/
                     -- Realizo un tratamiento del fichero txt
                     v_Datoserror := 'GestionarFicheros: Llamada al procedimiento CrearTotalAcreedor txt';
@@ -3047,13 +3067,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         v_Datoserror);
                     IF v_Codretorno <> To_Char(0) THEN
                         RAISE e_Error;
-                    END IF; 
+                    END IF;
 
                     /* Grabar registro en el fichero */
                     v_Datoserror := 'GestionarFicheros: Grabacion del total del ordenante SEPA en el fichero txt';
                     Utl_File.Putf(f_SalidaTxt, Substr(Rpad(v_Registro, PKG_SIGA_CONSTANTES.c_LongitudRegistroSEPA, ' '), 1, PKG_SIGA_CONSTANTES.c_LongitudRegistroSEPA) || Chr(13) || Chr(10));
-                    Utl_File.Fflush(f_SalidaTxt); 
-                    
+                    Utl_File.Fflush(f_SalidaTxt);
+
                     /********************************************** TOTAL FICHERO ***********************************************/
                     v_Datoserror := 'GestionarFicheros: Llamada al procedimiento CrearTotalFichero txt';
                     CrearTotalFichero(
@@ -3065,25 +3085,25 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         v_Datoserror);
                     IF v_Codretorno <> To_Char(0) THEN
                         RAISE e_Error;
-                    END IF; 
+                    END IF;
 
                     /* Grabar registro en el fichero */
                     v_Datoserror := 'GestionarFicheros: Grabacion del total del ordenante SEPA en el fichero txt';
                     Utl_File.Putf(f_SalidaTxt, Substr(Rpad(v_Registro, PKG_SIGA_CONSTANTES.c_LongitudRegistroSEPA, ' '), 1, PKG_SIGA_CONSTANTES.c_LongitudRegistroSEPA) || Chr(13) || Chr(10));
                     Utl_File.Fflush(f_SalidaTxt);
-                    
+
                     /* Cerrar ficheros de salida */
                     v_Datoserror := 'GestionarFicheros: Cierre del fichero txt';
                     Utl_File.Fclose(f_SalidaTxt);
-                END IF; 
-                
+                END IF;
+
                 -------------------------------XML-------------------------------------
                 -- Realizo un tratamiento del fichero xml
                 IF (p_RegAcreedor.TIPOSFICHEROS>0 AND M_Ficheros(v_contadorFichero).CONTADORBLOQUESACREEDOR > 0) THEN -- 1=Txt+Xml; 2=Xml
-                
-                    v_Datoserror := 'GestionarFicheros: Calculo el nombre del fichero xml'; 
+
+                    v_Datoserror := 'GestionarFicheros: Calculo el nombre del fichero xml';
                     v_Nombrefichero := v_IdDisqueteCargos || '.' || M_Ficheros(v_contadorFichero).NOMBREFICHEROXML || '.xml';
-                                                   
+
                     v_Datoserror := 'GestionarFicheros: Creacion del documento - sepa xml';
                     l_sepa := DBMS_XMLDOM.newDomDocument;
 
@@ -3100,7 +3120,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     --[1..1] + Raiz del mensaje adeudos  <CstmrDrctDbtInitn>
                     v_Datoserror := 'GestionarFicheros: Insertar Nodo CstmrDrctDbtInitn (Raiz del mensaje) - sepa xml';
                     l_CstmrDrctDbtInitn_node := DBMS_XMLDOM.appendChild(l_Document_node, DBMS_XMLDOM.makeNode(DBMS_XMLDOM.createElement(l_sepa, 'CstmrDrctDbtInitn')));
-                    
+
                      /**************************************** CABECERA DEL PRESENTADOR ******************************************/
                     v_Datoserror := 'GestionarFicheros: Llamada al procedimiento CabPresentadorXML';
                     CabPresentadorXML(
@@ -3112,16 +3132,16 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         v_Datoserror);
                     IF v_Codretorno <> To_Char(0) THEN
                         RAISE e_Error;
-                    END IF; 
-                    
+                    END IF;
+
                     /**************************************** DATOS ACREEDOR ******************************************/
-                    -- Recorre todos los bloques de acreedor por fecha de cargo    
+                    -- Recorre todos los bloques de acreedor por fecha de cargo
                     FOR v_contadorBloque IN 1..M_Ficheros(v_contadorFichero).CONTADORBLOQUESACREEDOR LOOP
-                    
+
                         -- Cargo el disquete de cargos y la fecha de presentacion
                         M_Ficheros(v_contadorFichero).M_BLOQUEACREEDOR(v_contadorBloque).IDDISQUETECARGOS := M_Ficheros(v_contadorFichero).IDDISQUETECARGOS;
-                        M_Ficheros(v_contadorFichero).M_BLOQUEACREEDOR(v_contadorBloque).FECHAPRESENTACION := M_Ficheros(v_contadorFichero).FECHAPRESENTACION; 
-                    
+                        M_Ficheros(v_contadorFichero).M_BLOQUEACREEDOR(v_contadorBloque).FECHAPRESENTACION := M_Ficheros(v_contadorFichero).FECHAPRESENTACION;
+
                         v_Datoserror := 'GestionarFicheros: Llamada al procedimiento TratarFacturasAcreedor';
                         TratarFacturasAcreedor(
                             p_RegAcreedor,
@@ -3130,19 +3150,19 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                             l_sepa, -- Contenedor documento xml
                             l_CstmrDrctDbtInitn_node, -- Raiz del mensaje adeudos
                             v_contadorBloque, -- contar bloques acreedor
-                            p_UsuModificacion, 
-                            v_Codretorno, 
+                            p_UsuModificacion,
+                            v_Codretorno,
                             v_Datoserror);
                         IF v_Codretorno <> To_Char(0) THEN
                             RAISE e_Error;
-                        END IF; 
+                        END IF;
                         v_SumaImportesXml := v_SumaImportesXml + M_Ficheros(v_contadorFichero).M_BLOQUEACREEDOR(v_contadorBloque).IMPORTETOTAL;
-                        v_NumRegIndividualesXml := v_NumRegIndividualesXml + M_Ficheros(v_contadorFichero).M_BLOQUEACREEDOR(v_contadorBloque).CONTADORFACTURAS; 
-                        v_NumRegTotalXml := v_NumRegTotalXml + M_Ficheros(v_contadorFichero).M_BLOQUEACREEDOR(v_contadorBloque).CONTADORFACTURAS + 2; -- Registros individuales +  cabecera + total            
-                    END LOOP; 
-                    
+                        v_NumRegIndividualesXml := v_NumRegIndividualesXml + M_Ficheros(v_contadorFichero).M_BLOQUEACREEDOR(v_contadorBloque).CONTADORFACTURAS;
+                        v_NumRegTotalXml := v_NumRegTotalXml + M_Ficheros(v_contadorFichero).M_BLOQUEACREEDOR(v_contadorBloque).CONTADORFACTURAS + 2; -- Registros individuales +  cabecera + total
+                    END LOOP;
+
                     /******************** TOTALES DOCUMENTO XML **********************/
-                    
+
                     v_Datoserror := 'GestionarFicheros: Insertar total numero facturas y total importes  - sepa xml';
                     l_NbOfTxs_node := DBMS_XMLDOM.item(DBMS_XMLDOM.getElementsByTagName(l_sepa, 'NbOfTxs'), 0);
                     l_CtrlSum_node := DBMS_XMLDOM.item(DBMS_XMLDOM.getElementsByTagName(l_sepa, 'CtrlSum'), 0);
@@ -3172,11 +3192,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 p_NumFicheros := To_Char(0);
                 p_CodRetorno := v_Codretorno;
                 p_DatosError := v_Datoserror;
-                    
+
                 -- Cerrar fichero de salida txt
                 BEGIN
                     Utl_File.Fclose(f_SalidaTxt);
-                        
+
                     EXCEPTION
                         WHEN Utl_File.Invalid_Filehandle THEN
                             -- EL DESCRIPTOR NO ES DE UN ARCHIVO ABIERTO.
@@ -3186,7 +3206,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         WHEN Utl_File.Write_Error THEN
                             -- ERROR DEL S.O. DURANTE LA ESCRITURA
                             p_CodRetorno := To_Char(5398);
-                            p_DatosError := v_Datoserror || ', ERROR DEL S.O. DURANTE LA ESCRITURA'; 
+                            p_DatosError := v_Datoserror || ', ERROR DEL S.O. DURANTE LA ESCRITURA';
                 END;
 
             -- posibles errores que se pueden producir al operar con ficheros.
@@ -3252,7 +3272,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 -- Cerrar fichero de salida txt
                 BEGIN
                     Utl_File.Fclose(f_SalidaTxt);
-                            
+
                     EXCEPTION
                         WHEN Utl_File.Invalid_Filehandle THEN
                             -- EL DESCRIPTOR NO ES DE UN ARCHIVO ABIERTO.
@@ -3262,7 +3282,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         WHEN Utl_File.Write_Error THEN
                             -- ERROR DEL S.O. DURANTE LA ESCRITURA
                             p_CodRetorno := To_Char(5398);
-                            p_DatosError := v_Datoserror || ', ERROR DEL S.O. DURANTE LA ESCRITURA'; 
+                            p_DatosError := v_Datoserror || ', ERROR DEL S.O. DURANTE LA ESCRITURA';
                 END;
     END GestionarFicheros;
 
@@ -3357,7 +3377,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     AND FAC_FACTURA.ESTADO = 5
                     AND FAC_FACTURA.NUMEROFACTURA IS NOT NULL -- JPT: Estaba dando ficheros sin numero de factura, cuando debe estar siempre indicado
 
-                    -- Obtengo las facturas sueltas o confirmadas                    
+                    -- Obtengo las facturas sueltas o confirmadas
                     AND (v_idProgramacion IS NULL OR FAC_FACTURA.IDPROGRAMACION = v_idProgramacion)
 
                     -- Obtengo las facturas cuya serie de facturacion coincida con el banco y sufijo actual
@@ -3378,26 +3398,26 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             ORDER BY TABLA.CODIGOREFERENCIA;
 
     v_nombreDeudor VARCHAR2(4000);
-    v_nombreDeudor2 VARCHAR2(4000); 
-    
+    v_nombreDeudor2 VARCHAR2(4000);
+
     v_RegFactura REG_FACTURA; -- Registro con datos de la factura
-    v_RegFacturas REG_FACTURAS; -- Registro con todos los datos de las facturas    
-    
+    v_RegFacturas REG_FACTURAS; -- Registro con todos los datos de las facturas
+
     v_Codretorno VARCHAR2(10) := To_Char(0);
     v_Datoserror VARCHAR2(4000) := Null;
-    e_Error EXCEPTION; 
+    e_Error EXCEPTION;
 
     BEGIN
         -- Calcular el identificador de persona SEPA de la institucion (la institucion siempre tiene 'ES' como codigo ISO del pais)
         v_Datoserror := 'PresentacionGeneral: Llamada a la funcion CalcularDCPersonaSepa';
         p_RegAcreedor.IDPERSONASEPAINSTITUCION := 'ES' || CalcularDCPersonaSepa('ES', p_RegAcreedor.NIF) || LPAD(NVL(p_RegAcreedor.SUFIJO, '0'), 3, '0') || RPAD(NVL(p_RegAcreedor.NIF, ' '), 28, ' ');
-        
+
         -- Obtiene la direccion SEPA del Acreedor
         v_Datoserror := 'PresentacionGeneral: Llamada a la funcion ObtenerDireccionFacturacion';
-        p_RegAcreedor.DIRECCION := ObtenerDireccionFacturacion(p_IdInstitucion, p_RegAcreedor.IDPERSONA); 
-                     
+        p_RegAcreedor.DIRECCION := ObtenerDireccionFacturacion(p_IdInstitucion, p_RegAcreedor.IDPERSONA);
+
         -- Compruebo que existe la direccion de facturacion del acreedor
-        IF (p_RegAcreedor.DIRECCION.DOMICILIO IS NULL) THEN 
+        IF (p_RegAcreedor.DIRECCION.DOMICILIO IS NULL) THEN
             v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.errorMandatos.mensajeCondicionesIncumplidas', p_Idioma) ||
                         ' ' ||  p_RegAcreedor.NOMBRE ||
                         ' ' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.errorMandatos.mensajeIdentificacion', p_Idioma) ||
@@ -3405,8 +3425,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         ' ' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.errorMandatos.mensajeDireccionFacturacionAcreedor', p_Idioma);
             v_Codretorno := To_Char(5414);
             RAISE e_Error;
-        END IF; 
-        
+        END IF;
+
         v_Datoserror := 'PresentacionGeneral: Llamada al procedimiento CargarFechasSEPA';
         CargarFechasSEPA(
             p_IdInstitucion,
@@ -3422,7 +3442,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             v_Datoserror);
         IF v_Codretorno <> To_Char(0) THEN
             RAISE e_Error;
-        END IF; 
+        END IF;
 
         v_Datoserror := 'PresentacionGeneral: Bucle del cursor de facturas (' || p_IdInstitucion || ',' || p_RegAcreedor.CODIGOBANCO || ', ' || p_IdSerieFacturacion || ', ' || p_IdProgramacion || ', ' || p_RegAcreedor.SUFIJO || ')';
         FOR v_CursorFacturas IN c_Facturas (p_IdInstitucion, p_RegAcreedor.CODIGOBANCO, p_IdSerieFacturacion, p_IdProgramacion, p_RegAcreedor.SUFIJO) LOOP
@@ -3441,9 +3461,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             v_RegFactura.IDMANDATO := v_CursorFacturas.IDMANDATO;
             v_RegFactura.DEUDOR_ID := v_CursorFacturas.DEUDOR_ID;
             v_RegFactura.SECUENCIAREAL := NULL;
-            
+
             v_nombreDeudor := RPAD(REGEXP_REPLACE(UPPER(v_CursorFacturas.DEUDOR_NOMBRE), '[^ABCDEFGHIJ-NOP-TUV-Z0-9]', ''), 70, ' ');
-            v_nombreDeudor2 := RPAD(REGEXP_REPLACE(UPPER(v_CursorFacturas.DEUDOR_NOMBRE2), '[^ABCDEFGHIJ-NOP-TUV-Z0-9]', ''), 70, ' '); 
+            v_nombreDeudor2 := RPAD(REGEXP_REPLACE(UPPER(v_CursorFacturas.DEUDOR_NOMBRE2), '[^ABCDEFGHIJ-NOP-TUV-Z0-9]', ''), 70, ' ');
 
             IF (LENGTH(TRIM(v_CursorFacturas.DEUDOR_NOMBRE2)) > 0 -- Tiene que tener nombre de deudor
                 AND NVL(LENGTH(v_RegFactura.DEUDOR_NOMBRE), 0) <= 66 -- MAXIMO 70 CARACTERES Y MINIMO ESPACIO + DOS PARENTESIS + UNA LETRA
@@ -3453,7 +3473,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     v_nombreDeudor := v_nombreDeudor || ')';
                     v_RegFactura.DEUDOR_NOMBRE := v_nombreDeudor;
             END IF;
-            
+
             v_Datoserror := 'PresentacionGeneral: Llamada al procedimiento CargarFacturaEnArrayDeudor';
             CargarFacturaEnArrayDeudor(
                 p_RegAcreedor,
@@ -3464,9 +3484,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 v_Datoserror);
             IF v_Codretorno <> To_Char(0) THEN
                 RAISE e_Error;
-            END IF; 
-        END LOOP; 
-        
+            END IF;
+        END LOOP;
+
         v_Datoserror := 'PresentacionGeneral: Llamada al procedimiento GestionarFicheros';
         GestionarFicheros (
             p_IdInstitucion,
@@ -3478,11 +3498,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             v_RegFacturas,
             p_NumFicheros,
             v_Codretorno,
-            v_Datoserror                    
+            v_Datoserror
         );
         IF v_Codretorno <> To_Char(0) THEN
             RAISE e_Error;
-        END IF; 
+        END IF;
 
         v_Datoserror := 'PresentacionGeneral: Actualizacion de los parametros de salida';
         p_Codretorno := To_Char(0);
@@ -3561,7 +3581,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     FROM FAC_SUFIJO
                     WHERE FAC_SUFIJO.IDINSTITUCION = FAC_SERIEFACTURACION_BANCO.IDINSTITUCION
                         AND FAC_SUFIJO.IDSUFIJO = FAC_SERIEFACTURACION_BANCO.IDSUFIJO
-                ) AS SUFIJO               
+                ) AS SUFIJO
             FROM FAC_BANCOINSTITUCION,
                 FAC_SERIEFACTURACION_BANCO,
                 CEN_BANCOS
@@ -3575,7 +3595,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         v_Nficheros NUMBER := 0; /* Numero de ficheros de adeudos generados */
         v_RegAcreedor REG_ACREEDOR;
         v_Descripcion FAC_SERIEFACTURACION.DESCRIPCION%TYPE;
-        
+
         v_Codretorno VARCHAR2(10) := To_Char(0);
         v_Datoserror VARCHAR2(4000) := Null;
         e_Error EXCEPTION;
@@ -3594,25 +3614,25 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             Into v_RegAcreedor.NIF
         From CEN_PERSONA
         Where IDPERSONA = v_RegAcreedor.IDPERSONA;
-        
+
         -- -1=Error; 0=Txt; 1=Txt+Xml; 2=Xml
         v_Datoserror := 'Presentacion: Obtiene el parametro FAC.SEPA_TIPO_FICHEROS';
-        v_RegAcreedor.TIPOSFICHEROS := F_SIGA_GETPARAMETRO('FAC', 'SEPA_TIPO_FICHEROS', p_Idinstitucion); 
-         IF (v_RegAcreedor.TIPOSFICHEROS = '-1') THEN             
+        v_RegAcreedor.TIPOSFICHEROS := F_SIGA_GETPARAMETRO('FAC', 'SEPA_TIPO_FICHEROS', p_Idinstitucion);
+        IF (v_RegAcreedor.TIPOSFICHEROS = '-1') THEN
             v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.errorParamSepaTipoFicheros.mensajeCondicionesIncumplidas', p_Idioma);
             v_Codretorno := To_Char(5417);
             Raise e_Error;
-         END IF;
+        END IF;
 
         v_Datoserror := 'Presentacion: Bucle del cursor de bancos';
         For v_Bancos In C_BANCOS(p_Idseriefacturacion) Loop
-        
+
             -- Control que comprueba que se ha indicado el BIC del banco
-            IF (v_Bancos.BIC IS NULL) THEN            
+            IF (v_Bancos.BIC IS NULL) THEN
                 v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.errorBIC.mensajeCondicionesIncumplidas', p_Idioma) || ' ' || v_Bancos.NOMBRE_BANCO;
                 v_Codretorno := To_Char(5422);
                 Raise e_Error;
-            END IF; 
+            END IF;
 
             -- Control que comprueba que se ha indicado el sufijo
             IF (v_Bancos.SUFIJO IS NULL) THEN
@@ -3622,7 +3642,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     FAC_SERIEFACTURACION
                 WHERE FAC_SERIEFACTURACION_BANCO.IDINSTITUCION = P_IDINSTITUCION
                     AND FAC_SERIEFACTURACION_BANCO.BANCOS_CODIGO = v_Bancos.CODIGOBANCO
-                    AND (p_idSerieFacturacion IS NULL OR FAC_SERIEFACTURACION_BANCO.IDSERIEFACTURACION = p_idSerieFacturacion) 
+                    AND (p_idSerieFacturacion IS NULL OR FAC_SERIEFACTURACION_BANCO.IDSERIEFACTURACION = p_idSerieFacturacion)
                     AND FAC_SERIEFACTURACION.IDINSTITUCION = FAC_SERIEFACTURACION_BANCO.IDINSTITUCION
                     AND FAC_SERIEFACTURACION.IDSERIEFACTURACION = FAC_SERIEFACTURACION_BANCO.IDSERIEFACTURACION
                     AND NOT EXISTS(
@@ -3632,7 +3652,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                             AND FAC_SUFIJO.IDSUFIJO = FAC_SERIEFACTURACION_BANCO.IDSUFIJO
                     )
                     AND ROWNUM = 1;
-            
+
                 v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.errorSufijos.mensajeCondicionesIncumplidas', p_Idioma) ||
                         ' ' || v_Descripcion ||
                         ' ' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.errorSufijos.mensajeCuentaBancaria', p_Idioma) ||
@@ -3641,7 +3661,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 v_Codretorno := To_Char(5421);
                 Raise e_Error;
             END IF;
-            
+
             v_RegAcreedor.CODIGOBANCO := v_Bancos.CODIGOBANCO;
             v_RegAcreedor.ENTIDADBANCO := v_Bancos.ENTIDADBANCO;
             v_RegAcreedor.OFICINABANCO := v_Bancos.OFICINABANCO;
@@ -3651,7 +3671,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             v_RegAcreedor.CONFIGFICHEROSESQUEMA := v_Bancos.CONFIGFICHEROSESQUEMA;
             v_RegAcreedor.CONFIGFICHEROSSECUENCIA := v_Bancos.CONFIGFICHEROSSECUENCIA;
             v_RegAcreedor.CONFIGLUGARESQUEMASECUENCIA := v_Bancos.CONFIGLUGARESQUEMASECUENCIA;
-            v_RegAcreedor.CONFIGCONCEPTOAMPLIADO := v_Bancos.CONFIGCONCEPTOAMPLIADO;            
+            v_RegAcreedor.CONFIGCONCEPTOAMPLIADO := v_Bancos.CONFIGCONCEPTOAMPLIADO;
             v_RegAcreedor.IDSUFIJO := v_Bancos.IDSUFIJO;
 
             v_Datoserror := 'Presentacion: Llamada al procedimiento PresentacionGeneral';
@@ -3694,7 +3714,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             p_Codretorno := To_Char(Sqlcode);
             p_Datoserror := v_Datoserror || ', ' || Sqlerrm;
     End Presentacion;
-    
+
 /****************************************************************************************************************/
     /* Nombre: PresentacionGeneral */
     /* Descripcion: Codigo generico para la presentacion de los ficheros de adeudo (SEPA) */
@@ -3720,7 +3740,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         p_CodRetorno OUT VARCHAR2,
         p_DatosError OUT VARCHAR2
     ) IS
-    
+
         CURSOR c_FIED (v_idInstitucion FAC_FACTURAINCLUIDAENDISQUETE.IDINSTITUCION%TYPE, v_idDisqueteCargos FAC_FACTURAINCLUIDAENDISQUETE.IDDISQUETECARGOS%TYPE) IS
             SELECT FAC_FACTURAINCLUIDAENDISQUETE.IDFACTURA,
                 FAC_FACTURAINCLUIDAENDISQUETE.IDRECIBO AS CODIGOREFERENCIA,
@@ -3734,12 +3754,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 CEN_BANCOS.BIC AS BANCO_BIC,
                 SUBSTR(CEN_PERSONA.NIFCIF, 1, 9) AS DEUDOR_ID,
                 F_RevisarCaracteresSEPA(CEN_PERSONA.NOMBRE || ' ' ||CEN_PERSONA.APELLIDOS1 || ' ' ||  CEN_PERSONA.APELLIDOS2) AS DEUDOR_NOMBRE2, -- Se revisan los caracteres SEPA porque hay que compararlos con su resultado final
-                FAC_FACTURAINCLUIDAENDISQUETE.SECUENCIA                           
+                FAC_FACTURAINCLUIDAENDISQUETE.SECUENCIA
             FROM FAC_FACTURAINCLUIDAENDISQUETE,
                  FAC_FACTURA,
                 CEN_CUENTASBANCARIAS,
                 CEN_BANCOS,
-                CEN_PERSONA     
+                CEN_PERSONA
             WHERE FAC_FACTURAINCLUIDAENDISQUETE.IDINSTITUCION = v_idInstitucion
                 AND FAC_FACTURAINCLUIDAENDISQUETE.IDDISQUETECARGOS = v_idDisqueteCargos
                 AND FAC_FACTURA.IDINSTITUCION = FAC_FACTURAINCLUIDAENDISQUETE.IDINSTITUCION
@@ -3750,29 +3770,29 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 --AND CEN_CUENTASBANCARIAS.FECHABAJA IS NULL -- Deben regenerarse aunque ahora esten de baja
                 AND CEN_BANCOS.CODIGO = CEN_CUENTASBANCARIAS.CBO_CODIGO
                 AND CEN_PERSONA.IDPERSONA = CEN_CUENTASBANCARIAS.IDPERSONA
-            ORDER BY CODIGOREFERENCIA; 
+            ORDER BY CODIGOREFERENCIA;
 
     v_nombreDeudor VARCHAR2(4000);
-    v_nombreDeudor2 VARCHAR2(4000); 
-    
-    v_RegFactura REG_FACTURA; -- Registro con datos de la factura   
+    v_nombreDeudor2 VARCHAR2(4000);
+
+    v_RegFactura REG_FACTURA; -- Registro con datos de la factura
     v_numFicheros NUMBER := 0; -- Esta variable es necesaria pero no la usamos
-    
+
     v_Codretorno VARCHAR2(10) := To_Char(0);
     v_Datoserror VARCHAR2(4000) := Null;
-    e_Error EXCEPTION; 
+    e_Error EXCEPTION;
 
     BEGIN
         -- Calcular el identificador de persona SEPA de la institucion (la institucion siempre tiene 'ES' como codigo ISO del pais)
         v_Datoserror := 'Regenerar_PresentacionGeneral: Llamada a la funcion CalcularDCPersonaSepa';
         p_RegAcreedor.IDPERSONASEPAINSTITUCION := 'ES' || CalcularDCPersonaSepa('ES', p_RegAcreedor.NIF) || LPAD(NVL(p_RegAcreedor.SUFIJO, '0'), 3, '0') || RPAD(NVL(p_RegAcreedor.NIF, ' '), 28, ' ');
-        
+
         -- Obtiene la direccion SEPA del Acreedor
         v_Datoserror := 'Regenerar_PresentacionGeneral: Llamada a la funcion ObtenerDireccionFacturacion';
-        p_RegAcreedor.DIRECCION := ObtenerDireccionFacturacion(p_IdInstitucion, p_RegAcreedor.IDPERSONA); 
-                     
+        p_RegAcreedor.DIRECCION := ObtenerDireccionFacturacion(p_IdInstitucion, p_RegAcreedor.IDPERSONA);
+
         -- Compruebo que existe la direccion de facturacion del acreedor
-        IF (p_RegAcreedor.DIRECCION.DOMICILIO IS NULL) THEN 
+        IF (p_RegAcreedor.DIRECCION.DOMICILIO IS NULL) THEN
             v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.errorMandatos.mensajeCondicionesIncumplidas', p_Idioma) ||
                         ' ' ||  p_RegAcreedor.NOMBRE ||
                         ' ' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.errorMandatos.mensajeIdentificacion', p_Idioma) ||
@@ -3780,9 +3800,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         ' ' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.errorMandatos.mensajeDireccionFacturacionAcreedor', p_Idioma);
             v_Codretorno := To_Char(5414);
             RAISE e_Error;
-        END IF; 
-        
-        /* NO NECESITA CargarFechasSEPA() */ 
+        END IF;
+
+        /* NO NECESITA CargarFechasSEPA() */
 
         v_Datoserror := 'Regenerar_PresentacionGeneral: Bucle del cursor de facturas (' || p_IdInstitucion || ',' || p_RegFacturas.IDDISQUETECARGOS || ')';
         FOR v_CursorFacturas IN c_FIED (p_IdInstitucion, p_RegFacturas.IDDISQUETECARGOS) LOOP
@@ -3801,9 +3821,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             v_RegFactura.IDMANDATO := v_CursorFacturas.IDMANDATO;
             v_RegFactura.DEUDOR_ID := v_CursorFacturas.DEUDOR_ID;
             v_RegFactura.SECUENCIAREAL := v_CursorFacturas.SECUENCIA;
-            
+
             v_nombreDeudor := RPAD(REGEXP_REPLACE(UPPER(v_CursorFacturas.DEUDOR_NOMBRE), '[^ABCDEFGHIJ-NOP-TUV-Z0-9]', ''), 70, ' ');
-            v_nombreDeudor2 := RPAD(REGEXP_REPLACE(UPPER(v_CursorFacturas.DEUDOR_NOMBRE2), '[^ABCDEFGHIJ-NOP-TUV-Z0-9]', ''), 70, ' '); 
+            v_nombreDeudor2 := RPAD(REGEXP_REPLACE(UPPER(v_CursorFacturas.DEUDOR_NOMBRE2), '[^ABCDEFGHIJ-NOP-TUV-Z0-9]', ''), 70, ' ');
 
             IF (LENGTH(TRIM(v_CursorFacturas.DEUDOR_NOMBRE2)) > 0 -- Tiene que tener nombre de deudor
                 AND NVL(LENGTH(v_RegFactura.DEUDOR_NOMBRE), 0) <= 66 -- MAXIMO 70 CARACTERES Y MINIMO ESPACIO + DOS PARENTESIS + UNA LETRA
@@ -3813,7 +3833,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     v_nombreDeudor := v_nombreDeudor || ')';
                     v_RegFactura.DEUDOR_NOMBRE := v_nombreDeudor;
             END IF;
-            
+
             v_Datoserror := 'Regenerar_PresentacionGeneral: Llamada al procedimiento CargarFacturaEnArrayDeudor';
             CargarFacturaEnArrayDeudor(
                 p_RegAcreedor,
@@ -3824,15 +3844,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 v_Datoserror);
             IF v_Codretorno <> To_Char(0) THEN
                 RAISE e_Error;
-            END IF; 
-        END LOOP; 
-        
+            END IF;
+        END LOOP;
+
         v_Datoserror := 'Regenerar_PresentacionGeneral: Llamada al procedimiento GestionarFicheros';
         /* NO NECESITA:
             - InsertarDisqueteCargos()
             - insertarFIED()
             - UPDATE FAC_FACTURA
-            - UPDATE CEN_MANDATOS_CUENTASBANCARIAS */        
+            - UPDATE CEN_MANDATOS_CUENTASBANCARIAS */
         GestionarFicheros (
             p_IdInstitucion,
             NULL,
@@ -3843,11 +3863,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             p_RegFacturas,
             v_numFicheros,
             v_Codretorno,
-            v_Datoserror                    
+            v_Datoserror
         );
         IF v_Codretorno <> To_Char(0) THEN
             RAISE e_Error;
-        END IF; 
+        END IF;
 
         v_Datoserror := 'Regenerar_PresentacionGeneral: Actualizacion de los parametros de salida';
         p_Codretorno := To_Char(0);
@@ -3860,9 +3880,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
 
             WHEN OTHERS THEN
                 p_CodRetorno := To_Char(Sqlcode);
-                p_DatosError := v_Datoserror || ', ' || Sqlerrm; 
-    END Regenerar_PresentacionGeneral; 
-    
+                p_DatosError := v_Datoserror || ', ' || Sqlerrm;
+    END Regenerar_PresentacionGeneral;
+
  /****************************************************************************************************************/
     /* Nombre: Regenerar_Presentacion */
     /* Descripcion: Regeneracion de los ficheros de adeudo (SEPA) */
@@ -3899,7 +3919,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         v_RegAcreedor REG_ACREEDOR;
         v_RegFacturas REG_FACTURAS;
         v_NombreBanco CEN_BANCOS.NOMBRE%TYPE;
-        
+
         v_Codretorno VARCHAR2(10) := To_Char(0);
         v_Datoserror VARCHAR2(4000) := Null;
         e_Error EXCEPTION;
@@ -3927,7 +3947,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 FAC_BANCOINSTITUCION.CONFIGLUGARESQUEMASECUENCIA, -- 0=bloqueAcreedor; 1=registrosIndividuales
                 FAC_BANCOINSTITUCION.CONFIGCONCEPTOAMPLIADO,-- 0=Concepto140; 1=concepto640
                 CEN_BANCOS.NOMBRE AS NOMBRE_BANCO,
-                CEN_BANCOS.BIC,                
+                CEN_BANCOS.BIC,
                 CEN_INSTITUCION.NOMBRE,
                 CEN_INSTITUCION.IDPERSONA,
                 SUBSTR(CEN_PERSONA.NIFCIF, 1, 9)
@@ -3948,7 +3968,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 v_RegAcreedor.CONFIGLUGARESQUEMASECUENCIA,
                 v_RegAcreedor.CONFIGCONCEPTOAMPLIADO,
                 v_NombreBanco,
-                v_RegAcreedor.BANCO_BIC,                
+                v_RegAcreedor.BANCO_BIC,
                 v_RegAcreedor.NOMBRE,
                 v_RegAcreedor.IDPERSONA,
                 v_RegAcreedor.NIF
@@ -3960,40 +3980,40 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         WHERE FAC_DISQUETECARGOS.IDINSTITUCION = p_IdInstitucion
             AND FAC_DISQUETECARGOS.IDDISQUETECARGOS = p_IdDisqueteCargos
             AND FAC_BANCOINSTITUCION.IDINSTITUCION = FAC_DISQUETECARGOS.IDINSTITUCION
-            AND FAC_BANCOINSTITUCION.BANCOS_CODIGO = FAC_DISQUETECARGOS.BANCOS_CODIGO             
+            AND FAC_BANCOINSTITUCION.BANCOS_CODIGO = FAC_DISQUETECARGOS.BANCOS_CODIGO
             --AND FAC_BANCOINSTITUCION.FECHABAJA IS NULL  -- Deben regenerarse aunque ahora esten de baja
-            AND CEN_BANCOS.CODIGO = FAC_BANCOINSTITUCION.COD_BANCO            
+            AND CEN_BANCOS.CODIGO = FAC_BANCOINSTITUCION.COD_BANCO
             AND CEN_INSTITUCION.IDINSTITUCION = FAC_DISQUETECARGOS.IDINSTITUCION
             AND CEN_PERSONA.IDPERSONA = CEN_INSTITUCION.IDPERSONA;
-            
+
         v_Datoserror := 'Regenerar_Presentacion: Cargar fechas';
-        IF (p_FechaPresentacion IS NOT NULL) THEN   
+        IF (p_FechaPresentacion IS NOT NULL) THEN
             v_RegFacturas.FECHAPRESENTACION := TO_DATE(p_FechaPresentacion, 'YYYYMMDD');
             v_RegFacturas.FECHACARGO_COREFRST := TO_DATE(p_FechaCargoFRST, 'YYYYMMDD');
             v_RegFacturas.FECHACARGO_CORERCUR := TO_DATE(p_FechaCargoRCUR, 'YYYYMMDD');
             v_RegFacturas.FECHACARGO_COR1 := TO_DATE(p_FechaCargoCOR1, 'YYYYMMDD');
             v_RegFacturas.FECHACARGO_B2B := TO_DATE(p_FechaCargoB2B, 'YYYYMMDD');
         END IF;
-        
+
         -- -1=Error; 0=Txt; 1=Txt+Xml; 2=Xml
         v_Datoserror := 'Regenerar_Presentacion: Obtiene el parametro FAC.SEPA_TIPO_FICHEROS';
-        v_RegAcreedor.TIPOSFICHEROS := F_SIGA_GETPARAMETRO('FAC', 'SEPA_TIPO_FICHEROS', p_Idinstitucion); 
-         IF (v_RegAcreedor.TIPOSFICHEROS = '-1') THEN             
+        v_RegAcreedor.TIPOSFICHEROS := F_SIGA_GETPARAMETRO('FAC', 'SEPA_TIPO_FICHEROS', p_Idinstitucion);
+         IF (v_RegAcreedor.TIPOSFICHEROS = '-1') THEN
             v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.errorParamSepaTipoFicheros.mensajeCondicionesIncumplidas', p_Idioma);
             v_Codretorno := To_Char(5417);
             Raise e_Error;
          END IF;
-         
+
         -- Control que comprueba que se ha indicado el BIC del banco
-        IF (v_RegAcreedor.BANCO_BIC IS NULL) THEN            
+        IF (v_RegAcreedor.BANCO_BIC IS NULL) THEN
             v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.errorBIC.mensajeCondicionesIncumplidas', p_Idioma) || ' ' || v_NombreBanco;
             v_Codretorno := To_Char(5422);
             Raise e_Error;
-        END IF; 
-        
+        END IF;
+
         -- Si es antiguo, intento calcular el sufijo actual
-        IF (v_RegAcreedor.IDSUFIJO IS NULL) THEN        
-            BEGIN        
+        IF (v_RegAcreedor.IDSUFIJO IS NULL) THEN
+            BEGIN
                 v_Datoserror := 'Regenerar_Presentacion: Calcula el sufijo utilizado por el disquete de cargos actual';
                 SELECT TABLA.SUFIJO, TABLA.IDSUFIJO
                     INTO v_RegAcreedor.SUFIJO, v_RegAcreedor.IDSUFIJO
@@ -4005,7 +4025,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                             FAC_SERIEFACTURACION_BANCO,
                             FAC_SUFIJO
                         WHERE FAC_DISQUETECARGOS.IDINSTITUCION = p_IdInstitucion
-                            AND FAC_DISQUETECARGOS.IDDISQUETECARGOS = p_IdDisqueteCargos   
+                            AND FAC_DISQUETECARGOS.IDDISQUETECARGOS = p_IdDisqueteCargos
                             AND FAC_FACTURAINCLUIDAENDISQUETE.IDINSTITUCION = FAC_DISQUETECARGOS.IDINSTITUCION
                             AND FAC_FACTURAINCLUIDAENDISQUETE.IDDISQUETECARGOS = FAC_DISQUETECARGOS.IDDISQUETECARGOS
                             AND FAC_FACTURA.IDINSTITUCION = FAC_FACTURAINCLUIDAENDISQUETE.IDINSTITUCION
@@ -4014,12 +4034,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                             AND FAC_SERIEFACTURACION_BANCO.BANCOS_CODIGO = FAC_DISQUETECARGOS.BANCOS_CODIGO
                             AND FAC_SERIEFACTURACION_BANCO.IDSERIEFACTURACION = FAC_FACTURA.IDSERIEFACTURACION
                             AND FAC_SUFIJO.IDINSTITUCION = FAC_SERIEFACTURACION_BANCO.IDINSTITUCION
-                            AND FAC_SUFIJO.IDSUFIJO = FAC_SERIEFACTURACION_BANCO.IDSUFIJO     
+                            AND FAC_SUFIJO.IDSUFIJO = FAC_SERIEFACTURACION_BANCO.IDSUFIJO
                         GROUP BY FAC_SUFIJO.SUFIJO, FAC_SUFIJO.IDSUFIJO
-                        ORDER BY CONTADOR DESC 
-                    ) TABLA    
+                        ORDER BY CONTADOR DESC
+                    ) TABLA
                 WHERE ROWNUM = 1;
-            
+
                 EXCEPTION WHEN NO_DATA_FOUND THEN
                     v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.errorSufijos.mensajeCondicionesIncumplidas', p_Idioma) ||
                             ' ' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.errorSufijos.mensajeSufijoDisqueteCargos', p_Idioma) ||
@@ -4027,8 +4047,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     v_Codretorno := To_Char(5421);
                     Raise e_Error;
             END;
-        END IF; 
-        
+        END IF;
+
         v_RegFacturas.IDDISQUETECARGOS := p_IdDisqueteCargos;
 
         v_Datoserror := 'Regenerar_Presentacion: Llamada al procedimiento Regenerar_PresentacionGeneral';
@@ -4052,14 +4072,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         WHEN e_Error THEN
             ROLLBACK;
             p_Codretorno := v_Codretorno;
-            p_Datoserror := v_Datoserror; 
+            p_Datoserror := v_Datoserror;
 
         WHEN OTHERS THEN
             ROLLBACK;
             p_Codretorno := To_Char(Sqlcode);
-            p_Datoserror := v_Datoserror || ', ' || Sqlerrm; 
-    END Regenerar_Presentacion; 
-    
+            p_Datoserror := v_Datoserror || ', ' || Sqlerrm;
+    END Regenerar_Presentacion;
+
     /****************************************************************************************************************/
     /* Nombre: CARGADISQUETEDEVOLUCIONES */
     /* Descripcion: Carga en la tabla de la base de datos FAC_DISQUETEDEVOLUCIONES */
@@ -4076,7 +4096,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
     /*    En caso de error devuelve el mensaje de error Oracle correspondiente */
     /* */
     /* Version: 1.0 - Fecha Creacion: 18/10/2004 - Autor: Yolanda Garcia Espino */
-    /* Version: 2.0 - Fecha Modificacion: 17/01/2014 - Autor: Jorge Paez Trivino */        
+    /* Version: 2.0 - Fecha Modificacion: 17/01/2014 - Autor: Jorge Paez Trivino */
   /****************************************************************************************************************/
     Procedure Cargadisquetedevoluciones(
         p_Idinstitucion In Number,
@@ -4146,10 +4166,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
     /* */
     /* Version: 1.0 - Fecha Creacion: 18/10/2004 - Autor: Yolanda Garcia Espino */
     /* Version: 2.0 - Fecha Modificacion: 17/01/2014 - Autor: Jorge Paez Trivino */
-    /* Version: 3.0 - Fecha Modificacion: 17/01/2014 - Autor: Jorge Paez Trivino 
+    /* Version: 3.0 - Fecha Modificacion: 17/01/2014 - Autor: Jorge Paez Trivino
         - Ahora viene como datos de entrada IDDISQUETECARGOS y IDFACTURAINCLUIDAENDISQUETE */
-    /* Version: 4.0 - Fecha Modificacion: 23/06/2015 - Autor: Jorge Paez Trivino 
-    - Cuando no encuentra el motivo que devuelva un error */        
+    /* Version: 4.0 - Fecha Modificacion: 23/06/2015 - Autor: Jorge Paez Trivino
+    - Cuando no encuentra el motivo que devuelva un error */
   /****************************************************************************************************************/
     Procedure Cargalineasdevoluciones(
         p_Idinstitucion In Number,
@@ -4167,7 +4187,26 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         v_Codigomotivo Fac_Motivodevolucion.Codigo%Type;
         v_Codretorno VARCHAR2(10) := To_Char(0);
         v_Datoserror VARCHAR2(4000) := Null;
-        e_Error Exception; 
+        e_Error Exception;
+        
+         --CGP para el historico de facturas INICIO
+         V_IDFACTURA FAC_HISTORICOFACTURA.IDFACTURA%TYPE;
+         V_IDPERSONA FAC_HISTORICOFACTURA.IDPERSONA%TYPE;
+         V_IMPTOTALPORPAGAR FAC_HISTORICOFACTURA.IMPTOTALPORPAGAR%TYPE;
+         V_IDCUENTA FAC_HISTORICOFACTURA.IDCUENTA%TYPE;
+         V_FECHAMODIFICACION FAC_HISTORICOFACTURA.FECHAMODIFICACION%TYPE;
+         V_IDFORMAPAGO FAC_HISTORICOFACTURA.IDFORMAPAGO%TYPE;
+         V_IDPERSONADEUDOR FAC_HISTORICOFACTURA.IDPERSONADEUDOR%TYPE;
+         V_IDCUENTADEUDOR FAC_HISTORICOFACTURA.IDCUENTADEUDOR%TYPE;
+         V_IMPTOTALANTICIPADO FAC_HISTORICOFACTURA.IDCUENTADEUDOR%TYPE;
+         V_IMPTOTALPAGADOPORCAJA FAC_HISTORICOFACTURA.IMPTOTALPAGADOPORCAJA%TYPE;
+         V_IMPTOTALPAGADOSOLOCAJA FAC_HISTORICOFACTURA.IMPTOTALPAGADOSOLOCAJA%TYPE;
+         V_IMPTOTALPAGADO FAC_HISTORICOFACTURA.IMPTOTALPAGADO%TYPE;
+         V_IMPTOTALPAGADOSOLOTARJETA FAC_HISTORICOFACTURA.IMPTOTALPAGADOSOLOTARJETA%TYPE;
+         V_IMPTOTALPAGADOPORBANCO FAC_HISTORICOFACTURA.IMPTOTALPAGADOPORBANCO%TYPE;
+         V_IMPTOTALCOMPENSADO FAC_HISTORICOFACTURA.IMPTOTALCOMPENSADO%TYPE;
+         V_ESTADO FAC_HISTORICOFACTURA.ESTADO%TYPE;
+         --CGP FIN
 
     Begin
         v_Datoserror := 'CARGALINEASDEVOLUCIONES: Obtencion del motivo';
@@ -4187,13 +4226,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 Into v_Descripcionmotivos
             FROM FAC_MOTIVODEVOLUCION
             WHERE CODIGO = v_Codigomotivo;
-            
-            EXCEPTION 
+
+            EXCEPTION
                 WHEN OTHERS THEN
                     v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.motivoIncorrecto', p_Idioma) || ' ' || v_Codigomotivo;
                     v_Codretorno := To_Char(5420);
                     RAISE e_Error;
-        END;            
+        END;
 
         v_Datoserror := 'CARGALINEASDEVOLUCIONES: Insercion en la tabla FAC_LINEADEVOLUDISQBANCO del disquete ' || p_Iddisquetedevoluciones;
         INSERT INTO FAC_LINEADEVOLUDISQBANCO (
@@ -4224,12 +4263,41 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         v_Datoserror := 'CARGALINEASDEVOLUCIONES: Actualizacion de los parametros de salida';
         p_Codretorno := To_Char(0);
         p_Datoserror := Null;
+        
+         -- CGP (27/10/2017) Insertamos en el histórico de la facturacion INICIO
+             
+             
+            SELECT IDFACTURA INTO V_IDFACTURA from fac_facturaincluidaendisquete 
+            where idInstitucion=p_Idinstitucion
+                  and iddisquetecargos=p_IdDisqueteCargos
+                  and IDFACTURAINCLUIDAENDISQUETE=p_IdFacturaIncluidaEnDisquete;
+             
+             
+             SELECT IDPERSONA, IMPTOTALPORPAGAR, IDCUENTA, FECHAMODIFICACION,IDFORMAPAGO,IDPERSONADEUDOR,IDCUENTADEUDOR,IMPTOTALANTICIPADO,
+                    IMPTOTALPAGADOPORCAJA,IMPTOTALPAGADOSOLOCAJA,IMPTOTALPAGADO,IMPTOTALPAGADOSOLOTARJETA,IMPTOTALPAGADOPORBANCO,IMPTOTALCOMPENSADO,
+                    ESTADO
+               INTO V_IDPERSONA, V_IMPTOTALPORPAGAR, V_IDCUENTA, V_FECHAMODIFICACION,V_IDFORMAPAGO,V_IDPERSONADEUDOR,V_IDCUENTADEUDOR,V_IMPTOTALANTICIPADO,
+                    V_IMPTOTALPAGADOPORCAJA,V_IMPTOTALPAGADOSOLOCAJA,V_IMPTOTALPAGADO,V_IMPTOTALPAGADOSOLOTARJETA,V_IMPTOTALPAGADOPORBANCO,V_IMPTOTALCOMPENSADO,
+                    V_ESTADO
+               FROM FAC_FACTURA
+              WHERE IDINSTITUCION =  p_Idinstitucion
+                    AND IDFACTURA = V_IDFACTURA;
+
+             INSERT INTO FAC_HISTORICOFACTURA (IDINSTITUCION,IDFACTURA, IDHISTORICO,FECHAMODIFICACION, USUMODIFICACION, IDTIPOACCION, IDFORMAPAGO, 
+									    IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA,
+									    IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO, IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, ESTADO, IDDISQUETEDEVOLUCIONES, IDRECIBO)
+								      SELECT IDINSTITUCION, IDFACTURA,nvl((select max(his2.IDHISTORICO) from FAC_HISTORICOFACTURA his2 where his2.IDINSTITUCION = FAC_FACTURA.IdInstitucion and his2.IDFACTURA = FAC_FACTURA.IdFactura), 0)+1,SYSDATE,USUMODIFICACION,6,IDFORMAPAGO, 
+								      IDPERSONA, IDCUENTA, IDPERSONADEUDOR, IDCUENTADEUDOR, IMPTOTALANTICIPADO, IMPTOTALPAGADOPORCAJA, IMPTOTALPAGADOSOLOCAJA, 
+								      IMPTOTALPAGADOSOLOTARJETA, IMPTOTALPAGADOPORBANCO,IMPTOTALPAGADO, IMPTOTALPORPAGAR, IMPTOTALCOMPENSADO, ESTADO,p_Iddisquetedevoluciones,p_Codigoreferencia 
+								      FROM FAC_FACTURA WHERE IDINSTITUCION=p_Idinstitucion AND IDFACTURA= V_IDFACTURA;
+           
+                --CGP FIN
 
         Exception
             When e_Error Then
                     p_Codretorno := v_Codretorno;
-                    p_Datoserror := v_Datoserror;        
-        
+                    p_Datoserror := v_Datoserror;
+
             When Others Then
                 p_Codretorno := To_Char(Sqlcode);
                 p_Datoserror := v_Datoserror || ', ' || Sqlerrm;
@@ -4240,7 +4308,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
     /* Descripcion: Tratamiento final de las devoluciones */
     /* */
     /* P_IDINSTITUCION - IN - Identificador de la institucion - DATE */
-    /* P_NOMBREFICHERO - IN - Nombre del fichero - VARCHAR2(80) */    
+    /* P_NOMBREFICHERO - IN - Nombre del fichero - VARCHAR2(80) */
     /* M_DISQ_DEVO - IN OUT - Matriz de los disquetes de devoluciones - TAB_DISQ_DEVO */
     /* P_CONTADORDISQDEVO - IN OUT - Contador de disquetes de las devoluciones a gestionar - NUMBER */
     /* P_FECHADEVOLUCION - IN - Fecha de la devolucion - DATE */
@@ -4270,7 +4338,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         v_Datoserror_2 Varchar2(4000) := Null;
         v_EstadoFactura FAC_FACTURA.ESTADO%TYPE;
         v_numFicherosSinFacturas NUMBER := 0;
-        
+
         /* Declaracion de excepciones */
         e_Error Exception;
 
@@ -4292,8 +4360,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             v_Datoserror := 'DevolucionesFin: Comprobar existencia ficheros individuales en disquete de devoluciones - Tratamiento Devoluciones';
             IF (M_DISQ_DEVO(contadorDisq).CONT_M_FIED_DEVO=0) THEN
                 v_numFicherosSinFacturas := v_numFicherosSinFacturas + 1;
-            
-            ELSE                           
+
+            ELSE
                 -- Insercion tabla FAC_DISQUETEDEVOLUCIONES
                 v_Datoserror := 'DevolucionesFin: Llamada al procedimiento CargaDisqueteDevoluciones - Tratamiento Devoluciones';
                 Cargadisquetedevoluciones(
@@ -4313,17 +4381,17 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
 
                 v_Datoserror := 'DevolucionesFin: Recorro todos los ficheros incluidos en disquete - Tratamiento Devoluciones';
                 FOR contadorFied IN 1..M_DISQ_DEVO(contadorDisq).CONT_M_FIED_DEVO LOOP
-                
+
                     v_Datoserror := 'DevolucionesFin: Se comprueba obtiene el estado actual de la factura';
                     SELECT ESTADO
                         INTO v_EstadoFactura
                     FROM FAC_FACTURA
                     WHERE IDINSTITUCION = p_Idinstitucion
-                        AND IDFACTURA = M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).ID_FACTURA; 
+                        AND IDFACTURA = M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).ID_FACTURA;
 
                     -- Compruebo que la factura tiene el estado pagada
                     IF (v_EstadoFactura = 1) THEN
-                        
+
                         -- JPT (17-02-2015): Actualizo FAC_FACTURAINCLUIDAENDISQUETE por su PK
                         v_Datoserror := 'DevolucionesFin: Actualizacion tabla FAC_FACTURAINCLUIDAENDISQUETE - Tratamiento Devoluciones';
                         UPDATE FAC_FACTURAINCLUIDAENDISQUETE
@@ -4334,7 +4402,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         WHERE IDINSTITUCION = p_Idinstitucion
                             AND IDDISQUETECARGOS = M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).IDDISQUETECARGOS
                             AND IDFACTURAINCLUIDAENDISQUETE = M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).IDFACTURAINCLUIDAENDISQUETE;
-                            
+
                         v_Datoserror := 'DevolucionesFin: Actualizacion tabla FAC_FACTURA - Tratamiento Devoluciones';
                         UPDATE FAC_FACTURA
                         SET IMPTOTALPAGADOPORBANCO = IMPTOTALPAGADOPORBANCO - M_DISQ_DEVO(contadorDisq).M_FIED_DEVO(contadorFied).IMPORTE_DEVO,
@@ -4366,11 +4434,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         ELSE
                             v_Datoserror_2 := '';
                         END IF;
-                    END IF;                    
+                    END IF;
                 END LOOP;
             END IF;
         END LOOP;
-        
+
         -- Hay que restar los ficheros sin facturas
         p_ContadorDisqDevo := p_ContadorDisqDevo - v_numFicherosSinFacturas;
 
@@ -4390,11 +4458,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     p_Datoserror := v_Datoserror_2;
                 ELSE
                     p_Datoserror := v_Datoserror || ', ' || v_Datoserror_2;
-                END IF;                    
+                END IF;
 
             When Others Then
                 p_Codretorno := To_Char(Sqlcode);
-                p_Datoserror := v_Datoserror || ', ' || v_Datoserror_2 || ', ' || Sqlerrm; 
+                p_Datoserror := v_Datoserror || ', ' || v_Datoserror_2 || ', ' || Sqlerrm;
       End DevolucionesFin;
 
     /****************************************************************************************************************/
@@ -4414,14 +4482,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
     /* */
     /* Version: 1.0 - Fecha Creacion: 25/10/2004 - Autor: Yolanda Garcia Espino */
     /* Version: 2.0 - Fecha Modificacion: 17/01/2014 - Autor: Jorge Paez Trivino */
-    /* Version: 3.0 - Fecha Modificacion: 17/02/2015 - Autor: Jorge Paez Trivino 
+    /* Version: 3.0 - Fecha Modificacion: 17/02/2015 - Autor: Jorge Paez Trivino
         - Elimino devoluciones y rechazos con N19.
         - Quitar una comprobacion que miraba si existia la factura dentro del array (era para cuando habia varios registros individuales con la misma factura)
         - Obtengo y guardo en array IDDISQUETECARGOS, pero no IDFACTURAINCLUIDAENDISQUETE*/
-    /* Version: 4.0 - Fecha Modificacion: 10/06/2015 - Autor: Oscar de la Torre Noheda 
-        - Se integra el procesado de ficheros SEPA XML de rechazos y devoluciones */    
-    /* Version: 5.0 - Fecha Modificacion: 24/06/2015 - Autor: Jorge Paez Trivino 
-    - Revision de codigo XML SEPA */        
+    /* Version: 4.0 - Fecha Modificacion: 10/06/2015 - Autor: Oscar de la Torre Noheda
+        - Se integra el procesado de ficheros SEPA XML de rechazos y devoluciones */
+    /* Version: 5.0 - Fecha Modificacion: 24/06/2015 - Autor: Jorge Paez Trivino
+    - Revision de codigo XML SEPA */
     /****************************************************************************************************************/
     Procedure Devoluciones (
         p_Idinstitucion In Number,
@@ -4498,24 +4566,24 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
 
         /* Declaracion de excepciones */
         e_Ficheroincorrecto Exception;
-        e_Error Exception;         
+        e_Error Exception;
 
-    BEGIN        
+    BEGIN
         -------------------------------XML-------------------------------------
         -- -1=Error; 0=Txt; 1=Txt+Xml; 2=Xml
         v_Datoserror := 'DEVOLUCIONES: Obtiene el parametro FAC.SEPA_TIPO_FICHEROS';
-        v_RegAcreedor.TIPOSFICHEROS := F_SIGA_GETPARAMETRO('FAC', 'SEPA_TIPO_FICHEROS', p_Idinstitucion); 
-        
+        v_RegAcreedor.TIPOSFICHEROS := F_SIGA_GETPARAMETRO('FAC', 'SEPA_TIPO_FICHEROS', p_Idinstitucion);
+
         -- Compruebo el tipo de fichero
-        IF (v_RegAcreedor.TIPOSFICHEROS = '-1') THEN             
+        IF (v_RegAcreedor.TIPOSFICHEROS = '-1') THEN
             v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.errorParamSepaTipoFicheros.mensajeCondicionesIncumplidas', p_Idioma);
             v_Codretorno := To_Char(5420);
-            Raise e_Error;            
+            Raise e_Error;
 
-        ELSIF v_RegAcreedor.TIPOSFICHEROS IN (1,2) THEN           
+        ELSIF v_RegAcreedor.TIPOSFICHEROS IN (1,2) THEN
             BEGIN
                 v_Datoserror := 'DEVOLUCIONES: Extraer contenido - fichero xml';
-                v_documento := DBMS_XSLPROCESSOR.Read2Clob(p_Pathfichero, p_Nombrefichero, 0);            
+                v_documento := DBMS_XSLPROCESSOR.Read2Clob(p_Pathfichero, p_Nombrefichero, 0);
                 -- Se parsea todo el documento
                 v_Datoserror := 'DEVOLUCIONES: Parsear datos y pasarlos a una variable tipo documento - fichero xml';
                 v_parse:= DBMS_XMLPARSER.newparser();
@@ -4525,14 +4593,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
 
                 EXCEPTION
                     WHEN OTHERS THEN
-                        v_Tipofichero := 0; -- Devolucion fichero texto  
+                        v_Tipofichero := 0; -- Devolucion fichero texto
             END;
         END IF;
-        
-        IF (v_Tipofichero = 0 AND v_RegAcreedor.TIPOSFICHEROS = 2) THEN            
+
+        IF (v_Tipofichero = 0 AND v_RegAcreedor.TIPOSFICHEROS = 2) THEN
             v_Datoserror :=  F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.ficheroXML', p_Idioma);
             v_Codretorno := To_Char(5420);
-            RAISE e_Error; 
+            RAISE e_Error;
         END IF;
 
         -- Devolucion fichero texto
@@ -4542,7 +4610,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
 
             /* Abrir fichero de entrada */
             v_Datoserror := 'DEVOLUCIONES: Apertura del fichero';
-            f_Entrada := Utl_File.Fopen(p_Pathfichero, p_Nombrefichero, 'R'); 
+            f_Entrada := Utl_File.Fopen(p_Pathfichero, p_Nombrefichero, 'R');
 
             /******************************  LINEA CABECERA PRESENTADOR ***************************************/
             LOOP -- Empezamos a recorrer el fichero hasta encontrar el registro de cabecera del presentador de la devolucion
@@ -4614,10 +4682,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                             v_Codretorno := To_Char(5406);
                             RAISE e_Error;
                 END;
-                
+
                 -- JPT (17-02-2015): Obtiene el identificador del disquete de cargos
                 v_IdFicheroOriginal := TRIM(SUBSTR(v_Registro, 300, 35));
-                v_IdDisqueteCargos2 := TRIM(SUBSTR(v_IdFicheroOriginal, 26, 10)); 
+                v_IdDisqueteCargos2 := TRIM(SUBSTR(v_IdFicheroOriginal, 26, 10));
 
                 v_Datoserror := 'DEVOLUCIONES: Compruebo si ya existe un disquete de devoluciones con ese codigo de banco - Cabecera ordenante';
                 v_contadorActualDisqDevo := 0; -- Inicializo el contador actual
@@ -4678,17 +4746,17 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     v_Importe := ROUND(TO_NUMBER(SUBSTR(v_Registro, 89, 11)) / 100, 2);
 
                     v_Datoserror := 'DEVOLUCIONES: Obtencion estado y fecha emision factura - Registro individual';
-                    BEGIN 
+                    BEGIN
                         SELECT FECHAEMISION
                             INTO v_FechaEmision
                         FROM FAC_FACTURA
                         WHERE IDINSTITUCION = p_Idinstitucion
                             AND IDFACTURA = v_Idfactura;
-                            
+
                         EXCEPTION
                             WHEN NO_DATA_FOUND THEN
                                 v_Codretorno := To_Char(5407); -- Error, no encuentra la factura
-                                RAISE e_Error; 
+                                RAISE e_Error;
                     END;
 
                     v_Datoserror := 'DEVOLUCIONES: Comprobar fecha devolucion posterior a fecha emision - Registro individual';
@@ -4696,16 +4764,16 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         v_Codretorno := To_Char(5404);
                         RAISE e_Error;
                     END IF;
-                    
+
                     -- JPT (17-02-2015): Obtengo IMPORTE, IDDISQUETECARGOS y IDFACTURAINCLUIDAENDISQUETE
                     BEGIN
                         v_Datoserror := 'DEVOLUCIONES: Obtengo IDFACTURAINCLUIDAENDISQUETE';
-                        SELECT IMPORTE, 
-                                IDDISQUETECARGOS, 
-                                IDFACTURAINCLUIDAENDISQUETE, 
+                        SELECT IMPORTE,
+                                IDDISQUETECARGOS,
+                                IDFACTURAINCLUIDAENDISQUETE,
                                 DEVUELTA
-                            INTO v_ImporteFIED, 
-                                v_IdDisqueteCargos, 
+                            INTO v_ImporteFIED,
+                                v_IdDisqueteCargos,
                                 v_IdFacturaIncluidaEnDisquete,
                                 v_facturaDevuelta
                         FROM FAC_FACTURAINCLUIDAENDISQUETE
@@ -4716,30 +4784,30 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                             AND ROWNUM = 1;
 
                         EXCEPTION
-                            WHEN OTHERS THEN        
-                                BEGIN  
-                                    -- JPT (17-02-2015): Si no viene IDDISQUETECARGOS, intento buscarlo con IDFACTURA e IDRECIBO                   
-                                    SELECT IMPORTE, 
-                                            IDDISQUETECARGOS, 
+                            WHEN OTHERS THEN
+                                BEGIN
+                                    -- JPT (17-02-2015): Si no viene IDDISQUETECARGOS, intento buscarlo con IDFACTURA e IDRECIBO
+                                    SELECT IMPORTE,
+                                            IDDISQUETECARGOS,
                                             IDFACTURAINCLUIDAENDISQUETE,
                                             DEVUELTA
-                                        INTO v_ImporteFIED, 
-                                            v_IdDisqueteCargos, 
+                                        INTO v_ImporteFIED,
+                                            v_IdDisqueteCargos,
                                             v_IdFacturaIncluidaEnDisquete,
                                             v_facturaDevuelta
                                     FROM FAC_FACTURAINCLUIDAENDISQUETE
                                     WHERE IDINSTITUCION = p_Idinstitucion
                                         AND IDFACTURA = v_Idfactura
-                                        AND IDRECIBO = v_Codigoreferencia                                    
-                                        AND ROWNUM = 1; 
-                                        
+                                        AND IDRECIBO = v_Codigoreferencia
+                                        AND ROWNUM = 1;
+
                                     EXCEPTION
                                         WHEN NO_DATA_FOUND THEN
                                             v_Codretorno := To_Char(5407); -- Error, no encuentra la factura
-                                            RAISE e_Error; 
+                                            RAISE e_Error;
                                 END;
-                    END; 
-                    
+                    END;
+
                     IF (v_facturaDevuelta = 'N') THEN
                         v_Datoserror := 'DEVOLUCIONES: Guardo datos en matriz de disquetes de devoluciones - Registro individual';
                         v_contadorFiedDevo := M_DISQ_DEVO(v_contadorActualDisqDevo).CONT_M_FIED_DEVO + 1;
@@ -4748,17 +4816,17 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IMPORTE_DEVO := v_Importe;
                         M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).MOTIVO_DEVO := v_Motivodevolucion;
                         M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IDFACTURAINCLUIDAENDISQUETE := v_IdFacturaIncluidaEnDisquete;
-                        
+
                           v_Datoserror := 'DEVOLUCIONES: Comprobar importe FAC_FACTURAINCLUIDAENDISQUETE - Tratamiento Devoluciones';
                         IF (v_Importe <> v_ImporteFIED) THEN
                             v_Codretorno := To_Char(5405);
                             RAISE e_Error;
                         END IF;
-                        
+
                         -- JPT (17-02-2015): Guarda el identificador del disquete de cargos
-                        M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IDDISQUETECARGOS := v_IdDisqueteCargos; 
+                        M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IDDISQUETECARGOS := v_IdDisqueteCargos;
                         M_DISQ_DEVO(v_contadorActualDisqDevo).CONT_M_FIED_DEVO := v_contadorFiedDevo; -- Tiene un fichero incluidos en disquete nuevo
-                    END IF;                
+                    END IF;
 
                     /****************** LINEAS INDIVIDUALES O TOTALES ORDENANTE ****************************************/
                     LOOP
@@ -4784,7 +4852,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     v_Datoserror := 'DEVOLUCIONES: Comprobar codigo registro y codigo dato - Registro individual o total ordenante - SEPA';
                     IF NOT (v_Codregistro = v_tipoDevolucion + 3 AND v_Coddato = 3) THEN -- Error si no es un registro individual obligatorio
                         RAISE e_Ficheroincorrecto;
-                    END IF;                    
+                    END IF;
                 END LOOP;
 
                 /******************** LINEAS TOTALES O CABECERA ORDENANTE *******************************/
@@ -4830,16 +4898,16 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
 
             v_Datoserror := 'DEVOLUCIONES: Cierre fichero';
             Utl_File.Fclose(f_Entrada);
-        
+
         -------------------------------XML-------------------------------------
-        -- Devolucion xml    
+        -- Devolucion xml
         ELSIF v_Tipofichero = 1 THEN
-        
+
             /* SE HA ELIMINADO EL TRATAMIENTO QUE ELIMINABA LOS ATRIBUTOS xmlns de la etiqueta Document => Ahora se hacen desde java
             * Se han detectado dos problemas en pl que podemos evitar desde java:
              * - Cuando viene todo el xml en una linea muy grande (37.XXX), no funciona bien el pl, aunque trabaja con funciones CLOB, por debajo debe trabajar con VARCHAR2.
              * - Cuando crea un fichero desde java se crea con usuario root, y cuando se sobreescribe desde pl se utiliza un usuario de oracle, con lo que en pl no es el propietario del fichero.
-             * - Al crear un fichero el propietario tiene permisos de lectura y escritura, pero para el resto tiene permisos de solo lectura. 
+             * - Al crear un fichero el propietario tiene permisos de lectura y escritura, pero para el resto tiene permisos de solo lectura.
              */
 
             -- Comprobamos si es un fichero del esquema pain.002.001.03 correspondiente a devoluciones y rechazos
@@ -4847,7 +4915,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             l_CstmrPmtStsRpt := DBMS_XMLDOM.item(DBMS_XMLDOM.getElementsByTagName(l_sepa, 'CstmrPmtStsRpt'), 0);
 
             IF DBMS_XMLDOM.isNull(l_CstmrPmtStsRpt) THEN
-                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinNodo', p_Idioma) || ' "CstmrPmtStsRpt" - ' || 
+                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinNodo', p_Idioma) || ' "CstmrPmtStsRpt" - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt"';
                 v_Codretorno := To_Char(5420);
                 RAISE e_Error;
@@ -4860,7 +4928,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             l_CreDtTm := DBMS_XMLDOM.item(DBMS_XMLDOM.getElementsByTagName(l_sepa, 'CreDtTm'), 0);
 
             IF DBMS_XMLDOM.isNull(l_CreDtTm) THEN
-                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinNodo', p_Idioma) || ' "CreDtTm" - ' || 
+                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinNodo', p_Idioma) || ' "CreDtTm" - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/GrpHdr/CreDtTm"';
                 v_Codretorno := To_Char(5420);
                 RAISE e_Error;
@@ -4870,7 +4938,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             v_CreDtTm := DBMS_XMLDOM.getnodevalue(l_CreDtTm_child);
 
             IF v_CreDtTm IS NULL THEN
-                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinDatos', p_Idioma) || ' "CreDtTm" - ' || 
+                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinDatos', p_Idioma) || ' "CreDtTm" - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/GrpHdr/CreDtTm"';
                 v_Codretorno := To_Char(5420);
                 RAISE e_Error;
@@ -4879,24 +4947,24 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             BEGIN
                 v_Datoserror := 'DEVOLUCIONES: Obtencion fecha devolucion - Cabecera - fichero xml';
                 v_FechaDevolucion := TO_DATE(SUBSTR(v_CreDtTm, 1, 10), 'YYYY-MM-DD');
-                
+
                 v_Datoserror := 'DEVOLUCIONES: Devuelvo la fecha devolucion';
                 p_FechaDevolucion := TO_CHAR(v_FechaDevolucion, 'YYYY/MM/DD HH24:MI:SS');
-                
+
                 EXCEPTION
                     WHEN OTHERS THEN
-                        v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.formatoIncorrecto', p_Idioma) || ' "CreDtTm" (YYYY-MM-DDThh:mm:ss) - ' || 
+                        v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.formatoIncorrecto', p_Idioma) || ' "CreDtTm" (YYYY-MM-DDThh:mm:ss) - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/GrpHdr/CreDtTm"';
                         v_Codretorno := To_Char(5420);
                         RAISE e_Error;
-            END; 
+            END;
 
             -- Buscar y extraer tipo devolucion
             v_Datoserror := 'DEVOLUCIONES: Buscar y extraer tipo de devolucion - Cabecera - fichero xml';
             l_MsgId := DBMS_XMLDOM.item(DBMS_XMLDOM.getElementsByTagName(l_sepa, 'MsgId'), 0);
 
             IF DBMS_XMLDOM.isNull(l_MsgId) THEN
-                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinNodo', p_Idioma) || ' "MsgId" - ' || 
+                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinNodo', p_Idioma) || ' "MsgId" - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/GrpHdr/MsgId"';
                 v_Codretorno := To_Char(5420);
                 RAISE e_Error;
@@ -4906,13 +4974,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             v_MsgId := DBMS_XMLDOM.getnodevalue(l_MsgId_child);
 
             IF v_MsgId IS NULL THEN
-                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinDatos', p_Idioma) || ' "MsgId" - ' || 
+                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinDatos', p_Idioma) || ' "MsgId" - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/GrpHdr/MsgId"';
                 v_Codretorno := To_Char(5420);
                 RAISE e_Error;
 
             ELSIF LENGTH(v_MsgId) NOT BETWEEN 1 AND 35 THEN
-                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.formatoIncorrecto', p_Idioma) || ' "MsgId" (35 ' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.caracteresMaximo', p_Idioma) || ') - ' || 
+                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.formatoIncorrecto', p_Idioma) || ' "MsgId" (35 ' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.caracteresMaximo', p_Idioma) || ') - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/GrpHdr/MsgId"';
                 v_Codretorno := To_Char(5420);
                 RAISE e_Error;
@@ -4932,7 +5000,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             l_IBAN := DBMS_XSLPROCESSOR.selectSingleNode(DBMS_XMLDOM.makeNode(l_sepa), '/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts/TxInfAndSts['||v_contadorBloqueIndividual||']/OrgnlTxRef/CdtrAcct/Id/IBAN');
 
             IF DBMS_XMLDOM.isNull(l_IBAN) THEN
-                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinNodo', p_Idioma) || ' "IBAN" - ' || 
+                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinNodo', p_Idioma) || ' "IBAN" - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts/TxInfAndSts['||v_contadorBloqueIndividual||']/OrgnlTxRef/CdtrAcct/Id/IBAN"';
                 v_Codretorno := To_Char(5420);
                 RAISE e_Error;
@@ -4942,13 +5010,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             v_IBAN := DBMS_XMLDOM.getnodevalue(l_IBAN_child);
 
             IF v_IBAN IS NULL THEN
-                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinDatos', p_Idioma) || ' "IBAN" - ' || 
+                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinDatos', p_Idioma) || ' "IBAN" - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts/TxInfAndSts['||v_contadorBloqueIndividual||']/OrgnlTxRef/CdtrAcct/Id/IBAN"';
                 v_Codretorno := To_Char(5420);
                 RAISE e_Error;
 
             ELSIF LENGTH(v_IBAN) NOT BETWEEN 1 AND 34 THEN
-                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.formatoIncorrecto', p_Idioma) || ' "IBAN" (34 ' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.caracteresMaximo', p_Idioma) || ') - ' || 
+                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.formatoIncorrecto', p_Idioma) || ' "IBAN" (34 ' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.caracteresMaximo', p_Idioma) || ') - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts/TxInfAndSts['||v_contadorBloqueIndividual||']/OrgnlTxRef/CdtrAcct/Id/IBAN"';
                 v_Codretorno := To_Char(5420);
                 RAISE e_Error;
@@ -4975,7 +5043,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             l_OrgnlPmtInfId := DBMS_XMLDOM.item(DBMS_XMLDOM.getElementsByTagName(l_sepa, 'OrgnlPmtInfId'), 0); -- selecciono el primer nodo de la lista
 
             IF DBMS_XMLDOM.isNull(l_OrgnlPmtInfId) THEN
-                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinNodo', p_Idioma) || ' "OrgnlPmtInfId" - ' || 
+                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinNodo', p_Idioma) || ' "OrgnlPmtInfId" - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts/OrgnlPmtInfId"';
                 v_Codretorno := To_Char(5420);
                 RAISE e_Error;
@@ -4985,13 +5053,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             v_IdFicheroOriginal := TRIM(DBMS_XMLDOM.getnodevalue(l_OrgnlPmtInfId_child));
 
             IF v_IdFicheroOriginal IS NULL THEN
-                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinDatos', p_Idioma) || ' "OrgnlPmtInfId" - ' || 
+                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinDatos', p_Idioma) || ' "OrgnlPmtInfId" - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts/OrgnlPmtInfId"';
                 v_Codretorno := To_Char(5420);
                 RAISE e_Error;
 
             ELSIF LENGTH(v_IdFicheroOriginal) NOT BETWEEN 1 AND 35 THEN
-                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.formatoIncorrecto', p_Idioma) || ' "OrgnlPmtInfId" (35 ' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.caracteresMaximo', p_Idioma) || ') - ' ||  
+                v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.formatoIncorrecto', p_Idioma) || ' "OrgnlPmtInfId" (35 ' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.caracteresMaximo', p_Idioma) || ') - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts/OrgnlPmtInfId"';
                 v_Codretorno := To_Char(5420);
                 RAISE e_Error;
@@ -5007,7 +5075,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             M_DISQ_DEVO(v_contadorActualDisqDevo).CONT_M_FIED_DEVO := 0; -- Inicialmente no tiene ningun fichero incluido en disquete
 
             /********************** BLOQUE REMESA (OrgnlPmtInfAndSts) **************************/
-            LOOP           
+            LOOP
                 -- Busco y extraigo referencia factura
                 v_Datoserror := 'DEVOLUCIONES: Buscar y extraer Referencia factura - fichero xml';
                 l_OrgnlEndToEndId := DBMS_XSLPROCESSOR.selectSingleNode(DBMS_XMLDOM.makeNode(l_sepa), '/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts['||v_contadorBloqueRemesa||']/TxInfAndSts['||v_contadorBloqueIndividual||']/OrgnlEndToEndId');
@@ -5016,7 +5084,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 v_Codigoreferencia := DBMS_XMLDOM.getnodevalue(l_OrgnlEndToEndId_child);
 
                 IF DBMS_XMLDOM.isNull(l_OrgnlEndToEndId) AND v_contadorBloqueIndividual = 1 THEN
-                    v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinNodo', p_Idioma) || ' "OrgnlEndToEndId" - ' || 
+                    v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinNodo', p_Idioma) || ' "OrgnlEndToEndId" - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts['||v_contadorBloqueRemesa||']/TxInfAndSts['||v_contadorBloqueIndividual||']/OrgnlEndToEndId"';
                     v_Codretorno := To_Char(5420);
                     RAISE e_Error;
@@ -5035,13 +5103,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 END IF;
 
                 IF v_Codigoreferencia IS NULL THEN
-                    v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinDatos', p_Idioma) || ' "OrgnlEndToEndId" - ' || 
+                    v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinDatos', p_Idioma) || ' "OrgnlEndToEndId" - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts['||v_contadorBloqueRemesa||']/TxInfAndSts['||v_contadorBloqueIndividual||']/OrgnlEndToEndId"';
                     v_Codretorno := To_Char(5420);
                     RAISE e_Error;
-                    
+
                 ELSIF LENGTH(v_Codigoreferencia) <> 10 THEN
-                    v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.formatoIncorrecto', p_Idioma) || ' "OrgnlEndToEndId" (10 ' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.digitos', p_Idioma) || ') - ' || 
+                    v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.formatoIncorrecto', p_Idioma) || ' "OrgnlEndToEndId" (10 ' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.digitos', p_Idioma) || ') - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts['||v_contadorBloqueRemesa||']/TxInfAndSts['||v_contadorBloqueIndividual||']/OrgnlEndToEndId"';
                     v_Codretorno := To_Char(5420);
                     RAISE e_Error;
@@ -5054,7 +5122,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 l_Cd := DBMS_XSLPROCESSOR.selectSingleNode(DBMS_XMLDOM.makeNode(l_sepa), '/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts['||v_contadorBloqueRemesa||']/TxInfAndSts['||v_contadorBloqueIndividual||']/StsRsnInf/Rsn/Cd');
 
                 IF DBMS_XMLDOM.isNull(l_Cd) THEN
-                    v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinNodo', p_Idioma) || ' "Cd" - ' || 
+                    v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinNodo', p_Idioma) || ' "Cd" - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts['||v_contadorBloqueRemesa||']/TxInfAndSts['||v_contadorBloqueIndividual||']/StsRsnInf/Rsn/Cd"';
                     v_Codretorno := To_Char(5420);
                     RAISE e_Error;
@@ -5064,13 +5132,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 v_Motivodevolucion := DBMS_XMLDOM.getnodevalue(l_Cd_child);
 
                 IF v_Motivodevolucion IS NULL THEN
-                    v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinDatos', p_Idioma) || ' "Cd" - ' || 
+                    v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinDatos', p_Idioma) || ' "Cd" - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts['||v_contadorBloqueRemesa||']/TxInfAndSts['||v_contadorBloqueIndividual||']/StsRsnInf/Rsn/Cd"';
                     v_Codretorno := To_Char(5420);
                     RAISE e_Error;
 
                 ELSIF LENGTH(v_Motivodevolucion) NOT BETWEEN 1 AND 4 THEN
-                    v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.formatoIncorrecto', p_Idioma) || ' "Cd" (4 ' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.caracteresMaximo', p_Idioma) || ') - ' ||  
+                    v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.formatoIncorrecto', p_Idioma) || ' "Cd" (4 ' || F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.caracteresMaximo', p_Idioma) || ') - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts['||v_contadorBloqueRemesa||']/TxInfAndSts['||v_contadorBloqueIndividual||']/StsRsnInf/Rsn/Cd"';
                     v_Codretorno := To_Char(5420);
                     RAISE e_Error;
@@ -5081,7 +5149,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 l_InstdAmt := DBMS_XSLPROCESSOR.selectSingleNode(DBMS_XMLDOM.makeNode(l_sepa), '/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts['||v_contadorBloqueRemesa||']/TxInfAndSts['||v_contadorBloqueIndividual||']/OrgnlTxRef/Amt/InstdAmt');
 
                 IF DBMS_XMLDOM.isNull(l_InstdAmt) THEN
-                    v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinNodo', p_Idioma) || ' "InstdAmt" - ' || 
+                    v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinNodo', p_Idioma) || ' "InstdAmt" - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts['||v_contadorBloqueRemesa||']/TxInfAndSts['||v_contadorBloqueIndividual||']/OrgnlTxRef/Amt/InstdAmt"';
                     v_Codretorno := To_Char(5420);
                     RAISE e_Error;
@@ -5091,13 +5159,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 v_Importe := TO_NUMBER(DBMS_XMLDOM.getnodevalue(l_InstdAmt_child),'9999999999999999.99');
 
                 IF v_Importe IS NULL THEN
-                    v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinDatos', p_Idioma) || ' "InstdAmt" - ' || 
+                    v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.sinDatos', p_Idioma) || ' "InstdAmt" - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts['||v_contadorBloqueRemesa||']/TxInfAndSts['||v_contadorBloqueIndividual||']/OrgnlTxRef/Amt/InstdAmt"';
                     v_Codretorno := To_Char(5420);
                     RAISE e_Error;
 
                 ELSIF v_Importe NOT BETWEEN 0.01 AND 99999999.99 THEN
-                    v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.formatoIncorrecto', p_Idioma) || ' "InstdAmt" (12345678.12) - ' || 
+                    v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.formatoIncorrecto', p_Idioma) || ' "InstdAmt" (12345678.12) - ' ||
                                         F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts['||v_contadorBloqueRemesa||']/TxInfAndSts['||v_contadorBloqueIndividual||']/OrgnlTxRef/Amt/InstdAmt"';
                     v_Codretorno := To_Char(5420);
                     RAISE e_Error;
@@ -5125,14 +5193,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 -- JPT (17-02-2015): Obtengo IMPORTE, IDDISQUETECARGOS y IDFACTURAINCLUIDAENDISQUETE
                 BEGIN
                     v_Datoserror := 'DEVOLUCIONES: Obtengo IDFACTURAINCLUIDAENDISQUETE - bloque remesa - fichero xml';
-                    SELECT IMPORTE, 
-                            IDDISQUETECARGOS, 
-                            IDFACTURAINCLUIDAENDISQUETE, 
+                    SELECT IMPORTE,
+                            IDDISQUETECARGOS,
+                            IDFACTURAINCLUIDAENDISQUETE,
                             ESQUEMA,
                             DEVUELTA
-                        INTO v_ImporteFIED, 
-                            v_IdDisqueteCargos, 
-                            v_IdFacturaIncluidaEnDisquete, 
+                        INTO v_ImporteFIED,
+                            v_IdDisqueteCargos,
+                            v_IdFacturaIncluidaEnDisquete,
                             v_Esquema,
                             v_facturaDevuelta
                     FROM FAC_FACTURAINCLUIDAENDISQUETE
@@ -5140,20 +5208,20 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         AND IDDISQUETECARGOS = TO_NUMBER(v_IdDisqueteCargos2)
                         AND IDFACTURA = v_Idfactura
                         AND IDRECIBO = v_Codigoreferencia
-                        AND ROWNUM = 1;                     
+                        AND ROWNUM = 1;
 
                     EXCEPTION
                         WHEN OTHERS THEN
                             BEGIN
                                 -- JPT (17-02-2015): Si no viene IDDISQUETECARGOS, intento buscarlo con IDFACTURA e IDRECIBO
-                                SELECT IMPORTE, 
-                                        IDDISQUETECARGOS, 
-                                        IDFACTURAINCLUIDAENDISQUETE, 
+                                SELECT IMPORTE,
+                                        IDDISQUETECARGOS,
+                                        IDFACTURAINCLUIDAENDISQUETE,
                                         ESQUEMA,
                                         DEVUELTA
-                                    INTO v_ImporteFIED, 
-                                        v_IdDisqueteCargos, 
-                                        v_IdFacturaIncluidaEnDisquete, 
+                                    INTO v_ImporteFIED,
+                                        v_IdDisqueteCargos,
+                                        v_IdFacturaIncluidaEnDisquete,
                                         v_Esquema,
                                         v_facturaDevuelta
                                 FROM FAC_FACTURAINCLUIDAENDISQUETE
@@ -5168,8 +5236,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                                         RAISE e_Error;
                             END;
                 END;
-                
-                IF (v_facturaDevuelta = 'N') THEN                
+
+                IF (v_facturaDevuelta = 'N') THEN
                     v_Datoserror := 'DEVOLUCIONES: Guardo datos en matriz de disquetes de devoluciones - bloque remesa - fichero xml';
                     v_contadorFiedDevo := M_DISQ_DEVO(v_contadorActualDisqDevo).CONT_M_FIED_DEVO + 1;
                     M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).ID_RECIBO := v_Codigoreferencia;
@@ -5180,7 +5248,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
 
                     v_Datoserror := 'DEVOLUCIONES: Comprobar si hay una devolucion B2B';
                     IF v_tipoDevolucion = 10 AND v_Esquema = 2  THEN -- 2 esquema B2B
-                        v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.B2B', p_Idioma) || ' - ' || 
+                        v_Datoserror := F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.B2B', p_Idioma) || ' - ' ||
                                             F_SIGA_GETRECURSO_ETIQUETA('facturacion.ficheroBancarioPagos.error.devoluciones.localizacion', p_Idioma) || ': "/Document/CstmrPmtStsRpt/OrgnlPmtInfAndSts['||v_contadorBloqueRemesa||']/TxInfAndSts['||v_contadorBloqueIndividual||']/OrgnlEndToEndId"';
                         v_Codretorno := To_Char(5420);
                         RAISE e_Error;
@@ -5197,10 +5265,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     M_DISQ_DEVO(v_contadorActualDisqDevo).CONT_M_FIED_DEVO := v_contadorFiedDevo; -- Tiene un fichero incluidos en disquete nuevo
                 END IF;
                 v_contadorBloqueIndividual := v_contadorBloqueIndividual + 1;
-            END LOOP; 
+            END LOOP;
         END IF;
         -------------------------------XML-------------------------------------
-                                                   
+
         /*********************************************************************/
         /******************** FIN LECTURA FICHERO *******************************/
         /********************************************************************/
@@ -5310,7 +5378,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     v_Datoserror := v_Datoserror || ', ' || Sqlerrm;
                     Utl_File.Fclose(f_Entrada); -- Cerrar fichero de entrada
                     p_Codretorno := To_Char(Sqlcode);
-                    p_Datoserror := v_Datoserror; 
+                    p_Datoserror := v_Datoserror;
 
                     Exception
                         When Utl_File.Read_Error Then
@@ -5351,7 +5419,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         p_Codretorno OUT VARCHAR2,
         p_Datoserror OUT VARCHAR2,
         p_ListaIdDisquetesDevolucion OUT VARCHAR2) Is
-        
+
         v_Datoserror Varchar2(4000) := Null;
         v_Codretorno Varchar2(10) := To_Char(0);
         v_ArrayFacturas PKG_SIGA_UTIL.t_array;
@@ -5371,7 +5439,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
         M_DISQ_DEVO TAB_DISQ_DEVO;
         v_contadorFiedDevo NUMBER;
         v_FechaDevolucion DATE;
-        
+
         /* Declaracion de excepciones */
         e_Error Exception;
 
@@ -5397,13 +5465,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                 BEGIN
                     v_Datoserror := 'DevolucionesManuales: Obtengo los datos de la factura';
                     v_ArrayFactura := PKG_SIGA_UTIL.SPLIT(v_Factura, '||'); -- v_Factura = 'idDisqueteCargos||idFacturaIncluidaEnDisquete||idFactura||idRecibo||idMotivo'
-                
+
                     v_IdDisqueteCargos := v_ArrayFactura(1);
                     v_IdFIED := v_ArrayFactura(2);
                     v_IdFactura := v_ArrayFactura(3);
                     v_IdRecibo := v_ArrayFactura(4);
                     v_MotivoDevolucion := v_ArrayFactura(5);
-                
+
                     v_Datoserror := 'DevolucionesManuales: Obtengo IMPORTE, BANCOS_CODIGO, ESTADO y FECHAEMISION de la factura';
                     SELECT FIED.IMPORTE, BI.BANCOS_CODIGO, FAC.FECHAEMISION
                         INTO v_Importe, v_CodigoBanco, v_FechaEmision
@@ -5415,7 +5483,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                         AND FIED.IDDISQUETECARGOS = v_IdDisqueteCargos
                         AND FIED.IDFACTURAINCLUIDAENDISQUETE = v_IdFIED
                         AND FIED.IDFACTURA = v_IdFactura
-                        AND FIED.IDRECIBO = v_IdRecibo                        
+                        AND FIED.IDRECIBO = v_IdRecibo
                         AND DC.IDINSTITUCION = FIED.IDINSTITUCION
                         AND DC.IDDISQUETECARGOS = FIED.IDDISQUETECARGOS
                         AND BI.IDINSTITUCION = DC.IDINSTITUCION
@@ -5459,7 +5527,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     M_DISQ_DEVO(v_contadorActualDisqDevo).CONT_M_FIED_DEVO := 1;
                     M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(1).ID_FACTURA := v_IdFactura;
                     M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(1).ID_RECIBO := v_IdRecibo;
-                    M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(1).IMPORTE_DEVO := v_Importe; 
+                    M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(1).IMPORTE_DEVO := v_Importe;
                     M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(1).MOTIVO_DEVO := v_MotivoDevolucion;
                     -- JPT (17-02-2015): Guarda IDDISQUETECARGOS y IDFACTURAINCLUIDAENDISQUETE
                     M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(1).IDDISQUETECARGOS := v_IdDisqueteCargos;
@@ -5475,7 +5543,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
                     -- JPT (17-02-2015): Guarda IDDISQUETECARGOS y IDFACTURAINCLUIDAENDISQUETE
                     M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IDDISQUETECARGOS := v_IdDisqueteCargos;
                     M_DISQ_DEVO(v_contadorActualDisqDevo).M_FIED_DEVO(v_contadorFiedDevo).IDFACTURAINCLUIDAENDISQUETE := v_IdFIED;
-                    M_DISQ_DEVO(v_contadorActualDisqDevo).CONT_M_FIED_DEVO := v_contadorFiedDevo; 
+                    M_DISQ_DEVO(v_contadorActualDisqDevo).CONT_M_FIED_DEVO := v_contadorFiedDevo;
                 END IF;
 
                 v_Datoserror := 'DevolucionesManuales: Obtengo la siguiente factura';
@@ -5767,7 +5835,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_CARGOS IS
             When Others Then
                 p_Codretorno := To_Char(Sqlcode);
                 p_Datoserror := v_Datoserror || ', ' ||Sqlerrm;
-    END InsertarMandatos; 
+    END InsertarMandatos;
 
     /****************************************************************************************************************/
     /* Nombre: RevisarAnexos */

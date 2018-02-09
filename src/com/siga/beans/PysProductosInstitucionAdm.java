@@ -75,7 +75,9 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 							PysProductosInstitucionBean.C_FECHABAJA,
 							PysProductosInstitucionBean.C_FECHAMODIFICACION,
 							PysProductosInstitucionBean.C_NOFACTURABLE,
+							PysProductosInstitucionBean.C_CODIGOEXT,
 							PysProductosInstitucionBean.C_CODIGOTRASPASONAV,
+							PysProductosInstitucionBean.C_ORDEN,
 							PysProductosInstitucionBean.C_USUMODIFICACION};
 		return campos;
 	}
@@ -129,10 +131,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 			bean.setIdProductoInstitucion (UtilidadesHash.getLong(hash,PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION));
 			bean.setDescripcion (UtilidadesHash.getString(hash,PysProductosInstitucionBean.C_DESCRIPCION ));
 			bean.setCuentacontable (UtilidadesHash.getString(hash,PysProductosInstitucionBean.C_CUENTACONTABLE ));
-			// Esto no ha podido funcionar nunca, pero bueno, lo comento por si acaso.
-			//bean.setValor ((Double)hash.get(PysProductosInstitucionBean.C_VALOR));
 			bean.setValor (UtilidadesHash.getDouble(hash,PysProductosInstitucionBean.C_VALOR));
-			// Esto no ha podido funcionar nunca, pero bueno, lo comento por si acaso.
 			bean.setIdTipoIva (UtilidadesHash.getFloat(hash,PysProductosInstitucionBean.C_IDTIPOIVA));
 			bean.setMomentoCargo (UtilidadesHash.getString(hash,PysProductosInstitucionBean.C_MOMENTOCARGO ));
 			bean.setSolicitarBaja (UtilidadesHash.getString(hash,PysProductosInstitucionBean.C_SOLICITARBAJA ));
@@ -145,7 +144,9 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 			bean.setFechaMod(UtilidadesHash.getString(hash,PysProductosInstitucionBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,PysProductosInstitucionBean.C_USUMODIFICACION));			
 			bean.setnoFacturable (UtilidadesHash.getString(hash,PysProductosInstitucionBean.C_NOFACTURABLE ));
+			bean.setCodigoext(UtilidadesHash.getString(hash,PysProductosInstitucionBean.C_CODIGOEXT ));
 			bean.setCodigoTraspasoNav(UtilidadesHash.getString(hash,PysProductosInstitucionBean.C_CODIGOTRASPASONAV ));
+			bean.setOrden(UtilidadesHash.getLong(hash,PysProductosInstitucionBean.C_ORDEN));
 		}
 		catch (Exception e) { 
 			bean = null;	
@@ -186,7 +187,9 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_USUMODIFICACION, b.getUsuMod());
 			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_NOFACTURABLE, b.getnoFacturable());
+			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_CODIGOEXT, b.getCodigoext());
 			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_CODIGOTRASPASONAV, b.getCodigoTraspasoNav());
+			UtilidadesHash.set(htData,PysProductosInstitucionBean.C_ORDEN, b.getOrden());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -606,7 +609,8 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 						
 						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_MOMENTOCARGO + ", " +
 						PysProductosInstitucionBean.T_NOMBRETABLA +"." + PysProductosInstitucionBean.C_FECHABAJA + ", " +
-						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO;
+						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_TIPOCERTIFICADO + ", " +
+						PysProductosInstitucionBean.T_NOMBRETABLA + "." + PysProductosInstitucionBean.C_CODIGOEXT;
 
 			String from = " FROM " + 
 						PysProductosInstitucionBean.T_NOMBRETABLA + ", " + PysProductosBean.T_NOMBRETABLA + ", " + PysTiposProductosBean.T_NOMBRETABLA +  "," +PysTipoIvaBean.T_NOMBRETABLA ;
@@ -843,7 +847,7 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 				
 			}
 
-		    htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO);
+		    htNew.put(CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO, ""+ CerEstadoSoliCertifiAdm.C_ESTADO_SOL_APROBADO);
         	
 			
 			///////////////////////////////////////////////
@@ -866,14 +870,14 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
         	admSolicitud.guardarCertificado(beanSolicitud, (File)listaDeObjetos.get("fOut"));
         	((File)listaDeObjetos.get("fOut")).delete();
 
-		    htNew.put(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_CER_GENERADO);
+		    htNew.put(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO, ""+ CerSolicitudCertificadosAdm.C_ESTADO_CER_GENERADO);
 
 
 	        // FIRMAR CERTIFICADO
 	        if (!admSolicitud.firmarPDF(beanSolicitud.getIdSolicitud().toString(), beanSolicitud.getIdInstitucion().toString(),-1)) {
 		        ClsLogging.writeFileLog("Error al FIRMAR el PDF de la Solicitud: " + beanSolicitud.getIdSolicitud().toString(), 3);
 		    } else {
-		        htNew.put(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO, CerSolicitudCertificadosAdm.K_ESTADO_CER_FIRMADO);
+		        htNew.put(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO, ""+ CerSolicitudCertificadosAdm.C_ESTADO_CER_FIRMADO);
 		    }
 		    
 	        String[] campos2 = {CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO};
@@ -1046,4 +1050,23 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 		return desc; 
 		
 	}
+	
+	public String getTipoCertificadoPorCodigoExterno(String idInstitucion, String idTipoProducto, String idProducto, String idProductoInstitucion) throws ClsExceptions, NumberFormatException, SIGAException {
+		return getTipoCertificadoPorCodigoExterno(Integer.valueOf(idInstitucion), Integer.valueOf(idTipoProducto), Long.valueOf(idProducto), Long.valueOf(idProductoInstitucion));
+	}
+
+	public String getTipoCertificadoPorCodigoExterno(Integer idInstitucion, Integer idTipoProducto, Long idProducto, Long idProductoInstitucion) throws ClsExceptions, NumberFormatException, SIGAException {
+		Hashtable<String, String> producto = this.getProducto(idInstitucion, idProducto, idProductoInstitucion, idTipoProducto);
+		if (producto == null) {
+			return "";
+		} else {
+			String codigoexterno = producto.get(PysProductosInstitucionBean.C_CODIGOEXT);
+			if (codigoexterno == null || codigoexterno.length() < ClsConstants.CERT_CGAE_LONGITUD_CODIGO) {
+				return "";
+			} else {
+				return codigoexterno.substring(0, ClsConstants.CERT_CGAE_LONGITUD_CODIGO);
+			}
+		}
+	}
+
 }

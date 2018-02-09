@@ -376,13 +376,6 @@
 					<%}%>
 				</td>
 				<td class="tdBotones">
-					<%if(mostrarBotonTarjeta) {%>
-						<input type="button" name="pagoTarjeta" id="idButton" value="<siga:Idioma key="facturacion.pagosFactura.boton.PagoTarjeta"/>" onclick="return pagoPorTarjeta();" class="button">
-					<%} else { %>
-						&nbsp;
-					<%}%>
-				</td>
-				<td class="tdBotones">
 					<%if(mostrarBotonRenegociar) {%>
 						<input type="button" name="renegociar" id="idButton" value="<siga:Idioma key="facturacion.pagosFactura.boton.Renegociar"/>" onclick="return botonRenegociar();" class="button">
 					<%} else { %>

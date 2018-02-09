@@ -115,9 +115,8 @@ public class Certificado {
 			throw new SIGAException("Error al generar el PDF del Certificado.", e);
 		}
 	}
-
 	
-	public static String getEtiquetaMultiRegistro(File fichero) throws ClsExceptions, SIGAException {
+	private static String getEtiquetaMultiRegistro(File fichero) throws ClsExceptions, SIGAException {
 		String etiquetasMultiregistro = null;
 		try {
 

@@ -54,7 +54,7 @@
 	String fechaEmisionHasta = "";
 	String fechaSolicitudDesde = "";
 	String fechaSolicitudHasta = "";	
-	String checkCobrado = "", checkDescardado = "";
+	String checkCobrado = "", checkDescargado = "";
 	if ((request.getParameter("buscar") != null && request.getParameter("buscar").equalsIgnoreCase("true"))  || (request.getParameter("buscarAntiguo") != null && request.getParameter("buscarAntiguo").equalsIgnoreCase("true")) || (request.getAttribute("volver") != null && ((String)request.getAttribute("volver")).equalsIgnoreCase("volver"))) {
 		if (formulario != null) {
 			if (formulario.getFechaDesde() != null)
@@ -72,9 +72,14 @@
 			if (formulario.getCobrado() != null)
 				checkCobrado = formulario.getCobrado();		
 			if (formulario.getDescargado() != null)
-				checkDescardado = formulario.getDescargado();					
+				checkDescargado = formulario.getDescargado();					
 		}
 		fBuscar = "buscar";
+	} else {
+		if (formulario != null) {
+			if (formulario.getFechaDesde() != null)
+				fechaDesde = formulario.getFechaDesde();
+		}
 	}
 	
 	String sError= UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usr, "messages.general.error"));
@@ -401,28 +406,28 @@
 			</div>
 	
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request" />
-	<fieldset>
-		<table class="tablaCentralCampos" align="center" border="0">
-			<html:form action="/CER_GestionSolicitudes.do?noReset=true" method="POST" target="resultado">
-				<input type="hidden" name="modo" value="inicio">
-				<input type="hidden" name="actionModal" value="">
-				<input type="hidden" name="idsParaGenerarFicherosPDF" value="">
-				<input type="hidden" name="idsParaFinalizar" value="">
-				<input type="hidden" name="idsParaFacturar" value="">
-				<input type="hidden" name="idSerieSeleccionada" value="">
-				<input type="hidden" name="idsTemp" value="">
-				<input type="hidden" name="limpiarFilaSeleccionada" value="">
-				<html:hidden property="seleccionarTodos" value=""/>
-				
+	<html:form action="/CER_GestionSolicitudes.do?noReset=true" method="POST" target="resultado">
+		<input type="hidden" name="modo" value="inicio">
+		<input type="hidden" name="actionModal" value="">
+		<input type="hidden" name="idsParaGenerarFicherosPDF" value="">
+		<input type="hidden" name="idsParaFinalizar" value="">
+		<input type="hidden" name="idsParaFacturar" value="">
+		<input type="hidden" name="idSerieSeleccionada" value="">
+		<input type="hidden" name="idsTemp" value="">
+		<input type="hidden" name="limpiarFilaSeleccionada" value="">
+		<html:hidden property="seleccionarTodos" value=""/>
+		
+		<siga:ConjCampos leyenda="certificados.solicitudes.literal.titulo.estadosolicitud" desplegable="true">
+			<table class="tablaCentralCampos" align="center" border="0">
 				<tr>
-					<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.fechadesde" /></td>
-					<td><siga:Fecha nombreCampo="fechaDesde" valorInicial="<%=fechaDesde%>" /></td>
+					<td class="labelText" width="15%"><siga:Idioma key="certificados.solicitudes.literal.fechadesde" /></td>
+					<td width="20%"><siga:Fecha nombreCampo="fechaDesde" valorInicial="<%=fechaDesde%>" /></td>
 
-					<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.fechahasta" /></td>
-					<td><siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=fechaHasta%>" campoCargarFechaDesde="fechaDesde"/></td>
+					<td class="labelText" width="10%"><siga:Idioma key="certificados.solicitudes.literal.fechahasta" /></td>
+					<td width="20%"><siga:Fecha nombreCampo="fechaHasta" valorInicial="<%=fechaHasta%>"/></td>
 					
-					<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.estadosolicitud" /></td>
-					<td>
+					<td class="labelText" width="15%"><siga:Idioma key="certificados.solicitudes.literal.estadosolicitud" /></td>
+					<td width="20%">
 						<select name="busquedaEstado" class="boxCombo">
 							<option value=""></option>
 <%
@@ -431,11 +436,11 @@
 									CerEstadoSoliCertifiBean b = (CerEstadoSoliCertifiBean) vEstado.get(k);
 									String seleccionar = "";
 
-									if (b.getIdEstadoSolicitudCertificado().toString().equals(estadoSol.get(0))) {
+									if (b.getListaIdEstadoSolicitudCertificado().equals(estadoSol.get(0))) {
 										seleccionar = "selected";
 									}
 %>
-									<option value="<%=b.getIdEstadoSolicitudCertificado().toString()%>" <%=seleccionar%>><%=b.getDescripcion()%></option>
+									<option value="<%=b.getListaIdEstadoSolicitudCertificado().toString()%>" <%=seleccionar%>><%=b.getDescripcion()%></option>
 <%
 								}
 							}
@@ -451,6 +456,8 @@
 					<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.fechaemision.hasta" /></td>
 					<td><siga:Fecha nombreCampo="fechaEmisionHasta" valorInicial="<%=fechaEmisionHasta%>" campoCargarFechaDesde="fechaEmisionDesde"/> </td>
 					
+					<td class="labelText"><siga:Idioma key="pys.gestionSolicitudes.literal.numeroCertificado" /></td>
+					<td><html:text name="SolicitudesCertificadosForm" styleClass="box" property="buscarNumCertificadoCompra" maxlength="30" /></td>
 				</tr>
 				
 				<tr>
@@ -459,42 +466,36 @@
 
 					<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.fechaemision.hasta" /></td>
 					<td><siga:Fecha nombreCampo="fechaSolicitudHasta" valorInicial="<%=fechaSolicitudHasta%>" campoCargarFechaDesde="fechaSolicitudDesde"/></td>			
-				</tr>					
-				
-				<tr>
-					<td class="labelText"><siga:Idioma key="certificados.mantenimiento.literal.certificado" /></td>
-					<td><siga:Select queryId="getTiposCertificado" id="busquedaTipoCertificado" selectedIds="<%=tipoCert%>"/></td>
 					
 					<td class="labelText"><siga:Idioma key="pys.gestionSolicitudes.literal.idPeticion" /></td>
 					<td><html:text name="SolicitudesCertificadosForm" styleClass="box" property="busquedaIdSolicitud" maxlength="10" /></td>
+				</tr>
+			</table>
+		</siga:ConjCampos>
+		
+		<siga:ConjCampos leyenda="certificados.solicitudes.literal.titulo.certificadoacciones" desplegable="true" oculto="true">
+			<table class="tablaCentralCampos" align="center" border="0">
+				<tr>
+					<td class="labelText" width="15%"><siga:Idioma key="certificados.mantenimiento.literal.certificado" /></td>
+					<td width="20%"><siga:Select queryId="getTiposCertificado" id="busquedaTipoCertificado" selectedIds="<%=tipoCert%>"/></td>
 					
-					<td class="labelText"><siga:Idioma key="pys.gestionSolicitudes.literal.numeroCertificado" /></td>
-					<td><html:text name="SolicitudesCertificadosForm" styleClass="box" property="buscarNumCertificadoCompra" maxlength="30" /></td>
+					<td class="labelText" width="10%" />
+					<td width="20%" />
+					
+					<td class="labelText" width="15%" />
+					<td width="20%" />
 				</tr>
 				
 				<tr>
-					<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.colegioOrigen" /></td>
-					<td><siga:Select queryId="getInstitucionesAbreviadas" id="busquedaIdInstitucionOrigen" selectedIds="<%=colOrigen%>"/></td>
+					<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.cobrado"/></td>
+					<td>					
+						<html:select property="cobrado" styleId="cobrado" name="SolicitudesCertificadosForm" style="width:50" styleClass="boxCombo">
+							<html:option value=""></html:option>
+							<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
+							<html:option value="0"><siga:Idioma key="general.no"/></html:option>
+						</html:select>	
+					</td>		
 					
-					<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.colegiadoen" /></td>
-					<td><siga:Select queryId="getInstitucionesAbreviadas" id="busquedaIdInstitucionDestino" selectedIds="<%=colDestino%>"/></td>
-					
-					<td class="labelText"><siga:Idioma key="censo.busquedaClientes.literal.nColegiado" /></td>
-					<td><html:text name="SolicitudesCertificadosForm" property="busquedaNumCol" size="20" maxlength="30" styleClass="box" /></td>
-				</tr>
-								
-				<tr>
-					<td class="labelText"><siga:Idioma key="censo.busquedaClientes.literal.nombre" /></td>
-					<td><html:text name="SolicitudesCertificadosForm" property="busquedaNombre" size="20" maxlength="30" styleClass="box" /></td>
-					
-					<td class="labelText"><siga:Idioma key="censo.busquedaClientes.literal.apellidos" /></td>
-					<td><html:text name="SolicitudesCertificadosForm" property="busquedaApellidos" size="20" maxlength="30" styleClass="box" /></td>
-					
-					<td class="labelText"><siga:Idioma key="censo.busquedaClientes.literal.nif" /></td>
-					<td><html:text name="SolicitudesCertificadosForm" property="busquedaNIF" size="20" maxlength="30" styleClass="box" /></td>
-				</tr>
-				
-				<tr>
 					<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.enviado"/></td>
 					<td>	
 						<html:select property="enviado" styleId="enviado" name="SolicitudesCertificadosForm" style="width:50" styleClass="boxCombo">
@@ -512,18 +513,37 @@
 							<html:option value="0"><siga:Idioma key="general.no"/></html:option>
 						</html:select>	
 					</td>
-					<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.cobrado"/></td>
-					<td>					
-						<html:select property="cobrado" styleId="cobrado" name="SolicitudesCertificadosForm" style="width:50" styleClass="boxCombo">
-							<html:option value=""></html:option>
-							<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
-							<html:option value="0"><siga:Idioma key="general.no"/></html:option>
-						</html:select>	
-					</td>		
 				</tr>
-			</html:form>
-		</table>
-	</fieldset>
+			</table>
+		</siga:ConjCampos>
+		
+		<siga:ConjCampos leyenda="certificados.solicitudes.literal.titulo.personacolegio" desplegable="true">
+			<table class="tablaCentralCampos" align="center" border="0">
+				<tr>
+					<td class="labelText" width="15%"><siga:Idioma key="certificados.solicitudes.literal.colegioOrigen" /></td>
+					<td width="20%"><siga:Select queryId="getInstitucionesAbreviadas" id="busquedaIdInstitucionOrigen" selectedIds="<%=colOrigen%>"/></td>
+					
+					<td class="labelText" width="10%"><siga:Idioma key="pys.solicitudCompra.literal.colegiadoen" /></td>
+					<td width="20%"><siga:Select queryId="getInstitucionesAbreviadas" id="busquedaIdInstitucionDestino" selectedIds="<%=colDestino%>"/></td>
+					
+					<td class="labelText" width="15%"><siga:Idioma key="censo.busquedaClientes.literal.nColegiado" /></td>
+					<td width="20%"><html:text name="SolicitudesCertificadosForm" property="busquedaNumCol" size="20" maxlength="30" styleClass="box" /></td>
+				</tr>
+								
+				<tr>
+					<td class="labelText"><siga:Idioma key="censo.busquedaClientes.literal.nombre" /></td>
+					<td><html:text name="SolicitudesCertificadosForm" property="busquedaNombre" size="20" maxlength="30" styleClass="box" /></td>
+					
+					<td class="labelText"><siga:Idioma key="censo.busquedaClientes.literal.apellidos" /></td>
+					<td><html:text name="SolicitudesCertificadosForm" property="busquedaApellidos" size="20" maxlength="30" styleClass="box" /></td>
+					
+					<td class="labelText"><siga:Idioma key="censo.busquedaClientes.literal.nif" /></td>
+					<td><html:text name="SolicitudesCertificadosForm" property="busquedaNIF" size="20" maxlength="30" styleClass="box" /></td>
+				</tr>
+			</table>
+		</siga:ConjCampos>	
+	
+	</html:form>
 	
 	
 

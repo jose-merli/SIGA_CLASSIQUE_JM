@@ -43,6 +43,7 @@ import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacFacturacionProgramadaAdm;
 import com.siga.beans.FacFacturacionProgramadaBean;
+import com.siga.beans.FacHistoricoFacturaAdm;
 import com.siga.beans.FacSerieFacturacionAdm;
 import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.beans.GenParametrosAdm;
@@ -759,6 +760,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			HttpSession ses = request.getSession();
 			UsrBean user = this.getUserBean(request);
 			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(user);
+			FacHistoricoFacturaAdm admHistFac = new FacHistoricoFacturaAdm(user); // CGP - R1709_0035
 			
 			Vector ocultos = form.getDatosTablaOcultos(0);
 			
@@ -799,6 +801,7 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			
 			/** CR - Obtener informacion de factura en estado confirmada para mostrarselo en la ventan de consulta **/
 			Vector datosInformeFac = null;
+			Vector datosInformeFacOriginal=null; // CGP - R1709_0035
 			if(hash.get("IDESTADOCONFIRMACION") != null && ((String)hash.get("IDESTADOCONFIRMACION")).equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA.toString())){			
 				String sql = "	SELECT f_siga_getrecurso(FP.DESCRIPCION, 1)	AS FORMA_PAGO,   	"+
 							 "      F_SIGA_CALCULAFORMATO(SUM(fac.imptotal - fac.imptotalanticipado)) AS IMPORTE, "+
@@ -814,8 +817,11 @@ public class ConfirmarFacturacionAction extends MasterAction{
 							 " 		AND PROG.IDINSTITUCION =      " + idInstitucion			 +
 							 " GROUP BY FP.DESCRIPCION	";
 				datosInformeFac = adm.selectGenerico(sql);
+				datosInformeFacOriginal = admHistFac.obtenerInformacionHistorico(idSerieFacturacion, idProgramacion, idInstitucion); // CGP - R1709_0035
+				
 			}
 			request.setAttribute("datosInformeFac",datosInformeFac);
+			request.setAttribute("datosInformeFacOriginal",datosInformeFacOriginal); // CGP - R1709_0035
 			
 			// obtengo el parametro general 'SEPA_TIPO_FICHEROS'
 			GenParametrosAdm admParametros = new GenParametrosAdm(user);

@@ -31,6 +31,8 @@ public class CerSolicitudCertificadosBean extends MasterBean
 	private Integer idInstitucionDestino;
 	private Integer idInstitucionColegiacion;
 	private String 	metodoSolicitud;
+	private Integer idMotivoSolicitud;
+	private Integer idMotivoAnulacion;
 	private Long idPeticionProducto;
 
 	private String contadorCer;
@@ -87,6 +89,8 @@ public class CerSolicitudCertificadosBean extends MasterBean
 	static public final String C_COMENTARIO = "COMENTARIO";
 	static public final String C_FECHAENTREGAINFO = "FECHAENTREGAINFO";
 	static public final String C_IDMETODOSOLICITUD = "IDMETODOSOLICITUD";
+	static public final String C_IDMOTIVOSOLICITUD = "IDMOTIVOSOLICITUD";
+	static public final String C_IDMOTIVOANULACION = "IDMOTIVOANULACION";
 	
 	static public final String C_FECHACREACION  = "FECHACREACION";
     static public final String C_USUCREACION   = "USUCREACION";
@@ -424,6 +428,26 @@ public class CerSolicitudCertificadosBean extends MasterBean
 
 	public void setCertificado(Documento certificado) {
 		this.certificado = certificado;
+	}
+
+	public Integer getIdMotivoSolicitud()
+	{
+		return idMotivoSolicitud;
+	}
+
+	public void setIdMotivoSolicitud(Integer idMotivoSolicitud)
+	{
+		this.idMotivoSolicitud = idMotivoSolicitud;
+	}
+
+	public Integer getIdMotivoAnulacion()
+	{
+		return idMotivoAnulacion;
+	}
+
+	public void setIdMotivoAnulacion(Integer idMotivoAnulacion)
+	{
+		this.idMotivoAnulacion = idMotivoAnulacion;
 	}
 
 }

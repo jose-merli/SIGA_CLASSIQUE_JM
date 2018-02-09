@@ -27,6 +27,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.GestorContadores;
@@ -39,6 +40,8 @@ import com.siga.beans.FacAbonoBean;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacFacturacionSuscripcionAdm;
+import com.siga.beans.FacHistoricoFacturaAdm;
+import com.siga.beans.FacHistoricoFacturaBean;
 import com.siga.beans.FacLineaAbonoAdm;
 import com.siga.beans.FacLineaAbonoBean;
 import com.siga.beans.FacLineaFacturaAdm;
@@ -47,10 +50,12 @@ import com.siga.beans.FacPagoAbonoEfectivoAdm;
 import com.siga.beans.FacPagoAbonoEfectivoBean;
 import com.siga.beans.FacPagosPorCajaAdm;
 import com.siga.beans.FacPagosPorCajaBean;
+import com.siga.facturacion.Facturacion;
 import com.siga.facturacion.form.AltaAbonosForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.informes.InformeFactura;
 
 
 public class AltaAbonosAction extends MasterAction {
@@ -525,6 +530,7 @@ public class AltaAbonosAction extends MasterAction {
 			FacLineaFacturaAdm admFacLineaFactura = new FacLineaFacturaAdm(usr);
 			FacPagoAbonoEfectivoAdm admFacPagoAbonoEfectivo = new FacPagoAbonoEfectivoAdm(usr);
 			FacPagosPorCajaAdm admFacPagosPorCaja = new FacPagosPorCajaAdm(usr);
+			FacHistoricoFacturaAdm historicoFacturaAdm = new FacHistoricoFacturaAdm (usr);
 			
 			GestorContadores gc = new GestorContadores(usr);
 			Hashtable contadorTablaHash = null;
@@ -687,7 +693,7 @@ public class AltaAbonosAction extends MasterAction {
 					    	beanFacFactura.setImpTotalCompensado(new Double(beanFacFactura.getImpTotalCompensado().doubleValue() + new Double(total).doubleValue()));
 					    	beanFacFactura.setImpTotalPagado(new Double(beanFacFactura.getImpTotalPagado().doubleValue() + new Double(total).doubleValue()));
 					    	beanFacFactura.setImpTotalPorPagar(new Double(beanFacFactura.getImpTotalPorPagar().doubleValue() - new Double(total).doubleValue()));
-					        
+					    	
 					        // AQUI VAMOS A MODIFICAR EL VALOR DE ESTADO, pero esta vez es fijo a ANULADO (8)
 					    	beanFacFactura.setEstado(new Integer(8));
 							
@@ -817,6 +823,36 @@ public class AltaAbonosAction extends MasterAction {
 					    else
 					        return abonoInsertado=false;
 					}
+			     // CGP - (02/11/2017) INICIO Añadimos al histórico de la facturación
+			       
+					//Insertamos en el histórico.
+					boolean resultado = Boolean.FALSE;
+					Integer idTipoAccion;
+					try{
+						if(bFacFactura.getComisionIdFactura() != null && !"".equalsIgnoreCase(bFacFactura.getComisionIdFactura())){
+				        	//En fac_factura seguirá teniendo el valor 8 que es ANULADA a secas pero en nuestro histórico particularizamos la ANULACIÓN
+							idTipoAccion=9;
+							 resultado= historicoFacturaAdm.insertarHistoricoFacParametros(String.valueOf(bFacFactura.getIdInstitucion()),bFacFactura.getIdFactura(), idTipoAccion,null, 
+										null, null,null,null, null, null, bFacFactura.getComisionIdFactura());
+				        }else{
+				        	idTipoAccion=8;
+				        	 resultado= historicoFacturaAdm.insertarHistoricoFacParametros(String.valueOf(bFacFactura.getIdInstitucion()),bFacFactura.getIdFactura(), idTipoAccion,null, 
+										null, null,null,null, null, idAbono.intValue(), null);
+				        }
+						 if(!resultado){
+								ClsLogging.writeFileLog("### No se ha insertado en el histórico de la facturación ", 7);
+						 }
+					} catch (Exception e) {
+						ClsLogging.writeFileLogError("@@@ ERROR: No se ha insertado el histórico de la facturación",e,3);
+					}
+					
+					//CGP - (02/11/2017) FIN
+		        
+			    	try {
+				        //TODO: Si no se produce error regeneramos el pdf con la información de la factura
+				        	InformeFactura infFactura = new InformeFactura(usr);
+				        	infFactura.generarPdfFacturaFirmada(null, bFacFactura, Boolean.TRUE);
+		    		}catch(Exception e){}
 			        
 			        // Si tiene servicios, mueve FAC_FACTURACIONSUSCRIPCION a FAC_FACTURACIONSUSCRIPCION_ANU
 					if (!admFacFacturacionSuscripcion.moverFacturacionSuscripcion(miForm.getIdInstitucion(), miForm.getIdFactura())) {

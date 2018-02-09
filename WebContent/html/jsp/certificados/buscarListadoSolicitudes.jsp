@@ -20,6 +20,7 @@
 <%@ page import="com.siga.beans.CerEstadoCertificadoBean"%> 
 <%@ page import="com.siga.beans.CerSolicitudCertificadosBean"%>
 <%@ page import="com.siga.beans.CerSolicitudCertificadosAdm"%>
+<%@ page import="com.siga.beans.CerEstadoSoliCertifiAdm"%>
 <%@ page import="com.siga.beans.FacFacturaBean"%>
 <%@ page import="com.siga.beans.PysProductosInstitucionAdm"%>
 <%@ page import="com.siga.tlds.FilaExtElement"%>
@@ -216,8 +217,9 @@
   		  			certificados.solicitudes.literal.apellidosynombre,
   		  			certificados.mantenimiento.literal.certificado,
   		  			certificados.solicitudes.literal.institucionOrigenLista,
+  		  			pys.gestionSolicitudes.literal.numeroCertificado,
   		  			certificados.solicitudes.literal.fechaEmision,"
-	  	columnSizes="3,7,16,23,13,10,10,18">
+	  	columnSizes="3,6,14,24,10,11,9,7,16">
 <%
 		if (resultado==null || resultado.size()==0) {
 %>
@@ -234,6 +236,7 @@
 		  		String extNumeroFactura = UtilidadesHash.getString(hDatos, FacFacturaBean.C_NUMEROFACTURA);
 		  		String idEstadoSolicitud = UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO);
 				String tipoCertificado = UtilidadesHash.getString(hDatos, "TIPOCERTIFICADO");
+				String numeroCertificado = UtilidadesHash.getString(hDatos, "PREFIJO_CER") + UtilidadesHash.getString(hDatos, "CONTADOR_CER") + UtilidadesHash.getString(hDatos, "SUFIJO_CER");
 				String tipoCertificado2 = UtilidadesHash.getString(hDatos, "TIPOCERTIFICADO2");	
 		  		String idEstadoCertificado = UtilidadesHash.getString(hDatos, CerEstadoCertificadoBean.C_IDESTADOCERTIFICADO);
 		  		String idPeticion = UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO);
@@ -251,8 +254,8 @@
 		  		
 				FilaExtElement[] elems = new FilaExtElement[8];					
 				
-				if (tipoCertificado!=null && !tipoCertificado.trim().equals("") && (idEstadoCertificado.equals(CerSolicitudCertificadosAdm.K_ESTADO_CER_GENERADO) 
-					|| idEstadoCertificado.equals(CerSolicitudCertificadosAdm.K_ESTADO_CER_FIRMADO)) && (esCliente||esCGAE)) {
+				if (tipoCertificado!=null && !tipoCertificado.trim().equals("") && (idEstadoCertificado.equals(""+CerSolicitudCertificadosAdm.C_ESTADO_CER_GENERADO) 
+					|| idEstadoCertificado.equals(""+CerSolicitudCertificadosAdm.C_ESTADO_CER_FIRMADO)) && (esCliente||esCGAE)) {
 				   elems[1]=new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ);
 				}		
 				
@@ -265,7 +268,7 @@
 				 	idPeticionAux = idPeticion;
 				}
 					
-				if (idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO) && tipoCertificado2.equals("C") && bCobrado && isPermitirFacturaCertificado!=null
+				if (idEstadoSolicitud.equals(""+CerEstadoSoliCertifiAdm.C_ESTADO_SOL_FINALIZADO) && tipoCertificado2.equals("C") && bCobrado && isPermitirFacturaCertificado!=null
 					&& isPermitirFacturaCertificado.booleanValue() && (bSolicitudColegio || idInstitucion.equals("2000"))) {
 					String sTipoIcono = UtilidadesHash.getString(hDatos, "TIPO_ICONO");
 					if (sTipoIcono!=null && sTipoIcono.equals("1")) {
@@ -299,7 +302,7 @@
 					elems[4]=new FilaExtElement("descargaLog", "descargaLog", SIGAConstants.ACCESS_READ);
 				}	
 				
-				if (idEstadoSolicitud.equals(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND)){
+				if (idEstadoSolicitud.equals(""+CerEstadoSoliCertifiAdm.C_ESTADO_SOL_PEND)){
 					botones += ",B";
 				}
 				
@@ -325,7 +328,7 @@
 				
 %>
 
-  				<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botones%>" elementos="<%=elems%>"  visibleConsulta="false" pintarEspacio="no" clase="listaNonEdit" visibleBorrado="false">
+  				<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botones%>" elementos="<%=elems%>" visibleConsulta="false" pintarEspacio="no" clase="listaNonEdit" visibleBorrado="false">
 					<td>
 						<input type="hidden" name="oculto<%=""+(i+1)%>_1" value="<%=idInstitucionCertificado%>">
 						<input type="hidden" name="oculto<%=""+(i+1)%>_2" value="<%=idSolicitud%>">
@@ -364,7 +367,7 @@
 <%
 							} else {
 %>					
-									<input type="checkbox" value="<%=valorCheck%>" name="chkPDF" onclick="pulsarCheck(this)">
+								<input type="checkbox" value="<%=valorCheck%>" name="chkPDF" onclick="pulsarCheck(this)">
 <%
 							}
 							
@@ -373,11 +376,12 @@
 
 					</td>
 					<td><%=idSolicitud%></td>
-					<td><%=estadoSolicitud%>&nbsp;(<%=UtilidadesString.mostrarDatoJSP(fechaEstado)%>)</td>
+					<td><%=estadoSolicitud%> (<%=UtilidadesString.mostrarDatoJSP(fechaEstado)%>)</td>
 					<td><%=cliente%></td>
 					<td><%=tipoCertificado%></td>
-					<td><%=UtilidadesString.mostrarDatoJSP(institucionOrigen)%></td>
-					<td><%=UtilidadesString.mostrarDatoJSP(fechaEmision)%></td>
+					<td align="center"><%=UtilidadesString.mostrarDatoJSP(institucionOrigen)%></td>
+					<td align="right"><%=numeroCertificado%>&nbsp;</td>
+					<td align="center"><%=UtilidadesString.mostrarDatoJSP(fechaEmision)%></td>
 				</siga:FilaConIconos>
 <%
 			}

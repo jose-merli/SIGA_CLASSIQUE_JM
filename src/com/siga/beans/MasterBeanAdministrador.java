@@ -224,8 +224,7 @@ public abstract class MasterBeanAdministrador {
 	}
 	
 
-	
-	public Vector selectGenericaBind(String where, Hashtable data) throws ClsExceptions 
+	public Vector selectGenericaBindSorted(String where, Hashtable data, String[] order) throws ClsExceptions 
 	{
 		Vector datos = new Vector();
 		
@@ -235,7 +234,7 @@ public abstract class MasterBeanAdministrador {
 			rc = new RowsContainer(); 
 			String sql = UtilidadesBDAdm.sqlSelect(this.nombreTabla, this.getCamposBean());
 			sql += " " + where;
-			sql += this.getOrdenCampos()!=null ? UtilidadesBDAdm.sqlOrderBy(this.getOrdenCampos()) : UtilidadesBDAdm.sqlOrderBy(this.getClavesBean());
+			sql += UtilidadesBDAdm.sqlOrderBy(order != null ? order : (this.getOrdenCampos()!=null ? this.getOrdenCampos() : this.getClavesBean()));
 			if (rc.queryBind(sql,data)) {
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
@@ -249,6 +248,11 @@ public abstract class MasterBeanAdministrador {
 			throw new ClsExceptions (e, e.getMessage()); 
 		}
 		return datos;
+	}
+	
+	public Vector selectGenericaBind(String where, Hashtable data) throws ClsExceptions 
+	{
+		return selectGenericaBindSorted(where, data, null);
 	}
 	
 	public Vector findGenericoBind(String sql, Hashtable data) throws ClsExceptions 
@@ -423,32 +427,10 @@ public abstract class MasterBeanAdministrador {
 	 * */
 	public Vector select(Hashtable hash) throws ClsExceptions
 	{
-	    return selectBind(hash);
-	    /*
-	    Vector vector = new Vector();
-		
-		try {
-			int i = 0;
-			String campos[] = new String[hash.size()];
-			Enumeration e = hash.keys();
-			while (e.hasMoreElements()) {
-				campos[i] = (String) e.nextElement();
-				i++;
-			}
-			
-			String where = UtilidadesBDAdm.sqlWhere(this.nombreTabla, hash, campos);
-//			String where = UtilidadesBDAdm.sqlWhere(this.nombreTabla, hash, this.getClavesBean());
-			vector = this.select(where);
-		}
-		catch (Exception e) {
-			vector = null;		
-			throw new ClsExceptions(e, "Error al ejecutar el \"select\" en B.D.");
-		}
-		return vector;
-		*/
+		return selectBindSorted(hash, null);
 	}
 	
-	private Vector selectBind(Hashtable hash) throws ClsExceptions
+	public Vector selectBindSorted(Hashtable hash, String[] order) throws ClsExceptions
 	{
 		Vector vector = new Vector();
 		
@@ -463,8 +445,7 @@ public abstract class MasterBeanAdministrador {
 			
 			Row row = new Row();			
 			Vector resultado = row.sqlWhereBind(this.nombreTabla, hash, campos);
-//			String where = UtilidadesBDAdm.sqlWhere(this.nombreTabla, hash, this.getClavesBean());			
-			vector = this.selectGenericaBind((String)resultado.get(0),(Hashtable)resultado.get(1));
+			vector = this.selectGenericaBindSorted((String)resultado.get(0),(Hashtable)resultado.get(1), order);
 		}
 		catch (Exception e) {
 			vector = null;		
@@ -507,32 +488,6 @@ public abstract class MasterBeanAdministrador {
 	 *  @return vector con los registros encontrados. El objeto es de tipo administrador del bean 
 	 * */
 	public Vector selectForUpdate(Hashtable hash) throws ClsExceptions	{
-	    return selectForUpdateBind(hash);
-		/*
-	    Vector vector = new Vector();
-		
-		try {
-			int i = 0;
-			String campos[] = new String[hash.size()];
-			Enumeration e = hash.keys();
-			while (e.hasMoreElements()) {
-				campos[i] = (String) e.nextElement();
-				i++;
-			}
-			
-			String where = UtilidadesBDAdm.sqlWhere(this.nombreTabla, hash, campos);
-//			String where = UtilidadesBDAdm.sqlWhere(this.nombreTabla, hash, this.getClavesBean());
-			vector = this.selectForUpdate(where);
-		}
-		catch (Exception e) {
-			vector = null;		
-			throw new ClsExceptions(e, "Error al ejecutar el \"select\" en B.D.");
-		}
-		return vector;
-		*/
-	}
-
-	private Vector selectForUpdateBind(Hashtable hash) throws ClsExceptions	{
 		Vector vector = new Vector();
 		
 		try {
@@ -562,8 +517,6 @@ public abstract class MasterBeanAdministrador {
 	 * */
 	public Vector selectByPK(Hashtable hash) throws ClsExceptions
 	{
-	    return selectByPKBind(hash);
-	    /*
 		try {
 			String [] claves = this.getClavesBean();
 			
@@ -572,23 +525,6 @@ public abstract class MasterBeanAdministrador {
 				aux.put((String)claves[i], hash.get((String)claves[i]));
 			}
 			return this.select(aux);
-		}
-		catch (Exception e) {
-			throw new ClsExceptions(e, "Error al ejecutar el \"select\" en B.D.");
-		}
-		*/
-	}	
-	
-	private Vector selectByPKBind(Hashtable hash) throws ClsExceptions
-	{
-		try {
-			String [] claves = this.getClavesBean();
-			
-			Hashtable aux = new Hashtable();
-			for (int i = 0; i < claves.length; i++) {
-				aux.put((String)claves[i], hash.get((String)claves[i]));
-			}
-			return this.selectBind(aux);
 		}
 		catch (Exception e) {
 			throw new ClsExceptions(e,  e.getMessage());
@@ -602,25 +538,6 @@ public abstract class MasterBeanAdministrador {
 	 * */
 	public Vector selectByPKForUpdate(Hashtable hash) throws ClsExceptions
 	{
-	    return selectByPKForUpdateBind(hash);
-		/*
-	    try {
-			String [] claves = this.getClavesBean();
-			
-			Hashtable aux = new Hashtable();
-			for (int i = 0; i < claves.length; i++) {
-				aux.put((String)claves[i], hash.get((String)claves[i]));
-			}
-			return this.selectForUpdate(aux);
-		}
-		catch (Exception e) {
-			throw new ClsExceptions(e, "Error al ejecutar el \"select\" en B.D.");
-		}
-		*/
-	}
-	
-	private Vector selectByPKForUpdateBind(Hashtable hash) throws ClsExceptions
-	{
 		try {
 			String [] claves = this.getClavesBean();
 			
@@ -628,7 +545,7 @@ public abstract class MasterBeanAdministrador {
 			for (int i = 0; i < claves.length; i++) {
 				aux.put((String)claves[i], hash.get((String)claves[i]));
 			}
-			return this.selectForUpdateBind(aux);
+			return this.selectForUpdate(aux);
 		}
 		catch (Exception e) {
 			throw new ClsExceptions(e,  e.getMessage());
