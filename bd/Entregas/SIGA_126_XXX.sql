@@ -615,3 +615,40 @@ alter table ECOM_CEN_NOCOLEGIADO
 
 --126_018: Oido
 
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.numProcedimiento.formato.numeroanio', 'Debería ser una cadena con el formato [nnnnn.nn/yyyy] donde [nnnnn.nn] es el número de procedimiento y [yyyy] es el año.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.numProcedimiento.formato.numeroanio', 'Debería ser una cadena con el formato [nnnnn.nn/yyyy] donde [nnnnn.nn] es el número de procedimiento y [yyyy] es el año.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.numProcedimiento.formato.numeroanio', 'Debería ser una cadena con el formato [nnnnn.nn/yyyy] donde [nnnnn.nn] es el número de procedimiento y [yyyy] es el año.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.numProcedimiento.formato.numeroanio', 'Debería ser una cadena con el formato [nnnnn.nn/yyyy] donde [nnnnn.nn] es el número de procedimiento y [yyyy] es el año.#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.numProcedimiento.formato.cadeca', 'Debería ser una cadena de 8 caracteres con el formato [nnnnn.xx] donde n es un número obligatorio y x es un número opcional.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.numProcedimiento.formato.cadeca', 'Debería ser una cadena de 8 caracteres con el formato [nnnnn.xx] donde n es un número obligatorio y x es un número opcional.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.numProcedimiento.formato.cadeca', 'Debería ser una cadena de 8 caracteres con el formato [nnnnn.xx] donde n es un número obligatorio y x es un número opcional.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.numProcedimiento.formato.cadeca', 'Debería ser una cadena de 8 caracteres con el formato [nnnnn.xx] donde n es un número obligatorio y x es un número opcional.#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.numProcedimiento.formato', 'El formato del número de procedimiento es incorrecto.{0} ', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.numProcedimiento.formato', 'El formato del número de procedimiento es incorrecto.{0} #CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.numProcedimiento.formato', 'El formato del número de procedimiento es incorrecto.{0} #EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.numProcedimiento.formato', 'El formato del número de procedimiento es incorrecto.{0} #GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.numProcedimiento.formato.ejis', 'Debería ser una cadena de 7 caracteres numéricos.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.numProcedimiento.formato.ejis', 'Debería ser una cadena de 7 caracteres numéricos.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.numProcedimiento.formato.ejis', 'Debería ser una cadena de 7 caracteres numéricos.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.numProcedimiento.formato.ejis', 'Debería ser una cadena de 7 caracteres numéricos.#GL', 0, '4', sysdate, 0, '19');
+
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='El formato del NIG es incoreecto.{0} ' where idrecurso='gratuita.nig.formato' and idlenguaje='1';
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='El formato del NIG es incoreecto.{0} #CA' where idrecurso='gratuita.nig.formato' and idlenguaje='2';
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='El formato del NIG es incoreecto.{0} #EU' where idrecurso='gratuita.nig.formato' and idlenguaje='3';
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='El formato del NIG es incoreecto.{0} #GL' where idrecurso='gratuita.nig.formato' and idlenguaje='4';
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.nig.formato.general', 'Debería ser una cadena de 19 caracteres.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.nig.formato.general', 'Debería ser una cadena de 19 caracteres.#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.nig.formato.general', 'Debería ser una cadena de 19 caracteres.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.nig.formato.general', 'Debería ser una cadena de 19 caracteres.#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.nig.formato.cadeca', 'Debería ser una cadena de 19 caracteres con el formato [nnnnn nn A yyyy nnnnnnn] donde [n] es un número, [y] corresponde a un año y [a] es alfanumérico de valores S,C,P,O,I,V,6,8,1,2', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.nig.formato.cadeca', 'Debería ser una cadena de 19 caracteres con el formato [nnnnn nn A yyyy nnnnnnn] donde [n] es un número, [y] corresponde a un año y [a] es alfanumérico de valores S,C,P,O,I,V,6,8,1,2#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.nig.formato.cadeca', 'Debería ser una cadena de 19 caracteres con el formato [nnnnn nn A yyyy nnnnnnn] donde [n] es un número, [y] corresponde a un año y [a] es alfanumérico de valores S,C,P,O,I,V,6,8,1,2#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.nig.formato.cadeca', 'Debería ser una cadena de 19 caracteres con el formato [nnnnn nn A yyyy nnnnnnn] donde [n] es un número, [y] corresponde a un año y [a] es alfanumérico de valores S,C,P,O,I,V,6,8,1,2#GL', 0, '4', sysdate, 0, '19');
+
+-- SIGA_126_019 - estos ultimos recursos los ha ejecutado Jorge en int y pre a posteriori de la version
+-- Adrian se encarga de insertarlos para que se entreguen en PRO
