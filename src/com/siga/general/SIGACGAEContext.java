@@ -280,10 +280,10 @@ System.setProperties(properties);
 			CenInstitucion cenInstitucion = new CenInstitucion();
 			cenInstitucion.setIdinstitucion(Short.valueOf(bean.getLocation()));
 			cenInstitucion = cenInstitucionService.get(cenInstitucion);
-			Integer idConsejo = AppConstants.IDINSTITUCION_2000;
+			Short idConsejo = AppConstants.IDINSTITUCION_2000;
 			if(cenInstitucion.getCenInstIdinstitucion()!=null)
-				idConsejo = cenInstitucion.getCenInstIdinstitucion().intValue();
-			bean.setIdConsejo(idConsejo);
+				idConsejo = cenInstitucion.getCenInstIdinstitucion();
+			bean.setIdConsejo(idConsejo.intValue());
 			CenInstitucion comision =  cenInstitucionService.getComision(cenInstitucion);
 			bean.setIdInstitucionComision(comision.getIdinstitucion());
 			if(bean.isComision()){
