@@ -197,211 +197,205 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		StringBuilder consulta = new StringBuilder();  
 		
 		if (esProcesoMasivo) {
-			consulta.append("SELECT TO_CHAR(MAX(FECHA), '");
+			consulta.append("select TO_CHAR(MAX(FECHA), '");
 			consulta.append(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
-			consulta.append("') AS ULTIMAFECHA FROM ( select "); 
-			consulta.append("			       case when  (facHist.Idtipoaccion =1) then ");
-			consulta.append("			            fac.fechaemision ");
-			consulta.append("			            else ");
-			consulta.append("			             facHist.fechamodificacion ");
-			consulta.append("			       end AS Fecha ");
-		} else {
-			//Select nueva 12/12/2017
+			consulta.append("') AS ULTIMAFECHA FROM ");
 			
-
-			consulta.append("select facHist.IDFACTURA,facHist.IDINSTITUCION, facHist.Idhistorico,facHist.Idtipoaccion, ");
-			consulta.append("			       case when  (facHist.Idtipoaccion =1) then ");
-			consulta.append("			           (f_Siga_Getrecurso(facTipoAcc.nombre, 1) || ' (' || fac.numerofactura || ')')  ");
-			consulta.append("			           when (facHist.Idtipoaccion =6) then ");
-			consulta.append("			            (f_Siga_Getrecurso(facTipoAcc.nombre, 1) || ' (' || (select  Fac_Lineadevoludisqbanco.Descripcionmotivos  ");
-			consulta.append("				            from Fac_Lineadevoludisqbanco  ");
-			consulta.append("				                  where facHist.iddisquetedevoluciones = Fac_Lineadevoludisqbanco.iddisquetedevoluciones ");
-			consulta.append("			                               and facHist.Idinstitucion = Fac_Lineadevoludisqbanco.idinstitucion ");
-			consulta.append("			                               and facHist.Idrecibo = Fac_Lineadevoludisqbanco.Idrecibo ");
-			consulta.append("			                               and facHist.Idhistorico = facHist.Idhistorico ");
-			consulta.append("			                               ) || ')')     ");
-				                               
-			consulta.append("			            when (facHist.Idtipoaccion =7) then ");
-			consulta.append("			             (f_Siga_Getrecurso(facTipoAcc.nombre, 1) || ' ' || (select Renegociacion.Comentario  ");
-			consulta.append("			                         from  Fac_Renegociacion renegociacion ");
-			consulta.append("			                         where facHist.Idrenegociacion= renegociacion.idrenegociacion "); 
-			consulta.append("			                               and facHist.Idinstitucion = renegociacion.idinstitucion ");
-			consulta.append("			                               and facHist.Idfactura = renegociacion.idfactura))    ");
-			consulta.append("			              when (facHist.Idtipoaccion =9) then ");
-			consulta.append("			                  (select  (f_Siga_Getrecurso_Etiqueta('facturacion.pagosFactura.accion.anulacion', 1) || ' (' || ");
-			consulta.append("			                          f_Siga_Getrecurso_Etiqueta('facturacion.pagosFactura.accion.anulacionComision', 1) ) from dual) ");
-			consulta.append("			              when (facHist.Idtipoaccion =10) then ");
-			consulta.append("			                    (f_Siga_Getrecurso_Etiqueta('facturacion.pagosFactura.accion.compensacion', 1) ) ");
-			consulta.append("			           else ");
-			consulta.append("			              f_Siga_Getrecurso(facTipoAcc.nombre, 1) ");
-			consulta.append("			       end AS TABLA, ");
-						     
-			consulta.append("			       f_Siga_Getrecurso_Etiqueta(facEstado.descripcion, 1) AS Estado, ");
-						      
-			consulta.append("			       case when  (facHist.Idtipoaccion =1) then ");
-			consulta.append("			            fac.fechaemision ");
-			consulta.append("			            else ");
-			consulta.append("			             facHist.fechamodificacion ");
-			consulta.append("			       end AS Fecha, ");
-						      
-			consulta.append("			       case when  (facHist.Idtipoaccion =1 or facHist.Idtipoaccion =2) then ");
-			consulta.append("			                nvl( fac.Imptotal,0.0)  ");
-			consulta.append("			            when (facHist.Idtipoaccion =3) then ");
-			consulta.append("			               nvl(  facHist.Imptotalanticipado,0.0) ");
-			consulta.append("			            when (facHist.Idtipoaccion =4 or facHist.Idtipoaccion =10) then ");
-			consulta.append("			                nvl(  (select Fac_Pagosporcaja.Importe from fac_pagosporcaja ");
-			consulta.append("			                         where facHist.Idfactura = fac_pagosporcaja.Idfactura  ");
-			consulta.append("			                               and facHist.Idinstitucion = fac_pagosporcaja.idinstitucion ");
-			consulta.append("			                               and fac_pagosporcaja.Idpagoporcaja = facHist.idpagoporcaja ");
-			consulta.append("			                             ),0.0) ");
-			consulta.append("			            when (facHist.Idtipoaccion =5 ) then  ");               
-			consulta.append("			                  nvl( (select Incluidadisquete.importe from Fac_Facturaincluidaendisquete Incluidadisquete ");
-			consulta.append("			                where facHist.Idinstitucion = Incluidadisquete.idinstitucion ");
-			consulta.append("			                      and Incluidadisquete.Iddisquetecargos = facHist.iddisquetecargos ");
-			consulta.append("			                      and Incluidadisquete.Idfacturaincluidaendisquete = facHist.idfacturaincluidaendisquete ");
-			consulta.append("			                     ),0.0) ");
-			consulta.append("			             when (facHist.Idtipoaccion=6) then   ");
-			consulta.append("			              nvl( facHist.imptotalporpagar,0.0) ");
-			consulta.append("			             when (facHist.Idtipoaccion=7) then  ");
-			consulta.append("			                 nvl(  (select Renegociacion.Importe  ");
-			consulta.append("			                         from  Fac_Renegociacion renegociacion ");
-			consulta.append("			                         where facHist.Idrenegociacion= renegociacion.idrenegociacion  ");
-			consulta.append("			                               and facHist.Idinstitucion = renegociacion.idinstitucion ");
-			consulta.append("			                               and facHist.Idfactura = renegociacion.idfactura ");
-			consulta.append("			                          ),0.0) ");
-			consulta.append("			            when (facHist.Idtipoaccion=8) then  ");
-			consulta.append("			                 nvl(  (select abono.imptotal  ");
-			consulta.append("			                         from  Fac_Abono abono ");
-			consulta.append("			                         where facHist.idabono= abono.idabono ");
-			consulta.append("			                               and facHist.Idinstitucion = abono.idinstitucion  ");
-			consulta.append("				                               ),0.0)  ");
-			consulta.append("			              when (facHist.Idtipoaccion=9) then  ");
-			consulta.append("			                nvl(  fac.Imptotalporpagar,0.0) ");
-						                               
-						                                
-			consulta.append("			        end As IMPORTE, ");
-						       
-			consulta.append("			        fac.Idfactura As Idfactura,  ");
-						       
-			consulta.append("			        case when (facHist.Idtipoaccion =1 or facHist.Idtipoaccion =2 or facHist.Idtipoaccion =3 or facHist.Idtipoaccion =4 ");
-			consulta.append("			                                        or facHist.Idtipoaccion =5 or facHist.Idtipoaccion =6 or facHist.Idtipoaccion =7 or facHist.Idtipoaccion =8 or facHist.Idtipoaccion =10) then ");
-			consulta.append("			               '' ");
-			consulta.append("			             when (facHist.Idtipoaccion =9) then ");
-			consulta.append("			                TO_CHAR(1) ");
-			consulta.append("			        end As Anulacioncomision, ");
-			consulta.append("			        case when (facHist.Idtipoaccion =1 or facHist.Idtipoaccion =2 or facHist.Idtipoaccion =3 or facHist.Idtipoaccion =4 or facHist.Idtipoaccion =7 or facHist.Idtipoaccion =8 ");
-			consulta.append("			                  or facHist.Idtipoaccion =9 or facHist.Idtipoaccion =10) then ");
-			consulta.append("			               '' ");
-			consulta.append("			                when (facHist.Idtipoaccion =5 or facHist.Idtipoaccion =6) then ");
-			consulta.append("			                     (select Incluidadisquete.Devuelta from Fac_Facturaincluidaendisquete Incluidadisquete ");
-			consulta.append("			                        where facHist.Idinstitucion = Incluidadisquete.idinstitucion ");
-			consulta.append("			                              and Incluidadisquete.Iddisquetecargos = facHist.iddisquetecargos ");
-			consulta.append("			                              and Incluidadisquete.Idfacturaincluidaendisquete = facHist.idfacturaincluidaendisquete ");
-			consulta.append("			                            ) ");
-			consulta.append("			        end As Devuelta, ");
-			consulta.append("			        case when (facHist.Idtipoaccion =1 or facHist.Idtipoaccion =2 or facHist.Idtipoaccion =3 or facHist.Idtipoaccion =5 or facHist.Idtipoaccion =6 or facHist.Idtipoaccion =7 ");
-			consulta.append("			                   or facHist.Idtipoaccion =8 or facHist.Idtipoaccion =9 or facHist.Idtipoaccion =10) then ");
-			consulta.append("			               '' ");
-			consulta.append("			             when (facHist.Idtipoaccion =4) then ");
-			consulta.append("			                 (select Fac_Pagosporcaja.Tarjeta from fac_pagosporcaja ");
-			consulta.append("			                        where facHist.Idfactura = fac_pagosporcaja.Idfactura  ");
-			consulta.append("			                              and facHist.Idinstitucion = fac_pagosporcaja.idinstitucion ");
-			consulta.append("			                              and fac_pagosporcaja.Idpagoporcaja = facHist.idpagoporcaja ");
-			consulta.append("			                             ) ");
-			consulta.append("			        end As Tarjeta, ");
-			consulta.append("			        case when (facHist.Idtipoaccion =1 or facHist.Idtipoaccion =2 or facHist.Idtipoaccion =3 or facHist.Idtipoaccion =7) then ");
-			consulta.append("			               0 ");
-			consulta.append("			             when (facHist.Idtipoaccion =4) then ");
-			consulta.append("			                  (select Fac_Pagosporcaja.Idabono from fac_pagosporcaja ");
-			consulta.append("			                         where facHist.Idfactura = fac_pagosporcaja.Idfactura ");
-			consulta.append("			                               and facHist.Idinstitucion = fac_pagosporcaja.idinstitucion ");
-			consulta.append("			                               and fac_pagosporcaja.Idpagoporcaja = facHist.idpagoporcaja ");
-			consulta.append("			                              ) ");
-			consulta.append("			             when (facHist.Idtipoaccion =5 or facHist.Idtipoaccion =6) then ");
-			consulta.append("			                  (select Incluidadisquete.Idcuenta from Fac_Facturaincluidaendisquete Incluidadisquete ");
-			consulta.append("			                        where facHist.Idinstitucion = Incluidadisquete.idinstitucion ");
-			consulta.append("			                              and Incluidadisquete.Iddisquetecargos = facHist.iddisquetecargos ");
-			consulta.append("			                              and Incluidadisquete.Idfacturaincluidaendisquete = facHist.idfacturaincluidaendisquete ");
-			consulta.append("			                             ) ");
-			consulta.append("			             when (facHist.Idtipoaccion =8 or facHist.Idtipoaccion =9) then ");
-			consulta.append("			                  fac.Idcuenta ");
-						             
-			consulta.append("			              when (facHist.Idtipoaccion =10) then ");
-			consulta.append("			                  (select fac_abono.idcuenta from fac_abono ");
-			consulta.append("			                      where facHist.idinstitucion=fac_abono.idinstitucion ");
-			consulta.append("			                            and facHist.idabono =  fac_abono.idabono ");
-			consulta.append("			                            )  ");
-			consulta.append("			        end As Idabono_Idcuenta, ");
-			consulta.append("			        case when (facHist.Idtipoaccion =1 or facHist.Idtipoaccion =2 or facHist.Idtipoaccion =3 or facHist.Idtipoaccion =5 or facHist.Idtipoaccion =6 or facHist.Idtipoaccion =7 ");
-			consulta.append("			                  or facHist.Idtipoaccion =9) then ");
-			consulta.append("			               '' ");
-			consulta.append("			             when (facHist.Idtipoaccion =4) then ");
-			consulta.append("			                   TO_CHAR(facHist.Idabono) ");
-			consulta.append("			              when (facHist.Idtipoaccion =8 or facHist.Idtipoaccion =10) then ");
-			consulta.append("			                  (select abono.Numeroabono ");
-			consulta.append("			                         from  Fac_Abono abono ");
-			consulta.append("			                         where facHist.idabono= abono.idabono  ");
-			consulta.append("			                               and facHist.Idinstitucion = abono.idinstitucion ");
-			consulta.append("			                               ) ");
-						               
-			consulta.append("			        end As Numeroabono, ");
-			consulta.append("			        case when (facHist.Idtipoaccion =1 or facHist.Idtipoaccion =2 or facHist.Idtipoaccion =3 or facHist.Idtipoaccion =5 ");
-			consulta.append("			                   or facHist.Idtipoaccion =6 or facHist.Idtipoaccion =7 or facHist.Idtipoaccion=8 or facHist.Idtipoaccion=9) then ");
-			consulta.append("			               0 ");
-			consulta.append("			             when (facHist.Idtipoaccion =4) then ");
-			consulta.append("			                   facHist.idpagoporcaja ");
-			consulta.append("			             when (facHist.Idtipoaccion =10) then ");
-			consulta.append("			                   (select Fac_Pagosporcaja.Idpagoporcaja from Fac_Pagosporcaja ");
-			consulta.append("			                    where facHist.idinstitucion = Fac_Pagosporcaja.Idinstitucion ");
-			consulta.append("			                          and facHist.idfactura = Fac_Pagosporcaja.Idfactura ");
-			consulta.append("			                          and facHist.idpagoporcaja = Fac_Pagosporcaja.Idpagoporcaja ");
-			consulta.append("			                         ) ");
-			consulta.append("			        end As Idpago, ");
-			consulta.append("			        case when (facHist.Idtipoaccion =1 or facHist.Idtipoaccion =2 or facHist.Idtipoaccion =3 or facHist.Idtipoaccion =4) then ");
-			consulta.append("			               '' ");
-			consulta.append("			             when (facHist.Idtipoaccion =5 or facHist.Idtipoaccion =6 or facHist.Idtipoaccion =8 or facHist.Idtipoaccion =9 or facHist.Idtipoaccion =10) then ");
-			consulta.append("			                   (Select Banco.Nombre || ' nº ' || Cuenta.Iban ");
-			consulta.append("			                  From Cen_Cuentasbancarias Cuenta, Cen_Bancos Banco ");
-			consulta.append("			                 Where Cuenta.Cbo_Codigo = Banco.Codigo ");
-			consulta.append("			                   And Cuenta.Idinstitucion = fac.idinstitucion  "); 
-			consulta.append("				                   And Cuenta.Idpersona = nvl(fac.idPersonaDeudor,fac.idpersona)   "); 
-			consulta.append("			                   And Cuenta.Idcuenta = nvl(fac.idcuentadeudor,fac.Idcuenta))  ");
-						                 
-			consulta.append("			             when (facHist.Idtipoaccion =7) then     ");
-			consulta.append("			                  (Select Banco.Nombre || ' nº ' || Cuenta.Iban ");
-			consulta.append("			                From Cen_Cuentasbancarias Cuenta, Cen_Bancos Banco, Fac_Renegociacion Renegocia2 ");
-			consulta.append("			                 Where Cuenta.Cbo_Codigo = Banco.Codigo ");
-			consulta.append("			                   And facHist.Idinstitucion = Renegocia2.Idinstitucion ");
-			consulta.append("			                   And facHist.Idfactura = Renegocia2.Idfactura ");
-			consulta.append("		                   And facHist.Idrenegociacion = Renegocia2.Idrenegociacion ");
-			consulta.append("			                   And Cuenta.Idcuenta = Renegocia2.Idcuenta ");
-			consulta.append("			                   And Cuenta.Idinstitucion =Renegocia2.idinstitucion ");
-			consulta.append("			                   And Cuenta.Idpersona = Renegocia2.idpersona) ");
-			consulta.append("			        end As Nombrebanco ");
+			consulta.append("(select case when facHist.Idtipoaccion = 1 ");
+			consulta.append("             then fac.fechaemision ");
+			consulta.append("             else facHist.fechamodificacion ");
+			consulta.append("         end AS Fecha ");
+		} else {
+			consulta.append("select facHist.IDFACTURA, facHist.IDINSTITUCION, facHist.Idhistorico, facHist.Idtipoaccion, ");
+			consulta.append("       case when  (facHist.Idtipoaccion =1) then ");
+			consulta.append("           (f_Siga_Getrecurso(facTipoAcc.nombre, 1) || ' (' || fac.numerofactura || ')')  ");
+			consulta.append("           when (facHist.Idtipoaccion =6) then ");
+			consulta.append("            (f_Siga_Getrecurso(facTipoAcc.nombre, 1) || ' (' || (select  Fac_Lineadevoludisqbanco.Descripcionmotivos  ");
+			consulta.append("	            from Fac_Lineadevoludisqbanco  ");
+			consulta.append("	                  where facHist.iddisquetedevoluciones = Fac_Lineadevoludisqbanco.iddisquetedevoluciones ");
+			consulta.append("                               and facHist.Idinstitucion = Fac_Lineadevoludisqbanco.idinstitucion ");
+			consulta.append("                               and facHist.Idrecibo = Fac_Lineadevoludisqbanco.Idrecibo ");
+			consulta.append("                               and facHist.Idhistorico = facHist.Idhistorico ");
+			consulta.append("                               ) || ')')     ");
+			
+			consulta.append("            when (facHist.Idtipoaccion =7) then ");
+			consulta.append("             (f_Siga_Getrecurso(facTipoAcc.nombre, 1) || ' ' || (select Renegociacion.Comentario  ");
+			consulta.append("                         from  Fac_Renegociacion renegociacion ");
+			consulta.append("                         where facHist.Idrenegociacion= renegociacion.idrenegociacion "); 
+			consulta.append("                               and facHist.Idinstitucion = renegociacion.idinstitucion ");
+			consulta.append("                               and facHist.Idfactura = renegociacion.idfactura))    ");
+			consulta.append("              when (facHist.Idtipoaccion =9) then ");
+			consulta.append("                  (select  (f_Siga_Getrecurso_Etiqueta('facturacion.pagosFactura.accion.anulacion', 1) || ' (' || ");
+			consulta.append("                          f_Siga_Getrecurso_Etiqueta('facturacion.pagosFactura.accion.anulacionComision', 1) ) from dual) ");
+			consulta.append("              when (facHist.Idtipoaccion =10) then ");
+			consulta.append("                    (f_Siga_Getrecurso_Etiqueta('facturacion.pagosFactura.accion.compensacion', 1) ) ");
+			consulta.append("           else ");
+			consulta.append("              f_Siga_Getrecurso(facTipoAcc.nombre, 1) ");
+			consulta.append("       end AS TABLA, ");
+			
+			consulta.append("       f_Siga_Getrecurso_Etiqueta(facEstado.descripcion, 1) AS Estado, ");
+			
+			consulta.append("       case when  (facHist.Idtipoaccion =1) then ");
+			consulta.append("            fac.fechaemision ");
+			consulta.append("            else ");
+			consulta.append("             facHist.fechamodificacion ");
+			consulta.append("       end AS Fecha, ");
+			
+			consulta.append("       case when  (facHist.Idtipoaccion =1 or facHist.Idtipoaccion =2) then ");
+			consulta.append("                nvl( fac.Imptotal,0.0)  ");
+			consulta.append("            when (facHist.Idtipoaccion =3) then ");
+			consulta.append("               nvl(  facHist.Imptotalanticipado,0.0) ");
+			consulta.append("            when (facHist.Idtipoaccion =4 or facHist.Idtipoaccion =10) then ");
+			consulta.append("                nvl(  (select Fac_Pagosporcaja.Importe from fac_pagosporcaja ");
+			consulta.append("                         where facHist.Idfactura = fac_pagosporcaja.Idfactura  ");
+			consulta.append("                               and facHist.Idinstitucion = fac_pagosporcaja.idinstitucion ");
+			consulta.append("                               and fac_pagosporcaja.Idpagoporcaja = facHist.idpagoporcaja ");
+			consulta.append("                             ),0.0) ");
+			consulta.append("            when (facHist.Idtipoaccion =5 ) then  ");               
+			consulta.append("                  nvl( (select Incluidadisquete.importe from Fac_Facturaincluidaendisquete Incluidadisquete ");
+			consulta.append("                where facHist.Idinstitucion = Incluidadisquete.idinstitucion ");
+			consulta.append("                      and Incluidadisquete.Iddisquetecargos = facHist.iddisquetecargos ");
+			consulta.append("                      and Incluidadisquete.Idfacturaincluidaendisquete = facHist.idfacturaincluidaendisquete ");
+			consulta.append("                     ),0.0) ");
+			consulta.append("             when (facHist.Idtipoaccion=6) then   ");
+			consulta.append("              nvl( facHist.imptotalporpagar,0.0) ");
+			consulta.append("             when (facHist.Idtipoaccion=7) then  ");
+			consulta.append("                 nvl(  (select Renegociacion.Importe  ");
+			consulta.append("                         from  Fac_Renegociacion renegociacion ");
+			consulta.append("                         where facHist.Idrenegociacion= renegociacion.idrenegociacion  ");
+			consulta.append("                               and facHist.Idinstitucion = renegociacion.idinstitucion ");
+			consulta.append("                               and facHist.Idfactura = renegociacion.idfactura ");
+			consulta.append("                          ),0.0) ");
+			consulta.append("            when (facHist.Idtipoaccion=8) then  ");
+			consulta.append("                 nvl(  (select abono.imptotal  ");
+			consulta.append("                         from  Fac_Abono abono ");
+			consulta.append("                         where facHist.idabono= abono.idabono ");
+			consulta.append("                               and facHist.Idinstitucion = abono.idinstitucion  ");
+			consulta.append("	                               ),0.0)  ");
+			consulta.append("            when (facHist.Idtipoaccion=9) then  ");
+			consulta.append("                 nvl(  fac.Imptotalporpagar,0.0) ");
+			consulta.append("       end As IMPORTE, ");
+			
+			consulta.append("       fac.Idfactura As Idfactura,  ");
+			
+			consulta.append("       case when (facHist.Idtipoaccion =1 or facHist.Idtipoaccion =2 or facHist.Idtipoaccion =3 or facHist.Idtipoaccion =4 ");
+			consulta.append("                                       or facHist.Idtipoaccion =5 or facHist.Idtipoaccion =6 or facHist.Idtipoaccion =7 or facHist.Idtipoaccion =8 or facHist.Idtipoaccion =10) then ");
+			consulta.append("              '' ");
+			consulta.append("            when (facHist.Idtipoaccion =9) then ");
+			consulta.append("               TO_CHAR(1) ");
+			consulta.append("       end As Anulacioncomision, ");
+			
+			consulta.append("       case when (facHist.Idtipoaccion =1 or facHist.Idtipoaccion =2 or facHist.Idtipoaccion =3 or facHist.Idtipoaccion =4 or facHist.Idtipoaccion =7 or facHist.Idtipoaccion =8 ");
+			consulta.append("                 or facHist.Idtipoaccion =9 or facHist.Idtipoaccion =10) then ");
+			consulta.append("              '' ");
+			consulta.append("               when (facHist.Idtipoaccion =5 or facHist.Idtipoaccion =6) then ");
+			consulta.append("                    (select Incluidadisquete.Devuelta from Fac_Facturaincluidaendisquete Incluidadisquete ");
+			consulta.append("                       where facHist.Idinstitucion = Incluidadisquete.idinstitucion ");
+			consulta.append("                             and Incluidadisquete.Iddisquetecargos = facHist.iddisquetecargos ");
+			consulta.append("                             and Incluidadisquete.Idfacturaincluidaendisquete = facHist.idfacturaincluidaendisquete ");
+			consulta.append("                           ) ");
+			consulta.append("       end As Devuelta, ");
+			
+			consulta.append("       case when (facHist.Idtipoaccion =1 or facHist.Idtipoaccion =2 or facHist.Idtipoaccion =3 or facHist.Idtipoaccion =5 or facHist.Idtipoaccion =6 or facHist.Idtipoaccion =7 ");
+			consulta.append("                  or facHist.Idtipoaccion =8 or facHist.Idtipoaccion =9 or facHist.Idtipoaccion =10) then ");
+			consulta.append("              '' ");
+			consulta.append("            when (facHist.Idtipoaccion =4) then ");
+			consulta.append("                (select Fac_Pagosporcaja.Tarjeta from fac_pagosporcaja ");
+			consulta.append("                       where facHist.Idfactura = fac_pagosporcaja.Idfactura  ");
+			consulta.append("                             and facHist.Idinstitucion = fac_pagosporcaja.idinstitucion ");
+			consulta.append("                             and fac_pagosporcaja.Idpagoporcaja = facHist.idpagoporcaja ");
+			consulta.append("                            ) ");
+			consulta.append("       end As Tarjeta, ");
+			
+			consulta.append("       case when (facHist.Idtipoaccion =1 or facHist.Idtipoaccion =2 or facHist.Idtipoaccion =3 or facHist.Idtipoaccion =7) then ");
+			consulta.append("              0 ");
+			consulta.append("            when (facHist.Idtipoaccion =4) then ");
+			consulta.append("                 (select Fac_Pagosporcaja.Idabono from fac_pagosporcaja ");
+			consulta.append("                        where facHist.Idfactura = fac_pagosporcaja.Idfactura ");
+			consulta.append("                              and facHist.Idinstitucion = fac_pagosporcaja.idinstitucion ");
+			consulta.append("                              and fac_pagosporcaja.Idpagoporcaja = facHist.idpagoporcaja ");
+			consulta.append("                             ) ");
+			consulta.append("            when (facHist.Idtipoaccion =5 or facHist.Idtipoaccion =6) then ");
+			consulta.append("                 (select Incluidadisquete.Idcuenta from Fac_Facturaincluidaendisquete Incluidadisquete ");
+			consulta.append("                       where facHist.Idinstitucion = Incluidadisquete.idinstitucion ");
+			consulta.append("                             and Incluidadisquete.Iddisquetecargos = facHist.iddisquetecargos ");
+			consulta.append("                             and Incluidadisquete.Idfacturaincluidaendisquete = facHist.idfacturaincluidaendisquete ");
+			consulta.append("                            ) ");
+			consulta.append("            when (facHist.Idtipoaccion =8 or facHist.Idtipoaccion =9) then ");
+			consulta.append("                 fac.Idcuenta ");
+			consulta.append("            when (facHist.Idtipoaccion =10) then ");
+			consulta.append("                 (select fac_abono.idcuenta from fac_abono ");
+			consulta.append("                     where facHist.idinstitucion=fac_abono.idinstitucion ");
+			consulta.append("                           and facHist.idabono =  fac_abono.idabono ");
+			consulta.append("                           )  ");
+			consulta.append("       end As Idabono_Idcuenta, ");
+			
+			consulta.append("       case when (facHist.Idtipoaccion =1 or facHist.Idtipoaccion =2 or facHist.Idtipoaccion =3 or facHist.Idtipoaccion =5 or facHist.Idtipoaccion =6 or facHist.Idtipoaccion =7 ");
+			consulta.append("                 or facHist.Idtipoaccion =9) then ");
+			consulta.append("              '' ");
+			consulta.append("            when (facHist.Idtipoaccion =4) then ");
+			consulta.append("                  TO_CHAR(facHist.Idabono) ");
+			consulta.append("            when (facHist.Idtipoaccion =8 or facHist.Idtipoaccion =10) then ");
+			consulta.append("                 (select abono.Numeroabono ");
+			consulta.append("                        from  Fac_Abono abono ");
+			consulta.append("                        where facHist.idabono= abono.idabono  ");
+			consulta.append("                              and facHist.Idinstitucion = abono.idinstitucion ");
+			consulta.append("                              ) ");
+			consulta.append("       end As Numeroabono, ");
+		     
+			consulta.append("       case when (facHist.Idtipoaccion =1 or facHist.Idtipoaccion =2 or facHist.Idtipoaccion =3 or facHist.Idtipoaccion =5 ");
+			consulta.append("                  or facHist.Idtipoaccion =6 or facHist.Idtipoaccion =7 or facHist.Idtipoaccion=8 or facHist.Idtipoaccion=9) then ");
+			consulta.append("              0 ");
+			consulta.append("            when (facHist.Idtipoaccion =4) then ");
+			consulta.append("                  facHist.idpagoporcaja ");
+			consulta.append("            when (facHist.Idtipoaccion =10) then ");
+			consulta.append("                  (select Fac_Pagosporcaja.Idpagoporcaja from Fac_Pagosporcaja ");
+			consulta.append("                   where facHist.idinstitucion = Fac_Pagosporcaja.Idinstitucion ");
+			consulta.append("                         and facHist.idfactura = Fac_Pagosporcaja.Idfactura ");
+			consulta.append("                         and facHist.idpagoporcaja = Fac_Pagosporcaja.Idpagoporcaja ");
+			consulta.append("                        ) ");
+			consulta.append("       end As Idpago, ");
+			
+			consulta.append("       case when (facHist.Idtipoaccion =1 or facHist.Idtipoaccion =2 or facHist.Idtipoaccion =3 or facHist.Idtipoaccion =4) then ");
+			consulta.append("              '' ");
+			consulta.append("            when (facHist.Idtipoaccion =5 or facHist.Idtipoaccion =6 or facHist.Idtipoaccion =8 or facHist.Idtipoaccion =9 or facHist.Idtipoaccion =10) then ");
+			consulta.append("                  (Select Banco.Nombre || ' nº ' || Cuenta.Iban ");
+			consulta.append("                 From Cen_Cuentasbancarias Cuenta, Cen_Bancos Banco ");
+			consulta.append("                Where Cuenta.Cbo_Codigo = Banco.Codigo ");
+			consulta.append("                  And Cuenta.Idinstitucion = fac.idinstitucion  "); 
+			consulta.append("	                  And Cuenta.Idpersona = nvl(fac.idPersonaDeudor,fac.idpersona)   "); 
+			consulta.append("                  And Cuenta.Idcuenta = nvl(fac.idcuentadeudor,fac.Idcuenta))  ");
+			consulta.append("            when (facHist.Idtipoaccion =7) then     ");
+			consulta.append("                 (Select Banco.Nombre || ' nº ' || Cuenta.Iban ");
+			consulta.append("               From Cen_Cuentasbancarias Cuenta, Cen_Bancos Banco, Fac_Renegociacion Renegocia2 ");
+			consulta.append("                Where Cuenta.Cbo_Codigo = Banco.Codigo ");
+			consulta.append("                  And facHist.Idinstitucion = Renegocia2.Idinstitucion ");
+			consulta.append("                  And facHist.Idfactura = Renegocia2.Idfactura ");
+			consulta.append("                  And facHist.Idrenegociacion = Renegocia2.Idrenegociacion ");
+			consulta.append("                  And Cuenta.Idcuenta = Renegocia2.Idcuenta ");
+			consulta.append("                  And Cuenta.Idinstitucion =Renegocia2.idinstitucion ");
+			consulta.append("                  And Cuenta.Idpersona = Renegocia2.idpersona) ");
+			consulta.append("       end As Nombrebanco ");
 		}
 			
-		consulta.append("			        from fac_historicofactura facHist, fac_tiposaccionfactura facTipoAcc, fac_factura fac, fac_Estadofactura facEstado ");
-		consulta.append("				       where ");
-		consulta.append("				       facTipoAcc.Idtipoaccion = facHist.Idtipoaccion ");
-		consulta.append("				       and facEstado.Idestado = facHist.Estado ");
-		consulta.append("				       and fac.idfactura = facHist.Idfactura ");
-		consulta.append("				       and fac.idinstitucion = facHist.Idinstitucion ");
-		consulta.append(" and fac.idfactura IN (");
+		consulta.append("  from fac_historicofactura facHist, fac_tiposaccionfactura facTipoAcc, fac_factura fac, fac_Estadofactura facEstado ");
+		consulta.append(" where facTipoAcc.Idtipoaccion = facHist.Idtipoaccion ");
+		consulta.append("   and facEstado.Idestado = facHist.Estado ");
+		consulta.append("   and fac.idfactura = facHist.Idfactura ");
+		consulta.append("   and fac.idinstitucion = facHist.Idinstitucion ");
+		consulta.append("   and fac.idfactura IN (");
 		consulta.append(listaFacturasComision);
-		consulta.append(") ");
-		consulta.append(" and fac.idinstitucion ");
-		consulta.append(" = ");
+		consulta.append("       ) ");
+		consulta.append("   and fac.idinstitucion = ");
 		consulta.append(idInstitucion); 
 		
 		if (esProcesoMasivo) {
-			consulta.append(" and  facHist.idTipoAccion not in (8,9)");
-			consulta.append(	"ORDER BY TO_NUMBER(fac.idfactura),facHist.idTipoAccion,facHist.Idhistorico,facHist.Fechamodificacion ASC ");
-			consulta.append(	" ) ");
+			consulta.append(" and facHist.idTipoAccion not in (8,9)");
+			consulta.append(" ORDER BY TO_NUMBER(fac.idfactura),facHist.idTipoAccion,facHist.Idhistorico,facHist.Fechamodificacion ASC ");
+			consulta.append(") ");
 		} else{
-			consulta.append(	"ORDER BY TO_NUMBER(fac.idfactura),facHist.idTipoAccion,facHist.Idhistorico,facHist.Fechamodificacion ASC ");
+			consulta.append(" ORDER BY TO_NUMBER(fac.idfactura),facHist.idTipoAccion,facHist.Idhistorico,facHist.Fechamodificacion ASC ");
 		}
-		
-		
 
 		return consulta.toString();
 	}
