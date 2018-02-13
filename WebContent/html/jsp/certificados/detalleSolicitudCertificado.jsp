@@ -886,7 +886,7 @@
 		
 		<html:hidden property="aceptaCesionMutualidad" value="<%=aceptMut%>" />
 		<tr>
-			<td><siga:ConjCampos leyenda="certificados.solicitudes.ventanaEdicion.datosSolicitud">
+			<td><siga:ConjCampos leyenda="certificados.solicitudes.ventanaEdicion.datosSolicitud" desplegable="true">
 				<table class="tablaCampos" align="center">
 					<tr>
 						<td width="15%" class="labelText"><siga:Idioma key="certificados.mantenimiento.literal.productoCertificado" />&nbsp;(*)</td>
