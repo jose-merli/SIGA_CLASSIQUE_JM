@@ -137,7 +137,7 @@ SELECT EJGREMESA.IDREMESA
              THEN '3'
              WHEN I.CEN_INST_IDINSTITUCION = 3001--CATALANES
              THEN DECODE(NVL(VPROC.COD_COL_PROCURADOR, PROC.IDCOLPROCURADOR), 'P08019', 'PBAR', 'P08113', 'PMAN', 'P08121', 'PMAT'
-                                                       , 'P08279', 'PTER', 'P17079', 'PGIR', 'P25120', 'PLLE', 'P43123', 'PREU', 'P43155', 'PTOR', NULL)
+                                                       , 'P08279', 'PTER', 'P17079', 'PGIR', 'P25120', 'PLLE', 'P43123', 'PREU', 'P43155', 'PTOR', 'P43148', 'PTAR' NULL)
              WHEN VPROC.IDPROCURADOR IS NOT NULL
              THEN VPROC.COD_COL_PROCURADOR
              WHEN PROC.IDPROCURADOR IS NOT NULL
