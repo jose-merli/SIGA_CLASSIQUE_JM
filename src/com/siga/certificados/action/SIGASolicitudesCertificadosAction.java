@@ -1154,7 +1154,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.certificados" }, e, null);
 		}
-
+		
 		return "exitoConString";
 	} // aprobarYGenerarCertificado()
 	
@@ -1861,7 +1861,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 						sTemp += "||" + beanPlantilla.getIdPlantilla();
 						form.setIdsParaGenerarFicherosPDF(sTemp);
 						String exitoAprobacion = this.aprobarYGenerarCertificado(mapping, formulario, request, response);
-						return exitoAprobacion.equalsIgnoreCase("exitoConString") ? descargar(mapping, form, request, response) : exitoAprobacion;
+						return exitoAprobacion;//.equalsIgnoreCase("exitoConString") ? descargar(mapping, form, request, response) : exitoAprobacion;
 					} else {// Si hay mas de una plantilla se muestra el combo
 							// para seleccionarla
 						request.setAttribute("idsTemp", sTemp);
