@@ -553,6 +553,8 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         Execute Immediate 'set constraint FK_FAC_FACTURA_CUENTASBANCARIA deferred';
         Execute Immediate 'set constraint FK_FACTURA_MANDATO deferred';
         Execute Immediate 'set constraint FK_FACTURA_MANDATO_DEUDOR deferred';
+        Execute Immediate 'set constraint FK_FAC_HISFAC_IDPERSONA deferred';
+        Execute Immediate 'set constraint FK_FAC_HISFAC_IDPERDEUDOR deferred';
         Execute Immediate 'set constraint FK_FAC_ABONO_CUENTASBANCARIAS deferred';
         Execute Immediate 'set constraint FK_FCS_PER_DEST_CUENTASBANCA deferred';
         Execute Immediate 'set constraint FK_FACINCLUIDADISQUETE_CUENTAS deferred';
@@ -698,6 +700,44 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         End If;
         End If;
         Execute Immediate 'set constraint FK_FACTURA_MANDATO_DEUDOR immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
+      
+        Tabla := 'FAC_HISTORICOFACTURA';
+        Select Count(1) Into n_registros_enorigen
+          From Fac_Historicofactura
+         Where Idpersona = p_Idpersona_Origen
+           And Idinstitucion = Reg.Idinstitucion
+           And Idcuenta = Reg.Idcuenta;
+        If n_registros_enorigen > 0 Then
+        Update Fac_Historicofactura
+           Set Idpersona = p_Idpersona_Destino, Idcuenta = v_Idcuentanueva
+         Where Idpersona = p_Idpersona_Origen
+           And Idinstitucion = Reg.Idinstitucion
+           And Idcuenta = Reg.Idcuenta;
+        If Sql%Rowcount > 0 Then
+          p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
+        End If;
+        End If;
+        Execute Immediate 'set constraint FK_FAC_HISFAC_IDPERSONA immediate';
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
+      
+        Tabla := 'FAC_HISTORICOFACTURA deudor';
+        Select Count(1) Into n_registros_enorigen
+          From Fac_Historicofactura
+         Where idpersonadeudor = p_idpersona_origen
+           And idinstitucion = reg.idinstitucion
+           And idcuentadeudor = reg.idcuenta;
+        If n_registros_enorigen > 0 Then
+        Update Fac_Historicofactura
+           Set idpersonadeudor = p_idpersona_destino, idcuentadeudor = v_idcuentanueva
+         Where idpersonadeudor = p_idpersona_origen
+           And idinstitucion = reg.idinstitucion
+           And idcuentadeudor = reg.idcuenta;
+        If Sql%Rowcount > 0 Then
+          p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
+        End If;
+        End If;
+        Execute Immediate 'set constraint FK_FAC_HISFAC_IDPERDEUDOR immediate';
 --dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
       
         Tabla := 'FAC_ABONO';
@@ -1649,6 +1689,22 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
        And Idinstitucion = Nvl(p_Idinstitucion, Idinstitucion);
     If n_registros_enorigen > 0 Then
     Update Cen_Solicmodifexportarfoto
+       Set Idpersona = p_Idpersona_Destino
+     Where Idpersona = p_Idpersona_Origen
+       And Idinstitucion = Nvl(p_Idinstitucion, Idinstitucion);
+    If Sql%Rowcount > 0 Then
+      p_Datoserror := p_Datoserror || Chr(10) || Tabla || ': ' || Sql%Rowcount;
+    End If;
+    End If;
+--dbms_output.put_line (to_char(Sysdate, 'mi:ss') || ': Despues de ' || Tabla);
+  
+    Tabla := 'CEN_SOLMODIFACTURACIONSERVICIO';
+    Select Count(1) Into n_registros_enorigen
+      From Cen_Solmodifacturacionservicio
+     Where Idpersona = p_Idpersona_Origen
+       And Idinstitucion = Nvl(p_Idinstitucion, Idinstitucion);
+    If n_registros_enorigen > 0 Then
+    Update Cen_Solmodifacturacionservicio
        Set Idpersona = p_Idpersona_Destino
      Where Idpersona = p_Idpersona_Origen
        And Idinstitucion = Nvl(p_Idinstitucion, Idinstitucion);
