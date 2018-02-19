@@ -120,15 +120,16 @@
 		idProductoInstitucion = beanSolicitud.getPpn_IdProductoInstitucion().toString();
 		String idtipoCertSel = idInstitucion + "_" + idTipoProducto + "_" + idProducto + "_" + idProductoInstitucion;
 		tipoCertSel.add(idtipoCertSel);
+		
 		idMotivoSolicitud = beanSolicitud.getIdMotivoSolicitud();
 		if (idMotivoSolicitud != null) {
 			String idMotivoSolicitudSel = idInstitucion + "_" + idMotivoSolicitud.toString();
 			motivoSolicitudSel.add(idMotivoSolicitudSel);
-			paramidMotivoSolicitud = "{\"idmotivosolicitud\":\""+idMotivoSolicitud+"\"}";
 		} else {
 			idMotivoSolicitud = -1;
-			paramidMotivoSolicitud = "";
 		}
+		paramidMotivoSolicitud = "{\"idmotivosolicitud\":\""+idMotivoSolicitud+"\"}";
+		
 		idMotivoAnulacion = beanSolicitud.getIdMotivoAnulacion();
 		if (idMotivoAnulacion != null) {
 			String idMotivoAnulacionSel = idInstitucion + "_" + idMotivoAnulacion.toString();
@@ -1000,7 +1001,6 @@
 							%>							
 						</td>
 					</tr>
-					
 
 					<%
 						if (!esCompatibleConCertificadosExistentes) {
