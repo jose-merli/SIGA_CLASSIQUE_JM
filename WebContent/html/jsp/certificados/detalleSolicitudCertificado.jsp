@@ -400,11 +400,6 @@
 		
 		function accionFinalizar() { 
 			sub();
-			if (SolicitudesCertificadosForm.codigoBanco.value=="" && SolicitudesCertificadosForm.comentario.value==""){
-			      alert("<siga:Idioma key="messages.certificado.error.finalizarCobro"/>");
-			      fin();
-				  return false;
-			    }
 			
 			if(confirm('<siga:Idioma key="facturacion.seleccionSerie.literal.finalizarCertificado"/>')) { 
 			   	SolicitudesCertificadosForm.modo.value = "finalizar";

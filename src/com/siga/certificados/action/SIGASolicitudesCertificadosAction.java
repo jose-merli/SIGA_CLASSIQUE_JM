@@ -622,6 +622,39 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 		}
 	} // comprobarCompatibilidadNuevoCertificado()
 	
+	/**
+	 * Comprueba en primer lugar si tiene la marca (fecha) de cobro.
+	 * a. Si esta cobrado, entonces comprueba si tiene, o bien algun comentario o bien algun campo de cuenta bancaria (entidad y/o sucursal)
+	 * b. Si no es asi, entonces basta con que este informado el colegio de cobro
+	 * Devuelve true en alguno de estos casos. Si no, devuelve false.
+	 * 
+	 * Nota: esta comprobacion solo se hace para el Consejo; para los colegios y resto, siempre se devuelve true
+	 * 
+	 * @param userBean
+	 * @param beanSolicitud
+	 * @return
+	 */
+	private static boolean comprobarCamposMinimosDeCobro(CerSolicitudCertificadosBean beanSolicitud) {
+		if (beanSolicitud.getIdInstitucion() != ClsConstants.INSTITUCION_CGAE) {
+			// actualmente solo hay este control para el Consejo
+			return true;
+		} else {
+			// Si esta cobrado, 
+			if (beanSolicitud.getFechaCobro() != null && !beanSolicitud.getFechaCobro().equals("")) {
+				// entonces es necesario que exista:
+				// o bien algo en el comentario
+				return ( (beanSolicitud.getComentario() != null && !beanSolicitud.getComentario().equals("")) ||
+						// o bien los codigos de banco y sucursal
+						((beanSolicitud.getCbo_codigo() != null && !beanSolicitud.getCbo_codigo().equals("")) &&
+						 (beanSolicitud.getCodigo_sucursal() != null && !beanSolicitud.getCodigo_sucursal().equals(""))));
+			} else {
+				// Si NO esta cobrado, 
+				// entonces es necesario que exista la institucion de cobro
+				return (beanSolicitud.getIdInstitucionDestino() != null); //la institucion de cobro
+			}
+		}
+	}
+	
 	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		UsrBean userBean = this.getUserBean(request);
 		
@@ -1183,11 +1216,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 
 		try {
 			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
-
-			// Si viene de regenerar (es decir desde pantalla de edicion) hay que guardar las modificaciones.
-			if (form.getRegenerar() != null && !"".equalsIgnoreCase(form.getRegenerar()) && "1".equalsIgnoreCase(form.getRegenerar())) {
-				this.guardarInfoSolicitudCertificado(form, userBean, 0);
-			}
 
 			int contador = 0;
 			int contadorErrores = 0;
@@ -2432,6 +2460,9 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 				throw new SIGAException(UtilidadesString.getMensaje("certificados.solicitudes.mensaje.fechaSolicitudFueraDePlazo", parametrosMensaje, userBean.getLanguage()));
 			}
 
+			if (! comprobarCamposMinimosDeCobro(beanSolicitud)) {
+				throw new SIGAException("messages.certificado.error.finalizarCobro");
+			}
 			boolean controlFacturasSII = parametrosAdm.getValor(idInstitucion, "FAC", "CONTROL_EMISION_FACTURAS_SII", "0").equalsIgnoreCase("1");
 			Hashtable<String, Object> htOld = beanSolicitud.getOriginalHash();
 			Hashtable<String, Object> htNew = (Hashtable<String, Object>) htOld.clone();
