@@ -2471,8 +2471,8 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 	jQuery("#dialogNig").mask("AAAAA AA A AAAA AAAAAAA");
 	jQuery("#dialogNig").keyup();
 	if(document.getElementById("idConsejo") && document.getElementById("idConsejo").value==IDINSTITUCION_CONSEJO_ANDALUZ){
-		jQuery("#dialogNumProc").mask("99999.99");
-		jQuery("#dialogNumProc").keyup();	
+		//jQuery("#dialogNumProc").mask("99999.99");
+		//jQuery("#dialogNumProc").keyup();	
 	}else if(document.getElementById("ejisActivo").value=='1'){
 		jQuery("#dialogNumProc").mask("9999999");
 		jQuery("#dialogNumProc").keyup();

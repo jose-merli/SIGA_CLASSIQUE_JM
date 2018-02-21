@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import="org.redabogacia.sigaservices.app.AppConstants"%>
 <html>
 <head>
 <!-- operarEJG.jsp --> 
@@ -766,7 +767,7 @@
 									<td class="labelText"><siga:Idioma key='gratuita.mantAsistencias.literal.numeroProcedimiento'/>
 									</td>
 			 						<%
-			 							if (ejisActivo > 0) {
+			 							if (ejisActivo > 0 || usrBean.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ ) {
 			 						%>							
 										<td>
 											<input name="numeroProcedimiento" type="text" value="<%=numeroProcedimientoAsi%>" size="7" class="boxConsulta" readonly/>/

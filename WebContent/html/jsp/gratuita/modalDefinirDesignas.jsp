@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import="org.redabogacia.sigaservices.app.AppConstants"%>
 <html>
 <head>
 <!-- modalDefinirDesignas.jsp -->
@@ -40,7 +41,7 @@
 	if (request.getAttribute("EJIS_ACTIVO")!=null){
 		ejisActivo = Integer.parseInt(request.getAttribute("EJIS_ACTIVO").toString());
 	}	
-	if (ejisActivo>0){
+	if (ejisActivo>0 || usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ){
 		anioProcedimiento = (String)request.getAttribute("anioProcedimiento");
 	}
 	
@@ -267,7 +268,8 @@
 	<html:hidden property ="anioAsistencia" value = "<%=anioAsistencia%>"/>
 	<html:hidden property ="anioEjg" value = "<%=anioEJG%>"/>
 	<html:hidden property ="numProcedimiento" value = "<%=numProcedimiento%>"/>
-<%if (ejisActivo>0){%>
+<%if (ejisActivo>0|| usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ ){
+%>
 	<html:hidden property ="anioProcedimiento" value = "<%=anioProcedimiento%>"/>
 <%}%>
 	<html:hidden property = "diligencia"     value="<%=diligenciaAsi%>"/>
@@ -495,6 +497,7 @@
 			
 			
 		}
+		
 		<!-- Funcion asociada a boton buscar -->
 		// documen
 	</script>

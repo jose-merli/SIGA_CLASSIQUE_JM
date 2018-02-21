@@ -352,8 +352,8 @@
 			jQuery("#nig2").mask("AAAAA AA A AAAA AAAAAAA");
 			jQuery("#nig2").keyup();	
 			if(document.getElementById("idConsejo") && document.getElementById("idConsejo").value==IDINSTITUCION_CONSEJO_ANDALUZ){
-				jQuery("#numeroProcedimiento2").mask("99999.99");
-				jQuery("#numeroProcedimiento2").keyup();	
+				//jQuery("#numeroProcedimiento2").mask("99999.99");
+				//jQuery("#numeroProcedimiento2").keyup();	
 			}else if(document.getElementById("ejisActivo").value=='1'){
 				jQuery("#numeroProcedimiento2").mask("9999999");
 				jQuery("#numeroProcedimiento2").keyup();
