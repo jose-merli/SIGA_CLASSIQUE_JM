@@ -20,6 +20,7 @@ import java.util.Vector;
 
 import javax.transaction.UserTransaction;
 
+import org.apache.log4j.Logger;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.helper.StringHelper;
@@ -39,7 +40,7 @@ import com.siga.ws.PCAJGConstantes;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
-	
+	private static final Logger log = Logger.getLogger(CajgEJGRemesaAdm.class);
 	public CajgEJGRemesaAdm (UsrBean usu) {
 		super (CajgEJGRemesaBean.T_NOMBRETABLA, usu);
 	}	
@@ -625,34 +626,41 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 			String numeroIntercambioEJG = expNewHashtable.get("CAB2_NUMERO_INTERCAMBIO");
 			while (ejgNewIterator.hasNext()) {
 				String key = (String) ejgNewIterator.next();
+				//			EXP_INTERCAMBIO_ID
 
-				if (!key.startsWith("SALTO_LINEA_") && !key.startsWith("TIPO_REGISTRO_") && !key.startsWith("GRUPO_") && key.indexOf("_NUMERO_INTERCAMBIO") == -1) {
+				
+				if (!key.startsWith("SALTO_LINEA_") && !key.startsWith("TIPO_REGISTRO_") && !key.startsWith("GRUPO_")&& key.indexOf("_INTERCAMBIO") == -1 ) {
 					String newValue = expNewHashtable.get(key) == null ? "" : expNewHashtable.get(key);
 					String oldValue = expOldHashtable.get(key) == null ? "" : expOldHashtable.get(key);
 					if (!newValue.trim().equalsIgnoreCase(oldValue.trim())) {
+						log.debug("key:"+key);
+						log.debug("Cambio:"+key+" OLD:"+oldValue.trim()+",NEW:"+newValue.trim());
+//						
 						if (!expActualizarMap.containsKey(numeroIntercambioEJG)) {
 							segmentosActualizarSet = new HashSet<String>();
-
 						}
 						segmentosActualizarSet.add(key.substring(0, 3));
 						expActualizarMap.put(numeroIntercambioEJG, segmentosActualizarSet);
-
-
-						
 					}
 				}
 			}
 		}
 		List<String> lineasFicheroAct = null;
 		Iterator<String> ejgActualizar = expActualizarMap.keySet().iterator();
-		int numActualizacion = 1;
+		Long numIntercambio = null;
+		
 		while (ejgActualizar.hasNext()) {
 			lineasFicheroAct = new ArrayList<String>();
 			String keyNumIntercambioAct = ejgActualizar.next();
 			Map<String, String> expActualizarMapDatosOriginalMap = expActualizarMapDatosOld.get(keyNumIntercambioAct);
 			Map<String, String> expActualizarMapDatosNewMap = expActualizarMapDatosNew.get(keyNumIntercambioAct);
-			lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
-			numActualizacion++;
+			String anioIntercambio = expActualizarMapDatosNewMap.get("CAB3_ANIO_INTERCAMBIO");
+			if(numIntercambio==null){
+				numIntercambio = Long.parseLong(expActualizarMapDatosNewMap.get("CAB2_NUMERO_INTERCAMBIO"));
+			}else{
+				numIntercambio++;
+			}
+			lineasFicheroAct.add(getSegmentoCAB("CAB",numIntercambio.toString(),anioIntercambio));
 			
 			Set<String> segmentosActualizarSetValue = expActualizarMap.get(keyNumIntercambioAct);
 			boolean isAñadidaSegmentosTipoMod = false;
@@ -660,8 +668,8 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 				// Añadimos e
 				if (segmentoActualizar.equals("EXP")) {
 					if(isAñadidaSegmentosTipoMod){
-						lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
-						numActualizacion++;
+						numIntercambio++;
+						lineasFicheroAct.add(getSegmentoCAB("CAB",numIntercambio.toString(),anioIntercambio));
 					}
 					
 //					001	Actualización datos expediente
@@ -720,8 +728,8 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 						// En tal caso se hara un turnado de profesional y si no se hara una nueva designacion de abogado
 						if (organoJudicialOld.equals(organoJudicialNew) && tipoProcedimientoOld.equals(tipoProcedimientoNew) && numProcedimientoOld.equals(numProcedimientoNew)) {
 							if(isAñadidaSegmentosTipoMod){
-								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
-								numActualizacion++;
+								numIntercambio++;
+								lineasFicheroAct.add(getSegmentoCAB("CAB",numIntercambio.toString(),anioIntercambio));
 							}
 //							hay que modificar EXP por AXP y añadirle el tipo de actualizacion ("002" Turnado profesional)
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"002"));
@@ -730,8 +738,8 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 							
 						} else {
 							if(isAñadidaSegmentosTipoMod){
-								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
-								numActualizacion++;
+								numIntercambio++;
+								lineasFicheroAct.add(getSegmentoCAB("CAB",numIntercambio.toString(),anioIntercambio));
 							}
 //							hay que modificar EXP por AXP y añadirle el tipo de actualizacion ("010"	Nueva designacion)
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"010"));
@@ -746,8 +754,8 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 //						si es el mismo procedimiento es un cambio de profesional designado. Si es distinto es una nueva designacion
 						if (organoJudicialOld.equals(organoJudicialNew) && tipoProcedimientoOld.equals(tipoProcedimientoNew) && numProcedimientoOld.equals(numProcedimientoNew)) {
 							if(isAñadidaSegmentosTipoMod){
-								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
-								numActualizacion++;
+								numIntercambio++;
+								lineasFicheroAct.add(getSegmentoCAB("CAB",numIntercambio.toString(),anioIntercambio));
 							}
 //							hay que modificar EXP por AXP y añadirle el tipo de actualizacion ("002" Turnado profesional)
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"002"));
@@ -758,8 +766,8 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 							isAñadidaSegmentosTipoMod = true;
 						}else{
 							if(isAñadidaSegmentosTipoMod){
-								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
-								numActualizacion++;
+								numIntercambio++;
+								lineasFicheroAct.add(getSegmentoCAB("CAB",numIntercambio.toString(),anioIntercambio));
 							}
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"010"));
 							lineasFicheroAct.add(getSegmento("PRN",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,true));
@@ -773,8 +781,8 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 						//Si hay una nueva designacion para elmismo abogado
 						if(!numDesignaOld.equals(numDesignaNew) || !anioDesignaOld.equals(anioDesignaNew)){
 							if(isAñadidaSegmentosTipoMod){
-								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
-								numActualizacion++;
+								numIntercambio++;
+								lineasFicheroAct.add(getSegmentoCAB("CAB",numIntercambio.toString(),anioIntercambio));
 							}
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"010"));
 							lineasFicheroAct.add(getSegmento("PRN",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,true));
@@ -784,8 +792,8 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 							//Mismo colegiado y mismo procedimineto no se hace nada
 						}else{
 							if(isAñadidaSegmentosTipoMod){
-								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
-								numActualizacion++;
+								numIntercambio++;
+								lineasFicheroAct.add(getSegmentoCAB("CAB",numIntercambio.toString(),anioIntercambio));
 							}
 							//Nueva designacion
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"010"));
@@ -796,8 +804,8 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 					}
 					if (procuradorOld.trim().equals("") && !procuradorNew.trim().equals("")) {
 						if(isAñadidaSegmentosTipoMod){
-							lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
-							numActualizacion++;
+							numIntercambio++;
+							lineasFicheroAct.add(getSegmentoCAB("CAB",numIntercambio.toString(),anioIntercambio));
 						}
 						// Vamos a ver los datos del procedimiento judicial (tribunal, procedimiento y número de Procedimiento)
 						// IF OLD.PRJ3_ORGANO_JUDICIAL == NEW. PRJ3_ORGANO_JUDICIAL && OLD.PRJ4_TIPO_PROCED_JUDICIAL == NEW.PRJ4_TIPO_PROCED_JUDICIAL && OLD.PRJ5_NUM_PROCEDIMIENTO == NEW.PRJ5_NUM_PROCEDIMIENTO
@@ -821,8 +829,8 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 //						si es el mismo procedimiento es un cambio de profesional designado. Si es distinto es una nueva designacion
 						if (organoJudicialOld.equals(organoJudicialNew) && tipoProcedimientoOld.equals(tipoProcedimientoNew) && numProcedimientoOld.equals(numProcedimientoNew)) {
 							if(isAñadidaSegmentosTipoMod){
-								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
-								numActualizacion++;
+								numIntercambio++;
+								lineasFicheroAct.add(getSegmentoCAB("CAB",numIntercambio.toString(),anioIntercambio));
 							}
 //							hay que modificar EXP por AXP y añadirle el tipo de actualizacion ("002" Turnado profesional)
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"002"));
@@ -833,8 +841,8 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 							isAñadidaSegmentosTipoMod = true;
 						}else{
 							if(isAñadidaSegmentosTipoMod){
-								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
-								numActualizacion++;
+								numIntercambio++;
+								lineasFicheroAct.add(getSegmentoCAB("CAB",numIntercambio.toString(),anioIntercambio));
 							}
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"010"));
 							lineasFicheroAct.add(getSegmento("PRN",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
@@ -847,8 +855,8 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 						
 						if(!numDesignaProcuradorOld.equals(numDesignaProcuradorNew) || !anioDesignaProcuradorOld.equals(anioDesignaProcuradorNew)){
 							if(isAñadidaSegmentosTipoMod){
-								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
-								numActualizacion++;
+								numIntercambio++;
+								lineasFicheroAct.add(getSegmentoCAB("CAB",numIntercambio.toString(),anioIntercambio));
 							}
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"010"));
 							lineasFicheroAct.add(getSegmento("PRN",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
@@ -859,8 +867,8 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 						}else{
 							//Nueva designacion
 							if(isAñadidaSegmentosTipoMod){
-								lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
-								numActualizacion++;
+								numIntercambio++;
+								lineasFicheroAct.add(getSegmentoCAB("CAB",numIntercambio.toString(),anioIntercambio));
 							}
 							lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"010"));
 							lineasFicheroAct.add(getSegmento("PRN",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
@@ -870,8 +878,8 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 					}
 				}else if (segmentoActualizar.equals("PRJ") && !segmentosActualizarSetValue.contains("PRD") ) {
 					if(isAñadidaSegmentosTipoMod){
-						lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
-						numActualizacion++;
+						numIntercambio++;
+						lineasFicheroAct.add(getSegmentoCAB("CAB",numIntercambio.toString(),anioIntercambio));
 					}
 //					011	Actualización de Órgano y procedimiento judicial
 					lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"011"));
@@ -883,8 +891,8 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 				}else if (segmentoActualizar.equals("SOL")) {
 //					006	Actualización datos solicitante
 					if(isAñadidaSegmentosTipoMod){
-						lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
-						numActualizacion++;
+						numIntercambio++;
+						lineasFicheroAct.add(getSegmentoCAB("CAB",numIntercambio.toString(),anioIntercambio));
 					}
 					lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"006"));
 					lineasFicheroAct.add(getSegmento("SOA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
@@ -894,8 +902,8 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 //					Hemos estado haciendo prueba y no funciona cuando se envian un modificacion de sol y de dom a la vez.  Asi que ya vermeos mcomo lo hacemos
 //					007	Actualización domicilio solicitante. Hay que enviar primero el SOA
 					if(isAñadidaSegmentosTipoMod){
-						lineasFicheroAct.add(getSegmentoCAB("CAB",expActualizarMapDatosNewMap,numActualizacion));
-						numActualizacion++;
+						numIntercambio++;
+						lineasFicheroAct.add(getSegmentoCAB("CAB",numIntercambio.toString(),anioIntercambio));
 					}
 					lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"007"));
 					lineasFicheroAct.add(getSegmento("SOA",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
@@ -917,15 +925,9 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 			List<String> arrayList = expInluidosFicheroActualizacion.get(key);
 			for (int i = 0; i < arrayList.size(); i++) {
 				String linea = arrayList.get(i);
-				System.out.println(linea);
-				
+				log.debug(i+":"+linea);
 			}
-			
-			
 		}
-		
-		
-		
 		return expInluidosFicheroActualizacion;
 	}
 	
@@ -987,20 +989,15 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 		
 		
 	}
-	private String getSegmentoCAB(String segmento, Map<String, String> expHashtableNew, int numActualizacion) {
+	private String getSegmentoCAB(String segmento, String numeroIntercambio,String anioIntercambio) {
 
 		StringBuilder linea = new StringBuilder();
 
 		linea.append(segmento);
 		// pONEMOS EL TIPO DE FICHERO QUE ES 002 Actualización
 		linea.append("002");
-		if(numActualizacion>1){
-			long numIntercambio = Long.parseLong(expHashtableNew.get("CAB2_NUMERO_INTERCAMBIO"))+1;
-			linea.append(StringHelper.rellena(""+numIntercambio, '0', 7, StringHelper.IZQUIERDA));
-		}
-		else
-			linea.append(StringHelper.rellena(expHashtableNew.get("CAB2_NUMERO_INTERCAMBIO"), '0', 7, StringHelper.IZQUIERDA));
-		linea.append(StringHelper.rellena(expHashtableNew.get("CAB3_ANIO_INTERCAMBIO"), '0', 4, StringHelper.IZQUIERDA));
+		linea.append(StringHelper.rellena(numeroIntercambio, '0', 7, StringHelper.IZQUIERDA));
+		linea.append(StringHelper.rellena(anioIntercambio, '0', 4, StringHelper.IZQUIERDA));
 		return linea.toString();
 
 	}

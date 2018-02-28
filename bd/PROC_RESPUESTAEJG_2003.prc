@@ -114,9 +114,10 @@ begin
                       AND R.IDTIPOREMESA = 3
                       AND R.IDREMESARESOLUCION = P_IDREMESARESOLUCION;
             
-          
-          
-          BEGIN
+        
+        END IF;
+        
+         BEGIN
             SELECT MAX(CAB.CAB_INTERCAMBIO_ID)
               INTO V_CAB_INTERCAMBIO_ID
               FROM PCAJG_ALC_INT_CAB CAB
@@ -126,9 +127,6 @@ begin
               RAISE REMESA_NOT_FOUND;
             
           END;
-        
-        
-        END IF;
       
         BEGIN
           SELECT TE.ERROR_DESCRIPCION,TE.ERROR_SOLUCION
@@ -187,9 +185,7 @@ begin
                  ECO11_DESCRIP_INF_ECONOMICA    = NULL
            WHERE ECO_INTERCAMBIO_ID = V_CAB_INTERCAMBIO_ID;
           UPDATE PCAJG_ALC_INT_EXP
-             SET EXP1_NUM_EXPEDIENTE           = NULL,
-                 EXP2_ANIO_EXPEDIENTE          = NULL,
-                 EXP3_TIPO_EXPEDIENTE          = NULL,
+             SET EXP3_TIPO_EXPEDIENTE          = NULL,
                  EXP4_TIPO_EXPEDIENTE_EXTRAORD = NULL,
                  EXP5_FECHA_SOLICITUD          = NULL,
                  EXP6_COLEGIO_ABOGADOS         = NULL,

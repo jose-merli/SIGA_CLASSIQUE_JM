@@ -2360,6 +2360,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			Row row = (Row) rowsContainer.get(i);
 
 			boolean mismoExpediente = true;
+			
+			
 			String numeroIntercambio = row.getString("CAB2_NUMERO_INTERCAMBIO");
 			String aniooEJG = row.getString("EXP2_ANIO_EXPEDIENTE");
 			String numEJG = row.getString("EXP1_NUM_EXPEDIENTE");
@@ -2370,6 +2372,8 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			//Luego se mirara si ha tenido alguna modificacion con respecto a la ultima vez que se envio
 			if (isActualizacion) {
 //				expedientesActualizar.add(aniooEJG + "/" + numEJG);
+				String tipoIntercambio = row.getString("CAB1_TIPO_INTERCAMBIO");
+				row.setValue("CAB1_TIPO_INTERCAMBIO", "002");
 				if(!expedientesActualizar.contains(numeroIntercambio))
 					expedientesActualizar.add(numeroIntercambio);
 				newIntercambiosRemesaMap.put(numeroIntercambio, row.getRow());
@@ -2546,7 +2550,6 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			}
 			
 		}
-		
 		if(!isSimulacion && expedientesList!=null && expedientesList.size()>0)
 			cajgRemesaAdm.insertaHistoricoRemesa(expedientesList);
 		if (expedientesActualizar.size() > 0){
