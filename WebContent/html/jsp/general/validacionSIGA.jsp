@@ -738,7 +738,7 @@ function validarNig(nig,consejo){
 	//Esto es para la validacion de CADECA
 	if(consejo && consejo==IDINSTITUCION_CONSEJO_ANDALUZ){
 		if(nig!=''){
-			var objRegExp  = /^[0-9]{7}[S,C,P,O,I,V,6,8,1,2]{1}(19|20)\d{2}[0-9]{7}$/;
+			var objRegExp  = /^[0-9]{7}[S,C,P,O,I,V,M,6,8,1,2,3,4]{1}(19|20)\d{2}[0-9]{7}$/;
 			var ret = objRegExp.test(nig);
 			return ret;
 		}
