@@ -235,10 +235,45 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 			
 			consulta.append("       f_Siga_Getrecurso_Etiqueta(facEstado.descripcion, 1) AS Estado, ");
 			
-			consulta.append("       case when  (facHist.Idtipoaccion =1) then ");
-			consulta.append("            fac.fechaemision ");
+			consulta.append("       case when facHist.Idtipoaccion = 1 then ");
+			consulta.append("              fac.fechaemision ");
+			consulta.append("            when facHist.Idtipoaccion = 2 And fachist.Comisionidfactura Is Null then ");
+			consulta.append("              (Select Facpro.Fechaconfirmacion ");
+			consulta.append("                 From Fac_Facturacionprogramada Facpro ");
+			consulta.append("                Where Facpro.Idinstitucion = Fac.Idinstitucion ");
+			consulta.append("                  And Facpro.Idseriefacturacion = Fac.Idseriefacturacion ");
+			consulta.append("                  And Facpro.Idprogramacion = Fac.Idprogramacion) ");
+			consulta.append("            when facHist.Idtipoaccion = 2 And fachist.Comisionidfactura Is Not Null then ");
+			consulta.append("              fac.fechaemision ");
+			consulta.append("            when facHist.Idtipoaccion in (4,10) then ");
+			consulta.append("              (Select Fac_Pagosporcaja.Fecha ");
+			consulta.append("                 from fac_pagosporcaja ");
+			consulta.append("                where facHist.Idfactura = fac_pagosporcaja.Idfactura  ");
+			consulta.append("                  and facHist.Idinstitucion = fac_pagosporcaja.idinstitucion ");
+			consulta.append("                  and facHist.Idpagoporcaja = fac_pagosporcaja.idpagoporcaja) ");
+			consulta.append("            when facHist.Idtipoaccion = 5 then ");
+			consulta.append("              (Select Dis.Fechacreacion ");
+			consulta.append("                 From Fac_Disquetecargos Dis ");
+			consulta.append("                Where Fachist.Idinstitucion = Dis.Idinstitucion ");
+			consulta.append("                  And Fachist.Iddisquetecargos = Dis.Iddisquetecargos) ");
+			consulta.append("            when facHist.Idtipoaccion = 6 then ");
+			consulta.append("              (Select Dev.Fechageneracion ");
+			consulta.append("                 From Fac_Disquetedevoluciones Dev ");
+			consulta.append("                Where Fachist.Idinstitucion = Dev.Idinstitucion ");
+			consulta.append("                  And Fachist.Iddisquetedevoluciones = Dev.Iddisquetedevoluciones) ");
+			consulta.append("            when facHist.Idtipoaccion = 7 then ");
+			consulta.append("              (Select Ren.Fecharenegociacion ");
+			consulta.append("                 From Fac_Renegociacion Ren ");
+			consulta.append("                Where Fachist.Idinstitucion = Ren.Idinstitucion ");
+			consulta.append("                  And Fachist.Idfactura = Ren.Idfactura ");
+			consulta.append("                  And Fachist.Idrenegociacion = Ren.Idrenegociacion) ");
+			consulta.append("            when facHist.Idtipoaccion in (8,9) then ");
+			consulta.append("              (Select Abo.Fecha ");
+			consulta.append("                 From Fac_Abono Abo ");
+			consulta.append("                Where Abo.Idinstitucion = Fachist.Idinstitucion ");
+			consulta.append("                  And Abo.Idabono = Fachist.Idabono) ");			
 			consulta.append("            else ");
-			consulta.append("             facHist.fechamodificacion ");
+			consulta.append("              facHist.fechamodificacion ");
 			consulta.append("       end AS Fecha, ");
 			
 			consulta.append("       case when  (facHist.Idtipoaccion =1 or facHist.Idtipoaccion =2) then ");
@@ -391,10 +426,10 @@ public class FacPagosPorCajaAdm extends MasterBeanAdministrador {
 		
 		if (esProcesoMasivo) {
 			consulta.append(" and facHist.idTipoAccion not in (8,9)");
-			consulta.append(" ORDER BY TO_NUMBER(fac.idfactura),facHist.idTipoAccion,facHist.Idhistorico,facHist.Fechamodificacion ASC ");
+			consulta.append(" ORDER BY TO_NUMBER(fac.idfactura), facHist.Idhistorico ");
 			consulta.append(") ");
 		} else{
-			consulta.append(" ORDER BY TO_NUMBER(fac.idfactura),facHist.idTipoAccion,facHist.Idhistorico,facHist.Fechamodificacion ASC ");
+			consulta.append(" ORDER BY TO_NUMBER(fac.idfactura), facHist.Idhistorico ");
 		}
 
 		return consulta.toString();
