@@ -1,6 +1,8 @@
 Pkg_Siga_Fusion_Personas
 V_pcajg_ejg
 
+PROC_RESPUESTAEJG_2003
+
 Update Gen_Recursos rec Set rec.Descripcion = 'Es necesario aportar alguna información de identificación sobre el cobro. Para continuar, si el certificado ya está cobrado rellene o bien Comentario, o bien Entidad; si no está cobrado rellene el Colegio al que se cobrará.' Where rec.Idrecurso = 'messages.certificado.error.finalizarCobro' And rec.Idlenguaje = 1;
 Update Gen_Recursos rec Set rec.Descripcion = 'Es necesario aportar alguna información de identificación sobre el cobro. Para continuar, si el certificado ya está cobrado rellene o bien Comentario, o bien Entidad; si no está cobrado rellene el Colegio al que se cobrará.#CA' Where rec.Idrecurso = 'messages.certificado.error.finalizarCobro' And rec.Idlenguaje = 2;
 Update Gen_Recursos rec Set rec.Descripcion = 'Es necesario aportar alguna información de identificación sobre el cobro. Para continuar, si el certificado ya está cobrado rellene o bien Comentario, o bien Entidad; si no está cobrado rellene el Colegio al que se cobrará.#EU' Where rec.Idrecurso = 'messages.certificado.error.finalizarCobro' And rec.Idlenguaje = 3;
