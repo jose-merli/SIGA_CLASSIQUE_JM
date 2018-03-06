@@ -35,3 +35,7 @@ update PCAJG_ALC_INT_CAB cab
          where idinstitucion = 2003
            and idremesa = 2105)
    and trunc(cab_fechaenvio) > '21/02/2018';
+
+
+-- Ejecutados en Integracion por AAG el 05/03/2018 a las 18:35
+-- 127_003:
