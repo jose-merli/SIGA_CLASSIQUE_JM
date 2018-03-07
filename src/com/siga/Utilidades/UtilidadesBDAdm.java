@@ -42,6 +42,21 @@ public class UtilidadesBDAdm
 		}
 	}
 	
+	/** Funcion getFechaBDDesde
+	 *  Funcion que obtiene la fecha a partir de la base de datos
+	 *  @param idioma, para el formato de salida. Si es "" el formato sera DD/MM/YYYY, en caso contario sera YYYY/MM/DD 
+	 *  @return String con la fecha actual 
+	 * */
+	static public String getFechaBdDesde(String lang) throws ClsExceptions 
+	{
+		if (esLenguajeDeEspana(lang)) {
+			return UtilidadesBDAdm.getDateBD("SELECT TO_CHAR(add_months(SYSDATE,-1), 'DD/MM/YYYY') AS FECHA FROM DUAL");
+		}
+		else {
+			return UtilidadesBDAdm.getDateBD("SELECT TO_CHAR(add_months(SYSDATE,-1), 'YYYY/MM/DD') AS FECHA FROM DUAL");
+		}
+	}
+	
 	/** Funcion getFechaBD
 	 *  Funcion que obtiene la fecha a partir de la base de datos
 	 *  @param idioma, para el formato de salida. Si es "" el formato sera DD/MM/YYYY, en caso contario sera YYYY/MM/DD 

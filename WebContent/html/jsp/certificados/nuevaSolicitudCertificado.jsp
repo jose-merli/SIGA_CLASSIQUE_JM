@@ -47,8 +47,6 @@
 	String consultaOrigen, consultaDestino = "";
 
 	boolean pintarCheckMutualidad = (Boolean) request.getAttribute("pintarCheckMutualidad");
-	boolean bSolicitudTelematica = false;
-	
 	boolean esCompatibleConCertificadosExistentes = (Boolean) request.getAttribute("esCompatibleConCertificadosExistentes");
 	boolean facturable = (Boolean) request.getAttribute("facturable");
 
@@ -87,7 +85,6 @@
 	String idInstitucionCertificado = "", institucionFinal = "", idsTemp = "", idPeticion = "";
 	String idPersona = "", nombreSolicitante = "", nombreSoloSolicitante = "", apellidosSolicitante = "", nidSolicitante = "", ncolSolicitante = "";
 	String sIdCompra = "";
-	String estadoInc = "", residente = "";
 	boolean isSolicitudColegio = false;
 	String[] parametros = null;
 	String aceptaCesion = "", aceptMut = "";
@@ -116,12 +113,6 @@
 		aceptaCesion = beanSolicitud.getAceptaCesionMutualidad().equals("1") ? "checked" : "";
 		aceptMut = beanSolicitud.getAceptaCesionMutualidad();
 		aMetodoSol.add(beanSolicitud.getMetodoSolicitud());
-		if(beanSolicitud.getMetodoSolicitud().equals("5")){
-			bSolicitudTelematica = true;
-			estadoInc = (String) request.getAttribute("estadoInc");
-			residente = (String) request.getAttribute("residenteInc");
-		}
-			
 		fechaSolicitud = beanSolicitud.getFechaSolicitud();
 		idInstitucionSolicitud = beanSolicitud.getIdInstitucion_Sol().toString();
 		idTipoProducto = beanSolicitud.getPpn_IdTipoProducto().toString();
@@ -308,26 +299,25 @@
 	jQuery.noConflict();
 		function refrescarLocal() {
 			sub();
-			CerDetalleSolicitudForm.target="mainWorkArea";
-			CerDetalleSolicitudForm.modo.value="editar";
-			CerDetalleSolicitudForm.submit();
+			SolicitudesCertificadosForm.target="mainWorkArea";
+			SolicitudesCertificadosForm.modo.value="editar";
+			SolicitudesCertificadosForm.submit();
 		}
 		
 		function refrescarLocalDescarga() {
 			sub();
-			CerDetalleSolicitudForm.target="mainWorkArea";
-			CerDetalleSolicitudForm.modo.value="editarDescarga";
-			CerDetalleSolicitudForm.submit();
+			SolicitudesCertificadosForm.target="mainWorkArea";
+			SolicitudesCertificadosForm.modo.value="editarDescarga";
+			SolicitudesCertificadosForm.submit();
 		}
 	
 		// Asociada al boton Cerrar
 		function accionVolver() 
 		{		
 			sub();
-			CerDetalleSolicitudForm.action = "/SIGA/CER_GestionSolicitudes.do";
-			CerDetalleSolicitudForm.target = "mainWorkArea";
-			CerDetalleSolicitudForm.modo.value="volver";
-			CerDetalleSolicitudForm.submit();
+			SolicitudesCertificadosForm.target = "mainWorkArea";
+			SolicitudesCertificadosForm.modo.value="volver";
+			SolicitudesCertificadosForm.submit();
 		}
 		
 		// Asociada al boton Cerrar
@@ -335,8 +325,8 @@
 		{		
 			sub();
 			if(confirm('<siga:Idioma key="facturacion.seleccionSerie.literal.denegarCertificado"/>')) { 
-				CerDetalleSolicitudForm.modo.value="denegar";
-				CerDetalleSolicitudForm.submit();
+				SolicitudesCertificadosForm.modo.value="denegar";
+				SolicitudesCertificadosForm.submit();
 		   		fin();
 			} else {
 				fin();
@@ -349,17 +339,17 @@
 		function accionAprobarGenerar() 
 		{	
 			sub();
-			CerDetalleSolicitudForm.modo.value="comprobarNumPlantillas";
-			CerDetalleSolicitudForm.submit();
+			SolicitudesCertificadosForm.modo.value="comprobarNumPlantillas";
+			SolicitudesCertificadosForm.submit();
 		}			
 		
 		// Asociada al boton Cerrar
 		function accionRegenerar() 
 		{		
 			sub();
-			CerDetalleSolicitudForm.modo.value="comprobarNumPlantillas";
-			CerDetalleSolicitudForm.regenerar.value="1";
-			CerDetalleSolicitudForm.submit();
+			SolicitudesCertificadosForm.modo.value="comprobarNumPlantillas";
+			SolicitudesCertificadosForm.regenerar.value="1";
+			SolicitudesCertificadosForm.submit();
 		}			
 		
 		function accionAnular() {
@@ -381,9 +371,9 @@
 		    	         text: "Guardar y cerrar",
 		    	         id: "btGuardarYCerrar",
 		    	         click: function(){
-			 			   		CerDetalleSolicitudForm.modo.value = "anular";
-			 			   		CerDetalleSolicitudForm.idMotivoAnulacion.value = jQuery("select#idMotivoAnulacionNuevo option:selected").val();
-						   		CerDetalleSolicitudForm.submit();
+			 			   		SolicitudesCertificadosForm.modo.value = "anular";
+			 			   		SolicitudesCertificadosForm.idMotivoAnulacion.value = jQuery("select#idMotivoAnulacionNuevo option:selected").val();
+						   		SolicitudesCertificadosForm.submit();
 								jQuery( this ).dialog( "close" );
 		    	        	 }   
 		    	      } ,
@@ -412,8 +402,8 @@
 			sub();
 			
 			if(confirm('<siga:Idioma key="facturacion.seleccionSerie.literal.finalizarCertificado"/>')) { 
-			   	CerDetalleSolicitudForm.modo.value = "finalizar";
-			   	CerDetalleSolicitudForm.submit();
+			   	SolicitudesCertificadosForm.modo.value = "finalizar";
+			   	SolicitudesCertificadosForm.submit();
 			} else {
 				fin();
 				return false;
@@ -424,15 +414,15 @@
 			if(confirm('<siga:Idioma key="facturacion.seleccionSerie.literal.facturacionRapidaCertificado"/>')) {
 				sub();
 				
-			    var idInstitucion = CerDetalleSolicitudForm.idInstitucion;		          		
-			    var idSolicitud = CerDetalleSolicitudForm.idSolicitud;
-			    var idPersona = CerDetalleSolicitudForm.idPersonaSolicitante;
-			    var idProducto = CerDetalleSolicitudForm.idProducto;
-			    var idTipoProducto = CerDetalleSolicitudForm.idTipoProducto;
+			    var idInstitucion = SolicitudesCertificadosForm.idInstitucion;		          		
+			    var idSolicitud = SolicitudesCertificadosForm.idSolicitud;
+			    var idPersona = SolicitudesCertificadosForm.idPersonaSolicitante;
+			    var idProducto = SolicitudesCertificadosForm.idProducto;
+			    var idTipoProducto = SolicitudesCertificadosForm.idTipoProducto;
 			    
 			    jQuery.ajax({ 
 					type: "POST",
-					url: "/SIGA/CER_DetalleSolicitud.do?modo=getAjaxSeleccionSerieFacturacion",				
+					url: "/SIGA/CER_GestionSolicitudes.do?modo=getAjaxSeleccionSerieFacturacion",				
 					data: "idInstitucion=" + idInstitucion.value + "&idTipoProducto=" + idTipoProducto.value + "&idProducto=" + idProducto.value + "&idSolicitud=" + idSolicitud.value + "&idPersona=" + idPersona.value,
 					dataType: "json",
 					contentType: "application/x-www-form-urlencoded;charset=UTF-8",
@@ -463,9 +453,9 @@
 												
 											} else {
 												jQuery(this).dialog("close");
-												CerDetalleSolicitudForm.idSerieSeleccionada.value =  idSerieFacturacion;
-												CerDetalleSolicitudForm.modo.value = "facturacionRapida";
-											   	CerDetalleSolicitudForm.submit();	
+												SolicitudesCertificadosForm.idSerieSeleccionada.value =  idSerieFacturacion;
+												SolicitudesCertificadosForm.modo.value = "facturacionRapida";
+											   	SolicitudesCertificadosForm.submit();	
 											   	window.setTimeout("fin()",5000,"Javascript");
 											}
 										},
@@ -479,9 +469,9 @@
 							
 						} else {
 							
-							CerDetalleSolicitudForm.idSerieSeleccionada.value =  idSerieFacturacion;	
-							CerDetalleSolicitudForm.modo.value = "facturacionRapida";
-						   	CerDetalleSolicitudForm.submit();		
+							SolicitudesCertificadosForm.idSerieSeleccionada.value =  idSerieFacturacion;	
+							SolicitudesCertificadosForm.modo.value = "facturacionRapida";
+						   	SolicitudesCertificadosForm.submit();		
 						   	window.setTimeout("fin()",5000,"Javascript");
 						}							
 					},
@@ -496,44 +486,44 @@
 		
 		function copiarSanciones() 
 		{		
-			CerDetalleSolicitudForm.modo.value="copiarSanciones";
-			CerDetalleSolicitudForm.submit();
+			SolicitudesCertificadosForm.modo.value="copiarSanciones";
+			SolicitudesCertificadosForm.submit();
 		}
 		
 		function copiarHistorico() 
 		{		
-			CerDetalleSolicitudForm.modo.value="copiarHistorico";
-			CerDetalleSolicitudForm.submit();
+			SolicitudesCertificadosForm.modo.value="copiarHistorico";
+			SolicitudesCertificadosForm.submit();
 		}
 		
 		function historicoObservaciones()
 		{
-			CerDetalleSolicitudForm.modo.value="historicoObservaciones";
-			CerDetalleSolicitudForm.submit();
+			SolicitudesCertificadosForm.modo.value="historicoObservaciones";
+			SolicitudesCertificadosForm.submit();
 		} 
 		
 		function accionGuardar() 
 		{	
 			sub();
 			
-			if (CerDetalleSolicitudForm.fechaSolicitud.value==""){
+			if (SolicitudesCertificadosForm.fechaSolicitud.value==""){
 			      alert("Debe introducir una fecha de solicitud");
 			      fin();
 				  return false;
 			    }
-			var idInstitucion = CerDetalleSolicitudForm.idInstitucion.value;
-			if (CerDetalleSolicitudForm.idInstitucionOrigen.value==""){
+			var idInstitucion = SolicitudesCertificadosForm.idInstitucion.value;
+			if (SolicitudesCertificadosForm.idInstitucionOrigen.value==""){
 		      alert("<siga:Idioma key="messages.certificado.error.noExisteColegioOrigen"/>");
 		      fin();
 			  return false;
 		    }
-		  if (CerDetalleSolicitudForm.idInstitucionDestino){	
+		  if (SolicitudesCertificadosForm.idInstitucionDestino){	
 		  <%if (tipoCertificado != null && tipoCertificado.equals("C")) {%> 
-		       if (CerDetalleSolicitudForm.checkCobro.checked){
-			         CerDetalleSolicitudForm.idInstitucionDestino.value="";
+		       if (SolicitudesCertificadosForm.checkCobro.checked){
+			         SolicitudesCertificadosForm.idInstitucionDestino.value="";
 			  }else{
 			  	if(idInstitucion==2000 || idInstitucion.substring(0,2)==30){
-				    if (CerDetalleSolicitudForm.idInstitucionDestino.value==""){
+				    if (SolicitudesCertificadosForm.idInstitucionDestino.value==""){
 				      alert("<siga:Idioma key="messages.certificado.error.noExisteColegioFacturable"/>");
 					  fin();
 				 	  return false;
@@ -545,35 +535,35 @@
 		  
 		  <%if (modo.equals("nuevo")) {%> 
 				// NUEVO
-				if(CerDetalleSolicitudForm.idProductoCertificado.value==""){
+				if(SolicitudesCertificadosForm.idProductoCertificado.value==""){
 					var mensaje = "<siga:Idioma key="certificados.mantenimiento.literal.productoCertificado"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
 					alert (mensaje);
 					fin();
 					return false;
 				}
 				
-				if(CerDetalleSolicitudForm.idInstitucionOrigen.value==""){
+				if(SolicitudesCertificadosForm.idInstitucionOrigen.value==""){
 					var mensaje = "<siga:Idioma key="pys.solicitudCompra.literal.presentador"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
 					alert (mensaje);
 					fin();
 					return false;
 				}
 				
-				if(CerDetalleSolicitudForm.idPersonaSolicitante.value==""){
+				if(SolicitudesCertificadosForm.idPersonaSolicitante.value==""){
 					var mensaje = "<siga:Idioma key="gratuita.busquedaEJG.interesado"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
 					alert (mensaje);
 					fin();
 					return false;
 				}
 				
-				DummyForm.idProductoCertificado.value = CerDetalleSolicitudForm.idProductoCertificado.value;
-				DummyForm.idInstitucionPresentador.value = CerDetalleSolicitudForm.idInstitucionOrigen.value;
-				DummyForm.idInstitucion.value = CerDetalleSolicitudForm.idInstitucion.value;
-				DummyForm.idPersona.value = CerDetalleSolicitudForm.idPersonaSolicitante.value;
-				DummyForm.metodoSolicitud.value = CerDetalleSolicitudForm.metodoSolicitud.value;
-				DummyForm.fechaSolicitud.value = CerDetalleSolicitudForm.fechaSolicitud.value;
-				DummyForm.idInstitucionColegiacion.value =CerDetalleSolicitudForm.idInstitucionColegiacion.value;
-				if(CerDetalleSolicitudForm.aceptaCesionMutualidadCheck != null && CerDetalleSolicitudForm.aceptaCesionMutualidadCheck.checked){
+				DummyForm.idProductoCertificado.value = SolicitudesCertificadosForm.idProductoCertificado.value;
+				DummyForm.idInstitucionPresentador.value = SolicitudesCertificadosForm.idInstitucionOrigen.value;
+				DummyForm.idInstitucion.value = SolicitudesCertificadosForm.idInstitucion.value;
+				DummyForm.idPersona.value = SolicitudesCertificadosForm.idPersonaSolicitante.value;
+				DummyForm.metodoSolicitud.value = SolicitudesCertificadosForm.metodoSolicitud.value;
+				DummyForm.fechaSolicitud.value = SolicitudesCertificadosForm.fechaSolicitud.value;
+				DummyForm.idInstitucionColegiacion.value =SolicitudesCertificadosForm.idInstitucionColegiacion.value;
+				if(SolicitudesCertificadosForm.aceptaCesionMutualidadCheck != null && SolicitudesCertificadosForm.aceptaCesionMutualidadCheck.checked){
 					DummyForm.aceptaCesionMutualidad.value = "1";
 				} else {
 					DummyForm.aceptaCesionMutualidad.value = "0";
@@ -585,7 +575,7 @@
 		<%} else {%> 	
 			  
 			  // MOFIFICAR				  
-			  if (CerDetalleSolicitudForm.checkCobro.checked){
+			  if (SolicitudesCertificadosForm.checkCobro.checked){
 				  
 				  // LA FECHA COBRO ES OBLIGATORIA SI ESTA MARCADO EL CHECK DE COBRO
 				  if(jQuery("#fechaCobro").val() == null || jQuery("#fechaCobro").val() == ""){
@@ -625,7 +615,7 @@
 				  }	
 				  
 					
-					if(CerDetalleSolicitudForm.idPersonaSolicitante.value==""){
+					if(SolicitudesCertificadosForm.idPersonaSolicitante.value==""){
 						var mensaje = "<siga:Idioma key="gratuita.busquedaEJG.interesado"/> <siga:Idioma key="messages.campoObligatorio.error"/>";
 						alert (mensaje);
 						fin();
@@ -638,16 +628,16 @@
 						|| idEstadoSolicitud.equals("" + CerEstadoSoliCertifiAdm.C_ESTADO_SOL_FINALIZADO)) {%>
 			 	 alertStop("<siga:Idioma key="certificados.solicitudes.literal.msgRegenerar"/>");
 			  <%}%>
-				CerDetalleSolicitudForm.modo.value="modificar";
-				CerDetalleSolicitudForm.submit();
+				SolicitudesCertificadosForm.modo.value="modificar";
+				SolicitudesCertificadosForm.submit();
 		 <%}%>
 		}
 		
 		function validarCheckDescarga()
 		{
-			if (!CerDetalleSolicitudForm.checkDescarga.checked)	
+			if (!SolicitudesCertificadosForm.checkDescarga.checked)	
 			{
-				CerDetalleSolicitudForm.fechaDescarga.value="";
+				SolicitudesCertificadosForm.fechaDescarga.value="";
 				
 			}
 			else
@@ -659,15 +649,15 @@
 				if (dia<10) dia="0"+dia;
 				if (mes<10) mes="0"+mes;
 								
-				CerDetalleSolicitudForm.fechaDescarga.value=dia+"/"+mes+"/"+yea;
+				SolicitudesCertificadosForm.fechaDescarga.value=dia+"/"+mes+"/"+yea;
 			}
 		}
 		
 		function validarCheckCobro()
 		{
-			if (!CerDetalleSolicitudForm.checkCobro.checked) {
+			if (!SolicitudesCertificadosForm.checkCobro.checked) {
 				
-				CerDetalleSolicitudForm.fechaCobro.value="";
+				SolicitudesCertificadosForm.fechaCobro.value="";
 				<%if (tipoCertificado != null && tipoCertificado.equals("C")) {%> 
 					jQuery("#idInstitucionDestino").removeAttr("disabled");
  				<%}%>
@@ -686,7 +676,7 @@
 				<%}%>
 			} else {
 				<%if (tipoCertificado != null && tipoCertificado.equals("C")) {%> 
-					CerDetalleSolicitudForm.idInstitucionDestino.value="";
+					SolicitudesCertificadosForm.idInstitucionDestino.value="";
 					jQuery("#idInstitucionDestino").attr("disabled","disabled");
  				<%}%>	  
 
@@ -699,7 +689,7 @@
 				jQuery("#fechaCobro-datepicker-trigger").show();
 				jQuery("#td_gcob1").hide();
 				jQuery("#td_gcob2").hide();					
-				CerDetalleSolicitudForm.fechaCobro.value="<%=UtilidadesBDAdm.getFechaBD("")%>";
+				SolicitudesCertificadosForm.fechaCobro.value="<%=UtilidadesBDAdm.getFechaBD("")%>";
 				
 				<%if (idEstadoSolicitud.equals("" + CerEstadoSoliCertifiAdm.C_ESTADO_SOL_APROBADO)) {%>
 					<%if (controlFacturasSII.equals("1")) {%>
@@ -738,27 +728,27 @@
 		
 		function fijarFechaEntregaInfo () 
 		{
-			if (CerDetalleSolicitudForm.checkInfoAdjunta.checked) {
-				CerDetalleSolicitudForm.fechaEntregaInfo.value="<%=UtilidadesBDAdm.getFechaBD("")%>";
+			if (SolicitudesCertificadosForm.checkInfoAdjunta.checked) {
+				SolicitudesCertificadosForm.fechaEntregaInfo.value="<%=UtilidadesBDAdm.getFechaBD("")%>";
 			}
 			else {
-				CerDetalleSolicitudForm.fechaEntregaInfo.value="";
+				SolicitudesCertificadosForm.fechaEntregaInfo.value="";
 			}
 		}
 		
 		function checkMutualidad () 
 		{
-			if(CerDetalleSolicitudForm.aceptaCesionMutualidadCheck.checked){
-				CerDetalleSolicitudForm.aceptaCesionMutualidad.value = "1";
+			if(SolicitudesCertificadosForm.aceptaCesionMutualidadCheck.checked){
+				SolicitudesCertificadosForm.aceptaCesionMutualidad.value = "1";
 			} else {
-				CerDetalleSolicitudForm.aceptaCesionMutualidad.value = "0";
+				SolicitudesCertificadosForm.aceptaCesionMutualidad.value = "0";
 			}
 		}		
 		
 		function revisarCheck() {
 			<%if (!modo.equals("nuevo")) {%> 
-				if (CerDetalleSolicitudForm.idInstitucionDestino)
-					if (!CerDetalleSolicitudForm.checkCobro.checked){
+				if (SolicitudesCertificadosForm.idInstitucionDestino)
+					if (!SolicitudesCertificadosForm.checkCobro.checked){
 				     <%if (tipoCertificado != null && tipoCertificado.equals("C")) {%> 
 				       jQuery("#idInstitucionDestino").removeAttr("disabled");
  				    <%}%>	  
@@ -795,10 +785,10 @@
 					nombre = resultado[2];
 					apellidos = resultado[3] + " " +resultado[4];
 				}				
-				CerDetalleSolicitudForm.idPersonaSolicitante.value=idPersona;
-				CerDetalleSolicitudForm.nombre.value=nombre + " " + apellidos;
-				CerDetalleSolicitudForm.idInstitucionOrigenSolicitante.value=idInstitucionOrigen;
-				CerDetalleSolicitudForm.nidSolicitante.value=nid;
+				SolicitudesCertificadosForm.idPersonaSolicitante.value=idPersona;
+				SolicitudesCertificadosForm.nombre.value=nombre + " " + apellidos;
+				SolicitudesCertificadosForm.idInstitucionOrigenSolicitante.value=idInstitucionOrigen;
+				SolicitudesCertificadosForm.nidSolicitante.value=nid;
 				
 				comprobarDuplicados(idInstitucion, idPersona, nid, nombre, apellidos, '', '', '');
 				// NOTA: es mejor no pasar el numcol, para que asi busque duplicados por todas las colegiaciones
@@ -806,27 +796,27 @@
 		}
 		
 		function editarSolicitante() {
-		    var idInst = CerDetalleSolicitudForm.idInstitucionOrigenSolicitante.value;		
+		    var idInst = SolicitudesCertificadosForm.idInstitucionOrigenSolicitante.value;		
 		    if(idInst == null || idInst ==''){
-		    	idInst = CerDetalleSolicitudForm.idInstitucion.value;
+		    	idInst = SolicitudesCertificadosForm.idInstitucion.value;
 		    }
-		    var idPers = CerDetalleSolicitudForm.idPersonaSolicitante.value;			    
+		    var idPers = SolicitudesCertificadosForm.idPersonaSolicitante.value;			    
 		    var idLetrado = "1";			
 		    
 			if (idLetrado.value=='1') {				    
-				CerDetalleSolicitudForm.tablaDatosDinamicosD.value=idPers + ',' + idInst + ',LETRADO' + '%';		
+				document.forms[1].tablaDatosDinamicosD.value=idPers + ',' + idInst + ',LETRADO' + '%';		
 			 } else {
-				CerDetalleSolicitudForm.tablaDatosDinamicosD.value=idPers + ',' + idInst + '%';		
+				document.forms[1].tablaDatosDinamicosD.value=idPers + ',' + idInst + '%';		
 			 }
-		   	CerDetalleSolicitudForm.submit();			   	
+		   	document.forms[1].submit();			   	
 		}
 		
 		function descargarPDF() {
 			<%if (descargaPDF != null && descargaPDF.equalsIgnoreCase("1")) {%>
 				sub();
-				CerDetalleSolicitudForm.descargarCertificado.value="1";
-				CerDetalleSolicitudForm.modo.value="descargar";
-				CerDetalleSolicitudForm.submit();
+				SolicitudesCertificadosForm.descargarCertificado.value="1";
+				SolicitudesCertificadosForm.modo.value="descargar";
+				SolicitudesCertificadosForm.submit();
 			<%}%>
 		}		
 	</script>
@@ -872,7 +862,7 @@
 		</table>			
 	</div>	
 		
-	<html:form action="/CER_DetalleSolicitud.do" method="POST" target="submitArea">
+	<html:form action="/CER_GestionSolicitudes.do" method="POST" target="submitArea">
 		<html:hidden property="modo" value="" />
 		<html:hidden property="idInstitucion" styleId="idInstitucion" value="<%=idInstitucion%>" />
 		<html:hidden property="idInstitucionSolicitud" value="<%=idInstitucionSolicitud%>" />
@@ -915,7 +905,7 @@
 						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.fechaSolicitud" />&nbsp;(*)</td>
 						<td>
 						<%
-							if (modificarSolicitud.equals("1") && !bSolicitudTelematica
+							if (modificarSolicitud.equals("1")
 								&& (idEstadoSolicitud.equals("" + CerEstadoSoliCertifiAdm.C_ESTADO_SOL_PEND) || 
 									idEstadoSolicitud.equals(""	+ CerEstadoSoliCertifiAdm.C_ESTADO_SOL_APROBADO))) {
 						%> 
@@ -960,7 +950,7 @@
 						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.colegioOrigen" />&nbsp;(*) </td>
 						<td>
 							<%
-								if (!modificarSolicitud.equals("1") || bSolicitudTelematica)
+								if (!modificarSolicitud.equals("1"))
 											sReadOnly = "true";
 							%>
 							<siga:Select id="idInstitucionOrigen" 
@@ -974,23 +964,16 @@
 					
 					<tr>
 						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud"/></td>
-						
-						<%if (!bSolicitudTelematica) {%> 
-							<td>
-								<siga:Select id="metodoSolicitud" queryId="getMetodosSolicitudNew" selectedIds="<%=aMetodoSol%>" readonly="<%=stLectura%>"/>
-							</td>	
-						<%} else {%>
-							<td>
-								<siga:Select id="metodoSolicitud" queryId="getMetodosSolicitud" selectedIds="<%=aMetodoSol%>" readonly="true"/>
-							</td>
-						<%}%>
+						<td>
+							<siga:Select id="metodoSolicitud" queryId="getMetodosSolicitudNew" selectedIds="<%=aMetodoSol%>" readonly="<%=stLectura%>"/>
+						</td>
 										
 						<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.colegiadoen"/></td>	
 						<td >
 							<%
 								sReadOnly = stLectura;
-								if (!modificarSolicitud.equals("1") || bSolicitudTelematica)
-									sReadOnly = "true";
+										if (!modificarSolicitud.equals("1"))
+											sReadOnly = "true";
 							%>
 							<siga:Select id="idInstitucionColegiacion" 
 									queryId="<%=consultaOrigen%>" 
@@ -1013,7 +996,6 @@
 							%>							
 						</td>
 					</tr>
-					
 
 					<%
 						if (!esCompatibleConCertificadosExistentes) {
@@ -1025,26 +1007,13 @@
 					<%
 						}
 					%>
-					
-					<%if(bSolicitudTelematica){ %>					
-						<tr>
-							<td class="labelText" width="130px"><siga:Idioma key="certificados.solicitudes.literal.estadoIncorporacion" /></td>
-							<td class="labelTextvalue" width="80px"><%=UtilidadesString.mostrarDatoJSP(estadoInc)%></td>
-							<td class="labelText" width="130px"><siga:Idioma key="certificados.solicitudes.literal.residencia" /></td>
-							<td class="labelTextvalue" width="80px"><%=UtilidadesString.mostrarDatoJSP(residente)%></td>
-						</tr>
-					<% } %>
 						
 					<%
 						if (pintarCheckMutualidad) {
 					%>					
 					<tr>
 						<td class="labelText" colspan="6">
-							<% if (bSolicitudTelematica) { %>
-								<div style="float:left"><input disabled="disabled" type=checkbox name="aceptaCesionMutualidadCheck" <%=aceptaCesion %> <%=deshabilitaMutualidad%> onclick="checkMutualidad()" /></div>&nbsp;		
-							<%}else{%>
-								<div style="float:left"><input type=checkbox name="aceptaCesionMutualidadCheck" <%=aceptaCesion %> <%=deshabilitaMutualidad%> onclick="checkMutualidad()" /></div>&nbsp;
-							<% } %> 
+							<div style="float:left"><input type=checkbox name="aceptaCesionMutualidadCheck" <%=aceptaCesion%> <%=deshabilitaMutualidad%> onclick="checkMutualidad()"/></div>&nbsp;
 							<siga:Idioma key="certificados.solicitudes.literal.textoConformidad" />
 						</td>					
 					</tr>
@@ -1343,7 +1312,7 @@
 								
 							<script type="text/javascript">	
 								jQuery(document).ready(function () {		
-									if (!CerDetalleSolicitudForm.checkCobro.checked){
+									if (!SolicitudesCertificadosForm.checkCobro.checked){
 										jQuery("#fechaCobro").addClass("boxConsulta").removeClass("box");	
 										jQuery("#fechaCobro-datepicker-trigger").hide();
 										jQuery("#td_1").hide();
@@ -1576,14 +1545,14 @@
 	
 	<html:form action="/PYS_CompraPredefinida" method="POST" target="mainWorkArea">
 		<input type="hidden" name="modo">
-		<input type="hidden" name="idPersona" value ="${CerDetalleSolicitudForm.idPersonaSolicitante}">
-		<input type="hidden" name="idInstitucion" value ="${CerDetalleSolicitudForm.idInstitucion}">
-		<input type="hidden" name="idInstitucionPresentador" value="${CerDetalleSolicitudForm.idInstitucionOrigen}">
-		<input type="hidden" name="idProductoCertificado" value="${CerDetalleSolicitudForm.idProductoCertificado}">
-		<input type="hidden" name="metodoSolicitud" value="${CerDetalleSolicitudForm.metodoSolicitud}">
-		<input type="hidden" name="fechaSolicitud" value="${CerDetalleSolicitudForm.fechaSolicitud}">
-		<input type="hidden" name="idInstitucionColegiacion" value="${CerDetalleSolicitudForm.idInstitucionColegiacion}">
-		<input type="hidden" name="aceptaCesionMutualidad" value="${CerDetalleSolicitudForm.aceptaCesionMutualidad}">
+		<input type="hidden" name="idPersona" value ="${SolicitudesCertificadosForm.idPersonaSolicitante}">
+		<input type="hidden" name="idInstitucion" value ="${SolicitudesCertificadosForm.idInstitucion}">
+		<input type="hidden" name="idInstitucionPresentador" value="${SolicitudesCertificadosForm.idInstitucionOrigen}">
+		<input type="hidden" name="idProductoCertificado" value="${SolicitudesCertificadosForm.idProductoCertificado}">
+		<input type="hidden" name="metodoSolicitud" value="${SolicitudesCertificadosForm.metodoSolicitud}">
+		<input type="hidden" name="fechaSolicitud" value="${SolicitudesCertificadosForm.fechaSolicitud}">
+		<input type="hidden" name="idInstitucionColegiacion" value="${SolicitudesCertificadosForm.idInstitucionColegiacion}">
+		<input type="hidden" name="aceptaCesionMutualidad" value="${SolicitudesCertificadosForm.aceptaCesionMutualidad}">
 		<input type="hidden" name="idBoton" value="2">
 	</html:form>
 	

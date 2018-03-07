@@ -92,7 +92,7 @@ import com.siga.beans.PysProductosSolicitadosAdm;
 import com.siga.beans.PysProductosSolicitadosBean;
 import com.siga.beans.PysServiciosSolicitadosBean;
 import com.siga.certificados.Certificado;
-import com.siga.certificados.form.SIGASolicitudesCertificadosForm;
+import com.siga.certificados.form.SIGACerDetalleSolicitudForm;
 import com.siga.facturacion.form.ConfirmarFacturacionForm;
 import com.siga.facturacion.Facturacion;
 import com.siga.facturacion.action.AltaAbonosAction;
@@ -103,7 +103,7 @@ import com.siga.general.SIGAException;
 
 import es.satec.businessManager.BusinessManager;
 
-public class SIGASolicitudesCertificadosAction extends MasterAction {
+public class SIGACerDetalleSolicitudAction extends MasterAction {
 
 	public static Hashtable<String, Integer> contadores = new Hashtable<String, Integer>();
 
@@ -127,7 +127,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 					request.setAttribute("descarga", "1");
 					mapDestino = editar(mapping, miForm, request, response);
 				} else if (accion.equalsIgnoreCase("buscarInicio") || accion.equalsIgnoreCase("buscarInicioSeleccionarTodos")) {
-					SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) miForm;
+					SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) miForm;
 					form.reset(new String[] { "registrosSeleccionados", "datosPaginador", "seleccionarTodos" });
 					if (accion.equalsIgnoreCase("buscarInicio")) {
 						form.setSeleccionarTodos("");
@@ -213,7 +213,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		try {
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+			SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) formulario;
 			String idSolicitudCompra = "";
 			String idSolicitudCertificado = "";
 			String concepto = "";
@@ -259,8 +259,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 
 			if ((request.getParameter("buscar") != null && request.getParameter("buscar").equalsIgnoreCase("true"))
 					|| (request.getAttribute("volver") != null && ((String) request.getAttribute("volver")).equalsIgnoreCase("volver"))) {
-				if (request.getSession().getAttribute("DATABACKUP") != null && (request.getSession().getAttribute("DATABACKUP") instanceof SIGASolicitudesCertificadosForm)) {
-					form = (SIGASolicitudesCertificadosForm) request.getSession().getAttribute("DATABACKUP");
+				if (request.getSession().getAttribute("DATABACKUP") != null && (request.getSession().getAttribute("DATABACKUP") instanceof SIGACerDetalleSolicitudForm)) {
+					form = (SIGACerDetalleSolicitudForm) request.getSession().getAttribute("DATABACKUP");
 				}
 			} else {
 				form.resetCamposBusqueda();
@@ -274,7 +274,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			request.setAttribute("controlFacturasSII", controlFacturasSII);
 
 			//request.setAttribute("SolicitudesCertificadosForm", form);
-			request.getSession().removeAttribute("DATABACKUP");
+			//request.getSession().removeAttribute("DATABACKUP");
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.certificados" }, e, null);
@@ -282,14 +282,14 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 		return "abrir";
 	}
 
-	protected String buscar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
+/*	protected String buscar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		try {
 			final String[] clavesBusqueda = { CerSolicitudCertificadosBean.C_FECHASOLICITUD, CerSolicitudCertificadosBean.C_IDSOLICITUD, "TIPOCERTIFICADO",
 					CerSolicitudCertificadosBean.C_PPN_IDTIPOPRODUCTO, CerSolicitudCertificadosBean.C_PPN_IDPRODUCTO, CerSolicitudCertificadosBean.C_PPN_IDPRODUCTOINSTITUCION,
 					CerSolicitudCertificadosBean.C_IDINSTITUCION, CerSolicitudCertificadosBean.C_IDPERSONA_DES, CerSolicitudCertificadosBean.C_IDINSTITUCIONORIGEN,
 					CerSolicitudCertificadosBean.C_IDESTADOSOLICITUDCERTIFICADO };
 
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+			SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) formulario;
 			UsrBean userBean = (UsrBean) request.getSession().getAttribute("USRBEAN");
 
 			String idInstitucion = userBean.getLocation();
@@ -353,7 +353,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 
 				// obtengo datos de la consulta
 				PaginadorBind resultado = null;
-				resultado = admSolicitudCertificados.buscarSolicitudes(form, idInstitucion);
+				// resultado = admSolicitudCertificados.buscarSolicitudes(form, idInstitucion);
 				Vector datos = null;
 
 				databackup.put("paginador", resultado);
@@ -390,8 +390,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			String esCGAE = CenVisibilidad.getNivelInstitucion(idInstitucion).equalsIgnoreCase(String.valueOf(ClsConstants.TIPO_INTITUCION_CGAE)) ? "true" : "false";
 			request.setAttribute("esCGAE", esCGAE);
 
-			request.getSession().setAttribute("DATABACKUP", form);
-			request.getSession().setAttribute("SolicitudesCertificadosForm", form);
+			//request.getSession().setAttribute("DATABACKUP", form);
 
 			// Para volver correctamente desde envios:
 			request.getSession().setAttribute("EnvEdicionEnvio", "GS");
@@ -406,13 +405,14 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 
 		return "buscar";
 	}
-
+*/
+	
 	protected String borrar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		UserTransaction tx = null;
 		try {
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+			SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) formulario;
 			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(usr);
 			CerSolicitudCertificadosTextoAdm admTextoSolicitud = new CerSolicitudCertificadosTextoAdm(usr);
 
@@ -664,119 +664,324 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			String accion = miForm.getModo();
 			request.setAttribute("modo", accion);
 
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+			SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) formulario;
+			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(userBean);
+			FacFacturaAdm admFactura = new FacFacturaAdm(userBean);
 			String idInstitucion = "", idSolicitud = "", idEstadoSolicitud = "", tipoCertificado = "";
-			Vector vOcultos = form.getDatosTablaOcultos(0);
 			
-			if (vOcultos != null) {
-				/** Icono listado de solicitudes **/
-				idInstitucion = ((String) vOcultos.elementAt(0)).trim();
-				request.setAttribute("idInstitucion", idInstitucion);
-				idSolicitud = ((String) vOcultos.elementAt(1)).trim();
-				request.setAttribute("idSolicitud", idSolicitud);
-				idEstadoSolicitud = ((String) vOcultos.elementAt(9)).trim();
-				request.setAttribute("idEstadoSolicitud", idEstadoSolicitud);
-				tipoCertificado = ((String) vOcultos.elementAt(11)).trim();
-				request.setAttribute("tipoCertificado", tipoCertificado);
+			idInstitucion = request.getParameter("idInstitucion");
+			idSolicitud = request.getParameter("idSolicitud");
+			idEstadoSolicitud = request.getParameter("idEstadoSolicitud");
+			tipoCertificado = request.getParameter("tipoCertificado");
 
-			} else {
-				/** Nueva ventana detalle certificado **/
-				idInstitucion = form.getIdInstitucion();
-				idSolicitud = form.getIdSolicitud();
-				tipoCertificado = form.getTipoCertificado();
-			}
-			
 			Hashtable<String, Object> htSolicitud = new Hashtable<String, Object>();
 			htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
 			htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
-			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(userBean);
-			Vector vDatos = admSolicitud.selectByPK(htSolicitud);
-			CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean) vDatos.elementAt(0);
-			
-			if(!beanSolicitud.getMetodoSolicitud().equals("5"))
-			{
-				String[] pestanasOcultas=new String [1];
-				pestanasOcultas[0]="61b";
-				request.setAttribute("pestanasOcultas",pestanasOcultas);
+			CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean) admSolicitud.selectByPK(htSolicitud).elementAt(0);
+
+			CenInstitucionAdm admInstitucion = new CenInstitucionAdm(userBean);
+			String idInstitucionOrigen = "" + beanSolicitud.getIdInstitucionOrigen();
+			String idInstitucionDestino = "" + beanSolicitud.getIdInstitucionDestino();
+			String idInstitucionColegiacion = "" + beanSolicitud.getIdInstitucionColegiacion();
+			CenInstitucionBean beanInstitucionOrigen = null;
+			Hashtable<String, Object> htInstitucion = new Hashtable<String, Object>();
+			if (!idInstitucionOrigen.equalsIgnoreCase("null")) {
+				htInstitucion.put(CenInstitucionBean.C_IDINSTITUCION, idInstitucionOrigen);
+				Vector vDatos = admInstitucion.selectByPK(htInstitucion);
+				if (vDatos != null && vDatos.size() == 1) {
+					beanInstitucionOrigen = (CenInstitucionBean) vDatos.elementAt(0);
+				}
 			}
 
-			String[] modos = new String[] {accion, accion};
-			request.setAttribute("modos", modos);
-			Hashtable<String, Object> htDatos = new Hashtable<String, Object>();
-			htDatos.put("modo",request.getAttribute("modo"));
+			CenInstitucionBean beanInstitucionColegiacion = null;
+			if (!idInstitucionColegiacion.equalsIgnoreCase("null")) {
+				htInstitucion.put(CenInstitucionBean.C_IDINSTITUCION, idInstitucionColegiacion);
+				Vector vDatos = admInstitucion.selectByPK(htInstitucion);
+				if (vDatos != null && vDatos.size() == 1) {
+					beanInstitucionColegiacion = (CenInstitucionBean) vDatos.elementAt(0);
+				}
+			}
+
+			CenInstitucionBean beanInstitucionDestino = null;
+			if (!idInstitucionDestino.equalsIgnoreCase("null")) {
+				htInstitucion.put(CenInstitucionBean.C_IDINSTITUCION, idInstitucionDestino);
+				Vector vDatos = admInstitucion.selectByPK(htInstitucion);
+
+				if (vDatos != null && vDatos.size() == 1) {
+					beanInstitucionDestino = (CenInstitucionBean) vDatos.elementAt(0);
+				}
+			}
+
+			// obtengo el texto de sanciones. se modifica. Lo que se obtiene es
+			// el texto del certificado
+			// ESTA TABLA ESTA MAL YA QUE NO TIENE SENTIDO EL CAMPO IDTEXTO COMO
+			// PARTE DE LA PK CUANDO NO EXSITE TAL MULTIPLICAIDAD.
+			CerSolicitudCertificadosTextoService certificadosTextoService = (CerSolicitudCertificadosTextoService) getBusinessManager().getService(
+					CerSolicitudCertificadosTextoService.class);
+			CerSolicitudcertificadostextoExample cerSolicitudcertificadostextoExample = new CerSolicitudcertificadostextoExample();
+			org.redabogacia.sigaservices.app.autogen.model.CerSolicitudcertificadostextoExample.Criteria criteria = cerSolicitudcertificadostextoExample.createCriteria();
+
+			criteria.andIdinstitucionEqualTo(beanSolicitud.getIdInstitucion().shortValue());
+			criteria.andIdsolicitudEqualTo(beanSolicitud.getIdSolicitud());
+
+			List<CerSolicitudcertificadostexto> cerSolicitudcertificadostextoList = certificadosTextoService.getList(cerSolicitudcertificadostextoExample);
+			String textoCertificado = "";
+			String incluirDeudas = "off";
+			String incluirSanciones = "off";
+			if (cerSolicitudcertificadostextoList.size() > 0) {
+				CerSolicitudcertificadostexto cerSolicitudcertificadostexto = cerSolicitudcertificadostextoList.get(0);
+				if (cerSolicitudcertificadostexto != null) {
+					textoCertificado = cerSolicitudcertificadostexto.getTexto();
+					if (cerSolicitudcertificadostexto.getIncluirdeudas() != null && cerSolicitudcertificadostexto.getIncluirdeudas().equalsIgnoreCase("S"))
+						incluirDeudas = "on";
+					if (cerSolicitudcertificadostexto.getIncluirsanciones() != null && cerSolicitudcertificadostexto.getIncluirsanciones().equalsIgnoreCase("S"))
+						incluirSanciones = "on";
+
+				}
+
+				form.setIncluirDeudas(incluirDeudas);
+				form.setIncluirSanciones(incluirSanciones);
+			}
+
+			request.setAttribute("sanciones", textoCertificado);
+			request.setAttribute("solicitud", beanSolicitud);
 			
-			if(request.getParameter("hiddenFrame")!=null){
-				htDatos.put("hiddenFrame",request.getParameter("hiddenFrame"));
+			//Comprobamos si el certificado tiene factura o no, esto lo realizamos para mostrar en la edicción el botón anular.
+			Vector<Hashtable<String, Object>> vFacturas = admFactura.obtenerFacturasFacturacionRapida(String.valueOf(beanSolicitud.getIdInstitucion()), null,
+					String.valueOf(beanSolicitud.getIdSolicitud()));
+			if (vFacturas == null || vFacturas.size() == 0) { // No esta facturado
+				request.setAttribute("facturado", "0");
 			}else{
-				htDatos.put("hiddenFrame","");
+				request.setAttribute("facturado", "1");
 			}
-			if(request.getParameter("idsParaGenerarFicherosPDF")!=null){
-				htDatos.put("idsParaGenerarFicherosPDF",request.getParameter("idsParaGenerarFicherosPDF"));
-			}else{
-				htDatos.put("idsParaGenerarFicherosPDF","");
-			}
-			if(request.getParameter("idsTemp")!=null){
-				htDatos.put("idsTemp",request.getParameter("idsTemp"));
-			}else{
-				htDatos.put("idsTemp","");
-			}
-			if(request.getParameter("validado")!=null){
-				htDatos.put("validado",request.getParameter("validado"));
-			}else{
-				htDatos.put("validado","");
-			}
-			if(request.getParameter("idPeticion")!=null){
-				htDatos.put("idPeticion",request.getParameter("idPeticion"));
-			}else{
-				htDatos.put("idPeticion","");
-			}
-			if(request.getParameter("idProducto")!=null){
-				htDatos.put("idProducto",request.getParameter("idProducto"));
-			}else{
-				htDatos.put("idProducto","");
-			}
-			if(request.getParameter("idTipoProducto")!=null){
-				htDatos.put("idTipoProducto",request.getParameter("idTipoProducto"));
-			}else{
-				htDatos.put("idTipoProducto","");
-			}
-			if(request.getParameter("idProductoInstitucion")!=null){
-				htDatos.put("idProductoInstitucion",request.getParameter("idProductoInstitucion"));
-			}else{
-				htDatos.put("idProductoInstitucion","");
-			}
-			if(request.getParameter("registrosSeleccionados")!=null){
-				htDatos.put("registrosSeleccionados",request.getParameter("registrosSeleccionados"));
-			}else{
-				htDatos.put("registrosSeleccionados","");
-			}
-			if(request.getParameter("datosPaginador")!=null){
-				htDatos.put("datosPaginador",""); //htDatos.put("datosPaginador",request.getParameter("datosPaginador"));
-			}else{
-				htDatos.put("datosPaginador","");
-			}
-			if(request.getParameter("seleccionarTodos")!=null){
-				htDatos.put("seleccionarTodos",request.getParameter("seleccionarTodos"));
-			}else{
-				htDatos.put("seleccionarTodos","");
-			}
-			if(request.getParameter("tablaDatosDinamicosD")!=null){
-				htDatos.put("tablaDatosDinamicosD","");//htDatos.put("tablaDatosDinamicosD",request.getParameter("tablaDatosDinamicosD"));
-			}else{
-				htDatos.put("tablaDatosDinamicosD","");
-			}
-			if(request.getParameter("filaSelD")!=null){
-				htDatos.put("filaSelD",request.getParameter("filaSelD"));
-			}else{
-				htDatos.put("filaSelD","");
-			}
-			htDatos.put("idInstitucion", idInstitucion);
-			htDatos.put("idSolicitud", idSolicitud);
-			htDatos.put("idEstadoSolicitud", idEstadoSolicitud);
-			htDatos.put("tipoCertificado", tipoCertificado);
-			request.setAttribute("datos", htDatos);
+																
 			
+			// obteniendo el valor del parametro de control de facturas a la JSP para que actue en consecuencia
+			GenParametrosAdm paramAdm = new GenParametrosAdm(userBean);
+			String controlFacturasSII = paramAdm.getValor(idInstitucion, "FAC", "CONTROL_EMISION_FACTURAS_SII", "0");
+			request.setAttribute("controlFacturasSII", controlFacturasSII);
 			
+			// ahora hay que buscar si se han hecho facturaciones que incluyan el dia de hoy y 
+			// que petenezcan a una serie que incluya el tipo de producto de este certificado que se esta editando
+			{
+				ConfirmarFacturacionForm formFacturacion = new ConfirmarFacturacionForm();
+				formFacturacion.setFechaDesdeProductos(UtilidadesFecha.getToday(UtilidadesFecha.FORMATO_FECHA_ES));
+				formFacturacion.setFechaHastaProductos(UtilidadesFecha.getToday(UtilidadesFecha.FORMATO_FECHA_ES));
+				formFacturacion.setIdTipoProducto(beanSolicitud.getPpn_IdTipoProducto().toString());
+				formFacturacion.setIdProducto(beanSolicitud.getPpn_IdProducto().toString());
+				
+				FacFacturacionProgramadaAdm	facturacionProgramadaAdm = new FacFacturacionProgramadaAdm(userBean);
+				Paginador facturacionesEncontradas = facturacionProgramadaAdm.getProgramacioneFacturacionPaginador(formFacturacion);
+				boolean hayFacturacionHoy = (facturacionesEncontradas != null && facturacionesEncontradas.getNumeroTotalRegistros() > 0);
+				request.setAttribute("hayFacturacionHoy", hayFacturacionHoy ? "1" : "0");
+			}
+
+			/** ESTADOS SOLICITUD CERTIFICADO **/
+			if (idEstadoSolicitud == null || idEstadoSolicitud.equals("")) {
+				// No se rellena si venimos de vuelta
+				idEstadoSolicitud = beanSolicitud.getIdEstadoSolicitudCertificado().toString();
+			}
+
+			CerEstadoSoliCertifiAdm estAdm = new CerEstadoSoliCertifiAdm(userBean);
+			String strEstadoActual = estAdm.getNombreEstadoSolicitudCert(idEstadoSolicitud);
+			String strSiguienteEstado = "-";
+			if (idEstadoSolicitud != null) {
+				switch (Integer.parseInt(idEstadoSolicitud)) {
+				case 1:// Integer.valueOf(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND)
+					strSiguienteEstado = estAdm.getNombreEstadoSolicitudCert(""+ CerEstadoSoliCertifiAdm.C_ESTADO_SOL_APROBADO);
+					break;
+
+				case 2:// Integer.parseInt(CerSolicitudCertificadosAdm.K_ESTADO_SOL_APROBADO)
+					Thread.sleep(2000);
+					if (controlFacturasSII.equalsIgnoreCase("0") && beanSolicitud.getFechaCobro() != null && !beanSolicitud.getFechaCobro().trim().equals("")) {
+						strSiguienteEstado = estAdm.getNombreEstadoSolicitudCert(""+ CerEstadoSoliCertifiAdm.C_ESTADO_SOL_PEND_FACTURAR);
+					} else {
+						strSiguienteEstado = estAdm.getNombreEstadoSolicitudCert(""+ CerEstadoSoliCertifiAdm.C_ESTADO_SOL_FINALIZADO);
+					}
+					break;
+
+				case 4:// Integer.parseInt(CerSolicitudCertificadosAdm.K_ESTADO_SOL_FINALIZADO)
+					Thread.sleep(2000);
+					strSiguienteEstado = "-";
+					break;
+
+				case 10:// Integer.parseInt(CerSolicitudCertificadosAdm.K_ESTADO_SOL_PEND_FACTURAR)
+					strSiguienteEstado = estAdm.getNombreEstadoSolicitudCert(""+ CerEstadoSoliCertifiAdm.C_ESTADO_SOL_FINALIZADO);
+					break;
+				default:
+					Thread.sleep(2000);
+					strSiguienteEstado = "-";
+					break;
+				}
+			}
+
+			request.setAttribute("idEstadoSolicitud", idEstadoSolicitud);
+			request.setAttribute("strEstadoSolicitud", strEstadoActual);
+			request.setAttribute("strSiguienteEstado", strSiguienteEstado);
+
+			if (beanSolicitud.getIdEstadoSolicitudCertificado().equals(CerEstadoSoliCertifiAdm.C_ESTADO_SOL_ANULADO) ||
+				beanSolicitud.getIdEstadoSolicitudCertificado().equals(CerEstadoSoliCertifiAdm.C_ESTADO_SOL_DENEGADO)) {
+				request.setAttribute("modificarSolicitud", "0");
+			} else {
+				request.setAttribute("modificarSolicitud", "1");
+			}
+			request.setAttribute("institucionOrigen", beanInstitucionOrigen);
+			request.setAttribute("institucionDestino", beanInstitucionDestino);
+			request.setAttribute("institucionColegiacion", beanInstitucionColegiacion);
+			request.setAttribute("tipoCertificado", tipoCertificado);
+
+			// TRATAMIENTO DEL CONTADOR
+			String pre = (beanSolicitud.getPrefijoCer() != null) ? beanSolicitud.getPrefijoCer() : "";
+			String suf = (beanSolicitud.getSufijoCer() != null) ? beanSolicitud.getSufijoCer() : "";
+			String numContador = beanSolicitud.getContadorCer();
+			String idtipop = beanSolicitud.getPpn_IdTipoProducto().toString();
+			String idp = beanSolicitud.getPpn_IdProducto().toString();
+			String idpi = beanSolicitud.getPpn_IdProductoInstitucion().toString();
+
+			// Tratamiento para los certificados que pasan informacion a la mutualidad
+			boolean pintarCheckMutualidad = false;
+			if (admSolicitud.isCertNuevaIncorporacion(beanSolicitud.getIdInstitucion().toString(), beanSolicitud.getPpn_IdProducto().toString(), beanSolicitud
+					.getPpn_IdTipoProducto().toString(), beanSolicitud.getPpn_IdProductoInstitucion().toString())) {
+				pintarCheckMutualidad = true;
+			}
+			request.setAttribute("pintarCheckMutualidad", pintarCheckMutualidad);
+			
+			// Control de Certificados nuevos vs Certificados emitidos
+			boolean esCompatibleConCertificadosExistentes = comprobarCompatibilidadNuevoCertificado(userBean, beanSolicitud);
+			request.setAttribute("esCompatibleConCertificadosExistentes", esCompatibleConCertificadosExistentes);
+			
+			// Tratamiento para las solicitudes de certificados de forma telemática
+			boolean pintarCamposTelematica = false;
+			if (beanSolicitud.getMetodoSolicitud().equals("5")) {
+				pintarCamposTelematica = true;
+			}
+
+			request.setAttribute("pintarCamposTelematica", pintarCamposTelematica);
+			
+			// buscando situacion colegiado y estado de residencia
+			String estadoInc = "", residenteInc = "";
+			CenColegiadoAdm cenColegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
+			
+			String tabla ="ECOM_CEN_NOCOLEGIADO";
+			String sql = "SELECT CD.IDECOMCENSOSITUACIONEJER SITUACION, CD.RESIDENTE RESIDENTE" + "  FROM ECOM_CEN_DATOS CD, " + tabla + " T" + " WHERE CD.IDCENSODATOS = T.IDCENSODATOS AND T.IDPERSONA = " + beanSolicitud.getIdPersona_Des() + " ";
+			
+			RowsContainer rowsContainer = cenColegiadoAdm.find(sql);
+			System.out.println("Consulta realizada a NOCOLEGIADO");
+			System.out.println("filas encontradas: "+rowsContainer.size());
+			if (rowsContainer != null && rowsContainer.size()>0) {
+				Vector vector = rowsContainer.getAll();
+				if (vector != null && vector.size() > 0) {
+					Row row = (Row) vector.get(0);
+					if(row.getString("SITUACION").equals("10"))
+						estadoInc = "No Ejerciente";
+					else
+						estadoInc = "Ejerciente";
+					if(row.getString("RESIDENTE").equals("1"))
+						residenteInc = "SI";
+					else
+						residenteInc = "NO";
+				}
+			}else{//No hemos encontrado el solicitante en ECOM_CEN_NOCOLEGIADO
+				tabla ="ECOM_CEN_COLEGIADO";
+				sql = "SELECT CD.IDECOMCENSOSITUACIONEJER SITUACION, CD.RESIDENTE RESIDENTE" + "  FROM ECOM_CEN_DATOS CD, " + tabla + " T" + " WHERE CD.IDCENSODATOS = T.IDCENSODATOS AND T.IDPERSONA = " + beanSolicitud.getIdPersona_Des() + " ";
+				
+				rowsContainer = cenColegiadoAdm.find(sql);
+				System.out.println("Consulta realizada a COLEGIADO");
+				System.out.println("filas encontradas: "+rowsContainer.size());
+				if (rowsContainer != null) {
+					Vector vector = rowsContainer.getAll();
+					if (vector != null && vector.size() > 0) {
+						Row row = (Row) vector.get(0);
+						if(row.getString("SITUACION").equals("10"))
+							estadoInc = "No Ejerciente";
+						else
+							estadoInc = "Ejerciente";
+						if(row.getString("RESIDENTE").equals("1"))
+							residenteInc = "SI";
+						else
+							residenteInc = "NO";
+					}
+				}
+			}
+			request.setAttribute("residenteInc", residenteInc);
+			request.setAttribute("estadoInc", estadoInc);
+			//Fin buscando situacion colegiado y estado de residencia
+
+			PysProductosInstitucionAdm admProd = new PysProductosInstitucionAdm(userBean);
+			Vector vector = admProd.select("WHERE " + PysProductosInstitucionBean.C_IDINSTITUCION + "=" + idInstitucion + " AND " + PysProductosInstitucionBean.C_IDTIPOPRODUCTO
+					+ "=" + idtipop + " AND " + PysProductosInstitucionBean.C_IDPRODUCTO + "=" + idp + " AND " + PysProductosInstitucionBean.C_IDPRODUCTOINSTITUCION + "=" + idpi);
+			PysProductosInstitucionBean beanProd = null;
+			if (vector != null && vector.size() > 0) {
+				beanProd = (PysProductosInstitucionBean) vector.get(0);
+			}
+
+			// Si el pcerificado es facturable o no
+			boolean facturable = false;
+			if (beanProd != null && beanProd.getnoFacturable().equals("0"))
+				facturable = true;
+			request.setAttribute("facturable", facturable);
+
+			// Contador
+			if (numContador != null && !numContador.equals("")) {
+				// obtengo el objeto contador
+				GestorContadores gc = new GestorContadores(userBean);
+
+				// obtenemos el contador de la FK del producto
+				String idContador = "";
+				if (beanProd != null)
+					idContador = beanProd.getIdContador();
+
+				Hashtable<String, Object> contadorTablaHash = gc.getContador(new Integer(idInstitucion), idContador);
+
+				// formateo el contador
+				Integer longitud = new Integer((contadorTablaHash.get("LONGITUDCONTADOR").toString()));
+				int longitudContador = longitud.intValue();
+				Integer contadorSugerido = new Integer(numContador);
+				String contadorFinalSugerido = UtilidadesString.formatea(contadorSugerido, longitudContador, true);
+				String contador = pre.trim() + contadorFinalSugerido + suf.trim();
+
+				// lo guardamos formateado
+				request.setAttribute("codigo", contador);
+			} else {
+				request.setAttribute("codigo", "");
+			}
+
+			String nombreSolicitante = "", nombreSoloSolicitante = "", apellidosSolicitante = "", nidSolicitante = "", ncolSolicitante = "";
+			/** DATOS SOLICITANTE **/
+			if (beanSolicitud.getIdPersona_Des() != null) {
+				String idPersona = beanSolicitud.getIdPersona_Des().toString();
+				CenPersonaAdm personaAdm = new CenPersonaAdm(userBean);
+				CenColegiadoAdm colAdm = new CenColegiadoAdm(userBean);
+				nidSolicitante = personaAdm.obtenerNIF(idPersona);
+				nombreSolicitante = personaAdm.obtenerNombreApellidos(idPersona);
+				nombreSoloSolicitante = personaAdm.obtenerNombre(idPersona);
+				apellidosSolicitante = personaAdm.obtenerApellidos1(idPersona) + " " + personaAdm.obtenerApellidos2(idPersona);
+				ncolSolicitante = colAdm.getNumColegiado(beanSolicitud.getIdInstitucion(), idPersona);
+			}
+						
+			request.setAttribute("nombreSolicitante", nombreSolicitante);
+			request.setAttribute("nombreSoloSolicitante", nombreSoloSolicitante);
+			request.setAttribute("apellidosSolicitante", apellidosSolicitante);
+			request.setAttribute("nidSolicitante", nidSolicitante);
+			request.setAttribute("ncolSolicitante", ncolSolicitante);
+
+			AdmUsuariosAdm adm = new AdmUsuariosAdm(userBean);
+			Hashtable<String, Object> h = new Hashtable<String, Object>();
+			UtilidadesHash.set(h, AdmUsuariosBean.C_IDUSUARIO, beanSolicitud.getUsuMod());
+			UtilidadesHash.set(h, AdmUsuariosBean.C_IDINSTITUCION, beanSolicitud.getIdInstitucion());
+			Vector v = adm.select(h);
+			if (v != null && v.size() == 1) {
+				request.setAttribute("nombreUltimoUsuMod", ((AdmUsuariosBean) v.get(0)).getDescripcion());
+			}
+
+			UtilidadesHash.set(h, AdmUsuariosBean.C_IDUSUARIO, beanSolicitud.getUsuCreacion());
+			v = adm.select(h);
+			if (v != null && v.size() == 1) {
+				request.setAttribute("nombreUsuCreacion", ((AdmUsuariosBean) v.get(0)).getDescripcion());
+			}
+
+		} catch (SIGAException e) {
+			throw e;
 		} catch (Exception e) {
 			throwExcp("messages.general.error", new String[] { "modulo.certificados" }, e, null);
 		}
@@ -836,7 +1041,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 		GenParametrosAdm admParametros = new GenParametrosAdm(userBean);
 
 		try {
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+			SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) formulario;
 
 			// guardando las modificaciones
 			this.guardarInfoSolicitudCertificado(form, userBean, 0);
@@ -1059,7 +1264,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 		CerPlantillasAdm admPlantillas = new CerPlantillasAdm(userBean);
 
 		try {
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+			SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) formulario;
 
 			int contador = 0;
 			int contadorErrores = 0;
@@ -1314,7 +1519,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 	protected String enviar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 
 		try {
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+			SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) formulario;
 			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
 
 			Vector vOcultos = form.getDatosTablaOcultos(0);
@@ -1346,7 +1551,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 		try {
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			tx = usr.getTransaction();
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+			SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) formulario;
 			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
 			PysCompraAdm pysCompra = new PysCompraAdm(this.getUserBean((request)));
 			String idInstitucion = "", idSolicitud = "", idPeticion = "", idTipoProducto = "", idProducto = "", idProductoInstitucion = "";
@@ -1432,7 +1637,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 
 	protected String denegar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		try {
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+			SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) formulario;
 			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
 			String idInstitucion = "";
 			String idSolicitud = "";
@@ -1476,7 +1681,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 		String idSolicitud = "";
 
 		try {
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+			SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) formulario;
 			/** Nueva ventana detalle certificado **/
 			idInstitucion = form.getIdInstitucion();
 			idSolicitud = form.getIdSolicitud();
@@ -1511,7 +1716,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+			SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) formulario;
 			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(usr);
 			Vector vOcultos = form.getDatosTablaOcultos(0);
 			String idInstitucion = "";
@@ -1642,7 +1847,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 	protected String asignarPlantillaCertificado(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions,
 			SIGAException {
 		try {
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+			SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) formulario;
 
 			String sTemp = form.getIdsTemp();
 			StringTokenizer st = new StringTokenizer(sTemp, "||");
@@ -1698,7 +1903,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 	protected String comprobarNumPlantillas(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions,
 			SIGAException {
 		try {
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+			SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) formulario;
 			String sTemp = form.getIdsTemp();
 			StringTokenizer st = new StringTokenizer(sTemp, "||");
 
@@ -1763,7 +1968,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 		try {
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+			SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) formulario;
 
 			// validaciones
 			String idInstitucion = usr.getLocation();
@@ -1829,7 +2034,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	private CerSolicitudCertificadosBean guardarInfoSolicitudCertificado(SIGASolicitudesCertificadosForm form, UsrBean usr, int origen) throws ClsExceptions {
+	private CerSolicitudCertificadosBean guardarInfoSolicitudCertificado(SIGACerDetalleSolicitudForm form, UsrBean usr, int origen) throws ClsExceptions {
 		CerSolicitudCertificadosBean bean = null;
 		try {
 			// obtengo la solicitud
@@ -1910,8 +2115,8 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 				bean.setComentario(null);
 			}
 
-			if (!form.getBusquedaMetodoSolicitud().equals("")) {
-				bean.setMetodoSolicitud(form.getBusquedaMetodoSolicitud());
+			if (!form.getMetodoSolicitud().equals("")) {
+				bean.setMetodoSolicitud(form.getMetodoSolicitud());
 			} else {
 				bean.setMetodoSolicitud(null);
 			}
@@ -1972,7 +2177,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+			SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) formulario;
 			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
 
 			// obtengo la solicitud
@@ -2003,7 +2208,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 		try {
 			UsrBean usr = this.getUserBean(request);
 
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+			SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) formulario;
 			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
 
 			// obtengo el historico
@@ -2031,7 +2236,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 		try {
 			UsrBean usr = this.getUserBean(request);
 
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+			SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) formulario;
 			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(this.getUserBean(request));
 
 			// obtengo el historico
@@ -2055,7 +2260,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 	protected String finalizarCertificados(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 
 		UsrBean userBean = ((UsrBean) request.getSession().getAttribute(("USRBEAN")));
-		SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+		SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) formulario;
 		List<CerSolicitudcertificados> listaCerSolicitudcertificados = new ArrayList<CerSolicitudcertificados>();
 		CerSolicitudCertificadosService cerSolicitudCertificadosService = (CerSolicitudCertificadosService) BusinessManager.getInstance().getService(
 				CerSolicitudCertificadosService.class);
@@ -2611,7 +2816,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 	}
 
 	protected String facturarCertificadosSeleccionados(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		SIGASolicitudesCertificadosForm formSolicitudesCertificados = (SIGASolicitudesCertificadosForm) formulario;
+		SIGACerDetalleSolicitudForm formSolicitudesCertificados = (SIGACerDetalleSolicitudForm) formulario;
 		String idSerieSeleccionada = (String) formSolicitudesCertificados.getIdSerieSeleccionada();
 		UsrBean usr = this.getUserBean(request);
 		String[] claves = { CerSolicitudCertificadosBean.C_IDINSTITUCION, CerSolicitudCertificadosBean.C_IDSOLICITUD };
@@ -2928,7 +3133,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 		try {
 
 			// datos llamada
-			SIGASolicitudesCertificadosForm formSolicitudesCertificados = (SIGASolicitudesCertificadosForm) formulario;
+			SIGACerDetalleSolicitudForm formSolicitudesCertificados = (SIGACerDetalleSolicitudForm) formulario;
 			Hashtable<String, Object> htNew = null;
 			String idInstitucion = "", idSolicitudCertificado = "", idSerieSeleccionada = "";
 			Vector vOcultos = formSolicitudesCertificados.getDatosTablaOcultos(0);
@@ -3561,7 +3766,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			CerSolicitudCertificadosAdm admCert = new CerSolicitudCertificadosAdm(usr);
 
-			SIGASolicitudesCertificadosForm form = (SIGASolicitudesCertificadosForm) formulario;
+			SIGACerDetalleSolicitudForm form = (SIGACerDetalleSolicitudForm) formulario;
 			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(usr);
 			Vector vOcultos = form.getDatosTablaOcultos(0);
 
@@ -3616,7 +3821,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			throwExcp("messages.general.error", new String[] { "modulo.certificados" }, e, null);
 		}
 
-		return "nuevo";
+		return "mostrar";
 	}
 
 	/**

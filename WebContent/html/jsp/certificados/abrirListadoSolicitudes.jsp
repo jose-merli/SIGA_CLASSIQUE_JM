@@ -42,18 +42,22 @@
 	ArrayList estadoSol = new ArrayList();
 	ArrayList colOrigen = new ArrayList();
 	ArrayList colDestino = new ArrayList();
+	ArrayList metodosSolicitud = new ArrayList();
 	tipoCert.add(formulario.getBusquedaTipoCertificado());
 	estadoSol.add(formulario.getBusquedaEstado());
 	colOrigen.add(formulario.getBusquedaIdInstitucionOrigen());
 	colDestino.add(formulario.getBusquedaIdInstitucionDestino());
+	metodosSolicitud.add(formulario.getBusquedaMetodoSolicitud());
 
 	String fBuscar = "";
-	String fechaDesde = UtilidadesBDAdm.getFechaBD("");
+	String fechaDesde = UtilidadesBDAdm.getFechaBdDesde("");
 	String fechaHasta = "";
 	String fechaEmisionDesde = "";
 	String fechaEmisionHasta = "";
 	String fechaSolicitudDesde = "";
-	String fechaSolicitudHasta = "";	
+	String fechaSolicitudHasta = "";
+		
+	
 	String checkCobrado = "", checkDescargado = "";
 	if ((request.getParameter("buscar") != null && request.getParameter("buscar").equalsIgnoreCase("true"))  || (request.getParameter("buscarAntiguo") != null && request.getParameter("buscarAntiguo").equalsIgnoreCase("true")) || (request.getAttribute("volver") != null && ((String)request.getAttribute("volver")).equalsIgnoreCase("volver"))) {
 		if (formulario != null) {
@@ -72,14 +76,14 @@
 			if (formulario.getCobrado() != null)
 				checkCobrado = formulario.getCobrado();		
 			if (formulario.getDescargado() != null)
-				checkDescargado = formulario.getDescargado();					
+				checkDescargado = formulario.getDescargado();
 		}
 		fBuscar = "buscar";
-	} else {
+	/*} else {
 		if (formulario != null) {
 			if (formulario.getFechaDesde() != null)
 				fechaDesde = formulario.getFechaDesde();
-		}
+		}*/
 	}
 	
 	String sError= UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usr, "messages.general.error"));
@@ -469,6 +473,12 @@
 					
 					<td class="labelText"><siga:Idioma key="pys.gestionSolicitudes.literal.idPeticion" /></td>
 					<td><html:text name="SolicitudesCertificadosForm" styleClass="box" property="busquedaIdSolicitud" maxlength="10" /></td>
+				</tr>
+				<tr>
+					<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud" /></td>
+					<td>
+						<siga:Select id="busquedaMetodoSolicitud" queryId="getMetodosSolicitud" selectedIds="<%=metodosSolicitud%>" cssClass="boxCombo" /> <!-- width="200"/>  --> 
+					</td>
 				</tr>
 			</table>
 		</siga:ConjCampos>

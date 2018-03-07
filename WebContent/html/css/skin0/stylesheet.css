@@ -509,6 +509,19 @@ thead.Cabeceras {
   padding-top: 2px;
   padding-bottom: 1px;
 }
+.boxConsultaRojoN {
+  font-size: 13px;
+  font-weight: bold;
+  margin-top: 0px;
+  margin-left: 0px;
+  vertical-align: top;
+  text-align: left;
+  background-color: transparent;
+  color: red;
+  border: 0px solid #222222;
+  padding-top: 2px;
+  padding-bottom: 1px;
+}
 .boxComboConsulta {
   font-size: 13px;
   font-weight: normal;

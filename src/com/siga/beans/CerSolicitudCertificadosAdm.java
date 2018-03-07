@@ -768,6 +768,10 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 			sql.append(".");
 			sql.append(CerSolicitudCertificadosBean.C_IDESTADOCERTIFICADO);
 			sql.append(", ");
+			sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+			sql.append(".");
+			sql.append(CerSolicitudCertificadosBean.C_IDMETODOSOLICITUD);
+			sql.append(", ");
 			sql.append(PysProductosInstitucionBean.T_NOMBRETABLA);
 			sql.append(".");
 			sql.append(PysProductosInstitucionBean.C_TIPOCERTIFICADO);
@@ -944,6 +948,17 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 				sql.append(" in ( ");
 				sql.append(estadoSolicitud.trim());
 				sql.append(" ) ");
+			} 
+			
+			String metodoSolicitud = form.getBusquedaMetodoSolicitud();
+			if (metodoSolicitud!=null && !metodoSolicitud.equals("")) {
+				sql.append(" AND ");
+				sql.append(CerSolicitudCertificadosBean.T_NOMBRETABLA);
+				sql.append(".");
+				sql.append(CerSolicitudCertificadosBean.C_IDMETODOSOLICITUD);
+				sql.append(" = ");
+				sql.append(metodoSolicitud.trim());
+				
 			} 
 
 			String tipoCertificado = form.getBusquedaTipoCertificado();

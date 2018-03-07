@@ -170,6 +170,8 @@
 		<form-bean name="MantenimientoCertificadosPlantillasForm" type="com.siga.certificados.form.SIGAMantenimientoCertificadosPlantillasForm"/>
 		<form-bean name="MantenimientoCertificadosIncompatibilidadesForm" type="com.siga.certificados.form.SIGAMantenimientoCertificadosIncompatibilidadesForm"/>
 		<form-bean name="SolicitudesCertificadosForm" type="com.siga.certificados.form.SIGASolicitudesCertificadosForm"/>
+		<form-bean name="CerSolicitudOriginalForm" type="com.siga.certificados.form.SIGACerSolicitudOriginalForm"/>
+		<form-bean name="CerDetalleSolicitudForm" type="com.siga.certificados.form.SIGACerDetalleSolicitudForm"/>
 		<form-bean name="SolicitudCertificadoForm" type="com.siga.certificados.form.SIGASolicitudCertificadoForm"/>
 
 		<!-- ************************** FORMS CONTACTOS *************************
@@ -1823,13 +1825,33 @@
 			<forward name="abrir" path="/html/jsp/certificados/abrirListadoSolicitudes.jsp"/>
 			<forward name="buscar" path="/html/jsp/certificados/buscarListadoSolicitudes.jsp"/>
 			<forward name="asignarPlantillaCertificado" path="/html/jsp/certificados/asignarPlantillaCertificado.jsp"/>
-			<forward name="mostrar" path="/html/jsp/certificados/detalleSolicitudCertificado.jsp"/>
+			<forward name="mostrar" path="/html/jsp/certificados/pestanasCertificado.jsp"/>
+			<forward name="nuevo" path="/html/jsp/certificados/nuevaSolicitudCertificado.jsp"/>
 			<forward name="preguntaDireccionGeneraPDF" path="/html/jsp/certificados/preguntaDireccionGeneraPDF.jsp"/>
 			<forward name="copiarSanciones" path="/html/jsp/certificados/copiarSanciones.jsp"/>
 			<forward name="seleccionarPlantilla" path="/html/jsp/certificados/seleccionarPlantilla.jsp"/>
 			<forward name="preguntaNumeroFacturas" path="/html/jsp/certificados/preguntaNumeroFacturas.jsp"/>
 			<forward name="exitoConStringDescarga" path="/html/jsp/certificados/exitoConStringDescarga.jsp"/>
 		</action>
+		
+		<!-- ***** Certificados / Detalle Solicitud ***** -->
+		<action path="/CER_DetalleSolicitud" type="com.siga.certificados.action.SIGACerDetalleSolicitudAction" name="CerDetalleSolicitudForm" scope="session">
+			<forward name="inicio" path="/html/jsp/certificados/abrirListadoSolicitudes.jsp"/>
+			<forward name="abrir" path="/html/jsp/certificados/abrirListadoSolicitudes.jsp"/>
+			<forward name="consultar" path="/html/jsp/certificados/detalleSolicitudCertificado.jsp"/>
+			<forward name="editar" path="/html/jsp/certificados/detalleSolicitudCertificado.jsp"/>
+			<forward name="mostrar" path="/html/jsp/certificados/detalleSolicitudCertificado.jsp"/>
+		</action>
+		
+		<!-- ***** Certificados / Solicitud Original ***** -->
+		<action path="/CER_SolicitudOriginal" type="com.siga.certificados.action.SIGACerSolicitudOriginalAction" name="CerSolicitudOriginalForm" scope="session">
+			<forward name="inicio" path="/html/jsp/certificados/abrirListadoSolicitudes.jsp"/>
+			<forward name="abrir" path="/html/jsp/certificados/abrirListadoSolicitudes.jsp"/>
+			<forward name="consultar" path="/html/jsp/certificados/detalleSolicitudOriginal.jsp"/>
+			<forward name="editar" path="/html/jsp/certificados/detalleSolicitudOriginal.jsp"/>
+			<forward name="mostrar" path="/html/jsp/certificados/detalleSolicitudOriginal.jsp"/>
+		</action>
+		
 
 		<!-- ***** Certificados / Mantenimiento de Certificados ***** -->
 		<action path="/CER_MantenimientoCertificados" type="com.siga.certificados.action.SIGAMantenimientoCertificadosAction" name="MantenimientoCertificadosForm" scope="request">

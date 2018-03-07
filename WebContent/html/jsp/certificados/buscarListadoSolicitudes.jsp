@@ -240,6 +240,7 @@
 				String tipoCertificado2 = UtilidadesHash.getString(hDatos, "TIPOCERTIFICADO2");	
 		  		String idEstadoCertificado = UtilidadesHash.getString(hDatos, CerEstadoCertificadoBean.C_IDESTADOCERTIFICADO);
 		  		String idPeticion = UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_IDPETICIONPRODUCTO);
+		  		String idMetodoSolicitud = UtilidadesHash.getString(hDatos, CerSolicitudCertificadosBean.C_IDMETODOSOLICITUD);
 		  		String idInstitucion = userBean.getLocation();	
 		  		
 			  		
@@ -255,7 +256,7 @@
 				FilaExtElement[] elems = new FilaExtElement[8];					
 				
 				if (tipoCertificado!=null && !tipoCertificado.trim().equals("") && (idEstadoCertificado.equals(""+CerSolicitudCertificadosAdm.C_ESTADO_CER_GENERADO) 
-					|| idEstadoCertificado.equals(""+CerSolicitudCertificadosAdm.C_ESTADO_CER_FIRMADO)) && (esCliente||esCGAE)) {
+						|| idEstadoCertificado.equals(""+CerSolicitudCertificadosAdm.C_ESTADO_CER_FIRMADO)) && (esCliente||esCGAE)) {
 				   elems[1]=new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ);
 				}		
 				
@@ -302,7 +303,7 @@
 					elems[4]=new FilaExtElement("descargaLog", "descargaLog", SIGAConstants.ACCESS_READ);
 				}	
 				
-				if (idEstadoSolicitud.equals(""+CerEstadoSoliCertifiAdm.C_ESTADO_SOL_PEND)){
+				if (idEstadoSolicitud.equals(""+CerEstadoSoliCertifiAdm.C_ESTADO_SOL_PEND) && !idMetodoSolicitud.equals("5")){
 					botones += ",B";
 				}
 				

@@ -6,7 +6,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.siga.general.MasterForm;
 
-public class SIGASolicitudesCertificadosForm extends MasterForm
+public class SIGACerSolicitudOriginalForm extends MasterForm
 {
 /**
 	 * 
