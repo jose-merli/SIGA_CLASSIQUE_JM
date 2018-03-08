@@ -120,4 +120,26 @@ insert into ADM_TIPOSACCESO (IDPROCESO,IDPERFIL,FECHAMODIFICACION,USUMODIFICACIO
 select '61b' as IDPROCESO, acc.IDPERFIL, sysdate as FECHAMODIFICACION, 0 as USUMODIFICACION, acc.DERECHOACCESO, acc.IDINSTITUCION 
 from adm_tiposacceso acc where acc.idproceso = '61' and idinstitucion = 2000;
 
-COMMIT;
+
+Pkg_Siga_Fusion_Personas
+
+Declare
+  Cursor c_nocolegiados Is Select col.idpersona, col.idinstitucion
+    From Cen_Colegiado Col, Cen_Nocolegiado Noc
+   Where Col.Idpersona = Noc.Idpersona
+     And Noc.Idinstitucion = 2000 For Update;
+  v_Codretorno Varchar2(4000);
+  v_Datoserror Varchar2(4000);
+Begin
+  For r_noc In c_nocolegiados Loop
+    Pkg_Siga_Censo.Actualizardatosletrado(r_noc.idpersona,
+                                          r_noc.idinstitucion,
+                                          '30',
+                                          1,
+                                          '-7',
+                                          v_Codretorno,
+                                          v_Datoserror);
+  End Loop;
+End;
+/
+

@@ -3509,11 +3509,6 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
         p_Datoserror := p_Datoserror || Reg_Cliente.Idinstitucion || '(' || v_Datoserror || ')'  || ', ';
       End If;
     
-      -- Se marca si existe colegiado
-      If Reg_Cliente.Tipoclienteorigen = c_CLIENTECOLEGIADO Then
-        v_colegiomovido := Reg_Cliente.Idinstitucion;
-      End If;
-    
       -- Comprobando que no se mezcla sociedad con persona fisica en cada colegio
       If Reg_Cliente.Tipoclientedestino > 0 Then
         If (Reg_Cliente.Tipoclienteorigen = c_CLIENTESOCIEDAD And Reg_Cliente.Tipoclientedestino <> c_CLIENTESOCIEDAD) Then
@@ -3669,6 +3664,16 @@ CREATE OR REPLACE Package Body Pkg_Siga_Fusion_Personas Is
     End If;
   
     -- Si se movio alguna colegiacion, habra que actualizar los datos en los Consejos
+    Begin
+      Select Idinstitucion
+        Into v_colegiomovido
+        From Cen_Colegiado
+       Where Idpersona = p_Idpersona_Destino
+         And Rownum = 1;
+    Exception
+      When No_Data_Found Then
+        v_colegiomovido := Null;
+    End;
     If v_colegiomovido Is Not Null Then
       Pkg_Siga_Censo.Actualizardatosletrado(p_Idpersona_Destino,
                                             v_colegiomovido,
