@@ -13886,17 +13886,20 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 else
                     p_Datoserror := v_mensaje || ', ' || 'Antes de primer select';
                     Begin
-                        select sum(precioaplicado)
-                            into Fac_Act_Acumulado
-                        from fcs_fact_actuacionasistencia
-                        where idinstitucion = r_Dia.Idinstitucion
-                            and idpersona = r_Dia.Idpersona
-                            and Anio = r_Actuacion.Anio
-                            and trunc(fechaactuacion) = r_Dia.Fechafin;
-
-                        Exception
-                            When no_data_found Then
-                                Fac_Act_Acumulado := 0;
+                        Select Sum(fac.Precioaplicado)
+                          into Fac_Act_Acumulado
+                          From Fcs_Fact_Actuacionasistencia fac, Scs_Asistencia asi
+                         Where fac.Idinstitucion = asi.Idinstitucion
+                           And fac.Anio = asi.Anio
+                           And fac.Numero = asi.Numero
+                           And Asi.Idinstitucion = r_Dia.Idinstitucion
+                           And asi.Idturno = r_Dia.Idturno
+                           And asi.Idguardia = r_Dia.Idguardia
+                           And Asi.Idpersonacolegiado = r_Dia.Idpersona
+                           And Trunc(asi.Fechahora) = r_Dia.Fechafin;
+                    Exception
+                        When no_data_found Then
+                            Fac_Act_Acumulado := 0;
                     End;
 
                     If (Conf_SeAgrupaPorCabecera = '1') Then
