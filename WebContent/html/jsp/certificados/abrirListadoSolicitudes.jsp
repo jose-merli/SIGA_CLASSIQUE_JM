@@ -483,7 +483,7 @@
 			</table>
 		</siga:ConjCampos>
 		
-		<siga:ConjCampos leyenda="certificados.solicitudes.literal.titulo.certificadoacciones" desplegable="true" oculto="true">
+		<siga:ConjCampos leyenda="certificados.solicitudes.literal.titulo.certificadoacciones" desplegable="true">
 			<table class="tablaCentralCampos" align="center" border="0">
 				<tr>
 					<td class="labelText" width="15%"><siga:Idioma key="certificados.mantenimiento.literal.certificado" /></td>
