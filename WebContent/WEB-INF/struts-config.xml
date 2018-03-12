@@ -1841,6 +1841,12 @@
 			<forward name="consultar" path="/html/jsp/certificados/detalleSolicitudCertificado.jsp"/>
 			<forward name="editar" path="/html/jsp/certificados/detalleSolicitudCertificado.jsp"/>
 			<forward name="mostrar" path="/html/jsp/certificados/detalleSolicitudCertificado.jsp"/>
+			<forward name="preguntaDireccionGeneraPDF" path="/html/jsp/certificados/preguntaDireccionGeneraPDF.jsp"/>
+			<forward name="asignarPlantillaCertificado" path="/html/jsp/certificados/asignarPlantillaCertificado.jsp"/>
+			<forward name="seleccionarPlantilla" path="/html/jsp/certificados/seleccionarPlantilla.jsp"/>
+			<forward name="preguntaNumeroFacturas" path="/html/jsp/certificados/preguntaNumeroFacturas.jsp"/>
+			<forward name="copiarSanciones" path="/html/jsp/certificados/copiarSanciones.jsp"/>
+			<forward name="exitoConStringDescarga" path="/html/jsp/certificados/exitoConStringDescarga.jsp"/>
 		</action>
 		
 		<!-- ***** Certificados / Solicitud Original ***** -->
