@@ -103,14 +103,14 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('certificados.solicitudes.literal.numSolicitudColegiacion', 'Núm. Solicitud Colegiación#EU', 0, '3', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('certificados.solicitudes.literal.numSolicitudColegiacion', 'Núm. Solicitud Colegiación#GL', 0, '4', sysdate, 0, '19');
 
-insert into GEN_PESTANAS (IDPROCESO, IDLENGUAJE, IDRECURSO, POSICION, IDGRUPO) 
-values('61a',1, 'pestana.certificados.datosCertificado', 1, 'DATOSCERT');
-insert into GEN_PESTANAS (IDPROCESO, IDLENGUAJE, IDRECURSO, POSICION, IDGRUPO) 
-values('61b',1, 'pestana.certificados.solicitudOriginal', 2, 'DATOSCERT');
 insert into GEN_PROCESOS (IDPROCESO, IDMODULO, TRAZA, TARGET, FECHAMODIFICACION, USUMODIFICACION, DESCRIPCION, TRANSACCION, IDPARENT, NIVEL)
 values ('61a', 'CER', 1, 'Y', SYSDATE, 0, 'Datos Certificado', 'CER_DetalleSolicitud', '61', 10);
 insert into GEN_PROCESOS (IDPROCESO, IDMODULO, TRAZA, TARGET, FECHAMODIFICACION, USUMODIFICACION, DESCRIPCION, TRANSACCION, IDPARENT, NIVEL)
 values ('61b', 'CER', 1, 'Y', SYSDATE, 0, 'Solicitud Original', 'CER_SolicitudOriginal', '61', 10);
+insert into GEN_PESTANAS (IDPROCESO, IDLENGUAJE, IDRECURSO, POSICION, IDGRUPO) 
+values('61a',1, 'pestana.certificados.datosCertificado', 1, 'DATOSCERT');
+insert into GEN_PESTANAS (IDPROCESO, IDLENGUAJE, IDRECURSO, POSICION, IDGRUPO) 
+values('61b',1, 'pestana.certificados.solicitudOriginal', 2, 'DATOSCERT');
 
 insert into ADM_TIPOSACCESO (IDPROCESO,IDPERFIL,FECHAMODIFICACION,USUMODIFICACION,DERECHOACCESO,IDINSTITUCION)
 select '61a' as IDPROCESO, acc.IDPERFIL, sysdate as FECHAMODIFICACION, 0 as USUMODIFICACION, acc.DERECHOACCESO, acc.IDINSTITUCION 
@@ -144,4 +144,7 @@ End;
 /
 
 PKG_SIGA_FACTURACION_SJCS
+
+-- Ejecutados en Integracion por AAG el 12/03/2018 a las 11:05
+-- 127_004:
 
