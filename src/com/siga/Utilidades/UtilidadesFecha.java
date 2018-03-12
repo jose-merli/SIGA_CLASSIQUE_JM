@@ -180,7 +180,7 @@ public class UtilidadesFecha {
 	public static Date getDaysOfMonthBackwards(Date date) {
 		Calendar cal = GregorianCalendar.getInstance();
 		cal.setTime((Date)date.clone());
-		cal.add(Calendar.DATE, (-1) * cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		cal.add(Calendar.DATE, (-1) * (cal.getActualMaximum(Calendar.DAY_OF_MONTH)-1));
 		return cal.getTime();
 	}
 	
