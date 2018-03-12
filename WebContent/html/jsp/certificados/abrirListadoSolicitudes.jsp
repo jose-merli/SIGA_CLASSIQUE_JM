@@ -79,11 +79,11 @@
 				checkDescargado = formulario.getDescargado();
 		}
 		fBuscar = "buscar";
-	/*} else {
+	} else {
 		if (formulario != null) {
 			if (formulario.getFechaDesde() != null)
 				fechaDesde = formulario.getFechaDesde();
-		}*/
+		}
 	}
 	
 	String sError= UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(usr, "messages.general.error"));
