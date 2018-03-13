@@ -31,7 +31,7 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 	<script type="text/javascript">
 	function reloadPage() {
-		window.parent.document.SolicitudesCertificadosForm.textoSanciones.value=unescape('<%=sanciones%>');
+		window.parent.document.CerDetalleSolicitudForm.textoSanciones.value=unescape('<%=sanciones%>');
 		var m = "<siga:Idioma key="certificados.solicitudes.ventanaEdicion.textoSancionesCopiado"/>";
 		alert(m);
 	}

@@ -42,15 +42,15 @@
 			function generar(fila)
 			{
 				sub();
-				SolicitudesCertificadosForm.idsTemp.value=SolicitudesCertificadosForm.idsParaGenerarFicherosPDF.value;
-				SolicitudesCertificadosForm.modo.value="asignarPlantillaCertificado";
-				var resultado = ventaModalGeneral("SolicitudesCertificadosForm", "P");
+				CerDetalleSolicitudForm.idsTemp.value=CerDetalleSolicitudForm.idsParaGenerarFicherosPDF.value;
+				CerDetalleSolicitudForm.modo.value="asignarPlantillaCertificado";
+				var resultado = ventaModalGeneral("CerDetalleSolicitudForm", "P");
 				if (resultado!=undefined) {
-					SolicitudesCertificadosForm.idsParaGenerarFicherosPDF.value=SolicitudesCertificadosForm.idsParaGenerarFicherosPDF.value + "||" + resultado;
-					SolicitudesCertificadosForm.action="<%=app%>/CER_GestionSolicitudes.do";
-					SolicitudesCertificadosForm.modo.value="generarPDF";
-					SolicitudesCertificadosForm.target="submitArea";
-					SolicitudesCertificadosForm.submit();
+					CerDetalleSolicitudForm.idsParaGenerarFicherosPDF.value=CerDetalleSolicitudForm.idsParaGenerarFicherosPDF.value + "||" + resultado;
+					CerDetalleSolicitudForm.action="<%=app%>/CER_DetalleSolicitud.do";
+					CerDetalleSolicitudForm.modo.value="generarPDF";
+					CerDetalleSolicitudForm.target="submitArea";
+					CerDetalleSolicitudForm.submit();
 				} else {
 					fin();					
 				}
@@ -63,7 +63,7 @@
 	</head>
 
 	<body class="tablaCentralCampos" onload="generar();">
-		<html:form action="/CER_GestionSolicitudes.do" method="POST" target="resultado">
+		<html:form action="/CER_DetalleSolicitud.do" method="POST" target="resultado">
 			<html:hidden property = "modo" value = ""/>
 			<html:hidden property = "hiddenFrame" value = "1"/>
 			<html:hidden property="idInstitucion" styleId="idInstitucion"/>

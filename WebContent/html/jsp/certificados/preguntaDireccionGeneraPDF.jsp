@@ -46,7 +46,7 @@
 
 <body onload="reloadPage();">
 
-		<html:form action="/CER_GestionSolicitudes.do" method="POST" target="_self">
+		<html:form action="/CER_DetalleSolicitud.do" method="POST" target="_self">
 			<html:hidden property = "modo" value = "generarPDF"/>
 			<html:hidden property = "hiddenFrame" value = "1"/>
 			<input type="hidden" name="idsTemp" value="">
