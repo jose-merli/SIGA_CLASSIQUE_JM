@@ -421,7 +421,7 @@
 		<input type="hidden" name="limpiarFilaSeleccionada" value="">
 		<html:hidden property="seleccionarTodos" value=""/>
 		
-		<siga:ConjCampos leyenda="certificados.solicitudes.literal.titulo.estadosolicitud" desplegable="true">
+		<siga:ConjCampos leyenda="certificados.solicitudes.literal.titulo.estadosolicitud" desplegable="true" postFunction="ajusteAltoBotones('resultado');">
 			<table class="tablaCentralCampos" align="center" border="0">
 				<tr>
 					<td class="labelText" width="15%"><siga:Idioma key="certificados.solicitudes.literal.fechadesde" /></td>
@@ -474,31 +474,26 @@
 					<td class="labelText"><siga:Idioma key="pys.gestionSolicitudes.literal.idPeticion" /></td>
 					<td><html:text name="SolicitudesCertificadosForm" styleClass="box" property="busquedaIdSolicitud" maxlength="10" /></td>
 				</tr>
-				<tr>
-					<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud" /></td>
-					<td>
-						<siga:Select id="busquedaMetodoSolicitud" queryId="getMetodosSolicitud" selectedIds="<%=metodosSolicitud%>" cssClass="boxCombo" /> <!-- width="200"/>  --> 
-					</td>
-				</tr>
+				
 			</table>
 		</siga:ConjCampos>
 		
-		<siga:ConjCampos leyenda="certificados.solicitudes.literal.titulo.certificadoacciones" desplegable="true">
+ 		<siga:ConjCampos leyenda="certificados.solicitudes.literal.titulo.certificadoacciones" desplegable="true" postFunction="ajusteAltoBotones('resultado');">
 			<table class="tablaCentralCampos" align="center" border="0">
 				<tr>
-					<td class="labelText" width="15%"><siga:Idioma key="certificados.mantenimiento.literal.certificado" /></td>
-					<td width="20%"><siga:Select queryId="getTiposCertificado" id="busquedaTipoCertificado" selectedIds="<%=tipoCert%>"/></td>
-					
-					<td class="labelText" width="10%" />
-					<td width="20%" />
-					
-					<td class="labelText" width="15%" />
-					<td width="20%" />
+					<td class="labelText"><siga:Idioma key="certificados.mantenimiento.literal.certificado" /></td>
+					<td colspan="3"><siga:Select queryId="getTiposCertificado" id="busquedaTipoCertificado" selectedIds="<%=tipoCert%>" width="90%"/></td>
+					<!-- 
+					<td class="labelText" />
+					<td />
+					 -->
+					<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.metodoSolicitud" /></td>
+					<td><siga:Select id="busquedaMetodoSolicitud" queryId="getMetodosSolicitud" selectedIds="<%=metodosSolicitud%>" cssClass="boxCombo" /></td>
 				</tr>
 				
 				<tr>
-					<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.cobrado"/></td>
-					<td>					
+					<td class="labelText" width="15%"><siga:Idioma key="certificados.solicitudes.literal.cobrado"/></td>
+					<td width="20%">					
 						<html:select property="cobrado" styleId="cobrado" name="SolicitudesCertificadosForm" style="width:50" styleClass="boxCombo">
 							<html:option value=""></html:option>
 							<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
@@ -506,8 +501,8 @@
 						</html:select>	
 					</td>		
 					
-					<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.enviado"/></td>
-					<td>	
+					<td class="labelText" width="10%"><siga:Idioma key="certificados.solicitudes.literal.enviado"/></td>
+					<td width="20%">	
 						<html:select property="enviado" styleId="enviado" name="SolicitudesCertificadosForm" style="width:50" styleClass="boxCombo">
 							<html:option value=""></html:option>
 							<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
@@ -515,8 +510,8 @@
 						</html:select>	
 					</td>
 					
-					<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.descargado"/></td>
-					<td>	
+					<td class="labelText" width="15%"><siga:Idioma key="certificados.solicitudes.literal.descargado"/></td>
+					<td width="20%">	
 						<html:select property="descargado" styleId="descargado" name="SolicitudesCertificadosForm" style="width:50" styleClass="boxCombo">
 							<html:option value=""></html:option>
 							<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
@@ -527,7 +522,7 @@
 			</table>
 		</siga:ConjCampos>
 		
-		<siga:ConjCampos leyenda="certificados.solicitudes.literal.titulo.personacolegio" desplegable="true">
+		<siga:ConjCampos leyenda="certificados.solicitudes.literal.titulo.personacolegio" desplegable="true" postFunction="ajusteAltoBotones('resultado');">
 			<table class="tablaCentralCampos" align="center" border="0">
 				<tr>
 					<td class="labelText" width="15%"><siga:Idioma key="certificados.solicitudes.literal.colegioOrigen" /></td>
