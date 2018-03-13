@@ -28,13 +28,13 @@
 	
 	String sTipoCombo = CenVisibilidad.getNivelInstitucion(userBean.getLocation());
 	if(esComision || esComisionMultiple){
-		sTipoCombo = "getTablasMaestrasComisionMultiple";
+		sTipoCombo = "getTablasMaestrasComisionMultiple"; // Las comisiones solo pueden manejar unos pocos catalogos concretos.
 	}else{
 		String intitucionComisionMultiple = (String)request.getAttribute("intitucionComisionMultiple");
 		if(intitucionComisionMultiple.equals(ClsConstants.DB_TRUE)){
-			sTipoCombo = "getTablasMaestrasInstitucionComisionMultiple";
+			sTipoCombo = "getTablasMaestrasInstitucionComisionMultiple"; // Los colegios que comparten comision, mejor que no toquen nada de la Comision y solo lo haga esta
 		}else{
-			sTipoCombo = sTipoCombo!=null && sTipoCombo.equals("1") ? "getTablasMaestrasAdmin" : "getTablasMaestras";
+			sTipoCombo = sTipoCombo!=null && sTipoCombo.equals("1") ? "getTablasMaestrasAdmin" : "getTablasMaestras"; // Los catalogos generales solo se pueden tocar desde el CGAE (nivel 1 de visibilidad)
 		}
 	}
 	String refrescar="";
