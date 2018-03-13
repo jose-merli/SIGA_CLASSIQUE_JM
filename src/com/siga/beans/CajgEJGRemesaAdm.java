@@ -647,7 +647,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 		}
 		List<String> lineasFicheroAct = null;
 		Iterator<String> ejgActualizar = expActualizarMap.keySet().iterator();
-		Long numIntercambio = null;
+		
 		
 		while (ejgActualizar.hasNext()) {
 			lineasFicheroAct = new ArrayList<String>();
@@ -655,11 +655,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 			Map<String, String> expActualizarMapDatosOriginalMap = expActualizarMapDatosOld.get(keyNumIntercambioAct);
 			Map<String, String> expActualizarMapDatosNewMap = expActualizarMapDatosNew.get(keyNumIntercambioAct);
 			String anioIntercambio = expActualizarMapDatosNewMap.get("CAB3_ANIO_INTERCAMBIO");
-			if(numIntercambio==null){
-				numIntercambio = Long.parseLong(expActualizarMapDatosNewMap.get("CAB2_NUMERO_INTERCAMBIO"));
-			}else{
-				numIntercambio++;
-			}
+			Long numIntercambio = Long.parseLong(expActualizarMapDatosNewMap.get("CAB2_NUMERO_INTERCAMBIO"));
 			lineasFicheroAct.add(getSegmentoCAB("CAB",numIntercambio.toString(),anioIntercambio));
 			
 			Set<String> segmentosActualizarSetValue = expActualizarMap.get(keyNumIntercambioAct);

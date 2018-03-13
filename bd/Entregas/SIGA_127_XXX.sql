@@ -148,3 +148,102 @@ PKG_SIGA_FACTURACION_SJCS
 -- Ejecutados en Integracion por AAG el 12/03/2018 a las 11:05
 -- 127_004:
 
+DELETE FROM PCAJG_ALC_INT_CAB CAB
+ where (cab.cab_ejg_idinstitucion, cab.cab_ejg_anio, cab.cab_ejg_idtipo,
+        cab.cab_ejg_numero) in
+       (select e.idinstitucion, e.anio, e.idtipoejg, e.numero
+          from CAJG_EJGREMESA e
+         where idinstitucion = 2003
+           and idremesa = 2122)
+   and trunc(cab_fechaenvio) > '8/03/2018';
+   --(398)
+
+DELETE
+
+FROM PCAJG_ALC_INT_EXP
+ WHERE EXP_INTERCAMBIO_ID IN
+       (select cab.cab_intercambio_id
+          from PCAJG_ALC_INT_CAB cab
+         where (cab.cab_ejg_idinstitucion, cab.cab_ejg_anio,
+                cab.cab_ejg_idtipo, cab.cab_ejg_numero) in
+               (select e.idinstitucion, e.anio, e.idtipoejg, e.numero
+                  from CAJG_EJGREMESA e
+                 where idinstitucion = 2003
+                   and idremesa = 2122)
+           and trunc(cab_fechaenvio) > '8/03/2018');
+--(398)
+DELETE FROM PCAJG_ALC_INT_PRD
+ WHERE prd_INTERCAMBIO_ID IN
+       (select cab.cab_intercambio_id
+          from PCAJG_ALC_INT_CAB cab
+         where (cab.cab_ejg_idinstitucion, cab.cab_ejg_anio,
+                cab.cab_ejg_idtipo, cab.cab_ejg_numero) in
+               (select e.idinstitucion, e.anio, e.idtipoejg, e.numero
+                  from CAJG_EJGREMESA e
+                 where idinstitucion = 2003
+                   and idremesa = 2122)
+           and trunc(cab_fechaenvio) > '8/03/2018');
+--(398)
+DELETE FROM PCAJG_ALC_INT_PRJ
+ WHERE prj_INTERCAMBIO_ID IN
+       (select cab.cab_intercambio_id
+          from PCAJG_ALC_INT_CAB cab
+         where (cab.cab_ejg_idinstitucion, cab.cab_ejg_anio,
+                cab.cab_ejg_idtipo, cab.cab_ejg_numero) in
+               (select e.idinstitucion, e.anio, e.idtipoejg, e.numero
+                  from CAJG_EJGREMESA e
+                 where idinstitucion = 2003
+                   and idremesa = 2122)
+           and trunc(cab_fechaenvio) > '8/03/2018');
+--(398)
+DELETE FROM PCAJG_ALC_INT_SOL
+ WHERE sol_INTERCAMBIO_ID IN
+       (select cab.cab_intercambio_id
+          from PCAJG_ALC_INT_CAB cab
+         where (cab.cab_ejg_idinstitucion, cab.cab_ejg_anio,
+                cab.cab_ejg_idtipo, cab.cab_ejg_numero) in
+               (select e.idinstitucion, e.anio, e.idtipoejg, e.numero
+                  from CAJG_EJGREMESA e
+                 where idinstitucion = 2003
+                   and idremesa = 2122)
+           and trunc(cab_fechaenvio) > '8/03/2018');
+--(398)
+DELETE FROM PCAJG_ALC_INT_DOM
+ WHERE dom_INTERCAMBIO_ID IN
+       (select cab.cab_intercambio_id
+          from PCAJG_ALC_INT_CAB cab
+         where (cab.cab_ejg_idinstitucion, cab.cab_ejg_anio,
+                cab.cab_ejg_idtipo, cab.cab_ejg_numero) in
+               (select e.idinstitucion, e.anio, e.idtipoejg, e.numero
+                  from CAJG_EJGREMESA e
+                 where idinstitucion = 2003
+                   and idremesa = 2122)
+           and trunc(cab_fechaenvio) > '8/03/2018');
+--(398)
+DELETE FROM PCAJG_ALC_INT_ECO
+ WHERE Eco_INTERCAMBIO_ID IN
+       (select cab.cab_intercambio_id
+          from PCAJG_ALC_INT_CAB cab
+         where (cab.cab_ejg_idinstitucion, cab.cab_ejg_anio,
+                cab.cab_ejg_idtipo, cab.cab_ejg_numero) in
+               (select e.idinstitucion, e.anio, e.idtipoejg, e.numero
+                  from CAJG_EJGREMESA e
+                 where idinstitucion = 2003
+                   and idremesa = 2122)
+           and trunc(cab_fechaenvio) > '8/03/2018');
+--(398)		   
+		   delete FROM SCS_ESTADOEJG
+ WHERE (IDINSTITUCION, IDTIPOEJG, ANIO, NUMERO) IN
+       (SELECT ER.IDINSTITUCION, ER.IDTIPOEJG, ER.ANIO, ER.NUMERO
+          FROM CAJG_EJGREMESA ER
+         WHERE ER.IDREMESA = 2122
+           AND ER.IDINSTITUCION = 2003)
+           and idestadoejg = 9
+      and trunc(fechamodificacion) >'08/03/2018';
+      --(398)
+delete CAJG_REMESAESTADOS ER
+ where er.idremesa = 2122
+   and er.idinstitucion = 2003
+   and idestado in (1, 2, 3);
+   --(3)
+
