@@ -906,6 +906,17 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 					lineasFicheroAct.add(getSegmento("DOM",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
 					isAñadidaSegmentosTipoMod = true;
 					
+				}else if (segmentoActualizar.equals("ECO")) {
+//					008	Actualización datos económicos solicitante
+					if(isAñadidaSegmentosTipoMod){
+						numIntercambio++;
+						lineasFicheroAct.add(getSegmentoCAB("CAB",numIntercambio.toString(),anioIntercambio));
+					}
+					
+					lineasFicheroAct.add(getSegmentoAxp(expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,"008"));
+					lineasFicheroAct.add(getSegmento("ECO",expActualizarMapDatosNewMap,expActualizarMapDatosOriginalMap,false));
+					isAñadidaSegmentosTipoMod = true;
+					
 				}
 			}
 			   
@@ -1347,7 +1358,56 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 			// DOM14 Descripción de la vía, número, escalera sin normalizar. SÍ Dirección Litigante 60 (19) VARCHAR2(100)
 			// DOM15 Código postal sin normalizar SI Código Postal Litigante 5 (16) VARCHAR2(10)
 
-		}
+		}else if (segmento.equals("ECO")) {
+
+			linea.append(segmento);
+			
+			
+			
+//	          , RPAD('002', 3, ' ') AS ECO1_CONCEPTO_INGRESO_ANUAL
+//	          , DECODE(UF.IMPORTEINGRESOSANUALES, NULL, LPAD(' ', 8, ' '), LPAD(TRUNC(UF.IMPORTEINGRESOSANUALES), 8, '0')) AS ECO2_IMPORTE_INGRESO_ANUAL
+//	          
+//	          , RPAD(' ', 3, ' ') AS ECO3_CONCEPTO_INGRESO_MENSUAL
+//	          , LPAD(' ', 8, ' ') AS ECO4_IMPORTE_INGRESO_MENSUAL
+//	          , RPAD(' ', 3, ' ') AS ECO5_CONCEPTO_OTROS_INGRESOS --no obligatorio
+//	          , DECODE(UF.IMPORTEOTROSBIENES, NULL, LPAD(' ', 8, ' '), LPAD(TRUNC(UF.IMPORTEOTROSBIENES), 8, '0')) AS ECO6_IMPORTE_OTROS_INGRESOS --no obligatorio
+//	          , RPAD(' ', 3, ' ') AS ECO7_PROPIEDADES_INMUEBLES --no obligatorio
+//	          , DECODE(UF.IMPORTEBIENESINMUEBLES, NULL, LPAD(' ', 8, ' '), LPAD(TRUNC(UF.IMPORTEBIENESINMUEBLES), 8, '0')) AS ECO8_IMPORTE_PROP_INMUEBLES --no obligatorio
+//	          , RPAD(' ', 3, ' ') AS ECO9_OBLIGACIONES_ECONOMICAS --no obligatorio
+//	          , LPAD(' ', 8, ' ') AS ECO10_IMPORTE_OBLIGAC_ECONOMIC --no obligatorio
+//	          , RPAD(' ', 1000, ' ') AS ECO11_DESCRIP_INF_ECONOMICA
+//			
+			
+//	          ECO1	Concepto ingreso anual	NO			NO	VARCHAR2(3)	AJGR_C_TIPOINGRESOSANUAL
+//	          ECO2	Importe ingreso anual	NO			NO	NUMBER(8)	
+//	          ECO3	Concepto ingreso mensual	NO			NO	VARCHAR2(3)	AJGR_C_TIPOINGRESOMEN
+//	          ECO4	Ingreso mensual	NO			NO	NUMBER(8)	
+//	          ECO5	Concepto otros ingresos	NO			NO	VARCHAR2(3)	AJGR_C_TIPOOTROSINGRESOS
+//	          ECO6	Importe otros ingresos	NO			NO	NUMBER(8)	
+//	          ECO7	Propiedades inmuebles	NO			NO	VARCHAR2(3)	AJGR_C_TIPOPROPMUEBLES
+//	          ECO8	Importe propiedades inmuebles	N O			NO	NUMBER(8)	
+//	          ECO9	Obligaciones económicas	NO			NO	VARCHAR2(3)	AJGR_C_TIPOOBLIGACIONESEC
+//	          ECO10	Importe Obligaciones económicas	NO			NO	NUMBER(8)	
+//	          ECO11	Descripción inf. económica	NO			NO	VARCHAR2(1000)	
+
+	          
+	          
+	          
+			linea.append(StringHelper.rellena(expHashtableNew.get("ECO1_CONCEPTO_INGRESO_ANUAL"), ' ', 3, StringHelper.DERECHA));
+			linea.append(StringHelper.rellena(expHashtableNew.get("ECO2_IMPORTE_INGRESO_ANUAL"), ' ', 8, StringHelper.DERECHA));
+			linea.append(StringHelper.rellena(expHashtableNew.get("ECO3_CONCEPTO_INGRESO_MENSUAL"), ' ', 3, StringHelper.DERECHA));
+			linea.append(StringHelper.rellena(expHashtableNew.get("ECO4_IMPORTE_INGRESO_MENSUAL"), ' ', 8, StringHelper.IZQUIERDA));
+			linea.append(StringHelper.rellena(expHashtableNew.get("ECO5_CONCEPTO_OTROS_INGRESOS"), ' ', 3, StringHelper.DERECHA));
+			linea.append(StringHelper.rellena(expHashtableNew.get("ECO6_IMPORTE_OTROS_INGRESOS"), ' ', 8, StringHelper.DERECHA));
+			linea.append(StringHelper.rellena(expHashtableNew.get("ECO7_PROPIEDADES_INMUEBLES"), ' ', 3, StringHelper.DERECHA));
+			linea.append(StringHelper.rellena(expHashtableNew.get("ECO8_IMPORTE_PROP_INMUEBLES"), ' ', 8, StringHelper.DERECHA));
+			linea.append(StringHelper.rellena(expHashtableNew.get("ECO9_OBLIGACIONES_ECONOMICAS"), ' ', 3, StringHelper.DERECHA));
+			linea.append(StringHelper.rellena(expHashtableNew.get("ECO10_IMPORTE_OBLIGAC_ECONOMIC"), ' ', 8, StringHelper.DERECHA));
+						linea.append(StringHelper.rellena(expHashtableNew.get("ECO11_DESCRIP_INF_ECONOMICA"), ' ', 1000, StringHelper.DERECHA));
+		}			
+
+		
+		
 
 		return linea.toString();
 	}
