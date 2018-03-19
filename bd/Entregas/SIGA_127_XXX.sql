@@ -146,7 +146,6 @@ End;
 PKG_SIGA_FACTURACION_SJCS
 
 -- Ejecutados en Integracion por AAG el 12/03/2018 a las 11:05
--- 127_004:
 
 DELETE FROM PCAJG_ALC_INT_CAB CAB
  where (cab.cab_ejg_idinstitucion, cab.cab_ejg_anio, cab.cab_ejg_idtipo,
@@ -247,3 +246,7 @@ delete CAJG_REMESAESTADOS ER
    and idestado in (1, 2, 3);
    --(3)
 
+-- Esto se ha ejecutado a mano en PRO (porque son errores)
+   
+-- 127_004:
+update gen_parametros set valor = 10 where idinstitucion = 2000 and parametro = 'MAXIMO_DIAS_ANTELACION_SOLICITUD';

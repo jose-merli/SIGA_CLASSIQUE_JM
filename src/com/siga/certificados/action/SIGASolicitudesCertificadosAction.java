@@ -901,23 +901,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 					return "exitoConString";
 				}
 
-				// comprobando compatibilidad del certificado con existentes
-				if (!(comprobarCompatibilidadNuevoCertificado(userBean, beanSolicitud) || beanSolicitud.getIdMotivoSolicitud() != null)) {
-					contadorErrores++;
-
-					ClsLogging.writeFileLog("Error al generar el certificado PDF: El certificado no es compatible con los existentes, idpersona=" + idPersona,
-							3);
-					if (contadorReg == 1) {
-						String mensaje = "certificados.solicitudes.mensaje.certificadoIncompatible";
-						String[] datos = { "" + contador };
-						mensaje = UtilidadesString.getMensaje(mensaje, datos, userBeanLanguage);
-						request.setAttribute("mensaje", mensaje);
-						return "exitoConString";
-					}
-
-					continue;
-				}
-
 				if (!(Boolean) listadoColegiado.get("colegiadoEnOrigen")) {
 					contadorErrores++;
 					contadorColegiadosNoOrigen++;
@@ -934,44 +917,65 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 					continue;
 				}
 
-				// comprobando que la fecha de solicitud es anterior al dia de hoy
-				Date fechaSolicitudReal = UtilidadesFecha.getDate(beanSolicitud.getFechaSolicitud(), ClsConstants.DATE_FORMAT_JAVA);
-				if (UtilidadesFecha.afterToday(fechaSolicitudReal)) {
-					contadorErrores++;
+				// solo cuando se aprueba una solicitud hay que comprobar el control de incompatibilidad y fecha
+				if (beanSolicitud.getIdEstadoSolicitudCertificado().equals(CerEstadoSoliCertifiAdm.C_ESTADO_SOL_PEND)) {
+					
+					// comprobando compatibilidad del certificado con existentes
+					if (!(comprobarCompatibilidadNuevoCertificado(userBean, beanSolicitud) || beanSolicitud.getIdMotivoSolicitud() != null)) {
+						contadorErrores++;
 
-					ClsLogging.writeFileLog("Error al generar el certificado PDF: La fecha de solicitud es del futuro, idpersona=" + idPersona,
-							3);
-					if (contadorReg == 1) {
-						String mensaje = "certificados.solicitudes.mensaje.fechaSolicitudFutura";
-						String[] datos = { "" + contador };
-						mensaje = UtilidadesString.getMensaje(mensaje, datos, userBeanLanguage);
-						request.setAttribute("mensaje", mensaje);
-						return "exitoConString";
+						ClsLogging.writeFileLog("Error al generar el certificado PDF: El certificado no es compatible con los existentes, idpersona=" + idPersona,
+								3);
+						if (contadorReg == 1) {
+							String mensaje = "certificados.solicitudes.mensaje.certificadoIncompatible";
+							String[] datos = { "" + contador };
+							mensaje = UtilidadesString.getMensaje(mensaje, datos, userBeanLanguage);
+							request.setAttribute("mensaje", mensaje);
+							return "exitoConString";
+						}
+
+						continue;
 					}
 
-					continue;
-				}
-				
-				// comprobando limite de fecha de solicitud
-				int maximoDiasAntelacionSolicitud = getDiasLimiteSolicitud(Integer.valueOf(idInstitucion), userBean);
-				if (antesDelLimiteSolicitud(fechaSolicitudReal, maximoDiasAntelacionSolicitud)) {
-					contadorErrores++;
-
-					ClsLogging.writeFileLog("Error al generar el certificado PDF: La fecha de solicitud es demasiado antigua (ver parámetro), idpersona=" + idPersona,
-							3);
-					if (contadorReg == 1) {
-						String[] parametrosMensaje = new String[1];
-						parametrosMensaje[0] = Integer.toString(maximoDiasAntelacionSolicitud);
-
-						String mensaje = UtilidadesString.getMensaje("certificados.solicitudes.mensaje.fechaSolicitudFueraDePlazo", parametrosMensaje,
-								userBeanLanguage);
-						String[] datos = { "" + contador };
-						mensaje = UtilidadesString.getMensaje(mensaje, datos, userBeanLanguage);
-						request.setAttribute("mensaje", mensaje);
-						return "exitoConString";
+					// comprobando que la fecha de solicitud es anterior al dia de hoy
+					Date fechaSolicitudReal = UtilidadesFecha.getDate(beanSolicitud.getFechaSolicitud(), ClsConstants.DATE_FORMAT_JAVA);
+					if (UtilidadesFecha.afterToday(fechaSolicitudReal)) {
+						contadorErrores++;
+	
+						ClsLogging.writeFileLog("Error al generar el certificado PDF: La fecha de solicitud es del futuro, idpersona=" + idPersona,
+								3);
+						if (contadorReg == 1) {
+							String mensaje = "certificados.solicitudes.mensaje.fechaSolicitudFutura";
+							String[] datos = { "" + contador };
+							mensaje = UtilidadesString.getMensaje(mensaje, datos, userBeanLanguage);
+							request.setAttribute("mensaje", mensaje);
+							return "exitoConString";
+						}
+	
+						continue;
 					}
-
-					continue;
+					
+					// comprobando limite de fecha de solicitud
+					int maximoDiasAntelacionSolicitud = getDiasLimiteSolicitud(Integer.valueOf(idInstitucion), userBean);
+					if (antesDelLimiteSolicitud(fechaSolicitudReal, maximoDiasAntelacionSolicitud)) {
+						contadorErrores++;
+	
+						ClsLogging.writeFileLog("Error al generar el certificado PDF: La fecha de solicitud es demasiado antigua (ver parámetro), idpersona=" + idPersona,
+								3);
+						if (contadorReg == 1) {
+							String[] parametrosMensaje = new String[1];
+							parametrosMensaje[0] = Integer.toString(maximoDiasAntelacionSolicitud);
+	
+							String mensaje = UtilidadesString.getMensaje("certificados.solicitudes.mensaje.fechaSolicitudFueraDePlazo", parametrosMensaje,
+									userBeanLanguage);
+							String[] datos = { "" + contador };
+							mensaje = UtilidadesString.getMensaje(mensaje, datos, userBeanLanguage);
+							request.setAttribute("mensaje", mensaje);
+							return "exitoConString";
+						}
+	
+						continue;
+					}
 				}
 
 				HashMap<String, Object> listaDeObjetos = obtenerPathBD(admParametros, idInstitucion, idSolicitud);
@@ -1119,33 +1123,37 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 						continue; // saltando al siguiente registro porque este da error
 					}
 
-					// comprobando compatibilidad del certificado con existentes
-					if (!(comprobarCompatibilidadNuevoCertificado(userBean, beanSolicitud) || beanSolicitud.getIdMotivoSolicitud() != null)) {
-						log.addLogWithDateAndFlush("certificados.solicitudes.mensaje.certificadoIncompatible", userBeanLanguage);
+					// solo cuando se aprueba una solicitud hay que comprobar el control de incompatibilidad y fecha
+					if (beanSolicitud.getIdEstadoSolicitudCertificado().equals(CerEstadoSoliCertifiAdm.C_ESTADO_SOL_PEND)) {
 						
-						contadorErrores++;
-						continue; // saltando al siguiente registro porque este da error
-					}
+						// comprobando compatibilidad del certificado con existentes
+						if (!(comprobarCompatibilidadNuevoCertificado(userBean, beanSolicitud) || beanSolicitud.getIdMotivoSolicitud() != null)) {
+							log.addLogWithDateAndFlush("certificados.solicitudes.mensaje.certificadoIncompatible", userBeanLanguage);
+							
+							contadorErrores++;
+							continue; // saltando al siguiente registro porque este da error
+						}
 
-					Date fechaSolicitudReal = UtilidadesFecha.getDate(beanSolicitud.getFechaSolicitud(), ClsConstants.DATE_FORMAT_JAVA);
-					// comprobando que la fecha de solicitud es anterior al dia de hoy
-					if (UtilidadesFecha.afterToday(fechaSolicitudReal)) {
-						log.addLogWithDateAndFlush("certificados.solicitudes.mensaje.fechaSolicitudFutura", userBeanLanguage);
-
-						contadorErrores++;
-						continue; // saltando al siguiente registro porque este da error
-					}
-					
-					// comprobando limite de fecha de solicitud
-					int maximoDiasAntelacionSolicitud = getDiasLimiteSolicitud(Integer.valueOf(idInstitucion), userBean);
-					if (antesDelLimiteSolicitud(fechaSolicitudReal, maximoDiasAntelacionSolicitud)) {
-						String[] parametrosMensaje = new String[1];
-						parametrosMensaje[0] = Integer.toString(maximoDiasAntelacionSolicitud);
-						String mensajeLog = UtilidadesString.getMensaje("certificados.solicitudes.mensaje.fechaSolicitudFueraDePlazo", parametrosMensaje, userBeanLanguage);
-						log.addLogWithDateAndFlush(mensajeLog, userBeanLanguage);
+						Date fechaSolicitudReal = UtilidadesFecha.getDate(beanSolicitud.getFechaSolicitud(), ClsConstants.DATE_FORMAT_JAVA);
+						// comprobando que la fecha de solicitud es anterior al dia de hoy
+						if (UtilidadesFecha.afterToday(fechaSolicitudReal)) {
+							log.addLogWithDateAndFlush("certificados.solicitudes.mensaje.fechaSolicitudFutura", userBeanLanguage);
+	
+							contadorErrores++;
+							continue; // saltando al siguiente registro porque este da error
+						}
 						
-						contadorErrores++;
-						continue; // saltando al siguiente registro porque este da error
+						// comprobando limite de fecha de solicitud
+						int maximoDiasAntelacionSolicitud = getDiasLimiteSolicitud(Integer.valueOf(idInstitucion), userBean);
+						if (antesDelLimiteSolicitud(fechaSolicitudReal, maximoDiasAntelacionSolicitud)) {
+							String[] parametrosMensaje = new String[1];
+							parametrosMensaje[0] = Integer.toString(maximoDiasAntelacionSolicitud);
+							String mensajeLog = UtilidadesString.getMensaje("certificados.solicitudes.mensaje.fechaSolicitudFueraDePlazo", parametrosMensaje, userBeanLanguage);
+							log.addLogWithDateAndFlush(mensajeLog, userBeanLanguage);
+							
+							contadorErrores++;
+							continue; // saltando al siguiente registro porque este da error
+						}
 					}
 
 					HashMap<String, Object> listadoColegiado = obtenerPersonaCertificado(userBean, idInstitucion, idTipoProducto, idProducto,
@@ -2287,23 +2295,6 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 				throw new SIGAException("messages.certificados.error.nogenerado");
 			}
 			
-			if (! (comprobarCompatibilidadNuevoCertificado(userBean, beanSolicitud) || beanSolicitud.getIdMotivoSolicitud() != null)) {
-				throw new SIGAException("certificados.solicitudes.mensaje.certificadoIncompatible");
-			}
-			
-			Date fechaSolicitudReal = UtilidadesFecha.getDate(beanSolicitud.getFechaSolicitud(), ClsConstants.DATE_FORMAT_JAVA);
-			// comprobando que la fecha de solicitud es anterior al dia de hoy
-			if (UtilidadesFecha.afterToday(fechaSolicitudReal)) {
-				throw new SIGAException("certificados.solicitudes.mensaje.fechaSolicitudFutura");
-			}
-			// comprobando limite de fecha de solicitud
-			int maximoDiasAntelacionSolicitud = getDiasLimiteSolicitud(Integer.valueOf(idInstitucion), userBean);
-			if (antesDelLimiteSolicitud(fechaSolicitudReal, maximoDiasAntelacionSolicitud)) {
-				String [] parametrosMensaje = new String[1];
-				parametrosMensaje[0] = Integer.toString(maximoDiasAntelacionSolicitud);
-				throw new SIGAException(UtilidadesString.getMensaje("certificados.solicitudes.mensaje.fechaSolicitudFueraDePlazo", parametrosMensaje, userBean.getLanguage()));
-			}
-
 			if (! comprobarCamposMinimosDeCobro(beanSolicitud)) {
 				throw new SIGAException("messages.certificado.error.finalizarCobro");
 			}

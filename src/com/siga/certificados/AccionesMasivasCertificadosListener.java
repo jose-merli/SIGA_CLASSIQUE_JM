@@ -181,21 +181,26 @@ public class AccionesMasivasCertificadosListener extends SIGAListenerPorMinutosA
 							String.valueOf(cerSolicitudcertificados.getIdinstitucion()), String.valueOf(cerSolicitudcertificados.getIdsolicitud()));
 
 					try {
-						if (! (SIGASolicitudesCertificadosAction.comprobarCompatibilidadNuevoCertificado(usr, beanSolicitud) || beanSolicitud.getIdMotivoSolicitud() != null)) {
-							throw new SIGAException("certificados.solicitudes.mensaje.certificadoIncompatible");
-						}
-						
-						Date fechaSolicitudReal = UtilidadesFecha.getDate(beanSolicitud.getFechaSolicitud(), ClsConstants.DATE_FORMAT_JAVA);
-						// comprobando que la fecha de solicitud es anterior al dia de hoy
-						if (UtilidadesFecha.afterToday(fechaSolicitudReal)) {
-							throw new SIGAException("certificados.solicitudes.mensaje.fechaSolicitudFutura");
-						}
-						// comprobando limite de fecha de solicitud
-						int maximoDiasAntelacionSolicitud = SIGASolicitudesCertificadosAction.getDiasLimiteSolicitud(Integer.valueOf(cerSolicitudcertificados.getIdinstitucion()), usr);
-						if (SIGASolicitudesCertificadosAction.antesDelLimiteSolicitud(fechaSolicitudReal, maximoDiasAntelacionSolicitud)) {
-							String [] parametrosMensaje = new String[1];
-							parametrosMensaje[0] = Integer.toString(maximoDiasAntelacionSolicitud);
-							throw new SIGAException(UtilidadesString.getMensaje("certificados.solicitudes.mensaje.fechaSolicitudFueraDePlazo", parametrosMensaje, usr.getLanguage()));
+						// solo cuando se aprueba una solicitud hay que comprobar el control de incompatibilidad y fecha
+						if (beanSolicitud.getIdEstadoSolicitudCertificado().equals(CerEstadoSoliCertifiAdm.C_ESTADO_SOL_APROBANDO)) {
+							
+							// comprobando compatibilidad del certificado con existentes
+							if (! (SIGASolicitudesCertificadosAction.comprobarCompatibilidadNuevoCertificado(usr, beanSolicitud) || beanSolicitud.getIdMotivoSolicitud() != null)) {
+								throw new SIGAException("certificados.solicitudes.mensaje.certificadoIncompatible");
+							}
+							
+							Date fechaSolicitudReal = UtilidadesFecha.getDate(beanSolicitud.getFechaSolicitud(), ClsConstants.DATE_FORMAT_JAVA);
+							// comprobando que la fecha de solicitud es anterior al dia de hoy
+							if (UtilidadesFecha.afterToday(fechaSolicitudReal)) {
+								throw new SIGAException("certificados.solicitudes.mensaje.fechaSolicitudFutura");
+							}
+							// comprobando limite de fecha de solicitud
+							int maximoDiasAntelacionSolicitud = SIGASolicitudesCertificadosAction.getDiasLimiteSolicitud(Integer.valueOf(cerSolicitudcertificados.getIdinstitucion()), usr);
+							if (SIGASolicitudesCertificadosAction.antesDelLimiteSolicitud(fechaSolicitudReal, maximoDiasAntelacionSolicitud)) {
+								String [] parametrosMensaje = new String[1];
+								parametrosMensaje[0] = Integer.toString(maximoDiasAntelacionSolicitud);
+								throw new SIGAException(UtilidadesString.getMensaje("certificados.solicitudes.mensaje.fechaSolicitudFueraDePlazo", parametrosMensaje, usr.getLanguage()));
+							}
 						}
 						
 						// Se realiza el proceso de aprobar y generar o de sólamente generar
