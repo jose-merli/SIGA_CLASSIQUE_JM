@@ -3625,6 +3625,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		
 	    // RGG autenticar SMTP
 	    sesion.getProperties().put("mail.smtp.auth", "true");
+	    sesion.getProperties().put("mail.smtp.port", rp.returnProperty("mail.smtp.port"));
 	    
 	   
 
