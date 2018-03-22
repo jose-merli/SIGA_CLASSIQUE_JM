@@ -1991,13 +1991,6 @@ function jQueryLoaded(){
 						if (searchBoxKeyupTimeOut)
 							clearTimeout(searchBoxKeyupTimeOut);
 						tagSelect_search(jQuery(this).parent().find("select.tagSelect"), jQuery(this));
-					}).on("blur", function(){
-						console.debug("[searchBox] BLUR ENVENT");
-						//var selected_value = tagSelect_select.find("option:selected").val();
-						//if (typeof selected_value != "undefined" && selected_value != "" && selected_value != "-1" && selected_value != null)
-						if (searchBoxKeyupTimeOut)
-							clearTimeout(searchBoxKeyupTimeOut);
-						jQuery(this).parent().find("select.tagSelect").change();
 					});
 					if (tagSelect_select.find("option:selected").exists()){
 						tagSelect_searchBox.val(tagSelect_select.find('option:selected').data("searchkey"));
@@ -5223,7 +5216,7 @@ function sumarDias(fechaInput,dias){
 	return (dia+"/"+mes+"/"+anyo); 
 }	
 
-var letras=" abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZÇÁÉÍÓÚÄËÏÖÜÀÈÌÒÙÂÊÎÔÛçáéíóúäëïöüàèìòùâêîôû^'·\-";
+var letras=" abcdefghijklmnï¿½opqrstuvwxyzABCDEFGHIJKLMNï¿½OPQRSTUVWXYZï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½^'ï¿½\-";
 
 function validarNombreApellido(nombre){
    for(i=0; i<nombre.length; i++){
