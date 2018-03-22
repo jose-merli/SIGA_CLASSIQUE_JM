@@ -551,7 +551,8 @@
 		{ 
 
 			var nigAux = document.getElementById("nig2").value;
-			nigAux = formateaNig(nigAux);
+			nigAux = ready2ApplyMask(nigAux);
+			nigAux = nigAux.toUpperCase();
 			
 			if(!validarNig(nigAux)){	
 				alert('<siga:Idioma key="gratuita.nig.formato"/>');

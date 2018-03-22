@@ -143,7 +143,7 @@ function habilitarCampos(isHabilitar) {
 
 	function cargarBancoPorIBAN(){		
 		mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";	
-		var iban = formateaMask(document.getElementById("iban").value);	
+		var iban = ready2ApplyMask(document.getElementById("iban").value);	
 		if (iban!=undefined && iban!="") {
 			jQuery.ajax({ //Comunicacion jQuery hacia JSP  
    				type: "POST",
@@ -971,7 +971,7 @@ function habilitarCampos(isHabilitar) {
 			
 			//validamos el numero de cuenta (IBAN)
 			if(document.MutualidadForm.idTipoSolicitud.value=='P'){	
-				document.MutualidadForm.iban.value = formateaMask(document.getElementById("iban").value);
+				document.MutualidadForm.iban.value = ready2ApplyMask(document.getElementById("iban").value);
 				iban = document.MutualidadForm.iban.value;
 				bic = document.MutualidadForm.swift.value;
 				

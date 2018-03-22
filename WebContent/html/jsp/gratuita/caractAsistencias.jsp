@@ -525,7 +525,8 @@ function accionGuardar()
 		document.CaracteristicasForm.descripcionPretensionHidden.value=document.CaracteristicasForm.idPretension.options[indice].text;
 	
 	var nigAux = document.getElementById("nig").value;
-	nigAux = formateaNig(nigAux);
+	nigAux = ready2ApplyMask(nigAux);
+	nigAux = nigAux.toUpperCase();
 	var idConsejo = '';
 	if(document.getElementById("idConsejo"))
 		idConsejo = document.getElementById("idConsejo").value;

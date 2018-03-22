@@ -809,7 +809,7 @@ function validarFormatosNigNumProc(valueNig,valueNumProcedimiento,objectAnioProc
 	if(!validarNig(valueNig,idConsejo)){	
 		error += "<siga:Idioma key='gratuita.nig.formato' arg0='"+formatoNig+"' />"+"\n"; 
  	}
-	//Validamos el año de priocedimineto si esta visible
+	//Validamos el año de procedimiento si esta visible 
 	if(objectAnioProcedimiento && !validarAnio(objectAnioProcedimiento.value)){
 		error += "<siga:Idioma key='fecha.error.anio' />"+"\n";
 	}
@@ -819,5 +819,3 @@ function validarFormatosNigNumProc(valueNig,valueNumProcedimiento,objectAnioProc
 	}
 	return error;
 }
-
-  

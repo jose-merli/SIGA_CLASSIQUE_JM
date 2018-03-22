@@ -185,7 +185,7 @@ VERSIONES: -->
 			}
 			
 			//Se quita la mascara al guardar 
-			document.cuentasBancariasForm.IBAN.value = formateaMask(document.getElementById("IBAN").value);			
+			document.cuentasBancariasForm.IBAN.value = ready2ApplyMask(document.getElementById("IBAN").value);			
 			
 			iban = document.cuentasBancariasForm.IBAN.value;
 			bic = document.cuentasBancariasForm.BIC.value;
@@ -279,7 +279,7 @@ VERSIONES: -->
 		function cargarBancoPorIBAN(){			
 			<%if (modo.equals("nuevo")) {%>				
 				mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";	
-				var iban = formateaMask(document.getElementById("IBAN").value);		
+				var iban = ready2ApplyMask(document.getElementById("IBAN").value);		
 				if (iban!=undefined && iban!="") {			
 					jQuery.ajax({ //Comunicacion jQuery hacia JSP  
 		   				type: "POST",
@@ -348,7 +348,7 @@ VERSIONES: -->
 		}	
 		
 		function inicioCargarBancoBIC(){
-			var iban = formateaMask(document.getElementById("IBAN").value);
+			var iban = ready2ApplyMask(document.getElementById("IBAN").value);
 			var codigoBanco ="<%=cbo_Codigo%>";
 			if (iban!=undefined && iban!="") {			
 				jQuery.ajax({ //Comunicacion jQuery hacia JSP  

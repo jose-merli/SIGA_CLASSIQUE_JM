@@ -5163,22 +5163,11 @@ function getElementAbsolutePos(element) {
     return res;
 }
 	
-function formateaNig(strValue) 
+function ready2ApplyMask(strValue) 
 {
 	strValue = replaceAll(strValue,' ','');
 	strValue = replaceAll(strValue,'.','');
 	return strValue;
-	
-
-}
-
-function formateaMask(strValue) 
-{
-	strValue = replaceAll(strValue,' ','');
-	strValue = replaceAll(strValue,'.','');
-	return strValue;
-	
-
 }
 
 /* CR7 - Funcion que suma 'X' dias a una fecha (formato dd/mm/yyyy) pasada por par�metros */

@@ -547,7 +547,8 @@
 		 		return false;
 		 	}
 			var nigAux = document.getElementById("nig").value;
-			nigAux = formateaNig(nigAux);
+			nigAux = ready2ApplyMask(nigAux);
+			nigAux = nigAux.toUpperCase();
 			
 			valueNumProcedimiento = document.getElementById("numeroProcedimiento").value;
 			objectConsejo = document.getElementById("idConsejo");

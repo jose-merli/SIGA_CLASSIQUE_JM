@@ -1350,7 +1350,8 @@
 					error += "<siga:Idioma key='gratuita.procedimientos.numero.formato'/>"+ '\n';
 				}
 				var nigAux = document.getElementById("nig").value;
-				nigAux = formateaNig(nigAux);
+				nigAux = ready2ApplyMask(nigAux);
+				nigAux = nigAux.toUpperCase();
 				
 				if (jQuery("#labelNig").css('display')=='block' && nigAux=='') {
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.mantAsistencias.literal.NIG'/>"+ '\n';
@@ -1440,7 +1441,8 @@
 						}
 					<%}%>
 					var nigAux = document.getElementById("nig").value;
-					nigAux = formateaNig(nigAux);
+					nigAux = ready2ApplyMask(nigAux);
+					nigAux = nigAux.toUpperCase();
 					if (jQuery("#labelNig").css('display')=='block' && nigAux=='') {
 						error += "<siga:Idioma key='errors.required' arg0='gratuita.mantAsistencias.literal.NIG'/>"+ '\n';
 					}

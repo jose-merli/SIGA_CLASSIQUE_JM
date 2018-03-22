@@ -337,7 +337,7 @@
 			}
 			
 			//Se quita la mascara al guardar 
-			document.SolicitudIncorporacionForm.IBAN.value = formateaMask(document.getElementById("IBAN").value);					
+			document.SolicitudIncorporacionForm.IBAN.value = ready2ApplyMask(document.getElementById("IBAN").value);					
 			
 			iban = document.SolicitudIncorporacionForm.IBAN.value;
 			bic = document.SolicitudIncorporacionForm.BIC.value;
@@ -810,7 +810,7 @@
 	var mensajeGeneralError='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma(user, "messages.general.error"))%>';
 	
 	function inicioCargarBancoBIC(){
-		var iban = formateaMask(document.getElementById("IBAN").value);	
+		var iban = ready2ApplyMask(document.getElementById("IBAN").value);	
 		var codigoBanco = '<%=cbo_Codigo%>';
 		if (iban!=undefined && iban!="") {			
 			jQuery.ajax({ //Comunicacion jQuery hacia JSP  
@@ -838,7 +838,7 @@
 	function cargarBancoPorIBAN(){
 		<%if(!readonly){%>
 			mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";	
-			var iban = formateaMask(document.getElementById("IBAN").value);	
+			var iban = ready2ApplyMask(document.getElementById("IBAN").value);	
 			if (iban!=undefined && iban!="") {			
 				jQuery.ajax({ //Comunicacion jQuery hacia JSP  
 	   				type: "POST",

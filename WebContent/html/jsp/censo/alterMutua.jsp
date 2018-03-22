@@ -93,7 +93,7 @@ function habilitarCampos(isHabilitar) {
 	
 	function cargarBancoPorIBAN(){		
 		mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";	
-		var iban = formateaMask(document.getElementById("IBAN").value);	
+		var iban = ready2ApplyMask(document.getElementById("IBAN").value);	
 		if (iban!=undefined && iban!="") {
 			jQuery.ajax({ //Comunicacion jQuery hacia JSP  
    				type: "POST",
@@ -152,7 +152,7 @@ function habilitarCampos(isHabilitar) {
 	}	
 	
 	function inicioCargarBancoBIC(){
-		var iban = formateaMask(document.getElementById("IBAN").value);
+		var iban = ready2ApplyMask(document.getElementById("IBAN").value);
 		var codigoBanco = "${AlterMutuaForm.cboCodigo}";
 		if (iban!=undefined && iban!="") {			
 			jQuery.ajax({ //Comunicacion jQuery hacia JSP  
@@ -747,7 +747,7 @@ function habilitarCampos(isHabilitar) {
 		}
 
 		//validamos el numero de cuenta (IBAN)
-		document.forms["AlterMutuaForm"].IBAN.value = formateaMask(document.getElementById("IBAN").value);
+		document.forms["AlterMutuaForm"].IBAN.value = ready2ApplyMask(document.getElementById("IBAN").value);
 		iban = document.forms["AlterMutuaForm"].IBAN.value;
 		bic = document.forms["AlterMutuaForm"].SWIFT.value;		
 		

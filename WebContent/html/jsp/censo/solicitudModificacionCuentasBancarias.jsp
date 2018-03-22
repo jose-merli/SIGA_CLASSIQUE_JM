@@ -153,7 +153,7 @@
 
 		function cargarBancoPorIBAN(){
 			mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";	
-			var iban = formateaMask(document.getElementById("IBAN").value);	
+			var iban = ready2ApplyMask(document.getElementById("IBAN").value);	
 			if (iban!=undefined && iban!="") {			
 				jQuery.ajax({ //Comunicacion jQuery hacia JSP  
 	   				type: "POST",
@@ -220,7 +220,7 @@
 		}	
 		
 		function inicioCargarBancoBIC(){
-			var iban = formateaMask(document.getElementById("IBAN").value);
+			var iban = ready2ApplyMask(document.getElementById("IBAN").value);
 			var codigoBanco ="<%=String.valueOf(htData.get(CenCuentasBancariasBean.C_CBO_CODIGO))%>";
 			if (iban!=undefined && iban!="") {			
 				jQuery.ajax({ //Comunicacion jQuery hacia JSP  

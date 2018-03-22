@@ -1209,7 +1209,8 @@
 		 	}	  
 		 	
 		  	var nigAux = document.getElementById("nig2").value;
-		  	nigAux = formateaNig(nigAux);
+		  	nigAux = ready2ApplyMask(nigAux);
+			nigAux = nigAux.toUpperCase();
 		  	var idConsejo = '';
 			if(document.getElementById("idConsejo"))
 				idConsejo = document.getElementById("idConsejo").value;

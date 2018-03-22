@@ -30,7 +30,7 @@
 			sub();
 			
 			var IBAN_valor = jQuery("#IBAN").val();						
-			var IBAN_formateado = formateaMask(IBAN_valor);
+			var IBAN_formateado = ready2ApplyMask(IBAN_valor);
 			jQuery("#IBAN").val(IBAN_formateado);	
 			
 			document.CuentasBancariasForm.modo.value="buscar";

@@ -96,7 +96,7 @@
 	function cargarBancoPorIBAN(){		
 		if(document.CuentasBancariasForm.modo.value =='insertar'){
 			mensaje = "<siga:Idioma key="messages.censo.cuentasBancarias.errorCuentaBancaria"/>";	
-			var iban = formateaMask(document.getElementById("IBAN").value);	
+			var iban = ready2ApplyMask(document.getElementById("IBAN").value);	
 			if (iban!=undefined && iban!="") {
 				
 				//EN ESTE MODULO NO ACEPTAN IBAN EXTRANJEROS POR PROBELMAS CON LA SUCURSALES PARA EL FICHERO BANCARIO
@@ -176,7 +176,7 @@
 	}	
 	
 	function inicioCargarBancoBIC(){
-		var iban = formateaMask(document.getElementById("IBAN").value);
+		var iban = ready2ApplyMask(document.getElementById("IBAN").value);
 		var codigoBanco = "${CuentasBancariasForm.codigoBanco}";
 		if (iban!=undefined && iban!="") {			
 			jQuery.ajax({ //Comunicacion jQuery hacia JSP  
@@ -580,7 +580,7 @@
 		sub();
 
 		//Se quita la mascara al guardar 
-		document.CuentasBancariasForm.IBAN.value = formateaMask(document.getElementById("IBAN").value);
+		document.CuentasBancariasForm.IBAN.value = ready2ApplyMask(document.getElementById("IBAN").value);
 		
 		if(document.CuentasBancariasForm.modo.value=='insertar'){
 			iban = document.CuentasBancariasForm.IBAN.value;

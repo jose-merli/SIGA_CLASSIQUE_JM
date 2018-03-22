@@ -1064,7 +1064,8 @@ if(usr.isComision()){
 				
 		}
 		var nigAux = document.getElementById("nig").value;
-		nigAux = formateaNig(nigAux);
+		nigAux = ready2ApplyMask(nigAux);
+		nigAux = nigAux.toUpperCase();
 		if(!validarNig(nigAux)){	
 			alert("<siga:Idioma key='gratuita.nig.formato'/>");
 			return false;
