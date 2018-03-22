@@ -251,6 +251,7 @@ public class MaestroDesignasAction extends MasterAction {
 			
 			
 			ses.setAttribute("ModoAction","editar");
+			miform.setConvenio(beanDesigna.getFactConvenio()!=null?beanDesigna.getFactConvenio():"0");
 		}		
 		catch (Exception e2){
 		    throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e2, null); 
@@ -866,7 +867,13 @@ public class MaestroDesignasAction extends MasterAction {
 							
 						}else if (!designaAntigua.getEstado().equals("F")){
 							designaNueva.put(ScsDesignaBean.C_FECHARECEPCIONCOLEGIO, "");
-						}		
+						}
+						
+						
+						designaNueva.put(ScsDesignaBean.C_FACTCONVENIO, UtilidadesString.stringToBoolean(miform.getConvenio())?AppConstants.DB_TRUE:AppConstants.DB_FALSE);
+						
+						
+						
 						
 						tx.begin();
 						designaAdm.update(designaNueva,designaAntigua.getOriginalHash());	

@@ -64,6 +64,7 @@ public class MaestroDesignasForm extends MasterForm {
 	private List<ScsProcedimientosBean> modulos;
 	private List<ScsEJGBean> ejgs;  	
 	String origen; 
+	String convenio;
 	private String idInstitucion;
 	private boolean fichaColegial = false;
 	public boolean getFichaColegial() {
@@ -548,6 +549,12 @@ public class MaestroDesignasForm extends MasterForm {
 	 */
 	public void setIdLetradoDesignado(String idLetradoDesignado) {
 		this.idLetradoDesignado = idLetradoDesignado;
+	}
+	public String getConvenio() {
+		return convenio;
+	}
+	public void setConvenio(String convenio) {
+		this.convenio = convenio;
 	}
 	
 }

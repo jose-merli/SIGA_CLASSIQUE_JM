@@ -788,6 +788,11 @@
 
 <!-- Comienzo del formulario con los campos -->
 <table class="tablaCentralCampos" height="420" align="center" >
+<c:set var="checkConvenio" value="" />
+	<c:if test="${beanDesigna.factConvenio=='1'}">
+		<c:set var="checkConvenio" value="checked" />
+	</c:if>
+
 	<bean:define id="usrBean" name="USRBEAN" scope="session" type="com.atos.utils.UsrBean" />
 	<c:set var="IDINSTITUCION_CONSEJO_ANDALUZ" value="<%=AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ%>" />
 	<input type="hidden" id ="idConsejo" value = "${usrBean.idConsejo}"/>
@@ -1129,13 +1134,32 @@
 								<siga:Idioma key="gratuita.editarDesigna.literal.asunto" />
 							</td>
 							
-							<td colspan="7">
+							<td colspan="4">
 								<% if (!modo.equalsIgnoreCase("ver")) { %> 
 									<html:text name="MaestroDesignasForm" property="asunto" maxlength="100" styleClass="box" value="<%=(String)resultado.get(ScsDesignaBean.C_RESUMENASUNTO)%>" style="width:740"></html:text> 
 								<% } else { %> 
 									<html:text name="MaestroDesignasForm" property="asunto" maxlength="100" styleClass="boxConsulta" value="<%=(String)resultado.get(ScsDesignaBean.C_RESUMENASUNTO)%>" readonly="true" style="width:740"></html:text> 
 								<% } %>
 							</td>
+								<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA){ %>
+								<td class="labelText" colspan="2">
+									
+								
+									<% if (!modo.equalsIgnoreCase("ver")) { %>
+										
+										Convenio <input type="checkbox" name="convenio" id="convenio" ${checkConvenio} />
+										
+										 
+									<% } else { %>
+										Convenio <html:checkbox name="MaestroDesignasForm" property="convenio" disabled="true" /> 
+										
+										 
+									<% } %>
+								</td>
+							<td></td>
+							<%}else{ %>
+								<td colspan = "3"></td>
+							<%} %>
 						</tr>
 						
 						<!-- JBD 16/2/2009 INC-5739-SIGA -->

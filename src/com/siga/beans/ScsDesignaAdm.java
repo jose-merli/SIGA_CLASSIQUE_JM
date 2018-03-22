@@ -70,7 +70,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 							ScsDesignaBean.C_SUFIJO,				ScsDesignaBean.C_FECHAOFICIOJUZGADO,
 							ScsDesignaBean.C_FECHARECEPCIONCOLEGIO, ScsDesignaBean.C_ART27,
 							ScsDesignaBean.C_FECHAALTA, 			ScsDesignaBean.C_NIG,
-							ScsDesignaBean.C_ANIOPROCEDIMIENTO};
+							ScsDesignaBean.C_ANIOPROCEDIMIENTO,ScsDesignaBean.C_FACTCONVENIO};
 		return campos;
 	}
 	/** Funcion getClavesBean ()
@@ -125,6 +125,8 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			bean.setArt27(UtilidadesHash.getString(hash,ScsDesignaBean.C_ART27));
 			bean.setNIG(UtilidadesHash.getString(hash,ScsDesignaBean.C_NIG));
 			bean.setAnioProcedimiento(UtilidadesHash.getInteger(hash,ScsDesignaBean.C_ANIOPROCEDIMIENTO));
+			bean.setFactConvenio(UtilidadesHash.getString(hash,ScsDesignaBean.C_FACTCONVENIO));
+			
 		}
 		catch(Exception e){
 			bean = null;
@@ -233,6 +235,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsDesignaBean.C_ART27,b.getArt27());
 			UtilidadesHash.set(hash, ScsDesignaBean.C_NIG,b.getNIG());
 			UtilidadesHash.set(hash, ScsDesignaBean.C_ANIOPROCEDIMIENTO ,b.getAnioProcedimiento());
+			UtilidadesHash.set(hash, ScsDesignaBean.C_FACTCONVENIO,b.getFactConvenio());
 			return hash;
 		}
 		catch (Exception e){

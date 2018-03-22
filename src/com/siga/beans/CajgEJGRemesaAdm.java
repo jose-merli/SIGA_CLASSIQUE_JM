@@ -1187,7 +1187,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 
 			linea.append(segmento);
 
-			linea.append(StringHelper.rellena(expHashtableOriginal.get("SOL1_TIPO_IDENTIFICACION"), '0', 1, StringHelper.IZQUIERDA));
+			linea.append(StringHelper.rellena(expHashtableOriginal.get("SOL1_TIPO_IDENTIFICACION"), ' ', 1, StringHelper.IZQUIERDA));
 			linea.append(StringHelper.rellena(expHashtableOriginal.get("SOL2_IDENTIFICACION_SOLICIT"), ' ', 11, StringHelper.DERECHA));
 			linea.append(StringHelper.rellena(expHashtableOriginal.get("SOL3_TIPOPERSONA"), '0', 3, StringHelper.IZQUIERDA));
 			linea.append(StringHelper.rellena(expHashtableOriginal.get("SOL4_NOMBRE_SOLICITANTE"), ' ', 50, StringHelper.DERECHA));

@@ -47,7 +47,14 @@ public class ScsDesignaBean extends MasterBean {
 	private String art27;
 	private String NIG;
 	private Integer anioProcedimiento;
+	private String factConvenio;
 	
+	public String getFactConvenio() {
+		return factConvenio;
+	}
+	public void setFactConvenio(String factConvenio) {
+		this.factConvenio = factConvenio;
+	}
 	// Nombre de Tabla
 	static public String T_NOMBRETABLA = "SCS_DESIGNA";
 	
@@ -83,6 +90,7 @@ public class ScsDesignaBean extends MasterBean {
 	static public final String	C_ART27 				= 	"ART27";
 	static public final String  C_NIG   				= 	"NIG";
 	static public final String  C_ANIOPROCEDIMIENTO		= 	"ANIOPROCEDIMIENTO";
+	static public final String  C_FACTCONVENIO			= 	"FACTCONVENIO";
 	
 	
 
