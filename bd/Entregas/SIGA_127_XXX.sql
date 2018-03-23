@@ -250,3 +250,60 @@ delete CAJG_REMESAESTADOS ER
    
 -- 127_004:
 update gen_parametros set valor = 10 where idinstitucion = 2000 and parametro = 'MAXIMO_DIAS_ANTELACION_SOLICITUD';
+
+
+
+---- TRAMITE NUEVA FORTUNA ----
+insert into pcajg_tipo_resolucion (identificador, codigo, descripcion, abreviatura, fechamodificacion, usumodificacion, idinstitucion)
+select 12, 'MF', 'Declarar millor fortuna', null, sysdate, 0, i.idinstitucion
+from cen_institucion i where i.cen_inst_idinstitucion = 3001;
+
+insert into pcajg_tipo_resolucion_scstipor (identificador, idinstitucion, idtiporesolucion, fechamodificacion, usumodificacion)
+select 12, i.idinstitucion, 7, sysdate, 0
+from cen_institucion i where i.cen_inst_idinstitucion = 3001;
+
+
+insert into scs_tipofundamentos (idfundamento, codigo, descripcion, fechamodificacion, usumodificacion, idinstitucion, bloqueado, textoplantilla, idtiporesolucion, textoplantilla2, textoplantilla3, textoplantilla4, fechabaja, codigoejis)
+select (select max(idfundamento)+1 from scs_tipofundamentos t where t.idinstitucion = i.idinstitucion), '41CD', 'arxiu causes diverses', sysdate, 0, i.idinstitucion, 'S', null, 7, null, null, null, null, null
+from cen_institucion i where i.cen_inst_idinstitucion = 3001;
+insert into scs_tipofundamentos (idfundamento, codigo, descripcion, fechamodificacion, usumodificacion, idinstitucion, bloqueado, textoplantilla, idtiporesolucion, textoplantilla2, textoplantilla3, textoplantilla4, fechabaja, codigoejis)
+select (select max(idfundamento)+1 from scs_tipofundamentos t where t.idinstitucion = i.idinstitucion), '41NA', 'arxiu per no acreditar els requisits de l''article 36.2', sysdate, 0, i.idinstitucion, 'S', null, 7, null, null, null, null, null
+from cen_institucion i where i.cen_inst_idinstitucion = 3001;
+insert into scs_tipofundamentos (idfundamento, codigo, descripcion, fechamodificacion, usumodificacion, idinstitucion, bloqueado, textoplantilla, idtiporesolucion, textoplantilla2, textoplantilla3, textoplantilla4, fechabaja, codigoejis)
+select (select max(idfundamento)+1 from scs_tipofundamentos t where t.idinstitucion = i.idinstitucion), '41NC', 'arxiu per no complir els requisits de l''article 36.2', sysdate, 0, i.idinstitucion, 'S', null, 7, null, null, null, null, null
+from cen_institucion i where i.cen_inst_idinstitucion = 3001;
+insert into scs_tipofundamentos (idfundamento, codigo, descripcion, fechamodificacion, usumodificacion, idinstitucion, bloqueado, textoplantilla, idtiporesolucion, textoplantilla2, textoplantilla3, textoplantilla4, fechabaja, codigoejis)
+select (select max(idfundamento)+1 from scs_tipofundamentos t where t.idinstitucion = i.idinstitucion), '41D', 'desistiment', sysdate, 0, i.idinstitucion, 'S', null, 7, null, null, null, null, null
+from cen_institucion i where i.cen_inst_idinstitucion = 3001;     
+insert into scs_tipofundamentos (idfundamento, codigo, descripcion, fechamodificacion, usumodificacion, idinstitucion, bloqueado, textoplantilla, idtiporesolucion, textoplantilla2, textoplantilla3, textoplantilla4, fechabaja, codigoejis)
+select (select max(idfundamento)+1 from scs_tipofundamentos t where t.idinstitucion = i.idinstitucion), '65', 'Declaració millor fortuna per superar els llindars de l''article 36.2', sysdate, 0, i.idinstitucion, 'S', null, 7, null, null, null, null, null
+from cen_institucion i where i.cen_inst_idinstitucion = 3001;
+insert into scs_tipofundamentos (idfundamento, codigo, descripcion, fechamodificacion, usumodificacion, idinstitucion, bloqueado, textoplantilla, idtiporesolucion, textoplantilla2, textoplantilla3, textoplantilla4, fechabaja, codigoejis)
+select (select max(idfundamento)+1 from scs_tipofundamentos t where t.idinstitucion = i.idinstitucion), '65', 'Declaració millor fortuna per superar els llindars de l''article 36.2', sysdate, 0, i.idinstitucion, 'S', null, 7, null, null, null, null, null
+from cen_institucion i where i.cen_inst_idinstitucion = 3001;  
+insert into scs_tipofundamentos (idfundamento, codigo, descripcion, fechamodificacion, usumodificacion, idinstitucion, bloqueado, textoplantilla, idtiporesolucion, textoplantilla2, textoplantilla3, textoplantilla4, fechabaja, codigoejis)
+select (select max(idfundamento)+1 from scs_tipofundamentos t where t.idinstitucion = i.idinstitucion), '66', 'Declaració millor fortuna per canvi substancial de circumstàncies que van motivar el reconeixement', sysdate, 0, i.idinstitucion, 'S', null, 7, null, null, null, null, null
+from cen_institucion i where i.cen_inst_idinstitucion = 3001;      
+insert into scs_tipofundamentos (idfundamento, codigo, descripcion, fechamodificacion, usumodificacion, idinstitucion, bloqueado, textoplantilla, idtiporesolucion, textoplantilla2, textoplantilla3, textoplantilla4, fechabaja, codigoejis)
+select (select max(idfundamento)+1 from scs_tipofundamentos t where t.idinstitucion = i.idinstitucion), '28', 'Inadmetre a tràmit petició extemporània', sysdate, 0, i.idinstitucion, 'S', null, 7, null, null, null, null, null
+from cen_institucion i where i.cen_inst_idinstitucion = 3001; 
+
+
+
+Declare
+  p_Codretorno Varchar2(4000);
+  p_Datoserror Varchar2(4000);
+Begin
+  Update Gen_Catalogos_Multiidioma
+     Set Migrado = 'N'
+   Where Nombretabla = 'SCS_TIPOFUNDAMENTOS'; --Marcar la tabla como No traducida
+  Proc_Act_Recursos(p_Codretorno, p_Datoserror);
+  Dbms_Output.Put_Line(p_Codretorno || ': ' || p_Datoserror);
+End;
+
+--MODIFICADA VISTA V_PCAJG_EJG PARA SETEAR VERSIÓN PCAJG GENERALITAT NUEVA
+
+
+commit;
+
+---- FIN TRAMITE NUEVA FORTUNA ----

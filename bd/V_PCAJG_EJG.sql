@@ -87,7 +87,7 @@ SELECT EJGREMESA.IDREMESA
                ELSE TO_CHAR(SYSDATE, 'DD-MM-YYYY')
                END) AS FECHA_INTERCAMBIO
        , '2.5.2' AS VERSION_PCAJG
-       , '3.0.7' AS VERSION_XSD_GENERALITAT
+       , '3.1.0' AS VERSION_XSD_GENERALITAT
        , 'yyyy-MM-dd' AS FORMATO_FECHAS
       --Datos Expedientes
       /*, (SELECT P.CODIGO

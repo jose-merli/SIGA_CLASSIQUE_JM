@@ -28,6 +28,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.GstDate;
 import com.jcraft.jsch.JSchException;
 import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgEJGRemesaBean;
@@ -38,6 +39,7 @@ import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
+import com.siga.general.SIGAException;
 import com.siga.ws.PCAJGConstantes;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument;
@@ -54,6 +56,8 @@ import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionInte
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosExpediente;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosTramitacionExpediente.TramiteResolucion;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosTramitacionExpediente.TramiteResolucion.PrestacionesResolucion;
+import com.siga.ws.pcajg.cat.xsd.MillorFortunaType;
+import com.siga.ws.pcajg.cat.xsd.MillorFortunaType.DadesResolucio.Resolucio;
 import com.siga.ws.pcajg.cat.xsd.TipoIdentificacionIntercambio;
 
 
@@ -207,6 +211,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				}			
 				
 				Expediente[] expedientes = tipoGenerico.getExpedienteArray();
+				MillorFortunaType[] millorFortunaArray = tipoGenerico.getMillorFortunaArray();
 				
 				int anyoExpediente = -1;
 				String numExpediente = null;
@@ -220,44 +225,76 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 				tx = getUsrBean().getTransactionPesada();
 				tx.begin();
 				
-				for (Expediente expediente : expedientes) {					
-					tipoPrestacion = new StringBuffer();
-					
-					DatosExpediente datosExpediente = expediente.getDatosExpediente();
-					
-					if (datosExpediente.getCodigoExpedienteServicio() != null) {
-						String descError = "El expediente no se puede relacionar en el sistema. Se ha recibido el siguiente código expediente servicio (año/número)" +
-								" = " + datosExpediente.getCodigoExpedienteServicio().getAnyoExpedienteServicio() + "/" + datosExpediente.getCodigoExpedienteServicio().getNumExpedienteServicio();
-						escribeLogRemesa(descError);
-						rellenaErrorContenido(datosError, datosExpediente.getCodigoExpedienteServicio().getOrigenExpedienteServicio(), 
-								datosExpediente.getCodigoExpedienteServicio().getAnyoExpedienteServicio(), 
-								datosExpediente.getCodigoExpedienteServicio().getNumExpedienteServicio(), 
-								"CodigoExpedienteServicio", descError);
-					} else {
+				if (expedientes != null && expedientes.length > 0) {
+					for (Expediente expediente : expedientes) {					
+						tipoPrestacion = new StringBuffer();
 						
-						numExpediente = datosExpediente.getCodigoExpediente().getNumExpediente();
-						anyoExpediente = datosExpediente.getCodigoExpediente().getAnyoExpediente();
+						DatosExpediente datosExpediente = expediente.getDatosExpediente();
 						
-						if (expediente.getDatosTramitacionExpediente() == null || expediente.getDatosTramitacionExpediente().getTramiteResolucion() == null) {
-							String descError = "No se ha recibido resolución para el expediente (año/número)" +
-									" = " + anyoExpediente + "/" + numExpediente;
+						if (datosExpediente.getCodigoExpedienteServicio() != null) {
+							String descError = "El expediente no se puede relacionar en el sistema. Se ha recibido el siguiente código expediente servicio (año/número)" +
+									" = " + datosExpediente.getCodigoExpedienteServicio().getAnyoExpedienteServicio() + "/" + datosExpediente.getCodigoExpedienteServicio().getNumExpedienteServicio();
 							escribeLogRemesa(descError);
-							rellenaErrorContenido(datosError, datosExpediente.getCodigoExpediente().getColegioExpediente(), anyoExpediente, numExpediente, "TramiteResolucion", descError);
-							
+							rellenaErrorContenido(datosError, datosExpediente.getCodigoExpedienteServicio().getOrigenExpedienteServicio(), 
+									datosExpediente.getCodigoExpedienteServicio().getAnyoExpedienteServicio(), 
+									datosExpediente.getCodigoExpedienteServicio().getNumExpedienteServicio(), 
+									"CodigoExpedienteServicio", descError);
 						} else {
 							
-							TramiteResolucion tramiteResolucion = expediente.getDatosTramitacionExpediente().getTramiteResolucion();
-							fechaEstado = tramiteResolucion.getIdentificacionTramite().getFechaEstado();
-							identificadorResolucion = tramiteResolucion.getIdentificadorResolucion();
-							codTipoResolucion = tramiteResolucion.getCodTipoResolucion();
-							codMotivoResolucion = tramiteResolucion.getCodMotivoResolucion();
-							intervaloIngresosRecursos = tramiteResolucion.getIntervaloIngresosRecursos();
+							numExpediente = datosExpediente.getCodigoExpediente().getNumExpediente();
+							anyoExpediente = datosExpediente.getCodigoExpediente().getAnyoExpediente();
 							
-							for (PrestacionesResolucion prestacionesResolucion : tramiteResolucion.getPrestacionesResolucionArray()) {
-								tipoPrestacion.append("\n" + prestacionesResolucion.getCodTipoPrestacion());
-								tipoPrestacion.append(" " + prestacionesResolucion.getDescTipoPrestacion());
+							if (expediente.getDatosTramitacionExpediente() == null || expediente.getDatosTramitacionExpediente().getTramiteResolucion() == null) {
+								String descError = "No se ha recibido resolución para el expediente (año/número)" +
+										" = " + anyoExpediente + "/" + numExpediente;
+								escribeLogRemesa(descError);
+								rellenaErrorContenido(datosError, datosExpediente.getCodigoExpediente().getColegioExpediente(), anyoExpediente, numExpediente, "TramiteResolucion", descError);
+								
+							} else {
+								
+								TramiteResolucion tramiteResolucion = expediente.getDatosTramitacionExpediente().getTramiteResolucion();
+								fechaEstado = tramiteResolucion.getIdentificacionTramite().getFechaEstado();
+								identificadorResolucion = tramiteResolucion.getIdentificadorResolucion();
+								codTipoResolucion = tramiteResolucion.getCodTipoResolucion();
+								codMotivoResolucion = tramiteResolucion.getCodMotivoResolucion();
+								intervaloIngresosRecursos = tramiteResolucion.getIntervaloIngresosRecursos();
+								
+								for (PrestacionesResolucion prestacionesResolucion : tramiteResolucion.getPrestacionesResolucionArray()) {
+									tipoPrestacion.append("\n" + prestacionesResolucion.getCodTipoPrestacion());
+									tipoPrestacion.append(" " + prestacionesResolucion.getDescTipoPrestacion());
+								}
+								actualizaExpediente(idInstitucion, datosExpediente.getCodigoExpediente().getColegioExpediente(), anyoExpediente, numExpediente, fechaEstado, identificadorResolucion, codTipoResolucion, codMotivoResolucion, intervaloIngresosRecursos, tipoPrestacion.toString(), datosError);
 							}
-							actualizaExpediente(idInstitucion, datosExpediente.getCodigoExpediente().getColegioExpediente(), anyoExpediente, numExpediente, fechaEstado, identificadorResolucion, codTipoResolucion, codMotivoResolucion, intervaloIngresosRecursos, tipoPrestacion.toString(), datosError);
+						}
+					}
+				}
+				
+				if (millorFortunaArray != null && millorFortunaArray.length > 0) {
+					for (MillorFortunaType millorFortuna : millorFortunaArray) {					
+						tipoPrestacion = new StringBuffer();
+						
+						
+						if (millorFortuna.getDadesMillorFortuna().getCodiExpedientServei() != null) {
+							String descError = "El expediente no se puede relacionar en el sistema. Se ha recibido el siguiente código expediente servicio (año/número)" +
+									" = " + millorFortuna.getDadesMillorFortuna().getCodiExpedientServei().getAnyoExpedienteServicio() + "/" + millorFortuna.getDadesMillorFortuna().getCodiExpedientServei().getNumExpedienteServicio();
+							escribeLogRemesa(descError);
+							rellenaErrorContenido(datosError, millorFortuna.getDadesMillorFortuna().getCodiExpedientServei().getOrigenExpedienteServicio(), 
+									millorFortuna.getDadesMillorFortuna().getCodiExpedientServei().getAnyoExpedienteServicio(), 
+									millorFortuna.getDadesMillorFortuna().getCodiExpedientServei().getNumExpedienteServicio(), 
+									"CodigoExpedienteServicio", descError);
+						} else {
+							
+							numExpediente = millorFortuna.getDadesMillorFortuna().getCodiExpedient().getNumExpediente();
+							anyoExpediente = millorFortuna.getDadesMillorFortuna().getCodiExpedient().getAnyoExpediente();
+							
+							Resolucio resolucio = millorFortuna.getDadesResolucio().getResolucio();
+							fechaEstado = resolucio.getDataResolucio();
+							identificadorResolucion = resolucio.getNumResolucio();
+							codTipoResolucion = "MF";
+							codMotivoResolucion = resolucio.getMotiuResolucio();
+							intervaloIngresosRecursos = null;
+							
+							actualizaExpediente(idInstitucion, millorFortuna.getDadesMillorFortuna().getCodiExpedient().getColegioExpediente(), anyoExpediente, numExpediente, fechaEstado, identificadorResolucion, codTipoResolucion, codMotivoResolucion, intervaloIngresosRecursos, tipoPrestacion.toString(), datosError);
 						}
 					}
 				}
@@ -337,7 +374,8 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 	 * @param  
 	 * @throws Exception
 	 */
-	private void actualizaExpediente(String idInstitucion, String colegioExpediente, int anyoExpediente, String numExpediente, Calendar fechaEstadoCalendar, String identificadorResolucion, String codTipoResolucion, String codMotivoResolucion, String intervaloIngresosRecursos, String tipoPrestacion, DatosError datosError) throws Exception {		
+	private void actualizaExpediente(String idInstitucion, String colegioExpediente, int anyoExpediente, String numExpediente, Calendar fechaEstadoCalendar, String identificadorResolucion
+			, String codTipoResolucion, String codMotivoResolucion, String intervaloIngresosRecursos, String tipoPrestacion, DatosError datosError) throws Exception {		
 		
 		ScsEJGAdm scsEJGAdm = new ScsEJGAdm(getUsrBean());
 		CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(getUsrBean());
@@ -402,13 +440,16 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 					return;
 				}
 				
+				StringBuffer observaciones = new StringBuffer();
+				
+				aniadeTexto(observaciones, scsEJGBean.getRatificacionDictamen());
+				aniadeTexto(observaciones, recuperaDatosEJG(scsEJGBean));
+				
 				//El estado lo pone el trigger como resuelto
-				String observaciones = intervaloIngresosRecursos;
-				observaciones = observaciones==null?"":("Intervalo ingresos recursos: " + observaciones);
+				aniadeTexto(observaciones, (intervaloIngresosRecursos!=null?("Intervalo ingresos recursos: " + intervaloIngresosRecursos):""));
 				
 				if (tipoPrestacion != null && !tipoPrestacion.trim().equals("")){
-					observaciones += "\nPrestaciones:";
-					observaciones += tipoPrestacion;
+					aniadeTexto(observaciones, "Prestaciones: " + tipoPrestacion);
 				}
 				
 				String update = "UPDATE " + ScsEJGBean.T_NOMBRETABLA + " SET " +
@@ -439,6 +480,63 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 		}
 		
 	}
+	
+	private String recuperaDatosEJG(ScsEJGBean scsEJGBean) throws ClsExceptions, SIGAException {
+		String observaciones = "";
+		if (scsEJGBean != null && scsEJGBean.getIdTipoRatificacionEJG() != null) {
+			String sql = "select f_siga_getrecurso(tr.descripcion, 2) TIPORESOLUCION from scs_tiporesolucion tr where tr.idtiporesolucion = " + scsEJGBean.getIdTipoRatificacionEJG();
+			CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(getUsrBean());
+			Vector vector = cajgEJGRemesaAdm.selectGenerico(sql);
+			if (vector != null && vector.size() == 1) {
+				Hashtable hashtable = (Hashtable) vector.get(0);
+				if (hashtable.get("TIPORESOLUCION") != null) {
+					observaciones = "Resolución anterior: " + hashtable.get("TIPORESOLUCION");
+					 
+					if (scsEJGBean.getIdFundamentoJuridico() != null) {
+						sql = "SELECT f_siga_getrecurso(T.descripcion, 2) TIPOFUNDAMENTOS" +
+							" FROM SCS_TIPOFUNDAMENTOS T" +
+							" WHERE T.IDINSTITUCION = " + scsEJGBean.getIdInstitucion() +
+							" AND T.IDFUNDAMENTO = " + scsEJGBean.getIdFundamentoJuridico();
+						vector = cajgEJGRemesaAdm.selectGenerico(sql);
+						if (vector != null && vector.size() == 1) {
+							hashtable = (Hashtable) vector.get(0);
+							if (hashtable.get("TIPOFUNDAMENTOS") != null) {
+								observaciones += " (" + hashtable.get("TIPOFUNDAMENTOS") + ")";
+							}
+						}
+						
+						if (scsEJGBean.getFechaResolucionCAJG() != null && !scsEJGBean.getFechaResolucionCAJG().trim().equals("")) {
+							try {
+								observaciones += " (" + (GstDate.getFormatedDateShort("", scsEJGBean.getFechaResolucionCAJG())) + ")";
+							} catch (ClsExceptions e) {
+								//si falla por el formata lo fecha no la insertamos en el campo observaciones
+								ClsLogging.writeFileLogError("Se ha producido un error al tratar la fecha de resolución " + scsEJGBean.getFechaResolucionCAJG(), e, 3);
+							}
+							
+						}
+						if (scsEJGBean.getRefAuto() != null && !scsEJGBean.getRefAuto().trim().equals("")) {
+							observaciones += ". RefAuto: " + scsEJGBean.getRefAuto();
+						}
+					}
+				}
+			}
+		}
+		
+		return observaciones;
+	}
+
+
+	private void aniadeTexto(StringBuffer observaciones, String string) {
+		if (string != null && !string.trim().equals("")) {
+			if (observaciones.length() > 0) {
+				observaciones.append("\n");
+			}
+			observaciones.append(string);
+		}
+	}
+
+
+	
 
 
 	private void rellenaErrorContenido(DatosError datosError, String colegioExpediente, int anyoExpediente, String numExpediente, String campoError, String descError) {
