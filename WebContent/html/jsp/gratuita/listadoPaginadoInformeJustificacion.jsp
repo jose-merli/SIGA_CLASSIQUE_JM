@@ -117,8 +117,21 @@ function accionCerrar(){
 function refrescarLocal(){
 	parent.buscar();
 }
-function accionNuevaActuacion(anio,idTurno,numero,idInstitucion,validarActuaciones) 
+function accionNuevaActuacion(anio,idTurno,numero,idInstitucion,validarActuaciones,isLetrado) 
 {	
+	
+	if(isLetrado && isLetrado=='true'){
+		if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true'){
+			if(trim(document.InformeJustificacionMasivaForm.mensajeResponsabilidadJustificacionLetrado.value)!=''){
+				if (!confirm(document.InformeJustificacionMasivaForm.mensajeResponsabilidadJustificacionLetrado.value)){
+					fin();
+					return false;
+				}
+			}
+		
+		}
+	}
+	
 	var accion = document.ActuacionesDesignasForm.action;
 	if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true')
 		document.ActuacionesDesignasForm.action = accion.replace('JGR_ActuacionesDesigna','JGR_ActuacionDesignaLetrado');
@@ -136,6 +149,20 @@ function accionNuevaActuacion(anio,idTurno,numero,idInstitucion,validarActuacion
 
 function accionEditarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion,validarActuaciones,fichaColegial) 
 {	
+	
+	if(isLetrado && isLetrado=='true'){
+		if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true'){
+			if(trim(document.InformeJustificacionMasivaForm.mensajeResponsabilidadJustificacionLetrado.value)!=''){
+				if (!confirm(document.InformeJustificacionMasivaForm.mensajeResponsabilidadJustificacionLetrado.value)){
+					fin();
+					return false;
+				}
+			}
+		
+		}
+	}
+	
+	
 	var accion = document.ActuacionesDesignasForm.action;
 	if(document.InformeJustificacionMasivaForm.fichaColegial.value=='true')
 		document.ActuacionesDesignasForm.action = accion.replace('JGR_ActuacionesDesigna','JGR_ActuacionDesignaLetrado');
@@ -2046,7 +2073,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																<c:when test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V')}">
 																	<img id="iconoboton_editar1" src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor: hand;" alt="Editar" name="editar_1"
 																		border="0"
-																		onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}','${InformeJustificacionMasivaForm.fichaColegial }');"
+																		onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}','${InformeJustificacionMasivaForm.fichaColegial }','${usrBean.letrado}');"
 																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)" />
 																	<img id="iconoboton_borrar1" src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>" style="cursor: hand;" alt="Borrar" name="borrar_1"
 																		border="0"
@@ -2236,7 +2263,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 																<c:when test="${(permitirBotones==true && designa.estado!=null && designa.estado=='V')}">
 																	<img id="iconoboton_editar1" src="<html:rewrite page='/html/imagenes/beditar_off.gif'/>" style="cursor: hand;" alt="Editar" name="editar_1"
 																		border="0"
-																		onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}','${InformeJustificacionMasivaForm.fichaColegial }');"
+																		onClick="accionEditarActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},${actuacion.numero},'${designa.actuacionValidarJustificaciones}','${InformeJustificacionMasivaForm.fichaColegial }','${usrBean.letrado}');"
 																		onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('editar_1','','<html:rewrite page='/html/imagenes/beditar_on.gif'/>',1)">
 																	<img id="iconoboton_borrar1" src="<html:rewrite page='/html/imagenes/bborrar_off.gif'/>" style="cursor: hand;" alt="Borrar" name="borrar_1"
 																		border="0"
@@ -2297,7 +2324,7 @@ function accionNuevaDocumentacionActuacion(anio,idTurno,numero,idInstitucion,num
 											</c:choose>
 											<td colspan="3" style="vertical-align: middle;"><img src="<html:rewrite page='/html/imagenes/icono+.gif'/>" style="cursor: hand;"
 												alt="<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion"/>" name="" border="0"
-												onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},'${designa.actuacionValidarJustificaciones}');" />
+												onclick="accionNuevaActuacion(${designa.anio},${designa.idTurno},${designa.numero},${designa.idInstitucion},'${designa.actuacionValidarJustificaciones}','${usrBean.letrado}');" />
 												<siga:Idioma key="gratuita.informeJustificacionMasiva.nuevaActuacion" /></td>
 											<td>&nbsp;</td>
 											<td>&nbsp;</td>
