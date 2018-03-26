@@ -701,6 +701,7 @@
 				
 				if((objectConsejo && objectConsejo.value ==IDINSTITUCION_CONSEJO_ANDALUZ)){
 					var objectAnioProcedimiento =  new Object();
+					error ='';
 					if(valueNumProcedimiento!=''){ 
 						arrayNumProcedimiento = valueNumProcedimiento.split("/");
 						if(arrayNumProcedimiento.length<2){
