@@ -1836,8 +1836,6 @@
 		
 		<!-- ***** Certificados / Detalle Solicitud ***** -->
 		<action path="/CER_DetalleSolicitud" type="com.siga.certificados.action.SIGACerDetalleSolicitudAction" name="CerDetalleSolicitudForm" scope="session">
-			<forward name="inicio" path="/html/jsp/certificados/abrirListadoSolicitudes.jsp"/>
-			<forward name="abrir" path="/html/jsp/certificados/abrirListadoSolicitudes.jsp"/>
 			<forward name="consultar" path="/html/jsp/certificados/detalleSolicitudCertificado.jsp"/>
 			<forward name="editar" path="/html/jsp/certificados/detalleSolicitudCertificado.jsp"/>
 			<forward name="mostrar" path="/html/jsp/certificados/detalleSolicitudCertificado.jsp"/>
