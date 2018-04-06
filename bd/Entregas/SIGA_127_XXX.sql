@@ -307,3 +307,6 @@ End;
 commit;
 
 ---- FIN TRAMITE NUEVA FORTUNA ----
+
+
+-- Ejecutados en Integracion por ACP el 06/04/2018 a las 13:17
