@@ -310,3 +310,9 @@ commit;
 
 
 -- Ejecutados en Integracion por ACP el 06/04/2018 a las 13:17
+
+-- Add/modify columns 
+alter table SCS_DESIGNA add factconvenio number(1) default 0;
+-- Add comments to the columns 
+comment on column SCS_DESIGNA.factconvenio
+  is 'Campo no obligatorio que indica si se va a pagar por convenio';

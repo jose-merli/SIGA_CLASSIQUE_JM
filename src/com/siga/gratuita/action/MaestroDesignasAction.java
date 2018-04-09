@@ -870,7 +870,7 @@ public class MaestroDesignasAction extends MasterAction {
 						}
 						
 						
-						designaNueva.put(ScsDesignaBean.C_FACTCONVENIO, UtilidadesString.stringToBoolean(miform.getConvenio())?AppConstants.DB_TRUE:AppConstants.DB_FALSE);
+						designaNueva.put(ScsDesignaBean.C_FACTCONVENIO, miform.getConvenio());
 						
 						
 						
