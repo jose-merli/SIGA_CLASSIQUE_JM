@@ -1513,7 +1513,9 @@
 		
 	</html:form>
 	</div>
-
+	<%
+		if (idMotivoAnulacion != null && !idMotivoAnulacion.equals(new Integer(-1))) {
+	%>	
 	<div id="divAnulacion" class="divModal" style="display:none" title="Anulación">
 		<fieldset>
 		<div style='width:98%;'>
@@ -1525,6 +1527,10 @@
 		</div>
 		</fieldset>
 	</div>
+	
+	<%
+		}
+	%>
 	
 	<siga:ConjBotonesAccion botones="<%=botones%>" ordenar="false"/>
 
