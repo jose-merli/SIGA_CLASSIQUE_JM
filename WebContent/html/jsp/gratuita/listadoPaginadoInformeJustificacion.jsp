@@ -147,7 +147,7 @@ function accionNuevaActuacion(anio,idTurno,numero,idInstitucion,validarActuacion
 			
 }
 
-function accionEditarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion,validarActuaciones,fichaColegial) 
+function accionEditarActuacion(anio,idTurno,numero,idInstitucion,numeroActuacion,validarActuaciones,fichaColegial,isLetrado) 
 {	
 	
 	if(isLetrado && isLetrado=='true'){
