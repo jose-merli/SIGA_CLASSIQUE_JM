@@ -33,7 +33,8 @@
 	UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	Hashtable resultado = (Hashtable) ses.getAttribute("resultado");
 	ses.removeAttribute("resultado");
-
+	
+	String algunaActuacionFacturada = (String) request.getAttribute("isAlgunaActuacionFacturada");
 	String modo = (String) ses.getAttribute("Modo");
 	String modoAction=(String) ses.getAttribute("ModoAction");
 	String idInstitucionLocation = usr.getLocation();
@@ -1140,10 +1141,10 @@
 								<% } %>
 							</td>
 								<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA){ %>
-								<td class="labelText">Tipo pago conserjeria </td>
-								<td >
+								<td class="labelText">Tipo certificación</td>
+								<td class="labelTextValor">
 								
-									<% if (!modo.equalsIgnoreCase("ver")) { %>
+									<% if (!modo.equalsIgnoreCase("ver") && algunaActuacionFacturada!=null && algunaActuacionFacturada.equals("0")) { %>
 
 										<html:select name="MaestroDesignasForm" styleId="convenio" styleClass="boxCombo" style="width:150px;" property="convenio" >
 											<html:option value=''>&nbsp;</html:option>
@@ -1163,6 +1164,7 @@
 								</td>
 							<td></td>
 							<%}else{ %>
+								<html:hidden name="MaestroDesignasForm" styleId="convenio"  property="convenio" />
 								<td colspan = "3"></td>
 							<%} %>
 						</tr>
