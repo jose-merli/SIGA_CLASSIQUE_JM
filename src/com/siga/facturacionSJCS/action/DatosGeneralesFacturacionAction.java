@@ -413,6 +413,8 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			if (aux!=null) {
 				request.setAttribute("prevision", "S");
 			}
+			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
+			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 		}
 		catch(Exception e){}
 		return "nuevoCriterio";
@@ -576,6 +578,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		}
 			
 			
+			
 		} 
 		catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacionSJCS"},e,null); 
@@ -663,8 +666,8 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			facturaPrueba.setFechaHasta((String)miform.getFechaFin());
 			facturaPrueba.setIdInstitucion(Integer.valueOf(idInstitucion));
 			facturaPrueba.setIdFacturacion(Integer.valueOf(idFacturacion));
-			
-			boolean solapamiento = facturacionAdm.existeFacturacionMismoPerdiodo(facturaPrueba,null);
+			Integer valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
+			boolean solapamiento = facturacionAdm.existeFacturacionMismoPerdiodo(facturaPrueba,null,valorPcajgActivo);
 			
 			//Si se solapan, paramos la insercion y volvemos avisando del error sin refrescar:
 			if (solapamiento) {
@@ -905,8 +908,8 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			facturaPrueba.setFechaHasta((String)miform.getFechaFin());
 			facturaPrueba.setIdInstitucion(Integer.valueOf((String)usr.getLocation()));
 			facturaPrueba.setIdFacturacion(Integer.valueOf((String)datos.get("IDFACTURACION")));
-			
-			boolean solapamiento = facturacionAdm.existeFacturacionMismoPerdiodo(facturaPrueba,null);
+			Integer valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
+			boolean solapamiento = facturacionAdm.existeFacturacionMismoPerdiodo(facturaPrueba,null,valorPcajgActivo);
 			
 			//Si se solapan, paramos la insercion y volvemos avisando del error sin refrescar:
 			if (solapamiento) 
@@ -1055,6 +1058,8 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			beanCriterio.setIdInstitucion(new Integer(usr.getLocation()));
 			beanCriterio.setUsuMod(new Integer(usr.getUserName()));
 			
+			
+			
 			Hashtable nuevoCriterio = new Hashtable();
 			nuevoCriterio.put(FcsFactGrupoFactHitoBean.C_FECHAMODIFICACION, "sysdate");
 			nuevoCriterio.put(FcsFactGrupoFactHitoBean.C_IDFACTURACION, (String)miform.getIdFacturacion());
@@ -1062,16 +1067,22 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			nuevoCriterio.put(FcsFactGrupoFactHitoBean.C_IDHITOGENERAL, (String) miform.getHito());
 			nuevoCriterio.put(FcsFactGrupoFactHitoBean.C_IDINSTITUCION, (String)usr.getLocation());
 			nuevoCriterio.put(FcsFactGrupoFactHitoBean.C_USUMODIFICACION, (String)usr.getUserName());
+			if(miform.getConvenio()!=null)
+				nuevoCriterio.put(FcsFactGrupoFactHitoBean.C_FACTCONVENIO, (String) miform.getConvenio());
 			
+			Integer valorPcajgActivo = null;
 			// RGG 25/04/2005 Si venimos de prevision no comprobamos esto
 			if (prevision==null || !prevision.equals("S")) {
+				valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 				
 				//comprobamos que no exista un criterio igual
 				String consulta = " where " + FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION + "=" + (String) miform.getGrupoF() +
 				" and " + FcsFactGrupoFactHitoBean.C_IDHITOGENERAL + "=" + (String) miform.getHito() + 
 				" and " + FcsFactGrupoFactHitoBean.C_IDFACTURACION + "=" + (String) miform.getIdFacturacion() +
 				" and " + FcsFactGrupoFactHitoBean.C_IDINSTITUCION + "=" + (String) usr.getLocation();
-				
+				if(valorPcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA && miform.getConvenio()!=null && !miform.getConvenio().equalsIgnoreCase("")) {
+					consulta += " and nvl(" + FcsFactGrupoFactHitoBean.C_FACTCONVENIO + ", "+(String)miform.getConvenio()+")=" + (String)miform.getConvenio();
+				}
 				Vector resultadoConsulta = criterioAdm.select(consulta);
 				if (resultadoConsulta.size()>0)
 					throw new SIGAException("messages.factSJCS.error.insertarCriterioFacturacion"); 
@@ -1087,7 +1098,13 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 			
 			// RGG 25/04/2005 Si venimos de prevision no comprobamos esto
 			if (prevision==null || !prevision.equals("S")) {
-				boolean solapamiento = facturacionAdm.existeFacturacionMismoPerdiodo(facturaPrueba,beanCriterio);
+				if(valorPcajgActivo==null)
+					valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
+				if(valorPcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA && miform.getConvenio()!=null && !miform.getConvenio().equalsIgnoreCase("") ) {
+					beanCriterio.setFactConvenio(Short.valueOf(miform.getConvenio()));
+				}
+				
+				boolean solapamiento = facturacionAdm.existeFacturacionMismoPerdiodo(facturaPrueba,beanCriterio,valorPcajgActivo);
 				
 				//si se solapan, paramos la insercion
 				if (solapamiento) 

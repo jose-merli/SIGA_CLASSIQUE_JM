@@ -33,8 +33,15 @@ public class DatosGeneralesFacturacionForm extends MasterForm {
 	private String idEstado=null;
 	private FormFile file;
 	private String tipoFicheroCAMRadio;
+	private String convenio;
 	
 	
+	public String getConvenio() {
+		return convenio;
+	}
+	public void setConvenio(String convenio) {
+		this.convenio = convenio;
+	}
 	/**
 	 * @return Returns the idInstitucion.
 	 */

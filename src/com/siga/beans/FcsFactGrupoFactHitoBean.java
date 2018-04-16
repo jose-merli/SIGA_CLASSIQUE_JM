@@ -24,6 +24,7 @@ public class FcsFactGrupoFactHitoBean extends MasterBean{
 	private Integer		idFacturacion;
 	private Integer 	idGrupoFacturacion;
 	private Integer 	idHitoGeneral;
+	private Short factConvenio;
 	
 		
 	/**
@@ -40,6 +41,8 @@ public class FcsFactGrupoFactHitoBean extends MasterBean{
 	static public final String 	C_IDFACTURACION = 			"IDFACTURACION";
 	static public final String 	C_IDGRUPOFACTURACION = 		"IDGRUPOFACTURACION";
 	static public final String 	C_IDHITOGENERAL = 		"IDHITOGENERAL";
+	static public final String 	C_FACTCONVENIO = 		"FACTCONVENIO";
+	
 	
 		
 		
@@ -91,5 +94,11 @@ public class FcsFactGrupoFactHitoBean extends MasterBean{
 	 */
 	public void setIdHitoGeneral(Integer idHitoGeneral) {
 		this.idHitoGeneral = idHitoGeneral;
+	}
+	public Short getFactConvenio() {
+		return factConvenio;
+	}
+	public void setFactConvenio(Short factConvenio) {
+		this.factConvenio = factConvenio;
 	}
 }

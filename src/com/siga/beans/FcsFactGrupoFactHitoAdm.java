@@ -26,8 +26,8 @@ import com.siga.general.SIGAException;
 public class FcsFactGrupoFactHitoAdm extends MasterBeanAdministrador {
 
 	private static String[] campos = {	FcsFactGrupoFactHitoBean.C_FECHAMODIFICACION,	FcsFactGrupoFactHitoBean.C_IDFACTURACION,
-			FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION,	FcsFactGrupoFactHitoBean.C_IDHITOGENERAL,	FcsFactGrupoFactHitoBean.C_IDINSTITUCION,
-			FcsFactGrupoFactHitoBean.C_USUMODIFICACION};
+			FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION,	FcsFactGrupoFactHitoBean.C_IDHITOGENERAL,	FcsFactGrupoFactHitoBean.C_FACTCONVENIO,
+			FcsFactGrupoFactHitoBean.C_IDINSTITUCION, FcsFactGrupoFactHitoBean.C_USUMODIFICACION};
 	private static String[] claves = {	FcsFactGrupoFactHitoBean.C_IDINSTITUCION,		FcsFactGrupoFactHitoBean.C_IDFACTURACION,
 		FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION,FcsFactGrupoFactHitoBean.C_IDHITOGENERAL};
 	/**
@@ -78,6 +78,7 @@ public class FcsFactGrupoFactHitoAdm extends MasterBeanAdministrador {
 		bean.setIdGrupoFacturacion(UtilidadesHash.getInteger(hash,FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION));
 		bean.setIdInstitucion(UtilidadesHash.getInteger(hash,FcsFactGrupoFactHitoBean.C_IDINSTITUCION));
 		bean.setIdHitoGeneral(UtilidadesHash.getInteger(hash,FcsFactGrupoFactHitoBean.C_IDHITOGENERAL));
+		bean.setFactConvenio(UtilidadesHash.getShort(hash,FcsFactGrupoFactHitoBean.C_FACTCONVENIO));
 		bean.setUsuMod(UtilidadesHash.getInteger(hash,FcsFactGrupoFactHitoBean.C_USUMODIFICACION));
 	}
 
@@ -96,6 +97,7 @@ public class FcsFactGrupoFactHitoAdm extends MasterBeanAdministrador {
 			hash.put(FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION, String.valueOf(b.getIdGrupoFacturacion()));
 			hash.put(FcsFactGrupoFactHitoBean.C_IDINSTITUCION, 		String.valueOf(b.getIdInstitucion()));
 			hash.put(FcsFactGrupoFactHitoBean.C_IDHITOGENERAL, 		String.valueOf(b.getIdHitoGeneral()));
+			hash.put(FcsFactGrupoFactHitoBean.C_FACTCONVENIO, 		String.valueOf(b.getFactConvenio()));
 			hash.put(FcsFactGrupoFactHitoBean.C_USUMODIFICACION,	String.valueOf(b.getUsuMod()));
 		}
 		catch (Exception e){

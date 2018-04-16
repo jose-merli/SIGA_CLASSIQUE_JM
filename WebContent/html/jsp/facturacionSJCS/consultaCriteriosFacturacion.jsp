@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html>
 <head>
 <!-- consultaCriteriosFacturacion.jsp -->
@@ -17,6 +18,7 @@
 <%@ taglib uri = "struts-bean.tld" prefix="bean"%>
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-logic.tld" prefix="logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.*"%>
@@ -25,11 +27,12 @@
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.util.Vector"%>
 <%@ page import="java.util.Hashtable"%>
+<%@page import="com.siga.ws.CajgConfiguracion"%>
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-		
+	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");	
 	Vector obj = (Vector)request.getSession().getAttribute("vHito");
 	request.getSession().removeAttribute("vHito");
 	
@@ -38,7 +41,9 @@
 	String idFacturacion = (String) request.getParameter("idFacturacion");
 	String idInstitucion = (String) request.getParameter("idInstitucion");
 	String estado = (String)ses.getAttribute("estado");
-
+	if(idInstitucion==null)
+		idInstitucion = usr.getLocation(); 
+	Integer pcajgActivo = CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion));
 	String prevision = request.getParameter("prevision");
 	boolean bPrevision = false;
 	if (prevision!=null && prevision.equals("S")) {
@@ -103,12 +108,23 @@
 		<html:hidden property = "modo" value = ""/>
 		</html:form>	
 		
+			<c:set var="columnNames" value="factSJCS.datosFacturacion.literal.gruposFacturacion,factSJCS.datosFacturacion.literal.hitos," />
+	<c:set var="columnSizes" value="35,45,10" />
+	<%if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == pcajgActivo) { %>
+	
+		<c:set var="columnNames" value="factSJCS.datosFacturacion.literal.gruposFacturacion,factSJCS.datosFacturacion.literal.hitos,Tipo certificación," />
+		<c:set var="columnSizes" value="30,35,10,15" />
+	
+	
+	<%}%>
+	
+		
 		
 		<siga:Table 
 			   name="tablaDatos"
 			   border="1"
-			   columnNames="factSJCS.datosFacturacion.literal.gruposFacturacion,factSJCS.datosFacturacion.literal.hitos,"
-			   columnSizes="35,45,10"
+			   columnNames="${columnNames}"
+			columnSizes="${columnSizes}"
 			   modal="P">
 		<% if (obj==null || obj.size()==0){%>
 					<tr class="notFound">
@@ -125,6 +141,10 @@
 				  	<siga:FilaConIconos visibleEdicion='no' visibleConsulta='no' fila='<%=String.valueOf(recordNumber)%>' botones="<%=botones%>" clase="listaNonEdit" modo="<%=modo%>">
 						<td><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_1' value='<%=idFacturacion%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_2' value='<%=hash.get("IDGRUPOFACTURACION")%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_3' value='<%=hash.get("IDHITOGENERAL")%>'><input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idInstitucion%>'><%=UtilidadesString.mostrarDatoJSP((String)hash.get("NOMBRE"))%></td>
 						<td><siga:Idioma key='<%=(String)hash.get("DESCRIPCION")%>'/></td>
+						<%if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == pcajgActivo) { %>
+					<td>consultaCriteriosFacturacion</td>
+					<%}%>
+						
 					</siga:FilaConIconos>	
 				<%recordNumber++;%>
 				<%}%>	

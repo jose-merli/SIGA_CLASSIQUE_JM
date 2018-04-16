@@ -318,5 +318,7 @@ comment on column SCS_DESIGNA.factconvenio
   is 'Campo no obligatorio que indica si se va a pagar por convenio';
   
 -- Ejecutados en Integracion por AAG el 09/04/2018 a las 10:55
-  
+  --ALCALA
+alter table FCS_FACT_GRUPOFACT_HITO add factconvenio number(1);
+alter paquete PKG_SIGA_FACTURACION_SJCS
   

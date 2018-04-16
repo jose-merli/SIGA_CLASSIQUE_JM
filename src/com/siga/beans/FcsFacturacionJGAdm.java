@@ -396,6 +396,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		RowsContainer rc = null;
 		String consulta =	" select  " + UtilidadesMultidioma.getCampoMultidiomaSimple(ScsGrupoFacturacionBean.T_NOMBRETABLA + "." + ScsGrupoFacturacionBean.C_NOMBRE,this.usrbean.getLanguage()) + " NOMBRE, " + UtilidadesMultidioma.getCampoMultidiomaSimple(FcsHitoGeneralBean.T_NOMBRETABLA + "." + FcsHitoGeneralBean.C_DESCRIPCION, this.usrbean.getLanguage()) + " DESCRIPCION,"+
 							ScsGrupoFacturacionBean.T_NOMBRETABLA + "." + ScsGrupoFacturacionBean.C_IDGRUPOFACTURACION + " IDGRUPOFACTURACION," + FcsHitoGeneralBean.T_NOMBRETABLA + "." + FcsHitoGeneralBean.C_IDHITOGENERAL + " IDHITOGENERAL"+
+							", "+FcsFactGrupoFactHitoBean.T_NOMBRETABLA + "." + FcsFactGrupoFactHitoBean.C_FACTCONVENIO+""+
 							" from " + FcsFactGrupoFactHitoBean.T_NOMBRETABLA + " , "+ ScsGrupoFacturacionBean.T_NOMBRETABLA + ", " + FcsHitoGeneralBean.T_NOMBRETABLA + " " +
 							" where " + FcsFactGrupoFactHitoBean.T_NOMBRETABLA + "." + FcsFactGrupoFactHitoBean.C_IDGRUPOFACTURACION + " = " + ScsGrupoFacturacionBean.T_NOMBRETABLA + "." + ScsGrupoFacturacionBean.C_IDGRUPOFACTURACION + " (+) " + 
 							" and " + FcsFactGrupoFactHitoBean.T_NOMBRETABLA + "." + FcsFactGrupoFactHitoBean.C_IDINSTITUCION + "= " + ScsGrupoFacturacionBean.T_NOMBRETABLA + "." + ScsGrupoFacturacionBean.C_IDINSTITUCION + " " + 
@@ -435,8 +436,9 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 * @throws SIGAException
 	 */
-	public boolean existeFacturacionMismoPerdiodo (FcsFacturacionJGBean beanFacturacion, FcsFactGrupoFactHitoBean beanCriterio)throws ClsExceptions
+	public boolean existeFacturacionMismoPerdiodo (FcsFacturacionJGBean beanFacturacion, FcsFactGrupoFactHitoBean beanCriterio,Integer valorPcajgActivo)throws ClsExceptions
 	{
+		
 		boolean resultado = false;
 		//variables con los resultados de las consultas
 		String nFacturaciones = "0", nGrupos ="0";
@@ -516,8 +518,14 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 					" AND h." + FcsFactGrupoFactHitoBean.C_IDHITOGENERAL + " = " + beanCriterio.getIdHitoGeneral().toString() +
 					" and h." + FcsFactGrupoFactHitoBean.C_IDHITOGENERAL + " <> " + ClsConstants.HITO_GENERAL_TURNO +
 					" AND h." + FcsFactGrupoFactHitoBean.C_IDINSTITUCION + " = fact." + FcsFacturacionJGBean.C_IDINSTITUCION +
-					" AND h." + FcsFactGrupoFactHitoBean.C_IDFACTURACION + " = fact." + FcsFacturacionJGBean.C_IDFACTURACION +
-					" AND fact." + FcsFacturacionJGBean.C_PREVISION + " = 0 " +
+					" AND h." + FcsFactGrupoFactHitoBean.C_IDFACTURACION + " = fact." + FcsFacturacionJGBean.C_IDFACTURACION ;
+	    			if(valorPcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA)
+	    				if(beanCriterio.getFactConvenio()!=null)
+	    					consultaGrupos += " AND nvl(h." + FcsFactGrupoFactHitoBean.C_FACTCONVENIO + ","+beanCriterio.getFactConvenio()+") = " + beanCriterio.getFactConvenio();
+	    				else
+	    					consultaGrupos += " AND h." + FcsFactGrupoFactHitoBean.C_FACTCONVENIO + " is not null";
+					
+					consultaGrupos += " AND fact." + FcsFacturacionJGBean.C_PREVISION + " = 0 " +
 					" AND fact." + FcsFacturacionJGBean.C_REGULARIZACION + " = 0  " +
 					" AND ((TO_DATE('" + fechaDesde + "', 'DD/MM/YYYY') >= fact." + FcsFacturacionJGBean.C_FECHADESDE +
 						" AND TO_DATE('" + fechaDesde + "', 'DD/MM/YYYY') <= fact." + FcsFacturacionJGBean.C_FECHAHASTA + ")" +

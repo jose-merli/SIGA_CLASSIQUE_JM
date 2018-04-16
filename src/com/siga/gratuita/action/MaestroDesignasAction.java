@@ -157,6 +157,8 @@ public class MaestroDesignasAction extends MasterAction {
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(idInstitucion));
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
 			
+			
+			
 		
 			String ejisActivo = admParametros.getValor(idInstitucion, "ECOM", "EJIS_ACTIVO", "0");
 			request.setAttribute("EJIS_ACTIVO", ejisActivo);			
@@ -169,6 +171,12 @@ public class MaestroDesignasAction extends MasterAction {
 			Vector vDesignas = admDesigna.select(resultado);
 			beanDesigna = (ScsDesignaBean)vDesignas.get(0);
 			request.setAttribute("beanDesigna",beanDesigna);
+			
+			boolean isAlgunaActuacionFacturada = admDesigna.isAlgunaActuacionFacturada(beanDesigna.getIdInstitucion(), beanDesigna.getNumero(), beanDesigna.getIdTurno(), beanDesigna.getAnio());
+			request.setAttribute("isAlgunaActuacionFacturada",isAlgunaActuacionFacturada?AppConstants.DB_TRUE:AppConstants.DB_FALSE);
+			
+			
+			
 			if ((beanDesigna.getIdTurno()!=null)&&(!(beanDesigna.getIdTurno()).equals(""))){
 				consultaTurno=" where idTurno = " + beanDesigna.getIdTurno() + " and idinstitucion="+idInstitucion+" ";
 				nombreTurno = ((ScsTurnoBean)((Vector)turno.select(consultaTurno)).get(0)).getAbreviatura();
@@ -251,7 +259,7 @@ public class MaestroDesignasAction extends MasterAction {
 			
 			
 			ses.setAttribute("ModoAction","editar");
-			miform.setConvenio(beanDesigna.getFactConvenio()!=null?beanDesigna.getFactConvenio():"0");
+			miform.setConvenio(beanDesigna.getFactConvenio()!=null?beanDesigna.getFactConvenio():"");
 		}		
 		catch (Exception e2){
 		    throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e2, null); 
@@ -869,8 +877,8 @@ public class MaestroDesignasAction extends MasterAction {
 							designaNueva.put(ScsDesignaBean.C_FECHARECEPCIONCOLEGIO, "");
 						}
 						
-						
-						designaNueva.put(ScsDesignaBean.C_FACTCONVENIO, miform.getConvenio());
+						if(miform.getConvenio()!=null)
+							designaNueva.put(ScsDesignaBean.C_FACTCONVENIO, miform.getConvenio());
 						
 						
 						

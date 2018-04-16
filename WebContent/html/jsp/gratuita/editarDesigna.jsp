@@ -34,7 +34,7 @@
 	Hashtable resultado = (Hashtable) ses.getAttribute("resultado");
 	ses.removeAttribute("resultado");
 	
-	//String algunaActuacionFacturada = (String) request.getAttribute("isAlgunaActuacionFacturada");
+	String algunaActuacionFacturada = (String) request.getAttribute("isAlgunaActuacionFacturada");
 	String modo = (String) ses.getAttribute("Modo");
 	String modoAction=(String) ses.getAttribute("ModoAction");
 	String idInstitucionLocation = usr.getLocation();
@@ -1144,7 +1144,7 @@
 								<td class="labelText">Tipo certificación</td>
 								<td class="labelTextValor">
 								
-									<% if (!modo.equalsIgnoreCase("ver")) { %>
+								<% if (!modo.equalsIgnoreCase("ver") && algunaActuacionFacturada!=null && algunaActuacionFacturada.equals("0")) { %>
 
 										<html:select name="MaestroDesignasForm" styleId="convenio" styleClass="boxCombo" style="width:150px;" property="convenio" >
 											<html:option value=''>&nbsp;</html:option>
@@ -1154,7 +1154,9 @@
 										
 										 
 									<% } else { %>
+									<html:hidden name="MaestroDesignasForm" styleId="convenio"  property="convenio" />
 										<c:choose>
+										
 											<c:when test="${beanDesigna.factConvenio=='0'}">Subvención J.G.</c:when>
 											<c:when test="${beanDesigna.factConvenio=='1'}">Convenio T.O.</c:when>
 											<c:otherwise>&nbsp;</c:otherwise>

@@ -3434,6 +3434,40 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		}
 	}
 	
+	public boolean isAlgunaActuacionFacturada(Integer idInstitucion, Long numero, Integer idTurno, Integer anio) throws ClsExceptions  
+	{
+		Hashtable h = new Hashtable();
+		h.put(new Integer(1), idInstitucion.toString());
+		h.put(new Integer(2), idTurno.toString());
+		h.put(new Integer(3), anio.toString());
+		h.put(new Integer(4), numero.toString());
+		StringBuilder sql =  new StringBuilder();
+		sql.append("SELECT COUNT(*) NUMACTUACIONESFACTURADAS FROM SCS_ACTUACIONDESIGNA AD WHERE AD.IDFACTURACION IS NOT NULL ");
+		
+		sql.append(" AND AD.IDINSTITUCION = :1 "); 
+		sql.append(" AND AD.IDTURNO = :2 " );
+		sql.append(" AND AD.ANIO = :3 " );
+		sql.append(" AND AD.NUMERO = :4 " );
+
+		
+			
+		Vector salida = new Vector();
+		int numActuacionesFacturadas = 0;
+		try {
+			salida = this.selectGenericoBind(sql.toString(), h);
+			if(salida!=null &&salida.size()>0) {
+				Hashtable registro  = (Hashtable) salida.get(0);
+				numActuacionesFacturadas = UtilidadesHash.getShort(registro,"NUMACTUACIONESFACTURADAS");
+			}
+
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar consutla para devolver vector incluso vacio");
+		}
+		return numActuacionesFacturadas>0;
+	}
+	
+	
 	/**
 	 * @param institucion
 	 * @param tipoEJG

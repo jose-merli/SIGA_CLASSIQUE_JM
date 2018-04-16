@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import="com.siga.ws.CajgConfiguracion"%>
 <html>
 <head>
 <!-- datosCriteriosFacturacion.jsp -->
@@ -37,7 +38,8 @@
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	UsrBean usr=(UsrBean)ses.getAttribute("USRBEAN");	
-		
+	String	idInstitucion = usr.getLocation(); 
+	Integer pcajgActivo = CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion));
 	String nombreInstitucion = (String)request.getAttribute("nombreInstitucion");
 	String idFacturacion = (String)request.getAttribute("idFacturacion");
 	String prevision = (String)request.getAttribute("prevision");
@@ -94,7 +96,7 @@
 			<siga:Idioma key="factSJCS.datosFacturacion.literal.hitos"/>&nbsp;(*)
 		</td>				
 		<td><%	String[] dato1 = {"G"};%>
-			<siga:ComboBD nombre = "hito" tipo="cmbHitoGeneral" clase="boxCombo" obligatorio="true"/>						
+			<siga:ComboBD nombre = "hito" tipo="cmbHitoGeneral" clase="boxCombo"  accion="accionHito(this);"  obligatorio="true"/>						
 		</td>
 		</tr>				
 
@@ -109,7 +111,18 @@
 			<siga:ComboBD nombre = "grupoF" tipo="grupoFacturacion" clase="boxCombo" obligatorio="true" parametro="<%=dato2%>"/>
 		</td>
 		</tr>
-
+		<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA){ %>
+		
+				<tr id="trTipoPago" style="display:none">
+					<td class="labelText">Tipo certificación</td>
+					<td><html:select name="DatosGeneralesFacturacionForm" styleId="convenio" styleClass="boxCombo" style="width:150px;" property="convenio" >
+							<html:option value=''>&nbsp;</html:option>
+							<html:option value='0'>Subvención J.G.</html:option>		
+							<html:option value='1'>Convenio T.O.</html:option>						
+						</html:select>
+					</td>
+				</tr>
+		<%}%>
 	
 		</table>
 
@@ -128,30 +141,17 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
-  
-
-		// Asociada al boton GuardarCerrar
-		function accionGuardarCerrar() 
-		{
-			sub();		
-		    if (document.forms[0].hito.selectedIndex < 1) {
-				alert('<siga:Idioma key="factSJCS.datosFacturacion.literal.hitos"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
-				fin();
-				return false;
-			}else{
-				if (document.forms[0].grupoF.selectedIndex < 1) {
-					alert('<siga:Idioma key="factSJCS.datosFacturacion.literal.gruposFacturacion"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
-					fin();
-					return false;
-				}
-				else{
-					document.forms[0].modo.value="insertarCriterio";
-					document.forms[0].submit();
-					window.top.returnValue="MODIFICADO";			
-				}
-			}
+	
+	function accionHito(hito){
+		if(document.getElementById('trTipoPago')){		
+			if(hito.value==10)
+				document.getElementById('trTipoPago').style.display = 'block';
+			else
+				document.getElementById('trTipoPago').style.display = 'none';
 		}
-		
+	}
+
+	
 		function accionGuardarCerrar() {
             if (document.forms[0].hito.selectedIndex < 1) {
                 alert('<siga:Idioma key="factSJCS.datosFacturacion.literal.hitos"/> <siga:Idioma key="messages.campoObligatorio.error"/>');
@@ -164,9 +164,9 @@
                        return false;
                 }
                 else{
-                       document.forms[0].modo.value="insertarCriterio";
-                       document.forms[0].submit();
-                       window.top.returnValue="MODIFICADO";                 
+                      document.forms[0].modo.value="insertarCriterio";
+                      document.forms[0].submit();
+                      window.top.returnValue="MODIFICADO";                 
                 }
             }
         }

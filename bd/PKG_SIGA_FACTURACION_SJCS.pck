@@ -1959,7 +1959,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         ' and trunc(Ac.Fechajustificacion) between ''@P_FECHAINIFACT@'' and ''@P_FECHAFINFACT@''' ||
         ' and Ac.Validada = ''1''' || -- en fecha
         ' and pkg_siga_facturacion_sjcs.FUN_ESDIAAPLICABLE(A.Fechahora,''@P_DIASAPLICABLES@'')=1' ||
-        ' and Ac.diadespues=''N'''; -- no del día después.
+        ' and Ac.diadespues=''N'''; -- no del despues
 
     /*Cursores que utilizaremos para cargar la matriz de memoria m_apunte_as de CG*/
     c_obtener_asistenciasFact varchar2(4000) := 'select idinstitucion, anio, numero,1 facturado' ||
@@ -2225,7 +2225,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 Select *
                 From Fcs_Fact_Guardiascolegiado Fgc2
                 --           where upper(fgc2.motivo) like '%TP%' -- solo los apuntes de tipo
-                Where Upper(Fgc2.Motivo) Not Like '%TP%' -- solo los apuntes de día
+                Where Upper(Fgc2.Motivo) Not Like '%TP%' -- solo los apuntes de dia
             ) Fgc
         Where Gc.Idinstitucion = Fgc.Idinstitucion(+)
             And Gc.Idturno = Fgc.Idturno(+)
@@ -2452,7 +2452,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     and actasi.fechajustificacion between trunc(V_DATOS_FACTURACION.FECHADESDE) and trunc(V_DATOS_FACTURACION.FECHAHASTA)
                     And actasi.Validada = '1'
                     and nvl(actasi.anulacion, '0') = '0'
-                    and actasi.diadespues = 'S' -- solo las del día después.
+                    and actasi.diadespues = 'S' -- solo las del dia despues
                     and not exists( -- solo las NO FACTURADAS
                         select 1
                         from FCS_FACT_ACTUACIONASISTENCIA FACTASI
@@ -3803,6 +3803,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
     -- Cursores que obtienen el listado de actuaciones a facturar
     Cursor c_Gruposfacturacion Is
       Select Fcs_Fact_Grupofact_Hito.Idgrupofacturacion, Fcs_Fact_Grupofact_Hito.Idinstitucion
+      , Fcs_Fact_Grupofact_Hito.factconvenio
         From Fcs_Fact_Grupofact_Hito
        Where Fcs_Fact_Grupofact_Hito.Idinstitucion = p_Idinstitucion
          And Fcs_Fact_Grupofact_Hito.Idfacturacion = p_Idfacturacion
@@ -3814,7 +3815,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
        Where Idinstitucion = p_Idinstitucion
          And Idgrupofacturacion = p_Idgrupofact;
 
-    Cursor c_Actdesigna(p_Idturno Number, p_Fechadesde Date, p_Fechahasta Date) Is
+    Cursor c_Actdesigna(p_Idturno Number, p_Fechadesde Date, p_Fechahasta Date, p_factconvenio Number) Is
       Select Scs_Actuaciondesigna.Idinstitucion,
              Scs_Actuaciondesigna.Idturno,
              Scs_Actuaciondesigna.Anio,
@@ -3848,10 +3849,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
          -- (CONDICIONES PARA ENTRAR EN ESTA FACTURACION - SIEMPRE IGUAL)
          And Scs_Actuaciondesigna.Fechajustificacion Is Not Null
          And Trunc(Scs_Actuaciondesigna.Fechajustificacion) Between Trunc(p_Fechadesde) And Trunc(p_Fechahasta)
-         And Nvl(Scs_Actuaciondesigna.Facturado, 0) <> 1
+         And Nvl(Scs_Actuaciondesigna.Facturado, '0') <> '1'
          And Nvl(Scs_Actuaciondesigna.Validada, '0') = '1'
          And Nvl(Scs_Actuaciondesigna.Anulacion, '0') = '0'
-         And Scs_Actuaciondesigna.Idpersonacolegiado Is Not Null;
+         And Scs_Actuaciondesigna.Idpersonacolegiado Is Not Null
+         And nvl(Scs_Designa.factconvenio,0) = nvl(p_factconvenio,nvl(Scs_Designa.factconvenio,0))
+         
+         ;
 
   Begin
 
@@ -3881,7 +3885,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
       For v_Turno In c_Turno(v_Gruposfacturacion.Idgrupofacturacion) Loop
 
         v_Datoserror2 := 'Iniciando el recorrido por Actuaciones de Designa';
-        For v_Actdesigna In c_Actdesigna(v_Turno.Idturno, v_Fechadesde, v_Fechahasta) Loop
+        For v_Actdesigna In c_Actdesigna(v_Turno.Idturno, v_Fechadesde, v_Fechahasta,v_Gruposfacturacion.factconvenio) Loop
 
           v_Datoserror2 := 'Obteniendo el importe para la Actuacion de Designa';
           If v_tipo_facturacion_fines = C_FACTURA_FINES_RESTOINICIO And v_Actdesigna.Idacreditacion = C_ACREDITACION_FIN Then
@@ -4343,12 +4347,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
     End Loop; -- Fin Grupos Facturacion
 
     If v_designas_TOOMANY_FINS Is Not Null Then
-      v_Datoserror2 := 'Error al facturar una actuación de fin, no se ha encontrado su actuación de inicio correspondiente. Esto ha ocurrido en las designaciones siguientes: ' ||
+      v_Datoserror2 := 'Error al facturar una actuacion fin, no se ha encontrado su actuacion inicio correspondiente. Esto ha ocurrido en las designaciones siguientes: ' ||
                        v_designas_TOOMANY_FINS;
     End If;
     If v_designas_SEVERAL_INICIOS Is Not Null Then
       v_Datoserror2 := v_Datoserror2 || chr(10);
-      v_Datoserror2 := v_Datoserror2 || 'Error al facturar una actuación de fin, se han encontrado varias actuaciones inicio con diferentes importes. Esto ha ocurrido en las designaciones siguientes: ' ||
+      v_Datoserror2 := v_Datoserror2 || 'Error al facturar una actuacion fin, se han encontrado varias actuaciones inicio con diferentes importes. Esto ha ocurrido en las designaciones siguientes: ' ||
                        v_designas_SEVERAL_INICIOS;
     End If;
 
@@ -12982,7 +12986,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                 /*** INICIO PROCESO CALCULO FACTURADO ***/
                 IF (NVL(importeTipoAsistMax, 0.0) > 0.0 -- Tiene importe maximo del tipo de asistencia
                     AND totalImporteAsFact > importeTipoAsistMax) THEN -- El importe de las asistencias facturadas (total - nuevas) supera el importe maximo del tipo de asistencia
-                    -- RGG: NO DEVENGO POR APUNTE DETIPO PORQUE YA SE DEVENGA POR DÍA
+                    -- RGG: NO DEVENGO POR APUNTE DETIPO PORQUE YA SE DEVENGA POR Dia
                     totalImporteAsFactFinal := importeTipoAsistMax;
                 ELSE
                     totalImporteAsFactFinal := totalImporteAsFact;
@@ -13007,7 +13011,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     IF (V_CONFIG_GUARDIA.IMPORTEMAXASISTENCIA IS NOT NULL -- Tiene configurado maximo
                         AND NVL(importeTipoAsistMax, 0.0) > 0.0 -- Tiene importe maximo del tipo de asistencia
                         AND totalImporteAsFact + totalImporteAsNuevas > importeTipoAsistMax) THEN -- El importe de todas las asistencias supera el importe maximo del tipo de asistencia
-                        -- RGG: NO DEVENGO POR APUNTE DETIPO PORQUE YA SE DEVENGA POR DÍA
+                        -- RGG: NO DEVENGO POR APUNTE DETIPO PORQUE YA SE DEVENGA POR Dia
 
                         IF (totalImporteAsFact >= importeTipoAsistMax) THEN -- Consulto si el importe de las asistencias facturadas supera o iguala el importe maximo del tipo de asistencia
                             auxImporteCalculado := 0;
@@ -13036,7 +13040,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                             - No tiene configurado por maximo
                             - No tiene importe o es cero de maximo del tipo de asistencia
                             - El importe de todas las asistencias es inferior o igual al importe maximo del tipo de asistencia*/
-                        -- RGG: NO DEVENGO POR APUNTE DETIPO PORQUE YA SE DEVENGA POR DÍA
+                        -- RGG: NO DEVENGO POR APUNTE DETIPO PORQUE YA SE DEVENGA POR Dia
 
                         auxImporteCalculado := totalImporteAsNuevas;
 
@@ -14793,7 +14797,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             AND ACT.FECHAJUSTIFICACION BETWEEN TRUNC(V_DATOS_FACTURACION.FECHADESDE) AND TRUNC(V_DATOS_FACTURACION.FECHAHASTA)
             And act.Validada = '1'
             AND NVL(ACT.ANULACION, '0') = '0'
-            AND ACT.DIADESPUES = 'S' -- solo las del día después
+            AND ACT.DIADESPUES = 'S' -- solo las del dia despues
             AND NOT EXISTS ( -- solo las NO FACTURADAS
                 SELECT 1
                 FROM FCS_FACT_ACTUACIONASISTENCIA FAC
@@ -14826,7 +14830,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             AND ACT.NUMERO = FAC.NUMERO
             AND ACT.IDACTUACION = FAC.IDACTUACION
             AND NVL(ACT.ANULACION, '0') = '0'
-            AND ACT.DIADESPUES = 'S' -- solo las del día después
+            AND ACT.DIADESPUES = 'S' -- solo las del dia despues
         GROUP BY ACT.IDINSTITUCION,
               ACT.ANIO,
               ACT.NUMERO,
@@ -15278,7 +15282,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
           if (importeTipoActMax is not null and importeTipoActMax <> 0.0 and
              importeTotalTipoActuacion >= importeTipoActMax) then
 
-            -- RGG 19/06/2008 SUPERA EL MÁXIMO POR TIPO
+            -- RGG 19/06/2008 SUPERA EL MÂ˜aximo POR TIPO
 
             if (V_ACTUACIONES_FG.FACTURADO is not null and
                V_ACTUACIONES_FG.FACTURADO = 1) THEN
@@ -15300,7 +15304,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
             end if;
 
           ELSE
-            -- RGG 19/06/2008 NO SUPERA EL MÁXIMO POR TIPO
+            -- RGG 19/06/2008 NO SUPERA EL Maximo POR TIPO
 
             if (V_ACTUACIONES_FG.FACTURADO is not null and
                V_ACTUACIONES_FG.FACTURADO = 1) THEN
@@ -15314,7 +15318,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
             else
 
-              -- RGG 19/06/2008 NO ESTÁ FACTURADO
+              -- RGG 19/06/2008 NO ESTa FACTURADO
               M_APUNTE_AC(IND_AC).MOTIVO := 25; --AcFGTp
               M_APUNTE_AC(IND_AC).IMPORTE := importeTipoActuacion;
 

@@ -20,6 +20,7 @@
 <%@ taglib uri = "struts-bean.tld"  prefix = "bean"%>
 <%@ taglib uri = "struts-html.tld" 	prefix = "html"%>
 <%@ taglib uri = "struts-logic.tld" prefix = "logic"%>
+<%@ taglib uri="c.tld" prefix="c"%>
 
 <!-- IMPORTS -->
 <%@ page import = "com.atos.utils.ClsConstants"%>
@@ -45,7 +46,7 @@
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-
+	
 	request.setAttribute("nuevoCriterio","si");
 		
 	String regularizacion = (String) request.getAttribute("FcsRegularizacion");
@@ -85,10 +86,13 @@
 	String clase = "box", desactivado="false";
 	boolean consulta = false;
 	boolean readonly = false;
-	
+	Integer pcajgActivo = null;
 	try {
 		modo = (String)request.getAttribute("modo");
 		idInstitucion = (String)request.getAttribute("idInstitucion");
+		if(idInstitucion==null)
+			idInstitucion = usr.getLocation();
+		pcajgActivo = CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion));
 		idFacturacion = (String)request.getAttribute("idFacturacion");
 			
 		nombreInstitucion = (String)request.getAttribute("nombreInstitucion");
@@ -137,7 +141,7 @@
 		clase = "boxConsulta";		
 		botones ="GM";
 		
-		if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
+		if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == pcajgActivo) {
 			//recuperamos el último estado de envío a la Xunta
 			FCS_MAESTROESTADOS_ENVIO_FACT ultimoEstadoEnvio = (FCS_MAESTROESTADOS_ENVIO_FACT)request.getAttribute(FcsFacturacionEstadoEnvio.C_IDESTADOENVIOFACTURACION);
 			if (ultimoEstadoEnvio != null) {
@@ -186,7 +190,7 @@
 			clase = "boxConsulta";
 			
 			//en las facturaciones ejecutadas se permite reejecutar y descargar el informe			
-			if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
+			if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == pcajgActivo) {
 				botones = "LC2,GM";
 				
 				FCS_MAESTROESTADOS_ENVIO_FACT ultimoEstadoEnvio = (FCS_MAESTROESTADOS_ENVIO_FACT)request.getAttribute(FcsFacturacionEstadoEnvio.C_IDESTADOENVIOFACTURACION);
@@ -208,7 +212,7 @@
 						|| idEstado.intValue() == ESTADO_FACTURACION.ESTADO_FACTURACION_ENVIO_NO_ACEPTADO.getCodigo()) {				
 					botonesAbajo = "V,II";
 				}
-			} else if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
+			} else if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == pcajgActivo) {
 				botones = "LC2,GM,ecam";
 			} else {
 				botones = "LC,GM";
@@ -364,7 +368,7 @@
 
 		function accionGenerarInforme() {
 			
-			<%if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))
+			<%if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == pcajgActivo
 					&& listaErroresCAM != null && listaErroresCAM.size() > 0) {%>
 				generarFicheroCAM();
 			<%} else {%>
@@ -564,7 +568,7 @@
 			</table>
 		</siga:ConjCampos>		
 		
-		<%if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) { %>
+		<%if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == pcajgActivo) { %>
 		<div id="dialogoSeleccionErroresCAM"  title='<siga:Idioma key="facturacionjg.dialogo.ficheroSeleccionErrorCAM"/>' style="display:none">
 			
 			<div class="labelTextArea"><siga:Idioma key="facturacionjg.literal.aviso.ficheroSeleccionErrorCAM"/></div>
@@ -594,7 +598,7 @@
 		<%} %>
 				
 	</html:form>
-	<%if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) { %>
+	<%if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == pcajgActivo) { %>
 	<div id="dialogoInformeIncidenciasCAM"  title='<siga:Idioma key="facturacionjg.dialogo.ficheroErrorCAM"/>' style="display:none">
 			
 			<div class="labelTextArea"><siga:Idioma key="facturacionjg.literal.aviso.ficheroErrorCAM"/></div>
@@ -649,12 +653,24 @@
 	
 	if ((regularizacion != null) && (regularizacion.equalsIgnoreCase("true"))) botones = "";
 %>	
-	<!-- INICIO TABLA -->	
+	
+	<!-- INICIO TABLA -->
+	
+	<c:set var="columnNames" value="factSJCS.datosFacturacion.literal.gruposFacturacion,factSJCS.datosFacturacion.literal.hitos," />
+	<c:set var="columnSizes" value="35,45,10" />
+	<%if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == pcajgActivo) { %>
+	
+		<c:set var="columnNames" value="factSJCS.datosFacturacion.literal.gruposFacturacion,factSJCS.datosFacturacion.literal.hitos,Tipo certificación," />
+		<c:set var="columnSizes" value="30,35,10,15" />
+	
+	
+	<%}%>
 	<siga:Table 
 		name="tablaDatos"
 	   	border="1"
-		columnNames="factSJCS.datosFacturacion.literal.gruposFacturacion,factSJCS.datosFacturacion.literal.hitos,"
-		columnSizes="35,45,10"
+		columnNames="${columnNames}"
+			columnSizes="${columnSizes}"
+	
 		fixedHeight="50%"
 		modal="P">
 		
@@ -680,6 +696,21 @@
 						<input type='hidden' name='oculto<%=String.valueOf(recordNumber)%>_4' value='<%=idInstitucion%>'><%=UtilidadesString.mostrarDatoJSP((String)hash.get("NOMBRE"))%>
 					</td>
 					<td><siga:Idioma key='<%=(String)hash.get("DESCRIPCION")%>'/></td>
+					<%if (idInstitucion != null && CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == pcajgActivo) { 
+						String factConvenio = (String)hash.get("FACTCONVENIO");
+						if(factConvenio!=null&&factConvenio.equals("1"))
+							factConvenio = "Convenio T.O.";
+						else if(factConvenio!=null&&factConvenio.equals("0")){
+							factConvenio = "Subvención J.G.";
+						}else{
+							factConvenio = "&nbsp;";
+						}
+					
+					%>
+					<td><%=factConvenio%></td>	
+					
+					<%}%>
+					
 				</siga:FilaConIconos>	
 <%
 				recordNumber++;
