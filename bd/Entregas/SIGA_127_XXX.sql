@@ -322,3 +322,5 @@ comment on column SCS_DESIGNA.factconvenio
 alter table FCS_FACT_GRUPOFACT_HITO add factconvenio number(1);
 alter paquete PKG_SIGA_FACTURACION_SJCS
   
+-- Ejecutados en Integracion por AAG el 16/04/2018 a las 17:05
+
