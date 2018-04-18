@@ -324,3 +324,8 @@ alter paquete PKG_SIGA_FACTURACION_SJCS
   
 -- Ejecutados en Integracion por AAG el 16/04/2018 a las 17:05
 
+-- 127_006
+
+PKG_SIGA_FACTURACION_SJCS
+
+

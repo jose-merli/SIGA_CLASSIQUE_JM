@@ -1848,7 +1848,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
     c_Id_Ciudad_Real Constant Scs_Asistencia.Idinstitucion%Type := 2020;
     c_Id_La_Rioja    Constant Scs_Asistencia.Idinstitucion%Type := 2058;
     c_Id_Valladolid  Constant Scs_Asistencia.Idinstitucion%Type := 2078;
-    c_Id_Toledo      Constant Scs_Asistencia.Idinstitucion%Type := 2074;
 
   -- declaracion de cursores para la facturacion de guardias
     -- Cursor para cargar el RECORD de Facturacion
@@ -3854,7 +3853,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
          And Nvl(Scs_Actuaciondesigna.Anulacion, '0') = '0'
          And Scs_Actuaciondesigna.Idpersonacolegiado Is Not Null
          And nvl(Scs_Designa.factconvenio,0) = nvl(p_factconvenio,nvl(Scs_Designa.factconvenio,0))
-         
          ;
 
   Begin
@@ -12496,7 +12494,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                     M_APUNTE_AS(IND_AS).CONTADOR := contadorUnidades;
                     M_APUNTE_AS(IND_AS).MOTIVO := 5; --As
                     M_APUNTE_AS(IND_AS).IMPORTE := V_CONFIG_GUARDIA.IMPORTEASISTENCIA;
-                    
+
                 ELSE -- Asistencia facturada
                     importeTotalAsistenciaUG := importeTotalAsistenciaUG + V_ASISTENCIAS_UG.IMPORTEFACTURADO;
 
@@ -13235,7 +13233,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                            p_Fechafin,
                                            p_Fechadesde,
                                            p_Fechahasta);
-    Elsif p_Idinstitucion in (c_Id_Albacete, c_Id_Ciudad_Real, c_Id_La_Rioja, c_Id_Valladolid, c_Id_Toledo) Then
+    Elsif p_Idinstitucion in (c_Id_Albacete, c_Id_Ciudad_Real, c_Id_La_Rioja, c_Id_Valladolid) Then
       Return f_Tiene_Asist_Derivadas_Cr(p_Idinstitucion,
                                         p_Idturno,
                                         p_Idguardia,
@@ -13378,7 +13376,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                             p_Numero,
                                             p_Fechadesde,
                                             p_Fechahasta);
-    Elsif p_Idinstitucion in (c_Id_Albacete, c_Id_Ciudad_Real, c_Id_La_Rioja, c_Id_Valladolid, c_Id_Toledo) Then
+    Elsif p_Idinstitucion in (c_Id_Albacete, c_Id_Ciudad_Real, c_Id_La_Rioja, c_Id_Valladolid) Then
       Return f_Es_Asistencia_Derivada_Cr(p_Idinstitucion,
                                          p_Anio,
                                          p_Numero,
@@ -13606,7 +13604,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         Return Pkg_Siga_Constantes.Db_False_n;
       End If;
 
-    Elsif p_Idinstitucion in (c_Id_Albacete, c_Id_Ciudad_Real, c_Id_La_Rioja, c_Id_Valladolid, c_Id_Toledo) Then
+    Elsif p_Idinstitucion in (c_Id_Albacete, c_Id_Ciudad_Real, c_Id_La_Rioja, c_Id_Valladolid) Then
       Select Idtipoasistenciacolegio
         Into v_Idtipo_Asistencia
         From Scs_Asistencia
@@ -15282,7 +15280,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
           if (importeTipoActMax is not null and importeTipoActMax <> 0.0 and
              importeTotalTipoActuacion >= importeTipoActMax) then
 
-            -- RGG 19/06/2008 SUPERA EL Maximo POR TIPO
+            -- RGG 19/06/2008 SUPERA EL Maximo POR TIPO
 
             if (V_ACTUACIONES_FG.FACTURADO is not null and
                V_ACTUACIONES_FG.FACTURADO = 1) THEN
