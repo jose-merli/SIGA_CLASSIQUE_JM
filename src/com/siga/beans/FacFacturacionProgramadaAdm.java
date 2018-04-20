@@ -28,54 +28,54 @@ import com.siga.general.SIGAException;
 
 
 public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
-	
+
 	public FacFacturacionProgramadaAdm (UsrBean usu) {
 		super (FacFacturacionProgramadaBean.T_NOMBRETABLA, usu);
 	}
-	
+
 	protected String[] getCamposBean() {
 		String [] campos = {FacFacturacionProgramadaBean.C_IDINSTITUCION, 		
-							FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,
-							FacFacturacionProgramadaBean.C_IDPROGRAMACION, 	
-							FacFacturacionProgramadaBean.C_FECHAINICIOPRODUCTOS,
-							FacFacturacionProgramadaBean.C_FECHAFINPRODUCTOS,	
-							FacFacturacionProgramadaBean.C_FECHAINICIOSERVICIOS,
-							FacFacturacionProgramadaBean.C_FECHAFINSERVICIOS,
-							FacFacturacionProgramadaBean.C_FECHAREALGENERACION,
-							FacFacturacionProgramadaBean.C_FECHACONFIRMACION,
-							FacFacturacionProgramadaBean.C_FECHAPROGRAMACION,
-							FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION,
-							FacFacturacionProgramadaBean.C_IDPREVISION,
-							FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM ,
-							FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION ,
-							FacFacturacionProgramadaBean.C_IDESTADOPDF ,
-							FacFacturacionProgramadaBean.C_IDESTADOTRASPASO ,
-							FacFacturacionProgramadaBean.C_IDESTADOENVIO ,
-							FacFacturacionProgramadaBean.C_GENERAPDF ,
-							FacFacturacionProgramadaBean.C_TRASPASOFACTURAS ,
-							FacFacturacionProgramadaBean.C_TRASPASOPLANTILLA ,
-							FacFacturacionProgramadaBean.C_TRASPASOCODAUDITORIADEF ,
-							FacFacturacionProgramadaBean.C_ENVIO ,
-							FacFacturacionProgramadaBean.C_ARCHIVARFACT ,
-							FacFacturacionProgramadaBean.C_FECHACARGO,
-							FacFacturacionProgramadaBean.C_CONFDEUDOR,
-							FacFacturacionProgramadaBean.C_CONFINGRESOS,
-							FacFacturacionProgramadaBean.C_CTACLIENTES,
-							FacFacturacionProgramadaBean.C_CTAINGRESOS,
-							FacFacturacionProgramadaBean.C_VISIBLE,
-							FacFacturacionProgramadaBean.C_DESCRIPCION,
-							FacFacturacionProgramadaBean.C_IDTIPOENVIOS,
-							FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL,
-							FacFacturacionProgramadaBean.C_FECHAMODIFICACION,
-							FacFacturacionProgramadaBean.C_USUMODIFICACION,
-							FacFacturacionProgramadaBean.C_FECHAPRESENTACION,
-							FacFacturacionProgramadaBean.C_FECHARECIBOSPRIMEROS,
-							FacFacturacionProgramadaBean.C_FECHARECIBOSRECURRENTES,
-							FacFacturacionProgramadaBean.C_FECHARECIBOSCOR1,
-							FacFacturacionProgramadaBean.C_FECHARECIBOSB2B,
-							FacFacturacionProgramadaBean.C_LOGERROR,
-							FacFacturacionProgramadaBean.C_LOGTRASPASO,
-							FacFacturacionProgramadaBean.C_NOMBREFICHERO};
+				FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,
+				FacFacturacionProgramadaBean.C_IDPROGRAMACION, 	
+				FacFacturacionProgramadaBean.C_FECHAINICIOPRODUCTOS,
+				FacFacturacionProgramadaBean.C_FECHAFINPRODUCTOS,	
+				FacFacturacionProgramadaBean.C_FECHAINICIOSERVICIOS,
+				FacFacturacionProgramadaBean.C_FECHAFINSERVICIOS,
+				FacFacturacionProgramadaBean.C_FECHAREALGENERACION,
+				FacFacturacionProgramadaBean.C_FECHACONFIRMACION,
+				FacFacturacionProgramadaBean.C_FECHAPROGRAMACION,
+				FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION,
+				FacFacturacionProgramadaBean.C_IDPREVISION,
+				FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM ,
+				FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION ,
+				FacFacturacionProgramadaBean.C_IDESTADOPDF ,
+				FacFacturacionProgramadaBean.C_IDESTADOTRASPASO ,
+				FacFacturacionProgramadaBean.C_IDESTADOENVIO ,
+				FacFacturacionProgramadaBean.C_GENERAPDF ,
+				FacFacturacionProgramadaBean.C_TRASPASOFACTURAS ,
+				FacFacturacionProgramadaBean.C_TRASPASOPLANTILLA ,
+				FacFacturacionProgramadaBean.C_TRASPASOCODAUDITORIADEF ,
+				FacFacturacionProgramadaBean.C_ENVIO ,
+				FacFacturacionProgramadaBean.C_ARCHIVARFACT ,
+				FacFacturacionProgramadaBean.C_FECHACARGO,
+				FacFacturacionProgramadaBean.C_CONFDEUDOR,
+				FacFacturacionProgramadaBean.C_CONFINGRESOS,
+				FacFacturacionProgramadaBean.C_CTACLIENTES,
+				FacFacturacionProgramadaBean.C_CTAINGRESOS,
+				FacFacturacionProgramadaBean.C_VISIBLE,
+				FacFacturacionProgramadaBean.C_DESCRIPCION,
+				FacFacturacionProgramadaBean.C_IDTIPOENVIOS,
+				FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL,
+				FacFacturacionProgramadaBean.C_FECHAMODIFICACION,
+				FacFacturacionProgramadaBean.C_USUMODIFICACION,
+				FacFacturacionProgramadaBean.C_FECHAPRESENTACION,
+				FacFacturacionProgramadaBean.C_FECHARECIBOSPRIMEROS,
+				FacFacturacionProgramadaBean.C_FECHARECIBOSRECURRENTES,
+				FacFacturacionProgramadaBean.C_FECHARECIBOSCOR1,
+				FacFacturacionProgramadaBean.C_FECHARECIBOSB2B,
+				FacFacturacionProgramadaBean.C_LOGERROR,
+				FacFacturacionProgramadaBean.C_LOGTRASPASO,
+				FacFacturacionProgramadaBean.C_NOMBREFICHERO};
 		return campos;
 	}
 
@@ -83,11 +83,11 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION, FacFacturacionProgramadaBean.C_IDPROGRAMACION};
 		return claves;
 	}
-	
+
 	protected MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
 
 		FacFacturacionProgramadaBean bean = null;
-		
+
 		try {
 			bean = new FacFacturacionProgramadaBean();
 			bean.setIdInstitucion			(UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_IDINSTITUCION));
@@ -126,7 +126,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			bean.setFechaCargo				(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHACARGO));
 			bean.setFechaMod				(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAMODIFICACION));
 			bean.setUsuMod					(UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_USUMODIFICACION));
-			
+
 			bean.setFechaPresentacion		(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAPRESENTACION));
 			bean.setFechaRecibosPrimeros	(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHARECIBOSPRIMEROS));
 			bean.setFechaRecibosRecurrentes	(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHARECIBOSRECURRENTES));
@@ -141,12 +141,12 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			bean = null;	
 			throw new ClsExceptions (e, "Error al construir el bean a partir del hashTable");
 		}
-		
+
 		return bean;
 	}
 
 	public Hashtable beanToHashTable(MasterBean bean) throws ClsExceptions {
-		
+
 		Hashtable htData = null;
 		try {
 			htData = new Hashtable();
@@ -215,7 +215,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 	protected String[] getOrdenCampos() {
 		return this.getClavesBean();
 	}
-	
+
 	public Vector selectTabla(String where){
 		Vector v = new Vector();
 		RowsContainer rc = null;
@@ -224,7 +224,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			String sql = "Select Nvl(Max("+FacFacturacionProgramadaBean.T_NOMBRETABLA+"."+FacFacturacionProgramadaBean.C_IDPROGRAMACION+"), 0) + 1 IDPROGRAMACION";
 			sql += " From "+FacFacturacionProgramadaBean.T_NOMBRETABLA;
 			sql += where;
-			
+
 			if (rc.query(sql)) {
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
@@ -251,10 +251,10 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			aux[i] = FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + campos[i];
 		}
 		aux[num] = FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_NOMBREABREVIADO;		
-				
+
 		return aux;
 	}
-	
+
 	/**
 	 * Devuelve un string con el nombre de las tablas FAC_FACTURACIONPROGRAMADA, FAC_SERIEFACTURACION y las relaciones entre ellas para construir la Query.
 	 * @author nuria.rgonzalez 10-03-05
@@ -263,7 +263,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		String campos = FacFacturacionProgramadaBean.T_NOMBRETABLA + " , " + FacSerieFacturacionBean.T_NOMBRETABLA;
 		return campos;
 	}
-	
+
 	/**
 	 * Devuelve un Vector con los datos de la Facturacion Programada  del cliente pasado como parámetro.
 	 * @author nuria.rgonzalez 10-03-05
@@ -273,7 +273,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	public Vector selectDatosFacturacion(String sWhere, String[] orden) throws ClsExceptions, SIGAException{
-		
+
 		Vector v = null;		
 		RowsContainer rc = null;
 		String where = sWhere;
@@ -283,9 +283,9 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			sql += where;
 			sql += UtilidadesBDAdm.sqlOrderBy(orden);  
 			sql += "desc";
-            rc = this.find(sql);
-            if (rc!=null) {
- 				v = new Vector();
+			rc = this.find(sql);
+			if (rc!=null) {
+				v = new Vector();
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
 					Hashtable registro = (Hashtable)fila.getRow(); 
@@ -315,11 +315,11 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			String sql = UtilidadesBDAdm.sqlSelect(this.getTablasFacturacion(), this.getCamposFacturacion()) +
 					sWhereBind +
 					UtilidadesBDAdm.sqlOrderBy(orden) + " ASC";
-			
+
 			RowsContainer rc = new RowsContainer();
-            rc = this.findBind(sql,codigos);
-            if (rc!=null) {
-            	vResultado = new Vector();
+			rc = this.findBind(sql,codigos);
+			if (rc!=null) {
+				vResultado = new Vector();
 				for (int i = 0; i < rc.size(); i++)	{
 					Row fila = (Row) rc.get(i);
 					Hashtable hRegistro = (Hashtable) fila.getRow(); 
@@ -328,11 +328,11 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 						vResultado.add(bRegistro);
 				}
 			}
-            
+
 		} catch(Exception e) {
 			throw new ClsExceptions (e, "Error en selectDatosFacturacion");
 		}
-		
+
 		return vResultado;
 	}
 
@@ -357,21 +357,21 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 	public Long getNuevoID(String idInstitucion, String idSerieFacturacion) throws ClsExceptions {
 		try {		
 			String sql = " SELECT NVL(MAX(" + FacFacturacionProgramadaBean.C_IDPROGRAMACION + "), 0) + 1 AS " + FacFacturacionProgramadaBean.C_IDPROGRAMACION + 
-			  			 " FROM " + FacFacturacionProgramadaBean.T_NOMBRETABLA +
-						 " WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + idInstitucion +
-						 " AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion;
-			
+					" FROM " + FacFacturacionProgramadaBean.T_NOMBRETABLA +
+					" WHERE " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + idInstitucion +
+					" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + idSerieFacturacion;
+
 			RowsContainer rc = new RowsContainer();
 			if (rc.query(sql) && rc.size()>0)	{
 				Row fila = (Row) rc.get(0);
 				String id = fila.getString(FacFacturacionProgramadaBean.C_IDPROGRAMACION);
 				return Long.valueOf(id);
 			}
-			
+
 		} catch (Exception e) {		
 			throw new ClsExceptions (e, "Error al obtener un nuevo identificador de facturación programada");		
 		}
-		
+
 		return null;
 	}	
 
@@ -383,7 +383,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 	 */
 	public Vector selectGenerico(String select) throws ClsExceptions {
 		Vector datos = new Vector();
-		
+
 		// Acceso a BBDD
 		RowsContainer rc = null;
 		try { 
@@ -403,7 +403,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		return datos;	
 	}
 
-	
+
 	/**
 	 * Realiza el tratamiento de una facturación para ponerle los estados de confirmacion, generacion de pdf y envio de facturas adecuados segun sus datos.
 	 * @param bean Obtendremos de el los datos
@@ -411,82 +411,82 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 */
 	public FacFacturacionProgramadaBean tratamientoEstadosProgramacion(FacFacturacionProgramadaBean bean) throws ClsExceptions {
-		
-		FacFacturacionProgramadaBean aux = bean;
+
 		try { 
-			
-			Integer idTratamientoActual = UtilidadesHash.getInteger(bean.getOriginalHash(), FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION);
-			
-			// confirmacion
-			if (bean.getFechaPrevistaConfirmacion()!=null && !bean.getFechaPrevistaConfirmacion().trim().equals("")) {
-				// Se ha programado la confirmacion
-				if(idTratamientoActual.intValue() == FacEstadoConfirmFactBean.GENERADA.intValue() || idTratamientoActual.intValue() == FacEstadoConfirmFactBean.ERROR_CONFIRMACION.intValue()){
-					bean.setIdEstadoConfirmacion(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA);
-				
-				}else if(idTratamientoActual.intValue() == FacEstadoConfirmFactBean.ERROR_GENERACION.intValue()){
-					//Pasamos de estado error a estado generado porgramacion
-					bean.setIdEstadoConfirmacion(FacEstadoConfirmFactBean.GENERACION_PROGRAMADA);
-				
-				}else{
-					bean.setIdEstadoConfirmacion(idTratamientoActual);
+			if(bean!=null){
+
+				Integer idTratamientoActual = UtilidadesHash.getInteger(bean.getOriginalHash(), FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION);
+
+				// confirmacion
+				if (bean.getFechaPrevistaConfirmacion()!=null && !bean.getFechaPrevistaConfirmacion().trim().equals("")) {
+					// Se ha programado la confirmacion
+					if(idTratamientoActual.intValue() == FacEstadoConfirmFactBean.GENERADA.intValue() || idTratamientoActual.intValue() == FacEstadoConfirmFactBean.ERROR_CONFIRMACION.intValue()){
+						bean.setIdEstadoConfirmacion(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA);
+
+					}else if(idTratamientoActual.intValue() == FacEstadoConfirmFactBean.ERROR_GENERACION.intValue()){
+						//Pasamos de estado error a estado generado porgramacion
+						bean.setIdEstadoConfirmacion(FacEstadoConfirmFactBean.GENERACION_PROGRAMADA);
+
+					}else{
+						bean.setIdEstadoConfirmacion(idTratamientoActual);
+					}
+				} else {
+					//No hay fecha programada de confirmacion.
+					if(idTratamientoActual.intValue() == FacEstadoConfirmFactBean.ERROR_GENERACION.intValue()){
+						//Pasamos de estado error a estado generado porgramacion
+						bean.setIdEstadoConfirmacion(FacEstadoConfirmFactBean.GENERACION_PROGRAMADA);
+					}else{
+						bean.setIdEstadoConfirmacion(idTratamientoActual);
+					}					
 				}
-			} else {
-				//No hay fecha programada de confirmacion.
-				if(idTratamientoActual.intValue() == FacEstadoConfirmFactBean.ERROR_GENERACION.intValue()){
-					//Pasamos de estado error a estado generado porgramacion
-					bean.setIdEstadoConfirmacion(FacEstadoConfirmFactBean.GENERACION_PROGRAMADA);
-				}else{
-					bean.setIdEstadoConfirmacion(idTratamientoActual);
-				}					
+				// PDF
+				if (bean.getFechaPrevistaConfirmacion()!=null && !bean.getFechaPrevistaConfirmacion().trim().equals("")) {
+					if (bean.getGenerarPDF()!=null && bean.getGenerarPDF().equals("1")) {
+						bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_PROGRAMADA);
+					} else {
+						bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_NOAPLICA);
+					}
+				} else { 
+					if (bean.getGenerarPDF()!=null && bean.getGenerarPDF().equals("1")) {
+						bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_PENDIENTE);
+					} else {
+						bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_NOAPLICA);
+					}
+				}
+				// TRASPASO FACTURAS
+				if (bean.getFechaPrevistaConfirmacion()!=null && !bean.getFechaPrevistaConfirmacion().trim().equals("")) {
+					if (bean!=null && bean.getTraspasoFacturas()!=null && bean.getTraspasoFacturas().equals("1")) {
+						bean.setIdEstadoTraspaso(FacEstadoConfirmFactBean.TRASPASO_PROGRAMADA);
+					} else {
+						bean.setIdEstadoTraspaso(FacEstadoConfirmFactBean.TRASPASO_NOAPLICA);
+					}
+				} else { 
+					if (bean.getTraspasoFacturas()!=null && bean.getTraspasoFacturas().equals("1")) {
+						bean.setIdEstadoTraspaso(FacEstadoConfirmFactBean.TRASPASO_PENDIENTE);
+					} else {
+						bean.setIdEstadoTraspaso(FacEstadoConfirmFactBean.TRASPASO_NOAPLICA);
+					}
+				}
+				// Envio
+				if (bean.getFechaPrevistaConfirmacion()!=null && !bean.getFechaPrevistaConfirmacion().trim().equals("")) {
+					if (bean.getEnvio()!=null && bean.getEnvio().equals("1")) {
+						bean.setIdEstadoEnvio(FacEstadoConfirmFactBean.ENVIO_PROGRAMADA);
+					} else {
+						bean.setIdEstadoEnvio(FacEstadoConfirmFactBean.ENVIO_NOAPLICA);
+					}
+				} else { 
+					if (bean.getEnvio()!=null && bean.getEnvio().equals("1")) {
+						bean.setIdEstadoEnvio(FacEstadoConfirmFactBean.ENVIO_PENDIENTE);
+					} else {
+						bean.setIdEstadoEnvio(FacEstadoConfirmFactBean.ENVIO_NOAPLICA);
+					}
+				}
 			}
-			// PDF
-			if (bean.getFechaPrevistaConfirmacion()!=null && !bean.getFechaPrevistaConfirmacion().trim().equals("")) {
-				if (bean.getGenerarPDF().equals("1")) {
-					bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_PROGRAMADA);
-				} else {
-					bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_NOAPLICA);
-				}
-			} else { 
-				if (bean.getGenerarPDF().equals("1")) {
-					bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_PENDIENTE);
-				} else {
-					bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_NOAPLICA);
-				}
-			}
-			// TRASPASO FACTURAS
-			if (bean.getFechaPrevistaConfirmacion()!=null && !bean.getFechaPrevistaConfirmacion().trim().equals("")) {
-				if (bean!=null && bean.getTraspasoFacturas()!=null && bean.getTraspasoFacturas().equals("1")) {
-					bean.setIdEstadoTraspaso(FacEstadoConfirmFactBean.TRASPASO_PROGRAMADA);
-				} else {
-					bean.setIdEstadoTraspaso(FacEstadoConfirmFactBean.TRASPASO_NOAPLICA);
-				}
-			} else { 
-				if (bean.getTraspasoFacturas().equals("1")) {
-					bean.setIdEstadoTraspaso(FacEstadoConfirmFactBean.TRASPASO_PENDIENTE);
-				} else {
-					bean.setIdEstadoTraspaso(FacEstadoConfirmFactBean.TRASPASO_NOAPLICA);
-				}
-			}
-			// Envio
-			if (bean.getFechaPrevistaConfirmacion()!=null && !bean.getFechaPrevistaConfirmacion().trim().equals("")) {
-				if (bean.getEnvio().equals("1")) {
-					bean.setIdEstadoEnvio(FacEstadoConfirmFactBean.ENVIO_PROGRAMADA);
-				} else {
-					bean.setIdEstadoEnvio(FacEstadoConfirmFactBean.ENVIO_NOAPLICA);
-				}
-			} else { 
-				if (bean.getEnvio().equals("1")) {
-					bean.setIdEstadoEnvio(FacEstadoConfirmFactBean.ENVIO_PENDIENTE);
-				} else {
-					bean.setIdEstadoEnvio(FacEstadoConfirmFactBean.ENVIO_NOAPLICA);
-				}
-			}
-			
 		} 
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Excepcion en FacFacturacionProgramadaAdm.tratamientoEstadosProgramacion().");
 		}
-		return aux;	
+		return bean;
 	}
 
 	/**
@@ -495,28 +495,28 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 	 * @throws ClsExceptions
 	 */
 	public Vector comprobarRecursosProgramacion(FacFacturacionProgramadaBean bean) throws ClsExceptions {
-		
+
 		Vector v = new Vector();
 		try { 
 			//String idserieidprogramacion = bean.getIdSerieFacturacion().toString()+"_" + bean.getIdProgramacion().toString();
 			String institucion = bean.getIdInstitucion().toString();
-		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 			//ReadProperties p = new ReadProperties ("SIGA.properties");
-			
+
 			// directorio de fichero bancario 
 			String pathFichero = p.returnProperty("facturacion.directorioBancosOracle");
-    		String sBarra = "";
-    		if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
-    		if (pathFichero.indexOf("\\") > -1) sBarra = "\\";        		
-    		pathFichero += sBarra+institucion;
-    		File aux = new File(pathFichero);
-    		if (!aux.exists()) {
-    			v.add("messages.facturacion.comprueba.noPathFicheroBancario"); // No existe el path de generacion de fichero bancario
-    		} else 
-    		if (!aux.canWrite()) {
-    			v.add("messages.facturacion.comprueba.noPermisosPathFicheroBancario"); // EL path de generación de fichero bancarios no tiene los permisos adecuados.
-    		} 
-    		
+			String sBarra = "";
+			if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
+			if (pathFichero.indexOf("\\") > -1) sBarra = "\\";        		
+			pathFichero += sBarra+institucion;
+			File aux = new File(pathFichero);
+			if (!aux.exists()) {
+				v.add("messages.facturacion.comprueba.noPathFicheroBancario"); // No existe el path de generacion de fichero bancario
+			} else 
+				if (!aux.canWrite()) {
+					v.add("messages.facturacion.comprueba.noPermisosPathFicheroBancario"); // EL path de generación de fichero bancarios no tiene los permisos adecuados.
+				} 
+
 			// Obtengo la plantilla a utilizar
 			FacPlantillaFacturacionAdm plantillaAdm = new FacPlantillaFacturacionAdm(this.usrbean);
 			Vector plantillas=plantillaAdm.getPlantillaSerieFacturacion(institucion,bean.getIdSerieFacturacion().toString());
@@ -527,46 +527,46 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 
 				//TODO Esta comprobacion de rutas no me parece correcta: deberia pasarse la ruta de o a algun metodo y no hacerlo aqui como en una isla sin relacion con nada a la vista
 				// Obtencion de la ruta donde se almacenan temporalmente los ficheros formato FOP			
-			    String rutaTemporal = p.returnProperty("facturacion.directorioFisicoTemporalFacturasJava")+p.returnProperty("facturacion.directorioTemporalFacturasJava");
-	    		String barraTemporal = "";
-	    		if (rutaTemporal.indexOf("/") > -1){ 
-	    			barraTemporal = "/";
-	    		}
-	    		if (rutaTemporal.indexOf("\\") > -1){ 
-	    			barraTemporal = "\\";
-	    		}    		
-	    		rutaTemporal += barraTemporal+institucion.toString();
+				String rutaTemporal = p.returnProperty("facturacion.directorioFisicoTemporalFacturasJava")+p.returnProperty("facturacion.directorioTemporalFacturasJava");
+				String barraTemporal = "";
+				if (rutaTemporal.indexOf("/") > -1){ 
+					barraTemporal = "/";
+				}
+				if (rutaTemporal.indexOf("\\") > -1){ 
+					barraTemporal = "\\";
+				}    		
+				rutaTemporal += barraTemporal+institucion.toString();
 				File rutaFOP=new File(rutaTemporal);
 				if (!rutaFOP.exists()) {
-	    			v.add("messages.facturacion.comprueba.noPathTemporalFacturas"); // No existe el path temporal de facturas
-	    		} else 
-	    		if (!rutaFOP.canWrite()) {
-	    			v.add("messages.facturacion.comprueba.noPermisosPathFicheroBancario"); // El path temporal de facturas no tiene los permisos adecuados.
-	    		} 
-			
+					v.add("messages.facturacion.comprueba.noPathTemporalFacturas"); // No existe el path temporal de facturas
+				} else 
+					if (!rutaFOP.canWrite()) {
+						v.add("messages.facturacion.comprueba.noPermisosPathFicheroBancario"); // El path temporal de facturas no tiene los permisos adecuados.
+					} 
+
 				// Obtencion de la ruta de donde se obtiene la plantilla adecuada			
-			    String rutaPlantilla = p.returnProperty("facturacion.directorioFisicoPlantillaFacturaJava")+p.returnProperty("facturacion.directorioPlantillaFacturaJava");
-			    String barraPlantilla="";
-	    		if (rutaPlantilla.indexOf("/") > -1){
-	    			barraPlantilla = "/";
-	    		}
-	    		if (rutaPlantilla.indexOf("\\") > -1){
-	    			barraPlantilla = "\\";
-	    		}
-	    		rutaPlantilla += barraPlantilla+institucion.toString()+barraPlantilla+plantilla;
+				String rutaPlantilla = p.returnProperty("facturacion.directorioFisicoPlantillaFacturaJava")+p.returnProperty("facturacion.directorioPlantillaFacturaJava");
+				String barraPlantilla="";
+				if (rutaPlantilla.indexOf("/") > -1){
+					barraPlantilla = "/";
+				}
+				if (rutaPlantilla.indexOf("\\") > -1){
+					barraPlantilla = "\\";
+				}
+				rutaPlantilla += barraPlantilla+institucion.toString()+barraPlantilla+plantilla;
 				File rutaModelo=new File(rutaPlantilla);
 				//Comprobamos que exista la ruta y sino la creamos
 				if (!rutaModelo.exists()){
 					v.add("messages.facturacion.comprueba.noPlantillaFacturacion"); // No existe la plantilla de facturación					
 				}
 			}
-			
-    		if (bean.getEnvio().equals("1")) {
+
+			if (bean.getEnvio().equals("1")) {
 				// plantilla de envios
 				GenParametrosAdm paramAdm = new GenParametrosAdm(this.usrbean);
 				String preferencia = paramAdm.getValor(institucion.toString(),"ENV","TIPO_ENVIO_PREFERENTE","1");
 				Integer tipoEnvio = Envio.calculaTipoEnvio(preferencia);
-	
+
 				// Recojo una plantilla valida cualquiera:
 				EnvPlantillasEnviosAdm plantillasEnviosAdm = new EnvPlantillasEnviosAdm(this.usrbean);
 				Vector plantillasValidas=plantillasEnviosAdm.getIdPlantillasValidos(institucion,tipoEnvio.toString());
@@ -581,9 +581,9 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 					if (tipoEnvio.intValue()!=1 && (plantillasEnvio==null || plantillasEnvio.size()==0)) {
 						v.add("messages.facturacion.comprueba.noConfigPlantillaGeneracionEnvios"); // No estan configuradas plantillas de generacion para la plantilla seleccionada
 					} else {
-			   	        String sWhere = " WHERE " + GenParametrosBean.C_PARAMETRO + "='PATH_PLANTILLAS' AND "+
-	                    GenParametrosBean.C_MODULO + "='CER' AND " + 
-	                    GenParametrosBean.C_IDINSTITUCION + "=0";
+						String sWhere = " WHERE " + GenParametrosBean.C_PARAMETRO + "='PATH_PLANTILLAS' AND "+
+								GenParametrosBean.C_MODULO + "='CER' AND " + 
+								GenParametrosBean.C_IDINSTITUCION + "=0";
 						GenParametrosAdm admParametros = new GenParametrosAdm(this.usrbean);
 						Vector vParametros = admParametros.select(sWhere);
 						if (vParametros==null || vParametros.size()==0)
@@ -594,44 +594,44 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 						GenParametrosBean beanParametros = (GenParametrosBean)vParametros.elementAt(0);
 						String sPath = beanParametros.getValor();
 
-	
-			   	        if (tipoEnvio.intValue()!=1) {
+
+						if (tipoEnvio.intValue()!=1) {
 							// RGG Damos por supuesto que el proceso de crear envios automaticamwnte obtiene la primera plantilla de generacion que encuentra en la plantilla
 							EnvPlantillaGeneracionBean beanPL = (EnvPlantillaGeneracionBean) plantillasEnvio.get(0); 	
-				   	        String sCompuesto = beanPL.getIdTipoEnvios() + "_" + beanPL.getIdPlantillaEnvios() + "_" + beanPL.getIdPlantilla();
+							String sCompuesto = beanPL.getIdTipoEnvios() + "_" + beanPL.getIdPlantillaEnvios() + "_" + beanPL.getIdPlantilla();
 
-				   	        String sNombreFinal = sPath + File.separator + institucion + File.separator + sCompuesto;
-				   	        File f = new File(sNombreFinal);
+							String sNombreFinal = sPath + File.separator + institucion + File.separator + sCompuesto;
+							File f = new File(sNombreFinal);
 							if (!f.exists()) {
 								v.add("messages.facturacion.comprueba.noFicheroPlantillaEnvios"); // No existe la plantilla configurada de envios
-				    		} else 
-				    		if (!f.canRead()) {
-				    			v.add("messages.facturacion.comprueba.noPermisosFicheroPlantillaEnvios"); // La plantilla de envios configurada no tiene los permisos adecuados.
-				    		} 
-			   	        }
+							} else 
+								if (!f.canRead()) {
+									v.add("messages.facturacion.comprueba.noPermisosFicheroPlantillaEnvios"); // La plantilla de envios configurada no tiene los permisos adecuados.
+								} 
+						}
 					}
 				}
-    		}
+			}
 		} 
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Excepcion en FacFacturacionProgramadaAdm.comprobarRecursosProgramacion().");
 		}
 		return v;	
 	}
-   
-    public Paginador getProgramacioneFacturacionPaginador(ConfirmarFacturacionForm confirmarFacturacionForm) throws ClsExceptions, SIGAException{
-		
-    	Integer idInstitucion	=  Integer.valueOf(this.usrbean.getLocation());	
-		
+
+	public Paginador getProgramacioneFacturacionPaginador(ConfirmarFacturacionForm confirmarFacturacionForm) throws ClsExceptions, SIGAException{
+
+		Integer idInstitucion	=  Integer.valueOf(this.usrbean.getLocation());	
+
 		//Este select interno si devuelve un numero > 0 querra decir que debo pedir la fecha de cargo
 		String selectInterno = "SELECT count(*) FROM "+FacFacturaBean.T_NOMBRETABLA+" fac "+
-							   " WHERE fac."+FacFacturaBean.C_IDINSTITUCION+" = facProg."+FacFacturacionProgramadaBean.C_IDINSTITUCION+
-							   " AND fac."+FacFacturaBean.C_IDSERIEFACTURACION+" = facProg."+FacFacturacionProgramadaBean.C_IDSERIEFACTURACION+
-							   " AND fac."+FacFacturaBean.C_IDPROGRAMACION+" = facProg."+FacFacturacionProgramadaBean.C_IDPROGRAMACION+
-							   " AND fac."+FacFacturaBean.C_IDFORMAPAGO+"="+ClsConstants.TIPO_FORMAPAGO_FACTURA;
-							   
+				" WHERE fac."+FacFacturaBean.C_IDINSTITUCION+" = facProg."+FacFacturacionProgramadaBean.C_IDINSTITUCION+
+				" AND fac."+FacFacturaBean.C_IDSERIEFACTURACION+" = facProg."+FacFacturacionProgramadaBean.C_IDSERIEFACTURACION+
+				" AND fac."+FacFacturaBean.C_IDPROGRAMACION+" = facProg."+FacFacturacionProgramadaBean.C_IDPROGRAMACION+
+				" AND fac."+FacFacturaBean.C_IDFORMAPAGO+"="+ClsConstants.TIPO_FORMAPAGO_FACTURA;
+
 		StringBuffer select = new StringBuffer("SELECT  ");
-		
+
 		select.append(FacFacturacionProgramadaBean.C_FECHAINICIOPRODUCTOS);
 		select.append(",");
 		select.append(FacFacturacionProgramadaBean.C_FECHAFINPRODUCTOS);
@@ -650,38 +650,38 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		select.append(",");
 		select.append(FacFacturacionProgramadaBean.C_FECHAREALGENERACION);
 		select.append(",");
-		
+
 		select.append("IDESTADOCONFIRMACION, IDESTADOPDF, IDESTADOENVIO, IDESTADOTRASPASO ");
 
 		select.append(",ARCHIVARFACT,IDPROGRAMACION");
 		select.append(",facProg.");
 		select.append(FacFacturacionProgramadaBean.C_IDSERIEFACTURACION);
-		
+
 		select.append(",facProg.");
 		select.append(FacFacturacionProgramadaBean.C_USUMODIFICACION);
-		
+
 		select.append(",facProg.");
 		select.append(FacFacturacionProgramadaBean.C_NOMBREFICHERO);
-		
+
 		select.append(",facProg.");
 		select.append(FacFacturacionProgramadaBean.C_LOGERROR);
-		
+
 		select.append(",facProg.");
 		select.append(FacFacturacionProgramadaBean.C_LOGTRASPASO);
-		
+
 		select.append(",facProg.");
 		select.append(FacFacturacionProgramadaBean.C_TRASPASOFACTURAS);
-		
+
 		select.append(",facProg.");
 		select.append(FacFacturacionProgramadaBean.C_TRASPASOPLANTILLA);
-		
+
 		select.append(",facProg.");
 		select.append(FacFacturacionProgramadaBean.C_TRASPASOCODAUDITORIADEF);
-		
+
 		select.append(",facProg.");
 		select.append(FacFacturacionProgramadaBean.C_DESCRIPCION);
 		select.append(",");
-		
+
 		select.append(" ("+selectInterno+") AS FECHACARGO, ");
 		select.append(" serieFac."+FacSerieFacturacionBean.C_NOMBREABREVIADO);
 		select.append(" FROM "+FacFacturacionProgramadaBean.T_NOMBRETABLA+" facProg, ");
@@ -690,7 +690,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		select.append(" AND facProg."+FacFacturacionProgramadaBean.C_IDINSTITUCION+"= serieFac."+FacSerieFacturacionBean.C_IDINSTITUCION);
 		select.append(" AND facProg."+FacFacturacionProgramadaBean.C_IDSERIEFACTURACION+"= serieFac."+FacSerieFacturacionBean.C_IDSERIEFACTURACION);
 		select.append(" AND NVL(facProg."+FacFacturacionProgramadaBean.C_VISIBLE+", 'N') = 'S' ");
-						
+
 		// filtros
 		if (confirmarFacturacionForm.getEstadoConfirmacion()!= null && !confirmarFacturacionForm.getEstadoConfirmacion().trim().equals("")) {
 			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION+"="+confirmarFacturacionForm.getEstadoConfirmacion());
@@ -727,7 +727,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		if (confirmarFacturacionForm.getFechaHastaPrevistaGeneracion()!=null && !confirmarFacturacionForm.getFechaHastaPrevistaGeneracion().trim().equals("")) {
 			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION+"<TO_DATE ('" + confirmarFacturacionForm.getFechaHastaPrevistaGeneracion() + " 23:59:59', 'DD/MM/YYYY hh24:mi:ss')");
 		}
-		
+
 		// filtro por fecha de productos
 		boolean hayFechaDesdeProductos = true;
 		String fechaDesdeProductos = confirmarFacturacionForm.getFechaDesdeProductos();
@@ -746,10 +746,10 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAINICIOPRODUCTOS+"<=TO_DATE ('" + fechaHastaProductos + "', 'DD/MM/YYYY')");
 			select.append(" AND facProg."+FacFacturacionProgramadaBean.C_FECHAFINPRODUCTOS+">=TO_DATE ('" + fechaDesdeProductos + "', 'DD/MM/YYYY')");
 		}
-		
+
 		// filtro por tipo de producto
 		if (confirmarFacturacionForm.getIdTipoProducto()!=null && !confirmarFacturacionForm.getIdTipoProducto().trim().equals("") &&
-			confirmarFacturacionForm.getIdProducto()!=null && !confirmarFacturacionForm.getIdProducto().trim().equals("")) 
+				confirmarFacturacionForm.getIdProducto()!=null && !confirmarFacturacionForm.getIdProducto().trim().equals("")) 
 		{
 			select.append(" And Exists (Select 1 ");
 			select.append("     From "+FacTiposProduIncluEnFactuBean.T_NOMBRETABLA+" Tippro ");
@@ -758,14 +758,14 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			select.append("      And Tippro."+FacTiposProduIncluEnFactuBean.C_IDTIPOPRODUCTO+" = " +confirmarFacturacionForm.getIdTipoProducto()+" ");
 			select.append("      And Tippro."+FacTiposProduIncluEnFactuBean.C_IDPRODUCTO+" = "+confirmarFacturacionForm.getIdProducto()+") ");
 		}
-		
+
 		select.append( " ORDER BY "+FacFacturacionProgramadaBean.C_FECHAREALGENERACION+" DESC");
-    	Paginador paginador= new Paginador(select.toString());
-		
+		Paginador paginador= new Paginador(select.toString());
+
 		return paginador;                        
 	}	
-    
-    
-   
+
+
+
 
 }
