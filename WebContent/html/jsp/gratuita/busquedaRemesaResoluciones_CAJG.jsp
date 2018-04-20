@@ -49,6 +49,9 @@
 			titulo = "menu.justiciaGratuita.e_comunicaciones.cargaDesignaProcurador";
 		}else if(idTipoRemesa.equals("3")) {
 			titulo = "menu.sjcs.ecomunicaciones.resultadoRemesaEJG";
+		}else if(idTipoRemesa.equals("4")) {
+			titulo = "menu.sjcs.facturacion.envioReintegrosXunta"; 
+			localizacion = "factSJCS.envioReintegrosXunta.localizacion";
 		}
 	}
 	
@@ -146,9 +149,7 @@
 		}
 	</script>
 	<!-- INICIO: TITULO Y LOCALIZACION -->
-	<siga:Titulo 
-		titulo="<%=titulo%>"
-		localizacion="<%=localizacion%>"/>
+	<siga:Titulo titulo="<%=titulo%>" localizacion="<%=localizacion%>"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 
 </head>
