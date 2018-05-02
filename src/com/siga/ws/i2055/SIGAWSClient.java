@@ -10,11 +10,10 @@ import java.math.BigInteger;
 import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
-
 import javax.transaction.UserTransaction;
 
 import org.apache.axis.EngineConfiguration;
@@ -26,7 +25,6 @@ import org.apache.axis.transport.http.HTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlOptions;
-import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
@@ -51,12 +49,6 @@ import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
-import com.siga.beans.ScsPersonaJGBean;
-import com.siga.beans.ScsUnidadFamiliarEJGAdm;
-import com.siga.beans.ScsUnidadFamiliarEJGBean;
-import com.siga.beans.eejg.ScsEejgPeticionesAdm;
-import com.siga.beans.eejg.ScsEejgPeticionesBean;
-import com.siga.gratuita.service.EejgService;
 import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.i2055.xmlbeans.Direccion;
 import com.siga.ws.i2055.xmlbeans.SCalificacion;
@@ -70,7 +62,6 @@ import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.Dt
 import com.siga.ws.i2055.xmlbeans.SIGAAsignaDocument.SIGAAsigna.DtExpedientes.TurnadoAbogado;
 import com.siga.ws.i2055.xmlbeans.SPrestacion;
 
-import es.satec.businessManager.BusinessException;
 import es.satec.businessManager.BusinessManager;
 
 /**
@@ -725,6 +716,20 @@ public class SIGAWSClient extends SIGAWSClientAbstract {
 	}
 	
 	private void enviaDocumentacion(UsrBean usrBean, int idInstitucion, String anio,	String numero, String idTipoEJG) throws ClsExceptions {
+		EcomCola ecomCola = new EcomCola();
+		ecomCola.setIdoperacion(OPERACION.ASIGNA_ENVIO_DOCUMENTO.getId());
+		ecomCola.setIdinstitucion((short) idInstitucion);
+		EcomColaService ecomColaService = (EcomColaService)BusinessManager.getInstance().getService(EcomColaService.class);
+		
+		Map<String, String> mapa = new HashMap<String, String>();
+		mapa.put(ScsEjgKey.C_IDINSTITUCION, String.valueOf(idInstitucion));
+		mapa.put(ScsEjgKey.C_ANIO, anio);
+		mapa.put(ScsEjgKey.C_IDTIPOEJG, idTipoEJG);
+		mapa.put(ScsEjgKey.C_NUMERO, numero);
+		
+		ecomColaService.insertaColaConParametros(ecomCola, mapa);
+		
+		/*
 		ScsEejgPeticionesAdm scsEejgPeticionesAdm = new ScsEejgPeticionesAdm(usrBean);
 		Hashtable<String, Object> hash = new Hashtable<String, Object>();
 		hash.put(ScsEejgPeticionesBean.C_IDINSTITUCION, idInstitucion);
@@ -743,11 +748,11 @@ public class SIGAWSClient extends SIGAWSClientAbstract {
 					enviaPDF(scsEejgPeticionesBean, usrBean);
 				}
 			}
-		}
+		}*/
 		
 	}
 	
-	private void enviaPDF(ScsEejgPeticionesBean scsEejgPeticionesBean, UsrBean usrBean) {
+	/*private void enviaPDF(ScsEejgPeticionesBean scsEejgPeticionesBean, UsrBean usrBean) {
 		try {
 			BusinessManager bm = BusinessManager.getInstance();
 			EejgService eEjgS = (EejgService)bm.getService(EejgService.class);
@@ -785,10 +790,15 @@ public class SIGAWSClient extends SIGAWSClientAbstract {
 				ecomCola.setIdoperacion(OPERACION.ASIGNA_ENVIO_DOCUMENTO.getId());
 				ecomCola.setIdinstitucion(Short.valueOf(scsEejgPeticionesBean.getIdInstitucion().toString()));
 				EcomColaService ecomColaService = (EcomColaService)BusinessManager.getInstance().getService(EcomColaService.class);
+				
+				Map<String, String> mapa = new HashMap<String, String>();
+				mapa.put(ScsEjgKey.C_IDINSTITUCION, scsEejgPeticionesBean.getIdInstitucion().toString());
+				mapa.put(ScsEjgKey.C_ANIO, scsEejgPeticionesBean.getAnio().toString());
+				mapa.put(ScsEjgKey.C_IDTIPOEJG, scsEejgPeticionesBean.getIdTipoEjg().toString());
+				mapa.put(ScsEjgKey.C_NUMERO, scsEejgPeticionesBean.getNumero().toString());
+				
+				ecomColaService.insertaColaConParametros(ecomCola, mapa);
 							
-				if (ecomColaService.insert(ecomCola) != 1) {				
-					throw new ClsExceptions("No se ha podido insertar en la cola de comunicaciones.");
-				}
 				scsEejgPeticionesBean.setIdEcomCola(ecomCola.getIdecomcola());
 				
 				ScsEejgPeticionesAdm scsEejgPeticionesAdm = new ScsEejgPeticionesAdm(usrBean);
@@ -801,5 +811,5 @@ public class SIGAWSClient extends SIGAWSClientAbstract {
 			ClsLogging.writeFileLogError("Se ha producido un error al generar y enviar el pdf a Asigna", e, 3);
 		}
 	}
-
+*/
 }
