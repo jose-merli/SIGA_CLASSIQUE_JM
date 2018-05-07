@@ -1587,15 +1587,15 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += " AND X.XML IS NOT NULL )";
 			
 			//Sacamos los  ejgs que hyan sido remitidos a comision perro que no tienen un estado posterior devuelto al colegio
-			consulta += " AND "+ESTADOS_EJG.DEVUELTO_AL_COLEGIO.getCodigo()+" = ";
-			consulta += " (SELECT DISTINCT FIRST_VALUE(EST.IDESTADOEJG) OVER(ORDER BY EST.FECHAINICIO DESC, EST.IDESTADOPOREJG DESC) ";
+			consulta += " AND "+ESTADOS_EJG.REMITIDO_COMISION.getCodigo()+" = ";
+			consulta += " nvl((SELECT DISTINCT FIRST_VALUE(EST.IDESTADOEJG) OVER(ORDER BY EST.FECHAINICIO DESC, EST.IDESTADOPOREJG DESC) ";
 			consulta += " FROM SCS_ESTADOEJG EST ";
 			consulta += " WHERE EST.IDINSTITUCION = EJG.IDINSTITUCION ";
 			consulta += " AND EST.IDTIPOEJG = EJG.IDTIPOEJG ";
 			consulta += " AND EST.ANIO = EJG.ANIO ";
 			consulta += " AND EST.NUMERO = EJG.NUMERO ";
 			consulta += " AND EST.FECHABAJA IS NULL ";
-			consulta += " AND EST.IDESTADOEJG IN ("+ESTADOS_EJG.REMITIDO_COMISION.getCodigo()+", "+ESTADOS_EJG.DEVUELTO_AL_COLEGIO.getCodigo()+")) ";
+			consulta += " AND EST.IDESTADOEJG IN ("+ESTADOS_EJG.REMITIDO_COMISION.getCodigo()+", "+ESTADOS_EJG.DEVUELTO_AL_COLEGIO.getCodigo()+")),9) ";
 	      
 			consulta += " AND EXISTS (SELECT 1 ";
 			consulta += " FROM SCS_ESTADOEJG EREM ";
