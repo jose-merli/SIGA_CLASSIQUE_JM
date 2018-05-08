@@ -288,6 +288,11 @@ public class DefinirTurnosAction extends MasterAction {
 			if (miform.getCodigoExterno() != null) {
 				hash.put(ScsTurnoBean.C_CODIGOEXT,miform.getCodigoExterno());
 			}
+			
+			//MCL: Nuevo para incluir jurisdiccion
+			if (miform.getJurisdiccion() != null){
+				hash.put(ScsTurnoBean.C_IDJURISDICCION, miform.getJurisdiccion());
+			}
 
 			insercion = prepararHash(hash);
 			if (turno.insert(insercion))
@@ -361,6 +366,9 @@ public class DefinirTurnosAction extends MasterAction {
 		//IDTIPOTURNO:
 		aux.put(ScsTurnoBean.C_IDTIPOTURNO, this.obtenerValor(hash, ScsTurnoBean.C_IDTIPOTURNO));
 		
+		//MCL: IDJURISDICCION:
+		aux.put(ScsTurnoBean.C_IDJURISDICCION, this.obtenerValor(hash, ScsTurnoBean.C_IDJURISDICCION));
+		
 		//IDPERSONAULTIMO:
 		try{
 			if ((UtilidadesHash.getInteger(hash,"IDPERSONAULTIMO")).intValue()>0)aux.put("IDPERSONAULTIMO",(hash.get("IDPERSONAULTIMO")));
@@ -393,6 +401,7 @@ public class DefinirTurnosAction extends MasterAction {
 			aux.put("IDPARTIDOJUDICIAL",(hash.get("IDPARTIDOJUDICIAL")));
 		}catch(Exception e){}
 		aux.put("IDTURNO",(hash.get("IDTURNO")));
+		aux.put("IDJURISDICCION",(hash.get("IDJURISDICCION")));
 		aux.put("DESCRIPCION",(hash.get("DESCRIPCION")));
 		aux.put("REQUISITOS",(hash.get("REQUISITOS")));
 		aux.put("IDORDENACIONCOLAS",(hash.get("IDORDENACIONCOLAS")));
@@ -479,6 +488,10 @@ public class DefinirTurnosAction extends MasterAction {
 			
 			if (miform.getIdTipoTurno() != null){
 				hash.put(ScsTurnoBean.C_IDTIPOTURNO, miform.getIdTipoTurno());
+			}
+			
+			if (miform.getJurisdiccion()!= null){
+				hash.put(ScsTurnoBean.C_IDJURISDICCION, miform.getJurisdiccion());
 			}
 			
 			//Chequeo que el IDMATERIA no sea nulo:

@@ -45,6 +45,7 @@ public class ScsTurnoBean extends MasterBean{
 	private String 		visibilidad;
 	private String 		idTipoTurno;
 	private String 		visibleMovil;
+	private Integer     idJurisdiccion;
 	
 	ScsPartidaPresupuestariaBean partidaPresupuestaria =null;
 	ScsMateriaBean materia = null;
@@ -95,6 +96,7 @@ public class ScsTurnoBean extends MasterBean{
 	static public final String  C_VISIBILIDAD     			= "VISIBILIDAD";
 	static public final String  C_IDTIPOTURNO	    		= "IDTIPOTURNO";
 	static public final String  C_VISIBLEMOVIL 				= "VISIBLEMOVIL";
+	static public final String  C_IDJURISDICCION	        = "IDJURISDICCION";
 	
 	
 	
@@ -617,5 +619,14 @@ public class ScsTurnoBean extends MasterBean{
 	public void setVisibleMovil(String visibleMovil) {
 		this.visibleMovil = visibleMovil;
 	}
+
+	public Integer getIdJurisdiccion() {
+		return idJurisdiccion;
+	}
+
+	public void setIdJurisdiccion(Integer idJurisdiccion) {
+		this.idJurisdiccion = idJurisdiccion;
+	}
+
 
 }

@@ -3,6 +3,7 @@ package com.siga.gratuita.form;
 /**
  * @author ruben.fernandez
  */
+import com.siga.beans.ScsProcedimientosBean;
 import com.siga.general.*;
 import java.util.*;
 
@@ -28,6 +29,7 @@ public class DefinirTurnosForm extends MasterForm {
 	public String idTipoTurno ="";
 	public String nameBajaLogica ="";
 	private String ponerVisibilidadMovil;
+	private String jurisdiccion;
 
 	String codigoExterno="";
 	
@@ -604,5 +606,14 @@ public class DefinirTurnosForm extends MasterForm {
 	public void setPonerVisibilidadMovil(String ponerVisibilidadMovil) {
 		this.ponerVisibilidadMovil = ponerVisibilidadMovil;
 	}
+
+	public String getJurisdiccion() {
+		return jurisdiccion;
+	}
+
+	public void setJurisdiccion(String jurisdiccion) {
+		this.jurisdiccion = jurisdiccion;
+	}
+
 	
 }

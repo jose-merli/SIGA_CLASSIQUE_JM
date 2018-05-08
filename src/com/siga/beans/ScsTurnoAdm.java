@@ -58,7 +58,8 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 				ScsTurnoBean.C_FECHAMODIFICACION, 		ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT,
 				ScsTurnoBean.C_LETRADOACTUACIONES,		ScsTurnoBean.C_LETRADOASISTENCIAS, 
 				ScsTurnoBean.C_CODIGOEXT,				ScsTurnoBean.C_FECHASOLICITUD_ULTIMO,
-				ScsTurnoBean.C_IDTIPOTURNO, ScsTurnoBean.C_VISIBLEMOVIL};
+				ScsTurnoBean.C_IDJURISDICCION,			ScsTurnoBean.C_IDTIPOTURNO,
+				ScsTurnoBean.C_VISIBLEMOVIL};
 		return campos;
 	}
 	/**
@@ -78,7 +79,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 	 */
 	
 	private String[] getCamposTurnos(){
-			String[] campos = {	"turnos."+ScsTurnoBean.C_IDTURNO+" IDTURNO",								
+			String[] campos = {	"turnos."+ScsTurnoBean.C_IDTURNO+" IDTURNO",
 					//"substr(turnos."+ScsTurnoBean.C_NOMBRE+ ",1,10) NOMBRE",
 					"turnos."+ScsTurnoBean.C_NOMBRE+ " NOMBRE",
 					"turnos."+ScsTurnoBean.C_ABREVIATURA+ " ABREVIATURA",
@@ -177,6 +178,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 		try{
 			bean = new ScsTurnoBean();
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash,ScsTurnoBean.C_IDINSTITUCION));
+			bean.setIdJurisdiccion(UtilidadesHash.getInteger(hash,ScsTurnoBean.C_IDJURISDICCION));
 			bean.setIdTurno(UtilidadesHash.getInteger(hash,ScsTurnoBean.C_IDTURNO));
 			bean.setNombre(UtilidadesHash.getString(hash,ScsTurnoBean.C_NOMBRE));
 			bean.setAbreviatura(UtilidadesHash.getString(hash,ScsTurnoBean.C_ABREVIATURA));
@@ -222,6 +224,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 			ScsTurnoBean b = (ScsTurnoBean) bean;
 			hash.put(ScsTurnoBean.C_IDINSTITUCION, String.valueOf(b.getIdInstitucion()));
 			hash.put(ScsTurnoBean.C_IDTURNO, String.valueOf(b.getIdTurno()));
+			hash.put(ScsTurnoBean.C_IDJURISDICCION, String.valueOf(b.getIdJurisdiccion()));
 			hash.put(ScsTurnoBean.C_NOMBRE, b.getNombre());
 			hash.put(ScsTurnoBean.C_ABREVIATURA, b.getAbreviatura());
 			aux = b.getDescripcion().toString();
@@ -421,6 +424,7 @@ public class ScsTurnoAdm extends MasterBeanAdministrador {
 		" turno." + ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT + " " + ScsTurnoBean.C_ACTIVARRETRICCIONACREDIT + ", " + 
 		" turno." + ScsTurnoBean.C_LETRADOACTUACIONES + " " + ScsTurnoBean.C_LETRADOACTUACIONES + ", " + 
 		" turno." + ScsTurnoBean.C_LETRADOASISTENCIAS + " " + ScsTurnoBean.C_LETRADOASISTENCIAS+","+
+		" turno." + ScsTurnoBean.C_IDJURISDICCION + " " + ScsTurnoBean.C_IDJURISDICCION+","+
 		" turno." + ScsTurnoBean.C_CODIGOEXT + " " + ScsTurnoBean.C_CODIGOEXT +  
 		" from scs_turno turno, scs_area area, scs_materia materia, scs_zona zona, scs_subzona subzona, scs_partidapresupuestaria partida, cen_partidojudicial partido"+
 		" where area.idinstitucion = turno.idinstitucion"+

@@ -32,6 +32,8 @@
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
+	//recogemos los datos
+	Hashtable resultado = (Hashtable) request.getAttribute("resultado");
 	
 	String localiz="";
 	String entrada =(String)request.getSession().getAttribute("entrada");
@@ -355,6 +357,13 @@
 					</td>
 					<td>
 						<siga:Select queryId="getTiposTurno" id="idTipoTurno"/>
+					</td>
+					
+					<td class="labelText">
+						<siga:Idioma key="gratuita.procedimientos.literal.Jurisdiccion" />&nbsp;
+					</td>
+					<td>
+						<siga:ComboBD nombre="jurisdiccion" ancho="200" tipo="jurisdiccionSCJS" clase="boxCombo" obligatorio="false"/>
 					</td>
 				</tr>	
 			</table>

@@ -27,7 +27,7 @@
 <%@ page import="com.siga.beans.ScsOrdenacionColasBean"%>
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
-
+<%@ page import="com.siga.beans.ScsProcedimientosBean"%>
 <% 	
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
@@ -36,6 +36,14 @@
 	String accion = (String)request.getSession().getAttribute("accionTurno");
 	Hashtable turno = (Hashtable) ses.getAttribute("turnoElegido");
 	String validarInscripciones=(String)turno.get("VALIDARINSCRIPCIONES"); 
+	
+	//variables quese van a mostrar en la jsp
+		String idJurisdiccion = "";
+		//inicializamos los valores
+		try {
+			idJurisdiccion = (String) turno.get(ScsProcedimientosBean.C_IDJURISDICCION);
+		} catch (Exception e) {
+		}
 	
 	String asterisco = "&nbsp;(*)&nbsp;";
 	int pcajgActivo = 0;
@@ -541,7 +549,7 @@
 						
 				<tr>
 					<td class="labelText">
-						<siga:Idioma key="gratuita.maestroTurnos.literal.tipoturno"/>
+						<siga:Idioma key="gratuita.maestroTurnos.literal.tipoturno"/>&nbsp;
 					</td>
 					<td>
 <%
@@ -556,6 +564,17 @@
 						}
 %>							
 						<siga:Select queryId="getTiposTurno" id="idTipoTurno" selectedIds="<%=vTipoTurno%>" readOnly="<%=modoVerReadOnly%>"/>
+					</td>
+					
+					<td class="labelText">
+						<siga:Idioma key="gratuita.procedimientos.literal.Jurisdiccion"/>&nbsp;
+					</td>
+					<td>
+<%
+						ArrayList juris = new ArrayList();
+						juris.add(idJurisdiccion);
+%>
+						<siga:ComboBD nombre="jurisdiccion" ancho="200" tipo="jurisdiccionSCJS" clase="<%=classCombo%>" obligatorio="false" elementoSel="<%=juris%>" readOnly="<%=modoVerReadOnly%>"/>							
 					</td>
 				</tr>			
 			</table>			
