@@ -14,7 +14,10 @@ public class DesignacionProcuradorAsigna {
 				
 		EcomCola ecomCola = new EcomCola();
 		ecomCola.setIdinstitucion(idInstitucion);
-		ecomCola.setIdoperacion(OPERACION.ASIGNA_OBTENER_PROCURADOR.getId());			
+		if(idInstitucion!=null && idInstitucion.shortValue()==2016)
+			ecomCola.setIdoperacion(OPERACION.ASIGNA_MODIFICAR_TURNADO_PROCURADOR.getId());
+		else
+			ecomCola.setIdoperacion(OPERACION.ASIGNA_OBTENER_PROCURADOR.getId());			
 		EcomColaService ecomColaService = (EcomColaService)BusinessManager.getInstance().getService(EcomColaService.class);
 								
 		if (ecomColaService.insert(ecomCola) != 1) {			
