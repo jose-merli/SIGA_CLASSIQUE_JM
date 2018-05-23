@@ -342,7 +342,8 @@ public class ClsLogging{
 				}
 			}
 		} catch(Exception _ex) {
-			System.out.println("Error Escribiendo Log :"+_ex.toString());
+			System.out.println("Error Escribiendo Log en " + fileName + ":" + _ex.toString());
+			_ex.printStackTrace();
 		} finally {
 		    try {
 		        printer.flush();
