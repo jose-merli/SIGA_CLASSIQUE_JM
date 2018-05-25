@@ -30,6 +30,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.jcraft.jsch.JSchException;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgEJGRemesaBean;
 import com.siga.beans.CajgRemesaAdm;
@@ -452,12 +453,15 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 					aniadeTexto(observaciones, "Prestaciones: " + tipoPrestacion);
 				}
 				
+				String sObservaciones = observaciones.toString();
+				sObservaciones = UtilidadesString.escapaCaracteres(sObservaciones);				
+				
 				String update = "UPDATE " + ScsEJGBean.T_NOMBRETABLA + " SET " +
 						ScsEJGBean.C_IDTIPORATIFICACIONEJG + " = (" + sqlCodTipoResolucion + ")" +//tipoResolucion
 						", " + ScsEJGBean.C_IDFUNDAMENTOJURIDICO + " = (" + sqlCodMotivoResolucion + ")" + //motivoResolucion
 						", " + ScsEJGBean.C_FECHARESOLUCIONCAJG + " = TO_DATE('" + fechaEstado + "', 'YYYY-MM-DD')" +
 						", " + ScsEJGBean.C_REFAUTO + " = '" + (identificadorResolucion==null?"":identificadorResolucion) + "'" +
-						", " + ScsEJGBean.C_RATIFICACIONDICTAMEN + " = '" + observaciones + "'" +
+						", " + ScsEJGBean.C_RATIFICACIONDICTAMEN + " = '" + sObservaciones + "'" +
 						", " + ScsEJGBean.C_FECHAMODIFICACION + " = SYSDATE" +
 						// jbd // A peticion de los catalanes ya no se actualiza el usumodificacion
 						// ", " + ScsEJGBean.C_USUMODIFICACION + " = " + getUsrBean().getUserName() +

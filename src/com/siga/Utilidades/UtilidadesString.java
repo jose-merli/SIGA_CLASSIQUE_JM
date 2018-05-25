@@ -1791,4 +1791,14 @@ public class UtilidadesString {
 		}// for i
 		return output;
 	}
+	
+	/**
+	 * Función que escapa las comillas simples para querys de bbdd.
+	 * @param input
+	 * @return cadena de texto escapa comillas.
+	 */
+	public static String escapaCaracteres(String input) {
+		String output = input.replaceAll("'", "''");
+		return output;
+	}
 }
