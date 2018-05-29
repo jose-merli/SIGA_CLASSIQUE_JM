@@ -1798,7 +1798,10 @@ public class UtilidadesString {
 	 * @return cadena de texto escapa comillas.
 	 */
 	public static String escapaCaracteres(String input) {
-		String output = input.replaceAll("'", "''");
+		String output = "";
+		if(input != null){
+			output = input.replaceAll("'", "''");
+		}		
 		return output;
 	}
 }
