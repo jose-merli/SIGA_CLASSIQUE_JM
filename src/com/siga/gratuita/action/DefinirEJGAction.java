@@ -833,22 +833,9 @@ public class DefinirEJGAction extends MasterAction
 			ScsSOJBean sojBean=null;
 			ScsDefinirSOJAdm sojAdm = new ScsDefinirSOJAdm (this.getUserBean(request));
 			
+			// Antes desde aqui se creaba la coleccion en Docushare, si no existia. Como tiraba el sistema cuando Docushare no respondia, lo hemos quitado y pasado al entrar en la pestanya correspondiente.
+			// El problema de esta solucion es que ya no podran acceder a la carpeta directamente despues de crear el EJG en SIGA.
 			
-			if (miHash.get(ScsEJGBean.C_ANIO) != null && miHash.get(ScsEJGBean.C_NUMEJG) != null) {
-				try {
-					short idInstitucionShort = getIDInstitucion(request).shortValue();
-					DocuShareHelper docuShareHelper = new DocuShareHelper(idInstitucionShort);
-					String identificadorDS = docuShareHelper.getIdentificadorDocuShare(miHash.get(ScsEJGBean.C_ANIO).toString(),  miHash.get(ScsEJGBean.C_NUMEJG).toString());
-					if (identificadorDS != null) {
-						miHash.put(ScsEJGBean.C_IDENTIFICADORDS, identificadorDS);
-					}	
-				} catch (Exception e) {
-					ClsLogging.writeFileLog("No se ha podico crear la carpeta de REGTEl del expediente "+miHash.get(ScsEJGBean.C_ANIO)+"/"+ miHash.get(ScsEJGBean.C_NUMEJG)+":"+e.toString(),10);
-				}
-				
-			}
-			
-
 			// Desde SOJ o nuevo EJG
 			if (((miForm.getDesignaAnio()    == null || miForm.getDesignaAnio().equals("")) &&
 				 (miForm.getAsistenciaAnio() == null || miForm.getAsistenciaAnio().equals("")))) { 
