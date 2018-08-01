@@ -65,7 +65,9 @@ public class EJGDocumentacionRegTelAction extends DocumentacionRegTelAction {
 
 			if (scsEJGBean.getIdentificadorDS() == null || scsEJGBean.getIdentificadorDS().trim().equals("")) {
 				if (scsEJGBean.getAnio() != null) {
-					String idDS = docuShareHelper.getIdentificadorDocuShare(scsEJGBean.getAnio().toString(), scsEJGBean.getNumEJG());
+					String title = DocuShareHelper.getTitleEJG(scsEJGBean.getAnio().toString(), scsEJGBean.getNumEJG());
+					String idDS = docuShareHelper.buscaCollectionEJG(title);
+										
 					if (idDS != null) {
 						scsEJGBean.setIdentificadorDS(idDS);
 						admEJG.updateDirect(scsEJGBean);
@@ -103,9 +105,10 @@ public class EJGDocumentacionRegTelAction extends DocumentacionRegTelAction {
 	protected String createCollection(MasterForm formulario, HttpServletRequest request) throws SIGAServiceException, ClsExceptions {
 		Hashtable hashtable = (Hashtable)request.getSession().getAttribute("DATABACKUP_REGTEL");
 		
+		String title = DocuShareHelper.getTitleEJG(hashtable.get(ScsEJGBean.C_ANIO).toString(), hashtable.get(ScsEJGBean.C_NUMEJG).toString());
 		short idInstitucion = Short.valueOf((String)hashtable.get(ScsEJGBean.C_IDINSTITUCION));
 		DocuShareHelper docuShareHelper = new DocuShareHelper(idInstitucion);
-		String idDS = docuShareHelper.getIdentificadorDocuShare(hashtable.get(ScsEJGBean.C_ANIO).toString(), hashtable.get(ScsEJGBean.C_NUMEJG).toString());
+		String idDS = docuShareHelper.createCollectionEJG(title,"");
 		hashtable.put(ScsEJGBean.C_IDENTIFICADORDS, idDS);
 		
 		ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
