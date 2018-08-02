@@ -65,8 +65,7 @@ public class EJGDocumentacionRegTelAction extends DocumentacionRegTelAction {
 
 			if (scsEJGBean.getIdentificadorDS() == null || scsEJGBean.getIdentificadorDS().trim().equals("")) {
 				if (scsEJGBean.getAnio() != null) {
-					String title = DocuShareHelper.getTitleEJG(scsEJGBean.getAnio().toString(), scsEJGBean.getNumEJG());
-					String idDS = docuShareHelper.buscaCollectionEJG(title);
+					String idDS = docuShareHelper.getIdentificadorDocuShare(scsEJGBean.getAnio().toString(), scsEJGBean.getNumEJG());
 										
 					if (idDS != null) {
 						scsEJGBean.setIdentificadorDS(idDS);
