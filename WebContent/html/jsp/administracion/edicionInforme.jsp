@@ -986,7 +986,15 @@
 		
 		function campoEscritura(campo){
 			jQuery(campo).removeAttr('readOnly');
-			if(jQuery(campo).is("select")){
+			
+			var isSelect = false;			
+			try{
+				isSelect = jQuery(campo).is("select");
+			}catch(err){
+				isSelect = jQueryTop(campo).is("select");
+			}
+			
+			if(isSelect){
 				jQuery(campo).next().remove();
 				jQuery(campo).show();
 				jQuery(campo).removeClass('boxComboConsulta');
