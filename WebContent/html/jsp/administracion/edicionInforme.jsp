@@ -975,7 +975,15 @@
 		
 		function campoSoloLectura(campo){
 			jQuery(campo).attr('readOnly','readOnly');
-			if(jQuery(campo).is('select')){			
+			
+			var isSelect = false;
+			try{
+				isSelect = jQuery(campo).is("select");
+			}catch(err){
+				isSelect = jQueryTop(campo).is("select");
+			}
+			
+			if(isSelect){		
 				jQuery(campo).after(jQuery(campo).find("option:selected").text());
 				jQuery(campo).hide();
 			}else{
