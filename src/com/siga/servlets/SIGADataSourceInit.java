@@ -8,6 +8,10 @@ import javax.servlet.ServletException;
 
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.config.ModuleConfig;
+import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.AppConstants.MODULO;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsExceptions;
@@ -16,6 +20,8 @@ import com.atos.utils.ClsMngProperties;
 import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.FcsFacturacionJGAdm;
 import com.siga.general.CenVisibilidad;
+
+import es.satec.businessManager.BusinessManager;
 
 
 public class SIGADataSourceInit extends ActionServlet {
@@ -106,6 +112,10 @@ public class SIGADataSourceInit extends ActionServlet {
         }
         //END BNS INC_10389_SIGA
         
+        // CENSO-124
+        ClsLogging.writeFileLogWithoutSession("Actualizando parámetros proxy censoWS", 3);
+		initCensoWSProxyParam();
+        
         seg_last=System.currentTimeMillis();
         //ClsLogging.writeFileLogWithoutSession(" ",1);
         ClsLogging.writeFileLogWithoutSession(" > Inicialización finalizada...: "+ ((seg_last-seg_first)/1000)+" segundos",1);
@@ -194,4 +204,12 @@ public class SIGADataSourceInit extends ActionServlet {
                 + " with pool: "+ poolName + " " + e.toString(), 3);
         }
     }*/
+	
+	private void initCensoWSProxyParam() {
+		GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
+		String activo = genParametrosService.getValorParametro(AppConstants.IDINSTITUCION_2000, PARAMETRO.CEN_WS_PROXY_ACTIVO, MODULO.CEN);
+		
+		AppConstants.CEN_WS_PROXY_ACTIVO = AppConstants.DB_TRUE.equals(activo);  
+		AppConstants.CEN_WS_PROXY_URL = genParametrosService.getValorParametro(AppConstants.IDINSTITUCION_2000, PARAMETRO.CEN_WS_PROXY_URL, MODULO.CEN);
+	}
 }

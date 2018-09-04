@@ -30,6 +30,7 @@ import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsEnvio;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.services.cen.CenWSService;
 import org.redabogacia.sigaservices.app.services.cen.EcomCenWsEnvioService;
+import org.redabogacia.sigaservices.app.services.ecom.EcColaService;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.vo.EcomCenColegiadoVO;
@@ -322,8 +323,16 @@ public class EdicionRemesasAction extends MasterAction {
 				mapa.put(EcomCenWsEnvio.C_IDCENWSENVIO, edicionRemesaForm.getIdcensowsenvio().toString());
 				mapa.put(AppConstants.ENVIO_MAIL, Boolean.TRUE.toString());
 				
-				EcomColaService ecomColaService = (EcomColaService) getBusinessManager().getService(EcomColaService.class);	
-				ecomColaService.insertaColaProcesarEnvioCensoProgramado(mapa, edicionRemesaForm.getIdcensowsenvio(), fechaEjecucion);
+				GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
+				String activo = genParametrosService.getValorParametro(AppConstants.IDINSTITUCION_2000, PARAMETRO.CEN_WS_PROXY_ACTIVO, MODULO.CEN);
+				
+				if(AppConstants.DB_TRUE.equals(activo)){
+					EcColaService ecColaService = (EcColaService) getBusinessManager().getService(EcColaService.class);	
+					ecColaService.insertaColaProcesarEnvioCensoProgramado(mapa, edicionRemesaForm.getIdcensowsenvio(), fechaEjecucion);
+				}else{
+					EcomColaService ecomColaService = (EcomColaService) getBusinessManager().getService(EcomColaService.class);	
+					ecomColaService.insertaColaProcesarEnvioCensoProgramado(mapa, edicionRemesaForm.getIdcensowsenvio(), fechaEjecucion);
+				}				
 				
 				edicionRemesaForm.setIdEstadoenvio(AppConstants.ECOM_CEN_MAESESTADOENVIO.PROCESANDO.getCodigo());
 				edicionRemesaForm.setAccion("ver");

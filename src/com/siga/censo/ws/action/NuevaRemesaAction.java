@@ -20,10 +20,14 @@ import org.apache.struts.upload.FormFile;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_MAESESTADOENVIO;
 import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_TIPO_ENVIO;
+import org.redabogacia.sigaservices.app.AppConstants.MODULO;
+import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsEnvio;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenWsPagina;
 import org.redabogacia.sigaservices.app.services.cen.EcomCenWsEnvioService;
+import org.redabogacia.sigaservices.app.services.ecom.EcColaService;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
+import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -91,10 +95,24 @@ public class NuevaRemesaAction extends MasterAction {
 			if(idColegio!=null){
 				idcol=Short.valueOf(idColegio);
 			}
-			EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
-			if (ecomColaService.insertaColaCargaCenso(idcol, false) != 1) {
-					throw new Exception("No se ha podido insertar correctamente en la cola para el colegio " + idcol);
+			
+			// Si el parametro de proxy está activo hay que introducirlo en la cola de censoWS
+			
+			GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
+			String activo = genParametrosService.getValorParametro(AppConstants.IDINSTITUCION_2000, PARAMETRO.CEN_WS_PROXY_ACTIVO, MODULO.CEN);
+			
+			if(AppConstants.DB_TRUE.equals(activo)){
+				EcColaService ecColaService = (EcColaService) BusinessManager.getInstance().getService(EcColaService.class);
+				if (ecColaService.insertaColaCargaCenso(idcol, false) != 1) {
+						throw new Exception("No se ha podido insertar correctamente en la cola de censoWS para el colegio " + idcol);
+				}
+			}else{
+				EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
+				if (ecomColaService.insertaColaCargaCenso(idcol, false) != 1) {
+						throw new Exception("No se ha podido insertar correctamente en la cola para el colegio " + idcol);
+				}
 			}
+			
 		} catch (Exception e) {
 			log.error("Error al insertar en la cola para el colegio " + idcol, e);
 			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, null);			
