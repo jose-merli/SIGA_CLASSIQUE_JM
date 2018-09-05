@@ -351,4 +351,6 @@ coger la vista V_PCAJG_CONTRARIOS
 
 insert into GEN_PROPERTIES (FICHERO, PARAMETRO, VALOR) values ('SIGA', 'mail.smtp.sesion', 'CorreoSIGA');
 
+-- Ejecutados en Integracion por AAG el 05/09/2018 a las 13:30
+
 
