@@ -185,14 +185,8 @@ public class EdicionColegiadoAction extends MasterAction {
 			ecomCenDatos.setFax(edicionColegiadoForm.getFax());
 			ecomCenDatos.setPublicaremail(getCheckShort(edicionColegiadoForm.isPublicaremail()));
 			ecomCenDatos.setEmail(edicionColegiadoForm.getEmail());
-			if (edicionColegiadoForm.getIdecomcensosituacionejer() != null && edicionColegiadoForm.getIdecomcensosituacionejer().shortValue() > 0) {							
-				if(edicionColegiadoForm.getIdecomcensosituacionejer().shortValue() == AppConstants.ESTADO_COLEGIAL_INSCRITO){
-					ecomCenDatos.setInscrito(AppConstants.INSCRITO);
-					ecomCenDatos.setIdecomcensosituacionejer(AppConstants.ESTADO_COLEGIAL_EJERCIENTE);	
-				}else{
-					ecomCenDatos.setInscrito(AppConstants.NO_INSCRITO);
-					ecomCenDatos.setIdecomcensosituacionejer(edicionColegiadoForm.getIdecomcensosituacionejer());	
-				}
+			if (edicionColegiadoForm.getIdecomcensosituacionejer() != null && edicionColegiadoForm.getIdecomcensosituacionejer().shortValue() > 0) {
+				ecomCenDatos.setIdecomcensosituacionejer(edicionColegiadoForm.getIdecomcensosituacionejer());
 			} else {
 				ecomCenDatos.setIdecomcensosituacionejer(null);
 			}
@@ -203,7 +197,7 @@ public class EdicionColegiadoAction extends MasterAction {
 				ecomCenDatos.setFechasituacion(null);
 			}
 			
-			ecomCenDatos.setResidente(getCheckShort(edicionColegiadoForm.isResidente()));			
+			ecomCenDatos.setResidente(getCheckShort(edicionColegiadoForm.isResidente()));
 			
 			if (edicionColegiadoForm.getMediador() != null && !edicionColegiadoForm.getMediador().trim().equals("")) {
 				ecomCenDatos.setMediador(Short.valueOf(edicionColegiadoForm.getMediador()));
@@ -259,10 +253,6 @@ public class EdicionColegiadoAction extends MasterAction {
 				ecomCenColegiadoService.addIncidenciasRevisadas(ecomCenColegiado, ECOM_CEN_MAESTRO_INCIDENCIAS.NUMERO_COLEGIADO_DUPLICADO);
 			}
 			
-			if (edicionColegiadoForm.isIncidenciaInscritoRevisada()) {
-				ecomCenColegiadoService.addIncidenciasRevisadas(ecomCenColegiado, ECOM_CEN_MAESTRO_INCIDENCIAS.INSCRITO_A_NO_INSCRITO);
-			}
-			
 			short idinstitucion = ecomCenColegiadoService.getIdinstitucion(ecomCenColegiado);
 			
 			ecomCenColegiadoService.lanzarProcesoAltaModificacionColegiado(idinstitucion, ecomCenColegiado);
@@ -272,7 +262,6 @@ public class EdicionColegiadoAction extends MasterAction {
 			
 			BusinessManager.getInstance().commitTransaction();
 			idcensodatos = ecomCenColegiado.getIdcensodatos();
-			
 						
 		} catch (Exception e) {
 			BusinessManager.getInstance().endTransaction();
@@ -361,11 +350,6 @@ public class EdicionColegiadoAction extends MasterAction {
 			edicionColegiadoForm.setFechasituacion(getValue(ecomCenDatos.getFechasituacion()));
 			edicionColegiadoForm.setResidente(getCheckShort(ecomCenDatos.getResidente()));
 			
-			if(ecomCenDatos.getInscrito() == AppConstants.INSCRITO){
-				edicionColegiadoForm.setIdecomcensosituacionejer(AppConstants.ESTADO_COLEGIAL_INSCRITO);
-			}
-			
-			
 			EcomCenDireccion ecomCenDireccion = cenWSService.getEcomCenDireccionesByPk(ecomCenDatos.getIdcensodireccion());
 			if (ecomCenDireccion != null) {
 				edicionColegiadoForm.setIdcensodireccion(ecomCenDatos.getIdcensodireccion());
@@ -401,7 +385,6 @@ public class EdicionColegiadoAction extends MasterAction {
 			
 			edicionColegiadoForm.setIncidenciaNumeroColegiadoDuplicado(false);
 			edicionColegiadoForm.setIncidenciaPoblacionNoEncontrada(false);
-			edicionColegiadoForm.setIncidenciaInscrito(false);
 			
 			if (incidencias != null && incidencias.size() > 0) {
 				for (EcomCenMaestroIncidenc ecomCenMaestroIncidenc : incidencias) {
@@ -409,8 +392,6 @@ public class EdicionColegiadoAction extends MasterAction {
 						edicionColegiadoForm.setIncidenciaNumeroColegiadoDuplicado(true);
 					} else if (AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS.POBLACION_NO_ENCONTRADA.getCodigo() == ecomCenMaestroIncidenc.getIdcensomaestroincidencias()) {
 						edicionColegiadoForm.setIncidenciaPoblacionNoEncontrada(true);
-					}else if(AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS.INSCRITO_A_NO_INSCRITO.getCodigo() == ecomCenMaestroIncidenc.getIdcensomaestroincidencias()){
-						edicionColegiadoForm.setIncidenciaInscrito(true);
 					}
 				}
 			}

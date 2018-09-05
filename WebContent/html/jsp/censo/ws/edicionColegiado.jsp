@@ -162,7 +162,6 @@
 		
 		<html:hidden name="EdicionColegiadoForm" property="incidenciaNumeroColegiadoDuplicadoRevisada" value="false"/>
 		<html:hidden name="EdicionColegiadoForm" property="incidenciaPoblacionNoEncontradaRevisada" value="false"/>
-		<html:hidden name="EdicionColegiadoForm" property="incidenciaInscritoRevisada" value="false"/>
 		
 					
 			<siga:ConjCampos leyenda="censo.ws.edicioncolegiado.datosColegiado">			
@@ -561,7 +560,6 @@
 			 		var guardar = true;
 			 		document.forms[0].incidenciaNumeroColegiadoDuplicadoRevisada.value = "false";
 			 		document.forms[0].incidenciaPoblacionNoEncontradaRevisada.value = "false";
-			 		document.forms[0].incidenciaInscritoRevisada.value = "false";
 			 		
 			 		if (${EdicionColegiadoForm.incidenciaNumeroColegiadoDuplicado} && '${EdicionColegiadoForm.ncolegiado}' == document.forms[0].ncolegiado.value) {
 			 			guardar = confirm('<siga:Idioma key="censo.ws.ncolegiadoduplicado.confirmacion"/>');
@@ -574,13 +572,6 @@
 			 			
 			 			if (confirm('<siga:Idioma key="censo.ws.poblacion.confirmacion"/>')) {
 			 				document.forms[0].incidenciaPoblacionNoEncontradaRevisada.value = "true";
-			 			}
-			 		}
-			 		
-					if (${EdicionColegiadoForm.incidenciaInscrito} && '${EdicionColegiadoForm.idecomcensosituacionejer}' == document.forms[0].idecomcensosituacionejer.value) {
-			 			
-			 			if (confirm('<siga:Idioma key="censo.ws.inscrito.confirmacion"/>')) {
-			 				document.forms[0].incidenciaInscritoRevisada.value = "true";
 			 			}
 			 		}
 			 		
