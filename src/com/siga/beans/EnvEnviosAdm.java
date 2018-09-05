@@ -3617,12 +3617,12 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         // OBTENCIÓN DE SERVIDOR DE CORREO
         /////////////////////////////////////
 	    Context ctx = new InitialContext();
-	    Session sesion = (Session)javax.rmi.PortableRemoteObject.narrow(ctx.lookup("CorreoSIGA"), Session.class);
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+	    String smtpSesion = rp.returnProperty("mail.smtp.sesion");
+	    if(smtpSesion==null || smtpSesion.equals(""))smtpSesion = "CorreoSIGA";
+	    Session sesion = (Session)javax.rmi.PortableRemoteObject.narrow(ctx.lookup(smtpSesion), Session.class);
 	    ctx.close();
 
-	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//		ReadProperties rp = new ReadProperties("SIGA.properties");	
-		
 	    // RGG autenticar SMTP
 	    sesion.getProperties().put("mail.smtp.auth", "true");
 	    sesion.getProperties().put("mail.smtp.port", rp.returnProperty("mail.smtp.port"));
