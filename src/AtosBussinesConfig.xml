@@ -55,6 +55,10 @@
    		<service interface="com.siga.envios.service.SalidaEnviosService" 							implementation="com.siga.envios.service.impl.SalidaEnviosServiceImpl"/>
    		   		
 		<service interface="org.redabogacia.sigaservices.app.services.ecom.EcomColaService" 	 											implementation="org.redabogacia.sigaservices.app.services.ecom.impl.EcomColaServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.ecom.EcColaService" 	 						implementation="org.redabogacia.sigaservices.app.services.ecom.impl.EcColaServiceImpl"/>
+		
+		<service interface="org.redabogacia.sigaservices.app.services.gen.EcParametrosService" 	 					implementation="org.redabogacia.sigaservices.app.services.gen.impl.EcParametrosServiceImpl"/>
+		
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgService" 	 												implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsEjgResolucionService" 	 										implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsEjgResolucionServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.EjgResolucionService" 	 													implementation="org.redabogacia.sigaservices.app.services.scs.impl.EjgResolucionServiceImpl"/>
