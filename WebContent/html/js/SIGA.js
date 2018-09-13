@@ -1641,6 +1641,11 @@ function jQueryLoaded(){
 						};
 						// ID DEL REGIONAL SEGUN EL DATA REGIONAL (QUE RELLENA EL TAG)
 						options.regional = datepickerInput.data("regional");
+						//options.draggable = true;
+						// AUNQUE ESTO NO DEBERIA PASAR, SI EXISTE YA UN DATEPICKER SE DESTRUYE
+						if (typeof jQueryTop.datepicker._curInst != "undefined" && jQueryTop.datepicker._curInst != null){
+							jQueryTop.datepicker._destroyDatepicker(jQueryTop.datepicker._curInst);
+						}
 						// CREACION DEL DATEPICKER DIALOG
 						datepickerInput.datepicker("dialog",
 								formatDate(datepickerInput.val(),datepickerInput.data("datepickerformat")),
