@@ -1616,6 +1616,13 @@ function jQueryLoaded(){
 					
 					// EVENTO CLICK DEL BOTON DEL DATEPICKER
 					jQuery("#"+jQuery(this).attr("id")+'-datepicker-trigger').on("click", function(e){
+						//var jQuery = windowTop.jQuery;						
+						try{
+
+							datepickerInput = jQuery(this.id.split("-")[0]).datepicker();
+						}catch(err){
+						  datepickerInput = jQueryTop(this.id.split("-")[0]).datepicker();
+						} 
 						// OBTENEMOS LAS OPCIONES REGIONALES SEGUN EL DATA REGIONAL (QUE RELLENA EL TAG CON EL USUARIO)
 						var options = jQueryTop.datepicker.regional[datepickerInput.data("regional")];
 						// OBTENEMOS EL FORMATO DE LA FECHA SEGUN EL DATA DATEPICKERFORMAT (QUE RELLENA EL TAG)
@@ -1986,6 +1993,13 @@ function jQueryLoaded(){
 						if (searchBoxKeyupTimeOut)
 							clearTimeout(searchBoxKeyupTimeOut);
 						tagSelect_search(jQuery(this).parent().find("select.tagSelect"), jQuery(this));
+					}).on("blur", function(){
+						console.debug("[searchBox] BLUR ENVENT");
+						//var selected_value = tagSelect_select.find("option:selected").val();
+						//if (typeof selected_value != "undefined" && selected_value != "" && selected_value != "-1" && selected_value != null)
+						if (searchBoxKeyupTimeOut)
+							clearTimeout(searchBoxKeyupTimeOut);
+						jQuery(this).parent().find("select.tagSelect").change();
 					});
 					if (tagSelect_select.find("option:selected").exists()){
 						tagSelect_searchBox.val(tagSelect_select.find('option:selected').data("searchkey"));
@@ -5157,12 +5171,31 @@ function getElementAbsolutePos(element) {
 	
     return res;
 }
-	
-function ready2ApplyMask(strValue) 
+function validarNig( nig ) 
+{
+	if (nig.length == 19){
+		var objRegExp  = /^([a-zA-Z0-9]{19})?$/;
+		return objRegExp.test(nig);
+	}else{
+		return true;
+	}
+}	
+function formateaNig(strValue) 
 {
 	strValue = replaceAll(strValue,' ','');
 	strValue = replaceAll(strValue,'.','');
 	return strValue;
+	
+
+}
+
+function formateaMask(strValue) 
+{
+	strValue = replaceAll(strValue,' ','');
+	strValue = replaceAll(strValue,'.','');
+	return strValue;
+	
+
 }
 
 /* CR7 - Funcion que suma 'X' dias a una fecha (formato dd/mm/yyyy) pasada por parÔøΩmetros */
@@ -5200,61 +5233,5 @@ function sumarDias(fechaInput,dias){
 	return (dia+"/"+mes+"/"+anyo); 
 }	
 
-var letras=" abcdefghijklmnÒopqrstuvwxyzABCDEFGHIJKLMN—OPQRSTUVWXYZ«¡…Õ”⁄ƒÀœ÷‹¿»Ã“Ÿ¬ Œ‘€Á·ÈÌÛ˙‰ÎÔˆ¸‡ËÏÚ˘‚ÍÓÙ˚^'∑\-";
-
-
-function validarNombreApellido(nombre){
-   for(i=0; i<nombre.length; i++){
-      if (letras.indexOf(nombre.charAt(i))==-1){
-         return false;
-      }
-   }
-   return true;
-}
-
-function validarDenominacion(nombre){
-   return true;
-}
-
-function calcularEdad(fecha){
-
-	 // Si la fecha es correcta, calculamos la edad
-	var values=fecha.split("/");
-	var dia = values[0];
-	var mes = values[1];
-	var ano = values[2];
-
-	fecha_hoy = new Date();
-	ahora_ano = fecha_hoy.getYear();
-	ahora_mes = fecha_hoy.getMonth();
-	ahora_dia = fecha_hoy.getDate();
-	edad = (ahora_ano + 1900) - ano;
-		
-	if ( ahora_mes < (mes - 1)){
-	  edad--;
-	}
-	if (((mes - 1) == ahora_mes) && (ahora_dia < dia)){ 
-	  edad--;
-	}
-	if (edad > 1900){
-		edad -= 1900;
-	}
-	if(edad == 1900){
-		edad = 0;
-	}
-	return edad;
-
-}
-
-function pad (n, length,derecha) {
-    var  n = n.toString();
-    while(n.length < length){
-    	if(derecha)
-    		n =  n +"0";
-    	else
-    		n = "0" + n;
-    }
-    return n;
-}
 
 fin();
