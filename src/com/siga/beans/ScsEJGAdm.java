@@ -1587,7 +1587,27 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += " AND X.XML IS NOT NULL )";
 			
 			//Sacamos los  ejgs que hyan sido remitidos a comision perro que no tienen un estado posterior devuelto al colegio
-			consulta += " AND "+ESTADOS_EJG.REMITIDO_COMISION.getCodigo()+" = ";
+			
+			consulta += " AND ((SELECT COUNT(1) ";
+			consulta += " FROM SCS_ESTADOEJG EREM ";
+			consulta += " WHERE EREM.IDINSTITUCION = EJG.IDINSTITUCION ";
+			consulta += " AND EREM.IDTIPOEJG = EJG.IDTIPOEJG ";
+			consulta += " AND EREM.ANIO = EJG.ANIO ";
+			consulta += " AND EREM.NUMERO = EJG.NUMERO ";
+			consulta += " AND EREM.FECHABAJA IS NULL ";
+			consulta += " AND EREM.IDESTADOEJG = "+ESTADOS_EJG.REMITIDO_COMISION.getCodigo()+") > ";
+			consulta += " (SELECT COUNT(1) ";
+			consulta += " FROM SCS_ESTADOEJG EREM ";
+			consulta += " WHERE EREM.IDINSTITUCION = EJG.IDINSTITUCION ";
+			consulta += " AND EREM.IDTIPOEJG = EJG.IDTIPOEJG ";
+			consulta += " AND EREM.ANIO = EJG.ANIO ";
+			consulta += " AND EREM.NUMERO = EJG.NUMERO ";
+			consulta += " AND EREM.FECHABAJA IS NULL ";
+			consulta += " AND EREM.IDESTADOEJG = "+ESTADOS_EJG.DEVUELTO_AL_COLEGIO.getCodigo()+") "; 
+			consulta += " OR ";
+			
+			
+			consulta += "  "+ESTADOS_EJG.REMITIDO_COMISION.getCodigo()+" = ";
 			consulta += " nvl((SELECT DISTINCT FIRST_VALUE(EST.IDESTADOEJG) OVER(ORDER BY EST.FECHAINICIO DESC, EST.IDESTADOPOREJG DESC) ";
 			consulta += " FROM SCS_ESTADOEJG EST ";
 			consulta += " WHERE EST.IDINSTITUCION = EJG.IDINSTITUCION ";
@@ -1595,8 +1615,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += " AND EST.ANIO = EJG.ANIO ";
 			consulta += " AND EST.NUMERO = EJG.NUMERO ";
 			consulta += " AND EST.FECHABAJA IS NULL ";
-			consulta += " AND EST.IDESTADOEJG IN ("+ESTADOS_EJG.REMITIDO_COMISION.getCodigo()+", "+ESTADOS_EJG.DEVUELTO_AL_COLEGIO.getCodigo()+")),9) ";
+			consulta += " AND EST.IDESTADOEJG IN ("+ESTADOS_EJG.REMITIDO_COMISION.getCodigo()+", "+ESTADOS_EJG.DEVUELTO_AL_COLEGIO.getCodigo()+")),9)) ";
 	      
+			
+			
 			consulta += " AND EXISTS (SELECT 1 ";
 			consulta += " FROM SCS_ESTADOEJG EREM ";
 			consulta += " WHERE EREM.IDINSTITUCION = EJG.IDINSTITUCION ";
