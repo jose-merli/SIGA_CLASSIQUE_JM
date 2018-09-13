@@ -1617,12 +1617,14 @@ function jQueryLoaded(){
 					// EVENTO CLICK DEL BOTON DEL DATEPICKER
 					jQuery("#"+jQuery(this).attr("id")+'-datepicker-trigger').on("click", function(e){
 						//var jQuery = windowTop.jQuery;						
+						/*
 						try{
 
 							datepickerInput = jQuery("#"+this.id.split("-")[0]);
 						}catch(err){
 						  datepickerInput = jQueryTop("#"+this.id.split("-")[0]);
 						} 
+						*/
 						// OBTENEMOS LAS OPCIONES REGIONALES SEGUN EL DATA REGIONAL (QUE RELLENA EL TAG CON EL USUARIO)
 						var options = jQueryTop.datepicker.regional[datepickerInput.data("regional")];
 						// OBTENEMOS EL FORMATO DE LA FECHA SEGUN EL DATA DATEPICKERFORMAT (QUE RELLENA EL TAG)
