@@ -1625,6 +1625,10 @@ function jQueryLoaded(){
 						  datepickerInput = jQueryTop("#"+this.id.split("-")[0]);
 						} 
 						*/
+						if ( jQuery(this.id.split("-")[0]).length > 0)
+							datepickerInput = jQuery(this.id.split("-")[0]);
+						else datepickerInput = jQueryTop(this.id.split("-")[0]);
+						
 						// OBTENEMOS LAS OPCIONES REGIONALES SEGUN EL DATA REGIONAL (QUE RELLENA EL TAG CON EL USUARIO)
 						var options = jQueryTop.datepicker.regional[datepickerInput.data("regional")];
 						// OBTENEMOS EL FORMATO DE LA FECHA SEGUN EL DATA DATEPICKERFORMAT (QUE RELLENA EL TAG)
