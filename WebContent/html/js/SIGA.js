@@ -37,11 +37,12 @@ if (typeof String.prototype.endsWith !== 'function') {
 
 
 // CARGA JQUERY SOLO EN EL TOP
-if (window == window.top && window.jQuery){
+var jQueryTop = window.jQuery;
+/*if (window == window.top && window.jQuery){
 	var jQueryTop = window.jQuery;
 } else {
 	var jQueryTop = window.top.jQueryTop;
-}
+}*/
 
 var jqueryFileUri = 	"/SIGA/html/js/jquery.js";
 var jqueryUIfileUri = 	"/SIGA/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js";
@@ -1616,15 +1617,6 @@ function jQueryLoaded(){
 					
 					// EVENTO CLICK DEL BOTON DEL DATEPICKER
 					jQuery("#"+jQuery(this).attr("id")+'-datepicker-trigger').on("click", function(e){
-						//var jQuery = windowTop.jQuery;						
-						/*
-						try{
-
-							datepickerInput = jQuery("#"+this.id.split("-")[0]);
-						}catch(err){
-						  datepickerInput = jQueryTop("#"+this.id.split("-")[0]);
-						} 
-						*/
 						if ( jQuery("#"+this.id.split("-")[0]).length > 0)
 							datepickerInput = jQuery("#"+this.id.split("-")[0]);
 						else datepickerInput = jQueryTop("#"+this.id.split("-")[0]);
@@ -1665,42 +1657,6 @@ function jQueryLoaded(){
 										datepickerInput.change();
 								},
 								options);
-						/*
-						var vContainment = "#mainWorkArea";
-						if (jQueryTop(vContainment).length <= 0){
-						   if (jQueryTop("#modal").length > 0)
-							   vContainment = "#modal";
-						   else
-							   vContainment = "#main_overlay";
-						}
-						
-						vContainment = [];
-						vContainment.push(0);//x1
-						vContainment.push(0);//y1
-						var winW = 630, winH = 460;
-						var curDoc = document;
-						if (jQueryTop("#mainWorkArea").length > 0)
-							curDoc = jQueryTop("#mainWorkArea")[0].ownerDocument;
-						else if (jQueryTop("#modal").length > 0)
-							curDoc = jQueryTop("#modal")[0].ownerDocument;
-						if (curDoc.body && curDoc.body.offsetWidth) {
-						 winW = curDoc.body.offsetWidth;
-						 winH = curDoc.body.offsetHeight;
-						}
-						if (curDoc.compatMode=='CSS1Compat' &&
-								curDoc.documentElement &&
-								curDoc.documentElement.offsetWidth ) {
-						 winW = curDoc.documentElement.offsetWidth;
-						 winH = curDoc.documentElement.offsetHeight;
-						}
-						if (window.innerWidth && window.innerHeight) {
-						 winW = window.innerWidth;
-						 winH = window.innerHeight;
-						}
-						vContainment.push(winW);//x2
-						vContainment.push(winH);//y2
-						alert("vContainment: [0,0,"+winW+","+winH+"]");
-						*/
 						
 						// CONFIGURACI�N DEL DEL MOVIMIENTO DEL DATEPICKER
 						if (jQueryTop("#mainWorkArea").length > 0){
@@ -1735,11 +1691,6 @@ function jQueryLoaded(){
 								}
 							});
 						}
-						/*
-						jQueryTop("#ui-datepicker-div").on( "dragstart", function( event, ui ) {
-							console.debug("ui.offset.top: " + ui.offset.top);
-						} );
-						*/
 						// EVENTO CLICK SOBRE EL OVERLAY PARA CERRAR EL DATEPICKER
 						jQueryTop("#main_overlay").on("click", function(e){
 							datepickerInput.datepicker("destroy");
