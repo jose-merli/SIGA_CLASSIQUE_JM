@@ -1625,7 +1625,7 @@ function jQueryLoaded(){
 						  datepickerInput = jQueryTop("#"+this.id.split("-")[0]);
 						} 
 						*/
-						if ( jQuery(this.id.split("-")[0]).length > 0)
+						if ( jQuery("#"+this.id.split("-")[0]).length > 0)
 							datepickerInput = jQuery("#"+this.id.split("-")[0]);
 						else datepickerInput = jQueryTop("#"+this.id.split("-")[0]);
 						
