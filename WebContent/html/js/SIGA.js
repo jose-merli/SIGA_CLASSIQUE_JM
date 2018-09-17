@@ -4557,7 +4557,7 @@ document.getElementById = function(elemIdOrName) {
 */
 document._oldGetElementById = document.getElementById;
 document.getElementById = function (elemIdOrName) {
-	var result = undefined;
+	var result = null;
 	try {
 		result = document._oldGetElementById(elemIdOrName);
 		if (!result) {
