@@ -5650,3 +5650,7 @@ function f_tcalAddOnload (f_func) {
 }
 
 f_tcalAddOnload (f_tcalInit);
+
+jQuery("#listadoInformeJustificacionDiv").css('overflow-x', 'hidden');
+jQuery("#listadoInformeJustificacionDiv").css('overflow-y', 'auto');
+jQuery("#listadoInformeJustificacionDiv").css('height', '260px'); 
