@@ -353,4 +353,8 @@ insert into GEN_PROPERTIES (FICHERO, PARAMETRO, VALOR) values ('SIGA', 'mail.smt
 
 -- Ejecutados en Integracion por AAG el 05/09/2018 a las 13:30
 
+-- 127_011
+
+PKG_SIGA_REGULARIZACION_SJCS
+
 
