@@ -1958,10 +1958,7 @@ span.etiquetaInfo {
 	cursor: pointer;
 }
 
-/* additional properties for input boxe in activated state, above still applies unless in conflict */
-.tcalActive {
-	background-image: url('img/no_cal.gif');
-}
+
 /* container of calendar's pop-up */
 #tcal {
 	position: absolute;
@@ -2040,4 +2037,31 @@ span.etiquetaInfo {
 #tcalGrid td.tcalOtherMonth { color: silver; }
 #tcalGrid td.tcalWeekend { background-color: #ACD6F5; }
 #tcalGrid td.tcalToday { border: 1px solid red; }
-#tcalGrid td.tcalSelected { background-color: #FFB3BE; }		
+#tcalGrid td.tcalSelected { background-color: #FFB3BE; }
+
+#tcalCustomControls{
+	padding: 2px;
+}
+	
+	
+#tcalCustomControls #tcalToday{
+	width: 56%;
+    padding: 2px;
+    background-color: #f1f1f19c;
+    border: solid 1px #c3c1c1;
+    cursor: pointer;
+    margin-right: 24px;
+    display: block;
+}
+
+#tcalCustomControls #tcalClear, #tcalCustomControls #tcalClose{
+	width: 33%;
+    padding: 2px;
+    background-color: #f1f1f19c;
+    border: solid 1px #c3c1c1;
+    cursor: pointer;
+}
+
+.tcalInput.editable{
+	background-color: white;
+}
