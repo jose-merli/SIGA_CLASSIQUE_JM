@@ -89,7 +89,7 @@ public class TagFecha extends TagSupport {
 					// No ponemos valor inicial
 				}
 			}
-			String cssClass = " class='datepicker";
+			String cssClass = " class='tcal";
 			if (this.disabled != null && UtilidadesString.stringToBoolean(this.disabled)){
 				//bEditable = false;
 				cssClass += " boxConsulta noEditable";
