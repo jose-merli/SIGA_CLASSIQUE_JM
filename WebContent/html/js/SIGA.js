@@ -1602,9 +1602,8 @@ function jQueryLoaded(){
 				} else {
 					//console.debug("DATEPICKER: NO est� en el top, construimos datepicker dialog");
 					// INSERTAMOS EL BOTON DEL DATEPICKER DESPUES DEL INPUT TEXT
-					//jQuery(this).after('<img id="'+jQuery(this).attr("id")+'-datepicker-trigger" class="siga-datepicker-trigger" style="cursor:pointer;" src="/SIGA/html/imagenes/calendar.gif" alt="..." title="...">');
+					jQuery(this).after('<img id="'+jQuery(this).attr("id")+'-datepicker-trigger" class="siga-datepicker-trigger" style="cursor:pointer;" src="/SIGA/html/imagenes/calendar.gif" alt="..." title="...">');
 					var datepickerInput = jQueryTop(this, this.ownerDocument);
-					datepickerInput.datepickerInput();
 					//var self = jQuery(this);
 					/*
 					datepickerInput.keydown(function(e) {
@@ -1614,7 +1613,7 @@ function jQueryLoaded(){
 						}
 					});
 					*/
-					/*
+					
 					// EVENTO CLICK DEL BOTON DEL DATEPICKER
 					jQuery("#"+jQuery(this).attr("id")+'-datepicker-trigger').on("click", function(e){
 						// OBTENEMOS LAS OPCIONES REGIONALES SEGUN EL DATA REGIONAL (QUE RELLENA EL TAG CON EL USUARIO)
@@ -1688,7 +1687,7 @@ function jQueryLoaded(){
 						vContainment.push(winW);//x2
 						vContainment.push(winH);//y2
 						alert("vContainment: [0,0,"+winW+","+winH+"]");
-						*
+						*/
 						
 						// CONFIGURACI�N DEL DEL MOVIMIENTO DEL DATEPICKER
 						if (jQueryTop("#mainWorkArea").length > 0){
@@ -1727,12 +1726,12 @@ function jQueryLoaded(){
 						jQueryTop("#ui-datepicker-div").on( "dragstart", function( event, ui ) {
 							console.debug("ui.offset.top: " + ui.offset.top);
 						} );
-						
+						*/
 						// EVENTO CLICK SOBRE EL OVERLAY PARA CERRAR EL DATEPICKER
 						jQueryTop("#main_overlay").on("click", function(e){
 							datepickerInput.datepicker("destroy");
 						});
-					});*/
+					});
 				}
 			}
 		});
