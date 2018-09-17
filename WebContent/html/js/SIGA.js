@@ -37,12 +37,11 @@ if (typeof String.prototype.endsWith !== 'function') {
 
 
 // CARGA JQUERY SOLO EN EL TOP
-var jQueryTop = window.jQuery;
-/*if (window == window.top && window.jQuery){
+if (window == window.top && window.jQuery){
 	var jQueryTop = window.jQuery;
 } else {
 	var jQueryTop = window.top.jQueryTop;
-}*/
+}
 
 var jqueryFileUri = 	"/SIGA/html/js/jquery.js";
 var jqueryUIfileUri = 	"/SIGA/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js";
@@ -1617,10 +1616,6 @@ function jQueryLoaded(){
 					
 					// EVENTO CLICK DEL BOTON DEL DATEPICKER
 					jQuery("#"+jQuery(this).attr("id")+'-datepicker-trigger').on("click", function(e){
-						if ( jQuery("#"+this.id.split("-")[0]).length > 0)
-							datepickerInput = jQuery("#"+this.id.split("-")[0]);
-						else datepickerInput = jQueryTop("#"+this.id.split("-")[0]);
-						
 						// OBTENEMOS LAS OPCIONES REGIONALES SEGUN EL DATA REGIONAL (QUE RELLENA EL TAG CON EL USUARIO)
 						var options = jQueryTop.datepicker.regional[datepickerInput.data("regional")];
 						// OBTENEMOS EL FORMATO DE LA FECHA SEGUN EL DATA DATEPICKERFORMAT (QUE RELLENA EL TAG)
@@ -1657,6 +1652,42 @@ function jQueryLoaded(){
 										datepickerInput.change();
 								},
 								options);
+						/*
+						var vContainment = "#mainWorkArea";
+						if (jQueryTop(vContainment).length <= 0){
+						   if (jQueryTop("#modal").length > 0)
+							   vContainment = "#modal";
+						   else
+							   vContainment = "#main_overlay";
+						}
+						
+						vContainment = [];
+						vContainment.push(0);//x1
+						vContainment.push(0);//y1
+						var winW = 630, winH = 460;
+						var curDoc = document;
+						if (jQueryTop("#mainWorkArea").length > 0)
+							curDoc = jQueryTop("#mainWorkArea")[0].ownerDocument;
+						else if (jQueryTop("#modal").length > 0)
+							curDoc = jQueryTop("#modal")[0].ownerDocument;
+						if (curDoc.body && curDoc.body.offsetWidth) {
+						 winW = curDoc.body.offsetWidth;
+						 winH = curDoc.body.offsetHeight;
+						}
+						if (curDoc.compatMode=='CSS1Compat' &&
+								curDoc.documentElement &&
+								curDoc.documentElement.offsetWidth ) {
+						 winW = curDoc.documentElement.offsetWidth;
+						 winH = curDoc.documentElement.offsetHeight;
+						}
+						if (window.innerWidth && window.innerHeight) {
+						 winW = window.innerWidth;
+						 winH = window.innerHeight;
+						}
+						vContainment.push(winW);//x2
+						vContainment.push(winH);//y2
+						alert("vContainment: [0,0,"+winW+","+winH+"]");
+						*/
 						
 						// CONFIGURACI�N DEL DEL MOVIMIENTO DEL DATEPICKER
 						if (jQueryTop("#mainWorkArea").length > 0){
@@ -1691,6 +1722,11 @@ function jQueryLoaded(){
 								}
 							});
 						}
+						/*
+						jQueryTop("#ui-datepicker-div").on( "dragstart", function( event, ui ) {
+							console.debug("ui.offset.top: " + ui.offset.top);
+						} );
+						*/
 						// EVENTO CLICK SOBRE EL OVERLAY PARA CERRAR EL DATEPICKER
 						jQueryTop("#main_overlay").on("click", function(e){
 							datepickerInput.datepicker("destroy");
@@ -1955,13 +1991,6 @@ function jQueryLoaded(){
 						if (searchBoxKeyupTimeOut)
 							clearTimeout(searchBoxKeyupTimeOut);
 						tagSelect_search(jQuery(this).parent().find("select.tagSelect"), jQuery(this));
-					}).on("blur", function(){
-						console.debug("[searchBox] BLUR ENVENT");
-						//var selected_value = tagSelect_select.find("option:selected").val();
-						//if (typeof selected_value != "undefined" && selected_value != "" && selected_value != "-1" && selected_value != null)
-						if (searchBoxKeyupTimeOut)
-							clearTimeout(searchBoxKeyupTimeOut);
-						jQuery(this).parent().find("select.tagSelect").change();
 					});
 					if (tagSelect_select.find("option:selected").exists()){
 						tagSelect_searchBox.val(tagSelect_select.find('option:selected').data("searchkey"));
@@ -5133,31 +5162,12 @@ function getElementAbsolutePos(element) {
 	
     return res;
 }
-function validarNig( nig ) 
-{
-	if (nig.length == 19){
-		var objRegExp  = /^([a-zA-Z0-9]{19})?$/;
-		return objRegExp.test(nig);
-	}else{
-		return true;
-	}
-}	
-function formateaNig(strValue) 
+	
+function ready2ApplyMask(strValue) 
 {
 	strValue = replaceAll(strValue,' ','');
 	strValue = replaceAll(strValue,'.','');
 	return strValue;
-	
-
-}
-
-function formateaMask(strValue) 
-{
-	strValue = replaceAll(strValue,' ','');
-	strValue = replaceAll(strValue,'.','');
-	return strValue;
-	
-
 }
 
 /* CR7 - Funcion que suma 'X' dias a una fecha (formato dd/mm/yyyy) pasada por par�metros */
@@ -5195,11 +5205,79 @@ function sumarDias(fechaInput,dias){
 	return (dia+"/"+mes+"/"+anyo); 
 }	
 
+var letras=" abcdefghijklmn�opqrstuvwxyzABCDEFGHIJKLMN�OPQRSTUVWXYZ������������������������������������������^'�\-";
+
+
+function validarNombreApellido(nombre){
+   for(i=0; i<nombre.length; i++){
+      if (letras.indexOf(nombre.charAt(i))==-1){
+         return false;
+      }
+   }
+   return true;
+}
+
+function validarDenominacion(nombre){
+   return true;
+}
+
+function calcularEdad(fecha){
+
+	 // Si la fecha es correcta, calculamos la edad
+	var values=fecha.split("/");
+	var dia = values[0];
+	var mes = values[1];
+	var ano = values[2];
+
+	fecha_hoy = new Date();
+	ahora_ano = fecha_hoy.getYear();
+	ahora_mes = fecha_hoy.getMonth();
+	ahora_dia = fecha_hoy.getDate();
+	edad = (ahora_ano + 1900) - ano;
+		
+	if ( ahora_mes < (mes - 1)){
+	  edad--;
+	}
+	if (((mes - 1) == ahora_mes) && (ahora_dia < dia)){ 
+	  edad--;
+	}
+	if (edad > 1900){
+		edad -= 1900;
+	}
+	if(edad == 1900){
+		edad = 0;
+	}
+	return edad;
+
+}
+
+function pad (n, length,derecha) {
+    var  n = n.toString();
+    while(n.length < length){
+    	if(derecha)
+    		n =  n +"0";
+    	else
+    		n = "0" + n;
+    }
+    return n;
+}
 
 fin();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+##########
 
 //Tigra Calendar v5.2 (11/20/2011)
 //http://www.softcomplex.com/products/tigra_calendar/
