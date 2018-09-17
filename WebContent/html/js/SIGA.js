@@ -5277,7 +5277,6 @@ fin();
 
 
 
-##########
 
 //Tigra Calendar v5.2 (11/20/2011)
 //http://www.softcomplex.com/products/tigra_calendar/
@@ -5286,9 +5285,9 @@ fin();
 //default settins - this structure can be moved in separate file in multilangual applications
 var A_TCALCONF = {
 	'cssprefix'  : 'tcal',
-	'months'     : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-	'weekdays'   : ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-	'longwdays'  : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+	'months'     : ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+	'weekdays'   : ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+	'longwdays'  : ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado'],
 	'yearscroll' : true, // show year scroller
 	'weekstart'  : 1, // first day of week: 0-Su or 1-Mo
 	'prevyear'   : 'Previous Year',
