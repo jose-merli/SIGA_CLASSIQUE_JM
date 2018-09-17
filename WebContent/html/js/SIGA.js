@@ -2045,6 +2045,17 @@ function jQueryLoaded(){
 			setTagselectDivWidth(jQuery(this));
 		});
 		// TAG SELECT END
+		
+		$("body").mouseup(function(e)
+	    {
+	        var subject = $("#tcal"); 
+			
+	        if($(e.target).closest('div').attr('id') != subject.attr('id'))
+	        {
+	        	subject.css("visibility", "hidden");
+	        	$(".tcal").removeClass('tcalActive');
+	        }
+	    });
 	}); // READY
 	
 } // FIN JQUERY LOADED
@@ -3609,8 +3620,7 @@ function ajusteAltoMain(nObj, menos) {
 				//hCont = jQuery.height(window) - jQuery.offset(obj, this.parent.document).top - menos;
 				//alert("final iframe other : "+hCont);
 				if (hCont > 0){
-					//jQuery(obj).height(hCont);
-					jQuery(obj).css("height", hCont+"px");  
+					jQuery(obj).height(hCont);
 				}
 			}
 			var innerFixedHeadertables = jQuery(obj).contents().find("table.fixedHeaderTable");
@@ -4541,7 +4551,6 @@ function isSWIFTValido(swift){
 
 // JBD // ï¿½Por que has quitado esto BNS? No funciona nada en chrome si lo quitas porque el tag html:text no crea id, solo name 
 // BNS porque daba errores de llenado de pila de llamadas en chrome e IE y como esta funcionalidad te la da jquery sin sobrescribir un mï¿½todo de document creï¿½a que ya no se estaba usando...
-
 document._oldGetElementById = document.getElementById;
 document.getElementById = function(elemIdOrName) {
     var result = document._oldGetElementById(elemIdOrName);
@@ -4555,28 +4564,7 @@ document.getElementById = function(elemIdOrName) {
     return result;
 };
 
-/*
-document._oldGetElementById = document.getElementById;
-document.getElementById = function (elemIdOrName) {
-	try {
-		var result = document._oldGetElementById(elemIdOrName);
-		if (!result) {
-			var elems = document.getElementsByName(elemIdOrName);
-			if (elems && elems.length > 0) {
-				result = elems[0];
-			}
-		}
-	} catch (e) {
-		var elems = document.getElementsByName(elemIdOrName);
-		if (elems && elems.length > 0) {
-			var result = elems[0];
-		}
-	}
 
-
-	return result;
-}; 
-*/
 // **
 	
 	function iniInputSelect(frames){
@@ -5310,7 +5298,7 @@ var A_TCALCONF = {
 	'cssprefix'  : 'tcal',
 	'months'     : ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
 	'weekdays'   : ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
-	'longwdays'  : ['Domingo', 'Lunes', 'Martes', 'MiÃ©rcoles', 'Jueves', 'Viernes', 'Sabado'],
+	'longwdays'  : ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado'],
 	'yearscroll' : true, // show year scroller
 	'weekstart'  : 1, // first day of week: 0-Su or 1-Mo
 	'prevyear'   : 'Previous Year',
@@ -5404,6 +5392,12 @@ function f_tcalGetHTML (d_date) {
 		}
 		s_html +='</tr>';
 	}
+	
+	// CustomControls
+	s_html += '<table id="tcalCustomControls"><tbody><tr><td id="tcalToday" ' + f_tcalRelDate(d_today) +' title="Hoy">Hoy</td>';
+	s_html += '<td id="tcalClear" onclick="f_tcalClean()" title="Borrar">Borrar</td>';
+	s_html += '<td id="tcalClose" onclick="f_tcalCancel()" title="Cerrar">Cerrar</td></tr></tbody></table>';
+	
 	s_html +='</tbody></table>';
 
 	return s_html;
@@ -5429,6 +5423,19 @@ function f_tcalResetTime (d_date) {
 	return d_date;
 }
 
+function f_tcalUpdateCal (element) {
+	var e_input = f_tcalGetInputs(true);
+	if (!e_input) return;
+	
+	d_date = new Date($("#"+element).attr("id").value);
+	var s_pfx = A_TCALCONF.cssprefix;
+
+	var e_cal = document.getElementById(s_pfx);
+	if (!e_cal || e_cal.style.visibility != 'visible') return;
+	e_cal.innerHTML = f_tcalGetHTML(d_date, e_input);
+	
+}
+
 //closes calendar and returns all inputs to default state
 function f_tcalCancel () {
 	
@@ -5442,11 +5449,18 @@ function f_tcalCancel () {
 }
 
 function f_tcalUpdate (n_date, b_keepOpen) {
-
+	
 	var e_input = f_tcalGetInputs(true);
 	if (!e_input) return;
 	
-	d_date = new Date(n_date);
+	if(n_date.toString().indexOf('/')>0){
+		var from = n_date.split("/");
+		d_date = new Date(from[2], from[1] - 1, from[0]);
+	}else{
+		d_date = new Date(n_date);
+	}
+	
+	
 	var s_pfx = A_TCALCONF.cssprefix;
 
 	if (b_keepOpen) {
@@ -5458,6 +5472,15 @@ function f_tcalUpdate (n_date, b_keepOpen) {
 		e_input.value = f_tcalGenerateDate(d_date, A_TCALCONF.format);
 		f_tcalCancel();
 	}
+}
+
+function f_tcalClean () {
+
+	var e_input = f_tcalGetInputs(true);
+	if (!e_input) return;
+	
+	e_input.value = '';
+	f_tcalCancel();
 }
 
 function f_tcalOnClick () {
