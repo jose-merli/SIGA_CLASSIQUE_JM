@@ -4557,9 +4557,8 @@ document.getElementById = function(elemIdOrName) {
 */
 document._oldGetElementById = document.getElementById;
 document.getElementById = function (elemIdOrName) {
-	var result = null;
 	try {
-		result = document._oldGetElementById(elemIdOrName);
+		var result = document._oldGetElementById(elemIdOrName);
 		if (!result) {
 			var elems = document.getElementsByName(elemIdOrName);
 			if (elems && elems.length > 0) {
@@ -4569,7 +4568,7 @@ document.getElementById = function (elemIdOrName) {
 	} catch (e) {
 		var elems = document.getElementsByName(elemIdOrName);
 		if (elems && elems.length > 0) {
-			result = elems[0];
+			var result = elems[0];
 		}
 	}
 
