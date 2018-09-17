@@ -3609,7 +3609,8 @@ function ajusteAltoMain(nObj, menos) {
 				//hCont = jQuery.height(window) - jQuery.offset(obj, this.parent.document).top - menos;
 				//alert("final iframe other : "+hCont);
 				if (hCont > 0){
-					jQuery(obj).height(hCont);
+					//jQuery(obj).height(hCont);
+					jQuery(obj).css("height", hCont+"px");  
 				}
 			}
 			var innerFixedHeadertables = jQuery(obj).contents().find("table.fixedHeaderTable");
