@@ -4564,7 +4564,7 @@ document.getElementById = function(elemIdOrName) {
 
     return result;
 };
-*/
+
 document._oldGetElementById = document.getElementById;
 document.getElementById = function (elemIdOrName) {
 	try {
@@ -4585,7 +4585,7 @@ document.getElementById = function (elemIdOrName) {
 
 	return result;
 }; 
-
+*/
 // **
 	
 	function iniInputSelect(frames){
