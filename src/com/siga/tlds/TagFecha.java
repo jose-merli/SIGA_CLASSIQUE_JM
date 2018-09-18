@@ -208,6 +208,7 @@ public class TagFecha extends TagSupport {
 			//Validación fecha
 			sDatepicker += " onblur=\" return validaFecha"+ this.nombreCampo +"(" + this.nombreCampo + ")\"";
 			sDatepicker += " onkeyup=\" f_tcalUpdate (this.value, true);\"";
+			sDatepicker += " onkeydown=\" return isNumberKey(event);\"";
 			
 			sDatepicker += " data-format=\""+	DATE_FORMAT +"\"";
 			sDatepicker += " data-datepickerformat=\""+	DATEPICKER_DATE_FORMAT +"\"";
