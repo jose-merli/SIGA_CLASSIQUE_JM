@@ -1254,6 +1254,23 @@ function jQueryLoaded(){
 	//*** ONLOAD ***//
 	
 	jQuery(document).ready(function(){
+		
+		//Estilos para el calendario
+
+		var hoja = document.createElement('style');
+		hoja.innerHTML = ".tcalInput.editable {background: url('html/js/jquery.ui/css/smoothness/img/cal.gif') 100% 50% no-repeat;padding-right: 20px;cursor: pointer;}/* container of calendar's pop-up */#tcal {position: absolute;visibility: hidden;z-index: 100;" +
+						"width: 200px;background-color: white;margin-top: 2px;padding: 0 2px 2px 2px;border: 1px solid silver;-moz-box-shadow: 3px 3px 4px silver;-webkit-box-shadow: 3px 3px 4px silver;box-shadow: 3px 3px 4px silver;" + 
+						"-ms-filter: \"progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='silver')\";filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='silver');}" +
+						"/* table containing navigation and current month */#tcalControls {border-collapse: collapse;border: 0;width: 100%;}#tcalControls td {border-collapse: collapse;border: 0;padding: 0;width: 16px;background-position: 50% 50%;" + 
+						"background-repeat: no-repeat;cursor: pointer;}#tcalControls th {border-collapse: collapse;border: 0;padding: 0;line-height: 25px;font-size: 11px;text-align: center;font-family: Tahoma, Geneva, sans-serif;font-weight: bold;white-space: nowrap;}" + 
+						"#tcalPrevYear { background-image: url('html/js/jquery.ui/css/smoothness/img/prev_year.gif'); }#tcalPrevMonth { background-image: url('html/js/jquery.ui/css/smoothness/img/prev_mon.gif'); }#tcalNextMonth { background-image: url('html/js/jquery.ui/css/smoothness/img/next_mon.gif'); }#tcalNextYear { background-image: url('html/js/jquery.ui/css/smoothness/img/next_year.gif'); }" +
+						"/* table containing week days header and calendar grid */#tcalGrid {border-collapse: collapse;border: 1px solid silver;width: 100%;}#tcalGrid th {border: 1px solid silver;border-collapse: collapse;padding: 3px 0;text-align: center;" + 
+						"font-family: Tahoma, Geneva, sans-serif;font-size: 10px;background-color: gray;color: white;}#tcalGrid td {border: 0;border-collapse: collapse;padding: 2px 0;text-align: center;font-family: Tahoma, Geneva, sans-serif;width: 14%;font-size: 11px;cursor: pointer;}" +
+						"#tcalGrid td.tcalOtherMonth { color: silver; }#tcalGrid td.tcalWeekend { background-color: #ACD6F5; }#tcalGrid td.tcalToday { border: 1px solid red; }#tcalGrid td.tcalSelected { background-color: #FFB3BE; }#tcalCustomControls{padding: 2px;width: 100%;} " +
+						"#tcalCustomControls #tcalToday{width: 33%;padding: 2px;background-color: #f1f1f19c;border: solid 1px #c3c1c1;cursor: pointer;text-align: center;font-weight: bold;}#tcalCustomControls #tcalClear, #tcalCustomControls #tcalClose{width: 33%; " +
+						"padding: 2px;background-color: #f1f1f19c;border: solid 1px #c3c1c1;cursor: pointer;text-align: center;font-weight: bold;}.tcalInput.editable{background-color: white;}";
+		document.body.appendChild(hoja);
+		
 		if (jQuery("table.tablaLineaPestanasArriba").length>0){
 			jQuery("table.tablaLineaPestanasArriba").css("float", "left");
 		}
@@ -2046,14 +2063,14 @@ function jQueryLoaded(){
 		});
 		// TAG SELECT END
 		
-		$("body").mouseup(function(e)
+		jQuery("body").mouseup(function(e)
 	    {
 	        var subject = $("#tcal"); 
 			
-	        if($(e.target).closest('div').attr('id') != subject.attr('id'))
+	        if(jQuery(e.target).closest('div').attr('id') != subject.attr('id'))
 	        {
 	        	subject.css("visibility", "hidden");
-	        	$(".tcal").removeClass('tcalActive');
+	        	jQuery(".tcal").removeClass('tcalActive');
 	        }
 	    });
 	}); // READY
@@ -5282,21 +5299,28 @@ fin();
 
 
 
-
-
-
-
-
-
-
 //Tigra Calendar v5.2 (11/20/2011)
 //http://www.softcomplex.com/products/tigra_calendar/
 //License: Public Domain... You're welcome.
 
 //default settins - this structure can be moved in separate file in multilangual applications
-var A_TCALCONF = {
+/*var A_TCALCONF = {
 	'cssprefix'  : 'tcal',
 	'months'     : ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+	'weekdays'   : ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+	'longwdays'  : ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado'],
+	'yearscroll' : true, // show year scroller
+	'weekstart'  : 1, // first day of week: 0-Su or 1-Mo
+	'prevyear'   : 'Año Previo',
+	'nextyear'   : 'Año Siguiente',
+	'prevmonth'  : 'Mes Previo',
+	'nextmonth'  : 'Mes Siguiente',
+	'format'     : 'd/m/Y' //'m/d/Y' // 'd-m-Y', Y-m-d', 'l, F jS Y'
+};
+
+var A_TCALCONF = {
+	'cssprefix'  : 'tcal',
+	'months'     : ['aa', 'bbb', 'ccc', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
 	'weekdays'   : ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
 	'longwdays'  : ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado'],
 	'yearscroll' : true, // show year scroller
@@ -5324,7 +5348,7 @@ var A_TCALTOKENS = [
 	// English ordinal suffix for the day of the month, 2 characters
 	{'t': 'S', 'r': 'st|nd|rd|th', 'p': function (d_date, s_value) { return d_date }, 'g': function (d_date) { n_date = d_date.getDate(); if (n_date % 10 == 1 && n_date != 11) return 'st'; if (n_date % 10 == 2 && n_date != 12) return 'nd'; if (n_date % 10 == 3 && n_date != 13) return 'rd'; return 'th'; }}
 	
-];
+];*/
 
 function f_tcalGetHTML (d_date) {
 
@@ -5453,9 +5477,17 @@ function f_tcalUpdate (n_date, b_keepOpen) {
 	var e_input = f_tcalGetInputs(true);
 	if (!e_input) return;
 	
+	var reg = /^[0-9]{2}[\/\.\,\-]{1}[0-9]{2}[\/\.\,\-]{1}[0-9]{4}$/g;
+	var continua = true;
 	if(n_date.toString().indexOf('/')>0){
 		var from = n_date.split("/");
-		d_date = new Date(from[2], from[1] - 1, from[0]);
+		if(reg.test(n_date)){
+			d_date = new Date(from[2], from[1] - 1, from[0]);
+			continua = true;
+		}else{
+			continua = false;
+		}
+		
 	}else{
 		d_date = new Date(n_date);
 	}
@@ -5463,15 +5495,17 @@ function f_tcalUpdate (n_date, b_keepOpen) {
 	
 	var s_pfx = A_TCALCONF.cssprefix;
 
-	if (b_keepOpen) {
-		var e_cal = document.getElementById(s_pfx);
-		if (!e_cal || e_cal.style.visibility != 'visible') return;
-		e_cal.innerHTML = f_tcalGetHTML(d_date, e_input);
-	}
-	else {
-		e_input.value = f_tcalGenerateDate(d_date, A_TCALCONF.format);
-		f_tcalCancel();
-	}
+	if(continua){
+		if (b_keepOpen) {
+			var e_cal = document.getElementById(s_pfx);
+			if (!e_cal || e_cal.style.visibility != 'visible') return;
+			e_cal.innerHTML = f_tcalGetHTML(d_date, e_input);
+		}
+		else {
+			e_input.value = f_tcalGenerateDate(d_date, A_TCALCONF.format);
+			f_tcalCancel();
+		}
+	}	
 }
 
 function f_tcalClean () {
@@ -5492,7 +5526,7 @@ function f_tcalOnClick () {
 
 	// close all clalendars
 	f_tcalCancel();
-	if (b_close) return;
+	if (b_close || f_tcalHasClass(this, "noEditable")) return;
 
 	// get position of input
 	f_tcalAddClass(this, s_activeClass);
@@ -5647,8 +5681,10 @@ function f_tcalInit () {
 	}
 	
 	window.A_TCALTOKENS_IDX = {};
-	for (n = 0; n < A_TCALTOKENS.length; n++)
-		A_TCALTOKENS_IDX[A_TCALTOKENS[n]['t']] = A_TCALTOKENS[n];
+	if(typeof(A_TCALTOKENS) != "undefined"){
+		for (n = 0; n < A_TCALTOKENS.length; n++)
+			A_TCALTOKENS_IDX[A_TCALTOKENS[n]['t']] = A_TCALTOKENS[n];
+	}	
 }
 
 function f_tcalAddOnload (f_func) {

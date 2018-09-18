@@ -217,7 +217,79 @@ public class TagFecha extends TagSupport {
 			sDatepicker += " data-regional=\""+	regional +"\"";
 			sDatepicker += " />";
 			sDatepicker += "<script>jQuery('#"+ this.styleId +"').parent().css('white-space','nowrap');</script>";
-			out.print(sDatepicker);			
+			out.print(sDatepicker);	
+			
+			// Pintamos las variables según el idioma
+			out.println("<script language=\"JavaScript\">");
+			
+			if("ca".equalsIgnoreCase(regional)){
+				out.println("var A_TCALCONF = {");
+				out.println("	'cssprefix'  : 'tcal',");
+				out.println("	'months'     : ['Gener', 'Febrer', 'Març', 'Abril', 'Maig', 'Juny', 'Juliol', 'Agost', 'Setembre', 'Octubre', 'Novembre', 'Decembre'],");
+				out.println("	'weekdays'   : ['Dg','Dl','Dt','Dc','Dj','Dv','Ds'],");
+				out.println("	'longwdays'  : ['Diumenge', 'Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres', 'Divendres'],");
+				out.println("	'yearscroll' : true, // show year scroller");
+				out.println("	'weekstart'  : 1, // first day of week: 0-Su or 1-Mo");
+				out.println("	'prevyear'   : 'Any Previ',");
+				out.println("	'nextyear'   : 'Any Següent',");
+				out.println("	'prevmonth'  : 'Mes Previ',");
+				out.println("	'nextmonth'  : 'Mes Següent',");
+				out.println("	'format'     : 'd/m/Y' //'m/d/Y' // 'd-m-Y', Y-m-d', 'l, F jS Y'");
+				out.println("};");
+				out.println("var textoBorrar = 'Esborrar';var textoCerrar = 'Trancar';var textoHoy='Avui'");
+			}else if("en".equalsIgnoreCase(regional)){
+				out.println("var A_TCALCONF = {");
+				out.println("	'cssprefix'  : 'tcal',");
+				out.println("	'months'     : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],");
+				out.println("	'weekdays'   : ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],");
+				out.println("	'longwdays'  : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],");
+				out.println("	'yearscroll' : true, // show year scroller");
+				out.println("	'weekstart'  : 1, // first day of week: 0-Su or 1-Mo");
+				out.println("	'prevyear'   : 'Previous Year',");
+				out.println("	'nextyear'   : 'Next Year',");
+				out.println("	'prevmonth'  : 'Previous Month',");
+				out.println("	'nextmonth'  : 'Next Month',");
+				out.println("	'format'     : 'd/m/Y' //'m/d/Y' // 'd-m-Y', Y-m-d', 'l, F jS Y'");
+				out.println("};");
+				out.println("var textoBorrar = 'Clean';var textoCerrar = 'Close';var textoHoy='Today'");
+			}else{
+				out.println("var A_TCALCONF = {");
+				out.println("	'cssprefix'  : 'tcal',");
+				out.println("	'months'     : ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],");
+				out.println("	'weekdays'   : ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],");
+				out.println("	'longwdays'  : ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado'],");
+				out.println("	'yearscroll' : true, // show year scroller");
+				out.println("	'weekstart'  : 1, // first day of week: 0-Su or 1-Mo");
+				out.println("	'prevyear'   : 'Año Previo',");
+				out.println("	'nextyear'   : 'Año Siguiente',");
+				out.println("	'prevmonth'  : 'Mes Previo',");
+				out.println("	'nextmonth'  : 'Mes Siguiente',");
+				out.println("	'format'     : 'd/m/Y' //'m/d/Y' // 'd-m-Y', Y-m-d', 'l, F jS Y'");
+				out.println("};");
+				out.println("var textoBorrar = 'Borrar';var textoCerrar = 'Cerrar';var textoHoy='Hoy'");
+			}
+			
+
+			out.println("var A_TCALTOKENS = [");
+			out.println("	 // A full numeric representation of a year, 4 digits");
+			out.println("	{'t': 'Y', 'r': '19\\\\d{2}|20\\\\d{2}', 'p': function (d_date, n_value) { d_date.setFullYear(Number(n_value)); return d_date; }, 'g': function (d_date) { var n_year = d_date.getFullYear(); return n_year; }},");
+			out.println("	 // Numeric representation of a month, with leading zeros");
+			out.println("	{'t': 'm', 'r': '0?[1-9]|1[0-2]', 'p': function (d_date, n_value) { d_date.setMonth(Number(n_value) - 1); return d_date; }, 'g': function (d_date) { var n_month = d_date.getMonth() + 1; return (n_month < 10 ? '0' : '') + n_month }},");
+			out.println("	 // A full textual representation of a month, such as January or March");
+			out.println("	{'t': 'F', 'r': A_TCALCONF.months.join('|'), 'p': function (d_date, s_value) { for (var m = 0; m < 12; m++) if (A_TCALCONF.months[m] == s_value) { d_date.setMonth(m); return d_date; }}, 'g': function (d_date) { return A_TCALCONF.months[d_date.getMonth()]; }},");
+			out.println("	 // Day of the month, 2 digits with leading zeros");
+			out.println("	{'t': 'd', 'r': '0?[1-9]|[12][0-9]|3[01]', 'p': function (d_date, n_value) { d_date.setDate(Number(n_value)); if (d_date.getDate() != n_value) d_date.setDate(0); return d_date }, 'g': function (d_date) { var n_date = d_date.getDate(); return (n_date < 10 ? '0' : '') + n_date; }},");
+			out.println("	// Day of the month without leading zeros");
+			out.println("	{'t': 'j', 'r': '0?[1-9]|[12][0-9]|3[01]', 'p': function (d_date, n_value) { d_date.setDate(Number(n_value)); if (d_date.getDate() != n_value) d_date.setDate(0); return d_date }, 'g': function (d_date) { var n_date = d_date.getDate(); return n_date; }},");
+			out.println("	 // A full textual representation of the day of the week");
+			out.println("	{'t': 'l', 'r': A_TCALCONF.longwdays.join('|'), 'p': function (d_date, s_value) { return d_date }, 'g': function (d_date) { return A_TCALCONF.longwdays[d_date.getDay()]; }},");
+			out.println("	// English ordinal suffix for the day of the month, 2 characters");
+			out.println("	{'t': 'S', 'r': 'st|nd|rd|th', 'p': function (d_date, s_value) { return d_date }, 'g': function (d_date) { n_date = d_date.getDate(); if (n_date % 10 == 1 && n_date != 11) return 'st'; if (n_date % 10 == 2 && n_date != 12) return 'nd'; if (n_date % 10 == 3 && n_date != 13) return 'rd'; return 'th'; }}");
+			out.println("	");
+			out.println("];");
+			out.println("</script>");
+			out.println(""); // Linea vacia por legibilidad del codigo
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
