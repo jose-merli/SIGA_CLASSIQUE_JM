@@ -1258,13 +1258,13 @@ function jQueryLoaded(){
 		//Estilos para el calendario
 
 		var hoja = document.createElement('style');
-		hoja.innerHTML = ".tcalInput.editable {background: url('html/js/jquery.ui/css/smoothness/img/cal.gif') 100% 50% no-repeat;padding-right: 20px;cursor: pointer;}/* container of calendar's pop-up */#tcal {position: absolute;visibility: hidden;z-index: 100;" +
-						"width: 200px;background-color: white;margin-top: 2px;padding: 0 2px 2px 2px;border: 1px solid silver;-moz-box-shadow: 3px 3px 4px silver;-webkit-box-shadow: 3px 3px 4px silver;box-shadow: 3px 3px 4px silver;" + 
+		hoja.innerHTML = ".tcalInput.editable {background: url('html/js/jquery.ui/css/smoothness/img/cal.gif') 100% 50% no-repeat;padding-right: 20px;cursor: pointer;}/* container of calendar's pop-up */#tcal {position: absolute;visibility: hidden;z-index: 200;" +
+						"width: 217px;height: 200px;background-color: white;margin-top: 2px;padding: 0 2px 2px 2px;border: 1px solid silver;-moz-box-shadow: 3px 3px 4px silver;-webkit-box-shadow: 3px 3px 4px silver;box-shadow: 3px 3px 4px silver;" + 
 						"-ms-filter: \"progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='silver')\";filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='silver');}" +
 						"/* table containing navigation and current month */#tcalControls {border-collapse: collapse;border: 0;width: 100%;}#tcalControls td {border-collapse: collapse;border: 0;padding: 0;width: 16px;background-position: 50% 50%;" + 
 						"background-repeat: no-repeat;cursor: pointer;}#tcalControls th {border-collapse: collapse;border: 0;padding: 0;line-height: 25px;font-size: 11px;text-align: center;font-family: Tahoma, Geneva, sans-serif;font-weight: bold;white-space: nowrap;}" + 
 						"#tcalPrevYear { background-image: url('html/js/jquery.ui/css/smoothness/img/prev_year.gif'); }#tcalPrevMonth { background-image: url('html/js/jquery.ui/css/smoothness/img/prev_mon.gif'); }#tcalNextMonth { background-image: url('html/js/jquery.ui/css/smoothness/img/next_mon.gif'); }#tcalNextYear { background-image: url('html/js/jquery.ui/css/smoothness/img/next_year.gif'); }" +
-						"/* table containing week days header and calendar grid */#tcalGrid {border-collapse: collapse;border: 1px solid silver;width: 100%;}#tcalGrid th {border: 1px solid silver;border-collapse: collapse;padding: 3px 0;text-align: center;" + 
+						"/* table containing week days header and calendar grid */#tcalGrid {border-collapse: collapse;border: 1px solid silver;width: 100%;height: 146px;}#tcalGrid th {border: 1px solid silver;border-collapse: collapse;padding: 3px 0;text-align: center;" + 
 						"font-family: Tahoma, Geneva, sans-serif;font-size: 10px;background-color: gray;color: white;}#tcalGrid td {border: 0;border-collapse: collapse;padding: 2px 0;text-align: center;font-family: Tahoma, Geneva, sans-serif;width: 14%;font-size: 11px;cursor: pointer;}" +
 						"#tcalGrid td.tcalOtherMonth { color: silver; }#tcalGrid td.tcalWeekend { background-color: #ACD6F5; }#tcalGrid td.tcalToday { border: 1px solid red; }#tcalGrid td.tcalSelected { background-color: #FFB3BE; }#tcalCustomControls{padding: 2px;width: 100%;} " +
 						"#tcalCustomControls #tcalToday{width: 33%;padding: 2px;background-color: #f1f1f19c;border: solid 1px #c3c1c1;cursor: pointer;text-align: center;font-weight: bold;}#tcalCustomControls #tcalClear, #tcalCustomControls #tcalClose{width: 33%; " +
@@ -5477,8 +5477,9 @@ function f_tcalUpdate (n_date, b_keepOpen) {
 	var e_input = f_tcalGetInputs(true);
 	if (!e_input) return;
 	
-	var reg = /^[0-9]{2}[\/\.\,\-]{1}[0-9]{2}[\/\.\,\-]{1}[0-9]{4}$/g;
+	var reg = /^([0][1-9]|[12][0-9]|3[01])[\/\.\,\-]{1}([0][1-9]|[1][0-2])[\/\.\,\-]{1}[0-9]{4}$/g;
 	var continua = true;
+	var d_date;
 	if(n_date.toString().indexOf('/')>-1){
 		var from = n_date.split("/");
 		if(reg.test(n_date)){
@@ -5488,10 +5489,43 @@ function f_tcalUpdate (n_date, b_keepOpen) {
 			continua = false;
 		}
 		
+	}else if(n_date.toString().indexOf('.')>-1){
+		var from = n_date.split(".");
+		if(reg.test(n_date)){
+			d_date = new Date(from[2], from[1] - 1, from[0]);
+			continua = true;
+		}else{
+			continua = false;
+		}
+		
+	}else if(n_date.toString().indexOf(',')>-1){
+		var from = n_date.split(",");
+		if(reg.test(n_date)){
+			d_date = new Date(from[2], from[1] - 1, from[0]);
+			continua = true;
+		}else{
+			continua = false;
+		}
+		
+	}else if(n_date.toString().indexOf('-')>-1){
+		var from = n_date.split("-");
+		if(reg.test(n_date)){
+			d_date = new Date(from[2], from[1] - 1, from[0]);
+			continua = true;
+		}else{
+			continua = false;
+		}
+		
+	}else if(n_date == ""){
+		continua = false;
+		f_tcalCancel();
 	}else{
 		d_date = new Date(n_date);
 	}
 	
+	if(isNaN(d_date)){
+		continua = false;
+	}
 	
 	var s_pfx = A_TCALCONF.cssprefix;
 
@@ -5706,6 +5740,14 @@ function f_tcalAddOnload (f_func) {
 			}
 		}
 	}
+}
+
+function isNumberKey(evt)
+{
+    var charCode = (evt.which) ? evt.which : event.keyCode
+    if (charCode > 31 && (charCode < 48 || charCode > 57) &&  (charCode < 188 || charCode > 191))
+      return false;
+  return true;
 }
 
 f_tcalAddOnload (f_tcalInit);
