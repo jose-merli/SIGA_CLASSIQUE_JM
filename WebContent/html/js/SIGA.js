@@ -1257,8 +1257,7 @@ function jQueryLoaded(){
 		
 		//Estilos para el calendario
 
-		var hoja = document.createElement('style');
-		hoja.innerHTML = ".tcalInput.editable {background: url('html/js/jquery.ui/css/smoothness/img/cal.gif') 100% 50% no-repeat;padding-right: 20px;cursor: pointer;}/* container of calendar's pop-up */#tcal {position: absolute;visibility: hidden;z-index: 200;" +
+		var hoja = ".tcalInput.editable {background: url('html/js/jquery.ui/css/smoothness/img/cal.gif') 100% 50% no-repeat;padding-right: 20px;cursor: pointer;}/* container of calendar's pop-up */#tcal {position: absolute;visibility: hidden;z-index: 200;" +
 						"width: 217px;height: 200px;background-color: white;margin-top: 2px;padding: 0 2px 2px 2px;border: 1px solid silver;-moz-box-shadow: 3px 3px 4px silver;-webkit-box-shadow: 3px 3px 4px silver;box-shadow: 3px 3px 4px silver;" + 
 						"-ms-filter: \"progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='silver')\";filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='silver');}" +
 						"/* table containing navigation and current month */#tcalControls {border-collapse: collapse;border: 0;width: 100%;}#tcalControls td {border-collapse: collapse;border: 0;padding: 0;width: 16px;background-position: 50% 50%;" + 
@@ -1269,7 +1268,20 @@ function jQueryLoaded(){
 						"#tcalGrid td.tcalOtherMonth { color: silver; }#tcalGrid td.tcalWeekend { background-color: #ACD6F5; }#tcalGrid td.tcalToday { border: 1px solid red; }#tcalGrid td.tcalSelected { background-color: #FFB3BE; }#tcalCustomControls{padding: 2px;width: 100%;} " +
 						"#tcalCustomControls #tcalToday{width: 33%;padding: 2px;background-color: #f1f1f19c;border: solid 1px #c3c1c1;cursor: pointer;text-align: center;font-weight: bold;}#tcalCustomControls #tcalClear, #tcalCustomControls #tcalClose{width: 33%; " +
 						"padding: 2px;background-color: #f1f1f19c;border: solid 1px #c3c1c1;cursor: pointer;text-align: center;font-weight: bold;}.tcalInput.editable{background-color: white;}";
-		document.body.appendChild(hoja);
+		
+        var head = document.head || document.getElementsByTagName('head')[0],
+        style = document.createElement('style');
+
+	      style.type = 'text/css';
+	      if (style.styleSheet){
+	        // This is required for IE8 and below.
+	        style.styleSheet.cssText = hoja;
+	      } else {
+	        style.appendChild(document.createTextNode(hoja));
+	      }
+	
+	      head.appendChild(style);
+
 		
 		if (jQuery("table.tablaLineaPestanasArriba").length>0){
 			jQuery("table.tablaLineaPestanasArriba").css("float", "left");
@@ -5745,7 +5757,7 @@ function f_tcalAddOnload (f_func) {
 function isNumberKey(evt)
 {
     var charCode = (evt.which) ? evt.which : event.keyCode
-    if (charCode > 31 && (charCode < 48 || charCode > 57) &&  (charCode < 188 || charCode > 191))
+    if (charCode > 31 && (charCode < 44 || charCode > 57) && (charCode < 188 || charCode > 191)  && (charCode < 37 || charCode > 41) && (charCode < 32 || charCode > 33))
       return false;
   return true;
 }
