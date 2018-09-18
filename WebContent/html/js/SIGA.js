@@ -4551,6 +4551,7 @@ function isSWIFTValido(swift){
 
 // JBD // �Por que has quitado esto BNS? No funciona nada en chrome si lo quitas porque el tag html:text no crea id, solo name 
 // BNS porque daba errores de llenado de pila de llamadas en chrome e IE y como esta funcionalidad te la da jquery sin sobrescribir un m�todo de document cre�a que ya no se estaba usando...
+/*
 document._oldGetElementById = document.getElementById;
 document.getElementById = function(elemIdOrName) {
     var result = document._oldGetElementById(elemIdOrName);
@@ -4563,7 +4564,27 @@ document.getElementById = function(elemIdOrName) {
 
     return result;
 };
+*/
+document._oldGetElementById = document.getElementById;
+document.getElementById = function (elemIdOrName) {
+	try {
+		var result = document._oldGetElementById(elemIdOrName);
+		if (!result) {
+			var elems = document.getElementsByName(elemIdOrName);
+			if (elems && elems.length > 0) {
+				result = elems[0];
+			}
+		}
+	} catch (e) {
+		var elems = document.getElementsByName(elemIdOrName);
+		if (elems && elems.length > 0) {
+			var result = elems[0];
+		}
+	}
 
+
+	return result;
+}; 
 
 // **
 	
