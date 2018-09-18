@@ -5479,7 +5479,7 @@ function f_tcalUpdate (n_date, b_keepOpen) {
 	
 	var reg = /^[0-9]{2}[\/\.\,\-]{1}[0-9]{2}[\/\.\,\-]{1}[0-9]{4}$/g;
 	var continua = true;
-	if(n_date.toString().indexOf('/')>0){
+	if(n_date.toString().indexOf('/')>-1){
 		var from = n_date.split("/");
 		if(reg.test(n_date)){
 			d_date = new Date(from[2], from[1] - 1, from[0]);
