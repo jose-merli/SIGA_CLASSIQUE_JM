@@ -5418,9 +5418,9 @@ function f_tcalGetHTML (d_date) {
 	}
 	
 	// CustomControls
-	s_html += '<table id="tcalCustomControls"><tbody><tr><td id="tcalToday" ' + f_tcalRelDate(d_today) +' title="Hoy">Hoy</td>';
-	s_html += '<td id="tcalClear" onclick="f_tcalClean()" title="Borrar">Borrar</td>';
-	s_html += '<td id="tcalClose" onclick="f_tcalCancel()" title="Cerrar">Cerrar</td></tr></tbody></table>';
+	s_html += '<table id="tcalCustomControls"><tbody><tr><td id="tcalToday" ' + f_tcalRelDate(d_today) +' title="Hoy">' + textoHoy + '</td>';
+	s_html += '<td id="tcalClear" onclick="f_tcalClean()" title="Borrar">' + textoBorrar + '</td>';
+	s_html += '<td id="tcalClose" onclick="f_tcalCancel()" title="Cerrar">' + textoCerrar + '</td></tr></tbody></table>';
 	
 	s_html +='</tbody></table>';
 
