@@ -5754,10 +5754,14 @@ function f_tcalAddOnload (f_func) {
 	}
 }
 
+var ctrlDown = false;
+
+
+
 function isNumberKey(evt)
 {
-    var charCode = (evt.which) ? evt.which : event.keyCode
-    if (charCode > 31 && (charCode < 44 || charCode > 57) && (charCode < 188 || charCode > 191)  && (charCode < 37 || charCode > 41) && (charCode < 32 || charCode > 33))
+    var charCode = (evt.which) ? evt.which : event.keyCode;
+    if (charCode > 64 && charCode < 127 && !evt.ctrlKey)
       return false;
   return true;
 }
