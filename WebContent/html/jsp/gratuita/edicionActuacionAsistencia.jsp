@@ -777,6 +777,7 @@
 			} else {
 				document.getElementById('fechaJustificacion').className="tcal box editable tcalInput";
 				document.getElementById('fechaJustificacion').readOnly = false;
+				f_tcalInit();
 				if(document.getElementById("tdValidada")) {
 					document.getElementById("tdValidada").innerHTML = "";
 				}
@@ -1078,7 +1079,8 @@
 				document.ActuacionAsistenciaFormEdicion.validada.value="0";
 				document.getElementById("tdValidada").innerHTML = '';
 				jQuery("#fechaJustificacion-datepicker-trigger").show();
-				document.getElementById('fechaJustificacion').value="";			
+				document.getElementById('fechaJustificacion').value="";		
+				f_tcalInit();
 			} else {
 	
 				document.getElementById('fechaJustificacion').className="boxConsulta";
