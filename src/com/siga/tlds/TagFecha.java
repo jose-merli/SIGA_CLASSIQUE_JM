@@ -237,7 +237,7 @@ public class TagFecha extends TagSupport {
 				out.println("	'nextmonth'  : 'Mes Següent',");
 				out.println("	'format'     : 'd/m/Y' //'m/d/Y' // 'd-m-Y', Y-m-d', 'l, F jS Y'");
 				out.println("};");
-				out.println("var textoBorrar = 'Esborrar';var textoCerrar = 'Trancar';var textoHoy='Avui'");
+				out.println("var textoBorrar = 'Esborrar';var textoCerrar = 'Tancar';var textoHoy='Avui'");
 			}else if("en".equalsIgnoreCase(regional)){
 				out.println("var A_TCALCONF = {");
 				out.println("	'cssprefix'  : 'tcal',");
