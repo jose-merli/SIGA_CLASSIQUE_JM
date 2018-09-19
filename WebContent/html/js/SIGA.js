@@ -2077,7 +2077,7 @@ function jQueryLoaded(){
 		
 		jQuery("body").mouseup(function(e)
 	    {
-	        var subject = $("#tcal"); 
+	        var subject = jQuery("#tcal"); 
 			
 	        if(jQuery(e.target).closest('div').attr('id') != subject.attr('id'))
 	        {
