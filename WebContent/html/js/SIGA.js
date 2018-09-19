@@ -5761,7 +5761,7 @@ var ctrlDown = false;
 function isNumberKey(evt)
 {
     var charCode = (evt.which) ? evt.which : event.keyCode;
-    if (charCode > 64 && charCode < 127 && !evt.ctrlKey)
+    if (charCode > 64 && charCode < 91 && !evt.ctrlKey)
       return false;
   return true;
 }
