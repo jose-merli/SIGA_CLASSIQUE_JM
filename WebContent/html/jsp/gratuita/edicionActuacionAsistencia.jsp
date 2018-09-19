@@ -769,12 +769,14 @@
 			document.getElementById("checkAnulacion").checked = document.ActuacionAsistenciaFormEdicion.anulacion.value=='1';
 			if(document.ActuacionAsistenciaFormEdicion.validada.value=="1"){
 				document.getElementById('fechaJustificacion').className="boxConsulta";
+				document.getElementById('fechaJustificacion').readOnly = true;
 				if(document.getElementById("tdValidada")){
 					document.getElementById("tdValidada").innerHTML = '<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
 				}
 				jQuery("#fechaJustificacion-datepicker-trigger").hide();
 			} else {
-				document.getElementById('fechaJustificacion').className="box";
+				document.getElementById('fechaJustificacion').className="tcal box editable tcalInput";
+				document.getElementById('fechaJustificacion').readOnly = false;
 				if(document.getElementById("tdValidada")) {
 					document.getElementById("tdValidada").innerHTML = "";
 				}
@@ -1071,7 +1073,8 @@
 		function validaJustificacion () {
 			
 			if(document.ActuacionAsistenciaFormEdicion.validada.value=="1"){
-				document.getElementById('fechaJustificacion').className="box";
+				document.getElementById('fechaJustificacion').className="tcal box editable tcalInput";
+				document.getElementById('fechaJustificacion').readOnly = false;
 				document.ActuacionAsistenciaFormEdicion.validada.value="0";
 				document.getElementById("tdValidada").innerHTML = '';
 				jQuery("#fechaJustificacion-datepicker-trigger").show();
@@ -1079,6 +1082,7 @@
 			} else {
 	
 				document.getElementById('fechaJustificacion').className="boxConsulta";
+				document.getElementById('fechaJustificacion').readOnly = true;
 				document.ActuacionAsistenciaFormEdicion.validada.value="1"; 
 				jQuery("#fechaJustificacion-datepicker-trigger").hide();
 				document.getElementById("tdValidada").innerHTML = '<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
