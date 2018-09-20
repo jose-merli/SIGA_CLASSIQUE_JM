@@ -5580,7 +5580,9 @@ function f_tcalOnClick () {
 	var n_left = f_getPosition (this, 'Left'),
 		n_top  = f_getPosition (this, 'Top') + this.offsetHeight;
 	
-	if(n_top + 200 > window.innerHeight)	n_top  = n_top -231;
+	var height = "innerHeight" in window ? window.innerHeight  : document.documentElement.offsetHeight; 
+	
+	if(n_top + 200 > height)	n_top  = n_top -231;
 
 	var e_cal = document.getElementById(s_pfx);
 	if (!e_cal) {
