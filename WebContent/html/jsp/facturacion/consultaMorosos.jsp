@@ -300,10 +300,10 @@
 					 var bBuscar = document.getElementsByName("buscarCliente");
 					 bBuscar[0].disabled='';
 					
-					document.getElementById("cmbEstadoColegial").disabled = true;
+					if(document.getElementById("cmbEstadoColegial")!=null)document.getElementById("cmbEstadoColegial").disabled = true;
 					jQuery('#interesadoApellidos').attr('disabled','disabled').attr('readonly','readonly');
 					jQuery('#interesadoNombre').attr('disabled','disabled').attr('readonly','readonly');
-					document.getElementById("cmbEstadoColegial").value='';
+					if(document.getElementById("cmbEstadoColegial")!=null)document.getElementById("cmbEstadoColegial").value='';
 					jQuery('#interesadoApellidos').val('');
 					jQuery('#interesadoNombre').val('');				
 					
