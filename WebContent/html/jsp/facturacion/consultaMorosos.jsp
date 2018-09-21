@@ -293,32 +293,33 @@
 		}			
 		
 		function accionRadio(){
-			if (document.getElementById("radiofechaCargo").checked) {
-				jQuery('#numeroNifTagBusquedaPersonas').removeAttr('disabled').removeAttr('readonly');
-				 var bLimpiar = document.getElementsByName("limpiar"); 
-				 bLimpiar[0].disabled='';
-				 var bBuscar = document.getElementsByName("buscarCliente");
-				 bBuscar[0].disabled='';
-				
-				jQuery('#cmbEstadoColegial').attr('disabled','disabled');
-				jQuery('#interesadoApellidos').attr('disabled','disabled').attr('readonly','readonly');
-				jQuery('#interesadoNombre').attr('disabled','disabled').attr('readonly','readonly');
-				jQuery('#cmbEstadoColegial').val('');
-				jQuery('#interesadoApellidos').val('');
-				jQuery('#interesadoNombre').val('');				
-				
-			} else {
-				jQuery('#numeroNifTagBusquedaPersonas').attr('disabled','disabled').attr('readonly','readonly');
-				limpiarPersona ();
-				var bLimpiar = document.getElementsByName("limpiar"); 
-				bLimpiar[0].disabled='disabled';
-				var bBuscar = document.getElementsByName("buscarCliente");
-				bBuscar[0].disabled='disabled';
-				
-				jQuery('#cmbEstadoColegial').removeAttr('disabled');
-				jQuery('#interesadoApellidos').removeAttr('disabled').removeAttr('readonly');
-				jQuery('#interesadoNombre').removeAttr('disabled').removeAttr('readonly');
-			}			
+				if (document.getElementById("radiofechaCargo").checked) {
+					jQuery('#numeroNifTagBusquedaPersonas').removeAttr('disabled').removeAttr('readonly');
+					 var bLimpiar = document.getElementsByName("limpiar"); 
+					 bLimpiar[0].disabled='';
+					 var bBuscar = document.getElementsByName("buscarCliente");
+					 bBuscar[0].disabled='';
+					
+					document.getElementById("cmbEstadoColegial").disabled = true;
+					jQuery('#interesadoApellidos').attr('disabled','disabled').attr('readonly','readonly');
+					jQuery('#interesadoNombre').attr('disabled','disabled').attr('readonly','readonly');
+					document.getElementById("cmbEstadoColegial").value='';
+					jQuery('#interesadoApellidos').val('');
+					jQuery('#interesadoNombre').val('');				
+					
+				} else {
+					jQuery('#numeroNifTagBusquedaPersonas').attr('disabled','disabled').attr('readonly','readonly');
+					limpiarPersona ();
+					var bLimpiar = document.getElementsByName("limpiar"); 
+					bLimpiar[0].disabled='disabled';
+					var bBuscar = document.getElementsByName("buscarCliente");
+					bBuscar[0].disabled='disabled';
+					
+					document.getElementById("cmbEstadoColegial").disabled = false;
+					jQuery('#interesadoApellidos').removeAttr('disabled').removeAttr('readonly');
+					jQuery('#interesadoNombre').removeAttr('disabled').removeAttr('readonly');
+				}		
+			
 		}		
 		
 	</script>
