@@ -260,7 +260,7 @@
 				
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();
-				window.setTimeout("fin()",5000,"Javascript"); 
+				//window.setTimeout("fin()",5000,"Javascript"); 
 			} else {
 				setFocusFormularios();
 			}	
@@ -328,7 +328,7 @@
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 
 	<!-- INICIO: IFRAME LISTA RESULTADOS -->
-	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp" id="resultado" name="resultado" scrolling="no" frameborder="0" marginheight="0" marginwidth="0" class="frameGeneral"></iframe>
+	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp" id="resultado" name="resultado" onload="fin()" scrolling="no" frameborder="0" marginheight="0" marginwidth="0" class="frameGeneral"></iframe>
 	<!-- FIN: IFRAME LISTA RESULTADOS -->
 
 	<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->

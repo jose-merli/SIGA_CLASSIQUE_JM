@@ -92,7 +92,7 @@
 	<!-- FIN: TITULO Y LOCALIZACION -->	
 </head>
 
-<body onLoad="ajusteAlto('resultado');accionRadio();">	
+<body onload="cargarChecks();checkTodos();accionRadio();">
 	<!-- INICIO: LISTA DE VALORES -->
 	<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista de cabeceras fijas -->
 		 
