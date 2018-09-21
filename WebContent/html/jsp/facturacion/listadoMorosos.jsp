@@ -549,25 +549,6 @@
 		
 		function accionRadio(){
 			parent.accionRadio();
-			parent.fin();
-			
-			try {
-			
-				if (jQueryTop("#mainWorkArea").length > 0 && 
-						typeof jQueryTop("#mainWorkArea")[0].contentWindow != "undefined" && 
-						typeof jQueryTop("#mainWorkArea")[0].contentWindow.jQuery != "undefined"){
-					var mainWorkAreaJquery = jQueryTop("#mainWorkArea")[0].contentWindow.jQuery;
-					try {
-						mainWorkAreaJquery.unblockUI();
-					} catch (e) {
-						console.debug("[mainFin] unblockUI");
-					}
-				}
-				jQuery("#divEspera").hide();
-			} catch(msg){
-				console.debug(msg);
-			}
-			
 		}
 	</script>
 	

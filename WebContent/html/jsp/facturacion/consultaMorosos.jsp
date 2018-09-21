@@ -260,6 +260,7 @@
 				
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();
+				window.setTimeout("fin()",5000,"Javascript"); 
 			} else {
 				setFocusFormularios();
 			}	
