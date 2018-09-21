@@ -229,10 +229,7 @@
 				document.DevolucionesManualesForm.modo.value = modo;
 				
 			} else {
-				var checkTodos = jQuery("#resultado").contents().find("#chkGeneral");
-				if (!checkTodos.exists() || !checkTodos[0].checked) {
-					document.DevolucionesManualesForm.seleccionarTodos.value = "";
-				}
+				document.DevolucionesManualesForm.seleccionarTodos.value = "";
 				document.DevolucionesManualesForm.modo.value = "BuscarInicio";
 			}
 			
