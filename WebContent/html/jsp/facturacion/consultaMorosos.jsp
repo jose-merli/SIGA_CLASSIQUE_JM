@@ -251,10 +251,7 @@
 					
 					
 				} else {
-					var checkTodos = jQuery("#resultado").contents().find("#chkGeneral");
-					if (checkTodos.length>0 && !checkTodos[0].checked) {
-						document.forms[0].seleccionarTodos.value = "";
-					}
+					
 					document.forms[0].modo.value="buscarInit";
 				}
 				
