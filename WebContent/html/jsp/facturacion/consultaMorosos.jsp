@@ -260,7 +260,6 @@
 				
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();
-				fin();
 			} else {
 				setFocusFormularios();
 			}	
