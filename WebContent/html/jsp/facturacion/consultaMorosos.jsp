@@ -260,6 +260,7 @@
 				
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();
+				fin();
 			} else {
 				setFocusFormularios();
 			}	
@@ -318,7 +319,9 @@
 					if(document.getElementById("cmbEstadoCsolegial")!=null)	document.getElementById("cmbEstadoColegial").disabled = false;
 					jQuery('#interesadoApellidos').removeAttr('disabled').removeAttr('readonly');
 					jQuery('#interesadoNombre').removeAttr('disabled').removeAttr('readonly');
-				}		
+				}	
+				
+				fin();
 			
 		}		
 		
