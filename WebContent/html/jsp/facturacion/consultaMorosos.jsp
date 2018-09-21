@@ -319,7 +319,7 @@
 					jQuery('#interesadoApellidos').removeAttr('disabled').removeAttr('readonly');
 					jQuery('#interesadoNombre').removeAttr('disabled').removeAttr('readonly');
 				}	
-				
+				window.top.bloqueado=true;
 				fin();
 			
 		}		
