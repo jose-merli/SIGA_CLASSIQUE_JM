@@ -251,7 +251,7 @@
 					
 					
 				} else {
-					
+					document.forms[0].seleccionarTodos.value = "";
 					document.forms[0].modo.value="buscarInit";
 				}
 				
