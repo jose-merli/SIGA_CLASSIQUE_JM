@@ -292,63 +292,33 @@
 			}
 		}			
 		
-		function accionRadio(){		
-			try{
-				if (jQuery("input[name='radioAccion']:checked").val() == "0") {
-					jQuery('#numeroNifTagBusquedaPersonas').removeAttr('disabled').removeAttr('readonly');
-					 var bLimpiar = document.getElementsByName("limpiar"); 
-					 bLimpiar[0].disabled='';
-					 var bBuscar = document.getElementsByName("buscarCliente");
-					 bBuscar[0].disabled='';
-					
-					jQuery('#cmbEstadoColegial').attr('disabled','disabled');
-					jQuery('#interesadoApellidos').attr('disabled','disabled').attr('readonly','readonly');
-					jQuery('#interesadoNombre').attr('disabled','disabled').attr('readonly','readonly');
-					jQuery('#cmbEstadoColegial').val('');
-					jQuery('#interesadoApellidos').val('');
-					jQuery('#interesadoNombre').val('');				
-					
-				} else {
-					jQuery('#numeroNifTagBusquedaPersonas').attr('disabled','disabled').attr('readonly','readonly');
-					limpiarPersona ();
-					var bLimpiar = document.getElementsByName("limpiar"); 
-					bLimpiar[0].disabled='disabled';
-					var bBuscar = document.getElementsByName("buscarCliente");
-					bBuscar[0].disabled='disabled';
-					
-					jQuery('#cmbEstadoColegial').removeAttr('disabled');
-					jQuery('#interesadoApellidos').removeAttr('disabled').removeAttr('readonly');
-					jQuery('#interesadoNombre').removeAttr('disabled').removeAttr('readonly');
-				}
-			}catch(err){
-				if (jQueryTop("input[name='radioAccion']:checked").val() == "0") {
-					jQueryTop('#numeroNifTagBusquedaPersonas').removeAttr('disabled').removeAttr('readonly');
-					 var bLimpiar = document.getElementsByName("limpiar"); 
-					 bLimpiar[0].disabled='';
-					 var bBuscar = document.getElementsByName("buscarCliente");
-					 bBuscar[0].disabled='';
-					
-					jQueryTop('#cmbEstadoColegial').attr('disabled','disabled');
-					jQueryTop('#interesadoApellidos').attr('disabled','disabled').attr('readonly','readonly');
-					jQueryTop('#interesadoNombre').attr('disabled','disabled').attr('readonly','readonly');
-					jQueryTop('#cmbEstadoColegial').val('');
-					jQueryTop('#interesadoApellidos').val('');
-					jQueryTop('#interesadoNombre').val('');				
-					
-				} else {
-					jQueryTop('#numeroNifTagBusquedaPersonas').attr('disabled','disabled').attr('readonly','readonly');
-					limpiarPersona ();
-					var bLimpiar = document.getElementsByName("limpiar"); 
-					bLimpiar[0].disabled='disabled';
-					var bBuscar = document.getElementsByName("buscarCliente");
-					bBuscar[0].disabled='disabled';
-					
-					jQueryTop('#cmbEstadoColegial').removeAttr('disabled');
-					jQueryTop('#interesadoApellidos').removeAttr('disabled').removeAttr('readonly');
-					jQueryTop('#interesadoNombre').removeAttr('disabled').removeAttr('readonly');
-				}
-			}
-			
+		function accionRadio(){
+			if (document.getElementById("radiofechaCargo").checked) {
+				jQuery('#numeroNifTagBusquedaPersonas').removeAttr('disabled').removeAttr('readonly');
+				 var bLimpiar = document.getElementsByName("limpiar"); 
+				 bLimpiar[0].disabled='';
+				 var bBuscar = document.getElementsByName("buscarCliente");
+				 bBuscar[0].disabled='';
+				
+				jQuery('#cmbEstadoColegial').attr('disabled','disabled');
+				jQuery('#interesadoApellidos').attr('disabled','disabled').attr('readonly','readonly');
+				jQuery('#interesadoNombre').attr('disabled','disabled').attr('readonly','readonly');
+				jQuery('#cmbEstadoColegial').val('');
+				jQuery('#interesadoApellidos').val('');
+				jQuery('#interesadoNombre').val('');				
+				
+			} else {
+				jQuery('#numeroNifTagBusquedaPersonas').attr('disabled','disabled').attr('readonly','readonly');
+				limpiarPersona ();
+				var bLimpiar = document.getElementsByName("limpiar"); 
+				bLimpiar[0].disabled='disabled';
+				var bBuscar = document.getElementsByName("buscarCliente");
+				bBuscar[0].disabled='disabled';
+				
+				jQuery('#cmbEstadoColegial').removeAttr('disabled');
+				jQuery('#interesadoApellidos').removeAttr('disabled').removeAttr('readonly');
+				jQuery('#interesadoNombre').removeAttr('disabled').removeAttr('readonly');
+			}			
 		}		
 		
 	</script>
