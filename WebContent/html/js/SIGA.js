@@ -5245,7 +5245,7 @@ function sumarDias(fechaInput,dias){
 	return (dia+"/"+mes+"/"+anyo); 
 }	
 
-var letras=" abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZÇÁÉÍÓÚÄËÏÖÜÀÈÌÒÙÂÊÎÔÛçáéíóúäëïöüàèìòùâêîôû^'·\-";
+var letras=" abcdefghijklmnï¿½opqrstuvwxyzABCDEFGHIJKLMNï¿½OPQRSTUVWXYZï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½^'ï¿½\-";
 
 
 function validarNombreApellido(nombre){
@@ -5302,7 +5302,7 @@ function pad (n, length,derecha) {
     return n;
 }
 
-fin();
+
 
 
 
@@ -5320,11 +5320,11 @@ fin();
 	'cssprefix'  : 'tcal',
 	'months'     : ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
 	'weekdays'   : ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
-	'longwdays'  : ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado'],
+	'longwdays'  : ['Domingo', 'Lunes', 'Martes', 'Miï¿½rcoles', 'Jueves', 'Viernes', 'Sabado'],
 	'yearscroll' : true, // show year scroller
 	'weekstart'  : 1, // first day of week: 0-Su or 1-Mo
-	'prevyear'   : 'Año Previo',
-	'nextyear'   : 'Año Siguiente',
+	'prevyear'   : 'Aï¿½o Previo',
+	'nextyear'   : 'Aï¿½o Siguiente',
 	'prevmonth'  : 'Mes Previo',
 	'nextmonth'  : 'Mes Siguiente',
 	'format'     : 'd/m/Y' //'m/d/Y' // 'd-m-Y', Y-m-d', 'l, F jS Y'
@@ -5334,7 +5334,7 @@ var A_TCALCONF = {
 	'cssprefix'  : 'tcal',
 	'months'     : ['aa', 'bbb', 'ccc', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
 	'weekdays'   : ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
-	'longwdays'  : ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sabado'],
+	'longwdays'  : ['Domingo', 'Lunes', 'Martes', 'Miï¿½rcoles', 'Jueves', 'Viernes', 'Sabado'],
 	'yearscroll' : true, // show year scroller
 	'weekstart'  : 1, // first day of week: 0-Su or 1-Mo
 	'prevyear'   : 'Previous Year',
@@ -5771,3 +5771,6 @@ function isNumberKey(evt)
 }
 
 f_tcalAddOnload (f_tcalInit);
+
+
+fin();
