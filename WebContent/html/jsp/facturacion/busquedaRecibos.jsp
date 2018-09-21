@@ -193,7 +193,7 @@
 	
 		// Funcion asociada a boton buscar
 		function buscar(modo) {
-			sub();		
+			//sub();		
 			mensaje();
 			
 			jQuery("#nombreTitular").val(jQuery("#nombrePersona").val());
@@ -248,7 +248,7 @@
 	
 		// Asociada al boton ProcesarDevoluciones
 		function accionProcesarDevoluciones() {		
-			sub();
+			//sub();
 			
 			var numeroFacturasSeleccionadas =  jQuery("#resultado").contents().find("#registrosSeleccionadosPaginador").val();
 			

@@ -240,7 +240,7 @@
 					return;
 				}					
 					
-				sub();	
+				//sub();	
 				document.forms[0].facturasImpagadasDesde.value=document.forms[0].facturasImpagadasDesde.value.replace(/,/,".");
 				document.forms[0].facturasImpagadasHasta.value=document.forms[0].facturasImpagadasHasta.value.replace(/,/,".");
 				document.forms[0].importeAdeudadoDesde.value=document.forms[0].importeAdeudadoDesde.value.replace(/,/,".");
@@ -260,7 +260,6 @@
 				
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();
-				//window.setTimeout("fin()",5000,"Javascript"); 
 			} else {
 				setFocusFormularios();
 			}	
@@ -301,10 +300,10 @@
 					 var bBuscar = document.getElementsByName("buscarCliente");
 					 bBuscar[0].disabled='';
 					
-					if(document.getElementById("cmbEstadoCsolegial")!=null)	document.getElementById("cmbEstadoColegial").disabled = true;
+					document.getElementById("cmbEstadoColegial").disabled = true;
 					jQuery('#interesadoApellidos').attr('disabled','disabled').attr('readonly','readonly');
 					jQuery('#interesadoNombre').attr('disabled','disabled').attr('readonly','readonly');
-					if(document.getElementById("cmbEstadoCsolegial")!=null)	document.getElementById("cmbEstadoColegial").value='';
+					document.getElementById("cmbEstadoColegial").value='';
 					jQuery('#interesadoApellidos').val('');
 					jQuery('#interesadoNombre').val('');				
 					
@@ -319,8 +318,7 @@
 					if(document.getElementById("cmbEstadoCsolegial")!=null)	document.getElementById("cmbEstadoColegial").disabled = false;
 					jQuery('#interesadoApellidos').removeAttr('disabled').removeAttr('readonly');
 					jQuery('#interesadoNombre').removeAttr('disabled').removeAttr('readonly');
-				}	
-				
+				}		
 			
 		}		
 		
@@ -328,7 +326,7 @@
 	<!-- FIN: SCRIPTS BOTONES BUSQUEDA -->
 
 	<!-- INICIO: IFRAME LISTA RESULTADOS -->
-	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp" id="resultado" name="resultado" onload="fin()" scrolling="no" frameborder="0" marginheight="0" marginwidth="0" class="frameGeneral"></iframe>
+	<iframe align="center" src="<%=app%>/html/jsp/general/blank.jsp" id="resultado" name="resultado" scrolling="no" frameborder="0" marginheight="0" marginwidth="0" class="frameGeneral"></iframe>
 	<!-- FIN: IFRAME LISTA RESULTADOS -->
 
 	<!-- FIN  ******* BOTONES Y CAMPOS DE BUSQUEDA ****** -->
