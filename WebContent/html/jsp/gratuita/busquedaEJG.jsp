@@ -1118,7 +1118,25 @@ if(usr.isComision()){
 				alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorIdPersona"/>');
 			}else{ 
 				filtroSeleccionado = false;	
-				jQuery("#body").find('td input').each(function () {
+				var inputs = document.getElementsByTagName('input');
+				for(var i = 0; i < inputs.length; i++) {
+				    if(inputs[i].value != "" && inputs[i].type.toLowerCase() != 'checkbox' && inputs[i].type.toLowerCase() != 'button' && inputs[i].readonly != 'readonly') {
+				    	filtroSeleccionado = true;
+				    }
+				}
+				
+				if(!filtroSeleccionado){
+					var selects = document.getElementsByTagName('select');
+					
+					for(var i = 0; i < inputs.length; i++) {
+					    if(selects[i].value != "" && selects[i].name != 'dictaminado' && selects[i].id() != 'idFundamentoJuridico' && selects[i].id() != 'idTipoResolucionEJG') {
+					    	filtroSeleccionado = true;
+					    }
+					}
+
+				}
+				
+				/*jQuery("#body").find('td input').each(function () {
 					if (jQuery(this).val() != "" && jQuery(this).attr('type')!='checkbox' && jQuery(this).attr('type')!='button' && jQuery(this).attr('readonly')!='readonly'){
 						filtroSeleccionado = true;
 					}
@@ -1130,7 +1148,7 @@ if(usr.isComision()){
 							filtroSeleccionado = true;
 						}
 					});
-				}
+				}*/
 				if(!filtroSeleccionado){
 					if(document.getElementById("dictaminado").value!='I'){
 						filtroSeleccionado = true;
