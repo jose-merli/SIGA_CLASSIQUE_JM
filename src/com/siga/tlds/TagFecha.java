@@ -196,26 +196,28 @@ public class TagFecha extends TagSupport {
 			sDatepicker += cssClass;
 						
 			if(this.preFunction!=null && !this.preFunction.equals("")){
-				sDatepicker += " onfocus=\"return "+	this.preFunction+"\"";
+				sDatepicker += " onfocus='return "+	this.preFunction+"'";
 			}
 			if(this.postFunction!=null && !this.postFunction.equals("")){
-				sDatepicker += " onchange=\"return "+	this.postFunction+"\"";
+				sDatepicker += " onblur='validaFecha"+ this.nombreCampo +"(this);"+	this.postFunction+"'";
+			} else {
+				sDatepicker += " onblur=\" return validaFecha"+ this.nombreCampo +"(this)\"";	
 			}
 			if (this.campoCargarFechaDesde != null && !this.campoCargarFechaDesde.equals("")){
-				sDatepicker += " data-cargarfechadesde=\""+	this.campoCargarFechaDesde+"\"";
+				sDatepicker += " data-cargarfechadesde='"+	this.campoCargarFechaDesde+"'";
 			}
 			
 			//Validación fecha
-			sDatepicker += " onblur=\" return validaFecha"+ this.nombreCampo +"(this)\"";
+//			
 			sDatepicker += " onkeyup=\" f_tcalUpdate (this.value, true);\"";
 			sDatepicker += " onkeydown=\" return isNumberKey(event);\"";
 			
-			sDatepicker += " data-format=\""+	DATE_FORMAT +"\"";
-			sDatepicker += " data-datepickerformat=\""+	DATEPICKER_DATE_FORMAT +"\"";
+//			sDatepicker += " data-format=\""+	DATE_FORMAT +"\"";
+//			sDatepicker += " data-datepickerformat=\""+	DATEPICKER_DATE_FORMAT +"\"";
 			//TODO: SELECCIONAR IDIOMA DEL USUARIO DEFINIDO EN SIGA.JS
 			String regional = "es";
 			regional = usrbean.getLanguageExt().toLowerCase();
-			sDatepicker += " data-regional=\""+	regional +"\"";
+//			sDatepicker += " data-regional=\""+	regional +"\"";
 			sDatepicker += " />";
 			sDatepicker += "<script>jQuery('#"+ this.styleId +"').parent().css('white-space','nowrap');</script>";
 			out.print(sDatepicker);	
