@@ -312,6 +312,7 @@
 		}
 		
 		function inicio(){
+		  fin();
 		 <% if (busquedaRealizada.equals("1")) {%>
 		      buscarPaginador();
 		 <%}%>
