@@ -5245,17 +5245,16 @@ function sumarDias(fechaInput,dias){
 	return (dia+"/"+mes+"/"+anyo); 
 }	
 
-var letras=" abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZÇÁÉÍÓÚÄËÏÖÜÀÈÌÒÙÂÊÎÔÛçáéíóúäëïöüàèìòùâêîôû^'·\-";
-
-
+// https://www.ascii.cl/es/codigos-html.htm
+// Si hacen falta mas cÃ³digos abrÃ­a que sacarlos de ahÃ­
+// Admite letras, Ã±Ã‘ de la Ã€ a la Ã¿ Âº Âª - / ' Â· ^
 function validarNombreApellido(nombre){
-   for(i=0; i<nombre.length; i++){
-      if (letras.indexOf(nombre.charAt(i))==-1){
-         return false;
-      }
-   }
-   return true;
-}
+	regex = /^(\s*[a-zA-Z\u00c0-\u00ff\u00f1\u00d1\u00aa\u00ba\u002d\u0027\u00b7\u005e]+\s*)*$/g;
+	if (regex.test(nombre)) 
+		return true;
+	else 
+		return false;
+	}
 
 function validarDenominacion(nombre){
    return true;
