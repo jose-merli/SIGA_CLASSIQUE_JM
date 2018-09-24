@@ -109,7 +109,7 @@ function informeGenerico(){
 }
 
 function ajustarCabeceraTabla(){
-		jQuery('#listadoInformeJustificacionCab').width(jQuery('#listadoInformeJustificacion').width());
+		//jQuery('#listadoInformeJustificacionCab').width(jQuery('#listadoInformeJustificacion').width());
 }
 function accionCerrar(){
 	
