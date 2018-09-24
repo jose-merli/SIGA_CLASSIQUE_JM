@@ -5474,6 +5474,9 @@ function f_tcalUpdate (n_date, b_keepOpen) {
 			f_tcalCancel();
 		}
 	}	
+	if(e_input.onchange!=null) { 
+		e_input.onchange();
+	}
 }
 
 function f_tcalClean () {
@@ -5483,6 +5486,9 @@ function f_tcalClean () {
 	
 	e_input.value = '';
 	f_tcalCancel();
+	if(e_input.onchange!=null) { 
+		e_input.onchange();
+	}
 }
 
 function f_tcalOnClick () {

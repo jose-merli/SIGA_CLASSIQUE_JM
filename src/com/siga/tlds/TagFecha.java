@@ -153,14 +153,14 @@ public class TagFecha extends TagSupport {
 			out.println("		campoFecha.focus();");
 			out.println("	}");
 			
-			if(this.postFunction!=null && !this.postFunction.equals("")){
-				if (!this.postFunction.endsWith(";")) {
-					this.postFunction += ";";
-				}
-				out.println("	if (err == 0) {");
-				out.println("		" + this.postFunction);
-				out.println("	}");
-			}
+//			if(this.postFunction!=null && !this.postFunction.equals("")){
+//				if (!this.postFunction.endsWith(";")) {
+//					this.postFunction += ";";
+//				}
+//				out.println("	if (err == 0) {");
+//				out.println("		" + this.postFunction);
+//				out.println("	}");
+//			}
 			
 			out.println("	return err;");
 			out.println("}");
@@ -207,6 +207,10 @@ public class TagFecha extends TagSupport {
 						
 			if(this.preFunction!=null && !this.preFunction.equals("")){
 				sDatepicker += " onfocus='return "+	this.preFunction+"'";
+			}
+			
+			if(this.postFunction!=null && !this.postFunction.equals("")){
+				sDatepicker += " onchange='return "+	this.postFunction+"'";
 			}
 			
 			if (this.campoCargarFechaDesde != null && !this.campoCargarFechaDesde.equals("")){
