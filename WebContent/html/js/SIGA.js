@@ -3501,100 +3501,23 @@ function finsubicono(identificador) {
  */
 
 function sub(w){
-	//var jQuery = window.top.jQuery;
-	if(w == undefined) {
-		w = window.top;
+	try{
+		var windowTop=window.top;
+		windowTop.mainSub();
+		return true;
+	}catch(e){
+		
 	}
-	try {
-		// disable links in current frame
-		var imgs = w.document.getElementsByTagName("img");
-		for ( var l = 0; l < imgs.length; l++) {
-			if (!imgs(links[l]).hasClass("disabled")) {
-				imgs(links[l]).addClass("disabled");
-			}
-		}
-	} catch (e) {
-		// TODO: handle exception
-	}
-	try {
-		// disable links in current frame
-		var links = w.document.getElementsByTagName("a");
-		for ( var l = 0; l < links.length; l++) {
-			if (!jQuery(links[l]).hasClass("disabled")) {
-				jQuery(links[l]).addClass("disabled");
-			}
-		}
-	} catch (e) {
-		// TODO: handle exception
-	}
-	try {
-		// disable buttons in current frame
-		var buts = w.document.getElementsByTagName("input");
-		for ( var b = 0; b < buts.length; b++) {
-			if (buts[b].type == 'button') {
-				jQuery(buts[b]).attr("disabled", "disabled");
-			}
-		}
-	} catch (e) {
-		// TODO: handle exception
-	}
-	try {
-		// Go to child frames
-		var framess = w.frames;
-		for(var f=0; f < framess.length; f++){
-			sub(framess[f]);
-		}
-	} catch (e) {
-		// TODO: handle exception
-	}
-	var windowTop=window.top;
-	windowTop.mainSub();
-	return true;
 }
 
 function fin(w){
-	
-	//var jQuery = window.top.jQuery;
-	if(w == undefined) {
-		w = window.top;
-	}
-	try {
-		// enable links and buttons in current frame
-		var links = w.document.getElementsByTagName("a");
-		for ( var l = 0; l < links.length; l++) {
-			if (jQuery(links[l]).hasClass("disabled")) {
-				jQuery(links[l]).removeClass("disabled");
-			}
-		}
-	} catch (e) {
-		// TODO: handle exception
-		//alert("Error habilitando links. Continuo.");
-	}
-	try {
-		var buts = w.document.getElementsByTagName("input");
-		for ( var b = 0; b < buts.length; b++) {
-			if (buts[b].type == 'button') {
-				jQuery(buts[b]).removeAttr("disabled");
-			}
-		}
-	} catch (e) {
-		// TODO: handle exception
-		//alert("Error habilitando botones. Continuo.");
-	}
-	try {
-			// Go to child frames
-		var framess = w.frames;
-		for(var f=0; f < framess.length; f++){
-			fin(framess[f]);
-		}
-	} catch (e) {
-		// TODO: handle exception
-		//alert("Error procesando frame. Continuo.");
-	}
-	var windowTop=window.top;
-	if(windowTop.bloqueado)
+	try{
+		var windowTop=window.top;
 		windowTop.mainFin();
-	return true;
+		return true;
+	}catch(e){
+		
+	}
 }
 
 function trim(s) {
@@ -5462,7 +5385,7 @@ function f_tcalUpdateCal (element) {
 	var e_input = f_tcalGetInputs(true);
 	if (!e_input) return;
 	
-	d_date = new Date($("#"+element).attr("id").value);
+	d_date = new Date(jQuery("#"+element).attr("id").value);
 	var s_pfx = A_TCALCONF.cssprefix;
 
 	var e_cal = document.getElementById(s_pfx);
