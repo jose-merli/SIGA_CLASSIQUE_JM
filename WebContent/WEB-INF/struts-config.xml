@@ -426,7 +426,7 @@
 			<forward name="accesoDevelopNoPermitido" path="/html/jsp/general/accesoDevelopNoPermitido.jsp"/>
 		</action>
 
-		<action path="/sigainit" type="com.siga.general.SIGAAuthAction">
+		<action path="/login" type="com.siga.general.SIGAAuthAction">
 			<forward name="topMenu" path="/openMainFrameset.do"/>
 			<forward name="leftMenu" path="/openMainFrameset2.do"/>
 		</action>
