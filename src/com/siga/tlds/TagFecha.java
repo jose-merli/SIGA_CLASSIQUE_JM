@@ -152,6 +152,16 @@ public class TagFecha extends TagSupport {
 			out.println("		campoFecha.select();");
 			out.println("		campoFecha.focus();");
 			out.println("	}");
+			
+			if(this.postFunction!=null && !this.postFunction.equals("")){
+				if (!this.postFunction.endsWith(";")) {
+					this.postFunction += ";";
+				}
+				out.println("	if (err == 0) {");
+				out.println("		" + this.postFunction);
+				out.println("	}");
+			}
+			
 			out.println("	return err;");
 			out.println("}");
 			out.println("</script>");
@@ -198,17 +208,13 @@ public class TagFecha extends TagSupport {
 			if(this.preFunction!=null && !this.preFunction.equals("")){
 				sDatepicker += " onfocus='return "+	this.preFunction+"'";
 			}
-			if(this.postFunction!=null && !this.postFunction.equals("")){
-				sDatepicker += " onblur='validaFecha"+ this.nombreCampo +"(this);"+	this.postFunction+"'";
-			} else {
-				sDatepicker += " onblur=\" return validaFecha"+ this.nombreCampo +"(this)\"";	
-			}
+			
 			if (this.campoCargarFechaDesde != null && !this.campoCargarFechaDesde.equals("")){
 				sDatepicker += " data-cargarfechadesde='"+	this.campoCargarFechaDesde+"'";
 			}
 			
 			//Validación fecha
-//			
+			sDatepicker += " onblur=\" return validaFecha"+ this.nombreCampo +"(this)\"";
 			sDatepicker += " onkeyup=\" f_tcalUpdate (this.value, true);\"";
 			sDatepicker += " onkeydown=\" return isNumberKey(event);\"";
 			
