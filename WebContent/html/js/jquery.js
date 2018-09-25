@@ -1290,15 +1290,6 @@ function Sizzle( selector, context, results, seed ) {
 	return select( selector.replace( rtrim, "$1" ), context, results, seed );
 }
 
-//MY EDIT - this try/catch seems to fix IE 'permission denied' errors as described here:
-//http://bugs.jquery.com/ticket/14535
-try{
- document === document; //may cause permission denied
-}
-catch(err){
- document = window.document; //resets document, and no more permission denied errors.
-} 
-
 /**
  * Create key-value caches of limited size
  * @returns {Function(string, Object)} Returns the Object data after storing it on itself with
