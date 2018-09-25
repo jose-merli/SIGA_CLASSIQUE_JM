@@ -2075,14 +2075,18 @@ function jQueryLoaded(){
 		});
 		// TAG SELECT END
 		
-		jQuery("body").mouseup(function(e)
-			    {
-			        var subject = jQuery("#tcal"); 
+		document.body.addEventListener("mouseup", function(e)
+				{
+			        var subject = document.getElementById("tcal"); 
 					
-			        if(jQuery(e.target).closest('div').attr('id') != subject.attr('id'))
+			        if(closestById(e.target,"tcal") == null)
 			        {
-			        	subject.css("visibility", "hidden");
-			        	jQuery(".tcal").removeClass('tcalActive');
+			        	if(subject!=null)subject.style.visibility = "hidden";
+			        	var allInputs = document.getElementsByClassName("tcal");
+			        	for(var i=0; i <allInputs.length;i++)
+		    			{
+		    				allInputs[i].classList.remove('tcalActive');
+		    			}
 			        }
 			    });
 			}); // READY
