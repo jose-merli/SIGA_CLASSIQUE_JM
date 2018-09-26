@@ -206,11 +206,11 @@ public class TagFecha extends TagSupport {
 			sDatepicker += cssClass;
 						
 			if(this.preFunction!=null && !this.preFunction.equals("")){
-				sDatepicker += " onfocus='return "+	this.preFunction+"'";
+				sDatepicker += " onfocus=\"return "+	this.preFunction+"\"";
 			}
 			
 			if(this.postFunction!=null && !this.postFunction.equals("")){
-				sDatepicker += " onchange='return "+	this.postFunction+"'";
+				sDatepicker += " onchange=\"return "+	this.postFunction+"\"";
 			}
 			
 			if (this.campoCargarFechaDesde != null && !this.campoCargarFechaDesde.equals("")){
