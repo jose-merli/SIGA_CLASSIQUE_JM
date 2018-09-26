@@ -2075,7 +2075,7 @@ function jQueryLoaded(){
 		});
 		// TAG SELECT END
 		
-		jQuery("body").mouseup(function(e) {
+		jQuery("body").mouseup(function(e)
         {
               var subject = document.getElementById("tcal"); 
                           
