@@ -419,3 +419,5 @@ End Pys_Productossolicitados_Ai;
 -- Ejecutados en Integracion por FMS el 26/09/2018 a las 11:30
 
 alter table PYS_PRODUCTOSSOLICITADOS add OBSERVACIONES varchar2(200);
+
+-- Ejecutados en Integracion por FMS el 26/09/2018 a las 16:30
