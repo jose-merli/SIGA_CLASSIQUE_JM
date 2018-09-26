@@ -360,7 +360,7 @@ PKG_SIGA_REGULARIZACION_SJCS
 -- Ejecutados en Integracion por AAG el 19/09/2018 a las 13:30
 
 -- 127_012
-
+--R1809_0
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('certificados.solicitudes.literal.datosExistentes', 'Datos existentes en el sistema', 0, '1', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('certificados.solicitudes.literal.datosExistentes', 'Datos existentes en el sistema#CA', 0, '2', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('certificados.solicitudes.literal.datosExistentes', 'Datos existentes en el sistema#EU', 0, '3', sysdate, 0, '19');
@@ -370,3 +370,44 @@ update gen_recursos set descripcion = 'Validación de datos' where idrecurso = 'p
 commit;
 
 -- Ejecutados en Integracion por FMS el 26/09/2018 a las 09:30
+CREATE OR REPLACE TRIGGER "PYS_PRODUCTOSSOLICITADOS_AI"
+AFTER INSERT
+ON pys_productossolicitados
+REFERENCING NEW AS NEW OLD AS OLD
+FOR EACH ROW
+Declare
+  v_Escertificado          Number;
+
+Begin
+
+  --Si el producto es de Tipo Certificado insertamos un registro en CER_SOLICITUDCERTIFICADOS:
+  Select Count(*)
+    Into v_Escertificado
+    From Pys_Productosinstitucion Pi
+   Where Pi.Idinstitucion = :New.Idinstitucion
+     And Pi.Idtipoproducto = :New.Idtipoproducto
+     And Pi.Idproducto = :New.Idproducto
+     And Pi.Idproductoinstitucion = :New.Idproductoinstitucion
+     And Pi.Tipocertificado = 'C';
+
+  If (v_Escertificado > 0) Then
+
+    For i In 1 .. :New.Cantidad Loop
+      Insert Into Cer_Solicitudcertificados
+        (Idinstitucion, Idsolicitud, Fechasolicitud, Idestadosolicitudcertificado,
+         Idinstitucion_Sol, Idinstitucionorigen, Idinstituciondestino, Idinstitucioncolegiacion,
+         Idpersona_Des, Idpersona_Dir, Iddireccion_Dir, Idtipoenvios, Ppn_Idtipoproducto,
+         Ppn_Idproductoinstitucion, Ppn_Idproducto, Idestadocertificado, Fechaestado,
+         Fechaemisioncertificado, Fechamodificacion, Usumodificacion, Idpeticionproducto,
+         Idmetodosolicitud, Aceptacesionmutualidad, Fechacreacion, Usucreacion)
+      Values
+        (:New.Idinstitucion, Seq_Solicitudcertificados.Nextval, :New.Fecharecepcionsolicitud, 1,
+         :New.Idinstitucion, :New.Idinstitucionorigen, :New.Idinstitucioncolegiacion,
+         :New.Idinstitucioncolegiacion, :New.Idpersona, :New.Idpersona, :New.Iddireccion,
+         :New.Idtipoenvios, :New.Idtipoproducto, :New.Idproductoinstitucion, :New.Idproducto, 1,
+         Sysdate, Null, :New.Fechamodificacion, :New.Usumodificacion, :New.Idpeticion,
+         :New.Metodorecepcionsolicitud, :New.Aceptacesionmutualidad, Sysdate, :New.Usumodificacion);
+    End Loop;
+
+  End If;
+End Pys_Productossolicitados_Ai;
