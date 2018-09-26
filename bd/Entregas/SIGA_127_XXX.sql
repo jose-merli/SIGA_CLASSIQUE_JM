@@ -361,8 +361,6 @@ PKG_SIGA_REGULARIZACION_SJCS
 
 -- 127_012
 
--- Ejecutados en Integracion por FMS el 26/09/2018 a las 09:30
-
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('certificados.solicitudes.literal.datosExistentes', 'Datos existentes en el sistema', 0, '1', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('certificados.solicitudes.literal.datosExistentes', 'Datos existentes en el sistema#CA', 0, '2', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('certificados.solicitudes.literal.datosExistentes', 'Datos existentes en el sistema#EU', 0, '3', sysdate, 0, '19');
@@ -370,3 +368,5 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 update gen_recursos set descripcion = 'Datos solicitud' where idrecurso = 'pestana.certificados.datosCertificado';
 update gen_recursos set descripcion = 'Validación de datos' where idrecurso = 'pestana.certificados.solicitudOriginal';
 commit;
+
+-- Ejecutados en Integracion por FMS el 26/09/2018 a las 09:30
