@@ -2075,8 +2075,8 @@ function jQueryLoaded(){
 		});
 		// TAG SELECT END
 		
-		document.body.addEventListener("mouseup", function(e)
-                {
+		jQuery("body").mouseup(function(e) {
+        {
               var subject = document.getElementById("tcal"); 
                           
               if(closestById(e.target,"tcal") == null)
@@ -2084,9 +2084,9 @@ function jQueryLoaded(){
                 if(subject!=null)subject.style.visibility = "hidden";
                 var allInputs = document.getElementsByClassName("tcal");
                 for(var i=0; i <allInputs.length;i++)
-                          {
-                                    allInputs[i].className.replace("tcalActive","");
-                          }
+	              {
+	                        allInputs[i].className.replace("tcalActive","");
+	              }
               }
           });
       }); // READY
