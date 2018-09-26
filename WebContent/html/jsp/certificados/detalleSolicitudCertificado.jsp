@@ -1017,13 +1017,10 @@
 
 					<%
 						if (!esCompatibleConCertificadosExistentes) {
-							if (!modificarSolicitud.equals("1") || (idEstadoSolicitud.equals("" + CerEstadoSoliCertifiAdm.C_ESTADO_SOL_FINALIZADO))) {
-								sReadOnly = "true";
-							}
 					%>					
 					<tr>
 						<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.motivo" />&nbsp;(*)</td>
-						<td colspan="3"><siga:Select id="idMotivoSolicitud" queryId="getMotivosSolicitud" queryParamId="idmotivosolicitud" params="<%=paramidMotivoSolicitud%>" selectedIds="<%=motivoSolicitudSel%>" readonly="<%=sReadOnly%>" width="100%"/></td>
+						<td colspan="3"><siga:Select id="idMotivoSolicitud" queryId="getMotivosSolicitud" queryParamId="idmotivosolicitud" params="<%=paramidMotivoSolicitud%>" selectedIds="<%=motivoSolicitudSel%>" readonly="<%=stLectura%>" width="100%"/></td>
 					</tr>
 					<%
 						}
