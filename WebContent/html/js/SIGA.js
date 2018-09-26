@@ -2076,22 +2076,50 @@ function jQueryLoaded(){
 		// TAG SELECT END
 		
 		document.body.addEventListener("mouseup", function(e)
-				{
-			        var subject = document.getElementById("tcal"); 
-					
-			        if(closestById(e.target,"tcal") == null)
-			        {
-			        	if(subject!=null)subject.style.visibility = "hidden";
-			        	var allInputs = document.getElementsByClassName("tcal");
-			        	for(var i=0; i <allInputs.length;i++)
-		    			{
-		    				allInputs[i].classList.remove('tcalActive');
-		    			}
-			        }
-			    });
-			}); // READY
-			
-		} // FIN JQUERY LOADED
+                {
+              var subject = document.getElementById("tcal"); 
+                          
+              if(closestById(e.target,"tcal") == null)
+              {
+                if(subject!=null)subject.style.visibility = "hidden";
+                var allInputs = document.getElementsByClassName("tcal");
+                for(var i=0; i <allInputs.length;i++)
+                          {
+                                    allInputs[i].className.replace("tcalActive","");
+                          }
+              }
+          });
+      }); // READY
+                          
+} // FIN JQUERY LOADED
+
+/**
+* Get the closest element of a given element by id
+*
+* Take an element (the first param), and traverse the DOM upward from it
+* until it hits the element with a given class name (second parameter).
+* This mimics jQuery's `.closest()`.
+*
+* @param  {element} el    The element to start from
+* @param  {string}  id    The id name
+* @return {element}       The closest element
+*/
+var closestById = function(el, id) {
+// Traverse the DOM up with a while loop
+while (el.id != id) {
+    // Increment the loop to the parent node
+    el = el.parentNode;
+    if (!el) {
+        return null;
+    }
+}
+// At this point, the while loop has stopped and `el` represents the element that has
+// the class you specified in the second parameter of the function `clazz`
+
+// Then return the matched element
+return el;
+}
+
 
 function tagSelectMostrarDesplegable(id, mostrar){
 	//var tagSelectDiv = jQuery(this).parent().parent();
