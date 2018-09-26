@@ -164,18 +164,21 @@ public class SIGACerSolicitudOriginalAction extends MasterAction {
 			String paisInteresado = "", domicilioInteresado = "", cpostalInteresado = "", provInteresado = "", poblInteresado = "";
 			String estadoInc = "", residenteInc = "";
 			
-			String sql = "SELECT col.numsolicitudcolegiacion, CD.NOMBRE, CD.APELLIDOS1, CD.APELLIDOS2,";
+			String sql = "SELECT CD.NOMBRE, CD.APELLIDOS1, CD.APELLIDOS2,";
 			sql = sql + " CD.Nifcif, CD.FECHANACIMIENTO, dir.telefono1, dir.movil, dir.fax1,";
 			sql = sql + " dir.correoelectronico, dir.domicilio, dir.codigopostal, dir.idpais,";
 			sql = sql + " (select nombre from cen_provincias where idprovincia = dir.idprovincia) as provincia,";
 			sql = sql + " (select nombre from cen_poblaciones where idpoblacion = dir.idpoblacion) as poblacion,";
-			sql = sql + " col.situacionejercicio, col.situacionresidente";
-			sql = sql + " FROM cer_solicitudcertificados cer, cen_persona CD, CEN_COLEGIADO COL, CEN_DIRECCIONES DIR";
-			sql = sql + " WHERE cer.idpersona_des= cd.idpersona and cer.iddireccion_dir = dir.iddireccion";
-			sql = sql + " and cer.idpersona_dir = dir.idpersona";
-			sql = sql + " and cer.idinstitucion = dir.idinstitucion";
-			sql = sql + " and CD.IDPERSONA = COL.IDPERSONA";
-			sql = sql + " and cer.idsolicitud = " + idSolicitud;
+			sql = sql + " NVL(col.numsolicitudcolegiacion, cens.numsolicitudcolegiacion) AS numsolicitudcolegiacion,";
+			sql = sql + " NVL(NVL(col.situacionejercicio, cens.idecomcensosituacionejer),10) AS idecomcensosituacionejer,";
+			sql = sql + " NVL(NVL(col.situacionresidente, cens.residente),0) AS residente";
+			sql = sql + " FROM cer_solicitudcertificados cer join cen_persona CD ON cer.idpersona_des = cd.idpersona";
+			sql = sql + " join CEN_DIRECCIONES DIR ON cer.iddireccion_dir = dir.iddireccion and cer.idpersona_dir = dir.idpersona";
+			sql = sql + " and cer.idinstitucion = dir.idinstitucion left outer join CEN_COLEGIADO COL ON CD.IDPERSONA = COL.IDPERSONA";
+			sql = sql + " left outer join (SELECT ncol.idpersona, cd.numsolicitudcolegiacion, cd.idecomcensosituacionejer,";
+			sql = sql + " cd.residente, cd.nombre, cd.apellido1, cd.apellido2, cd.idcensotipoidentificacion, cd.numdocumento, cd.fechanacimiento";
+			sql = sql + "  FROM ECOM_CEN_DATOS CD, ECOM_CEN_NOCOLEGIADO NCOL WHERE CD.IDCENSODATOS = NCOL.IDCENSODATOS) cens";
+			sql = sql + " on cer.idpersona_des = cens.idpersona WHERE cer.idsolicitud = " + idSolicitud;
 			sql = sql + " ORDER BY CD.FECHAMODIFICACION DESC";
 			
 			CenColegiadoAdm cenColegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));

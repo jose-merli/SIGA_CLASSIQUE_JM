@@ -420,7 +420,7 @@
 					<td>
 						<table class="tablaCampos" align="center" style="border: none; width: auto;">
 							<tr>
-								<td class="labelText"><siga:Idioma key="pestana.certificados.solicitudOriginal"/>&nbsp;</td>
+								<td class="labelText"><siga:Idioma key="certificados.solicitudes.literal.datosExistentes"/>&nbsp;</td>
 								<td colspan="2">&nbsp;</td>
 							</tr>
 							
