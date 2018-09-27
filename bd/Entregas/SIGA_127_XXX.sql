@@ -404,7 +404,7 @@ Begin
          Idpersona_Des, Idpersona_Dir, Iddireccion_Dir, Idtipoenvios, Ppn_Idtipoproducto,
          Ppn_Idproductoinstitucion, Ppn_Idproducto, Idestadocertificado, Fechaestado,
          Fechaemisioncertificado, Fechamodificacion, Usumodificacion, Idpeticionproducto,
-         Idmetodosolicitud, Aceptacesionmutualidad, Fechacreacion, Usucreacion, Comentarios, fechacobro)
+         Idmetodosolicitud, Aceptacesionmutualidad, Fechacreacion, Usucreacion, COMENTARIO, fechacobro)
       Values
         (:New.Idinstitucion, Seq_Solicitudcertificados.Nextval, :New.Fecharecepcionsolicitud, 1,
          :New.Idinstitucion, :New.Idinstitucionorigen, :New.Idinstitucioncolegiacion,
