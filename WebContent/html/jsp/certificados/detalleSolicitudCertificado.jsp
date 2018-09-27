@@ -529,7 +529,7 @@
 		    }
 		  if (CerDetalleSolicitudForm.idInstitucionDestino){	
 		  <%if (tipoCertificado != null && tipoCertificado.equals("C")) {%> 
-		       if (CerDetalleSolicitudForm.checkCobro.checked){
+		       if (CerDetalleSolicitudForm.checkCobro.checked && !bSolicitudTelematica){
 			         CerDetalleSolicitudForm.idInstitucionDestino.value="";
 			  }else{
 			  	if(idInstitucion==2000 || idInstitucion.substring(0,2)==30){
@@ -685,7 +685,7 @@
 					jQuery("#siguienteEstado").val("Finalizado");
 				<%}%>
 			} else {
-				<%if (tipoCertificado != null && tipoCertificado.equals("C")) {%> 
+				<%if (tipoCertificado != null && tipoCertificado.equals("C") && !bSolicitudTelematica) {%> 
 					CerDetalleSolicitudForm.idInstitucionDestino.value="";
 					jQuery("#idInstitucionDestino").attr("disabled","disabled");
  				<%}%>	  

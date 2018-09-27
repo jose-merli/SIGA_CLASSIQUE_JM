@@ -381,10 +381,12 @@ Declare
 Begin
 
   --Si hay observaciones significa que está pagado porque contienen el número de pago
-  IF (:New.Observaciones <> '') THEN
-    SELECT SYSDATE INTO v_FechaCobro FROM DUAL;
+  IF(:New.Observaciones IS NOT NULL) THEN
+    IF (Length(:New.Observaciones) > 0) THEN
+      SELECT SYSDATE INTO v_FechaCobro FROM DUAL;
+    END IF;
   END IF;
-  
+
   --Si el producto es de Tipo Certificado insertamos un registro en CER_SOLICITUDCERTIFICADOS:
   Select Count(*)
     Into v_Escertificado
