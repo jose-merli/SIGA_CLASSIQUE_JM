@@ -2082,16 +2082,26 @@ function jQueryLoaded(){
               if(closestById(e.target,"tcal") == null)
               {
                 if(subject!=null)subject.style.visibility = "hidden";
-                var allInputs = document.getElementsByClassName("tcal");
+                var allInputs = document.getElementsByClassName_new("tcal");
                 for(var i=0; i <allInputs.length;i++)
 	              {
-	                        allInputs[i].className.replace("tcalActive","");
+                	allInputs[i].className = allInputs[i].className.replace("tcalActive","");
 	              }
               }
           });
       }); // READY
                           
 } // FIN JQUERY LOADED
+
+
+document.getElementsByClassName_new = function(cl) {
+  var retnode = [];
+  var elem = this.getElementsByTagName('*');
+  for (var i = 0; i < elem.length; i++) {
+    if((' ' + elem[i].className + ' ').indexOf(' ' + cl + ' ') > -1) retnode.push(elem[i]);
+  }
+  return retnode;
+};
 
 /**
 * Get the closest element of a given element by id
