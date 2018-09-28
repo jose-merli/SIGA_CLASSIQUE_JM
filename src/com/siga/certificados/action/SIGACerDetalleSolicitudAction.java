@@ -1971,7 +1971,7 @@ public class SIGACerDetalleSolicitudAction extends MasterAction {
 			} else {
 				bean.setIdInstitucionOrigen(null);
 			}
-
+			
 			if (!form.getIdInstitucionColegiacion().trim().equals("")) {
 				bean.setIdInstitucionColegiacion(new Integer(form.getIdInstitucionColegiacion()));
 			} else {
@@ -1981,7 +1981,8 @@ public class SIGACerDetalleSolicitudAction extends MasterAction {
 			if (!form.getIdInstitucionDestino().trim().equals("")) {
 				bean.setIdInstitucionDestino(new Integer(form.getIdInstitucionDestino()));
 			} else {
-				bean.setIdInstitucionDestino(null);
+				if(!form.getMetodoSolicitud().equals("5"))
+					bean.setIdInstitucionDestino(null);
 			}
 			if (!form.getComentario().trim().equals("")) {
 				bean.setComentario(form.getComentario());
