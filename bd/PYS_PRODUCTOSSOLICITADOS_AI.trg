@@ -5,17 +5,15 @@ REFERENCING NEW AS NEW OLD AS OLD
 FOR EACH ROW
 Declare
   v_Escertificado          Number;
-  v_Instituciondestino     Pys_Productossolicitados.Idinstitucionorigen%Type;
-
+  v_FechaCobro     Date;
 Begin
 
-  --Si la institucion es CGAE o Consejo metemos como Institucion Destino el mismo que el Origen
-  -- Si la institucion es un colegio dejamos la institucion destino a nulo
-  If (:New.Idinstitucion = 2000 Or Substr(:New.Idinstitucion, 1, 2) = 30) Then
-    v_Instituciondestino := :New.Idinstitucionorigen;
-  Else
-    v_Instituciondestino := Null;
-  End If;
+  --Si hay observaciones significa que está pagado porque contienen el número de pago
+  IF(:New.Observaciones IS NOT NULL) THEN
+    IF (Length(:New.Observaciones) > 0) THEN
+      SELECT SYSDATE INTO v_FechaCobro FROM DUAL;
+    END IF;
+  END IF;
 
   --Si el producto es de Tipo Certificado insertamos un registro en CER_SOLICITUDCERTIFICADOS:
   Select Count(*)
@@ -36,14 +34,14 @@ Begin
          Idpersona_Des, Idpersona_Dir, Iddireccion_Dir, Idtipoenvios, Ppn_Idtipoproducto,
          Ppn_Idproductoinstitucion, Ppn_Idproducto, Idestadocertificado, Fechaestado,
          Fechaemisioncertificado, Fechamodificacion, Usumodificacion, Idpeticionproducto,
-         Idmetodosolicitud, Aceptacesionmutualidad, Fechacreacion, Usucreacion)
+         Idmetodosolicitud, Aceptacesionmutualidad, Fechacreacion, Usucreacion, COMENTARIO, fechacobro)
       Values
         (:New.Idinstitucion, Seq_Solicitudcertificados.Nextval, :New.Fecharecepcionsolicitud, 1,
-         :New.Idinstitucion, :New.Idinstitucionorigen, v_Instituciondestino,
+         :New.Idinstitucion, :New.Idinstitucionorigen, :New.Idinstitucioncolegiacion,
          :New.Idinstitucioncolegiacion, :New.Idpersona, :New.Idpersona, :New.Iddireccion,
          :New.Idtipoenvios, :New.Idtipoproducto, :New.Idproductoinstitucion, :New.Idproducto, 1,
          Sysdate, Null, :New.Fechamodificacion, :New.Usumodificacion, :New.Idpeticion,
-         :New.Metodorecepcionsolicitud, :New.Aceptacesionmutualidad, Sysdate, :New.Usumodificacion);
+         :New.Metodorecepcionsolicitud, :New.Aceptacesionmutualidad, Sysdate, :New.Usumodificacion, :New.Observaciones, v_FechaCobro);
     End Loop;
 
   End If;
