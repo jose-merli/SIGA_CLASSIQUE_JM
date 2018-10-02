@@ -524,6 +524,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 
 			Hashtable hashDesigna =  (Hashtable)(designaAdm.getConsultaDesigna(hashDatosDesigna, request)).get(0);
 			
+			
 			//Se muestra todas las Actuaciones de la designa.
 		    Vector vAct = designaAdm.getConsultaActuacion(hashDatosDesigna, usr);
 		    Hashtable hashActuacion = new Hashtable();
@@ -551,6 +552,16 @@ public class ActuacionesDesignasAction extends MasterAction {
 			request.setAttribute("hashActuacionActual",hashActuacion);
 			ses.setAttribute("hashActuacionAntigua",actuacionAntigua);
 			
+			
+			String factConvenio=  "0";
+			if(hashActuacion.get(ScsActuacionDesignaBean.C_FACTCONVENIO)!=null)
+				factConvenio = (String)hashActuacion.get(ScsActuacionDesignaBean.C_FACTCONVENIO);
+			else if(hashDesigna.get(ScsDesignaBean.C_FACTCONVENIO)!=null)
+				factConvenio = (String)hashDesigna.get(ScsDesignaBean.C_FACTCONVENIO);
+			
+			miform.setConvenio(factConvenio);
+			
+			
 			String talonario="";
 			if(hashActuacion.get("TALONARIO")!=null){
 				talonario = ((String)hashActuacion.get("TALONARIO"));
@@ -562,6 +573,8 @@ public class ActuacionesDesignasAction extends MasterAction {
 		    	talon = ((String)hashActuacion.get("TALON"));
 		    }
 		    miform.setTalon(talon);
+		    
+		    
 			
 		} catch(Exception e){
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
@@ -632,6 +645,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 								" ejgdesigna.anioejg anioejg, "+
 								" ejgdesigna.idtipoejg idtipoejg, "+
 							    " ejgdesigna.numeroejg numeroejg"+
+							    " ,des.FACTCONVENIO "+
 								" FROM scs_designa des, cen_colegiado col, cen_persona per, scs_designasletrado deslet, scs_turno tur,  scs_ejgdesigna ejgdesigna"+
 								" WHERE deslet.idinstitucion = des.idinstitucion"+
 								" and deslet.anio = des.anio"+
@@ -724,6 +738,11 @@ public class ActuacionesDesignasAction extends MasterAction {
 			
 			request.setAttribute("hashDesigna",designaActual);
 			request.setAttribute("MODO_ANTERIOR","NUEVO");
+			String factConvenio=  "0";
+			if(designaActual.get(ScsDesignaBean.C_FACTCONVENIO)!=null)
+				factConvenio = (String)designaActual.get(ScsDesignaBean.C_FACTCONVENIO);
+			miform.setConvenio(factConvenio);
+			
 		} catch(Exception e){
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 		}
@@ -788,6 +807,10 @@ public class ActuacionesDesignasAction extends MasterAction {
 			
 			
 			Hashtable hash = prepararInsert (miform.getDatos());
+			String factConvenio=  "0";
+			if(miform.getConvenio()!=null && !miform.getConvenio().equals(""))
+				factConvenio = miform.getConvenio();
+			hash.put(ScsActuacionDesignaBean.C_FACTCONVENIO,factConvenio);
 			hash.put(ScsActuacionAsistenciaBean.C_FECHAMODIFICACION,"SYSDATE");
 			hash.put(ScsActuacionAsistenciaBean.C_USUMODIFICACION,usr.getUserName());
 			hash.put(ScsActuacionAsistenciaBean.C_FECHACREACION,"SYSDATE");
@@ -1161,7 +1184,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 		}catch(Exception e){
 			UtilidadesHash.set(hashSal, ScsActuacionDesignaBean.C_OBSERVACIONESJUSTIFICACION , "");
 		}
-		
+		UtilidadesHash.set(hashSal, ScsActuacionDesignaBean.C_FACTCONVENIO , UtilidadesHash.getString(hashEnt, "CONVENIO"));
 		return hashSal;
 	}
 	
@@ -1204,7 +1227,10 @@ public class ActuacionesDesignasAction extends MasterAction {
 							ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO,			ScsActuacionDesignaBean.C_IDPRETENSION,
 		    				ScsActuacionDesignaBean.C_TALONARIO,					ScsActuacionDesignaBean.C_TALON,
 		    				ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO,			ScsActuacionDesignaBean.C_NIG,
-		    				ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO,ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO};
+		    				ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO,ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO
+		    				,ScsActuacionDesignaBean.C_FACTCONVENIO
+		    				
+		};
 		
 		ScsActuacionDesignaAdm actuacionDesignaAdm = new ScsActuacionDesignaAdm(this.getUserBean(request));
 		boolean ok = false;
@@ -1439,6 +1465,9 @@ public class ActuacionesDesignasAction extends MasterAction {
 					actuacionModificada.put(ScsActuacionDesignaBean.C_VALIDADA, "0");
 			}
 			
+			if (miform.getConvenio() != null) {
+				actuacionModificada.put(ScsActuacionDesignaBean.C_FACTCONVENIO,miform.getConvenio() );
+			}
 			
 			//INC_3094_SIGA
 			//Obtener el colegiado designdo activo en la fecha de la actuacion
@@ -1527,6 +1556,8 @@ public class ActuacionesDesignasAction extends MasterAction {
 				tx.begin();
 			//	actuacionDesignaAdm.update(actuacionModificada, actuacionAntigua);
 			//	tx.commit();
+				
+				
 				actuacionDesignaAdm.updateDirect(actuacionModificada,clavesActuaciones,campos);
 				tx.commit();
 				String mensaje = cambiaLetradoDesigna == true ? "gratuita.designas.actuaciones.exitoConCambioLetrado" : "messages.updated.success";
@@ -1548,7 +1579,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 		actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROASUNTO, miform.getNactuacion());
 		
 		String clavesActuaciones[] = { ScsActuacionDesignaBean.C_IDINSTITUCION, ScsActuacionDesignaBean.C_IDTURNO, ScsActuacionDesignaBean.C_ANIO, ScsActuacionDesignaBean.C_NUMERO, ScsActuacionAsistenciaBean.C_NUMEROASUNTO };
-		String campos[] = { ScsActuacionDesignaBean.C_FECHAMODIFICACION, ScsActuacionDesignaBean.C_USUMODIFICACION, ScsActuacionDesignaBean.C_FECHA, ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, ScsActuacionDesignaBean.C_NIG, ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO };
+		String campos[] = { ScsActuacionDesignaBean.C_FECHAMODIFICACION, ScsActuacionDesignaBean.C_USUMODIFICACION, ScsActuacionDesignaBean.C_FECHA, ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, ScsActuacionDesignaBean.C_NIG, ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, ScsActuacionDesignaBean.C_FACTCONVENIO  };
 
 		ScsActuacionDesignaAdm actuacionDesignaAdm = new ScsActuacionDesignaAdm(this.getUserBean(request));
 		String forward = null;
@@ -1581,7 +1612,7 @@ public class ActuacionesDesignasAction extends MasterAction {
 			//Seteamos la fecha
 			actuacionModificada.put(ScsActuacionDesignaBean.C_FECHA, GstDate.getApplicationFormatDate("", (String) actuacionModificada.get("FECHAACTUACION")));
 			actuacionModificada.put(ScsActuacionDesignaBean.C_IDINSTITUCION, (String) usr.getLocation());
-
+			
 			String numeroProcedimiento = miform.getNumeroProcedimiento();
 			if (numeroProcedimiento != null && !numeroProcedimiento.equals("")) {
 				actuacionModificada.put(ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO, numeroProcedimiento);
@@ -1600,6 +1631,10 @@ public class ActuacionesDesignasAction extends MasterAction {
 				actuacionModificada.put(ScsActuacionDesignaBean.C_NIG, nig);
 			} else {
 				actuacionModificada.put(ScsActuacionDesignaBean.C_NIG, "");
+			}
+			
+			if (miform.getConvenio() != null) {
+				actuacionModificada.put(ScsActuacionDesignaBean.C_FACTCONVENIO,miform.getConvenio() );
 			}
 			
 			tx.begin();

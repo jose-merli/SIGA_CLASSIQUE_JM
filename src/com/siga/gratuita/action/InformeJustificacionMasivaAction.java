@@ -483,6 +483,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 						UtilidadesHash.set(hashActuacion, ScsActuacionDesignaBean.C_IDPRETENSION, scsDesignaBean.getIdPretension()!=null?scsDesignaBean.getIdPretension().toString():"");
 						
 						
+						
 						if(user.getLocation().equalsIgnoreCase("2005") || user.getLocation().equalsIgnoreCase("2018") 
 								|| user.getLocation().equalsIgnoreCase("2023") || user.getLocation().equalsIgnoreCase("2051") || user.getLocation().equalsIgnoreCase("2068")){
 							// Para Valencia:
@@ -499,6 +500,11 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 							List<String> ocultarClaveList = getListCamposOcultarHistorico();
 							hashActuacion.put("fks", fksActuacionMap);
 							hashActuacion.put("scsDesignaBean", scsDesignaBean);
+							String factConvenio=  "0";
+							if(scsDesignaBean.getFactConvenio()!=null)
+								factConvenio = scsDesignaBean.getFactConvenio();
+							hashActuacion.put(ScsActuacionDesignaBean.C_FACTCONVENIO,factConvenio);
+							
 							actuacionDesginaAdm.insertHistorico(new Long(idPersona), hashActuacion,ocultarClaveList,ClsConstants.TIPO_CAMBIO_HISTORICO_DESIGNACIONJUSTIFICACION);
 						
 					}else{
@@ -579,7 +585,9 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 							
 						}
 						
-							actuacionDesginaAdm.updateDirect(hashActuacion,clavesActuacion,camposList.toArray(new String[camposList.size()]));
+						
+						
+						actuacionDesginaAdm.updateDirect(hashActuacion,clavesActuacion,camposList.toArray(new String[camposList.size()]));
 						
 						
 						

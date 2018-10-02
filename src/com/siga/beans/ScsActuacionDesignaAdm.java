@@ -69,7 +69,8 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 							ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO,			ScsActuacionDesignaBean.C_IDPRETENSION,
 		    				ScsActuacionDesignaBean.C_TALONARIO,					ScsActuacionDesignaBean.C_TALON,
 		    				ScsActuacionDesignaBean.C_NUMEROPROCEDIMIENTO,			ScsActuacionDesignaBean.C_NIG,
-		    				ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO,ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO};
+		    				ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO,ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO,
+		    				ScsActuacionDesignaBean.C_FACTCONVENIO};
 		return campos;
 	}
 	/** Funcion getClavesBean ()
@@ -126,6 +127,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 		    bean.setNig(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_NIG));
 		    bean.setIdMotivoCambio(UtilidadesHash.getInteger(hash, ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO));
 		    bean.setAnioProcedimiento(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO));
+		    bean.setFactConvenio(UtilidadesHash.getString(hash, ScsActuacionDesignaBean.C_FACTCONVENIO));
 		    
 		}
 		catch(Exception e){
@@ -181,6 +183,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_NIG,b.getNig());
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_ID_MOTIVO_CAMBIO, b.getIdMotivoCambio()!=null?String.valueOf(b.getIdMotivoCambio()):"");
 			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_ANIOPROCEDIMIENTO, String.valueOf(b.getAnioProcedimiento()));
+			UtilidadesHash.set(hash, ScsActuacionDesignaBean.C_FACTCONVENIO,b.getFactConvenio());
 			
 		}
 		catch (Exception e){
@@ -488,6 +491,8 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 								    " ejgdesigna.anioejg anioejg, "+
 								    " ejgdesigna.idtipoejg idtipoejg, "+
 							        " ejgdesigna.numeroejg numeroejg"+
+							        " ,des.FACTCONVENIO "+
+							        
 									" FROM scs_designa des, cen_colegiado col, cen_persona per,scs_turno tur, scs_ejgdesigna ejgdesigna "+
 									" WHERE  per.idpersona = F_SIGA_GETIDLETRADO_DESIGNA("+entrada.get("IDINSTITUCION")+","+ entrada.get("IDTURNO")+","+ entrada.get("ANIO")+","+entrada.get("NUMERO")+")"+
 									" and col.idpersona = per.idpersona"+
@@ -551,6 +556,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 								" from "+FcsFacturacionJGBean.T_NOMBRETABLA+
 							    " where "+FcsFacturacionJGBean.C_IDINSTITUCION+" = "+entrada.get("IDINSTITUCION")+
 							    "   and "+FcsFacturacionJGBean.T_NOMBRETABLA+"."+FcsFacturacionJGBean.C_IDFACTURACION+" = act."+ScsActuacionDesignaBean.C_IDFACTURACION+") nombrefacturacion"+
+							   	" , act.FACTCONVENIO "+
 								" FROM SCS_ACTUACIONDESIGNA act, scs_designa des, scs_procedimientos pro , scs_turno tur, scs_acreditacion acred, scs_juzgado juzgado, cen_colegiado col, cen_persona per"+
 							    " ,scs_acreditacionprocedimiento ap "+
 								" WHERE act.IDINSTITUCION =  "+  entrada.get("IDINSTITUCION")+
@@ -593,7 +599,7 @@ public class ScsActuacionDesignaAdm extends MasterBeanAdministrador {
 							    " Numeroasunto,Acuerdoextrajudicial,Anulacion,Idprocedimiento,Lugar,Observacionesjustificacion, "+
 							    " Observaciones,Fechajustificacion,Facturado,Pagado,Idfacturacion,Validada,Idjuzgado,Idinstitucion_Juzg, "+
 							    " Idcomisaria,Idinstitucion_Comis,Idprision,Idinstitucion_Pris,Idacreditacion,Idinstitucion_Proc, "+
-							    " Idpersonacolegiado,Idpretension,Talonario,Talon,NUMEROPROCEDIMIENTO,ANIOPROCEDIMIENTO "+
+							    " Idpersonacolegiado,Idpretension,Talonario,Talon,NUMEROPROCEDIMIENTO,ANIOPROCEDIMIENTO,FACTCONVENIO "+
 								" From Scs_Actuaciondesigna " +
 								" WHERE IDINSTITUCION =  "+ entrada.get("IDINSTITUCION")+
 								" and IDTURNO = "+entrada.get("IDTURNO")+

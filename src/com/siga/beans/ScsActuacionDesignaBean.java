@@ -66,6 +66,7 @@ public class ScsActuacionDesignaBean extends MasterBean{
 	static public final String  C_USUCREACION         	      = "USUCREACION";
 	
 	static public final String  C_IDMOVIMIENTO                = "IDMOVIMIENTO";
+	static public final String  C_FACTCONVENIO                = "FACTCONVENIO";
 	
 	
 	
@@ -106,7 +107,14 @@ public class ScsActuacionDesignaBean extends MasterBean{
     private String   nig;
     private Integer  idMotivoCambio;
     private Integer idMovimiento;
+    private String factConvenio;
 	
+	public String getFactConvenio() {
+		return factConvenio;
+	}
+	public void setFactConvenio(String factConvenio) {
+		this.factConvenio = factConvenio;
+	}
     /**
 	 * @return Returns the getTalonario.
 	 */

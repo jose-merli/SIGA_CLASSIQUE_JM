@@ -1081,12 +1081,38 @@
 								}
 							%>
 						</td>
+						
+						<% if (isColegioAlcala){ %>
+								<td class="labelText">Tipo certificación</td>
+								<td class="labelTextValor">
+								
+								<% if (!modo.equalsIgnoreCase("ver") && (nombreFacturacion == null || nombreFacturacion.equals("")) && !usr.isLetrado()) { %>
+										<html:select name="ActuacionesDesignasForm" styleId="convenio" styleClass="boxCombo" style="width:150px;" property="convenio" >
+											<html:option value=''>&nbsp;</html:option>
+											<html:option value='0'>Subvención J.G.</html:option>		
+											<html:option value='1'>Convenio T.O.</html:option>						
+										</html:select>
+									<% } else { %>
+									<html:hidden name="ActuacionesDesignasForm" styleId="convenio"  property="convenio" />
+										<c:choose>
+											<c:when test="${ActuacionesDesignasForm.convenio=='0'}">Subvención J.G.</c:when>
+											<c:when test="${ActuacionesDesignasForm.convenio=='1'}">Convenio T.O.</c:when>
+											<c:otherwise>&nbsp;</c:otherwise>
+										</c:choose>
+										 
+									<% } %>
+								</td>
+							
+							<%}else{ %>
+								<html:hidden name="ActuacionesDesignasForm" styleId="convenio"  property="convenio" />
+								<td colspan = "2"></td>
+							<%} %>
 					</tr>
 					<tr>
 						<td class="labelText" width="130px" style="vertical-align: middle;">
 							<siga:Idioma key="gratuita.altaGuardia.literal.observaciones"/>
 						</td>
-						<td colspan="3">
+						<td colspan="5">
 							<%
 								if (!modoAnterior.equalsIgnoreCase("VER") && !usr.isLetrado() && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))) {
 							%>

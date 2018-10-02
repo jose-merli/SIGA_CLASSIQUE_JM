@@ -55,6 +55,7 @@ public class ActuacionesDesignasForm extends MasterForm {
 	
 	private String idfacturacion;
 	private String facturado;
+	private String convenio;
 	
 	public boolean getFichaColegial() {
 		return fichaColegial;
@@ -539,6 +540,12 @@ public class ActuacionesDesignasForm extends MasterForm {
 	}
 	public void setFacturado(String facturado) {
 		this.facturado = facturado;
+	}
+	public String getConvenio() {
+		return convenio;
+	}
+	public void setConvenio(String convenio) {
+		this.convenio = convenio;
 	}
 
 }

@@ -376,3 +376,16 @@ TRIGGER PYS_PRODUCTOSSOLICITADOS_AI
 alter table PYS_PRODUCTOSSOLICITADOS add OBSERVACIONES varchar2(200);
 
 -- Ejecutados en Integracion por FMS el 26/09/2018 a las 16:30
+
+-- Add/modify columns 
+alter table SCS_ACTUACIONDESIGNA add FACTCONVENIO NUMBER(1) default 0;
+
+update scs_actuaciondesigna a
+   set a.factconvenio = (select d.factconvenio
+                           from scs_designa d
+                          where d.idinstitucion = a.idinstitucion
+                            and d.idturno = a.idturno
+                            and d.anio = a.anio
+                            and d.numero = a.numero)
+  where a.idinstitucion = 2003;
+  

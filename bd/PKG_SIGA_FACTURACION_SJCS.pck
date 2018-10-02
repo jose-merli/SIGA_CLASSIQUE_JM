@@ -3852,7 +3852,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
          And Nvl(Scs_Actuaciondesigna.Validada, '0') = '1'
          And Nvl(Scs_Actuaciondesigna.Anulacion, '0') = '0'
          And Scs_Actuaciondesigna.Idpersonacolegiado Is Not Null
-         And nvl(Scs_Designa.factconvenio,0) = nvl(p_factconvenio,nvl(Scs_Designa.factconvenio,0))
+         And nvl(Scs_Actuaciondesigna.factconvenio,0) = nvl(p_factconvenio,nvl(Scs_Actuaciondesigna.factconvenio,0))
          ;
 
   Begin
