@@ -377,6 +377,8 @@ alter table PYS_PRODUCTOSSOLICITADOS add OBSERVACIONES varchar2(200);
 
 -- Ejecutados en Integracion por FMS el 26/09/2018 a las 16:30
 
+-- 127_014
+
 -- Add/modify columns 
 alter table SCS_ACTUACIONDESIGNA add FACTCONVENIO NUMBER(1) default 0;
 
@@ -389,3 +391,5 @@ update scs_actuaciondesigna a
                             and d.numero = a.numero)
   where a.idinstitucion = 2003;
   
+create index SI_CEN_HISTORICO_FECHA on CEN_HISTORICO (fechaefectiva);
+
