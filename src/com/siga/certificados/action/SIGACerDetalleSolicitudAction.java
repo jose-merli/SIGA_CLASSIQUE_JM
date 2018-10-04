@@ -728,12 +728,11 @@ public class SIGACerDetalleSolicitudAction extends MasterAction {
 			String estadoInc = "", residenteInc = "", idInstitucionRes = ""; //, anioLicenciatura = "";
 			CenColegiadoAdm cenColegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
 			
-			String tabla ="ECOM_CEN_NOCOLEGIADO";
 			String sql = "SELECT CD.IDECOMCENSOSITUACIONEJER SITUACION, CD.RESIDENTE RESIDENTE, CD.IDINSTITUCIONRESIDENCIA IDINSTITUCIONRESIDENCIA";//, CD.ANIOLICENCIATURA ANIOLICENCIATURA";
-			sql = sql + "  FROM ECOM_CEN_DATOS CD, " + tabla + " T" + " WHERE CD.IDCENSODATOS = T.IDCENSODATOS AND T.IDPERSONA = " + beanSolicitud.getIdPersona_Des() + " ";
+			sql = sql + "  FROM CER_SOLICITUDCERTIFICADOS CER JOIN ECOM_CEN_DATOS CD ON CER.IDCENSODATOS = CD.IDCENSODATOS WHERE CER.IDSOLICITUD = " + beanSolicitud.getIdSolicitud() + " ";
 			
 			RowsContainer rowsContainer = cenColegiadoAdm.find(sql);
-			System.out.println("Consulta realizada a NOCOLEGIADO");
+			System.out.println("Consulta realizada a ECOM_CEN_DATOS");
 			System.out.println("filas encontradas: "+rowsContainer.size());
 			if (rowsContainer != null && rowsContainer.size()>0) {
 				Vector vector = rowsContainer.getAll();
@@ -749,30 +748,6 @@ public class SIGACerDetalleSolicitudAction extends MasterAction {
 						residenteInc = "NO";
 					idInstitucionRes = row.getString("IDINSTITUCIONRESIDENCIA");
 					//anioLicenciatura = row.getString("ANIOLICENCIATURA");
-				}
-			}else{//No hemos encontrado el solicitante en ECOM_CEN_NOCOLEGIADO
-				tabla ="ECOM_CEN_COLEGIADO";
-				sql = "SELECT CD.IDECOMCENSOSITUACIONEJER SITUACION, CD.RESIDENTE RESIDENTE, CD.IDINSTITUCIONRESIDENCIA IDINSTITUCIONRESIDENCIA";//, CD.ANIOLICENCIATURA ANIOLICENCIATURA";
-				sql = sql + "  FROM ECOM_CEN_DATOS CD, " + tabla + " T" + " WHERE CD.IDCENSODATOS = T.IDCENSODATOS AND T.IDPERSONA = " + beanSolicitud.getIdPersona_Des() + " ";
-				
-				rowsContainer = cenColegiadoAdm.find(sql);
-				System.out.println("Consulta realizada a COLEGIADO");
-				System.out.println("filas encontradas: "+rowsContainer.size());
-				if (rowsContainer != null) {
-					Vector vector = rowsContainer.getAll();
-					if (vector != null && vector.size() > 0) {
-						Row row = (Row) vector.get(0);
-						if(row.getString("SITUACION").equals("10"))
-							estadoInc = "No Ejerciente";
-						else
-							estadoInc = "Ejerciente";
-						if(row.getString("RESIDENTE").equals("1"))
-							residenteInc = "SI";
-						else
-							residenteInc = "NO";
-						idInstitucionRes = row.getString("IDINSTITUCIONRESIDENCIA");
-						//anioLicenciatura = row.getString("ANIOLICENCIATURA");
-					}
 				}
 			}
 			request.setAttribute("residenteInc", residenteInc);

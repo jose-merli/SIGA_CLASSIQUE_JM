@@ -404,3 +404,73 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('pys.solicitudCompra.literal.residenteen', 'Residente en#CA', 0, '2', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('pys.solicitudCompra.literal.residenteen', 'Residente en#EU', 0, '3', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('pys.solicitudCompra.literal.residenteen', 'Residente en#GL', 0, '4', sysdate, 0, '19');
+
+alter table PYS_PRODUCTOSSOLICITADOS add IDCENSODATOS NUMBER(10);
+alter table PYS_PRODUCTOSSOLICITADOS
+  add constraint FK_PRODUCTOSSOLIC_CENDATOS foreign key (IDCENSODATOS)
+  references ecom_cen_datos (IDCENSODATOS)
+  deferrable;
+
+alter table CER_SOLICITUDCERTIFICADOS add IDCENSODATOS NUMBER(10);
+ 
+alter table CER_SOLICITUDCERTIFICADOS
+  add constraint FK_CER_SOLICITUD_CENSODATOS foreign key (IDCENSODATOS)
+  references ecom_cen_datos (IDCENSODATOS)
+  deferrable;
+
+-- Modifico el trigger para añadir los nuevos campos
+CREATE OR REPLACE TRIGGER PYS_PRODUCTOSSOLICITADOS_AI
+AFTER INSERT
+ON pys_productossolicitados
+REFERENCING NEW AS NEW OLD AS OLD
+FOR EACH ROW
+Declare
+  v_Escertificado          Number;
+  v_FechaCobro     Date;
+Begin
+
+  --Si hay observaciones significa que está pagado porque contienen el número de pago
+  IF(:New.Observaciones IS NOT NULL) THEN
+    IF (Length(:New.Observaciones) > 0) THEN
+      SELECT SYSDATE INTO v_FechaCobro FROM DUAL;
+    END IF;
+  END IF;
+
+  --Si el producto es de Tipo Certificado insertamos un registro en CER_SOLICITUDCERTIFICADOS:
+  Select Count(*)
+    Into v_Escertificado
+    From Pys_Productosinstitucion Pi
+   Where Pi.Idinstitucion = :New.Idinstitucion
+     And Pi.Idtipoproducto = :New.Idtipoproducto
+     And Pi.Idproducto = :New.Idproducto
+     And Pi.Idproductoinstitucion = :New.Idproductoinstitucion
+     And Pi.Tipocertificado = 'C';
+
+  If (v_Escertificado > 0) Then
+
+    For i In 1 .. :New.Cantidad Loop
+      Insert Into Cer_Solicitudcertificados
+        (Idinstitucion, Idsolicitud, Fechasolicitud, Idestadosolicitudcertificado,
+         Idinstitucion_Sol, Idinstitucionorigen, Idinstituciondestino, Idinstitucioncolegiacion,
+         Idpersona_Des, Idpersona_Dir, Iddireccion_Dir, Idtipoenvios, Ppn_Idtipoproducto,
+         Ppn_Idproductoinstitucion, Ppn_Idproducto, Idestadocertificado, Fechaestado,
+         Fechaemisioncertificado, Fechamodificacion, Usumodificacion, Idpeticionproducto,
+         Idmetodosolicitud, Aceptacesionmutualidad, Fechacreacion, Usucreacion, Comentario,
+         Fechacobro, Idcensodatos)
+      Values
+        (:New.Idinstitucion, Seq_Solicitudcertificados.Nextval, :New.Fecharecepcionsolicitud, 1,
+         :New.Idinstitucion, :New.Idinstitucionorigen, :New.Idinstitucioncolegiacion,
+         :New.Idinstitucioncolegiacion, :New.Idpersona, :New.Idpersona, :New.Iddireccion,
+         :New.Idtipoenvios, :New.Idtipoproducto, :New.Idproductoinstitucion, :New.Idproducto, 1,
+         Sysdate, Null, :New.Fechamodificacion, :New.Usumodificacion, :New.Idpeticion,
+         :New.Metodorecepcionsolicitud, :New.Aceptacesionmutualidad, Sysdate, :New.Usumodificacion, :New.Observaciones, 
+         v_FechaCobro, :New.Idcensodatos);
+    End Loop;
+
+  End If;
+End Pys_Productossolicitados_Ai;
+
+/*
+ * 
+ * EJECUTADO HASTA AQUÍ EN INTEGRACION POR FMS EL 04/10/2018 
+ */
