@@ -334,6 +334,13 @@
 			ajustarDivListadoResultados();
 		}
 		
+		window.addEventListener("ajustarAltoResultado", receiveMessage, false);
+
+		function receiveMessage(event)
+		{
+		  window.ajustarAltoResultado();
+		}
+		
 		function buscar () {
 			sub();
 			var	error ='';

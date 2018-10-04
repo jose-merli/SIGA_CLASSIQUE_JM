@@ -771,7 +771,12 @@ function inicio(){
 
 
 function ajustarAltoResultados(){
-	parent.ajustarAltoResultado();
+	try{
+		parent.ajustarAltoResultado();
+	}catch(e){
+		window.postMessage("ajustarAltoResultado",this.location.origin);
+	}
+	
 	ajusteDivListado();
 	ajustarCabeceraTabla();
 }
