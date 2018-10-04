@@ -393,3 +393,14 @@ update scs_actuaciondesigna a
   
 create index SI_CEN_HISTORICO_FECHA on CEN_HISTORICO (fechaefectiva);
 
+/*
+ * NUEVOS CAMPOS TABLA CEN_DATOS
+ * EJECUTADOS EN INTEGRACION POR FMS EL 03/10/2018 
+ */
+alter table ECOM_CEN_DATOS add IDINSTITUCIONRESIDENCIA number(4);
+alter table ECOM_CEN_DATOS add ANIOLICENCIATURA varchar2(4);
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('pys.solicitudCompra.literal.residenteen', 'Residente en', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('pys.solicitudCompra.literal.residenteen', 'Residente en#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('pys.solicitudCompra.literal.residenteen', 'Residente en#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('pys.solicitudCompra.literal.residenteen', 'Residente en#GL', 0, '4', sysdate, 0, '19');

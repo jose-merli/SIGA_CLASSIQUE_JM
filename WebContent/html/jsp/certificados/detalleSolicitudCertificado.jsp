@@ -87,7 +87,7 @@
 	String idInstitucionCertificado = "", institucionFinal = "", idsTemp = "", idPeticion = "";
 	String idPersona = "", nombreSolicitante = "", nombreSoloSolicitante = "", apellidosSolicitante = "", nidSolicitante = "", ncolSolicitante = "";
 	String sIdCompra = "";
-	String estadoInc = "", residente = "";
+	String estadoInc = "", residente = "", idInstitucionRes = "";
 	boolean isSolicitudColegio = false;
 	String[] parametros = null;
 	String aceptaCesion = "", aceptMut = "";
@@ -100,6 +100,7 @@
 	Integer idMotivoAnulacion = -1;
 	String paramidMotivoSolicitud = null;
 	String paramidMotivoAnulacion = null;
+	ArrayList idInstitucionResidencia = new ArrayList();
 
 	if (beanSolicitud != null) {
 		if (beanSolicitud.getIdPeticionProducto() != null) {
@@ -120,6 +121,8 @@
 			bSolicitudTelematica = true;
 			estadoInc = (String) request.getAttribute("estadoInc");
 			residente = (String) request.getAttribute("residenteInc");
+			idInstitucionRes = (String) request.getAttribute("idInstitucionRes");
+			idInstitucionResidencia.add(idInstitucionRes);
 		}
 			
 		fechaSolicitud = beanSolicitud.getFechaSolicitud();
@@ -1032,6 +1035,21 @@
 							<td class="labelTextvalue" width="80px"><%=UtilidadesString.mostrarDatoJSP(estadoInc)%></td>
 							<td class="labelText" width="130px"><siga:Idioma key="certificados.solicitudes.literal.residencia" /></td>
 							<td class="labelTextvalue" width="80px"><%=UtilidadesString.mostrarDatoJSP(residente)%></td>
+						<% if (residente.equals("SI")) %>
+							<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.residenteen"/></td>
+							<td >
+								<%
+									sReadOnly = stLectura;
+									if (bSolicitudTelematica)
+										sReadOnly = "true";
+								%>
+								<siga:Select id="idInstitucionResidencia" 
+										queryId="<%=consultaOrigen%>" 
+										selectedIds="<%=idInstitucionResidencia%>"
+										params="<%=idInstitucionRes%>"
+										readonly="<%=sReadOnly%>"/>	
+							</td>
+						<% } %>
 						</tr>
 					<% } %>
 						

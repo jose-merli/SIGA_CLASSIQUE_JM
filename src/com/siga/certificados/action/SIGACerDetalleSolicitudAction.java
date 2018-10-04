@@ -725,11 +725,12 @@ public class SIGACerDetalleSolicitudAction extends MasterAction {
 			request.setAttribute("pintarCamposTelematica", pintarCamposTelematica);
 			
 			// buscando situacion colegiado y estado de residencia
-			String estadoInc = "", residenteInc = "";
+			String estadoInc = "", residenteInc = "", idInstitucionRes = ""; //, anioLicenciatura = "";
 			CenColegiadoAdm cenColegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
 			
 			String tabla ="ECOM_CEN_NOCOLEGIADO";
-			String sql = "SELECT CD.IDECOMCENSOSITUACIONEJER SITUACION, CD.RESIDENTE RESIDENTE" + "  FROM ECOM_CEN_DATOS CD, " + tabla + " T" + " WHERE CD.IDCENSODATOS = T.IDCENSODATOS AND T.IDPERSONA = " + beanSolicitud.getIdPersona_Des() + " ";
+			String sql = "SELECT CD.IDECOMCENSOSITUACIONEJER SITUACION, CD.RESIDENTE RESIDENTE, CD.IDINSTITUCIONRESIDENCIA IDINSTITUCIONRESIDENCIA";//, CD.ANIOLICENCIATURA ANIOLICENCIATURA";
+			sql = sql + "  FROM ECOM_CEN_DATOS CD, " + tabla + " T" + " WHERE CD.IDCENSODATOS = T.IDCENSODATOS AND T.IDPERSONA = " + beanSolicitud.getIdPersona_Des() + " ";
 			
 			RowsContainer rowsContainer = cenColegiadoAdm.find(sql);
 			System.out.println("Consulta realizada a NOCOLEGIADO");
@@ -746,10 +747,13 @@ public class SIGACerDetalleSolicitudAction extends MasterAction {
 						residenteInc = "SI";
 					else
 						residenteInc = "NO";
+					idInstitucionRes = row.getString("IDINSTITUCIONRESIDENCIA");
+					//anioLicenciatura = row.getString("ANIOLICENCIATURA");
 				}
 			}else{//No hemos encontrado el solicitante en ECOM_CEN_NOCOLEGIADO
 				tabla ="ECOM_CEN_COLEGIADO";
-				sql = "SELECT CD.IDECOMCENSOSITUACIONEJER SITUACION, CD.RESIDENTE RESIDENTE" + "  FROM ECOM_CEN_DATOS CD, " + tabla + " T" + " WHERE CD.IDCENSODATOS = T.IDCENSODATOS AND T.IDPERSONA = " + beanSolicitud.getIdPersona_Des() + " ";
+				sql = "SELECT CD.IDECOMCENSOSITUACIONEJER SITUACION, CD.RESIDENTE RESIDENTE, CD.IDINSTITUCIONRESIDENCIA IDINSTITUCIONRESIDENCIA";//, CD.ANIOLICENCIATURA ANIOLICENCIATURA";
+				sql = sql + "  FROM ECOM_CEN_DATOS CD, " + tabla + " T" + " WHERE CD.IDCENSODATOS = T.IDCENSODATOS AND T.IDPERSONA = " + beanSolicitud.getIdPersona_Des() + " ";
 				
 				rowsContainer = cenColegiadoAdm.find(sql);
 				System.out.println("Consulta realizada a COLEGIADO");
@@ -766,11 +770,15 @@ public class SIGACerDetalleSolicitudAction extends MasterAction {
 							residenteInc = "SI";
 						else
 							residenteInc = "NO";
+						idInstitucionRes = row.getString("IDINSTITUCIONRESIDENCIA");
+						//anioLicenciatura = row.getString("ANIOLICENCIATURA");
 					}
 				}
 			}
 			request.setAttribute("residenteInc", residenteInc);
 			request.setAttribute("estadoInc", estadoInc);
+			request.setAttribute("idInstitucionRes", idInstitucionRes);
+			//request.setAttribute("anioLicenciatura", anioLicenciatura);
 			//Fin buscando situacion colegiado y estado de residencia
 
 			PysProductosInstitucionAdm admProd = new PysProductosInstitucionAdm(userBean);
