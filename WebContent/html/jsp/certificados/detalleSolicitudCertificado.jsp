@@ -1035,7 +1035,7 @@
 							<td class="labelTextvalue" width="80px"><%=UtilidadesString.mostrarDatoJSP(estadoInc)%></td>
 							<td class="labelText" width="130px"><siga:Idioma key="certificados.solicitudes.literal.residencia" /></td>
 							<td class="labelTextvalue" width="80px"><%=UtilidadesString.mostrarDatoJSP(residente)%></td>
-						<% if (residente.equals("SI")) %>
+						<% if (residente.equals("SI")) { %>
 							<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.residenteen"/></td>
 							<td >
 								<%
