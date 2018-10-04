@@ -5516,9 +5516,18 @@ function f_tcalUpdate (n_date, b_keepOpen) {
 			f_tcalCancel();
 		}
 	}	
-	if(e_input.onchange!=null) { 
-		e_input.onchange();
+	if(event != null && event.target!=null && event.target.attr("id")!="tcalPrevYear"
+		&& event.target.attr("id")!="tcalPrevMonth" && event.target.attr("id")!="tcalNextMonth"
+		&& event.target.attr("id")!="tcalNextYear"){		
+		if(e_input.onchange!=null) { 
+			e_input.onchange();
+		}		
+	}else{
+		if(e_input.onchange!=null) { 
+			e_input.onchange();
+		}
 	}
+	
 }
 
 function f_tcalClean () {
