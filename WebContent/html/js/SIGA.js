@@ -5516,9 +5516,9 @@ function f_tcalUpdate (n_date, b_keepOpen) {
 			f_tcalCancel();
 		}
 	}	
-	if(event != null && event.target!=null && event.target.attr("id")!="tcalPrevYear"
-		&& event.target.attr("id")!="tcalPrevMonth" && event.target.attr("id")!="tcalNextMonth"
-		&& event.target.attr("id")!="tcalNextYear"){		
+	if(event != null && event.target!=null && jQuery(event.target).attr("id")!="tcalPrevYear"
+		&& jQuery(event.target).attr("id")!="tcalPrevMonth" && jQuery(event.target).attr("id")!="tcalNextMonth"
+		&& jQuery(event.target).attr("id")!="tcalNextYear"){		
 		if(e_input.onchange!=null) { 
 			e_input.onchange();
 		}		
