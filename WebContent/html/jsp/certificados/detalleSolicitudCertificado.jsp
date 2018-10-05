@@ -265,6 +265,9 @@
 		deshabilitaCobro = "disabled";
 		deshabilitaMutualidad = "disabled";
 	}
+	if(bSolicitudTelematica){
+		deshabilitaCobro = "disabled";
+	}
 
 	if (modo.equalsIgnoreCase("nuevo")) {
 		readOnlyCertificado = "false";
@@ -1031,12 +1034,12 @@
 					
 					<%if(bSolicitudTelematica){ %>					
 						<tr>
-							<td class="labelText" width="150px"><siga:Idioma key="certificados.solicitudes.literal.estadoIncorporacion" /></td>
-							<td class="labelTextvalue" width="80px"><%=UtilidadesString.mostrarDatoJSP(estadoInc)%></td>
-							<td class="labelText" width="150px"><siga:Idioma key="certificados.solicitudes.literal.residencia" /></td>
-							<td class="labelTextvalue" width="80px"><%=UtilidadesString.mostrarDatoJSP(residente)%></td>
+							<td class="labelText" style="width:150px"><siga:Idioma key="certificados.solicitudes.literal.estadoIncorporacion" /></td>
+							<td class="labelTextvalue" style="width:80px"><%=UtilidadesString.mostrarDatoJSP(estadoInc)%></td>
+							<td class="labelText" style="width:150px"><siga:Idioma key="certificados.solicitudes.literal.residencia" /></td>
+							<td class="labelTextvalue" style="width:80px"><%=UtilidadesString.mostrarDatoJSP(residente)%></td>
 						<% if (residente.equals("SI")) { %>
-							<td class="labelText" width="150px"><siga:Idioma key="pys.solicitudCompra.literal.residenteen"/></td>
+							<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.residenteen"/></td>
 							<td >
 								<%
 									sReadOnly = stLectura;
@@ -1332,13 +1335,13 @@
 					<tr>
 						<td class="labelText" width="180px">
 							<siga:Idioma key="certificados.solicitudes.literal.cobrado"/>&nbsp; &nbsp; 
-
+							
 							<input type=checkbox name="checkCobro" onclick="validarCheckCobro();" <%=deshabilitaCobro%>
 								<%=(beanSolicitud.getFechaCobro() != null && !beanSolicitud.getFechaCobro().trim().equals("")) ? "checked" : ""%>>
 						</td>
 						<td>	
 							<%
-									if (modoEditar && !idEstadoSolicitud.equals("" + CerEstadoSoliCertifiAdm.C_ESTADO_SOL_FINALIZADO)) {
+									if (modoEditar && !idEstadoSolicitud.equals("" + CerEstadoSoliCertifiAdm.C_ESTADO_SOL_FINALIZADO) && !bSolicitudTelematica) {
 													String fechaCo = "";
 													if (!beanSolicitud.getFechaCobro().equals("")) {
 														SimpleDateFormat sdf = new SimpleDateFormat(UtilidadesFecha.FORMATO_FECHA_ES);

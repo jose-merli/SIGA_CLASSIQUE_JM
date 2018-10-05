@@ -86,7 +86,7 @@
 	String numSolicitudCol = "", nombreInteresado = "", apellido1Interesado = "", apellido2Interesado = "", nidInteresado = "";
 	String fechaNacInteresado = "", telInteresado = "", movilInteresado = "", faxInteresado = "", emailInteresado = "";
 	String paisInteresado = "", domicilioInteresado = "", cpostalInteresado = "", provInteresado = "", poblInteresado = "";
-	
+	String anioLicenciatura = "";
 	String numSolicitudColOld = "", nombreInteresadoOld = "", apellido1InteresadoOld = "", apellido2InteresadoOld = "", nidInteresadoOld = "";
 	String fechaNacInteresadoOld = "", telInteresadoOld = "", movilInteresadoOld = "", faxInteresadoOld = "", emailInteresadoOld = "";
 	String paisInteresadoOld = "", domicilioInteresadoOld = "", cpostalInteresadoOld = "", provInteresadoOld = "", poblInteresadoOld = "";
@@ -152,6 +152,8 @@
 		cpostalInteresado = (String) request.getAttribute("cpostalInteresado");
 		provInteresado = (String) request.getAttribute("provInteresado");
 		poblInteresado = (String) request.getAttribute("poblInteresado");
+		anioLicenciatura = (String) request.getAttribute("anioLicenciatura");
+		
 		if(request.getAttribute("estadoInc").equals("10"))
 			estadoInc = "No Ejerciente";
 		else
@@ -406,6 +408,10 @@
 								<%}else{%>
 									<td class="labelText" style="min-width: 200px; font-weight: bold; color: red;"><%=UtilidadesString.mostrarDatoJSP(poblInteresado)%></td>
 								<% } %> 
+							</tr>
+							<tr>
+								<td class="labelText" style="width: 165px"><siga:Idioma key="censo.datosDireccion.literal.anioLicenciatura" /></td>
+								<td class="labelText" style="min-width: 200px"><%=UtilidadesString.mostrarDatoJSP(anioLicenciatura)%></td> 
 							</tr>
 							
 						</table>

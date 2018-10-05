@@ -470,6 +470,14 @@ Begin
   End If;
 End Pys_Productossolicitados_Ai;
 
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.datosDireccion.literal.anioLicenciatura', 'Año de Licenciatura', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.datosDireccion.literal.anioLicenciatura', 'Año de Licenciatura#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.datosDireccion.literal.anioLicenciatura', 'Año de Licenciatura#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('censo.datosDireccion.literal.anioLicenciatura', 'Año de Licenciatura#GL', 0, '4', sysdate, 0, '19');
+
+
+
 /*
  * 
  * EJECUTADO HASTA AQUÍ EN INTEGRACION POR FMS EL 04/10/2018 

@@ -162,24 +162,21 @@ public class SIGACerSolicitudOriginalAction extends MasterAction {
 			String numSolicitudCol = "", nombreInteresado = "", apellido1Interesado = "", apellido2Interesado = "", nidInteresado = "";
 			String fechaNacInteresado = "", telInteresado = "", movilInteresado = "", faxInteresado = "", emailInteresado = "";
 			String paisInteresado = "", domicilioInteresado = "", cpostalInteresado = "", provInteresado = "", poblInteresado = "";
-			String estadoInc = "", residenteInc = "";
+			String estadoInc = "", residenteInc = "", anioLicenciatura = "";
 			
-			String sql = "SELECT CD.NOMBRE, CD.APELLIDOS1, CD.APELLIDOS2,";
-			sql = sql + " CD.Nifcif, CD.FECHANACIMIENTO, dir.telefono1, dir.movil, dir.fax1,";
-			sql = sql + " dir.correoelectronico, dir.domicilio, dir.codigopostal, dir.idpais,";
-			sql = sql + " (select nombre from cen_provincias where idprovincia = dir.idprovincia) as provincia,";
-			sql = sql + " (select nombre from cen_poblaciones where idpoblacion = dir.idpoblacion) as poblacion,";
-			sql = sql + " NVL(col.numsolicitudcolegiacion, cens.numsolicitudcolegiacion) AS numsolicitudcolegiacion,";
-			sql = sql + " NVL(NVL(col.situacionejercicio, cens.idecomcensosituacionejer),10) AS idecomcensosituacionejer,";
-			sql = sql + " NVL(NVL(col.situacionresidente, cens.residente),0) AS residente";
-			sql = sql + " FROM cer_solicitudcertificados cer join cen_persona CD ON cer.idpersona_des = cd.idpersona";
-			sql = sql + " join CEN_DIRECCIONES DIR ON cer.iddireccion_dir = dir.iddireccion and cer.idpersona_dir = dir.idpersona";
-			sql = sql + " and cer.idinstitucion = dir.idinstitucion left outer join CEN_COLEGIADO COL ON CD.IDPERSONA = COL.IDPERSONA";
-			sql = sql + " left outer join (SELECT ncol.idpersona, cd.numsolicitudcolegiacion, cd.idecomcensosituacionejer,";
-			sql = sql + " cd.residente, cd.nombre, cd.apellido1, cd.apellido2, cd.idcensotipoidentificacion, cd.numdocumento, cd.fechanacimiento";
-			sql = sql + "  FROM ECOM_CEN_DATOS CD, ECOM_CEN_NOCOLEGIADO NCOL WHERE CD.IDCENSODATOS = NCOL.IDCENSODATOS) cens";
-			sql = sql + " on cer.idpersona_des = cens.idpersona WHERE cer.idsolicitud = " + idSolicitud;
-			sql = sql + " ORDER BY CD.FECHAMODIFICACION DESC";
+			String sql = "SELECT cens.nombre, cens.apellido1, cens.apellido2, cens.numdocumento as NIFCIF, ";
+			sql = sql + " TO_CHAR(cens.fechanacimiento,'DD/MM/YYYY') as FECHANACIMIENTO, dir.telefono1 as TELEFONO1, dir.movil as MOVIL, dir.fax1 as FAX1, ";
+			sql = sql + " dir.correoelectronico as CORREOELECTRONICO, dir.domicilio as DOMICILIO, dir.codigopostal as CODIGOPOSTAL, dir.idpais as IDPAIS, ";
+			sql = sql + " (select nombre from cen_provincias where idprovincia = dir.idprovincia) as provincia, ";
+			sql = sql + " (select nombre from cen_poblaciones where idpoblacion = dir.idpoblacion) as poblacion, ";
+			sql = sql + " cens.numsolicitudcolegiacion AS NUMSOLICITUDCOLEGIACION, ";
+			sql = sql + " NVL(cens.idecomcensosituacionejer,10) AS SITUACIONEJERCICIO, ";
+			sql = sql + " NVL(cens.residente,0) AS SITUACIONRESIDENTE, ";
+			sql = sql + " cens.aniolicenciatura as ANIOLICENCIATURA ";
+			sql = sql + " FROM cer_solicitudcertificados cer join cen_persona CD ON cer.idpersona_des = cd.idpersona ";
+			sql = sql + " join CEN_DIRECCIONES DIR ON cer.iddireccion_dir = dir.iddireccion and cer.idpersona_dir = dir.idpersona ";
+			sql = sql + " and cer.idinstitucion = dir.idinstitucion left outer join CEN_COLEGIADO COL ON CD.IDPERSONA = COL.IDPERSONA ";
+			sql = sql + " left outer join ECOM_CEN_DATOS cens on cer.idcensodatos = cens.idcensodatos WHERE cer.idsolicitud = " + idSolicitud;
 			
 			CenColegiadoAdm cenColegiadoAdm = new CenColegiadoAdm(this.getUserBean(request));
 			RowsContainer rowsContainer = cenColegiadoAdm.find(sql);
@@ -189,8 +186,8 @@ public class SIGACerSolicitudOriginalAction extends MasterAction {
 					Row row = (Row) vector.get(0);
 					numSolicitudCol = row.getString("NUMSOLICITUDCOLEGIACION");
 					nombreInteresado = row.getString("NOMBRE"); 
-					apellido1Interesado = row.getString("APELLIDOS1");
-					apellido2Interesado = row.getString("APELLIDOS2");
+					apellido1Interesado = row.getString("APELLIDO1");
+					apellido2Interesado = row.getString("APELLIDO2");
 					nidInteresado = row.getString("NIFCIF");
 					fechaNacInteresado = row.getString("FECHANACIMIENTO");
 					telInteresado = row.getString("TELEFONO1");
@@ -204,24 +201,30 @@ public class SIGACerSolicitudOriginalAction extends MasterAction {
 					poblInteresado = row.getString("POBLACION");
 					estadoInc = row.getString("SITUACIONEJERCICIO");
 					residenteInc = row.getString("SITUACIONRESIDENTE");
+					anioLicenciatura = row.getString("ANIOLICENCIATURA");
 				}
 			}
 			
-			String idPersona = beanSolicitud.getIdPersona_Des().toString();
 			String numSolicitudColOld = "", nombreInteresadoOld = "", apellido1InteresadoOld = "", apellido2InteresadoOld = "", nidInteresadoOld = "";
 			String fechaNacInteresadoOld = "", telInteresadoOld = "", movilInteresadoOld = "", faxInteresadoOld = "", emailInteresadoOld = "";
 			String paisInteresadoOld = "", domicilioInteresadoOld = "", cpostalInteresadoOld = "", provInteresadoOld = "", poblInteresadoOld = "";
 			String estadoIncOld = "", residenteIncOld = "";
 			
-			sql = "SELECT CD.NUMSOLICITUDCOLEGIACION, CD.NOMBRE, CD.APELLIDO1, CD.APELLIDO2, CD.NUMDOCUMENTO, ";
-			sql = sql + "CD.FECHANACIMIENTO, CD.TELEFONO, CD.TELEFONOMOVIL, CD.FAX, CD.EMAIL, DIR.CODIGOPAISEXTRANJ, ";
-			sql = sql + "DIR.DOMICILIO, DIR.CODIGOPOSTAL, DIR.DESCRIPCIONPROVINCIA, DIR.DESCRIPCIONPOBLACION, ";
-			sql = sql + "CD.IDECOMCENSOSITUACIONEJER AS SITUACION, CD.RESIDENTE ";
-			sql = sql + "FROM ECOM_CEN_DATOS CD, ECOM_CEN_NOCOLEGIADO COL, ECOM_CEN_DIRECCION DIR ";
-			sql = sql + "WHERE CD.IDCENSODATOS = COL.IDCENSODATOS AND CD.IDCENSODIRECCION = DIR.IDCENSODIRECCION ";
-			sql = sql + "AND COL.IDPERSONA = " + idPersona;
-			sql = sql + " ORDER BY CD.FECHAMODIFICACION DESC";
-			
+			sql = "SELECT CD.NOMBRE as NOMBRE, CD.APELLIDOS1 as APELLIDO1, CD.APELLIDOS2 as APELLIDO2, CD.Nifcif as NUMDOCUMENTO, ";
+			sql = sql + "TO_CHAR(CD.FECHANACIMIENTO,'DD/MM/YYYY') as FECHANACIMIENTO, dir.telefono1 as TELEFONO, dir.movil as TELEFONOMOVIL, dir.fax1 as FAX, ";
+			sql = sql + "dir.correoelectronico as EMAIL, dir.domicilio as DOMICILIO, dir.codigopostal as CODIGOPOSTAL, dir.idpais as CODIGOPAISEXTRANJ, ";
+			sql = sql + "(select nombre from cen_provincias where idprovincia = dir.idprovincia) as DESCRIPCIONPROVINCIA, ";
+			sql = sql + "(select nombre from cen_poblaciones where idpoblacion = dir.idpoblacion) as DESCRIPCIONPOBLACION, ";
+			sql = sql + "col.numsolicitudcolegiacion AS NUMSOLICITUDCOLEGIACION, ";
+			sql = sql + "NVL(col.situacionejercicio,10) AS SITUACION, ";
+			sql = sql + "NVL(col.situacionresidente,0) AS RESIDENTE ";
+			sql = sql + "FROM cer_solicitudcertificados cer join cen_persona CD ON cer.idpersona_des = cd.idpersona ";
+			sql = sql + "join cen_direcciones DIR ON cer.idpersona_dir = dir.idpersona  and dir.idinstitucion = 2000 ";
+			sql = sql + "left outer join CEN_COLEGIADO COL ON CD.IDPERSONA = COL.IDPERSONA ";
+			sql = sql + "WHERE dir.iddireccion = (select max(indir.iddireccion) from cen_direcciones indir ";
+			sql = sql + "where indir.idinstitucion = 2000 and indir.idpersona = cer.idpersona_dir and indir.iddireccion < cer.iddireccion_dir) ";
+			sql = sql + "AND cer.idsolicitud = " +idSolicitud;
+
 			rowsContainer = cenColegiadoAdm.find(sql);
 			if (rowsContainer != null && rowsContainer.size()>0) {
 				Vector vector = rowsContainer.getAll();
@@ -245,40 +248,6 @@ public class SIGACerSolicitudOriginalAction extends MasterAction {
 					estadoIncOld = row.getString("SITUACION");
 					residenteIncOld = row.getString("RESIDENTE");
 				}
-			}else{//No hemos encontrado el solicitante en ECOM_CEN_NOCOLEGIADO
-				sql = "SELECT CD.NUMSOLICITUDCOLEGIACION, CD.NOMBRE, CD.APELLIDO1, CD.APELLIDO2, CD.NUMDOCUMENTO, ";
-				sql = sql + "CD.FECHANACIMIENTO, CD.TELEFONO, CD.TELEFONOMOVIL, CD.FAX, CD.EMAIL, DIR.CODIGOPAISEXTRANJ, ";
-				sql = sql + "DIR.DOMICILIO, DIR.CODIGOPOSTAL, DIR.DESCRIPCIONPROVINCIA, DIR.DESCRIPCIONPOBLACION, ";
-				sql = sql + "CD.IDECOMCENSOSITUACIONEJER AS SITUACION, CD.RESIDENTE ";
-				sql = sql + "FROM ECOM_CEN_DATOS CD, ECOM_CEN_COLEGIADO COL, ECOM_CEN_DIRECCION DIR ";
-				sql = sql + "WHERE CD.IDCENSODATOS = COL.IDCENSODATOS AND CD.IDCENSODIRECCION = DIR.IDCENSODIRECCION ";
-				sql = sql + "AND COL.IDPERSONA = " + idPersona;
-				sql = sql + " ORDER BY CD.FECHAMODIFICACION DESC";
-				
-				rowsContainer = cenColegiadoAdm.find(sql);
-				if (rowsContainer != null) {
-					Vector vector = rowsContainer.getAll();
-					if (vector != null && vector.size() > 0) {
-						Row row = (Row) vector.get(0);
-						numSolicitudColOld = row.getString("NUMSOLICITUDCOLEGIACION");
-						nombreInteresadoOld = row.getString("NOMBRE"); 
-						apellido1InteresadoOld = row.getString("APELLIDO1");
-						apellido2InteresadoOld = row.getString("APELLIDO2");
-						nidInteresadoOld = row.getString("NUMDOCUMENTO");
-						fechaNacInteresadoOld = row.getString("FECHANACIMIENTO");
-						telInteresadoOld = row.getString("TELEFONO");
-						movilInteresadoOld = row.getString("TELEFONOMOVIL");
-						faxInteresadoOld = row.getString("FAX");
-						emailInteresadoOld = row.getString("EMAIL");
-						paisInteresadoOld = row.getString("CODIGOPAISEXTRANJ");
-						domicilioInteresadoOld = row.getString("DOMICILIO");
-						cpostalInteresadoOld = row.getString("CODIGOPOSTAL");
-						provInteresadoOld = row.getString("DESCRIPCIONPROVINCIA");
-						poblInteresadoOld = row.getString("DESCRIPCIONPOBLACION");
-						estadoIncOld = row.getString("SITUACION");
-						residenteIncOld = row.getString("RESIDENTE");
-					}
-				}
 			}
 			
 			request.setAttribute("numSolicitudCol",numSolicitudCol);
@@ -298,6 +267,7 @@ public class SIGACerSolicitudOriginalAction extends MasterAction {
 			request.setAttribute("poblInteresado",poblInteresado);
 			request.setAttribute("residenteInc", residenteInc);
 			request.setAttribute("estadoInc", estadoInc);
+			request.setAttribute("anioLicenciatura", anioLicenciatura);
 			request.setAttribute("numSolicitudColOld",numSolicitudColOld);
 			request.setAttribute("nombreInteresadoOld",nombreInteresadoOld);
 			request.setAttribute("apellido1InteresadoOld",apellido1InteresadoOld);
