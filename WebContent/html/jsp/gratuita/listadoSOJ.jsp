@@ -445,7 +445,7 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 			}else{
 			
 				var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
-				if (arrayResultado==undefined||arrayResultado[0]==undefined){
+				if (arrayResultado==undefined||arrayResultado[0]==undefined|| typeof(arrayResultado) == "string"){
 				  fin(); 		
 			   	} 
 			   	else {

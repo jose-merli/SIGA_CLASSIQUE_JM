@@ -91,7 +91,7 @@ function informeGenerico(){
 		document.InformesGenericosForm.submit();
 	}else{
 		var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
-		if (arrayResultado==undefined||arrayResultado[0]==undefined){
+		if (arrayResultado==undefined||arrayResultado[0]==undefined|| typeof(arrayResultado) == "string"){
 		   		
 	   	} else {
 	   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");
@@ -810,7 +810,7 @@ function downloadResolucionCAJG(idInstitucion,anio,idTipo,numero) {
 	}else{
 	
 		var arrayResultado = ventaModalGeneral("Informe","M");
-		if (arrayResultado==undefined||arrayResultado[0]==undefined){
+		if (arrayResultado==undefined||arrayResultado[0]==undefined|| typeof(arrayResultado) == "string"){
 		   		
 	   	} 
 	   	else {
@@ -840,7 +840,7 @@ function downloadInformeActuacionesDesigna(idInstitucion,anio,numero,idPersona,i
 		
 		//Esto permite la descarga de varios informes
 		var arrayResultado = ventaModalGeneral("Informe","M");
-	   	if (arrayResultado==undefined||arrayResultado[0]==undefined){
+	   	if (arrayResultado==undefined||arrayResultado[0]==undefined|| typeof(arrayResultado) == "string"){
 	   				   		
 	   	} 
 	   	else {
@@ -862,7 +862,7 @@ function downloadInformeActuacionesDesigna(idInstitucion,anio,numero,idPersona,i
 			document.Informe.submit();
 		}else{ //Más de un informe configurado pero no se envía
 			var arrayResultado = ventaModalGeneral("Informe","M");
-			if (arrayResultado==undefined||arrayResultado[0]==undefined){
+			if (arrayResultado==undefined||arrayResultado[0]==undefined|| typeof(arrayResultado) == "string"){
 			   		
 		   	} 
 		   	else {
@@ -897,7 +897,7 @@ function downloadInformesOficio(idInstitucion,anio,idTurno,numero) {
 	}else{
 	
 		var arrayResultado = ventaModalGeneral("Informe","M");
-		if (arrayResultado==undefined||arrayResultado[0]==undefined){
+		if (arrayResultado==undefined||arrayResultado[0]==undefined|| typeof(arrayResultado) == "string"){
 		   		
 	   	} 
 	   	else {

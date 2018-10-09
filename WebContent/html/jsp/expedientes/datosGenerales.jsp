@@ -919,7 +919,7 @@
 			//la caratula del expediente, no de la gestion de informes y envios
 			document.InformesGenericosForm.datosInforme.value =datos;
 			var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
-			if (arrayResultado==undefined||arrayResultado[0]==undefined){
+			if (arrayResultado==undefined||arrayResultado[0]==undefined|| typeof(arrayResultado) == "string"){
 			   		
 		   	} else {
 		   		var confirmar = confirm("<siga:Idioma key='general.envios.confirmar.edicion'/>");

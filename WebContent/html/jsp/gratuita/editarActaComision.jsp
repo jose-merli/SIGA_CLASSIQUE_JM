@@ -376,7 +376,7 @@
 				document.InformesGenericosForm.submit();
 			} else {
 				var arrayResultado = ventaModalGeneral("InformesGenericosForm","M");
-				if (arrayResultado==undefined||arrayResultado[0]==undefined){
+				if (arrayResultado==undefined||arrayResultado[0]==undefined|| typeof(arrayResultado) == "string"){
 					fin();
 			   	} else {
 			   		fin();

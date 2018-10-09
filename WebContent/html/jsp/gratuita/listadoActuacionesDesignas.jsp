@@ -138,7 +138,7 @@
 				
 				//Esto permite la descarga de varios informes
 				var arrayResultado = ventaModalGeneral("Informe","M");
-			   	if (arrayResultado==undefined||arrayResultado[0]==undefined){
+			   	if (arrayResultado==undefined||arrayResultado[0]==undefined|| typeof(arrayResultado) == "string"){
 			   				   		
 			   	} 
 			   	else {
@@ -161,7 +161,7 @@
 					document.Informe.submit();
 				<%}else{%> //Más de un informe configurado pero no se envía
 					var arrayResultado = ventaModalGeneral("Informe","M");
-					if (arrayResultado==undefined||arrayResultado[0]==undefined){
+					if (arrayResultado==undefined||arrayResultado[0]==undefined|| typeof(arrayResultado) == "string"){
 					   		
 				   	} 
 				   	else {
