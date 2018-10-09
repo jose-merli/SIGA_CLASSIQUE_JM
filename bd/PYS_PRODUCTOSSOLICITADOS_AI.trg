@@ -1,4 +1,4 @@
-CREATE OR REPLACE TRIGGER PYS_PRODUCTOSSOLICITADOS_AI  
+CREATE OR REPLACE TRIGGER PYS_PRODUCTOSSOLICITADOS_AI
 AFTER INSERT
 ON pys_productossolicitados
 REFERENCING NEW AS NEW OLD AS OLD
@@ -34,14 +34,16 @@ Begin
          Idpersona_Des, Idpersona_Dir, Iddireccion_Dir, Idtipoenvios, Ppn_Idtipoproducto,
          Ppn_Idproductoinstitucion, Ppn_Idproducto, Idestadocertificado, Fechaestado,
          Fechaemisioncertificado, Fechamodificacion, Usumodificacion, Idpeticionproducto,
-         Idmetodosolicitud, Aceptacesionmutualidad, Fechacreacion, Usucreacion, COMENTARIO, fechacobro)
+         Idmetodosolicitud, Aceptacesionmutualidad, Fechacreacion, Usucreacion, Comentario,
+         Fechacobro, Idcensodatos)
       Values
         (:New.Idinstitucion, Seq_Solicitudcertificados.Nextval, :New.Fecharecepcionsolicitud, 1,
          :New.Idinstitucion, :New.Idinstitucionorigen, :New.Idinstitucioncolegiacion,
          :New.Idinstitucioncolegiacion, :New.Idpersona, :New.Idpersona, :New.Iddireccion,
          :New.Idtipoenvios, :New.Idtipoproducto, :New.Idproductoinstitucion, :New.Idproducto, 1,
          Sysdate, Null, :New.Fechamodificacion, :New.Usumodificacion, :New.Idpeticion,
-         :New.Metodorecepcionsolicitud, :New.Aceptacesionmutualidad, Sysdate, :New.Usumodificacion, :New.Observaciones, v_FechaCobro);
+         :New.Metodorecepcionsolicitud, :New.Aceptacesionmutualidad, Sysdate, :New.Usumodificacion, :New.Observaciones, 
+         v_FechaCobro, :New.Idcensodatos);
     End Loop;
 
   End If;
