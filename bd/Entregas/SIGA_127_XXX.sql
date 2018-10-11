@@ -433,3 +433,8 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
  * 
  * EJECUTADO HASTA AQUÍ EN INTEGRACION POR FMS EL 04/10/2018 
  */
+
+-- Ejecutados en Integracion por AAG (bueno lo que no ejecuto ya FMS) el 10/10/2018 a las 10:30
+
+-- 127_015
+
