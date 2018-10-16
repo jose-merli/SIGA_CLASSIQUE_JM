@@ -1299,67 +1299,131 @@ if(usr.isComision()){
 		<% }%>
 		
 		function limpiar() {
-			if (jQuery("#idInstitucionComision").exists()) { // idInstitucionComision
-				jQuery("#idInstitucionComision").val("");
+			
+			try{
+				if (jQuery("#idInstitucionComision").exists()) { // idInstitucionComision
+					jQuery("#idInstitucionComision").val("");			
+				}
+			}catch (e){
+				if (document.getElementById("idInstitucionComision") != null) { // idInstitucionComision
+					document.getElementById("idInstitucionComision").value="";		
+				}
 			}
 			
 			jQuery("#anio").val("<%=anioActual%>"); // anio=Actual
 			jQuery("#numEJG").val(""); // numEJG
-			jQuery("#idTipoEJG").val(""); // idTipoEJG
-			jQuery("#idTipoEJGColegio").val(""); // idTipoEJGColegio
 
-			jQuery("#creadoDesde").val(""); // creadoDesde
+					
+			 // idTipoEJGColegio
+			try{
+				jQuery("#idTipoEJG").val(""); // idTipoEJG
+				jQuery("#idTipoEJGColegio").val("");
+				jQuery("#creadoDesde").val(""); // creadoDesde
+				jQuery("#estadoEJG").val(""); // estadoEJG
+				
+			}catch(e){
+
+				document.getElementById("idTipoEJG").value="";
+				document.getElementById("idTipoEJGColegio").value="";
+				document.getElementById("creadoDesde").value="";
+				document.getElementById("estadoEJG").value="";
+				
+			}
 			jQuery("#fechaAperturaDesde").val(""); // fechaAperturaDesde
 			jQuery("#fechaAperturaHasta").val(""); // fechaAperturaHasta
-						
-			jQuery("#estadoEJG").val(""); // estadoEJG
 			jQuery("#fechaEstadoDesde").val(""); // fechaEstadoDesde
 			jQuery("#fechaEstadoHasta").val(""); // fechaEstadoHasta
 			
-			if (jQuery("#ddcl-idTipoResolucionEJG-ddw").exists()) { // idTipoResolucionEJG
-				var opcionIndiferente = jQuery("#ddcl-idTipoResolucionEJG-i0");
-				if (opcionIndiferente.is(':checked')) {
-					opcionIndiferente.click(); // Desmarco todas ... invoca una llamada ajax para cargar los fundamentos juridicos
-				} else {
-					opcionIndiferente.click(); // Marco todas ... invoca una llamada ajax para cargar los fundamentos juridicos
-					opcionIndiferente.click(); // Desmarco todas ... invoca una llamada ajax para cargar los fundamentos juridicos
+			try{
+
+				if (jQuery("#ddcl-idTipoResolucionEJG-ddw").exists()) { // idTipoResolucionEJG
+					var opcionIndiferente = jQuery("#ddcl-idTipoResolucionEJG-i0");
+					if (opcionIndiferente.is(':checked')) {
+						opcionIndiferente.click(); // Desmarco todas ... invoca una llamada ajax para cargar los fundamentos juridicos
+					} else {
+						opcionIndiferente.click(); // Marco todas ... invoca una llamada ajax para cargar los fundamentos juridicos
+						opcionIndiferente.click(); // Desmarco todas ... invoca una llamada ajax para cargar los fundamentos juridicos
+					}
+				}
+			}catch (e)
+			{
+				if (jQueryTop("#ddcl-idTipoResolucionEJG-ddw") != null) { // idTipoResolucionEJG
+					var opcionIndiferente = document.getElementById("#ddcl-idTipoResolucionEJG-i0");
+					if (opcionIndiferente.is(':checked')) {
+						opcionIndiferente.click(); // Desmarco todas ... invoca una llamada ajax para cargar los fundamentos juridicos
+					} else {
+						opcionIndiferente.click(); // Marco todas ... invoca una llamada ajax para cargar los fundamentos juridicos
+						opcionIndiferente.click(); // Desmarco todas ... invoca una llamada ajax para cargar los fundamentos juridicos
+					}
+				}
+			} 
+						
+			try{
+				if (jQuery("#idTipoRatificacionEJG").exists()) { // idTipoRatificacionEJG
+					jQuery("#idTipoRatificacionEJG").val("");
+				}
+				
+			}
+			catch(e){
+				if (document.getElementById("idTipoRatificacionEJG") != null) { // idTipoRatificacionEJG
+					document.getElementById("idTipoRatificacionEJG").value="";
+				}
+				
+			}
+
+			try{
+				if (jQuery("#idFundamentoJuridico").exists()) { // idFundamentoJuridico
+					jQuery("#idFundamentoJuridico").val("");
+				}
+
+			}catch(e){
+				if (document.getElementById("idFundamentoJuridico") != null) { // idTipoRatificacionEJG
+					document.getElementById("idFundamentoJuridico").value="";
 				}
 			}
-			if (jQuery("#idTipoRatificacionEJG").exists()) { // idTipoRatificacionEJG
-				jQuery("#idTipoRatificacionEJG").val("");
-			}			
-			jQuery("#fechaLimitePresentacionDesde").val(""); // fechaLimitePresentacionDesde
-			jQuery("#fechaLimitePresentacionHasta").val(""); // fechaLimitePresentacionHasta
 			
-			if (jQuery("#idFundamentoJuridico").exists()) { // idFundamentoJuridico
-				jQuery("#idFundamentoJuridico").val("");
+			try{
+				
+				jQuery("#idTipoDictamenEJG").val(""); // idTipoDictamenEJG
+				jQuery("#identificador").val(""); // idturno
+				jQuery("#idPonente").val(""); // idPonente
+				jQuery("#idPreceptivo").val(""); // idPreceptivo
+				jQuery("#idRenuncia").val(""); // idRenuncia	
+				jQuery("#guardiaTurnoIdGuardia").val(""); // guardiaTurnoIdGuardia	
+				jQuery("#calidad").val(""); // calidad
+				jQuery("#juzgado").val(""); // juzgado
+				jQuery("#dictaminado").val("I"); // dictaminado=Indiferente	
+				
+			}
+			catch(e){
+				
+				document.getElementById("idTipoDictamenEJG").value=""; // idTipoDictamenEJG
+				document.getElementById("identificador").value=""; // idturno
+				document.getElementById("idPonente").value=""; // idPonente
+				document.getElementById("idPreceptivo").value=""; // idPreceptivo
+				document.getElementById("idRenuncia").value=""; // idRenuncia	
+				document.getElementById("guardiaTurnoIdGuardia").value=""; // guardiaTurnoIdGuardia	
+				document.getElementById("calidad").value=""; // calidad
+				document.getElementById("juzgado").value=""; // juzgado
+				document.getElementById("dictaminado").value="I";
 			}
 			
-			jQuery("#dictaminado").val("I"); // dictaminado=Indiferente		
-			jQuery("#idTipoDictamenEJG").val(""); // idTipoDictamenEJG
+			jQuery("#fechaLimitePresentacionDesde").val(""); // fechaLimitePresentacionDesde
+			jQuery("#fechaLimitePresentacionHasta").val(""); // fechaLimitePresentacionHasta
 			jQuery("#fechaDictamenDesde").val(""); // fechaDictamenDesde
 			jQuery("#fechaDictamenHasta").val(""); // fechaDictamenHasta
-			
-			jQuery("#idPonente").val(""); // idPonente
 			jQuery("#fechaPresentacionPonenteDesde").val(""); // fechaPresentacionPonenteDesde
 			jQuery("#fechaPresentacionPonenteHasta").val(""); // fechaPresentacionPonenteHasta
+			
 			
 			jQuery("#anioCAJG").val(""); // anioCAJG
 			jQuery("#numeroCAJG").val(""); // numeroCAJG
 			jQuery("#anioActa").val(""); // anioActa
 			jQuery("#numeroActa").val(""); // numeroActa
-			
-			jQuery("#identificador").val(""); // idturno
-			jQuery("#guardiaTurnoIdGuardia").val(""); // guardiaTurnoIdGuardia			
-			
-			limpiarPersona();
-			
-			jQuery("#calidad").val(""); // calidad
-			jQuery("#idPreceptivo").val(""); // idPreceptivo
-			jQuery("#idRenuncia").val(""); // idRenuncia			
-			
+	
 			jQuery("#juzgado_searchBox").val(""); // juzgado
-			jQuery("#juzgado").val(""); // juzgado
+	
+			limpiarPersona();
 			
 			jQuery("#procedimiento").val(""); // procedimiento
 			jQuery("#asunto").val(""); // asunto
