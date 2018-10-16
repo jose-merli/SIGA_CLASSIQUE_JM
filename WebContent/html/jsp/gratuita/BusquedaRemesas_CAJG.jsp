@@ -218,7 +218,7 @@
 	<!-- INICIO: SCRIPTS BOTONES BUSQUEDA -->
 	<script language="JavaScript">	
 		function buscar(idRemesa) {
-			sub();
+			//sub();
 			document.forms[0].modo.value = "buscarInit";
 			//si me pasan una remesa es para imprimir
 			if (idRemesa) {
