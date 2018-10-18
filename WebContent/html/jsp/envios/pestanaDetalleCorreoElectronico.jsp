@@ -55,10 +55,20 @@
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 		<script src="<%=app%>/html/jsp/general/validacionSIGA.jsp" type="text/javascript"></script>
-<script type="text/javascript" src="https://cloud.tinymce.com/stable/tinymce.min.js"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/tinymce/tinymce.min.js'/>"></script>
 <script type="text/javascript">
 	tinyMCE.init({
-		selector : "textarea"		
+		selector : "textarea",
+		theme : "advanced",
+		plugins : "pagebreak style layer table save advhr advimage advlink emotions iespell insertdatetime preview media searchreplace print contextmenu paste directionality fullscreen noneditable visualchars nonbreaking xhtmlxtras template inlinepopups",
+
+		// Theme options
+		theme_advanced_buttons1 : "newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect,|,hr",
+		theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,image,cleanup,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
+		theme_advanced_buttons3 :"",
+		theme_advanced_toolbar_location : "top",
+		theme_advanced_toolbar_align : "left",
+		theme_advanced_statusbar_location : "bottom"
 	});
 </script>
 		<script language="JavaScript">
