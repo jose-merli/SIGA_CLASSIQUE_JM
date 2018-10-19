@@ -273,6 +273,8 @@
 		seleccionados1 = ObjArray; // Variable del paginador
 		jQuery("#registrosSeleccionados").val(ObjArray);
 		jQuery("#registrosSeleccionadosPaginador").val(ObjArray.length); // Variable del paginador
+		sessionStorage.setItem("registrosSeleccionadosPaginador", ObjArray.length);
+		
 		checkTodos();
 	}
 	
@@ -293,6 +295,7 @@
 		seleccionados1 = ObjArray; // Variable del paginador
 		jQuery("#registrosSeleccionados").val(ObjArray);
 		jQuery("#registrosSeleccionadosPaginador").val(ObjArray.length); // Variable del paginador
+		sessionStorage.setItem("registrosSeleccionadosPaginador", ObjArray.length);
 		
 		parent.cerrarDialog();
 	}
@@ -311,6 +314,7 @@
 				seleccionados1 = ObjArray; // Variable del paginador
 			   	jQuery("#registrosSeleccionados").val(ObjArray);
 				jQuery("#registrosSeleccionadosPaginador").val(ObjArray.length); // Variable del paginador
+				sessionStorage.setItem("registrosSeleccionadosPaginador", ObjArray.length);
 			 }
 	   	  
 		} else {

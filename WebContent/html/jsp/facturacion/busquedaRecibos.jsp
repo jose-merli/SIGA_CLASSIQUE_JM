@@ -56,7 +56,7 @@
 
 	<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	<link rel="stylesheet" href="<html:rewrite page='/html/js/jquery.ui/css/smoothness/jquery-ui-1.10.3.custom.min.css'/>">
-	
+
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-1.9.1.js?v=${sessionScope.VERSIONJS}'/>"></script>	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
@@ -163,7 +163,7 @@
 	<!-- BOTONES ACCION: PD Procesar devoluciones -->	 
 	<siga:ConjBotonesAccion botones="PD" />
 	
-	<script language="JavaScript">
+	<script language="JavaScript">		
 	
 		function buscarPaginador() {		
 			jQuery("#numeroNifTagBusquedaPersonas").val("<%=sIdentificacionTitular%>");
@@ -250,7 +250,14 @@
 		function accionProcesarDevoluciones() {		
 			//sub();
 			
-			var numeroFacturasSeleccionadas =  jQuery("#resultado").contents().find("#registrosSeleccionadosPaginador").val();
+			var numeroFacturasSeleccionadas;
+			
+			try{
+				numeroFacturasSeleccionadas =  jQuery("#resultado").contents().find("#registrosSeleccionadosPaginador").val();
+			}catch(e){
+				numeroFacturasSeleccionadas = sessionStorage.getItem("registrosSeleccionadosPaginador");
+			}
+			
 			
 			if (numeroFacturasSeleccionadas==null || numeroFacturasSeleccionadas == 0) {
 				var mensaje2 = '<siga:Idioma key="messages.fact.error.noRecibos"/>';
