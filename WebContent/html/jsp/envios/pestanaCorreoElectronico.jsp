@@ -28,23 +28,15 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 		<script src="<html:rewrite page='/html/jsp/general/validacionSIGA.jsp'/>" type="text/javascript"></script>
 		
-	<script type="text/javascript" src="<html:rewrite page='/html/js/tiny_mce/tiny_mce.js'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='https://cloud.tinymce.com/stable/tinymce.min.js'/>"></script>
 	<script type="text/javascript">
-		tinyMCE.init({
-			mode : "textareas",
-			theme : "advanced",
-			plugins : "pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,inlinepopups",
-	
-			// Theme options
-			theme_advanced_buttons1 : "newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect,|,hr",
-			theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,image,cleanup,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
-			theme_advanced_buttons3 :"",
-			theme_advanced_toolbar_location : "top",
-			theme_advanced_toolbar_align : "left",
-			theme_advanced_statusbar_location : "bottom"
-		
-		
-		});
+		tinymce.init({
+			selector: 'textarea',
+			plugins: "pagebreak table save charmap media contextmenu paste directionality noneditable visualchars nonbreaking spellchecker template searchreplace lists link image insertdatetime textcolor code hr",
+			toolbar: "newdocument | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify formatselect fontselect fontsizeselect | cut copy paste pastetext | searchreplace | bullist numlist | indent blockquote | undo redo | link unlink image code | insertdatetime preview | forecolor backcolor",
+			menubar: false,
+			statusbar: false
+		  });
 	</script>
 		<!-- INICIO: SCRIPTS BOTONES -->
 		<script language="JavaScript">

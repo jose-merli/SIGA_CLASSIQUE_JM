@@ -59,17 +59,13 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/tinymce/tinymce.min.js'/>"></script>
 	
 <script type="text/javascript">
-	tinyMCE.init({
-		selector : "textarea",
-		theme : "modern",
-		plugins: "pagebreak table save charmap media contextmenu paste directionality noneditable visualchars nonbreaking spellchecker template",
-	    toolbar1: "bold italic underline strikethrough | alignleft aligncenter alignright alignjustify fontselect fontsizeselect | bullist numlist | undo redo | forecolor backcolor | charmap nonbreaking",
-
-	    contextmenu: "cut copy paste",
-	    menubar: false,
-	    statusbar: false,
-	    toolbar_item_size: "small",
-	});
+	tinymce.init({
+		selector: 'textarea',
+		plugins: "pagebreak table save charmap media contextmenu paste directionality noneditable visualchars nonbreaking spellchecker template searchreplace lists link image insertdatetime textcolor code hr",
+		toolbar: "newdocument | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify formatselect fontselect fontsizeselect | cut copy paste pastetext | searchreplace | bullist numlist | indent blockquote | undo redo | link unlink image code | insertdatetime preview | forecolor backcolor",
+		menubar: false,
+		statusbar: false
+	  });
 </script>
 		<script language="JavaScript">
 			function accionGuardar()
