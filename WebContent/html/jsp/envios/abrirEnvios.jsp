@@ -75,9 +75,7 @@
 	
 	
 	<!-- Incluido jquery en siga.js -->
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.js'/>"></script>		
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
-	<script type="text/javascript" src="<html:rewrite page='/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js?v=${sessionScope.VERSIONJS}'/>"></script>
 	
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el título y localización en la barra de título del frame principal -->
@@ -235,11 +233,20 @@
 		{
 			sub();
 			
-			if(jQuery("#idCheckArchivados").is(':checked')){
-				document.forms[0].conArchivados.value = "1";
-			} else{
-				document.forms[0].conArchivados.value= "0";
+			try{
+				if(jQuery("#idCheckArchivados").is(':checked')){
+					document.forms[0].conArchivados.value = "1";
+				} else{
+					document.forms[0].conArchivados.value= "0";
+				}
+			}catch(e){				
+				if(document.getElementById("idCheckArchivados").checked==true){
+					document.forms[0].conArchivados.value = "1";
+				} else{
+					document.forms[0].conArchivados.value= "0";
+				}
 			}
+			
 			
 			if(document.forms[0].idEnvioBuscar.value!=''){ 
 				if (!isAllDigits(document.forms[0].idEnvioBuscar.value)) {
