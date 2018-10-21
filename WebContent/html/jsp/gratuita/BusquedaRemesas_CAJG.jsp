@@ -231,14 +231,14 @@
 				var objRegExp  = /^([0-9]{4})?$/;
 				if(!objRegExp.test(document.forms[0].anioEJG.value)){
 					alert( "<siga:Idioma key='errors.formato' arg0='gratuita.busquedaEJG.literal.anyo'/>"+ '\n');
-					fin();
+					//fin();
 					return false;
 				}
 			}	
 			
 			if(document.forms[0].anioEJG.value!='' && document.forms[0].codigoEJG.value ==''){
 				alert( "<siga:Idioma key='errors.required' arg0='gratuita.busquedaEJG.literal.codigo'/>"+ '\n');
-				fin();
+				//fin();
 				return false;
 				
 			}
