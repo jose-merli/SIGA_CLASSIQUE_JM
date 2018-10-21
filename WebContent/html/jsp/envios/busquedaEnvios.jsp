@@ -116,15 +116,9 @@
 		localizacion="envios.definir.literal.localizacion"/>
 	<!-- FIN: TITULO Y LOCALIZACION -->
 	
-	<script language="JavaScript">
-
-	function inicio() {		
-		setTimeout(function(){fin()}, 100);	
-	}
-	</script>
 	</head>
 
-	<body class="tablaCentralCampos" onload="inicio();">
+	<body class="tablaCentralCampos">
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 		<!-- INICIO: LISTA DE VALORES -->
 		<!-- Tratamiento del tagTabla y tagFila para la formacion de la lista 
@@ -398,6 +392,9 @@
 				document.forms[0].target = aux;
 			}
 
+		    setTimeout(function(){
+		      //deferred onload
+		    }, 1000);
 	</script>
 	
 		
