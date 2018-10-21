@@ -2085,6 +2085,9 @@ function jQueryLoaded(){
                 var allInputs = document.getElementsByClassName_new("tcal");
                 for(var i=0; i <allInputs.length;i++)
 	              {
+                	if(allInputs[i].className.indexOf("tcalActive")>-1){
+                		allInputs[i].onchange();
+                	}
                 	allInputs[i].className = allInputs[i].className.replace("tcalActive","");
 	              }
               }

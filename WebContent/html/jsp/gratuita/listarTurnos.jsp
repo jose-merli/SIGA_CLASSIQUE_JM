@@ -673,21 +673,24 @@
 			}
 	
 			function accionCalendario() {
-				// Abrimos el calendario 
-				if (formatDate(document.getElementById('fechaConsulta').value,"") && document.getElementById('fechaConsulta').value!='') {
-					document.DefinirTurnosLetradoForm.fechaConsulta.value =document.getElementById('fechaConsulta').value;
-				 	document.DefinirTurnosLetradoForm.modo.value = 'abrir';
-				 	document.DefinirTurnosLetradoForm.submit();
-				
-		 		}else{
-					if(formatDate(document.DefinirTurnosLetradoForm.fechaConsulta.value,"") && document.DefinirTurnosLetradoForm.fechaConsulta.value==''){
-						fechaActual = getFechaActualDDMMYYYY();
-						document.getElementById('fechaConsulta').value = fechaActual;
-						document.DefinirTurnosLetradoForm.fechaConsulta.value = fechaActual;
-						document.DefinirTurnosLetradoForm.modo.value = 'abrirTurnosPaginados';
-						document.DefinirTurnosLetradoForm.submit();
-					}
-				} 
+				if(event != null && (event.type == "keyup" || event.type == "keydown")){
+				}else{
+					// Abrimos el calendario 
+					if (formatDate(document.getElementById('fechaConsulta').value,"") && document.getElementById('fechaConsulta').value!='') {
+						document.DefinirTurnosLetradoForm.fechaConsulta.value =document.getElementById('fechaConsulta').value;
+					 	document.DefinirTurnosLetradoForm.modo.value = 'abrir';
+					 	document.DefinirTurnosLetradoForm.submit();
+					
+			 		}else{
+						if(formatDate(document.DefinirTurnosLetradoForm.fechaConsulta.value,"") && document.DefinirTurnosLetradoForm.fechaConsulta.value==''){
+							fechaActual = getFechaActualDDMMYYYY();
+							document.getElementById('fechaConsulta').value = fechaActual;
+							document.DefinirTurnosLetradoForm.fechaConsulta.value = fechaActual;
+							document.DefinirTurnosLetradoForm.modo.value = 'abrirTurnosPaginados';
+							document.DefinirTurnosLetradoForm.submit();
+						}
+					}				
+				}				
 			}
 		</script>
 			
