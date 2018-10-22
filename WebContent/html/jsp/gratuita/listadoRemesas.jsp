@@ -129,6 +129,7 @@
 		%>
 		
 		function inicio() {
+			setTimeout(function(){fin();}, 100);
 			<%if (idRemesa != null && !idRemesa.trim().equals("")){%>
 				descargaFichero(<%=idRemesa%>)
 			<%}%>
