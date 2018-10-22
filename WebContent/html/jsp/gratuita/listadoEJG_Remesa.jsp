@@ -253,7 +253,7 @@
 		}
 		
 		function accionVolver(){
-			sub();	
+			//sub();	
 			
 			var miForm = document.forms[0];
 			miForm.modo.value="abrir";
