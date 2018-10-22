@@ -289,9 +289,7 @@ dd { padding-bottom: 15px }
 	   
 	 <script type="text/javascript">
     	jQuery.noConflict();
-    	jQuery(document).ready(function() {
-            jQueryTop("#idTipoResolucionEJG", window.document).dropdownchecklist({ width: 375,maxDropHeight: 150,firstItemChecksAll: true, icon: {placement: 'right' ,toOpen:'ui-icon-triangle-1-s',toClose:'ui-icon-triangle-1-s'} });
-      	});
+    	
     
 		function refrescarLocal() {	
 			buscar();
@@ -593,7 +591,7 @@ if(usr.isComision()){
 				</td>				
 				<td style="vertical-align:middle">
 					<%if(esComision){%>
-						<select id="idTipoResolucionEJG" styleClass="boxCombo" multiple="multiple" onchange="onchangeTipoResolucion();" style="width:375px; display:none;">
+						<select id="idTipoResolucionEJG" styleClass="boxCombo" multiple="multiple" onchange="onchangeTipoResolucion();" style="width:375px;">
 							<% for (int i = 0; i < tiposResolucion.size(); i++) {
 								ScsTiporesolucion  resolucion = (ScsTiporesolucion)tiposResolucion.get(i);
 								String seleccionado = "";
