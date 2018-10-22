@@ -392,9 +392,6 @@
 				document.forms[0].target = aux;
 			}
 
-		    setTimeout(function(){
-		      //deferred onload
-		    }, 1000);
 	</script>
 	
 		
