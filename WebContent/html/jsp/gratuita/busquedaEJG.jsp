@@ -297,8 +297,13 @@
 	 <script type="text/javascript">
 	 jQuery.noConflict();
     	jQuery(document).ready(function() {
-            jQueryTop("#idTipoResolucionEJG", window.document).dropdownchecklist({ width: 375,maxDropHeight: 150,firstItemChecksAll: true, icon: {placement: 'right' ,toOpen:'ui-icon-triangle-1-s',toClose:'ui-icon-triangle-1-s'} });
-      	});
+    		try{
+    			jQueryTop("#idTipoResolucionEJG", window.document).dropdownchecklist({ width: 375,maxDropHeight: 150,firstItemChecksAll: true, icon: {placement: 'right' ,toOpen:'ui-icon-triangle-1-s',toClose:'ui-icon-triangle-1-s'} });
+			}catch(e){
+    			var elm = document.getElementById("idTipoResolucionEJG");
+    			jQuery(elm).dropdownchecklist({ width: 375,maxDropHeight: 150,firstItemChecksAll: true, icon: {placement: 'right' ,toOpen:'ui-icon-triangle-1-s',toClose:'ui-icon-triangle-1-s'} });
+    		}
+        });
     
 		function refrescarLocal() {	
 			buscar();
