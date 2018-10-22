@@ -160,7 +160,7 @@
 						<siga:Idioma key="censo.consultaHistorico.literal.tipo"/>
 					</td>				
 					<td>
-						<select id="listaIdTipoCambio" multiple="multiple" styleClass="boxCombo" style="width:250px;display: none;">
+						<select id="listaIdTipoCambio" multiple="multiple" styleClass="boxCombo" style="width:250px;">
 							<option value=""><siga:Idioma key="censo.consultaHistorico.literal.tipo.todasNinguna"/></option>
 <% 
 							for (int i = 0; i < vTiposAuditoria.size(); i++) {
@@ -219,13 +219,7 @@
 	<script language="JavaScript">
 		jQuery.noConflict();
 		jQuery(document).ready(function() {
-	        jQueryTop("#listaIdTipoCambio", window.document).dropdownchecklist({
-	        	width:250,
-	        	maxDropHeight:250, 
-	        	firstItemChecksAll:true,
-	        	zIndex:99,
-	        	icon:{placement:'right', toOpen:'ui-icon-triangle-1-s', toClose:'ui-icon-triangle-1-s'}
-			});
+	        
 	        
 	        jQuery('#ddcl-listaIdTipoCambio').click(function(){
 	        	jQueryTop("#ddcl-listaIdTipoCambio-ddw", window.document).show();
@@ -241,7 +235,6 @@
 					for (var i=0; i<arrayIdsTipoCambio.length; i++) {
 						jQuery("#listaIdTipoCambio option[value='" + arrayIdsTipoCambio[i] + "']").attr("selected", "selected");
 					}
-					jQueryTop("#listaIdTipoCambio", window.document).dropdownchecklist("refresh");
 					
 					document.forms['HistoricoForm'].fechaInicio.value = jSonVolverObject.fechaInicio;
 					document.forms['HistoricoForm'].fechaFin.value = jSonVolverObject.fechaFin;
