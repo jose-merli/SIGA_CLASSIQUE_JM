@@ -4550,7 +4550,10 @@ function isSWIFTValido(swift){
 // BNS porque daba errores de llenado de pila de llamadas en chrome e IE y como esta funcionalidad te la da jquery sin sobrescribir un m�todo de document cre�a que ya no se estaba usando...
 //if (__isChrome) {
 	document._oldGetElementById = document.getElementById;
-	document.getElementById = function (elemIdOrName) {
+	document.getElementById = function (elemIdOrName) {		
+		if(typeof(document._oldGetElementById)=="undefined"){
+			document._oldGetElementById = Document.prototype.getElementById;
+		}
 		var result = document._oldGetElementById(elemIdOrName);
 		if (!result) {
 			var elems = document.getElementsByName(elemIdOrName);
