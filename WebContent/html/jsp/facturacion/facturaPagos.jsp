@@ -72,8 +72,11 @@
 		hTotales = (Hashtable) datos.get("TOTALES");
 		
 		//Se calcula la fecha de la ultima línea
-		Hashtable pagoAux = (Hashtable) vPagos.get(vPagos.size()-1);
-		ultimaFecha = UtilidadesHash.getString(pagoAux, "FECHA");				
+		Hashtable pagoAux = null;
+		if (vPagos != null && vPagos.size() > 0) {
+			pagoAux = (Hashtable) vPagos.get(vPagos.size()-1);
+			ultimaFecha = UtilidadesHash.getString(pagoAux, "FECHA");
+		}
 	}
 
 	if (hTotales != null) {	
