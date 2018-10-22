@@ -170,7 +170,8 @@
 			jQuery("#nombrePersona").val("<%=sNombreTitular%>");
 			document.DevolucionesManualesForm.modo.value="buscar";
 			document.DevolucionesManualesForm.target="resultado";	
-			document.DevolucionesManualesForm.submit();	
+			buscar();
+			//document.DevolucionesManualesForm.submit();	
 		}
 		
 		function mensaje() {
