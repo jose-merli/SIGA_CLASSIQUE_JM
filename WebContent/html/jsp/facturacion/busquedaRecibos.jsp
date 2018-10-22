@@ -262,19 +262,19 @@
 			if (numeroFacturasSeleccionadas==null || numeroFacturasSeleccionadas == 0) {
 				var mensaje2 = '<siga:Idioma key="messages.fact.error.noRecibos"/>';
 				alert(mensaje2);
-				fin();
+				//fin();
 				return false;
 				
 			} else if (numeroFacturasSeleccionadas>1000) {
 				alert ('<siga:Idioma key="facturacion.devolucionManual.error.devolverMilFacturas"/>');
-				fin();
+				//fin();
 				return false;
 			}
 			
 			jQuery("#dialogFechaDevolucion").val("");
 	        jQuery("#dialogAplicarComisiones").prop('checked', false);
 			
-	        fin();
+	        //fin();
 			jQuery("#divDatosDevolucionManual").dialog({
 				height: 180,
 				width: 400,
