@@ -298,6 +298,8 @@
 		sessionStorage.setItem("registrosSeleccionadosPaginador", ObjArray.length);
 		
 		parent.cerrarDialog();
+		
+		var actualizaDom = "";
 	}
 	
 	function cargarChecksTodos(obj) {  		
@@ -336,10 +338,6 @@
 	function cambiarMotivo(fila) {
 		pulsarCheck(jQuery("input[name=checkDevolucion_" + fila + "]")[0]);
 	}
-	
-    setTimeout(function(){
-      //deferred onload
-    }, 1000);
 </script>
 	
 
