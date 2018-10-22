@@ -76,7 +76,7 @@
 			<!-- Asociada al boton Guardar -->
 			function accionGuardar() 
 			{	sub();	
-				PlantillasEnviosCamposForm.plantilla.value =  document.getElementById('DescripcionPlantilla').value;
+				PlantillasEnviosCamposForm.plantilla.value =  document.getElementById('descripcionPlantilla').value;
 				document.forms[0].target="submitArea";
 				document.forms[0].submit();
 			}
