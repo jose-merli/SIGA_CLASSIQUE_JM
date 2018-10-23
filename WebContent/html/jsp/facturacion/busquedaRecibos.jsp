@@ -69,7 +69,7 @@
 	<html:javascript formName="DevolucionesManualesForm" staticJavascript="false" />  
 </head>
 
-<body onload="ajusteAltoBotones('resultado'); <%=funcionBuscar%>">
+<body onload="ajusteAltoBotones('resultado');inicio(); <%=funcionBuscar%>">
 	<html:form action="/FAC_DevolucionesManual.do?noReset=true" method="POST" target="resultado">
 		<html:hidden property="modo" value = ""/>
 		<html:hidden property="recibos"/>
@@ -170,8 +170,7 @@
 			jQuery("#nombrePersona").val("<%=sNombreTitular%>");
 			document.DevolucionesManualesForm.modo.value="buscar";
 			document.DevolucionesManualesForm.target="resultado";	
-			buscar();
-			//document.DevolucionesManualesForm.submit();	
+			document.DevolucionesManualesForm.submit();	
 		}
 		
 		function mensaje() {
@@ -320,6 +319,10 @@
 			if (jQuery("#divDatosDevolucionManual").hasClass('ui-dialog-content')) {
 			 jQuery("#divDatosDevolucionManual").dialog("close"); 
 			}
+		}
+		
+		function inicio() {
+			jQuery.getScript('/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js');
 		}
 	</script>
 			
