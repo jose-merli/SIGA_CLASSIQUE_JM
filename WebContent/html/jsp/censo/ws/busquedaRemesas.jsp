@@ -73,7 +73,7 @@
 			
 </head>
 
-<body onLoad="inicio();ajusteAlto('resultado');">
+<body onLoad="ajusteAlto('resultado');inicio();">
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance"	property="path" scope="request" />
 	
 	
@@ -339,6 +339,11 @@
 					
 			function refrescarLocal(){
 				
+				cerrarPopup();
+				
+			}
+			
+			function cerrarPopup() {
 				if (jQuery("#dialogoNuevoExcel").is(':visible')){
 					closeDialog('dialogoNuevoExcel');
 				} 
@@ -346,7 +351,6 @@
 				if(jQuery("#dialogoActualizaCenso").is(':visible')) { 
 					closeDialog('dialogoActualizaCenso');
 				}
-				
 			}
 			
 			// Funcion asociada a boton buscar
@@ -371,6 +375,9 @@
 			}
 			
 			function inicio() {
+				actualizarCenso();
+				nuevo();
+				cerrarPopup();
 				if (document.forms['BusquedaRemesasForm'].modo.value == "abrirAvanzada") {
 					buscarPaginador();				
 				}
