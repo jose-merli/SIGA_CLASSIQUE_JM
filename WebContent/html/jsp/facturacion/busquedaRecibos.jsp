@@ -183,6 +183,12 @@
 	        jQuery("#dialogAplicarComisiones").prop('checked', false);
 			
 	        //fin();
+			mostrarPopupDivDatosDevolucionManual();
+			
+		}	
+		
+		
+		function mostrarPopupDivDatosDevolucionManual() {
 			jQuery("#divDatosDevolucionManual").dialog({
 				height: 180,
 				width: 400,
@@ -230,11 +236,12 @@
 		}
 		
 		function inicio() {
-			jQuery.getScript('/html/js/jquery.ui/js/jquery-ui-1.10.3.custom.min.js');
+			mostrarPopupDivDatosDevolucionManual();
+			cerrarDialog();
 		}
 	</script>
 
-<body onload="ajusteAltoBotones('resultado');inicio(); <%=funcionBuscar%>">
+<body onload="ajusteAltoBotones('resultado');inicio();<%=funcionBuscar%>">
 	<html:form action="/FAC_DevolucionesManual.do?noReset=true" method="POST" target="resultado">
 		<html:hidden property="modo" value = ""/>
 		<html:hidden property="recibos"/>
