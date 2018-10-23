@@ -247,27 +247,7 @@
 		<input type="hidden" name="limpiarFilaSeleccionada" value="">
 	    <input type="hidden" name="actionModal" value="">
 	    
-		<div id="divDatosDevolucionManual" title="<siga:Idioma key='facturacion.devolucionManual.datosDevolucion'/>" style="display:none">
-			<table align="left">
-				<tr>		
-					<td class="labelText" nowrap style="color:black">
-						<siga:Idioma key="facturacion.devolucionManual.fechaDevolucion"/>&nbsp;(*)
-					</td>
-					<td>
-						<siga:Fecha nombreCampo="dialogFechaDevolucion" valorInicial="" />
-					</td>
-				</tr>		
-				
-				<tr>
-					<td class="labelText" style="color:black">
-						<siga:Idioma key="facturacion.devolucionManual.aplicarComisiones"/>
-					</td>
-					<td>
-						<input type="checkbox" id="dialogAplicarComisiones">
-					</td>
-				</tr>			
-			</table>			
-		</div>		    
+			    
 		
 		<siga:ConjCampos leyenda="facturacion.devolucionManual.criterios">	
 			<table>
@@ -312,6 +292,28 @@
 			</table>
 		</siga:ConjCampos>	
 	</html:form>
+	
+	<div id="divDatosDevolucionManual" title="<siga:Idioma key='facturacion.devolucionManual.datosDevolucion'/>" style="display:none">
+			<table align="left">
+				<tr>		
+					<td class="labelText" nowrap style="color:black">
+						<siga:Idioma key="facturacion.devolucionManual.fechaDevolucion"/>&nbsp;(*)
+					</td>
+					<td>
+						<siga:Fecha nombreCampo="dialogFechaDevolucion" valorInicial="" />
+					</td>
+				</tr>		
+				
+				<tr>
+					<td class="labelText" style="color:black">
+						<siga:Idioma key="facturacion.devolucionManual.aplicarComisiones"/>
+					</td>
+					<td>
+						<input type="checkbox" id="dialogAplicarComisiones">
+					</td>
+				</tr>			
+			</table>			
+		</div>	
 
 	<!-- BOTONES: B Buscar -->
 	<siga:ConjBotonesBusqueda botones="B" />
