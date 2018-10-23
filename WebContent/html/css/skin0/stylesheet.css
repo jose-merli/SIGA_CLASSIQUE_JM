@@ -1208,7 +1208,7 @@ A.imageLink:active {
 
 .botonesDetalle {
   background-color:#95afcf;
-  position: absolute;
+  position: relative;
   width: 100%;
   height:30px;
   z-index: 2;
@@ -1218,8 +1218,8 @@ A.imageLink:active {
   border: none;
   left: 0px;
   bottom: 0px;
-
 }
+
 .botonesSeguido {
   background-color: #95afcf;
   position: relative;
