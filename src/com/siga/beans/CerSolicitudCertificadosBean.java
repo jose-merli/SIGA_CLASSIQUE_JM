@@ -34,6 +34,7 @@ public class CerSolicitudCertificadosBean extends MasterBean
 	private Integer idMotivoSolicitud;
 	private Integer idMotivoAnulacion;
 	private Long idPeticionProducto;
+	private String ficheroDocumento;
 
 	private String contadorCer;
 	private String sufijoCer;
@@ -91,6 +92,7 @@ public class CerSolicitudCertificadosBean extends MasterBean
 	static public final String C_IDMETODOSOLICITUD = "IDMETODOSOLICITUD";
 	static public final String C_IDMOTIVOSOLICITUD = "IDMOTIVOSOLICITUD";
 	static public final String C_IDMOTIVOANULACION = "IDMOTIVOANULACION";
+	static public final String C_FICHERODOCUMENTO = "FICHERO_DOCUMENTO";
 	
 	static public final String C_FECHACREACION  = "FECHACREACION";
     static public final String C_USUCREACION   = "USUCREACION";
@@ -448,6 +450,14 @@ public class CerSolicitudCertificadosBean extends MasterBean
 	public void setIdMotivoAnulacion(Integer idMotivoAnulacion)
 	{
 		this.idMotivoAnulacion = idMotivoAnulacion;
+	}
+
+	public String getFicheroDocumento() {
+		return ficheroDocumento;
+	}
+
+	public void setFicheroDocumento(String ficheroDocumento) {
+		this.ficheroDocumento = ficheroDocumento;
 	}
 
 }

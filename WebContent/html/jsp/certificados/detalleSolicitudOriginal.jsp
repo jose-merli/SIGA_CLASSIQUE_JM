@@ -195,7 +195,7 @@
 
 	String botones = "";
 	//Modo consulta
-	botones = "V";
+	botones = "V,DLNIF";
 		
 	String tipoCombo="boxConsulta";
 	String tipoComboRojo="boxConsultaRojoN";
@@ -231,6 +231,12 @@
 	<!-- INICIO: SCRIPTS BOTONES -->
 	<script language="JavaScript">
 	jQuery.noConflict();
+		function refrescarLocal() {
+			sub();
+			CerSolicitudOriginalForm.target="mainPestanas";
+			CerSolicitudOriginalForm.modo.value="editar";
+			CerSolicitudOriginalForm.submit();
+		}
 		// Asociada al boton Cerrar
 		function accionVolver() 
 		{		
@@ -239,6 +245,12 @@
 			CerSolicitudOriginalForm.target = "mainWorkArea";
 			CerSolicitudOriginalForm.modo.value="volver";
 			CerSolicitudOriginalForm.submit();
+		}
+		function descargarDocumento() {
+				sub();
+				CerSolicitudOriginalForm.descargarCertificado.value="1";
+				CerSolicitudOriginalForm.modo.value="descargar";
+				CerSolicitudOriginalForm.submit();
 		}
 	</script>
 		

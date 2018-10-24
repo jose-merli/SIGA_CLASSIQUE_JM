@@ -1,18 +1,27 @@
 package com.siga.certificados.action;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.UserTransaction;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesFecha;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.Paginador;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenInstitucionAdm;
@@ -22,6 +31,9 @@ import com.siga.beans.CerSolicitudCertificadosBean;
 import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturacionProgramadaAdm;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.certificados.Certificado;
+import com.siga.certificados.form.SIGACerDetalleSolicitudForm;
+import com.siga.certificados.form.SIGACerSolicitudOriginalForm;
 import com.siga.facturacion.form.ConfirmarFacturacionForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -43,6 +55,9 @@ public class SIGACerSolicitudOriginalAction extends MasterAction {
 
 				if (accion.equalsIgnoreCase("ver")) {
 					mapDestino = editar(mapping, miForm, request, response);
+				} else if (accion.equalsIgnoreCase("descargar")) {
+					mapDestino = descargar(mapping, miForm, request, response);
+
 				} else {
 					return super.executeInternal(mapping, formulario, request, response);
 				}
@@ -120,6 +135,7 @@ public class SIGACerSolicitudOriginalAction extends MasterAction {
 			request.setAttribute("institucionOrigen", beanInstitucionOrigen);
 			request.setAttribute("institucionDestino", beanInstitucionDestino);
 			request.setAttribute("institucionColegiacion", beanInstitucionColegiacion);
+			request.setAttribute("documentoDescarga", beanSolicitud.getFicheroDocumento());
 			
 			// obteniendo el valor del parametro de control de facturas a la JSP para que actue en consecuencia
 			GenParametrosAdm paramAdm = new GenParametrosAdm(userBean);
@@ -293,6 +309,100 @@ public class SIGACerSolicitudOriginalAction extends MasterAction {
 			throwExcp("messages.general.error", new String[] { "modulo.certificados" }, e, null);
 		}
 		return "mostrar";
+	}
+	
+	protected String descargar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
+		UserTransaction tx = null;
+		try {
+			// Obtengo usuario y creo manejadores para acceder a las BBDD
+			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+
+			SIGACerSolicitudOriginalForm form = (SIGACerSolicitudOriginalForm) formulario;
+			CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(usr);
+			Vector vOcultos = form.getDatosTablaOcultos(0);
+			String idInstitucion = "";
+			String idSolicitud = "";
+
+			if (vOcultos != null) {
+				/** Icono listado de solicitudes **/
+				idInstitucion = ((String) vOcultos.elementAt(0)).trim();
+				idSolicitud = ((String) vOcultos.elementAt(1)).trim();
+
+			} else {
+				/** Nueva ventana detalle certificado **/
+				idInstitucion = form.getIdInstitucion();
+				idSolicitud = form.getIdSolicitud();
+			}
+
+			Hashtable<String, Object> htSolicitud = new Hashtable<String, Object>();
+			htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
+			htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
+
+			Vector vDatos = admSolicitud.selectByPK(htSolicitud);
+
+			CerSolicitudCertificadosBean solicitudCertificadoBean = (CerSolicitudCertificadosBean) vDatos.elementAt(0);
+			String pathFichero = solicitudCertificadoBean.getFicheroDocumento();
+			File fDocumento = new File(pathFichero);
+
+			String nombrefichero = pathFichero.substring(pathFichero.lastIndexOf("/")+1);
+			request.setAttribute("nombreFichero", nombrefichero);
+			String path = UtilidadesString.replaceAllIgnoreCase(fDocumento.getPath(), "\\", "/");
+			request.setAttribute("rutaFichero", path);
+			request.setAttribute("borrarFichero", "false");
+
+		} catch (Exception e) {
+			throwExcp("messages.general.error", new String[] { "modulo.certificados" }, e, tx);
+		}
+
+		if (request.getParameter("descargarCertificado") != null && !"".equals(request.getParameter("descargarCertificado"))
+				&& request.getParameter("descargarCertificado").equalsIgnoreCase("1")) {
+			return "exitoDescarga";
+		} else {
+			return "descargaFichero";
+		}
+
+	}
+	
+	public static void generarZip(UsrBean usr, String idInstitucion, String idSolicitud) throws ClsExceptions, SIGAException {
+
+		CerSolicitudCertificadosAdm admSolicitud = new CerSolicitudCertificadosAdm(usr);
+
+		Hashtable<String, Object> htSolicitud = new Hashtable<String, Object>();
+		htSolicitud.put(CerSolicitudCertificadosBean.C_IDINSTITUCION, idInstitucion);
+		htSolicitud.put(CerSolicitudCertificadosBean.C_IDSOLICITUD, idSolicitud);
+
+		Vector vDatos = admSolicitud.selectByPK(htSolicitud);
+
+		CerSolicitudCertificadosBean solicitudCertificadoBean = (CerSolicitudCertificadosBean) vDatos.elementAt(0);
+
+		ArrayList<File> fCertificado = admSolicitud.recuperarVariosCertificado(solicitudCertificadoBean);
+
+		// Genera un array con los ficheros y ruta de su carpeta
+		ArrayList<Hashtable<String, Object>> arrayDatosCertificados = new ArrayList<Hashtable<String, Object>>();
+		Hashtable<String, Object> hDatosCertificados = new Hashtable<String, Object>();
+		for (int i = 0; i < fCertificado.size(); i++) {
+
+			hDatosCertificados.put("fichero", fCertificado.get(i));
+			hDatosCertificados.put("rutaCarpeta", fCertificado.get(i).getPath());
+			arrayDatosCertificados.add(hDatosCertificados);
+			hDatosCertificados = new Hashtable<String, Object>();
+		}
+
+		// Generamos el ZIP
+		File ficheroZip = null;
+		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		// Obtenemos las rutas del zip
+		String rutaAlmacen = admSolicitud.getRutaCertificadoDirectorioBD(solicitudCertificadoBean.getIdInstitucion());
+		rutaAlmacen = admSolicitud.getRutaCertificadoDirectorio(solicitudCertificadoBean, rutaAlmacen);
+
+		String rutaFicheroZip = rutaAlmacen + File.separator + solicitudCertificadoBean.getIdSolicitud() + ".zip";
+		ficheroZip = new File(rutaFicheroZip);
+
+		// Generamos el fichero zip con todas los certificados asociadas a la
+		// solicitud
+		Certificado certificado = new Certificado();
+		certificado.doZip(rutaAlmacen + File.separator, String.valueOf(solicitudCertificadoBean.getIdSolicitud()), fCertificado, solicitudCertificadoBean, admSolicitud);
+
 	}
 	
 }

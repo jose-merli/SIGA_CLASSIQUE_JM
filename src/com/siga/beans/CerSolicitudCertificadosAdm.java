@@ -94,6 +94,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 		        		   CerSolicitudCertificadosBean.C_IDMETODOSOLICITUD,
 		        		   CerSolicitudCertificadosBean.C_IDMOTIVOSOLICITUD,
 		        		   CerSolicitudCertificadosBean.C_IDMOTIVOANULACION,
+		        		   CerSolicitudCertificadosBean.C_FICHERODOCUMENTO,
 		        		   CerSolicitudCertificadosBean.C_USUMODIFICACION,
 		        		   CerSolicitudCertificadosBean.C_CBO_CODIGO,
 		        		   CerSolicitudCertificadosBean.C_ACEPTACESIONMUTUALIDAD,
@@ -195,6 +196,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 			bean.setMetodoSolicitud(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_IDMETODOSOLICITUD));
 			bean.setIdMotivoSolicitud(UtilidadesHash.getInteger(hash, CerSolicitudCertificadosBean.C_IDMOTIVOSOLICITUD));
 			bean.setIdMotivoAnulacion(UtilidadesHash.getInteger(hash, CerSolicitudCertificadosBean.C_IDMOTIVOANULACION));
+			bean.setFicheroDocumento(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_FICHERODOCUMENTO));
 			bean.setFechaMod(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, CerSolicitudCertificadosBean.C_USUMODIFICACION));
 			bean.setFechaCreacion(UtilidadesHash.getString(hash, CerSolicitudCertificadosBean.C_FECHACREACION));
@@ -257,6 +259,7 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_IDMETODOSOLICITUD, b.getMetodoSolicitud());
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_IDMOTIVOSOLICITUD, b.getIdMotivoSolicitud());
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_IDMOTIVOANULACION, b.getIdMotivoAnulacion());
+			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_FICHERODOCUMENTO, b.getFicheroDocumento());
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_FECHAMODIFICACION, b.getFechaMod());
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_USUMODIFICACION, b.getUsuMod());
 			UtilidadesHash.set(htData, CerSolicitudCertificadosBean.C_FECHACREACION, b.getFechaCreacion());

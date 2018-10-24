@@ -314,14 +314,14 @@
 	jQuery.noConflict();
 		function refrescarLocal() {
 			sub();
-			CerDetalleSolicitudForm.target="mainWorkArea";
+			CerDetalleSolicitudForm.target="mainPestanas";
 			CerDetalleSolicitudForm.modo.value="editar";
 			CerDetalleSolicitudForm.submit();
 		}
 		
 		function refrescarLocalDescarga() {
 			sub();
-			CerDetalleSolicitudForm.target="mainWorkArea";
+			CerDetalleSolicitudForm.target="mainPestanas";
 			CerDetalleSolicitudForm.modo.value="editarDescarga";
 			CerDetalleSolicitudForm.submit();
 		}

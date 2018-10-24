@@ -119,7 +119,8 @@ public enum ActionButtonsConstants {
 	REGENERAR ("rg","cert.boton.regenerar","accionRegenerar()",95),
 	BORRARMASIVO ("bm","general.delete.selected","borrarSeleccionados()",96),
 	MARCARRESPUESTAINCORRECTA ("mri","e_comunicaciones.boton.marcarRespuestaIncorrecta","marcarRespuestaIncorrecta()",97),
-	SUBIR_ERRORES_CAM ("ecam","facturacionjg.boton.subirFicheroErrorCAM","subirFicheroErrorCAM()",98), ;
+	SUBIR_ERRORES_CAM ("ecam","facturacionjg.boton.subirFicheroErrorCAM","subirFicheroErrorCAM()",98),
+	DESCARGARDOCUMENTO ("DLNIF","general.boton.descargardocumento","descargarDocumento()",99);
 
     private final String valor;   
 	private final String label;   

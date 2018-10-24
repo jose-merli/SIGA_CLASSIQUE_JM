@@ -334,6 +334,9 @@ public class TagBotonesAccion extends TagSupport {
 						} // del while 
 					}
 					break;
+				case DESCARGARDOCUMENTO:
+					printButton(usrbean, out, abc);
+					break;
 				default: 
 					if (tipoAcceso.equalsIgnoreCase(SIGAPTConstants.ACCESS_FULL) && 
 							this.valoresEdicion.contains(this.modo)) {  
