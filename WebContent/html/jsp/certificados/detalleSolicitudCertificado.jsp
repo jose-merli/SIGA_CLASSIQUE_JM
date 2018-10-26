@@ -535,7 +535,7 @@
 		    }
 		  if (CerDetalleSolicitudForm.idInstitucionDestino){	
 		  <%if (tipoCertificado != null && tipoCertificado.equals("C")) {%> 
-		       if (CerDetalleSolicitudForm.checkCobro.checked && !bSolicitudTelematica){
+		       if (CerDetalleSolicitudForm.checkCobro.checked){
 			         CerDetalleSolicitudForm.idInstitucionDestino.value="";
 			  }else{
 			  	if(idInstitucion==2000 || idInstitucion.substring(0,2)==30){
