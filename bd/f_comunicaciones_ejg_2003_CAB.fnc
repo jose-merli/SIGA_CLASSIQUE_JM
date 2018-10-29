@@ -1,4 +1,4 @@
-create or replace function f_comunicaciones_ejg_2003_CAB(P_INSTITUCION IN SCS_EJG.IDINSTITUCION%type,
+create or replace function USCGAE.f_comunicaciones_ejg_2003_CAB(P_INSTITUCION IN SCS_EJG.IDINSTITUCION%type,
                                                          P_IDREMESA    IN CAJG_REMESA.IDREMESA%type)
   return clob is
   salida          clob;
@@ -110,6 +110,17 @@ begin
                     AND P.IDTIPOEJG = EJG.IDTIPOEJG
                     AND P.ESTADO = 30)--FINALIZADO
                     AS EXP14_EEJG
+          ,(SELECT  DECODE(COUNT(1), 0, ''N'',''S'')
+                      FROM SCS_DOCUMENTACIONEJG DE
+                      WHERE DE.IDFICHERO IS NOT NULL
+                      AND DE.IDINSTITUCION = EJG.IDINSTITUCION
+                      AND DE.ANIO = EJG.ANIO
+                      AND DE.IDTIPOEJG = EJG.IDTIPOEJG
+                      AND DE.NUMERO = EJG.NUMERO
+                 ) AS EXP15_DOC_ADICIONAL
+               ,
+               DECODE(NVL(SOL.ASISTIDOSOLICITAJG, 0), 1, ''S'', ''N'') AS  EXP16_SOL_JG
+               
           , ''##'' AS SALTO_LINEA_2
      , ''PRD'' AS TIPO_REGISTRO_PRD
           , LPAD(DECODE(DL.IDPERSONA, NULL, ''      '', NVL(F_SIGA_CALCULONCOLEGIADO(DL.IDINSTITUCION, DL.IDPERSONA), ''      '')), 6, ''0'') AS PRD1_NCOLEGIADOABOGADO
@@ -292,7 +303,7 @@ begin
           , RPAD(DECODE(SOL.TIPOPERSONAJG, ''F'', NVL(SOL.NOMBRE, '' ''), '' ''), 50, '' '') AS SOL4_NOMBRE_SOLICITANTE
           , RPAD(DECODE(SOL.TIPOPERSONAJG, ''F'', NVL(SOL.APELLIDO1, '' ''), '' ''), 50, '' '') AS SOL5_APELLIDO1_SOLICITANTE
           , RPAD(DECODE(SOL.TIPOPERSONAJG, ''F'', NVL(SOL.APELLIDO2, '' ''), '' ''), 50, '' '') AS SOL6_APELLIDO2_SOLICITANTE
-          , '' '' AS SOL7_SEXO_SOLICITANTE --no obligatorio
+          , DECODE(SOL.SEXO,''H'',''H'',''M'',''M'',''N'') AS SOL7_SEXO_SOLICITANTE --no obligatorio
           , RPAD(NVL((SELECT CODIGO FROM PCAJG_PAIS P, PCAJG_PAIS_CENPAIS S
                     WHERE P.IDENTIFICADOR = S.IDENTIFICADOR
                     AND P.IDINSTITUCION = S.IDINSTITUCION
@@ -308,6 +319,9 @@ begin
           , RPAD('' '', 15, '' '') AS SOL16_NUMERO_TELEFONO --no obligatorio
           , RPAD('' '', 1, '' '') AS SOL17_PRESO --obligatorio??
           , RPAD('' '', 10, '' '') AS SOL18_CENTRO_PENITENCIARIO --obligatorio??
+          , DECODE(SOL.AUTORIZAAVISOTELEMATICO,null,'' '', 1, ''S'', ''N'') AS SOL19_AUTORIZA_TELEM
+          , DECODE(EJG.CALIDAD,null,'' '',0,''S'',''N'') AS SOL20_DEMANDADO
+          
           , ''##'' AS SALTO_LINEA_5
      , ''DOM'' AS TIPO_REGISTRO_DOM
           , RPAD(''2'', 1, '' '') AS DOM1_TIPO_DOMICILIO
@@ -422,7 +436,7 @@ begin
 
           AND R.IDREMESA = ' || P_IDREMESA ||
             ' AND R.IDINSTITUCION = ' || P_INSTITUCION || '
-          ORDER BY PRD4_ANIO_DESIGNA, TO_NUMBER(TRIM(PRD3_NUMERO_DESIGNA)), EXP2_ANIO_EXPEDIENTE, EXP1_NUM_EXPEDIENTE';
+          ORDER BY  EXP2_ANIO_EXPEDIENTE asc, EXP1_NUM_EXPEDIENTE asc, PRD4_ANIO_DESIGNA, TO_NUMBER(TRIM(PRD3_NUMERO_DESIGNA))';
 
   cuentaCondicion := 0;
   --ELIMINADA LA OBLIGATORIEDAD DE LOS CAMPOS EXP7 Y EXP8 SEGÚN CORREO DE CARMEN DEL 23/05/2011

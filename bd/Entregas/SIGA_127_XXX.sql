@@ -444,3 +444,5 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.boton.descargardocumento', 'Descargar Documento#GL', 0, '4', sysdate, 0, '19');
 
 -- Ejecutados en Integracion por FMS el 23/10/2018 a las 13:30
+
+coger f_comunicaciones_ejg_2003_CAB
