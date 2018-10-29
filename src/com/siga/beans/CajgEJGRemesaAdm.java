@@ -956,6 +956,11 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 //		  EXP12_PROCEDENCIA             VARCHAR2(100),
 //		  EXP13_OBSERVACIONES           VARCHAR2(1000),
 //		  EXP14_EEJG    
+//		EXP15	Documentación adicional			1	SI	VARCHAR2(1)	S = El expediente trae documentación económica adicional (en papel)				N = El expediente no trae documentación económica adicional (en papel)
+//				EXP16	Solicitud firmada			1	SI	VARCHAR2(1)	S = El solicitante ha firmado su solicitud				N = El solicitante no ha firmado su solicitud
+
+		
+		
 		
 //				AXP1	Tipo de actualización	VARCHAR2(3)	AJGR_C_TIPOACTUALIZACIÓN(  1	Actualización datos expediente
 //				AXP2	Nº  de expediente del Colegio de Abogados (original)	VARCHAR2(8)	
@@ -974,6 +979,14 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 //				AXP13	Mot.anulacion	NUMBER(4)	Se lee y recupera del fichero pero no se guarda en AJGR
 //				AXP14	Nº de documentos electrónicos	VARCHAR2(2)	Puede tener valor vacío o introducir un número de hasta 2 dígitos.
 		
+//				AXP15	Documentación adicional			1	SI	VARCHAR2(1)	S = El expediente trae documentación económica adicional (en papel) N = El expediente no trae documentación económica adicional (en papel)
+
+				
+//				AXP16	Solicitud firmada			1	SÍ	VARCHAR2(1)	S = El solicitante ha firmado su solicitud			N = El solicitante no ha firmado su solicitud
+
+		
+		
+		
 		linea.append(StringHelper.rellena(expHashtableOriginal.get("EXP1_NUM_EXPEDIENTE"), '0', 8, StringHelper.IZQUIERDA));
 		linea.append(StringHelper.rellena(expHashtableOriginal.get("EXP2_ANIO_EXPEDIENTE"), '0', 4, StringHelper.IZQUIERDA));
 		//Tenemos que buscar el expediente CAJG ya qu eno se envia en los expedientes
@@ -991,6 +1004,10 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 		linea.append(StringHelper.rellena("", '0', 4, StringHelper.IZQUIERDA));
 		//nº docuemntos el enviados
 		linea.append(StringHelper.rellena("", ' ', 2, StringHelper.DERECHA));
+		//Envia docuemntacion adicional
+		linea.append(StringHelper.rellena(expHashtableNew.get("EXP15_DOC_ADICIONAL"), ' ', 1, StringHelper.IZQUIERDA));
+		//Ha solicitado la justicia gratuita
+		linea.append(StringHelper.rellena(expHashtableNew.get("EXP16_SOL_JG"), ' ', 1, StringHelper.IZQUIERDA));
 		
 		return linea.toString();
 		
@@ -1217,9 +1234,10 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 				linea.append(StringHelper.rellena(expHashtableNew.get("SOL17_PRESO"), ' ', 1, StringHelper.DERECHA));
 				linea.append(StringHelper.rellena(expHashtableNew.get("SOL18_CENTRO_PENITENCIARIO"), ' ', 10, StringHelper.DERECHA));
 				// Esta linea vacia para para SOA26_Autorización
-				linea.append(" ");
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL19_AUTORIZA_TELEM"), ' ', 1, StringHelper.DERECHA));
 				// Esta linea vacia para para SOA27_Denunciado
-				linea.append(" ");
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL20_DEMANDADO"), ' ', 1, StringHelper.DERECHA));
+				
 			}else{
 				linea.append(StringHelper.rellena("", ' ', 1, StringHelper.IZQUIERDA));
 				linea.append(StringHelper.rellena("", ' ', 100, StringHelper.DERECHA));
