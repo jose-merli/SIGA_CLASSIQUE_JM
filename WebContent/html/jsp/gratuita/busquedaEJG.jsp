@@ -376,13 +376,13 @@
 		comboTipoResolucion = document.getElementById('idTipoResolucionEJG');
 		var idInstitucion = document.forms['DefinirEJGForm'].idInstitucion.value;
 		if(document.getElementById('idFundamentoJuridico')){
-			elementsTipoResolucion =  jQuery(comboTipoResolucion).val();
+			elementsTipoResolucion =  comboTipoResolucion.value;
 			var comboFundamentos = document.getElementById('idFundamentoJuridico');
 			
 			
 			var optioncomboFundamentos = comboFundamentos.options;
 			//if(elementsTipoResolucion  && jQuery(comboTipoResolucion).val().toString()!='-1'){
-			if(elementsTipoResolucion && jQuery(comboTipoResolucion).val().toString()!='-1'){
+			if(elementsTipoResolucion && elementsTipoResolucion.toString()!='-1'){
 				if(comboTipoResolucion.value!=""){
 					jQuery.ajax({ //Comunicación jQuery hacia JSP  
 			   			type: "POST",
