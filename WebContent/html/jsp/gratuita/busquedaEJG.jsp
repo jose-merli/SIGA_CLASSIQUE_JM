@@ -392,12 +392,25 @@
 						success: function(json){		
 							var fundamentos = json.fundamentos;
 								optioncomboFundamentos.length = 0;
-								jQuery("#idFundamentoJuridico").append("<option  value=''>&nbsp;</option>");
+								//jQuery("#idFundamentoJuridico").append("<option  value=''>&nbsp;</option>");
+																
+								var option = document.createElement("option");
+								option.text = "";
+								option.value = "";
+								comboFundamentos.appendChild(option);
+
+								
 		           				jQuery.each(fundamentos, function(i,item2){
 		           					seleccionado = '';
 		           					if(document.forms[0].idTipoFundamento.value==item2.idFundamento)
 		           						seleccionado = 'selected';
-			                        jQuery("#idFundamentoJuridico").append("<option "+seleccionado+" value='"+item2.idFundamento+"'>"+item2.descripcion+"</option>");
+			                        //jQuery("#idFundamentoJuridico").append("<option "+seleccionado+" value='"+item2.idFundamento+"'>"+item2.descripcion+"</option>");
+									
+									var option = document.createElement("option");
+									option.text = item2.descripcion;
+									option.value = item2.idFundamento;
+									option.selected = seleccionado;
+									comboFundamentos.appendChild(option);
 			                        
 			                    });
 						},
@@ -1049,8 +1062,22 @@ if(usr.isComision()){
 		}
 			
 			
-		var tipoResol = jQuery("#idTipoResolucionEJG").val();
-		if(tipoResol){
+		var tipoResolObj = document.getElementById("idTipoResolucionEJG");//jQuery("#idTipoResolucionEJG").val();
+		
+		 		 
+		if(tipoResolObj){
+			
+			var tipoResol = new Array();
+			var i;
+			var count = 0;
+			for (i=0; i < tipoResolObj.options.length; i++) { 
+				if (tipoResolObj.options[i].selected) {
+					tipoResol[count] = tipoResolObj.options[i].value;
+					count++; 
+				} 
+			}
+						
+			
 			if(true){
 				if(tipoResol.toString().substring(0,1)==','){
 					tipoResol = tipoResol.toString().substring(1);
