@@ -1451,7 +1451,7 @@
 							avisoTelematico = new String("");
 %>
 						
-						<td class="labelText" width="200px">
+						<td class="labelText" colspan="2">
 							<siga:Idioma key="gratuita.personaJG.literal.autorizaavisotel"/>
 						</td>
 						<td>
@@ -1468,7 +1468,7 @@
 							solicitajg = new String("");
 %>
 						
-						<td class="labelText" width="200px">
+						<td class="labelText" style="width:0px">
 							<siga:Idioma key="gratuita.personaJG.literal.solicitajg"/>
 						</td>
 						<td>
@@ -1483,7 +1483,7 @@
 								if (autorizaeejg == null)
 									autorizaeejg = new String("");
 %>
-						<td class="labelText" width="200px">
+						<td class="labelText" style="width:0px">
 							<siga:Idioma key="gratuita.personaJG.literal.autorizaeejg"/>
 						</td>
 						<td>
