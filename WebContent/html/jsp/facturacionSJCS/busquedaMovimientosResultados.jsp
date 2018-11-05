@@ -223,9 +223,9 @@
 		</siga:Table>	
 		
 		<div style="position:absolute; left:400px;bottom:0px;z-index:99;">
-			<table align="center" border="0">
+			<table align="center" border="0" class="botonesSeguido">
 				<tr>
-					<td class="botonesDetalle">
+					<td class="labelText">
 						<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal"/>
 							<% if (mosMovimiento != null && mosMovimiento.equals("0")) { %>
 								<input type="checkbox" id="idCheckHistorico" name="checkHistorico" onclick="comprobarCheckHistorico(this);"checked>

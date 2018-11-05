@@ -353,9 +353,9 @@
 	</siga:Table>
 
 	<div style="position:absolute; left:400px;bottom:0px;z-index:99;">
-		<table align="center">
+		<table align="center" class="botonesSeguido">
 			<tr>
-				<td class="botonesDetalle">
+				<td class="labelText">
 					<siga:Idioma key="gratuita.inicio_PestanaCalendarioGuardias.literal.ordenacion" />:	&nbsp; 
 					<!-- Combo de ordenacion--> 
 					<select id="orden" name="orden" onchange="refrescarLocalThis(this)" class="boxCombo">
