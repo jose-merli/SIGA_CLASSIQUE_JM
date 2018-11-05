@@ -1429,7 +1429,7 @@
 								<html:text name="PersonaJGForm" property="apellido2" maxlength="100" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:120px" />
 							</div>
 						</td>
-				
+					
 						<td>
 <%
 							if (!accion.equalsIgnoreCase("ver")) {
@@ -1442,6 +1442,56 @@
 <%
 							}
 %>
+						</td>
+					</tr>
+					<tr>
+<%
+						String avisoTelematico = miform.getAutorizaAvisoTelematico();
+						if (avisoTelematico == null)
+							avisoTelematico = new String("");
+%>
+						
+						<td class="labelText" width="200px">
+							<siga:Idioma key="gratuita.personaJG.literal.autorizaavisotel"/>
+						</td>
+						<td>
+								<html:select styleClass="boxCombo" name="PersonaJGForm" value="<%=avisoTelematico%>" property="autorizaAvisoTelematico">
+									<html:option value=""></html:option>
+									<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
+									<html:option value="0"><siga:Idioma key="general.no"/></html:option>
+								</html:select>
+						</td>
+<%
+			
+						String solicitajg = miform.getAsistidoSolicitaJG();
+						if (solicitajg == null)
+							solicitajg = new String("");
+%>
+						
+						<td class="labelText" width="200px">
+							<siga:Idioma key="gratuita.personaJG.literal.solicitajg"/>
+						</td>
+						<td>
+								<html:select styleClass="boxCombo" name="PersonaJGForm" value="<%=solicitajg%>" property="asistidoSolicitaJG">
+									<html:option value=""></html:option>
+									<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
+									<html:option value="0"><siga:Idioma key="general.no"/></html:option>
+								</html:select>
+						</td>
+<%
+								String autorizaeejg = miform.getAsistidoAutorizaEEJG();
+								if (autorizaeejg == null)
+									autorizaeejg = new String("");
+%>
+						<td class="labelText" width="200px">
+							<siga:Idioma key="gratuita.personaJG.literal.autorizaeejg"/>
+						</td>
+						<td>
+								<html:select styleClass="boxCombo" name="PersonaJGForm" value="<%=autorizaeejg%>" property="asistidoAutorizaEEJG">
+									<html:option value=""></html:option>
+									<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
+									<html:option value="0"><siga:Idioma key="general.no"/></html:option>
+								</html:select>
 						</td>
 					</tr>
 				</table>

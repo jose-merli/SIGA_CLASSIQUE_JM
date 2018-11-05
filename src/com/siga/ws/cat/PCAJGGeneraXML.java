@@ -775,7 +775,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				, DR_DP_DD_M_SUBCODIGOMUNICIPIO
 				, DR_DP_DD_CODIGOPOSTAL);
 		
-			datosContacto(datosRepresentante.addNewDatosContacto(), htEJGs, DR_DC_NUMEROTELEFONO1, DR_DC_NUMEROTELEFONO2, DR_DC_EMAIL);
+			datosContacto(datosRepresentante.addNewDatosContacto(), htEJGs, DR_DC_NUMEROTELEFONO1, DR_DC_NUMEROTELEFONO2, DR_DC_EMAIL, DR_DC_AVISOTELEMATICO);
 		}
 	}
 
@@ -806,7 +806,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				, DS_DP_DD_M_SUBCODIGOMUNICIPIO
 				, DS_DP_DD_CODIGOPOSTAL);
 		
-		datosContacto(datosSolicitante.addNewDatosContacto(), htEJGs, DS_DC_NUMEROTELEFONO1, DS_DC_NUMEROTELEFONO2, DS_DC_EMAIL);
+		datosContacto(datosSolicitante.addNewDatosContacto(), htEJGs, DS_DC_NUMEROTELEFONO1, DS_DC_NUMEROTELEFONO2, DS_DC_EMAIL, DS_DC_AVISOTELEMATICO);
 		
 		//DocumentacionExpediente documentacionExpediente = datosSolicitante.addNewDocumentacionExpediente();
 		
@@ -938,10 +938,11 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @param dc_numerotelefono2
 	 * @param dc_email
 	 */
-	private void datosContacto(DatosContacto datosContacto, Hashtable htEJGs, String dc_numerotelefono1, String dc_numerotelefono2, String dc_email) {
+	private void datosContacto(DatosContacto datosContacto, Hashtable htEJGs, String dc_numerotelefono1, String dc_numerotelefono2, String dc_email, String dc_avisotelematico) {
 		datosContacto.setNumeroTelefono1((String)htEJGs.get(dc_numerotelefono1));
 		datosContacto.setNumeroTelefono2((String)htEJGs.get(dc_numerotelefono2));
 		datosContacto.setEmail((String)htEJGs.get(dc_email));
+		datosContacto.setNotificacionElectronica(Short.valueOf((String)htEJGs.get(dc_avisotelematico)));
 	}
 
 	

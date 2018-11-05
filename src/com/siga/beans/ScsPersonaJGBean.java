@@ -60,6 +60,9 @@ public class ScsPersonaJGBean extends MasterBean{
 	private String pisoDir;
 	private String puertaDir;
 	private String idTipoVia;
+	private String asistidoSolicitaJG;
+	private String asistidoAutorizaEEJG;
+	private String autorizaAvisoTelematico;
 
 	
 	/* Nombre de Tabla*/
@@ -109,6 +112,9 @@ public class ScsPersonaJGBean extends MasterBean{
 	static public final String  C_PISODIR		      	=			"PISODIR";
 	static public final String  C_PUERTADIR			    =			"PUERTADIR";
 	static public final String  C_IDTIPOVIA			    =			"IDTIPOVIA";
+	static public final String  C_ASISTIDOSOLICITAJG	=			"ASISTIDOSOLICITAJG";
+	static public final String  C_ASISTIDOAUTORIZAEEJG	=			"ASISTIDOAUTORIZAEEJG";
+	static public final String  C_AUTORIZAAVISOTELEMATICO	=			"AUTORIZAAVISOTELEMATICO";
 	
 	
 	/*Metodos SET*/
@@ -581,6 +587,24 @@ public class ScsPersonaJGBean extends MasterBean{
 	}
 	public void setIdTipoVia(String idTipoVia) {
 		this.idTipoVia = idTipoVia;
+	}
+	public String getAsistidoSolicitaJG() {
+		return asistidoSolicitaJG;
+	}
+	public void setAsistidoSolicitaJG(String asistidoSolicitaJG) {
+		this.asistidoSolicitaJG = asistidoSolicitaJG;
+	}
+	public String getAsistidoAutorizaEEJG() {
+		return asistidoAutorizaEEJG;
+	}
+	public void setAsistidoAutorizaEEJG(String asistidoAutorizaEEJG) {
+		this.asistidoAutorizaEEJG = asistidoAutorizaEEJG;
+	}
+	public String getAutorizaAvisoTelematico() {
+		return autorizaAvisoTelematico;
+	}
+	public void setAutorizaAvisoTelematico(String autorizaAvisoTelematico) {
+		this.autorizaAvisoTelematico = autorizaAvisoTelematico;
 	}
 	
 

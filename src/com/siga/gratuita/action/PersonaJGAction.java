@@ -1333,6 +1333,9 @@ public class PersonaJGAction extends MasterAction {
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_PISODIR,perBean.getPisoDir());
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_PUERTADIR,perBean.getPuertaDir());
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDTIPOVIA,perBean.getIdTipoVia());		
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ASISTIDOAUTORIZAEEJG,perBean.getAsistidoAutorizaEEJG());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ASISTIDOSOLICITAJG,perBean.getAsistidoSolicitaJG());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO,perBean.getAutorizaAvisoTelematico());
 					
 					idRepresentanteJG=perBean.getIdRepresentanteJG();
 					
@@ -1416,6 +1419,15 @@ public class PersonaJGAction extends MasterAction {
 							ScsPersonaJGAdm adm = new ScsPersonaJGAdm(this.getUserBean(request));
 							miform.setRepresentante(adm.getNombreApellidos(perBean.getIdRepresentanteJG().toString(),perBean.getIdInstitucion().toString()));
 						}
+					}
+					if (perBean.getAsistidoAutorizaEEJG() != null){
+						miform.setAsistidoAutorizaEEJG(perBean.getAsistidoAutorizaEEJG());
+					}
+					if (perBean.getAsistidoSolicitaJG() != null){
+						miform.setAsistidoSolicitaJG(perBean.getAsistidoSolicitaJG());
+					}
+					if (perBean.getAutorizaAvisoTelematico() != null){
+						miform.setAutorizaAvisoTelematico(perBean.getAutorizaAvisoTelematico());
 					}
 					miform.setObservaciones(perBean.getObservaciones());
 					
@@ -2002,7 +2014,22 @@ public class PersonaJGAction extends MasterAction {
 			if(miform.getTipoVia()==null)
 				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDTIPOVIA,"");
 			else
-				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDTIPOVIA,miform.getTipoVia());	
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_IDTIPOVIA,miform.getTipoVia());
+			
+			if(miform.getAsistidoAutorizaEEJG()==null)
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_ASISTIDOAUTORIZAEEJG,"");
+			else
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_ASISTIDOAUTORIZAEEJG,miform.getAsistidoAutorizaEEJG());
+			
+			if(miform.getAsistidoSolicitaJG()==null)
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_ASISTIDOSOLICITAJG,"");
+			else
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_ASISTIDOSOLICITAJG,miform.getAsistidoSolicitaJG());
+			
+			if(miform.getAutorizaAvisoTelematico()==null)
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO,"");
+			else
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO,miform.getAutorizaAvisoTelematico());
 	     	
 			// recojo el databackup
 			Hashtable dataBackup = (Hashtable) request.getSession().getAttribute("DATABACKUP");
@@ -2100,6 +2127,9 @@ public class PersonaJGAction extends MasterAction {
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_PISODIR,perBean.getPisoDir());
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_PUERTADIR,perBean.getPuertaDir());
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDTIPOVIA,perBean.getIdTipoVia());	
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ASISTIDOAUTORIZAEEJG,perBean.getAsistidoAutorizaEEJG());	
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ASISTIDOSOLICITAJG,perBean.getAsistidoSolicitaJG());	
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO,perBean.getAutorizaAvisoTelematico());	
 					
 					//dataBackup.put(ScsPersonaJGBean.T_NOMBRETABLA,hash);
 					if (miform.getConceptoE().equals(PersonaJGAction.PERSONAJG)) {

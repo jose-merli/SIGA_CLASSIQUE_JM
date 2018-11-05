@@ -204,7 +204,10 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 							ScsPersonaJGBean.C_FAX,					ScsPersonaJGBean.C_CORREOELECTRONICO,
 							ScsPersonaJGBean.C_IDTIPODIR,			ScsPersonaJGBean.C_NUMERODIR,
 							ScsPersonaJGBean.C_PISODIR,				ScsPersonaJGBean.C_PUERTADIR,
-							ScsPersonaJGBean.C_ESCALERADIR,			ScsPersonaJGBean.C_IDTIPOVIA
+							ScsPersonaJGBean.C_ESCALERADIR,			ScsPersonaJGBean.C_IDTIPOVIA,
+							ScsPersonaJGBean.C_ASISTIDOSOLICITAJG,			ScsPersonaJGBean.C_ASISTIDOAUTORIZAEEJG,
+							ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO
+							
 						};
 
 		return campos;
@@ -262,6 +265,9 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			bean.setPisoDir(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_PISODIR));
 			bean.setPuertaDir(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_PUERTADIR));
 			bean.setIdTipoVia(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_IDTIPOVIA));
+			bean.setAsistidoSolicitaJG(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_ASISTIDOSOLICITAJG));
+			bean.setAsistidoAutorizaEEJG(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_ASISTIDOAUTORIZAEEJG));
+			bean.setAutorizaAvisoTelematico(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO));
 			
 		}
 		catch(Exception e){
@@ -316,7 +322,9 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_PISODIR,miBean.getPisoDir());
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_PUERTADIR,miBean.getPuertaDir());
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_IDTIPOVIA,miBean.getIdTipoVia());
-			
+			UtilidadesHash.set(hash,ScsPersonaJGBean.C_ASISTIDOSOLICITAJG,miBean.getAsistidoSolicitaJG());
+			UtilidadesHash.set(hash,ScsPersonaJGBean.C_ASISTIDOAUTORIZAEEJG,miBean.getAsistidoAutorizaEEJG());
+			UtilidadesHash.set(hash,ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO,miBean.getAutorizaAvisoTelematico());
 			
 		
 		}

@@ -12,6 +12,7 @@ import java.util.Vector;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.CenTipoIdentificacionBean;
+import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsTelefonosPersonaJGBean;
 import com.siga.general.MasterForm;
 
@@ -421,6 +422,24 @@ public class PersonaJGForm extends MasterForm {
 	}
 	public String getUnidadObservaciones() {
 		return UtilidadesHash.getString(this.datos,"UnidadObservaciones");
+	}
+	public void setAsistidoSolicitaJG(String dato) {
+		UtilidadesHash.set(this.datos,"AsistidoSolicitaJG",dato);
+	}
+	public String getAsistidoSolicitaJG() {
+		return UtilidadesHash.getString(this.datos,"AsistidoSolicitaJG");
+	}
+	public void setAsistidoAutorizaEEJG(String dato) {
+		UtilidadesHash.set(this.datos,"AsistidoAutorizaEEJG",dato);
+	}
+	public String getAsistidoAutorizaEEJG() {
+		return UtilidadesHash.getString(this.datos,"AsistidoAutorizaEEJG");
+	}
+	public void setAutorizaAvisoTelematico(String dato) {
+		UtilidadesHash.set(this.datos,"AutorizaAvisoTelematico",dato);
+	}
+	public String getAutorizaAvisoTelematico() {
+		return UtilidadesHash.getString(this.datos,"AutorizaAvisoTelematico");
 	}
 	// campo para tabla de tipo calidad en representante tutor.
 	public void setEnCalidadDe(String dato) {
