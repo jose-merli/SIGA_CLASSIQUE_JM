@@ -135,8 +135,8 @@
 				//document.forms[0].submit();	
 			}
 			
-			function buscar(modo) {
-				sub();
+			
+			function buscarSinSub(modo) {
 				if (document.forms[0].chkBusqueda.checked){
 		           document.forms[0].chkBusqueda.value="1";
 				   document.forms[0].valorCheck.value="1";
@@ -153,6 +153,11 @@
 				jQuery("#buscarForm").submit();
 			}
 			
+			function buscar(modo) {
+				sub();
+				buscarSinSub(modo);
+			}
+			
 			function seleccionarTodos(pagina) {
 				document.forms[0].seleccionarTodos.value = pagina;
 				buscar('buscarPor');					
@@ -160,7 +165,7 @@
 	
 			// Funcion asociada a boton busqueda avanzada 
 			function buscarAvanzada() {	
-				sub();		
+				//sub();		
 				document.forms[0].action="/SIGA/CEN_BusquedaClientesAvanzada.do";
 				document.forms[0].modo.value="abrirAvanzada";
 				document.forms[0].target="mainWorkArea";	
@@ -225,7 +230,7 @@
 				   
 				<%if (request.getParameter("buscar")!=null && request.getParameter("buscar").equals("1")){%>
 					// Cuando venimos de las colegiaciones de letrados	            
-				    buscar();
+				    buscarSinSub();
 					
 				<%} else if(request.getParameter("buscar")!=null && request.getParameter("buscar").equals("true")){%>
 					// Cuando volvemos a la paginación
