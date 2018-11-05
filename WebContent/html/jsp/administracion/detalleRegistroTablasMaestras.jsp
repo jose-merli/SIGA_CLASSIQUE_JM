@@ -473,7 +473,7 @@
 		}
 			
 		function accionVolver(){		
-			sub();
+			//sub();
 			<%ses.setAttribute("refrescar","S");
 			ses.setAttribute("tabla",sNombreTabla);%>
 			listadoTablasMaestrasForm.target="mainWorkArea";
