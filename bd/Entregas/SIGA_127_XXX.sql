@@ -445,8 +445,6 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 
 -- Ejecutados en Integracion por FMS el 23/10/2018 a las 13:30
 
-coger f_comunicaciones_ejg_2003_CAB
-
 alter table SCS_PERSONAJG add ASISTIDOSOLICITAJG VARCHAR2(1);
 alter table SCS_PERSONAJG add ASISTIDOAUTORIZAEEJG VARCHAR2(1);
 alter table SCS_PERSONAJG add AUTORIZAAVISOTELEMATICO VARCHAR2(1);
@@ -469,3 +467,7 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 
 coger V_PCAJG_EJG
 coger V_PCAJG_M_DPERSONA
+
+-- Ejecutados en Integracion por FMS el 05/11/2018 a las 17:15
+
+coger f_comunicaciones_ejg_2003_CAB
