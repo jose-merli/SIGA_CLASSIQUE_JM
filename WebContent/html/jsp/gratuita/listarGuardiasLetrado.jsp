@@ -402,22 +402,26 @@
 			}		
 		
 			function accionCalendario() {
-				// Abrimos el calendario 
-				if (document.getElementById('fechaConsulta').value!='') {
-					 
-					 document.DefinirGuardiasLetradoForm.fechaConsulta.value = document.getElementById('fechaConsulta').value;
-					 document.DefinirGuardiasLetradoForm.modo.value = 'abrirGuardias';
-					 document.DefinirGuardiasLetradoForm.submit();
-					
-			 	}else{
-						if(document.DefinirGuardiasLetradoForm.fechaConsulta.value==''){
-							fechaActual = getFechaActualDDMMYYYY();
-							document.getElementById('fechaConsulta').value = fechaActual;
-							document.DefinirGuardiasLetradoForm.fechaConsulta.value = fechaActual;
-							document.DefinirGuardiasLetradoForm.modo.value = 'abrirGuardias';
-							document.DefinirGuardiasLetradoForm.submit();
-						}
-				} 
+				// SIGARNV-313 Para que al actualizar la fecha por teclao no se lance la búsqueda
+				if(event != null && (event.type == "keyup" || event.type == "keydown")){
+				}else{
+					// Abrimos el calendario 
+					if (document.getElementById('fechaConsulta').value!='') {
+						 
+						 document.DefinirGuardiasLetradoForm.fechaConsulta.value = document.getElementById('fechaConsulta').value;
+						 document.DefinirGuardiasLetradoForm.modo.value = 'abrirGuardias';
+						 document.DefinirGuardiasLetradoForm.submit();
+						
+				 	}else{
+							if(document.DefinirGuardiasLetradoForm.fechaConsulta.value==''){
+								fechaActual = getFechaActualDDMMYYYY();
+								document.getElementById('fechaConsulta').value = fechaActual;
+								document.DefinirGuardiasLetradoForm.fechaConsulta.value = fechaActual;
+								document.DefinirGuardiasLetradoForm.modo.value = 'abrirGuardias';
+								document.DefinirGuardiasLetradoForm.submit();
+							}
+					}
+				}
 			}
 		
 			function mostrarFecha() {		
