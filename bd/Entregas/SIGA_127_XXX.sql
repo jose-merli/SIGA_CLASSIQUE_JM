@@ -472,6 +472,7 @@ coger V_PCAJG_M_DPERSONA
 
 coger f_comunicaciones_ejg_2003_CAB
 
+-- Ejecutados en Integracion por FMS el 06/11/2018 a las 12:51
 
  jbd -- ejecutado unicamente en local
 delete from adm_tiposacceso where idproceso in ('11b','1b','21b');

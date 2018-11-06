@@ -1,4 +1,4 @@
-create or replace function USCGAE.f_comunicaciones_ejg_2003_CAB(P_INSTITUCION IN SCS_EJG.IDINSTITUCION%type,
+create or replace function f_comunicaciones_ejg_2003_CAB(P_INSTITUCION IN SCS_EJG.IDINSTITUCION%type,
                                                          P_IDREMESA    IN CAJG_REMESA.IDREMESA%type)
   return clob is
   salida          clob;
