@@ -215,9 +215,9 @@
 	
 	
 	<div style="position:absolute; left:400px;bottom:0px;z-index:99;">
-				<table align="center" border="0">
+				<table align="center" border="0" class="botonesSeguido">
 					<tr>
-						<td class="botonesDetalle">
+						<td class="labelText">
 							<siga:Idioma key="censo.consultaRegistrosBajaLogica.literal"/>
 							
 							<%if (booVerHistorico) { %>
