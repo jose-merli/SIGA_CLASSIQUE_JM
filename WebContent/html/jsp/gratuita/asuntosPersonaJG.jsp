@@ -154,6 +154,9 @@
 			<html:hidden property="ninstitucionOrigen"/>
 			<html:hidden property="incapacitado"/>
 			<html:hidden property="circunstanciasExcepcionales"/>
+			<html:hidden property="autorizaAvisoTelematico"/>
+			<html:hidden property="asistidoSolicitaJG"/>
+			<html:hidden property="asistidoAutorizaEEJG"/>
 			<input type="hidden" name="actionModal" value="">
 		</html:form>
 
