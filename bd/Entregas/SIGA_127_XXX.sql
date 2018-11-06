@@ -473,6 +473,12 @@ coger V_PCAJG_M_DPERSONA
 coger f_comunicaciones_ejg_2003_CAB
 
 -- Ejecutados en Integracion por FMS el 06/11/2018 a las 12:51
+Ejecutados en integracion a fecha 06-11-2018 a las 14:02
+alter table PCAJG_ALC_INT_SOL add SOL19_AUTORIZA_TELEM CHAR(1);
+alter table PCAJG_ALC_INT_SOL add SOL20_DEMANDADO CHAR(1);
+alter table PCAJG_ALC_INT_EXP add EXP15_DOC_ADICIONAL CHAR(1);
+alter table PCAJG_ALC_INT_EXP add EXP16_SOL_JG CHAR(1);
+
 
  jbd -- ejecutado unicamente en local
 delete from adm_tiposacceso where idproceso in ('11b','1b','21b');
