@@ -1445,13 +1445,17 @@
 						</td>
 					</tr>
 					<tr>
+						<td colspan="6">
+						<table>
+						<tr>
+						
 <%
 						String avisoTelematico = miform.getAutorizaAvisoTelematico();
 						if (avisoTelematico == null)
 							avisoTelematico = new String("");
 %>
 						
-						<td class="labelText" colspan="2">
+						<td class="labelText">
 							<siga:Idioma key="gratuita.personaJG.literal.autorizaavisotel"/>
 						</td>
 						<td>
@@ -1492,6 +1496,9 @@
 									<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
 									<html:option value="0"><siga:Idioma key="general.no"/></html:option>
 								</html:select>
+						</td>
+						</tr>
+						</table>
 						</td>
 					</tr>
 				</table>
