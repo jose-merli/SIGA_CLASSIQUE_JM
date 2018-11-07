@@ -119,7 +119,8 @@ begin
                       AND DE.NUMERO = EJG.NUMERO
                  ) AS EXP15_DOC_ADICIONAL
                ,
-               DECODE(NVL(SOL.ASISTIDOSOLICITAJG, 0), 1, ''S'', ''N'') AS  EXP16_SOL_JG
+               DECODE(SOL.ASISTIDOSOLICITAJG, null,null, ''1'', ''S'',''0'', ''N'') AS  EXP16_SOL_JG
+               
                
           , ''##'' AS SALTO_LINEA_2
      , ''PRD'' AS TIPO_REGISTRO_PRD
@@ -319,8 +320,8 @@ begin
           , RPAD('' '', 15, '' '') AS SOL16_NUMERO_TELEFONO --no obligatorio
           , RPAD('' '', 1, '' '') AS SOL17_PRESO --obligatorio??
           , RPAD('' '', 10, '' '') AS SOL18_CENTRO_PENITENCIARIO --obligatorio??
-          , DECODE(SOL.AUTORIZAAVISOTELEMATICO,null,'' '', 1, ''S'', ''N'') AS SOL19_AUTORIZA_TELEM
-          , DECODE(EJG.CALIDAD,null,'' '',0,''S'',''N'') AS SOL20_DEMANDADO
+          , DECODE(SOL.AUTORIZAAVISOTELEMATICO,null,'' '', ''1'', ''S'', ''N'') AS SOL19_AUTORIZA_TELEM
+          , DECODE(EJG.CALIDAD,null,'' '',''0'',''S'',''N'') AS SOL20_DEMANDADO
           
           , ''##'' AS SALTO_LINEA_5
      , ''DOM'' AS TIPO_REGISTRO_DOM
@@ -449,6 +450,11 @@ begin
   cuentaCondicion := cuentaCondicion + 1;
   v_arrayCondiciones(cuentaCondicion).condicion := 'TRIM(EXP8_FECHA_DICTAMEN) IS NOT NULL';
   v_arrayCondiciones(cuentaCondicion).descripcion := 'Debe rellenar la fecha del dictamen';
+  
+   cuentaCondicion := cuentaCondicion + 1;
+  v_arrayCondiciones(cuentaCondicion).condicion := 'TRIM(EXP16_SOL_JG) IS NOT NULL';
+  v_arrayCondiciones(cuentaCondicion).descripcion := 'Debe rellenar si el Solicitante ha firmado la solicitud de Justicia gratuitala';
+  
 
   cuentaCondicion := cuentaCondicion + 1;
   v_arrayCondiciones(cuentaCondicion).condicion := '(TRIM(PRD6_ANIO_DESIGNA_PROCURADOR) IS NOT NULL AND TRIM(PRD8_NUMERO_DESIGNA_PROCURADOR) IS NOT NULL OR TRIM(PRD6_ANIO_DESIGNA_PROCURADOR) IS NULL AND TRIM(PRD8_NUMERO_DESIGNA_PROCURADOR) IS NULL)';
