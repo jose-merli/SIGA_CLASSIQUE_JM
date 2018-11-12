@@ -1445,7 +1445,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td colspan="6">
+						<td colspan="8">
 						<table>
 						<tr>
 						
