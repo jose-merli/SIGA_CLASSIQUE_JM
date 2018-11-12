@@ -1,4 +1,4 @@
-create or replace function USCGAE.f_comunicaciones_ejg_2003_CAB(P_INSTITUCION IN SCS_EJG.IDINSTITUCION%type,
+create or replace function uscgae.f_comunicaciones_ejg_2003_CAB(P_INSTITUCION IN SCS_EJG.IDINSTITUCION%type,
                                                          P_IDREMESA    IN CAJG_REMESA.IDREMESA%type)
   return clob is
   salida          clob;
@@ -120,18 +120,18 @@ begin
                  ) AS EXP15_DOC_ADICIONAL
                ,
                DECODE(SOL.ASISTIDOSOLICITAJG, null,null, ''1'', ''S'',''0'', ''N'') AS  EXP16_SOL_JG
-               
-               
+
+
           , ''##'' AS SALTO_LINEA_2
      , ''PRD'' AS TIPO_REGISTRO_PRD
           , LPAD(DECODE(DL.IDPERSONA, NULL, ''      '', NVL(F_SIGA_CALCULONCOLEGIADO(DL.IDINSTITUCION, DL.IDPERSONA), ''      '')), 6, ''0'') AS PRD1_NCOLEGIADOABOGADO
           , RPAD(NVL(TO_CHAR(DL.FECHADESIGNA, ''YYYYMMDD''), '' ''), 8, '' '') AS PRD2_FECHA_DESIGNA
-          
-          
+
+
           , DECODE(D.CODIGO,
                       NULL,
                       ''      '',
-                      
+
                       (SELECT COUNT(1) NUMERO
                          FROM SCS_DESIGNASLETRADO DESLET2
                         WHERE DL.IDINSTITUCION = DESLET2.IDINSTITUCION
@@ -322,7 +322,7 @@ begin
           , RPAD('' '', 10, '' '') AS SOL18_CENTRO_PENITENCIARIO --obligatorio??
           , DECODE(SOL.AUTORIZAAVISOTELEMATICO,null,'' '', ''1'', ''S'', ''N'') AS SOL19_AUTORIZA_TELEM
           , DECODE(EJG.CALIDAD,null,'' '',''0'',''S'',''N'') AS SOL20_DEMANDADO
-          
+
           , ''##'' AS SALTO_LINEA_5
      , ''DOM'' AS TIPO_REGISTRO_DOM
           , RPAD(''2'', 1, '' '') AS DOM1_TIPO_DOMICILIO
@@ -442,7 +442,7 @@ begin
   cuentaCondicion := 0;
   --ELIMINADA LA OBLIGATORIEDAD DE LOS CAMPOS EXP7 Y EXP8 SEGÚN CORREO DE CARMEN DEL 23/05/2011
   -- AÑADIMOS OBLIGATORIEDAD POR CORREO DE ENRIQUE DE 21-02-2017
-  
+
  cuentaCondicion := cuentaCondicion + 1;
   v_arrayCondiciones(cuentaCondicion).condicion := '(TRIM(EXP7_CALIFICACION) IS NOT NULL OR EXP3_TIPO_EXPEDIENTE = ''EXT'')';
   v_arrayCondiciones(cuentaCondicion).descripcion := 'Debe rellenar el tipo de dictamen';
@@ -450,11 +450,11 @@ begin
   cuentaCondicion := cuentaCondicion + 1;
   v_arrayCondiciones(cuentaCondicion).condicion := 'TRIM(EXP8_FECHA_DICTAMEN) IS NOT NULL';
   v_arrayCondiciones(cuentaCondicion).descripcion := 'Debe rellenar la fecha del dictamen';
-  
-   cuentaCondicion := cuentaCondicion + 1;
-  v_arrayCondiciones(cuentaCondicion).condicion := 'TRIM(EXP16_SOL_JG) IS NOT NULL';
-  v_arrayCondiciones(cuentaCondicion).descripcion := 'Debe rellenar si el Solicitante ha firmado la solicitud de Justicia gratuitala';
-  
+
+ cuentaCondicion := cuentaCondicion + 1;
+  v_arrayCondiciones(cuentaCondicion).condicion := ' nvl(EXP16_SOL_JG,''N'') = ''S''';
+  v_arrayCondiciones(cuentaCondicion).descripcion := 'El Solicitante no ha solicitado Justicia gratuita por lo que no se puede traspasar la información';
+
 
   cuentaCondicion := cuentaCondicion + 1;
   v_arrayCondiciones(cuentaCondicion).condicion := '(TRIM(PRD6_ANIO_DESIGNA_PROCURADOR) IS NOT NULL AND TRIM(PRD8_NUMERO_DESIGNA_PROCURADOR) IS NOT NULL OR TRIM(PRD6_ANIO_DESIGNA_PROCURADOR) IS NULL AND TRIM(PRD8_NUMERO_DESIGNA_PROCURADOR) IS NULL)';
