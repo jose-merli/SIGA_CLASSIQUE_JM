@@ -1472,7 +1472,7 @@
 							solicitajg = new String("");
 %>
 						
-						<td class="labelText" style="width:0px">
+						<td class="labelText">
 							<siga:Idioma key="gratuita.personaJG.literal.solicitajg"/>
 						</td>
 						<td>
@@ -1487,7 +1487,7 @@
 								if (autorizaeejg == null)
 									autorizaeejg = new String("");
 %>
-						<td class="labelText" style="width:0px">
+						<td class="labelText">
 							<siga:Idioma key="gratuita.personaJG.literal.autorizaeejg"/>
 						</td>
 						<td>
@@ -1504,7 +1504,7 @@
 				</table>
 			</siga:ConjCampos>
 	
-			<siga:ConjCampos leyenda="gratuita.personaJG.literal.direccion">
+			<siga:ConjCampos leyenda="gratuita.personaJG.literal.direccion" desplegable="true">
 				<table width="100%" cellpadding="2" cellspacing="0" border="0">
 					<tr>
 						<td class="labelText" width="107px">
@@ -1713,7 +1713,7 @@
 				</table>
 			</siga:ConjCampos>
 		
-			<siga:ConjCampos leyenda="gratuita.personaJG.literal.inforAdicional">
+			<siga:ConjCampos leyenda="gratuita.personaJG.literal.inforAdicional" desplegable="true">
 				<table width="100%" cellpadding="2" cellspacing="0" border="0">
 					<tr>
 						<td class="labelText" width="85px">
@@ -2171,7 +2171,7 @@
 					}	
 				</script>
 				
-				<siga:ConjCampos leyenda="gratuita.personaJG.literal.representantes">
+				<siga:ConjCampos leyenda="gratuita.personaJG.literal.representantes" desplegable="true">
 					<table width="100%" cellpadding="2" cellspacing="0" border="0">
 						<tr>
 							<td class="labelText">
@@ -2351,7 +2351,7 @@
    					}
 %>
 
-					<siga:ConjCampos leyenda="gratuita.personaJG.literal.representantes">
+					<siga:ConjCampos leyenda="gratuita.personaJG.literal.representantes" desplegable="true">
 						<table width="100%" cellpadding="2" cellspacing="0" border="0">
 							<tr>
 								<td class="labelText">
