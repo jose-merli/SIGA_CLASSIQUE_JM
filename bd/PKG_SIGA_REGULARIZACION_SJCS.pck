@@ -100,13 +100,14 @@ create or replace package PKG_SIGA_REGULARIZACION_SJCS is
   --   * 2009-09-21 - Adrian: cambio total
   --
   -----------------------------------------------------------------------------
-  FUNCTION FUNC_CALC_REGULARIZ_GUARDIAS (P_IDINSTITUCION     IN NUMBER,
-                                         P_IDREGULARIZACION  IN NUMBER,
-                                         P_IDAPUNTE          IN NUMBER,
-                                         P_FECHAFIN          IN DATE,
-                                         P_ANIO              IN NUMBER,
-                                         P_NUMERO            IN NUMBER,
-                                         P_IDACTUACION       IN Number)
+  FUNCTION FUNC_CALC_REGULARIZ_GUARDIAS (P_IDINSTITUCION         IN NUMBER,
+                                         P_IDREGULARIZACION      IN NUMBER,
+                                         P_IDAPUNTE              IN NUMBER,
+                                         P_FECHAFIN              IN DATE,
+                                         P_ANIO                  IN NUMBER,
+                                         P_NUMERO                IN NUMBER,
+                                         P_IDACTUACION           IN Number,
+                                         P_CALCULAR_COSTES_FIJOS IN Number)
     return NUMBER;
   PROCEDURE PROC_FCS_REGULAR_GUARDIAS (P_IDINSTITUCION     IN NUMBER,
                                        P_IDREGULARIZACION  IN NUMBER,
@@ -730,13 +731,14 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
       P_DATOSERROR := P_DATOSERROR || ': ' || sqlerrm;
   END PROC_CARGAR_REGULARIZ_GUARDIAS;
 
-  FUNCTION FUNC_CALC_REGULARIZ_GUARDIAS (P_IDINSTITUCION     IN NUMBER,
-                                         P_IDREGULARIZACION  IN NUMBER,
-                                         P_IDAPUNTE          IN NUMBER,
-                                         P_FECHAFIN          IN DATE,
-                                         P_ANIO              IN NUMBER,
-                                         P_NUMERO            IN NUMBER,
-                                         P_IDACTUACION       IN Number)
+  FUNCTION FUNC_CALC_REGULARIZ_GUARDIAS (P_IDINSTITUCION         IN NUMBER,
+                                         P_IDREGULARIZACION      IN NUMBER,
+                                         P_IDAPUNTE              IN NUMBER,
+                                         P_FECHAFIN              IN DATE,
+                                         P_ANIO                  IN NUMBER,
+                                         P_NUMERO                IN NUMBER,
+                                         P_IDACTUACION           IN Number,
+                                         p_calcular_costes_fijos In Number)
     return NUMBER IS
 
     v_importe_regularizado     number;
@@ -961,11 +963,46 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
                         and apu.idapunte = P_IDAPUNTE
                         and apu.fechafin = nvl(P_FECHAFIN, apu.fechafin)
                         and apu.idhito in (5, 27, 11, 36))
+                        
          and asi.anio = nvl(P_ANIO, asi.anio)
          and asi.numero = nvl(P_NUMERO, asi.numero)
          and asi.idhito in (5, 27, 11, 36)
          and hit.idhito = 5
          and nvl(hit.agrupar, '0') = '0';
+
+      if v_aux_importe_regularizado is not null then
+        v_importe_regularizado := v_importe_regularizado + v_aux_importe_regularizado;
+      end if;
+
+      --AsTp
+      select sum(decode(FACASI.precioaplicado,
+                        0,
+                        0,
+                        tipasi.Importe - FACASI.precioaplicado))
+        into v_aux_importe_regularizado
+        from FCS_FACT_ASISTENCIA       FACASI,
+             Scs_Asistencia            ASI,
+             Scs_Tipoasistenciacolegio tipasi
+       where exists (select *
+                       from FCS_FACT_GUARDIASCOLEGIADO APU
+                      where FACASI.idinstitucion = apu.idinstitucion
+                        and FACASI.idfacturacion = apu.idfacturacion
+                        and FACASI.idapunte = apu.idapunte
+                        and trunc(FACASI.fechahora) = apu.fechafin
+
+                        and apu.idinstitucion = P_IDINSTITUCION
+                        and apu.idfacturacion = P_IDREGULARIZACION
+                        and apu.idapunte = P_IDAPUNTE
+                        and apu.fechafin = nvl(P_FECHAFIN, apu.fechafin))
+         And FACASI.idinstitucion = AsI.idinstitucion
+         and FACASI.Anio = ASI.Anio
+         And facasi.Numero = asi.Numero
+         And asi.Idinstitucion = tipasi.Idinstitucion
+         And asi.Idtipoasistenciacolegio = tipasi.Idtipoasistenciacolegio
+         
+         and FACASI.anio = nvl(P_ANIO, FACASI.anio)
+         and FACASI.numero = nvl(P_NUMERO, FACASI.numero)
+         and FACASI.idhito in (20);
 
       if v_aux_importe_regularizado is not null then
         v_importe_regularizado := v_importe_regularizado + v_aux_importe_regularizado;
@@ -1298,6 +1335,35 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
         v_importe_regularizado := v_importe_regularizado + v_aux_importe_regularizado;
       end if;
 
+      --AsTpMax
+      Select Sum(Decode(Apu.Precioaplicado,
+                        0,
+                        0,
+                        (Select Tipasi.Importe
+                           From Fcs_Fact_Asistencia Facasi, Scs_Asistencia Asi, Scs_Tipoasistenciacolegio Tipasi
+                          Where Facasi.Idinstitucion = Apu.Idinstitucion
+                            And Facasi.Idfacturacion = Apu.Idfacturacion
+                            And Facasi.Idapunte = Apu.Idapunte
+                            And Trunc(Facasi.Fechahora) = Apu.Fechafin
+                            And Facasi.Idtipo = Apu.Idtipo
+                            And Facasi.Idinstitucion = Asi.Idinstitucion
+                            And Facasi.Anio = Asi.Anio
+                            And Facasi.Numero = Asi.Numero
+                            And Asi.Idinstitucion = Tipasi.Idinstitucion
+                            And Asi.Idtipoasistenciacolegio = Tipasi.Idtipoasistenciacolegio
+                            And Rownum = 1) - Apu.Precioaplicado))
+        Into v_Aux_Importe_Regularizado
+        From Fcs_Fact_Guardiascolegiado Apu
+       Where Apu.Idinstitucion = p_Idinstitucion
+         And Apu.Idfacturacion = p_Idregularizacion
+         And Apu.Idapunte = p_Idapunte
+         And Apu.Fechafin = Nvl(p_Fechafin, Apu.Fechafin)
+         And Apu.Idhito In (21, 41);
+
+      if v_aux_importe_regularizado is not null then
+        v_importe_regularizado := v_importe_regularizado + v_aux_importe_regularizado;
+      end if;
+
       --AcMax por cab
       select sum(decode(apu.precioaplicado,
                         0,
@@ -1516,6 +1582,42 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
 
     end if;
     end;
+    
+    -- calculo para costes fijos
+    Begin
+    If p_calcular_costes_fijos Is Not Null Then
+    
+      v_importe_regularizado := 0;
+      
+      Select Sum(Decode(Facact.Preciocostesfijos, 0, 0, Tipactcos.Importe - Facact.Preciocostesfijos))
+        Into v_aux_importe_regularizado
+        From Fcs_Fact_Actuacionasistencia Facact, Scs_Actuacionasistencia Act, Scs_Actuacionasistcostefijo actcos, Scs_Tipoactuacioncostefijo Tipactcos
+       Where Facact.Idinstitucion = Act.Idinstitucion
+         And Facact.Anio = Act.Anio
+         And Facact.Numero = Act.Numero
+         And Facact.Idactuacion = Act.Idactuacion
+         And act.Idinstitucion = actcos.Idinstitucion
+         And act.Anio = actcos.Anio
+         And act.Numero = actcos.Numero
+         And act.Idactuacion = actcos.Idactuacion
+         And actcos.Idinstitucion = Tipactcos.Idinstitucion
+         And actcos.Idtipoasistencia = Tipactcos.Idtipoasistencia
+         And actcos.Idtipoactuacion = Tipactcos.Idtipoactuacion
+         And actcos.Idcostefijo = tipactcos.Idcostefijo
+
+         and Facact.idinstitucion = P_IDINSTITUCION
+         and Facact.idfacturacion = P_IDREGULARIZACION
+         and Facact.idapunte = P_IDAPUNTE
+         and Facact.anio = nvl(P_ANIO, Facact.anio)
+         and Facact.numero = nvl(P_NUMERO, Facact.numero)
+         and Facact.idactuacion = nvl(P_IDACTUACION, Facact.idactuacion);
+
+      if v_aux_importe_regularizado is not null then
+        v_importe_regularizado := v_importe_regularizado + v_aux_importe_regularizado;
+      End If;
+
+    End If;
+    End;
 
 
     if (v_importe_regularizado < 0) then
@@ -1547,250 +1649,6 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
   --   * 2009-09-21 - Adrian: cambio total
   --
   -----------------------------------------------------------------------------
-  PROCEDURE PROC_FCS_REGULAR_GUARDIAS2 (P_IDINSTITUCION     IN NUMBER,
-                                       P_IDREGULARIZACION  IN NUMBER,
-                                       P_USUMODIFICACION   IN NUMBER,
-                                       P_IDIOMA            IN NUMBER,
-                                       P_TOTAL             OUT VARCHAR2,
-                                       P_CODRETORNO        OUT VARCHAR2,
-                                       P_DATOSERROR        OUT VARCHAR2) IS
-
-    cursor C_APUNTES (P_IDINSTITUCION  NUMBER,
-                      P_IDFACTURACION  NUMBER) is
-      select *
-        from FCS_FACT_APUNTE
-       where idinstitucion = P_IDINSTITUCION
-         and idfacturacion = P_IDFACTURACION;
-    cursor C_DIAS (P_IDINSTITUCION  NUMBER,
-                   P_IDFACTURACION  NUMBER) is
-      select *
-        from FCS_FACT_GUARDIASCOLEGIADO
-       where idinstitucion = P_IDINSTITUCION
-         and idfacturacion = P_IDFACTURACION;
-    cursor C_ASIS (P_IDINSTITUCION  NUMBER,
-                   P_IDFACTURACION  NUMBER) is
-      select *
-        from FCS_FACT_ASISTENCIA
-       where idinstitucion = P_IDINSTITUCION
-         and idfacturacion = P_IDFACTURACION;
-    cursor C_ACTS (P_IDINSTITUCION  NUMBER,
-                   P_IDFACTURACION  NUMBER) is
-      select *
-        from FCS_FACT_ACTUACIONASISTENCIA
-       where idinstitucion = P_IDINSTITUCION
-         and idfacturacion = P_IDFACTURACION;
-
-    v_codretorno varchar2(10);
-    v_datoserror varchar2(2000);
-
-    v_idfacturacion_regulariza number;
-
-    v_totalregularizacion    Number := 0;
-    v_importe_regularizacion number;
-
-  BEGIN
-    --
-    --
-    --
-    -- Actualmente no funciona bien la regularizacion de guardias
-    -- y ademas bloquea la BD, 
-    -- asi que de momento la eliminamos de funcionalidad
-    --
-    --
-    --
-
-    --inicializando valor para retorno correcto
-    P_CODRETORNO := 0;
-    P_DATOSERROR := '';
-               
-     -- Se almacenan los historicos a nivel de institucion
-    P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
-                    'Almacenando los datos historicos de la regularizacion'; 
-                    
-    PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTORICOS_GUARDIAS(P_IDINSTITUCION,
-                        P_IDREGULARIZACION,
-                        V_CODRETORNO2,
-                        V_DATOSERROR2);
-    
-    PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTO_HITOFACT_REGU(P_IDINSTITUCION,
-                        P_IDREGULARIZACION,
-                        V_CODRETORNO2,
-                        V_DATOSERROR2);
-
-    --obteniendo idfacturacion origen de la regularizacion
-    P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
-                    'obteniendo idfacturacion origen de la regularizacion';                                   
-    select idfacturacion_regulariza
-      into v_idfacturacion_regulariza
-      from FCS_FACTURACIONJG
-     where idinstitucion = P_IDINSTITUCION
-       and idfacturacion = P_IDREGULARIZACION;
-
-    --copiando todos los apuntes completos de la facturacion en la regularizacion
-    P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
-                    'copiando todos los apuntes completos de la facturacion en la regularizacion';
-    PROC_CARGAR_REGULARIZ_GUARDIAS (P_IDINSTITUCION,
-                                    v_idfacturacion_regulariza,
-                                    P_IDREGULARIZACION,
-                                    v_codretorno,
-                                    v_datoserror);
-    if (v_codretorno <> 0) then
-      P_CODRETORNO := v_codretorno;
-      P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
-                      v_datoserror;
-      return;
-    end if;
-
-    --inicializando el importe total de la regularizacion
-    v_totalregularizacion := 0;
-
-    --recorriendo las actuaciones
-    P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
-                    'recorriendo las actuaciones';
-    for r_actuacion in C_ACTS(P_IDINSTITUCION, v_idfacturacion_regulariza) loop
-
-      --calculando importe regularizacion de la actuacion
-      P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
-                      'calculando importe regularizacion de la actuacion ' || r_actuacion.idapunte;
-      v_importe_regularizacion := FUNC_CALC_REGULARIZ_GUARDIAS (r_actuacion.idinstitucion,
-                                                                r_actuacion.idfacturacion,
-                                                                r_actuacion.idapunte,
-                                                                null,
-                                                                r_actuacion.anio,
-                                                                r_actuacion.numero,
-                                                                r_actuacion.idactuacion);
-      if (v_importe_regularizacion < 0) then
-        v_importe_regularizacion := 0;
-      end if;
-
-      --actualizando la regularizacion de la actuacion
-      P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
-                      'actualizando la regularizacion de la actuacion ' || r_actuacion.idapunte;
-      update FCS_FACT_ACTUACIONASISTENCIA
-         set precioaplicado = v_importe_regularizacion,
-             fechamodificacion = sysdate,
-             usumodificacion = P_USUMODIFICACION
-       where idinstitucion = r_actuacion.idinstitucion
-         and idfacturacion = P_IDREGULARIZACION
-         and idapunte = r_actuacion.idapunte
-         and anio = r_actuacion.anio
-         and numero = r_actuacion.numero
-         and idactuacion = r_actuacion.idactuacion;
-
-    end loop;
-
-    --recorriendo las asistencias
-    P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
-                    'recorriendo las asistencias';
-    for r_asistencia in C_ASIS(P_IDINSTITUCION, v_idfacturacion_regulariza) loop
-
-      --calculando importe regularizacion de la asistencia
-      P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
-                      'calculando importe regularizacion de la asistencia ' || r_asistencia.idapunte;
-      v_importe_regularizacion := FUNC_CALC_REGULARIZ_GUARDIAS (r_asistencia.idinstitucion,
-                                                                r_asistencia.idfacturacion,
-                                                                r_asistencia.idapunte,
-                                                                null,
-                                                                r_asistencia.anio,
-                                                                r_asistencia.numero,
-                                                                Null);
-      if (v_importe_regularizacion < 0) then
-        v_importe_regularizacion := 0;
-      end if;
-
-      --actualizando la regularizacion de la asistencia
-      P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
-                      'actualizando la regularizacion de la asistencia ' || r_asistencia.idapunte;
-      update FCS_FACT_ASISTENCIA
-         set precioaplicado = v_importe_regularizacion,
-             fechamodificacion = sysdate,
-             usumodificacion = P_USUMODIFICACION
-       where idinstitucion = r_asistencia.idinstitucion
-         and idfacturacion = P_IDREGULARIZACION
-         and idapunte = r_asistencia.idapunte
-         and anio = r_asistencia.anio
-         and numero = r_asistencia.numero;
-
-    end loop;
-
-    --recorriendo los dias
-    P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
-                    'recorriendo los dias';
-    for r_dia in C_DIAS(P_IDINSTITUCION, v_idfacturacion_regulariza) loop
-
-      --calculando importe regularizacion del dia
-      P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
-                      'calculando importe regularizacion del dia ' || r_dia.idapunte;
-      v_importe_regularizacion := FUNC_CALC_REGULARIZ_GUARDIAS (r_dia.idinstitucion,
-                                                                r_dia.idfacturacion,
-                                                                r_dia.idapunte,
-                                                                r_dia.fechafin,
-                                                                null,
-                                                                null,
-                                                                Null);
-      if (v_importe_regularizacion < 0) then
-        v_importe_regularizacion := 0;
-      end if;
-
-      --actualizando la regularizacion del dia
-      P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
-                      'actualizando la regularizacion del dia ' || r_dia.idapunte;
-      update FCS_FACT_GUARDIASCOLEGIADO
-         set precioaplicado = v_importe_regularizacion,
-             fechamodificacion = sysdate,
-             usumodificacion = P_USUMODIFICACION
-       where idinstitucion = r_dia.idinstitucion
-         and idfacturacion = P_IDREGULARIZACION
-         and idapunte = r_dia.idapunte
-         and fechafin = r_dia.fechafin;
-
-    end loop;
-
-    --recorriendo los apuntes
-    P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
-                    'recorriendo los apuntes';
-    for r_apunte in C_APUNTES(P_IDINSTITUCION, v_idfacturacion_regulariza) loop
-
-      --calculando importe regularizacion del apunte
-      P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
-                      'calculando importe regularizacion del apunte ' || r_apunte.idapunte;
-      v_importe_regularizacion := FUNC_CALC_REGULARIZ_GUARDIAS (r_apunte.idinstitucion,
-                                                                r_apunte.idfacturacion,
-                                                                r_apunte.idapunte,
-                                                                null,
-                                                                null,
-                                                                null,
-                                                                Null);
-      if (v_importe_regularizacion < 0) then
-        v_importe_regularizacion := 0;
-      end if;
-
-      --actualizando la regularizacion del apunte
-      P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
-                      'actualizando la regularizacion del apunte ' || r_apunte.idapunte;
-      update FCS_FACT_APUNTE
-         set precioaplicado = v_importe_regularizacion,
-             fechamodificacion = sysdate,
-             usumodificacion = P_USUMODIFICACION
-       where idinstitucion = r_apunte.idinstitucion
-         and idfacturacion = P_IDREGULARIZACION
-         and idapunte = r_apunte.idapunte;
-
-      --acumulando importe para total
-      v_totalregularizacion := v_totalregularizacion + v_importe_regularizacion;
-
-    end loop;
-
-    --finalizando
-    P_TOTAL      := v_totalregularizacion;
-    P_CODRETORNO := 0;
-    P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: Finalizado';
-
-  EXCEPTION
-    WHEN OTHERS THEN
-      P_CODRETORNO := sqlcode;
-      P_DATOSERROR := P_DATOSERROR || ': ' || sqlerrm;
-  END PROC_FCS_REGULAR_GUARDIAS2;
 
   PROCEDURE PROC_FCS_REGULAR_GUARDIAS (P_IDINSTITUCION     IN NUMBER,
                                        P_IDREGULARIZACION  IN NUMBER,
@@ -1808,7 +1666,16 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
                                               null,
                                               null,
                                               null,
-                                              Null) As importe_regularizacion
+                                              Null,
+                                              Null) As importe_regularizacion, 
+                    FUNC_CALC_REGULARIZ_GUARDIAS (idinstitucion,
+                                              idfacturacion,
+                                              idapunte,
+                                              null,
+                                              null,
+                                              null,
+                                              Null,
+                                              1) As importe_costesfijos
         from FCS_FACT_APUNTE apu
        where idinstitucion = P_IDINSTITUCION
          and idfacturacion = P_IDFACTURACION;
@@ -1820,7 +1687,16 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
                                               fechafin,
                                               null,
                                               null,
-                                              Null) As importe_regularizacion
+                                              Null,
+                                              Null) As importe_regularizacion, 
+                    FUNC_CALC_REGULARIZ_GUARDIAS (idinstitucion,
+                                              idfacturacion,
+                                              idapunte,
+                                              fechafin,
+                                              null,
+                                              null,
+                                              Null,
+                                              1) As importe_costesfijos
         from FCS_FACT_GUARDIASCOLEGIADO apu
        where idinstitucion = P_IDINSTITUCION
          and idfacturacion = P_IDFACTURACION;
@@ -1832,7 +1708,16 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
                                               null,
                                               anio,
                                               numero,
-                                              Null) As importe_regularizacion
+                                              Null,
+                                              Null) As importe_regularizacion, 
+                    FUNC_CALC_REGULARIZ_GUARDIAS (idinstitucion,
+                                              idfacturacion,
+                                              idapunte,
+                                              null,
+                                              anio,
+                                              numero,
+                                              Null,
+                                              1) As importe_costesfijos
         from FCS_FACT_ASISTENCIA apu
        where idinstitucion = P_IDINSTITUCION
          and idfacturacion = P_IDFACTURACION;
@@ -1844,7 +1729,16 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
                                               null,
                                               anio,
                                               numero,
-                                              idactuacion) As importe_regularizacion
+                                              idactuacion,
+                                              Null) As importe_regularizacion, 
+                    FUNC_CALC_REGULARIZ_GUARDIAS (idinstitucion,
+                                              idfacturacion,
+                                              idapunte,
+                                              null,
+                                              anio,
+                                              numero,
+                                              idactuacion,
+                                              1) As importe_costesfijos
         from FCS_FACT_ACTUACIONASISTENCIA apu
        where idinstitucion = P_IDINSTITUCION
          and idfacturacion = P_IDFACTURACION;
@@ -1861,20 +1755,6 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
     --inicializando valor para retorno correcto
     P_CODRETORNO := 0;
     P_DATOSERROR := '';
-               
-     -- Se almacenan los historicos a nivel de institucion
-    P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
-                    'Almacenando los datos historicos de la regularizacion'; 
-                    
-    PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTORICOS_GUARDIAS(P_IDINSTITUCION,
-                        P_IDREGULARIZACION,
-                        V_CODRETORNO2,
-                        V_DATOSERROR2);
-    
-    PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTO_HITOFACT_REGU(P_IDINSTITUCION,
-                        P_IDREGULARIZACION,
-                        V_CODRETORNO2,
-                        V_DATOSERROR2);
 
     --obteniendo idfacturacion origen de la regularizacion
     P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
@@ -1890,27 +1770,6 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
 
     P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
                     'recorriendo los apuntes';
-    /*
-    insert into FCS_FACT_APUNTE
-      (idinstitucion, idfacturacion, idapunte, idpersona, idturno, idguardia, fechainicio, idhito, motivo, precioaplicado, fechamodificacion, usumodificacion, preciocostesfijos, idtipoapunte)
-      (select P_IDINSTITUCION, P_IDREGULARIZACION, idapunte, idpersona, idturno, idguardia, fechainicio, idhito, motivo, FUNC_CALC_REGULARIZ_GUARDIAS (idinstitucion,
-                                              idfacturacion,
-                                              idapunte,
-                                              null,
-                                              null,
-                                              null,
-                                              Null), Sysdate, P_USUMODIFICACION, 0, idtipoapunte
-         from FCS_FACT_APUNTE
-        where idinstitucion = P_IDINSTITUCION
-          and idfacturacion = v_idfacturacion_regulariza
-      );
-    select Sum(precioaplicado)
-      into v_totalregularizacion
-      from FCS_FACT_APUNTE
-     where idinstitucion = P_IDINSTITUCION
-       and idfacturacion = P_IDREGULARIZACION;
-    
-    */
     for reg in C_APUNTES(P_IDINSTITUCION, v_idfacturacion_regulariza) loop
 
       P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
@@ -1918,11 +1777,11 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
       insert into FCS_FACT_APUNTE
         (idinstitucion, idfacturacion, idapunte, idpersona, idturno, idguardia, fechainicio, idhito, motivo, precioaplicado, fechamodificacion, usumodificacion, preciocostesfijos, idtipoapunte)
       Values
-        (P_IDINSTITUCION, P_IDREGULARIZACION, reg.idapunte, reg.idpersona, reg.idturno, reg.idguardia, reg.fechainicio, reg.idhito, reg.motivo, reg.importe_regularizacion, Sysdate, P_USUMODIFICACION, 0, reg.idtipoapunte);
+        (P_IDINSTITUCION, P_IDREGULARIZACION, reg.idapunte, reg.idpersona, reg.idturno, reg.idguardia, reg.fechainicio, reg.idhito, reg.motivo, reg.importe_regularizacion, Sysdate, P_USUMODIFICACION, reg.importe_costesfijos, reg.idtipoapunte);
       
       --acumulando importe para total
       if (reg.importe_regularizacion > 0) then
-         v_totalregularizacion := v_totalregularizacion + reg.importe_regularizacion;
+         v_totalregularizacion := v_totalregularizacion + reg.importe_regularizacion + reg.importe_costesfijos;
       end if;
 
     end loop;
@@ -1930,21 +1789,6 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
 
     P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
                     'recorriendo los dias';
-    /*
-    insert into FCS_FACT_GUARDIASCOLEGIADO
-      (idinstitucion, idfacturacion, idapunte, idturno, idguardia, fechainicio, fechafin, idpersona, precioaplicado, fechamodificacion, usumodificacion, idtipo, preciocostesfijos, idhito, motivo)
-      (select P_IDINSTITUCION, P_IDREGULARIZACION, idapunte, idturno, idguardia, fechainicio, fechafin, idpersona, FUNC_CALC_REGULARIZ_GUARDIAS (idinstitucion,
-                                              idfacturacion,
-                                              idapunte,
-                                              fechafin,
-                                              null,
-                                              null,
-                                              Null), Sysdate, P_USUMODIFICACION, idtipo, 0, idhito, motivo
-         from FCS_FACT_GUARDIASCOLEGIADO
-        where idinstitucion = P_IDINSTITUCION
-          and idfacturacion = v_idfacturacion_regulariza
-      );
-    */
     for reg in C_DIAS(P_IDINSTITUCION, v_idfacturacion_regulariza) loop
 
       P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
@@ -1952,28 +1796,13 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
       insert into FCS_FACT_GUARDIASCOLEGIADO
         (idinstitucion, idfacturacion, idapunte, idturno, idguardia, fechainicio, fechafin, idpersona, precioaplicado, fechamodificacion, usumodificacion, idtipo, preciocostesfijos, idhito, motivo)
       Values
-        (P_IDINSTITUCION, P_IDREGULARIZACION, reg.idapunte, reg.idturno, reg.idguardia, reg.fechainicio, reg.fechafin, reg.idpersona, reg.importe_regularizacion, Sysdate, P_USUMODIFICACION, reg.idtipo, 0, reg.idhito, reg.motivo);
+        (P_IDINSTITUCION, P_IDREGULARIZACION, reg.idapunte, reg.idturno, reg.idguardia, reg.fechainicio, reg.fechafin, reg.idpersona, reg.importe_regularizacion, Sysdate, P_USUMODIFICACION, reg.idtipo, reg.importe_costesfijos, reg.idhito, reg.motivo);
 
     end loop;
     
 
     P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
                     'recorriendo las asistencias';
-    /*
-    insert into FCS_FACT_ASISTENCIA
-      (idinstitucion, idfacturacion, idapunte, anio, numero, idpersona, fechahora, fechajustificacion, precioaplicado, fechamodificacion, usumodificacion, idhito, motivo, idtipo)
-      (select P_IDINSTITUCION, P_IDREGULARIZACION, idapunte, anio, numero, idpersona, fechahora, fechajustificacion, FUNC_CALC_REGULARIZ_GUARDIAS (idinstitucion,
-                                              idfacturacion,
-                                              idapunte,
-                                              null,
-                                              anio,
-                                              numero,
-                                              Null), Sysdate, P_USUMODIFICACION, idhito, motivo, idtipo
-         from FCS_FACT_ASISTENCIA
-        where idinstitucion = P_IDINSTITUCION
-          and idfacturacion = v_idfacturacion_regulariza
-      );
-    */
     for reg in C_ASIS(P_IDINSTITUCION, v_idfacturacion_regulariza) loop
 
       P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
@@ -1988,21 +1817,6 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
 
     P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
                     'recorriendo las actuaciones';
-    /*
-    insert into FCS_FACT_ACTUACIONASISTENCIA
-      (idinstitucion, idfacturacion, fechamodificacion, idapunte, idactuacion, anio, numero, idpersona, precioaplicado, fechaactuacion, fechajustificacion, usumodificacion, preciocostesfijos, idhito, motivo, idtipo)
-      (select P_IDINSTITUCION, P_IDREGULARIZACION, Sysdate, idapunte, idactuacion, anio, numero, idpersona, FUNC_CALC_REGULARIZ_GUARDIAS (idinstitucion,
-                                              idfacturacion,
-                                              idapunte,
-                                              null,
-                                              anio,
-                                              numero,
-                                              idactuacion), fechaactuacion, fechajustificacion, P_USUMODIFICACION, 0, idhito, motivo, idtipo
-         from FCS_FACT_ACTUACIONASISTENCIA
-        where idinstitucion = P_IDINSTITUCION
-          and idfacturacion = v_idfacturacion_regulariza
-      );
-    */
     for reg in C_ACTS(P_IDINSTITUCION, v_idfacturacion_regulariza) Loop
     
       P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
@@ -2011,9 +1825,23 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
       insert into FCS_FACT_ACTUACIONASISTENCIA
         (idinstitucion, idfacturacion, fechamodificacion, idapunte, idactuacion, anio, numero, idpersona, precioaplicado, fechaactuacion, fechajustificacion, usumodificacion, preciocostesfijos, idhito, motivo, idtipo)
       Values
-        (P_IDINSTITUCION, P_IDREGULARIZACION, Sysdate, reg.idapunte, reg.idactuacion, reg.anio, reg.numero, reg.idpersona, reg.importe_regularizacion, reg.fechaactuacion, reg.fechajustificacion, P_USUMODIFICACION, 0, reg.idhito, reg.motivo, reg.idtipo);
+        (P_IDINSTITUCION, P_IDREGULARIZACION, Sysdate, reg.idapunte, reg.idactuacion, reg.anio, reg.numero, reg.idpersona, reg.importe_regularizacion, reg.fechaactuacion, reg.fechajustificacion, P_USUMODIFICACION, reg.importe_costesfijos, reg.idhito, reg.motivo, reg.idtipo);
 
     end loop;
+               
+     -- Se almacenan los historicos a nivel de institucion
+    P_DATOSERROR := 'PROC_FCS_REGULAR_GUARDIAS: ' ||
+                    'Almacenando los datos historicos de la regularizacion'; 
+                    
+    PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTORICOS_GUARDIAS(P_IDINSTITUCION,
+                        P_IDREGULARIZACION,
+                        V_CODRETORNO2,
+                        V_DATOSERROR2);
+    
+    PKG_SIGA_FCS_HISTORICO.PROC_FCS_HISTO_HITOFACT_REGU(P_IDINSTITUCION,
+                        P_IDREGULARIZACION,
+                        V_CODRETORNO2,
+                        V_DATOSERROR2);
 
     --finalizando
     P_TOTAL      := v_totalregularizacion;
