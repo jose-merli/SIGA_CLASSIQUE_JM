@@ -1,4 +1,4 @@
-create or replace package PKG_SIGA_REGULARIZACION_SJCS is
+create or replace package uscgae.PKG_SIGA_REGULARIZACION_SJCS is
 
   -----------------------------------------------------------------------------
   -- PROCEDURE PROC_FCS_REGULAR_TURNOS_OFI
@@ -119,7 +119,7 @@ create or replace package PKG_SIGA_REGULARIZACION_SJCS is
 
 end PKG_SIGA_REGULARIZACION_SJCS;
 /
-create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
+create or replace package body uscgae.PKG_SIGA_REGULARIZACION_SJCS is
 
   /* Variables */
   --Variables de gestion de errores Oracle
@@ -975,34 +975,40 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
       end if;
 
       --AsTp
-      select sum(decode(FACASI.precioaplicado,
-                        0,
-                        0,
-                        tipasi.Importe - FACASI.precioaplicado))
-        into v_aux_importe_regularizado
-        from FCS_FACT_ASISTENCIA       FACASI,
-             Scs_Asistencia            ASI,
-             Scs_Tipoasistenciacolegio tipasi
-       where exists (select *
-                       from FCS_FACT_GUARDIASCOLEGIADO APU
-                      where FACASI.idinstitucion = apu.idinstitucion
-                        and FACASI.idfacturacion = apu.idfacturacion
-                        and FACASI.idapunte = apu.idapunte
-                        and trunc(FACASI.fechahora) = apu.fechafin
-
-                        and apu.idinstitucion = P_IDINSTITUCION
-                        and apu.idfacturacion = P_IDREGULARIZACION
-                        and apu.idapunte = P_IDAPUNTE
-                        and apu.fechafin = nvl(P_FECHAFIN, apu.fechafin))
-         And FACASI.idinstitucion = AsI.idinstitucion
-         and FACASI.Anio = ASI.Anio
-         And facasi.Numero = asi.Numero
-         And asi.Idinstitucion = tipasi.Idinstitucion
-         And asi.Idtipoasistenciacolegio = tipasi.Idtipoasistenciacolegio
-         
-         and FACASI.anio = nvl(P_ANIO, FACASI.anio)
-         and FACASI.numero = nvl(P_NUMERO, FACASI.numero)
-         and FACASI.idhito in (20);
+      Select Sum(Decode(Facasi.Precioaplicado, 0, 0, Tipasi.Importe - Facasi.Precioaplicado))
+        Into v_Aux_Importe_Regularizado
+        From Fcs_Fact_Asistencia        Facasi,
+             Scs_Asistencia             Asi,
+             Scs_Tipoasistenciacolegio  Tipasi,
+             Fcs_Fact_Guardiascolegiado Apu
+       Where Facasi.Idinstitucion = Asi.Idinstitucion
+         And Facasi.Anio = Asi.Anio
+         And Facasi.Numero = Asi.Numero
+         And Asi.Idinstitucion = Tipasi.Idinstitucion
+         And Asi.Idtipoasistenciacolegio = Tipasi.Idtipoasistenciacolegio
+         And Facasi.Idinstitucion = Apu.Idinstitucion
+         And Facasi.Idfacturacion = Apu.Idfacturacion
+         And Facasi.Idapunte = Apu.Idapunte
+         And Trunc(Facasi.Fechahora) = Apu.Fechafin
+         And Facasi.Idtipo = Apu.Idtipo
+            
+         And Not Exists (Select 1
+                From Fcs_Fact_Guardiascolegiado Facgua
+               Where Facasi.Idinstitucion = Facgua.Idinstitucion
+                 And Facasi.Idfacturacion = Facgua.Idfacturacion
+                 And Facasi.Idapunte = Facgua.Idapunte
+                 And Trunc(Facasi.Fechahora) = Facgua.Fechafin
+                 And 1 = Facgua.Idtipo
+                 And Facgua.Idhito Not In (5, 27))
+             
+         And Apu.Idinstitucion = p_Idinstitucion
+         And Apu.Idfacturacion = p_Idregularizacion
+         And Apu.Idapunte = p_Idapunte
+         And Apu.Fechafin = Nvl(p_Fechafin, Apu.Fechafin)
+         And Facasi.Anio = Nvl(p_Anio, Facasi.Anio)
+         And Facasi.Numero = Nvl(p_Numero, Facasi.Numero)
+         And Apu.Idhito Not In (21, 41)
+         And Facasi.Idhito In (20);
 
       if v_aux_importe_regularizado is not null then
         v_importe_regularizado := v_importe_regularizado + v_aux_importe_regularizado;
@@ -1339,7 +1345,7 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
       Select Sum(Decode(Apu.Precioaplicado,
                         0,
                         0,
-                        (Select Tipasi.Importe
+                        (Select Tipasi.Importemaximo
                            From Fcs_Fact_Asistencia Facasi, Scs_Asistencia Asi, Scs_Tipoasistenciacolegio Tipasi
                           Where Facasi.Idinstitucion = Apu.Idinstitucion
                             And Facasi.Idfacturacion = Apu.Idfacturacion
