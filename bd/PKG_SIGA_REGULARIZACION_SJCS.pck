@@ -1,4 +1,4 @@
-create or replace package uscgae.PKG_SIGA_REGULARIZACION_SJCS is
+create or replace package PKG_SIGA_REGULARIZACION_SJCS is
 
   -----------------------------------------------------------------------------
   -- PROCEDURE PROC_FCS_REGULAR_TURNOS_OFI
@@ -119,7 +119,7 @@ create or replace package uscgae.PKG_SIGA_REGULARIZACION_SJCS is
 
 end PKG_SIGA_REGULARIZACION_SJCS;
 /
-create or replace package body uscgae.PKG_SIGA_REGULARIZACION_SJCS is
+create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
 
   /* Variables */
   --Variables de gestion de errores Oracle
