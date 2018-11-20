@@ -107,6 +107,7 @@ create or replace package PKG_SIGA_REGULARIZACION_SJCS is
                                          P_ANIO                  IN NUMBER,
                                          P_NUMERO                IN NUMBER,
                                          P_IDACTUACION           IN Number,
+                                         p_tipodia               In Number,
                                          P_CALCULAR_COSTES_FIJOS IN Number)
     return NUMBER;
   PROCEDURE PROC_FCS_REGULAR_GUARDIAS (P_IDINSTITUCION     IN NUMBER,
@@ -738,6 +739,7 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
                                          P_ANIO                  IN NUMBER,
                                          P_NUMERO                IN NUMBER,
                                          P_IDACTUACION           IN Number,
+                                         p_tipodia               In Number,
                                          p_calcular_costes_fijos In Number)
     return NUMBER IS
 
@@ -1364,6 +1366,7 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
          And Apu.Idfacturacion = p_Idregularizacion
          And Apu.Idapunte = p_Idapunte
          And Apu.Fechafin = Nvl(p_Fechafin, Apu.Fechafin)
+         And Apu.Idtipo = Nvl(Case(p_Tipodia) When 1 Then Null Else p_Tipodia End, Apu.Idtipo)
          And Apu.Idhito In (21, 41);
 
       if v_aux_importe_regularizado is not null then
@@ -1673,6 +1676,7 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
                                               null,
                                               null,
                                               Null,
+                                              Null,
                                               Null) As importe_regularizacion, 
                     FUNC_CALC_REGULARIZ_GUARDIAS (idinstitucion,
                                               idfacturacion,
@@ -1680,6 +1684,7 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
                                               null,
                                               null,
                                               null,
+                                              Null,
                                               Null,
                                               1) As importe_costesfijos
         from FCS_FACT_APUNTE apu
@@ -1694,6 +1699,7 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
                                               null,
                                               null,
                                               Null,
+                                              apu.Idtipo,
                                               Null) As importe_regularizacion, 
                     FUNC_CALC_REGULARIZ_GUARDIAS (idinstitucion,
                                               idfacturacion,
@@ -1702,6 +1708,7 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
                                               null,
                                               null,
                                               Null,
+                                              apu.Idtipo,
                                               1) As importe_costesfijos
         from FCS_FACT_GUARDIASCOLEGIADO apu
        where idinstitucion = P_IDINSTITUCION
@@ -1715,6 +1722,7 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
                                               anio,
                                               numero,
                                               Null,
+                                              Null,
                                               Null) As importe_regularizacion, 
                     FUNC_CALC_REGULARIZ_GUARDIAS (idinstitucion,
                                               idfacturacion,
@@ -1722,6 +1730,7 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
                                               null,
                                               anio,
                                               numero,
+                                              Null,
                                               Null,
                                               1) As importe_costesfijos
         from FCS_FACT_ASISTENCIA apu
@@ -1736,6 +1745,7 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
                                               anio,
                                               numero,
                                               idactuacion,
+                                              Null,
                                               Null) As importe_regularizacion, 
                     FUNC_CALC_REGULARIZ_GUARDIAS (idinstitucion,
                                               idfacturacion,
@@ -1744,6 +1754,7 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
                                               anio,
                                               numero,
                                               idactuacion,
+                                              Null,
                                               1) As importe_costesfijos
         from FCS_FACT_ACTUACIONASISTENCIA apu
        where idinstitucion = P_IDINSTITUCION
@@ -1787,7 +1798,10 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
       
       --acumulando importe para total
       if (reg.importe_regularizacion > 0) then
-         v_totalregularizacion := v_totalregularizacion + reg.importe_regularizacion + reg.importe_costesfijos;
+         v_totalregularizacion := v_totalregularizacion + reg.importe_regularizacion;
+      end if;
+      if (reg.importe_costesfijos > 0) then
+         v_totalregularizacion := v_totalregularizacion + reg.importe_costesfijos;
       end if;
 
     end loop;
