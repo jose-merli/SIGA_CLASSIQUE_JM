@@ -1917,8 +1917,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 //	    }
 	    
 	    //Sustituimos las etiquetas por sus valores
-	    sAsunto = sustituirEtiquetas(sAsunto,htDatosEnvio);
-	    sCuerpo = sustituirEtiquetas(sCuerpo,htDatosEnvio);
+	    sAsunto = sustituirEtiquetas(sAsunto,htDatosEnvio,"##");
+	    sCuerpo = sustituirEtiquetas(sCuerpo,htDatosEnvio,"##");
 	    
 	    Hashtable htCorreo = new Hashtable();
 	    htCorreo.put("asunto",sAsunto);
@@ -1970,22 +1970,24 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	}
 	
 	public String sustituirEtiquetas(String sArchivo, Hashtable etiquetas) throws SIGAException, ClsExceptions{
-	try {
-		if (!etiquetas.isEmpty()){
-			String key = "";
-			for (Enumeration e = etiquetas.keys(); e.hasMoreElements() ;) {
-		         key = (String)e.nextElement();
-		         final Pattern pattern = Pattern.compile("%%"+key+"%%");
-		         final Matcher matcher = pattern.matcher( sArchivo );
-//		         sArchivo = matcher.replaceAll(UtilidadesString.formato_ISO_8859_1((String)etiquetas.get(key)));
-		         sArchivo = matcher.replaceAll((String)etiquetas.get(key));
-		    }
-		}
-	    return sArchivo;
-	} catch (Exception e) {
-        throw new ClsExceptions(e,"Error sustituyendo etiquetas");
-//		throw new SIGAException("messages.general.error",e);
+		return sustituirEtiquetas(sArchivo, etiquetas, "%%");
 	}
+	
+	public String sustituirEtiquetas(String sArchivo, Hashtable etiquetas, String marcaInicioFin) throws SIGAException, ClsExceptions{
+		try {
+			if (!etiquetas.isEmpty()) {
+				String key = "";
+				for (Enumeration e = etiquetas.keys(); e.hasMoreElements();) {
+					key = (String) e.nextElement();
+					final Pattern pattern = Pattern.compile(marcaInicioFin + key + marcaInicioFin);
+					final Matcher matcher = pattern.matcher(sArchivo);
+					sArchivo = matcher.replaceAll((String) etiquetas.get(key));
+				}
+			}
+			return sArchivo;
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error sustituyendo etiquetas");
+		}
 	}
 
 	public Row getDireccionPreferenteInstitucion(Integer idInstitucion,int idTipoEnvio)

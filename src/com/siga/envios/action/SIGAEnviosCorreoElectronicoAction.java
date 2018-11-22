@@ -90,7 +90,7 @@ public class SIGAEnviosCorreoElectronicoAction extends MasterAction
 	        String idInstitucion = form.getIdInstitucion();
 	        String idEnvio = form.getIdEnvio();
 	        String sAsunto = form.getAsunto();
-	        String sCuerpo =UtilidadesString.reemplazarTextoEntreMarca(form.getCuerpo(),"%%"); 
+	        String sCuerpo =UtilidadesString.reemplazarTextoEntreMarca(form.getCuerpo(),"##"); 
 
 	        tx = userBean.getTransaction();
 	        tx.begin();
