@@ -820,6 +820,9 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 
 						}
 
+					}else if (!procuradorOld.trim().equals("") && procuradorNew.trim().equals("")) {
+						//Si habia procurador y ahora no, no se lopasamos
+						
 					}else if (!procuradorOld.trim().equals(procuradorNew.trim())) {
 						
 //						si es el mismo procedimiento es un cambio de profesional designado. Si es distinto es una nueva designacion
