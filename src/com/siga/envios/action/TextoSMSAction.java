@@ -24,6 +24,7 @@ import javax.transaction.UserTransaction;
 import com.siga.envios.form.*;
 
 import org.apache.struts.action.*;
+import org.redabogacia.sigaservices.app.AppConstants;
 
 public class TextoSMSAction extends MasterAction
 {
@@ -153,7 +154,7 @@ public class TextoSMSAction extends MasterAction
 	        if (admProducto.insert(beanCampos))
 	        {
 	            beanCampos.setIdCampo(new Integer(EnvCamposPlantillaAdm.K_IDCAMPO_SMS));	            
-	            beanCampos.setValor(UtilidadesString.reemplazarTextoEntreMarca(form.getCuerpo(),"%%"));
+	            beanCampos.setValor(UtilidadesString.reemplazarTextoEntreMarca(form.getCuerpo(), AppConstants.MARCAS_ETIQUETAS_REEMPLAZO_TEXTO));
 			 
 /*ESTE*/		admProducto.delete(beanCampos);
 			        if (admProducto.insert(beanCampos))

@@ -1,16 +1,27 @@
 package com.siga.envios.action;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Vector;
 
-import com.atos.utils.*;
-import com.siga.beans.*;
-import com.siga.general.*;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
-import com.siga.Utilidades.UtilidadesString;
-import com.siga.envios.form.*;
 
-import org.apache.struts.action.*;
+import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants;
+
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.EnvCamposAdm;
+import com.siga.beans.EnvCamposBean;
+import com.siga.beans.EnvCamposPlantillaAdm;
+import com.siga.beans.EnvCamposPlantillaBean;
+import com.siga.beans.EnvPlantillasEnviosAdm;
+import com.siga.beans.EnvPlantillasEnviosBean;
+import com.siga.envios.form.SIGAPlantillasEnviosCorreoElectronicoForm;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
 
 public class SIGAPlantillasEnviosCorreoElectronicoAction extends MasterAction
 {
@@ -104,7 +115,7 @@ public class SIGAPlantillasEnviosCorreoElectronicoAction extends MasterAction
 	        if (admProducto.insert(beanCampos))
 	        {
 	            beanCampos.setIdCampo(new Integer(EnvCamposPlantillaAdm.K_IDCAMPO_CUERPO));
-	            String valor= UtilidadesString.reemplazarTextoEntreMarca(form.getCuerpo(),"%%");      	
+	            String valor= UtilidadesString.reemplazarTextoEntreMarca(form.getCuerpo(), AppConstants.MARCAS_ETIQUETAS_REEMPLAZO_TEXTO);      	
 	            beanCampos.setValor(valor);
 	            
 	           // beanCampos.setValor(form.getCuerpo());

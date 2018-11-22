@@ -21,6 +21,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
@@ -161,7 +162,7 @@ public class TextoEnviosSMSAction extends MasterAction
 
 	        String idInstitucion = form.getIdInstitucion();
 	        String idEnvio = form.getIdEnvio();	             	
-	        String sCuerpo = UtilidadesString.reemplazarTextoEntreMarca(form.getCuerpo(),"%%");
+	        String sCuerpo = UtilidadesString.reemplazarTextoEntreMarca(form.getCuerpo(), AppConstants.MARCAS_ETIQUETAS_REEMPLAZO_TEXTO);
 	        tx = userBean.getTransaction();
 	        tx.begin();
 

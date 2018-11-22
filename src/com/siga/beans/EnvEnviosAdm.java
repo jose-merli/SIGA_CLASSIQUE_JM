@@ -48,6 +48,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.autogen.model.ScsComunicaciones;
 import org.redabogacia.sigaservices.app.autogen.model.ScsDesigna;
 import org.redabogacia.sigaservices.app.autogen.model.ScsEjg;
@@ -1917,8 +1918,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 //	    }
 	    
 	    //Sustituimos las etiquetas por sus valores
-	    sAsunto = sustituirEtiquetas(sAsunto,htDatosEnvio,"##");
-	    sCuerpo = sustituirEtiquetas(sCuerpo,htDatosEnvio,"##");
+	    sAsunto = sustituirEtiquetas(sAsunto,htDatosEnvio, AppConstants.MARCAS_ETIQUETAS_REEMPLAZO_TEXTO);
+	    sCuerpo = sustituirEtiquetas(sCuerpo,htDatosEnvio, AppConstants.MARCAS_ETIQUETAS_REEMPLAZO_TEXTO);
 	    
 	    Hashtable htCorreo = new Hashtable();
 	    htCorreo.put("asunto",sAsunto);
@@ -1970,7 +1971,9 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	}
 	
 	public String sustituirEtiquetas(String sArchivo, Hashtable etiquetas) throws SIGAException, ClsExceptions{
-		return sustituirEtiquetas(sArchivo, etiquetas, "%%");
+		String retorno = sustituirEtiquetas(sArchivo, etiquetas, "%%");
+		retorno = sustituirEtiquetas(retorno, etiquetas, AppConstants.MARCAS_ETIQUETAS_REEMPLAZO_TEXTO);
+		return retorno;
 	}
 	
 	public String sustituirEtiquetas(String sArchivo, Hashtable etiquetas, String marcaInicioFin) throws SIGAException, ClsExceptions{
