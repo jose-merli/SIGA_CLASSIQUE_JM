@@ -110,16 +110,28 @@ begin
                     AND P.IDTIPOEJG = EJG.IDTIPOEJG
                     AND P.ESTADO = 30)--FINALIZADO
                     AS EXP14_EEJG
+          ,(SELECT  DECODE(COUNT(1), 0, ''N'',''S'')
+                      FROM SCS_DOCUMENTACIONEJG DE
+                      WHERE DE.IDFICHERO IS NOT NULL
+                      AND DE.IDINSTITUCION = EJG.IDINSTITUCION
+                      AND DE.ANIO = EJG.ANIO
+                      AND DE.IDTIPOEJG = EJG.IDTIPOEJG
+                      AND DE.NUMERO = EJG.NUMERO
+                 ) AS EXP15_DOC_ADICIONAL
+               ,
+               DECODE(SOL.ASISTIDOSOLICITAJG, null,null, ''1'', ''S'',''0'', ''N'') AS  EXP16_SOL_JG
+
+
           , ''##'' AS SALTO_LINEA_2
      , ''PRD'' AS TIPO_REGISTRO_PRD
           , LPAD(DECODE(DL.IDPERSONA, NULL, ''      '', NVL(F_SIGA_CALCULONCOLEGIADO(DL.IDINSTITUCION, DL.IDPERSONA), ''      '')), 6, ''0'') AS PRD1_NCOLEGIADOABOGADO
           , RPAD(NVL(TO_CHAR(DL.FECHADESIGNA, ''YYYYMMDD''), '' ''), 8, '' '') AS PRD2_FECHA_DESIGNA
-          
-          
+
+
           , DECODE(D.CODIGO,
                       NULL,
                       ''      '',
-                      
+
                       (SELECT COUNT(1) NUMERO
                          FROM SCS_DESIGNASLETRADO DESLET2
                         WHERE DL.IDINSTITUCION = DESLET2.IDINSTITUCION
@@ -308,6 +320,9 @@ begin
           , RPAD('' '', 15, '' '') AS SOL16_NUMERO_TELEFONO --no obligatorio
           , RPAD('' '', 1, '' '') AS SOL17_PRESO --obligatorio??
           , RPAD('' '', 10, '' '') AS SOL18_CENTRO_PENITENCIARIO --obligatorio??
+          , DECODE(SOL.AUTORIZAAVISOTELEMATICO,null,'' '', ''1'', ''S'', ''N'') AS SOL19_AUTORIZA_TELEM
+          , DECODE(EJG.CALIDAD,null,'' '',''0'',''S'',''N'') AS SOL20_DEMANDADO
+
           , ''##'' AS SALTO_LINEA_5
      , ''DOM'' AS TIPO_REGISTRO_DOM
           , RPAD(''2'', 1, '' '') AS DOM1_TIPO_DOMICILIO
@@ -427,7 +442,7 @@ begin
   cuentaCondicion := 0;
   --ELIMINADA LA OBLIGATORIEDAD DE LOS CAMPOS EXP7 Y EXP8 SEGÚN CORREO DE CARMEN DEL 23/05/2011
   -- AÑADIMOS OBLIGATORIEDAD POR CORREO DE ENRIQUE DE 21-02-2017
-  
+
  cuentaCondicion := cuentaCondicion + 1;
   v_arrayCondiciones(cuentaCondicion).condicion := '(TRIM(EXP7_CALIFICACION) IS NOT NULL OR EXP3_TIPO_EXPEDIENTE = ''EXT'')';
   v_arrayCondiciones(cuentaCondicion).descripcion := 'Debe rellenar el tipo de dictamen';
@@ -435,6 +450,11 @@ begin
   cuentaCondicion := cuentaCondicion + 1;
   v_arrayCondiciones(cuentaCondicion).condicion := 'TRIM(EXP8_FECHA_DICTAMEN) IS NOT NULL';
   v_arrayCondiciones(cuentaCondicion).descripcion := 'Debe rellenar la fecha del dictamen';
+
+ cuentaCondicion := cuentaCondicion + 1;
+  v_arrayCondiciones(cuentaCondicion).condicion := ' nvl(EXP16_SOL_JG,''N'') = ''S''';
+  v_arrayCondiciones(cuentaCondicion).descripcion := 'El Solicitante no ha solicitado Justicia gratuita por lo que no se puede traspasar la información';
+
 
   cuentaCondicion := cuentaCondicion + 1;
   v_arrayCondiciones(cuentaCondicion).condicion := '(TRIM(PRD6_ANIO_DESIGNA_PROCURADOR) IS NOT NULL AND TRIM(PRD8_NUMERO_DESIGNA_PROCURADOR) IS NOT NULL OR TRIM(PRD6_ANIO_DESIGNA_PROCURADOR) IS NULL AND TRIM(PRD8_NUMERO_DESIGNA_PROCURADOR) IS NULL)';
