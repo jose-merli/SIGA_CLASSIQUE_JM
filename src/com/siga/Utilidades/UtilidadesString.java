@@ -47,6 +47,7 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.util.KeyValue;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -1474,7 +1475,7 @@ public class UtilidadesString {
 
         return nombreValido;
     }
-	
+		
 		/**
 		 *  Metodo reemplazarTextoEntreMarca
 		 *  convierte a mayuscula el texto que este entre la marca.
@@ -1487,7 +1488,7 @@ public class UtilidadesString {
 	public static String reemplazarTextoEntreMarca(String textoreemplazar,String marca){
         if(textoreemplazar==null ||textoreemplazar.length()==0)
         	return "";
-        String texto = textoreemplazar;
+        String texto = textoreemplazar.replaceAll(AppConstants.MARCAS_ETIQUETAS_REEMPLAZO_TEXTO_ANTIGUO, marca);
         
         String textoAux = texto;
         String cadena = "";
