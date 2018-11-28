@@ -494,3 +494,15 @@ update env_camposplantilla ce
    and ce.tipocampo in ('S', 'E');
 
 commit;
+
+update gen_recursos rec 
+set rec.descripcion= replace(rec.descripcion,'%%','##')
+where rec.idrecurso='envios.ayuda.campos';
+
+update gen_recursos rec 
+set rec.descripcion= replace(rec.descripcion,'%%','##')
+where rec.idrecurso='envios.ayuda.imagenes';
+
+
+-- a paticion de goyo añadimos codigoext a la institucion 2000
+update cen_institucion set codigoext = 'AC0000' where idinstitucion = 2000;
