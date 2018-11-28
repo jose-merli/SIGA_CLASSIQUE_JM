@@ -105,7 +105,7 @@ public class SIGAPlantillasEnviosCorreoElectronicoAction extends MasterAction
 	        beanCampos.setIdPlantillaEnvios(new Integer(form.getIdPlantillaEnvios()));
 	        beanCampos.setIdCampo(new Integer(EnvCamposPlantillaAdm.K_IDCAMPO_ASUNTO));
 	        beanCampos.setTipoCampo(EnvCamposAdm.K_TIPOCAMPO_E);
-	        beanCampos.setValor(form.getAsunto());
+	        beanCampos.setValor(UtilidadesString.reemplazarTextoEntreMarca(form.getAsunto(), AppConstants.MARCAS_ETIQUETAS_REEMPLAZO_TEXTO));
 	        
 		    UserTransaction tx = userBean.getTransaction();
 		    tx.begin();

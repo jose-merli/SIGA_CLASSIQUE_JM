@@ -90,8 +90,8 @@ public class SIGAEnviosCorreoElectronicoAction extends MasterAction
 
 	        String idInstitucion = form.getIdInstitucion();
 	        String idEnvio = form.getIdEnvio();
-	        String sAsunto = form.getAsunto();
-	        String sCuerpo =UtilidadesString.reemplazarTextoEntreMarca(form.getCuerpo(), AppConstants.MARCAS_ETIQUETAS_REEMPLAZO_TEXTO); 
+	        String sAsunto = UtilidadesString.reemplazarTextoEntreMarca(form.getAsunto(), AppConstants.MARCAS_ETIQUETAS_REEMPLAZO_TEXTO);
+	        String sCuerpo = UtilidadesString.reemplazarTextoEntreMarca(form.getCuerpo(), AppConstants.MARCAS_ETIQUETAS_REEMPLAZO_TEXTO); 
 
 	        tx = userBean.getTransaction();
 	        tx.begin();

@@ -483,3 +483,14 @@ alter table PCAJG_ALC_INT_EXP add EXP16_SOL_JG CHAR(1);
  jbd -- ejecutado unicamente en local
 delete from adm_tiposacceso where idproceso in ('11b','1b','21b');
 delete from gen_procesos where idproceso in ('11b','1b','21b');
+
+update env_camposenvios ce set ce.valor = replace(ce.valor, '%%', '##') where 1=1 
+and ce.idcampo in (1, 2) and ce.tipocampo in ('S','E');
+
+update env_camposplantilla ce
+   set ce.valor = replace(ce.valor, '%%', '##')
+ where 1 = 1
+   and ce.idcampo in (1, 2)
+   and ce.tipocampo in ('S', 'E');
+
+commit;

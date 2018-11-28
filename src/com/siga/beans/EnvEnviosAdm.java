@@ -1918,8 +1918,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 //	    }
 	    
 	    //Sustituimos las etiquetas por sus valores
-	    sAsunto = sustituirEtiquetas(sAsunto,htDatosEnvio, AppConstants.MARCAS_ETIQUETAS_REEMPLAZO_TEXTO);
-	    sCuerpo = sustituirEtiquetas(sCuerpo,htDatosEnvio, AppConstants.MARCAS_ETIQUETAS_REEMPLAZO_TEXTO);
+	    sAsunto = sustituirEtiquetas(sAsunto,htDatosEnvio);
+	    sCuerpo = sustituirEtiquetas(sCuerpo,htDatosEnvio);
 	    
 	    Hashtable htCorreo = new Hashtable();
 	    htCorreo.put("asunto",sAsunto);
@@ -1971,12 +1971,12 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	}
 	
 	public String sustituirEtiquetas(String sArchivo, Hashtable etiquetas) throws SIGAException, ClsExceptions{
-		String retorno = sustituirEtiquetas(sArchivo, etiquetas, "%%");
+		String retorno = sustituirEtiquetas(sArchivo, etiquetas, AppConstants.MARCAS_ETIQUETAS_REEMPLAZO_TEXTO_ANTIGUO);
 		retorno = sustituirEtiquetas(retorno, etiquetas, AppConstants.MARCAS_ETIQUETAS_REEMPLAZO_TEXTO);
 		return retorno;
 	}
 	
-	public String sustituirEtiquetas(String sArchivo, Hashtable etiquetas, String marcaInicioFin) throws SIGAException, ClsExceptions{
+	private String sustituirEtiquetas(String sArchivo, Hashtable etiquetas, String marcaInicioFin) throws SIGAException, ClsExceptions{
 		try {
 			if (!etiquetas.isEmpty()) {
 				String key = "";
