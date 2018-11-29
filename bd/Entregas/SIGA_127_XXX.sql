@@ -506,3 +506,5 @@ where rec.idrecurso='envios.ayuda.imagenes';
 
 -- a paticion de goyo añadimos codigoext a la institucion 2000
 update cen_institucion set codigoext = 'AC0000' where idinstitucion = 2000;
+
+-- Ejecutados en Integracion por AAG el 29/11/2018 a las 09:45

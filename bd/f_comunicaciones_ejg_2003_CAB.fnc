@@ -550,3 +550,4 @@ begin
   return salida;
 
 end f_comunicaciones_ejg_2003_CAB;
+/
