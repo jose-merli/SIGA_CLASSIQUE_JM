@@ -687,46 +687,27 @@ end FUN_FCS_OBTENERIDPERSONASOCIED;
     v_Retencion   Scs_Maestroretenciones.Retencion%Type;
     v_Idretencion Scs_Maestroretenciones.Idretencion%Type;
   Begin
-    If (p_Essociedad = 1) Then
-      Begin
-        Select Scs_Maestroretenciones.Retencion,
-               Scs_Maestroretenciones.Idretencion
-          Into v_Retencion, v_Idretencion
-          From Scs_Maestroretenciones, Cen_Nocolegiado
-         Where Scs_Maestroretenciones.Letranifsociedad =
-               Cen_Nocolegiado.Tipo
-           And Cen_Nocolegiado.Idinstitucion = p_Institucion
-           And Cen_Nocolegiado.Idpersona = p_Idpersona;
-      Exception
-        When Others Then
-          v_Retencion   := 0;
-          v_Idretencion := 0;
-          p_Codretorno  := To_Char(Sqlcode);
-          p_Datoserror  := p_Datoserror || ' ' || Sqlerrm;
-      End;
-    Else
-      Begin
-        Select Scs_Maestroretenciones.Retencion,
-               Scs_Maestroretenciones.Idretencion
-          Into v_Retencion, v_Idretencion
-          From Scs_Retencionesirpf, Scs_Maestroretenciones
-         Where Scs_Retencionesirpf.Idretencion =
-               Scs_Maestroretenciones.Idretencion
-           And Scs_Retencionesirpf.Idinstitucion = p_Institucion
-           And Scs_Retencionesirpf.Idpersona = p_Idpersona
-           And ((Scs_Retencionesirpf.Fechainicio <= Sysdate And
-               Sysdate <= Scs_Retencionesirpf.Fechafin) Or
-               (Scs_Retencionesirpf.Fechainicio <= Sysdate And
-               Scs_Retencionesirpf.Fechafin Is Null))
-         Order By Scs_Retencionesirpf.Fechainicio Asc;
-      Exception
-        When Others Then
-          v_Retencion   := 0;
-          v_Idretencion := 0;
-          p_Codretorno  := To_Char(Sqlcode);
-          p_Datoserror  := p_Datoserror || ' ' || Sqlerrm;
-      End;
-    End If;
+    Begin
+      Select Scs_Maestroretenciones.Retencion, Scs_Maestroretenciones.Idretencion
+        Into v_Retencion, v_Idretencion
+        From Scs_Retencionesirpf, Scs_Maestroretenciones
+       Where Scs_Retencionesirpf.Idretencion = Scs_Maestroretenciones.Idretencion
+         And Scs_Retencionesirpf.Idinstitucion = p_Institucion
+         And Scs_Retencionesirpf.Idpersona = p_Idpersona
+         And Trunc(Sysdate) Between Trunc(Scs_Retencionesirpf.Fechainicio) And
+             Nvl(Trunc(Scs_Retencionesirpf.Fechafin), '31/12/2999')
+         /*And ((Scs_Retencionesirpf.Fechainicio <= Sysdate And
+             Sysdate <= Scs_Retencionesirpf.Fechafin) Or
+             (Scs_Retencionesirpf.Fechainicio <= Sysdate And
+             Scs_Retencionesirpf.Fechafin Is Null))*/
+       Order By Scs_Retencionesirpf.Fechainicio Asc;
+    Exception
+      When Others Then
+        v_Retencion   := 0;
+        v_Idretencion := 0;
+        p_Codretorno  := To_Char(Sqlcode);
+        p_Datoserror  := p_Datoserror || ' ' || Sqlerrm;
+    End;
   
     If (v_Retencion < 0) Then
       p_Retencion   := 0;

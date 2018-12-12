@@ -508,3 +508,8 @@ where rec.idrecurso='envios.ayuda.imagenes';
 update cen_institucion set codigoext = 'AC0000' where idinstitucion = 2000;
 
 -- Ejecutados en Integracion por AAG el 29/11/2018 a las 09:45
+
+-- SIGA_127_018
+
+PKG_SIGA_PAGOS_SJCS
+
