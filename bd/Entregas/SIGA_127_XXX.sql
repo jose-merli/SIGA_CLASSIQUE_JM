@@ -513,3 +513,8 @@ update cen_institucion set codigoext = 'AC0000' where idinstitucion = 2000;
 
 PKG_SIGA_PAGOS_SJCS
 
+-- Ejecutados en Integracion por AAG el 17/12/2018 a las 10:05
+
+-- SIGA_127_019
+
+
