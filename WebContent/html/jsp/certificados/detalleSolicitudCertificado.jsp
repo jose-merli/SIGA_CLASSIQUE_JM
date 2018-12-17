@@ -1036,26 +1036,7 @@
 						<tr>
 							<td class="labelText" style="width:150px"><siga:Idioma key="certificados.solicitudes.literal.estadoIncorporacion" /></td>
 							<td class="labelTextvalue" style="width:80px"><%=UtilidadesString.mostrarDatoJSP(estadoInc)%></td>
-							<td class="labelText" style="width:150px"><siga:Idioma key="certificados.solicitudes.literal.residencia" /></td>
-							<td class="labelTextvalue" style="width:80px"><%=UtilidadesString.mostrarDatoJSP(residente)%></td>
-						<% if (residente.equals("SI")) { %>
-							<td class="labelText"><siga:Idioma key="pys.solicitudCompra.literal.residenteen"/></td>
-							<td >
-								<%
-									sReadOnly = stLectura;
-									if (bSolicitudTelematica)
-										sReadOnly = "true";
-								%>
-								<siga:Select id="idInstitucionResidencia" 
-										queryId="<%=consultaOrigen%>" 
-										selectedIds="<%=idInstitucionResidencia%>"
-										params="<%=idInstitucionSol%>"
-										readonly="<%=sReadOnly%>"/>	
-							</td>
-						<% } %>
-						</tr>
-					<% } %>
-						
+
 					<%
 						if (pintarCheckMutualidad) {
 					%>					

@@ -38,7 +38,7 @@ Begin
          Fechacobro, Idcensodatos)
       Values
         (:New.Idinstitucion, Seq_Solicitudcertificados.Nextval, :New.Fecharecepcionsolicitud, 1,
-         :New.Idinstitucion, :New.Idinstitucionorigen, :New.Idinstitucioncolegiacion,
+         :New.idinstitucionpeticion , :New.Idinstitucionorigen, :New.Idinstitucioncolegiacion,
          :New.Idinstitucioncolegiacion, :New.Idpersona, :New.Idpersona, :New.Iddireccion,
          :New.Idtipoenvios, :New.Idtipoproducto, :New.Idproductoinstitucion, :New.Idproducto, 1,
          Sysdate, Null, :New.Fechamodificacion, :New.Usumodificacion, :New.Idpeticion,
@@ -48,4 +48,3 @@ Begin
 
   End If;
 End Pys_Productossolicitados_Ai;
-/
