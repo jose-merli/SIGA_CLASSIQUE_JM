@@ -1036,7 +1036,9 @@
 						<tr>
 							<td class="labelText" style="width:150px"><siga:Idioma key="certificados.solicitudes.literal.estadoIncorporacion" /></td>
 							<td class="labelTextvalue" style="width:80px"><%=UtilidadesString.mostrarDatoJSP(estadoInc)%></td>
-
+						</tr>
+					<% } %>
+						
 					<%
 						if (pintarCheckMutualidad) {
 					%>					
