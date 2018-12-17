@@ -515,6 +515,11 @@ PKG_SIGA_PAGOS_SJCS
 
 -- Ejecutados en Integracion por AAG el 17/12/2018 a las 10:05
 
+Update CEN_NOCOLEGIADO Set SOCIEDADPROFESIONAL = 0 Where SOCIEDADPROFESIONAL Is null;
+alter table CEN_NOCOLEGIADO modify SOCIEDADPROFESIONAL default 0 not null;
+
+-- Ejecutados en Integracion por AAG el 17/12/2018 a las 14:45
+
 -- SIGA_127_019
 
 
