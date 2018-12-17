@@ -520,6 +520,8 @@ alter table CEN_NOCOLEGIADO modify SOCIEDADPROFESIONAL default 0 not null;
 
 -- Ejecutados en Integracion por AAG el 17/12/2018 a las 14:45
 
+Actualizacion de contadores y de SMI del año 2019 en esta entrega
+
 -- SIGA_127_019
 
 
