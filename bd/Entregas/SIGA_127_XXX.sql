@@ -522,10 +522,11 @@ alter table CEN_NOCOLEGIADO modify SOCIEDADPROFESIONAL default 0 not null;
 
 Actualizacion de contadores y de SMI del año 2019 en esta entrega
 
--- SIGA_127_019
-
-
 -- Ejecutados en Integración por FMS el 17/12/1981 a las 16:00
 alter table PYS_PRODUCTOSSOLICITADOS add IDINSTITUCIONPETICION number(4);
 
 coger PYS_PRODUCTOSSOLICITADOS_AI.trg
+
+-- SIGA_127_019
+
+
