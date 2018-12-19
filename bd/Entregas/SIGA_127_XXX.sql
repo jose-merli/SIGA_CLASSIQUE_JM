@@ -526,6 +526,11 @@ alter table PYS_PRODUCTOSSOLICITADOS add IDINSTITUCIONPETICION number(4);
 coger PYS_PRODUCTOSSOLICITADOS_AI.trg
 -- Ejecutados en Integración por FMS el 17/12/1981 a las 16:00
 
+PYS_PRODUCTOSSOLICITADOS_AI.trg
+alter table CEN_NOCOLEGIADO modify SOCIEDADPROFESIONAL default 0 null;
+
+-- Ya Ejecutado en todos los entornos
+
 -- SIGA_127_019
 
 
