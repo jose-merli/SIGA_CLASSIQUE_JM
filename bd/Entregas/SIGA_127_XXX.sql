@@ -529,7 +529,7 @@ coger PYS_PRODUCTOSSOLICITADOS_AI.trg
 PYS_PRODUCTOSSOLICITADOS_AI.trg
 alter table CEN_NOCOLEGIADO modify SOCIEDADPROFESIONAL default 0 null;
 
--- Ya Ejecutado en todos los entornos
+-- Ya Ejecutado en todos los entornos (aunque ha quedado pendiente el alter table en PRE)
 
 -- SIGA_127_019
 
