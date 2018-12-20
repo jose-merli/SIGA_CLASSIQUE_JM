@@ -533,4 +533,5 @@ alter table CEN_NOCOLEGIADO modify SOCIEDADPROFESIONAL default 0 null;
 
 -- SIGA_127_019
 
+PKG_SIGA_FACTURACION_SJCS (ya ejecutado en todos los entornos por ser urgente)
 

@@ -13898,7 +13898,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                            And asi.Idturno = r_Dia.Idturno
                            And asi.Idguardia = r_Dia.Idguardia
                            And Asi.Idpersonacolegiado = r_Dia.Idpersona
-                           And Trunc(asi.Fechahora) = r_Dia.Fechafin;
+                           And Trunc(asi.Fechahora) = r_Dia.Fechafin
+                           And fac.Idhito <> '9'; --se excluyen las de FG
                     Exception
                         When no_data_found Then
                             Fac_Act_Acumulado := 0;
