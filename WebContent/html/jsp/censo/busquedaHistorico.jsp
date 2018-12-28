@@ -263,7 +263,16 @@
 					document.forms[0].idsTipoCambio.value = "";
 				}
 				
-				jQueryTop("#ddcl-listaIdTipoCambio-ddw", window.document).hide();
+				//	SIGARNV-343 
+				try {
+					jQueryTop("#ddcl-listaIdTipoCambio-ddw", window.document).hide();
+				} catch (Exception e) {
+					try {
+						jQuery("#ddcl-listaIdTipoCambio-ddw", window.document).hide();
+					} catch (Exception e) {
+						//no hacemos nada
+					}
+				}
 				
 				document.forms[0].modo.value='buscarPor';
 				document.forms[0].target='resultado';				
