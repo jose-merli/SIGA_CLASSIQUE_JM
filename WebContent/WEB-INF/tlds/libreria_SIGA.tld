@@ -1340,6 +1340,11 @@
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
+    <name>postValida</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
         <name>posicionX</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>

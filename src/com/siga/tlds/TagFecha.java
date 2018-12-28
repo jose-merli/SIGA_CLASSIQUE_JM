@@ -49,7 +49,16 @@ public class TagFecha extends TagSupport {
 	private String posicionY;
 	private String readOnly;
 	private String atributos;
+	private String postValida;
     
+	public String getPostValida() {
+		return postValida;
+	}
+
+	public void setPostValida(String postValida) {
+		this.postValida = postValida;
+	}
+
 	@Override
 	public int doStartTag() {
 		try{
@@ -129,6 +138,11 @@ public class TagFecha extends TagSupport {
 			out.println("		if (day.length==1) day=\"0\" + day;");
 			out.println("		if (month.length==1) month=\"0\" + month;");
 			out.println("		campoFecha.value = day + separador + month + separador + year;");
+			
+			if (postValida != null && !postValida.trim().equals("")) {
+				out.println("		" + postValida);
+			}
+			
 			out.println("	}else if (err == 6) {");
 			// Si el campo se ha marcado como necesario se incluye la clausula que no permita que el campo quede vacio
 			if(this.necesario.equalsIgnoreCase("true")){
