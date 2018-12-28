@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- ColaGuardiasSelect.jsp -->
+<!-- colaOficioSelect.jsp -->
 	 
  
 <!-- CABECERA JSP -->
@@ -113,7 +113,7 @@ parametros[1] = (String)turnoElegido.get("IDTURNO");	// turno
 		<table border="0" style="table-layout:fixed;" cellpadding="2" cellspacing="2" width="100%" align="center">
 		  	<tr>			
 			  <td class="labelText"><siga:Idioma key="gratuita.gestionInscripciones.fechaConsulta"/></td>
-			  <td>	<siga:Fecha nombreCampo="fechaConsulta" postFunction="postAccionCalendario();"/></td>
+			   <td>	<siga:Fecha nombreCampo="fechaConsulta" postValida="postAccionCalendario();"/></td>
 			  <td width="30%">&nbsp; </td>
 
 				</tr>
