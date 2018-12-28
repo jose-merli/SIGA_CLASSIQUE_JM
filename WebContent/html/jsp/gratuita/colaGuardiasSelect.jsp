@@ -87,10 +87,12 @@
 		
 		function postAccionCalendario() 
 		{
-			document.ColaGuardiasForm.target="areaDatos";
-			window.top.focus();
-			document.ColaGuardiasForm.modo.value = 'ver';
-			document.ColaGuardiasForm.submit();
+			if (document.forms[0].idGuardia.value) {
+				document.ColaGuardiasForm.target="areaDatos";
+				//window.top.focus();SIGARNV-349 
+				document.ColaGuardiasForm.modo.value = 'ver';
+				document.ColaGuardiasForm.submit();
+			}
 		}
 		function mostrarFechaActual() {		
 			fechaActual = getFechaActualDDMMYYYY();
@@ -127,7 +129,7 @@ parametros[1] = (String)turnoElegido.get("IDTURNO");	// turno
 			
 					<td class="labelText"><siga:Idioma key="gratuita.gestionInscripciones.fechaConsulta"/></td>
 					<td >
-					<siga:Fecha nombreCampo="fechaConsulta" postFunction="postAccionCalendario();"></siga:Fecha>
+					<siga:Fecha nombreCampo="fechaConsulta" postValida="postAccionCalendario();"></siga:Fecha>
 					</td>
 				<td width="20%"> </td>
 				</tr>
