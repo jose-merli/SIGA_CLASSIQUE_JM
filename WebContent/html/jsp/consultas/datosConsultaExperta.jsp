@@ -169,7 +169,8 @@
 		}
 		
 		function changeConsulta(){
-			jQuery('#idButtonEjecutarConsulta').attr('disabled','disabled'); 
+			//jQuery('#idButtonEjecutarConsulta').attr('disabled','disabled'); 
+			
 		}
 		
 		
@@ -195,7 +196,7 @@
 					<%}else{%>
 						document.forms[0].modo.value="modificarSolo";					
 					<%}%>
-					jQuery('#idButtonEjecutarConsulta').removeAttr('disabled'); 
+					//jQuery('#idButtonEjecutarConsulta').removeAttr('disabled'); 
 					document.forms[0].submit();
 				}else{
 					fin();
@@ -270,7 +271,7 @@
 					
 		
 		function ajusteSelectExperta(){
-			jQuery('#boxExperta').height(jQuery(document).height()-130);
+			//jQuery('#boxExperta').height(jQuery(document).height()-130);
 		}
 		
 		function editarCriterio(ref){
@@ -472,7 +473,7 @@ if (!bEditable){
 		<tr>
 
 			<td  align="center" width="93%">
-		    	<html:textarea style="width:800px" rows="20" property="selectExperta" styleId='boxExperta' styleClass="boxExpert" value="<%=sentenciaSelect%>" onchange="changeConsulta()"></html:textarea> 
+		    	<html:textarea style="width:800px;height:500px"  rows="20" property="selectExperta" styleId='boxExperta' styleClass="boxExpert" value="<%=sentenciaSelect%>" onchange="changeConsulta()"></html:textarea> 
 		    </td>	
 			<td align="left">
 			   <a HREF="javascript:abrirAyuda();"><IMG border=0 src="<%=app_imagen%>help.gif"  alt="<%=help%>"></a>
