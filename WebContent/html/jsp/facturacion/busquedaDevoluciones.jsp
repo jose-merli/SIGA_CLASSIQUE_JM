@@ -164,12 +164,16 @@
 		
 		function init(){
 			<% 	if (request.getAttribute("buscar") != null && request.getAttribute("buscar").equals("true")) { %>
-				buscar();
+				buscarSinSub();
 			<% 	}  %>
 		}
 	
 		function buscar(){
 			sub();
+			buscarSinSub();
+		}
+			
+		function buscarSinSub(){//SIGARNV-339
 			
 			if(!isNumero(document.DevolucionesForm.facturasDesde.value)){
 				fin();

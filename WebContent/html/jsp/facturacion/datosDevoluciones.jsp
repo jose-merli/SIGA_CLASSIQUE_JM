@@ -67,7 +67,7 @@
 		botonesAccion="V";
 	}
 	
-	request.getSession().setAttribute("CenBusquedaClientesTipo", "DEV_AUTO");
+	//SIGARNV-339 - Facturación > Ficheros de devoluciones: editamos cualquier registro de la búsqueda. Si le damos a Volver, la pantalla se queda bloqueada
 %>	
 
 
