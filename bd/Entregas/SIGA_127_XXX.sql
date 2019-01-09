@@ -524,7 +524,7 @@ Actualizacion de contadores y de SMI del año 2019 en esta entrega
 
 alter table PYS_PRODUCTOSSOLICITADOS add IDINSTITUCIONPETICION number(4);
 coger PYS_PRODUCTOSSOLICITADOS_AI.trg
--- Ejecutados en Integración por FMS el 17/12/1981 a las 16:00
+-- Ejecutados en Integración por FMS el 17/12/2018 a las 16:00
 
 PYS_PRODUCTOSSOLICITADOS_AI.trg
 alter table CEN_NOCOLEGIADO modify SOCIEDADPROFESIONAL default 0 null;
@@ -535,3 +535,5 @@ alter table CEN_NOCOLEGIADO modify SOCIEDADPROFESIONAL default 0 null;
 
 PKG_SIGA_FACTURACION_SJCS (ya ejecutado en todos los entornos por ser urgente)
 
+PYS_PRODUCTOSSOLICITADOS_AI.trg
+-- Ejecutado en Integración por FMS el 08/01/2019 a las 10:31
