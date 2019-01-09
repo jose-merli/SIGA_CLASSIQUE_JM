@@ -42,7 +42,7 @@ Begin
          :New.Idinstitucioncolegiacion, :New.Idpersona, :New.Idpersona, :New.Iddireccion,
          :New.Idtipoenvios, :New.Idtipoproducto, :New.Idproductoinstitucion, :New.Idproducto, 1,
          Sysdate, Null, :New.Fechamodificacion, :New.Usumodificacion, :New.Idpeticion,
-         :New.Metodorecepcionsolicitud, :New.Aceptacesionmutualidad, Sysdate, :New.Usumodificacion, :New.Observaciones, 
+         :New.Metodorecepcionsolicitud, NVL(:New.Aceptacesionmutualidad,'0'), Sysdate, :New.Usumodificacion, :New.Observaciones, 
          v_FechaCobro, :New.Idcensodatos);
     End Loop;
 
