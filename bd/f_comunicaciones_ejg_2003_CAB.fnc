@@ -1,4 +1,4 @@
-create or replace function f_comunicaciones_ejg_2003_CAB(P_INSTITUCION IN SCS_EJG.IDINSTITUCION%type,
+create or replace function uscgae.f_comunicaciones_ejg_2003_CAB(P_INSTITUCION IN SCS_EJG.IDINSTITUCION%type,
                                                          P_IDREMESA    IN CAJG_REMESA.IDREMESA%type)
   return clob is
   salida          clob;
@@ -117,6 +117,8 @@ begin
                       AND DE.ANIO = EJG.ANIO
                       AND DE.IDTIPOEJG = EJG.IDTIPOEJG
                       AND DE.NUMERO = EJG.NUMERO
+                      AND DE.IDTIPODOCUMENTO IN (7,9)
+                      
                  ) AS EXP15_DOC_ADICIONAL
                ,
                DECODE(SOL.ASISTIDOSOLICITAJG, null,null, ''1'', ''S'',''0'', ''N'') AS  EXP16_SOL_JG
