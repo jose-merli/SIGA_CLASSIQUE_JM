@@ -170,6 +170,7 @@ public class ScsEejgPeticionesBean extends MasterBean{
 		unidadFamiliar.setNumero(numero);
 		if(idPersona!=null)
 			unidadFamiliar.setIdPersona(Integer.parseInt(idPersona.toString()));
+		
 		return unidadFamiliar;
 	}
 	
@@ -305,8 +306,13 @@ public class ScsEejgPeticionesBean extends MasterBean{
 				elementosFila = new FilaExtElement[4];
 				elementosFila[3] = new FilaExtElement("descargaLog", "errorEejg","general.boton.errorEejg",SIGAConstants.ACCESS_READ);
 		} else if (estado == EEJG_ESTADO.FINALIZADO.getId()) {
+			if(isPersonaUnidadFamiliar()) {
 				elementosFila = new FilaExtElement[4];
 				elementosFila[3] = new FilaExtElement("download", "descargarEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
+			}else {
+				elementosFila = new FilaExtElement[4];
+				elementosFila[3] = new FilaExtElement("descargaLog", "avisoDNICambiado","gratuita.personaJG.tooltip.noPerteneceUnidadFam",	SIGAConstants.ACCESS_READ);
+			}
 		} else {
 			elementosFila = new FilaExtElement[4];
 			elementosFila[3] = new FilaExtElement(null, "solicitarEejg","general.boton.solicitarEejg",	SIGAConstants.ACCESS_READ,"general.boton.solicitudEejg","90");		

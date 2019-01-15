@@ -3,6 +3,7 @@ package com.siga.gratuita.service.impl;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -11,16 +12,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
 
-import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.beans.CenInstitucionAdm;
 import com.siga.beans.EnvEnviosAdm;
 import com.siga.beans.EnvEnviosBean;
 import com.siga.beans.ScsEJGAdm;
@@ -28,13 +26,11 @@ import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsPersonaJGAdm;
 import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsTelefonosPersonaJGBean;
-import com.siga.beans.ScsUnidadFamiliarEJGAdm;
 import com.siga.beans.ScsUnidadFamiliarEJGBean;
 import com.siga.beans.eejg.ScsEejgPeticionesAdm;
 import com.siga.beans.eejg.ScsEejgPeticionesBean;
 import com.siga.eejg.SolicitudesEEJG;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm;
 import com.siga.gratuita.service.EejgService;
 import com.siga.informes.InformeEejg;
 import com.sis.firma.core.B64.Base64CODEC;
@@ -75,40 +71,11 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		}
 		
 		ScsEJGBean ejg = vEjg.get(0);
-		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		String directorioPlantillas = rp.returnProperty("sjcs.directorioFisicoPlantillaInformeEejg");
-		String directorioEspecificoInforme = rp.returnProperty("sjcs.directorioPlantillaInformeEejg");
-		String plantillaRuta   = directorioPlantillas + directorioEspecificoInforme + ClsConstants.FILE_SEP + usr.getLocation();
-		CenInstitucionAdm admInstitucion = new CenInstitucionAdm(usr);
-		String institucion = "";
-		try {
-			institucion = admInstitucion.getNombreInstitucion(usr.getLocation());
-		} catch (SIGAException e) {
-			throw new BusinessException(e.getMessage(), e);
-		} catch (ClsExceptions e) {
-			throw new BusinessException(e.getMessage(), e);
-		}
-		
-		String rutaLogoColegio = plantillaRuta+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"Logo.GIF";
-		rutaLogoColegio = UtilidadesString.replaceAllIgnoreCase(rutaLogoColegio, "/","\\\\" );
-		
 		Map<Integer, Map<String, String>> mapInformes = new HashMap<Integer, Map<String,String>>();
 		Map<String, String> mapParameters = new HashMap<String, String>();
-		try {
-			mapParameters.put("fechaConsulta", GstDate.getFormatedDateShort("", unidadFamiliar.getPeticionEejg().getFechaConsulta()));
-		}catch (ClsExceptions e) {
-			throw new BusinessException(e.getMessage());
-		}
-		
-		mapParameters = actualizaParametrosComunes(mapParameters, usr);
 		mapParameters.put("numEjg", ejg.getAnio()+"-"+ejg.getNumEJG());
-		mapParameters.put("idPersonaJG", unidadFamiliar.getPersonaJG().getIdPersona().toString());
-		mapParameters.put("institucion", institucion);
+		mapParameters.put("nif", unidadFamiliar.getPeticionEejg().getNif());
 		mapParameters.put("idInstitucion", usr.getLocation());
-		if(unidadFamiliar.getParentesco()!=null)
-			mapParameters.put("declaranteEs", unidadFamiliar.getParentesco().getDescripcion().toString());
-		actualizaParametrosPersona(mapParameters,usr);
-		mapParameters.put("rutaLogoColegio", rutaLogoColegio);
 		mapParameters.put("idioma", unidadFamiliar.getPeticionEejg().getIdioma());
 		mapParameters.put("csv", unidadFamiliar.getPeticionEejg().getCsv());
 		mapInformes.put(new Integer(unidadFamiliar.getPeticionEejg().getIdXml()), mapParameters);
@@ -122,68 +89,24 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		Map<String, String> mapParameters = null;
 		ScsEJGBean ejg = null;
 		
-		Hashtable<StringBuffer, ScsEJGBean> htEjgs = new Hashtable<StringBuffer, ScsEJGBean>();
-		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		String directorioPlantillas = rp.returnProperty("sjcs.directorioFisicoPlantillaInformeEejg");
-		String directorioEspecificoInforme = rp.returnProperty("sjcs.directorioPlantillaInformeEejg");
-		String plantillaRuta   = directorioPlantillas + directorioEspecificoInforme + ClsConstants.FILE_SEP + usr.getLocation();
-		CenInstitucionAdm admInstitucion = new CenInstitucionAdm(usr);
-		String institucion = "";
-		try {
-			institucion = admInstitucion.getNombreInstitucion(usr.getLocation());
-		} catch (SIGAException e) {
-			throw new BusinessException(e.getMessage());
-		} catch (ClsExceptions e) {
-			throw new BusinessException(e.getMessage());
-		}
-		
-		String rutaLogoColegio = plantillaRuta+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"Logo.GIF";
-		rutaLogoColegio = UtilidadesString.replaceAllIgnoreCase(rutaLogoColegio, "/","\\\\" );
 		for (ScsUnidadFamiliarEJGBean unidadFamiliar:lUnidadFamiliar) {
-			StringBuffer keyEjgs = new StringBuffer();
-			keyEjgs.append(unidadFamiliar.getAnio());
-			keyEjgs.append("||");
-			keyEjgs.append(unidadFamiliar.getNumero());
-			keyEjgs.append("||");
-			keyEjgs.append(unidadFamiliar.getIdTipoEJG());
-			keyEjgs.append("||");
-			keyEjgs.append(unidadFamiliar.getIdInstitucion());
-			keyEjgs.append("||");
-			if(htEjgs.containsKey(keyEjgs)){
-				ejg = htEjgs.get(keyEjgs);
-			
-			}else{
-				Vector<ScsEJGBean> vEjg = null;
-				miHash = new Hashtable<String, Object>();
-				miHash.put("ANIO",unidadFamiliar.getAnio());
-				miHash.put("NUMERO",unidadFamiliar.getNumero());
-				miHash.put("IDTIPOEJG",unidadFamiliar.getIdTipoEJG());
-				miHash.put("IDINSTITUCION",unidadFamiliar.getIdInstitucion());
-				try {
-					vEjg = admEJG.selectByPK(miHash);
-				} catch (ClsExceptions e) {
-					throw new BusinessException(e.getMessage());
-				}
-				ejg = (ScsEJGBean)vEjg.get(0);
-			}
-			htEjgs.put(keyEjgs, ejg);
-			mapParameters = new HashMap<String, String>();
+		
+			Vector<ScsEJGBean> vEjg = null;
+			miHash = new Hashtable<String, Object>();
+			miHash.put("ANIO",unidadFamiliar.getAnio());
+			miHash.put("NUMERO",unidadFamiliar.getNumero());
+			miHash.put("IDTIPOEJG",unidadFamiliar.getIdTipoEJG());
+			miHash.put("IDINSTITUCION",unidadFamiliar.getIdInstitucion());
 			try {
-				mapParameters.put("fechaConsulta", GstDate.getFormatedDateShort("", unidadFamiliar.getPeticionEejg().getFechaConsulta()));
-			}catch (ClsExceptions e) {
+				vEjg = admEJG.selectByPK(miHash);
+			} catch (ClsExceptions e) {
 				throw new BusinessException(e.getMessage());
 			}
-			mapParameters = actualizaParametrosComunes(mapParameters, usr);
-			mapParameters.put("numEjg", ejg.getAnio()+"-"+ejg.getNumEJG());
+			ejg = (ScsEJGBean)vEjg.get(0);
+			mapParameters = new HashMap<String, String>();
+			mapParameters.put("nif", unidadFamiliar.getPeticionEejg().getNif());
 			mapParameters.put("idioma", unidadFamiliar.getPeticionEejg().getIdioma());
-			mapParameters.put("idPersonaJG", unidadFamiliar.getPersonaJG().getIdPersona().toString());
-			mapParameters.put("institucion", institucion);
-			mapParameters.put("idInstitucion", usr.getLocation());
-			if(unidadFamiliar.getParentesco()!=null)
-				mapParameters.put("declaranteEs", unidadFamiliar.getParentesco().getDescripcion().toString());
-			
-			actualizaParametrosPersona(mapParameters,usr);
-			mapParameters.put("rutaLogoColegio", rutaLogoColegio);
+			mapParameters.put("numEjg", ejg.getAnio()+"-"+ejg.getNumEJG());
 			mapParameters.put("csv", unidadFamiliar.getPeticionEejg().getCsv());
 			mapInformes.put(new Integer(unidadFamiliar.getPeticionEejg().getIdXml()), mapParameters);
 			
@@ -191,7 +114,7 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 		
 		return mapInformes;
 	}
-	public Map<Integer, Map<String, String>> getDatosInformeEejgMultiplesEjg(String datosMultiplesEjg,String longitudNumEjg,UsrBean usr){
+	public Map<Integer, Map<String, String>> getDatosInformeEejgMultiplesEjg(String datosMultiplesEjg,String longitudNumEjg,UsrBean usr) throws BusinessException{
 		InformeEejg informe = new InformeEejg (usr);
 		Vector<Hashtable<String, String>> vDatosMultiplesEjg = null;
 		try {
@@ -200,126 +123,60 @@ public class AtosEejgService extends JtaBusinessServiceTemplate
 			throw new BusinessException(e.getMessage());
 		}
 		
-		
-		ScsUnidadFamiliarEJGAdm admUnidadFamiliar = new ScsUnidadFamiliarEJGAdm(usr);
-		ScsEJGAdm admEJG = new ScsEJGAdm(usr);
-		ScsEejgPeticionesBean peticionEejg = null;
-		Map<Integer, Map<String, String>> mapInformes = new HashMap<Integer, Map<String,String>>();
-		Hashtable<String, Object> miHash = null;
-		ScsEJGBean ejg = null;
-		ScsUnidadFamiliarEJGBean unidadFamiliar = null;
-		Hashtable<StringBuffer, ScsEJGBean> htEjgs = new Hashtable<StringBuffer, ScsEJGBean>();  
-		ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		String directorioPlantillas = rp.returnProperty("sjcs.directorioFisicoPlantillaInformeEejg");
-		String directorioEspecificoInforme = rp.returnProperty("sjcs.directorioPlantillaInformeEejg");
-		String plantillaRuta   = directorioPlantillas + directorioEspecificoInforme + ClsConstants.FILE_SEP + usr.getLocation();
-		CenInstitucionAdm admInstitucion = new CenInstitucionAdm(usr);
-		String institucion = "";
-		try {
-			institucion = admInstitucion.getNombreInstitucion(usr.getLocation());
-		} catch (SIGAException e) {
-			throw new BusinessException(e.getMessage());
-		} catch (ClsExceptions e) {
-			throw new BusinessException(e.getMessage());
-		}
-		
-		String rutaLogoColegio = plantillaRuta+ClsConstants.FILE_SEP+"recursos"+ClsConstants.FILE_SEP+"Logo.GIF";
-		rutaLogoColegio = UtilidadesString.replaceAllIgnoreCase(rutaLogoColegio, "/","\\\\" );
+		ScsEejgPeticionesAdm admPeticionEejg = new ScsEejgPeticionesAdm(usr);
+		List<ScsEJGBean> scsEJGBeans = new ArrayList<ScsEJGBean>();
 		for(Hashtable<String, String> datos:vDatosMultiplesEjg){
 			String idTipoEJG= (String)datos.get("idtipo");
 			String anio= (String)datos.get("anio");
 			String numero= (String)datos.get("numero");
 			String idInstitucion= (String)datos.get("idinstitucion");
-			
-			
-			
-			unidadFamiliar = new ScsUnidadFamiliarEJGBean();
-			//miForm.setEjg(ejg);
-			unidadFamiliar.setIdInstitucion(new Integer(idInstitucion));
-			unidadFamiliar.setIdTipoEJG(new Integer(idTipoEJG));
-			unidadFamiliar.setAnio(new Integer(anio));
-			unidadFamiliar.setNumero(new Integer(numero));
-			ejg = new ScsEJGBean();
-			ejg.setIdInstitucion(new Integer(idInstitucion));
-			ejg.setIdTipoEJG(new Integer(idTipoEJG));
-			ejg.setAnio(new Integer(anio));
-			ejg.setNumero(new Integer(numero));
-			unidadFamiliar.setEjg(ejg);
-			
-			//Sacaremmos solos las peticiones que esten finalizadas 
-			peticionEejg = new ScsEejgPeticionesBean();
-			peticionEejg.setEstado((int)EEJG_ESTADO.FINALIZADO.getId());
-			unidadFamiliar.setPeticionEejg(peticionEejg);
-			List<DefinirUnidadFamiliarEJGForm> alUnidadFamiliar = null;
+			ScsEJGBean ejgBean = new ScsEJGBean();
+			ejgBean.setIdInstitucion(Integer.parseInt(idInstitucion));
+			ejgBean.setAnio(Integer.parseInt(anio));
+			ejgBean.setIdTipoEJG(Integer.parseInt(idTipoEJG));
+			ejgBean.setNumero(Integer.parseInt(numero));
+			scsEJGBeans.add(ejgBean);
+		}
+		
+		List<ScsEejgPeticionesBean> peticionesEejgBeans =  admPeticionEejg.getPeticionesEejg(scsEJGBeans);
+		
+		ScsEJGAdm admEJG = new ScsEJGAdm(usr);
+		Hashtable<String, Object> miHash = null;
+		Map<Integer, Map<String, String>> mapInformes = new HashMap<Integer, Map<String,String>>();
+		Map<String, String> mapParameters = null;
+		ScsEJGBean ejg = null;
+		
+		for (ScsEejgPeticionesBean peticionesEejgBean:peticionesEejgBeans) {
+		
+			Vector<ScsEJGBean> vEjg = null;
+			miHash = new Hashtable<String, Object>();
+			miHash.put("ANIO",peticionesEejgBean.getAnio());
+			miHash.put("NUMERO",peticionesEejgBean.getNumero());
+			miHash.put("IDTIPOEJG",peticionesEejgBean.getIdTipoEjg());
+			miHash.put("IDINSTITUCION",peticionesEejgBean.getIdInstitucion());
 			try {
-				alUnidadFamiliar = admUnidadFamiliar.getUnidadFamiliar(unidadFamiliar.getUnidadFamiliarEjgForm(),longitudNumEjg, usr).getUnidadFamiliar();
+				vEjg = admEJG.selectByPK(miHash);
 			} catch (ClsExceptions e) {
 				throw new BusinessException(e.getMessage());
 			}
-			if(alUnidadFamiliar!=null && alUnidadFamiliar.size()>0){
-				StringBuffer keyEjgs = new StringBuffer();
-				keyEjgs.append(anio);
-				keyEjgs.append("||");
-				keyEjgs.append(numero);
-				keyEjgs.append("||");
-				keyEjgs.append(idTipoEJG);
-				keyEjgs.append("||");
-				keyEjgs.append(idInstitucion);
-				keyEjgs.append("||");
-				if(htEjgs.containsKey(keyEjgs)){
-					ejg = htEjgs.get(keyEjgs);
-				
-				}else{
-					Vector<ScsEJGBean> vEjg = null;
-					miHash = new Hashtable<String, Object>();
-					miHash.put("ANIO",anio);
-					miHash.put("NUMERO",numero);
-					miHash.put("IDTIPOEJG",idTipoEJG);
-					miHash.put("IDINSTITUCION",idInstitucion);
-					try {
-						vEjg = admEJG.selectByPK(miHash);
-					} catch (ClsExceptions e) {
-						throw new BusinessException(e.getMessage());
-					}
-					ejg = (ScsEJGBean)vEjg.get(0);
-				}
-				htEjgs.put(keyEjgs, ejg);
-				
-				for(DefinirUnidadFamiliarEJGForm formUnidadFamiliar:alUnidadFamiliar){
-					
-					Map<String, String> mapParameters = new HashMap<String, String>();
-					try {
-						mapParameters.put("fechaConsulta", GstDate.getFormatedDateShort("", formUnidadFamiliar.getPeticionEejg().getFechaConsulta()));
-					}catch (ClsExceptions e) {
-						throw new BusinessException(e.getMessage());
-					}
-					mapParameters = actualizaParametrosComunes(mapParameters, usr);
-					mapParameters.put("numEjg", ejg.getAnio()+"-"+ejg.getNumEJG());
-					mapParameters.put("idPersonaJG",formUnidadFamiliar.getIdPersona());
-					mapParameters.put("institucion", institucion);
-					mapParameters.put("idInstitucion", usr.getLocation());
-					if(formUnidadFamiliar.getParentesco()!=null)
-						mapParameters.put("declaranteEs", formUnidadFamiliar.getParentesco().getDescripcion().toString());
-					actualizaParametrosPersona(mapParameters,usr);
-					
-					mapParameters.put("rutaLogoColegio", rutaLogoColegio);
-					mapParameters.put("idioma", formUnidadFamiliar.getPeticionEejg().getIdioma());
-					String csv = "";
-					if(formUnidadFamiliar.getPeticionEejg().getCsv()!= null){
-						csv = formUnidadFamiliar.getPeticionEejg().getCsv();
-					}
-					mapParameters.put("csv",csv);
-					mapInformes.put(formUnidadFamiliar.getPeticionEejg().getIdXml(), mapParameters);
-				}
-			}
+			ejg = (ScsEJGBean)vEjg.get(0);
+			mapParameters = new HashMap<String, String>();
+			mapParameters.put("nif", peticionesEejgBean.getNif());
+			mapParameters.put("idioma", peticionesEejgBean.getIdioma());
+			mapParameters.put("numEjg", ejg.getAnio()+"-"+ejg.getNumEJG());
+			mapParameters.put("csv", peticionesEejgBean.getCsv());
+			mapInformes.put(new Integer(peticionesEejgBean.getIdXml()), mapParameters);
+			
 		}
+		
+		
+		
+		
+		
 		
 		return mapInformes;
 	}
 	
-	
-
-
 	public File getInformeEejg(Map<Integer, Map<String, String>> mapInformeEejg,UsrBean usr) {
 		InformeEejg informe = new InformeEejg (usr);
 		File fichero;

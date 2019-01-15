@@ -357,6 +357,7 @@
 							<input type="hidden" name="peticion<%=indice%>_3" value="${peticion.idTipoEjg}">
 							<input type="hidden" name="peticion<%=indice%>_4" value="${peticion.anio}">
 							<input type="hidden" name="peticion<%=indice%>_5" value="${peticion.numero}">
+							<input type="hidden" name="peticion<%=indice%>_10" value="${peticion.nif}">
 					
 							<c:choose>
 								<c:when test="${peticion.idPeticion!=null}">
@@ -374,7 +375,7 @@
 								</c:when>
 				
 								<c:otherwise>
-				  					<input type="checkbox" title="gratuita.personaJG.tooltip.noPerteneceUnidadFam" value="<bean:write name="indice"/>" disabled name="chkPersona">
+				  					<input type="checkbox"  value="<bean:write name="indice"/>" disabled name="chkPersona">
 				  					<input type="hidden" name="peticion<%=indice%>_7" value="${peticion.msgError}">
 								</c:otherwise>
 							</c:choose>											
@@ -614,12 +615,14 @@
 		var anio = document.getElementById( 'peticion' + fila + '_4');
 		var numero = document.getElementById( 'peticion' + fila + '_5');
 		var idPeticion = document.getElementById( 'peticion' + fila + '_6');
+		var nif = document.getElementById( 'peticion' + fila + '_10');
 		datos = idPersonaJG.value + 	','
 	   			+idInstitucionEJG.value + 	','
 	   			+idTipoEJG.value + 	','
 	   			+anio.value + 	','
 	   			+numero.value + ','
-				+idPeticion.value + ''
+				+idPeticion.value + ','
+				+nif.value + ''
 				'#';
 		
 	   	document.EEJG.tablaDatosDinamicosD.value = datos;
@@ -640,13 +643,16 @@
 				var numero = document.getElementById( 'peticion' + (i+1) + '_5');
 				
 				var idPeticion = document.getElementById( 'peticion' + (i+1) + '_6');
+				var nif = document.getElementById( 'peticion' + (i+1) + '_10');
 				datos = datos + idPersonaJG.value + 	','
 	   			+idInstitucionEJG.value + 	','
 	   			+idTipoEJG.value + 	','
 	   			+anio.value + 	','
 	   			+numero.value + ','
 	   			
-				+idPeticion.value + 	'#';
+	   			+idPeticion.value + ','
+				+nif.value + ''
+				'#';
 	 		   
  		   	}
 			
@@ -690,6 +696,13 @@
    		}else{
    			alert("<siga:Idioma key="general.boton.errorEejg"/>");
    		}
+   	}
+   	
+   	function avisoDNICambiado(fila){
+   		selectRowPeticiones(fila);
+   		var msgError = document.getElementById( 'peticion' + fila + '_7').value;
+   		alert("<siga:Idioma key='gratuita.personaJG.tooltip.noPerteneceUnidadFam'/>");
+   		
    	}
    	
    	function esperaInfoEejg(fila){

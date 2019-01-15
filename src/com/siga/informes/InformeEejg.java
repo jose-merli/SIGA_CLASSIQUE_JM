@@ -141,7 +141,7 @@ public class InformeEejg extends MasterReport
 			String numEjgListado = UtilidadesString.replaceAllIgnoreCase(numEjg, "-", "/");
 			mapParameters.put("numEjg", numEjgListado);
 			
-			String pdfNombre       = "eejg"+"_" + idInstitucion +"_"+numEjg+ "_"+mapParameters.get("idPersonaJG") + "_" + fecha+".pdf";
+			String pdfNombre       = "eejg"+"_" + idInstitucion +"_"+numEjg+ "_"+mapParameters.get("nif") + "_" + fecha+".pdf";
 			String pdfRuta         = directorioSalida    + directorioEspecificoInforme + ClsConstants.FILE_SEP + idInstitucion;
 			
 			File rutaPDF = new File(pdfRuta);

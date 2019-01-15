@@ -785,12 +785,12 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			Hashtable<String, Object> htPK = null;
 			for (int i = 0; i < lengthDatosTabla ; i++) {
 				Vector vCampos = miForm.getDatosTablaOcultos(i);
-				String idPersonaJG = (String) vCampos.get(0);
 				String idInstitucionEJG = (String) vCampos.get(1);
 				String idTipoEJG = (String) vCampos.get(2);
 				String anio = (String) vCampos.get(3);
 				String numero = (String) vCampos.get(4);
 				String idPeticion = (String) vCampos.get(5);
+				String nifCIF = (String) vCampos.get(6);
 				
 				ScsEejgPeticionesAdm admPeticionEejg = new ScsEejgPeticionesAdm(usr);
 				htPK = new Hashtable<String, Object>();
@@ -801,41 +801,15 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 					miForm.setIdXml(peticionEejg.getIdXml().toString());
 				miForm.setIdioma(peticionEejg.getIdioma());
 				
-				ScsUnidadFamiliarEJGAdm admUnidadFam = new ScsUnidadFamiliarEJGAdm(usr);
-				htPK.clear();
-				htPK = new Hashtable<String, Object>();
-				htPK.put(ScsUnidadFamiliarEJGBean.C_IDPERSONA,idPersonaJG );
-				htPK.put(ScsUnidadFamiliarEJGBean.C_ANIO, anio);
-				htPK.put(ScsUnidadFamiliarEJGBean.C_NUMERO, numero);
-				htPK.put(ScsUnidadFamiliarEJGBean.C_IDINSTITUCION,idInstitucionEJG );
-				htPK.put(ScsUnidadFamiliarEJGBean.C_IDTIPOEJG,idTipoEJG );
-				Vector vUF = admUnidadFam.selectByPK(htPK);
-				ScsUnidadFamiliarEJGBean unidadFamiliarVo = (ScsUnidadFamiliarEJGBean) vUF.get(0);
-				ScsParentescoBean parentesco = null;
-				if(unidadFamiliarVo.getIdParentesco()!=null){
-					ScsParentescoAdm admParentesco = new ScsParentescoAdm(usr);
-					htPK = new Hashtable<String, Object>();
-					htPK.put(ScsParentescoBean.C_IDINSTITUCION,idInstitucionEJG );
-					htPK.put(ScsParentescoBean.C_IDPARENTESCO, unidadFamiliarVo.getIdParentesco());
-					parentesco = admParentesco.getParentesco(htPK,usr.getLanguage());
-					
-				}else{
-					parentesco = new ScsParentescoBean();
-					String literalSolicitante = UtilidadesString.getMensajeIdioma(usr,"gratuita.busquedaEJG.literal.solicitante");
-					parentesco.setDescripcion(literalSolicitante);
-					
-					
-				}
-				unidadFamiliarVo.setParentesco(parentesco);
+//				
+				ScsUnidadFamiliarEJGBean unidadFamiliarVo =  new ScsUnidadFamiliarEJGBean();
+				unidadFamiliarVo.setIdInstitucion(Integer.parseInt(idInstitucionEJG));
+				unidadFamiliarVo.setAnio(Integer.parseInt(anio));
+				unidadFamiliarVo.setIdTipoEJG(Integer.parseInt(idTipoEJG));
+				unidadFamiliarVo.setNumero(Integer.parseInt(numero));
+				peticionEejg.setNif(nifCIF);
 				unidadFamiliarVo.setPeticionEejg(peticionEejg);
-				
-				ScsPersonaJGBean personaJG = new ScsPersonaJGBean();
-				personaJG.setIdPersona(unidadFamiliarVo.getIdPersona());
-				unidadFamiliarVo.setPersonaJG(personaJG);
-				
-				
 				alUnidadFamiliar.add(unidadFamiliarVo);
-//				alUnidadFamiliar.add(unidadFamiliarForm.getUnidadFamiliarEjgVo());
 				
 				
 			}

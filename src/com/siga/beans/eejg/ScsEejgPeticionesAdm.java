@@ -8,6 +8,7 @@ import java.util.Vector;
 import javax.transaction.SystemException;
 
 import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -29,7 +30,7 @@ import com.siga.beans.ScsUnidadFamiliarEJGBean;
  */
 
 public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
-  
+
 
 	/**
 	 * Constructor de la clase. 
@@ -39,13 +40,13 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 	public ScsEejgPeticionesAdm (UsrBean usuario) {
 		super( ScsEejgPeticionesBean.T_NOMBRETABLA, usuario);
 	}
-  
+
 
 	/** Funcion getCamposBean ()
 	 *  @return conjunto de datos con los nombres de todos los campos del bean
 	 * 
 	 */
-	
+
 	protected String[] getCamposBean() {
 		String[] campos = {
 				ScsEejgPeticionesBean.C_IDPETICION,
@@ -75,21 +76,21 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 				ScsEejgPeticionesBean.C_IDECOMCOLA,
 				ScsEejgPeticionesBean.C_CSV,
 				ScsEejgPeticionesBean.C_MSGERROR
-				};
+		};
 		return campos;
 	}	
-	
+
 	/** Funcion getClavesBean ()
 	 *  @return conjunto de datos con los nombres de todos los campos que forman la claves del bean
 	 * 
 	 */
-	
+
 	protected String[] getClavesBean() {
 		String[] campos = {	ScsEejgPeticionesBean.C_IDPETICION};
 		return campos;
 	}
 
-	
+
 	/** Funcion hashTableToBean (Hashtable hash)
 	 *  @param hash Hashtable para crear el bean
 	 *  @return bean con la información de la hashtable
@@ -97,23 +98,23 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 	 */
 	public MasterBean hashTableToBean(Hashtable hash) throws ClsExceptions {
 		ScsEejgPeticionesBean bean = null;
-//		ScsUnidadFamiliarEJGBean unidadFamiliar = null;
-//		ScsPersonaJGBean personaJG;
+		//		ScsUnidadFamiliarEJGBean unidadFamiliar = null;
+		//		ScsPersonaJGBean personaJG;
 		try{
 			bean = new ScsEejgPeticionesBean();
-//			unidadFamiliar =  new ScsUnidadFamiliarEJGBean();
-//			personaJG = new ScsPersonaJGBean();
-//			unidadFamiliar.setPersonaJG(personaJG);
-//			bean.setUnidadFamiliar(unidadFamiliar);
-			
+			//			unidadFamiliar =  new ScsUnidadFamiliarEJGBean();
+			//			personaJG = new ScsPersonaJGBean();
+			//			unidadFamiliar.setPersonaJG(personaJG);
+			//			bean.setUnidadFamiliar(unidadFamiliar);
+
 			bean.setIdPeticion(UtilidadesHash.getLong(hash,ScsEejgPeticionesBean.C_IDPETICION));
 			bean.setIdUsuarioPeticion(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_IDUSUARIOPETICION));			
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_IDINSTITUCION));
-//			unidadFamiliar.setIdInstitucion(valor);
-//			unidadFamiliar.setAnio(valor);
-//			unidadFamiliar.setNumero(valor);
-//			unidadFamiliar.setIdPersona(valor);
-		
+			//			unidadFamiliar.setIdInstitucion(valor);
+			//			unidadFamiliar.setAnio(valor);
+			//			unidadFamiliar.setNumero(valor);
+			//			unidadFamiliar.setIdPersona(valor);
+
 			bean.setAnio(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_ANIO));
 			bean.setEstado(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_ESTADO));
 			bean.setFechaPeticion(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_FECHAPETICION));
@@ -128,21 +129,21 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			bean.setNumeroIntentosSolicitud(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_NUMEROINTENTOSSOLICITUD));
 			bean.setNumeroIntentosPendienteInfo(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_NUMEROINTENTOSPENDIENTEINFO));
 			bean.setIdioma(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_IDIOMA));
-			
+
 			bean.setNif(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_NIF));
 			bean.setNombre(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_NOMBRE));
 			bean.setApellido1(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_APELLIDO1));
 			bean.setApellido2(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_APELLIDO2));
-			
+
 			bean.setRutaPDF(UtilidadesHash.getString(hash,ScsEejgPeticionesBean.C_RUTA_PDF));
 			bean.setIdEcomCola(UtilidadesHash.getLong(hash,ScsEejgPeticionesBean.C_IDECOMCOLA));
-			
+
 			bean.setFechaMod(UtilidadesHash.getString(hash, ScsEejgPeticionesBean.C_FECHAMODIFICACION));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,ScsEejgPeticionesBean.C_USUMODIFICACION));
-			
+
 			bean.setMsgError(UtilidadesHash.getString(hash, ScsEejgPeticionesBean.C_MSGERROR));
 			bean.setCsv(UtilidadesHash.getString(hash, ScsEejgPeticionesBean.C_CSV));
-			
+
 		}
 		catch(Exception e){
 			bean = null;
@@ -178,21 +179,21 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NUMEROINTENTOSSOLICITUD, b.getNumeroIntentosSolicitud());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NUMEROINTENTOSPENDIENTEINFO, b.getNumeroIntentosPendienteInfo());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDIOMA, b.getIdioma());
-			
+
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NIF, b.getNif());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_NOMBRE, b.getNombre());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_APELLIDO1, b.getApellido1());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_APELLIDO2, b.getApellido2());
-			
+
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_RUTA_PDF, b.getRutaPDF());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_IDECOMCOLA, b.getIdEcomCola());
-			
+
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_USUMODIFICACION, String.valueOf(b.getUsuMod()));
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_FECHAMODIFICACION, b.getFechaMod());
-			
+
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_MSGERROR, b.getMsgError());
 			UtilidadesHash.set(htData,ScsEejgPeticionesBean.C_CSV, b.getCsv());
-			
+
 		}
 		catch (Exception e){
 			htData = null;
@@ -209,7 +210,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		String[] vector = {ScsEejgPeticionesBean.C_IDPETICION};
 		return vector;
 	}
-	
+
 	/**
 	 * 
 	 * @param peticionEejg
@@ -219,27 +220,27 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 	 * @throws SystemException
 	 */
 	public void insertarPeticionEejg(ScsEejgPeticionesBean peticionEejg) throws ClsExceptions{
-	
-//		UserTransaction tx = null;
-//		try {
-//			tx = this.usrbean.getTransaction();
-//			tx.begin();
-//			
-			Long idPeticion = getNuevoPeticionEejg(peticionEejg.getIdInstitucion());
-			peticionEejg.setIdPeticion(idPeticion);
-			peticionEejg.setIdUsuarioPeticion(Integer.parseInt(this.usrbean.getUserName()));
-			peticionEejg.setFechaPeticion("sysdate");
-			peticionEejg.setNumeroIntentosSolicitud(0);
-			peticionEejg.setNumeroIntentosConsulta(0);
-			peticionEejg.setNumeroIntentosPendienteInfo(0);
-			peticionEejg.setEstado((int)EEJG_ESTADO.INICIAL.getId());
-			insert(peticionEejg);
-//			tx.commit();
-//		} catch (Exception e) {
-//			tx.rollback();
-//			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.insertarPeticionEejg");
-//		} 
-		
+
+		//		UserTransaction tx = null;
+		//		try {
+		//			tx = this.usrbean.getTransaction();
+		//			tx.begin();
+		//			
+		Long idPeticion = getNuevoPeticionEejg(peticionEejg.getIdInstitucion());
+		peticionEejg.setIdPeticion(idPeticion);
+		peticionEejg.setIdUsuarioPeticion(Integer.parseInt(this.usrbean.getUserName()));
+		peticionEejg.setFechaPeticion("sysdate");
+		peticionEejg.setNumeroIntentosSolicitud(0);
+		peticionEejg.setNumeroIntentosConsulta(0);
+		peticionEejg.setNumeroIntentosPendienteInfo(0);
+		peticionEejg.setEstado((int)EEJG_ESTADO.INICIAL.getId());
+		insert(peticionEejg);
+		//			tx.commit();
+		//		} catch (Exception e) {
+		//			tx.rollback();
+		//			throw new ClsExceptions(e, "Error al ejecutar el 'select' en B.D.insertarPeticionEejg");
+		//		} 
+
 	}
 
 	/**
@@ -251,14 +252,14 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 	public Long getNuevoPeticionEejg(Integer idInstitucion) throws ClsExceptions {
 		String select = null;
 		Long nuevoId;
-		
+
 		try {
 			select  = "SELECT MAX("+ScsEejgPeticionesBean.C_IDPETICION+")+1 AS ID FROM "+ScsEejgPeticionesBean.T_NOMBRETABLA;
-					  
-			
+
+
 			Vector<Hashtable<String, Object>> datos = this.selectGenerico(select);
 			String id = (String)((Hashtable<String , Object>)datos.get(0)).get("ID");
-			
+
 			if ( (datos == null) || (id!= null && id.equals("")) )
 				nuevoId = new Long("0");
 			else
@@ -271,29 +272,13 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		return nuevoId;
 	}
 
-	
-  
-	   public List<ScsEejgPeticionesBean> getPeticionesEejg(ScsEJGBean eejgBean)throws ClsExceptions{
+
+
+	public List<ScsEejgPeticionesBean> getPeticionesEejg(ScsEJGBean eejgBean)throws ClsExceptions{
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
-		StringBuffer sql = new StringBuffer();
-		
-		sql.append(" SELECT  EEJG.NIF,EEJG.NOMBRE, EEJG.APELLIDO1, EEJG.APELLIDO2, ");
-		sql.append(" EEJG.IDPETICION,EEJG.ESTADO, EEJG.IDXML, EEJG.MSGERROR,");
-		sql.append(" EEJG.IDINSTITUCION , EEJG.IDTIPOEJG, ");
-		sql.append(" EEJG.ANIO,EEJG.NUMERO, EEJG.IDPERSONA, ");
-		sql.append(" EEJG.IDIOMA, EEJG.FECHACONSULTA,  TO_CHAR(EEJG.FECHAPETICION, 'DD/MM/YYYY') FECHAPETICION, ");
-		sql.append(" USU.DESCRIPCION DESCRIPCIONUSUARIO,  USU.NIF NIFUSUARIO ");
-		sql.append(" ,UF.IDPERSONA IDPERSONAINIT ");
-		sql.append(" FROM SCS_EEJG_PETICIONES EEJG,SCS_UNIDADFAMILIAREJG UF, ADM_USUARIOS USU ");
-		sql.append(" WHERE ");
-		sql.append("  EEJG.IDPERSONA = UF.IDPERSONA(+)   AND EEJG.IDINSTITUCION = UF.IDINSTITUCION(+) ");
-		sql.append("  AND EEJG.IDTIPOEJG = UF.IDTIPOEJG(+)   AND EEJG.ANIO = UF.ANIO(+) ");
-		sql.append("  AND EEJG.NUMERO = UF.NUMERO(+) "); 
-		sql.append(" AND EEJG.IDUSUARIOPETICION = USU.IDUSUARIO(+) ");
-		sql.append(" AND EEJG.IDINSTITUCION = USU.IDINSTITUCION(+) ");
-		 
+		StringBuffer sql = new StringBuffer(getQueryPeticionesEejg());
 		sql.append(" AND EEJG.IDINSTITUCION =:");
 		contador ++;
 		sql.append(contador);
@@ -311,35 +296,122 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		sql.append(contador);
 		htCodigos.put(new Integer(contador),eejgBean.getNumero());
 		sql.append(" ORDER BY EEJG.FECHAPETICION ");
-		
+
 		List<ScsEejgPeticionesBean> lPeticionesEejg = null;
 		try {
 			RowsContainer rc = new RowsContainer(); 
-												
-           if (rc.findBind(sql.toString(),htCodigos)) {
-           	lPeticionesEejg = new ArrayList<ScsEejgPeticionesBean>();
-           	ScsEejgPeticionesBean peticionEejgOut = null;
-           	for (int i = 0; i < rc.size(); i++){
-           		Row fila = (Row) rc.get(i);
-           		Hashtable<String, Object> htFila=fila.getRow();
-           		peticionEejgOut = (ScsEejgPeticionesBean) this.hashTableToBean(htFila);
-           		peticionEejgOut.setPersonaUnidadFamiliar((htFila.get("IDPERSONAINIT")!=null&&!UtilidadesHash.getString(htFila,"IDPERSONAINIT").equals("")));
-           		AdmUsuariosBean usuarioPeticion = new AdmUsuariosBean();
-        		usuarioPeticion.setDescripcion(UtilidadesHash.getString(htFila,"DESCRIPCIONUSUARIO"));
-        		usuarioPeticion.setNIF(UtilidadesHash.getString(htFila,"NIFUSUARIO"));
-        		peticionEejgOut.setUsuarioPeticion(usuarioPeticion);
-           		
-           		lPeticionesEejg.add(peticionEejgOut);
-           		
-           	}
-           } 
-      } catch (Exception e) {
-      		throw new ClsExceptions (e, "Error al ejecutar consulta.");
-      }
-      return lPeticionesEejg;
-		
+
+			if (rc.findBind(sql.toString(),htCodigos)) {
+				lPeticionesEejg = new ArrayList<ScsEejgPeticionesBean>();
+				ScsEejgPeticionesBean peticionEejgOut = null;
+				for (int i = 0; i < rc.size(); i++){
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila=fila.getRow();
+					peticionEejgOut = (ScsEejgPeticionesBean) this.hashTableToBean(htFila);
+					peticionEejgOut.setPersonaUnidadFamiliar((htFila.get("NIFINIT")!=null&&!UtilidadesHash.getString(htFila,"NIFINIT").equals("")));
+					AdmUsuariosBean usuarioPeticion = new AdmUsuariosBean();
+					usuarioPeticion.setDescripcion(UtilidadesHash.getString(htFila,"DESCRIPCIONUSUARIO"));
+					usuarioPeticion.setNIF(UtilidadesHash.getString(htFila,"NIFUSUARIO"));
+					peticionEejgOut.setUsuarioPeticion(usuarioPeticion);
+
+					lPeticionesEejg.add(peticionEejgOut);
+
+				}
+			} 
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar consulta.");
+		}
+		return lPeticionesEejg;
+
 	} 
-	   
+	private String getQueryPeticionesEejg() {
+		StringBuffer sql = new StringBuffer();
+
+		sql.append(" SELECT  EEJG.NIF,EEJG.NOMBRE, EEJG.APELLIDO1, EEJG.APELLIDO2, ");
+		sql.append(" EEJG.IDPETICION,EEJG.ESTADO, EEJG.IDXML, EEJG.MSGERROR,");
+		sql.append(" EEJG.IDINSTITUCION , EEJG.IDTIPOEJG, ");
+		sql.append(" EEJG.ANIO,EEJG.NUMERO, EEJG.IDPERSONA, ");
+		sql.append(" EEJG.IDIOMA, EEJG.FECHACONSULTA,  TO_CHAR(EEJG.FECHAPETICION, 'DD/MM/YYYY') FECHAPETICION, EEJG.CSV,");
+		sql.append(" USU.DESCRIPCION DESCRIPCIONUSUARIO,  USU.NIF NIFUSUARIO ");
+		
+		sql.append(" ,(SELECT PJG.NIF ");
+		sql.append(" FROM SCS_UNIDADFAMILIAREJG UF, SCS_PERSONAJG PJG ");
+		sql.append(" WHERE PJG.IDPERSONA = UF.IDPERSONA ");
+		sql.append(" AND PJG.IDINSTITUCION = UF.IDINSTITUCION ");
+		sql.append(" AND UF.IDINSTITUCION = EEJG.IDINSTITUCION ");
+		sql.append(" AND UF.IDTIPOEJG = EEJG.IDTIPOEJG ");
+		sql.append(" AND UF.ANIO = EEJG.ANIO ");
+		sql.append(" AND UF.NUMERO = EEJG.NUMERO ");
+		sql.append(" AND PJG.NIF = EEJG.NIF) NIFINIT ");
+		sql.append(" FROM SCS_EEJG_PETICIONES EEJG, ADM_USUARIOS USU ");
+		sql.append(" WHERE ");
+		sql.append(" EEJG.IDUSUARIOPETICION = USU.IDUSUARIO(+) ");
+		sql.append(" AND EEJG.IDINSTITUCION = USU.IDINSTITUCION(+) ");
+		sql.append(" AND EEJG.ESTADO = 30 ");
+		sql.append(" AND EEJG.IDXML IS NOT NULL ");
+		 
+		return sql.toString();
+
+	}
+	public List<ScsEejgPeticionesBean> getPeticionesEejg(List<ScsEJGBean> eejgBeans)throws BusinessException{
+
+		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
+		int contador = 0;
+
+		StringBuffer sql = new StringBuffer("SELECT * FROM (");
+		sql.append(getQueryPeticionesEejg());
+		if(eejgBeans!=null && eejgBeans.size()>0) {
+			sql.append(" AND EEJG.IDINSTITUCION =:");
+			contador ++;
+			sql.append(contador);
+			htCodigos.put(new Integer(contador),eejgBeans.get(0).getIdInstitucion());
+		}
+
+		sql.append(" AND (EEJG.IDINSTITUCION||EEJG.IDTIPOEJG||EEJG.ANIO||EEJG.NUMERO) IN ( ");
+		for (ScsEJGBean scsEJGBean : eejgBeans) {
+
+			sql.append(scsEJGBean.getIdInstitucion());
+			sql.append(scsEJGBean.getIdTipoEJG());
+			sql.append(scsEJGBean.getAnio());
+			sql.append(scsEJGBean.getNumero());
+			sql.append(",");
+		} 
+
+
+		sql.append("0) ) WHERE  NIFINIT IS NOT NULL ");
+
+		sql.append(" ORDER BY FECHAPETICION ");
+
+		List<ScsEejgPeticionesBean> lPeticionesEejg = new ArrayList<ScsEejgPeticionesBean>();
+		try {
+			RowsContainer rc = new RowsContainer(); 
+
+			if (rc.findBind(sql.toString(),htCodigos)) {
+				
+				ScsEejgPeticionesBean peticionEejgOut = null;
+				for (int i = 0; i < rc.size(); i++){
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila=fila.getRow();
+					peticionEejgOut = (ScsEejgPeticionesBean) this.hashTableToBean(htFila);
+					peticionEejgOut.setPersonaUnidadFamiliar((htFila.get("NIFINIT")!=null&&!UtilidadesHash.getString(htFila,"NIFINIT").equals("")));
+					peticionEejgOut.setNif((String)htFila.get("NIFINIT"));
+					AdmUsuariosBean usuarioPeticion = new AdmUsuariosBean();
+					usuarioPeticion.setDescripcion(UtilidadesHash.getString(htFila,"DESCRIPCIONUSUARIO"));
+					usuarioPeticion.setNIF(UtilidadesHash.getString(htFila,"NIFUSUARIO"));
+					peticionEejgOut.setUsuarioPeticion(usuarioPeticion);
+
+					lPeticionesEejg.add(peticionEejgOut);
+
+				}
+			} 
+		} catch (Exception e) {
+			throw new BusinessException ("Error al ejecutar consulta."+e.toString());
+		}
+		return lPeticionesEejg;
+
+	} 
+
+
 	/**
 	 * 
 	 * @param peticionEejg
@@ -351,7 +423,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
 		StringBuffer sql = new StringBuffer();
-				
+
 		sql.append(" SELECT PET.IDPETICION,  PET.IDUSUARIOPETICION,	PET.FECHAPETICION , ");
 		sql.append(" PET.ESTADO,  PET.IDSOLICITUD, PET.IDINSTITUCION , PET.IDTIPOEJG, ");
 		sql.append(" PET.ANIO,PET.NUMERO, PET.IDPERSONA, PET.NUMEROINTENTOSSOLICITUD, ");
@@ -389,48 +461,48 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 					contador ++;
 					sql.append(contador);
 					htCodigos.put(new Integer(contador),peticionEejg.getUnidadFamiliar().getPersonaJG().getIdPersona());
-					
-					
+
+
 				}
-						
-				
+
+
 			}
-			
+
 		}
 		sql.append(" ORDER BY PET.FECHAPETICION ");
 		List<ScsEejgPeticionesBean> lPeticionesEejg = null;
 		try {
 			RowsContainer rc = new RowsContainer(); 
-												
-            if (rc.findBind(sql.toString(),htCodigos)) {
-            	lPeticionesEejg = new ArrayList<ScsEejgPeticionesBean>();
-            	ScsEejgPeticionesBean peticionEejgOut = null;
-            	ScsEejgXmlBean xmlPeticionEejg = null;
-            	for (int i = 0; i < rc.size(); i++){
-            		Row fila = (Row) rc.get(i);
-            		Hashtable<String, Object> htFila=fila.getRow();
-            		peticionEejgOut = (ScsEejgPeticionesBean) this.hashTableToBean(htFila);
-            		if(peticionEejg.getUnidadFamiliar()!=null)
-            			peticionEejgOut.setUnidadFamiliar(peticionEejg.getUnidadFamiliar());
-            		xmlPeticionEejg = new ScsEejgXmlBean();
-            		peticionEejgOut.setXmlPeticionEejg(xmlPeticionEejg);
-            		xmlPeticionEejg.setIdPeticion(peticionEejgOut.getIdPeticion());
-            		xmlPeticionEejg.setEnvioRespuesta(UtilidadesHash.getString(htFila,"XML_"+ScsEejgXmlBean.C_ENVIORESPUESTA));
-            		xmlPeticionEejg.setXml(UtilidadesHash.getString(htFila,"XML_"+ScsEejgXmlBean.C_XML));
-            		xmlPeticionEejg.setEstado(UtilidadesHash.getInteger(htFila,"XML_"+ScsEejgXmlBean.C_ESTADO));
-            		xmlPeticionEejg.setIdXml(UtilidadesHash.getInteger(htFila,"XML_"+ScsEejgXmlBean.C_IDXML));
-            		lPeticionesEejg.add(peticionEejgOut);
-            		
-            	}
-            } 
-       } catch (Exception e) {
-       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
-       }
-       return lPeticionesEejg;
-		
+
+			if (rc.findBind(sql.toString(),htCodigos)) {
+				lPeticionesEejg = new ArrayList<ScsEejgPeticionesBean>();
+				ScsEejgPeticionesBean peticionEejgOut = null;
+				ScsEejgXmlBean xmlPeticionEejg = null;
+				for (int i = 0; i < rc.size(); i++){
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila=fila.getRow();
+					peticionEejgOut = (ScsEejgPeticionesBean) this.hashTableToBean(htFila);
+					if(peticionEejg.getUnidadFamiliar()!=null)
+						peticionEejgOut.setUnidadFamiliar(peticionEejg.getUnidadFamiliar());
+					xmlPeticionEejg = new ScsEejgXmlBean();
+					peticionEejgOut.setXmlPeticionEejg(xmlPeticionEejg);
+					xmlPeticionEejg.setIdPeticion(peticionEejgOut.getIdPeticion());
+					xmlPeticionEejg.setEnvioRespuesta(UtilidadesHash.getString(htFila,"XML_"+ScsEejgXmlBean.C_ENVIORESPUESTA));
+					xmlPeticionEejg.setXml(UtilidadesHash.getString(htFila,"XML_"+ScsEejgXmlBean.C_XML));
+					xmlPeticionEejg.setEstado(UtilidadesHash.getInteger(htFila,"XML_"+ScsEejgXmlBean.C_ESTADO));
+					xmlPeticionEejg.setIdXml(UtilidadesHash.getInteger(htFila,"XML_"+ScsEejgXmlBean.C_IDXML));
+					lPeticionesEejg.add(peticionEejgOut);
+
+				}
+			} 
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Error al ejecutar consulta.");
+		}
+		return lPeticionesEejg;
+
 	} 
-	
-	
+
+
 
 
 	/**
@@ -439,7 +511,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 	public List<ScsEejgPeticionesBean> getPeticionesIniciadas() throws ClsExceptions {
 		return select(getWherePeticionesIniciadas());		
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -449,11 +521,11 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		UsrBean usrBean = new UsrBean();
 		usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));		
 		GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);
-				
+
 		String numeroReintentosSolicitud = admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_NUMERO_REINTENTOS_SOLICITUD", "");		
 		double horasMaximasDeProceso = Double.parseDouble(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_HORAS_MAXIMAS_DE_PROCESO", ""));
 		String horasMaximas = String.valueOf(horasMaximasDeProceso / 24.0);
-		
+
 		StringBuffer where = new StringBuffer(" WHERE " + ScsEejgPeticionesBean.C_IDSOLICITUD + " IS NULL");
 		where.append(" AND " + ScsEejgPeticionesBean.C_NUMEROINTENTOSSOLICITUD + " < " + numeroReintentosSolicitud);
 		where.append(" AND (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + EEJG_ESTADO.INICIAL.getId());
@@ -461,10 +533,10 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		where.append(" AND (SYSDATE - " + horasMaximas + ") >= " + ScsEejgPeticionesBean.C_FECHAMODIFICACION);
 		where.append(" ))");
 		return where.toString();
-		
+
 	}
-	
-	
+
+
 	/**
 	 * 
 	 * @throws ClsExceptions
@@ -487,8 +559,8 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		updateSql.append(getWherePeticionesIniciadas());
 		boolean isUpdated = updateSQL(updateSql.toString());
 		//int filaModificadas = updateDirectSQL(updateSql.toString());
-		
-		
+
+
 	}
 
 
@@ -501,8 +573,8 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 	public List<ScsEejgPeticionesBean> getSolicitudesPendientes(double horas) throws ClsExceptions {
 		return select(getWherePeticionesEnEspera(horas));
 	}
-	
-	
+
+
 	/**
 	 * 
 	 * @param horas
@@ -514,27 +586,27 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		UsrBean usrBean = new UsrBean();
 		usrBean.setUserName(String.valueOf(ClsConstants.USUMODIFICACION_AUTOMATICO));		
 		GenParametrosAdm admParametros = new GenParametrosAdm(usrBean);
-		
+
 		String numeroReintentosConsulta = admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_NUMERO_REINTENTOS_CONSULTA", "");
 		String numeroReintentosPendienteInfo = admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_NUMERO_REINTENTOS_PENDIENTE_INFO", "");
-		
+
 		double horasMaximasDeProceso = Double.parseDouble(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_HORAS_MAXIMAS_DE_PROCESO", ""));
 		double horasReintentoPendienteInfo = Double.parseDouble(admParametros.getValor(ScsEejgPeticionesBean.INSTITUCION_PARAMETROS_EEJG, "SCS", "EEJG_HORAS_REINTENTO_PENDIENTE_INFO", ""));
 		String horasMaximas = String.valueOf(horasMaximasDeProceso / 24.0);
-		
+
 		String horasSt = String.valueOf(horas / 24.0);//pasamos las horas a días 
 		StringBuffer where = new StringBuffer(" WHERE (SYSDATE - " + horasSt + ") >= " + ScsEejgPeticionesBean.C_FECHASOLICITUD);
 		where.append(" AND " + ScsEejgPeticionesBean.C_NUMEROINTENTOSCONSULTA + " < " + numeroReintentosConsulta);
 		where.append(" AND " + ScsEejgPeticionesBean.C_NUMEROINTENTOSPENDIENTEINFO + " < " + numeroReintentosPendienteInfo);
-		
+
 		where.append(" AND (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + EEJG_ESTADO.ESPERA.getId());
 		where.append(" 		OR (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + EEJG_ESTADO.ESPERA_ESPERANDO.getId());
 		where.append(" 			AND (SYSDATE - " + horasMaximas + ") >= " + ScsEejgPeticionesBean.C_FECHAMODIFICACION + ")");
 		where.append(" 		OR (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + EEJG_ESTADO.PENDIENTE_INFO.getId());
 		where.append(" 			AND (SYSDATE - " + (horasReintentoPendienteInfo/24.0) + ") >= " + ScsEejgPeticionesBean.C_FECHAMODIFICACION + "))");
-		
+
 		return where.toString();
-		
+
 	}
 	public void updatePeticionesEnEspera(double horas) throws ClsExceptions {
 		StringBuffer updateSql = new StringBuffer();
@@ -553,9 +625,9 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		updateSql.append(" ");
 		updateSql.append(getWherePeticionesEnEspera(horas));
 		boolean isUpdated = updateSQL(updateSql.toString());
-		
+
 	}
-	
+
 	/**
 	 * 
 	 * @param horas2
@@ -571,8 +643,8 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 
 		return existen;
 	}
-	
-	
+
+
 	/**
 	 * 
 	 * @param horas
