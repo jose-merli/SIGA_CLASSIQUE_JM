@@ -535,9 +535,6 @@ alter table CEN_NOCOLEGIADO modify SOCIEDADPROFESIONAL default 0 null;
 
 PKG_SIGA_FACTURACION_SJCS (ya ejecutado en todos los entornos por ser urgente)
 
-PYS_PRODUCTOSSOLICITADOS_AI.trg
--- Ejecutado en Integración por FMS el 08/01/2019 a las 10:31
-
 update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='No está permitido la descarga de este informe económico porque el NIF de la persona para la que se solicitó no existe en la unidad familiar.' where idrecurso='gratuita.personaJG.tooltip.noPerteneceUnidadFam' and idlenguaje='1';
 update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='No está permitido la descarga de este informe económico porque el NIF de la persona para la que se solicitó no existe en la unidad familiar.#CA' where idrecurso='gratuita.personaJG.tooltip.noPerteneceUnidadFam' and idlenguaje='2';
 update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='No está permitido la descarga de este informe económico porque el NIF de la persona para la que se solicitó no existe en la unidad familiar.#EU' where idrecurso='gratuita.personaJG.tooltip.noPerteneceUnidadFam' and idlenguaje='3';
