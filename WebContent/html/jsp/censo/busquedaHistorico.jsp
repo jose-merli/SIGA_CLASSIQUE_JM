@@ -219,12 +219,7 @@
 	<script language="JavaScript">
 		jQuery.noConflict();
 		jQuery(document).ready(function() {
-	        
-	        
-	        jQuery('#ddcl-listaIdTipoCambio').click(function(){
-	        	jQueryTop("#ddcl-listaIdTipoCambio-ddw", window.document).show();
-	        });
-	        
+	        	        
 	        if (document.forms[0].jsonVolver.value!='') {
 		        var jSonVolverObject =  jQuery.parseJSON(document.forms[0].jsonVolver.value);
 				if (jSonVolverObject.nombreFormulario == 'HistoricoForm') {
@@ -253,25 +248,24 @@
 				fin();
 				return false;
 			} else {
-				var listaIdTipoCambio = jQuery("#listaIdTipoCambio").val();
-				if (listaIdTipoCambio) {
-					if (listaIdTipoCambio.toString().substring(0,1)==',') {
-						listaIdTipoCambio = listaIdTipoCambio.toString().substring(1);
+				//	SIGARNV-343 
+				
+				var listaIdTipoCambio = document.getElementById("listaIdTipoCambio");
+				if (listaIdTipoCambio && listaIdTipoCambio.options) {
+					document.forms[0].idsTipoCambio.value = '';
+					for (var i = 0; i < listaIdTipoCambio.options.length; i++) {
+						
+						if(listaIdTipoCambio.options[i].selected){							
+							if (document.forms[0].idsTipoCambio.value != '') {
+								document.forms[0].idsTipoCambio.value += ',';
+							}
+							document.forms[0].idsTipoCambio.value += listaIdTipoCambio.options[i].value
+						}						 
 					}
-					document.forms[0].idsTipoCambio.value = listaIdTipoCambio;
+  
+					console.log(document.forms[0].idsTipoCambio.value);
 				} else {
 					document.forms[0].idsTipoCambio.value = "";
-				}
-				
-				//	SIGARNV-343 
-				try {
-					jQueryTop("#ddcl-listaIdTipoCambio-ddw", window.document).hide();
-				} catch (Exception e) {
-					try {
-						jQuery("#ddcl-listaIdTipoCambio-ddw", window.document).hide();
-					} catch (Exception e) {
-						//no hacemos nada
-					}
 				}
 				
 				document.forms[0].modo.value='buscarPor';
