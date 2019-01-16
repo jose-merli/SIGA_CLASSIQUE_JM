@@ -329,7 +329,7 @@
 		// Asociada al boton Cerrar
 		function accionVolver() 
 		{		
-			sub();
+			//sub();
 			CerDetalleSolicitudForm.action = "/SIGA/CER_GestionSolicitudes.do";
 			CerDetalleSolicitudForm.target = "mainWorkArea";
 			CerDetalleSolicitudForm.modo.value="volver";
