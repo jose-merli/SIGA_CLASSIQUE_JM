@@ -1848,6 +1848,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
     c_Id_Ciudad_Real Constant Scs_Asistencia.Idinstitucion%Type := 2020;
     c_Id_La_Rioja    Constant Scs_Asistencia.Idinstitucion%Type := 2058;
     c_Id_Valladolid  Constant Scs_Asistencia.Idinstitucion%Type := 2078;
+    c_Id_Zamora      Constant Scs_Asistencia.Idinstitucion%Type := 2082;
 
   -- declaracion de cursores para la facturacion de guardias
     -- Cursor para cargar el RECORD de Facturacion
@@ -13233,7 +13234,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                            p_Fechafin,
                                            p_Fechadesde,
                                            p_Fechahasta);
-    Elsif p_Idinstitucion in (c_Id_Albacete, c_Id_Ciudad_Real, c_Id_La_Rioja, c_Id_Valladolid) Then
+    Elsif p_Idinstitucion in (c_Id_Albacete, c_Id_Ciudad_Real, c_Id_La_Rioja, c_Id_Valladolid, c_Id_Zamora) Then
       Return f_Tiene_Asist_Derivadas_Cr(p_Idinstitucion,
                                         p_Idturno,
                                         p_Idguardia,
@@ -13376,7 +13377,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                                             p_Numero,
                                             p_Fechadesde,
                                             p_Fechahasta);
-    Elsif p_Idinstitucion in (c_Id_Albacete, c_Id_Ciudad_Real, c_Id_La_Rioja, c_Id_Valladolid) Then
+    Elsif p_Idinstitucion in (c_Id_Albacete, c_Id_Ciudad_Real, c_Id_La_Rioja, c_Id_Valladolid, c_Id_Zamora) Then
       Return f_Es_Asistencia_Derivada_Cr(p_Idinstitucion,
                                          p_Anio,
                                          p_Numero,
@@ -13604,7 +13605,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
         Return Pkg_Siga_Constantes.Db_False_n;
       End If;
 
-    Elsif p_Idinstitucion in (c_Id_Albacete, c_Id_Ciudad_Real, c_Id_La_Rioja, c_Id_Valladolid) Then
+    Elsif p_Idinstitucion in (c_Id_Albacete, c_Id_Ciudad_Real, c_Id_La_Rioja, c_Id_Valladolid, c_Id_Zamora) Then
       Select Idtipoasistenciacolegio
         Into v_Idtipo_Asistencia
         From Scs_Asistencia
@@ -13899,7 +13900,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
                            And asi.Idguardia = r_Dia.Idguardia
                            And Asi.Idpersonacolegiado = r_Dia.Idpersona
                            And Trunc(asi.Fechahora) = r_Dia.Fechafin
-                           And fac.Idhito <> '9'; --se excluyen las de FG
+                           And Fac.Idhito <> '9'; --se excluyen las de FG
                     Exception
                         When no_data_found Then
                             Fac_Act_Acumulado := 0;
