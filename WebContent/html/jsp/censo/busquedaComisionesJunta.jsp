@@ -652,10 +652,6 @@
 				alert (obligatorio);
 				return false;
 			}
-			if (!document.getElementById("numeroColegiado_" + fila).value) {
-				alert (obligatorio);
-				return false;
-			}
 		}	
 
 		return isValidado;
