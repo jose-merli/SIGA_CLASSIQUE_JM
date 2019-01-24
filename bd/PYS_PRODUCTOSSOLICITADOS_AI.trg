@@ -8,7 +8,7 @@ Declare
   v_FechaCobro     Date;
 Begin
 
-  --Si hay observaciones significa que está pagado porque contienen el número de pago
+  --Si hay observaciones significa que esta pagado porque contienen el numero de pago
   IF(:New.Observaciones IS NOT NULL) THEN
     IF (Length(:New.Observaciones) > 0) THEN
       SELECT SYSDATE INTO v_FechaCobro FROM DUAL;
