@@ -114,7 +114,7 @@
 					<td class="labelText">
 						<siga:Idioma key="censo.busquedaClientes.literal.colegio"/> (*)						
 					</td>				
-					<td class="labelText">
+					<td>
 						<siga:Select id="idInstitucionCargo" queryId="getNombreColegiosConsejoTodos" required="true" selectedIds="<%=modoSel %>"/>
 						<script type="text/javascript">
 						jQuery(function(){
@@ -122,67 +122,49 @@
 						});
 						</script>						
 					</td>
-					<td>
-						<table>
-							<tr>
-								<td class="labelText">
-									<siga:Idioma	key="gratuita.volantesExpres.literal.colegiado" />
-								</td>
-								<td>
-									<html:text styleId="numeroColegiado" property="numeroColegiado" size="4" maxlength="9"	styleClass="box" value="<%=numeroColegiado%>" />
-								</td>
-								<td>
-									<html:text styleId="nombreColegiado" property="nombreColegiado" size="40" maxlength="50" styleClass="box" readonly="true" id="nombreCol" value="<%=nombreColegiado%>"/>
-								</td>
-								<td><!-- Boton buscar --> 
-									<input type="button" class="button"  name="Buscar" id="idButtonB" value="<siga:Idioma key='general.boton.search' />" onClick="buscarColegiado();" /> 
-									<!-- Boton limpiar -->
-									&nbsp;<input type="button" class="button" id="idButtonL" name="Limpia" value="<siga:Idioma key='general.boton.clear' />" onClick="limpiarColegiado();" />
-								</td>		
-							</tr>
-						</table>	
-					</td>								
+					
+					<td class="labelText">
+						<siga:Idioma	key="gratuita.volantesExpres.literal.colegiado" />
+					</td>
+					<td colspan="2">
+						<html:text styleId="numeroColegiado" property="numeroColegiado" size="4" maxlength="9"	styleClass="box" value="<%=numeroColegiado%>" />
+						<html:text styleId="nombreColegiado" property="nombreColegiado" size="40" maxlength="50" styleClass="box" readonly="true" id="nombreCol" value="<%=nombreColegiado%>"/>
+						<input type="button" class="button"  name="Buscar" id="idButtonB" value="<siga:Idioma key='general.boton.search' />" onClick="buscarColegiado();" /> 
+						&nbsp;
+						<input type="button" class="button" id="idButtonL" name="Limpia" value="<siga:Idioma key='general.boton.clear' />" onClick="limpiarColegiado();" />
+					</td>
+					<td>&nbsp;</td>
 	  			</tr>						   				
 	
 				<tr>
 					<td class="labelText">
 						<siga:Idioma key="censo.busquedaComisiones.literal.fechaCargo"/> (*)
 					</td>
-					<td class="labelText">
+					<td>
 						<siga:Fecha nombreCampo="fechaCargo" valorInicial='<%=UtilidadesBDAdm.getFechaBD("")%>'/>
 					</td>
 				
-					<td>
-						<table>
-							<tr>
-								<td class="labelText">
-									<siga:Idioma key="censo.busquedaComisiones.literal.cargos"/>
-								</td>
-								<td class="labelText">
-									<siga:Select id="cargos" queryId="getCenTiposCVsubtipo2IdTipoCvJuntasGobierno" selectedIds="<%=selCargos%>" />
-								</td>
-								<td></td>
-								<td><input type='button'  id = 'idBorrar' name='idButton' style="display:none" value='Borrar' alt='Borrar' ></td>
-							</tr>
-						</table>
+					<td class="labelText">
+						<siga:Idioma key="censo.busquedaComisiones.literal.cargos"/>
 					</td>
+					<td class="labelText">
+						<siga:Select id="cargos" queryId="getCenTiposCVsubtipo2IdTipoCvJuntasGobierno" selectedIds="<%=selCargos%>" />
+					</td>
+					<td>&nbsp;</td>
+					<td><input type='button'  id = 'idBorrar' name='idButton' style="display:none" value='Borrar' alt='Borrar' ></td>
 				</tr>
 			</table>
 		</siga:ConjCampos>
 		
 		<div id="fechasParaInsertar" style="display:none">
 		<siga:ConjCampos leyenda="Fechas para insertar" desplegable="true">
-			<table width="100%" align="center" >
+			<table class="tablaCentralCampos" align="center">
 				<tr>
-					<td style="text-align: center; width: 10%;"><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.fechaInicio" /></td>
-					<td style="text-align: right; width: 60%; vertical-align: middle" colspan="3" rowspan="2" id="mensajeFechaFinCargos">La Fecha de Fin sólo se usa para dar de baja a los cargos existentes. <br>Para añadirla en un nuevo cargo, primero pulse en Guardar.</td>
-					<td style="text-align: center; width: 20%;"><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.fechaFin" /></td>
-					<td style="text-align: center; width: 10%;">&nbsp;</td>
-				</tr>
-				<tr>
-					<td style="text-align: center; width: 10%;"><siga:Fecha nombreCampo="fechaInicioCargos"/></td>
-					<td style="text-align: center; width: 20%;"><siga:Fecha nombreCampo="fechaFinCargos"/></td>
-					<td style="text-align: center; width: 10%;">&nbsp;</td>
+					<td class="labelText"><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.fechaInicio" /></td>
+					<td><siga:Fecha nombreCampo="fechaInicioCargos"/></td>
+					<td colspan="2" rowspan="2" align="center" id="mensajeFechaFinCargos">La Fecha de Fin sólo se usa para dar de baja a los cargos existentes. <br>Para añadirla en un nuevo cargo, primero pulse en Guardar.</td>
+					<td class="labelText"><siga:Idioma key="FactSJCS.mantRetencionesJ.literal.fechaFin" /></td>
+					<td><siga:Fecha nombreCampo="fechaFinCargos"/></td>
 				</tr>
 			</table>
 		</siga:ConjCampos>
