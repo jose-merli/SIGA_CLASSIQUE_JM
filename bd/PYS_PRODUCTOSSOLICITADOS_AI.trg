@@ -38,7 +38,7 @@ Begin
          Fechacobro, Idcensodatos)
       Values
         (:New.Idinstitucion, Seq_Solicitudcertificados.Nextval, :New.Fecharecepcionsolicitud, 1,
-         Nvl(:New.idinstitucionpeticion, :New.Idinstitucion) , :New.Idinstitucionorigen, :New.Idinstitucioncolegiacion,
+         :New.Idinstitucion, :New.Idinstitucionorigen, :New.Idinstitucioncolegiacion,
          :New.Idinstitucioncolegiacion, :New.Idpersona, :New.Idpersona, :New.Iddireccion,
          :New.Idtipoenvios, :New.Idtipoproducto, :New.Idproductoinstitucion, :New.Idproducto, 1,
          Sysdate, Null, :New.Fechamodificacion, :New.Usumodificacion, :New.Idpeticion,
