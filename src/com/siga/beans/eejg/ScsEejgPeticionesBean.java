@@ -307,8 +307,10 @@ public class ScsEejgPeticionesBean extends MasterBean{
 				elementosFila[3] = new FilaExtElement("descargaLog", "errorEejg","general.boton.errorEejg",SIGAConstants.ACCESS_READ);
 		} else if (estado == EEJG_ESTADO.FINALIZADO.getId()) {
 			if(isPersonaUnidadFamiliar()) {
-				elementosFila = new FilaExtElement[4];
-				elementosFila[3] = new FilaExtElement("download", "descargarEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
+				if(csv!=null) {
+					elementosFila = new FilaExtElement[4];
+					elementosFila[3] = new FilaExtElement("download", "descargarEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
+				}
 			}else {
 				elementosFila = new FilaExtElement[4];
 				elementosFila[3] = new FilaExtElement("descargaLog", "avisoDNICambiado","gratuita.personaJG.tooltip.noPerteneceUnidadFam",	SIGAConstants.ACCESS_READ);
