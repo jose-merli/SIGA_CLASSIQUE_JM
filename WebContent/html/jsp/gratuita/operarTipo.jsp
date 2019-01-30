@@ -165,7 +165,7 @@
 		{
 			var nombre = document.forms[0].descripcion.value;
 			var contenido = document.forms[0].abreviatura.value;
-			sub();
+			//sub();
 			if (nombre != "") {
 				if (contenido!="") {                   
 

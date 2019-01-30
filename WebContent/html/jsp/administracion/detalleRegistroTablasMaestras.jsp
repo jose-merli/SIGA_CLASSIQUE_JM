@@ -413,7 +413,7 @@
 		}
 			
 		function accionGuardar() {
-			sub();
+			//sub();
 			var numeroPlantillas = document.getElementById("numeroTextoPlantillas");
 			var textoPlantillas = "";
 			if(numeroPlantillas &&numeroPlantillas.value>0){

@@ -201,7 +201,7 @@
 				alert(error);
 				return false;
 			}
-			sub();
+			//sub();
 			if (!validateTipoAsistenciaColegioForm(document.forms['formEdicion'])){
 			   	 fin();	 
 			     return false;

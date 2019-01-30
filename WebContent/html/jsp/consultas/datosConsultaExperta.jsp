@@ -183,7 +183,7 @@
 		
 		function guardarListas() 
 		{	
-			sub();
+			//sub();
 			if (document.forms[0].descripcion==null || document.forms[0].descripcion.value==""){
 				alert('<%=errorDescripcion%>');
 				fin();
