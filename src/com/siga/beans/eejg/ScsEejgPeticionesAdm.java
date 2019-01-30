@@ -278,7 +278,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
-		StringBuffer sql = new StringBuffer(getQueryPeticionesEejg());
+		StringBuffer sql = new StringBuffer(getQueryPeticionesEejg(false));
 		sql.append(" AND EEJG.IDINSTITUCION =:");
 		contador ++;
 		sql.append(contador);
@@ -324,7 +324,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		return lPeticionesEejg;
 
 	} 
-	private String getQueryPeticionesEejg() {
+	private String getQueryPeticionesEejg(boolean isCompleto) {
 		StringBuffer sql = new StringBuffer();
 
 		sql.append(" SELECT  EEJG.NIF,EEJG.NOMBRE, EEJG.APELLIDO1, EEJG.APELLIDO2, ");
@@ -334,7 +334,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		sql.append(" EEJG.IDIOMA, EEJG.FECHACONSULTA,  TO_CHAR(EEJG.FECHAPETICION, 'DD/MM/YYYY') FECHAPETICION, EEJG.CSV,");
 		sql.append(" USU.DESCRIPCION DESCRIPCIONUSUARIO,  USU.NIF NIFUSUARIO ");
 		
-		sql.append(" ,(SELECT PJG.NIF ");
+		sql.append(" ,(SELECT DISTINCT(PJG.NIF) ");
 		sql.append(" FROM SCS_UNIDADFAMILIAREJG UF, SCS_PERSONAJG PJG ");
 		sql.append(" WHERE PJG.IDPERSONA = UF.IDPERSONA ");
 		sql.append(" AND PJG.IDINSTITUCION = UF.IDINSTITUCION ");
@@ -347,8 +347,10 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		sql.append(" WHERE ");
 		sql.append(" EEJG.IDUSUARIOPETICION = USU.IDUSUARIO(+) ");
 		sql.append(" AND EEJG.IDINSTITUCION = USU.IDINSTITUCION(+) ");
-		sql.append(" AND EEJG.ESTADO = 30 ");
-		sql.append(" AND EEJG.IDXML IS NOT NULL ");
+		if(isCompleto) {
+			sql.append(" AND EEJG.ESTADO = 30 ");
+			sql.append(" AND EEJG.IDXML IS NOT NULL ");
+		}
 		 
 		return sql.toString();
 
@@ -359,7 +361,7 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		int contador = 0;
 
 		StringBuffer sql = new StringBuffer("SELECT * FROM (");
-		sql.append(getQueryPeticionesEejg());
+		sql.append(getQueryPeticionesEejg(true));
 		if(eejgBeans!=null && eejgBeans.size()>0) {
 			sql.append(" AND EEJG.IDINSTITUCION =:");
 			contador ++;
