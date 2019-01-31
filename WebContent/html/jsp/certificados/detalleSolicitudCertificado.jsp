@@ -117,7 +117,7 @@
 		aceptaCesion = beanSolicitud.getAceptaCesionMutualidad().equals("1") ? "checked" : "";
 		aceptMut = beanSolicitud.getAceptaCesionMutualidad();
 		aMetodoSol.add(beanSolicitud.getMetodoSolicitud());
-		if(beanSolicitud.getMetodoSolicitud().equals("5")){
+		if(beanSolicitud.getMetodoSolicitud().equals("5") || beanSolicitud.getMetodoSolicitud().equals("6")){
 			bSolicitudTelematica = true;
 			estadoInc = (String) request.getAttribute("estadoInc");
 			residente = (String) request.getAttribute("residenteInc");

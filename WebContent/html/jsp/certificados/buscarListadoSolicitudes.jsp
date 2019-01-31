@@ -303,7 +303,7 @@
 					elems[4]=new FilaExtElement("descargaLog", "descargaLog", SIGAConstants.ACCESS_READ);
 				}	
 				
-				if (idEstadoSolicitud.equals(""+CerEstadoSoliCertifiAdm.C_ESTADO_SOL_PEND) && !idMetodoSolicitud.equals("5")){
+				if (idEstadoSolicitud.equals(""+CerEstadoSoliCertifiAdm.C_ESTADO_SOL_PEND) && !(idMetodoSolicitud.equals("5") || idMetodoSolicitud.equals("6"))){
 					botones += ",B";
 				}
 				

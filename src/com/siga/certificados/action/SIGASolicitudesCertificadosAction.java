@@ -693,7 +693,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			Vector vDatos = admSolicitud.selectByPK(htSolicitud);
 			CerSolicitudCertificadosBean beanSolicitud = (CerSolicitudCertificadosBean) vDatos.elementAt(0);
 			
-			if(!beanSolicitud.getMetodoSolicitud().equals("5"))
+			if(!beanSolicitud.getMetodoSolicitud().equals("5") && !beanSolicitud.getMetodoSolicitud().equals("6"))
 			{
 				String[] pestanasOcultas=new String [1];
 				pestanasOcultas[0]="61b";

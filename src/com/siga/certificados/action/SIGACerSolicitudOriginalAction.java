@@ -168,7 +168,7 @@ public class SIGACerSolicitudOriginalAction extends MasterAction {
 			
 			// Tratamiento para las solicitudes de certificados de forma telemática
 			boolean pintarCamposTelematica = false;
-			if (beanSolicitud.getMetodoSolicitud().equals("5")) {
+			if (beanSolicitud.getMetodoSolicitud().equals("5") || beanSolicitud.getMetodoSolicitud().equals("6")) {
 				pintarCamposTelematica = true;
 			}
 

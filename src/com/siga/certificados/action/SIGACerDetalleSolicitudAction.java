@@ -718,7 +718,7 @@ public class SIGACerDetalleSolicitudAction extends MasterAction {
 			
 			// Tratamiento para las solicitudes de certificados de forma telemática
 			boolean pintarCamposTelematica = false;
-			if (beanSolicitud.getMetodoSolicitud().equals("5")) {
+			if (beanSolicitud.getMetodoSolicitud().equals("5") || beanSolicitud.getMetodoSolicitud().equals("6")) {
 				pintarCamposTelematica = true;
 			}
 
@@ -1964,7 +1964,7 @@ public class SIGACerDetalleSolicitudAction extends MasterAction {
 			if (!form.getIdInstitucionDestino().trim().equals("")) {
 				bean.setIdInstitucionDestino(new Integer(form.getIdInstitucionDestino()));
 			} else {
-				if(!form.getMetodoSolicitud().equals("5"))
+				if(!form.getMetodoSolicitud().equals("5") && !form.getMetodoSolicitud().equals("6"))
 					bean.setIdInstitucionDestino(null);
 			}
 			if (!form.getComentario().trim().equals("")) {
@@ -1998,7 +1998,7 @@ public class SIGACerDetalleSolicitudAction extends MasterAction {
 			if (form.getAceptaCesionMutualidad().equalsIgnoreCase("1")) {
 				bean.setAceptaCesionMutualidad("1");
 			} else {
-				bean.setAceptaCesionMutualidad("");
+				bean.setAceptaCesionMutualidad("0");
 			}
 
 			bean.setFechaMod("sysdate");
