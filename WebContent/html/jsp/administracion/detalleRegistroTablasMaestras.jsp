@@ -442,12 +442,18 @@
 				error += (error==''?'':'\n') + validacodigo;
 			
 			if (error=='') {
+				var checkPonerBajaLogica = document.getElementById("checkPonerBajaLogica");
+				var ponerBajaLogica = document.getElementById("ponerBajaLogica");
 				
 				// JPT: No funcionaba la baja
-				if (jQuery("#checkPonerBajaLogica").is(':checked')) {
-					jQuery("#ponerBajaLogica").val("S");
+				if (checkPonerBajaLogica && checkPonerBajaLogica.checked) {
+					if (ponerBajaLogica) {
+						ponerBajaLogica.value = 'S'
+					}					
 				} else {
-					jQuery("#ponerBajaLogica").val("N");
+					if (ponerBajaLogica) {
+						ponerBajaLogica.value = 'N'
+					}
 				}
 							
 				listadoTablasMaestrasForm.modo.value="<%=miModo%>";
