@@ -50,7 +50,7 @@ public class AlterMutuaWSClient extends SIGAWSClientAbstract {
 	public WSRespuesta getEstadoSolicitud (int idSolicitud, boolean certificado) throws IOException, SIGAException{
 		WSRespuesta respuesta = new WSRespuesta();
         try{
-            WSSIGASoap_BindingStub stub = getStubNoLog();
+            WSSIGASoap_BindingStub stub = getStubLog();
             respuesta = stub.getEstadoSolicitud(idSolicitud, certificado);
         } catch (Exception e) {
             escribeLog("Error en llamada a getEstadoSolicitud: " + e.getMessage());
@@ -62,7 +62,7 @@ public class AlterMutuaWSClient extends SIGAWSClientAbstract {
 	public WSRespuesta getEstadoColegiado (int tipoIdent, String ident) throws IOException, SIGAException{
 		WSRespuesta respuesta = new WSRespuesta();
         try{
-            WSSIGASoap_BindingStub stub = getStubNoLog();
+            WSSIGASoap_BindingStub stub = getStubLog();
             respuesta = stub.getEstadoColegiado(tipoIdent, ident);
         } catch (Exception e) {
             escribeLog("Error en llamada a getEstadoColegiado: " + e.getMessage());
@@ -204,7 +204,7 @@ public class AlterMutuaWSClient extends SIGAWSClientAbstract {
 			String user = paramAdm.getValor(usr.getLocation(),"CEN", "WS_ALTERM_USER", "");
 			String password = paramAdm.getValor(usr.getLocation(),"CEN", "WS_ALTERM_PASS", "");
 		
-		    oHeaderElement = new SOAPHeaderElement("http://www.altermutua.com/WSSIGA", "Credenciales");
+		    oHeaderElement = new SOAPHeaderElement("https://www.altermutua.com/WSSIGA", "Credenciales");
 		    oHeaderElement.setPrefix("wss");
 		
 		    oElement = oHeaderElement.addChildElement("Usuario");
