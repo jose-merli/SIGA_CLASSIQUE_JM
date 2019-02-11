@@ -15,6 +15,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -35,7 +36,9 @@ import com.siga.beans.ScsContrariosDesignaAdm;
 import com.siga.beans.ScsContrariosDesignaBean;
 import com.siga.beans.ScsDefendidosDesignaAdm;
 import com.siga.beans.ScsDefendidosDesignaBean;
+import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsDesignasProcuradorAdm;
+import com.siga.beans.ScsDesignasProcuradorBean;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsEJGDESIGNAAdm;
@@ -859,6 +862,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 		String desInst = miForm.getDesigna_idInstitucion();
 		String desTurno = miForm.getDesigna_turno();
 		String desNum = miForm.getDesigna_numero();
+		
 		// Buscamos las posibles relaciones de la designacion con alguna asistencia 
 		ScsAsistenciasAdm asisAdm = new ScsAsistenciasAdm(this.getUserBean(request));
 		datosAsis = asisAdm.getRelacionadoDesigna(desAnio, desNum, desInst, desTurno);
@@ -940,7 +944,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 		try {
 			DefinirMantenimientoEJGForm miForm 	= (DefinirMantenimientoEJGForm)formulario;
 			
-			
+			boolean trasladarProcurador = miForm.getTraspasarProcurador()!=null && miForm.getTraspasarProcurador().equals(AppConstants.DB_TRUE);
 			Hashtable miHash = new Hashtable ();
 			Vector contrarios=new Vector();
 			Vector testigo=new Vector();
@@ -1026,6 +1030,48 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 						}
 					}
 				}
+				
+				if(trasladarProcurador){
+					Hashtable claves = new Hashtable();
+					claves.put(ScsEJGBean.C_IDINSTITUCION,miForm.getIdInstitucion());
+					claves.put(ScsEJGBean.C_IDTIPOEJG,miForm.getIdTipoEJG());
+					claves.put(ScsEJGBean.C_ANIO,miForm.getAnio());
+					claves.put(ScsEJGBean.C_NUMERO,miForm.getNumero());
+					
+					
+					ScsEJGAdm adm = new ScsEJGAdm(this.getUserBean(request));
+					Vector v = adm.selectByPK(claves);
+					
+					if (v != null && v.size() > 0) {
+						ScsEJGBean bean = (ScsEJGBean) v.get(0);
+					
+						if(bean.getIdProcurador()!=null){
+	
+							ScsDesignasProcuradorAdm procuradorDesignaAdm = new ScsDesignasProcuradorAdm(this.getUserBean(request));
+	
+							// HASH DE INSERCION para el nuevo
+							Hashtable procuradorNuevo = new Hashtable();
+							procuradorNuevo.put(ScsDesignasProcuradorBean.C_IDINSTITUCION,miForm.getIdInstitucion());
+							procuradorNuevo.put(ScsDesignasProcuradorBean.C_IDTURNO,miForm.getDesigna_turno());
+							procuradorNuevo.put(ScsDesignasProcuradorBean.C_NUMERO,new Integer(miForm.getDesigna_numero()));
+							procuradorNuevo.put(ScsDesignasProcuradorBean.C_ANIO,miForm.getDesigna_anio());
+							procuradorNuevo.put(ScsDesignasProcuradorBean.C_IDPROCURADOR,bean.getIdProcurador());
+							procuradorNuevo.put(ScsDesignasProcuradorBean.C_IDINSTITUCION_PROC,bean.getIdInstitucionProcurador());
+							if (bean.getFechaProc()!=null && !bean.getFechaProc().equals("")){
+								procuradorNuevo.put(ScsDesignasProcuradorBean.C_FECHADESIGNA, bean.getFechaProc());
+							}else{
+								procuradorNuevo.put(ScsDesignasProcuradorBean.C_FECHADESIGNA, "SYSDATE");	
+							}
+							if (bean.getNumeroDesignaProc()!=null && !bean.getNumeroDesignaProc().equals("")){
+								procuradorNuevo.put(ScsDesignasProcuradorBean.C_NUMERODESIGNACION, bean.getNumeroDesignaProc());
+							}
+							if (!procuradorDesignaAdm.insert(procuradorNuevo))
+								throw new Exception("No se ha relacionado el procurador con la designa");
+								
+						}
+					}
+				}			
+				
 				
 				
 				// Creamos la relacion

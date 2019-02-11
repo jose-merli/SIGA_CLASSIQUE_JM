@@ -90,6 +90,8 @@
 			<html:hidden property = "ejgAnio" value=""/>
 			<html:hidden property = "ejgNumero" value=""/>
 			<html:hidden property = "ejgIdTipoEjg" value=""/>
+			<html:hidden property = "traspasarProcurador" value=""/>
+			
 		</html:form>
 		
 		<html:form action="/JGR_EJG.do" method="post" target="mainWorkArea" style="display:none">
@@ -152,13 +154,14 @@
 		{
 			document.BusquedaPorTipoSJCSForm.tipo.value="EJG";
 			var resultado = ventaModalGeneral("BusquedaPorTipoSJCSForm","G");	
-
+			
 			if (resultado != null && resultado.length >= 4)
 			{
 				document.forms[1].ejgIdInstitucion.value=resultado[0];
 				document.forms[1].ejgAnio.value=resultado[1];
 				document.forms[1].ejgNumero.value=resultado[2];
 				document.forms[1].ejgIdTipoEjg.value=resultado[3];
+				document.forms[1].traspasarProcurador.value=resultado[5];
 
 				document.forms[1].modo.value= "relacionarConEJG";
 				document.forms[1].target = "submitArea";

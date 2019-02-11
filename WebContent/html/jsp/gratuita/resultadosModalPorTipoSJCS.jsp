@@ -90,6 +90,20 @@
 			  j++;
 			}
 			
+			<%if(formulario.getTipo()!=null && (formulario.getTipo().equals("EJG") || formulario.getTipo().equals("DESIGNA"))){%>
+				var type = "<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.actualizar.procuradores"/>";
+				<%if(formulario.getTipo()!=null && formulario.getTipo().equals("EJG") ){%>
+					type = "<siga:Idioma key="gratuita.cambiosProcuradoresDesigna.actualizar.procuradoresEJG"/>";
+				<%}%>
+				
+				if(confirm(type)){
+					datos.value = datos.value + '1,'; 
+				} else{
+					datos.value = datos.value + '0,';
+					
+				}
+			<%}%>
+			
 			datos.value = datos.value + "%";
 	
 	    	document.BusquedaPorTipoSJCSForm.modo.value = "enviar";

@@ -24,9 +24,9 @@ import com.siga.beans.ScsDefinirSOJAdm;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsDesignaBean;
 import com.siga.beans.ScsEJGAdm;
+import com.siga.beans.ScsEJGAdm.TipoVentana;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsSOJBean;
-import com.siga.beans.ScsEJGAdm.TipoVentana;
 import com.siga.general.CenVisibilidad;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -281,6 +281,8 @@ public class BusquedaPorTipoSJCSAction extends MasterAction
 					UtilidadesHash.set(claves, ScsEJGBean.C_ANIO, (String)vOcultos.get(0));
 					UtilidadesHash.set(claves, ScsEJGBean.C_NUMERO, (String)vOcultos.get(1));
 					UtilidadesHash.set(claves, ScsEJGBean.C_IDTIPOEJG, (String)vOcultos.get(2));
+					String traspasarProcuradorDesigna =  (vOcultos.size()>3 && vOcultos.get(3)!=null && !((String)vOcultos.get(3)).equals(""))?(String)vOcultos.get(3):"0"; 
+					
 					UtilidadesHash.set(claves, ScsEJGBean.C_IDINSTITUCION, idInstitucion);
 					ScsEJGAdm adm = new ScsEJGAdm(this.getUserBean(request));
 					Vector v = adm.selectByPK(claves);
@@ -293,6 +295,7 @@ public class BusquedaPorTipoSJCSAction extends MasterAction
 						elemento.add ("" + bean.getNumero());
 						elemento.add ("" + bean.getIdTipoEJG());
 						elemento.add ("" + bean.getNumEJG());
+						elemento.add ("" + traspasarProcuradorDesigna);
 						request.setAttribute("elementoSeleccionado", elemento);		
 					}					
 					break;
@@ -302,6 +305,7 @@ public class BusquedaPorTipoSJCSAction extends MasterAction
 					UtilidadesHash.set(claves, ScsDesignaBean.C_ANIO, (String)vOcultos.get(0));
 					UtilidadesHash.set(claves, ScsDesignaBean.C_NUMERO, (String)vOcultos.get(1));
 					UtilidadesHash.set(claves, ScsDesignaBean.C_IDTURNO, (String)vOcultos.get(2));
+					String traspasarProcuradorDesigna =  (vOcultos.size()>3 && vOcultos.get(3)!=null && !((String)vOcultos.get(3)).equals(""))?(String)vOcultos.get(3):"0";
 					UtilidadesHash.set(claves, ScsDesignaBean.C_IDINSTITUCION, idInstitucion);
 					ScsDesignaAdm adm = new ScsDesignaAdm(this.getUserBean(request));
 					Vector v = adm.selectByPK(claves);
@@ -314,6 +318,7 @@ public class BusquedaPorTipoSJCSAction extends MasterAction
 						elemento.add ("" + bean.getNumero());
 						elemento.add ("" + bean.getIdTurno());
 						elemento.add ("" + bean.getCodigo());
+						elemento.add ("" + traspasarProcuradorDesigna);
 						request.setAttribute("elementoSeleccionado", elemento);		
 					}					
 					break;

@@ -564,6 +564,7 @@
 		<html:hidden property = "designa_numero"  		value= "<%=designaNumero%>"/>
 		<html:hidden property = "designa_turno" 		value= "<%=designaIdTurno%>"/>
 		<html:hidden property = "designa_idInstitucion" value= "<%=idInstitucion%>"/>
+		<html:hidden property = "traspasarProcurador" value=""/>
 		<html:hidden property = "idPersona" value= "<%=IDPERSONA%>"/>
 		<html:hidden property = "flagSalto" value=""/>
 		<html:hidden property = "flagCompensacion" value=""/>	
@@ -1346,13 +1347,13 @@
 			<%}%>
 			document.BusquedaPorTipoSJCSForm.tipo.value="DESIGNA";
 			var resultado = ventaModalGeneral("BusquedaPorTipoSJCSForm","G");	
-
+			
 			if (resultado != null && resultado.length >= 4) {
 				document.forms[0].designa_idInstitucion.value=resultado[0];
 				document.forms[0].designa_anio.value=resultado[1];
 				document.forms[0].designa_numero.value=resultado[2];
 				document.forms[0].designa_turno.value=resultado[3];
-
+				document.forms[0].traspasarProcurador.value=resultado[5];
 				document.forms[0].modo.value= "relacionarConDesigna";
 				document.forms[0].target = "submitArea";
 				document.forms[0].submit();

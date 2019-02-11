@@ -20,7 +20,7 @@ import java.util.Hashtable;
 	private static final long serialVersionUID = 26276417568339400L;
 	protected Hashtable ejg= new Hashtable();
 	String anio="",num="",tipo=""; // Variables para el EJG
-	
+	String traspasarProcurador ;
 	
 	
 	public void  setAnioEJG				(String anioEJG)							{ this.ejg.put(ScsEJGBean.C_ANIO, anioEJG);	anio=anioEJG;																			}
@@ -245,6 +245,14 @@ import java.util.Hashtable;
 	public String  getTipoRespuesta			()							{ return this.datos.get(ScsSOJBean.C_IDTIPORESPUESTA).toString();							}
 	public String  getIdTurno   			()							{ return this.datos.get(ScsSOJBean.C_IDTURNO).toString();							}
 	public String  getidGuardia 			()							{ return this.datos.get(ScsSOJBean.C_IDGUARDIA).toString();							}
+
+	public String getTraspasarProcurador() {
+		return traspasarProcurador;
+	}
+
+	public void setTraspasarProcurador(String traspasarProcurador) {
+		this.traspasarProcurador = traspasarProcurador;
+	}
 	
 
 }

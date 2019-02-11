@@ -24,6 +24,7 @@ public class EjgDesignasForm extends MasterForm {
 	protected String ejgnumero = "EJGNUMERO";
 	protected String ejgidTipoEJG = "EJGIDTIPOEJG";
 	protected String procedimiento = "PROCEDIMIENTO";
+	String traspasarProcurador ;
 	protected String juzgado = "JUZGADO";
 	
 	//Metodos set de los campos del formulario
@@ -219,6 +220,12 @@ public class EjgDesignasForm extends MasterForm {
 	 */
 	public String getIdTurno	()	{
 		return (String)this.datos.get(this.idturno);
+	}
+	public String getTraspasarProcurador() {
+		return traspasarProcurador;
+	}
+	public void setTraspasarProcurador(String traspasarProcurador) {
+		this.traspasarProcurador = traspasarProcurador;
 	}
 	
 	

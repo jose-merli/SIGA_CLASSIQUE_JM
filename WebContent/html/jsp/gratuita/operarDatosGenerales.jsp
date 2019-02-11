@@ -195,6 +195,7 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 	<html:hidden property = "idInstitucion" value=""/>
 	<html:hidden property = "anioEJG" value=""/>
 	<html:hidden property = "numeroEJG" value=""/>
+	<html:hidden property = "traspasarProcurador" value=""/>
 	<html:hidden property = "tipoEJG" value=""/>
 	<html:hidden property = "numero" value="<%=numero%>"/>
 	<input type="hidden" name = "flagSalto" value=""/>
@@ -529,13 +530,14 @@ String informeUnico =(String) request.getAttribute("informeUnico");
 		{
 			document.BusquedaPorTipoSJCSForm.tipo.value="EJG";
 			var resultado = ventaModalGeneral("BusquedaPorTipoSJCSForm","G");	
-
+			
 			if (resultado != null && resultado.length >= 4)
 			{
 				document.forms[0].idInstitucion.value = resultado[0];
 				document.forms[0].anioEJG.value       = resultado[1];
 				document.forms[0].numeroEJG.value     = resultado[2];
 				document.forms[0].tipoEJG.value       = resultado[3];
+				document.forms[0].traspasarProcurador.value=resultado[5];
 				document.forms[0].modo.value          = "relacionarConEJG";
 				document.forms[0].target              = "submitArea";
 				document.forms[0].submit();

@@ -41,7 +41,7 @@ import com.siga.general.MasterForm;
 	String idInstitucionProcurador="";
 	String actualizaProcuradores = "";
 
-	
+	String traspasarProcurador ;
 
 	public String getIdProcurador() {
 		return idProcurador;
@@ -400,6 +400,14 @@ import com.siga.general.MasterForm;
 
 	public void setActualizaProcuradores(String actualizaProcuradores) {
 		this.actualizaProcuradores = actualizaProcuradores;
+	}
+
+	public String getTraspasarProcurador() {
+		return traspasarProcurador;
+	}
+
+	public void setTraspasarProcurador(String traspasarProcurador) {
+		this.traspasarProcurador = traspasarProcurador;
 	}
 	
 }

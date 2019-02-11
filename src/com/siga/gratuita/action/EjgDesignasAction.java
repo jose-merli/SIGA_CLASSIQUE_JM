@@ -11,6 +11,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 
 import com.atos.utils.ClsConstants;
@@ -19,6 +20,7 @@ import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
+import com.siga.beans.AdmContadorBean;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenColegiadoBean;
 import com.siga.beans.ScsAsistenciasAdm;
@@ -28,6 +30,10 @@ import com.siga.beans.ScsDefendidosDesignaAdm;
 import com.siga.beans.ScsDefendidosDesignaBean;
 import com.siga.beans.ScsDesignaAdm;
 import com.siga.beans.ScsDesignaBean;
+import com.siga.beans.ScsDesignasProcuradorAdm;
+import com.siga.beans.ScsDesignasProcuradorBean;
+import com.siga.beans.ScsEJGAdm;
+import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsEJGDESIGNAAdm;
 import com.siga.beans.ScsEJGDESIGNABean;
 import com.siga.beans.ScsPersonaJGAdm;
@@ -92,6 +98,8 @@ protected ActionForward executeInternal(ActionMapping mapping, ActionForm formul
 		String ejgInst = miForm.getEjgIdInstitucion();
 		String ejgIdTipo = miForm.getEjgIdTipoEjg();
 		String ejgNum = miForm.getEjgNumero();
+		
+		
 		// Buscamos las posibles relaciones de la designacion con alguna asistencia 
 		ScsAsistenciasAdm asisAdm = new ScsAsistenciasAdm(this.getUserBean(request));
 		Hashtable datosAsis= new Hashtable();
@@ -181,7 +189,7 @@ protected String relacionarConEJG (boolean bCrear, MasterForm formulario, HttpSe
 			UtilidadesHash.set(miHash, ScsEJGDESIGNABean.C_ANIODESIGNA,  	miForm.getAnio());
 			UtilidadesHash.set(miHash, ScsEJGDESIGNABean.C_NUMERODESIGNA,	miForm.getNumero());
 			UtilidadesHash.set(miHash, ScsEJGDESIGNABean.C_IDTURNO,	miForm.getIdTurno());
-
+			
 			if (bCrear) {
 				
 				ScsDefendidosDesignaAdm defendidosDesignaAdm = new ScsDefendidosDesignaAdm(this.getUserBean(request));
@@ -219,6 +227,48 @@ protected String relacionarConEJG (boolean bCrear, MasterForm formulario, HttpSe
 				
 				} 
 				// Creamos la relacion
+				
+				boolean trasladarProcurador = miForm.getTraspasarProcurador()!=null && miForm.getTraspasarProcurador().equals(AppConstants.DB_TRUE);
+				if(trasladarProcurador) {
+					ScsDesignasProcuradorAdm admProcurador = new ScsDesignasProcuradorAdm(this.getUserBean(request));
+					Vector vP = admProcurador.select(hDefDesig); // Aprovechamos la hash anterior que ya tiene los datos de la designa
+					ScsDesignasProcuradorBean beanProcurador;
+					Hashtable ejgHashtable=new Hashtable();
+					ScsEJGAdm scsEJGAdm = new ScsEJGAdm(this.getUserBean(request));
+					if ((vP != null) && (vP.size() > 0)) {
+						
+						for (int i = 0; i < vP.size(); i++) {
+							beanProcurador = (ScsDesignasProcuradorBean) vP.get(i);
+							if((beanProcurador.getFechaRenuncia()==null)||(beanProcurador.getFechaRenuncia().equalsIgnoreCase(""))){
+								
+								UtilidadesHash.set(ejgHashtable, ScsEJGBean.C_IDINSTITUCIONPROCURADOR,    beanProcurador.getIdInstitucionProc());
+								UtilidadesHash.set(ejgHashtable, ScsEJGBean.C_IDPROCURADOR,    			beanProcurador.getIdProcurador());
+								UtilidadesHash.set(ejgHashtable, ScsEJGBean.C_NUMERODESIGNAPROC,    		beanProcurador.getNumeroDesignacion());
+								UtilidadesHash.set(ejgHashtable, ScsEJGBean.C_FECHADESIGPROC,    			beanProcurador.getFechaDesigna());
+							}else {
+								trasladarProcurador = false;
+							}
+						}
+					}
+					if(trasladarProcurador) {
+						String[] claves = { ScsEJGBean.C_IDINSTITUCION,ScsEJGBean.C_ANIO,ScsEJGBean.C_NUMERO,ScsEJGBean.C_IDTIPOEJG };
+						String[] campos = { ScsEJGBean.C_IDINSTITUCIONPROCURADOR,ScsEJGBean.C_IDPROCURADOR,ScsEJGBean.C_NUMERODESIGNAPROC,ScsEJGBean.C_FECHADESIGPROC };
+						
+						
+						
+						UtilidadesHash.set(ejgHashtable, ScsEJGBean.C_IDINSTITUCION, 	miForm.getEjgIdInstitucion());
+						UtilidadesHash.set(ejgHashtable, ScsEJGBean.C_ANIO,			miForm.getEjgAnio());
+						UtilidadesHash.set(ejgHashtable, ScsEJGBean.C_NUMERO,			miForm.getEjgNumero());
+						UtilidadesHash.set(ejgHashtable, ScsEJGBean.C_IDTIPOEJG,		miForm.getEjgIdTipoEjg());
+						
+						
+						
+						if (!scsEJGAdm.updateDirect(ejgHashtable,claves,campos)) {
+							throw new ClsExceptions ("Error al relacionar el procurador de la designa con el ejg");
+						}
+					}
+					
+				}
 				
 				//String [] campos = {ScsEJGBean.C_IDINSTITUCION,ScsEJGBean.C_ANIO,ScsEJGBean.C_NUMERO,ScsEJGBean.C_IDTIPOEJG,ScsEJGDESIGNABean.C_ANIODESIGNA, ScsEJGDESIGNABean.C_NUMERODESIGNA, ScsEJGDESIGNABean.C_IDTURNO};
 				ejgDesignaAdm.insert(miHash);
