@@ -7,24 +7,13 @@ Declare
   v_Numerocolegiado Cen_Colegiado.Ncolegiado%Type;
   v_Nombrecolegiado Varchar2(300);
 
-activogeneral           GEN_PARAMETROS.Valor%Type;
   activocolegio           GEN_PARAMETROS.Valor%Type;
   e exception;
 
 Begin
 --Comprobamos que es servicio centralita virtual este activo para 0 y la institucion.
 --si no esta activo no hacemos nada
-  Begin
-    select VALOR
-      into activogeneral
-      from GEN_PARAMETROS
-     where IDINSTITUCION = 0
-       and MODULO = 'ECOM'
-       and PARAMETRO = 'CENTRALITAVIRTUAL_ACTIVO';
-  exception
-    when others then
-      activogeneral := 0;
-  end;
+
   Begin
     select VALOR
       into activocolegio
@@ -36,7 +25,7 @@ Begin
     when others then
       activocolegio := 0;
   end;
-  If (activogeneral = 0 or activocolegio = 0) Then
+  If (activocolegio = 0) Then
     raise e;
   end if;
 
