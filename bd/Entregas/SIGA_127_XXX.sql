@@ -540,3 +540,6 @@ update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='No está permitid
 update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='No está permitido la descarga de este informe económico porque el NIF de la persona para la que se solicitó no existe en la unidad familiar.#EU' where idrecurso='gratuita.personaJG.tooltip.noPerteneceUnidadFam' and idlenguaje='3';
 update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='No está permitido la descarga de este informe económico porque el NIF de la persona para la que se solicitó no existe en la unidad familiar.#GL' where idrecurso='gratuita.personaJG.tooltip.noPerteneceUnidadFam' and idlenguaje='4';
 
+-- Ejecutados en Integración por FMS el 13/02/2019 a las 11:20
+
+PYS_PRODUCTOSSOLICITADOS_AI.trg
