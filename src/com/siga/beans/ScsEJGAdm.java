@@ -2753,11 +2753,12 @@ public Hashtable getBindWhereEJG(Hashtable miHash, DefinirEJGForm miForm) throws
 			
 			sql.append(" where  ");
 			
-            sql.append(" des.idinstitucion = ejgd.idinstitucion ");
+            sql.append("     des.idinstitucion = ejgd.idinstitucion ");
             sql.append(" and des.idturno = ejgd.idturno ");
-            sql.append("  and des.anio = ejgd.aniodesigna ");
+            sql.append(" and des.anio = ejgd.aniodesigna ");
             sql.append(" and des.numero = ejgd.numerodesigna ");
 
+            sql.append(" And Des.Estado <> 'A' ");
 
 			
 			keyContador++;
@@ -2780,6 +2781,11 @@ public Hashtable getBindWhereEJG(Hashtable miHash, DefinirEJGForm miForm) throws
 			sql.append(" and ejgd.numeroejg = :");
 			sql.append(keyContador);
 			
+			// ordenar para que la primera designacion (la que se cogera mas tarde) 
+			// sea la mas moderna y en estado Validada, si se puede elegir
+			sql.append(" Order By Case Estado  When 'V' Then  1  When 'F' Then  2  End, ");
+			sql.append("          Des.Fechaentrada Desc ");
+            
 			HelperInformesAdm helperInformes = new HelperInformesAdm();	
 			return helperInformes.ejecutaConsultaBind(sql.toString(), htCodigos);
 			
