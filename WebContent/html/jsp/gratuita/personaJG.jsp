@@ -684,7 +684,7 @@
 				//alert("="+poblacionSeleccionada);
 				
 				//A los 1000 milisegundos (tiempo para recargar el combo provincias) se selecciona la poblacion:
-				setTimeout(function(){recargarComboHijo(poblacionSeleccionada);},1000,"Javascript");
+				setTimeout(function(){recargarComboHijo(poblacionSeleccionada);},3000,"Javascript");
 				//document.getElementById("poblacion").value = poblacionSeleccionada;
 
 				if (resultado!=null && resultado[1]!="") {
@@ -1042,7 +1042,7 @@
 		function postAccionBusquedaNIF(){
 			var poblacionSeleccionada = document.getElementById("poblacion").value;
 			document.getElementById("provincia").onchange();
-			setTimeout(function(){recargarComboHijo(poblacionSeleccionada);},1000,"Javascript");
+			setTimeout(function(){recargarComboHijo(poblacionSeleccionada);},3000,"Javascript");
 			//document.getElementById("poblacion").value = poblacionSeleccionada;	
 		}
 
