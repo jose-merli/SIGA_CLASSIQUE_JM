@@ -74,6 +74,7 @@
 			vGruposNO.add(vAux);
 		}
 	}
+//	System.out.println("Ha terminado de cargar los select ");
 %>	
 
 
@@ -138,13 +139,15 @@
 			<td class="labelText" align="right">
 				<select size="8" class="boxCombo" id="gruposCON" multiple>
 <%
-			for (int i=0; i<vGruposSI.size(); i++)
-			{
-				String myId = (String)((Vector)vGruposSI.elementAt(i)).elementAt(0);
-				String myDesc = (String)((Vector)vGruposSI.elementAt(i)).elementAt(1);
+			if(vGruposSI != null && vGruposSI.size()>0){
+				for (int i=0; i<vGruposSI.size(); i++)
+				{
+					String myId = (String)((Vector)vGruposSI.elementAt(i)).elementAt(0);
+					String myDesc = (String)((Vector)vGruposSI.elementAt(i)).elementAt(1);
 %>
-					<option value="<%=myId%>"><%=myDesc%></option>
+						<option value="<%=myId%>"><%=myDesc%></option>
 <%
+				}
 			}
 %>
 				</select>
@@ -157,14 +160,16 @@
 				<img src="<%=app%>/html/imagenes/flecha_izquierda.gif" onClick="ponerPerfil();" style="cursor:hand;">&nbsp;&nbsp;&nbsp;<img src="<%=app%>/html/imagenes/flecha_derecha.gif" onClick="quitarPerfil();" style="cursor:hand;">
 			</td>
 			<td class="labelText">
-				<select size="8" class="boxCombo" id="gruposSIN" multiple onclick='getSelectedOption(this).click()'>
+				<select size="8" class="boxCombo" id="gruposSIN" multiple>
 <%
+		if(vGruposNO != null && vGruposNO.size()>0){	
 			for (int j=0; j<vGruposNO.size(); j++){
 				String myId = (String)((Vector)vGruposNO.elementAt(j)).elementAt(0);
 				String myDesc = (String)((Vector)vGruposNO.elementAt(j)).elementAt(1);
 %>
 					<option value="<%=myId%>"><%=myDesc%></option>
 <%
+			}
 		}
 %>
 				</select>
@@ -291,10 +296,6 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 	
-		function getSelectedOption(select) {
-		    return select.options[select.selectedIndex];
-		}
-		
 		function ponerPerfil()
 		{
 			var gruposC = document.getElementById("gruposCON");
