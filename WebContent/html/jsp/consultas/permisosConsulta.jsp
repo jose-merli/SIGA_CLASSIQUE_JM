@@ -157,7 +157,7 @@
 				<img src="<%=app%>/html/imagenes/flecha_izquierda.gif" onClick="ponerPerfil();" style="cursor:hand;">&nbsp;&nbsp;&nbsp;<img src="<%=app%>/html/imagenes/flecha_derecha.gif" onClick="quitarPerfil();" style="cursor:hand;">
 			</td>
 			<td class="labelText">
-				<select size="8" class="boxCombo" id="gruposSIN" multiple>
+				<select size="8" class="boxCombo" id="gruposSIN" multiple onclick='getSelectedOption(this).click()'>
 <%
 			for (int j=0; j<vGruposNO.size(); j++){
 				String myId = (String)((Vector)vGruposNO.elementAt(j)).elementAt(0);
@@ -291,6 +291,10 @@
 	<!-- Aqui se reescriben las funciones que vayamos a utilizar -->
 	<script language="JavaScript">
 	
+		function getSelectedOption(select) {
+		    return select.options[select.selectedIndex];
+		}
+		
 		function ponerPerfil()
 		{
 			var gruposC = document.getElementById("gruposCON");
