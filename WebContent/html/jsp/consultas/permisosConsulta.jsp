@@ -74,7 +74,6 @@
 			vGruposNO.add(vAux);
 		}
 	}
-//	System.out.println("Ha terminado de cargar los select ");
 %>	
 
 
