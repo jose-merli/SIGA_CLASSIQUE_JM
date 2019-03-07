@@ -195,7 +195,11 @@
 
 	String botones = "";
 	//Modo consulta
-	botones = "V,DLNIF";
+	if (request.getAttribute("ficheroDocumento").equals("1")){
+		botones = "V,DLNIF";
+	}else {
+		botones = "V";
+	}
 		
 	String tipoCombo="boxConsulta";
 	String tipoComboRojo="boxConsultaRojoN";

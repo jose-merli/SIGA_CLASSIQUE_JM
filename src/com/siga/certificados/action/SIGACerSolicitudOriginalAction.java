@@ -174,6 +174,14 @@ public class SIGACerSolicitudOriginalAction extends MasterAction {
 
 			request.setAttribute("pintarCamposTelematica", pintarCamposTelematica);
 			
+			//Comprobamos si tiene DNI para mostrar el botón
+			String pathFichero = beanSolicitud.getFicheroDocumento();
+			if(pathFichero!=null && !pathFichero.isEmpty()){
+				request.setAttribute("ficheroDocumento", "1");
+			}else{
+				request.setAttribute("ficheroDocumento", "0");
+			}
+			
 			// Datos Interesado para comparar
 			String numSolicitudCol = "", nombreInteresado = "", apellido1Interesado = "", apellido2Interesado = "", nidInteresado = "";
 			String fechaNacInteresado = "", telInteresado = "", movilInteresado = "", faxInteresado = "", emailInteresado = "";
