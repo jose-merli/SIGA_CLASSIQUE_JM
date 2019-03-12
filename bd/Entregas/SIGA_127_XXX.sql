@@ -543,3 +543,16 @@ update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='No está permitid
 -- Ejecutados en Integración por FMS el 13/02/2019 a las 11:20
 
 PYS_PRODUCTOSSOLICITADOS_AI.trg
+
+-- INI - SOLO EJECUTAR EN PRE
+Drop Sequence SEQ_ENV_ENVIOPROGRAMADO;
+create sequence SEQ_ENV_ENVIOPROGRAMADO
+minvalue 1
+maxvalue 999999
+start with 1
+increment by 1
+nocache
+cycle;
+-- FIN - SOLO EJECUTAR EN PRE
+
+-- Ejecutados en Integracion por AAG el 12/03/2019 a las 10:10
