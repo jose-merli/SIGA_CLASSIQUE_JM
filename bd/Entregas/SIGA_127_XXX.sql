@@ -553,6 +553,8 @@ start with 1
 increment by 1
 nocache
 cycle;
+
+alter table CEN_NOCOLEGIADO modify SOCIEDADPROFESIONAL null;
 -- FIN - SOLO EJECUTAR EN PRE
 
 -- Ejecutados en Integracion por AAG el 12/03/2019 a las 10:10
