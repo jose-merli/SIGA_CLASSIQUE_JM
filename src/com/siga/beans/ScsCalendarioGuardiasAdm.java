@@ -623,7 +623,7 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 			codigosHashtable.put(new Integer(contador),definirCalendarioGuardiaFiltroForm.getIdInstitucion());
 			
 			if(!definirCalendarioGuardiaFiltroForm.getFechaInicio().equals("")){
-				sql.append(" AND TRUNC(CG.FECHAINICIO) = :");
+				sql.append(" AND TRUNC(CG.FECHAFIN) >= :");
 				contador++;
 				sql.append(contador);
 				codigosHashtable.put(new Integer(contador),definirCalendarioGuardiaFiltroForm.getFechaInicio());
@@ -631,7 +631,7 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 				
 			}
 			if(!definirCalendarioGuardiaFiltroForm.getFechaFin().equals("")){
-				sql.append(" AND TRUNC(CG.FECHAFIN) = :");
+				sql.append(" AND TRUNC(CG.FECHAINICIO) <= :");
 				contador++;
 				sql.append(contador);
 				codigosHashtable.put(new Integer(contador),definirCalendarioGuardiaFiltroForm.getFechaFin());
@@ -705,7 +705,7 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 			codigosHashtable.put(new Integer(contador),definirCalendarioGuardiaFiltroForm.getIdInstitucion());
 			
 			if(!definirCalendarioGuardiaFiltroForm.getFechaInicio().equals("")){
-				sql.append(" AND TRUNC(PC.FECHACALINICIO) = :");
+				sql.append(" AND TRUNC(PC.FECHACALFIN) >= :");
 				contador++;
 				sql.append(contador);
 				codigosHashtable.put(new Integer(contador),definirCalendarioGuardiaFiltroForm.getFechaInicio());
@@ -713,7 +713,7 @@ public class ScsCalendarioGuardiasAdm extends MasterBeanAdministrador
 				
 			}
 			if(!definirCalendarioGuardiaFiltroForm.getFechaFin().equals("")){
-				sql.append(" AND TRUNC(PC.FECHACALFIN) = :");
+				sql.append(" AND TRUNC(PC.FECHACALINICIO) <= :");
 				contador++;
 				sql.append(contador);
 				codigosHashtable.put(new Integer(contador),definirCalendarioGuardiaFiltroForm.getFechaFin());

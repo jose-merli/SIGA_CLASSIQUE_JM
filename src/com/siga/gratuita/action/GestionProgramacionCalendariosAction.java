@@ -1,6 +1,7 @@
 package com.siga.gratuita.action;
 
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +21,7 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
+import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.ScsGuardiasTurnoBean;
 import com.siga.beans.ScsTurnoBean;
@@ -352,6 +354,11 @@ public class GestionProgramacionCalendariosAction extends MasterAction {
 		miForm.setIdInstitucion(usrBean.getLocation());
 		miForm.setIdTurnoCalendario("");
 		miForm.setIdGuardiaCalendario("");
+		try {
+			miForm.setBuscarFechaDesde(UtilidadesFecha.getString(UtilidadesFecha.getToday(), ClsConstants.DATE_FORMAT_SHORT_SPANISH));
+		} catch (ParseException e) {
+			// Si no funciona, pues nada, no tiene importancia: era solo para filtrar desde la fecha de hoy por defecto
+		}
 
 		List<ScsTurnoBean> alTurnos = programacionCalendariosService.getTurnos(usrBean.getLocation(), usrBean);
 		if (alTurnos == null)
