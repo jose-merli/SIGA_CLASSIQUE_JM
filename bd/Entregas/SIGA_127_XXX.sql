@@ -558,3 +558,16 @@ alter table CEN_NOCOLEGIADO modify SOCIEDADPROFESIONAL null;
 -- FIN - SOLO EJECUTAR EN PRE
 
 -- Ejecutados en Integracion por AAG el 12/03/2019 a las 10:10
+
+-- INI - SOLO EJECUTAR EN PRE
+Drop Sequence SEQ_ENV_PROGRAMINFORMES;
+create sequence SEQ_ENV_PROGRAMINFORMES
+minvalue 1
+maxvalue 999999
+start with 1
+increment by 1
+nocache
+cycle;
+-- FIN - SOLO EJECUTAR EN PRE
+
+-- Ejecutados en Integracion por AAG el 20/03/2019 a las 09:30
