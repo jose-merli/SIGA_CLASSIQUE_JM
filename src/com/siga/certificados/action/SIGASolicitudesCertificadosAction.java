@@ -273,7 +273,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			String controlFacturasSII = paramAdm.getValor(idInstitucion, "FAC", "CONTROL_EMISION_FACTURAS_SII", "0");
 			request.setAttribute("controlFacturasSII", controlFacturasSII);
 
-			//request.setAttribute("SolicitudesCertificadosForm", form);
+			request.setAttribute("SolicitudesCertificadosForm", form);
 			request.getSession().removeAttribute("DATABACKUP");
 
 		} catch (Exception e) {
