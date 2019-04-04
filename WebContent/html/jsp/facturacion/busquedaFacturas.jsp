@@ -143,52 +143,56 @@
 			jQuery("#identificacionTitular").val(jQuery("#numeroNifTagBusquedaPersonas").val());
 			
 			jQuery("#idBotonesAccion").show();
-			if((validarFecha(document.BusquedaFacturaForm.buscarFechaDesde.value))&&
-				(validarFecha(document.BusquedaFacturaForm.buscarFechaGeneracion.value))&&
-				(validarFecha(document.BusquedaFacturaForm.buscarFechaHasta.value))){
-				// Rango Fechas (desde / hasta)
-				sub();
-				if (compararFecha (document.BusquedaFacturaForm.buscarFechaDesde, document.BusquedaFacturaForm.buscarFechaHasta) == 1) {
-					mensaje = '<siga:Idioma key="messages.fechas.rangoFechas"/>';
-					alert(mensaje);
-					fin();
-					return false;
+			try{
+				if((validarFecha(document.BusquedaFacturaForm.buscarFechaDesde.value))&&
+					(validarFecha(document.BusquedaFacturaForm.buscarFechaGeneracion.value))&&
+					(validarFecha(document.BusquedaFacturaForm.buscarFechaHasta.value))){
+					// Rango Fechas (desde / hasta)
+					sub();
+					if (compararFecha (document.BusquedaFacturaForm.buscarFechaDesde, document.BusquedaFacturaForm.buscarFechaHasta) == 1) {
+						mensaje = '<siga:Idioma key="messages.fechas.rangoFechas"/>';
+						alert(mensaje);
+						fin();
+						return false;
+					}
+					
+					var datosFiltro = "";
+					datosFiltro += jQuery("#buscarNumeroFactura").val();
+					datosFiltro += jQuery("#buscarFechaDesde").val();
+					datosFiltro += jQuery("#buscarFechaHasta").val();
+					
+					datosFiltro += jQuery("#buscarIdSerieFacturacion").val();
+					datosFiltro += jQuery("#buscarFechaGeneracion").val();
+					datosFiltro += jQuery("#buscarIdEstado").val();
+					
+					datosFiltro += jQuery("#buscarFormaPago").val();
+					datosFiltro += jQuery("#buscarConfirmada").val();
+					datosFiltro += jQuery("#buscarContabilizada").val();
+					
+					datosFiltro += jQuery("#numeroNifTagBusquedaPersonas").val();
+					datosFiltro += jQuery("#nombrePersona").val();								
+					if (jQuery("#deudor").exists())
+						datosFiltro += jQuery("#deudor").val();
+					
+					if (datosFiltro == "") {
+						var texto = '<siga:Idioma key="errors.filter.required"/>';
+						alert(texto);
+						fin();
+						return false;
+					}				
+					
+					document.BusquedaFacturaForm.target = "resultado";
+					document.BusquedaFacturaForm.modo.value = "buscarInit";
+					document.BusquedaFacturaForm.submit();
+				}else{
+					setFocusFormularios();
 				}
-				
-				var datosFiltro = "";
-				datosFiltro += jQuery("#buscarNumeroFactura").val();
-				datosFiltro += jQuery("#buscarFechaDesde").val();
-				datosFiltro += jQuery("#buscarFechaHasta").val();
-				
-				datosFiltro += jQuery("#buscarIdSerieFacturacion").val();
-				datosFiltro += jQuery("#buscarFechaGeneracion").val();
-				datosFiltro += jQuery("#buscarIdEstado").val();
-				
-				datosFiltro += jQuery("#buscarFormaPago").val();
-				datosFiltro += jQuery("#buscarConfirmada").val();
-				datosFiltro += jQuery("#buscarContabilizada").val();
-				
-				datosFiltro += jQuery("#numeroNifTagBusquedaPersonas").val();
-				datosFiltro += jQuery("#nombrePersona").val();								
-				if (jQuery("#deudor").exists())
-					datosFiltro += jQuery("#deudor").val();
-				
-				if (datosFiltro == "") {
-					var texto = '<siga:Idioma key="errors.filter.required"/>';
-					alert(texto);
-					fin();
-					return false;
-				}				
-				
-				document.BusquedaFacturaForm.target = "resultado";
-				document.BusquedaFacturaForm.modo.value = "buscarInit";
-				document.BusquedaFacturaForm.submit();
+			}catch(Exception){
+				//no hacemos nada
 			}
-			// else{
-			//	setFocusFormularios();
-			// }
 			jQuery("#idBotonesBusqueda").removeAttr("disabled");
 			jQuery("#idBotonesAccion").removeAttr("disabled");
+			
 		}
 		
 		function consultas() {		

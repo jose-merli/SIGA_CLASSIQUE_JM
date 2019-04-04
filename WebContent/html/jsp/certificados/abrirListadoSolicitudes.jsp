@@ -119,21 +119,24 @@
 		}
 			
 		function buscar() {
-			if((validarFecha(SolicitudesCertificadosForm.fechaDesde.value)) && (validarFecha(SolicitudesCertificadosForm.fechaHasta.value))){				
-				var nSolicitud = SolicitudesCertificadosForm.busquedaIdSolicitud.value;
-				if(isNumero(nSolicitud)){
-					sub();
-					SolicitudesCertificadosForm.modo.value="buscarInicio";
-					SolicitudesCertificadosForm.target="resultado";
-					SolicitudesCertificadosForm.submit();
+			try{
+				if((validarFecha(SolicitudesCertificadosForm.fechaDesde.value)) && (validarFecha(SolicitudesCertificadosForm.fechaHasta.value))){				
+					var nSolicitud = SolicitudesCertificadosForm.busquedaIdSolicitud.value;
+					if(isNumero(nSolicitud)){
+						sub();
+						SolicitudesCertificadosForm.modo.value="buscarInicio";
+						SolicitudesCertificadosForm.target="resultado";
+						SolicitudesCertificadosForm.submit();
+					} else {
+						alert("<siga:Idioma key="certificados.solicitudes.literal.numeroSolicitud"/>" +" "+ 
+								  "<siga:Idioma key="messages.campoNumerico.error"/>");
+					}
 				} else {
-					alert("<siga:Idioma key="certificados.solicitudes.literal.numeroSolicitud"/>" +" "+ 
-							  "<siga:Idioma key="messages.campoNumerico.error"/>");
+					setFocusFormularios();
 				}
-			} // else {
-			//	document.forms[1].modo.value = "buscar";
-			//	setFocusFormularios();
-			// }
+			}catch(Exception){
+				//no hacemos nada
+			}
 		}
 		function seleccionarTodos(pagina) {
 			document.forms[0].seleccionarTodos.value = pagina;

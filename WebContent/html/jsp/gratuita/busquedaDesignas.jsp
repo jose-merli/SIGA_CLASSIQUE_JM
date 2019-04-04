@@ -515,34 +515,38 @@
 				return false;
 			}
 
-			if((validarFecha(document.forms[0].fechaAperturaInicio.value))&&
-			   (validarFecha(document.forms[0].fechaAperturaFin.value))){
-				sub();
-				/*var codigo = document.forms[1].codigo.value;
-				if ((document.forms[1].codigo.value !="") && isNaN(codigo)) 
-						alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorNumero"/>');
-				else {*/
-					//document.forms[0].action = "<%=app%>/JGR_Designas.do";
-					if (isNaN(document.forms[0].anio.value)) {
-						fin();
-						alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
-						return false;
-					}
-					
-					
-					document.forms[0].target="resultado";
-					if(modo)
-						document.forms[0].modo.value = modo;
-					else
-						document.forms[0].modo.value = "buscarInicio";
-					
-					document.forms[0].submit();
-				//}
+			try{
+				if((validarFecha(document.forms[0].fechaAperturaInicio.value))&&
+				   (validarFecha(document.forms[0].fechaAperturaFin.value))){
+					sub();
+					/*var codigo = document.forms[1].codigo.value;
+					if ((document.forms[1].codigo.value !="") && isNaN(codigo)) 
+							alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorNumero"/>');
+					else {*/
+						//document.forms[0].action = "<%=app%>/JGR_Designas.do";
+						if (isNaN(document.forms[0].anio.value)) {
+							fin();
+							alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
+							return false;
+						}
+						
+						
+						document.forms[0].target="resultado";
+						if(modo)
+							document.forms[0].modo.value = modo;
+						else
+							document.forms[0].modo.value = "buscarInicio";
+						
+						document.forms[0].submit();
+					//}
+				}else{
+					setFocusFormularios();
+				}
+			}catch(Exception){
+				//no hacemos nada
 			}
-			// else{
-			//	setFocusFormularios();
-			// }
-			if((validarFecha(document.forms[0].fechaJustificacionDesde.value))&&
+			try{
+				if((validarFecha(document.forms[0].fechaJustificacionDesde.value))&&
 					   (validarFecha(document.forms[0].fechaJustificacionHasta.value))){
 						sub();
 							if (isNaN(document.forms[0].anio.value)) {
@@ -557,10 +561,12 @@
 								document.forms[0].modo.value = "buscarInicio";
 							
 							document.forms[0].submit();
-					}
-					// else{
-					//	setFocusFormularios();
-					// }
+				}else{
+					setFocusFormularios();
+				}
+			}catch(Exception){
+				//no hacemos nada
+			}
 			jQuery("#nig2").keyup();
 		}
 			function seleccionarTodos(pagina) 

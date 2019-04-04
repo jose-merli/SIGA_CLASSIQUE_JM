@@ -208,62 +208,65 @@
 			var importeDesde=document.forms[0].importeAdeudadoDesde.value.replace(/,/,".");
 		  	var importeHasta=document.forms[0].importeAdeudadoHasta.value.replace(/,/,".");
 
-			if (validarFecha(document.forms[0].fechaDesde.value) && validarFecha(document.forms[0].fechaHasta.value)) {
-				var nSolicitud = document.forms[0].facturasImpagadasDesde.value;
-				if (!isNumero(document.forms[0].facturasImpagadasDesde.value)) {
-					alert("<siga:Idioma key='facturacion.consultamorosos.literal.facturasimpagadas'/> <siga:Idioma key='messages.campoNumericoSinDecimales.error'/>");
-                     return;	
+			try{
+		  		if (validarFecha(document.forms[0].fechaDesde.value) && validarFecha(document.forms[0].fechaHasta.value)) {
+					var nSolicitud = document.forms[0].facturasImpagadasDesde.value;
+					if (!isNumero(document.forms[0].facturasImpagadasDesde.value)) {
+						alert("<siga:Idioma key='facturacion.consultamorosos.literal.facturasimpagadas'/> <siga:Idioma key='messages.campoNumericoSinDecimales.error'/>");
+	                     return;	
+					}
+	
+					if (!isNumero(document.forms[0].facturasImpagadasHasta.value)) {
+						alert("<siga:Idioma key='facturacion.consultamorosos.literal.facturasimpagadashasta'/> <siga:Idioma key='messages.campoNumericoSinDecimales.error'/>");
+						return;
+					}
+						
+					if (!isANumber(importeDesde)) {
+						alert("<siga:Idioma key='facturacion.consultamorosos.literal.importeadeudado'/> <siga:Idioma key='messages.campoNumerico.error'/>");
+						return;
+					}
+						
+					if (!isANumber(importeHasta)) {
+						alert("<siga:Idioma key='facturacion.consultamorosos.literal.importeadeudadohasta'/> <siga:Idioma key='messages.campoNumerico.error'/>");
+						return;
+					}
+						
+					if (!isNumero(document.forms[0].numeroComunicacionesDesde.value)) {
+						alert("<siga:Idioma key='facturacion.consultamorosos.literal.comunicaciones.numero.desde'/> <siga:Idioma key='messages.campoNumericoSinDecimales.error'/>");
+						return;
+					}
+						
+					if (!isNumero(document.forms[0].numeroComunicacionesHasta.value)) {
+						alert("<siga:Idioma key='facturacion.consultamorosos.literal.comunicaciones.numero.hasta'/> <siga:Idioma key='messages.campoNumericoSinDecimales.error'/>");
+						return;
+					}					
+						
+					//sub();	
+					document.forms[0].facturasImpagadasDesde.value=document.forms[0].facturasImpagadasDesde.value.replace(/,/,".");
+					document.forms[0].facturasImpagadasHasta.value=document.forms[0].facturasImpagadasHasta.value.replace(/,/,".");
+					document.forms[0].importeAdeudadoDesde.value=document.forms[0].importeAdeudadoDesde.value.replace(/,/,".");
+					document.forms[0].importeAdeudadoHasta.value=document.forms[0].importeAdeudadoHasta.value.replace(/,/,".");				
+					
+					if (modo) {
+						document.forms[0].modo.value = modo;
+						
+						
+					} else {
+						/*var checkTodos = jQuery("#resultado").contents().find("#chkGeneral");
+						if (checkTodos.length>0 && !checkTodos[0].checked) {
+							document.forms[0].seleccionarTodos.value = "";
+						}*/
+						document.forms[0].modo.value="buscarInit";
+					}
+					
+					document.forms[0].target="resultado";	
+					document.forms[0].submit();
+				}else {
+					setFocusFormularios();
 				}
-
-				if (!isNumero(document.forms[0].facturasImpagadasHasta.value)) {
-					alert("<siga:Idioma key='facturacion.consultamorosos.literal.facturasimpagadashasta'/> <siga:Idioma key='messages.campoNumericoSinDecimales.error'/>");
-					return;
-				}
-					
-				if (!isANumber(importeDesde)) {
-					alert("<siga:Idioma key='facturacion.consultamorosos.literal.importeadeudado'/> <siga:Idioma key='messages.campoNumerico.error'/>");
-					return;
-				}
-					
-				if (!isANumber(importeHasta)) {
-					alert("<siga:Idioma key='facturacion.consultamorosos.literal.importeadeudadohasta'/> <siga:Idioma key='messages.campoNumerico.error'/>");
-					return;
-				}
-					
-				if (!isNumero(document.forms[0].numeroComunicacionesDesde.value)) {
-					alert("<siga:Idioma key='facturacion.consultamorosos.literal.comunicaciones.numero.desde'/> <siga:Idioma key='messages.campoNumericoSinDecimales.error'/>");
-					return;
-				}
-					
-				if (!isNumero(document.forms[0].numeroComunicacionesHasta.value)) {
-					alert("<siga:Idioma key='facturacion.consultamorosos.literal.comunicaciones.numero.hasta'/> <siga:Idioma key='messages.campoNumericoSinDecimales.error'/>");
-					return;
-				}					
-					
-				//sub();	
-				document.forms[0].facturasImpagadasDesde.value=document.forms[0].facturasImpagadasDesde.value.replace(/,/,".");
-				document.forms[0].facturasImpagadasHasta.value=document.forms[0].facturasImpagadasHasta.value.replace(/,/,".");
-				document.forms[0].importeAdeudadoDesde.value=document.forms[0].importeAdeudadoDesde.value.replace(/,/,".");
-				document.forms[0].importeAdeudadoHasta.value=document.forms[0].importeAdeudadoHasta.value.replace(/,/,".");				
-				
-				if (modo) {
-					document.forms[0].modo.value = modo;
-					
-					
-				} else {
-					/*var checkTodos = jQuery("#resultado").contents().find("#chkGeneral");
-					if (checkTodos.length>0 && !checkTodos[0].checked) {
-						document.forms[0].seleccionarTodos.value = "";
-					}*/
-					document.forms[0].modo.value="buscarInit";
-				}
-				
-				document.forms[0].target="resultado";	
-				document.forms[0].submit();
+			}catch(Exception){
+				//no hacemos nada
 			}
-			// else {
-			//	setFocusFormularios();
-			// }	
 		}
 		
 		function seleccionarTodos(pagina) {
