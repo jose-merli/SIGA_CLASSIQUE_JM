@@ -429,7 +429,7 @@
 	
 <%
 	if (!busquedaVolver.equals("volverNo")) {
-		botones = "V," + botones;
+		botones = "" + botones;
 %>
 		<siga:ConjBotonesAccion botones="<%=botones%>" clase="botonesDetalle"  />	
 <%

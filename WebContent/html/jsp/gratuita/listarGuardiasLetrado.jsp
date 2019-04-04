@@ -443,11 +443,8 @@
 		<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
 		<!-- FIN: SUBMIT AREA -->
 
-		<% if (!busquedaVolver.equals("volverNo")) { %>
-			<siga:ConjBotonesAccion botones="V" />
-		<% } else { %>
-			<siga:ConjBotonesAccion botones="" />
-		<% } %>
+		<siga:ConjBotonesAccion botones="" />
+
 
 		<%@ include file="/html/jsp/censo/includeVolver.jspf"%>
 	</body>

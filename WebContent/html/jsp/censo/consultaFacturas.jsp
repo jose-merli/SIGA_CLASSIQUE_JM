@@ -269,7 +269,7 @@
 		</table>
 	</div>		
 
-	<siga:ConjBotonesAccion botones="<%=botonesAccion%>" modo='' clase="botonesDetalle"/>
+	<siga:ConjBotonesAccion botones="" modo='' clase="botonesDetalle"/>
 
 	<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 

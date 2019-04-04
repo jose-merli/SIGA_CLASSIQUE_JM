@@ -91,6 +91,7 @@
 	if (busquedaVolver==null) {
 		busquedaVolver = "volverNo";
 	}
+	busquedaVolver = "volverNo";
 	
 	if ((volver!=null && volver.equalsIgnoreCase("SI")) && !busquedaVolver.equals("volverNo")) { 
 		botonesAccion="V,G,R";

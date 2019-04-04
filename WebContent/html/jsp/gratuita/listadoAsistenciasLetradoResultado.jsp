@@ -262,11 +262,11 @@
 	if (!busquedaVolver.equals("volverNo")) { 
 		if (botonNuevo.equals("")) { 
 %>
-			<siga:ConjBotonesAccion botones="V" clase="botonesDetalle" />
+			<siga:ConjBotonesAccion botones="" clase="botonesDetalle" />
 <% 
 		} else { 
 %>
-			<siga:ConjBotonesAccion botones="V,N" clase="botonesDetalle" />
+			<siga:ConjBotonesAccion botones="N" clase="botonesDetalle" />
 <% 
 		} 
  	} else { 

@@ -75,7 +75,7 @@
 	if ((busquedaVolver==null)||(usr.isLetrado())) {
 		busquedaVolver = "volverNo";
 	}
-	
+	busquedaVolver = "volverNo";
 	if (!busquedaVolver.equals("volverNo")) { 
 		botonesAccion="V,N";
 	}

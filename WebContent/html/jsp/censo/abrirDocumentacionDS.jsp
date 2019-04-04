@@ -125,7 +125,7 @@
 			</iframe>
 			<!-- FIN: IFRAME LISTA RESULTADOS -->
 			
-			<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"/>
+			<siga:ConjBotonesAccion botones="" clase="botonesDetalle"/>
 
 		<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 		

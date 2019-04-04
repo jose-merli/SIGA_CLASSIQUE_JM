@@ -514,9 +514,9 @@
 				//aalg: se controlan los permisos según el modo de acceso
 				if (!busquedaVolver.equals("volverNo")) { 
 					if (accion.equals("editar") || (accion.equals("ver") && usr.isLetrado()==true)) {%>
-						<siga:ConjBotonesAccion botones="V,bajaEnTodosLosTurnos,L" clase="botonesDetalle"  />
+						<siga:ConjBotonesAccion botones="bajaEnTodosLosTurnos,L" clase="botonesDetalle"  />
 					<%} else {%>
-						<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
+						<siga:ConjBotonesAccion botones="" clase="botonesDetalle"  />
 					<%}
 						
 				} else { 
@@ -527,7 +527,7 @@
 				
 			} else {
 				if (!busquedaVolver.equals("volverNo")) { %>
-					<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />	
+					<siga:ConjBotonesAccion botones="" clase="botonesDetalle"  />	
 				<%}
 			}
 		}%>

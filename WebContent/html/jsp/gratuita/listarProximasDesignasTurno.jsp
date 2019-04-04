@@ -156,7 +156,7 @@
 	</siga:Table>
 
 	<% if (!busquedaVolver.equals("volverNo")) { %>
-		<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"  />
+		<siga:ConjBotonesAccion botones="" clase="botonesDetalle"  />
 	<% } %>
 
 	<!-- INICIO: SUBMIT AREA -->

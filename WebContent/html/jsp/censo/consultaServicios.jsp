@@ -341,12 +341,7 @@
 		</table>
 	</div>
 	
-
-	<% if (!busquedaVolver.equals("volverNo")) { %>
-		<siga:ConjBotonesAccion botones="V" clase="botonesDetalle"/>
-	<% } else {%>
-		<siga:ConjBotonesAccion botones="" clase="botonesDetalle"/>
-	<% } %>
+	<siga:ConjBotonesAccion botones="" clase="botonesDetalle"/>
 
 	<%@ include file="/html/jsp/censo/includeVolver.jspf" %>
 	

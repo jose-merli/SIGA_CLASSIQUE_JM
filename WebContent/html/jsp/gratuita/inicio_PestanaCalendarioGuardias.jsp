@@ -533,14 +533,14 @@
 <%
 	String botones = "";
 	if (!busquedaVolver.equals("volverNo")) { 
-		botones = "V"; 
+		botones = ""; 
 	} 
 %>
 		
 	<c:if test="${PermutasForm.validaGuardiasColegiado==1}">
 <% 	
 		if (botones.equals("V")) 
-			botones = "V,G";
+			botones = "G";
 		else
 			botones = "G";
 %>

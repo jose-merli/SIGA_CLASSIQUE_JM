@@ -169,7 +169,7 @@
 			</table>
 		</fieldset>
 			
-	<siga:ConjBotonesAccion botones="V"  clase="botonesDetalle"  />
+	<siga:ConjBotonesAccion botones=""  clase="botonesDetalle"  />
 	
 	</html:form>
 

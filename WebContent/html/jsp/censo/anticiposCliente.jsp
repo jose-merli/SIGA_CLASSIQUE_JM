@@ -319,11 +319,11 @@
 	if (!busquedaVolver.equals("volverNo")) { 
 		if (!usrbean.isLetrado()) { 
 %>
-			<siga:ConjBotonesAccion botones="V,N"  clase="botonesDetalle" modo="<%=modo%>"/>
+			<siga:ConjBotonesAccion botones="N"  clase="botonesDetalle" modo="<%=modo%>"/>
 <%
 		} else {
 %>
-			<siga:ConjBotonesAccion botones="V" clase="botonesDetalle" />
+			<siga:ConjBotonesAccion botones="" clase="botonesDetalle" />
 <%
 		}
 	} else {

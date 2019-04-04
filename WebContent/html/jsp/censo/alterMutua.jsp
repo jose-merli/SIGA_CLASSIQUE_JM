@@ -638,7 +638,7 @@ function habilitarCampos(isHabilitar) {
 	</html:form>
 </div>
 
-<siga:ConjBotonesAccion botones="V,SC,AT" modo="${modoAccion}" clase="botonesDetalle"/>
+<siga:ConjBotonesAccion botones="SC,AT" modo="${modoAccion}" clase="botonesDetalle"/>
 
 
 

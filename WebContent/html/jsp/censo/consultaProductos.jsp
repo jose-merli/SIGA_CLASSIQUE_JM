@@ -349,7 +349,8 @@
 	if ((busquedaVolver==null)||(usr.isLetrado())) {
 		busquedaVolver = "volverNo";
 	}
- 
+	// Fuerzo quitar el boton de volver
+	busquedaVolver = "volverNo";
 
 	if (!busquedaVolver.equals("volverNo")) { 
 		if (!usr.isLetrado()) { 
