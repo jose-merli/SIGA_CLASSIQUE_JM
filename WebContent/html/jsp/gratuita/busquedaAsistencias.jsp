@@ -589,9 +589,10 @@
 				}else{
 					fin();
 				}
-			}else{
-				setFocusFormularios();
-			}
+			} 
+			// else{
+			//	setFocusFormularios();
+			// }
 			jQuery("#nig2").keyup();
 		}
 		function buscarPaginador() 

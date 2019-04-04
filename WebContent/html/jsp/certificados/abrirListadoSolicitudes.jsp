@@ -130,7 +130,10 @@
 					alert("<siga:Idioma key="certificados.solicitudes.literal.numeroSolicitud"/>" +" "+ 
 							  "<siga:Idioma key="messages.campoNumerico.error"/>");
 				}
-			}
+			} // else {
+			//	document.forms[1].modo.value = "buscar";
+			//	setFocusFormularios();
+			// }
 		}
 		function seleccionarTodos(pagina) {
 			document.forms[0].seleccionarTodos.value = pagina;

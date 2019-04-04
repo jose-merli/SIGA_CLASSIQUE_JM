@@ -538,9 +538,10 @@
 					
 					document.forms[0].submit();
 				//}
-			}else{
-				setFocusFormularios();
 			}
+			// else{
+			//	setFocusFormularios();
+			// }
 			if((validarFecha(document.forms[0].fechaJustificacionDesde.value))&&
 					   (validarFecha(document.forms[0].fechaJustificacionHasta.value))){
 						sub();
@@ -556,9 +557,10 @@
 								document.forms[0].modo.value = "buscarInicio";
 							
 							document.forms[0].submit();
-					}else{
-						setFocusFormularios();
 					}
+					// else{
+					//	setFocusFormularios();
+					// }
 			jQuery("#nig2").keyup();
 		}
 			function seleccionarTodos(pagina) 

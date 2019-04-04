@@ -1193,9 +1193,10 @@ if(usr.isComision()){
 					document.forms[0].submit();
 				}
 			}
-		}else{
-			setFocusFormularios();
 		}
+		// else{
+		//	setFocusFormularios();
+		// }
 		jQuery("#nig").keyup();
 	}		
 		

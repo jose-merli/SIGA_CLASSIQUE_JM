@@ -183,9 +183,10 @@
 				document.BusquedaFacturaForm.target = "resultado";
 				document.BusquedaFacturaForm.modo.value = "buscarInit";
 				document.BusquedaFacturaForm.submit();
-			}else{
-				setFocusFormularios();
 			}
+			// else{
+			//	setFocusFormularios();
+			// }
 			jQuery("#idBotonesBusqueda").removeAttr("disabled");
 			jQuery("#idBotonesAccion").removeAttr("disabled");
 		}

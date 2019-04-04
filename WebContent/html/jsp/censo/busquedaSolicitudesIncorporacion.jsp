@@ -134,9 +134,10 @@
 				}
 				document.SolicitudIncorporacionForm.modo.value = "buscarPor";
 				document.SolicitudIncorporacionForm.submit();
-			}else{
-				setFocusFormularios();
 			}
+			// else{
+			//	setFocusFormularios();
+			// }
 		}
 		function deshabilitarCombo(){
 		  if (document.SolicitudIncorporacionForm.buscarVerAlarmas.checked){

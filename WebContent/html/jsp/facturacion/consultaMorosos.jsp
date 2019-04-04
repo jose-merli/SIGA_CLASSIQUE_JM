@@ -260,9 +260,10 @@
 				
 				document.forms[0].target="resultado";	
 				document.forms[0].submit();
-			} else {
-				setFocusFormularios();
-			}	
+			}
+			// else {
+			//	setFocusFormularios();
+			// }	
 		}
 		
 		function seleccionarTodos(pagina) {

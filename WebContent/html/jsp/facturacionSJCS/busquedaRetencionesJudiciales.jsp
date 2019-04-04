@@ -152,9 +152,10 @@
 					alert('<siga:Idioma key="FactSJCS.busquedaRetencionesJ.literal.errorNumerico"/>');
 				}
 				
-			} else {
-				setFocusFormularios();
-			}
+			} 
+			// else {
+			//	setFocusFormularios();
+			// }
 		}		
 		
 		// Funcion asociada a boton limpiar
