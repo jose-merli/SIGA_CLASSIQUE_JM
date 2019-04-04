@@ -193,7 +193,7 @@
 		 son: V Volver, B Buscar,A Avanzada ,S Simple,N Nuevo registro ,L Limpiar,R Borrar Log
 	-->
 
-		<siga:ConjBotonesAccion botones="V"  />
+		<siga:ConjBotonesAccion botones=""  />
 
 	<!-- FIN: BOTONES BUSQUEDA -->
 
