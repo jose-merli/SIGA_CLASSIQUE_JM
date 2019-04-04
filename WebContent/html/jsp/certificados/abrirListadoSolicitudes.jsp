@@ -122,7 +122,7 @@
 			if((validarFecha(SolicitudesCertificadosForm.fechaDesde.value)) && (validarFecha(SolicitudesCertificadosForm.fechaHasta.value))){				
 				var nSolicitud = SolicitudesCertificadosForm.busquedaIdSolicitud.value;
 				if(isNumero(nSolicitud)){
-					sub();
+					/// sub();
 					SolicitudesCertificadosForm.modo.value="buscarInicio";
 					SolicitudesCertificadosForm.target="resultado";
 					SolicitudesCertificadosForm.submit();
