@@ -1111,93 +1111,87 @@ if(usr.isComision()){
 			alert("<siga:Idioma key='gratuita.operarEJG.literal.CAJG'/> <siga:Idioma key='fecha.error.anio'/>");
 			return false;
 		}
-		try{
-			if((validarFecha(document.forms[0].fechaAperturaHasta.value))&&
-				   (validarFecha(document.forms[0].fechaAperturaDesde.value))&&
-				   (validarFecha(document.forms[0].fechaEstadoHasta.value))&&
-				   (validarFecha(document.forms[0].fechaEstadoDesde.value))&&
-				   (validarFecha(document.forms[0].fechaDictamenHasta.value))&&
-				   (validarFecha(document.forms[0].fechaDictamenDesde.value))&&
-				   (validarFecha(document.forms[0].fechaLimitePresentacionHasta.value))&&
-				   (validarFecha(document.forms[0].fechaLimitePresentacionDesde.value))){
+		if((validarFecha(document.forms[0].fechaAperturaHasta.value))&&
+			   (validarFecha(document.forms[0].fechaAperturaDesde.value))&&
+			   (validarFecha(document.forms[0].fechaEstadoHasta.value))&&
+			   (validarFecha(document.forms[0].fechaEstadoDesde.value))&&
+			   (validarFecha(document.forms[0].fechaDictamenHasta.value))&&
+			   (validarFecha(document.forms[0].fechaDictamenDesde.value))&&
+			   (validarFecha(document.forms[0].fechaLimitePresentacionHasta.value))&&
+			   (validarFecha(document.forms[0].fechaLimitePresentacionDesde.value))){
+				
+			sub();
+			document.forms[0].modo.value = "buscarInit";
 					
-				sub();
-				document.forms[0].modo.value = "buscarInit";
+			<%if(ventanaCajg.equalsIgnoreCase("2")||ventanaCajg.equalsIgnoreCase("4")){%>
+					document.forms[0].modo.value = "buscarListosInicio";
+					document.forms[0].idRemesa.value=<%=idremesa%>;			
+			<%}%>
 						
-				<%if(ventanaCajg.equalsIgnoreCase("2")||ventanaCajg.equalsIgnoreCase("4")){%>
-						document.forms[0].modo.value = "buscarListosInicio";
-						document.forms[0].idRemesa.value=<%=idremesa%>;			
-				<%}%>
-							
-				<%if (!esComision){%>
-						document.forms[0].descripcionEstado.value = document.forms[0].estadoEJG[document.forms[0].estadoEJG.selectedIndex].text;
-				<%}%>
-	
-				document.forms[0].guardiaTurnoIdTurno.value = document.forms[0].identificador.value;
-				if (isNaN(document.forms[0].anio.value)) {
-					fin();
-					alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
-				}else if (isNaN(document.forms[0].idPersona.value)) {
-					fin();
-					alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorIdPersona"/>');
-				}else{ 
-					filtroSeleccionado = false;	
-					var inputs = document.getElementsByTagName('input');
+			<%if (!esComision){%>
+					document.forms[0].descripcionEstado.value = document.forms[0].estadoEJG[document.forms[0].estadoEJG.selectedIndex].text;
+			<%}%>
+
+			document.forms[0].guardiaTurnoIdTurno.value = document.forms[0].identificador.value;
+			if (isNaN(document.forms[0].anio.value)) {
+				fin();
+				alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
+			}else if (isNaN(document.forms[0].idPersona.value)) {
+				fin();
+				alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorIdPersona"/>');
+			}else{ 
+				filtroSeleccionado = false;	
+				var inputs = document.getElementsByTagName('input');
+				for(var i = 0; i < inputs.length; i++) {
+				    if(inputs[i].value != "" && inputs[i].type.toLowerCase() != 'checkbox' && inputs[i].type.toLowerCase() != 'button' && inputs[i].readonly != 'readonly') {
+				    	filtroSeleccionado = true;
+				    }
+				}
+				
+				if(!filtroSeleccionado){
+					var selects = document.getElementsByTagName('select');
+					
 					for(var i = 0; i < inputs.length; i++) {
-					    if(inputs[i].value != "" && inputs[i].type.toLowerCase() != 'checkbox' && inputs[i].type.toLowerCase() != 'button' && inputs[i].readonly != 'readonly') {
+					    if(selects[i].value != "" && selects[i].name != 'dictaminado' && selects[i].id() != 'idFundamentoJuridico' && selects[i].id() != 'idTipoResolucionEJG') {
 					    	filtroSeleccionado = true;
 					    }
 					}
-					
-					if(!filtroSeleccionado){
-						var selects = document.getElementsByTagName('select');
-						
-						for(var i = 0; i < inputs.length; i++) {
-						    if(selects[i].value != "" && selects[i].name != 'dictaminado' && selects[i].id() != 'idFundamentoJuridico' && selects[i].id() != 'idTipoResolucionEJG') {
-						    	filtroSeleccionado = true;
-						    }
-						}
-	
-					}
-					
-					/*jQuery("#body").find('td input').each(function () {
-						if (jQuery(this).val() != "" && jQuery(this).attr('type')!='checkbox' && jQuery(this).attr('type')!='button' && jQuery(this).attr('readonly')!='readonly'){
-							filtroSeleccionado = true;
-						}
-					});	
-					if(!filtroSeleccionado){
-						jQuery("#body").find('td select').each(function () {
-							if (jQuery(this).val() != "" && jQuery(this).attr("name")!='dictaminado' && jQuery(this).attr("id")!='idFundamentoJuridico'&& jQuery(this).attr("id")!='idTipoResolucionEJG'){
-	
-								filtroSeleccionado = true;
-							}
-						});
-					}*/
-					if(!filtroSeleccionado){
-						if(document.getElementById("dictaminado").value!='I'){
-							filtroSeleccionado = true;
-						}
-						if(document.getElementById("idFundamentoJuridico") && document.getElementById("idFundamentoJuridico").value!=''){
-							filtroSeleccionado = true;
-						}
-						if(document.getElementById("idTipoResolucionEJG") && document.getElementById("idTipoResolucionEJG").value!=''){
-							filtroSeleccionado = true;
-						}
-							
-					}
-					if(!filtroSeleccionado){
-						alert('<siga:Idioma key="errors.filter.required"/>');
-						fin();
-						return false;
-					}else{
-						document.forms[0].submit();
-					}
+
 				}
-			}else{
-				setFocusFormularios();
+				
+				/*jQuery("#body").find('td input').each(function () {
+					if (jQuery(this).val() != "" && jQuery(this).attr('type')!='checkbox' && jQuery(this).attr('type')!='button' && jQuery(this).attr('readonly')!='readonly'){
+						filtroSeleccionado = true;
+					}
+				});	
+				if(!filtroSeleccionado){
+					jQuery("#body").find('td select').each(function () {
+						if (jQuery(this).val() != "" && jQuery(this).attr("name")!='dictaminado' && jQuery(this).attr("id")!='idFundamentoJuridico'&& jQuery(this).attr("id")!='idTipoResolucionEJG'){
+
+							filtroSeleccionado = true;
+						}
+					});
+				}*/
+				if(!filtroSeleccionado){
+					if(document.getElementById("dictaminado").value!='I'){
+						filtroSeleccionado = true;
+					}
+					if(document.getElementById("idFundamentoJuridico") && document.getElementById("idFundamentoJuridico").value!=''){
+						filtroSeleccionado = true;
+					}
+					if(document.getElementById("idTipoResolucionEJG") && document.getElementById("idTipoResolucionEJG").value!=''){
+						filtroSeleccionado = true;
+					}
+						
+				}
+				if(!filtroSeleccionado){
+					alert('<siga:Idioma key="errors.filter.required"/>');
+					fin();
+					return false;
+				}else{
+					document.forms[0].submit();
+				}
 			}
-		}catch(Exception){
-			//no hacemos nada
 		}
 		jQuery("#nig").keyup();
 	}		

@@ -124,22 +124,16 @@
 		//Funcion asociada a boton buscar
 		function buscar() 
 		{
-			try{
-				if((validarFecha(document.SolicitudIncorporacionForm.buscarFechaDesde.value))&&
-					(validarFecha(document.SolicitudIncorporacionForm.buscarFechaHasta.value))){
-					sub();	
-					if (compararFecha (document.SolicitudIncorporacionForm.buscarFechaDesde, document.SolicitudIncorporacionForm.buscarFechaHasta) == 1) {
-						mensaje = '<siga:Idioma key="messages.fechas.rangoFechas"/>'
-						alert(mensaje);
-						return;
-					}
-					document.SolicitudIncorporacionForm.modo.value = "buscarPor";
-					document.SolicitudIncorporacionForm.submit();
-				}else{
-					setFocusFormularios();
+			if((validarFecha(document.SolicitudIncorporacionForm.buscarFechaDesde.value))&&
+				(validarFecha(document.SolicitudIncorporacionForm.buscarFechaHasta.value))){
+				sub();	
+				if (compararFecha (document.SolicitudIncorporacionForm.buscarFechaDesde, document.SolicitudIncorporacionForm.buscarFechaHasta) == 1) {
+					mensaje = '<siga:Idioma key="messages.fechas.rangoFechas"/>'
+					alert(mensaje);
+					return;
 				}
-			}catch(Exception){
-				//no hacemos nada
+				document.SolicitudIncorporacionForm.modo.value = "buscarPor";
+				document.SolicitudIncorporacionForm.submit();
 			}
 		}
 		function deshabilitarCombo(){

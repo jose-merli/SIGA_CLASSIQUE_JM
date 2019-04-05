@@ -575,25 +575,19 @@
 					return false;
 				}			
 			<% } %>
-			try{
-				if((validarFecha(document.forms[0].fechaDesde.value))&&
-					(validarFecha(document.forms[0].fechaHasta.value))){
-					sub();
-					if (!errorValidacion()) {					
-						// obtenemos el idturno y el idguardia
-						document.forms[0].idGuardia.value 	= document.forms[0].scsinscripcionguardia.value;
-						document.forms[0].idTurno.value		= document.forms[0].turnos.value.substr(document.forms[0].turnos.value.indexOf(",")+1);
-						document.forms[0].target			= "resultado";
-						document.forms[0].modo.value 		= "buscarInit";
-						document.forms[0].submit();
-					}else{
-						fin();
-					}
+			if((validarFecha(document.forms[0].fechaDesde.value))&&
+				(validarFecha(document.forms[0].fechaHasta.value))){
+				sub();
+				if (!errorValidacion()) {					
+					// obtenemos el idturno y el idguardia
+					document.forms[0].idGuardia.value 	= document.forms[0].scsinscripcionguardia.value;
+					document.forms[0].idTurno.value		= document.forms[0].turnos.value.substr(document.forms[0].turnos.value.indexOf(",")+1);
+					document.forms[0].target			= "resultado";
+					document.forms[0].modo.value 		= "buscarInit";
+					document.forms[0].submit();
 				}else{
-					setFocusFormularios();
+					fin();
 				}
-			}catch(Exception){
-				//no hacemos nada
 			}
 			jQuery("#nig2").keyup();
 		}

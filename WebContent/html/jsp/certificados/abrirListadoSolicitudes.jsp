@@ -119,23 +119,19 @@
 		}
 			
 		function buscar() {
-			try{
-				if((validarFecha(SolicitudesCertificadosForm.fechaDesde.value)) && (validarFecha(SolicitudesCertificadosForm.fechaHasta.value))){				
-					var nSolicitud = SolicitudesCertificadosForm.busquedaIdSolicitud.value;
-					if(isNumero(nSolicitud)){
-						sub();
-						SolicitudesCertificadosForm.modo.value="buscarInicio";
-						SolicitudesCertificadosForm.target="resultado";
-						SolicitudesCertificadosForm.submit();
-					} else {
-						alert("<siga:Idioma key="certificados.solicitudes.literal.numeroSolicitud"/>" +" "+ 
-								  "<siga:Idioma key="messages.campoNumerico.error"/>");
-					}
+			if((validarFecha(SolicitudesCertificadosForm.fechaDesde.value)) && (validarFecha(SolicitudesCertificadosForm.fechaHasta.value))){				
+				var nSolicitud = SolicitudesCertificadosForm.busquedaIdSolicitud.value;
+				if(isNumero(nSolicitud)){
+					sub();
+					SolicitudesCertificadosForm.modo.value="buscarInicio";
+					SolicitudesCertificadosForm.target="resultado";
+					SolicitudesCertificadosForm.submit();
 				} else {
-					setFocusFormularios();
+					alert("<siga:Idioma key="certificados.solicitudes.literal.numeroSolicitud"/>" +" "+ 
+							  "<siga:Idioma key="messages.campoNumerico.error"/>");
 				}
-			}catch(Exception){
-				//no hacemos nada
+			} else {
+				setFocusFormularios();
 			}
 		}
 		function seleccionarTodos(pagina) {

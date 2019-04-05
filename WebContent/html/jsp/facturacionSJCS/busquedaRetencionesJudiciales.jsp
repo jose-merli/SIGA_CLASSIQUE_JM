@@ -138,26 +138,20 @@
 	<script language="JavaScript">
 		// Funcion asociada a boton buscar
 		function buscar() {	
-			try{
-				if((validarFecha(document.forms[0].fechaNotificacionDesde.value)) &&
-				   (validarFecha(document.forms[0].fechaNotificacionHasta.value))) {
-					var ncolegiado = document.getElementById('numeroNifTagBusquedaPersonas').value;
-					sub();
-					if (!isNaN(ncolegiado)) {
-					    document.forms[0].ncolegiado.value=ncolegiado;
-					    document.forms[0].checkEsDeTurno.value = document.forms[0].checkEsDeTurno.checked;
-						document.forms[0].modo.value = "buscarPor";
-						document.forms[0].submit();
-						
-					} else { 
-						alert('<siga:Idioma key="FactSJCS.busquedaRetencionesJ.literal.errorNumerico"/>');
-					}
+			if((validarFecha(document.forms[0].fechaNotificacionDesde.value)) &&
+			   (validarFecha(document.forms[0].fechaNotificacionHasta.value))) {
+				var ncolegiado = document.getElementById('numeroNifTagBusquedaPersonas').value;
+				sub();
+				if (!isNaN(ncolegiado)) {
+				    document.forms[0].ncolegiado.value=ncolegiado;
+				    document.forms[0].checkEsDeTurno.value = document.forms[0].checkEsDeTurno.checked;
+					document.forms[0].modo.value = "buscarPor";
+					document.forms[0].submit();
 					
-				}else {
-					setFocusFormularios();
+				} else { 
+					alert('<siga:Idioma key="FactSJCS.busquedaRetencionesJ.literal.errorNumerico"/>');
 				}
-			}catch(Exception){
-				//no hacemos nada
+				
 			}
 		}		
 		
