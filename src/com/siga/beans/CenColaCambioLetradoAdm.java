@@ -1,5 +1,6 @@
 package com.siga.beans;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -193,7 +194,7 @@ public class CenColaCambioLetradoAdm extends MasterBeanAdministrador
 			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 			String pathFicheroLog = rp.returnProperty("LogAdmin.archivo");
 			String nombreFichero = rp.returnProperty("LogAdmin.archivo.gestionColas");
-			SIGALogging log = new SIGALogging(pathFicheroLog + nombreFichero);
+			SIGALogging log = new SIGALogging(pathFicheroLog+File.separator+nombreFichero);
 
 			tx = this.usrbean.getTransaction();
 
