@@ -89,11 +89,11 @@
 	String busquedaVolver = (String)request.getSession().getAttribute("CenBusquedaClientesTipo");
 	String botonesAccion = "G,R";
 	if (busquedaVolver==null) {
-		busquedaVolver = "volverNo";
+		busquedaVolver = "NO";
 	}
-	busquedaVolver = "volverNo";
+	busquedaVolver = "NO";
 	
-	if ((volver!=null && volver.equalsIgnoreCase("SI")) && !busquedaVolver.equals("volverNo")) { 
+	if ((volver!=null && volver.equalsIgnoreCase("SI")) && !busquedaVolver.equals("NO")) { 
 		botonesAccion="V,G,R";
 	}
 	String informeUnico =(String) request.getAttribute("informeUnico");
