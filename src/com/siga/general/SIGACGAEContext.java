@@ -670,7 +670,8 @@ System.setProperties(properties);
 			}else{
 				//Si está relleno y no son iguales lanzamos una excepción por si es una suplantación
 				if(usu.getUsu_mail() == null || !admCertificadosBean.getEmail().equalsIgnoreCase(usu.getUsu_mail())){
-					 throw new SIGAException("messages.general.errorEmailCertificado");
+					ClsLogging.writeFileLog("usu.getUsu_mail() = " + usu.getUsu_mail() + "; admCertificadosBean.getEmail() = " + admCertificadosBean.getEmail(), 10);
+					throw new SIGAException("messages.general.errorEmailCertificado");
 				}
 			}
 		}
