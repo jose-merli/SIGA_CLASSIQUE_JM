@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- detalleSolicitudCertificado.jsp -->
+<!-- nuevaSolicitudCertificado.jsp -->
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="Pragma" content="no-cache"> <%@ page pageEncoding="ISO-8859-1"%>
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -314,7 +314,7 @@
 		// Asociada al boton Cerrar
 		function accionVolver() 
 		{		
-			sub();
+			//sub();
 			SolicitudesCertificadosForm.target = "mainWorkArea";
 			SolicitudesCertificadosForm.modo.value="volver";
 			SolicitudesCertificadosForm.submit();
