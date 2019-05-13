@@ -79,7 +79,7 @@
 	<script>
 		
 		function preAccionBusqueda(){
-			sub();
+			//sub();
 		}
 		
 		function postAccionBusqueda(){
@@ -140,7 +140,7 @@
 			<% if (request.getParameter("buscar")!=null && request.getParameter("buscar").equals("true")) {%>
 			 	<%if((!"DUPLICADOS".equalsIgnoreCase(valorIncialVolver) && !"MD".equalsIgnoreCase(valorIncialVolver)) 
 			 			|| "exitoFusionar".equalsIgnoreCase(valorIncialVolver) || "abrirConParametros".equalsIgnoreCase(valorIncialVolver)){ %>   
-			 			sub();
+			 			//sub();
 			 			document.forms[0].modo.value="buscar";
 				<% }else{ %>
 					document.forms[0].modo.value="buscarPor";
