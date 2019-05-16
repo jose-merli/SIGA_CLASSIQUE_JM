@@ -196,7 +196,7 @@ public class DireccionesAction extends MasterAction
 			Hashtable hDatosDireccion = clienteAdm.getDirecciones(idPersona, idInstitucionPersona, idDireccion, modo.equalsIgnoreCase("ver"));
 
 			// obteniendo todos los tipos existentes en SIGA
-			Vector vTipos = cenTipoDirAdm.select("");
+			Vector vTipos = cenTipoDirAdm.select(CenTipoDireccionBean.C_IDTIPODIRECCION + " <= " + ClsConstants.TIPO_DIRECCION_TRASPASO_OJ);
 			Hashtable hTipoDir = new Hashtable();
 			if (vTipos != null && vTipos.size() > 0) {
 				for (int i = 0; i < vTipos.size(); i++) {

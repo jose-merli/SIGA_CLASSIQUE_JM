@@ -92,10 +92,10 @@ public class CenTipoDireccionAdm extends MasterBeanAdministrador {
 									  CenTipoDireccionBean.C_FECHAMODIFICACION + ", " +
 									  CenTipoDireccionBean.C_IDTIPODIRECCION + ", " +
 									  CenTipoDireccionBean.C_USUMODIFICACION +
-						   " FROM " + CenTipoDireccionBean.T_NOMBRETABLA +
-						   " ORDER BY " + CenTipoDireccionBean.C_DESCRIPCION + " ASC ";
+						   " FROM " + CenTipoDireccionBean.T_NOMBRETABLA;
+			sql += " WHERE " + where;
+			sql += " ORDER BY " + CenTipoDireccionBean.C_DESCRIPCION + " ASC ";
 			
-			sql += " " + where;
 			//sql += this.getOrdenCampos()!=null ? UtilidadesBDAdm.sqlOrderBy(this.getOrdenCampos()): UtilidadesBDAdm.sqlOrderBy(this.getClavesBean());
 			if (rc.query(sql)) {
 				for (int i = 0; i < rc.size(); i++)	{
