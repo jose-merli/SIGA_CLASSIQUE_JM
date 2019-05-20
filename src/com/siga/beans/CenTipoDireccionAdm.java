@@ -9,6 +9,7 @@ package com.siga.beans;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -93,7 +94,7 @@ public class CenTipoDireccionAdm extends MasterBeanAdministrador {
 									  CenTipoDireccionBean.C_IDTIPODIRECCION + ", " +
 									  CenTipoDireccionBean.C_USUMODIFICACION +
 						   " FROM " + CenTipoDireccionBean.T_NOMBRETABLA;
-			sql += " WHERE " + where;
+			sql += " WHERE " + CenTipoDireccionBean.C_IDTIPODIRECCION + " <= " + ClsConstants.TIPO_DIRECCION_TRASPASO_OJ;
 			sql += " ORDER BY " + CenTipoDireccionBean.C_DESCRIPCION + " ASC ";
 			
 			//sql += this.getOrdenCampos()!=null ? UtilidadesBDAdm.sqlOrderBy(this.getOrdenCampos()): UtilidadesBDAdm.sqlOrderBy(this.getClavesBean());
