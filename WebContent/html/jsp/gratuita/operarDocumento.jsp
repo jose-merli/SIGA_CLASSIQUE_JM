@@ -81,9 +81,9 @@
 					</td>
 					<td valign="top" >	
 						<%if (accion.equalsIgnoreCase("ver")){%>				
-							<html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="9" maxlength="10" styleClass="boxConsulta" readonly="true" />
+							<html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="20" maxlength="20" styleClass="boxConsulta" readonly="true" />
 						<%} else {%>
-						    <html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="9" maxlength="10" styleClass="box"/>
+						    <html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="20" maxlength="20" styleClass="box"/>
 						<%}%>
 					</td>			
 				</tr>

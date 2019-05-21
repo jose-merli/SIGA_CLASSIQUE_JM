@@ -100,9 +100,9 @@
 					</td>
 					<td valign="top" >					
 					<%if (accion.equalsIgnoreCase("ver")){%>								
-							<html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="9" maxlength="10" styleClass="boxConsulta" readonly="true"></html:text>
+							<html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="20" maxlength="20" styleClass="boxConsulta" readonly="true"></html:text>
 						<%} else {%>
-					    	<html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="9" maxlength="10" styleClass="box" readonly="false"></html:text>
+					    	<html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="20" maxlength="20" styleClass="box" readonly="false"></html:text>
 						<%}%>
 					</td>
 					

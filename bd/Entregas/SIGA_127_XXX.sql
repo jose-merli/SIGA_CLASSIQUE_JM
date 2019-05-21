@@ -571,3 +571,196 @@ cycle;
 -- FIN - SOLO EJECUTAR EN PRE
 
 -- Ejecutados en Integracion por AAG el 20/03/2019 a las 09:30
+
+--Ejecutados en Integración por FMS el 20/05/2019
+alter table SCS_TIPODOCUMENTOEJG modify CODIGOEXT VARCHAR2(20);
+alter table SCS_DOCUMENTOEJG modify CODIGOEXT VARCHAR2(20);
+
+Coger V_PCAJG_M_DOCUMENTACIONEXP.sql
+Coger V_PCAJG_DOCUMENTACIONEXP_CAT.sql
+Coger V_PCAJG_DOCUMENTACIONEXP_DS.sql
+
+--BLOQUE PL/SQL para hacer carga inicial de tipos de documentos de intercambio obligatorios de cataluña
+DECLARE 
+       --Select de la lista de sedes
+      CURSOR C_LISTA_SEDES is
+      select idinstitucion 
+      from cen_institucion 
+      where cen_inst_idinstitucion=3001;
+     V_REC VARCHAR2(50);
+      V_DOC VARCHAR2(50);
+        
+BEGIN     
+ insert into gen_recursos values ('scs.parametro.pcajg.generalitat.inclusionDOC', 'Indica si está o no activo el envío de la documentación asociada al EJG', 0, 1, sysdate, 0, 19);
+ insert into gen_recursos values ('scs.parametro.pcajg.generalitat.inclusionDOC', 'Indica si está o no activo el envío de la documentación asociada al EJG#CA', 0, 2, sysdate, 0, 19);
+ insert into gen_recursos values ('scs.parametro.pcajg.generalitat.inclusionDOC', 'Indica si está o no activo el envío de la documentación asociada al EJG#EU', 0, 3, sysdate, 0, 19);
+ insert into gen_recursos values ('scs.parametro.pcajg.generalitat.inclusionDOC', 'Indica si está o no activo el envío de la documentación asociada al EJG#GL', 0, 4, sysdate, 0, 19);
+ insert into gen_parametros values ('SCS', 'PCAJG_GENERALITAT_INCLUSION_DOC', '1', SYSDATE, 0, 0, 'scs.parametro.pcajg.generalitat.inclusionDOC', null);
+  
+
+	SELECT MAX(IDTIPODOCUMENTOEJG)+1 into V_REC FROM scs_tipodocumentoejg WHERE IDINSTITUCION in (select idinstitucion from cen_institucion where cen_inst_idinstitucion=3001);
+        dbms_output.put_line(V_REC);
+        SELECT MAX(IDDOCUMENTOEJG)+1 INTO V_DOC FROM scs_documentoejg  WHERE IDINSTITUCION in (select idinstitucion from cen_institucion where cen_inst_idinstitucion=3001);
+        --Iterar por las sedes
+        FOR SEDE IN C_LISTA_SEDES LOOP
+        --iNSERTO EN LA TABLA DE RECURSOS
+        insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC, 'Documentación envío expedientes Generalitat', 1, sysdate, 0, SEDE.idinstitucion, 'SCS_TIPODOCUMENTOEJG', 'DESCRIPCION', 'scs_tipodocumentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC);
+         insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC, 'Documentación envío expedientes Generalitat', 2, sysdate, 0, SEDE.idinstitucion, 'SCS_TIPODOCUMENTOEJG', 'DESCRIPCION', 'scs_tipodocumentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC);
+        
+        insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC, 'Documentación envío expedientes Generalitat', 3, sysdate, 0, SEDE.idinstitucion, 'SCS_TIPODOCUMENTOEJG', 'DESCRIPCION', 'scs_tipodocumentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC);
+        
+        insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC, 'Documentación envío expedientes Generalitat', 4, sysdate, 0, SEDE.idinstitucion, 'SCS_TIPODOCUMENTOEJG', 'DESCRIPCION', 'scs_tipodocumentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC);
+        
+         --iNSERTO EN LA TABLA DE TIPOD DE DOCUMENTO
+         insert into scs_tipodocumentoejg (idinstitucion, idtipodocumentoejg, abreviatura, descripcion, codigoext, codigoejis) 
+         values  (SEDE.idinstitucion , V_REC, 'Documentación envío expedientes Generalitat', '830'||SEDE.idinstitucion || V_REC, null, null);		 
+         
+          --iNSERTO EN LA TABLA DE RECURSOS
+         insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Solicitud de la persona interesada / auto del órgano judicial', 1, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+         insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Solicitud de la persona interesada / auto del órgano judicial', 2, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+        
+        insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Solicitud de la persona interesada / auto del órgano judicial', 3, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+        
+        insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Solicitud de la persona interesada / auto del órgano judicial', 4, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+        
+         -- iNSERTO EN LA TABLA DE DOCUMENTO
+         
+         insert into scs_documentoejg
+           (idinstitucion, idtipodocumentoejg, iddocumentoejg, abreviatura, descripcion, codigoext, codigoejis)
+         values
+           (SEDE.idinstitucion, V_REC, V_DOC, 'Solicitud de EJG', '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'TR_DOCINISOL_01', NULL);        
+           V_DOC:=V_DOC+1;
+           
+         --iNSERTO EN LA TABLA DE RECURSOS
+         insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Documentación justificativa aportada', 1, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+         insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Documentación justificativa aportada', 2, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+        
+        insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Documentación justificativa aportada', 3, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+        
+        insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Documentación justificativa aportada', 4, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+        
+        insert into scs_documentoejg
+           (idinstitucion, idtipodocumentoejg, iddocumentoejg, abreviatura, descripcion, codigoext, codigoejis)
+         values
+           (SEDE.idinstitucion, V_REC, V_DOC, 'Documentación justificativa aportada', '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'TR_DOCINIJUS_01', NULL);
+            V_DOC:=V_DOC+1;
+         --iNSERTO EN LA TABLA DE RECURSOS
+         insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Consulta ACA', 1, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+         insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Consulta ACA', 2, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+        
+        insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Consulta ACA', 3, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+        
+        insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Consulta ACA', 4, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+           
+           insert into scs_documentoejg
+           (idinstitucion, idtipodocumentoejg, iddocumentoejg, abreviatura, descripcion, codigoext, codigoejis)
+         values
+           (SEDE.idinstitucion, V_REC, V_DOC, 'Consulta ACA', '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'TR_DOCINIACA_01', NULL);
+            V_DOC:=V_DOC+1;
+          --iNSERTO EN LA TABLA DE RECURSOS
+         insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Dictamen del colegio', 1, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+         insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Dictamen del colegio', 2, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+        
+        insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Dictamen del colegio', 3, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+        
+        insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Dictamen del colegio', 4, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+              
+          insert into scs_documentoejg
+           (idinstitucion, idtipodocumentoejg, iddocumentoejg, abreviatura, descripcion, codigoext, codigoejis)
+         values
+           (SEDE.idinstitucion, V_REC, V_DOC, 'Dictamen del colegio', '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'TR_DOCINIDIC_01', NULL);
+            V_DOC:=V_DOC+1;
+            --iNSERTO EN LA TABLA DE RECURSOS
+         insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Documento de designa', 1, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+         insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Documento de designa', 2, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+        
+        insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Documento de designa', 3, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+        
+        insert into gen_recursos_catalogos
+        (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
+         values
+         ( '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'Documento de designa', 4, sysdate, 0, SEDE.idinstitucion, 'SCS_DOCUMENTOEJG', 'DESCRIPCION', 'scs_documentoejg.descripcion.'||SEDE.idinstitucion || '.'|| V_REC||'_'||V_DOC);
+           
+           insert into scs_documentoejg
+           (idinstitucion, idtipodocumentoejg, iddocumentoejg, abreviatura, descripcion, codigoext, codigoejis)
+         values
+           (SEDE.idinstitucion, V_REC, V_DOC, 'Documento de designa', '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'TR_DOCINIDES_01', NULL);  
+          --Inserto el parametro por cada colegio
+		   insert into gen_parametros values ('SCS', 'PCAJG_GENERALITAT_INCLUSION_DOC', '1', SYSDATE, 0, SEDE.idinstitucion, 'scs.parametro.pcajg.generalitat.inclusionDOC', null);
+         --FIN Iterar por las sedes        
+        END LOOP;
+        COMMIT;
+       
+            
+END;
+
+	

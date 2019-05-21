@@ -446,8 +446,21 @@ public abstract class SIGAWSClientAbstract {
 		return pathFichero + File.separator + idInstitucion  + File.separator + idRemesa + File.separator + "xml";
 	}
 	
-
-	
+	protected String getNombreFicheroIndex(com.siga.ws.pcajg.cat.xsd.pdf.TipoIdentificacionIntercambio tipoIdentificacionIntercambio) {
+		StringBuffer nombreFichero = new StringBuffer();
+		nombreFichero.append(tipoIdentificacionIntercambio.getTipoIntercambio());
+		nombreFichero.append("_" + tipoIdentificacionIntercambio.getCodOrigenIntercambio());
+		nombreFichero.append("_" + tipoIdentificacionIntercambio.getCodDestinoIntercambio());
+		nombreFichero.append("_" + tipoIdentificacionIntercambio.getIdentificadorIntercambio());
+		
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		String fechaIntercambio = sdf.format(tipoIdentificacionIntercambio.getFechaIntercambio().getTime());
+		nombreFichero.append("_" + fechaIntercambio);
+		nombreFichero.append("_" + tipoIdentificacionIntercambio.getNumeroDetallesIntercambio());
+		nombreFichero.append(".index.xml");
+		return nombreFichero.toString();
+	}
 	
 	protected String getNombreFichero(TipoIdentificacionIntercambio tipoIdentificacionIntercambio) {
 		StringBuffer nombreFichero = new StringBuffer();
@@ -498,6 +511,29 @@ public abstract class SIGAWSClientAbstract {
 //		serializer.serialize( xmldoc.getDocumentElement() );
 //		fos.flush();
 //		fos.close();
+		
+		//si no es correcto lo genero y lo transformo para poder ver por qué no es correcto
+		if (sbErrores != null) {
+			throw new Exception("El xml generado no cumple el esquema establecido con la Generalitat: " + sbErrores.toString());
+		}
+	}
+	
+	protected void guardaFicheroIndexFormatoCatalan(com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument indexDocumentacion, File file) throws Exception {
+		SIGAServicesHelper.deleteEmptyNode(indexDocumentacion.getIntercambio().getDomNode());
+		
+		XmlOptions xmlOptions = new XmlOptions();
+		xmlOptions.setSavePrettyPrintIndent(4);
+		xmlOptions.setSavePrettyPrint();
+		
+		xmlOptions.setCharacterEncoding("ISO-8859-15");
+		Map<String, String> mapa = new HashMap<String, String>();
+		mapa.put("", indexDocumentacion.getIntercambio().getDomNode().getNamespaceURI());
+		xmlOptions.setSaveImplicitNamespaces(mapa);
+		
+		ClsLogging.writeFileLog("Guardando fichero generado xml para la Generalitat en " + file.getAbsolutePath(), 3);
+		indexDocumentacion.save(file, xmlOptions);
+		//comprobamos que el fichero generado sea correcto
+		StringBuffer sbErrores = SIGAWSClientAbstract.validateXML(indexDocumentacion); 
 		
 		//si no es correcto lo genero y lo transformo para poder ver por qué no es correcto
 		if (sbErrores != null) {

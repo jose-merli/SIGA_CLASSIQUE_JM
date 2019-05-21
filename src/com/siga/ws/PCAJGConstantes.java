@@ -333,6 +333,7 @@ public interface PCAJGConstantes {
 	public final String DS_DE_D_DD_NOMBRE_ARCHIVO = "DS_DE_D_DD_NOMBRE_ARCHIVO";
 	public final String DS_DE_D_DD_EXTENSION_ARCHIVO = "DS_DE_D_DD_EXTENSION_ARCHIVO";
 	public final String DS_DE_D_DD_DIRECTORIO_ARCHIVO = "DS_DE_D_DD_DIRECTORIO_ARCHIVO";
+	public final String DS_DE_D_DD_CODIGOEXT = "DS_DE_D_DD_CODIGOEXT";
 
 
      /***** CAMPOS DE LA VISTA V_PCAJG_FAMILIARES ****/

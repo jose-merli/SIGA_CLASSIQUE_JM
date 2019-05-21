@@ -201,6 +201,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 		return getDatos(consulta);
 	}
 	
+
 	
 	/**
 	 * Obtiene las marcas expediente de los EJGs de la remesa
@@ -285,7 +286,24 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 	 */
 	public Vector getDocumentacionExpedienteDS(int idInstitucion, int idRemesa, String idLenguaje) throws ClsExceptions, SIGAException {
 		String sql = "SELECT *" +
-				" FROM V_PCAJG_M_DOCUMENTACIONEXP" +
+				" FROM V_PCAJG_DOCUMENTACIONEXP_DS" +
+				" WHERE " + PCAJGConstantes.IDREMESA + "  = " + idRemesa +
+				" AND " + PCAJGConstantes.IDINSTITUCION + " = " + idInstitucion +
+				" AND " + PCAJGConstantes.IDLENGUAJE + " = " + idLenguaje;
+		return getDatos(sql);
+	}
+	
+	/**
+	 * Obtiene los datos de documentación de los expedientes
+	 * @param idInstitucion
+	 * @param idRemesa
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	public Vector getDocumentacionExpedienteDSCat(int idInstitucion, int idRemesa, String idLenguaje) throws ClsExceptions, SIGAException {
+		String sql = "SELECT *" +
+				" FROM V_PCAJG_DOCUMENTACIONEXP_CAT" +
 				" WHERE " + PCAJGConstantes.IDREMESA + "  = " + idRemesa +
 				" AND " + PCAJGConstantes.IDINSTITUCION + " = " + idInstitucion +
 				" AND " + PCAJGConstantes.IDLENGUAJE + " = " + idLenguaje;

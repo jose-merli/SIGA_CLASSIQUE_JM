@@ -681,6 +681,7 @@
         <pathelement location="WebContent/WEB-INF/lib/JDBInterface.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/MediadoresConcursales.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/PCAJG-Generalitat.jar"/>
+        <pathelement location="WebContent/WEB-INF/lib/PCAJG-GeneralitatResolPDFs.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/PCAJG-PaisVasco_EJGs.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/PCAJG-Santiago-JE.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/PCAJG-Santiago.jar"/>
