@@ -126,7 +126,8 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
                                      EnvTipoEnviosBean.T_NOMBRETABLA + " T " +
                           " WHERE P." + EnvPlantillasEnviosBean.C_IDINSTITUCION + "=:2 AND " +
                           		 "P." + EnvPlantillasEnviosBean.C_IDTIPOENVIOS + "=T." + EnvTipoEnviosBean.C_IDTIPOENVIOS + " ";
-            
+            			
+            sSQL += "   AND P.ANTIGUA<>'N' ";
             if (idTipoEnvios!=null && !idTipoEnvios.equals("")) {
                 contador++;
                 codigos.put(new Integer(contador),idTipoEnvios);
@@ -392,6 +393,8 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
 		where.append("  AND (idplantillaenvios = ");
 		where.append(idPlantillaEnvioDefecto);
 		where.append(" OR fechabaja IS NULL) ");
+		where.append(" AND ANTIGUA<>'N' ");
+		
 		
 		return select(where.toString());
 	}
