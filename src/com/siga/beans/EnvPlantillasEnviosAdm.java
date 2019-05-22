@@ -393,7 +393,7 @@ public class EnvPlantillasEnviosAdm extends MasterBeanAdministrador
 		where.append("  AND (idplantillaenvios = ");
 		where.append(idPlantillaEnvioDefecto);
 		where.append(" OR fechabaja IS NULL) ");
-		where.append("  AND NVL(P.ANTIGUA,'S') <> 'N' ");
+		where.append("  AND NVL(ANTIGUA,'S') <> 'N' ");
 		
 		
 		return select(where.toString());
