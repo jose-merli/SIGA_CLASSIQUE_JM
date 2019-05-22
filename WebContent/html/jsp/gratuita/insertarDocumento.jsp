@@ -102,7 +102,7 @@
  						%>		
 			</td>
 			<td valign="top" >					
-				<html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="9" maxlength="10" styleClass="box" value=""></html:text>
+				<html:text name="DefinirMantenimDocumentacionEJGForm" property="codigoExt" size="20" maxlength="20" styleClass="box" value=""></html:text>
 			</td>			
 		</tr>	
 		
