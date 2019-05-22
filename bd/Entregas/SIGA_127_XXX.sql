@@ -595,7 +595,7 @@ BEGIN
  insert into gen_recursos values ('scs.parametro.pcajg.generalitat.inclusionDOC', 'Indica si está o no activo el envío de la documentación asociada al EJG#CA', 0, 2, sysdate, 0, 19);
  insert into gen_recursos values ('scs.parametro.pcajg.generalitat.inclusionDOC', 'Indica si está o no activo el envío de la documentación asociada al EJG#EU', 0, 3, sysdate, 0, 19);
  insert into gen_recursos values ('scs.parametro.pcajg.generalitat.inclusionDOC', 'Indica si está o no activo el envío de la documentación asociada al EJG#GL', 0, 4, sysdate, 0, 19);
- insert into gen_parametros values ('SCS', 'PCAJG_GENERALITAT_INCLUSION_DOC', '1', SYSDATE, 0, 0, 'scs.parametro.pcajg.generalitat.inclusionDOC', null);
+ insert into gen_parametros values ('SCS', 'PCAJG_GENERALITAT_INCLUSION_DOC', '0', SYSDATE, 0, 0, 'scs.parametro.pcajg.generalitat.inclusionDOC', null);
   
 
 	SELECT MAX(IDTIPODOCUMENTOEJG)+1 into V_REC FROM scs_tipodocumentoejg WHERE IDINSTITUCION in (select idinstitucion from cen_institucion where cen_inst_idinstitucion=3001);
@@ -755,7 +755,7 @@ BEGIN
          values
            (SEDE.idinstitucion, V_REC, V_DOC, 'Documento de designa', '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'TR_DOCINIDES_01', NULL);  
           --Inserto el parametro por cada colegio
-		   insert into gen_parametros values ('SCS', 'PCAJG_GENERALITAT_INCLUSION_DOC', '1', SYSDATE, 0, SEDE.idinstitucion, 'scs.parametro.pcajg.generalitat.inclusionDOC', null);
+		   --insert into gen_parametros values ('SCS', 'PCAJG_GENERALITAT_INCLUSION_DOC', '1', SYSDATE, 0, SEDE.idinstitucion, 'scs.parametro.pcajg.generalitat.inclusionDOC', null);
          --FIN Iterar por las sedes        
         END LOOP;
         COMMIT;
