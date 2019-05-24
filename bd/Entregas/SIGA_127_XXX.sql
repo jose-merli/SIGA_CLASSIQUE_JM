@@ -596,13 +596,19 @@ BEGIN
  insert into gen_recursos values ('scs.parametro.pcajg.generalitat.inclusionDOC', 'Indica si está o no activo el envío de la documentación asociada al EJG#EU', 0, 3, sysdate, 0, 19);
  insert into gen_recursos values ('scs.parametro.pcajg.generalitat.inclusionDOC', 'Indica si está o no activo el envío de la documentación asociada al EJG#GL', 0, 4, sysdate, 0, 19);
  insert into gen_parametros values ('SCS', 'PCAJG_GENERALITAT_INCLUSION_DOC', '0', SYSDATE, 0, 0, 'scs.parametro.pcajg.generalitat.inclusionDOC', null);
-  
-
+ insert into gen_recursos values ('scs.parametro.pcajg.directorioIDOFtp', 'Directorio intercambio ficheros IDO', 0, 1, sysdate, 0, 19);
+ insert into gen_recursos values ('scs.parametro.pcajg.directorioIDOFtp', 'Directorio intercambio ficheros IDO#CA', 0, 2, sysdate, 0, 19);
+ insert into gen_recursos values ('scs.parametro.pcajg.directorioIDOFtp', 'Directorio intercambio ficheros IDO#EU', 0, 3, sysdate, 0, 19);
+ insert into gen_recursos values ('scs.parametro.pcajg.directorioIDOFtp', 'Directorio intercambio ficheros IDO#GL', 0, 4, sysdate, 0, 19);
+ 
 	SELECT MAX(IDTIPODOCUMENTOEJG)+1 into V_REC FROM scs_tipodocumentoejg WHERE IDINSTITUCION in (select idinstitucion from cen_institucion where cen_inst_idinstitucion=3001);
         dbms_output.put_line(V_REC);
         SELECT MAX(IDDOCUMENTOEJG)+1 INTO V_DOC FROM scs_documentoejg  WHERE IDINSTITUCION in (select idinstitucion from cen_institucion where cen_inst_idinstitucion=3001);
         --Iterar por las sedes
         FOR SEDE IN C_LISTA_SEDES LOOP
+		-- inserto la ruta nueva para los ficheros ido
+		insert into gen_parametros values ('SCS', 'PCAJG_FTP_DIRECTORIO_IDO', '/entrades/IDO', sysdate,0, SEDE.idinstitucion, 'scs.parametro.pcajg.directorioIDOFtp', null);
+ 
         --iNSERTO EN LA TABLA DE RECURSOS
         insert into gen_recursos_catalogos
         (idrecurso, descripcion, idlenguaje, fechamodificacion, usumodificacion, idinstitucion, nombretabla, campotabla, idrecursoalias)
@@ -652,7 +658,7 @@ BEGIN
          insert into scs_documentoejg
            (idinstitucion, idtipodocumentoejg, iddocumentoejg, abreviatura, descripcion, codigoext, codigoejis)
          values
-           (SEDE.idinstitucion, V_REC, V_DOC, 'Solicitud de EJG', '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'TR_DOCINISOL_01', NULL);        
+           (SEDE.idinstitucion, V_REC, V_DOC, 'Solicitud de EJG', '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'TR-DOCINISOL-01', NULL);        
            V_DOC:=V_DOC+1;
            
          --iNSERTO EN LA TABLA DE RECURSOS
@@ -678,7 +684,7 @@ BEGIN
         insert into scs_documentoejg
            (idinstitucion, idtipodocumentoejg, iddocumentoejg, abreviatura, descripcion, codigoext, codigoejis)
          values
-           (SEDE.idinstitucion, V_REC, V_DOC, 'Documentación justificativa aportada', '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'TR_DOCINIJUS_01', NULL);
+           (SEDE.idinstitucion, V_REC, V_DOC, 'Documentación justificativa aportada', '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'TR-DOCINIJUS-01', NULL);
             V_DOC:=V_DOC+1;
          --iNSERTO EN LA TABLA DE RECURSOS
          insert into gen_recursos_catalogos
@@ -703,7 +709,7 @@ BEGIN
            insert into scs_documentoejg
            (idinstitucion, idtipodocumentoejg, iddocumentoejg, abreviatura, descripcion, codigoext, codigoejis)
          values
-           (SEDE.idinstitucion, V_REC, V_DOC, 'Consulta ACA', '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'TR_DOCINIACA_01', NULL);
+           (SEDE.idinstitucion, V_REC, V_DOC, 'Consulta ACA', '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'TR-DOCINIACA-01', NULL);
             V_DOC:=V_DOC+1;
           --iNSERTO EN LA TABLA DE RECURSOS
          insert into gen_recursos_catalogos
@@ -728,7 +734,7 @@ BEGIN
           insert into scs_documentoejg
            (idinstitucion, idtipodocumentoejg, iddocumentoejg, abreviatura, descripcion, codigoext, codigoejis)
          values
-           (SEDE.idinstitucion, V_REC, V_DOC, 'Dictamen del colegio', '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'TR_DOCINIDIC_01', NULL);
+           (SEDE.idinstitucion, V_REC, V_DOC, 'Dictamen del colegio', '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'TR-DOCINIDIC-01', NULL);
             V_DOC:=V_DOC+1;
             --iNSERTO EN LA TABLA DE RECURSOS
          insert into gen_recursos_catalogos
@@ -753,7 +759,7 @@ BEGIN
            insert into scs_documentoejg
            (idinstitucion, idtipodocumentoejg, iddocumentoejg, abreviatura, descripcion, codigoext, codigoejis)
          values
-           (SEDE.idinstitucion, V_REC, V_DOC, 'Documento de designa', '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'TR_DOCINIDES_01', NULL);  
+           (SEDE.idinstitucion, V_REC, V_DOC, 'Documento de designa', '830'||SEDE.idinstitucion ||V_REC||'_'||V_DOC, 'TR-DOCINIDES-01', NULL);  
           --Inserto el parametro por cada colegio
 		   --insert into gen_parametros values ('SCS', 'PCAJG_GENERALITAT_INCLUSION_DOC', '1', SYSDATE, 0, SEDE.idinstitucion, 'scs.parametro.pcajg.generalitat.inclusionDOC', null);
          --FIN Iterar por las sedes        

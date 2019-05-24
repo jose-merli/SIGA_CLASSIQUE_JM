@@ -48,6 +48,7 @@ public abstract class SIGAWSClientAbstract {
 	public static String rutaOUT = "xml" + File.separator + "OUT";
 	private BufferedWriter bw = null;
 	public static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ");
+	private String namespacePDFs = com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.type.getProperties()[0].getName().getNamespaceURI();
 	
 	private UsrBean usrBean;
 	private int idInstitucion;
@@ -448,7 +449,7 @@ public abstract class SIGAWSClientAbstract {
 	
 	protected String getNombreFicheroIndex(com.siga.ws.pcajg.cat.xsd.pdf.TipoIdentificacionIntercambio tipoIdentificacionIntercambio) {
 		StringBuffer nombreFichero = new StringBuffer();
-		nombreFichero.append(tipoIdentificacionIntercambio.getTipoIntercambio());
+		nombreFichero.append("IDO");
 		nombreFichero.append("_" + tipoIdentificacionIntercambio.getCodOrigenIntercambio());
 		nombreFichero.append("_" + tipoIdentificacionIntercambio.getCodDestinoIntercambio());
 		nombreFichero.append("_" + tipoIdentificacionIntercambio.getIdentificadorIntercambio());
@@ -459,6 +460,20 @@ public abstract class SIGAWSClientAbstract {
 		nombreFichero.append("_" + fechaIntercambio);
 		nombreFichero.append("_" + tipoIdentificacionIntercambio.getNumeroDetallesIntercambio());
 		nombreFichero.append(".index.xml");
+		return nombreFichero.toString();
+	}
+	
+	protected String getNombreFicheroAdjunto(com.siga.ws.pcajg.cat.xsd.pdf.TipoIdentificacionIntercambio tipoIdentificacionIntercambio, String fichero) {
+		StringBuffer nombreFichero = new StringBuffer();
+		nombreFichero.append("IDO");
+		nombreFichero.append("_" + tipoIdentificacionIntercambio.getCodOrigenIntercambio());
+		nombreFichero.append("_" + tipoIdentificacionIntercambio.getCodDestinoIntercambio());
+		
+		
+		//SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		//String fechaIntercambio = sdf.format(tipoIdentificacionIntercambio.getFechaIntercambio().getTime());
+		//nombreFichero.append("_" + fechaIntercambio);
+		nombreFichero.append("_" + fichero);
 		return nombreFichero.toString();
 	}
 	
@@ -527,8 +542,9 @@ public abstract class SIGAWSClientAbstract {
 		
 		xmlOptions.setCharacterEncoding("ISO-8859-15");
 		Map<String, String> mapa = new HashMap<String, String>();
-		mapa.put("", indexDocumentacion.getIntercambio().getDomNode().getNamespaceURI());
-		xmlOptions.setSaveImplicitNamespaces(mapa);
+		mapa.put(indexDocumentacion.getDomNode().getFirstChild().getNamespaceURI(), namespacePDFs);
+		xmlOptions.setLoadSubstituteNamespaces(mapa);
+		//xmlOptions.setSaveImplicitNamespaces(mapa);
 		
 		ClsLogging.writeFileLog("Guardando fichero generado xml para la Generalitat en " + file.getAbsolutePath(), 3);
 		indexDocumentacion.save(file, xmlOptions);
