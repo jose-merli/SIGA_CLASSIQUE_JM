@@ -152,6 +152,7 @@
    						EdicionColegiadoForm edicionColegiadoForm = (EdicionColegiadoForm)resultado.get(i);
   		
 		   		   		FilaExtElement[] elems = null;
+		   		   		FilaExtElement[] elems2 = null;
 		   		   		botones = null;
 		   		   		String visibleConsulta = null;
 		   		   		String size = "&nbsp;";
@@ -159,7 +160,15 @@
 		   		   		
 	   		   			elems = new FilaExtElement[0];
 	   		   			visibleConsulta = "true";
-	   		   			botones = "C";
+	   		   			
+	   		   			if (!edicionColegiadoForm.isCambioSituacion()){
+	   		   				botones = "C";
+	   		   			}else{
+	   		   				elems = new FilaExtElement[1];
+	   		   				elems[0]=new FilaExtElement("consultar", "verCambio", "general.boton.consultar", SIGAConstants.ACCESS_FULL);
+	   		   				botones = "X";
+	   		   				visibleConsulta = "false";
+	   		   			}
 	   		   		
 	   		   		
 	   		   			if (!accion.equals("ver")) {		   		   			
@@ -169,8 +178,16 @@
 	   		   						|| edicionColegiadoForm.getIdestadocolegiado()==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ERROR_ACTUALIZACION_COLEGIADO.getCodigo()	   		   						   		   					
 	   		   					) {
 	   		   					
-	   		   					elems = new FilaExtElement[1];
-	   		   					elems[0]=new FilaExtElement("incidencia", "editar", "censo.ws.literal.revisarIncidencias", SIGAConstants.ACCESS_FULL);	   		   				
+	   		   					
+	   		   					if (edicionColegiadoForm.isCambioSituacion()){
+	   		   						elems2 = new FilaExtElement[2];
+	   		   						elems2[0] = elems[0];
+	   		   						elems2[1] = new FilaExtElement("incidencia", "editarCambio", "censo.ws.literal.revisarIncidencias", SIGAConstants.ACCESS_FULL);
+	   		   						elems = elems2;
+	   		   					}else{
+	   		   						elems = new FilaExtElement[1];
+	   		   						elems[0]=new FilaExtElement("incidencia", "editar", "censo.ws.literal.revisarIncidencias", SIGAConstants.ACCESS_FULL);	 
+	   		   					}
 	   		   				} else if (edicionColegiadoForm.getIdestadocolegiado()==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.INICIAL_RECIBIDO.getCodigo()
 	   		   						|| edicionColegiadoForm.getIdestadocolegiado()==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.LISTO_PASO2.getCodigo()
 	   		   						|| edicionColegiadoForm.getIdestadocolegiado()==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.BAJA_CALCULADA.getCodigo()) {
@@ -179,9 +196,18 @@
 	   		   				}
 	   		   			}
 	   		   			
+	   		   			
 	   		   			if (edicionColegiadoForm.getIdpersona() != null) {
-		   					elems = new FilaExtElement[1];
-		   					elems[0] = new FilaExtElement("informacionLetrado", "informacionLetrado", SIGAConstants.ACCESS_READ);
+	   		   				if (!edicionColegiadoForm.isCambioSituacion()){
+	   		   					elems = new FilaExtElement[1];
+	   							elems[0] = new FilaExtElement("informacionLetrado", "informacionLetrado", SIGAConstants.ACCESS_READ);
+	   		   				
+	   		   				}else{
+	   		   					elems2 = new FilaExtElement[2];
+		   						elems2[0] = elems[0];
+		   						elems2[1] = new FilaExtElement("informacionLetrado", "informacionLetrado", SIGAConstants.ACCESS_READ);
+   		   						elems = elems2;
+	   		   				}
 		   				}
 	   		   			
 		   		   	%>
@@ -223,6 +249,21 @@
 			 <%}%>	
 			 
 			 <script type="text/javascript">
+			 	function editarCambio(fila, id) {
+					if (typeof id == 'undefined')
+						id='listadoColegiados';
+					preparaDatos(fila, id);
+				   document.forms[0].modo.value = "editarCambio";
+				   document.forms[0].submit();
+				 }
+			 	function verCambio(fila, id) {
+					if (typeof id == 'undefined')
+						id='listadoColegiados';
+					preparaDatos(fila, id);
+				   document.forms[0].modo.value = "verCambio";
+				   document.forms[0].submit();
+				 }
+
 			 
 			 	function accionGenerarExcels() {	
 			 		if (confirm('<siga:Idioma key="messages.censo.cargaperiodica.confirmExcel"/>')) {

@@ -77,53 +77,11 @@
 		}
 		
 		function inicio() {
-			document.getElementById("codigoprovincia").onchange();
-	 		var e = document.getElementById("codigoprovincia");
-			var prov = e.options[e.selectedIndex].text;					
-			document.getElementById("codigoprovincia2").value=prov;
-			selPaisInicio();
+			
 		}
 		
-		function selPaisInicio() {
-			var valor = document.getElementById("codigopaisextranj").value;
-			if (valor!="" && valor!=idEspana) {
-		   		document.getElementById("codigopoblacion").value="";
-		   		document.getElementById("codigoprovincia").value="";
-			   	//aalg: se quita la marca de obligatoriedad
-			   	//document.getElementById("provinciaSinAsterisco").className="labelText";
-				//document.getElementById("provinciaConAsterisco").className="ocultar";
-				//document.getElementById("poblacionEspanola").className="ocultar";
-				//document.getElementById("poblacionExtranjera").className="";
-	       } else {
-		   		//document.getElementById("poblacionExt").value="";
-				//document.getElementById("poblacionEspanola").className="";
-				//document.getElementById("poblacionExtranjera").className="ocultar";
-				//aalg: se restaura la marca de obligatoriedad si es pertinente
-				//comprobarTelefonoAsterico();
-	       }
-		}
 		
-		function selPais(valor) {                                                                   
-		   if (valor!="" && valor!=idEspana) {
-		   		document.getElementById("codigopoblacion").value="";
-		   		document.getElementById("codigoprovincia").value="";
-			   	jQuery("#codigoprovincia").attr("disabled","disabled");
-			   	//aalg: se quita la marca de obligatoriedad
-			   	//document.getElementById("provinciaSinAsterisco").className="labelText";
-				//document.getElementById("provinciaConAsterisco").className="ocultar";
-				//document.getElementById("poblacionEspanola").className="ocultar";
-				//document.getElementById("poblacionExtranjera").className="";
-	       } else {
-		   		document.getElementById("codigopoblacion").value="";
-		   		document.getElementById("codigoprovincia").value="";
-				jQuery("#codigoprovincia").removeAttr("disabled");
-				//document.getElementById("poblacionEspanola").className="";
-				//document.getElementById("poblacionExtranjera").className="ocultar";
-				//aalg: se restaura la marca de obligatoriedad si es pertinente
-				//comprobarTelefonoAsterico();
-	       }
-		   document.getElementById("codigoprovincia").onchange();
-	    }
+		
 		
 	 	
 			
@@ -152,7 +110,7 @@
 		<c:set var="comboProvincia" value="block" />
 		<c:set var="textProvincia" value="none" />
 		
-		<c:if test="${EdicionColegiadoForm.accion!='editar' || EdicionColegiadoForm.historico}">
+		<c:if test="${EdicionColegiadoForm.accion!='editarCambio' || EdicionColegiadoForm.historico}">
 			<c:set var="htmlTextReadOnly" value="true" />
 			<c:set var="htmlTextClass" value="boxConsulta" />
 			<c:set var="comboBDClass" value="boxComboConsulta" />
@@ -173,23 +131,7 @@
 					
 					<input type="hidden" id="limpiarFilaSeleccionada" name="limpiarFilaSeleccionada" value=""/>
 					
-					<!-- FILA -->
-					<tr>				
-						<td class="labelText">										
-							<siga:Idioma key="censo.ws.literal.publicarInformacion"/>
-						</td>
-						<td>
-							<html:checkbox name="EdicionColegiadoForm" property="publicarcolegiado"  disabled="${htmlTextReadOnly}"/>	
-							<html:hidden name="EdicionColegiadoForm" property="publicarcolegiado" value="false"/>						
-						</td>
-						
-						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.numeroSolicitud"/>
-						</td>
-						<td>
-							<html:text name="EdicionColegiadoForm" property="numsolicitudcolegiacion" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
-						</td>						
-					</tr>
+					
 					<!-- FILA -->
 					<tr>				
 						<td class="labelText">
@@ -224,24 +166,7 @@
 							<html:text name="EdicionColegiadoForm" property="apellido2" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
 						</td>						
 					</tr>
-					<!-- FILA -->
-					<tr>				
-						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.sexo"/>
-						</td>
-						<td>
-							<html:select property="sexo" name="EdicionColegiadoForm" styleClass="boxCombo" disabled="${htmlTextReadOnly}">
-							 	<html:option value=""></html:option>
-								<html:optionsCollection name="EdicionColegiadoForm" property="sexos" value="key" label="value"></html:optionsCollection>
-							</html:select>													
-						</td>						
-						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.fechanacimiento"/>
-						</td>
-						<td>							
-							<siga:Fecha  nombreCampo= "fechanacimiento" valorInicial="${EdicionColegiadoForm.fechanacimiento}" disabled="${htmlTextReadOnly}"/>
-						</td>						
-					</tr>
+					
 					<!-- FILA -->
 					<tr>				
 						<td class="labelText">
@@ -260,72 +185,9 @@
 							<html:text name="EdicionColegiadoForm" property="numdocumento" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
 						</td>						
 					</tr>
-					<!-- FILA -->
-					<tr>				
-						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.publicarTelefono"/>
-						</td>
-						<td>							
-							<html:checkbox name="EdicionColegiadoForm" property="publicartelefono" disabled="${htmlTextReadOnly}"/>
-							<html:hidden name="EdicionColegiadoForm" property="publicartelefono" value="false"/>						
-						</td>
-						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.telefono"/>
-						</td>
-						<td>
-							<html:text name="EdicionColegiadoForm" property="telefono" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
-						</td>						
-					</tr>
-					<!-- FILA -->
-					<tr>				
-						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.publicarTelefonoMovil"/>
-						</td>
-						<td>							
-							<html:checkbox name="EdicionColegiadoForm" property="publicartelefonomovil" disabled="${htmlTextReadOnly}"/>
-							<html:hidden name="EdicionColegiadoForm" property="publicartelefonomovil" value="false"/>						
-						</td>
-						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.telefonoMovil"/>
-						</td>
-						<td>
-							<html:text name="EdicionColegiadoForm" property="telefonomovil" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
-						</td>						
-					</tr>
 					
+									
 					<!-- FILA -->
-					<tr>				
-						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.publicarfax"/>
-						</td>
-						<td>							
-							<html:checkbox name="EdicionColegiadoForm" property="publicarfax"disabled="${htmlTextReadOnly}"/>	
-							<html:hidden name="EdicionColegiadoForm" property="publicarfax" value="false"/>					
-						</td>
-						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.fax"/>
-						</td>
-						<td>
-							<html:text name="EdicionColegiadoForm" property="fax" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
-						</td>						
-					</tr>
-					
-					<!-- FILA -->
-					<tr>				
-						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.publicaremail"/>
-						</td>
-						<td>							
-							<html:checkbox name="EdicionColegiadoForm" property="publicaremail" disabled="${htmlTextReadOnly}"/>
-							<html:hidden name="EdicionColegiadoForm" property="publicaremail" value="false"/>							
-						</td>
-						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.email"/>
-						</td>
-						<td>
-							<html:text name="EdicionColegiadoForm" property="email" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
-						</td>						
-					</tr>
 					
 					<!-- FILA -->
 					<tr>				
@@ -350,144 +212,24 @@
 					<!-- FILA -->
 					<tr>				
 						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.residente"/>
-						</td>
-						<td>							
-							<html:checkbox name="EdicionColegiadoForm" property="residente" disabled="${htmlTextReadOnly}"/>
-							<html:hidden name="EdicionColegiadoForm" property="residente" value="false"/>						
+							<siga:Idioma key="censo.ws.literal.motivocambio"/>
 						</td>
 						
-						<td class="labelText" >
-							<siga:Idioma key="censo.ws.literal.mediador"/>
+						<td>
+							<html:select property="idmotivocambio" name="EdicionColegiadoForm" styleClass="boxCombo" disabled="${htmlTextReadOnly}">
+								<html:option value=""></html:option>								
+								<html:optionsCollection name="EdicionColegiadoForm" property="motivosCambioSituacion" value="key" label="value"></html:optionsCollection>
+							</html:select>	
+													
 						</td>
-						<td >
-							<!-- option select -->
-							<html:select name="EdicionColegiadoForm" property="mediador" styleClass = "boxCombo" value="${EdicionColegiadoForm.mediador}" disabled="${htmlTextReadOnly}">
-								<html:option value=""> </html:option>
-								<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
-								<html:option value="0"><siga:Idioma key="general.no"/></html:option>
-							</html:select>						
-						</td>
-																						
-					</tr>
-				<!-- FILA -->
-				<tr>
-					<td class="labelText">
-						<siga:Idioma key="censo.ws.literal.exentoCuota"/>
-					</td>
-					<td>							
 						
-						<!-- option select -->
-						<html:select name="EdicionColegiadoForm" property="exentoCuota" styleClass = "boxCombo" value="${EdicionColegiadoForm.exentoCuota}" disabled="${htmlTextReadOnly}">
-							<html:option value=""> </html:option>
-							<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
-							<html:option value="0"><siga:Idioma key="general.no"/></html:option>
-						</html:select>					
-					</td>
-								
-					</tr>
-					
+										
+					</tr>				
 					
 				</table>			
 			</siga:ConjCampos>
 			
-			<siga:ConjCampos leyenda="censo.ws.edicioncolegiado.direccion">			
-				<table class="tablaCampos" align="center">
-					<!-- FILA -->
-					<tr>				
-						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.publicardireccion"/>
-						</td>
-						<td>							
-							<html:checkbox name="EdicionColegiadoForm" property="publicardireccion" disabled="${htmlTextReadOnly}"/>
-							<html:hidden name="EdicionColegiadoForm" property="publicardireccion" value="false"/>						
-						</td>
-						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.tipovia"/>
-						</td>
-						<td>
-							<html:text name="EdicionColegiadoForm" property="desctipovia" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
-						</td>		
-					</tr>	
-					
-					<!-- FILA -->
-					<tr>				
-						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.domicilio"/>
-						</td>  
-						<td>							
-							<html:text name="EdicionColegiadoForm" property="domicilio" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>						
-						</td>
-						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.codigopostal"/>
-						</td>
-						<td>
-							<html:text name="EdicionColegiadoForm" property="codigopostal" size="30" styleClass="${htmlTextClass}" readonly="${htmlTextReadOnly}"/>
-						</td>		
-					</tr>	
-					
-					<!-- FILA -->
-					<tr>				
-						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.pais"/>
-						</td>  
-						<td>							
-							<bean:define id="codigopaisextranjList" name="EdicionColegiadoForm" property="codigopaisextranjList" type="java.util.ArrayList"></bean:define>
-							
-							<siga:ComboBD nombre="codigopaisextranj" tipo="pais"
-											clase="${comboBDClass}" obligatorio="false"
-											readonly="${htmlTextReadOnly}"											
-											elementoSel="<%=codigopaisextranjList%>"
-											accion="selPais(this.value);" /> 						
-						</td>
-						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.provincia"/>
-						</td>
-						<td>
-							<bean:define id="codigoprovinciaList" name="EdicionColegiadoForm" property="codigoprovinciaList" type="java.util.ArrayList"></bean:define>
-							
-							
-							<div style="display: ${comboProvincia}">
-								<siga:ComboBD nombre="codigoprovincia"
-											tipo="provincia" clase="${comboBDClass}" obligatorio="false"
-											readonly="false"
-											elementoSel="<%=codigoprovinciaList%>"
-											accion="Hijo:codigopoblacion" />
-							</div>				
-							<div  style="display: ${textProvincia}">
-								<input type="text" name="codigoprovincia2" size="30" value="" readonly="readonly" class="boxConsulta">
-							</div>	
-																		
-										
-						</td>		
-					</tr>
-					
-					<!-- FILA -->
-					<tr>				
-						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.poblacion"/>
-						</td>  
-						<td>		
-							<bean:define id="codigopoblacionList" name="EdicionColegiadoForm" property="codigopoblacionList" type="java.util.ArrayList"></bean:define>				
-							
-							<siga:ComboBD nombre="codigopoblacion"
-											tipo="poblacion" 
-											clase="${comboBDClass}"
-											readonly="${htmlTextReadOnly}"
-											elementoSel="<%=codigopoblacionList%>"						
-											hijo="t" />
-											
-											
-						</td>
-						<td class="labelText">
-							<siga:Idioma key="censo.ws.literal.poblacionRecibida"/>
-						</td>
-						<td>
-							<html:text name="EdicionColegiadoForm" property="descripcionpoblacion" size="30" styleClass="boxConsulta" readonly="true"/>
-						</td>		
-					</tr>
-				</table>			
-			</siga:ConjCampos>	
+	
 			
 			<bean:define id="idestadocolegiado" name="EdicionColegiadoForm" property="idestadocolegiado" type="Short"></bean:define>
 			
@@ -518,10 +260,10 @@
 		</html:form>
 		
 		<c:choose>
-			<c:when test="${!EdicionColegiadoForm.historico && EdicionColegiadoForm.accion=='editar'}">
+			<c:when test="${!EdicionColegiadoForm.historico && EdicionColegiadoForm.accion=='editarCambio'}">
 				<siga:ConjBotonesAccion botones="G, DESC" titulo="censo.ws.gestioncolegiado.historicoCambios" clase="botonesSeguido"/>		
 			</c:when>
-			<c:when test="${!EdicionColegiadoForm.historico && EdicionColegiadoForm.accion!='editar'}">
+			<c:when test="${!EdicionColegiadoForm.historico && EdicionColegiadoForm.accion!='editarCambio'}">
 				<siga:ConjBotonesAccion botones="" titulo="censo.ws.gestioncolegiado.historicoCambios" clase="botonesSeguido"/>
 			</c:when>
 		</c:choose>

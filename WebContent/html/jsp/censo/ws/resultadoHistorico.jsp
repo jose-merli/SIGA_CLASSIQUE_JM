@@ -148,9 +148,17 @@
 		   		   		String visibleConsulta = null;
 		   		   		String size = "&nbsp;";
 		   		   		
-	   		   			botones = "C";			
 	   		   			elems = new FilaExtElement[0];
-	   		   			visibleConsulta = "true";		   		   		
+	   		   				
+		   		   		if (!edicionColegiadoForm.isCambioSituacion()){
+	   		   				botones = "C";
+	   		   				visibleConsulta = "true";
+	   		   			}else{
+	   		   				elems = new FilaExtElement[1];
+	   		   				elems[0]=new FilaExtElement("consultar", "verCambio", "general.boton.consultar", SIGAConstants.ACCESS_FULL);
+	   		   				botones = "X";
+	   		   				visibleConsulta = "false";
+	   		   			}
 		   		   	%>
 		   		<siga:FilaConIconos fila='<%=String.valueOf(i+1)%>' elementos="<%=elems%>" visibleBorrado="false" visibleEdicion="false" visibleConsulta="<%=visibleConsulta%>" pintarEspacio="no" botones="<%=botones%>" clase="listaNonEdit">
 					<td>
@@ -208,7 +216,13 @@
 					document.forms[0].submit();
 				}
 			 	
-				
+			 	function verCambio(fila, id) {
+					if (typeof id == 'undefined')
+						id='listadoColegiados';
+					preparaDatos(fila, id);
+				   document.forms[0].modo.value = "verCambio";
+				   document.forms[0].submit();
+				 }
 				
 			 </script>
 		
