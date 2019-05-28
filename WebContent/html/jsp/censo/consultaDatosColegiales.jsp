@@ -70,6 +70,9 @@
 	
 	// Obtencion del valor del seguro (caso que exista)
 	ArrayList arraySel= new ArrayList();
+	String cuota = datosCol.getJubilacionCuota();
+	if (cuota == null)
+		cuota = new String("");
 	String seguro="";
 	String cuentaSJCS="";
 	String numMutualista="";
@@ -536,30 +539,33 @@
 									<siga:Idioma key="censo.consultaDatosColegiales.literal.jubilacion"/>
 								</td>
 								<td>
+								
 <% 
 									if (modo.equalsIgnoreCase("consulta")||modo.equalsIgnoreCase("ver")) {
-										if (datosCol.getJubilacionCuota().equalsIgnoreCase(ClsConstants.DB_TRUE)) { 
-%>
-			  								<input type="checkbox" name="jubilacionCuota" value="1" checked disabled>
-<% 
-										} else { 
-%>
-			  								<input type="checkbox" name="jubilacionCuota" value="1" disabled>
-<% 
-										}
 										
-									} else {
-										if (datosCol.getJubilacionCuota().equalsIgnoreCase(ClsConstants.DB_TRUE)) { 
-%>										
-			  								<input type="checkbox" name="jubilacionCuota" value="1" checked>
-<% 
-										} else { 
 %>
-			  								<input type="checkbox" name="jubilacionCuota" value="1">
+			  							<html:select styleClass="boxCombo" name="CenColegiadoBean" value="<%=cuota%>" property="jubilacionCuota" disabled="true">
+									<html:option value=""></html:option>
+									<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
+									<html:option value="0"><siga:Idioma key="general.no"/></html:option>
+									
+								</html:select>
+								
+										
+<%									} else {
+										
+%>										
+			  						<html:select styleClass="boxCombo" name="CenColegiadoBean" value="<%=cuota%>" property="jubilacionCuota" disabled="false">
+										<html:option value=""></html:option>
+										<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
+										<html:option value="0"><siga:Idioma key="general.no"/></html:option>
+									</html:select>
+									
+
 <% 
-										}
+										
 									} 
-%>																																												
+%>																																											
 								</td>
 								
 								<td class="labelText">
