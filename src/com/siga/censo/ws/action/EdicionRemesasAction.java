@@ -204,12 +204,18 @@ public class EdicionRemesasAction extends MasterAction {
 						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ALTA_PERSONA_COLEGIADO.getCodigo()
 						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ACTUALIZACION_COLEGIADO.getCodigo()
 						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ACTUALIZACION_COLEGIADO_MENOS_NUMERO_DOCUMENTO.getCodigo()
+						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ACTUALIZACION_COLEGIADO_CAMBIO.getCodigo()
+						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ACTUALIZACION_COLEGIADO_SANCION.getCodigo()
 						|| idestadocolegiado==AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL.ARCHIVADO.getCodigo()) {
 					
 					edicionColegiadoForm.setIdpersona(ecomCenColegiado.getIdpersona());
 					edicionColegiadoForm.setIdinstitucion(ecomCenColegiado.getIdinstitucion());
+					
 				}				
-			
+				edicionColegiadoForm.setCambioSituacion(ecomCenDato.getHaycambiosituacion()==1);
+				if (edicionColegiadoForm.isCambioSituacion()) {
+					edicionColegiadoForm.setIdmotivocambio(ecomCenDato.getIdmotivosituacion());
+				}
 				datos.add(edicionColegiadoForm);
 			}
 		}

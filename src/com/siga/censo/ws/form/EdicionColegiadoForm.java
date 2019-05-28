@@ -40,6 +40,7 @@ public class EdicionColegiadoForm extends MasterForm {
 	private String email = null;  
 	private Short idecomcensosituacionejer = null;  
 	private String fechasituacion = null;  
+	private Short idmotivocambio = null;
 	private String fechamodifrecibida = null;  
 	private boolean residente = false;  
 	private Short idestadocolegiado = null;  
@@ -69,6 +70,7 @@ public class EdicionColegiadoForm extends MasterForm {
 	private List<ValueKeyVO> tiposIdentificacion;
 	private List<ValueKeyVO> situacionesEjerciente;
 	private List<ValueKeyVO> sexos;
+	private List<ValueKeyVO> motivosCambioSituacion;
 	
 	private boolean incidenciaNumeroColegiadoDuplicado = false;
 	private boolean incidenciaNumeroColegiadoDuplicadoRevisada = false;
@@ -76,7 +78,12 @@ public class EdicionColegiadoForm extends MasterForm {
 	private boolean incidenciaPoblacionNoEncontrada = false;
 	private boolean incidenciaPoblacionNoEncontradaRevisada = false;
 	
+	private boolean incidenciaInscrito = false;
+	private boolean incidenciaInscritoRevisada = false;
+	private boolean incidenciaCambioSituacion = false;
+	private boolean cambioSituacion = false;
 	private String mediador = null;
+	private String exentoCuota = null;
 	
 	public String getNcolegiado() {
 		return ncolegiado;
@@ -429,6 +436,49 @@ public class EdicionColegiadoForm extends MasterForm {
 	}
 	public void setMediador(String mediador) {
 		this.mediador = mediador;
+	}
+	public boolean isIncidenciaInscrito() {
+		return incidenciaInscrito;
+	}
+	public void setIncidenciaInscrito(boolean incidenciaInscrito) {
+		this.incidenciaInscrito = incidenciaInscrito;
+	}
+	public boolean isIncidenciaInscritoRevisada() {
+		return incidenciaInscritoRevisada;
+	}
+	public void setIncidenciaInscritoRevisada(boolean incidenciaInscritoRevisada) {
+		this.incidenciaInscritoRevisada = incidenciaInscritoRevisada;
+	}
+	public boolean isIncidenciaCambioSituacion() {
+		return incidenciaCambioSituacion;
+	}
+	public void setIncidenciaCambioSituacion(boolean incidenciaCambioSituacion) {
+		this.incidenciaCambioSituacion = incidenciaCambioSituacion;
+	}
+	public boolean isCambioSituacion() {
+		return cambioSituacion;
+	}
+	public void setCambioSituacion(boolean cambioSituacion) {
+		this.cambioSituacion = cambioSituacion;
+	}
+	
+	public Short getIdmotivocambio() {
+		return idmotivocambio;
+	}
+	public void setIdmotivocambio(Short idmotivocambio) {
+		this.idmotivocambio = idmotivocambio;
+	}
+	public List<ValueKeyVO> getMotivosCambioSituacion() {
+		return motivosCambioSituacion;
+	}
+	public void setMotivosCambioSituacion(List<ValueKeyVO> motivosCambioSituacion) {
+		this.motivosCambioSituacion = motivosCambioSituacion;
+	}
+	public String getExentoCuota() {
+		return exentoCuota;
+	}
+	public void setExentoCuota(String exentoCuota) {
+		this.exentoCuota = exentoCuota;
 	}
 	
 		

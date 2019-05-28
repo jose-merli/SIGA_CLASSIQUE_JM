@@ -71,7 +71,11 @@ public class EdicionColegiadoAction extends MasterAction {
 				String accion = miForm.getModo();
 				if (accion != null && accion.equals("archivar")) {
 					mapDestino = archivar(mapping, miForm, request, response);				
-				} else {
+				} else if (accion != null && accion.equals("editarCambio")) {
+					mapDestino = editarCambio(mapping, miForm, request, response);	
+				} else if (accion != null && accion.equals("verCambio")) {
+					mapDestino = verCambio(mapping, miForm, request, response);	
+				}else {
 					return super.executeInternal(mapping,formulario,request,response);
 				}
 			}
@@ -91,9 +95,14 @@ public class EdicionColegiadoAction extends MasterAction {
 	protected String ver (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException{		
 		return verEditar("ver", mapping, formulario, request, response, null);
 	}
-
+	protected String verCambio(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException{		
+		return verEditar("verCambio", mapping, formulario, request, response, null);
+	}
 	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {		
 		return verEditar("editar", mapping, formulario, request, response, null);
+	}
+	protected String editarCambio(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {		
+		return verEditar("editarCambio", mapping, formulario, request, response, null);
 	}
 	
 	private String archivar (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException{
@@ -177,15 +186,7 @@ public class EdicionColegiadoAction extends MasterAction {
 				ecomCenDatos.setIdcensotipoidentificacion(null);
 			}
 			ecomCenDatos.setNumdocumento(edicionColegiadoForm.getNumdocumento());
-			ecomCenDatos.setPublicartelefono(getCheckShort(edicionColegiadoForm.isPublicartelefono()));
-			ecomCenDatos.setTelefono(edicionColegiadoForm.getTelefono());
-			ecomCenDatos.setPublicartelefonomovil(getCheckShort(edicionColegiadoForm.isPublicartelefonomovil()));
-			ecomCenDatos.setTelefonomovil(edicionColegiadoForm.getTelefonomovil());
-			ecomCenDatos.setPublicarfax(getCheckShort(edicionColegiadoForm.isPublicarfax()));
-			ecomCenDatos.setFax(edicionColegiadoForm.getFax());
-			ecomCenDatos.setPublicaremail(getCheckShort(edicionColegiadoForm.isPublicaremail()));
-			ecomCenDatos.setEmail(edicionColegiadoForm.getEmail());
-			if (edicionColegiadoForm.getIdecomcensosituacionejer() != null && edicionColegiadoForm.getIdecomcensosituacionejer().shortValue() > 0) {
+			if (edicionColegiadoForm.getIdecomcensosituacionejer() != null && edicionColegiadoForm.getIdecomcensosituacionejer().shortValue() > 0) {							
 				ecomCenDatos.setIdecomcensosituacionejer(edicionColegiadoForm.getIdecomcensosituacionejer());
 			} else {
 				ecomCenDatos.setIdecomcensosituacionejer(null);
@@ -196,51 +197,74 @@ public class EdicionColegiadoAction extends MasterAction {
 			} else {
 				ecomCenDatos.setFechasituacion(null);
 			}
+			EcomCenDireccion ecomCenDireccion = null;
+			if (edicionColegiadoForm.isCambioSituacion()){
+				ecomCenDatos.setHaycambiosituacion(new Short("1"));
+				ecomCenDatos.setIdmotivosituacion(edicionColegiadoForm.getIdmotivocambio());
+				accion = "editarCambio";
+			}else{
+				ecomCenDatos.setPublicartelefono(getCheckShort(edicionColegiadoForm.isPublicartelefono()));
+				ecomCenDatos.setTelefono(edicionColegiadoForm.getTelefono());
+				ecomCenDatos.setPublicartelefonomovil(getCheckShort(edicionColegiadoForm.isPublicartelefonomovil()));
+				ecomCenDatos.setTelefonomovil(edicionColegiadoForm.getTelefonomovil());
+				ecomCenDatos.setPublicarfax(getCheckShort(edicionColegiadoForm.isPublicarfax()));
+				ecomCenDatos.setFax(edicionColegiadoForm.getFax());
+				ecomCenDatos.setPublicaremail(getCheckShort(edicionColegiadoForm.isPublicaremail()));
+				ecomCenDatos.setEmail(edicionColegiadoForm.getEmail());
+				ecomCenDatos.setResidente(getCheckShort(edicionColegiadoForm.isResidente()));
+				
+				ecomCenDireccion = new EcomCenDireccion();
+		//		ecomCenDireccion.setIdcensodireccion(edicionColegiadoForm.getIdcensodireccion());
+				ecomCenDireccion.setPublicar(getCheckShort(edicionColegiadoForm.isPublicardireccion()));
+				ecomCenDireccion.setDesctipovia(edicionColegiadoForm.getDesctipovia());
+				ecomCenDireccion.setDomicilio(edicionColegiadoForm.getDomicilio());
+				ecomCenDireccion.setCodigopostal(edicionColegiadoForm.getCodigopostal());
+				
+				String codigoPaisExt = null;
+				if (!ClsConstants.ID_PAIS_ESPANA.equals(edicionColegiadoForm.getCodigopaisextranj())) {	
+					CenPais cenPais = new CenPais();
+					cenPais.setIdpais(edicionColegiadoForm.getCodigopaisextranj());
+					CenPaisService cenPaisService = (CenPaisService) getBusinessManager().getService(CenPaisService.class);
+					cenPais = cenPaisService.get(cenPais);
+					if (cenPais != null) {
+						codigoPaisExt = cenPais.getCodigoext();	
+					}			
+				}
+				
+				ecomCenDireccion.setCodigopaisextranj(codigoPaisExt);
+				
+				ecomCenDireccion.setCodigoprovincia(edicionColegiadoForm.getCodigoprovincia());
+				
+				if (edicionColegiadoForm.getCodigopoblacion() != null && !edicionColegiadoForm.getCodigopoblacion().trim().equals("")) {
+					//tenemos el idpoblacion y tenemos que encontrar el codigo externo
+					CenPoblacionService cenPoblacionService = (CenPoblacionService) BusinessManager.getInstance().getService(CenPoblacionService.class);
+					CenPoblaciones cenPoblaciones = new CenPoblaciones();
+					cenPoblaciones.setIdpoblacion(edicionColegiadoForm.getCodigopoblacion());
+					cenPoblaciones = cenPoblacionService.get(cenPoblaciones);
+					if (cenPoblaciones != null && cenPoblaciones.getCodigoext() != null) {					
+						ecomCenDireccion.setCodigopoblacion(cenPoblaciones.getCodigoext());
+					}
+				}
+				
+				ecomCenDireccion.setDescripcionpoblacion(edicionColegiadoForm.getDescripcionpoblacion());
+			}
 			
-			ecomCenDatos.setResidente(getCheckShort(edicionColegiadoForm.isResidente()));
+						
 			
 			if (edicionColegiadoForm.getMediador() != null && !edicionColegiadoForm.getMediador().trim().equals("")) {
 				ecomCenDatos.setMediador(Short.valueOf(edicionColegiadoForm.getMediador()));
 			} else {
 				ecomCenDatos.setMediador(null);
 			}
+			if (edicionColegiadoForm.getExentoCuota() != null && !edicionColegiadoForm.getExentoCuota().trim().equals("")) {
+				ecomCenDatos.setExentocuotas(Short.valueOf(edicionColegiadoForm.getExentoCuota()));
+			} else {
+				ecomCenDatos.setExentocuotas(null);
+			}
 			//eliminamos el hash que tuviera
 			ecomCenDatos.setHash(null);
 			
-			EcomCenDireccion ecomCenDireccion = new EcomCenDireccion();
-	//		ecomCenDireccion.setIdcensodireccion(edicionColegiadoForm.getIdcensodireccion());
-			ecomCenDireccion.setPublicar(getCheckShort(edicionColegiadoForm.isPublicardireccion()));
-			ecomCenDireccion.setDesctipovia(edicionColegiadoForm.getDesctipovia());
-			ecomCenDireccion.setDomicilio(edicionColegiadoForm.getDomicilio());
-			ecomCenDireccion.setCodigopostal(edicionColegiadoForm.getCodigopostal());
 			
-			String codigoPaisExt = null;
-			if (!ClsConstants.ID_PAIS_ESPANA.equals(edicionColegiadoForm.getCodigopaisextranj())) {	
-				CenPais cenPais = new CenPais();
-				cenPais.setIdpais(edicionColegiadoForm.getCodigopaisextranj());
-				CenPaisService cenPaisService = (CenPaisService) getBusinessManager().getService(CenPaisService.class);
-				cenPais = cenPaisService.get(cenPais);
-				if (cenPais != null) {
-					codigoPaisExt = cenPais.getCodigoext();	
-				}			
-			}
-			
-			ecomCenDireccion.setCodigopaisextranj(codigoPaisExt);
-			
-			ecomCenDireccion.setCodigoprovincia(edicionColegiadoForm.getCodigoprovincia());
-			
-			if (edicionColegiadoForm.getCodigopoblacion() != null && !edicionColegiadoForm.getCodigopoblacion().trim().equals("")) {
-				//tenemos el idpoblacion y tenemos que encontrar el codigo externo
-				CenPoblacionService cenPoblacionService = (CenPoblacionService) BusinessManager.getInstance().getService(CenPoblacionService.class);
-				CenPoblaciones cenPoblaciones = new CenPoblaciones();
-				cenPoblaciones.setIdpoblacion(edicionColegiadoForm.getCodigopoblacion());
-				cenPoblaciones = cenPoblacionService.get(cenPoblaciones);
-				if (cenPoblaciones != null && cenPoblaciones.getCodigoext() != null) {					
-					ecomCenDireccion.setCodigopoblacion(cenPoblaciones.getCodigoext());
-				}
-			}
-			
-			ecomCenDireccion.setDescripcionpoblacion(edicionColegiadoForm.getDescripcionpoblacion());
 			
 			//insertamos en el histórico y lanzamos el proceso
 			EcomCenColegiadoService ecomCenColegiadoService = (EcomCenColegiadoService) BusinessManager.getInstance().getService(EcomCenColegiadoService.class);
@@ -253,6 +277,10 @@ public class EdicionColegiadoAction extends MasterAction {
 				ecomCenColegiadoService.addIncidenciasRevisadas(ecomCenColegiado, ECOM_CEN_MAESTRO_INCIDENCIAS.NUMERO_COLEGIADO_DUPLICADO);
 			}
 			
+			if (edicionColegiadoForm.isIncidenciaInscritoRevisada()) {
+				ecomCenColegiadoService.addIncidenciasRevisadas(ecomCenColegiado, ECOM_CEN_MAESTRO_INCIDENCIAS.INSCRITO_A_NO_INSCRITO);
+			}
+			
 			short idinstitucion = ecomCenColegiadoService.getIdinstitucion(ecomCenColegiado);
 			
 			ecomCenColegiadoService.lanzarProcesoAltaModificacionColegiado(idinstitucion, ecomCenColegiado);
@@ -262,6 +290,7 @@ public class EdicionColegiadoAction extends MasterAction {
 			
 			BusinessManager.getInstance().commitTransaction();
 			idcensodatos = ecomCenColegiado.getIdcensodatos();
+			
 						
 		} catch (Exception e) {
 			BusinessManager.getInstance().endTransaction();
@@ -349,7 +378,10 @@ public class EdicionColegiadoAction extends MasterAction {
 			edicionColegiadoForm.setIdecomcensosituacionejer(ecomCenDatos.getIdecomcensosituacionejer());
 			edicionColegiadoForm.setFechasituacion(getValue(ecomCenDatos.getFechasituacion()));
 			edicionColegiadoForm.setResidente(getCheckShort(ecomCenDatos.getResidente()));
-			
+			edicionColegiadoForm.setCambioSituacion(ecomCenDatos.getHaycambiosituacion()==1);
+			if (edicionColegiadoForm.isCambioSituacion()) {
+				edicionColegiadoForm.setIdmotivocambio(ecomCenDatos.getIdmotivosituacion());
+			}
 			EcomCenDireccion ecomCenDireccion = cenWSService.getEcomCenDireccionesByPk(ecomCenDatos.getIdcensodireccion());
 			if (ecomCenDireccion != null) {
 				edicionColegiadoForm.setIdcensodireccion(ecomCenDatos.getIdcensodireccion());
@@ -385,6 +417,7 @@ public class EdicionColegiadoAction extends MasterAction {
 			
 			edicionColegiadoForm.setIncidenciaNumeroColegiadoDuplicado(false);
 			edicionColegiadoForm.setIncidenciaPoblacionNoEncontrada(false);
+			edicionColegiadoForm.setIncidenciaInscrito(false);
 			
 			if (incidencias != null && incidencias.size() > 0) {
 				for (EcomCenMaestroIncidenc ecomCenMaestroIncidenc : incidencias) {
@@ -392,9 +425,24 @@ public class EdicionColegiadoAction extends MasterAction {
 						edicionColegiadoForm.setIncidenciaNumeroColegiadoDuplicado(true);
 					} else if (AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS.POBLACION_NO_ENCONTRADA.getCodigo() == ecomCenMaestroIncidenc.getIdcensomaestroincidencias()) {
 						edicionColegiadoForm.setIncidenciaPoblacionNoEncontrada(true);
+					}else if(AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS.INSCRITO_A_NO_INSCRITO.getCodigo() == ecomCenMaestroIncidenc.getIdcensomaestroincidencias()){
+						edicionColegiadoForm.setIncidenciaInscrito(true);
+					}else if (AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS.COLEGIADO_NOENCONTRADO_PARA_CAMBIO.getCodigo() == ecomCenMaestroIncidenc.getIdcensomaestroincidencias() 
+							|| AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS.MOTIVO_CAMBIO_SITUACION_NULO.getCodigo() == ecomCenMaestroIncidenc.getIdcensomaestroincidencias()
+							|| AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS.NCOL_APELL_NUMDOC.getCodigo() == ecomCenMaestroIncidenc.getIdcensomaestroincidencias()
+							|| AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS.FECHA_ACUERDO_NULA.getCodigo() == ecomCenMaestroIncidenc.getIdcensomaestroincidencias()
+							|| AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS.FECHA_INICIO.getCodigo() == ecomCenMaestroIncidenc.getIdcensomaestroincidencias()
+							|| AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS.FECHA_INICIO_ANTERIOR.getCodigo() == ecomCenMaestroIncidenc.getIdcensomaestroincidencias()
+							|| AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS.TEXTO_SANCION_NULO.getCodigo() == ecomCenMaestroIncidenc.getIdcensomaestroincidencias()
+							|| AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS.TIPO_SANCION_NULO.getCodigo() == ecomCenMaestroIncidenc.getIdcensomaestroincidencias()
+							|| AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS.TEXTO_MODIFICACION_NULO.getCodigo() == ecomCenMaestroIncidenc.getIdcensomaestroincidencias()
+							|| AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS.TIPO_MODIFICACION_NULO.getCodigo() == ecomCenMaestroIncidenc.getIdcensomaestroincidencias()
+							|| AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS.COLEGIADO_NOENCONTRADO_PARA_CAMBIO.getCodigo() == ecomCenMaestroIncidenc.getIdcensomaestroincidencias()) {
+						edicionColegiadoForm.setIncidenciaCambioSituacion(true);
 					}
 				}
 			}
+			
 			
 			
 			List<EcomCenDatosIncidencias> incidenciasdatos = cenWSService.getIncidenciasCenDatos(ecomCenDatos.getIdcensodatos());
@@ -407,14 +455,22 @@ public class EdicionColegiadoAction extends MasterAction {
 			edicionColegiadoForm.setTiposIdentificacion(combosCenWS.getTiposIdentificacion(getUserBean(request)));
 			edicionColegiadoForm.setSituacionesEjerciente(combosCenWS.getSituacionesEjeciente(getUserBean(request)));
 			edicionColegiadoForm.setSexos(combosCenWS.getSexos(getUserBean(request)));
-				
+			edicionColegiadoForm.setMotivosCambioSituacion(combosCenWS.getMotivosCambioSituacion(getUserBean(request)));	
 			if (!edicionColegiadoForm.isColegiadoEditable()) {
-				accion = "ver";
+				if (edicionColegiadoForm.isCambioSituacion()){
+					accion = "verCambio";
+				}else{
+					accion = "ver";
+				}
 			}
 			
 			edicionColegiadoForm.setMediador(null);
 			if (ecomCenDatos.getMediador() != null) {
 				edicionColegiadoForm.setMediador(String.valueOf(ecomCenDatos.getMediador()));
+			}
+			edicionColegiadoForm.setExentoCuota(null);
+			if (ecomCenDatos.getExentocuotas() != null) {
+				edicionColegiadoForm.setExentoCuota(String.valueOf(ecomCenDatos.getExentocuotas()));
 			}
 			
 			edicionColegiadoForm.setAccion(accion);
@@ -467,6 +523,7 @@ public class EdicionColegiadoAction extends MasterAction {
 						ecf.setFechaCambio(GstDate.getFormatedDateLong("ES", ecomCenDato.getFechamodificacion()));						
 						ecf.setIncidencias(getDescripcionIncidenciasColegiado(cenWSService.getIncidencias(ecomCenDato.getIdcensodatos(), true)));
 						ecf.setIdestadocolegiado(ecomCenDato.getIdestadocolegiado());
+						ecf.setCambioSituacion(ecomCenDato.getHaycambiosituacion()==1);
 						edicionColegiadoForms.add(ecf);
 					}
 				}

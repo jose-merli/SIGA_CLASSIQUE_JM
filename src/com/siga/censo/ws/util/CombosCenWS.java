@@ -6,6 +6,7 @@ import java.util.List;
 import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_MAESESTADOCOLEGIAL;
 import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_MAESESTADOENVIO;
 import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_MAESTRO_INCIDENCIAS;
+import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_MOTIVO_CAMBIO;
 import org.redabogacia.sigaservices.app.AppConstants.ECOM_CEN_SEXO;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenSituacionejerciente;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCenSituacionejercienteExample;
@@ -34,6 +35,14 @@ public class CombosCenWS {
 				lista.add(getValueKeyVO(usrBean, ecomCenSituacionejerciente.getIdecomcensosituacionejer().toString(), ecomCenSituacionejerciente.getDescripcion()));
 			}
 		}
+		return lista;
+	}
+	public List<ValueKeyVO> getMotivosCambioSituacion(UsrBean usrBean) {
+		List<ValueKeyVO> lista = new ArrayList<ValueKeyVO>();		
+		for (ECOM_CEN_MOTIVO_CAMBIO ecomCen_Motivo : ECOM_CEN_MOTIVO_CAMBIO.values()) {
+			lista.add(getValueKeyVO(usrBean, new Short(ecomCen_Motivo.getCodigo()).toString(), ecomCen_Motivo.getRecurso()));
+		}
+		
 		return lista;
 	}
 	
