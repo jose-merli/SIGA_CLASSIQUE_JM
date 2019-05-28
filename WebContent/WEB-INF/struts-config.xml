@@ -808,6 +808,8 @@
 		<action path="/CEN_EdicionColegiado" type="com.siga.censo.ws.action.EdicionColegiadoAction" name="EdicionColegiadoForm" scope="session">			
 			<forward name="ver" path="/html/jsp/censo/ws/edicionColegiado.jsp"/>
 			<forward name="editar" path="/html/jsp/censo/ws/edicionColegiado.jsp"/>
+			<forward name="editarCambio" path="/html/jsp/censo/ws/edicionCambioColegiado.jsp"/>
+			<forward name="verCambio" path="/html/jsp/censo/ws/edicionCambioColegiado.jsp"/>
 			<forward name="resultado" path="/html/jsp/censo/ws/resultadoHistorico.jsp"/>
 		</action>
 		
