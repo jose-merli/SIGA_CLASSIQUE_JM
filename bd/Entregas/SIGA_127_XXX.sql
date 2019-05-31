@@ -769,4 +769,220 @@ BEGIN
             
 END;
 
+-- CAMBIOS PARA LA CARGAS DE CENSO CON CAMBIO DE SITUACIÓN, INSCRITO Y EXENTO CUOTA
+
+--Nueva situaciÃ³n colegial ECOM
+insert into ecom_cen_situacionejerciente (idecomcensosituacionejer, codigo, descripcion, fechamodificacion, usumodificacion) 
+values (40, 'INSCRITO', 'Inscrito', sysdate, 0);
+alter table ECOM_CEN_DATOS add EXENTOCUOTAS    NUMBER(1) ;
+alter table ECOM_CEN_DATOS add HAYCAMBIOSITUACION    NUMBER(1) DEFAULT 0;
+--Creamos un nuevo campo en la tabla de ecom_datos que nos servirÃ¡ para almacenar el motivo del cambio e situaciÃ³n. Ese campo es obligatorio para los cambios de situaciÃ³n, por lo que cuando estÃ© relleno
+-- ya sabemos que se trata de ese caso, por lo que no creamos uno nuevo para ello
+alter table ECOM_CEN_DATOS add IDMOTIVOSITUACION    NUMBER(4) ;
+
+create table ECOM_CEN_MOTIVO_SITUACION
+(
+  IDMOTIVOSITUACION NUMBER(2) not null,
+  CODIGO             VARCHAR2(25) not null,
+  DESCRIPCION       VARCHAR2(250) not null,
+  FECHAMODIFICACION  DATE not null,
+  USUMODIFICACION    NUMBER(5) not null
+)tablespace TS_SIGA_CMN;
+
+alter table ECOM_CEN_MOTIVO_SITUACION
+  add constraint PK_ECOM_MOTIVO_SITUACION primary key (IDMOTIVOSITUACION) using index tablespace TS_SIGA_CMN_IDX;
+  
+alter table ECOM_CEN_DATOS
+  add constraint FK_ECOMCEN_DATOS_MAEST_MOTIV foreign key (IDMOTIVOSITUACION)
+  references ECOM_CEN_MOTIVO_SITUACION (IDMOTIVOSITUACION);
+
+create table ECOM_CEN_TIPO_SANCION
+(
+  IDTIPOSANCION NUMBER(2) not null,
+  CODIGO             VARCHAR2(25) not null,
+  DESCRIPCION       VARCHAR2(250) not null,
+  FECHAMODIFICACION  DATE not null,
+  USUMODIFICACION    NUMBER(5) not null
+)tablespace TS_SIGA_CMN;
+
+alter table ECOM_CEN_TIPO_SANCION
+  add constraint PK_ECOM_TIPO_SANCION primary key (IDTIPOSANCION) using index tablespace TS_SIGA_CMN_IDX;
+  
+create table ECOM_CEN_MODIFICACION_SANCION
+(
+  IDTIPOMODIFICACION NUMBER(2) not null,
+  CODIGO             VARCHAR2(25) not null,
+  DESCRIPCION       VARCHAR2(250) not null,
+  FECHAMODIFICACION  DATE not null,
+  USUMODIFICACION    NUMBER(5) not null
+)tablespace TS_SIGA_CMN;
+
+alter table ECOM_CEN_MODIFICACION_SANCION
+  add constraint PK_ECOM_MODIFICACION_SANCION primary key (IDTIPOMODIFICACION) using index tablespace TS_SIGA_CMN_IDX;
+  
+create sequence SEQ_ECOM_CEN_SANCIONES minvalue 1 maxvalue 9999999999 start with 1 increment by 1 nocache;
+
+create table ECOM_CEN_SANCIONES
+(
+  IDCENSOSANCION NUMBER(10) not null,
+  IDCENSODATOS   NUMBER(10) not null,
+  REFERENCIA   VARCHAR2(50) not null,
+  FECHAACUERDO DATE not null,
+  FECHAREHABILITACION DATE,
+  ESNUEVA  NUMBER(1) NOT NULL,
+  IDTIPOSANCION NUMBER(4),
+  TEXTOSANCION VARCHAR2(4000),
+  IDTIPOMODIFICACION NUMBER(4),
+  TEXTONOTIFICACION VARCHAR2(4000),
+  FECHAINICIO DATE NOT NULL,
+  FECHAFIN DATE,
+  FECHAMODIFICACION  DATE not null,
+  USUMODIFICACION    NUMBER(5) not null
+  
+)tablespace TS_SIGA_CMN;
+
+alter table ECOM_CEN_SANCIONES
+  add constraint PK_ECOM_CEN_SANCIONES primary key (IDCENSOSANCION) using index  tablespace TS_SIGA_CMN_IDX;
+alter table ECOM_CEN_SANCIONES
+  add constraint FK_ECOMCEN_SANCIONES_MOTIV foreign key (IDTIPOMODIFICACION)
+  references ECOM_CEN_MODIFICACION_SANCION (IDTIPOMODIFICACION);  
+alter table ECOM_CEN_SANCIONES
+  add constraint FK_ECOMCEN_SANCIONES_DATOS foreign key (IDCENSODATOS)
+  references ECOM_CEN_DATOS (IDCENSODATOS);
+  alter table ECOM_CEN_SANCIONES
+  add constraint FK_ECOMCEN_SANCIONES_TIPO foreign key (IDTIPOSANCION)
+  references ECOM_CEN_TIPO_SANCION (IDTIPOSANCION);
+
+  
+grant select, insert, update, delete on ECOM_CEN_TIPO_SANCION to ROLE_SIGA;
+grant select, insert, update, delete on ECOM_CEN_MODIFICACION_SANCION to ROLE_SIGA;
+grant select, insert, update, delete on ECOM_CEN_SANCIONES to ROLE_SIGA;
+grant select, insert, update, delete on ECOM_CEN_MOTIVO_SITUACION to ROLE_SIGA;
+grant select on ECOM_CEN_TIPO_SANCION to ROLE_SIGA_R;
+grant select on ECOM_CEN_MODIFICACION_SANCION to ROLE_SIGA_R;
+grant select on ECOM_CEN_SANCIONES to ROLE_SIGA_R;
+grant select on ECOM_CEN_MOTIVO_SITUACION to ROLE_SIGA_R;
+
+
+insert into ECOM_CEN_MOTIVO_SITUACION values(1, 'Fallecimiento', 'Fallecimiento',sysdate,0);
+insert into ECOM_CEN_MOTIVO_SITUACION values(2, 'No_especificado', 'No especificado',sysdate,0);
+insert into ECOM_CEN_MOTIVO_SITUACION values(3, 'Voluntario','Voluntario', sysdate,0);
+insert into ECOM_CEN_TIPO_SANCION values(1, 'IMPAGOCUOTAS','Impago Cuotas', sysdate,0);
+insert into ECOM_CEN_TIPO_SANCION values(2, 'SUSPENSION_DISCIPLINARIA','SuspensiÃ³n Disciplinaria', sysdate,0);
+insert into ECOM_CEN_TIPO_SANCION values(3, 'EXPULSION','ExpulsiÃ³n', sysdate,0);
+insert into ECOM_CEN_MODIFICACION_SANCION values(1, 'REACTIVAR','Reactivar', sysdate,0);
+insert into ECOM_CEN_MODIFICACION_SANCION values(2, 'REHABILITAR_ARCHIVAR', 'Rehabilitar-Archivar', sysdate,0);
+insert into ECOM_CEN_MODIFICACION_SANCION values(3, 'SUSPENDER','Suspender', sysdate,0);
+
+insert into ecom_cen_maestro_incidenc   (idcensomaestroincidencias, descripcion, fechamodificacion)
+values   (122, 'INSCRITO_A_NO_INSCRITO', sysdate);  
+insert into ecom_cen_maestro_incidenc   (idcensomaestroincidencias, descripcion, fechamodificacion)
+values   (123, 'NO_INSCRITO_A_INSCRITO', sysdate);
+insert into ecom_cen_maestro_incidenc   (idcensomaestroincidencias, descripcion, fechamodificacion)
+values   (124, 'MOTIVO_CAMBIO_SITUACION_NULO', sysdate);  
+insert into ecom_cen_maestro_incidenc   (idcensomaestroincidencias, descripcion, fechamodificacion)
+values   (125, 'NCOL_APELL_NUMDOC', sysdate);
+insert into ecom_cen_maestro_incidenc   (idcensomaestroincidencias, descripcion, fechamodificacion)
+values   (126, 'REFERENCIA_NULO', sysdate);
+insert into ecom_cen_maestro_incidenc   (idcensomaestroincidencias, descripcion, fechamodificacion)
+values   (127, 'FECHA_ACUERDO_NULA', sysdate);
+insert into ecom_cen_maestro_incidenc   (idcensomaestroincidencias, descripcion, fechamodificacion)
+values   (128, 'FECHA_INICIO', sysdate);
+insert into ecom_cen_maestro_incidenc   (idcensomaestroincidencias, descripcion, fechamodificacion)
+values   (129, 'FECHA_INICIO_ANTERIOR', sysdate);
+insert into ecom_cen_maestro_incidenc   (idcensomaestroincidencias, descripcion, fechamodificacion)
+values   (130, 'TEXTO_SANCION_NULO', sysdate);
+insert into ecom_cen_maestro_incidenc   (idcensomaestroincidencias, descripcion, fechamodificacion)
+values   (131, 'TIPO_SANCION_NULO', sysdate);
+insert into ecom_cen_maestro_incidenc   (idcensomaestroincidencias, descripcion, fechamodificacion)
+values   (132, 'TEXTO_MODIFICACION_NULO', sysdate);
+insert into ecom_cen_maestro_incidenc   (idcensomaestroincidencias, descripcion, fechamodificacion)
+values   (133, 'TIPO_MODIFICACION_NULO', sysdate);
+insert into ecom_cen_maestro_incidenc   (idcensomaestroincidencias, descripcion, fechamodificacion)
+values   (134, 'COLEGIADO_NOENCONTRADO_PARA_CAMBIO', sysdate);
+
+insert into ecom_cen_maestro_estad_coleg
+  (idestadocolegiado, descripcion, fechamodificacion)
+values
+  (13, 'ACTUALIZACION_COLEGIADO_CAMBIO', sysdate);
+  insert into ecom_cen_maestro_estad_coleg
+  (idestadocolegiado, descripcion, fechamodificacion)
+values
+  (14, 'ACTUALIZACION_COLEGIADO_SANCION', sysdate);
+  
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('MOTIVO_CAMBIO_SITUACION_NULO', 'El motivo del cambio de situación edbe estar informado', 0, 1, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('MOTIVO_CAMBIO_SITUACION_NULO', 'El motivo del cambio de situación edbe estar informado#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('MOTIVO_CAMBIO_SITUACION_NULO', 'El motivo del cambio de situación edbe estar informado#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('MOTIVO_CAMBIO_SITUACION_NULO', 'El motivo del cambio de situación edbe estar informado#GL', 0, 4, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('NCOL_APELL_NUMDOC', 'Para identificar al colegiado se debe informar mínimo de dos de los tres criterios siguientes: Nombre y Apellidos, Número de coelgiado, Identificación.', 0, 1, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('NCOL_APELL_NUMDOC', 'Para identificar al colegiado se debe informar mínimo de dos de los tres criterios siguientes: Nombre y Apellidos, Número de coelgiado, Identificación.#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('NCOL_APELL_NUMDOC', 'Para identificar al colegiado se debe informar mínimo de dos de los tres criterios siguientes: Nombre y Apellidos, Número de coelgiado, Identificación.#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('NCOL_APELL_NUMDOC', 'Para identificar al colegiado se debe informar mínimo de dos de los tres criterios siguientes: Nombre y Apellidos, Número de coelgiado, Identificación.#GL', 0, 4, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('REFERENCIA_NULO', 'El numero de referencia debe ser informado.', 0, 1, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('REFERENCIA_NULO', 'El numero de referencia debe ser informado.#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('REFERENCIA_NULO', 'El numero de referencia debe ser informado.#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('REFERENCIA_NULO', 'El numero de referencia debe ser informado.#GL', 0, 4, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('FECHA_ACUERDO_NULA', 'La fecha de acuerdo debe ser informado.', 0, 1, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('FECHA_ACUERDO_NULA', 'La fecha de acuerdo debe ser informado.#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('FECHA_ACUERDO_NULA', 'La fecha de acuerdo debe ser informado.#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('FECHA_ACUERDO_NULA', 'La fecha de acuerdo debe ser informado.#GL', 0, 4, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('FECHA_INICIO', 'La fecha de incio de la sanción debe ser informado.', 0, 1, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('FECHA_INICIO', 'La fecha de incio de la sanción debe ser informado.#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('FECHA_INICIO', 'La fecha de incio de la sanción debe ser informado.#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('FECHA_INICIO', 'La fecha de incio de la sanción debe ser informado.#GL', 0, 4, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('FECHA_INICIO_ANTERIOR', 'La fecha de incio de la sanción no puede ser anterior a la actual.', 0, 1, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('FECHA_INICIO_ANTERIOR', 'La fecha de incio de la sanción no puede ser anterior a la actual.#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('FECHA_INICIO_ANTERIOR', 'La fecha de incio de la sanción no puede ser anterior a la actual.#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('FECHA_INICIO_ANTERIOR', 'La fecha de incio de la sanción no puede ser anterior a la actual.#GL', 0, 4, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('TIPO_SANCION_NULO', 'El tipo de sanción debe ser informado.', 0, 1, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('TIPO_SANCION_NULO', 'El tipo de sanción debe ser informado.#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('TIPO_SANCION_NULO', 'El tipo de sanción debe ser informado.#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('TIPO_SANCION_NULO', 'El tipo de sanción debe ser informado.#GL', 0, 4, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('TEXTO_SANCION_NULO', 'El texto de la sanción debe ser informado.', 0, 1, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('TEXTO_SANCION_NULO', 'El texto de la sanción debe ser informado.#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('TEXTO_SANCION_NULO', 'El texto de la sanción debe ser informado.#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('TEXTO_SANCION_NULO', 'El texto de la sanción debe ser informado.#GL', 0, 4, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('TEXTO_MODIFICACION_NULO', 'El campo modificación de la sanción debe ser informado.', 0, 1, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('TEXTO_MODIFICACION_NULO', 'El campo modificación de la sanción debe ser informado.#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('TEXTO_MODIFICACION_NULO', 'El campo modificación de la sanción debe ser informado.#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('TEXTO_MODIFICACION_NULO', 'El campo modificación de la sanción debe ser informado.#GL', 0, 4, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('TIPO_MODIFICACION_NULO', 'El tipo de modificación de la sanción debe ser informado.', 0, 1, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('TIPO_MODIFICACION_NULO', 'El tipo de modificación de la sanción debe ser informado.#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('TIPO_MODIFICACION_NULO', 'El tipo de modificación de la sanción debe ser informado.#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('TIPO_MODIFICACION_NULO', 'El tipo de modificación de la sanción debe ser informado.#GL', 0, 4, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('COLEGIADO_NOENCONTRADO_PARA_CAMBIO', 'Con los datos indicados no se ha podido encontrar al colegiado para actualizar su situación.', 0, 1, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('COLEGIADO_NOENCONTRADO_PARA_CAMBIO', 'Con los datos indicados no se ha podido encontrar al colegiado para actualizar su situación.#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('COLEGIADO_NOENCONTRADO_PARA_CAMBIO', 'Con los datos indicados no se ha podido encontrar al colegiado para actualizar su situación.#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('COLEGIADO_NOENCONTRADO_PARA_CAMBIO', 'Con los datos indicados no se ha podido encontrar al colegiado para actualizar su situación.#GL', 0, 4, sysdate, 0, 19);
+
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('censo.ws.estadoColegiado.ACTUALIZACION_COLEGIADO_CAMBIO', 'Actualización situación colegial.', 0, 1, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('censo.ws.estadoColegiado.ACTUALIZACION_COLEGIADO_CAMBIO', 'Actualización situación colegial.#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('censo.ws.estadoColegiado.ACTUALIZACION_COLEGIADO_CAMBIO', 'Actualización situación colegial.#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('censo.ws.estadoColegiado.ACTUALIZACION_COLEGIADO_CAMBIO', 'Actualización situación colegial.#GL', 0, 4, sysdate, 0, 19);
+
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('NCOL_APELL_NUMDOC', 'Se debe informar dos de los tres datos del colegiado: Apellidos, Nº colegiado, Identificación.', 0, 1, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('NCOL_APELL_NUMDOC', 'Se debe informar dos de los tres datos del colegiado: Apellidos, Nº colegiado, Identificación.#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('NCOL_APELL_NUMDOC', 'Se debe informar dos de los tres datos del colegiado: Apellidos, Nº colegiado, Identificación.#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('NCOL_APELL_NUMDOC', 'Se debe informar dos de los tres datos del colegiado: Apellidos, Nº colegiado, Identificación.#GL', 0, 4, sysdate, 0, 19);
+
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('censo.ws.literal.motivocambio', 'Motivo Cambio', 0, 1, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('censo.ws.literal.motivocambio', 'Motivo Cambio#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('censo.ws.literal.motivocambio', 'Motivo Cambio#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('censo.ws.literal.motivocambio', 'Motivo Cambio#GL', 0, 4, sysdate, 0, 19);
+
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('censo.ws.estadoColegiado.ACTUALIZACION_COLEGIADO_SANCION', 'Actualización sanción', 0, 1, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('censo.ws.estadoColegiado.ACTUALIZACION_COLEGIADO_SANCION', 'Actualización sanción#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('censo.ws.estadoColegiado.ACTUALIZACION_COLEGIADO_SANCION', 'Actualización sanción#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('censo.ws.estadoColegiado.ACTUALIZACION_COLEGIADO_SANCION', 'Actualización sanción#GL', 0, 4, sysdate, 0, 19);
+
+alter table CEN_COLEGIADO modify JUBILACIONCUOTA null;
+ insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('censo.ws.literal.exentoCuota', 'Exento cuota', 0, 1, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('censo.ws.literal.exentoCuota', 'Exento cuota#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('censo.ws.literal.exentoCuota', 'Exento cuota#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('censo.ws.literal.exentoCuota', 'Exento cuota#GL', 0, 4, sysdate, 0, 19);
+
+
+
+
+
 	
