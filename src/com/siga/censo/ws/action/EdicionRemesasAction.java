@@ -212,7 +212,7 @@ public class EdicionRemesasAction extends MasterAction {
 					edicionColegiadoForm.setIdinstitucion(ecomCenColegiado.getIdinstitucion());
 					
 				}				
-				edicionColegiadoForm.setCambioSituacion(ecomCenDato.getHaycambiosituacion()==1);
+				edicionColegiadoForm.setCambioSituacion((ecomCenDato.getHaycambiosituacion()!=null && ecomCenDato.getHaycambiosituacion()==1));
 				if (edicionColegiadoForm.isCambioSituacion()) {
 					edicionColegiadoForm.setIdmotivocambio(ecomCenDato.getIdmotivosituacion());
 				}

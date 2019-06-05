@@ -378,7 +378,7 @@ public class EdicionColegiadoAction extends MasterAction {
 			edicionColegiadoForm.setIdecomcensosituacionejer(ecomCenDatos.getIdecomcensosituacionejer());
 			edicionColegiadoForm.setFechasituacion(getValue(ecomCenDatos.getFechasituacion()));
 			edicionColegiadoForm.setResidente(getCheckShort(ecomCenDatos.getResidente()));
-			edicionColegiadoForm.setCambioSituacion(ecomCenDatos.getHaycambiosituacion()==1);
+			edicionColegiadoForm.setCambioSituacion(ecomCenDatos.getHaycambiosituacion()!=null && ecomCenDatos.getHaycambiosituacion()==1);
 			if (edicionColegiadoForm.isCambioSituacion()) {
 				edicionColegiadoForm.setIdmotivocambio(ecomCenDatos.getIdmotivosituacion());
 			}
@@ -523,7 +523,7 @@ public class EdicionColegiadoAction extends MasterAction {
 						ecf.setFechaCambio(GstDate.getFormatedDateLong("ES", ecomCenDato.getFechamodificacion()));						
 						ecf.setIncidencias(getDescripcionIncidenciasColegiado(cenWSService.getIncidencias(ecomCenDato.getIdcensodatos(), true)));
 						ecf.setIdestadocolegiado(ecomCenDato.getIdestadocolegiado());
-						ecf.setCambioSituacion(ecomCenDato.getHaycambiosituacion()==1);
+						ecf.setCambioSituacion(ecomCenDato.getHaycambiosituacion()!=null && ecomCenDato.getHaycambiosituacion()==1);
 						edicionColegiadoForms.add(ecf);
 					}
 				}
