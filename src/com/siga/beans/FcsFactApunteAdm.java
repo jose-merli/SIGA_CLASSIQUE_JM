@@ -6,6 +6,7 @@ import java.util.Vector;
 import org.redabogacia.sigaservices.app.autogen.model.ScsCabeceraguardias;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -171,8 +172,14 @@ public class FcsFactApunteAdm extends MasterBeanAdministrador {
 		consulta.append(datosGuardia.getIdpersona());
 		consulta.append("   AND ");
 		consulta.append(FcsFactApunteBean.C_FECHAINICIO);
-		consulta.append("=");
-		consulta.append(datosGuardia.getFechainicio());
+		consulta.append("='");
+		try {
+			consulta.append(GstDate.getFormatedDateShort(datosGuardia.getFechainicio()));	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		consulta.append("'");
+		
 		
 		//Hashtable para recoger el resultado de la contulta
 		Hashtable hash = new Hashtable();

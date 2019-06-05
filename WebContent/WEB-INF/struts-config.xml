@@ -365,6 +365,7 @@
 		<form-bean name="CargaMasivaGFForm" type="com.siga.censo.form.CargaMasivaGFForm"/>
 		<form-bean name="CargaMasivaProcuradoresForm" type="com.siga.gratuita.form.CargaMasivaProcuradoresForm"/>
 		<form-bean name="TipoAsistenciaColegioForm" type="com.siga.gratuita.form.TipoAsistenciaColegioForm"/>
+		<form-bean name="GestionEconomicaCatalunyaForm" type="com.siga.gratuita.form.GestionEconomicaCatalunyaForm"/>
 		
 		
 	</form-beans>
@@ -3631,6 +3632,17 @@
 			<forward name="edicion" path="/html/jsp/gratuita/editarTipoAsistenciaColegio.jsp"/>
 		</action>		
 		
+		<action path="/JGR_E-Comunicaciones_Justificacion" type="com.siga.gratuita.action.GestionEconomicaCatalunyaAction" name="GestionEconomicaCatalunyaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/gestionJustificacionEconomicaCatalunya.jsp"/>
+			<forward name="listado" path="/html/jsp/gratuita/listadoJustificacionEconomicaCatalunya.jsp"/>
+			<forward name="editaJustificacion" path="/html/jsp/gratuita/editarJustificacionEconomicaCatalunya.jsp"/>
+		</action>
+		
+		<action path="/JGR_E-Comunicaciones_Devolucion" type="com.siga.gratuita.action.GestionEconomicaCatalunyaAction" name="GestionEconomicaCatalunyaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/gestionDevolucionEconomicaCatalunya.jsp"/>
+			<forward name="listado" path="/html/jsp/gratuita/listadoDevolucionEconomicaCatalunya.jsp"/>
+			<forward name="editaJustificacion" path="/html/jsp/gratuita/editarDevolucionEconomicaCatalunya.jsp"/>
+		</action>
 		
 		
 		<!-- ****************************************************************************

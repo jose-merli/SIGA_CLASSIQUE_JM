@@ -576,6 +576,7 @@ public class MantenimientoMovimientosAction extends MasterAction {
 				ScsCabeceraguardias cabeceraGuardias = scsCabeceraGuardias.getCabeceraGuardia(scsCabeceraGuadiasBean.getIdpersona(),
 						scsCabeceraGuadiasBean.getIdturno(), scsCabeceraGuadiasBean.getIdguardia(), scsCabeceraGuadiasBean.getIdinstitucion(),
 						scsCabeceraGuadiasBean.getFechainicio());
+				scsCabeceraGuadiasBean.setIdfacturacion(cabeceraGuardias.getIdfacturacion());
 
 				if (cabeceraGuardias.getIdmovimiento() != null) {
 					// Desde Asunto y ya existe movimiento
