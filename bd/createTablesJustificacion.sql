@@ -112,7 +112,8 @@ CREATE TABLE fcs_je_maestroestados (
     descripcion         VARCHAR2(100 BYTE) NOT NULL,
     codigoext           VARCHAR2(10 BYTE),
     fechamodificacion   DATE NOT NULL,
-    usumodificacion     NUMBER(5) NOT NULL
+    usumodificacion     NUMBER(5) NOT NULL,
+     PROPIETARIO       NUMBER(1)
 );
 
 CREATE UNIQUE INDEX pk_fcs_je_maestroestados ON
