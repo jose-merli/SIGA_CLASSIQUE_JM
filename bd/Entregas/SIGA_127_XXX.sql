@@ -981,6 +981,20 @@ insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodifi
 insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('censo.ws.literal.exentoCuota', 'Exento cuota#EU', 0, 3, sysdate, 0, 19);
 insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('censo.ws.literal.exentoCuota', 'Exento cuota#GL', 0, 4, sysdate, 0, 19);
 
+-- Regla de inscrito EJECUTADA YA EN TODOS LOS ENTORNOS
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('VALIDACION_INSCRITO', 'Validación de la nueva situación de inscrito', 0, 1, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('VALIDACION_INSCRITO', 'Validació de la nova situació de inscrit', 0, 2, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('VALIDACION_INSCRITO', 'Validación de la nueva situación de inscrito#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursos (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad) values   ('VALIDACION_INSCRITO', 'Validación de la nueva situación de inscrito#GL', 0, 4, sysdate, 0, 19);
+insert into gen_parametros
+  (modulo, parametro, valor, fechamodificacion, usumodificacion, idinstitucion, idrecurso, fecha_baja)
+values   ('CEN', 'RULE_INSCRITO', '0', sysdate, 0, 0, 'VALIDACION_INSCRITO', null);
+COMMIT;
+
+/*
+ * 
+ * EJECUTADO YA EN TODOS LOS ENTORNOS 05/06/2019
+ */
 
 
 
