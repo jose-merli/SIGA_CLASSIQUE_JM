@@ -1,6 +1,6 @@
 
 coger createTablesJustificacion.sql
-
+--
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecom.justificacion', 'Justificación', 0, '1', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecom.justificacion', 'Justificación#CA', 0, '2', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('menu.sjcs.ecom.justificacion', 'Justificación#EU', 0, '3', sysdate, 0, '19');
@@ -41,7 +41,7 @@ values ('712', 32030, 160, '606', sysdate, 0, null, 'menu.sjcs.ecom.devolucion',
 
 
 
-insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion) values(10,'INICIAL','1',sysdate,-1,0);
+insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario) values(10,'INICIAL','1',sysdate,-1,0);
 insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario) values(12,'VALIDANDO','1',sysdate,-1,0);
 insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario)values(14,'VALIDADO CORRECTO','1',sysdate,-1,0);
 insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario)values(16,'NO VÁLIDO','1',sysdate,-1,0);
@@ -132,6 +132,7 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.boton.upload', 'Subir#EU', 0, '3', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.boton.upload', 'Subir#GL', 0, '4', sysdate, 0, '19');
 
+--ejecutado en integracion 
 
 
               
