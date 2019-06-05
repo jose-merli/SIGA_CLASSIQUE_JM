@@ -126,7 +126,8 @@ public class InsertaRecursos {
 	}
 
 	private static void conecta() throws Exception {		
-		String cadenaConexion = "jdbc:oracle:thin:@192.168.18.6:1546:SIGADES";
+//		String cadenaConexion = "jdbc:oracle:thin:@192.168.18.6:1546:SIGADES";
+		String cadenaConexion = "jdbc:oracle:thin:@40.115.50.23:1546:SIGADES";
 		String usuario = "uscgae_desa";
 		String clave = "desarrollo";
 
