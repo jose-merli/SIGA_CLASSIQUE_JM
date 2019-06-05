@@ -5,62 +5,6 @@
 
 
 
-DROP TABLE fcs_certificacion CASCADE CONSTRAINTS;
-
-DROP TABLE fcs_je_cert_estado CASCADE CONSTRAINTS;
-
-DROP TABLE fcs_je_dev_estado CASCADE CONSTRAINTS;
-
-DROP TABLE fcs_je_devol_mov_vario CASCADE CONSTRAINTS;
-
-DROP TABLE fcs_je_devolucion CASCADE CONSTRAINTS;
-
-DROP TABLE fcs_je_just_estado CASCADE CONSTRAINTS;
-
-DROP TABLE fcs_je_justifica_facturacionjg CASCADE CONSTRAINTS;
-
-DROP TABLE fcs_je_justificacion CASCADE CONSTRAINTS;
-
-DROP TABLE fcs_je_maestroestados CASCADE CONSTRAINTS;
-
-DROP TABLE fcs_je_tipocertificacion CASCADE CONSTRAINTS;
-
-DROP TABLE je_cabecera CASCADE CONSTRAINTS;
-
-DROP TABLE je_cert_ica_guardia CASCADE CONSTRAINTS;
-
-DROP TABLE je_certificacion_anexo CASCADE CONSTRAINTS;
-
-DROP TABLE je_certificacion_cicac CASCADE CONSTRAINTS;
-
-DROP TABLE je_certificacion_ica CASCADE CONSTRAINTS;
-
-DROP TABLE je_codigoexpediente CASCADE CONSTRAINTS;
-
-DROP TABLE je_designa CASCADE CONSTRAINTS;
-
-DROP TABLE je_detalle_error CASCADE CONSTRAINTS;
-
-DROP TABLE je_dev_valerroneo CASCADE CONSTRAINTS;
-
-DROP TABLE je_devolucion CASCADE CONSTRAINTS;
-
-DROP TABLE je_error CASCADE CONSTRAINTS;
-
-DROP TABLE je_importe_modulo CASCADE CONSTRAINTS;
-
-DROP TABLE je_intercambio CASCADE CONSTRAINTS;
-
-DROP TABLE je_intercambioerroneo CASCADE CONSTRAINTS;
-
-DROP TABLE je_jus_valerroneo CASCADE CONSTRAINTS;
-
-DROP TABLE je_justiciable CASCADE CONSTRAINTS;
-
-DROP TABLE je_justificacion CASCADE CONSTRAINTS;
-
-DROP TABLE je_trimestre CASCADE CONSTRAINTS;
-
 CREATE TABLE fcs_certificacion (
     idcertificacion       NUMBER(10) NOT NULL,
     idtipocertificacion   NUMBER(1) NOT NULL,
@@ -109,7 +53,7 @@ CREATE TABLE fcs_je_devolucion (
     usumodificacion     NUMBER(5) NOT NULL
 );
 
-CREATE UNIQUE INDEX uscgae_desa.pk_fcs_je_devolucion ON
+CREATE UNIQUE INDEX pk_fcs_je_devolucion ON
     fcs_je_devolucion ( iddevolucion ASC );
 
 ALTER TABLE fcs_je_devolucion ADD CONSTRAINT pk_fcs_je_devolucionv1 PRIMARY KEY ( iddevolucion );
@@ -123,10 +67,10 @@ CREATE TABLE fcs_je_just_estado (
     usumodificacion     NUMBER(5) NOT NULL
 );
 
-CREATE UNIQUE INDEX uscgae_desa.pk_fcs_je_just_estado ON
+CREATE UNIQUE INDEX pk_fcs_je_just_estado ON
     fcs_je_just_estado ( idjustestado ASC );
 
-CREATE UNIQUE INDEX uscgae_desa.uk_fcs_je_just_estado ON
+CREATE UNIQUE INDEX uk_fcs_je_just_estado ON
     fcs_je_just_estado ( idjustificacion ASC,
     idestado ASC );
 
@@ -142,7 +86,7 @@ CREATE TABLE fcs_je_justifica_facturacionjg (
     idfacturacion         NUMBER(5) NOT NULL
 );
 
-CREATE UNIQUE INDEX uscgae_desa.pk_fcs_je_justifica_facturacjg ON
+CREATE UNIQUE INDEX pk_fcs_je_justifica_facturacjg ON
     fcs_je_justifica_facturacionjg ( idjustfacturacionjg ASC );
 
 ALTER TABLE fcs_je_justifica_facturacionjg ADD CONSTRAINT pk_fcs_je_justifica_facturacjg PRIMARY KEY ( idjustfacturacionjg );
@@ -157,7 +101,7 @@ CREATE TABLE fcs_je_justificacion (
     usumodificacion     NUMBER(5) NOT NULL
 );
 
-CREATE UNIQUE INDEX uscgae_desa.uk_fcs_je_justificacion ON
+CREATE UNIQUE INDEX uk_fcs_je_justificacion ON
     fcs_je_justificacion ( idinstitucion ASC,
     idjustificacion ASC );
 
@@ -171,7 +115,7 @@ CREATE TABLE fcs_je_maestroestados (
     usumodificacion     NUMBER(5) NOT NULL
 );
 
-CREATE UNIQUE INDEX uscgae_desa.pk_fcs_je_maestroestados ON
+CREATE UNIQUE INDEX pk_fcs_je_maestroestados ON
     fcs_je_maestroestados ( idestado ASC );
 
 ALTER TABLE fcs_je_maestroestados ADD CONSTRAINT pk_fcs_je_maestroestados PRIMARY KEY ( idestado );
