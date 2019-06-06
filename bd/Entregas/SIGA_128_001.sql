@@ -41,26 +41,42 @@ values ('712', 32030, 160, '606', sysdate, 0, null, 'menu.sjcs.ecom.devolucion',
 
 
 
-insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario) values(10,'INICIAL','1',sysdate,-1,0);
-insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario) values(12,'VALIDANDO','1',sysdate,-1,0);
-insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario)values(14,'VALIDADO CORRECTO','1',sysdate,-1,0);
-insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario)values(16,'NO VÁLIDO','1',sysdate,-1,0);
-insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario)values(20,'ENVIANDO CICAC','1',sysdate,-1,0);
-
-insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario)values(30,'ENVIADO CICAC','1',sysdate,-1,1);
-insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario)values(40,'ERROR CICAC','1',sysdate,-1,1);
-insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario)values(50,'FIN CICAC','1',sysdate,-1,1);
-insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario)values(52,'RESPONDIENDO CA','1',sysdate,-1,1);
-insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario)values(55,'DEVUELTO CA KO','1',sysdate,-1,1);
-insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario)values(62,'ENVIANDO AJG. Genera XML','1',sysdate,-1,1);
-insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario)values(65,'ENVIANDO AJG. Mueve XML','1',sysdate,-1,1);
-insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario)values(70,'ENVIADO AJG','1',sysdate,-1,1);
-insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario)values(75,'Procesando AJG','1',sysdate,-1,1);
-
-insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario)values(85,'Error AJG','1',sysdate,-1,1);
-insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario)values(87,'DEVUELTO CA KO AJG','1',sysdate,-1,1);
-insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario)values(90,'Verificado AJG','1',sysdate,-1,1);
-insert into fcs_je_maestroestados (idestado, descripcion, codigoext, fechamodificacion, usumodificacion,propietario)values(95,'DEVUELTO CA OK','1',sysdate,-1,1);
+insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
+values (10, 'Inicial', '1', sysdate, -1, 0);
+insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
+values (12, 'Validando', '1', sysdate, -1, 0);
+insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
+values (14, 'Validado correctamente', '1', sysdate, -1, 0);
+insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
+values (16, 'Validado erróneo', '1', sysdate, -1, 0);
+insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
+values (20, 'Enviando Consell', '1', sysdate, -1, 0);
+insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
+values (30, 'Enviado Consell', '1', sysdate, -1, 1);
+insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
+values (40, 'Error Consell', '1', sysdate, -1, 1);
+insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
+values (50, 'Finalizado Consell', '1', sysdate, -1, 1);
+insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
+values (52, 'Respondiendo Ica.', '1', sysdate, -1, 1);
+insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
+values (55, 'Devuelto error Consell al Ica.', '1', sysdate, -1, 1);
+insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
+values (62, 'Enviando Generalitat. Generando XML.', '1', sysdate, -1, 1);
+insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
+values (65, 'Enviando Generalitat. Moviendo XML', '1', sysdate, -1, 1);
+insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
+values (70, 'Enviado Generalitat.', '1', sysdate, -1, 1);
+insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
+values (75, 'Procesando XML Generalitat', '1', sysdate, -1, 1);
+insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
+values (85, 'Error Generalitat', '1', sysdate, -1, 1);
+insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
+values (87, 'Devuelto error Generalitat al Ica.', '1', sysdate, -1, 1);
+insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
+values (90, 'Verificado correctamente Generalitat', '1', sysdate, -1, 1);
+insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
+values (95, 'Respondiendo correctamente al Ica.', '1', sysdate, -1, 1);
 
 
 
