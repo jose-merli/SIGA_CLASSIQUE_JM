@@ -234,8 +234,8 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 				elementosFila[2] = new FilaExtElement( "descargaLog","descargaErroresJustificacion", SIGAConstants.ACCESS_FULL);
 				elementosFila[3] = new FilaExtElement( "finalizar","finalizaErrores", SIGAConstants.ACCESS_FULL);
 			}else {
-				elementosFila = new FilaExtElement[2];
-//				elementosFila[0] = new FilaExtElement("consultar", "consultaJustificacion",SIGAConstants.ACCESS_FULL);
+				elementosFila = new FilaExtElement[1];
+				elementosFila[0] = new FilaExtElement("consultar", "consultaJustificacion",SIGAConstants.ACCESS_NONE);
 //				elementosFila[1] = new FilaExtElement("download","descargaJustificacion", SIGAConstants.ACCESS_FULL);
 				
 			}
@@ -243,8 +243,8 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 			break;
 		case 50:
 			
-			elementosFila = new FilaExtElement[0];
-//			elementosFila[0] = new FilaExtElement("consultar", "consultaJustificacion",SIGAConstants.ACCESS_FULL);
+			elementosFila = new FilaExtElement[1];
+			elementosFila[0] = new FilaExtElement("consultar", "consultaJustificacion",SIGAConstants.ACCESS_NONE);
 //			elementosFila[1] = new FilaExtElement( "descargaLog","descargaErroresJustificacion", SIGAConstants.ACCESS_FULL);
 			
 			break;
