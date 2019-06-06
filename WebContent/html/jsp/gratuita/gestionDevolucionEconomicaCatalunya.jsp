@@ -194,6 +194,7 @@
 		
 	}
 	function descargaLogValidacion(fila) {
+		alert('<siga:Idioma key="facturacion.estadosfac.literal.GenEjecucion"/>');
 		document.forms['FormularioGestion'].modo.value = "descargaErrorValidacionDevolucion";
 		var idJustificacion = 'idJustificacion_' + fila ;
 		var idDevolucion = 'idDevolucion_' + fila ;
@@ -204,6 +205,7 @@
 		document.forms['FormularioGestion'].submit();		
 	}
 	function descargaErrorJustificacionCICAC(fila) {
+		alert('<siga:Idioma key="facturacion.estadosfac.literal.GenEjecucion"/>');
 		document.forms['FormularioGestion'].modo.value = "descargaErrorDevolucionCICAC";
 		var idJustificacion = 'idJustificacion_' + fila ;
 		var idDevolucion = 'idDevolucion_' + fila ;
@@ -228,6 +230,7 @@
 		
 	}
 	function descargaErroresJustificacion(fila) {
+		alert('<siga:Idioma key="facturacion.estadosfac.literal.GenEjecucion"/>');
 		document.forms['FormularioGestion'].modo.value = "descargaErroresDevolucion";
 		var idJustificacion = 'idJustificacion_' + fila ;
 		var idDevolucion = 'idDevolucion_' + fila ;
@@ -239,6 +242,7 @@
 		
 	}
 	function descargaJustificacion(fila) {
+		alert('<siga:Idioma key="facturacion.estadosfac.literal.GenEjecucion"/>');
 		document.forms['FormularioGestion'].modo.value = "descargaDevolucion";
 		var idJustificacion = 'idJustificacion_' + fila ;
 		var idDevolucion = 'idDevolucion_' + fila ;

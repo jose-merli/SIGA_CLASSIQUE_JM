@@ -229,6 +229,7 @@
 		
 	}
 	function descargaErroresJustificacion(fila) {
+		alert('<siga:Idioma key="facturacion.estadosfac.literal.GenEjecucion"/>');
 		document.forms['FormularioGestion'].modo.value = "descargaErroresJustificacion";
 		var idJustificacion = 'idJustificacion_' + fila ;
 		var idInstitucion = 'idInstitucion_' + fila ;
@@ -238,6 +239,7 @@
 		
 	}
 	function descargaJustificacion(fila) {
+		alert('<siga:Idioma key="facturacion.estadosfac.literal.GenEjecucion"/>');
 		document.forms['FormularioGestion'].modo.value = "descargaJustificacion";
 		var idJustificacion = 'idJustificacion_' + fila ;
 		var idInstitucion = 'idInstitucion_' + fila ;
