@@ -455,8 +455,7 @@
 		
 </html:form>
 	
-		
-<div id="dialogoInsercion"  title='Devolucion' style="display:none">
+<div id="dialogoInsercion"  title='<bean:message key="menu.sjcs.ecom.devolucion"/>' style="display:none">		
 	<div>&nbsp;</div>
 
   	<siga:ConjCampos leyenda="gratuita.informeJustificacionMasiva.leyenda.datosJustificacion">
