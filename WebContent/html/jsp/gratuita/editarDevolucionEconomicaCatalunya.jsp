@@ -378,7 +378,7 @@
 	<html:hidden property="seleccion"/>
 	<html:hidden property="error"/>
 </html:form>
-<div id="dialogoErrorLineaJustificacion"  title='Error designa' style="display:none">
+<div id="dialogoErrorLineaJustificacion"  title='<bean:message key="general.literal.errorGlobal"/>' style="display:none">
 <div>&nbsp;</div>
 	<div>
 		<div class="labelText">
