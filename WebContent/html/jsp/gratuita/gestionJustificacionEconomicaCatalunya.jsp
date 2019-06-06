@@ -209,7 +209,7 @@
 		document.forms['FormularioGestion'].submit();		
 	}
 	function descargaErrorJustificacionCICAC(fila) {
-		document.forms['FormularioGestion'].modo.value = "descargaErrorJustificacionCICAC";
+		document.forms['FormularioGestion'].modo.value = "descargaErroresJustificacion";
 		var idJustificacion = 'idJustificacion_' + fila ;
 		var idInstitucion = 'idInstitucion_' + fila ;
 		document.forms['FormularioGestion'].idJustificacion.value = document.getElementById(idJustificacion).value;

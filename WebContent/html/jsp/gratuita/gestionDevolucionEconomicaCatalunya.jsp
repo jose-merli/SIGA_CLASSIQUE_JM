@@ -206,7 +206,7 @@
 	}
 	function descargaErrorJustificacionCICAC(fila) {
 		alert('<siga:Idioma key="facturacion.estadosfac.literal.GenEjecucion"/>');
-		document.forms['FormularioGestion'].modo.value = "descargaErrorDevolucionCICAC";
+		document.forms['FormularioGestion'].modo.value = "descargaErroresDevolucion";
 		var idJustificacion = 'idJustificacion_' + fila ;
 		var idDevolucion = 'idDevolucion_' + fila ;
 		var idInstitucion = 'idInstitucion_' + fila ;
