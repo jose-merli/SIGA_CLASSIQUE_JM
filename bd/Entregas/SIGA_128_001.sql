@@ -44,13 +44,13 @@ values ('712', 32030, 160, '606', sysdate, 0, null, 'menu.sjcs.ecom.devolucion',
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
 values (10, 'Inicial', '1', sysdate, -1, 0);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
-values (12, 'Validando', '1', sysdate, -1, 0);
+values (12, 'Validando...', '1', sysdate, -1, 0);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
 values (14, 'Validado correctamente', '1', sysdate, -1, 0);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
 values (16, 'Validado erróneo', '1', sysdate, -1, 0);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
-values (20, 'Enviando Consell', '1', sysdate, -1, 0);
+values (20, 'Enviando Consell...', '1', sysdate, -1, 0);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
 values (30, 'Enviado Consell', '1', sysdate, -1, 1);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
@@ -58,23 +58,25 @@ values (40, 'Error Consell', '1', sysdate, -1, 1);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
 values (50, 'Finalizado Consell', '1', sysdate, -1, 1);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
-values (55, 'Devuelto error Consell al Ica.', '1', sysdate, -1, 1);
+values (60, 'Devuelto error Consell al ICA.', '1', sysdate, -1, 1);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
-values (62, 'Enviando Generalitat. Generando XML.', '1', sysdate, -1, 1);
+values (62, 'Enviando Generalitat. Generando XML....', '1', sysdate, -1, 1);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
-values (65, 'Enviando Generalitat. Moviendo XML', '1', sysdate, -1, 1);
+values (65, 'Enviando Generalitat. Moviendo XML...', '1', sysdate, -1, 1);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
 values (70, 'Enviado Generalitat.', '1', sysdate, -1, 1);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
-values (75, 'Procesando XML Generalitat', '1', sysdate, -1, 1);
+values (75, 'Procesando XML de Generalitat...', '1', sysdate, -1, 1);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
 values (85, 'Error Generalitat', '1', sysdate, -1, 1);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
-values (87, 'Devuelto error Generalitat al Ica.', '1', sysdate, -1, 1);
+values (87, 'Devuelto error Generalitat al ICA.', '1', sysdate, -1, 1);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
 values (90, 'Verificado correctamente Generalitat', '1', sysdate, -1, 1);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
-values (95, 'Respondiendo correctamente al Ica.', '1', sysdate, -1, 1);
+values (95, 'Respondido correctamente al ICA. Fin de proceso', '1', sysdate, -1, 1);
+insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
+values (92, 'Respondiendo ICA...', '1', sysdate, -1, 1);
 
 
 
