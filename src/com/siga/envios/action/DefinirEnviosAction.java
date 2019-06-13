@@ -44,6 +44,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.LogFileWriter;
 import com.atos.utils.RowsContainer;
@@ -2357,9 +2358,7 @@ public class DefinirEnviosAction extends MasterAction {
 			StringBuilder pathDirectorioTemporal = new StringBuilder(admSolicitud.getRutaCertificadoDirectorioBD(2000));
 			pathDirectorioTemporal.append(ClsConstants.FILE_SEP);
 			pathDirectorioTemporal.append("tmp");
-			File directorioPlantillas = new File(pathDirectorioTemporal.toString());
-			if(!directorioPlantillas.exists())
-				directorioPlantillas.mkdirs();
+			FileHelper.mkdirs(pathDirectorioTemporal.toString());
 			List<Documento> documentosList = new ArrayList<Documento>();
 			List<CerSolicitudCertificadosBean> cerSolicitudCertificadosBeans = new ArrayList<CerSolicitudCertificadosBean>();
 			Vector<Hashtable<String, Object>> datosVectorError = new Vector<Hashtable<String,Object>>();

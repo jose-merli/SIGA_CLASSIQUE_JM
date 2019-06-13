@@ -24,6 +24,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesFicheros;
@@ -488,8 +489,7 @@ public class DocumentosAction extends MasterAction
 		    	String sNombreDocumento = form.getIdInstitucion() + "_" + form.getIdEnvio()+ "_" + form.getIdDocumento();
 		    	
 		    	String sDirectorio = envioAdm.getPathEnvio(idInstitucion,idEnvio);
-		    	File fDirectorio = new File(sDirectorio);
-		    	fDirectorio.mkdirs();
+		    	FileHelper.mkdirs(sDirectorio);
 		    	
 		    	OutputStream bos = null;
 		    	try 

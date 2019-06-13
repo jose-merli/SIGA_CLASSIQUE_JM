@@ -21,6 +21,7 @@ import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.EnvCamposPlantillaBean;
@@ -337,8 +338,7 @@ public class SIGAPlantillasEnviosPlantillasAction extends MasterAction
 		    	String sNombrePlantilla = form.getIdTipoEnvio() + "_" + form.getIdPlantillaEnvios();
 		    	String sDirectorio = getPathPlantillasFromDB(userBean) + File.separator + form.getIdInstitucion();
 		    	
-		    	File fDirectorio = new File(sDirectorio);
-		    	fDirectorio.mkdirs();
+		    	FileHelper.mkdirs(sDirectorio);
 		    	
 		    	try 
 		    	{			
