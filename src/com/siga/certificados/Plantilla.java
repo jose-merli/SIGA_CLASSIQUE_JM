@@ -35,6 +35,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
@@ -140,8 +141,7 @@ public class Plantilla {
 			
 			
 			//Debemos asegurar que existe el directorio destino del fichero de salida
-			File fParent = salida.getParentFile();
-			if (!fParent.exists()) fParent.mkdirs();
+			FileHelper.mkdirs(salida.getParentFile().getAbsolutePath());
 			
 			/*Writer wArchivo = new FileWriter(salida);
 			wArchivo.write(sArchivo);*/
