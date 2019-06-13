@@ -33,7 +33,7 @@ public class LogFileWriter
 
 		try {
 			// creating directory tree
-			new File(path).mkdirs();
+			FileHelper.mkdirs(path);
 
 			// creating file
 			File file = new File(path + File.separator + fileName + EXTENSION);
@@ -165,7 +165,7 @@ public class LogFileWriter
 			this.buffer.clear();
 			
 			// creating directory tree
-			new File(path).mkdirs();
+			FileHelper.mkdirs(path);
 
 			// creating file
 			File file = new File(path + File.separator + fileName + EXTENSION);

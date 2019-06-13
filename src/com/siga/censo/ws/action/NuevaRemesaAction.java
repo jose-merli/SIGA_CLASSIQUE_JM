@@ -1,7 +1,6 @@
 package com.siga.censo.ws.action;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -32,14 +31,11 @@ import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsExceptions;
-import com.atos.utils.GstDate;
-import com.siga.Utilidades.UtilidadesString;
+import com.atos.utils.FileHelper;
 import com.siga.censo.ws.form.NuevaRemesaForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.ws.cen.CargaCensoWSListener;
-
 import es.satec.businessManager.BusinessManager;
 
 public class NuevaRemesaAction extends MasterAction {
@@ -191,7 +187,7 @@ public class NuevaRemesaAction extends MasterAction {
 		
 		File parentFile = new File(rutaAlmacen, String.valueOf(idinstitucion));
 		parentFile = new File(parentFile, numeroPeticion);
-		parentFile.mkdirs();
+		FileHelper.mkdirs(parentFile.getAbsolutePath());
 		
 		return parentFile;
 	}

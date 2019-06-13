@@ -31,6 +31,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
@@ -916,8 +917,7 @@ public class DatosGeneralesAction extends MasterAction {
 		    		stream = foto.getInputStream();
 		    		//write the file to the file specified
 		    		
-		    		File camino = new File (pathImagenes + File.separator + idInstitucion);
-		    		camino.mkdirs();
+		    		FileHelper.mkdirs(pathImagenes + File.separator + idInstitucion);
 		    		bos = new FileOutputStream(pathImagenes + File.separator + idInstitucion +File.separator+nombreFoto );
 		    		int bytesRead = 0;
 		    		byte[] buffer = new byte[8192];
@@ -1235,8 +1235,7 @@ public class DatosGeneralesAction extends MasterAction {
 		    		//retrieve the file data
 		    		stream = foto.getInputStream();
 		    		//write the file to the file specified
-		    		File camino = new File (pathImagenes + File.separator + idInstitucion);
-		    		camino.mkdirs();
+		    		FileHelper.mkdirs(pathImagenes + File.separator + idInstitucion);
 		    		bos = new FileOutputStream(pathImagenes + File.separator+ idInstitucion +File.separator+nombreFoto );
 		    		int bytesRead = 0;
 		    		byte[] buffer = new byte[8192];
@@ -1792,8 +1791,7 @@ public class DatosGeneralesAction extends MasterAction {
 		    		//retrieve the file data
 		    		stream = foto.getInputStream();
 		    		//write the file to the file specified
-		    		File camino = new File (pathImagenes + File.separator + idInstitucion);
-		    		camino.mkdirs();
+		    		FileHelper.mkdirs(pathImagenes + File.separator + idInstitucion);
 		    		bos = new FileOutputStream(pathImagenes + File.separator+ idInstitucion +File.separator+nombreFoto );
 		    		int bytesRead = 0;
 		    		byte[] buffer = new byte[8192];
@@ -2253,8 +2251,7 @@ public class DatosGeneralesAction extends MasterAction {
 		    		stream = foto.getInputStream();
 		    		//write the file to the file specified
 		    		String idInstitucion=miForm.getIdInstitucion();
-		    		File camino = new File (pathImagenes + File.separator + idInstitucion);
-		    		camino.mkdirs();
+		    		FileHelper.mkdirs(pathImagenes + File.separator + idInstitucion);
 		    		bos = new FileOutputStream(pathImagenes + File.separator + idInstitucion +File.separator+nombreFoto );
 		    		int bytesRead = 0;
 		    		byte[] buffer = new byte[8192];

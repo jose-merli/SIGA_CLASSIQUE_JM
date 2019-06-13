@@ -20,6 +20,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.FileHelper;
 
 
 public class SIGASvlChkFolders extends SIGAServletAdapter {
@@ -157,86 +158,14 @@ public class SIGASvlChkFolders extends SIGAServletAdapter {
 			System.out.println("** Done **");
 		}
 
-		/**********************************/
-		//ClsLogging.writeFileLogWithoutSession("");
-		//ClsLogging.writeFileLogWithoutSession("Checking PSSC Folders ...",3);
-		//ClsLogging.writeFileLogWithoutSession("Checking PSSC necessary folders ...",1);
 		/*******************************************/
 		/*   BEGIN PREV. GENERATING OF PROPERTIES  */
 		/*******************************************/
 
-		//String pathLogs = ClsConstants.RES_DIR +ClsConstants.RES_PROP_DOMAIN + ClsConstants.FILE_SEP + "Log";
-		//File fileResourcesDir = new File(pathProperties);
-		//File fileResourcesDirCDS = new File(RESOURCES_DIR + ClsConstants.FILE_SEP + "cds");
 		try {
-			//ClsLogging.writeFileLogWithoutSession("Exists PSSC necessary folder? : "+pathLogs+"---> "+directoryLogExists);
 			File fileLogs = SIGAReferences.getFileReference(SIGAReferences.RESOURCE_FILES.LOG_DIR);
-			String pathLogs = fileLogs.getAbsolutePath(); 
-			if(!fileLogs.exists()) {
-				if (fileLogs.mkdirs()){
-					//ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+pathLogs,3);
-				} else
-					ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+pathLogs);
-			}
+			FileHelper.mkdirs(fileLogs.getAbsolutePath());
 
-			//ClsLogging.writeFileLogWithoutSession("Exists PSSC necessary folder? : "+pathProperties+"---> "+directoryResourcesDirExists);
-/* Comentado por que no tiene sentido comprobar si existe el directorio properties o si su contenido en valido.
-  			File fileResourcesDir = SIGAReferences.getFileReference(SIGAReferences.RESOURCE_FILES.PROPERTIES_DIR);
-			String pathProperties=fileResourcesDir.getAbsolutePath();
-			if(!fileResourcesDir.exists()) {
-				if (fileResourcesDir.mkdirs()){
-					//ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+pathProperties,3);
-				} else
-					ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+pathProperties,1);
-			}
-
-			this.copyFileWithinJar("SIGA.properties",pathProperties+ ClsConstants.FILE_SEP +"Log.properties");
-			this.copyFileWithinJar("ldap.properties",pathProperties+ ClsConstants.FILE_SEP +"ldap.properties");
-			this.copyFileWithinJar("Icons.properties",pathProperties+ ClsConstants.FILE_SEP +"Icons.properties");
-			this.copyFileWithinJar("pki.properties",pathProperties+ ClsConstants.FILE_SEP +"pki.properties");
-			this.copyFileWithinJar("Upload.properties",pathProperties+ ClsConstants.FILE_SEP +"Upload.properties");
-			this.copyFileWithinJar("crystal.properties",pathProperties+ ClsConstants.FILE_SEP +"crystal.properties");
-			this.copyFileWithinJar("jndi.properties",pathProperties+ ClsConstants.FILE_SEP +"jndi.properties");
-			this.copyFileWithinJar("URLConnections.properties",pathProperties+ ClsConstants.FILE_SEP +"URLConnections.properties");
-			this.copyFileWithinJar("logbook.properties",pathProperties+ ClsConstants.FILE_SEP +"logbook.properties");
-			this.copyFileWithinJar("AdvancedSearch.properties",pathProperties+ ClsConstants.FILE_SEP +"AdvancedSearch.properties");
-			this.copyFileWithinJar("AdvancedSearch.xsd",pathProperties+ ClsConstants.FILE_SEP +"AdvancedSearch.xsd");
-			this.copyFileWithinJar("AdvancedSearch.xsl",pathProperties+ ClsConstants.FILE_SEP +"AdvancedSearch.xsl");
-			this.copyFileWithinJar("AdvancedSearchJRules.css",pathProperties+ ClsConstants.FILE_SEP +"AdvancedSearchJRules.css");
-
-		    ReadProperties rpr= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-//			ReadProperties rpr=new ReadProperties("Log.properties");
-			int loglevel = Integer.parseInt(rpr.returnProperty("LOG.level"));
-			System.out.println(" ");
-			System.out.println("************************************************");
-			System.out.println("****************** P S S C *********************");
-			if (rpr.returnProperty("LOG.run").equals("1")){
-				System.out.println("**** Trace ON forwarding to File, Level: "+loglevel+" *****");
-				System.out.println("************************************************");
-			} else{
-				System.out.println("*** Trace ON forwarding to Console, Level: "+loglevel+" ***");
-				System.out.println("************************************************");
-			}
-			System.out.println(" ");
-
-			ClsLogging.writeFileLogWithoutSession("Checking PSSC necessary folders ...",1);
-			ClsLogging.writeFileLogWithoutSession("",1);
-
-			//ClsLogging.writeFileLogWithoutSession("Exists PSSC necessary folder? : "+pathProperties+ ClsConstants.FILE_SEP + "cds, "+directoryResourcesDirCDSExists);
-			File fileResourcesDirCDS = SIGAReferences.getFileReference(SIGAReferences.RESOURCE_FILES.CDS_DIR);
-			if(!fileResourcesDirCDS.exists()) {
-				if (fileResourcesDirCDS.mkdirs())
-					ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+pathProperties+ ClsConstants.FILE_SEP + "cds",3);
-				else
-					ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+pathProperties+ ClsConstants.FILE_SEP + "cds",1);
-			}
-
-			// CDS
-			this.copyFileWithinJar("/cds/AETS_Failure_Event_Codes.properties",pathProperties+ ClsConstants.FILE_SEP + "cds" + ClsConstants.FILE_SEP + "AETS_Failure_Event_Codes.properties");
-			this.copyFileWithinJar("/cds/Maintenance_LRI_Codes.properties",pathProperties+ ClsConstants.FILE_SEP + "cds" + ClsConstants.FILE_SEP + "Maintenance_LRI_Codes.properties");
-			this.copyFileWithinJar("/cds/SIGA_CDS_TABLES.xml",pathProperties+ ClsConstants.FILE_SEP + "cds" + ClsConstants.FILE_SEP + "SIGA_CDS_TABLES.xml");
-			this.copyFileWithinJar("/cds/SIGA_SPECIFIC_CDS_TABLES.xml",pathProperties+ ClsConstants.FILE_SEP + "cds" + ClsConstants.FILE_SEP + "SIGA_SPECIFIC_CDS_TABLES.xml");
-*/
 		} catch (IOException ex) {
 			ClsLogging.writeFileLogWithoutSession("Error: "+ex.toString());
 			ex.printStackTrace();
@@ -250,7 +179,6 @@ public class SIGASvlChkFolders extends SIGAServletAdapter {
 		/******************************************/
 
 	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.UPLOAD);
-//		ReadProperties rp=new ReadProperties("Upload.properties");
 		String drive=(String)rp.returnProperty("UPLOAD.drive");
 
 		System.out.println("REMOTE PSSC RESOURCES DRIVE: "+drive);
@@ -277,168 +205,20 @@ public class SIGASvlChkFolders extends SIGAServletAdapter {
 		String pathAdvSearchJrules = pathAdvSearch + ClsConstants.FILE_SEP + "jRules";
 		String pathAdvSearchSql = pathAdvSearch + ClsConstants.FILE_SEP + "sql";
 
-		//File fileResDir = new File(ClsConstants.RES_DIR);
-		//File fileResDirStruts = new File(ClsConstants.RESOURCES_DIR_STRUTS);
-		//File fileResDirImages = new File(pathImages);
-		File fileResDirImagesIconsAf = new File(pathImagesAficons);
-		File fileResDirImagesIconsAt = new File(pathImagesAticons);
-		File fileResDirImagesIconsIo = new File(pathImagesIoicons);
-		File fileResDirImagesIconsSt = new File(pathImagesSticons);
-		File fileResDirImagesFindings = new File(pathImagesFindings);
-		File fileResDirImagesManActs = new File(pathImagesManActs);
-		File fileFilesUploadedConcess = new File(pathFilesUploadedConcess);
-		File fileFilesUploadedXML = new File(pathFilesUploadedXML);
-		File fileAdvSearchJrules = new File(pathAdvSearchJrules);
-		File fileAdvSearchSql = new File(pathAdvSearchSql);
-		File fileFilesUploadedDDS = new File(pathFilesUploadedDDS);
-		File fileFilesUploadedLogBI = new File(pathFilesUploadedLogbookImp);
-		File fileFilesUploadedLogBE = new File(pathFilesUploadedLogbookExp);
-		File fileFilesUploadedSign = new File(pathFilesUploadedSign);
-
-		//ClsLogging.writeFileLogWithoutSession("Exists PSSC necessary folder? : "+pathImagesFindings+"---> "+directoryFileFindExists,3);
-		if(!fileResDirImagesFindings.exists()) {
-			if(fileResDirImagesFindings.mkdirs())
-				ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+pathImagesFindings,3);
-			else
-				ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+pathImagesFindings);
-		}
-
-		//ClsLogging.writeFileLogWithoutSession("Exists PSSC necessary folder? : "+pathImagesManActs+"---> "+directoryFileManExists);
-		if(!fileResDirImagesManActs.exists()) {
-			if(fileResDirImagesManActs.mkdirs())
-				ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+pathImagesManActs,3);
-			else
-				ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+pathImagesManActs);
-		}
-
-		//ClsLogging.writeFileLogWithoutSession("Exists PSSC necessary folder? : "+pathFilesUploadedSign+"---> "+directoryFileSignExists);
-		if(!fileFilesUploadedSign.exists()) {
-			if(fileFilesUploadedSign.mkdirs())
-				ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+pathFilesUploadedSign,3);
-			else
-				ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+pathFilesUploadedSign);
-		}
-
-		//ClsLogging.writeFileLogWithoutSession("Exists PSSC necessary folder? : "+pathFilesUploadedLogbookExp+"---> "+directoryFileLogbookExpExists);
-		if(!fileFilesUploadedLogBE.exists()) {
-			if(fileFilesUploadedLogBE.mkdirs())
-				ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+pathFilesUploadedLogbookExp,3);
-			else
-				ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+pathFilesUploadedLogbookExp);
-		}
-
-		//ClsLogging.writeFileLogWithoutSession("Exists PSSC necessary folder? : "+pathFilesUploadedLogbookImp+"---> "+directoryFileLogbookImpExists);
-		if(!fileFilesUploadedLogBI.exists()) {
-			if (fileFilesUploadedLogBI.mkdirs())
-				ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+pathFilesUploadedLogbookImp,3);
-			else
-				ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+pathFilesUploadedLogbookImp);
-		}
-
-
-		//ClsLogging.writeFileLogWithoutSession("Exists PSSC necessary folder? : "+pathFilesUploadedDDS+"---> "+directoryFileDDSExists);
-		if(!fileFilesUploadedDDS.exists()) {
-			if (fileFilesUploadedDDS.mkdirs())
-				ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+pathFilesUploadedDDS,3);
-			else
-				ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+pathFilesUploadedDDS);
-		}
-
-		//ClsLogging.writeFileLogWithoutSession("Exists PSSC necessary folder? : "+pathAdvSearchJrules+"---> "+directoryAdvSearchExists);
-		if(!fileAdvSearchJrules.exists()) {
-			if (fileAdvSearchJrules.mkdirs())
-				ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+pathAdvSearchJrules,3);
-			else
-				ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+pathAdvSearchJrules);
-		}
-
-		//ClsLogging.writeFileLogWithoutSession("Exists PSSC necessary folder? : "+pathAdvSearchSql+"---> "+directoryAdvSearchsqlExists);
-		if(!fileAdvSearchSql.exists()) {
-			if (fileAdvSearchSql.mkdirs())
-				ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+pathAdvSearchSql,3);
-			else
-				ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+pathAdvSearchSql);
-		}
-
-		//ClsLogging.writeFileLogWithoutSession("Exists PSSC necessary folder? : "+pathFilesUploadedConcess+"---> "+directoryFilesConcessionsExists);
-		if(!fileFilesUploadedConcess.exists()) {
-			if (fileFilesUploadedConcess.mkdirs())
-				ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+pathFilesUploadedConcess,3);
-			else
-				ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+pathFilesUploadedConcess);
-		}
-
-		//ClsLogging.writeFileLogWithoutSession("Exists PSSC necessary folder? : "+pathFilesUploadedXML+"---> "+directoryFilesXMLExists);
-		if(!fileFilesUploadedXML.exists()) {
-			if (fileFilesUploadedXML.mkdirs())
-				ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+pathFilesUploadedXML,3);
-			else
-				ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+pathFilesUploadedXML);
-		}
-
-//		try {
-//			File fileResDir = SIGAReferences.getFileReference(SIGAReferences.RESOURCE_FILES.WEB_INF);
-			//ClsLogging.writeFileLogWithoutSession("Exists PSSC necessary folder? : "+ClsConstants.RES_DIR+"---> "+directoryResDirExists);
-//			if(!fileResDir.exists()) {
-//				if (fileResDir.mkdirs())
-//					ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+fileResDir.getAbsolutePath(),3);
-					//ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+ClsConstants.RES_DIR,3);
-//				else
-					//ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+ClsConstants.RES_DIR);
-//					ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+fileResDir.getAbsolutePath());
-//			}
-
-/* Comentado por que no tiene sentido comprobar si existe el directorio properties ni su contenido
-  			File fileResDirStruts = SIGAReferences.getFileReference(SIGAReferences.RESOURCE_FILES.PROPERTIES_DIR);
-			//ClsLogging.writeFileLogWithoutSession("Exists PSSC necessary folder? : "+ClsConstants.RESOURCES_DIR_STRUTS+"---> "+directoryResDirStrutsExists);
-			if(!fileResDirStruts.exists()) {
-				if (fileResDirStruts.mkdirs())
-					ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+fileResDirStruts.getAbsolutePath(),3);
-					//ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+ClsConstants.RESOURCES_DIR_STRUTS,3);
-				else
-					//ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+ClsConstants.RESOURCES_DIR_STRUTS);
-					ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+fileResDirStruts.getAbsolutePath());
-			}
-		} catch (IOException e){
-			ClsLogging.writeFileLogWithoutSession("Error: "+e.toString());
-			e.printStackTrace();
-		} catch (URISyntaxException e){
-			ClsLogging.writeFileLogWithoutSession("Error: "+e.toString());
-			e.printStackTrace();
-		}
-*/
-
-		//ClsLogging.writeFileLogWithoutSession("Exists PSSC necessary folder? : "+pathImagesAficons + "---> "+directoryResDirImagesIconsAfExists);
-		if(!fileResDirImagesIconsAf.exists()) {
-			if (fileResDirImagesIconsAf.mkdirs())
-				ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+pathImagesAficons,3);
-			else
-				ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+pathImagesAficons);
-		}
-
-		//ClsLogging.writeFileLogWithoutSession("Exists PSSC necessary folder? : "+pathImagesAticons + "---> "+directoryResDirImagesIconsAtExists);
-		if(!fileResDirImagesIconsAt.exists()) {
-			if (fileResDirImagesIconsAt.mkdirs())
-				ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+pathImagesAticons,3);
-			else
-				ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+pathImagesAticons);
-		}
-
-		//ClsLogging.writeFileLogWithoutSession("Exists PSSC necessary folder? : "+pathImagesIoicons + "---> "+directoryResDirImagesIconsIoExists);
-		if(!fileResDirImagesIconsIo.exists()) {
-			if (fileResDirImagesIconsIo.mkdirs())
-				ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+pathImagesIoicons,3);
-			else
-				ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+pathImagesIoicons);
-		}
-
-		//ClsLogging.writeFileLogWithoutSession("Exists PSSC necessary folder? : "+pathImagesSticons + "---> "+directoryResDirImagesIconsStExists);
-		if(!fileResDirImagesIconsSt.exists()) {
-			if (fileResDirImagesIconsSt.mkdirs())
-				ClsLogging.writeFileLogWithoutSession("<***> Creating PSSC necessary folder: "+pathImagesSticons,3);
-			else
-				ClsLogging.writeFileLogWithoutSession("<***> Error Creating PSSC necessary folder: "+pathImagesSticons);
-		}
+		FileHelper.mkdirs(pathImagesAficons);
+		FileHelper.mkdirs(pathImagesAticons);
+		FileHelper.mkdirs(pathImagesIoicons);
+		FileHelper.mkdirs(pathImagesSticons);
+		FileHelper.mkdirs(pathImagesFindings);
+		FileHelper.mkdirs(pathImagesManActs);
+		FileHelper.mkdirs(pathFilesUploadedConcess);
+		FileHelper.mkdirs(pathFilesUploadedXML);
+		FileHelper.mkdirs(pathAdvSearchJrules);
+		FileHelper.mkdirs(pathAdvSearchSql);
+		FileHelper.mkdirs(pathFilesUploadedDDS);
+		FileHelper.mkdirs(pathFilesUploadedLogbookImp);
+		FileHelper.mkdirs(pathFilesUploadedLogbookExp);
+		FileHelper.mkdirs(pathFilesUploadedSign);
 
 		try {
 			// icons
@@ -500,13 +280,7 @@ public class SIGASvlChkFolders extends SIGAServletAdapter {
 		ClsLogging.writeFileLogWithoutSession("src Dir = " + srcDir,3);
 		ClsLogging.writeFileLogWithoutSession("dst Dir = " + dstDir,3);
 
-		File fdstDir = new File(dstDir);
-
-		if (! fdstDir.exists()) {
-			fdstDir.mkdirs();
-			ClsLogging.writeFileLogWithoutSession("creating  " +  dstDir,3);
-		}
-
+		FileHelper.mkdirs(dstDir);
 		String[ ] fileList = new File(srcDir).list();
 
 		boolean dir;

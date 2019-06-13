@@ -22,6 +22,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
@@ -156,12 +157,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 		    String rutaServidor =
 		    	Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoSJCSJava")+rp.returnProperty("sjcs.directorioSJCSJava"))+
 		    	ClsConstants.FILE_SEP+institucion;
-			File rutaFin=new File(rutaServidor);
-			if (!rutaFin.exists()){
-				if(!rutaFin.mkdirs()){
-					throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
-				}
-			}    
+		    FileHelper.mkdirs(rutaServidor);
 			String nombreFicheroPDF="SolicitudAsistencia_"+System.currentTimeMillis();
 			
 			//Obtengo el bean

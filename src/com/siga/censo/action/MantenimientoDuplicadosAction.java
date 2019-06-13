@@ -45,6 +45,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.FileHelper;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
@@ -1109,8 +1110,7 @@ public class MantenimientoDuplicadosAction extends MasterAction {
 					+ ClsConstants.FILE_SEP + rp.returnProperty("censo.duplicados.directorio");
 			String fechaActual = sdfDateOnly.format(Calendar.getInstance().getTime());
 			String nombreFichero = rutaFichero + ClsConstants.FILE_SEP + "duplicados_" + fechaActual;
-			File ruta = new File(rutaFichero);
-			ruta.mkdirs();
+			FileHelper.mkdirs(rutaFichero);
 
 			File fichero;
 			// semaforo para evitar que se pida la fusion de la misma persona varias veces

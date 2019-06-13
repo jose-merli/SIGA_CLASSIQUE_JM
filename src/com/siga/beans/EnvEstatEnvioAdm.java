@@ -6,13 +6,19 @@
  */
 package com.siga.beans;
 
-import iaik.security.cipher.IDEA;
-
 import java.io.File;
 import java.util.Hashtable;
 import java.util.Vector;
-import com.atos.utils.*;
-import com.siga.Utilidades.*;
+
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
+import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.FileHelper;
+import com.atos.utils.GstDate;
+import com.atos.utils.UsrBean;
+import com.siga.Utilidades.SIGALogging;
+import com.siga.Utilidades.UtilidadesHash;
 import com.siga.envios.form.DefinirEnviosForm;
 import com.siga.general.SIGAException;
 
@@ -252,8 +258,7 @@ public class EnvEstatEnvioAdm extends MasterBeanAdministrador {
 		try {
 			String pathDoc = new EnvDocumentosDestinatariosAdm(this.usrbean).getPathDocumentosFromDB();
 			
-			File auxDirectorios = new File(pathDoc + File.separator + idInstitucion.toString());
-			auxDirectorios.mkdirs();
+			FileHelper.mkdirs(pathDoc + File.separator + idInstitucion.toString());
 			
 			String sFicheroLog = pathDoc + File.separator + idInstitucion.toString() + File.separator
 					+ "logEnvios_" + idInstitucion.toString() + ".log.xls";

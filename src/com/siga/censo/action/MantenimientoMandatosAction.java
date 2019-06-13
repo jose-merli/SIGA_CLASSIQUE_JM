@@ -40,6 +40,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.Paginador;
 import com.siga.Utilidades.UtilidadesHash;
@@ -457,8 +458,7 @@ public class MantenimientoMandatosAction extends MasterAction {
 			int fila=1;
 			
 			String ruta=getDirectorioFicherosCarga(user.getLocation());
-			File path = new File(ruta);
-			path.mkdirs();
+			FileHelper.mkdirs(ruta);
 			
 			StringBuffer nombreFichero = new StringBuffer("Mandatos_" + user.getLocation());
 			nombreFichero.append("_");
@@ -615,9 +615,7 @@ public class MantenimientoMandatosAction extends MasterAction {
 			CenMandatosAdm mandatoAdm = new CenMandatosAdm(user);
 			
 			StringBuffer pathFichero = new StringBuffer(getDirectorioFicherosCarga(user.getLocation()));
-			File path = new File(pathFichero.toString());
-			path.mkdirs();
-			
+			FileHelper.mkdirs(pathFichero.toString());
 			
 			
 			StringBuffer nombreFichero = new StringBuffer(formFile.getFileName().substring(0, formFile.getFileName().lastIndexOf('.')));
@@ -740,8 +738,7 @@ public class MantenimientoMandatosAction extends MasterAction {
     		//retrieve the file data
     		stream = formFile.getInputStream();
     		//write the file to the file specified
-    		File camino = new File (path);
-    		camino.mkdirs();
+    		FileHelper.mkdirs(path);
     		bos = new FileOutputStream(path + File.separator+ newFileName);
     		int bytesRead = 0;
     		byte[] buffer = new byte[8192];

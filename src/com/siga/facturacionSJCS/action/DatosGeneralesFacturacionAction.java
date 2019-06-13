@@ -48,6 +48,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
@@ -225,7 +226,7 @@ public class DatosGeneralesFacturacionAction extends MasterAction {
 		File parentFile = new File(rutaAlmacen, "erroresActuacionesCAM");
 		parentFile = new File(rutaAlmacen, idInstitucion);
 		parentFile = new File(parentFile, idFacturacion);
-		parentFile.mkdirs();
+		FileHelper.mkdirs(parentFile.getAbsolutePath());
 		
 		return parentFile;
 	}

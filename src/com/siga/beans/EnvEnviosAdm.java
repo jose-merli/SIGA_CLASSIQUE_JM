@@ -66,6 +66,7 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
 import com.atos.utils.ExceptionManager;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -2145,8 +2146,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    String sFicheroLog = "";
 	    try {
 	        // RGG creo los directorios
-	    	File auxDirectorios = new File(this.getPathEnvio(sIdInstitucion,sIdEnvio));
-	    	auxDirectorios.mkdirs();
+	    	FileHelper.mkdirs(this.getPathEnvio(sIdInstitucion,sIdEnvio));
 	    	// RGG 08-09-2005 Cambio para que el fichero de log sea unico 
 	        sFicheroLog = this.getPathEnvio(sIdInstitucion,sIdEnvio) + File.separator + "informeEnvio" + ".log.xls"; 
 	        File borrar = new File(sFicheroLog);
@@ -2410,8 +2410,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			    String sFicheroLog = "";
 			    try {
 			        // RGG creo los directorios
-			    	File auxDirectorios = new File(this.getPathEnvio(sIdInstitucion,sIdEnvio));
-			    	auxDirectorios.mkdirs();
+			    	FileHelper.mkdirs(this.getPathEnvio(sIdInstitucion,sIdEnvio));
 			    	// RGG 08-09-2005 Cambio para que el fichero de log sea unico 
 			        sFicheroLog = this.getPathEnvio(sIdInstitucion,sIdEnvio) + File.separator + "informeEnvio" + ".log.xls"; 
 			        File borrar = new File(sFicheroLog);
@@ -2636,8 +2635,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    String sFicheroLog = "";
 	    try {
 	        // RGG creo los directorios
-	    	File auxDirectorios = new File(this.getPathEnvio(sIdInstitucion,sIdEnvio));
-	    	auxDirectorios.mkdirs();
+	    	FileHelper.mkdirs(this.getPathEnvio(sIdInstitucion,sIdEnvio));
 	
 	        sFicheroLog = this.getPathEnvio(sIdInstitucion,sIdEnvio) + File.separator + "informeEnvio" + ".log.xls"; 
 	        File borrar = new File(sFicheroLog);
@@ -2845,7 +2843,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 							txtDocumentos.append(fGenerado.getName());
 							txtDocumentos.append(",");
 							File fCopiado = new File(sCopiado);
-							fCopiado.getParentFile().mkdirs();
+							FileHelper.mkdirs(fCopiado.getParentFile().getAbsolutePath());
 							if (fGenerado.exists()) {
 								copiarFichero(fGenerado,fCopiado);
 							}						
@@ -2900,7 +2898,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 								File fAdjunto = new File(direccionPlantilla);
 								String sCopiadoAdjunto = pathDestino + Pathdocumento;
 								File fCopiadoAdjunto = new File(sCopiadoAdjunto);
-								fCopiadoAdjunto.getParentFile().mkdirs();
+								FileHelper.mkdirs(fCopiadoAdjunto.getParentFile().getAbsolutePath());
 								if (!fAdjunto.exists()) {								
 									if(f2.exists()){
 										/**Renombramos el fichero fAdjunto con el nombre del fichero f2 
@@ -2936,10 +2934,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				File ficheroSalida = null;
 				String rutaServidorDescargasZip = pathDocumentosAdjuntos;
 				rutaServidorDescargasZip += ClsConstants.FILE_SEP+idInstitucion+ClsConstants.FILE_SEP+"temp"+ File.separator;
+				FileHelper.mkdirs(rutaServidorDescargasZip);
 				File ruta = new File(rutaServidorDescargasZip);					
-				if(!ruta.exists()){
-						ruta.mkdirs();
-				}				
 				if (listaParaZip.size()!=0) {
 					ArrayList ficherosPDF= new ArrayList();
 					for (int i=0;i<listaParaZip.size();i++){								
@@ -2952,9 +2948,9 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				 Date hoy = new Date();
 				 SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMdd_HHmm");
 				 String sHoy = sdf2.format(hoy);		
-				 nombreFicheroZIP= sHoy;				 
+				 nombreFicheroZIP= sHoy;
+				 FileHelper.mkdirs(sCopiadoAdjunto);
 				 File fCopiadoAdjunto = new File(sCopiadoAdjunto+nombreFicheroZIP+".zip");
-				 fCopiadoAdjunto.getParentFile().mkdirs();
 				 if (ficheroSalida.exists()) {					
 						copiarFichero(ficheroSalida,fCopiadoAdjunto);						
 						SIGAServicesHelper.borrarDirectorio(ruta);
@@ -3065,12 +3061,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    		
 	    		// Sustituye a lo anterior comentado para coordinar ruta con Juanmi 
 				rutaEtiquetas=getPathEnvio(institucion,envio)+barra;
-				File ficRutaFOP=new File(rutaEtiquetas);
-				if (!ficRutaFOP.exists()){
-					if(!ficRutaFOP.mkdirs()){
-						throw new SIGAException("messages.envios.error.noPlantilla");
-					}
-				}
+				FileHelper.mkdirs(rutaEtiquetas);
 				ficFOP = new File(rutaEtiquetas+"temp_"+envio+".fo");
 				if (ficFOP.exists()){
 					if(!ficFOP.delete()){
@@ -3128,7 +3119,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					ficFOP.delete();
 					
 					// AQUI COPIA EL FICHERO GENERADO DE ETIQUETAS (ficPDF)
-					new File(pathDestino).mkdirs();
+					FileHelper.mkdirs(pathDestino);
 					File destino = new File(pathDestino + File.separator + ficPDF.getName());
 					copiarFichero(ficPDF,destino);
 					
@@ -3433,7 +3424,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	        contadorFicheros++;
 	
 		    	        File fCopiadoGenerado = new File(sCopiadoGenerado);
-		    	        fCopiadoGenerado.getParentFile().mkdirs();
+		    	        FileHelper.mkdirs(fCopiadoGenerado.getParentFile().getAbsolutePath());
 		    	        if (fGenerado.exists()) {
 		    	        	copiarFichero(fGenerado,fCopiadoGenerado);
 		    	        }
@@ -3464,7 +3455,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    	        contadorFicheros++;
 	
 		    	        File fCopiadoAdjunto = new File(sCopiadoAdjunto);
-		    	        fCopiadoAdjunto.getParentFile().mkdirs();
+		    	        FileHelper.mkdirs(fCopiadoAdjunto.getParentFile().getAbsolutePath());
 		    	        if (fAdjunto.exists()) {
 		    	        	copiarFichero(fAdjunto,fCopiadoAdjunto);
 		    	        }
@@ -4191,9 +4182,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				//identificador = identificador + ".doc";
 				String path = admEnvio.getPathEnvio(beanEnvio) + File.separator + "documentosdest";
 	            
-				File crear = new File(path);
-				if (!crear.exists())
-					crear.mkdirs();
+				FileHelper.mkdirs(path);
 				
 	            // Generamos el archivo temporal que se obtendrá de sustituir las etiquetas
 	            // de la plantilla
@@ -4208,9 +4197,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			}else{
 				
 				String path = admEnvio.getPathEnvio(beanEnvio) + File.separator + "documentosdest";
-				File crear = new File(path);
-				if (!crear.exists())
-					crear.mkdirs();
+				FileHelper.mkdirs(path);
 				String nombreFin =  beanEnvio.getIdInstitucion().toString() + "_" + beanEnvio.getIdEnvio().toString() + "_" + beanDestinatario.getIdPersona()+"."+tipoArchivoPlantilla;
 				ficheroSalida = SIGAServicesHelper.copyFile(fPlantilla, path, nombreFin);
 				
@@ -5141,8 +5128,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		
     	try {
     		String newPathDirectorio = getPathEnvio(idInstitucion.toString(),idNewEnvio.toString());
-    		File fDirectorio = new File(newPathDirectorio);
-        	fDirectorio.mkdirs();
+			FileHelper.mkdirs(newPathDirectorio);
     		String oldPathDirectorio = getPathEnvio(idInstitucion.toString(),idOldEnvio.toString());
     		
     		

@@ -15,6 +15,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
@@ -172,9 +173,8 @@ public class GenerarImpreso190Action extends MasterAction {
 	    	String sDirectorio = getPathTemporal(user);
     		
 	    	// creo el directorio si no existe
-	    	File camino = new File (sDirectorio + File.separator + user.getLocation());
-    		camino.mkdirs();
-
+	    	FileHelper.mkdirs(sDirectorio + File.separator + user.getLocation());
+    		
 	    	String sNombreCompletoFichero=sDirectorio + File.separator + user.getLocation() + File.separator + sNombreFichero;
 			File fichero = new File(sNombreCompletoFichero);
 			

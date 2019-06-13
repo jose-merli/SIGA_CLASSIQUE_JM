@@ -20,6 +20,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.CLSAdminLog;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.administracion.SIGAConstants;
 import com.siga.administracion.SIGAGestorInterfaz;
@@ -137,8 +138,7 @@ public class SIGAGestorInterfazAction extends MasterAction {
 			    		//write the file to the file specified
 
 			    		// RGG para asegurar que se crea el path
-			    		File aux = new File(pathImagenes);
-			    		aux.mkdirs();
+			    		FileHelper.mkdirs(pathImagenes);
 			    		
 			    		bos = new FileOutputStream(pathImagenes+nombreLogo);
 			    		int bytesRead = 0;

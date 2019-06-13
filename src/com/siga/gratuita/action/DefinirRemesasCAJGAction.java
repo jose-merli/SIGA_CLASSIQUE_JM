@@ -68,6 +68,7 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -1716,16 +1717,11 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 					String pathdocumento = sRutaJava + ClsConstants.FILE_SEP + nombreFicheroPorDefecto;
 					if (rutaFicheroZIP != null) {
 						pathdocumento = rutaFicheroZIP + ClsConstants.FILE_SEP + nombreFicheroPorDefecto;
-						File file = new File(rutaFicheroZIP);
-						file.mkdirs();
+						FileHelper.mkdirs(rutaFicheroZIP);
 					}					
 									
 					fileZIP = MasterWords.doZip(ficheros, pathdocumento);					
 				}
-				
-				
-				
-				
 			} else {
 				// no devuelve ningun resultado la consulta
 				if (numeroEJGs != null && Integer.parseInt(numeroEJGs) > 0) {
@@ -2216,9 +2212,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			imprimirCabecera = Boolean.FALSE;
 		}
 
-		File directorio = new File(rutaFichero);
-		directorio.mkdirs();
-
+		FileHelper.mkdirs(rutaFichero);
 		File archivo = new File(rutaFichero + ClsConstants.FILE_SEP + nombreFichero + "." + extension);
 		
 		int i = 2;
@@ -2458,9 +2452,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			}
 
 		}
-		File directorio = new File(rutaFichero);
-		directorio.mkdirs();
-
+		FileHelper.mkdirs(rutaFichero);
 		File archivo = new File(rutaFichero + ClsConstants.FILE_SEP + nombreFichero + "." + extension);
 
 		int j = 1;

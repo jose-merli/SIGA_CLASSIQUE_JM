@@ -13,6 +13,7 @@ import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesFecha;
 import com.siga.Utilidades.UtilidadesHash;
@@ -292,10 +293,8 @@ public class AtosAlterMutuaService extends JtaBusinessServiceTemplate
 			    rutaPDF.append( rp.returnProperty("alterMutua.directorioLog") );
 			    rutaPDF.append( "/" + institucion );
 			    //File folder = new File(rutaPDF.toString());
-   	   			File fDirectorio = new File(rutaPDF.toString());
-   	   			if(!fDirectorio.exists())
-   	   				fDirectorio.mkdirs();
-			    rutaPDF.append( "/" +NIF + "_" +  UtilidadesString.getTimeStamp() + ".pdf" );
+			    FileHelper.mkdirs(rutaPDF.toString());
+   	   			rutaPDF.append( "/" +NIF + "_" +  UtilidadesString.getTimeStamp() + ".pdf" );
 				FileOutputStream fos;
 				File ficheroTemp = new File(rutaPDF.toString()); 
 				fos = new FileOutputStream(ficheroTemp);

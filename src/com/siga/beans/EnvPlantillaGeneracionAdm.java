@@ -17,6 +17,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.FileHelper;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -322,9 +323,8 @@ public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
 
 					Hashtable htNombresRecursos = new Hashtable();
 
-					File fDirectorio = new File(sDirectorioFinal + File.separator + sDirectorioRecursos);
-					fDirectorio.mkdirs();
-
+					FileHelper.mkdirs(sDirectorioFinal + File.separator + sDirectorioRecursos);
+					
 					while (enumer.hasMoreElements()) {
 						ZipEntry ze = (ZipEntry) enumer.nextElement();
 						String sNombreAux = ze.getName();
@@ -638,8 +638,7 @@ public class EnvPlantillaGeneracionAdm extends MasterBeanAdministrador
 				throw new ClsExceptions ("Error de lectura de la plantilla. "+aux.getAbsolutePath());
 //				throw new SIGAException("facturacion.nuevoFichero.literal.errorLectura");
 		    }		   	
-   	 		File auxDir = new File(aux.getParent());
-			auxDir.mkdirs();
+			FileHelper.mkdirs(aux.getParent());
 	    
    	        return aux;
    	    }

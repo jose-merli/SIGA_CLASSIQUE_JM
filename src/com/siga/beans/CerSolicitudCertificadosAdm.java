@@ -22,6 +22,7 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -302,9 +303,8 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 
             String sRuta = getRutaCertificadoDirectorio(solicitud, sRutaBD);
 
+            FileHelper.mkdirs(sRuta);
             File fDirectorio = new File(sRuta);
-
-            fDirectorio.mkdirs();
 
             //Antes de crear el fichero borramos el que exista (casos en los que se guarda un .pdf y ya exista un .zip)
             String[] myFiles = fDirectorio.list(new FilenameFilter() {
@@ -422,9 +422,8 @@ public class CerSolicitudCertificadosAdm extends MasterBeanAdministrador
 
             String sRuta = getRutaCertificadoDirectorio(solicitud, sRutaBD);
 
+            FileHelper.mkdirs(sRuta);
             File fDirectorio = new File(sRuta);
-
-            fDirectorio.mkdirs();
             
             sRuta= getRutaCertificadoDirectorio(solicitud, sRutaBD) + File.separator + solicitud.getIdSolicitud() +"-"+i+".pdf";
 

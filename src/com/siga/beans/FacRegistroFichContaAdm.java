@@ -18,6 +18,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -369,8 +370,7 @@ public class FacRegistroFichContaAdm extends MasterBeanAdministrador {
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 			String sRutaFisicaJava = rp.returnProperty("contabilidad.directorioFisicoContabilidad");
 			String directorio = sRutaFisicaJava+File.separator+this.usrbean.getLocation();
-			File fDirectorio = new File(directorio);
-			fDirectorio.mkdirs();
+			FileHelper.mkdirs(directorio);
 
 			String nombreFichero = beanContab.getNombreFichero();
 			String fechaDesde = GstDate.getFormatedDateShort("ES",beanContab.getFechaDesde());

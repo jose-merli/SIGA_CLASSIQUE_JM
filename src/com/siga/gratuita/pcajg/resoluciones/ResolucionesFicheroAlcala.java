@@ -6,6 +6,7 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import com.atos.utils.FileHelper;
 import com.siga.general.SIGAException;
 
 public class ResolucionesFicheroAlcala extends ResolucionesFicheroAbstract{
@@ -18,8 +19,8 @@ public class ResolucionesFicheroAlcala extends ResolucionesFicheroAbstract{
 		try {
 			zipFile = new ZipFile(ficheroCliente);		
 			
+			FileHelper.mkdirs(getDirectorioArchivos(idInstitucion));
 			File dirArchivos = new File(getDirectorioArchivos(idInstitucion));
-			dirArchivos.mkdirs();
 			
 			File destino = null;
 			Enumeration<? extends ZipEntry> eZip = zipFile.entries();

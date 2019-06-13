@@ -481,13 +481,8 @@ public class ClsLogging{
 
 				if (bStoreFile)
 				{
-					File ficLog = new File(fileName.substring(0, fileName.lastIndexOf(System.getProperty("file.separator"))));
-					if (!ficLog.exists())
-					{
-						ficLog.mkdirs();
-					}
-					ficLog = new File(fileName+sdfShort.format(dat) +".out");
-					//PrintWriter printer = new PrintWriter(new BufferedWriter(new FileWriter(fileName+sdffile.format(dat) +".out", true)));
+					FileHelper.mkdirs(fileName.substring(0, fileName.lastIndexOf(System.getProperty("file.separator"))));
+					File ficLog = new File(fileName+sdfShort.format(dat) +".out");
 					printer = new PrintWriter(new BufferedWriter(new FileWriter(ficLog, true)));
 					printer.println(sdfLong.format(dat)+","+s);
 					printer.flush();

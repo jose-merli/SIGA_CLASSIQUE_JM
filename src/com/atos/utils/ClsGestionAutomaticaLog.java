@@ -143,26 +143,20 @@ public class ClsGestionAutomaticaLog {
 	
 	public static int contarLineas(){
 		int contador = 0;
-		try{			
-			ficLog = new File(fileName);
-		    if (!ficLog.exists()){
-		       	ficLog.mkdirs();	
-		       	ficLog = new File(fileName+File.separator+nomFich);			       
-	        }
-		    else{
-		    	ficLog = new File(fileName+File.separator+nomFich);
-		    	try {
-					if(!ficLog.createNewFile()){
-						BufferedReader sarchivo = new BufferedReader(new FileReader(ficLog));
-				    	while (sarchivo.readLine() != null){
-				    		contador++;
-				    	}
-				    	sarchivo.close();						
-					}
-				}catch(Exception _ex) {
-					ClsLogging.writeFileLogWithoutSession("Gestion automatica de logs : Excepcion contando lineas" + _ex.toString());
-				}				    	
-		    }
+		try{
+			FileHelper.mkdirs(fileName);
+	       	ficLog = new File(fileName+File.separator+nomFich);			       
+	    	try {
+				if(!ficLog.createNewFile()){
+					BufferedReader sarchivo = new BufferedReader(new FileReader(ficLog));
+			    	while (sarchivo.readLine() != null){
+			    		contador++;
+			    	}
+			    	sarchivo.close();						
+				}
+			}catch(Exception _ex) {
+				ClsLogging.writeFileLogWithoutSession("Gestion automatica de logs : Excepcion contando lineas" + _ex.toString());
+			}				    	
 		}catch(Exception _ex) {
 			ClsLogging.writeFileLogWithoutSession("Gestion automatica de logs : Excepcion contando lineas" + _ex.toString());
 	    }

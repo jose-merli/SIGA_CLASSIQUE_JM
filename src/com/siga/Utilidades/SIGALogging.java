@@ -23,6 +23,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ExceptionManager;
+import com.atos.utils.FileHelper;
 
 
 public class SIGALogging
@@ -46,11 +47,7 @@ public class SIGALogging
 	public SIGALogging(String nombreFichero) {
 	
 		f = new File(nombreFichero);
-		File path = new File(f.getParent());
-		if (!path.exists())
-		{
-			path.mkdirs();
-		}
+		FileHelper.mkdirs(f.getParent());
 	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 //		ReadProperties rp = new ReadProperties("SIGA.properties");	
 		iniciado = false;

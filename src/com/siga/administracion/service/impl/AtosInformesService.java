@@ -22,6 +22,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.form.InformeForm;
@@ -505,10 +506,8 @@ public class AtosInformesService extends JtaBusinessServiceTemplate
    				ClsLogging.writeFileLog("Entramos uploadFile.getDirectorio...",3);
    	   			String directorio = getDirectorio(informeForm);
    	   			ClsLogging.writeFileLog("uploadFile.directorio..."+directorio,3);
-   	   			File fDirectorio = new File(directorio);
    	   			
-   	   			if(fDirectorio!=null && !fDirectorio.exists())
-   	   				fDirectorio.mkdirs();
+   	   			FileHelper.mkdirs(directorio);
    	   			ClsLogging.writeFileLog("uploadFile.inputStream...",3);
    				stream = theFile.getInputStream();
    				StringBuffer pathInforme = new StringBuffer(directorio);

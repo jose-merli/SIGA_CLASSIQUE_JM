@@ -5,6 +5,8 @@ import java.io.File;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
+import com.atos.utils.FileHelper;
+
 
 
 public class DirectoriosRemesasCAJG {
@@ -50,15 +52,12 @@ public class DirectoriosRemesasCAJG {
 					if (file.isFile()) {
 						String name = file.getName();
 						String idRemesa = name.substring(0, name.indexOf("_"));
-						File newDir = new File(dirInstitucion, idRemesa);						
-						if (newDir.mkdirs()) {
-							File newFile = new File(newDir, name);
-							file.renameTo(newFile);
-							System.out.println("Moviendo de \"" + file.getAbsolutePath() + "\" a \"" + newFile.getAbsolutePath() + "\"");
-							ficherosMovidos++;
-						} else {
-							System.out.println("No se ha podido crear el directorio " + newDir.getAbsolutePath());
-						}
+						File newDir = new File(dirInstitucion, idRemesa);
+						FileHelper.mkdirs(newDir.getAbsolutePath());
+						File newFile = new File(newDir, name);
+						file.renameTo(newFile);
+						System.out.println("Moviendo de \"" + file.getAbsolutePath() + "\" a \"" + newFile.getAbsolutePath() + "\"");
+						ficherosMovidos++;
 					}
 				}
 			}

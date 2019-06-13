@@ -16,6 +16,7 @@ import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.FileHelper;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -209,10 +210,7 @@ public class EnvImagenPlantillaAdm extends MasterBeanAdministrador
    			//String sNombrePlantilla = form.getIdTipoEnvios() + "_" + form.getIdPlantillaEnvios();
    			String directorioImagen = imagenPlantilla.getDirectorioImagen(File.separator);
 
-   			File fDirectorio = new File(directorioImagen);
-   			if(!fDirectorio.exists())
-   				fDirectorio.mkdirs();
-
+   			FileHelper.mkdirs(directorioImagen);
 
    			try {
 				stream = theFile.getInputStream();

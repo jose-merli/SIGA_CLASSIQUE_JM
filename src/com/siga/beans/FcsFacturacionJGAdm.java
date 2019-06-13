@@ -41,6 +41,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
 import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -1153,8 +1154,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
     		String sNombreLog = "IMPRESO190_"+anio+".log.xls";
 			
 	    	// creo el directorio si no existe:
-	    	File camino = new File (sCamino);
-    		camino.mkdirs();
+    		FileHelper.mkdirs(sCamino);
 
 	    	String sNombreCompletoFichero = sCamino + File.separator + sNombreFichero;
 	    	String sNombreFicheroErrorLog = sCamino + File.separator + sNombreLog;	    	

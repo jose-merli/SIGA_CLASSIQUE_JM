@@ -21,6 +21,7 @@ import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
@@ -794,12 +795,7 @@ public class DefinirListaGuardiasAction extends MasterAction {
 	    		}
 	    		
 	     		rutaServidor += barra+institucion;
-				File rutaFOP = new File(rutaServidor);
-				if (!rutaFOP.exists()){
-					if(!rutaFOP.mkdirs()){
-						throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
-					}
-				}     		
+	     		FileHelper.mkdirs(rutaServidor);
 				
 				Plantilla plantilla = new Plantilla(this.getUserBean(request));		    				
 			    String rutaPlantilla = rp.returnProperty("sjcs.directorioFisicoListaGuardiasJava") + rp.returnProperty("sjcs.directorioListaGuardiasJava");
@@ -971,167 +967,4 @@ public class DefinirListaGuardiasAction extends MasterAction {
         return  todos;
 	}
 
-//	protected String finalizarInforme(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException  {
-//	    
-//		String resultado="exito";
-//		String institucion="";
-//		File ficFOP=null;
-//			
-//		try {
-//			
-//			DefinirListaGuardiasForm miForm = (DefinirListaGuardiasForm) formulario;
-//			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-//			
-//			// Obtengo el periodo a consultar
-//			String fechaInicio=miForm.getFechaInicio();
-//			String fechaFin=miForm.getFechaFin();
-//			
-//			// Las listas de guardias a analizar
-//			ScsInclusionGuardiasEnListasAdm admIGL =new ScsInclusionGuardiasEnListasAdm(this.getUserBean(request));
-//			Hashtable paramBusqueda=new Hashtable();
-//			paramBusqueda.put(ScsInclusionGuardiasEnListasBean.C_IDINSTITUCION,miForm.getIdInstitucion());
-//			paramBusqueda.put(ScsInclusionGuardiasEnListasBean.C_IDLISTA,miForm.getIdLista());
-//			Vector listasIncluidas=admIGL.select(paramBusqueda);
-//							
-//			Enumeration listaResultados=listasIncluidas.elements();
-//			
-//			// Generacion de cartas propiamente dichas
-//			if (listaResultados.hasMoreElements()){
-///*
-//				String nombreFicheroPDF="";
-//				
-//				boolean correcto=true;
-//				institucion=usr.getLocation();
-//				
-//				// Gestion de nombres de ficheros
-//				ReadProperties rp = new ReadProperties("SIGA.properties");			
-//			    String rutaServidor = rp.returnProperty("sjcs.directorioFisicoSJCSJava")+rp.returnProperty("sjcs.directorioSJCSJava");
-//	    		String barra = "";
-//	    		String nombreFichero = "";
-//	    		if (rutaServidor.indexOf("/") > -1){ 
-//	    			barra = "/";
-//	    		}
-//	    		if (rutaServidor.indexOf("\\") > -1){ 
-//	    			barra = "\\";
-//	    		}    		
-//	     		rutaServidor += barra+institucion;
-//				File rutaFOP=new File(rutaServidor);
-//				if (!rutaFOP.exists()){
-//					if(!rutaFOP.mkdirs()){
-//						throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
-//					}
-//				}     		
-//	     		nombreFichero=rutaServidor+barra+institucion+"_"+this.getUserName(request).toString()+".fo";     		
-//				ficFOP = new File(nombreFichero);
-//				if (ficFOP.exists()){
-//					if(!ficFOP.delete()){
-//						throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
-//					}
-//				}
-//				
-//				Plantilla plantilla = new Plantilla();
-//		    				
-//			    String rutaPlantilla = rp.returnProperty("sjcs.directorioFisicoListaGuardiasJava")+rp.returnProperty("sjcs.directorioListaGuardiasJava");
-//	    		if (rutaPlantilla.indexOf("/") > -1){
-//	    			barra = "/";
-//	    		}
-//	    		if (rutaPlantilla.indexOf("\\") > -1){
-//	    			barra = "\\";
-//	    		}
-//	    		
-//	    		// Insertamos cabecera del documento
-////	    		 Comentado por PDM, todo esta en las plantillas
-//	    		//correcto=plantilla.insercionCabeceraSimpleDocumentoFOP(ficFOP,"listaGuardias","1","1","1.5","1.2");
-//	    		
-//	    		// Obtenemos nombre de la institucion
-//	    		CenInstitucionAdm admInstitucion = new CenInstitucionAdm(this.getUserBean(request)); 
-//	    		String nombreInstitucion=admInstitucion.getNombreInstitucion(institucion);
-//	    		
-////	    		 Comentado por PDM,No hace falta poner un numero por defecto de registros
-////               porque FOP pagina automaticamente cuando los datos estan en tablas	    		
-//	    		//int numeroLineas=40;
-//	    		Vector datos = new Vector();
-//	    		Vector guardias = new Vector();
-//
-//				ScsGuardiasTurnoAdm admGT = new ScsGuardiasTurnoAdm(this.getUserBean(request));
-//*/	    		
-//				while(listaResultados.hasMoreElements()){
-//					ScsInclusionGuardiasEnListasBean fila=(ScsInclusionGuardiasEnListasBean)listaResultados.nextElement();
-//					// Recopilacion datos
-//					/* RGG 08/10/2007 cambio para que obtenga todas las guardias del tiron
-//					 * Vector datosParciales= admGT.getDatosListaGuardias(fila.getIdInstitucion().toString(),fila.getIdTurno().toString(),fila.getIdGuardia().toString(),fechaInicio,fechaFin);
-//					int i=0;
-//					while (i<datosParciales.size()){
-//						datos.add(datosParciales.elementAt(i));
-//						i++;
-//					}
-//					*/
-//					Vector guardia = new Vector();
-//					guardia.add(fila.getIdTurno().toString());
-//					guardia.add(fila.getIdGuardia().toString());
-//
-//					
-//				}
-///*
-//				// RGG
-//				datos = admGT.getDatosListaGuardias(institucion,guardias,fechaInicio,fechaFin);  
-//*/				
-////				 Comentado por PDM
-//	    		/*if (datos.size()<=numeroLineas){
-//	    			correcto=plantilla.obtencionPaginaInformeListaGuardias(institucion, ficFOP, datos, nombreInstitucion, fechaInicio, fechaFin, datos.size(),rutaPlantilla+barra+institucion+barra,usr.getLanguage());    			
-//	    		}
-//	    		else{*/
-//	    			/*correcto=plantilla.obtencionPaginaInformeListaGuardias(institucion, ficFOP, datos, nombreInstitucion, fechaInicio, fechaFin, numeroLineas,rutaPlantilla+barra+institucion+barra,usr.getLanguage());
-//	        		for (int cont=0; cont<numeroLineas; cont++){
-//	        			datos.removeElementAt(0);
-//	        		}
-//	        		while (datos.size()>numeroLineas){
-//	        			correcto=plantilla.insercionSimplePaginaNuevaDocumentoFOP(ficFOP);
-//		    			correcto=plantilla.obtencionPaginaInformeListaGuardias(institucion, ficFOP, datos, nombreInstitucion, fechaInicio, fechaFin, numeroLineas,rutaPlantilla+barra+institucion+barra,usr.getLanguage());
-//	            		for (int cont=0; cont<numeroLineas; cont++){
-//	            			datos.removeElementAt(0);
-//	            		}
-//	        	    }*/
-//        			//correcto=plantilla.insercionSimplePaginaNuevaDocumentoFOP(ficFOP);
-///*	    			correcto=plantilla.obtencionPaginaInformeListaGuardias(institucion, ficFOP, datos, nombreInstitucion, fechaInicio, fechaFin, datos.size(),rutaPlantilla+barra+institucion+barra,usr.getLanguage());
-// *          		for (int cont=0; cont<datos.size(); cont++){
-//	        			datos.removeElementAt(0);
-//	        		}
-//*/	        		    			
-//	    		//}
-//	    		
-//				// Insertamos fin documento
-//	        	// Comentado por PDM, todo esta en las plantillas	
-//	    		//correcto=plantilla.insercionPieSimpleDocumentoFOP(ficFOP);
-///*				
-//				// Obtencion fichero PDF
-//				if (correcto){
-//					nombreFicheroPDF="listaGuardias_"+UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","-").replaceAll(":","#").replaceAll(" ","_")+".pdf";
-//					File ficPDF=new File(rutaServidor+barra+nombreFicheroPDF); 
-//					plantilla.convertFO2PDF(ficFOP, ficPDF, rutaPlantilla+File.separator+institucion);
-//					ficFOP.delete();
-//				}
-//				else{
-//					ficFOP.delete();					
-//				}
-//				
-//			request.setAttribute("nombreFichero", nombreFicheroPDF);
-//			request.setAttribute("rutaFichero", rutaServidor+barra+nombreFicheroPDF);
-//			resultado="descargaFichero";
-//*/			
-//			}
-//			else{
-//			    resultado = exito("messages.listaGuardias.definirListaGuardias.generarInforme.sinGuardias.error",request);
-//				// Por el cambio 2417 Quitar este mensaje: throw new ClsExceptions("Se ha producido un error en la generación de informes.");
-//			} 
-//			
-//		}
-//		catch (Exception e) 
-//		{
-//			ficFOP.delete();
-//			throwExcp("messages.general.error",new String[] {"modulo.gratuita"},e,null);
-//		} 
-//        return resultado;
-//	}
-	
 }

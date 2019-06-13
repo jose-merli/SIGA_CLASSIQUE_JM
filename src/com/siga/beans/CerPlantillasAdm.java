@@ -22,6 +22,7 @@ import java.util.zip.ZipOutputStream;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -400,8 +401,7 @@ public class CerPlantillasAdm extends MasterBeanAdministrador
 
 	                Hashtable htNombresRecursos = new Hashtable();
 
-	                File fDirectorio = new File(sDirectorioFinal + File.separator + sDirectorioRecursos);
-                    fDirectorio.mkdirs();
+	                FileHelper.mkdirs(sDirectorioFinal + File.separator + sDirectorioRecursos);
 
 	                while (enumer.hasMoreElements())
 	                {

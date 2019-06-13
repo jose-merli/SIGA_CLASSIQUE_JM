@@ -189,20 +189,15 @@ public class CLSAdminLog {
 	
 	protected static int contarLineas(){
 		int contador = 0;
-		try{			
-			ficLog = new File(fileName);
-			if (!ficLog.exists()){
-				ficLog.mkdirs();	
-			
-			}else{
-				ficLog = new File(fileName+File.separator+nomFich);
-				if(!ficLog.createNewFile()){
-					BufferedReader sarchivo = new BufferedReader(new FileReader(ficLog));
-					while (sarchivo.readLine() != null){
-						contador++;
-					}
-					sarchivo.close();						
+		try{
+			FileHelper.mkdirs(fileName);
+			ficLog = new File(fileName+File.separator+nomFich);
+			if(!ficLog.createNewFile()){
+				BufferedReader sarchivo = new BufferedReader(new FileReader(ficLog));
+				while (sarchivo.readLine() != null){
+					contador++;
 				}
+				sarchivo.close();						
 			}
 		}catch(Exception _ex) {
 			ClsLogging.writeFileLogError("Error Contando lineas Log:"+_ex.toString(),_ex,1);

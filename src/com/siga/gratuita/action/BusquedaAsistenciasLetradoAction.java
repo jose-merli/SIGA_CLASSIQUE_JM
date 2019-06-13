@@ -23,6 +23,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
@@ -880,18 +881,9 @@ public class BusquedaAsistenciasLetradoAction extends MasterAction {
 		    String rutaServidor =
 		    	Plantilla.obtenerPathNormalizado(rp.returnProperty("sjcs.directorioFisicoSJCSJava")+rp.returnProperty("sjcs.directorioSJCSJava"))+
 		    	ClsConstants.FILE_SEP+institucion;
-
-		    rutaFin=new File(rutaServidor);
-			if (!rutaFin.exists()){
-				if(!rutaFin.mkdirs()){
-					throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
-				}
-			}    
+		    FileHelper.mkdirs(rutaServidor);
 			String rutaServidorTmp=rutaServidor+ClsConstants.FILE_SEP+"tmp_asistencias_"+System.currentTimeMillis();
-			rutaTmp=new File(rutaServidorTmp);
-			if(!rutaTmp.mkdirs()){
-				throw new SIGAException("facturacion.nuevoFichero.literal.errorAcceso");					
-			}
+			FileHelper.mkdirs(rutaServidorTmp);
 			
 		    //obtener los datos comunes
 		    Hashtable datosComunes= this.obtenerDatosComunes(request);
