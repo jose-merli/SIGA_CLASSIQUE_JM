@@ -25,6 +25,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.beans.CajgEJGRemesaAdm;
 import com.siga.beans.CajgEJGRemesaBean;
@@ -121,7 +122,7 @@ public abstract class SIGAWSClientAbstract {
 		rutaAlmacen += File.separator + idRemesa;
 		
 		File file = new File(rutaAlmacen + File.separator + "log");
-		file.mkdirs();
+		FileHelper.mkdirs(rutaAlmacen);
 		file = new File(file, "incidencias.log");
 		return file;
 	}
@@ -138,7 +139,7 @@ public abstract class SIGAWSClientAbstract {
 		rutaAlmacen += File.separator + idInstitucion;
 		
 		File file = new File(rutaAlmacen + File.separator + "log");
-		file.mkdirs();
+		FileHelper.mkdirs(rutaAlmacen);
 		file = new File(file, "incidencias.log");
 		return file;
 	}
@@ -599,7 +600,7 @@ public abstract class SIGAWSClientAbstract {
 		rutaAlmacen += File.separator + idRemesa;
 		
 		File file = new File(rutaAlmacen + File.separator + SIGAWSClientAbstract.rutaOUT);
-		file.mkdirs();
+		FileHelper.mkdirs(rutaAlmacen + File.separator + SIGAWSClientAbstract.rutaOUT);
 		file = new File(file, fileName);
 		return file;
 	}

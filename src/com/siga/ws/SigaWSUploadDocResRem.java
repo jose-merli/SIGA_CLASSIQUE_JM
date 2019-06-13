@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,11 +18,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.apache.struts.upload.FormFile;
@@ -36,6 +30,7 @@ import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -46,7 +41,6 @@ import com.siga.beans.CajgRemesaResolucionAdm;
 import com.siga.beans.CajgRemesaResolucionBean;
 import com.siga.beans.CajgRemesaResolucionFicheroAdm;
 import com.siga.beans.CajgRemesaResolucionFicheroBean;
-import com.siga.beans.GenParametrosAdm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.pcajg.resoluciones.ResolucionesFicheroAbstract;
 import com.siga.informes.MasterWords;
@@ -194,7 +188,7 @@ public class SigaWSUploadDocResRem {
 		
 		File parentFile = new File(rutaAlmacen, idRemesaResolucion);
 		deleteFiles(parentFile);			
-		parentFile.mkdirs();
+		FileHelper.mkdirs(parentFile.getAbsolutePath());
 		
 		return parentFile;
 	} 
@@ -412,7 +406,7 @@ public class SigaWSUploadDocResRem {
 	public static File getLogFile(File parentFile, String nombreFichero) {
 		File logFile = new File(parentFile, AppConstants.DIRECTORIO_CAJG_REMESARESOLUCIONES_LOG);
 		deleteFiles(logFile);
-		logFile.mkdirs();
+		FileHelper.mkdirs(logFile.getAbsolutePath());
 		logFile = new File(logFile, nombreFichero + AppConstants.REMESARESOLUCIONES_SUFIJO_LOG);
 		return logFile;
 	}

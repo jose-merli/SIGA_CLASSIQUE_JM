@@ -44,6 +44,7 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.SIGALogging;
@@ -854,8 +855,8 @@ public class Facturacion {
     								ClsConstants.FILE_SEP + beanP.getIdInstitucion().toString() + 
     								ClsConstants.FILE_SEP + idSerieFacturacion.toString() + 
     								"_" + idProgramacion.toString();
+    						FileHelper.mkdirs(ruta);
     						File rutaPDF = new File(ruta);
-    						rutaPDF.mkdirs();
     						if (!rutaPDF.exists()) {
     							throw new SIGAException("messages.facturacion.comprueba.noPathFacturas");					
     						} else {
@@ -1533,14 +1534,7 @@ public class Facturacion {
     			barraTemporal = "\\";
     		}    		
     		rutaTemporal += barraTemporal+institucion.toString();
-			File rutaFOP=new File(rutaTemporal);
-			//Comprobamos que exista la ruta y sino la creamos
-			if (!rutaFOP.exists()){
-				if(!rutaFOP.mkdirs()){
-					// ESCRIBO EN EL LOG
-					throw new SIGAException("messages.facturacion.almacenar.rutaTemporalMal");					
-				}
-			}
+    		FileHelper.mkdirs(rutaTemporal);
 			
 			// Obtencion de la ruta de donde se obtiene la plantilla adecuada			
 		    String rutaPlantilla = rp.returnProperty("facturacion.directorioFisicoPlantillaFacturaJava")+rp.returnProperty("facturacion.directorioPlantillaFacturaJava");

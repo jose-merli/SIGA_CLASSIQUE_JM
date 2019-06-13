@@ -16,6 +16,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.aspose.words.Document;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.administracion.form.InformeForm;
@@ -164,9 +165,7 @@ public class InformePersonalizable extends MasterReport
 		if (!plantilla.exists()) // si no existe la plantilla, generar un Excel
 			throw new SIGAException("noExistePlantilla");
 		Document doc = words.nuevoDocumento();
-		File crear = new File(rutaAlm);
-		if (!crear.exists())
-			crear.mkdirs();
+		FileHelper.mkdirs(rutaAlm);
 		ArrayList<File> listaFicheros = new ArrayList<File> ();
 
 		// obteniendo los tipos de filtros obligatorios
@@ -349,9 +348,7 @@ public class InformePersonalizable extends MasterReport
 		Vector<AdmConsultaInformeConsultaBean> consultas = consultaAdm.selectConsultas(consultaHash);
 
 		// creando la ruta de salida
-		File crear = new File(rutaAlm);
-		if (!crear.exists())
-			crear.mkdirs();
+		FileHelper.mkdirs(rutaAlm);
 
 		ArrayList<File> listaFicheros = new ArrayList<File> ();
 
@@ -484,9 +481,7 @@ public class InformePersonalizable extends MasterReport
 		if (!plantilla.exists()) // si no existe la plantilla, generar un Excel
 			throw new SIGAException("No existe la plantilla");
 		Document doc = words.nuevoDocumento();
-		File crear = new File(rutaAlm);
-		if (!crear.exists())
-			crear.mkdirs();
+		FileHelper.mkdirs(rutaAlm);
 		
 		doc = words.sustituyeRegionDocumento(doc, "region", vDatos);
 		
@@ -540,7 +535,7 @@ public class InformePersonalizable extends MasterReport
 		+ ClsConstants.FILE_SEP
 		+ informe.getDirectorio() + ClsConstants.FILE_SEP
 		+ (idinstitucionInforme.equals("0") ? "2000" : idinstitucionInforme) + ClsConstants.FILE_SEP;
-		new File(rutaAlm).mkdirs();
+		FileHelper.mkdirs(rutaAlm);
 		
 
 			try {
@@ -663,8 +658,7 @@ public class InformePersonalizable extends MasterReport
 			String nombreFicheroZIP = tipoInformeBean.getDescripcion().trim() + "_"
 			+ idInstitucion + "_" + userBean.getUserName() + "_"
 			+ UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/", "").replaceAll(":", "").replaceAll(" ", "");
-			File ruta = new File(rutaServidorDescargasZip);
-			ruta.mkdirs();
+			FileHelper.mkdirs(rutaServidorDescargasZip);
 			Plantilla.doZip(rutaServidorDescargasZip, nombreFicheroZIP, listaFicheros);
 			ficheroSalida= new File(rutaServidorDescargasZip+ClsConstants.FILE_SEP+nombreFicheroZIP+".zip");
 		}

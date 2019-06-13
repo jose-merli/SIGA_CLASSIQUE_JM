@@ -43,6 +43,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstStringTokenizer;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
@@ -280,7 +281,7 @@ public class MasterReport
 			// 2.1. obteniendo ruta para fichero intermedio FOP
 			rutaFOP = rutaServidorPlantillas + ClsConstants.FILE_SEP
 					+ "tmp";
-			new File(rutaFOP).mkdirs();
+			FileHelper.mkdirs(rutaFOP);
 			rutaFicheroFOP = rutaFOP + ClsConstants.FILE_SEP
 					+ nombreFicheroGenerado + ".fo";
 			ficheroFOP = new File(rutaFicheroFOP);
@@ -294,7 +295,7 @@ public class MasterReport
 
 			// 3. generando PDF final
 			// 3.1. obteniendo ruta para fichero PDF final
-			new File(rutaServidorDescargas).mkdirs();
+			FileHelper.mkdirs(rutaServidorDescargas);
 			rutaFicheroPDF = rutaServidorDescargas + nombreFicheroGenerado
 					+ ".pdf";
 			ficheroPDF = new File(rutaFicheroPDF);
@@ -377,8 +378,7 @@ public class MasterReport
 			// GENERACION DEL FICHERO FOP DEL USUARIO:nombre del fichero generado a partir del nombre de la plantilla concatenado con la hora en milisegundos
 			//	 					
 			//Crea el fichero. Si no existe el directorio temporal lo crea.	 		
-			rutaTmp = new File(rutaServidorTmp);
-			rutaTmp.mkdirs();
+			FileHelper.mkdirs(rutaServidorTmp);
 			ficheroFOP = new File(rutaServidorTmp+ClsConstants.FILE_SEP+nombreFicheroPDF+System.currentTimeMillis()+".fo");
 			
 			// Generacion del fichero .FOP para este usuario a partir de la plantilla .FO 				
@@ -390,8 +390,7 @@ public class MasterReport
 			//
 			
 			//Crea el fichero. Si no existe el directorio de la institucion para la descarga lo crea.
-			rutaPDF = new File(rutaServidorDescargas);
-			rutaPDF.mkdirs();
+			FileHelper.mkdirs(rutaServidorDescargas);
 			ficheroPDF = new File(rutaServidorDescargas+ClsConstants.FILE_SEP+nombreFicheroPDF+".pdf");
 			
 			//Clase para la conversion de FOP a PDF con un directorio base para usar rutas relativas:
@@ -420,8 +419,7 @@ public class MasterReport
 			// GENERACION DEL FICHERO FOP DEL USUARIO:nombre del fichero generado a partir del nombre de la plantilla concatenado con la hora en milisegundos
 			//	 					
 			//Crea el fichero. Si no existe el directorio temporal lo crea.	 		
-			rutaTmp = new File(rutaServidorTmp);
-			rutaTmp.mkdirs();
+			FileHelper.mkdirs(rutaServidorTmp);
 			ficheroFOP = new File(rutaServidorTmp+ClsConstants.FILE_SEP+nombreFicheroPDF+System.currentTimeMillis()+".fo");
 			
 			// Generacion del fichero .FOP para este usuario a partir de la plantilla .FO 						
@@ -432,8 +430,7 @@ public class MasterReport
 			//
 			
 			//Crea el fichero. Si no existe el directorio de la institucion para la descarga lo crea.
-			rutaPDF = new File(rutaServidorDescargas);
-			rutaPDF.mkdirs();
+			FileHelper.mkdirs(rutaServidorDescargas);
 			ficheroPDF = new File(rutaServidorDescargas+ClsConstants.FILE_SEP+nombreFicheroPDF+".pdf");
 			
 			//Clase para la conversion de FOP a PDF con un directorio base para usar rutas relativas:
@@ -461,8 +458,7 @@ public class MasterReport
 			//Setup directories
 			File fileBaseDir = new File(xslDir);
 			File filePdfDir = new File(pdfDir);
-			File outDir = new File(pdfDir);
-			outDir.mkdirs();
+			FileHelper.mkdirs(pdfDir);
 
 			//Setup input and output files            
 			File xsltFile = new File(fileBaseDir, xslName);
@@ -776,7 +772,7 @@ Así que hemos logrado convertirse en el documento en formato RTF xml. So that we
 			
 			//Crea la ruta temporal
 			rutaTmp = new File(rutaServidorTmp);
-			rutaTmp.mkdirs();
+			FileHelper.mkdirs(rutaServidorTmp);
 			ficheroFOP = new File(rutaTmp+ClsConstants.FILE_SEP+nombreFicheroPDF+System.currentTimeMillis()+".fo");
 			//ficheroFOP = new File(rutaTmp.getParent()+ClsConstants.FILE_SEP+nombreFicheroPDF+System.currentTimeMillis()+".fo");
 			

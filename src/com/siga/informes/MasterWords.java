@@ -21,6 +21,7 @@ import com.aspose.words.SaveFormat;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.siga.general.SIGAException;
 
 /**
@@ -66,8 +67,7 @@ public class MasterWords {
 	 */
 	public Vector<File> generarInforme(String nombreFichero, String pathFinal, Vector<File> salida) throws ClsExceptions {
 		Document doc;
-		File nuevo = new File(pathFinal);
-		nuevo.mkdirs();
+		FileHelper.mkdirs(pathFinal);
 		String rutaFinal = pathFinal + ClsConstants.FILE_SEP + nombreFichero;// +sysdate;
 		File aux = null;//
 		if (datos != null && datos.size() > 0) // Más de un documento
@@ -89,8 +89,6 @@ public class MasterWords {
 
 	public Vector<File> generarInformePorIdioma(String nombreFichero, String pathFinal, Vector<File> salida, String idiomaUsuario) throws ClsExceptions {
 		Document doc;
-		// File nuevo=new File(pathFinal);
-		// nuevo.mkdirs();
 		String rutaFinal = pathFinal + ClsConstants.FILE_SEP + nombreFichero;// +sysdate;
 		File aux = null;//
 
@@ -120,8 +118,6 @@ public class MasterWords {
 
 	public Vector<File> generarInformePdfPorIdioma(String nombreFichero, String pathFinal, Vector<File> salida, String idiomaUsuario) throws ClsExceptions {
 		Document doc;
-		// File nuevo=new File(pathFinal);
-		// nuevo.mkdirs();
 		String rutaFinal = pathFinal + ClsConstants.FILE_SEP + nombreFichero;// +sysdate;
 		File aux = null;//
 
@@ -151,8 +147,6 @@ public class MasterWords {
 
 	public Vector<File> generarInformePorIdioma(String nombreFichero, String pathFinal, String pathTemporal, Vector<File> salida, String idiomaUsuario) throws ClsExceptions {
 		Document doc;
-		// File nuevo=new File(pathFinal);
-		// nuevo.mkdirs();
 		String rutaFinal = pathFinal + ClsConstants.FILE_SEP + nombreFichero;// +sysdate;
 		File aux = null;//
 

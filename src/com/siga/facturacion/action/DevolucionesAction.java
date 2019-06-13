@@ -45,6 +45,7 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ClsMngBBDD;
+import com.atos.utils.FileHelper;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorCaseSensitive;
@@ -533,8 +534,7 @@ public class DevolucionesAction extends MasterAction {
 		    		//retrieve the file data
 		    		stream = ficheroOriginal.getInputStream();
 		    		//write the file to the file specified
-		    		File camino = new File (rutaServidor);		    		
-		    		camino.mkdirs();
+		    		FileHelper.mkdirs(rutaServidor);
 
 		    		rdr = new BufferedReader(new InputStreamReader(stream));
 		    		out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(nombreFichero),"ISO-8859-1"));

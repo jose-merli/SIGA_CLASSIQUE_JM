@@ -14,6 +14,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesFicheros;
@@ -153,13 +154,9 @@ public class InformeFactura extends MasterReport {
 								ClsConstants.FILE_SEP + bFacturaBean.getIdInstitucion().toString() + 
 								ClsConstants.FILE_SEP + idSerieIdProgramacion;
 			File rutaPDF = new File(rutaAlmacen);
-			rutaPDF.mkdirs();
-			if (!rutaPDF.exists()) {
-				throw new SIGAException("messages.facturacion.comprueba.noPathFacturas");					
-			} else {
-				if (!rutaPDF.canWrite()) {
-					throw new SIGAException("messages.facturacion.comprueba.noPermisosPathFacturas");					
-				}
+			FileHelper.mkdirs(rutaAlmacen);
+			if (!rutaPDF.canWrite()) {
+				throw new SIGAException("messages.facturacion.comprueba.noPermisosPathFacturas");					
 			}
 			
 			//para las facturas que estan generadas pero no confirmadas por lo que no tienen numero se le pondra de nombre del idfactura y se borrara una vez descargada
@@ -247,14 +244,10 @@ public class InformeFactura extends MasterReport {
 			// Genero una carpeta con las firmas
 			String sRutaFirmas = filePDF.getParentFile().getPath() + ClsConstants.FILE_SEP + "firmas";
 			File fRutaFirmas = new File(sRutaFirmas);
-			fRutaFirmas.mkdirs();
-			if (!fRutaFirmas.exists()) {
-				throw new SIGAException("messages.facturacion.comprueba.noPathFacturas");					
-			} else {
-				if (!fRutaFirmas.canWrite()) {
-					throw new SIGAException("messages.facturacion.comprueba.noPermisosPathFacturas");					
-				}
-			}					
+			FileHelper.mkdirs(sRutaFirmas);
+			if (!fRutaFirmas.canWrite()) {
+				throw new SIGAException("messages.facturacion.comprueba.noPermisosPathFacturas");					
+			}
 			
 			// Genero una copia del pdf que se va a firmar				
 			File fFicheroFirmado = new File(sRutaFirmas + ClsConstants.FILE_SEP + filePDF.getName());
@@ -339,17 +332,10 @@ public class InformeFactura extends MasterReport {
 			
 			// Comprueba que existe la ruta donde guardar el fichero zip
 			File carpetaAlmacen = new File(rutaAlmacen);
-			if(!carpetaAlmacen.exists()){
-				carpetaAlmacen.mkdirs();
-				
-				if(!carpetaAlmacen.exists()){
-					throw new SIGAException("messages.facturacion.comprueba.noPathFacturas");					
-				} else {
-					if(!carpetaAlmacen.canWrite()){
-						throw new SIGAException("messages.facturacion.comprueba.noPermisosPathFacturas");					
-					}
-				}					
-			}				
+			FileHelper.mkdirs(rutaAlmacen);
+			if(!carpetaAlmacen.canWrite()){
+				throw new SIGAException("messages.facturacion.comprueba.noPermisosPathFacturas");					
+			}
 			
 			// Se crea un array con los pdf del zip
 			ArrayList<File> listaFicherosPDF = new ArrayList<File>();

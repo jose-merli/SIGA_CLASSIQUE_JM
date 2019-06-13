@@ -11,6 +11,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesString;
@@ -145,14 +146,9 @@ public class InformeEejg extends MasterReport
 			String pdfRuta         = directorioSalida    + directorioEspecificoInforme + ClsConstants.FILE_SEP + idInstitucion;
 			
 			File rutaPDF = new File(pdfRuta);
-			rutaPDF.mkdirs();
-			if(!rutaPDF.exists()){
+			FileHelper.mkdirs(pdfRuta);
+			if(!rutaPDF.canWrite()){
 				throw new SIGAException("messages.envios.error.noPlantilla");					
-			} 
-			else {
-				if(!rutaPDF.canWrite()){
-					throw new SIGAException("messages.envios.error.noPlantilla");					
-				}
 			}
 			
 			//Nos creamos el fichero PDF que se va a mostrar al usuario

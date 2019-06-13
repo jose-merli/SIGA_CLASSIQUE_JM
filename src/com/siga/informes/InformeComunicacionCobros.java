@@ -13,6 +13,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
@@ -145,13 +146,7 @@ public class InformeComunicacionCobros extends MasterReport
 			barraTemporal = "\\";
 		}    		
 		rutaTemporal += barraTemporal+idInstitucion;
-		File rutaFOP=new File(rutaTemporal);
-		//Comprobamos que exista la ruta y sino la creamos
-		if (!rutaFOP.exists()){
-			if(!rutaFOP.mkdirs()){
-				throw new ClsExceptions("La ruta de acceso a los ficheros temporales no puede ser creada");					
-			}
-		}
+		FileHelper.mkdirs(rutaTemporal);
 		
 		// Obtencion de la ruta donde se almacenan las facturas en formato PDF			
 	    String rutaAlmacen = rp.returnProperty("facturacion.directorioFisicoComunicacionesPDFJava")+rp.returnProperty("facturacion.directorioComunicacionesPDFJava");
@@ -163,14 +158,7 @@ public class InformeComunicacionCobros extends MasterReport
 			barraAlmacen = "\\";
 		}    		
 		rutaAlmacen += barraAlmacen+idInstitucion;
-		File rutaPDF=new File(rutaAlmacen);
-		//Comprobamos que exista la ruta y sino la creamos
-		if (!rutaPDF.exists()){
-			if(!rutaPDF.mkdirs()){
-				throw new ClsExceptions("La ruta de acceso a los ficheros PDF no puede ser creada");					
-			}
-		}
-		
+		FileHelper.mkdirs(rutaAlmacen);		
 		
 		EnvPlantillaGeneracionAdm admEnvPlantilla = new EnvPlantillaGeneracionAdm(this.getUsuario());
 		String nombrePlantilla = idTipoEnvio + "_" + idPlantilla + "_" + idPlantillaGeneracion;
@@ -254,8 +242,7 @@ public class InformeComunicacionCobros extends MasterReport
 			// GENERACION DEL FICHERO FOP DEL USUARIO:nombre del fichero generado a partir del nombre de la plantilla concatenado con la hora en milisegundos
 			//	 					
 			//Crea el fichero. Si no existe el directorio temporal lo crea.	 		
-			rutaTmp = new File(rutaServidorTmp);
-			rutaTmp.mkdirs();
+			FileHelper.mkdirs(rutaServidorTmp);
 			ficheroFOP = new File(rutaServidorTmp+ClsConstants.FILE_SEP+nombreFicheroPDF+System.currentTimeMillis()+".fo");
 			
 			// Generacion del fichero .FOP para este usuario a partir de la plantilla .FO 						
@@ -266,8 +253,7 @@ public class InformeComunicacionCobros extends MasterReport
 			//
 			
 			//Crea el fichero. Si no existe el directorio de la institucion para la descarga lo crea.
-			rutaPDF = new File(rutaServidorDescargas);
-			rutaPDF.mkdirs();
+			FileHelper.mkdirs(rutaServidorDescargas);
 			ficheroPDF = new File(rutaServidorDescargas+ClsConstants.FILE_SEP+nombreFicheroPDF+".pdf");
 			
 			//Clase para la conversion de FOP a PDF con un directorio base para usar rutas relativas:

@@ -12,6 +12,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.beans.GenParametrosAdm;
@@ -37,7 +38,7 @@ public abstract class InformeXML {
 			+ ClsConstants.FILE_SEP + idInstitucion
 			+ ClsConstants.FILE_SEP + idFacturacion);
 		
-		file.mkdirs();
+		FileHelper.mkdirs(file.getAbsolutePath());
 		file = new File (file, "InformeIncididencias.csv");
 		
 		return file;

@@ -35,6 +35,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.bea.common.security.xacml.IOException;
@@ -684,11 +685,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 		try{
 //		Generamos el nombre del fichero.
 		rutaServidor = sRutaFisicaJava + rutaServidor;
-		File fDirectorio = new File(rutaServidor);
-		
-		if (!fDirectorio.exists()){
-			fDirectorio.mkdirs();
-		}
+		FileHelper.mkdirs(rutaServidor);
 		
 		String barra = "";
 		if (rutaServidor.indexOf("/") > -1){ 
@@ -698,11 +695,7 @@ public class GestionarFacturaPagosAction extends MasterAction {
 			barra = "\\";
 		}
 		rutaServidor += barra + idInstitucion.toString();
-		File fDirectorio2 = new File(rutaServidor);
-		
-		if (!fDirectorio2.exists()){
-			fDirectorio2.mkdirs();
-		}
+		FileHelper.mkdirs(rutaServidor);
 		
 		Date fecha = new Date();
 		

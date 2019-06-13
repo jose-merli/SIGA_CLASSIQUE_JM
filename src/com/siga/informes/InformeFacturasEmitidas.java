@@ -21,6 +21,7 @@ import weblogic.xml.dom.DocumentImpl;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -143,21 +144,11 @@ public class InformeFacturasEmitidas extends MasterReport
 			
 			// obtener ruta almacen
 			File rutaPDF = new File(pdfRuta);
-			rutaPDF.mkdirs();
-			if(!rutaPDF.exists()){
-				throw new SIGAException("messages.facturacion.comprueba.noPathFacturas");					
-			} 
-			else {
-				if(!rutaPDF.canWrite()){
-					throw new SIGAException("messages.facturacion.comprueba.noPermisosPathFacturas");					
-				}
+			FileHelper.mkdirs(pdfRuta);
+			if(!rutaPDF.canWrite()){
+				throw new SIGAException("messages.facturacion.comprueba.noPermisosPathFacturas");					
 			}
 			pdfRuta += ClsConstants.FILE_SEP;
-			
-			//File fileXml = getXmlFacturasEmitidas(idInstitucion, fechaDesde, fechaHasta, pathXml)
-			
-			
-			
 			fPdf = this.generarInformePdfFromXmlToFoXsl(pathXml,plantillaRuta,plantillaNombre,pdfRuta,pdfNombre, datosFormulario);
 		}
 		catch (SIGAException se) {
@@ -231,20 +222,11 @@ public class InformeFacturasEmitidas extends MasterReport
 			
 			// obtener ruta almacen
 			File rutaPDF = new File(pdfRuta);
-			rutaPDF.mkdirs();
-			if(!rutaPDF.exists()){
-				throw new SIGAException("messages.facturacion.comprueba.noPathFacturas");					
-			} 
-			else {
-				if(!rutaPDF.canWrite()){
-					throw new SIGAException("messages.facturacion.comprueba.noPermisosPathFacturas");					
-				}
+			FileHelper.mkdirs(pdfRuta);
+			if(!rutaPDF.canWrite()){
+				throw new SIGAException("messages.facturacion.comprueba.noPermisosPathFacturas");					
 			}
 			pdfRuta += ClsConstants.FILE_SEP;
-			
-			
-			
-			
 			fPdf = this.generarInformePdfFromXmlToFoXsl(pathXml,plantillaRuta,plantillaNombre,pdfRuta,pdfNombre, null);
 		}
 		catch (SIGAException se) {

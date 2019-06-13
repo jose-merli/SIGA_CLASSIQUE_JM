@@ -24,6 +24,7 @@ import com.aspose.words.Document;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesString;
@@ -169,8 +170,7 @@ public class InformeCertificadoIRPF extends MasterReport
 					rutaServidorDescargasZip += ClsConstants.FILE_SEP
 					+ miform.getIdInstitucion() + ClsConstants.FILE_SEP
 					+ "temp" + File.separator;
-					File ruta = new File(rutaServidorDescargasZip);
-					ruta.mkdirs();
+					FileHelper.mkdirs(rutaServidorDescargasZip);
 					Plantilla.doZip(rutaServidorDescargasZip, nombreFicheroZIP,
 							ficherosPDF);
 					ficheroSalida = new File(rutaServidorDescargasZip
@@ -215,9 +215,7 @@ public class InformeCertificadoIRPF extends MasterReport
 			+ ClsConstants.FILE_SEP;
 		String nombrePlantilla = beanInforme.getNombreFisico() + "_" + idiomaExt + ".doc";
 		String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP + idInstitucion + ClsConstants.FILE_SEP + beanInforme.getDirectorio();
-		File crear = new File(rutaAlm);
-		if (!crear.exists())
-			crear.mkdirs();
+		FileHelper.mkdirs(rutaAlm);
 
 		// obteniendo manejador de informe Aspose Word
 		MasterWords masterWord = new MasterWords(rutaPl + nombrePlantilla);

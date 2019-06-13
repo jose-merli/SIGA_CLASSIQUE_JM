@@ -28,6 +28,7 @@ import org.apache.struts.action.ActionMapping;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
@@ -526,9 +527,9 @@ public class BusquedaFacturaAction extends MasterAction {
 					request.setAttribute("rutaFichero",  documentosList.get(0).getDocumento().getPath());
 					
 				} else {
-					File fichero = documentosList.get(0).getDocumento();					 					
+					File fichero = documentosList.get(0).getDocumento();
+					FileHelper.mkdirs(fichero.getParentFile().getAbsolutePath());
 					File directorio = fichero.getParentFile();
-					directorio.mkdirs();
 					if (!directorio.exists()) {
 						throw new SIGAException("messages.facturacion.comprueba.noPathFacturas");					
 					} else {

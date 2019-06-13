@@ -13,6 +13,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.FileHelper;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
@@ -173,7 +174,7 @@ public class InformeAbono extends MasterReport {
 			String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
     		rutaAlmacen += ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+beanI.getDirectorio();
 			File rutaPDF=new File(rutaAlmacen);
-			rutaPDF.mkdirs();
+			FileHelper.mkdirs(rutaAlmacen);
 			if(!rutaPDF.canWrite()){
 				throw new SIGAException("messages.informes.generico.noPlantilla");					
 			}
