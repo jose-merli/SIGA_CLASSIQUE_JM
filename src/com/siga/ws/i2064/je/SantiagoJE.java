@@ -26,6 +26,7 @@ import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.LogBDDHandler;
 import com.siga.beans.GenParametrosAdm;
@@ -228,7 +229,7 @@ public class SantiagoJE extends InformeXML implements PCAJGConstantes {
 			String rutaAlm = getDirectorioSalida(directorio, idInstitucion, idFacturacion);			
 			File file = new File(rutaAlm);
 			file.delete();
-			file.mkdirs();
+			FileHelper.mkdirs(rutaAlm);
 			
 			for (File f : file.listFiles()) {
 				ClsLogging.writeFileLog("Fichero eliminado (" + f.delete() + ") " + f.getAbsolutePath(), 3);			
