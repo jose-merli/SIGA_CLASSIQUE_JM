@@ -26,6 +26,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.LogBDDHandler;
 import com.siga.Utilidades.UtilidadesFecha;
@@ -603,9 +604,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 			    rutaPDF.append( rp.returnProperty("wsMutualidad.directorioLog") );
 			    rutaPDF.append( "/" + institucion );
 
-   	   			File fDirectorio = new File(rutaPDF.toString());
-   	   			if(!fDirectorio.exists())
-   	   				fDirectorio.mkdirs();
+			    FileHelper.mkdirs(rutaPDF.toString());
    	   			
 			    rutaPDF.append( "/" +NIF + "_" +  UtilidadesString.getTimeStamp() + ".pdf" );
 				FileOutputStream fos;

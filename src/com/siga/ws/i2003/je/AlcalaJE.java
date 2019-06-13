@@ -35,6 +35,7 @@ import org.redabogacia.sigaservices.app.services.fac.PcajgAlcActService;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
@@ -101,7 +102,7 @@ public class AlcalaJE extends InformeXML implements PCAJGConstantes {
 			String rutaAlm = getDirectorioSalida(directorio, idInstitucion, idFacturacion);			
 			File parentFile = new File(rutaAlm);
 			parentFile.delete();
-			parentFile.mkdirs();
+			FileHelper.mkdirs(rutaAlm);
 			
 			for (File f : parentFile.listFiles()) {
 				ClsLogging.writeFileLog("Fichero eliminado (" + f.delete() + ") " + f.getAbsolutePath(), 3);			

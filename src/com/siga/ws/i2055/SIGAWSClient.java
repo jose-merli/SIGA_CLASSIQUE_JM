@@ -42,6 +42,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AxisObjectSerializerDeserializer;
 import com.siga.Utilidades.LogBDDHandler;
@@ -225,7 +226,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract {
 		
 		
 		File file = new File(pathFichero);
-		file.mkdirs();
+		FileHelper.mkdirs(pathFichero);
 		file = new File(file, sigaAsignaDocument.getSIGAAsigna().getDtExpedientes().getIDExpedienteSIGA()+".xml");
 		
 		log.debug("Guardando fichero de envío webservice del colegio " + getIdInstitucion());

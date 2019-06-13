@@ -28,6 +28,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.jcraft.jsch.JSchException;
 import com.siga.Utilidades.UtilidadesString;
@@ -79,7 +80,7 @@ public class PCAJGxmlResponse extends SIGAWSClientAbstract implements PCAJGConst
 		String rutaAlmacen = rp.returnProperty("cajg.directorioFisicoCAJG") + rp.returnProperty("cajg.directorioCAJGJava");			
 		rutaAlmacen += File.separator + idInstitucion;				
 		File file = new File(rutaAlmacen + File.separator + "resolucionIR");
-		file.mkdirs();
+		FileHelper.mkdirs(rutaAlmacen + File.separator + "resolucionIR");
 		file = new File(file, fileName);
 		return file;
 	}	

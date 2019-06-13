@@ -31,6 +31,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.jcraft.jsch.JSchException;
 import com.siga.Utilidades.UtilidadesString;
@@ -316,7 +317,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	private File creaFichero(String dirFicheros, String dirPlantilla, IntercambioDocument intercambioDocument, Intercambio intercambio, int numDetalles) throws Exception {
 		
 		File file = new File(dirFicheros);
-		file.mkdirs();
+		FileHelper.mkdirs(dirFicheros);
 		
 		TipoIdentificacionIntercambio tipoIdentificacionIntercambio = intercambio.getInformacionIntercambio().getIdentificacionIntercambio();
 		tipoIdentificacionIntercambio.setNumeroDetallesIntercambio(numDetalles);
@@ -333,7 +334,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument indexDocumentacion, com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.Intercambio intercambioDoc, int numDetalles) throws Exception {
 		
 		File file = new File(dirFicheros);
-		file.mkdirs();
+		FileHelper.mkdirs(dirFicheros);
 		
 		com.siga.ws.pcajg.cat.xsd.pdf.TipoIdentificacionIntercambio tipoIdentificacionIntercambio = intercambioDoc.getInformacionIntercambio().getIdentificacionIntercambio();
 		tipoIdentificacionIntercambio.setNumeroDetallesIntercambio(numDetalles);

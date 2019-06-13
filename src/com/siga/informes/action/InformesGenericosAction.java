@@ -27,6 +27,7 @@ import com.aspose.words.Document;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.GstStringTokenizer;
 import com.atos.utils.Row;
@@ -178,9 +179,8 @@ public class InformesGenericosAction extends MasterAction {
 					}
 					String nombreFicheroZIP=beanT.getDescripcion().trim() + "_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
 					String rutaServidorDescargasZip = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
-				rutaServidorDescargasZip += ClsConstants.FILE_SEP+miform.getIdInstitucion()+ClsConstants.FILE_SEP+"temp"+ File.separator;
-					File ruta = new File(rutaServidorDescargasZip);
-					ruta.mkdirs();
+					rutaServidorDescargasZip += ClsConstants.FILE_SEP+miform.getIdInstitucion()+ClsConstants.FILE_SEP+"temp"+ File.separator;
+					FileHelper.mkdirs(rutaServidorDescargasZip);
 					Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
 					ficheroSalida = new File(rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
 				}
@@ -436,9 +436,7 @@ public class InformesGenericosAction extends MasterAction {
 					String nombrePlantilla=b.getNombreFisico()+"_"+codigoext+".doc";
 					String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+carpetaInstitucion+ClsConstants.FILE_SEP+b.getDirectorio();			
 
-					File crear = new File(rutaAlm);
-					if(!crear.exists())
-						crear.mkdirs();
+					FileHelper.mkdirs(rutaAlm);
 				
 					MasterWords words=new MasterWords(rutaPl+nombrePlantilla);
 					Document doc=words.nuevoDocumento(); 
@@ -474,8 +472,7 @@ public class InformesGenericosAction extends MasterAction {
 					String nombreFicheroZIP=beanT.getDescripcion().trim() + "_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
 					String rutaServidorDescargasZip = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 					rutaServidorDescargasZip += ClsConstants.FILE_SEP+miform.getIdInstitucion()+ClsConstants.FILE_SEP+"temp"+ File.separator;
-					File ruta = new File(rutaServidorDescargasZip);
-					ruta.mkdirs();
+					FileHelper.mkdirs(rutaServidorDescargasZip);
 					Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
 					ficheroSalida = new File(rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
 				}
@@ -604,9 +601,7 @@ public class InformesGenericosAction extends MasterAction {
 											String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+carpetaInstitucion+ClsConstants.FILE_SEP+beanInforme.getDirectorio();
 											MasterWords words=new MasterWords(rutaPl+nombrePlantilla);
 											Document doc=words.nuevoDocumento(); 
-											File crear = new File(rutaAlm);
-											if(!crear.exists())
-												crear.mkdirs();
+											FileHelper.mkdirs(rutaAlm);
 											Vector documentosSoj =  (Vector)sojHashtable.get("DOCUMENTACION_SOJ");
 											sojHashtable.remove("DOCUMENTACION_SOJ");
 											doc = words.sustituyeDocumento(doc,sojHashtable);
@@ -663,8 +658,7 @@ public class InformesGenericosAction extends MasterAction {
 					String nombreFicheroZIP=beanT.getDescripcion().trim() + "_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
 					String rutaServidorDescargasZip = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
 					rutaServidorDescargasZip += ClsConstants.FILE_SEP+miform.getIdInstitucion()+ClsConstants.FILE_SEP+"temp"+ File.separator;
-					File ruta = new File(rutaServidorDescargasZip);
-					ruta.mkdirs();
+					FileHelper.mkdirs(rutaServidorDescargasZip);
 					Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
 					ficheroSalida = new File(rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
 				}
@@ -846,8 +840,7 @@ public class InformesGenericosAction extends MasterAction {
 				infBean.getDirectorio();
 
 				//creando la ruta del fichero a generar
-				fRutaAlmacen = new File (rutaAlmacen);
-				if (! fRutaAlmacen.exists()) fRutaAlmacen.mkdirs();
+				FileHelper.mkdirs(rutaAlmacen);
 
 				//Controles de este tipo de plantilla
 				MasterWords words = new MasterWords (rutaPlantilla+nombrePlantilla);
@@ -958,8 +951,7 @@ public class InformesGenericosAction extends MasterAction {
 					    fDelete.delete();
 					}
 					
-					File ruta = new File (rutaServidorDescargasZip);
-					ruta.mkdirs();
+					FileHelper.mkdirs(rutaServidorDescargasZip);
 					Plantilla.doZip (rutaServidorDescargasZip, nombreFicheroZIP, ficherosPDF);
 					ficheroSalida = new File (rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
 				}
@@ -1281,8 +1273,8 @@ public class InformesGenericosAction extends MasterAction {
 					String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP+miform.getIdInstitucion()+ClsConstants.FILE_SEP+b.getDirectorio()+ClsConstants.FILE_SEP;
 					String nombrePlantilla=b.getNombreFisico()+"_"+usr.getLanguageExt()+".rpt";
 					String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+usr.getLocation()+ClsConstants.FILE_SEP+b.getDirectorio();
+					FileHelper.mkdirs(rutaAlm);
 					File rutaPDF=new File(rutaAlm);
-					rutaPDF.mkdirs();
 					if(!rutaPDF.canWrite()){
 						throw new SIGAException("messages.informes.generico.noPlantilla");					
 					}
@@ -1319,9 +1311,8 @@ public class InformesGenericosAction extends MasterAction {
 					}
 					String nombreFicheroZIP=beanT.getDescripcion().trim() + "_" +UtilidadesBDAdm.getFechaCompletaBD("").replaceAll("/","").replaceAll(":","").replaceAll(" ","");
 					String rutaServidorDescargasZip = rp.returnProperty("informes.directorioFisicoSalidaInformesJava")+rp.returnProperty("informes.directorioPlantillaInformesJava");
-				rutaServidorDescargasZip += ClsConstants.FILE_SEP+miform.getIdInstitucion()+ClsConstants.FILE_SEP+"temp"+ File.separator;
-					File ruta = new File(rutaServidorDescargasZip);
-					ruta.mkdirs();
+					rutaServidorDescargasZip += ClsConstants.FILE_SEP+miform.getIdInstitucion()+ClsConstants.FILE_SEP+"temp"+ File.separator;
+					FileHelper.mkdirs(rutaServidorDescargasZip);
 					Plantilla.doZip(rutaServidorDescargasZip,nombreFicheroZIP,ficherosPDF);
 					ficheroSalida = new File(rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
 				}
@@ -1544,10 +1535,7 @@ public class InformesGenericosAction extends MasterAction {
 					String nombrePlantilla=nombreFisicoInforme+"_"+idiomaPer+".doc";
 					rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP+carpetaInstitucion+ClsConstants.FILE_SEP+directorioInforme;
 
-					File crear = new File(rutaAlm);
-					if(!crear.exists())
-						crear.mkdirs();
-
+					FileHelper.mkdirs(rutaAlm);
 
 					Hashtable htCabeceraInforme = null;
 

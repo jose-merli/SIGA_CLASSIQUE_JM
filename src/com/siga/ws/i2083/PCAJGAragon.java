@@ -29,6 +29,7 @@ import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.LogBDDHandler;
 import com.siga.Utilidades.UtilidadesString;
@@ -203,8 +204,7 @@ public class PCAJGAragon extends SIGAWSClientAbstract implements PCAJGConstantes
 	private File creaFichero(String dirFicheros, TipoInformacion tipoInformacion) throws Exception {
 		
 		File file = new File(dirFicheros);
-		file.mkdirs();
-		
+		FileHelper.mkdirs(dirFicheros);
 		
 		TipoIdentificacionIntercambio tipoIdentificacionIntercambio = intercambioDocument.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio();
 		tipoIdentificacionIntercambio.setNumeroDetallesIntercambio(intercambioDocument.getIntercambio().getInformacionIntercambio().getInformacion().getExpedientes().sizeOfExpedienteArray());

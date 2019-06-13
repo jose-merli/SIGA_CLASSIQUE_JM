@@ -20,6 +20,7 @@ import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
@@ -184,8 +185,7 @@ public class PCAJGGeneraXMLSantiago extends SIGAWSClientAbstract implements PCAJ
 				xmlOptions.setSavePrettyPrint();
 			
 				File file = new File(getDirXML(getIdInstitucion(), getIdRemesa()));
-				
-				file.mkdirs();
+				FileHelper.mkdirs(getDirXML(getIdInstitucion(), getIdRemesa()));
 				SimpleDateFormat sdf = new SimpleDateFormat("MM-yyyy");
 				String fecha = sdf.format(Calendar.getInstance().getTime());
 												
