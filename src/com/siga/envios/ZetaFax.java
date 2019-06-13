@@ -13,6 +13,7 @@ import java.io.PrintWriter;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.beans.GenParametrosAdm;
 
@@ -81,8 +82,7 @@ public class ZetaFax {
 			String rutaFichero = parametrosAdm.getValor("0","ENV","PATH_ZSUMBIT",null);
 
 			//Creamos si no existe la estructura de directorios para los ficheros del ZSUBMIT:
-			File directorioZSUBMIT = new File(rutaFichero);
-			directorioZSUBMIT.mkdirs();
+			FileHelper.mkdirs(rutaFichero);
 			
 	        //Fichero temporal del fax a enviar por el ZSUBMIT:			
 			ficheroTemp = new File(rutaFichero+File.separator+nombreFichero+".TMP");

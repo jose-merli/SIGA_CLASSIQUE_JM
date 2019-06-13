@@ -27,6 +27,7 @@ import org.redabogacia.sigaservices.app.autogen.model.ScsEjg;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CenDireccionesAdm;
@@ -1533,8 +1534,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
 	    	try 
 	    	{
 	    	    String sDirectorio = envioAdm.getPathEnvio(idInstitucion,idEnvio);		    	
-		    	File fDirectorio = new File(sDirectorio);
-		    	fDirectorio.mkdirs(); 
+	    	    FileHelper.mkdirs(sDirectorio);
 		    	
 	    		FIStream = new FileInputStream(fDocumento);
 	    		sNombreFichero = sDirectorio + File.separator 

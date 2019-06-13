@@ -35,11 +35,11 @@ import com.aspose.words.Document;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.GstStringTokenizer;
 import com.atos.utils.LogFileWriter;
 import com.atos.utils.UsrBean;
-import com.ibm.icu.text.DateFormat;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesNumero;
@@ -3601,8 +3601,7 @@ public class EnvioInformesGenericos extends MasterReport {
 				ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 				String rutaServidorDescargasZip = rp.returnProperty("informes.directorioFisicoSalidaInformesJava") + rp.returnProperty("informes.directorioPlantillaInformesJava") 
 						+ ClsConstants.FILE_SEP + usr.getLocation() + ClsConstants.FILE_SEP + "temp" + ClsConstants.FILE_SEP + idsesion.replaceAll("!", "") + File.separatorChar;
-				File ruta = new File(rutaServidorDescargasZip);
-				ruta.mkdirs();
+				FileHelper.mkdirs(rutaServidorDescargasZip);
 				Plantilla.doZip(rutaServidorDescargasZip, nombreFicheroZIP, ficherosPDF);
 				ficheroSalida = new File(rutaServidorDescargasZip + nombreFicheroZIP + ".zip");
 			}
@@ -3796,9 +3795,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		String nombrePlantilla = beanInforme.getNombreFisico() + "_" + idiomaExt + ".doc";
 		String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP + carpetaInstitucion + ClsConstants.FILE_SEP + beanInforme.getDirectorio();
 
-		File crear = new File(rutaAlm);
-		if (!crear.exists())
-			crear.mkdirs();
+		FileHelper.mkdirs(rutaAlm);
 
 		MasterWords masterWord;
 		Document documento;
@@ -8525,8 +8522,8 @@ public class EnvioInformesGenericos extends MasterReport {
 			String pathXml = plantillaRuta + ClsConstants.FILE_SEP + "facturaEmitida_" + idiomaExt + ".xml";
 
 			// obtener ruta almacen
+			FileHelper.mkdirs(pdfRuta);
 			File rutaPDF = new File(pdfRuta);
-			rutaPDF.mkdirs();
 			if (!rutaPDF.exists()) {
 				throw new SIGAException("messages.facturacion.comprueba.noPathFacturas");
 			} else {
