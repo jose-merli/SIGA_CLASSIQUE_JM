@@ -45,6 +45,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
+import com.atos.utils.FileHelper;
 import com.atos.utils.GstDate;
 import com.atos.utils.LogFileWriter;
 import com.atos.utils.Row;
@@ -3334,7 +3335,7 @@ public class SIGACerDetalleSolicitudAction extends MasterAction {
 		sRutaDB += File.separator + "tmp";
 
 		File fDirTemp = new File(sRutaDB);
-		fDirTemp.mkdirs();
+		FileHelper.mkdirs(sRutaDB);
 
 		File fOut = new File(fDirTemp.getPath() + File.separator + sAux + "_" + System.currentTimeMillis() + ".pdf");
 		valoresRetornados.put("fOut", fOut);

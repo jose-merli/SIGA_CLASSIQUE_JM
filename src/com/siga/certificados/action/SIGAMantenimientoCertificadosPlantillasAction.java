@@ -22,6 +22,7 @@ import org.json.JSONObject;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.ComodinBusquedas;
+import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.CerPlantillasAdm;
@@ -599,9 +600,7 @@ public class SIGAMantenimientoCertificadosPlantillasAction extends MasterAction
 			    	String sNombrePlantilla = form.getIdTipoProducto() + "_" + form.getIdProducto() + "_" + form.getIdProductoInstitucion();
 			    	String sDirectorio = getPathPlantillasFromDB(this.getUserBean(request)) + File.separator + form.getIdInstitucion();
 			    	
-			    	File fDirectorio = new File(sDirectorio);
-	
-			    	fDirectorio.mkdirs();
+			    	FileHelper.mkdirs(sDirectorio);
 			    	
 			    	OutputStream bos = null;
 			    	try 
