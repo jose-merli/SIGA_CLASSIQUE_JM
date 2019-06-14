@@ -70,7 +70,7 @@ values (75, 'Procesando XML de Generalitat...', '1', sysdate, -1, 1);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
 values (85, 'Error Generalitat', '1', sysdate, -1, 1);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
-values (87, 'Devuelto error Generalitat al ICA.', '1', sysdate, -1, 1);
+values (87, 'Devuelto error Generalitat al Consell.', '1', sysdate, -1, 1);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
 values (90, 'Verificado correctamente Generalitat', '1', sysdate, -1, 1);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
@@ -151,7 +151,7 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 
 
 insert into GEN_PARAMETROS (MODULO, PARAMETRO, VALOR, FECHAMODIFICACION, USUMODIFICACION, IDINSTITUCION, IDRECURSO, FECHA_BAJA)
-values ('GEN', 'PATH_FICHEROS', '/Datos/SIGADES/ficheros/archivo/', SYSDATE, 0, 0, 'gen.parametro.pathFicheros', null);
+values ('GEN', 'PATH_FICHEROS', '/Datos/SIGAINT/ficheros/archivo/', SYSDATE, 0, 0, 'gen.parametro.pathFicheros', null);
 
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gen.parametro.pathFicheros', 'Directorio donde se almacenan ficheros', 0, '1', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gen.parametro.pathFicheros', 'Directorio donde se almacenan ficheros#CA', 0, '2', sysdate, 0, '19');
