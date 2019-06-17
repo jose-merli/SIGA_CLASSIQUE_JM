@@ -74,7 +74,7 @@ values (87, 'Devuelto error Generalitat al Consell.', '1', sysdate, -1, 1);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
 values (90, 'Verificado correctamente Generalitat', '1', sysdate, -1, 1);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
-values (95, 'Respondido correctamente al ICA. Fin de proceso', '1', sysdate, -1, 1);
+values (95, 'Respondido al ICA. Fin de proceso', '1', sysdate, -1, 1);
 insert into FCS_JE_MAESTROESTADOS (IDESTADO, DESCRIPCION, CODIGOEXT, FECHAMODIFICACION, USUMODIFICACION, PROPIETARIO)
 values (92, 'Respondiendo ICA...', '1', sysdate, -1, 1);
 
