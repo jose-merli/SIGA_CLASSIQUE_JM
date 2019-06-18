@@ -158,5 +158,9 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gen.parametro.pathFicheros', 'Directorio donde se almacenan ficheros#EU', 0, '3', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gen.parametro.pathFicheros', 'Directorio donde se almacenan ficheros#GL', 0, '4', sysdate, 0, '19');
 
+update gen_menu set path = 'justificacion' where idmenu = '710';
+update gen_menu set path = 'certificacion' where idmenu = '711';
+update gen_menu set path = 'devolucion' where idmenu = '712';
+
 --ejecutado en integracion 
 
