@@ -122,7 +122,7 @@ public abstract class SIGAWSClientAbstract {
 		rutaAlmacen += File.separator + idRemesa;
 		
 		File file = new File(rutaAlmacen + File.separator + "log");
-		FileHelper.mkdirs(rutaAlmacen);
+		FileHelper.mkdirs(file.getAbsolutePath());
 		file = new File(file, "incidencias.log");
 		return file;
 	}
@@ -139,7 +139,7 @@ public abstract class SIGAWSClientAbstract {
 		rutaAlmacen += File.separator + idInstitucion;
 		
 		File file = new File(rutaAlmacen + File.separator + "log");
-		FileHelper.mkdirs(rutaAlmacen);
+		FileHelper.mkdirs(file.getAbsolutePath());
 		file = new File(file, "incidencias.log");
 		return file;
 	}
@@ -600,7 +600,7 @@ public abstract class SIGAWSClientAbstract {
 		rutaAlmacen += File.separator + idRemesa;
 		
 		File file = new File(rutaAlmacen + File.separator + SIGAWSClientAbstract.rutaOUT);
-		FileHelper.mkdirs(rutaAlmacen + File.separator + SIGAWSClientAbstract.rutaOUT);
+		FileHelper.mkdirs(file.getAbsolutePath());
 		file = new File(file, fileName);
 		return file;
 	}
