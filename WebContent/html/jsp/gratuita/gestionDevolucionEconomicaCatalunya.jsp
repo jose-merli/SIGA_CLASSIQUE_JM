@@ -108,7 +108,7 @@
 	function openDialog(dialogo){
 		jQuery("#"+dialogo).dialog(
 				{
-				      height: 300,
+				      height: 320,
 				      width: 525,
 				      modal: true,
 				      resizable: false,
@@ -466,13 +466,15 @@
   		
   		<div class="labelText">
    			<label for="descripcion"  style="width:100px;float:left;color: black"><siga:Idioma key="gratuita.mantActuacion.literal.descripcion"/></label>
-   			<input type="text" id="descripcionNew" maxlength="100" size="40" />
+   			<input type="text" id="descripcionNew" maxlength="100" size="35" />
 		</div>
 		
 		<div class="labelText">
 			<label for="idJustificacion" style="width:100px;float:left;color: black"><siga:Idioma key="menu.sjcs.ecom.justificacion"/></label>
-			<siga:Select queryId="getJustificacionesCatalunya" id="idJustificacionNew" required="true" width="300" lines="4" />
+			<siga:Select queryId="getJustificacionesCatalunya" id="idJustificacionNew" required="true" width="330" lines="4" />
+			
 		</div>
+		
 			
 	</siga:ConjCampos>
 

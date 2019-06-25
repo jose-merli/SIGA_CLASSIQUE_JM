@@ -109,7 +109,7 @@
 	function openDialog(dialogo){
 		jQuery("#"+dialogo).dialog(
 				{
-				      height: 300,
+				      height: 320,
 				      width: 525,
 				      modal: true,
 				      resizable: false,
@@ -470,27 +470,30 @@
 	
 		
 <div id="dialogoInsercion"  title='<bean:message key="menu.sjcs.ecom.justificacion"/>' style="display:none">
-	<div>&nbsp;</div>
+	
 
   	<siga:ConjCampos leyenda="gratuita.informeJustificacionMasiva.leyenda.datosJustificacion">
   		
   		<div class="labelText">
    			<label for="descripcion"  style="width:100px;float:left;color: black"><siga:Idioma key="gratuita.mantActuacion.literal.descripcion"/></label>
-   			<input type="text" id="descripcionNew" maxlength="100" size="40" />
+   			<input type="text" id="descripcionNew" maxlength="100" size="35" />
 		</div>
 		<div class="labelText">
-		
-						
-		
    			<label for="anio"  style="width:100px;float:left;color: black"><siga:Idioma key="gratuita.mantActuacion.literal.anio"/></label>
    			<input type="text" id="anioNew" maxlength="4" size="6" />
    			<label for="trimestre" style="width:100px;color: black"><siga:Idioma key="gratuita.calendarioGuardias.literal.periodo"/></label>
-			<siga:Select queryId="getPeriodos" id="idPeriodoNew" width="120" required="true" />
+			<siga:Select queryId="getPeriodos" id="idPeriodoNew" width="150" required="true" />
 		</div>
 		<div class="labelText">
 			<label for="facturacion" style="width:100px;float:left;color: black"><siga:Idioma key="pestana.justiciagratuita.retenciones"/></label>
-			<siga:Select queryId="getFacturacionesSJCS" id="facturacionesNew" required="true" width="300" multiple="true" lines="4" />
+		
 		</div>
+		<div>&nbsp;</div>
+		
+		<div class="labelText">
+			<siga:Select queryId="getFacturacionesSJCS" id="facturacionesNew" required="true" width="430" multiple="true" lines="4" />
+			</div>
+		
    			
 			
 	</siga:ConjCampos>
