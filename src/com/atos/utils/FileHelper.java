@@ -2,22 +2,27 @@ package com.atos.utils;
 
 import java.io.File;
 
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
+
 public class FileHelper
 {
+	private static final String SIGArootPath = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA).returnProperty("directorios.path.OrigenPlantillas");
 	private static void addPerm777(File file) {
 		if (file != null && file.exists()) {
 			try {
 				// Permissions to the parent file
 				File parentFile = file.getParentFile();
-				if (parentFile != null && parentFile.exists()) {
-					ClsLogging.writeFileLogWithoutSession("Cambiando los permisos del padre: " + parentFile.getAbsolutePath());
+				if (parentFile != null && parentFile.exists() && !parentFile.getAbsolutePath().equalsIgnoreCase(SIGArootPath)) {
 					addPerm777(parentFile);
 				}
 				
 				// Permissions to this file
+				ClsLogging.writeFileLogWithoutSession("Cambiando los permisos de: " + parentFile.getAbsolutePath());
 				file.setReadable(true, false);
 				file.setWritable(true, false);
 				file.setExecutable(true, false);
+				ClsLogging.writeFileLogWithoutSession("OK - Permisos cambiados a: " + parentFile.getAbsolutePath());
 			} catch (Exception e) {
 				ClsLogging.writeFileLogWithoutSession("Error al cambiar los permisos del fichero " + file.getAbsolutePath() + " - " + e.toString());
 			}
@@ -37,7 +42,7 @@ public class FileHelper
 		File fileDir = new File(filePath.toString());
 		if(fileDir!=null && !fileDir.exists()) {
 			fileDir.mkdirs();
+			addPerm777(fileDir);
 		}
-		addPerm777(fileDir);
 	}
 }
