@@ -140,7 +140,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		List<File> ficheros = new ArrayList<File>();
 		ficherosCat = new ArrayList<File>();
 		mapaFicheros = new HashMap<String, String>();
-		Integer numFiles = 0;
+		Integer numFilesCat = 0;
 		CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(getUsrBean());
 		com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument indexDocumentacion = null;
 		com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.Intercambio intercambioDoc = null;
@@ -230,23 +230,25 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			
 			//Funcionalidad de digitalizacion de documentacion
 			if(activoEnvioDigitalizacionDoc() && datosDocumentacionExpedienteDSCat != null && !datosDocumentacionExpedienteDSCat.isEmpty() && indexDocumentacion != null){
- 				numFiles += anadirDocumentosIDO(indexDocumentacion,datosDocumentacionExpedienteDSCat,ht);
-				if(numFiles == 0)
+				numFilesCat += anadirDocumentosIDO(indexDocumentacion,datosDocumentacionExpedienteDSCat,ht);
+				if(numFilesCat == 0)
 					escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, "El expediente no tiene la documentación mínima requerida", CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
 				else
-					indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().setNumeroDetallesIntercambio(numFiles);
+					indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().setNumeroDetallesIntercambio(numFilesCat);
 			}
 			
 		}
-		if (intercambio != null && numDetalles > 0) {			
-			ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, numDetalles));
-			if (activoEnvioDigitalizacionDoc()){
-				numDetalles = (int) indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().getNumeroDetallesIntercambio();
-				if(numDetalles > 0)
-					ficherosCat.add(creaFicheroIndex(dirFicheros, dirPlantilla, indexDocumentacion, intercambioDoc, numDetalles));
+		if(!activoEnvioDigitalizacionDoc()){
+			if (intercambio != null && numDetalles > 0) {			
+				ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, numDetalles));
 			}
-		}
-						
+		}else{
+			numFilesCat = (int) indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().getNumeroDetallesIntercambio();
+			if (intercambio != null && numDetalles > 0 && numFilesCat > 0) {			
+				ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, numDetalles));
+				ficherosCat.add(creaFicheroIndex(dirFicheros, dirPlantilla, indexDocumentacion, intercambioDoc, numFilesCat));
+			}
+		}			
 		return ficheros;
 	}
 	
@@ -301,14 +303,16 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		}
 		
 		if(numFilesReq == 0){
-			escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, "El expediente no tiene la documentación mínima requerida", CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
-			return numFiles;
+			escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, "El expediente no tiene la documentación mínima requerida. Compruebe que tengan fecha de presentación.", CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
+			return 0;
 		}
 
 		
 		// validamos fichero index
-		if(activoEnvioDigitalizacionDoc() && !validateXML_EJG(indexDocumentacion, anyo, numejg, numero, idTipoEJG))
-			escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, "El expediente no tiene la documentación mínima requerida", CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
+		if(activoEnvioDigitalizacionDoc() && !validateXML_EJG(indexDocumentacion, anyo, numejg, numero, idTipoEJG)){
+			escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, "El expediente no tiene la documentación mínima requerida. Compruebe que tengan fecha de presentación.", CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
+			return 0;
+		}
 		
 		return numFiles;
 	}
