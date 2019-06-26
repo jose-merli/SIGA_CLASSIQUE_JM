@@ -14,7 +14,7 @@
 	// aalg: se ha añadido la posible vuelta desde la página de duplicados
 	
 	// crea el formulario de vuelta
- 	if (!busquedaVolver.equals("volverNo")) { 
+ 	if (busquedaVolver != null && !busquedaVolver.equals("volverNo")) { 
  		if (busquedaVolver.equals("A")) { %>
 			<html:form  action="/CEN_BusquedaClientesAvanzada.do" method="POST" target="mainWorkArea">
 			<html:hidden  name="busquedaClientesAvanzadaForm" property="modo"/>
@@ -134,7 +134,7 @@
 		//Asociada al boton Volver
 		function accionVolver() {
 <%
- 			if (!busquedaVolver.equals("volverNo")) { 
+ 			if (busquedaVolver != null && !busquedaVolver.equals("volverNo")) { 
  				if (busquedaVolver.equals("A")) { 
 %>
 					document.busquedaClientesAvanzadaForm.action = "/SIGA/CEN_BusquedaClientesAvanzada.do" + "?noReset=true";
