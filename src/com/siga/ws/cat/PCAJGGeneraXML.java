@@ -1418,7 +1418,7 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 			tx.commit();
 			
 			if (!isSimular()) {
-				if (files != null && files.size() > 0) {
+				if (files != null && files.size() > 0 && (!activoEnvioDigitalizacionDoc() || (activoEnvioDigitalizacionDoc() && ficherosCat != null && ficherosCat.size()>0))) {
 					tx.begin();				
 					
 				
@@ -1445,35 +1445,30 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 					}
 					//Si esta activo el envio de documentos digitalizados tienen que estar los obligatorios
 					
-					if(!activoEnvioDigitalizacionDoc() || (activoEnvioDigitalizacionDoc() && ficherosCat != null && ficherosCat.size()>0)){
+					//si todo ha ido bien subimos los ficheros
+					ftpPcajgAbstract = FtpPcajgFactory.getInstance((short)getIdInstitucion());
+					escribeLogRemesa("Conectando al servidor FTP");			
+					ftpPcajgAbstract.connect();				
 					
-						//si todo ha ido bien subimos los ficheros
-						ftpPcajgAbstract = FtpPcajgFactory.getInstance((short)getIdInstitucion());
-						escribeLogRemesa("Conectando al servidor FTP");			
-						ftpPcajgAbstract.connect();				
-						
-						for (File file : files) {
-							FileInputStream fis = new FileInputStream(file);
-							escribeLogRemesa("Subiendo XML generado al servidor FTP");
-							ftpPcajgAbstract.upload(file.getName(), fis);				
-							fis.close();
-							escribeLogRemesa("El archivo se ha subido correctamente al servidor FTP");
-						}
+					for (File file : files) {
+						FileInputStream fis = new FileInputStream(file);
+						escribeLogRemesa("Subiendo XML generado al servidor FTP");
+						ftpPcajgAbstract.upload(file.getName(), fis);				
+						fis.close();
+						escribeLogRemesa("El archivo se ha subido correctamente al servidor FTP");
 					}
-					
-					if(activoEnvioDigitalizacionDoc()){
-						for (File fileCat : ficherosCat) {
-							String nombreFichero;
-							if(fileCat.getName().contains("index.xml"))
-								nombreFichero = fileCat.getName();
-							else
-								nombreFichero = mapaFicheros.get(fileCat.getName());
-							FileInputStream fis = new FileInputStream(fileCat);
-							escribeLogRemesa("Subiendo XML generado al servidor FTP");
-							ftpPcajgAbstract.uploadIDO(nombreFichero, fis);				
-							fis.close();				
-							escribeLogRemesa("El archivo se ha subido correctamente al servidor FTP");
-						}
+
+					for (File fileCat : ficherosCat) {
+						String nombreFichero;
+						if(fileCat.getName().contains("index.xml"))
+							nombreFichero = fileCat.getName();
+						else
+							nombreFichero = mapaFicheros.get(fileCat.getName());
+						FileInputStream fis = new FileInputStream(fileCat);
+						escribeLogRemesa("Subiendo XML generado al servidor FTP");
+						ftpPcajgAbstract.uploadIDO(nombreFichero, fis);				
+						fis.close();				
+						escribeLogRemesa("El archivo se ha subido correctamente al servidor FTP");
 					}
 					
 					tx.commit();
