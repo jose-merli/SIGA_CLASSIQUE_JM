@@ -115,6 +115,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	private String numero;
 	private String numejg;
 	private List<File> ficherosCat;
+	private Boolean errorMinDoc = false;
 	
 	
 	private Map htFamiliares = new Hashtable();
@@ -231,11 +232,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			//Funcionalidad de digitalizacion de documentacion
 			if(activoEnvioDigitalizacionDoc() && datosDocumentacionExpedienteDSCat != null && !datosDocumentacionExpedienteDSCat.isEmpty() && indexDocumentacion != null){
 				numFilesCat += anadirDocumentosIDO(indexDocumentacion,datosDocumentacionExpedienteDSCat,ht);
-				if(numFilesCat == 0){
-					indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().setNumeroDetallesIntercambio(0);
-				}
-				else
-					indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().setNumeroDetallesIntercambio(numFilesCat);
+				indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().setNumeroDetallesIntercambio(numFilesCat);
 			}
 			
 		}
@@ -305,6 +302,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		if(numFilesReq == 0){
 			escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, "El expediente no tiene la documentación mínima requerida. Compruebe que tengan fecha de presentación.", CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
+			errorMinDoc = true;
 			return 0;
 		}
 
@@ -1418,7 +1416,8 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 			tx.commit();
 			
 			if (!isSimular()) {
-				if (files != null && files.size() > 0 && (!activoEnvioDigitalizacionDoc() || (activoEnvioDigitalizacionDoc() && ficherosCat != null && ficherosCat.size()>0))) {
+				if (files != null && files.size() > 0 && 
+						(!activoEnvioDigitalizacionDoc() || (activoEnvioDigitalizacionDoc() && ficherosCat != null && ficherosCat.size()>0 && !errorMinDoc))) {
 					tx.begin();				
 					
 				
