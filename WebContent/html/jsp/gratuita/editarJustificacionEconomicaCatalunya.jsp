@@ -305,7 +305,7 @@
 			  				visibleBorrado = "no"
 			  				clase="listaNonEdit">
 			  				<c:if test="${GestionEconomicaCatalunyaForm.modo=='editaJustificacion'}">
-			  					<td >
+			  					<td align="center">
 		 							
 		 							<input type="checkbox" id="chkActuacion_${status.count}" name="chkActuacion" />
 								</td>
