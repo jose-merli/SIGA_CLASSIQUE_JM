@@ -1443,11 +1443,16 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 							throw new Exception("No se ha podido actualizar el campo idIntercambio de la tabla " + CajgRemesaBean.T_NOMBRETABLA);
 						}
 					}
+					//Si esta activo el envio de documentos digitalizados tienen que estar los obligatorios
+					if(activoEnvioDigitalizacionDoc() && ficherosCat.isEmpty()){
+						tx.commit();
+						return;
+					}
 					//si todo ha ido bien subimos los ficheros
 					ftpPcajgAbstract = FtpPcajgFactory.getInstance((short)getIdInstitucion());
 					escribeLogRemesa("Conectando al servidor FTP");			
 					ftpPcajgAbstract.connect();				
-				
+					
 					for (File file : files) {
 						FileInputStream fis = new FileInputStream(file);
 						escribeLogRemesa("Subiendo XML generado al servidor FTP");
