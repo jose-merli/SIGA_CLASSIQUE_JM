@@ -34,4 +34,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON CEN_HISTORICO_DOCPERSONA TO ROLE_SIGA;
 
 alter table MJU_REPORT_CERTIFICADO modify CLAVE VARCHAR2(25);
 
---Ejecutado en integración por FMS el 27/07/2019
+--Ejecutado en integración por FMS el 27/06/2019
+
+PKG_SIGA_FACTURACION_SJCS
+
+--Ejecutado en integración por AAG el 02/07/2019 09:00
