@@ -185,6 +185,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		// Funcionalidad de digitalizacion de documentacion
 		// Si está activa la parametrización de la digitalizacion creamos el fichero indice 
 		if(activoEnvioDigitalizacionDoc() && datosDocumentacionExpedienteDSCat != null && !datosDocumentacionExpedienteDSCat.isEmpty()){
+			errorMinDoc = false;
 			indexDocumentacion = com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.Factory.newInstance();
 			intercambioDoc = indexDocumentacion.addNewIntercambio();
 			infoIntercambioDoc = rellenaInformacionIntercambioIDO(intercambioDoc,(Hashtable)datos.get(0), sufijoIdIntercambio++);
@@ -232,7 +233,6 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			//Funcionalidad de digitalizacion de documentacion
 			if(activoEnvioDigitalizacionDoc() && datosDocumentacionExpedienteDSCat != null && !datosDocumentacionExpedienteDSCat.isEmpty() && indexDocumentacion != null){
 				numFilesCat += anadirDocumentosIDO(indexDocumentacion,datosDocumentacionExpedienteDSCat,ht);
-				indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().setNumeroDetallesIntercambio(numFilesCat);
 			}
 			
 		}
@@ -241,9 +241,11 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, numDetalles));
 			}
 		}else{
-			numFilesCat = (int) indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().getNumeroDetallesIntercambio();
 			if (intercambio != null && numDetalles > 0 && numFilesCat > 0) {			
+				//Anadimos fichero de intercambio de expedientes
 				ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, numDetalles));
+				//Anadimos fichero de intercambio de documentacion IDO
+				indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().setNumeroDetallesIntercambio(numDetalles);
 				ficherosCat.add(creaFicheroIndex(dirFicheros, dirPlantilla, indexDocumentacion, intercambioDoc, numFilesCat));
 			}
 		}			
