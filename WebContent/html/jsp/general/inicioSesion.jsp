@@ -42,7 +42,32 @@
 	
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
 		<script type="text/javascript">
+		
+			var url2 = window.location;
+			
 			function cargarInicio() {
+				
+				var msg1 = '<siga:Idioma key="messages.noSession"/>';
+						
+				alertStop(msg1);
+				//window.setTimeout(recarga, 6000);
+				window.location.replace(url2);
+				
+				/*jQueryTop.ajax({ //Comunicación jQuery hacia JSP  
+							type: "GET",
+					url: "/SIGA/login.do",
+					success: function(){
+						alertStop(msg1);
+						window.location = '/';
+					},
+					error: function(e){
+						//alertStop('Error: ' + e);
+						
+					}
+				});	*/			
+				
+			}
+			function cargarInicio2() {
 				var msg1 = '<siga:Idioma key="messages.noSession"/>';
 				var msg2 = '<siga:Idioma key="messages.noSession.modal"/>';
 				if (top.dialogArguments) {
@@ -54,10 +79,18 @@
 					window.top.location="<%=pathInicio%>";
 				}
 			}
+			
+			function recarga() {
+				alertStop(url2);
+				window.location.replace(url2);
+			}
 		</script>
 
 	</head>
 	
 	<body onLoad="cargarInicio();">
+		<iframe src="/SIGA/login.do" style="display: none"/>
 	</body>
+	
+	
 </html>
