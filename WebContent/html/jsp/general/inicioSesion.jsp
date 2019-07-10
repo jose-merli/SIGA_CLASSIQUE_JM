@@ -67,6 +67,7 @@
 				});	*/			
 				
 			}
+			
 			function cargarInicio2() {
 				var msg1 = '<siga:Idioma key="messages.noSession"/>';
 				var msg2 = '<siga:Idioma key="messages.noSession.modal"/>';
