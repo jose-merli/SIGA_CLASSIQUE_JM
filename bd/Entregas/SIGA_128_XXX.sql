@@ -39,3 +39,5 @@ alter table MJU_REPORT_CERTIFICADO modify CLAVE VARCHAR2(25);
 PKG_SIGA_FACTURACION_SJCS
 
 --Ejecutado en integración por AAG el 02/07/2019 09:00
+
+--promover el triger  SCS_GUARDIASCOLEGIADO_AID de uscgae_desa hasta pro

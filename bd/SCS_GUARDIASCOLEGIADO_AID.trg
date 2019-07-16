@@ -22,6 +22,7 @@ Begin
     r_Guardiacolegiado.Idguardia     := :New.Idguardia;
     r_Guardiacolegiado.Idpersona     := :New.Idpersona;
     r_Guardiacolegiado.Fechainicio   := :New.Fechainicio;
+    r_Guardiacolegiado.Fechafin   := :New.Fechafin;
     v_Accion                         := 1;
   Else
     -- delete
@@ -30,6 +31,7 @@ Begin
     r_Guardiacolegiado.Idguardia     := :Old.Idguardia;
     r_Guardiacolegiado.Idpersona     := :Old.Idpersona;
     r_Guardiacolegiado.Fechainicio   := :Old.Fechainicio;
+    r_Guardiacolegiado.Fechafin   := :Old.Fechafin;
     v_Accion                         := 2;
   End If;
   --Comprobamos que es servicio centralita virtual este activo para 0 y la institucion.
@@ -94,7 +96,7 @@ Begin
       (Select v_Ecomidguardiacol,
               r_Guardiacolegiado.Idinstitucion,
               r_Guardiacolegiado.Idguardia,
-              r_Guardiacolegiado.Fechainicio,
+              r_Guardiacolegiado.Fechafin,
               Gt.Nombre,
               Cg.Posicion,
               f_Siga_Calculoncolegiado(r_Guardiacolegiado.Idinstitucion,
@@ -176,4 +178,3 @@ Begin
   End If;
   exception when e then null;
 End Scs_Guardiascolegiado_Aid;
-/
