@@ -41,3 +41,7 @@ PKG_SIGA_FACTURACION_SJCS
 --Ejecutado en integración por AAG el 02/07/2019 09:00
 
 --promover el triger  SCS_GUARDIASCOLEGIADO_AID de uscgae_desa hasta pro
+
+-- ya lo ejecuto Azucena de forma urgente en PRe y PRO. Dejo aqui el comentario como Hco.
+
+ 
