@@ -3,5 +3,15 @@
 		<font metrics-file="trebuc.xml" kerning="yes" embed-file="trebuc.ttf">
 			<font-triplet name="TrebuchetMS" style="normal" weight="normal"/>
 		</font>
+		<font metrics-file="trebuc.xml" kerning="yes" embed-file="trebuc.ttf">
+			<font-triplet name="TrebuchetMS" style="normal" weight="normal"/>
+		</font>
+		<font metrics-file="gara.xml" kerning="yes" embed-file="gara.ttf">
+			<font-triplet name="Garamond" style="normal" weight="normal"/>
+		</font>
+		<font metrics-file="kunstshm.xml" kerning="yes" embed-file="kunstshm.ttf">
+			<font-triplet name="Kunstshm" style="normal" weight="normal"/>
+		</font>
+		
 	</fonts>
 </configuration>
