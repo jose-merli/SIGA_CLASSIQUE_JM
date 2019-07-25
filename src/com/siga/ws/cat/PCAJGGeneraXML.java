@@ -342,9 +342,8 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 		FileHelper.mkdirs(dirFicheros);
 		
 		com.siga.ws.pcajg.cat.xsd.pdf.TipoIdentificacionIntercambio tipoIdentificacionIntercambio = intercambioDoc.getInformacionIntercambio().getIdentificacionIntercambio();
-		tipoIdentificacionIntercambio.setNumeroDetallesIntercambio(numDetalles);
 		
-		String nombreFichero = getNombreFicheroIndex(tipoIdentificacionIntercambio);
+		String nombreFichero = getNombreFicheroIndex(tipoIdentificacionIntercambio, numDetalles);
 		
 		file = new File(file, nombreFichero);
 		guardaFicheroIndexFormatoCatalan(indexDocumentacion, file);

@@ -448,7 +448,7 @@ public abstract class SIGAWSClientAbstract {
 		return pathFichero + File.separator + idInstitucion  + File.separator + idRemesa + File.separator + "xml";
 	}
 	
-	protected String getNombreFicheroIndex(com.siga.ws.pcajg.cat.xsd.pdf.TipoIdentificacionIntercambio tipoIdentificacionIntercambio) {
+	protected String getNombreFicheroIndex(com.siga.ws.pcajg.cat.xsd.pdf.TipoIdentificacionIntercambio tipoIdentificacionIntercambio, int numDetalles) {
 		StringBuffer nombreFichero = new StringBuffer();
 		nombreFichero.append("IDO");
 		nombreFichero.append("_" + tipoIdentificacionIntercambio.getCodOrigenIntercambio());
@@ -459,7 +459,7 @@ public abstract class SIGAWSClientAbstract {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		String fechaIntercambio = sdf.format(tipoIdentificacionIntercambio.getFechaIntercambio().getTime());
 		nombreFichero.append("_" + fechaIntercambio);
-		nombreFichero.append("_" + tipoIdentificacionIntercambio.getNumeroDetallesIntercambio());
+		nombreFichero.append("_" + numDetalles);
 		nombreFichero.append(".index.xml");
 		return nombreFichero.toString();
 	}
