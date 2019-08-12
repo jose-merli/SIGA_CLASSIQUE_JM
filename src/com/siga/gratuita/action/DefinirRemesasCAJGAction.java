@@ -885,7 +885,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		int numFicheros = 0;
 		File file = null;
 		
-		
+		ClsLogging.writeFileLog("Buscando remesa anterior con idRemesa: " + idRemesa +" para la institución " +idInstitucion, 3);
 	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 		String rutaAlmacen = rp.returnProperty("cajg.directorioFisicoCAJG") + rp.returnProperty("cajg.directorioCAJGJava");
 			
@@ -906,7 +906,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				}
 			}
 		}
-		
+		ClsLogging.writeFileLog("Se han borrado " + numFicheros +" ficheros en la ruta " +rutaAlmacen, 3);
 		if(numFicheros>0 && isBorrarHistorico){
 			CajgEJGRemesaAdm cajEjgRemesaAdm = new CajgEJGRemesaAdm(usrBean);
 			cajEjgRemesaAdm.borraHistoricoRemesa(new Long(idRemesa), Short.valueOf(idInstitucion));
