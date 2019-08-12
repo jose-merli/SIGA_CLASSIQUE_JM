@@ -136,7 +136,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @return
 	 * @throws Exception
 	 */
-	private List<File> generaFicherosXML(String dirFicheros, String dirPlantilla) throws Exception {
+	private List<File> generaFicherosXML(String dirFicheros, String dirPlantilla, boolean envioDigitalizacionDoc) throws Exception {
 		
 		List<File> ficheros = new ArrayList<File>();
 		ficherosCat = new ArrayList<File>();
@@ -146,30 +146,38 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument indexDocumentacion = null;
 		com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.Intercambio intercambioDoc = null;
 		com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.Intercambio.InformacionIntercambio infoIntercambioDoc= null;
-		
+		ClsLogging.writeFileLog("Construyendo xml para la remesa: " + getIdRemesa(), 3);
 //		doc.setSchemaLocation("IntercambioEJG.xsd");
 //		doc.setXsiType();		
 		Vector datos = cajgEJGRemesaAdm.getDatosEJGs(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
+		ClsLogging.writeFileLog("Datos de los ejg de la remesa obtenidos", 3);
 		Vector datosFamiliares = cajgEJGRemesaAdm.getFamiliares(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
 		construyeHTxEJG(datosFamiliares, htFamiliares);
+		ClsLogging.writeFileLog("Datos familiares obtenidos", 3);
 		
 		Vector datosMarcasExpediente = cajgEJGRemesaAdm.getDatosMarcasExpediente(getIdInstitucion(), getIdRemesa());
 		construyeHTxEJG(datosMarcasExpediente, htMarcasExpediente);
+		ClsLogging.writeFileLog("Datos marcas expedientes obtenidos", 3);
 		
 		Vector datosAbogadosDesignados = cajgEJGRemesaAdm.getAbogadosDesignados(getIdInstitucion(), getIdRemesa());
 		construyeHTxEJG(datosAbogadosDesignados, htAbogadosDesignados);
+		ClsLogging.writeFileLog("Datos abogados designados obtenidos", 3);
 		
 		Vector datosContrarios = cajgEJGRemesaAdm.getContrarios(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
 		construyeHTxEJG(datosContrarios, htContrarios);	
+		ClsLogging.writeFileLog("Datos contrarios obtenidos", 3);
 		
 		Vector datosDocumentacionExpedienteDS = cajgEJGRemesaAdm.getDocumentacionExpedienteDS(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
 		construyeHTxPersona(datosDocumentacionExpedienteDS, htDocumentacionExpediente);
+		ClsLogging.writeFileLog("Documentacion normal obtenida", 3);
 		
 		Vector datosDocumentacionExpedienteDSCat = cajgEJGRemesaAdm.getDocumentacionExpedienteDSCat(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
 		construyeHTxPersona(datosDocumentacionExpedienteDSCat, htDocumentacionExpedienteCat);
+		ClsLogging.writeFileLog("Documentacion digitalización obtenida", 3);
 		
 		Vector datosDelitos = cajgEJGRemesaAdm.getDelitos(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
 		construyeHTxEJG(datosDelitos, htDelitos);
+		ClsLogging.writeFileLog("Datos contrarios obtenidos", 3);
 		
 		Hashtable ht = null;
 		String tipoIntercambio = "";
@@ -184,11 +192,12 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		// Funcionalidad de digitalizacion de documentacion
 		// Si está activa la parametrización de la digitalizacion creamos el fichero indice 
-		if(activoEnvioDigitalizacionDoc() && datosDocumentacionExpedienteDSCat != null && !datosDocumentacionExpedienteDSCat.isEmpty()){
+		if(envioDigitalizacionDoc && datosDocumentacionExpedienteDSCat != null && !datosDocumentacionExpedienteDSCat.isEmpty()){
 			errorMinDoc = false;
 			indexDocumentacion = com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.Factory.newInstance();
 			intercambioDoc = indexDocumentacion.addNewIntercambio();
 			infoIntercambioDoc = rellenaInformacionIntercambioIDO(intercambioDoc,(Hashtable)datos.get(0), sufijoIdIntercambio++);
+			
 		}
 		
 		for (int i = 0; i < datos.size(); i++) {
@@ -231,12 +240,13 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			}
 			
 			//Funcionalidad de digitalizacion de documentacion
-			if(activoEnvioDigitalizacionDoc() && datosDocumentacionExpedienteDSCat != null && !datosDocumentacionExpedienteDSCat.isEmpty() && indexDocumentacion != null){
-				numFilesCat += anadirDocumentosIDO(indexDocumentacion,datosDocumentacionExpedienteDSCat,ht);
+			if(envioDigitalizacionDoc && datosDocumentacionExpedienteDSCat != null && !datosDocumentacionExpedienteDSCat.isEmpty() && indexDocumentacion != null){
+				numFilesCat += anadirDocumentosIDO(indexDocumentacion,datosDocumentacionExpedienteDSCat,ht, envioDigitalizacionDoc);
+				ClsLogging.writeFileLog("La digitalización está activa y hay documentos digitalizados: "+ numFilesCat, 3);
 			}
 			
 		}
-		if(!activoEnvioDigitalizacionDoc()){
+		if(!envioDigitalizacionDoc){
 			if (intercambio != null && numDetalles > 0) {			
 				ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, numDetalles));
 			}
@@ -253,7 +263,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	}
 	
 
-	private Integer anadirDocumentosIDO(com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument indexDocumentacion, Vector datosDocumentacionExpedienteDSCat, Hashtable ht) throws Exception {
+	private Integer anadirDocumentosIDO(com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument indexDocumentacion, Vector datosDocumentacionExpedienteDSCat, Hashtable ht, boolean envioDigitalizacionDoc) throws Exception {
 		Integer numFiles = 0;
 		Integer numFilesReq = 0;
 		TipoIDO.Expediente expediente = indexDocumentacion.getIntercambio().getInformacionIntercambio().getTipoIDO().addNewExpediente();
@@ -303,14 +313,14 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		}
 		
 		if(numFilesReq == 0){
-			escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, "El expediente no tiene la documentación mínima requerida. Compruebe que tengan fecha de presentación.", CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
+			escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, "El expediente no tiene la documentación mínima requerida. Compruebe que tengan solicitud de presentación.", CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
 			errorMinDoc = true;
 			return 0;
 		}
 
 		
 		// validamos fichero index
-		if(activoEnvioDigitalizacionDoc() && !validateXML_EJG(indexDocumentacion, anyo, numejg, numero, idTipoEJG)){
+		if(envioDigitalizacionDoc && !validateXML_EJG(indexDocumentacion, anyo, numejg, numero, idTipoEJG)){
 			escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, "El expediente no tiene la documentación mínima requerida. Compruebe que tengan fecha de presentación.", CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
 			return 0;
 		}
@@ -342,7 +352,7 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 		FileHelper.mkdirs(dirFicheros);
 		
 		com.siga.ws.pcajg.cat.xsd.pdf.TipoIdentificacionIntercambio tipoIdentificacionIntercambio = intercambioDoc.getInformacionIntercambio().getIdentificacionIntercambio();
-		
+				
 		String nombreFichero = getNombreFicheroIndex(tipoIdentificacionIntercambio, numDetalles);
 		
 		file = new File(file, nombreFichero);
@@ -1394,7 +1404,7 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 
 		UserTransaction tx = usr.getTransactionPesada();
 		dirFicheros = dirFicheros + File.separator + "xml";
-		
+		ClsLogging.writeFileLog("EJECUTANDO REMESAS PCAJG CAT", 3);
 		//si se ha hecho una remesa txt previa hay que borrarla previamente
 		DefinirRemesasCAJGAction.eliminaFicheroTXTGenerado(String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()),idInstitucion==2003,usr);//por si se estan regenerando...
 		
@@ -1408,17 +1418,19 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 		try {
 			
 			tx.begin();
-			
+			boolean envioDigitalizacionDoc = activoEnvioDigitalizacionDoc();
+			ClsLogging.writeFileLog("El parámetro de digitalización de documentos está a "+ envioDigitalizacionDoc, 3);
 			CajgRespuestaEJGRemesaAdm cajgRespuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(usr);
+			ClsLogging.writeFileLog("Borrando posibles errores anteriores", 3);
 			cajgRespuestaEJGRemesaAdm.eliminaAnterioresErrores(getIdInstitucion(), getIdRemesa());
 			
-			List<File> files = generaFicherosXML(dirFicheros, dirPlantillas);
+			List<File> files = generaFicherosXML(dirFicheros, dirPlantillas, envioDigitalizacionDoc);
 			//hacemos commit por los posibles errores de validación del xml con el xsd
 			tx.commit();
 			
 			if (!isSimular()) {
 				if (files != null && files.size() > 0 && 
-						(!activoEnvioDigitalizacionDoc() || (activoEnvioDigitalizacionDoc() && ficherosCat != null && ficherosCat.size()>0 && !errorMinDoc))) {
+						(!envioDigitalizacionDoc || (envioDigitalizacionDoc && ficherosCat != null && ficherosCat.size()>0 && !errorMinDoc))) {
 					tx.begin();				
 					
 				
@@ -1434,7 +1446,7 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 						int idIntercambio = (int)idIntercambioLong/10;
 						guardarIdIntercambioRemesa(usr, idIntercambio);
 						cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, String.valueOf(getIdInstitucion()), String.valueOf(getIdRemesa()), ESTADOS_EJG.REMITIDO_COMISION);
-						
+						ClsLogging.writeFileLog("Actualizada remesa y estado de EJG's", 3);
 						//vuelvo a hacer el mismo update del idintercambio porque a veces falla la capa de bdd y no hace el commit (no se pq)
 						CajgRemesaAdm cajgRemesaAdm = new CajgRemesaAdm(usr);
 						if (!cajgEJGRemesaAdm.updateSQL("UPDATE " + CajgRemesaBean.T_NOMBRETABLA + " SET " + CajgRemesaBean.C_IDINTERCAMBIO + " = " + idIntercambio +
@@ -1449,13 +1461,14 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 					ftpPcajgAbstract = FtpPcajgFactory.getInstance((short)getIdInstitucion());
 					escribeLogRemesa("Conectando al servidor FTP");			
 					ftpPcajgAbstract.connect();				
-					
+					ClsLogging.writeFileLog("Procedemos a subir los ficheros al SFTP", 3);
 					for (File file : files) {
 						FileInputStream fis = new FileInputStream(file);
 						escribeLogRemesa("Subiendo XML generado al servidor FTP");
 						ftpPcajgAbstract.upload(file.getName(), fis);				
 						fis.close();
 						escribeLogRemesa("El archivo se ha subido correctamente al servidor FTP");
+						ClsLogging.writeFileLog("El archivo " + file.getName() +" se ha subido correctamente al servidor FTP", 3);
 					}
 
 					for (File fileCat : ficherosCat) {
@@ -1465,15 +1478,17 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 						else
 							nombreFichero = mapaFicheros.get(fileCat.getName());
 						FileInputStream fis = new FileInputStream(fileCat);
-						escribeLogRemesa("Subiendo XML generado al servidor FTP");
+						escribeLogRemesa("Subiendo IDO generado al servidor FTP");
 						ftpPcajgAbstract.uploadIDO(nombreFichero, fis);				
 						fis.close();				
 						escribeLogRemesa("El archivo se ha subido correctamente al servidor FTP");
+						ClsLogging.writeFileLog("El archivo " + nombreFichero +" se ha subido correctamente al servidor FTP", 3);
 					}
 					
 					tx.commit();
 				}				
 			}
+			ClsLogging.writeFileLog("********************** Terminando proceso envía CAT ********************", 3);
 
 		} catch (JSchException e) {
 			tx.rollback();
