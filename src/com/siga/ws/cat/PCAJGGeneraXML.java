@@ -251,7 +251,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, numDetalles));
 			}
 		}else{
-			if (intercambio != null && numDetalles > 0 && numFilesCat > 0) {			
+			if (intercambio != null && numDetalles > 0 && !errorMinDoc) {			
 				//Anadimos fichero de intercambio de expedientes
 				ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, numDetalles));
 				//Anadimos fichero de intercambio de documentacion IDO
@@ -262,7 +262,6 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		return ficheros;
 	}
 	
-
 	private Integer anadirDocumentosIDO(com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument indexDocumentacion, Vector datosDocumentacionExpedienteDSCat, Hashtable ht, boolean envioDigitalizacionDoc) throws Exception {
 		Integer numFiles = 0;
 		Integer numFilesReq = 0;
@@ -311,11 +310,19 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				}
 			}
 		}
-		
+		//Si no se han anadido ficheros requeridos comprobamos si tiene dictamen que permite no enviar documentación
 		if(numFilesReq == 0){
-			escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, "El expediente no tiene la documentación mínima requerida. Compruebe que tengan solicitud de presentación.", CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
-			errorMinDoc = true;
-			return 0;
+			if(compruebaDictamenEJG(ht)){
+				ClsLogging.writeFileLog("El EJG sí tiene dictamen que permita no tener documentos requeridos ", 3);
+				return numFiles;
+			}
+			else{
+				//Si no se han anadido los ficheros requeridos o y el EJG no tiene el dictamen "Sin dictamen" que lo exime de adjuntar ficheros, es un error
+				ClsLogging.writeFileLog("El EJG no tiene dictamen que permita no tener documentos ", 3);
+				escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, "El expediente no tiene la documentación mínima requerida. Compruebe que tengan solicitud de presentación.", CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
+				errorMinDoc = true;
+				return 0;
+			}
 		}
 
 		
@@ -328,6 +335,19 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		return numFiles;
 	}
 
+	private boolean compruebaDictamenEJG(Hashtable ht) throws ClsExceptions, SIGAException {
+		CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(getUsrBean());
+		String anyo = (String)ht.get(ANIO);
+		String numero = (String)ht.get(NUMERO);
+		Vector datos = cajgEJGRemesaAdm.getDictamenEJG(getIdInstitucion(), anyo, numero);
+		Hashtable aux = (Hashtable) datos.get(0);
+		//Busqueda de dictamen del EJG. El EJG tiene dictamen que permita no tener documentos(1->Sí, 0->No)
+		ClsLogging.writeFileLog("Busqueda de dictamen del EJG. El EJG tiene dictamen que permita no tener documentos(1->Sí, 0->No): " + aux.get("DICTAMENDOC").toString(), 3);
+		if (aux.get("DICTAMENDOC").toString().equals("0"))
+			return false;
+		else
+			return true;
+	}
 
 	private File creaFichero(String dirFicheros, String dirPlantilla, IntercambioDocument intercambioDocument, Intercambio intercambio, int numDetalles) throws Exception {
 		
