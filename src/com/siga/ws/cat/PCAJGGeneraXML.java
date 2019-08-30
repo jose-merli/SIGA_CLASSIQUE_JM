@@ -255,8 +255,10 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				//Anadimos fichero de intercambio de expedientes
 				ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, numDetalles));
 				//Anadimos fichero de intercambio de documentacion IDO
-				indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().setNumeroDetallesIntercambio(numDetalles);
-				ficherosCat.add(creaFicheroIndex(dirFicheros, dirPlantilla, indexDocumentacion, intercambioDoc, numFilesCat));
+				if(numFilesCat >0){
+					indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().setNumeroDetallesIntercambio(numDetalles);
+					ficherosCat.add(creaFicheroIndex(dirFicheros, dirPlantilla, indexDocumentacion, intercambioDoc, numFilesCat));
+				}
 			}
 		}			
 		return ficheros;
