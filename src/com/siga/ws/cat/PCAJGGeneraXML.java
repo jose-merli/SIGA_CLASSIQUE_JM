@@ -259,6 +259,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, numDetalles));
 				//Anadimos fichero de intercambio de documentacion IDO
 				if(numFilesCat > 0){
+					ClsLogging.writeFileLog("XMLCat: "+indexDocumentacion.xmlText(), 3);
 					indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().setNumeroDetallesIntercambio(numDetallesCat);
 					ficherosCat.add(creaFicheroIndex(dirFicheros, dirPlantilla, indexDocumentacion, intercambioDoc, numFilesCat));
 				}
@@ -319,8 +320,11 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if(numFilesReq == 0){
 			if(compruebaDictamenEJG(ht)){
 				ClsLogging.writeFileLog("El EJG sí tiene dictamen que permita no tener documentos requeridos ", 3);
-				if(numFiles == 0)
-					indexDocumentacion.getIntercambio().getInformacionIntercambio().getTipoIDO().removeExpediente(indexDocumentacion.getIntercambio().getInformacionIntercambio().getTipoIDO().sizeOfExpedienteArray());
+				if(numFiles == 0){
+					ClsLogging.writeFileLog("XMLCat antes de borrar: "+indexDocumentacion.xmlText(), 3);
+					indexDocumentacion.getIntercambio().getInformacionIntercambio().getTipoIDO().removeExpediente(indexDocumentacion.getIntercambio().getInformacionIntercambio().getTipoIDO().sizeOfExpedienteArray()-1);
+					ClsLogging.writeFileLog("XMLCat despues de borrar: "+indexDocumentacion.xmlText(), 3);
+				}
 				return numFiles;
 			}
 			else{
