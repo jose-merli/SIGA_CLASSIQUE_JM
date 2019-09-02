@@ -115,6 +115,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	private String numero;
 	private String numejg;
 	private List<File> ficherosCat;
+	private int numDetallesCat = 0;
 	private Boolean errorMinDoc = false;
 	
 	
@@ -142,6 +143,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		ficherosCat = new ArrayList<File>();
 		mapaFicheros = new HashMap<String, String>();
 		Integer numFilesCat = 0;
+		numDetallesCat = 0;
 		CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(getUsrBean());
 		com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument indexDocumentacion = null;
 		com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.Intercambio intercambioDoc = null;
@@ -186,7 +188,6 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		Intercambio intercambio = null;		
 		
 		int numDetalles = 0;
-		int numDetallesCat = 0;
 		int sufijoIdIntercambio = 0;
 		TipoICD tipoICD = null;
 		TipoGenerico tipoGenerico = null;
@@ -243,8 +244,6 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			//Funcionalidad de digitalizacion de documentacion
 			if(envioDigitalizacionDoc && datosDocumentacionExpedienteDSCat != null && !datosDocumentacionExpedienteDSCat.isEmpty() && indexDocumentacion != null){
 				numFilesCat += anadirDocumentosIDO(indexDocumentacion,datosDocumentacionExpedienteDSCat,ht, envioDigitalizacionDoc);
-				if (numFilesCat > 0)
-					numDetallesCat++;
 				ClsLogging.writeFileLog("La digitalización está activa y hay documentos digitalizados: "+ numFilesCat, 3);
 			}
 			
@@ -259,7 +258,6 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, numDetalles));
 				//Anadimos fichero de intercambio de documentacion IDO
 				if(numFilesCat > 0){
-					ClsLogging.writeFileLog("XMLCat: "+indexDocumentacion.xmlText(), 3);
 					indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().setNumeroDetallesIntercambio(numDetallesCat);
 					ficherosCat.add(creaFicheroIndex(dirFicheros, dirPlantilla, indexDocumentacion, intercambioDoc, numFilesCat));
 				}
@@ -320,11 +318,10 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if(numFilesReq == 0){
 			if(compruebaDictamenEJG(ht)){
 				ClsLogging.writeFileLog("El EJG sí tiene dictamen que permita no tener documentos requeridos ", 3);
-				if(numFiles == 0){
-					ClsLogging.writeFileLog("XMLCat antes de borrar: "+indexDocumentacion.xmlText(), 3);
+				if(numFiles == 0)
 					indexDocumentacion.getIntercambio().getInformacionIntercambio().getTipoIDO().removeExpediente(indexDocumentacion.getIntercambio().getInformacionIntercambio().getTipoIDO().sizeOfExpedienteArray()-1);
-					ClsLogging.writeFileLog("XMLCat despues de borrar: "+indexDocumentacion.xmlText(), 3);
-				}
+				else
+					numDetallesCat++;
 				return numFiles;
 			}
 			else{
@@ -342,7 +339,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, "El expediente no tiene la documentación mínima requerida. Compruebe que tengan fecha de presentación.", CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
 			return 0;
 		}
-		
+		numDetallesCat++;
 		return numFiles;
 	}
 
