@@ -96,7 +96,7 @@ public class SIGADispatcher extends SIGAActionBase {
 	    /** CHK RIGHTS & TRANSACTION **/
 	    /******************************/
 //	    access_type=chkAccessType(proceso,request,perfil,access_type, institucion);
-	    String access=usrbean.getAccessForProcessNumber(proceso);
+	    String access=usrbean.getAccessForProcessNumber(proceso, request);
 	    if (!access.equals(SIGAPTConstants.ACCESS_READ) && 
 	    	!access.equals(SIGAPTConstants.ACCESS_FULL)) {
 	    	return mapping.findForward("accesodenegado");
