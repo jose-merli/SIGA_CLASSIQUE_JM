@@ -186,6 +186,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		Intercambio intercambio = null;		
 		
 		int numDetalles = 0;
+		int numDetallesCat = 0;
 		int sufijoIdIntercambio = 0;
 		TipoICD tipoICD = null;
 		TipoGenerico tipoGenerico = null;
@@ -242,6 +243,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			//Funcionalidad de digitalizacion de documentacion
 			if(envioDigitalizacionDoc && datosDocumentacionExpedienteDSCat != null && !datosDocumentacionExpedienteDSCat.isEmpty() && indexDocumentacion != null){
 				numFilesCat += anadirDocumentosIDO(indexDocumentacion,datosDocumentacionExpedienteDSCat,ht, envioDigitalizacionDoc);
+				if (numFilesCat > 0)
+					numDetallesCat++;
 				ClsLogging.writeFileLog("La digitalización está activa y hay documentos digitalizados: "+ numFilesCat, 3);
 			}
 			
@@ -255,8 +258,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				//Anadimos fichero de intercambio de expedientes
 				ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, numDetalles));
 				//Anadimos fichero de intercambio de documentacion IDO
-				if(numFilesCat >0){
-					indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().setNumeroDetallesIntercambio(numDetalles);
+				if(numFilesCat > 0){
+					indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().setNumeroDetallesIntercambio(numDetallesCat);
 					ficherosCat.add(creaFicheroIndex(dirFicheros, dirPlantilla, indexDocumentacion, intercambioDoc, numFilesCat));
 				}
 			}
