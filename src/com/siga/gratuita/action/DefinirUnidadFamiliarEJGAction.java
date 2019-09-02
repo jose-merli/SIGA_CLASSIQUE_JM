@@ -578,7 +578,7 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			}
 			GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
 			String eejg = paramAdm.getValor (idInstitucion, ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_EEJG, "");
-			String accesoEEJGSt=usr.getPermisoProceso("JGR_UnidadFamiliarEEJG");
+			String accesoEEJGSt=usr.getPermisoProceso("JGR_UnidadFamiliarEEJG", request);
 			boolean accesoEEJG = accesoEEJGSt!=null && (accesoEEJGSt.equalsIgnoreCase(SIGAConstants.ACCESS_FULL));
 			Boolean isPermisoEejg = new Boolean((eejg!=null && eejg.equalsIgnoreCase(ClsConstants.DB_TRUE)));
 			miForm.setPermisoEejg(isPermisoEejg&&accesoEEJG);

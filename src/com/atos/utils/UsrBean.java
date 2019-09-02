@@ -16,6 +16,7 @@ import java.util.Vector;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
@@ -323,12 +324,12 @@ public class UsrBean implements Serializable {
 		return  comision;
 	}
 	
-	public String getAccessForProcessNumber(String process) {
+	public String getAccessForProcessNumber(String process, HttpServletRequest request) {
 		if (accessControl==null) {
 			accessControl=new AccessControl(); 
 		}
 		try {
-			String aa=accessControl.checkAccessByProcessNumber(getProfile(),process,Integer.parseInt(getLocation()));
+			String aa=accessControl.checkAccessByProcessNumber(getProfile(),process,Integer.parseInt(getLocation()), request);
 			setAccessType(aa);
 			return getAccessType();
 		} catch (Exception e) {
@@ -343,19 +344,19 @@ public class UsrBean implements Serializable {
 	 */
 	public String getProcessAccessTemp(String process){
 		try {
-			return accessControl.checkAccessByProcessNumber(getProfile(),process,Integer.parseInt(getLocation()));
+			return accessControl.checkAccessByProcessNumber(getProfile(),process,Integer.parseInt(getLocation()), null);
 		} catch (Exception e) {
 			return SIGAConstants.ACCESS_DENY;
 		}
 		
 	}
 	
-	public String getAccessForProcessName(String process) {
+	public String getAccessForProcessName(String process, HttpServletRequest request) {
 		if (accessControl==null) {
 			accessControl=new AccessControl(); 
 		}
 		try {
-			String aa=accessControl.checkAccessByProcessName(getProfile(),process,Integer.parseInt(getLocation()));
+			String aa=accessControl.checkAccessByProcessName(getProfile(),process,Integer.parseInt(getLocation()), request);
 			
 //			 consideramos este caso en particular porque como la busqueda de colegiados, no colegiados y letrados lo gestiona el mismo action (busqueda de clientes)
 //           los permisos de busqueda de clientes siempre prevalecian sobre los otros, de esta manera mantendremos los permisos que tenga cada hijo de
@@ -426,12 +427,12 @@ public class UsrBean implements Serializable {
 		this.aplicarLOPD = aplicarLOPD;
 	}
 	
-	public String getPermisoProceso(String process) {
+	public String getPermisoProceso(String process, HttpServletRequest request) {
 		if (accessControl==null) {
 			accessControl=new AccessControl(); 
 		}
 		try {
-			String aa=accessControl.checkAccessByProcessName(getProfile(),process,Integer.parseInt(getLocation()));
+			String aa=accessControl.checkAccessByProcessName(getProfile(),process,Integer.parseInt(getLocation()), request);
 			
 			if (process.equals("CEN_BusquedaClientes")||process.equals("10")){
 				                                                                

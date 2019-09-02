@@ -194,11 +194,9 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 	}
 	protected String testAccess(String uri,String proceso,HttpServletRequest request) throws ClsExceptions, SIGAException{
 		UsrBean usrbean=(UsrBean)request.getSession().getAttribute(ClsConstants.USERBEAN);
-//		UsrBean usrbean=(UsrBean)request.getSession().getAttribute("USRBEAN");
 		
 		// Si venimos por SolicitarIncorporacionAccesoDirectoAction no comprobamos el tipo de acceso porque 
 		// no vamos a entrar a la aplicacion, sola a una parte concreta: SolicitarIncorporacion 
-		
 		if (uri != null) {
 			if (uri.equals("/SIGA/SIN_SolicitudIncorporacion.do") 	&& 
 					usrbean.getUserName().equals("-1")					&&
@@ -207,7 +205,8 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 				return SIGAConstants.ACCESS_FULL;
 			}
 		}
-		////////////////
+		
+		ClsLogging.writeFileLog("Comprobacion de usrbean: " + uri,request,3);
 		if (usrbean==null) { 
 			ClsExceptions e=new ClsExceptions("Usuario inválido. Es necesario firmar antes de utilizar la aplicación");
 			e.setErrorCode("USERNOVALID");
@@ -215,6 +214,7 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 		}
 		String access=SIGAConstants.ACCESS_DENY;
 		
+		ClsLogging.writeFileLog("Test de acceso a proceso: " + proceso,request,3);
 		if (proceso==null) {
 			if (uri==null) throw new ClsExceptions("URL no reconocida por SIGA");
 			int idexofdo=uri.indexOf(".do");
@@ -222,9 +222,9 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 			int indexofslash=uri.indexOf("/",1);
 			if (indexofslash==-1) throw new ClsExceptions("URL no reconocida por SIGA ("+uri+")");
 			proceso=uri.substring(indexofslash+1,idexofdo);
-			access=usrbean.getAccessForProcessName(proceso);
+			access=usrbean.getAccessForProcessName(proceso, request);
 		} else {
-			access=usrbean.getAccessForProcessNumber(proceso);
+			access=usrbean.getAccessForProcessNumber(proceso, request);
 		}
 		return access;
 	}

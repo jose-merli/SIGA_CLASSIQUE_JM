@@ -12,6 +12,8 @@ import java.sql.Statement;
 import java.util.Hashtable;
 import java.io.Serializable;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.siga.administracion.SIGAConstants;
 
 /**
@@ -37,12 +39,15 @@ public class AccessControl implements SIGAConstants, Serializable {
 	}
 
 	public String checkAccessByProcessNumber(String[] profiles, String process,
-			int institucion) {
+			int institucion, HttpServletRequest request) {
 		if (accesos == null) {
 			accesos = new Hashtable();
 			procesos = new Hashtable();
 			getProcess(profiles, institucion);
 		}
+		
+		ClsLogging.writeFileLog("Permisos de este usuario: " + procesos,request,3);
+		ClsLogging.writeFileLog("Test de acceso a proceso: " + process,request,3);
 		Integer access = (Integer) accesos.get(process);
 		if (access != null) {
 			switch (access.intValue()) {
@@ -61,7 +66,7 @@ public class AccessControl implements SIGAConstants, Serializable {
 	}
 
 	public String checkAccessByProcessName(String[] profiles, String process,
-			int institucion) {
+			int institucion, HttpServletRequest request) {
 		if (accesos == null) {
 			accesos = new Hashtable();
 			procesos = new Hashtable();
@@ -71,6 +76,9 @@ public class AccessControl implements SIGAConstants, Serializable {
 		if (processNumber == null) {
 			return ACCESS_NONE;
 		}
+		
+		ClsLogging.writeFileLog("Permisos de este usuario: " + procesos,request,3);
+		ClsLogging.writeFileLog("Test de acceso a proceso numero: " + processNumber,request,3);
 		Integer access = (Integer) accesos.get(processNumber);
 		if (access != null) {
 			switch (access.intValue()) {
