@@ -319,6 +319,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if(numFilesReq == 0){
 			if(compruebaDictamenEJG(ht)){
 				ClsLogging.writeFileLog("El EJG sí tiene dictamen que permita no tener documentos requeridos ", 3);
+				if(numFiles == 0)
+					indexDocumentacion.getIntercambio().getInformacionIntercambio().getTipoIDO().removeExpediente(indexDocumentacion.getIntercambio().getInformacionIntercambio().getTipoIDO().sizeOfExpedienteArray());
 				return numFiles;
 			}
 			else{
