@@ -1452,7 +1452,7 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 			
 			if (!isSimular()) {
 				if (files != null && files.size() > 0 && 
-						(!envioDigitalizacionDoc || (envioDigitalizacionDoc && ficherosCat != null && ficherosCat.size()>0 && !errorMinDoc))) {
+						(!envioDigitalizacionDoc || (envioDigitalizacionDoc && !errorMinDoc))) {
 					tx.begin();				
 					
 				
