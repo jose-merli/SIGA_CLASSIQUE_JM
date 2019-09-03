@@ -351,10 +351,10 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		Hashtable aux = (Hashtable) datos.get(0);
 		//Busqueda de dictamen del EJG. El EJG tiene dictamen que permita no tener documentos(1->Sí, 0->No)
 		ClsLogging.writeFileLog("Busqueda de dictamen del EJG. El EJG tiene dictamen que permita no tener documentos(1->Sí, 0->No): " + aux.get("DICTAMENDOC").toString(), 3);
-		if (aux.get("DICTAMENDOC").toString().equals("0"))
-			return false;
-		else
+		if (aux.get("DICTAMENDOC").toString().equals("1") && aux.get("FUNDAMENTOCALIF").toString().equals("1"))
 			return true;
+		else
+			return false;
 	}
 
 	private File creaFichero(String dirFicheros, String dirPlantilla, IntercambioDocument intercambioDocument, Intercambio intercambio, int numDetalles) throws Exception {
@@ -1514,7 +1514,8 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 					}
 					
 					tx.commit();
-				}				
+				}else				
+					ClsLogging.writeFileLog("Ha ocurrido un problema y no se han generado los ficheros ni cambiado el estado de la remesa en el proceso envía CAT", 3);
 			}
 			ClsLogging.writeFileLog("********************** Terminando proceso envía CAT ********************", 3);
 
