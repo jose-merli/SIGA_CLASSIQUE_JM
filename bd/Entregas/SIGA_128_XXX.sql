@@ -44,4 +44,5 @@ PKG_SIGA_FACTURACION_SJCS
 
 -- ya lo ejecuto Azucena de forma urgente en PRe y PRO. Dejo aqui el comentario como Hco.
 
- 
+-- Solo para PRO:
+Update Gen_Properties Pro   Set Pro.Valor = '/FILERMSA1000/SIGA' Where Parametro = 'directorios.path.OrigenPlantillas'   And Valor = '/FILERMSA1000/SIGA/'; 
