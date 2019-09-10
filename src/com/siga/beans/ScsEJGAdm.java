@@ -1632,6 +1632,22 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += " AND EREM.FECHABAJA IS NULL ";
 			consulta += " AND EREM.IDESTADOEJG = "+ESTADOS_EJG.REMITIDO_COMISION.getCodigo()+" ) ";
 			
+			
+			consulta += " AND NOT EXISTS ";
+			consulta += " (SELECT 1 ";
+			consulta += " FROM CAJG_EJGREMESA EJ, CAJG_REMESA R ";
+			consulta += " WHERE EJ.IDREMESA = R.IDREMESA ";
+			consulta += " AND EJ.IDINSTITUCION = R.IDINSTITUCION ";
+			consulta += " AND R.IDTIPOREMESA = 1 ";
+			consulta += " AND EJ.IDINSTITUCION =  EJG.IDINSTITUCION ";
+			consulta += " AND EJ.NUMERO =  EJG.NUMERO ";
+			consulta += " AND EJ.IDTIPOEJG =  EJG.IDTIPOEJG ";
+			consulta += " AND EJ.ANIO =  EJG.ANIO ";
+			consulta += " AND NOT EXISTS (SELECT 1 ";
+			consulta += " FROM CAJG_RESPUESTA_EJGREMESA RER ";
+			consulta += " WHERE RER.IDEJGREMESA = EJ.IDEJGREMESA) "; 
+			consulta += " ) ";
+			
 		}
 		
 		// Se filtra por numero cajg
