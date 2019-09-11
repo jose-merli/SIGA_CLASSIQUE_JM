@@ -14,7 +14,9 @@ import java.io.Serializable;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.administracion.SIGAConstants;
+import com.siga.beans.MasterBean;
 
 /**
  * @author Carmen.Garcia
@@ -104,59 +106,52 @@ public class AccessControl implements SIGAConstants, Serializable {
 		if (perfiles.length() > 0)
 			perfiles = perfiles.substring(1);
 
-		String queryAccess = "select a.idproceso, p.transaccion,decode(max(decode(a.derechoacceso,1,9)), 9, 1, max(a.derechoacceso)) derechoacceso, "
-				+ " p.descripcion, p.idparent "
-				+ "from adm_tiposacceso a, gen_procesos p where idperfil in ("
-				+ perfiles
-				+ ") and a.idproceso=p.idproceso and "
-				+ ColumnConstants.FN_ACCESS_RIGHT_INSTITUCION
-				+ "="
-				+ institucion
-				+ "and p.descripcion not like 'HIDDEN%' " //Para los procesos hidden no se cogen los permisos propios si no los del padre.
-				//Esto se necesita asi, porque si alguien (como susi) crea un proceso hidden y no le asigna un drecho acceso 
-				//habra conflictos con otros peerfiles que se creen desde cero daran conflicto con los existentes
-				//PREGUNTAR A NVL(CARLOS (si está todavía),ADRIAN)
-				+ " group by a.idproceso, p.transaccion,  p.descripcion, p.idparent ";
+		StringBuilder queryBuilder = new StringBuilder();
+		queryBuilder.append("select a.idproceso, ");
+		queryBuilder.append("       p.transaccion, ");
+		queryBuilder.append("       decode(max(decode(a.derechoacceso,1,9)), 9, 1, max(a.derechoacceso)) derechoacceso, ");
+		queryBuilder.append("       p.descripcion, ");
+		queryBuilder.append("       p.idparent ");
+		queryBuilder.append("  from adm_tiposacceso a, gen_procesos p where idperfil in ( ");
+		queryBuilder.append(perfiles);
+		queryBuilder.append(")  and a.idproceso=p.idproceso and  ");
+		queryBuilder.append(ColumnConstants.FN_ACCESS_RIGHT_INSTITUCION);
+		queryBuilder.append("= ");
+		queryBuilder.append(institucion);
+		queryBuilder.append("   and p.descripcion not like 'HIDDEN%' ");
+		//Para los procesos hidden no se cogen los permisos propios si no los del padre.
+		//Esto se necesita asi, porque si alguien (como susi) crea un proceso hidden y no le asigna un drecho acceso 
+		//habra conflictos con otros peerfiles que se creen desde cero daran conflicto con los existentes
+		//PREGUNTAR A NVL(CARLOS (si está todavía),ADRIAN)
+		queryBuilder.append(" group by a.idproceso, p.transaccion,  p.descripcion, p.idparent ");
 
-		Connection con = null;
-		Statement stmtAccess = null;
-		ResultSet rsAccess = null;
+		String queryAccess = queryBuilder.toString();
 		try {
-			con = ClsMngBBDD.getReadConnection();
-			stmtAccess = con.createStatement();
-			rsAccess = stmtAccess.executeQuery(queryAccess);
-			while (rsAccess.next()) {
-				String processNumber = rsAccess.getString(1);
-				String processTrans = rsAccess.getString(2);
-				int tipoAccess = rsAccess.getInt(3);
+			RowsContainer rc = new RowsContainer();
+			if (rc.query(queryAccess)) {
+				for (int i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					Hashtable registro = fila.getRow(); 
+					String processNumber = registro.get("IDPROCESO") == null ? null : (String) registro.get("IDPROCESO");
+					String processTrans = registro.get("TRANSACCION") == null ? null : (String) registro.get("TRANSACCION");
+					int tipoAccess = registro.get("DERECHOACCESO") == null ? 0 : Integer.valueOf((String) registro.get("DERECHOACCESO"));
 
-				Integer accessTypeStored = (Integer) accesos.get(processNumber);
-				if (accessTypeStored == null) {
-					accesos.put(processNumber, new Integer(tipoAccess));
-					if (processTrans != null && processTrans.length() != 0)
-						procesos.put(processTrans, processNumber);
-				} else {
-					if (accessTypeStored.intValue() == 1)
-						continue;
-					if (accessTypeStored.intValue() < tipoAccess
-							|| tipoAccess == 1) {
+					Integer accessTypeStored = (Integer) accesos.get(processNumber);
+					if (accessTypeStored == null) {
 						accesos.put(processNumber, new Integer(tipoAccess));
+						if (processTrans != null && processTrans.length() != 0)
+							procesos.put(processTrans, processNumber);
+					} else {
+						if (accessTypeStored.intValue() == 1)
+							continue;
+						if (accessTypeStored.intValue() < tipoAccess
+								|| tipoAccess == 1) {
+							accesos.put(processNumber, new Integer(tipoAccess));
+						}
 					}
 				}
+			}
 
-/*				if (descripcion != null && descripcion.startsWith(Hidden)) {
-					hidden.put(processNumber,pater);
-				}  */
-			}
-			rsAccess.close();
-			rsAccess = null;
-/*			Enumeration e=hidden.keys();
-			while (e.hasMoreElements()) {
-				String process=(String)e.nextElement();
-				String pater=(String)hidden.get(process);
-				accesos.put(process,accesos.get(pater));		
-			}
-*/			
 			rellenaProcesosHidden();
 		} catch (Exception e) {
 			//ORA-00942: tabla o vista no encontrada
@@ -164,19 +159,6 @@ public class AccessControl implements SIGAConstants, Serializable {
 			//ORA-00933: comando SQL no terminado correctamente
 			//	                   throw new ClsExceptions("Error en sentencia SQL, " + e.toString(), "","","","");
 			ClsLogging.writeFileLogError("ERROR: " + e.toString(), e, 1);
-
-		} finally {
-
-			try {
-				if (rsAccess != null)
-					rsAccess.close();
-				if (stmtAccess != null)
-					stmtAccess.close();
-				ClsMngBBDD.closeConnection(con);
-			} catch (Exception ex) {
-				ClsLogging.writeFileLogError("ERROR cerrando la conexion: "
-						+ ex.toString(),ex, 1);
-			}
 		}
 	}
 	
