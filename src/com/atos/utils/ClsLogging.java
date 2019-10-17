@@ -296,14 +296,14 @@ public class ClsLogging{
 				trace2.append(IDSession);
 				if(error)
 				{
-					trace.append("\n"+s+" (l=trace)");
-					trace2.append("\n"+s+" (l=trace2)");
+					trace.append("\n"+s+" (l=traceE)");
+					trace2.append("\n"+s+" (l=traceE2)");
 					trace.append(sError);
 					trace2.append(sError);
 				} else
 				{
-					trace.append(","+s);
-					trace2.append(","+s);
+					trace.append(","+s+" (l=trace)");
+					trace2.append(","+s+" (l=trace2)");
 				}
 				
 				if (bConsole)
