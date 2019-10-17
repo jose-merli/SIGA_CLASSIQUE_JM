@@ -313,7 +313,7 @@ public class ClsLogging{
 				
 				if (bLog4j && logger!=null)
 				{			
-					logger.info(trace2.toString());
+					logger.info(trace2.toString()+" (l=info)");
 				}
 				if (bLogXeMail && logXeMail!=null && !isErrorUser)
 				{
@@ -328,7 +328,7 @@ public class ClsLogging{
 				if (bLog4j && logger!=null)
 				{
 					logger.error(",***** ERROR *****,");
-					logger.error(s+sError);
+					logger.error(s+" (l=error) "+sError);
 				}
 
 				

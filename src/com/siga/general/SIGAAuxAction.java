@@ -214,7 +214,7 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 		}
 		String access=SIGAConstants.ACCESS_DENY;
 		
-		ClsLogging.writeFileLog("Test de acceso a proceso: " + proceso,request,3);
+		ClsLogging.writeFileLog("Test de acceso a proceso: " + proceso,request,10);
 		if (proceso==null) {
 			if (uri==null) throw new ClsExceptions("URL no reconocida por SIGA");
 			int idexofdo=uri.indexOf(".do");
