@@ -296,8 +296,8 @@ public class ClsLogging{
 				trace2.append(IDSession);
 				if(error)
 				{
-					trace.append("\n"+s);
-					trace2.append("\n"+s);
+					trace.append("\n"+s+" (l=trace)");
+					trace2.append("\n"+s+" (l=trace2)");
 					trace.append(sError);
 					trace2.append(sError);
 				} else
