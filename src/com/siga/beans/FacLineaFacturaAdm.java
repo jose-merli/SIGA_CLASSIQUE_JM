@@ -248,10 +248,13 @@ public class FacLineaFacturaAdm extends MasterBeanAdministrador {
 			    			FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_CTAIVA + ", " +
 			    			FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_PRECIOUNITARIO + " AS PRECIO_LINEA, " +
 			    			FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_IVA + " AS IVA_LINEA, " +
+			    			"TO_CHAR (" + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_FECHA + ",'DD/MM/RRRR') AS FECHA_COMPRA, " +
 							" F_SIGA_DESCLINEAFACT(" + institucion + "," + factura + "," + FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_NUMEROLINEA + ") AS DESCRIPCION_LINEA " +
-							" FROM " + FacLineaFacturaBean.T_NOMBRETABLA + 
+							" FROM " + FacLineaFacturaBean.T_NOMBRETABLA + ", " +  PysCompraBean.T_NOMBRETABLA +
 							" WHERE " + FacLineaFacturaBean.T_NOMBRETABLA + "."+ FacLineaFacturaBean.C_IDINSTITUCION + " = " + institucion +
 								" AND " + FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_IDFACTURA + " = " + factura +
+								" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDFACTURA +"(+)=" + FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_IDFACTURA +
+								" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION +"(+)="  + FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_IDINSTITUCION +
 							" ORDER BY " + FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_NUMEROORDEN + " ASC, " + 
 								FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_NUMEROLINEA + " ASC ";
 														
