@@ -457,6 +457,7 @@ public class ClsLogging{
 	 */
 	public static void writeFileLogWithoutSession(String s, int i)
 	{
+		s = s+" (l=infoNoSes)";
 		init();
 		PrintWriter printer = null;
 		try
