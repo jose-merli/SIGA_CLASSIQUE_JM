@@ -28,7 +28,7 @@
 	String idinstitucion = userBean.getLocation();
 	
 	//aalg. incidencia del 18 de mayo de 2012. para ver si hay permisos para ese perfil para crear nuevos expedientes
-	String accesoNuevo = userBean.getAccessForProcessName("EXP_NuevoExpediente",request);
+	String accesoNuevo = userBean.getAccessForProcessName("EXP_NuevoExpediente");
 	
 	// para ver si tengo que buscar tras mostrar la pantalla
 	String buscar = (String) request.getAttribute("buscar");

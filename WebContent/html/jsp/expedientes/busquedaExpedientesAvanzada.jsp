@@ -49,7 +49,7 @@
 	datoTipoExp[1] = idinstitucion;
 	
 	//aalg. incidencia del 18 de mayo de 2012. para ver si hay permisos para ese perfil para crear nuevos expedientes
-	String accesoNuevo = userBean.getAccessForProcessName("EXP_NuevoExpediente", request);
+	String accesoNuevo = userBean.getAccessForProcessName("EXP_NuevoExpediente");
 
 	BusquedaExpedientesForm form = (BusquedaExpedientesForm) session.getAttribute("busquedaExpedientesForm");
 

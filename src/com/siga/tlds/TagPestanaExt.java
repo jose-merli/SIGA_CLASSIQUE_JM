@@ -332,7 +332,7 @@ public class TagPestanaExt extends TagSupport {
 				elements[i].mostrar=false;
 			} else {
 				String access=SIGAConstants.ACCESS_DENY;
-				access=usrbean.getAccessForProcessNumber(elements[i].process, null);
+				access=usrbean.getAccessForProcessNumber(elements[i].process);
 				if (!access.equals(SIGAConstants.ACCESS_READ) && 
 						!access.equals(SIGAConstants.ACCESS_FULL)) {
 				    // Aqui meto a pelo que se vean las pestañas ya que han aparecido en los permisos (por estar seleccionadas)

@@ -70,7 +70,7 @@ public class SIGAConfigurarPermisosAplicacionAction extends MasterAction
 		// Ponemos modo debug para los administradores
 		request.setAttribute("debug", this.getUserBean(request).isEntradaCombos());
 		UsrBean usr = this.getUserBean(request);
-		String permiso= usr.getAccessForProcessNumber("84", request);
+		String permiso= usr.getAccessForProcessNumber("84");
 		
 		if(permiso.equalsIgnoreCase(SIGAConstants.ACCESS_FULL)){
 			request.setAttribute("permiso", true);

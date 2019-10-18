@@ -132,6 +132,11 @@ public class ClsLogging{
 		ClsLogging.writeFileLog(s, null, i);  
 	}
 	
+	public static void writeFileLog(String s) {
+		init();
+		ClsLogging.writeFileLogWithoutSession(s);  
+	}
+		
 	/**
 	 *
 	 * @param s
@@ -259,61 +264,48 @@ public class ClsLogging{
 						}
 					} catch (Exception e){}
 				}
-				StringBuffer trace = new StringBuffer();
+				
 				StringBuffer trace2 = new StringBuffer();
-				Date dat = Calendar.getInstance().getTime();
-				trace.append(sdfLong.format(dat));
-				trace.append(",");
-				trace.append((error ? sError.substring(1,13) : "")+ssys);
 				trace2.append((error ? sError.substring(1,13) : "")+ssys);
-				trace.append(",");
 				trace2.append(",");
 				if (usrbean!=null)
 				{
-					trace.append(usrbean.getUserName());
 					trace2.append(usrbean.getUserName());
-					trace.append(",");
 					trace2.append(",");
-					trace.append(usrbean.getLanguage());
 					trace2.append(usrbean.getLanguage());
-					trace.append(",");
 					trace2.append(",");
 				} else
 				{
-					trace.append("USER NOT AUTHENTICATED,NO LANGUAGE,");
 					trace2.append("USER NOT AUTHENTICATED,NO LANGUAGE,");
 					isErrorUser=true;
 				}
-				trace.append(snav);
 				trace2.append(snav);
-				trace.append(":");
 				trace2.append(":");
-				trace.append(remoteAddress);
 				trace2.append(remoteAddress);
-				trace.append("-");
 				trace2.append("-");
-				trace.append(IDSession);
 				trace2.append(IDSession);
 				if(error)
 				{
-					trace.append("\n"+s+" (l=traceE)");
-					trace2.append("\n"+s+" (l=traceE2)");
-					trace.append(sError);
+					trace2.append("\n"+s);
 					trace2.append(sError);
 				} else
 				{
-					trace.append(","+s+" (l=trace)");
-					trace2.append(","+s+" (l=trace2)");
+					trace2.append(","+s);
 				}
 				
+				StringBuffer trace4console = new StringBuffer();
+				Date dat = Calendar.getInstance().getTime();
+				trace4console.append(sdfLong.format(dat));
+				trace4console.append(",");
+				trace4console.append(trace2);
 				if (bConsole)
 				{
-					System.out.println(trace.toString());
+					System.out.println(trace4console.toString());
 				}
 				
 				if (bLog4j && logger!=null)
 				{			
-					logger.info(trace2.toString()+" (l=info)");
+					logger.info(trace2.toString());
 				}
 				if (bLogXeMail && logXeMail!=null && !isErrorUser)
 				{
@@ -328,15 +320,13 @@ public class ClsLogging{
 				if (bLog4j && logger!=null)
 				{
 					logger.error(",***** ERROR *****,");
-					logger.error(s+" (l=error) "+sError);
+					logger.error(s+sError);
 				}
-
-				
 				
 				if (bStoreFile)
 				{
 					printer = new PrintWriter(new BufferedWriter(new FileWriter(fileName+sdfShort.format(dat) +".out", true)));
-					printer.println(trace.toString());
+					printer.println(trace4console.toString());
 					printer.flush();
 					printer.close();
 				}
@@ -451,13 +441,12 @@ public class ClsLogging{
 	}
 	
 	/**
-	 *
+	 * 
 	 * @param s
 	 * @param i
 	 */
 	public static void writeFileLogWithoutSession(String s, int i)
 	{
-		s = s+" (l=infoNoSes)";
 		init();
 		PrintWriter printer = null;
 		try
@@ -501,7 +490,7 @@ public class ClsLogging{
 	}
 	
 	/**
-	 *
+	 * Deberia ser lo mismo que sin indicar el nivel.
 	 * @param s
 	 */
 	public static void writeFileLogWithoutSession(String s)

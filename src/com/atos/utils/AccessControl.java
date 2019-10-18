@@ -12,11 +12,7 @@ import java.sql.Statement;
 import java.util.Hashtable;
 import java.io.Serializable;
 
-import javax.servlet.http.HttpServletRequest;
-
-import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.administracion.SIGAConstants;
-import com.siga.beans.MasterBean;
 
 /**
  * @author Carmen.Garcia
@@ -40,16 +36,15 @@ public class AccessControl implements SIGAConstants, Serializable {
 
 	}
 
-	public String checkAccessByProcessNumber(String[] profiles, String process,
-			int institucion, HttpServletRequest request) {
+	public String checkAccessByProcessNumber(String[] profiles, String process, int institucion) {
 		if (accesos == null) {
 			accesos = new Hashtable();
 			procesos = new Hashtable();
 			getProcess(profiles, institucion);
 		}
 		
-		ClsLogging.writeFileLog("Permisos de este usuario: " + procesos,request,3);
-		ClsLogging.writeFileLog("Test de acceso a proceso: " + process,request,3);
+		ClsLogging.writeFileLog("Permisos de este usuario: " + procesos);
+		ClsLogging.writeFileLog("Test de acceso a proceso: " + process);
 		Integer access = (Integer) accesos.get(process);
 		if (access != null) {
 			switch (access.intValue()) {
@@ -67,8 +62,7 @@ public class AccessControl implements SIGAConstants, Serializable {
 		return ACCESS_NONE;
 	}
 
-	public String checkAccessByProcessName(String[] profiles, String process,
-			int institucion, HttpServletRequest request) {
+	public String checkAccessByProcessName(String[] profiles, String process, int institucion) {
 		if (accesos == null) {
 			accesos = new Hashtable();
 			procesos = new Hashtable();
@@ -79,8 +73,8 @@ public class AccessControl implements SIGAConstants, Serializable {
 			return ACCESS_NONE;
 		}
 		
-		ClsLogging.writeFileLog("Permisos de este usuario: " + procesos,10);
-		ClsLogging.writeFileLog("Test de acceso a proceso numero: " + processNumber,10);
+		ClsLogging.writeFileLog("Permisos de este usuario: " + procesos);
+		ClsLogging.writeFileLog("Test de acceso a proceso numero: " + processNumber);
 		Integer access = (Integer) accesos.get(processNumber);
 		if (access != null) {
 			switch (access.intValue()) {
