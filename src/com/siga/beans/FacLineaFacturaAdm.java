@@ -253,6 +253,7 @@ public class FacLineaFacturaAdm extends MasterBeanAdministrador {
 							" FROM " + FacLineaFacturaBean.T_NOMBRETABLA + ", " +  PysCompraBean.T_NOMBRETABLA +
 							" WHERE " + FacLineaFacturaBean.T_NOMBRETABLA + "."+ FacLineaFacturaBean.C_IDINSTITUCION + " = " + institucion +
 								" AND " + FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_IDFACTURA + " = " + factura +
+								" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_NUMEROLINEA +"(+)=" + FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_NUMEROLINEA +
 								" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDFACTURA +"(+)=" + FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_IDFACTURA +
 								" AND " + PysCompraBean.T_NOMBRETABLA + "." + PysCompraBean.C_IDINSTITUCION +"(+)="  + FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_IDINSTITUCION +
 							" ORDER BY " + FacLineaFacturaBean.T_NOMBRETABLA + "." + FacLineaFacturaBean.C_NUMEROORDEN + " ASC, " + 
