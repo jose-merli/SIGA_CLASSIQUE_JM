@@ -181,75 +181,19 @@ public class DefinirEJGAction extends MasterAction
 	
 	/**
 	 * Actualiza el paginador con los datos del letrado relacionado con la designacion o asistencia 
+	 * Actualiza los datos pasados por parametro
 	 * @throws SIGAException 
 	 */
-	private Vector actualizarPagina(HttpServletRequest request,ScsEJGAdm admBean,Vector datos) throws ClsExceptions, SIGAException{
-		String letradoDes = "";
-		String turnoDes = "";
-		// Obtenemos las relaciones de la EJG con designaciones y asistencias para mostrarlas en la busqueda
+	private void actualizarPagina(HttpServletRequest request,ScsEJGAdm admBean,Vector datos) throws ClsExceptions, SIGAException{
 		try{
 			for (int i=0; i<datos.size(); i++){
 				Row fila = (Row)datos.get(i);
 				Hashtable registro = (Hashtable) fila.getRow();
-				String anio = registro.get("ANIO").toString();
-				String idInstitucion = registro.get("IDINSTITUCION").toString();
-				String idTipo = registro.get("IDTIPOEJG").toString();
-				String numero = registro.get("NUMERO").toString();
-				registro.put(ScsEJGBean.C_FECHAAPERTURA, admBean.getFechaAperturaEJG(idInstitucion, idTipo, anio, numero));
-				// Obtenemos un vector con las relaciones del EJG
-				Vector relacionados = new Vector();
-				relacionados = admBean.getRelacionadoCon(idInstitucion, anio, numero, idTipo);
-				letradoDes = "";
-				turnoDes = "";
-				if (relacionados.size()>0){
-					// Nos recorremos las relaciones buscando informacion
-					for (int r=0; r<relacionados.size(); r++){
-						Hashtable elementoRel = new Hashtable();
-						elementoRel = (Hashtable)relacionados.get(r);
-						String tipoSJCS = UtilidadesHash.getString(elementoRel, "SJCS");
-						if (tipoSJCS.equalsIgnoreCase("DESIGNA")){
-							// Si se trata de una designa sacamos el idTurno y el año de la designa para poder 
-							// recuperar el nombre del letrado
-							String anioDes = UtilidadesHash.getString(elementoRel, "ANIO");
-							ScsDesignaAdm desAdm = new ScsDesignaAdm(this.getUserBean(request));
-							String idTurno = UtilidadesHash.getString(elementoRel, "IDTURNO");
-							String numDes = UtilidadesHash.getString(elementoRel, "NUMERO");
-							letradoDes = desAdm.getApeNomDesig(idInstitucion, idTurno, anioDes, numDes);
-							turnoDes = UtilidadesHash.getString(elementoRel, "DES_TURNO");
-						}else if (tipoSJCS.equalsIgnoreCase("ASISTENCIA")){
-							// Damos preferencia a las designas. Solo usaremos las asistencias o SOJ cuando
-							// No tengamos datos de la designa. Si luego aparecen sobreescribiran estos.
-							String idLetrado = UtilidadesHash.getString(elementoRel, "IDLETRADO");
-							if (idLetrado != null){
-								Vector vPersona = new Vector();
-								CenPersonaAdm perAdm = new CenPersonaAdm(this.getUserBean(request));
-								// Si se trata de una asistencia o SOJ buscamos al letrado en el censo
-								vPersona = perAdm.getDatosPersonaTag(idInstitucion, idLetrado);
-								if (vPersona.size()>0){
-									turnoDes = UtilidadesHash.getString(elementoRel, "DES_TURNO");
-									letradoDes = UtilidadesHash.getString((Hashtable)vPersona.get(0),"NOMBRE");
-								}
-							}
-						}
-					}
-				}
-
-				// Finalmente escribimos los datos en el paginador (si no ha encontrado nada que quede vacio)
-				if((letradoDes.equals(", "))||(letradoDes.equals(""))){
-					letradoDes="-";
-				}
-				if((turnoDes.equals(", "))||(turnoDes.equals(""))){
-					turnoDes="-";
-				}
-				registro.put("LETRADODESIGNA", letradoDes);
-				registro.put("TURNODESIGNA", turnoDes);
-
-			} // JBD INC-CAT-5
+				admBean.actualizarDatosEJGconDesignaRelacionada(registro);
+			}
 		} catch (Exception e) {
 			throwExcp("messages.general.error",e,null);
 		}
-		return datos;
-
 	}
 	
 	/**

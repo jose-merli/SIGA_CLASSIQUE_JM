@@ -529,7 +529,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 			UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 			String longitudNumEjg = (String) request.getSession().getAttribute(PARAMETRO.LONGITUD_CODEJG.toString());
 			String nombreTurnoAsistencia="", nombreGuardiaAsistencia="", consultaTurnoAsistencia="", consultaGuardiaAsistencia="";
-			ScsEJGAdm admBean =  new ScsEJGAdm(this.getUserBean(request));
+			ScsEJGAdm admBean =  new ScsEJGAdm(usr);
 			String anio="", numero="", idtipoEjg="",idInstitucion ="";
 			
 			
@@ -640,45 +640,14 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 				throwExcp("error.general.yanoexiste",e,null);
 			}
 			
-			// jbd // INC_10830_SIGA // Recogemos las designas relacionadas
-			
-			consulta = " select designa.ESTADO, ";
-			consulta += "  ejgd.aniodesigna AS DESIGNA_ANIO, ";
-			consulta += "   ejgd.idturno AS DESIGNA_IDTURNO, ";
-			consulta += "   ejgd.numerodesigna AS DESIGNA_NUMERO, ";
-			consulta += "   (SELECT ABREVIATURA  FROM scs_turno t WHERE t.idturno = ejgd.IDTURNO and t.IDINSTITUCION = ejgd.IDINSTITUCION) DESIGNA_TURNO_NOMBRE, ";
-			consulta += "   to_char(designa.FECHAENTRADA,'dd/MM/yyyy') AS FECHAENTRADADESIGNA, ";
-			consulta += "	designa.IDJUZGADO AS DES_IDJUZGADO, ";
-			consulta += "	designa.IDINSTITUCION_JUZG AS DES_IDJUZGADOINSTITUCION, ";
-			consulta += "	designa.NUMPROCEDIMIENTO AS DES_NUMPROCEDIMIENTO, ";
-			consulta += "	designa.ANIOPROCEDIMIENTO AS DES_ANIOPROCEDIMIENTO, ";
-			consulta += "	designa.IDPROCEDIMIENTO AS DES_IDPROCEDIMIENTO, ";
-			consulta += "	designa.IDPRETENSION AS DES_IDPRETENSION, ";
-			consulta += "	designa.IDINSTITUCION AS DES_IDINSTITUCION, ";
-			consulta += "	f_siga_getnomapeletra_designa(designa.idinstitucion,designa.idturno,designa.anio, designa.numero) AS TRAMITADOR, ";
-			consulta += " 	designa.codigo CODIGO ";
-			
-			consulta += " from scs_designa        designa, ";
-			consulta += "      scs_ejgdesigna     ejgd ";
-			
-			consulta += " where designa.idinstitucion(+) = ejgd.idinstitucion ";
-			consulta += "   and designa.anio(+) = ejgd.aniodesigna ";
-			consulta += "   and designa.numero(+) = ejgd.numerodesigna ";
-			consulta += "   and designa.idturno(+) = ejgd.idturno ";
-			
-			consulta += "   and ejgd.idtipoejg = " + miHash.get("IDTIPOEJG") ;
-			consulta += "   and ejgd.idinstitucion = " + miHash.get("IDINSTITUCION") ; 
-			consulta += "   and ejgd.anioejg = " + miHash.get("ANIO") ;
-			consulta += "   and ejgd.numeroejg = " + miHash.get("NUMERO");
-			
-			consulta += " order by designa.estado desc, designa.fechaentrada desc ";
-			
-			// jbd // INC_10830_SIGA // Metemos las designas en la request. Si no hay designas metemos lo mismo campos de designa0
-			Vector designas = admBean.selectGenerico(consulta);
+			// obteniendo las designas
+			Vector designas = admBean.getRelacionadoCon((String) miHash.get("IDINSTITUCION"), (String) miHash.get("ANIO"), (String) miHash.get("NUMERO"),
+					(String) miHash.get("IDTIPOEJG"), ScsEJGAdm.LISTAR_RELACIONES_TAMBIEN_ANULADOS, ScsEJGAdm.LISTAR_RELACIONES_SOLO_DESIGNAS);
 			Hashtable designa0 = new Hashtable();
 			if(designas!=null && designas.size()>0){
 				designa0 = (Hashtable)designas.get(0);
 			}else{
+				// si no hay designas metemos los mismos campos de designa0
 				designa0.put("ESTADO","");
 				designa0.put("DESIGNA_ANIO","");
 				designa0.put("DESIGNA_IDTURNO","");
@@ -693,6 +662,7 @@ public class DefinirMantenimientoEJGAction extends MasterAction
 				designa0.put("DES_IDINSTITUCION","");
 				designa0.put("CODIGO","");
 			}
+			// metiendo las designas en la request
 			ejg.putAll(designa0);
 			request.setAttribute("DESIGNAS",designas);
 			
