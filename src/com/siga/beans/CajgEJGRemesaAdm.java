@@ -1616,7 +1616,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 				"  1 " +
 				" ELSE " +
 				"  0 " +
-				" END AS DICTAMENDOC " +
+				" END AS DICTAMENDOC, " +
 				" CASE " +
 				" WHEN CAL.CODIGO = 11 THEN " +
 				" 	0 " +
