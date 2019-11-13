@@ -125,7 +125,7 @@ public class RelacionadoConSJCSAction extends MasterAction
 				int i = 0;
 				ScsEJGAdm ejg = new ScsEJGAdm (this.getUserBean(request));
 				ExpExpedienteAdm exp = new ExpExpedienteAdm (this.getUserBean(request));
-				v = ejg.getRelacionadoCon(idInstitucion, anio, numero, idTipo, ScsEJGAdm.LISTAR_RELACIONES_TAMBIEN_ANULADOS, ScsEJGAdm.LISTAR_RELACIONES_TODOS);
+				v = ejg.getRelacionadoCon(idInstitucion, anio, numero, idTipo);
 				// JBD INC_CAT_5 >>
 				// Para recuperar el nombre del letrado de cada relacion hemos añadido el IDLETRADO a getRelacionadoCon
 				CenPersonaAdm perAdm = new CenPersonaAdm(this.getUserBean(request));

@@ -901,67 +901,125 @@ public class MantenimientoAsistenciasAction extends MasterAction
 	}
 
 	
-	protected String relacionarConEJGExt(boolean bCrear, MasterForm formulario, HttpServletRequest request) throws ClsExceptions, SIGAException
+	protected String relacionarConEJGExt (boolean bCrear, MasterForm formulario, HttpServletRequest request) throws ClsExceptions,SIGAException  
 	{
 		String mapDestino;
 		UserTransaction tx = null;
 		try {
-
-			AsistenciasForm miForm = (AsistenciasForm) formulario;
-			mapDestino = this.relacionarConEJG(true, miForm, request);
-
-			if ((mapDestino.equalsIgnoreCase("exito"))) {
-				if (miForm.getDesigna_anio() != null && !miForm.getDesigna_anio().equals("")) {
-
-					Hashtable hashEjgDesigna = new Hashtable();
-					ScsEJGDESIGNABean ejgDesignabean = new ScsEJGDESIGNABean();
-
-					ejgDesignabean.setIdInstitucion(this.getIDInstitucion(request));
-					ejgDesignabean.setAnioDesigna(new Integer(miForm.getDesigna_anio()));
-					ejgDesignabean.setIdTurno(new Integer(miForm.getDesigna_turno()));
-					ejgDesignabean.setNumeroDesigna(new Integer(miForm.getDesigna_numero()));
-					ejgDesignabean.setAnioEJG(new Integer((String) miForm.getEjg_anio()));
-					ejgDesignabean.setIdTipoEJG(new Integer((String) miForm.getEjg_idTipoEJG()));
-					ejgDesignabean.setNumeroEJG(new Integer((String) miForm.getEjg_numero()));
-
-					ScsEJGDESIGNAAdm ejgDesignaAdm = new ScsEJGDESIGNAAdm(this.getUserBean(request));
-
-					UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_ANIODESIGNA, miForm.getDesigna_anio());
-					UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_NUMERODESIGNA, new Integer(miForm.getDesigna_numero()));
-					UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_IDTURNO, miForm.getDesigna_turno());
-					UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_IDTIPOEJG, new Integer((String) miForm.getEjg_idTipoEJG()));
-					UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_NUMEROEJG, new Integer((String) miForm.getEjg_numero()));
-					UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_ANIOEJG, new Integer((String) miForm.getEjg_anio()));
-					UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_IDINSTITUCION, this.getIDInstitucion(request));
-					Vector existeRelacion = ejgDesignaAdm.select(hashEjgDesigna);
-
-					tx = this.getUserBean(request).getTransaction();
-					tx.begin();
-					if (existeRelacion.size() == 0) {// Si no existe la relación, la creamos
-						if (!ejgDesignaAdm.insert(ejgDesignabean))
-							throw new ClsExceptions("Error al crear la relacion entre EJG y la designa");
+			
+			
+			AsistenciasForm miForm 	= (AsistenciasForm)formulario;
+			mapDestino = this.relacionarConEJG(true, miForm, request);;
+			
+			if((mapDestino.equalsIgnoreCase("exito"))){
+				if (miForm.getDesigna_anio()!=null && !miForm.getDesigna_anio().equals("")){
+				
+				Hashtable hashEjgDesigna=new Hashtable();
+				ScsEJGDESIGNABean ejgDesignabean=new ScsEJGDESIGNABean();
+				
+				ejgDesignabean.setIdInstitucion(this.getIDInstitucion(request));
+				ejgDesignabean.setAnioDesigna(new Integer(miForm.getDesigna_anio()));
+				ejgDesignabean.setIdTurno(new Integer(miForm.getDesigna_turno()));
+				ejgDesignabean.setNumeroDesigna(new Integer(miForm.getDesigna_numero()));
+				ejgDesignabean.setAnioEJG(new Integer((String)miForm.getEjg_anio()));
+				ejgDesignabean.setIdTipoEJG(new Integer((String)miForm.getEjg_idTipoEJG()));
+				ejgDesignabean.setNumeroEJG(new Integer((String)miForm.getEjg_numero()));
+				
+				ScsEJGDESIGNAAdm ejgDesignaAdm = new ScsEJGDESIGNAAdm (this.getUserBean(request));
+				
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_ANIODESIGNA, 			miForm.getDesigna_anio());
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_NUMERODESIGNA,  new Integer(miForm.getDesigna_numero()));
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_IDTURNO, 		miForm.getDesigna_turno());
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_IDTIPOEJG, 		new Integer((String)miForm.getEjg_idTipoEJG()));
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_NUMEROEJG, 		new Integer((String)miForm.getEjg_numero()));
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_ANIOEJG, 		new Integer((String)miForm.getEjg_anio()));
+				UtilidadesHash.set(hashEjgDesigna, ScsEJGDESIGNABean.C_IDINSTITUCION, 		this.getIDInstitucion(request));
+				Vector existeRelacion = ejgDesignaAdm.select(hashEjgDesigna);
+				
+				tx=this.getUserBean(request).getTransaction();
+				tx.begin();
+				if (existeRelacion.size()==0){//Si no existe la relación, la creamos
+					if(!ejgDesignaAdm.insert(ejgDesignabean))
+						throw new ClsExceptions ("Error al crear la relacion entre EJG y la designa");
+				}
+				tx.commit();
+				
+				
+				//Obtenemos las relaciones del ejg
+				/*ScsEJGAdm ejgAdm = new ScsEJGAdm(this.getUserBean(request));
+				Vector vRelacionados = new Vector(); 
+				vRelacionados = ejgAdm.getRelacionadoCon (	miForm.getIdInstitucion(),miForm.getEjg_anio(), 
+															miForm.getEjg_numero(), miForm.getEjg_idTipoEJG());
+				// Recorremos el vector 
+				if (vRelacionados.size()>0){
+					// Solo nos quedaremos con la designacione relacionada si es unica
+					Hashtable ejgRelacionado;
+					int posAsistencia = 0; // Almacenara la posicion de la asistencia unica
+					boolean encontradaAsistenciaUnica = false; // Nos indicará que realmente es unica
+					for (int i=0;i<vRelacionados.size();i++){
+						ejgRelacionado = (Hashtable) vRelacionados.get(i);
+						String tipo = (String)ejgRelacionado.get("SJCS"); 
+						// Comprobamos que sea asistencia y no se haya encontrado otra antes
+						if((tipo.equalsIgnoreCase("DESIGNA"))&& (!encontradaAsistenciaUnica)){
+							// Almacenamos la posicion
+							encontradaAsistenciaUnica = true;
+							posAsistencia = i;
+						}
+						else
+							encontradaAsistenciaUnica = false;
 					}
-					tx.commit();
-
-				} else {
-					// Obtenemos las relaciones del ejg
-					ScsEJGAdm ejgAdm = new ScsEJGAdm(this.getUserBean(request));
-					Vector vRelacionados = ejgAdm.getRelacionadoCon(miForm.getIdInstitucion(), miForm.getEjg_anio(), miForm.getEjg_numero(),
-							miForm.getEjg_idTipoEJG(), ScsEJGAdm.LISTAR_RELACIONES_SIN_ANULADOS, ScsEJGAdm.LISTAR_RELACIONES_SOLO_DESIGNAS);
-					// Solo nos quedaremos con la designacion relacionada si es unica
-					if (vRelacionados.size() == 1) {
-						Hashtable ejgRelacionado = (Hashtable) vRelacionados.get(0);
-						miForm.setDesigna_anio((String) ejgRelacionado.get("ANIO"));
-						miForm.setDesigna_idInstitucion((String) ejgRelacionado.get("IDINSTITUCION"));
-						miForm.setDesigna_turno((String) ejgRelacionado.get("IDTURNO"));
-						miForm.setDesigna_numero((String) ejgRelacionado.get("NUMERO"));
+					// Si era una unica designa creamos la relacion usando el metodo relacionarConDesigna
+					if (encontradaAsistenciaUnica){
+						ejgRelacionado = (Hashtable) vRelacionados.get(posAsistencia);
+						miForm.setDesigna_anio((String)ejgRelacionado.get("ANIO"));
+						miForm.setDesigna_idInstitucion((String)ejgRelacionado.get("IDINSTITUCION"));
+						miForm.setDesigna_turno((String)ejgRelacionado.get("IDTURNO"));
+						miForm.setDesigna_numero((String)ejgRelacionado.get("NUMERO"));
+						this.relacionarConDesigna(true, miForm, request);
+					}
+				}*/
+			
+			}else{
+				//Obtenemos las relaciones del ejg
+				ScsEJGAdm ejgAdm = new ScsEJGAdm(this.getUserBean(request));
+				Vector vRelacionados = new Vector(); 
+				vRelacionados = ejgAdm.getRelacionadoCon (	miForm.getIdInstitucion(),miForm.getEjg_anio(), 
+															miForm.getEjg_numero(), miForm.getEjg_idTipoEJG());
+				// Recorremos el vector 
+				if (vRelacionados.size()>0){
+					// Solo nos quedaremos con la designacione relacionada si es unica
+					Hashtable ejgRelacionado;
+					int posAsistencia = 0; // Almacenara la posicion de la asistencia unica
+					boolean encontradaAsistenciaUnica = false; // Nos indicará que realmente es unica
+					for (int i=0;i<vRelacionados.size();i++){
+						ejgRelacionado = (Hashtable) vRelacionados.get(i);
+						String tipo = (String)ejgRelacionado.get("SJCS"); 
+						// Comprobamos que sea asistencia y no se haya encontrado otra antes
+						if((tipo.equalsIgnoreCase("DESIGNA"))&& (!encontradaAsistenciaUnica)){
+							// Almacenamos la posicion
+							encontradaAsistenciaUnica = true;
+							posAsistencia = i;
+						}
+						else
+							encontradaAsistenciaUnica = false;
+					}
+					// Si era una unica designa creamos la relacion usando el metodo relacionarConDesigna
+					if (encontradaAsistenciaUnica){
+						ejgRelacionado = (Hashtable) vRelacionados.get(posAsistencia);
+						miForm.setDesigna_anio((String)ejgRelacionado.get("ANIO"));
+						miForm.setDesigna_idInstitucion((String)ejgRelacionado.get("IDINSTITUCION"));
+						miForm.setDesigna_turno((String)ejgRelacionado.get("IDTURNO"));
+						miForm.setDesigna_numero((String)ejgRelacionado.get("NUMERO"));
 						this.relacionarConDesigna(true, miForm, request);
 					}
 				}
 			}
-		} catch (Exception e) {
-			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, tx);
+			}		
 		}
+		catch (Exception e) 
+		{
+		    throwExcp("messages.general.error", new String[] {"modulo.gratuita"}, e, tx); 
+		} 
 
 		return "exito";
 	}

@@ -34,11 +34,6 @@ import es.satec.businessManager.BusinessManager;
  */ 
 public class ScsEJGAdm extends MasterBeanAdministrador {
 	
-	public static final boolean LISTAR_RELACIONES_TAMBIEN_ANULADOS = true;
-	public static final boolean LISTAR_RELACIONES_SIN_ANULADOS = false;
-	public static final byte LISTAR_RELACIONES_TODOS = 10;
-	public static final byte LISTAR_RELACIONES_SOLO_DESIGNAS = 1;
-	
 	public static enum TipoVentana {
 		BUSQUEDA_EJG,
 		BUSQUEDA_PREPARACION_CAJG,
@@ -1045,259 +1040,113 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	       return fila;                        
 	    }
 
-	public void actualizarDatosEJGconDesignaRelacionada(Hashtable registro) throws ClsExceptions, SIGAException
+	public Vector getRelacionadoCon (String institucion, String anio, String numero, String idTipo) throws ClsExceptions,SIGAException 
 	{
-		String letradoDes = "";
-		String turnoDes = "";
-		String anio = registro.get("ANIO").toString();
-		String idInstitucion = registro.get("IDINSTITUCION").toString();
-		String idTipo = registro.get("IDTIPOEJG").toString();
-		String numero = registro.get("NUMERO").toString();
-		registro.put(ScsEJGBean.C_FECHAAPERTURA, this.getFechaAperturaEJG(idInstitucion, idTipo, anio, numero));
-		// Obtenemos un vector con las relaciones del EJG
-		Vector relacionados = this.getRelacionadoCon(idInstitucion, anio, numero, idTipo, ScsEJGAdm.LISTAR_RELACIONES_SIN_ANULADOS,
-				ScsEJGAdm.LISTAR_RELACIONES_TODOS);
-
-		// Nos recorremos las relaciones buscando informacion
-		for (int r = 0; r < relacionados.size() && (letradoDes.equalsIgnoreCase("") || letradoDes.equalsIgnoreCase(", ")); r++) {
-			Hashtable elementoRel = new Hashtable();
-			elementoRel = (Hashtable) relacionados.get(r);
-			String tipoSJCS = UtilidadesHash.getString(elementoRel, "SJCS");
-			if (tipoSJCS.equalsIgnoreCase("DESIGNA")) {
-				// Si se trata de una designa sacamos el idTurno y el año de la designa para poder recuperar el
-				// nombre del letrado
-				String anioDes = UtilidadesHash.getString(elementoRel, "ANIO");
-				ScsDesignaAdm desAdm = new ScsDesignaAdm(this.usrbean);
-				String idTurno = UtilidadesHash.getString(elementoRel, "IDTURNO");
-				String numDes = UtilidadesHash.getString(elementoRel, "NUMERO");
-				letradoDes = desAdm.getApeNomDesig(idInstitucion, idTurno, anioDes, numDes);
-				turnoDes = UtilidadesHash.getString(elementoRel, "DES_TURNO");
-			} else if (tipoSJCS.equalsIgnoreCase("ASISTENCIA")) {
-				// Damos preferencia a las designas. Solo usaremos las asistencias o SOJ cuando no tengamos
-				// datos de la designa
-				String idLetrado = UtilidadesHash.getString(elementoRel, "IDLETRADO");
-				if (idLetrado != null) {
-					Vector vPersona = new Vector();
-					CenPersonaAdm perAdm = new CenPersonaAdm(this.usrbean);
-					// Si se trata de una asistencia o SOJ buscamos al letrado en el censo
-					vPersona = perAdm.getDatosPersonaTag(idInstitucion, idLetrado);
-					if (vPersona.size() > 0) {
-						turnoDes = UtilidadesHash.getString(elementoRel, "DES_TURNO");
-						letradoDes = UtilidadesHash.getString((Hashtable) vPersona.get(0), "NOMBRE");
-					}
-				}
-			}
-		}
-
-		// Finalmente escribimos los datos en el paginador (si no ha encontrado nada que quede vacio)
-		if ((letradoDes.equals(", ")) || (letradoDes.equals(""))) {
-			letradoDes = "-";
-		}
-		if ((turnoDes.equals(", ")) || (turnoDes.equals(""))) {
-			turnoDes = "-";
-		}
-		registro.put("LETRADODESIGNA", letradoDes);
-		registro.put("TURNODESIGNA", turnoDes);
-
-	} // actualizarDatosEJGconDesignaRelacionada()
-
-	public Vector getRelacionadoCon (String institucion, String anio, String numero, String idTipo, boolean incluirAnulados, byte asuntosListados) throws ClsExceptions,SIGAException 
-	{
-		if (institucion == null || institucion.equalsIgnoreCase("") || anio == null || anio.equalsIgnoreCase("") ||
-				numero == null || numero.equalsIgnoreCase("") || idTipo == null || idTipo.equalsIgnoreCase("")) {
-			return new Vector();
-		}
-		StringBuilder sql = new StringBuilder();
-		sql.append("Select * ");
-		sql.append("  From ( ");
-		
-		if (asuntosListados == ScsEJGAdm.LISTAR_RELACIONES_TODOS) {
-			
-		sql.append("		Select Trim('ASISTENCIA') Sjcs, ");
-		sql.append("               To_Char(Idestadoasistencia) Estado, ");
-		sql.append("               Fechahora Fecha, ");
-		sql.append("               Case Idestadoasistencia ");
-		sql.append("                 When 1 Then ");
-		sql.append("                  '15' ");
-		sql.append("                 When 2 Then ");
-		sql.append("                  '35' ");
-		sql.append("                 Else ");
-		sql.append("                  '25' ");
-		sql.append("               End Orden, ");
-		sql.append("               Idinstitucion Idinstitucion, ");
-		sql.append("               Anio Anio, ");
-		sql.append("               Numero Numero, ");
-		sql.append("               Idpersonacolegiado Idletrado, ");
-		sql.append("               To_Char(Idturno) Idturno, ");
-		sql.append("               To_Char(Idtipoasistencia) Idtipo, ");
-		sql.append("               To_Char(Numero) Codigo, ");
-		sql.append("               (Select Abreviatura ");
-		sql.append("                  From Scs_Turno ");
-		sql.append("                 Where Idturno = Scs_Asistencia.Idturno ");
-		sql.append("                   And Idinstitucion = Scs_Asistencia.Idinstitucion) Des_Turno, ");
-		sql.append("               (Select f_Siga_Getrecurso(s.Descripcion, 1) ");
-		sql.append("                  From Scs_Tipoasistenciacolegio s ");
-		sql.append("                 Where Scs_Asistencia.Idinstitucion = s.Idinstitucion ");
-		sql.append("                   And Scs_Asistencia.Idtipoasistenciacolegio = s.Idtipoasistenciacolegio) Des_Tipo, ");
-		sql.append("               Null As Designa_Anio, ");
-		sql.append("               Null As Designa_Idturno, ");
-		sql.append("               Null As Designa_Numero, ");
-		sql.append("               Null As Designa_Turno_Nombre, ");
-		sql.append("               Null As Fechaentradadesigna, ");
-		sql.append("               Null As Des_Idjuzgado, ");
-		sql.append("               Null As Des_Idjuzgadoinstitucion, ");
-		sql.append("               Null As Des_Numprocedimiento, ");
-		sql.append("               Null As Des_Anioprocedimiento, ");
-		sql.append("               Null As Des_Idprocedimiento, ");
-		sql.append("               Null As Des_Idpretension, ");
-		sql.append("               Null As Des_Idinstitucion, ");
-		sql.append("               Null As Tramitador ");
-		sql.append("          From Scs_Asistencia ");
-		sql.append("         Where Ejganio = '");
-		sql.append(anio);
-		sql.append("'           And Ejgnumero = '");
-		sql.append(numero);
-		sql.append("'           And Ejgidtipoejg = '");
-		sql.append(idTipo);
-		sql.append("'           And Idinstitucion = '");
-		sql.append(institucion);
-		sql.append("'");
-		if (incluirAnulados == LISTAR_RELACIONES_SIN_ANULADOS) {
-		sql.append("           And Idestadoasistencia <> 2 ");
-		}
-		sql.append("        Union ");
-		sql.append("        Select Trim('SOJ') Sjcs, ");
-		sql.append("               Estado, ");
-		sql.append("               Fechaapertura Fecha, ");
-		sql.append("               '90' Orden, ");
-		sql.append("               Idinstitucion Idinstitucion, ");
-		sql.append("               Anio Anio, ");
-		sql.append("               Numero Numero, ");
-		sql.append("               Idpersona Idletrado, ");
-		sql.append("               To_Char(Idturno) Idturno, ");
-		sql.append("               To_Char(Idtiposoj) Idtipo, ");
-		sql.append("               Numsoj Codigo, ");
-		sql.append("               (Select Abreviatura ");
-		sql.append("                  From Scs_Turno ");
-		sql.append("                 Where Idturno = Scs_Soj.Idturno ");
-		sql.append("                   And Idinstitucion = Scs_Soj.Idinstitucion) Des_Turno, ");
-		sql.append("               (Select f_Siga_Getrecurso(Descripcion, 1) As Descripcion ");
-		sql.append("                  From Scs_Tiposoj ");
-		sql.append("                 Where Scs_Tiposoj.Idtiposoj = Scs_Soj.Idtiposoj) Des_Tipo, ");
-		sql.append("               Null As Designa_Anio, ");
-		sql.append("               Null As Designa_Idturno, ");
-		sql.append("               Null As Designa_Numero, ");
-		sql.append("               Null As Designa_Turno_Nombre, ");
-		sql.append("               Null As Fechaentradadesigna, ");
-		sql.append("               Null As Des_Idjuzgado, ");
-		sql.append("               Null As Des_Idjuzgadoinstitucion, ");
-		sql.append("               Null As Des_Numprocedimiento, ");
-		sql.append("               Null As Des_Anioprocedimiento, ");
-		sql.append("               Null As Des_Idprocedimiento, ");
-		sql.append("               Null As Des_Idpretension, ");
-		sql.append("               Null As Des_Idinstitucion, ");
-		sql.append("               Null As Tramitador ");
-		sql.append("          From Scs_Soj ");
-		sql.append("         Where Ejganio = '");
-		sql.append(anio);
-		sql.append("'           And Ejgnumero = '");
-		sql.append(numero);
-		sql.append("'           And Ejgidtipoejg = '");
-		sql.append(idTipo);
-		sql.append("'           And Idinstitucion = '");
-		sql.append(institucion);
-		sql.append("'");
-		sql.append("        Union ");
-		
-		}
-		
-		sql.append("        Select Trim('DESIGNA') Sjcs, ");
-		sql.append("               Des.Estado, ");
-		sql.append("               Des.Fechaalta Fecha, ");
-		sql.append("               Case Estado ");
-		sql.append("                 When 'V' Then ");
-		sql.append("                  '10' ");
-		sql.append("                 When 'A' Then ");
-		sql.append("                  '30' ");
-		sql.append("                 Else ");
-		sql.append("                  '20' ");
-		sql.append("               End Orden, ");
-		sql.append("               Ejg.Idinstitucion Idinstitucion, ");
-		sql.append("               Ejgd.Aniodesigna Anio, ");
-		sql.append("               Ejgd.Numerodesigna Numero, ");
-		sql.append("               Ejg.Idpersona Idletrado, ");
-		sql.append("               To_Char(Ejgd.Idturno) Idturno, ");
-		sql.append("               (Select To_Char(Idtipodesignacolegio) ");
-		sql.append("                  From Scs_Designa ");
-		sql.append("                 Where Anio = Ejgd.Aniodesigna ");
-		sql.append("                   And Numero = Ejgd.Numerodesigna ");
-		sql.append("                   And Idturno = Ejgd.Idturno ");
-		sql.append("                   And Idinstitucion = Ejgd.Idinstitucion) Idtipo, ");
-		sql.append("               (Select Codigo ");
-		sql.append("                  From Scs_Designa ");
-		sql.append("                 Where Anio = Ejgd.Aniodesigna ");
-		sql.append("                   And Numero = Ejgd.Numerodesigna ");
-		sql.append("                   And Idturno = Ejgd.Idturno ");
-		sql.append("                   And Idinstitucion = Ejgd.Idinstitucion) Codigo, ");
-		sql.append("               (Select Abreviatura ");
-		sql.append("                  From Scs_Turno ");
-		sql.append("                 Where Idturno = Ejgd.Idturno ");
-		sql.append("                   And Idinstitucion = Ejg.Idinstitucion) Des_Turno, ");
-		sql.append("               (Select f_Siga_Getrecurso(Descripcion, 1) ");
-		sql.append("                  From Scs_Designa a, Scs_Tipodesignacolegio b ");
-		sql.append("                 Where a.Anio = Ejgd.Aniodesigna ");
-		sql.append("                   And a.Numero = Ejgd.Numerodesigna ");
-		sql.append("                   And a.Idturno = Ejgd.Idturno ");
-		sql.append("                   And a.Idinstitucion = 2003 ");
-		sql.append("                   And a.Idinstitucion = b.Idinstitucion ");
-		sql.append("                   And a.Idtipodesignacolegio = b.Idtipodesignacolegio) Des_Tipo, ");
-		sql.append("               Ejgd.Aniodesigna As Designa_Anio, ");
-		sql.append("               Ejgd.Idturno As Designa_Idturno, ");
-		sql.append("               Ejgd.Numerodesigna As Designa_Numero, ");
-		sql.append("               (Select Abreviatura ");
-		sql.append("                  From Scs_Turno t ");
-		sql.append("                 Where t.Idturno = Ejgd.Idturno ");
-		sql.append("                   And t.Idinstitucion = Ejgd.Idinstitucion) Designa_Turno_Nombre, ");
-		sql.append("               To_Char(Des.Fechaentrada, 'dd/MM/yyyy') As Fechaentradadesigna, ");
-		sql.append("               Des.Idjuzgado As Des_Idjuzgado, ");
-		sql.append("               Des.Idinstitucion_Juzg As Des_Idjuzgadoinstitucion, ");
-		sql.append("               Des.Numprocedimiento As Des_Numprocedimiento, ");
-		sql.append("               Des.Anioprocedimiento As Des_Anioprocedimiento, ");
-		sql.append("               Des.Idprocedimiento As Des_Idprocedimiento, ");
-		sql.append("               Des.Idpretension As Des_Idpretension, ");
-		sql.append("               Des.Idinstitucion As Des_Idinstitucion, ");
-		sql.append("               f_Siga_Getnomapeletra_Designa(Des.Idinstitucion, Des.Idturno, Des.Anio, Des.Numero) As Tramitador ");
-		sql.append("          From Scs_Ejg Ejg, Scs_Ejgdesigna Ejgd, Scs_Designa Des ");
-		sql.append("         Where Ejg.Anio = '");
-		sql.append(anio);
-		sql.append("'           And Ejg.Numero = '");
-		sql.append(numero);
-		sql.append("'           And Ejg.Idtipoejg = '");
-		sql.append(idTipo);
-		sql.append("'           And Ejg.Idinstitucion = '");
-		sql.append(institucion);
-		sql.append("'");
-		sql.append("           And Ejgd.Anioejg = Ejg.Anio ");
-		sql.append("           And Ejgd.Numeroejg = Ejg.Numero ");
-		sql.append("           And Ejgd.Idtipoejg = Ejg.Idtipoejg ");
-		sql.append("           And Ejgd.Idinstitucion = Ejg.Idinstitucion ");
-		sql.append("           And Ejgd.Idinstitucion = Des.Idinstitucion ");
-		sql.append("           And Ejgd.Idturno = Des.Idturno ");
-		sql.append("           And Ejgd.Aniodesigna = Des.Anio ");
-		sql.append("           And Ejgd.Numerodesigna = Des.Numero ");
-		if (incluirAnulados == LISTAR_RELACIONES_SIN_ANULADOS) {
-		sql.append("           And Des.Estado <> 'A' ");
-		}
-		sql.append("        ) ");
-		sql.append(" Order By Orden, Estado Desc, Fecha Desc, Anio Desc, Codigo Desc ");
-		
 		try {
-	       	return this.selectGenerico(sql.toString());
+	            	            
+	       	String sql = " SELECT * FROM ( " +
+			
+							" SELECT TRIM('ASISTENCIA') SJCS, " + 
+									 ScsAsistenciasBean.C_IDINSTITUCION + " IDINSTITUCION, " + 
+									 ScsAsistenciasBean.C_ANIO + " ANIO, " + 
+									 ScsAsistenciasBean.C_NUMERO + " NUMERO, " +
+									 ScsAsistenciasBean.C_IDPERSONACOLEGIADO + " IDLETRADO, " + 
+									 "TO_CHAR("+ScsAsistenciasBean.C_IDTURNO + ") IDTURNO, " +
+									 "TO_CHAR("+ScsAsistenciasBean.C_IDTIPOASISTENCIA + ") IDTIPO, " +
+									 "TO_CHAR("+ScsAsistenciasBean.C_NUMERO + ") CODIGO, " +
+									 
+									 "(SELECT " + ScsTurnoBean.C_ABREVIATURA + " FROM " + ScsTurnoBean.T_NOMBRETABLA + 
+									 " WHERE " + ScsTurnoBean.C_IDTURNO + " = " + ScsAsistenciasBean.T_NOMBRETABLA + " ." + ScsAsistenciasBean.C_IDTURNO + 
+									 " AND " + ScsTurnoBean.C_IDINSTITUCION + " = " + ScsAsistenciasBean.T_NOMBRETABLA + " ." + ScsAsistenciasBean.C_IDINSTITUCION + ") DES_TURNO, " +
+									 "(SELECT f_siga_getRecurso(s.descripcion, " + this.usrbean.getLanguage() + ") FROM "+ ScsTipoAsistenciaColegioBean.T_NOMBRETABLA + " s " +  
+									 " WHERE  " + ScsAsistenciasBean.T_NOMBRETABLA+"."+ScsAsistenciasBean.C_IDINSTITUCION + " = s." +ScsTipoAsistenciaColegioBean.C_IDINSTITUCION +
+									 " AND " + ScsAsistenciasBean.T_NOMBRETABLA+"."+ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO + " = s."+ ScsTipoAsistenciaColegioBean.C_IDTIPOASISTENCIACOLEGIO+ " ) DES_TIPO "+									 
+							 " FROM " + ScsAsistenciasBean.T_NOMBRETABLA +
+							" WHERE " + ScsAsistenciasBean.C_EJGANIO + " = " + anio + 
+							  " AND " + ScsAsistenciasBean.C_EJGNUMERO + " = " + numero +
+							  " AND " + ScsAsistenciasBean.C_EJGIDTIPOEJG + " = " + idTipo +
+							  " AND " + ScsAsistenciasBean.C_IDINSTITUCION + " = " + institucion +
+							
+							" UNION " +
+			
+							" SELECT TRIM('SOJ') SJCS, " + 
+							 		 ScsSOJBean.C_IDINSTITUCION + " IDINSTITUCION, " + 
+							         ScsSOJBean.C_ANIO + " ANIO, " + 
+									 ScsSOJBean.C_NUMERO + " NUMERO, " +
+									 ScsSOJBean.C_IDPERSONA + " IDLETRADO, " + 
+									 "TO_CHAR(" + ScsSOJBean.C_IDTURNO + ") IDTURNO, " +
+									 "TO_CHAR(" + ScsSOJBean.C_IDTIPOSOJ + ") IDTIPO, " +
+									 ScsSOJBean.C_NUMSOJ + " CODIGO, " +
+
+									 "(SELECT " + ScsTurnoBean.C_ABREVIATURA + " FROM " + ScsTurnoBean.T_NOMBRETABLA + 
+									 " WHERE " + ScsTurnoBean.C_IDTURNO + " = " + ScsSOJBean.T_NOMBRETABLA + " ." + ScsSOJBean.C_IDTURNO + 
+									 " AND " + ScsTurnoBean.C_IDINSTITUCION + " = " + ScsSOJBean.T_NOMBRETABLA + " ." + ScsSOJBean.C_IDINSTITUCION + ") DES_TURNO, " +
+
+									 "( Select F_SIGA_GETRECURSO(DESCRIPCION, " + this.usrbean.getLanguage() + ") as DESCRIPCION From SCS_TIPOSOJ " +
+									 " WHERE SCS_TIPOSOJ.idtiposoj = " + ScsSOJBean.T_NOMBRETABLA + "." + ScsSOJBean.C_IDTIPOSOJ + " ) DES_TIPO " +
+							  " FROM " + ScsSOJBean.T_NOMBRETABLA +
+							 " WHERE " + ScsSOJBean.C_EJGANIO + " = " + anio + 
+							   " AND " + ScsSOJBean.C_EJGNUMERO + " = " + numero +
+							   " AND " + ScsSOJBean.C_EJGIDTIPOEJG + " = " + idTipo +
+							   " AND " + ScsSOJBean.C_IDINSTITUCION + " = " + institucion +
+							
+							" UNION " +
+							
+							" SELECT TRIM('DESIGNA') SJCS, " + 
+									 "ejg."+ScsEJGBean.C_IDINSTITUCION + " IDINSTITUCION, " + 
+									 "ejgd."+ScsEJGDESIGNABean.C_ANIODESIGNA  + " ANIO, " + 
+									 "ejgd."+ScsEJGDESIGNABean.C_NUMERODESIGNA + " NUMERO, " +
+									 "ejg."+ScsEJGBean.C_IDPERSONA + " IDLETRADO, " +
+									 "TO_CHAR(ejgd."+ScsEJGDESIGNABean.C_IDTURNO + ") IDTURNO, " +
+									 
+									" (SELECT TO_CHAR(" + ScsDesignaBean.C_IDTIPODESIGNACOLEGIO + ") " + 
+									   " FROM " + ScsDesignaBean.T_NOMBRETABLA + 
+									  " WHERE " + ScsDesignaBean.C_ANIO + " = ejgd." + ScsEJGDESIGNABean.C_ANIODESIGNA  +
+									    " AND " + ScsDesignaBean.C_NUMERO + " = ejgd." + ScsEJGDESIGNABean.C_NUMERODESIGNA +
+										" AND " + ScsDesignaBean.C_IDTURNO + " = ejgd." + ScsEJGDESIGNABean.C_IDTURNO + "" +
+						                " AND " + ScsDesignaBean.C_IDINSTITUCION + " = ejgd." + ScsEJGDESIGNABean.C_IDINSTITUCION + ") IDTIPO, " +
+									 
+									" (SELECT " + ScsDesignaBean.C_CODIGO + 
+									   " FROM " + ScsDesignaBean.T_NOMBRETABLA + 
+									  " WHERE " + ScsDesignaBean.C_ANIO + " = ejgd." + ScsEJGDESIGNABean.C_ANIODESIGNA  +
+									    " AND " + ScsDesignaBean.C_NUMERO + " = ejgd." + ScsEJGDESIGNABean.C_NUMERODESIGNA +
+										" AND " + ScsDesignaBean.C_IDTURNO + " = ejgd." + ScsEJGDESIGNABean.C_IDTURNO + "" +
+										" AND " + ScsDesignaBean.C_IDINSTITUCION + " = ejgd." + ScsEJGDESIGNABean.C_IDINSTITUCION + ") CODIGO, " +
+										
+									 "(SELECT " + ScsTurnoBean.C_ABREVIATURA + " FROM " + ScsTurnoBean.T_NOMBRETABLA + 
+									 " WHERE " + ScsTurnoBean.C_IDTURNO + " = ejgd." + ScsEJGDESIGNABean.C_IDTURNO + 
+									 " AND " + ScsTurnoBean.C_IDINSTITUCION + " = ejg." + ScsEJGBean.C_IDINSTITUCION + ") DES_TURNO, " +
+
+									" (SELECT f_siga_getrecurso(" + ScsTipoDesignaColegioBean.C_DESCRIPCION + "," + this.usrbean.getLanguage() + ") " + 
+									   " FROM " + ScsDesignaBean.T_NOMBRETABLA + " a, " + ScsTipoDesignaColegioBean.T_NOMBRETABLA + " b " + 
+									  " WHERE a." + ScsDesignaBean.C_ANIO + " = ejgd." + ScsEJGDESIGNABean.C_ANIODESIGNA  +
+									    " AND a." + ScsDesignaBean.C_NUMERO + " = ejgd." + ScsEJGDESIGNABean.C_NUMERODESIGNA +
+										" AND a." + ScsDesignaBean.C_IDTURNO + " = ejgd." + ScsEJGDESIGNABean.C_IDTURNO + 
+										" AND a." + ScsDesignaBean.C_IDINSTITUCION + " = " + institucion + 
+										" AND a." + ScsDesignaBean.C_IDINSTITUCION + " = b." + ScsTipoDesignaColegioBean.C_IDINSTITUCION + 
+										" AND a." + ScsDesignaBean.C_IDTIPODESIGNACOLEGIO + " = b." + ScsTipoDesignaColegioBean.C_IDTIPODESIGNACOLEGIADO + 	") DES_TIPO " +
+							  " FROM " + ScsEJGBean.T_NOMBRETABLA +" ejg,"+ScsEJGDESIGNABean.T_NOMBRETABLA+" ejgd"+
+							 " WHERE ejg." + ScsEJGBean.C_ANIO + " = " + anio +
+							   " AND ejg." + ScsEJGBean.C_NUMERO + " = " + numero +
+							   " AND ejg." + ScsEJGBean.C_IDTIPOEJG + " = " + idTipo +
+							   " AND ejg." + ScsEJGBean.C_IDINSTITUCION + " = " + institucion + 
+							 
+							   " AND ejgd." + ScsEJGDESIGNABean.C_ANIOEJG    + " = ejg." +ScsEJGBean.C_ANIO +
+							   " AND ejgd." + ScsEJGDESIGNABean.C_NUMEROEJG  + " = ejg." +ScsEJGBean.C_NUMERO +
+							   " AND ejgd." + ScsEJGDESIGNABean.C_IDTIPOEJG + " = ejg." +ScsEJGBean.C_IDTIPOEJG +
+							   " AND ejgd." + ScsEJGDESIGNABean.C_IDINSTITUCION + " = ejg." +ScsEJGBean.C_IDINSTITUCION +
+							
+							" ) " +
+						 " ORDER BY SJCS, IDINSTITUCION, ANIO, CODIGO ";
+
+	       	return this.selectGenerico(sql);
 		}
 		catch (Exception e) {
 			throw new ClsExceptions (e, "Error al obtener la informacion sobre las relaciones de un ejg.");
 		}
 	}
+
+	
 	
 	/*Devuelve la clave de la asistencia en caso de que este creado o relacionado con una asistencia*/
 	public Hashtable procedeDeAsistencia(String tipo,String numero, String anio){
