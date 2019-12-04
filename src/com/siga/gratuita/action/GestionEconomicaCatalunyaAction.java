@@ -16,7 +16,6 @@ import org.apache.struts.action.ActionMapping;
 import org.json.JSONException;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.services.scs.GestionEnvioInformacionEconomicaCatalunyaService;
-import org.redabogacia.sigaservices.app.services.scs.GestionEnvioInformacionEconomicaCatalunyaService.TIPOINTERCAMBIO;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import org.redabogacia.sigaservices.app.vo.scs.GestionEconomicaCatalunyaVo;
@@ -57,135 +56,67 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 						mapDestino = inicio (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("getAjaxBusqueda")){
 						mapDestino = getAjaxBusqueda (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("insertaJustificacion")){
-						mapDestino = insertaJustificacion (mapping, miForm, request, response);
+					}else if ( accion.equalsIgnoreCase("insertaIntercambios")){
+						mapDestino = insertaIntercambios (mapping, miForm, request, response);
 
-					}else if ( accion.equalsIgnoreCase("deleteJustificacion")){
-						mapDestino = deleteJustificacion (mapping, miForm, request, response);
-
-					}else if ( accion.equalsIgnoreCase("insertaDevolucion")){
-						mapDestino = insertaDevolucion (mapping, miForm, request, response);
-
-					}else if ( accion.equalsIgnoreCase("deleteDevolucion")){
-						mapDestino = deleteDevolucion (mapping, miForm, request, response);
-
-					}else if ( accion.equalsIgnoreCase("validaJustificacion")){
-						mapDestino = validaJustificacion (mapping, miForm, request, response);
-
-					}else if ( accion.equalsIgnoreCase("validaDevolucion")){
-						mapDestino = validaDevolucion (mapping, miForm, request, response);
-
-					}
-					else if ( accion.equalsIgnoreCase("descargaErrorValidacionJustificacion")){
-						mapDestino = descargaErrorValidacionJustificacion (mapping, miForm, request, response);
-
-					}else if ( accion.equalsIgnoreCase("descargaErrorValidacionDevolucion")){
-						mapDestino = descargaErrorValidacionDevolucion (mapping, miForm, request, response);
-
-					}else if ( accion.equalsIgnoreCase("consultaVistaPreviaJustificacion")){
-						mapDestino = consultaVistaPreviaJustificacion (mapping, miForm, request, response);
-
-					}
-					else if ( accion.equalsIgnoreCase("consultaVistaPreviaDevolucion")){
-						mapDestino = consultaVistaPreviaDevolucion (mapping, miForm, request, response);
+					}else if ( accion.equalsIgnoreCase("guardar")){
+						mapDestino = guardar (mapping, miForm, request, response);
 
 					}
 					
-					
-					else if ( accion.equalsIgnoreCase("enviaJustificacionGEN")){
-						mapDestino = enviaIntercambioGEN (TIPOINTERCAMBIO.Justificaciones, miForm, request);
+					else if ( accion.equalsIgnoreCase("borraIntercambio")){
+						mapDestino = borraIntercambio (mapping, miForm, request, response);
 
-					}else if ( accion.equalsIgnoreCase("enviaDevolucionGEN")){
-						mapDestino = enviaIntercambioGEN (TIPOINTERCAMBIO.Devoluciones, miForm, request);
+					}else if ( accion.equalsIgnoreCase("editaIntercambio")){
+						mapDestino = editaIntercambio (mapping, miForm, request, response);
 
-					}else if ( accion.equalsIgnoreCase("enviaJustificacionCICAC")){
-						mapDestino = enviaJustificacionCICAC (mapping, miForm, request, response);
+					}else if ( accion.equalsIgnoreCase("consultaVistaPrevia")){
+						mapDestino = consultaVistaPrevia (mapping, miForm, request, response);
+
+					}else if ( accion.equalsIgnoreCase("enviaIntercambioCICAC")){
+						mapDestino = enviaIntercambioCICAC (mapping, miForm, request, response);
 						
-					}
-					else if ( accion.equalsIgnoreCase("enviaDevolucionCICAC")){
-						mapDestino = enviaDevolucionCICAC (mapping, miForm, request, response);
+					}else if ( accion.equalsIgnoreCase("descarga")){
+						mapDestino = descarga (mapping, miForm, request, response);
 						
-					}
-					else if ( accion.equalsIgnoreCase("consultaJustificacion")){
-//						mapDestino = consultaJustificacion (mapping, miForm, request, response);
-						mapDestino = descargaJustificacion (mapping, miForm, request, response);
+					}else if ( accion.equalsIgnoreCase("consulta")){
+						mapDestino = consulta(mapping, miForm, request, response);
 
-					}else if ( accion.equalsIgnoreCase("consultaDevolucion")){
-//						mapDestino = consultaJustificacion (mapping, miForm, request, response);
-						mapDestino = descargaDevolucion(mapping, miForm, request, response);
+					}else if ( accion.equalsIgnoreCase("valida")){
+						mapDestino = valida (mapping, miForm, request, response);
 
-					}else if ( accion.equalsIgnoreCase("editaJustificacion")){
-						mapDestino = editaJustificacion (mapping, miForm, request, response);
-
-					}else if ( accion.equalsIgnoreCase("finalizaErrores")){
-						mapDestino = finalizaErrores (TIPOINTERCAMBIO.Justificaciones, miForm, request);
+					}else if ( accion.equalsIgnoreCase("adjuntaFicheroError")){
+						mapDestino = adjuntaFicheroError (miForm, request);
 
 					}
-					else if ( accion.equalsIgnoreCase("descargaJustificacion")){
-						mapDestino = descargaJustificacion (mapping, miForm, request, response);
+					else if ( accion.equalsIgnoreCase("descargaErrorValidacion")){
+						mapDestino = descargaErrorValidacion (mapping, miForm, request, response);
 
 					}
-					else if ( accion.equalsIgnoreCase("descargaErroresJustificacion")){
+					else if ( accion.equalsIgnoreCase("descargaErrores")){
 						mapDestino = descargaErroresJustificacion (mapping, miForm, request, response);
 
 					}
-					else if ( accion.equalsIgnoreCase("adjuntaFicheroError")){
-						mapDestino = adjuntaFicheroError (TIPOINTERCAMBIO.Justificaciones, miForm, request);
-
-					}else if ( accion.equalsIgnoreCase("insertaErrorGlobal")){
-						mapDestino = insertaErrorGlobal  (TIPOINTERCAMBIO.Justificaciones, miForm, request);
-
-					}else if ( accion.equalsIgnoreCase("insertaErrorLineaJustificacion")){
-						mapDestino = insertaErrorLinea (TIPOINTERCAMBIO.Justificaciones, miForm, request);
+					
+					
+					
+					else if ( accion.equalsIgnoreCase("enviarIntercambioGEN")){
+						mapDestino = enviaIntercambioGEN (miForm, request);
 
 					}
+					else if ( accion.equalsIgnoreCase("finalizaErrores")){
+						mapDestino = finalizaErrores (miForm, request);
 
+					}
+					else if ( accion.equalsIgnoreCase("insertaErrorGlobal")){
+						mapDestino = insertaErrorGlobal  (miForm, request);
 
+					}
 					else if ( accion.equalsIgnoreCase("enviaRespuestaCICAC_ICA")){
-						mapDestino = enviaRespuestaCICAC_ICA (TIPOINTERCAMBIO.Justificaciones, miForm, request);
+						mapDestino = enviaRespuestaCICAC_ICA ( miForm, request);
 						
 
-					}else if ( accion.equalsIgnoreCase("buscaEdicionJustificacion")){
-							mapDestino = buscaEdicionJustificacion (mapping, miForm, request, response);
 					}
-					
-					
-					
-					else if ( accion.equalsIgnoreCase("editaDevolucion")){
-						mapDestino = editaDevolucion (mapping, miForm, request, response);
-
-					}else if ( accion.equalsIgnoreCase("finalizaErroresDevolucion")){
-						mapDestino = finalizaErrores (TIPOINTERCAMBIO.Devoluciones, miForm, request);
-
-					}
-					else if ( accion.equalsIgnoreCase("descargaDevolucion")){
-						mapDestino = descargaDevolucion (mapping, miForm, request, response);
-
-					}
-					else if ( accion.equalsIgnoreCase("descargaErroresDevolucion")){
-						mapDestino = descargaErroresDevolucion (mapping, miForm, request, response);
-
-					}
-					else if ( accion.equalsIgnoreCase("adjuntaFicheroErrorDevolucion")){
-						mapDestino = adjuntaFicheroError (TIPOINTERCAMBIO.Devoluciones, miForm, request);
-
-					}else if ( accion.equalsIgnoreCase("insertaErrorGlobalDevolucion")){
-						mapDestino = insertaErrorGlobal  (TIPOINTERCAMBIO.Devoluciones, miForm, request);
-
-					}else if ( accion.equalsIgnoreCase("insertaErrorLineaDevolucion")){
-						mapDestino = insertaErrorLinea (TIPOINTERCAMBIO.Devoluciones, miForm, request);
-
-					}
-
-
-					else if ( accion.equalsIgnoreCase("enviaRespuestaDevolucionCICAC_ICA")){
-						mapDestino = enviaRespuestaCICAC_ICA (TIPOINTERCAMBIO.Devoluciones, miForm, request);
-						
-
-					}else if ( accion.equalsIgnoreCase("buscaEdicionDevolucion")){
-							mapDestino = buscaEdicionDevolucion (mapping, miForm, request, response);
-					}
-					
 					
 					
 					else if ( accion.equalsIgnoreCase("volver")){
@@ -248,7 +179,6 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		miForm.setDescripcion(gestionEconomicaCatalunyaForm.getDescripcion());
 		miForm.setAnio(gestionEconomicaCatalunyaForm.getAnio());
 		miForm.setIdPeriodo(gestionEconomicaCatalunyaForm.getIdPeriodo());
-		miForm.setIdFacturacion(gestionEconomicaCatalunyaForm.getIdFacturacion());
 		miForm.setIdEstado(gestionEconomicaCatalunyaForm.getIdEstado());
 		miForm.setFechaDesde(gestionEconomicaCatalunyaForm.getFechaDesde());
 		miForm.setFechaHasta(gestionEconomicaCatalunyaForm.getFechaHasta());
@@ -306,28 +236,25 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		gestionEconomicaForm.setUsrBean(this.getUserBean(request));
 		
 		
-		String origen = request.getParameter("origen");
 		//origen sin viene a nulo es justificacion, si viene 1 es devolucion y si viene 2 es Certificaion
 		String idInstitucion = request.getParameter("idInstitucion");
 		String descripcion = request.getParameter("descripcion");
 		String idEstado = request.getParameter("idEstado");
 		String idPeriodo = request.getParameter("idPeriodo");
-		String idFacturacion = request.getParameter("idFacturacion");
 		String anyo = request.getParameter("anio");
 		String fechaDesde = request.getParameter("fechaDesde");
 		String fechaHasta = request.getParameter("fechaHasta");
 		String pagina = request.getParameter("pagina");
-		String 	idJustificacion = request.getParameter("idJustificacion");
+//		String 	idJustificacion = request.getParameter("idJustificacion");
 
 		String 	idColegio = request.getParameter("idColegio");
 		
 		
-		gestionEconomicaForm.setIdJustificacion(idJustificacion);
+//		gestionEconomicaForm.setIdJustificacion(idJustificacion);
 		gestionEconomicaForm.setIdInstitucion(idInstitucion);
 		gestionEconomicaForm.setDescripcion(descripcion);
 		gestionEconomicaForm.setAnio(anyo);
 		gestionEconomicaForm.setIdPeriodo(idPeriodo);
-		gestionEconomicaForm.setIdFacturacion(idFacturacion);
 		gestionEconomicaForm.setIdEstado(idEstado);
 		gestionEconomicaForm.setFechaDesde(fechaDesde);
 		gestionEconomicaForm.setFechaHasta(fechaHasta);
@@ -345,12 +272,9 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 			int page = 1;
 			String registrosPorPagina = null;
 			Short numRegistrosBusqueda = null;
-			if(origen==null)
-				numRegistrosBusqueda  = gestionEconomicaCatalunyaService.getNumJustificaciones(gestionEconomicaCatalunyaVo);
-			else if(origen.equals("1"))
-				numRegistrosBusqueda  = gestionEconomicaCatalunyaService.getNumDevoluciones(gestionEconomicaCatalunyaVo);
-			else if(origen.equals("2"))
-				numRegistrosBusqueda  = gestionEconomicaCatalunyaService.getNumCertificaciones(gestionEconomicaCatalunyaVo);
+			GestionEnvioInformacionEconomicaCatalunyaService.TIPOINTERCAMBIO tipo = null;
+				numRegistrosBusqueda  = gestionEconomicaCatalunyaService.getNumCabeceraIntercambios(gestionEconomicaCatalunyaVo);
+			
 			if(pagina ==null || (request.getParameter("totalRegistros")!=null && numRegistrosBusqueda.shortValue()!=Short.valueOf(request.getParameter("totalRegistros")).shortValue())){
 				ReadProperties properties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 				registrosPorPagina = properties.returnProperty("paginador.registrosPorPagina", true);
@@ -381,18 +305,14 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 			int rowNumStart = ((page - 1) * rowNumPageSize);
 
 			if(numRegistrosBusqueda!=null && numRegistrosBusqueda.shortValue()>0) {
-				if(origen==null)
-					gestionEconomicaForms =  gestionEconomicaForm.getVo2FormList(gestionEconomicaCatalunyaService.getJustificaciones(gestionEconomicaCatalunyaVo,rowNumStart,rowNumPageSize));
-				else if(origen.equals("1"))
-					gestionEconomicaForms =  gestionEconomicaForm.getVo2FormList(gestionEconomicaCatalunyaService.getDevoluciones(gestionEconomicaCatalunyaVo,rowNumStart,rowNumPageSize));
-				else if(origen.equals("2"))
-					gestionEconomicaForms =  gestionEconomicaForm.getVo2FormList(gestionEconomicaCatalunyaService.getCertificaciones(gestionEconomicaCatalunyaVo,rowNumStart,rowNumPageSize));
+				gestionEconomicaForms =  gestionEconomicaForm.getVo2FormList(gestionEconomicaCatalunyaService.getCabeceraIntercambios(gestionEconomicaCatalunyaVo,rowNumStart,rowNumPageSize));
+			
 			}
 			else
 				gestionEconomicaForms = new ArrayList<GestionEconomicaCatalunyaForm>();
 			request.setAttribute("mensajeSuccess", "");
 			request.setAttribute("listadoRegistros", gestionEconomicaForms);
-			return "listado";
+			return "listadoIntercambios";
 		}catch (Exception e){
 			gestionEconomicaForms = new ArrayList<GestionEconomicaCatalunyaForm>();
 			request.setAttribute("listadoRegistros", gestionEconomicaForms);
@@ -404,39 +324,49 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 
 
 	}
-	private String insertaJustificacion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	private String guardar (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
-		UsrBean usrBean = this.getUserBean(request);
+		gestionEconomicaForm.setUsrBean(this.getUserBean(request));
+		
+		
+		
+
+
 		BusinessManager bm = getBusinessManager();
 		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
+		
+		GestionEconomicaCatalunyaVo gestionEconomicaCatalunyaVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
+
 		try {
-			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			justificacionVo.setUsuModificacion(Integer.parseInt(usrBean.getUserName()));
-			gestionEconomicaCatalunyaService.insertJustificacion(justificacionVo);
-		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
-		}
-		catch (Exception e){
-			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
+			gestionEconomicaCatalunyaService.updateIntercambio(gestionEconomicaCatalunyaVo);
+		
+			return exito("messages.updated.success", request);
+		}catch (Exception e){
+			String error = UtilidadesString.getMensajeIdioma(this.getUserBean(request),"messages.general.errorExcepcion");
+			request.setAttribute("mensajeSuccess", error);
+			throw new SIGAException(error,e);
 
 		}
-		return exitoRefresco("messages.inserted.success",request);
+
+
 	}
-	private String insertaDevolucion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	
+	private String insertaIntercambios (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
 		BusinessManager bm = getBusinessManager();
 		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
 		try {
+			
 			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
+			justificacionVo.setIdInstitucion(Short.valueOf(usrBean.getLocation()));
 			justificacionVo.setUsuModificacion(Integer.parseInt(usrBean.getUserName()));
-			gestionEconomicaCatalunyaService.insertDevolucion(justificacionVo);
+			gestionEconomicaCatalunyaService.insertaIntercambios(justificacionVo);
+			
+			
 		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
+			
+			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
 		}
 		catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
@@ -445,8 +375,9 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		return exitoRefresco("messages.inserted.success",request);
 	}
 	
+	
 
-	private String deleteJustificacion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	private String borraIntercambio (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
 		BusinessManager bm = getBusinessManager();
@@ -456,9 +387,7 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 			justificacionVo.setUsuModificacion(Integer.parseInt(usrBean.getUserName()));
 			gestionEconomicaCatalunyaService.deleteJustificacion(justificacionVo);
 		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
+			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
 		}
 		catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
@@ -466,73 +395,47 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		}
 		return exitoRefresco("messages.deleted.success",request);
 	}
-	private String deleteDevolucion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	
+	private String valida (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
-		UsrBean usrBean = this.getUserBean(request);
 		BusinessManager bm = getBusinessManager();
 		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
 		try {
 			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			justificacionVo.setUsuModificacion(Integer.parseInt(usrBean.getUserName()));
-			gestionEconomicaCatalunyaService.deleteDevolucion(justificacionVo);
+			GestionEconomicaCatalunyaVo intercambio = gestionEconomicaCatalunyaService.getCabeceraIntercambio(justificacionVo.getIdIntercambio());
+			justificacionVo.setAnio(intercambio.getAnio());
+			justificacionVo.setIdPeriodo(intercambio.getIdPeriodo());
+			justificacionVo.setIdInstitucion(intercambio.getIdInstitucion());
+			
+			gestionEconomicaCatalunyaService.valida(justificacionVo);
 		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
+			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
 		}
 		catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
 
 		}
-		return exitoRefresco("messages.deleted.success",request);
-	}
-	private String validaJustificacion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
-		BusinessManager bm = getBusinessManager();
-		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
-		try {
-			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			gestionEconomicaCatalunyaService.validaJustificacion(justificacionVo);
-		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
-		}
-		catch (Exception e){
-			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
-
-		}
-		return exitoRefresco("messages.error.censo.mantenimientoDuplicados.espera",request);
-	}
-	private String validaDevolucion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
-		BusinessManager bm = getBusinessManager();
-		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
-		try {
-			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			gestionEconomicaCatalunyaService.validaDevolucion(justificacionVo);
-		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
-		}
-		catch (Exception e){
-			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
-
-		}
-		return exitoRefresco("messages.error.censo.mantenimientoDuplicados.espera",request);
+		return exitoRefresco("facturacion.estadosfac.literal.GenEjecucion",request);
 	}
 	
 	
 	
 	
-	private String descargaJustificacion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	private String descarga (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
 		BusinessManager bm = getBusinessManager();
 		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
 		try {
+			
 			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			File log = gestionEconomicaCatalunyaService.getFileJustificacion(justificacionVo);
+			GestionEconomicaCatalunyaVo intercambio = gestionEconomicaCatalunyaService.getCabeceraIntercambio(justificacionVo.getIdIntercambio());
+			justificacionVo.setAnio(intercambio.getAnio());
+			justificacionVo.setIdPeriodo(intercambio.getIdPeriodo());
+			justificacionVo.setIdInstitucion(intercambio.getIdInstitucion());
+			justificacionVo.setIdEstado(intercambio.getIdEstado());
+			
+			File log = gestionEconomicaCatalunyaService.getXmlIntercambio(justificacionVo,false);
+			
 			request.setAttribute("nombreFichero", log.getName());
 			request.setAttribute("rutaFichero", log.getPath());			
 			//			request.setAttribute("borrarFichero", "false");			
@@ -540,23 +443,29 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 
 
 		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
+			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
 		}
 		catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
 
 		}
 		return "descargaFichero";
+		
+		
 	}
-	private String descargaDevolucion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	private String consulta (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
 		BusinessManager bm = getBusinessManager();
 		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
 		try {
+			
 			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			File log = gestionEconomicaCatalunyaService.getFileDevolucion(justificacionVo);
+			GestionEconomicaCatalunyaVo intercambio = gestionEconomicaCatalunyaService.getCabeceraIntercambio(justificacionVo.getIdIntercambio());
+			justificacionVo.setAnio(intercambio.getAnio());
+			justificacionVo.setIdPeriodo(intercambio.getIdPeriodo());
+			justificacionVo.setIdInstitucion(intercambio.getIdInstitucion());
+			justificacionVo.setIdEstado((short)30);
+			File log = gestionEconomicaCatalunyaService.getFile(justificacionVo);
 			request.setAttribute("nombreFichero", log.getName());
 			request.setAttribute("rutaFichero", log.getPath());			
 			//			request.setAttribute("borrarFichero", "false");			
@@ -564,9 +473,7 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 
 
 		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
+			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
 		}
 		catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
@@ -576,30 +483,7 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 	}
 	
 	
-	private String descargaErroresDevolucion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
-		BusinessManager bm = getBusinessManager();
-		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
-		try {
-			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			File log = gestionEconomicaCatalunyaService.getFileErroresDevolucion(justificacionVo);
-			request.setAttribute("nombreFichero", log.getName());
-			request.setAttribute("rutaFichero", log.getPath());			
-			//			request.setAttribute("borrarFichero", "false");			
-
-
-
-		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
-		}
-		catch (Exception e){
-			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
-
-		}
-		return "descargaFichero";
-	}
+	
 	
 	private String descargaErroresJustificacion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
@@ -607,7 +491,12 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
 		try {
 			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			File log = gestionEconomicaCatalunyaService.getFileErroresJustificacion(justificacionVo);
+			GestionEconomicaCatalunyaVo intercambio = gestionEconomicaCatalunyaService.getCabeceraIntercambio(justificacionVo.getIdIntercambio());
+			justificacionVo.setAnio(intercambio.getAnio());
+			justificacionVo.setIdPeriodo(intercambio.getIdPeriodo());
+			justificacionVo.setIdInstitucion(intercambio.getIdInstitucion());
+			justificacionVo.setIdEstado((short)30);
+			File log = gestionEconomicaCatalunyaService.getFile(justificacionVo);
 			request.setAttribute("nombreFichero", log.getName());
 			request.setAttribute("rutaFichero", log.getPath());			
 			//			request.setAttribute("borrarFichero", "false");			
@@ -615,9 +504,7 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 
 
 		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
+			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
 		}
 		catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
@@ -625,23 +512,26 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		}
 		return "descargaFichero";
 	}
-	private String descargaErrorValidacionJustificacion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	private String descargaErrorValidacion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
 		BusinessManager bm = getBusinessManager();
 		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
 		try {
 			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			File log = gestionEconomicaCatalunyaService.getFileErroresValidacionJustificacion(justificacionVo);
+			GestionEconomicaCatalunyaVo intercambio = gestionEconomicaCatalunyaService.getCabeceraIntercambio(justificacionVo.getIdIntercambio());
+			justificacionVo.setAnio(intercambio.getAnio());
+			justificacionVo.setIdPeriodo(intercambio.getIdPeriodo());
+			justificacionVo.setIdInstitucion(intercambio.getIdInstitucion());
+			
+			File log = gestionEconomicaCatalunyaService.getFileErroresValidacion(justificacionVo);
 			request.setAttribute("nombreFichero", log.getName());
 			request.setAttribute("rutaFichero", log.getPath());			
-			request.setAttribute("borrarFichero", "true");			
+			request.setAttribute("borrarFichero", "false");			
 
 
 
 		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
+			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
 		}
 		catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
@@ -649,46 +539,25 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		}
 		return "descargaFichero";
 	}
-	private String descargaErrorValidacionDevolucion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	
+
+	private String consultaVistaPrevia(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
 		BusinessManager bm = getBusinessManager();
 		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
 		try {
 			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			File log = gestionEconomicaCatalunyaService.getFileErroresValidacionDevolucion(justificacionVo);
-			request.setAttribute("nombreFichero", log.getName());
-			request.setAttribute("rutaFichero", log.getPath());			
-			request.setAttribute("borrarFichero", "true");			
-
-
-
-		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
-		}
-		catch (Exception e){
-			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
-
-		}
-		return "descargaFichero";
-	}
-
-	private String consultaVistaPreviaJustificacion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
-		BusinessManager bm = getBusinessManager();
-		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
-		try {
-			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			File vistaPreviaJustificacionFile = gestionEconomicaCatalunyaService.getFileVistaPreviaJustificacion(justificacionVo);
+			GestionEconomicaCatalunyaVo intercambio = gestionEconomicaCatalunyaService.getCabeceraIntercambio(justificacionVo.getIdIntercambio());
+			justificacionVo.setAnio(intercambio.getAnio());
+			justificacionVo.setIdPeriodo(intercambio.getIdPeriodo());
+			justificacionVo.setIdInstitucion(intercambio.getIdInstitucion());
+			File vistaPreviaJustificacionFile = gestionEconomicaCatalunyaService.getFileVistaPrevia(justificacionVo);
 			request.setAttribute("nombreFichero", vistaPreviaJustificacionFile.getName());
 			request.setAttribute("rutaFichero", vistaPreviaJustificacionFile.getPath());			
 			request.setAttribute("borrarFichero", "false");			
 
 		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
+			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
 		}
 		catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
@@ -696,40 +565,18 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		}
 		return "descargaFichero";
 	}
-	private String consultaVistaPreviaDevolucion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	
+
+	private String insertaErrorGlobal (MasterForm formulario, HttpServletRequest request) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
 		BusinessManager bm = getBusinessManager();
 		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
 		try {
 			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			File vistaPreviaJustificacionFile = gestionEconomicaCatalunyaService.getFileVistaPreviaDevolucion(justificacionVo);
-			request.setAttribute("nombreFichero", vistaPreviaJustificacionFile.getName());
-			request.setAttribute("rutaFichero", vistaPreviaJustificacionFile.getPath());			
-			request.setAttribute("borrarFichero", "false");			
-
+			GestionEconomicaCatalunyaVo intercambio = gestionEconomicaCatalunyaService.getCabeceraIntercambio(justificacionVo.getIdIntercambio());
+			gestionEconomicaCatalunyaService.insertaErrorGlobalCICAC(intercambio,justificacionVo.getError());
 		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
-		}
-		catch (Exception e){
-			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
-
-		}
-		return "descargaFichero";
-	}
-
-	private String insertaErrorGlobal (TIPOINTERCAMBIO tipo, MasterForm formulario, HttpServletRequest request) throws SIGAException {
-		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
-		BusinessManager bm = getBusinessManager();
-		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
-		try {
-			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			gestionEconomicaCatalunyaService.insertaErrorGlobalCICAC(tipo,justificacionVo.getIdDevolucion()!=null?justificacionVo.getIdDevolucion():justificacionVo.getIdJustificacion(),justificacionVo.getIdInstitucion(),justificacionVo.getError());
-		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
+			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
 		}
 		catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
@@ -737,40 +584,20 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		}
 		return exitoRefresco("messages.inserted.success",request);
 	}
-	private String insertaErrorLinea(TIPOINTERCAMBIO tipo, MasterForm formulario, HttpServletRequest request) throws SIGAException {
-		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
-		BusinessManager bm = getBusinessManager();
-		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
-		try {
-			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			
-			
-			gestionEconomicaCatalunyaService.insertaErroresLineaJustificacion(tipo,justificacionVo.getIdDevolucion()!=null?justificacionVo.getIdDevolucion():justificacionVo.getIdJustificacion(),justificacionVo.getIdInstitucion(),justificacionVo.getIdLineasJustificacion(),justificacionVo.getError());
-		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
-		}
-		catch (Exception e){
-			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
-
-		}
-		return exitoRefresco("messages.inserted.success",request);
-	}
-
+	
 
 	
-	private String adjuntaFicheroError (TIPOINTERCAMBIO tipo,MasterForm formulario, HttpServletRequest request) throws SIGAException {
+	private String adjuntaFicheroError (MasterForm formulario, HttpServletRequest request) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
 		BusinessManager bm = getBusinessManager();
 		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
 		try {
 			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			gestionEconomicaCatalunyaService.adjuntaFicheroError(tipo,justificacionVo.getIdJustificacion(),justificacionVo.getFileErrorData());
+			GestionEconomicaCatalunyaVo intercambio = gestionEconomicaCatalunyaService.getCabeceraIntercambio(justificacionVo.getIdIntercambio());
+			intercambio.setIdJustificacion(justificacionVo.getIdJustificacion());
+			gestionEconomicaCatalunyaService.adjuntaFicheroError(intercambio, justificacionVo.getFileErrorData());
 		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
+			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
 		}
 		catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
@@ -782,17 +609,16 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 	
 	
 	
-	private String enviaRespuestaCICAC_ICA (TIPOINTERCAMBIO tipo, MasterForm formulario, HttpServletRequest request) throws SIGAException {
+	private String enviaRespuestaCICAC_ICA (MasterForm formulario, HttpServletRequest request) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
 		BusinessManager bm = getBusinessManager();
 		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
 		try {
 			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			gestionEconomicaCatalunyaService.enviaRespuestaCICAC_ICA(tipo,justificacionVo.getIdDevolucion()!=null?justificacionVo.getIdDevolucion():justificacionVo.getIdJustificacion(),justificacionVo.getIdInstitucion());
+			GestionEconomicaCatalunyaVo intercambio = gestionEconomicaCatalunyaService.getCabeceraIntercambio(justificacionVo.getIdIntercambio());
+			gestionEconomicaCatalunyaService.enviaRespuestaCICAC_ICA(intercambio);
 		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
+			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
 		}
 		catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
@@ -803,17 +629,16 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 
 	
 	
-	private String finalizaErrores (TIPOINTERCAMBIO tipo, MasterForm formulario, HttpServletRequest request) throws SIGAException {
+	private String finalizaErrores (MasterForm formulario, HttpServletRequest request) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
 		BusinessManager bm = getBusinessManager();
 		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
 		try {
 			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			gestionEconomicaCatalunyaService.finalizaErrores(tipo,justificacionVo.getIdJustificacion(),justificacionVo.getIdInstitucion());
+			GestionEconomicaCatalunyaVo intercambio = gestionEconomicaCatalunyaService.getCabeceraIntercambio(justificacionVo.getIdIntercambio());
+			gestionEconomicaCatalunyaService.finalizaErrores(intercambio);
 		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
+			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
 		}
 		catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
@@ -822,17 +647,15 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		return exitoRefresco("messages.error.censo.mantenimientoDuplicados.espera",request);
 	}
 
-	private String enviaIntercambioGEN (TIPOINTERCAMBIO tipo, MasterForm formulario, HttpServletRequest request) throws SIGAException {
+	private String enviaIntercambioGEN (MasterForm formulario, HttpServletRequest request) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
 		BusinessManager bm = getBusinessManager();
 		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
 		try {
-			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			gestionEconomicaCatalunyaService.enviaIntercambioGEN(tipo,justificacionVo.getIdDevolucion()!=null?justificacionVo.getIdDevolucion():justificacionVo.getIdJustificacion(),justificacionVo.getIdInstitucion());
+			GestionEconomicaCatalunyaVo gestionEconomicaCatalunyaVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
+			gestionEconomicaCatalunyaService.enviaIntercambioGEN(gestionEconomicaCatalunyaVo);
 		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
+			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
 		}
 		catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
@@ -842,17 +665,15 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 	}
 	
 
-	private String enviaJustificacionCICAC (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	private String enviaIntercambioCICAC (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
 		BusinessManager bm = getBusinessManager();
 		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
 		try {
 			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			gestionEconomicaCatalunyaService.enviaJustificacionCICAC(justificacionVo);
+			gestionEconomicaCatalunyaService.enviaIntercambioCICAC(justificacionVo);
 		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
+			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
 		}
 		catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
@@ -860,91 +681,31 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		}
 		return exitoRefresco("messages.envios.procesandoEnvio",request);
 	}
-	private String enviaDevolucionCICAC (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
-		BusinessManager bm = getBusinessManager();
-		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
-		try {
-			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			gestionEconomicaCatalunyaService.enviaDevolucionCICAC(justificacionVo);
-		}catch (BusinessException e){
-			StringBuffer error = new StringBuffer(e.getMessage());
-			error = error.insert(0, UtilidadesString.getMensajeIdioma(this.getUserBean(request), "sjcs.solicitudaceptadacentralita.aviso.datosErroneos"));
-			return errorRefresco(error.toString(), new ClsExceptions(error.toString()), request);
-		}
-		catch (Exception e){
-			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
-
-		}
-		return exitoRefresco("messages.envios.procesandoEnvio",request);
-	}
-	private String editaJustificacion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
-		BusinessManager bm = getBusinessManager();
-		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
-		try {
-			GestionEconomicaCatalunyaVo justificacion = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			
-			Date fechaDesde = justificacion.getFechaDesde();
-//			TODO Meter filtros en la busqueda de datos de justificaion
-			
-			System.out.println("fechaDesde"+fechaDesde);
-			justificacion =   gestionEconomicaCatalunyaService.getGestionEconomicaCatalunya(justificacion);
-			
-			request.setAttribute("justificacion",gestionEconomicaForm.getVo2Form(justificacion));
-
-
-			gestionEconomicaForm.setAccion("editaJustificacion");
-		}catch (Exception e){
-			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
-
-		}
-		request.setAttribute("titulo","sjcs.solicitudaceptadacentralita.validacion.titulo");
-		request.setAttribute("tituloLocalizacion","sjcs.solicitudaceptadacentralita.validacion");
-		request.setAttribute("localizacion","sjcs.solicitudaceptadacentralita.localizacion");
-
-
-		return "editaJustificacion";
-	}
-	private String editaDevolucion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
-		BusinessManager bm = getBusinessManager();
-		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
-		try {
-			GestionEconomicaCatalunyaVo justificacion = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			
-			Date fechaDesde = justificacion.getFechaDesde();
-//			TODO Meter filtros en la busqueda de datos de justificaion
-			
-			System.out.println("fechaDesde"+fechaDesde);
-			justificacion =   gestionEconomicaCatalunyaService.getGestionEconomicaCatalunya(justificacion);
-			
-			request.setAttribute("devolucion",gestionEconomicaForm.getVo2Form(justificacion));
-
-
-			gestionEconomicaForm.setAccion("editaDevolucion");
-		}catch (Exception e){
-			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
-
-		}
-		request.setAttribute("titulo","sjcs.solicitudaceptadacentralita.validacion.titulo");
-		request.setAttribute("tituloLocalizacion","sjcs.solicitudaceptadacentralita.validacion");
-		request.setAttribute("localizacion","sjcs.solicitudaceptadacentralita.localizacion");
-
-
-		return "editaJustificacion";
-	}
 	
-	private String buscaEdicionJustificacion (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	private String editaIntercambio (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
+		UsrBean usrBean = this.getUserBean(request);
+		gestionEconomicaForm.setUsrBean(usrBean);
 		BusinessManager bm = getBusinessManager();
 		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
 		try {
-			GestionEconomicaCatalunyaVo justificacion = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			justificacion =   gestionEconomicaCatalunyaService.getGestionEconomicaCatalunya(justificacion);
-			request.setAttribute("justificacion",gestionEconomicaForm.getVo2Form(justificacion));
 			
-			gestionEconomicaForm.setModo("editaJustificacion");
+			GestionEconomicaCatalunyaVo gestionEconomicaCatalunyaVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
+			
+			GestionEconomicaCatalunyaVo intercambio = gestionEconomicaCatalunyaService.getCabeceraIntercambio(gestionEconomicaCatalunyaVo.getIdIntercambio());
+			gestionEconomicaForm.setIdEstado(intercambio.getIdEstado().toString());
+			gestionEconomicaForm.setDescripcionEstado(intercambio.getDescripcionEstado());
+			gestionEconomicaForm.setIdInstitucion(usrBean.getLocation());
+			List<GestionEconomicaCatalunyaVo> listadoDesgloseIntercambios =   gestionEconomicaCatalunyaService.getIntercambios(intercambio);
+			
+			request.setAttribute("idEstadoIntercambio",intercambio.getIdEstado().toString());
+			
+			
+			request.setAttribute("listadoDesgloseIntercambios",gestionEconomicaForm.getVo2FormList(listadoDesgloseIntercambios));
+
+			request.setAttribute("intercambio",intercambio);
+
+			gestionEconomicaForm.setAccion("editaIntercambio");
 		}catch (Exception e){
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
 
@@ -954,30 +715,9 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		request.setAttribute("localizacion","sjcs.solicitudaceptadacentralita.localizacion");
 
 
-		return "editaJustificacion";
+		return "editaIntercambio";
 	}
-	private String buscaEdicionDevolucion(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
-		BusinessManager bm = getBusinessManager();
-		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
-		try {
-			GestionEconomicaCatalunyaVo justificacion = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			justificacion =   gestionEconomicaCatalunyaService.getGestionEconomicaCatalunya(justificacion);
-			request.setAttribute("devolucion",gestionEconomicaForm.getVo2Form(justificacion));
-			
-			gestionEconomicaForm.setModo("editaDevolucion");
-		}catch (Exception e){
-			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
 
-		}
-		request.setAttribute("titulo","sjcs.solicitudaceptadacentralita.validacion.titulo");
-		request.setAttribute("tituloLocalizacion","sjcs.solicitudaceptadacentralita.validacion");
-		request.setAttribute("localizacion","sjcs.solicitudaceptadacentralita.localizacion");
-
-
-		return "editaDevolucion";
-	}
-	
 	
 	
 

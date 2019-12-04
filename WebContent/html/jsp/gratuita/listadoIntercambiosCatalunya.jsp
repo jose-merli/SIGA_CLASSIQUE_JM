@@ -1,5 +1,5 @@
 
-<!-- listadoDevolucionEconomicaCatalunya.jsp -->
+<!-- listadoIntercambiosCatalunya.jsp -->
 
 <!-- CABECERA JSP -->
 <meta http-equiv="Expires" content="0">
@@ -23,9 +23,12 @@
 	property="path" scope="request" />
 <input type="hidden" id="mensajeSuccess" name="mensajeSuccess" class="inputNotSelect" value="${mensajeSuccess}"/>
 <siga:Table name="listadoInicial" border="1"
-	columnNames="censo.busquedaClientesAvanzada.literal.colegio,gratuita.mantActuacion.literal.descripcion,gratuita.mantActuacion.literal.anio,gratuita.calendarioGuardias.literal.periodo
-	,pestana.justiciagratuita.retenciones,gratuita.mantAsistencias.literal.estado,"
-	columnSizes="10,20,5,20,20,12,12">
+	columnNames="censo.busquedaClientesAvanzada.literal.colegio,
+	gratuita.mantActuacion.literal.descripcion,
+	gratuita.mantActuacion.literal.anio,
+	gratuita.calendarioGuardias.literal.periodo,
+	gratuita.mantAsistencias.literal.estado,"
+	columnSizes="10,20,10,10,20,12">
 					
 	<c:choose>
 		<c:when test="${empty listadoRegistros}">
@@ -34,30 +37,35 @@
 			</tr>
 		</c:when>
 		<c:otherwise>
-			<c:forEach items="${listadoRegistros}"
-				var="justificacion" varStatus="status">
-				<bean:define id="elementosFila" name="justificacion"
+			<c:forEach items="${listadoRegistros}"	var="intercambio" varStatus="status">
+				<bean:define id="elementosFila" name="intercambio"
 					property="elementosFila" type="com.siga.tlds.FilaExtElement[]" />
 				<siga:FilaConIconos fila='${status.count}' botones=""
 					pintarEspacio="no" visibleConsulta="no" visibleEdicion="no"
-					visibleBorrado="no" elementos="${elementosFila}"
+					visibleBorrado="no"  elementos="${elementosFila}"
+					
 					clase="listaNonEdit">
-					<td align='left'><input type="hidden"
-						id="idJustificacion_${status.count}"
-						value="${justificacion.idJustificacion}" class="inputNotSelect"/>
+					<td align='left'>
 						<input type="hidden" id="idInstitucion_${status.count}"
-						value="${justificacion.idInstitucion}" class="inputNotSelect"/> 
-						<input type="hidden"
-						id="idDevolucion_${status.count}"
-						value="${justificacion.idDevolucion}" class="inputNotSelect"/>
-						<c:out	value="${justificacion.abreviaturaInstitucion}"/>
+						value="${intercambio.idInstitucion}" class="inputNotSelect"/> 
+						<input type="hidden" id="idIntercambio_${status.count}"
+						value="${intercambio.idIntercambio}" class="inputNotSelect"/>
+						<c:out	value="${intercambio.abreviaturaInstitucion}"/>
 					</td>
-					<td><c:out	value="${justificacion.descripcion}"/></td>
-					<td align='center'><c:out value="${justificacion.anio}"/></td>
-					<td align='left'><c:out	value="${justificacion.nombrePeriodo}"/></td>
-					<td align='left'><c:out value="${justificacion.descripcionFacturaciones}"/></td>
-					<td align='left'><c:out
-							value="${justificacion.descripcionEstado}"/></td>
+					<td><c:out	value="${intercambio.descripcion}"/></td>
+					<td align='center'><c:out value="${intercambio.anio}"/></td>
+					<td align='left'><c:out	value="${intercambio.nombrePeriodo}"/></td>
+					<td align='left'>
+						<c:choose>
+							<c:when test="${GestionEconomicaCatalunyaForm.idInstitucion=='3001' }">
+								<c:out		value="${intercambio.descripcionEstadoConsell}"/>
+							</c:when>
+							<c:otherwise>
+								<c:out		value="${intercambio.descripcionEstadoIca}"/>
+							</c:otherwise>
+						</c:choose>
+						
+					</td>
 				</siga:FilaConIconos>
 			</c:forEach>
 		</c:otherwise>
@@ -80,7 +88,7 @@
 	
 	function paginar(pagina){
 		var action = formPaginador.action;
-		buscarJustificaciones(pagina,action);
+		buscarIntercambios(pagina,action);
 	
 	}
 	

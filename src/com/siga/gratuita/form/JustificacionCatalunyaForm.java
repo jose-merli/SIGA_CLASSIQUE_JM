@@ -9,6 +9,7 @@ import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.helper.StringHelper;
 import org.redabogacia.sigaservices.app.services.scs.GestionEnvioInformacionEconomicaCatalunyaService;
+import org.redabogacia.sigaservices.app.vo.scs.DevolucionCatalunyaVo;
 import org.redabogacia.sigaservices.app.vo.scs.GestionEconomicaCatalunyaVo;
 import org.redabogacia.sigaservices.app.vo.scs.JustificacionCatalunyaVo;
 
@@ -42,6 +43,9 @@ public class JustificacionCatalunyaForm extends MasterForm {
 	String importe;
 	String justiciable;
 	String error;
+	String motivoMovimiento;
+	String fechaDevolucion;
+	String tipologia;
 
 	
 
@@ -134,9 +138,27 @@ public class JustificacionCatalunyaForm extends MasterForm {
 		}
 		return list;
 	}
+	
+	public List<JustificacionCatalunyaForm> getVoDev2FormList(
+			List<DevolucionCatalunyaVo> voList) {
+		List<JustificacionCatalunyaForm> list = new ArrayList<JustificacionCatalunyaForm>();
+		JustificacionCatalunyaForm gestionEconomicaForm   = null;
+		for (DevolucionCatalunyaVo objectVo : voList) {
+			gestionEconomicaForm = getVoDev2Form(objectVo);
+			list.add(gestionEconomicaForm);
+			
+		}
+		return list;
+	}
+	
+	
 	public JustificacionCatalunyaForm getVo2Form(JustificacionCatalunyaVo objectVo) {
 		return getVo2Form(objectVo,new JustificacionCatalunyaForm());
 	}
+	public JustificacionCatalunyaForm getVoDev2Form(DevolucionCatalunyaVo objectVo) {
+		return getVoDev2Form(objectVo,new JustificacionCatalunyaForm());
+	}
+	
 	public JustificacionCatalunyaForm getVo2Form(JustificacionCatalunyaVo objectVo, JustificacionCatalunyaForm objectForm) {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -238,6 +260,133 @@ public class JustificacionCatalunyaForm extends MasterForm {
 			objectForm.setError(objectVo.getError());
 		return objectForm;
 	}
+public JustificacionCatalunyaForm getVoDev2Form(DevolucionCatalunyaVo objectVo, JustificacionCatalunyaForm objectForm) {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		
+		if(objectVo.getCodActuacion()!=null)
+			objectForm.setCodActuacion(objectVo.getCodActuacion());
+		if(objectVo.getFechaActuacion()!=null)
+			objectForm.setFechaActuacion(sdf.format(objectVo.getFechaActuacion()));
+		
+		if(objectVo.getFechaDevolucion()!=null)
+			objectForm.setFechaDevolucion(sdf.format(objectVo.getFechaDevolucion()));
+		if(objectVo.getTipologia()!=null)
+			objectForm.setTipologia(objectVo.getTipologia());
+		if(objectVo.getMotivoMovimiento()!=null)
+			objectForm.setTipologia(objectVo.getMotivoMovimiento());
+			
+		
+		
+		
+		
+		
+		
+		if(objectVo.getDesigna()!=null) {
+			if(objectVo.getDesigna().getNombreAbogado()!=null) {
+	//		datos del abogado designado
+				StringBuilder abogado = new StringBuilder();
+				if(objectVo.getDesigna().getNumColegiadoAbogado()!=null) {
+					abogado.append(objectVo.getDesigna().getNumColegiadoAbogado());
+					abogado.append(" ");
+				}
+				abogado.append(objectVo.getDesigna().getNombreAbogado());
+				abogado.append(" ");
+				abogado.append(objectVo.getDesigna().getPrimerApellidoAbogado());
+				abogado.append(" ");
+				
+				if(objectVo.getDesigna().getSegundoApellidoAbogado()!=null) 
+					abogado.append(objectVo.getDesigna().getSegundoApellidoAbogado());
+				objectForm.setAbogado(abogado.toString());
+				
+				if(objectVo.getDesigna().getTurno()!=null) {
+					StringBuilder turno = new StringBuilder();
+					turno.append(objectVo.getDesigna().getTurno());
+					if(objectVo.getDesigna().getAreaPartidoJudicial()!=null) {
+						turno.append(" ");
+						turno.append(objectVo.getDesigna().getAreaPartidoJudicial());
+						
+					} 
+					objectForm.setTurno(turno.toString());
+					
+				}
+				
+				
+	//			O --> Oficio A-->datos de la guardia
+				if(objectVo.getDesigna().getTipoIniciacion()!=null && objectVo.getDesigna().getTipoIniciacion().equals("O")) {
+					StringBuilder oficio = new StringBuilder();
+					oficio.append("Oficio ");
+					oficio.append(objectVo.getDesigna().getNumDesignacionAbogado());
+					if(objectVo.getDesigna().getFechaDesignacionAbogado() != null)
+					oficio.append(" ");
+					oficio.append(sdf.format(objectVo.getDesigna().getFechaDesignacionAbogado()));
+					objectForm.setOficio(oficio.toString());
+				}else {
+					objectForm.setGuardia(abogado.toString());
+					StringBuilder guardia = new StringBuilder();
+					guardia.append("Guardia");
+					
+					objectForm.setGuardia(guardia.toString());
+				}
+				
+			}
+		}
+		if(objectVo.getCodigoExpediente()!=null) {
+			StringBuilder expediente = new StringBuilder();
+			expediente.append(objectVo.getCodigoExpediente().getAnioExpediente());
+			expediente.append("/");
+			expediente.append(objectVo.getCodigoExpediente().getNumExpediente());
+			objectForm.setEjg(expediente.toString());
+		}
+		
+		
+			
+		if(objectVo.getModuloJustificado()!=null)
+			objectForm.setModulo(objectVo.getModuloJustificado());
+		if(objectVo.getImporte()!=null)
+			objectForm.setImporte(objectVo.getImporte().toString());
+		
+		if(objectVo.getJusticiable()!=null) {
+			//		datos del abogado designado
+			StringBuilder justiciable = new StringBuilder();
+			if(objectVo.getJusticiable().getIdentificacion()!=null) {
+				justiciable.append(objectVo.getJusticiable().getIdentificacion());
+				justiciable.append(" ");
+			}
+			justiciable.append(objectVo.getJusticiable().getNombreJusticiable());
+			justiciable.append(" ");
+			justiciable.append(objectVo.getJusticiable().getPrimerApellidoJusticiable());
+			justiciable.append(" ");
+			
+			if(objectVo.getJusticiable().getSegundoApellidoJusticiable()!=null) 
+				justiciable.append(objectVo.getJusticiable().getSegundoApellidoJusticiable());
+			objectForm.setJusticiable(justiciable.toString());
+		}
+		
+		if(objectVo.getError()!=null)
+			objectForm.setError(objectVo.getError());
+		return objectForm;
+	}
+public String getMotivoMovimiento() {
+	return motivoMovimiento;
+}
+public void setMotivoMovimiento(String motivoMovimiento) {
+	this.motivoMovimiento = motivoMovimiento;
+}
+
+public String getTipologia() {
+	return tipologia;
+}
+public void setTipologia(String tipologia) {
+	this.tipologia = tipologia;
+}
+public String getFechaDevolucion() {
+	return fechaDevolucion;
+}
+public void setFechaDevolucion(String fechaDevolucion) {
+	this.fechaDevolucion = fechaDevolucion;
+}
+
 
 	
 	

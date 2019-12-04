@@ -6,8 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.struts.upload.FormFile;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
+import org.redabogacia.sigaservices.app.services.scs.GestionEnvioInformacionEconomicaCatalunyaService;
 import org.redabogacia.sigaservices.app.vo.scs.GestionEconomicaCatalunyaVo;
 
 import com.atos.utils.UsrBean;
@@ -25,20 +25,25 @@ import com.siga.tlds.FilaExtElement;
  */
 public class GestionEconomicaCatalunyaForm extends MasterForm {
 	private static final long serialVersionUID = 1L;
+	String idTipoIntercambio = null;
+	String descripcionTipoIntercambio = null;
 	String descripcion = null;
 	String idPeriodo = null;
 	String anio;
+	String idIntercambio;
 	String idJustificacion;
-	String idFacturacion = null;
-	String facturaciones = null;
-	String descripcionFacturaciones = null;
 	
 	String idDevolucion = null;
+	String idCertificacion ;
+	String idCertificacionAnexo;
+	String idTipoCertificacion;
 	
 
 	String idInstitucion = null;
 	String idEstado;
 	String descripcionEstado;
+	String descripcionEstadoIca;
+	String descripcionEstadoConsell;
 	String fechaDesde;
 	String fechaHasta;
 	String nombrePeriodo;
@@ -51,12 +56,7 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 	String pathFile;
 
 	
-	String edicionJusticiable;
-	String edicionFechaJustificacion;
-	String edicionTipoActuacion;
-	String edicionLetrado;
-	String edicionFecha;
-	String edicionId;
+	
 	String idColegio;
 
 	public final String getIdColegio() {
@@ -67,54 +67,7 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 		this.idColegio = idColegio;
 	}
 
-	public final String getEdicionJusticiable() {
-		return edicionJusticiable;
-	}
-
-	public final void setEdicionJusticiable(String edicionJusticiable) {
-		this.edicionJusticiable = edicionJusticiable;
-	}
-
-	public final String getEdicionFechaJustificacion() {
-		return edicionFechaJustificacion;
-	}
-
-	public final void setEdicionFechaJustificacion(String edicionFechaJustificacion) {
-		this.edicionFechaJustificacion = edicionFechaJustificacion;
-	}
-
-	public final String getEdicionTipoActuacion() {
-		return edicionTipoActuacion;
-	}
-
-	public final void setEdicionTipoActuacion(String edicionTipoActuacion) {
-		this.edicionTipoActuacion = edicionTipoActuacion;
-	}
-
-	public final String getEdicionLetrado() {
-		return edicionLetrado;
-	}
-
-	public final void setEdicionLetrado(String edicionLetrado) {
-		this.edicionLetrado = edicionLetrado;
-	}
-
-	public final String getEdicionFecha() {
-		return edicionFecha;
-	}
-
-	public final void setEdicionFecha(String edicionFecha) {
-		this.edicionFecha = edicionFecha;
-	}
-
-	public final String getEdicionId() {
-		return edicionId;
-	}
-
-	public final void setEdicionId(String edicionId) {
-		this.edicionId = edicionId;
-	}
-
+	
 	public final String getPathFile() {
 		return pathFile;
 	}
@@ -139,13 +92,7 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 		this.usuModificacion = usuModificacion;
 	}
 
-	public String getFacturaciones() {
-		return facturaciones;
-	}
-
-	public void setFacturaciones(String facturaciones) {
-		this.facturaciones = facturaciones;
-	}
+	
 	public String getNombrePeriodo() {
 		return nombrePeriodo;
 	}
@@ -158,143 +105,269 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 	FilaExtElement[] elementosFila;
 
 	public FilaExtElement[] getElementosFila() {
-	
-//		ESTADOS JUSTIFICACION
-//		INICIAL((short)10,"Inicial"),
-//		VALIDANDO((short)12,"Validando"),
-//		VALIDADO_CORRECTO((short)14,"Validado correcto"),
-//		VALIDADO_ERRONEO((short)16,"Validado erróneo"),
-//		ENVIANDO_CICAC((short)20,"Enviando ICA - CICAC..."),
-//		ENVIADO_CICAC((short)30,"Enviado CICAC"),
-//		ERROR_CICAC((short)40,"Error CICAC"),
-//		FIN_CICAC((short)50,"Fin CICAC"),
-//		DEVUELTO_CICAC_ICA_ERRONEO((short)60,"Devuelto CICAC - ICA erróneo"),
-//		ENVIANDO_GEN_GENERANDO_XML((short)62,"Enviando CICAC - GEN. Generando xml"),
-//		ENVIANDO_GEN_MOVIENDO_XML((short)65,"Enviando CICAC - GEN. Moviendo xml"),
-//		ENVIADO_GEN((short)70,"Enviado Gen."),
-//		PROCESANDO_GEN((short)75,"Procesando Gen..."),
-//		ERROR_GEN_ANTIVIRUS((short)80,"Error GEN antivirus"),
-//		ERROR_GEN((short)85,"Error Gen."),
-//		DEVUELTO_GEN_CICAC_ERRONEO((short)87,"Devuelto GEN - CICAC erróneo"),
-//		DEVUELTO_GEN_CICAC_CORRECTO((short)90,"Devuelto GEN - CICAC correcto."),
-//		RESPONDIENDO_ICA((short)92,"Respondiendo ICA..."),
-//		DEVUELTO_ICA_CORRECTO((short)95,"Devuelto CICAC - ICA correcto");
 
-		
-		
-		
-		switch (Integer.valueOf(idEstado)) {
-		case 10:
-			elementosFila = new FilaExtElement[1];
-			elementosFila[0] = new FilaExtElement("consultar", "consultaVistaPreviaJustificacion",SIGAConstants.ACCESS_FULL);
-			break;
-		case 12:
-			elementosFila = new FilaExtElement[1];
-			elementosFila[0] = new FilaExtElement("consultar", "consultaVistaPreviaJustificacion",SIGAConstants.ACCESS_FULL);
-			break;
-		case 14:
-			elementosFila = new FilaExtElement[3];
-			elementosFila[0] = new FilaExtElement("consultar", "consultaVistaPreviaJustificacion",SIGAConstants.ACCESS_FULL);
-			elementosFila[1] = new FilaExtElement( "enviardenuevo","revalida", SIGAConstants.ACCESS_FULL);
-			elementosFila[2] = new FilaExtElement("enviar", "enviaJustificacionCICAC",SIGAConstants.ACCESS_FULL);
-			break;
-			
-		case 16:
-			elementosFila = new FilaExtElement[3];
-			elementosFila[0] = new FilaExtElement("consultar", "consultaVistaPreviaJustificacion",SIGAConstants.ACCESS_FULL);
-			elementosFila[1] = new FilaExtElement( "enviardenuevo","revalida", SIGAConstants.ACCESS_FULL);
-			elementosFila[2] = new FilaExtElement( "descargaLog","descargaLogValidacion", SIGAConstants.ACCESS_FULL);
-			
-			break;
-		case 20:
-			elementosFila = new FilaExtElement[1];
-			elementosFila[0] = new FilaExtElement("consultar", "consultaVistaPreviaJustificacion",SIGAConstants.ACCESS_FULL);
-			break;
-		case 30:
-			
-			
-			if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
-				elementosFila = new FilaExtElement[5];
-				elementosFila[0] = new FilaExtElement("editar", "editaJustificacion",SIGAConstants.ACCESS_FULL);
-				elementosFila[1] = new FilaExtElement("download","descargaJustificacion", SIGAConstants.ACCESS_FULL);
-				elementosFila[2] = new FilaExtElement("upload","adjuntaFicheroError", SIGAConstants.ACCESS_FULL);
-				elementosFila[3] = new FilaExtElement("denegar","insertaErrorGlobal", SIGAConstants.ACCESS_FULL);
-				elementosFila[4] = new FilaExtElement("enviar","enviaJustificacionGEN", SIGAConstants.ACCESS_FULL);
-			}else {
-				elementosFila = new FilaExtElement[1];
-//				elementosFila[0] = new FilaExtElement("consultar", "consultaJustificacion",SIGAConstants.ACCESS_FULL);
-				elementosFila[0] = new FilaExtElement("download","descargaJustificacion", SIGAConstants.ACCESS_FULL);
-			}
-			break;
-		case 40:
-			if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
-				elementosFila = new FilaExtElement[4];
-				elementosFila[0] = new FilaExtElement("editar", "editaJustificacion",SIGAConstants.ACCESS_FULL);
-				elementosFila[1] = new FilaExtElement("upload","adjuntaFicheroError", SIGAConstants.ACCESS_FULL);
-				elementosFila[2] = new FilaExtElement( "descargaLog","descargaErroresJustificacion", SIGAConstants.ACCESS_FULL);
-				elementosFila[3] = new FilaExtElement( "finalizar","finalizaErrores", SIGAConstants.ACCESS_FULL);
-			}else {
-				elementosFila = new FilaExtElement[1];
-				elementosFila[0] = new FilaExtElement("consultar", "consultaJustificacion",SIGAConstants.ACCESS_NONE);
-//				elementosFila[1] = new FilaExtElement("download","descargaJustificacion", SIGAConstants.ACCESS_FULL);
-				
-			}
-			
-			break;
-		case 50:
-			
-			elementosFila = new FilaExtElement[1];
-			elementosFila[0] = new FilaExtElement("consultar", "consultaJustificacion",SIGAConstants.ACCESS_NONE);
-//			elementosFila[1] = new FilaExtElement( "descargaLog","descargaErroresJustificacion", SIGAConstants.ACCESS_FULL);
-			
-			break;
-			
-		case 60:
-			elementosFila = new FilaExtElement[1];
-//			elementosFila[0] = new FilaExtElement( "consultar","consultaJustificacion", SIGAConstants.ACCESS_FULL);
-			elementosFila[0] = new FilaExtElement( "descargaLog","descargaErroresJustificacion", SIGAConstants.ACCESS_FULL);
-			break;
-		case 70:
-			elementosFila = new FilaExtElement[2];
-			elementosFila[0] = new FilaExtElement( "consultar","consultaJustificacion", SIGAConstants.ACCESS_FULL);
-			elementosFila[1] = new FilaExtElement( "download","descargaJustificacion", SIGAConstants.ACCESS_FULL);
-			break;
-		
-		case 87:
-			if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
-				elementosFila = new FilaExtElement[3];
-				elementosFila[0] = new FilaExtElement("consultar", "consultaJustificacion",SIGAConstants.ACCESS_FULL);
-				elementosFila[1] = new FilaExtElement( "descargaLog","descargaErroresJustificacion", SIGAConstants.ACCESS_FULL);
-				elementosFila[2] = new FilaExtElement("enviar","enviaRespuestaCICAC_ICA", SIGAConstants.ACCESS_FULL);
-			}else {
-				elementosFila = new FilaExtElement[2];
-				elementosFila[0] = new FilaExtElement("consultar", "consultaJustificacion",SIGAConstants.ACCESS_FULL);
-				elementosFila[1] = new FilaExtElement( "descargaLog","descargaErroresJustificacion", SIGAConstants.ACCESS_FULL);
-				
-			}
-			break;
-		case 90:
-			if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
-				elementosFila = new FilaExtElement[3];
-				elementosFila[0] = new FilaExtElement("consultar", "consultaJustificacion",SIGAConstants.ACCESS_FULL);
-				elementosFila[1] = new FilaExtElement( "download","descargaJustificacion", SIGAConstants.ACCESS_FULL);
-				elementosFila[2] = new FilaExtElement("enviar","enviaRespuestaCICAC_ICA", SIGAConstants.ACCESS_FULL);
-			}else {
-				elementosFila = new FilaExtElement[2];
-				elementosFila[0] = new FilaExtElement("consultar", "consultaJustificacion",SIGAConstants.ACCESS_FULL);
-				elementosFila[1] = new FilaExtElement( "download","descargaJustificacion", SIGAConstants.ACCESS_FULL);
-			}
-			break;
-		case 95:
-			elementosFila = new FilaExtElement[2];
-			elementosFila[0] = new FilaExtElement("consultar", "consultaJustificacion",SIGAConstants.ACCESS_FULL);
-			elementosFila[1] = new FilaExtElement( "download","descargaJustificacion", SIGAConstants.ACCESS_FULL);
-			break;
+		//		ESTADOS JUSTIFICACION
+		//		INICIAL((short)10,"Inicial"),
+		//		VALIDANDO((short)12,"Validando"),
+		//		VALIDADO_CORRECTO((short)14,"Validado correcto"),
+		//		VALIDADO_ERRONEO((short)16,"Validado erróneo"),
+		//		ENVIANDO_CICAC((short)20,"Enviando ICA - CICAC..."),
+		//		ENVIADO_CICAC((short)30,"Enviado CICAC"),
+		//		ERROR_CICAC((short)40,"Error CICAC"),
+		//		FIN_CICAC((short)50,"Fin CICAC"),
+		//		DEVUELTO_CICAC_ICA_ERRONEO((short)60,"Devuelto CICAC - ICA erróneo"),
+		//		ENVIANDO_GEN_GENERANDO_XML((short)62,"Enviando CICAC - GEN. Generando xml"),
+		//		ENVIANDO_GEN_MOVIENDO_XML((short)65,"Enviando CICAC - GEN. Moviendo xml"),
+		//		ENVIADO_GEN((short)70,"Enviado Gen."),
+		//		PROCESANDO_GEN((short)75,"Procesando Gen..."),
+		//		ERROR_GEN_ANTIVIRUS((short)80,"Error GEN antivirus"),
+		//		ERROR_GEN((short)85,"Error Gen."),
+		//		DEVUELTO_GEN_CICAC_ERRONEO((short)87,"Devuelto GEN - CICAC erróneo"),
+		//		DEVUELTO_GEN_CICAC_CORRECTO((short)90,"Devuelto GEN - CICAC correcto."),
+		//		RESPONDIENDO_ICA((short)92,"Respondiendo ICA..."),
+		//		DEVUELTO_ICA_CORRECTO((short)95,"Devuelto CICAC - ICA correcto");
 
-		default:
+
+
+		if(getIdTipoIntercambio()==null) {
 			elementosFila = new FilaExtElement[1];
-			elementosFila[0] = new FilaExtElement("consultar", "consultaJustificacion",SIGAConstants.ACCESS_FULL);
-		
+			elementosFila[0] = new FilaExtElement("editar", "editaIntercambio",SIGAConstants.ACCESS_FULL);
+			
+		}else {
+			GestionEnvioInformacionEconomicaCatalunyaService.TIPOINTERCAMBIO tipo = GestionEnvioInformacionEconomicaCatalunyaService.TIPOINTERCAMBIO.getEnum(getIdTipoIntercambio());
+
+			switch (tipo) {
+
+
+			case Justificaciones:
+				switch (Integer.valueOf(idEstado)) {
+				case 10:
+					elementosFila = new FilaExtElement[1];
+					elementosFila[0] = new FilaExtElement("consultar", "consultaVistaPrevia",SIGAConstants.ACCESS_FULL);
+					break;
+				case 12:
+					elementosFila = new FilaExtElement[1];
+					elementosFila[0] = new FilaExtElement("consultar", "consultaVistaPrevia",SIGAConstants.ACCESS_FULL);
+					break;
+				case 14:
+					elementosFila = new FilaExtElement[3];
+					elementosFila[0] = new FilaExtElement("consultar", "consultaVistaPrevia",SIGAConstants.ACCESS_FULL);
+					// elementosFila[1] = new FilaExtElement( "enviardenuevo","revalida", SIGAConstants.ACCESS_FULL);
+					break;
+
+				case 16:
+					elementosFila = new FilaExtElement[3];
+					elementosFila[0] = new FilaExtElement("consultar", "consultaVistaPrevia",SIGAConstants.ACCESS_FULL);
+					elementosFila[1] = new FilaExtElement( "enviardenuevo","revalida", SIGAConstants.ACCESS_FULL);
+					elementosFila[2] = new FilaExtElement( "descargaLog","descargaLogValidacion", SIGAConstants.ACCESS_FULL);
+
+					break;
+				case 20:
+					elementosFila = new FilaExtElement[1];
+					elementosFila[0] = new FilaExtElement("consultar", "consultaVistaPrevia",SIGAConstants.ACCESS_FULL);
+					break;
+				case 30:
+
+
+					if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
+							elementosFila = new FilaExtElement[4];
+							elementosFila[0] = new FilaExtElement("consultar","consulta", SIGAConstants.ACCESS_FULL);
+							elementosFila[1] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
+							elementosFila[2] = new FilaExtElement("upload","adjuntaFicheroError", SIGAConstants.ACCESS_FULL);
+							elementosFila[3] = new FilaExtElement("denegar","insertaErrorGlobal", SIGAConstants.ACCESS_FULL);
+
+					}else {
+						elementosFila = new FilaExtElement[2];
+						elementosFila[0] = new FilaExtElement("consultar","consulta", SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
+						
+					}
+					break;
+				case 40:
+					if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
+							elementosFila = new FilaExtElement[5];
+							elementosFila[0] = new FilaExtElement("consultar","consulta", SIGAConstants.ACCESS_FULL);
+							elementosFila[1] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
+							elementosFila[2] = new FilaExtElement("upload","adjuntaFicheroError", SIGAConstants.ACCESS_FULL);
+							elementosFila[3] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
+							elementosFila[4] = new FilaExtElement( "finalizar","finalizaErrores", SIGAConstants.ACCESS_FULL);
+						
+					}else {
+						elementosFila = new FilaExtElement[2];
+						elementosFila[0] = new FilaExtElement("consultar","consulta", SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement("download", "descarga",SIGAConstants.ACCESS_NONE);
+
+					}
+
+					break;
+				case 50:
+
+					elementosFila = new FilaExtElement[3];
+					elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_NONE);
+					elementosFila[1] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
+					elementosFila[2] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
+
+					break;
+
+				case 60:
+					elementosFila = new FilaExtElement[3];
+					elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_NONE);
+					elementosFila[1] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
+					elementosFila[2] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
+					break;
+				case 70:
+					elementosFila = new FilaExtElement[2];
+					elementosFila[0] = new FilaExtElement( "consultar","consulta", SIGAConstants.ACCESS_FULL);
+					elementosFila[1] = new FilaExtElement( "download","descarga", SIGAConstants.ACCESS_FULL);
+					break;
+
+				case 87:
+					if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
+						elementosFila = new FilaExtElement[3];
+						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
+						elementosFila[2] = new FilaExtElement("enviar","enviaRespuestaCICAC_ICA", SIGAConstants.ACCESS_FULL);
+					}else {
+						elementosFila = new FilaExtElement[2];
+						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
+
+					}
+					break;
+				case 90:
+					if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
+						elementosFila = new FilaExtElement[3];
+						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement( "download","descarga", SIGAConstants.ACCESS_FULL);
+//						elementosFila[2] = new FilaExtElement("enviar","enviaRespuestaCICAC_ICA", SIGAConstants.ACCESS_FULL);
+					}else {
+						elementosFila = new FilaExtElement[2];
+						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement( "download","descarga", SIGAConstants.ACCESS_FULL);
+					}
+					break;
+				case 95:
+					elementosFila = new FilaExtElement[2];
+					elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
+					elementosFila[1] = new FilaExtElement( "download","descarga", SIGAConstants.ACCESS_FULL);
+					break;
+
+				default:
+					elementosFila = new FilaExtElement[1];
+					elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
+
+				}
+				break;
+				case Devoluciones: case Certificaciones:	case Anexos:
+
+				
+				switch (Integer.valueOf(idEstado)) {
+				case 10:
+					elementosFila = new FilaExtElement[1];
+					elementosFila[0] = new FilaExtElement("consultar", "consultaVistaPrevia",SIGAConstants.ACCESS_FULL);
+					break;
+				case 12:
+					elementosFila = new FilaExtElement[1];
+					elementosFila[0] = new FilaExtElement("consultar", "consultaVistaPrevia",SIGAConstants.ACCESS_FULL);
+					break;
+				case 14:
+					elementosFila = new FilaExtElement[3];
+					elementosFila[0] = new FilaExtElement("consultar", "consultaVistaPrevia",SIGAConstants.ACCESS_FULL);
+					break;
+
+				case 16:
+					elementosFila = new FilaExtElement[3];
+					elementosFila[0] = new FilaExtElement("consultar", "consultaVistaPrevia",SIGAConstants.ACCESS_FULL);
+					elementosFila[1] = new FilaExtElement( "enviardenuevo","revalida", SIGAConstants.ACCESS_FULL);
+					elementosFila[2] = new FilaExtElement( "descargaLog","descargaLogValidacion", SIGAConstants.ACCESS_FULL);
+
+					break;
+				case 20:
+					elementosFila = new FilaExtElement[1];
+					elementosFila[0] = new FilaExtElement("consultar", "consultaVistaPrevia",SIGAConstants.ACCESS_FULL);
+					break;
+				case 30:
+
+
+					if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
+						elementosFila = new FilaExtElement[2];
+						elementosFila[0] = new FilaExtElement("consultar","consulta", SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
+						
+
+					}else {
+						elementosFila = new FilaExtElement[2];
+						elementosFila[0] = new FilaExtElement("consultar","consulta", SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
+					}
+					break;
+				case 40:
+					if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
+							elementosFila = new FilaExtElement[1];
+							elementosFila[0] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
+					}else {
+						elementosFila = new FilaExtElement[1];
+						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_NONE);
+					}
+
+					break;
+				case 50:
+
+					elementosFila = new FilaExtElement[1];
+					elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_NONE);
+
+					break;
+
+				case 60:
+					elementosFila = new FilaExtElement[1];
+					elementosFila[0] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
+					break;
+				case 70:
+					elementosFila = new FilaExtElement[2];
+					elementosFila[0] = new FilaExtElement( "consultar","consulta", SIGAConstants.ACCESS_FULL);
+					elementosFila[1] = new FilaExtElement( "download","descarga", SIGAConstants.ACCESS_FULL);
+					break;
+
+				case 87:
+					if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
+						elementosFila = new FilaExtElement[2];
+						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
+					}else {
+						elementosFila = new FilaExtElement[2];
+						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
+
+					}
+					break;
+				case 90:
+					if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
+						elementosFila = new FilaExtElement[2];
+						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement( "download","descarga", SIGAConstants.ACCESS_FULL);
+					}else {
+						elementosFila = new FilaExtElement[2];
+						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement( "download","descarga", SIGAConstants.ACCESS_FULL);
+					}
+					break;
+				case 95:
+					elementosFila = new FilaExtElement[2];
+					elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
+					elementosFila[1] = new FilaExtElement( "download","descarga", SIGAConstants.ACCESS_FULL);
+					break;
+
+				default:
+					elementosFila = new FilaExtElement[1];
+					elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
+
+				}
+				break;
+			
+
+			default:
+				break;
+			}
 		}
 
 		return elementosFila;
@@ -312,7 +385,6 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 		this.idEstado = null;
 		this.descripcion = null;
 		this.idPeriodo = null;
-		this.idFacturacion = null;
 		this.idInstitucion = null;
 		this.descripcionEstado = null;
 		this.elementosFila = null;
@@ -340,14 +412,7 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 		this.idPeriodo = idPeriodo;
 	}
 
-	public String getIdFacturacion() {
-		return idFacturacion;
-	}
-
-	public void setIdFacturacion(String idFacturacion) {
-		this.idFacturacion = idFacturacion;
-	}
-
+	
 	public String getIdInstitucion() {
 		return idInstitucion;
 	}
@@ -412,17 +477,13 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 	public void setIdJustificacion(String idJustificacion) {
 		this.idJustificacion = idJustificacion;
 	}
-	public final String getDescripcionFacturaciones() {
-		return descripcionFacturaciones;
-	}
-
-	public final void setDescripcionFacturaciones(String descripcionFacturaciones) {
-		this.descripcionFacturaciones = descripcionFacturaciones;
-	}
+	
 	public GestionEconomicaCatalunyaVo getForm2Vo(GestionEconomicaCatalunyaForm objectForm) {
 		
 		GestionEconomicaCatalunyaVo gestionEconomicaCatalunyaVo = new GestionEconomicaCatalunyaVo();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		if(objectForm.getIdTipoIntercambio()!=null)
+			gestionEconomicaCatalunyaVo.setIdTipoIntercambio(objectForm.getIdTipoIntercambio());
 		if(objectForm.getIdInstitucion()!=null && !objectForm.getIdInstitucion().equals(""))
 			gestionEconomicaCatalunyaVo.setIdInstitucion(Short.valueOf(objectForm.getIdInstitucion()));
 		
@@ -440,6 +501,8 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		if(objectForm.getIdIntercambio()!=null && !objectForm.getIdIntercambio().equals(""))
+			gestionEconomicaCatalunyaVo.setIdIntercambio(Long.valueOf(objectForm.getIdIntercambio()));
 		if(objectForm.getIdJustificacion()!=null && !objectForm.getIdJustificacion().equals(""))
 			gestionEconomicaCatalunyaVo.setIdJustificacion(Long.valueOf(objectForm.getIdJustificacion()));
 		
@@ -449,6 +512,13 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 		if(objectForm.getIdDevolucion()!=null && !objectForm.getIdDevolucion().equals(""))
 			gestionEconomicaCatalunyaVo.setIdDevolucion(Long.valueOf(objectForm.getIdDevolucion()));
 		
+		if(objectForm.getIdCertificacion()!=null && !objectForm.getIdCertificacion().equals(""))
+			gestionEconomicaCatalunyaVo.setIdCertificacion(Long.valueOf(objectForm.getIdCertificacion()));
+		if(objectForm.getIdCertificacionAnexo()!=null && !objectForm.getIdCertificacionAnexo().equals(""))
+			gestionEconomicaCatalunyaVo.setIdCertificacionAnexo(Long.valueOf(objectForm.getIdCertificacionAnexo()));
+		if(objectForm.getIdTipoCertificacion()!=null && !objectForm.getIdTipoCertificacion().equals(""))
+			gestionEconomicaCatalunyaVo.setIdTipoCertificacion(Short.valueOf(objectForm.getIdTipoCertificacion()));
+		
 		
 		if(objectForm.getIdEstado()!=null && !objectForm.getIdEstado().equals(""))
 			gestionEconomicaCatalunyaVo.setIdEstado(Short.valueOf(objectForm.getIdEstado()));
@@ -456,20 +526,12 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 			gestionEconomicaCatalunyaVo.setIdPeriodo(Short.valueOf(objectForm.getIdPeriodo()));
 		if(objectForm.getAnio()!=null && !objectForm.getAnio().equals(""))
 			gestionEconomicaCatalunyaVo.setAnio(Short.valueOf(objectForm.getAnio()));
-		if(objectForm.getIdFacturacion()!=null && !objectForm.getIdFacturacion().equals(""))
-			gestionEconomicaCatalunyaVo.setIdFacturacion(Long.valueOf(objectForm.getIdFacturacion()));
+		
 		gestionEconomicaCatalunyaVo.setDescripcion(objectForm.getDescripcion());
+		gestionEconomicaCatalunyaVo.setDescripcionTipoIntercambio(objectForm.getDescripcionTipoIntercambio());
 		
 		gestionEconomicaCatalunyaVo.setNombrePeriodo(objectForm.getNombrePeriodo());
-		String facturaciones = objectForm.getFacturaciones();
-		if(facturaciones!=null && !facturaciones.equalsIgnoreCase("")) {
-			String[] registrosFacturaciones = facturaciones.split(",");
-			Long[] longNum = new Long[registrosFacturaciones.length];
-			for(int i=0; i<registrosFacturaciones.length; i++){
-				longNum[i] = Long.parseLong(registrosFacturaciones[i]);
-			}
-			gestionEconomicaCatalunyaVo.setFacturaciones(longNum);
-		}
+		
 		gestionEconomicaCatalunyaVo.setUsuModificacion(objectForm.getUsuModificacion());
 		gestionEconomicaCatalunyaVo.setAbreviaturaInstitucion(objectForm.getAbreviaturaInstitucion());
 		gestionEconomicaCatalunyaVo.setError(objectForm.getError());
@@ -486,12 +548,6 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 			e.printStackTrace();
 		}
 		
-		gestionEconomicaCatalunyaVo.setEdicionFecha(objectForm.getEdicionFecha());
-		gestionEconomicaCatalunyaVo.setEdicionFechaJustificacion(objectForm.getEdicionFechaJustificacion());
-		gestionEconomicaCatalunyaVo.setEdicionId(objectForm.getEdicionId());
-		gestionEconomicaCatalunyaVo.setEdicionJusticiable(objectForm.getEdicionJusticiable());
-		gestionEconomicaCatalunyaVo.setEdicionLetrado(objectForm.getEdicionLetrado());
-		gestionEconomicaCatalunyaVo.setEdicionTipoActuacion(objectForm.getEdicionTipoActuacion());
 		
 		
 		
@@ -517,15 +573,19 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 	public GestionEconomicaCatalunyaForm getVo2Form(GestionEconomicaCatalunyaVo objectVo, GestionEconomicaCatalunyaForm objectForm) {
 		
 		
+		if(objectVo.getIdTipoIntercambio()!=null)
+			objectForm.setIdTipoIntercambio(objectVo.getIdTipoIntercambio());
 		if(objectVo.getIdJustificacion()!=null)
 			objectForm.setIdJustificacion(objectVo.getIdJustificacion().toString());
+		if(objectVo.getIdIntercambio()!=null)
+			objectForm.setIdIntercambio(objectVo.getIdIntercambio().toString());
 		if(objectVo.getIdInstitucion()!=null)
 			objectForm.setIdInstitucion(objectVo.getIdInstitucion().toString());
 		if(objectVo.getDescripcion()!=null && !objectVo.getDescripcion().equals(""))
 			objectForm.setDescripcion(objectVo.getDescripcion());
-		if(objectVo.getIdFacturacion()!=null){
-			objectForm.setIdFacturacion(objectVo.getIdFacturacion().toString());
-		}
+		if(objectVo.getDescripcionTipoIntercambio()!=null && !objectVo.getDescripcionTipoIntercambio().equals(""))
+			objectForm.setDescripcionTipoIntercambio(objectVo.getDescripcionTipoIntercambio());
+		
 		if(objectVo.getAnio()!=null){
 			objectForm.setAnio(objectVo.getAnio().toString());
 		}
@@ -535,18 +595,34 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 			objectForm.setIdEstado(objectVo.getIdEstado().toString());
 		if(objectVo.getDescripcionEstado()!=null && !objectVo.getDescripcionEstado().equals(""))
 			objectForm.setDescripcionEstado(objectVo.getDescripcionEstado());
+		if(objectVo.getDescripcionEstadoIca()!=null && !objectVo.getDescripcionEstadoIca().equals(""))
+			objectForm.setDescripcionEstadoIca(objectVo.getDescripcionEstadoIca());
+		if(objectVo.getDescripcionEstadoConsell()!=null && !objectVo.getDescripcionEstadoConsell().equals(""))
+			objectForm.setDescripcionEstadoConsell(objectVo.getDescripcionEstadoConsell());
 		
-		objectForm.setDescripcion(objectVo.getDescripcion());
-		objectForm.setDescripcionFacturaciones(objectVo.getDescripcionFacturaciones());
+		
+		
 		objectForm.setNombrePeriodo(objectVo.getNombrePeriodo());
 		objectForm.setUsuModificacion(objectVo.getUsuModificacion());
 		objectForm.setAbreviaturaInstitucion(objectVo.getAbreviaturaInstitucion());
 		objectForm.setError(objectVo.getError());
 		if(objectVo.getIdDevolucion()!=null)
 			objectForm.setIdDevolucion(objectVo.getIdDevolucion().toString());
+		if(objectVo.getIdCertificacion()!=null)
+			objectForm.setIdCertificacion(objectVo.getIdCertificacion().toString());
+		if(objectVo.getIdCertificacionAnexo()!=null)
+			objectForm.setIdCertificacionAnexo(objectVo.getIdCertificacionAnexo().toString());
+		if(objectVo.getIdTipoCertificacion()!=null)
+			objectForm.setIdTipoCertificacion(objectVo.getIdTipoCertificacion().toString());
+		
 		if(objectVo.getDatosJustificacion()!=null && objectVo.getDatosJustificacion().size()>0) {
 			JustificacionCatalunyaForm justificacionCatalunyaForm = new JustificacionCatalunyaForm();
 			List<JustificacionCatalunyaForm>  datosJustificacionList = justificacionCatalunyaForm.getVo2FormList(objectVo.getDatosJustificacion());
+			objectForm.setDatosJustificacion(datosJustificacionList);
+		}
+		if(objectVo.getDatosDevolucion()!=null && objectVo.getDatosDevolucion().size()>0) {
+			JustificacionCatalunyaForm justificacionCatalunyaForm = new JustificacionCatalunyaForm();
+			List<JustificacionCatalunyaForm>  datosJustificacionList = justificacionCatalunyaForm.getVoDev2FormList(objectVo.getDatosDevolucion());
 			objectForm.setDatosJustificacion(datosJustificacionList);
 		}
 		
@@ -592,6 +668,72 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 
 	public final void setIdDevolucion(String idDevolucion) {
 		this.idDevolucion = idDevolucion;
+	}
+
+	public String getIdTipoIntercambio() {
+		return idTipoIntercambio;
+	}
+
+	public void setIdTipoIntercambio(String idTipoIntercambio) {
+		this.idTipoIntercambio = idTipoIntercambio;
+	}
+
+	public String getIdIntercambio() {
+		return idIntercambio;
+	}
+
+	public void setIdIntercambio(String idIntercambio) {
+		this.idIntercambio = idIntercambio;
+	}
+
+	public String getDescripcionTipoIntercambio() {
+		return descripcionTipoIntercambio;
+	}
+
+	public void setDescripcionTipoIntercambio(String descripcionTipoIntercambio) {
+		this.descripcionTipoIntercambio = descripcionTipoIntercambio;
+	}
+
+	public String getDescripcionEstadoIca() {
+		return descripcionEstadoIca;
+	}
+
+	public void setDescripcionEstadoIca(String descripcionEstadoIca) {
+		this.descripcionEstadoIca = descripcionEstadoIca;
+	}
+
+	public String getDescripcionEstadoConsell() {
+		return descripcionEstadoConsell;
+	}
+
+	public void setDescripcionEstadoConsell(String descripcionEstadoConsell) {
+		this.descripcionEstadoConsell = descripcionEstadoConsell;
+	}
+
+	public String getIdCertificacion() {
+		return idCertificacion;
+	}
+
+	public void setIdCertificacion(String idCertificacion) {
+		this.idCertificacion = idCertificacion;
+	}
+
+	
+
+	public String getIdTipoCertificacion() {
+		return idTipoCertificacion;
+	}
+
+	public void setIdTipoCertificacion(String idTipoCertificacion) {
+		this.idTipoCertificacion = idTipoCertificacion;
+	}
+
+	public String getIdCertificacionAnexo() {
+		return idCertificacionAnexo;
+	}
+
+	public void setIdCertificacionAnexo(String idCertificacionAnexo) {
+		this.idCertificacionAnexo = idCertificacionAnexo;
 	}
 
 	

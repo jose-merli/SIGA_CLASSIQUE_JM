@@ -3632,17 +3632,14 @@
 			<forward name="edicion" path="/html/jsp/gratuita/editarTipoAsistenciaColegio.jsp"/>
 		</action>		
 		
-		<action path="/JGR_E-Comunicaciones_Justificacion" type="com.siga.gratuita.action.GestionEconomicaCatalunyaAction" name="GestionEconomicaCatalunyaForm" scope="request">
-			<forward name="inicio" path="/html/jsp/gratuita/gestionJustificacionEconomicaCatalunya.jsp"/>
-			<forward name="listado" path="/html/jsp/gratuita/listadoJustificacionEconomicaCatalunya.jsp"/>
+		<action path="/JGR_E-IntercambiosCatalunya" type="com.siga.gratuita.action.GestionEconomicaCatalunyaAction" name="GestionEconomicaCatalunyaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/gestionIntercambiosCatalunya.jsp"/>
+			<forward name="listadoIntercambios" path="/html/jsp/gratuita/listadoIntercambiosCatalunya.jsp"/>
+			<forward name="editaIntercambio" path="/html/jsp/gratuita/listadoDesgloseIntercambiosCatalunya.jsp"/>
 			<forward name="editaJustificacion" path="/html/jsp/gratuita/editarJustificacionEconomicaCatalunya.jsp"/>
 		</action>
 		
-		<action path="/JGR_E-Comunicaciones_Devolucion" type="com.siga.gratuita.action.GestionEconomicaCatalunyaAction" name="GestionEconomicaCatalunyaForm" scope="request">
-			<forward name="inicio" path="/html/jsp/gratuita/gestionDevolucionEconomicaCatalunya.jsp"/>
-			<forward name="listado" path="/html/jsp/gratuita/listadoDevolucionEconomicaCatalunya.jsp"/>
-			<forward name="editaJustificacion" path="/html/jsp/gratuita/editarDevolucionEconomicaCatalunya.jsp"/>
-		</action>
+		
 		
 		
 		<!-- ****************************************************************************

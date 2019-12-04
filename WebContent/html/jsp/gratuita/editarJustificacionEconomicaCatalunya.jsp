@@ -186,19 +186,16 @@
 				</tr>
 				<tr>
 	
-					<td class="labelText">
-						<siga:Idioma key="pestana.justiciagratuita.retenciones"/>
-					</td>
-					<td class="labelTextValor" >
-						<c:out value="${justificacion.descripcionFacturaciones}"/>
-					</td>
+				
 					<td class="labelText">
 						<siga:Idioma key="gratuita.mantAsistencias.literal.estado"/>
 					</td >
-					<td colspan="2" class="labelTextValor">
+					<td class="labelTextValor">
 						<c:out value="${justificacion.descripcionEstado}"/>
 						
 					</td>
+					<td colspan="3" class="labelTextValor"></td>
+					
 				</tr>
 				
 				
