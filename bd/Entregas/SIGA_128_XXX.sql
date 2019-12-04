@@ -585,7 +585,13 @@ update fcs_je_maestroestados set descripcion = 'Intercanvi lliurat. Fi de procés
 
 
 
+drop table fcs_je_justifica_facturacionjg ;
+drop table FCS_JE_DEVOL_MOV_VARIO ;
+drop table je_cert_ica_guardia;
+drop SEQUENCE seq_fcs_je_devol_mov_vario;
 
+drop SEQUENCE seq_fcs_je_justifica_facturaci;
+drop SEQUENCE seq_je_cert_ica_guardia;
 
 
 
