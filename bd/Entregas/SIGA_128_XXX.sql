@@ -593,6 +593,12 @@ drop SEQUENCE seq_fcs_je_devol_mov_vario;
 drop SEQUENCE seq_fcs_je_justifica_facturaci;
 drop SEQUENCE seq_je_cert_ica_guardia;
 
-
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table FCS_JE_CERTANEXO_ESTADO
+  drop constraint FK_FCSJEANEXOEST_FCSANEXO;
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table FCS_JE_CERTANEXO_ESTADO
+  add constraint FK_FCSJEANEXOEST_FCSANEXO foreign key (IDCERTIFICACIONANEXO)
+  references fcs_je_certificacionanexo (IDCERTIFICACIONANEXO);
 
 
