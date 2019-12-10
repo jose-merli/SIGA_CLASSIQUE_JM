@@ -601,4 +601,5 @@ alter table FCS_JE_CERTANEXO_ESTADO
   add constraint FK_FCSJEANEXOEST_FCSANEXO foreign key (IDCERTIFICACIONANEXO)
   references fcs_je_certificacionanexo (IDCERTIFICACIONANEXO);
 
-
+--Habria que ñadir esto en el script o quitar la linea de arriba update GEN_PROCESOS set DESCRIPCION = 'Intercambios económicos',TRANSACCION='JGR_E-IntercambiosCatalunya' where idproceso = '710';
+  update GEN_PROCESOS set DESCRIPCION = 'Intercambios económicos',TRANSACCION='JGR_E-Comunicaciones_Justificacion' where idproceso = '710';
