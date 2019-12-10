@@ -47,6 +47,8 @@ PKG_SIGA_FACTURACION_SJCS
 -- Solo para PRO:
 Update Gen_Properties Pro   Set Pro.Valor = '/FILERMSA1000/SIGA' Where Parametro = 'directorios.path.OrigenPlantillas'   And Valor = '/FILERMSA1000/SIGA/';
 
+-- Ya ejecutado en PRE: SIGA_128_008
+
 --nuevo concepto de intercambios con cataluña
 
 crear v_siga_cat_certificacion
@@ -658,10 +660,11 @@ alter table FCS_JE_CERTIFICACION
   references FCS_JE_TIPOCERTIFICACION (IDTIPOCERTIFICACION);
 
   
-  alter table FCS_JE_CERT_ESTADO
+alter table FCS_JE_CERT_ESTADO
   add constraint FK_FCSJECERTEST_FCSCERT foreign key (IDCERTIFICACION)
   references FCS_JE_CERTIFICACION (IDCERTIFICACION);
 
+-- 2019-12-12 - Ejecutado en Integracion por AAG
   
   delete from  JE_dev_VALERRONEO ;
        delete from  JE_cert_VALERRONEO ;
