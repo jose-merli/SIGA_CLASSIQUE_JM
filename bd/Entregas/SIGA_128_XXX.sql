@@ -601,5 +601,63 @@ alter table FCS_JE_CERTANEXO_ESTADO
   add constraint FK_FCSJEANEXOEST_FCSANEXO foreign key (IDCERTIFICACIONANEXO)
   references fcs_je_certificacionanexo (IDCERTIFICACIONANEXO);
 
---Habria que ñadir esto en el script o quitar la linea de arriba update GEN_PROCESOS set DESCRIPCION = 'Intercambios económicos',TRANSACCION='JGR_E-IntercambiosCatalunya' where idproceso = '710';
+--Habria que ñadir esto en el script o 
+--quitar la linea de arriba update GEN_PROCESOS set DESCRIPCION = 'Intercambios económicos',TRANSACCION='JGR_E-IntercambiosCatalunya' where idproceso = '710';
+--o qyuitar update GEN_MENU set IDRECURSO = 'menu.sjcs.ecom.intercambios' where idproceso = '710';
   update GEN_PROCESOS set DESCRIPCION = 'Intercambios económicos',TRANSACCION='JGR_E-Comunicaciones_Justificacion' where idproceso = '710';
+  update GEN_MENU set IDRECURSO = 'menu.sjcs.ecom.justificacion' where idproceso = '710';
+  update gen_Recursos set descripcion = 'Envio de información económica' where IDRECURSO = 'menu.sjcs.ecom.justificacion' and idlenguaje = 1;
+update gen_Recursos set descripcion = 'Enviament de información económica' where IDRECURSO = 'menu.sjcs.ecom.justificacion' and idlenguaje = 2;
+update gen_Recursos set descripcion = 'Envio de información económica#GL' where IDRECURSO = 'menu.sjcs.ecom.justificacion' and idlenguaje = 3;
+update gen_Recursos set descripcion = 'Enviament de información económica#EU' where IDRECURSO = 'menu.sjcs.ecom.justificacion' and idlenguaje = 4;
+
+drop table FCS_JE_CERTIFICACION;
+
+-- Create table
+create table FCS_JE_CERTIFICACION
+(
+  IDCERTIFICACION     NUMBER(10) not null,
+  IDTIPOCERTIFICACION NUMBER(1) not null,
+  IDINTERCAMBIO       NUMBER(10) not null,
+  FECHAMODIFICACION   DATE not null,
+  USUMODIFICACION     NUMBER(5) not null
+)
+tablespace TS_SIGA
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 1M
+    next 1M
+    minextents 1
+    maxextents unlimited
+    pctincrease 0
+  );
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table FCS_JE_CERTIFICACION
+  add constraint FCS_CERTIFICACION_PK primary key (IDCERTIFICACION)
+  using index 
+  tablespace TS_SIGA
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 1M
+    next 1M
+    minextents 1
+    maxextents unlimited
+    pctincrease 0
+  );
+alter table FCS_JE_CERTIFICACION
+  add constraint FK_FCSCERT_FCSJEINT foreign key (IDINTERCAMBIO)
+  references FCS_JE_INTERCAMBIOS (IDINTERCAMBIO);
+alter table FCS_JE_CERTIFICACION
+  add constraint FK_FCSCERT_FCSJETIPOCERT foreign key (IDTIPOCERTIFICACION)
+  references FCS_JE_TIPOCERTIFICACION (IDTIPOCERTIFICACION);
+
+  
+  alter table FCS_JE_CERT_ESTADO
+  add constraint FK_FCSJECERTEST_FCSCERT foreign key (IDCERTIFICACION)
+  references FCS_JE_CERTIFICACION (IDCERTIFICACION);
