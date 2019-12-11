@@ -433,27 +433,27 @@
 <table class="botonesDetalle" id="idBotonesAccion"  align="center">
 	<tr>
 		<td class="tdBotones">
-		<input type="button" alt="Tornar"  id="idButton" onclick="return accionVolver();" class="button" name="idButton" value="Tornar">
+		<input type="button" alt="<siga:Idioma key='general.boton.volver'/>"  id="idButton" onclick="return accionVolver();" class="button" name="idButton" value="<siga:Idioma key='general.boton.volver'/>">
 		</td>
 		<td class="tdBotones" style="width:900px;">
 		&nbsp;
 		</td>
-		
+
 		
 		<c:choose>
 			<c:when test="${GestionEconomicaCatalunyaForm.idInstitucion!='3001' && GestionEconomicaCatalunyaForm.idEstado=='14' }">
 				<td class="tdBotones">
-					<input type="button" alt="Enviar Intercambio CICAC"  id="idButton" onclick="return enviarIntercambioCICAC();" class="button" name="idButton" value="Enviar Intercambio CICAC">
+					<input type="button" alt="<siga:Idioma key='intercambios.boton.enviar.consejo'/>"  id="idButton" onclick="return enviarIntercambioCICAC();" class="button" name="idButton" value="<siga:Idioma key='intercambios.boton.enviar.consejo'/>">
 				</td>
 			</c:when>
 			<c:when test="${GestionEconomicaCatalunyaForm.idInstitucion=='3001' && GestionEconomicaCatalunyaForm.idEstado=='30' }">
 				<td class="tdBotones">
-					<input type="button" alt="Enviar Intercambio GEN"  id="idButton" onclick="return enviarIntercambioGEN();" class="button" name="idButton" value="Enviar Intercambio GEN">
+					<input type="button" alt="<siga:Idioma key='intercambios.boton.enviar.comision'/>"  id="idButton" onclick="return enviarIntercambioGEN();" class="button" name="idButton" value="<siga:Idioma key='intercambios.boton.enviar.comision'/>">
 				</td>
 			</c:when>
 			<c:when test="${GestionEconomicaCatalunyaForm.idInstitucion=='3001' && (GestionEconomicaCatalunyaForm.idEstado=='87' || GestionEconomicaCatalunyaForm.idEstado=='90' )  }">
 				<td class="tdBotones">
-					<input type="button" alt="Enviar Respuesta ICA"  id="idButton" onclick="return enviaRespuestaCICAC_ICA();" class="button" name="idButton" value="Enviar Respuesta ICA">
+					<input type="button" alt="<siga:Idioma key='intercambios.boton.enviar.ica'/>"  id="idButton" onclick="return enviaRespuestaCICAC_ICA();" class="button" name="idButton" value="<siga:Idioma key='intercambios.boton.enviar.ica'/>">
 				</td>
 			</c:when>
 		</c:choose>
