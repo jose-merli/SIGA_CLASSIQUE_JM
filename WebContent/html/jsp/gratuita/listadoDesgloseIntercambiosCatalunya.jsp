@@ -457,9 +457,11 @@
 				</td>
 			</c:when>
 		</c:choose>
-		<td class="tdBotones">
-			<input type="button" alt="Guardar"  id="idButton" onclick="return accionGuardar();" class="button" name="idButton" value="Guardar">
-		</td>
+		<c:if test="${GestionEconomicaCatalunyaForm.idInstitucion!='3001'}">
+			<td class="tdBotones">
+				<input type="button" alt="Guardar"  id="idButton" onclick="return accionGuardar();" class="button" name="idButton" value="Guardar">
+			</td>
+		</c:if>
 	</tr>
 </table>
 <html:form action="${path}" name="FormularioGestion" type ="com.siga.gratuita.form.GestionEconomicaCatalunyaForm"  target="submitArea">
