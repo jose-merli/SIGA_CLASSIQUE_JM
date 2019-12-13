@@ -690,4 +690,5 @@ update gen_diccionario set descripcion = 'Enviament de información económica' wh
 update gen_diccionario set descripcion = 'Envio de información económica#GL' where IDRECURSO = 'menu.sjcs.ecom.justificacion' and idlenguaje = 3;
 update gen_diccionario set descripcion = 'Enviament de información económica#EU' where IDRECURSO = 'menu.sjcs.ecom.justificacion' and idlenguaje = 4;
 
+-- 2019-12-13 - Ejecutado en Integracion por AAG
 
