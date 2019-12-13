@@ -660,53 +660,34 @@ alter table FCS_JE_CERTIFICACION
   references FCS_JE_TIPOCERTIFICACION (IDTIPOCERTIFICACION);
 
   
-alter table FCS_JE_CERT_ESTADO
+  alter table FCS_JE_CERT_ESTADO
   add constraint FK_FCSJECERTEST_FCSCERT foreign key (IDCERTIFICACION)
   references FCS_JE_CERTIFICACION (IDCERTIFICACION);
 
 -- 2019-12-12 - Ejecutado en Integracion por AAG
   
-  delete from  JE_dev_VALERRONEO ;
-       delete from  JE_cert_VALERRONEO ;
-       delete from  JE_certanexo_VALERRONEO ;
-       
-       delete FCS_JE_DEVOL_MOV_VARIO;
-       
-       delete from  FCS_JE_DEV_ESTADO;
-       delete FCS_JE_DEVOLUCION;
-       
-       
-       
-       delete from  JE_DEVOLUCION;
-       
-       DELETE  from  FCS_JE_CERT_ESTADO;
-       DELETE  from  JE_CERTIFICACION_ICA;
-       DELETE FROM  FCS_JE_CERTIFICACION;
-       
-       DELETE from  Fcs_Je_Certanexo_Estado;
-       DELETE  from  Je_Certificacion_Anexo;  
-       DELETE FROM  Fcs_Je_Certificacionanexo;
-       
-       
-       
-       
-       
-       delete from  JE_JUS_VALERRONEO ;
-       delete from  Fcs_Je_Just_Estado ;
-       delete from  je_detalle_error;
-       delete from  Je_error;
-       delete from Je_Intercambioerroneo;
-       
-       delete from  JE_JUSTIFICACION;
-       delete from  JE_INTERCAMBIO;
-       delete from  JE_CABECERA;
-       
-       
-       delete from  JE_TRIMESTRE;
-       delete from  JE_CODIGOEXPEDIENTE;
-       delete from  JE_DESIGNA;
-       delete from  JE_JUSTICIABLE;
-       
-       delete from FCS_JE_JUSTIFICA_FACTURACIONJG;
-       delete from FCS_JE_JUSTIFICACION;
-       delete from  FCS_JE_INTERCAMBIOS;
+  
+  
+  -----
+  
+  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('intercambios.boton.enviar.comision', 'Enviar Intercambio GEN', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('intercambios.boton.enviar.comision', 'Enviar Intercambio GEN#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('intercambios.boton.enviar.comision', 'Enviar Intercambio GEN#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('intercambios.boton.enviar.comision', 'Enviar Intercambio GEN#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('intercambios.boton.enviar.ica', 'Enviar Respuesta ICA', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('intercambios.boton.enviar.ica', 'Enviar Respuesta ICA#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('intercambios.boton.enviar.ica', 'Enviar Respuesta ICA#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('intercambios.boton.enviar.ica', 'Enviar Respuesta ICA#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('intercambios.boton.enviar.consejo', 'Enviar Intercambio CICAC', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('intercambios.boton.enviar.consejo', 'Enviar Intercambio CICAC#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('intercambios.boton.enviar.consejo', 'Enviar Intercambio CICAC#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('intercambios.boton.enviar.consejo', 'Enviar Intercambio CICAC#GL', 0, '4', sysdate, 0, '19');
+
+ update gen_diccionario set descripcion = 'Envio de información económica' where IDRECURSO = 'menu.sjcs.ecom.justificacion' and idlenguaje = 1;
+update gen_diccionario set descripcion = 'Enviament de información económica' where IDRECURSO = 'menu.sjcs.ecom.justificacion' and idlenguaje = 2;
+update gen_diccionario set descripcion = 'Envio de información económica#GL' where IDRECURSO = 'menu.sjcs.ecom.justificacion' and idlenguaje = 3;
+update gen_diccionario set descripcion = 'Enviament de información económica#EU' where IDRECURSO = 'menu.sjcs.ecom.justificacion' and idlenguaje = 4;
+
+
