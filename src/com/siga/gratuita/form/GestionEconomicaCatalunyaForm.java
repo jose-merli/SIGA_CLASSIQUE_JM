@@ -226,7 +226,7 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 						elementosFila = new FilaExtElement[3];
 						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
 						elementosFila[1] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
-						elementosFila[2] = new FilaExtElement("enviar","enviaRespuestaCICAC_ICA", SIGAConstants.ACCESS_FULL);
+//						elementosFila[2] = new FilaExtElement("enviar","enviaRespuestaCICAC_ICA", SIGAConstants.ACCESS_FULL);
 					}else {
 						elementosFila = new FilaExtElement[2];
 						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);

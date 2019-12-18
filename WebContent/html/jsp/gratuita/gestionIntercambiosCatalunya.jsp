@@ -193,14 +193,9 @@
 			
 		</script>
 	</head>
-<c:choose> 
-	<c:when test="true">
-		<siga:Titulo titulo="menu.sjcs.ecom.justificacion" localizacion="menu.sjcs.ecomunicaciones.localizacion"/>
-	</c:when>
-	<c:otherwise>
-		<siga:Titulo titulo="menu.sjcs.ecom.certificacion" localizacion="menu.sjcs.ecomunicaciones.localizacion"/>
-	</c:otherwise>
-</c:choose>
+
+	<siga:Titulo titulo="menu.sjcs.ecom.justificacion" localizacion="menu.sjcs.ecomunicaciones.localizacion"/>
+
 <c:set var="botonesBusqueda" value="N,B" />
 <c:if test="${USRBEAN.location=='3001'}">
 		<c:set var="botonesBusqueda" value="B" />
@@ -300,10 +295,10 @@
 </html:form>
 	
 		
-<div id="dialogoInsercion"  title='<bean:message key="menu.sjcs.ecom.justificacion"/>' style="display:none">
+<div id="dialogoInsercion"  title='<bean:message key="informes.genericos.comunicacion"/>' style="display:none">
 	
 
-  	<siga:ConjCampos leyenda="gratuita.informeJustificacionMasiva.leyenda.datosJustificacion">
+  	<siga:ConjCampos leyenda="comunicaciones.leyenda.informacionIntercambio">
   		
   		<div class="labelText">
    			<label for="descripcion"  style="width:100px;float:left;color: black"><siga:Idioma key="gratuita.mantActuacion.literal.descripcion"/></label>

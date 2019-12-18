@@ -295,7 +295,7 @@
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
 	
 
-		<siga:ConjCampos leyenda="gratuita.informeJustificacionMasiva.leyenda.datosJustificacion">
+		<siga:ConjCampos leyenda="comunicaciones.leyenda.informacionIntercambio">
 			<table width="100%" border="0">
 				
 				
