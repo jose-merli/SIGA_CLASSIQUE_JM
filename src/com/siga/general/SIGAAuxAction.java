@@ -206,7 +206,7 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 			}
 		}
 		
-		ClsLogging.writeFileLog("Comprobacion de usrbean: " + uri);
+		//ClsLogging.writeFileLog("Comprobacion de usrbean: " + uri);
 		if (usrbean==null) { 
 			ClsExceptions e=new ClsExceptions("Usuario inválido. Es necesario firmar antes de utilizar la aplicación");
 			e.setErrorCode("USERNOVALID");
@@ -214,7 +214,7 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 		}
 		String access=SIGAConstants.ACCESS_DENY;
 		
-		ClsLogging.writeFileLog("Test de acceso a proceso: " + proceso);
+		//ClsLogging.writeFileLog("Test de acceso a proceso: " + proceso);
 		if (proceso==null) {
 			if (uri==null) throw new ClsExceptions("URL no reconocida por SIGA");
 			int idexofdo=uri.indexOf(".do");

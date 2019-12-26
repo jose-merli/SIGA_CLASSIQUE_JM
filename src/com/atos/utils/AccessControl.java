@@ -43,8 +43,8 @@ public class AccessControl implements SIGAConstants, Serializable {
 			getProcess(profiles, institucion);
 		}
 		
-		ClsLogging.writeFileLog("Permisos de este usuario: " + procesos);
-		ClsLogging.writeFileLog("Test de acceso a proceso: " + process);
+		//ClsLogging.writeFileLog("Permisos de este usuario: " + procesos);
+		//ClsLogging.writeFileLog("Test de acceso a proceso: " + process);
 		Integer access = (Integer) accesos.get(process);
 		if (access != null) {
 			switch (access.intValue()) {
@@ -73,8 +73,8 @@ public class AccessControl implements SIGAConstants, Serializable {
 			return ACCESS_NONE;
 		}
 		
-		ClsLogging.writeFileLog("Permisos de este usuario: " + procesos);
-		ClsLogging.writeFileLog("Test de acceso a proceso numero: " + processNumber);
+		//ClsLogging.writeFileLog("Permisos de este usuario: " + procesos);
+		//ClsLogging.writeFileLog("Test de acceso a proceso numero: " + processNumber);
 		Integer access = (Integer) accesos.get(processNumber);
 		if (access != null) {
 			switch (access.intValue()) {
