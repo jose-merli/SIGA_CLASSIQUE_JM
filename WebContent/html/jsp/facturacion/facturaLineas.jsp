@@ -38,7 +38,7 @@
 	// Gestion de Volver
 	String busquedaVolver = (String)request.getSession().getAttribute("CenBusquedaClientesTipo");
 
-	if (busquedaVolver.equals("DEV_MANUAL")) {
+	if (busquedaVolver != null && busquedaVolver.equals("DEV_MANUAL")) {
 		volver="SI";
 	}
 
