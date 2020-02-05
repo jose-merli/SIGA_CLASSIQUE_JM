@@ -692,3 +692,7 @@ update gen_diccionario set descripcion = 'Enviament de información económica#EU'
 
 -- 2019-12-13 - Ejecutado en Integracion por AAG
 
+-- SIGA_128_010
+Cambio en CEN_COLEGIADO_AI
+
+-- 2020-02-04 - Ejecutado en Integracion por AAG
