@@ -696,3 +696,7 @@ update gen_diccionario set descripcion = 'Enviament de información económica#EU'
 Cambio en CEN_COLEGIADO_AI
 
 -- 2020-02-04 - Ejecutado en Integracion por AAG
+
+Cambio en PKG_SIGA_REGULARIZACION_SJCS
+
+-- Se entrega como adjunto a la ultima entrega para que quede registrado
