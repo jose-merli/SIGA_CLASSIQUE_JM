@@ -2,7 +2,7 @@ create or replace view v_siga_cat_certificacion as
 Select To_Char(Fac.FechaDesde, 'Q"T"YYYY') Trimestre,
        Trim(To_Char(Fac.IdInstitucion, '0000')) CodigoICA,
        Sum(nvl(Mov.Importe,0)) ImportDevolucions,
-       'ICT-' || To_Char(Fac.FechaDesde, 'Q"T"YYYY') || '-' || Trim(To_Char(Fac.IdInstitucion, '0000')) nomPdf,
+       'ICT_' || To_Char(Fac.FechaDesde, 'Q"T"YYYY') || '-' || Trim(To_Char(Fac.IdInstitucion, '0000')||'.pdf') nomPdf,
        Null CodigoIncidencia,
        LTrim(To_Char(Sum(Ofi.Importe + Asi.Importe), '9999990D00')) ImporteTotal,
        Sum(Ofi.Cantidad + Asi.Cantidad) CantidadTotal,

@@ -1,6 +1,8 @@
 package com.siga.gratuita.action;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,8 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
 import org.json.JSONException;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.scs.GestionEnvioInformacionEconomicaCatalunyaService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -76,6 +80,9 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 					}else if ( accion.equalsIgnoreCase("enviaIntercambioCICAC")){
 						mapDestino = enviaIntercambioCICAC (mapping, miForm, request, response);
 						
+					}else if ( accion.equalsIgnoreCase("enviarIntercambiosCICAC")){
+						mapDestino = enviaIntercambiosCICAC (miForm, request);
+						
 					}else if ( accion.equalsIgnoreCase("descarga")){
 						mapDestino = descarga (mapping, miForm, request, response);
 						
@@ -98,10 +105,11 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 
 					}
 					
-					
-					
 					else if ( accion.equalsIgnoreCase("enviarIntercambioGEN")){
 						mapDestino = enviaIntercambioGEN (miForm, request);
+
+					}else if ( accion.equalsIgnoreCase("enviarIntercambiosGEN")){
+						mapDestino = enviaIntercambiosGEN (miForm, request);
 
 					}
 					else if ( accion.equalsIgnoreCase("finalizaErrores")){
@@ -355,6 +363,8 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
 		UsrBean usrBean = this.getUserBean(request);
 		BusinessManager bm = getBusinessManager();
+		
+		
 		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
 		try {
 			
@@ -646,7 +656,22 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		}
 		return exitoRefresco("messages.error.censo.mantenimientoDuplicados.espera",request);
 	}
+	private String enviaIntercambiosGEN (MasterForm formulario, HttpServletRequest request) throws SIGAException {
+		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
+		BusinessManager bm = getBusinessManager();
+		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
+		try {
+			GestionEconomicaCatalunyaVo gestionEconomicaCatalunyaVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
+			gestionEconomicaCatalunyaService.enviaIntercambiosGEN(gestionEconomicaCatalunyaVo);
+		}catch (BusinessException e){
+			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
+		}
+		catch (Exception e){
+			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
 
+		}
+		return exitoRefresco("messages.envios.procesandoEnvio",request);
+	}
 	private String enviaIntercambioGEN (MasterForm formulario, HttpServletRequest request) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
 		BusinessManager bm = getBusinessManager();
@@ -663,7 +688,22 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		}
 		return exitoRefresco("messages.envios.procesandoEnvio",request);
 	}
-	
+	private String enviaIntercambiosCICAC (MasterForm formulario, HttpServletRequest request) throws SIGAException {
+		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
+		BusinessManager bm = getBusinessManager();
+		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
+		try {
+			GestionEconomicaCatalunyaVo gestionEconomicaCatalunyaVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
+			gestionEconomicaCatalunyaService.enviaIntercambiosCICAC(gestionEconomicaCatalunyaVo);
+		}catch (BusinessException e){
+			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
+		}
+		catch (Exception e){
+			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
+
+		}
+		return exitoRefresco("messages.envios.procesandoEnvio",request);
+	}
 
 	private String enviaIntercambioCICAC (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;

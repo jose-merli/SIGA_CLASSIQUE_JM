@@ -24,8 +24,11 @@ Select CodActuacion,
        FueraPlazo,
        CausaNuevaDesigna,
        TipoDelito,
+       Delito,
        TipoProcedimiento,
+       Procedimiento,
        CentroDetencionOrganJudicial,
+       CenDetOrgJud,
        Modulo,
        GuardiaDoble,
        Importe,
@@ -83,7 +86,7 @@ Select CodActuacion,
               Pjg.Nombre Nombre,
               Pjg.Apellido1 PrimerApellido,
               Pjg.Apellido2 SegundoApellido,
-              Pjg.Sexo Sexo,
+              Decode(Pjg.Sexo, 'H', 'H', 'M', 'M', Null) Sexo,
               To_Char(Fad.FechaActuacion, 'YYYY-MM-DD') FechaActuacion,
               To_Char(Fad.FechaJustificacion, 'YYYY-MM-DD') FechaJustificacionActuacion,
               Case When Cal.Fecha Is Null
@@ -116,17 +119,12 @@ Select CodActuacion,
                    Then 'NA'
                    Else Null
                End CausaNuevaDesigna,
-              (Select Min(Del.CodigoExt)
-                 From Scs_DelitosDesigna Dde
-                      Inner Join Scs_Delito Del
-                         On Del.IdInstitucion = Dde.IdInstitucion
-                        And Del.IdDelito      = Dde.IdDelito
-                Where Dde.IdInstitucion = Fad.IdInstitucion
-                  And Dde.IdTurno       = Fad.IdTurno
-                  And Dde.Anio          = Fad.Anio
-                  And Dde.Numero        = Fad.Numero) TipoDelito,
+              Del.CodigoExt TipoDelito,
+              F_Siga_GetRecurso(Del.Descripcion, 2) Delito,
               Pre.CodigoExt TipoProcedimiento,
+              F_Siga_GetRecurso(Pre.Descripcion, 2) Procedimiento,
               Decode(Juz.CodigoExt2, Null, Null, 'O' || Juz.CodigoExt2) CentroDetencionOrganJudicial,
+              Juz.Nombre CenDetOrgJud,
               Pro.CodigoExt Modulo,
               Null GuardiaDoble,
               To_char(Fad.ImporteFacturado, '9999990D00') Importe,
@@ -230,6 +228,23 @@ Select CodActuacion,
                            Left Outer Join Scs_Juzgado Juz
                              On Juz.IdInstitucion = Act.IdInstitucion_Juzg
                             And Juz.IdJuzgado     = Act.IdJuzgado
+                     Left Outer Join (Select IdInstitucion,
+                                             IdTurno,
+                                             Anio,
+                                             Numero,
+                                             Min(IdDelito) IdDelito
+                                        From Scs_DelitosDesigna
+                                       Group By IdInstitucion,
+                                                IdTurno,
+                                                Anio,
+                                                Numero) Mdd
+                       On Mdd.IdInstitucion = Fad.IdInstitucion
+                      And Mdd.IdTurno       = Fad.IdTurno
+                      And Mdd.Anio          = Fad.Anio
+                      And Mdd.Numero        = Fad.Numero
+                          Left Outer Join Scs_Delito Del
+                            On Del.IdInstitucion = Mdd.IdInstitucion
+                           And Del.IdDelito      = Mdd.IdDelito
         Where (Fac.IdInstitucion,
                Fac.IdFacturacion) In(Select IdInstitucion,
                                             IdFacturacion
@@ -281,7 +296,7 @@ Select CodActuacion,
               Pjg.Nombre Nombre,
               Pjg.Apellido1 PrimerApellido,
               Pjg.Apellido2 SegundoApellido,
-              Pjg.Sexo Sexo,
+              Decode(Pjg.Sexo, 'H', 'H', 'M', 'M', Null) Sexo,
               To_Char(Faa.FechaActuacion, 'YYYY-MM-DD') FechaActuacion,
               To_Char(Faa.FechaJustificacion, 'YYYY-MM-DD') FechaJustificacionActuacion,
               Case When Cal.Fecha Is Null
@@ -304,16 +319,12 @@ Select CodActuacion,
                 End Festivo,
               'N' FueraPlazo,
               Null CausaNuevaDesigna,
-              (Select Min(Del.CodigoExt)
-                 From Scs_DelitosAsistencia Das
-                      Inner Join Scs_Delito Del
-                         On Del.IdInstitucion = Das.IdInstitucion
-                        And Del.IdDelito      = Das.IdDelito
-                Where Das.IdInstitucion = Faa.IdInstitucion
-                  And Das.Anio          = Faa.Anio
-                  And Das.Numero        = Faa.Numero) TipoDelito,
+              Del.CodigoExt TipoDelito,
+              F_Siga_GetRecurso(Del.Descripcion, 2) Delito,
               Null TipoProcedimiento,
+              Null Procedimiento,
               Decode(Act.IdComisaria, Null, Decode(Juz.CodigoExt2, Null, Null, 'O' || Juz.CodigoExt2), 'C' || Com.CodigoExt) CentroDetencionOrganJudicial,
+              Decode(Act.IdComisaria, Null, Juz.Nombre, Com.Nombre) CenDetOrgJud,
               Case Apu.PrecioAplicado
                    When To_Number(SubStr(Hfg.Hitos, InStr(Hfg.Hitos, '01-') + 3, InStr(Hfg.Hitos, ' ;') - 4))
                         Then Case When Nvl(Faa.Anio * 10000000 + Faa.Numero * 100 + Faa.IdActuacion, 0) = Nvl(Tot.Primera, 0)
@@ -390,7 +401,7 @@ Select CodActuacion,
                                                                      Else '30'
                                                                  End
                                                        End
-                                                 Else '40'
+                                                 Else '40a'
                                              End
                                        Else Case When Nvl(Faa.Anio * 10000000 + Faa.Numero * 100 + Faa.IdActuacion, 0) = Nvl(Tot.Primera, 0)
                                                  Then Case When Hfg.IdTipoGuardia <> 1
@@ -506,9 +517,24 @@ Select CodActuacion,
                                   And Ejg.IdTipoEJG     = Asi.EJGIdTipoEJG
                                   And Ejg.Anio          = Asi.EJGAnio
                                   And Ejg.Numero        = Asi.EJGNumero
-        Where (Fac.IdInstitucion,
-               Fac.IdFacturacion) In(Select IdInstitucion,
-                                            IdFacturacion
-                                       From Fcs_Fact_GrupoFact_Hito
-                                      Where IdGrupoFacturacion = 1)
+                                 Left Outer Join (Select IdInstitucion,
+                                                         Anio,
+                                                         Numero,
+                                                         Min(IdDelito) IdDelito
+                                                    From Scs_DelitosAsistencia
+                                                   Group By IdInstitucion,
+                                                            Anio,
+                                                            Numero) Mda
+                                   On Mda.IdInstitucion = Asi.IdInstitucion
+                                  And Mda.Anio          = Asi.Anio
+                                  And Mda.Numero        = Asi.Numero
+                                      Left Outer Join Scs_Delito Del
+                                        On Del.IdInstitucion = Mda.IdInstitucion
+                                       And Del.IdDelito      = Mda.IdDelito
+                    Where (Fac.IdInstitucion,
+                           Fac.IdFacturacion) In(Select IdInstitucion,
+                                                        IdFacturacion
+                                                   From Fcs_Fact_GrupoFact_Hito
+                                                  Where IdGrupoFacturacion = 1)
           And Apu.PrecioAplicado > 0)
+

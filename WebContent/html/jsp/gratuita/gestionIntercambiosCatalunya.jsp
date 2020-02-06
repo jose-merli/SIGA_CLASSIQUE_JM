@@ -102,7 +102,7 @@
 	function openDialog(dialogo){
 		jQuery("#"+dialogo).dialog(
 				{
-				      height: 220,
+				      height: 270,
 				      width: 525,
 				      modal: true,
 				      resizable: false,
@@ -123,7 +123,7 @@
 			document.forms['FormularioGestion'].descripcion.value = jQuery("#descripcionNew").val();  
 			document.forms['FormularioGestion'].idPeriodo.value = jQuery('select#idPeriodoNew option:selected').val();
 			document.forms['FormularioGestion'].anio.value = jQuery("#anioNew").val();
-			
+			document.forms['FormularioGestion'].pathFile.value = jQuery("#theFileNew").val();
 			
 			if(document.forms['FormularioGestion'].anio.value==''){
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.mantActuacion.literal.anio'/>"+ '\n';
@@ -190,6 +190,27 @@
 		
 		
 	}	
+	function enviarIntercambiosGEN(fila) {
+		sub();
+		var idIntercambio = 'idIntercambio_' + fila ;
+		var idInstitucion = 'idInstitucion_' + fila ;
+		document.forms['FormularioGestion'].idIntercambio.value = document.getElementById(idIntercambio).value;
+		document.forms['FormularioGestion'].idInstitucion.value = document.getElementById(idInstitucion).value;
+		document.forms['FormularioGestion'].modo.value = "enviarIntercambiosGEN";
+		
+		document.forms['FormularioGestion'].submit();
+	}
+	function enviarIntercambiosCICAC(fila) {
+		sub();
+		var idIntercambio = 'idIntercambio_' + fila ;
+		var idInstitucion = 'idInstitucion_' + fila ;
+		document.forms['FormularioGestion'].idIntercambio.value = document.getElementById(idIntercambio).value;
+		document.forms['FormularioGestion'].idInstitucion.value = document.getElementById(idInstitucion).value;
+		document.forms['FormularioGestion'].modo.value = "enviarIntercambiosCICAC";
+		
+		document.forms['FormularioGestion'].submit();
+	}
+	
 			
 		</script>
 	</head>
@@ -208,7 +229,7 @@
 	<html:form action="${path}"  method="POST" enctype="multipart/form-data" target="mainWorkArea">
 		<html:hidden  property="modo"/>
 		<html:hidden property="idInstitucion"/>
-		<input type="file" id ='fileUpdate' style="display:none"/>
+		
 		<siga:ConjCampos leyenda="gratuita.gestionInscripciones.datosSolicitud.leyenda">
 			<table width="100%" border="0">
 				<tr>
@@ -281,7 +302,7 @@
 		<div id="divListado"></div>	
 	</html:form>
 	
-	<html:form action="${path}"   name="FormularioGestion" type ="com.siga.gratuita.form.GestionEconomicaCatalunyaForm"  target="submitArea">
+	<html:form action="${path}"   name="FormularioGestion" method="POST" enctype="multipart/form-data" type ="com.siga.gratuita.form.GestionEconomicaCatalunyaForm"  target="submitArea">
   		<html:hidden property="modo"/>
 		<html:hidden property="idInstitucion"  />
 		<html:hidden property="idIntercambio" />
@@ -295,10 +316,13 @@
 </html:form>
 	
 		
-<div id="dialogoInsercion"  title='<bean:message key="informes.genericos.comunicacion"/>' style="display:none">
+<div id="dialogoInsercion"  title='<bean:message key="informes.genericos.comunicacion"/>' style=" background-color:white; display:none">
 	
-
-  	<siga:ConjCampos leyenda="comunicaciones.leyenda.informacionIntercambio">
+<fieldset style="background-color:white;">
+	<legend  >
+		<siga:Idioma key="comunicaciones.leyenda.informacionIntercambio"/>
+	</legend>
+  
   		
   		<div class="labelText">
    			<label for="descripcion"  style="width:100px;float:left;color: black"><siga:Idioma key="gratuita.mantActuacion.literal.descripcion"/></label>
@@ -310,10 +334,11 @@
    			<label for="trimestre" style="width:100px;color: black"><siga:Idioma key="gratuita.calendarioGuardias.literal.periodo"/></label>
 			<siga:Select queryId="getPeriodos" id="idPeriodoNew" width="150" required="true" />
 		</div>
-		
-   			
-			
-	</siga:ConjCampos>
+		<div class="labelText">
+			<label for="file"   style="width:100px;float:left;color:black">Fichero</label><input type="file"  id="theFileNew" size="30" />
+			</div>
+			<div class="labelText"><label style="color:black">Seleccione el fichero generado de la certificacion del trimestre para enviarselo a la Generalitat</label></div>
+	</fieldset>
 
 </div>
 

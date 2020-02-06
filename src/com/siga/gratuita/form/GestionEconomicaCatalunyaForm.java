@@ -54,9 +54,6 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 	String seleccion;
 	List<JustificacionCatalunyaForm> datosJustificacion;
 	String pathFile;
-
-	
-	
 	String idColegio;
 
 	public final String getIdColegio() {
@@ -130,8 +127,21 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 
 
 		if(getIdTipoIntercambio()==null) {
-			elementosFila = new FilaExtElement[1];
+			elementosFila = new FilaExtElement[2];
 			elementosFila[0] = new FilaExtElement("editar", "editaIntercambio",SIGAConstants.ACCESS_FULL);
+			switch (Integer.valueOf(idEstado)) {
+			case 14:
+				if(usrBean !=null && usrBean.getLocation()!=null && !usrBean.getLocation().equals("3001")) {
+						
+						elementosFila[1] = new FilaExtElement("enviar","enviarIntercambiosCICAC", SIGAConstants.ACCESS_FULL);
+				}
+			
+			case 30:
+				if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
+						
+						elementosFila[1] = new FilaExtElement("enviar","enviarIntercambiosGEN", SIGAConstants.ACCESS_FULL);
+				}
+			}
 			
 		}else {
 			GestionEnvioInformacionEconomicaCatalunyaService.TIPOINTERCAMBIO tipo = GestionEnvioInformacionEconomicaCatalunyaService.TIPOINTERCAMBIO.getEnum(getIdTipoIntercambio());
@@ -548,7 +558,7 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 			e.printStackTrace();
 		}
 		
-		
+		gestionEconomicaCatalunyaVo.setPathFileCertificacion(objectForm.getPathFile());
 		
 		
 		
@@ -735,8 +745,5 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 	public void setIdCertificacionAnexo(String idCertificacionAnexo) {
 		this.idCertificacionAnexo = idCertificacionAnexo;
 	}
-
-	
-
 
 }
