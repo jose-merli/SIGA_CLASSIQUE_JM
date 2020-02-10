@@ -1,3 +1,8 @@
+spool  PKG_SIGA_REGULARIZACION_SJCS_arreglo_idioma.log
+prompt PKG_SIGA_REGULARIZACION_SJCS_arreglo_idioma.log
+select to_char(sysdate, 'hh24:mi:ss') as "Inicio" from dual;
+prompt .
+
 create or replace package PKG_SIGA_REGULARIZACION_SJCS is
 
   -----------------------------------------------------------------------------
@@ -9,6 +14,7 @@ create or replace package PKG_SIGA_REGULARIZACION_SJCS is
   --   * P_IDFACTURACION     NUMBER: identificador de la Regularizacion
   --   * P_USUMODIFICACION   NUMBER: usuario que realiza la llamada
   -- Parametros de salida:
+  --   * P_IDIOMA            NUMBER: idioma a usar en los recursos
   --   * P_TOTAL       VARCHAR2: importe total obtenido en la Regularizacion
   --   * P_CODRETORNO  VARCHAR2: codigo indicador del resultado de la
   --     Regularizacion. Si es distinto de 0, indica error
@@ -21,6 +27,7 @@ create or replace package PKG_SIGA_REGULARIZACION_SJCS is
   PROCEDURE PROC_FCS_REGULAR_TURNOS_OFI (P_IDINSTITUCION    IN NUMBER,
                                          P_IDFACTURACION    IN NUMBER,
                                          P_USUMODIFICACION  IN NUMBER,
+                                         P_IDIOMA           IN NUMBER,
                                          P_TOTAL            OUT VARCHAR2,
                                          P_CODRETORNO       OUT VARCHAR2,
                                          P_DATOSERROR       OUT VARCHAR2);
@@ -33,6 +40,7 @@ create or replace package PKG_SIGA_REGULARIZACION_SJCS is
   --   * P_IDINSTITUCION     NUMBER: identificador de la Institucion
   --   * P_IDFACTURACION     NUMBER: identificador de la Regularizacion
   --   * P_USUMODIFICACION   NUMBER: usuario que realiza la llamada
+  --   * P_IDIOMA            NUMBER: idioma a usar en los recursos
   -- Parametros de salida:
   --   * P_TOTAL       VARCHAR2: importe total obtenido en la Regularizacion
   --   * P_CODRETORNO  VARCHAR2: codigo indicador del resultado de la
@@ -46,6 +54,7 @@ create or replace package PKG_SIGA_REGULARIZACION_SJCS is
   PROCEDURE PROC_FCS_REGULAR_EJG (P_IDINSTITUCION    IN NUMBER,
                                   P_IDFACTURACION    IN NUMBER,
                                   P_USUMODIFICACION  IN NUMBER,
+                                  P_IDIOMA           IN NUMBER,
                                   P_TOTAL            OUT VARCHAR2,
                                   P_CODRETORNO       OUT VARCHAR2,
                                   P_DATOSERROR       OUT VARCHAR2);
@@ -58,6 +67,7 @@ create or replace package PKG_SIGA_REGULARIZACION_SJCS is
   --   * P_IDINSTITUCION     NUMBER: identificador de la Institucion
   --   * P_IDFACTURACION     NUMBER: identificador de la Regularizacion
   --   * P_USUMODIFICACION   NUMBER: usuario que realiza la llamada
+  --   * P_IDIOMA            NUMBER: idioma a usar en los recursos
   -- Parametros de salida:
   --   * P_TOTAL       VARCHAR2: importe total obtenido en la Regularizacion
   --   * P_CODRETORNO  VARCHAR2: codigo indicador del resultado de la
@@ -71,6 +81,7 @@ create or replace package PKG_SIGA_REGULARIZACION_SJCS is
   PROCEDURE PROC_FCS_REGULAR_SOJ (P_IDINSTITUCION    IN NUMBER,
                                   P_IDFACTURACION    IN NUMBER,
                                   P_USUMODIFICACION  IN NUMBER,
+                                  P_IDIOMA           IN NUMBER,
                                   P_TOTAL            OUT VARCHAR2,
                                   P_CODRETORNO       OUT VARCHAR2,
                                   P_DATOSERROR       OUT VARCHAR2);
@@ -83,6 +94,7 @@ create or replace package PKG_SIGA_REGULARIZACION_SJCS is
   --   * P_IDINSTITUCION     NUMBER: identificador de la Institucion
   --   * P_IDREGULARIZACION  NUMBER: identificador de la Regularizacion
   --   * P_USUMODIFICACION   NUMBER: usuario que realiza la llamada
+  --   * P_IDIOMA            NUMBER: idioma a usar en los recursos
   -- Parametros de salida:
   --   * P_TOTAL       VARCHAR2: importe total obtenido en la Regularizacion
   --   * P_CODRETORNO  VARCHAR2: codigo indicador del resultado de la
@@ -106,6 +118,7 @@ create or replace package PKG_SIGA_REGULARIZACION_SJCS is
   PROCEDURE PROC_FCS_REGULAR_GUARDIAS (P_IDINSTITUCION     IN NUMBER,
                                        P_IDREGULARIZACION  IN NUMBER,
                                        P_USUMODIFICACION   IN NUMBER,
+                                       P_IDIOMA            IN NUMBER,
                                        P_TOTAL             OUT VARCHAR2,
                                        P_CODRETORNO        OUT VARCHAR2,
                                        P_DATOSERROR        OUT VARCHAR2);
@@ -153,6 +166,7 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
   PROCEDURE PROC_FCS_REGULAR_TURNOS_OFI (P_IDINSTITUCION    IN NUMBER,
                                          P_IDFACTURACION    IN NUMBER,
                                          P_USUMODIFICACION  IN NUMBER,
+                                         P_IDIOMA           IN NUMBER,
                                          P_TOTAL            OUT VARCHAR2,
                                          P_CODRETORNO       OUT VARCHAR2,
                                          P_DATOSERROR       OUT VARCHAR2) IS
@@ -345,6 +359,7 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
   PROCEDURE PROC_FCS_REGULAR_EJG (P_IDINSTITUCION    IN NUMBER,
                                   P_IDFACTURACION    IN NUMBER,
                                   P_USUMODIFICACION  IN NUMBER,
+                                  P_IDIOMA           IN NUMBER,
                                   P_TOTAL            OUT VARCHAR2,
                                   P_CODRETORNO       OUT VARCHAR2,
                                   P_DATOSERROR       OUT VARCHAR2) IS
@@ -513,6 +528,7 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
   PROCEDURE PROC_FCS_REGULAR_SOJ (P_IDINSTITUCION    IN NUMBER,
                                   P_IDFACTURACION    IN NUMBER,
                                   P_USUMODIFICACION  IN NUMBER,
+                                  P_IDIOMA           IN NUMBER,
                                   P_TOTAL            OUT VARCHAR2,
                                   P_CODRETORNO       OUT VARCHAR2,
                                   P_DATOSERROR       OUT VARCHAR2) IS
@@ -1656,6 +1672,7 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
   PROCEDURE PROC_FCS_REGULAR_GUARDIAS (P_IDINSTITUCION     IN NUMBER,
                                        P_IDREGULARIZACION  IN NUMBER,
                                        P_USUMODIFICACION   IN NUMBER,
+                                       P_IDIOMA            IN NUMBER,
                                        P_TOTAL             OUT VARCHAR2,
                                        P_CODRETORNO        OUT VARCHAR2,
                                        P_DATOSERROR        OUT VARCHAR2) IS
@@ -1869,3 +1886,7 @@ create or replace package body PKG_SIGA_REGULARIZACION_SJCS is
 
 END PKG_SIGA_REGULARIZACION_SJCS;
 /
+
+prompt .
+select to_char(sysdate, 'hh24:mi:ss') as "Fin" from dual;
+spool off
