@@ -1,3 +1,8 @@
+spool  Pkg_Siga_Censo_arreglo_estados_colegiales.log
+prompt Pkg_Siga_Censo_arreglo_estados_colegiales.log
+select to_char(sysdate, 'hh24:mi:ss') as "Inicio" from dual;
+prompt .
+
 CREATE OR REPLACE Package Pkg_Siga_Censo Is
 
   /****************************************************************************************************************/
@@ -394,6 +399,11 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
                   And Dircon.Fechabaja Is Null
                   -- si ya se ha copiado la direccion al Consejo, en este sera posterior a la del colegio
                   And dircon.Fechamodificacion >= dir.Fechamodificacion)
+          And Exists (Select 1
+                 From Cen_Datoscolegialesestado Est2
+                Where Est2.Idinstitucion = Col.Idinstitucion
+                  And Est2.Idpersona = Col.Idpersona
+                  And Trunc(Est2.Fechaestado) <= Sysdate)
           And Not Exists (Select 1
                  From Cen_Colacambioletrado Col2
                 Where Col.Idinstitucion = Col2.Idinstitucion
@@ -423,6 +433,11 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
                   And Dircon.Fechabaja Is Null
                   -- si ya se ha copiado la direccion al Consejo, en este sera posterior a la del colegio
                   And dircon.Fechamodificacion >= dir.Fechamodificacion)
+          And Exists (Select 1
+                 From Cen_Datoscolegialesestado Est2
+                Where Est2.Idinstitucion = Col.Idinstitucion
+                  And Est2.Idpersona = Col.Idpersona
+                  And Trunc(Est2.Fechaestado) <= Sysdate)
           And Not Exists (Select 1
                  From Cen_Colacambioletrado Col2
                 Where Col.Idinstitucion = Col2.Idinstitucion
@@ -1028,3 +1043,7 @@ CREATE OR REPLACE Package Body Pkg_Siga_Censo Is
 
 End Pkg_Siga_Censo;
 /
+
+prompt .
+select to_char(sysdate, 'hh24:mi:ss') as "Fin" from dual;
+spool off
