@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.scs.GestionEnvioInformacionEconomicaCatalunyaService;
 import org.redabogacia.sigaservices.app.vo.scs.GestionEconomicaCatalunyaVo;
@@ -24,6 +25,7 @@ import com.siga.tlds.FilaExtElement;
  *
  */
 public class GestionEconomicaCatalunyaForm extends MasterForm {
+	private static final Logger log = Logger.getLogger(GestionEconomicaCatalunyaForm.class);
 	private static final long serialVersionUID = 1L;
 	String idTipoIntercambio = null;
 	String descripcionTipoIntercambio = null;
@@ -124,32 +126,44 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 		//		RESPONDIENDO_ICA((short)92,"Respondiendo ICA..."),
 		//		DEVUELTO_ICA_CORRECTO((short)95,"Devuelto CICAC - ICA correcto");
 
-
+		log.info("getIdTipoIntercambio"+getIdTipoIntercambio());
 
 		if(getIdTipoIntercambio()==null) {
+			log.info("Entrmos aqui");
+			log.info("idEstado"+idEstado);
 			elementosFila = new FilaExtElement[2];
 			elementosFila[0] = new FilaExtElement("editar", "editaIntercambio",SIGAConstants.ACCESS_FULL);
 			switch (Integer.valueOf(idEstado)) {
 			case 14:
 				if(usrBean !=null && usrBean.getLocation()!=null && !usrBean.getLocation().equals("3001")) {
-						
-						elementosFila[1] = new FilaExtElement("enviar","enviarIntercambiosCICAC", SIGAConstants.ACCESS_FULL);
+
+					elementosFila[1] = new FilaExtElement("enviar","enviarIntercambiosCICAC", SIGAConstants.ACCESS_FULL);
 				}
-			
+				break;
+
 			case 30:
 				if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
-						
-						elementosFila[1] = new FilaExtElement("enviar","enviarIntercambiosGEN", SIGAConstants.ACCESS_FULL);
-				}
-			}
-			
-		}else {
-			GestionEnvioInformacionEconomicaCatalunyaService.TIPOINTERCAMBIO tipo = GestionEnvioInformacionEconomicaCatalunyaService.TIPOINTERCAMBIO.getEnum(getIdTipoIntercambio());
 
+					elementosFila[1] = new FilaExtElement("enviar","enviarIntercambiosGEN", SIGAConstants.ACCESS_FULL);
+				}
+				break;
+			default:
+				elementosFila = new FilaExtElement[1];
+				elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
+				break;
+			}
+
+		}else {
+			log.info("Entrmos alli");
+			GestionEnvioInformacionEconomicaCatalunyaService.TIPOINTERCAMBIO tipo = GestionEnvioInformacionEconomicaCatalunyaService.TIPOINTERCAMBIO.getEnum(getIdTipoIntercambio());
+			log.info("tipo"+tipo);
+			log.info("idEstado"+idEstado);
+			elementosFila = new FilaExtElement[0];
 			switch (tipo) {
 
 
 			case Justificaciones:
+				log.info("caso justificacione");
 				switch (Integer.valueOf(idEstado)) {
 				case 10:
 					elementosFila = new FilaExtElement[1];
@@ -180,28 +194,28 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 
 
 					if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
-							elementosFila = new FilaExtElement[4];
-							elementosFila[0] = new FilaExtElement("consultar","consulta", SIGAConstants.ACCESS_FULL);
-							elementosFila[1] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
-							elementosFila[2] = new FilaExtElement("upload","adjuntaFicheroError", SIGAConstants.ACCESS_FULL);
-							elementosFila[3] = new FilaExtElement("denegar","insertaErrorGlobal", SIGAConstants.ACCESS_FULL);
+						elementosFila = new FilaExtElement[4];
+						elementosFila[0] = new FilaExtElement("consultar","consulta", SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
+						elementosFila[2] = new FilaExtElement("upload","adjuntaFicheroError", SIGAConstants.ACCESS_FULL);
+						elementosFila[3] = new FilaExtElement("denegar","insertaErrorGlobal", SIGAConstants.ACCESS_FULL);
 
 					}else {
 						elementosFila = new FilaExtElement[2];
 						elementosFila[0] = new FilaExtElement("consultar","consulta", SIGAConstants.ACCESS_FULL);
 						elementosFila[1] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
-						
+
 					}
 					break;
 				case 40:
 					if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
-							elementosFila = new FilaExtElement[5];
-							elementosFila[0] = new FilaExtElement("consultar","consulta", SIGAConstants.ACCESS_FULL);
-							elementosFila[1] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
-							elementosFila[2] = new FilaExtElement("upload","adjuntaFicheroError", SIGAConstants.ACCESS_FULL);
-							elementosFila[3] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
-							elementosFila[4] = new FilaExtElement( "finalizar","finalizaErrores", SIGAConstants.ACCESS_FULL);
-						
+						elementosFila = new FilaExtElement[5];
+						elementosFila[0] = new FilaExtElement("consultar","consulta", SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
+						elementosFila[2] = new FilaExtElement("upload","adjuntaFicheroError", SIGAConstants.ACCESS_FULL);
+						elementosFila[3] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
+						elementosFila[4] = new FilaExtElement( "finalizar","finalizaErrores", SIGAConstants.ACCESS_FULL);
+
 					}else {
 						elementosFila = new FilaExtElement[2];
 						elementosFila[0] = new FilaExtElement("consultar","consulta", SIGAConstants.ACCESS_FULL);
@@ -236,7 +250,7 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 						elementosFila = new FilaExtElement[3];
 						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
 						elementosFila[1] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
-//						elementosFila[2] = new FilaExtElement("enviar","enviaRespuestaCICAC_ICA", SIGAConstants.ACCESS_FULL);
+						//						elementosFila[2] = new FilaExtElement("enviar","enviaRespuestaCICAC_ICA", SIGAConstants.ACCESS_FULL);
 					}else {
 						elementosFila = new FilaExtElement[2];
 						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
@@ -249,7 +263,7 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 						elementosFila = new FilaExtElement[3];
 						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
 						elementosFila[1] = new FilaExtElement( "download","descarga", SIGAConstants.ACCESS_FULL);
-//						elementosFila[2] = new FilaExtElement("enviar","enviaRespuestaCICAC_ICA", SIGAConstants.ACCESS_FULL);
+						//						elementosFila[2] = new FilaExtElement("enviar","enviaRespuestaCICAC_ICA", SIGAConstants.ACCESS_FULL);
 					}else {
 						elementosFila = new FilaExtElement[2];
 						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
@@ -265,12 +279,12 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 				default:
 					elementosFila = new FilaExtElement[1];
 					elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
-
+					break;
 				}
-				break;
-				case Devoluciones: case Certificaciones:	case Anexos:
-
 				
+			case Devoluciones: case Certificaciones:	case Anexos:
+				log.info("caso no justificacione");
+
 				switch (Integer.valueOf(idEstado)) {
 				case 10:
 					elementosFila = new FilaExtElement[1];
@@ -303,7 +317,7 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 						elementosFila = new FilaExtElement[2];
 						elementosFila[0] = new FilaExtElement("consultar","consulta", SIGAConstants.ACCESS_FULL);
 						elementosFila[1] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
-						
+
 
 					}else {
 						elementosFila = new FilaExtElement[2];
@@ -313,8 +327,8 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 					break;
 				case 40:
 					if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
-							elementosFila = new FilaExtElement[1];
-							elementosFila[0] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
+						elementosFila = new FilaExtElement[1];
+						elementosFila[0] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
 					}else {
 						elementosFila = new FilaExtElement[1];
 						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_NONE);
@@ -370,16 +384,19 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 				default:
 					elementosFila = new FilaExtElement[1];
 					elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
+					break;
 
 				}
-				break;
-			
+				
 
-			default:
-				break;
+
+			
 			}
 		}
-
+		if(elementosFila==null) {
+			log.info("Viene nulos");
+			elementosFila = new FilaExtElement[0];
+		}
 		return elementosFila;
 	}
 
