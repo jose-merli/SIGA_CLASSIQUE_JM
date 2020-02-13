@@ -475,7 +475,7 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 			justificacionVo.setIdPeriodo(intercambio.getIdPeriodo());
 			justificacionVo.setIdInstitucion(intercambio.getIdInstitucion());
 			justificacionVo.setIdEstado((short)30);
-			File log = gestionEconomicaCatalunyaService.getFile(justificacionVo);
+			File log = gestionEconomicaCatalunyaService.getFile(justificacionVo,false);
 			request.setAttribute("nombreFichero", log.getName());
 			request.setAttribute("rutaFichero", log.getPath());			
 			//			request.setAttribute("borrarFichero", "false");			
@@ -506,7 +506,7 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 			justificacionVo.setIdPeriodo(intercambio.getIdPeriodo());
 			justificacionVo.setIdInstitucion(intercambio.getIdInstitucion());
 			justificacionVo.setIdEstado((short)30);
-			File log = gestionEconomicaCatalunyaService.getFile(justificacionVo);
+			File log = gestionEconomicaCatalunyaService.getFile(justificacionVo,true);
 			request.setAttribute("nombreFichero", log.getName());
 			request.setAttribute("rutaFichero", log.getPath());			
 			//			request.setAttribute("borrarFichero", "false");			

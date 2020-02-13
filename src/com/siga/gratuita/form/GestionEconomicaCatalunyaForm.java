@@ -129,8 +129,6 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 		log.info("getIdTipoIntercambio"+getIdTipoIntercambio());
 
 		if(getIdTipoIntercambio()==null) {
-			log.info("Entrmos aqui");
-			log.info("idEstado"+idEstado);
 			elementosFila = new FilaExtElement[2];
 			elementosFila[0] = new FilaExtElement("editar", "editaIntercambio",SIGAConstants.ACCESS_FULL);
 			switch (Integer.valueOf(idEstado)) {
@@ -152,7 +150,6 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 			}
 
 		}else {
-			log.info("Entrmos alli");
 			GestionEnvioInformacionEconomicaCatalunyaService.TIPOINTERCAMBIO tipo = GestionEnvioInformacionEconomicaCatalunyaService.TIPOINTERCAMBIO.getEnum(getIdTipoIntercambio());
 			log.info("tipo"+tipo);
 			log.info("idEstado"+idEstado);
@@ -161,7 +158,6 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 
 
 			case Justificaciones:
-				log.info("caso justificacione");
 				switch (Integer.valueOf(idEstado)) {
 				case 10:
 					elementosFila = new FilaExtElement[1];
@@ -281,8 +277,6 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 				}
 				
 			case Devoluciones: case Certificaciones:	case Anexos:
-				log.info("caso no justificacione");
-
 				switch (Integer.valueOf(idEstado)) {
 				case 10:
 					elementosFila = new FilaExtElement[1];
