@@ -148,8 +148,6 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 				}
 				break;
 			default:
-				elementosFila = new FilaExtElement[1];
-				elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
 				break;
 			}
 
@@ -278,7 +276,7 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 
 				default:
 					elementosFila = new FilaExtElement[1];
-					elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
+					elementosFila[0] = new FilaExtElement("editar", "editaIntercambio",SIGAConstants.ACCESS_FULL);
 					break;
 				}
 				
@@ -383,7 +381,7 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 
 				default:
 					elementosFila = new FilaExtElement[1];
-					elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
+					elementosFila[0] = new FilaExtElement("editar", "editaIntercambio",SIGAConstants.ACCESS_FULL);
 					break;
 
 				}
@@ -396,6 +394,7 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 		if(elementosFila==null) {
 			log.info("Viene nulos");
 			elementosFila = new FilaExtElement[0];
+			
 		}
 		return elementosFila;
 	}
