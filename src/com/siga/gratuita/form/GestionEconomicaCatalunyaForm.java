@@ -562,7 +562,7 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 		}
 		try {
 			if(getPathFile()!=null && !getPathFile().equals("")) {
-				gestionEconomicaCatalunyaVo.setFileErrorData(SIGAServicesHelper.getBytes(new File(getPathFile())));
+				gestionEconomicaCatalunyaVo.setFileErrorData(SIGAServicesHelper.getBytes(getPathFile()));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

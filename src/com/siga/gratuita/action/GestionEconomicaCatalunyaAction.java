@@ -1,10 +1,7 @@
 package com.siga.gratuita.action;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -12,13 +9,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.upload.FormFile;
 import org.json.JSONException;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
-import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.scs.GestionEnvioInformacionEconomicaCatalunyaService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -42,7 +38,7 @@ import es.satec.businessManager.BusinessManager;
  *
  */
 public class GestionEconomicaCatalunyaAction extends MasterAction {
-
+	private static final Logger log = Logger.getLogger(GestionEconomicaCatalunyaAction.class);
 	protected ActionForward executeInternal(ActionMapping mapping,ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		String mapDestino = "exception";
 		GestionEconomicaCatalunyaForm miForm = null;
@@ -367,8 +363,9 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		
 		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
 		try {
-			
+			log.info("getPathFile"+gestionEconomicaForm.getPathFile());
 			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
+			log.info("getFileErrorData"+justificacionVo.getFileErrorData());
 			justificacionVo.setIdInstitucion(Short.valueOf(usrBean.getLocation()));
 			justificacionVo.setUsuModificacion(Integer.parseInt(usrBean.getUserName()));
 			gestionEconomicaCatalunyaService.insertaIntercambios(justificacionVo);
