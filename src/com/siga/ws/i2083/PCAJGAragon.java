@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.transaction.UserTransaction;
@@ -161,9 +162,27 @@ public class PCAJGAragon extends SIGAWSClientAbstract implements PCAJGConstantes
 		TipoInformacion tipoInformacion = null;
 		
 		int sufijoIdIntercambio = 0;
-		
+		TreeMap<Short,Vector<Hashtable>> datosOrdenadosMap = new TreeMap<Short, Vector<Hashtable>>();
+		datosOrdenadosMap.put((short) 0, new Vector<Hashtable>());
+		datosOrdenadosMap.put((short)1, new Vector<Hashtable>());
+		Vector<Hashtable> auxDatos = null;
 		for (int i = 0; i < datos.size(); i++) {
 			ht = (Hashtable)datos.get(i);
+			String tipoIntercambioString = (String)ht.get(TIPOINTERCAMBIO);
+			if (tipoIntercambioString.equals(PCAJGAragon.INTERCAMBIO_EXPEDIENTES_DICTAMINADOS)) {
+				auxDatos = datosOrdenadosMap.get((short)0);
+			}else {
+				auxDatos = datosOrdenadosMap.get((short)1);
+			}
+			auxDatos.add(ht);
+		}
+		
+		Vector<Hashtable> datosOrdenados = new Vector<Hashtable>();
+		datosOrdenados.addAll(datosOrdenadosMap.get((short)0));
+		datosOrdenados.addAll(datosOrdenadosMap.get((short)1));
+		
+		for (int i = 0; i < datosOrdenados.size(); i++) {
+			ht = (Hashtable)datosOrdenados.get(i);
 			
 			if (!tipoIntercambio.equals(ht.get(TIPOINTERCAMBIO))) {								
 				if (intercambio != null && expedientes.sizeOfExpedienteArray() > 0) {
