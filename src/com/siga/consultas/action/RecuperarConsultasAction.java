@@ -37,6 +37,7 @@ import com.siga.beans.ConCampoConsultaBean;
 import com.siga.beans.ConConsultaAdm;
 import com.siga.beans.ConConsultaBean;
 import com.siga.beans.ConCriteriosDinamicosAdm;
+import com.siga.beans.ConEjecucionAdm;
 import com.siga.beans.ConOperacionConsultaAdm;
 import com.siga.beans.ConOperacionConsultaBean;
 import com.siga.consultas.CriterioDinamico;
@@ -342,8 +343,10 @@ public class RecuperarConsultasAction extends MasterAction {
 		//Controles generales
 		UsrBean userBean = this.getUserBean (request);
 		RecuperarConsultasForm form = (RecuperarConsultasForm) formulario;
-		
+		ConConsultaAdm conAdm = new ConConsultaAdm(userBean);
+		ConEjecucionAdm conEjeAdm = new ConEjecucionAdm(userBean);
 		UserTransaction tx = null;
+		
 		try {
 		
     
@@ -359,11 +362,17 @@ public class RecuperarConsultasAction extends MasterAction {
 			
 			//obteniendo datos de la consulta
 			ConConsultaBean conBean = (ConConsultaBean) databackup.get ("datosParticulares");
-			String sentencia = conBean.getSentencia().toUpperCase(); 
+			String sentencia = conBean.getSentencia().toUpperCase().replaceAll("\\r\\n|\\r|\\n", " "); 
 			String tipoEnvio = form.getTipoEnvio();
 			CriterioDinamico[] criteriosDinamicos = form.getCriteriosDinamicos();
 			
-			ConConsultaAdm conAdm = new ConConsultaAdm(userBean);
+			// registrando estadistica ejecucion - inicio
+			tx = userBean.getTransactionLigera();
+			tx.begin();
+		    conEjeAdm.registrarInicioEjecucion(conBean, "~~ Ejecución de consulta");
+		    tx.commit();
+			
+		    // preparando la ejecucion
 			Hashtable ht = conAdm.procesarEjecutarConsulta(tipoEnvio, conBean, criteriosDinamicos, true);
 			
 			// BEGIN BNS 12/12/2012 INCIDENCIA 140: Eliminaba parte de la query si existían subquerys con order by y
@@ -388,11 +397,8 @@ public class RecuperarConsultasAction extends MasterAction {
 			String[] cabeceras = (String[]) ht.get("cabeceras");
 			Hashtable codigosOrdenados = (Hashtable) ht.get("codigosOrdenados");
 			
-			
 			//Ya se ha obtenido todo dependiendo del tipo de consulta.
 			// Ahora se ejecuta la consulta y se obtiene la primera pagina
-
-		    // RGG PRUEBA DE TIEMPOS
 		    tx = userBean.getTransactionLigera();
 		    tx.begin();
 		    
@@ -422,8 +428,32 @@ public class RecuperarConsultasAction extends MasterAction {
 					databackup.put ("datos", datos);
 					databackup.put ("cabeceras", cabeceras);
 				}
+				
+				try {
+					tx.commit();
+				} catch(Exception e2) {
+					;
+				}
+				// registrando estadistica ejecucion - fin
+				tx = userBean.getTransactionLigera();
+				tx.begin();
+			    conEjeAdm.registrarFinEjecucion(null);
+			    tx.commit();
 			} catch (Exception sqle) {
+				try {
+					tx.rollback();
+				} catch(Exception e2) {
+					;
+				}
+				
 		        String mensaje = sqle.getMessage();
+		        
+				// registrando estadistica ejecucion - fin
+		        tx = userBean.getTransactionLigera();
+		        tx.begin();
+			    conEjeAdm.registrarFinEjecucion(mensaje);
+			    tx.commit();
+			    
 			    if (mensaje.indexOf("TimedOutException")!=-1 || mensaje.indexOf("timed out")!=-1) {
 			        throw new SIGAException("messages.transaccion.timeout",sqle);
 			    } else {
@@ -433,8 +463,6 @@ public class RecuperarConsultasAction extends MasterAction {
 			        throw sqle;
 			    }
 			}			
-		    tx.commit();
-			
 		}
 		else
 		{
@@ -504,15 +532,24 @@ public class RecuperarConsultasAction extends MasterAction {
 	 * @exception  SIGAException  En cualquier caso de error
 	 * @return String para el forward
 	 */
-	protected String download(ActionMapping mapping, MasterForm formulario,
-			HttpServletRequest request, HttpServletResponse response)
-			throws SIGAException {
-	
+	protected String download(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException
+	{
+		// Controles generales
+		UsrBean userBean = this.getUserBean (request);
+		HashMap databackup = (HashMap)request.getSession().getAttribute("DATABACKUP");
+		ConConsultaAdm conAdm = new ConConsultaAdm(userBean);
+		ConEjecucionAdm conEjeAdm = new ConEjecucionAdm(userBean);
+		UserTransaction tx = null;
 		
 		try {
-			UsrBean userBean = this.getUserBean (request);
-			HashMap databackup = (HashMap)request.getSession().getAttribute("DATABACKUP");
 			ConConsultaBean conBean = (ConConsultaBean)databackup.get("datosParticulares");
+			
+			// registrando estadistica ejecucion - inicio
+			tx = userBean.getTransactionLigera();
+			tx.begin();
+		    conEjeAdm.registrarInicioEjecucion(conBean, "~~ Descarga de consulta");
+		    tx.commit();
+
 			BusinessManager bm = getBusinessManager();
 			InformesService informeService = (InformesService)bm.getService(InformesService.class);
 			InformeForm informeForm = new InformeForm();
@@ -554,7 +591,29 @@ public class RecuperarConsultasAction extends MasterAction {
 				request.setAttribute("cabeceras",databackup.get("cabeceras"));
 			}
 			
+			// registrando estadistica ejecucion - fin
+			tx = userBean.getTransactionLigera();
+			tx.begin();
+		    conEjeAdm.registrarFinEjecucion(null);
+		    tx.commit();
+			
 		} catch (Exception e) {
+			try {
+				tx.rollback();
+			} catch(Exception e2) {
+				;
+			}
+
+			// registrando estadistica ejecucion - fin
+	        try {
+		        tx = userBean.getTransactionLigera();
+				tx.begin();
+			    conEjeAdm.registrarFinEjecucion(e.getMessage());
+			    tx.commit();
+			} catch (Exception e1) {
+				throwExcp("messages.general.error",new String[] {"modulo.consultas"},e1,null); 
+			}
+			
 			throwExcp("messages.general.error",new String[] {"modulo.consultas"},e,null); 
 		}
 		return "export";
