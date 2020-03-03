@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.apache.struts.upload.FormFile;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.scs.GestionEnvioInformacionEconomicaCatalunyaService;
 import org.redabogacia.sigaservices.app.vo.scs.GestionEconomicaCatalunyaVo;
@@ -55,6 +56,7 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 	UsrBean usrBean = null;
 	String seleccion;
 	List<JustificacionCatalunyaForm> datosJustificacion;
+	private FormFile theFile;
 	String pathFile;
 	String idColegio;
 
@@ -564,11 +566,14 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 			if(getPathFile()!=null && !getPathFile().equals("")) {
 				gestionEconomicaCatalunyaVo.setFileErrorData(SIGAServicesHelper.getBytes(getPathFile()));
 			}
+			if(getTheFile()!=null) {
+				gestionEconomicaCatalunyaVo.setFileErrorData((getTheFile().getFileData()));
+				
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		gestionEconomicaCatalunyaVo.setPathFileCertificacion(objectForm.getPathFile());
 		
 		
 		
@@ -754,6 +759,14 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 
 	public void setIdCertificacionAnexo(String idCertificacionAnexo) {
 		this.idCertificacionAnexo = idCertificacionAnexo;
+	}
+
+	public FormFile getTheFile() {
+		return theFile;
+	}
+
+	public void setTheFile(FormFile theFile) {
+		this.theFile = theFile;
 	}
 
 }

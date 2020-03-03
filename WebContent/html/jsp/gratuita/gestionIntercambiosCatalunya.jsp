@@ -102,7 +102,7 @@
 	function openDialog(dialogo){
 		jQuery("#"+dialogo).dialog(
 				{
-				      height: 270,
+				      height: 240,
 				      width: 525,
 				      modal: true,
 				      resizable: false,
@@ -116,45 +116,7 @@
 		jQuery(".ui-widget-overlay").css("opacity","0");
 	}
 	
-	function accionInsercion(dialogo){
-		sub();
-		error = '';
-		if(dialogo=='dialogoInsercion'){
-			document.forms['FormularioGestion'].descripcion.value = jQuery("#descripcionNew").val();  
-			document.forms['FormularioGestion'].idPeriodo.value = jQuery('select#idPeriodoNew option:selected').val();
-			document.forms['FormularioGestion'].anio.value = jQuery("#anioNew").val();
-			document.forms['FormularioGestion'].pathFile.value = jQuery("#theFileNew").val();
-			
-			if(document.forms['FormularioGestion'].anio.value==''){
-				error += "<siga:Idioma key='errors.required' arg0='gratuita.mantActuacion.literal.anio'/>"+ '\n';
-				
-			}
-			if(!isNumero(document.forms['FormularioGestion'].anio.value)){
-				
-				error += "<siga:Idioma key='errors.short' arg0='gratuita.mantActuacion.literal.anio'/>"+ '\n';
-				document.forms['FormularioGestion'].anio.value ='';
-				
-			}
-			if(document.forms['FormularioGestion'].idPeriodo.value==''){
-				error += "<siga:Idioma key='errors.required' arg0='gratuita.calendarioGuardias.literal.periodo'/>"+ '\n';
-				
-			}
-			if(document.forms['FormularioGestion'].descripcion.value==''){
-				error += "<siga:Idioma key='errors.required' arg0='gratuita.mantActuacion.literal.descripcion'/>"+ '\n';
-				
-			}
-			
-			if (error=='')
-				document.FormularioGestion.modo.value = "insertaIntercambios";
-		}
-		if (error!=''){
-			alert(error);
-			fin();
-			return false;
-		}
-		
-		document.forms['FormularioGestion'].submit();
-	}
+	
 	function closeDialog(dialogo){
 		 jQuery("#"+dialogo).dialog("close"); 
 	}
@@ -210,7 +172,49 @@
 		
 		document.forms['FormularioGestion'].submit();
 	}
-	
+	function accionInsercion(dialogo){
+		
+		error = '';
+		if(dialogo=='dialogoInsercion'){
+			
+			
+			
+			if(document.forms['FormularioGestion'].theFile.value==''){
+				error += "<siga:Idioma key='errors.required' arg0='administracion.confInterfaz.fichero'/>"+ '\n';
+				
+			}
+			
+			if(document.forms['FormularioGestion'].anio.value==''){
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.mantActuacion.literal.anio'/>"+ '\n';
+				
+			}
+			if(!isNumero(document.forms['FormularioGestion'].anio.value)){
+				
+				error += "<siga:Idioma key='errors.short' arg0='gratuita.mantActuacion.literal.anio'/>"+ '\n';
+				document.forms['FormularioGestion'].anio.value ='';
+				
+			}
+			if(document.forms['FormularioGestion'].idPeriodo.value==''){
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.calendarioGuardias.literal.periodo'/>"+ '\n';
+				
+			}
+			if(document.forms['FormularioGestion'].descripcion.value==''){
+				error += "<siga:Idioma key='errors.required' arg0='gratuita.mantActuacion.literal.descripcion'/>"+ '\n';
+				
+			}
+			
+			if (error=='')
+				document.forms['FormularioGestion'].modo.value = "insertaIntercambios";
+		}
+		if (error!=''){
+			alert(error);
+			fin();
+			return false;
+		}
+		sub();
+	    document.forms['FormularioGestion'].submit();
+	}
+
 			
 		</script>
 	</head>
@@ -226,10 +230,10 @@
  
 <input type="hidden" id="volverBusqueda" value="${volverBusqueda}" class="inputNotSelect"/>
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
-	<html:form action="${path}"  method="POST" enctype="multipart/form-data" target="mainWorkArea">
+	<html:form action="${path}"  method="POST" target="mainWorkArea" enctype="multipart/form-data" >
 		<html:hidden  property="modo"/>
 		<html:hidden property="idInstitucion"/>
-		
+			
 		<siga:ConjCampos leyenda="gratuita.gestionInscripciones.datosSolicitud.leyenda">
 			<table width="100%" border="0">
 				<tr>
@@ -302,22 +306,19 @@
 		<div id="divListado"></div>	
 	</html:form>
 	
-	<html:form action="${path}"   name="FormularioGestion" method="POST" enctype="multipart/form-data" type ="com.siga.gratuita.form.GestionEconomicaCatalunyaForm"  target="submitArea">
+
+
+
+		
+<div id="dialogoInsercion"  title='<bean:message key="informes.genericos.comunicacion"/>' style=" background-color:white; display:none">
+
+<html:form action="${path}"   name="FormularioGestion"  enctype="multipart/form-data" method="POST"  type ="com.siga.gratuita.form.GestionEconomicaCatalunyaForm"  target="submitArea">
   		<html:hidden property="modo"/>
 		<html:hidden property="idInstitucion"  />
 		<html:hidden property="idIntercambio" />
-		<html:hidden property="descripcion"/>
-		<html:hidden property="idPeriodo"/>
-		<html:hidden property="idDevolucion"/>
-		<html:hidden property="anio"/>
 		<html:hidden property="error"/>
-		<html:hidden property="pathFile"/>
 		
-</html:form>
-	
-		
-<div id="dialogoInsercion"  title='<bean:message key="informes.genericos.comunicacion"/>' style=" background-color:white; display:none">
-	
+
 <fieldset style="background-color:white;">
 	<legend  >
 		<siga:Idioma key="comunicaciones.leyenda.informacionIntercambio"/>
@@ -325,31 +326,34 @@
   
   		
   		<div class="labelText">
-   			<label for="descripcion"  style="width:100px;float:left;color: black"><siga:Idioma key="gratuita.mantActuacion.literal.descripcion"/></label>
-   			<input type="text" id="descripcionNew" maxlength="100" size="35" />
+   			<label for="descripcion"  style="width:120px;float:left;color: black"><siga:Idioma key="gratuita.mantActuacion.literal.descripcion"/></label>
+   			<html:text property="descripcion" size="35" maxlength="100" />
 		</div>
 		<div class="labelText">
-   			<label for="anio"  style="width:100px;float:left;color: black"><siga:Idioma key="gratuita.mantActuacion.literal.anio"/></label>
-   			<input type="text" id="anioNew" maxlength="4" size="6" />
+   			<label for="anio"  style="width:120px;float:left;color: black"><siga:Idioma key="gratuita.mantActuacion.literal.anio"/></label>
+   			<html:text property="anio" size="6" maxlength="4" />
    			<label for="trimestre" style="width:100px;color: black"><siga:Idioma key="gratuita.calendarioGuardias.literal.periodo"/></label>
-			<siga:Select queryId="getPeriodos" id="idPeriodoNew" width="150" required="true" />
+			
+			<siga:Select queryId="getPeriodos" id="idPeriodo" width="150" required="true" />
 		</div>
 		<div class="labelText">
-			<label for="file"   style="width:100px;float:left;color:black">Fichero</label><input type="file"  id="theFileNew" size="30" />
+			<label for="file"   style="width:120px;float:left;color:black"><siga:Idioma key="administracion.confInterfaz.fichero"/>&nbsp;<siga:Idioma key="menu.sjcs.ecom.certificacion"/></label><html:file  property="theFile"/>
 			</div>
-			<div class="labelText"><label style="color:black">Seleccione el fichero generado de la certificacion del trimestre para enviarselo a la Generalitat</label></div>
+			
 	</fieldset>
-
+		
+			
+</html:form>
 </div>
-
-
-
-
 
 		
 		<!-- FIN: BOTONES BUSQUEDA -->
-<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" 	style="display: none" />
+<iframe name="submitArea"  src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" 	style="display: none" />
+<script type="text/javascript">
+
+</script>
 		
 		
 </body>
+
 </html>

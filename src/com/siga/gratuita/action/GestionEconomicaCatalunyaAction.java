@@ -14,6 +14,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.json.JSONException;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.services.scs.GestionEnvioInformacionEconomicaCatalunyaService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
@@ -363,6 +364,13 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		
 		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
 		try {
+			
+			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			String maxsize = rp.returnProperty(AppConstants.GEN_PROPERTIES.ficheros_maxsize_MB.getValor());
+			int maxSizebytes = Integer.parseInt(maxsize) * 1000 * 1024;
+			if (gestionEconomicaForm.getTheFile() != null && gestionEconomicaForm.getTheFile().getFileSize() > maxSizebytes) {
+				throw new SIGAException("messages.general.file.maxsize", new String[] { (maxsize) });
+			}
 			log.info("getPathFile"+gestionEconomicaForm.getPathFile());
 			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
 			log.info("getFileErrorData"+justificacionVo.getFileErrorData());
