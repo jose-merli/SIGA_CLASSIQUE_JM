@@ -515,65 +515,36 @@
 				return false;
 			}
 
-			if((validarFecha(document.forms[0].fechaAperturaInicio.value))&&
-			   (validarFecha(document.forms[0].fechaAperturaFin.value))){
+			if	(validarFecha(document.forms[0].fechaAperturaInicio.value) &&
+				 validarFecha(document.forms[0].fechaAperturaFin.value) &&
+				 validarFecha(document.forms[0].fechaJustificacionDesde.value) &&
+				 validarFecha(document.forms[0].fechaJustificacionHasta.value)){
 				sub();
-				/*var codigo = document.forms[1].codigo.value;
-				if ((document.forms[1].codigo.value !="") && isNaN(codigo)) 
-						alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorNumero"/>');
-				else {*/
-					//document.forms[0].action = "<%=app%>/JGR_Designas.do";
 					if (isNaN(document.forms[0].anio.value)) {
 						fin();
 						alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
 						return false;
 					}
 					
-					
 					document.forms[0].target="resultado";
 					if(modo)
 						document.forms[0].modo.value = modo;
 					else
-						document.forms[0].modo.value = "buscarInicio";
-					
+						document.forms[0].modo.value = "buscarInicio";				
 					document.forms[0].submit();
-				//}
 			}
-			if((validarFecha(document.forms[0].fechaJustificacionDesde.value))&&
-				   (validarFecha(document.forms[0].fechaJustificacionHasta.value))){
-					sub();
-						if (isNaN(document.forms[0].anio.value)) {
-							fin();
-							alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorAnio"/>');
-							return false;
-						}
-						document.forms[0].target="resultado";
-						if(modo)
-							document.forms[0].modo.value = modo;
-						else
-							document.forms[0].modo.value = "buscarInicio";
-						
-						document.forms[0].submit();
-				}
 			jQuery("#nig2").keyup();
 		}
-			function seleccionarTodos(pagina) 
-		{
-				document.forms[0].seleccionarTodos.value = pagina;
-				buscar('buscarPor');
-				
+		
+		function seleccionarTodos(pagina){
+			document.forms[0].seleccionarTodos.value = pagina;
+			buscar('buscarPor');
 		}		
-			function buscarPaginador() 
-		{
-				/*var codigo = document.forms[1].codigo.value;
-				if ((document.forms[1].codigo.value !="") && isNaN(codigo)) 
-						alert('<siga:Idioma key="gratuita.busquedaEJG.literal.errorNumero"/>');
-				else {*/
-					//document.forms[0].action = "<%=app%>/JGR_Designas.do";
-					document.forms[0].target="resultado";
-					document.forms[0].modo.value = "buscarPor";
-					document.forms[0].submit();
-				//}
+
+		function buscarPaginador(){
+			document.forms[0].target="resultado";
+			document.forms[0].modo.value = "buscarPor";
+			document.forms[0].submit();
 		}			
 		
 		//<!-- Funcion asociada a boton Nuevo -->
