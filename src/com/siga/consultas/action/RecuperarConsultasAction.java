@@ -334,192 +334,174 @@ public class RecuperarConsultasAction extends MasterAction {
 		return "editar";
 	}
 	
-	protected String ejecutarConsulta (ActionMapping mapping,
-									   MasterForm formulario,
-									   HttpServletRequest request,
-									   HttpServletResponse response)
-			throws SIGAException
+	protected String ejecutarConsulta(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) 
+			throws SIGAException 
 	{
-		//Controles generales
-		UsrBean userBean = this.getUserBean (request);
+		// Controles generales
+		UsrBean userBean = this.getUserBean(request);
 		RecuperarConsultasForm form = (RecuperarConsultasForm) formulario;
 		ConConsultaAdm conAdm = new ConConsultaAdm(userBean);
 		ConEjecucionAdm conEjeAdm = new ConEjecucionAdm(userBean);
 		UserTransaction tx = null;
-		
+
 		try {
-		
-    
-		    
-		if (request.getParameter ("pagina") == null)
-		{
-			//Si es la primera llamada,
-			// hay que obtener la query a ejecutar,
-			// crear el paginador, y obtener la primera pagina
-			
-			HashMap databackup =
-				(HashMap) request.getSession ().getAttribute ("DATABACKUP");
-			
-			//obteniendo datos de la consulta
-			ConConsultaBean conBean = (ConConsultaBean) databackup.get ("datosParticulares");
-			String sentencia = conBean.getSentencia().toUpperCase().replaceAll("\\r\\n|\\r|\\n", " "); 
-			String tipoEnvio = form.getTipoEnvio();
-			CriterioDinamico[] criteriosDinamicos = form.getCriteriosDinamicos();
-			
-			// registrando estadistica ejecucion - inicio
-			tx = userBean.getTransactionLigera();
-			tx.begin();
-		    conEjeAdm.registrarInicioEjecucion(conBean, "~~ Ejecución de consulta");
-		    tx.commit();
-			
-		    // preparando la ejecucion
-			Hashtable ht = conAdm.procesarEjecutarConsulta(tipoEnvio, conBean, criteriosDinamicos, true);
-			
-			// BEGIN BNS 12/12/2012 INCIDENCIA 140: Eliminaba parte de la query si existían subquerys con order by y
-			//										la query principal no tenía order by.
-			//										Añadimos comprobación de que el último order by no es parte de una
-			//										subquery buscando por el paréntesis. Esto falla cuando dentro del 
-			//										propio order by existe una subquery pero lo mantenemos por compatibilidad y 
-			//										porque ya está funcionando en todos los casos excepto en consultas expertas.
-			//										Para que no se produzcan errores en la consulta experta se da la posibilidad
-			//										de suministrar la query del count sin el order by que se elimina antes de 
-			//										tratar las etiquetas de la consulta experta
-			if (sentencia.indexOf(ClsConstants.ETIQUETASORDERBYCLOSE) != -1)
-				conBean.setSentencia(sentencia.substring(0, sentencia.indexOf(ClsConstants.ETIQUETAORDERBYOPEN) + ClsConstants.ETIQUETAORDERBYOPEN.length()) + sentencia.substring(sentencia.indexOf(ClsConstants.ETIQUETASORDERBYCLOSE)));
-			else
-				conBean.setSentencia(sentencia);
-			Hashtable htSinOrder = conAdm.procesarEjecutarConsulta(tipoEnvio, conBean, criteriosDinamicos, true);			
-			String sentenciaSinOrder = (String) htSinOrder.get("sentencia");
-			conBean.setSentencia(sentencia);
-			//END BNS
-			
-			sentencia = (String) ht.get("sentencia");
-			String[] cabeceras = (String[]) ht.get("cabeceras");
-			Hashtable codigosOrdenados = (Hashtable) ht.get("codigosOrdenados");
-			
-			//Ya se ha obtenido todo dependiendo del tipo de consulta.
-			// Ahora se ejecuta la consulta y se obtiene la primera pagina
-		    tx = userBean.getTransactionLigera();
-		    tx.begin();
-		    
-		    try {
-		    	// BEGIN BNS 12/12/2012 INCIDENCIA 140: Eliminaba parte de la query si existían subquerys con order by y
-		    	//										la query principal no tenía order by.
-		    	//										Añadimos comprobación de que el último order by no es parte de una
-		    	//										subquery buscando por el paréntesis. Esto falla cuando dentro del 
-		    	//										propio order by existe una subquery pero lo mantenemos por compatibilidad y 
-		    	//										porque ya está funcionando en todos los casos excepto en consultas expertas.
-		    	//										Para que no se produzcan errores en la consulta experta se da la posibilidad
-		    	//										de suministrar la query del count sin el order by que se elimina antes de 
-		    	//										tratar las etiquetas de la consulta experta
-				PaginadorCaseSensitiveBind paginador =
-				new PaginadorCaseSensitiveBind (sentencia, sentenciaSinOrder, cabeceras, codigosOrdenados);				
-				//END BNS
-				
-				int totalRegistros = paginador.getNumeroTotalRegistros ();
-				request.setAttribute ("descripcion", conBean.getDescripcion ());
-				if (totalRegistros==0) {
-					tx.rollback();
-				    return "vacia";
-				}
-				else {
-					Vector datos = paginador.obtenerPagina (1);
-					databackup.put ("paginador", paginador);
-					databackup.put ("datos", datos);
-					databackup.put ("cabeceras", cabeceras);
-				}
-				
-				try {
-					tx.commit();
-				} catch(Exception e2) {
-					;
-				}
-				// registrando estadistica ejecucion - fin
+
+			if (request.getParameter("pagina") == null) {
+				// Si es la primera llamada, hay que obtener la query a ejecutar, crear el paginador, y obtener la primera pagina
+				HashMap databackup = (HashMap) request.getSession().getAttribute("DATABACKUP");
+
+				// obteniendo datos de la consulta
+				ConConsultaBean conBean = (ConConsultaBean) databackup.get("datosParticulares");
+				String sentencia = conBean.getSentencia().toUpperCase();
+				String tipoEnvio = form.getTipoEnvio();
+				CriterioDinamico[] criteriosDinamicos = form.getCriteriosDinamicos();
+
+				// registrando estadistica ejecucion - inicio
 				tx = userBean.getTransactionLigera();
 				tx.begin();
-			    conEjeAdm.registrarFinEjecucion(null);
-			    tx.commit();
-			} catch (Exception sqle) {
-				try {
-					tx.rollback();
-				} catch(Exception e2) {
-					;
-				}
-				
-		        String mensaje = sqle.getMessage();
-		        
-				// registrando estadistica ejecucion - fin
-		        tx = userBean.getTransactionLigera();
-		        tx.begin();
-			    conEjeAdm.registrarFinEjecucion(mensaje);
-			    tx.commit();
-			    
-			    if (mensaje.indexOf("TimedOutException")!=-1 || mensaje.indexOf("timed out")!=-1) {
-			        throw new SIGAException("messages.transaccion.timeout",sqle);
-			    } else {
-			        if (sqle.toString().indexOf("ORA-")!=-1) {
-			            throw new SIGAException("messages.general.sql", sqle, new String[] {sqle.toString()});
-			        }
-			        throw sqle;
-			    }
-			}			
-		}
-		else
-		{
-			//Si no es la primera llamada,
-			// hay que obtener la pagina del request y
-			// devolver los datos correspondientes
-			
-			//obteniendo la pagina del request
-			String pagina = (String) request.getParameter ("pagina");
-			HashMap databackup =
-				(HashMap) request.getSession ().getAttribute ("DATABACKUP");
-			ConConsultaBean conBean =
-				(ConConsultaBean) databackup.get ("datosParticulares");
+				conEjeAdm.registrarInicioEjecucion(conBean, "~~ Ejecución de consulta");
+				tx.commit();
 
-//			 RGG PRUEBA DE TIEMPOS
-		    
-			tx = userBean.getTransactionLigera();
-		    tx.begin();
-			try {
-				PaginadorCaseSensitiveBind paginador =
-					(PaginadorCaseSensitiveBind) databackup.get ("paginador");
-	//			PaginadorBind paginador =
-	//				(PaginadorBind) databackup.get ("paginador");
-				//Utilizamos este paginador para optimizar la respuesta de las
-				// consultas, se ha visto que utilizando el paginador
-				// que no es sensitivo a mayusculas, acentos, etc.
-				// el tiempo de respuesta es de más del doble
-				
-				//obteniendo la pagina y devolviendola
-				Vector datos = paginador.obtenerPagina (Integer.parseInt(pagina));
-				databackup.put ("paginador", paginador);
-				databackup.put ("datos", datos);
-				request.setAttribute ("descripcion", conBean.getDescripcion ());
-			} catch (Exception sqle) {
-		        String mensaje = sqle.getMessage();
-			    if (mensaje.indexOf("TimedOutException")!=-1 || mensaje.indexOf("timed out")!=-1) {
-			        throw new SIGAException("messages.transaccion.timeout",sqle);
-			    } else {
-			        if (sqle.toString().indexOf("ORA-")!=-1) {
-			            throw new SIGAException("messages.general.sql", sqle, new String[] {sqle.toString()});
-			        }
-			        throw sqle;
-			    }
+				// preparando la ejecucion
+				Hashtable ht = conAdm.procesarEjecutarConsulta(tipoEnvio, conBean, criteriosDinamicos, true);
+
+				// Añadimos comprobación de que el último order by no es parte de una subquery buscando por el paréntesis. 
+				// Esto falla cuando dentro del propio order by existe una subquery pero lo mantenemos por compatibilidad y 
+				//  porque ya está funcionando en todos los casos excepto en consultas expertas.
+				// Para que no se produzcan errores en la consulta experta se da la posibilidad de suministrar la query del count sin el order by 
+				// que se elimina antes de tratar las etiquetas de la consulta experta
+				if (sentencia.indexOf(ClsConstants.ETIQUETASORDERBYCLOSE) != -1) {
+					conBean.setSentencia(sentencia.substring(0,	sentencia.indexOf(ClsConstants.ETIQUETAORDERBYOPEN)
+									+ ClsConstants.ETIQUETAORDERBYOPEN.length())
+							+ sentencia.substring(sentencia.indexOf(ClsConstants.ETIQUETASORDERBYCLOSE)));
+				} else {
+					conBean.setSentencia(sentencia);
+				}
+				Hashtable htSinOrder = conAdm.procesarEjecutarConsulta(tipoEnvio, conBean, criteriosDinamicos, true);
+				String sentenciaSinOrder = (String) htSinOrder.get("sentencia");
+				conBean.setSentencia(sentencia);
+
+				sentencia = (String) ht.get("sentencia");
+				String[] cabeceras = (String[]) ht.get("cabeceras");
+				Hashtable codigosOrdenados = (Hashtable) ht.get("codigosOrdenados");
+
+				// registrando estadistica ejecucion - sentencia
+				tx = userBean.getTransactionLigera();
+				tx.begin();
+				conEjeAdm.registrarSentenciaEjecucion(sentencia.replaceAll("\\r\\n|\\r|\\n", " "));
+				tx.commit();
+
+				// Ya se ha obtenido todo dependiendo del tipo de consulta.
+				// Ahora se ejecuta la consulta y se obtiene la primera pagina
+				tx = userBean.getTransactionLigera();
+				tx.begin();
+
+				try {
+					PaginadorCaseSensitiveBind paginador = new PaginadorCaseSensitiveBind(sentencia, sentenciaSinOrder,	cabeceras, codigosOrdenados);
+					// END BNS
+
+					int totalRegistros = paginador.getNumeroTotalRegistros();
+					request.setAttribute("descripcion", conBean.getDescripcion());
+					if (totalRegistros > 0) {
+						Vector datos = paginador.obtenerPagina(1);
+						databackup.put("paginador", paginador);
+						databackup.put("datos", datos);
+						databackup.put("cabeceras", cabeceras);
+					}
+
+					try {
+						tx.commit();
+					} catch (Exception e2) {
+						;
+					}
+					// registrando estadistica ejecucion - fin
+					tx = userBean.getTransactionLigera();
+					tx.begin();
+					conEjeAdm.registrarFinEjecucion(null);
+					tx.commit();
+					
+					if (totalRegistros == 0) {
+						return "vacia";
+					}
+				} catch (Exception sqle) {
+					try {
+						tx.rollback();
+					} catch (Exception e2) {
+						;
+					}
+
+					String mensaje = sqle.getMessage();
+
+					// registrando estadistica ejecucion - fin
+					tx = userBean.getTransactionLigera();
+					tx.begin();
+					conEjeAdm.registrarFinEjecucion(mensaje);
+					tx.commit();
+
+					if (mensaje.indexOf("TimedOutException") != -1 || mensaje.indexOf("timed out") != -1) {
+						throw new SIGAException("messages.transaccion.timeout", sqle);
+					} else {
+						if (sqle.toString().indexOf("ORA-") != -1) {
+							throw new SIGAException("messages.general.sql", sqle, new String[] { sqle.toString() });
+						}
+						throw sqle;
+					}
+				}
+			} else {
+				// Si no es la primera llamada, hay que obtener la pagina del request y devolver los datos correspondientes
+
+				// obteniendo la pagina del request
+				String pagina = (String) request.getParameter("pagina");
+				HashMap databackup = (HashMap) request.getSession().getAttribute("DATABACKUP");
+				ConConsultaBean conBean = (ConConsultaBean) databackup.get("datosParticulares");
+
+				tx = userBean.getTransactionLigera();
+				tx.begin();
+				try {
+					PaginadorCaseSensitiveBind paginador = (PaginadorCaseSensitiveBind) databackup.get("paginador");
+					// PaginadorBind paginador = (PaginadorBind) databackup.get ("paginador");
+					// Utilizamos este paginador para optimizar la respuesta de las consultas, se ha visto que utilizando el paginador
+					// que no es sensitivo a mayusculas, acentos, etc. el tiempo de respuesta es de más del doble
+
+					// obteniendo la pagina y devolviendola
+					Vector datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+					databackup.put("paginador", paginador);
+					databackup.put("datos", datos);
+					request.setAttribute("descripcion", conBean.getDescripcion());
+				} catch (Exception sqle) {
+					String mensaje = sqle.getMessage();
+					if (mensaje.indexOf("TimedOutException") != -1 || mensaje.indexOf("timed out") != -1) {
+						throw new SIGAException("messages.transaccion.timeout", sqle);
+					} else {
+						if (sqle.toString().indexOf("ORA-") != -1) {
+							throw new SIGAException("messages.general.sql", sqle, new String[] { sqle.toString() });
+						}
+						throw sqle;
+					}
+
+				}
+				tx.commit();
 
 			}
-			tx.commit();
-			
-		}
-		
-		
+
 		} catch (Exception e) {
-			throwExcp ("messages.general.error", new String[] {"modulo.consultas"}, e, tx); 
+			// registrando estadistica ejecucion - fin
+			try {
+				String mensaje = e.getMessage();
+
+				tx = userBean.getTransactionLigera();
+				tx.begin();
+				conEjeAdm.registrarFinEjecucion(mensaje);
+				tx.commit();
+			} catch (Exception e2) {
+				throw new SIGAException("messages.general.sql", e2, new String[] { e2.toString() });
+			}
+
+			throw new SIGAException("messages.general.sql", e, new String[] { e.toString() });
 		}
-		
+
 		return "ejecucion";
-	} 
-	
+	}	
 
 
 	
@@ -537,19 +519,19 @@ public class RecuperarConsultasAction extends MasterAction {
 		// Controles generales
 		UsrBean userBean = this.getUserBean (request);
 		HashMap databackup = (HashMap)request.getSession().getAttribute("DATABACKUP");
-		ConConsultaAdm conAdm = new ConConsultaAdm(userBean);
 		ConEjecucionAdm conEjeAdm = new ConEjecucionAdm(userBean);
 		UserTransaction tx = null;
 		
 		try {
 			ConConsultaBean conBean = (ConConsultaBean)databackup.get("datosParticulares");
+			PaginadorCaseSensitiveBind p = (PaginadorCaseSensitiveBind)databackup.get("paginador");
 			
 			// registrando estadistica ejecucion - inicio
 			tx = userBean.getTransactionLigera();
 			tx.begin();
-		    conEjeAdm.registrarInicioEjecucion(conBean, "~~ Descarga de consulta");
+		    conEjeAdm.registrarInicioEjecucion(conBean, "~~ Descarga de consulta", p.getQueryOriginal().replaceAll("\\r\\n|\\r|\\n", " "));
 		    tx.commit();
-
+			
 			BusinessManager bm = getBusinessManager();
 			InformesService informeService = (InformesService)bm.getService(InformesService.class);
 			InformeForm informeForm = new InformeForm();
@@ -557,33 +539,20 @@ public class RecuperarConsultasAction extends MasterAction {
 			informeForm.setIdTipoInforme(AdmTipoInformeBean.TIPOINFORME_CONSULTAS);
 			List<InformeForm> informesForms = informeService.getInformesConsulta(conBean,informeForm,userBean);
 			
-			
 			if(informesForms!=null && informesForms.size()>0){
 				ArrayList<File> listaFicheros = new ArrayList<File>();
+				AdmInformeAdm informeAdm = new AdmInformeAdm(userBean);
 				
-				AdmInformeAdm adm = new AdmInformeAdm(userBean);
-				
-				PaginadorCaseSensitiveBind p = (PaginadorCaseSensitiveBind)databackup.get("paginador");
-				Vector datos = adm.selectGenericoBind(p.getQueryOriginal(), p.getCodigos());
+				Vector datos = informeAdm.selectGenericoBind(p.getQueryOriginal(), p.getCodigos());
 				String[] columnas = (String[]) databackup.get("cabeceras");
 				
-				/*if(datos!=null)
-					datos.*/
 				InformePersonalizable informePersonalizable = new InformePersonalizable();
 				File ficheroSalida = informePersonalizable.getFicheroGenerado(informesForms, datos,columnas, userBean);
 				request.setAttribute("nombreFichero", ficheroSalida.getName());
 				request.setAttribute("rutaFichero", ficheroSalida.getPath());
 				request.setAttribute("borrarFichero", "true");
 				request.setAttribute("generacionOK","OK");
-				
-				return "descarga";	
-				
-				
-				
-				
 			}else{
-			
-				PaginadorCaseSensitiveBind p = (PaginadorCaseSensitiveBind)databackup.get("paginador");
 				RowsContainer rc = new RowsContainer();
 				rc.queryBind(p.getQueryOriginal(), p.getCodigos());
 				request.setAttribute("datos",rc.getAll());
@@ -597,6 +566,11 @@ public class RecuperarConsultasAction extends MasterAction {
 		    conEjeAdm.registrarFinEjecucion(null);
 		    tx.commit();
 			
+			if(informesForms!=null && informesForms.size()>0){
+				return "descarga";	
+			}else{
+				return "export";
+			}
 		} catch (Exception e) {
 			try {
 				tx.rollback();

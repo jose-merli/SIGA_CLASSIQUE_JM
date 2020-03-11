@@ -103,14 +103,15 @@ public class ConEjecucionAdm extends MasterBeanAdministrador {
 	}
 	
 	/**
-	 * Obtiene el bean de ejecucion para crear a partir de una consulta y un mensaje
+	 * Obtiene el bean de ejecucion para crear a partir de una consulta y una sentencia.
+	 * Si la sentencia es nula, obtiene la sentencia de la consulta original.
 	 * 
 	 * @param consultaBean
-	 * @param mensaje
+	 * @param sentencia
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	protected ConEjecucionBean getBeanFromConsulta(ConConsultaBean consultaBean, String mensaje) throws ClsExceptions {
+	protected ConEjecucionBean getBeanFromConsulta(ConConsultaBean consultaBean, String sentencia) throws ClsExceptions {
 		
 		ConEjecucionBean bean = null;
 
@@ -124,8 +125,11 @@ public class ConEjecucionAdm extends MasterBeanAdministrador {
 			bean.setIdConsulta(consultaBean.getIdConsulta());
 			bean.setIdInstitucion_Consulta(consultaBean.getIdInstitucion());
 			bean.setFechaEjecucion("sysdate");
-			bean.setMensaje(mensaje);
-			bean.setSentencia(consultaBean.getSentencia());
+			if (sentencia != null && ! "".equalsIgnoreCase(sentencia)) {
+				bean.setSentencia(sentencia);
+			} else {
+				bean.setSentencia(consultaBean.getSentencia());
+			}
 		
 		} catch (Exception e) {
 			bean = null;
@@ -136,6 +140,13 @@ public class ConEjecucionAdm extends MasterBeanAdministrador {
 
 	}
 	
+	/**
+	 * Obtiene el siguiente valor para la secuencia de la PK de esta tabla
+	 * 
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
 	private Long getNewIdEjecucion() throws ClsExceptions, SIGAException 
 	{		
 		long nuevoIdEjecucion = 1;
@@ -161,9 +172,39 @@ public class ConEjecucionAdm extends MasterBeanAdministrador {
 		return new Long (nuevoIdEjecucion);
 	}
 	
+	/**
+	 * Guarda el inicio de la ejecucion de una consulta con un mensaje. No añade la sentencia.
+	 * 
+	 * @param consultaBean
+	 * @param mensaje
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
 	public void registrarInicioEjecucion(ConConsultaBean consultaBean, String mensaje) throws ClsExceptions, SIGAException {
+		registrarInicioEjecucion(consultaBean, mensaje, null);
+	}
+	/**
+	 * Guarda el inicio de la ejecucion de una consulta con un mensaje.
+	 * Solo se puede registrar una vez. 
+	 * 
+	 * @param consultaBean
+	 * @param mensaje
+	 * @param sentencia
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	public void registrarInicioEjecucion(ConConsultaBean consultaBean, String mensaje, String sentencia) throws ClsExceptions, SIGAException {
+		// comprobando que no hay un registro inicial
+		if (ejecucionBean_iniciada != null) {
+			throw new ClsExceptions ("Ya se ha iniciado ejecucion de consulta"); 
+		}
+		
+		// guardando la hora de inicio para calcular el tiempo de ejecucion
+		fechaEjecucion_iniciada = new Date();
+		
 		// guardando en BD
-		ConEjecucionBean ejecucionBean = getBeanFromConsulta(consultaBean, mensaje);
+		ConEjecucionBean ejecucionBean = getBeanFromConsulta(consultaBean, sentencia);
+		ejecucionBean.setMensaje(mensaje);
 		this.insert(ejecucionBean);
 		
 		// guardando para registro de fin posterior
@@ -172,10 +213,48 @@ public class ConEjecucionAdm extends MasterBeanAdministrador {
 		Vector v = this.selectByPK(htEjecucion);
 		if (v!= null && v.size()!=0) {
 			ejecucionBean_iniciada = (ConEjecucionBean) v.elementAt(0);
-			fechaEjecucion_iniciada = new Date();
 		}
 	}
 
+	/**
+	 * Adjunta la sentencia al registro de ejecucion insertado previamente.
+	 * Si no se creo el registro de ejecucion previamente, dara error.
+	 * 
+	 * @param sentencia
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	public void registrarSentenciaEjecucion(String sentencia) throws ClsExceptions, SIGAException {
+		// comprobando que hay un registro inicial
+		if (ejecucionBean_iniciada == null) {
+			throw new ClsExceptions ("No se ha iniciado ejecucion de consulta"); 
+		}
+		
+		// guardando cambios en registro
+		ejecucionBean_iniciada.setTiempoEjecucion(new Date().getTime() - fechaEjecucion_iniciada.getTime());
+		if (sentencia != null && ! "".equalsIgnoreCase(sentencia)) {
+			ejecucionBean_iniciada.setSentencia(sentencia);
+		}
+		this.update(ejecucionBean_iniciada);
+		
+		// guardando para registro de fin posterior
+		Hashtable htEjecucion = new Hashtable();
+		htEjecucion.put(ConEjecucionBean.C_IDEJECUCION, ejecucionBean_iniciada.getIdEjecucion());
+		Vector v = this.selectByPK(htEjecucion);
+		if (v!= null && v.size()!=0) {
+			ejecucionBean_iniciada = (ConEjecucionBean) v.elementAt(0);
+		}
+	}
+
+	/**
+	 * Registra el tiempo de ejecucion junto a un mensaje en el registro de ejecucion insertado previamente.
+	 * Si no se creo el registro de ejecucion previamente, dara error.
+	 * Si el mensaje es nulo o vacio, no se anyade el mensaje.
+	 * 
+	 * @param mensaje
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
 	public void registrarFinEjecucion(String mensaje) throws ClsExceptions, SIGAException {
 		// comprobando que hay un registro inicial
 		if (ejecucionBean_iniciada == null) {
