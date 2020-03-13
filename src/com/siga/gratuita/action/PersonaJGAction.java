@@ -3339,7 +3339,10 @@ public class PersonaJGAction extends MasterAction {
 					" where upper(lpad(regexp_replace(nif, '[^[:alnum:]]', ''), 20, '0')) = " +
 					"       upper(lpad(regexp_replace(:1, '[^[:alnum:]]', ''), 20, '0')) " +
 					"   and idinstitucion=:2";
-				Vector resultadoNIF = admBean.selectBind(where,codigos);
+				//Vector resultadoNIF = admBean.selectBind(where,codigos);
+				String[] orden = {ScsPersonaJGBean.C_FECHAMODIFICACION+" DESC"};
+				Vector resultadoNIF = admBean.selectGenericaBindSorted(where,codigos,orden);
+				
 				
 				// RGG 18-04-2006 actualizo el databackup para que no me de error el update
 				if (resultadoNIF!=null && resultadoNIF.size()>0) {
@@ -3491,7 +3494,11 @@ public class PersonaJGAction extends MasterAction {
 			if(nif!=null && !nif.equals("")){			
 				UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
 		     	ScsPersonaJGAdm admBean =  new ScsPersonaJGAdm(this.getUserBean(request));
-
+				
+				//Quitamos caracteres no alfanumericos, 
+				// anhadimos 0 por delante hasta completar los 20 caracteres maximo
+				// y lo dejamos todo en mayusculas
+				// La configuracion del sistema tambien ignora acentos y demas en las letras
 				Hashtable codigos = new Hashtable();
 				codigos.put(new Integer(1),nif);
 				codigos.put(new Integer(2),user.getLocation());
@@ -3499,7 +3506,9 @@ public class PersonaJGAction extends MasterAction {
 					" where upper(lpad(regexp_replace(nif, '[^[:alnum:]]', ''), 20, '0')) = " +
 					"       upper(lpad(regexp_replace(:1, '[^[:alnum:]]', ''), 20, '0')) " +
 					"   and idinstitucion=:2";
-				Vector resultadoNIF = admBean.selectBind(where,codigos);
+				//Vector resultadoNIF = admBean.selectBind(where,codigos);
+				String[] orden = {ScsPersonaJGBean.C_FECHAMODIFICACION+" DESC"};
+				Vector resultadoNIF = admBean.selectGenericaBindSorted(where,codigos,orden);
 				
 				if (resultadoNIF!=null && resultadoNIF.size()>0) {
 					ScsPersonaJGBean perBean = (ScsPersonaJGBean) resultadoNIF.get(0);
