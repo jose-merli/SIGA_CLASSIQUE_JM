@@ -104,8 +104,7 @@ public class UtilidadesFicheros {
 				for (Documento doc : list) {
 					File baos = doc.getDocumento();
 					
-					
-					if (baos.exists()) {
+					if (baos.exists() && ! baos.getAbsolutePath().equalsIgnoreCase(ficZip.getAbsolutePath())) {
 						ZipEntry ze = new ZipEntry(doc.getDescripcion());
 						outTemp.putNextEntry(ze);
 						FileInputStream fis=new FileInputStream(baos);

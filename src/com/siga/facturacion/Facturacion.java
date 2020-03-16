@@ -607,7 +607,7 @@ public class Facturacion {
 
 				    File auxFile = (File)ficherosPDF.get(i).getFichero();
 				    ClsLogging.writeFileLog("DESCARGA DE FACTURAS: fichero numero "+i+" longitud="+auxFile.length(),10);
-					if (auxFile.exists()) {
+					if (auxFile.exists() && ! auxFile.getAbsolutePath().equalsIgnoreCase(ficZip.getAbsolutePath())) {
 						ZipEntry ze = null;
 						String[] nombreFicherosarrays;
 						
