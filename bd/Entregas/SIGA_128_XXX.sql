@@ -700,3 +700,24 @@ Cambio en CEN_COLEGIADO_AI
 Cambio en PKG_SIGA_REGULARIZACION_SJCS
 
 -- Se entrega como adjunto a la ultima entrega para que quede registrado
+
+-- SIGA_128_013
+
+prompt 01_quitando_logs.log
+Select * From Gen_Properties pro Where pro.Parametro Like '%log4j%' And pro.parametro In ('log4j.category.com.pra', 'log4j.category.org.apache');
+Select * From Gen_Properties pro Where pro.Parametro Like '%log4j%' And valor Like '%DEBUG%';
+Delete From Gen_Properties pro Where pro.Parametro In ('log4j.category.com.pra');
+Update Gen_Properties pro Set pro.Valor = 'DEBUG' Where pro.Parametro In ('log4j.category.org.apache');
+Update Gen_Properties pro Set pro.Valor = Replace (pro.valor, 'DEBUG', 'ERROR') Where pro.Parametro Like '%log4j%' And valor Like '%DEBUG%';
+
+
+F_SIGA_GETRECURSO_ETIQUETA
+
+
+prompt 21_desactivacion_logs_struts_nanc.log
+Select * From Gen_Properties pro Where pro.Parametro Like '%PRA%';
+Select * From Gen_Properties pro Where pro.Parametro Like '%STRUTS%';
+Delete From Gen_Properties pro Where pro.Parametro Like '%PRA%';
+Delete From Gen_Properties pro Where pro.Parametro Like '%STRUTS%';
+
+-- Ejecutado ya todo en Integracion y PREproduccion
