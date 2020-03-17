@@ -720,4 +720,11 @@ Select * From Gen_Properties pro Where pro.Parametro Like '%STRUTS%';
 Delete From Gen_Properties pro Where pro.Parametro Like '%PRA%';
 Delete From Gen_Properties pro Where pro.Parametro Like '%STRUTS%';
 
+
+prompt 22_desactivacion_logs_struts_nanc.log
+Select * from gen_properties where parametro = 'log4j.category.com.pra';
+Select * from gen_properties where parametro = 'log4j.category.org.apache';
+delete from gen_properties where parametro = 'log4j.category.com.pra';
+delete from gen_properties where parametro = 'log4j.category.org.apache';
+
 -- Ejecutado ya todo en Integracion y PREproduccion
