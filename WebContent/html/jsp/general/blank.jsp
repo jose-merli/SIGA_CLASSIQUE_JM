@@ -21,13 +21,11 @@
 	    
 	    <link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
 	
+
 	
-	<!-- Incluido jquery en siga.js -->
-	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
 	</head>
 
-<!--	<body class ='tablaCentralCampos' background="/SIGA/html/imagenes/fondo2.gif"> -->
 	<body class ='tablaCentralCampos' >
 	</body>
 </html>

@@ -38,11 +38,6 @@
 		elementoSel.add(vector[j].trim());
 	}
 
-	//EN OBSERVACION
-	//ArrayList elementoSel = new ArrayList();
-	//cambio ArrayList (elementoSel multiple)		
-	//elementoSel.add(request.getParameter("elementoSel"));		
-	//int elementoSel = Integer.parseInt(request.getParameter("elementoSel"));
 
 	String seleccionMultiple = request.getParameter("seleccionMultiple");
 	String accion = request.getParameter("accion");
@@ -126,11 +121,7 @@
 	
 
 	String nombreCombo = nombre+"Sel";
-	//accion += ";parent.document.getElementById('" + nombre + "').value = " + nombreCombo + ".value;";
 
-	
-	
-	// RGG prueba
 	String primero="";
 	String segundo="";
 	int ihijo=accion.toLowerCase().lastIndexOf("hijo:");
@@ -149,14 +140,6 @@
 	}
 
 	
-	
-	// RGG 02/02/2006 cambio para utilizar combos seleccion multiple en un segundo nivel de combos
-	//accion += ";actualizaValoresSel('" + nombre + "',document.getElementById('"+nombreCombo+"'));";
-	
-	//;parent.document.getElementById('" + nombre + "').value = " + nombreCombo + ".value;
-
-	//accion += ";parent.document.getElementById('provincia').value = '01';";
-	
 	String obligatorioSinTextoSeleccionar = request.getParameter("obligatorioSinTextoSeleccionar");
 %>
 
@@ -170,7 +153,7 @@
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
 
 		<script>
 		
@@ -212,47 +195,7 @@ function actualizaValoresSel(nombre, sele) {
 	}
 }
 
-/*
-function actualizaValoresSel(nombre, valores) {
 
-
-if (!valores[0]) {
-	alert("v="+valores);
-}
-
-	if (parent.document) {
-		var formu = parent.document.forms[0];
-		var elementos = formu.elements;
-		var i=0;
-		var j=0;
-		for (i=0;i<elementos.length;i++) 
-		{
-			if (elementos[i].name==nombre) {
-				if (valores[0]) {
-					for (j=0;j<valores.length;j++) 
-					{
-						var valor = valores[j];
-						if (j==0) {
-							elementos[i].value=valor;
-							alert("dado valor ... "+elementos[i].name + "="+elementos[i].value);
-						} else  {
-							var el = document.createElement('input');
-							el.setAttribute('type', 'hidden');
-							el.setAttribute('name', nombre);
-							el.setAttribute('value', valor);
-							formu.appendChild(el);
-							alert("creado "+el.name + "=" + el.value);
-						}
-					}
-				} else {
-					elementos[i].value=valores;
-				}
-			}
-		}
-	}
-
-}
-*/
 		</script>
 	</head>
 
