@@ -1093,7 +1093,9 @@ public class PersonaJGAction extends MasterAction {
 				" where upper(lpad(regexp_replace(nif, '[^[:alnum:]]', ''), 20, '0')) = " +
 				"       upper(lpad(regexp_replace(:1, '[^[:alnum:]]', ''), 20, '0')) " +
 				"   and idinstitucion=:2";
-			Vector resultadoNIF = admBean.selectBind(where,codigos);
+			String[] orden = {ScsPersonaJGBean.C_FECHAMODIFICACION+" DESC"};
+			Vector resultadoNIF = admBean.selectGenericaBindSorted(where,codigos,orden);
+			//Vector resultadoNIF = admBean.selectBind(where,codigos);
 			
 			// RGG 18-04-2006 actualizo el databackup para que no me de error el update
 			if (resultadoNIF!=null && resultadoNIF.size()>0) {
