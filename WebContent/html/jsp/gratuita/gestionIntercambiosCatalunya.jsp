@@ -174,13 +174,16 @@
 	}
 	function accionInsercion(dialogo){
 		
+		alert("<siga:Idioma key='messages.enProceso'/>");
+		closeDialog(dialogo);
+		
 		error = '';
 		if(dialogo=='dialogoInsercion'){
 			
 			
 			
 			if(document.forms['FormularioGestion'].theFile.value==''){
-				error += "<siga:Idioma key='errors.required' arg0='administracion.confInterfaz.fichero'/>"+ '\n';
+				error += ""+ '\n';
 				
 			}
 			
@@ -211,7 +214,7 @@
 			fin();
 			return false;
 		}
-		sub();
+		
 	    document.forms['FormularioGestion'].submit();
 	}
 
