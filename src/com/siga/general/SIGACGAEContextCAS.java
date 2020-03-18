@@ -109,74 +109,75 @@ public class SIGACGAEContextCAS {
 		String token = request.getHeader("Authorization");
 		UsrBean bean=new UsrBean();
 		if(token!=null && token.equalsIgnoreCase("")){
-			bean = gerUserFromJWTToken(token);
-		}
-		
-		
+			try {
 
-		try {
-			
-			BusinessManager bm = BusinessManager.getInstance();
-			CenInstitucionService cenInstitucionService = (CenInstitucionService)bm.getService(CenInstitucionService.class);
-			CenInstitucion cenInstitucion = new CenInstitucion();
-			cenInstitucion.setIdinstitucion(Short.valueOf(bean.getLocation()));
-			cenInstitucion = cenInstitucionService.get(cenInstitucion);
-			Short idConsejo = AppConstants.IDINSTITUCION_2000;
-			if(cenInstitucion.getCenInstIdinstitucion()!=null)
-				idConsejo = cenInstitucion.getCenInstIdinstitucion();
-			bean.setIdConsejo(idConsejo.intValue());
-			CenInstitucion comision =  cenInstitucionService.getComision(cenInstitucion);
-			bean.setIdInstitucionComision(comision.getIdinstitucion());
-			if(bean.isComision()){
-				List<CenInstitucion> instituciones =  cenInstitucionService.getInstitucionesComision(comision);
-				if( instituciones!=null && instituciones.size()>0 ){
-					Short[] institucionesComision  = new Short[instituciones.size()];
-					for (int i = 0; i < instituciones.size(); i++) {
-						institucionesComision[i]= instituciones.get(i).getIdinstitucion();
+				bean = gerUserFromJWTToken(token);
+		
+				
+				BusinessManager bm = BusinessManager.getInstance();
+				CenInstitucionService cenInstitucionService = (CenInstitucionService)bm.getService(CenInstitucionService.class);
+				CenInstitucion cenInstitucion = new CenInstitucion();
+				cenInstitucion.setIdinstitucion(Short.valueOf(bean.getLocation()));
+				cenInstitucion = cenInstitucionService.get(cenInstitucion);
+				Short idConsejo = AppConstants.IDINSTITUCION_2000;
+				if(cenInstitucion.getCenInstIdinstitucion()!=null)
+					idConsejo = cenInstitucion.getCenInstIdinstitucion();
+				bean.setIdConsejo(idConsejo.intValue());
+				CenInstitucion comision =  cenInstitucionService.getComision(cenInstitucion);
+				bean.setIdInstitucionComision(comision.getIdinstitucion());
+				if(bean.isComision()){
+					List<CenInstitucion> instituciones =  cenInstitucionService.getInstitucionesComision(comision);
+					if( instituciones!=null && instituciones.size()>0 ){
+						Short[] institucionesComision  = new Short[instituciones.size()];
+						for (int i = 0; i < instituciones.size(); i++) {
+							institucionesComision[i]= instituciones.get(i).getIdinstitucion();
+						}
+						bean.setInstitucionesComision(institucionesComision);
+					}else{
+						bean.setInstitucionesComision(new Short[]{Short.parseShort(bean.getLocation())});
 					}
-					bean.setInstitucionesComision(institucionesComision);
-				}else{
-					bean.setInstitucionesComision(new Short[]{Short.parseShort(bean.getLocation())});
+					bean.setLocation(""+comision.getIdinstitucion());
 				}
-				bean.setLocation(""+comision.getIdinstitucion());
+	
+				
+				// insertando registro de acceso en la tabla de estadisticas
+				String profile;
+				EstUserRegistryAdm userRegistryAdm = new EstUserRegistryAdm(bean);
+				if (bean.getProfile() != null) {
+					String perfiles = Arrays.toString(bean.getProfile());
+					profile = perfiles.substring(1, perfiles.length() - 1);
+				} else {
+					profile = "-";
+				}			
+				if(!userRegistryAdm.insertarRegistroUser(profile)){
+					ClsLogging.writeFileLog("***** ERROR AL REGISTRAR UN USUARIO EN EL EST_USER_REGISTRY *****",1);
+				}
+				
+				HttpSession ses= request.getSession();
+				if(ses!=null && ses.getAttribute(PARAMETRO.LONGITUD_CODEJG.toString())==null){
+					GenParametrosService genParametrosService = (GenParametrosService) bm.getService(GenParametrosService.class);
+					GenParametros genParametros = new GenParametros();
+					genParametros.setIdinstitucion(cenInstitucion.getIdinstitucion());
+					genParametros.setModulo(MODULO.SCS.toString());
+					genParametros.setParametro(PARAMETRO.LONGITUD_CODEJG.toString());
+					genParametros =  genParametrosService.getGenParametroInstitucionORvalor0(genParametros);
+					if (genParametros != null && genParametros.getValor() != null) {
+						ses.setAttribute(PARAMETRO.LONGITUD_CODEJG.toString(), genParametros.getValor());
+						ClsLogging.writeFileLog("Tamaño EJGs:"+genParametros.getValor(),1);
+					} 
+				}
+				
+				// Configuramos los estilos
+				initStyles(bean.getLocation(), ses);
 			}
-
 			
-			// insertando registro de acceso en la tabla de estadisticas
-			String profile;
-			EstUserRegistryAdm userRegistryAdm = new EstUserRegistryAdm(bean);
-			if (bean.getProfile() != null) {
-				String perfiles = Arrays.toString(bean.getProfile());
-				profile = perfiles.substring(1, perfiles.length() - 1);
-			} else {
-				profile = "-";
-			}			
-			if(!userRegistryAdm.insertarRegistroUser(profile)){
-				ClsLogging.writeFileLog("***** ERROR AL REGISTRAR UN USUARIO EN EL EST_USER_REGISTRY *****",1);
+			catch (Exception e) {
+				
+				if (e instanceof SIGAException) throw (SIGAException)e;
+				throw new SIGAException("messages.general.errorAutenticacion",e);
 			}
-			
-			HttpSession ses= request.getSession();
-			if(ses!=null && ses.getAttribute(PARAMETRO.LONGITUD_CODEJG.toString())==null){
-				GenParametrosService genParametrosService = (GenParametrosService) bm.getService(GenParametrosService.class);
-				GenParametros genParametros = new GenParametros();
-				genParametros.setIdinstitucion(cenInstitucion.getIdinstitucion());
-				genParametros.setModulo(MODULO.SCS.toString());
-				genParametros.setParametro(PARAMETRO.LONGITUD_CODEJG.toString());
-				genParametros =  genParametrosService.getGenParametroInstitucionORvalor0(genParametros);
-				if (genParametros != null && genParametros.getValor() != null) {
-					ses.setAttribute(PARAMETRO.LONGITUD_CODEJG.toString(), genParametros.getValor());
-					ClsLogging.writeFileLog("Tamaño EJGs:"+genParametros.getValor(),1);
-				} 
-			}
-			
-			// Configuramos los estilos
-			initStyles(bean.getLocation(), ses);
-			
-		}
-		catch (Exception e) {
-			
-			if (e instanceof SIGAException) throw (SIGAException)e;
-			throw new SIGAException("messages.general.errorAutenticacion",e);
+		}else{
+			throw new SIGAException("TOKEN NO ENCONTRADO");
 		}
 		
 		return bean;
