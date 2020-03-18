@@ -29,19 +29,18 @@ public class SIGAAuthAction extends Action
 
 		HttpSession ses= request.getSession();
 
-		SIGACGAEContext cont=null;
-		cont=new SIGACGAEContext();
+		SIGACGAEContextCAS cont= new SIGACGAEContextCAS();
 		UsrBean bean=null;
-
-		try
-		{
-			bean=cont.rellenaContexto(request, getServlet());
+		
+		try{
+			bean = cont.rellenaContexto(request, getServlet());
 		} catch (SIGAException e)
 		{
-			ClsLogging.writeFileLogError("Acceso denegado: Error en rellenaContexto: "+e.getLiteral("1"), e, 3);
+			ClsLogging.writeFileLogError("Acceso denegado: Error al autenticar con CAS: "+e.getLiteral("1"), e, 3);
 			request.setAttribute("mensaje",e.getLiteral());
 			return mapping.findForward("accesodenegado");
 		}
+
 
 		if (bean==null)
 		{
@@ -62,31 +61,22 @@ public class SIGAAuthAction extends Action
 			ClsLogging.writeFileLogError("Error al obtener la IP "+ e.toString(), e, 3);
 		}
 		
+	    result="topMenu";
+		ses.setAttribute(SIGAConstants.MENU_POSITION_REF, SIGAConstants.MENU_TOP);
 
-/*		if(menuPosition.equals("1"))
-		{
-			result="leftMenu";
-			ses.setAttribute(SIGAConstants.MENU_POSITION_REF, SIGAConstants.MENU_LEFT);
-		}
-
-		else
-		{  */
-		    result="topMenu";
-			ses.setAttribute(SIGAConstants.MENU_POSITION_REF, SIGAConstants.MENU_TOP);
-//		}
-			String idsession = (String)ses.getId();
-			long fcses = ses.getCreationTime();
-	        if (idsession != null && idsession.length() > 0)
-	        {
-	        	SimpleDateFormat fm = new SimpleDateFormat("ddMMyyyyhhmmssSSS");
-	        	String fecha = fm.format(new Date(fcses));
-	        	String idSesion = idsession.substring(0, 5)+fecha;
-	            // Put the principal's name into the message diagnostic
-	            // context. May be shown using %X{username} in the layout
-	            // pattern.
-	        	MDC.put("idSesion", idSesion);
-	            
-	        }
+		String idsession = (String)ses.getId();
+		long fcses = ses.getCreationTime();
+        if (idsession != null && idsession.length() > 0)
+        {
+        	SimpleDateFormat fm = new SimpleDateFormat("ddMMyyyyhhmmssSSS");
+        	String fecha = fm.format(new Date(fcses));
+        	String idSesion = idsession.substring(0, 5)+fecha;
+            // Put the principal's name into the message diagnostic
+            // context. May be shown using %X{username} in the layout
+            // pattern.
+        	MDC.put("idSesion", idSesion);
+            
+        }
 	        
 	        getVersionActualApp(request);
 		return mapping.findForward(result);

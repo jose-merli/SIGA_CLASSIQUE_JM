@@ -43,8 +43,8 @@
 		<filter-name>ResponseOverrideFilter</filter-name>
 		<url-pattern>*.jsp</url-pattern>
 	</filter-mapping>
-  
-	<filter-mapping>
+  <!-- 
+  	<filter-mapping>
 		<filter-name>HttpsFilter</filter-name>
 		<url-pattern>/login.do</url-pattern>
 	</filter-mapping>
@@ -95,7 +95,7 @@
 		<url-pattern>/infoDirectorio.do</url-pattern>
 	</filter-mapping>
 
-<!-- COMENTAR LOS FILTROS SIGUIENTES EN LOCAL -->
+
 	<filter-mapping>
 		<filter-name>HttpsFilter</filter-name>
 		<url-pattern>/developmentLogin.do</url-pattern>
