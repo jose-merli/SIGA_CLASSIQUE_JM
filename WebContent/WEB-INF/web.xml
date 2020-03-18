@@ -43,76 +43,7 @@
 		<filter-name>ResponseOverrideFilter</filter-name>
 		<url-pattern>*.jsp</url-pattern>
 	</filter-mapping>
-  <!-- 
-  	<filter-mapping>
-		<filter-name>HttpsFilter</filter-name>
-		<url-pattern>/login.do</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>AccesoCertificadoFilter</filter-name>
-		<url-pattern>/login.do</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>CtrlCRLFilter</filter-name>
-		<url-pattern>/login.do</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>DatosSesionFilter</filter-name>
-		<url-pattern>/login.do</url-pattern>
-	</filter-mapping>
  
-	<filter-mapping>
-		<filter-name>HttpsFilter</filter-name>
-		<url-pattern>/itcgaeinit.do</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>AccesoCertificadoFilter</filter-name>
-		<url-pattern>/itcgaeinit.do</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>CtrlCRLFilter</filter-name>
-		<url-pattern>/itcgaeinit.do</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>DatosSesionFilter</filter-name>
-		<url-pattern>/itcgaeinit.do</url-pattern>
-	</filter-mapping>
-	
-	<filter-mapping>
-		<filter-name>HttpsFilter</filter-name>
-		<url-pattern>/infoDirectorio.do</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>AccesoCertificadoFilter</filter-name>
-		<url-pattern>/infoDirectorio.do</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>CtrlCRLFilter</filter-name>
-		<url-pattern>/infoDirectorio.do</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>DatosSesionFilter</filter-name>
-		<url-pattern>/infoDirectorio.do</url-pattern>
-	</filter-mapping>
-
-
-	<filter-mapping>
-		<filter-name>HttpsFilter</filter-name>
-		<url-pattern>/developmentLogin.do</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>AccesoCertificadoFilter</filter-name>
-		<url-pattern>/developmentLogin.do</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>CtrlCRLFilter</filter-name>
-		<url-pattern>/developmentLogin.do</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>DatosSesionFilter</filter-name>
-		<url-pattern>/developmentLogin.do</url-pattern>
-	</filter-mapping>
-<!-- -->
 
 	<!--************ Seguridad de Certificados FIN ************-->
 
