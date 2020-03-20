@@ -190,44 +190,30 @@ public class SIGACGAEContextCAS {
 	public UsrBean gerUserFromJWTToken(String token) throws SIGAException {
 		UsrBean user = new UsrBean();
 		
-		//String dni = Jwts.parser().parseClaimsJws(token).getBody().getSubject();
 		String dni = Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody()
 				.getSubject();
 		String institucion = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token).getBody().get("institucion");
 		String grupo = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token).getBody().get("grupo");
 		HashMap<String, String> permisos = getPermisosFromJWTToken(token);
-		List<String> perfiles = (List<String>) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token).getBody().get("perfiles");
-		String[] profiles = (String[]) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token).getBody().get("perfiles");
-		String letrado = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token).getBody().get("grupo");
+		String[] perfiles = getPerfilesFromToken(token);
+		String letrado = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token).getBody().get("letrado");
 		
-		ClsLogging.writeFileLog("LECTURA DEL TOKEN >>>");
-		ClsLogging.writeFileLog("DNI		 - " + dni);
-		ClsLogging.writeFileLog("INSTITUCION - " + institucion);
-		ClsLogging.writeFileLog("GRUPO		 - " + grupo);
-		ClsLogging.writeFileLog("PERFILES	 - " + perfiles);
-		ClsLogging.writeFileLog("LETRADO	 - " + letrado);
-		ClsLogging.writeFileLog("<<< LECTURA DEL TOKEN");
+		ClsLogging.writeFileLog(">>> LECTURA DEL TOKEN >>>");
+		ClsLogging.writeFileLog(" DNI         - " + dni);
+		ClsLogging.writeFileLog(" INSTITUCION - " + institucion);
+		ClsLogging.writeFileLog(" GRUPO       - " + grupo);
+		ClsLogging.writeFileLog(" PERFILES    - " + showPerfiles(perfiles));
+		ClsLogging.writeFileLog(" LETRADO     - " + letrado);
+		ClsLogging.writeFileLog("<<< LECTURA DEL TOKEN <<<");
 
 		user.setLocation(institucion);
 		try {
 			
-			/* Rellenamos el admUserBean con los siguientes datos
-				IDUSUARIO
-				DESCRIPCION
-				IDLENGUAJE
-				IDINSTITUCION
-				NIF
-				ACTIVO
-				FECHAALTA
-				IDSGRUPOS
-				IDSPERFILES
-				CODIGOEXT
-				FECHA_REGISTRO
-			*/
+			// Rellenamos el admUserBean con los siguientes datos
 			AdmUsuariosBean admUserBean = getAdmUserBean(dni,user);
 
 			// Añadimos al usuario sus perfiles
-			user.setProfile(profiles);
+			user.setProfile(perfiles);
 			
 			// Le ponemos el idpersona correspondiente si lo tiene y si no se quedara -1
 			long idPersona=setPersona(admUserBean.getNIF().toUpperCase(),user);
@@ -261,6 +247,23 @@ public class SIGACGAEContextCAS {
 		}
 
 		return retorno;
+	}
+	
+	private String showPerfiles(String[] perfiles){
+		String perfs = "";
+		for(String s : perfiles)
+            perfs+=s+" ";
+		return perfs;
+	}
+	
+	private String[] getPerfilesFromToken(String token){
+		List<String> perfiles = (List<String>) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token).getBody().get("perfiles");
+		
+		String[] lista = new String[perfiles.size()];
+		lista = perfiles.toArray(lista);
+        
+        return lista;
+		
 	}
 
 
