@@ -106,9 +106,10 @@ public class SIGACGAEContextCAS {
 	
 
 		// Recogemos el token de la sesion
-		String token = request.getHeader("Authorization");
+		String token =(String)request.getParameter("token");
+
 		UsrBean bean=new UsrBean();
-		if(token!=null && token.equalsIgnoreCase("")){
+		if(token!=null && !token.equalsIgnoreCase("")){
 			try {
 
 				bean = gerUserFromJWTToken(token);
