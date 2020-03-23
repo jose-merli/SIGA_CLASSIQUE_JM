@@ -191,24 +191,23 @@ public class SIGACGAEContextCAS {
 	public UsrBean gerUserFromJWTToken(String token) throws SIGAException {
 		UsrBean user = new UsrBean();
 		
-		String dni = Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody()
-				.getSubject();
-		String institucion = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("institucion");
-		String grupo = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("grupo");
-		HashMap<String, String> permisos = getPermisosFromJWTToken(token);
-		String[] perfiles = getPerfilesFromToken(token);
-		String letrado = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("letrado");
-		
-		ClsLogging.writeFileLog(" >>> LECTURA DEL TOKEN >>>");
-		ClsLogging.writeFileLog(" DNI         - " + dni);
-		ClsLogging.writeFileLog(" INSTITUCION - " + institucion);
-		ClsLogging.writeFileLog(" GRUPO       - " + grupo);
-		ClsLogging.writeFileLog(" PERFILES    - " + showPerfiles(perfiles));
-		ClsLogging.writeFileLog(" LETRADO     - " + letrado);
-		ClsLogging.writeFileLog(" <<< LECTURA DEL TOKEN <<<");
-
-		user.setLocation(institucion);
 		try {
+		
+			ClsLogging.writeFileLog(" >>> LECTURA DEL TOKEN >>>");
+			String dni = Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().getSubject();
+			ClsLogging.writeFileLog(" DNI         - " + dni);
+			String institucion = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("institucion");
+			ClsLogging.writeFileLog(" INSTITUCION - " + institucion);
+			String grupo = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("grupo");
+			ClsLogging.writeFileLog(" GRUPO       - " + grupo);
+			HashMap<String, String> permisos = getPermisosFromJWTToken(token);
+			String[] perfiles = getPerfilesFromToken(token);
+			ClsLogging.writeFileLog(" PERFILES    - " + showPerfiles(perfiles));
+			String letrado = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("letrado");
+			ClsLogging.writeFileLog(" LETRADO     - " + letrado);			
+			ClsLogging.writeFileLog(" <<< LECTURA DEL TOKEN <<<");
+	
+			user.setLocation(institucion);
 			
 			// Rellenamos el admUserBean con los siguientes datos
 			AdmUsuariosBean admUserBean = getAdmUserBean(dni,user);
