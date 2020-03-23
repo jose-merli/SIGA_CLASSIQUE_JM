@@ -669,6 +669,7 @@
     <path id="EAR Libraries.libraryclasspath"/>
     <path id="Web App Libraries.libraryclasspath">
         <pathelement location="../../../SIGAServices"/>
+    	<pathelement location="WebContent/WEB-INF/lib/jjwt-0.9.1.jar"/>
     	<pathelement location="WebContent/WEB-INF/lib/InterfazSistemaInteroperabilidad-test-client.jar"/>
     	<pathelement location="WebContent/WEB-INF/lib/ServiciosJGExpediente_v2.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/Aspose.Words.14.2.jdk16.jar"/>
@@ -763,7 +764,6 @@
         <pathelement location="WebContent/WEB-INF/lib/xmlbeans-2.5.0.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/xmlsec-1.2.97.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/xstream-1.0.2.jar"/>
-    	<pathelement location="WebContent/WEB-INF/lib/jjwt-0.6.0.jar"/>
         <pathelement location="WebContent/WEB-INF/properties"/>
         <pathelement location="WebContent/html"/>
     </path>
