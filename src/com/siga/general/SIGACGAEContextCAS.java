@@ -86,7 +86,7 @@ public class SIGACGAEContextCAS {
 	@SuppressWarnings("unchecked")
 	public HashMap<String, String> getPermisosFromJWTToken(String token) {
 
-		return (HashMap<String, String>) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token).getBody().get("permisos");
+		return (HashMap<String, String>) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("permisos");
 	}
 	
 	public UsrBean rellenaContexto(HttpServletRequest request, ActionServlet config ) throws SIGAException
@@ -193,11 +193,11 @@ public class SIGACGAEContextCAS {
 		
 		String dni = Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody()
 				.getSubject();
-		String institucion = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token).getBody().get("institucion");
-		String grupo = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token).getBody().get("grupo");
+		String institucion = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("institucion");
+		String grupo = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("grupo");
 		HashMap<String, String> permisos = getPermisosFromJWTToken(token);
 		String[] perfiles = getPerfilesFromToken(token);
-		String letrado = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token).getBody().get("letrado");
+		String letrado = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("letrado");
 		
 		ClsLogging.writeFileLog(" >>> LECTURA DEL TOKEN >>>");
 		ClsLogging.writeFileLog(" DNI         - " + dni);
@@ -258,7 +258,7 @@ public class SIGACGAEContextCAS {
 	}
 	
 	private String[] getPerfilesFromToken(String token){
-		List<String> perfiles = (List<String>) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token).getBody().get("perfiles");
+		List<String> perfiles = (List<String>) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("perfiles");
 		
 		String[] lista = new String[perfiles.size()];
 		lista = perfiles.toArray(lista);
