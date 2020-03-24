@@ -1,10 +1,7 @@
 package com.siga.general;
 
-//import java.net.MalformedURLException;
-//import java.net.URL;
-//import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -13,9 +10,6 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.transaction.UserTransaction;
-import javax.xml.bind.DatatypeConverter;
-
 import org.apache.struts.action.ActionServlet;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.MODULO;
@@ -30,28 +24,15 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
-import com.atos.utils.GstDate;
-import com.atos.utils.Row;
-import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
-import com.pra.core.filters.security.helper.UsuariosTO;
+import com.bea.httppubsub.json.JSONObject;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
 import com.siga.administracion.SIGAGestorInterfaz;
-import com.siga.beans.AdmCertificadosAdm;
-import com.siga.beans.AdmCertificadosBean;
 import com.siga.beans.AdmLenguajesAdm;
-import com.siga.beans.AdmPerfilRolAdm;
-import com.siga.beans.AdmPerfilRolBean;
-import com.siga.beans.AdmRolAdm;
-import com.siga.beans.AdmRolBean;
-import com.siga.beans.AdmUsuarioEfectivoAdm;
-import com.siga.beans.AdmUsuarioEfectivoBean;
 import com.siga.beans.AdmUsuariosAdm;
 import com.siga.beans.AdmUsuariosBean;
-import com.siga.beans.AdmUsuariosEfectivosPerfilAdm;
-import com.siga.beans.AdmUsuariosEfectivosPerfilBean;
 import com.siga.beans.CenClienteAdm;
 import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenInstitucionAdm;
@@ -64,7 +45,6 @@ import com.siga.beans.EstUserRegistryAdm;
 import com.siga.beans.GenParametrosAdm;
 
 import es.satec.businessManager.BusinessManager;
-import io.jsonwebtoken.Jwts;
 
 
 /**
@@ -81,13 +61,13 @@ public class SIGACGAEContextCAS {
 	private static final String TOKEN_PREFIX = "Bearer ";
 
 	
-	
+	/*
 	
 	@SuppressWarnings("unchecked")
 	public HashMap<String, String> getPermisosFromJWTToken(String token) {
 
 		return (HashMap<String, String>) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("permisos");
-	}
+	}*/
 	
 	public UsrBean rellenaContexto(HttpServletRequest request, ActionServlet config ) throws SIGAException
 	{
@@ -187,23 +167,50 @@ public class SIGACGAEContextCAS {
 		return bean;
 	}
 
+	
+	
+	private static String decode(String encodedString) {
+	    return new String(Base64.getUrlDecoder().decode(encodedString));
+	}
+	
+	private String getBodyJWT(String token) throws SIGAException{
+		UsrBean user = new UsrBean();
+		String[] parts = token.split("\\."); 
+		String json= decode(parts[1]);
+		ClsLogging.writeFileLog(" token decodificado - " + json);
+		
+		return json;
+	}
+	
+	private String[] getPerfiles(String perfiles){
+		return perfiles.replaceAll("[^a-zA-Z0-9 ,]", "").split(",");
+	}
 
 	public UsrBean gerUserFromJWTToken(String token) throws SIGAException {
 		UsrBean user = new UsrBean();
 		
 		try {
-		
 			ClsLogging.writeFileLog(" >>> LECTURA DEL TOKEN >>>");
-			String dni = Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().getSubject();
+			String body = getBodyJWT(token);
+			JSONObject payload = new JSONObject(body);
+			String dni = payload.getString("sub"); 
+			String institucion = payload.getString("institucion");
+			String grupo = payload.getString("grupo");
+			String[] perfiles = getPerfiles(payload.getString("perfiles"));
+			String letrado = payload.getString("letrado");
+			
+			// Usando JJWT
+			// String dni = Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().getSubject();
+			// String institucion = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("institucion");
+			// String grupo = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("grupo");
+			// HashMap<String, String> permisos = getPermisosFromJWTToken(token);
+			// String[] perfiles = getPerfilesFromToken(token);
+			// String letrado = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("letrado");
+			
 			ClsLogging.writeFileLog(" DNI         - " + dni);
-			String institucion = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("institucion");
 			ClsLogging.writeFileLog(" INSTITUCION - " + institucion);
-			String grupo = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("grupo");
 			ClsLogging.writeFileLog(" GRUPO       - " + grupo);
-			HashMap<String, String> permisos = getPermisosFromJWTToken(token);
-			String[] perfiles = getPerfilesFromToken(token);
 			ClsLogging.writeFileLog(" PERFILES    - " + showPerfiles(perfiles));
-			String letrado = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("letrado");
 			ClsLogging.writeFileLog(" LETRADO     - " + letrado);			
 			ClsLogging.writeFileLog(" <<< LECTURA DEL TOKEN <<<");
 	
@@ -256,6 +263,7 @@ public class SIGACGAEContextCAS {
 		return perfs;
 	}
 	
+	/*
 	private String[] getPerfilesFromToken(String token){
 		List<String> perfiles = (List<String>) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("perfiles");
 		
@@ -265,7 +273,7 @@ public class SIGACGAEContextCAS {
         return lista;
 		
 	}
-
+*/
 
 	/**
 	 * JBD
