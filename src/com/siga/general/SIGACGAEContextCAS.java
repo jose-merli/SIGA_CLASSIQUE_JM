@@ -1,7 +1,8 @@
 package com.siga.general;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
-import java.util.Base64;
+import com.sis.firma.core.B64.Base64CODEC;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.xml.bind.DatatypeConverter;
+
 import org.apache.struts.action.ActionServlet;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.MODULO;
@@ -169,14 +172,18 @@ public class SIGACGAEContextCAS {
 
 	
 	
-	private static String decode(String encodedString) {
-	    return new String(Base64.getUrlDecoder().decode(encodedString));
+	private static String decode(String encodedString) throws UnsupportedEncodingException {
+		
+		byte[] decoded = DatatypeConverter.parseBase64Binary(encodedString);
+		String base64 = new String(decoded, "UTF-8");
+		System.out.println(base64);
+
+	    return base64;
 	}
 	
-	private String getBodyJWT(String token) throws SIGAException{
-		UsrBean user = new UsrBean();
+	private String getBodyJWT(String token) throws SIGAException, UnsupportedEncodingException{
 		String[] parts = token.split("\\."); 
-		String json= decode(parts[1]);
+		String json= decode(parts[1])+"}";
 		ClsLogging.writeFileLog(" token decodificado - " + json);
 		
 		return json;
