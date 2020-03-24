@@ -2,8 +2,6 @@ package com.siga.general;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
-import com.sis.firma.core.B64.Base64CODEC;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
@@ -28,7 +26,7 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
-import com.bea.httppubsub.json.JSONObject;
+import org.json.JSONObject;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
