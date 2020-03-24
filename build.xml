@@ -765,8 +765,8 @@
         <pathelement location="WebContent/WEB-INF/lib/xstream-1.0.2.jar"/>
     	<pathelement location="WebContent/WEB-INF/lib/jackson-core-2.8.10.jar"/>
 		<pathelement location="WebContent/WEB-INF/lib/jackson-annotations-2.8.0.jar"/>
-		<pathelement location="WebContent/WEB-INF/lib/jackson-databind-2.8.10.jar"/>
     	<pathelement location="WebContent/WEB-INF/lib/jjwt-0.7.0.jar"/>
+		<pathelement location="WebContent/WEB-INF/lib/jackson-databind-2.8.10.jar"/>
         <pathelement location="WebContent/WEB-INF/properties"/>
         <pathelement location="WebContent/html"/>
     </path>
