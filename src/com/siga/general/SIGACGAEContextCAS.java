@@ -1,5 +1,6 @@
 package com.siga.general;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -27,6 +28,9 @@ import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
 import org.json.JSONObject;
+
+import sun.misc.BASE64Decoder;
+
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
@@ -170,19 +174,17 @@ public class SIGACGAEContextCAS {
 
 	
 	
-	private static String decode(String encodedString) throws UnsupportedEncodingException {
-		
-		byte[] decoded = DatatypeConverter.parseBase64Binary(encodedString);
-		String base64 = new String(decoded, "UTF-8");
-		System.out.println(base64);
+	private static String decode(String encodedString) throws Exception {
 
-	    return base64;
+		byte[] decodeResult = new BASE64Decoder().decodeBuffer(encodedString);
+		String foo= new String(decodeResult);
+		
+	    return foo;
 	}
 	
-	private String getBodyJWT(String token) throws SIGAException, UnsupportedEncodingException{
+	private String getBodyJWT(String token) throws Exception{
 		String[] parts = token.split("\\."); 
-		String json= decode(parts[1])+"}";
-		ClsLogging.writeFileLog(" token decodificado - " + json);
+		String json= decode(parts[1]);
 		
 		return json;
 	}
@@ -195,6 +197,7 @@ public class SIGACGAEContextCAS {
 		UsrBean user = new UsrBean();
 		
 		try {
+			
 			ClsLogging.writeFileLog(" >>> LECTURA DEL TOKEN >>>");
 			String body = getBodyJWT(token);
 			JSONObject payload = new JSONObject(body);
@@ -203,14 +206,6 @@ public class SIGACGAEContextCAS {
 			String grupo = payload.getString("grupo");
 			String[] perfiles = getPerfiles(payload.getString("perfiles"));
 			String letrado = payload.getString("letrado");
-			
-			// Usando JJWT
-			// String dni = Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().getSubject();
-			// String institucion = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("institucion");
-			// String grupo = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("grupo");
-			// HashMap<String, String> permisos = getPermisosFromJWTToken(token);
-			// String[] perfiles = getPerfilesFromToken(token);
-			// String letrado = (String) Jwts.parser().setSigningKey(SECRET_SIGN_KEY).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().get("letrado");
 			
 			ClsLogging.writeFileLog(" DNI         - " + dni);
 			ClsLogging.writeFileLog(" INSTITUCION - " + institucion);
@@ -226,9 +221,12 @@ public class SIGACGAEContextCAS {
 
 			// Añadimos al usuario sus perfiles
 			user.setProfile(perfiles);
+			user.setUserName(""+admUserBean.getIdUsuario());
+			user.setUserDescription(""+admUserBean.getDescripcion());
 			
 			// Le ponemos el idpersona correspondiente si lo tiene y si no se quedara -1
 			long idPersona=setPersona(admUserBean.getNIF().toUpperCase(),user);
+			
 			// Ponemos el idioma que corresponda
 			setIdioma(new Long(idPersona),Integer.valueOf(user.getLocation()),user);
 			//
