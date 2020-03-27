@@ -38,8 +38,9 @@
     	token= "";
     }else{
     	token="?token="+token;
+    	urlLogin="/SIGA/login.do"+token;
     }
-	urlLogin="/SIGA/login.do"+token;
+	
 	
 %>
 
@@ -58,43 +59,15 @@
 			function cargarInicio() {
 				
 				var msg1 = '<siga:Idioma key="messages.noSession"/>';
-						
+				<%if(token.equalsIgnoreCase("")){%>
 				alertStop(msg1);
-				//window.setTimeout(recarga, 6000);
+				<%}else{%>
 				window.location.replace(url2);
-				
-				/*jQueryTop.ajax({ //Comunicación jQuery hacia JSP  
-							type: "GET",
-					url: "/SIGA/login.do",
-					success: function(){
-						alertStop(msg1);
-						window.location = '/';
-					},
-					error: function(e){
-						//alertStop('Error: ' + e);
-						
-					}
-				});	*/			
-				
+				<%}%>
+
+
 			}
-			
-			function cargarInicio2() {
-				var msg1 = '<siga:Idioma key="messages.noSession"/>';
-				var msg2 = '<siga:Idioma key="messages.noSession.modal"/>';
-				if (top.dialogArguments) {
-					// es ventana modal
-					alertStop(msg2);
-					top.cierraConParametros("MODIFICADO");
-				} else {
-					alertStop(msg1);
-					window.top.location="<%=pathInicio%>";
-				}
-			}
-			
-			function recarga() {
-				alertStop(url2);
-				window.location.replace(url2);
-			}
+
 		</script>
 
 	</head>
