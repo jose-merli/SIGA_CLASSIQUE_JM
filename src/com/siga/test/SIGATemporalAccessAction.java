@@ -25,6 +25,7 @@ import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.util.PropertyReader;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
@@ -51,6 +52,7 @@ import com.siga.beans.CenInstitucionLenguajesBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.CenPersonaBean;
 import com.siga.beans.GenParametrosAdm;
+import com.siga.general.SIGACGAEContextCAS;
 import com.siga.general.SIGAException;
 
 import es.satec.businessManager.BusinessManager;
@@ -65,6 +67,10 @@ public class SIGATemporalAccessAction extends Action
 	        					 HttpServletRequest request, 
 	        					 HttpServletResponse response) throws ClsExceptions, SIGAException
 	{
+		final String ENTORNO_DESARROLLO ="DESARROLLO";
+		ReadProperties rproperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		boolean desarrollo = rproperties.returnProperty("administracion.login.entorno").equalsIgnoreCase(ENTORNO_DESARROLLO);
+		
 		String result="";
 //		String user=request.getParameter("user");
 		String location = request.getParameter("location");
@@ -74,21 +80,24 @@ public class SIGATemporalAccessAction extends Action
 		String profileArray[] = profile.split (",");
 		String letrado=request.getParameter("letrado");
 		UsrBean usrbean = UsrBean.UsrBeanAutomatico(location);
+		// Ya no tenemos certificadoy tendremos que rellenarlo a partir de los datos que tengamos de CAS
+		// PERO SOLO EN CASO DE QUE TENGA ROL DE ADMIN
 		UsuariosTO certificado = (UsuariosTO) request.getAttribute("USUARIOTO");
-
-		///////////////////////////////////////////////////
-		// Verficamos si el usuario es de la 2000. Solo puede ser de esta institucion
-		try {
-			if (certificado != null && !certificado.getZon_codigo().equalsIgnoreCase("2000") ) {
-				request.removeAttribute("USUARIOTO");
-				return mapping.findForward("accesodenegado");
-			}
+		boolean accesoAdmin=true;
+		if(!desarrollo){
+			String roles=(String)request.getHeader("CAS-roles");
+			accesoAdmin=roles.contains("SIGA-Admin");
 		}
-		catch (Exception e) {
-			ClsLogging.writeFileLog("ERR>> No se ha podido leer el Usuario " + 	"del Certificado desde la peticion: UsuariosTO no existe",1);
-			e.printStackTrace();
+		
+		if(accesoAdmin&&!desarrollo){
+			certificado = new UsuariosTO();
+			// Si tiene el rol de SIGA-Admin esta autorizado a entrar por combos
+			certificado.setUsu_nif((String)request.getHeader("CAS-username"));
+			certificado.setPfiNombre((String)request.getHeader("CAS-nickname"));
+			
+		}else if(!desarrollo){
+			return mapping.findForward("accesodenegado");
 		}
-		///////////////////////////////////////////////////
 
 		///////////////////////////////////////////////////
 		// Verficamos si el usuario es dado de alta en la insticion seleccionada en los combos
@@ -131,14 +140,6 @@ public class SIGATemporalAccessAction extends Action
 		//usrbean.setAccessType("FULL");
 		//usrbean.setAccessType(sAccess);
 		
-//		Hashtable htUsuario = new Hashtable();
-//		htUsuario.put(AdmUsuariosBean.C_IDINSTITUCION, location);
-//		htUsuario.put(AdmUsuariosBean.C_IDUSUARIO, user);
-//		AdmUsuariosAdm admUsuario = new AdmUsuariosAdm(usrbean);
-//		Vector vUsuario = admUsuario.selectByPK(htUsuario);
-//		AdmUsuariosBean beanUsuario = (AdmUsuariosBean)vUsuario.elementAt(0);
-//		usrbean.setUserDescription(beanUsuario.getDescripcion());
-//		usrbean.setUserName(user);
 
 		usrbean.setProfile(profileArray);
 		
