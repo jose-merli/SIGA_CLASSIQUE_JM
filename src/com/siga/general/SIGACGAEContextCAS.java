@@ -79,28 +79,27 @@ public class SIGACGAEContextCAS {
 	    ReadProperties rproperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 
 	 // Recogemos el token de la sesion
-	    String token =(String)request.getParameter("token");
+	    String token= (String)request.getParameter("token");
 	    if(token == null || token.equalsIgnoreCase("")){
-	    	token=(String)request.getHeader("Authorization");
+	    	token = (String)request.getHeader("Authorization");
 	    }
 	    ClsLogging.writeFileLog("TOKEN >>> "+token);
-//		ReadProperties rproperties=new ReadProperties("SIGA.properties");
-		boolean desarrollo = rproperties.returnProperty("administracion.login.entorno").equalsIgnoreCase(SIGACGAEContextCAS.ENTORNO_DESARROLLO);
-		if (desarrollo){
-			//Magia
-			Properties properties = System.getProperties();
-			
-			properties.put("http.proxyHost", "localhost");
-			properties.put("http.proxyPort", "7001");
-			
-			System.setProperties(properties);
-		}
-	
-
+	    UsrBean bean=new UsrBean();
+	    if(token!=null && !token.equalsIgnoreCase("")){
+	    	try {
+		//		ReadProperties rproperties=new ReadProperties("SIGA.properties");
+				boolean desarrollo = rproperties.returnProperty("administracion.login.entorno").equalsIgnoreCase(SIGACGAEContextCAS.ENTORNO_DESARROLLO);
+				if (desarrollo){
+					//Magia
+					Properties properties = System.getProperties();
+					
+					properties.put("http.proxyHost", "localhost");
+					properties.put("http.proxyPort", "7001");
+					
+					System.setProperties(properties);
+				}
 		
-		UsrBean bean=new UsrBean();
-		if(token!=null && !token.equalsIgnoreCase("")){
-			try {
+				
 
 				bean = gerUserFromJWTToken(token);
 		
@@ -225,6 +224,7 @@ public class SIGACGAEContextCAS {
 			user.setProfile(perfiles);
 			user.setUserName(""+admUserBean.getIdUsuario());
 			user.setUserDescription(""+admUserBean.getDescripcion());
+			user.setLetrado(letrado.equalsIgnoreCase("S"));
 			
 			// Le ponemos el idpersona correspondiente si lo tiene y si no se quedara -1
 			long idPersona=setPersona(admUserBean.getNIF().toUpperCase(),user);

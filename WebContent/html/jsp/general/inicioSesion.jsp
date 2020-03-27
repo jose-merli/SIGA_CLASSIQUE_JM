@@ -31,6 +31,16 @@
 	
 	String pathInicio = BotonesMenu.getPathCerrarSesion("2000");
 	
+	//Leemos el token de la cabecera para poder hacer login de nuevo
+	String token = (String)request.getParameter("token");
+	String urlLogin="";
+    if(token == null){
+    	token= "";
+    }else{
+    	token="?token="+token;
+    }
+	urlLogin="/SIGA/login.do"+token;
+	
 %>
 
 
@@ -90,7 +100,7 @@
 	</head>
 	
 	<body onLoad="cargarInicio();">
-		<iframe src="/SIGA/login.do" style="display: none"/>
+		<iframe src="<%=urlLogin%>" style="display: none"/>
 	</body>
 	
 	
