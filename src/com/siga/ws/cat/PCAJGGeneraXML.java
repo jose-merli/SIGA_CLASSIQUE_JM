@@ -346,7 +346,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	private boolean compruebaDictamenEJG(Hashtable ht) throws ClsExceptions, SIGAException {
 		CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(getUsrBean());
 		String anyo = (String)ht.get(ANIO);
-		String numero = (String)ht.get(NUMERO);
+		String numero = (String)ht.get(NUMEJG);
 		Vector datos = cajgEJGRemesaAdm.getDictamenEJG(getIdInstitucion(), anyo, numero);
 		Hashtable aux = (Hashtable) datos.get(0);
 		//Busqueda de dictamen del EJG. El EJG tiene dictamen que permita no tener documentos(1->Sí, 0->No)
