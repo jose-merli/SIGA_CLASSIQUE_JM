@@ -274,7 +274,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		com.siga.ws.pcajg.cat.xsd.pdf.TipoCodigoExpediente codigoExpediente = datosExpediente.addNewCodigoExpediente();
 		codigoExpediente.setColegioExpediente((String)ht.get(DE_CE_COLEGIOEXPEDIENTE));
-		String numExpediente = (String)ht.get(NUMEJG);
+		String numExpediente = (String)ht.get(DE_CE_NUMEXPEDIENTE);
 		//String numExpediente = UtilidadesString.formatea(ht.get(DE_CE_NUMEXPEDIENTE), 8, true);
 		codigoExpediente.setNumExpediente(numExpediente);		
 		Integer anyoExpediente = SIGAServicesHelper.getInteger("año del expediente", (String)ht.get(DE_CE_ANYOEXPEDIENTE));		
@@ -347,7 +347,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(getUsrBean());
 		String anyo = (String)ht.get(ANIO);
 		String numero = (String)ht.get(NUMERO);
-		Vector datos = cajgEJGRemesaAdm.getDictamenEJG(getIdInstitucion(), anyo, numero);
+		String idtipoejg = (String)ht.get(IDTIPOEJG);
+		Vector datos = cajgEJGRemesaAdm.getDictamenEJG(getIdInstitucion(), anyo, numero, idtipoejg);
 		Hashtable aux = (Hashtable) datos.get(0);
 		//Busqueda de dictamen del EJG. El EJG tiene dictamen que permita no tener documentos(1->Sí, 0->No)
 		ClsLogging.writeFileLog("Busqueda de dictamen del EJG. El EJG tiene dictamen que permita no tener documentos(1->Sí, 0->No): " + aux.get("DICTAMENDOC").toString(), 3);

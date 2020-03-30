@@ -1610,7 +1610,7 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 		
 	}
 
-	public Vector getDictamenEJG(int idInstitucion, String anyo, String numero) throws ClsExceptions, SIGAException {
+	public Vector getDictamenEJG(int idInstitucion, String anyo, String numero, String idtipoejg) throws ClsExceptions, SIGAException {
 		String consulta = "SELECT CASE " +
 				" WHEN ejg.IDTIPODICTAMENEJG = 3 THEN " +
 				"  1 " +
@@ -1629,7 +1629,8 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 				" 								   AND EJG.IDINSTITUCION = CAL.IDINSTITUCION " +
 				" WHERE ejg.idinstitucion = " + idInstitucion +
 				" AND ejg.anio = " + anyo +
-				" AND ejg.numero = " + numero;
+				" AND ejg.numero = " + numero +
+				" AND ejg.idtipoejg = " + idtipoejg;
 		
 	return getDatos(consulta);
 }
