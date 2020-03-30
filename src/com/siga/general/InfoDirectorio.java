@@ -3,6 +3,7 @@ package com.siga.general;
 
 import java.io.File;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,25 +70,20 @@ public class InfoDirectorio {
 	}
 	
 	public static boolean isAllowed(HttpServletRequest request){
-		boolean bAllowed = false;
-		HttpSession ses= request.getSession();
-		if (ses != null && ses.getAttribute("USRBEAN") != null){
-			UsrBean usrBean = (UsrBean) ses.getAttribute("USRBEAN");
-			if (usrBean.getLocation() != null && "2000".equals(usrBean.getLocation().trim()))
-				bAllowed = true;
-		} else {
-			ClsLogging.writeFileLog("InfoDirectorio.isAllowed: Sesion o userbean en sesion no encontrados", 0);
-		}
-		return bAllowed;
+
+		return true;
 	}
 	
 	private static void pintaInfoDirectorio (File f, int nivel, Vector v) 
 	{
+		double bytes = f.length();
+		double kilobytes = (bytes / 1024);
+		
 		Date d = new Date(f.lastModified());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String fecha = sdf.format(d);
 		String acceso = "";
-
+		String tam = "";
 		try {
 			//acceso += f.canExecute()?"+x":"-x";
 			acceso += f.canRead()?"+r":"-r";
@@ -99,13 +95,16 @@ public class InfoDirectorio {
 		catch (Throwable e) {
 			acceso = "";
 		}
+		DecimalFormat formatter = new DecimalFormat("###,###");
+
+		tam= formatter.format(kilobytes) + " kb";
 		
 		
 		if (f.isDirectory()) {
 		    
 		    //			traza ("(+) ["+f.getName() + "]", (f.canExecute()?"+X":"-X") + (f.canRead()?"+R":"-R") + (f.canWrite()?"+W":"+W"), fecha, nivel, v);
 			
-				traza (f.getName(), f.getAbsolutePath(), "d", acceso, fecha, nivel, v);
+				traza (f.getName(), f.getAbsolutePath(), "d", acceso, fecha, nivel, v, tam);
 				
 				// BNS INC_10694_SIGA Ordenamos los ficheros por nombre
 				ArrayList directorios = new ArrayList();
@@ -125,12 +124,12 @@ public class InfoDirectorio {
 				    Date dat = new Date(aux2.lastModified());
 			        SimpleDateFormat fec = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					String fech = sdf.format(dat);
-				    traza (aux2.getName(), aux2.getAbsolutePath(), "dd", acceso, fech, nivel+1, v);
+				    traza (aux2.getName(), aux2.getAbsolutePath(), "dd", acceso, fech, nivel+1, v, tam);
 				}
 		}
 		else {
 			
-				traza (f.getName(), f.getAbsolutePath(), "f", acceso, fecha, nivel, v);
+				traza (f.getName(), f.getAbsolutePath(), "f", acceso, fecha, nivel, v, tam);
 	//			traza ("|- " + f.getName(), (f.canExecute()?"+X":"-X") + (f.canRead()?"+R":"-R") + (f.canWrite()?"+W":"+W"), fecha, nivel+1, v);
 		}
 		
@@ -138,7 +137,10 @@ public class InfoDirectorio {
 
 	private static void getApariciones (File f, String s, int nivel, Vector v) 
 	{
+		double bytes = f.length();
+		double kilobytes = (bytes / 1024);
 		
+		String tam= kilobytes + "kb";
 			Date d = new Date(f.lastModified());
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String fecha = sdf.format(d);
@@ -163,9 +165,9 @@ public class InfoDirectorio {
 					path = UtilidadesString.replaceAllIgnoreCase(path,"\\","/");
 				}
 				if (f.isDirectory()) {
-					traza (path, f.getAbsolutePath(), "dd", acceso, fecha, nivel, v);
+					traza (path, f.getAbsolutePath(), "dd", acceso, fecha, nivel, v, tam);
 				}else{
-					traza (path, f.getAbsolutePath(), "f", acceso, fecha, nivel, v);
+					traza (path, f.getAbsolutePath(), "f", acceso, fecha, nivel, v, tam);
 				}
 			}
 			
@@ -180,9 +182,8 @@ public class InfoDirectorio {
 			
 		
 	}
-	
 
-	private static void traza (String nombre, String path, String tipo, String acceso, String fecha, int nivel, Vector v) 
+	private static void traza (String nombre, String path, String tipo, String acceso, String fecha, int nivel, Vector v, String size) 
 	{
 		Hashtable h = new Hashtable ();
 		h.put("nombre", nombre);
@@ -191,6 +192,7 @@ public class InfoDirectorio {
 		h.put("acceso", acceso);
 		h.put("fecha", fecha);
 		h.put("nivel", ""+nivel);
+		h.put("size", ""+size);
 		v.add (h);
 	}
 

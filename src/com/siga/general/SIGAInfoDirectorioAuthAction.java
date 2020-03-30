@@ -12,10 +12,13 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
+import com.pra.core.filters.security.helper.UsuariosTO;
 import com.siga.Utilidades.UtilidadesString;
 
 public class SIGAInfoDirectorioAuthAction extends Action {
@@ -29,24 +32,23 @@ public class SIGAInfoDirectorioAuthAction extends Action {
 	public final ActionForward execute(ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response){
 		String 			result	="success";
 		HttpSession 	ses		= request.getSession();
-		SIGACGAEContext cont 	= new SIGACGAEContext();
+		SIGACGAEContextCAS cont 	= new SIGACGAEContextCAS();
 		UsrBean 		bean	= null;
 
-		try {
-			bean=cont.rellenaContexto(request, getServlet());
-		} catch (SIGAException e) {
-			ClsLogging.writeFileLogError("Acceso denegado: Error en rellenaContexto: "+e.getLiteral("1"), e, 3);
-			request.setAttribute("mensaje",e.getLiteral());
-			return mapping.findForward("accesodenegado");
+
+		boolean accesoAdmin=true;
+		final String ENTORNO_DESARROLLO ="DESARROLLO";
+		ReadProperties rproperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		boolean desarrollo = rproperties.returnProperty("administracion.login.entorno").equalsIgnoreCase(ENTORNO_DESARROLLO);
+		if(!desarrollo){
+			String roles=(String)request.getHeader("CAS-roles");
+			accesoAdmin=roles.contains("SIGA-Admin");
 		}
-		
-		if (bean==null || !ID_INSTITUCION_PERMITIDA.equals(bean.getLocation())) {
+		if (!accesoAdmin) {
 			ClsLogging.writeFileLog("Acceso denegado: UsrBean nulo", 3);
 			return mapping.findForward("accesodenegado");
 		}
 		
-		ses.setAttribute("USRBEAN", bean);
-		cont.initStyles(bean.getLocation(), ses);
 		
 		try {
 			String IPServidor = UtilidadesString.obtenerIPServidor(request); 

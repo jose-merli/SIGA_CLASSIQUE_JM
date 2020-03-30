@@ -112,6 +112,10 @@ try {
 		font: italic 16px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
 		text-align: left;
 	}
+	
+	tr {
+		height:30px
+	}
 
 
 	td {
@@ -129,8 +133,8 @@ try {
 		color: #797268;
 	}
    
-    .dir{color:blue; font: 12px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;cursor:hand}
-    .dirSans{color:blue; font: 13px italic "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;}
+    .dir{color:blue; font: 12px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;cursor:pointer}
+    .dirSans{color:black; font: 13px italic "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;}
 
     </style>
 
@@ -150,6 +154,12 @@ try {
 		aux.nombreFichero.value = nombreArchivo; 
 		aux.accion.value = "subir";
 		aux.submit();
+	}
+	function mkDir(nombre, path){
+		document.crear.rutaFichero.value = unescape(path);
+		document.crear.nombreFichero.value = nombre; 
+		document.crear.accion.value = "crear";
+		document.crear.submit();
 	}
 	
 	function fBorrar (nombreArchivo, rutaArchivo)
@@ -219,16 +229,22 @@ try {
 		<input type="hidden" name="borrarFichero" value="true"/>
 	</form>
 
-	
+  	<form name="crear" action="<%=app%>/ServletFicherosInfoDirectorio.svrl"  method="POST">
+		<input type="hidden" name="nombreFichero" value=""/>
+		<input type="hidden" name="rutaFichero"   value=""/>
+		<input type="hidden" name="accion"        value=""/>
+		<input type="hidden" name="borrarFichero" value=""/>
+	</form>
 	
 
 	<table border="0">
 	
 		<tr>
-			<td colspan="5">
+			<td colspan="6">
 			<B class="dir" onclick="dNavegar('<%=pathUP%>')">..</B>
 			</td>
 		</tr>
+
 
 <% 	for (int i = 0; i < vDatos.size(); i++) { 
 		Hashtable h = (Hashtable)vDatos.get(i);
@@ -237,6 +253,8 @@ try {
 		String tipo   = (String)h.get("tipo");
 		String acceso = (String)h.get("acceso");
 		String fecha  = (String)h.get("fecha");
+		String tam  = (String)h.get("size");
+		System.out.println("tamaño " + h);
 		int nivel = Integer.parseInt((String)h.get("nivel"));
 		
 	%>
@@ -251,6 +269,11 @@ try {
 			   		<%=nombre%>
 			   <%}%>
 		   </td>
+		   <% if(tipo.startsWith("d")) { %>
+		   <td width="80px"> </td>
+		   <% }else{ %>
+		   <td width="80px" style='text-align:right'><%=tam%></td>
+		   <%} %>
 		   <td width="80px"><%=acceso%></td>
 		   <td width="200px"><%=fecha%></td>
 		   <% if(tipo.equals("d")){%>
@@ -273,6 +296,12 @@ try {
 		</tr>
 
    <% } %>
+   		<!-- tr>
+			<td colspan="6">
+	   			<input type="text" name="nombreCarpeta" value=""/>
+		   		<input type="button" value="Crear carpeta" onclick="mkDir('fichero', 'nombreCarpeta', 'crear')" />
+			</td>
+		</tr-->
    
 	</table>
 	
