@@ -274,8 +274,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		com.siga.ws.pcajg.cat.xsd.pdf.TipoCodigoExpediente codigoExpediente = datosExpediente.addNewCodigoExpediente();
 		codigoExpediente.setColegioExpediente((String)ht.get(DE_CE_COLEGIOEXPEDIENTE));
-		String numExpediente = (String)ht.get(DE_CE_NUMEXPEDIENTE);
-		//String numExpediente = UtilidadesString.formatea(ht.get(DE_CE_NUMEXPEDIENTE), 8, true);
+//		String numExpediente = (String)ht.get(DE_CE_NUMEXPEDIENTE);
+		String numExpediente = UtilidadesString.formatea(ht.get(DE_CE_NUMEXPEDIENTE), 8, true);
 		codigoExpediente.setNumExpediente(numExpediente);		
 		Integer anyoExpediente = SIGAServicesHelper.getInteger("año del expediente", (String)ht.get(DE_CE_ANYOEXPEDIENTE));		
 		if (anyoExpediente != null) {
