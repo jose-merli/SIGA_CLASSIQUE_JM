@@ -21,6 +21,7 @@ import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.util.PropertyReader;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
@@ -63,7 +64,9 @@ public class SIGAAuthItcgaeAction extends Action
 			 HttpServletRequest request, 
 			 HttpServletResponse response) throws ClsExceptions, SIGAException
 {
-		ClsLogging.writeFileLog(" INFO >> ATENCION . ESTAMOS DENTRO DEL SERVLET DE ITCGAEINIT. Por lo tanto SE HAN SUPERADO LO FILTRO",1);	
+		final String ENTORNO_DESARROLLO ="DESARROLLO";
+		ReadProperties rproperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		boolean desarrollo = rproperties.returnProperty("administracion.login.entorno").equalsIgnoreCase(ENTORNO_DESARROLLO);
 
 		String result="";
 //		String user=request.getParameter("user");
@@ -77,21 +80,21 @@ public class SIGAAuthItcgaeAction extends Action
 		
 		UsrBean usrbean = UsrBean.UsrBeanAutomatico(location);
 		UsuariosTO certificado = (UsuariosTO) request.getAttribute("USUARIOTO");
-
-		///////////////////////////////////////////////////
-		// Verficamos si el usuario es de la 2000. Solo puede ser de esta institucion
-		try {
-			if (certificado != null && !certificado.getZon_codigo().equalsIgnoreCase("2000") ) {
-				ClsLogging.writeFileLog("ERROR >> O NO HAY  CERTIFICADO O LA ZONA NO ES LA 2000. ZONA="+((certificado!=null)?certificado.getZon_codigo():" el certificado es nulo."),1);	
-				request.removeAttribute("USUARIOTO");
-				return mapping.findForward("accesodenegado");
-			}
+		boolean accesoAdmin=true;
+		if(!desarrollo){
+			String roles=(String)request.getHeader("CAS-roles");
+			accesoAdmin=roles.contains("SIGA-Admin");
 		}
-		catch (Exception e) {
-			ClsLogging.writeFileLog("ERR>> No se ha podido leer el Usuario " + 	"del Certificado desde la peticion: UsuariosTO no existe",1);
-			e.printStackTrace();
+		
+		if(accesoAdmin&&!desarrollo){
+			certificado = new UsuariosTO();
+			// Si tiene el rol de SIGA-Admin esta autorizado a entrar al area itcgae
+			certificado.setUsu_nif((String)request.getHeader("CAS-username"));
+			certificado.setPfiNombre((String)request.getHeader("CAS-nickname"));
+			
+		}else if(!desarrollo){
+			return mapping.findForward("accesodenegado");
 		}
-		///////////////////////////////////////////////////
 
 		///////////////////////////////////////////////////
 		// Verficamos si el usuario es dado de alta en la insticion seleccionada en los combos
