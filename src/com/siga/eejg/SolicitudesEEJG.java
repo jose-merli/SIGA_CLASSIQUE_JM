@@ -38,7 +38,7 @@ import com.siga.beans.eejg.ScsEejgXmlAdm;
 import com.siga.beans.eejg.ScsEejgXmlBean;
 import com.siga.pfd.ws.DocumentoTO;
 import com.siga.pfd.ws.ResultSolicitudDocumentoTO;
-import com.siga.pfd.ws.ServiciosPFDServiceSOAPStub;
+import com.siga.pfd.ws.ServiciosPFDServiceServiceSoapBindingStub;
 import com.siga.pfd.ws.ServiciosPFDService_ServiceLocator;
 import com.siga.pfd.ws.SolicitudDocumentoTO;
 
@@ -264,7 +264,7 @@ public class SolicitudesEEJG {
 			//Configuramos los datos de acceso al WS
 			URL url = new URL(urlWSPFD);		
 			ServiciosPFDService_ServiceLocator locator = new ServiciosPFDService_ServiceLocator();
-			ServiciosPFDServiceSOAPStub stub = new ServiciosPFDServiceSOAPStub(url, locator);
+			ServiciosPFDServiceServiceSoapBindingStub stub = new ServiciosPFDServiceServiceSoapBindingStub(url, locator);
 			SolicitudDocumentoTO solDocTO = new SolicitudDocumentoTO();			
 			solDocTO.setIdAppCliente(idSistema);
 			solDocTO.setIdValidacion(csv);

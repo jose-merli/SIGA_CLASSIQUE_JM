@@ -25,6 +25,8 @@ import org.redabogacia.v2.pjgpra.wspjgpra.SolicitudPeticionInfoAAPP.DatosContact
 import org.redabogacia.v2.pjgpra.wspjgpra.SolicitudPeticionInfoAAPP.DatosDireccionSolicitante;
 import org.redabogacia.v2.pjgpra.wspjgpra.SolicitudPeticionInfoAAPP.DatosPeticionInfoAAPP;
 import org.redabogacia.v2.pjgpra.wspjgpra.SolicitudPeticionInfoAAPP.DatosPeticionInfoAAPPIdioma;
+
+
 import org.redabogacia.v2.pjgpra.wspjgpra.SolicitudPeticionInfoAAPP.DatosProcedimiento;
 import org.redabogacia.v2.pjgpra.wspjgpra.SolicitudPeticionInfoAAPP.DatosProcedimientoTipoSolicitante;
 import org.redabogacia.v2.pjgpra.wspjgpra.SolicitudPeticionInfoAAPP.Informacion;
@@ -32,10 +34,12 @@ import org.redabogacia.v2.pjgpra.wspjgpra.SolicitudPeticionInfoAAPP.SolicitudPet
 import org.redabogacia.v2.pjgpra.wspjgpra.service.ServiciosJGExpedienteServiceLocator;
 import org.redabogacia.v2.pjgpra.wspjgpra.service.ServiciosJGExpedienteServiceSoapBindingStub;
 
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.AxisObjectSerializerDeserializer;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.beans.AdmUsuariosAdm;
 import com.siga.beans.AdmUsuariosBean;
@@ -48,7 +52,7 @@ import com.siga.beans.eejg.ScsEejgXmlAdm;
 import com.siga.beans.eejg.ScsEejgXmlBean;
 import com.siga.pfd.ws.DocumentoTO;
 import com.siga.pfd.ws.ResultSolicitudDocumentoTO;
-import com.siga.pfd.ws.ServiciosPFDServiceSOAPStub;
+import com.siga.pfd.ws.ServiciosPFDServiceServiceSoapBindingStub;
 import com.siga.pfd.ws.ServiciosPFDService_ServiceLocator;
 import com.siga.pfd.ws.SolicitudDocumentoTO;
 /**
@@ -660,7 +664,7 @@ public class SolicitudesEEJGInformacionCompleta {
 			//Configuramos los datos de acceso al WS
 			URL url = new URL(urlWSPFD);		
 			ServiciosPFDService_ServiceLocator locator = new ServiciosPFDService_ServiceLocator();
-			ServiciosPFDServiceSOAPStub stub = new ServiciosPFDServiceSOAPStub(url, locator);
+			ServiciosPFDServiceServiceSoapBindingStub stub = new ServiciosPFDServiceServiceSoapBindingStub(url, locator);
 			SolicitudDocumentoTO solDocTO = new SolicitudDocumentoTO();			
 			solDocTO.setIdAppCliente(idSistema);
 			solDocTO.setIdValidacion(csv);
