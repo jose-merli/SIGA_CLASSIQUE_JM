@@ -1,7 +1,14 @@
-create or replace view v_siga_cat_justificacion as
-Select CodActuacion,
+create or replace view uscgae.v_siga_cat_justificacion as
+Select IdInstitucion,
+
+       IdInstitucion || Trim(AnyoExpediente) || SubStr(Trimestre, 1, 1) || Trim(To_Char(RowNum, '00000')) CodActuacion,
+       ColegioExpediente,
+       NumExpediente,
+       AnyoExpediente,
        CodExpediente,
+
        Trimestre,
+
        ICAColegiado,
        NumColegiado,
        NombreAbogado,
@@ -13,34 +20,33 @@ Select CodActuacion,
        TipoIniciacion,
        NumDesignacionAbogado,
        FechaDesignacionAbogado,
+
        CodTipoIdentificacion,
        Identificacion,
        Nombre,
        PrimerApellido,
        SegundoApellido,
        Sexo,
+
        FechaActuacion,
+       FechaJustificacionActuacion,
        Festivo,
        FueraPlazo,
        CausaNuevaDesigna,
        TipoDelito,
-       Delito,
        TipoProcedimiento,
-       Procedimiento,
        CentroDetencionOrganJudicial,
-       CenDetOrgJud,
        Modulo,
-       GuardiaDoble,
        Importe,
-       CantidadAsistencias,
-       IdInstitucion
- From (Select Fac.IdInstitucion,
-              Trim(To_Char(Fac.IdInstitucion, '0000')) -- Institución
-                 || Trim(To_Char(Fad.Anio, '0000')) -- Año
-                 || '1' -- Tipo: Actuaciones de oficio
+       CantidadAsistencias
+
+ From (Select Fac.IdInstitucion, 
+              Fac.IdInstitucion ColegioExpediente,
+              '1' -- Tipo: Actuaciones de oficio
                  || Trim(To_Char(Fad.IdTurno, '0000')) -- Turno
                  || Trim(To_Char(Des.Codigo, '00000')) -- Número designación
-                 || Trim(To_Char(Fad.NumeroAsunto, '00')) CodActuacion, -- Actuación
+                 || Trim(To_Char(Fad.NumeroAsunto, '00')) NumExpediente, 
+              To_Char(Fad.Anio, '0000') AnyoExpediente,
               Decode(Ejg.Anio, Null, Null, Ins.IdComision -- Código comisión
                                               || '-'
                                               || SubStr(Ejg.NumEJG, 5, 5)
@@ -120,13 +126,9 @@ Select CodActuacion,
                    Else Null
                End CausaNuevaDesigna,
               Del.CodigoExt TipoDelito,
-              F_Siga_GetRecurso(Del.Descripcion, 2) Delito,
               Pre.CodigoExt TipoProcedimiento,
-              F_Siga_GetRecurso(Pre.Descripcion, 2) Procedimiento,
               Decode(Juz.CodigoExt2, Null, Null, 'O' || Juz.CodigoExt2) CentroDetencionOrganJudicial,
-              Juz.Nombre CenDetOrgJud,
-              Pro.CodigoExt Modulo,
-              Null GuardiaDoble,
+              Decode(Fad.PorcentajeFacturado, 75, '22', Pro.CodigoExt) Modulo,
               To_char(Fad.ImporteFacturado, '9999990D00') Importe,
               0 CantidadAsistencias
          From Fcs_FacturacionJG Fac
@@ -251,13 +253,17 @@ Select CodActuacion,
                                        From Fcs_Fact_GrupoFact_Hito
                                       Where IdGrupoFacturacion = 1)
     Union All
-       Select Fac.IdInstitucion,
-              Trim(To_Char(Fac.IdInstitucion, '0000')) -- Institución
-                 || Trim(To_Char(Fac.FechaDesde, 'YYYY')) -- Año
-                 || Decode(Faa.IdInstitucion, Null, '2', '3') -- Tipo: 2- Guardias sin actuaciones, 3- Actuaciones de asistencia
-                 || Decode(Faa.IdInstitucion, Null, Trim(To_Char(Fac.IdFacturacion, '0000')), Trim(To_Char(Faa.IdTipo, '0000'))) -- Tipo 2- Facturación, 3- Tipo actuación
-                 || Decode(Faa.IdInstitucion, Null, '', Trim(To_Char(Faa.Numero, '00000'))) -- Tipo: 2 '', 3-Numero asistencia
-                 || Decode(Faa.IdInstitucion, Null, Trim(To_Char(Apu.IdApunte, '0000000')), Trim(To_Char(Faa.IdActuacion, '00'))) CodActuacion, -- Tipo: 2- Apunte, 3- Numero actuacion
+       Select Fac.IdInstitucion, 
+              Faa.IdInstitucion ColegioExpediente,
+              Decode(Faa.IdInstitucion,
+                 Null, Null,
+                       '2' -- Tipo: Actuaciones de Asistencia
+                          || Trim(To_Char(Faa.IdTipo, '0000')) -- Tipo actuación
+                          || Trim(To_Char(Faa.Numero, '00000')) -- Numero asistencia
+                          || Trim(To_Char(Faa.IdActuacion, '00'))) NumExpediente, -- Numero actuacion
+              Decode(Faa.IdInstitucion,
+                 Null, Null,
+                       To_Char(Fac.FechaDesde, 'YYYY')) AnyoExpediente,
               Decode(Faa.IdInstitucion,
                  Null, Null,
                        Ins.IdComision -- Código comisión
@@ -271,7 +277,7 @@ Select CodActuacion,
               Per.Nombre NombreAbogado,
               Per.Apellidos1 PrimerApellidoAbogado,
               Per.Apellidos2 SegundoApellidoAbogado,
-              'A' AsistenciaDefensa,
+              Decode(Faa.IdInstitucion, Null, Null, 'A') AsistenciaDefensa,
               Decode(Hfg.IdTipoGuardia,
                  1, 'VID',
                  5, 'MEN',
@@ -285,7 +291,7 @@ Select CodActuacion,
                  || SubStr(Nvl(Faa.Anio, To_Char(Fac.FechaDesde, 'YYYY')), 3, 2)
                  || '/'
                  || Fac.IdInstitucion NumDesignacionAbogado,
-              To_Char(Asi.FechaHora, 'YYYY-MM-DD') FechaDesignacionAbogado,
+              To_Char(Apu.FechaInicio, 'YYYY-MM-DD') FechaDesignacionAbogado,
               Decode(Pjg.IdTipoIdentificacion,
                  10, 'NIF',
                  20, 'CIF',
@@ -297,8 +303,8 @@ Select CodActuacion,
               Pjg.Apellido1 PrimerApellido,
               Pjg.Apellido2 SegundoApellido,
               Decode(Pjg.Sexo, 'H', 'H', 'M', 'M', Null) Sexo,
-              To_Char(Faa.FechaActuacion, 'YYYY-MM-DD') FechaActuacion,
-              To_Char(Faa.FechaJustificacion, 'YYYY-MM-DD') FechaJustificacionActuacion,
+              To_Char(Nvl(Faa.FechaActuacion, Apu.FechaInicio), 'YYYY-MM-DD') FechaActuacion,
+              To_Char(Nvl(Faa.FechaJustificacion, Apu.FechaInicio), 'YYYY-MM-DD') FechaJustificacionActuacion,
               Case When Cal.Fecha Is Null
                    Then Case To_Char(Apu.FechaInicio, 'D')
                              When '6' Then 'DS'
@@ -320,11 +326,8 @@ Select CodActuacion,
               'N' FueraPlazo,
               Null CausaNuevaDesigna,
               Del.CodigoExt TipoDelito,
-              F_Siga_GetRecurso(Del.Descripcion, 2) Delito,
               Null TipoProcedimiento,
-              Null Procedimiento,
               Decode(Act.IdComisaria, Null, Decode(Juz.CodigoExt2, Null, Null, 'O' || Juz.CodigoExt2), 'C' || Com.CodigoExt) CentroDetencionOrganJudicial,
-              Decode(Act.IdComisaria, Null, Juz.Nombre, Com.Nombre) CenDetOrgJud,
               Case Apu.PrecioAplicado
                    When To_Number(SubStr(Hfg.Hitos, InStr(Hfg.Hitos, '01-') + 3, InStr(Hfg.Hitos, ' ;') - 4))
                         Then Case When Nvl(Faa.Anio * 10000000 + Faa.Numero * 100 + Faa.IdActuacion, 0) = Nvl(Tot.Primera, 0)
@@ -363,7 +366,7 @@ Select CodActuacion,
                    Else Case When Nvl(Tot.Importe ,0) = 0
                              Then Case When Nvl(Tot.Cantidad, 0) = 0
                                        Then Case When Hfg.IdTipoGuardia <> 1
-                                                 Then 'Guardia sin actuaciones'
+                                                 Then 'Guardia sin asistencias'
                                                  Else '40d'
                                              End
                                        Else Case When Cantidad > SubStr(Hfg.Hitos, InStr(Hfg.Hitos, '46') + 3, 1)
@@ -373,7 +376,7 @@ Select CodActuacion,
                                                                      Else '40c'
                                                                  End
                                                            Else Case When Hfg.IdTipoGuardia <> 1
-                                                                     Then 'Res Gua Dob2'
+                                                                     Then 'Res Gua Dob 2'
                                                                      Else 'D40c'
                                                                  End
                                                        End
@@ -383,7 +386,7 @@ Select CodActuacion,
                                                                      Else '40b'
                                                                  End
                                                            Else Case When Hfg.IdTipoGuardia <> 1
-                                                                     Then 'Res Gua Sim'
+                                                                     Then 'Res Gua Sim 2'
                                                                      Else 'S40b'
                                                                  End
                                                        End
@@ -422,7 +425,6 @@ Select CodActuacion,
                                    End
                          End
                End Modulo,
-              Null GuardiaDoble,
               To_Char(Case When Apu.PrecioAplicado = Tot.Importe
                            Then Tot.Importe / Tot.Cantidad
                            Else Case When Nvl(Faa.Anio * 10000000 + Faa.Numero * 100 + Faa.IdActuacion, 0) = Nvl(Tot.Primera, 0)
@@ -465,7 +467,7 @@ Select CodActuacion,
                                           Gua.IdTurno,
                                           Gua.IdGuardia,
                                           Gua.Nombre,
-                                          Gua.IdTipoGuardia) hfg
+                                          Gua.IdTipoGuardia) Hfg
                        On Hfg.IdInstitucion = Apu.IdInstitucion
                       And Hfg.IdTurno       = Apu.IdTurno
                       And Hfg.IdGuardia     = Apu.IdGuardia
@@ -535,6 +537,5 @@ Select CodActuacion,
                            Fac.IdFacturacion) In(Select IdInstitucion,
                                                         IdFacturacion
                                                    From Fcs_Fact_GrupoFact_Hito
-                                                  Where IdGrupoFacturacion = 1)
-          And Apu.PrecioAplicado > 0)
-
+                                                  Where IdGrupoFacturacion = 1))
+;
