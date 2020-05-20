@@ -1258,6 +1258,9 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 				linea.append(StringHelper.rellena(expHashtableNew.get("SOL19_AUTORIZA_TELEM"), ' ', 1, StringHelper.DERECHA));
 				// Esta linea vacia para para SOA27_Denunciado
 				linea.append(StringHelper.rellena(expHashtableNew.get("SOL20_DEMANDADO"), ' ', 1, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL21_NOTIFICA_TELEM"), ' ', 1, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena(expHashtableNew.get("SOL22_TIPOINTERVENCION"), ' ', 3, StringHelper.DERECHA));
+
 				
 			}else{
 				linea.append(StringHelper.rellena("", ' ', 1, StringHelper.IZQUIERDA));
@@ -1284,6 +1287,9 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 				linea.append(" ");
 				// Esta linea vacia para para SOA27_Denunciado
 				linea.append(" ");
+				linea.append(StringHelper.rellena("", ' ', 1, StringHelper.DERECHA));
+				linea.append(StringHelper.rellena("", ' ', 3, StringHelper.DERECHA));
+				
 			}
 			// SOA1 Tipo Identificación (original) VARCHAR2(1) INTS_C_TIPOIDENTIFICACION
 			// SOA2 Identificación del sol. (original) DNI Litigante VARCHAR2(11)

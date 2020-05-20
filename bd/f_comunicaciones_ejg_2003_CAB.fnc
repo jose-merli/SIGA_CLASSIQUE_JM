@@ -1,4 +1,4 @@
-create or replace function uscgae.f_comunicaciones_ejg_2003_CAB(P_INSTITUCION IN SCS_EJG.IDINSTITUCION%type,
+create or replace function f_comunicaciones_ejg_2003_CAB(P_INSTITUCION IN SCS_EJG.IDINSTITUCION%type,
                                                          P_IDREMESA    IN CAJG_REMESA.IDREMESA%type)
   return clob is
   salida          clob;
@@ -118,7 +118,7 @@ begin
                       AND DE.IDTIPOEJG = EJG.IDTIPOEJG
                       AND DE.NUMERO = EJG.NUMERO
                       AND DE.IDTIPODOCUMENTO IN (7,9)
-                      
+
                  ) AS EXP15_DOC_ADICIONAL
                ,
                DECODE(SOL.ASISTIDOSOLICITAJG, null,null, ''1'', ''S'',''0'', ''N'') AS  EXP16_SOL_JG
@@ -324,6 +324,8 @@ begin
           , RPAD('' '', 10, '' '') AS SOL18_CENTRO_PENITENCIARIO --obligatorio??
           , DECODE(SOL.AUTORIZAAVISOTELEMATICO,null,'' '', ''1'', ''S'', ''N'') AS SOL19_AUTORIZA_TELEM
           , DECODE(EJG.CALIDAD,null,'' '',''0'',''S'',''N'') AS SOL20_DEMANDADO
+          , DECODE(SOL.AUTORIZAAVISOTELEMATICO,null,'' '', ''1'', ''S'', ''N'') AS SOL21_NOTIFICA_TELEM
+          ,''001'' AS SOL22_TIPOINTERVENCION
 
           , ''##'' AS SALTO_LINEA_5
      , ''DOM'' AS TIPO_REGISTRO_DOM

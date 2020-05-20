@@ -730,4 +730,5 @@ delete from gen_properties where parametro = 'log4j.category.org.apache';
 -- Ejecutado ya todo en Integracion y PREproduccion
 modificar v_siga_cat_justificacion
 
+f_comunicaciones_ejg_2003_CAB
 
