@@ -88,7 +88,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 										ScsEJGBean.C_ANIO + ", " +
 										ScsPersonaJGBean.C_ASISTIDOAUTORIZAEEJG + ", " +
 										ScsPersonaJGBean.C_ASISTIDOSOLICITAJG + ", " +
-										ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO + ", " ;
+										ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO + ", " +
+										ScsPersonaJGBean.C_NOTIFICACIONTELEMATICA + ", " ;
 										if(longitudNumEjg!=null)
 											sql += "LPAD( a." + ScsEJGBean.C_NUMEJG + ", "+longitudNumEjg+",0)" + ScsEJGBean.C_NUMEJG + ", " ;
 										else
