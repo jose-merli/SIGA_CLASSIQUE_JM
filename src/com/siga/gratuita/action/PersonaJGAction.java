@@ -1338,6 +1338,7 @@ public class PersonaJGAction extends MasterAction {
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ASISTIDOAUTORIZAEEJG,perBean.getAsistidoAutorizaEEJG());
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ASISTIDOSOLICITAJG,perBean.getAsistidoSolicitaJG());
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO,perBean.getAutorizaAvisoTelematico());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_NOTIFICACIONTELEMATICA,perBean.getNotificacionTelematica());
 					
 					idRepresentanteJG=perBean.getIdRepresentanteJG();
 					
@@ -1430,6 +1431,9 @@ public class PersonaJGAction extends MasterAction {
 					}
 					if (perBean.getAutorizaAvisoTelematico() != null){
 						miform.setAutorizaAvisoTelematico(perBean.getAutorizaAvisoTelematico());
+					}
+					if (perBean.getNotificacionTelematica() != null){
+						miform.setNotificacionTelematica(perBean.getNotificacionTelematica());
 					}
 					miform.setObservaciones(perBean.getObservaciones());
 					
@@ -2032,6 +2036,10 @@ public class PersonaJGAction extends MasterAction {
 				UtilidadesHash.set(persona,ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO,"");
 			else
 				UtilidadesHash.set(persona,ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO,miform.getAutorizaAvisoTelematico());
+			if(miform.getNotificacionTelematica()==null)
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_NOTIFICACIONTELEMATICA,"");
+			else
+				UtilidadesHash.set(persona,ScsPersonaJGBean.C_NOTIFICACIONTELEMATICA,miform.getNotificacionTelematica());
 	     	
 			// recojo el databackup
 			Hashtable dataBackup = (Hashtable) request.getSession().getAttribute("DATABACKUP");
@@ -2132,6 +2140,7 @@ public class PersonaJGAction extends MasterAction {
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ASISTIDOAUTORIZAEEJG,perBean.getAsistidoAutorizaEEJG());	
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ASISTIDOSOLICITAJG,perBean.getAsistidoSolicitaJG());	
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO,perBean.getAutorizaAvisoTelematico());	
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_NOTIFICACIONTELEMATICA,perBean.getNotificacionTelematica());
 					
 					//dataBackup.put(ScsPersonaJGBean.T_NOMBRETABLA,hash);
 					if (miform.getConceptoE().equals(PersonaJGAction.PERSONAJG)) {

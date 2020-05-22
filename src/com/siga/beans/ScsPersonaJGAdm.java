@@ -206,7 +206,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 							ScsPersonaJGBean.C_PISODIR,				ScsPersonaJGBean.C_PUERTADIR,
 							ScsPersonaJGBean.C_ESCALERADIR,			ScsPersonaJGBean.C_IDTIPOVIA,
 							ScsPersonaJGBean.C_ASISTIDOSOLICITAJG,			ScsPersonaJGBean.C_ASISTIDOAUTORIZAEEJG,
-							ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO
+							ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO,ScsPersonaJGBean.C_NOTIFICACIONTELEMATICA
 							
 						};
 
@@ -268,6 +268,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			bean.setAsistidoSolicitaJG(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_ASISTIDOSOLICITAJG));
 			bean.setAsistidoAutorizaEEJG(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_ASISTIDOAUTORIZAEEJG));
 			bean.setAutorizaAvisoTelematico(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO));
+			bean.setNotificacionTelematica(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_NOTIFICACIONTELEMATICA));
 			
 		}
 		catch(Exception e){
@@ -325,6 +326,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_ASISTIDOSOLICITAJG,miBean.getAsistidoSolicitaJG());
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_ASISTIDOAUTORIZAEEJG,miBean.getAsistidoAutorizaEEJG());
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO,miBean.getAutorizaAvisoTelematico());
+			UtilidadesHash.set(hash,ScsPersonaJGBean.C_NOTIFICACIONTELEMATICA,miBean.getNotificacionTelematica());
 			
 		
 		}

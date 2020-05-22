@@ -732,3 +732,12 @@ modificar v_siga_cat_justificacion
 
 f_comunicaciones_ejg_2003_CAB
 
+-- Add/modify columns 
+alter table SCS_PERSONAJG add NOTIFICACIONTELEMATICA VARCHAR2(1);
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.literal.notificacionTelematica', 'Solicita notificaciones telemáticas', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.literal.notificacionTelematica', 'Sol·licita notificacions telemàtiques', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.literal.notificacionTelematica', 'Solicita notificaciones telemáticas#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.literal.notificacionTelematica', 'Solicita notificaciones telemáticas#GL', 0, '4', sysdate, 0, '19');
+
+

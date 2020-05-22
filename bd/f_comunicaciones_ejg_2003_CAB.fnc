@@ -324,7 +324,7 @@ begin
           , RPAD('' '', 10, '' '') AS SOL18_CENTRO_PENITENCIARIO --obligatorio??
           , DECODE(SOL.AUTORIZAAVISOTELEMATICO,null,'' '', ''1'', ''S'', ''N'') AS SOL19_AUTORIZA_TELEM
           , DECODE(EJG.CALIDAD,null,'' '',''0'',''S'',''N'') AS SOL20_DEMANDADO
-          , DECODE(SOL.AUTORIZAAVISOTELEMATICO,null,'' '', ''1'', ''S'', ''N'') AS SOL21_NOTIFICA_TELEM
+          , DECODE(SOL.NOTIFICACIONTELEMATICA,null,'' '', ''1'', ''S'', ''N'') AS SOL21_NOTIFICA_TELEM
           ,''001'' AS SOL22_TIPOINTERVENCION
 
           , ''##'' AS SALTO_LINEA_5

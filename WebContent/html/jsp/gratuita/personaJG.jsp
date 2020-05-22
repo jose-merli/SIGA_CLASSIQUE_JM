@@ -1497,6 +1497,28 @@
 									<html:option value="0"><siga:Idioma key="general.no"/></html:option>
 								</html:select>
 						</td>
+						
+						<%
+						String notificacionTelematica = miform.getNotificacionTelematica();
+						if (notificacionTelematica == null)
+							notificacionTelematica = new String("");
+%>
+						
+						<td class="labelText">
+							<siga:Idioma key="gratuita.personaJG.literal.notificacionTelematica"/>
+						</td>
+						<td>
+								<html:select styleClass="boxCombo" name="PersonaJGForm" value="<%=notificacionTelematica%>" property="notificacionTelematica">
+									<html:option value=""></html:option>
+									<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
+									<html:option value="0"><siga:Idioma key="general.no"/></html:option>
+								</html:select>
+						</td>
+						
+						
+						
+						
+						
 						</tr>
 						</table>
 						</td>

@@ -441,6 +441,13 @@ public class PersonaJGForm extends MasterForm {
 	public String getAutorizaAvisoTelematico() {
 		return UtilidadesHash.getString(this.datos,"AutorizaAvisoTelematico");
 	}
+	public void setNotificacionTelematica(String dato) {
+		UtilidadesHash.set(this.datos,"NotificacionTelematica",dato);
+	}
+	public String getNotificacionTelematica() {
+		return UtilidadesHash.getString(this.datos,"NotificacionTelematica");
+	}
+	
 	// campo para tabla de tipo calidad en representante tutor.
 	public void setEnCalidadDe(String dato) {
 		UtilidadesHash.set(this.datos,"EnCalidadDe",dato);

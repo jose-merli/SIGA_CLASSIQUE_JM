@@ -63,6 +63,8 @@ public class ScsPersonaJGBean extends MasterBean{
 	private String asistidoSolicitaJG;
 	private String asistidoAutorizaEEJG;
 	private String autorizaAvisoTelematico;
+	private String notificacionTelematica;
+	
 
 	
 	/* Nombre de Tabla*/
@@ -115,6 +117,7 @@ public class ScsPersonaJGBean extends MasterBean{
 	static public final String  C_ASISTIDOSOLICITAJG	=			"ASISTIDOSOLICITAJG";
 	static public final String  C_ASISTIDOAUTORIZAEEJG	=			"ASISTIDOAUTORIZAEEJG";
 	static public final String  C_AUTORIZAAVISOTELEMATICO	=			"AUTORIZAAVISOTELEMATICO";
+	static public final String  C_NOTIFICACIONTELEMATICA	=			"NOTIFICACIONTELEMATICA";
 	
 	
 	/*Metodos SET*/
@@ -605,6 +608,12 @@ public class ScsPersonaJGBean extends MasterBean{
 	}
 	public void setAutorizaAvisoTelematico(String autorizaAvisoTelematico) {
 		this.autorizaAvisoTelematico = autorizaAvisoTelematico;
+	}
+	public String getNotificacionTelematica() {
+		return notificacionTelematica;
+	}
+	public void setNotificacionTelematica(String notificacionTelematica) {
+		this.notificacionTelematica = notificacionTelematica;
 	}
 	
 
