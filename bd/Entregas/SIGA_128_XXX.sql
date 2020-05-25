@@ -740,4 +740,4 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.literal.notificacionTelematica', 'Solicita notificaciones telemáticas#EU', 0, '3', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.literal.notificacionTelematica', 'Solicita notificaciones telemáticas#GL', 0, '4', sysdate, 0, '19');
 
-
+-- 2020-05-25 - Ejecutado en Integracion por AAG

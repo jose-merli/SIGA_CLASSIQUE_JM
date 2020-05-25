@@ -1,14 +1,11 @@
-create or replace view uscgae.v_siga_cat_justificacion as
+create or replace view v_siga_cat_justificacion as
 Select IdInstitucion,
-
        IdInstitucion || Trim(AnyoExpediente) || SubStr(Trimestre, 1, 1) || Trim(To_Char(RowNum, '00000')) CodActuacion,
        ColegioExpediente,
        NumExpediente,
        AnyoExpediente,
        CodExpediente,
-
        Trimestre,
-
        ICAColegiado,
        NumColegiado,
        NombreAbogado,
@@ -20,14 +17,12 @@ Select IdInstitucion,
        TipoIniciacion,
        NumDesignacionAbogado,
        FechaDesignacionAbogado,
-
        CodTipoIdentificacion,
        Identificacion,
        Nombre,
        PrimerApellido,
        SegundoApellido,
        Sexo,
-
        FechaActuacion,
        FechaJustificacionActuacion,
        Festivo,
@@ -39,7 +34,6 @@ Select IdInstitucion,
        Modulo,
        Importe,
        CantidadAsistencias
-
  From (Select Fac.IdInstitucion, 
               Fac.IdInstitucion ColegioExpediente,
               '1' -- Tipo: Actuaciones de oficio
@@ -539,3 +533,4 @@ Select IdInstitucion,
                                                    From Fcs_Fact_GrupoFact_Hito
                                                   Where IdGrupoFacturacion = 1))
 ;
+/
