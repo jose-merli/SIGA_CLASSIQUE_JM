@@ -741,3 +741,19 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.literal.notificacionTelematica', 'Solicita notificaciones telemáticas#GL', 0, '4', sysdate, 0, '19');
 
 -- 2020-05-25 - Ejecutado en Integracion por AAG
+
+alter table PCAJG_ALC_INT_SOL add SOL21_NOTIFICA_TELEM CHAR(1);
+alter table PCAJG_ALC_INT_SOL add SOL22_TIPOINTERVENCION VARCHAR2(3);
+-VALENCIA
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.numeroMaximoExpRemesas', 'Número máximo de expedientes que puede contener una remesa(0: No hay limite)', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.numeroMaximoExpRemesas', 'Nombre màxim d''expedients que pot contenir una remesa (0: No hi ha límit)', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.numeroMaximoExpRemesas', 'Número máximo de expedientes que puede contener una remesa(0: No hay limite)#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.numeroMaximoExpRemesas', 'Número máximo de expedientes que puede contener una remesa(0: No hay limite)#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.aviso.numeroMaximoExpRemesas', 'Se ha superado el número máximo de expedientes que puede contener una remesa', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.aviso.numeroMaximoExpRemesas', 'S''ha superat el nombre màxim d''expedients que pot contenir una remesa', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.aviso.numeroMaximoExpRemesas', 'Se ha superado el número máximo de expedientes que puede contener una remesa#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.aviso.numeroMaximoExpRemesas', 'Se ha superado el número máximo de expedientes que puede contener una remesa#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_PARAMETROS (MODULO, PARAMETRO, VALOR, FECHAMODIFICACION, USUMODIFICACION, IDINSTITUCION, IDRECURSO, FECHA_BAJA)
+values ('SCS', 'REMESAS_NUM_MAXIMO_EXP', '0', SYSDATE, 1, 0, 'scs.parametro.numeroMaximoExpRemesas', null);
