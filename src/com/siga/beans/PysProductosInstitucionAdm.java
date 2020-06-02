@@ -827,13 +827,13 @@ public class PysProductosInstitucionAdm extends MasterBeanAdministrador
 				int longitudContador=longitud.intValue();
 				
 				int numContador= new Integer((contadorTablaHash.get("CONTADOR").toString())).intValue();
-				gc.validarLogitudContador(numContador,contadorTablaHash);
+				gc.validarLongitudContador(numContador,contadorTablaHash);
 				
 				//Comprobamos la unicidad de este contador junto con el prefijo y sufijo guardado en la hash contador
 				while(gc.comprobarUnicidadContadorProdCertif(numContador,contadorTablaHash, beanProd.getIdTipoProducto().toString(), beanProd.getIdProducto().toString(), beanProd.getIdProductoInstitucion().toString())){
 					
 					numContador++;
-					gc.validarLogitudContador(numContador,contadorTablaHash);
+					gc.validarLongitudContador(numContador,contadorTablaHash);
 				}
 				
 			  	Integer contadorSugerido=new Integer(numContador);

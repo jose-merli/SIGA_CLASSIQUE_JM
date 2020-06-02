@@ -35,6 +35,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 							FacSerieFacturacionBean.C_TRASPASOPLANTILLA,
 							FacSerieFacturacionBean.C_TRASPASOCODAUDITORIADEF,
 							FacSerieFacturacionBean.C_IDCONTADOR,
+							FacSerieFacturacionBean.C_IDCONTADOR_ABONOS,
 							FacSerieFacturacionBean.C_CONFDEUDOR,
 							FacSerieFacturacionBean.C_CONFINGRESOS,
 							FacSerieFacturacionBean.C_CTACLIENTES,
@@ -71,6 +72,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 			bean.setTraspasoCodAuditoriaDef(UtilidadesHash.getString(hash,FacSerieFacturacionBean.C_TRASPASOCODAUDITORIADEF));
 			bean.setNombreAbreviado(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_NOMBREABREVIADO));
 			bean.setIdContador(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_IDCONTADOR));
+			bean.setIdContadorAbonos(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_IDCONTADOR_ABONOS));
 			bean.setConfigDeudor(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_CONFDEUDOR));
 			bean.setConfigIngresos(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_CONFINGRESOS));
 			bean.setCuentaClientes(UtilidadesHash.getString(hash, FacSerieFacturacionBean.C_CTACLIENTES));
@@ -107,6 +109,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_TRASPASOCODAUDITORIADEF, b.getTraspasoCodAuditoriaDef());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_NOMBREABREVIADO, b.getNombreAbreviado());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDCONTADOR, b.getIdContador());
+			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_IDCONTADOR_ABONOS, b.getIdContadorAbonos());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_CONFDEUDOR, b.getConfigDeudor());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_CONFINGRESOS, b.getConfigIngresos());
 			UtilidadesHash.set(htData, FacSerieFacturacionBean.C_CTACLIENTES, b.getCuentaClientes());
@@ -143,6 +146,7 @@ public class FacSerieFacturacionAdm extends MasterBeanAdministrador {
 										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_NOMBREABREVIADO + " AS NOMBREABREVIADO",	
 										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_TIPOSERIE + " AS TIPOSERIE",	
 										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDCONTADOR + " AS IDCONTADOR",
+										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDCONTADOR_ABONOS + " AS IDCONTADOR_ABONOS",
 										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_FECHABAJA + " AS FECHABAJA",
 										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_FECHAMODIFICACION + " AS FECHAMODIFICACION",
 										  FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_USUMODIFICACION + " AS USUMODIFICACION"};

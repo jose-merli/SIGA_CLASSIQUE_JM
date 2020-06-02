@@ -206,19 +206,46 @@ public class AdmContadorAdm extends MasterBeanAdministrador
 		return datos;
 	}
 
-	public String obtenerNuevoMax(String idInstitucion) throws ClsExceptions,
-			SIGAException {
+	public String obtenerNuevoMaxContadorFacturas(String idInstitucion) throws ClsExceptions, SIGAException {
 		String salida = "";
 		Vector datos = new Vector();
 
-		String select = 
-			"select nvl(max(to_number(substr(idcontador, instr(idcontador, '_',1,2)+1))), 0) + 1 as ID " +
-			"  from ADM_CONTADOR " +
-			" where substr(idcontador, 1, 3) = 'FAC' " +
-			"   and upper(idcontador) not in ('FAC_GENERAL', 'FAC_ABONOS') " +
-			"   and general = '0' " +
-			"   and idinstitucion = "+idInstitucion+" ";
-		datos = this.selectGenerico(select);
+		StringBuilder select = new StringBuilder();
+		select.append("select nvl(max(to_number(substr(idcontador, instr(idcontador, '_',1,2)+1))), 0) + 1 as ID ");
+		select.append("  from ADM_CONTADOR ");
+		select.append(" where idmodulo = 6 ");
+		select.append("	  and substr(idcontador, 1, 3) = 'FAC' ");
+		select.append("   and upper(idcontador) <> 'FAC_GENERAL' ");
+		select.append("   and upper(idcontador) not like 'FAC_ABONOS%' ");
+		select.append("   and general = '0' ");
+		select.append("   and idinstitucion = ");
+		select.append(idInstitucion);
+		datos = this.selectGenerico(select.toString());
+		if (datos == null || datos.size() == 0) {
+			salida = "1";
+		} else {
+			salida = (String) ((Hashtable) datos.get(0)).get("ID");
+			if (salida.trim().equals(""))
+				salida = "1";
+		}
+
+		return salida;
+	}
+
+	public String obtenerNuevoMaxContadorAbonos(String idInstitucion) throws ClsExceptions, SIGAException {
+		String salida = "";
+		Vector datos = new Vector();
+
+		StringBuilder select = new StringBuilder();
+		select.append("select nvl(max(to_number(substr(idcontador, instr(idcontador, '_',1,3)+1))), 0) + 1 as ID ");
+		select.append("  from ADM_CONTADOR ");
+		select.append(" where idmodulo = 6 ");
+		select.append("	  and substr(idcontador, 1, 10) = 'FAC_ABONOS' ");
+		select.append("   and upper(idcontador) <> 'FAC_ABONOS_GENERAL' ");
+		select.append("   and general = '0' ");
+		select.append("   and idinstitucion = ");
+		select.append(idInstitucion);
+		datos = this.selectGenerico(select.toString());
 		if (datos == null || datos.size() == 0) {
 			salida = "1";
 		} else {
@@ -231,7 +258,7 @@ public class AdmContadorAdm extends MasterBeanAdministrador
 	}
 
 	/**
-	 * Borra el contador que esta relacionado con la serie
+	 * Borra el contador de facturas que esta relacionado con la serie
 	 * si no es general ni tiene otras relaciones
 	 */
 	public boolean borrarContadorLibre(String idInstitucion, String idContador)
@@ -239,11 +266,13 @@ public class AdmContadorAdm extends MasterBeanAdministrador
 
 		String delete = 
 			"DELETE ADM_CONTADOR " +
-			" WHERE IDCONTADOR = '"+idContador+"' " +
+			" WHERE idmodulo = 6 " +
+			"   AND IDCONTADOR = '"+idContador+"' " +
 			"   AND IDINSTITUCION = "+idInstitucion+" " +
 			"   AND GENERAL = '0' " +
-			"   AND SUBSTR(IDCONTADOR,0,3) = 'FAC' " +
 			"   AND IDCONTADOR NOT IN (SELECT IDCONTADOR " +
+			"                            FROM FAC_SERIEFACTURACION) " +
+			"   AND IDCONTADOR NOT IN (SELECT IDCONTADOR_ABONOS " +
 			"                            FROM FAC_SERIEFACTURACION) ";
 
 		return this.deleteSQL(delete);

@@ -96,6 +96,16 @@
 		contador = beanContador.getContador().toString();
 		sufijo = beanContador.getSufijo();
 	}
+	ArrayList aContadorAbonosSel = new ArrayList();
+	String idContadorAbonos="", prefijoAbonos="", contadorAbonos="", sufijoAbonos="";
+	AdmContadorBean beanContadorAbonos = (AdmContadorBean) request.getAttribute("beanContadorAbonos");	
+	if (beanContadorAbonos!=null) {
+		aContadorAbonosSel.add(beanContadorAbonos.getIdContador());
+		idContadorAbonos = beanContadorAbonos.getIdContador();
+		prefijoAbonos = beanContadorAbonos.getPrefijo();
+		contadorAbonos = beanContadorAbonos.getContador().toString();
+		sufijoAbonos = beanContadorAbonos.getSufijo();
+	}
 	
 	String parametro[] = new String[1];
 	parametro[0] = user.getLocation();
@@ -182,6 +192,21 @@
 			return false;
 		}
 
+		function configuraContadorAbonos() {
+			var con = document.getElementById("contaAbonos");
+			var con2 = document.getElementById("conta2Abonos");
+			if (document.forms[0].configurarContadorAbonos.checked==true) {
+				con.style.display='block';
+				con2.style.display='block';
+				comprobarNuevoAbonos();
+			} 
+			else {
+				con.style.display='none';
+				con2.style.display='none';
+			}
+			return false;
+		}
+
 		function comprobarNuevo() {
 			if (document.forms[0].contadorExistente.value=="") {
 				jQuery("#prefijo_nuevo").removeAttr("disabled");
@@ -192,6 +217,20 @@
 				jQuery("#prefijo_nuevo").attr("disabled","disabled");
 				jQuery("#contador_nuevo").attr("disabled","disabled");
 				jQuery("#sufijo_nuevo").attr("disabled","disabled");
+
+			}					
+		}
+			
+		function comprobarNuevoAbonos() {
+			if (document.forms[0].contadorExistenteAbonos.value=="") {
+				jQuery("#prefijo_nuevo_abonos").removeAttr("disabled");
+				jQuery("#contador_nuevo_abonos").removeAttr("disabled");
+				jQuery("#sufijo_nuevo_abonos").removeAttr("disabled");
+
+			} else {
+				jQuery("#prefijo_nuevo_abonos").attr("disabled","disabled");
+				jQuery("#contador_nuevo_abonos").attr("disabled","disabled");
+				jQuery("#sufijo_nuevo_abonos").attr("disabled","disabled");
 
 			}					
 		}
@@ -257,23 +296,47 @@
 						
 						
 						// se trata de un nuevo contador
-						if (document.forms[0].prefijo_nuevo.length>8) {
-							alert('<siga:Idioma key="Facturacion.mensajes.longitud.prefijo"/>');
+						if (document.forms[0].prefijo_nuevo.value.length>8) {
+							alert('<siga:Idioma key="Facturacion.mensajes.contadorFacturas.longitud.prefijo"/>');
 							return false;
 						}	
 						
-						if (document.forms[0].sufijo_nuevo.length>8) {
-							alert('<siga:Idioma key="Facturacion.mensajes.longitud.sufijo"/>');
+						if (document.forms[0].sufijo_nuevo.value.length>8) {
+							alert('<siga:Idioma key="Facturacion.mensajes.contadorFacturas.longitud.sufijo"/>');
 							return false;
 						}
 						
 	                    if (isNaN(document.forms[0].contador_nuevo.value)) {
-							alert('<siga:Idioma key="Facturacion.mensajes.noNumerico.contador"/>');
+							alert('<siga:Idioma key="Facturacion.mensajes.contadorFacturas.noNumerico.contador"/>');
 							return false;
 						}	
 						if (document.forms[0].contador_nuevo.value=="") {
 						
-						    alert('<siga:Idioma key="Facturacion.mensajes.obligatorio.contador"/>');
+						    alert('<siga:Idioma key="Facturacion.mensajes.contadorFacturas.obligatorio.contador"/>');
+							return false;
+						}	
+					}
+					if (document.forms[0].configurarContadorAbonos.checked==1 && document.forms[0].contadorExistenteAbonos.value=="") {
+						
+						
+						// se trata de un nuevo contador
+						if (document.forms[0].prefijo_nuevo_abonos.value.length>8) {
+							alert('<siga:Idioma key="Facturacion.mensajes.contadorAbonos.longitud.prefijo"/>');
+							return false;
+						}	
+						
+						if (document.forms[0].sufijo_nuevo_abonos.value.length>8) {
+							alert('<siga:Idioma key="Facturacion.mensajes.contadorAbonos.longitud.sufijo"/>');
+							return false;
+						}
+						
+	                    if (isNaN(document.forms[0].contador_nuevo_abonos.value)) {
+							alert('<siga:Idioma key="Facturacion.mensajes.contadorAbonos.noNumerico.contador"/>');
+							return false;
+						}	
+						if (document.forms[0].contador_nuevo_abonos.value=="") {
+						
+						    alert('<siga:Idioma key="Facturacion.mensajes.contadorAbonos.obligatorio.contador"/>');
 							return false;
 						}	
 					}
@@ -346,48 +409,46 @@
 	</script>
 </head>
 
-<body class="tablaCentralCampos" onLoad="configuraContador();actualiza();ediccion();habilitarCamposTraspaso();">
+<body class="tablaCentralCampos" onLoad="configuraContador();configuraContadorAbonos();actualiza();ediccion();habilitarCamposTraspaso();">
 	
-	<table class="tablaCentralCampos">
-		<html:form action="/FAC_DatosGenerales.do" method="POST" focus="nombreAbreviado" target="submitArea">
-			<html:hidden property="modo" value=""/>
-			<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>
-			<html:hidden property="idSerieFacturacion" value="<%=idSerieFacturacion%>"/>
-			<html:hidden property="accion" value="<%=accion%>"/>
-			<html:hidden property="ids" value=""/>
+	<html:form action="/FAC_DatosGenerales.do" method="POST" focus="nombreAbreviado" target="submitArea">
+		<html:hidden property="modo" value=""/>
+		<html:hidden property="idInstitucion" value="<%=idInstitucion%>"/>
+		<html:hidden property="idSerieFacturacion" value="<%=idSerieFacturacion%>"/>
+		<html:hidden property="accion" value="<%=accion%>"/>
+		<html:hidden property="ids" value=""/>
+		
+		<table class="tablaCentralCampos">
 			<tr>
 				<td style="width:100%">		
 					<siga:ConjCampos leyenda="facturacion.serios.literal.seriesFacturacion">
-						<table align="center" border="0">
+						<table class="tablaCentralCampos">
 							<tr>
-								<td width="10%"></td>
 								<td width="20%"></td>
 								<td width="5%"></td>
-								<td width="5%"></td>
-								<td width="10%"></td>
-								<td width="10%"></td>
 								<td width="15%"></td>
-								<td width="5%"></td>
+								<td width="20%"></td>
+								<td width="20%"></td>
+								<td width="20%"></td>
 							</tr>
 							<tr>
 								<td class="labelText" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.nombreAbreviado"/>&nbsp;(*)</td>
-								<td>
+								<td colspan="3">
 <%
 									if (!bEditable) {
 %>
-										<html:text name="DatosGeneralesForm" styleId="nombreAbreviado" property="nombreAbreviado" size="36" maxlength="20" styleClass="boxConsulta" value="<%=sAbreviatura%>" readonly="true"/>
+										<html:text name="DatosGeneralesForm" styleId="nombreAbreviado" property="nombreAbreviado" size="30" maxlength="20" styleClass="boxConsulta" value="<%=sAbreviatura%>" readonly="true"/>
 <%
 									} else {
 %>
-										<html:text name="DatosGeneralesForm" styleId="nombreAbreviado" property="nombreAbreviado" size="36" maxlength="20" styleClass="boxMayuscula" value="<%=sAbreviatura%>" readonly="false"/>
+										<html:text name="DatosGeneralesForm" styleId="nombreAbreviado" property="nombreAbreviado" size="30" maxlength="20" styleClass="boxMayuscula" value="<%=sAbreviatura%>" readonly="false"/>
 <%
 									}
 %>
 								</td>
+
 								<td class="labelText" nowrap title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (user, "facturacion.seriesFacturacion.tipoGenerica.ayuda").replaceAll("\\\\n", ""))%>'>
-									<siga:Idioma key="facturacion.datosGenerales.literal.tipoGenerica"/>
-								</td>
-								<td title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (user, "facturacion.seriesFacturacion.tipoGenerica.ayuda").replaceAll("\\\\n", ""))%>'>
+									<siga:Idioma key="facturacion.datosGenerales.literal.tipoGenerica"/>&nbsp;&nbsp;
 <% 
 									if (sTipoSerieFacturacion!=null && sTipoSerieFacturacion.equals("G")) { 
 %>
@@ -400,8 +461,7 @@
 									} 
 %>
 								</td>					
-								<td class="labelText" nowrap><siga:Idioma key="facturacion.datosGenerales.literal.estado"/></td>
-								<td>
+								<td class="labelText" nowrap><siga:Idioma key="facturacion.datosGenerales.literal.estado"/>&nbsp;&nbsp;
 <%
 									if (sFechaBaja==null || sFechaBaja.equals("")) {
 %>								
@@ -414,67 +474,40 @@
 									}
 %>																			
 								</td>	
-								<%
-								if (ClsConstants.esConsejoITCGAE(idInstitucion)) {
-%>
-									<td id="titulo" class="labelText"><siga:Idioma key="facturacion.datosGenerales.literal.facturacion.datosGenerales.literal.planificarPosteriormente"/></td>
-									<td>
-<%
-										if (!bEditable) {
-%>
-											<siga:ComboBD nombre = "idSerieFacturacionPrevia" tipo="cmbSerieFacturacionPrevias" elementoSel ="<%=aSerieSeleccionada%>" clase="boxCombo" ancho="180" parametro="<%=datoSerie%>" readonly="true"/>
-<%
-										} else { 
-%>
-											<siga:ComboBD nombre = "idSerieFacturacionPrevia" tipo="cmbSerieFacturacionPrevias" elementoSel ="<%=aSerieSeleccionada%>" clase="boxCombo" ancho="180" parametro="<%=datoSerie%>"/>
-<%
-										}
-%>									
-									</td>
-<% 
-								} else{
-%>									
-									<td></td>
-									<td></td>
-<% 								} %>
-																
 							</tr>
 												
 							<tr> 
        							<td class="labelText" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.descripcion"/>&nbsp;(*)</td>
-								<td colspan="7">
+								<td colspan="5">
 <%
 									if (!bEditable) {
 %>
-										<html:text name="DatosGeneralesForm"  styleId="descripcion"  property="descripcion" size="100" maxlength="100" styleClass="boxConsulta" value="<%=sDescripcion%>" readonly="true"/>
+										<html:text name="DatosGeneralesForm"  styleId="descripcion"  property="descripcion" size="120" maxlength="100" styleClass="boxConsulta" value="<%=sDescripcion%>" readonly="true"/>
 <%
 									} else {
 %>
-										<html:text name="DatosGeneralesForm" styleId="descripcion"  property="descripcion" size="100" maxlength="100" styleClass="box" value="<%=sDescripcion%>" readonly="false"/>
+										<html:text name="DatosGeneralesForm" styleId="descripcion"  property="descripcion" size="120" maxlength="100" styleClass="box" value="<%=sDescripcion%>" readonly="false"/>
 <%
 									}
 %>
 								</td>
 								
 							</tr>
+							
 							<tr>
-							    <td class="labelText" style="text-align:left" >
-									<siga:Idioma key="facturacion.datosGenerales.literal.observaciones"/>
-								</td>
-								<td colspan="7">
+								<td class="labelText" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.facturacion.datosGenerales.literal.planificarPosteriormente"/></td>
+								<td colspan="5">
 <%
 									if (!bEditable) {
 %>
-										<html:textarea name="DatosGeneralesForm" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleId="observaciones" property="observaciones" onkeydown="cuenta(this,4000);" styleClass="boxConsulta" value="<%=observaciones%>" readonly="true"
-											style="overflow-y:auto;overflow-x:hidden;width:750px;height:50px;resize:none;"/>
+										<siga:ComboBD nombre = "idSerieFacturacionPrevia" tipo="cmbSerieFacturacionPrevias" elementoSel ="<%=aSerieSeleccionada%>" clase="boxCombo" ancho="750" parametro="<%=datoSerie%>" readonly="true"/>
 <%
-									} else {
+									} else { 
 %>
-										<html:textarea name="DatosGeneralesForm" property="observaciones" styleId="observaciones" onkeydown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleClass="box" value="<%=observaciones%>" readonly="false"
-											style="overflow-y:auto;overflow-x:hidden;width:750px;height:50px;resize:none;"/>
+										<siga:ComboBD nombre = "idSerieFacturacionPrevia" tipo="cmbSerieFacturacionPrevias" elementoSel ="<%=aSerieSeleccionada%>" clase="boxCombo" ancho="750" parametro="<%=datoSerie%>"/>
 <%
 									}
-%>
+%>									
 								</td>
 							</tr>
 						</table>
@@ -483,47 +516,76 @@
 			</tr>
 		</table>
 		
-		<table class="tablaCentralCampos" border="0">	
+		<table class="tablaCentralCampos">
 			<tr>
-				<td style="width:100%" >		
-					<siga:ConjCampos leyenda="facturacion.serios.literal.configuracionPDF">
-						<table align="left" border="0">
+				<td style="width:50%">		
+					<siga:ConjCampos leyenda="facturacion.datosGenerales.literal.observaciones" desplegable="true">
+						<table align="center" border="0">
 							<tr>
-								<td class="labelText" width="10%" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.plantilla"/>&nbsp;(*)</td>
 								<td>
 <%
 									if (!bEditable) {
 %>
-										<html:text name="DatosGeneralesForm" styleId="plantilla"  property="plantilla" style="width:400px" maxlength="100" styleClass="boxComboConsulta" value="<%=sPlantilla%>" readonly="true"/>
+										<html:textarea name="DatosGeneralesForm" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleId="observaciones" property="observaciones" onkeydown="cuenta(this,4000);" styleClass="boxConsulta" value="<%=observaciones%>" readonly="true"
+											style="overflow-y:auto;overflow-x:hidden;width:450px;height:80px;resize:none;"/>
 <%
 									} else {
-										String dato[] = new String[1];
-										dato[0] = idInstitucion;
-										ArrayList aPlantilla = new ArrayList();
-										aPlantilla.add(iPlantilla.toString());
 %>
-										<siga:ComboBD nombre = "idPlantilla" tipo="cmbPlantilla" elementoSel ="<%=aPlantilla%>" clase="boxCombo" parametro="<%=dato%>" ancho="400"/>
+										<html:textarea name="DatosGeneralesForm" property="observaciones" styleId="observaciones" onkeydown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleClass="box" value="<%=observaciones%>" readonly="false"
+											style="overflow-y:auto;overflow-x:hidden;width:450px;height:80px;resize:none;"/>
 <%
 									}
 %>
 								</td>
-								
-								<td class="labelText" width="15%" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.nombrePDF"/>&nbsp;(*)</td>
-								<td>		
-									<siga:ComboBD nombre="idNombreDescargaPDF"  elementoSelstring="<%=String.valueOf(nombreDescargaPDF)%>" obligatorioSinTextoSeleccionar="true" tipo="cmbNombreDescargaPDF" clase="boxCombo"  />
-								</td>		
+							</tr>
+						</table>
+					</siga:ConjCampos>
+				</td>
+				
+				<td style="width:50%">
+					<siga:ConjCampos leyenda="facturacion.serios.literal.formaPago" desplegable="true">
+						<table align="center" border="0">
+							<tr>
+								<td width="50%" valign="middle" class="labelText" title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (user, "facturacion.seriesFacturacion.formaPago.ayuda").replaceAll("\\\\n", ""))%>'>
+									<siga:Idioma key="facturacion.serios.literal.formaPagoSeleccionar"/>
+								</td>
+								<td width="50%">
+<%
+									if (aFormasPago.isEmpty()) {
+										if (accion != "ver") {
+%>
+											<siga:ComboBD nombre="formaPagoAutomática" tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="5" seleccionMultiple="true" elementoSel="<%=0%>" obligatorio="true"/>
+<%
+										} else {
+%>
+											<siga:ComboBD nombre="formaPagoAutomática" tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="5" seleccionMultiple="true" elementoSel="<%=0%>" obligatorio="true" readOnly="true" />
+<%
+										}
+									} else { 
+										if (accion != "ver") {
+%>
+											<siga:ComboBD nombre="formaPagoAutomática" tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="5" seleccionMultiple="true" elementoSel="<%=aFormasPago%>" obligatorio="true"/>
+<%
+										} else {
+%>
+											<siga:ComboBD nombre="formaPagoAutomática" tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="5" seleccionMultiple="true" elementoSel="<%=aFormasPago%>" obligatorio="true" readOnly="true" />
+<%
+										}
+									}
+%> 
+								</td>
 							</tr>
 						</table>
 					</siga:ConjCampos>
 				</td>
 			</tr>
-		 </table>
-		 
-		 <table class="tablaCentralCampos" border="0">	
+		</table>
+		
+		<table class="tablaCentralCampos">	
 			<tr>
 				<td style="width:100%" >		
-					<siga:ConjCampos leyenda="facturacion.serios.literal.configuracionEnvios">
-						<table align="left" border="0" width="100%">
+					<siga:ConjCampos leyenda="facturacion.serios.literal.configuracionPDF">
+						<table align="left" width="100%">
 							<tr>
 								<td class="labelText" style="text-align:left" width="25%">
 									<siga:Idioma key="facturacion.datosGenerales.literal.generaPDF"/>&nbsp;&nbsp;
@@ -543,7 +605,43 @@
 									} 
 %>
 								</td>
+								<td class="labelText" width="10%" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.plantilla"/>&nbsp;(*)</td>
 								<td width="25%">
+<%
+									if (!bEditable) {
+%>
+										<html:text name="DatosGeneralesForm" styleId="plantilla"  property="plantilla" style="width:400px" maxlength="100" styleClass="boxComboConsulta" value="<%=sPlantilla%>" readonly="true"/>
+<%
+									} else {
+										String dato[] = new String[1];
+										dato[0] = idInstitucion;
+										ArrayList aPlantilla = new ArrayList();
+										aPlantilla.add(iPlantilla.toString());
+%>
+										<siga:ComboBD nombre = "idPlantilla" tipo="cmbPlantilla" elementoSel ="<%=aPlantilla%>" clase="boxCombo" parametro="<%=dato%>" ancho="200"/>
+<%
+									}
+%>
+								</td>
+								
+								<td class="labelText" width="15%" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.nombrePDF"/>&nbsp;(*)</td>
+								<td width="25%">		
+									<siga:ComboBD nombre="idNombreDescargaPDF"  elementoSelstring="<%=String.valueOf(nombreDescargaPDF)%>" obligatorioSinTextoSeleccionar="true" tipo="cmbNombreDescargaPDF" clase="boxCombo" ancho="200" />
+								</td>		
+							</tr>
+						</table>
+					</siga:ConjCampos>
+				</td>
+			</tr>
+		 </table>
+		 
+		 <table class="tablaCentralCampos">	
+			<tr>
+				<td style="width:100%" >		
+					<siga:ConjCampos leyenda="facturacion.serios.literal.configuracionEnvios">
+						<table align="left" width="100%">
+							<tr>
+								<td class="labelText" style="text-align:left" width="25%">
 									<siga:Idioma key="facturacion.datosGenerales.literal.envioFacturas"/>&nbsp;&nbsp;
 <% 
 									if (enviarFacturas!=null && enviarFacturas.equals("1")) { 
@@ -558,10 +656,10 @@
 %>
 								</td>
 								
-								<td id="titulo" class="labelText" width="20%"><siga:Idioma key="envios.plantillas.literal.plantilla"/></td>
-								<td width="30%">
-									<siga:ComboBD  nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=aPlantillaEnviosSeleccionada%>" ancho="280" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>" />
-								</td>									
+								<td id="titulo" class="labelText" width="10%"><siga:Idioma key="envios.plantillas.literal.plantilla"/></td>
+								<td width="65%" colspan="2">
+									<siga:ComboBD  nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=aPlantillaEnviosSeleccionada%>" ancho="600" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>" />
+								</td>
 							</tr>
 						</table>
 					</siga:ConjCampos>
@@ -574,7 +672,7 @@
 			<tr>
 				<td style="width:100%" >		
 					<siga:ConjCampos leyenda="facturacion.serios.literal.configuracionTraspasoFacturas">
-						<table align="left" border="0" width="100%">
+						<table align="left" width="100%">
 							<tr>
 								<td class="labelText" style="text-align:left" width="25%">
 									<siga:Idioma key="facturacion.datosGenerales.literal.traspasarFacturas"/>&nbsp;&nbsp;
@@ -590,8 +688,10 @@
 									} 
 %>
 								</td>
-								<td width="25%" nowrap="nowrap">
-									<siga:Idioma key="facturacion.datosGenerales.literal.plantillaTraspasoFacturas"/>&nbsp;&nbsp;
+								<td width="10%" class="labelText">
+									<siga:Idioma key="facturacion.datosGenerales.literal.plantillaTraspasoFacturas"/>
+								</td>
+								<td width="25%">
 <% 									if(accion.equals("ver")){ %>
 										<html:text name="DatosGeneralesForm" id="plantillaTraspasoFacturas" styleId="plantillaTraspasoFacturas" property="plantillaTraspasoFacturas" size="30" maxlength="10" value="<%= plantillaTraspasoFacturas %>" styleClass="boxConsulta" readonly="true" />
 <%									} else { %>
@@ -599,12 +699,12 @@
 <%									} %>
 								</td>
 								
-								<td id="titulo" class="labelText" width="20%"><siga:Idioma key="envios.plantillas.literal.plantillaTraspasoFacturasAuditoria"/></td>
-								<td width="30%">
+								<td id="titulo" class="labelText" width="15%"><siga:Idioma key="envios.plantillas.literal.plantillaTraspasoFacturasAuditoria"/></td>
+								<td width="25%">
 <% 									if(accion.equals("ver")){ %>
-										<html:text name="DatosGeneralesForm" id="plantillaTraspasoAuditoria" styleId="plantillaTraspasoAuditoria" property="plantillaTraspasoAuditoria" size="45" maxlength="10" value="<%= plantillaTraspasoAuditoria %>" styleClass="boxConsulta" readonly="true" />
+										<html:text name="DatosGeneralesForm" id="plantillaTraspasoAuditoria" styleId="plantillaTraspasoAuditoria" property="plantillaTraspasoAuditoria" size="30" maxlength="10" value="<%= plantillaTraspasoAuditoria %>" styleClass="boxConsulta" readonly="true" />
 <%									} else { %>
-										<html:text name="DatosGeneralesForm" id="plantillaTraspasoAuditoria" styleId="plantillaTraspasoAuditoria" property="plantillaTraspasoAuditoria" size="45" maxlength="10" value="<%= plantillaTraspasoAuditoria %>" styleClass="box" readonly="false"  />
+										<html:text name="DatosGeneralesForm" id="plantillaTraspasoAuditoria" styleId="plantillaTraspasoAuditoria" property="plantillaTraspasoAuditoria" size="30" maxlength="10" value="<%= plantillaTraspasoAuditoria %>" styleClass="box" readonly="false"  />
 <%									} %>
 								</td>									
 							</tr>
@@ -629,15 +729,20 @@
 %>
 
 			<tr border="1">
-				<td style="width:58%" border ="1">		
-					<siga:ConjCampos leyenda="facturacion.serios.literal.contador">
+				<td style="width:50%" border ="1">		
+					<siga:ConjCampos leyenda="facturacion.series.literal.contador.facturas" desplegable="true">
 						<table align="left" border="0">
 							<tr>
-								<td class="labelText" style="width:35%">
+								<td width="35%"/>
+								<td width="65%"/>
+							</tr>
+							
+							<tr>
+								<td class="labelText">
 									<siga:Idioma key="facturacion.datosGenerales.literal.nombreContador"/>&nbsp;
 								</td>
 								<td  class="labelTextValue" >
-									<html:text name="DatosGeneralesForm" property="idContador" styleId="idContador" size="20" maxlength="20" styleClass="boxConsulta" value="<%=idContador%>" readonly="true"/>
+									<html:text name="DatosGeneralesForm" property="idContador" styleId="idContador" size="40" maxlength="20" styleClass="boxConsulta" value="<%=idContador%>" readonly="true"/>
 								</td>
 							</tr>
 							
@@ -656,7 +761,7 @@
 <% 
 								if (accion.equals("ver")) { 
 %>
-									<td class="labelText" style="width:39%">
+									<td class="labelText">
 								 		&nbsp;
 									</td>
 									<td  class="labelTextValue">
@@ -665,7 +770,7 @@
 <% 
 								} else { 
 %>
-									<td class="labelText" style="width:39%">
+									<td class="labelText">
 										<siga:Idioma key="facturacion.datosGenerales.literal.configurarContador"/>&nbsp;
 									</td>
 									<td  class="labelTextValue">
@@ -698,38 +803,75 @@
 						</table>
 					</siga:ConjCampos>
 				</td>
-				
-				<td style="width:45%">
-					<siga:ConjCampos leyenda="facturacion.serios.literal.formaPago">
-						<table align="center" border="0">
+				<td style="width:50%" border ="1">		
+					<siga:ConjCampos leyenda="facturacion.series.literal.contador.abonos" desplegable="true">
+						<table align="left" border="0">
 							<tr>
-								<td width="60%" class="labelText" title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (user, "facturacion.seriesFacturacion.formaPago.ayuda").replaceAll("\\\\n", ""))%>'>
-									<siga:Idioma key="facturacion.serios.literal.formaPagoSeleccionar"/>
+								<td width="35%"/>
+								<td width="65%"/>
+							</tr>
+							
+							<tr>
+								<td class="labelText">
+									<siga:Idioma key="facturacion.datosGenerales.literal.nombreContador"/>&nbsp;
 								</td>
-								<td width="40%" class="labelText" align="right" title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (user, "facturacion.seriesFacturacion.formaPago.ayuda").replaceAll("\\\\n", ""))%>'>
-<%
-									if (aFormasPago.isEmpty()) {
-										if (accion != "ver") {
+								<td  class="labelTextValue" >
+									<html:text name="DatosGeneralesForm" property="idContadorAbonos" styleId="idContadorAbonos" size="40" maxlength="20" styleClass="boxConsulta" value="<%=idContadorAbonos%>" readonly="true"/>
+								</td>
+							</tr>
+							
+							<tr>
+								<td class="labelText" >
+									<siga:Idioma key="facturacion.datosGenerales.literal.contadorGenerico"/>&nbsp;
+								</td>
+								<td  class="labelTextValue" >
+									<html:text name="DatosGeneralesForm" styleId="prefijoAbonos" property="prefijoAbonos"  size="8" maxlength="10" styleClass="box" value="<%=prefijoAbonos%>" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="contadorAbonos" property="contadorAbonos"  size="15" maxlength="15" styleClass="box" value="<%=contadorAbonos%>" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="sufijoAbonos" property="sufijoAbonos"  size="8" maxlength="10" styleClass="box" value="<%=sufijoAbonos%>" disabled="true"/>
+								</td>
+							</tr>
+							
+							<tr>
+<% 
+								if (accion.equals("ver")) { 
 %>
-											<siga:ComboBD nombre="formaPagoAutomática" tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=0%>" obligatorio="true"/>
-<%
-										} else {
+									<td class="labelText">
+								 		&nbsp;
+									</td>
+									<td  class="labelTextValue">
+										<input type="hidden" name="configurarContadorAbonos" value="off"/>
+									</td>
+<% 
+								} else { 
 %>
-											<siga:ComboBD nombre="formaPagoAutomática" tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=0%>" obligatorio="true" readOnly="true" />
-<%
-										}
-									} else { 
-										if (accion != "ver") {
-%>
-											<siga:ComboBD nombre="formaPagoAutomática" tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=aFormasPago%>" obligatorio="true"/>
-<%
-										} else {
-%>
-											<siga:ComboBD nombre="formaPagoAutomática" tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=aFormasPago%>" obligatorio="true" readOnly="true" />
-<%
-										}
-									}
-%> 
+									<td class="labelText">
+										<siga:Idioma key="facturacion.datosGenerales.literal.configurarContador"/>&nbsp;
+									</td>
+									<td  class="labelTextValue">
+										<input type="checkbox" name="configurarContadorAbonos" id="configurarContadorAbonos" onclick="configuraContadorAbonos();"/>
+									</td>
+<% 
+								} 
+%>																
+							</tr>
+							
+							<tr id="contaAbonos">								
+								<td class="labelText">
+									<siga:Idioma key="facturacion.datosGenerales.literal.existentes"/>&nbsp;
+								</td>
+								<td class="labelText">
+									<siga:ComboBD nombre="contadorExistenteAbonos" tipo="cmbContadorFacturacionAbonos" parametro="<%=parametro%>" clase="boxCombo" obligatorio="false" elementoSel="<%=aContadorAbonosSel%>" accion="comprobarNuevoAbonos()" />
+								</td>
+							</tr>
+							
+							<tr id="conta2Abonos">	
+								<td class="labelText" >
+									<siga:Idioma key="facturacion.datosGenerales.literal.nuevoContador"/>&nbsp;
+								</td>
+								<td  class="labelTextValue">
+									<html:text name="DatosGeneralesForm" styleId="prefijo_nuevo_abonos" property="prefijo_nuevo_abonos" size="8" maxlength="10" styleClass="box" value="" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="contador_nuevo_abonos" property="contador_nuevo_abonos" size="15" maxlength="15" styleClass="box" value="" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="sufijo_nuevo_abonos" property="sufijo_nuevo_abonos" size="8" maxlength="10" styleClass="box" value="" disabled="true"/>
 								</td>
 							</tr>
 						</table>

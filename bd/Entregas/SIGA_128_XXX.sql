@@ -747,7 +747,7 @@ alter table PCAJG_ALC_INT_SOL add SOL22_TIPOINTERVENCION VARCHAR2(3);
 
 -- 2020-05-26 - Ejecutado en Integracion por AAG
 
--VALENCIA
+--VALENCIA
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.numeroMaximoExpRemesas', 'Número máximo de expedientes que puede contener una remesa(0: No hay limite)', 0, '1', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.numeroMaximoExpRemesas', 'Nombre màxim d''expedients que pot contenir una remesa (0: No hi ha límit)', 0, '2', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('scs.parametro.numeroMaximoExpRemesas', 'Número máximo de expedientes que puede contener una remesa(0: No hay limite)#EU', 0, '3', sysdate, 0, '19');
@@ -761,5 +761,84 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_PARAMETROS (MODULO, PARAMETRO, VALOR, FECHAMODIFICACION, USUMODIFICACION, IDINSTITUCION, IDRECURSO, FECHA_BAJA)
 values ('SCS', 'REMESAS_NUM_MAXIMO_EXP', '0', SYSDATE, 1, 0, 'scs.parametro.numeroMaximoExpRemesas', null);
 
+-- SIGARNV-1783
+
+Insert Into Adm_Contador
+  (Idinstitucion, Idcontador, Nombre, Descripcion, 
+   Modificablecontador, Modo, Contador, Prefijo,
+   Sufijo, Longitudcontador, Fechareconfiguracion, Reconfiguracioncontador, Reconfiguracionprefijo,
+   Reconfiguracionsufijo, Idtabla, Idcampocontador, Idcampoprefijo, Idcamposufijo, General,
+   Fechamodificacion, Usumodificacion, 
+   Idmodulo, Fechacreacion, Usucreacion)
+  (Select Idinstitucion,
+          Idcontador || '_FCS',
+          Nombre || ' de pagos SJCS',
+          Descripcion || ' de pagos SJCS',
+          Modificablecontador, Modo, Contador, 'TO' || prefijo,
+          Sufijo, Longitudcontador, Fechareconfiguracion, Reconfiguracioncontador, Reconfiguracionprefijo,
+          Reconfiguracionsufijo, Idtabla, Idcampocontador, Idcampoprefijo, Idcamposufijo, General,
+          Fechamodificacion, Usumodificacion,
+          7,
+          Sysdate,
+          -1
+     From Adm_Contador Con
+    Where Con.Idcontador = 'FAC_ABONOS');
+Update Adm_Contador Con
+   Set Idcontador    = Idcontador || '_GENERAL',
+       Nombre        = Nombre || ' de facturas',
+       Descripcion   = Descripcion || ' de pagos SJCS',
+       Fechacreacion = Sysdate,
+       Usucreacion   = -1
+ Where Con.Idcontador = 'FAC_ABONOS';
+
+Insert Into gen_recursos
+  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  (Select replace(idrecurso, 'serios', 'series') || '.facturas', Case idlenguaje When '1' Then 'Contador de facturas' When '2' Then 'Comptador de factures' When '3' Then 'Contador de facturas#EU' When '4' Then 'Contador de facturas#GL' End, error, idlenguaje, Sysdate, 0, idpropiedad
+     From Gen_Recursos rec Where rec.Idrecurso = 'facturacion.serios.literal.contador');
+Insert Into gen_recursos
+  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  (Select replace(idrecurso, 'serios', 'series') || '.abonos', Case idlenguaje When '1' Then 'Contador de abonos' When '2' Then 'Comptador d''abonaments' When '3' Then 'Contador de abonos#EU' When '4' Then 'Contador de abonos#GL' End, error, idlenguaje, Sysdate, 0, idpropiedad
+     From Gen_Recursos rec Where rec.Idrecurso = 'facturacion.serios.literal.contador');
+Delete From Gen_Recursos rec Where rec.Idrecurso = 'facturacion.serios.literal.contador';
+
+alter table FAC_SERIEFACTURACION add IDCONTADOR_ABONOS VARCHAR2(20);
+Update FAC_SERIEFACTURACION Set IDCONTADOR_ABONOS = 'FAC_ABONOS_GENERAL';
+alter table FAC_SERIEFACTURACION Modify IDCONTADOR_ABONOS Not Null;
+
+Insert Into gen_recursos
+  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  (Select 'Facturacion.mensajes.contadorFacturas.longitud.prefijo', Case idlenguaje When '2' Then 'Error en el nou comptador de factures: ' Else 'Error en el nuevo contador de facturas: ' End || descripcion, error, idlenguaje, Sysdate, 0, idpropiedad
+  From Gen_Recursos rec Where rec.Idrecurso = 'Facturacion.mensajes.longitud.prefijo');
+Insert Into gen_recursos
+  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  (Select 'Facturacion.mensajes.contadorAbonos.longitud.prefijo', Case idlenguaje When '2' Then 'Error en el nou comptador d''abonaments: ' Else 'Error en el nuevo contador de abonos: ' End || descripcion, error, idlenguaje, Sysdate, 0, idpropiedad
+  From Gen_Recursos rec Where rec.Idrecurso = 'Facturacion.mensajes.longitud.prefijo');
+
+Insert Into gen_recursos
+  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  (Select 'Facturacion.mensajes.contadorFacturas.longitud.sufijo', Case idlenguaje When '2' Then 'Error en el nou comptador de factures: ' Else 'Error en el nuevo contador de facturas: ' End || descripcion, error, idlenguaje, Sysdate, 0, idpropiedad
+  From Gen_Recursos rec Where rec.Idrecurso = 'Facturacion.mensajes.longitud.sufijo');
+Insert Into gen_recursos
+  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  (Select 'Facturacion.mensajes.contadorAbonos.longitud.sufijo', Case idlenguaje When '2' Then 'Error en el nou comptador d''abonaments: ' Else 'Error en el nuevo contador de abonos: ' End || descripcion, error, idlenguaje, Sysdate, 0, idpropiedad
+  From Gen_Recursos rec Where rec.Idrecurso = 'Facturacion.mensajes.longitud.sufijo');
+
+Insert Into gen_recursos
+  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  (Select 'Facturacion.mensajes.contadorFacturas.noNumerico.contador', Case idlenguaje When '2' Then 'Error en el nou comptador de factures: ' Else 'Error en el nuevo contador de facturas: ' End || descripcion, error, idlenguaje, Sysdate, 0, idpropiedad
+  From Gen_Recursos rec Where rec.Idrecurso = 'Facturacion.mensajes.noNumerico.contador');
+Insert Into gen_recursos
+  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  (Select 'Facturacion.mensajes.contadorAbonos.noNumerico.contador', Case idlenguaje When '2' Then 'Error en el nou comptador d''abonaments: ' Else 'Error en el nuevo contador de abonos: ' End || descripcion, error, idlenguaje, Sysdate, 0, idpropiedad
+  From Gen_Recursos rec Where rec.Idrecurso = 'Facturacion.mensajes.noNumerico.contador');
+
+Insert Into gen_recursos
+  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  (Select 'Facturacion.mensajes.contadorFacturas.obligatorio.contador', Case idlenguaje When '2' Then 'Error en el nou comptador de factures: ' Else 'Error en el nuevo contador de facturas: ' End || descripcion, error, idlenguaje, Sysdate, 0, idpropiedad
+  From Gen_Recursos rec Where rec.Idrecurso = 'Facturacion.mensajes.obligatorio.contador');
+Insert Into gen_recursos
+  (idrecurso, descripcion, error, idlenguaje, fechamodificacion, usumodificacion, idpropiedad)
+  (Select 'Facturacion.mensajes.contadorAbonos.obligatorio.contador', Case idlenguaje When '2' Then 'Error en el nou comptador d''abonaments: ' Else 'Error en el nuevo contador de abonos: ' End || descripcion, error, idlenguaje, Sysdate, 0, idpropiedad
+  From Gen_Recursos rec Where rec.Idrecurso = 'Facturacion.mensajes.obligatorio.contador');
 
 

@@ -563,7 +563,8 @@ MDB Microsoft Access Database
 
   public static final String SOCIEDADSJ="SOCIEDADSJ";
   public static final String SOCIEDADSP="SSPP";
-  public static final String FAC_ABONOS="FAC_ABONOS";
+  public static final String CONTADOR_ABONOS_FACTURA="FAC_ABONOS_GENERAL";
+  public static final String CONTADOR_ABONOS_PAGOSJG="FAC_ABONOS_FCS";
   
   // Diferentes formas de Pantalla de Cargos (si, esto deberia ser un parametro, pero el MASTER que creo la funcionalidad lo diferencia directamente con "2000"
   public static final int BUSQUEDA_CARGOS_COMO_COMISIONES = 1;

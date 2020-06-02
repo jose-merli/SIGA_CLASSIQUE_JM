@@ -66,46 +66,56 @@ public class DatosGeneralesAction extends MasterAction{
 			FacBancoInstitucionAdm admBancoInstitucion = new FacBancoInstitucionAdm(user);
 			FacNombresDescargaAdm facNombresDescargaAdm = new FacNombresDescargaAdm(user);
 		
-			/** ---------- 1. OBTIENE LA SERIE DE FACTURACION ----------*/
+			// obteniendo los datos de la serie
 			String idInstitucion = user.getLocation();
 			String idSerieFacturacion = (String)request.getSession().getAttribute("idSerieFacturacion");
 			String where = " WHERE " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion +
 								" AND " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +
 									(idSerieFacturacion!=null && !idSerieFacturacion.equals("") ? " = " + idSerieFacturacion : " IS NULL ");
 			Vector<FacSerieFacturacionBean> vSeriesFacturacion = admSerieFacturacion.select(where);
-												
-			Hashtable<String,Object> hContador = new Hashtable<String,Object>();			
+			request.getSession().setAttribute("idSerieFacturacion", idSerieFacturacion);
+
+			Hashtable<String,Object> hContador = new Hashtable<String,Object>();
 			Vector<AdmContadorBean> vContador = null;
 			if (vSeriesFacturacion!=null && vSeriesFacturacion.size()>0) {
 				FacSerieFacturacionBean beanSerieFacturacion = vSeriesFacturacion.get(0);
 				request.setAttribute("beanSerieFacturacion", beanSerieFacturacion);
 				
-				/** ---------- 2. OBTIENE LA PLANTILLA DE FACTURACION ----------*/
+				// obteniendo los datos de la plantilla de facturas
 				Integer iPlantilla = beanSerieFacturacion.getIdPlantilla();				
 				where = " WHERE " + FacPlantillaFacturacionBean.T_NOMBRETABLA + "." + FacPlantillaFacturacionBean.C_IDINSTITUCION + " = " + idInstitucion +
 							" AND " + FacPlantillaFacturacionBean.T_NOMBRETABLA + "." + FacPlantillaFacturacionBean.C_IDPLANTILLA + " = " + iPlantilla;
-								
 				Vector<FacPlantillaFacturacionBean> vPlantilla = admPlantillaFacturacion.select(where);
 				if (vPlantilla!=null && vPlantilla.size()>0) {
 					FacPlantillaFacturacionBean beanPlantillaFacturacion = vPlantilla.get(0);
 					request.setAttribute("beanPlantillaFacturacion", beanPlantillaFacturacion);
 				}
 				
-				/** ---------- 3. OBTIENE LAS FORMAS DE PAGO ----------*/
-				idSerieFacturacion = String.valueOf(beanSerieFacturacion.getIdSerieFacturacion());
+				// obteniendo las formas de pago
 				Vector<Hashtable<String, Object>> vFormasPago = admSerieFacturacion.obtenerFormasPago(idInstitucion, idSerieFacturacion);
 				request.setAttribute("vFormasPago", vFormasPago);
 				
-				/** ---------- 4. OBTIENE EL CONTADOR ----------*/
+				// obteniendo el contador de facturas
 				hContador.put(AdmContadorBean.C_IDINSTITUCION, idInstitucion);
 				hContador.put(AdmContadorBean.C_IDCONTADOR, beanSerieFacturacion.getIdContador());
 				vContador = admContador.selectByPK(hContador);
 				
-				/** ---------- 5. OBTENEMOS EL FORMATO DE NOMBRE DE LA PLANTILLA DE DESCARGA ----------*/
+				// obteniendo el contador de abonos
+				Vector<AdmContadorBean> vContadorAbonos = null;
+				Hashtable<String,Object> hContadorAbonos = new Hashtable<String,Object>();
+				hContadorAbonos.put(AdmContadorBean.C_IDINSTITUCION, idInstitucion);
+				hContadorAbonos.put(AdmContadorBean.C_IDCONTADOR, beanSerieFacturacion.getIdContadorAbonos());
+				vContadorAbonos = admContador.selectByPK(hContadorAbonos);
+				if (vContadorAbonos!=null && vContadorAbonos.size()>0) {
+					AdmContadorBean beanContadorAbonos = vContadorAbonos.get(0);
+					request.setAttribute("beanContadorAbonos", beanContadorAbonos);
+				}
+				
+				// obteniendo el nombre de las facturas
 				String nombreFacturaDescarga = facNombresDescargaAdm.getNombreDescargarPDF(beanSerieFacturacion.getIdNombreDescargaPDF());
 				request.setAttribute("nombreFacturaDescarga", nombreFacturaDescarga);
 				
-			} else {
+			} else { // cuando es nueva, se toma el contador generico
 				hContador.put(AdmContadorBean.C_IDINSTITUCION, idInstitucion);
 				hContador.put(AdmContadorBean.C_GENERAL, "1"); // Se obtiene el general de la institucion
 				vContador = admContador.select(hContador);
@@ -115,11 +125,11 @@ public class DatosGeneralesAction extends MasterAction{
 				request.setAttribute("beanContador", beanContador);
 			}
 			
-			/** ---------- 5. OBTIENE LOS BANCOS DEL COLEGIO Y LA RELACION CON LA SERIE DE FACTURACION ----------*/			
+			// obteniendo las cuentas bancarias relacionadas con esta serie			
 			Vector<Hashtable<String, Object>> vBancosInstitucion = admBancoInstitucion.obtenerBancosSerieFacturacion(idInstitucion, idSerieFacturacion);
 			request.setAttribute("vBancosInstitucion", vBancosInstitucion);
 			
-			/** ---------- 6. OBTIENE LOS SUFIJOS ----------*/	
+			// obteniendo los sufijos de las cuentas bancarias	
 			FacSufijoAdm admSufijo = new FacSufijoAdm(user);
 			Hashtable<String,Object> claves = new Hashtable<String,Object>();
 			UtilidadesHash.set(claves, FacSufijoBean.C_IDINSTITUCION, idInstitucion);
@@ -130,14 +140,12 @@ public class DatosGeneralesAction extends MasterAction{
 				FacSufijoBean sufijosBean = vsufijos.get(numSufijo);
 				lSufijos.add(sufijosBean);
 			}
+			request.setAttribute("lSufijos", lSufijos);
 			
 			//COMPROBAMOS SI ESTÁ ACTIVO EL TRASPASO DE LA FACTURACIÓN PARA ESTE COLEGIO: 
 			GenParametrosAdm admParametros = new GenParametrosAdm(user);
 			String bTraspasoActivo = (admParametros.getValor(idInstitucion, AppConstants.MODULO.ECOM.toString(), AppConstants.PARAMETRO.TRASPASO_FACTURAS_WS_ACTIVO.toString(), "false").equals("1"))?"true":"false";
-			
 			request.setAttribute("TRASPASOACTIVOPARAESTECOLEGIO", bTraspasoActivo);
-			request.setAttribute("lSufijos", lSufijos);
-			request.getSession().setAttribute("idSerieFacturacion", idSerieFacturacion);
 			
 		} catch (Exception e) {
 		   throwExcp("messages.general.error",new String[] {"modulo.facturacion.asignacionConceptos"},e,null);
@@ -436,14 +444,13 @@ public class DatosGeneralesAction extends MasterAction{
 			}
 			
 			boolean eliminarContador = false;
-			// RGG 10/09/2007 tratamiento del contador
 			if (formDatosGenerales.getConfigurarContador()!=null && formDatosGenerales.getConfigurarContador().equals("on")) {
 				if (formDatosGenerales.getContadorExistente().equals("")) {
 					
 					/** ---------- 3. OBTIENE NUEVO CONTADOR ----------*/
 					
 			        
-					String nuevoIdContador = "FAC_" + sIdSerieFacturacion + "_" + admContador.obtenerNuevoMax(idInstitucion);
+					String nuevoIdContador = "FAC_" + sIdSerieFacturacion + "_" + admContador.obtenerNuevoMaxContadorFacturas(idInstitucion);
 			        
 			        AdmContadorBean contadorBean = new AdmContadorBean();
 					contadorBean.setIdinstitucion(Integer.valueOf(idInstitucion));
@@ -483,6 +490,53 @@ public class DatosGeneralesAction extends MasterAction{
 				hashNew.put(FacSerieFacturacionBean.C_IDCONTADOR, formDatosGenerales.getIdContador());
 			}
 					
+			boolean eliminarContadorAbonos = false;
+			if (formDatosGenerales.getConfigurarContadorAbonos()!=null && formDatosGenerales.getConfigurarContadorAbonos().equals("on")) {
+				if (formDatosGenerales.getContadorExistenteAbonos().equals("")) {
+					
+					/** ---------- 3. OBTIENE NUEVO CONTADOR ----------*/
+					
+			        
+					String nuevoIdContador = "FAC_ABONOS_" + sIdSerieFacturacion + "_" + admContador.obtenerNuevoMaxContadorFacturas(idInstitucion);
+			        
+			        AdmContadorBean contadorBean = new AdmContadorBean();
+					contadorBean.setIdinstitucion(Integer.valueOf(idInstitucion));
+					contadorBean.setIdContador(nuevoIdContador);
+					contadorBean.setDescripcion(beanSerieFacturacionBeanOld.getNombreAbreviado());
+					contadorBean.setNombre(beanSerieFacturacionBeanOld.getNombreAbreviado());
+					
+					contadorBean.setContador(Long.valueOf(formDatosGenerales.getContador_nuevo_abonos()));
+					contadorBean.setPrefijo(formDatosGenerales.getPrefijo_nuevo_abonos());
+					contadorBean.setSufijo(formDatosGenerales.getSufijo_nuevo_abonos());
+					contadorBean.setLongitudContador(formDatosGenerales.getContador_nuevo_abonos().length()<=5 ? 5 : 10);
+					
+					contadorBean.setIdModulo(ClsConstants.IDMODULOFACTURACION);
+					
+					contadorBean.setIdTabla("FAC_ABONO");
+					contadorBean.setIdCampoContador("NUMEROABONO");
+					contadorBean.setIdCampoPrefijo("NUMEROABONO");
+					contadorBean.setIdCampoSufijo("NUMEROABONO");
+					
+					contadorBean.setModoContador(Integer.valueOf(0));
+			        
+					admContador.insertaNuevoContador(contadorBean, true, false,	false,  user);
+			        
+			        
+			        
+					hashNew.put(FacSerieFacturacionBean.C_IDCONTADOR_ABONOS, nuevoIdContador);
+					eliminarContadorAbonos = true;
+					
+				} else {
+					// cogemos el de la lista
+					hashNew.put(FacSerieFacturacionBean.C_IDCONTADOR_ABONOS, formDatosGenerales.getContadorExistenteAbonos());
+					eliminarContadorAbonos = true;
+				}
+				
+			} else {
+				// se deja el que había
+				hashNew.put(FacSerieFacturacionBean.C_IDCONTADOR_ABONOS, formDatosGenerales.getIdContadorAbonos());
+			}
+					
 			/** ---------- 5. ACTUALIZA FAC_SERIEFACTURACION ----------*/
 			if (!admSerieFacturacion.update(hashNew, hashOld)) {
 				throw new SIGAException("messages.updated.error");
@@ -491,6 +545,10 @@ public class DatosGeneralesAction extends MasterAction{
 			/** ---------- 6. ELIMINA ADM_CONTADOR ----------*/
 			// Borramos el contador que estaba relacionado si no es general ni tiene otras relaciones
 			if (eliminarContador && !admContador.borrarContadorLibre(idInstitucion, formDatosGenerales.getIdContador())) {
+				throw new SIGAException("messages.updated.error");
+			}
+			// Borramos el contador que estaba relacionado si no es general ni tiene otras relaciones
+			if (eliminarContadorAbonos && !admContador.borrarContadorLibre(idInstitucion, formDatosGenerales.getIdContadorAbonos())) {
 				throw new SIGAException("messages.updated.error");
 			}
 

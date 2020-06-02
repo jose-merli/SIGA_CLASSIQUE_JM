@@ -2329,7 +2329,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			FcsPagosJGBean pagosBean = new FcsPagosJGBean();
 			String idAbono = ((Long) abonoAdm.getNuevoID(usr.getLocation())).toString();
 			GestorContadores gc = new GestorContadores(this.getUserBean(request));
-			Hashtable contadorTablaHash = gc.getContador(new Integer(usr.getLocation()), ClsConstants.FAC_ABONOS);
+			Hashtable contadorTablaHash = gc.getContador(new Integer(usr.getLocation()), ClsConstants.CONTADOR_ABONOS_PAGOSJG);
 			String numeroAbono = gc.getNuevoContadorConPrefijoSufijo(contadorTablaHash);
 			hash.put(FacAbonoBean.C_IDINSTITUCION, (String) usr.getLocation());
 			hash.put(FacAbonoBean.C_IDABONO, idAbono);

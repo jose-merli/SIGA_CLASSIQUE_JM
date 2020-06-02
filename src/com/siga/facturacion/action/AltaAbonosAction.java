@@ -41,7 +41,6 @@ import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.FacFacturaBean;
 import com.siga.beans.FacFacturacionSuscripcionAdm;
 import com.siga.beans.FacHistoricoFacturaAdm;
-import com.siga.beans.FacHistoricoFacturaBean;
 import com.siga.beans.FacLineaAbonoAdm;
 import com.siga.beans.FacLineaAbonoBean;
 import com.siga.beans.FacLineaFacturaAdm;
@@ -50,7 +49,8 @@ import com.siga.beans.FacPagoAbonoEfectivoAdm;
 import com.siga.beans.FacPagoAbonoEfectivoBean;
 import com.siga.beans.FacPagosPorCajaAdm;
 import com.siga.beans.FacPagosPorCajaBean;
-import com.siga.facturacion.Facturacion;
+import com.siga.beans.FacSerieFacturacionAdm;
+import com.siga.beans.FacSerieFacturacionBean;
 import com.siga.facturacion.form.AltaAbonosForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
@@ -145,7 +145,7 @@ public class AltaAbonosAction extends MasterAction {
 			String idAbono=abonoAdm.getNuevoID(idInstitucion).toString();
 			// Obtenemos el nuevo numero de abono
 			GestorContadores gc = new GestorContadores(this.getUserBean(request));
-			Hashtable contadorTablaHash=gc.getContador(new Integer(idInstitucion),ClsConstants.FAC_ABONOS);
+			Hashtable contadorTablaHash=gc.getContador(new Integer(idInstitucion),ClsConstants.CONTADOR_ABONOS_FACTURA);
 			String numeroAbonoSugerido=gc.getNuevoContadorConPrefijoSufijo(contadorTablaHash);
 		  	
 		  
@@ -531,6 +531,7 @@ public class AltaAbonosAction extends MasterAction {
 			FacPagoAbonoEfectivoAdm admFacPagoAbonoEfectivo = new FacPagoAbonoEfectivoAdm(usr);
 			FacPagosPorCajaAdm admFacPagosPorCaja = new FacPagosPorCajaAdm(usr);
 			FacHistoricoFacturaAdm historicoFacturaAdm = new FacHistoricoFacturaAdm (usr);
+			FacSerieFacturacionAdm serieFacturaAdm = new FacSerieFacturacionAdm(usr);
 			
 			GestorContadores gc = new GestorContadores(usr);
 			Hashtable contadorTablaHash = null;
@@ -575,6 +576,7 @@ public class AltaAbonosAction extends MasterAction {
 			/** Si realizamos la busqueda por IDFACTURA, hay que rellenar el NUMFACTURA **/
 			if(numfactura.equals(""))
 				numfactura = ((String)((Row)asociados.firstElement()).getRow().get("NUMEROFACTURA")).trim().toUpperCase();
+			hash.put(FacAbonoBean.C_OBSERVACIONES,UtilidadesString.getMensajeIdioma(usr.getLanguage(),"messages.informes.abono.mensajeFactura")+" "+numfactura);
 			
 			// Cargo la tabla hash con los valores del formulario para insertar en PYS_PRODUCTOSINSTITUCION
 			Long idAbono = admFacAbono.getNuevoID(usr.getLocation());
@@ -594,14 +596,8 @@ public class AltaAbonosAction extends MasterAction {
 			}
 			
 			hash.put(FacAbonoBean.C_IDPERSONA,idPersona);			
-			contadorTablaHash = gc.getContador(new Integer(usr.getLocation()), ClsConstants.FAC_ABONOS);
-			String numeroAbono = gc.getNuevoContadorConPrefijoSufijo(contadorTablaHash);
-			hash.put(FacAbonoBean.C_NUMEROABONO,numeroAbono);
-			hash.put(FacAbonoBean.C_OBSERVACIONES,UtilidadesString.getMensajeIdioma(usr.getLanguage(),"messages.informes.abono.mensajeFactura")+" "+numfactura);
-			
-			
-			//JTA comprobamos si la factura tiene numero de cuenta y en tal caso es que el pago por banco.
-			//Entonces metemos el numero de cuenta al abono para que quede pendiente de abonar por banco.
+			hash.put(FacAbonoBean.C_IDCUENTA,"");
+			hash.put(FacAbonoBean.C_IDCUENTADEUDOR,"");
 			
 			//BEGIN BNS OBTENGO LA FACTURA Y SUS DATOS
 			double importeCompensado = 0; 
@@ -621,10 +617,16 @@ public class AltaAbonosAction extends MasterAction {
 					importeTotal = new Double(totalConIva).doubleValue();
 				}
 			}
-						
-			//CR7 - INC_11904_SIGA
-			hash.put(FacAbonoBean.C_IDCUENTA,"");
-			hash.put(FacAbonoBean.C_IDCUENTADEUDOR,"");
+			
+			// obteniendo siguiente numero de abono
+			Hashtable<String, String> hashSerieFactura = new Hashtable<String, String>();
+			hashSerieFactura.put(FacFacturaBean.C_IDINSTITUCION, (String)((Row)asociados.firstElement()).getRow().get(FacFacturaBean.C_IDINSTITUCION));
+			hashSerieFactura.put(FacFacturaBean.C_IDSERIEFACTURACION, (String)((Row)asociados.firstElement()).getRow().get(FacFacturaBean.C_IDSERIEFACTURACION));
+			Vector vSeries = serieFacturaAdm.selectByPK(hashSerieFactura);
+			FacSerieFacturacionBean serieBean = (FacSerieFacturacionBean) vSeries.get(0);
+			contadorTablaHash = gc.getContador(new Integer(usr.getLocation()), serieBean.getIdContadorAbonos());
+			String numeroAbono = gc.getNuevoContadorConPrefijoSufijo(contadorTablaHash);
+			hash.put(FacAbonoBean.C_NUMEROABONO,numeroAbono);
 			
 			// Inserto el abono
 			if (admFacAbono.insert(hash)) {

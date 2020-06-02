@@ -3385,7 +3385,7 @@ public class SIGACerDetalleSolicitudAction extends MasterAction {
 						String.valueOf(beanSolicitud.getPpn_IdProducto()), String.valueOf(beanSolicitud.getPpn_IdProductoInstitucion()))) {
 					numContador++;
 				}
-				gc.validarLogitudContador(numContador, contadorTablaHash);
+				gc.validarLongitudContador(numContador, contadorTablaHash);
 
 				// construyendo contador final
 				Integer longitud = new Integer((contadorTablaHash.get("LONGITUDCONTADOR").toString()));

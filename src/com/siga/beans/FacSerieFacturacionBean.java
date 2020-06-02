@@ -5,7 +5,7 @@ public class FacSerieFacturacionBean extends MasterBean {
 	private static final long serialVersionUID = 3143948645003008848L;
 	private Integer idInstitucion, idPlantilla, idTipoPlantillaMail, idTipoEnvios,idNombreDescargaPDF;
 	private Long idSerieFacturacion,idSerieFacturacionPrevia;
-	private String descripcion, nombreAbreviado, envioFactura,generarPDF, idContador, configDeudor, configIngresos, cuentaIngresos, cuentaClientes,tipoSerie, observaciones, fechaBaja, traspasoFacturas, traspasoPlantilla, traspasoCodAuditoriaDef;
+	private String descripcion, nombreAbreviado, envioFactura,generarPDF, idContador, idContadorAbonos, configDeudor, configIngresos, cuentaIngresos, cuentaClientes,tipoSerie, observaciones, fechaBaja, traspasoFacturas, traspasoPlantilla, traspasoCodAuditoriaDef;
 	private String[] formaPagoAutomática;				
 
 	/* Nombre tabla */
@@ -20,6 +20,7 @@ public class FacSerieFacturacionBean extends MasterBean {
 	static public final String C_ENVIOFACTURA = "ENVIOFACTURAS";
 	static public final String C_GENERARPDF = "GENERARPDF";
 	static public final String C_IDCONTADOR = "IDCONTADOR";
+	static public final String C_IDCONTADOR_ABONOS = "IDCONTADOR_ABONOS";
 	static public final String C_CONFDEUDOR = "CONFDEUDOR";		
 	static public final String C_CONFINGRESOS = "CONFINGRESOS";
 	static public final String C_CTAINGRESOS = "CTAINGRESOS";
@@ -51,6 +52,7 @@ public class FacSerieFacturacionBean extends MasterBean {
 	public void setEnvioFactura (String dato) {this.envioFactura = dato;}
 	public void setGenerarPDF (String dato) {this.generarPDF = dato;}
 	public void setIdContador (String dato) {this.idContador = dato;}
+	public void setIdContadorAbonos (String dato) {this.idContadorAbonos = dato;}
 	public void setConfigDeudor(String dato) {this.configDeudor = dato;}
 	public void setConfigIngresos(String dato) {this.configIngresos = dato;}
 	public void setCuentaClientes(String dato) {this.cuentaClientes = dato;}
@@ -77,6 +79,7 @@ public class FacSerieFacturacionBean extends MasterBean {
 	public String getEnvioFactura() {return this.envioFactura;}
 	public String getGenerarPDF() {return this.generarPDF;}
 	public String getIdContador() {return this.idContador;}
+	public String getIdContadorAbonos() {return this.idContadorAbonos;}
 	public String getConfigDeudor() {return configDeudor;}
 	public String getConfigIngresos() {return configIngresos;}
 	public String getCuentaClientes() {return cuentaClientes;}
