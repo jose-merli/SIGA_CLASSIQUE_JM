@@ -26,6 +26,7 @@ import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.GestorContadores;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.AdmContadorAdm;
 import com.siga.beans.AdmContadorBean;
@@ -199,13 +200,16 @@ public class DatosGeneralesAction extends MasterAction{
 			if (vContador!=null && vContador.size()>0) {
 				AdmContadorBean b1 = vContador.get(0);
 				beanSerieFacturacion.setIdContador(b1.getIdContador());
-				
 			} else if (vContador!=null && vContador.size()>1) {
 				throw new SIGAException("Messages.Facturacion.NoContadorGenerico");
-				
 			} else {
 				throw new SIGAException("Messages.Facturacion.MasDeUnContadorGenerico");
 			}
+			
+			// registrando el contador generico de abonos
+			GestorContadores gc = new GestorContadores(user);
+			Hashtable contadorTablaHash=gc.getContador(new Integer(idInstitucion),ClsConstants.CONTADOR_ABONOS_FACTURA);
+			beanSerieFacturacion.setIdContadorAbonos((String) contadorTablaHash.get(AdmContadorBean.C_IDCONTADOR));
 			
 			/** ---------- 3. OBTIENE NUEVO IDSERIEFACTURACION ---------- */
 			String nuevoidSerieFacturacion = admSerieFacturacion.getNuevoId(idInstitucion);

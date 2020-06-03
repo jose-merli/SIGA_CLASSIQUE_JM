@@ -841,4 +841,11 @@ Insert Into gen_recursos
   (Select 'Facturacion.mensajes.contadorAbonos.obligatorio.contador', Case idlenguaje When '2' Then 'Error en el nou comptador d''abonaments: ' Else 'Error en el nuevo contador de abonos: ' End || descripcion, error, idlenguaje, Sysdate, 0, idpropiedad
   From Gen_Recursos rec Where rec.Idrecurso = 'Facturacion.mensajes.obligatorio.contador');
 
+alter table FAC_SERIEFACTURACION
+  add constraint FK_ADM_CONTADOR_ABONOS foreign key (IDINSTITUCION, IDCONTADOR_ABONOS)
+  references adm_contador (IDINSTITUCION, IDCONTADOR)
+  deferrable;
+create index IDX_FK_ADM_CONTADOR_ABONOS on FAC_SERIEFACTURACION (IDINSTITUCION, IDCONTADOR_ABONOS);
+
+-- 2020-06-03 - Ejecutado en Integracion por AAG
 

@@ -825,9 +825,9 @@
 									<siga:Idioma key="facturacion.datosGenerales.literal.contadorGenerico"/>&nbsp;
 								</td>
 								<td  class="labelTextValue" >
-									<html:text name="DatosGeneralesForm" styleId="prefijoAbonos" property="prefijoAbonos"  size="8" maxlength="10" styleClass="box" value="<%=prefijoAbonos%>" disabled="true"/>
-									<html:text name="DatosGeneralesForm" styleId="contadorAbonos" property="contadorAbonos"  size="15" maxlength="15" styleClass="box" value="<%=contadorAbonos%>" disabled="true"/>
-									<html:text name="DatosGeneralesForm" styleId="sufijoAbonos" property="sufijoAbonos"  size="8" maxlength="10" styleClass="box" value="<%=sufijoAbonos%>" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="prefijoAbonos" property="prefijoAbonos"  size="7" maxlength="10" styleClass="box" value="<%=prefijoAbonos%>" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="contadorAbonos" property="contadorAbonos"  size="13" maxlength="15" styleClass="box" value="<%=contadorAbonos%>" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="sufijoAbonos" property="sufijoAbonos"  size="7" maxlength="10" styleClass="box" value="<%=sufijoAbonos%>" disabled="true"/>
 								</td>
 							</tr>
 							
@@ -869,9 +869,9 @@
 									<siga:Idioma key="facturacion.datosGenerales.literal.nuevoContador"/>&nbsp;
 								</td>
 								<td  class="labelTextValue">
-									<html:text name="DatosGeneralesForm" styleId="prefijo_nuevo_abonos" property="prefijo_nuevo_abonos" size="8" maxlength="10" styleClass="box" value="" disabled="true"/>
-									<html:text name="DatosGeneralesForm" styleId="contador_nuevo_abonos" property="contador_nuevo_abonos" size="15" maxlength="15" styleClass="box" value="" disabled="true"/>
-									<html:text name="DatosGeneralesForm" styleId="sufijo_nuevo_abonos" property="sufijo_nuevo_abonos" size="8" maxlength="10" styleClass="box" value="" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="prefijo_nuevo_abonos" property="prefijo_nuevo_abonos" size="7" maxlength="10" styleClass="box" value="" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="contador_nuevo_abonos" property="contador_nuevo_abonos" size="13" maxlength="15" styleClass="box" value="" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="sufijo_nuevo_abonos" property="sufijo_nuevo_abonos" size="7" maxlength="10" styleClass="box" value="" disabled="true"/>
 								</td>
 							</tr>
 						</table>
@@ -879,31 +879,6 @@
 				</td>
 			</tr>
 		</table>
-
-<% 
-		if (accion.equals("nuevo")) {  
-%>
-			<table class="tablaCentralCampos">
-				<tr>
-					<td width="100%">
-						<siga:ConjCampos leyenda="facturacion.serios.literal.formaPago">
-							<table width="100%" align="center" border="0">
-								<tr>
-									<td width="60%" class="labelText" align="left" title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (user, "facturacion.seriesFacturacion.formaPago.ayuda").replaceAll("\\\\n", ""))%>'>
-										<siga:Idioma key="facturacion.serios.literal.formaPagoSeleccionar" /> 
-									</td>
-									<td width="40%" class="labelText" align="right" title='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (user, "facturacion.seriesFacturacion.formaPago.ayuda").replaceAll("\\\\n", ""))%>'>
-										<siga:ComboBD nombre="formaPagoAutomática" tipo="cmbFormaPagoAutomaticoSerie" clase="boxCombo" filasMostrar="4" seleccionMultiple="true" elementoSel="<%=0%>" obligatorio="true"/>
-									</td> 
-								</tr>
-							</table>
-						</siga:ConjCampos>
-					</td>
-				</tr>
-			</table>	
-<%
-		}
-%>		
 
 	</html:form>
 
