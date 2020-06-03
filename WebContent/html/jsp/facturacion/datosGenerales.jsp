@@ -520,19 +520,19 @@
 			<tr>
 				<td style="width:50%">		
 					<siga:ConjCampos leyenda="facturacion.datosGenerales.literal.observaciones" desplegable="true">
-						<table align="center" border="1">
+						<table align="center" border="0">
 							<tr>
 								<td>
 <%
 									if (!bEditable) {
 %>
 										<html:textarea name="DatosGeneralesForm" onKeyDown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleId="observaciones" property="observaciones" onkeydown="cuenta(this,4000);" styleClass="boxConsulta" value="<%=observaciones%>" readonly="true"
-											style="overflow-y:auto;overflow-x:hidden;width:450px;height:80px;resize:none;"/>
+											style="overflow-y:auto;overflow-x:hidden;width:400px;height:80px;resize:none;"/>
 <%
 									} else {
 %>
 										<html:textarea name="DatosGeneralesForm" property="observaciones" styleId="observaciones" onkeydown="cuenta(this,4000)" onChange="cuenta(this,4000)" styleClass="box" value="<%=observaciones%>" readonly="false"
-											style="overflow-y:auto;overflow-x:hidden;width:450px;height:80px;resize:none;"/>
+											style="overflow-y:auto;overflow-x:hidden;width:400px;height:80px;resize:none;"/>
 <%
 									}
 %>
