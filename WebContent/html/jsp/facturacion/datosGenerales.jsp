@@ -181,8 +181,8 @@
 			var con = document.getElementById("conta");
 			var con2 = document.getElementById("conta2");
 			if (document.forms[0].configurarContador.checked==true) {
-				con.style.display='block';
-				con2.style.display='block';
+				con.style.display='table-row';
+				con2.style.display='table-row';
 				comprobarNuevo();
 			} 
 			else {
@@ -196,8 +196,8 @@
 			var con = document.getElementById("contaAbonos");
 			var con2 = document.getElementById("conta2Abonos");
 			if (document.forms[0].configurarContadorAbonos.checked==true) {
-				con.style.display='block';
-				con2.style.display='block';
+				con.style.display='table-row';
+				con2.style.display='table-row';
 				comprobarNuevoAbonos();
 			} 
 			else {
@@ -422,14 +422,14 @@
 			<tr>
 				<td style="width:100%">		
 					<siga:ConjCampos leyenda="facturacion.serios.literal.seriesFacturacion">
-						<table class="tablaCentralCampos">
+						<table class="tablaCentralCampos" border="0">
 							<tr>
-								<td width="20%"></td>
-								<td width="5%"></td>
+								<td width="22%"></td>
+								<td width="3%"></td>
+								<td width="14%"></td>
+								<td width="23%"></td>
 								<td width="15%"></td>
-								<td width="20%"></td>
-								<td width="20%"></td>
-								<td width="20%"></td>
+								<td width="23%"></td>
 							</tr>
 							<tr>
 								<td class="labelText" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.nombreAbreviado"/>&nbsp;(*)</td>
@@ -486,7 +486,7 @@
 <%
 									} else {
 %>
-										<html:text name="DatosGeneralesForm" styleId="descripcion"  property="descripcion" size="120" maxlength="100" styleClass="box" value="<%=sDescripcion%>" readonly="false"/>
+										<html:text name="DatosGeneralesForm" styleId="descripcion"  property="descripcion" size="100" maxlength="100" styleClass="box" value="<%=sDescripcion%>" readonly="false"/>
 <%
 									}
 %>
@@ -495,7 +495,7 @@
 							</tr>
 							
 							<tr>
-								<td class="labelText" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.facturacion.datosGenerales.literal.planificarPosteriormente"/></td>
+								<td class="labelText" style="text-align:left" nowrap="nowrap"><siga:Idioma key="facturacion.datosGenerales.literal.facturacion.datosGenerales.literal.planificarPosteriormente"/></td>
 								<td colspan="5">
 <%
 									if (!bEditable) {
@@ -520,7 +520,7 @@
 			<tr>
 				<td style="width:50%">		
 					<siga:ConjCampos leyenda="facturacion.datosGenerales.literal.observaciones" desplegable="true">
-						<table align="center" border="0">
+						<table align="center" border="1">
 							<tr>
 								<td>
 <%
@@ -585,10 +585,20 @@
 			<tr>
 				<td style="width:100%" >		
 					<siga:ConjCampos leyenda="facturacion.serios.literal.configuracionPDF">
-						<table align="left" width="100%">
+						<table align="left" width="100%" border="0">
 							<tr>
-								<td class="labelText" style="text-align:left" width="25%">
-									<siga:Idioma key="facturacion.datosGenerales.literal.generaPDF"/>&nbsp;&nbsp;
+								<td width="22%"></td>
+								<td width="3%"></td>
+								<td width="14%"></td>
+								<td width="23%"></td>
+								<td width="15%"></td>
+								<td width="23%"></td>
+							</tr>
+							<tr>
+								<td class="labelText" style="text-align:left">
+									<siga:Idioma key="facturacion.datosGenerales.literal.generaPDF"/>
+								</td>
+								<td class="labelText" style="text-align:left">
 <% 
 									if (enviarFacturas!=null && enviarFacturas.equals("1")) { 
 %>
@@ -605,8 +615,8 @@
 									} 
 %>
 								</td>
-								<td class="labelText" width="10%" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.plantilla"/>&nbsp;(*)</td>
-								<td width="25%">
+								<td class="labelText" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.plantilla"/>&nbsp;(*)</td>
+								<td>
 <%
 									if (!bEditable) {
 %>
@@ -624,8 +634,8 @@
 %>
 								</td>
 								
-								<td class="labelText" width="15%" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.nombrePDF"/>&nbsp;(*)</td>
-								<td width="25%">		
+								<td class="labelText" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.nombrePDF"/>&nbsp;(*)</td>
+								<td>		
 									<siga:ComboBD nombre="idNombreDescargaPDF"  elementoSelstring="<%=String.valueOf(nombreDescargaPDF)%>" obligatorioSinTextoSeleccionar="true" tipo="cmbNombreDescargaPDF" clase="boxCombo" ancho="200" />
 								</td>		
 							</tr>
@@ -639,10 +649,18 @@
 			<tr>
 				<td style="width:100%" >		
 					<siga:ConjCampos leyenda="facturacion.serios.literal.configuracionEnvios">
-						<table align="left" width="100%">
+						<table align="left" width="100%" border="0">
 							<tr>
-								<td class="labelText" style="text-align:left" width="25%">
-									<siga:Idioma key="facturacion.datosGenerales.literal.envioFacturas"/>&nbsp;&nbsp;
+								<td width="22%"></td>
+								<td width="3%"></td>
+								<td width="14%"></td>
+								<td width="23%"></td>
+								<td width="15%"></td>
+								<td width="23%"></td>
+							</tr>
+							<tr>
+								<td class="labelText" style="text-align:left"><siga:Idioma key="facturacion.datosGenerales.literal.envioFacturas"/></td>
+								<td class="labelText" style="text-align:left">
 <% 
 									if (enviarFacturas!=null && enviarFacturas.equals("1")) { 
 %>
@@ -656,9 +674,9 @@
 %>
 								</td>
 								
-								<td id="titulo" class="labelText" width="10%"><siga:Idioma key="envios.plantillas.literal.plantilla"/></td>
-								<td width="65%" colspan="2">
-									<siga:ComboBD  nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=aPlantillaEnviosSeleccionada%>" ancho="600" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>" />
+								<td id="titulo" class="labelText"><siga:Idioma key="envios.plantillas.literal.plantilla"/></td>
+								<td colspan="3">
+									<siga:ComboBD  nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=aPlantillaEnviosSeleccionada%>" ancho="550" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>" />
 								</td>
 							</tr>
 						</table>
@@ -668,14 +686,24 @@
 		 </table>
 		 
 		 <% if(bEstaActivoElTraspasoParaEsteColegio){ %>
-		 <table class="tablaCentralCampos" border="0">	
+		 <table class="tablaCentralCampos">	
 			<tr>
 				<td style="width:100%" >		
 					<siga:ConjCampos leyenda="facturacion.serios.literal.configuracionTraspasoFacturas">
-						<table align="left" width="100%">
+						<table align="left" width="100%" border="0">
 							<tr>
-								<td class="labelText" style="text-align:left" width="25%">
-									<siga:Idioma key="facturacion.datosGenerales.literal.traspasarFacturas"/>&nbsp;&nbsp;
+								<td width="22%"></td>
+								<td width="3%"></td>
+								<td width="14%"></td>
+								<td width="23%"></td>
+								<td width="15%"></td>
+								<td width="23%"></td>
+							</tr>
+							<tr>
+								<td class="labelText" style="text-align:left">
+									<siga:Idioma key="facturacion.datosGenerales.literal.traspasarFacturas"/>
+								</td>
+								<td class="labelText" style="text-align:left">
 <%
 									if (traspasarFacturas.equals("1")) { 
 %>
@@ -688,23 +716,23 @@
 									} 
 %>
 								</td>
-								<td width="10%" class="labelText">
+								<td class="labelText">
 									<siga:Idioma key="facturacion.datosGenerales.literal.plantillaTraspasoFacturas"/>
 								</td>
-								<td width="25%">
+								<td>
 <% 									if(accion.equals("ver")){ %>
 										<html:text name="DatosGeneralesForm" id="plantillaTraspasoFacturas" styleId="plantillaTraspasoFacturas" property="plantillaTraspasoFacturas" size="30" maxlength="10" value="<%= plantillaTraspasoFacturas %>" styleClass="boxConsulta" readonly="true" />
 <%									} else { %>
-										<html:text name="DatosGeneralesForm" id="plantillaTraspasoFacturas" styleId="plantillaTraspasoFacturas" property="plantillaTraspasoFacturas" size="30" maxlength="10" value="<%= plantillaTraspasoFacturas %>" styleClass="box" readonly="false"  />
+										<html:text name="DatosGeneralesForm" id="plantillaTraspasoFacturas" styleId="plantillaTraspasoFacturas" property="plantillaTraspasoFacturas" size="25" maxlength="10" value="<%= plantillaTraspasoFacturas %>" styleClass="box" readonly="false"  />
 <%									} %>
 								</td>
 								
-								<td id="titulo" class="labelText" width="15%"><siga:Idioma key="envios.plantillas.literal.plantillaTraspasoFacturasAuditoria"/></td>
-								<td width="25%">
+								<td id="titulo" class="labelText"><siga:Idioma key="envios.plantillas.literal.plantillaTraspasoFacturasAuditoria"/></td>
+								<td>
 <% 									if(accion.equals("ver")){ %>
 										<html:text name="DatosGeneralesForm" id="plantillaTraspasoAuditoria" styleId="plantillaTraspasoAuditoria" property="plantillaTraspasoAuditoria" size="30" maxlength="10" value="<%= plantillaTraspasoAuditoria %>" styleClass="boxConsulta" readonly="true" />
 <%									} else { %>
-										<html:text name="DatosGeneralesForm" id="plantillaTraspasoAuditoria" styleId="plantillaTraspasoAuditoria" property="plantillaTraspasoAuditoria" size="30" maxlength="10" value="<%= plantillaTraspasoAuditoria %>" styleClass="box" readonly="false"  />
+										<html:text name="DatosGeneralesForm" id="plantillaTraspasoAuditoria" styleId="plantillaTraspasoAuditoria" property="plantillaTraspasoAuditoria" size="25" maxlength="10" value="<%= plantillaTraspasoAuditoria %>" styleClass="box" readonly="false"  />
 <%									} %>
 								</td>									
 							</tr>
@@ -728,32 +756,32 @@
 		} 
 %>
 
-			<tr border="1">
-				<td style="width:50%" border ="1">		
+			<tr>
+				<td style="width:50%">		
 					<siga:ConjCampos leyenda="facturacion.series.literal.contador.facturas" desplegable="true">
 						<table align="left" border="0">
 							<tr>
-								<td width="35%"/>
-								<td width="65%"/>
+								<td width="45%"/>
+								<td width="55%"/>
 							</tr>
 							
 							<tr>
 								<td class="labelText">
 									<siga:Idioma key="facturacion.datosGenerales.literal.nombreContador"/>&nbsp;
 								</td>
-								<td  class="labelTextValue" >
-									<html:text name="DatosGeneralesForm" property="idContador" styleId="idContador" size="40" maxlength="20" styleClass="boxConsulta" value="<%=idContador%>" readonly="true"/>
+								<td class="labelTextValue">
+									<html:text name="DatosGeneralesForm" property="idContador" styleId="idContador" size="35" maxlength="20" styleClass="boxConsulta" value="<%=idContador%>" readonly="true"/>
 								</td>
 							</tr>
 							
 							<tr>
-								<td class="labelText" >
+								<td class="labelText" nowrap="nowrap">
 									<siga:Idioma key="facturacion.datosGenerales.literal.contadorGenerico"/>&nbsp;
 								</td>
-								<td  class="labelTextValue" >
-									<html:text name="DatosGeneralesForm" styleId="prefijo" property="prefijo"  size="8" maxlength="10" styleClass="box" value="<%=prefijo%>" disabled="true"/>
-									<html:text name="DatosGeneralesForm" styleId="contador" property="contador"  size="15" maxlength="15" styleClass="box" value="<%=contador%>" disabled="true"/>
-									<html:text name="DatosGeneralesForm" styleId="sufijo" property="sufijo"  size="8" maxlength="10" styleClass="box" value="<%=sufijo%>" disabled="true"/>
+								<td class="labelTextValue" >
+									<html:text name="DatosGeneralesForm" styleId="prefijo"  property="prefijo"  size="5" maxlength="10" styleClass="estiloNumber" value="<%=prefijo%>" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="contador" property="contador" size="10" maxlength="15" styleClass="estiloNumber" value="<%=contador%>" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="sufijo"   property="sufijo"   size="5" maxlength="10" styleClass="estiloNumber" value="<%=sufijo%>" disabled="true"/>
 								</td>
 							</tr>
 							
@@ -770,7 +798,7 @@
 <% 
 								} else { 
 %>
-									<td class="labelText">
+									<td class="labelText" nowrap="nowrap">
 										<siga:Idioma key="facturacion.datosGenerales.literal.configurarContador"/>&nbsp;
 									</td>
 									<td  class="labelTextValue">
@@ -795,20 +823,20 @@
 									<siga:Idioma key="facturacion.datosGenerales.literal.nuevoContador"/>&nbsp;
 								</td>
 								<td  class="labelTextValue">
-									<html:text name="DatosGeneralesForm" styleId="prefijo_nuevo" property="prefijo_nuevo" size="8" maxlength="10" styleClass="box" value="" disabled="true"/>
-									<html:text name="DatosGeneralesForm" styleId="contador_nuevo" property="contador_nuevo" size="15" maxlength="15" styleClass="box" value="" disabled="true"/>
-									<html:text name="DatosGeneralesForm" styleId="sufijo_nuevo" property="sufijo_nuevo" size="8" maxlength="10" styleClass="box" value="" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="prefijo_nuevo"  property="prefijo_nuevo"  size="5" maxlength="10" styleClass="box" value="" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="contador_nuevo" property="contador_nuevo" size="10" maxlength="15" styleClass="box" value="" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="sufijo_nuevo"   property="sufijo_nuevo"   size="5" maxlength="10" styleClass="box" value="" disabled="true"/>
 								</td>
 							</tr>
 						</table>
 					</siga:ConjCampos>
 				</td>
-				<td style="width:50%" border ="1">		
+				<td style="width:50%">		
 					<siga:ConjCampos leyenda="facturacion.series.literal.contador.abonos" desplegable="true">
 						<table align="left" border="0">
 							<tr>
-								<td width="35%"/>
-								<td width="65%"/>
+								<td width="45%"/>
+								<td width="55%"/>
 							</tr>
 							
 							<tr>
@@ -816,18 +844,18 @@
 									<siga:Idioma key="facturacion.datosGenerales.literal.nombreContador"/>&nbsp;
 								</td>
 								<td  class="labelTextValue" >
-									<html:text name="DatosGeneralesForm" property="idContadorAbonos" styleId="idContadorAbonos" size="40" maxlength="20" styleClass="boxConsulta" value="<%=idContadorAbonos%>" readonly="true"/>
+									<html:text name="DatosGeneralesForm" property="idContadorAbonos" styleId="idContadorAbonos" size="35" maxlength="20" styleClass="boxConsulta" value="<%=idContadorAbonos%>" readonly="true"/>
 								</td>
 							</tr>
 							
 							<tr>
-								<td class="labelText" >
+								<td class="labelText" nowrap="nowrap">
 									<siga:Idioma key="facturacion.datosGenerales.literal.contadorGenerico"/>&nbsp;
 								</td>
 								<td  class="labelTextValue" >
-									<html:text name="DatosGeneralesForm" styleId="prefijoAbonos" property="prefijoAbonos"  size="7" maxlength="10" styleClass="box" value="<%=prefijoAbonos%>" disabled="true"/>
-									<html:text name="DatosGeneralesForm" styleId="contadorAbonos" property="contadorAbonos"  size="13" maxlength="15" styleClass="box" value="<%=contadorAbonos%>" disabled="true"/>
-									<html:text name="DatosGeneralesForm" styleId="sufijoAbonos" property="sufijoAbonos"  size="7" maxlength="10" styleClass="box" value="<%=sufijoAbonos%>" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="prefijoAbonos"  property="prefijoAbonos"  size="5" maxlength="10" styleClass="estiloNumber" value="<%=prefijoAbonos%>" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="contadorAbonos" property="contadorAbonos" size="10" maxlength="15" styleClass="estiloNumber" value="<%=contadorAbonos%>" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="sufijoAbonos"   property="sufijoAbonos"   size="5" maxlength="10" styleClass="estiloNumber" value="<%=sufijoAbonos%>" disabled="true"/>
 								</td>
 							</tr>
 							
@@ -844,7 +872,7 @@
 <% 
 								} else { 
 %>
-									<td class="labelText">
+									<td class="labelText" nowrap="nowrap">
 										<siga:Idioma key="facturacion.datosGenerales.literal.configurarContador"/>&nbsp;
 									</td>
 									<td  class="labelTextValue">
@@ -869,9 +897,9 @@
 									<siga:Idioma key="facturacion.datosGenerales.literal.nuevoContador"/>&nbsp;
 								</td>
 								<td  class="labelTextValue">
-									<html:text name="DatosGeneralesForm" styleId="prefijo_nuevo_abonos" property="prefijo_nuevo_abonos" size="7" maxlength="10" styleClass="box" value="" disabled="true"/>
-									<html:text name="DatosGeneralesForm" styleId="contador_nuevo_abonos" property="contador_nuevo_abonos" size="13" maxlength="15" styleClass="box" value="" disabled="true"/>
-									<html:text name="DatosGeneralesForm" styleId="sufijo_nuevo_abonos" property="sufijo_nuevo_abonos" size="7" maxlength="10" styleClass="box" value="" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="prefijo_nuevo_abonos"  property="prefijo_nuevo_abonos"  size="5" maxlength="10" styleClass="box" value="" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="contador_nuevo_abonos" property="contador_nuevo_abonos" size="10" maxlength="15" styleClass="box" value="" disabled="true"/>
+									<html:text name="DatosGeneralesForm" styleId="sufijo_nuevo_abonos"   property="sufijo_nuevo_abonos"   size="5" maxlength="10" styleClass="box" value="" disabled="true"/>
 								</td>
 							</tr>
 						</table>
