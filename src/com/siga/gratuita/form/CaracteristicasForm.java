@@ -57,6 +57,11 @@ public class CaracteristicasForm extends MasterForm
 	private String 		violenciaGenero;
 	private String 		violenciaDomestica;
 	
+
+	private String 		temaSinDefinir;
+	private String 		violenciaIntrafamiliar;
+	private String 		violenciaContraMujer;
+	
 	private String colegiadoNumero;
 	private String colegiadoNombre;
 	
@@ -354,6 +359,26 @@ public class CaracteristicasForm extends MasterForm
 	public void setPersonaConDiscapacidad(String personaConDiscapacidad) {
 		this.personaConDiscapacidad = personaConDiscapacidad;
 	}
+	public String getTemaSinDefinir() {
+		return temaSinDefinir;
+	}
+	public void setTemaSinDefinir(String sinDefinir) {
+		this.temaSinDefinir = sinDefinir;
+	}
+	public String getViolenciaIntrafamiliar() {
+		return violenciaIntrafamiliar;
+	}
+	public void setViolenciaIntrafamiliar(String violenciaIntrafamiliar) {
+		this.violenciaIntrafamiliar = violenciaIntrafamiliar;
+	}
+	public String getViolenciaContraMujer() {
+		return violenciaContraMujer;
+	}
+	public void setViolenciaContraMujer(String violenciaContraMujer) {
+		this.violenciaContraMujer = violenciaContraMujer;
+	}
+	
+	
 	
 	
 }

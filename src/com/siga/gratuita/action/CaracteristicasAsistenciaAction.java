@@ -168,7 +168,7 @@ public class CaracteristicasAsistenciaAction extends MasterAction
 				miform.setViolenciaGenero(b.getViolenciaGenero());
 				miform.setMedidasProvisionales(b.getMedidasProvisionales());
 				miform.setNig(b.getNig());
-				miform.setNumero(b.getNumero().toString());
+				miform.setNumero(numeroAsistencia);
 				miform.setNumeroProcedimiento(b.getNumeroProcedimiento());
 				miform.setObligadaDesalojoDomicilio(b.getObligadaDesalojoDomicilio());
 				miform.setOrdenProteccion(b.getOrdenProteccion());
@@ -179,6 +179,10 @@ public class CaracteristicasAsistenciaAction extends MasterAction
 				miform.setSolicitudMedidasCautelares(b.getSolicitudMedidasCautelares());
 				miform.setVictimaLetradoAnterioridad(b.getVictimaLetradoAnterioridad());
 				miform.setPersonaConDiscapacidad(b.getPersonaConDiscapacidad());
+				
+				miform.setTemaSinDefinir(b.getTemaSinDefinir());
+				miform.setViolenciaContraMujer(b.getViolenciaContraMujer());
+				miform.setViolenciaIntrafamiliar(b.getViolenciaIntrafamiliar());
 						
 				String idTurno = request.getParameter("idTurno");
 				if(idTurno==null)
@@ -238,6 +242,9 @@ public class CaracteristicasAsistenciaAction extends MasterAction
 				miform.setDescripcionJuzgado("");
 				miform.setDescripcionPretension("");
 				miform.setPersonaConDiscapacidad("");
+				miform.setTemaSinDefinir("");
+				miform.setViolenciaContraMujer("");
+				miform.setViolenciaIntrafamiliar("");
 							
 				String idTurno = request.getParameter("idTurno");
 				if(idTurno==null)
@@ -387,7 +394,7 @@ public class CaracteristicasAsistenciaAction extends MasterAction
 			b.setViolenciaGenero(miform.getViolenciaGenero());
 			b.setMedidasProvisionales(miform.getMedidasProvisionales());
 			b.setNig(miform.getNig());
-			b.setNumero(new Double (miform.getNumero()));
+			b.setNumero(new Integer (miform.getNumero()));
 			b.setNumeroProcedimiento(miform.getNumeroProcedimiento());
 			b.setObligadaDesalojoDomicilio(miform.getObligadaDesalojoDomicilio());
 			b.setOrdenProteccion(miform.getOrdenProteccion());
@@ -396,6 +403,10 @@ public class CaracteristicasAsistenciaAction extends MasterAction
 			b.setPenal(miform.getPenal());
 			b.setSolicitudMedidasCautelares(miform.getSolicitudMedidasCautelares());
 			b.setVictimaLetradoAnterioridad(miform.getVictimaLetradoAnterioridad());
+			
+			b.setViolenciaIntrafamiliar(miform.getViolenciaIntrafamiliar());
+			b.setTemaSinDefinir(miform.getTemaSinDefinir());
+			b.setViolenciaContraMujer(miform.getViolenciaContraMujer());
 							
 			// Comienzo control de transacciones 
 			

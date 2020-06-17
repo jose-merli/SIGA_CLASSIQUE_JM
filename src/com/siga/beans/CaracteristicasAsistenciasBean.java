@@ -13,7 +13,7 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	 * */ 	
 	private Integer		idInstitucion;
 	private Integer		anio;
-	private Double		numero;
+	private Integer		numero;
 	private Integer		idInstitucionJuzgado;		
 	private Integer		idOrigenContacto;
 	private	String		descripcionContacto;
@@ -50,6 +50,10 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	private	String		descripcionPretension;
 	private	String		violenciaGenero;
 	private	String		violenciaDomestica;
+
+	private	String		temaSinDefinir;
+	private	String		violenciaIntrafamiliar;
+	private	String		violenciaContraMujer;
 	
 	
 	static public final String T_NOMBRETABLA = "SCS_CARACTASISTENCIA";
@@ -96,6 +100,9 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	static public final String 	C_VIOLENCIAGENERO =						"VIOLENCIAGENERO";
 	static public final String 	C_VIOLENCIADOMESTICA =					"VIOLENCIADOMESTICA";
 	static public final String 	C_PERSONACONDISCAPACIDAD =				"PERSONACONDISCAPACIDAD";
+	static public final String 	C_VIOLENCIAINTRAFAMILIAR =				"VIOLENCIAINTRAFAMILIAR";
+	static public final String 	C_VIOLENCIACONTRAMUJER =				"VIOLENCIACONTRAMUJER";
+	static public final String 	C_TEMASINDEFINIR =						"TEMASINDEFINIR";
 	
 	
 	public Integer getIdInstitucion() {
@@ -110,10 +117,10 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	public void setAnio(Integer anio) {
 		this.anio = anio;
 	}
-	public Double getNumero() {
+	public int getNumero() {
 		return numero;
 	}
-	public void setNumero(Double numero) {
+	public void setNumero(int numero) {
 		this.numero = numero;
 	}
 	public Integer getIdInstitucionJuzgado() {
@@ -334,6 +341,26 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	public void setPersonaConDiscapacidad(String personaConDiscapacidad) {
 		this.personaConDiscapacidad = personaConDiscapacidad;
 	}
+	public String getTemaSinDefinir() {
+		return temaSinDefinir;
+	}
+	public void setTemaSinDefinir(String temaSinDefinir) {
+		this.temaSinDefinir = temaSinDefinir;
+	}
+	public String getViolenciaIntrafamiliar() {
+		return violenciaIntrafamiliar;
+	}
+	public void setViolenciaIntrafamiliar(String violenciaIntrafamiliar) {
+		this.violenciaIntrafamiliar = violenciaIntrafamiliar;
+	}
+	public String getViolenciaContraMujer() {
+		return violenciaContraMujer;
+	}
+	public void setViolenciaContraMujer(String violenciaContraMujer) {
+		this.violenciaContraMujer = violenciaContraMujer;
+	}
+	
+	
 	
 
 }

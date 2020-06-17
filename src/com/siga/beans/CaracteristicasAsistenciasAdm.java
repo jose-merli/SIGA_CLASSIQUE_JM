@@ -37,7 +37,8 @@ public class CaracteristicasAsistenciasAdm extends MasterBeanAdministrador
 				CaracteristicasAsistenciasBean.C_CIVILESPENALES,CaracteristicasAsistenciasBean.C_VICTIMALETRADOANTERIORIDAD,
 				CaracteristicasAsistenciasBean.C_IDPERSONA,CaracteristicasAsistenciasBean.C_NUMEROPROCEDIMIENTO,
 				CaracteristicasAsistenciasBean.C_IDJUZGADO,CaracteristicasAsistenciasBean.C_NIG,
-				CaracteristicasAsistenciasBean.C_IDPRETENSION};
+				CaracteristicasAsistenciasBean.C_IDPRETENSION,CaracteristicasAsistenciasBean.C_TEMASINDEFINIR,CaracteristicasAsistenciasBean.C_VIOLENCIAINTRAFAMILIAR,
+				CaracteristicasAsistenciasBean.C_VIOLENCIACONTRAMUJER};
 		return campos;
 	}
 
@@ -86,7 +87,7 @@ public class CaracteristicasAsistenciasAdm extends MasterBeanAdministrador
 			bean.setViolenciaGenero(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_VIOLENCIAGENERO));
 			bean.setMedidasProvisionales(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_MEDIDASPROVISIONALES));
 			bean.setNig(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_NIG));
-			bean.setNumero(UtilidadesHash.getDouble(hash, CaracteristicasAsistenciasBean.C_NUMERO));
+			bean.setNumero(UtilidadesHash.getInteger(hash, CaracteristicasAsistenciasBean.C_NUMERO));
 			bean.setNumeroProcedimiento(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_NUMEROPROCEDIMIENTO));
 			bean.setObligadaDesalojoDomicilio(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_OBLIGADADESALOJODOMICILIO));
 			bean.setOrdenProteccion(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_ORDENPROTECCION));
@@ -97,6 +98,10 @@ public class CaracteristicasAsistenciasAdm extends MasterBeanAdministrador
 			bean.setSolicitudMedidasCautelares(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_SOLICITUDMEDIDASCAUTELARES));
 			bean.setVictimaLetradoAnterioridad(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_VICTIMALETRADOANTERIORIDAD));
 			bean.setPersonaConDiscapacidad(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_PERSONACONDISCAPACIDAD));
+
+			bean.setTemaSinDefinir(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_TEMASINDEFINIR));
+			bean.setViolenciaContraMujer(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_VIOLENCIACONTRAMUJER));
+			bean.setViolenciaIntrafamiliar(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_VIOLENCIAINTRAFAMILIAR));
 			
 			bean.setFechaMod(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_FECHAMODIFICACION));						
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, CaracteristicasAsistenciasBean.C_USUMODIFICACION));
@@ -154,6 +159,9 @@ public class CaracteristicasAsistenciasAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_PENAL, b.getPenal());
 			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_SOLICITUDMEDIDASCAUTELARES, b.getSolicitudMedidasCautelares());
 			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_VICTIMALETRADOANTERIORIDAD, b.getVictimaLetradoAnterioridad());
+			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_TEMASINDEFINIR, b.getTemaSinDefinir());
+			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_VIOLENCIACONTRAMUJER, b.getViolenciaContraMujer());
+			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_VIOLENCIAINTRAFAMILIAR, b.getViolenciaIntrafamiliar());
 														
 			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_FECHAMODIFICACION, b.getFechaMod());			
 			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_USUMODIFICACION, b.getUsuMod());
