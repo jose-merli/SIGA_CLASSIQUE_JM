@@ -876,3 +876,9 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.caracteristicas.literal.ambos', 'Si, ambos#CA', 0, '2', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.caracteristicas.literal.ambos', 'Si, ambos#EU', 0, '3', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.caracteristicas.literal.ambos', 'Si, ambos#GL', 0, '4', sysdate, 0, '19');
+
+
+insert into gen_catalogos_multiidioma
+  (codigo, nombretabla, campotabla, fechamodificacion, usumodificacion, local, codigotabla, migrado)
+values
+  (835, 'SCS_ORIGENCONTACTO', 'DESCRIPCION', SYSDATE, 0, 'S', 'IDORIGENCONTACTO', 'S');
