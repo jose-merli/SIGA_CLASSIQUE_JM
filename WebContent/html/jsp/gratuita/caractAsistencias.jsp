@@ -736,17 +736,17 @@ function bloquearDesbloquear(o)
 		<td colspan ="1" class="labelText"><siga:Idioma key="gratuita.caracteristicas.literal.temasActuaciones"/>:&nbsp;</td>
 		<td colspan ="3" class="labelText">
 			
-			<input type="checkbox" name="cContraLaLibertadSexual" onclick="fContraLaLibertadSexual(this);" <%=(contraLaLibertadSexual.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>
-			<siga:Idioma key="gratuita.caracteristicas.literal.contraLibertadSexual"/>&nbsp;
+			<label><input type="checkbox" name="cContraLaLibertadSexual" onclick="fContraLaLibertadSexual(this);" <%=(contraLaLibertadSexual.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>
+			<siga:Idioma key="gratuita.caracteristicas.literal.contraLibertadSexual"/>&nbsp;</label>
 			
-			<input type="checkbox" name="cViolenciaIntrafamiliar" onclick="fViolenciaIntrafamiliar(this);" <%=(violenciaIntrafamiliar.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>
-			<siga:Idioma key="gratuita.personaJG.literal.violenciaIntrafamiliar"/>&nbsp;
+			<label><input type="checkbox" name="cViolenciaIntrafamiliar" onclick="fViolenciaIntrafamiliar(this);" <%=(violenciaIntrafamiliar.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>
+			<siga:Idioma key="gratuita.personaJG.literal.violenciaIntrafamiliar"/>&nbsp;</label>
 			
-			<input type="checkbox" name="cViolenciaContraMujer" onclick="fViolenciaContraMujer(this);" <%=(violenciaContraMujer.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>
-			<siga:Idioma key="gratuita.personaJG.literal.violenciaContraMujer"/>&nbsp;
+			<label><input type="checkbox" name="cViolenciaContraMujer" onclick="fViolenciaContraMujer(this);" <%=(violenciaContraMujer.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>
+			<siga:Idioma key="gratuita.personaJG.literal.violenciaContraMujer"/>&nbsp;</label>
 						
-			<input type="checkbox" name="cTemaSinDefinir" onclick="fTemaSinDefinir(this);" <%=(temaSinDefinir.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>
-			<siga:Idioma key="gratuita.personaJG.literal.temaSinDefinir"/>&nbsp;
+			<label><input type="checkbox" name="cTemaSinDefinir" onclick="fTemaSinDefinir(this);" <%=(temaSinDefinir.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>
+			<siga:Idioma key="gratuita.personaJG.literal.temaSinDefinir"/>&nbsp;</label>
 		</td>
 	</tr>
 	
