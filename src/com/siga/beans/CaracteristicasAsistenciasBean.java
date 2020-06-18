@@ -54,6 +54,7 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	private	String		temaSinDefinir;
 	private	String		violenciaIntrafamiliar;
 	private	String		violenciaContraMujer;
+	private	String		contraLaLibertadSexual;
 	
 	
 	static public final String T_NOMBRETABLA = "SCS_CARACTASISTENCIA";
@@ -102,6 +103,7 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	static public final String 	C_PERSONACONDISCAPACIDAD =				"PERSONACONDISCAPACIDAD";
 	static public final String 	C_VIOLENCIAINTRAFAMILIAR =				"VIOLENCIAINTRAFAMILIAR";
 	static public final String 	C_VIOLENCIACONTRAMUJER =				"VIOLENCIACONTRAMUJER";
+	static public final String 	C_CONTRALALIBERTADSEXUAL =				"CONTRALALIBERTADSEXUAL";
 	static public final String 	C_TEMASINDEFINIR =						"TEMASINDEFINIR";
 	
 	
@@ -358,6 +360,12 @@ public class CaracteristicasAsistenciasBean extends MasterBean
 	}
 	public void setViolenciaContraMujer(String violenciaContraMujer) {
 		this.violenciaContraMujer = violenciaContraMujer;
+	}
+	public String getContraLaLibertadSexual() {
+		return contraLaLibertadSexual;
+	}
+	public void setContraLaLibertadSexual(String contraLaLibertadSexual) {
+		this.contraLaLibertadSexual = contraLaLibertadSexual;
 	}
 	
 	

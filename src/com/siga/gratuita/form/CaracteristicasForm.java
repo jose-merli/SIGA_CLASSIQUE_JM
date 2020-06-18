@@ -61,6 +61,7 @@ public class CaracteristicasForm extends MasterForm
 	private String 		temaSinDefinir;
 	private String 		violenciaIntrafamiliar;
 	private String 		violenciaContraMujer;
+	private String 		contraLaLibertadSexual;
 	
 	private String colegiadoNumero;
 	private String colegiadoNombre;
@@ -376,6 +377,12 @@ public class CaracteristicasForm extends MasterForm
 	}
 	public void setViolenciaContraMujer(String violenciaContraMujer) {
 		this.violenciaContraMujer = violenciaContraMujer;
+	}
+	public String getContraLaLibertadSexual() {
+		return contraLaLibertadSexual;
+	}
+	public void setContraLaLibertadSexual(String contraLaLibertadSexual) {
+		this.contraLaLibertadSexual = contraLaLibertadSexual;
 	}
 	
 	

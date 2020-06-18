@@ -64,6 +64,7 @@ String		personaConDiscapacidad="";
 
 String		violenciaIntrafamiliar="";
 String		violenciaContraMujer="";
+String		contraLaLibertadSexual="";
 String		temaSinDefinir="";
 
 String		judicial="";
@@ -147,6 +148,7 @@ if(miform!=null)
 	 idPretension = miform.getIdPretension();	
 	 temaSinDefinir=miform.getTemaSinDefinir();
 	 violenciaContraMujer=miform.getViolenciaContraMujer();
+	 contraLaLibertadSexual=miform.getContraLaLibertadSexual();
 	 violenciaIntrafamiliar=miform.getViolenciaIntrafamiliar();
 }
 
@@ -354,8 +356,7 @@ function fPersonaConDiscapacidad(o)
 	}		
 }
 
-function fViolenciaIntrafamiliar(o) 
-{
+function fViolenciaIntrafamiliar(o){
 	if (o.checked) { 			
 		document.forms[0].violenciaIntrafamiliar.value = "1";
 	} else {		 	
@@ -363,8 +364,7 @@ function fViolenciaIntrafamiliar(o)
 	}		
 }
 
-function fViolenciaContraMujer(o) 
-{
+function fViolenciaContraMujer(o){
 	if (o.checked) { 			
 		document.forms[0].violenciaContraMujer.value = "1";
 	} else {		 	
@@ -372,13 +372,19 @@ function fViolenciaContraMujer(o)
 	}		
 }
 
-
-function fTemaSinDefinir(o) 
-{
+function fTemaSinDefinir(o){
 	if (o.checked) { 			
 		document.forms[0].temaSinDefinir.value = "1";
 	} else {		 	
 		document.forms[0].temaSinDefinir.value = "0";
+	}		
+}
+
+function fContraLaLibertadSexual(o){
+	if (o.checked) { 			
+		document.forms[0].contraLaLibertadSexual.value = "1";
+	} else {		 	
+		document.forms[0].contraLaLibertadSexual.value = "0";
 	}		
 }
 
@@ -679,6 +685,7 @@ function bloquearDesbloquear(o)
 
 <input type="hidden" name="temaSinDefinir" value="<%=temaSinDefinir%>">
 <input type="hidden" name="violenciaContraMujer" value="<%=violenciaContraMujer%>">
+<input type="hidden" name="contraLaLibertadSexual" value="<%=contraLaLibertadSexual%>">
 <input type="hidden" name="violenciaIntrafamiliar" value="<%=violenciaIntrafamiliar%>">
 
 <input type="hidden" name="contraLibertadSexual" value="<%=contraLibertadSexual%>">
@@ -729,9 +736,7 @@ function bloquearDesbloquear(o)
 		<td colspan ="1" class="labelText"><siga:Idioma key="gratuita.caracteristicas.literal.temasActuaciones"/>:&nbsp;</td>
 		<td colspan ="3" class="labelText">
 			
-			
-						
-			<input type="checkbox" name="cContraLibertadSexual" onclick="fContraLibertadSexual(this);" <%=(contraLibertadSexual.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>
+			<input type="checkbox" name="cContraLaLibertadSexual" onclick="fContraLaLibertadSexual(this);" <%=(contraLaLibertadSexual.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>
 			<siga:Idioma key="gratuita.caracteristicas.literal.contraLibertadSexual"/>&nbsp;
 			
 			<input type="checkbox" name="cViolenciaIntrafamiliar" onclick="fViolenciaIntrafamiliar(this);" <%=(violenciaIntrafamiliar.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>
@@ -748,6 +753,9 @@ function bloquearDesbloquear(o)
 	<tr style="display:none">	
 		<td>&nbsp;</td>
 		<td colspan ="3" class="labelText">
+			
+			<input type="checkbox" name="cContraLibertadSexual" onclick="fContraLibertadSexual(this);" <%=(contraLibertadSexual.equals("1"))?"checked":""%> <%=(readonly==true)?"disabled":""%>>
+			<siga:Idioma key="gratuita.caracteristicas.literal.contraLibertadSexual"/>&nbsp;
 			
 			<input type="checkbox" name="cViolenciaDomestica" onclick="fViolenciaDomestica(this);" <%=(violenciaDomestica.equals("1"))?"checked":""%> disabled>															
 			<siga:Idioma key="gratuita.caracteristicas.literal.violenciadomestica"/>&nbsp;

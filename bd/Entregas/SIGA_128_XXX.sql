@@ -852,6 +852,10 @@ create index IDX_FK_ADM_CONTADOR_ABONOS on FAC_SERIEFACTURACION (IDINSTITUCION, 
 alter table SCS_CARACTASISTENCIA add VIOLENCIACONTRAMUJER varchar2(1);
 alter table SCS_CARACTASISTENCIA add TEMASINDEFINIR varchar2(1);
 alter table SCS_CARACTASISTENCIA add VIOLENCIAINTRAFAMILIAR varchar2(1);
+alter table SCS_CARACTASISTENCIA add CONTRALALIBERTADSEXUAL varchar2(1);
+comment on column SCS_CARACTASISTENCIA.CONTRALALIBERTADSEXUAL
+  is 'Nuevo en 2020';
+
 
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.literal.violenciaIntrafamiliar', 'Violencia intrafamiliar', 0, '1', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.literal.violenciaIntrafamiliar', 'Violencia intrafamiliar#CA', 0, '2', sysdate, 0, '19');

@@ -182,6 +182,7 @@ public class CaracteristicasAsistenciaAction extends MasterAction
 				
 				miform.setTemaSinDefinir(b.getTemaSinDefinir());
 				miform.setViolenciaContraMujer(b.getViolenciaContraMujer());
+				miform.setContraLaLibertadSexual(b.getContraLaLibertadSexual());
 				miform.setViolenciaIntrafamiliar(b.getViolenciaIntrafamiliar());
 						
 				String idTurno = request.getParameter("idTurno");
@@ -242,9 +243,11 @@ public class CaracteristicasAsistenciaAction extends MasterAction
 				miform.setDescripcionJuzgado("");
 				miform.setDescripcionPretension("");
 				miform.setPersonaConDiscapacidad("");
+				
 				miform.setTemaSinDefinir("");
 				miform.setViolenciaContraMujer("");
 				miform.setViolenciaIntrafamiliar("");
+				miform.setContraLaLibertadSexual("");
 							
 				String idTurno = request.getParameter("idTurno");
 				if(idTurno==null)
@@ -407,6 +410,7 @@ public class CaracteristicasAsistenciaAction extends MasterAction
 			b.setViolenciaIntrafamiliar(miform.getViolenciaIntrafamiliar());
 			b.setTemaSinDefinir(miform.getTemaSinDefinir());
 			b.setViolenciaContraMujer(miform.getViolenciaContraMujer());
+			b.setContraLaLibertadSexual(miform.getContraLaLibertadSexual());
 							
 			// Comienzo control de transacciones 
 			

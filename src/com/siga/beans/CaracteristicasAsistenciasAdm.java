@@ -38,7 +38,7 @@ public class CaracteristicasAsistenciasAdm extends MasterBeanAdministrador
 				CaracteristicasAsistenciasBean.C_IDPERSONA,CaracteristicasAsistenciasBean.C_NUMEROPROCEDIMIENTO,
 				CaracteristicasAsistenciasBean.C_IDJUZGADO,CaracteristicasAsistenciasBean.C_NIG,
 				CaracteristicasAsistenciasBean.C_IDPRETENSION,CaracteristicasAsistenciasBean.C_TEMASINDEFINIR,CaracteristicasAsistenciasBean.C_VIOLENCIAINTRAFAMILIAR,
-				CaracteristicasAsistenciasBean.C_VIOLENCIACONTRAMUJER};
+				CaracteristicasAsistenciasBean.C_VIOLENCIACONTRAMUJER, CaracteristicasAsistenciasBean.C_CONTRALALIBERTADSEXUAL};
 		return campos;
 	}
 
@@ -101,6 +101,7 @@ public class CaracteristicasAsistenciasAdm extends MasterBeanAdministrador
 
 			bean.setTemaSinDefinir(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_TEMASINDEFINIR));
 			bean.setViolenciaContraMujer(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_VIOLENCIACONTRAMUJER));
+			bean.setContraLaLibertadSexual(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_CONTRALALIBERTADSEXUAL));
 			bean.setViolenciaIntrafamiliar(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_VIOLENCIAINTRAFAMILIAR));
 			
 			bean.setFechaMod(UtilidadesHash.getString(hash, CaracteristicasAsistenciasBean.C_FECHAMODIFICACION));						
@@ -161,6 +162,7 @@ public class CaracteristicasAsistenciasAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_VICTIMALETRADOANTERIORIDAD, b.getVictimaLetradoAnterioridad());
 			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_TEMASINDEFINIR, b.getTemaSinDefinir());
 			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_VIOLENCIACONTRAMUJER, b.getViolenciaContraMujer());
+			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_CONTRALALIBERTADSEXUAL, b.getContraLaLibertadSexual());
 			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_VIOLENCIAINTRAFAMILIAR, b.getViolenciaIntrafamiliar());
 														
 			UtilidadesHash.set(hash, CaracteristicasAsistenciasBean.C_FECHAMODIFICACION, b.getFechaMod());			
