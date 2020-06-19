@@ -44,13 +44,21 @@
 	String accion = (String)request.getSession().getAttribute("accion");
 		
 	String botonesFila="";
+
+
 	
-	String	botones="V,N";
-	if (accion.equalsIgnoreCase("ver")){
-		botonesFila = "C";
-	} else {
-		botonesFila = "C,E,B";
+	//recoger de request el vector con los registros resultado
+	String esFicha = "0";
+	if(request.getAttribute("noFicha")==null){
+		esFicha = (String)request.getParameter("esFichaColegial");
 	}
+	String	botones="V,N";
+	if(esFicha.equalsIgnoreCase("1")){
+		botones="N";
+	}else{
+		botones="V,N";
+	}
+
 %>
 
 	<!-- HEAD -->
@@ -87,6 +95,8 @@
 						t_anio      = (String)hTitulo.get(ScsAsistenciasBean.C_ANIO);
 						t_numero    = (String)hTitulo.get(ScsAsistenciasBean.C_NUMERO);
 					}
+					
+					
 				%>
 				<%=UtilidadesString.mostrarDatoJSP(t_anio)%>/<%=UtilidadesString.mostrarDatoJSP(t_numero)%> 
 				- <%=UtilidadesString.mostrarDatoJSP(t_nombre)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido1)%> <%=UtilidadesString.mostrarDatoJSP(t_apellido2)%>
@@ -105,6 +115,13 @@
 	    	int recordNumber=1;
 	    	while (recordNumber-1 < obj.size())	{	
 	    		DocumentacionAsistenciaVo fila = (DocumentacionAsistenciaVo) obj.get(recordNumber-1);
+	    		// Si estamos en modo edicion y el usuario es administrado o siendo letrado ha sido el modificador
+	    		if((!accion.equalsIgnoreCase("ver"))&&((!usr.isLetrado())||(usr.isLetrado()&&(usr.getIdPersona()==fila.getUsumodificacion())))){
+	    			botonesFila = "C,E,B";
+	    		}else{
+	    			botonesFila = "C";
+	    		}
+	    		
 %>				
 				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botonesFila%>" clase="listaNonEdit" >
 					<td>

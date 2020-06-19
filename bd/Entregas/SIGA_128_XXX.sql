@@ -882,3 +882,12 @@ insert into gen_catalogos_multiidioma
   (codigo, nombretabla, campotabla, fechamodificacion, usumodificacion, local, codigotabla, migrado)
 values
   (835, 'SCS_ORIGENCONTACTO', 'DESCRIPCION', SYSDATE, 0, 'S', 'IDORIGENCONTACTO', 'S');
+  
+  
+insert into gen_procesos
+  (idproceso, idmodulo, traza, target, fechamodificacion, usumodificacion, descripcion, transaccion, idparent, nivel)
+(select '9M0', idmodulo, traza, target, sysdate, 0, descripcion, 'JGR_DocumentacionAsistenciaLetrado', '9S0', nivel from gen_procesos where idproceso='9Z7');
+
+insert into gen_pestanas
+  (idproceso, idlenguaje, idrecurso, posicion, idgrupo, tipoacceso)
+(select '9M0', idlenguaje, idrecurso, 9, 'LETASIST', tipoacceso from gen_pestanas where idproceso='9Z7')  ;

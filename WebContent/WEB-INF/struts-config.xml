@@ -2913,6 +2913,11 @@
 			<forward name="inicio" path="/html/jsp/gratuita/listadoDocumentacionAsistencia.jsp"/>
 			<forward name="editar" path="/html/jsp/gratuita/operarDocumentacionAsistencia.jsp"/>
 		</action>
+		<action path="/JGR_DocumentacionAsistenciaLetrado" type="com.siga.gratuita.action.DefinirDocumentacionAsistenciaAction" name="DefinirDocumentacionAsistenciaForm" scope="request">
+			<forward name="inicio" path="/html/jsp/gratuita/listadoDocumentacionAsistencia.jsp?esFichaColegial=1"/>
+			<forward name="editar" path="/html/jsp/gratuita/operarDocumentacionAsistencia.jsp?esFichaColegial=1"/>
+		</action>
+		
 		<action path="/JGR_DocumentacionDesigna" type="com.siga.gratuita.action.DefinirDocumentacionDesignaAction" name="DefinirDocumentacionDesignaForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/listadoDocumentacionDesigna.jsp"/>
 			<forward name="editar" path="/html/jsp/gratuita/operarDocumentacionDesigna.jsp"/>
