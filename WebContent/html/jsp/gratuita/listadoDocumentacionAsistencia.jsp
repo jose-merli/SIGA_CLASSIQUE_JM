@@ -116,7 +116,7 @@
 	    	while (recordNumber-1 < obj.size())	{	
 	    		DocumentacionAsistenciaVo fila = (DocumentacionAsistenciaVo) obj.get(recordNumber-1);
 	    		// Si estamos en modo edicion y el usuario es administrado o siendo letrado ha sido el modificador
-	    		if((!accion.equalsIgnoreCase("ver"))&&((!usr.isLetrado())||(usr.isLetrado()&&(usr.getIdPersona()==fila.getUsumodificacion())))){
+	    		if((!accion.equalsIgnoreCase("ver"))&&((!usr.isLetrado())||(usr.isLetrado()&&(usr.getUserName().equalsIgnoreCase(fila.getUsumodificacion().toString()))))){
 	    			botonesFila = "C,E,B";
 	    		}else{
 	    			botonesFila = "C";
