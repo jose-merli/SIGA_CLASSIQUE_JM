@@ -48,13 +48,13 @@
 
 	
 	//recoger de request el vector con los registros resultado
-	String esFicha = "0";
-	if(request.getAttribute("noFicha")==null){
-		esFicha = (String)request.getParameter("esFichaColegial");
-	}
+	String esFicha = (String)request.getParameter("esFichaColegial");
+	System.out.println(esFicha);
 	String	botones="V,N";
+	String sAction="JGR_DocumentacionAsistencia";
 	if(esFicha.equalsIgnoreCase("1")){
 		botones="N";
+		sAction="JGR_DocumentacionAsistenciaLetrado";
 	}else{
 		botones="V,N";
 	}
@@ -73,7 +73,7 @@
 </head>
 
 <body class="tablaCentralCampos">	
-	<html:form action="/JGR_DocumentacionAsistencia" method="post" target="mainPestanas" style="display:none">
+	<html:form action="<%=sAction %>" method="post" target="mainPestanas" style="display:none">
 		<html:hidden property="modo" value=""/>	
 		<html:hidden styleId="jsonVolver" property="jsonVolver" />
 		<html:hidden styleId="idInstitucion" property="idInstitucion" />		
