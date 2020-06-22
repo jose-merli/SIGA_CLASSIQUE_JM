@@ -49,14 +49,11 @@
 	
 	//recoger de request el vector con los registros resultado
 	String esFicha = (String)request.getParameter("esFichaColegial");
-	System.out.println(esFicha);
 	String	botones="V,N";
 	String sAction="JGR_DocumentacionAsistencia";
-	if(esFicha.equalsIgnoreCase("1")){
+	if(esFicha!=null && esFicha.equalsIgnoreCase("1")){
 		botones="N";
 		sAction="JGR_DocumentacionAsistenciaLetrado";
-	}else{
-		botones="V,N";
 	}
 
 %>
