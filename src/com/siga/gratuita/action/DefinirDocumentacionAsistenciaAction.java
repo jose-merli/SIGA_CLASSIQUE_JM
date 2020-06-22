@@ -114,7 +114,7 @@ public class DefinirDocumentacionAsistenciaAction extends MasterAction {
 			//pasamos si es obligatorio el archivo
 			request.setAttribute("fileRequired", true);
 			try {
-				String permisoFicheros = testAccess(request.getContextPath()+"/JGR_DocumentacionAsistencia.do",null,request);
+				String permisoFicheros = testAccess(request.getContextPath()+request.getServletPath(),null,request);
 				request.setAttribute("permisoFicheros", permisoFicheros);
 			} catch (ClsExceptions e) {
 				throw new SIGAException(e.getMsg());
@@ -170,7 +170,7 @@ public class DefinirDocumentacionAsistenciaAction extends MasterAction {
 			//pasamos si es obligatorio el archivo
 			request.setAttribute("fileRequired", false);
 			try {
-				String permisoFicheros = testAccess(request.getContextPath()+"/JGR_DocumentacionAsistencia.do",null,request);
+				String permisoFicheros = testAccess(request.getContextPath()+request.getServletPath(),null,request);
 				request.setAttribute("permisoFicheros", permisoFicheros);
 			} catch (ClsExceptions e) {
 				throw new SIGAException(e.getMsg());
@@ -220,7 +220,7 @@ public class DefinirDocumentacionAsistenciaAction extends MasterAction {
 			//pasamos si es obligatorio el archivo
 			request.setAttribute("fileRequired", true);
 			try {
-				String permisoFicheros = testAccess(request.getContextPath()+mapping.getPath()+".do",null,request);
+				String permisoFicheros = testAccess(request.getContextPath()+request.getServletPath(),null,request);
 				request.setAttribute("permisoFicheros", permisoFicheros);
 			} catch (ClsExceptions e) {
 				throw new SIGAException(e.getMsg());
