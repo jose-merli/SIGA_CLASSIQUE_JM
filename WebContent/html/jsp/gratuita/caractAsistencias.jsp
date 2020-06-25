@@ -153,7 +153,9 @@ if(miform!=null)
 }
 
 boolean scheck = false;
-String[] dato = {idInstitucion};
+
+String[] datosOrigen = {usr.getLocation(),idInstitucion};
+
 String modo = request.getParameter("MODO")!=null?request.getParameter("MODO"):"";
 
 //Combo procedimientos (pretensiones)
@@ -726,7 +728,7 @@ function bloquearDesbloquear(o)
 			<%if(modo.equals("ver")){%>
 					<%=descripcionContacto%>
 				<%}else{%>
-			<siga:ComboBD  nombre = "idOrigenContacto" tipo="cmbOrigenContacto" clase="boxCombo" obligatorio="false" accion="bloquearDesbloquear(this);" elementoSel="<%=conectadoLetradoSel%>"  parametro="<%=dato%>"/>
+			<siga:ComboBD  nombre = "idOrigenContacto" tipo="cmbOrigenContacto" clase="boxCombo" obligatorio="false" accion="bloquearDesbloquear(this);" elementoSel="<%=conectadoLetradoSel%>"  parametro="<%=datosOrigen%>"/>
 			<%}%>			
 			<html:text name="CaracteristicasForm" styleId="otroDescripcionOrigenContacto" property="otroDescripcionOrigenContacto" size="50" maxlength="100" styleClass="box" value="<%=otroDescripcionOrigenContacto%>" readOnly="<%=readonly%>"></html:text>&nbsp;&nbsp;			
 		</td>		
