@@ -1617,12 +1617,12 @@ public class CajgEJGRemesaAdm extends MasterBeanAdministrador {
 	}
 
 	public Vector getDictamenEJG(int idInstitucion, String anyo, String numero, String idtipoejg) throws ClsExceptions, SIGAException {
-		String consulta = "SELECT CASE " +
+		String consulta = "SELECT ejg.IDTIPODICTAMENEJG, CASE " +
 				" WHEN ejg.IDTIPODICTAMENEJG = 3 THEN " +
 				"  1 " +
 				" ELSE " +
 				"  0 " +
-				" END AS DICTAMENDOC, " +
+				" END AS DICTAMENDOC,CAL.CODIGO CODIGOFUND, " +
 				" CASE " +
 				" WHEN CAL.CODIGO = 11 THEN " +
 				" 	0 " +

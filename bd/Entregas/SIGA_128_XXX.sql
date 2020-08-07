@@ -891,3 +891,9 @@ insert into gen_procesos
 insert into gen_pestanas
   (idproceso, idlenguaje, idrecurso, posicion, idgrupo, tipoacceso)
 (select '9M0', idlenguaje, idrecurso, 9, 'LETASIST', tipoacceso from gen_pestanas where idproceso='9Z7')  ;
+
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('sjcs.remesas.error.faltaDocumentacion', 'El expediente no tiene la documentación mínima requerida. Además de añadir los ficheros necesarios compruebe que ha introducido la fecha de presentación.', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('sjcs.remesas.error.faltaDocumentacion', 'L''expedient no té la documentació mínima requerida. A més d''afegir els fitxers necessaris comprovi que ha introduït la data de presentació.', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('sjcs.remesas.error.faltaDocumentacion', 'El expediente no tiene la documentación mínima requerida. Además de añadir los ficheros necesarios compruebe que ha introducido la fecha de presentaciÃ³n.#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('sjcs.remesas.error.faltaDocumentacion', 'El expediente no tiene la documentación mínima requerida. Además de añadir los ficheros necesarios compruebe que ha introducido la fecha de presentaciÃ³n.#GL', 0, '4', sysdate, 0, '19');

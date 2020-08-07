@@ -95,6 +95,7 @@ import com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.Intercambio.Informacion
 import com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.Intercambio.InformacionIntercambio.TipoIDO.Expediente.DocumentoAnexado;
 
 import es.satec.businessManager.BusinessManager;
+import weblogic.descriptor.beangen.StringHelper;
 
 /**
  * @author angelcpe
@@ -137,7 +138,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	 * @return
 	 * @throws Exception
 	 */
-	private List<File> generaFicherosXML(String dirFicheros, String dirPlantilla, boolean envioDigitalizacionDoc) throws Exception {
+	private List<File> generaFicherosXML(String dirFicheros, String dirPlantilla, boolean isActivoEnvioDigitalizacionDoc) throws Exception {
 		
 		List<File> ficheros = new ArrayList<File>();
 		ficherosCat = new ArrayList<File>();
@@ -151,7 +152,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		ClsLogging.writeFileLog("Construyendo xml para la remesa: " + getIdRemesa(), 3);
 //		doc.setSchemaLocation("IntercambioEJG.xsd");
 //		doc.setXsiType();		
-		Vector datos = cajgEJGRemesaAdm.getDatosEJGs(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
+		Vector datosGeneralesEJGVector = cajgEJGRemesaAdm.getDatosEJGs(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
 		ClsLogging.writeFileLog("Datos de los ejg de la remesa obtenidos", 3);
 		Vector datosFamiliares = cajgEJGRemesaAdm.getFamiliares(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
 		construyeHTxEJG(datosFamiliares, htFamiliares);
@@ -174,14 +175,14 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		ClsLogging.writeFileLog("Documentacion normal obtenida", 3);
 		
 		Vector datosDocumentacionExpedienteDSCat = cajgEJGRemesaAdm.getDocumentacionExpedienteDSCat(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
-		construyeHTxPersona(datosDocumentacionExpedienteDSCat, htDocumentacionExpedienteCat);
+		construyeHTxEJG(datosDocumentacionExpedienteDSCat, htDocumentacionExpedienteCat);
 		ClsLogging.writeFileLog("Documentacion digitalización obtenida", 3);
 		
 		Vector datosDelitos = cajgEJGRemesaAdm.getDelitos(getIdInstitucion(), getIdRemesa(), getUsrBean().getLanguage());
 		construyeHTxEJG(datosDelitos, htDelitos);
 		ClsLogging.writeFileLog("Datos contrarios obtenidos", 3);
 		
-		Hashtable ht = null;
+		Hashtable datosGeneralesEJG = null;
 		String tipoIntercambio = "";
 		InformacionIntercambio informacionIntercambio = null;
 		
@@ -194,61 +195,65 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		
 		// Funcionalidad de digitalizacion de documentacion
 		// Si está activa la parametrización de la digitalizacion creamos el fichero indice 
-		if(envioDigitalizacionDoc && datosDocumentacionExpedienteDSCat != null && !datosDocumentacionExpedienteDSCat.isEmpty()){
+		if(isActivoEnvioDigitalizacionDoc){
+			ClsLogging.writeFileLog("El envio de documentacion esta activo...");
 			errorMinDoc = false;
 			indexDocumentacion = com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.Factory.newInstance();
 			intercambioDoc = indexDocumentacion.addNewIntercambio();
-			infoIntercambioDoc = rellenaInformacionIntercambioIDO(intercambioDoc,(Hashtable)datos.get(0), sufijoIdIntercambio++);
+			infoIntercambioDoc = rellenaIdentificacionInformacionIntercambioIDO(intercambioDoc,(Hashtable)datosGeneralesEJGVector.get(0), sufijoIdIntercambio++);
 			
 		}
 		
-		for (int i = 0; i < datos.size(); i++) {
-			ht = (Hashtable)datos.get(i);
+		for (int i = 0; i < datosGeneralesEJGVector.size(); i++) {
+			datosGeneralesEJG = (Hashtable)datosGeneralesEJGVector.get(i);
 			
-			if (!tipoIntercambio.equals(ht.get(TIPOINTERCAMBIO))) {				
+			if (!tipoIntercambio.equals(datosGeneralesEJG.get(TIPOINTERCAMBIO))) {				
 				if (intercambio != null && numDetalles > 0) {					
 					ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, numDetalles));
 				}
 				numDetalles = 0;
 				intercambioDocument = IntercambioDocument.Factory.newInstance();
 				intercambio = intercambioDocument.addNewIntercambio();
-				informacionIntercambio = rellenaInformacionIntercambio(intercambio, ht, sufijoIdIntercambio++);
-				if (INTERCAMBIO_CAMBIO_DESIGNACION.equals(ht.get(TIPOINTERCAMBIO))) {
+				informacionIntercambio = rellenaInformacionIntercambio(intercambio, datosGeneralesEJG, sufijoIdIntercambio++);
+				if (INTERCAMBIO_CAMBIO_DESIGNACION.equals(datosGeneralesEJG.get(TIPOINTERCAMBIO))) {
 					tipoICD = informacionIntercambio.addNewTipoICD();
 				} else {
 					tipoGenerico = informacionIntercambio.addNewTipoGenerico();
 				}					
 			}
 			
-			tipoIntercambio = (String) ht.get(TIPOINTERCAMBIO);
-			idTipoEJG = (String)ht.get(IDTIPOEJG);
-			anyo = (String)ht.get(ANIO);
-			numero = (String)ht.get(NUMERO);
-			numejg = (String)ht.get(NUMEJG);
+			tipoIntercambio = (String) datosGeneralesEJG.get(TIPOINTERCAMBIO);
+			idTipoEJG = (String)datosGeneralesEJG.get(IDTIPOEJG);
+			anyo = (String)datosGeneralesEJG.get(ANIO);
+			numero = (String)datosGeneralesEJG.get(NUMERO);
+			numejg = (String)datosGeneralesEJG.get(NUMEJG);
 			
 			try {	
 				
 				if (tipoIntercambio.equals(INTERCAMBIO_CAMBIO_DESIGNACION)) {
-					numDetalles += addExpedienteTipoICD(tipoICD, ht, tipoIntercambio);
+					numDetalles += addExpedienteTipoICD(tipoICD, datosGeneralesEJG, tipoIntercambio);
 				} else {
-					numDetalles += addExpedienteTipoGenerico(tipoGenerico, ht, tipoIntercambio);
+					numDetalles += addExpedienteTipoGenerico(tipoGenerico, datosGeneralesEJG, tipoIntercambio);
 				}
 				
 			} catch (IllegalArgumentException e) {	
-				if (tipoGenerico.sizeOfExpedienteArray() > 0) {
+				if (tipoGenerico != null && tipoGenerico.sizeOfExpedienteArray() > 0) {
 					tipoGenerico.removeExpediente(tipoGenerico.sizeOfExpedienteArray()-1);
 				}
 				escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, e.getMessage(), CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
 			}
 			
 			//Funcionalidad de digitalizacion de documentacion
-			if(envioDigitalizacionDoc && datosDocumentacionExpedienteDSCat != null && !datosDocumentacionExpedienteDSCat.isEmpty() && indexDocumentacion != null){
-				numFilesCat += anadirDocumentosIDO(indexDocumentacion,datosDocumentacionExpedienteDSCat,ht, envioDigitalizacionDoc);
-				ClsLogging.writeFileLog("La digitalización está activa y hay documentos digitalizados: "+ numFilesCat, 3);
+			if(isActivoEnvioDigitalizacionDoc){
+				String key = getKey(new Object[]{datosGeneralesEJG.get(IDINSTITUCION), datosGeneralesEJG.get(ANIO), datosGeneralesEJG.get(NUMERO), datosGeneralesEJG.get(IDTIPOEJG)});
+				List documentacionExpedienteList =  (ArrayList)htDocumentacionExpedienteCat.get(key);
+				int numFilesEjg = anadirDocumentosIDO(indexDocumentacion,documentacionExpedienteList,datosGeneralesEJG); 
+				numFilesCat += numFilesEjg;
+				ClsLogging.writeFileLog("Número de documentos añadidos: "+numFilesEjg +". Total documentos digitalizados: "+ numFilesCat, 3);
 			}
 			
 		}
-		if(!envioDigitalizacionDoc){
+		if(!isActivoEnvioDigitalizacionDoc){
 			if (intercambio != null && numDetalles > 0) {			
 				ficheros.add(creaFichero(dirFicheros, dirPlantilla, intercambioDocument, intercambio, numDetalles));
 			}
@@ -266,77 +271,80 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		return ficheros;
 	}
 	
-	private Integer anadirDocumentosIDO(com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument indexDocumentacion, Vector datosDocumentacionExpedienteDSCat, Hashtable ht, boolean envioDigitalizacionDoc) throws Exception {
+	private Integer anadirDocumentosIDO(com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument indexDocumentacion, List datosDocumentacionExpedienteDSCat, Hashtable datosGeneralesEJG) throws Exception {
 		Integer numFiles = 0;
 		Integer numFilesReq = 0;
 		TipoIDO.Expediente expediente = indexDocumentacion.getIntercambio().getInformacionIntercambio().getTipoIDO().addNewExpediente();
 		TipoIDO.Expediente.DatosExpediente datosExpediente = expediente.addNewDatosExpediente();
 		
 		com.siga.ws.pcajg.cat.xsd.pdf.TipoCodigoExpediente codigoExpediente = datosExpediente.addNewCodigoExpediente();
-		codigoExpediente.setColegioExpediente((String)ht.get(DE_CE_COLEGIOEXPEDIENTE));
+		codigoExpediente.setColegioExpediente((String)datosGeneralesEJG.get(DE_CE_COLEGIOEXPEDIENTE));
 //		String numExpediente = (String)ht.get(DE_CE_NUMEXPEDIENTE);
-		String numExpediente = UtilidadesString.formatea(ht.get(DE_CE_NUMEXPEDIENTE), 8, true);
+		String numExpediente = UtilidadesString.formatea(datosGeneralesEJG.get(DE_CE_NUMEXPEDIENTE), 8, true);
 		codigoExpediente.setNumExpediente(numExpediente);		
-		Integer anyoExpediente = SIGAServicesHelper.getInteger("año del expediente", (String)ht.get(DE_CE_ANYOEXPEDIENTE));		
+		Integer anyoExpediente = SIGAServicesHelper.getInteger("año del expediente", (String)datosGeneralesEJG.get(DE_CE_ANYOEXPEDIENTE));		
 		if (anyoExpediente != null) {
 			codigoExpediente.setAnyoExpediente(anyoExpediente);	
 		}
 		//		codigoExpediente.setColegioExpediente(String.valueOf(getIdInstitucion()));
 		//		codigoExpediente.setAnyoExpediente(Integer.valueOf((String) ht.get(ANIO)));
 		//		codigoExpediente.setNumExpediente((String)ht.get(NUMERO));
-		for (int j = 0; j < datosDocumentacionExpedienteDSCat.size(); j++) {
-			Hashtable htDocumentos = (Hashtable)datosDocumentacionExpedienteDSCat.get(j);
-
-			if(((String) ht.get(ANIO)).equals((String) htDocumentos.get(ANIO)) && 
-					((String) ht.get(NUMERO)).equals((String) htDocumentos.get(NUMERO)) &&
-					((String) htDocumentos.get(DS_DE_D_DD_EXTENSION_ARCHIVO)).equals("pdf") &&
-					((String) htDocumentos.get(DS_DE_D_DD_FECHAPRESENTACIONDO)) != null &&
-					!((String) htDocumentos.get(DS_DE_D_DD_FECHAPRESENTACIONDO)).isEmpty()){
-				// TODO Como mejora hay que crear un catalogo en la clase de constantes con la documentacion requerida
-				if(((String) htDocumentos.get(DS_DE_D_DD_CODIGOEXT)).equals("TR-DOCINISOL-01"))
-					numFilesReq++;
-				DocumentoAnexado documentoAnexado = expediente.addNewDocumentoAnexado();
-				String nombreFichero = htDocumentos.get("DS_DE_D_DD_NOMBRE_ARCHIVO").toString() + "." + htDocumentos.get("DS_DE_D_DD_EXTENSION_ARCHIVO").toString();
-				documentoAnexado.setPathDocumento(getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), nombreFichero));
-				documentoAnexado.setFechaDocumento(toCalendar((String) htDocumentos.get(DS_DE_D_DD_FECHAPRESENTACIONDO)));
-				if(!((String) htDocumentos.get(DS_DE_D_DD_DESCRIPCIONAMPLIADA)).isEmpty())
-					documentoAnexado.setDescripcioOpcional((String) htDocumentos.get(DS_DE_D_DD_DESCRIPCIONAMPLIADA));
-				else
-					documentoAnexado.setDescripcioOpcional((String) htDocumentos.get(DS_DE_D_DD_CODIGOEXT));
-				documentoAnexado.setTipusDocumentAnnex((String) htDocumentos.get(DS_DE_D_DD_CODIGOEXT));
+		if(datosDocumentacionExpedienteDSCat!=null) {
+			for (int j = 0; j < datosDocumentacionExpedienteDSCat.size(); j++) {
 				
-				String rutaFichero = htDocumentos.get("DS_DE_D_DD_DIRECTORIO_ARCHIVO").toString();
-				File fileIn = new File(rutaFichero+File.separator+nombreFichero);
-				if(fileIn != null){
-					mapaFicheros.put(fileIn.getName(), getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), fileIn.getName()));
-					ficherosCat.add(fileIn);
-					numFiles++;
+				Hashtable htDocumentos = (Hashtable)datosDocumentacionExpedienteDSCat.get(j);
+	
+				if(((String) htDocumentos.get(DS_DE_D_DD_EXTENSION_ARCHIVO)).equalsIgnoreCase("pdf") &&
+						((String) htDocumentos.get(DS_DE_D_DD_FECHAPRESENTACIONDO)) != null &&
+						!((String) htDocumentos.get(DS_DE_D_DD_FECHAPRESENTACIONDO)).isEmpty()){
+					// TODO Como mejora hay que crear un catalogo en la clase de constantes con la documentacion requerida
+					if(((String) htDocumentos.get(DS_DE_D_DD_CODIGOEXT)).equals("TR-DOCINISOL-01"))
+						numFilesReq++;
+					DocumentoAnexado documentoAnexado = expediente.addNewDocumentoAnexado();
+					String nombreFichero = htDocumentos.get("DS_DE_D_DD_NOMBRE_ARCHIVO").toString() + "." + htDocumentos.get("DS_DE_D_DD_EXTENSION_ARCHIVO").toString();
+					documentoAnexado.setPathDocumento(getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), nombreFichero));
+					documentoAnexado.setFechaDocumento(toCalendar((String) htDocumentos.get(DS_DE_D_DD_FECHAPRESENTACIONDO)));
+					if(!((String) htDocumentos.get(DS_DE_D_DD_DESCRIPCIONAMPLIADA)).isEmpty())
+						documentoAnexado.setDescripcioOpcional((String) htDocumentos.get(DS_DE_D_DD_DESCRIPCIONAMPLIADA));
+					else
+						documentoAnexado.setDescripcioOpcional((String) htDocumentos.get(DS_DE_D_DD_CODIGOEXT));
+					documentoAnexado.setTipusDocumentAnnex((String) htDocumentos.get(DS_DE_D_DD_CODIGOEXT));
+					
+					String rutaFichero = htDocumentos.get("DS_DE_D_DD_DIRECTORIO_ARCHIVO").toString();
+					File fileIn = new File(rutaFichero+File.separator+nombreFichero);
+					if(fileIn != null){
+						mapaFicheros.put(fileIn.getName(), getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), fileIn.getName()));
+						ficherosCat.add(fileIn);
+						numFiles++;
+					}
 				}
 			}
 		}
 		//Si no se han anadido ficheros requeridos comprobamos si tiene dictamen que permite no enviar documentación
 		if(numFilesReq == 0){
-			if(compruebaDictamenEJG(ht)){
-				ClsLogging.writeFileLog("El EJG sí tiene dictamen que permita no tener documentos requeridos ", 3);
-				if(numFiles == 0)
-					indexDocumentacion.getIntercambio().getInformacionIntercambio().getTipoIDO().removeExpediente(indexDocumentacion.getIntercambio().getInformacionIntercambio().getTipoIDO().sizeOfExpedienteArray()-1);
-				else
-					numDetallesCat++;
-				return numFiles;
-			}
-			else{
+//			TODO    Ver como evitamos enviar docuentacion Ahora mismo estab que se comprobaba si el tipo dictamen era 1 y el fundamento !=11
+			//, que no se da porque solo tienen un fundamento y es ese;
+//			if(compruebaDictamenEJG(datosGeneralesEJG)){
+//				ClsLogging.writeFileLog("El EJG tiene dictamen que permita no tener documentos requeridos ", 3);
+//				if(numFiles == 0)
+//					indexDocumentacion.getIntercambio().getInformacionIntercambio().getTipoIDO().removeExpediente(indexDocumentacion.getIntercambio().getInformacionIntercambio().getTipoIDO().sizeOfExpedienteArray()-1);
+//				else
+//					numDetallesCat++;
+//				return numFiles;
+//			}
+//			else{
 				//Si no se han anadido los ficheros requeridos o y el EJG no tiene el dictamen "Sin dictamen" que lo exime de adjuntar ficheros, es un error
-				ClsLogging.writeFileLog("El EJG no tiene dictamen que permita no tener documentos ", 3);
-				escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, "El expediente no tiene la documentación mínima requerida. Compruebe que tengan solicitud de presentación.", CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
+				ClsLogging.writeFileLog("El EJG NO tiene dictamen que permita no tener documentos. Se añade error "+anyoExpediente+"/"+numExpediente, 3);
+				escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, UtilidadesString.getMensajeIdioma(datosGeneralesEJG.get("IDLENGUAJE").toString(),"sjcs.remesas.error.faltaDocumentacion"), CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
 				errorMinDoc = true;
 				return 0;
-			}
+//			}
 		}
 
 		
 		// validamos fichero index
-		if(envioDigitalizacionDoc && !validateXML_EJG(indexDocumentacion, anyo, numejg, numero, idTipoEJG)){
-			escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, "El expediente no tiene la documentación mínima requerida. Compruebe que tengan fecha de presentación.", CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
+		if(!validateXML_EJG(expediente, anyo, numejg, numero, idTipoEJG)){
+			escribeErrorExpediente(anyo, numejg, numero, idTipoEJG, UtilidadesString.getMensajeIdioma(datosGeneralesEJG.get("IDLENGUAJE").toString(),"sjcs.remesas.error.faltaDocumentacion"), CajgRespuestaEJGRemesaBean.TIPO_RESPUESTA_SIGA);
 			return 0;
 		}
 		numDetallesCat++;
@@ -351,7 +359,12 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		Vector datos = cajgEJGRemesaAdm.getDictamenEJG(getIdInstitucion(), anyo, numero, idtipoejg);
 		Hashtable aux = (Hashtable) datos.get(0);
 		//Busqueda de dictamen del EJG. El EJG tiene dictamen que permita no tener documentos(1->Sí, 0->No)
-		ClsLogging.writeFileLog("Busqueda de dictamen del EJG. El EJG tiene dictamen que permita no tener documentos(1->Sí, 0->No): " + aux.get("DICTAMENDOC").toString(), 3);
+		ClsLogging.writeFileLog("Busqueda de dictamen del EJG. El EJG tiene dictamen que permita no tener documentos(1->Sí, 0->No): " , 3);
+		ClsLogging.writeFileLog("dictamen: "+ aux.get("DICTAMENDOC").toString() + " Fundamento Calif:"+aux.get("FUNDAMENTOCALIF"), 3);
+		ClsLogging.writeFileLog("IDTIPODICTAMENEJG: "+ aux.get("IDTIPODICTAMENEJG").toString() + " CODIGOFUND:"+aux.get("CODIGOFUND"), 3);
+		ClsLogging.writeFileLog("dictamen: "+ ht.get("DTE_TD_TIPODICTAMEN_CDA") + " Fundamento Calfi:"+ht.get("DTE_TD_MOTIVODICTAMEN_CDA") , 3);
+		
+		
 		if (aux.get("DICTAMENDOC").toString().equals("1") && aux.get("FUNDAMENTOCALIF").toString().equals("1"))
 			return true;
 		else
@@ -709,7 +722,7 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 		Boolean b = getBoolean((String)htEJGs.get(DDJ_ORGANOJUDICIAL_ESDECANO));
 		//si el identificadorProcedimiento es null y no es juzgado decano
 		if (codOrganoJudicial != null && identificadorProcedimiento == null && (b == null || !b.booleanValue())) {
-			throw new IllegalArgumentException("Debe rellenar número de procedimiento");
+			throw new IllegalArgumentException("gratuita.operarEJG.message.requeridoProcedimientos");
 		}
 		procedimientoJudicial.setIdentificadorProcedimiento(identificadorProcedimiento);
 	}
@@ -1387,24 +1400,24 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 	 * @param numDetalles
 	 * @return
 	 */
-	private com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.Intercambio.InformacionIntercambio rellenaInformacionIntercambioIDO
-		(com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.Intercambio intercambio, Hashtable ht, int sufijoIdIntercambio) throws SIGAException {
+	private com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.Intercambio.InformacionIntercambio rellenaIdentificacionInformacionIntercambioIDO
+		(com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.Intercambio intercambio, Hashtable datosGeneralesEJG, int sufijoIdIntercambio) throws SIGAException {
 		
 		com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.Intercambio.InformacionIntercambio informacionIntercambio =
 				intercambio.addNewInformacionIntercambio();
 		com.siga.ws.pcajg.cat.xsd.pdf.TipoIdentificacionIntercambio identificacionIntercambio = 
 				informacionIntercambio.addNewIdentificacionIntercambio();
 		
-		if (ht != null) {		
+		if (datosGeneralesEJG != null) {		
 			identificacionIntercambio.setTipoIntercambio("IDO");
 			
-			identificacionIntercambio.setCodOrigenIntercambio(getCodigoElementoTipificado((String)ht.get(ORIGENINTERCAMBIO_CDA)));
-			identificacionIntercambio.setDescOrigenIntercambio(getDescripcionElementoTipificado((String)ht.get(ORIGENINTERCAMBIO_CDA)));
+			identificacionIntercambio.setCodOrigenIntercambio(getCodigoElementoTipificado((String)datosGeneralesEJG.get(ORIGENINTERCAMBIO_CDA)));
+			identificacionIntercambio.setDescOrigenIntercambio(getDescripcionElementoTipificado((String)datosGeneralesEJG.get(ORIGENINTERCAMBIO_CDA)));
 			
-			identificacionIntercambio.setCodDestinoIntercambio(getCodigoElementoTipificado((String)ht.get(DESTINOINTERCAMBIO_CDA)));
-			identificacionIntercambio.setDescDestinoIntercambio(getDescripcionElementoTipificado((String)ht.get(DESTINOINTERCAMBIO_CDA)));
+			identificacionIntercambio.setCodDestinoIntercambio(getCodigoElementoTipificado((String)datosGeneralesEJG.get(DESTINOINTERCAMBIO_CDA)));
+			identificacionIntercambio.setDescDestinoIntercambio(getDescripcionElementoTipificado((String)datosGeneralesEJG.get(DESTINOINTERCAMBIO_CDA)));
 						
-			Long valueLong = SIGAServicesHelper.getLong("identificador del intercambio", (String)ht.get(IDENTIFICADORINTERCAMBIO));
+			Long valueLong = SIGAServicesHelper.getLong("identificador del intercambio", (String)datosGeneralesEJG.get(IDENTIFICADORINTERCAMBIO));
 			identificacionIntercambio.setIdentificadorIntercambio((valueLong.longValue() * 10) + sufijoIdIntercambio);		
 			identificacionIntercambio.setFechaIntercambio(SIGAServicesHelper.clearCalendar(Calendar.getInstance()));
 			identificacionIntercambio.setNumeroDetallesIntercambio(0);
@@ -1447,19 +1460,19 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 		try {
 			
 			tx.begin();
-			boolean envioDigitalizacionDoc = activoEnvioDigitalizacionDoc();
-			ClsLogging.writeFileLog("El parámetro de digitalización de documentos está a "+ envioDigitalizacionDoc, 3);
+			boolean isActivoEnvioDigitalizacionDoc = activoEnvioDigitalizacionDoc();
+			ClsLogging.writeFileLog("El parámetro de digitalización de documentos está a "+ isActivoEnvioDigitalizacionDoc, 3);
 			CajgRespuestaEJGRemesaAdm cajgRespuestaEJGRemesaAdm = new CajgRespuestaEJGRemesaAdm(usr);
 			ClsLogging.writeFileLog("Borrando posibles errores anteriores", 3);
 			cajgRespuestaEJGRemesaAdm.eliminaAnterioresErrores(getIdInstitucion(), getIdRemesa());
 			
-			List<File> files = generaFicherosXML(dirFicheros, dirPlantillas, envioDigitalizacionDoc);
+			List<File> files = generaFicherosXML(dirFicheros, dirPlantillas, isActivoEnvioDigitalizacionDoc);
 			//hacemos commit por los posibles errores de validación del xml con el xsd
 			tx.commit();
 			
 			if (!isSimular()) {
 				if (files != null && files.size() > 0 && 
-						(!envioDigitalizacionDoc || (envioDigitalizacionDoc && !errorMinDoc))) {
+						(!isActivoEnvioDigitalizacionDoc || (isActivoEnvioDigitalizacionDoc && !errorMinDoc))) {
 					tx.begin();				
 					
 				
@@ -1515,8 +1528,9 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 					}
 					
 					tx.commit();
-				}else				
+				}else {				
 					ClsLogging.writeFileLog("Ha ocurrido un problema y no se han generado los ficheros ni cambiado el estado de la remesa en el proceso envía CAT", 3);
+				}
 			}
 			ClsLogging.writeFileLog("********************** Terminando proceso envía CAT ********************", 3);
 
