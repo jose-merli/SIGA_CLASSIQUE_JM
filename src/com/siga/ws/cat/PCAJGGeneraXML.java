@@ -302,7 +302,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 						numFilesReq++;
 					DocumentoAnexado documentoAnexado = expediente.addNewDocumentoAnexado();
 					String nombreFichero = htDocumentos.get("DS_DE_D_DD_NOMBRE_ARCHIVO").toString() + "." + htDocumentos.get("DS_DE_D_DD_EXTENSION_ARCHIVO").toString();
-					documentoAnexado.setPathDocumento(getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), nombreFichero));
+					String nombreFicheroExtMin = htDocumentos.get("DS_DE_D_DD_NOMBRE_ARCHIVO").toString() + "." + htDocumentos.get("DS_DE_D_DD_EXTENSION_ARCHIVO").toString().toLowerCase();
+					documentoAnexado.setPathDocumento(getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), nombreFicheroExtMin));
 					documentoAnexado.setFechaDocumento(toCalendar((String) htDocumentos.get(DS_DE_D_DD_FECHAPRESENTACIONDO)));
 					if(!((String) htDocumentos.get(DS_DE_D_DD_DESCRIPCIONAMPLIADA)).isEmpty())
 						documentoAnexado.setDescripcioOpcional((String) htDocumentos.get(DS_DE_D_DD_DESCRIPCIONAMPLIADA));
@@ -313,7 +314,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 					String rutaFichero = htDocumentos.get("DS_DE_D_DD_DIRECTORIO_ARCHIVO").toString();
 					File fileIn = new File(rutaFichero+File.separator+nombreFichero);
 					if(fileIn != null){
-						mapaFicheros.put(fileIn.getName(), getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), fileIn.getName()));
+						mapaFicheros.put(fileIn.getName(), getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), nombreFicheroExtMin));
 						ficherosCat.add(fileIn);
 						numFiles++;
 					}
@@ -722,7 +723,8 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 		Boolean b = getBoolean((String)htEJGs.get(DDJ_ORGANOJUDICIAL_ESDECANO));
 		//si el identificadorProcedimiento es null y no es juzgado decano
 		if (codOrganoJudicial != null && identificadorProcedimiento == null && (b == null || !b.booleanValue())) {
-			throw new IllegalArgumentException("gratuita.operarEJG.message.requeridoProcedimientos");
+			String idLenguaje = htEJGs.get("IDLENGUAJE")!=null?"2":htEJGs.get("IDLENGUAJE").toString();
+			throw new IllegalArgumentException(UtilidadesString.getMensajeIdioma(idLenguaje,"gratuita.operarEJG.message.requeridoProcedimientos"));
 		}
 		procedimientoJudicial.setIdentificadorProcedimiento(identificadorProcedimiento);
 	}
