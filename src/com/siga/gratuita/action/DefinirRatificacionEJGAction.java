@@ -283,7 +283,7 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 		File file = new File(ResolucionesFicheroAbstract.getDirectorioArchivos(idInstitucion));
 		String extension = ResolucionesFicheroAbstract.getExtension(idInstitucion);
 		file = new File(file, docResolucion + extension);
-		if (!file.exists()) {
+		if (file==null || !file.exists()) {
 			file = new File(file, docResolucion + extension.toUpperCase());
 			if (!file.exists()) {
 				file = null;	
