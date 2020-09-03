@@ -15,7 +15,6 @@ import java.util.Vector;
 
 import javax.transaction.UserTransaction;
 
-import org.apache.xmlbeans.XmlOptions;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.AppConstants.MODULO;
@@ -89,13 +88,10 @@ import com.siga.ws.pcajg.cat.xsd.TipoProfesionalesDesignados;
 import com.siga.ws.pcajg.cat.xsd.TipoProfesionalesDesignados.AbogadoDesignado;
 import com.siga.ws.pcajg.cat.xsd.TipoProfesionalesDesignados.AbogadoDesignado.LibreDatosAbogado;
 import com.siga.ws.pcajg.cat.xsd.TipoProfesionalesDesignados.ProcuradorDesignado;
-
-
 import com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.Intercambio.InformacionIntercambio.TipoIDO;
 import com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.Intercambio.InformacionIntercambio.TipoIDO.Expediente.DocumentoAnexado;
 
 import es.satec.businessManager.BusinessManager;
-import weblogic.descriptor.beangen.StringHelper;
 
 /**
  * @author angelcpe
