@@ -31,8 +31,16 @@ public class ResolucionesFicheroAlcala extends ResolucionesFicheroAbstract{
 					if (zipEntry.getName().toUpperCase().endsWith("TXT")) {
 						ficheroTXT = new File(ficheroCliente.getParentFile(), zipEntry.getName());
 						destino = new File(ficheroCliente.getParentFile(), zipEntry.getName());
+					}else if(zipEntry.getName().toUpperCase().endsWith("CSV")){
+						ficheroTXT = new File(ficheroCliente.getParentFile(), zipEntry.getName());
+						destino = new File(ficheroCliente.getParentFile(), zipEntry.getName());
 					} else {
-						destino = new File(dirArchivos, zipEntry.getName());				
+						if(zipEntry.getName().indexOf("/")!=-1) {
+						//esta dentro de un directorios
+							destino = new File(dirArchivos, zipEntry.getName().substring(zipEntry.getName().indexOf("/")+1));
+						}else {
+							destino = new File(dirArchivos, zipEntry.getName());
+						}
 					}
 					
 					copyInputStream(zipFile.getInputStream(zipEntry), new FileOutputStream(destino));					

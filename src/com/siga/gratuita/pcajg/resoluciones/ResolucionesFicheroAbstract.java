@@ -43,6 +43,8 @@ public abstract class ResolucionesFicheroAbstract {
 		try {
 			if (CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == CajgConfiguracion.getTipoCAJG(Integer.parseInt(idInstitucion))) {
 				return "." + EXTENSION_PDF;
+			}else if(idInstitucion.equals("2013")) {
+				return "." + EXTENSION_PDF;
 			}
 		} catch (Exception e) {
 			

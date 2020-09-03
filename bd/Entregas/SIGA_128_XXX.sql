@@ -897,3 +897,11 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('sjcs.remesas.error.faltaDocumentacion', 'L''expedient no té la documentació mínima requerida. A més d''afegir els fitxers necessaris comprovi que ha introduït la data de presentació.', 0, '2', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('sjcs.remesas.error.faltaDocumentacion', 'El expediente no tiene la documentación mínima requerida. Además de añadir los ficheros necesarios compruebe que ha introducido la fecha de presentaciÃ³n.#EU', 0, '3', sysdate, 0, '19');
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('sjcs.remesas.error.faltaDocumentacion', 'El expediente no tiene la documentación mínima requerida. Además de añadir los ficheros necesarios compruebe que ha introducido la fecha de presentaciÃ³n.#GL', 0, '4', sysdate, 0, '19');
+
+
+--coger PARA LO DE RSOLUCIONES DE BURGOS
+UPDATE CAJG_TIPOREMESA SET JAVACLASS = 'com.siga.gratuita.pcajg.resoluciones.ResolucionesFicheroAlcala',fechamodificacion = sysdate WHERE IDINSTITUCION = 2013 AND IDTIPOREMESA = 1;
+insert into CAJG_ERRORESREMESARESOL (IDERRORESREMESARESOL, IDINSTITUCION, CODIGO, DESCRIPCION) values (26, 2013, '26', 'Fichero de resolución no encontrado {0}');
+PROC_SIGA_RESOL_2013
+
+
