@@ -268,11 +268,7 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 			HttpServletResponse response) throws ClsExceptions, SIGAException {
 		
 		DefinirEJGForm miForm = (DefinirEJGForm)formulario;			
-		System.out.println("Empezamos la descarga");
 		ClsLogging.writeFileLog(" Empezamos la descarga",10);
-		ClsLogging.writeFileLog(" DocResolucion:"+miForm.getDocResolucion(),10);
-		ClsLogging.writeFileLog("institucion:"+getIDInstitucion(request).toString(),10);
-		
 		File file = getFicheroPDF(getIDInstitucion(request).toString(), miForm.getDocResolucion());
 
 		if (file == null) {								
@@ -290,15 +286,27 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 		ClsLogging.writeFileLog("Directorio:"+directorio,10);
 		File file = new File(directorio);
 		String extension = ResolucionesFicheroAbstract.getExtension(idInstitucion);
-		String nombreFichero = docResolucion + extension;
-		ClsLogging.writeFileLog("Fichero:"+nombreFichero,10);
+//		String nombreFichero = docResolucion + extension;
 		
-		file = new File(file, nombreFichero);
+		
+		StringBuilder path = new StringBuilder();
+		path.append(directorio);
+		path.append(ClsConstants.FILE_SEP);
+		path.append(docResolucion);
+		path.append(extension);
+		ClsLogging.writeFileLog("Fichero:"+path,10);
+		
+		file = new File(path.toString());
 		ClsLogging.writeFileLog("¿existe?"+""+(file!=null && file.exists()),10);
 		if (file==null || !file.exists()) {
-			nombreFichero = docResolucion + extension.toUpperCase();
-			ClsLogging.writeFileLog("Fichero:"+nombreFichero,10);
-			file = new File(file, nombreFichero);
+			 path = new StringBuilder();
+				path.append(directorio);
+				path.append(ClsConstants.FILE_SEP);
+				path.append(docResolucion);
+				path.append(extension.toUpperCase());
+			
+			ClsLogging.writeFileLog("Fichero:"+path,10);
+			file = new File(path.toString());
 			ClsLogging.writeFileLog("¿existe?"+""+(file!=null && file.exists()),10);
 			if (!file.exists()) {
 				file = null;	
