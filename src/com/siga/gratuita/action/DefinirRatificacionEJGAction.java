@@ -11,6 +11,7 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -39,7 +40,7 @@ import es.satec.businessManager.BusinessManager;
 * Maneja las acciones que se pueden realizar sobre la tabla SCS_SOJ
 */
 public class DefinirRatificacionEJGAction extends MasterAction {
-	
+	private static Logger log = Logger.getLogger(DefinirRatificacionEJGAction.class);
 	protected ActionForward executeInternal(ActionMapping mapping,
 		      ActionForm formulario,
 		      HttpServletRequest request, 
@@ -280,16 +281,26 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 	}
 	
 	private File getFicheroPDF(String idInstitucion, String docResolucion) {
-		File file = new File(ResolucionesFicheroAbstract.getDirectorioArchivos(idInstitucion));
+		String directorio = ResolucionesFicheroAbstract.getDirectorioArchivos(idInstitucion);
+		File file = new File(directorio);
 		String extension = ResolucionesFicheroAbstract.getExtension(idInstitucion);
-		file = new File(file, docResolucion + extension);
+		String nombreFichero = docResolucion + extension;
+		log.debug("Directorio:"+directorio);
+		log.debug("Fichero:"+nombreFichero);
+		
+		file = new File(file, nombreFichero);
+		log.debug("¿existe?"+file!=null && file.exists());
 		if (file==null || !file.exists()) {
-			file = new File(file, docResolucion + extension.toUpperCase());
+			nombreFichero = docResolucion + extension.toUpperCase();
+			log.debug("Fichero:"+nombreFichero);
+			file = new File(file, nombreFichero);
+			log.debug("¿existe?"+file!=null && file.exists());
 			if (!file.exists()) {
 				file = null;	
 			}
 			
 		}		
+		log.debug("File:"+file);
 		return file;
 	}
 	
