@@ -23,6 +23,7 @@ import org.redabogacia.sigaservices.app.vo.scs.EjgVo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
 import com.siga.beans.GenParametrosAdm;
@@ -267,9 +268,10 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 			HttpServletResponse response) throws ClsExceptions, SIGAException {
 		
 		DefinirEJGForm miForm = (DefinirEJGForm)formulario;			
-		log.debug("Empezamos la descarga");
-		log.debug("DocResolucion:"+miForm.getDocResolucion());
-		log.debug("institucion:"+getIDInstitucion(request).toString());
+		System.out.println("Empezamos la descarga");
+		ClsLogging.writeFileLog(" Empezamos la descarga",10);
+		ClsLogging.writeFileLog(" DocResolucion:"+miForm.getDocResolucion(),10);
+		ClsLogging.writeFileLog("institucion:"+getIDInstitucion(request).toString(),10);
 		
 		File file = getFicheroPDF(getIDInstitucion(request).toString(), miForm.getDocResolucion());
 
@@ -285,25 +287,25 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 	
 	private File getFicheroPDF(String idInstitucion, String docResolucion) {
 		String directorio = ResolucionesFicheroAbstract.getDirectorioArchivos(idInstitucion);
-		log.debug("Directorio:"+directorio);
+		ClsLogging.writeFileLog("Directorio:"+directorio,10);
 		File file = new File(directorio);
 		String extension = ResolucionesFicheroAbstract.getExtension(idInstitucion);
 		String nombreFichero = docResolucion + extension;
-		log.debug("Fichero:"+nombreFichero);
+		ClsLogging.writeFileLog("Fichero:"+nombreFichero,10);
 		
 		file = new File(file, nombreFichero);
-		log.debug("¿existe?"+file!=null && file.exists());
+		ClsLogging.writeFileLog("¿existe?"+""+(file!=null && file.exists()),10);
 		if (file==null || !file.exists()) {
 			nombreFichero = docResolucion + extension.toUpperCase();
-			log.debug("Fichero:"+nombreFichero);
+			ClsLogging.writeFileLog("Fichero:"+nombreFichero,10);
 			file = new File(file, nombreFichero);
-			log.debug("¿existe?"+file!=null && file.exists());
+			ClsLogging.writeFileLog("¿existe?"+""+(file!=null && file.exists()),10);
 			if (!file.exists()) {
 				file = null;	
 			}
 			
 		}		
-		log.debug("File:"+file);
+		ClsLogging.writeFileLog("File:"+file,10);
 		return file;
 	}
 	
