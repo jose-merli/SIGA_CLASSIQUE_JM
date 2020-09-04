@@ -267,6 +267,9 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 			HttpServletResponse response) throws ClsExceptions, SIGAException {
 		
 		DefinirEJGForm miForm = (DefinirEJGForm)formulario;			
+		log.debug("Empezamos la descarga");
+		log.debug("DocResolucion:"+miForm.getDocResolucion());
+		log.debug("institucion:"+getIDInstitucion(request).toString());
 		
 		File file = getFicheroPDF(getIDInstitucion(request).toString(), miForm.getDocResolucion());
 
@@ -282,10 +285,10 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 	
 	private File getFicheroPDF(String idInstitucion, String docResolucion) {
 		String directorio = ResolucionesFicheroAbstract.getDirectorioArchivos(idInstitucion);
+		log.debug("Directorio:"+directorio);
 		File file = new File(directorio);
 		String extension = ResolucionesFicheroAbstract.getExtension(idInstitucion);
 		String nombreFichero = docResolucion + extension;
-		log.debug("Directorio:"+directorio);
 		log.debug("Fichero:"+nombreFichero);
 		
 		file = new File(file, nombreFichero);
