@@ -3433,8 +3433,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		return this.selectGenerico (sql);
 	} //informeFJGAsistencias	
 
-	public void ejecutarFacturacion(String idInstitucion, String idFacturacion, UserTransaction tx) throws ClsExceptions, SIGAException {
-		//CRM: Marcha atras a la incidencia --> (aalg: INC_10717_SIGA) 
+	public void ejecutarFacturacion(String idInstitucion, String idFacturacion, UserTransaction tx, boolean esRegularizacion) throws ClsExceptions, SIGAException {
 	    FcsFactEstadosFacturacionAdm admEstado = new FcsFactEstadosFacturacionAdm(this.usrbean);
 		FcsFactEstadosFacturacionBean beanEstado = null;
 
@@ -3497,7 +3496,9 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				param_in_facturacion[2] = beanFac.getUsuMod().toString();        // USUMODIFICACION
 
 				String resultado[] = new String[3];
-				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_FACTURAR_TURNOS_OFI(?,?,?,?,?,?)}", 3, param_in_facturacion);
+				resultado = ClsMngBBDD.callPLProcedure("{call "+
+						(esRegularizacion?"PKG_SIGA_REGULARIZACION_SJCS.PROC_FCS_REGULAR_TURNOS_OFI":"PKG_SIGA_FACTURACION_SJCS.PROC_FCS_FACTURAR_TURNOS_OFI")+
+						"(?,?,?,?,?,?)}", 3, param_in_facturacion);
 				if (!resultado[1].equalsIgnoreCase("0")) {
 					ClsLogging.writeFileLog("Error en PL = "+(String)resultado[2],3);
 					throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Turnos de Oficio: "+(String)resultado[2]);
@@ -3515,7 +3516,9 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				param_in_facturacion[2] = beanFac.getUsuMod().toString(); // USUMODIFICACION
 
 				resultado = new String[3];
-				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_FACTURAR_GUARDIAS(?,?,?,?,?,?)}", 3, param_in_facturacion);
+				resultado = ClsMngBBDD.callPLProcedure("{call "+
+						(esRegularizacion?"PKG_SIGA_REGULARIZACION_SJCS.PROC_FCS_REGULAR_GUARDIAS":"PKG_SIGA_FACTURACION_SJCS.PROC_FCS_FACTURAR_GUARDIAS")+
+						"(?,?,?,?,?,?)}", 3, param_in_facturacion);
 				if (!resultado[1].equalsIgnoreCase("0")) {
 					ClsLogging.writeFileLog("Error en PL = "+(String)resultado[2],3);
 					throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Guardias: "+(String)resultado[2]);
@@ -3532,7 +3535,9 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				param_in_facturacion[2] = beanFac.getUsuMod().toString(); 		 // USUMODIFICACION
 
 				resultado = new String[3];
-				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_FACTURAR_SOJ(?,?,?,?,?,?)}", 3, param_in_facturacion);
+				resultado = ClsMngBBDD.callPLProcedure("{call "+
+						(esRegularizacion?"PKG_SIGA_REGULARIZACION_SJCS.PROC_FCS_REGULAR_SOJ":"PKG_SIGA_FACTURACION_SJCS.PROC_FCS_FACTURAR_SOJ")+
+						"(?,?,?,?,?,?)}", 3, param_in_facturacion);
 				if (!resultado[1].equalsIgnoreCase("0")) {
 					ClsLogging.writeFileLog("Error en PL = "+(String)resultado[2],3);
 					throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Expedientes de Orientación Jurídica: "+(String)resultado[2]);
@@ -3550,7 +3555,9 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 				param_in_facturacion[2] = beanFac.getUsuMod().toString(); 		 // USUMODIFICACION
 
 				resultado = new String[3];
-				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_FACTURACION_SJCS.PROC_FCS_FACTURAR_EJG (?,?,?,?,?,?)}", 3, param_in_facturacion);
+				resultado = ClsMngBBDD.callPLProcedure("{call "+
+						(esRegularizacion?"PKG_SIGA_REGULARIZACION_SJCS.PROC_FCS_REGULAR_EJG":"PKG_SIGA_FACTURACION_SJCS.PROC_FCS_FACTURAR_EJG")+
+						"(?,?,?,?,?,?)}", 3, param_in_facturacion);
 				if (!resultado[1].equalsIgnoreCase("0")) {
 					ClsLogging.writeFileLog("Error en PL = "+(String)resultado[2],3);
 					throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Expedientes de Justicia Gratuita: "+(String)resultado[2]);
@@ -3707,205 +3714,6 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 		return filtrosInforme;							
 	}
 	
-	
-	public void ejecutarRegularizacion(String idInstitucion, String idFacturacion, UserTransaction tx) throws ClsExceptions, SIGAException {
-
-	    FcsFactEstadosFacturacionAdm admEstado = new FcsFactEstadosFacturacionAdm(this.usrbean);
-		FcsFactEstadosFacturacionBean beanEstado = null;
-		String idOrdenEstado="";
-
-	    SimpleDateFormat sdfLong = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); 
-		Date dat = Calendar.getInstance().getTime();
-		String fecha = sdfLong.format(dat);
-
-	    // Fichero de log
-		GenParametrosAdm paramAdm = new GenParametrosAdm(this.usrbean);
-		String pathFicheros = paramAdm.getValor("" + idInstitucion, "FCS", "PATH_PREVISIONES_BD", null);
-		String sNombreFichero = pathFicheros + File.separator + "LOG_ERROR_" + idInstitucion + "_" + idFacturacion + ".log";
-		File ficheroLog = new File(sNombreFichero);
-		if (ficheroLog!=null && ficheroLog.exists()) {
-		    ficheroLog.delete();
-		}
-	    SIGALogging log = new SIGALogging(sNombreFichero);
-
-		try {
-
-			//////////////////////////////////
-			// cambio de estado
-		    tx.begin();
-		    idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);
-			beanEstado = new FcsFactEstadosFacturacionBean();
-			beanEstado.setIdInstitucion(new Integer(idInstitucion));
-			beanEstado.setIdFacturacion(new Integer(idFacturacion));
-			beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_EN_EJECUCION.getCodigo()));
-			beanEstado.setFechaEstado("SYSDATE");
-			beanEstado.setIdOrdenEstado(new Integer(idOrdenEstado));			
-			admEstado.insert(beanEstado);
-			tx.commit();
-			
-		    tx.begin();
-			Hashtable criterios = new Hashtable();
-			criterios.put(FcsFacturacionJGBean.C_IDINSTITUCION,idInstitucion);
-			criterios.put(FcsFacturacionJGBean.C_IDFACTURACION,idFacturacion);
-			Vector v = (Vector)this.select(criterios);
-			if (v!=null && v.size()>0) {
-				FcsFacturacionJGBean beanFac = (FcsFacturacionJGBean)v.get(0);
-				Hashtable estado = this.getEstadoFacturacion(idInstitucion,idFacturacion);
-				String idEstado = (String) estado.get(FcsEstadosFacturacionBean.C_IDESTADOFACTURACION);
-				
-				// proceso de facturacion
-				
-				double  importeTotal = 0;
-				Double  importeOficio = null, 
-				importeGuardia = null, 
-				importeSOJ = null,  
-				importeEJG = null; 
-				
-				// parametros de entrada
-				Object[] param_in_facturacion = new Object[4];
-				param_in_facturacion[0] = beanFac.getIdInstitucion().toString(); // IDINSTITUCION
-				param_in_facturacion[1] = beanFac.getIdFacturacion().toString(); // IDFACTURACION
-				param_in_facturacion[2] = beanFac.getUsuMod().toString(); 		 // USUMODIFICACION
-				param_in_facturacion[3] = this.usrbean.getLanguage();
-				
-				String resultado[] = null;
-				
-				
-				//////////////////////////////////
-				// TURNOS DE OFICIO rgg 29-03-2005
-				resultado = new String[3];
-				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_REGULARIZACION_SJCS.PROC_FCS_REGULAR_TURNOS_OFI(?,?,?,?,?,?,?)}", 3, param_in_facturacion);
-				if (!resultado[1].equals("0")) {
-					ClsLogging.writeFileLog("Error en PL = "+(String)resultado[2],3);
-					throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Turnos de Oficio");
-				}
-				importeOficio = new Double(resultado[0].replaceAll(",","."));
-				importeTotal += importeOficio.doubleValue();
-				
-				
-				//////////////////////////////////
-				// GUARDIAS PRESENCIALES rgg 29-03-2005
-				resultado = new String[3];
-				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_REGULARIZACION_SJCS.PROC_FCS_REGULAR_GUARDIAS(?,?,?,?,?,?,?)}", 3, param_in_facturacion);
-				if (!resultado[1].equals("0")) {
-					ClsLogging.writeFileLog("Error en PL = "+(String)resultado[2],3);
-					throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Guardias");	
-				} 
-				importeGuardia = new Double((String)resultado[0].replaceAll(",","."));
-				importeTotal += importeGuardia.doubleValue();
-				
-				
-				//////////////////////////////////
-				// SOJ rgg 29-03-2005
-				resultado = new String[3];
-				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_REGULARIZACION_SJCS.PROC_FCS_REGULAR_SOJ(?,?,?,?,?,?,?)}", 3, param_in_facturacion);
-				if (!resultado[1].equals("0")) {
-					ClsLogging.writeFileLog("Error en PL = "+(String)resultado[2],3);
-					throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Expedientes de Justicia Gratuita");	
-				} 
-				importeSOJ = new Double((String)resultado[0].replaceAll(",","."));
-				importeTotal += importeSOJ.doubleValue();
-				
-				
-				//////////////////////////////////
-				// EJG rgg 29-03-2005
-				resultado = new String[3];
-				resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_REGULARIZACION_SJCS.PROC_FCS_REGULAR_EJG(?,?,?,?,?,?,?)}", 3, param_in_facturacion);
-				if (!resultado[1].equals("0")) {
-					ClsLogging.writeFileLog("Error en PL = "+(String)resultado[2],3);
-					throw new ClsExceptions ("Ha ocurrido un error al ejecutar la facturación de Expedientes de Justicia Gratuita");	
-				} 
-				importeEJG = new Double(((String)resultado[0]).replaceAll(",","."));
-				importeTotal += importeEJG.doubleValue();
-				
-				//////////////////////////////////
-				// ACTUALIZO LOS TOTALES
-				beanFac.setImporteEJG(importeEJG);
-				beanFac.setImporteGuardia(importeGuardia);
-				beanFac.setImporteOficio(importeOficio);
-				beanFac.setImporteSOJ(importeSOJ);
-				beanFac.setImporteTotal(new Double(importeTotal));
-				if (!this.update(beanFac)) {
-					throw new SIGAException(this.getError());
-				}
-					
-			}
-	
-			tx.commit();
-	
-			// Exportacion de datos a EXCEL
-			tx.begin();
-			UtilidadesFacturacionSJCS.exportarDatosFacturacion(new Integer(idInstitucion), new Integer(idFacturacion), this.usrbean);
-			tx.commit();
-	
-			
-			//////////////////////////////////
-			// cambio de estado
-			tx.begin();
-			idOrdenEstado= admEstado.getIdordenestadoMaximo(idInstitucion, idFacturacion);
-			beanEstado = new FcsFactEstadosFacturacionBean();
-			beanEstado.setIdInstitucion(new Integer(idInstitucion));
-			beanEstado.setIdFacturacion(new Integer(idFacturacion));
-			beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_EJECUTADA.getCodigo()));
-			beanEstado.setFechaEstado("SYSDATE");
-			beanEstado.setIdOrdenEstado(new Integer(idOrdenEstado));
-			Thread.sleep(1000);
-			admEstado.insert(beanEstado);
-			tx.commit();
-			
-		} catch (SIGAException e) {
-			try {
-
-			    ClsLogging.writeFileLogError("Error al ejecutar facturacion SJCS.",e,3);
-			    log.writeLimpio(UtilidadesString.getMensajeIdioma(this.usrbean,"mensaje.error.logFacturacion.cabecera")+" "+fecha);
-			    log.writeLimpioError(e,idInstitucion,this.usrbean.getUserName());
-
-			    tx.rollback();
-
-			    //////////////////////////////////
-				// cambio de estado
-				tx.begin();
-				beanEstado = new FcsFactEstadosFacturacionBean();
-				beanEstado.setIdInstitucion(new Integer(idInstitucion));
-				beanEstado.setIdFacturacion(new Integer(idFacturacion));
-				beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo()));
-				beanEstado.setFechaEstado("SYSDATE");
-				Thread.sleep(1000);
-				admEstado.insert(beanEstado);
-				tx.commit();
-			} catch (Exception ee) {
-			    ClsLogging.writeFileLogError("Error al cambiar de estado facturacion SJCS por error.",ee,3);
-			}
-		    throw e;
-		} catch (Exception e) {
-			try {
-
-			    ClsLogging.writeFileLogError("Error al ejecutar facturacion SJCS.",e,3);
-			    log.writeLimpio(UtilidadesString.getMensajeIdioma(this.usrbean,"mensaje.error.logFacturacion.cabecera")+" "+fecha);
-			    log.writeLimpioError(e,idInstitucion,this.usrbean.getUserName());
-
-			    tx.rollback();
-
-			    //////////////////////////////////
-				// cambio de estado
-				tx.begin();
-				beanEstado = new FcsFactEstadosFacturacionBean();
-				beanEstado.setIdInstitucion(new Integer(idInstitucion));
-				beanEstado.setIdFacturacion(new Integer(idFacturacion));
-				beanEstado.setIdEstadoFacturacion(new Integer(ESTADO_FACTURACION.ESTADO_FACTURACION_ABIERTA.getCodigo()));
-				beanEstado.setFechaEstado("SYSDATE");
-				Thread.sleep(1000);
-				admEstado.insert(beanEstado);
-				tx.commit();
-			} catch (Exception ee) {
-			    ClsLogging.writeFileLogError("Error al cambiar de estado facturacion SJCS por error.",ee,3);
-			}
-		    throw new ClsExceptions(e,"Error en la ejecución de la Facturación SJCS. idinstitucion="+idInstitucion+" idfacturacion="+idFacturacion);
-		}
-		
-		
-	}
-	
 	public boolean facturacionesSJCSProgramadas(String idInstitucion,UsrBean usr) throws SIGAException, ClsExceptions
 	{
 		boolean ejecutafacturacion=false;
@@ -3969,9 +3777,9 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 					
 					// Genero los multiples ficheros pendientes
 					if (bRegularizacion)
-					    this.ejecutarRegularizacion(idInstitucion,idFacturacion,tx);    
+					    this.ejecutarFacturacion(idInstitucion,idFacturacion,tx,true);    
 					else
-					    this.ejecutarFacturacion(idInstitucion,idFacturacion,tx);
+					    this.ejecutarFacturacion(idInstitucion,idFacturacion,tx,false);
 					ejecutafacturacion=true;
 					
 						
