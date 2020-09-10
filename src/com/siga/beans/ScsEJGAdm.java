@@ -6,6 +6,8 @@ import java.util.Vector;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+import org.redabogacia.sigaservices.app.util.ReadProperties;
+import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -1574,6 +1576,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 //		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESA.equals(tipoVentana)||TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)) {
 			consulta += " AND ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " IN (" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.ESTADO_LISTO_COMISION_ACTUALIZAR_DESIGNACION.getCodigo() + ") ";
 		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)) {
+			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			String idPeticionMinimoConDatos = rp.returnProperty("cajg.idPeticion_SCS_EEJG_PETICIONES_DondeEmpezoAFuncionarDatosCompletos");
 		// QUITAMOS LOS QUE YA ESTAN INCLUIDOS EN UNA REMESA
 			consulta += " and F_SIGA_GET_IDULTIMOESTADOEJG(EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO)<>"+ESTADOS_EJG.GENERADO_EN_REMESA.getCodigo()+" ";
 			
@@ -1587,7 +1591,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += " AND P.IDXML = X.IDXML ";
 			consulta += " AND P.ESTADO = 30 ";
 			consulta += " AND P.CSV IS NOT NULL ";
-			consulta += " AND P.IDPETICION >=1586644 ";//eSTO LO PONEMOS YA QUE EN ESE REGISTRO ES DONDE HA EMPEZADO A FUNCIONAR LOS DATOS COMPLETOS
+			consulta += " AND P.IDPETICION >= " + idPeticionMinimoConDatos;//eSTO LO PONEMOS YA QUE EN ESE REGISTRO ES DONDE HA EMPEZADO A FUNCIONAR LOS DATOS COMPLETOS
 			consulta += " AND X.XML IS NOT NULL )";
 			
 			//Sacamos los  ejgs que hyan sido remitidos a comision perro que no tienen un estado posterior devuelto al colegio
