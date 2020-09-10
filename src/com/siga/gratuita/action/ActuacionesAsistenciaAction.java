@@ -72,7 +72,8 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 				return null;
 			}else if ( accion.equalsIgnoreCase("nuevoDesdeVolanteExpress")){
 				mapDestino = nuevo (mapping, miForm, request, response);
-				
+			}else if ( accion.equalsIgnoreCase("edicionActuacionAsistencia")){
+				mapDestino = edicionActuacionAsistencia (mapping, miForm, request, response);
 			}
 			else {
 				return super.executeInternal(mapping,
@@ -84,13 +85,10 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 //			Redireccionamos el flujo a la JSP correspondiente
 			if (mapDestino == null) 
 			{ 
-//				mapDestino = "exception";
 				if (miForm.getModal().equalsIgnoreCase("TRUE"))
 				{
 					request.setAttribute("exceptionTarget", "parent.modal");
 				}
-
-//				throw new ClsExceptions("El ActionMapping no puede ser nulo");
 				throw new ClsExceptions("El ActionMapping no puede ser nulo","","0","GEN00","15");
 			}
 
@@ -185,6 +183,7 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
 			{
 		ActuacionAsistenciaForm actuacionAsistenciaForm 	= (ActuacionAsistenciaForm)formulario;
+		actuacionAsistenciaForm.setModo("");
 		UsrBean usrBean = this.getUserBean(request);
 		//Recogemos el parametro enviado por ajax
 		String idTipoActuacion = request.getParameter("idTipoActuacion");
@@ -205,7 +204,7 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 			anio=Integer.parseInt(actuacionAsistenciaForm.getAnio());
 		
 		if((actuacionAsistenciaForm.getIdActuacion()!=null)&&(!actuacionAsistenciaForm.getIdActuacion().isEmpty()))
-			idActuacion=Integer.parseInt(actuacionAsistenciaForm.getIdActuacion()); //número de actuacion que se muestra en ventana
+			idActuacion=Integer.parseInt(actuacionAsistenciaForm.getIdActuacion()); //numero de actuacion que se muestra en ventana
 		
 		//Sacamos las guardias si hay algo selccionado en el turno
 		List<ValueKeyVO> tipoCosteList = null;
@@ -223,10 +222,36 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 		
 	}
     
-	
+	/**
+	 * Esta funcion centraliza las acciones de edicion, ver y nuevo, que al fin y al cabo recuperan los mismos datos para el formulario y solo cambia el modo
+	 * 
+	 * @param formulario
+	 * @param request
+	 * @param modoParaJSP : el modo para que la JSP sepa si estamos editando, viendo o creando un nuevo registro
+	 * @return
+	 * @throws ClsExceptions
+	 * @throws SIGAException
+	 */
+	protected String edicion(ActuacionAsistenciaForm formulario, HttpServletRequest request, String modoParaJSP) throws ClsExceptions, SIGAException {
+
+		String forward = "exception";
+		
+		try {
+			ActuacionAsistenciaForm actuacionAsistenciaForm = (ActuacionAsistenciaForm) formulario;
+			actuacionAsistenciaForm.setModo("");
+			actuacionAsistenciaForm.setModoPestanha(modoParaJSP);
+			request.setAttribute("modosActuacionAsistencia", actuacionAsistenciaForm.getModos());
+			
+			forward = "edicion";
+		} catch (Exception e) {
+			throwExcp("messages.general.errorExcepcion", e, null);
+		}
+		return forward;
+
+	}
 	
 	/** 
-	 *  Funcion que atiende la accion editar
+	 *  Funcion que atiende la accion editar: redirecciona hacia las subpestaÃ±as
 	 * @param  mapping - Mapeo de los struts
 	 * @param  formulario -  Action Form asociado a este Action
 	 * @param  request - objeto llamada HTTP 
@@ -234,81 +259,10 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions,SIGAException   En cualquier caso de error
 	 */
-	protected String editar(ActionMapping mapping, 
-							MasterForm formulario,
-							HttpServletRequest request, 
-							HttpServletResponse response)throws ClsExceptions,SIGAException  {
+	protected String editar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request,
+			HttpServletResponse response) throws ClsExceptions, SIGAException {
 
-		String forward="exception";
-		try {
-		
-			UsrBean usrBean = this.getUserBean(request);
-			ActuacionAsistenciaForm actuacionAsistenciaForm 	= (ActuacionAsistenciaForm)formulario;
-			
-			AsistenciaForm asistenciaForm = new AsistenciaForm();
-			asistenciaForm.setIdInstitucion(actuacionAsistenciaForm.getIdInstitucion());
-			asistenciaForm.setAnio(actuacionAsistenciaForm.getAnio());
-			asistenciaForm.setNumero(actuacionAsistenciaForm.getNumero());
-			
-			
-			BusinessManager bm = getBusinessManager();
-			AsistenciasService asistenciasService = (AsistenciasService)bm.getService(AsistenciasService.class);
-			asistenciaForm = asistenciasService.getDatosAsistencia(asistenciaForm, usrBean);
-			asistenciaForm.setFichaColegial(actuacionAsistenciaForm.getFichaColegial());
-			asistenciaForm.setModoPestanha(actuacionAsistenciaForm.getModoPestanha());
-			request.setAttribute("asistencia",asistenciaForm);
-			
-			ActuacionAsistenciaForm actuacionAsistenciaFormEdicion = asistenciasService.getActuacionAsistencia(
-					actuacionAsistenciaForm, usrBean);
-			actuacionAsistenciaFormEdicion.setNumeroProcedimientoAsistencia(asistenciaForm.getNumeroDiligencia());
-			actuacionAsistenciaFormEdicion.setNumeroDiligenciaAsistencia(asistenciaForm.getNumeroDiligencia());
-			actuacionAsistenciaFormEdicion.setComisariaAsistencia(asistenciaForm.getComisaria());
-			actuacionAsistenciaFormEdicion.setJuzgadoAsistencia(asistenciaForm.getJuzgado());
-		//	actuacionAsistenciaForm.setIdCosteFijoActuacion(null);
-			
-			String idPrision = actuacionAsistenciaFormEdicion.getIdPrision();
-			String idInstitucionPrision = actuacionAsistenciaFormEdicion.getIdInstitucionPris();
-			if(idPrision!=null &&!idPrision.equals("")){
-				String codigoPrision = idInstitucionPrision+","+idPrision;
-				actuacionAsistenciaFormEdicion.setIdPrision(codigoPrision);
-			}
-			 
-			String idComisaria = actuacionAsistenciaFormEdicion.getIdComisaria();
-			if(idComisaria==null ||idComisaria.equals(""))
-				idComisaria = asistenciaForm.getComisaria();
-			
-			if(idComisaria==null ||idComisaria.equals(""))
-				actuacionAsistenciaForm.setComisarias(asistenciasService.getComisarias(asistenciaForm, usrBean));
-			else
-				actuacionAsistenciaForm.setComisarias(asistenciasService.getComisarias(asistenciaForm,idComisaria, usrBean));
-			
-			
-			String idJuzgado = actuacionAsistenciaFormEdicion.getIdJuzgado();
-			if(idJuzgado==null ||idJuzgado.equals(""))
-				idJuzgado = asistenciaForm.getJuzgado();
-			
-			if(idJuzgado==null ||idJuzgado.equals(""))
-				actuacionAsistenciaForm.setJuzgados(asistenciasService.getJuzgados(asistenciaForm, usrBean));
-			else
-				actuacionAsistenciaForm.setJuzgados(asistenciasService.getJuzgados(asistenciaForm,idJuzgado, usrBean));
-			
-		
-			actuacionAsistenciaFormEdicion.setModo("modificar");
-			request.setAttribute("ActuacionAsistenciaFormEdicion", actuacionAsistenciaFormEdicion);
-			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usrBean.getLocation()));
-			request.setAttribute("tipoPcajg", new Integer(valorPcajgActivo));
-			actuacionAsistenciaFormEdicion.setTipoPcajg(""+valorPcajgActivo);
-			request.setAttribute("botones", "R,Y,C");
-			forward=  "edicion";
-			
-			// Obtiene si la configuracion de la guardia es por asistencias (0) o por actuaciones (1)
-			this.comunGestionActuacionesAsistencia(request, asistenciaForm);
-			
-		} catch (Exception e) {
-			throwExcp("messages.general.errorExcepcion", e, null); 
-		}
-		return forward;
-		
+		return edicion((ActuacionAsistenciaForm) formulario, request, "modificar");
 	}
 
 	/** 
@@ -320,71 +274,10 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions,SIGAException   En cualquier caso de error
 	 */
-	protected String ver(ActionMapping mapping, MasterForm formulario,
-			HttpServletRequest request, HttpServletResponse response)
-			throws ClsExceptions,SIGAException  {
-		
-		String forward="exception";
-		try {
-			
-		
-			UsrBean usrBean = this.getUserBean(request);
-			ActuacionAsistenciaForm actuacionAsistenciaForm 	= (ActuacionAsistenciaForm)formulario;
-			
-			AsistenciaForm asistenciaForm = new AsistenciaForm();
-			asistenciaForm.setIdInstitucion(actuacionAsistenciaForm.getIdInstitucion());
-			asistenciaForm.setAnio(actuacionAsistenciaForm.getAnio());
-			asistenciaForm.setNumero(actuacionAsistenciaForm.getNumero());
-			asistenciaForm.setModoPestanha(actuacionAsistenciaForm.getModoPestanha());
-			
-			BusinessManager bm = getBusinessManager();
-			AsistenciasService asistenciasService = (AsistenciasService)bm.getService(AsistenciasService.class);
-			asistenciaForm = asistenciasService.getDatosAsistencia(asistenciaForm, usrBean);
-			asistenciaForm.setFichaColegial(actuacionAsistenciaForm.getFichaColegial());
-			request.setAttribute("asistencia",asistenciaForm);
-			
-			ActuacionAsistenciaForm actuacionAsistenciaFormEdicion = asistenciasService.getActuacionAsistencia(
-					actuacionAsistenciaForm, usrBean);
-			
-			
-			String idPrision = actuacionAsistenciaFormEdicion.getIdPrision();
-			String idInstitucionPrision = actuacionAsistenciaFormEdicion.getIdInstitucionPris();
-			if(idPrision!=null &&!idPrision.equals("")){
-				String codigoPrision = idInstitucionPrision+","+idPrision;
-				actuacionAsistenciaFormEdicion.setIdPrision(codigoPrision);
-			}
-			String idComisaria = actuacionAsistenciaFormEdicion.getIdComisaria();
-			if(idComisaria==null ||idComisaria.equals(""))
-				idComisaria = asistenciaForm.getComisaria();
-			
-			if(idComisaria==null ||idComisaria.equals(""))
-				actuacionAsistenciaForm.setComisarias(asistenciasService.getComisarias(asistenciaForm, usrBean));
-			else
-				actuacionAsistenciaForm.setComisarias(asistenciasService.getComisarias(asistenciaForm,idComisaria, usrBean));
-			
-			
-			String idJuzgado = actuacionAsistenciaFormEdicion.getIdJuzgado();
-			if(idJuzgado==null ||idJuzgado.equals(""))
-				idJuzgado = asistenciaForm.getJuzgado();
-			
-			if(idJuzgado==null ||idJuzgado.equals(""))
-				actuacionAsistenciaForm.setJuzgados(asistenciasService.getJuzgados(asistenciaForm, usrBean));
-			else
-				actuacionAsistenciaForm.setJuzgados(asistenciasService.getJuzgados(asistenciaForm,idJuzgado, usrBean));
-			actuacionAsistenciaForm.setModo("ver");
-			request.setAttribute("ActuacionAsistenciaFormEdicion", actuacionAsistenciaFormEdicion);
-			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usrBean.getLocation()));
-			request.setAttribute("tipoPcajg", new Integer(valorPcajgActivo));			
-			request.setAttribute("botones", "C");
-			forward=  "edicion";
-			
-			// Obtiene si la configuracion de la guardia es por asistencias (0) o por actuaciones (1)
-			this.comunGestionActuacionesAsistencia(request, asistenciaForm);
-			
-		} catch (Exception e) {
-			throwExcp("messages.general.errorExcepcion", e, null); 
-		}
-		return forward;
+	protected String ver(ActionMapping mapping, MasterForm formulario, HttpServletRequest request,
+			HttpServletResponse response) throws ClsExceptions, SIGAException {
+
+		return edicion((ActuacionAsistenciaForm) formulario, request, "ver");
 	}
 
 	/** 
@@ -396,83 +289,140 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 	 * @return  String  Destino del action  
 	 * @exception  ClsExceptions,SIGAException   En cualquier caso de error
 	 */
-	protected String nuevo(ActionMapping mapping, MasterForm formulario,
-							HttpServletRequest request, HttpServletResponse response)
-							throws ClsExceptions,SIGAException  {
-		
+	protected String nuevo(ActionMapping mapping, MasterForm formulario, HttpServletRequest request,
+			HttpServletResponse response) throws ClsExceptions, SIGAException {
+
+		return edicion((ActuacionAsistenciaForm) formulario, request, ((ActuacionAsistenciaForm) formulario).getModo()); 
+		//este modo deberia devolver "nuevoVolanteExpres" si viene de Volante Expres o "nuevo" si viene desde el listado de actuaciones de la asistencia
+	}
+
+	/**
+	 * Prepara la pantalla para mostrar los datos de la actuacion
+	 */
+	protected String edicionActuacionAsistencia(ActionMapping mapping, MasterForm formulario, HttpServletRequest request,
+			HttpServletResponse response) throws ClsExceptions, SIGAException {
+
 		String forward="exception";
-		try{
+		try {
+		
 			UsrBean usrBean = this.getUserBean(request);
-			ActuacionAsistenciaForm actuacionAsistenciaForm 	= (ActuacionAsistenciaForm)formulario;
+			ActuacionAsistenciaForm actuacionAsistenciaForm = (ActuacionAsistenciaForm)formulario;
 			
 			AsistenciaForm asistenciaForm = new AsistenciaForm();
 			asistenciaForm.setIdInstitucion(actuacionAsistenciaForm.getIdInstitucion());
 			asistenciaForm.setAnio(actuacionAsistenciaForm.getAnio());
 			asistenciaForm.setNumero(actuacionAsistenciaForm.getNumero());
-			asistenciaForm.setModoPestanha(actuacionAsistenciaForm.getModoPestanha());
+			
 			
 			BusinessManager bm = getBusinessManager();
 			AsistenciasService asistenciasService = (AsistenciasService)bm.getService(AsistenciasService.class);
 			asistenciaForm = asistenciasService.getDatosAsistencia(asistenciaForm, usrBean);
 			asistenciaForm.setFichaColegial(actuacionAsistenciaForm.getFichaColegial());
+			asistenciaForm.setModoPestanha(actuacionAsistenciaForm.getModoPestanha());
 			request.setAttribute("asistencia",asistenciaForm);
 			
-			ActuacionAsistenciaForm actuacionAsistenciaFormEdicion = new ActuacionAsistenciaForm();
-			
-			actuacionAsistenciaFormEdicion.setIdActuacion(asistenciasService.getNuevaActuacionAsistencia(asistenciaForm, usrBean).toString());
-			
-			actuacionAsistenciaFormEdicion.setIdTipoAsistencia(asistenciaForm.getIdTipoAsistenciaColegio());
-			actuacionAsistenciaFormEdicion.setFacturado("0");
-			actuacionAsistenciaFormEdicion.setValidada("0");
-			actuacionAsistenciaForm.setIdCosteFijoActuacion(null);
-			if(asistenciaForm.getJuzgado()!=null&&!asistenciaForm.getJuzgado().equals("")&&(asistenciaForm.getComisaria()==null||asistenciaForm.getComisaria().equals(""))){
-				actuacionAsistenciaFormEdicion.setIdJuzgado(asistenciaForm.getJuzgado());
-				actuacionAsistenciaFormEdicion.setIdInstitucionJuzg(asistenciaForm.getIdInstitucion());
-				actuacionAsistenciaFormEdicion.setNumeroAsunto(asistenciaForm.getNumeroProcedimiento());
+			ActuacionAsistenciaForm actuacionAsistenciaFormEdicion;
+			if (actuacionAsistenciaForm.getModoPestanha().startsWith("nuevo")) {
+				actuacionAsistenciaFormEdicion = new ActuacionAsistenciaForm();
+				actuacionAsistenciaFormEdicion.setIdActuacion(asistenciasService.getNuevaActuacionAsistencia(asistenciaForm, usrBean).toString());
+				
+				//obteniendo todos los datos posibles de la asistencia
+				actuacionAsistenciaFormEdicion.setIdTipoAsistencia(asistenciaForm.getIdTipoAsistenciaColegio());
+				actuacionAsistenciaFormEdicion.setFacturado("0");
+				actuacionAsistenciaFormEdicion.setValidada("0");
+				actuacionAsistenciaForm.setIdCosteFijoActuacion(null);
+				if(asistenciaForm.getJuzgado()!=null&&!asistenciaForm.getJuzgado().equals("")&&(asistenciaForm.getComisaria()==null||asistenciaForm.getComisaria().equals(""))){
+					actuacionAsistenciaFormEdicion.setIdJuzgado(asistenciaForm.getJuzgado());
+					actuacionAsistenciaFormEdicion.setIdInstitucionJuzg(asistenciaForm.getIdInstitucion());
+					actuacionAsistenciaFormEdicion.setNumeroAsunto(asistenciaForm.getNumeroProcedimiento());
+				}
+				if(asistenciaForm.getComisaria()!=null&&!asistenciaForm.getComisaria().equals("")&&(asistenciaForm.getJuzgado()==null||asistenciaForm.getJuzgado().equals(""))){
+					actuacionAsistenciaFormEdicion.setIdComisaria(asistenciaForm.getComisaria());
+					actuacionAsistenciaFormEdicion.setIdInstitucionComis(asistenciaForm.getIdInstitucion());
+					actuacionAsistenciaFormEdicion.setNumeroAsunto(asistenciaForm.getNumeroDiligencia());
+				}
+				//No hay campo en el formulario y no admite nulos. Por defecto 0
+				actuacionAsistenciaFormEdicion.setAcuerdoExtrajudicial("0");
+				actuacionAsistenciaFormEdicion.setIdInstitucion(asistenciaForm.getIdInstitucion());
+				actuacionAsistenciaFormEdicion.setAnio(asistenciaForm.getAnio());
+				actuacionAsistenciaFormEdicion.setNumero(asistenciaForm.getNumero());
+				actuacionAsistenciaFormEdicion.setNumeroProcedimientoAsistencia(asistenciaForm.getNumeroProcedimiento());
+				actuacionAsistenciaFormEdicion.setNig(asistenciaForm.getNig());
+				
+				if(actuacionAsistenciaForm.getModoPestanha().equals("nuevoDesdeVolanteExpress")){
+					actuacionAsistenciaForm.setTiposActuacion(asistenciasService.getTiposActuacion(asistenciaForm, usrBean));
+					actuacionAsistenciaForm.setTipoCosteFijoActuaciones(new ArrayList<ValueKeyVO>());
+					actuacionAsistenciaForm.setPrisiones(asistenciasService.getPrisiones(asistenciaForm, usrBean));
+				}
+				actuacionAsistenciaForm.setComisarias(asistenciasService.getComisarias(asistenciaForm, usrBean));
+				actuacionAsistenciaForm.setJuzgados(asistenciasService.getJuzgados(asistenciaForm, usrBean));
+				
+				// Al entrar en la pantalla de nuevo, necesita el modo insertar para luego poder guardar
+				actuacionAsistenciaFormEdicion.setModo("insertar");
+			} else {
+				actuacionAsistenciaFormEdicion = asistenciasService.getActuacionAsistencia(actuacionAsistenciaForm, usrBean);
+				actuacionAsistenciaFormEdicion.setNumeroProcedimientoAsistencia(asistenciaForm.getNumeroDiligencia());
+				
+				String idPrision = actuacionAsistenciaFormEdicion.getIdPrision();
+				String idInstitucionPrision = actuacionAsistenciaFormEdicion.getIdInstitucionPris();
+				if(idPrision!=null &&!idPrision.equals("")){
+					String codigoPrision = idInstitucionPrision+","+idPrision;
+					actuacionAsistenciaFormEdicion.setIdPrision(codigoPrision);
+				}
+				 
+				String idComisaria = actuacionAsistenciaFormEdicion.getIdComisaria();
+				if(idComisaria==null ||idComisaria.equals(""))
+					idComisaria = asistenciaForm.getComisaria();
+				
+				if(idComisaria==null ||idComisaria.equals(""))
+					actuacionAsistenciaForm.setComisarias(asistenciasService.getComisarias(asistenciaForm, usrBean));
+				else
+					actuacionAsistenciaForm.setComisarias(asistenciasService.getComisarias(asistenciaForm,idComisaria, usrBean));
+				
+				
+				String idJuzgado = actuacionAsistenciaFormEdicion.getIdJuzgado();
+				if(idJuzgado==null ||idJuzgado.equals(""))
+					idJuzgado = asistenciaForm.getJuzgado();
+				
+				if(idJuzgado==null ||idJuzgado.equals(""))
+					actuacionAsistenciaForm.setJuzgados(asistenciasService.getJuzgados(asistenciaForm, usrBean));
+				else
+					actuacionAsistenciaForm.setJuzgados(asistenciasService.getJuzgados(asistenciaForm,idJuzgado, usrBean));
+				
+				// Mantenemos el modo existente para que sea leido por la jsp
+				actuacionAsistenciaFormEdicion.setModo(actuacionAsistenciaForm.getModoPestanha());
 			}
-			if(asistenciaForm.getComisaria()!=null&&!asistenciaForm.getComisaria().equals("")&&(asistenciaForm.getJuzgado()==null||asistenciaForm.getJuzgado().equals(""))){
-				actuacionAsistenciaFormEdicion.setIdComisaria(asistenciaForm.getComisaria());
-				actuacionAsistenciaFormEdicion.setIdInstitucionComis(asistenciaForm.getIdInstitucion());
-				actuacionAsistenciaFormEdicion.setNumeroAsunto(asistenciaForm.getNumeroDiligencia());
-			}
-			//No hay campo en el formulario y no admite nulos. Por defecto 0
-			actuacionAsistenciaFormEdicion.setAcuerdoExtrajudicial("0");
-			actuacionAsistenciaFormEdicion.setIdInstitucion(asistenciaForm.getIdInstitucion());
-			actuacionAsistenciaFormEdicion.setAnio(asistenciaForm.getAnio());
-			actuacionAsistenciaFormEdicion.setNumero(asistenciaForm.getNumero());
-			actuacionAsistenciaFormEdicion.setNumeroProcedimientoAsistencia(asistenciaForm.getNumeroProcedimiento());
+			actuacionAsistenciaForm.setModo("");
+			
+			// datos de la asistencia para mostrar en la propia actuacion
 			actuacionAsistenciaFormEdicion.setNumeroDiligenciaAsistencia(asistenciaForm.getNumeroDiligencia());
 			actuacionAsistenciaFormEdicion.setComisariaAsistencia(asistenciaForm.getComisaria());
 			actuacionAsistenciaFormEdicion.setJuzgadoAsistencia(asistenciaForm.getJuzgado());
-			actuacionAsistenciaFormEdicion.setNig(asistenciaForm.getNig());
 			
-			if(actuacionAsistenciaForm.getModo().equals("nuevoDesdeVolanteExpress")){
-				actuacionAsistenciaForm.setTiposActuacion(asistenciasService.getTiposActuacion(asistenciaForm, usrBean));
-				actuacionAsistenciaForm.setTipoCosteFijoActuaciones(new ArrayList<ValueKeyVO>());
-				actuacionAsistenciaForm.setPrisiones(asistenciasService.getPrisiones(asistenciaForm, usrBean));
-				
-				
-			}
-			
-			actuacionAsistenciaForm.setComisarias(asistenciasService.getComisarias(asistenciaForm, usrBean));
-			actuacionAsistenciaForm.setJuzgados(asistenciasService.getJuzgados(asistenciaForm, usrBean));
-			
-			actuacionAsistenciaForm.setModo("abrir");
-			actuacionAsistenciaFormEdicion.setModo("insertar");
 			request.setAttribute("ActuacionAsistenciaFormEdicion", actuacionAsistenciaFormEdicion);
 			int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usrBean.getLocation()));
-			request.setAttribute("tipoPcajg", new Integer(valorPcajgActivo));		
+			request.setAttribute("tipoPcajg", new Integer(valorPcajgActivo));
 			actuacionAsistenciaFormEdicion.setTipoPcajg(""+valorPcajgActivo);
-			request.setAttribute("botones", "R,Y,C"); 
-			forward=  "edicion";
+			if ("nuevoDesdeVolanteExpress".equalsIgnoreCase(actuacionAsistenciaForm.getModoPestanha()) || 
+				"nuevoDesdeVolanteExpress".equalsIgnoreCase(actuacionAsistenciaForm.getModoVolver())) {
+				//Desde Volante Expres, dejo de momento que siga la ventana modal porque es mas dificil volver a Volante Expres
+				request.setAttribute("botones", "R,G,V");
+			} else if (!actuacionAsistenciaForm.getModoPestanha().equalsIgnoreCase("ver")) {
+				request.setAttribute("botones", "R,G");
+			} else {
+				request.setAttribute("botones", "");
+			}
 			
 			// Obtiene si la configuracion de la guardia es por asistencias (0) o por actuaciones (1)
-			this.comunGestionActuacionesAsistencia(request, asistenciaForm);
+			ScsHitoFacturableGuardiaAdm admHitoFacturableGuardia = new ScsHitoFacturableGuardiaAdm(usrBean);
+			String porAsAct = admHitoFacturableGuardia.porAsAct(asistenciaForm.getIdInstitucion(), asistenciaForm.getIdTurno(), asistenciaForm.getIdGuardia());
+			request.setAttribute("porAsAct", porAsAct); 
 			
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null); 
 		}
-		return forward;
+
+		return ("edicionActuacionAsistencia");
 	}
 
 	/** 
@@ -550,13 +500,20 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 						throw new Exception();
 				} catch (Exception e) {
 					asistenciasService.borrarActuacionAsistencia(actuacionAsistenciaFormEdicion, usrBean);
-					throw new SIGAException("Error al insertar en histórico");
+					throw new SIGAException("Error al insertar en historico");
 				}
 
 			}
 
-			actuacionAsistenciaFormEdicion.setModo("abrir");
-			forward = exitoModal("messages.inserted.success", request);
+			actuacionAsistenciaFormEdicion.setModo("");
+			/*if (actuacionAsistenciaFormEdicion.getModoPestanha().equalsIgnoreCase("nuevoDesdeVolanteExpress")) {
+				//Desde Volante Expres, dejo de momento que siga la ventana modal porque es mas dificil volver a Volante Expres
+				forward = exitoModal("messages.inserted.success", request);
+			} else {*/
+				actuacionAsistenciaFormEdicion.setModoVolver(actuacionAsistenciaFormEdicion.getModoPestanha());
+				actuacionAsistenciaFormEdicion.setModoPestanha("editar"); //esto hara que al refrescar se quede editando en la misma pantalla
+				forward = exitoRefresco("messages.inserted.success", request);
+			//}
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null);
 		}
@@ -686,13 +643,13 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 						throw new Exception();
 				} catch (Exception e) {
 					asistenciasService.borrarActuacionAsistencia(actuacionAsistenciaFormEdicion, usrBean);
-					throw new SIGAException("Error al insertar en histórico");
+					throw new SIGAException("Error al insertar en historico");
 				}
 
 			}
 
 			actuacionAsistenciaFormEdicion.setModo("abrir");
-			forward = exitoModal("messages.updated.success", request);
+			forward = exitoRefresco("messages.updated.success", request);//Desde Volante Expres es una modal, pero siempre es el metodo insertar, nunca este de modificar
 		} catch (Exception e) {
 			throwExcp("messages.general.errorExcepcion", e, null);
 		}
@@ -750,7 +707,7 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 				motivo.append(actuacionAsistenciaFormEdicion.getAnio());
 				motivo.append("/");
 				motivo.append(actuacionAsistenciaFormEdicion.getNumero());
-				motivo.append(". Actuación ");
+				motivo.append(". Actuacion ");
 				motivo.append(actuacionAsistenciaFormEdicion.getIdActuacion());
 				motivo.append(". Registro Eliminado ");
 				historicoHashtable.put(CenHistoricoBean.C_MOTIVO, motivo.toString());
@@ -774,7 +731,7 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 					if (!isInsertado)
 						throw new Exception();
 				} catch (Exception e) {
-					throw new SIGAException("Error al insertar en histórico");
+					throw new SIGAException("Error al insertar en historico");
 				}
 
 			}
@@ -799,22 +756,5 @@ public class ActuacionesAsistenciaAction extends MasterAction {
 		
 		return "consultarAsistencia";
 		
-	}
-	
-	/**
-	 * Obtiene si la configuracion de la guardia es por asistencias (0) o por actuaciones (1) 
-	 * @param request
-	 * @param asistenciaForm
-	 * @throws SIGAException
-	 */
-	private void comunGestionActuacionesAsistencia(HttpServletRequest request, AsistenciaForm asistenciaForm) throws SIGAException {
-		try {
-			// Obtiene si la configuracion de la guardia es por asistencias (0) o por actuaciones (1) 
-			ScsHitoFacturableGuardiaAdm admHitoFacturableGuardia = new ScsHitoFacturableGuardiaAdm(this.getUserBean(request));
-			String porAsAct = admHitoFacturableGuardia.porAsAct(asistenciaForm.getIdInstitucion(), asistenciaForm.getIdTurno(), asistenciaForm.getIdGuardia());
-			request.setAttribute("porAsAct", porAsAct); 
-		} catch (Exception e) {
-			throwExcp("messages.general.errorExcepcion", e, null); 
-		}
 	}
 }

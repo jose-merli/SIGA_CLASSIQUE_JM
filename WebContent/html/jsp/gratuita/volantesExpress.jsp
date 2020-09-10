@@ -39,34 +39,101 @@
 		jQuery.noConflict();
 	
 		function init() {
-		   	jQuery("#colegiadosSustituidos").attr("disabled","disabled");
+		   	/*jQuery("#colegiadosSustituidos").attr("disabled","disabled");
 		   	jQuery("#colegiadosGuardia").attr("disabled","disabled");
 		   	jQuery("#turnos").attr("disabled","disabled");
 		   	jQuery("#guardias").attr("disabled","disabled");
+		   	document.getElementById('fechaGuardia').value="${VolantesExpressForm.fechaGuardia}";
+		   	accionCalendario();
+		   	document.getElementById('turnos').value="${VolantesExpressForm.idTurno}";
+		   	accionCalendario();
+		   	postAccionTurno();*/
+		   	document.getElementById('fechaGuardia').onchange();
+		   	accionNuevo();
 		}
 		
 		function accionCalendario() {
 			// Abrimos el calendario			
 			
 			if (document.getElementById('fechaGuardia').value!='') {
-				 document.VolantesExpressForm.turnos.value= '';
-				 document.VolantesExpressForm.guardias.value= '';
-				 document.VolantesExpressForm.colegiadosGuardia.value= '';
-				 document.VolantesExpressForm.colegiadosSustituidos.value= '';
-				 document.VolantesExpressForm.idTurno.value = '';
-			     document.VolantesExpressForm.idGuardia.value = '';
-				 document.VolantesExpressForm.idColegiadoGuardia.value = '';
-				 document.VolantesExpressForm.idColegiadoSustituido.value = '';
-				 document.VolantesExpressForm.fechaGuardia.value =  document.getElementById('fechaGuardia').value;
-				 document.getElementById('fechaGuardia').onchange();
+				document.VolantesExpressForm.turnos.value= '';
+				document.VolantesExpressForm.guardias.value= '';
+				document.VolantesExpressForm.colegiadosGuardia.value= '';
+				document.VolantesExpressForm.colegiadosSustituidos.value= '';
+				document.VolantesExpressForm.idTurno.value = '';
+			    document.VolantesExpressForm.idGuardia.value = '';
+				document.VolantesExpressForm.idColegiadoGuardia.value = '';
+				document.VolantesExpressForm.idColegiadoSustituido.value = '';
+				document.getElementById('fechaGuardia').onchange();
 				
 		 	}else{
 				//Si da a reset no viene nada por lo que actualizamos. si viene con fecha
 				//es que ha cerrado desde el aspa, lo dejamos como estuviera(no hacemos nada) 		 		
-		 		 
-				 if(document.getElementById('fechaGuardia').value=='')
-				 	document.getElementById('fechaGuardia').onchange();
+		 		
+				if(document.getElementById('fechaGuardia').value=='') {
+					document.getElementById('fechaGuardia').onchange();
+				}
 			} 
+		}
+		
+		function  postAccionFechaGuardia(){
+			if((document.VolantesExpressForm.fechaGuardia && 
+				document.VolantesExpressForm.fechaGuardia.value != '' && 
+				document.VolantesExpressForm.idGuardia.value != '-1')){
+				limpiarColegiado();
+			}
+			document.getElementById('turnos').value="${VolantesExpressForm.idTurno}";
+			document.getElementById('turnos').onchange();
+		}
+	
+		function preAccionTurno(){
+			jQuery("#guardias").attr("disabled","disabled");
+		}
+		
+		function postAccionTurno(){
+			if((document.VolantesExpressForm.idTurno && document.VolantesExpressForm.idTurno.value != ''&& document.VolantesExpressForm.idTurno.value != '-1')){
+				// if(document.VolantesExpressForm.guardias.length==2){
+					
+					// document.getElementById("idGuardia").value = document.VolantesExpressForm.guardias[1].value;
+					// document.VolantesExpressForm.idGuardia.value = document.VolantesExpressForm.guardias[1].value;
+					//document.getElementById("guardias").selectedIndex=1;
+					// document.VolantesExpressForm.guardias.onchange();
+				// } 
+				if(document.VolantesExpressForm.idColegiado&&document.VolantesExpressForm.idColegiado!=''){
+					postAccionColegiado();
+				}else{
+					actualizarResultados();
+				}
+			}
+			document.getElementById('guardias').value="${VolantesExpressForm.idGuardia}";
+			document.getElementById('guardias').onchange();
+		}	
+		
+		function postAccionGuardia(){
+			if((document.VolantesExpressForm.idGuardia && document.VolantesExpressForm.idGuardia.value != ''&& document.VolantesExpressForm.idGuardia.value != '-1')){
+				//Ahora mismo si hay seleccionado un letrado no se va a borrar aunque haya cambio de guardia 
+				if(document.VolantesExpressForm.idColegiado&&document.VolantesExpressForm.idColegiado.value!=''){
+					postAccionColegiado();
+				}else{
+					var optionsColegiadoGuardia = document.getElementById("colegiadosGuardia");
+					var encontrado;
+					if(optionsColegiadoGuardia.length==2){
+						optionsColegiadoGuardia.selectedIndex=1;
+						document.getElementById('colegiadosGuardia').onchange();
+					}else{
+						actualizarResultados();
+						document.getElementById('colegiadosGuardia').value="${VolantesExpressForm.idColegiadoGuardia}";
+						document.getElementById('colegiadosGuardia').onchange();
+					}
+				}
+			
+			}else{
+				actualizarResultados();
+				document.getElementById('colegiadosGuardia').value="${VolantesExpressForm.idColegiadoGuardia}";
+				document.getElementById('colegiadosGuardia').onchange();
+			}
+			rellenaTipoAsistencia();
+			
 		}
 		
 		function postAccionColegiadoGuardia(){
@@ -111,67 +178,6 @@
 			}
 		}
 		
-		function preAccionTurno(){
-			jQuery("#guardias").attr("disabled","disabled");
-		}
-		
-		function postAccionTurno(){
-			if((document.VolantesExpressForm.idTurno && document.VolantesExpressForm.idTurno.value != ''&& document.VolantesExpressForm.idTurno.value != '-1')){
-				// if(document.VolantesExpressForm.guardias.length==2){
-					
-					// document.getElementById("idGuardia").value = document.VolantesExpressForm.guardias[1].value;
-					// document.VolantesExpressForm.idGuardia.value = document.VolantesExpressForm.guardias[1].value;
-					//document.getElementById("guardias").selectedIndex=1;
-					// document.VolantesExpressForm.guardias.onchange();
-				// } 
-				if(document.VolantesExpressForm.idColegiado&&document.VolantesExpressForm.idColegiado!=''){
-					postAccionColegiado();
-				}else{
-					actualizarResultados();
-				}
-			}
-						
-		}	
-		
-		function  postAccionFechaGuardia(){
-			if((document.VolantesExpressForm.fechaGuardia && 
-				document.VolantesExpressForm.fechaGuardia.value != '' && 
-				document.VolantesExpressForm.idGuardia.value != '-1')){
-				limpiarColegiado();
-			}
-		}
-	
-		function preAccionGuardia(){
-	//		if((document.VolantesExpressForm.idGuardia && document.VolantesExpressForm.idGuardia.value != ''&& document.VolantesExpressForm.idGuardia.value != '-1')){
-				
-	// 		}else{
-		// 		return 'cancel';
-	// 		}
-		}
-		
-		function postAccionGuardia(){
-			
-			if((document.VolantesExpressForm.idGuardia && document.VolantesExpressForm.idGuardia.value != ''&& document.VolantesExpressForm.idGuardia.value != '-1')){
-				//Ahora mismo si hay seleccionado un letrado no se va a borrar aunque haya cambio de guardia 
-				if(document.VolantesExpressForm.idColegiado&&document.VolantesExpressForm.idColegiado.value!=''){
-					postAccionColegiado();
-				}else{
-					var optionsColegiadoGuardia = document.getElementById("colegiadosGuardia");
-					var encontrado;
-					if(optionsColegiadoGuardia.length==2){
-						optionsColegiadoGuardia.selectedIndex=1;
-						document.getElementById('colegiadosGuardia').onchange();
-					}else{
-						actualizarResultados();
-					}
-				}
-			
-			}else{
-				actualizarResultados();
-			}
-			rellenaTipoAsistencia();
-			
-		}
 		function rellenaTipoAsistencia() {
 			var idGuardia = document.getElementById('guardias').value;
 			var idTurno = document.getElementById('turnos').value;
@@ -193,6 +199,7 @@
 		                        
 		                    });
 			       			
+		        			document.getElementById('idTipoAsistenciaColegio').value="${VolantesExpressForm.idTipoAsistenciaColegio}";
 			           },
 			           error: function(xml,msg){
 			        	   alert("Error: "+msg+xml);
@@ -890,8 +897,7 @@
 <bean:define id="fechaJustificacion" name="VolantesExpressForm" property="fechaJustificacion" type="String" />
 <!-- INICIO: CAMPOS DE BUSQUEDA-->
 <input type="hidden" id = "idTipoAsistenciaColegioSelected" value = ""/>
-<html:form action="/JGR_VolantesExpres" method="POST"
-	target="mainWorkArea">
+<html:form action="/JGR_VolantesExpres" method="POST"	target="mainWorkArea">
 	<html:hidden property="tipoPcajg" styleId="tipoPcajg" />
 	<html:hidden property="modo" styleId="modo" value=""/>
 	<html:hidden property="idColegiado" styleId="idColegiado" />
@@ -910,7 +916,7 @@
 					<siga:Idioma key="gratuita.volantesExpres.literal.GuardiaDia" />&nbsp;(*)
 				</td>
 				<td>
-					<siga:Fecha styleId="fechaGuardia" nombreCampo="fechaGuardia" postFunction="accionCalendario();"/>
+					<siga:Fecha styleId="fechaGuardia" nombreCampo="fechaGuardia" valorInicial="${VolantesExpressForm.fechaGuardia}" postFunction="accionCalendario();"/>
 				</td>
 
 				<td class="labelText" width="80px">
@@ -938,7 +944,7 @@
 					<siga:Idioma key="gratuita.volantesExpres.literal.turno" />&nbsp;(*)
 				</td>
 				<td>
-					<html:select styleId="turnos" styleClass="boxCombo" style="width:350px;" property="idTurno">
+					<html:select styleId="turnos" styleClass="boxCombo" style="width:350px;" name="VolantesExpressForm" property="idTurno">
 						<bean:define id="turnos" name="VolantesExpressForm" property="turnos" type="java.util.Collection" />
 						<html:optionsCollection name="turnos" value="idTurno" label="nombre" />
 					</html:select>
@@ -948,7 +954,7 @@
 					<siga:Idioma key="gratuita.volantesExpres.literal.guardia" />&nbsp;(*)
 				</td>
 				<td>
-					<html:select styleId="guardias" styleClass="boxCombo" style="width:350px;" property="idGuardia" >
+					<html:select styleId="guardias" styleClass="boxCombo" style="width:350px;" property="idGuardia">
 						<bean:define id="guardias" name="VolantesExpressForm" property="guardias" type="java.util.Collection" />
 						<html:optionsCollection name="guardias" value="idGuardia" label="nombre" />
 					</html:select>
@@ -1330,10 +1336,8 @@
 		document.ActuacionAsistenciaForm.anio.value = anioAsistencia;
 		document.ActuacionAsistenciaForm.numero.value = numeroAsistencia;
 		document.ActuacionAsistenciaForm.idInstitucion.value = idInstitucion;
-		var resultado=ventaModalGeneral(document.ActuacionAsistenciaForm.name,"G");
-		if(true){
-			document.ActuacionAsistenciaForm.modo.value = 'abrir';
-		}
+		document.ActuacionAsistenciaForm.target = "mainWorkArea";
+		document.ActuacionAsistenciaForm.submit();
 	}
 	
 	function accionConsultaAsistencia(anioAsistencia,numeroAsistencia,idInstitucion) {	

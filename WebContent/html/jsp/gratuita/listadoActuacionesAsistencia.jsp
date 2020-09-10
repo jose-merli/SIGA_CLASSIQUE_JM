@@ -227,11 +227,7 @@
 
 		function accionNuevo()	{
 		    document.ActuacionAsistenciaFormEdicion.modo.value = "nuevo";
-		    resultadoVentanaCondicion = ventaModalGeneral(document.ActuacionAsistenciaFormEdicion.name, "G");
-			if (resultadoVentanaCondicion == "MODIFICADO") 
-				refrescarLocal();
-			else
-				refrescarLocal();
+			document.ActuacionAsistenciaFormEdicion.submit();
 		}
 
 		function accionVolver() {
@@ -275,11 +271,7 @@
 			document.ActuacionAsistenciaFormEdicion.numero.value = numero;
 			document.ActuacionAsistenciaFormEdicion.idActuacion.value = idActuacion;
 			document.ActuacionAsistenciaFormEdicion.modo.value="ver";
-			var resultado = ventaModalGeneral(document.ActuacionAsistenciaFormEdicion.name,"G");
-			if(resultado)
-				refrescarLocal();
-			else
-				refrescarLocal();
+			document.ActuacionAsistenciaFormEdicion.submit();
 	 	}
 	 
 		function editar(fila) {
@@ -292,11 +284,7 @@
 			document.ActuacionAsistenciaFormEdicion.numero.value = numero;
 			document.ActuacionAsistenciaFormEdicion.idActuacion.value = idActuacion;
 			document.ActuacionAsistenciaFormEdicion.modo.value="editar";
-	   		var resultado = ventaModalGeneral(document.ActuacionAsistenciaFormEdicion.name,"G");
-	   		if(resultado)
-				refrescarLocal();
-			else
-				refrescarLocal();
+			document.ActuacionAsistenciaFormEdicion.submit();
 	 	}
 	 
 		function borrar(fila) {
