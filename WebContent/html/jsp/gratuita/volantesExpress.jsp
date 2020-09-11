@@ -47,9 +47,8 @@
 		   	accionCalendario();
 		   	document.getElementById('turnos').value="${VolantesExpressForm.idTurno}";
 		   	accionCalendario();
-		   	postAccionTurno();*/
-		   	document.getElementById('fechaGuardia').onchange();
-		   	accionNuevo();
+		   	postAccionTurno();
+		   	document.getElementById('fechaGuardia').onchange();*/
 		}
 		
 		function accionCalendario() {
