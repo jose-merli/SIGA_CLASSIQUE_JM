@@ -39,7 +39,7 @@
 	HttpSession ses = request.getSession();
 	
 	
-	String accion="", anioActa="", apellido1="", apellido2="", asunto="", busquedaRealizada="", cajgAnio="", cajgNumero="", calidad="", calidadidinstitucion="", formulario="", idcalidad="", idPersona="", idPersonaDefensa="", idRenuncia="", idremesa="", nif="", nombre="", numActa="", numEJG="", procedimiento="", sNig=""; 
+	String accion="", anioActa="", apellido1="", apellido2="", asunto="", busquedaRealizada="", cajgAnio="", cajgNumero="", calidad="", calidadidinstitucion="", formulario="", idcalidad="", idPersona="", idPersonaDefensa="", idRenuncia="", idremesa="", nif="", nombre="", numActa="", numEJG="", procedimiento="", sNig="", prefijoRemesa="", numeroRemesa="", sufijoRemesa=""; 
 	String creadoDesde="", fechaApertura="", fechaAperturaHasta="", fechaDictamenDesde="", fechaDictamenHasta="", fechaEstadoDesde="", fechaEstadoHasta="",  fechaLimiteDesde="", fechaLimiteHasta="", fechaPonenteDesde="", fechaPonenteHasta="";
 	ArrayList calidadSel=new ArrayList(), idEstado=new ArrayList(), idGuardia=new ArrayList(), idResolucion=new ArrayList(), idTipoDictamen=new ArrayList(), idTipoEJG=new ArrayList(), idTipoEJGColegio=new ArrayList(), idTurno=new ArrayList(), juzgado=new ArrayList(), juzgadoSel = new ArrayList(), renunciaSel=new ArrayList(), vPonente=new ArrayList(), vFundamentoJuridico= new ArrayList(), vTipoRatificacion= new ArrayList(), idPreceptivo = new ArrayList();
 	ArrayList idInstitucionSelected = new ArrayList();
@@ -136,6 +136,13 @@
 					if (idRenuncia!=null)
 						renunciaSel.add(0,idRenuncia);	
 				}
+				
+				if (miHash.get(CajgRemesaBean.C_NUMERO) != null) 
+					numeroRemesa=miHash.get(CajgRemesaBean.C_NUMERO).toString();
+				if (miHash.get(CajgRemesaBean.C_PREFIJO) != null) 
+					prefijoRemesa=miHash.get(CajgRemesaBean.C_PREFIJO).toString();
+				if (miHash.get(CajgRemesaBean.C_NUMERO) != null) 
+					sufijoRemesa=miHash.get(CajgRemesaBean.C_SUFIJO).toString();
 				
 				if (miHash.get(ScsEJGBean.C_IDPONENTE)!= null)
 					vPonente.add(0, miHash.get(ScsEJGBean.C_IDPONENTE).toString());			
@@ -760,6 +767,17 @@ if(usr.isComision()){
 					&nbsp;/&nbsp;
 					<html:text name="<%=formulario%>" styleId="numeroActa" styleClass="box" property="numeroActa" value="<%=numActa%>" size="8" maxlength="10" />
 				</td>				
+			</tr>
+			<tr>
+				<td class="labelText" style="vertical-align:middle" width="100px">
+					<siga:Idioma key="facturacion.consultaDevolucion.literal.identificador"/>
+				</td>
+
+				<td style="vertical-align:middle"  >
+					<html:text name="<%=formulario%>" property="prefijoRemesa" size="5" maxlength="10" styleClass="box" style="width:55px" readonly="false" value="<%=prefijoRemesa%>" />
+					<html:text name="<%=formulario%>" property="numeroRemesa" size="5" maxlength="10" styleClass="box" style="width:55px" readonly="false" value="<%=numeroRemesa%>"/>
+					<html:text name="<%=formulario%>" property="sufijoRemesa" size="5" maxlength="10" styleClass="box" style="width:55px" readonly="false" value="<%=sufijoRemesa%>" />
+				</td>
 			</tr>
 		</table>
 	</siga:ConjCampos>

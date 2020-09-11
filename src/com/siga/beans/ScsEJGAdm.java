@@ -1457,6 +1457,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += ","+ScsEstadoEJGBean.T_NOMBRETABLA + " ESTADO, " +
 			ScsMaestroEstadosEJGBean.T_NOMBRETABLA + " MEE ";
 		}
+		// Mete las tablas para filtrar por remesa
+		if(miForm.getNumeroRemesa()!=null && !miForm.getNumeroRemesa().trim().equalsIgnoreCase("")){
+			consulta += ", "+CajgRemesaBean.T_NOMBRETABLA + " rem, " + CajgEJGRemesaBean.T_NOMBRETABLA + " ejgrem ";
+		}
 //		if (TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)) {
 //			consulta += ",SCS_EEJG_PETICIONES P, SCS_EEJG_XML X ";
 //		}
@@ -1668,7 +1672,29 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			codigos.put(new Integer(contador),miForm.getAnioCAJG());
 			consulta += " AND EJG.Aniocajg = :" + contador;
 		}
-
+		
+		// Se filtra por remesa
+		if(miForm.getNumeroRemesa()!=null && !miForm.getNumeroRemesa().trim().equalsIgnoreCase("")){
+			consulta += " and ejg.anio = ejgrem.anio ";
+			consulta += " and ejg.idtipoejg = ejgrem.idtipoejg ";
+			consulta += " and ejg.numero = ejgrem.numero ";
+			consulta += " and ejg.idinstitucion = ejgrem.idinstitucion ";
+			consulta += " and rem.idremesa=ejgrem.idremesa ";
+			consulta += " and rem.idinstitucion=ejgrem.idinstitucionremesa ";
+			contador++;
+			codigos.put(new Integer(contador), miForm.getNumeroRemesa().trim());
+			consulta += " and ltrim(rem.numero,'0') = ltrim(:" + contador+",'0')";
+			if(miForm.getSufijoRemesa()!=null && !miForm.getSufijoRemesa().trim().equalsIgnoreCase("")){
+				contador++;
+				codigos.put(new Integer(contador), miForm.getSufijoRemesa().trim());
+				consulta += " and rem.sufijo = :" + contador;
+			}
+			if(miForm.getPrefijoRemesa()!=null && !miForm.getPrefijoRemesa().trim().equalsIgnoreCase("")){
+				contador++;
+				codigos.put(new Integer(contador), miForm.getPrefijoRemesa().trim());
+				consulta += " and rem.prefijo = :" + contador;
+			}		
+		}
 
 		// Y ahora concatenamos los criterios de búsqueda
 		if ((miForm.getFechaAperturaDesde() != null && !miForm.getFechaAperturaDesde().equals("")) ||

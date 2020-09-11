@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.atos.utils.ClsConstants;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.beans.CajgRemesaBean;
 import com.siga.beans.ScsAsistenciasBean;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsEJGDESIGNABean;
@@ -46,6 +47,8 @@ import com.siga.censo.form.DatosRegTelForm;
 	 
 	 String descripcionDictamenEJG;
 	 String descripcionResolucionEJG;
+	 
+	 String prefijoRemesa, numeroRemesa, sufijoRemesa;
 	 
 	 //String bisResolucion;
 	 
@@ -1142,8 +1145,32 @@ import com.siga.censo.form.DatosRegTelForm;
 		public void setDescripcionResolucionEJG(String descripcionResolucionEJG) {
 			this.descripcionResolucionEJG = descripcionResolucionEJG;
 		}
-		
 
+		// SIGARNV-1845 // Nuevos campos para buscar por remesa
+		public String getPrefijoRemesa() {
+			return UtilidadesHash.getString(datos, CajgRemesaBean.C_PREFIJO);
+		}
+
+		public void setPrefijoRemesa(String prefijoRemesa) {
+			UtilidadesHash.set(this.datos, CajgRemesaBean.C_PREFIJO, prefijoRemesa);
+		}
+
+		public String getNumeroRemesa() {
+			return UtilidadesHash.getString(datos, CajgRemesaBean.C_NUMERO);
+		}
+
+		public void setNumeroRemesa(String numeroRemesa) {
+			UtilidadesHash.set(this.datos, CajgRemesaBean.C_NUMERO, numeroRemesa);
+		}
+
+		public String getSufijoRemesa() {
+			return UtilidadesHash.getString(datos, CajgRemesaBean.C_SUFIJO);
+		}
+
+		public void setSufijoRemesa(String sufijoRemesa) {
+			UtilidadesHash.set(this.datos, CajgRemesaBean.C_SUFIJO, sufijoRemesa);
+		}
+		
 				
 		
 }
