@@ -1330,8 +1330,10 @@
 		document.ActuacionAsistenciaForm.anio.value = anioAsistencia;
 		document.ActuacionAsistenciaForm.numero.value = numeroAsistencia;
 		document.ActuacionAsistenciaForm.idInstitucion.value = idInstitucion;
-		document.ActuacionAsistenciaForm.target = "mainWorkArea";
-		document.ActuacionAsistenciaForm.submit();
+		var resultado=ventaModalGeneral(document.ActuacionAsistenciaForm.name,"G");
+		if(true){
+			document.ActuacionAsistenciaForm.modo.value = 'abrir';
+		}
 	}
 	
 	function accionConsultaAsistencia(anioAsistencia,numeroAsistencia,idInstitucion) {	

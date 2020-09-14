@@ -23,74 +23,73 @@ public class ActuacionAsistenciaForm extends MasterForm
 	 */
 	private static final long serialVersionUID = -5151925289916286910L;
 	String idInstitucion; 
-	String anio;
-	String numero;
-	String idActuacion;
-	String fecha;
-	String diaDespues;
-	String acuerdoExtrajudicial;
-	String fechaJustificacion;
-	String descripcionBreve;
-	String lugar;
-	String numeroAsunto;
-	String anulacion;
-	String observacionesJustificacion;
-	String observaciones;
-	String facturado;
-	String pagado;
-	String idFacturacion;
-	String idInstitucionPris;
-	String idPrision;
-	String idInstitucionComis;
-	String idComisaria;
-	String idInstitucionJuzg;
-	String idJuzgado;
-	String validada;
-	String idTipoAsistencia;
-	String idTipoActuacion;
+	  String anio;   
+	  String numero;               
+	  String idActuacion;        
+	  String fecha;              
+	  String diaDespues;         
+	  String acuerdoExtrajudicial;  
+	  String fechaJustificacion;    
+	  String descripcionBreve;      
+	  String lugar;                 
+	  String numeroAsunto;          
+	  String anulacion;             
+	  String observacionesJustificacion;
+	  String observaciones;             
+	  String facturado;                 
+	  String pagado;                    
+	  String idFacturacion;             
+	  String idInstitucionPris;        
+	  String idPrision;                 
+	  String idInstitucionComis;       
+	  String idComisaria;           
+	  String idInstitucionJuzg;    
+	  String idJuzgado;             
+	  String validada;              
+	  String idTipoAsistencia;      
+	  String idTipoActuacion;   
 
-	String descripcionActuacion;
-	String nombreFacturacion;
-	String fechaHoraAsistencia;
-	String letradoActuaciones;
-
-	String fichaColegial;
-	boolean isLetrado = true;
-	String botones = "";
-	String tipoPcajg = "";
-	String numeroProcedimientoAsistencia;
-	String numeroDiligenciaAsistencia;
-	String comisariaAsistencia;
-	String juzgadoAsistencia;
-	String fechaAnulacionAsistencia;
-	List<ScsTipoActuacionBean> tiposActuacion;
-	List<ValueKeyVO> tipoCosteFijoActuaciones;
-	String idCosteFijoActuacion;
-	List<ScsComisariaBean> comisarias;
-	List<ScsJuzgadoBean> juzgados;
-	List<ScsPrisionBean> prisiones;
-	Integer usuCreacion;
-	String fechaCreacion;
-	String facturacionCerrada;
-
-	private String modo = "";
+	  String descripcionActuacion;
+	  String nombreFacturacion;
+	  String fechaHoraAsistencia;
+	  String letradoActuaciones;
+	  
+	  String fichaColegial;
+	  boolean isLetrado= true;
+	  String botones="";
+	  String tipoPcajg="";
+	  String numeroProcedimientoAsistencia;
+	  String numeroDiligenciaAsistencia;
+	  String comisariaAsistencia;
+	  String juzgadoAsistencia;
+	  String modo="";
+	  String fechaAnulacionAsistencia;
+	  List<ScsTipoActuacionBean> tiposActuacion;
+	  List<ValueKeyVO> tipoCosteFijoActuaciones;
+	  String idCosteFijoActuacion;
+	  List<ScsComisariaBean> comisarias;
+	  List<ScsJuzgadoBean> juzgados;	  
+	  List<ScsPrisionBean> prisiones;
+	  Integer usuCreacion;
+	  String fechaCreacion;
+	  String facturacionCerrada;
+	  
 	private String modoPestanha=null;
-	private String modoVolver=null;
-	private String[] modos = {"edicionActuacionAsistencia"};
-	private String nig;
+		private String nig;
 	
-	public String[] getModos() {
-		return modos;
-	}
-	public void setModos(String[] modos) {
-		this.modos = modos;
-	}
+	/**
+	 * @return Returns the modoPestanha.
+	 */
 	public String getModoPestanha() {
 		return modoPestanha;
 	}
+	/**
+	 * @param modoPestanha The modoPestanha to set.
+	 */
 	public void setModoPestanha(String modoPestanha) {
 		this.modoPestanha = modoPestanha;
 	}
+	
 	public String getAnio() {
 		return anio;
 	}
@@ -518,12 +517,6 @@ public class ActuacionAsistenciaForm extends MasterForm
 	public void setFacturacionCerrada(String facturacionCerrada)
 	{
 		this.facturacionCerrada = facturacionCerrada;
-	}
-	public String getModoVolver() {
-		return modoVolver;
-	}
-	public void setModoVolver(String modoVolver) {
-		this.modoVolver = modoVolver;
 	}
 	
 }

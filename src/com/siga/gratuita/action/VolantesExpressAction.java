@@ -146,7 +146,7 @@ public class VolantesExpressAction extends MasterAction
 			{
 
 		VolantesExpressForm miForm = (VolantesExpressForm) formulario;
-		//miForm.clear();
+		miForm.clear();
 		UsrBean usrBean = this.getUserBean(request);
 		miForm.setUsrBean(usrBean);
 		miForm.setIdInstitucion(usrBean.getLocation());

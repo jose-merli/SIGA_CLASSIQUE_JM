@@ -2380,7 +2380,6 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		sql.append("PJG.APELLIDO1 PJGAPELLIDO1, ");
 		sql.append("PJG.APELLIDO2 PJGAPELLIDO2, ");
 		sql.append("COL.NCOLEGIADO CNCOLEGIADO, ");
-		sql.append("PER.IDPERSONA PIDPERSONA, ");
 		sql.append("PER.NOMBRE PNOMBRE, ");
 		sql.append("PER.APELLIDOS1 PAPELLIDOS1, ");
 		sql.append("PER.APELLIDOS2 PAPELLIDOS2, ");
@@ -2458,7 +2457,6 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 					personaJG.setApellido2(UtilidadesHash.getString(htFila, "PJGAPELLIDO2"));
 					personaJG.setNombre(UtilidadesHash.getString(htFila, "PJGNOMBRE"));
 
-					persona.setIdPersona(UtilidadesHash.getLong(htFila, "PIDPERSONA"));
 					persona.setApellido1(UtilidadesHash.getString(htFila, "PAPELLIDOS1"));
 					persona.setApellido2(UtilidadesHash.getString(htFila, "PAPELLIDOS2"));
 					persona.setNombre(UtilidadesHash.getString(htFila, "PNOMBRE"));
