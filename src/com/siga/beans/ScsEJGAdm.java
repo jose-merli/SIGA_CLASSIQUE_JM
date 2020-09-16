@@ -1417,6 +1417,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		boolean isBusquedaExactaSolicitante = miForm.getValorBusquedaExactaSolicitante()!=null && miForm.getValorBusquedaExactaSolicitante().equals(ClsConstants.DB_TRUE);
 		miHash.put("chkBusquedaExactaSolicitante",isBusquedaExactaSolicitante);
 		boolean esComision=(miHash.containsKey("ESCOMISION") && UtilidadesString.stringToBoolean(miHash.get("ESCOMISION").toString()));
+		boolean buscarPorRemesa=false;
 		boolean isAñadirJoinEstados = TipoVentana.BUSQUEDA_PREPARACION_CAJG.equals(tipoVentana) ||TipoVentana.BUSQUEDA_ANIADIR_REMESA.equals(tipoVentana)
 				//||TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)
 				||(miHash.containsKey("ESTADOEJG")) && (!miHash.get("ESTADOEJG").toString().equals(""))
@@ -1458,8 +1459,11 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			ScsMaestroEstadosEJGBean.T_NOMBRETABLA + " MEE ";
 		}
 		// Mete las tablas para filtrar por remesa
-		if(miForm.getNumeroRemesa()!=null && !miForm.getNumeroRemesa().trim().equalsIgnoreCase("")){
+		if((miForm.getNumeroRemesa()!=null && !miForm.getNumeroRemesa().trim().equalsIgnoreCase(""))||
+				(miForm.getPrefijoRemesa()!=null && !miForm.getPrefijoRemesa().trim().equalsIgnoreCase(""))||
+				(miForm.getSufijoRemesa()!=null && !miForm.getSufijoRemesa().trim().equalsIgnoreCase(""))){
 			consulta += ", "+CajgRemesaBean.T_NOMBRETABLA + " rem, " + CajgEJGRemesaBean.T_NOMBRETABLA + " ejgrem ";
+			buscarPorRemesa=true;
 		}
 //		if (TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)) {
 //			consulta += ",SCS_EEJG_PETICIONES P, SCS_EEJG_XML X ";
@@ -1674,25 +1678,28 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		}
 		
 		// Se filtra por remesa
-		if(miForm.getNumeroRemesa()!=null && !miForm.getNumeroRemesa().trim().equalsIgnoreCase("")){
+		if(buscarPorRemesa){
 			consulta += " and ejg.anio = ejgrem.anio ";
 			consulta += " and ejg.idtipoejg = ejgrem.idtipoejg ";
 			consulta += " and ejg.numero = ejgrem.numero ";
 			consulta += " and ejg.idinstitucion = ejgrem.idinstitucion ";
 			consulta += " and rem.idremesa=ejgrem.idremesa ";
 			consulta += " and rem.idinstitucion=ejgrem.idinstitucionremesa ";
-			contador++;
-			codigos.put(new Integer(contador), miForm.getNumeroRemesa().trim());
-			consulta += " and ltrim(rem.numero,'0') = ltrim(:" + contador+",'0')";
+			
+			if(miForm.getNumeroRemesa()!=null && !miForm.getNumeroRemesa().trim().equalsIgnoreCase("")){
+				contador++;
+				codigos.put(new Integer(contador), miForm.getNumeroRemesa().trim());
+				consulta += " and ltrim(rem.numero,'0') = ltrim(:" + contador+",'0')";
+			}
 			if(miForm.getSufijoRemesa()!=null && !miForm.getSufijoRemesa().trim().equalsIgnoreCase("")){
 				contador++;
 				codigos.put(new Integer(contador), miForm.getSufijoRemesa().trim());
-				consulta += " and rem.sufijo = :" + contador;
+				consulta += " and trim(rem.sufijo) = trim(:" + contador +")";
 			}
 			if(miForm.getPrefijoRemesa()!=null && !miForm.getPrefijoRemesa().trim().equalsIgnoreCase("")){
 				contador++;
 				codigos.put(new Integer(contador), miForm.getPrefijoRemesa().trim());
-				consulta += " and rem.prefijo = :" + contador;
+				consulta += " and trim(rem.prefijo) = trim(:" + contador + ")";
 			}		
 		}
 

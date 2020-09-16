@@ -774,9 +774,9 @@ if(usr.isComision()){
 				</td>
 
 				<td style="vertical-align:middle"  >
-					<html:text name="<%=formulario%>" property="prefijoRemesa" size="5" maxlength="10" styleClass="box" style="width:55px" readonly="false" value="<%=prefijoRemesa%>" />
-					<html:text name="<%=formulario%>" property="numeroRemesa" size="5" maxlength="10" styleClass="box" style="width:55px" readonly="false" value="<%=numeroRemesa%>"/>
-					<html:text name="<%=formulario%>" property="sufijoRemesa" size="5" maxlength="10" styleClass="box" style="width:55px" readonly="false" value="<%=sufijoRemesa%>" />
+					<html:text name="<%=formulario%>" property="prefijoRemesa" size="5" maxlength="10" styleClass="box" style="width:45px" readonly="false" value="<%=prefijoRemesa%>" title="Prefijo"/>
+					<html:text name="<%=formulario%>" property="numeroRemesa" size="5" maxlength="10" styleClass="box" style="width:65px" readonly="false" value="<%=numeroRemesa%>" title="Número"/>
+					<html:text name="<%=formulario%>" property="sufijoRemesa" size="5" maxlength="10" styleClass="box" style="width:45px" readonly="false" value="<%=sufijoRemesa%>"  title="Sufijo"/>
 				</td>
 			</tr>
 		</table>
