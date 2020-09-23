@@ -1156,11 +1156,11 @@ import com.siga.censo.form.DatosRegTelForm;
 		}
 
 		public String getNumeroRemesa() {
-			return UtilidadesHash.getString(datos, CajgRemesaBean.C_NUMERO);
+			return UtilidadesHash.getString(datos, "numeroRemesa");
 		}
 
 		public void setNumeroRemesa(String numeroRemesa) {
-			UtilidadesHash.set(this.datos, CajgRemesaBean.C_NUMERO, numeroRemesa);
+			UtilidadesHash.set(this.datos, "numeroRemesa", numeroRemesa);
 		}
 
 		public String getSufijoRemesa() {

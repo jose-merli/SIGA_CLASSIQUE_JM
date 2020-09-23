@@ -137,12 +137,12 @@
 						renunciaSel.add(0,idRenuncia);	
 				}
 				
-				if (miHash.get(CajgRemesaBean.C_NUMERO) != null) 
-					numeroRemesa=miHash.get(CajgRemesaBean.C_NUMERO).toString();
-				if (miHash.get(CajgRemesaBean.C_PREFIJO) != null) 
-					prefijoRemesa=miHash.get(CajgRemesaBean.C_PREFIJO).toString();
-				if (miHash.get(CajgRemesaBean.C_NUMERO) != null) 
-					sufijoRemesa=miHash.get(CajgRemesaBean.C_SUFIJO).toString();
+				if (miHash.get("numeroRemesa") != null) 
+					numeroRemesa=miHash.get("numeroRemesa").toString();
+				if (miHash.get("prefijoRemesa") != null) 
+					prefijoRemesa=miHash.get("prefijoRemesa").toString();
+				if (miHash.get("sufijoRemesa") != null) 
+					sufijoRemesa=miHash.get("sufijoRemesa").toString();
 				
 				if (miHash.get(ScsEJGBean.C_IDPONENTE)!= null)
 					vPonente.add(0, miHash.get(ScsEJGBean.C_IDPONENTE).toString());			
