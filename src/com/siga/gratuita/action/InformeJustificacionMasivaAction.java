@@ -27,6 +27,7 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesFicheros;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.Utilidades.paginadores.PaginadorBind;
@@ -986,7 +987,7 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 			HttpServletResponse response) throws ClsExceptions, SIGAException {
 		
 		InformeJustificacionMasivaForm miForm = (InformeJustificacionMasivaForm) formulario;
-		File file = getFicheroPDF(getIDInstitucion(request).toString(), miForm.getDocResolucion());
+		File file = UtilidadesFicheros.getFicheroResolucionPDF(getIDInstitucion(request).toString(), miForm.getDocResolucion());
 
 		if (file == null) {								
 			throw new SIGAException("messages.general.error.ficheroNoExiste");
@@ -998,14 +999,5 @@ public class InformeJustificacionMasivaAction extends MasterAction {
 		return "descargaFichero";
 	}	
 	
-	private File getFicheroPDF(String idInstitucion, String docResolucion) {
-		File file = new File(ResolucionesFicheroAbstract.getDirectorioArchivos(idInstitucion));
-		file = new File(file, docResolucion + ResolucionesFicheroAbstract.getExtension(idInstitucion));
-		if (!file.exists()) {
-			file = null;
-		}		
-		return file;
-	}
-
-
+	
 }

@@ -12,8 +12,11 @@ import java.util.zip.ZipOutputStream;
 
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 
+import com.atos.utils.ClsConstants;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.ListOfFiles;
 import com.siga.envios.Documento;
+import com.siga.gratuita.pcajg.resoluciones.ResolucionesFicheroAbstract;
 
 /**
  * Mantiene utilidades de ficheros
@@ -135,6 +138,43 @@ public class UtilidadesFicheros {
 		
 		return ficZip;
 	}
+	public static File getFicheroResolucionPDF(String idInstitucion, String docResolucion) {
+		String directorio = ResolucionesFicheroAbstract.getDirectorioArchivos(idInstitucion);
+		ClsLogging.writeFileLog("Directorio:"+directorio,10);
+		File file = new File(directorio);
+		String extension = ResolucionesFicheroAbstract.getExtension(idInstitucion);
+		StringBuilder path = new StringBuilder();
+		path.append(directorio);
+		path.append(ClsConstants.FILE_SEP);
+		path.append(docResolucion);
+		path.append(extension);
+		ClsLogging.writeFileLog("Fichero:"+path,10);
+		
+		file = new File(path.toString());
+		ClsLogging.writeFileLog("¿existe?"+""+(file!=null && file.exists()),10);
+		if (file==null || !file.exists()) {
+			 path = new StringBuilder();
+				path.append(directorio);
+				path.append(ClsConstants.FILE_SEP);
+				path.append(docResolucion);
+				if(extension.equals(extension.toLowerCase()))
+					path.append(extension.toUpperCase());
+				else
+					path.append(extension.toLowerCase());
+			
+			ClsLogging.writeFileLog("Fichero:"+path,10);
+			file = new File(path.toString());
+			ClsLogging.writeFileLog("¿existe?"+""+(file!=null && file.exists()),10);
+			if (!file.exists()) {
+				file = null;	
+			}
+			
+		}		
+		ClsLogging.writeFileLog("File:"+file,10);
+		return file;
+	}
+	
+
 
 	
 }

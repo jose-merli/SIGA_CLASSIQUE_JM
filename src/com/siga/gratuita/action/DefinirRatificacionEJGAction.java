@@ -26,6 +26,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.UtilidadesFicheros;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.ScsEJGAdm;
 import com.siga.beans.ScsEJGBean;
@@ -269,7 +270,7 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 		
 		DefinirEJGForm miForm = (DefinirEJGForm)formulario;			
 		ClsLogging.writeFileLog(" Empezamos la descarga",10);
-		File file = getFicheroPDF(getIDInstitucion(request).toString(), miForm.getDocResolucion());
+		File file = UtilidadesFicheros.getFicheroResolucionPDF(getIDInstitucion(request).toString(), miForm.getDocResolucion());
 
 		if (file == null) {								
 			throw new SIGAException("messages.general.error.ficheroNoExiste");
@@ -281,41 +282,6 @@ public class DefinirRatificacionEJGAction extends MasterAction {
 		return "descargaFichero";
 	}
 	
-	private File getFicheroPDF(String idInstitucion, String docResolucion) {
-		String directorio = ResolucionesFicheroAbstract.getDirectorioArchivos(idInstitucion);
-		ClsLogging.writeFileLog("Directorio:"+directorio,10);
-		File file = new File(directorio);
-		String extension = ResolucionesFicheroAbstract.getExtension(idInstitucion);
-//		String nombreFichero = docResolucion + extension;
-		
-		
-		StringBuilder path = new StringBuilder();
-		path.append(directorio);
-		path.append(ClsConstants.FILE_SEP);
-		path.append(docResolucion);
-		path.append(extension);
-		ClsLogging.writeFileLog("Fichero:"+path,10);
-		
-		file = new File(path.toString());
-		ClsLogging.writeFileLog("¿existe?"+""+(file!=null && file.exists()),10);
-		if (file==null || !file.exists()) {
-			 path = new StringBuilder();
-				path.append(directorio);
-				path.append(ClsConstants.FILE_SEP);
-				path.append(docResolucion);
-				path.append(extension.toUpperCase());
-			
-			ClsLogging.writeFileLog("Fichero:"+path,10);
-			file = new File(path.toString());
-			ClsLogging.writeFileLog("¿existe?"+""+(file!=null && file.exists()),10);
-			if (!file.exists()) {
-				file = null;	
-			}
-			
-		}		
-		ClsLogging.writeFileLog("File:"+file,10);
-		return file;
-	}
 	
 	
 }
