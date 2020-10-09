@@ -29,7 +29,7 @@
 
 
 
-	<table class="fixedHeaderTable dataScroll" id='asistencias' style='table-layout:fixed;border-spacing: 0px;'>
+	<table class="fixedHeaderTable dataScroll" id='asistencias' style='table-layout:fixed;border-spacing: 0px; width:100%;'>
 		<tbody style='text-align:center; overflow-y: scroll; overflow-x: hidden; margin:0px;'>
 		
 	
@@ -54,31 +54,22 @@
 					</c:choose>
 				
 				
-					<td align='center' width='6%'>
+					<td align='center' width="6%">
 						<input type="text" id="hora_<bean:write name='index'/>" class="box" style="width:20px; margin-top:4px; text-align:center;" maxLength="2" value="<bean:write name="asistencia" property="hora" />" onBlur="validaHora(this);" />
 						<input type="text" id="minuto_<bean:write name='index'/>" class="box" style="width:20px; margin-top:4px;text-align:center;" maxLength="2" value="<bean:write name="asistencia" property="minuto" />" onBlur="validaMinuto(this);" />
 					</td>
 				
-					<td align='center' width='17%' >				
+					<td align='center' width="19%">				
 						<c:if test="${VolantesExpressForm.lugar == 'centro'}">
-							<table>
-								<tr>
-									<td style="border: none">	
-										<input type="text" id="codComisaria_<bean:write name='index'/>" class="box" size="8" style="width:20px; margin-top:2px;" maxlength="10" onBlur="obtenerComisaria(<bean:write name='index'/>);" />
-									</td>
-									 			
-									<td style="border: none">
-										<select class="boxCombo" id="comisaria_<bean:write name='index'/>" style="width:135px; margin-top:2px;" name="comisaria_<bean:write name='index'/>" onchange="cambiarComisaria(<bean:write name='index'/>);"> 
-											<bean:define id="comisarias" name="VolantesExpressForm" property="comisarias" type="java.util.List" />
-											<logic:iterate id="comisaria" name="comisarias">
-												<option value='<bean:write name="comisaria" property="idComisaria"/>' >
-													<bean:write name="comisaria" property="nombre"/>
-												</option>					
-											</logic:iterate> 
-										</select>
-									</td>
-								</tr>
-							</table>
+							<input type="text" id="codComisaria_<bean:write name='index'/>" class="box" style="width:15%; margin-top:4px;" maxlength="10" onBlur="obtenerComisaria(<bean:write name='index'/>);" />
+							<select class="box" id="comisaria_<bean:write name='index'/>" style="width:75%; margin-top:4px;" name="comisaria_<bean:write name='index'/>" onchange="cambiarComisaria(<bean:write name='index'/>);"> 
+								<bean:define id="comisarias" name="VolantesExpressForm" property="comisarias" type="java.util.List" />
+								<logic:iterate id="comisaria" name="comisarias">
+									<option value='<bean:write name="comisaria" property="idComisaria"/>' >
+										<bean:write name="comisaria" property="nombre"/>
+									</option>					
+								</logic:iterate> 
+							</select>
 						
 							<script>
 								if(${asistencia.comisaria!=null} && ${asistencia.comisaria!='-1'}) {
@@ -89,24 +80,15 @@
 						</c:if>
 					
 						<c:if test="${VolantesExpressForm.lugar == 'juzgado'}">
-			      			<table >
-								<tr>
-									<td style="border: none">	
-			      						<input type="text" id="codJuzgado_<bean:write name='index'/>" class="box" size="8" style="width:20px; margin-top:2px;" maxlength="10" onBlur="obtenerJuzgado(<bean:write name='index'/>);"/> 			
-									</td>
-								 			
-									<td style="border: none">
-										<select class="boxCombo" id="juzgado_<bean:write name='index'/>" style="width:135px; margin-top:2px;" name="juzgado_<bean:write name='index'/>" onchange="cambiarJuzgado(<bean:write name='index'/>);"> 
-											<bean:define id="juzgados" name="VolantesExpressForm" property="juzgados" type="java.util.List" />
-											<logic:iterate id="juzgado" name="juzgados">
-												<option value='<bean:write name="juzgado" property="idJuzgado"/>' >
-													<bean:write name="juzgado" property="nombre"/>
-												</option>					
-											</logic:iterate> 								
-										</select>
-									</td>
-								</tr>
-							</table>
+      						<input type="text" id="codJuzgado_<bean:write name='index'/>" class="box" style="width:15%; margin-top:4px;" maxlength="10" onBlur="obtenerJuzgado(<bean:write name='index'/>);"/> 			
+							<select class="box" id="juzgado_<bean:write name='index'/>" style="width:75%; margin-top:4px;" name="juzgado_<bean:write name='index'/>" onchange="cambiarJuzgado(<bean:write name='index'/>);"> 
+								<bean:define id="juzgados" name="VolantesExpressForm" property="juzgados" type="java.util.List" />
+								<logic:iterate id="juzgado" name="juzgados">
+									<option value='<bean:write name="juzgado" property="idJuzgado"/>' >
+										<bean:write name="juzgado" property="nombre"/>
+									</option>					
+								</logic:iterate> 								
+							</select>
 						
 							<script>
 							 	if(${asistencia.juzgado!=null} && ${asistencia.juzgado!='-1'}) {
@@ -117,29 +99,22 @@
 						</c:if>															
 				 	</td>
 				 	
-					<td align='center' width='44%'>
-						<table >
-							<tr>
-								<td style="border: none"><input type="text" id="dni_<bean:write name='index'/>" class="box" style="width:70px;margin-top:2px;margin-rigth:1px;" value="<bean:write name="asistencia" property="asistidoNif" />" maxlength="20" onBlur="obtenerPersona(<bean:write name='index'/>);"/></td>
-								<td style="border: none">-</td>
-								<td style="border: none"><input type="text" id="nombre_<bean:write name='index'/>" class="box" style="width:70px;margin-top:2px;margin-rigth:1px;" value="<bean:write name="asistencia" property="asistidoNombre" />" maxlength="80"/></td>
-			        			<td style="border: none"><input type="text" id="apellido1_<bean:write name='index'/>" class="box" style="width:70px;margin-top:2px;margin-rigth:1px;" value="<bean:write name="asistencia" property="asistidoApellido1" />" maxlength="80"/></td>
-			        			<td style="border: none"><input type="text" id="apellido2_<bean:write name='index'/>" class="box" style="width:70px;margin-top:2px;" value="<bean:write name="asistencia" property="asistidoApellido2" />" maxlength="80"/></td>
+					<td align='center' width="35%">
+								<input type="text" id="dni_<bean:write name='index'/>" class="box" style="width:18%;margin-top:4px;" value="<bean:write name="asistencia" property="asistidoNif" />" maxlength="20" onBlur="obtenerPersona(<bean:write name='index'/>);"/>
+								&nbsp;-&nbsp;
+								<input type="text" id="nombre_<bean:write name='index'/>" class="box" style="width:18%;margin-top:4px;" value="<bean:write name="asistencia" property="asistidoNombre" />" maxlength="80"/>
+			        			<input type="text" id="apellido1_<bean:write name='index'/>" class="box" style="width:18%;margin-top:4px;" value="<bean:write name="asistencia" property="asistidoApellido1" />" maxlength="80"/>
+			        			<input type="text" id="apellido2_<bean:write name='index'/>" class="box" style="width:18%;margin-top:4px;" value="<bean:write name="asistencia" property="asistidoApellido2" />" maxlength="80"/>
 			        			<c:if test="${VolantesExpressForm.tipoPcajg == '9'}">
-				        			<td style="border: none">	
-					    				<select id="comboSexo_<bean:write name='index'/>"  styleClass="box"  <c:if test="${asistencia.sexo == 'H' || asistencia.sexo == 'M' || asistencia.sexo == 'N' }"> disabled="disabled" </c:if>>
+					    				<select id="comboSexo_<bean:write name='index'/>"  class="box"  style="width:4%;margin-top:4px;" <c:if test="${asistencia.sexo == 'H' || asistencia.sexo == 'M' || asistencia.sexo == 'N' }"> disabled="disabled" </c:if>>
 											<option value="" >--Sexo</option>
 											<option value="H"  <c:if test="${asistencia.sexo == 'H'}"> selected="selected" </c:if>><siga:Idioma key="censo.sexo.hombre"/></option>
 											<option value="M"  <c:if test="${asistencia.sexo == 'M'}"> selected="selected"</c:if>><siga:Idioma key="censo.sexo.mujer"/></option>
 											<option value="N" <c:if test="${asistencia.sexo == 'N'}"> selected="selected" </c:if>><siga:Idioma key="censo.sexo.nc"/></option>
 										</select>		
-					
-									</td>
 								</c:if>
-			        			<td style="border: none"><img id="info_existe_<bean:write name='index'/>" src="/SIGA/html/imagenes/nuevo.gif" alt="<siga:Idioma key="gratuita.volantesExpres.mensaje.esNuevaPersonaJG"/>"/></td>
-			        			<td style="border: none"><input type="hidden" id="idPersona_<bean:write name='index'/>" class="box" value="<bean:write name="asistencia" property="idPersonaJG" />"/></td>
-			        		</tr>
-			        	</table>
+			        			<img id="info_existe_<bean:write name='index'/>" src="/SIGA/html/imagenes/nuevo.gif" alt="<siga:Idioma key="gratuita.volantesExpres.mensaje.esNuevaPersonaJG"/>"/>
+			        			<input type="hidden" id="idPersona_<bean:write name='index'/>" class="box" style="width:4%;margin-top:4px;" value="<bean:write name="asistencia" property="idPersonaJG" />"/>
 			   		</td>
 			   		     	
 			      	<script>
@@ -149,49 +124,43 @@
 			      	</script>
 			      	
 					<c:if test="${VolantesExpressForm.lugar == 'centro'}">
-						<td align='center' width='8%'>
-							<input type="text" id="diligencia_<bean:write name='index'/>" class="box" maxlength="20" style="width:70px;margin-top:2px;" value="<bean:write name="asistencia" property="numeroDiligencia" />"/>
+						<td align='center' width="10%">
+							<input type="text" id="diligencia_<bean:write name='index'/>" class="box" maxlength="20" style="width:90%;margin-top:4px;" value="<bean:write name="asistencia" property="numeroDiligencia" />"/>
 						</td>
 					</c:if>
 					
 					<c:if test="${VolantesExpressForm.lugar == 'juzgado'}">
-						<td align='center' width='8%'>
-							<input type="text" id="diligencia_<bean:write name='index'/>" class="box" maxlength="20" style="width:70px;margin-top:2px;" value="<bean:write name="asistencia" property="numeroProcedimiento" />"/>
+						<td align='center' width="10%">
+							<input type="text" id="diligencia_<bean:write name='index'/>" class="box" maxlength="20" style="width:90%;margin-top:4px;" value="<bean:write name="asistencia" property="numeroProcedimiento" />"/>
 						</td>
 					</c:if>
 					
-					<td align='center' width='14%'>				
+					<td align='center' width="15%">				
 						<c:if test="${VolantesExpressForm.delito==true}">
-							<table>
-								<tr>
-									<td style="border: none">
-										<input type="hidden" id="observaciones_<bean:write name='index'/>" value="">
-					
-										<select class="boxCombo" id="idDelito_<bean:write name='index'/>" style="width:130px;margin-top:2px;" name="idDelito_<bean:write name='index'/>" > 
-											<bean:define id="delitos" name="VolantesExpressForm" property="delitos" type="java.util.List" />
-											<logic:iterate id="delito" name="delitos">
-												<option value='<bean:write name="delito" property="idDelito"/>' >
-													<bean:write name="delito" property="descripcion"/>
-												</option>					
-											</logic:iterate> 
-										</select>
-						
-										<script>
-											if(${asistencia.idDelito!=null})
-												document.getElementById("idDelito_<bean:write name='index'/>").value ='<bean:write name="asistencia" property="idDelito"/>'; 
-										</script>
-									</td>
-								</tr>
-							</table>
+							<input type="hidden" id="observaciones_<bean:write name='index'/>" value="">
+		
+							<select class="box" id="idDelito_<bean:write name='index'/>" style="width:90%;margin-top:4px;" name="idDelito_<bean:write name='index'/>" > 
+								<bean:define id="delitos" name="VolantesExpressForm" property="delitos" type="java.util.List" />
+								<logic:iterate id="delito" name="delitos">
+									<option value='<bean:write name="delito" property="idDelito"/>' >
+										<bean:write name="delito" property="descripcion"/>
+									</option>					
+								</logic:iterate> 
+							</select>
+			
+							<script>
+								if(${asistencia.idDelito!=null})
+									document.getElementById("idDelito_<bean:write name='index'/>").value ='<bean:write name="asistencia" property="idDelito"/>'; 
+							</script>
 						</c:if>
 				
 						<c:if test="${VolantesExpressForm.delito==false}">
-							<input type="text" id="observaciones_<bean:write name='index'/>" class="box" style="width:130px;margin-top:2px;" value="<bean:write name="asistencia" property="observaciones" />"/>
+							<input type="text" id="observaciones_<bean:write name='index'/>" class="box" style="width:90%;margin-top:4px;" value="<bean:write name="asistencia" property="observaciones" />"/>
 							<input type="hidden" id="idDelito_<bean:write name='index'/>" value="">
 						</c:if>
 					</td>
 					
-					<td align='left' width='11%'>
+					<td align='left' width="15%">
 						<table>
 							<tr>
 								<td style="border: none" id="consultar_<bean:write name='index'/>"><img  src="/SIGA/html/imagenes/bconsultar_on.gif" style="cursor:hand;" alt="<siga:Idioma key="general.boton.consultar"/>" name="" border="0" onclick="accionConsultaAsistencia(<bean:write name="asistencia" property="anio" />,<bean:write name="asistencia" property="numero" />,<bean:write name="asistencia" property="idInstitucion" />,<bean:write name='index'/>);"/></td>

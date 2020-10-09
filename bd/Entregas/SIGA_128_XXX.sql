@@ -911,3 +911,13 @@ CEN_DATOSCOLEGIALESESTADO_BF.trg
 PROC_CALC_SITUACIONEJERCICIO.prc
 
 -- Ejecutado en Integracion 09/09/2020 11:00
+
+--https://redabogacia.atlassian.net/browse/SIGA-317
+INSERT INTO GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD)
+VALUES('gratuita.volantesExpres.literal.registroVolante', 'Registro de volante', 0, '1', sysdate, 0, '19');
+INSERT INTO GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD)
+VALUES('gratuita.volantesExpres.literal.registroVolante', 'Registre de Butlleta', 0, '2', sysdate, 0, '19');
+INSERT INTO GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD)
+VALUES('gratuita.volantesExpres.literal.registroVolante', 'Registro de volante#EU', 0, '3', sysdate, 0, '19');
+INSERT INTO GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD)
+VALUES('gratuita.volantesExpres.literal.registroVolante', 'Registro de volante#GL', 0, '4', sysdate, 0, '19');

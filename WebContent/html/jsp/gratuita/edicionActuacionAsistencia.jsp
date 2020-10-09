@@ -53,7 +53,7 @@
 			//alert("postAccionTipoActuacion");
 			document.getElementById('idCosteFijoActuacion').value = document.getElementById('auxIdCosteFijoActuacion').value ;
 			document.getElementById('auxIdCosteFijoActuacion').value = '';
-			if(document.ActuacionAsistenciaForm.modo.value =='ver' || document.ActuacionAsistenciaFormEdicion.validada.value==1 ||  document.ActuacionAsistenciaFormEdicion.anulacion.value==1){
+			if(document.ActuacionAsistenciaFormEdicion.modo.value =='ver' || document.ActuacionAsistenciaFormEdicion.validada.value==1 ||  document.ActuacionAsistenciaFormEdicion.anulacion.value==1){
 				if (jQuery("#idCosteFijoActuacion").length <= 0){
 					jQuery("#tiposCosteFijoActuaciones").after('<input type="hidden" value="" id="idCosteFijoActuacion"/>');
 				}
@@ -70,20 +70,6 @@
 				jQuery("#idCosteFijoActuacion").removeAttr("disabled");
 
 			}
-			/*
-			if(document.ActuacionAsistenciaForm.modo.value=='ver' ){
-				tdTiposCosteFijoAct = document.getElementById('tdSelectTiposCosteFijo');
-				index=document.ActuacionAsistenciaFormEdicion.idCosteFijoActuacion.selectedIndex;
-				idCosteFijoActuacion="";
-				if(index!=-1){
-					descripcionCosteFijo = document.ActuacionAsistenciaFormEdicion.idCosteFijoActuacion.options[index].text;
-					idCosteFijoActuacion=document.ActuacionAsistenciaFormEdicion.idCosteFijoActuacion.options[index].value;
-				} else {
-					descripcionCosteFijo ="";
-				}
-				tdTiposCosteFijoAct.innerHTML = '<input type="hidden" value="'+idCosteFijoActuacion+'" id="idCosteFijoActuacion"/><input type="text" readonly class="boxConsulta" value="'+descripcionCosteFijo+'" style="width:600px;" />';
-			}
-			*/
 		}	
 		
 		function obtenerJuzgado() { 
@@ -140,8 +126,10 @@
 				}
 				document.getElementById("idComisaria").value="";
 				document.getElementById("codComisaria").value="";
+				// para VolantesExpress
+				document.VolantesExpressForm.centroOjuzgado.value = "juzgado";
 			
-				jQuery.ajax({ //Comunicación jQuery hacia JSP  
+				jQuery.ajax({
 		   			type: "POST",
 					url: "/SIGA/GEN_Juzgados.do?modo=getAjaxJuzgado3",
 					data: "idCombo="+comboJuzgado.value,
@@ -151,7 +139,7 @@
 						fin();
 					},
 					error: function(e){
-						alert('Error de comunicación: ' + e);
+						alert('Error de comunicacion: ' + e);
 						fin();
 					}
 				});
@@ -223,9 +211,11 @@
 					jQuery("#asteriscoComisaria").show();
 				}
 				document.getElementById("idJuzgado").value="";
-				document.getElementById("codJuzgado").value="";			
+				document.getElementById("codJuzgado").value="";
+				// para VolantesExpress
+				document.VolantesExpressForm.centroOjuzgado.value = "centro";
 			
-				jQuery.ajax({ //Comunicación jQuery hacia JSP  
+				jQuery.ajax({ 
 		   			type: "POST",
 					url: "/SIGA/GEN_Comisarias.do?modo=getAjaxComisaria2",
 					data: "idCombo="+comboComisaria.value,
@@ -235,7 +225,7 @@
 						fin();
 					},
 					error: function(e){
-						alert('Error de comunicación: ' + e);
+						alert('Error de comunicacion: ' + e);
 						fin();
 					}
 				});
@@ -267,7 +257,7 @@
 	</script>
 </head>
 
-<body onload="ajusteAltoMain('datosModal',0);inicio();cambioComisaria();cambioJuzgado();">
+<body onload="inicio();cambioComisaria();cambioJuzgado();">
 
 	<bean:define id="usrBean" name="USRBEAN" scope="session" type="com.atos.utils.UsrBean" />
 	<input type="hidden" id ="idConsejo" value = "${usrBean.idConsejo}"/>
@@ -275,12 +265,6 @@
 	<bean:define id="tipoPcajg" name="tipoPcajg" scope="request" />
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request" />
 
-	<table class="tablaTitulo" border="0" cellpadding="0" cellspacing="0">
-		<tr>
-			<td id="titulo" class="titulosPeq"><siga:Idioma key="gratuita.mantActuacion.literal.titulo" /></td>
-		</tr>
-	</table>
-	
 	<div id="datosModal" style='position:absolute; width:100%; overflow-y:auto'>
 	
 	<html:form action="${path}">
@@ -345,64 +329,64 @@
 					<td class="labelTextValor"><c:out value="${asistencia.fechaHora}"></c:out></td>
 				</tr>
 			</table>
+		</siga:ConjCampos>
 			
-			<siga:ConjCampos desplegable="true" oculto="false" leyenda='gratuita.mantActuacion.literal.asistido'>
-				<table width="100%" border="0" cellpadding="0" cellspacing="0">
-					<tr>
-						<td width="12%"></td>
-						<td width="8%"></td>
-						<td width="8%"></td>
-						<td width="12%"></td>
-						<td width="8%"></td>
-						<td width="22%"></td>
-						<td width="8%"></td>
-						<td width="22%"></td>
-					</tr>
+		<siga:ConjCampos desplegable="true" oculto="false" leyenda='gratuita.mantActuacion.literal.asistido'>
+			<table width="100%" border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td width="12%"></td>
+					<td width="8%"></td>
+					<td width="8%"></td>
+					<td width="12%"></td>
+					<td width="8%"></td>
+					<td width="22%"></td>
+					<td width="8%"></td>
+					<td width="22%"></td>
+				</tr>
 
-					<tr>
-						<td class="labelText"><siga:Idioma key='gratuita.mantActuacion.literal.nif' /></td>
-						<td class="labelTextValor"><c:out value="${asistencia.personaJG.NIdentificacion}"></c:out></td>
-						
-						<td class="labelText"><siga:Idioma key='gratuita.mantActuacion.literal.nombre' /></td>
-						<td class="labelTextValor"><c:out value="${asistencia.personaJG.nombre}"></c:out></td>
-						
-						<td class="labelText"><siga:Idioma key='gratuita.mantActuacion.literal.apellidos1' /></td>
-						<td class="labelTextValor"><c:out value="${asistencia.personaJG.apellido1}"></c:out></td>
-						
-						<td class="labelText"><siga:Idioma key='gratuita.mantActuacion.literal.apellidos2' /></td>
-						<td class="labelTextValor"><c:out value="${asistencia.personaJG.apellido2}"></c:out></td>
-					</tr>
-				</table>
-			</siga:ConjCampos>
-			
-			<siga:ConjCampos desplegable="true" oculto="false" leyenda="gratuita.busquedaDesignas.literal.letrado">
-				<table width="100%" border="0" cellpadding="0" cellspacing="0">
-					<tr>
-						<td width="12%"></td>
-						<td width="8%"></td>
-						<td width="8%"></td>
-						<td width="12%"></td>
-						<td width="8%"></td>
-						<td width="22%"></td>
-						<td width="8%"></td>
-						<td width="22%"></td>
-					</tr>
+				<tr>
+					<td class="labelText"><siga:Idioma key='gratuita.mantActuacion.literal.nif' /></td>
+					<td class="labelTextValor"><c:out value="${asistencia.personaJG.NIdentificacion}"></c:out></td>
 					
-					<tr>
-						<td class="labelText"><siga:Idioma key='gratuita.mantActuacion.literal.ncolegiado' /></td>
-						<td class="labelTextValor"><c:out value="${asistencia.personaColegiado.colegiado.NColegiado}"></c:out></td>
-						<td class="labelText"><siga:Idioma key='gratuita.mantActuacion.literal.nombre' /></td>
-						<td class="labelTextValor"><c:out value="${asistencia.personaColegiado.nombre}"></c:out></td>
-						<td class="labelText"><siga:Idioma key='gratuita.mantActuacion.literal.apellidos1' /></td>
-						<td class="labelTextValor"><c:out value="${asistencia.personaColegiado.apellido1}"></c:out></td>
-						<td class="labelText"><siga:Idioma key='gratuita.mantActuacion.literal.apellidos2' /></td>
-						<td class="labelTextValor"><c:out value="${asistencia.personaColegiado.apellido2}"></c:out></td>
-					</tr>
-				</table>
-			</siga:ConjCampos>
+					<td class="labelText"><siga:Idioma key='gratuita.mantActuacion.literal.nombre' /></td>
+					<td class="labelTextValor"><c:out value="${asistencia.personaJG.nombre}"></c:out></td>
+					
+					<td class="labelText"><siga:Idioma key='gratuita.mantActuacion.literal.apellidos1' /></td>
+					<td class="labelTextValor"><c:out value="${asistencia.personaJG.apellido1}"></c:out></td>
+					
+					<td class="labelText"><siga:Idioma key='gratuita.mantActuacion.literal.apellidos2' /></td>
+					<td class="labelTextValor"><c:out value="${asistencia.personaJG.apellido2}"></c:out></td>
+				</tr>
+			</table>
+		</siga:ConjCampos>
+		
+		<siga:ConjCampos desplegable="true" oculto="false" leyenda="gratuita.busquedaDesignas.literal.letrado">
+			<table width="100%" border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td width="12%"></td>
+					<td width="8%"></td>
+					<td width="8%"></td>
+					<td width="12%"></td>
+					<td width="8%"></td>
+					<td width="22%"></td>
+					<td width="8%"></td>
+					<td width="22%"></td>
+				</tr>
+				
+				<tr>
+					<td class="labelText"><siga:Idioma key='gratuita.mantActuacion.literal.ncolegiado' /></td>
+					<td class="labelTextValor"><c:out value="${asistencia.personaColegiado.colegiado.NColegiado}"></c:out></td>
+					<td class="labelText"><siga:Idioma key='gratuita.mantActuacion.literal.nombre' /></td>
+					<td class="labelTextValor"><c:out value="${asistencia.personaColegiado.nombre}"></c:out></td>
+					<td class="labelText"><siga:Idioma key='gratuita.mantActuacion.literal.apellidos1' /></td>
+					<td class="labelTextValor"><c:out value="${asistencia.personaColegiado.apellido1}"></c:out></td>
+					<td class="labelText"><siga:Idioma key='gratuita.mantActuacion.literal.apellidos2' /></td>
+					<td class="labelTextValor"><c:out value="${asistencia.personaColegiado.apellido2}"></c:out></td>
+				</tr>
+			</table>
 		</siga:ConjCampos>
 
-		<siga:ConjCampos  leyenda="gratuita.mantActuacion.literal.actuacion">
+		<siga:ConjCampos desplegable="true" oculto="false" leyenda="gratuita.mantActuacion.literal.actuacion">
 			<table width="100%" border="0" cellpadding="0" cellspacing="2">
 				<tr>
 					<td width="15%"></td>
@@ -416,7 +400,7 @@
 					<td class="labelText"><siga:Idioma key='gratuita.mantActuacion.literal.nactuacion' />&nbsp;(*)</td>
 					<td class="labelTextValor">
 						<c:choose>
-							<c:when test="${ActuacionAsistenciaForm.modo=='nuevo'}">
+							<c:when test="${ActuacionAsistenciaFormEdicion.modo=='nuevo'}">
 								<html:text name="ActuacionAsistenciaFormEdicion" styleId="idActuacion" property="idActuacion" size="10" maxlength="10" styleClass="box" />
 							</c:when>
 							<c:otherwise>
@@ -445,7 +429,7 @@
 					</td>
 					<td colspan="2">
 						<c:choose>
-							<c:when test="${ActuacionAsistenciaForm.modo=='ver' ||  ActuacionAsistenciaFormEdicion.validada==1 ||  ActuacionAsistenciaFormEdicion.anulacion==1}">
+							<c:when test="${ActuacionAsistenciaFormEdicion.modo=='ver' ||  ActuacionAsistenciaFormEdicion.validada==1 ||  ActuacionAsistenciaFormEdicion.anulacion==1}">
 								<html:text property="fecha" size="10" readonly="true" styleClass="boxConsulta" styleId="fecha" value="${ActuacionAsistenciaFormEdicion.fecha}" />
 
 							</c:when>
@@ -531,7 +515,7 @@
 				</tr>
 				
 				<tr>
-					<td class="labelText" style="padding-left: 30px;">ó</td>
+					<td class="labelText" style="padding-left: 30px;">o</td>
 				</tr>
 				
 				<tr>
@@ -581,7 +565,7 @@
 					</td>
 					<td> 
 						<c:choose>
-							<c:when test="${ActuacionAsistenciaForm.modo=='ver' ||  ActuacionAsistenciaFormEdicion.anulacion==1}">
+							<c:when test="${ActuacionAsistenciaFormEdicion.modo=='ver' ||  ActuacionAsistenciaFormEdicion.anulacion==1}">
 								<html:textarea name="ActuacionAsistenciaFormEdicion" styleId="observaciones" property="observaciones"
 									style="overflow-y:auto; overflow-x:hidden; width:300px; height:45px; resize:none;"
 									styleClass="boxConsulta"></html:textarea>
@@ -598,7 +582,7 @@
 		</siga:ConjCampos>
 
 		<c:choose>
-			<c:when test="${ActuacionAsistenciaFormEdicion.facturado=='1' ||ActuacionAsistenciaForm.modo=='ver'}">
+			<c:when test="${ActuacionAsistenciaFormEdicion.facturado=='1' ||ActuacionAsistenciaFormEdicion.modo=='ver'}">
 				<siga:ConjCampos desplegable="true" oculto="false" leyenda="gratuita.mantActuacion.literal.justificacion">
 					<table width="100%" border="0" cellpadding="0" cellspacing="2">
 						<tr>
@@ -630,7 +614,7 @@
 							</td>
 							<td class="labelTextValor">
 								<c:choose>
-									<c:when test="${ActuacionAsistenciaForm.modo=='ver' ||  ActuacionAsistenciaFormEdicion.anulacion==1}">
+									<c:when test="${ActuacionAsistenciaFormEdicion.modo=='ver' ||  ActuacionAsistenciaFormEdicion.anulacion==1}">
 										<html:textarea name="ActuacionAsistenciaFormEdicion" styleId="observacionesJustificacion" property="observacionesJustificacion"
 											style="overflow-y:auto; overflow-x:hidden; width:300px; height:45px; resize:none;"
 											styleClass="boxConsulta"></html:textarea>
@@ -684,7 +668,7 @@
 							</td>
 							<td class="labelTextValor">
 								<c:choose>
-									<c:when test="${ActuacionAsistenciaForm.modo=='ver' ||  ActuacionAsistenciaFormEdicion.anulacion==1}">
+									<c:when test="${ActuacionAsistenciaFormEdicion.modo=='ver' ||  ActuacionAsistenciaFormEdicion.anulacion==1}">
 										<html:textarea name="ActuacionAsistenciaFormEdicion" styleId="observacionesJustificacion" property="observacionesJustificacion" 
 											style="overflow-y:auto; overflow-x:hidden; width:300px; height:45px; resize:none;"
 											styleClass="boxConsulta"></html:textarea>
@@ -705,7 +689,7 @@
 			<c:when
 				test="${usrBean.letrado==true && asistencia.validarJustificaciones=='N' }">
 				<html:hidden name="ActuacionAsistenciaFormEdicion" styleId="fechaJustificacion" property="fechaJustificacion" value="sysdate" />
-				<html:hidden name="ActuacionAsistenciaFormEdicion" property="observacionesJustificacion" styleId="observacionesJustificacion" value="Validado automáticamente por configuración del turno" />
+				<html:hidden name="ActuacionAsistenciaFormEdicion" property="observacionesJustificacion" styleId="observacionesJustificacion" value="Validado automaticamente por configuracion del turno" />
 			</c:when>
 			
 			<c:otherwise>
@@ -713,6 +697,7 @@
 				<html:hidden name="ActuacionAsistenciaFormEdicion" property="observacionesJustificacion" />
 			</c:otherwise>
 		</c:choose>
+
 
 		<table valign="bottom" border="0" cellpadding="0" cellspacing="0">
 			<tr>
@@ -731,16 +716,23 @@
 			preFunction="preAccionTipoActuacion"
 			postFunction="postAccionTipoActuacion" />
 	
-	<html:form action="/JGR_MantenimientoJuzgados.do" method="POST"
-		target="submitArea">
+	<html:form action="/JGR_MantenimientoJuzgados.do" method="POST" target="submitArea">
 		<input type="hidden" name="modo" value="buscarJuzgado">
 		<html:hidden property="codigoExt2" styleId="codigoExt2" value="" />
 	</html:form>
 	
-	<html:form action="/JGR_MantenimientoComisarias.do" method="POST"
-		target="submitArea">
+	<html:form action="/JGR_MantenimientoComisarias.do" method="POST" target="submitArea">
 		<input type="hidden" name="modo" value="buscarComisaria">
 		<html:hidden property="codigoExtBusqueda" styleId="codigoExtBusqueda" value="" />
+	</html:form>
+	
+	<html:form action="/JGR_VolantesExpres.do" method="POST" target="submitArea">
+		<html:hidden property="fechaGuardia" styleId="fechaGuardia" value="${asistencia.fechaHora}" />
+		<html:hidden property="idTurno" styleId="idTurno" value="${asistencia.idTurno}" />
+		<html:hidden property="idGuardia" styleId="idGuardia" value="${asistencia.idGuardia}" />
+		<html:hidden property="idColegiadoGuardia" styleId="idColegiadoGuardia" value="${asistencia.personaColegiado.idPersona}" />
+		<html:hidden property="idTipoAsistenciaColegio" styleId="idTipoAsistenciaColegio" value="${asistencia.idTipoAsistenciaColegio}" />
+		<html:hidden property="centroOjuzgado" styleId="centroOjuzgado"/>
 	</html:form>
 
 	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
@@ -774,7 +766,7 @@
 					document.getElementById("tdValidada").innerHTML = '<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
 				}
 				jQuery("#fechaJustificacion-datepicker-trigger").hide();
-			} else {
+			} else if (document.ActuacionAsistenciaFormEdicion.modo.value!='ver' && document.ActuacionAsistenciaFormEdicion.facturado.value!='1' && document.getElementById('isLetrado').value=='false') {
 				document.getElementById('fechaJustificacion').className="tcal box editable tcalInput";
 				document.getElementById('fechaJustificacion').readOnly = false;
 				f_tcalInit();
@@ -784,8 +776,7 @@
 				jQuery("#fechaJustificacion-datepicker-trigger").show();
 			}
 			
-			// if(document.ActuacionAsistenciaForm.modo.value=='ver' || document.ActuacionAsistenciaFormEdicion.validada.value=="1" || document.ActuacionAsistenciaFormEdicion.anulacion.value=='1'){
-			if(document.getElementsByName("ActuacionAsistenciaForm")[0].modo.value == 'ver' ){
+			if(document.ActuacionAsistenciaFormEdicion.modo.value == 'ver' ){
 				habilitarCampos(false);			
 			} else {
 				if(document.getElementById('isLetrado').value=='false') {							
@@ -809,7 +800,6 @@
 		}
 		
 		function habilitarCampos(isHabilitar) {
-			//alert('Habilitar campos : '+isHabilitar);
 			
 			if(isHabilitar==true){
 				var inputs = document.getElementsByTagName("input");
@@ -817,11 +807,11 @@
 					input = inputs[i];
 					if(input.type=="checkbox") {
 						jQuery.removeAttr(input,"disabled");
-						//$(input).removeAttr("disabled");
 					} else if(input.type!="button") {
-						input.className = "box";
+						if(!input.name.startsWith('fecha')) {
+							input.className = "box";
+						}
 						jQuery.removeAttr(input,"readonly");
-						//$(input).removeAttr("readonly");
 					}
 				}
 				var selects = document.getElementsByTagName("select");
@@ -925,12 +915,12 @@
 		}
 	
 		function refrescarLocal() {
-			document.ActuacionAsistenciaForm.modo.value = 'abrir';
-		
-			window.top.close();		
-		}
+			document.ActuacionAsistenciaForm.target = "_self";
+			document.ActuacionAsistenciaForm.modo.value="edicionActuacionAsistencia";
+			document.ActuacionAsistenciaForm.submit();
+		}			
 	
-		function accionGuardarCerrar() {
+		function accionGuardar() {
 			sub();
 			if(document.getElementById("tiposActuacion").value== '-1'){
 				msg = "<siga:Idioma key='errors.required' arg0='gratuita.mantActuacion.literal.tipoActuacion'/>";
@@ -1016,11 +1006,16 @@
 			}
 			habilitarCampos(true);
 			if (validateActuacionAsistenciaFormEdicion(document.ActuacionAsistenciaFormEdicion)){
-				document.ActuacionAsistenciaForm.modo.value = 'abrir';
+				document.ActuacionAsistenciaForm.modo.value = 'edicionActuacionAsistencia';
+				document.ActuacionAsistenciaFormEdicion.target = "submitArea";
 				document.ActuacionAsistenciaFormEdicion.submit();
-			 } else {
-				 fin();
+			} else {
+				fin();
 		 	}		
+		}
+		function accionGuardarCerrar() {
+			//solo necesario para nuevoDesdeVolanteExpres
+			accionGuardar();
 		}
 		
 		function formateaNumProcedimiento(valueNumProcedimiento,valueAnioProcedimiento,objectConsejo){
@@ -1061,7 +1056,7 @@
 			    if (isEquals(fechaHora,fechaAct)){
 			    	document.getElementById("checkDiaDespues").checked = false;
 				} else {// cuando la fecha de asistencia es igual que la de la actuacion el check del dia despues no se chequea.
-					alert("La fecha de actuación no puede ser anterior a la fecha de la asistencia ("+fechaHora+")");
+					alert("La fecha de actuacion no puede ser anterior a la fecha de la asistencia ("+fechaHora+")");
 				  	document.ActuacionAsistenciaFormEdicion.fecha.value = '';
 				  	document.getElementById("checkDiaDespues").checked = false;				
 				}// fin del if
@@ -1116,7 +1111,14 @@
 			}
 			
 		}	
-	
+		
+		// Asociada al boton Volver para Volantes Expres
+		function accionVolver() {
+			document.VolantesExpressForm.target="mainWorkArea";
+			document.VolantesExpressForm.action = "/SIGA/JGR_VolantesExpres.do";
+			document.VolantesExpressForm.submit();
+		}
+
 		// Asociada al boton Cerrar
 		function accionCerrar() {		
 			document.ActuacionAsistenciaForm.modo.value = 'abrir';
@@ -1136,5 +1138,7 @@
 			cambioJuzgado();
 		}
 	</script>
+	
+	<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none"></iframe>
 </body>
 </html>

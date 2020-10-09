@@ -146,7 +146,9 @@ public class VolantesExpressAction extends MasterAction
 			{
 
 		VolantesExpressForm miForm = (VolantesExpressForm) formulario;
-		miForm.clear();
+		//miForm.clear();
+		// Esto lo he comentado porque estropeaba la carga del valor anterior cuando se vuelve de crear una actuacion mas dentro de una asistencia.
+		// Quizas se puede mantener con un IF, pero no vi una forma elegante de hacerlo
 		UsrBean usrBean = this.getUserBean(request);
 		miForm.setUsrBean(usrBean);
 		miForm.setIdInstitucion(usrBean.getLocation());
@@ -200,10 +202,10 @@ public class VolantesExpressAction extends MasterAction
 		ScsTipoAsistenciaColegioAdm admTiposAsis = new ScsTipoAsistenciaColegioAdm(miForm.getUsrBean());
 		Hashtable<String, Object> ht = new Hashtable<String, Object>();
 		ht.put(ScsTipoAsistenciaColegioBean.C_IDINSTITUCION, miForm.getIdInstitucion());
-//		Vector<ScsTipoAsistenciaColegioBean> vTiposAsistenciaColegio = (Vector<ScsTipoAsistenciaColegioBean>)admTiposAsis.selectCombo(ht,true);
-//		miForm.setTiposAsistenciaColegio(vTiposAsistenciaColegio);
 		// Por defecto marcamos "Guardia 24h. Asistencia al detenido. Procedimiento general"
-		miForm.setIdTipoAsistenciaColegio(String.valueOf(ScsTipoAsistenciaColegioBean.TIPO_ASISTENCIA_DETENIDO_PROC_GENERAL));
+		// miForm.setIdTipoAsistenciaColegio(String.valueOf(ScsTipoAsistenciaColegioBean.TIPO_ASISTENCIA_DETENIDO_PROC_GENERAL));
+		// Esto lo he comentado porque estropeaba la carga del valor anterior cuando se vuelve de crear una actuacion mas dentro de una asistencia.
+		// Quizas se puede mantener con un IF, pero no vi una forma elegante de hacerlo
 		 
 		int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usrBean.getLocation()));
 		miForm.setTipoPcajg(""+valorPcajgActivo);

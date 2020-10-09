@@ -28,6 +28,7 @@ public class VolantesExpressForm extends MasterForm
 	String idInstitucion;
 	String fechaGuardia;
 	String lugar;
+	String centroOjuzgado="centro";
 	String idTurno;
 	String idGuardia;
 	String idColegiadoGuardia;
@@ -86,8 +87,12 @@ public class VolantesExpressForm extends MasterForm
 	public void setLugar(String lugar) {
 		this.lugar = lugar;
 	}
-	
-	
+	public String getCentroOjuzgado() {
+		return centroOjuzgado;
+	}
+	public void setCentroOjuzgado(String centroOjuzgado) {
+		this.centroOjuzgado = centroOjuzgado;
+	}
 	public String getNombreColegiado() {
 		return nombreColegiado;
 	}

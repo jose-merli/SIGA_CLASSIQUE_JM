@@ -2429,14 +2429,15 @@
 
 		<action path="/JGR_ActuacionesAsistencia" type="com.siga.gratuita.action.ActuacionesAsistenciaAction" name="ActuacionAsistenciaForm">
             <forward name="listadoActuacionesAsistencia" path="/html/jsp/gratuita/listadoActuacionesAsistencia.jsp?esFichaColegial=0"/>
-            <forward name="edicion" path="/html/jsp/gratuita/edicionActuacionAsistencia.jsp?esFichaColegial=0"/>
-            
+            <forward name="edicion" path="/html/jsp/gratuita/pestanaActuacionAsistencia.jsp?esFichaColegial=0"/>
+            <forward name="edicionActuacionAsistencia" path="/html/jsp/gratuita/edicionActuacionAsistencia.jsp?esFichaColegial=0"/>
             <forward name="consultarAsistencia" path="/html/jsp/gratuita/consultaAsistencia.jsp"/>
         </action>
         
 		<action path="/JGR_ActuacionAsistenciaLetrado" type="com.siga.gratuita.action.ActuacionesAsistenciaAction" name="ActuacionAsistenciaForm">
-           <forward name="listadoActuacionesAsistencia" path="/html/jsp/gratuita/listadoActuacionesAsistencia.jsp?esFichaColegial=1"/>
-            <forward name="edicion" path="/html/jsp/gratuita/edicionActuacionAsistencia.jsp?esFichaColegial=1"/>
+            <forward name="listadoActuacionesAsistencia" path="/html/jsp/gratuita/listadoActuacionesAsistencia.jsp?esFichaColegial=1"/>
+            <forward name="edicion" path="/html/jsp/gratuita/pestanaActuacionAsistencia.jsp?esFichaColegial=1"/>
+            <forward name="edicionActuacionAsistencia" path="/html/jsp/gratuita/edicionActuacionAsistencia.jsp?esFichaColegial=1"/>
             <forward name="consultarAsistencia" path="/html/jsp/gratuita/consultaAsistencia.jsp"/>
         </action>
 
