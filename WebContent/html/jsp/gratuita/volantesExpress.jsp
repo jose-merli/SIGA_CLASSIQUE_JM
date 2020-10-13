@@ -85,9 +85,10 @@
 				document.VolantesExpressForm.idGuardia.value != '-1')){
 				limpiarColegiado();
 			}
-			document.getElementById('turnos').value="${VolantesExpressForm.idTurno}";
-			document.getElementById('turnos').onchange();
-			
+			if("${VolantesExpressForm.idTurno}" != '') {
+				document.getElementById('turnos').value="${VolantesExpressForm.idTurno}";
+				document.getElementById('turnos').onchange();
+			}
 		}
 	
 		function preAccionTurno(){
@@ -95,30 +96,13 @@
 		}
 		
 		function postAccionTurno(){
-			if((document.VolantesExpressForm.idTurno && document.VolantesExpressForm.idTurno.value != ''&& document.VolantesExpressForm.idTurno.value != '-1')){
-				// if(document.VolantesExpressForm.guardias.length==2){
-					
-					// document.getElementById("idGuardia").value = document.VolantesExpressForm.guardias[1].value;
-					// document.VolantesExpressForm.idGuardia.value = document.VolantesExpressForm.guardias[1].value;
-					//document.getElementById("guardias").selectedIndex=1;
-					// document.VolantesExpressForm.guardias.onchange();
-				// } 
-				if(document.VolantesExpressForm.idColegiado&&document.VolantesExpressForm.idColegiado!=''){
-					postAccionColegiado();
-				}else{
-					actualizarResultados();
-				}
+			if ("${VolantesExpressForm.idGuardia}") {
+				document.getElementById('guardias').value="${VolantesExpressForm.idGuardia}";
+				document.getElementById('guardias').onchange();
 			}
-			document.getElementById('guardias').value="${VolantesExpressForm.idGuardia}";
-			document.getElementById('guardias').onchange();
 		}	
 		
 		function preAccionGuardia(){
-	//		if((document.VolantesExpressForm.idGuardia && document.VolantesExpressForm.idGuardia.value != ''&& document.VolantesExpressForm.idGuardia.value != '-1')){
-				
-	// 		}else{
-		// 		return 'cancel';
-	// 		}
 		}
 		
 		function postAccionGuardia(){
@@ -133,19 +117,19 @@
 					if(optionsColegiadoGuardia.length==2){
 						optionsColegiadoGuardia.selectedIndex=1;
 						document.getElementById('colegiadosGuardia').onchange();
-					}else{
-						actualizarResultados();
 					}
 				}
-			
-			}else{
-				actualizarResultados();
 			}
 			rellenaTipoAsistencia();
 			
 		}
 		
+		function preAccionColegiadoGuardia(){
+			sub();
+		}
+		
 		function postAccionColegiadoGuardia(){
+			fin();
 			idColegiadoGuardia = document.VolantesExpressForm.idColegiadoGuardia.value;
 			
 			if (idColegiadoGuardia!="-1"){
@@ -193,7 +177,7 @@
 			var comboTipoAsistenciaColegio = document.getElementById('idTipoAsistenciaColegio');
 			var optionTipoAsistenciaColegio = comboTipoAsistenciaColegio.options;
 			if(idGuardia!='' &&idGuardia!='-1' && idTurno!=''){
-				var txtSelect = '<siga:Idioma key="general.boton.seleccionar"/>';
+				var txtSelect = '--<siga:Idioma key="general.boton.seleccionar"/>';
 				jQuery.ajax({   
 			           type: "POST",
 			           url: "/SIGA/GEN_Juzgados.do?modo=getAjaxTiposAsistencia",
@@ -221,12 +205,11 @@
 		}
 		
 		function actualizarResultados(){
-			if((document.VolantesExpressForm.fechaGuardia && document.VolantesExpressForm.fechaGuardia.value != '')&&
+			if ((document.VolantesExpressForm.fechaGuardia && document.VolantesExpressForm.fechaGuardia.value != '')&&
 				(document.VolantesExpressForm.idTurno && document.VolantesExpressForm.idTurno.value != ''&& document.VolantesExpressForm.idTurno.value != '-1')&&
 			    (document.VolantesExpressForm.idGuardia && document.VolantesExpressForm.idGuardia.value != ''&& document.VolantesExpressForm.idGuardia.value != '-1')&&
 				(document.VolantesExpressForm.idTipoAsistenciaColegio && document.VolantesExpressForm.idTipoAsistenciaColegio.value != ''&& document.VolantesExpressForm.idTipoAsistenciaColegio.value != '-1')&&
-				((document.VolantesExpressForm.idColegiado && document.VolantesExpressForm.idColegiado.value != '')||
-				(document.VolantesExpressForm.idColegiadoGuardia && document.VolantesExpressForm.idColegiadoGuardia.value!= ''&& document.VolantesExpressForm.idColegiadoGuardia.value!= '-1'))){
+				(document.VolantesExpressForm.idColegiado && document.VolantesExpressForm.idColegiado.value != '')){
 				document.getElementById('idBuscarAsistencias').onclick();
 			}else{
 				table = document.getElementById('asistencias');
@@ -903,9 +886,9 @@
 	<siga:ConjCampos leyenda="gratuita.volantesExpres.literal.cabeceraVolante">
 		<table width="100%" border="0">			
 			<tr>
-				<td width="15%"></td>
+				<td width="17%"></td>
 				<td width="11%"></td>
-				<td width="10%"></td>
+				<td width="8%"></td>
 				<td width="27%"></td>
 				<td width="10%"></td>
 				<td width="27%"></td>
@@ -946,7 +929,7 @@
 				</td>
 				<td colspan="3">
 					<select id="idTipoAsistenciaColegio"  name="idTipoAsistenciaColegio" style="width:100%;" class="boxCombo" onchange="actualizarResultados();">
-						<option  value="-1"><siga:Idioma key="general.boton.seleccionar"/></option>
+						<option  value="-1">--<siga:Idioma key="general.boton.seleccionar"/></option>
 					</select>
 				</td>
 				<td class="labelText">
@@ -968,11 +951,11 @@
 	<siga:ConjCampos leyenda="gratuita.volantesExpres.literal.letradosGuardia">
 		<table width="100%" border="0">
 			<tr>
-				<td class="labelText" width="15%">
+				<td class="labelText" width="17%">
 					<siga:Idioma key="gratuita.volantesExpres.literal.colegiado" />&nbsp;
 				</td>
-				<td colspan="3" width="48%">
-					<html:select styleId="colegiadosGuardia" styleClass="boxCombo" style="width:100%;" property="idColegiadoGuardia">
+				<td colspan="3" width="46%">
+					<html:select styleId="colegiadosGuardia" styleClass="boxCombo" style="width:100%;margin-top:-2px;" property="idColegiadoGuardia">
 						<bean:define id="colegiadosGuardia" name="VolantesExpressForm" property="colegiadosGuardia" type="java.util.Collection" />
 						<html:optionsCollection name="colegiadosGuardia" value="idPersona" label="nombre" />
 					</html:select>
@@ -987,14 +970,14 @@
 	<siga:ConjCampos leyenda="gratuita.volantesExpres.literal.letrado">
 		<table width="100%" border="0">
 			<tr>
-				<td class="labelText" width="15%">
+				<td class="labelText" width="17%">
 					<siga:Idioma key="gratuita.volantesExpres.literal.colegiado" />&nbsp;(*)
 				</td>
 				<td colspan="2" width="30%">
 					<html:text styleId="numeroColegiado" property="numeroColegiado" style="width:15%;" maxlength="9" styleClass="box" />
 					<html:text styleId="nombreColegiado" property="nombreColegiado" style="width:70%;" maxlength="50" styleClass="box" readonly="true" />
 				</td>
-				<td width="18%">
+				<td width="16%">
 					<input type="button" style="margin-top:-2px;" class="button" id="idButton" name="Buscar" value="<siga:Idioma key="general.boton.search" />" onClick="buscarColegiado();">
 					<input type="button" style="margin-top:-2px;" class="button" id="idButton" name="Limpiar" value="<siga:Idioma key="general.boton.clear" />" onClick="limpiarColegiado();">
 				</td>
@@ -1059,7 +1042,7 @@
 	<ajax:updateFieldFromSelect  
 		baseUrl="/SIGA/JGR_VolantesExpres.do?modo=getAjaxColegiadoGuardia"
 	    source="colegiadosGuardia" target="idColegiado,numeroColegiado,nombreColegiado"
-		parameters="idColegiadoGuardia={idColegiadoGuardia}" postFunction="postAccionColegiadoGuardia"/>
+		parameters="idColegiadoGuardia={idColegiadoGuardia}" preFunction="preAccionColegiadoGuardia" postFunction="postAccionColegiadoGuardia"/>
 
 		<table id='tabAsistenciasCabeceras'	name ='tabAsistenciasCabeceras' class='fixedHeaderTable dataScroll'  width="100%" style='table-layout: fixed;border:1;'>
 
@@ -1128,7 +1111,7 @@
 	target="divAsistencias"
 	preFunction="preAccionBuscarAsistencias"
 	postFunction="postAccionBuscarAsistencias"
-	parameters="fechaGuardia={fechaGuardia},idTurno={idTurno},idGuardia={idGuardia},idColegiado={idColegiado},idColegiadoGuardia={idColegiadoGuardia},idTipoAsistenciaColegio={idTipoAsistenciaColegio},lugar={lugar},idColegiadoSustituido={idColegiadoSustituido}"/>
+	parameters="fechaGuardia={fechaGuardia},idTurno={idTurno},idGuardia={idGuardia},idColegiado={idColegiado},idTipoAsistenciaColegio={idTipoAsistenciaColegio},lugar={lugar},idColegiadoSustituido={idColegiadoSustituido}"/>
 
 <ajax:htmlContent
 	baseUrl="/SIGA/JGR_VolantesExpres.do?modo=getAjaxPrimeraAsistencia"
