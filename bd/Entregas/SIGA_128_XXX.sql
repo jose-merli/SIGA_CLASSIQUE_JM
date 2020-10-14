@@ -913,6 +913,42 @@ PROC_CALC_SITUACIONEJERCICIO.prc
 -- Ejecutado en Integracion 09/09/2020 11:00
 
 --https://redabogacia.atlassian.net/browse/SIGA-317
+Insert Into gen_procesos
+  (idproceso, idmodulo, traza, target, fechamodificacion, usumodificacion, descripcion, transaccion, idparent, nivel)
+Values
+  ('9T3', 'JGR', 1, 'Y', Sysdate, 0, 'HIDDEN_AsistenciaActuaciones', 'JGR_ActuacionesAsistencia', '95O', '10');
+Insert Into Gen_Recursos
+  (Idrecurso, Descripcion, Error, Idlenguaje, Fechamodificacion, Usumodificacion, Idpropiedad)
+  (Select 'pestana.justiciagratuitaasistencia.actuaciones.actuacion',
+          Case To_Number(Idlenguaje)
+            When 1 Then
+             'Información de la actuación'
+            When 2 Then
+             'Informació de l''actuació'
+            When 3 Then
+             'Información de la actuación#EU'
+            When 4 Then
+             'Información de la actuación#GL'
+          End,
+          Error,
+          Idlenguaje,
+          Sysdate,
+          0,
+          Idpropiedad
+     From Gen_Recursos Rec
+    Where Rec.Idrecurso = 'pestana.justiciagratuitaasistencia.actuaciones');
+
+Insert Into Adm_Tiposacceso
+  (Idproceso, Idperfil, Fechamodificacion, Usumodificacion, Derechoacceso, Idinstitucion)
+  (Select '9T3', Idperfil, Fechamodificacion, Usumodificacion, Derechoacceso, Idinstitucion
+     From Adm_Tiposacceso
+    Where Idproceso = '95O');
+
+Insert Into gen_pestanas
+  (idproceso, idlenguaje, idrecurso, posicion, idgrupo)
+Values
+  ('9T3', 1, 'pestana.justiciagratuitaasistencia.actuaciones.actuacion', 1, 'ACTASIST');
+
 INSERT INTO GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD)
 VALUES('gratuita.volantesExpres.literal.registroVolante', 'Registro de volante', 0, '1', sysdate, 0, '19');
 INSERT INTO GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD)
@@ -921,3 +957,5 @@ INSERT INTO GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 VALUES('gratuita.volantesExpres.literal.registroVolante', 'Registro de volante#EU', 0, '3', sysdate, 0, '19');
 INSERT INTO GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD)
 VALUES('gratuita.volantesExpres.literal.registroVolante', 'Registro de volante#GL', 0, '4', sysdate, 0, '19');
+
+-- Ejecutado en Integracion 10/09/2020 10:00
