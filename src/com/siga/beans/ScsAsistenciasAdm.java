@@ -2571,5 +2571,37 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 			throw new ClsExceptions (e, "Error al ejecutar el 'actualizaMovimientosVarios' en B.D.");
 		}
 	}
+
+	  public Vector getPersonaAsistenciaEjg(Integer idInstitucion, Integer idTipoEJG, Integer anio, Integer numero) throws ClsExceptions,SIGAException {
+		Vector datos=new Vector();
+		try {
+			
+			StringBuffer sql = new StringBuffer();
+			sql.append(" SELECT IDPERSONACOLEGIADO AS IDPERSONA ");
+			sql.append(" FROM SCS_ASISTENCIA  ");
+			sql.append(" WHERE ");
+			sql.append(" IDINSTITUCION = ");
+			sql.append(idInstitucion);
+			sql.append(" AND EJGIDTIPOEJG = ");
+			sql.append(idTipoEJG);
+			sql.append(" AND EJGANIO =  ");
+			sql.append(anio);
+			sql.append(" AND EJGNUMERO =  ");
+			sql.append(numero);
+			
+			RowsContainer rc = new RowsContainer(); 
+			if (rc.find(sql.toString())) {
+				for (int i = 0; i < rc.size(); i++){
+					Row fila = (Row) rc.get(i);
+					Hashtable resultado=fila.getRow();	                  
+					datos.add(resultado);
+				}
+			} 
+		}
+		catch (Exception e) {
+			throw new ClsExceptions (e, "Error al obtener la informacion sobre getPersonasDesignadasEjg");
+		}
+		return datos;                        
+	}
 	
 }

@@ -104,6 +104,7 @@ import com.siga.beans.FacFacturaAdm;
 import com.siga.beans.GenParametrosAdm;
 import com.siga.beans.HelperInformesAdm;
 import com.siga.beans.ScsActaComisionAdm;
+import com.siga.beans.ScsAsistenciasAdm;
 import com.siga.beans.ScsContrariosEJGAdm;
 import com.siga.beans.ScsContrariosEJGBean;
 import com.siga.beans.ScsDefendidosDesignaAdm;
@@ -5932,6 +5933,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		ScsEJGAdm ejgAdm = new ScsEJGAdm(userBean);
 		ScsContrariosEJGAdm scsContrariosEJGAdm = new ScsContrariosEJGAdm(userBean);
 		ScsDesignaAdm designaAdm = new ScsDesignaAdm(userBean);
+		ScsAsistenciasAdm asistenciaAdm = new ScsAsistenciasAdm(userBean);
 		ScsUnidadFamiliarEJGAdm unidadFamiliarEJGAdm = new ScsUnidadFamiliarEJGAdm(userBean);
 		String idTipoEJG = null;
 		String idInstitucion = null;
@@ -5965,16 +5967,19 @@ public class EnvioInformesGenericos extends MasterReport {
 				// Este netodo nos debe devolver un vector de hashtable con las
 				// personas de las designaciones relacionadas
 				Vector personasDesignasEjg = designaAdm.getPersonasDesignadasEjg(new Integer(idInstitucion), new Integer(idTipoEJG), new Integer(anio), new Integer(numero));
-				if (personasDesignasEjg != null)
+				if (personasDesignasEjg != null && personasDesignasEjg.size() > 0){
 					ht.put("personasDesignasEjg", personasDesignasEjg);
+				}else{
+					Vector personasAsistenciaEJG = asistenciaAdm.getPersonaAsistenciaEjg(new Integer(idInstitucion), new Integer(idTipoEJG), new Integer(anio), new Integer(numero));
+					if (personasAsistenciaEJG != null)
+						ht.put("personasDesignasEjg", personasAsistenciaEJG);
+				}
 				solicitantesEjg = unidadFamiliarEJGAdm.getSolicitantesEjg(new Integer(idInstitucion), new Integer(idTipoEJG), new Integer(anio), new Integer(numero));
 				if (solicitantesEjg != null)
 					ht.put("solicitantesEjg", solicitantesEjg);
 				Vector<ScsContrariosEJGBean> contrariosEjg = scsContrariosEJGAdm.getPersonasContrariosEjg(new Integer(idInstitucion), new Integer(idTipoEJG), new Integer(anio), new Integer(numero));
 				if (contrariosEjg != null)
 					ht.put("contrariosEjg", contrariosEjg);
-				
-				
 				
 				Hashtable datosEJgHashtable = ejgAdm.getJuzgadoProcuradorEjg(idInstitucion, anio, numero, idTipoEJG);
 				String idJuzgado = null;
