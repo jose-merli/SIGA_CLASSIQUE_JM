@@ -225,7 +225,8 @@ public class ActuacionesDesignasAction extends MasterAction {
 													    "   and "+FcsFacturacionJGBean.T_NOMBRETABLA+"."+FcsFacturacionJGBean.C_IDFACTURACION+" = act."+ScsActuacionDesignaBean.C_IDFACTURACION+") nombrefacturacion,"+
 													/** pdm INC-xxx1**/
 //													 "DECODE(act."+ScsActuacionDesignaBean.C_VALIDADA+",'1','Si','No') validada"+	
-													 "act." + ScsActuacionDesignaBean.C_VALIDADA + " validada " +	
+													 "act." + ScsActuacionDesignaBean.C_VALIDADA + " validada, " +
+													 "act." + ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO + " idpersonaActuacion " +
 													 
 											" FROM " + ScsActuacionDesignaBean.T_NOMBRETABLA+" act,"+ScsProcedimientosBean.T_NOMBRETABLA+" pro"+
 											" , " + ScsAcreditacionProcedimientoBean.T_NOMBRETABLA+" acp,"+ScsAcreditacionBean.T_NOMBRETABLA+" acr"+
@@ -276,7 +277,8 @@ public class ActuacionesDesignasAction extends MasterAction {
 													/**/
 												    /** pdm INC-xxx1**/
 													// "DECODE(act."+ScsActuacionDesignaBean.C_VALIDADA+",'1','Si','No') validada"+	
-													 "act." + ScsActuacionDesignaBean.C_VALIDADA + " validada " +	
+													"act." + ScsActuacionDesignaBean.C_VALIDADA + " validada, " +
+													"act." + ScsActuacionDesignaBean.C_IDPERSONACOLEGIADO + " idpersonaActuacion " +
 													/**/
 											" FROM "+ScsActuacionDesignaBean.T_NOMBRETABLA+" act,"+ScsProcedimientosBean.T_NOMBRETABLA+" pro,"+
 													 ScsDesignasLetradoBean.T_NOMBRETABLA+" deslet,"+

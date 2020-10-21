@@ -125,8 +125,8 @@
 			if (typeof id == 'undefined')
 				id='tablaDatos';
 			preparaDatos(fila,id);
-			var datosDesigna = "idInstitucion=="+<%=idInstitucion%> +"##idPersona=="+jQuery("#ocultoHidden"+fila+"_2").val()+  "##idTurno==" +<%=idTurno%>+"##anio=="+<%=anio%> +"##numero==" +<%=numero%>+
-			"##numeroAsunto==" +jQuery("#ocultoHidden"+fila+"_1").val()  +"##codigoDesigna=="+<%=codigoDesigna%>+"%%%";
+			var datosDesigna = "idInstitucion=="+<%=idInstitucion%> +"##idPersona=="+jQuery("#ocultoHidden"+fila+"_2").val()+ "##idTurno==" +<%=idTurno%>+"##anio=="+<%=anio%> +"##numero==" +<%=numero%>+
+			"##numeroAsunto==" +jQuery("#ocultoHidden"+fila+"_1").val()  +"##codigoDesigna=="+<%=codigoDesigna%>+"##idPersonaActuacion=="+jQuery("#ocultoHidden"+fila+"_3").val()+"%%%";
 			document.Informe.datosInforme.value=datosDesigna;
 			
 			
@@ -353,6 +353,7 @@
 						<td>
 							<input type="hidden" name="ocultoHidden<%=String.valueOf(recordNumber)%>_1" id="ocultoHidden<%=String.valueOf(recordNumber)%>_1" value="<%=hash.get("NUMEROASUNTO")%>">
 							<input type="hidden" name="ocultoHidden<%=String.valueOf(recordNumber)%>_2" id="ocultoHidden<%=String.valueOf(recordNumber)%>_2" value="<%=hash.get("IDPERSONA")%>">
+							<input type="hidden" name="ocultoHidden<%=String.valueOf(recordNumber)%>_3" id="ocultoHidden<%=String.valueOf(recordNumber)%>_3" value="<%=hash.get("IDPERSONAACTUACION")%>">
 							<%=UtilidadesString.mostrarDatoJSP(GstDate.getFormatedDateShort("",(String)hash.get("FECHA")))%>
 						</td>
 						<td><%=hash.get("NUMEROASUNTO")%></td>

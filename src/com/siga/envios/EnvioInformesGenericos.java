@@ -3898,6 +3898,32 @@ public class EnvioInformesGenericos extends MasterReport {
 
 		return idPersona;
 	}
+	
+	public String getIdColegiadoActuacion(Vector vCampos) {
+		Hashtable htPersonas = new Hashtable();
+		String idPersona = null;
+		String idInstitucion = null;
+		for (int i = 0; i < vCampos.size(); i++) {
+			Hashtable ht = (Hashtable) vCampos.get(i);
+			if(ht.get("idPersonaActuacion")!=null)
+				idPersona = (String) ht.get("idPersonaActuacion");
+			else
+				idPersona = (String) ht.get("idPersona");
+			idInstitucion = (String) ht.get("idInstitucion");
+			String key = idPersona + "||" + idInstitucion;
+			if (!htPersonas.containsKey(key) && i != 0) {
+				idPersona = null;
+				break;
+
+			} else {
+				if (idPersona == null)
+					return null;
+				htPersonas.put(key, idPersona);
+			}
+		}
+
+		return idPersona;
+	}
 
 	public Hashtable getDestinatariosExpedientes(Vector vCampos) {
 
@@ -4338,7 +4364,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		else
 			datosInformeVector = masterReport.getDatosInforme(form.getDatosInforme());
 
-		String idPersona = getIdColegiadoUnico(datosInformeVector);
+		String idPersona = getIdColegiadoActuacion(datosInformeVector);
 		String idInstitucion = userBean.getLocation();
 
 		String datosEnvios = form.getDatosEnvios();
