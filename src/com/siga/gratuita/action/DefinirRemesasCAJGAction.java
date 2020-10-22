@@ -62,6 +62,8 @@ import org.redabogacia.sigaservices.app.vo.scs.CajgEjgRemesaVo;
 import org.redabogacia.sigaservices.app.vo.scs.CajgRemesaVo;
 import org.redabogacia.sigaservices.app.vo.scs.EejgXmlVo;
 
+import weblogic.management.timer.Timer;
+
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
@@ -108,7 +110,6 @@ import com.siga.ws.SIGAWSClientAbstract;
 import com.siga.ws.SIGAWSListener;
 
 import es.satec.businessManager.BusinessManager;
-import weblogic.management.timer.Timer;
 
 
 
@@ -1095,42 +1096,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			ScsEstadoEJGAdm estadoEJGAdm = new ScsEstadoEJGAdm(usr);
 			CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(usr);
 			UserTransaction tx = null;
-			
-				GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
-				String numMaximoRemesasTXT = genParametrosService.getValorParametroWithNull(Short.valueOf(usr.getLocation()),PARAMETRO.REMESAS_NUM_MAXIMO_EXP,MODULO.SCS);
-				int numMaximoRemesas = 0;
-				if(numMaximoRemesasTXT!=null) {
-					try {
-						numMaximoRemesas = Integer.parseInt(numMaximoRemesasTXT);
-					} catch (Exception e) {
-						ClsLogging.writeFileLog("Parámetro "+PARAMETRO.REMESAS_NUM_MAXIMO_EXP+" mal configurado:"+numMaximoRemesasTXT+"/");
-					}
-				}
-						
-				if(numMaximoRemesas>0) {
-					StringBuilder sb = new StringBuilder("SELECT COUNT(RE.IDEJGREMESA) NUMEJGREMESA");
-					sb.append(" FROM CAJG_EJGREMESA RE ");
-					sb.append(" WHERE RE.IDREMESA =");
-					sb.append(miForm.getIdRemesa());
-					sb.append(" AND RE.IDINSTITUCION =");
-					sb.append(getIDInstitucion(request));
-					Vector vectorNumRemesas = null;
-					try {
-						vectorNumRemesas = cajgEJGRemesaAdm.selectGenerico(sb.toString());
-					} catch (ClsExceptions e) {
-						throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
-					}
-					int numEJGRemesa = 0;
-					if(vectorNumRemesas!=null && vectorNumRemesas.size()>0)
-						numEJGRemesa = UtilidadesHash.getInteger((Hashtable)vectorNumRemesas.get(0),"NUMEJGREMESA");
-					
-					String[] seleccionadosArray = seleccionados.split(",");
-					int numExpSeleccionados = seleccionadosArray.length;
-					
-					if(numExpSeleccionados+numEJGRemesa>numMaximoRemesas)
-						throw new SIGAException("scs.aviso.numeroMaximoExpRemesas");
-				}
-				try {
+			try {
 				tx = usr.getTransactionPesada();
 				tx.begin();
 
@@ -1174,12 +1140,10 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 						" AND EJG.IDREMESA = " + miForm.getIdRemesa() +
 						" AND (1 = 0");
 
-				
 				StringBuffer sbsqlInsertEJGRemesa = new StringBuffer();
 				StringBuffer sbsqlInsertEstadoEJG = new StringBuffer();
 				int cuenta = 0;
-				int numeroMaximoExpedientesInsert = 1;
-				
+				int numeroMaximoExpedientesInsert = 500;
 				for (int i = 0; i < v_seleccionadosSesion.size(); i++) {
 					Hashtable miHashaux = new Hashtable();
 					miHashaux = (Hashtable) v_seleccionadosSesion.get(i);
