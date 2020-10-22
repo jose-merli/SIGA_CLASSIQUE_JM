@@ -623,7 +623,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 						  " 	AND DE.IDTIPOEJG = " + (Integer)params.get("idTipoEJG")  +
 						  "  	AND DE.ANIO = " + (Integer)params.get("anio")  +
 						  "  	AND DE.NUMERO =" + (Integer)params.get("numero")  +
-						  "  ORDER BY PRESENTADOR ";
+						  "  ORDER BY DE.FECHAENTREGA DESC, DE.FECHALIMITE DESC, PRESENTADOR ";
    
 
 

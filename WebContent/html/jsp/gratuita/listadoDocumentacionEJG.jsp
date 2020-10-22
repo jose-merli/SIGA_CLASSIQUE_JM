@@ -84,12 +84,19 @@
 				</td>
 			</tr>
 		</table>
-
+<!-- columnSizes="8,8,25,18,25,8,8" -->
 		<siga:Table 		   
 		   name="listadoDocumentacion"
 		   border="1"
-		   columnNames="gratuita.operarEJG.literal.fechaLimitePresentacion,sjcs.ejg.documentacion.presentador,expedientes.auditoria.literal.documento,gratuita.documentacionEJG.regentrada,gratuita.documentacionEJG.regsalida,gratuita.operarEJG.literal.fechaPresentacion,Prop.,"
-		   columnSizes="10,25,25,8,8,6,8"
+		   columnNames="gratuita.operarEJG.literal.fechaLimitePresentacion,
+		   gratuita.operarEJG.literal.fechaPresentacion,
+		   sjcs.ejg.documentacion.presentador,
+		   expedientes.auditoria.literal.documento,
+		   pestana.justiciagratuitaejg.documentacion,
+		   gratuita.documentacionEJG.regentrada,
+		   Prop.,"
+		   
+		   columnSizes="8,8,25,18,18,6,8,9"
 		   modal="M">
 		   
   	<% if (obj.size()>0){
@@ -103,33 +110,28 @@
 			%>				
 					<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botonFila%>" clase="listaNonEdit" >
 					
-					<td><input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=documentacionEjgVo.getIdDocumentacion()%>">
-					<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=documentacionEjgVo.getIdInstitucion()%>">
-					
-					
-							<%=documentacionEjgVo.getFechaLimite()==null||documentacionEjgVo.getFechaLimite().equals("")?"&nbsp;":documentacionEjgVo.getFechaLimite()%>
+					<td>
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=documentacionEjgVo.getIdDocumentacion()%>">
+						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_2" value="<%=documentacionEjgVo.getIdInstitucion()%>">
+						<%=documentacionEjgVo.getFechaLimite()==null||documentacionEjgVo.getFechaLimite().equals("")?"&nbsp;":documentacionEjgVo.getFechaLimite()%>
+					</td>
+					<td>
+						<%=documentacionEjgVo.getFechaEntrega()==null||documentacionEjgVo.getFechaEntrega().equals("")?"&nbsp;":documentacionEjgVo.getFechaEntrega()%>
 					</td>
 					<td>
 						<%=documentacionEjgVo.getDescPresentador()==null||documentacionEjgVo.getDescPresentador().equals("")?"&nbsp;":documentacionEjgVo.getDescPresentador()%>
 					</td>
-					<td> <%=documentacionEjgVo.getDocumentoAbreviatura()==null||documentacionEjgVo.getDocumentoAbreviatura().equals("")?"&nbsp;":documentacionEjgVo.getDocumentoAbreviatura()%>
-						
+					<td> 
+						<%=documentacionEjgVo.getDocumentoAbreviatura()==null||documentacionEjgVo.getDocumentoAbreviatura().equals("")?"&nbsp;":documentacionEjgVo.getDocumentoAbreviatura()%>
 					</td>
 					<td>
-					<%=documentacionEjgVo.getRegEntrada()==null||documentacionEjgVo.getRegEntrada().equals("")?"&nbsp;":documentacionEjgVo.getRegEntrada()%>
-					
+						<%=documentacionEjgVo.getDocumentacion()==null||documentacionEjgVo.getDocumentacion().equals("")?"&nbsp;":documentacionEjgVo.getDocumentacion()%>
+					</td>
+					<td>
+						<%=documentacionEjgVo.getRegEntrada()==null||documentacionEjgVo.getRegEntrada().equals("")?"&nbsp;":documentacionEjgVo.getRegEntrada()%>
 					</td>					
 					<td>
-					<%=documentacionEjgVo.getRegSalida()==null||documentacionEjgVo.getRegSalida().equals("")?"&nbsp;":documentacionEjgVo.getRegSalida()%>
-					
-					</td>
-					<td>
-					<%=documentacionEjgVo.getFechaEntrega()==null||documentacionEjgVo.getFechaEntrega().equals("")?"&nbsp;":documentacionEjgVo.getFechaEntrega()%>
-					
-					</td>
-					<td>
-					<%=documentacionEjgVo.getComisionAJG()==null||documentacionEjgVo.getComisionAJG()==0?"ICA":"CAJG"%>
-					
+						<%=documentacionEjgVo.getComisionAJG()==null||documentacionEjgVo.getComisionAJG()==0?"ICA":"CAJG"%>
 					</td>
 				</siga:FilaConIconos>		
 		<% recordNumber++;		   
@@ -243,6 +245,7 @@
 				fin();
 			}
 		}
+		fin();
 	</script>
 
 	<!-- Obligatoria en todas las páginas-->
