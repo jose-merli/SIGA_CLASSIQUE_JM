@@ -1207,18 +1207,6 @@
 	}
 	
 	function accionNuevo(){
-		document.getElementById('idTipoAsistenciaColegio').value = "";
-		document.getElementById('idGuardia').value = "";
-		document.getElementById('guardias').value = "";
-		document.getElementById('guardias').onchange();
-		document.getElementById('idTurno').value = "";
-		document.getElementById('turnos').value = "";
-		document.getElementById('turnos').onchange();
-		document.getElementById('fechaGuardia').value = "";
-		document.VolantesExpressForm.idColegiado.value       = "";
-		document.VolantesExpressForm.numeroColegiado.value    = "";
-		document.VolantesExpressForm.nombreColegiado.value   = "";
-		
 		document.VolantesExpressForm.modo.value = "";
 		document.VolantesExpressForm.submit();
 	}

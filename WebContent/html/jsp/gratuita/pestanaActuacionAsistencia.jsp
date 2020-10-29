@@ -21,7 +21,7 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
-	<!-- Escribe el titulo y localizacion en la barra de t�tulo del frame principal -->	
+	<!-- Escribe el titulo y localizacion en la barra de titulo del frame principal -->	
 	<!-- FIN: TITULO Y LOCALIZACION -->
 </head>
 

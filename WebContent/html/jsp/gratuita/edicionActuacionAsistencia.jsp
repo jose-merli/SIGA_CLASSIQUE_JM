@@ -1115,7 +1115,7 @@
 		// Asociada al boton Volver para Volantes Expres
 		function accionVolver() {
 			document.VolantesExpressForm.target="mainWorkArea";
-			document.VolantesExpressForm.action = "/SIGA/JGR_VolantesExpres.do";
+			document.VolantesExpressForm.action = "/SIGA/JGR_VolantesExpres.do?origen=ACTUACIONASISTENCIA";
 			document.VolantesExpressForm.submit();
 		}
 

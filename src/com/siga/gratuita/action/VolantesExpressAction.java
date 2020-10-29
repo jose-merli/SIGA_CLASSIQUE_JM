@@ -196,7 +196,19 @@ public class VolantesExpressAction extends MasterAction
 		miForm.setMsgError("");
 		miForm.setMsgAviso("");
 		
-		
+		String origen = (String) request.getParameter("origen"); 
+		if (origen == null || origen.equalsIgnoreCase("")) {
+			// esto quiere decir que no venimos de ningun sitio, asi que hay que limpiar el formulario
+			miForm.setIdTipoAsistenciaColegio("");
+			miForm.setIdGuardia("");
+			//miForm.setGuardias("");
+			miForm.setIdTurno("");
+			//miForm.setTurnos("");
+			miForm.setFechaGuardia("");
+			miForm.setIdColegiado("");
+			miForm.setNumeroColegiado("");
+			miForm.setNombreColegiado("");
+		}
 		
 		
 		ScsTipoAsistenciaColegioAdm admTiposAsis = new ScsTipoAsistenciaColegioAdm(miForm.getUsrBean());
