@@ -23,12 +23,21 @@
 	<!-- INICIO: TITULO Y LOCALIZACION -->
 	<!-- Escribe el titulo y localizacion en la barra de titulo del frame principal -->	
 	<!-- FIN: TITULO Y LOCALIZACION -->
+	<% 
+		String esFichaColegial = request.getParameter("esFichaColegial");
+		String grupoPestanas = "";
+		if(esFichaColegial.equalsIgnoreCase("0")) {
+			grupoPestanas = "ACTASIST";
+		} else {
+			grupoPestanas = "LETACTASI";
+		}
+	%>
 </head>
 
 <body onload="ajusteAlto('mainPestanaActuacionAsistencia');return activarPestana();">
 	
 	<siga:PestanasExt 
-		pestanaId="ACTASIST" 
+		pestanaId="<%=grupoPestanas%>" 
 		target="mainPestanaActuacionAsistencia"
 		modos="modosActuacionAsistencia" 
 		parametros=""

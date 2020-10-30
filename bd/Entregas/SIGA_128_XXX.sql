@@ -959,3 +959,21 @@ INSERT INTO GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 VALUES('gratuita.volantesExpres.literal.registroVolante', 'Registro de volante#GL', 0, '4', sysdate, 0, '19');
 
 -- Ejecutado en Integracion 10/09/2020 10:00
+
+-- SIGA-490
+UPDATE GEN_PROCESOS SET descripcion = 'HIDDEN_InfoActuacionAsistencia'
+WHERE idproceso = '9T3';
+Insert Into gen_procesos
+  (idproceso, idmodulo, traza, target, fechamodificacion, usumodificacion, descripcion, transaccion, idparent, nivel)
+Values
+  ('9T4', 'JGR', 1, 'Y', Sysdate, 0, 'HIDDEN_InfoActuacionAsistenciaLetrado', 'JGR_ActuacionAsistenciaLetrado', '9T0', '10');
+Insert Into Adm_Tiposacceso
+  (Idproceso, Idperfil, Fechamodificacion, Usumodificacion, Derechoacceso, Idinstitucion)
+  (Select '9T4', Idperfil, Fechamodificacion, Usumodificacion, Derechoacceso, Idinstitucion
+     From Adm_Tiposacceso
+    Where Idproceso = '9T0');
+Insert Into gen_pestanas
+  (idproceso, idlenguaje, idrecurso, posicion, idgrupo)
+Values
+  ('9T4', 1, 'pestana.justiciagratuitaasistencia.actuaciones.actuacion', 1, 'LETACTASI');
+  
