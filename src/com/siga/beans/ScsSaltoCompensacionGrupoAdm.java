@@ -505,20 +505,290 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 		}
 		return salida;
 	}
+
+	private String buildConsultaBusquedaSaltosCompensacionesGrupo(String filtrosWhere, boolean ordenar) {
+		StringBuilder consulta = new StringBuilder();
+		
+		//select
+		consulta.append("SELECT ");
+		consulta.append(" decode(saltos.");
+		consulta.append(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION);
+		consulta.append(",'S','SG','C','CG') ");
+		consulta.append(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION);
+		consulta.append(" , saltos.");
+		consulta.append(ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO);
+		consulta.append(" , saltos.");
+		consulta.append(ScsSaltosCompensacionesBean.C_IDINSTITUCION);
+		consulta.append(" , saltos.");
+		consulta.append(ScsSaltosCompensacionesBean.C_IDTURNO);
+		consulta.append(" , null as ");
+		consulta.append(ScsSaltosCompensacionesBean.C_IDSALTOSTURNO);
+		consulta.append(" , saltos.");
+		consulta.append(ScsSaltoCompensacionGrupoBean.C_IDSALTOCOMPENSACIONGRUPO);
+		consulta.append(" , saltos.");
+		consulta.append(ScsSaltosCompensacionesBean.C_FECHA);
+		consulta.append(" , turno.");
+		consulta.append(ScsTurnoBean.C_NOMBRE);
+		consulta.append(" AS NOMBRETURNO ");
+		consulta.append(" , guardia.");
+		consulta.append(ScsGuardiasTurnoBean.C_NOMBRE);
+		consulta.append(" AS NOMBREGUARDIA ");
+		consulta.append(" , saltos.");
+		consulta.append(ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA);
+		consulta.append(" , '' || grupo.");
+		consulta.append(ScsGrupoGuardiaBean.C_NUMEROGRUPO);
+		consulta.append(" AS NUMERO ");
+		
+		consulta.append(" , LISTAGG(CASE to_number(coleg.");
+		consulta.append(CenColegiadoBean.C_COMUNITARIO);
+		consulta.append("            ) WHEN 1 THEN coleg.");
+		consulta.append(CenColegiadoBean.C_NCOMUNITARIO);
+		consulta.append("            ELSE coleg.");
+		consulta.append(CenColegiadoBean.C_NCOLEGIADO);
+		consulta.append("            END || ");
+		consulta.append("           ' - ' || perso.");
+		consulta.append(CenPersonaBean.C_APELLIDOS1);
+		consulta.append("           || nvl2(perso.");
+		consulta.append(CenPersonaBean.C_APELLIDOS2);
+		consulta.append("           , ' ' || perso.");
+		consulta.append(CenPersonaBean.C_APELLIDOS2);
+		consulta.append("           , NULL ) || ");
+		consulta.append("           ', ' || perso.");
+		consulta.append(CenPersonaBean.C_NOMBRE);
+		consulta.append("           , '; ') ");
+		consulta.append("  WITHIN GROUP(ORDER BY perso.");
+		consulta.append(CenPersonaBean.C_APELLIDOS1);
+		consulta.append("  ) AS LETRADO ");
+		
+		//Campos para mostrar en la ventana de cola guardia
+		consulta.append(" , turno.");
+		consulta.append(ScsGrupoGuardiaBean.C_IDINSTITUCION);
+		consulta.append(" AS ID1, turno.");
+		consulta.append(ScsGrupoGuardiaBean.C_IDTURNO);
+		consulta.append(" AS ID2, saltos.");
+		consulta.append(ScsGrupoGuardiaBean.C_IDGUARDIA);
+		consulta.append(" AS ID3, grupo.");
+		consulta.append(ScsGrupoGuardiaBean.C_IDGRUPOGUARDIA);
+		consulta.append(" AS ID4 ");
+		
+		//from
+		consulta.append("  FROM ");
+		consulta.append(ScsSaltoCompensacionGrupoBean.T_NOMBRETABLA);
+		consulta.append(" saltos, ");
+		consulta.append(ScsTurnoBean.T_NOMBRETABLA);
+		consulta.append(" turno, ");
+		consulta.append(ScsGuardiasTurnoBean.T_NOMBRETABLA);
+		consulta.append(" guardia, ");
+		consulta.append(ScsGrupoGuardiaBean.T_NOMBRETABLA);
+		consulta.append(" grupo, ");
+		consulta.append(ScsGrupoGuardiaColegiadoBean.T_NOMBRETABLA);
+		consulta.append(" grucol, "); 
+		consulta.append(CenPersonaBean.T_NOMBRETABLA);
+		consulta.append(" perso, ");
+		consulta.append(CenColegiadoBean.T_NOMBRETABLA);
+		consulta.append(" coleg ");
+		consulta.append(" WHERE ");
+		
+		//joins
+		consulta.append("   grupo.");
+		consulta.append(ScsGrupoGuardiaBean.C_IDGRUPOGUARDIA);
+		consulta.append("       = saltos.");
+		consulta.append(ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA);
+		consulta.append("   AND turno.");
+		consulta.append(ScsTurnoBean.C_IDINSTITUCION);
+		consulta.append("       = guardia.");
+		consulta.append(ScsGuardiasTurnoBean.C_IDINSTITUCION);
+		consulta.append("   AND turno.");
+		consulta.append(ScsTurnoBean.C_IDTURNO);
+		consulta.append("       = guardia.");
+		consulta.append(ScsGuardiasTurnoBean.C_IDTURNO);
+		
+		consulta.append("   AND turno.");
+		consulta.append(ScsTurnoBean.C_IDINSTITUCION);
+		consulta.append("       = saltos.");
+		consulta.append(ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION);
+		consulta.append("   AND turno.");
+		consulta.append(ScsTurnoBean.C_IDTURNO);
+		consulta.append("       = saltos.");
+		consulta.append(ScsSaltoCompensacionGrupoBean.C_IDTURNO);
+		consulta.append("   AND guardia.");
+		consulta.append(ScsGuardiasTurnoBean.C_IDINSTITUCION);
+		consulta.append("   (+) = saltos.");
+		consulta.append(ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION);
+		consulta.append("   AND guardia.");
+		consulta.append(ScsGuardiasTurnoBean.C_IDTURNO);
+		consulta.append("   (+) = saltos.");
+		consulta.append(ScsSaltoCompensacionGrupoBean.C_IDTURNO);
+		consulta.append("   AND guardia.");
+		consulta.append(ScsGuardiasTurnoBean.C_IDGUARDIA);
+		consulta.append("   (+) = saltos.");
+		consulta.append(ScsSaltoCompensacionGrupoBean.C_IDGUARDIA);
+		
+		consulta.append("   AND grupo.");
+		consulta.append(ScsGrupoGuardiaBean.C_IDGRUPOGUARDIA);
+		consulta.append("       = grucol.");
+		consulta.append(ScsGrupoGuardiaColegiadoBean.C_IDGRUPO);
+
+		consulta.append("   AND perso.");
+		consulta.append(CenPersonaBean.C_IDPERSONA);
+		consulta.append("       = grucol.");
+		consulta.append(ScsGrupoGuardiaColegiadoBean.C_IDPERSONA);
+		consulta.append("   AND coleg.");
+		consulta.append(CenColegiadoBean.C_IDPERSONA);
+		consulta.append("       = grucol.");
+		consulta.append(ScsGrupoGuardiaColegiadoBean.C_IDPERSONA);
+		consulta.append("   AND coleg.");
+		consulta.append(CenColegiadoBean.C_IDINSTITUCION);
+		consulta.append("       = grucol.");
+		consulta.append(ScsGrupoGuardiaColegiadoBean.C_IDINSTITUCION);
+		
+		//where
+		consulta.append("   AND ");
+		consulta.append(filtrosWhere);
+		
+		//group by
+		consulta.append("GROUP BY ");
+		consulta.append(" saltos.");
+		consulta.append(ScsSaltosCompensacionesBean.C_SALTOCOMPENSACION);
+		consulta.append(" , saltos.");
+		consulta.append(ScsSaltosCompensacionesBean.C_FECHACUMPLIMIENTO);
+		consulta.append(" , saltos.");
+		consulta.append(ScsSaltosCompensacionesBean.C_IDINSTITUCION);
+		consulta.append(" , saltos.");
+		consulta.append(ScsSaltosCompensacionesBean.C_IDTURNO);
+		consulta.append(" , saltos.");
+		consulta.append(ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA);
+		consulta.append(" , saltos.");
+		consulta.append(ScsSaltoCompensacionGrupoBean.C_IDSALTOCOMPENSACIONGRUPO);
+		consulta.append(" , saltos.");
+		consulta.append(ScsSaltosCompensacionesBean.C_FECHA);
+		consulta.append(" , grupo.");
+		consulta.append(ScsGrupoGuardiaBean.C_NUMEROGRUPO);
+		consulta.append(" , turno.");
+		consulta.append(ScsTurnoBean.C_NOMBRE);
+		consulta.append(" , guardia.");
+		consulta.append(ScsGuardiasTurnoBean.C_NOMBRE);
+		consulta.append(" , turno.");
+		consulta.append(ScsTurnoBean.C_IDINSTITUCION);
+		consulta.append(" , turno.");
+		consulta.append(ScsTurnoBean.C_IDTURNO);
+		consulta.append(" , saltos.");
+		consulta.append(ScsGrupoGuardiaBean.C_IDGUARDIA);
+		consulta.append(" , grupo.");
+		consulta.append(ScsGrupoGuardiaBean.C_IDGRUPOGUARDIA);
+		
+		//order
+		if (ordenar) {
+			consulta.append(" ORDER BY saltos.");
+			consulta.append(ScsSaltoCompensacionGrupoBean.C_FECHA);
+			consulta.append(" desc");
+		}
+		
+		return consulta.toString();
+	}
 	
+	public Hashtable getSqlYContadorBusquedaSaltosCompensacionesGrupoBind(Hashtable datosEntrada, int contador, Hashtable<Integer, String> codigosBind) 
+			throws ClsExceptions
+	{
+		Hashtable sqlYcontador = new Hashtable();
+		
+		try { 
+			//obteniendo datos desde el Hash
+			String idInstitucion = UtilidadesHash.getString(datosEntrada,"IDINSTITUCION");
+			String fechaDesde = UtilidadesHash.getString(datosEntrada,"FECHADESDE"); 
+			String fechaHasta = UtilidadesHash.getString(datosEntrada,"FECHAHASTA");
+			String idTurno = UtilidadesHash.getString(datosEntrada,"IDTURNO");
+			String idGuardia = UtilidadesHash.getString(datosEntrada,"IDGUARDIA");
+			String idPersona = UtilidadesHash.getString(datosEntrada,"IDPERSONA");
+			String idGrupoGuardia = UtilidadesHash.getString(datosEntrada,"IDGRUPOGUARDIA");
+			String salto = UtilidadesHash.getString(datosEntrada,"SALTO");
+			String compensado = UtilidadesHash.getString(datosEntrada,"COMPENSADO");
+			
+			//generando where
+			StringBuilder where = new StringBuilder();
+			where.append(" saltos.");
+			where.append(ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION);
+			where.append("=:");
+			contador ++;
+			codigosBind.put(new Integer(contador), idInstitucion);
+			where.append(contador);
+			if (salto!=null) {
+				where.append(" AND saltos.");
+				where.append(ScsSaltoCompensacionGrupoBean.C_SALTOCOMPENSACION);
+				where.append("=:");
+				contador ++;
+				codigosBind.put(new Integer(contador), salto);
+				where.append(contador);
+			}
+			if (!idTurno.equals("")) {
+				where.append(" AND saltos.");
+				where.append(ScsSaltoCompensacionGrupoBean.C_IDTURNO);
+				where.append("=:");
+				contador ++;
+				codigosBind.put(new Integer(contador), idTurno);
+				where.append(contador);
+			}
+			if (!idGuardia.equals("")) {
+				where.append(" AND saltos.");
+				where.append(ScsSaltoCompensacionGrupoBean.C_IDGUARDIA);
+				where.append("=:");
+				contador ++;
+				codigosBind.put(new Integer(contador), idGuardia);
+				where.append(contador);
+			}
+			if (idGrupoGuardia!=null && !idGrupoGuardia.equals("")) {
+				where.append(" AND saltos.");
+				where.append(ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA);
+				where.append("=:");
+				contador ++;
+				codigosBind.put(new Integer(contador), idGrupoGuardia);
+				where.append(contador);
+			}
+			if (compensado!=null) {
+				where.append(" AND saltos.");
+				where.append(ScsSaltoCompensacionGrupoBean.C_FECHACUMPLIMIENTO);
+				where.append(compensado.equals("S") ? " > TO_DATE('01/01/2001','DD/MM/YYYY')" : " is null ");
+			}
+			if ((fechaDesde != null && !fechaDesde.trim().equals("")) || (fechaHasta != null && !fechaHasta.trim().equals(""))) {
+				where.append(" AND ");
+				if (!fechaDesde.equals(""))
+					fechaDesde = GstDate.getApplicationFormatDate("", fechaDesde); 
+				if (!fechaHasta.equals(""))
+					fechaHasta = GstDate.getApplicationFormatDate("", fechaHasta);
+				Vector contadorYsql = GstDate.dateBetweenDesdeAndHastaBind("saltos."+ScsSaltoCompensacionGrupoBean.C_FECHA, fechaDesde, fechaHasta, contador, codigosBind);
+				contador = ((Integer)contadorYsql.get(0)).intValue();
+				where.append(contadorYsql.get(1));
+			}
+			if (idPersona!=null && !idPersona.equals("")) {
+				where.append(" AND grupo.idgrupoguardia in (select col2.idgrupoguardia from scs_grupoguardiacolegiado col2 where col2.idpersona = ");
+				contador ++;
+				codigosBind.put(new Integer(contador), idPersona);
+				where.append(":"+contador);
+				where.append(")");
+			}
+			
+			sqlYcontador.put("CODIGOS", contador);
+			sqlYcontador.put("SQL", buildConsultaBusquedaSaltosCompensacionesGrupo(where.toString(), false));
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Excepcion en ScsSaltosCompensacionesGrupoAdm.getPaginadorBusquedaSaltosCompensacionesGrupo() en la consulta");
+		}
+		return sqlYcontador;
+	}
 	/** 
 	 * Devuelve la consulta SQL de la búsqueda de Turnos, Guardias y Letrados con saltos o compensaciones.
 	 * 
 	 * @param Hashtable registros: tabla hash con los datos de la pantalla para realizar la busqueda.
 	 * @return String: tiene la consulta SQL a ejecutar
 	 * @throws ClsExceptions
-	 */	
-	public String buscar(Hashtable registros) throws ClsExceptions {
-		String consulta = "";
-		String fechaDesde="", fechaHasta="", idTurno="", idGuardia="", idGrupoGuardia="", salto="", compensado="", idPersona="";		
+	 */
+	public String getConsultaBusquedaSaltosCompensacionesGrupo(Hashtable registros) throws ClsExceptions {
+		StringBuilder sql = new StringBuilder();
+		StringBuilder where = new StringBuilder();
+		String idInstitucion="", fechaDesde="", fechaHasta="", idTurno="", idGuardia="", idGrupoGuardia="", salto="", compensado="", idPersona="";		
 
 		try { 
-			//Datos iniciales:
+			//obteniendo datos desde el Hash
+			idInstitucion = UtilidadesHash.getString(registros,"IDINSTITUCION");
 			fechaDesde = UtilidadesHash.getString(registros,"FECHADESDE"); 
 			fechaHasta = UtilidadesHash.getString(registros,"FECHAHASTA");
 			idTurno = UtilidadesHash.getString(registros,"IDTURNO");
@@ -528,68 +798,66 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 			salto = UtilidadesHash.getString(registros,"SALTO");
 			compensado = UtilidadesHash.getString(registros,"COMPENSADO");
 			
-			//Consulta:
-			consulta  = "SELECT ";
-			consulta += " decode(saltos.saltoocompensacion,'S','SG','C','CG') SALTOOCOMPENSACION, ";
-			consulta += " saltos.*,";
-			consulta += " grupo."+ScsGrupoGuardiaBean.C_NUMEROGRUPO+ " AS NUMERO,";
-			consulta += " turno."+ScsTurnoBean.C_NOMBRE+" AS NOMBRETURNO,";
-			consulta += " guardia."+ScsGuardiasTurnoBean.C_NOMBRE+" AS NOMBREGUARDIA ";
-			//Campos para mostrar en la ventana de cola guardia
-			consulta += " , turno.IDINSTITUCION AS ID1, turno.IDTURNO AS ID2, saltos.IDGUARDIA AS ID3, grupo.IDGRUPOGUARDIA AS ID4 ";
-			consulta += " FROM "+ScsSaltoCompensacionGrupoBean.T_NOMBRETABLA+" saltos, ";
-			consulta += ScsTurnoBean.T_NOMBRETABLA+" turno, ";
-			consulta += ScsGuardiasTurnoBean.T_NOMBRETABLA+" guardia, ";
-			consulta += ScsGrupoGuardiaBean.T_NOMBRETABLA+" grupo ";
- 			consulta += " WHERE ";
-			consulta += " saltos."+ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION+"="+UtilidadesHash.getString(registros,"IDINSTITUCION");
-			if(salto!=null)
-				consulta += " AND saltos."+ScsSaltoCompensacionGrupoBean.C_SALTOCOMPENSACION+"='"+salto+"'";
-			if (!idTurno.equals(""))
-				consulta += " AND saltos."+ScsSaltoCompensacionGrupoBean.C_IDTURNO+"="+idTurno;
-			if (!idGuardia.equals(""))
-				consulta += " AND saltos."+ScsSaltoCompensacionGrupoBean.C_IDGUARDIA+"="+idGuardia;
-			if (idGrupoGuardia!=null && !idGrupoGuardia.equals(""))
-				consulta += " AND saltos."+ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA+"="+idGrupoGuardia;
-			if (compensado!=null && compensado.equals("S"))
-				consulta += " AND saltos."+ScsSaltoCompensacionGrupoBean.C_FECHACUMPLIMIENTO+" > TO_DATE('01/01/2001','DD/MM/YYYY')";
-			if (compensado!=null && compensado.equals("N"))
-				consulta += " AND saltos."+ScsSaltoCompensacionGrupoBean.C_FECHACUMPLIMIENTO+" is null ";
-			
+			//generando where
+			where.append(" saltos.");
+			where.append(ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION);
+			where.append("=");
+			where.append(idInstitucion);
+			if (salto!=null) {
+				where.append(" AND saltos.");
+				where.append(ScsSaltoCompensacionGrupoBean.C_SALTOCOMPENSACION);
+				where.append("='");
+				where.append(salto+"'");
+			}
+			if (!idTurno.equals("")) {
+				where.append(" AND saltos.");
+				where.append(ScsSaltoCompensacionGrupoBean.C_IDTURNO);
+				where.append("=");
+				where.append(idTurno);
+			}
+			if (!idGuardia.equals("")) {
+				where.append(" AND saltos.");
+				where.append(ScsSaltoCompensacionGrupoBean.C_IDGUARDIA);
+				where.append("=");
+				where.append(idGuardia);
+			}
+			if (idGrupoGuardia!=null && !idGrupoGuardia.equals("")) {
+				where.append(" AND saltos.");
+				where.append(ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA);
+				where.append("=");
+				where.append(idGrupoGuardia);
+			}
+			if (compensado!=null) {
+				where.append(" AND saltos.");
+				where.append(ScsSaltoCompensacionGrupoBean.C_FECHACUMPLIMIENTO);
+				where.append(compensado.equals("S") ? " > TO_DATE('01/01/2001','DD/MM/YYYY')" : " is null ");
+			}
 			if ((fechaDesde != null && !fechaDesde.trim().equals("")) || (fechaHasta != null && !fechaHasta.trim().equals(""))) {
 				if (!fechaDesde.equals(""))
 					fechaDesde = GstDate.getApplicationFormatDate("", fechaDesde); 
 				if (!fechaHasta.equals(""))
 					fechaHasta = GstDate.getApplicationFormatDate("", fechaHasta);
-				consulta += " AND " + GstDate.dateBetweenDesdeAndHasta("saltos."+ScsSaltoCompensacionGrupoBean.C_FECHA, fechaDesde, fechaHasta);
+				where.append(" AND ");
+				where.append(GstDate.dateBetweenDesdeAndHasta("saltos."+ScsSaltoCompensacionGrupoBean.C_FECHA, fechaDesde, fechaHasta));
 			}
+			if (idPersona!=null && !idPersona.equals("")) {
+				where.append(" AND grupo.idgrupoguardia in (select col2.idgrupoguardia from scs_grupoguardiacolegiado col2 where col2.idpersona = ");
+				where.append(idPersona);
+				where.append(")");
+			}
+			sql.append(buildConsultaBusquedaSaltosCompensacionesGrupo(where.toString(), true));
 			
-			if (idPersona!=null && !idPersona.equals(""))
-				consulta += " AND grupo.idgrupoguardia in (select col2.idgrupoguardia from scs_grupoguardiacolegiado col2 where col2.idpersona = "+idPersona+")";
-
-			consulta += " AND grupo."+ScsGrupoGuardiaBean.C_IDGRUPOGUARDIA+"=saltos."+ScsSaltoCompensacionGrupoBean.C_IDGRUPOGUARDIA;
-			
-			consulta += " AND turno."+ScsTurnoBean.C_IDINSTITUCION+"=guardia."+ScsGuardiasTurnoBean.C_IDINSTITUCION;
-			consulta += " AND turno."+ScsTurnoBean.C_IDTURNO+"=guardia."+ScsGuardiasTurnoBean.C_IDTURNO;
-			
-			consulta += " AND guardia."+ScsGuardiasTurnoBean.C_IDINSTITUCION+"(+)=grupo."+ScsGrupoGuardiaBean.C_IDINSTITUCION;
-			consulta += " AND guardia."+ScsGuardiasTurnoBean.C_IDTURNO+"(+)=grupo."+ScsGrupoGuardiaBean.C_IDTURNO;
-			consulta += " AND guardia."+ScsGuardiasTurnoBean.C_IDGUARDIA+"(+)=grupo."+ScsGrupoGuardiaBean.C_IDGUARDIA;
-
-			//ORDENACION
-			consulta += " ORDER BY saltos."+ScsSaltoCompensacionGrupoBean.C_FECHA+" desc";
+		} catch (Exception e) {
+			throw new ClsExceptions (e, "Excepcion en ScsSaltosCompensacionesGrupoAdm.getConsultaBusquedaSaltosCompensacionesGrupo() en la consulta:"+where.toString());
 		}
-		catch (Exception e) {
-			throw new ClsExceptions (e, "Excepcion en ScsSaltosCompensacionesGrupoAdm.buscar() en la consulta:"+consulta);
-		}
-		return consulta;
-	}	
-	
+		return sql.toString();
+	}
+
 	public String selectSaltosCompensaciones(Hashtable registros) throws ClsExceptions {
 		String consulta = "";
 		try{
 			consulta  = "SELECT ID1, ID2, ID3, ID4, NUMERO , COUNT(1) REP from (";
-			consulta +=  this.buscar(registros);
+			consulta +=  this.getConsultaBusquedaSaltosCompensacionesGrupo(registros);
 			consulta += ")";
 			consulta += "  GROUP BY numero, ID1, ID2, ID3, ID4";
 		}
@@ -598,34 +866,6 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 		}
 		return consulta;
 	}	
-	
-	public Vector selectMantenimientoSYC(String consulta) throws ClsExceptions
-	{
-		Vector datos = new Vector();
-
-		// Acceso a BBDD
-		try {
-			RowsContainer rc = new RowsContainer();
-			if (rc.query(consulta)) {
-				for (int i = 0; i < rc.size(); i++) {
-					Row fila = (Row) rc.get(i);
-					Hashtable registro = (Hashtable) fila.getRow();
-					if (registro != null){
-						String idInstitucion =  (String) registro.get("IDINSTITUCION");
-						String idTurno = (String) registro.get("IDTURNO"); 
-						String idGuardia = (String) registro.get("IDGUARDIA"); 
-						String idGrupoGuardia = (String) registro.get("IDGRUPOGUARDIA");
-						registro.put("LETRADO",getInfoLetradosGrupoGuardia(idInstitucion, idTurno, idGuardia, idGrupoGuardia));
-						datos.add(registro);
-					}
-				}
-			}
-		} catch (Exception e) {
-			throw new ClsExceptions(e, "Excepcion en ScsSaltoCompensacionGrupoAdm.selectGenerico(). Consulta SQL:"
-					+ consulta);
-		}
-		return datos;
-	}
 	
 	public Vector selectDatosColaGuardiaSYC(String consulta) throws ClsExceptions {
 		Vector datos = new Vector();

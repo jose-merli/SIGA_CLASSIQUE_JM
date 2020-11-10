@@ -96,63 +96,71 @@
 		<td class="labelText">	
 			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.turno"/>
 		</td>
-		<td colspan="4">
-			<siga:ComboBD nombre = "idTurno" tipo="turnos" clase="boxCombo" ancho="350" obligatorio="false" accion="Hijo:idGuardia" parametro="<%=dato%>"/>		
+		<td colspan="5">
+			<siga:ComboBD nombre = "idTurno" tipo="turnos" clase="boxCombo" ancho="400" obligatorio="false" accion="Hijo:idGuardia" parametro="<%=dato%>"/>		
 		</td>	
-		<td class="labelText">	
-			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.guardia"/>
-		</td>	
-		<td colspan="4">	
-			<siga:ComboBD nombre = "idGuardia" tipo="guardias" clase="boxCombo" ancho="290" obligatorio="false" hijo="t"/> 
-		</td>		
-	</tr>
-	<tr>	
-		<td class="labelText">	
-			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.numero"/>
-		</td>
-		<td colspan="5">	
-				<!-- Si la busqueda se realiza por idPersona, el campo numeroLetrado no puede modificarse, en cambio
-					 si la busqueda se realiza mediante el campo numeroLetrado se podría modificar por pantalla sin
-					 necesidad de seleccionarlo por el botón -->
-				<html:text name="SaltosYCompensacionesForm" property="numeroLetrado" size="10" maxlength="100" styleClass="boxConsulta" value="" readonly="true"></html:text>
-				<html:text property="nombreMostrado" size="30" maxlength="150" styleClass="boxConsulta" value="" readonly="true"></html:text>
-				&nbsp;
-				<!-- Boton para buscar un Colegiado -->
-				<input type="button" class="button" id="idButton" name="buscarColegiado" value='<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.buscar"/>' onClick="buscarCliente();">
-				<!-- Si el campo numeroLetrado es de solo lectuta hace falta este botón para limpiar -->
-				&nbsp;<input type="button" id="idButton" class="button" name="limpiarColegiado" value='<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.limpiar"/>' onClick="limpiarCliente();">
-				<!-- FIN - RGG - SELECCION DE COLEGIADO -->
-		</td>
-		<td class="labelText">	
-			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.mostrar"/>
-		</td>
-		<td>
-			<Select name="salto" class="boxCombo">
-					<option value='todo' selected ><siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.todo"/></option>
-					<option value='S' ><siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.salto"/></option>
-					<option value='C' ><siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.compensacion"/></option>
-					<option value='SG' ><siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.saltoGrupos"/></option>
-					<option value='CG' ><siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.compensacionGrupos"/></option>
-			</Select>
-		</td>	
-	</tr>
-	<tr>	
 		<td class="labelText">	
 			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.fecha"/>
 			&nbsp;
 			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.desde"/>
 		</td>
-		<td class="labelText" colspan="5">	
+		<td>	
 			<siga:Fecha nombreCampo="fechaDesde"></siga:Fecha>
-			&nbsp;
+		</td>
+		<td class="labelText">	
 			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.hasta"/>
-			&nbsp;
+		</td>
+		<td>	
 			<siga:Fecha nombreCampo="fechaHasta" campoCargarFechaDesde="fechaDesde"></siga:Fecha>		
 		</td>
+	</tr>
+	<tr>	
+		<td class="labelText">	
+			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.guardia"/>
+		</td>	
+		<td colspan="5">	
+			<siga:ComboBD nombre = "idGuardia" tipo="guardias" clase="boxCombo" ancho="400" obligatorio="false" hijo="t"/> 
+		</td>		
+		<td class="labelText">	
+			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.mostrar"/>
+		</td>
+		<td colspan="3">
+			<Select name="salto" class="boxCombo" style="width:280px">
+				<option value='todo' selected ><siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.todo"/></option>
+				<option value='S' ><siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.salto"/></option>
+				<option value='C' ><siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.compensacion"/></option>
+				<option value='SG' ><siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.saltoGrupos"/></option>
+				<option value='CG' ><siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.compensacionGrupos"/></option>
+			</Select>
+		</td>	
+	</tr>
+	<tr>	
+		<td class="labelText">	
+			<siga:Idioma key="gratuita.seleccionColegiadoJG.literal.colegiado"/>
+		</td>
+		<td>	
+			<!-- Boton para buscar un Colegiado -->
+			<input type="button" class="button" id="idButton" name="buscarColegiado" value='<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.buscar"/>' onClick="buscarCliente();">
+		</td>
+		<td>	
+			<!-- Si el campo numeroLetrado es de solo lectuta hace falta este botón para limpiar -->
+			<input type="button" id="idButton" class="button" name="limpiarColegiado" value='<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.limpiar"/>' onClick="limpiarCliente();">
+			<!-- FIN - RGG - SELECCION DE COLEGIADO -->
+		</td>
+		<td class="labelText">	
+			<!-- Si la busqueda se realiza por idPersona, el campo numeroLetrado no puede modificarse, en cambio
+				 si la busqueda se realiza mediante el campo numeroLetrado se podría modificar por pantalla sin
+				 necesidad de seleccionarlo por el botón -->
+			<html:text name="SaltosYCompensacionesForm" property="numeroLetrado" size="10" maxlength="100" styleClass="boxConsulta" value="" readonly="true"></html:text>
+		</td>
+		<td class="labelText" colspan="2">	
+			<html:text property="nombreMostrado" size="30" maxlength="150" styleClass="boxConsulta" value="" readonly="true"></html:text>
+		</td>
+		
 		<td class="labelText">	
 			<siga:Idioma key="gratuita.inicio_SaltosYCompensaciones.literal.compensado"/>
 		</td>
-		<td>	
+		<td colspan="3">	
 			<Select name="compensado" class="boxCombo">
 					<option value='todo'></option>
 					<option value='no' selected ><siga:Idioma key="general.no"/></option>
@@ -190,9 +198,16 @@
 		{
 			sub();
 			document.forms[0].target = 'resultado';		
+			document.forms[0].modo.value = "buscarInit";
+			document.forms[0].submit();
+		}		
+		<!-- Funcion asociada al paginador -->
+		function buscarPaginador() 
+		{
+			sub();
+			document.forms[0].target = 'resultado';		
 			document.forms[0].modo.value = "buscarPor";
 			document.forms[0].submit();
-			
 		}		
 		
 		<!-- Funcion asociada a boton Nuevo -->
