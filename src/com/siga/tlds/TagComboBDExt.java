@@ -407,27 +407,7 @@ public class TagComboBDExt extends TagSupport {
 		if (datos == null) 
 			datos = new Vector();
 		
-		// Acceso a BBDD
-		RowsContainer rc = null;
-		try { 
-			rc = new RowsContainer();
-			if (rc.queryNLS(consultaSQL)) {
-				for (int i = 0; i < rc.size(); i++)	{
-					Row fila = (Row) rc.get(i);
-					ParejaNombreID dato = new ParejaNombreID();
-					dato.setIdNombre((String)fila.getRow().get("ID"));
-					dato.setNombre((String)fila.getRow().get("DESCRIPCION"));
-					datos.add(dato);
-				}
-			}
-		} 
-		catch (Exception e) { 	
-			ParejaNombreID dato = new ParejaNombreID();
-			dato.setIdNombre("1");
-			dato.setNombre("Error B.D.");
-			datos.add(dato);
-		}
-		
+		UtilidadesBDAdm.getDatosConsulta(datos, consultaSQL, null);
 		return TagComboBDExt.OK;
 	}
 	private int getDatosConsultaBind (Vector datos, String consultaSQL, Hashtable codigos) throws Exception
@@ -435,27 +415,7 @@ public class TagComboBDExt extends TagSupport {
 		if (datos == null) 
 			datos = new Vector();
 		
-		// Acceso a BBDD
-		RowsContainer rc = null;
-		try { 
-			rc = new RowsContainer();
-			if (rc.queryNLSBind(consultaSQL,codigos)) {
-				for (int i = 0; i < rc.size(); i++)	{
-					Row fila = (Row) rc.get(i);
-					ParejaNombreID dato = new ParejaNombreID();
-					dato.setIdNombre((String)fila.getRow().get("ID"));
-					dato.setNombre((String)fila.getRow().get("DESCRIPCION"));
-					datos.add(dato);
-				}
-			}
-		} 
-		catch (Exception e) { 	
-			ParejaNombreID dato = new ParejaNombreID();
-			dato.setIdNombre("1");
-			dato.setNombre("Error B.D.");
-			datos.add(dato);
-		}
-		
+		UtilidadesBDAdm.getDatosConsulta(datos, consultaSQL, codigos);
 		return TagComboBDExt.OK;
 	}
 	

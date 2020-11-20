@@ -21,6 +21,7 @@ public class MantenimientoInformesForm extends MasterForm
 	private String idPersona;
 	String[] parametrosComboPago = null;
 	String[] parametrosComboPagoFin = null;
+	private String nombrePago, abreviatura;
 
 	
 	// Getters
@@ -35,6 +36,8 @@ public class MantenimientoInformesForm extends MasterForm
 	public String getIdPersona() {return idPersona;}
 	public String[] getParametrosComboPago() {return parametrosComboPago;}
 	public String[] getParametrosComboPagoFin() {return parametrosComboPagoFin;}
+	public String getNombrePago() {return nombrePago;}
+	public String getAbreviatura() {return abreviatura;}
 	
 	public String getIdioma() {return UtilidadesHash.getString(this.datos, "IDIOMA");}
 	public String getIdPago() {return UtilidadesHash.getString(this.datos, "IDPAGO");}
@@ -58,6 +61,8 @@ public class MantenimientoInformesForm extends MasterForm
 	public void setIdPersona(String valor) {this.idPersona = valor;}
 	public void setParametrosComboPago(String[] valor) {this.parametrosComboPago = valor;}
 	public void setParametrosComboPagoFin(String[] valor) {this.parametrosComboPagoFin = valor;}
+	public void setNombrePago(String nombrePago) {this.nombrePago = nombrePago;}
+	public void setAbreviatura(String abreviatura) {this.abreviatura = abreviatura;}
 	
 	public void setIdioma(String valor) {UtilidadesHash.set(this.datos, "IDIOMA", valor);}
 	public void setIdPago(String valor) {UtilidadesHash.set(this.datos, "IDPAGO", valor);}

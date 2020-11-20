@@ -191,36 +191,42 @@ public class InformePagosColegiadoAction extends MasterAction {
 
 				databackup=new HashMap();
 				 			
-				PaginadorCaseSensitiveBind resultado = null;
 				Vector datos = null;
 				FcsPagosJGAdm pagosAdm = new FcsPagosJGAdm(user);
 				
-				
+				// obteniendo los pagos del filtro de usuario
 				String idPagos = EjecucionPLs.ejecutarFuncPagosIntervalo(idInstitucion, miFormulario.getIdPago(),miFormulario.getIdPagoFinal());
 				
-				resultado = pagosAdm.getPaginadorDetallePago(miFormulario,idPagos, idInstitucion, user.getLanguage());
+				// ejecutando la consulta y obteniendo el paginador
+				Hashtable codigos = new Hashtable();
+				String sql = pagosAdm.getQueryDetallePagoInicioFin(miFormulario,idPagos,idInstitucion, codigos, user.getLanguage());
+				PaginadorCaseSensitiveBind paginador = new PaginadorCaseSensitiveBind(sql, codigos);
+				int totalRegistros = paginador.getNumeroTotalRegistros();
+				if (totalRegistros == 0)
+					paginador = null;
 				
-				
-				databackup.put("paginador",resultado);
-				if (resultado!=null){ 
+				// registrando la seleccion de registros
+				if (paginador!=null){ 
 					if(isSeleccionarTodos){
 						//Si hay que seleccionar todos hacemos la query completa.
-						ArrayList clavesRegSeleccinados = new ArrayList((Collection)pagosAdm.selectGenericoNLSBind(resultado.getQueryInicio(), resultado.getCodigosInicio()));
+						ArrayList clavesRegSeleccinados = new ArrayList((Collection)pagosAdm.selectGenericoNLSBind(paginador.getQueryInicio(), paginador.getCodigosInicio()));
 						aniadeClavesBusqueda(this.clavesBusqueda,clavesRegSeleccinados);
 						miFormulario.setRegistrosSeleccionados(clavesRegSeleccinados);
-						datos = resultado.obtenerPagina(Integer.parseInt(miFormulario.getSeleccionarTodos()));
+						datos = paginador.obtenerPagina(Integer.parseInt(miFormulario.getSeleccionarTodos()));
 						miFormulario.setSeleccionarTodos("");
 						
 					}else{
-//					
 						miFormulario.setRegistrosSeleccionados(new ArrayList());
-						datos = resultado.obtenerPagina(1);
+						datos = paginador.obtenerPagina(1);
 					}
 					databackup.put("datos",datos);
 					
 				}else{
 					miFormulario.setRegistrosSeleccionados(new ArrayList());
-				} 
+				}
+				
+				// devolviendo el paginador
+				databackup.put("paginador",paginador);
 				miFormulario.setDatosPaginador(databackup);
 			}
 
