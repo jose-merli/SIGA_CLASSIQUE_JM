@@ -1515,6 +1515,7 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 		BusquedaCAJG_EJGForm miForm = (BusquedaCAJG_EJGForm) formulario;
 		String seleccionados = miForm.getSelDefinitivo(); 
 		String idEstado= miForm.getIdNuevoEstado();
+		String observaciones= miForm.getObservaciones();
 		Vector claves = (Vector) request.getSession().getAttribute("EJG_SELECCIONADOS");
 		Vector v_seleccionadosSesion = new Vector();
 		if (seleccionados != null && !seleccionados.equals("")) {
@@ -1539,7 +1540,7 @@ protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpSer
 				String sqlInsertEstadoEJG = new String("insert into scs_estadoejg (idinstitucion, idtipoejg, anio, numero, idestadoejg" +
 						", fechainicio, fechamodificacion, usumodificacion, observaciones, idestadoporejg, automatico)" +
 						" SELECT EJG.IDINSTITUCION, EJG.IDTIPOEJG, EJG.ANIO, EJG.NUMERO, '" + idEstado + "'" +
-						", TRUNC(SYSDATE), SYSDATE, " + getUserBean(request).getUserName() + ", NULL, (" + sqlMaxIdEstadoPorEJG + "), 0" +
+						", TRUNC(SYSDATE), SYSDATE, " + getUserBean(request).getUserName() + ", '"+observaciones+"', (" + sqlMaxIdEstadoPorEJG + "), 0" +
 						" FROM SCS_EJG EJG" +
 						" WHERE EJG.IDINSTITUCION = " + getIDInstitucion(request) + 
 						" AND (1 = 0");

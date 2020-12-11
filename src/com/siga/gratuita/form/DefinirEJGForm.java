@@ -469,7 +469,7 @@ import com.siga.censo.form.DatosRegTelForm;
 	 * 
 	 * @return Observaciones de la EJG
 	 */
-	public String getObservaciones			()		{ return this.datos.get(ScsEJGBean.C_OBSERVACIONES).toString();}
+	public String getObservaciones			()		{ return this.datos.get(ScsEJGBean.C_OBSERVACIONES)!=null?this.datos.get(ScsEJGBean.C_OBSERVACIONES).toString():null;}
 	/**.
 	 * Recupera de la Hashtable los delitos de la EJG
 	 * 
