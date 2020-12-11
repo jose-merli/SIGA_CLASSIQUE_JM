@@ -199,25 +199,23 @@ public class VolantesExpressAction extends MasterAction
 		String origen = (String) request.getParameter("origen"); 
 		if (origen == null || origen.equalsIgnoreCase("")) {
 			// esto quiere decir que no venimos de ningun sitio, asi que hay que limpiar el formulario
-			miForm.setIdTipoAsistenciaColegio("");
+			miForm.setCentroOjuzgado("");
 			miForm.setIdGuardia("");
 			//miForm.setGuardias("");
 			miForm.setIdTurno("");
 			//miForm.setTurnos("");
 			miForm.setFechaGuardia("");
 			miForm.setIdColegiado("");
+			miForm.setIdColegiadoGuardia("");
 			miForm.setNumeroColegiado("");
 			miForm.setNombreColegiado("");
+			// Por defecto marcamos "Guardia 24h. Asistencia al detenido. Procedimiento general"
+			miForm.setIdTipoAsistenciaColegio(String.valueOf(ScsTipoAsistenciaColegioBean.TIPO_ASISTENCIA_DETENIDO_PROC_GENERAL));
 		}
-		
 		
 		ScsTipoAsistenciaColegioAdm admTiposAsis = new ScsTipoAsistenciaColegioAdm(miForm.getUsrBean());
 		Hashtable<String, Object> ht = new Hashtable<String, Object>();
 		ht.put(ScsTipoAsistenciaColegioBean.C_IDINSTITUCION, miForm.getIdInstitucion());
-		// Por defecto marcamos "Guardia 24h. Asistencia al detenido. Procedimiento general"
-		// miForm.setIdTipoAsistenciaColegio(String.valueOf(ScsTipoAsistenciaColegioBean.TIPO_ASISTENCIA_DETENIDO_PROC_GENERAL));
-		// Esto lo he comentado porque estropeaba la carga del valor anterior cuando se vuelve de crear una actuacion mas dentro de una asistencia.
-		// Quizas se puede mantener con un IF, pero no vi una forma elegante de hacerlo
 		 
 		int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usrBean.getLocation()));
 		miForm.setTipoPcajg(""+valorPcajgActivo);
@@ -376,68 +374,65 @@ public class VolantesExpressAction extends MasterAction
 	
 	
 	@SuppressWarnings("unchecked")
-	protected void getAjaxColegiados (ActionMapping mapping, 		
-			MasterForm formulario, 
-			HttpServletRequest request, 
-			HttpServletResponse response) throws ClsExceptions, SIGAException ,Exception
-			{
+	protected void getAjaxColegiados(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
+			throws ClsExceptions, SIGAException, Exception {
 		VolantesExpressForm miForm = (VolantesExpressForm) formulario;
-		
-		//Recogemos el parametro enviado por ajax
+
+		// Recogemos el parametro enviado por ajax
 		String fechaGuardia = request.getParameter("fechaGuardia");
 		miForm.setFechaGuardia(fechaGuardia);
 		String idTurno = request.getParameter("idTurno");
 		miForm.setIdTurno(idTurno);
 		String idGuardia = request.getParameter("idGuardia");
 		miForm.setIdGuardia(idGuardia);
-		
-		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxColegiados.fechaguardia:"+fechaGuardia+"/", 10);
-		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxColegiados.idTurno:"+idTurno+"/", 10);
-		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxColegiados.idGuardia:"+idGuardia+"/", 10);
-		
-		
-		
-		//Sacamos las guardias si hay algo selccionado en el turno
+
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxColegiados.fechaguardia:" + fechaGuardia + "/", 10);
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxColegiados.idTurno:" + idTurno + "/", 10);
+		ClsLogging.writeFileLog("VOLANTES EXPRESS:getAjaxColegiados.idGuardia:" + idGuardia + "/", 10);
+
+		// Sacamos las guardias si hay algo selccionado en el turno
 		List<CenPersonaBean> alColegiadosGuardias = null;
 		List<CenPersonaBean> alColegiadosSustituidos = null;
-		
-		if(miForm.getIdGuardia()!= null && !miForm.getIdGuardia().equals("")&& !miForm.getIdGuardia().equals("-1")&&miForm.getFechaGuardia()!= null && !miForm.getFechaGuardia().equals("")){
+
+		if (miForm.getIdGuardia() != null && !miForm.getIdGuardia().equals("") && !miForm.getIdGuardia().equals("-1")
+				&& miForm.getFechaGuardia() != null && !miForm.getFechaGuardia().equals("")) {
 			ScsGuardiasColegiadoAdm admGuardiasCol = new ScsGuardiasColegiadoAdm(miForm.getUsrBean());
 			ClsLogging.writeFileLog("VOLANTES EXPRESS:Select alColegiadosGuardias", 10);
-			alColegiadosGuardias = admGuardiasCol.getColegiadosGuardia(miForm.getVolanteExpressVo(),true);
+			alColegiadosGuardias = admGuardiasCol.getColegiadosGuardia(miForm.getVolanteExpressVo(), true);
 			ClsLogging.writeFileLog("VOLANTES EXPRESS:Select fin alColegiadosGuardias", 10);
 			ClsLogging.writeFileLog("VOLANTES EXPRESS:Select alColegiadosSustituidos", 10);
-			alColegiadosSustituidos = admGuardiasCol.getColegiadosGuardia(miForm.getVolanteExpressVo(),false);
+			alColegiadosSustituidos = admGuardiasCol.getColegiadosGuardia(miForm.getVolanteExpressVo(), false);
 			ClsLogging.writeFileLog("VOLANTES EXPRESS:Select fin alColegiadosSustituidos", 10);
 		}
-		
-		if(alColegiadosGuardias==null){
+
+		if (alColegiadosGuardias == null) {
 			alColegiadosGuardias = new ArrayList<CenPersonaBean>();
-		}else{
-			for(CenPersonaBean persona:alColegiadosGuardias){
-				ClsLogging.writeFileLog("VOLANTES EXPRESS:letrado guardia:"+persona.getNombre(), 10);
+		} else {
+			for (CenPersonaBean persona : alColegiadosGuardias) {
+				ClsLogging.writeFileLog("VOLANTES EXPRESS:letrado guardia:" + persona.getNombre(), 10);
 			}
-			
+			if (alColegiadosGuardias.size() == 1) {
+				miForm.setIdColegiadoGuardia(String.valueOf(alColegiadosGuardias.get(0).getIdPersona()));
+			}
 		}
-		if(alColegiadosSustituidos==null){
+		if (alColegiadosSustituidos == null) {
 			alColegiadosSustituidos = new ArrayList<CenPersonaBean>();
-		}else{
-			for(CenPersonaBean persona:alColegiadosSustituidos){
-				ClsLogging.writeFileLog("VOLANTES EXPRESS:letrado sustituido:"+persona.getNombre(), 10);
+		} else {
+			for (CenPersonaBean persona : alColegiadosSustituidos) {
+				ClsLogging.writeFileLog("VOLANTES EXPRESS:letrado sustituido:" + persona.getNombre(), 10);
 			}
-			
+
 		}
 		miForm.setColegiadosGuardia(alColegiadosGuardias);
 		miForm.setColegiadosSustituidos(alColegiadosSustituidos);
 		List listaParametros = new ArrayList();
 		listaParametros.add(alColegiadosGuardias);
 		listaParametros.add(alColegiadosSustituidos);
-		
-		respuestaAjax(new AjaxMultipleCollectionXmlBuilder<CenPersonaBean>(), listaParametros,response);
-		
-		
-		
+
+		respuestaAjax(new AjaxMultipleCollectionXmlBuilder<CenPersonaBean>(), listaParametros, response);
+
 	}
+	
 	@SuppressWarnings("unchecked")
 	protected void getAjaxSustituidos (ActionMapping mapping, 		
 			MasterForm formulario, 

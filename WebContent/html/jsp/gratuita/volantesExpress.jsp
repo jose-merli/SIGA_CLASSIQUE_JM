@@ -44,8 +44,9 @@
 		   	jQuery("#turnos").attr("disabled","disabled");
 		   	jQuery("#guardias").attr("disabled","disabled");
 			document.getElementById('fechaGuardia').value="${VolantesExpressForm.fechaGuardia}";
-		   	accionCalendario(); 
-		   	if (document.VolantesExpressForm.centroOjuzgado != "" && document.VolantesExpressForm.centroOjuzgado.value == "juzgado") {
+		   	accionCalendario();
+		   	
+			if (document.VolantesExpressForm.centroOjuzgado != "" && document.VolantesExpressForm.centroOjuzgado.value == "juzgado") {
 				jQuery("#lugar_juzgado").prop("checked", true);
 				document.VolantesExpressForm.lugar_centro.onclick();
 			} else {
@@ -64,9 +65,10 @@
 				document.VolantesExpressForm.colegiadosSustituidos.value= '';
 				document.VolantesExpressForm.idTurno.value = '';
 			    document.VolantesExpressForm.idGuardia.value = '';
-				document.VolantesExpressForm.idColegiadoGuardia.value = '';
+				document.VolantesExpressForm.idColegiadoGuardia.value = document.getElementById('idColegiadoGuardia').value;
 				document.VolantesExpressForm.idColegiadoSustituido.value = '';
 				document.VolantesExpressForm.fechaGuardia.value =  document.getElementById('fechaGuardia').value;
+				document.VolantesExpressForm.idTipoAsistenciaColegio.value =  document.getElementById('idTipoAsistenciaColegio').value;
 				document.getElementById('fechaGuardia').onchange();
 				
 		 	}else{
@@ -75,16 +77,11 @@
 		 		 
 				if(document.getElementById('fechaGuardia').value=='')
 					document.getElementById('fechaGuardia').onchange();
+				
 			}
-			
 		}
 		
 		function  postAccionFechaGuardia(){
-			if((document.VolantesExpressForm.fechaGuardia && 
-				document.VolantesExpressForm.fechaGuardia.value != '' && 
-				document.VolantesExpressForm.idGuardia.value != '-1')){
-				limpiarColegiado();
-			}
 			if("${VolantesExpressForm.idTurno}" != '') {
 				document.getElementById('turnos').value="${VolantesExpressForm.idTurno}";
 				document.getElementById('turnos').onchange();
@@ -119,6 +116,9 @@
 						document.getElementById('colegiadosGuardia').onchange();
 					}
 				}
+				
+				// para que no se pueda cambiar la fecha a mano, que luego es mas dificil controlar que datos traer o no (cuando vuelve de actuacion)
+				jQuery("#fechaGuardia").attr("disabled","disabled");
 			}
 			rellenaTipoAsistencia();
 			
@@ -130,7 +130,9 @@
 		
 		function postAccionColegiadoGuardia(){
 			fin();
-			idColegiadoGuardia = document.VolantesExpressForm.idColegiadoGuardia.value;
+			if (document.VolantesExpressForm.idColegiadoGuardia != null && document.VolantesExpressForm.idColegiadoGuardia.value != "") {
+				idColegiadoGuardia = document.VolantesExpressForm.idColegiadoGuardia.value;
+			}
 			
 			if (idColegiadoGuardia!="-1"){
 				document.VolantesExpressForm.idColegiadoSustituido.value = '-1';
@@ -138,6 +140,7 @@
 			}else{
 				jQuery("#colegiadosSustituidos").removeAttr("disabled");
 	 		}
+			
 			actualizarResultados();
 		}
 		
@@ -172,6 +175,7 @@
 		}
 		
 		function rellenaTipoAsistencia() {
+			sub();
 			var idGuardia = document.getElementById('guardias').value;
 			var idTurno = document.getElementById('turnos').value;
 			var comboTipoAsistenciaColegio = document.getElementById('idTipoAsistenciaColegio');
@@ -201,7 +205,8 @@
 				optionTipoAsistenciaColegio.length = 0;
 				
 			}
-			
+			fin();
+			document.VolantesExpressForm.idColegiado.value = "${VolantesExpressForm.idColegiado}";
 		}
 		
 		function actualizarResultados(){
@@ -327,15 +332,6 @@
 
 		function postAccionGuardarAsistencias(){
 			fin();
-			// if((document.VolantesExpressForm.idColegiadoSustituido && document.VolantesExpressForm.idColegiadoSustituido.value != ''&& document.VolantesExpressForm.idColegiadoSustituido.value != '-1')
-			// ||
-			// (document.VolantesExpressForm.idColegiado && document.VolantesExpressForm.idColegiado.value != '' && (document.VolantesExpressForm.idColegiadoGuardia==null ||document.VolantesExpressForm.idColegiadoGuardia.value=='-1'))
-			// ||
-			// ((!document.VolantesExpressForm.idColegiadoGuardia || document.VolantesExpressForm.idColegiadoGuardia.value == ''|| document.VolantesExpressForm.idColegiadoGuardia.value == '-1') && (!document.VolantesExpressForm.idColegiadoSustituido || document.VolantesExpressForm.idColegiadoSustituido.value == ''|| document.VolantesExpressForm.idColegiadoSustituido.value == '-1'))
-			// ){
-				document.getElementById('idGuardia').onchange();
-				
-			// }
 		}
 
 		function preAccionBuscarAsistencias(){
@@ -1207,6 +1203,7 @@
 	}
 	
 	function accionNuevo(){
+		jQuery("#fechaGuardia").attr("disabled","");
 		document.VolantesExpressForm.modo.value = "";
 		document.VolantesExpressForm.submit();
 	}
