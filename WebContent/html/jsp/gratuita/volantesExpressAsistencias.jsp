@@ -168,7 +168,9 @@
 								<td style="border: none" id="borrarActuacion_<bean:write name='index'/>"><img src="/SIGA/html/imagenes/bborrar_off.gif" style="cursor:hand;" alt='<siga:Idioma key="general.boton.borrar"/>' name="" border="0" onclick="borrarFila('fila_<bean:write name='index'/>')"></td>
 								<td style="border: none" id="nuevoEjg_<bean:write name='index'/>"><img  src="/SIGA/html/imagenes/binsertarestado_on.gif" style="cursor:hand;" alt="<siga:Idioma key="gratuita.volantesExpres.asociarEjg"/>" name="" border="0" onclick="accionCrearEJG(<bean:write name="asistencia" property="anio" />,<bean:write name="asistencia" property="numero" />,<bean:write name="asistencia" property="idInstitucion" />,<bean:write name='index'/>);"/></td>
 								<!-- aalg. INC_09396_SIGA -->
-								<td style="border: none" id="numEjg_<bean:write name='index'/>" style="display:none"><input type="text" id="ejgNumEjg_<bean:write name='index'/>" size="6" style="font-size:8.5px" title="<bean:write name="asistencia" property="ejgNumEjg"/>"  value="<bean:write name="asistencia" property="ejgNumEjg"/>" readOnly="readonly" class="box" /></td>
+								<td style="border: none" id="numEjg_<bean:write name='index'/>" style="display:none">
+									<input type="text" id="ejgNumEjg_<bean:write name='index'/>" size="10" style="font-size:8.5px" title="<bean:write name="asistencia" property="ejgNumEjg"/>"  value="<bean:write name="asistencia" property="ejgNumEjg"/>" readOnly="readonly" class="box" />
+								</td>
 							</tr>
 						</table>
 							
