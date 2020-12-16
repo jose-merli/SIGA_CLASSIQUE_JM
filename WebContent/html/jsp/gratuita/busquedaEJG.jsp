@@ -509,7 +509,7 @@ if(usr.isComision()){
 		<html:hidden property = "idTipoFundamento" />	
 		<html:hidden property = "valorBusquedaExactaSolicitante" />
 		<html:hidden property = "idNuevoEstado"/>
-		<html:hidden property = "observaciones"/>
+		<html:hidden property = "observaciones" value = ""/>
 				
 		
 		
