@@ -126,8 +126,6 @@
 				}
 				document.getElementById("idComisaria").value="";
 				document.getElementById("codComisaria").value="";
-				// para VolantesExpress
-				document.VolantesExpressForm.centroOjuzgado.value = "juzgado";
 			
 				jQuery.ajax({
 		   			type: "POST",
@@ -212,8 +210,6 @@
 				}
 				document.getElementById("idJuzgado").value="";
 				document.getElementById("codJuzgado").value="";
-				// para VolantesExpress
-				document.VolantesExpressForm.centroOjuzgado.value = "centro";
 			
 				jQuery.ajax({ 
 		   			type: "POST",
