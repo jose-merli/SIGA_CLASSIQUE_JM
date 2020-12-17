@@ -317,14 +317,6 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 		consulta.append(CenColegiadoBean.C_IDINSTITUCION);
 		consulta.append("       = saltos.");
 		consulta.append(ScsSaltosCompensacionesBean.C_IDINSTITUCION);
-		consulta.append("   AND turno.");
-		consulta.append(ScsTurnoBean.C_IDINSTITUCION);
-		consulta.append("       = guardia.");
-		consulta.append(ScsGuardiasTurnoBean.C_IDINSTITUCION);
-		consulta.append("   AND turno.");
-		consulta.append(ScsTurnoBean.C_IDTURNO);
-		consulta.append("       = guardia.");
-		consulta.append(ScsGuardiasTurnoBean.C_IDTURNO);
 		
 		consulta.append("   AND turno.");
 		consulta.append(ScsTurnoBean.C_IDINSTITUCION);
