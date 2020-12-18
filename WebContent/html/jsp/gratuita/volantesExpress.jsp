@@ -546,7 +546,7 @@
 								'<input type="text" id="apellido2_' + numFila + '" class="box" style="width:18%;margin-top:4px;" value="" maxlength="80"/>&nbsp;';
 				if (document.VolantesExpressForm.tipoPcajg.value =="9"){
 					filaDinamica = filaDinamica + 
-								'<select id="comboSexo_' + numFila + '" styleClass="box" style="width:4%;margin-top:4px;" name="comboSexo_'+numFila+'">' +
+								'<select id="comboSexo_' + numFila + '" styleClass="box" style="width:8%;margin-top:4px;" name="comboSexo_'+numFila+'">' +
 									'<option value="" selected ="selected">--Sexo</option>'+
 									'<option value="H"><siga:Idioma key="censo.sexo.hombre"/></option>'+
 									'<option value="M"><siga:Idioma key="censo.sexo.mujer"/></option>'+
@@ -1050,13 +1050,13 @@
 					<th id='centroDetencionJuzgado' style='text-align: center; width: 19%;'>
 						<siga:Idioma key="gratuita.volantesExpres.literal.centroDetencion" />
 					</th>
-					<th style='text-align: center; width: 35%;'>
+					<th style='text-align: center; width: 40%;'>
 						<siga:Idioma key="gratuita.volantesExpres.literal.asistido" />
 					</th>
-					<th id='diligenciaProcedimiento' style='text-align: center; width: 10%;'>
+					<th id='diligenciaProcedimiento' style='text-align: center; width: 8%;'>
 						<siga:Idioma key="gratuita.volantesExpres.literal.numeroDiligencia" />
 					</th>
-					<th style='text-align: center; width: 15%;'>
+					<th style='text-align: center; width: 12%;'>
 					<c:if test="${VolantesExpressForm.delito==true}">
 						<siga:Idioma key="gratuita.volantesExpres.literal.delitos" />
 					</c:if>

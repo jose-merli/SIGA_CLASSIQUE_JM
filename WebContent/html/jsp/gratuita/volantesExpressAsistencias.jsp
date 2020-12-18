@@ -99,22 +99,22 @@
 						</c:if>															
 				 	</td>
 				 	
-					<td align='center' width="35%">
-								<input type="text" id="dni_<bean:write name='index'/>" class="box" style="width:18%;margin-top:4px;" value="<bean:write name="asistencia" property="asistidoNif" />" maxlength="20" onBlur="obtenerPersona(<bean:write name='index'/>);"/>
-								&nbsp;-&nbsp;
-								<input type="text" id="nombre_<bean:write name='index'/>" class="box" style="width:18%;margin-top:4px;" value="<bean:write name="asistencia" property="asistidoNombre" />" maxlength="80"/>
-			        			<input type="text" id="apellido1_<bean:write name='index'/>" class="box" style="width:18%;margin-top:4px;" value="<bean:write name="asistencia" property="asistidoApellido1" />" maxlength="80"/>
-			        			<input type="text" id="apellido2_<bean:write name='index'/>" class="box" style="width:18%;margin-top:4px;" value="<bean:write name="asistencia" property="asistidoApellido2" />" maxlength="80"/>
-			        			<c:if test="${VolantesExpressForm.tipoPcajg == '9'}">
-					    				<select id="comboSexo_<bean:write name='index'/>"  class="box"  style="width:4%;margin-top:4px;" <c:if test="${asistencia.sexo == 'H' || asistencia.sexo == 'M' || asistencia.sexo == 'N' }"> disabled="disabled" </c:if>>
-											<option value="" >--Sexo</option>
-											<option value="H"  <c:if test="${asistencia.sexo == 'H'}"> selected="selected" </c:if>><siga:Idioma key="censo.sexo.hombre"/></option>
-											<option value="M"  <c:if test="${asistencia.sexo == 'M'}"> selected="selected"</c:if>><siga:Idioma key="censo.sexo.mujer"/></option>
-											<option value="N" <c:if test="${asistencia.sexo == 'N'}"> selected="selected" </c:if>><siga:Idioma key="censo.sexo.nc"/></option>
-										</select>		
-								</c:if>
-			        			<img id="info_existe_<bean:write name='index'/>" src="/SIGA/html/imagenes/nuevo.gif" alt="<siga:Idioma key="gratuita.volantesExpres.mensaje.esNuevaPersonaJG"/>"/>
-			        			<input type="hidden" id="idPersona_<bean:write name='index'/>" class="box" style="width:4%;margin-top:4px;" value="<bean:write name="asistencia" property="idPersonaJG" />"/>
+					<td align='center' width="40%">
+						<input type="text" id="dni_<bean:write name='index'/>" class="box" style="width:18%;margin-top:4px;" value="<bean:write name="asistencia" property="asistidoNif" />" maxlength="20" onBlur="obtenerPersona(<bean:write name='index'/>);"/>
+						&nbsp;-&nbsp;
+						<input type="text" id="nombre_<bean:write name='index'/>" class="box" style="width:18%;margin-top:4px;" value="<bean:write name="asistencia" property="asistidoNombre" />" maxlength="80"/>
+	        			<input type="text" id="apellido1_<bean:write name='index'/>" class="box" style="width:18%;margin-top:4px;" value="<bean:write name="asistencia" property="asistidoApellido1" />" maxlength="80"/>
+	        			<input type="text" id="apellido2_<bean:write name='index'/>" class="box" style="width:18%;margin-top:4px;" value="<bean:write name="asistencia" property="asistidoApellido2" />" maxlength="80"/>
+	        			<c:if test="${VolantesExpressForm.tipoPcajg == '9'}">
+		    				<select id="comboSexo_<bean:write name='index'/>"  class="box"  style="width:8%;margin-top:4px;" <c:if test="${asistencia.sexo == 'H' || asistencia.sexo == 'M' || asistencia.sexo == 'N' }"> </c:if>>
+								<option value="" >--Sexo</option>
+								<option value="H" <c:if test="${asistencia.sexo == 'H'}"> selected="selected" </c:if>><siga:Idioma key="censo.sexo.hombre"/></option>
+								<option value="M" <c:if test="${asistencia.sexo == 'M'}"> selected="selected" </c:if>><siga:Idioma key="censo.sexo.mujer"/></option>
+								<option value="N" <c:if test="${asistencia.sexo == 'N'}"> selected="selected" </c:if>><siga:Idioma key="censo.sexo.nc"/></option>
+							</select>		
+						</c:if>
+	        			<img id="info_existe_<bean:write name='index'/>" src="/SIGA/html/imagenes/nuevo.gif" alt="<siga:Idioma key="gratuita.volantesExpres.mensaje.esNuevaPersonaJG"/>"/>
+	        			<input type="hidden" id="idPersona_<bean:write name='index'/>" class="box" style="width:4%;margin-top:4px;" value="<bean:write name="asistencia" property="idPersonaJG" />"/>
 			   		</td>
 			   		     	
 			      	<script>
@@ -124,18 +124,18 @@
 			      	</script>
 			      	
 					<c:if test="${VolantesExpressForm.lugar == 'centro'}">
-						<td align='center' width="10%">
+						<td align='center' width="8%">
 							<input type="text" id="diligencia_<bean:write name='index'/>" class="box" maxlength="20" style="width:90%;margin-top:4px;" value="<bean:write name="asistencia" property="numeroDiligencia" />"/>
 						</td>
 					</c:if>
 					
 					<c:if test="${VolantesExpressForm.lugar == 'juzgado'}">
-						<td align='center' width="10%">
+						<td align='center' width="8%">
 							<input type="text" id="diligencia_<bean:write name='index'/>" class="box" maxlength="20" style="width:90%;margin-top:4px;" value="<bean:write name="asistencia" property="numeroProcedimiento" />"/>
 						</td>
 					</c:if>
 					
-					<td align='center' width="15%">				
+					<td align='center' width="12%">				
 						<c:if test="${VolantesExpressForm.delito==true}">
 							<input type="hidden" id="observaciones_<bean:write name='index'/>" value="">
 		
