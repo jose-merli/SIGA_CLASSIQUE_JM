@@ -93,7 +93,7 @@
 		}
 		
 		function postAccionTurno(){
-			if ("${VolantesExpressForm.idGuardia}") {
+			if ("${VolantesExpressForm.idGuardia}" && "${VolantesExpressForm.idGuardia}" != "") {
 				document.getElementById('guardias').value="${VolantesExpressForm.idGuardia}";
 				document.getElementById('guardias').onchange();
 			}
@@ -170,7 +170,7 @@
 				} else {
 					optionsColegiadoGuardia.selectedIndex=0;
 				}
-				postAccionColegiadoGuardia();
+				actualizarResultados();
 			}
 		}
 		
@@ -206,7 +206,9 @@
 				
 			}
 			fin();
-			document.VolantesExpressForm.idColegiado.value = "${VolantesExpressForm.idColegiado}";
+			if ("${VolantesExpressForm.idColegiado}" && "${VolantesExpressForm.idColegiado}" != "") {
+				document.VolantesExpressForm.idColegiado.value = "${VolantesExpressForm.idColegiado}";
+			}
 		}
 		
 		function actualizarResultados(){
