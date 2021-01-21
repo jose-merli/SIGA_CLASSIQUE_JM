@@ -434,11 +434,14 @@ public class ScsSaltosCompensacionesAdm extends MasterBeanAdministrador {
 				where.append(contadorYsql.get(1));
 			}
 			if (idPersona!=null && !idPersona.equals("")) {
-				where.append(" AND grupo.idgrupoguardia in (select col2.idgrupoguardia from scs_grupoguardiacolegiado col2 where col2.idpersona = ");
+				where.append(" AND perso.");
+				where.append(CenPersonaBean.C_IDPERSONA);
+				where.append("   = ");
 				contador ++;
 				codigosBind.put(contador, idPersona);
-				where.append(":"+contador);
-				where.append(")");
+				where.append(":");
+				where.append(contador);
+				where.append(" ");
 			}
 			
 			sqlYcontador.put("CONTADOR", contador);

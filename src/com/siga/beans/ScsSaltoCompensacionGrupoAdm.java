@@ -683,6 +683,7 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 			throws ClsExceptions
 	{
 		Hashtable sqlYcontador = new Hashtable();
+		StringBuilder where = new StringBuilder();
 		
 		try { 
 			//obteniendo datos desde el Hash
@@ -697,7 +698,6 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 			String compensado = UtilidadesHash.getString(datosEntrada,"COMPENSADO");
 			
 			//generando where
-			StringBuilder where = new StringBuilder();
 			where.append(" saltos.");
 			where.append(ScsSaltoCompensacionGrupoBean.C_IDINSTITUCION);
 			where.append("=:");
@@ -752,17 +752,26 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 				where.append(contadorYsql.get(1));
 			}
 			if (idPersona!=null && !idPersona.equals("")) {
-				where.append(" AND grupo.idgrupoguardia in (select col2.idgrupoguardia from scs_grupoguardiacolegiado col2 where col2.idpersona = ");
+				where.append(" AND grupo.");
+				where.append(ScsGrupoGuardiaBean.C_IDGRUPOGUARDIA);
+				where.append(" in (select col2.");
+				where.append(ScsGrupoGuardiaColegiadoBean.C_IDGRUPO);
+				where.append("       from ");
+				where.append(ScsGrupoGuardiaColegiadoBean.T_NOMBRETABLA);
+				where.append(" col2 where col2.");
+				where.append(ScsGrupoGuardiaColegiadoBean.C_IDPERSONA);
+				where.append("            = ");
 				contador ++;
 				codigosBind.put(new Integer(contador), idPersona);
-				where.append(":"+contador);
+				where.append(":");
+				where.append(contador);
 				where.append(")");
 			}
 			
 			sqlYcontador.put("CODIGOS", contador);
 			sqlYcontador.put("SQL", buildConsultaBusquedaSaltosCompensacionesGrupo(where.toString(), false));
 		} catch (Exception e) {
-			throw new ClsExceptions (e, "Excepcion en ScsSaltosCompensacionesGrupoAdm.getPaginadorBusquedaSaltosCompensacionesGrupo() en la consulta");
+			throw new ClsExceptions (e, "Excepcion en ScsSaltosCompensacionesGrupoAdm.getPaginadorBusquedaSaltosCompensacionesGrupo() en la consulta:"+where.toString());
 		}
 		return sqlYcontador;
 	}
@@ -773,22 +782,21 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 	 * @return String: tiene la consulta SQL a ejecutar
 	 * @throws ClsExceptions
 	 */
-	public String getConsultaBusquedaSaltosCompensacionesGrupo(Hashtable registros) throws ClsExceptions {
+	public String getConsultaBusquedaSaltosCompensacionesGrupo(Hashtable datosEntrada) throws ClsExceptions {
 		StringBuilder sql = new StringBuilder();
 		StringBuilder where = new StringBuilder();
-		String idInstitucion="", fechaDesde="", fechaHasta="", idTurno="", idGuardia="", idGrupoGuardia="", salto="", compensado="", idPersona="";		
 
 		try { 
 			//obteniendo datos desde el Hash
-			idInstitucion = UtilidadesHash.getString(registros,"IDINSTITUCION");
-			fechaDesde = UtilidadesHash.getString(registros,"FECHADESDE"); 
-			fechaHasta = UtilidadesHash.getString(registros,"FECHAHASTA");
-			idTurno = UtilidadesHash.getString(registros,"IDTURNO");
-			idGuardia = UtilidadesHash.getString(registros,"IDGUARDIA");
-			idPersona = UtilidadesHash.getString(registros,"IDPERSONA");
-			idGrupoGuardia = UtilidadesHash.getString(registros,"IDGRUPOGUARDIA");
-			salto = UtilidadesHash.getString(registros,"SALTO");
-			compensado = UtilidadesHash.getString(registros,"COMPENSADO");
+			String idInstitucion = UtilidadesHash.getString(datosEntrada,"IDINSTITUCION");
+			String fechaDesde = UtilidadesHash.getString(datosEntrada,"FECHADESDE"); 
+			String fechaHasta = UtilidadesHash.getString(datosEntrada,"FECHAHASTA");
+			String idTurno = UtilidadesHash.getString(datosEntrada,"IDTURNO");
+			String idGuardia = UtilidadesHash.getString(datosEntrada,"IDGUARDIA");
+			String idPersona = UtilidadesHash.getString(datosEntrada,"IDPERSONA");
+			String idGrupoGuardia = UtilidadesHash.getString(datosEntrada,"IDGRUPOGUARDIA");
+			String salto = UtilidadesHash.getString(datosEntrada,"SALTO");
+			String compensado = UtilidadesHash.getString(datosEntrada,"COMPENSADO");
 			
 			//generando where
 			where.append(" saltos.");
@@ -799,7 +807,8 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 				where.append(" AND saltos.");
 				where.append(ScsSaltoCompensacionGrupoBean.C_SALTOCOMPENSACION);
 				where.append("='");
-				where.append(salto+"'");
+				where.append(salto);
+				where.append("'");
 			}
 			if (!idTurno.equals("")) {
 				where.append(" AND saltos.");
@@ -825,17 +834,25 @@ public class ScsSaltoCompensacionGrupoAdm extends MasterBeanAdministrador
 				where.append(compensado.equals("S") ? " > TO_DATE('01/01/2001','DD/MM/YYYY')" : " is null ");
 			}
 			if ((fechaDesde != null && !fechaDesde.trim().equals("")) || (fechaHasta != null && !fechaHasta.trim().equals(""))) {
+				where.append(" AND ");
 				if (!fechaDesde.equals(""))
 					fechaDesde = GstDate.getApplicationFormatDate("", fechaDesde); 
 				if (!fechaHasta.equals(""))
 					fechaHasta = GstDate.getApplicationFormatDate("", fechaHasta);
-				where.append(" AND ");
 				where.append(GstDate.dateBetweenDesdeAndHasta("saltos."+ScsSaltoCompensacionGrupoBean.C_FECHA, fechaDesde, fechaHasta));
 			}
 			if (idPersona!=null && !idPersona.equals("")) {
-				where.append(" AND grupo.idgrupoguardia in (select col2.idgrupoguardia from scs_grupoguardiacolegiado col2 where col2.idpersona = ");
+				where.append(" AND grupo.");
+				where.append(ScsGrupoGuardiaBean.C_IDGRUPOGUARDIA);
+				where.append(" in (select col2.");
+				where.append(ScsGrupoGuardiaColegiadoBean.C_IDGRUPO);
+				where.append("       from ");
+				where.append(ScsGrupoGuardiaColegiadoBean.T_NOMBRETABLA);
+				where.append(" col2 where col2.");
+				where.append(ScsGrupoGuardiaColegiadoBean.C_IDPERSONA);
+				where.append("            = ");
 				where.append(idPersona);
-				where.append(")");
+				where.append("    )");
 			}
 			sql.append(buildConsultaBusquedaSaltosCompensacionesGrupo(where.toString(), true));
 			
