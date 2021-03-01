@@ -21,6 +21,7 @@ import org.apache.axis.message.addressing.Constants;
 import org.apache.axis.message.addressing.handler.AddressingHandler;
 import org.apache.axis.transport.http.HTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -74,7 +75,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 
         RespuestaMutualidad respuesta = new RespuestaMutualidad();
         try{
-            WSHttpBinding_IIntegracion_MetodosStub stub = getStubNoLog();
+            WSHttpBinding_IIntegracion_MetodosStub stub = getStubLog();
            
             Calendar fechaNacimientoCal = Calendar.getInstance();
             fechaNacimientoCal = UtilidadesFecha.stringToCalendar(fechaNacimiento);
@@ -105,7 +106,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 	public RespuestaMutualidad getEstadoMutualista(String nif, String fechaNacimiento) throws Exception {
 		RespuestaMutualidad respuesta = new RespuestaMutualidad();
         try{
-            WSHttpBinding_IIntegracion_MetodosStub stub = getStubNoLog();
+            WSHttpBinding_IIntegracion_MetodosStub stub = getStubLog();
            
             Calendar fechaNacimientoCal = Calendar.getInstance();
             if(fechaNacimiento!=null){
@@ -520,7 +521,7 @@ public class MutualidadWSClient extends SIGAWSClientAbstract {
 		} catch (Exception e) {
 			throw new ClsExceptions("error.inesperado.estadoMutualista");
 		}
-
+		java.security.Security.addProvider(new BouncyCastleProvider());
 		return stub;
 	}
 

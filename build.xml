@@ -672,6 +672,8 @@
     	<pathelement location="WebContent/WEB-INF/lib/InterfazSistemaInteroperabilidad-test-client.jar"/>
     	<pathelement location="WebContent/WEB-INF/lib/ServiciosJGExpediente_v2.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/Aspose.Words.14.2.jdk16.jar"/>
+    	<pathelement location="WebContent/WEB-INF/lib/bcprov-ext-jdk15on-154.jar"/>
+       	<pathelement location="WebContent/WEB-INF/lib/bcprov-jdk15on-154.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/BusinessDelegate-1.1.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/BusinessDelegate-optional-1.1.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/CrystalCommon2.jar"/>
