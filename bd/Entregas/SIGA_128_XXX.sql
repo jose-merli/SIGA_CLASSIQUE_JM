@@ -977,3 +977,8 @@ Insert Into gen_pestanas
 Values
   ('9T4', 1, 'pestana.justiciagratuitaasistencia.actuaciones.actuacion', 1, 'LETACTASI');
   
+  
+  
+  
+  
+ update GEN_RECURSOS set descripcion = 'Debería ser una cadena de 19 caracteres con el formato [nnnnn nn A yyyy nnnnnnn] donde [n] es un número, [y] corresponde a un año y [a] es alfanumérico de valores S,C,P,O,I,V,M,0,1,2,3,4,6,8' WHERE idrecurso =  'gratuita.nig.formato.cadeca' and idlenguaje = 1 ;
