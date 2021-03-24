@@ -8,7 +8,7 @@
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-	Properties src2 = src;
+	Properties src2 = (Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 	
 	if (src2==null) {
 	  SIGAGestorInterfaz interfazGestor=new SIGAGestorInterfaz("2000");

@@ -2891,6 +2891,10 @@
 		<action path="/JGR_ComunicacionEJG" type="com.siga.gratuita.action.ComunicacionesAction" parameter="EJG" name="ComunicacionesForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/comunicaciones.jsp"/>
 		</action>
+		<action path="/JGR_IntercambiosJG" type="com.siga.gratuita.action.DefinirEJGAction" parameter="EJG" name="DefinirEJGForm" scope="request">
+			<forward name="listadoIntercambiosJG" path="/html/jsp/gratuita/listadoIntercambiosJG.jsp"/>
+		</action>
+		
 		
 		<action path="/JGR_ComunicacionDesigna" type="com.siga.gratuita.action.ComunicacionesAction" parameter="Designacion" name="ComunicacionesForm" scope="request">
 			<forward name="inicio" path="/html/jsp/gratuita/comunicaciones.jsp"/>

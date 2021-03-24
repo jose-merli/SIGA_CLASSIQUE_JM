@@ -30,8 +30,8 @@
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
-	HttpSession ses=request.getSession();
-	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
+	//ses=request.getSession();
+	//usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 	
 	String dato[] = new String[1];
 	Long	LSerieFacturacion			= null;
@@ -63,17 +63,17 @@
 	boolean nuevo = true;
 	String auxFcargo ="";
 	String idTipoEnvioCorreoElectronico = ""+EnvTipoEnviosAdm.K_CORREO_ELECTRONICO;
-	String parametrosCmbPlantillaEnvios[] = {usr.getLocation(),idTipoEnvioCorreoElectronico,"-1"};
-	String parametrosPlantillasMail [] = {"-1",usr.getLocation(),"1"};
+	String parametrosCmbPlantillaEnvios[] = {((UsrBean)request.getSession().getAttribute("USRBEAN")).getLocation(),idTipoEnvioCorreoElectronico,"-1"};
+	String parametrosPlantillasMail [] = {"-1",((UsrBean)request.getSession().getAttribute("USRBEAN")).getLocation(),"1"};
 	ArrayList plantillaEnviosSeleccionada = new ArrayList();
 	ArrayList plantillaSeleccionada = new ArrayList();
 	
 	// parametro para consultas de estados (Combo)
 	String datoEstado[] = new String[1];
-	datoEstado[0] = usr.getLanguage().toUpperCase();
+	datoEstado[0] = ((UsrBean)request.getSession().getAttribute("USRBEAN")).getLanguage().toUpperCase();
 	ArrayList estadoConfirmacionSel = new ArrayList();
 	
-	String modoAction=(String) ses.getAttribute("ModoAction");
+	String modoAction=(String) request.getSession().getAttribute("ModoAction");
 	String desplegar = "true";
 	String ocultarProgramacionConfirmacion = "true";
 	String sFechaPresentacion = (String) request.getAttribute("fechaPresentacion");
@@ -124,7 +124,7 @@
 		if (hash.get(FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL) != null && !hash.get(FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL).equals("")){
 			idTipoPlantilla = (UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL)).toString();
 			if(idTipoPlantilla != null && !idTipoPlantilla.equals("")){	
-				plantillaEnviosSeleccionada.add(idTipoPlantilla+","+usr.getLocation() +",1");
+				plantillaEnviosSeleccionada.add(idTipoPlantilla+","+((UsrBean)request.getSession().getAttribute("USRBEAN")).getLocation() +",1");
 				parametrosCmbPlantillaEnvios[2] = idTipoPlantilla;
 			}
 		}
@@ -574,7 +574,7 @@
 					</td>
 					<td>
 						<% if(nuevo) {
-								dato[0] = usr.getLocation().toString();
+								dato[0] = ((UsrBean)request.getSession().getAttribute("USRBEAN")).getLocation().toString();
 						%>
 				    		<siga:ComboBD nombre="idSerieFacturacion" tipo="cmbSerieFacturacionAlta" parametro="<%=dato%>" clase="boxCombo" accion="cambiaSerie();" obligatorio="true"/>
 						<% } else { %>

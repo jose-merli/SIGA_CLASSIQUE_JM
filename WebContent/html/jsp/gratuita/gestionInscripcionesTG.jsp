@@ -417,6 +417,7 @@
 				document.FormAValidar.tipo.value=tipoBusqueda;
 				document.FormAValidar.clase.value=claseBusqueda;
 				document.FormAValidar.estado.value=estadoBusqueda;
+				document.FormAValidar.idPersona.value=idPersona;
 				document.FormAValidar.modo.value="solicitudesMasivas";
 				var tamanioVentana ='G';
 				if(estadoBusqueda=='C'){

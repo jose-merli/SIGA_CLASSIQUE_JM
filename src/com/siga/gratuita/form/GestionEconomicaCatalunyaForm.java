@@ -128,7 +128,6 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 		//		RESPONDIENDO_ICA((short)92,"Respondiendo ICA..."),
 		//		DEVUELTO_ICA_CORRECTO((short)95,"Devuelto CICAC - ICA correcto");
 
-		log.info("getIdTipoIntercambio"+getIdTipoIntercambio());
 
 		if(getIdTipoIntercambio()==null) {
 			elementosFila = new FilaExtElement[2];
@@ -153,8 +152,8 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 
 		}else {
 			GestionEnvioInformacionEconomicaCatalunyaService.TIPOINTERCAMBIO tipo = GestionEnvioInformacionEconomicaCatalunyaService.TIPOINTERCAMBIO.getEnum(getIdTipoIntercambio());
-			log.info("tipo"+tipo);
-			log.info("idEstado"+idEstado);
+//			log.info("tipo"+tipo);
+//			log.info("idEstado"+idEstado);
 			elementosFila = new FilaExtElement[0];
 			switch (tipo) {
 

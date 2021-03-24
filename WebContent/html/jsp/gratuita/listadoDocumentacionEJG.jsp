@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<%@page import="com.siga.administracion.SIGAConstants"%>
+<%@page import="com.siga.tlds.FilaExtElement"%>
 <%@page import="com.atos.utils.UsrBean"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="com.siga.gratuita.vos.SIGADocumentacionEjgVo"%>
@@ -13,8 +15,6 @@
 <%@ page contentType="text/html" language="java" errorPage="/html/jsp/error/errorSIGA.jsp"%>
 
 <!-- IMPORTS -->
-
-
 
 <!-- TAGLIBS -->
 <%@taglib uri	=	"struts-bean.tld" 			prefix="bean" 		%>
@@ -71,6 +71,7 @@
 		<html:hidden styleId="anio" property = "anio" />
 		<html:hidden styleId="numero" property = "numero"  />
 		<html:hidden styleId="numEjg" property = "numEjg" />
+		<html:hidden styleId="idDocumentacion" property = "idDocumentacion" />
 		<html:hidden styleId="jsonVolver" property = "jsonVolver"  />
 		
 	</html:form>	
@@ -94,9 +95,9 @@
 		   expedientes.auditoria.literal.documento,
 		   pestana.justiciagratuitaejg.documentacion,
 		   gratuita.documentacionEJG.regentrada,
-		   Prop.,"
+		   Prop.,Adjunto,"
 		   
-		   columnSizes="8,8,25,18,18,6,8,9"
+		   columnSizes="8,8,24,17,17,6,4,5,10"
 		   modal="M">
 		   
   	<% if (obj.size()>0){
@@ -104,11 +105,21 @@
 	    	while (recordNumber-1 < obj.size())	{
 	    		
 	    		SIGADocumentacionEjgVo documentacionEjgVo = (SIGADocumentacionEjgVo)obj.get(recordNumber-1);
+	    		FilaExtElement[] elems = new FilaExtElement[1];
+				if(false && (documentacionEjgVo.getNumIntercambiosOk()!=null && documentacionEjgVo.getNumIntercambiosOk()==0 && documentacionEjgVo.getIdFichero()!=null)){
+					elems[0]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
+				}
 	    		String botonFila = botonesFila;
-	    		if(!botonesFila.equals("C") &&( (documentacionEjgVo.getComisionAJG()!=null && documentacionEjgVo.getComisionAJG().toString().equals("1")&&!usr.isComision()) || (documentacionEjgVo.getComisionAJG()!=null && documentacionEjgVo.getComisionAJG().toString().equals("0")&&usr.isComision()) ))
+	    		if(!botonesFila.equals("C") &&
+	    				( 
+	    						(documentacionEjgVo.getComisionAJG()!=null && documentacionEjgVo.getComisionAJG().toString().equals("1")&&!usr.isComision())
+	    						|| (documentacionEjgVo.getComisionAJG()!=null && documentacionEjgVo.getComisionAJG().toString().equals("0")&&usr.isComision()) 
+	    						|| (documentacionEjgVo.getNumIntercambiosOk()!=null && documentacionEjgVo.getNumIntercambiosOk()>0)
+	    						)
+	    				)
 	    			botonFila = "C";
 			%>				
-					<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botonFila%>" clase="listaNonEdit" >
+					<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' botones="<%=botonFila%>" elementos="<%=elems%>" clase="listaNonEdit" >
 					
 					<td>
 						<input type="hidden" name="oculto<%=String.valueOf(recordNumber)%>_1" value="<%=documentacionEjgVo.getIdDocumentacion()%>">
@@ -130,8 +141,11 @@
 					<td>
 						<%=documentacionEjgVo.getRegEntrada()==null||documentacionEjgVo.getRegEntrada().equals("")?"&nbsp;":documentacionEjgVo.getRegEntrada()%>
 					</td>					
-					<td>
+					<td align="center">
 						<%=documentacionEjgVo.getComisionAJG()==null||documentacionEjgVo.getComisionAJG()==0?"ICA":"CAJG"%>
+					</td>
+					<td align="center">
+						<%= documentacionEjgVo.getNumIntercambiosOk()==null?(documentacionEjgVo.getIdFichero()!=null?"Sí":"No"):(documentacionEjgVo.getIdFichero()!=null?( documentacionEjgVo.getNumIntercambiosOk()==0?"Pte. envio CAJG":"Enviado CAJG"):"No")%>
 					</td>
 				</siga:FilaConIconos>		
 		<% recordNumber++;		   
@@ -227,7 +241,19 @@
 			
 			}
 		}
-		
+		function enviar(fila)
+		{
+			var idOculto1= 'oculto'+fila+'_1';
+			var idDocumentacion = document.getElementById(idOculto1).value;
+			var idOculto2= 'oculto'+fila+'_2';
+			var idInstitucion = document.getElementById(idOculto2).value;
+			document.forms[0].idDocumentacion.value = idDocumentacion;
+			document.forms[0].idInstitucion.value = idInstitucion;
+			document.forms[0].target = "submitArea";
+			document.forms[0].modo.value = "enviarPericles";
+			document.forms[0].submit();
+		    
+		}
 
 		function borrar(fila, id) {
 			sub();

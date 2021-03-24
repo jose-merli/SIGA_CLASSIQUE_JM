@@ -4,10 +4,10 @@
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.siga.administracion.SIGAGestorInterfaz"%>
 <%@ page import="java.util.Properties"%>
-
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
+	Properties src=(Properties)ses.getAttribute(SIGAConstants.STYLESHEET_REF);
 	Properties src2 = src;
 	
 	if (src2==null) {

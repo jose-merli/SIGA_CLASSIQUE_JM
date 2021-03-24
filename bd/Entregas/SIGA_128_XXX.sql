@@ -959,3 +959,112 @@ INSERT INTO GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 VALUES('gratuita.volantesExpres.literal.registroVolante', 'Registro de volante#GL', 0, '4', sysdate, 0, '19');
 
 -- Ejecutado en Integracion 10/09/2020 10:00
+
+-- SIGA-490
+UPDATE GEN_PROCESOS SET descripcion = 'HIDDEN_InfoActuacionAsistencia'
+WHERE idproceso = '9T3';
+Insert Into gen_procesos
+  (idproceso, idmodulo, traza, target, fechamodificacion, usumodificacion, descripcion, transaccion, idparent, nivel)
+Values
+  ('9T4', 'JGR', 1, 'Y', Sysdate, 0, 'HIDDEN_InfoActuacionAsistenciaLetrado', 'JGR_ActuacionAsistenciaLetrado', '9T0', '10');
+Insert Into Adm_Tiposacceso
+  (Idproceso, Idperfil, Fechamodificacion, Usumodificacion, Derechoacceso, Idinstitucion)
+  (Select '9T4', Idperfil, Fechamodificacion, Usumodificacion, Derechoacceso, Idinstitucion
+     From Adm_Tiposacceso
+    Where Idproceso = '9T0');
+Insert Into gen_pestanas
+  (idproceso, idlenguaje, idrecurso, posicion, idgrupo)
+Values
+  ('9T4', 1, 'pestana.justiciagratuitaasistencia.actuaciones.actuacion', 1, 'LETACTASI');
+  
+  
+  update GEN_RECURSOS set descripcion = 'Debería ser una cadena de 19 caracteres con el formato [nnnnn nn A yyyy nnnnnnn] donde [n] es un número, [y] corresponde a un año y [a] es alfanumérico de valores S,C,P,O,I,V,M,0,1,2,3,4,6,8' WHERE idrecurso =  'gratuita.nig.formato.cadeca' and idlenguaje = 1 ;
+  
+  
+  insert into SCS_MAESTROESTADOSEJG (IDESTADOEJG, DESCRIPCION, FECHAMODIFICACION, USUMODIFICACION, CODIGOEXT, BLOQUEADO, ORDEN, VISIBLECOMISION, CODIGOEJIS, FECHA_BAJA)
+values (25, '150025', sysdate, 0, '25', 'S', 80, '0', null, null);
+
+insert into GEN_RECURSOS_CATALOGOS (IDRECURSO, DESCRIPCION, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDINSTITUCION, NOMBRETABLA, CAMPOTABLA, IDRECURSOALIAS)
+values ('150025', 'Generado envío a comisión', '1', sysdate, 0, null, 'SCS_MAESTROESTADOSEJG', 'DESCRIPCION', 'scs_maestroestadosejg.descripcion.0.25');
+insert into GEN_RECURSOS_CATALOGOS (IDRECURSO, DESCRIPCION, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDINSTITUCION, NOMBRETABLA, CAMPOTABLA, IDRECURSOALIAS)
+values ('150025', 'Generado envío a comisión#CA', '2', sysdate, 0, null, 'SCS_MAESTROESTADOSEJG', 'DESCRIPCION', 'scs_maestroestadosejg.descripcion.0.25');
+insert into GEN_RECURSOS_CATALOGOS (IDRECURSO, DESCRIPCION, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDINSTITUCION, NOMBRETABLA, CAMPOTABLA, IDRECURSOALIAS)
+values ('150025', 'Generado envío a comisión#EU', '3', sysdate, 0, null, 'SCS_MAESTROESTADOSEJG', 'DESCRIPCION', 'scs_maestroestadosejg.descripcion.0.25');
+insert into GEN_RECURSOS_CATALOGOS (IDRECURSO, DESCRIPCION, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDINSTITUCION, NOMBRETABLA, CAMPOTABLA, IDRECURSOALIAS)
+values ('150025', 'Generado envío a comisión#GL', '4', sysdate, 0, null, 'SCS_MAESTROESTADOSEJG', 'DESCRIPCION', 'scs_maestroestadosejg.descripcion.0.25');
+
+
+-- Create table
+create table ECOM_INTERCAMBIO
+(
+  IDECOMINTERCAMBIO NUMBER(10) not null,
+  IDECOMCOLA        NUMBER(10) not null,
+  DESCRIPCION       VARCHAR2(500) not null,
+  FECHAENVIO        TIMESTAMP(6) not null,
+  FECHARESPUESTA    TIMESTAMP(6),
+  IDESTADORESPUESTA NUMBER(2),
+  RESPUESTA         CLOB,
+  IDINSTITUCION     NUMBER(4) not null
+)
+tablespace TS_SIGA_CMN
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 10M
+    next 8K
+    minextents 1
+    maxextents unlimited
+  );
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table ECOM_INTERCAMBIO
+  add constraint PK_ECOM_INTERCAMBIO primary key (IDECOMINTERCAMBIO)
+  using index 
+  tablespace TS_SIGA_CMN_IDX
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 5M
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table ECOM_INTERCAMBIO
+  add constraint FK_ECOM_INTERCAMBIO_COLA foreign key (IDECOMCOLA)
+  references ECOM_COLA (IDECOMCOLA)
+  deferrable;
+alter table ECOM_INTERCAMBIO
+  add constraint FK_ECOM_INTERCAMBIO_ESTADOS foreign key (IDESTADORESPUESTA)
+  references ECOM_ESTADOSCOLA (IDESTADOCOLA)
+  deferrable;
+alter table ECOM_INTERCAMBIO
+  add constraint FK_ECOM_INTERCAMBIO_INST foreign key (IDINSTITUCION)
+  references CEN_INSTITUCION (IDINSTITUCION);
+
+
+
+  create sequence SEQ_ECOM_INTERCAMBIO minvalue 1 maxvalue 9999999999 start with 1 increment by 1 nocache;
+  
+  insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('pestana.justiciagratuitaejg.intercambiosJG', 'Intercambios JG', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('pestana.justiciagratuitaejg.intercambiosJG', 'Intercambios JG#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('pestana.justiciagratuitaejg.intercambiosJG', 'Intercambios JG#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('pestana.justiciagratuitaejg.intercambiosJG', 'Intercambios JG#GL', 0, '4', sysdate, 0, '19');
+
+
+insert into 
+GEN_PROCESOS (IDPROCESO, IDMODULO, TRAZA, TARGET, FECHAMODIFICACION, USUMODIFICACION, DESCRIPCION, TRANSACCION, IDPARENT, NIVEL) 
+values ('940','JGR', 1, 'Y', SYSDATE,0 ,'EJGIntercambios Pericles', 'JGR_IntercambiosJG', 946,10);
+
+
+insert into 
+GEN_PESTANAS (idproceso, Idlenguaje, Idrecurso, Posicion, Idgrupo) 
+values(940,1, 'pestana.justiciagratuitaejg.intercambiosJG', 6, 'EJG');
+
+-- Add/modify columns 
+alter table CEN_COLEGIOPROCURADOR modify CODIGOEJIS VARCHAR2(12);
+
+
+

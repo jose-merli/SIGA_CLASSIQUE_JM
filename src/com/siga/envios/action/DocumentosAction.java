@@ -146,7 +146,17 @@ public class DocumentosAction extends MasterAction
 					String rutaAlm = pathDocumentosAdjuntos + ClsConstants.FILE_SEP;
 					File fdocumento1 = new File(rutaAlm + nombreOriginal);				
 					if (!fdocumento1.exists()) {
-						throw new SIGAException("messages.general.error.ficheroNoExiste");
+						// Si no existe el fichero puede ser porque se ha enviado con SIGA novo y ahora no se reconoce en classique
+						// porque han cambiado la forma de nombrar los archivos
+
+							String ficheroNovo = rutaAlm+documentosBean.getPathDocumento(); 
+							File fdocumentoNovo = new File(ficheroNovo);
+							if(!fdocumentoNovo.exists()){
+								throw new SIGAException("messages.general.error.ficheroNoExiste");
+							}else{
+								request.setAttribute("rutaFichero", fdocumentoNovo.getPath());
+								request.setAttribute("nombreFichero", documentosBean.getDescripcion());
+							}
 					} else {
 						request.setAttribute("rutaFichero", fdocumento1.getPath());
 						request.setAttribute("nombreFichero", nombreOriginal);

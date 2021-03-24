@@ -57,35 +57,36 @@ public class ClsMngProperties {
 	 * los resultados obtenidos en una structura Hash, ordenando por código de lenguaje. 
 	 * @throws ClsExceptions
 	 */
-	private static void loadPropertiesFromDatabase() throws ClsExceptions{
-		RowsContainer rowsLanguages=new RowsContainer();
-      	RowsContainer rowsResources=null;
-      	LinkedHashMap lhmResources=null;
-      	try {
-      		if(rowsLanguages.query(selectLanguages)){
-				int sizeLanguages=rowsLanguages.size();
-				for(int i=0;i<sizeLanguages;i++){
-	  				Row rowL=(Row)rowsLanguages.get(i);
-	  				String languageCode=(String)rowL.getString(ColumnConstants.FN_LANG_ID_LANGUAGE);
-      				rowsResources=new RowsContainer();
-	  				lhmResources= new LinkedHashMap();
-	  				Hashtable<Integer, String> codigos = new Hashtable<Integer, String>();
-	  				codigos.put(new Integer(1),languageCode);
-	  				if(rowsResources.queryBind(selectResources+":1 ORDER BY 1",codigos)) {
-	    				int sizeResources=rowsResources.size();
-	    				for(int j=0;j<sizeResources;j++){
-	      					Row rowR=(Row)rowsResources.get(j);
-	      					lhmResources.put(rowR.getString(FN_ID_RESOURCE),
-											 rowR.getString(FN_DESC_RESOURCE));
-	    				}
-	  				}
-	  				htLanguages.put(languageCode.toLowerCase(),lhmResources);
-				}
-      		}
-  		} catch (ClsExceptions e) {
-        	throw e;
-      	}
-  	}
+		private static void loadPropertiesFromDatabase() throws ClsExceptions{
+			RowsContainer rowsLanguages=new RowsContainer();
+	      	RowsContainer rowsResources=null;
+	      	LinkedHashMap lhmResources=null;
+	      	try {
+//	      		if(rowsLanguages.query(selectLanguages)){
+					int sizeLanguages=rowsLanguages.size();
+					for(int i=1;i<2;i++){
+//		  				Row rowL=(Row)rowsLanguages.get(i);
+//		  				String languageCode=(String)rowL.getString(ColumnConstants.FN_LANG_ID_LANGUAGE);
+	      				rowsResources=new RowsContainer();
+		  				lhmResources= new LinkedHashMap();
+		  				Hashtable<Integer, String> codigos = new Hashtable<Integer, String>();
+		  				codigos.put(new Integer(1),""+i);
+		  				if(rowsResources.queryBind(selectResources+":1 ORDER BY 1",codigos)) {
+		    				int sizeResources=rowsResources.size();
+		    				for(int j=0;j<sizeResources;j++){
+		      					Row rowR=(Row)rowsResources.get(j);
+		      					lhmResources.put(rowR.getString(FN_ID_RESOURCE),
+												 rowR.getString(FN_DESC_RESOURCE));
+		    				}
+		  				}
+		  				htLanguages.put(""+i,lhmResources);
+					}
+//	      		}
+	  		} catch (ClsExceptions e) {
+	        	throw e;
+	      	}
+	  	}
+  	
 
 	/**
 	 * Genera los archivos de claves de lenguajes a partir de los datos recuperados de 

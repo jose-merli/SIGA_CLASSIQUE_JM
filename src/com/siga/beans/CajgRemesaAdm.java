@@ -230,7 +230,13 @@ public class CajgRemesaAdm extends MasterBeanAdministrador {
 			
 		}
 		
-		consulta += " order by r.prefijo DESC,r.numero DESC, r.sufijo DESC";		
+		consulta += " ORDER BY "; 
+		consulta += " CASE WHEN r.prefijo IS NOT NULL THEN r.prefijo ";
+		consulta += " WHEN r.sufijo IS NOT NULL THEN r.sufijo ";
+		consulta += " ELSE r.numero ";
+		consulta += " END desc,r.numero DESC "; 
+		
+		//consulta += " order by r.prefijo DESC,r.numero DESC, r.sufijo DESC";		
 		return new PaginadorCaseSensitive(consulta);
 	} 
 	

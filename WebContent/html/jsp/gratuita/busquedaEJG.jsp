@@ -509,7 +509,8 @@ if(usr.isComision()){
 		<html:hidden property = "idTipoFundamento" />	
 		<html:hidden property = "valorBusquedaExactaSolicitante" />
 		<html:hidden property = "idNuevoEstado"/>
-		
+		<html:hidden property = "observaciones" value = ""/>
+				
 		
 		
 		
@@ -934,6 +935,10 @@ if(usr.isComision()){
 		<div>
 		  	<p class="labelTextValue"><siga:Idioma key='gratuita.busquedaEJG.seleccioneEstado'/></p>
 			<siga:Select id="idNuevoEstado" queryId="getEstadosEjg" width="300px"/>
+		</div>
+		<div>
+		  	<p class="labelTextValue"><siga:Idioma key='pestana.justiciagratuitaejg.observaciones'/></p>
+			<html:textarea styleId="observaciones" name="<%=formulario%>" property="observaciones" size="60" rows="5" maxlength="4000" styleClass="box" value="" />
 		</div>
 	</div>
 
@@ -1483,7 +1488,7 @@ if(usr.isComision()){
 		    if(datos1.value!=""){
 		    	jQuery("#cambioEstado").dialog(
 						{
-						      height: 270,
+						      height: 350,
 						      width: 525,
 						      modal: true,
 						      resizable: false,
@@ -1491,9 +1496,11 @@ if(usr.isComision()){
 						          	"Cambiar": function() {
 						        	  accionCambiarSeleccionados();
 						        	  jQuery( this ).dialog( "close" );
+						        	  limpiarCambioMasivo();
 						            },
 						            "Cerrar": function() {
 						              jQuery( this ).dialog( "close" );
+						              limpiarCambioMasivo();
 						            }
 						          }
 						    }
@@ -1508,10 +1515,16 @@ if(usr.isComision()){
 		}
 	}
 	
+	function limpiarCambioMasivo(){
+		jQuery("#idNuevoEstado").val('');
+		jQuery("#observaciones").val('');
+	}
+	
 	function accionCambiarSeleccionados(){
 		if(confirm("<siga:Idioma key='messages.cajg.confirmarCambioEstado'/>")){		
 			var datos1 = window.frames.resultado.document.<%=formulario%>.selDefinitivo;
 			document.forms[0].idNuevoEstado.value=jQuery("#idNuevoEstado").val();
+			document.forms[0].observaciones.value=jQuery("#observaciones").val();
 			document.forms[0].selDefinitivo.value=datos1.value;
 			document.forms[0].modo.value = "listosCambiarEstado";
 			document.forms[0].submit();

@@ -2,6 +2,7 @@ package com.siga.gratuita.action;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -20,6 +21,7 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.UsrBean;
+import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.beans.ScsSaltoCompensacionGrupoAdm;
 import com.siga.beans.ScsSaltoCompensacionGrupoBean;
@@ -91,8 +93,8 @@ public class SaltosYCompensacionesAction extends MasterAction {
 		Vector ocultos = new Vector();
 		ocultos = miForm.getDatosTablaOcultos(0);
 		String idGrupoGuardia = (String)ocultos.get(3);
-		//Si viene idpersona la fila seleccionada no es de grupos
-		if(idGrupoGuardia.equals("null")){
+		if("".equalsIgnoreCase(idGrupoGuardia) || "null".equalsIgnoreCase(idGrupoGuardia))
+		{	// Sin idgrupo, entonces no es de grupo
 			ScsSaltosCompensacionesAdm admSaltosYCompensaciones = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
 			Hashtable miHash = new Hashtable();
 			Vector visibles = new Vector();
@@ -548,9 +550,8 @@ public class SaltosYCompensacionesAction extends MasterAction {
 		Vector ocultos = new Vector();
 		ocultos = miForm.getDatosTablaOcultos(0);
 		String idGrupoGuardia = (String) ocultos.get(3);
-		// Si viene idpersona la fila seleccionada no es de grupos
-		if (idGrupoGuardia.equals("null")) {
-
+		if ("".equalsIgnoreCase(idGrupoGuardia) || "null".equalsIgnoreCase(idGrupoGuardia))
+		{	// Sin idgrupo, entonces no es de grupo
 			ScsSaltosCompensacionesAdm admSaltosYCompensaciones = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
 
 			String forward = "exito";
@@ -624,74 +625,124 @@ public class SaltosYCompensacionesAction extends MasterAction {
 	 * 
 	 * @return String que indicará la siguiente acción a llevar a cabo. 
 	 */
-	protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+	protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
+			throws SIGAException {
+		UsrBean usr = this.getUserBean(request);
 		SaltosYCompensacionesForm miForm = (SaltosYCompensacionesForm) formulario;
-		ScsSaltosCompensacionesAdm admSaltosYCompensaciones = new ScsSaltosCompensacionesAdm(this.getUserBean(request));
-		ScsSaltoCompensacionGrupoAdm admSaltosYCompensacionesGrupo = new ScsSaltoCompensacionGrupoAdm(this.getUserBean(request));
-				
-		UsrBean usr = null;
-		Vector salida = new Vector();		
+		ScsSaltosCompensacionesAdm admSaltosYCompensaciones = new ScsSaltosCompensacionesAdm(usr);
+		ScsSaltoCompensacionGrupoAdm admSaltosYCompensacionesGrupo = new ScsSaltoCompensacionGrupoAdm(usr);
+
+		Vector salida = new Vector();
 		Hashtable registros = new Hashtable();
-		String idTurno="", idGuardia="", idInstitucion="", compensado ="";
-		
-			try {
-				usr = (UsrBean) request.getSession().getAttribute("USRBEAN");					
-			
-				//Datos para la consulta:
-				idInstitucion = usr.getLocation(); 
+		String idTurno = "", idGuardia = "", idInstitucion = "", compensado = "", salto = "";
+		Hashtable miHash = new Hashtable();
+		PaginadorBind paginador;
+
+		try {
+
+			request.setAttribute("resultado", salida);
+			request.setAttribute("modo", miForm.getModo());
+
+			HashMap databackup = new HashMap();
+			if (request.getSession().getAttribute("DATAPAGINADOR") != null) {
+				databackup = (HashMap) request.getSession().getAttribute("DATAPAGINADOR");
+				paginador = (PaginadorBind) databackup.get("paginador");
+				Vector datos = new Vector();
+				// Si no es la primera llamada, obtengo la página del request y la busco con el paginador
+				String pagina = (String) request.getParameter("pagina");
+				if (paginador != null) {
+					if (pagina != null) {
+						datos = paginador.obtenerPagina(Integer.parseInt(pagina));
+					} else {// cuando hemos editado un registro de la busqueda y volvemos a la paginacion
+						datos = paginador.obtenerPagina((paginador.getPaginaActual()));
+					}
+				}
+				databackup.put("paginador", paginador);
+				databackup.put("datos", datos);
+
+			} else {
+				// construir la busqueda para el paginador
+				idInstitucion = usr.getLocation();
 				if (miForm.getIdTurno() != null && !miForm.getIdTurno().equals(""))
 					idTurno = miForm.getIdTurno().split(",")[1];
 				if (miForm.getIdGuardia() != null && !miForm.getIdGuardia().equals(""))
 					idGuardia = miForm.getIdGuardia();
+				compensado = miForm.getCompensado();
+				salto = miForm.getSalto();
 
-				UtilidadesHash.set(registros,"IDINSTITUCION",idInstitucion);
-				UtilidadesHash.set(registros,"IDTURNO",idTurno);
-				UtilidadesHash.set(registros,"IDGUARDIA",idGuardia);
-				UtilidadesHash.set(registros,"IDPERSONA",miForm.getIdPersona());
-				UtilidadesHash.set(registros,"FECHADESDE",miForm.getFechaDesde());
-				UtilidadesHash.set(registros,"FECHAHASTA",miForm.getFechaHasta());
-				if(miForm.getIdGrupoGuardia()!=null)
-					UtilidadesHash.set(registros,"IDGRUPOGUARDIA",miForm.getIdGrupoGuardia());	
-				
-				//Campo Compensado/No compensado/Todo:
-				if (miForm.getCompensado().equalsIgnoreCase("si")){
-					compensado="S";
-					UtilidadesHash.set(registros,"COMPENSADO",compensado);
-				}else if (miForm.getCompensado().equalsIgnoreCase("no")){ 
-					compensado="N";
-					UtilidadesHash.set(registros,"COMPENSADO",compensado);
-				}
-				
-				//Campo salto/compensacion/Todo:
-				if (miForm.getSalto().equalsIgnoreCase("S")||miForm.getSalto().equalsIgnoreCase("C")){
-					//SELECT
-					UtilidadesHash.set(registros,"SALTO",miForm.getSalto());
-					salida = admSaltosYCompensaciones.selectGenerico(admSaltosYCompensaciones.buscar(registros));
-				
-				}else if (miForm.getSalto().equalsIgnoreCase("SG")||miForm.getSalto().equalsIgnoreCase("CG")){
-					if(miForm.getSalto().equalsIgnoreCase("SG")){
-						UtilidadesHash.set(registros,"SALTO","S");
-					}else if (miForm.getSalto().equalsIgnoreCase("CG")){
-						UtilidadesHash.set(registros,"SALTO","C");
-					}
-									
-					salida = admSaltosYCompensacionesGrupo.selectMantenimientoSYC(admSaltosYCompensacionesGrupo.buscar(registros));
-				
-				}else{
-					salida = admSaltosYCompensaciones.selectGenerico(admSaltosYCompensaciones.buscar(registros));
-					Vector salida2 = admSaltosYCompensacionesGrupo.selectMantenimientoSYC(admSaltosYCompensacionesGrupo.buscar(registros));
-					for(int i = 0; i<salida2.size(); i++){
-						this.insertarPosicionVector(salida,(Hashtable)salida2.get(i));
+				UtilidadesHash.set(registros, "IDINSTITUCION", idInstitucion);
+				UtilidadesHash.set(registros, "IDTURNO", idTurno);
+				UtilidadesHash.set(registros, "IDGUARDIA", idGuardia);
+				UtilidadesHash.set(registros, "IDPERSONA", miForm.getIdPersona());
+				UtilidadesHash.set(registros, "FECHADESDE", miForm.getFechaDesde());
+				UtilidadesHash.set(registros, "FECHAHASTA", miForm.getFechaHasta());
+				if (miForm.getIdGrupoGuardia() != null)
+					UtilidadesHash.set(registros, "IDGRUPOGUARDIA", miForm.getIdGrupoGuardia());
+
+				// Campo Compensado/No compensado/Todo:
+				if (compensado != null) {
+					if (compensado.equalsIgnoreCase("si")) {
+						compensado = "S";
+						UtilidadesHash.set(registros, "COMPENSADO", compensado);
+					} else {
+						compensado = "N";
+						UtilidadesHash.set(registros, "COMPENSADO", compensado);
 					}
 				}
-			
-				request.setAttribute("resultado",salida);			
-				request.setAttribute("modo",miForm.getModo());
+
+				Hashtable sqlYcontador = null, sqlYcontador2 = null;
+				Hashtable<Integer, String> codigosBind = new Hashtable<Integer, String>();
+				
+				// Campo salto/compensacion/Todo:
+				if ("S".equalsIgnoreCase(salto) || "C".equalsIgnoreCase(salto)) {
+					UtilidadesHash.set(registros, "SALTO", miForm.getSalto());
+					sqlYcontador = admSaltosYCompensaciones.getSqlYContadorBusquedaSaltosCompensacionesBind(registros, 0, codigosBind);
+				} else if ("SG".equalsIgnoreCase(salto) || "CG".equalsIgnoreCase(salto)) {
+					UtilidadesHash.set(registros, "SALTO", "SG".equalsIgnoreCase(salto) ? "S" : "C");
+					sqlYcontador = admSaltosYCompensacionesGrupo.getSqlYContadorBusquedaSaltosCompensacionesGrupoBind(registros, 0, codigosBind);
+				} else {
+					sqlYcontador = admSaltosYCompensaciones.getSqlYContadorBusquedaSaltosCompensacionesBind(registros, 0, codigosBind);
+					sqlYcontador2 = admSaltosYCompensacionesGrupo.getSqlYContadorBusquedaSaltosCompensacionesGrupoBind(registros, (Integer)sqlYcontador.get("CONTADOR"), codigosBind);
+				}
+				StringBuilder sql = new StringBuilder();
+				sql.append("select * from (");
+				sql.append(sqlYcontador.get("SQL"));
+				if (sqlYcontador2 != null) {
+					sql.append(" union all ");
+					sql.append(sqlYcontador2.get("SQL"));
+				}
+				sql.append(") ORDER BY FECHA desc, ");
+				sql.append(ScsSaltosCompensacionesBean.C_IDSALTOSTURNO);
+				sql.append(" desc");
+				paginador = new PaginadorBind(sql.toString(), codigosBind);
+				
+				databackup = new HashMap();
+
+				// Paginador paginador = new Paginador(sql);
+				int totalRegistros = paginador.getNumeroTotalRegistros();
+				if (totalRegistros == 0) {
+					paginador = null;
+				}
+				databackup.put("paginador", paginador);
+				if (paginador != null) {
+					Vector datos = paginador.obtenerPagina(1);
+					databackup.put("datos", datos);
+					request.getSession().setAttribute("DATAPAGINADOR", databackup);
+				}
+
+				// En "DATOSFORMULARIO" almacenamos el identificador del letrado
+				miHash.put("BUSQUEDAREALIZADA", "1");
+				request.getSession().setAttribute("DATOSFORMULARIO", miHash);
+				request.getSession().setAttribute("CenBusquedaClientesTipo", ""); // busqueda normal
 			}
-			catch  (Exception e){
-				throwExcp("messages.select.error",e,null);	
-			}			
-			return "listado";
+		} catch (SIGAException e1) {
+			// Excepcion procedente de obtenerPagina cuando se han borrado datos throw e1;
+			borrarPaginador(request, paginadorPenstania);
+			return exitoRefresco("error.messages.obtenerPagina", request);
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error", e, new String[] { "modulo.gratuita" });
+		}
+		return "listado";
 	}
 	
 	public void insertarPosicionVector(Vector v, Hashtable registro) {
@@ -718,6 +769,7 @@ public class SaltosYCompensacionesAction extends MasterAction {
 	 *
 	 */
 	protected String abrirAvanzada(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		request.getSession().removeAttribute("DATAPAGINADOR");
 		return mapSinDesarrollar;
 	}
 	
@@ -727,6 +779,7 @@ public class SaltosYCompensacionesAction extends MasterAction {
 	 */
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		SaltosYCompensacionesForm miForm = (SaltosYCompensacionesForm) formulario;
+		request.getSession().removeAttribute("DATAPAGINADOR");
 		
 		try {
 			miForm.setSalto("S");

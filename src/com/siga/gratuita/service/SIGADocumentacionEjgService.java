@@ -263,6 +263,7 @@ public class SIGADocumentacionEjgService {
 				documentacionEjgVo2.setDocumentoAbreviatura(scsDocumentacionEJGExtended.getDocumentoAbreviatura());
 				if(scsDocumentacionEJGExtended.getComisionAJG()!=null && !scsDocumentacionEJGExtended.getComisionAJG().equals(""))
 					documentacionEjgVo2.setComisionAJG(new Short(scsDocumentacionEJGExtended.getComisionAJG()));
+				documentacionEjgVo2.setNumIntercambiosOk(scsDocumentacionEJGExtended.getNumIntercambiosOk());
 				documentacionEjgVos.add(documentacionEjgVo2);
 
 			}
@@ -308,6 +309,9 @@ public class SIGADocumentacionEjgService {
 			documentacionEjgVo.setDocumentacion(objectDb.getDocumentacion());
 		if(objectDb.getComisionAJG()!=null && !objectDb.getComisionAJG().equals(""))
 			documentacionEjgVo.setComisionAJG(new Short(objectDb.getComisionAJG()));
+		if(objectDb.getNumero()!=null && !objectDb.getComisionAJG().equals(""))
+			documentacionEjgVo.setComisionAJG(new Short(objectDb.getComisionAJG()));
+		
 		return documentacionEjgVo;
 	}	
 

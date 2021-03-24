@@ -1419,7 +1419,6 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		boolean esComision=(miHash.containsKey("ESCOMISION") && UtilidadesString.stringToBoolean(miHash.get("ESCOMISION").toString()));
 		boolean buscarPorRemesa=false;
 		boolean isAñadirJoinEstados = TipoVentana.BUSQUEDA_PREPARACION_CAJG.equals(tipoVentana) ||TipoVentana.BUSQUEDA_ANIADIR_REMESA.equals(tipoVentana)
-				//||TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)
 				||(miHash.containsKey("ESTADOEJG")) && (!miHash.get("ESTADOEJG").toString().equals(""))
 				||(miHash.containsKey("DESCRIPCIONESTADO")) && (!miHash.get("DESCRIPCIONESTADO").toString().equals(""));
 		Short[] idInstitucionesComision = usrbean.getInstitucionesComision();
@@ -1577,12 +1576,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				codigos.put(new Integer(contador), UtilidadesHash.getString(miHash, "ESTADOEJG"));
 				consulta += " AND ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " = :" + contador;
 			}else{
-				consulta += " AND (ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " NOT IN (" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.GENERADO_EN_REMESA.getCodigo() + ", " + ESTADOS_EJG.REMITIDO_COMISION.getCodigo() + ", " + ESTADOS_EJG.RESUELTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.IMPUGNADO.getCodigo() + "))  ";
+				consulta += " AND (ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " NOT IN (" + ESTADOS_EJG.LISTO_REMITIR_COMISION.getCodigo() + ", " + ESTADOS_EJG.GENERADO_EN_REMESA.getCodigo() + ", " + ESTADOS_EJG.REMITIDO_COMISION.getCodigo() + ", " + ESTADOS_EJG.RESUELTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.IMPUGNADO.getCodigo() + "))  ";
 			}
 			
 		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESA.equals(tipoVentana)) {
 //		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESA.equals(tipoVentana)||TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)) {
-			consulta += " AND ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " IN (" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.ESTADO_LISTO_COMISION_ACTUALIZAR_DESIGNACION.getCodigo() + ") ";
+			consulta += " AND ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " IN (" + ESTADOS_EJG.LISTO_REMITIR_COMISION.getCodigo() + ", " + ESTADOS_EJG.LISTO_REMITIR_COMISION_ACT_DESIGNACION.getCodigo() + ") ";
 		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)) {
 			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 			String idPeticionMinimoConDatos = rp.returnProperty("cajg.idPeticion_SCS_EEJG_PETICIONES_DondeEmpezoAFuncionarDatosCompletos");
@@ -2574,7 +2573,7 @@ public Hashtable getBindWhereEJG(Hashtable miHash, DefinirEJGForm miForm) throws
 			
 		}else{
 				where += " AND (F_SIGA_GET_IDULTIMOESTADOEJG(EJG.IDINSTITUCION,  EJG.IDTIPOEJG, EJG.ANIO,EJG.NUMERO) ";
-				where+=	"  NOT IN (" + ESTADOS_EJG.LISTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.GENERADO_EN_REMESA.getCodigo() + ", " + ESTADOS_EJG.RESUELTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.ESTADO_LISTO_COMISION_ACTUALIZAR_DESIGNACION.getCodigo() + ", "  + ESTADOS_EJG.IMPUGNADO.getCodigo() + "))  ";
+				where+=	"  NOT IN (" + ESTADOS_EJG.LISTO_REMITIR_COMISION.getCodigo() + ", " + ESTADOS_EJG.GENERADO_EN_REMESA.getCodigo() + ", " + ESTADOS_EJG.RESUELTO_COMISION.getCodigo() + ", " + ESTADOS_EJG.LISTO_REMITIR_COMISION_ACT_DESIGNACION.getCodigo() + ", "  + ESTADOS_EJG.IMPUGNADO.getCodigo() + "))  ";
 			
 			
 		}

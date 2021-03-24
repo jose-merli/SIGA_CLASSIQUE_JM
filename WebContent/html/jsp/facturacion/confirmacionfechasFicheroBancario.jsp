@@ -25,7 +25,8 @@
 
 <!-- JSP -->
 <% 
-	String appPrincipal=request.getContextPath();
+HttpSession ses=request.getSession();	
+String appPrincipal=request.getContextPath();
 	
 	String idDisqueteCargo = (String) request.getAttribute("idDisqueteCargo");
 	String nombreFichero = (String) request.getAttribute("nombreFichero");

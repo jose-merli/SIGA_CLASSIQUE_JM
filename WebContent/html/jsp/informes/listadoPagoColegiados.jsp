@@ -139,7 +139,7 @@
 		   		  	informes.sjcs.pagos.literal.importeIRPF,
 		   		  	factSJCS.datosPagos.literal.importeRetenciones,
 		   		  	factSJCS.detalleFacturacion.literal.importe,"
-	columnSizes="4,9,19,15,8,8,8,8,8,8,4">
+	columnSizes="4,5,19,19,8,8,8,8,8,8,4">
 
 	<!-- INICIO: ZONA DE REGISTROS -->
 	<%
@@ -190,7 +190,7 @@
  	}
  %>
 		</td>
-		<td><%=UtilidadesString.mostrarDatoJSP(fila.getString(CenColegiadoBean.C_NCOLEGIADO))%></td>
+		<td align="center"><%=UtilidadesString.mostrarDatoJSP(fila.getString(CenColegiadoBean.C_NCOLEGIADO))%></td>
 		<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NOMBRE"))%></td>
 		<td><%=UtilidadesString.mostrarDatoJSP(fila.getString("NOMBREPAGO"))%></td>
 		<td align="right"><%=UtilidadesNumero.formatoCampo(UtilidadesNumero.redondea(fila.getString("TOTALIMPORTESJCS"), 2))%>&nbsp;&euro;</td>

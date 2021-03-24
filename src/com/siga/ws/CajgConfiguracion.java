@@ -17,7 +17,7 @@ import com.siga.ws.i2083.PCAJGAragon.SUBTIPOCAJGAragon;
  *
  */
 public class CajgConfiguracion  {
-	
+	public static final int TIPO_CAJG_ZONACOMUN = 1;
 	public static final int TIPO_CAJG_CATALANES = 2;
 	public static final int TIPO_CAJG_PCAJG_GENERAL = 3;
 	public static final int TIPO_CAJG_WEBSERVICE_PAMPLONA = 4;

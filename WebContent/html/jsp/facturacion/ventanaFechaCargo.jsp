@@ -22,12 +22,7 @@
 <%@ page import="com.atos.utils.UsrBean"%>
 
 <!-- JSP -->
-<%
-	String app = request.getContextPath();
-	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-	String modoAction = ""; //NO BORRAR
-	boolean bObligatorioFechasSEPA = true; // Esta variable es necesaria para fechasFicheroBancario.jsp
-%>
+
 
 
 
@@ -62,7 +57,7 @@
 					document.ficheroBancarioPagosForm.target = 'submitArea';					
 					
 					var nombreFormulario = document.ficheroBancarioPagosForm.name;	
-					window.frames.submitArea.location='<%=app%>/html/jsp/general/loadingWindowOpener.jsp?formName=' + nombreFormulario + '&msg=facturacion.ficheroBancarioPagos.mensaje.generandoFicheros';
+					window.frames.submitArea.location='/SIGA/html/jsp/general/loadingWindowOpener.jsp?formName=' + nombreFormulario + '&msg=facturacion.ficheroBancarioPagos.mensaje.generandoFicheros';
 					
 				} else {
 					fin();
@@ -116,7 +111,7 @@
 	
 
 <!-- INICIO: SUBMIT AREA -->
-<iframe name="submitArea" src="<%=app%>/html/jsp/general/blank.jsp" style="display:none"></iframe>
+<iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display:none"></iframe>
 <!-- FIN: SUBMIT AREA -->
 
 </body>

@@ -126,8 +126,6 @@
 				}
 				document.getElementById("idComisaria").value="";
 				document.getElementById("codComisaria").value="";
-				// para VolantesExpress
-				document.VolantesExpressForm.centroOjuzgado.value = "juzgado";
 			
 				jQuery.ajax({
 		   			type: "POST",
@@ -212,8 +210,6 @@
 				}
 				document.getElementById("idJuzgado").value="";
 				document.getElementById("codJuzgado").value="";
-				// para VolantesExpress
-				document.VolantesExpressForm.centroOjuzgado.value = "centro";
 			
 				jQuery.ajax({ 
 		   			type: "POST",
@@ -730,6 +726,7 @@
 		<html:hidden property="fechaGuardia" styleId="fechaGuardia" value="${asistencia.fechaHora}" />
 		<html:hidden property="idTurno" styleId="idTurno" value="${asistencia.idTurno}" />
 		<html:hidden property="idGuardia" styleId="idGuardia" value="${asistencia.idGuardia}" />
+		<html:hidden property="idColegiado" styleId="idColegiado" value="${asistencia.personaColegiado.idPersona}" />
 		<html:hidden property="idColegiadoGuardia" styleId="idColegiadoGuardia" value="${asistencia.personaColegiado.idPersona}" />
 		<html:hidden property="idTipoAsistenciaColegio" styleId="idTipoAsistenciaColegio" value="${asistencia.idTipoAsistenciaColegio}" />
 		<html:hidden property="centroOjuzgado" styleId="centroOjuzgado"/>
@@ -759,14 +756,14 @@
 			}
 			
 			document.getElementById("checkAnulacion").checked = document.ActuacionAsistenciaFormEdicion.anulacion.value=='1';
-			if(document.ActuacionAsistenciaFormEdicion.validada.value=="1"){
+			if(document.ActuacionAsistenciaFormEdicion.validada!=null && document.ActuacionAsistenciaFormEdicion.validada.value=="1"){
 				document.getElementById('fechaJustificacion').className="boxConsulta";
 				document.getElementById('fechaJustificacion').readOnly = true;
 				if(document.getElementById("tdValidada")){
 					document.getElementById("tdValidada").innerHTML = '<siga:Idioma key='gratuita.mantActuacion.literal.actuacionValidada'/>';
 				}
 				jQuery("#fechaJustificacion-datepicker-trigger").hide();
-			} else if (document.ActuacionAsistenciaFormEdicion.modo.value!='ver' && document.ActuacionAsistenciaFormEdicion.facturado.value!='1' && document.getElementById('isLetrado').value=='false') {
+			} else if (document.ActuacionAsistenciaFormEdicion.modo!=null && document.ActuacionAsistenciaFormEdicion.modo.value!='ver' && document.ActuacionAsistenciaFormEdicion.facturado!=null && document.ActuacionAsistenciaFormEdicion.facturado.value!='1' && document.getElementById('isLetrado')!=null && document.getElementById('isLetrado').value=='false') {
 				document.getElementById('fechaJustificacion').className="tcal box editable tcalInput";
 				document.getElementById('fechaJustificacion').readOnly = false;
 				f_tcalInit();
@@ -796,7 +793,17 @@
 						habilitarCampos(false);
 					}
 				}
-			}			
+			}
+			
+			// para VolantesExpress
+			var comboJuzgado = document.getElementById("idJuzgado");	
+			if(comboJuzgado.value!=""){
+				document.VolantesExpressForm.centroOjuzgado.value = "juzgado";
+			}
+			var comboComisaria = document.getElementById("idComisaria");
+			if(comboComisaria.value!=""){
+				document.VolantesExpressForm.centroOjuzgado.value = "centro";
+			}
 		}
 		
 		function habilitarCampos(isHabilitar) {
@@ -1115,7 +1122,7 @@
 		// Asociada al boton Volver para Volantes Expres
 		function accionVolver() {
 			document.VolantesExpressForm.target="mainWorkArea";
-			document.VolantesExpressForm.action = "/SIGA/JGR_VolantesExpres.do";
+			document.VolantesExpressForm.action = "/SIGA/JGR_VolantesExpres.do?origen=ACTUACIONASISTENCIA";
 			document.VolantesExpressForm.submit();
 		}
 

@@ -21,14 +21,23 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
 
 	<!-- INICIO: TITULO Y LOCALIZACION -->
-	<!-- Escribe el titulo y localizacion en la barra de t�tulo del frame principal -->	
+	<!-- Escribe el titulo y localizacion en la barra de titulo del frame principal -->	
 	<!-- FIN: TITULO Y LOCALIZACION -->
+	<% 
+		String esFichaColegial = request.getParameter("esFichaColegial");
+		String grupoPestanas = "";
+		if(esFichaColegial.equalsIgnoreCase("0")) {
+			grupoPestanas = "ACTASIST";
+		} else {
+			grupoPestanas = "LETACTASI";
+		}
+	%>
 </head>
 
 <body onload="ajusteAlto('mainPestanaActuacionAsistencia');return activarPestana();">
 	
 	<siga:PestanasExt 
-		pestanaId="ACTASIST" 
+		pestanaId="<%=grupoPestanas%>" 
 		target="mainPestanaActuacionAsistencia"
 		modos="modosActuacionAsistencia" 
 		parametros=""

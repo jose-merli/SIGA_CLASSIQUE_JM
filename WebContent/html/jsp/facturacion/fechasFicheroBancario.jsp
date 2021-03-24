@@ -14,9 +14,12 @@
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
 
 <%@ page import="com.siga.Utilidades.UtilidadesString"%>
+<%@ page import="com.atos.utils.UsrBean"%>
 
 <!-- JSP -->
-<% 
+<%
+
+
 	/** JPT - Control de fechas de presentación y cargo en ficheros SEPA **/
 	String fechaPresentacion = (String) request.getAttribute("fechaPresentacion");
 	String fechaPrimerosRecibos = (String) request.getAttribute("fechaPrimerosRecibos");
@@ -29,6 +32,8 @@
 	String habilesRecibosB2B = (String) request.getAttribute("habilesRecibosB2B");
 	String accionRecFechas = (String) request.getAttribute("accionInit");
 	
+	String modoAction = "";
+	boolean bObligatorioFechasSEPA = false; 
 	String tiposFicherosAdeudo = (String) request.getAttribute("tiposFicherosAdeudo");
 %>
 
@@ -45,9 +50,8 @@
 		<td width="120px">
 			<siga:Fecha nombreCampo="fechaPresentacion"	posicionX="10" posicionY="10" valorInicial="<%=fechaPresentacion%>" postFunction="onChangeFechaPresentacion(this)"/>
 		</td>
-		
 		<td>
-			<siga:ToolTip id='ayudaFechaPresentacion' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (usr, "facturacion.fechasficherobancario.ayudaFechaPresentacion"))%>'/>
+			<siga:ToolTip id='ayudaFechaPresentacion' imagen='/SIGA/html/imagenes/botonAyuda.gif' texto='<%=UtilidadesString.mostrarDatoJSP(UtilidadesString.getMensajeIdioma (((UsrBean)request.getSession().getAttribute("USRBEAN")), "facturacion.fechasficherobancario.ayudaFechaPresentacion"))%>'/>
 		</td>
 	</tr>
 </table>	

@@ -961,7 +961,7 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			throw new SIGAException("gratuita.volantesExpres.error.guardiaConVariosCalendarios");
 		}
 		ScsGuardiasColegiadoBean guardiaBean = (ScsGuardiasColegiadoBean) vGuardias.get(0);
-		String fechaInicio = GstDate.getFormatedDateLong("", guardiaBean.getFechaInicio()); 
+		String fechaInicio = guardiaBean.getFechaInicio(); 
 		
 		// Obtenemos el idCalendario
 		hash = new Hashtable();
@@ -978,9 +978,14 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 		String idCalendarioGuardias = ""+cabBean.getIdCalendario();
 		
 		
+		validarColegiadoEntrante(usr,idInstitucion.toString(), idTurno.toString(), idGuardia.toString(), fechaInicio,fechaFin,idPersonaEntrante.toString());
+		
+		// adecuando fechas al formato que requiere el siguiente metodo
+		fechaInicio = GstDate.getFormatedDateShort(usr.getLanguageExt(), fechaInicio);
+		fechaFin = GstDate.getFormatedDateShort(usr.getLanguageExt(), fechaFin);
+		
 		String salto = null; 			// No creamos salto
 		String compensacion = null; 	// No creamos compensacion
-		validarColegiadoEntrante(usr,idInstitucion.toString(), idTurno.toString(), idGuardia.toString(), fechaInicio,fechaFin,idPersonaEntrante.toString());
 		guarcoladm.sustitucionLetradoGuardiaPuntual(usr, null, idInstitucion.toString(), idTurno.toString(),idGuardia.toString(),idCalendarioGuardias,idPersonaSaliente.toString(),fechaInicio,fechaFin,idPersonaEntrante.toString(), salto, compensacion,"si","");
 	}
 	public void validarColegiadoEntrante(UsrBean usr, String idInstitucion, String idTurno, String idGuardia, String fechaInicio,String fechaFin,String idPersonaEntrante) throws SIGAException,ClsExceptions

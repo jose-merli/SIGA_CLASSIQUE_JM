@@ -209,7 +209,7 @@ public class SolicitudesEEJG {
 		if (datosInfoAAPP != null) {
 			// Si tenemos CSV comprobamos si tambien estan todas las fechas
 			if(datosInfoAAPP.getCSV()!=null && !datosInfoAAPP.getCSV().equalsIgnoreCase("")){
-				AdministracionInf[] administracions = datosInfoAAPP.getAdministracionInf();
+				/*AdministracionInf[] administracions = datosInfoAAPP.getAdministracionInf();
 				if (administracions != null) {
 					for (AdministracionInf administracion : administracions) {
 						if (administracion.getFecha_Respuesta() == null || administracion.getFecha_Respuesta().trim().equals("")) {
@@ -218,7 +218,7 @@ public class SolicitudesEEJG {
 							break;
 						}
 					}
-				}
+				}*/
 			}else{
 				ClsLogging.writeFileLog("CSV no disponible", 10);
 				pendiente = true;

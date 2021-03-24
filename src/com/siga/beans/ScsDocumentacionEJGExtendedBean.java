@@ -8,6 +8,7 @@ public class ScsDocumentacionEJGExtendedBean {
 	private String documentoAbreviatura;
 	private ScsDocumentacionEJGBean documentacionEJGBean;
 	private String comisionAJG;
+	private Short numIntercambiosOk;
 	public String getIdPresentador() {
 		return idPresentador;
 	}
@@ -46,6 +47,14 @@ public class ScsDocumentacionEJGExtendedBean {
 
 	public void setComisionAJG(String comisionAJG) {
 		this.comisionAJG = comisionAJG;
+	}
+
+	public Short getNumIntercambiosOk() {
+		return numIntercambiosOk;
+	}
+
+	public void setNumIntercambiosOk(Short numIntercambiosOk) {
+		this.numIntercambiosOk = numIntercambiosOk;
 	}
 	
 }

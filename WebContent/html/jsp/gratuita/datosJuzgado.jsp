@@ -284,6 +284,7 @@
 		<html:hidden name="MantenimientoJuzgadoForm" property="idInstitucionProcedimiento" />
 		<html:hidden name="MantenimientoJuzgadoForm" property="idProcedimiento" />	
 		<html:hidden name="MantenimientoJuzgadoForm" property="registrosBorrar" />
+		<html:hidden name="MantenimientoJuzgadoForm" property="visible" />
 		
 		<input type="hidden" name="actionModal" value="">
 	

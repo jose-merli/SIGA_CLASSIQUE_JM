@@ -5,6 +5,12 @@
 
 package com.siga.gratuita.form;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+import org.redabogacia.sigaservices.app.autogen.model.ScsEstadoejg;
+import org.redabogacia.sigaservices.app.vo.scs.EstadoEjgVo;
+
 import com.siga.beans.*;
 import com.siga.general.MasterForm;
 
@@ -147,6 +153,26 @@ import com.siga.general.MasterForm;
 	public void setVerHistorico(String verHistorico) {
 		this.verHistorico = verHistorico;
 	}
+	public EstadoEjgVo getEstadoEjgVo(DefinirEstadosEJGForm estadosEJGForm) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		EstadoEjgVo estadoEjgVo = new EstadoEjgVo();
+		estadoEjgVo.setIdinstitucion(estadosEJGForm.getIdInstitucion()!=null && !estadosEJGForm.getIdInstitucion().equalsIgnoreCase("")?Short.valueOf(estadosEJGForm.getIdInstitucion()):null);
+		estadoEjgVo.setAnio(estadosEJGForm.getAnio()!=null&& !estadosEJGForm.getAnio().equalsIgnoreCase("")?Short.valueOf(estadosEJGForm.getAnio()):null);
+		estadoEjgVo.setIdtipoejg(estadosEJGForm.getIdTipoEJG()!=null&& !estadosEJGForm.getIdTipoEJG().equalsIgnoreCase("")?Short.valueOf(estadosEJGForm.getIdTipoEJG()):null);
+		estadoEjgVo.setNumero(estadosEJGForm.getNumero()!=null&& !estadosEJGForm.getNumero().equalsIgnoreCase("")?Long.valueOf(estadosEJGForm.getNumero()):null);
+		estadoEjgVo.setIdestadoejg(estadosEJGForm.getIdEstadoEJG()!=null&& !estadosEJGForm.getIdEstadoEJG().equalsIgnoreCase("")?Short.valueOf(estadosEJGForm.getIdEstadoEJG()):null);
+		estadoEjgVo.setIdestadoporejg(estadosEJGForm.getIdEstadoPorEJG()!=null&& !estadosEJGForm.getIdEstadoPorEJG().equalsIgnoreCase("")?Long.valueOf(estadosEJGForm.getIdEstadoPorEJG()):null);
 		
+		estadoEjgVo.setAutomatico(estadosEJGForm.getAutomatico());
+		estadoEjgVo.setObservaciones(estadosEJGForm.getObservaciones());
+		try {
+			estadoEjgVo.setFechainicio(estadosEJGForm.getFechaInicio()!=null?simpleDateFormat.parse(estadosEJGForm.getFechaInicio()):null);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		
+		return estadoEjgVo;
+		
+	}
+	
 }

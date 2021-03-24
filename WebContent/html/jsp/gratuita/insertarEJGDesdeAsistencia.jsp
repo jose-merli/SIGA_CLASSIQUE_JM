@@ -284,7 +284,7 @@
 					<siga:Idioma key="gratuita.busquedaEJG.literal.turno"/>&nbsp;
 				</td>
 				<td class="labelText" colspan="4">
-					<siga:ComboBD nombre = "identificador" tipo="turnos" clase="boxCombo" obligatorio="false" accion="Hijo:identificador2" ancho="550" parametro="<%=dato%>"/>
+					<siga:ComboBD nombre = "identificador" tipo="turnosTramitacionAlta" clase="boxCombo" obligatorio="false" accion="Hijo:identificador2" ancho="550" parametro="<%=dato%>"/>
 				</td>
 			</tr>
 			<tr>

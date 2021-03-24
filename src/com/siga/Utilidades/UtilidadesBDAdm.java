@@ -11,6 +11,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -18,6 +19,7 @@ import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
+import com.siga.general.ParejaNombreID;
 
 /**
  * @author daniel.campos
@@ -978,4 +980,50 @@ public class UtilidadesBDAdm
 		  }
 		  
 	  }
+	  
+	public static int getDatosConsulta (Vector datos, String consultaSQL, Hashtable codigos) throws Exception
+	{
+		// Acceso a BBDD
+		RowsContainer rc = null;
+		int i = -1;
+		try { 
+			rc = new RowsContainer();
+			if ((codigos == null ? rc.queryNLS(consultaSQL) : rc.queryNLSBind(consultaSQL,codigos))) {
+				for (i = 0; i < rc.size(); i++)	{
+					Row fila = (Row) rc.get(i);
+					ParejaNombreID dato = new ParejaNombreID();
+					dato.setIdNombre((String)fila.getRow().get("ID"));
+					dato.setNombre((String)fila.getRow().get("DESCRIPCION"));
+					datos.add(dato);
+				}
+			}
+		} 
+		catch (Exception e) { 	
+			ParejaNombreID dato = new ParejaNombreID();
+			dato.setIdNombre("1");
+			dato.setNombre("Error B.D.");
+			datos.add(dato);
+			
+			StringBuilder mensajeLogError = new StringBuilder();
+			mensajeLogError.append("Error al obtener los datos de la consulta");
+			mensajeLogError.append((codigos == null ? "" : " Bind"));
+			mensajeLogError.append(" para el Combo.");
+			if (rc == null) {
+				mensajeLogError.append(" Antes de crear contenedor");
+			} else {
+				mensajeLogError.append(" Total: ");
+				mensajeLogError.append(rc.size());
+				if (rc.size() > 0) {
+					mensajeLogError.append(". Fallo en elemento n: ");
+					mensajeLogError.append(i);
+				}
+			}
+			mensajeLogError.append(" - ");
+			mensajeLogError.append(e.getMessage());
+			ClsLogging.writeFileLogError(mensajeLogError.toString(), e, 3);
+		}
+		
+		return 1;
+	}
+
 }

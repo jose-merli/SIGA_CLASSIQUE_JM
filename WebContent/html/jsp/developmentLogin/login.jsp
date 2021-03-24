@@ -42,15 +42,39 @@
 			}
 		}
 
-		function entradaDirecta()
+		function entradaDirectaCaceres()
 		{
-			frmLogin.location.value="2045";
+			frmLogin.location.value="2014";
 			frmLogin.profile.value="ADG";
 			frmLogin.user.value="";
 			frmLogin.letrado.value="N";
 			var urlGet=document.frmLogin.action+"?location="+frmLogin.location.value+"&profile="+frmLogin.profile.value+"&user="+frmLogin.user.value+"&letrado="+frmLogin.letrado.value+"&tmpLoginInstitucion="+frmLogin.tmpLoginInstitucion.value+"&posMenu="+frmLogin.posMenu.value;
 			frmLogin.submit();
 		}
+		
+		function entradaDirectaReus()
+		{
+			frmLogin.location.value="2057";
+			frmLogin.profile.value="ADG";
+			frmLogin.user.value="";
+			frmLogin.letrado.value="N";
+			var urlGet=document.frmLogin.action+"?location="+frmLogin.location.value+"&profile="+frmLogin.profile.value+"&user="+frmLogin.user.value+"&letrado="+frmLogin.letrado.value+"&tmpLoginInstitucion="+frmLogin.tmpLoginInstitucion.value+"&posMenu="+frmLogin.posMenu.value;
+			frmLogin.submit();
+		}
+		function entradaDirecta(idinstitucion,profile)
+		{
+			frmLogin.location.value=idinstitucion;
+			frmLogin.profile.value="ADG";
+			if(profile)
+				frmLogin.profile.value=profile;
+			
+			frmLogin.user.value="";
+			frmLogin.letrado.value="N";
+			var urlGet=document.frmLogin.action+"?location="+frmLogin.location.value+"&profile="+frmLogin.profile.value+"&user="+frmLogin.user.value+"&letrado="+frmLogin.letrado.value+"&tmpLoginInstitucion="+frmLogin.tmpLoginInstitucion.value+"&posMenu="+frmLogin.posMenu.value;
+			frmLogin.submit();
+		}
+		
+		
  
 		function entradaDirectaGen()
 		{
@@ -128,6 +152,22 @@
 					<siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfil" clase="box" ancho="300" filasMostrar="20" elementoSel="<%=idADM%>" seleccionMultiple="true" hijo="t" obligatorioSinTextoSeleccionar="true"/>
 				</td>		
 			</tr>
+			
+			<tr>
+				<td colspan="3" valign="middle" align="center" >
+					<input type="button" class="button" value="Colegio Cáceres" onClick="entradaDirectaCaceres()" title="Entrar a Caceres como ADMINistrador NO colegiado">
+					&nbsp;
+					<input type="button" class="button" value="Comision Cantabria" onClick="entradaDirecta('2016','CJG')" title="Entrar a Comision Cantabria como comision">
+					&nbsp;
+					<input type="button" class="button" value="Colegio Reus" onClick="entradaDirectaReus()" title="Entrar a Reus como ADMINistrador NO colegiado">
+					&nbsp;
+					<input type="button" class="button" value="Consejo Calalunya" onClick="entradaDirecta('3001')" title="Entrar a Consejo Catalunya como ADMINistrador NO colegiado">
+					
+					&nbsp;
+					<input type="button" class="button" value="GENERAL" onClick="entradaDirectaGen()"  title="Entrar a GENERAL como ADMINistrador NO colegiado">
+				</td>
+			</tr>
+			
 			
 		</table>
 		

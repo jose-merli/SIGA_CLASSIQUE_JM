@@ -51,6 +51,7 @@ import com.siga.censo.form.DatosRegTelForm;
 	 String prefijoRemesa, numeroRemesa, sufijoRemesa;
 	 
 	 //String bisResolucion;
+	 String solicitante;
 	 
 	 boolean chkBusquedaExactaSolicitante;
 	 String valorBusquedaExactaSolicitante;
@@ -469,7 +470,7 @@ import com.siga.censo.form.DatosRegTelForm;
 	 * 
 	 * @return Observaciones de la EJG
 	 */
-	public String getObservaciones			()		{ return this.datos.get(ScsEJGBean.C_OBSERVACIONES).toString();}
+	public String getObservaciones			()		{ return this.datos.get(ScsEJGBean.C_OBSERVACIONES)!=null?this.datos.get(ScsEJGBean.C_OBSERVACIONES).toString():null;}
 	/**.
 	 * Recupera de la Hashtable los delitos de la EJG
 	 * 
@@ -1169,6 +1170,14 @@ import com.siga.censo.form.DatosRegTelForm;
 
 		public void setSufijoRemesa(String sufijoRemesa) {
 			UtilidadesHash.set(this.datos, CajgRemesaBean.C_SUFIJO, sufijoRemesa);
+		}
+
+		public final String getSolicitante() {
+			return solicitante;
+		}
+
+		public final void setSolicitante(String solicitante) {
+			this.solicitante = solicitante;
 		}
 		
 				

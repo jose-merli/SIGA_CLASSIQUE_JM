@@ -607,7 +607,7 @@ public class SolicitudesEEJGInformacionCompleta {
 		if (datosInformacionCompletaAAPP != null) {
 			// Si tenemos CSV comprobamos si tambien estan todas las fechas
 			if(datosInformacionCompletaAAPP.getCSV()!=null && !datosInformacionCompletaAAPP.getCSV().equalsIgnoreCase("")){
-				AdministracionCompleta[] administracions = datosInformacionCompletaAAPP.getAdministracionCompleta();
+				/*AdministracionCompleta[] administracions = datosInformacionCompletaAAPP.getAdministracionCompleta();
 				if (administracions != null) {
 					for (AdministracionCompleta administracion : administracions) {
 						if (administracion.getFecha_Respuesta() == null || administracion.getFecha_Respuesta().trim().equals("")) {
@@ -616,7 +616,7 @@ public class SolicitudesEEJGInformacionCompleta {
 							break;
 						}
 					}
-				}
+				}*/
 			}else{
 				ClsLogging.writeFileLog("CSV no disponible", 10);
 				pendiente = true;

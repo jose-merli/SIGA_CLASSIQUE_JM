@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html>
 <head>
 <!-- listadoEstadosEJG.jsp -->
@@ -21,7 +22,7 @@
 <%@ page import="com.siga.beans.*"%>
 <%@ page import="com.siga.Utilidades.*"%>
 <%@page import="org.redabogacia.sigaservices.app.AppConstants.PARAMETRO"%>
-
+<%@page import="com.siga.tlds.FilaExtElement"%>
 
 <!-- TAGLIBS -->
 <%@taglib uri =	"struts-bean.tld" 	prefix="bean"%>
@@ -29,7 +30,6 @@
 <%@taglib uri = "libreria_SIGA.tld" prefix="siga"%>
 <%@taglib uri = "struts-logic.tld" 	prefix="logic"%>
 <%@ taglib uri="c.tld" prefix="c"%>
-
 <!-- JSP -->
 <% 
 	String app=request.getContextPath();
@@ -88,6 +88,7 @@
 		<input type="hidden" name="numero" value="<%=numero%>">
 		<input type="hidden" name="idInstitucion" value="<%=idInstitucion%>">
 		<input type="hidden" name="verHistorico" >
+		<input type="hidden" name="idEstadoPorEJG" >
 		<html:hidden name="DefinirEstadosEJGForm"  styleId="jsonVolver" property = "jsonVolver"  />
 		
 	</html:form>
@@ -176,8 +177,13 @@
 				} else {
 					botones="C";
 				}
+				FilaExtElement[] elems = new FilaExtElement[1];
+				if(fila.get("botonEnvio") != null && ((String)fila.get("botonEnvio")).equals("1")){
+					elems[0]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
+				}
+				
 %>				
-				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' pintarEspacio="false"  visibleConsulta="false" botones="<%=botones%>" clase="listaNonEdit" modo="<%=accion%>">
+				<siga:FilaConIconos fila='<%=String.valueOf(recordNumber)%>' pintarEspacio="false"  visibleConsulta="false" botones="<%=botones%>" elementos="<%=elems%>"   clase="listaNonEdit" modo="<%=accion%>">
 					
 					<%if(booVerHistorico){%>
 						<td>
@@ -212,9 +218,8 @@
 %>
 	</siga:Table>	
 	
-	
-	
-	<div style="position:absolute; left:400px;bottom:0px;z-index:99;">
+	<!-- FIN: SUBMIT AREA -->	
+	<div style="width:200px; position:absolute; left:400px;bottom:0px;z-index:99;">
 				<table align="center" border="0" class="botonesSeguido">
 					<tr>
 						<td class="labelText">
@@ -239,6 +244,8 @@
 	<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
 	<siga:ConjBotonesAccion botones="<%=botonesPie %>" clase="botonesDetalle" modo="<%=accion%>"/>
 	
+	
+	
 	<script type="text/javascript">		
 	
 		function verHistorico(o) {
@@ -250,7 +257,10 @@
 			document.DefinirEstadosEJGForm.modo.value = "abrir";
 			document.DefinirEstadosEJGForm.submit();
 		}
-	
+		function refrescarLocal() {
+			return buscar();
+			
+		}
 		//Asociada al boton Cerrar
 		function accionVolver() {
 			
@@ -289,6 +299,16 @@
 		function buscar() {
 				document.forms[0].modo.value = "abrir";
 				document.forms[0].submit();
+		}
+		function enviar(fila)
+		{
+			var idOculto= 'oculto'+fila+'_1';
+			var idEstadoPorEJG = document.getElementById(idOculto).value;
+			document.forms[0].idEstadoPorEJG.value = idEstadoPorEJG;
+			document.forms[0].target = "submitArea";
+			document.forms[0].modo.value = "enviarPericles";
+			document.forms[0].submit();
+		    
 		}
 	</script>
 </body>	
