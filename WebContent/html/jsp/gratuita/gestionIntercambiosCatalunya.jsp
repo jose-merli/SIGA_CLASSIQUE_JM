@@ -263,20 +263,25 @@
 						<siga:Idioma key="gratuita.calendarioGuardias.literal.periodo"/>
 					</td>
 					<td>
-						<siga:Select queryId="getPeriodos" id="idPeriodo" width="100" />
+					<div>
+						<siga:Select queryId="getPeriodos" id="idPeriodo"  width="100" />
+						</div>
 					</td>
 					<td class="labelText">
 					
 						<siga:Idioma key="gratuita.mantActuacion.literal.anio"/>
 					</td>
 					<td>
+					
 						<html:text property="anio" size="4" maxlength="4"  styleClass="box"  />
 					</td>
 					<td class="labelText">
 						<siga:Idioma key="gratuita.mantAsistencias.literal.estado"/>
 					</td>
 					<td >
-						<siga:Select queryId="getEstadosJustificacion" id="idEstado" params="${paramsEstados}" width="180" />
+						<div>
+						<siga:Select queryId="getEstadosJustificacion" id="idEstado"  params="${paramsEstados}" width="180" />
+						</div>
 					</td>		
 					<td>
 						
@@ -289,8 +294,9 @@
 								
 							</td>
 							<td>
-								<siga:Select id="idColegio" queryId="getColegiosDeConsejo"  width="200" />	
-								
+								<div>
+									<siga:Select id="idColegio" queryId="getColegiosDeConsejo"  width="200" />	
+								</div>
 							</td>
 							<td colspan="6">
 						
