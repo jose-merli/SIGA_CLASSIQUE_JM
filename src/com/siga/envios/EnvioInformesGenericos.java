@@ -940,193 +940,126 @@ public class EnvioInformesGenericos extends MasterReport {
 								htRowDesignaClone.put("ACREDITACION", acreditacion);
 								vRowsInformePorPersona.add(htRowDesignaClone);
 
-							} 
-							boolean isPrimero = true;
-							StringBuffer asuntoDesigna = new StringBuffer(designaForm.getAsunto() == null ? "" : designaForm.getAsunto());
-							asuntoDesigna.append(" ");
-							if (designaForm.getActuaciones() != null && designaForm.getActuaciones().size() > 0) {
-								Map<String, List<ActuacionDesignaForm>> actuacionesMap = designaForm.getActuaciones();
-								Iterator actuacionesIterator = actuacionesMap.keySet().iterator();
-								String categoria = "";
-								String procedimiento = "";
-
-								while (actuacionesIterator.hasNext()) {
-									String idProcedimineto = (String) actuacionesIterator.next();
-									List<ActuacionDesignaForm> actuacionesList = actuacionesMap.get(idProcedimineto);
-									if (actuacionesList != null && actuacionesList.size() > 0) {
-
-										for (ActuacionDesignaForm actuacionForm : actuacionesList) {
-											categoria = actuacionForm.getCategoria();
-
-											procedimiento = actuacionForm.getDescripcionProcedimiento();
-											if (actuacionForm.getNumeroProcedimiento() != null && !actuacionForm.getNumeroProcedimiento().equals("")) {
-												asuntoDesigna.append(actuacionForm.getNumeroProcedimiento());
-												asuntoDesigna.append(" ");
-											}
-
-											// String acreditacion =
-											// actuacionForm.getDescripcion();
-											String acreditacion = actuacionForm.getAcreditacion().getDescripcion();
-											String fechaJustificacion = "";
-											String validada = "";
-											if (actuacionForm.getFechaJustificacion() != null && !actuacionForm.getFechaJustificacion().equals("")) {
-												fechaJustificacion = actuacionForm.getFechaJustificacion();
-												if (actuacionForm.getValidada().equals("1")) {
-													validada = "X";
+							} else {
+								boolean isPrimero = true;
+								StringBuffer asuntoDesigna = new StringBuffer(designaForm.getAsunto() == null ? "" : designaForm.getAsunto());
+								asuntoDesigna.append(" ");
+								if (designaForm.getActuaciones() != null && designaForm.getActuaciones().size() > 0) {
+									Map<String, List<ActuacionDesignaForm>> actuacionesMap = designaForm.getActuaciones();
+									Iterator actuacionesIterator = actuacionesMap.keySet().iterator();
+									String categoria = "";
+									String procedimiento = "";
+	
+									while (actuacionesIterator.hasNext()) {
+										String idProcedimineto = (String) actuacionesIterator.next();
+										List<ActuacionDesignaForm> actuacionesList = actuacionesMap.get(idProcedimineto);
+										if (actuacionesList != null && actuacionesList.size() > 0) {
+	
+											for (ActuacionDesignaForm actuacionForm : actuacionesList) {
+												categoria = actuacionForm.getCategoria();
+	
+												procedimiento = actuacionForm.getDescripcionProcedimiento();
+												if (actuacionForm.getNumeroProcedimiento() != null && !actuacionForm.getNumeroProcedimiento().equals("")) {
+													asuntoDesigna.append(actuacionForm.getNumeroProcedimiento());
+													asuntoDesigna.append(" ");
 												}
-
-											}
-											String numeroAsunto = "";
-											if (actuacionForm.getNumero() != null && !actuacionForm.getNumero().equals("")) {
-												numeroAsunto = actuacionForm.getNumero();
-											}
-											String numeroProcediminetoAct = "";
-											if (actuacionForm.getNumeroProcedimiento() != null && !actuacionForm.getNumeroProcedimiento().equals("")) {
-												numeroProcediminetoAct = actuacionForm.getNumeroProcedimiento();
-											}
-
-											String descripcionFacturacion = "";
-											if (actuacionForm.getDescripcionFacturacion() != null && !actuacionForm.getDescripcionFacturacion().equals("")) {
-												descripcionFacturacion = actuacionForm.getDescripcionFacturacion();
-											}
-
-											Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
-											if (isPrimero) {
-												isPrimero = false;
-											} else {
-												htRowDesignaClone.put("CODIGODESIGNA", "");
-												htRowDesignaClone.put("EXPEDIENTES", "");
-												htRowDesignaClone.put("IDJUZGADO", "");
-												htRowDesignaClone.put("FECHADESIGNA", "");
-												htRowDesignaClone.put("ASUNTO", "");
-												htRowDesignaClone.put("CLIENTE", "");
-
-											}
-											htRowDesignaClone.put("CATEGORIA", categoria);
-											htRowDesignaClone.put("PROCEDIMIENTO", procedimiento);
-											htRowDesignaClone.put("ACREDITACION", acreditacion);
-											htRowDesignaClone.put("FECHAJUSTIFICACION", fechaJustificacion);
-											htRowDesignaClone.put("VALIDADA", validada);
-											htRowDesignaClone.put("N_ACTUACION", numeroAsunto);
-											htRowDesignaClone.put("NUMEROPROCEDIMIENTOACT", numeroProcediminetoAct);
-											htRowDesignaClone.put("DESCRIPCIONFACTURACION", descripcionFacturacion);
-											vRowsInformePorPersona.add(htRowDesignaClone);
-
-										}
-										if (designaForm.getAcreditaciones() != null && designaForm.getAcreditaciones().size() > 0) {
-											Map<String, List<AcreditacionForm>> acreditacionesMap = designaForm.getAcreditaciones();
-											List<AcreditacionForm> acreditacionesList = acreditacionesMap.get(idProcedimineto);
-											if (acreditacionesList != null && acreditacionesList.size() > 0) {
-												for (AcreditacionForm acreditacionForm : acreditacionesList) {
-													// String categoria =
-													// actuacionForm.getCategoria();
-													String fechaJustificacion = "";
-													String validada = "";
-													String numeroAsunto = "";
-													String numeroProcediminetoAct = "";
-													String descripcionFacturacion = "";
-													String acreditacion = acreditacionForm.getDescripcion();
-													Hashtable htRowDesignaClone2 = (Hashtable) htRowDesigna.clone();
-													if (isPrimero) {
-														isPrimero = false;
-													} else {
-														htRowDesignaClone2.put("CODIGODESIGNA", "");
-														htRowDesignaClone2.put("EXPEDIENTES", "");
-														htRowDesignaClone2.put("IDJUZGADO", "");
-														htRowDesignaClone2.put("FECHADESIGNA", "");
-														htRowDesignaClone2.put("ASUNTO", "");
-														htRowDesignaClone2.put("CLIENTE", "");
-
+	
+												// String acreditacion =
+												// actuacionForm.getDescripcion();
+												String acreditacion = actuacionForm.getAcreditacion().getDescripcion();
+												String fechaJustificacion = "";
+												String validada = "";
+												if (actuacionForm.getFechaJustificacion() != null && !actuacionForm.getFechaJustificacion().equals("")) {
+													fechaJustificacion = actuacionForm.getFechaJustificacion();
+													if (actuacionForm.getValidada().equals("1")) {
+														validada = "X";
 													}
-													htRowDesignaClone2.put("PROCEDIMIENTO", procedimiento);
-													htRowDesignaClone2.put("CATEGORIA", categoria);
-													htRowDesignaClone2.put("ACREDITACION", acreditacion);
-													htRowDesignaClone2.put("FECHAJUSTIFICACION", fechaJustificacion);
-													htRowDesignaClone2.put("VALIDADA", validada);
-													htRowDesignaClone2.put("N_ACTUACION", numeroAsunto);
-													htRowDesignaClone2.put("NUMEROPROCEDIMIENTOACT", numeroProcediminetoAct);
-													htRowDesignaClone2.put("DESCRIPCIONFACTURACION", descripcionFacturacion);
-													vRowsInformePorPersona.add(htRowDesignaClone2);
+	
+												}
+												String numeroAsunto = "";
+												if (actuacionForm.getNumero() != null && !actuacionForm.getNumero().equals("")) {
+													numeroAsunto = actuacionForm.getNumero();
+												}
+												String numeroProcediminetoAct = "";
+												if (actuacionForm.getNumeroProcedimiento() != null && !actuacionForm.getNumeroProcedimiento().equals("")) {
+													numeroProcediminetoAct = actuacionForm.getNumeroProcedimiento();
+												}
+	
+												String descripcionFacturacion = "";
+												if (actuacionForm.getDescripcionFacturacion() != null && !actuacionForm.getDescripcionFacturacion().equals("")) {
+													descripcionFacturacion = actuacionForm.getDescripcionFacturacion();
+												}
+	
+												Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
+												if (isPrimero) {
+													isPrimero = false;
+												} else {
+													htRowDesignaClone.put("CODIGODESIGNA", "");
+													htRowDesignaClone.put("EXPEDIENTES", "");
+													htRowDesignaClone.put("IDJUZGADO", "");
+													htRowDesignaClone.put("FECHADESIGNA", "");
+													htRowDesignaClone.put("ASUNTO", "");
+													htRowDesignaClone.put("CLIENTE", "");
+	
+												}
+												htRowDesignaClone.put("CATEGORIA", categoria);
+												htRowDesignaClone.put("PROCEDIMIENTO", procedimiento);
+												htRowDesignaClone.put("ACREDITACION", acreditacion);
+												htRowDesignaClone.put("FECHAJUSTIFICACION", fechaJustificacion);
+												htRowDesignaClone.put("VALIDADA", validada);
+												htRowDesignaClone.put("N_ACTUACION", numeroAsunto);
+												htRowDesignaClone.put("NUMEROPROCEDIMIENTOACT", numeroProcediminetoAct);
+												htRowDesignaClone.put("DESCRIPCIONFACTURACION", descripcionFacturacion);
+												vRowsInformePorPersona.add(htRowDesignaClone);
+	
+											}
+											if (designaForm.getAcreditaciones() != null && designaForm.getAcreditaciones().size() > 0) {
+												Map<String, List<AcreditacionForm>> acreditacionesMap = designaForm.getAcreditaciones();
+												List<AcreditacionForm> acreditacionesList = acreditacionesMap.get(idProcedimineto);
+												if (acreditacionesList != null && acreditacionesList.size() > 0) {
+													for (AcreditacionForm acreditacionForm : acreditacionesList) {
+														// String categoria =
+														// actuacionForm.getCategoria();
+														String fechaJustificacion = "";
+														String validada = "";
+														String numeroAsunto = "";
+														String numeroProcediminetoAct = "";
+														String descripcionFacturacion = "";
+														String acreditacion = acreditacionForm.getDescripcion();
+														Hashtable htRowDesignaClone2 = (Hashtable) htRowDesigna.clone();
+														if (isPrimero) {
+															isPrimero = false;
+														} else {
+															htRowDesignaClone2.put("CODIGODESIGNA", "");
+															htRowDesignaClone2.put("EXPEDIENTES", "");
+															htRowDesignaClone2.put("IDJUZGADO", "");
+															htRowDesignaClone2.put("FECHADESIGNA", "");
+															htRowDesignaClone2.put("ASUNTO", "");
+															htRowDesignaClone2.put("CLIENTE", "");
+	
+														}
+														htRowDesignaClone2.put("PROCEDIMIENTO", procedimiento);
+														htRowDesignaClone2.put("CATEGORIA", categoria);
+														htRowDesignaClone2.put("ACREDITACION", acreditacion);
+														htRowDesignaClone2.put("FECHAJUSTIFICACION", fechaJustificacion);
+														htRowDesignaClone2.put("VALIDADA", validada);
+														htRowDesignaClone2.put("N_ACTUACION", numeroAsunto);
+														htRowDesignaClone2.put("NUMEROPROCEDIMIENTOACT", numeroProcediminetoAct);
+														htRowDesignaClone2.put("DESCRIPCIONFACTURACION", descripcionFacturacion);
+														vRowsInformePorPersona.add(htRowDesignaClone2);
+													}
 												}
 											}
 										}
 									}
-								}
-
-							} else {
-								if (designaForm.getIdJuzgado() == null || designaForm.getIdJuzgado().equals("")) {
-
-									String acreditacion = UtilidadesString.getMensajeIdioma(usrBean, "gratuita.informeJustificacionMasiva.aviso.sinJuzgado");
-									Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
-									htRowDesignaClone.put("CATEGORIA", "");
-									htRowDesignaClone.put("PROCEDIMIENTO", "");
-									htRowDesignaClone.put("ACREDITACION", acreditacion);
-									htRowDesignaClone.put("FECHAJUSTIFICACION", "");
-									htRowDesignaClone.put("VALIDADA", "");
-									htRowDesignaClone.put("N_ACTUACION", "");
-									htRowDesignaClone.put("NUMEROPROCEDIMIENTOACT", "");
-									htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
-									vRowsInformePorPersona.add(htRowDesignaClone);
-
-								} else if (designaForm.getIdProcedimiento() == null || designaForm.getIdProcedimiento().equals("")) {
-									String acreditacion = UtilidadesString.getMensajeIdioma(usrBean, "gratuita.informeJustificacionMasiva.aviso.sinModulo");
-									Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
-									htRowDesignaClone.put("CATEGORIA", "");
-									htRowDesignaClone.put("PROCEDIMIENTO", "");
-
-									htRowDesignaClone.put("ACREDITACION", acreditacion);
-									htRowDesignaClone.put("FECHAJUSTIFICACION", "");
-									htRowDesignaClone.put("VALIDADA", "");
-									htRowDesignaClone.put("N_ACTUACION", "");
-									htRowDesignaClone.put("NUMEROPROCEDIMIENTOACT", "");
-									htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
-									vRowsInformePorPersona.add(htRowDesignaClone);
+	
 								} else {
-									String categoria = designaForm.getCategoria();
-									String procedimiento = designaForm.getDescripcionProcedimiento();
-
-									if (designaForm.getAcreditaciones() != null && designaForm.getAcreditaciones().size() > 0) {
-										Map<String, List<AcreditacionForm>> acreditacionesMap = designaForm.getAcreditaciones();
-										Iterator acreditacionesIterator = acreditacionesMap.keySet().iterator();
-										while (acreditacionesIterator.hasNext()) {
-											String idProcedimineto = (String) acreditacionesIterator.next();
-											List<AcreditacionForm> acreditacionesList = acreditacionesMap.get(idProcedimineto);
-											if (acreditacionesList != null && acreditacionesList.size() > 0) {
-												for (AcreditacionForm acreditacionForm : acreditacionesList) {
-													String acreditacion = acreditacionForm.getDescripcion();
-													Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
-													if (isPrimero) {
-														isPrimero = false;
-													} else {
-														htRowDesignaClone.put("CODIGODESIGNA", "");
-														htRowDesignaClone.put("EXPEDIENTES", "");
-														htRowDesignaClone.put("IDJUZGADO", "");
-														htRowDesignaClone.put("FECHADESIGNA", "");
-														htRowDesignaClone.put("ASUNTO", "");
-														htRowDesignaClone.put("CLIENTE", "");
-
-													}
-													htRowDesignaClone.put("CATEGORIA", categoria);
-													htRowDesignaClone.put("PROCEDIMIENTO", procedimiento);
-													htRowDesignaClone.put("ACREDITACION", acreditacion);
-													htRowDesignaClone.put("FECHAJUSTIFICACION", "");
-													htRowDesignaClone.put("VALIDADA", "");
-													htRowDesignaClone.put("N_ACTUACION", "");
-													htRowDesignaClone.put("NUMEROPROCEDIMIENTOACT", "");
-													htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
-													vRowsInformePorPersona.add(htRowDesignaClone);
-
-												}
-											}
-
-										}
-
-									} else {
-
-										String acreditacion = UtilidadesString.getMensajeIdioma(usrBean, "gratuita.informeJustificacionMasiva.literal.moduloSinAcreditaciones");
+									if (designaForm.getIdJuzgado() == null || designaForm.getIdJuzgado().equals("")) {
+	
+										String acreditacion = UtilidadesString.getMensajeIdioma(usrBean, "gratuita.informeJustificacionMasiva.aviso.sinJuzgado");
 										Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
-										htRowDesignaClone.put("CATEGORIA", categoria);
-										htRowDesignaClone.put("PROCEDIMIENTO", procedimiento);
+										htRowDesignaClone.put("CATEGORIA", "");
+										htRowDesignaClone.put("PROCEDIMIENTO", "");
 										htRowDesignaClone.put("ACREDITACION", acreditacion);
 										htRowDesignaClone.put("FECHAJUSTIFICACION", "");
 										htRowDesignaClone.put("VALIDADA", "");
@@ -1134,13 +1067,81 @@ public class EnvioInformesGenericos extends MasterReport {
 										htRowDesignaClone.put("NUMEROPROCEDIMIENTOACT", "");
 										htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
 										vRowsInformePorPersona.add(htRowDesignaClone);
+	
+									} else if (designaForm.getIdProcedimiento() == null || designaForm.getIdProcedimiento().equals("")) {
+										String acreditacion = UtilidadesString.getMensajeIdioma(usrBean, "gratuita.informeJustificacionMasiva.aviso.sinModulo");
+										Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
+										htRowDesignaClone.put("CATEGORIA", "");
+										htRowDesignaClone.put("PROCEDIMIENTO", "");
+	
+										htRowDesignaClone.put("ACREDITACION", acreditacion);
+										htRowDesignaClone.put("FECHAJUSTIFICACION", "");
+										htRowDesignaClone.put("VALIDADA", "");
+										htRowDesignaClone.put("N_ACTUACION", "");
+										htRowDesignaClone.put("NUMEROPROCEDIMIENTOACT", "");
+										htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
+										vRowsInformePorPersona.add(htRowDesignaClone);
+									} else {
+										String categoria = designaForm.getCategoria();
+										String procedimiento = designaForm.getDescripcionProcedimiento();
+	
+										if (designaForm.getAcreditaciones() != null && designaForm.getAcreditaciones().size() > 0) {
+											Map<String, List<AcreditacionForm>> acreditacionesMap = designaForm.getAcreditaciones();
+											Iterator acreditacionesIterator = acreditacionesMap.keySet().iterator();
+											while (acreditacionesIterator.hasNext()) {
+												String idProcedimineto = (String) acreditacionesIterator.next();
+												List<AcreditacionForm> acreditacionesList = acreditacionesMap.get(idProcedimineto);
+												if (acreditacionesList != null && acreditacionesList.size() > 0) {
+													for (AcreditacionForm acreditacionForm : acreditacionesList) {
+														String acreditacion = acreditacionForm.getDescripcion();
+														Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
+														if (isPrimero) {
+															isPrimero = false;
+														} else {
+															htRowDesignaClone.put("CODIGODESIGNA", "");
+															htRowDesignaClone.put("EXPEDIENTES", "");
+															htRowDesignaClone.put("IDJUZGADO", "");
+															htRowDesignaClone.put("FECHADESIGNA", "");
+															htRowDesignaClone.put("ASUNTO", "");
+															htRowDesignaClone.put("CLIENTE", "");
+	
+														}
+														htRowDesignaClone.put("CATEGORIA", categoria);
+														htRowDesignaClone.put("PROCEDIMIENTO", procedimiento);
+														htRowDesignaClone.put("ACREDITACION", acreditacion);
+														htRowDesignaClone.put("FECHAJUSTIFICACION", "");
+														htRowDesignaClone.put("VALIDADA", "");
+														htRowDesignaClone.put("N_ACTUACION", "");
+														htRowDesignaClone.put("NUMEROPROCEDIMIENTOACT", "");
+														htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
+														vRowsInformePorPersona.add(htRowDesignaClone);
+	
+													}
+												}
+	
+											}
+	
+										} else {
+	
+											String acreditacion = UtilidadesString.getMensajeIdioma(usrBean, "gratuita.informeJustificacionMasiva.literal.moduloSinAcreditaciones");
+											Hashtable htRowDesignaClone = (Hashtable) htRowDesigna.clone();
+											htRowDesignaClone.put("CATEGORIA", categoria);
+											htRowDesignaClone.put("PROCEDIMIENTO", procedimiento);
+											htRowDesignaClone.put("ACREDITACION", acreditacion);
+											htRowDesignaClone.put("FECHAJUSTIFICACION", "");
+											htRowDesignaClone.put("VALIDADA", "");
+											htRowDesignaClone.put("N_ACTUACION", "");
+											htRowDesignaClone.put("NUMEROPROCEDIMIENTOACT", "");
+											htRowDesignaClone.put("DESCRIPCIONFACTURACION", "");
+											vRowsInformePorPersona.add(htRowDesignaClone);
+										}
 									}
+	
 								}
-
+	
 							}
-
-
 						}
+						
 					}
 					// En toda las filas tenemos la descripcion del colegiado
 					// asi que cogemos la
