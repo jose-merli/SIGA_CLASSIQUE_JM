@@ -5,6 +5,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import org.redabogacia.sigaservices.app.services.scs.EjgService;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
@@ -13,6 +15,8 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.gratuita.vos.SIGADocumentacionEjgVo;
+
+import es.satec.businessManager.BusinessManager;
 
 //Clase: ScsDocumentacionEJGAdm 
 //Autor: julio.vicente@atosorigin.com
@@ -577,7 +581,9 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 	 */
 	public List<ScsDocumentacionEJGExtendedBean> getListadoDocumentacionEJG(Hashtable<String, Object> params) throws ClsExceptions {
 		List<ScsDocumentacionEJGExtendedBean> list = new ArrayList<ScsDocumentacionEJGExtendedBean>();
+		EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
 		RowsContainer rc = null;
+		Integer idInstitucion = (Integer)params.get("idInstitucion");
 		String sql = "   SELECT DE.*, " +
 					      "  	DECODE(PERSONA.IDPERSONA, NULL, 'IDMAESTROPRESENTADOR_' || MAESTROPRESENTADOR.IDPRESENTADOR, " +
 					      "         'IDPERSONAJG_' || PERSONA.IDPERSONA) IDPRESENTADOR, " +
@@ -601,29 +607,56 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 					      "                        FAMILIA.IDPARENTESCO)) || ')') AS DESCPRESENTADOR, " +
 					      
 					      "  	D.ABREVIATURA DOCUMENTOABREVIATURA " +
-					      "  	,DE.COMISIONAJG " +
-						  " FROM SCS_DOCUMENTACIONEJG  DE, " +
-						  "      SCS_DOCUMENTOEJG      D, " +
-						  "      SCS_UNIDADFAMILIAREJG FAMILIA, " +
-						  "      SCS_PERSONAJG         PERSONA, " +
-						  "      SCS_PRESENTADOR       MAESTROPRESENTADOR " +
-						  " WHERE DE.IDTIPODOCUMENTO = D.IDTIPODOCUMENTOEJG " +
-						  "  	AND DE.IDINSTITUCION = D.IDINSTITUCION " +
-						  "  	AND DE.IDDOCUMENTO = D.IDDOCUMENTOEJG " +
-						  "  	AND FAMILIA.IDPERSONA = PERSONA.IDPERSONA(+) " +
-						  "  	AND FAMILIA.IDINSTITUCION = PERSONA.IDINSTITUCION(+) " +
-						  "  	AND DE.IDINSTITUCION = FAMILIA.IDINSTITUCION(+) " +
-						  "  	AND DE.IDTIPOEJG = FAMILIA.IDTIPOEJG(+) " +
-						  "  	AND DE.ANIO = FAMILIA.ANIO(+) " +
-						  "  	AND DE.NUMERO = FAMILIA.NUMERO(+) " +
-						  "  	AND DE.PRESENTADOR = FAMILIA.IDPERSONA(+) " +
-						  "  	AND DE.IDMAESTROPRESENTADOR = MAESTROPRESENTADOR.IDPRESENTADOR(+) " +
-						  "  	AND DE.IDINSTITUCION = MAESTROPRESENTADOR.IDINSTITUCION(+) " +
-						  "  	AND DE.IDINSTITUCION = " + (Integer)params.get("idInstitucion")  +
-						  " 	AND DE.IDTIPOEJG = " + (Integer)params.get("idTipoEJG")  +
-						  "  	AND DE.ANIO = " + (Integer)params.get("anio")  +
-						  "  	AND DE.NUMERO =" + (Integer)params.get("numero")  +
-						  "  ORDER BY DE.FECHAENTREGA DESC, DE.FECHALIMITE DESC, PRESENTADOR ";
+					      "  	,DE.COMISIONAJG " ;
+					      
+				if(ejgService.isColegioZonaComun(idInstitucion.shortValue()) && ejgService.isColegioConfiguradoEnvioPericles(idInstitucion.shortValue())) {	      
+					 sql = sql +" ,(SELECT count(1) " +
+						" FROM ECOM_COLA C " +
+						" LEFT OUTER JOIN ECOM_INTERCAMBIO IC ON " +
+						        
+						" C.IDECOMCOLA = IC.IDECOMCOLA "+
+						" WHERE IC.IDESTADORESPUESTA = 5 "+
+						" AND IC.RESPUESTA IS NULL " +
+						" AND C.IDECOMCOLA IN "+
+						" (SELECT IDECOMCOLA "+
+						" FROM ECOM_COLA_PARAMETROS "+
+						" WHERE CLAVE = 'IDINSTITUCION' "+
+						" AND VALOR = DE.IDINSTITUCION) "+
+						" AND C.IDECOMCOLA IN "+
+						" (SELECT IDECOMCOLA "+
+						" FROM ECOM_COLA_PARAMETROS "+
+						" WHERE CLAVE = 'IDDOCUMENTACION' "+
+						" AND VALOR = DE.IDDOCUMENTACION) "+
+						              
+						" AND C.IDINSTITUCION = DE.IDINSTITUCION "+
+						" AND C.IDOPERACION = 79) NUM_INTERCAMBIOS_OK ";
+									  
+				}else {
+					sql = sql +" ,null NUM_INTERCAMBIOS_OK " ;
+				}
+						  
+		 sql = sql +" FROM SCS_DOCUMENTACIONEJG  DE, " +
+			  "      SCS_DOCUMENTOEJG      D, " +
+			  "      SCS_UNIDADFAMILIAREJG FAMILIA, " +
+			  "      SCS_PERSONAJG         PERSONA, " +
+			  "      SCS_PRESENTADOR       MAESTROPRESENTADOR " +
+			  " WHERE DE.IDTIPODOCUMENTO = D.IDTIPODOCUMENTOEJG " +
+			  "  	AND DE.IDINSTITUCION = D.IDINSTITUCION " +
+			  "  	AND DE.IDDOCUMENTO = D.IDDOCUMENTOEJG " +
+			  "  	AND FAMILIA.IDPERSONA = PERSONA.IDPERSONA(+) " +
+			  "  	AND FAMILIA.IDINSTITUCION = PERSONA.IDINSTITUCION(+) " +
+			  "  	AND DE.IDINSTITUCION = FAMILIA.IDINSTITUCION(+) " +
+			  "  	AND DE.IDTIPOEJG = FAMILIA.IDTIPOEJG(+) " +
+			  "  	AND DE.ANIO = FAMILIA.ANIO(+) " +
+			  "  	AND DE.NUMERO = FAMILIA.NUMERO(+) " +
+			  "  	AND DE.PRESENTADOR = FAMILIA.IDPERSONA(+) " +
+			  "  	AND DE.IDMAESTROPRESENTADOR = MAESTROPRESENTADOR.IDPRESENTADOR(+) " +
+			  "  	AND DE.IDINSTITUCION = MAESTROPRESENTADOR.IDINSTITUCION(+) " +
+			  "  	AND DE.IDINSTITUCION = " + idInstitucion  +
+			  " 	AND DE.IDTIPOEJG = " + (Integer)params.get("idTipoEJG")  +
+			  "  	AND DE.ANIO = " + (Integer)params.get("anio")  +
+			  "  	AND DE.NUMERO =" + (Integer)params.get("numero")  +
+			  "  ORDER BY DE.FECHAENTREGA DESC, DE.FECHALIMITE DESC, PRESENTADOR ";
    
 
 
@@ -640,6 +673,8 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
                   extendedBean.setDescPresentador((String) hash.get("DESCPRESENTADOR"));
                   extendedBean.setDocumentoAbreviatura((String) hash.get("DOCUMENTOABREVIATURA"));
                   extendedBean.setComisionAJG((String) hash.get("COMISIONAJG"));
+                  if(hash.get("NUM_INTERCAMBIOS_OK")!=null && !hash.get("NUM_INTERCAMBIOS_OK").equals(""))
+                	  extendedBean.setNumIntercambiosOk(Short.valueOf((String) hash.get("NUM_INTERCAMBIOS_OK")));
                   list.add(extendedBean);
                }
 			}

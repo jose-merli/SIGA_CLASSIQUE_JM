@@ -21,11 +21,18 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+import org.redabogacia.sigaservices.app.AppConstants.TipoIntercambioEnum;
+import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnvios;
+import org.redabogacia.sigaservices.app.autogen.model.EnvEnvios;
 import org.redabogacia.sigaservices.app.autogen.model.ScsTiporesolucion;
 import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
+import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
+import org.redabogacia.sigaservices.app.services.scs.DocumentacionEjgService;
+import org.redabogacia.sigaservices.app.services.scs.EjgService;
 import org.redabogacia.sigaservices.app.services.scs.ScsTipoResolucionService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
+import org.redabogacia.sigaservices.app.vo.scs.IntercambioJG;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -35,9 +42,12 @@ import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.PaginadorBind;
+import com.siga.Utilidades.TransformBeanToForm;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.administracion.SIGAConstants;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.ExpExpedienteAdm;
@@ -87,10 +97,16 @@ import com.siga.beans.ScsTurnoBean;
 import com.siga.beans.ScsUnidadFamiliarEJGAdm;
 import com.siga.beans.ScsUnidadFamiliarEJGBean;
 import com.siga.certificados.Plantilla;
+import com.siga.envios.form.DefinirEnviosForm;
+import com.siga.envios.form.EntradaEnviosForm;
+import com.siga.envios.service.EntradaEnviosService;
+import com.siga.envios.service.SalidaEnviosService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.form.ComunicacionesForm;
 import com.siga.gratuita.form.DefinirEJGForm;
+import com.siga.gratuita.vos.SIGADocumentacionEjgVo;
 
 import es.satec.businessManager.BusinessManager;
 
@@ -1440,66 +1456,109 @@ public class DefinirEJGAction extends MasterAction
 		return "inicio";		
 	}
 
-	
+	protected String listadoIntercambiosJG(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		
+
+		UsrBean usrBean = this.getUserBean(request);
+		DefinirEJGForm definirEJGForm = (DefinirEJGForm)formulario;
+		String accion = (String)request.getSession().getAttribute("accion");
+		definirEJGForm.setModo(accion);
+		
+		if(request.getParameter("ANIO")!=null && !request.getParameter("ANIO").toString().equals("")){
+			definirEJGForm.setAnio(request.getParameter("ANIO").toString());
+			definirEJGForm.setIdInstitucion(request.getParameter("IDINSTITUCION").toString());
+			definirEJGForm.setIdTipoEJG(request.getParameter("IDTIPOEJG").toString());
+			definirEJGForm.setNumero(request.getParameter("NUMERO").toString());
+			definirEJGForm.setSolicitante(request.getParameter("solicitante").toString());
+			definirEJGForm.setNumEJG(request.getParameter("ejgNumEjg").toString());
+		}
+		
+		String forward = "listadoIntercambiosJG";
+		List<IntercambioJG> intercambiosAltaEJG = new ArrayList<IntercambioJG>();
+		List<IntercambioJG> intercambiosEnvioDocumento = new ArrayList<IntercambioJG>();
+
+		try {
+			EjgService ejgService = (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+			
+			intercambiosAltaEJG = ejgService.getListadoIntercambiosAltaEJG(definirEJGForm.getIdInstitucion(),definirEJGForm.getAnio(),definirEJGForm.getIdTipoEJG(),definirEJGForm.getNumero());
+			
+			intercambiosEnvioDocumento = ejgService.getListadoIntercambiosDocumentacionEJG(definirEJGForm.getIdInstitucion(),definirEJGForm.getAnio(),definirEJGForm.getIdTipoEJG(),definirEJGForm.getNumero());
+			
+//			EntradaEnviosService entradaEnviosService = (EntradaEnviosService) businessManager.getService(EntradaEnviosService.class);
+					
+
+		} catch (Exception e) {
+			this.throwExcp("messages.general.error",new String[] {"modulo.envios"},e,null);
+		}
+
+		request.setAttribute("listadoAltaExpediente", intercambiosAltaEJG);     
+		request.setAttribute("listadoEnvioDocumento", intercambiosEnvioDocumento);
+		
+		return "listadoIntercambiosJG";
+	}
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		//si el usuario logado es letrado consultar en BBDD el nColegiado para mostrar en la jsp
-		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-		if (usr.isLetrado()){
-			CenColegiadoAdm colegiado = new CenColegiadoAdm(this.getUserBean(request));
-			CenPersonaAdm persona = new CenPersonaAdm(this.getUserBean(request));
-			
-			try {
+		if(mapping.getPath()!=null && mapping.getPath().equalsIgnoreCase("/JGR_IntercambiosJG")){
+			return listadoIntercambiosJG(mapping, formulario, request, response);
+		}else {
+		
+			UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
+			if (usr.isLetrado()){
+				CenColegiadoAdm colegiado = new CenColegiadoAdm(this.getUserBean(request));
+				CenPersonaAdm persona = new CenPersonaAdm(this.getUserBean(request));
 				
-				String numeroColegiado = colegiado.getIdentificadorColegiado(usr);
-				String nombreColegiado = persona.obtenerNombreApellidos(new Long(usr.getIdPersona()).toString());
-				request.setAttribute("nColegiado",numeroColegiado);
-				request.setAttribute("nombreColegiado",nombreColegiado);
+				try {
+					
+					String numeroColegiado = colegiado.getIdentificadorColegiado(usr);
+					String nombreColegiado = persona.obtenerNombreApellidos(new Long(usr.getIdPersona()).toString());
+					request.setAttribute("nColegiado",numeroColegiado);
+					request.setAttribute("nombreColegiado",nombreColegiado);
+					
+				}
+				catch (Exception e) 
+				{
+					throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
+				} 
+			}
+			/* "DATABACKUP" y "DATOSFORMULARIO" se usan habitualmente así que en primero lugar las borramos esta*/
+	        request.getSession().removeAttribute("DATOSFORMULARIO");
+	        request.getSession().removeAttribute("DATABACKUP");
+	        request.getSession().removeAttribute("accion");
+	        try {
+	        	DefinirEJGForm miFormulario =(DefinirEJGForm)formulario;
+	    		miFormulario.setJsonVolver("");
+	        	GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
+	     		String eejg = paramAdm.getValor (usr.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_EEJG, "");
+	     		Boolean isPermisoEejg = new Boolean((eejg!=null && eejg.equalsIgnoreCase(ClsConstants.DB_TRUE)));
+	     		request.setAttribute("permisoEejg", isPermisoEejg);
+	     		if(usr.isComision()){
+		     		BusinessManager bm = getBusinessManager();
+					ScsTipoResolucionService tipoResolucionService = (ScsTipoResolucionService)bm.getService(ScsTipoResolucionService.class);
+					List<ScsTiporesolucion> tiposResolucion = (ArrayList) tipoResolucionService.getTiposResolucion(Integer.parseInt(usr.getLanguage()));
+					ScsTiporesolucion option = new  ScsTiporesolucion();
+					option.setDescripcion(UtilidadesString.getMensajeIdioma(usr, "gratuita.busquedaSOJ.literal.indiferente"));
+					tiposResolucion.add(0,option);
+					option = new  ScsTiporesolucion();
+					option.setIdtiporesolucion(new Short("-1"));
+					option.setDescripcion(UtilidadesString.getMensajeIdioma(usr, "gratuita.sinResolucion"));
+					tiposResolucion.add(1,option);
+					request.setAttribute("tiposResolucion", tiposResolucion);
+	//				String accesoActaSt = paramAdm.getValor(usr.getLocation(), "SCS", "HABILITA_ACTAS_COMISION", "N");
+	//				request.setAttribute("accesoActa", accesoActaSt.equalsIgnoreCase("S")?"true":"false");
+					
+	     		}
 				
+	     		
 			}
 			catch (Exception e) 
 			{
 				throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
 			} 
-		}
-		/* "DATABACKUP" y "DATOSFORMULARIO" se usan habitualmente así que en primero lugar las borramos esta*/
-        request.getSession().removeAttribute("DATOSFORMULARIO");
-        request.getSession().removeAttribute("DATABACKUP");
-        request.getSession().removeAttribute("accion");
-        try {
-        	DefinirEJGForm miFormulario =(DefinirEJGForm)formulario;
-    		miFormulario.setJsonVolver("");
-        	GenParametrosAdm paramAdm = new GenParametrosAdm (usr);
-     		String eejg = paramAdm.getValor (usr.getLocation (), ClsConstants.MODULO_SJCS, ClsConstants.GEN_PARAM_EEJG, "");
-     		Boolean isPermisoEejg = new Boolean((eejg!=null && eejg.equalsIgnoreCase(ClsConstants.DB_TRUE)));
-     		request.setAttribute("permisoEejg", isPermisoEejg);
-     		if(usr.isComision()){
-	     		BusinessManager bm = getBusinessManager();
-				ScsTipoResolucionService tipoResolucionService = (ScsTipoResolucionService)bm.getService(ScsTipoResolucionService.class);
-				List<ScsTiporesolucion> tiposResolucion = (ArrayList) tipoResolucionService.getTiposResolucion(Integer.parseInt(usr.getLanguage()));
-				ScsTiporesolucion option = new  ScsTiporesolucion();
-				option.setDescripcion(UtilidadesString.getMensajeIdioma(usr, "gratuita.busquedaSOJ.literal.indiferente"));
-				tiposResolucion.add(0,option);
-				option = new  ScsTiporesolucion();
-				option.setIdtiporesolucion(new Short("-1"));
-				option.setDescripcion(UtilidadesString.getMensajeIdioma(usr, "gratuita.sinResolucion"));
-				tiposResolucion.add(1,option);
-				request.setAttribute("tiposResolucion", tiposResolucion);
-//				String accesoActaSt = paramAdm.getValor(usr.getLocation(), "SCS", "HABILITA_ACTAS_COMISION", "N");
-//				request.setAttribute("accesoActa", accesoActaSt.equalsIgnoreCase("S")?"true":"false");
-				
-     		}
-			
-     		
-		}
-		catch (Exception e) 
-		{
-			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
-		} 
-       
-        
-		
-        
-        return "inicio";           
+	       
+	        	return "inicio";
+			}
+	        
+                   
     } 
 	
 	

@@ -31,6 +31,8 @@
 	Hashtable miHash = (Hashtable)ses.getAttribute("EJG");
 	ses.removeAttribute("EJG");
 	String modo = (String) request.getAttribute("modo");
+	String envioPericles = (String) request.getAttribute("envioPericles");
+	
 	String estilo="";
 	String estiloCombo="";
 	String fechaHoy=UtilidadesBDAdm.getFechaBD("");
@@ -91,7 +93,7 @@
 </head>
 
 <body>
-
+<input type="hidden" id ="envioPericles" value = "${envioPericles}"/>
 	<!-- INICIO: TITULO OPCIONAL DE LA TABLA -->
 	<table class="tablaTitulo" align="center" cellspacing="0">
 	<tr>
@@ -212,10 +214,17 @@
 			document.forms[0].reset();
 		}
 		
-	<!-- Asociada al boton Guardar y Cerrar -->
 		function accionGuardarCerrar() 
 		{
+			
+			
 			sub();
+			if(document.getElementById('envioPericles') && document.getElementById('envioPericles').value=='true' && document.forms[0].idEstadoEJG.value =='7'){
+				if(!confirm('Se va ha proceder a enviar el expediente, la documentación y los expedientes económicos solicitados a la CAJG. ¿Deséa continuar?')){
+					fin();
+					return;
+				}
+			}
 			if (validateDefinirEstadosEJGForm(document.forms[0])){
 			  <%if (modo!=null && modo.equals("editar")){%>
 			    document.forms[0].modo.value="Modificar";
@@ -231,7 +240,7 @@
 			}
 		}		
 		
-		<!-- Asociada al boton Cerrar -->
+	
 		function accionCerrar()
 		{
 			top.cierraConParametros("NORMAL");			

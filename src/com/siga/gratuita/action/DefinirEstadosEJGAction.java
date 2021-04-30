@@ -1,18 +1,23 @@
 package com.siga.gratuita.action;
 
 
+import java.util.Hashtable;
+import java.util.Vector;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
-import java.util.Hashtable;
-import java.util.Vector;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+import org.redabogacia.sigaservices.app.services.scs.EjgService;
+import org.redabogacia.sigaservices.app.vo.scs.EstadoEjgVo;
 
-import com.atos.utils.*;
+import com.atos.utils.ClsConstants;
+import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.beans.GenParametrosAdm;
@@ -23,6 +28,8 @@ import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirEstadosEJGForm;
 
+import es.satec.businessManager.BusinessManager;
+
 
 /**
  * Maneja las acciones que se pueden realizar sobre la tabla SCS_ESTADOSEJG
@@ -32,6 +39,7 @@ import com.siga.gratuita.form.DefinirEstadosEJGForm;
 */
 public class DefinirEstadosEJGAction extends MasterAction
 {
+	
 	//////////////////// METODOS GENERICOS DE ACTION ////////////////////
 	protected ActionForward executeInternal (ActionMapping mapping,
 											 ActionForm formulario,
@@ -40,17 +48,50 @@ public class DefinirEstadosEJGAction extends MasterAction
 			throws SIGAException
 	{
 		MasterForm miForm = (MasterForm) formulario;
-		if (miForm == null)
+		if (miForm == null) {
 			try {
 				return mapping.findForward (this.abrir (mapping, miForm, request, response));
 			} catch (Exception e) {
 				return mapping.findForward ("exception");
 			}
-		else
-				return super.executeInternal (mapping, formulario, request, response); 
+		}else {
+			
+				String accion = miForm.getModo();
+				if (accion != null && accion.equalsIgnoreCase("enviarPericles")){
+					return  mapping.findForward (enviarPericles(mapping, miForm, request, response));
+				}else
+					return super.executeInternal (mapping, formulario, request, response);
+			
+		}
+			
+				 
 	} //executeInternal ()
-	
-	
+	protected String enviarPericles (ActionMapping mapping,
+			   MasterForm formulario,
+			   HttpServletRequest request,
+					   HttpServletResponse response) throws SIGAException
+		
+		{
+		
+		UsrBean usr = (UsrBean) request.getSession ().getAttribute ("USRBEAN");
+		DefinirEstadosEJGForm miForm = (DefinirEstadosEJGForm) formulario; 
+		
+		try {
+			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+			EstadoEjgVo estadoEjg = new EstadoEjgVo();
+			estadoEjg.setIdestadoporejg(Long.valueOf(miForm.getIdEstadoPorEJG()));
+			estadoEjg.setIdtipoejg( Short.valueOf(miForm.getIdTipoEJG() ));
+			estadoEjg.setAnio( Short.valueOf(miForm.getAnio ()));
+			estadoEjg.setNumero( Long.valueOf(miForm.getNumero ()));
+			estadoEjg.setIdinstitucion( Short.valueOf( miForm.getIdInstitucion()));
+			
+			ejgService.envioPericles(estadoEjg, usr.getLanguageInstitucion(), EjgService.PERICLES_REENVIA );
+		} catch (BusinessException e) {
+			throwExcp ("messages.general.error", e, null);
+		}
+		return exitoRefresco("messages.inserted.success", request);
+	}
+			
 	//////////////////// METODOS DE ACCIONES ////////////////////
 	/** No implementado */
 	protected String buscarPor (ActionMapping mapping,
@@ -81,7 +122,13 @@ public class DefinirEstadosEJGAction extends MasterAction
 		ScsEstadoEJGAdm  estadoEJGAdm=new ScsEstadoEJGAdm(this.getUserBean(request));
 		v=estadoEJGAdm.selectByPK(miHash);
 		request.getSession ().setAttribute ("EJG", miHash);
-		
+		UsrBean usr = (UsrBean) request.getSession ().getAttribute ("USRBEAN");
+		EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+		if(ejgService.isColegioZonaComun(Short.valueOf(usr.getLocation())) && ejgService.isColegioConfiguradoEnvioPericles(Short.valueOf(usr.getLocation()))){
+			request.setAttribute("envioPericles","true");
+		}else {
+			request.setAttribute("envioPericles","false");
+		}
 		request.setAttribute ("resultado", v);
 		request.setAttribute("modo","editar");
 	   }catch (Exception e){
@@ -111,7 +158,7 @@ public class DefinirEstadosEJGAction extends MasterAction
 		ScsEstadoEJGAdm  estadoEJGAdm=new ScsEstadoEJGAdm(this.getUserBean(request));
 		v=estadoEJGAdm.selectByPK(miHash);
 		request.getSession ().setAttribute ("EJG", miHash);
-		
+		request.setAttribute("envioPericles","false");
 		request.setAttribute ("resultado", v);
 		request.setAttribute("modo","consulta");
 	   }catch (Exception e){
@@ -138,7 +185,13 @@ public class DefinirEstadosEJGAction extends MasterAction
 		miHash.put ("IDINSTITUCION", formulario.getDatos ().get ("IDINSTITUCION"));
 		
 		request.getSession ().setAttribute ("EJG", miHash);
-
+		UsrBean usr = (UsrBean) request.getSession ().getAttribute ("USRBEAN");
+		EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+		if(ejgService.isColegioZonaComun(Short.valueOf(usr.getLocation())) && ejgService.isColegioConfiguradoEnvioPericles(Short.valueOf(usr.getLocation()))){
+			request.setAttribute("envioPericles","true");
+		}else {
+			request.setAttribute("envioPericles","false");
+		}
 		request.setAttribute("modo","nuevo");
 		return "insertar";
 	} //nuevo ()
@@ -155,19 +208,21 @@ public class DefinirEstadosEJGAction extends MasterAction
 	{
 		//Controles generales
 		UsrBean usr = (UsrBean) request.getSession ().getAttribute ("USRBEAN");
-		ScsEstadoEJGAdm admBean = new ScsEstadoEJGAdm (usr);
 		UserTransaction tx = null;
 		
 		DefinirEstadosEJGForm miForm = (DefinirEstadosEJGForm) formulario;		
 		
 		try {
-			Hashtable miHash = new Hashtable ();
-			miHash = miForm.getDatos ();
-			admBean.prepararInsert (miHash);
-			miHash.put(ScsEstadoEJGBean.C_AUTOMATICO,ClsConstants.DB_FALSE);
+			
+			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+			EstadoEjgVo estadoEjg = miForm.getEstadoEjgVo(miForm);
+			estadoEjg.setAutomatico(AppConstants.DB_FALSE);
 			if(usr.isComision())
-				miHash.put(ScsEstadoEJGBean.C_PROPIETARIOCOMISION,ClsConstants.DB_TRUE);
-			admBean.insert (miHash);
+				estadoEjg.setPropietariocomision(ClsConstants.DB_TRUE);
+			
+			ejgService.insertEstadoEjg(estadoEjg,usr.getLanguageInstitucion());
+			
+			
 		} catch (Exception e) {
 			throwExcp ("messages.general.error",
 					new String[] {"modulo.gratuita"}, e, tx);
@@ -175,6 +230,8 @@ public class DefinirEstadosEJGAction extends MasterAction
 		
 		return exitoModal ("messages.inserted.success", request);
 	} //insertar ()
+	
+	
 	
 	/**
 	 * No implementado
@@ -187,22 +244,20 @@ public class DefinirEstadosEJGAction extends MasterAction
 	{ 
 		
 		UsrBean usr = (UsrBean) request.getSession ().getAttribute ("USRBEAN");
-		ScsEstadoEJGAdm admBean = new ScsEstadoEJGAdm (usr);
-		UserTransaction tx = null;
-		
-					
 		DefinirEstadosEJGForm miForm = (DefinirEstadosEJGForm) formulario;		
-		
 		try {
-			Hashtable miHash = new Hashtable ();
-			miHash = miForm.getDatos ();
-			admBean.prepararUpdate (miHash);
+			
+			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+			EstadoEjgVo estadoEjg = miForm.getEstadoEjgVo(miForm);
 			if(usr.isComision())
-				miHash.put(ScsEstadoEJGBean.C_PROPIETARIOCOMISION,ClsConstants.DB_TRUE);
-			admBean.updateDirect(miHash,null,null);
+				estadoEjg.setPropietariocomision(ClsConstants.DB_TRUE);
+			
+			ejgService.updateEstadoEjg(estadoEjg,usr.getLanguageInstitucion());
+			
+			
 		} catch (Exception e) {
 			throwExcp ("messages.general.error",
-					new String[] {"modulo.gratuita"}, e, tx);
+					new String[] {"modulo.gratuita"}, e,null);
 		}
 		
 		return exitoModal ("messages.updated.success", request);
@@ -311,7 +366,7 @@ public class DefinirEstadosEJGAction extends MasterAction
 			"   AND estado.NUMERO = "+UtilidadesHash.getString(miHash,"NUMERO")+" " ;
 		if(miForm.getVerHistorico()!=null && miForm.getVerHistorico().equalsIgnoreCase(ClsConstants.DB_TRUE)){
 			request.setAttribute("verHistorico", miForm.getVerHistorico());
-			consulta += " ORDER BY ESTADO.FECHAMODIFICACION asc ";
+			consulta += " ORDER BY ESTADO.FECHAMODIFICACION asc , ESTADO.IDESTADOPOREJG asc ";
 		}else{
 			request.setAttribute("verHistorico", ClsConstants.DB_FALSE);
 			consulta += " and fechabaja is null "+
@@ -327,6 +382,19 @@ public class DefinirEstadosEJGAction extends MasterAction
 			request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
 			
 			v = admBean.selectGenerico (consulta);
+			
+			if( v != null && v.size()>0) {
+				//miramos si el ultimo estado es Listo remitir a comision. si es asi miramos el estado del ultimo envio de eCOM
+				Hashtable fila = (Hashtable)v.get(v.size()-1);
+				String idEstado = (String)fila.get(ScsEstadoEJGBean.C_IDESTADOEJG);
+				if(Short.parseShort(idEstado) == AppConstants.ESTADOS_EJG.GENERADO_ENV_COMISION.getCodigo()) {
+//					fila.put("botonEnvio", "1");
+				}
+				
+			}
+			
+			
+			
 			request.setAttribute ("resultado", v);
 			request.getSession ().setAttribute ("accion", accion);
 		} catch (Exception e) {

@@ -19,9 +19,11 @@ import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+import org.redabogacia.sigaservices.app.services.scs.EjgService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import org.redabogacia.sigaservices.app.vo.scs.DocumentacionEjgVo;
+import org.redabogacia.sigaservices.app.vo.scs.EstadoEjgVo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -37,9 +39,12 @@ import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirDocumentacionEJGForm;
+import com.siga.gratuita.form.DefinirEstadosEJGForm;
 import com.siga.gratuita.form.service.DocumentacionEjgVoService;
 import com.siga.gratuita.service.SIGADocumentacionEjgService;
 import com.siga.gratuita.vos.SIGADocumentacionEjgVo;
+
+import es.satec.businessManager.BusinessManager;
 
 /**
  * Maneja las acciones que se pueden realizar sobre la tabla SCS_DOCUMENTACIONEJG
@@ -62,7 +67,12 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 						mapDestino = downloadFichero(mapping, miForm, request, response);
 					} else if (accion != null && accion.equalsIgnoreCase("borrarfichero")) {
 						mapDestino = borrarFichero(mapping, miForm, request, response);
-					} else {
+					} 
+					else if (accion != null && accion.equalsIgnoreCase("enviarPericles")){
+						return  mapping.findForward (enviarPericles(mapping, miForm, request, response));
+					}
+					
+					else {
 						return super.executeInternal(mapping, formulario, request, response);
 					}
 
@@ -644,5 +654,29 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 
 		return definirDocumentacionEJGForm;
 	}	
-
+	protected String enviarPericles (ActionMapping mapping,
+			   MasterForm formulario,
+			   HttpServletRequest request,
+					   HttpServletResponse response) throws SIGAException
+		
+		{
+		
+		UsrBean usr = (UsrBean) request.getSession ().getAttribute ("USRBEAN");
+		DefinirDocumentacionEJGForm miForm = (DefinirDocumentacionEJGForm) formulario; 
+		
+		try {
+			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+			DocumentacionEjgVo documentacionEjgVo = new DocumentacionEjgVo();
+			documentacionEjgVo.setIdtipoejg( Short.valueOf(miForm.getIdTipoEJG() ));
+			documentacionEjgVo.setAnio( Short.valueOf(miForm.getAnio ()));
+			documentacionEjgVo.setNumero( Long.valueOf(miForm.getNumero ()));
+			documentacionEjgVo.setIdinstitucion( Short.valueOf( miForm.getIdInstitucion()));
+			documentacionEjgVo.setIddocumentacion(Integer.valueOf(miForm.getIdDocumentacion()));
+			
+			ejgService.envioPericles(documentacionEjgVo, usr.getLanguageInstitucion());
+		} catch (BusinessException e) {
+			throwExcp ("messages.general.error", e, null);
+		}
+		return exitoRefresco("messages.inserted.success", request);
+	}
 }

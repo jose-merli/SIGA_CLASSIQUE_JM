@@ -25,6 +25,7 @@ public class SIGADocumentacionEjgVo extends ScsDocumentacionEJGBean implements C
 	private Date fechaArchivo;
 	byte[] fichero;
 	boolean borrarFichero = false;
+	private Short numIntercambiosOk;
 
 	public SIGADocumentacionEjgVo() {
 
@@ -150,6 +151,14 @@ public class SIGADocumentacionEjgVo extends ScsDocumentacionEJGBean implements C
 
 	public void setFechaEntrega(String fechaEntrega) {
 		this.fechaEntrega = fechaEntrega;
+	}
+
+	public Short getNumIntercambiosOk() {
+		return numIntercambiosOk;
+	}
+
+	public void setNumIntercambiosOk(Short numIntercambiosOk) {
+		this.numIntercambiosOk = numIntercambiosOk;
 	}
 
 }

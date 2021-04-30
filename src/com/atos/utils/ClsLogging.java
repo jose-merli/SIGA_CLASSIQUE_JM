@@ -93,7 +93,8 @@ public class ClsLogging{
 			try{
 				loglevel = Integer.parseInt(rp.returnProperty("LOG.level").trim());
 			}catch (Exception nfe){
-				nfe.printStackTrace();
+				//nfe.printStackTrace();
+				loglevel = 10;
 			}
 			
 			try{
