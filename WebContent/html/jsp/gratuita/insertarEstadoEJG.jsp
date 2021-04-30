@@ -220,7 +220,6 @@
 			
 			sub();
 			if(document.getElementById('envioPericles') && document.getElementById('envioPericles').value=='true' && document.forms[0].idEstadoEJG.value =='7'){
-				alertStop("entramos");
 				if(!confirm('Se va ha proceder a enviar el expediente, la documentación y los expedientes económicos solicitados a la CAJG. ¿Deséa continuar?')){
 					fin();
 					return;
