@@ -217,6 +217,7 @@ public class DefinirEstadosEJGAction extends MasterAction
 			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
 			EstadoEjgVo estadoEjg = miForm.getEstadoEjgVo(miForm);
 			estadoEjg.setAutomatico(AppConstants.DB_FALSE);
+			estadoEjg.setUsumodificacion(new Integer (usr.getUserName()));
 			if(usr.isComision())
 				estadoEjg.setPropietariocomision(ClsConstants.DB_TRUE);
 			
@@ -249,6 +250,7 @@ public class DefinirEstadosEJGAction extends MasterAction
 			
 			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
 			EstadoEjgVo estadoEjg = miForm.getEstadoEjgVo(miForm);
+			estadoEjg.setUsumodificacion(new Integer (usr.getUserName()));
 			if(usr.isComision())
 				estadoEjg.setPropietariocomision(ClsConstants.DB_TRUE);
 			
