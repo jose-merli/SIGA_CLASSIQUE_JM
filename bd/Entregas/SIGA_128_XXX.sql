@@ -1090,3 +1090,6 @@ values(940,1, 'pestana.justiciagratuitaejg.intercambiosJG', 6, 'EJG');
 -- Add/modify columns 
 alter table CEN_COLEGIOPROCURADOR modify CODIGOEJIS VARCHAR2(12);
 
+UPDATE gen_pestanas set posicion = 10 where IDPROCESO = '940';
+
+
