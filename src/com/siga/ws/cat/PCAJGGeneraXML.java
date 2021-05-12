@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -20,12 +21,18 @@ import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.AppConstants.MODULO;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
+import org.redabogacia.sigaservices.app.autogen.model.ScsEjg;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.helper.ftp.FtpPcajgAbstract;
 import org.redabogacia.sigaservices.app.helper.ftp.FtpPcajgFactory;
+import org.redabogacia.sigaservices.app.mapper.ScsEjgExtendsMapper;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
+import org.redabogacia.sigaservices.app.services.scs.DocumentacionEjgService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
+import org.redabogacia.sigaservices.app.vo.scs.DocumentacionEjgVo;
+import org.redabogacia.sigaservices.app.vo.scs.EejgPeticionessVo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -40,6 +47,7 @@ import com.siga.beans.CajgRemesaBean;
 import com.siga.beans.CajgRemesaEstadosAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaAdm;
 import com.siga.beans.CajgRespuestaEJGRemesaBean;
+import com.siga.eejg.SolicitudesEEJG;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.action.DefinirRemesasCAJGAction;
 import com.siga.ws.PCAJGConstantes;
@@ -90,6 +98,7 @@ import com.siga.ws.pcajg.cat.xsd.TipoProfesionalesDesignados.AbogadoDesignado.Li
 import com.siga.ws.pcajg.cat.xsd.TipoProfesionalesDesignados.ProcuradorDesignado;
 import com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.Intercambio.InformacionIntercambio.TipoIDO;
 import com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument.Intercambio.InformacionIntercambio.TipoIDO.Expediente.DocumentoAnexado;
+import com.sis.firma.core.B64.Base64CODEC;
 
 import es.satec.businessManager.BusinessManager;
 
@@ -243,6 +252,11 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 			if(isActivoEnvioDigitalizacionDoc){
 				String key = getKey(new Object[]{datosGeneralesEJG.get(IDINSTITUCION), datosGeneralesEJG.get(ANIO), datosGeneralesEJG.get(NUMERO), datosGeneralesEJG.get(IDTIPOEJG)});
 				List documentacionExpedienteList =  (ArrayList)htDocumentacionExpedienteCat.get(key);
+				//AÑADO ESTO PARA VER SI LOS FAMILIARES TIENEN INFORME ECONOMICO
+				List familiares = (ArrayList) htFamiliares.get(key);
+//				.size()>0
+				if(familiares!=null && familiares.size()>0)
+					datosGeneralesEJG.put("FAMILIARES", familiares);
 				int numFilesEjg = anadirDocumentosIDO(indexDocumentacion,documentacionExpedienteList,datosGeneralesEJG); 
 				numFilesCat += numFilesEjg;
 				ClsLogging.writeFileLog("Número de documentos añadidos: "+numFilesEjg +". Total documentos digitalizados: "+ numFilesCat, 3);
@@ -267,6 +281,51 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		return ficheros;
 	}
 	
+	private DocumentacionEjgVo getDocumentoEconomicoEjg(Short idInstitucion, Short anio, Short idTipoEJG, Long numero,String nifNie) {
+		DocumentacionEjgService documentacionEjgService = (DocumentacionEjgService) BusinessManager.getInstance().getService(DocumentacionEjgService.class);
+		DocumentacionEjgVo documentacionEjgVo = new DocumentacionEjgVo();
+		try {
+			List<EejgPeticionessVo> eejgPeticionessVos = documentacionEjgService.getUltimoExpedienteEconomico(idInstitucion, anio, idTipoEJG, numero, nifNie);
+			
+			documentacionEjgVo.setIdinstitucion(idInstitucion);
+			documentacionEjgVo.setAnio(anio);
+			documentacionEjgVo.setIdtipoejg(idTipoEJG);
+			documentacionEjgVo.setNumero(numero);
+			
+			ClsLogging.writeFileLog("Hemos encontrado " + eejgPeticionessVos.size() + " informes económicos para el nif."+nifNie,3);
+			for (EejgPeticionessVo peticion : eejgPeticionessVos) {
+				if(peticion!=null && peticion.getCsv()!=null && !peticion.getCsv().equals("")){
+										
+//					if(true) {
+//						File fichero = new File("C:\\txt\\informeeconomico.pdf");
+//						byte[] archivo = SIGAServicesHelper.getBytes(fichero);
+//						documentacionEjgVo.setFichero(archivo);
+//						
+//						documentacionEjgVo.setFechaArchivo(new Date());
+//					}else {
+						SolicitudesEEJG solicitudesEEJG = new SolicitudesEEJG();
+						String contenidoPDF = solicitudesEEJG.getDocumentoTO(peticion.getCsv());
+						if (contenidoPDF != null) {
+							File temporalFile = File.createTempFile("prefijo", "sufijo");
+							Base64CODEC.decodeToFile(contenidoPDF,temporalFile.getPath());
+							byte[] archivo = SIGAServicesHelper.getBytes(temporalFile);
+							documentacionEjgVo.setFichero(archivo);
+							documentacionEjgVo.setFechaArchivo(peticion.getFechaconsulta());
+							
+							temporalFile.delete();
+						}	
+//					}
+					break;
+				}
+			}		
+		}catch (Exception e) {
+			ClsLogging.writeFileLog("PCAJGGeneraXML.getDocumentoEconomicoEJG"+e.toString(),3);
+			throw new BusinessException("Error al obtener el expediente económico ");
+		}
+		ClsLogging.writeFileLog("PCAJGGeneraXML.getDocumentoEconomicoEJG fin",3);
+		return documentacionEjgVo;
+
+	}
 	private Integer anadirDocumentosIDO(com.siga.ws.pcajg.cat.xsd.pdf.IntercambioDocument indexDocumentacion, List datosDocumentacionExpedienteDSCat, Hashtable datosGeneralesEJG) throws Exception {
 		Integer numFiles = 0;
 		Integer numFilesReq = 0;
@@ -282,9 +341,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 		if (anyoExpediente != null) {
 			codigoExpediente.setAnyoExpediente(anyoExpediente);	
 		}
-		//		codigoExpediente.setColegioExpediente(String.valueOf(getIdInstitucion()));
-		//		codigoExpediente.setAnyoExpediente(Integer.valueOf((String) ht.get(ANIO)));
-		//		codigoExpediente.setNumExpediente((String)ht.get(NUMERO));
+	
 		if(datosDocumentacionExpedienteDSCat!=null) {
 			for (int j = 0; j < datosDocumentacionExpedienteDSCat.size(); j++) {
 				
@@ -316,6 +373,66 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 					}
 				}
 			}
+		}
+		//Buscamos los expedientes economicos para adjuntarlos
+		try {
+			
+		
+			//PRIMERO EL DEL SOLICITANTE PRINCIPAL
+			DocumentacionEjgVo documentacionEjgVo =  getDocumentoEconomicoEjg(Short.valueOf((String)datosGeneralesEJG.get(IDINSTITUCION)), 
+					Short.valueOf((String)datosGeneralesEJG.get(ANIO)),Short.valueOf((String) datosGeneralesEJG.get(IDTIPOEJG)),Long.valueOf((String) datosGeneralesEJG.get(NUMERO)), (String) datosGeneralesEJG.get(DS_DP_IDENTIFICACION));
+			if(documentacionEjgVo!=null &&  documentacionEjgVo.getFichero()!=null) {
+				String nifNie =  (String) datosGeneralesEJG.get(DS_DP_IDENTIFICACION);
+				String nombreFichero =  nifNie + ".pdf";
+				String nombreFicheroExtMin =nombreFichero;
+				DocumentoAnexado documentoAnexado = expediente.addNewDocumentoAnexado();
+				documentoAnexado.setPathDocumento(getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), nombreFicheroExtMin));
+				documentoAnexado.setFechaDocumento( toCalendar(documentacionEjgVo.getFechaArchivo()));
+				documentoAnexado.setDescripcioOpcional("Expedient econòmic");
+				documentoAnexado.setTipusDocumentAnnex("TR-DOCINIACA-01");
+				
+				File fileIn = SIGAServicesHelper.createTemporalFile(documentacionEjgVo.getFichero(),nifNie, "pdf");
+				if(fileIn != null){
+					mapaFicheros.put(fileIn.getName(), getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), nombreFicheroExtMin));
+					ficherosCat.add(fileIn);
+					numFiles++;
+				}
+			}
+			//AHORA EL DE LOS FAMILIARES
+			if(datosGeneralesEJG.get("FAMILIARES")!=null) {
+				ArrayList familiares = (ArrayList) datosGeneralesEJG.get("FAMILIARES");
+				if(familiares!=null && familiares.size()>0) {
+					for (int i = 0; i < familiares.size(); i++) {
+						Hashtable familiar  =  (Hashtable) familiares.get(0);
+						if(familiar!=null && familiar.get("F_F_DP_IDENTIFICACION")!=null) {
+							documentacionEjgVo =  getDocumentoEconomicoEjg(Short.valueOf((String)datosGeneralesEJG.get(IDINSTITUCION)), 
+									Short.valueOf((String)datosGeneralesEJG.get(ANIO)),Short.valueOf((String) datosGeneralesEJG.get(IDTIPOEJG)),Long.valueOf((String) datosGeneralesEJG.get(NUMERO)), (String) familiar.get("F_F_DP_IDENTIFICACION"));
+							
+							if(documentacionEjgVo!=null &&  documentacionEjgVo.getFichero()!=null) {
+								String nifNie =  (String) datosGeneralesEJG.get(DS_DP_IDENTIFICACION);
+								String nombreFichero =  nifNie + ".pdf";
+								String nombreFicheroExtMin =nombreFichero;
+								DocumentoAnexado documentoAnexado = expediente.addNewDocumentoAnexado();
+								documentoAnexado.setPathDocumento(getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), nombreFicheroExtMin));
+								documentoAnexado.setFechaDocumento( toCalendar(documentacionEjgVo.getFechaArchivo()));
+								documentoAnexado.setDescripcioOpcional("Expedient econòmic");
+								documentoAnexado.setTipusDocumentAnnex("TR-DOCINIACA-01");
+								
+								File fileIn = SIGAServicesHelper.createTemporalFile(documentacionEjgVo.getFichero(),nifNie, "pdf");
+								if(fileIn != null){
+									mapaFicheros.put(fileIn.getName(), getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), nombreFicheroExtMin));
+									ficherosCat.add(fileIn);
+									numFiles++;
+								}	
+							}
+						}
+					}
+				}
+			}
+		
+		} catch (Exception e) {
+			
+			ClsLogging.writeFileLog("PCAJGGeneraXML.getDocumentoEconomicoEJG. Se ha producido errores al adjuntar ficheros economicos. el proceso continua...",3);
 		}
 		//Si no se han anadido ficheros requeridos comprobamos si tiene dictamen que permite no enviar documentación
 		if(numFilesReq == 0){
@@ -1591,6 +1708,13 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 		  Calendar cal = Calendar.getInstance();
 		  SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		  cal.setTime(sdf.parse(fecha));
+		  return cal;
+	}
+	public static Calendar toCalendar(Date fecha) throws ParseException{ 
+		
+		  Calendar cal = Calendar.getInstance();
+		  SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		  cal.setTime(fecha);
 		  return cal;
 	}
 
