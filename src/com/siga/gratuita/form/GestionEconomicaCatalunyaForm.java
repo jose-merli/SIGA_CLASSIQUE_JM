@@ -276,6 +276,7 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 					elementosFila[0] = new FilaExtElement("editar", "editaIntercambio",SIGAConstants.ACCESS_FULL);
 					break;
 				}
+				break;
 				
 			case Devoluciones: case Certificaciones:	case Anexos:
 				switch (Integer.valueOf(idEstado)) {
@@ -383,8 +384,13 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 				
 
 
-			
+				break;
+			default:
+				elementosFila = new FilaExtElement[1];
+				elementosFila[0] = new FilaExtElement("editar", "editaIntercambio",SIGAConstants.ACCESS_FULL);
+				break;
 			}
+			
 		}
 		if(elementosFila==null) {
 			log.info("Viene nulos");
