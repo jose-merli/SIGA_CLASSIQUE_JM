@@ -659,7 +659,7 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
 
 		}
-		return exitoRefresco("messages.error.censo.mantenimientoDuplicados.espera",request);
+		return exitoRefresco("messages.envios.procesandoEnvio",request);
 	}
 	private String enviaIntercambiosGEN (MasterForm formulario, HttpServletRequest request) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
