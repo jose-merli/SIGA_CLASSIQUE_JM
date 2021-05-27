@@ -77,7 +77,7 @@
 		
 	}
 	function enviarIntercambioCICAC(fila) {
-		
+		alert('<siga:Idioma key="facturacion.estadosfac.literal.GenEjecucion"/>');
 		sub();
 		document.forms['FormularioGestion'].idDevolucion.value = document.getElementById("idDevolucion").value;
 		document.forms['FormularioGestion'].idJustificacion.value = document.getElementById("idJustificacion").value;
@@ -89,6 +89,7 @@
 		
 	}
 	function descarga(fila) {
+		sub();
 		alert('<siga:Idioma key="facturacion.estadosfac.literal.GenEjecucion"/>');
 		document.forms['FormularioGestion'].modo.value = "descarga";
 		var idTipoIntercambio = 'idTipoIntercambio_' + fila ;
@@ -102,6 +103,8 @@
 	}
 	
 	function consulta(fila) {
+		sub();
+		alert('<siga:Idioma key="facturacion.estadosfac.literal.GenEjecucion"/>');
 		document.forms['FormularioGestion'].modo.value = "consulta";
 		var idTipoIntercambio = 'idTipoIntercambio_' + fila ;
 		document.forms['FormularioGestion'].idTipoIntercambio.value = document.getElementById(idTipoIntercambio).value;
@@ -152,6 +155,7 @@
 	
 	
 	function descargaLogValidacion(fila) {
+		alert('<siga:Idioma key="facturacion.estadosfac.literal.GenEjecucion"/>');
 		document.forms['FormularioGestion'].modo.value = "descargaErrorValidacion";
 		var idTipoIntercambio = 'idTipoIntercambio_' + fila ;
 		document.forms['FormularioGestion'].idTipoIntercambio.value = document.getElementById(idTipoIntercambio).value;
