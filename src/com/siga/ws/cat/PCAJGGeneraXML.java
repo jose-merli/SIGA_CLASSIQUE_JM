@@ -10,23 +10,21 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 import javax.transaction.UserTransaction;
-
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.AppConstants.MODULO;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
-import org.redabogacia.sigaservices.app.autogen.model.ScsEjg;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.helper.ftp.FtpPcajgAbstract;
 import org.redabogacia.sigaservices.app.helper.ftp.FtpPcajgFactory;
-import org.redabogacia.sigaservices.app.mapper.ScsEjgExtendsMapper;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 import org.redabogacia.sigaservices.app.services.scs.DocumentacionEjgService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
@@ -120,7 +118,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	private String anyo;
 	private String numero;
 	private String numejg;
-	private List<File> ficherosCat;
+	private HashMap<String,List<FicheroAdjunto>> ejgFicherosCat;
 	private int numDetallesCat = 0;
 	private Boolean errorMinDoc = false;
 	
@@ -146,8 +144,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 	private List<File> generaFicherosXML(String dirFicheros, String dirPlantilla, boolean isActivoEnvioDigitalizacionDoc) throws Exception {
 		
 		List<File> ficheros = new ArrayList<File>();
-		ficherosCat = new ArrayList<File>();
-		mapaFicheros = new HashMap<String, String>();
+		ejgFicherosCat = new HashMap<String, List<FicheroAdjunto>>();
 		Integer numFilesCat = 0;
 		numDetallesCat = 0;
 		CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(getUsrBean());
@@ -274,7 +271,15 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				//Anadimos fichero de intercambio de documentacion IDO
 				if(numFilesCat > 0){
 					indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio().setNumeroDetallesIntercambio(numDetallesCat);
-					ficherosCat.add(creaFicheroIndex(dirFicheros, dirPlantilla, indexDocumentacion, intercambioDoc, numFilesCat));
+					File ficheroIndex = creaFicheroIndex(dirFicheros, dirPlantilla, indexDocumentacion, intercambioDoc, numFilesCat);
+					List<FicheroAdjunto> ficherosAdjuntar = new ArrayList<FicheroAdjunto>();
+					FicheroAdjunto adjunto = new FicheroAdjunto();
+					adjunto.setDescripcion("Index");
+					adjunto.setTipo("Index");
+					adjunto.setNombre(ficheroIndex.getName());
+					adjunto.setFichero(ficheroIndex);
+					ficherosAdjuntar.add(adjunto);
+					ejgFicherosCat.put("0_Index",ficherosAdjuntar);
 				}
 			}
 		}			
@@ -356,7 +361,8 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 					DocumentoAnexado documentoAnexado = expediente.addNewDocumentoAnexado();
 					String nombreFichero = htDocumentos.get("DS_DE_D_DD_NOMBRE_ARCHIVO").toString() + "." + htDocumentos.get("DS_DE_D_DD_EXTENSION_ARCHIVO").toString();
 					String nombreFicheroExtMin = htDocumentos.get("DS_DE_D_DD_NOMBRE_ARCHIVO").toString() + "." + htDocumentos.get("DS_DE_D_DD_EXTENSION_ARCHIVO").toString().toLowerCase();
-					documentoAnexado.setPathDocumento(getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), nombreFicheroExtMin));
+					String nombreFicheroAdjunto = getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), nombreFicheroExtMin);
+					documentoAnexado.setPathDocumento(nombreFicheroAdjunto);
 					documentoAnexado.setFechaDocumento(toCalendar((String) htDocumentos.get(DS_DE_D_DD_FECHAPRESENTACIONDO)));
 					if(!((String) htDocumentos.get(DS_DE_D_DD_DESCRIPCIONAMPLIADA)).isEmpty())
 						documentoAnexado.setDescripcioOpcional((String) htDocumentos.get(DS_DE_D_DD_DESCRIPCIONAMPLIADA));
@@ -367,8 +373,21 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 					String rutaFichero = htDocumentos.get("DS_DE_D_DD_DIRECTORIO_ARCHIVO").toString();
 					File fileIn = new File(rutaFichero+File.separator+nombreFichero);
 					if(fileIn != null){
-						mapaFicheros.put(fileIn.getName(), getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), nombreFicheroExtMin));
-						ficherosCat.add(fileIn);
+						String keyEJG = anyoExpediente+numExpediente;
+						List<FicheroAdjunto> ficherosAdjuntar = null;
+						if(ejgFicherosCat.containsKey(keyEJG))
+							ficherosAdjuntar = ejgFicherosCat.get(keyEJG);
+						else
+							ficherosAdjuntar = new ArrayList<FicheroAdjunto>();
+						
+						FicheroAdjunto adjunto = new FicheroAdjunto();
+						adjunto.setDescripcion(documentoAnexado.getDescripcioOpcional());
+						adjunto.setTipo(documentoAnexado.getTipusDocumentAnnex());
+						adjunto.setNombre(nombreFicheroAdjunto);
+						adjunto.setFichero(fileIn);
+						ficherosAdjuntar.add(adjunto);
+						ejgFicherosCat.put(keyEJG,ficherosAdjuntar);
+						
 						numFiles++;
 					}
 				}
@@ -386,15 +405,30 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				String nombreFichero =  nifNie + ".pdf";
 				String nombreFicheroExtMin =nombreFichero;
 				DocumentoAnexado documentoAnexado = expediente.addNewDocumentoAnexado();
-				documentoAnexado.setPathDocumento(getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), nombreFicheroExtMin));
+				String nombreFicheroAdjunto = getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), nombreFicheroExtMin);
+				documentoAnexado.setPathDocumento(nombreFicheroAdjunto);
 				documentoAnexado.setFechaDocumento( toCalendar(documentacionEjgVo.getFechaArchivo()));
 				documentoAnexado.setDescripcioOpcional("Expedient econòmic");
 				documentoAnexado.setTipusDocumentAnnex("TR-DOCINIACA-01");
 				
 				File fileIn = SIGAServicesHelper.createTemporalFile(documentacionEjgVo.getFichero(),nifNie, "pdf");
 				if(fileIn != null){
-					mapaFicheros.put(fileIn.getName(), getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), nombreFicheroExtMin));
-					ficherosCat.add(fileIn);
+					
+					String keyEJG = anyoExpediente+numExpediente;
+					List<FicheroAdjunto> ficherosAdjuntar = null;
+					if(ejgFicherosCat.containsKey(keyEJG))
+						ficherosAdjuntar = ejgFicherosCat.get(keyEJG);
+					else
+						ficherosAdjuntar = new ArrayList<FicheroAdjunto>();
+					
+					FicheroAdjunto adjunto = new FicheroAdjunto();
+					adjunto.setDescripcion(documentoAnexado.getDescripcioOpcional());
+					adjunto.setTipo(documentoAnexado.getTipusDocumentAnnex());
+					adjunto.setNombre(nombreFicheroAdjunto);
+					adjunto.setFichero(fileIn);
+					ficherosAdjuntar.add(adjunto);
+					ejgFicherosCat.put(keyEJG,ficherosAdjuntar);
+					
 					numFiles++;
 				}
 			}
@@ -413,15 +447,30 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 								String nombreFichero =  nifNie + ".pdf";
 								String nombreFicheroExtMin =nombreFichero;
 								DocumentoAnexado documentoAnexado = expediente.addNewDocumentoAnexado();
-								documentoAnexado.setPathDocumento(getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), nombreFicheroExtMin));
+								String nombreFicheroAdjunto = getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), nombreFicheroExtMin);
+								documentoAnexado.setPathDocumento(nombreFicheroAdjunto);
 								documentoAnexado.setFechaDocumento( toCalendar(documentacionEjgVo.getFechaArchivo()));
 								documentoAnexado.setDescripcioOpcional("Expedient econòmic");
 								documentoAnexado.setTipusDocumentAnnex("TR-DOCINIACA-01");
 								
 								File fileIn = SIGAServicesHelper.createTemporalFile(documentacionEjgVo.getFichero(),nifNie, "pdf");
 								if(fileIn != null){
-									mapaFicheros.put(fileIn.getName(), getNombreFicheroAdjunto(indexDocumentacion.getIntercambio().getInformacionIntercambio().getIdentificacionIntercambio(), nombreFicheroExtMin));
-									ficherosCat.add(fileIn);
+									
+									String keyEJG = anyoExpediente+numExpediente;
+									List<FicheroAdjunto> ficherosAdjuntar = null;
+									if(ejgFicherosCat.containsKey(keyEJG))
+										ficherosAdjuntar = ejgFicherosCat.get(keyEJG);
+									else
+										ficherosAdjuntar = new ArrayList<FicheroAdjunto>();
+									
+									FicheroAdjunto adjunto = new FicheroAdjunto();
+									adjunto.setDescripcion(documentoAnexado.getDescripcioOpcional());
+									adjunto.setTipo(documentoAnexado.getTipusDocumentAnnex());
+									adjunto.setNombre(nombreFicheroAdjunto);
+									adjunto.setFichero(fileIn);
+									ficherosAdjuntar.add(adjunto);
+									ejgFicherosCat.put(keyEJG,ficherosAdjuntar);
+									
 									numFiles++;
 								}	
 							}
@@ -1616,32 +1665,67 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 					
 					//si todo ha ido bien subimos los ficheros
 					ftpPcajgAbstract = FtpPcajgFactory.getInstance((short)getIdInstitucion());
-					escribeLogRemesa("Conectando al servidor FTP");			
+					escribeLogRemesa("---------------------------------------------------------------");
+					escribeLogRemesa("Iniciando envio de ficheros a la Generalitat");			
 					ftpPcajgAbstract.connect();				
 					ClsLogging.writeFileLog("Procedemos a subir los ficheros al SFTP", 3);
 					for (File file : files) {
 						FileInputStream fis = new FileInputStream(file);
-						escribeLogRemesa("Subiendo XML generado al servidor FTP");
+						escribeLogRemesa("Subiendo XML generado "+file.getName()+" al servidor FTP");
 						ftpPcajgAbstract.upload(file.getName(), fis);				
 						fis.close();
-						escribeLogRemesa("El archivo se ha subido correctamente al servidor FTP");
+						escribeLogRemesa("El archivo "+file.getName()+" se ha subido correctamente al servidor FTP");
 						ClsLogging.writeFileLog("El archivo " + file.getName() +" se ha subido correctamente al servidor FTP", 3);
 					}
-
-					for (File fileCat : ficherosCat) {
-						String nombreFichero;
-						if(fileCat.getName().contains("index.xml"))
-							nombreFichero = fileCat.getName();
-						else
-							nombreFichero = mapaFicheros.get(fileCat.getName());
-						FileInputStream fis = new FileInputStream(fileCat);
-						escribeLogRemesa("Subiendo IDO generado al servidor FTP");
-						ftpPcajgAbstract.uploadIDO(nombreFichero, fis);				
-						fis.close();				
-						escribeLogRemesa("El archivo se ha subido correctamente al servidor FTP");
-						ClsLogging.writeFileLog("El archivo " + nombreFichero +" se ha subido correctamente al servidor FTP", 3);
-					}
+					StringBuilder logFichero = null;
+//					2021-05-21 13:55:02 Subiendo IDO generado al servidor FTP
+//					2021-05-21 13:55:03 El archivo se ha subido correctamente al servidor FTP
+//
+//					2021-05-21 13:55:04 Subiendo IDO generado al servidor FTP
+//					2021-05-21 13:55:05 El archivo se ha subido correctamente al servidor FTP
+//
+//					[…]
+//
+//					Cambio a:
+//
+//					[…]
+//					2021-05-21 13:55:02 Subiendo Expedient econòmic(IDO_2079_GEN_45297819D.pdf) al servidor FTP
+//					2021-05-21 13:55:03 El archivo IDO_2079_GEN_45297819D.pdf se ha subido correctamente al servidor FTP
+//
+//					2021-05-21 13:55:04 Subiendo Dictamen del col·legi(IDO_2061_GEN_2061_2044978.pdf ) generado al servidor FTP
+//					2021-05-21 13:55:05 El archivo IDO_2061_GEN_2061_2044978.pdf se ha subido correctamente al servidor FTP
 					
+					
+					Iterator iterator = ejgFicherosCat.keySet().iterator();
+				    List guardiasOutList = null;
+				    while (iterator.hasNext()) {
+				    	String keyEjg =  (String)iterator.next();
+					
+				    	List<FicheroAdjunto> listaAdjuntos =  ejgFicherosCat.get(keyEjg);
+				    	for (FicheroAdjunto ficheroAdjunto : listaAdjuntos) {
+							
+							FileInputStream fis = new FileInputStream(ficheroAdjunto.getFichero());
+							logFichero = new StringBuilder("Subiendo ");
+							logFichero.append(ficheroAdjunto.getTipo());
+							logFichero.append(" ");
+							logFichero.append(ficheroAdjunto.getDescripcion());
+							logFichero.append("(");
+							logFichero.append(ficheroAdjunto.getNombre());						
+							logFichero.append(") al servidor FTP");
+							ClsLogging.writeFileLog(logFichero.toString(), 3);
+							escribeLogRemesa(logFichero.toString());
+							ftpPcajgAbstract.uploadIDO(ficheroAdjunto.getNombre(), fis);				
+							fis.close();				
+							logFichero = new StringBuilder("Archivo ");
+							logFichero.append(ficheroAdjunto.getNombre());						
+							logFichero.append(" subido correctamente al FTP");
+							escribeLogRemesa(logFichero.toString());
+							ClsLogging.writeFileLog(logFichero.toString(), 3);
+							
+				    	}
+					}
+				    escribeLogRemesa("Finalizado proceso de envio de ficheros a la Generalitat");	
+				    escribeLogRemesa("---------------------------------------------------------------");
 					tx.commit();
 				}else {				
 					ClsLogging.writeFileLog("Ha ocurrido un problema y no se han generado los ficheros ni cambiado el estado de la remesa en el proceso envía CAT", 3);
@@ -1730,5 +1814,40 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 		
 		System.out.println(i);
 	}
+	
+}
+class FicheroAdjunto {
+	String tipo;
+	String nombre;
+	String descripcion;
+	File fichero;
+	public String getNombre() {
+		return nombre;
+	}
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+	public String getTipo() {
+		return tipo;
+	}
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+	
+	public String getDescripcion() {
+		return descripcion;
+	}
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+	public File getFichero() {
+		return fichero;
+	}
+	public void setFichero(File fichero) {
+		this.fichero = fichero;
+	}
+	
+	
+	
 	
 }
