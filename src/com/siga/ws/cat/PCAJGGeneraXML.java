@@ -279,7 +279,7 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 					adjunto.setNombre(ficheroIndex.getName());
 					adjunto.setFichero(ficheroIndex);
 					ficherosAdjuntar.add(adjunto);
-					ejgFicherosCat.put("0_Index",ficherosAdjuntar);
+					ejgFicherosCat.put("Index",ficherosAdjuntar);
 				}
 			}
 		}			
@@ -1700,7 +1700,11 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 				    List guardiasOutList = null;
 				    while (iterator.hasNext()) {
 				    	String keyEjg =  (String)iterator.next();
-					
+				    	logFichero = new StringBuilder("Ejg:");
+				    	logFichero.append(keyEjg);
+				    	ClsLogging.writeFileLog(logFichero.toString(), 3);
+						escribeLogRemesa(logFichero.toString());
+						
 				    	List<FicheroAdjunto> listaAdjuntos =  ejgFicherosCat.get(keyEjg);
 				    	for (FicheroAdjunto ficheroAdjunto : listaAdjuntos) {
 							
