@@ -6,6 +6,7 @@ import java.util.Vector;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+import org.redabogacia.sigaservices.app.services.scs.EjgService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -1409,7 +1410,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		
 		// A raiz de la INC_07042_SIGA se revisan los criterios de busqueda eliminado el codigo comentado.
 		// Estamos a 08/04/2010 version 1.4.2.3 del CVS
-
+		
+			
 		Hashtable hashReturn = new Hashtable(); 
 
 		Hashtable codigos = new Hashtable();
@@ -1580,8 +1582,10 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			}
 			
 		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESA.equals(tipoVentana)) {
-//		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESA.equals(tipoVentana)||TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)) {
-			consulta += " AND ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " IN (" + ESTADOS_EJG.LISTO_REMITIR_COMISION.getCodigo() + ", " + ESTADOS_EJG.LISTO_REMITIR_COMISION_ACT_DESIGNACION.getCodigo() + ") ";
+			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+			boolean isColegiozonacomun =  ejgService.isColegioZonaComun(Short.valueOf(usrbean.getLocation()));
+			if(!isColegiozonacomun)
+				consulta += " AND ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " IN (" + ESTADOS_EJG.LISTO_REMITIR_COMISION.getCodigo() + ", " + ESTADOS_EJG.LISTO_REMITIR_COMISION_ACT_DESIGNACION.getCodigo() + ") ";
 		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)) {
 			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 			String idPeticionMinimoConDatos = rp.returnProperty("cajg.idPeticion_SCS_EEJG_PETICIONES_DondeEmpezoAFuncionarDatosCompletos");
@@ -1659,6 +1663,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			consulta += " FROM CAJG_RESPUESTA_EJGREMESA RER ";
 			consulta += " WHERE RER.IDEJGREMESA = EJ.IDEJGREMESA) "; 
 			consulta += " ) ";
+			
 			
 		}
 		

@@ -55,6 +55,7 @@ import org.redabogacia.sigaservices.app.services.caj.PCAJGInsertaColaService;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService.RESPUESTA_ENVIO_REMESA;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
+import org.redabogacia.sigaservices.app.services.scs.EjgService;
 import org.redabogacia.sigaservices.app.services.scs.ScsEjgService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -1530,7 +1531,10 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			//si es alcala metemos el estabdo recibida respuesta 
 			if(usr.getLocation().equals("2003"))
 				cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(miForm.getIdRemesa()), ClsConstants.ESTADO_REMESA_RECIBIDA);
-			cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, getIDInstitucion(request).toString(), miForm.getIdRemesa(), ESTADOS_EJG.REMITIDO_COMISION);
+			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+			boolean isColegiozonacomun =  ejgService.isColegioZonaComun(Short.valueOf(usr.getLocation()));
+			if(!isColegiozonacomun)
+				cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, getIDInstitucion(request).toString(), miForm.getIdRemesa(), ESTADOS_EJG.REMITIDO_COMISION);
 		}
 
 		tx.commit();
