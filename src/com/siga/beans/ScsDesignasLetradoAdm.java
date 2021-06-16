@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.services.scs.EjgService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -27,6 +28,8 @@ import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirEJGForm;
 import com.siga.gratuita.form.DesignaForm;
 import com.siga.gratuita.form.InformeJustificacionMasivaForm;
+
+import es.satec.businessManager.BusinessManager;
 
 
 
@@ -1200,9 +1203,13 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sql.append(" D.NUMPROCEDIMIENTO, ");
 		sql.append(" D.ANIOPROCEDIMIENTO, ");
 		sql.append(" D.NIG, ");
-		
 		sql.append(" (SELECT COUNT(*) FROM SCS_DESIGNASLETRADO SDL WHERE D.IDINSTITUCION = SDL.IDINSTITUCION AND D.ANIO = SDL.ANIO AND D.NUMERO = SDL.NUMERO AND D.IDTURNO = SDL.IDTURNO) AS CAMBIOLETRADO, ");
-	               
+
+		BusinessManager businessManager =  BusinessManager.getInstance();	
+		EjgService ejgService = (EjgService)businessManager.getService(EjgService.class);
+		boolean isColegioZonaMinisterio = ejgService.isColegioZonaComun(Short.valueOf(formulario.getIdInstitucion()));
+		if(isColegioZonaMinisterio)
+	    	sql.append("DECODE(");
 		sql.append(" (SELECT MIN(CASE WHEN (EJG.FECHARESOLUCIONCAJG IS NOT NULL ");
 		sql.append(" AND ((EJG.IDTIPORATIFICACIONEJG IN (3,5,6,7) ");
 		sql.append(" AND EJG.IDTIPORESOLAUTO IS NOT NULL ");
@@ -1234,7 +1241,28 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 		sql.append(" AND D.IDINSTITUCION = EJGDES.IDINSTITUCION ");
 		sql.append(" AND D.IDTURNO = EJGDES.IDTURNO ");
 		sql.append(" AND D.ANIO = EJGDES.ANIODESIGNA ");
-		sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA) AS NUM_TIPO_RESOLUCION_DESIGNA ");
+		sql.append(" AND D.NUMERO = EJGDES.NUMERODESIGNA) ");
+		
+		
+		if(isColegioZonaMinisterio){
+			sql.append(" ,1,1,2,2,3,NVL((SELECT DISTINCT 1 ");
+			sql.append(" FROM SCS_PROCEDIMIENTOS P, SCS_JURISDICCION J ");
+			sql.append(" WHERE P.IDJURISDICCION = J.IDJURISDICCION ");
+			sql.append(" AND NVL(J.JUSTIFICAR_SIN_RESOL, 0) = 1 ");
+			sql.append(" AND P.IDINSTITUCION = D.IDINSTITUCION ");
+			sql.append(" AND P.IDPROCEDIMIENTO = D.IDPROCEDIMIENTO),3),4,NVL((SELECT DISTINCT 1 ");
+			sql.append(" FROM SCS_PROCEDIMIENTOS P, SCS_JURISDICCION J ");
+			sql.append(" WHERE P.IDJURISDICCION = J.IDJURISDICCION ");
+			sql.append(" AND NVL(J.JUSTIFICAR_SIN_RESOL, 0) = 1 ");
+			sql.append(" AND P.IDINSTITUCION = D.IDINSTITUCION ");
+			sql.append(" AND P.IDPROCEDIMIENTO = D.IDPROCEDIMIENTO),4),NVL((SELECT DISTINCT 1 ");
+			sql.append(" FROM SCS_PROCEDIMIENTOS P, SCS_JURISDICCION J ");
+			sql.append(" WHERE P.IDJURISDICCION = J.IDJURISDICCION ");
+			sql.append(" AND NVL(J.JUSTIFICAR_SIN_RESOL, 0) = 1 ");
+			sql.append(" AND P.IDINSTITUCION = D.IDINSTITUCION ");
+			sql.append(" AND P.IDPROCEDIMIENTO = D.IDPROCEDIMIENTO),NULL)) ");
+		}
+		sql.append(" AS NUM_TIPO_RESOLUCION_DESIGNA ");
 	        
 		sql.append(" FROM SCS_DESIGNA D, ");
 		sql.append(" SCS_DESIGNASLETRADO DL ");

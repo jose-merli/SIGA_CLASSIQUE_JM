@@ -1093,3 +1093,64 @@ alter table CEN_COLEGIOPROCURADOR modify CODIGOEJIS VARCHAR2(12);
 UPDATE gen_pestanas set posicion = 10 where IDPROCESO = '940';
 
 
+-- Add/modify columns 
+alter table SCS_JURISDICCION add JUSTIFICAR_SIN_RESOL CHAR(1) default 0;
+-- Add comments to the columns 
+comment on column SCS_JURISDICCION.JUSTIFICAR_SIN_RESOL
+  is 'Se permite la justificacion de actuaciones de designacion aunque no exista resolucion inclusives las pendientes';
+  UPDATE scs_jurisdiccion SET JUSTIFICAR_SIN_RESOL = 1 WHERE IDJURISDICCION IN (1,9);
+  
+  CREATE TABLE CEN_GRUPOSINSTITUCION (
+    IDGRUPO NUMBER(4,0) NOT NULL,
+    FECHAMODIFICACION DATE NOT NULL,
+    USUMODIFICACION NUMBER(5,0) NOT NULL,
+    NOMBRE VARCHAR2(255) NOT NULL,
+    CODIGO VARCHAR2(10) NOT NULL,
+    BLOQUEADO VARCHAR2(1) NOT NULL,
+    CONSTRAINT PK_CEN_GRUPOSINSTITUCION PRIMARY KEY (IDGRUPO)
+);
+
+CREATE UNIQUE INDEX UK_GRUPOSINSTITUCION ON CEN_GRUPOSINSTITUCION (NOMBRE); 
+CREATE TABLE CEN_GRUPOSINSTITUCION_INSTITU (
+    IDGRUPO NUMBER(4,0) NOT NULL,
+    IDINSTITUCION NUMBER(4,0) NOT NULL,
+    FECHAMODIFICACION DATE NOT NULL,
+    USUMODIFICACION NUMBER(5,0) NOT NULL,
+    FECHA_BAJA DATE NULL,
+    FECHA_INICIO DATE NOT NULL,
+    CONSTRAINT PK_CEN_GRUPOSINSTITU_INSTITU PRIMARY KEY (IDGRUPO,IDINSTITUCION),
+    CONSTRAINT FK_GRUPOSINSTITU_INSTITU_GRUPO FOREIGN KEY (IDGRUPO) REFERENCES CEN_GRUPOSINSTITUCION(IDGRUPO),
+    CONSTRAINT FK_CEN_INSTITU_GRUPOSINSTITU FOREIGN KEY (IDINSTITUCION) REFERENCES CEN_INSTITUCION(IDINSTITUCION)
+);
+
+CREATE INDEX IND_FK_GRUPOSINSTITUCION_GRUPO ON CEN_GRUPOSINSTITUCION_INSTITU (IDGRUPO);
+CREATE INDEX IND_FK_GRUPOSINSTITUCION_INST ON CEN_GRUPOSINSTITUCION_INSTITU (IDINSTITUCION);
+INSERT into CEN_GRUPOSINSTITUCION(idgrupo, fechamodificacion, usumodificacion, nombre, codigo, bloqueado)
+values(1, sysdate, 0, 'Zona comun Ministerio Justicia', 'COMUN_MINI', 'S');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2002	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2060	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2065	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2009	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2010	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2011	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2013	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2014	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2020	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2022	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2054	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2070	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2074	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2078	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2082	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2031	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2050	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2019	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2040	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2042	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2049	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2067	, sysdate, 0, '01/01/2000');
+INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2017	, sysdate, 0, '01/01/2000');
+
+
+  
+
