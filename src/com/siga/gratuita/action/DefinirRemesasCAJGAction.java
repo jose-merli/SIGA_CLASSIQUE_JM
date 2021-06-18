@@ -1533,7 +1533,9 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIDInstitucion(request), Integer.valueOf(miForm.getIdRemesa()), ClsConstants.ESTADO_REMESA_RECIBIDA);
 			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
 			boolean isColegiozonacomun =  ejgService.isColegioZonaComun(Short.valueOf(usr.getLocation()));
-			if(!isColegiozonacomun)
+			boolean isColegioConfiguradoPericles =  ejgService.isColegioConfiguradoEnvioPericles(Short.valueOf(usr.getLocation()));
+			
+			if(!isColegiozonacomun && !isColegioConfiguradoPericles )
 				cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, getIDInstitucion(request).toString(), miForm.getIdRemesa(), ESTADOS_EJG.REMITIDO_COMISION);
 		}
 
