@@ -244,12 +244,14 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 					if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
 						elementosFila = new FilaExtElement[3];
 						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
-						elementosFila[1] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement( "download","descarga", SIGAConstants.ACCESS_FULL);
+						elementosFila[2] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
 						//						elementosFila[2] = new FilaExtElement("enviar","enviaRespuestaCICAC_ICA", SIGAConstants.ACCESS_FULL);
 					}else {
-						elementosFila = new FilaExtElement[2];
+						elementosFila = new FilaExtElement[3];
 						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
-						elementosFila[1] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement( "download","descarga", SIGAConstants.ACCESS_FULL);
+						elementosFila[2] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
 
 					}
 					break;
@@ -321,24 +323,28 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 					break;
 				case 40:
 					if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
-						elementosFila = new FilaExtElement[1];
+						elementosFila = new FilaExtElement[2];
 						elementosFila[0] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
 					}else {
-						elementosFila = new FilaExtElement[1];
-						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_NONE);
+						elementosFila = new FilaExtElement[2];
+						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
 					}
 
 					break;
 				case 50:
 
-					elementosFila = new FilaExtElement[1];
+					elementosFila = new FilaExtElement[2];
 					elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_NONE);
+					elementosFila[1] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
 
 					break;
 
 				case 60:
-					elementosFila = new FilaExtElement[1];
+					elementosFila = new FilaExtElement[2];
 					elementosFila[0] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
+					elementosFila[1] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
 					break;
 				case 70:
 					elementosFila = new FilaExtElement[2];
@@ -348,13 +354,15 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 
 				case 87:
 					if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
-						elementosFila = new FilaExtElement[2];
+						elementosFila = new FilaExtElement[3];
 						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
-						elementosFila[1] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement( "download","descarga", SIGAConstants.ACCESS_FULL);
+						elementosFila[2] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
 					}else {
-						elementosFila = new FilaExtElement[2];
+						elementosFila = new FilaExtElement[3];
 						elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_FULL);
-						elementosFila[1] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
+						elementosFila[1] = new FilaExtElement( "download","descarga", SIGAConstants.ACCESS_FULL);
+						elementosFila[2] = new FilaExtElement( "descargaLog","descargaErrores", SIGAConstants.ACCESS_FULL);
 
 					}
 					break;
