@@ -566,7 +566,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 	 * 
 	 * @return String que indicará la siguiente acción a llevar a cabo.
 	 */
-	protected synchronized String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
+	protected String insertar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
 			throws SIGAException {
 
 		UserTransaction tx = null;
@@ -1085,7 +1085,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 		return v_seleccionadosSesion;
 	}
 
-	protected synchronized String aniadirARemesa(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
+	protected String aniadirARemesa(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response)
 			throws SIGAException {
 		DefinicionRemesas_CAJG_Form miForm = (DefinicionRemesas_CAJG_Form) formulario;
 		String seleccionados = miForm.getSelDefinitivo();
@@ -1534,9 +1534,10 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
 			boolean isColegiozonacomun =  ejgService.isColegioZonaComun(Short.valueOf(usr.getLocation()));
 			boolean isColegioConfiguradoPericles =  ejgService.isColegioConfiguradoEnvioPericles(Short.valueOf(usr.getLocation()));
-			
-			if(!isColegiozonacomun && !isColegioConfiguradoPericles )
+			if(!isColegiozonacomun || (isColegiozonacomun && !isColegioConfiguradoPericles ))
 				cajgEJGRemesaAdm.nuevoEstadoEJGRemitidoComision(usr, getIDInstitucion(request).toString(), miForm.getIdRemesa(), ESTADOS_EJG.REMITIDO_COMISION);
+			
+				
 		}
 
 		tx.commit();
