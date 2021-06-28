@@ -1584,8 +1584,8 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESA.equals(tipoVentana)) {
 			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
 			boolean isColegiozonacomun =  ejgService.isColegioZonaComun(Short.valueOf(usrbean.getLocation()));
-			boolean isColegioConfiguradoPericles =  ejgService.isColegioConfiguradoEnvioPericles(Short.valueOf(usrbean.getLocation()));
-			if(!isColegiozonacomun || (isColegiozonacomun && !isColegioConfiguradoPericles ))
+			boolean isColegioConfiguradoEnvioWS =  ejgService.isColegioConfiguradoEnvioPericles(Short.valueOf(usrbean.getLocation()));
+			if(!isColegiozonacomun || (isColegiozonacomun && !isColegioConfiguradoEnvioWS ))
 				consulta += " AND ESTADO." + ScsEstadoEJGBean.C_IDESTADOEJG + " IN (" + ESTADOS_EJG.LISTO_REMITIR_COMISION.getCodigo() + ", " + ESTADOS_EJG.LISTO_REMITIR_COMISION_ACT_DESIGNACION.getCodigo() + ") ";
 		} else if (TipoVentana.BUSQUEDA_ANIADIR_REMESARECONOMICA.equals(tipoVentana)) {
 			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
