@@ -1152,5 +1152,7 @@ INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificac
 INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2017	, sysdate, 0, '01/01/2000');
 
 
-  
+--SIGA_553
+CEN_COLEGIADO_BU
+CEN_COLEGIADO_AU
 
