@@ -1151,8 +1151,10 @@ INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificac
 INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2067	, sysdate, 0, '01/01/2000');
 INSERT into CEN_GRUPOSINSTITUCION_INSTITU(idgrupo, idinstitucion, fechamodificacion, usumodificacion, fecha_inicio) values(1,	2017	, sysdate, 0, '01/01/2000');
 
-
 --SIGA_553
 CEN_COLEGIADO_BU
 CEN_COLEGIADO_AU
+
+--Ya ejecutado en Produccion con caracter de urgencia: 
+ALTER TABLE SCS_DOCUMENTACIONDESIGNA MODIFY IDDOCUMENTACIONDES NUMBER(10,0);
 
