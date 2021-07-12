@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.services.scs.GestionEnvioInformacionEconomicaCatalunyaService;
+import org.redabogacia.sigaservices.app.services.scs.GestionEnvioInformacionEconomicaCatalunyaService.TIPOINTERCAMBIO;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import org.redabogacia.sigaservices.app.vo.scs.GestionEconomicaCatalunyaVo;
@@ -371,9 +372,17 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 			if (gestionEconomicaForm.getTheFile() != null && gestionEconomicaForm.getTheFile().getFileSize() > maxSizebytes) {
 				throw new SIGAException("messages.general.file.maxsize", new String[] { (maxsize) });
 			}
-			log.info("getPathFile"+gestionEconomicaForm.getPathFile());
+			
+//			log.info("getPathFile"+gestionEconomicaForm.getPathFile());
 			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			log.info("getFileErrorData"+justificacionVo.getFileErrorData());
+			if(usrBean.getLocation().equalsIgnoreCase(""+AppConstants.IDINSTITUCION_CONSEJO_CATALAN)) {
+				
+				justificacionVo.setDescripcion(TIPOINTERCAMBIO.CertificacionCICAC.getDescripcio());
+				justificacionVo.setIdTipoIntercambio(TIPOINTERCAMBIO.CertificacionCICAC.getId());
+//				justificacionVo.setIdTipoCertificacion(GestionEnvioInformacionEconomicaCatalunyaService.ti);
+			}
+			
+//			log.info("getFileErrorData"+justificacionVo.getFileErrorData());
 			justificacionVo.setIdInstitucion(Short.valueOf(usrBean.getLocation()));
 			justificacionVo.setUsuModificacion(Integer.parseInt(usrBean.getUserName()));
 			gestionEconomicaCatalunyaService.insertaIntercambios(justificacionVo);

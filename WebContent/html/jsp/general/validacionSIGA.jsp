@@ -764,6 +764,18 @@ function validarAnio(anio){
 	
 	
 }
+function validateDecimal(valor) {
+	valor = valor.replace('.',',');
+   
+   var RE = /^[0-9]+(,[0-9]+)?$/;
+    
+    if (RE.test(valor)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 function validaNumerico(numero, tamanio){
 	expresion = "^[0-9]{0,";
 	expresion += tamanio;

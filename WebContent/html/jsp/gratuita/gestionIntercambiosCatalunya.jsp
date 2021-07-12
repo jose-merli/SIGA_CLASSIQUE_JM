@@ -95,15 +95,17 @@
 		jQuery("#descripcionNew").val("");
 		jQuery("#idPeriodoNew").val("");
 		jQuery("#anioNew").val("");
-		
-		openDialog('dialogoInsercion');
+		if(document.forms['FormularioGestion'].cantidadAsunto)
+			openDialog('dialogoInsercion',650,400);
+		else
+			openDialog('dialogoInsercion',600,240);
 	}
 	
-	function openDialog(dialogo){
+	function openDialog(dialogo,valWidth,valHeight){
 		jQuery("#"+dialogo).dialog(
 				{
-				      height: 240,
-				      width: 525,
+				      height: valHeight,
+				      width: valWidth,
 				      modal: true,
 				      resizable: false,
 				      buttons: {
@@ -162,6 +164,8 @@
 		
 		document.forms['FormularioGestion'].submit();
 	}
+	
+	
 	function enviarIntercambiosCICAC(fila) {
 		sub();
 		var idIntercambio = 'idIntercambio_' + fila ;
@@ -175,7 +179,7 @@
 	function accionInsercion(dialogo){
 		
 		alert("<siga:Idioma key='messages.enProceso'/>");
-		closeDialog(dialogo);
+		
 		
 		error = '';
 		if(dialogo=='dialogoInsercion'){
@@ -201,7 +205,76 @@
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.calendarioGuardias.literal.periodo'/>"+ '\n';
 				
 			}
-			if(document.forms['FormularioGestion'].descripcion.value==''){
+			
+			if(document.forms['FormularioGestion'].cantidadAsunto){
+				if(document.forms['FormularioGestion'].cantidadAsunto.value==''){
+					error += "<siga:Idioma key='errors.required' arg0='Assumptes. Quantitat'/>"+ '\n';
+				}else if(!numerico(document.forms['FormularioGestion'].cantidadAsunto.value)){
+					error += "<siga:Idioma key='errors.integer' arg0='Assumptes. Quantitat'/>"+ '\n';
+				}
+				
+			}
+			
+			if(document.forms['FormularioGestion'].importeAsunto){
+				if(document.forms['FormularioGestion'].importeAsunto.value==''){
+					error += "<siga:Idioma key='errors.required' arg0='Assumptes. Import total'/>"+ '\n';
+				}else if(!validateDecimal(document.forms['FormularioGestion'].importeAsunto.value)){
+					error += "<siga:Idioma key='errors.double' arg0='Assumptes. Import total'/>"+ '\n';
+				}
+				
+			}
+			if(document.forms['FormularioGestion'].importeDevoluciones){
+				if(document.forms['FormularioGestion'].importeDevoluciones.value=='' ){
+					error += "<siga:Idioma key='errors.required' arg0='Devolucions. Import total'/>"+ '\n';
+				}else if( !validateDecimal(document.forms['FormularioGestion'].importeDevoluciones.value)){
+					error += "<siga:Idioma key='errors.double' arg0='Devolucions. Import total'/>"+ '\n';
+				}
+				
+			}
+			
+			if(document.forms['FormularioGestion'].valorInteres){
+				if(document.forms['FormularioGestion'].valorInteres.value=='' ){
+					error += "<siga:Idioma key='errors.required' arg0='Interessos. Valor'/>"+ '\n';
+				}else if( !validateDecimal(document.forms['FormularioGestion'].valorInteres.value)){
+					error += "<siga:Idioma key='errors.double' arg0='Interessos. Valor'/>"+ '\n';
+				}
+				
+			}
+			if(document.forms['FormularioGestion'].importeFinal){
+				if(document.forms['FormularioGestion'].importeFinal.value=='' ){
+					error += "<siga:Idioma key='errors.required' arg0='Import final'/>"+ '\n';
+				}else if(!validateDecimal(document.forms['FormularioGestion'].importeFinal.value)){
+					error += "<siga:Idioma key='errors.double' arg0='Import final'/>"+ '\n';
+				}
+				
+			}
+			if(document.forms['FormularioGestion'].importeAnticipo){
+				if(document.forms['FormularioGestion'].importeAnticipo.value=='' ){
+					error += "<siga:Idioma key='errors.required' arg0='Bestreta. Import'/>"+ '\n';
+				}else if( !validateDecimal(document.forms['FormularioGestion'].importeAnticipo.value)){
+					error += "<siga:Idioma key='errors.double' arg0='Bestreta. Import'/>"+ '\n';
+				}
+				
+			}
+			if(document.forms['FormularioGestion'].acumuladoTrimetreActual){
+				if(document.forms['FormularioGestion'].acumuladoTrimetreActual.value=='' ){
+					error += "<siga:Idioma key='errors.required' arg0='Import acumulat del trimestre anterior'/>"+ '\n';
+				}else if(!validateDecimal(document.forms['FormularioGestion'].acumuladoTrimetreActual.value)){
+					error += "<siga:Idioma key='errors.double' arg0='Import acumulat del trimestre anterior'/>"+ '\n';
+				}
+				
+			}
+			if(document.forms['FormularioGestion'].acumuladoTrimetreAnterior){
+				if(document.forms['FormularioGestion'].acumuladoTrimetreAnterior.value==''){
+					error += "<siga:Idioma key='errors.required' arg0='Import acumulat del trimestre actual'/>"+ '\n';
+				}else if( !validateDecimal(document.forms['FormularioGestion'].acumuladoTrimetreAnterior.value)){
+					error += "<siga:Idioma key='errors.double' arg0='Import acumulat del trimestre actual'/>"+ '\n';
+				}
+				
+			}
+			
+			
+			if(document.forms['FormularioGestion'].descripcion && document.forms['FormularioGestion'].descripcion.value==''){
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.mantActuacion.literal.descripcion'/>"+ '\n';
 				
 			}
@@ -209,12 +282,13 @@
 			if (error=='')
 				document.forms['FormularioGestion'].modo.value = "insertaIntercambios";
 		}
+		
 		if (error!=''){
 			alert(error);
 			fin();
 			return false;
 		}
-		
+		closeDialog(dialogo);
 	    document.forms['FormularioGestion'].submit();
 	}
 
@@ -225,9 +299,7 @@
 	<siga:Titulo titulo="menu.sjcs.ecom.justificacion" localizacion="menu.sjcs.ecomunicaciones.localizacion"/>
 
 <c:set var="botonesBusqueda" value="N,B" />
-<c:if test="${USRBEAN.location=='3001'}">
-		<c:set var="botonesBusqueda" value="B" />
-</c:if>
+
 
 <body onload="return inicio();">
  
@@ -333,21 +405,61 @@
 		<siga:Idioma key="comunicaciones.leyenda.informacionIntercambio"/>
 	</legend>
   
+  		<c:if test="${USRBEAN.location!='3001'}">
+			<div class="labelText">
+   				<label for="descripcion"  style="width:120px;olor: black"><siga:Idioma key="gratuita.mantActuacion.literal.descripcion"/></label>
+   				<html:text property="descripcion" size="35" maxlength="100" />
+			</div>	
+		</c:if>
   		
-  		<div class="labelText">
-   			<label for="descripcion"  style="width:120px;float:left;color: black"><siga:Idioma key="gratuita.mantActuacion.literal.descripcion"/></label>
-   			<html:text property="descripcion" size="35" maxlength="100" />
-		</div>
 		<div class="labelText">
-   			<label for="anio"  style="width:120px;float:left;color: black"><siga:Idioma key="gratuita.mantActuacion.literal.anio"/></label>
+   			<label for="anio"  style="width:120px;color: black"><siga:Idioma key="gratuita.mantActuacion.literal.anio"/></label>
    			<html:text property="anio" size="6" maxlength="4" />
    			<label for="trimestre" style="width:100px;color: black"><siga:Idioma key="gratuita.calendarioGuardias.literal.periodo"/></label>
 			
 			<siga:Select queryId="getPeriodos" id="idPeriodo" width="150" required="true" />
 		</div>
 		<div class="labelText">
-			<label for="file"   style="width:120px;float:left;color:black"><siga:Idioma key="administracion.confInterfaz.fichero"/>&nbsp;<siga:Idioma key="menu.sjcs.ecom.certificacion"/></label><html:file  property="theFile"/>
+			<label for="file"   style="width:120px;color:black"><siga:Idioma key="administracion.confInterfaz.fichero"/>&nbsp;<siga:Idioma key="menu.sjcs.ecom.certificacion"/></label>&nbsp;<html:file  property="theFile"/>
 			</div>
+
+		<c:if test="${USRBEAN.location=='3001'}">
+			<div class="labelText">
+	   			<label for="cantidadAsunto"  style="width:120px;color: black">Assumptes. Quantitat</label>
+	   				<html:text property="cantidadAsunto" size="13" maxlength="6" />
+	   			<label for="importeAsunto"  style="width:120px;color: black">Assumptes. Import total</label>
+					<html:text property="importeAsunto" size="13" maxlength="13" />
+			</div>
+			<div class="labelText">
+	   			<label for="importeDevoluciones"  style="width:120px;  color: black">Devolucions. Import total</label>
+	   			<html:text property="importeDevoluciones" size="13" maxlength="13" />
+	   		
+				<label for="valorInteres"  style="width:120px;color: black">Interessos. Valor</label>
+				<html:text  				property="valorInteres" size="13" maxlength="13" />
+			</div>
+			<div class="labelText">		
+				<label for="importeFinal"  style="width:120px;color: black">Import final</label>
+					<html:text property="importeFinal" size="13" maxlength="13" />
+			</div>
+			
+			<div class="labelText">
+				<label for="importeAnticipo"  style="width:120px;color: black">Bestreta. Import</label>
+					<html:text property="importeAnticipo" size="13" maxlength="13" />
+				
+			</div>
+			
+			<div class="labelText">
+				<label for="acumuladoTrimetreActual"  style="width:120px;color: black">Import acumulat del trimestre anterior</label>
+					<html:text property="acumuladoTrimetreActual" size="13" maxlength="13" />
+			
+			</div>
+			<div class="labelText">
+				<label for="acumuladoTrimetreAnterior"  style="width:120px;color: black">Import acumulat del trimestre actual.</label>
+					<html:text property="acumuladoTrimetreAnterior" size="13" maxlength="13" />
+			</div>
+			<div class="labelText">&nbsp;</div>
+		</c:if>
+			
 			
 	</fieldset>
 		

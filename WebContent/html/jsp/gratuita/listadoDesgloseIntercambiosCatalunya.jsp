@@ -88,6 +88,18 @@
 		document.forms['FormularioGestion'].submit();
 		
 	}
+	function enviarIntercambiosGEN(fila) {
+		sub();
+		var idIntercambio = 'idIntercambio_' + fila ;
+		var idInstitucion = 'idInstitucion_' + fila ;
+		document.forms['FormularioGestion'].idIntercambio.value = document.getElementById(idIntercambio).value;
+		document.forms['FormularioGestion'].idInstitucion.value = document.getElementById(idInstitucion).value;
+		document.forms['FormularioGestion'].modo.value = "enviarIntercambiosGEN";
+		
+		document.forms['FormularioGestion'].submit();
+	}
+	
+	
 	function descarga(fila) {
 		sub();
 		alert('<siga:Idioma key="facturacion.estadosfac.literal.GenEjecucion"/>');

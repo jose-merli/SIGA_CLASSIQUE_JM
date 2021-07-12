@@ -1,6 +1,7 @@
 package com.siga.gratuita.form;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,6 +60,87 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 	private FormFile theFile;
 	String pathFile;
 	String idColegio;
+	String cantidadAsunto;
+	String	importeAsunto;
+	String	importeDevoluciones;
+	String	valorInteres;
+	String	importeFinal;
+	String	importeAnticipo;
+	String	acumuladoTrimetreActual;
+	String	acumuladoTrimetreAnterior;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	public String getCantidadAsunto() {
+		return cantidadAsunto;
+	}
+
+	public void setCantidadAsunto(String cantidadAsunto) {
+		this.cantidadAsunto = cantidadAsunto;
+	}
+
+	public String getImporteAsunto() {
+		return importeAsunto;
+	}
+
+	public void setImporteAsunto(String importeAsunto) {
+		this.importeAsunto = importeAsunto;
+	}
+
+	public String getImporteDevoluciones() {
+		return importeDevoluciones;
+	}
+
+	public void setImporteDevoluciones(String importeDevoluciones) {
+		this.importeDevoluciones = importeDevoluciones;
+	}
+
+	public String getValorInteres() {
+		return valorInteres;
+	}
+
+	public void setValorInteres(String valorInteres) {
+		this.valorInteres = valorInteres;
+	}
+
+	public String getImporteFinal() {
+		return importeFinal;
+	}
+
+	public void setImporteFinal(String importeFinal) {
+		this.importeFinal = importeFinal;
+	}
+
+	public String getImporteAnticipo() {
+		return importeAnticipo;
+	}
+
+	public void setImporteAnticipo(String importeAnticipo) {
+		this.importeAnticipo = importeAnticipo;
+	}
+
+	public String getAcumuladoTrimetreActual() {
+		return acumuladoTrimetreActual;
+	}
+
+	public void setAcumuladoTrimetreActual(String acumuladoTrimetreActual) {
+		this.acumuladoTrimetreActual = acumuladoTrimetreActual;
+	}
+
+	public String getAcumuladoTrimetreAnterior() {
+		return acumuladoTrimetreAnterior;
+	}
+
+	public void setAcumuladoTrimetreAnterior(String acumuladoTrimetreAnterior) {
+		this.acumuladoTrimetreAnterior = acumuladoTrimetreAnterior;
+	}
 
 	public final String getIdColegio() {
 		return idColegio;
@@ -130,23 +212,47 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 
 
 		if(getIdTipoIntercambio()==null) {
+			
+			
 			elementosFila = new FilaExtElement[2];
-			elementosFila[0] = new FilaExtElement("editar", "editaIntercambio",SIGAConstants.ACCESS_FULL);
+			
 			switch (Integer.valueOf(idEstado)) {
 			case 14:
+				elementosFila[0] = new FilaExtElement("editar", "editaIntercambio",SIGAConstants.ACCESS_FULL);
 				if(usrBean !=null && usrBean.getLocation()!=null && !usrBean.getLocation().equals("3001")) {
 
 					elementosFila[1] = new FilaExtElement("enviar","enviarIntercambiosCICAC", SIGAConstants.ACCESS_FULL);
 				}
 				break;
-
+				
+			case 50:
+				if(getIdInstitucion() !=null && getIdInstitucion().equals("3001")) {
+					elementosFila[0] = new FilaExtElement("editar", "editaIntercambio",SIGAConstants.ACCESS_FULL);
+					//elementosFila[0] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
+					elementosFila[1] = new FilaExtElement("enviar","enviarIntercambiosGEN", SIGAConstants.ACCESS_FULL);
+					
+				}else {
+					elementosFila[0] = new FilaExtElement("editar", "editaIntercambio",SIGAConstants.ACCESS_FULL);
+				}
+				break;
+			case 70:
+				if(getIdInstitucion() !=null && getIdInstitucion().equals("3001")) {
+					elementosFila[0] = new FilaExtElement("editar", "editaIntercambio",SIGAConstants.ACCESS_FULL);
+//					elementosFila[0] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
+					
+				}else {
+					elementosFila[0] = new FilaExtElement("editar", "editaIntercambio",SIGAConstants.ACCESS_FULL);
+				}
+				break;
 			case 30:
+				elementosFila[0] = new FilaExtElement("editar", "editaIntercambio",SIGAConstants.ACCESS_FULL);
 				if(usrBean !=null && usrBean.getLocation()!=null && usrBean.getLocation().equals("3001")) {
 
 					elementosFila[1] = new FilaExtElement("enviar","enviarIntercambiosGEN", SIGAConstants.ACCESS_FULL);
 				}
 				break;
 			default:
+				elementosFila[0] = new FilaExtElement("editar", "editaIntercambio",SIGAConstants.ACCESS_FULL);
 				break;
 			}
 
@@ -336,8 +442,9 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 				case 50:
 
 					elementosFila = new FilaExtElement[2];
-					elementosFila[0] = new FilaExtElement("consultar", "consulta",SIGAConstants.ACCESS_NONE);
-					elementosFila[1] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
+					
+					elementosFila[0] = new FilaExtElement("download","descarga", SIGAConstants.ACCESS_FULL);
+					elementosFila[1] = new FilaExtElement("enviar","enviarIntercambiosGEN", SIGAConstants.ACCESS_FULL);
 
 					break;
 
@@ -586,7 +693,22 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+		if(objectForm.getImporteDevoluciones()!=null  && !objectForm.getImporteDevoluciones().equals(""))
+			gestionEconomicaCatalunyaVo.setImporteDevoluciones(new BigDecimal(objectForm.getImporteDevoluciones()));
+		if(objectForm.getCantidadAsunto()!=null && !objectForm.getCantidadAsunto().equals(""))
+			gestionEconomicaCatalunyaVo.setCantidadAsunto(Integer.parseInt(objectForm.getCantidadAsunto()));
+		if(objectForm.getImporteAsunto()!=null && !objectForm.getImporteAsunto().equals(""))
+			gestionEconomicaCatalunyaVo.setImporteAsunto(new BigDecimal(objectForm.getImporteAsunto()));
+		if(objectForm.getAcumuladoTrimetreActual()!=null && !objectForm.getAcumuladoTrimetreActual().equals(""))
+			gestionEconomicaCatalunyaVo.setAcumuladoTrimetreActual(new BigDecimal(objectForm.getAcumuladoTrimetreActual()));
+		if(objectForm.getAcumuladoTrimetreAnterior()!=null && !objectForm.getAcumuladoTrimetreAnterior().equals(""))
+			gestionEconomicaCatalunyaVo.setAcumuladoTrimetreAnterior(new BigDecimal(objectForm.getAcumuladoTrimetreAnterior()));
+		if(objectForm.getImporteAnticipo()!=null && !objectForm.getImporteAnticipo().equals(""))
+			gestionEconomicaCatalunyaVo.setImporteAnticipo(new BigDecimal(objectForm.getImporteAnticipo()));
+		if(objectForm.getImporteFinal()!=null && !objectForm.getImporteFinal().equals(""))
+			gestionEconomicaCatalunyaVo.setImporteFinal(new BigDecimal(objectForm.getImporteFinal()));
+		if(objectForm.getValorInteres()!=null && !objectForm.getValorInteres().equals(""))
+			gestionEconomicaCatalunyaVo.setValorInteres(new BigDecimal(objectForm.getValorInteres()));
 		
 		
 		
