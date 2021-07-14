@@ -14,21 +14,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Properties;
 
-import org.redabogacia.sigaservices.app.autogen.model.GenRecursos;
-import org.redabogacia.sigaservices.app.exceptions.BusinessException;
-import org.redabogacia.sigaservices.app.services.gen.GenRecursosService;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.siga.beans.AdmLenguajesAdm;
-
-import es.satec.businessManager.BusinessManager;
 
 
 public class ClsMngProperties {
@@ -65,35 +58,33 @@ public class ClsMngProperties {
 	 * @throws ClsExceptions
 	 */
 	private static void loadPropertiesFromDatabase() throws ClsExceptions{
-		GenRecursosService genRecursosService = (GenRecursosService) BusinessManager.getInstance().getService(GenRecursosService.class);
-		
-		try {
-			System.out.println("Entramos:"+new Date());
-			LinkedHashMap lhmResources = new LinkedHashMap();
-			List<GenRecursos> listRecursos = genRecursosService.getRecursos(null);
-			if (listRecursos != null && listRecursos.size() > 0) {
-				
-				for (GenRecursos recurso : listRecursos) {
-					String languageCode = String.valueOf(recurso.getIdlenguaje());
-  					String idRecurso = recurso.getIdrecurso();
-  					String descripcion = recurso.getDescripcion();
-  					
-  					if(htLanguages.containsKey(languageCode)) {
-  						lhmResources = htLanguages.get(languageCode);
-  					}else {
-  						lhmResources = new LinkedHashMap();
-  					}
-  					lhmResources.put(idRecurso, descripcion);
-  					htLanguages.put(languageCode, lhmResources);
-					
+		RowsContainer rowsLanguages=new RowsContainer();
+      	RowsContainer rowsResources=null;
+      	LinkedHashMap lhmResources=null;
+      	try {
+      		if(rowsLanguages.query(selectLanguages)){
+				int sizeLanguages=rowsLanguages.size();
+				for(int i=0;i<sizeLanguages;i++){
+	  				Row rowL=(Row)rowsLanguages.get(i);
+	  				String languageCode=(String)rowL.getString(ColumnConstants.FN_LANG_ID_LANGUAGE);
+      				rowsResources=new RowsContainer();
+	  				lhmResources= new LinkedHashMap();
+	  				Hashtable<Integer, String> codigos = new Hashtable<Integer, String>();
+	  				codigos.put(new Integer(1),languageCode);
+	  				if(rowsResources.queryBind(selectResources+":1 ORDER BY 1",codigos)) {
+	    				int sizeResources=rowsResources.size();
+	    				for(int j=0;j<sizeResources;j++){
+	      					Row rowR=(Row)rowsResources.get(j);
+	      					lhmResources.put(rowR.getString(FN_ID_RESOURCE),
+											 rowR.getString(FN_DESC_RESOURCE));
+	    				}
+	  				}
+	  				htLanguages.put(languageCode.toLowerCase(),lhmResources);
 				}
-			}
-			System.out.println("Salimos:"+new Date());
-			
-
-		} catch (BusinessException e) {
-			throw e;
-		}
+      		}
+  		} catch (ClsExceptions e) {
+        	throw e;
+      	}
   	}
 
 	/**
