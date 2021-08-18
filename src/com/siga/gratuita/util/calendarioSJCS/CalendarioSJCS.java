@@ -413,7 +413,7 @@ public class CalendarioSJCS
 
 					// RGG cambio para cabeceras de guardia validadas
 					GenParametrosAdm admPar = new GenParametrosAdm(this.usrBean);
-					String valorValidar = admPar.getValor(this.usrBean.getLocation(),"SCS","VALIDAR_VOLANTE","N"); 
+					String valorValidar = admPar.getValor(this.idInstitucion.toString(),"SCS","VALIDAR_VOLANTE","N"); 
 					if (valorValidar.equals("N")) {
 						// directamente quedan validados
 						beanCabeceraGuardias.setValidado(ClsConstants.DB_TRUE);
