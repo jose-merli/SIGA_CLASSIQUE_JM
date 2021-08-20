@@ -4466,7 +4466,9 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			" AND "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"."+CenDatosColegialesEstadoBean.C_FECHAESTADO+" = (SELECT MAX("+CenDatosColegialesEstadoBean.C_FECHAESTADO+") " + 
 			" FROM  "+CenDatosColegialesEstadoBean.T_NOMBRETABLA+"   " +
 			" WHERE "+CenColegiadoBean.C_IDPERSONA+" = "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+"  " +
-			" AND "+CenColegiadoBean.C_IDINSTITUCION+"= "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" AND CEN_DATOSCOLEGIALESESTADO.FECHAESTADO <= SYSDATE)) AS ESTADOCOLEGIAL, " +
+			" AND "+CenColegiadoBean.C_IDINSTITUCION+"= "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" AND CEN_DATOSCOLEGIALESESTADO.FECHAESTADO <= SYSDATE)) " +
+			"     || case when "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_COMUNITARIO+" = '"+ClsConstants.DB_TRUE+"' then ' (' || F_SIGA_GETRECURSO_ETIQUETA('censo.consultaDatosColegiacion.literal.comunitario', "+idioma+") || ')' " +
+			"        end AS ESTADOCOLEGIAL, " +
 			" "+CenColegiadoBean.C_SITUACIONRESIDENTE+", "+
 			" (select t.fechaenproduccion "+
 			"  from "+CenInstitucionBean.T_NOMBRETABLA+" t "+

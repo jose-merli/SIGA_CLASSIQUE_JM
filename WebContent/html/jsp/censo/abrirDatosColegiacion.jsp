@@ -176,7 +176,7 @@
 					censo.solicitudIncorporacion.literal.fechaAct,
 					censo.consultaDatosColegiacion.literal.residente,
 					censo.consultaDatosColegiacion.literal.fechaNac,"
-		columnSizes="10,8,7,10,8,8,8,8,8,8,12">
+		columnSizes="12,6,6,16,6,12,6,6,6,6,13">
 
 <%
 		if (request.getAttribute("DATESTADO") == null || ((Vector) request.getAttribute("DATESTADO")).size() < 1) {
