@@ -539,10 +539,14 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 	public GestionEconomicaCatalunyaForm clone() {
 		GestionEconomicaCatalunyaForm miForm = new GestionEconomicaCatalunyaForm();
 		miForm.setIdInstitucion(this.getIdInstitucion());
+		miForm.setIdColegio(this.getIdColegio());
 		miForm.setIdEstado(this.getIdEstado());
 		miForm.setFechaDesde(this.getFechaDesde());
 		miForm.setFechaHasta(this.getFechaHasta());
 		miForm.setDatosPaginador(this.getDatosPaginador());
+		miForm.setAnio(this.getAnio());
+		miForm.setIdPeriodo(this.getIdPeriodo());
+		miForm.setDescripcion(this.getDescripcion());
 		return miForm;
 
 	}

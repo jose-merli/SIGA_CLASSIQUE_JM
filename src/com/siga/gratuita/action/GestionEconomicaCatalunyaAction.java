@@ -182,13 +182,24 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		String identificadorFormularioBusqueda = getIdBusqueda(super.dataBusqueda,getClass().getName());
 		GestionEconomicaCatalunyaForm gestionEconomicaCatalunyaForm = (GestionEconomicaCatalunyaForm) request.getSession().getAttribute(identificadorFormularioBusqueda);
 		miForm.setIdInstitucion(gestionEconomicaCatalunyaForm.getIdInstitucion());
+		miForm.setIdColegio(gestionEconomicaCatalunyaForm.getIdColegio());
 		miForm.setDescripcion(gestionEconomicaCatalunyaForm.getDescripcion());
 		miForm.setAnio(gestionEconomicaCatalunyaForm.getAnio());
 		miForm.setIdPeriodo(gestionEconomicaCatalunyaForm.getIdPeriodo());
 		miForm.setIdEstado(gestionEconomicaCatalunyaForm.getIdEstado());
 		miForm.setFechaDesde(gestionEconomicaCatalunyaForm.getFechaDesde());
 		miForm.setFechaHasta(gestionEconomicaCatalunyaForm.getFechaHasta());
-
+		List<String> idPeriodoSelected = new ArrayList<String>();
+		idPeriodoSelected.add(miForm.getIdPeriodo());
+		request.setAttribute("idPeriodoSelected",idPeriodoSelected);
+		List<String> idEstadoSelected = new ArrayList<String>();
+		idEstadoSelected.add(miForm.getIdEstado());
+		request.setAttribute("idEstadoSelected",idEstadoSelected);
+		List<String> idColegioSelected = new ArrayList<String>();
+		idColegioSelected.add(miForm.getIdColegio());
+		request.setAttribute("idColegioSelected",idColegioSelected);
+		
+		
 
 		miForm.setIdInstitucion(usrBean.getLocation());
 		miForm.setIdEstado("0");
