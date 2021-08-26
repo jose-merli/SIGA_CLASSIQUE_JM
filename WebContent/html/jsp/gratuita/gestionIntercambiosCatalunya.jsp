@@ -336,7 +336,7 @@
 					</td>
 					<td>
 					<div>
-						<siga:Select queryId="getPeriodos" id="idPeriodo"  width="100" />
+						<siga:Select queryId="getPeriodos" id="idPeriodo"  selectedIds="${idPeriodoSelected}" width="100" />
 						</div>
 					</td>
 					<td class="labelText">
@@ -352,7 +352,7 @@
 					</td>
 					<td >
 						<div>
-						<siga:Select queryId="getEstadosJustificacion" id="idEstado"  params="${paramsEstados}" width="180" />
+						<siga:Select queryId="getEstadosJustificacion" id="idEstado" selectedIds="${idEstadoSelected}" params="${paramsEstados}" width="180" />
 						</div>
 					</td>		
 					<td>
@@ -367,7 +367,7 @@
 							</td>
 							<td>
 								<div>
-									<siga:Select id="idColegio" queryId="getColegiosDeConsejo"  width="200" />	
+									<siga:Select id="idColegio" queryId="getColegiosDeConsejo" selectedIds="${idColegioSelected}"  width="200" />	
 								</div>
 							</td>
 							<td colspan="6">
