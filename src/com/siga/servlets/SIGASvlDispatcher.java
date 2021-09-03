@@ -132,6 +132,7 @@ public class SIGASvlDispatcher extends HttpServlet {
 	transaction_aux=transaction.substring(0,n);
     desc=transaction.substring(transaction_aux.length()+2,transaction.length());
 
+    access_type=3;
     ClsLogging.writeFileLog("SIGA Access_type: "+access_type+", Transaccion: "+transaction_aux+", Descripcion: "+desc,request,3);
     /***************/
 
