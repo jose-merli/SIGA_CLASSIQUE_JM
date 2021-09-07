@@ -437,13 +437,13 @@ public class PCAJGGeneraXML extends SIGAWSClientAbstract implements PCAJGConstan
 				ArrayList familiares = (ArrayList) datosGeneralesEJG.get("FAMILIARES");
 				if(familiares!=null && familiares.size()>0) {
 					for (int i = 0; i < familiares.size(); i++) {
-						Hashtable familiar  =  (Hashtable) familiares.get(0);
-						if(familiar!=null && familiar.get("F_F_DP_IDENTIFICACION")!=null) {
+						Hashtable familiar  =  (Hashtable) familiares.get(i);
+						if(familiar!=null && familiar.get("F_F_DP_IDENTIFICACION")!=null && !((String)familiar.get("F_F_DP_IDENTIFICACION")).equalsIgnoreCase("")) {
 							documentacionEjgVo =  getDocumentoEconomicoEjg(Short.valueOf((String)datosGeneralesEJG.get(IDINSTITUCION)), 
 									Short.valueOf((String)datosGeneralesEJG.get(ANIO)),Short.valueOf((String) datosGeneralesEJG.get(IDTIPOEJG)),Long.valueOf((String) datosGeneralesEJG.get(NUMERO)), (String) familiar.get("F_F_DP_IDENTIFICACION"));
 							
 							if(documentacionEjgVo!=null &&  documentacionEjgVo.getFichero()!=null) {
-								String nifNie =  (String) datosGeneralesEJG.get(DS_DP_IDENTIFICACION);
+								String nifNie =  (String) familiar.get("F_F_DP_IDENTIFICACION");
 								String nombreFichero =  nifNie + ".pdf";
 								String nombreFicheroExtMin =nombreFichero;
 								DocumentoAnexado documentoAnexado = expediente.addNewDocumentoAnexado();
