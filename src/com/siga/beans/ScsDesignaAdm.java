@@ -2857,7 +2857,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 			        " (select Nombre from cen_institucion where IDINSTITUCION=ACTUACION.IDINSTITUCION)AS NOMBRE_COLEGIO, "+
 			        " (select Abreviatura from cen_institucion where IDINSTITUCION=ACTUACION.IDINSTITUCION)AS NOMBRE_COLEGIO_ABREVIA, "+
 			        
-					" replace((select wm_concat(f_siga_getsolicitantesejg(ejg.Idinstitucion, ejg.anio, ejg.numero, ejg.idtipoejg)) "+
+					" replace((select LISTAGG(f_siga_getsolicitantesejg(ejg.Idinstitucion, ejg.anio, ejg.numero, ejg.idtipoejg), ',') within group (order by rownum) "+
 					" from scs_ejg ejg,scs_ejgdesigna ejgDesigna "+
 					" where ejgDesigna.Idtipoejg = ejg.idtipoejg "+
 					" and ejgDesigna.Idinstitucion = ejg.idinstitucion "+
@@ -2985,7 +2985,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" WHERE TEL2.IDINSTITUCION = PERJG.IDINSTITUCION ");
 		sql.append(" AND TEL2.IDPERSONA = PERJG.IDPERSONA ");
 		sql.append(" AND ROWNUM < 2) AS TELEFONO1_DEFENDIDO, ");
-		sql.append(" replace((SELECT WMSYS.WM_CONCAT(LTEL.NOMBRETELEFONO||':'||LTEL.NUMEROTELEFONO) from SCS_TELEFONOSPERSONA LTEL WHERE LTEL.IDINSTITUCION = PERJG.IDINSTITUCION AND LTEL.IDPERSONA = PERJG.IDPERSONA),',',', ') AS LISTA_TELEFONOS_INTERESADO,");
+		sql.append(" replace((SELECT LISTAGG(LTEL.NOMBRETELEFONO||':'||LTEL.NUMEROTELEFONO, ',') within group (order by rownum) from SCS_TELEFONOSPERSONA LTEL WHERE LTEL.IDINSTITUCION = PERJG.IDINSTITUCION AND LTEL.IDPERSONA = PERJG.IDPERSONA),',',', ') AS LISTA_TELEFONOS_INTERESADO,");
 		sql.append(" PERJG.NIF AS NIF_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO,  null,  null,  'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO,  null,  null,  'M',f_siga_getrecurso_etiqueta('gratuita.personaEJG.sexo.mujer',"+this.usrbean.getLanguage()+"),f_siga_getrecurso_etiqueta('gratuita.personaEJG.sexo.hombre',"+this.usrbean.getLanguage()+")) AS SEXO_DEFENDIDO_DESCRIPCION, ");
@@ -3125,7 +3125,7 @@ public class ScsDesignaAdm extends MasterBeanAdministrador {
 		sql.append(" WHERE TEL2.IDINSTITUCION = PERJG.IDINSTITUCION ");
 		sql.append(" AND TEL2.IDPERSONA = PERJG.IDPERSONA ");
 		sql.append(" AND ROWNUM < 2) AS TELEFONO1_DEFENDIDO, ");
-		sql.append("(SELECT WMSYS.WM_CONCAT(LTEL.NOMBRETELEFONO||':'||LTEL.NUMEROTELEFONO) from SCS_TELEFONOSPERSONA LTEL WHERE LTEL.IDINSTITUCION = PERJG.IDINSTITUCION AND LTEL.IDPERSONA = PERJG.IDPERSONA) AS LISTA_TELEFONOS_INTERESADO,");
+		sql.append("(SELECT LISTAGG(LTEL.NOMBRETELEFONO||':'||LTEL.NUMEROTELEFONO, ',') within group (order by rownum) from SCS_TELEFONOSPERSONA LTEL WHERE LTEL.IDINSTITUCION = PERJG.IDINSTITUCION AND LTEL.IDPERSONA = PERJG.IDPERSONA) AS LISTA_TELEFONOS_INTERESADO,");
 		sql.append(" PERJG.NIF AS NIF_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO,  null,  null,  'M','gratuita.personaEJG.sexo.mujer','gratuita.personaEJG.sexo.hombre') AS SEXO_DEFENDIDO, ");
 		sql.append(" DECODE(PERJG.SEXO,  null,  null,  'M',f_siga_getrecurso_etiqueta('gratuita.personaEJG.sexo.mujer',"+this.usrbean.getLanguage()+"),f_siga_getrecurso_etiqueta('gratuita.personaEJG.sexo.hombre',"+this.usrbean.getLanguage()+")) AS SEXO_DEFENDIDO_DESCRIPCION, ");

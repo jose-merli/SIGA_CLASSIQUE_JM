@@ -798,7 +798,7 @@ public class ScsActaComisionAdm extends MasterBeanAdministrador {
 		int keyContador = 0;
 		
 		String sql = "SELECT F_SIGA_GETRECURSO(PON." + ScsPonenteBean.C_NOMBRE + ", 1) as PONENTE, " +
-				" REPLACE(WM_CONCAT(EJG." + ScsEJGBean.C_ANIO + " || '/' || LPAD(EJG." + ScsEJGBean.C_NUMEJG + ","+longitudNumEjg+",0)), ',', ', ') as LISTAEJG " +
+				" LISTAGG(EJG." + ScsEJGBean.C_ANIO + " || '/' || LPAD(EJG." + ScsEJGBean.C_NUMEJG + ","+longitudNumEjg+",0), ', ') within group (order by rownum) as LISTAEJG " +
 				" ,EJG." + ScsEJGBean.C_IDINSTITUCION +" " +
 			" FROM " + ScsEJGBean.T_NOMBRETABLA + " EJG, " + 
 				" SCS_EJG_ACTA      EJGACTA,"+

@@ -1081,7 +1081,7 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
   		sqlBuffer.append("AND ST.IDPERSONA = PER.IDPERSONA ");
   		sqlBuffer.append("AND ST.PREFERENTESMS = 1) MOVIL_PJG, ");
   		
-  		sqlBuffer.append("(SELECT WMSYS.WM_CONCAT(LTEL.NOMBRETELEFONO||':'||LTEL.NUMEROTELEFONO) ");
+  		sqlBuffer.append("(SELECT LISTAGG(LTEL.NOMBRETELEFONO||':'||LTEL.NUMEROTELEFONO, ',') within group (order by rownum) ");
   		sqlBuffer.append("FROM SCS_TELEFONOSPERSONA LTEL ");
   		sqlBuffer.append("WHERE LTEL.IDINSTITUCION = PER.IDINSTITUCION AND LTEL.IDPERSONA=PER.IDPERSONA) LISTA_TELEFONOS_REPR, ");
 

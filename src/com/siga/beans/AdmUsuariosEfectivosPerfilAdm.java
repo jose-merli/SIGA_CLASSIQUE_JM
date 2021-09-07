@@ -116,7 +116,7 @@ public class AdmUsuariosEfectivosPerfilAdm extends MasterBeanAdministrador
     	   	
 		StringBuffer query = new StringBuffer();
 		query.append("select rol.codigoext codrol, ");
-		query.append(" (select wm_concat(uefepe.idperfil) ");
+		query.append(" (select LISTAGG(uefepe.idperfil, ',') within group (order by rownum) ");
 		query.append(" from adm_usuarios_efectivos_perfil uefepe ");
 		query.append(" where uefepe.idinstitucion(+) = uefe.idinstitucion ");
 		query.append(" and uefepe.idusuario(+) = uefe.idusuario ");
