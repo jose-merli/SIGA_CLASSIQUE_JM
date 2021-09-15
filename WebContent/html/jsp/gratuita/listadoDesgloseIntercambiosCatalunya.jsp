@@ -88,16 +88,22 @@
 		document.forms['FormularioGestion'].submit();
 		
 	}
+	
+	
 	function enviarIntercambiosGEN(fila) {
 		sub();
-		var idIntercambio = 'idIntercambio_' + fila ;
-		var idInstitucion = 'idInstitucion_' + fila ;
-		document.forms['FormularioGestion'].idIntercambio.value = document.getElementById(idIntercambio).value;
-		document.forms['FormularioGestion'].idInstitucion.value = document.getElementById(idInstitucion).value;
+		document.forms['FormularioGestion'].idDevolucion.value = document.getElementById("idDevolucion").value;
+		document.forms['FormularioGestion'].idJustificacion.value = document.getElementById("idJustificacion").value;
+		document.forms['FormularioGestion'].idCertificacion.value = document.getElementById("idCertificacion").value;
+		document.forms['FormularioGestion'].idCertificacionAnexo.value = document.getElementById("idCertificacionAnexo").value;
+		document.forms['FormularioGestion'].idTipoCertificacion.value = document.getElementById("idTipoCertificacion").value;
+		
 		document.forms['FormularioGestion'].modo.value = "enviarIntercambiosGEN";
 		
 		document.forms['FormularioGestion'].submit();
 	}
+	
+	
 	
 	
 	function descarga(fila) {
@@ -212,18 +218,7 @@
 		
 	}
 	
-	function enviarIntercambioGEN() {
-		
-		
-		sub();
-		document.forms['FormularioGestion'].modo.value = "enviarIntercambioGEN";
-		document.forms['FormularioGestion'].idDevolucion.value = document.getElementById("idDevolucion").value;
-		document.forms['FormularioGestion'].idJustificacion.value = document.getElementById("idJustificacion").value;
-		document.forms['FormularioGestion'].idCertificacion.value = document.getElementById("idCertificacion").value;
-		document.forms['FormularioGestion'].idCertificacionAnexo.value = document.getElementById("idCertificacionAnexo").value;
-		document.forms['FormularioGestion'].idTipoCertificacion.value = document.getElementById("idTipoCertificacion").value;
-		document.forms['FormularioGestion'].submit();
-	}
+	
 	
 	
 	function enviaRespuestaCICAC_ICA(fila) {
