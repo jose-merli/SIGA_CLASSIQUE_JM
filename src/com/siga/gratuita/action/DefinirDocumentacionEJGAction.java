@@ -441,13 +441,20 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 
 	protected String abrir(UsrBean usrBean, DefinirDocumentacionEJGForm definirDocumentacionEJGForm, HttpServletRequest request) throws SIGAException {
 		try {
-			Vector v = new Vector();
+			
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			if (definirDocumentacionEJGForm.getNumEjg() != null && !definirDocumentacionEJGForm.getNumEjg().equals(""))
-				request.setAttribute("NUMEJG", definirDocumentacionEJGForm.getNumEjg());
-			else {
+			
+			
+			SIGADocumentacionEjgService documentacionEjgService = new SIGADocumentacionEjgService();
+			definirDocumentacionEJGForm.setComisionAJG(usr.isComision()?"1":"0");
+			
+			SIGADocumentacionEjgVo documentacionEjgVo = this.getForm2Vo(definirDocumentacionEJGForm);
+			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+			boolean isConfiguradoEnvioPericles = ejgService.isColegioZonaComun(documentacionEjgVo.getIdInstitucion().shortValue()) && ejgService.isColegioConfiguradoEnvioPericles(documentacionEjgVo.getIdInstitucion().shortValue());
+			
+						
+			if(isConfiguradoEnvioPericles || definirDocumentacionEJGForm.getNumEjg() == null || definirDocumentacionEJGForm.getNumEjg().equals("") ) {
 				Hashtable miHash = new Hashtable();
-
 				miHash.put("ANIO", definirDocumentacionEJGForm.getAnio());
 				miHash.put("NUMERO", definirDocumentacionEJGForm.getNumero());
 				miHash.put("IDTIPOEJG", definirDocumentacionEJGForm.getIdTipoEJG());
@@ -457,16 +464,12 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 				if (v3 != null && v3.size() > 0) {
 					ScsEJGBean b = (ScsEJGBean) v3.get(0);
 					definirDocumentacionEJGForm.setNumEjg(b.getNumEJG());
+					request.setAttribute("numCAJG", b.getNumeroCAJG());
 				}
+			}else {
+				request.setAttribute("NUMEJG", definirDocumentacionEJGForm.getNumEjg());
 			}
-			
-			
-			
-			SIGADocumentacionEjgService documentacionEjgService = new SIGADocumentacionEjgService();
-			definirDocumentacionEJGForm.setComisionAJG(usr.isComision()?"1":"0");
-			List<SIGADocumentacionEjgVo> documentacionEjgVoList = documentacionEjgService.getListadoDocumentacionEJG(this.getForm2Vo(definirDocumentacionEJGForm),usrBean.getLanguage(),usr);
-			
-
+			List<SIGADocumentacionEjgVo> documentacionEjgVoList = documentacionEjgService.getListadoDocumentacionEJG(documentacionEjgVo,usrBean.getLanguage(),isConfiguradoEnvioPericles,usr);
 			request.setAttribute("resultado", documentacionEjgVoList);
 
 			String informeUnico = ClsConstants.DB_TRUE;

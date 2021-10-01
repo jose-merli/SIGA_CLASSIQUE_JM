@@ -581,7 +581,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 	 */
 	public List<ScsDocumentacionEJGExtendedBean> getListadoDocumentacionEJG(Hashtable<String, Object> params) throws ClsExceptions {
 		List<ScsDocumentacionEJGExtendedBean> list = new ArrayList<ScsDocumentacionEJGExtendedBean>();
-		EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+		Boolean isConfiguradoEnvioPericles = (Boolean)params.get("isConfiguradoEnvioPericles"); 
 		RowsContainer rc = null;
 		Integer idInstitucion = (Integer)params.get("idInstitucion");
 		String sql = "   SELECT DE.*, " +
@@ -609,7 +609,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 					      "  	D.ABREVIATURA DOCUMENTOABREVIATURA " +
 					      "  	,DE.COMISIONAJG " ;
 					      
-				if(ejgService.isColegioZonaComun(idInstitucion.shortValue()) && ejgService.isColegioConfiguradoEnvioPericles(idInstitucion.shortValue())) {	      
+				if(isConfiguradoEnvioPericles) {	      
 					 sql = sql +" ,(SELECT count(1) " +
 						" FROM ECOM_COLA C " +
 						" LEFT OUTER JOIN ECOM_INTERCAMBIO IC ON " +
@@ -673,7 +673,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
                   extendedBean.setDescPresentador((String) hash.get("DESCPRESENTADOR"));
                   extendedBean.setDocumentoAbreviatura((String) hash.get("DOCUMENTOABREVIATURA"));
                   extendedBean.setComisionAJG((String) hash.get("COMISIONAJG"));
-                  if(hash.get("NUM_INTERCAMBIOS_OK")!=null && !hash.get("NUM_INTERCAMBIOS_OK").equals(""))
+                  if(hash.get("NUM_INTERCAMBIOS_OK")!=null && !hash.get("NUM_INTERCAMBIOS_OK").equals("") && isConfiguradoEnvioPericles )
                 	  extendedBean.setNumIntercambiosOk(Short.valueOf((String) hash.get("NUM_INTERCAMBIOS_OK")));
                   list.add(extendedBean);
                }

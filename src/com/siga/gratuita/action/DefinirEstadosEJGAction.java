@@ -14,6 +14,7 @@ import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.services.scs.EjgService;
+import org.redabogacia.sigaservices.app.vo.scs.EjgVo;
 import org.redabogacia.sigaservices.app.vo.scs.EstadoEjgVo;
 
 import com.atos.utils.ClsConstants;
@@ -57,8 +58,8 @@ public class DefinirEstadosEJGAction extends MasterAction
 		}else {
 			
 				String accion = miForm.getModo();
-				if (accion != null && accion.equalsIgnoreCase("enviarPericles")){
-					return  mapping.findForward (enviarPericles(mapping, miForm, request, response));
+				if (accion != null && accion.equalsIgnoreCase("consultarEstadoPericles")){
+					return  mapping.findForward (consultarEstadoPericles(mapping, miForm, request, response));
 				}else
 					return super.executeInternal (mapping, formulario, request, response);
 			
@@ -66,7 +67,7 @@ public class DefinirEstadosEJGAction extends MasterAction
 			
 				 
 	} //executeInternal ()
-	protected String enviarPericles (ActionMapping mapping,
+	protected String consultarEstadoPericles (ActionMapping mapping,
 			   MasterForm formulario,
 			   HttpServletRequest request,
 					   HttpServletResponse response) throws SIGAException
@@ -78,18 +79,15 @@ public class DefinirEstadosEJGAction extends MasterAction
 		
 		try {
 			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
-			EstadoEjgVo estadoEjg = new EstadoEjgVo();
-			estadoEjg.setIdestadoporejg(Long.valueOf(miForm.getIdEstadoPorEJG()));
-			estadoEjg.setIdtipoejg( Short.valueOf(miForm.getIdTipoEJG() ));
-			estadoEjg.setAnio( Short.valueOf(miForm.getAnio ()));
-			estadoEjg.setNumero( Long.valueOf(miForm.getNumero ()));
-			estadoEjg.setIdinstitucion( Short.valueOf( miForm.getIdInstitucion()));
+			EjgVo ejgVo = new EjgVo(Short.valueOf( miForm.getIdInstitucion()), 
+					 Short.valueOf(miForm.getAnio ()),Short.valueOf(miForm.getIdTipoEJG() ),Long.valueOf(miForm.getNumero ()));
 			
-			ejgService.envioPericles(estadoEjg, usr.getLanguageInstitucion(), EjgService.PERICLES_REENVIA );
+			
+			ejgService.consultarEstadoPericles(ejgVo);
 		} catch (BusinessException e) {
 			throwExcp ("messages.general.error", e, null);
 		}
-		return exitoRefresco("messages.inserted.success", request);
+		return exitoRefresco("messages.gratuita.actualizadonResoluciones", request);
 	}
 			
 	//////////////////// METODOS DE ACCIONES ////////////////////
@@ -384,13 +382,14 @@ public class DefinirEstadosEJGAction extends MasterAction
 			request.setAttribute("PREFIJOEXPEDIENTECAJG",prefijoExpedienteCajg);
 			
 			v = admBean.selectGenerico (consulta);
-			
+			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+			boolean isConfiguradoEnvioPericles = ejgService.isColegioZonaComun(Short.valueOf(idInstitucion)) && ejgService.isColegioConfiguradoEnvioPericles(Short.valueOf(idInstitucion));
 			if( v != null && v.size()>0) {
 				//miramos si el ultimo estado es Listo remitir a comision. si es asi miramos el estado del ultimo envio de eCOM
 				Hashtable fila = (Hashtable)v.get(v.size()-1);
 				String idEstado = (String)fila.get(ScsEstadoEJGBean.C_IDESTADOEJG);
-				if(Short.parseShort(idEstado) == AppConstants.ESTADOS_EJG.GENERADO_ENV_COMISION.getCodigo()) {
-//					fila.put("botonEnvio", "1");
+				if(isConfiguradoEnvioPericles && Short.parseShort(idEstado) == AppConstants.ESTADOS_EJG.REMITIDO_COMISION.getCodigo()) {
+					fila.put("botonEnvio", "1");
 				}
 				
 			}

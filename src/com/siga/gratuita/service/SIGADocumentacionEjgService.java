@@ -242,7 +242,7 @@ public class SIGADocumentacionEjgService {
 	 * 
 	 * @see org.redabogacia.sigaservices.app.services.scs.DocumentacionEjgService#getListadoDocumentacionEJG(org.redabogacia.sigaservices.app.vo.scs.SIGADocumentacionEjgVo)
 	 */
-	public List<SIGADocumentacionEjgVo> getListadoDocumentacionEJG(SIGADocumentacionEjgVo documentacionEjgVo, String codIdioma, UsrBean usrBean) throws BusinessException {
+	public List<SIGADocumentacionEjgVo> getListadoDocumentacionEJG(SIGADocumentacionEjgVo documentacionEjgVo, String codIdioma,boolean isConfiguradoEnvioPericles, UsrBean usrBean) throws BusinessException {
 		Date dateLog = new Date();
 		log.info(dateLog + ":inicio.DocumentacionEjgServiceImpl.getListadoDocumentacionEJG");
 		ScsDocumentacionEJGAdm ejgDocuAdm = new ScsDocumentacionEJGAdm(usrBean);
@@ -255,6 +255,8 @@ public class SIGADocumentacionEjgService {
 		params.put("codIdioma", codIdioma);
 
 		try {
+			
+			params.put("isConfiguradoEnvioPericles", Boolean.valueOf(isConfiguradoEnvioPericles));
 			List<ScsDocumentacionEJGExtendedBean> scsDocumentacionEJGExtendedList = ejgDocuAdm.getListadoDocumentacionEJG(params);
 			for (ScsDocumentacionEJGExtendedBean scsDocumentacionEJGExtended : scsDocumentacionEJGExtendedList) {
 				SIGADocumentacionEjgVo documentacionEjgVo2 = this.getSigaDocEJG2Vo(scsDocumentacionEJGExtended.getDocumentacionEJGBean());

@@ -179,7 +179,7 @@
 				}
 				FilaExtElement[] elems = new FilaExtElement[1];
 				if(fila.get("botonEnvio") != null && ((String)fila.get("botonEnvio")).equals("1")){
-					elems[0]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
+					elems[0]=new FilaExtElement("consultaInscripcion", "consultaInscripcion", SIGAConstants.ACCESS_FULL);
 				}
 				
 %>				
@@ -258,6 +258,7 @@
 			document.DefinirEstadosEJGForm.submit();
 		}
 		function refrescarLocal() {
+			document.forms[0].target = "mainPestanas";
 			return buscar();
 			
 		}
@@ -300,13 +301,13 @@
 				document.forms[0].modo.value = "abrir";
 				document.forms[0].submit();
 		}
-		function enviar(fila)
+		function consultaInscripcion(fila)
 		{
 			var idOculto= 'oculto'+fila+'_1';
 			var idEstadoPorEJG = document.getElementById(idOculto).value;
 			document.forms[0].idEstadoPorEJG.value = idEstadoPorEJG;
 			document.forms[0].target = "submitArea";
-			document.forms[0].modo.value = "enviarPericles";
+			document.forms[0].modo.value = "consultarEstadoPericles";
 			document.forms[0].submit();
 		    
 		}
