@@ -7101,7 +7101,7 @@ public Hashtable getBindWhereEJG(Hashtable miHash, DefinirEJGForm miForm) throws
 		try {
 			StringBuilder sql = new StringBuilder();
 			sql.append(" SELECT * ");
-			sql.append(" FROM (SELECT TO_CHAR(ACTA.FECHAREUNION, 'dd/mm/yyyy') AS FECHAREUNION_ACTA, ");
+			sql.append(" FROM (SELECT ACTA.*,TO_CHAR(ACTA.FECHAREUNION, 'dd/mm/yyyy') AS FECHAREUNION_ACTA, ");
 			sql.append(" PKG_SIGA_FECHA_EN_LETRA.F_SIGA_FECHACOMPLETAENLETRA(ACTA.FECHAREUNION,  'DMA', 1) AS FECHAREUNION_ACTA_LETRA, ");
 			sql.append(" (select F_SIGA_GETRECURSO(NOMBRE, ");
 			sql.append(idioma);
