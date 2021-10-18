@@ -449,13 +449,15 @@
 			</div>
 			
 			<div class="labelText">
-				<label for="acumuladoTrimetreActual"  style="width:120px;color: black">Import acumulat del trimestre anterior</label>
-					<html:text property="acumuladoTrimetreActual" size="13" maxlength="13" />
+				<label for="acumuladoTrimetreAnterior"  style="width:120px;color: black">Import acumulat del trimestre anterior.</label>
+					<html:text property="acumuladoTrimetreAnterior" size="13" maxlength="13" />
 			
 			</div>
 			<div class="labelText">
-				<label for="acumuladoTrimetreAnterior"  style="width:120px;color: black">Import acumulat del trimestre actual.</label>
-					<html:text property="acumuladoTrimetreAnterior" size="13" maxlength="13" />
+			<label for="acumuladoTrimetreActual"  style="width:120px;color: black">Import acumulat del trimestre actual.</label>
+					<html:text property="acumuladoTrimetreActual" size="13" maxlength="13" />
+			
+				
 			</div>
 			<div class="labelText">&nbsp;</div>
 		</c:if>
