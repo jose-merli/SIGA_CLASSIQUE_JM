@@ -218,7 +218,8 @@
 			if(document.forms['FormularioGestion'].importeAsunto){
 				if(document.forms['FormularioGestion'].importeAsunto.value==''){
 					error += "<siga:Idioma key='errors.required' arg0='Assumptes. Import total'/>"+ '\n';
-				}else if(!validateDecimal(document.forms['FormularioGestion'].importeAsunto.value)){
+					
+				}else if (errorValidarPrecio(document.forms['FormularioGestion'].importeAsunto)) {
 					error += "<siga:Idioma key='errors.double' arg0='Assumptes. Import total'/>"+ '\n';
 				}
 				
@@ -226,7 +227,7 @@
 			if(document.forms['FormularioGestion'].importeDevoluciones){
 				if(document.forms['FormularioGestion'].importeDevoluciones.value=='' ){
 					error += "<siga:Idioma key='errors.required' arg0='Devolucions. Import total'/>"+ '\n';
-				}else if( !validateDecimal(document.forms['FormularioGestion'].importeDevoluciones.value)){
+				}else if( errorValidarPrecio(document.forms['FormularioGestion'].importeDevoluciones)){
 					error += "<siga:Idioma key='errors.double' arg0='Devolucions. Import total'/>"+ '\n';
 				}
 				
@@ -235,7 +236,7 @@
 			if(document.forms['FormularioGestion'].valorInteres){
 				if(document.forms['FormularioGestion'].valorInteres.value=='' ){
 					error += "<siga:Idioma key='errors.required' arg0='Interessos. Valor'/>"+ '\n';
-				}else if( !validateDecimal(document.forms['FormularioGestion'].valorInteres.value)){
+				}else if( errorValidarPrecio(document.forms['FormularioGestion'].valorInteres)){
 					error += "<siga:Idioma key='errors.double' arg0='Interessos. Valor'/>"+ '\n';
 				}
 				
@@ -243,7 +244,7 @@
 			if(document.forms['FormularioGestion'].importeFinal){
 				if(document.forms['FormularioGestion'].importeFinal.value=='' ){
 					error += "<siga:Idioma key='errors.required' arg0='Import final'/>"+ '\n';
-				}else if(!validateDecimal(document.forms['FormularioGestion'].importeFinal.value)){
+				}else if(errorValidarPrecio(document.forms['FormularioGestion'].importeFinal)){
 					error += "<siga:Idioma key='errors.double' arg0='Import final'/>"+ '\n';
 				}
 				
@@ -251,7 +252,7 @@
 			if(document.forms['FormularioGestion'].importeAnticipo){
 				if(document.forms['FormularioGestion'].importeAnticipo.value=='' ){
 					error += "<siga:Idioma key='errors.required' arg0='Bestreta. Import'/>"+ '\n';
-				}else if( !validateDecimal(document.forms['FormularioGestion'].importeAnticipo.value)){
+				}else if( errorValidarPrecio(document.forms['FormularioGestion'].importeAnticipo)){
 					error += "<siga:Idioma key='errors.double' arg0='Bestreta. Import'/>"+ '\n';
 				}
 				
@@ -259,7 +260,7 @@
 			if(document.forms['FormularioGestion'].acumuladoTrimetreActual){
 				if(document.forms['FormularioGestion'].acumuladoTrimetreActual.value=='' ){
 					error += "<siga:Idioma key='errors.required' arg0='Import acumulat del trimestre anterior'/>"+ '\n';
-				}else if(!validateDecimal(document.forms['FormularioGestion'].acumuladoTrimetreActual.value)){
+				}else if(errorValidarPrecio(document.forms['FormularioGestion'].acumuladoTrimetreActual)){
 					error += "<siga:Idioma key='errors.double' arg0='Import acumulat del trimestre anterior'/>"+ '\n';
 				}
 				
@@ -267,7 +268,7 @@
 			if(document.forms['FormularioGestion'].acumuladoTrimetreAnterior){
 				if(document.forms['FormularioGestion'].acumuladoTrimetreAnterior.value==''){
 					error += "<siga:Idioma key='errors.required' arg0='Import acumulat del trimestre actual'/>"+ '\n';
-				}else if( !validateDecimal(document.forms['FormularioGestion'].acumuladoTrimetreAnterior.value)){
+				}else if( errorValidarPrecio(document.forms['FormularioGestion'].acumuladoTrimetreAnterior)){
 					error += "<siga:Idioma key='errors.double' arg0='Import acumulat del trimestre actual'/>"+ '\n';
 				}
 				
@@ -279,8 +280,31 @@
 				
 			}
 			
-			if (error=='')
+			if (error==''){
+				if(document.forms['FormularioGestion'].importeAsunto){
+						document.forms['FormularioGestion'].importeAsunto.value = convertirAFormato(document.forms['FormularioGestion'].importeAsunto.value);
+				}
+				if(document.forms['FormularioGestion'].importeDevoluciones){
+						document.forms['FormularioGestion'].importeDevoluciones.value = convertirAFormato(document.forms['FormularioGestion'].importeDevoluciones.value);
+				}
+				if(document.forms['FormularioGestion'].valorInteres){
+						document.forms['FormularioGestion'].valorInteres.value = convertirAFormato(document.forms['FormularioGestion'].valorInteres.value);
+				}
+				if(document.forms['FormularioGestion'].importeFinal){
+						document.forms['FormularioGestion'].importeFinal.value = convertirAFormato(document.forms['FormularioGestion'].importeFinal.value);
+				}
+				if(document.forms['FormularioGestion'].importeAnticipo){
+						document.forms['FormularioGestion'].importeAnticipo.value = convertirAFormato(document.forms['FormularioGestion'].importeAnticipo.value);
+				}
+				if(document.forms['FormularioGestion'].acumuladoTrimetreActual){
+						document.forms['FormularioGestion'].acumuladoTrimetreActual.value = convertirAFormato(document.forms['FormularioGestion'].acumuladoTrimetreActual.value);
+				}
+				if(document.forms['FormularioGestion'].acumuladoTrimetreAnterior){
+						document.forms['FormularioGestion'].acumuladoTrimetreAnterior.value = convertirAFormato(document.forms['FormularioGestion'].acumuladoTrimetreAnterior.value);
+				}
+				
 				document.forms['FormularioGestion'].modo.value = "insertaIntercambios";
+			}
 		}
 		
 		if (error!=''){
@@ -292,6 +316,81 @@
 	    document.forms['FormularioGestion'].submit();
 	}
 
+	function tieneError (valorFormateado) {
+		if (valorFormateado==null || valorFormateado=="")				
+			return true;			
+		
+		if (isNaN(valorFormateado) || eval(valorFormateado)<0)
+			return true;	
+			
+		var indiceSimboloDecimal = valorFormateado.indexOf(".");
+		if (indiceSimboloDecimal!=-1) {
+			if (valorFormateado.length - indiceSimboloDecimal > 3) {
+				return true
+			}
+			
+			if (indiceSimboloDecimal > 12) {
+				return true
+			}
+			
+		} else { // No tiene simbolo decimal
+			if (valorFormateado.length > 12) {
+				return true
+			}
+		}
+		
+		return false;
+	}
+
+	function convertirAFormato(numero){
+		numero = numero.trim();
+		while (numero.indexOf(" ",0)>=0) {
+			numero = numero.replace(" ","");
+		}		
+		
+		while (numero.indexOf(",",0)>=0) {
+			numero = numero.replace(",",".");
+		}				
+		
+		while (numero.indexOf(".",0)>=0 && numero.indexOf(".",numero.indexOf(".",0)+1)>=0) {
+			numero = numero.replace(".", "");
+		}  			
+		
+		if (tieneError(numero)) {
+			return -1;
+		}
+		
+		return numero;	
+	}		
+		
+	
+	function errorValidarPrecio (valor) {
+		// No es valido si es nulo
+		// No es valido si no tiene longitud
+		// No es valido si no es numero
+		// No es valido si es menor que cero
+		// No es valido si tiene mas de dos decimales
+		// No es valido si tiene mas de ocho numeros de la parte entera
+		if (valor==null || valor.value==null || valor.value=='')				
+			return true;					
+			
+		var valorFormateado = valor.value;
+		
+		while (valorFormateado.indexOf(" ",0)>=0) {
+			valorFormateado = valorFormateado.replace(" ","");
+		}				
+		
+		while (valorFormateado.indexOf(",",0)>=0) {
+			valorFormateado = valorFormateado.replace(",",".");
+		}				
+		
+		while (valorFormateado.indexOf(".",0)>=0 && valorFormateado.indexOf(".",valorFormateado.indexOf(".",0)+1)>=0) {
+			valorFormateado = valorFormateado.replace(".", "");
+		}  	
+		
+		return tieneError(valorFormateado);
+	}		
+	
 			
 		</script>
 	</head>
