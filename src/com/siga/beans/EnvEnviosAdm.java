@@ -253,7 +253,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
     public Integer getNewIdEnvio(String idInstitucion) throws ClsExceptions{
         Long idEnvio = getSecuenciaNextVal(EnvEnviosBean.SEQ_ENV_ENVIOS);
         SimpleDateFormat formato = new SimpleDateFormat("yyyy");
-        return new Integer(formato.format(new Date())+idEnvio);
+        int anyo = new Integer(formato.format(new Date())) - 2000;//esto lo hago asi para que el anyo 2100 quede como 100 y no como 00
+        return new Integer(Integer.toString(anyo)+idEnvio);
     }
 
     public Integer getNewIdEnvio(UsrBean usrBean) throws ClsExceptions{
