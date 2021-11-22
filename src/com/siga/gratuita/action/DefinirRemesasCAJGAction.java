@@ -216,7 +216,7 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			// Redireccionamos el flujo a la JSP correspondiente
 			if (mapDestino == null) {
 				// mapDestino = "exception";
-				if (miForm.getModal().equalsIgnoreCase("TRUE")) {
+				if (miForm.getModal()!=null && miForm.getModal().equalsIgnoreCase("TRUE")) {
 					request.setAttribute("exceptionTarget", "parent.modal");
 				}
 
@@ -422,6 +422,9 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			// Entramos al formulario en modo 'modificación'
 			session.setAttribute("accion", "editar");
 			request.setAttribute("REMESA", remesaBean.getOriginalHash());
+			
+			
+			
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
 		}
@@ -1368,7 +1371,9 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			request.setAttribute("idremesa", idremesa);
 
 			request.setAttribute("ISDATOSECONOMICOS", Boolean.valueOf(true) );
-			
+			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+			boolean isConfiguradoEnvioPericles = ejgService.isColegioZonaComun(Short.valueOf(idinstitucion)) && ejgService.isColegioConfiguradoEnvioPericles(Short.valueOf(idinstitucion));
+			request.setAttribute("isConfiguradoEnvioPericles", new Boolean(isConfiguradoEnvioPericles));
 			com.siga.Utilidades.paginadores.PaginadorBind resultado = admBean.getPaginadorEJGRemesas(miHash, miForm, miForm.getIdInstitucion(), longitudNumEjg);
 			HashMap databackup = new HashMap();
 			databackup.put("paginador", resultado);
@@ -1937,175 +1942,190 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			//si es asigna comprueba la version Si es la versión 2 va por ecom pq es la versión de vereda y si es 1 se deja lo antiguo como estaba en SIGA
 			versionAsignaVereda = AsignaVeredaHelper.getAsignaVersion(Short.valueOf(idInstitucion.toString()));
 		}
+		EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+		boolean isConfiguradoEnvioPericles = ejgService.isColegioZonaComun(idInstitucion.shortValue()) && ejgService.isColegioConfiguradoEnvioPericles(idInstitucion.shortValue());
+		if(isConfiguradoEnvioPericles ) {
+			
+			
+			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
+			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			//GENERAMOS EL FICHERO POR SI LUEGO LO QUEIREN DESCARGAR
+			String returnGenerarFichero = generarFichero(mapping, formulario, request, response);
+			if(returnGenerarFichero!=null && returnGenerarFichero.equals("exito"))
+				log.debug("Se ha generado correctamente el fichero de expedeintes de la CAJG");
+			pcajgInsertaColaService.enviaRemesaZonaComun(idInstitucion.shortValue(), new Long(idRemesa), "Estado creado de forma masiva al enviar la remesa", usr.getUserName(), usr.getLanguageInstitucion());
+			mensaje = getMensajeRespuesta( RESPUESTA_ENVIO_REMESA.OK, request, simular);	
+		}else {
 		
-		if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAISVASCO == tipoCAJG) {
-			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
-			RESPUESTA_ENVIO_REMESA respuesta = null;
-			if (simular) {			
-				respuesta = pcajgInsertaColaService.validaExpedientesPaisVasco(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-					, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
-			} else {
-				respuesta = pcajgInsertaColaService.enviaExpedientesPaisVasco(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
-			}
-			mensaje = getMensajeRespuesta(respuesta, request, simular);			
-		} else if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_GENERALITAT_VALENCIANA == tipoCAJG) {
-			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
-			RESPUESTA_ENVIO_REMESA respuesta = null;
-			if (simular) {
-				respuesta = pcajgInsertaColaService.validaExpedientesGeneralitatValenciana(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
-			} else {
-				respuesta = pcajgInsertaColaService.enviaExpedientesGeneralitatValenciana(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
-			}
-			
-			mensaje = getMensajeRespuesta(respuesta, request, simular);		
-		} else if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_EJIS_ANDALUCIA == tipoCAJG) {
-			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
-			RESPUESTA_ENVIO_REMESA respuesta = null;
-			if (simular) {
-				respuesta = pcajgInsertaColaService.validaExpedientesAndaluciaEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
-			} else {
-				respuesta = pcajgInsertaColaService.enviaExpedientesAndaluciaEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
-			}
-			
-			mensaje = getMensajeRespuesta(respuesta, request, simular);
-		} else if (CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == tipoCAJG) {
-			if(formulario.getIdTipoRemesa()!=null && !formulario.getIdTipoRemesa().equalsIgnoreCase(CajgRemesaBean.TIPOREMESA.REMESA_EJGS.getIdTipo())){
+			if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAISVASCO == tipoCAJG) {
 				PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
 				RESPUESTA_ENVIO_REMESA respuesta = null;
-				CajgEjgremesaExample cajgEjgremesaExample = new CajgEjgremesaExample();
-				cajgEjgremesaExample.createCriteria().andIdinstitucionEqualTo(Short.valueOf(formulario.getIdinstitucion())).andIdremesaEqualTo(Long.valueOf(formulario.getIdRemesa()));
-				CajgEjgRemesaService ejgRemesaService = (CajgEjgRemesaService) getBusinessManager().getService(CajgEjgRemesaService.class);
-				List<CajgEjgremesa> cajgEjgremesas =  ejgRemesaService.getList(cajgEjgremesaExample);
-				
-				// Otenemos los informes economicos que se solicitaron y recibieron correctamente
-				
-				
-				Map<String, String> mapa = new HashMap<String, String>();
-				SolicitudesEEJGInformacionCompleta solicitudesEEJGInformacionCompleta = new SolicitudesEEJGInformacionCompleta();
-				ScsEjgService scsEjgService = (ScsEjgService) getBusinessManager().getService(ScsEjgService.class);
-				ScsEejgPeticionesAdm scsPeticionesAdm = new ScsEejgPeticionesAdm(this.getUserBean(request));
-				for (CajgEjgremesa cajgEjgremesa : cajgEjgremesas) {
-					mapa.put(CajgEjgremesa.C_IDINSTITUCION, idInstitucion.toString());
-					mapa.put(CajgEjgremesa.C_ANIO, cajgEjgremesa.getAnio().toString());
-					mapa.put( CajgEjgremesa.C_IDTIPOEJG, cajgEjgremesa.getIdtipoejg().toString());
-					mapa.put(CajgEjgremesa.C_NUMERO, cajgEjgremesa.getNumero().toString());
-					//Vamos a recuperar los expedientes economicos devueltos por EEJG para trasformarlos en como quiere la CAM
-					
-					List<EejgXmlVo> scsEejgXmls = scsEjgService.getInformesEconomicoEjg(mapa);
-					
-					for (EejgXmlVo eejgXmlVo : scsEejgXmls) {
-						if(eejgXmlVo.getXml()==null && eejgXmlVo.getEejgPeticiones()!=null && eejgXmlVo.getEejgPeticiones().getCsv()!=null){
-							ScsEejgPeticionesBean scsEejgPeticionesBean = new ScsEejgPeticionesBean();
-							scsEejgPeticionesBean.setIdInstitucion(eejgXmlVo.getEejgPeticiones().getIdinstitucion().intValue());
-							scsEejgPeticionesBean.setIdSolicitud(eejgXmlVo.getEejgPeticiones().getIdsolicitud());
-							scsEejgPeticionesBean.setIdPeticion(eejgXmlVo.getEejgPeticiones().getIdpeticion().longValue());
-							scsEejgPeticionesBean.setIdioma(eejgXmlVo.getEejgPeticiones().getIdioma());
-							try {
-								int idXML = solicitudesEEJGInformacionCompleta.consultaInformacionCompletaAAPP( scsEejgPeticionesBean);
-								if (idXML > -1) {	
-									scsEejgPeticionesBean.setIdXml(idXML);						
-									scsEejgPeticionesBean.setFechaMod("SYSDATE");
-									String[] claves = {ScsEejgPeticionesBean.C_IDPETICION};
-									String[] campos = {ScsEejgPeticionesBean.C_IDXML,										
-											ScsEejgPeticionesBean.C_USUMODIFICACION,
-											ScsEejgPeticionesBean.C_FECHAMODIFICACION};
-									scsPeticionesAdm.updateDirect(scsEejgPeticionesBean,claves,campos);
-								}	
-							} catch (Exception e) {
-								log.debug("El expediente "+cajgEjgremesa.getNumero().toString()+" no tiene cargado el informe economico. Debera solicitarlo de nuevo");
-								//lO PONEMOS EN ESTADO CADUCADO PARA QUWE PUEDA VOLVER A SOLICITARLO
-//								scsEejgPeticionesBean.setEstado(EEJG_ESTADO.CADUCADO);						
-								scsEejgPeticionesBean.setEstado(40);
-								scsEejgPeticionesBean.setFechaMod("SYSDATE");
-								String[] claves = {ScsEejgPeticionesBean.C_IDPETICION};
-								String[] campos = {ScsEejgPeticionesBean.C_ESTADO,										
-										ScsEejgPeticionesBean.C_USUMODIFICACION,
-										ScsEejgPeticionesBean.C_FECHAMODIFICACION};
-								scsPeticionesAdm.updateDirect(scsEejgPeticionesBean,claves,campos);
-							}
-							
-						}
-						
-					}
+				if (simular) {			
+					respuesta = pcajgInsertaColaService.validaExpedientesPaisVasco(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
+				} else {
+					respuesta = pcajgInsertaColaService.enviaExpedientesPaisVasco(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
 				}
+				mensaje = getMensajeRespuesta(respuesta, request, simular);			
+			} else if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_GENERALITAT_VALENCIANA == tipoCAJG) {
+				PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
+				RESPUESTA_ENVIO_REMESA respuesta = null;
 				if (simular) {
-					respuesta = pcajgInsertaColaService.validaExpedientesEconomicosAlcala(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+					respuesta = pcajgInsertaColaService.validaExpedientesGeneralitatValenciana(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
 							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
 				} else {
-					respuesta = pcajgInsertaColaService.enviaExpedientesEconomicosAlcala(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+					respuesta = pcajgInsertaColaService.enviaExpedientesGeneralitatValenciana(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
 							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
 				}
 				
 				mensaje = getMensajeRespuesta(respuesta, request, simular);		
-			}else{
-				mensaje = validaRemesaTxt(mapping, formulario, request, response);	
-			}
-			
-			
-			
-//			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
-//			RESPUESTA_ENVIO_REMESA respuesta = null;
-//			if (simular) {
-//				respuesta = pcajgInsertaColaService.validaExpedientesEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-//						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
-//			} else {
-//				respuesta = pcajgInsertaColaService.enviaExpedientesEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-//						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
-//			}
-			
-//			mensaje = getMensajeRespuesta(respuesta, request, simular);
-		} else if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA == tipoCAJG && versionAsignaVereda != null && ASIGNA_VERSION.VERSION_2.equals(versionAsignaVereda)) {
-			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
-			RESPUESTA_ENVIO_REMESA respuesta = null;
-			if (simular) {
-				respuesta = pcajgInsertaColaService.validaExpedientesAsignaVereda(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
-			} else {
-				respuesta = pcajgInsertaColaService.enviaExpedientesAsignaVereda(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
-			}
-			
-			mensaje = getMensajeRespuesta(respuesta, request, simular);
-		} else if (CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == tipoCAJG && versionAsignaVereda!=null && ASIGNA_VERSION.VERSION_2.equals(versionAsignaVereda)) {
-			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
-			RESPUESTA_ENVIO_REMESA respuesta = null;
-			if (simular) {
-				respuesta = pcajgInsertaColaService.validaExpedientesXunta(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
-			} else {
-				respuesta = pcajgInsertaColaService.cargaExpedientesXunta(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
-			}
-			
-			mensaje = getMensajeRespuesta(respuesta, request, simular);		
-		}else if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_EJIS_CANARIAS == tipoCAJG) {
-			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
-			RESPUESTA_ENVIO_REMESA respuesta = null;
-			if (simular) {
-				respuesta = pcajgInsertaColaService.validaEnvioExpedientesEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
-				mensaje = getMensajeRespuesta(respuesta, request, simular);
-			} else {
-				respuesta = pcajgInsertaColaService.envioExpedientesEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
-				if (RESPUESTA_ENVIO_REMESA.OK.equals(respuesta)) 
-					mensaje = exitoRefresco("messages.cajg.generacionXML",request);
-				else
-					mensaje = getMensajeRespuesta(respuesta, request, simular);
+			} else if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_EJIS_ANDALUCIA == tipoCAJG) {
+				PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
+				RESPUESTA_ENVIO_REMESA respuesta = null;
+				if (simular) {
+					respuesta = pcajgInsertaColaService.validaExpedientesAndaluciaEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
+				} else {
+					respuesta = pcajgInsertaColaService.enviaExpedientesAndaluciaEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
+				}
 				
-			}
-
-		} else {
-			ejecutaBackground(formulario, request, 0);	
-			if (simular) {
-				mensaje = exitoRefresco("messages.cajg.validarRemesa", request);
+				mensaje = getMensajeRespuesta(respuesta, request, simular);
+			} else if (CajgConfiguracion.TIPO_CAJG_TXT_ALCALA == tipoCAJG) {
+				if(formulario.getIdTipoRemesa()!=null && !formulario.getIdTipoRemesa().equalsIgnoreCase(CajgRemesaBean.TIPOREMESA.REMESA_EJGS.getIdTipo())){
+					PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
+					RESPUESTA_ENVIO_REMESA respuesta = null;
+					CajgEjgremesaExample cajgEjgremesaExample = new CajgEjgremesaExample();
+					cajgEjgremesaExample.createCriteria().andIdinstitucionEqualTo(Short.valueOf(formulario.getIdinstitucion())).andIdremesaEqualTo(Long.valueOf(formulario.getIdRemesa()));
+					CajgEjgRemesaService ejgRemesaService = (CajgEjgRemesaService) getBusinessManager().getService(CajgEjgRemesaService.class);
+					List<CajgEjgremesa> cajgEjgremesas =  ejgRemesaService.getList(cajgEjgremesaExample);
+					
+					// Otenemos los informes economicos que se solicitaron y recibieron correctamente
+					
+					
+					Map<String, String> mapa = new HashMap<String, String>();
+					SolicitudesEEJGInformacionCompleta solicitudesEEJGInformacionCompleta = new SolicitudesEEJGInformacionCompleta();
+					ScsEjgService scsEjgService = (ScsEjgService) getBusinessManager().getService(ScsEjgService.class);
+					ScsEejgPeticionesAdm scsPeticionesAdm = new ScsEejgPeticionesAdm(this.getUserBean(request));
+					for (CajgEjgremesa cajgEjgremesa : cajgEjgremesas) {
+						mapa.put(CajgEjgremesa.C_IDINSTITUCION, idInstitucion.toString());
+						mapa.put(CajgEjgremesa.C_ANIO, cajgEjgremesa.getAnio().toString());
+						mapa.put( CajgEjgremesa.C_IDTIPOEJG, cajgEjgremesa.getIdtipoejg().toString());
+						mapa.put(CajgEjgremesa.C_NUMERO, cajgEjgremesa.getNumero().toString());
+						//Vamos a recuperar los expedientes economicos devueltos por EEJG para trasformarlos en como quiere la CAM
+						
+						List<EejgXmlVo> scsEejgXmls = scsEjgService.getInformesEconomicoEjg(mapa);
+						
+						for (EejgXmlVo eejgXmlVo : scsEejgXmls) {
+							if(eejgXmlVo.getXml()==null && eejgXmlVo.getEejgPeticiones()!=null && eejgXmlVo.getEejgPeticiones().getCsv()!=null){
+								ScsEejgPeticionesBean scsEejgPeticionesBean = new ScsEejgPeticionesBean();
+								scsEejgPeticionesBean.setIdInstitucion(eejgXmlVo.getEejgPeticiones().getIdinstitucion().intValue());
+								scsEejgPeticionesBean.setIdSolicitud(eejgXmlVo.getEejgPeticiones().getIdsolicitud());
+								scsEejgPeticionesBean.setIdPeticion(eejgXmlVo.getEejgPeticiones().getIdpeticion().longValue());
+								scsEejgPeticionesBean.setIdioma(eejgXmlVo.getEejgPeticiones().getIdioma());
+								try {
+									int idXML = solicitudesEEJGInformacionCompleta.consultaInformacionCompletaAAPP( scsEejgPeticionesBean);
+									if (idXML > -1) {	
+										scsEejgPeticionesBean.setIdXml(idXML);						
+										scsEejgPeticionesBean.setFechaMod("SYSDATE");
+										String[] claves = {ScsEejgPeticionesBean.C_IDPETICION};
+										String[] campos = {ScsEejgPeticionesBean.C_IDXML,										
+												ScsEejgPeticionesBean.C_USUMODIFICACION,
+												ScsEejgPeticionesBean.C_FECHAMODIFICACION};
+										scsPeticionesAdm.updateDirect(scsEejgPeticionesBean,claves,campos);
+									}	
+								} catch (Exception e) {
+									log.debug("El expediente "+cajgEjgremesa.getNumero().toString()+" no tiene cargado el informe economico. Debera solicitarlo de nuevo");
+									//lO PONEMOS EN ESTADO CADUCADO PARA QUWE PUEDA VOLVER A SOLICITARLO
+	//								scsEejgPeticionesBean.setEstado(EEJG_ESTADO.CADUCADO);						
+									scsEejgPeticionesBean.setEstado(40);
+									scsEejgPeticionesBean.setFechaMod("SYSDATE");
+									String[] claves = {ScsEejgPeticionesBean.C_IDPETICION};
+									String[] campos = {ScsEejgPeticionesBean.C_ESTADO,										
+											ScsEejgPeticionesBean.C_USUMODIFICACION,
+											ScsEejgPeticionesBean.C_FECHAMODIFICACION};
+									scsPeticionesAdm.updateDirect(scsEejgPeticionesBean,claves,campos);
+								}
+								
+							}
+							
+						}
+					}
+					if (simular) {
+						respuesta = pcajgInsertaColaService.validaExpedientesEconomicosAlcala(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+								, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
+					} else {
+						respuesta = pcajgInsertaColaService.enviaExpedientesEconomicosAlcala(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+								, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
+					}
+					
+					mensaje = getMensajeRespuesta(respuesta, request, simular);		
+				}else{
+					mensaje = validaRemesaTxt(mapping, formulario, request, response);	
+				}
+				
+				
+				
+	//			PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
+	//			RESPUESTA_ENVIO_REMESA respuesta = null;
+	//			if (simular) {
+	//				respuesta = pcajgInsertaColaService.validaExpedientesEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+	//						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
+	//			} else {
+	//				respuesta = pcajgInsertaColaService.enviaExpedientesEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+	//						, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
+	//			}
+				
+	//			mensaje = getMensajeRespuesta(respuesta, request, simular);
+			} else if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_PAMPLONA == tipoCAJG && versionAsignaVereda != null && ASIGNA_VERSION.VERSION_2.equals(versionAsignaVereda)) {
+				PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
+				RESPUESTA_ENVIO_REMESA respuesta = null;
+				if (simular) {
+					respuesta = pcajgInsertaColaService.validaExpedientesAsignaVereda(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
+				} else {
+					respuesta = pcajgInsertaColaService.enviaExpedientesAsignaVereda(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
+				}
+				
+				mensaje = getMensajeRespuesta(respuesta, request, simular);
+			} else if (CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == tipoCAJG && versionAsignaVereda!=null && ASIGNA_VERSION.VERSION_2.equals(versionAsignaVereda)) {
+				PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
+				RESPUESTA_ENVIO_REMESA respuesta = null;
+				if (simular) {
+					respuesta = pcajgInsertaColaService.validaExpedientesXunta(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
+				} else {
+					respuesta = pcajgInsertaColaService.cargaExpedientesXunta(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
+				}
+				
+				mensaje = getMensajeRespuesta(respuesta, request, simular);		
+			}else if (CajgConfiguracion.TIPO_CAJG_WEBSERVICE_EJIS_CANARIAS == tipoCAJG) {
+				PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
+				RESPUESTA_ENVIO_REMESA respuesta = null;
+				if (simular) {
+					respuesta = pcajgInsertaColaService.validaEnvioExpedientesEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
+					mensaje = getMensajeRespuesta(respuesta, request, simular);
+				} else {
+					respuesta = pcajgInsertaColaService.envioExpedientesEJIS(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
+					if (RESPUESTA_ENVIO_REMESA.OK.equals(respuesta)) 
+						mensaje = exitoRefresco("messages.cajg.generacionXML",request);
+					else
+						mensaje = getMensajeRespuesta(respuesta, request, simular);
+					
+				}
+	
 			} else {
-				mensaje = exitoRefresco("messages.cajg.enviandoWS", request);
+				ejecutaBackground(formulario, request, 0);	
+				if (simular) {
+					mensaje = exitoRefresco("messages.cajg.validarRemesa", request);
+				} else {
+					mensaje = exitoRefresco("messages.cajg.enviandoWS", request);
+				}
 			}
 		}
 		

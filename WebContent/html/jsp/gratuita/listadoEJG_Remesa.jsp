@@ -101,7 +101,7 @@
 	boolean isPCajgTXT = cajgConfig < 2 || cajgConfig == 5;
 	boolean tieneTXT = DefinirRemesasCAJGAction.getFichero(usr.getLocation(), idremesa) != null;
 	boolean ejecutandose = SIGAWSListener.isEjecutandose(idInstitucion.intValue(), Integer.parseInt(idremesa));
-	
+	Boolean isConfiguradoEnvioPericles = (Boolean)request.getAttribute("isConfiguradoEnvioPericles");
 	
 	if (modo.equals("consultar")) {
 		buttons="";	
@@ -111,44 +111,50 @@
 		if(path.equals("/JGR_E-Comunicaciones_InfEconomico") ){
 			buttons+="g,ae,val,ws";//envio WebService
 		}else{
-			if (cajgConfig != 0) {
-				buttons="g,ae";//guardar y añadir expedientes
-				if (isPCajgTXT) {
-					buttons+=",val,gf";//generar fichero txt
-					if (cajgConfig == 5)buttons+=",r";
-				} else if (cajgConfig == 2) {				
-					buttons+=",val,ftp";//validar remesa, envio ftp
-				} else if (cajgConfig == 3) {
-					if (tipoPCAJGGeneral == 1) {
-						buttons+=",ws";//envio WebService
-					} else {
-						buttons+=",val,gxml";//generar XML	
-					}
-				} else if (cajgConfig == 4) {//PAMPLONA
-					buttons+=",val,ws";//envio WebService
-				} else if (cajgConfig == 6) {
-					if(versionAsignaVereda!=null && versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion())){
-						buttons+=",val,ws";//generar XML
-					}else
-						buttons+=",val,gxml";//generar XML			
-				} else if (cajgConfig == 7) {
-					buttons+=",val,ws";//envio WebService GVasco
-				} else if (cajgConfig == 8) {
-					buttons+=",val,ws";//envio WebService GenValenciana
-				} else if (cajgConfig == 9 ) {
-					if (tipoPCAJGGeneral == 1) {
-						buttons+=",val,ws";//envio WebService EJIS
-						
-					} else {
-						buttons+=",gf";//genera fichero
+			
+			if(isConfiguradoEnvioPericles){
+				buttons+="g,ae,ws";//envio WebService
+			}else{
+
+				if (cajgConfig != 0) {
+					buttons="g,ae";//guardar y añadir expedientes
+					if (isPCajgTXT) {
+						buttons+=",val,gf";//generar fichero txt
+						if (cajgConfig == 5)buttons+=",r";
+					} else if (cajgConfig == 2) {				
+						buttons+=",val,ftp";//validar remesa, envio ftp
+					} else if (cajgConfig == 3) {
+						if (tipoPCAJGGeneral == 1) {
+							buttons+=",ws";//envio WebService
+						} else {
+							buttons+=",val,gxml";//generar XML	
+						}
+					} else if (cajgConfig == 4) {//PAMPLONA
+						buttons+=",val,ws";//envio WebService
+					} else if (cajgConfig == 6) {
+						if(versionAsignaVereda!=null && versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion())){
+							buttons+=",val,ws";//generar XML
+						}else
+							buttons+=",val,gxml";//generar XML			
+					} else if (cajgConfig == 7) {
+						buttons+=",val,ws";//envio WebService GVasco
+					} else if (cajgConfig == 8) {
+						buttons+=",val,ws";//envio WebService GenValenciana
+					} else if (cajgConfig == 9 ) {
+						if (tipoPCAJGGeneral == 1) {
+							buttons+=",val,ws";//envio WebService EJIS
 							
+						} else {
+							buttons+=",gf";//genera fichero
+								
+						}
+						//ELIMINAR ,gf CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
+						
+					}else if (cajgConfig == 10 ) {
+						buttons+=",val,gxml";//envio WebService EJIS de Canarias
+							//buttons+=",val,ws";//envio WebService EJIS de Canarias
+							//ELIMINAR ,gxml CUANDO LA INTEGRACION DE CANARIAS SEA COMPLETA
 					}
-					//ELIMINAR ,gf CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
-					
-				}else if (cajgConfig == 10 ) {
-					buttons+=",val,gxml";//envio WebService EJIS de Canarias
-						//buttons+=",val,ws";//envio WebService EJIS de Canarias
-						//ELIMINAR ,gxml CUANDO LA INTEGRACION DE CANARIAS SEA COMPLETA
 				}
 			}
 		}
@@ -156,22 +162,27 @@
 		if(path.equals("/JGR_E-Comunicaciones_InfEconomico") ){
 			buttons="g";//guardar
 		}else{
-			if (cajgConfig != 0) {
-				buttons="g";//guardar
-				if (isPCajgTXT || cajgConfig == 2) {//QUITAR EL == 2 CUANDO SEA DEFINITIVO EL ENVIO XML
-					buttons+=",d";//descargar
-				} else if (cajgConfig == 3 && tipoPCAJGGeneral != 1) {
-					buttons+=",d";//descargar
-				} else if (cajgConfig == 6) {
-					if(versionAsignaVereda==null || !versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion()))
+			if(isConfiguradoEnvioPericles){
+				buttons+="g";//envio WebService
+			}else{
+				
+				if (cajgConfig != 0) {
+					buttons="g";//guardar
+					if (isPCajgTXT || cajgConfig == 2) {//QUITAR EL == 2 CUANDO SEA DEFINITIVO EL ENVIO XML
 						buttons+=",d";//descargar
-				}else if (cajgConfig == 9) {//ELIMINAR CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
-					if (tipoPCAJGGeneral == 0) {
-						buttons+=",d";//descarga envio
-							
+					} else if (cajgConfig == 3 && tipoPCAJGGeneral != 1) {
+						buttons+=",d";//descargar
+					} else if (cajgConfig == 6) {
+						if(versionAsignaVereda==null || !versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion()))
+							buttons+=",d";//descargar
+					}else if (cajgConfig == 9) {//ELIMINAR CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
+						if (tipoPCAJGGeneral == 0) {
+							buttons+=",d";//descarga envio
+								
+						}
+					}else if (cajgConfig == 10) {//DESCARGAR XML DE CANARIAS
+						buttons+=",ftp";//descarga envio
 					}
-				}else if (cajgConfig == 10) {//DESCARGAR XML DE CANARIAS
-					buttons+=",ftp";//descarga envio
 				}
 			}
 		}
@@ -179,36 +190,42 @@
 		if(path.equals("/JGR_E-Comunicaciones_InfEconomico") ){
 			buttons+="g";//hA HABIDO UN ERROR EN LA RESPUESTA
 		}else{
-			if (cajgConfig != 0) {
-				buttons="g";//guardar
-				if (cajgConfig == 5) {
-					buttons+=",d,mri";//descargar//marcar como respondidos con errores
-				}else if (isPCajgTXT) {
-					buttons+=",d";//descargar
-				} else if (cajgConfig == 2 && !SIGAWSClientAbstract.isRespondida(idInstitucion, Integer.parseInt(idremesa))) {
-					if (tieneTXT){
-						buttons+=",d";//descargar //QUITAR EL d y el tieneTXT CUANDO SEA DEFINITIVO EL ENVIO XML	
-					} else {
-						buttons+=",respFTP";//obtener respuesta
-					}				
-				} else if (cajgConfig == 2 && SIGAWSClientAbstract.isRespondida(idInstitucion, Integer.parseInt(idremesa))) {
-					if (tieneTXT){
-						buttons+=",d";//descargar //QUITAR EL d y el tieneTXT CUANDO SEA DEFINITIVO EL ENVIO XML	
-					} else {
-						buttons+=",resolucionFTP";//obtener resoluciones
-					}
-				} else if (cajgConfig == 3 && tipoPCAJGGeneral != 1) {
-					buttons+=",d";//descargar
-				} else if (cajgConfig == 6) {
-					if(versionAsignaVereda==null || !versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion()))
+			if(isConfiguradoEnvioPericles){
+				buttons+="ws,g,d";//envio WebService
+				
+			}else{
+			
+				if (cajgConfig != 0) {
+					buttons="g";//guardar
+					if (cajgConfig == 5) {
+						buttons+=",d,mri";//descargar//marcar como respondidos con errores
+					}else if (isPCajgTXT) {
 						buttons+=",d";//descargar
-				}else if (cajgConfig == 9) {//ELIMINAR CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
-					if (tipoPCAJGGeneral == 0) {
-						buttons+=",d";//descarga envio
-							
+					} else if (cajgConfig == 2 && !SIGAWSClientAbstract.isRespondida(idInstitucion, Integer.parseInt(idremesa))) {
+						if (tieneTXT){
+							buttons+=",d";//descargar //QUITAR EL d y el tieneTXT CUANDO SEA DEFINITIVO EL ENVIO XML	
+						} else {
+							buttons+=",respFTP";//obtener respuesta
+						}				
+					} else if (cajgConfig == 2 && SIGAWSClientAbstract.isRespondida(idInstitucion, Integer.parseInt(idremesa))) {
+						if (tieneTXT){
+							buttons+=",d";//descargar //QUITAR EL d y el tieneTXT CUANDO SEA DEFINITIVO EL ENVIO XML	
+						} else {
+							buttons+=",resolucionFTP";//obtener resoluciones
+						}
+					} else if (cajgConfig == 3 && tipoPCAJGGeneral != 1) {
+						buttons+=",d";//descargar
+					} else if (cajgConfig == 6) {
+						if(versionAsignaVereda==null || !versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion()))
+							buttons+=",d";//descargar
+					}else if (cajgConfig == 9) {//ELIMINAR CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
+						if (tipoPCAJGGeneral == 0) {
+							buttons+=",d";//descarga envio
+								
+						}
+					}else if (cajgConfig == 10) {//DESCARGAR XML DE CANARIAS
+						//buttons+=",d";//descarga envio
 					}
-				}else if (cajgConfig == 10) {//DESCARGAR XML DE CANARIAS
-					//buttons+=",d";//descarga envio
 				}
 			}
 		}
