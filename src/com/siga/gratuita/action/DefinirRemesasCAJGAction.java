@@ -359,6 +359,10 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			miHash.put("BUSQUEDAREALIZADA", "1");
 
 			request.getSession().setAttribute("DATOSBUSQUEDA", miHash);
+			String idinstitucion = this.getIDInstitucion(request).toString();
+			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+			boolean isConfiguradoEnvioPericles = ejgService.isColegioZonaComun(Short.valueOf(idinstitucion)) && ejgService.isColegioConfiguradoEnvioPericles(Short.valueOf(idinstitucion));
+			request.setAttribute("isConfiguradoEnvioPericles", new Boolean(isConfiguradoEnvioPericles));
 
 		} catch (Exception e) {
 			throwExcp("messages.general.error", e, null);
@@ -1342,8 +1346,9 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 			// En "DATOSFORMULARIO" almacenamos el identificador del letrado		
 			miHash.put("BUSQUEDAREALIZADA", "1");
 			request.getSession().setAttribute("DATOSFORMULARIO", miHash);
-			
-			
+			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+			boolean isConfiguradoEnvioPericles = ejgService.isColegioZonaComun(Short.valueOf(idinstitucion)) && ejgService.isColegioConfiguradoEnvioPericles(Short.valueOf(idinstitucion));
+			request.setAttribute("isConfiguradoEnvioPericles", new Boolean(isConfiguradoEnvioPericles));
 
 
 		}catch (SIGAException e1) {
