@@ -1860,7 +1860,7 @@
 											<siga:Idioma key="expedientes.auditoria.literal.nasunto"/>
 										</td>
 										<td>
-											<html:text name="ExpDatosGeneralesForm" property="numAsunto" styleId="numAsunto" size="10" maxlength="20" styleClass="<%=boxStyle%>" readonly="<%=!bEditable%>" />
+											<html:text name="ExpDatosGeneralesForm" property="numAsunto" styleId="numAsunto" size="30" maxlength="20" styleClass="<%=boxStyle%>" readonly="<%=!bEditable%>" />
 										</td>	
 									</tr>
 							
