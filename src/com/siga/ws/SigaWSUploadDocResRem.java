@@ -142,11 +142,17 @@ public class SigaWSUploadDocResRem {
 			
 			tx.commit();
 			
-			if(idTipoRemesa == 4) {
+			if(idTipoRemesa == 4 || (idInstitucion==2083 && fileN.getName().endsWith("xml")  )) {
 				//si todo ha ido bien inserto en la cola con la operación de envío de reintegros a la xunta
 				EcomCola ecomCola = new EcomCola();
 				ecomCola.setIdinstitucion((short) idInstitucion);
-				ecomCola.setIdoperacion(OPERACION.XUNTA_ENVIO_REINTEGROS.getId());			
+				if(idTipoRemesa == 4)
+					ecomCola.setIdoperacion(OPERACION.XUNTA_ENVIO_REINTEGROS.getId());
+				else {
+					
+					
+					ecomCola.setIdoperacion(OPERACION.ARAGON_PROCESAR_RESOLUCIONES.getId());
+				}
 				EcomColaService ecomColaService = (EcomColaService)BusinessManager.getInstance().getService(EcomColaService.class);
 					
 				Map<String, String> mapa = new HashMap<String, String>();
@@ -249,7 +255,7 @@ public class SigaWSUploadDocResRem {
 		}
 		boolean generaLog = false;
 		// EL TIPO 4 ES de envío de reintegros a la xunta que se hace en Java. No hay que llamar a ningún procedure
-		if(!idTipoRemesa.equals("4")) {
+		if(!idTipoRemesa.equals("4") && !( idInstitucion.equalsIgnoreCase("2083") && file.getName().endsWith("xml") )) {
 			generaLog = callProcedure(usr, idInstitucion, idTipoRemesa, idRemesaResolucion, file);
 		}
 		
