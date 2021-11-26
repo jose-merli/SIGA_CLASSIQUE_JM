@@ -568,14 +568,26 @@ public class BusquedaExpedientesAction extends MasterAction {
 
 			if (!bNuevo){
 //				Vector vVisibles = form.getDatosTablaVisibles(0);
-				Vector vOcultos = form.getDatosTablaOcultos(0);		
+				String idInstitucion, idInstitucion_TipoExpediente, idTipoExpediente, numExpediente, anioExpediente,
+						nombreTipoExpediente;
 
-				String idInstitucion = (String)vOcultos.elementAt(0);
-				String idInstitucion_TipoExpediente = (String)vOcultos.elementAt(1);
-				String idTipoExpediente = (String)vOcultos.elementAt(2);
-				String numExpediente = (String)vOcultos.elementAt(3);
-				String anioExpediente = (String)vOcultos.elementAt(4);
-				String nombreTipoExpediente = UtilidadesString.mostrarDatoJSP((String)vOcultos.elementAt(5));
+				if (form != null && form.getDatosTablaOcultos(0) != null) {
+					Vector vOcultos = form.getDatosTablaOcultos(0);
+
+					idInstitucion = (String) vOcultos.elementAt(0);
+					idInstitucion_TipoExpediente = (String) vOcultos.elementAt(1);
+					idTipoExpediente = (String) vOcultos.elementAt(2);
+					numExpediente = (String) vOcultos.elementAt(3);
+					anioExpediente = (String) vOcultos.elementAt(4);
+					nombreTipoExpediente = UtilidadesString.mostrarDatoJSP((String) vOcultos.elementAt(5));
+				} else {
+					idInstitucion = request.getParameter("idInstitucion");
+					idInstitucion_TipoExpediente = request.getParameter("idInstitucion_tipoExpediente");
+					idTipoExpediente = request.getParameter("idTipoExpediente");
+					numExpediente = request.getParameter("numExpediente");
+					anioExpediente = request.getParameter("anioExpediente");
+					nombreTipoExpediente = request.getParameter("nombreTipoExpediente");
+				}
 
 				//Si se intenta editar un expediente de otra institucion,
 				//sólo se permitirá modificar las anotaciones (pestanha de seguimiento)
