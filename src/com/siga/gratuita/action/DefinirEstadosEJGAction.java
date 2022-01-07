@@ -388,7 +388,7 @@ public class DefinirEstadosEJGAction extends MasterAction
 				//miramos si el ultimo estado es Listo remitir a comision. si es asi miramos el estado del ultimo envio de eCOM
 				Hashtable fila = (Hashtable)v.get(v.size()-1);
 				String idEstado = (String)fila.get(ScsEstadoEJGBean.C_IDESTADOEJG);
-				if(isConfiguradoEnvioPericles && Short.parseShort(idEstado) == AppConstants.ESTADOS_EJG.REMITIDO_COMISION.getCodigo()) {
+				if(isConfiguradoEnvioPericles && (Short.parseShort(idEstado) == AppConstants.ESTADOS_EJG.REMITIDO_COMISION.getCodigo() || Short.parseShort(idEstado) == AppConstants.ESTADOS_EJG.ACEPTADO_EXP_COMISION.getCodigo()) ) {
 					fila.put("botonEnvio", "1");
 				}
 				
