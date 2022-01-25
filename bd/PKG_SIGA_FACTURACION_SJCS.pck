@@ -1,4 +1,4 @@
-create or replace package PKG_SIGA_FACTURACION_SJCS is
+CREATE OR REPLACE package PKG_SIGA_FACTURACION_SJCS is
 
   -- Public variable declarations
 
@@ -1799,6 +1799,7 @@ PROCEDURE PROC_FCS_MARCAR_FACTURADOS(
 
 END PKG_SIGA_FACTURACION_SJCS;
 /
+
 CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
     -- Public variable declarations
@@ -1840,7 +1841,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_SIGA_FACTURACION_SJCS IS
 
     --INI: Cambio facturacion guardias inactivas catalanes de VG --
     C_CATALAN CEN_INSTITUCION.CEN_INST_IDINSTITUCION%TYPE := 3001;
-    C_IMPORTE_GUARDIA_INACTIVA SCS_HITOFACTURABLEGUARDIA.PRECIOHITO%TYPE := 61.96;
+    C_IMPORTE_GUARDIA_INACTIVA SCS_HITOFACTURABLEGUARDIA.PRECIOHITO%TYPE := 64.15;
     --FIN: Cambio facturacion guardias inactivas catalanes de VG --
 
     c_Id_Gijon       Constant Scs_Asistencia.Idinstitucion%Type := 2027;
