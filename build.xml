@@ -143,6 +143,7 @@
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/BusinessDelegate-1.1.jar"/>
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/BusinessDelegate-optional-1.1.jar"/>
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/ds6api.jar"/>
+    	<pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/jdom-b9.jar"/>
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/log4j-1.2.15.jar"/>
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/mybatis-3.1.1.jar"/>
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/xmlbeans-2.5.0.jar"/>
@@ -725,6 +726,7 @@
         <pathelement location="WebContent/WEB-INF/lib/displaytag-export-poi-1.2.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/dom4j-1.6.1.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/ds6api.jar"/>
+    	<pathelement location="WebContent/WEB-INF/lib/jdom-b9.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/fop.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/geronimo-stax-api_1.0_spec-1.0.1.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/gson-2.2.4.jar"/>
