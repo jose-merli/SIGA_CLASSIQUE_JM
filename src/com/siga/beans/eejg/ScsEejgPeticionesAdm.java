@@ -604,6 +604,8 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		where.append(" AND (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + EEJG_ESTADO.ESPERA.getId());
 		where.append(" 		OR (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + EEJG_ESTADO.ESPERA_ESPERANDO.getId());
 		where.append(" 			AND (SYSDATE - " + horasMaximas + ") >= " + ScsEejgPeticionesBean.C_FECHAMODIFICACION + ")");
+		where.append(" 		OR (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + EEJG_ESTADO.ERROR_CONSULTA_INFO.getId());
+		where.append(" 			AND (SYSDATE - " + horasMaximas + ") >= " + ScsEejgPeticionesBean.C_FECHAMODIFICACION + ")");
 		where.append(" 		OR (" + ScsEejgPeticionesBean.C_ESTADO  + " = " + EEJG_ESTADO.PENDIENTE_INFO.getId());
 		where.append(" 			AND (SYSDATE - " + (horasReintentoPendienteInfo/24.0) + ") >= " + ScsEejgPeticionesBean.C_FECHAMODIFICACION + "))");
 
