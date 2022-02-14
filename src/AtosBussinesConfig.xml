@@ -15,6 +15,8 @@
 		<service interface="com.siga.expedientes.service.ExpedientesService" 			implementation="com.siga.expedientes.service.impl.AtosExpedientesService"/>
 		<service interface="com.siga.censo.service.AlterMutuaService" 					implementation="com.siga.censo.service.impl.AtosAlterMutuaService"/>
 		<service interface="com.siga.facturacionSJCS.service.FacturacionSJCSService"	implementation="com.siga.facturacionSJCS.service.impl.AtosFacturacionSJCSServiceImpl"/>
+		
+		
 	</context>
 	
 	<context id="letrados">
@@ -155,7 +157,12 @@
 		<service interface="org.redabogacia.sigaservices.app.services.scs.ScsTipoAsistenciaColegioService" 					implementation="org.redabogacia.sigaservices.app.services.scs.impl.ScsTipoAsistenciaColegioServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.gen.GenRecursosCatalogosService" 					implementation="org.redabogacia.sigaservices.app.services.gen.impl.GenRecursosCatalogosServiceImpl"/>
 		<service interface="org.redabogacia.sigaservices.app.services.scs.GestionEnvioInformacionEconomicaCatalunyaService" 					implementation="org.redabogacia.sigaservices.app.services.scs.impl.GestionEnvioInformacionEconomicaCatalunyaServiceImpl"/>
-			
+		<service interface="org.redabogacia.sigaservices.app.services.scs.GestionAragonService"	implementation="org.redabogacia.sigaservices.app.services.scs.impl.GestionAragonServiceImpl"/>
+		<service interface="org.redabogacia.sigaservices.app.services.caj.CajgRemesaResolucionService" implementation="org.redabogacia.sigaservices.app.services.caj.impl.CajgRemesaResolucionServiceImpl"/>
+		
+		
+		
+		
 		
 	</context>
 </configuration> 

@@ -25,6 +25,7 @@ import org.apache.axis.transport.http.HTTPSender;
 import org.apache.axis.transport.http.HTTPTransport;
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlOptions;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
 import org.redabogacia.sigaservices.app.autogen.model.EcomCola;
@@ -36,8 +37,12 @@ import org.redabogacia.sigaservices.app.autogen.model.VWs2055Prestaciones;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.caj.AsignaConsultaNumeracionService;
 import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
+import org.redabogacia.sigaservices.app.services.scs.EjgService;
+import org.redabogacia.sigaservices.app.services.scs.ScsEjgService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
+import org.redabogacia.sigaservices.app.vo.MiembroUnidadFamiliar;
+import org.redabogacia.sigaservices.app.vo.scs.EjgVo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -94,7 +99,6 @@ public class SIGAWSClient extends SIGAWSClientAbstract {
 			stub = new ServiceSoap_BindingStub(new java.net.URL(getUrlWS()), locator);
 			log.debug("Creado el stub para el colegio " + getIdInstitucion());
 		}
-		
 		List<Hashtable<String, String>> listDtExpedientes = wsPamplonaAdm.getDtExpedientes(getIdInstitucion(), getIdRemesa());
 		construyeHTxEJG(wsPamplonaAdm.getDtPersonas(getIdInstitucion(), getIdRemesa()), htCargaDtPersonas);
 		construyeHTxEJG(wsPamplonaAdm.getDtArchivo(getIdInstitucion(), getIdRemesa()), htCargaDtArchivo);
@@ -718,7 +722,7 @@ public class SIGAWSClient extends SIGAWSClientAbstract {
 	
 	private void enviaDocumentacion(UsrBean usrBean, int idInstitucion, String anio,	String numero, String idTipoEJG) throws ClsExceptions {
 		EcomCola ecomCola = new EcomCola();
-		ecomCola.setIdoperacion(OPERACION.ASIGNA_ENVIO_DOCUMENTO.getId());
+		ecomCola.setIdoperacion(OPERACION.ASIGNA_ENVIO_DOCUMENTACION.getId());
 		ecomCola.setIdinstitucion((short) idInstitucion);
 		EcomColaService ecomColaService = (EcomColaService)BusinessManager.getInstance().getService(EcomColaService.class);
 		
@@ -730,87 +734,5 @@ public class SIGAWSClient extends SIGAWSClientAbstract {
 		
 		ecomColaService.insertaColaConParametros(ecomCola, mapa);
 		
-		/*
-		ScsEejgPeticionesAdm scsEejgPeticionesAdm = new ScsEejgPeticionesAdm(usrBean);
-		Hashtable<String, Object> hash = new Hashtable<String, Object>();
-		hash.put(ScsEejgPeticionesBean.C_IDINSTITUCION, idInstitucion);
-		hash.put(ScsEejgPeticionesBean.C_ANIO, anio);
-		hash.put(ScsEejgPeticionesBean.C_NUMERO, numero);
-		hash.put(ScsEejgPeticionesBean.C_IDTIPOEJG, idTipoEJG);
-		
-		@SuppressWarnings("rawtypes")
-		Vector vector = scsEejgPeticionesAdm.select(hash);
-		
-		if (vector != null && vector.size() > 0) {
-			for (int i = 0; i < vector.size();i++) {
-				ScsEejgPeticionesBean scsEejgPeticionesBean = (ScsEejgPeticionesBean)vector.get(i);
-				int estado = scsEejgPeticionesBean.getEstado();
-				if (estado == EEJG_ESTADO.PENDIENTE_INFO.getId() || estado == EEJG_ESTADO.FINALIZADO.getId()) {
-					enviaPDF(scsEejgPeticionesBean, usrBean);
-				}
-			}
-		}*/
-		
 	}
-	
-	/*private void enviaPDF(ScsEejgPeticionesBean scsEejgPeticionesBean, UsrBean usrBean) {
-		try {
-			BusinessManager bm = BusinessManager.getInstance();
-			EejgService eEjgS = (EejgService)bm.getService(EejgService.class);
-			
-			ScsUnidadFamiliarEJGAdm scsUnidadFamiliarEJGAdm = new ScsUnidadFamiliarEJGAdm(usrBean);
-			ScsUnidadFamiliarEJGBean unidadFamiliarVo = new ScsUnidadFamiliarEJGBean();
-			unidadFamiliarVo.setIdInstitucion(scsEejgPeticionesBean.getIdInstitucion());
-			unidadFamiliarVo.setAnio(scsEejgPeticionesBean.getAnio());
-			unidadFamiliarVo.setIdTipoEJG(scsEejgPeticionesBean.getIdTipoEjg());
-			unidadFamiliarVo.setNumero(scsEejgPeticionesBean.getNumero());
-			unidadFamiliarVo.setIdPersona(scsEejgPeticionesBean.getIdPersona().intValue());
-			
-			@SuppressWarnings("unchecked")
-			Vector<ScsUnidadFamiliarEJGBean> v = scsUnidadFamiliarEJGAdm.selectByPK(scsUnidadFamiliarEJGAdm.beanToHashTable(unidadFamiliarVo));
-			
-			if (v == null || v.size() != 1) {
-//				throw new BusinessException("No se ha encontrado el registro de la unidad familiar.");
-				ClsLogging.writeFileLog("No se ha encontrado el registro de la unidad familiar.", 3);
-			} else {
-				unidadFamiliarVo = v.get(0);
-				usrBean.setLocation(String.valueOf(scsEejgPeticionesBean.getIdInstitucion()));
-				unidadFamiliarVo.setPeticionEejg(scsEejgPeticionesBean);
-				
-				//el proceso que genera el fichero recoge el dato de personaJGBean
-				ScsPersonaJGBean scsPersonaJGBean = new ScsPersonaJGBean();
-				scsPersonaJGBean.setIdPersona(unidadFamiliarVo.getIdPersona());
-				unidadFamiliarVo.setPersonaJG(scsPersonaJGBean);
-				
-				Map<Integer, Map<String, String>> mapInformeEejg = eEjgS.getDatosInformeEejg(unidadFamiliarVo, usrBean);
-				File fichero = eEjgS.getInformeEejg(mapInformeEejg, usrBean);
-	
-				scsEejgPeticionesBean.setRutaPDF(fichero.getAbsolutePath());
-				
-				EcomCola ecomCola = new EcomCola();
-				ecomCola.setIdoperacion(OPERACION.ASIGNA_ENVIO_DOCUMENTO.getId());
-				ecomCola.setIdinstitucion(Short.valueOf(scsEejgPeticionesBean.getIdInstitucion().toString()));
-				EcomColaService ecomColaService = (EcomColaService)BusinessManager.getInstance().getService(EcomColaService.class);
-				
-				Map<String, String> mapa = new HashMap<String, String>();
-				mapa.put(ScsEjgKey.C_IDINSTITUCION, scsEejgPeticionesBean.getIdInstitucion().toString());
-				mapa.put(ScsEjgKey.C_ANIO, scsEejgPeticionesBean.getAnio().toString());
-				mapa.put(ScsEjgKey.C_IDTIPOEJG, scsEejgPeticionesBean.getIdTipoEjg().toString());
-				mapa.put(ScsEjgKey.C_NUMERO, scsEejgPeticionesBean.getNumero().toString());
-				
-				ecomColaService.insertaColaConParametros(ecomCola, mapa);
-							
-				scsEejgPeticionesBean.setIdEcomCola(ecomCola.getIdecomcola());
-				
-				ScsEejgPeticionesAdm scsEejgPeticionesAdm = new ScsEejgPeticionesAdm(usrBean);
-				if (!scsEejgPeticionesAdm.update(scsEejgPeticionesBean)) {
-					throw new ClsExceptions("No se ha podido actualizar scsEejgPeticionesBean.");
-				}
-			}
-			
-		} catch (Exception e) {
-			ClsLogging.writeFileLogError("Se ha producido un error al generar y enviar el pdf a Asigna", e, 3);
-		}
-	}
-*/
 }
