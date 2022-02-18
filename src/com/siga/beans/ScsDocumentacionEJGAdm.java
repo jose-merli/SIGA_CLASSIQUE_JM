@@ -629,7 +629,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 						" AND VALOR = DE.IDDOCUMENTACION) "+
 						              
 						" AND C.IDINSTITUCION = DE.IDINSTITUCION "+
-						" AND C.IDOPERACION = 79) NUM_INTERCAMBIOS_OK ";
+						" AND C.IDOPERACION IN (79,2,88)) NUM_INTERCAMBIOS_OK ";
 									  
 				}else {
 					sql = sql +" ,null NUM_INTERCAMBIOS_OK " ;

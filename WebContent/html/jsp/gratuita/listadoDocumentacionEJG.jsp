@@ -26,7 +26,8 @@
 <!-- JSP -->
 <% 
 	ArrayList obj = (ArrayList) request.getAttribute("resultado");
-	String numCAJG = (String) request.getAttribute("numCAJG");
+	String idExpedienteExt = (String) request.getAttribute("idExpedienteExt");
+	
 
 	String accion = (String)request.getSession().getAttribute("accion");
 	UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
@@ -106,7 +107,7 @@
 	    		
 	    		SIGADocumentacionEjgVo documentacionEjgVo = (SIGADocumentacionEjgVo)obj.get(recordNumber-1);
 	    		FilaExtElement[] elems = new FilaExtElement[1];
-				if(numCAJG !=null && !numCAJG.equals("") && (documentacionEjgVo.getNumIntercambiosOk()!=null && documentacionEjgVo.getNumIntercambiosOk()==0 && documentacionEjgVo.getIdFichero()!=null) && (documentacionEjgVo.getDocumentacion()==null || !documentacionEjgVo.getDocumentacion().equals("Envio en proceso"))){
+				if(idExpedienteExt !=null && !idExpedienteExt.equals("") && (documentacionEjgVo.getNumIntercambiosOk()!=null && documentacionEjgVo.getNumIntercambiosOk()==0 && documentacionEjgVo.getIdFichero()!=null) && (documentacionEjgVo.getDocumentacion()==null || !documentacionEjgVo.getDocumentacion().equals("Envio en proceso"))){
 					elems[0]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
 				}
 	    		String botonFila = botonesFila;
@@ -251,7 +252,7 @@
 			document.forms[0].idDocumentacion.value = idDocumentacion;
 			document.forms[0].idInstitucion.value = idInstitucion;
 			document.forms[0].target = "submitArea";
-			document.forms[0].modo.value = "enviarPericles";
+			document.forms[0].modo.value = "envioDocumento";
 			document.forms[0].submit();
 		    
 		}

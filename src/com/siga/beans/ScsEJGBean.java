@@ -124,7 +124,8 @@ public class ScsEJGBean extends MasterBean{
 	private String idInstitucionActa;
 	private Long idEcomCola;
 	private Integer anioProcedimiento;	
-    
+	private String idExpedienteExt;
+	
 	private ScsMaestroEstadosEJGBean maestroEstadoEJG;
 	
 	
@@ -278,6 +279,9 @@ public class ScsEJGBean extends MasterBean{
     static public final String C_IDECOMCOLA = "IDECOMCOLA";
     static public final String C_FECHAPRESENTACIONPONENTE = "FECHAPRESENTACIONPONENTE";
     static public final String  C_ANIOPROCEDIMIENTO		= 	"ANIOPROCEDIMIENTO";
+    static public final String  C_IDEXPEDIENTEEXT		= 	"IDEXPEDIENTEEXT";
+    
+    
 	
     public String getDeTipoEjg() {
 		return deTipoEjg;
@@ -1087,6 +1091,12 @@ public class ScsEJGBean extends MasterBean{
 	}
 	public void setDescripcionDictamen(String descripcionDictamen) {
 		this.descripcionDictamen = descripcionDictamen;
+	}
+	public String getIdExpedienteExt() {
+		return idExpedienteExt;
+	}
+	public void setIdExpedienteExt(String idExpedienteExt) {
+		this.idExpedienteExt = idExpedienteExt;
 	}
 	
 }

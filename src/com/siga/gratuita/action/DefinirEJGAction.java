@@ -150,7 +150,7 @@ public class DefinirEJGAction extends MasterAction
 				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("abrir")){
 					DefinirEJGForm form = (DefinirEJGForm)miForm;
 					form.reset(new String[]{"registrosSeleccionados","datosPaginador","seleccionarTodos"});
-					form.reset(mapping,request);
+//					form.reset(mapping,request);
 					request.getSession().removeAttribute("DATAPAGINADOR");
 					mapDestino = abrir(mapping, miForm, request, response);						
 				}else if (accion.equalsIgnoreCase("buscarInit")){
@@ -1471,6 +1471,7 @@ public class DefinirEJGAction extends MasterAction
 			definirEJGForm.setNumero(request.getParameter("NUMERO").toString());
 			definirEJGForm.setSolicitante(request.getParameter("solicitante").toString());
 			definirEJGForm.setNumEJG(request.getParameter("ejgNumEjg").toString());
+			
 		}
 		
 		String forward = "listadoIntercambiosJG";

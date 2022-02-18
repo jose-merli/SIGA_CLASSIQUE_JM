@@ -68,8 +68,8 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 					} else if (accion != null && accion.equalsIgnoreCase("borrarfichero")) {
 						mapDestino = borrarFichero(mapping, miForm, request, response);
 					} 
-					else if (accion != null && accion.equalsIgnoreCase("enviarPericles")){
-						return  mapping.findForward (enviarPericles(mapping, miForm, request, response));
+					else if (accion != null && accion.equalsIgnoreCase("envioDocumento")){
+						return  mapping.findForward (envioDocumento(mapping, miForm, request, response));
 					}
 					
 					else {
@@ -450,10 +450,13 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			
 			SIGADocumentacionEjgVo documentacionEjgVo = this.getForm2Vo(definirDocumentacionEJGForm);
 			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
-			boolean isConfiguradoEnvioPericles = ejgService.isColegioZonaComun(documentacionEjgVo.getIdInstitucion().shortValue()) && ejgService.isColegioConfiguradoEnvioPericles(documentacionEjgVo.getIdInstitucion().shortValue());
+			boolean isConfiguradoEnvioPericles = ejgService.isColegioZonaComun(documentacionEjgVo.getIdInstitucion().shortValue()) && ejgService.isColegioConfiguradoEnvioPericles(documentacionEjgVo.getIdInstitucion().shortValue()) || 
+					documentacionEjgVo.getIdInstitucion().shortValue()==2055
+					;
+			
 			
 						
-			if(isConfiguradoEnvioPericles || definirDocumentacionEJGForm.getNumEjg() == null || definirDocumentacionEJGForm.getNumEjg().equals("") ) {
+			if(isConfiguradoEnvioPericles) {
 				Hashtable miHash = new Hashtable();
 				miHash.put("ANIO", definirDocumentacionEJGForm.getAnio());
 				miHash.put("NUMERO", definirDocumentacionEJGForm.getNumero());
@@ -464,7 +467,12 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 				if (v3 != null && v3.size() > 0) {
 					ScsEJGBean b = (ScsEJGBean) v3.get(0);
 					definirDocumentacionEJGForm.setNumEjg(b.getNumEJG());
-					request.setAttribute("numCAJG", b.getNumeroCAJG());
+					if(documentacionEjgVo.getIdInstitucion().shortValue()==2055 ) {
+						if( b.getNumeroCAJG()!=null)
+							request.setAttribute("idExpedienteExt", b.getNumeroCAJG());
+					}else if(b.getIdExpedienteExt()!=null)
+						request.setAttribute("idExpedienteExt", b.getIdExpedienteExt());
+						
 				}
 			}else {
 				request.setAttribute("NUMEJG", definirDocumentacionEJGForm.getNumEjg());
@@ -657,7 +665,7 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 
 		return definirDocumentacionEJGForm;
 	}	
-	protected String enviarPericles (ActionMapping mapping,
+	protected String envioDocumento (ActionMapping mapping,
 			   MasterForm formulario,
 			   HttpServletRequest request,
 					   HttpServletResponse response) throws SIGAException
@@ -674,9 +682,12 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			documentacionEjgVo.setAnio( Short.valueOf(miForm.getAnio ()));
 			documentacionEjgVo.setNumero( Long.valueOf(miForm.getNumero ()));
 			documentacionEjgVo.setIdinstitucion( Short.valueOf( miForm.getIdInstitucion()));
-			documentacionEjgVo.setIddocumentacion(Integer.valueOf(miForm.getIdDocumentacion()));
 			
-			ejgService.envioPericles(documentacionEjgVo, usr.getLanguageInstitucion());
+			documentacionEjgVo.setIddocumentacion(Integer.valueOf(miForm.getIdDocumentacion()));
+			if(miForm.getIdInstitucion().equalsIgnoreCase("2055")) {
+				ejgService.envioDocumento(documentacionEjgVo, AppConstants.OPERACION.ASIGNA_ENVIO_DOCUMENTO, usr.getLanguageInstitucion());
+			}else
+				ejgService.envioDocumento(documentacionEjgVo, AppConstants.OPERACION.PERICLES_ENVIA_COMUNICACION, usr.getLanguageInstitucion());
 		} catch (BusinessException e) {
 			throwExcp ("messages.general.error", e, null);
 		}
