@@ -107,7 +107,7 @@
 	    		
 	    		SIGADocumentacionEjgVo documentacionEjgVo = (SIGADocumentacionEjgVo)obj.get(recordNumber-1);
 	    		FilaExtElement[] elems = new FilaExtElement[1];
-				if(idExpedienteExt !=null && !idExpedienteExt.equals("") && (documentacionEjgVo.getNumIntercambiosOk()!=null && documentacionEjgVo.getNumIntercambiosOk()==0 && documentacionEjgVo.getIdFichero()!=null) && (documentacionEjgVo.getDocumentacion()==null || !documentacionEjgVo.getDocumentacion().equals("Envio en proceso"))){
+				if(idExpedienteExt !=null && !idExpedienteExt.equals("") && (documentacionEjgVo.getNumIntercambiosOk()!=null && documentacionEjgVo.getNumIntercambiosOk()==0 && documentacionEjgVo.getIdFichero()!=null)){
 					elems[0]=new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_FULL);
 				}
 	    		String botonFila = botonesFila;

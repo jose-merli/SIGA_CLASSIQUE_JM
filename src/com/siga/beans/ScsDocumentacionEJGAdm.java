@@ -612,12 +612,8 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 				if(isConfiguradoEnvioPericles) {	      
 					 sql = sql +" ,(SELECT count(1) " +
 						" FROM ECOM_COLA C " +
-						" LEFT OUTER JOIN ECOM_INTERCAMBIO IC ON " +
-						        
-						" C.IDECOMCOLA = IC.IDECOMCOLA "+
-						" WHERE IC.IDESTADORESPUESTA = 5 "+
-						" AND IC.RESPUESTA IS NULL " +
-						" AND C.IDECOMCOLA IN "+
+						
+						" WHERE C.IDECOMCOLA IN "+
 						" (SELECT IDECOMCOLA "+
 						" FROM ECOM_COLA_PARAMETROS "+
 						" WHERE CLAVE = 'IDINSTITUCION' "+
@@ -627,9 +623,9 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 						" FROM ECOM_COLA_PARAMETROS "+
 						" WHERE CLAVE = 'IDDOCUMENTACION' "+
 						" AND VALOR = DE.IDDOCUMENTACION) "+
-						              
+						" AND C.IDESTADOCOLA in (1,5,2,3)    "+
 						" AND C.IDINSTITUCION = DE.IDINSTITUCION "+
-						" AND C.IDOPERACION IN (79,2,88)) NUM_INTERCAMBIOS_OK ";
+						" AND C.IDOPERACION IN (79,2,88,68)) NUM_INTERCAMBIOS_OK ";
 									  
 				}else {
 					sql = sql +" ,null NUM_INTERCAMBIOS_OK " ;

@@ -443,15 +443,14 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 		try {
 			
 			UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
-			
-			
-			SIGADocumentacionEjgService documentacionEjgService = new SIGADocumentacionEjgService();
+				
+						SIGADocumentacionEjgService documentacionEjgService = new SIGADocumentacionEjgService();
 			definirDocumentacionEJGForm.setComisionAJG(usr.isComision()?"1":"0");
 			
 			SIGADocumentacionEjgVo documentacionEjgVo = this.getForm2Vo(definirDocumentacionEJGForm);
 			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
 			boolean isConfiguradoEnvioPericles = ejgService.isColegioZonaComun(documentacionEjgVo.getIdInstitucion().shortValue()) && ejgService.isColegioConfiguradoEnvioPericles(documentacionEjgVo.getIdInstitucion().shortValue()) || 
-					documentacionEjgVo.getIdInstitucion().shortValue()==2055
+					documentacionEjgVo.getIdInstitucion().shortValue()==2055 || documentacionEjgVo.getIdInstitucion().shortValue()==2032
 					;
 			
 			
@@ -686,6 +685,8 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			documentacionEjgVo.setIddocumentacion(Integer.valueOf(miForm.getIdDocumentacion()));
 			if(miForm.getIdInstitucion().equalsIgnoreCase("2055")) {
 				ejgService.envioDocumento(documentacionEjgVo, AppConstants.OPERACION.ASIGNA_ENVIO_DOCUMENTO, usr.getLanguageInstitucion());
+			}else if(miForm.getIdInstitucion().equalsIgnoreCase("2032")) {
+				ejgService.envioDocumento(documentacionEjgVo, AppConstants.OPERACION.GV_ENVIO_DOCUMENTO, usr.getLanguageInstitucion());
 			}else
 				ejgService.envioDocumento(documentacionEjgVo, AppConstants.OPERACION.PERICLES_ENVIA_COMUNICACION, usr.getLanguageInstitucion());
 		} catch (BusinessException e) {

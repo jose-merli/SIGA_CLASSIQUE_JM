@@ -20,14 +20,9 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
-import org.redabogacia.sigaservices.app.AppConstants.TipoIntercambioEnum;
-import org.redabogacia.sigaservices.app.autogen.model.EnvEntradaEnvios;
-import org.redabogacia.sigaservices.app.autogen.model.EnvEnvios;
 import org.redabogacia.sigaservices.app.autogen.model.ScsTiporesolucion;
-import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
-import org.redabogacia.sigaservices.app.services.ecom.EcomColaService;
-import org.redabogacia.sigaservices.app.services.scs.DocumentacionEjgService;
 import org.redabogacia.sigaservices.app.services.scs.EjgService;
 import org.redabogacia.sigaservices.app.services.scs.ScsTipoResolucionService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
@@ -42,12 +37,9 @@ import com.atos.utils.Row;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.AjaxCollectionXmlBuilder;
 import com.siga.Utilidades.PaginadorBind;
-import com.siga.Utilidades.TransformBeanToForm;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.UtilidadesHash;
-import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
-import com.siga.administracion.SIGAConstants;
 import com.siga.beans.CenColegiadoAdm;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.ExpExpedienteAdm;
@@ -91,22 +83,15 @@ import com.siga.beans.ScsPersonaJGAdm;
 import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsSOJBean;
 import com.siga.beans.ScsSaltosCompensacionesAdm;
-import com.siga.beans.ScsSaltosCompensacionesBean;
 import com.siga.beans.ScsTurnoAdm;
 import com.siga.beans.ScsTurnoBean;
 import com.siga.beans.ScsUnidadFamiliarEJGAdm;
 import com.siga.beans.ScsUnidadFamiliarEJGBean;
 import com.siga.certificados.Plantilla;
-import com.siga.envios.form.DefinirEnviosForm;
-import com.siga.envios.form.EntradaEnviosForm;
-import com.siga.envios.service.EntradaEnviosService;
-import com.siga.envios.service.SalidaEnviosService;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
-import com.siga.gratuita.form.ComunicacionesForm;
 import com.siga.gratuita.form.DefinirEJGForm;
-import com.siga.gratuita.vos.SIGADocumentacionEjgVo;
 
 import es.satec.businessManager.BusinessManager;
 
@@ -1481,7 +1466,13 @@ public class DefinirEJGAction extends MasterAction
 		try {
 			EjgService ejgService = (EjgService) BusinessManager.getInstance().getService(EjgService.class);
 			
-			intercambiosAltaEJG = ejgService.getListadoIntercambiosAltaEJG(definirEJGForm.getIdInstitucion(),definirEJGForm.getAnio(),definirEJGForm.getIdTipoEJG(),definirEJGForm.getNumero());
+			if(definirEJGForm.getIdInstitucion().equals(AppConstants.IDINSTITUCION_2032)) {
+				intercambiosAltaEJG = ejgService.getListadoIntercambiosAltaEJG(definirEJGForm.getIdInstitucion(),definirEJGForm.getAnio(),definirEJGForm.getIdTipoEJG(),definirEJGForm.getNumero());
+			}else {
+				intercambiosAltaEJG = ejgService.getListadoIntercambiosAltaEJGRemesa(definirEJGForm.getIdInstitucion(),definirEJGForm.getAnio(),definirEJGForm.getIdTipoEJG(),definirEJGForm.getNumero());
+			}
+			
+			
 			
 			intercambiosEnvioDocumento = ejgService.getListadoIntercambiosDocumentacionEJG(definirEJGForm.getIdInstitucion(),definirEJGForm.getAnio(),definirEJGForm.getIdTipoEJG(),definirEJGForm.getNumero());
 			
