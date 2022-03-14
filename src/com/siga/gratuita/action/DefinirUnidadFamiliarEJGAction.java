@@ -19,6 +19,7 @@ import javax.transaction.UserTransaction;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 
 import com.atos.utils.ClsConstants;
@@ -845,6 +846,8 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 		String idTipoEJG = (String) vCampos.get(2);
 		String anio = (String) vCampos.get(3);
 		String numero = (String) vCampos.get(4);
+		String autoriza = (String) vCampos.get(5);
+		
 		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
 		ScsEejgPeticionesBean peticionEejg = new ScsEejgPeticionesBean();
 		peticionEejg.setIdInstitucion(Integer.parseInt(idinstitucion));
@@ -865,10 +868,17 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			ClsLogging.writeFileLog("Acceso denegado",request,3);
 			return exitoRefresco("messages.error.accesoDenegado", request);
 		}
+		
+		
 		BusinessManager bm = getBusinessManager();
 		EejgService eEjgS = (EejgService)bm.getService(EejgService.class);
-		
+				
 		try {
+			if(autoriza!=null && autoriza.equals(AppConstants.DB_TRUE)) {
+				ScsPersonaJGAdm scsPersonaJGAdm = new ScsPersonaJGAdm(this.getUserBean(request));
+				scsPersonaJGAdm.updateAutorizacionEEJG(peticionEejg.getIdInstitucion(),peticionEejg.getIdPersona());
+			}
+
 			eEjgS.insertarPeticionEejg(peticionEejg,usr);	
 		} catch (Exception e) {
 			throwExcp("messages.general.error",e,null);

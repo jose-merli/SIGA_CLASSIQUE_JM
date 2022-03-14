@@ -1170,3 +1170,17 @@ V_SIGA_SOLICITANTES_EJG, V_SIGA_DEFENDIDOS_DESIGNA
 -- https://redabogacia.atlassian.net/browse/SIGA-579
 ALTER SEQUENCE SEQ_ENV_ENVIOS INCREMENT BY 1 MINVALUE 1 MAXVALUE 9999999 CYCLE NOCACHE NOORDER ;
 
+
+
+
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Se va a proceder a tramitar la petición a los organismos competentes: Ag. Tributaria, TGSS, INSS, etc. Para ello es necesario el consentimiento expreso del solicitante. Si continúa se marcará la casilla del solicitante ''Autoriza recabar información de la administración'' ¿Desea continuar?' where idrecurso='gratuita.eejg.message.confirmaSolicitud' and idlenguaje='1';
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Es procedirà a tramitar la petició als organismes competents: Ag. Tributària, TGSS, INSS, etc. Per això és necessari el consentiment exprés del sol·licitant. Si continua es marcarà la casella del sol·licitant ''Autoritza demanar informació de l''administració''. Voleu continuar?' where idrecurso='gratuita.eejg.message.confirmaSolicitud' and idlenguaje='2';
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Se va a proceder a tramitar la petición a los organismos competentes: Ag. Tributaria, TGSS, INSS, etc. Para ello es necesario el consentimiento expreso del solicitante. Si continúa se marcará la casilla del solicitante ''Autoriza recabar información de la administración'' ¿Desea continuar?' where idrecurso='gratuita.eejg.message.confirmaSolicitud' and idlenguaje='4';
+update GEN_RECURSOS set fechamodificacion=sysdate, DESCRIPCION='Se va a proceder a tramitar la petición a los organismos competentes: Ag. Tributaria, TGSS, INSS, etc. Para ello es necesario el consentimiento expreso del solicitante. Si continúa se marcará la casilla del solicitante ''Autoriza recabar información de la administración'' ¿Desea continuar?' where idrecurso='gratuita.eejg.message.confirmaSolicitud' and idlenguaje='3';
+
+
+INSERT INTO GEN_RECURSOS (IDRECURSO,DESCRIPCION,ERROR,IDLENGUAJE,FECHAMODIFICACION,USUMODIFICACION,IDPROPIEDAD) VALUES ('gratuita.eejg.error.solicitantenoautoriza','El usuario no ha autorizado el recabar información de las administraciones. No tiene permiso para continuar.',0,'1',sysdate,0,'19');
+INSERT INTO GEN_RECURSOS (IDRECURSO,DESCRIPCION,ERROR,IDLENGUAJE,FECHAMODIFICACION,USUMODIFICACION,IDPROPIEDAD) VALUES ('gratuita.eejg.error.solicitantenoautoriza','L''usuari no ha autoritzat demanar informació de les administracions. No teniu permís per continuar.',0,'2',sysdate,0,'19');
+INSERT INTO GEN_RECURSOS (IDRECURSO,DESCRIPCION,ERROR,IDLENGUAJE,FECHAMODIFICACION,USUMODIFICACION,IDPROPIEDAD) VALUES ('gratuita.eejg.error.solicitantenoautoriza','El usuario no ha autorizado el recabar información de las administraciones. No tiene permiso para continuar.#EU',0,'3',sysdate,0,'19');
+INSERT INTO GEN_RECURSOS (IDRECURSO,DESCRIPCION,ERROR,IDLENGUAJE,FECHAMODIFICACION,USUMODIFICACION,IDPROPIEDAD) VALUES ('gratuita.eejg.error.solicitantenoautoriza','El usuario no ha autorizado el recabar información de las administraciones. No tiene permiso para continuar.#GL',0,'4',sysdate,0,'19');
+

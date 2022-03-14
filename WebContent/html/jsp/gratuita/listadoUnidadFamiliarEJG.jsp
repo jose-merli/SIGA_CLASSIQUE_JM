@@ -139,6 +139,7 @@
 							<input type="hidden" name="oculto<%=index%>_13" value="${solicitante.solicitante}">
 							<input type="hidden" name="oculto<%=index%>_14" value="${solicitante.personaJG.nif}">
 							<input type="hidden" name="oculto<%=index%>_15" value="${solicitante.personaJG.tipoIdentificacion}">
+							<input type="hidden" name="oculto<%=index%>_16" value="${solicitante.personaJG.asistidoAutorizaEEJG}">
 														
 							<c:out value="${solicitante.parentesco.descripcion}"></c:out>						
 						</td>
@@ -228,6 +229,8 @@
 							<input type="hidden" name="oculto<%=index%>_13" value="${solicitante.solicitante}">
 							<input type="hidden" name="oculto<%=index%>_14" value="${solicitante.personaJG.nif}">
 							<input type="hidden" name="oculto<%=index%>_15" value="${solicitante.personaJG.tipoIdentificacion}">
+							<input type="hidden" name="oculto<%=index%>_16" value="${solicitante.personaJG.asistidoAutorizaEEJG}">
+							
 							<c:choose>
 								<c:when test="${solicitante.peticionEejg.idPeticion!=null}">
 									<input type="hidden" name="oculto<%=index%>_11" value="${solicitante.peticionEejg.idPeticion}">
@@ -482,6 +485,8 @@
 	}
 	
 	function comunicar(fila) {
+		
+		
 		var idPersonaJG = document.getElementById( 'oculto' + fila + '_6');
 		var idInstitucionEJG = document.getElementById( 'oculto' + fila + '_7');
 		var idTipoEJG = document.getElementById( 'oculto' + fila + '_8');
@@ -489,6 +494,10 @@
 		var numero = document.getElementById( 'oculto' + fila + '_10');
 		var esComision = document.getElementById( 'oculto' + fila + '_12');
 		var solicitante = document.getElementById( 'oculto' + fila + '_13');
+		
+		
+		
+		
 		
 		var datos = "idinstitucion=="+idInstitucionEJG.value + "##idtipo==" +idTipoEJG.value+"##anio=="+anio.value +"##numero==" +numero.value+"##idPersonaJG==" +idPersonaJG.value+"##idTipoInforme==EJG%%%";
 		
@@ -577,11 +586,27 @@
 		var nif = document.getElementById( 'oculto' + fila + '_14').value;
 		var idTipoIdentificacion = document.getElementById( 'oculto' + fila + '_15').value;
 		
+		
+		
 		if (!validaNumeroIdentificacion(nif,idTipoIdentificacion)) {
 			fin();
 			return false;
 		}
+		var autoriza = document.getElementById( 'oculto' + fila + '_16');
 		
+		if(autoriza){
+			if(autoriza.value =='0'){
+				alert("<siga:Idioma key='gratuita.eejg.error.solicitantenoautoriza'/>","warning");
+				return false;
+			}else if(autoriza.value =='1'){
+				autoriza = 2;
+			}else{
+				autoriza = 1;
+			}
+		}
+		else{
+			autoriza = 1;
+		}
 		var isConfirmado = confirm('<siga:Idioma key="gratuita.eejg.message.confirmaSolicitud"/>');
 		if(!isConfirmado)
 			return;
@@ -594,7 +619,8 @@
 	   			+idInstitucionEJG.value + 	','
 	   			+idTipoEJG.value + 	','
 	   			+anio.value + 	','
-	   			+numero.value + '#';
+	   			+numero.value + 	','
+	   			+ autoriza +'#';
    		
 	   	document.EEJG.tablaDatosDinamicosD.value = datos;
 	   	document.EEJG.modo.value = "solicitarEejg";

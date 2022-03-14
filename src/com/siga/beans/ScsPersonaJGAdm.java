@@ -1154,6 +1154,25 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 		this.updateSQL(sql.toString());
 		
 	}
+	public void updateAutorizacionEEJG(Integer idInstitucion, Long idPersona) throws ClsExceptions{
+		
+		StringBuffer sql = null;
+		
+		sql = new StringBuffer();
+		
+		sql.append("update " + ScsPersonaJGBean.T_NOMBRETABLA+ " set ");
+		sql.append(ScsPersonaJGBean.C_ASISTIDOAUTORIZAEEJG+ " = 1,"); 
+		sql.append(ScsPersonaJGBean.C_FECHAMODIFICACION+ " = sysdate,");
+		sql.append(ScsPersonaJGBean.C_USUMODIFICACION+ " = ");
+		sql.append(this.usrbean.getUserName());
+		sql.append(" where " + ScsPersonaJGBean.C_IDINSTITUCION + " = " + idInstitucion);
+		sql.append(" and " + ScsPersonaJGBean.C_IDPERSONA + " = " +idPersona );
+		this.updateSQL(sql.toString());
+		
+	}
+
+	
+	
 	
 	
 }
