@@ -1466,7 +1466,7 @@ public class DefinirEJGAction extends MasterAction
 		try {
 			EjgService ejgService = (EjgService) BusinessManager.getInstance().getService(EjgService.class);
 			
-			if(definirEJGForm.getIdInstitucion().equals(AppConstants.IDINSTITUCION_2032)) {
+			if(!definirEJGForm.getIdInstitucion().equals(AppConstants.IDINSTITUCION_2032)) {
 				intercambiosAltaEJG = ejgService.getListadoIntercambiosAltaEJG(definirEJGForm.getIdInstitucion(),definirEJGForm.getAnio(),definirEJGForm.getIdTipoEJG(),definirEJGForm.getNumero());
 			}else {
 				intercambiosAltaEJG = ejgService.getListadoIntercambiosAltaEJGRemesa(definirEJGForm.getIdInstitucion(),definirEJGForm.getAnio(),definirEJGForm.getIdTipoEJG(),definirEJGForm.getNumero());
