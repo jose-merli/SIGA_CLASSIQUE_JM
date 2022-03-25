@@ -76,32 +76,37 @@
 		document.forms['FormularioGestion'].submit();
 		
 	}
-	function enviarIntercambioCICAC(fila) {
-		alert('<siga:Idioma key="facturacion.estadosfac.literal.GenEjecucion"/>');
+	
+	
+	function enviaIntercambiosGEN() {
 		sub();
-		document.forms['FormularioGestion'].idDevolucion.value = document.getElementById("idDevolucion").value;
-		document.forms['FormularioGestion'].idJustificacion.value = document.getElementById("idJustificacion").value;
-		document.forms['FormularioGestion'].idCertificacion.value = document.getElementById("idCertificacion").value;
-		document.forms['FormularioGestion'].idCertificacionAnexo.value = document.getElementById("idCertificacionAnexo").value;
-		document.forms['FormularioGestion'].idTipoCertificacion.value = document.getElementById("idTipoCertificacion").value;
-		document.forms['FormularioGestion'].modo.value = "enviaIntercambioCICAC";
-		document.forms['FormularioGestion'].submit();
+		document.forms['FormularioGestion'].idInstitucion.value = document.getElementById('idInstitucionIntercambio').value;
+		document.forms['FormularioGestion'].idIntercambio.value = document.getElementById('idIntercambio').value;
+		alertStop(document.forms['FormularioGestion'].idInstitucion.value);
+		alertStop(document.forms['FormularioGestion'].idIntercambio.value);
 		
+		document.forms['FormularioGestion'].modo.value = "enviaIntercambiosGEN";
+		document.forms['FormularioGestion'].submit();
 	}
 	
 	
-	function enviarIntercambiosGEN(fila) {
+	function enviaIntercambiosCICAC() {
 		sub();
-		document.forms['FormularioGestion'].idDevolucion.value = document.getElementById("idDevolucion").value;
-		document.forms['FormularioGestion'].idJustificacion.value = document.getElementById("idJustificacion").value;
-		document.forms['FormularioGestion'].idCertificacion.value = document.getElementById("idCertificacion").value;
-		document.forms['FormularioGestion'].idCertificacionAnexo.value = document.getElementById("idCertificacionAnexo").value;
-		document.forms['FormularioGestion'].idTipoCertificacion.value = document.getElementById("idTipoCertificacion").value;
-		
-		document.forms['FormularioGestion'].modo.value = "enviarIntercambiosGEN";
-		
+		document.forms['FormularioGestion'].idInstitucion.value = document.getElementById('idInstitucionIntercambio').value;
+		document.forms['FormularioGestion'].idIntercambio.value = document.getElementById('idIntercambio').value;
+		document.forms['FormularioGestion'].modo.value = "enviaIntercambiosCICAC";
 		document.forms['FormularioGestion'].submit();
 	}
+	function enviaRespuestaCICAC_ICA(fila) {
+		//alertStop("Envia el respuesta al ICA ");
+		sub();
+		document.forms['FormularioGestion'].modo.value = "enviaRespuestaCICAC_ICA";
+		document.forms['FormularioGestion'].idInstitucion.value = document.getElementById('idInstitucionIntercambio').value;
+		document.forms['FormularioGestion'].idIntercambio.value = document.getElementById('idIntercambio').value;
+		document.forms['FormularioGestion'].submit();
+	}
+	
+	
 	
 	
 	
@@ -118,6 +123,8 @@
 		document.forms['FormularioGestion'].idCertificacionAnexo.value = document.getElementById("idCertificacionAnexo").value;
 		document.forms['FormularioGestion'].idTipoCertificacion.value = document.getElementById("idTipoCertificacion").value;
 		document.forms['FormularioGestion'].submit();
+		if(true)
+			fin();
 	}
 	
 	function consulta(fila) {
@@ -132,6 +139,8 @@
 		document.forms['FormularioGestion'].idCertificacionAnexo.value = document.getElementById("idCertificacionAnexo").value;
 		document.forms['FormularioGestion'].idTipoCertificacion.value = document.getElementById("idTipoCertificacion").value;
 		document.forms['FormularioGestion'].submit();
+		if(true)
+			fin();
 	}
 	
 	function adjuntaFicheroError(fila) {
@@ -159,6 +168,7 @@
 		document.forms['FormularioGestion'].modo.value = "insertaErrorGlobal";
 		var idTipoIntercambio = 'idTipoIntercambio_' + fila ;
 		document.forms['FormularioGestion'].idTipoIntercambio.value = document.getElementById(idTipoIntercambio).value;
+		document.forms['FormularioGestion'].idInstitucion.value = document.getElementById("idInstitucionIntercambio").value;
 		document.forms['FormularioGestion'].idDevolucion.value = document.getElementById("idDevolucion").value;
 		document.forms['FormularioGestion'].idJustificacion.value = document.getElementById("idJustificacion").value;
 		document.forms['FormularioGestion'].idCertificacion.value = document.getElementById("idCertificacion").value;
@@ -221,19 +231,6 @@
 	
 	
 	
-	function enviaRespuestaCICAC_ICA(fila) {
-		
-		//alertStop("Envia el respuesta al ICA ");
-		sub();
-		document.forms['FormularioGestion'].modo.value = "enviaRespuestaCICAC_ICA";
-		document.forms['FormularioGestion'].idDevolucion.value = document.getElementById("idDevolucion").value;
-		document.forms['FormularioGestion'].idJustificacion.value = document.getElementById("idJustificacion").value;
-		document.forms['FormularioGestion'].idCertificacion.value = document.getElementById("idCertificacion").value;
-		document.forms['FormularioGestion'].idCertificacionAnexo.value = document.getElementById("idCertificacionAnexo").value;
-		document.forms['FormularioGestion'].idTipoCertificacion.value = document.getElementById("idTipoCertificacion").value;
-		
-		document.forms['FormularioGestion'].submit();
-	}
 	
 	
 	function openDialog(dialogo){
@@ -296,11 +293,15 @@
 	<input type="hidden" id="mensajeSuccess" value="${mensajeSuccess}"/>
 	<input type="file" id ='fileUpdate' style="display:none"/>
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
+	
+	<input type="hidden" id="idInstitucionIntercambio" value="${intercambio.idInstitucion}" />
+	<input type="hidden" id="idIntercambio" value="${intercambio.idIntercambio}" />
+	
 	<html:form action="${path}"  method="POST" target="mainWorkArea">
 		<html:hidden property="modo"/>
 		<html:hidden property="accion"/>
 		<html:hidden property="idIntercambio"/>
-		<html:hidden property="idInstitucion" />
+		<html:hidden property="idInstitucion" value="${USRBEAN.location}" />
 		<html:hidden property="jsonVolver"/>
 
 	<!-- INICIO: CAMPOS DE BUSQUEDA-->
@@ -400,6 +401,7 @@
 					<td align='left'>
 						<input type="hidden" id="idTipoIntercambio_${status.count}"
 							value="${justificacion.idTipoIntercambio}" class="inputNotSelect"/>
+						
 						<c:if test="${justificacion.idJustificacion!=null}">
 							<input type="hidden" id="idJustificacion" value="${justificacion.idJustificacion}" class="inputNotSelect"/>
 						</c:if>
@@ -416,11 +418,6 @@
 						<c:if test="${justificacion.idTipoCertificacion!=null}">
 							<input type="hidden" id="idTipoCertificacion" value="${justificacion.idDevolucion}" class="inputNotSelect"/>
 						</c:if>
-						
-						
-						
-						
-						
 						
 						<c:out	value="${justificacion.descripcionTipoIntercambio}"/>
 						</td>
@@ -454,12 +451,12 @@
 		<c:choose>
 			<c:when test="${GestionEconomicaCatalunyaForm.idInstitucion!='3001' && GestionEconomicaCatalunyaForm.idEstado=='14' }">
 				<td class="tdBotones">
-					<input type="button" alt="<siga:Idioma key='intercambios.boton.enviar.consejo'/>"  id="idButton" onclick="return enviarIntercambioCICAC();" class="button" name="idButton" value="<siga:Idioma key='intercambios.boton.enviar.consejo'/>">
+					<input type="button" alt="<siga:Idioma key='intercambios.boton.enviar.consejo'/>"  id="idButton" onclick="return enviaIntercambiosCICAC();" class="button" name="idButton" value="<siga:Idioma key='intercambios.boton.enviar.consejo'/>">
 				</td>
 			</c:when>
 			<c:when test="${GestionEconomicaCatalunyaForm.idInstitucion=='3001' && GestionEconomicaCatalunyaForm.idEstado=='30' }">
 				<td class="tdBotones">
-					<input type="button" alt="<siga:Idioma key='intercambios.boton.enviar.comision'/>"  id="idButton" onclick="return enviarIntercambioGEN();" class="button" name="idButton" value="<siga:Idioma key='intercambios.boton.enviar.comision'/>">
+					<input type="button" alt="<siga:Idioma key='intercambios.boton.enviar.comision'/>"  id="idButton" onclick="return enviaIntercambiosGEN();" class="button" name="idButton" value="<siga:Idioma key='intercambios.boton.enviar.comision'/>">
 				</td>
 			</c:when>
 			<c:when test="${GestionEconomicaCatalunyaForm.idInstitucion=='3001' && (GestionEconomicaCatalunyaForm.idEstado=='87' || GestionEconomicaCatalunyaForm.idEstado=='90' )  }">
@@ -478,9 +475,11 @@
 <html:form action="${path}" name="FormularioGestion" type ="com.siga.gratuita.form.GestionEconomicaCatalunyaForm"  target="submitArea">
   		<html:hidden property="modo"/>
 		<html:hidden property="idTipoIntercambio" />
+		<html:hidden property="idInstitucion"/>
 		<html:hidden property="idIntercambio"  value="${GestionEconomicaCatalunyaForm.idIntercambio}"/>
 		<html:hidden property="idJustificacion"/>
 		<html:hidden property="idDevolucion"/>
+		
 		<html:hidden property="idCertificacion"/>
 		<html:hidden property="idCertificacionAnexo"/>
 		<html:hidden property="idTipoCertificacion"/>

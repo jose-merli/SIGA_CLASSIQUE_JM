@@ -75,10 +75,7 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 					}else if ( accion.equalsIgnoreCase("consultaVistaPrevia")){
 						mapDestino = consultaVistaPrevia (mapping, miForm, request, response);
 
-					}else if ( accion.equalsIgnoreCase("enviaIntercambioCICAC")){
-						mapDestino = enviaIntercambioCICAC (mapping, miForm, request, response);
-						
-					}else if ( accion.equalsIgnoreCase("enviarIntercambiosCICAC")){
+					}else if ( accion.equalsIgnoreCase("enviaIntercambiosCICAC")){
 						mapDestino = enviaIntercambiosCICAC (miForm, request);
 						
 					}else if ( accion.equalsIgnoreCase("descarga")){
@@ -101,12 +98,12 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 					else if ( accion.equalsIgnoreCase("descargaErrores")){
 						mapDestino = descargaErroresJustificacion (mapping, miForm, request, response);
 
-					}
-					
-					else if ( accion.equalsIgnoreCase("enviarIntercambioGEN")){
-						mapDestino = enviaIntercambioGEN (miForm, request);
+//					}
+//					
+//					else if ( accion.equalsIgnoreCase("enviarIntercambioGEN")){
+//						mapDestino = enviaIntercambioGEN (miForm, request);
 
-					}else if ( accion.equalsIgnoreCase("enviarIntercambiosGEN")){
+					}else if ( accion.equalsIgnoreCase("enviaIntercambiosGEN")){
 						mapDestino = enviaIntercambiosGEN (miForm, request);
 
 					}
@@ -608,8 +605,8 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
 		try {
 			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			GestionEconomicaCatalunyaVo intercambio = gestionEconomicaCatalunyaService.getCabeceraIntercambio(justificacionVo.getIdIntercambio());
-			gestionEconomicaCatalunyaService.insertaErrorGlobalCICAC(intercambio,justificacionVo.getError());
+//			GestionEconomicaCatalunyaVo intercambio = gestionEconomicaCatalunyaService.getCabeceraIntercambio(justificacionVo.getIdIntercambio());
+			gestionEconomicaCatalunyaService.insertaErrorGlobalCICAC(justificacionVo,justificacionVo.getError());
 		}catch (BusinessException e){
 			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
 		}
@@ -697,22 +694,22 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		}
 		return exitoRefresco("messages.envios.procesandoEnvio",request);
 	}
-	private String enviaIntercambioGEN (MasterForm formulario, HttpServletRequest request) throws SIGAException {
-		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
-		BusinessManager bm = getBusinessManager();
-		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
-		try {
-			GestionEconomicaCatalunyaVo gestionEconomicaCatalunyaVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			gestionEconomicaCatalunyaService.enviaIntercambioGEN(gestionEconomicaCatalunyaVo);
-		}catch (BusinessException e){
-			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
-		}
-		catch (Exception e){
-			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
-
-		}
-		return exitoRefresco("messages.envios.procesandoEnvio",request);
-	}
+//	private String enviaIntercambioGEN (MasterForm formulario, HttpServletRequest request) throws SIGAException {
+//		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
+//		BusinessManager bm = getBusinessManager();
+//		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
+//		try {
+//			GestionEconomicaCatalunyaVo gestionEconomicaCatalunyaVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
+//			gestionEconomicaCatalunyaService.enviaIntercambioGEN(gestionEconomicaCatalunyaVo);
+//		}catch (BusinessException e){
+//			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
+//		}
+//		catch (Exception e){
+//			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
+//
+//		}
+//		return exitoRefresco("messages.envios.procesandoEnvio",request);
+//	}
 	private String enviaIntercambiosCICAC (MasterForm formulario, HttpServletRequest request) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
 		BusinessManager bm = getBusinessManager();
@@ -730,22 +727,7 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 		return exitoRefresco("messages.envios.procesandoEnvio",request);
 	}
 
-	private String enviaIntercambioCICAC (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
-		BusinessManager bm = getBusinessManager();
-		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
-		try {
-			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
-			gestionEconomicaCatalunyaService.enviaIntercambioCICAC(justificacionVo);
-		}catch (BusinessException e){
-			return errorRefresco(e.getMessage(), new ClsExceptions(e.toString()), request);
-		}
-		catch (Exception e){
-			throw new SIGAException("messages.general.error", e , new String[] {"modulo.gratuita"});
-
-		}
-		return exitoRefresco("messages.envios.procesandoEnvio",request);
-	}
+	
 	
 	private String editaIntercambio (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;

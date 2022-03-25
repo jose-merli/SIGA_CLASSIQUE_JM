@@ -18,7 +18,7 @@
 <%@ taglib uri="struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="c.tld" prefix="c"%>
 
-
+<c:set var="colorEJG" value="" />
 <bean:define id="path" name="org.apache.struts.action.mapping.instance"
 	property="path" scope="request" />
 <input type="hidden" id="mensajeSuccess" name="mensajeSuccess" class="inputNotSelect" value="${mensajeSuccess}"/>
@@ -55,7 +55,18 @@
 					<td><c:out	value="${intercambio.descripcion}"/></td>
 					<td align='center'><c:out value="${intercambio.anio}"/></td>
 					<td align='left'><c:out	value="${intercambio.nombrePeriodo}"/></td>
-					<td align='left'>
+					<c:choose> 
+						<c:when test="${intercambio.idEstado==60}">
+							<c:set var="colorEJG" value="color:red;" />
+						</c:when>
+						<c:when test="${intercambio.idEstado==95}">
+							<c:set var="colorEJG" value="color:blue;" />
+						</c:when>
+						<c:otherwise>
+						<c:set var="colorEJG" value="" />
+						 </c:otherwise>
+					</c:choose>
+					<td align='left' style="${colorEJG}">
 						<c:choose>
 							<c:when test="${GestionEconomicaCatalunyaForm.idInstitucion=='3001' }">
 								<c:out		value="${intercambio.descripcionEstadoConsell}"/>

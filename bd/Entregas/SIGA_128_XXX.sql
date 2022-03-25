@@ -1184,3 +1184,16 @@ INSERT INTO GEN_RECURSOS (IDRECURSO,DESCRIPCION,ERROR,IDLENGUAJE,FECHAMODIFICACI
 INSERT INTO GEN_RECURSOS (IDRECURSO,DESCRIPCION,ERROR,IDLENGUAJE,FECHAMODIFICACION,USUMODIFICACION,IDPROPIEDAD) VALUES ('gratuita.eejg.error.solicitantenoautoriza','El usuario no ha autorizado el recabar información de las administraciones. No tiene permiso para continuar.#EU',0,'3',sysdate,0,'19');
 INSERT INTO GEN_RECURSOS (IDRECURSO,DESCRIPCION,ERROR,IDLENGUAJE,FECHAMODIFICACION,USUMODIFICACION,IDPROPIEDAD) VALUES ('gratuita.eejg.error.solicitantenoautoriza','El usuario no ha autorizado el recabar información de las administraciones. No tiene permiso para continuar.#GL',0,'4',sysdate,0,'19');
 
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.boton.responderok', 'Enviar respuesta correcta', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.boton.responderok', 'Enviar resposta correcta', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.boton.responderok', 'Enviar respuesta correcta#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.boton.responderok', 'Enviar respuesta correcta#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.boton.responderko', 'Enviar respuesta incorrecta', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.boton.responderko', 'Enviar resposta incorrecta', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.boton.responderko', 'Enviar respuesta incorrecta#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.boton.responderko', 'Enviar respuesta incorrecta#GL', 0, '4', sysdate, 0, '19');
+
+
+

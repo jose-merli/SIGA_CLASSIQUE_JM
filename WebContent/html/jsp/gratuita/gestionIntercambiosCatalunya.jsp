@@ -154,25 +154,38 @@
 		
 		
 	}	
-	function enviarIntercambiosGEN(fila) {
+	function enviaIntercambiosGEN(fila) {
 		sub();
 		var idIntercambio = 'idIntercambio_' + fila ;
 		var idInstitucion = 'idInstitucion_' + fila ;
 		document.forms['FormularioGestion'].idIntercambio.value = document.getElementById(idIntercambio).value;
 		document.forms['FormularioGestion'].idInstitucion.value = document.getElementById(idInstitucion).value;
-		document.forms['FormularioGestion'].modo.value = "enviarIntercambiosGEN";
+		document.forms['FormularioGestion'].modo.value = "enviaIntercambiosGEN";
+		
+		document.forms['FormularioGestion'].submit();
+	}
+	function enviaRespuestaCICAC_ICA(fila) {
+		
+		//alertStop("Envia el respuesta al ICA ");
+		sub();
+		document.forms['FormularioGestion'].modo.value = "enviaRespuestaCICAC_ICA";
+		var idIntercambio = 'idIntercambio_' + fila ;
+		var idInstitucion = 'idInstitucion_' + fila ;
+		document.forms['FormularioGestion'].idIntercambio.value = document.getElementById(idIntercambio).value;
+		document.forms['FormularioGestion'].idInstitucion.value = document.getElementById(idInstitucion).value;
+//		document.forms['FormularioGestion'].idTipoCertificacion.value = document.getElementById("idTipoCertificacion").value;
 		
 		document.forms['FormularioGestion'].submit();
 	}
 	
 	
-	function enviarIntercambiosCICAC(fila) {
+	function enviaIntercambiosCICAC(fila) {
 		sub();
 		var idIntercambio = 'idIntercambio_' + fila ;
 		var idInstitucion = 'idInstitucion_' + fila ;
 		document.forms['FormularioGestion'].idIntercambio.value = document.getElementById(idIntercambio).value;
 		document.forms['FormularioGestion'].idInstitucion.value = document.getElementById(idInstitucion).value;
-		document.forms['FormularioGestion'].modo.value = "enviarIntercambiosCICAC";
+		document.forms['FormularioGestion'].modo.value = "enviaIntercambiosCICAC";
 		
 		document.forms['FormularioGestion'].submit();
 	}
@@ -406,7 +419,7 @@
 <bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
 	<html:form action="${path}"  method="POST" target="mainWorkArea" enctype="multipart/form-data" >
 		<html:hidden  property="modo"/>
-		<html:hidden property="idInstitucion"/>
+		<html:hidden property="idInstitucion" value="${USRBEAN.location}"/>
 			
 		<siga:ConjCampos leyenda="gratuita.gestionInscripciones.datosSolicitud.leyenda">
 			<table width="100%" border="0">
@@ -494,7 +507,7 @@
 
 <html:form action="${path}"   name="FormularioGestion"  enctype="multipart/form-data" method="POST"  type ="com.siga.gratuita.form.GestionEconomicaCatalunyaForm"  target="submitArea">
   		<html:hidden property="modo"/>
-		<html:hidden property="idInstitucion"  />
+		<html:hidden property="idInstitucion" value="${USRBEAN.location}"  />
 		<html:hidden property="idIntercambio" />
 		<html:hidden property="error"/>
 		
