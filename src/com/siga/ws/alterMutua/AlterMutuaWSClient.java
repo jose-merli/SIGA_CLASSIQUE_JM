@@ -39,14 +39,20 @@ import com.siga.ws.mutualidad.WSHttpBinding_IIntegracion_MetodosStub;
 public class AlterMutuaWSClient extends SIGAWSClientAbstract {
 	
 	private static final String URLALTERMUTUA = "WS_ALTERM_URL";
+	private static final String USRALTERMUTUA = "WS_ALTERM_USER";
+	private static final String PWDALTERMUTUA = "WS_ALTERM_PASS";
 	
 	
-	public AlterMutuaWSClient(UsrBean user) {
+	public AlterMutuaWSClient(UsrBean user) throws ClsExceptions {
 		super.setUsrBean(user);
 		super.setIdInstitucion(Integer.parseInt(user.getLocation()));
+		super.setUsrWS(getUrlWSParametro(USRALTERMUTUA));
+		super.setPwdWS(getUrlWSParametro(PWDALTERMUTUA));
+		String url = getUrlWSParametro(URLALTERMUTUA);
+		super.setUrlWS(url);
+		super.setNamespaceWS(url.substring(0, url.lastIndexOf("/")));
 	}
 	
-
 	public WSRespuesta getEstadoSolicitud (int idSolicitud, boolean certificado) throws IOException, SIGAException{
 		WSRespuesta respuesta = new WSRespuesta();
         try{
@@ -179,7 +185,18 @@ public class AlterMutuaWSClient extends SIGAWSClientAbstract {
 			
 			stub = new WSSIGASoap_BindingStub(new java.net.URL(urlWS), locator);
 
-			stub.setHeader(getUsuarioClave(getUsrBean()));
+			//preparando cabecera
+			SOAPHeaderElement oHeaderElement;
+		    oHeaderElement = new SOAPHeaderElement(super.getNamespaceWS(), "Credenciales");
+		    oHeaderElement.setPrefix("wss");
+		    
+			SOAPElement oElement;   
+		    oElement = oHeaderElement.addChildElement("Usuario");
+		    oElement.addTextNode(super.getUsrWS());//oElement.addTextNode("WS_SIGA_TEST");
+		    oElement = oHeaderElement.addChildElement("Clave");
+		    oElement.addTextNode(super.getPwdWS());//oElement.addTextNode("Hutfnw54oi62ywQDhr");
+		    
+			stub.setHeader(oHeaderElement);
 
 		} catch (Exception e) {
 			throw new ClsExceptions("error.inesperado.estadoMutualista");
@@ -187,36 +204,6 @@ public class AlterMutuaWSClient extends SIGAWSClientAbstract {
 
 		return stub;
 	}
-
-	/**
-	 * Añade el usuario y contraseña a la cabecera SOAP
-	 * Esto se deberia parametrizar
-	 * @return
-	 * @throws SOAPException
-	 * @throws ClsExceptions 
-	 */
-	private SOAPHeaderElement getUsuarioClave(UsrBean usr) throws SOAPException, ClsExceptions{
-		
-			SOAPHeaderElement oHeaderElement;
-			SOAPElement oElement;   
-			
-			GenParametrosAdm paramAdm = new GenParametrosAdm(usr);
-			String user = paramAdm.getValor(usr.getLocation(),"CEN", "WS_ALTERM_USER", "");
-			String password = paramAdm.getValor(usr.getLocation(),"CEN", "WS_ALTERM_PASS", "");
-		
-		    oHeaderElement = new SOAPHeaderElement("https://www.altermutua.com/WSSIGA", "Credenciales");
-		    oHeaderElement.setPrefix("wss");
-		
-		    oElement = oHeaderElement.addChildElement("Usuario");
-		    //oElement.addTextNode("WS_SIGA_TEST");
-		    oElement.addTextNode(user);
-		    oElement = oHeaderElement.addChildElement("Clave");
-		    //oElement.addTextNode("Hutfnw54oi62ywQDhr");
-		    oElement.addTextNode(password);
-		    
-		    return oHeaderElement;
-	}
-	
 	
 	private String getRutaPDF(byte[] pdf, String NIF, String institucion) throws IOException{
 	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);

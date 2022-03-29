@@ -55,6 +55,9 @@ public abstract class SIGAWSClientAbstract {
 	private int idInstitucion;
 	private int idRemesa;	
 	private String urlWS;
+	private String namespaceWS;
+	private String usrWS;
+	private String pwdWS;
 	private boolean generaTXT;
 	private boolean firmarXML;
 	private boolean simular;
@@ -625,5 +628,35 @@ public abstract class SIGAWSClientAbstract {
 			throw new BusinessException("Lista vacia");
 		return xmlFiles;
 		
+	}
+
+
+	public String getUsrWS() {
+		return usrWS;
+	}
+
+
+	public void setUsrWS(String usrWS) {
+		this.usrWS = usrWS;
+	}
+
+
+	public String getPwdWS() {
+		return pwdWS;
+	}
+
+
+	public void setPwdWS(String pwdWS) {
+		this.pwdWS = pwdWS;
+	}
+
+
+	public String getNamespaceWS() {
+		return namespaceWS;
+	}
+
+
+	public void setNamespaceWS(String namespaceWS) {
+		this.namespaceWS = namespaceWS;
 	}
 }
