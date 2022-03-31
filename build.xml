@@ -758,6 +758,10 @@
         <pathelement location="WebContent/WEB-INF/lib/pfjgraphics.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/plataformaFirmaCore-3.1.0.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/poi-3.17.jar"/>
+    	<pathelement location="WebContent/WEB-INF/lib/poi-ooxml-3.17.jar"/>
+    	<pathelement location="WebContent/WEB-INF/lib/poi-ooxml-schemas-3.17.jar"/>
+    	<pathelement location="WebContent/WEB-INF/lib/poi-scratchpad-3.17.jar"/>
+    	
         <pathelement location="WebContent/WEB-INF/lib/serializer.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/servlet.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/standard.jar"/>
