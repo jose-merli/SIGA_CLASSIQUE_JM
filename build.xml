@@ -154,7 +154,7 @@
         <pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/Aspose.Words.14.2.jdk16.jar"/>
         
     	<pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/poi-3.17.jar"/>
-    	<pathelement location="${SIGA92.location}/WebContent/WEB-INF/poi-ooxml-3.17.jar"/>
+    	<pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/poi-ooxml-3.17.jar"/>
     	<pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/poi-ooxml-schemas-3.17.jar"/>
        	<pathelement location="${SIGA92.location}/WebContent/WEB-INF/lib/poi-scratchpad-3.17.jar"/>
     	    	
