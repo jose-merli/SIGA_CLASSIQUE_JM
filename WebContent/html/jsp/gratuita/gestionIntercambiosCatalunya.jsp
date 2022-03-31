@@ -189,6 +189,7 @@
 		
 		document.forms['FormularioGestion'].submit();
 	}
+
 	function accionInsercion(dialogo){
 		
 		alert("<siga:Idioma key='messages.enProceso'/>");
@@ -198,11 +199,18 @@
 		if(dialogo=='dialogoInsercion'){
 			
 			
-			
 			if(document.forms['FormularioGestion'].theFile.value==''){
-				error += ""+ '\n';
+				error += "<siga:Idioma key='errors.required' arg0='facturacionjg.literal.fichero'/>"+ '\n';
 				
+			
+			}else{
+				var testear = isFicheroPermitido(document.forms['FormularioGestion'].theFile.value, ['PDF' ]);
+				if (testear!='true') {
+					error += "<siga:Idioma key='messages.general.error.file.extension' arg0='pdf'/>"+ '\n';
+					
+				}
 			}
+			
 			
 			if(document.forms['FormularioGestion'].anio.value==''){
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.mantActuacion.literal.anio'/>"+ '\n';
@@ -292,7 +300,6 @@
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.mantActuacion.literal.descripcion'/>"+ '\n';
 				
 			}
-			
 			if (error==''){
 				if(document.forms['FormularioGestion'].importeAsunto){
 						document.forms['FormularioGestion'].importeAsunto.value = convertirAFormato(document.forms['FormularioGestion'].importeAsunto.value);
