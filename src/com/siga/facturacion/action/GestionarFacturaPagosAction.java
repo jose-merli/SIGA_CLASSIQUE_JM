@@ -26,6 +26,8 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -719,11 +721,11 @@ public class GestionarFacturaPagosAction extends MasterAction {
 		
 		fuenteCabeceras.setFontHeightInPoints((short) 10);
 		fuenteCabeceras.setColor((short) HSSFFont.COLOR_NORMAL);
-		fuenteCabeceras.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+		fuenteCabeceras.setBold(true);
 
 		fuenteNormal.setFontHeightInPoints((short) 10);
 		fuenteNormal.setColor((short) HSSFFont.COLOR_NORMAL);
-		fuenteNormal.setBoldweight(HSSFFont.BOLDWEIGHT_NORMAL);
+		fuenteNormal.setBold(true);
 		
 		// GESTION DE ESTILOS
 		HSSFCellStyle estiloCeldaMoneda = libro.createCellStyle();
@@ -732,20 +734,20 @@ public class GestionarFacturaPagosAction extends MasterAction {
 		HSSFCellStyle estiloCeldaTitulo = libro.createCellStyle();
 
 		estiloCeldaMoneda.setFont(fuenteNormal);
-		estiloCeldaMoneda.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+		estiloCeldaMoneda.setAlignment(HorizontalAlignment.RIGHT);
 		estiloCeldaMoneda.setDataFormat(df.getFormat("###,###,##0.00 €"));
 
 		estiloCeldaPorcentaje.setFont(fuenteNormal);
-		estiloCeldaPorcentaje.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+		estiloCeldaPorcentaje.setAlignment(HorizontalAlignment.RIGHT);
 		estiloCeldaPorcentaje.setDataFormat(df.getFormat("##0.00 %"));
 
 		estiloCeldaTexto.setFont(fuenteNormal);
 		estiloCeldaTexto.setDataFormat(HSSFDataFormat.getBuiltinFormat("text"));			
 		
 		estiloCeldaTitulo.setFont(fuenteCabeceras);
-		estiloCeldaTitulo.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		estiloCeldaTitulo.setAlignment(HorizontalAlignment.CENTER);
 		estiloCeldaTitulo.setDataFormat(HSSFDataFormat.getBuiltinFormat("text"));
-		estiloCeldaTitulo.setFillPattern((short) HSSFCellStyle.SOLID_FOREGROUND);
+		estiloCeldaTitulo.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 		estiloCeldaTitulo.setFillForegroundColor(new HSSFColor.GREY_25_PERCENT().getIndex()); 						
 
 		

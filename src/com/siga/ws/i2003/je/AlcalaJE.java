@@ -13,11 +13,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.util.CellRangeAddress;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -230,7 +228,7 @@ public class AlcalaJE extends InformeXML implements PCAJGConstantes {
 				styleHeader.setFont(font);
 				XSSFColor color = new XSSFColor(new Color(149,175,207));
 				styleHeader.setFillForegroundColor(color);
-				styleHeader.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+				styleHeader.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				
 				Cell cell = null; 
 						
@@ -253,7 +251,7 @@ public class AlcalaJE extends InformeXML implements PCAJGConstantes {
 			XSSFCellStyle style1 = workbook.createCellStyle();
 			XSSFColor color = new XSSFColor(new Color(234,232,240));
 			style1.setFillForegroundColor(color);
-			style1.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+			style1.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 			
 			
 			for (int i = 0; i < rc.size(); i++)	{

@@ -30,7 +30,7 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -474,8 +474,8 @@ public class MantenimientoMandatosAction extends MasterAction {
 			HSSFSheet worksheet = workbook.createSheet("Mandatos");
 			HSSFCellStyle cellStyle = workbook.createCellStyle();
 			HSSFFont font = workbook.createFont();
-			cellStyle.setBorderBottom((short) 2);
-			font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+			cellStyle.setBorderBottom(BorderStyle.MEDIUM);
+			font.setBold(true);
 			cellStyle.setFont(font);
 			
 			worksheet.setColumnWidth(0, 10*256);
