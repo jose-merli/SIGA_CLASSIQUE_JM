@@ -1,24 +1,33 @@
 package com.siga.administracion.action;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Vector;
 
-import com.atos.utils.*;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
-import com.siga.beans.*;
-import com.siga.general.*;
-import com.siga.gratuita.form.ActaComisionForm;
-import com.siga.ws.CajgConfiguracion;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.*;
-
-import org.apache.commons.collections.map.HashedMap;
-import org.apache.struts.action.*;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.siga.administracion.form.*;
+import com.atos.utils.CLSAdminLog;
+import com.atos.utils.ClsExceptions;
+import com.atos.utils.UsrBean;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
+import com.siga.administracion.form.SIGAListadoUsuariosForm;
+import com.siga.beans.AdmPerfilAdm;
+import com.siga.beans.AdmRolAdm;
+import com.siga.beans.AdmUsuariosAdm;
+import com.siga.beans.AdmUsuariosBean;
+import com.siga.beans.AdmUsuariosEfectivosPerfilAdm;
+import com.siga.general.MasterAction;
+import com.siga.general.MasterForm;
+import com.siga.general.SIGAException;
 
 public class SIGAListadoUsuariosAction extends MasterAction
 {
