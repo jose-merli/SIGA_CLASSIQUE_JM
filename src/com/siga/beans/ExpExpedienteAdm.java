@@ -16,12 +16,7 @@ import java.util.Vector;
 
 import javax.transaction.UserTransaction;
 
-import org.redabogacia.sigaservices.app.AppConstants.MODULO;
-import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
-import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
-
-import sun.security.action.GetBooleanAction;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
