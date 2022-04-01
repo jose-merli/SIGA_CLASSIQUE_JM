@@ -1202,4 +1202,14 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('messages.general.error.file.extension', 'El tipo de archivo no está permitido. Los tipos de archivos permitidos son  {0}#GL', 0, '4', sysdate, 0, '19');
 
 
-
+--https://redabogacia.atlassian.net/browse/SIGA-605
+INSERT INTO GEN_RECURSOS (IDRECURSO,DESCRIPCION,ERROR,FECHAMODIFICACION,USUMODIFICACION,IDPROPIEDAD,IDLENGUAJE) 
+VALUES ('env.parametro.defaultemailfrom','Cuenta de correo electrónico desde donde se envían las comunicaciones y envíos manuales de SIGA classique. IMPORTANTE: Si se cambia, no llegarán los correos a los destinatarios. Antes de cambiarla en el colegio, es necesario comunicarlo a Soporte para dar de alta la dirección en el servidor de correo.',0,sysdate,0,'19',1);
+INSERT INTO GEN_RECURSOS (IDRECURSO,DESCRIPCION,ERROR,FECHAMODIFICACION,USUMODIFICACION,IDPROPIEDAD,IDLENGUAJE) 
+VALUES ('env.parametro.defaultemailfrom','Cuenta de correo electrónico desde donde se envían las comunicaciones y envíos manuales de SIGA classique. IMPORTANTE: Si se cambia, no llegarán los correos a los destinatarios. Antes de cambiarla en el colegio, es necesario comunicarlo a Soporte para dar de alta la dirección en el servidor de correo.#CA',0,sysdate,0,'19',2);
+INSERT INTO GEN_RECURSOS (IDRECURSO,DESCRIPCION,ERROR,FECHAMODIFICACION,USUMODIFICACION,IDPROPIEDAD,IDLENGUAJE) 
+VALUES ('env.parametro.defaultemailfrom','Cuenta de correo electrónico desde donde se envían las comunicaciones y envíos manuales de SIGA classique. IMPORTANTE: Si se cambia, no llegarán los correos a los destinatarios. Antes de cambiarla en el colegio, es necesario comunicarlo a Soporte para dar de alta la dirección en el servidor de correo.#EU',0,sysdate,0,'19',3);
+INSERT INTO GEN_RECURSOS (IDRECURSO,DESCRIPCION,ERROR,FECHAMODIFICACION,USUMODIFICACION,IDPROPIEDAD,IDLENGUAJE) 
+VALUES ('env.parametro.defaultemailfrom','Cuenta de correo electrónico desde donde se envían las comunicaciones y envíos manuales de SIGA classique. IMPORTANTE: Si se cambia, no llegarán los correos a los destinatarios. Antes de cambiarla en el colegio, es necesario comunicarlo a Soporte para dar de alta la dirección en el servidor de correo.#GL',0,sysdate,0,'19',4);
+INSERT INTO GEN_PARAMETROS (MODULO,PARAMETRO,VALOR,FECHAMODIFICACION,USUMODIFICACION,IDINSTITUCION,IDRECURSO) 
+VALUES ('ENV','DEFAULT_EMAIL_FROM','comunicaciones.siga@redabogacia.org', sysdate,0,0,'env.parametro.defaultemailfrom');

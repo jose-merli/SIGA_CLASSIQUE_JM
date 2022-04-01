@@ -3595,401 +3595,355 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 					
 	}
 
-	public String enviarCorreoElectronico(EnvEnviosBean envBean,  Vector vDestinatarios, 
-			Hashtable htErrores, boolean generarLog) 
-	throws SIGAException,ClsExceptions{
-    
-    boolean errores = false;
-    Transport tr = null;
-    
-    try{
-	    EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrbean);
-	    EnvDestinatariosAdm envDestinatariosAdm = new EnvDestinatariosAdm(this.usrbean);
+	public String enviarCorreoElectronico(EnvEnviosBean envBean, Vector vDestinatarios, Hashtable htErrores, boolean generarLog)
+			throws SIGAException, ClsExceptions {
 
-        // COMPROBACIÓN
-        /////////////////////////////////////
-        if (!envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))&&!envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_DOCUMENTACIONLETRADO))){
-            throw new ClsExceptions("Tipo de envio electrónico incorrecto");
-        }
-        
-        // OBTENCIÓN DE SERVIDOR DE CORREO
-        /////////////////////////////////////
-	    Context ctx = new InitialContext();
-	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-	    String smtpSesion = rp.returnProperty("mail.smtp.sesion");
-	    if(smtpSesion==null || smtpSesion.equals(""))smtpSesion = "CorreoSIGA";
-	    Session sesion = (Session)javax.rmi.PortableRemoteObject.narrow(ctx.lookup(smtpSesion), Session.class);
-	    ctx.close();
+		boolean errores = false;
+		Transport tr = null;
 
-	    // RGG autenticar SMTP
-	    sesion.getProperties().put("mail.smtp.auth", "true");
-	    sesion.getProperties().put("mail.smtp.port", rp.returnProperty("mail.smtp.port"));
-	    
-	   
+		try {
+			EnvEnviosAdm envAdm = new EnvEnviosAdm(this.usrbean);
+			EnvDestinatariosAdm envDestinatariosAdm = new EnvDestinatariosAdm(this.usrbean);
 
+			// COMPROBACION
+			// ///////////////////////////////////
+			if (!envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))
+					&& !envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_DOCUMENTACIONLETRADO))) {
+				throw new ClsExceptions("Tipo de envio electrónico incorrecto");
+			}
 
-	    /*
-        Session sesion2 = (Session)javax.rmi.PortableRemoteObject.narrow(ctx.lookup("CorreoSIGA"), Session.class);
-	    Authenticator authenticator = new Authenticator();
-	    Properties  props = sesion2.getProperties();
-	    props.setProperty("mail.smtp.submitter", authenticator.getPasswordAuthentication().getUserName());
-	    props.setProperty("mail.smtp.auth", "true");
-	    Session sesion = Session.getInstance(props,authenticator);
-	    */
-	    
+			// OBTENCIÓN DE SERVIDOR DE CORREO
+			// ///////////////////////////////////
+			Context ctx = new InitialContext();
+			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			String smtpSesion = rp.returnProperty("mail.smtp.sesion");
+			if (smtpSesion == null || smtpSesion.equals(""))
+				smtpSesion = "CorreoSIGA";
+			Session sesion = (Session) javax.rmi.PortableRemoteObject.narrow(ctx.lookup(smtpSesion), Session.class);
+			ctx.close();
 
+			// RGG autenticar SMTP
+			sesion.getProperties().put("mail.smtp.auth", "true");
+			sesion.getProperties().put("mail.smtp.port", rp.returnProperty("mail.smtp.port"));
 
-	    // OBTENCION DE REMITENTE 
-        /////////////////////////////////////
-        EnvRemitentesAdm remAdm = new EnvRemitentesAdm(this.usrbean);
-	    Hashtable htPk = new Hashtable();
-	    htPk.put(EnvEnviosBean.C_IDINSTITUCION,envBean.getIdInstitucion());
-	    htPk.put(EnvEnviosBean.C_IDENVIO,envBean.getIdEnvio());
-        Vector vRem = remAdm.select(htPk);
-        String sFrom = "";
-        EnvRemitentesBean remBean = null;
-        StringBuffer txtDocumentos = new StringBuffer("");
-        if (vRem.size()>0){
-        	// obtengo la primera de la lista
-        	remBean = (EnvRemitentesBean) vRem.firstElement();
-	        sFrom = remBean.getCorreoElectronico();
-        }else{
-        	// obtengo la de la institucion
-            Row dirPref = getDireccionPreferenteInstitucion(envBean.getIdInstitucion(),EnvTipoEnviosAdm.K_CORREO_ELECTRONICO);
-            sFrom = dirPref.getString(EnvRemitentesBean.C_CORREOELECTRONICO);
-        }
+			// OBTENCION DE REMITENTE
+			// ///////////////////////////////////
+			EnvRemitentesAdm remAdm = new EnvRemitentesAdm(this.usrbean);
+			Hashtable htPk = new Hashtable();
+			htPk.put(EnvEnviosBean.C_IDINSTITUCION, envBean.getIdInstitucion());
+			htPk.put(EnvEnviosBean.C_IDENVIO, envBean.getIdEnvio());
+			Vector vRem = remAdm.select(htPk);
+			String sFrom = "";
+			EnvRemitentesBean remBean = null;
+			StringBuffer txtDocumentos = new StringBuffer("");
+			if (vRem.size() > 0) {
+				// obtengo la primera de la lista
+				remBean = (EnvRemitentesBean) vRem.firstElement();
+				sFrom = remBean.getCorreoElectronico();
+			} else {
+				// obtengo la de la institucion
+				Row dirPref = getDireccionPreferenteInstitucion(envBean.getIdInstitucion(), EnvTipoEnviosAdm.K_CORREO_ELECTRONICO);
+				sFrom = dirPref.getString(EnvRemitentesBean.C_CORREOELECTRONICO);
+			}
 
-        
-	    // PLANTILLA DE GENERACION
-        /////////////////////////////////////
-        // Obtenemos el archivo con la plantilla
-        
-        
-                
-        // BUCLE DE DESTINATARIOS
-        /////////////////////////////////////
-	    
-	    
-	    
-	    
-        if (vDestinatarios!=null) {
-        	
-    	    
-        	//Obtenemos el tipo de archivo de la plantilla y el archivo de la plantilla
-        	String tipoArchivoPlantilla = null;
-        	File fPlantilla = null;
-        	
-        	if(envBean.getIdPlantilla()!=null){
-        		EnvPlantillaGeneracionAdm admPlantilla = new EnvPlantillaGeneracionAdm(this.usrbean);
-                fPlantilla = admPlantilla.obtenerPlantilla(""+envBean.getIdInstitucion(), 
-                        										""+envBean.getIdTipoEnvios(), 
-                        										""+envBean.getIdPlantillaEnvios(), 
-                        										""+envBean.getIdPlantilla());
-                
-                
-        		
-	        	Hashtable htPkPlantillaGeneracion = new Hashtable();
-	            htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDINSTITUCION,envBean.getIdInstitucion());
-	            htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDTIPOENVIOS,envBean.getIdTipoEnvios());
-	            htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDPLANTILLAENVIOS,envBean.getIdPlantillaEnvios());
-	            htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDPLANTILLA,envBean.getIdPlantilla());
-	        	
-	            
-	            Vector vPlant = admPlantilla.selectByPK(htPkPlantillaGeneracion);	    
-	            EnvPlantillaGeneracionBean plantBean = (EnvPlantillaGeneracionBean)vPlant.firstElement();
-	    	    tipoArchivoPlantilla = plantBean.getTipoArchivo();
-	    	    
-	    	    
+			// PLANTILLA DE GENERACION
+			// ///////////////////////////////////
+			// Obtenemos el archivo con la plantilla
 
-	    	    
-	    	    
-        	}
-        	EnvImagenPlantillaBean beanImagenes = new EnvImagenPlantillaBean();
-        	beanImagenes.setIdInstitucion(envBean.getIdInstitucion());
-        	beanImagenes.setIdTipoEnvios(envBean.getIdTipoEnvios());
-        	beanImagenes.setIdPlantillaEnvios(envBean.getIdPlantillaEnvios());
-        	EnvImagenPlantillaAdm admImagenPlantilla = new EnvImagenPlantillaAdm(this.usrbean);
-    	    List<ImagenPlantillaForm> lImagenes = admImagenPlantilla.getImagenes(beanImagenes);
-        	
-        	
-        	//ACUMULAMOS POBLACIONES, PAISES Y PROVINCIAS PARA EVITAR HACER QUERYS A LA BBDD
-        	Hashtable htPoblaciones = new Hashtable();
-    	    Hashtable htProvincia = new Hashtable();
-    	    Hashtable htPaises = new Hashtable();
-    	    String descripcionFrom = sFrom;
-    	    if(remBean!=null && remBean.getDescripcion()!=null && !remBean.getDescripcion().trim().equals(""))
-    	    	descripcionFrom = remBean.getDescripcion().trim();
-    	    else if(remBean.getIdPersona()!=null){
-    	    	CenPersonaAdm personaAdm = new CenPersonaAdm(usrbean);
-    	    	descripcionFrom =  personaAdm.obtenerNombreApellidosJSP(remBean.getIdPersona().toString());
-    	    	remBean.setDescripcion(descripcionFrom);
-    	    }
-    	    EnvCamposEnviosAdm admCampos = new EnvCamposEnviosAdm(this.usrbean);            
-            Vector vCampos = admCampos.obtenerCamposEnvios(envBean.getIdInstitucion().toString(), envBean.getIdEnvio().toString(), "");
-            
-    	    boolean isErrorEnvioIndividual = false;
-	        for (int l=0;l<vDestinatarios.size();l++) {
-	        	isErrorEnvioIndividual = false;
-	        	if(tr==null){
-	        		tr = sesion.getTransport("smtp");
-	        		tr.connect(rp.returnProperty("mail.smtp.host"),rp.returnProperty("mail.smtp.user"), rp.returnProperty("mail.smtp.pwd"));
-	        	}else if (!tr.isConnected()){
-		    	    tr.connect(rp.returnProperty("mail.smtp.host"),rp.returnProperty("mail.smtp.user"), rp.returnProperty("mail.smtp.pwd"));
-	        	}
-	        	
-	        	
-	        	txtDocumentos = new StringBuffer();
-	        	EnvDestinatariosBean destBean = (EnvDestinatariosBean) vDestinatarios.elementAt(l);
-//	        	if(destBean.getCorreoElectronico()==null || destBean.getCorreoElectronico().trim().equalsIgnoreCase(""))
-//	        		System.out.println("Bingo");
-	            actualizaPaisDestinatario(destBean, htPaises);
-	            actualizaPoblacionDestinatario(destBean, htPoblaciones);
-	            actualizaProvincia(destBean, htProvincia);
-                
-                String pathArchivoGenerado = null;
-		        String sDirPdf = null;
-		        
-	            // ENVIO PARA CADA DESTINATARIO
-		        /////////////////////////////////////
-		        Hashtable htDatos = null;
-		        try{
-		        
-		        	// GENERACION DEL PDF DEL ENVIO SI PROCEDE
-		        	/////////////////////////////////////
-		        	
-		        	
-			        if (envBean.getIdPlantilla()!=null && fPlantilla!=null){
-				        //Si no tiene plantilla no enviamos documento, 
-				        //pero continuamos para mandar el correo
-			        	
-			        	
-			            EnvEnviosAdm admEnvio = new EnvEnviosAdm(this.usrbean);
-			            htDatos = admEnvio.getDatosEnvio(destBean, null);
-			            
-						htDatos = admEnvio.darFormatoCampos(destBean.getIdInstitucion(), destBean.getIdEnvio(), this.usrbean.getLanguage(), htDatos,vCampos);
-			        	pathArchivoGenerado = generarDocumentoEnvioPDFDestinatario(envBean, destBean, fPlantilla,tipoArchivoPlantilla,htDatos);
-			        	
+			// BUCLE DE DESTINATARIOS
+			// ///////////////////////////////////
 
-			        	//Ruta donde guardamos los pdf
-				        sDirPdf = getPathEnvio(envBean)+File.separator + "documentosdest";
-				    }
-	        
-		            String sTo = destBean.getCorreoElectronico();
-		            if(sTo==null ||sTo.trim().equals(""))
-		            	throw new SMTPAddressFailedException(new InternetAddress(sFrom),null,0,UtilidadesString.getMensajeIdioma(usrbean,"messages.envios.errorSinEmail"));
-		            
-		            //Se crea un nuevo Mensaje.
-		    	    MimeMessage mensaje = new MimeMessage(sesion);
-		    	    
-		    	    //Se especifica la dirección de origen.
-//		    	    mensaje.setFrom(new InternetAddress(sFrom));
-		    	    //ATTENCION INCIDENCIA. DESCOMENTAR ESTO
-		    	    mensaje.setFrom(new InternetAddress(sFrom,descripcionFrom));
-			    	 // Acuse de recibo
-		    	    if(envBean.getAcuseRecibo()!=null && envBean.getAcuseRecibo().equals(ClsConstants.DB_TRUE))
-		    	    	mensaje.addHeader("Disposition-Notification-To",sFrom);
-		    	    InternetAddress toInternetAddress = new InternetAddress(sTo);
-		    	    //Se especifica la dirección de destino.
-		    	    mensaje.addRecipient(MimeMessage.RecipientType.TO,toInternetAddress );
-		    	    
-		    	    
-		    	    String idPersona = String.valueOf(destBean.getIdPersona());
-		    	    
-		            // MENSAJE DE CORREO ELECTRONICO
-			        /////////////////////////////////////
-		    	    //Obtenemos asunto y cuerpo del correo
-		    	    String consulta = envBean.getConsulta().equals("")?null:envBean.getConsulta();
-		    	    //Si NO TIENE PLANTILLA NO SE HAN OBTENIDO LOS DATOS DE LA CONSULTA, LUEGO LOS OBTENEMOS
-		    	    if(htDatos==null){
-		    	    	
-			            EnvEnviosAdm admEnvio = new EnvEnviosAdm(this.usrbean);
-			            htDatos = admEnvio.getDatosEnvio(destBean, null);
-						htDatos = admEnvio.darFormatoCampos(destBean.getIdInstitucion(), destBean.getIdEnvio(), this.usrbean.getLanguage(), htDatos,vCampos);
-		    	    	
-		    	    }
-		    	    
-		    	    if(lImagenes!= null && lImagenes.size()>0)
-		    	    	htDatos.put("imagenesPlantilla", lImagenes);
-			        Hashtable htCorreo = getCamposCorreoElectronico(envBean, destBean,Long.valueOf(idPersona),consulta,htDatos);
-			        String sAsunto = (htCorreo.get("asunto")==null)?"":(String)htCorreo.get("asunto");
-			        
-			        
-			        //Se especifica el texto del correo.
+			if (vDestinatarios != null) {
 
-			        //Se especifica el asunto del correo.
-		    	    mensaje.setSubject(sAsunto,"ISO-8859-1");
-		    	    mensaje.setHeader("Content-Type","text/html; charset=\"ISO-8859-1\"");
-		    	    
+				// Obtenemos el tipo de archivo de la plantilla y el archivo de la plantilla
+				String tipoArchivoPlantilla = null;
+				File fPlantilla = null;
 
-		   
-		    	    
-		    	    
-		    	    // Create your new message part
-		    	    // Se especifica que el correo es MultiPart: texto + fichero.
-		    	    // MimeMultipart multipart = new MimeMultipart("related");
-//		    	    MimeMultipart multipart = new MimeMultipart();
-		    	    
-		    	    String sCuerpo = (htCorreo.get("cuerpo")==null)?"":(String)htCorreo.get("cuerpo");
-		    	    
+				if (envBean.getIdPlantilla() != null) {
+					EnvPlantillaGeneracionAdm admPlantilla = new EnvPlantillaGeneracionAdm(this.usrbean);
+					fPlantilla = admPlantilla.obtenerPlantilla("" + envBean.getIdInstitucion(), "" + envBean.getIdTipoEnvios(), ""
+							+ envBean.getIdPlantillaEnvios(), "" + envBean.getIdPlantilla());
 
-		    	    MimeMultipart mixedMultipart = new MimeMultipart("mixed");
-		    	    MimeBodyPart mixedBodyPart = new MimeBodyPart();
-		    	    
-		    	    MimeMultipart relatedMultipart = new MimeMultipart("related");
-		    	    MimeBodyPart relatedBodyPart = new MimeBodyPart();
-		    	    
-		    	    
-//		    	    MimeMultipart alternativeMultipart = new MimeMultipart("alternative");
-//		    	    MimeBodyPart alternativeBodyPart = new MimeBodyPart();
-//		    	    alternativeBodyPart.setContent(relatedMultipart);
+					Hashtable htPkPlantillaGeneracion = new Hashtable();
+					htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDINSTITUCION, envBean.getIdInstitucion());
+					htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDTIPOENVIOS, envBean.getIdTipoEnvios());
+					htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDPLANTILLAENVIOS, envBean.getIdPlantillaEnvios());
+					htPkPlantillaGeneracion.put(EnvPlantillaGeneracionBean.C_IDPLANTILLA, envBean.getIdPlantilla());
 
-		    	    
-		    	    //alternative message
-		    	    addContentToMultipart(relatedMultipart,sCuerpo);
+					Vector vPlant = admPlantilla.selectByPK(htPkPlantillaGeneracion);
+					EnvPlantillaGeneracionBean plantBean = (EnvPlantillaGeneracionBean) vPlant.firstElement();
+					tipoArchivoPlantilla = plantBean.getTipoArchivo();
 
-		    	    //Hierarchy
-		    	    mixedBodyPart.setContent(relatedMultipart);
-		    	    
-		    	    mixedMultipart.addBodyPart(mixedBodyPart);
-//		    	    mixedMultipart.addBodyPart(relatedBodyPart);
-//		    	    mixedMultipart.addBodyPart(alternativeBodyPart);
-//		    	    multipartRoot.a
-		    	    
+				}
+				EnvImagenPlantillaBean beanImagenes = new EnvImagenPlantillaBean();
+				beanImagenes.setIdInstitucion(envBean.getIdInstitucion());
+				beanImagenes.setIdTipoEnvios(envBean.getIdTipoEnvios());
+				beanImagenes.setIdPlantillaEnvios(envBean.getIdPlantillaEnvios());
+				EnvImagenPlantillaAdm admImagenPlantilla = new EnvImagenPlantillaAdm(this.usrbean);
+				List<ImagenPlantillaForm> lImagenes = admImagenPlantilla.getImagenes(beanImagenes);
 
-		    	    //add a part for the image
-		    	    
-		    	    if (lImagenes!=null && lImagenes.size()>0){
-			    	    
-			    	    for(ImagenPlantillaForm imagenPlantilla:lImagenes){
-			    	    	
-			    	    	EnvImagenPlantillaBean imagenPlantillaBean = imagenPlantilla.getImagenPlantillaBean();
-			    	    	if(imagenPlantillaBean.isEmbebed()){
-			    	    		if(sCuerpo.indexOf(imagenPlantillaBean.getImagenSrcEmbebida("/"))!=-1){
-					    	    	addCIDToMultipart(relatedMultipart,imagenPlantillaBean.getPathImagen(null,File.separator),imagenPlantillaBean.getNombre());
-				    	    	}
-			    	    	}
-			    	    }
-			    	    
-		    	    }
-		    	    //attach a pdf
-		    	  //Documentos adjuntos
-		    	    String sAttachment,sAttach;
-		    	   
-		    	    
-		            // ADJUNTAR EL PDF DEL ENVIO
-			        /////////////////////////////////////
-		    	    /* archivo pdf: [idPersona].pdf */
-		    	    if (pathArchivoGenerado!=null){
-			        	String [] pathGenerado = pathArchivoGenerado.split("\\\\");  
-			        	txtDocumentos.append(pathGenerado[pathGenerado.length-1]);
-		    	        txtDocumentos.append(",");
-		    	    	
-		    	    	sAttachment = pathArchivoGenerado;
-			    	    sAttach = pathArchivoGenerado.substring(pathArchivoGenerado.lastIndexOf(File.separator)+1);
-			    	    addAttachToMultipart(mixedMultipart, pathArchivoGenerado, sAttach);
-		    	    }
-		    	    
-		            // DOCUMENTOS ADJUNTOS
-			        /////////////////////////////////////
-		    	    /* documentos adjuntos de envío*/
-		    	    //Solo adjuntamos docuemntos al envio NO es de tipo Docuemntacion letrado 
-		    	    if (envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))){
-			    	    EnvDocumentosAdm docAdm = new EnvDocumentosAdm(this.usrbean);
-			    	    Vector vDocs = docAdm.select(htPk);
-			    	    for (int d=0;d<vDocs.size();d++){
-			    	        EnvDocumentosBean docBean = (EnvDocumentosBean)vDocs.elementAt(d);
-			    	        String idDoc = String.valueOf(docBean.getIdDocumento());
-			    	        File fDoc = docAdm.getFile(envBean,idDoc);
-			    	        sAttachment = fDoc.getPath();
-			    	        sAttach = docBean.getPathDocumento();
-			    	        addAttachToMultipart(mixedMultipart, fDoc.getPath(), docBean.getPathDocumento());
-			    	        txtDocumentos.append(docBean.getDescripcion());
-			    	        txtDocumentos.append(",");
-			    	      
-			    	    }
-		    	    }
-		    	    
-		    	  
-		    	    
-		    	    
-		    	    // Associate multi-part with message
-		    	    mensaje.setContent(mixedMultipart);
-		    	   
-		    	    tr.sendMessage(mensaje, mensaje.getAllRecipients());
-		    	    
-		    	    EnvEstatEnvioAdm admEstat = new EnvEstatEnvioAdm(this.usrbean);
-		    	    
-		    	    
-		    	    admEstat.insertarApunteExtra(envBean.getIdInstitucion(),envBean.getIdEnvio(),envBean.getIdTipoEnvios(),new Long(idPersona),sTo);		    	    
-		    	    ////////////////////////////////////////////////////////////////////////////////
-		    	    // RGG 08/06/2009 ESTADISTICA
-		    	    
-	            }catch (SMTPAddressFailedException e){
-	            	isErrorEnvioIndividual = true;
-	                errores = true;
-	                insertarMensajeLogHT(destBean,htErrores, e);
-	            }catch (SendFailedException e){
-	            	isErrorEnvioIndividual = true;
-	                errores = true;
-	                insertarMensajeLogHT(destBean,htErrores, e);
-	            }catch (javax.mail.MessagingException e){
-	            	isErrorEnvioIndividual = true;
-	                errores = true;
-	                insertarMensajeLogHT(destBean,htErrores, e.getNextException());
-	            } catch (Exception e){
-	            	isErrorEnvioIndividual = true;
-	                errores = true;
-	                insertarMensajeLogHT(destBean,htErrores, e);
-	            }finally{
-	            	
-	    			Hashtable htPkDest = new Hashtable();
-	    			htPkDest.put(EnvDestinatariosBean.C_IDINSTITUCION,destBean.getIdInstitucion().toString());
-	    			htPkDest.put(EnvDestinatariosBean.C_IDENVIO,destBean.getIdEnvio().toString());
-	    			htPkDest.put(EnvDestinatariosBean.C_IDPERSONA,destBean.getIdPersona().toString());
-	    			if(isErrorEnvioIndividual)
-	    				htPkDest.put(EnvDestinatariosBean.C_IDESTADO, EnvEnviosAdm.ESTADO_PROCESADO_ERRORES);
-	    			else
-	    				htPkDest.put(EnvDestinatariosBean.C_IDESTADO, EnvEnviosAdm.ESTADO_PROCESADO);
-	    			String[] claves = {EnvDestinatariosBean.C_IDINSTITUCION, 
-	              		   EnvDestinatariosBean.C_IDENVIO , EnvDestinatariosBean.C_IDPERSONA         		   };
-	    			 String[] campos = { EnvDestinatariosBean.C_IDESTADO};
-	    			 
-	    			envDestinatariosAdm.updateDirect(htPkDest, claves,campos);
-	            	
-	            }
+				// ACUMULAMOS POBLACIONES, PAISES Y PROVINCIAS PARA EVITAR HACER QUERYS A LA BBDD
+				Hashtable htPoblaciones = new Hashtable();
+				Hashtable htProvincia = new Hashtable();
+				Hashtable htPaises = new Hashtable();
+				String descripcionFrom = sFrom;
+				if (remBean != null && remBean.getDescripcion() != null && !remBean.getDescripcion().trim().equals(""))
+					descripcionFrom = remBean.getDescripcion().trim();
+				else if (remBean.getIdPersona() != null) {
+					CenPersonaAdm personaAdm = new CenPersonaAdm(usrbean);
+					descripcionFrom = personaAdm.obtenerNombreApellidosJSP(remBean.getIdPersona().toString());
+					remBean.setDescripcion(descripcionFrom);
+				}
+				EnvCamposEnviosAdm admCampos = new EnvCamposEnviosAdm(this.usrbean);
+				Vector vCampos = admCampos.obtenerCamposEnvios(envBean.getIdInstitucion().toString(), envBean.getIdEnvio().toString(), "");
 
-	        } // FOR
-        } // IF
+				boolean isErrorEnvioIndividual = false;
+				for (int l = 0; l < vDestinatarios.size(); l++) {
+					isErrorEnvioIndividual = false;
+					if (tr == null) {
+						tr = sesion.getTransport("smtp");
+						tr.connect(rp.returnProperty("mail.smtp.host"), rp.returnProperty("mail.smtp.user"),
+								rp.returnProperty("mail.smtp.pwd"));
+					} else if (!tr.isConnected()) {
+						tr.connect(rp.returnProperty("mail.smtp.host"), rp.returnProperty("mail.smtp.user"),
+								rp.returnProperty("mail.smtp.pwd"));
+					}
 
+					txtDocumentos = new StringBuffer();
+					EnvDestinatariosBean destBean = (EnvDestinatariosBean) vDestinatarios.elementAt(l);
+					// if(destBean.getCorreoElectronico()==null || destBean.getCorreoElectronico().trim().equalsIgnoreCase(""))
+					// System.out.println("Bingo");
+					actualizaPaisDestinatario(destBean, htPaises);
+					actualizaPoblacionDestinatario(destBean, htPoblaciones);
+					actualizaProvincia(destBean, htProvincia);
 
-        // GENERAR EL LOG DEL ENVIO
-        /////////////////////////////////////
-        if (generarLog) {
-        	generarLogEnvioHTTuneado(vDestinatarios,remBean,txtDocumentos.toString(), htErrores, envBean);
-        }
-        
-        // HAN OCURRIDO ERRORES DE DESTINATARIO
-        /////////////////////////////////////
-        if (errores){
-        	return EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES;
-        } else {
-            return EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADO;
-        }
+					String pathArchivoGenerado = null;
+					String sDirPdf = null;
 
-    } catch (SIGAException e) { 
-		throw e;
-    } catch(Exception e){
-        throw new ClsExceptions(e,"Error enviando correo electrónico");
-	} finally {
-        // cerramos el transport
-	    try {
-	    	tr.close();
-	    } catch (Exception e) {}
+					// ENVIO PARA CADA DESTINATARIO
+					// ///////////////////////////////////
+					Hashtable htDatos = null;
+					try {
 
+						// GENERACION DEL PDF DEL ENVIO SI PROCEDE
+						// ///////////////////////////////////
+
+						if (envBean.getIdPlantilla() != null && fPlantilla != null) {
+							// Si no tiene plantilla no enviamos documento,
+							// pero continuamos para mandar el correo
+
+							EnvEnviosAdm admEnvio = new EnvEnviosAdm(this.usrbean);
+							htDatos = admEnvio.getDatosEnvio(destBean, null);
+
+							htDatos = admEnvio.darFormatoCampos(destBean.getIdInstitucion(), destBean.getIdEnvio(),
+									this.usrbean.getLanguage(), htDatos, vCampos);
+							pathArchivoGenerado = generarDocumentoEnvioPDFDestinatario(envBean, destBean, fPlantilla, tipoArchivoPlantilla,
+									htDatos);
+
+							// Ruta donde guardamos los pdf
+							sDirPdf = getPathEnvio(envBean) + File.separator + "documentosdest";
+						}
+
+						String sTo = destBean.getCorreoElectronico();
+						if (sTo == null || sTo.trim().equals(""))
+							throw new SMTPAddressFailedException(new InternetAddress(sFrom), null, 0, UtilidadesString.getMensajeIdioma(
+									usrbean, "messages.envios.errorSinEmail"));
+
+						// Se crea un nuevo Mensaje.
+						MimeMessage mensaje = new MimeMessage(sesion);
+
+						// Se especifica la direccion de origen.
+						GenParametrosAdm paramAdm = new GenParametrosAdm(this.usrbean);
+						String default_from = paramAdm.getValor(remBean.getIdInstitucion().toString(), "ENV", "DEFAULT_EMAIL_FROM", "");
+						mensaje.setFrom(new InternetAddress(default_from, descripcionFrom));
+						javax.mail.Address[] replyToAddresses = { new InternetAddress(sFrom, descripcionFrom) };
+						mensaje.setReplyTo(replyToAddresses);
+
+						// Acuse de recibo
+						if (envBean.getAcuseRecibo() != null && envBean.getAcuseRecibo().equals(ClsConstants.DB_TRUE))
+							mensaje.addHeader("Disposition-Notification-To", sFrom);
+						InternetAddress toInternetAddress = new InternetAddress(sTo);
+						// Se especifica la dirección de destino.
+						mensaje.addRecipient(MimeMessage.RecipientType.TO, toInternetAddress);
+
+						String idPersona = String.valueOf(destBean.getIdPersona());
+
+						// MENSAJE DE CORREO ELECTRONICO
+						// ///////////////////////////////////
+						// Obtenemos asunto y cuerpo del correo
+						String consulta = envBean.getConsulta().equals("") ? null : envBean.getConsulta();
+						// Si NO TIENE PLANTILLA NO SE HAN OBTENIDO LOS DATOS DE LA CONSULTA, LUEGO LOS OBTENEMOS
+						if (htDatos == null) {
+
+							EnvEnviosAdm admEnvio = new EnvEnviosAdm(this.usrbean);
+							htDatos = admEnvio.getDatosEnvio(destBean, null);
+							htDatos = admEnvio.darFormatoCampos(destBean.getIdInstitucion(), destBean.getIdEnvio(),
+									this.usrbean.getLanguage(), htDatos, vCampos);
+
+						}
+
+						if (lImagenes != null && lImagenes.size() > 0)
+							htDatos.put("imagenesPlantilla", lImagenes);
+						Hashtable htCorreo = getCamposCorreoElectronico(envBean, destBean, Long.valueOf(idPersona), consulta, htDatos);
+						String sAsunto = (htCorreo.get("asunto") == null) ? "" : (String) htCorreo.get("asunto");
+
+						// Se especifica el texto del correo.
+
+						// Se especifica el asunto del correo.
+						mensaje.setSubject(sAsunto, "ISO-8859-1");
+						mensaje.setHeader("Content-Type", "text/html; charset=\"ISO-8859-1\"");
+
+						// Create your new message part
+						// Se especifica que el correo es MultiPart: texto + fichero.
+						// MimeMultipart multipart = new MimeMultipart("related");
+						// MimeMultipart multipart = new MimeMultipart();
+
+						String sCuerpo = (htCorreo.get("cuerpo") == null) ? "" : (String) htCorreo.get("cuerpo");
+
+						MimeMultipart mixedMultipart = new MimeMultipart("mixed");
+						MimeBodyPart mixedBodyPart = new MimeBodyPart();
+
+						MimeMultipart relatedMultipart = new MimeMultipart("related");
+						MimeBodyPart relatedBodyPart = new MimeBodyPart();
+
+						// MimeMultipart alternativeMultipart = new MimeMultipart("alternative");
+						// MimeBodyPart alternativeBodyPart = new MimeBodyPart();
+						// alternativeBodyPart.setContent(relatedMultipart);
+
+						// alternative message
+						addContentToMultipart(relatedMultipart, sCuerpo);
+
+						// Hierarchy
+						mixedBodyPart.setContent(relatedMultipart);
+
+						mixedMultipart.addBodyPart(mixedBodyPart);
+						// mixedMultipart.addBodyPart(relatedBodyPart);
+						// mixedMultipart.addBodyPart(alternativeBodyPart);
+						// multipartRoot.a
+
+						// add a part for the image
+
+						if (lImagenes != null && lImagenes.size() > 0) {
+
+							for (ImagenPlantillaForm imagenPlantilla : lImagenes) {
+
+								EnvImagenPlantillaBean imagenPlantillaBean = imagenPlantilla.getImagenPlantillaBean();
+								if (imagenPlantillaBean.isEmbebed()) {
+									if (sCuerpo.indexOf(imagenPlantillaBean.getImagenSrcEmbebida("/")) != -1) {
+										addCIDToMultipart(relatedMultipart, imagenPlantillaBean.getPathImagen(null, File.separator),
+												imagenPlantillaBean.getNombre());
+									}
+								}
+							}
+
+						}
+						// attach a pdf
+						// Documentos adjuntos
+						String sAttachment, sAttach;
+
+						// ADJUNTAR EL PDF DEL ENVIO
+						// ///////////////////////////////////
+						/* archivo pdf: [idPersona].pdf */
+						if (pathArchivoGenerado != null) {
+							String[] pathGenerado = pathArchivoGenerado.split("\\\\");
+							txtDocumentos.append(pathGenerado[pathGenerado.length - 1]);
+							txtDocumentos.append(",");
+
+							sAttachment = pathArchivoGenerado;
+							sAttach = pathArchivoGenerado.substring(pathArchivoGenerado.lastIndexOf(File.separator) + 1);
+							addAttachToMultipart(mixedMultipart, pathArchivoGenerado, sAttach);
+						}
+
+						// DOCUMENTOS ADJUNTOS
+						// ///////////////////////////////////
+						/* documentos adjuntos de envío */
+						// Solo adjuntamos docuemntos al envio NO es de tipo Docuemntacion letrado
+						if (envBean.getIdTipoEnvios().equals(Integer.valueOf(EnvTipoEnviosAdm.K_CORREO_ELECTRONICO))) {
+							EnvDocumentosAdm docAdm = new EnvDocumentosAdm(this.usrbean);
+							Vector vDocs = docAdm.select(htPk);
+							for (int d = 0; d < vDocs.size(); d++) {
+								EnvDocumentosBean docBean = (EnvDocumentosBean) vDocs.elementAt(d);
+								String idDoc = String.valueOf(docBean.getIdDocumento());
+								File fDoc = docAdm.getFile(envBean, idDoc);
+								sAttachment = fDoc.getPath();
+								sAttach = docBean.getPathDocumento();
+								addAttachToMultipart(mixedMultipart, fDoc.getPath(), docBean.getPathDocumento());
+								txtDocumentos.append(docBean.getDescripcion());
+								txtDocumentos.append(",");
+
+							}
+						}
+
+						// Associate multi-part with message
+						mensaje.setContent(mixedMultipart);
+
+						// enviando!!!
+						tr.sendMessage(mensaje, mensaje.getAllRecipients());
+
+						// apuntando el estado
+						EnvEstatEnvioAdm admEstat = new EnvEstatEnvioAdm(this.usrbean);
+						admEstat.insertarApunteExtra(envBean.getIdInstitucion(), envBean.getIdEnvio(), envBean.getIdTipoEnvios(), new Long(idPersona), sTo);
+
+					} catch (SMTPAddressFailedException e) {
+						isErrorEnvioIndividual = true;
+						errores = true;
+						insertarMensajeLogHT(destBean, htErrores, e);
+					} catch (SendFailedException e) {
+						isErrorEnvioIndividual = true;
+						errores = true;
+						insertarMensajeLogHT(destBean, htErrores, e);
+					} catch (javax.mail.MessagingException e) {
+						isErrorEnvioIndividual = true;
+						errores = true;
+						insertarMensajeLogHT(destBean, htErrores, e.getNextException());
+					} catch (Exception e) {
+						isErrorEnvioIndividual = true;
+						errores = true;
+						insertarMensajeLogHT(destBean, htErrores, e);
+					} finally {
+
+						Hashtable htPkDest = new Hashtable();
+						htPkDest.put(EnvDestinatariosBean.C_IDINSTITUCION, destBean.getIdInstitucion().toString());
+						htPkDest.put(EnvDestinatariosBean.C_IDENVIO, destBean.getIdEnvio().toString());
+						htPkDest.put(EnvDestinatariosBean.C_IDPERSONA, destBean.getIdPersona().toString());
+						if (isErrorEnvioIndividual)
+							htPkDest.put(EnvDestinatariosBean.C_IDESTADO, EnvEnviosAdm.ESTADO_PROCESADO_ERRORES);
+						else
+							htPkDest.put(EnvDestinatariosBean.C_IDESTADO, EnvEnviosAdm.ESTADO_PROCESADO);
+						String[] claves = { EnvDestinatariosBean.C_IDINSTITUCION, EnvDestinatariosBean.C_IDENVIO,
+								EnvDestinatariosBean.C_IDPERSONA };
+						String[] campos = { EnvDestinatariosBean.C_IDESTADO };
+
+						envDestinatariosAdm.updateDirect(htPkDest, claves, campos);
+					}
+				} // FOR
+			} // IF
+
+			// GENERAR EL LOG DEL ENVIO
+			if (generarLog) {
+				generarLogEnvioHTTuneado(vDestinatarios, remBean, txtDocumentos.toString(), htErrores, envBean);
+			}
+
+			// HAN OCURRIDO ERRORES DE DESTINATARIO
+			if (errores) {
+				return EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADOCONERRORES;
+			} else {
+				return EnvEstadoEnvioAdm.K_ESTADOENVIO_PROCESADO;
+			}
+
+		} catch (SIGAException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ClsExceptions(e, "Error enviando correo electrónico");
+		} finally {
+			// cerramos el transport
+			try {
+				tr.close();
+			} catch (Exception e) {
+			}
+		}
 	}
-    
 	
-}
 	public void addContentToMultipart(MimeMultipart multipart,String htmlText) throws Exception
 	{
 	// first part (the html)
