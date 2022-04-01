@@ -716,7 +716,8 @@
         <pathelement location="WebContent/WEB-INF/lib/colt.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/com.azalea.ufl.barcode.1.0.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/commons-beanutils-1.7.0.jar"/>
-    	<pathelement location="WebContent/WEB-INF/lib/commons-collections4-4.1.jarr"/>
+    	
+    	<pathelement location="WebContent/WEB-INF/lib/commons-collections4-4.1.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/commons-configuration-1.2.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/commons-digester.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/commons-discovery-0.2.jar"/>
