@@ -3755,9 +3755,14 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 						// Se especifica la direccion de origen.
 						GenParametrosAdm paramAdm = new GenParametrosAdm(this.usrbean);
 						String default_from = paramAdm.getValor(remBean.getIdInstitucion().toString(), "ENV", "DEFAULT_EMAIL_FROM", "");
-						mensaje.setFrom(new InternetAddress(default_from, descripcionFrom));
-						javax.mail.Address[] replyToAddresses = { new InternetAddress(sFrom, descripcionFrom) };
-						mensaje.setReplyTo(replyToAddresses);
+						if (SIGAServicesHelper.isValidEmailAddress(default_from)) {
+							// Si esta indicada una direccion de origen unica, entonces se sustituye el FROM aunque se mantiene en el REPLY-TO
+							mensaje.setFrom(new InternetAddress(default_from, descripcionFrom));
+							javax.mail.Address[] replyToAddresses = { new InternetAddress(sFrom, descripcionFrom) };
+							mensaje.setReplyTo(replyToAddresses);
+						} else {
+							mensaje.setFrom(new InternetAddress(sFrom,descripcionFrom));
+						}
 
 						// Acuse de recibo
 						if (envBean.getAcuseRecibo() != null && envBean.getAcuseRecibo().equals(ClsConstants.DB_TRUE))

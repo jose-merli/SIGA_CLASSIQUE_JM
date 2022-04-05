@@ -1213,3 +1213,7 @@ INSERT INTO GEN_RECURSOS (IDRECURSO,DESCRIPCION,ERROR,FECHAMODIFICACION,USUMODIF
 VALUES ('env.parametro.defaultemailfrom','Cuenta de correo electrónico desde donde se envían las comunicaciones y envíos manuales de SIGA classique. IMPORTANTE: Si se cambia, no llegarán los correos a los destinatarios. Antes de cambiarla en el colegio, es necesario comunicarlo a Soporte para dar de alta la dirección en el servidor de correo.#GL',0,sysdate,0,'19',4);
 INSERT INTO GEN_PARAMETROS (MODULO,PARAMETRO,VALOR,FECHAMODIFICACION,USUMODIFICACION,IDINSTITUCION,IDRECURSO) 
 VALUES ('ENV','DEFAULT_EMAIL_FROM','comunicaciones.siga@redabogacia.org', sysdate,0,0,'env.parametro.defaultemailfrom');
+
+--https://redabogacia.atlassian.net/browse/SIGA-605
+delete from GEN_PARAMETROS where PARAMETRO = 'DEFAULT_EMAIL_FROM' and IDINSTITUCION <> 0;
+update GEN_PARAMETROS set valor = '-' where PARAMETRO = 'DEFAULT_EMAIL_FROM' and IDINSTITUCION = 0;
