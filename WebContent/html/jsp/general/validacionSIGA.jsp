@@ -577,6 +577,7 @@ function TestFileType( fileName, fileTypes ) {
 }
 function isFicheroPermitido( fileName, fileTypes ) {
 	fileName = fileName.toUpperCase();
+
 	if (!fileName){ 
 		return false;
 	}
@@ -585,6 +586,20 @@ function isFicheroPermitido( fileName, fileTypes ) {
 	var variable = fileTypes.join(".").indexOf(fileType) == -1;
 	return variable;
 }
+function isExtensionPermitida( fileName, fileTypes ) {
+	fileName = fileName.toUpperCase();
+
+
+	if (!fileName){ 
+		return false;
+	}
+	dots = fileName.split(".")
+	fileType = dots[dots.length-1];
+	var variable = fileTypes.join(".").indexOf(fileType) > -1;
+
+	return variable;
+}
+
 function getDigitoControl(valor){	
 	  valores = new Array(1, 2, 4, 8, 5, 10, 9, 7, 3, 6);
 	  control = 0;

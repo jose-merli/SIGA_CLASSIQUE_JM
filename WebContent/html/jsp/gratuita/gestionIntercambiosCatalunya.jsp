@@ -204,10 +204,9 @@
 				
 			
 			}else{
-				var testear = isFicheroPermitido(document.forms['FormularioGestion'].theFile.value, ['PDF' ]);
-				if (testear!='true') {
+				var testear = isExtensionPermitida(document.forms['FormularioGestion'].theFile.value, ['PDF' ]);
+				if (testear==false) {
 					error += "<siga:Idioma key='messages.general.error.file.extension' arg0='pdf'/>"+ '\n';
-					
 				}
 			}
 			
