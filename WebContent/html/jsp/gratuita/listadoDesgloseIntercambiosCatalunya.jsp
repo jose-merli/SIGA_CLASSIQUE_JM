@@ -82,9 +82,6 @@
 		sub();
 		document.forms['FormularioGestion'].idInstitucion.value = document.getElementById('idInstitucionIntercambio').value;
 		document.forms['FormularioGestion'].idIntercambio.value = document.getElementById('idIntercambio').value;
-		alertStop(document.forms['FormularioGestion'].idInstitucion.value);
-		alertStop(document.forms['FormularioGestion'].idIntercambio.value);
-		
 		document.forms['FormularioGestion'].modo.value = "enviaIntercambiosGEN";
 		document.forms['FormularioGestion'].submit();
 	}
