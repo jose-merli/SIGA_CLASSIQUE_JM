@@ -208,6 +208,42 @@ public class AdmConsultaInformeAdm extends MasterBeanAdministrador {
 		return datos;
 	} // selectCamposOrdenados()
 	
+	public Vector<Hashtable<String, Object>> getCamposOrdenados(String select) throws ClsExceptions, SIGAException
+	{
+		// Variables
+		RowsContainer rc; // manejador de BD
+		Row fila; // cada una de las filas obtenidas de BD
+		String[] cabeceras;
+		Hashtable<String, String> registro; // cada uno de las celdas de la tabla obtenida por la sentencia
+		Vector<Hashtable<String, Object>> linea;
+		// Salida
+		Vector<Hashtable<String, Object>> datos = new Vector<Hashtable<String, Object>>();
+
+		try {
+			rc = new RowsContainer();
+			if (rc.query(select)) {
+				linea = new Vector<Hashtable<String,Object>>();
+				for (int i = 0; i < rc.size(); i++) {
+					fila = (Row) rc.get(i);
+					datos.add(fila.getRow());
+
+//					cabeceras = rc.getFieldNames();
+//					linea = new Vector<Hashtable<String, String>>();
+//					for (int j = 0; j < cabeceras.length; j++) {
+//						registro = new Hashtable<String, String>();
+//						registro.put(cabeceras[j], (String) fila.getValue(cabeceras[j]));
+//						if (registro != null)
+//							linea.add(registro);
+//					}
+//					datos.add(linea);
+				}
+			}
+		} catch (Exception e) {
+			throw new ClsExceptions(e, e.getMessage() + "Consulta SQL:" + select);
+		}
+		return datos;
+	}
+	
 	public void deleteConsultaInforme(AdmConsultaInformeBean consultaInforme) throws ClsExceptions {
 		StringBuffer sql = new StringBuffer();
 		try {
