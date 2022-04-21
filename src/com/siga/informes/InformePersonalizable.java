@@ -4,18 +4,23 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+import org.redabogacia.sigaservices.app.helper.ExcelHelper;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
 import com.aspose.words.Document;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.FileHelper;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesBDAdm;
@@ -95,7 +100,12 @@ public class InformePersonalizable extends MasterReport
 						informeXML.setTipoFicheroCAM(this.tipoFicheroCAM);
 						listaFicheros.addAll(informeXML.execute(informe.getDirectorio(), informe.getNombreSalida(), idinstitucion, idFacturacion, usr));
 						setEliminarFichero(true);
-					} else {
+					}else if (obj instanceof AragonEnviaJustificacionActuaciones) {
+						AragonEnviaJustificacionActuaciones informeXML = (AragonEnviaJustificacionActuaciones)obj;
+						List<File> files = getFicherosInformeXMLAragon(informeXML, informe, filtrosInforme, usr);
+						listaFicheros.addAll(files);
+						setEliminarFichero(true);
+					} else  {
 						throw new IllegalArgumentException("La clase java debe extender de " + InformeXML.class.getName());
 					}
 					
@@ -107,10 +117,14 @@ public class InformePersonalizable extends MasterReport
 			return ficheroSalida;
 			// haciendo zip con todos los ficheros devueltos
 			
-		} catch (SIGAException e) {
+		}
+		catch (BusinessException e) {
+			throw new SIGAException(e.getMessage());
+		}
+		catch (SIGAException e) {
 			throw e;
 		}catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 			throw new SIGAException(e, new String [] {"Error al generar el informe"});
 		}
 	}
@@ -275,6 +289,66 @@ public class InformePersonalizable extends MasterReport
 		return listaFicheros;
 		
 	} // generarInformeDOC()
+	
+	public List<File> getFicherosInformeXMLAragon(AragonEnviaJustificacionActuaciones informeXML,AdmInformeBean informe,  ArrayList<HashMap<String, String>> filtrosInforme, UsrBean usr) throws BusinessException	{
+		AdmConsultaInformeAdm consultaAdm = new AdmConsultaInformeAdm(usr);
+		Hashtable<String, String> consultaHash = new Hashtable<String, String>();
+		consultaHash = new Hashtable<String, String>();
+		consultaHash.put(AdmConsultaInformeBean.C_IDINSTITUCION, informe.getIdInstitucion().toString());
+		consultaHash.put(AdmConsultaInformeBean.C_IDPLANTILLA, informe.getIdPlantilla());
+		List <File> returnList = new ArrayList<File>();
+		
+		try {
+			Vector<AdmConsultaInformeConsultaBean> consultas = consultaAdm.selectConsultas(consultaHash);
+			if(consultas!=null && consultas.size()>0) {
+				// creando la ruta de salida
+				Vector datos = null;
+				for (int i = 0; i < consultas.size(); i++) {
+					AdmConsultaInformeConsultaBean consulta = consultas.get(i);
+					// sustituyendo los filtros en la consulta por los datos del informe
+					String sentencia = consultaAdm.sustituirFiltrosConsulta(consulta, filtrosInforme); 
+					if ( sentencia == null)		// falla si la consulta no tiene los filtros obligatorios 
+						throw new SIGAException("informes.personalizable.error.configuracion.filtros");
+
+					datos = consultaAdm.getCamposOrdenados(sentencia);
+					if(datos!=null && datos.size()>0) {
+						
+						Hashtable primerRegistro = (Hashtable) datos.get(0); 
+						List<String> columnasExcel = null;
+						if(primerRegistro.get("TIPOJUSTIFICACION").equals("PG")) {
+							columnasExcel = Arrays.asList(AragonEnviaJustificacionActuaciones.camposExcelGuardias) ;
+						}else if(primerRegistro.get("TIPOJUSTIFICACION").equals("JA")) {
+							Arrays.asList(AragonEnviaJustificacionActuaciones.camposExcelOficio) ;
+						}
+						String año = primerRegistro.get("ANO").toString();
+						String codPeriodo = primerRegistro.get("CODPERIODO").toString();
+						String numPeriodo = primerRegistro.get("NUMPERIODO").toString();
+						StringBuilder nombreFichero = new StringBuilder();
+						nombreFichero.append(informe.getNombreSalida());
+						nombreFichero.append("_");
+						nombreFichero.append(numPeriodo);
+						nombreFichero.append(codPeriodo);
+						nombreFichero.append(año);
+						
+						File file = informeXML.getFile(nombreFichero.toString(), datos);
+						ClsLogging.writeFileLog("Fichero xml generado "+nombreFichero);
+						File fileXlsx =  ExcelHelper.createExcelFile(columnasExcel, datos ,informe.getNombreSalida()+"_"+consulta.getIdInstitucion(),AppConstants.TIPO_FICHERO.xlsx.toString());
+						ClsLogging.writeFileLog("Fichero xlsx generado "+nombreFichero);
+						returnList.add(fileXlsx);
+						returnList.add(file);
+					}
+
+				}
+			}
+		} catch (SIGAException e) {
+			throw new BusinessException(e.getMessage());
+		}catch (Exception e) {
+			ClsLogging.writeFileLogError("Error: generarInformeXML"+e.getMessage(),e,3);
+			throw new BusinessException("Se haproducido un error al genrar el informe xml");
+		}
+
+		return returnList;
+	}
 	
 	public static ArrayList<File> generarInformeXLS(AdmInformeBean informe,
 								  ArrayList<HashMap<String, String>> filtrosInforme,
