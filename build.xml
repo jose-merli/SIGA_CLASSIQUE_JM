@@ -699,6 +699,8 @@
         <pathelement location="WebContent/WEB-INF/lib/PCAJG-xmlBeans-Santiago-JE.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/PCAJG-xmlBeans_PaisVasco_EJGs.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/PCAJG_xmlBeans_Aragon.jar"/>
+    	<pathelement location="WebContent/WEB-INF/lib/PCAJG_Justif_Aragon.jar"/>
+    	
         <pathelement location="WebContent/WEB-INF/lib/PFD.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/QueryBuilder.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/SIGA-EEJG-1.0.jar"/>
@@ -778,6 +780,9 @@
         <pathelement location="WebContent/WEB-INF/lib/xmlbeans-2.5.0.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/xmlsec-1.2.97.jar"/>
         <pathelement location="WebContent/WEB-INF/lib/xstream-1.0.2.jar"/>
+    	
+    	<pathelement location="WebContent/WEB-INF/lib/commons-codec-1.9.jar"/>
+    	
     	
     	
         <pathelement location="WebContent/WEB-INF/properties"/>
