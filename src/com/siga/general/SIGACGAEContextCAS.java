@@ -1,7 +1,5 @@
 package com.siga.general;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
@@ -10,9 +8,10 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.xml.bind.DatatypeConverter;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.struts.action.ActionServlet;
+import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.MODULO;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
@@ -27,10 +26,6 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsLogging;
 import com.atos.utils.UsrBean;
-import org.json.JSONObject;
-
-import sun.misc.BASE64Decoder;
-
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.administracion.SIGAConstants;
@@ -177,7 +172,7 @@ public class SIGACGAEContextCAS {
 	
 	private static String decode(String encodedString) throws Exception {
 
-		byte[] decodeResult = new BASE64Decoder().decodeBuffer(encodedString);
+		byte[] decodeResult = Base64.decodeBase64(encodedString);
 		String foo= new String(decodeResult);
 		
 	    return foo;
