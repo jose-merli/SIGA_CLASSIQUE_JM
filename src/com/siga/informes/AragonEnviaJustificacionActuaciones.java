@@ -45,7 +45,7 @@ public class AragonEnviaJustificacionActuaciones {
 	public static final String[] camposExcelOficio ={"ANO","CODPERIODO","NUMPERIODO","FECHADESDE","FECHAHASTA","COLEGIO_COD","COLEGIO_NOMBRE","TIPOJUSTIFICACION","VERSIONJUSTIFICACION","FECHAJUSTIFICACION","NEPAG_AÑO","NEPAG_NUMERO","NOMBRE_ABOGADO","APELLIDOS_ABOGADO","Nº_COLEGIADO","NOMBRE_SOLICITANTE","APELLIDOS_SOLICITANTE","DOC_IDENTIFICATIVO","NIG","Nº_AUTOS_DILIG","ASUNTO","INSTANCIA_PROCESAL","COD_MOD","CUANTIA","DESI_ANIO","DESI_NUMERO","NUM_ACTU","RESOL_FAVORABLE","RESOL_FECHA","RESOL_CODIGO","RESOL_NOMBRE","RESOL_MOTIVO"};
 	public static final String[] camposExcelGuardias ={"ANO","CODPERIODO","NUMPERIODO","FECHADESDE","FECHAHASTA","COLEGIO_COD","COLEGIO_NOMBRE","TIPOJUSTIFICACION","VERSIONJUSTIFICACION","FECHAJUSTIFICACION","GUARDIA_FECHA","GUARDIA_PJ_NOMBRE","GUARDIA_COLEGIADO_NOMBRE","GUARDIA_COLEGIADO_APELLIDOS","GUARDIA_COLEGIADO_NUMERO","GUARDIA_CODTIPO","GUARDIA_IMPORTE_CODMODULO","GUARDIA_IMPORTE_CUANTIA","TURNO","GUARDIA","IDGUARDIA"};
 	public File getFile(String nombreSalida, Vector datosInforme) throws BusinessException{
-		SimpleDateFormat dateFormat =  new SimpleDateFormat("dd/mm/yyyy");
+		SimpleDateFormat dateFormat =  new SimpleDateFormat("dd/MM/yyyy");
 		JustificacionActuacionesDocument justificacionActuacionesDocument =JustificacionActuacionesDocument.Factory.newInstance();
 		JustificacionActuaciones justificacionActuaciones = null;
 		TipoEconomicoType tipoEconomico = null;
