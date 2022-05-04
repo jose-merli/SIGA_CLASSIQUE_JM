@@ -5599,6 +5599,8 @@ public Hashtable getBindWhereEJG(Hashtable miHash, DefinirEJGForm miForm) throws
 							isAlgunInformeNoGenerado = true;
 						}
 					}
+				} else {
+					throw new ClsExceptions ("Error al obtener la informacion en getDatosInformeEjg: no encontramos el tipo destinatario");
 				}
 			}//fin del for.
 			
