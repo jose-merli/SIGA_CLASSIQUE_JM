@@ -6,6 +6,7 @@ package com.siga.gratuita.action;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,8 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+import org.redabogacia.sigaservices.app.services.scs.EjgService;
+import org.redabogacia.sigaservices.app.vo.scs.DocumentacionEjgVo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -83,6 +86,8 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 					mapDestino = this.solicitarEejg(mapping, miForm, request,response);
 				}else if(miForm.getModo().equalsIgnoreCase("descargaEejg")){
 					mapDestino = this.descargaEejg(mapping, miForm, request,response);
+				}else if(miForm.getModo().equalsIgnoreCase("enviaDocumentoCAJG")){
+					mapDestino = this.enviaDocumentoCAJG(mapping, miForm, request,response);
 				}else if(miForm.getModo().equalsIgnoreCase("descargaEejgMasivo")){
 					mapDestino = this.descargaEejgMasivo(mapping, miForm, request,response);
 				}else if(miForm.getModo().equalsIgnoreCase("descargaMultiplesEejg")){
@@ -729,6 +734,45 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
 		}				
 		return salida;
+	}
+	protected String enviaDocumentoCAJG(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		DefinirUnidadFamiliarEJGForm miForm = (DefinirUnidadFamiliarEJGForm) formulario;
+		
+		try {
+			Vector vCampos = miForm.getDatosTablaOcultos(0);
+			String idInstitucionEJG = (String) vCampos.get(0);
+			String idTipoEJG = (String) vCampos.get(1);
+			String anio = (String) vCampos.get(2);
+			String numero = (String) vCampos.get(3);
+			String nif = (String) vCampos.get(4);
+
+			
+			
+			
+			List<HashMap<String, String>> listCola = new ArrayList<HashMap<String, String>>();
+			HashMap map = new HashMap<String, String>();
+			map.put(AppConstants.PARAM_ECOMCOLA_IDINSTITUCION,	idInstitucionEJG);
+			map.put(AppConstants.PARAM_ECOMCOLA_ANIO, anio);
+			map.put(AppConstants.PARAM_ECOMCOLA_IDTIPOEJG, idTipoEJG);
+			map.put(AppConstants.PARAM_ECOMCOLA_NUMERO, numero);
+			map.put(AppConstants.PARAM_ECOMCOLA_NIFNIE,	nif);
+			map.put(AppConstants.PARAM_ECOMCOLA_ULTIMODOCUMENTO,	AppConstants.DB_TRUE);
+
+			listCola.add(map);
+			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);			
+			
+			
+			if(miForm.getIdInstitucion().equalsIgnoreCase("2055")) {
+				ejgService.encolaEnvioDocumentacion(listCola, new Short(idInstitucionEJG), AppConstants.OPERACION.ASIGNA_ENVIO_DOCUMENTO);
+			}else if(miForm.getIdInstitucion().equalsIgnoreCase("2032")) {
+				ejgService.encolaEnvioDocumentacion(listCola, new Short(idInstitucionEJG), AppConstants.OPERACION.GV_ENVIO_DOCUMENTO);
+			}else
+				ejgService.encolaEnvioDocumentacion(listCola, new Short(idInstitucionEJG), AppConstants.OPERACION.PERICLES_ENVIA_COMUNICACION);
+		} catch (Exception e) {
+			throwExcp("messages.general.error",e,null);
+		}
+		return exitoRefresco("messages.inserted.success",request); 
+		
 	}
 	protected String simulaWebService(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		InformacionEconomicaEjg esto = new InformacionEconomicaEjg();

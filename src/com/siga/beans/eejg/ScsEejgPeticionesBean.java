@@ -308,8 +308,16 @@ public class ScsEejgPeticionesBean extends MasterBean{
 		} else if (estado == EEJG_ESTADO.FINALIZADO.getId()) {
 			if(isPersonaUnidadFamiliar()) {
 				if(csv!=null) {
-					elementosFila = new FilaExtElement[4];
-					elementosFila[3] = new FilaExtElement("download", "descargarEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
+					if(getIdXml()!=null && isPersonaUnidadFamiliar() && getEstado()==EEJG_ESTADO.FINALIZADO.getId()) {
+						elementosFila = new FilaExtElement[5];
+						elementosFila[3] = new FilaExtElement("download", "descargarEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
+						elementosFila[4] = new FilaExtElement("enviar", "enviaDocumentoCAJG", 	SIGAConstants.ACCESS_READ);
+					}else {
+						elementosFila = new FilaExtElement[4];
+						elementosFila[3] = new FilaExtElement("download", "descargarEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);	
+					}
+						
+					
 				}
 			}else {
 				elementosFila = new FilaExtElement[4];

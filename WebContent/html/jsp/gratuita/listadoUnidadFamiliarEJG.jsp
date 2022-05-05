@@ -760,6 +760,26 @@
 		document.DefinirUnidadFamiliarEJGForm.submit();
 	
    	}
+	function enviaDocumentoCAJG(fila) {
+		selectRowPeticiones(fila);
+		
+		var idInstitucionEJG = document.getElementById( 'peticion' + fila + '_2');
+		var idTipoEJG = document.getElementById( 'peticion' + fila + '_3');
+		var anio = document.getElementById( 'peticion' + fila + '_4');
+		var numero = document.getElementById( 'peticion' + fila + '_5');
+		var nif = document.getElementById( 'peticion' + fila + '_10');
+		datos = idInstitucionEJG.value + 	','
+	   			+idTipoEJG.value + 	','
+	   			+anio.value + 	','
+	   			+numero.value + ','
+				+nif.value + ''
+				'#';
+		
+	   	document.EEJG.tablaDatosDinamicosD.value = datos;
+	   	document.EEJG.modo.value = "enviaDocumentoCAJG";
+		document.EEJG.submit();	
+	}
+	
 	
 	function consultar(fila, id) {
 		if (typeof id == 'undefined')
