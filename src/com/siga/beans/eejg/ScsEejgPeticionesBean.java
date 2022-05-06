@@ -55,6 +55,7 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	
 	private boolean personaUnidadFamiliar;
 	private boolean  activadoIntercambioEconomico=false;
+	private boolean  enviarComision = false;
 	
 	
 	/* Nombre de Tabla*/
@@ -308,7 +309,7 @@ public class ScsEejgPeticionesBean extends MasterBean{
 		} else if (estado == EEJG_ESTADO.FINALIZADO.getId()) {
 			if(isPersonaUnidadFamiliar()) {
 				if(csv!=null) {
-					if(getIdXml()!=null && isPersonaUnidadFamiliar() && getEstado()==EEJG_ESTADO.FINALIZADO.getId()) {
+					if(getIdXml()!=null && isPersonaUnidadFamiliar() && getEstado()==EEJG_ESTADO.FINALIZADO.getId() && isEnviarComision()) {
 						elementosFila = new FilaExtElement[5];
 						elementosFila[3] = new FilaExtElement("download", "descargarEejg","general.boton.descargarEejg",	SIGAConstants.ACCESS_READ);
 						elementosFila[4] = new FilaExtElement("enviar", "enviaDocumentoCAJG", 	SIGAConstants.ACCESS_READ);
@@ -365,6 +366,12 @@ public class ScsEejgPeticionesBean extends MasterBean{
 	}
 	public void setCsv(String csv) {
 		this.csv = csv;
+	}
+	public boolean isEnviarComision() {
+		return enviarComision;
+	}
+	public void setEnviarComision(boolean enviarComision) {
+		this.enviarComision = enviarComision;
 	}
 	
 }

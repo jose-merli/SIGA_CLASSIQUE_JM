@@ -4,13 +4,18 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.exceptions.SIGAServiceException;
 import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
+import org.redabogacia.sigaservices.app.services.scs.EjgService;
 import org.redabogacia.sigaservices.app.vo.DocuShareObjectVO;
 import org.redabogacia.sigaservices.app.vo.DocuShareObjectVO.DocuShareTipo;
 
@@ -24,9 +29,46 @@ import com.siga.censo.form.DatosRegTelForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.form.DefinirEJGForm;
+import com.siga.gratuita.form.DefinirUnidadFamiliarEJGForm;
+
+import es.satec.businessManager.BusinessManager;
 
 public abstract class DocumentacionRegTelAction extends MasterAction {
 
+	protected ActionForward executeInternal(ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String mapDestino = "exception";
+		MasterForm miForm = null;
+		try {
+
+			do {
+				miForm = (MasterForm) formulario;
+				if (miForm != null) {
+					String accion = miForm.getModo();
+					String modo = request.getParameter("modo");
+					if (modo != null)
+						accion = modo;
+					if (accion != null && accion.equalsIgnoreCase("enviaDocumentoCAJG")) {
+						mapDestino = enviaDocumentoCAJG(mapping, miForm, request, response);
+					}else {
+						return super.executeInternal(mapping, formulario, request, response);
+					}
+
+				}
+			} while (false);
+			// Redireccionamos el flujo a la JSP correspondiente
+			if (mapDestino == null) {
+				throw new ClsExceptions("El ActionMapping no puede ser nulo");
+			}
+			return mapping.findForward(mapDestino);
+		} catch (SIGAException es) {
+
+			throw es;
+		} catch (Exception e) {
+			throw new SIGAException("messages.general.error", e, new String[] { "modulo.gratuita" });
+		}
+	}
+	
 	
 	protected abstract String createCollection(MasterForm formulario, HttpServletRequest request) throws Exception;
 	
@@ -36,8 +78,12 @@ public abstract class DocumentacionRegTelAction extends MasterAction {
 	protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {	
 		
 		try {
-			DatosRegTelForm miForm = (DatosRegTelForm) formulario;
+			DefinirEJGForm miForm = (DefinirEJGForm) formulario;
+			
+			boolean isColegioConfiguradoEnvioCAJG = miForm.isColegioConfiguradoEnvioCAJG();
 			HashMap databackup = new HashMap();
+			request.setAttribute("isColegioConfiguradoEnvioCAJG",isColegioConfiguradoEnvioCAJG);
+
 
 			if (request.getSession().getAttribute("DATAPAGINADOR") != null) {
 				databackup = (HashMap) request.getSession().getAttribute("DATAPAGINADOR");
@@ -148,7 +194,9 @@ public abstract class DocumentacionRegTelAction extends MasterAction {
 					request.getSession().setAttribute("HORABUSQUEDA", UtilidadesBDAdm.getFechaCompletaBD("es"));
 				}
 
+			
 			}
+			
 			
 		} catch (SIGAServiceException e) {
 			throw new SIGAException(e.getMessage(), e);
@@ -158,7 +206,42 @@ public abstract class DocumentacionRegTelAction extends MasterAction {
 		}
 		return "listadoCollection";		
 	}
-	
+	protected String enviaDocumentoCAJG(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		DefinirEJGForm miForm = (DefinirEJGForm) formulario;
+		
+		try {
+			Vector vCampos = miForm.getDatosTablaOcultos(0);
+			String idInstitucion = miForm.getIdInstitucion();
+			String idTipoEJG = miForm.getIdTipoEJG();
+			String anio = miForm.getAnio();
+			String numero = miForm.getNumero();
+			
+			
+			List<HashMap<String, String>> listCola = new ArrayList<HashMap<String, String>>();
+			HashMap map = new HashMap<String, String>();
+			map.put(AppConstants.PARAM_ECOMCOLA_IDINSTITUCION,	idInstitucion);
+			map.put(AppConstants.PARAM_ECOMCOLA_ANIO, anio);
+			map.put(AppConstants.PARAM_ECOMCOLA_IDTIPOEJG, idTipoEJG);
+			map.put(AppConstants.PARAM_ECOMCOLA_NUMERO, numero);
+			map.put(AppConstants.PARAM_ECOMCOLA_IDDOCUSHARE,	miForm.getIdentificadorDs());
+			map.put(AppConstants.PARAM_ECOMCOLA_ULTIMODOCUMENTO,	AppConstants.DB_TRUE);
+
+			listCola.add(map);
+			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);			
+			
+			
+			if(idInstitucion.equalsIgnoreCase("2055")) {
+				ejgService.encolaEnvioDocumentacion(listCola, new Short(idInstitucion), AppConstants.OPERACION.ASIGNA_ENVIO_DOCUMENTO);
+			}else if(idInstitucion.equalsIgnoreCase("2032")) {
+				ejgService.encolaEnvioDocumentacion(listCola, new Short(idInstitucion), AppConstants.OPERACION.GV_ENVIO_DOCUMENTO);
+			}else
+				ejgService.encolaEnvioDocumentacion(listCola, new Short(idInstitucion), AppConstants.OPERACION.PERICLES_ENVIA_COMUNICACION);
+		} catch (Exception e) {
+			throwExcp("messages.general.error",e,null);
+		}
+		return exitoRefresco("messages.inserted.success",request); 
+		
+	}
 
 	/**
 	 * 

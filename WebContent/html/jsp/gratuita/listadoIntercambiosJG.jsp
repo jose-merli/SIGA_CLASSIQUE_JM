@@ -44,7 +44,8 @@
 		<html:hidden styleId = "idTipoEJG" property="idTipoEJG" />
 		<html:hidden styleId = "anio" property="anio" />
 		<html:hidden styleId = "numero" property="numero" />
-		<html:hidden styleId = "origen" property="origen" value ="/JGR_EJG"/>
+		<html:hidden styleId = "origen" property="origen" value ="${path}"/>
+		<html:hidden styleId="jsonVolver" property = "jsonVolver"  />
 	</html:form>
 
 	<html:form  action="/JGR_EJG"  method="POST" target="mainWorkArea" style="display:none">
@@ -53,6 +54,7 @@
 		<html:hidden styleId = "anio" property="anio" value="${DefinirEJGForm.anio}"/>
 		<html:hidden styleId = "idTipoEJG" property="idTipoEJG" value="${DefinirEJGForm.idTipoEJG}"/>
 		<html:hidden styleId = "numero" property="numero" value="${DefinirEJGForm.numero}"/>
+
 		<html:hidden styleId = "origen" property="origen" value ="/JGR_EJG"/>
 		<html:hidden styleId="jsonVolver" property = "jsonVolver"  />
 	</html:form>
@@ -220,14 +222,7 @@
 			document.forms['EntradaEnviosForm'].submit();
 		}
 	}
-	function accionVolver()
-	{
-		document.forms[1].modo.value="buscar";
-		document.forms[1].target="mainWorkArea"; 
-		document.forms[1].submit(); 
 	
-
-	}	
 	
 	
 </script>

@@ -1,7 +1,5 @@
 package com.siga.beans;
 
-import org.redabogacia.sigaservices.app.autogen.model.ScsDocumentacionejg;
-
 public class ScsDocumentacionEJGExtendedBean {
 	private String idPresentador;
 	private String descPresentador;

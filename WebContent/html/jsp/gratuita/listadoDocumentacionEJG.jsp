@@ -146,7 +146,7 @@
 						<%=documentacionEjgVo.getComisionAJG()==null||documentacionEjgVo.getComisionAJG()==0?"ICA":"CAJG"%>
 					</td>
 					<td align="center">
-						<%= documentacionEjgVo.getNumIntercambiosOk()==null?(documentacionEjgVo.getIdFichero()!=null?"Sí":"No"):(documentacionEjgVo.getIdFichero()!=null?( documentacionEjgVo.getNumIntercambiosOk()==0?"Pte. envio CAJG":"Enviado CAJG"):"No")%>
+						<%= documentacionEjgVo.getIdFichero()!=null?"Sí":"No"%>
 					</td>
 				</siga:FilaConIconos>		
 		<% recordNumber++;		   

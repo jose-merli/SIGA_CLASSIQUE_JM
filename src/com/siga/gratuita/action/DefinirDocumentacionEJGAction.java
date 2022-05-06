@@ -449,13 +449,10 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			
 			SIGADocumentacionEjgVo documentacionEjgVo = this.getForm2Vo(definirDocumentacionEJGForm);
 			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
-			boolean isConfiguradoEnvioPericles = ejgService.isColegioZonaComun(documentacionEjgVo.getIdInstitucion().shortValue()) && ejgService.isColegioConfiguradoEnvioPericles(documentacionEjgVo.getIdInstitucion().shortValue()) || 
-					documentacionEjgVo.getIdInstitucion().shortValue()==2055 || documentacionEjgVo.getIdInstitucion().shortValue()==2032
-					;
-			
+			boolean isColegioConfiguradoEnvioCAJG = ejgService.isColegioConfiguradoEnvioCAJG(documentacionEjgVo.getIdInstitucion().shortValue()); 
 			
 						
-			if(isConfiguradoEnvioPericles) {
+			if(isColegioConfiguradoEnvioCAJG) {
 				Hashtable miHash = new Hashtable();
 				miHash.put("ANIO", definirDocumentacionEJGForm.getAnio());
 				miHash.put("NUMERO", definirDocumentacionEJGForm.getNumero());
@@ -476,7 +473,7 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			}else {
 				request.setAttribute("NUMEJG", definirDocumentacionEJGForm.getNumEjg());
 			}
-			List<SIGADocumentacionEjgVo> documentacionEjgVoList = documentacionEjgService.getListadoDocumentacionEJG(documentacionEjgVo,usrBean.getLanguage(),isConfiguradoEnvioPericles,usr);
+			List<SIGADocumentacionEjgVo> documentacionEjgVoList = documentacionEjgService.getListadoDocumentacionEJG(documentacionEjgVo,usrBean.getLanguage(),isColegioConfiguradoEnvioCAJG,usr);
 			request.setAttribute("resultado", documentacionEjgVoList);
 
 			String informeUnico = ClsConstants.DB_TRUE;

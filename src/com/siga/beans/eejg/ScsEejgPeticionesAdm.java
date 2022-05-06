@@ -9,6 +9,7 @@ import javax.transaction.SystemException;
 
 import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+import org.redabogacia.sigaservices.app.services.scs.EjgService;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -23,6 +24,8 @@ import com.siga.beans.MasterBeanAdministrador;
 import com.siga.beans.ScsEJGBean;
 import com.siga.beans.ScsPersonaJGBean;
 import com.siga.beans.ScsUnidadFamiliarEJGBean;
+
+import es.satec.businessManager.BusinessManager;
 /**
  * 
  * @author jorgeta
@@ -300,20 +303,31 @@ public class ScsEejgPeticionesAdm extends MasterBeanAdministrador {
 		List<ScsEejgPeticionesBean> lPeticionesEejg = null;
 		try {
 			RowsContainer rc = new RowsContainer(); 
-
+			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+			boolean isColegioConfiguradoEnvioCAJG  = false;
 			if (rc.findBind(sql.toString(),htCodigos)) {
 				lPeticionesEejg = new ArrayList<ScsEejgPeticionesBean>();
 				ScsEejgPeticionesBean peticionEejgOut = null;
 				for (int i = 0; i < rc.size(); i++){
+					if(i==0) {
+						if(eejgBean.getIdInstitucion().shortValue()==2055 ) {
+							isColegioConfiguradoEnvioCAJG = eejgBean.getNumeroCAJG()!=null && !eejgBean.getNumeroCAJG().equals("") && ejgService.isColegioConfiguradoEnvioCAJG(eejgBean.getIdInstitucion().shortValue());
+						}else {
+							isColegioConfiguradoEnvioCAJG = eejgBean.getIdExpedienteExt()!=null && !eejgBean.getIdExpedienteExt().equals("") && ejgService.isColegioConfiguradoEnvioCAJG(eejgBean.getIdInstitucion().shortValue());
+						}
+					}
 					Row fila = (Row) rc.get(i);
 					Hashtable<String, Object> htFila=fila.getRow();
+					
+					
 					peticionEejgOut = (ScsEejgPeticionesBean) this.hashTableToBean(htFila);
 					peticionEejgOut.setPersonaUnidadFamiliar((htFila.get("NIFINIT")!=null&&!UtilidadesHash.getString(htFila,"NIFINIT").equals("")));
 					AdmUsuariosBean usuarioPeticion = new AdmUsuariosBean();
 					usuarioPeticion.setDescripcion(UtilidadesHash.getString(htFila,"DESCRIPCIONUSUARIO"));
 					usuarioPeticion.setNIF(UtilidadesHash.getString(htFila,"NIFUSUARIO"));
 					peticionEejgOut.setUsuarioPeticion(usuarioPeticion);
-
+					peticionEejgOut.setEnviarComision(isColegioConfiguradoEnvioCAJG);
+					
 					lPeticionesEejg.add(peticionEejgOut);
 
 				}

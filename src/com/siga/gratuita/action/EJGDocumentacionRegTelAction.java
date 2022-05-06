@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.exceptions.SIGAServiceException;
 import org.redabogacia.sigaservices.app.helper.DocuShareHelper;
+import org.redabogacia.sigaservices.app.services.scs.EjgService;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
@@ -22,6 +23,8 @@ import com.siga.beans.ScsEJGBean;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
 import com.siga.gratuita.form.DefinirEJGForm;
+
+import es.satec.businessManager.BusinessManager;
 
 /**
  * Action de la documentación de un expediente
@@ -48,7 +51,13 @@ public class EJGDocumentacionRegTelAction extends DocumentacionRegTelAction {
 		miHash.put("NUMERO", request.getParameter("NUMERO").toString());
 		miHash.put("IDTIPOEJG", request.getParameter("IDTIPOEJG").toString());
 		miHash.put("IDINSTITUCION", request.getParameter("IDINSTITUCION").toString());
-
+		
+		
+		form.setIdInstitucion((String)miHash.get("IDINSTITUCION") );
+		form.setAnio((String)miHash.get("ANIO") );
+		form.setNumero((String)miHash.get("NUMERO") );
+		form.setIdTipoEJG((String)miHash.get("IDTIPOEJG") );
+		
 		ScsEJGAdm admEJG = new ScsEJGAdm(this.getUserBean(request));
 
 		try {
@@ -81,9 +90,12 @@ public class EJGDocumentacionRegTelAction extends DocumentacionRegTelAction {
 			request.getSession().setAttribute("DATABACKUP_REGTEL", admEJG.beanToHashTable((ScsEJGBean) v.get(0)));
 			
 			request.setAttribute("IDENTIFICADORDS", scsEJGBean.getIdentificadorDS());
+			EjgService ejgService =  (EjgService) BusinessManager.getInstance().getService(EjgService.class);
+			boolean isColegioConfiguradoEnvioCAJG = scsEJGBean.getIdExpedienteExt()!=null && !scsEJGBean.getIdExpedienteExt().equals("") && ejgService.isColegioConfiguradoEnvioCAJG(idInstitucion);
 			
+			form.setColegioConfiguradoEnvioCAJG(new Boolean(isColegioConfiguradoEnvioCAJG));
 			
-						
+//			request.setAttribute("isColegioConfiguradoEnvioCAJG",new Boolean(isColegioConfiguradoEnvioCAJG));
 			request.getSession().removeAttribute("MIGAS_DS");						
 			
 

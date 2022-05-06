@@ -56,6 +56,7 @@ import com.siga.censo.form.DatosRegTelForm;
 	 boolean chkBusquedaExactaSolicitante;
 	 String valorBusquedaExactaSolicitante;
  	String notasCAJG;
+ 	boolean colegioConfiguradoEnvioCAJG;
 
 	public void setRefAuto 					(String refAuto)					{ this.datos.put(ScsEJGBean.C_REFAUTO, refAuto);									} 	
  	
@@ -1178,6 +1179,14 @@ import com.siga.censo.form.DatosRegTelForm;
 
 		public final void setSolicitante(String solicitante) {
 			this.solicitante = solicitante;
+		}
+
+		public boolean isColegioConfiguradoEnvioCAJG() {
+			return colegioConfiguradoEnvioCAJG;
+		}
+
+		public void setColegioConfiguradoEnvioCAJG(boolean colegioConfiguradoEnvioCAJG) {
+			this.colegioConfiguradoEnvioCAJG = colegioConfiguradoEnvioCAJG;
 		}
 		
 				

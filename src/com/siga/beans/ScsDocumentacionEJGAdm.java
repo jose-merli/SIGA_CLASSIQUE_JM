@@ -581,7 +581,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 	 */
 	public List<ScsDocumentacionEJGExtendedBean> getListadoDocumentacionEJG(Hashtable<String, Object> params) throws ClsExceptions {
 		List<ScsDocumentacionEJGExtendedBean> list = new ArrayList<ScsDocumentacionEJGExtendedBean>();
-		Boolean isConfiguradoEnvioPericles = (Boolean)params.get("isConfiguradoEnvioPericles"); 
+		Boolean isColegioConfiguradoEnvioCAJG = (Boolean)params.get("isColegioConfiguradoEnvioCAJG"); 
 		RowsContainer rc = null;
 		Integer idInstitucion = (Integer)params.get("idInstitucion");
 		String sql = "   SELECT DE.*, " +
@@ -609,7 +609,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 					      "  	D.ABREVIATURA DOCUMENTOABREVIATURA " +
 					      "  	,DE.COMISIONAJG " ;
 					      
-				if(isConfiguradoEnvioPericles) {	      
+				if(isColegioConfiguradoEnvioCAJG) {	      
 					 sql = sql +" ,(SELECT count(1) " +
 						" FROM ECOM_COLA C " +
 						
@@ -623,7 +623,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
 						" FROM ECOM_COLA_PARAMETROS "+
 						" WHERE CLAVE = 'IDDOCUMENTACION' "+
 						" AND VALOR = DE.IDDOCUMENTACION) "+
-						" AND C.IDESTADOCOLA in (1,5,2,3)    "+
+						" AND C.IDESTADOCOLA in (1,2,3)    "+
 						" AND C.IDINSTITUCION = DE.IDINSTITUCION "+
 						" AND C.IDOPERACION IN (79,2,88,68)) NUM_INTERCAMBIOS_OK ";
 									  
@@ -669,7 +669,7 @@ public class ScsDocumentacionEJGAdm extends MasterBeanAdministrador {
                   extendedBean.setDescPresentador((String) hash.get("DESCPRESENTADOR"));
                   extendedBean.setDocumentoAbreviatura((String) hash.get("DOCUMENTOABREVIATURA"));
                   extendedBean.setComisionAJG((String) hash.get("COMISIONAJG"));
-                  if(hash.get("NUM_INTERCAMBIOS_OK")!=null && !hash.get("NUM_INTERCAMBIOS_OK").equals("") && isConfiguradoEnvioPericles )
+                  if(hash.get("NUM_INTERCAMBIOS_OK")!=null && !hash.get("NUM_INTERCAMBIOS_OK").equals("") && isColegioConfiguradoEnvioCAJG )
                 	  extendedBean.setNumIntercambiosOk(Short.valueOf((String) hash.get("NUM_INTERCAMBIOS_OK")));
                   list.add(extendedBean);
                }
