@@ -224,9 +224,13 @@
 		   		   			visibleConsulta = "true";
 		   		   			srcImage = app + "/html/imagenes/ico_collection_ds.png";
 		   		   		} else if (DocuShareObjectVO.DocuShareTipo.DOCUMENT.equals(dsObj.getTipo())) {
+		   		   			Boolean isColegioConfiguradoEnvioCAJG = (Boolean)request.getAttribute("isColegioConfiguradoEnvioCAJG");
 		   		   			botones = "";			
-	   		   				elems = new FilaExtElement[1];
+	   		   				elems = new FilaExtElement[2];
 	   		   				elems[0] = new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ);
+	   		   				if(isColegioConfiguradoEnvioCAJG!=null && isColegioConfiguradoEnvioCAJG)
+	   		   				elems[1] = new FilaExtElement("enviar", "enviaDocumentoCAJG", 	SIGAConstants.ACCESS_READ);
+	   		   					
 	   		   				visibleConsulta = "false";
 	   		   				size = DecimalFormat.getInstance().format(dsObj.getSizeKB()) + " KB";
 	   		   				srcImage = app + "/html/imagenes/ico_document_ds.png";
@@ -295,6 +299,14 @@
 					
 					parent.document.forms[0].titleDs.value=title;
 					parent.document.forms[0].submit();
+				}
+				function enviaDocumentoCAJG(fila) {
+					var objHiddId = document.getElementById('oculto' + fila + '_1');
+			 		var objHiddDes = document.getElementById('oculto' + fila + '_2');
+			 		parent.document.forms[0].identificadorDs.value=objHiddId.value;
+					parent.document.forms[0].modo.value = "enviaDocumentoCAJG";
+					parent.document.forms[0].submit();	
+					
 				}
 				
 				

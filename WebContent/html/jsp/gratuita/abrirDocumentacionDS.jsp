@@ -97,6 +97,11 @@
 
 		<table class="tablaTitulo" align="center" cellspacing="0">
 		<html:form action="/JGR_EJG_DocumentacionRegTel.do?noReset=true" method="POST" target="submitArea">
+			<html:hidden property = "colegioConfiguradoEnvioCAJG"/>
+			<html:hidden property = "idInstitucion"/>
+			<html:hidden property = "anio"/>
+			<html:hidden property = "idTipoEJG"/>
+			<html:hidden property = "numero"/>
 			<html:hidden property = "modo" value = ""/>
 			<html:hidden property = "hiddenFrame" value = "1"/>
 			
