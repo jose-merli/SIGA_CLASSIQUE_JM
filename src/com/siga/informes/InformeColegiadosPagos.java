@@ -897,10 +897,9 @@ public class InformeColegiadosPagos extends MasterReport {
 				Double dTotalNeto=	dTotalBruto + Double.parseDouble(sTotalIRPF);
 				result.put("TOTAL_NETO",UtilidadesNumero.formatoCartaPago(dTotalNeto.toString())+ClsConstants.CODIGO_EURO);
 				
-				Double dTotalLiquidacion =  Double.parseDouble(sTotalGeneral) + 
-											Double.parseDouble(sTotalRetenciones) + 
-											Double.parseDouble(sTotalIRPF) + 
-											Double.parseDouble(sTotalMovimientos)-
+				Double dTotalLiquidacion =  dTotalNeto + 
+											Double.parseDouble(sTotalIVA) + 
+											Double.parseDouble(sTotalRetenciones)-
 											dCompensadoCaja; // Restamos lo compensado
 				result.put("TOTAL_LIQUIDACION",UtilidadesNumero.formatoCartaPago(dTotalLiquidacion.toString())+ClsConstants.CODIGO_EURO);
 				
