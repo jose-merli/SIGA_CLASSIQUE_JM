@@ -12,7 +12,7 @@ public class DatosRegTelForm extends MasterForm {
 	private String titleDs;
 	private String posicionDs;
 	private boolean creaCollection = false;
-	
+	boolean colegioConfiguradoEnvioCAJG;
 		
 	public boolean isCreaCollection() {
 		return creaCollection;
@@ -44,5 +44,13 @@ public class DatosRegTelForm extends MasterForm {
 
 	public void setPosicionDs(String posicionDs) {
 		this.posicionDs = posicionDs;
+	}
+
+	public boolean isColegioConfiguradoEnvioCAJG() {
+		return colegioConfiguradoEnvioCAJG;
+	}
+
+	public void setColegioConfiguradoEnvioCAJG(boolean colegioConfiguradoEnvioCAJG) {
+		this.colegioConfiguradoEnvioCAJG = colegioConfiguradoEnvioCAJG;
 	}
 }

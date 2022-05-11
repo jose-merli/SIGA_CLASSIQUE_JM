@@ -78,7 +78,7 @@ public abstract class DocumentacionRegTelAction extends MasterAction {
 	protected String buscarPor(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {	
 		
 		try {
-			DefinirEJGForm miForm = (DefinirEJGForm) formulario;
+			DatosRegTelForm miForm = (DatosRegTelForm) formulario;
 			
 			boolean isColegioConfiguradoEnvioCAJG = miForm.isColegioConfiguradoEnvioCAJG();
 			HashMap databackup = new HashMap();
