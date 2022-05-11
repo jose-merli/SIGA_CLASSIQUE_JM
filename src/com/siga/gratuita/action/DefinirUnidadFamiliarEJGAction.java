@@ -21,9 +21,10 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants;
+import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+import org.redabogacia.sigaservices.app.services.scs.DocumentacionEjgService;
 import org.redabogacia.sigaservices.app.services.scs.EjgService;
-import org.redabogacia.sigaservices.app.vo.scs.DocumentacionEjgVo;
 
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ClsExceptions;
@@ -765,6 +766,12 @@ public class DefinirUnidadFamiliarEJGAction extends MasterAction {
 			if(miForm.getIdInstitucion().equalsIgnoreCase("2055")) {
 				ejgService.encolaEnvioDocumentacion(listCola, new Short(idInstitucionEJG), AppConstants.OPERACION.ASIGNA_ENVIO_DOCUMENTO);
 			}else if(miForm.getIdInstitucion().equalsIgnoreCase("2032")) {
+				DocumentacionEjgService documentacionEjgService = (DocumentacionEjgService) BusinessManager.getInstance()
+						.getService(DocumentacionEjgService.class);
+				int numDoc = documentacionEjgService.getNumEnviosCorrectos(new Short(idInstitucionEJG), new Short(anio),new Short(idTipoEJG), new Long(numero), OPERACION.GV_ENVIO_DOCUMENTO);
+				map.put(AppConstants.PARAM_ECOMCOLA_IDDOCUMENTO,String.valueOf((numDoc+1)));
+					
+				
 				ejgService.encolaEnvioDocumentacion(listCola, new Short(idInstitucionEJG), AppConstants.OPERACION.GV_ENVIO_DOCUMENTO);
 			}else
 				ejgService.encolaEnvioDocumentacion(listCola, new Short(idInstitucionEJG), AppConstants.OPERACION.PERICLES_ENVIA_COMUNICACION);
