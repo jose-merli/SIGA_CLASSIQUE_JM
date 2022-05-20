@@ -105,7 +105,7 @@
 									<td>
 											<html:select property="idColegio" name="BusquedaRemesasForm" styleClass="boxCombo">
 												<html:option value="">&nbsp;</html:option>
-												<html:optionsCollection name="BusquedaRemesasForm" property="instituciones" value="id" label="nombre"></html:optionsCollection>
+												<html:optionsCollection name="BusquedaRemesasForm" property="institucionesWS" value="id" label="nombre"></html:optionsCollection>
 											</html:select>
 									</td>
 	
@@ -299,7 +299,7 @@
 								
 								<html:select property="idColegioInsertar" name="NuevaRemesaForm" styleId="idColegioInsertar">
 									<html:option value=""><siga:Idioma key="general.combo.seleccionar" /></html:option>
-									<html:optionsCollection name="BusquedaRemesasForm" property="instituciones" value="id" label="nombre"></html:optionsCollection>
+									<html:optionsCollection name="BusquedaRemesasForm" property="institucionesWS" value="id" label="nombre"></html:optionsCollection>
 								</html:select>
 											
 							</div>
