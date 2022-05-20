@@ -67,7 +67,7 @@
 				<logic:notEmpty property="instituciones" name="BusquedaColegiadosForm">
 					<html:select property="idInstitucion" name="BusquedaColegiadosForm" styleClass="boxCombo">
 						<html:option value="">&nbsp;</html:option>
-						<html:optionsCollection name="BusquedaColegiadosForm" property="instituciones" value="id" label="nombre"></html:optionsCollection>
+						<html:optionsCollection name="BusquedaColegiadosForm" property="institucionesWS" value="id" label="nombre"></html:optionsCollection>
 					</html:select>
 				</logic:notEmpty>
 				</td>

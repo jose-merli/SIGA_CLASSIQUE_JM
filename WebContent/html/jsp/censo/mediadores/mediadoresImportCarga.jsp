@@ -132,7 +132,7 @@
 										<logic:notEmpty property="instituciones" name="MediadoresImportForm">
 											<html:select property="idColegio" name="MediadoresImportForm" styleClass="boxCombo">
 												<html:option value="">&nbsp;</html:option>
-												<html:optionsCollection name="MediadoresImportForm" property="instituciones" value="id" label="nombre"></html:optionsCollection>
+												<html:optionsCollection name="MediadoresImportForm" property="institucionesWS" value="id" label="nombre"></html:optionsCollection>
 											</html:select>
 										</logic:notEmpty>
 									</td>

@@ -102,7 +102,7 @@
 									<td>
 										<html:select property="idColegio" name="ConfigPerfilColegioForm" styleClass="boxCombo" styleId="idColegio">
 											<html:option value="">&nbsp;</html:option>
-											<html:optionsCollection name="ConfigPerfilColegioForm" property="instituciones" value="id" label="nombre"></html:optionsCollection>
+											<html:optionsCollection name="ConfigPerfilColegioForm" property="institucionesWS" value="id" label="nombre"></html:optionsCollection>
 										</html:select>
 									</td>
 								</tr>
