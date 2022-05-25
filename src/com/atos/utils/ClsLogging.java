@@ -112,7 +112,7 @@ public class ClsLogging{
 				e.printStackTrace();
 			}
 			
-			//System.out.println("GESTION DEL LOG: logLevel Init="+loglevel);
+			//logger.debug("GESTION DEL LOG: logLevel Init="+loglevel);
 			ClsLogging.writeFileLog("--------------------",3);
 			ClsLogging.writeFileLog("Info del LOG de SIGA",3);
 			ClsLogging.writeFileLog("--------------------",3);
@@ -301,7 +301,7 @@ public class ClsLogging{
 				trace4console.append(trace2);
 				if (bConsole)
 				{
-					System.out.println(trace4console.toString());
+					logger.debug(trace4console.toString());
 				}
 				
 				if (bLog4j && logger!=null)
@@ -333,13 +333,15 @@ public class ClsLogging{
 				}
 			}
 		} catch(Exception _ex) {
-			System.out.println("Error Escribiendo Log en " + fileName + ":" + _ex.toString());
+			logger.error("Error Escribiendo Log en " + fileName + ":" + _ex.toString());
 			_ex.printStackTrace();
 		} finally {
 		    try {
 		        printer.flush();
 				printer.close();  
-		    } catch (Exception eee) {}
+		    } catch (Exception eee) {
+		    	logger.error("ERROR: " + eee.getMessage());
+		    }
 		}
 	}
 	
@@ -377,13 +379,13 @@ public class ClsLogging{
 				if (bConsole)
 				{
 					if(e instanceof SchedulerException){
-						System.out.println(sdfLong.format(dat)+",******AVISO******"+e.getMessage());
+						logger.debug(sdfLong.format(dat)+",******AVISO******"+e.getMessage());
 					}else{
-						System.out.println(sdfLong.format(dat)+",***** ERROR *****,");
-						System.out.println(s+sError);
-						System.out.println(ExceptionManager.getCompleteMessageParaLogger(e,idInstitucion,idUsuario));
+						logger.debug(sdfLong.format(dat)+",***** ERROR *****,");
+						logger.debug(s+sError);
+						logger.debug(ExceptionManager.getCompleteMessageParaLogger(e,idInstitucion,idUsuario));
 					}
-						//System.out.println(sdfLong.format(dat)+",***** TRAZA *****,");
+						//logger.debug(sdfLong.format(dat)+",***** TRAZA *****,");
 						//e.printStackTrace(System.out);
 				}
 
@@ -399,7 +401,7 @@ public class ClsLogging{
 					}
 						//logger.error(",***** TRAZA *****,",e);
 				}
-					//System.out.println("EXCEPTION:***************"+e.getClass().getName());
+					//logger.debug("EXCEPTION:***************"+e.getClass().getName());
 					if (bLogXeMail && logXeMail!=null)
 					{
 						if(e instanceof SchedulerException){
@@ -432,12 +434,14 @@ public class ClsLogging{
 			} // if de control de exclusión de excepciones
 			
 		} catch(Exception _ex) {
-			System.out.println("Error Escribiendo Log :"+_ex.toString());
+			logger.error("Error Escribiendo Log : "+_ex.toString());
 		} finally {
 		    try {
 		        printer.flush();
 				printer.close();
-		    } catch (Exception eee) {}
+		    } catch (Exception eee) {
+		    	logger.error("ERROR: " + eee.getMessage());
+		    }
 		}
 	}
 	
@@ -458,7 +462,7 @@ public class ClsLogging{
 
 				if (bConsole)
 				{
-					System.out.println(sdfLong.format(dat)+","+s);
+					logger.debug(sdfLong.format(dat)+","+s);
 				}
 
 				if (bLog4j && logger!=null)
@@ -481,12 +485,14 @@ public class ClsLogging{
 				} 
 			}
 		} catch(Exception _ex) {
-			System.out.println("Error Escribiendo Log:"+_ex.toString());
+			logger.error("Error Escribiendo Log: "+_ex.toString());
 		} finally {
 		    try {
 		        printer.flush();
 				printer.close(); 
-		    } catch (Exception eee) {}
+		    } catch (Exception eee) {
+		    	logger.error("ERROR: " + eee.getMessage());
+		    }
 		}
 	}
 	
@@ -504,7 +510,7 @@ public class ClsLogging{
 
 			if (bConsole)
 			{
-				System.out.println(sdfLong.format(dat)+s);
+				logger.debug(sdfLong.format(dat)+s);
 			}
 
 			if (bLog4j && logger!=null)
@@ -525,12 +531,14 @@ public class ClsLogging{
 				printer.close();
 			} 
 		} catch(Exception _ex) {
-			System.out.println("Error Escribiendo Log :"+_ex.toString());
+			logger.error("Error Escribiendo Log :"+_ex.toString());
 		} finally {
 		    try {
 		        printer.flush();
 				printer.close();
-		    } catch (Exception eee) {}
+		    } catch (Exception eee) {
+		    	logger.error("ERROR: " + eee.getMessage());
+		    }
 		}
 	}
 	

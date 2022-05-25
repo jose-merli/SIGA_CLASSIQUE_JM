@@ -18,6 +18,7 @@ import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.general.SIGAException;
+import org.apache.log4j.Logger;
 
 /**
  * @author nuria.rgonzalez
@@ -26,7 +27,8 @@ import com.siga.general.SIGAException;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class CenSolicitudModificacionCVAdm extends MasterBeanAdministrador{
-
+	private static final Logger log = Logger.getLogger(CenSolicitudModificacionCVAdm.class);
+	
 	/**
 	 * @param tabla
 	 * @param usuario
@@ -104,6 +106,7 @@ public class CenSolicitudModificacionCVAdm extends MasterBeanAdministrador{
 			bean.setIdInstitucion_subt2(UtilidadesHash.getInteger(hash,CenDatosCVBean.C_IDINSTITUCION_SUBT2));
 		}
 		catch(Exception e){
+			log.error("ERROR - CenSolicitudModificacionCVAdm.hasTableToBean(): " + e.getMessage());
 			bean = null;
 			throw new ClsExceptions (e, "Error al construir el bean a partir del hashTable");
 		}
@@ -139,11 +142,13 @@ public class CenSolicitudModificacionCVAdm extends MasterBeanAdministrador{
 			UtilidadesHash.set(hash, CenDatosCVBean.C_IDINSTITUCION_SUBT2, String.valueOf(b.getIdInstitucion_subt2()));
 		}
 		catch (Exception e){
+			log.error("ERROR - CenSolicitudModificacionCVAdm.beanToHashTable(): " + e.getMessage());
 			hash = null;
 			throw new ClsExceptions (e, "Error al construir el hashTable a partir del bean");			
 		}
 		return hash;
 	}
+	
 	/** 
 	 * Prepara una tabla hash para insertarla en la tabla. <br/>
 	 * Obtiene el campo IDSOLICITUD, <br/>	 
@@ -170,7 +175,8 @@ public class CenSolicitudModificacionCVAdm extends MasterBeanAdministrador{
 //		catch (SIGAException e) {
 //			throw e;
 //		}
-		catch (ClsExceptions e) {		
+		catch (ClsExceptions e) {
+			log.error("ERROR - CenSolicitudModificacionCVAdm.getNuevoId(): " + e.getMessage());
 			throw new ClsExceptions (e, "Error al ejecutar el 'getNuevoId' en BBDD");		
 		}		
 		return id;
@@ -248,7 +254,8 @@ public class CenSolicitudModificacionCVAdm extends MasterBeanAdministrador{
 //				throw e;
 //			}
 	       catch (Exception e) {
-	       	throw new ClsExceptions (e, "Error al obtener solicitudes de modificacion de direcciones");
+	    	   log.error("ERROR - CenSolicitudModificacionCVAdm.getSolicitudes(): " + e.getMessage());
+	    	   throw new ClsExceptions (e, "Error al obtener solicitudes de modificacion de direcciones");
 	       }
 	       return datos;                        
 	    }	
@@ -312,7 +319,8 @@ public class CenSolicitudModificacionCVAdm extends MasterBeanAdministrador{
 //				throw e;
 //			}
 	       catch (Exception e) {
-	       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla de solicitudes de modificacion.");
+	    	   log.error("ERROR - CenSolicitudModificacionCVAdm.obtenerEntradaSolicitudModificacion(): " + e.getMessage());
+	    	   throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla de solicitudes de modificacion.");
 	       }
 	       return datos;                        
 	    }	
@@ -348,10 +356,12 @@ public class CenSolicitudModificacionCVAdm extends MasterBeanAdministrador{
 			}	
        }
 		catch (SIGAException e) {
+			log.error("ERROR - CenSolicitudModificacionCVAdm.denegarSolicitud(): " + e.getMessage());
 			throw e;
 		}
        catch (Exception e) {
-       	throw new ClsExceptions (e, "Error al denegar solicitudes de datos del curriculum");
+    	   log.error("ERROR - CenSolicitudModificacionCVAdm.denegarSolicitud(): " + e.getMessage());
+    	   throw new ClsExceptions (e, "Error al denegar solicitudes de datos del curriculum");
        }
        return correcto;                        
     }	
@@ -483,12 +493,13 @@ public class CenSolicitudModificacionCVAdm extends MasterBeanAdministrador{
 			}	
        }
 		catch (SIGAException e) {
+			log.error("ERROR - CenSolicitudModificacionCVAdm.procesarSolicitud(): " + e.getMessage());
 			throw e;
 		}
        catch (Exception e) {
-       	throw new ClsExceptions (e, "Error al procesar solicitudes de modificaciones de curriculms");
+    	   log.error("ERROR - CenSolicitudModificacionCVAdm.procesarSolicitud(): " + e.getMessage());
+    	   throw new ClsExceptions (e, "Error al procesar solicitudes de modificaciones de curriculms");
        }
        return correcto;                        
     }	
-	
 }

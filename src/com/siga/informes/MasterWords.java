@@ -80,6 +80,7 @@ public class MasterWords {
 					aux = new File(rutaFinal + i + ".doc");//
 					salida.add(aux);//
 				} catch (Exception e) {
+					ClsLogging.writeFileLogError("ERROR - MasterWords.generarInforme() Error al generar informe: " + e.getMessage(), e, 3);
 					throw new ClsExceptions(e, "Error al generar informe");
 				}
 			}
@@ -108,6 +109,7 @@ public class MasterWords {
 					aux = new File(rutaFinal + i + ".doc");//
 					salida.add(aux);//
 				} catch (Exception e) {
+					ClsLogging.writeFileLogError("ERROR - MasterWords.generarInformePorIdioma() Error al generar informe: " + e.getMessage(), e, 3);
 					throw new ClsExceptions(e, "Error al generar informe");
 				}
 			}
@@ -137,6 +139,7 @@ public class MasterWords {
 					aux = new File(rutaFinal);//
 					salida.add(aux);//
 				} catch (Exception e) {
+					ClsLogging.writeFileLogError("ERROR - MasterWords.generarInformePdfPorIdioma() Error al generar informe: " + e.getMessage(), e, 3);
 					throw new ClsExceptions(e, "Error al generar informe");
 				}
 			}
@@ -170,6 +173,7 @@ public class MasterWords {
 					aux = new File(rutaFinal + i + ".doc");//
 					salida.add(aux);//
 				} catch (Exception e) {
+					ClsLogging.writeFileLogError("ERROR - MasterWords.generarInformePorIdioma() Error al generar informe: " + e.getMessage(), e, 3);
 					throw new ClsExceptions(e, "Error al generar informe");
 				}
 			}
@@ -212,11 +216,13 @@ public class MasterWords {
 			}
 
 		} catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR - MasterWords.doZip() Error al crear fichero zip: " + e.getMessage(), e, 3);
 			throw new ClsExceptions(e, "Error al crear fichero zip");
 		} finally {
 			try {
 				outTemp.close();
 			} catch (Exception eee) {
+				ClsLogging.writeFileLogError("ERROR - MasterWords.doZip(): " + eee.getMessage(), eee, 3);
 			}
 		}
 
@@ -246,6 +252,7 @@ public class MasterWords {
 			} while (claves.hasMoreElements());
 
 		} catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR - MasterWords.generaUnInforme() Error al generar informe: " + e.getMessage(), e, 3);
 			throw new ClsExceptions(e, "Error al generar informe");
 		}
 
@@ -259,6 +266,7 @@ public class MasterWords {
 			doc = new Document(pathFichero);
 			doc = sustituyeDocumento(doc, dato);
 		} catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR - MasterWords.generaDocument() Error al generar informe: " + e.getMessage(), e, 3);
 			throw new ClsExceptions(e, "Error al generar informe");
 		}
 		return doc;
@@ -294,6 +302,7 @@ public class MasterWords {
 			} while (claves.hasMoreElements());
 
 		} catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR - MasterWords.generaUnInforme() Error al generar informe: " + e.getMessage(), e, 3);
 			throw new ClsExceptions(e, "Error al generar informe");
 		}
 
@@ -326,9 +335,12 @@ public class MasterWords {
 			doc.getMailMerge().executeWithRegions(dataMerge);
 			doc.save(rutaFinal + ".doc");
 			archivo = new File(rutaFinal + ".doc");
-			if (!archivo.exists())
+			if (!archivo.exists()) {
+				ClsLogging.writeFileLog("ERROR - messages.general.error.ficheroNoExiste", 3);
 				throw new SIGAException("messages.general.error.ficheroNoExiste");
+			}
 		} catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR - MasterWords.generarInformeRegiones() Error al generar informe: " + e.getMessage(), e, 3);
 			throw new ClsExceptions(e, "Error al generar informe");
 		}
 		return archivo;
@@ -337,14 +349,17 @@ public class MasterWords {
 	public Document nuevoDocumento() throws ClsExceptions, SIGAException {
 		Document doc;
 		try {
-			if(new File(pathPlantilla).exists())
+			if(new File(pathPlantilla).exists()) {
 				doc = new Document(pathPlantilla);
-			else
+			}else {
+				ClsLogging.writeFileLog("ERROR - messages.informes.generico.noPlantilla", 3);
 				throw new SIGAException("messages.informes.generico.noPlantilla");
+			}
 		} catch (SIGAException e) {
 			throw e;
 		
 		} catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR - MasterWords.nuevoDocumento() Error al generar informe: " + e.getMessage(), e, 3);
 			e.printStackTrace();
 			throw new ClsExceptions(e, "Error al generar informe");
 		}
@@ -384,6 +399,7 @@ public class MasterWords {
 						try {
 							builder.write(o.toString().trim());	
 						} catch (Exception e) {
+							ClsLogging.writeFileLogError("ERROR - MasterWords.sustituyeDocumento() Error al llegar el vector de la region. Continua...: " + e.getMessage(), e, 3);
 							ClsLogging.writeFileLog("ERROR al llegar el vector de la region. continua...",3);
 						}
 							
@@ -392,6 +408,7 @@ public class MasterWords {
 				
 			}
 		} catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR - MasterWords.sustituyeDocumento() Error al rellenar informe: " + e.getMessage(), e, 3);
 			throw new ClsExceptions(e,"Error al rellenar informe");
 		}
 		return doc;
@@ -406,8 +423,10 @@ public class MasterWords {
 			// doc.save(rutaFinal+".doc");
 
 		} catch (IllegalStateException ise) {
+			ClsLogging.writeFileLogError("ERROR - MasterWords.sustituyeRegionDocumento() messages.error.mail.badlyformed: " + ise.getMessage(), ise, 3);
 			throw new SIGAException("messages.error.mail.badlyformed");
 		} catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR - MasterWords.sustituyeRegionDocumento() Error al generar informe: " + e.getMessage(), e, 3);
 			throw new ClsExceptions(e, "Error al generar informe");
 		}
 		return doc;
@@ -419,11 +438,14 @@ public class MasterWords {
 		try {
 			doc.save(pathfinal + ClsConstants.FILE_SEP + nombrefichero);
 		} catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR - MasterWords.grabaDocumento(): " + e.getMessage(), e, 3);
 			throw new ClsExceptions(e, "Error al crear el archivo");
 		}
 		archivo = new File(pathfinal + ClsConstants.FILE_SEP + nombrefichero);
-		if (!archivo.exists())
+		if (!archivo.exists()) {
+			ClsLogging.writeFileLog("MasterWords.grabaDocumento() - error: messages.general.error.ficheroNoExiste");
 			throw new SIGAException("messages.general.error.ficheroNoExiste");
+		}
 
 		return archivo;
 	}
@@ -452,7 +474,8 @@ public class MasterWords {
 			fos.flush();
 			fos.close();
 		} catch (Exception e) {
-			ClsLogging.writeFileLog("ERROR al precargar informes aspose.words: " + e.toString(), 3);
+//			ClsLogging.writeFileLog("ERROR al precargar informes aspose.words: " + e.toString(), 3);
+			ClsLogging.writeFileLogError("ERROR al precargar informes aspose.words: " + e.getMessage(), e, 3);
 		} finally {
 
 		}

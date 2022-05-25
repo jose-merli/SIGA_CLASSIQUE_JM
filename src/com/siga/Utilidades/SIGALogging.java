@@ -24,10 +24,12 @@ import org.redabogacia.sigaservices.app.util.SIGAReferences;
 import com.atos.utils.ClsConstants;
 import com.atos.utils.ExceptionManager;
 import com.atos.utils.FileHelper;
+import org.apache.log4j.Logger;
 
 
 public class SIGALogging
 {
+	private static final Logger logger = Logger.getLogger(SIGALogging.class);
 	private SimpleDateFormat sdfLong = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); 
 	private String sError = "[ERROR]";
 	private String sInfo = "[INFO]";
@@ -74,8 +76,10 @@ public class SIGALogging
 		} catch(Exception _ex) {
 		    try {
 		        printer.close();
-		    } catch (Exception eee) {}
-			System.out.println("Error Escribiendo SIGALogging: "+_ex.toString());
+		    } catch (Exception eee) {
+		    	logger.error("ERROR: " + eee.getMessage());
+		    }
+			logger.error("Error Escribiendo SIGALogging: "+_ex.toString());
 		}
 	}
 	
@@ -92,8 +96,10 @@ public class SIGALogging
 		} catch(Exception _ex) {
 		    try {
 		        printer.close();
-		    } catch (Exception eee) {}
-			System.out.println("Error Escribiendo SIGALogging: "+_ex.toString());
+		    } catch (Exception eee) {
+		    	logger.error("ERROR: " + eee.getMessage());
+		    }
+			logger.error("Error Escribiendo SIGALogging: "+_ex.toString());
 		}
 	}
 	
@@ -110,8 +116,10 @@ public class SIGALogging
 		} catch(Exception _ex) {
 		    try {
 		        printer.close();
-		    } catch (Exception eee) {}
-			System.out.println("Error Escribiendo SIGALogging: "+_ex.toString());
+		    } catch (Exception eee) {
+		    	logger.error("ERROR: " + eee.getMessage());
+		    }
+			logger.error("Error Escribiendo SIGALogging: "+_ex.toString());
 		}
 	}
 	
@@ -145,8 +153,10 @@ public class SIGALogging
 		} catch(Exception _ex) {
 		    try {
 		        printer.close();
-		    } catch (Exception eee) {}
-			System.out.println("Error Escribiendo SIGALogging para log de facturacion: "+_ex.toString());
+		    } catch (Exception eee) {
+		    	logger.error("ERROR: " + eee.getMessage());
+		    }
+			logger.error("Error Escribiendo SIGALogging para log de facturacion: "+_ex.toString());
 		}
 	}
 	
@@ -170,8 +180,10 @@ public class SIGALogging
 		} catch(Exception _ex) {
 		    try {
 		        printer.close();
-		    } catch (Exception eee) {}
-			System.out.println("Error Escribiendo SIGALogging para log de facturacion: "+_ex.toString());
+		    } catch (Exception eee) {
+		    	logger.error("ERROR: " + eee.getMessage());
+		    }
+			logger.error("Error Escribiendo SIGALogging para log de facturacion: "+_ex.toString());
 		}
 	}
 	
@@ -208,8 +220,10 @@ public class SIGALogging
 		catch(Exception _ex) {
 		    try {
 		        printer.close();
-		    } catch (Exception eee) {}
-			System.out.println("Error Escribiendo SIGALogging para log de facturacion: "+_ex.toString());
+		    } catch (Exception eee) {
+		    	logger.error("ERROR: " + eee.getMessage());
+		    }
+			logger.error("Error Escribiendo SIGALogging para log de facturacion: "+_ex.toString());
 		}
 	}
 

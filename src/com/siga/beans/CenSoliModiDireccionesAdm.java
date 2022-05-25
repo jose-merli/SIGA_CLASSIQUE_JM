@@ -22,6 +22,7 @@ import com.siga.Utilidades.UtilidadesMultidioma;
 import com.siga.Utilidades.UtilidadesString;
 import com.siga.censo.action.Direccion;
 import com.siga.general.SIGAException;
+import org.apache.log4j.Logger;
 
 /**
  * @author nuria.rgonzalez
@@ -30,7 +31,8 @@ import com.siga.general.SIGAException;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
-
+	private static final Logger log = Logger.getLogger(CenSoliModiDireccionesAdm.class);
+	
 	/**	
 	 * @param usuario
 	 */
@@ -108,6 +110,7 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 			bean.setFechaAlta(UtilidadesHash.getString(hash,CenSoliModiDireccionesBean.C_FECHAALTA));
 		}
 		catch(Exception e){
+			log.error("ERROR - CenSoliModiDireccionesAdm.hashTableToBean(): " + e.getMessage());
 			bean = null;
 			throw new ClsExceptions (e, "Error al construir el bean a partir del hashTable");
 		}
@@ -150,6 +153,7 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash, CenSoliModiDireccionesBean.C_OTRAPROVINCIA, b.getOtraProvincia());
 		}
 		catch (Exception e){
+			log.error("ERROR - CenSoliModiDireccionesAdm.beanToHashTable(): " + e.getMessage());
 			hash = null;
 			throw new ClsExceptions (e, "Error al construir el hashTable a partir del bean");			
 		}
@@ -236,7 +240,8 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 //				throw e;
 //			}
 	       catch (Exception e) {
-	       	throw new ClsExceptions (e, "Error al obtener solicitudes de modificacion de direcciones");
+	    	   log.error("ERROR - CenSoliModiDireccionesAdm.getSolicitudes(): " + e.getMessage());
+	    	   throw new ClsExceptions (e, "Error al obtener solicitudes de modificacion de direcciones");
 	       }
 	       return datos;                        
 	    }	
@@ -335,7 +340,8 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 //				throw e;
 //			}
 	       catch (Exception e) {
-	       	throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla de solicitudes de modificacion.");
+	    	   log.error("ERROR - CenSoliModiDireccionesAdm.obtenerEntradaSolicitudModificacion(): " + e.getMessage());
+	    	   throw new ClsExceptions (e, "Error al obtener la informacion sobre una entrada de la tabla de solicitudes de modificacion.");
 	       }
 	       return datos;                        
 	    }	
@@ -366,7 +372,8 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 //		catch (SIGAException e) {
 //			throw e;
 //		}
-		catch (ClsExceptions e) {		
+		catch (ClsExceptions e) {
+			log.error("ERROR - CenSoliModiDireccionesAdm.getNuevoId(): " + e.getMessage());
 			throw new ClsExceptions (e, "Error al ejecutar el 'getNuevoId' en BBDD");		
 		}		
 		return id;
@@ -403,10 +410,12 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 			}	
        }
 		catch (SIGAException e) {
+			log.error("ERROR - CenSoliModiDireccionesAdm.denegarSolicitud(): " + e.getMessage());
 			throw e;
 		}
        catch (Exception e) {
-       	throw new ClsExceptions (e, "Error al denegar la solicitud de datos sobre direcciones");
+    	   log.error("ERROR - CenSoliModiDireccionesAdm.denegarSolicitud(): " + e.getMessage());
+    	   throw new ClsExceptions (e, "Error al denegar la solicitud de datos sobre direcciones");
        }
        return correcto;                        
     }	
@@ -521,9 +530,11 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 			}
 		
        } catch (SIGAException e) {
+    	   log.error("ERROR - CenSoliModiDireccionesAdm.procesarSolicitud(): " + e.getMessage());
     	   throw e;
        
        } catch (Exception e) {
+    	   log.error("ERROR - CenSoliModiDireccionesAdm.procesarSolicitud(): " + e.getMessage());
     	   throw new ClsExceptions (e, "Error al procesar solicitudes de modificaciones de direcciones");
        }
        
@@ -553,12 +564,7 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 			dirBean.setIdInstitucion(new Integer(idInstitucion));
 			dirBean.setPreferente("");
 			Hashtable hDirPreferencia=new Hashtable();
-			
-			
-			
-			
-			
-			
+
 			for (int i=0; i<idDir.length; i++){
 				
 				UtilidadesHash.set(hDireccion,CenDireccionesBean.C_IDDIRECCION,idDir[i]);
@@ -581,8 +587,7 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 					request.getSession().setAttribute("preferenciaDir",hDirPreferencia);
 					dirBean.setPreferente(modificarPreferencia);
 				}	
-				
-				
+
 				solicDirBean.setIdSolicitud(adm.getNuevoId());
 				solicDirBean.setIdInstitucion(dirBean.getIdInstitucion());
 				solicDirBean.setIdPersona(dirBean.getIdPersona());
@@ -608,11 +613,7 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 				solicDirBean.setPreferente(dirBean.getPreferente());
 				solicDirBean.setIdEstadoSolic(new Integer(ClsConstants.ESTADO_SOLICITUD_MODIF_PENDIENTE));
 				solicDirBean.setFechaAlta("sysdate");
-				
-				
-				
-				
-				
+
 				if(!adm.insert(solicDirBean)){
 					throw new SIGAException (adm.getError());
 				}
@@ -620,12 +621,12 @@ public class CenSoliModiDireccionesAdm extends MasterBeanAdministrador {
 			
 		}
 		catch(SIGAException e){
+			log.error("ERROR - CenSoliModiDireccionesAdm.solicitarModificacionDireccionesPreferentes(): " + e.getMessage());
 			throw e;
 		}catch(Exception e){
-			
+			log.error("ERROR - CenSoliModiDireccionesAdm.solicitarModificacionDireccionesPreferentes(): " + e.getMessage());
 			throw new ClsExceptions (e, "Error al actualizar la solicitud de preferencias de direcciones.");
 		}
 		return salida;
-		
 	}
 }
