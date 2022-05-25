@@ -26,6 +26,7 @@ import org.redabogacia.sigaservices.app.services.cen.CenWSService;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
 
 import com.atos.utils.ClsExceptions;
+import com.atos.utils.ClsLogging;
 import com.atos.utils.GstDate;
 import com.siga.Utilidades.UtilidadesBDAdm;
 import com.siga.Utilidades.paginadores.PaginadorVector;
@@ -187,8 +188,9 @@ public class BusquedaRemesasAction extends MasterAction {
 			MasterForm formulario, 
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ClsExceptions, SIGAException{
-		
+		ClsLogging.writeFileLog("BusquedaRemesasAction.buscar() - INICIO", 3);
 		request.getSession().removeAttribute(DATAPAGINADOR);
+		ClsLogging.writeFileLog("BusquedaRemesasAction.buscar() - FIN", 3);
 		return buscarPor(mapping, formulario, request, response);
 		
 	}
@@ -196,6 +198,7 @@ public class BusquedaRemesasAction extends MasterAction {
 	protected String buscarPor (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException {
 		
 		try {
+			ClsLogging.writeFileLog("BusquedaRemesasAction.buscarPor() - INICIO", 3);
 			BusquedaRemesasForm form = (BusquedaRemesasForm) formulario;			
 			HashMap databackup = new HashMap();
 			CenWSService cenWSService = (CenWSService) BusinessManager.getInstance().getService(CenWSService.class);
@@ -244,8 +247,10 @@ public class BusquedaRemesasAction extends MasterAction {
 			}				
 			
 		} catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR - BusquedaRemesasAction.buscarPor(): " + e.getMessage() , e, 3);
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
 		}
+		ClsLogging.writeFileLog("BusquedaRemesasAction.buscarPor() - FIN", 3);
 		return "resultado";
 	}
 
@@ -316,6 +321,7 @@ public class BusquedaRemesasAction extends MasterAction {
 
 	private List<EdicionRemesaForm> getDatos(CenWSService cenWSService, BusquedaRemesasForm form) throws ParseException, ClsExceptions {
 		
+		ClsLogging.writeFileLog("BusquedaRemesasAction.getDatos() - INICIO", 3);
 		List<EdicionRemesaForm> lista = null;
 		
 		EcomCenWsEnvioExample ecomCenWsEnvioExample = new EcomCenWsEnvioExample();
@@ -324,18 +330,22 @@ public class BusquedaRemesasAction extends MasterAction {
 		
 		//colegio
 		if (isNotnull(form.getIdColegio())) {
+			ClsLogging.writeFileLog("BusquedaRemesasAction.getDatos() - 1", 3);
 			ecomWSCriteria.andIdinstitucionEqualTo(Short.valueOf(form.getIdColegio()));
 		}		
 		//numero de peticion
 		if (isNotnull(form.getNumeroPeticion())) {
+			ClsLogging.writeFileLog("BusquedaRemesasAction.getDatos() - 2", 3);
 			ecomWSCriteria.andNumeropeticionLike(getCampoLike(form.getNumeroPeticion().trim()));
 		}
 		//fecha peticion desde
 		if (isNotnull(form.getFechaPeticionDesde())) {
+			ClsLogging.writeFileLog("BusquedaRemesasAction.getDatos() - 3", 3);
 			ecomWSCriteria.andFechacreacionGreaterThanOrEqualTo(AppConstants.DATE_FORMAT.parse(form.getFechaPeticionDesde()));
 		}			
 		//fecha peticion hasta
 		if (isNotnull(form.getFechaPeticionHasta())) {
+			ClsLogging.writeFileLog("BusquedaRemesasAction.getDatos() - 4", 3);
 			ecomWSCriteria.andFechacreacionLessThanOrEqualTo(AppConstants.DATE_FORMAT.parse(form.getFechaPeticionHasta()));
 		}
 		
@@ -347,35 +357,42 @@ public class BusquedaRemesasAction extends MasterAction {
 		
 		//número de colegiado
 		if (isNotnull(form.getNumeroColegiado())) {
+			ClsLogging.writeFileLog("BusquedaRemesasAction.getDatos() - 5", 3);
 			datosCriteria.andNcolegiadoUpperLike(getCampoLike(form.getNumeroColegiado().trim()));
 			busquedaDatos = true;
 		}
 		//nombre
 		if (isNotnull(form.getNombre())) {
+			ClsLogging.writeFileLog("BusquedaRemesasAction.getDatos() - 6", 3);
 			datosCriteria.andNombreUpperLike(getCampoLike(form.getNombre().trim()));
 			busquedaDatos = true;
 		}
 		//apellido 1
 		if (isNotnull(form.getPrimerApellido())) {
+			ClsLogging.writeFileLog("BusquedaRemesasAction.getDatos() - 7", 3);
 			datosCriteria.andApellido1UpperLike(getCampoLike(form.getPrimerApellido().trim()));
 			busquedaDatos = true;
 		}
 		//apellido 2
 		if (isNotnull(form.getSegundoApellido())) {
+			ClsLogging.writeFileLog("BusquedaRemesasAction.getDatos() - 8", 3);
 			datosCriteria.andApellido2UpperLike(getCampoLike(form.getSegundoApellido().trim()));
 			busquedaDatos = true;
 		}
 		//tipo identificación
 		if (isNotnull(form.getIdTipoIdentificacion())) {
+			ClsLogging.writeFileLog("BusquedaRemesasAction.getDatos() - 9", 3);
 			datosCriteria.andIdcensotipoidentificacionEqualTo(Short.valueOf(form.getIdTipoIdentificacion()));
 			busquedaDatos = true;
 		}
 		//identificación
 		if (isNotnull(form.getIdentificacion())) {
+			ClsLogging.writeFileLog("BusquedaRemesasAction.getDatos() - 10", 3);
 			datosCriteria.andNumdocumentoUpperLike(getCampoLike(form.getIdentificacion().trim()));
 			busquedaDatos = true;
 		}
 		if (!busquedaDatos) {
+			ClsLogging.writeFileLog("BusquedaRemesasAction.getDatos() - 11", 3);
 			//así conseguimos que sea más rápida la query al no cruzar con las tablas para usar este criterio
 			ecomCenDatosExample = null;
 		}
@@ -383,6 +400,7 @@ public class BusquedaRemesasAction extends MasterAction {
 		ecomCenWsEnvioExample.orderByIdcenwsenvioDESC();
 				
 		List<EcomCenWsEnvioExtended> listaEcomCenWsEnvio = cenWSService.getEcomCenWsEnvioList(ecomCenWsEnvioExample, ecomCenDatosExample, form.isConIncidencia(), form.isConError());
+		ClsLogging.writeFileLog("BusquedaRemesasAction.getDatos() - listaEcomCenWsEnvio tiene un tamaño de " + listaEcomCenWsEnvio.size(), 3); 
 		if (listaEcomCenWsEnvio != null) {
 			lista = new ArrayList<EdicionRemesaForm>();
 			for (EcomCenWsEnvioExtended ecomCenWsEnvio : listaEcomCenWsEnvio) {
@@ -399,7 +417,7 @@ public class BusquedaRemesasAction extends MasterAction {
 				lista.add(edicionRemesaForm);
 			}
 		}
-		
+		ClsLogging.writeFileLog("BusquedaRemesasAction.getDatos() - FIN", 3);
 		return lista;
 	}
 

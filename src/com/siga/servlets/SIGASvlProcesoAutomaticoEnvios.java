@@ -122,26 +122,24 @@ public class SIGASvlProcesoAutomaticoEnvios extends SIGAServletAdapter implement
  
  public void handleNotification(Notification notif, Object handback)
  {
-
+	ClsLogging.writeFileLogWithoutSession("SIGASvlProcesoAutomaticoEnvios.handleNotification() - INICIO", 3);
     ClsLogging.writeFileLogWithoutSession(" - INVOCANDO...  >>>  Ejecutando Notificación: \"" + sNombreProceso + "\".", 3);
 
-	try
-	{
+	try	{
 	    // invocamos al servlet
 		URL url = new URL(urlSiga+ "SIGASvlProcesoEnvios.svrl");
 	    Object ret = url.getContent();
 	    ClsLogging.writeFileLogWithoutSession(" - OK.  >>>  Ejecutando Notificación: \"" + sNombreProceso + "\".", 3);
 	    //ClsLogging.writeFileLogWithoutSession(" - EJECUTADO.  >>>  Ejecutando Notificación: \"" + urlSiga+ "SIGASvlProcesoEnvios.svrl" + "\"", 3);
+	    ClsLogging.writeFileLogWithoutSession("SIGASvlProcesoAutomaticoEnvios.handleNotification() - FIN", 3);
 	    
 	}
-	catch(Exception e)
-	{
-	    ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" ejecutada ERROR. ", 3);
+	catch(Exception e) {
+	    ClsLogging.writeFileLogWithoutSession("ERROR - Notificación \"" + sNombreProceso + "\" ejecutada ERROR: " + e.getMessage(), 3);
 	    e.printStackTrace();
+	    ClsLogging.writeFileLogWithoutSession("SIGASvlProcesoAutomaticoEnvios.handleNotification() - FIN", 3);
 	}
-
  } 
-
 }
 
 

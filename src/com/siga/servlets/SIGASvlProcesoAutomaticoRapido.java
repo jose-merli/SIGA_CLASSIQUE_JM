@@ -125,6 +125,7 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
 	}
 
 	public void handleNotification(Notification notif, Object handback){
+		ClsLogging.writeFileLogWithoutSession("SIGASvlProcesoAutomaticoRapido.handleNotification() - INICIO", 3);
 		Object userData = (Object)notif.getUserData();
 		
 		//Como actualmente se necesita un unico String solo esta implementado esto.
@@ -140,9 +141,11 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
 				Object ret = url.getContent();
 				
 				ClsLogging.writeFileLogWithoutSession(" - OK.  >>>  Ejecutando Notificación: \"" + sNombreProceso + "\".", 3);
+				ClsLogging.writeFileLogWithoutSession("SIGASvlProcesoAutomaticoRapido.handleNotification() - FIN", 3);
 			}
 			catch(Exception e){
-				ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" ejecutada ERROR. ", 3);
+				ClsLogging.writeFileLogWithoutSession("ERROR - Notificación \"" + sNombreProceso + "\" ejecutada ERROR. ", 3);
+				ClsLogging.writeFileLogWithoutSession("SIGASvlProcesoAutomaticoRapido.handleNotification() - FIN", 3);
 				e.printStackTrace();
 			}
 			
@@ -173,24 +176,24 @@ public class SIGASvlProcesoAutomaticoRapido extends SIGAServletAdapter implement
                     }
                 }
                
-               
                 URL url = new URL(urlAndParameters.toString());
                 Object ret = url.getContent();
-			ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" con hashtable como parametro no implementada. ", 3);
+				ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" con hashtable como parametro no implementada. ", 3);
+				ClsLogging.writeFileLogWithoutSession("SIGASvlProcesoAutomaticoRapido.handleNotification() - FIN", 3);
             }catch(Exception e){
-				ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" ejecutada ERROR. ", 3);
+				ClsLogging.writeFileLogWithoutSession("ERROR - Notificación \"" + sNombreProceso + "\" ejecutada ERROR. ", 3);
+				ClsLogging.writeFileLogWithoutSession("SIGASvlProcesoAutomaticoRapido.handleNotification() - FIN", 3);
 				e.printStackTrace();
 			}
 		}else if (userData instanceof MasterBean) {
 			MasterBean masterBean = (MasterBean) userData;
 			ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" con MasterBean como parametro no implementada. ", 3);
-			
+			ClsLogging.writeFileLogWithoutSession("SIGASvlProcesoAutomaticoRapido.handleNotification() - FIN", 3);
 			
 		}else{
 			ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" con "+userData.getClass().getName()+" parametro no implementada. ", 3);
+			ClsLogging.writeFileLogWithoutSession("SIGASvlProcesoAutomaticoRapido.handleNotification() - FIN", 3);
 		}
-
-		
 	} 
 
 	/**

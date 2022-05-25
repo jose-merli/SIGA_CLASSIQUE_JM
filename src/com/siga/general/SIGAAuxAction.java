@@ -74,49 +74,58 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 		String aux = "";
 		
 		try {
-			
-			
-			
 			// RGG 03-03-2005 cambio para controlar la sesion
+			ClsLogging.writeFileLog("SIGAAuxAction.execute() - INICIO", 3);
 			try {
+				ClsLogging.writeFileLog("SIGAAuxAction.execute() - testSession", 3);
 				testSession(request,response,this.getServlet());
 			} catch (ClsExceptions e) {
-
-				ClsLogging.writeFileLog("USRBEAN nulo",request,5);
+				ClsLogging.writeFileLogError("ERROR en respuesta de testSession(): " + e.getMessage(), e, 3);
+				ClsLogging.writeFileLog("USRBEAN nulo", request, 5);
 				return mapping.findForward("inicioGlobal");
 			}
-
+			
+			ClsLogging.writeFileLog("SIGAAuxAction.execute() - testAccess()", 3);
 			String access=testAccess(request);
-			if (!access.equals(SIGAConstants.ACCESS_READ) && 
-					!access.equals(SIGAConstants.ACCESS_FULL)) {
-				ClsLogging.writeFileLog("Acceso denegado",request,3);
+			if (!access.equals(SIGAConstants.ACCESS_READ) && !access.equals(SIGAConstants.ACCESS_FULL)) {
+				ClsLogging.writeFileLog("SIGAAuxAction.execute() - Entra if testAccess()", 3);
+				ClsLogging.writeFileLog("Acceso denegado", request, 3);
 				return mapping.findForward("accesodenegado");
 			}
-
+			
+			ClsLogging.writeFileLog("SIGAAuxAction.execute() - Obtiene la sesion", 3);
 			HttpSession ses = request.getSession();
-			if (ses.isNew())
-			{
-				ClsLogging.writeFileLogError("Sesión nueva",request,3);
+			
+			if (ses.isNew()){
+				ClsLogging.writeFileLog("SIGAAuxAction.execute() - La sesion es nueva", 3);
+				ClsLogging.writeFileLogError("Sesión nueva", request, 3);
 				return mapping.findForward("inicioGlobal");
 			}
+			
+			ClsLogging.writeFileLog("SIGAAuxAction.execute() - Obtiene el USRBEAN", 3);
 			usrbean=(UsrBean)ses.getAttribute("USRBEAN");
-			if (usrbean==null)
-			{
+			
+			if (usrbean==null){
+				ClsLogging.writeFileLog("SIGAAuxAction.execute() - El USRBEAN es nulo", 3);
 				ClsLogging.writeFileLog("USRBEAN nulo",request,5);
 				return mapping.findForward("inicioGlobal");
 			}
 			// RGG 03-03-2005 FIN CAMBIO 
 
-		} catch(ClsExceptions e)		{
+		} catch(ClsExceptions e) {
+			ClsLogging.writeFileLogError("ERROR - SIGAAuxAction.execute(): " + e.getMessage(), e, 3);
 			SIGAException ce = new SIGAException(e);
 			ce.prepare(request);
 			return mapping.findForward("exception");
 		} catch (Exception e) { 
+			ClsLogging.writeFileLogError("ERROR - SIGAAuxAction.execute(): " + e.getMessage(), e, 3 );
 			SIGAException ce = new SIGAException(e);
 			ce.prepare(request);
 			return mapping.findForward("exception");
 		}
+		
 		try {
+			ClsLogging.writeFileLog("SIGAAuxAction.execute() - Comienza parte de formulario", 3);
 			AuxForm miForm = (AuxForm) formulario;
 			if (miForm != null) {
 				aux = miForm.getAccion() + "/" + miForm.getModo();
@@ -134,19 +143,22 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 				try {
 					SessionForms.check(request, (BaseForm) miForm);
 				} catch (ClsExceptions e) {
+					ClsLogging.writeFileLogError("ERROR -  - SIGAAuxAction.execute(): " + e.getMessage(), e, 3 );
 					throw new SIGAException("messages.general.error",e);
 				}
 			}
-
+			ClsLogging.writeFileLog("SIGAAuxAction.execute() - Return llamando a executeInternal()", 3);
 			return executeInternal(mapping,formulario,request,response);
 
 		} catch (SIGAException se) {
-			//ClsLogging.writeFileLogError(se.getMessage(),se,3);
+			ClsLogging.writeFileLogError("ERROR - SIGAAuxAction.execute(): " + se.getMessage(), se, 3);
+
 			if (formulario!=null && "TRUE".equalsIgnoreCase(((MasterForm)formulario).getModal()))  {
 				request.setAttribute("exceptionTarget", "parent.modal");
 			}
 			se.prepare(request);
 			return mapping.findForward("exception");
+			
 		} finally {
 			Date fin = new Date();
 			ClsLogging.writeFileLog("++++++    FIN    ++++++++  TIEMPO:" +new Long((fin.getTime()-ini.getTime())).toString() + " milisegundos. + " + sali,10);
@@ -157,10 +169,12 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 				String fecha = sdfLong.format(dat);
 				ClsLogging.writeFileLog(fecha + ",==> SIGA: Control de tiempo de transacciones (>3 seg.)," +request.getRequestURL() + "?" + aux +  "," + usrbean.getLocation() + "," + usrbean.getUserName() +","+new Long((fin.getTime()-ini.getTime())).toString(),10);
 			}
+			ClsLogging.writeFileLog("SIGAAuxAction.execute() - FIN", 3);
 		}
 	}
 
 	private boolean isBaseForm(ActionForm formulario) {
+		ClsLogging.writeFileLog("SIGAAuxAction.isBaseForm() - INICIO", 3);
 		if (formulario == null)
 			return false;
 		
@@ -170,7 +184,7 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 				return true;
 			superClass = superClass.getSuperclass();
 		}
-		
+		ClsLogging.writeFileLog("SIGAAuxAction.isBaseForm() - FIN", 3);
 		return false;
 	}
 
@@ -229,100 +243,86 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 		return access;
 	}
 
-
 	/**
 	 * 
 	 * @param request
 	 */
-	private void informacionSesion (HttpServletRequest request) 
-	{
+	private void informacionSesion (HttpServletRequest request){
 		int loglevel = 10;
 		try {
+			ClsLogging.writeFileLog("SIGAAuxAction.informacionSesion() - INICIO", 3);
 			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 			//			ReadProperties rp=new ReadProperties("SIGA.properties");
-			try
-			{
+			try{
 				// Obtenemos el loglevel de properties
+				ClsLogging.writeFileLog("SIGAAuxAction.informacionSesion() - Obtiene el loglevel de properties", 3);
 				loglevel = Integer.parseInt(rp.returnProperty("LOG.level").trim());
 			} catch (Exception nfe){ }
 
 			// Si el loglevel es 11 entonces muestra el valor de la session
 			if (loglevel>=11) {
+				ClsLogging.writeFileLog("SIGAAuxAction.informacionSesion() - El loglevel es mayor o igual a 11", 3);
 				HttpSession ses = request.getSession();
 				Enumeration enum1 = ses.getAttributeNames();
-				System.out.println("-----------------------------------");
-				System.out.println("-------- datos de sesion ----------");
+				ClsLogging.writeFileLog("-----------------------------------", 3);
+				ClsLogging.writeFileLog("-------- datos de sesion ----------", 3);
 				while (enum1.hasMoreElements()) {
-					String clave =(String) enum1.nextElement();
+					String clave = (String) enum1.nextElement();
 					Object valor = ses.getAttribute(clave);
 					if (valor instanceof String) {
-						System.out.println(clave + ": " + valor.toString());
-					} else 
-						if (valor instanceof Integer) {
-							System.out.println(clave + ": " + ((Integer)valor).toString());
-						} else 
-							if (valor instanceof Long) {
-								System.out.println(clave + ": " + ((Long)valor).toString());
-							} else 
-								if (valor instanceof Double) {
-									System.out.println(clave + ": " + ((Double)valor).toString());
-								} else 
-									if (valor instanceof Hashtable) {
-										Hashtable ht = (Hashtable)valor;
-										System.out.println(clave + " (Hashtable)");
-										Enumeration enum2 = ht.keys();
-										while (enum2.hasMoreElements()) {
-											String clave2 =(String) enum2.nextElement();
-											Object valor2 = ht.get(clave2);
-											System.out.println("  - "+clave2 + ": " + valor2.toString() + "(" + valor2.getClass().getName()+")");
-										}
-									} else 
-										if (valor instanceof RowsContainer) {
-											RowsContainer rc = (RowsContainer)valor;
-											System.out.println(clave + " (RowsContainer)");
-											Vector v = rc.getAll();
-											for (int i=0;i<v.size();i++) {
-												System.out.println("  - "+v.get(i).toString());
-											}
-										} else 
-											if (valor instanceof Vector) {
-												Vector v = (Vector)valor;
-												System.out.println(clave + " (Vector)");
-												for (int i=0;i<v.size();i++) {
-													System.out.println("  - "+v.get(i).toString()  + "(" + v.get(i).getClass().getName()+")");
-												}
-											} else 
-												if (valor instanceof ArrayList) {
-													ArrayList v = (ArrayList)valor;
-													System.out.println(clave + " (ArrayList)");
-													for (int i=0;i<v.size();i++) {
-														System.out.println("  - "+v.get(i).toString()  + "(" + v.get(i).getClass().getName()+")");
-													}
-												} else 
-													if (valor instanceof UsrBean) {
-														UsrBean u = (UsrBean)valor;
-														System.out.println(clave + " (UsrBean)");
-													} else 
-														if (valor instanceof MasterForm) {
-															System.out.println(clave + ": "+ "(" + valor.getClass().getName()+")");
-														} else {
-															System.out.println(clave + ": "+ "(" + valor.getClass().getName()+")");
-														}
-
-					System.out.println(". . . . . ");
-
+						ClsLogging.writeFileLog(clave + ": " + valor.toString(), 3);
+					} else if (valor instanceof Integer) {
+						ClsLogging.writeFileLog(clave + ": " + ((Integer) valor).toString(), 3);
+					} else if (valor instanceof Long) {
+						ClsLogging.writeFileLog(clave + ": " + ((Long) valor).toString(), 3);
+					} else if (valor instanceof Double) {
+						ClsLogging.writeFileLog(clave + ": " + ((Double) valor).toString(), 3);
+					} else if (valor instanceof Hashtable) {
+						Hashtable ht = (Hashtable) valor;
+						ClsLogging.writeFileLog(clave + " (Hashtable)", 3);
+						Enumeration enum2 = ht.keys();
+						while (enum2.hasMoreElements()) {
+							String clave2 = (String) enum2.nextElement();
+							Object valor2 = ht.get(clave2);
+							ClsLogging.writeFileLog("  - " + clave2 + ": " + valor2.toString() + "(" + valor2.getClass().getName()
+									+ ")", 3);
+						}
+					} else if (valor instanceof RowsContainer) {
+						RowsContainer rc = (RowsContainer) valor;
+						ClsLogging.writeFileLog(clave + " (RowsContainer)", 3);
+						Vector v = rc.getAll();
+						for (int i = 0; i < v.size(); i++) {
+							ClsLogging.writeFileLog("  - " + v.get(i).toString(), 3);
+						}
+					} else if (valor instanceof Vector) {
+						Vector v = (Vector) valor;
+						ClsLogging.writeFileLog(clave + " (Vector)", 3);
+						for (int i = 0; i < v.size(); i++) {
+							ClsLogging.writeFileLog("  - " + v.get(i).toString() + "(" + v.get(i).getClass().getName() + ")", 3);
+						}
+					} else if (valor instanceof ArrayList) {
+						ArrayList v = (ArrayList) valor;
+						ClsLogging.writeFileLog(clave + " (ArrayList)", 3);
+						for (int i = 0; i < v.size(); i++) {
+							ClsLogging.writeFileLog("  - " + v.get(i).toString() + "(" + v.get(i).getClass().getName() + ")", 3);
+						}
+					} else if (valor instanceof UsrBean) {
+						UsrBean u = (UsrBean) valor;
+						ClsLogging.writeFileLog(clave + " (UsrBean)", 3);
+					} else if (valor instanceof MasterForm) {
+						ClsLogging.writeFileLog(clave + ": " + "(" + valor.getClass().getName() + ")", 3);
+					} else {
+						ClsLogging.writeFileLog(clave + ": " + "(" + valor.getClass().getName() + ")", 3);
+					}
+					ClsLogging.writeFileLog(". . . . . ", 3);
 				}
-				System.out.println("-----------------------------------");
-
+				ClsLogging.writeFileLog("-----------------------------------", 3);
 			}
-		}
-		catch (Exception e){ 
-
+			ClsLogging.writeFileLog("SIGAAuxAction.informacionSesion() - FIN", 3);
+		} catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR - SIGAAuxAction.informacionSesion(): " + e.getMessage(), e, 3);
 		}
 	}
-
-
-
 
 	/*
 	 * Metodos para recuperar informacion del UserBean

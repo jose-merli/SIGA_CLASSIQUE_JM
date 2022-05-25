@@ -113,7 +113,8 @@ public class SIGASvlProcesoAutomaticoFacturacion extends SIGAServletAdapter impl
  }
 
  public void handleNotification(Notification notif, Object handback) {
-    ClsLogging.writeFileLogWithoutSession(" - INVOCANDO...  >>>  Ejecutando Notificación: \"" + sNombreProceso + "\".", 3);
+	 ClsLogging.writeFileLogWithoutSession("SIGASvlProcesoAutomaticoFacturacion.handleNotification() - INICIO", 3);
+	 ClsLogging.writeFileLogWithoutSession(" - INVOCANDO...  >>>  Ejecutando Notificación: \"" + sNombreProceso + "\".", 3);
 
 	try {
 	    // invocamos al servlet
@@ -121,9 +122,11 @@ public class SIGASvlProcesoAutomaticoFacturacion extends SIGAServletAdapter impl
 	    Object ret = url.getContent();
 	    ClsLogging.writeFileLogWithoutSession(" - OK.  >>>  Ejecutando Notificación: \"" + sNombreProceso + "\".", 3);
 	    //ClsLogging.writeFileLogWithoutSession(" - OK. >>>  Ejecutando Notificación: \"" + urlSiga+ "SIGASvlProcesoFacturacion.svrl" + "\"", 3);
+	    ClsLogging.writeFileLogWithoutSession("SIGASvlProcesoAutomaticoFacturacion.handleNotification() - FIN", 3);
 	    
 	} catch(Exception e) {
-	    ClsLogging.writeFileLogWithoutSession(" - Notificación \"" + sNombreProceso + "\" ejecutada ERROR. ", 3);
+	    ClsLogging.writeFileLogWithoutSession("ERROR - Notificación \"" + sNombreProceso + "\" ejecutada ERROR. ", 3);
+	    ClsLogging.writeFileLogWithoutSession("SIGASvlProcesoAutomaticoFacturacion.handleNotification() - FIN", 3);
 	    e.printStackTrace();
 	}
  }
