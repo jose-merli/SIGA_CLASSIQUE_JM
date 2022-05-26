@@ -94,7 +94,8 @@ public class CenColaCambioLetradoAdm extends MasterBeanAdministrador
 			bean.setIdTipoCambio(UtilidadesHash.getInteger(hash, CenColaCambioLetradoBean.C_IDTIPOCAMBIO));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash, CenColaCambioLetradoBean.C_USUMODIFICACION));
 		}
-		catch (Exception e) { 
+		catch (Exception e) {
+			ClsLogging.writeFileLog("ERROR - CenColaCambioLetradoAdm.hashTableToBean(): " + e.getMessage(), 0);
 			bean = null;	
 			throw new ClsExceptions (e, "Error al construir el bean a partir del hashTable");
 		}
@@ -119,6 +120,7 @@ public class CenColaCambioLetradoAdm extends MasterBeanAdministrador
 			UtilidadesHash.set(htData, CenColaCambioLetradoBean.C_USUMODIFICACION, 		b.getUsuMod());
 		}
 		catch (Exception e) {
+			ClsLogging.writeFileLog("ERROR - CenColaCambioLetradoAdm.beanToHashTable(): " + e.getMessage(), 0);
 			htData = null;
 			throw new ClsExceptions (e, "Error al crear el hashTable a partir del bean");
 		}
@@ -145,6 +147,7 @@ public class CenColaCambioLetradoAdm extends MasterBeanAdministrador
 			return this.insert (bean);
         }
         catch (Exception e) {
+        	ClsLogging.writeFileLog("ERROR - CenColaCambioLetradoAdm.insertarCambioEnCola(): " + e.getMessage(), 0);
             e.printStackTrace ();
             this.setError (e.getMessage () + " (" + 
             		CenColaCambioLetradoBean.T_NOMBRETABLA + ")");
@@ -174,7 +177,8 @@ public class CenColaCambioLetradoAdm extends MasterBeanAdministrador
 			}
 			throw new ClsExceptions ("Error al obtener el id del cambio en B.D."); 
 		}
-		catch (Exception e) { 	
+		catch (Exception e) {
+			ClsLogging.writeFileLog("ERROR - CenColaCambioLetradoAdm.getNuevoId(): " + e.getMessage(), 0);
 			throw new ClsExceptions (e, "Error al obtener el id del cambio en B.D."); 
 		}
 	} //getNuevoId()
@@ -222,7 +226,7 @@ public class CenColaCambioLetradoAdm extends MasterBeanAdministrador
 					tx.commit();
 
 				} catch (Exception e) {
-					log.write("Error: " + e.getMessage());
+					log.write("ERROR - CenColaCambioLetradoAdm.chequearCola(): " + e.getMessage());
 					tx.rollback();
 				} finally {
 					vCola = this.selectFirst();
@@ -232,7 +236,7 @@ public class CenColaCambioLetradoAdm extends MasterBeanAdministrador
 			Date dat = Calendar.getInstance().getTime();
 			SimpleDateFormat sdfLong = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); 
 			String fecha = sdfLong.format(dat);
-			ClsLogging.writeFileLog(fecha + ": Error al configurar el tratamiento de la cola de cambio de letrado", 0);
+			ClsLogging.writeFileLog("ERROR: " + fecha + ": Error al configurar el tratamiento de la cola de cambio de letrado", 0);
 		}
 	} //chequearCola()
 }
