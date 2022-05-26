@@ -152,7 +152,7 @@ public class AccessControl implements SIGAConstants, Serializable {
 			//ORA-00923: palabra clave FROM no encontrada donde se esperaba
 			//ORA-00933: comando SQL no terminado correctamente
 			//	                   throw new ClsExceptions("Error en sentencia SQL, " + e.toString(), "","","","");
-			ClsLogging.writeFileLogError("ERROR: " + e.toString(), e, 1);
+			ClsLogging.writeFileLogError("ERROR - AccessControl.getProcess(): " + e.toString(), e, 1);
 		}
 	}
 	
@@ -187,7 +187,7 @@ public class AccessControl implements SIGAConstants, Serializable {
 			//ORA-00923: palabra clave FROM no encontrada donde se esperaba
 			//ORA-00933: comando SQL no terminado correctamente
 			//	                   throw new ClsExceptions("Error en sentencia SQL, " + e.toString(), "","","","");
-			ClsLogging.writeFileLogError("ERROR: " + e.toString(),e, 1);
+			ClsLogging.writeFileLogError("ERROR - AccessControl.rellenaProcesosHidden(): " + e.toString(),e, 1);
 
 		} finally {
 

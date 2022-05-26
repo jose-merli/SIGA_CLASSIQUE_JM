@@ -340,7 +340,7 @@ public class ClsLogging{
 		        printer.flush();
 				printer.close();  
 		    } catch (Exception eee) {
-		    	logger.error("ERROR: " + eee.getMessage());
+//		    	logger.error("ERROR - ClsLogging.writeFileLog(): " + eee.getMessage());
 		    }
 		}
 	}
@@ -440,7 +440,7 @@ public class ClsLogging{
 		        printer.flush();
 				printer.close();
 		    } catch (Exception eee) {
-		    	logger.error("ERROR: " + eee.getMessage());
+//		    	logger.error("ERROR - ClsLogging.writeFileLogError(): " + eee.getMessage());
 		    }
 		}
 	}
@@ -491,7 +491,7 @@ public class ClsLogging{
 		        printer.flush();
 				printer.close(); 
 		    } catch (Exception eee) {
-		    	logger.error("ERROR: " + eee.getMessage());
+//		    	logger.error("ERROR - ClsLogging.writeFileLogWithoutSession(): " + eee.getMessage());
 		    }
 		}
 	}
@@ -537,7 +537,7 @@ public class ClsLogging{
 		        printer.flush();
 				printer.close();
 		    } catch (Exception eee) {
-		    	logger.error("ERROR: " + eee.getMessage());
+//		    	logger.error("ERROR - ClsLogging.writeFileLogWithoutSession(): " + eee.getMessage());
 		    }
 		}
 	}
@@ -559,8 +559,5 @@ public class ClsLogging{
 		else if(e instanceof ServletException){ 
 			return false;
 		}
-		
-		
-		
 		return true;
 }}

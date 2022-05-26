@@ -77,7 +77,7 @@ public class SIGALogging
 		    try {
 		        printer.close();
 		    } catch (Exception eee) {
-		    	logger.error("ERROR: " + eee.getMessage());
+		    	logger.error("ERROR - SIGALogging.write(): " + eee.getMessage());
 		    }
 			logger.error("Error Escribiendo SIGALogging: "+_ex.toString());
 		}
@@ -97,7 +97,7 @@ public class SIGALogging
 		    try {
 		        printer.close();
 		    } catch (Exception eee) {
-		    	logger.error("ERROR: " + eee.getMessage());
+		    	logger.error("ERROR - SIGALogging.writeLimpio(): " + eee.getMessage());
 		    }
 			logger.error("Error Escribiendo SIGALogging: "+_ex.toString());
 		}
@@ -117,7 +117,7 @@ public class SIGALogging
 		    try {
 		        printer.close();
 		    } catch (Exception eee) {
-		    	logger.error("ERROR: " + eee.getMessage());
+		    	logger.error("ERROR - SIGALogging.writeLimpioError(): " + eee.getMessage());
 		    }
 			logger.error("Error Escribiendo SIGALogging: "+_ex.toString());
 		}
@@ -154,7 +154,7 @@ public class SIGALogging
 		    try {
 		        printer.close();
 		    } catch (Exception eee) {
-		    	logger.error("ERROR: " + eee.getMessage());
+		    	logger.error("ERROR - SIGALogging.writeLogFactura(): " + eee.getMessage());
 		    }
 			logger.error("Error Escribiendo SIGALogging para log de facturacion: "+_ex.toString());
 		}
@@ -181,7 +181,7 @@ public class SIGALogging
 		    try {
 		        printer.close();
 		    } catch (Exception eee) {
-		    	logger.error("ERROR: " + eee.getMessage());
+		    	logger.error("ERROR - SIGALogging.writeLogTraspasoFactura(): " + eee.getMessage());
 		    }
 			logger.error("Error Escribiendo SIGALogging para log de facturacion: "+_ex.toString());
 		}
@@ -221,7 +221,7 @@ public class SIGALogging
 		    try {
 		        printer.close();
 		    } catch (Exception eee) {
-		    	logger.error("ERROR: " + eee.getMessage());
+		    	logger.error("ERROR - SIGALogging.writeLogGestorColaSincronizarDatos(): " + eee.getMessage());
 		    }
 			logger.error("Error Escribiendo SIGALogging para log de facturacion: "+_ex.toString());
 		}

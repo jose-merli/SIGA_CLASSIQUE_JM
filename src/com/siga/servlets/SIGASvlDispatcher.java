@@ -248,7 +248,7 @@ public class SIGASvlDispatcher extends HttpServlet {
       //ORA-00923: palabra clave FROM no encontrada donde se esperaba
       //ORA-00933: comando SQL no terminado correctamente
 //                 throw new ClsExceptions("Error en sentencia SQL, " + e.toString(), "","","","");
-      ClsLogging.writeFileLogError("ERROR: "+e.toString(),request,1);
+      ClsLogging.writeFileLogError("ERROR - SIGASvlDispatcher.chkAccessType(): "+e.toString(),request,1);
 
     }finally{
 
@@ -300,7 +300,7 @@ public class SIGASvlDispatcher extends HttpServlet {
       //ORA-00923: palabra clave FROM no encontrada donde se esperaba
       //ORA-00933: comando SQL no terminado correctamente
 //                 throw new ClsExceptions("Error en sentencia SQL, " + e.toString(), "","","","");
-      ClsLogging.writeFileLogError("ERROR: "+e.toString(),request,1);
+      ClsLogging.writeFileLogError("ERROR - SIGASvlDispatcher.chkTransaction(): "+e.toString(),request,1);
 
     }finally{
 

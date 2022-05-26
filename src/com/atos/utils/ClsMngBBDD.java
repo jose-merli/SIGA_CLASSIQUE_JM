@@ -228,7 +228,7 @@ public final class ClsMngBBDD {
 
     /******************/
 
-    ClsLogging.writeFileLogWithoutSession("ERROR: " + description, 1);
+    ClsLogging.writeFileLogWithoutSession("ERROR - ClsMngBBDD.writeError(): " + description, 1);
     int sec = nextSequenceValue(ExceptionManager.SN_ERROR_SEQ);
     try {
       String query = "INSERT INTO "+ExceptionManager.TN_ERRORS+

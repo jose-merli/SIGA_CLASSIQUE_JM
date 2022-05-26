@@ -216,7 +216,7 @@ public class SIGADispatcher extends SIGAActionBase {
 	        //ORA-00923: palabra clave FROM no encontrada donde se esperaba
 	        //ORA-00933: comando SQL no terminado correctamente
 //	                   throw new ClsExceptions("Error en sentencia SQL, " + e.toString(), "","","","");
-	        ClsLogging.writeFileLogError("ERROR: "+e.toString(),request,3);
+	        ClsLogging.writeFileLogError("ERROR - SIGADispatcher.chkTransaction(): " + e.toString(), request, 3);
 	        ClsLogging.writeFileLogError("",e,3);
 	        
 	      }finally{
