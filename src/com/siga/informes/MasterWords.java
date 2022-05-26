@@ -451,6 +451,7 @@ public class MasterWords {
 	}
 
 	public static void precargaInformes() {
+		ClsLogging.writeFileLog("MasterWords.precargaInformes() - INICIO");
 		File salida = null;
 
 		try {
@@ -477,7 +478,7 @@ public class MasterWords {
 //			ClsLogging.writeFileLog("ERROR al precargar informes aspose.words: " + e.toString(), 3);
 			ClsLogging.writeFileLogError("ERROR al precargar informes aspose.words: " + e.getMessage(), e, 3);
 		} finally {
-
+			ClsLogging.writeFileLog("MasterWords.precargaInformes() - FIN");
 		}
 	}
 
