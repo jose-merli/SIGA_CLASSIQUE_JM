@@ -201,6 +201,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 
 		catch (Exception e)
 		{
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.hashTableToBean(): " + e.getMessage(), e, 1);
 			bean = null;
 			throw new ClsExceptions (e, "Error al construir el bean a partir del hashTable");
 		}
@@ -242,8 +243,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 
 		catch (Exception e)
 		{
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.beanToHashTable(): " + e.getMessage(), e, 1);
 			htData = null;
-
 			throw new ClsExceptions (e, "Error al crear el hashTable a partir del bean");
 		}
 
@@ -384,6 +385,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				return paginador;
 		}
 		catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.buscarEnvio(): " + e.getMessage(), e, 1);
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
 		}
 		
@@ -520,6 +522,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			}
 		}
 		catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getDestinatariosManuales(): " + e.getMessage(), e, 1);
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
 		}
 		return datos;
@@ -595,6 +598,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			}
 		}
 		catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getListasDestinatarias(): " + e.getMessage(), e, 1);
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
 		}
 		return datos;
@@ -679,6 +683,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			}
 		}
 		catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getRemitentes(): " + e.getMessage(), e, 1);
 			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
 		}
 		return datos;
@@ -711,6 +716,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
  		    direcciones = direccionesAdm.selectDirecciones(Long.valueOf(idPersona),Integer.valueOf(idInstitucion), false);
  		}
  		catch (Exception e) {
+ 			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getDirecciones(): " + e.getMessage(), e, 1);
  			throw new ClsExceptions (e, "Error al ejecutar el 'select' en B.D.");
  		}
 
@@ -874,6 +880,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         	this.copiarRemitentesDesdePlantilla(idInstitucion, id, idTipoEnvio, idPlantilla);
         }
         catch (Exception e) {
+        	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.copiarCamposPlantilla(): " + e.getMessage(), e, 1);
         	throw new ClsExceptions(e, "Error al copiar remitentes en el envio");
         }
     }
@@ -923,7 +930,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    			try {
 								htDatosEnvio.put("EXP_FECHA_ALERTA", GstDate.getFormatedDateLong("",expAlertaBean.getFechaAlerta()));
 							} catch (Exception e) {
-
+								ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.copiarCamposPlantilla() Error al añadir el campo EXP_FECHA_ALERTA: " + e.getMessage(), e, 1);
 							}
 	    	    			htDatosEnvio.put("EXP_TIPO", expAlertaBean.getTipoExpediente().getNombre());
 	    	    			if (expAlertaBean.getFase() != null){
@@ -967,7 +974,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    	    			try {
 								htDatosEnvio.put("EXP_FECHA_ALERTA", GstDate.getFormatedDateLong("",expAlertaBean.getFechaAlerta()));
 							} catch (Exception e) {
-
+								ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.copiarCamposPlantilla() Error al añadir el campo EXP_FECHA_ALERTA: " + e.getMessage(), e, 1);
 								
 							}
 	    	    			htDatosEnvio.put("EXP_TIPO", expAlertaBean.getTipoExpediente().getNombre());
@@ -1029,6 +1036,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         	this.copiarRemitentesDesdePlantilla(idInstitucion, id, idTipoEnvio, idPlantilla);
         }
         catch (Exception e) {
+        	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.copiarCamposPlantilla(): " + e.getMessage(), e, 1);
         	throw new ClsExceptions(e, "Error al copiar remitentes en el envio");
         }
     }
@@ -1166,6 +1174,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         	}       		
         }
         catch (Exception e1) {
+        	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.copiarRemitentesDesePlantilla(): " + e1.getMessage(), e1, 1);
             throw new SIGAException("messages.general.error",e1);
         }
     }
@@ -1212,6 +1221,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
     		}
         } 
         catch (Exception e1) {
+        	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.addRemitentesDesdePlantilla(): " + e1.getMessage(), e1, 1);
             throw new SIGAException("Error al copiar remitentes desde plantilla",e1);
         }
     }
@@ -1258,9 +1268,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		    } 
         } 
         catch (SIGAException e1) {
+        	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.addRemitentesPorDefecto(): " + e1.getMessage(), e1, 1);
             throw e1;
         } 
         catch (Exception e1) {
+        	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.addRemitentesPorDefecto(): " + e1.getMessage(), e1, 1);
             throw new SIGAException("Error al añadir los remitentes por defecto",e1);
         }
     }
@@ -1280,6 +1292,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	        d = sdf.parse(envioBean.getFechaCreacion());
 	        cal.setTime(d);
 	    } catch (ParseException e1) {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getPathEnvio(): " + e1.getMessage(), e1, 1);
 	    	throw new ClsExceptions(e1,e1.getMessage());
 	    }
 	    String anio = String.valueOf(cal.get(Calendar.YEAR));
@@ -1290,6 +1303,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		try {
 	        pathDoc = docAdm.getPathDocumentosFromDB();
 	    } catch (ClsExceptions e2) {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getPathEnvio(): " + e2.getMessage(), e2, 1);
 	    	throw e2;
 	    }
 	
@@ -1313,6 +1327,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	        d = sdf.parse(envioBean.getFechaCreacion());
 	        cal.setTime(d);
 	    } catch (ParseException e1) {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getPathEnvio(): " + e1.getMessage(), e1, 1);
 	    	throw new ClsExceptions(e1,e1.getMessage());
 	    }
 	    String anio = String.valueOf(cal.get(Calendar.YEAR));
@@ -1323,6 +1338,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		try {
 	        pathDoc = docAdm.getPathDocumentosFromDB();
 	    } catch (ClsExceptions e2) {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getPathEnvio(): " + e2.getMessage(), e2, 1);
 	    	throw e2;
 	    }
 	
@@ -1358,6 +1374,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            sAsunto = camposEnviosBean.getValor();
 	        }
         } catch (ClsExceptions e) {
+        	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getAsunto(): " + e.getMessage(), e, 1);
             throw new ClsExceptions(e,"Error obteniendo los datos del destinatario");
         }
         return sAsunto;
@@ -1383,6 +1400,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	        	sCuerpo = camposEnviosBean.getValor();
 	        }
 	    } catch (ClsExceptions e) {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getCuerpo(): " + e.getMessage(), e, 1);
 	        throw new ClsExceptions(e,"Error obteniendo el cuerpo del mensaje");
 	    }
 	    return sCuerpo;
@@ -1408,6 +1426,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	        	sCuerpo = camposEnviosBean.getValor();
 	        }
 	    } catch (ClsExceptions e) {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getCuerpoSMS(): " + e.getMessage(), e, 1);
 	        throw new ClsExceptions(e,"Error obteniendo el cuerpo del mensaje");
 	    }
 	    return sCuerpo;
@@ -1444,6 +1463,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            camposEnviosAdm.insert(camposEnviosBean);
 	        }
 	    } catch (ClsExceptions e) {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.setAsunto(): " + e.getMessage(), e, 1);
 	        throw new SIGAException("messages.envios.error.establecerasunto",e);
 	    }
 	}
@@ -1479,6 +1499,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            camposEnviosAdm.insert(camposEnviosBean);
 	        }
 	    } catch (ClsExceptions e) {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.setCuerpo(): " + e.getMessage(), e, 1);
 	        throw new ClsExceptions(e, "Error estableciendo el cuerpo del mensaje");
 	    }
 	}
@@ -1514,6 +1535,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            camposEnviosAdm.insert(camposEnviosBean);
 	        }
 	    } catch (ClsExceptions e) {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.setTextoSms(): " + e.getMessage(), e, 1);
 	        throw new ClsExceptions(e, "Error estableciendo el cuerpo del mensaje");
 	    }
 	}
@@ -1655,11 +1677,13 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
             htDatos.put("IDENVIO",idEnvio.toString());
 
 	        return htDatos;
-        } catch (SIGAException e) {	                
+        } catch (SIGAException e) {	
+        	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getDatosEnvio(): " + e.getMessage(), e, 1);
             throw e;
 		}
 		catch(Exception e)
 		{
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getDatosEnvio(): " + e.getMessage(), e, 1);
 			throw new ClsExceptions(e,"Error obteniendo los datos del destinatario");
 		}
 	}
@@ -1787,6 +1811,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		                
 		            	} catch(Exception e)
 		                {
+		            		ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.darFormatoCampos(): " + e.getMessage(), e, 1);
 		                    throw new ClsExceptions(e, "Error al dar formato fecha");
 		                }
 		                
@@ -1800,6 +1825,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    }
 	    catch(Exception e)
 	    {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.buscarEnvio(): " + e.getMessage(), e, 1);
 	        throw new ClsExceptions(e, "Error al dar formato a los campos");
 	    }
 
@@ -1892,6 +1918,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	        	sCuerpo = camposEnviosBean.getValor();
 	        }
 	    } catch (ClsExceptions e) {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getCamposCorreoElectronico(): " + e.getMessage(), e, 1);
 	        throw new ClsExceptions(e,"Error obteniendo el cuerpo del mensaje");
 	    }
 
@@ -1903,6 +1930,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	        	sAsunto = camposEnviosBean.getValor();
 	        }
 	    } catch (ClsExceptions e) {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getCamposCorreoElectronico(): " + e.getMessage(), e, 1);
 	        throw new ClsExceptions(e,"Error obteniendo el asunto del mensaje");
 	    }
 
@@ -1953,6 +1981,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            sTexto = camposEnviosBean.getValor();
 	        }
 	    } catch (ClsExceptions e) {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getTextoSMS(): " + e.getMessage(), e, 1);
 	        throw new ClsExceptions(e,"Error obteniendo el texto del mensaje");
 	    }
 	    EnvCamposEnviosAdm admCampos = new EnvCamposEnviosAdm(this.usrbean);            
@@ -1963,6 +1992,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    try {
 	        htDatosEnvioForm = darFormatoCampos(envBean.getIdInstitucion(),envBean.getIdEnvio(),this.usrbean.getLanguage(), htDatosEnvio,vCampos);
 	    } catch (Exception e1) {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getTextoSMS(): " + e1.getMessage(), e1, 1);
 	        throw new ClsExceptions(e1,"Error dando formato a los campos del envío SMS o BuroSMS");
 	    }
 	    
@@ -1991,6 +2021,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			}
 			return sArchivo;
 		} catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.sustituirEtiquetas(): " + e.getMessage(), e, 1);
 			throw new ClsExceptions(e, "Error sustituyendo etiquetas");
 		}
 	}
@@ -2006,6 +2037,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         try {
             instBean = (CenInstitucionBean)instAdm.selectByPK(htPkIns).firstElement();
         } catch (ClsExceptions e) {
+        	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getDireccionPreferenteInstitucion(): " + e.getMessage(), e, 1);
             throw new SIGAException("messages.general.error",e);
         }
         Integer idPersona = instBean.getIdPersona();
@@ -2046,6 +2078,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			}
 			
 		}catch(Exception e){
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getDireccionPreferenteInstitucion(): " + e.getMessage(), e, 1);
             throw new ClsExceptions(e,"Error obteniendo la dirección preferente del destinatario");
 //	        throw new SIGAException("messages.envios.error.obtenciondestinatarios",e);
 	    }
@@ -2066,7 +2099,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 
 	private void insertarMensajeLogHT(EnvDestinatariosBean destBean, Hashtable htErrores, Exception e)
 	throws SIGAException{
-
+		ClsLogging.writeFileLog("EnvEnviosAdm.insertarMensajeLogHT() - INICIO");
 		String mensajeNuevo = "";
 	    String languageCode = "";
 	    String userCode = "";
@@ -2087,7 +2120,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		        ExceptionManager mgr = new ExceptionManager(e, languageCode, this.usrbean.getUserName(), null, this.usrbean.getLocation());
 		        ClsLogging.writeFileLogError(mgr.getLogCompleteMessage(languageCode), e, this.usrbean, 1);
 		      } catch (ClsExceptions ex) { 
-		      	ex.printStackTrace();
+		    	  ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.insertarMensajeLogHT(): " + ex.getMessage(), ex, 1);
+		    	  ex.printStackTrace();
 		      }
 		    }
 			if (e instanceof SIGAException) {
@@ -2112,8 +2146,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			}
 			
 			insertarMensajeLogHT(destBean,htErrores,mensajeNuevo);
-
 	    }
+	    ClsLogging.writeFileLog("EnvEnviosAdm.insertarMensajeLogHT() - FIN");
 	}
 
 	
@@ -2132,6 +2166,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	        }
 	        return salida;
 	    } catch (ClsExceptions e) {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.obtenerIdPersonaInstitucion(): " + e.getMessage(), e, 1);
 	        throw new SIGAException(e.getMessage());
 	    }	        
     }
@@ -2154,6 +2189,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	        if (borrar.exists()) borrar.delete();
 	        bwOut = new BufferedWriter(new FileWriter(sFicheroLog));
 	    } catch (Exception e1) {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.generarLogEnvioHT(): " + e1.getMessage(), e1, 1);
 	        throw new SIGAException("messages.general.error",e1);
 	    }
 	    
@@ -2380,6 +2416,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	                //bwOut.newLine();
 	                
 	            } catch (Exception e2) {
+	            	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.generarLogEnvioHT(): " + e2.getMessage(), e2, 1);
 	                throw new SIGAException("messages.general.error",e2);
 	            }
 	        
@@ -2390,6 +2427,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            bwOut.write("EL ENVIO NO TIENE DESTINATARIOS. NO SE HA ENVIADO NADA.");
 	            bwOut.newLine();
 	        } catch (Exception e2) {
+	        	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.generarLogEnvioHT(): " + e2.getMessage(), e2, 1);
 	            throw new SIGAException("messages.general.error",e2);
 	        }
 	    }
@@ -2397,6 +2435,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    try {
 	        bwOut.close();
 	    } catch (IOException e2) {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.generarLogEnvioHT(): " + e2.getMessage(), e2, 1);
 	        throw new SIGAException("messages.general.error",e2);
 	    }        
 	    
@@ -2418,6 +2457,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			        if (borrar.exists()) borrar.delete();
 			        bwOut = new BufferedWriter(new FileWriter(sFicheroLog));
 			    } catch (Exception e1) {
+			    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.generarLgEnvioHTTuneado(): " + e1.getMessage(), e1, 1);
 			        throw new SIGAException("messages.general.error",e1);
 			    }
 			    
@@ -2602,6 +2642,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			                //bwOut.newLine();
 			                
 			            } catch (Exception e2) {
+			            	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.generarLogEnvioHTTuneado(): " + e2.getMessage(), e2, 1);
 			                throw new SIGAException("messages.general.error",e2);
 			            }
 			        
@@ -2612,6 +2653,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			            bwOut.write("EL ENVIO NO TIENE DESTINATARIOS. NO SE HA ENVIADO NADA.");
 			            bwOut.newLine();
 			        } catch (Exception e2) {
+			        	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.generarLogEnvioHTTuneado(): " + e2.getMessage(), e2, 1);
 			            throw new SIGAException("messages.general.error",e2);
 			        }
 			    }
@@ -2619,6 +2661,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			    try {
 			        bwOut.close();
 			    } catch (IOException e2) {
+			    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.generarLogEnvioHTTuneado(): " + e2.getMessage(), e2, 1);
 			        throw new SIGAException("messages.general.error",e2);
 			    }        
 			    
@@ -2644,6 +2687,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	        
 	        bwOut = new BufferedWriter(new FileWriter(sFicheroLog));
 	    } catch (Exception e1) {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.generarLogEnvioExceptionHT(): " + e1.getMessage(), e1, 1);
 	        throw new ClsExceptions(e1,"Error al crear fichero de log Envios");
 	    }
 	    
@@ -2673,6 +2717,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	        bwOut.write(mensajeNuevo);
 	        //bwOut.newLine();
 	    } catch (Exception e2) {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.generarLogEnvioHTTuneado(): " + e2.getMessage(), e2, 1);
 	        throw new SIGAException("messages.general.error",e2,new String[] {"modulo.envios"});
 	    }
 	
@@ -2680,6 +2725,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	    try {
 	        bwOut.close();
 	    } catch (IOException e2) {
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.generarLogEnvioHTTuneado(): " + e2.getMessage(), e2, 1);
 	        throw new SIGAException("messages.general.error",e2,new String[] {"modulo.envios"});
 	    }        
 	}
@@ -2742,7 +2788,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			try {
 				   pathDocumentosAdjuntos = envioAdm.getPathEnvio(idInstitucion,idenvio);
 				} catch (Exception e) {
-					 		new ClsExceptions (e, "Error al recuperar el envio");
+					ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarCorreoOrdinario(): " + e.getMessage(), e, 1);
+					new ClsExceptions (e, "Error al recuperar el envio");
 			   	}
 
 			// PREPARACION
@@ -2992,9 +3039,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 
 
 		} catch (SIGAException e) {
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarCorreoOrdinario(): " + e.getMessage(), e, 1);
 			this.generarLogEnvioExceptionHT(envBean, e);
 			throw e;
 		} catch(Exception e){
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarCorreoOrdinario(): " + e.getMessage(), e, 1);
 			this.generarLogEnvioExceptionHT(envBean, e);
 			throw new ClsExceptions(e,"Error general en envío ordinario");
 		}		
@@ -3136,8 +3185,10 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			}
 				
 		} catch (SIGAException e) {
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.generarEtiquetas(): " + e.getMessage(), e, 1);
 			throw e;
 	    } catch(Exception e){
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.generarEtiquetas(): " + e.getMessage(), e, 1);
             throw new ClsExceptions(e,"Error generando etiquetas");
 		}
 	    return nombrePDF;
@@ -3164,6 +3215,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			nombrePDF = this.getPathEnvio(institucion, envio)+File.separator+institucion+"_"+nombreEnvio+"_"+"ETIQ.pdf";
 				
 	    } catch(Exception e){
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getPathEtiquetas(): " + e.getMessage(), e, 1);
 	    	throw new ClsExceptions (e, "Error al generar el path de las etiquetas");
 		}
 	    return nombrePDF;
@@ -3193,6 +3245,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				}
 			}				
 		} catch(Exception e){
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.etiquetasFilaDinA4(): " + e.getMessage(), e, 1);
 			throw new ClsExceptions (e, "Error al obtener numero de etiquetas por fila");
 		}
 		return resultado;
@@ -3233,6 +3286,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			}
 		} 
 		catch(Exception e){
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.etiquetasColumnaDinA4(): " + e.getMessage(), e, 1);
 			throw new ClsExceptions (e, "Error al obtener numero de etiquetas por columna");
 		}
 		return filas;
@@ -3266,6 +3320,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			return enviosBeans;
 			
         } catch (ClsExceptions e) {
+        	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getEnviosPendientes(): " + e.getMessage(), e, 1);
 			throw new ClsExceptions (e, "Error al obtener los envíos pendientes");
 //	        throw new SIGAException("messages.general.error",e);
 	    }
@@ -3293,6 +3348,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	            dat = sdf.parse(envBean.getFechaCreacion());
 	            cal.setTime(dat);
 	        } catch (ParseException e1) {
+	        	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarFax(): " + e1.getMessage(), e1, 1);
 	            throw e1;
 	        }
 	        String anio = String.valueOf(cal.get(Calendar.YEAR));
@@ -3306,6 +3362,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	        	pathFTP = paramAdm.getValor(envBean.getIdInstitucion().toString(),"ENV","PATH_DESCARGA_ENVIOS_FAX","");
 	        	pathFicherosZETAFAX = paramAdm.getValor(envBean.getIdInstitucion().toString(),"ENV","PATH_DESCARGA_ENVIOS_FAX_SERVIDOR","");
 	        } catch (Exception e) {
+	        	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarFax(): " + e.getMessage(), e, 1);
 	        	pathFTP="";
 	        	pathFicherosZETAFAX="";
 	        	throw e;
@@ -3401,6 +3458,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				        nifcif = perBean.getNIFCIF().trim();
 		    	        nombreDestinatarioXX=perBean.getNombre() + " " + perBean.getApellido1() + " " + perBean.getApellido2();
 				    } catch (ClsExceptions e) {
+				    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarFax(): " + e.getMessage(), e, 1);
 				        throw new SIGAException("messages.envios.error.noDatosPersona",e);
 				    }
 			        String sIdEnvio = envBean.getIdEnvio().toString();
@@ -3480,6 +3538,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 
 		    	    
 	            } catch (Exception e){
+	            	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarFax(): " + e.getMessage(), e, 1);
 	                errores = true;
 	                insertarMensajeLogHT(destBean, htErrores, e);
 	            }
@@ -3501,9 +3560,11 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 	        }
 	        
 		} catch (SIGAException e) {
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarFax(): " + e.getMessage(), e, 1);
 	        this.generarLogEnvioExceptionHT(envBean,e);
 			throw e;
 	    } catch(Exception e){
+	    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarFax(): " + e.getMessage(), e, 1);
 	    	this.generarLogEnvioExceptionHT(envBean,e);
 			throw new ClsExceptions (e, "Error general enviando fax");
 		}		
@@ -3541,8 +3602,10 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			zetaFax.crearDocumentoFax(nombre,this.usrbean);
 
 		} catch (ClsExceptions e2) {
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.generarFax(): " + e2.getMessage(), e2, 1);
 			throw new SIGAException(e2.getMessage(),e2);
 		} catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.generarFax(): " + e.getMessage(), e, 1);
 			throw new ClsExceptions (e, "Error general generando el fax a enviar");
 		}
 	}
@@ -3890,18 +3953,22 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 						admEstat.insertarApunteExtra(envBean.getIdInstitucion(), envBean.getIdEnvio(), envBean.getIdTipoEnvios(), new Long(idPersona), sTo);
 
 					} catch (SMTPAddressFailedException e) {
+						ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarCorreoElectrnico(): " + e.getMessage(), e, 1);
 						isErrorEnvioIndividual = true;
 						errores = true;
 						insertarMensajeLogHT(destBean, htErrores, e);
 					} catch (SendFailedException e) {
+						ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarCorreoElectrnico(): " + e.getMessage(), e, 1);
 						isErrorEnvioIndividual = true;
 						errores = true;
 						insertarMensajeLogHT(destBean, htErrores, e);
 					} catch (javax.mail.MessagingException e) {
+						ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarCorreoElectrnico(): " + e.getMessage(), e, 1);
 						isErrorEnvioIndividual = true;
 						errores = true;
 						insertarMensajeLogHT(destBean, htErrores, e.getNextException());
 					} catch (Exception e) {
+						ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarCorreoElectrnico(): " + e.getMessage(), e, 1);
 						isErrorEnvioIndividual = true;
 						errores = true;
 						insertarMensajeLogHT(destBean, htErrores, e);
@@ -3937,8 +4004,10 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			}
 
 		} catch (SIGAException e) {
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarCorreoElectronico(): " + e.getMessage(), e, 1);
 			throw e;
 		} catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarCorreoElectronico(): " + e.getMessage(), e, 1);
 			throw new ClsExceptions(e, "Error enviando correo electrónico");
 		} finally {
 			// cerramos el transport
@@ -4313,15 +4382,18 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 
 
 					} catch(UnsupportedClassVersionError e){
+						ClsLogging.writeFileLog("ERROR - EnvEnviosAdm.enviarSMS(): " + e.getMessage(), 1);
 						ClsExceptions ex = new ClsExceptions("UnsupportedClassVersionError: "+e.toString());
 						errores = true;
 						isErrorEnvioIndividual = true;
 						insertarMensajeLogHT(destBean,htErrores, ex);
 					} catch (Exception e){
+						ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarSMS(): " + e.getMessage(), e, 1);
 						errores = true;
 						isErrorEnvioIndividual = true;
 						insertarMensajeLogHT(destBean,htErrores, e);
 					} catch (Throwable t){
+						ClsLogging.writeFileLog("ERROR - EnvEnviosAdm.enviarSMS(): " + t.getMessage(), 1);
 						errores = true;
 						isErrorEnvioIndividual = true;
 						t.printStackTrace();
@@ -4363,8 +4435,10 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			}
 
 		} catch (SIGAException e) { 
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarSMS(): " + e.getMessage(), e, 1);
 			throw e;
 		} catch(Exception e){
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarSMS(): " + e.getMessage(), e, 1);
 			throw new ClsExceptions(e,"Error enviando correo electrónico");
 		} 
 	}
@@ -4570,15 +4644,18 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 
 		    	    
 		        } catch(UnsupportedClassVersionError e){
+		        	ClsLogging.writeFileLog("ERROR - EnvEnviosAdm.enviarBuroSMS(): " + e.getMessage(), 1);
 		            ClsExceptions ex = new ClsExceptions("UnsupportedClassVersionError: "+e.toString());
 		            errores = true;
 		            isErrorEnvioIndividual = true;
 	                insertarMensajeLogHT(destBean,htErrores, ex);
 	            } catch (Exception e){
+	            	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarBuroSMS(): " + e.getMessage(), e, 1);
 	                errores = true;
 	                isErrorEnvioIndividual = true;
 	                insertarMensajeLogHT(destBean,htErrores, e);
 	            } catch (Throwable t){
+	            	ClsLogging.writeFileLog("ERROR - EnvEnviosAdm.enviarBuroSMS(): " + t.getMessage(), 1);
 	                errores = true;
 	                isErrorEnvioIndividual = true;
 	                t.printStackTrace();
@@ -4620,8 +4697,10 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         }
         
     } catch (SIGAException e) { 
+    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarBuroSMS(): " + e.getMessage(), e, 1);
 		throw e;
     } catch(Exception e){
+    	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.enviarBuroSMS(): " + e.getMessage(), e, 1);
         throw new ClsExceptions(e,"Error enviando correo electrónico");
 	} finally {
         // cerramos el transport
@@ -4693,6 +4772,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 			return this.insert(this.beanToHashTable(bean));
 		}
 		catch (Exception e)	{
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.insert(): " + e.getMessage(), e, 1);
 			throw new ClsExceptions (e,  e.getMessage());
 		}
 	}
@@ -4719,6 +4799,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		try {
 			insertSQL(s.toString());
 		} catch (ClsExceptions e) {
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.insertarComunicacionDesignaSalida(): " + e.getMessage(), e, 1);
 			throw new BusinessException("Error al insertarComunicacionDesigna"+e.toString());
 		}
     	
@@ -4763,6 +4844,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		try {
 			insertSQL(s.toString());
 		} catch (ClsExceptions e) {
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.insertarComunicacionDesignaEntrada(): " + e.getMessage(), e, 1);
 			throw new BusinessException("Error al insertarComunicacionDesignaEntrada"+e.toString());
 		}
     	
@@ -4811,6 +4893,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		try {
 			insertSQL(s.toString());
 		} catch (ClsExceptions e) {
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.insertarComunicacionEjgSalida(): " + e.getMessage(), e, 1);
 			throw new BusinessException("Error al insertarComunicacionEjgSalida"+e.toString());
 		}
     	
@@ -4845,6 +4928,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		try {
 			insertSQL(s.toString());
 		} catch (ClsExceptions e) {
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.insertarComunicacionSalida(): " + e.getMessage(), e, 1);
 			throw new BusinessException("Error al insertarComunicacionSalida"+e.toString());
 		}
     	
@@ -4896,6 +4980,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		try {
 			insertSQL(s.toString());
 		} catch (ClsExceptions e) {
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.insertarComunicacionEjgEntrada(): " + e.getMessage(), e, 1);
 			throw new BusinessException("Error al insertarComunicacionEjgEntrada"+e.toString());
 		}
     	
@@ -4930,7 +5015,8 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 				id = Long.valueOf((String)fila.getRow().get("NEXTVAL"));														
 			}
 		}	
-		catch (ClsExceptions e) {		
+		catch (ClsExceptions e) {	
+			ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.gtSecuenciaNextVal(): " + e.getMessage(), e, 1);
 			throw new ClsExceptions (e, "Error al ejecutar el 'getSecuenciaNextVal' en BBDD");		
 		}		
 		return id;
@@ -5099,7 +5185,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
     		SIGAServicesHelper.copyFile(new File(oldPathDocumento.toString()), newPathDirectorio.toString(), newNombreDocumento.toString());
     		
 		} catch (Exception e) {
-			ClsLogging.writeFileLogError("Error al duplicarDocumento",e,10);
+			ClsLogging.writeFileLogError("Error al duplicarDocumento: " + e.getMessage(), e, 10);
 			throw new SIGAException("general.error.noDisponible");
 		}
     	

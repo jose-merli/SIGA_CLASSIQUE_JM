@@ -20,7 +20,8 @@ public class ExceptionManagerAction extends Action {
   }
 
   public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest req, HttpServletResponse res) {
-    String forward = "success";
+	  ClsLogging.writeFileLog("ExceptionManagerAction.execute() - INICIO");
+	  String forward = "success";
     if (req.getAttribute("hiddenFrame") != null) {
       if (req.getAttribute("hiddenFrame").equals("1")) {
         forward="hSucces";
@@ -70,6 +71,7 @@ public class ExceptionManagerAction extends Action {
         req.getSession().setAttribute("exc2", ex);
       }
     }
+    ClsLogging.writeFileLog("ExceptionManagerAction.execute() - FIN");
     return mapping.findForward(forward);
   }
 }
