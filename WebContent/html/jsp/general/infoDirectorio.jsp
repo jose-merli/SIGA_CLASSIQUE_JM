@@ -278,7 +278,7 @@ try {
 		   <td width="200px"><%=fecha%></td>
 		   <% if(tipo.equals("d")){%>
 			   <td colspan="2">	  
-			   		<form name="subir_<%=i%>" action="<%=app%>/ServletFicherosInfoDirectorio.svrl"  method="POST" enctype="multipart/form-data">
+			   		<form id="subir_<%=i%>" name="subir_<%=i%>" action="<%=app%>/ServletFicherosInfoDirectorio.svrl"  method="POST" enctype="multipart/form-data">
 						<input type="hidden" name="nombreFichero" value=""/>
 						<input type="hidden" name="rutaFichero"   value=""/>
 						<input type="hidden" name="accion"        value=""/>
