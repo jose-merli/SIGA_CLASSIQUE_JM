@@ -993,7 +993,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 			" SUM(PC.IMPRET) + "+ 
 			" SUM(PC.IMPMOVVAR) + "+ 
 			" SUM(PC.IMPIRPF) AS TOTALFINAL, "+
-			" SUM(AB.IMPTOTALIVA) AS TOTALIMPORTEIVA, ";
+			" SUM(PC.IMPIRPF) AS TOTALIMPORTEIVA, ";
 		
 		if (irpf) {
 			sql += " PC.IDPERDESTINO as IDPERSONASJCS ";
@@ -1027,7 +1027,7 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 				" PC.IDPERORIGEN as IDPERSONASJCS ";
 		}
 		
-		sql += " FROM FCS_PAGO_COLEGIADO PC left join FAC_ABONO AB on PC.IDINSTITUCION = AB.IDINSTITUCION and PC.IDPAGOSJG = AB.IDPAGOSJG and PC.IDPERDESTINO = AB.IDPERSONA and PC.IDPERORIGEN = AB.IDPERORIGEN " + 
+		sql += " FROM FCS_PAGO_COLEGIADO PC " + 
 			" WHERE PC.IDINSTITUCION = " + idInstitucion +
 				" AND PC.IDPAGOSJG = NVL(" + idPagosJg + ", PC.IDPAGOSJG) ";
 		
