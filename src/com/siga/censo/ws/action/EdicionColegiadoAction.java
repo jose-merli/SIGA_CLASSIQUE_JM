@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,6 +45,7 @@ import es.satec.businessManager.BusinessManager;
 
 public class EdicionColegiadoAction extends MasterAction {
 	
+	private static final Logger log = Logger.getLogger(EdicionColegiadoAction.class);
 	public static final String DATAPAGINADOR = "DATAPAGINADOR_LISTADO_COLEGIADOS_HISTORICO";
 	
 	/** 
@@ -106,7 +108,7 @@ public class EdicionColegiadoAction extends MasterAction {
 	}
 	
 	private String archivar (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException{
-		
+		log.debug("EdicionColegiadoActin.archivar() - INICIO");
 		String accion = "ver";		
 		Long idcensodatos = null;
 		
@@ -137,7 +139,7 @@ public class EdicionColegiadoAction extends MasterAction {
 		} finally {
 			BusinessManager.getInstance().endTransaction();
 		}
-		
+		log.debug("EdicionColegiadoActin.archivar() - FIN");
 		return verEditar(accion, mapping, formulario, request, response, idcensodatos);
 	}
 	
@@ -152,7 +154,7 @@ public class EdicionColegiadoAction extends MasterAction {
 	 * @exception  SIGAException  Errores de aplicación
 	 */
 	protected String modificar (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws ClsExceptions, SIGAException{
-		
+		log.debug("EdicionColegiadoActin.modificar() - INICIO");
 		String accion = "editar";
 		Long idcensodatos = null;
 		
@@ -298,7 +300,7 @@ public class EdicionColegiadoAction extends MasterAction {
 		} finally {
 			BusinessManager.getInstance().endTransaction();
 		}
-		
+		log.debug("EdicionColegiadoActin.modificar() - FIN");
 		return verEditar(accion, mapping, formulario, request, response, idcensodatos);
 	}
 	
