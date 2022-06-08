@@ -993,7 +993,12 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 			" SUM(PC.IMPRET) + "+ 
 			" SUM(PC.IMPMOVVAR) + "+ 
 			" SUM(PC.IMPIRPF) AS TOTALFINAL, "+
-			" SUM(PC.IMPIRPF) AS TOTALIMPORTEIVA, ";
+			" SUM((select AB.IMPTOTALIVA "+
+			"        from FAC_ABONO AB" +
+			"       where PC.IDINSTITUCION = AB.IDINSTITUCION "+
+			"         and PC.IDPAGOSJG = AB.IDPAGOSJG "+
+			"         and PC.IDPERDESTINO = AB.IDPERSONA "+
+			"         and PC.IDPERORIGEN = AB.IDPERORIGEN)) AS TOTALIMPORTEIVA, ";
 		
 		if (irpf) {
 			sql += " PC.IDPERDESTINO as IDPERSONASJCS ";
@@ -1081,23 +1086,6 @@ public class FcsPagosJGAdm extends MasterBeanAdministrador {
 			sql = getQueryDetallePago(form, form.getIdInstitucion(), htCodigos,
 					idioma);
 			return selectGenericoBind(sql, htCodigos);
-			
-		} catch (Exception e) {
-			throw new ClsExceptions(e, "Error en FcsPAgosJG.getDetallePago()"
-					+ sql);
-		}
-	} //getDetallePago()
-	/**
-	 * Devuelve los datos del pago <code>idpago</code> para cada colegiado incluido en el pago.
-	 */
-	public Vector getDetallePago(Integer idInstitucion, Integer idPago, String idioma)
-			throws ClsExceptions, Exception
-	{
-		String sql = "";
-		try {
-			sql = getQueryDetallePagoColegiado(idInstitucion.toString(), idPago
-					.toString(), false, idioma);
-			return selectGenerico(sql);
 			
 		} catch (Exception e) {
 			throw new ClsExceptions(e, "Error en FcsPAgosJG.getDetallePago()"
