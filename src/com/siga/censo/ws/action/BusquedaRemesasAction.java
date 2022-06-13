@@ -83,7 +83,7 @@ public class BusquedaRemesasAction extends MasterAction {
 			MasterForm formulario, 
 			HttpServletRequest request, 
 			HttpServletResponse response) throws ClsExceptions, SIGAException {
-		
+		ClsLogging.writeFileLog("BusquedaRemesasAction.abrir() - INICIO", 3);
 		BusquedaRemesasForm busquedaRemesasForm = (BusquedaRemesasForm) formulario;
 		busquedaRemesasForm.reset();
 		request.getSession().removeAttribute(DATAPAGINADOR);
@@ -92,7 +92,7 @@ public class BusquedaRemesasAction extends MasterAction {
 		cal.add(Calendar.MONTH, -2);
 				
 		busquedaRemesasForm.setFechaPeticionDesde(AppConstants.DATE_FORMAT.format(cal.getTime()));
-		
+		ClsLogging.writeFileLog("BusquedaRemesasAction.abrir() - FIN", 3);
 		return abrirAvanzada(mapping, formulario, request, response);
 		
 	}
@@ -113,6 +113,7 @@ public class BusquedaRemesasAction extends MasterAction {
 							HttpServletResponse response) throws SIGAException
 	{
 		try {
+			ClsLogging.writeFileLog("BusquedaRemesasAction.abrirAvanzada() - INICIO", 3);
 			BusquedaRemesasForm busquedaRemesasForm = (BusquedaRemesasForm) formulario;
 			
 			request.getSession().removeAttribute(DATAPAGINADOR);
@@ -123,7 +124,11 @@ public class BusquedaRemesasAction extends MasterAction {
 			busquedaRemesasForm.setInstituciones(listInstitucionVOs);
 			busquedaRemesasForm.setTiposIdentificacion(combosCenWS.getTiposIdentificacion(getUserBean(request)));
 			
+			ClsLogging.writeFileLog("BusquedaRemesasAction.abrirAvanzada() - Obtengo el listado de instituciones", 3);
 			List<InstitucionVO> listInstitucionWsVos = getColegiosWS();
+			//CENSO-297@DTT.JAMARTIN@10/06/2022@INICIO
+			List<InstitucionVO> listInstitucionVos = getColegios();
+			//CENSO-297@DTT.JAMARTIN@10/06/2022@FIN
 			
 			if (listInstitucionVOs != null) {
 				Map<String, String> mapa = new HashMap<String, String>();
@@ -133,15 +138,25 @@ public class BusquedaRemesasAction extends MasterAction {
 				busquedaRemesasForm.setMapaInstituciones(mapa);
 			}
 			
+			//CENSO-297@DTT.JAMARTIN@10/06/2022@INICIO
 			if(listInstitucionWsVos!=null){
+				ClsLogging.writeFileLog("BusquedaRemesasAction.abrirAvanzada() - Asignamos las instituciones al combobox de colegios con carga automática y manual", 3);
 				busquedaRemesasForm.setInstitucionesWS(listInstitucionWsVos);
 			}
+			
+			if (listInstitucionVos != null) {
+				ClsLogging.writeFileLog("BusquedaRemesasAction.abrirAvanzada() - Asignamos las instituciones al combobox de colegios con carga manual", 3);
+				busquedaRemesasForm.setInstituciones(listInstitucionVos);
+			}
+			//CENSO-297@DTT.JAMARTIN@10/06/2022@FIN
 			
 			String buscar = request.getParameter("buscar");
 			request.setAttribute("buscar",buscar);
 		} catch (Exception e) {
 			throwExcp("messages.general.error",new String[] {"modulo.censo"},e,null);
 		}
+		
+		ClsLogging.writeFileLog("BusquedaRemesasAction.abrirAvanzada() - FIN", 3);
 		return "inicio";
 	}
 	
@@ -154,11 +169,31 @@ public class BusquedaRemesasAction extends MasterAction {
 	 * @throws SIGAException 
 	 */
 	private List<InstitucionVO> getColegiosWS() throws SIGAException{
+		ClsLogging.writeFileLog("BusquedaRemesasAction.getColegiosWS() - INICIO", 3);
 		List<InstitucionVO> institucionesWS = null;
 		CenInstitucionService service = (CenInstitucionService) getBusinessManager().getService(CenInstitucionService.class);
 		institucionesWS =	service.getColegiosWS();
+		ClsLogging.writeFileLog("BusquedaRemesasAction.getColegiosWS() - FIN", 3);
 		return institucionesWS;
 	}
+	
+	//CENSO-297@DTT.JAMARTIN@10/06/2022@INICIO
+	/**
+	 * Recupera los colegios que tienen carga de censo manual <code>idInstitucion</code>
+	 * @param idInstitucion Institucion para la cual se buscan sus colegios asociados
+	 * @return Una lista con los colegios que tienen carga de web services, o <code>null</code> si la institucion
+	 * no tiene colegios dependientes, es decir, si es un Colegio y no un Consejo.
+	 * @throws SIGAException 
+	 */
+	private List<InstitucionVO> getColegios() throws SIGAException{
+		ClsLogging.writeFileLog("BusquedaRemesasAction.getColegios() - INICIO", 3);
+		List<InstitucionVO> institucionesWS = null;
+		CenInstitucionService service = (CenInstitucionService) getBusinessManager().getService(CenInstitucionService.class);
+		institucionesWS = service.getColegios();
+		ClsLogging.writeFileLog("BusquedaRemesasAction.getColegios() - FIN", 3);
+		return institucionesWS;
+	}
+	//CENSO-297@DTT.JAMARTIN@10/06/2022@FIN
 	
 	
 	
@@ -170,16 +205,20 @@ public class BusquedaRemesasAction extends MasterAction {
 	 * @throws SIGAException 
 	 */
 	private List<InstitucionVO> getColegiosDependientes(String idInstitucion) throws SIGAException{
+		ClsLogging.writeFileLog("BusquedaRemesasAction.getColegiosDependientes() - INICIO", 3);
 		List<InstitucionVO> instituciones = null;
 		//Si la institucion conectada es General se recuperan todos los colegios (no los consejos)
 		CenInstitucionService service = (CenInstitucionService) getBusinessManager().getService(CenInstitucionService.class);
 		if (institucionEsGeneral(idInstitucion)){
+			ClsLogging.writeFileLog("BusquedaRemesasAction.getColegiosDependientes() - La institucion es general, recuperamos todos los colegios", 3);
 			instituciones = service.getColegiosNoConsejo(idInstitucion);
 		}
 		//Si la institucion no conectada es un Consejo, se recuperan sus colegios dependientes
 		else if (institucionEsConsejo(idInstitucion)){
+			ClsLogging.writeFileLog("BusquedaRemesasAction.getColegiosDependientes() - La institucion no es general, recuperamos los colegios dependientes", 3);
 			instituciones = service.getColegiosDeConsejo(idInstitucion);
 		}
+		ClsLogging.writeFileLog("BusquedaRemesasAction.getColegiosDependientes() - INICIO", 3);
 		return instituciones;
 	}
 	

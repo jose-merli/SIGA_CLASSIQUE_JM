@@ -464,10 +464,11 @@ public class MasterWords {
 			Document docu = new Document(is);
 			for (Map.Entry<String, String> entrada : htLocal.entrySet()) {
 				DocumentBuilder builder = new DocumentBuilder(docu);
-				if (builder.moveToMergeField(entrada.getKey())) // si lo
-																// encuentra
+				if (builder.moveToMergeField(entrada.getKey())) { // si lo encuentra
 					builder.write(entrada.getValue());
+				}
 			}
+
 			salida = SIGAReferences.getFileReference(SIGAReferences.RESOURCE_FILES.WORDS_INIT_RESULT);
 			salida.createNewFile();
 			FileOutputStream fos = new FileOutputStream(salida);
@@ -475,7 +476,6 @@ public class MasterWords {
 			fos.flush();
 			fos.close();
 		} catch (Exception e) {
-//			ClsLogging.writeFileLog("ERROR al precargar informes aspose.words: " + e.toString(), 3);
 			ClsLogging.writeFileLogError("ERROR al precargar informes aspose.words: " + e.getMessage(), e, 3);
 		} finally {
 			ClsLogging.writeFileLog("MasterWords.precargaInformes() - FIN");

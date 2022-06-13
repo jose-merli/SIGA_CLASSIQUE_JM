@@ -69,6 +69,7 @@ public abstract class MasterAction extends SIGAAuxAction {
 		
 
 		try {
+			ClsLogging.writeFileLog("MasterAction.executeInternal() - INICIO", 3);
 			do {
 				miForm = (MasterForm) formulario;
 				if (miForm == null) {
@@ -78,6 +79,7 @@ public abstract class MasterAction extends SIGAAuxAction {
 				compruebaFilaSeleccionada(miForm, request);
 				
 				String accion = miForm.getModo();
+				ClsLogging.writeFileLog("MasterAction.executeInternal() - Ejecutando la acción: " + accion, 3);
 				
 				// La primera vez que se carga el formulario 
 				// Abrir
@@ -186,6 +188,7 @@ public abstract class MasterAction extends SIGAAuxAction {
 			// Si no es para descargar un fichero, actuamos como siempre.
 			//if (!mapDestino.toLowerCase().startsWith(sPrefijoDownload))
 			//{
+			ClsLogging.writeFileLog("MasterAction.executeInternal() - FIN", 3);
 			return mapping.findForward(mapDestino);
 			//}
 			

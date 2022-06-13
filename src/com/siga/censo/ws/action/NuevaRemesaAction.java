@@ -43,6 +43,7 @@ public class NuevaRemesaAction extends MasterAction {
 	
 	protected ActionForward executeInternal(ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response)
 			throws SIGAException {
+		log.debug("NuevaRemesaAction.executeInternal() - INICIO"); 
 
 		String mapDestino = "exception";
 		MasterForm miForm = null;
@@ -58,19 +59,21 @@ public class NuevaRemesaAction extends MasterAction {
 				// La primera vez que se carga el formulario
 				// Abrir
 				if (accion == null || accion.equalsIgnoreCase("") || accion.equalsIgnoreCase("insertar")) {
+					log.debug("NuevaRemesaAction.actualizaWS() - insertar"); 
 					mapDestino = insertar(mapping, miForm, request, response);
 				
 				} else if (accion.equalsIgnoreCase("actualizaWS")) {
+					log.debug("NuevaRemesaAction.actualizaWS() - actualizaWS"); 
 					mapDestino = actualizaWS(mapping, miForm, request, response);
 				}
 			
 				if (mapDestino == null) {
-								// mapDestino = "exception";
-								if (miForm.getModal().equalsIgnoreCase("TRUE")) {
-									request.setAttribute("exceptionTarget", "parent.modal");
-								}
+					// mapDestino = "exception";
+					if (miForm.getModal().equalsIgnoreCase("TRUE")) {
+						request.setAttribute("exceptionTarget", "parent.modal");
+					}
 	
-								throw new ClsExceptions("El ActionMapping no puede ser nulo", "", "0", "GEN00", "15");
+					throw new ClsExceptions("El ActionMapping no puede ser nulo", "", "0", "GEN00", "15");
 				}
 	
 			} catch (SIGAException es) {
@@ -78,6 +81,8 @@ public class NuevaRemesaAction extends MasterAction {
 			} catch (Exception e) {
 					throw new SIGAException("messages.general.error", e, new String[] { "modulo.gratuita" });
 			}
+		log.debug("NuevaRemesaAction.executeInternal() - FIN"); 
+		
 		return mapping.findForward(mapDestino);
 	}
 	
@@ -85,6 +90,7 @@ public class NuevaRemesaAction extends MasterAction {
 	private String actualizaWS(ActionMapping mapping, MasterForm masterForm, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		Short idcol = null;
 		try {
+			log.debug("NuevaRemesaAction.actualizaWS() - INICIO"); 
 			NuevaRemesaForm form = (NuevaRemesaForm) masterForm;
 			String idColegio=form.getIdColegioActualizar();
 			
@@ -93,27 +99,26 @@ public class NuevaRemesaAction extends MasterAction {
 			}
 			
 			// Si el parametro de proxy está activo hay que introducirlo en la cola de censoWS
-			
 			GenParametrosService genParametrosService = (GenParametrosService) BusinessManager.getInstance().getService(GenParametrosService.class);
 			String activo = genParametrosService.getValorParametro(AppConstants.IDINSTITUCION_2000, PARAMETRO.CEN_WS_PROXY_ACTIVO, MODULO.CEN);
 			
 			if(AppConstants.DB_TRUE.equals(activo)){
 				EcColaService ecColaService = (EcColaService) BusinessManager.getInstance().getService(EcColaService.class);
 				if (ecColaService.insertaColaCargaCenso(idcol, false) != 1) {
-						throw new Exception("No se ha podido insertar correctamente en la cola de censoWS para el colegio " + idcol);
+					throw new Exception("No se ha podido insertar correctamente en la cola de censoWS para el colegio " + idcol);
 				}
 			}else{
 				EcomColaService ecomColaService = (EcomColaService) BusinessManager.getInstance().getService(EcomColaService.class);
 				if (ecomColaService.insertaColaCargaCenso(idcol, false) != 1) {
-						throw new Exception("No se ha podido insertar correctamente en la cola para el colegio " + idcol);
+					throw new Exception("No se ha podido insertar correctamente en la cola para el colegio " + idcol);
 				}
-			}
-			
+			}	
 		} catch (Exception e) {
 			log.error("Error al insertar en la cola para el colegio " + idcol, e);
 			throwExcp("messages.general.error", new String[] { "modulo.censo" }, e, null);			
 		}
 		
+		log.debug("NuevaRemesaAction.actualizaWS() - FIN"); 
 		return exitoRefresco("messages.success.censo.peticion", request);
 	}
 	

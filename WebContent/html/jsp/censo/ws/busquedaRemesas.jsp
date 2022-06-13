@@ -271,7 +271,10 @@
 						<html:option value="">
 							<siga:Idioma key="general.combo.seleccionar" />
 						</html:option>
-						<html:optionsCollection name="BusquedaRemesasForm" 	property="institucionesWS" value="id" label="nombre"></html:optionsCollection>
+							<!-- CENSO-297@DTT.JAMARTIN@10/06/2022@INICIO -->
+<%-- 						<html:optionsCollection name="BusquedaRemesasForm" 	property="institucionesWS" value="id" label="nombre"></html:optionsCollection> --%>
+							<html:optionsCollection name="BusquedaRemesasForm" 	property="instituciones" value="id" label="nombre"></html:optionsCollection>
+							<!-- CENSO-297@DTT.JAMARTIN@10/06/2022@FIN -->
 					</html:select>
 
 				</div>

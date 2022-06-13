@@ -455,7 +455,7 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 	 * @exception  ClsExceptions  En cualquier caso de error
 	 */	
 	public boolean procesarSolicitud(String solicitud, Integer usuario, String idioma, boolean bProcesoAltaCuentaCargos) throws ClsExceptions, SIGAException {
-
+		log.debug("CenSolicModiCuentasAdm.procesarSolicitud() - INICIO"); 
 		boolean correcto=true;
 		Vector original = new Vector();		
 		Hashtable hash = new Hashtable();
@@ -506,19 +506,19 @@ public class CenSolicModiCuentasAdm extends MasterBeanAdministrador {
 					//BEGIN BNS 11/12/12 INCIDENCIA INC_08950_SIGA
 					if (adminCuentas.updateConHistoricoYfecBaj(cuentaModificada, beanHist, usuario, this.usrbean, abonoCargoOrig, idioma, bProcesoAltaCuentaCargos) <0)
 						correcto = false;
-					
 				}				
 			}	
-       }
-		catch (SIGAException e) {
-			log.error("ERROR - CenSolicModiCuentasAdm.procesarSolicitud(): " + e.getMessage());
+       } catch (SIGAException e) {
+			log.error("ERROR SIGAException - CenSolicModiCuentasAdm.procesarSolicitud(): " + e.getMessage());
+			e.printStackTrace();
 			correcto = false;
 			throw e;
-		}
-       catch (Exception e) {
+		} catch (Exception e) {
     	   log.error("ERROR - CenSolicModiCuentasAdm.procesarSolicitud(): " + e.getMessage());
+    	   e.printStackTrace();
     	   throw new ClsExceptions (e, "Error al procesar solicitudes de modificaciones de cuentas");
        }
+       log.debug("CenSolicModiCuentasAdm.procesarSolicitud() - FIN"); 
        return correcto;                        
     }	
 }
