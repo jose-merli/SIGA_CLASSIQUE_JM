@@ -157,6 +157,9 @@ public class EdicionColegiadoAction extends MasterAction {
 		log.debug("EdicionColegiadoActin.modificar() - INICIO");
 		String accion = "editar";
 		Long idcensodatos = null;
+		//CENSO-298@DTT.JAMARTIN@14/06/2022@INICIO
+		String numDocumentoOriginal = "";
+		//CENSO-298@DTT.JAMARTIN@14/06/2022@FIN 
 		
 		try {
 			
@@ -166,6 +169,14 @@ public class EdicionColegiadoAction extends MasterAction {
 			//recuperamos el registro de bdd pq hay campos que no cambian
 			EcomCenDatos ecomCenDatos = cenWSService.getEcomCenDatosByPk(edicionColegiadoForm.getIdcensodatos());
 			
+			log.debug("Recuperamos ecomCenDatos de BBDD: \n" + 
+			" idCensoDatos: "+ (ecomCenDatos.getIdcensodatos() != null ? ecomCenDatos.getIdcensodatos().toString() : "null") + 
+			"\n nColegiado: "+ (ecomCenDatos.getNcolegiado() != null ? ecomCenDatos.getNcolegiado().toString() : "null") + 
+			"\n NumDocumento: "+ (ecomCenDatos.getNumdocumento() != null ? ecomCenDatos.getNumdocumento().toString() : "null"));
+			
+			//CENSO-298@DTT.JAMARTIN@14/06/2022@INICIO
+			numDocumentoOriginal = ecomCenDatos.getNumdocumento();
+			//CENSO-298@DTT.JAMARTIN@14/06/2022@FIN
 			ecomCenDatos.setPublicarcolegiado(getCheckShort(edicionColegiadoForm.isPublicarcolegiado()));
 			ecomCenDatos.setNumsolicitudcolegiacion(edicionColegiadoForm.getNumsolicitudcolegiacion());
 			ecomCenDatos.setNcolegiado(edicionColegiadoForm.getNcolegiado());
@@ -250,9 +261,7 @@ public class EdicionColegiadoAction extends MasterAction {
 				
 				ecomCenDireccion.setDescripcionpoblacion(edicionColegiadoForm.getDescripcionpoblacion());
 			}
-			
-						
-			
+
 			if (edicionColegiadoForm.getMediador() != null && !edicionColegiadoForm.getMediador().trim().equals("")) {
 				ecomCenDatos.setMediador(Short.valueOf(edicionColegiadoForm.getMediador()));
 			} else {
@@ -265,14 +274,23 @@ public class EdicionColegiadoAction extends MasterAction {
 			}
 			//eliminamos el hash que tuviera
 			ecomCenDatos.setHash(null);
-			
-			
-			
+
 			//insertamos en el histórico y lanzamos el proceso
 			EcomCenColegiadoService ecomCenColegiadoService = (EcomCenColegiadoService) BusinessManager.getInstance().getService(EcomCenColegiadoService.class);
 			EcomCenColegiado ecomCenColegiado = ecomCenColegiadoService.getEcomCenColegiado(edicionColegiadoForm.getIdcensodatos());
 			
+			log.debug("El ecomCenColegiado recuperado del formulario es: " + 
+					" idCensoColegiado: " + (ecomCenColegiado.getIdcensocolegiado() != null ? ecomCenColegiado.getIdcensocolegiado().toString() : "null") + 
+					"\n idCensoWSpagina: " + (ecomCenColegiado.getIdcensowspagina() != null ? ecomCenColegiado.getIdcensowspagina().toString() : "null") + 
+					"\n idCensoDatos: " + (ecomCenColegiado.getIdcensodatos() != null ? ecomCenColegiado.getIdcensodatos().toString() : "null") + 
+					"\n idPersona: " + (ecomCenColegiado.getIdpersona() != null ? ecomCenColegiado.getIdpersona().toString() : "null"));
+			
 			BusinessManager.getInstance().startTransaction();
+			
+			log.debug("El ecomCenDatos tras tratar las modificaciones: \n" + 
+					" idCensoDatos: " + (ecomCenDatos.getIdcensodatos() != null ? ecomCenDatos.getIdcensodatos().toString() : "null") + 
+					"\n nColegiado: " + (ecomCenDatos.getNcolegiado() != null ? ecomCenDatos.getNcolegiado().toString() : "null") + 
+					"\n NumDocumento: " + (ecomCenDatos.getNumdocumento() != null ? ecomCenDatos.getNumdocumento().toString() : "null"));
 			
 			ecomCenColegiado = ecomCenColegiadoService.insertHistorico(ecomCenColegiado, ecomCenDatos, ecomCenDireccion, null);
 			if (edicionColegiadoForm.isIncidenciaNumeroColegiadoDuplicadoRevisada()) {
@@ -284,8 +302,9 @@ public class EdicionColegiadoAction extends MasterAction {
 			}
 			
 			short idinstitucion = ecomCenColegiadoService.getIdinstitucion(ecomCenColegiado);
-			
-			ecomCenColegiadoService.lanzarProcesoAltaModificacionColegiado(idinstitucion, ecomCenColegiado);
+			//CENSO-298@DTT.JAMARTIN@14/06/2022@INICIO
+			ecomCenColegiadoService.lanzarProcesoAltaModificacionColegiado(idinstitucion, ecomCenColegiado, numDocumentoOriginal);
+			//CENSO-298@DTT.JAMARTIN@14/06/2022@FIN
 			if (edicionColegiadoForm.isIncidenciaPoblacionNoEncontradaRevisada()) {
 				ecomCenColegiadoService.lanzaAltaModificacionPorNuevaPoblacion(idinstitucion, ecomCenColegiado, ecomCenDireccion);
 			}
