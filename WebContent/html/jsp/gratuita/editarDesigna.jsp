@@ -104,8 +104,9 @@
 	String maxLenghtProc = "20", estilo = "box", readOnly="false", estiloCombo="boxCombo";
 	String idPretension = "",pretension="", turno = "", paramsJuzgadoJSON = "", idProcedimientoParamsJSON = "", filtrarModulos = ClsConstants.FILTRAR_MODULOS_FECHAACTUAL;
 	String comboJuzgados ="", comboModulos="",comboPretensionesEjis="", comboModulosParentQueryIds="";
+	String idJuzgadoSeleccionado = "";
 	String art27 = "", fechaVigor = "";
-	
+	String mouloSel ="";
 	try {
 		// Designa seleccionada:
 		beanDesigna = (ScsDesignaBean) request.getAttribute("beanDesigna");
@@ -200,8 +201,8 @@
 			anioProcedimiento = new String("");
 			if (beanDesigna.getAnioProcedimiento() != null)
 				anioProcedimiento = beanDesigna.getAnioProcedimiento().toString();						
-			
-			procedimientoSel.add(0,"{\"idprocedimiento\":\""+idProcedimiento+"\",\"idinstitucion\":\""+idInstitucion+"\"}");
+			mouloSel = "{\"idprocedimiento\":\""+idProcedimiento+"\",\"idinstitucion\":\""+idInstitucion+"\"}";
+			procedimientoSel.add(0,mouloSel);
 		}
 
 		// obteniendo juzgados y juzgado seleccionado
@@ -228,8 +229,8 @@
 			idPretension = beanDesigna.getIdPretension().toString();
 			pretensionesSel.add(0,idPretension);
 		}
-		
-		juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}");
+		idJuzgadoSeleccionado = "{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}"; 
+		juzgadoSel.add(0,idJuzgadoSeleccionado);
 		paramsJuzgadoJSON = "{\"idjuzgado\":\""+idJuzgado+"\"";
 		paramsJuzgadoJSON += ",\"idturno\":\""+idTurno+"\"";
 		paramsJuzgadoJSON += ",\"fechadesdevigor\":\""+fechaVigor+"\"";
@@ -313,7 +314,8 @@
 		 obligatorioModulo=false;
 		 obligatorioTipoDesigna=false;
 	}
-	
+	if(modo.equalsIgnoreCase("ver"))
+		estiloCombo="boxComboConsulta";
 	String modoVerReadOnly = String.valueOf(modo.equalsIgnoreCase("ver"));
 	
 	//Combo Pretensiones
@@ -321,6 +323,7 @@
 	String comboPretensiones = "getPretensiones";
 	String comboPretensionesParentQueryIds = null;
 	if(pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA || usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ){
+		comboModulos =   "getProcedimientosEnVigenciaAlcala";
 		comboPretensiones = "getPretensionesAlcala";
 		idPretension = "-2";
 		if(beanDesigna.getIdPretension()!=null&& !beanDesigna.getIdPretension().equals("")){
@@ -333,8 +336,8 @@
 		paramsJuzgadoJSON += ",\"fechahastavigor\":\""+fechaVigor+"\"";
 		paramsJuzgadoJSON += ",\"idpretension\":\""+idPretension+"\"";
 		paramsJuzgadoJSON += ",\"idprocedimiento\":\""+idProcedimiento+"\"}";
-		
-		juzgadoSel.add(0,"{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\",\"idpretension\":\""+idPretension+"\",\"idprocedimiento\":\""+idProcedimiento+"\"}");
+		idJuzgadoSeleccionado = "{\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\",\"idpretension\":\""+idPretension+"\",\"idprocedimiento\":\""+idProcedimiento+"\"}" ;
+		juzgadoSel.add(0,idJuzgadoSeleccionado);
 		
 		idPretensionParamsJSON = "{\"idpretension\":\""+idPretension+"\"";
 		idPretensionParamsJSON += ",\"idjuzgado\":\""+idJuzgado+"\"";
@@ -344,7 +347,8 @@
 		comboPretensionesParentQueryIds = "idjuzgado,fechadesdevigor,fechahastavigor";
 		String pretensionSel = "{\"idpretension\":\""+idPretension+"\"";
 		pretensionSel+= ",\"idjuzgado\":\""+idJuzgado+"\",\"idinstitucion\":\""+idInstitucionJuzgado+"\",\"fechadesdevigor\":\""+fechaVigor+"\",\"fechahastavigor\":\""+fechaVigor+"\"}";
-		pretensionesSel.add(0,pretensionSel);
+		idPretension = pretensionSel;
+		pretensionesSel.add(0,idPretension);
 		
 		comboModulosParentQueryIds = "idpretension,idjuzgado,fechadesdevigor,fechahastavigor";
 		idProcedimientoParamsJSON = "{\"idprocedimiento\":\""+idProcedimiento+"\"";
@@ -379,9 +383,15 @@
 			idPretensionParamsJSON += "}";
 		}
 	}
-	
-%>	
+//accion juzgado. 0 carga procedimientos, 1 carga pretension 2 carga pretensiones y luego modulos
+String accionJuzgado = "0";
+if (ejisActivo>0 || pcajgActivo == 4){		 														
+	accionJuzgado = "1";
+} else if(pcajgActivo == CajgConfiguracion.TIPO_CAJG_TXT_ALCALA|| usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ){														
+	accionJuzgado = "2";									
 
+} 
+%>
 <!-- HEAD -->
 	<script type="text/javascript">
 		var modo = "<%=modo%>";
@@ -746,11 +756,22 @@
 
 			} 
 		}
+		
+		
+		
+		
 	</script>
 	 
 </head>
 
 <body>
+<input type="hidden" id ="idJuzgadoSeleccionado" value='<%=idJuzgadoSeleccionado%>' />
+<input type="hidden" id ="idPretensionSeleccionado" value='<%=idPretension%>' />
+<input type="hidden" id ="idModuloSeleccionado" value='<%=mouloSel%>' />
+<input type="hidden" id ="accionJuzgado" value="<%=accionJuzgado %>" />
+<input type="hidden" id ="comboPretensiones" value="<%=comboPretensiones %>" />
+<input type="hidden" id ="comboModulos" value="<%=comboModulos %>" />
+
 
 <table class="tablaTitulo" cellspacing="0" width="100%" border="0">
 	<tr>
@@ -1034,7 +1055,7 @@
 																
 																<% } %>
 																	<td colspan="2" nowrap="nowrap">
-																		<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado,idturno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500" childrenIds="idProcedimiento,idPretension" readonly="<%=modoVerReadOnly%>"/>
+																		<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado,idturno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true"  searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500"   readonly="<%=modoVerReadOnly%>"/>
 																	</td> 
 															</tr>
 													<% } else if(pcajgActivo == CajgConfiguracion.TIPO_CAJG_TXT_ALCALA|| usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ){ %>														
@@ -1049,7 +1070,7 @@
 																<% } %> 
 																
 																<td rowspan="2" nowrap="nowrap">
-																	<siga:Select id="juzgado" queryId="getJuzgadosJurisdiccionAlcala" queryParamId="idjuzgado,idturno,idpretension,idprocedimiento" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500" childrenIds="idPretension" readonly="<%=modoVerReadOnly%>"/>
+																	<siga:Select id="juzgado" queryId="getJuzgadosJurisdiccionAlcala" queryParamId="idjuzgado,idturno,idpretension,idprocedimiento" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500"  readonly="<%=modoVerReadOnly%>"/>
 																</td> 
 															</tr>									
 													
@@ -1065,7 +1086,7 @@
 																<% } %> 
 																
 																<td rowspan="2" nowrap="nowrap">
-																	<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado,idturno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500" childrenIds="idProcedimiento" readonly="<%=modoVerReadOnly%>"/>
+																	<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado,idturno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500"  readonly="<%=modoVerReadOnly%>"/>
 																</td> 
 															</tr>									
 													<% } %>		
@@ -1118,9 +1139,24 @@
 							<td colspan="7">
 								<%-- Procedimiento --%> 
 								<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA|| usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ) { %>
-								 	<siga:Select id="idPretension" queryId="getPretensionesAlcala" parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>" queryParamId="idpretension" selectedIds="<%=pretensionesSel %>" childrenIds="idProcedimiento" width="380" readOnly="<%=modoVerReadOnly%>"  />
+								 	<html:select styleId="idPretension"
+										styleClass="<%=estiloCombo%>" style="width:380px;"
+										
+										property="idPretension"></html:select>
+									
+									
+									
+								 	
+								 
 								<%}else{%>
-									<siga:Select id="idProcedimiento" queryId="<%=comboModulos%>" parentQueryParamIds="<%=comboModulosParentQueryIds%>" params="<%=idProcedimientoParamsJSON%>" selectedIds="<%=procedimientoSel%>" disabled="<%=modoVerReadOnly%>" width="750"/>
+								
+								<html:select styleId="idProcedimiento"
+										style="width:750px;" styleClass="<%=estiloCombo%>"
+										property="idProcedimiento" ></html:select>
+									
+									
+									
+									
 								<%}%>						
 								
 								 
@@ -1196,10 +1232,19 @@
 					
 							<td  colspan="7">
 							<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA|| usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ) { %>
-								<siga:Select id="idProcedimiento" queryId="getProcedimientosEnVigenciaAlcala" parentQueryParamIds="<%=comboModulosParentQueryIds%>" params="<%=idProcedimientoParamsJSON%>" selectedIds="<%=procedimientoSel%>" disabled="<%=modoVerReadOnly%>" width="750"/>
+									<html:select styleId="idProcedimiento"
+										 styleClass="<%=estiloCombo%>" style="width:750px;"
+										property="idProcedimiento"></html:select>
+									
+									
 								 	
 								<%}else{%>
-									<siga:Select id="idPretension" queryId="<%=comboPretensiones %>" parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>" selectedIds="<%=pretensionesSel %>" width="380" readOnly="<%=modoVerReadOnly%>"/>
+									<html:select styleId="idPretension"
+										 styleClass="<%=estiloCombo%>" style="width:380px;"
+										property="idPretension"></html:select>
+									
+									
+									
 								<%}%>
 							
 															
@@ -1389,6 +1434,123 @@
 </html:form>
 
 <iframe name="submitArea" src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" style="display: none"></iframe>
+<script type="text/javascript">
+var selectJuzgados = document.getElementById('juzgado');
+var valueAccionJuzgado = document.getElementById("accionJuzgado").value;
+var valueComboModulos = document.getElementById("comboModulos").value;
+var valueComboPretensiones = document.getElementById("comboPretensiones").value;
+var valueModuloSeleccionado = document.getElementById("idModuloSeleccionado").value
+var valuePretensionSeleccionada = document.getElementById("idPretensionSeleccionado").value
+selectJuzgados.onchange = function(){
+	onchangeJuzgado(this.value,valueAccionJuzgado,valueComboModulos,valueModuloSeleccionado,valueComboPretensiones,valuePretensionSeleccionada);
+}
+var selectPretensiones = document.getElementById('idPretension');
+selectPretensiones.onchange = function(){
+	onchangePretension(selectJuzgados.value,valueAccionJuzgado,valueComboModulos,valueModuloSeleccionado,valueComboPretensiones,this.value);
+}
+function onchangePretension(idJuzgado,accionJuzgado,comboModulos,idModulo,comboPretensiones,idPretension){
+	if(accionJuzgado=='2'){
+		cambiaModulo(idJuzgado,comboModulos,'',idPretension);
+	}
+	
+}
 
+function onchangeJuzgado(idJuzgado,accionJuzgado,comboModulos,idModulo,comboPretensiones,idPretension){
+	
+	if(selectJuzgados.value !=''){
+		if(accionJuzgado=='1'){
+			cambiaModulo(idJuzgado,comboModulos,idModulo,'');
+			cambiaPretension(idJuzgado,comboPretensiones,idPretension);
+		}else if(accionJuzgado=='2'){
+			//cambiaModulo(idJuzgado,comboModulos,idModulo);
+			cambiaPretension(idJuzgado,comboPretensiones,idPretension);
+			jQuery("#idProcedimiento").html("");
+			
+		}else{
+			cambiaModulo(idJuzgado,comboModulos,idModulo,'');
+			cambiaPretension(idJuzgado,comboPretensiones,idPretension);
+		}
+	}else{
+		jQuery("#idProcedimiento").html("");
+		jQuery("#idPretension").html("");
+	}
+	
+}
+function cambiaPretension(idJuzgado,comboPretensiones,idPretension){
+
+	//Limpiamos el combo tratamiento para que no se sumen los resultados
+	jQuery("#idPretension").html("");
+
+	jQuery.ajax({  
+       type: "POST",
+       url: "/SIGA/JGR_MantenimientoDesignas.do?modo=getPretensionesJuzgado",
+       data: "idJuzgado="+idJuzgado+"&comboPretensiones="+comboPretensiones+"&idPretension="+idPretension,
+       dataType: "json",
+       success:  function(json) {
+    	   jQuery("#idPretension").append('<option value="">'+" "+'</option>');
+       
+    		jQuery.each(json, function(index, value) {
+    			seleccionado = '';
+					if(idPretension==value.id)
+						seleccionado = 'selected';
+    			
+    			jQuery("#idPretension").append('<option '+seleccionado+' value='+value.id+'>'+value.descripcion+'</option>');
+    		   });
+    		
+
+ 		
+       },
+       error: function(xml,msg){
+    	   alert("Error: "+msg);
+       }
+    }); 
+}
+
+function cambiaModulo(idJuzgado,comboModulos,idModulo,idPretension){
+	jQuery("#idProcedimiento").html("");
+		
+	jQuery.ajax({  
+       type: "POST",
+       url: "/SIGA/JGR_MantenimientoDesignas.do?modo=getModulosJuzgado",
+       data: "idJuzgado="+idJuzgado+"&comboModulos="+comboModulos+"&idModulo="+idModulo+"&idPretension="+idPretension,
+       dataType: "json",
+       success:  function(json) {
+    	   jQuery("#idProcedimiento").append('<option value="">'+" "+'</option>');
+       
+    		jQuery.each(json, function(index, value) {
+    			seleccionado = '';
+    			
+					if(idModulo==value.id)
+						seleccionado = 'selected';
+    			
+    			jQuery("#idProcedimiento").append('<option '+seleccionado+' value='+value.id+'>'+value.descripcion+'</option>');
+    		   });
+    		
+
+ 		
+       },
+       error: function(xml,msg){
+    	   alert("Error: "+msg);
+       }
+    }); 
+}
+selectJuzgados.value = document.getElementById("idJuzgadoSeleccionado").value;
+	if(selectJuzgados.value !=''){
+		if(valueAccionJuzgado=='1'){
+			cambiaModulo(selectJuzgados.value,valueComboModulos,valueModuloSeleccionado,'');
+			cambiaPretension(selectJuzgados.value,valueComboPretensiones,valuePretensionSeleccionada);
+		}else if(valueAccionJuzgado=='2'){
+			cambiaPretension(selectJuzgados.value,valueComboPretensiones,valuePretensionSeleccionada);
+			cambiaModulo(selectJuzgados.value,valueComboModulos,valueModuloSeleccionado,valuePretensionSeleccionada);
+		}else{
+			cambiaModulo(selectJuzgados.value,valueComboModulos,valueModuloSeleccionado,'');
+			cambiaPretension(selectJuzgados.value,valueComboPretensiones,valuePretensionSeleccionada);
+	}
+}
+
+
+
+
+</script>
 </body>
 </html>

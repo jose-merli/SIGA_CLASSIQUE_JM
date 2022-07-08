@@ -1,4 +1,5 @@
 package com.siga.gratuita.action;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,9 +17,14 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
+import org.redabogacia.sigaservices.app.services.gen.SelectDataService;
 import org.redabogacia.sigaservices.app.services.scs.ScsDesignaService;
+import org.redabogacia.sigaservices.app.util.KeyValue;
 import org.redabogacia.sigaservices.app.vo.scs.EjgsDesignaVo;
 
 import com.atos.utils.ClsConstants;
@@ -86,6 +92,20 @@ public class MaestroDesignasAction extends MasterAction {
 			}else if ( miForm.getModo().equalsIgnoreCase("actualizaDesigna")){
 				return mapping.findForward(actualizaDesigna(mapping, miForm, request, response));
 				
+			}else if (miForm.getModo().equalsIgnoreCase("getModulosJuzgado")){
+				try {
+					getModulosJuzgado(mapping, formulario, request, response);
+				} catch (Exception e) {
+					throw new SIGAException(e);
+				}
+				return null;
+			}else if (miForm.getModo().equalsIgnoreCase("getPretensionesJuzgado")){
+				try {
+					getPretensionesJuzgado(mapping, formulario, request, response);
+				} catch (Exception e) {
+					throw new SIGAException(e);
+				}
+				return null;
 			}else 
 				return super.executeInternal(mapping, formulario, request, response);
 		} catch (SIGAException e) {
@@ -96,7 +116,167 @@ public class MaestroDesignasAction extends MasterAction {
 			throw new SIGAException("Exception no controlada -> " + e.getMessage(),e);
 		}
 	}
-	
+	private void getPretensionesJuzgado(ActionMapping mapping,
+			ActionForm formulario, HttpServletRequest request,
+			HttpServletResponse response) throws JSONException, IOException {
+		//Declaración de atributos
+				HashMap<String, String> params = new HashMap<String, String>();
+				JSONObject objetoJSON = new JSONObject();
+				JSONArray listaArrayJSON = new JSONArray();
+		    	
+				//Obtenemos el usuario de sesión
+				UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+				//Recogemos el parametro enviado por ajax
+				String idJuzgado = request.getParameter("idJuzgado");
+				String comboPretensiones = request.getParameter("comboPretensiones");
+				
+				
+				//Introducimos los parametros necesarios para la query
+				params.put("idinstitucion", user.getLocation());
+				params.put("idioma", user.getLanguage());
+				JSONObject paraJsonObject = new JSONObject(idJuzgado);
+				params.put("idjuzgado", (String) paraJsonObject.get("idjuzgado"));
+				params.put("fechadesdevigor", (String) paraJsonObject.get("fechadesdevigor"));
+				params.put("fechahastavigor", (String) paraJsonObject.get("fechahastavigor"));
+				
+				if(idJuzgado.contains("idprocedimiento")) 
+					params.put("idprocedimiento", (String) paraJsonObject.get("idprocedimiento"));
+				else
+					params.put("idprocedimiento", "");
+				
+				if(idJuzgado.contains("idpretension")) 
+					params.put("idpretension", (String) paraJsonObject.get("idpretension"));
+				else
+					params.put("idpretension", "");
+				
+				
+				String idPretension = request.getParameter("idPretension");
+				if(idPretension!=null && idPretension.contains("idpretension")) { 
+					paraJsonObject = new JSONObject(idPretension);
+					params.put("idpretension", (String) paraJsonObject.get("idpretension"));
+				}else if(idPretension!=null && !idPretension.contains("idpretension")){
+					params.put("idpretension", idPretension);
+				}else {
+					//por aqui no entrara nunca
+					params.put("idpretension", "");
+				}
+					
+				
+				
+				
+				
+				//Llamada al servicio
+				SelectDataService service = (SelectDataService) BusinessManager.getInstance().getService(SelectDataService.class);
+				List<KeyValue> pretensiones = null;
+				if(comboPretensiones.equalsIgnoreCase("getPretensionesAlcala")) {
+					pretensiones = service.getPretensionesAlcala(params);
+				}else if(comboPretensiones.equalsIgnoreCase("getPretensionesEjisModulosFiltros")) {
+					pretensiones = service.getPretensionesEjisModulosFiltros(params);
+				}else {
+					pretensiones = service.getPretensiones(params);
+				}
+				//Obtenemos los datos y lo convertimos en objeto json
+				for(int i=0;i<pretensiones.size();i++){
+					KeyValue tratamientoAux = (KeyValue) pretensiones.get(i);
+					objetoJSON.put("id",tratamientoAux.getKey());
+					objetoJSON.put("descripcion",tratamientoAux.getValue());
+				
+					listaArrayJSON.put(objetoJSON);
+					objetoJSON = new JSONObject();
+					
+				}
+				
+				 response.setHeader("Cache-Control", "no-cache");
+				 response.setHeader("Content-Type", "application/json;charset=utf-8"); 
+			     response.setHeader("X-JSON", listaArrayJSON.toString());
+				 response.getWriter().write(listaArrayJSON.toString());
+	}
+	private void getModulosJuzgado(ActionMapping mapping,
+			ActionForm formulario, HttpServletRequest request,
+			HttpServletResponse response) throws JSONException, IOException {
+		//Declaración de atributos
+				HashMap<String, String> params = new HashMap<String, String>();
+				JSONObject objetoJSON = new JSONObject();
+				JSONArray listaArrayJSON = new JSONArray();
+		    	
+				//Obtenemos el usuario de sesión
+				UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");
+				//Recogemos el parametro enviado por ajax
+				String idJuzgado = request.getParameter("idJuzgado");
+				String comboModulos = request.getParameter("comboModulos");
+
+				
+				JSONObject paraJsonObject = new JSONObject(idJuzgado);
+				params.put("idjuzgado", (String) paraJsonObject.get("idjuzgado"));
+				params.put("fechadesdevigor", (String) paraJsonObject.get("fechadesdevigor"));
+				params.put("fechahastavigor", (String) paraJsonObject.get("fechahastavigor"));
+				if(idJuzgado.contains("idprocedimiento")) 
+					params.put("idprocedimiento", (String) paraJsonObject.get("idprocedimiento"));
+				else
+					params.put("idprocedimiento", "");
+				
+				
+				
+				String idModulo = request.getParameter("idModulo");
+				if(idModulo!=null && idModulo.equals("")) 
+					params.put("idprocedimiento", "");
+
+				if(idJuzgado.contains("idpretension")) 
+					params.put("idpretension", (String) paraJsonObject.get("idpretension"));
+				else
+					params.put("idpretension", "");
+				
+				
+				String idPretension = request.getParameter("idPretension");
+				if(idPretension!=null && idPretension.contains("idpretension")) { 
+					paraJsonObject = new JSONObject(idPretension);
+					params.put("idpretension", (String) paraJsonObject.get("idpretension"));
+				}else if(idPretension!=null && !idPretension.contains("idpretension")){
+					params.put("idpretension", idPretension);
+				}
+				if(!params.containsKey("idpretension"))
+					params.put("idpretension", "");
+				
+					
+				
+				
+				//Introducimos los parametros necesarios para la query
+				params.put("idioma", user.getLanguage());
+				params.put("idinstitucion", user.getLocation());
+				
+				SelectDataService service = (SelectDataService) BusinessManager.getInstance().getService(SelectDataService.class);
+				List<KeyValue> modulos = null;
+				if(comboModulos.equalsIgnoreCase("getProcedimientosEnVigencia")) {
+					modulos = service.getProcedimientosEnVigencia(params);
+				
+				}else if(comboModulos.equalsIgnoreCase("getProcedimientosEnVigenciaAlcala")) {
+					modulos = service.getProcedimientosEnVigenciaAlcala(params);
+				
+				} else {
+					modulos = service.getProcedimientosEnVigencia(params);
+				}
+				
+				
+				
+				
+				
+				
+				//Obtenemos los datos y lo convertimos en objeto json
+				for(int i=0;i<modulos.size();i++){
+					KeyValue tratamientoAux = (KeyValue) modulos.get(i);
+					objetoJSON.put("id",tratamientoAux.getKey());
+					objetoJSON.put("descripcion",tratamientoAux.getValue());
+				
+					listaArrayJSON.put(objetoJSON);
+					objetoJSON = new JSONObject();
+					
+				}
+				
+				 response.setHeader("Cache-Control", "no-cache");
+				 response.setHeader("Content-Type", "application/json;charset=utf-8"); 
+			     response.setHeader("X-JSON", listaArrayJSON.toString());
+				 response.getWriter().write(listaArrayJSON.toString());
+	}
 
 
 	/** 
@@ -815,6 +995,8 @@ public class MaestroDesignasAction extends MasterAction {
 								}
 								designaNueva.put(ScsDesignaBean.C_IDPROCEDIMIENTO, sIdprocedimiento);
 							}							
+						}else {
+							designaNueva.put(ScsDesignaBean.C_IDPROCEDIMIENTO, "");
 						}
 						// JBD 16/2/2009 INC-5739-SIGA
 						// Obtenemos el idPretension
@@ -826,6 +1008,8 @@ public class MaestroDesignasAction extends MasterAction {
 								HashMap<String, String> hmPretensionSel = new ObjectMapper().readValue(pretensionSel, HashMap.class);
 								String idPretension = hmPretensionSel.get("idpretension");
 								designaNueva.put(ScsDesignaBean.C_IDPRETENSION, idPretension);
+							}else {
+								designaNueva.put(ScsDesignaBean.C_IDPRETENSION, "");
 							}
 						}else{
 						
@@ -842,6 +1026,8 @@ public class MaestroDesignasAction extends MasterAction {
 									String pretenciaon[] = pretensionSel.split(",");
 									designaNueva.put(ScsDesignaBean.C_IDPRETENSION, pretenciaon[0]);
 								}							
+							}else {
+								designaNueva.put(ScsDesignaBean.C_IDPRETENSION, "");
 							}
 						}
 						
