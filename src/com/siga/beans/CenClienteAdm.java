@@ -4486,8 +4486,7 @@ public class CenClienteAdm extends MasterBeanAdmVisible
 			" WHERE " +
      		" "+CenPersonaBean.T_NOMBRETABLA+"."+CenPersonaBean.C_IDPERSONA+"= "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" "+
 			" AND "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDPERSONA+" = "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDPERSONA+" "+
-			" AND "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" "+
-			" AND ("+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = " + idInstitucion + " OR "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_CARACTER+" <> '" + ClsConstants.TIPO_CARACTER_PRIVADO + "')";
+			" AND "+CenClienteBean.T_NOMBRETABLA+"."+CenClienteBean.C_IDINSTITUCION+" = "+CenColegiadoBean.T_NOMBRETABLA+"."+CenColegiadoBean.C_IDINSTITUCION+" ";
 
 // 1
        		String institucionesVisibles = CenVisibilidad.getVisibilidadInstitucion(idInstitucion.toString());
