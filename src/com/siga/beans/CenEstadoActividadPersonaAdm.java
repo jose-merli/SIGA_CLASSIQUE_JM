@@ -50,7 +50,7 @@ public class CenEstadoActividadPersonaAdm extends MasterBeanAdministrador {
 			bean.setMotivo((String)hash.get(CenEstadoActividadPersonaBean.C_MOTIVO));
 			bean.setFechaEstado((String)hash.get(CenEstadoActividadPersonaBean.C_FECHAESTADO));
 			bean.setFechaMod((String)hash.get(CenEstadoActividadBean.C_FECHAMODIFICACION));
-			bean.setIdPersona(UtilidadesHash.getInteger(hash, CenEstadoActividadPersonaBean.C_IDPERSONA));
+			bean.setIdPersona(UtilidadesHash.getLong(hash, CenEstadoActividadPersonaBean.C_IDPERSONA));
 			bean.setIdEstado(UtilidadesHash.getInteger(hash, CenEstadoActividadPersonaBean.C_IDESTADO));
 			bean.setUsuMod((UtilidadesHash.getInteger(hash, CenEstadoActividadPersonaBean.C_USUMODIFICACION)));
 			bean.setIdCodigo((UtilidadesHash.getInteger(hash, CenEstadoActividadPersonaBean.C_IDCODIGO)));

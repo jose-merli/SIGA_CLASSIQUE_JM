@@ -53,7 +53,7 @@ public class ScsPermutaCabeceraAdm extends MasterBeanAdministrador {
 			bean.setIdCalendarioGuardias(UtilidadesHash.getInteger(hash,ScsPermutaCabeceraBean.C_IDCALENDARIOGUARDIAS));
 			bean.setIdTurno(UtilidadesHash.getInteger(hash,ScsPermutaCabeceraBean.C_IDTURNO));
 			bean.setIdGuardia(UtilidadesHash.getInteger(hash,ScsPermutaCabeceraBean.C_IDGUARDIA));
-			bean.setIdPersona(UtilidadesHash.getInteger(hash,ScsPermutaCabeceraBean.C_IDPERSONA));
+			bean.setIdPersona(UtilidadesHash.getLong(hash,ScsPermutaCabeceraBean.C_IDPERSONA));
 			bean.setFecha(UtilidadesHash.getString(hash,ScsPermutaCabeceraBean.C_FECHA));
 		}
 		catch(Exception e){
@@ -195,7 +195,7 @@ public class ScsPermutaCabeceraAdm extends MasterBeanAdministrador {
 		Integer idTurno = beanPermutaCabecera.getIdTurno();
 		Integer idGuardia = beanPermutaCabecera.getIdGuardia();
 		Integer idCalendarioGuardias = beanPermutaCabecera.getIdCalendarioGuardias();
-		Integer idPersona = beanPermutaCabecera.getIdPersona();
+		Long idPersona = beanPermutaCabecera.getIdPersona();
 		String fecha = beanPermutaCabecera.getFecha();
 		boolean salida = false;
 		try {			
@@ -226,7 +226,7 @@ public class ScsPermutaCabeceraAdm extends MasterBeanAdministrador {
 		Integer idTurno = beanPermutaCabecera.getIdTurno();
 		Integer idGuardia = beanPermutaCabecera.getIdGuardia();
 		Integer idCalendarioGuardias = beanPermutaCabecera.getIdCalendarioGuardias();
-		Integer idPersona = beanPermutaCabecera.getIdPersona();
+		Long idPersona = beanPermutaCabecera.getIdPersona();
 		String fecha = beanPermutaCabecera.getFecha();
 		boolean salida = false;
 		

@@ -13,7 +13,7 @@ public class EnvComunicacionMorososBean extends MasterBean
 	 */
 	private static final long serialVersionUID = -4969411095944175048L;
 	/* Variables */
-	private Integer idPersona;
+	private Long idPersona;
 	private Integer idInstitucion;
 	private String idFactura;
 	private Integer idEnvio;
@@ -39,13 +39,13 @@ public class EnvComunicacionMorososBean extends MasterBean
 
 
 
-	public Integer getIdPersona() {
+	public Long getIdPersona() {
 		return idPersona;
 	}
 
 
 
-	public void setIdPersona(Integer idPersona) {
+	public void setIdPersona(Long idPersona) {
 		this.idPersona = idPersona;
 	}
 

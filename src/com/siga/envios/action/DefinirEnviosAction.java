@@ -1390,7 +1390,7 @@ public class DefinirEnviosAction extends MasterAction {
 			CenInstitucionAdm admInst = new CenInstitucionAdm(userBean);
 			EnvEnviosAdm enviosAdm =  new EnvEnviosAdm(userBean);
 
-			HashMap<Integer, List<CerSolicitudCertificadosBean>> hashCertificadosPorDestinatario = new HashMap<Integer, List<CerSolicitudCertificadosBean>>();
+			HashMap<Long, List<CerSolicitudCertificadosBean>> hashCertificadosPorDestinatario = new HashMap<Long, List<CerSolicitudCertificadosBean>>();
 			List<CerSolicitudCertificadosBean> cerSolicitudCertificadosBeans = null;
 			StringBuilder errores = new StringBuilder("");
 			String[] lineas = form.getIdsParaEnviar().split(";");
@@ -1508,11 +1508,11 @@ public class DefinirEnviosAction extends MasterAction {
 			
 			EnvEnviosBean enviosBean = null;
 
-			Iterator<Integer> iteratorDestinatarios = hashCertificadosPorDestinatario.keySet().iterator();
+			Iterator<Long> iteratorDestinatarios = hashCertificadosPorDestinatario.keySet().iterator();
 			while (iteratorDestinatarios.hasNext()) {
 				StringBuilder datosSolicitudError = null;
 				try {
-				Integer keyPersonaDestinataria = (Integer) iteratorDestinatarios.next();
+					Long keyPersonaDestinataria = (Long) iteratorDestinatarios.next();
 
 				List<CerSolicitudCertificadosBean> solicitudCertificadosBeans = (List<CerSolicitudCertificadosBean>) hashCertificadosPorDestinatario.get(keyPersonaDestinataria);
 				Vector<Documento> certificadosVector = new Vector<Documento>();

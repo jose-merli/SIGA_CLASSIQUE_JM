@@ -11,7 +11,8 @@ public class FcsRetencionesJudicialesBean extends MasterBean {
 	 */
 	private static final long serialVersionUID = 1646898491015586477L;
 	/* Variables */
-	private Integer  idPersona, idRetencion, idDestinatario, idInstitucion;
+	Long idPersona;
+	private Integer  idRetencion, idDestinatario, idInstitucion;
 	private String   fechaAlta, fechaInicio, fechaFin, tipoRetencion, observaciones, contabilizado,descDestinatario,esDeTurno;
 	private Double 	 importe;
 	
@@ -53,7 +54,7 @@ public class FcsRetencionesJudicialesBean extends MasterBean {
 	public Integer getIdDestinatario() {
 		return idDestinatario;
 	}
-	public Integer getIdPersona() {
+	public Long getIdPersona() {
 		return idPersona;
 	}
 	public Integer getIdRetencion() {
@@ -93,7 +94,7 @@ public class FcsRetencionesJudicialesBean extends MasterBean {
 	public void setIdDestinatario(Integer idDestinatario) {
 		this.idDestinatario = idDestinatario;
 	}
-	public void setIdPersona(Integer idPersona) {
+	public void setIdPersona(Long idPersona) {
 		this.idPersona = idPersona;
 	}
 	public void setIdRetencion(Integer idRetencion) {

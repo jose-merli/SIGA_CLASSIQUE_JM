@@ -30,7 +30,7 @@ public class ScsAsistenciasBean extends MasterBean{
 	private Integer idTipoAsistenciaColegio;
 	private Integer idTurno;
 	private Integer idGuardia;
-	private Integer idPersonaColegiado;
+	private Long idPersonaColegiado;
 	private Integer idPersonaJG;
 	private Integer idFacturacion;
 	private String	fechaModificacion;
@@ -67,7 +67,7 @@ public class ScsAsistenciasBean extends MasterBean{
 	private Integer idDelito;
 	private String ejgNumEjg;
 	private String	fechaGuardia;
-	private Integer idPersonaRepresentante;
+	private Long idPersonaRepresentante;
 	ScsTurnoBean turno ;
 	ScsGuardiasTurnoBean guardia;
 	ScsPersonaJGBean asistido;
@@ -145,11 +145,11 @@ public class ScsAsistenciasBean extends MasterBean{
 	public void    setIdTipoAsistenciaColegio(Integer valor)	{ this.idTipoAsistenciaColegio = 	valor;}
 	public void    setIdturno                (Integer valor)	{ this.idTurno                 = 	valor;}
 	public void    setIdguardia              (Integer valor)	{ this.idGuardia               = 	valor;}
-	public void    setIdPersonaColegiado     (Integer valor)	{ this.idPersonaColegiado      = 	valor;}
+	public void    setIdPersonaColegiado     (Long valor)	{ this.idPersonaColegiado      = 	valor;}
 	public void    setIdPersonaJG            (Integer valor)	{ this.idPersonaJG             = 	valor;}
 	public void    setFechaModificacion      (String  valor)	{ this.fechaModificacion       = 	valor;}
 	public void    setUsuModificacion        (String  valor)	{ this.usuModificacion         = 	valor;}
-	public void    setIdPersonaRepresentante (Integer valor)	{ this.idPersonaRepresentante  = 	valor;}
+	public void    setIdPersonaRepresentante (Long valor)	{ this.idPersonaRepresentante  = 	valor;}
 	public void    setDesignaAnio		     (Integer valor)	{ this.designaAnio		       = 	valor;}
 	public void    setDesignaNumero		     (Integer valor)	{ this.designaNumero      	   = 	valor;}
 	public void    setEjgIdTipoEjg		     (Integer valor)	{ this.ejgidtipoejg      	   = 	valor;}
@@ -173,11 +173,11 @@ public class ScsAsistenciasBean extends MasterBean{
 	public Integer getIdTipoAsistenciaColegio()	{ return idTipoAsistenciaColegio ;}
 	public Integer getIdTurno                ()	{ return idTurno                 ;}
 	public Integer getIdGuardia              ()	{ return idGuardia               ;}
-	public Integer getIdPersonaColegiado     ()	{ return idPersonaColegiado      ;}
+	public Long getIdPersonaColegiado     ()	{ return idPersonaColegiado      ;}
 	public Integer getIdPersonaJG            ()	{ return idPersonaJG             ;}
 	public String  getFechaModificacion      ()	{ return fechaModificacion       ;}
 	public String  getUsuModificacion        ()	{ return usuModificacion         ;}   
-	public Integer getIdPersonaRepresentante ()	{ return idPersonaRepresentante  ;}
+	public Long getIdPersonaRepresentante ()	{ return idPersonaRepresentante  ;}
 	public Integer getDesignaAnio		     ()	{ return designaAnio		     ;}
 	public Integer getDesignaNumero		     ()	{ return designaNumero      	 ;}
 	public Integer getEjgIdTipoEjg		     ()	{ return this.ejgidtipoejg      	 ;}

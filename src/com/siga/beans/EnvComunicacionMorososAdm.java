@@ -70,7 +70,7 @@ public class EnvComunicacionMorososAdm extends MasterBeanAdministrador
 			
 			
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, EnvComunicacionMorososBean.C_IDINSTITUCION));
-			bean.setIdPersona(UtilidadesHash.getInteger(hash, EnvComunicacionMorososBean.C_IDPERSONA));
+			bean.setIdPersona(UtilidadesHash.getLong(hash, EnvComunicacionMorososBean.C_IDPERSONA));
 			bean.setIdEnvio(UtilidadesHash.getInteger(hash, EnvComunicacionMorososBean.C_IDENVIO));
 			bean.setIdFactura(UtilidadesHash.getString(hash, EnvComunicacionMorososBean.C_IDFACTURA));
 			bean.setDescripcion(UtilidadesHash.getString(hash, EnvComunicacionMorososBean.C_DESCRIPCION));

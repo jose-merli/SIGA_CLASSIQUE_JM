@@ -71,14 +71,14 @@ public class ScsPermutaGuardiasAdm extends MasterBeanAdministrador {
 			bean.setIdCalendarioGuardiasSolicitan(UtilidadesHash.getInteger(hash,ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_SOLICITAN));
 			bean.setIdTurnoSolicitante(UtilidadesHash.getInteger(hash,ScsPermutaGuardiasBean.C_IDTURNO_SOLICITANTE));
 			bean.setIdGuardiaSolicitante(UtilidadesHash.getInteger(hash,ScsPermutaGuardiasBean.C_IDGUARDIA_SOLICITANTE));
-			bean.setIdPersonaSolicitante(UtilidadesHash.getInteger(hash,ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE));
+			bean.setIdPersonaSolicitante(UtilidadesHash.getLong(hash,ScsPermutaGuardiasBean.C_IDPERSONA_SOLICITANTE));
 			bean.setMotivosSolicitante(UtilidadesHash.getString(hash,ScsPermutaGuardiasBean.C_MOTIVOS_SOLICITANTE));
 			bean.setFechaInicioSolicitante(UtilidadesHash.getString(hash,ScsPermutaGuardiasBean.C_FECHAINICIO_SOLICITANTE));
 			bean.setFechaSolicitud(UtilidadesHash.getString(hash,ScsPermutaGuardiasBean.C_FECHASOLICITUD));
 			bean.setIdCalendarioGuardiasConfirmad(UtilidadesHash.getInteger(hash,ScsPermutaGuardiasBean.C_IDCALENDARIOGUARDIAS_CONFIRMAD));
 			bean.setIdTurnoConfirmador(UtilidadesHash.getInteger(hash,ScsPermutaGuardiasBean.C_IDTURNO_CONFIRMADOR));
 			bean.setIdGuardiaConfirmador(UtilidadesHash.getInteger(hash,ScsPermutaGuardiasBean.C_IDGUARDIA_CONFIRMADOR));
-			bean.setIdPersonaConfirmador(UtilidadesHash.getInteger(hash,ScsPermutaGuardiasBean.C_IDPERSONA_CONFIRMADOR));
+			bean.setIdPersonaConfirmador(UtilidadesHash.getLong(hash,ScsPermutaGuardiasBean.C_IDPERSONA_CONFIRMADOR));
 			bean.setMotivosConfirmador(UtilidadesHash.getString(hash,ScsPermutaGuardiasBean.C_MOTIVOS_CONFIRMADOR));
 			bean.setFechaInicioConfirmador(UtilidadesHash.getString(hash,ScsPermutaGuardiasBean.C_FECHAINICIO_CONFIRMADOR));
 			bean.setFechaConfirmacion(UtilidadesHash.getString(hash,ScsPermutaGuardiasBean.C_FECHACONFIRMACION));

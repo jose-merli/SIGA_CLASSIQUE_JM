@@ -48,7 +48,7 @@ public class FcsAplicaMovimientosVariosAdm extends MasterBeanAdministrador {
 			bean.setIdAplicacion	(UtilidadesHash.getInteger(hash,FcsAplicaMovimientosVariosBean.C_IDAPLICACION));
 			bean.setIdInstitucion	(UtilidadesHash.getInteger(hash,FcsAplicaMovimientosVariosBean.C_IDINSTITUCION));
 			bean.setIdPagosJG		(UtilidadesHash.getInteger(hash,FcsAplicaMovimientosVariosBean.C_IDPAGOSJG));
-			bean.setIdPersona		(UtilidadesHash.getInteger(hash,FcsAplicaMovimientosVariosBean.C_IDPERSONA));
+			bean.setIdPersona		(UtilidadesHash.getLong(hash,FcsAplicaMovimientosVariosBean.C_IDPERSONA));
 			bean.setIdMovimiewnto	(UtilidadesHash.getInteger(hash,FcsAplicaMovimientosVariosBean.C_IDMOVIMIENTO));
 			bean.setImporteAplicado	(UtilidadesHash.getDouble(hash,FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO));
 			bean.setUsuMod			(UtilidadesHash.getInteger(hash,FcsAplicaMovimientosVariosBean.C_IMPORTEAPLICADO));

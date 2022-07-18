@@ -57,7 +57,7 @@ public class CenInstitucionAdm extends MasterBeanAdministrador {
 			bean.setCuentaContableCaja(UtilidadesHash.getInteger(hash,CenInstitucionBean.C_CUENTACONTABLECAJA));
 			bean.setBbddcpd(UtilidadesHash.getInteger(hash,CenInstitucionBean.C_BBDDCPD));
 			bean.setIdLenguaje(UtilidadesHash.getString(hash,CenInstitucionBean.C_IDLENGUAJE));
-			bean.setIdPersona(UtilidadesHash.getInteger(hash,CenInstitucionBean.C_IDPERSONA));
+			bean.setIdPersona(UtilidadesHash.getLong(hash,CenInstitucionBean.C_IDPERSONA));
 			bean.setCen_inst_idInstitucion(UtilidadesHash.getInteger(hash,CenInstitucionBean.C_CEN_INST_IDINSTITUCION));
 			bean.setAbreviatura(UtilidadesHash.getString(hash,CenInstitucionBean.C_ABREVIATURA));
 			bean.setFechaEnProduccion(UtilidadesHash.getString(hash,CenInstitucionBean.C_FECHAENPRODUCCION));

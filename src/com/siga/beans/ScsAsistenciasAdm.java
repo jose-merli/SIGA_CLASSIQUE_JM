@@ -144,7 +144,7 @@ public class ScsAsistenciasAdm extends MasterBeanAdministrador {
 			bean.setIdTipoAsistenciaColegio	(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_IDTIPOASISTENCIACOLEGIO));
 			bean.setIdturno					(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_IDTURNO));
 			bean.setIdguardia				(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_IDGUARDIA));
-			bean.setIdPersonaColegiado		(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_IDPERSONACOLEGIADO));
+			bean.setIdPersonaColegiado		(UtilidadesHash.getLong(hash, ScsAsistenciasBean.C_IDPERSONACOLEGIADO));
 			bean.setIdPersonaJG				(UtilidadesHash.getInteger(hash, ScsAsistenciasBean.C_IDPERSONAJG));
 			bean.setFechaModificacion		(UtilidadesHash.getString(hash, ScsAsistenciasBean.C_FECHAMODIFICACION));
 			bean.setUsuModificacion			(UtilidadesHash.getString(hash, ScsAsistenciasBean.C_USUMODIFICACION));

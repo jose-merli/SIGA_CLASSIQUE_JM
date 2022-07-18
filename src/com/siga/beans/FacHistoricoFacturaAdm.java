@@ -94,9 +94,9 @@ public class FacHistoricoFacturaAdm extends MasterBeanAdministrador {
 			bean.setUsuModificacion(UtilidadesHash.getInteger(hash,FacHistoricoFacturaBean.C_USUMODIFICACION));
 			bean.setIdTipoAccion(UtilidadesHash.getInteger(hash,FacHistoricoFacturaBean.C_IDTIPOACCION));
 			bean.setIdFormaPago(UtilidadesHash.getInteger(hash,FacHistoricoFacturaBean.C_IDFORMAPAGO));
-			bean.setIdPersona(UtilidadesHash.getInteger(hash,FacHistoricoFacturaBean.C_IDPERSONA));
+			bean.setIdPersona(UtilidadesHash.getLong(hash,FacHistoricoFacturaBean.C_IDPERSONA));
 			bean.setIdCuenta(UtilidadesHash.getInteger(hash,FacHistoricoFacturaBean.C_IDCUENTA));
-			bean.setIdPersonaDeudor(UtilidadesHash.getInteger(hash,FacHistoricoFacturaBean.C_IDPERSONADEUDOR));
+			bean.setIdPersonaDeudor(UtilidadesHash.getLong(hash,FacHistoricoFacturaBean.C_IDPERSONADEUDOR));
 			bean.setIdCuentaDeudor(UtilidadesHash.getInteger(hash,FacHistoricoFacturaBean.C_IDCUENTADEUDOR));
 			bean.setImpTotalAnticipado(UtilidadesHash.getDouble(hash,FacFacturaBean.C_IMPTOTALANTICIPADO));	
 			bean.setImpTotalPagadoPorCaja(UtilidadesHash.getDouble(hash,FacFacturaBean.C_IMPTOTALPAGADOPORCAJA));	

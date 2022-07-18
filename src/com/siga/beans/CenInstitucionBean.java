@@ -24,7 +24,7 @@ public class CenInstitucionBean extends MasterBean{
 	private Integer		cuentaContableCaja;
 	private Integer 	bbddcpd;
 	private String  	idLenguaje;
-	private Integer 	idPersona;
+	private Long 	idPersona;
 	private Integer 	cen_inst_idInstitucion;
 	private String	 	abreviatura;
 	private String	 	fechaEnProduccion;
@@ -57,7 +57,7 @@ public class CenInstitucionBean extends MasterBean{
 	public void setCuentaContableCaja		(Integer valor)		{ this.cuentaContableCaja = valor;}
 	public void setBbddcpd					(Integer valor)		{ this.bbddcpd = valor;}
 	public void setIdLenguaje	 			(String  valor) 	{ this.idLenguaje = valor;}
-	public void setIdPersona	 			(Integer valor) 	{ this.idPersona = valor;}
+	public void setIdPersona	 			(Long valor) 	{ this.idPersona = valor;}
 	public void setCen_inst_idInstitucion	(Integer valor) 	{ this.cen_inst_idInstitucion = valor;}
 	public void setAbreviatura				(String valor)		{ this.abreviatura = valor;}
 	public void setFechaEnProduccion		(String valor)		{ this.fechaEnProduccion = valor;}
@@ -71,7 +71,7 @@ public class CenInstitucionBean extends MasterBean{
 	public Integer getCuentaContableCaja		()	{ return this.cuentaContableCaja;}
 	public Integer getBbddcpd					()  { return this.bbddcpd;}
 	public String  getIdLenguaje	 			() 	{ return this.idLenguaje;}
-	public Integer getIdPersona	 				() 	{ return this.idPersona;}
+	public Long getIdPersona	 				() 	{ return this.idPersona;}
 	public Integer getCen_inst_idInstitucion	() 	{ return this.cen_inst_idInstitucion;}
 	@AjaxXMLBuilderNameAnnotation
 	public String getAbreviatura				()	{ return this.abreviatura;}

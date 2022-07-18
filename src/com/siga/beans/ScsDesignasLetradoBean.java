@@ -21,7 +21,7 @@ public class ScsDesignasLetradoBean extends MasterBean{
 	private Integer	idTurno;
 	private Integer	anio;
 	private Integer numero;
-	private Integer idPersona;
+	private Long idPersona;
 	private Integer manual;
 	private String	fechaDesigna;
 	private String	fechaRenuncia;
@@ -101,7 +101,7 @@ public class ScsDesignasLetradoBean extends MasterBean{
 	 * @param valor Identificador de la persona de la designa. De tipo "Integer". 
 	 * @return void 
 	 */
-	public void setIdPersona	(Integer valor)	{ this.idPersona =	valor;}
+	public void setIdPersona	(Long valor)	{ this.idPersona =	valor;}
 	
 	/**
 	 * Almacena en el Bean la fecha de la designa 
@@ -185,7 +185,7 @@ public class ScsDesignasLetradoBean extends MasterBean{
 	 * 
 	 * @return Identificador de la persona
 	 */
-	public Integer getIdPersona	()	{return this.idPersona;}
+	public Long getIdPersona	()	{return this.idPersona;}
 	
 	/**
 	 * Recupera del Bean la fecha de la designa

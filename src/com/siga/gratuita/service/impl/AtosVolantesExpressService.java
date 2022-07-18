@@ -250,7 +250,7 @@ public class AtosVolantesExpressService extends JtaBusinessServiceTemplate
 				asistencia.setFechaGuardia(truncFechaGuardia);
 				asistencia.setIdturno(volanteExpressVo.getIdTurno());
 				asistencia.setIdguardia(volanteExpressVo.getIdGuardia());
-				asistencia.setIdPersonaColegiado(volanteExpressVo.getIdColegiado().intValue());
+				asistencia.setIdPersonaColegiado(volanteExpressVo.getIdColegiado().longValue());
 				asistencia.setIdTipoAsistencia(volanteExpressVo.getIdTipoAsistencia());
 				asistencia.setIdTipoAsistenciaColegio(volanteExpressVo.getIdTipoAsistenciaColegio());
 				String fechaAsistencia;

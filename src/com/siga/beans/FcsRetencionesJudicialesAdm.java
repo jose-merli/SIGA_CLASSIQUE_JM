@@ -56,7 +56,7 @@ public class FcsRetencionesJudicialesAdm extends MasterBeanAdministrador {
 		try {
 			bean = new FcsRetencionesJudicialesBean();
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash,FcsRetencionesJudicialesBean.C_IDINSTITUCION));
-			bean.setIdPersona(UtilidadesHash.getInteger(hash,FcsRetencionesJudicialesBean.C_IDPERSONA));
+			bean.setIdPersona(UtilidadesHash.getLong(hash,FcsRetencionesJudicialesBean.C_IDPERSONA));
 			bean.setIdRetencion(UtilidadesHash.getInteger(hash,FcsRetencionesJudicialesBean.C_IDRETENCION));
 			bean.setIdDestinatario(UtilidadesHash.getInteger(hash,FcsRetencionesJudicialesBean.C_IDDESTINATARIO));
 			bean.setFechaAlta(UtilidadesHash.getString(hash,FcsRetencionesJudicialesBean.C_FECHAALTA));

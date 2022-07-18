@@ -19,8 +19,8 @@ public class PysLineaAnticipoBean extends MasterBean {
 	 */
 	private static final long serialVersionUID = 6081213343749367166L;
 	/* Variables */
-	private Integer idInstitucion, idAnticipo, idLinea,idPersona;
-	private Long NumeroLinea;
+	private Integer idInstitucion, idAnticipo, idLinea;
+	private Long NumeroLinea,idPersona;
 	private String 	idFactura, liquidacion, fechaEfectiva;	
 	private Double  importeAnticipado; 
 	
@@ -78,13 +78,13 @@ public class PysLineaAnticipoBean extends MasterBean {
 	/**
 	 * @return the idPersona
 	 */
-	public Integer getIdPersona() {
+	public Long getIdPersona() {
 		return idPersona;
 	}
 	/**
 	 * @param idPersona the idPersona to set
 	 */
-	public void setIdPersona(Integer idPersona) {
+	public void setIdPersona(Long idPersona) {
 		this.idPersona = idPersona;
 	}
 	/**

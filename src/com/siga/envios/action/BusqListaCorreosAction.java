@@ -333,7 +333,7 @@ public class BusqListaCorreosAction extends MasterAction {
 
 	        componenteBean.setIdInstitucion(Integer.valueOf(idInstitucion));
 	        componenteBean.setIdListaCorreo(Integer.valueOf(idListaCorreo));
-	        componenteBean.setIdPersona(Integer.valueOf(form.getIdPersona()));
+	        componenteBean.setIdPersona(Long.valueOf(form.getIdPersona()));
 		    
 	        //Ahora procedemos a insertarlo si no existe
 		    if (!componenteAdm.existeComponente(idListaCorreo,idInstitucion,form.getIdPersona())){

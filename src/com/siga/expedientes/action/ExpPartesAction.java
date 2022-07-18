@@ -302,7 +302,7 @@ public class ExpPartesAction extends MasterAction {
 	        ExpPartesAdm parAdm = new ExpPartesAdm (this.getUserBean(request));
 	        
 	        // Actualizamos los datos del expediente
-	        bean.setIdPersona(Integer.valueOf(form.getIdPersona()));
+	        bean.setIdPersona(Long.valueOf(form.getIdPersona()));
 	        bean.setIdDireccion(form.getIdDireccion());
 	        bean.setIdRol(Integer.valueOf(form.getIdRol()));        
 	        
@@ -388,7 +388,7 @@ public class ExpPartesAction extends MasterAction {
 		    parBean.setNumeroExpediente(Integer.valueOf((String)hash.get(ExpPartesBean.C_NUMEROEXPEDIENTE)));
 		    parBean.setAnioExpediente(Integer.valueOf((String)hash.get(ExpPartesBean.C_ANIOEXPEDIENTE)));
 		    parBean.setIdParte(parAdm.getNewIdParte(hash));
-		    parBean.setIdPersona(Integer.valueOf(form.getIdPersona()));
+		    parBean.setIdPersona(Long.valueOf(form.getIdPersona()));
 		    parBean.setIdRol(Integer.valueOf(form.getIdRol()));
 		    parBean.setIdDireccion(form.getIdDireccion());
 		    

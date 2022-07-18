@@ -84,7 +84,7 @@ public class ExpSolicitudBorradoAdm extends MasterBeanAdministrador {
 			bean = new ExpSolicitudBorradoBean();
 			bean.setIdSolicitud (UtilidadesHash.getInteger(hash,ExpSolicitudBorradoBean.C_IDSOLICITUD));
 			bean.setIdInstitucion (UtilidadesHash.getInteger(hash,ExpSolicitudBorradoBean.C_IDINSTITUCION));
-			bean.setIdPersona (UtilidadesHash.getInteger(hash,ExpSolicitudBorradoBean.C_IDPERSONA));			
+			bean.setIdPersona (UtilidadesHash.getLong(hash,ExpSolicitudBorradoBean.C_IDPERSONA));			
 			bean.setIdInstitucion_tipoExpediente(UtilidadesHash.getInteger(hash,ExpSolicitudBorradoBean.C_IDINSTITUCION_TIPOEXPEDIENTE));
 			bean.setFechaAlta(UtilidadesHash.getString(hash,ExpSolicitudBorradoBean.C_FECHAALTA));
 			bean.setIdEstadoSolic (UtilidadesHash.getInteger(hash,ExpSolicitudBorradoBean.C_IDESTADOSOLIC));

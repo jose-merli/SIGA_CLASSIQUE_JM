@@ -14,7 +14,7 @@ public class CenSancionBean extends MasterBean{
 	private static final long serialVersionUID = -8577341498247972976L;
 	/* Variables */ 
 	private Integer	idSancion;
-	private Integer	idPersona;
+	private Long	idPersona;
 	private Integer	idTipoSancion;
 	private Integer	idInstitucion;
 	private String	refColegio;
@@ -81,13 +81,13 @@ public class CenSancionBean extends MasterBean{
 	/**
 	 * @return 
 	 */
-	public Integer getIdPersona() {
+	public Long getIdPersona() {
 		return idPersona;
 	}
 	/**
 	 * @param 
 	 */
-	public void setIdPersona(Integer valor) {
+	public void setIdPersona(Long valor) {
 		this.idPersona = valor;
 	}
 	/**

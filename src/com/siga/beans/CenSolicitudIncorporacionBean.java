@@ -39,7 +39,7 @@ public class CenSolicitudIncorporacionBean extends MasterBean {
 	private String 	abonoCargo, abonoSJCS, cbo_Codigo, codigoSucursal, digitoControl, numeroCuenta,
 					titular, cuentaContable, residente, iban;	
 
-	Integer idPersona;
+	Long idPersona;
 	String fechaAlta;
 	/* Nombre tabla */
 	static public String T_NOMBRETABLA = "CEN_SOLICITUDINCORPORACION";
@@ -181,10 +181,10 @@ public class CenSolicitudIncorporacionBean extends MasterBean {
 	public String getSexo					()  { return sexo; }
 	public Integer getIdModalidadDocumentacion(){return this.idModalidadDocumentacion;	}
 	public boolean getResidente				()  { return residente.equalsIgnoreCase("1")?true:false; }
-	public Integer getIdPersona() {
+	public Long getIdPersona() {
 		return idPersona;
 	}
-	public void setIdPersona(Integer idPersona) {
+	public void setIdPersona(Long idPersona) {
 		this.idPersona = idPersona;
 	}
 	public String getFechaAlta() {

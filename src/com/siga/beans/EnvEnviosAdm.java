@@ -2040,7 +2040,7 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
         	ClsLogging.writeFileLogError("ERROR - EnvEnviosAdm.getDireccionPreferenteInstitucion(): " + e.getMessage(), e, 1);
             throw new SIGAException("messages.general.error",e);
         }
-        Integer idPersona = instBean.getIdPersona();
+        Long idPersona = instBean.getIdPersona();
         
         //NOMBRE TABLA
 		String T_CEN_DIRECCIONES = CenDireccionesBean.T_NOMBRETABLA + " DI";

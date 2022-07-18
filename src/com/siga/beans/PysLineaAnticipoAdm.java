@@ -80,7 +80,7 @@ public class PysLineaAnticipoAdm extends MasterBeanAdministrador {
 			bean.setNumeroLinea(UtilidadesHash.getLong(hash,PysLineaAnticipoBean.C_NUMEROLINEA));
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash,PysLineaAnticipoBean.C_IDINSTITUCION));
 			bean.setIdLinea(UtilidadesHash.getInteger(hash,PysLineaAnticipoBean.C_IDLINEA));
-			bean.setIdPersona(UtilidadesHash.getInteger(hash,PysLineaAnticipoBean.C_IDPERSONA));
+			bean.setIdPersona(UtilidadesHash.getLong(hash,PysLineaAnticipoBean.C_IDPERSONA));
 			bean.setImporteAnticipado(UtilidadesHash.getDouble(hash,PysLineaAnticipoBean.C_IMPORTEANTICIPADO));
 			bean.setUsuMod(UtilidadesHash.getInteger(hash,PysLineaAnticipoBean.C_USUMODIFICACION));
 			

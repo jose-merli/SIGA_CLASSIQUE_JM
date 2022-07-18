@@ -19,9 +19,9 @@ public class FacHistoricoFacturaBean extends MasterBean{
 	private Integer usuModificacion;
 	private Integer idTipoAccion;
 	private Integer idFormaPago;
-	private Integer idPersona;
+	private Long idPersona;
 	private Integer idCuenta;
-	private Integer IdPersonaDeudor;
+	private Long IdPersonaDeudor;
 	private Integer idCuentaDeudor;
 	private Double impTotalAnticipado;
 	private Double impTotalPagadoPorCaja;
@@ -120,10 +120,10 @@ public class FacHistoricoFacturaBean extends MasterBean{
 	public void setIdFormaPago(Integer idFormaPago) {
 		this.idFormaPago = idFormaPago;
 	}
-	public Integer getIdPersona() {
+	public Long getIdPersona() {
 		return idPersona;
 	}
-	public void setIdPersona(Integer idPersona) {
+	public void setIdPersona(Long idPersona) {
 		this.idPersona = idPersona;
 	}
 	public Integer getIdCuenta() {
@@ -132,10 +132,10 @@ public class FacHistoricoFacturaBean extends MasterBean{
 	public void setIdCuenta(Integer idCuenta) {
 		this.idCuenta = idCuenta;
 	}
-	public Integer getIdPersonaDeudor() {
+	public Long getIdPersonaDeudor() {
 		return IdPersonaDeudor;
 	}
-	public void setIdPersonaDeudor(Integer idPersonaDeudor) {
+	public void setIdPersonaDeudor(Long idPersonaDeudor) {
 		IdPersonaDeudor = idPersonaDeudor;
 	}
 	public Integer getIdCuentaDeudor() {

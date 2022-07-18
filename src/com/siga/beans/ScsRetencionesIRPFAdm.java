@@ -109,7 +109,7 @@ public class ScsRetencionesIRPFAdm extends MasterBeanAdministrador {
 		try {
 			bean = new ScsRetencionesIRPFBean();		
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash,ScsRetencionesIRPFBean.C_IDINSTITUCION));		
-			bean.setIdPersona(UtilidadesHash.getInteger(hash,ScsRetencionesIRPFBean.C_IDPERSONA));				
+			bean.setIdPersona(UtilidadesHash.getLong(hash,ScsRetencionesIRPFBean.C_IDPERSONA));				
 			bean.setIdRetencion(UtilidadesHash.getInteger(hash,ScsRetencionesIRPFBean.C_IDRETENCION));
 			bean.setFechaInicio(UtilidadesHash.getString(hash,ScsRetencionesIRPFBean.C_FECHAINICIO));				
 			bean.setFechaFin(UtilidadesHash.getString(hash,ScsRetencionesIRPFBean.C_FECHAFIN));				

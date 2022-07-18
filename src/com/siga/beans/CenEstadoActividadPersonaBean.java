@@ -21,7 +21,7 @@ public class CenEstadoActividadPersonaBean extends MasterBean{
 	/* Variables */
 	private Integer idEstado;
 	private String 	motivo;
-	private Integer idPersona;
+	private Long idPersona;
 	private String 	fechaEstado;
 	private Integer idCodigo;
 	
@@ -40,14 +40,14 @@ public class CenEstadoActividadPersonaBean extends MasterBean{
 	// Metodos SET
 	public void setIdEstado (Integer id) 	{ this.idEstado = id; }
 	public void setMotivo (String s)		{ this.motivo= s; }
-	public void setIdPersona (Integer id) 	{ this.idPersona = id; }
+	public void setIdPersona (Long id) 	{ this.idPersona = id; }
 	public void setFechaEstado (String s)		{ this.fechaEstado = s; }
 	public void setIdCodigo (Integer id)		{ this.idCodigo = id; }
 
 	// Metodos GET
 	public Integer getIdEstado()	    { return this.idEstado; }
 	public String getMotivo    ()	    { return this.motivo; }
-	public Integer getIdPersona   ()	{ return this.idPersona; }
+	public Long getIdPersona   ()	{ return this.idPersona; }
 	public String getfechaEstado   ()	{ return this.fechaEstado; }
 	public Integer getIdCodigo()	    { return this.idCodigo; }
 }

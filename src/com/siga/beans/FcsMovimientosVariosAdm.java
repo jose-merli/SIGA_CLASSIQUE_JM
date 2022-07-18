@@ -61,7 +61,7 @@ public class FcsMovimientosVariosAdm extends MasterBeanAdministrador {
 			bean.setFechaMod(UtilidadesHash.getString(hash,FcsMovimientosVariosBean.C_FECHAMODIFICACION));
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash,FcsMovimientosVariosBean.C_IDINSTITUCION));
 			bean.setIdMovimiento(UtilidadesHash.getInteger(hash,FcsMovimientosVariosBean.C_IDMOVIMIENTO));
-			bean.setIdPersona(UtilidadesHash.getInteger(hash,FcsMovimientosVariosBean.C_IDPERSONA));
+			bean.setIdPersona(UtilidadesHash.getLong(hash,FcsMovimientosVariosBean.C_IDPERSONA));
 			bean.setIdFacturacion(UtilidadesHash.getInteger(hash,FcsMovimientosVariosBean.C_IDFACTURACION));
 			bean.setIdGrupoFacturacion(UtilidadesHash.getInteger(hash,FcsMovimientosVariosBean.C_IDGRUPOFACTURACION));
 			bean.setMotivo(UtilidadesHash.getString(hash,FcsMovimientosVariosBean.C_MOTIVO));

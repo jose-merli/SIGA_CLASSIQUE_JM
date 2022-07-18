@@ -13,7 +13,7 @@ public class FcsMovimientosVariosBean extends MasterBean {
 	/* Variables */
 	private Integer idInstitucion;
 	private Integer idMovimiento;
-	private Integer idPersona;
+	private Long idPersona;
 	private String  descripcion;
 	private String  motivo;
 	private String  fechaAlta;
@@ -109,13 +109,13 @@ public class FcsMovimientosVariosBean extends MasterBean {
 	/**
 	 * @return Returns the idPersona.
 	 */
-	public Integer getIdPersona() {
+	public Long getIdPersona() {
 		return idPersona;
 	}
 	/**
 	 * @param idPersona The idPersona to set.
 	 */
-	public void setIdPersona(Integer idPersona) {
+	public void setIdPersona(Long idPersona) {
 		this.idPersona = idPersona;
 	}
 	/**

@@ -28,8 +28,8 @@ public class FcsPagoAsistenciaBean extends MasterBean{
 	private Float		importePagado;
 	private Float		importeIRPF;
 	private Integer		porcentajeIRPF;
-	private Integer		idPersona;
-	private Integer     idPersonaSociedad;
+	private Long		idPersona;
+	private Long     idPersonaSociedad;
 
 	
 	/**
@@ -92,13 +92,13 @@ public class FcsPagoAsistenciaBean extends MasterBean{
 	/**
 	 * @return Returns the idPersona.
 	 */
-	public Integer getIdPersona() {
+	public Long getIdPersona() {
 		return idPersona;
 	}
 	/**
 	 * @param idPersona The idPersona to set.
 	 */
-	public void setIdPersona(Integer idPersona) {
+	public void setIdPersona(Long idPersona) {
 		this.idPersona = idPersona;
 	}
 	/**
@@ -153,13 +153,13 @@ public class FcsPagoAsistenciaBean extends MasterBean{
 	/**
 	 * @return Returns the idPersonaSociedad.
 	 */
-	public Integer getIdPersonaSociedad() {
+	public Long getIdPersonaSociedad() {
 		return idPersonaSociedad;
 	}
 	/**
 	 * @param idPersonaSociedad The idPersonaSociedad to set.
 	 */
-	public void setIdPersonaSociedad(Integer idPersonaSociedad) {
+	public void setIdPersonaSociedad(Long idPersonaSociedad) {
 		this.idPersonaSociedad = idPersonaSociedad;
 	}
 }

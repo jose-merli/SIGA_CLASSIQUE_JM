@@ -572,7 +572,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
  			bean.setGuardiaTurno_idTurno(UtilidadesHash.getInteger(hash,ScsEJGBean.C_GUARDIATURNO_IDTURNO));
 			bean.setGuardiaTurno_idGuardia(UtilidadesHash.getInteger(hash,ScsEJGBean.C_GUARDIATURNO_IDGUARDIA));
 			bean.setIdTipoEJGColegio(UtilidadesHash.getInteger(hash,ScsEJGBean.C_IDTIPOEJGCOLEGIO));
-			bean.setIdPersona(UtilidadesHash.getInteger(hash,ScsEJGBean.C_IDPERSONA));
+			bean.setIdPersona(UtilidadesHash.getLong(hash,ScsEJGBean.C_IDPERSONA));
 			bean.setIdPersonaJG(UtilidadesHash.getInteger(hash,ScsEJGBean.C_IDPERSONAJG));
 			bean.setIdTipoDictamenEJG(UtilidadesHash.getInteger(hash,ScsEJGBean.C_IDTIPODICTAMENEJG));			
 			bean.setFechaApertura(UtilidadesHash.getString(hash,ScsEJGBean.C_FECHAAPERTURA));			

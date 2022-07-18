@@ -109,7 +109,7 @@ public class CenSolicitudIncorporacionAdm extends MasterBeanAdministrador {
 			bean.setNumeroCuenta(UtilidadesHash.getString(hash, CenSolicitudIncorporacionBean.C_NUMEROCUENTA));
 			bean.setTitular(UtilidadesHash.getString(hash, CenSolicitudIncorporacionBean.C_TITULAR));
 			bean.setResidente(UtilidadesHash.getString(hash, CenSolicitudIncorporacionBean.C_RESIDENTE).equalsIgnoreCase("1"));
-			bean.setIdPersona(UtilidadesHash.getInteger(hash, CenSolicitudIncorporacionBean.C_IDPERSONA));
+			bean.setIdPersona(UtilidadesHash.getLong(hash, CenSolicitudIncorporacionBean.C_IDPERSONA));
 			bean.setFechaAlta(UtilidadesHash.getString(hash, CenSolicitudIncorporacionBean.C_FECHAALTA));
 			bean.setIdPersonaTemp(UtilidadesHash.getLong(hash, CenSolicitudIncorporacionBean.C_IDPERSONATEMP));
 			bean.setIdDireccionTemp(UtilidadesHash.getLong(hash, CenSolicitudIncorporacionBean.C_IDDIRECCIONTEMP));

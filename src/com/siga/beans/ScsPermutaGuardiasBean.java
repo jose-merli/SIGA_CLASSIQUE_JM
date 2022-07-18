@@ -24,7 +24,7 @@ public class ScsPermutaGuardiasBean extends MasterBean{
 	private Integer 	idTurno_Solicitante;
 	private Integer 	idGuardia_Solicitante;
 	private Integer 	idCalendarioGuardias_Solicitan;
-	private Integer 	idPersona_Solicitante;
+	private Long 	idPersona_Solicitante;
 	private String 		fechaInicio_Solicitante;
 	private String 		motivos_Solicitante;
 	private String 		fechaSolicitud;
@@ -34,7 +34,7 @@ public class ScsPermutaGuardiasBean extends MasterBean{
 	private Integer 	idTurno_Confirmador;
 	private Integer 	idGuardia_Confirmador;
 	private Integer 	idCalendarioGuardias_Confirmad;
-	private Integer 	idPersona_Confirmador;
+	private Long 	idPersona_Confirmador;
 	private String 		fechaInicio_Confirmador;
 	private String 		motivos_Confirmador;
 	private String 		fechaConfirmacion;
@@ -73,14 +73,14 @@ public class ScsPermutaGuardiasBean extends MasterBean{
 	public void setIdCalendarioGuardiasSolicitan (Integer valor) 	{ this.idCalendarioGuardias_Solicitan = valor;}
 	public void setFechaInicioSolicitante (String  valor)			{ this.fechaInicio_Solicitante = valor;}
 	public void setMotivosSolicitante (String  valor)				{ this.motivos_Solicitante = valor;}
-	public void setIdPersonaSolicitante (Integer valor) 			{ this.idPersona_Solicitante = valor;}
+	public void setIdPersonaSolicitante (Long valor) 			{ this.idPersona_Solicitante = valor;}
 	public void setFechaSolicitud (String  valor)					{ this.fechaSolicitud = valor;}
 	public void setIdTurnoConfirmador (Integer valor) 				{ this.idTurno_Confirmador = valor;}
 	public void setIdGuardiaConfirmador(Integer valor) 				{ this.idGuardia_Confirmador = valor;}
 	public void setIdCalendarioGuardiasConfirmad (Integer valor) 	{ this.idCalendarioGuardias_Confirmad = valor;}
 	public void setFechaInicioConfirmador (String  valor)			{ this.fechaInicio_Confirmador = valor;}
 	public void setMotivosConfirmador (String  valor)				{ this.motivos_Confirmador = valor;}
-	public void setIdPersonaConfirmador (Integer valor) 			{ this.idPersona_Confirmador = valor;}
+	public void setIdPersonaConfirmador (Long valor) 			{ this.idPersona_Confirmador = valor;}
 	public void setFechaConfirmacion (String  valor)				{ this.fechaConfirmacion = valor;}
 	public void setIdPermutaCabeceraSolicitante (Integer  valor)	{ this.idPermutaCabeceraSolicitante = valor;}
 	public void setIdPermutaCabeceraConfirmador (Integer  valor)	{ this.idPermutaCabeceraConfirmador = valor;}
@@ -94,14 +94,14 @@ public class ScsPermutaGuardiasBean extends MasterBean{
 	public Integer getIdCalendarioGuardiasSolicitan () 	{ return this.idCalendarioGuardias_Solicitan;}
 	public String  getFechaInicioSolicitante ()			{ return this.fechaInicio_Solicitante;}
 	public String  getMotivosSolicitante ()				{ return this.motivos_Solicitante;}
-	public Integer getIdPersonaSolicitante () 			{ return this.idPersona_Solicitante;}
+	public Long getIdPersonaSolicitante () 			{ return this.idPersona_Solicitante;}
 	public String  getFechaSolicitud ()					{ return this.fechaSolicitud;}
 	public Integer getIdTurnoConfirmador () 			{ return this.idTurno_Confirmador;}
 	public Integer getIdGuardiaConfirmador() 			{ return this.idGuardia_Confirmador;}
 	public Integer getIdCalendarioGuardiasConfirmad () 	{ return this.idCalendarioGuardias_Confirmad;}
 	public String  getFechaInicioConfirmador ()			{ return this.fechaInicio_Confirmador;}
 	public String  getMotivosConfirmador ()				{ return this.motivos_Confirmador;}
-	public Integer getIdPersonaConfirmador () 			{ return this.idPersona_Confirmador;}
+	public Long getIdPersonaConfirmador () 			{ return this.idPersona_Confirmador;}
 	public String  getFechaConfirmacion ()				{ return this.fechaConfirmacion;}
 	public Integer getIdPermutaCabeceraSolicitante ()	{ return this.idPermutaCabeceraSolicitante;}
 	public Integer getIdPermutaCabeceraConfirmador ()	{ return this.idPermutaCabeceraConfirmador;}

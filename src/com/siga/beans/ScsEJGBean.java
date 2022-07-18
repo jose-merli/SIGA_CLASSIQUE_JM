@@ -38,7 +38,7 @@ public class ScsEJGBean extends MasterBean{
 	private String	fechaRatificacion;
 	private Integer idTipoDictamenEJG;
 	private Integer idFundamentoCalif;
-	private Integer idPersona;
+	private Long idPersona;
 	private Integer idInstitucion;
 	private Integer idTipoEJG;
 	private Integer guardiaTurno_idTurno;
@@ -553,13 +553,13 @@ public class ScsEJGBean extends MasterBean{
 	/**
 	 * @return Returns the idPersona.
 	 */
-	public Integer getIdPersona() {
+	public Long getIdPersona() {
 		return idPersona;
 	}
 	/**
 	 * @param idPersona The idPersona to set.
 	 */
-	public void setIdPersona(Integer idPersona) {
+	public void setIdPersona(Long idPersona) {
 		this.idPersona = idPersona;
 	}
 	/**

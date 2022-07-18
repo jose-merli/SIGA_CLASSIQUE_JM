@@ -48,7 +48,7 @@ public class FcsPagoActuacionAsistAdm extends MasterBeanAdministrador {
 			bean.setFechaMod		(UtilidadesHash.getString(hash,FcsPagoActuacionAsistBean.C_FECHAMODIFICACION));
 			bean.setIdPagosJG		(UtilidadesHash.getInteger(hash,FcsPagoActuacionAsistBean.C_IDPAGOSJG));
 			bean.setIdInstitucion	(UtilidadesHash.getInteger(hash,FcsPagoActuacionAsistBean.C_IDINSTITUCION));
-			bean.setIdPersona		(UtilidadesHash.getInteger(hash,FcsPagoActuacionAsistBean.C_IDPERSONA));
+			bean.setIdPersona		(UtilidadesHash.getLong(hash,FcsPagoActuacionAsistBean.C_IDPERSONA));
 			bean.setImporteIRPF		(UtilidadesHash.getFloat(hash,FcsPagoActuacionAsistBean.C_IMPORTEIRPF));
 			bean.setImportePagado	(UtilidadesHash.getFloat(hash,FcsPagoActuacionAsistBean.C_IMPORTEPAGADO ));
 			bean.setIdActuacion		(UtilidadesHash.getInteger(hash,FcsPagoActuacionAsistBean.C_IDACTUACION));

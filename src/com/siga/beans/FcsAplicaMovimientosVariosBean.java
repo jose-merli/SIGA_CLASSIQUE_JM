@@ -12,7 +12,7 @@ public class FcsAplicaMovimientosVariosBean extends MasterBean {
 	private static final long serialVersionUID = -6522815977279916778L;
 	/* Variables */
 	private Integer  idInstitucion; 
-	private Integer  idPersona; 
+	private Long  idPersona; 
 	private Integer  idMovimiento; 
 	private Integer  idAplicacion; 
 	private Integer  idPagosJG;
@@ -40,7 +40,7 @@ public class FcsAplicaMovimientosVariosBean extends MasterBean {
 	public Integer getIdPagosJG() {
 		return idPagosJG;
 	}
-	public Integer getIdPersona() {
+	public Long getIdPersona() {
 		return idPersona;
 	}
 	public Integer getIdMovimiento() {
@@ -61,7 +61,7 @@ public class FcsAplicaMovimientosVariosBean extends MasterBean {
 	public void setIdPagosJG(Integer idPagosJG) {
 		this.idPagosJG = idPagosJG;
 	}
-	public void setIdPersona(Integer idPersona) {
+	public void setIdPersona(Long idPersona) {
 		this.idPersona = idPersona;
 	}
 	public void setIdMovimiewnto(Integer idMovimiento) {

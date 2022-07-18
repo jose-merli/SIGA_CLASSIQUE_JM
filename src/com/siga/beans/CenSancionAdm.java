@@ -101,7 +101,7 @@ public class CenSancionAdm extends MasterBeanAdministrador {
 		try {
 			bean = new CenSancionBean();
 			bean.setIdSancion(UtilidadesHash.getInteger(hash, CenSancionBean.C_IDSANCION));
-			bean.setIdPersona(UtilidadesHash.getInteger(hash, CenSancionBean.C_IDPERSONA));
+			bean.setIdPersona(UtilidadesHash.getLong(hash, CenSancionBean.C_IDPERSONA));
 			bean.setIdTipoSancion(UtilidadesHash.getInteger(hash, CenSancionBean.C_IDTIPOSANCION));
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, CenSancionBean.C_IDINSTITUCION));
 			bean.setIdInstitucionSancion(UtilidadesHash.getInteger(hash, CenSancionBean.C_IDINSTITUCIONSANCION));

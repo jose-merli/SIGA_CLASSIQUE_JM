@@ -24,7 +24,8 @@ public class FcsCobrosRetencionJudicialBean extends MasterBean
 	static public final String C_IMPORTERETENIDO		= "IMPORTERETENIDO";	
 	 
 	/* Variables */
-	private Integer  idInstitucion, idPersona, idRetencion, idCobro, idPagosJG;
+	private Integer  idInstitucion,  idRetencion, idCobro, idPagosJG;
+	private Long idPersona;
 	private String   fechaRetencion;
 	private Double   importeRetenido;
 	FcsRetencionesJudicialesBean retencionJudicial = null;
@@ -80,12 +81,12 @@ public class FcsCobrosRetencionJudicialBean extends MasterBean
 		this.idPagosJG = idPagosJG;
 	}
 
-	public Integer getIdPersona()
+	public Long getIdPersona()
 	{
 		return idPersona;
 	}
 
-	public void setIdPersona(Integer idPersona)
+	public void setIdPersona(Long idPersona)
 	{
 		this.idPersona = idPersona;
 	}

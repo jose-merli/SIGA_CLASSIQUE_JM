@@ -951,7 +951,7 @@ public EnvDestinatariosBean addDestinatario(String idPersona,String tipoDestinat
     		String idFactura = (String)alFacturas.get(i);
     		beanEnvComorosos = new EnvComunicacionMorososBean();
     		beanEnvComorosos.setIdFactura(idFactura);
-        	beanEnvComorosos.setIdPersona(new Integer(idPersona));
+        	beanEnvComorosos.setIdPersona(new Long(idPersona));
         	beanEnvComorosos.setIdInstitucion(new Integer(idInstitucion));
         	beanEnvComorosos.setDescripcion(descripcion);
         	beanEnvComorosos.setFechaEnvio("SYSDATE");

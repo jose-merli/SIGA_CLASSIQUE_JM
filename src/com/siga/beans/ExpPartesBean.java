@@ -23,7 +23,7 @@ public class ExpPartesBean extends MasterBean {
 	private Integer numeroExpediente;
 	private Integer anioExpediente;
 	private Integer idParte;
-	private Integer idPersona;
+	private Long idPersona;
 	private Integer idRol;
 	private String fechaModificacion;
 	private String idDireccion;
@@ -77,10 +77,10 @@ public class ExpPartesBean extends MasterBean {
 	public void setIdParte(Integer idParte) {
 		this.idParte = idParte;
 	}
-	public Integer getIdPersona() {
+	public Long getIdPersona() {
 		return idPersona;
 	}
-	public void setIdPersona(Integer idPersona) {
+	public void setIdPersona(Long idPersona) {
 		this.idPersona = idPersona;
 	}
 	public Integer getIdRol() {

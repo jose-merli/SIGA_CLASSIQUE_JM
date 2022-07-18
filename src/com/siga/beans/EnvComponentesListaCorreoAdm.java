@@ -68,7 +68,7 @@ public class EnvComponentesListaCorreoAdm extends MasterBeanAdministrador {
 			
 			bean.setIdListaCorreo(UtilidadesHash.getInteger(hash, EnvComponentesListaCorreoBean.C_IDLISTACORREO));
 			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, EnvComponentesListaCorreoBean.C_IDINSTITUCION));
-			bean.setIdPersona(UtilidadesHash.getInteger(hash, EnvComponentesListaCorreoBean.C_IDPERSONA));
+			bean.setIdPersona(UtilidadesHash.getLong(hash, EnvComponentesListaCorreoBean.C_IDPERSONA));
 			
 		}
 

@@ -100,7 +100,7 @@ public class ScsDesignasLetradoAdm extends MasterBeanAdministrador {
 			bean.setAnio(UtilidadesHash.getInteger(hash,ScsDesignasLetradoBean.C_ANIO));
 			bean.setNumero(UtilidadesHash.getInteger(hash,ScsDesignasLetradoBean.C_NUMERO));
 			bean.setIdTurno(UtilidadesHash.getInteger(hash,ScsDesignasLetradoBean.C_IDTURNO));
-			bean.setIdPersona(UtilidadesHash.getInteger(hash,ScsDesignasLetradoBean.C_IDPERSONA));
+			bean.setIdPersona(UtilidadesHash.getLong(hash,ScsDesignasLetradoBean.C_IDPERSONA));
 			bean.setFechaDesigna(UtilidadesHash.getString(hash,ScsDesignasLetradoBean.C_FECHADESIGNA));
 			bean.setFechaRenuncia(UtilidadesHash.getString(hash,ScsDesignasLetradoBean.C_FECHARENUNCIA));
 			bean.setFechaRenunciaSolicita(UtilidadesHash.getString(hash,ScsDesignasLetradoBean.C_FECHARENUNCIASOLICITA));

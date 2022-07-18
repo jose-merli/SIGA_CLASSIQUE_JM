@@ -14,7 +14,7 @@ public class ScsRetencionesIRPFBean extends MasterBean {
 	private static final long serialVersionUID = -3407674679050323295L;
 	/* Variables */
 	private Integer idInstitucion;	
-	private Integer idPersona;	
+	private Long idPersona;	
 	private Integer idRetencion;	
 	private String 	fechaInicio,fechaFin;
 	
@@ -33,8 +33,8 @@ public class ScsRetencionesIRPFBean extends MasterBean {
 	public void setIdInstitucion (Integer d)	{ this.idInstitucion = d; 		}
 	public Integer getIdInstitucion()			{ return this.idInstitucion; 		}
 
-	public void setIdPersona (Integer d)	{ this.idPersona = d; 		}
-	public Integer getIdPersona()			{ return this.idPersona; 		}
+	public void setIdPersona (Long d)	{ this.idPersona = d; 		}
+	public Long getIdPersona()			{ return this.idPersona; 		}
 	
 	public void setIdRetencion (Integer d)	{ this.idRetencion = d; 		}
 	public Integer getIdRetencion()			{ return this.idRetencion; 		}

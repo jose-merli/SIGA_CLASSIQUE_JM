@@ -19,7 +19,7 @@ public class ExpSolicitudBorradoBean extends MasterBean {
 	private Integer idSolicitud;
 	private String motivo;
 	private Integer idEstadoSolic;
-	private Integer idPersona;
+	private Long idPersona;
 	private Integer idInstitucion;
 	private Integer idInstitucion_tipoExpediente;
 	private Integer idTipoExpediente;
@@ -76,10 +76,10 @@ public class ExpSolicitudBorradoBean extends MasterBean {
             Integer idInstitucion_tipoExpediente) {
         this.idInstitucion_tipoExpediente = idInstitucion_tipoExpediente;
     }
-    public Integer getIdPersona() {
+    public Long getIdPersona() {
         return idPersona;
     }
-    public void setIdPersona(Integer idPersona) {
+    public void setIdPersona(Long idPersona) {
         this.idPersona = idPersona;
     }
     public Integer getIdSolicitud() {

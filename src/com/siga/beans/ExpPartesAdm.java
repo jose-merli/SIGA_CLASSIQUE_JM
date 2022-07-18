@@ -85,7 +85,7 @@ public class ExpPartesAdm extends MasterBeanAdministrador {
 			bean.setNumeroExpediente(UtilidadesHash.getInteger(hash, ExpPartesBean.C_NUMEROEXPEDIENTE));
 			bean.setAnioExpediente(UtilidadesHash.getInteger(hash, ExpPartesBean.C_ANIOEXPEDIENTE));
 			bean.setIdParte(UtilidadesHash.getInteger(hash, ExpPartesBean.C_IDPARTE));
-			bean.setIdPersona(UtilidadesHash.getInteger(hash, ExpPartesBean.C_IDPERSONA));
+			bean.setIdPersona(UtilidadesHash.getLong(hash, ExpPartesBean.C_IDPERSONA));
 			bean.setIdDireccion(UtilidadesHash.getString(hash, ExpPartesBean.C_IDDIRECCION));
 			bean.setIdRol(UtilidadesHash.getInteger(hash, ExpPartesBean.C_IDROL));
 			bean.setFechaModificacion(UtilidadesHash.getString(hash, ExpPartesBean.C_FECHAMODIFICACION));			

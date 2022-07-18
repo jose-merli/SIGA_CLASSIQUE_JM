@@ -54,7 +54,7 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 			bean.setIdCobro			(UtilidadesHash.getInteger(hash,FcsCobrosRetencionJudicialBean.C_IDCOBRO));
 			bean.setIdInstitucion	(UtilidadesHash.getInteger(hash,FcsCobrosRetencionJudicialBean.C_IDINSTITUCION));
 			bean.setIdPagosJG		(UtilidadesHash.getInteger(hash,FcsCobrosRetencionJudicialBean.C_IDPAGOSJG));
-			bean.setIdPersona		(UtilidadesHash.getInteger(hash,FcsCobrosRetencionJudicialBean.C_IDPERSONA));
+			bean.setIdPersona		(UtilidadesHash.getLong(hash,FcsCobrosRetencionJudicialBean.C_IDPERSONA));
 			bean.setIdRetencion		(UtilidadesHash.getInteger(hash,FcsCobrosRetencionJudicialBean.C_IDRETENCION));
 			bean.setImporteRetenido	(UtilidadesHash.getDouble(hash,FcsCobrosRetencionJudicialBean.C_IMPORTERETENIDO));
 			bean.setUsuMod			(UtilidadesHash.getInteger(hash,FcsCobrosRetencionJudicialBean.C_USUMODIFICACION));
@@ -353,7 +353,7 @@ public class FcsCobrosRetencionJudicialAdm extends MasterBeanAdministrador {
 					retencionAplicada.setMes(UtilidadesHash.getString(registro, "MES") );
 					retencionAplicada.setIdInstitucion(new Integer((String)registro.get("IDINSTITUCION")));
 					retencionAplicada.setIdCobro(new Integer((String)registro.get("IDCOBRO")));
-					retencionAplicada.setIdPersona(new Integer((String)registro.get("IDPERSONA")));
+					retencionAplicada.setIdPersona(new Long((String)registro.get("IDPERSONA")));
 					retencionAplicada.setIdRetencion(new Integer((String)registro.get("IDRETENCION")));
 					retencionAplicada.setFechaDesdePago(UtilidadesHash.getString(registro, "FECHADESDE") );
 					retencionAplicada.setFechaHastaPago(UtilidadesHash.getString(registro, "FECHAHASTA") );

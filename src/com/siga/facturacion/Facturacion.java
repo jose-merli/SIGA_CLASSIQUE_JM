@@ -3222,11 +3222,11 @@ public class Facturacion {
 		if(facturaBean.getIdFormaPago() != null)
 			facHistoricofactura.setIdFormaPago(Integer.valueOf(facturaBean.getIdFormaPago()));
 		if(facturaBean.getIdPersona() != null)
-			facHistoricofactura.setIdPersona(facturaBean.getIdPersona().intValue());
+			facHistoricofactura.setIdPersona(facturaBean.getIdPersona().longValue());
 		if(facturaBean.getIdCuenta() != null)
 			facHistoricofactura.setIdCuenta(facturaBean.getIdCuenta());
 		if(facturaBean.getIdPersonaDeudor() != null)
-			facHistoricofactura.setIdPersonaDeudor(facturaBean.getIdPersonaDeudor().intValue());
+			facHistoricofactura.setIdPersonaDeudor(facturaBean.getIdPersonaDeudor().longValue());
 		if(facturaBean.getIdCuentaDeudor() != null)
 			facHistoricofactura.setIdCuentaDeudor(facturaBean.getIdCuentaDeudor());
 		if(facturaBean.getImpTotalAnticipado() != null)

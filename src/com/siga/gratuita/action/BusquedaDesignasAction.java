@@ -996,7 +996,7 @@ public class BusquedaDesignasAction extends MasterAction {
 			designaLetradoBean.setAnio(designaBean.getAnio());
 			designaLetradoBean.setFechaDesigna(designaBean.getFechaEntrada());
 			designaLetradoBean.setIdInstitucion(designaBean.getIdInstitucion());
-			designaLetradoBean.setIdPersona(new Integer(idPersonaSeleccionada));
+			designaLetradoBean.setIdPersona(new Long(idPersonaSeleccionada));
 			designaLetradoBean.setIdTurno(designaBean.getIdTurno());
 			designaLetradoBean.setLetradoDelTurno("S");
 			designaLetradoBean.setManual(new Integer(UtilidadesHash.getString(datosDesigna,"MANUAL")));
@@ -1075,7 +1075,7 @@ public class BusquedaDesignasAction extends MasterAction {
 			designaLetradoBean.setAnio(designaBean.getAnio());
 			designaLetradoBean.setFechaDesigna(designaBean.getFechaEntrada());
 			designaLetradoBean.setIdInstitucion(designaBean.getIdInstitucion());
-			designaLetradoBean.setIdPersona(new Integer(idPersonaSeleccionada));
+			designaLetradoBean.setIdPersona(new Long(idPersonaSeleccionada));
 			designaLetradoBean.setIdTurno(designaBean.getIdTurno());
 			designaLetradoBean.setLetradoDelTurno("S");
 			designaLetradoBean.setManual(new Integer(UtilidadesHash.getString(datosDesigna,"MANUAL")));
@@ -1358,7 +1358,7 @@ public class BusquedaDesignasAction extends MasterAction {
 			designaLetradoBean.setAnio(designaBean.getAnio());
 			designaLetradoBean.setFechaDesigna(designaBean.getFechaEntrada());
 			designaLetradoBean.setIdInstitucion(designaBean.getIdInstitucion());
-			designaLetradoBean.setIdPersona(new Integer(idPersonaSeleccionada));
+			designaLetradoBean.setIdPersona(new Long(idPersonaSeleccionada));
 			designaLetradoBean.setIdTurno(designaBean.getIdTurno());
 			designaLetradoBean.setLetradoDelTurno("S");
 			designaLetradoBean.setManual(new Integer(UtilidadesHash.getString(datosHash,"MANUAL")));

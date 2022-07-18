@@ -688,7 +688,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		beanPermutaCabecera.setIdTurno(new Integer(idTurno));
 		beanPermutaCabecera.setIdGuardia(new Integer(idGuardia));
 		beanPermutaCabecera.setIdCalendarioGuardias(new Integer(idCalendarioGuardias));
-		beanPermutaCabecera.setIdPersona(new Integer(idPersonaSaliente));
+		beanPermutaCabecera.setIdPersona(new Long(idPersonaSaliente));
 		beanPermutaCabecera.setFecha(GstDate.getApplicationFormatDate(usr.getLanguage(),fechaInicio));
 		
 		// Realiza los cambios previos a la sustitucion de una guardia para SCS_PERMUTA_CABECERA
@@ -764,7 +764,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		//---------------------------------------------------------------------------------------------------
 		
 		// Realiza los cambios posteriores a la sustituacion de una guardia para SCS_PERMUTA_CABECERA
-		beanPermutaCabecera.setIdPersona(new Integer(idPersonaEntrante));
+		beanPermutaCabecera.setIdPersona(new Long(idPersonaEntrante));
 		if (!admPermutasCabeceras.sustituirPosteriorPermutasCalendario(beanPermutaCabecera))
 				throw new ClsExceptions(admPermutasCabeceras.getError());
 		
@@ -772,7 +772,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			for(int i = 0; i < permutasComoSolicitante.size(); i++){
 				ScsPermutaGuardiasBean beanPermutaComoSolic = (ScsPermutaGuardiasBean)(permutasComoSolicitante.elementAt(i));
 				if(beanPermutaComoSolic.getFechaConfirmacion() != null && !beanPermutaComoSolic.getFechaConfirmacion().equals("")){
-					beanPermutaComoSolic.setIdPersonaSolicitante(new Integer(idPersonaEntrante));
+					beanPermutaComoSolic.setIdPersonaSolicitante(new Long(idPersonaEntrante));
 					if(!admPermutas.insert(beanPermutaComoSolic))
 						throw new ClsExceptions(admPermutas.getError());
 				}
@@ -783,7 +783,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 			for(int i = 0; i < permutasComoConfirmador.size(); i++){
 				ScsPermutaGuardiasBean beanPermutaComoConf = (ScsPermutaGuardiasBean)(permutasComoConfirmador.elementAt(i));
 				if(beanPermutaComoConf.getFechaConfirmacion() != null && !beanPermutaComoConf.getFechaConfirmacion().equals("")){
-					beanPermutaComoConf.setIdPersonaConfirmador(new Integer(idPersonaEntrante));
+					beanPermutaComoConf.setIdPersonaConfirmador(new Long(idPersonaEntrante));
 					if(!admPermutas.insert(beanPermutaComoConf))
 						throw new ClsExceptions(admPermutas.getError());
 				}

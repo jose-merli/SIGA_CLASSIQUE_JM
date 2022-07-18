@@ -14,7 +14,7 @@ public class EnvComponentesListaCorreoBean extends MasterBean {
 	//Variables
 	private Integer idListaCorreo;
 	private Integer idInstitucion;
-	private Integer idPersona;	
+	private Long idPersona;	
 	
 	// Nombre campos de la tabla 
 	static public final String C_IDLISTACORREO = "IDLISTACORREO";
@@ -35,10 +35,10 @@ public class EnvComponentesListaCorreoBean extends MasterBean {
     public void setIdListaCorreo(Integer idListaCorreo) {
         this.idListaCorreo = idListaCorreo;
     }
-    public Integer getIdPersona() {
+    public Long getIdPersona() {
         return idPersona;
     }
-    public void setIdPersona(Integer idPersona) {
+    public void setIdPersona(Long idPersona) {
         this.idPersona = idPersona;
     }
 }

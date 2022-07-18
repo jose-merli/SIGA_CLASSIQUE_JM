@@ -20,7 +20,7 @@ public class ScsPermutaCabeceraBean extends MasterBean{
 	private Integer idTurno;
 	private Integer idGuardia;
 	private Integer idCalendarioGuardias;
-	private Integer idPersona;
+	private Long idPersona;
 	private String fecha;
 	
 	/* Nombre de Tabla */	
@@ -41,7 +41,7 @@ public class ScsPermutaCabeceraBean extends MasterBean{
 	public void setIdTurno (Integer valor) 				{ this.idTurno = valor;}
 	public void setIdGuardia (Integer valor) 			{ this.idGuardia = valor;}
 	public void setIdCalendarioGuardias (Integer valor) { this.idCalendarioGuardias = valor;}	
-	public void setIdPersona (Integer valor) 			{ this.idPersona = valor;}
+	public void setIdPersona (Long valor) 			{ this.idPersona = valor;}
 	public void setFecha (String  valor)				{ this.fecha = valor;}
 	
 	/* Metodos GET */	
@@ -51,5 +51,5 @@ public class ScsPermutaCabeceraBean extends MasterBean{
 	public Integer getIdGuardia () 				{ return this.idGuardia;}
 	public Integer getIdCalendarioGuardias ()	{ return this.idCalendarioGuardias;}
 	public String  getFecha ()					{ return this.fecha;}
-	public Integer getIdPersona () 				{ return this.idPersona;}
+	public Long getIdPersona () 				{ return this.idPersona;}
 }

@@ -1450,7 +1450,7 @@ public class DatosGeneralesPagoAction extends MasterAction {
 			// porcentajeIRPF.toString());
 
 			movimientosBean.setIdInstitucion(Integer.valueOf(idInstitucion));
-			movimientosBean.setIdPersona(Integer.valueOf(idPersona));
+			movimientosBean.setIdPersona(Long.valueOf(idPersona));
 
 			importeMovimientos = aplicarMovimientosVarios(movimientosBean,
 					idPago, importeSJCS, usr);
