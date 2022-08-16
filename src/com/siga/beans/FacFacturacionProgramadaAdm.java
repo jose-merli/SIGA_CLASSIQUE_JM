@@ -501,10 +501,8 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			//String idserieidprogramacion = bean.getIdSerieFacturacion().toString()+"_" + bean.getIdProgramacion().toString();
 			String institucion = bean.getIdInstitucion().toString();
 			ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			//ReadProperties p = new ReadProperties ("SIGA.properties");
-
 			// directorio de fichero bancario 
-			String pathFichero = p.returnProperty("facturacion.directorioBancosOracle");
+		    String pathFichero = p.returnProperty("facturacion.directorioFisicoPagosBancosJava") + p.returnProperty("facturacion.directorioPagosBancosJava");
 			String sBarra = "";
 			if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
 			if (pathFichero.indexOf("\\") > -1) sBarra = "\\";        		

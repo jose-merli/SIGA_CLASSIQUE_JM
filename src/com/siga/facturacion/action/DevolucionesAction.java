@@ -498,7 +498,6 @@ public class DevolucionesAction extends MasterAction {
 			// Gestion de nombres de ficheros del servidor y de oracle
 		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);			
 		    String rutaServidor = rp.returnProperty("facturacion.directorioFisicoDevolucionesJava") + rp.returnProperty("facturacion.directorioDevolucionesJava");
-		    String rutaOracle = rp.returnProperty("facturacion.directorioDevolucionesOracle");
 
 			// Obtengo los datos del formulario			
 			FacDisqueteDevolucionesAdm devolucionesAdm = new FacDisqueteDevolucionesAdm(user);
@@ -512,14 +511,6 @@ public class DevolucionesAction extends MasterAction {
 			// Obtenemos la ruta completa del servidor donde vamos a generar el fichero	
      		rutaServidor += File.separator + idInstitucion;
      		nombreFichero = rutaServidor + File.separator +identificador+".d19";
-     		
-     		// Obtenemos la ruta completa de Oracle.
-     		String barra 	= "";
-    		if (rutaOracle.indexOf("/") > -1) 
-    			barra = "/"; 
-    		if (rutaOracle.indexOf("\\") > -1) 
-    			barra = "\\";        		
-    		rutaOracle 	+= barra + idInstitucion + barra;
 
     		// tratamiento del fichero de ficheroOriginalgrafia
 		    FormFile ficheroOriginal = miForm.getRuta();
@@ -699,7 +690,7 @@ public class DevolucionesAction extends MasterAction {
 			tx.begin();		
 
 			// Llamada a PL     		
-			resultado = actualizacionTablasDevoluciones(miForm.getIdInstitucion(), rutaOracle, identificador + ".d19", user.getLanguageInstitucion(), user.getUserName());
+			resultado = actualizacionTablasDevoluciones(miForm.getIdInstitucion(), identificador + ".d19", user.getLanguageInstitucion(), user.getUserName());
 			codretorno = resultado[0];
 			String fechaDevolucion = resultado[2];
 			
@@ -939,23 +930,11 @@ public class DevolucionesAction extends MasterAction {
 		try {
 			// Obtengo usuario y creo manejadores para acceder a las BBDD
 			UsrBean user = (UsrBean) request.getSession().getAttribute("USRBEAN");							
-			String idInstitucion = user.getLocation();	
-						
-			// Gestion del nombre del fichero de oracle
-		    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		    String rutaOracle = rp.returnProperty("facturacion.directorioDevolucionesOracle");
-		    			
+			String idInstitucion = user.getLocation();
+			
 			// Obtengo los datos del formulario			
 			FacDisqueteDevolucionesAdm devolucionesAdm = new FacDisqueteDevolucionesAdm(user);
 			DevolucionesForm miForm = (DevolucionesForm)formulario;			
-			
-     		// Obtenemos la ruta completa de Oracle.
-     		String barra 	= "";
-    		if (rutaOracle.indexOf("/") > -1) 
-    			barra = "/"; 
-    		if (rutaOracle.indexOf("\\") > -1) 
-    			barra = "\\";        		
-    		rutaOracle 	+= barra + idInstitucion + barra;
     		
     		// Comienzo la transaccion
     		tx = user.getTransactionPesada(); 		
@@ -965,7 +944,7 @@ public class DevolucionesAction extends MasterAction {
 			identificador = devolucionesAdm.getNuevoID(idInstitucion).toString();
 			
 			// Llamada a PL			
-			resultado = actualizacionTablasDevoluciones(miForm.getIdInstitucion(), rutaOracle, identificador + ".d19", user.getLanguageInstitucion(), user.getUserName());
+			resultado = actualizacionTablasDevoluciones(miForm.getIdInstitucion(), identificador + ".d19", user.getLanguageInstitucion(), user.getUserName());
 			codretorno = resultado[0];
 			String fechaDevolucion = resultado[2];			
 			
@@ -1126,7 +1105,16 @@ public class DevolucionesAction extends MasterAction {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	protected String[] actualizacionTablasDevoluciones(String institucion, String path, String fichero, String idioma, String usuario) throws ClsExceptions {	
+	protected String[] actualizacionTablasDevoluciones(String idInstitucion, String fichero, String idioma, String usuario) throws ClsExceptions {	
+ 		
+ 		// Obtenemos la ruta completa de Oracle.
+	    ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);			
+	    String path = rp.returnProperty("facturacion.directorioDevolucionesOracle");
+ 		String barra 	= "";
+		if (path.indexOf("/") > -1) { barra = "/"; } 
+		if (path.indexOf("\\") > -1) { barra = "\\"; }        		
+		path 	+= barra + idInstitucion + barra;
+		
 		String resultado[] = new String[3];
 		String codigoError_FicNoEncontrado = "5397";	// Código de error, el fichero no se ha encontrado.
 		String codretorno  = codigoError_FicNoEncontrado;		
@@ -1136,7 +1124,7 @@ public class DevolucionesAction extends MasterAction {
 				i++;
 				Thread.sleep(1000);
 				Object[] param_in = new Object[5];
-		    	param_in[0] = institucion;
+		    	param_in[0] = idInstitucion;
 		    	param_in[1] = path;
 		    	param_in[2] = fichero;
 		    	param_in[3] = idioma;

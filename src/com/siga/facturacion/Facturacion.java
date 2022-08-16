@@ -96,6 +96,7 @@ import com.siga.beans.PysTipoIvaAdm;
 import com.siga.beans.PysTipoIvaBean;
 import com.siga.envios.Documento;
 import com.siga.envios.Envio;
+import com.siga.facturacion.action.FicheroBancarioPagosAction;
 import com.siga.general.SIGAException;
 import com.siga.informes.InformeFactura;
 import com.siga.informes.InformePersonalizable;
@@ -724,11 +725,6 @@ public class Facturacion {
     		Long idSerieFacturacion = beanP.getIdSerieFacturacion();			
     		Long idProgramacion 	= beanP.getIdProgramacion();
     		String usuMod			= this.usrbean.getUserName();
-    		String pathFichero 		= p.returnProperty("facturacion.directorioBancosOracle");
-    		String sBarra = "";
-    		if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
-    		if (pathFichero.indexOf("\\") > -1) sBarra = "\\";        		
-    		pathFichero += sBarra+beanP.getIdInstitucion().toString();
 
     		// Se confirma la facturación
     		FacFacturacionProgramadaAdm facadm = new FacFacturacionProgramadaAdm(this.usrbean);
@@ -792,21 +788,14 @@ public class Facturacion {
 	    			// RGG 05/05/2009 Cambio (solo se generan los pagos por banco cuando se indica por parámetro)
 	    			if (generarPagosBanco) {
 		    		
-	    				// Se envían a banco para su cobro
-	        			Object[] param_in_banco = new Object[11];
-	        			param_in_banco[0] = beanP.getIdInstitucion().toString();
-	        			param_in_banco[1] = idSerieFacturacion.toString();
-	        			param_in_banco[2] = idProgramacion.toString();
-		    			param_in_banco[3] = "";
-		    			param_in_banco[4] = "";
-		    			param_in_banco[5] = "";
-		    			param_in_banco[6] = "";
-		    			param_in_banco[7] = "";
-		    			param_in_banco[8] = pathFichero;
-		    			param_in_banco[9] = usuMod;
-		    			param_in_banco[10] = this.usrbean.getLanguage();
-		
-		    			String resultado[] = new String[3];
+	    				// preparando llamada al paquete para la generacion del fichero
+	    				ArrayList<String> param_in = FicheroBancarioPagosAction.prepararParametrosParaGenerarFichero(null, this.usrbean);
+	    				param_in.add(idSerieFacturacion.toString()); //p_Idseriefacturacion
+	    				param_in.add(idProgramacion.toString()); //p_Idprogramacion
+	    				Object[] param_in_banco = param_in.toArray();
+	    				String[] resultado = new String[3];
+	    				
+	    				// ejecutando el PL que generara los ficheros
 		    			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PRESENTACION(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);
 		    			
 		    			codretorno = resultado[1];

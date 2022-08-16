@@ -306,6 +306,93 @@ public class FicheroBancarioPagosAction extends MasterAction{
 		return "descargaFichero";
 	}	
 	
+	public static ArrayList<String> prepararParametrosParaGenerarFichero(FicheroBancarioPagosForm form, UsrBean usr) throws ClsExceptions, SIGAException {
+		ArrayList<String> param_in_banco = new ArrayList();
+		
+		String idInstitucion = usr.getLocation();
+		
+		String keyPath = "facturacion.directorioBancosOracle";			
+	    ReadProperties p = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		String pathFichero = p.returnProperty(keyPath);
+		String sBarra 			= "";
+		if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
+		if (pathFichero.indexOf("\\") > -1) sBarra = "\\";
+		// pathFichero puede contener o bien una ruta absoluta (sBarra estara relleno) o bien el nombre de un Directory (sBarra estara vacio)
+		pathFichero += sBarra + idInstitucion;
+		
+		String fechaEntrega = "";
+		String fechaRecibosPrimeros = "";
+		String fechaRecibosRecurrentes = "";
+		String fechaRecibosCOR1 = "";
+		String fechaRecibosB2B = "";
+		if (form != null) {
+			fechaEntrega = form.getFechaEntrega();
+			fechaRecibosPrimeros = form.getFechaFRST();
+			fechaRecibosRecurrentes = form.getFechaRCUR();
+			fechaRecibosCOR1 = form.getFechaCOR1();
+			fechaRecibosB2B = form.getFechaB2B();
+		}
+		
+		// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
+		FacDisqueteCargosAdm adm = new FacDisqueteCargosAdm(usr);	
+		if (!adm.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, null)) {
+			throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
+		}				
+		
+		// Se envían a banco para su renegociación
+		param_in_banco.add(idInstitucion);
+		
+		if (fechaEntrega != null && !fechaEntrega.equals("") && fechaEntrega.length()==10) {
+			try {
+				fechaEntrega = fechaEntrega.substring(6,10) + fechaEntrega.substring(3,5) + fechaEntrega.substring(0,2); // AAAAMMDD
+			} catch (Exception e){
+				fechaEntrega = "";
+			}
+		}
+		param_in_banco.add(fechaEntrega);		
+		
+		if (fechaRecibosPrimeros != null && !fechaRecibosPrimeros.equals("") && fechaRecibosPrimeros.length()==10) {
+			try { 
+				fechaRecibosPrimeros = fechaRecibosPrimeros.substring(6,10) + fechaRecibosPrimeros.substring(3,5) + fechaRecibosPrimeros.substring(0,2); // AAAAMMDD 
+			} catch (Exception e){
+				fechaRecibosPrimeros = "";
+			}		
+		}
+		param_in_banco.add(fechaRecibosPrimeros);
+		
+		if (fechaRecibosRecurrentes != null && !fechaRecibosRecurrentes.equals("") && fechaRecibosRecurrentes.length()==10) {
+			try { 
+				fechaRecibosRecurrentes = fechaRecibosRecurrentes.substring(6,10) + fechaRecibosRecurrentes.substring(3,5) + fechaRecibosRecurrentes.substring(0,2); // AAAAMMDD 
+			} catch (Exception e){
+				fechaRecibosRecurrentes = "";
+			}
+		}
+		param_in_banco.add(fechaRecibosRecurrentes);
+		
+		if (fechaRecibosCOR1 != null && !fechaRecibosCOR1.equals("") && fechaRecibosCOR1.length()==10) {
+			try { 
+				fechaRecibosCOR1 = fechaRecibosCOR1.substring(6,10) + fechaRecibosCOR1.substring(3,5) + fechaRecibosCOR1.substring(0,2); // AAAAMMDD 
+			} catch (Exception e){
+				fechaRecibosCOR1 = "";
+			}	
+		}
+		param_in_banco.add(fechaRecibosCOR1);
+		
+		if (fechaRecibosB2B != null && !fechaRecibosB2B.equals("") && fechaRecibosB2B.length()==10) {
+			try { 
+				fechaRecibosB2B = fechaRecibosB2B.substring(6,10) + fechaRecibosB2B.substring(3,5) + fechaRecibosB2B.substring(0,2); // AAAAMMDD 
+			} catch (Exception e){
+				fechaRecibosB2B = "";
+			}		
+		}
+		param_in_banco.add(fechaRecibosB2B);
+		
+		param_in_banco.add(pathFichero);
+		param_in_banco.add(usr.getUserName());
+		param_in_banco.add(usr.getLanguage());
+		
+		return param_in_banco;
+	}
 	/** 
 	 *  Funcion que atiende la accion generarFichero. Genera los ficheros de Renegociación
 	 * @param  mapping - Mapeo de los struts
@@ -316,106 +403,29 @@ public class FicheroBancarioPagosAction extends MasterAction{
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
 	protected String generarFichero(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
-		UsrBean usr=(UsrBean)request.getSession().getAttribute("USRBEAN");
-		String keyPath 				= "facturacion.directorioBancosOracle";			
-		String pathFichero			= "";		
-		String idInstitucion		= "";
-		UserTransaction tx			= null;		
+		UsrBean usr = this.getUserBean(request);
+		UserTransaction tx = null;		
 		String resultadoFinal[] = new String[1];
+		FicheroBancarioPagosForm form = (FicheroBancarioPagosForm)formulario;
 		
-		try{				
-			Integer usuario = this.getUserName(request);						
+		try {
+			// preparando llamada al paquete para la generacion del fichero
+			ArrayList<String> param_in = prepararParametrosParaGenerarFichero(form, usr);
+			param_in.add(""); //p_Idseriefacturacion
+			param_in.add(""); //p_Idprogramacion
+			Object[] param_in_banco = param_in.toArray();
+			String[] resultado = new String[3];
 			
-		    ReadProperties p= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			pathFichero 			= p.returnProperty(keyPath);
-			idInstitucion			= this.getIDInstitucion(request).toString();
-			
-			String sBarra 			= "";
-			if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
-			if (pathFichero.indexOf("\\") > -1) sBarra = "\\";        		
-			
-			pathFichero += sBarra + idInstitucion;
-			
-			FicheroBancarioPagosForm form = (FicheroBancarioPagosForm)formulario;
-			String fechaEntrega = form.getFechaEntrega();
-			
-			String fechaRecibosPrimeros = form.getFechaFRST();
-			String fechaRecibosRecurrentes = form.getFechaRCUR();
-			String fechaRecibosCOR1 = form.getFechaCOR1();
-			String fechaRecibosB2B = form.getFechaB2B();
-			
-			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
-			FacDisqueteCargosAdm adm = new FacDisqueteCargosAdm(usr);	
-			if (!adm.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, null)) {
-				throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
-			}				
-			
-			// Se envían a banco para su renegociación
-			Object[] param_in_banco = new Object[11];
-			param_in_banco[0] = idInstitucion;
-			param_in_banco[1] = "";
-			param_in_banco[2] = "";
-			
-			if (fechaEntrega != null && !fechaEntrega.equals("") && fechaEntrega.length()==10) {
-				try {
-					fechaEntrega = fechaEntrega.substring(6,10) + fechaEntrega.substring(3,5) + fechaEntrega.substring(0,2); // AAAAMMDD
-				} catch (Exception e){
-					fechaEntrega = "";
-				}
-			}
-			param_in_banco[3] = fechaEntrega;		
-			
-			
-			if (fechaRecibosPrimeros != null && !fechaRecibosPrimeros.equals("") && fechaRecibosPrimeros.length()==10) {
-				try { 
-					fechaRecibosPrimeros = fechaRecibosPrimeros.substring(6,10) + fechaRecibosPrimeros.substring(3,5) + fechaRecibosPrimeros.substring(0,2); // AAAAMMDD 
-				} catch (Exception e){
-					fechaRecibosPrimeros = "";
-				}		
-			}
-			param_in_banco[4] = fechaRecibosPrimeros;
-			
-			if (fechaRecibosRecurrentes != null && !fechaRecibosRecurrentes.equals("") && fechaRecibosRecurrentes.length()==10) {
-				try { 
-					fechaRecibosRecurrentes = fechaRecibosRecurrentes.substring(6,10) + fechaRecibosRecurrentes.substring(3,5) + fechaRecibosRecurrentes.substring(0,2); // AAAAMMDD 
-				} catch (Exception e){
-					fechaRecibosRecurrentes = "";
-				}
-			}
-			param_in_banco[5] = fechaRecibosRecurrentes;
-			
-			if (fechaRecibosCOR1 != null && !fechaRecibosCOR1.equals("") && fechaRecibosCOR1.length()==10) {
-				try { 
-					fechaRecibosCOR1 = fechaRecibosCOR1.substring(6,10) + fechaRecibosCOR1.substring(3,5) + fechaRecibosCOR1.substring(0,2); // AAAAMMDD 
-				} catch (Exception e){
-					fechaRecibosCOR1 = "";
-				}	
-			}
-			param_in_banco[6] = fechaRecibosCOR1;
-			
-			if (fechaRecibosB2B != null && !fechaRecibosB2B.equals("") && fechaRecibosB2B.length()==10) {
-				try { 
-					fechaRecibosB2B = fechaRecibosB2B.substring(6,10) + fechaRecibosB2B.substring(3,5) + fechaRecibosB2B.substring(0,2); // AAAAMMDD 
-				} catch (Exception e){
-					fechaRecibosB2B = "";
-				}		
-			}
-			param_in_banco[7] = fechaRecibosB2B;
-			
-			param_in_banco[8] = pathFichero;
-			param_in_banco[9] = usuario.toString();
-			param_in_banco[10] = usr.getLanguage();
-						
-			String resultado[] = new String[3];
-			
+			// comenzando transaccion
 			tx = usr.getTransactionPesada(); 
 			tx.begin();
+			
+			// ejecutando el PL que generara los ficheros
 			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.PRESENTACION(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);
 			
 			String[] codigosErrorFormato = {"5412", "5413", "5414", "5415", "5416", "5417", "5418", "5421", "5422"};
 			if(Arrays.asList(codigosErrorFormato).contains(resultado[1])){
 				throw new SIGAException(resultado[2]);
-				
 			} else {
 				if (!resultado[1].equals("0")){
 					throw new SIGAException("censo.fichaCliente.bancos.mandatos.error.generacionFicheros");
@@ -441,6 +451,93 @@ public class FicheroBancarioPagosAction extends MasterAction{
 		request.setAttribute("modal","");
 				 
 		return "exitoParametros";
+	}
+	
+	/**
+	 * Funcion que regenera los ficheros de un disquete de cargos
+	 * @param mapping
+	 * @param formulario
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws SIGAException
+	 */
+	protected String regenerarFicherosDisqueteCargos(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {	
+		UsrBean usr = this.getUserBean(request);
+		UserTransaction tx = null;
+		FicheroBancarioPagosForm form = (FicheroBancarioPagosForm)formulario;
+		
+		String keyPath1 = "facturacion.directorioFisicoAbonosBancosJava";			
+		String keyPath2 = "facturacion.directorioPagosBancosJava";			
+		String pathFichero = "";		
+		String idInstitucion = usr.getLocation();
+		String idDisqueteCargos = form.getIdDisqueteCargo();
+		
+		try{
+			// preparando llamada al paquete para la generacion del fichero
+			ArrayList<String> param_in = prepararParametrosParaGenerarFichero(form, usr);
+			param_in.add(idDisqueteCargos);
+			Object[] param_in_banco = param_in.toArray();
+			String[] resultado = new String[3];
+			
+			// obteniendo la ruta de los ficheros de pagos
+		    ReadProperties p = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			pathFichero = p.returnProperty(keyPath1);
+			
+			String sBarra = "";
+			if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
+			if (pathFichero.indexOf("\\") > -1) sBarra = "\\";        		
+			
+			pathFichero += sBarra + p.returnProperty(keyPath2) + sBarra + idInstitucion;
+
+			// comenzando transaccion
+			tx = usr.getTransactionPesada(); 
+			tx.begin();
+			
+	    	// borrando todos los ficheros que contengan el identificador del disquete de cargos
+			File directorioFicheros = new File(pathFichero);
+	    	if (directorioFicheros.exists() && directorioFicheros.isDirectory()){
+		    	File[] ficheros = directorioFicheros.listFiles();
+		    	for (int x=0; x<ficheros.length; x++){
+		    		String nombreFichero = ficheros[x].getName();
+		    		if (nombreFichero.startsWith(idDisqueteCargos + ".")) {
+		    			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+						nombreFichero = sdf.format(new Date()) + "_" + nombreFichero;
+		    			
+		    			File newFile = new File(directorioFicheros, nombreFichero);
+		    			ficheros[x].renameTo(newFile);
+		    			//ficheros[x].delete(); JPT (06/05/2015): No se borran por miedo, prefiero generar una copia
+		    		}	    		
+		    	}
+	    	} 
+			
+			// ejecutando el PL que generara los ficheros
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.Regenerar_Presentacion(?,?,?,?,?,?,?,?,?,?,?)}", 2, param_in_banco);	
+		
+			String[] codigosErrorFormato = {"5412", "5413", "5414", "5415", "5416", "5417", "5418", "5421", "5422"};
+			if(Arrays.asList(codigosErrorFormato).contains(resultado[1])){
+				throw new SIGAException(resultado[2]);
+			} else {
+				if (!resultado[1].equals("0")){
+					throw new SIGAException("censo.fichaCliente.bancos.mandatos.error.generacionFicheros");
+				}							
+			}
+			
+			tx.commit();
+			
+		} catch (SIGAException e) {
+			String sms = e.getLiteral();
+			if (sms == null || sms.equals("")) {
+				sms = "messages.updated.error";
+			}
+			
+			throwExcp(sms, new String[] {"modulo.facturacion"}, e, tx);			
+						
+		} catch (Exception e) { 
+			throwExcp("messages.updated.error", new String[] {"modulo.facturacion"}, e, tx);  	  	
+		}
+		
+		return exitoModal("messages.updated.success", request);
 	}
 	
 	protected String informeRemesa (MasterForm formulario, HttpServletRequest request) throws SIGAException 
@@ -519,149 +616,6 @@ public class FicheroBancarioPagosAction extends MasterAction{
 		}	
 		
 		return result;
-	}
-	
-	/**
-	 * Funcion que regenera los ficheros de un disquete de cargos
-	 * @param mapping
-	 * @param formulario
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws SIGAException
-	 */
-	protected String regenerarFicherosDisqueteCargos(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {	
-		UsrBean usr = (UsrBean)request.getSession().getAttribute("USRBEAN");
-		
-		String keyPath 				= "facturacion.directorioBancosOracle";			
-		String pathFichero			= "";		
-		String idInstitucion		= "";
-		UserTransaction tx			= null;
-		
-		try{	
-			tx = usr.getTransactionPesada(); 
-			tx.begin();
-		    ReadProperties p = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-			pathFichero = p.returnProperty(keyPath);
-			idInstitucion = this.getIDInstitucion(request).toString();
-			
-			String sBarra = "";
-			if (pathFichero.indexOf("/") > -1) sBarra = "/"; 
-			if (pathFichero.indexOf("\\") > -1) sBarra = "\\";        		
-			
-			pathFichero += sBarra + idInstitucion;
-									
-			FicheroBancarioPagosForm form = (FicheroBancarioPagosForm)formulario;
-			String fechaEntrega = form.getFechaEntrega();
-			String idDisqueteCargos = form.getIdDisqueteCargo();
-			String fechaRecibosPrimeros = form.getFechaFRST();
-			String fechaRecibosRecurrentes = form.getFechaRCUR();
-			String fechaRecibosCOR1 = form.getFechaCOR1();
-			String fechaRecibosB2B = form.getFechaB2B();
-			
-			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
-			FacDisqueteCargosAdm adm = new FacDisqueteCargosAdm(this.getUserBean(request));	
-			if (!adm.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, null)) {
-				throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
-			}		
-				    		    	
-	    	//Se borrar todos los ficheros que contengan el identificador del disquete de cargos
-			File directorioFicheros = new File(pathFichero);
-	    	if (directorioFicheros.exists() && directorioFicheros.isDirectory()){
-		    	File[] ficheros = directorioFicheros.listFiles();
-		    	for (int x=0; x<ficheros.length; x++){
-		    		String nombreFichero = ficheros[x].getName();
-		    		if (nombreFichero.startsWith(idDisqueteCargos + ".")) {
-		    			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-						nombreFichero = sdf.format(new Date()) + "_" + nombreFichero;
-		    			
-		    			File newFile = new File(directorioFicheros, nombreFichero);
-		    			ficheros[x].renameTo(newFile);
-		    			//ficheros[x].delete(); JPT (06/05/2015): No se borran por miedo, prefiero generar una copia
-		    		}	    		
-		    	}
-	    	} 
-			
-			// Se envían los parametros para modificar las fechas del fichero
-			Object[] param_in_banco = new Object[9];
-			param_in_banco[0] = idInstitucion;
-			param_in_banco[1] = idDisqueteCargos;
-			
-			if (fechaEntrega != null && !fechaEntrega.equals("") && fechaEntrega.length()==10) {
-				try {
-					fechaEntrega = fechaEntrega.substring(6,10) + fechaEntrega.substring(3,5) + fechaEntrega.substring(0,2); // AAAAMMDD
-				} catch (Exception e){
-					fechaEntrega = "";
-				}
-			}
-			param_in_banco[2] = fechaEntrega;
-			
-			if (fechaRecibosPrimeros != null && !fechaRecibosPrimeros.equals("") && fechaRecibosPrimeros.length()==10) {
-				try { 
-					fechaRecibosPrimeros = fechaRecibosPrimeros.substring(6,10) + fechaRecibosPrimeros.substring(3,5) + fechaRecibosPrimeros.substring(0,2); // AAAAMMDD 
-				} catch (Exception e){
-					fechaRecibosPrimeros = "";
-				}		
-			}
-			param_in_banco[3] = fechaRecibosPrimeros;
-			
-			if (fechaRecibosRecurrentes != null && !fechaRecibosRecurrentes.equals("") && fechaRecibosRecurrentes.length()==10) {
-				try { 
-					fechaRecibosRecurrentes = fechaRecibosRecurrentes.substring(6,10) + fechaRecibosRecurrentes.substring(3,5) + fechaRecibosRecurrentes.substring(0,2); // AAAAMMDD 
-				} catch (Exception e){
-					fechaRecibosRecurrentes = "";
-				}
-			}
-			param_in_banco[4] = fechaRecibosRecurrentes;
-			
-			if (fechaRecibosCOR1 != null && !fechaRecibosCOR1.equals("") && fechaRecibosCOR1.length()==10) {
-				try { 
-					fechaRecibosCOR1 = fechaRecibosCOR1.substring(6,10) + fechaRecibosCOR1.substring(3,5) + fechaRecibosCOR1.substring(0,2); // AAAAMMDD 
-				} catch (Exception e){
-					fechaRecibosCOR1 = "";
-				}	
-			}
-			param_in_banco[5] = fechaRecibosCOR1;
-			
-			if (fechaRecibosB2B != null && !fechaRecibosB2B.equals("") && fechaRecibosB2B.length()==10) {
-				try { 
-					fechaRecibosB2B = fechaRecibosB2B.substring(6,10) + fechaRecibosB2B.substring(3,5) + fechaRecibosB2B.substring(0,2); // AAAAMMDD 
-				} catch (Exception e){
-					fechaRecibosB2B = "";
-				}		
-			}
-			param_in_banco[6] = fechaRecibosB2B;
-			param_in_banco[7] = pathFichero;		
-			param_in_banco[8] = usr.getLanguage();
-			
-			String resultado[] = new String[2];
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.Regenerar_Presentacion(?,?,?,?,?,?,?,?,?,?,?)}", 2, param_in_banco);	
-		
-			String[] codigosErrorFormato = {"5412", "5413", "5414", "5415", "5416", "5417", "5418", "5421", "5422"};
-			if(Arrays.asList(codigosErrorFormato).contains(resultado[0])){
-				throw new SIGAException(resultado[1]);
-				
-			} else {
-				if (!resultado[0].equals("0")){
-					throw new SIGAException("censo.fichaCliente.bancos.mandatos.error.generacionFicheros");
-				}							
-			}
-			
-			tx.commit();
-			
-		} catch (SIGAException e) {
-			String sms = e.getLiteral();
-			if (sms == null || sms.equals("")) {
-				sms = "messages.updated.error";
-			}
-			
-			throwExcp(sms, new String[] {"modulo.facturacion"}, e, tx);			
-						
-		} catch (Exception e) { 
-			throwExcp("messages.updated.error", new String[] {"modulo.facturacion"}, e, tx);  	  	
-		}
-		
-		return exitoModal("messages.updated.success", request);
 	}
 	
 	/**

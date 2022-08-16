@@ -580,10 +580,11 @@ public class FicheroBancarioAbonosAction extends MasterAction{
 		int resultadoInt;
 		try {
 			// calculando nombre y ruta del fichero
-			String rutaServidor = rp.returnProperty("facturacion.directorioFisicoAbonosBancosJava")
-					+ rp.returnProperty("facturacion.directorioAbonosBancosJava");
-			String barra = (rutaServidor.indexOf("/") > -1) ? "/" : "\\";
-			rutaServidor += barra + idInstitucion;
+			String rutaServidor = rp.returnProperty("facturacion.directorioAbonosBancosOracle");
+			String sBarra = "";
+			if (rutaServidor.indexOf("/") > -1) sBarra = "/"; 
+			if (rutaServidor.indexOf("\\") > -1) sBarra = "\\";
+			rutaServidor += sBarra + idInstitucion;
 			String sExtension = rp.returnProperty("facturacion.extension.ficherosTransferenciasSEPA");
 			nombreFichero += "." + sExtension;
 
