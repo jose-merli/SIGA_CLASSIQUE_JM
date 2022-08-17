@@ -512,7 +512,7 @@ public class FicheroBancarioPagosAction extends MasterAction{
 	    	} 
 			
 			// ejecutando el PL que generara los ficheros
-			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.Regenerar_Presentacion(?,?,?,?,?,?,?,?,?,?,?)}", 2, param_in_banco);	
+			resultado = ClsMngBBDD.callPLProcedure("{call PKG_SIGA_CARGOS.Regenerar_Presentacion(?,?,?,?,?,?,?,?,?,?,?,?,?)}", 3, param_in_banco);	
 		
 			String[] codigosErrorFormato = {"5412", "5413", "5414", "5415", "5416", "5417", "5418", "5421", "5422"};
 			if(Arrays.asList(codigosErrorFormato).contains(resultado[1])){
