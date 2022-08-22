@@ -96,6 +96,8 @@ public class FcsFactEstadosFacturacionAdm extends MasterBeanAdministrador {
 	public String getIdEstadoFacturacion (String idInstitucion, String idFacturacion){
 		String consulta=null, idEstado=null;
 		
+		if (idInstitucion == null || idInstitucion.equals("") || idFacturacion == null || idFacturacion.equals("")) return null;
+		
 		try {
 			consulta = " SELECT "+FcsFactEstadosFacturacionBean.C_IDESTADOFACTURACION+
  					   " FROM "+FcsFactEstadosFacturacionBean.T_NOMBRETABLA+
