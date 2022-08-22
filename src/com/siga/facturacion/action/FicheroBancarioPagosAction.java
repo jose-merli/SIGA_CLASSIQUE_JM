@@ -331,13 +331,13 @@ public class FicheroBancarioPagosAction extends MasterAction{
 			fechaRecibosRecurrentes = form.getFechaRCUR();
 			fechaRecibosCOR1 = form.getFechaCOR1();
 			fechaRecibosB2B = form.getFechaB2B();
+			
+			// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
+			FacDisqueteCargosAdm adm = new FacDisqueteCargosAdm(usr);	
+			if (!adm.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, null)) {
+				throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
+			}				
 		}
-		
-		// Controlar que las fechas cumplen los dias habiles introducidos en parametros generales
-		FacDisqueteCargosAdm adm = new FacDisqueteCargosAdm(usr);	
-		if (!adm.controlarFechasFicheroBancario(idInstitucion, fechaEntrega, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B, null)) {
-			throw new SIGAException("facturacion.ficheroBancarioPagos.errorMandatos.mensajeFechas");
-		}				
 		
 		// Se envían a banco para su renegociación
 		param_in_banco.add(idInstitucion);
