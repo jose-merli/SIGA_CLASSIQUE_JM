@@ -46,7 +46,7 @@ public final class ClsMngBBDD {
 	//ClsLogging.writeFileLogWithoutSession("****************************************************", 3);
 	//ClsLogging.writeFileLogWithoutSession("**               Objeto BBDD creado               **", 3);
 	//ClsLogging.writeFileLogWithoutSession("****************************************************", 3);
-	ClsLogging.writeFileLog("   > Levantando Pools de Conexión a Base de Datos.", 3);
+	ClsLogging.writeFileLogWithoutSession("   > Levantando Pools de Conexión a Base de Datos.", 3);
 
 	try{
 	  ctx = new InitialContext();
