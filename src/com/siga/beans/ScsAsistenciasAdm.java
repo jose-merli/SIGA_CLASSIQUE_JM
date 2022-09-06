@@ -2361,7 +2361,7 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 	
 	public AsistenciaForm getDatosAsistencia(ScsAsistenciasBean asistencia) throws ClsExceptions 
 	{
-		StringBuffer sql =  new StringBuffer();
+		StringBuilder sql =  new StringBuilder(2000);
 		Hashtable<Integer, Object> htCodigos = new Hashtable<Integer, Object>();
 		int contador = 0;
 		sql.append(" SELECT AA.ANIO||'/'||AA.NUMERO||DECODE(AA.IDPERSONAJG,null,null,' - '||PJG.NOMBRE ||' '||PJG.APELLIDO1||' '||PJG.APELLIDO2) DESCRIPCIONASISTENCIA ");
@@ -2387,19 +2387,15 @@ public  List<ScsAsistenciasBean> getAsistenciasVolantesExpres(VolantesExpressVo 
 		sql.append("PER.NIFCIF PNIFCIF ");
 
 		sql.append(" FROM "); 
-		sql.append(" SCS_ASISTENCIA AA, SCS_TURNO TU,SCS_GUARDIASTURNO GU, SCS_PERSONAJG PJG,CEN_PERSONA PER, CEN_COLEGIADO COL ");
-		sql.append(" WHERE " );
-		sql.append(" AA.IDINSTITUCION = COL.IDINSTITUCION " );
-		sql.append(" AND AA.IDPERSONACOLEGIADO = COL.IDPERSONA " );
-		sql.append(" AND COL.IDPERSONA = PER.IDPERSONA " );
-		sql.append(" AND GU.IDTURNO(+) = AA.IDTURNO " );
-		sql.append(" AND GU.IDGUARDIA(+) = AA.IDGUARDIA " );
-
-		sql.append(" AND PJG.IDPERSONA(+) = AA.IDPERSONAJG ");
-		sql.append(" AND PJG.IDINSTITUCION(+) = AA.IDINSTITUCION ");
-		sql.append(" AND TU.IDTURNO(+) = AA.IDTURNO ");
-		sql.append(" AND TU.IDINSTITUCION(+) = AA.IDINSTITUCION ");
-		sql.append("AND  AA.IDINSTITUCION = :");
+		sql.append(" SCS_ASISTENCIA AA ");
+		sql.append(" INNER JOIN SCS_TURNO TU ON TU.IDINSTITUCION = AA.IDINSTITUCION AND TU.IDTURNO = AA.IDTURNO " );
+		sql.append(" INNER JOIN SCS_GUARDIASTURNO GU ON GU.IDINSTITUCION = AA.IDINSTITUCION AND GU.IDTURNO = AA.IDTURNO AND GU.IDGUARDIA = AA.IDGUARDIA " );
+		sql.append(" INNER JOIN CEN_COLEGIADO COL ON AA.IDINSTITUCION = COL.IDINSTITUCION AND AA.IDPERSONACOLEGIADO = COL.IDPERSONA " );
+		sql.append(" INNER JOIN CEN_PERSONA PER ON COL.IDPERSONA = PER.IDPERSONA " );
+		sql.append(" LEFT JOIN SCS_PERSONAJG PJG ON AA.IDINSTITUCION = PJG.IDINSTITUCION AND AA.IDPERSONAJG = PJG.IDPERSONA " );
+		
+		sql.append(" WHERE 1=1 " );
+		sql.append(" AND AA.IDINSTITUCION = :");
 		contador ++;
 		sql.append(contador);
 		htCodigos.put(new Integer(contador),asistencia.getIdInstitucion());
