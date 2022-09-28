@@ -14,8 +14,10 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
+import org.redabogacia.sigaservices.app.helper.StringHelper;
 import org.redabogacia.sigaservices.app.services.scs.GestionEnvioInformacionEconomicaCatalunyaService;
 import org.redabogacia.sigaservices.app.services.scs.GestionEnvioInformacionEconomicaCatalunyaService.TIPOINTERCAMBIO;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
@@ -58,7 +60,12 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 						mapDestino = inicio (mapping, miForm, request, response);
 					}else if ( accion.equalsIgnoreCase("getAjaxBusqueda")){
 						mapDestino = getAjaxBusqueda (mapping, miForm, request, response);
-					}else if ( accion.equalsIgnoreCase("insertaIntercambios")){
+					}else if ( accion.equalsIgnoreCase("getAjaxValidaCertificacion")){
+						getAjaxValidaCertificacion (request, response);
+						return null;
+					}
+					
+					else if ( accion.equalsIgnoreCase("insertaIntercambios")){
 						mapDestino = insertaIntercambios (mapping, miForm, request, response);
 
 					}else if ( accion.equalsIgnoreCase("guardar")){
@@ -245,6 +252,41 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 	 * @throws SIGAException 
 	 * @throws JSONException 
 	 */
+	private void getAjaxValidaCertificacion (HttpServletRequest request, HttpServletResponse response) throws Exception {
+		GestionEconomicaCatalunyaForm gestionEconomicaForm = new GestionEconomicaCatalunyaForm();
+		gestionEconomicaForm.setUsrBean(this.getUserBean(request));
+		
+		
+		//origen sin viene a nulo es justificacion, si viene 1 es devolucion y si viene 2 es Certificaion
+		
+		String idPeriodo = request.getParameter("idPeriodo");
+		String anyo = request.getParameter("anio");
+
+
+
+		gestionEconomicaForm.setAnio(anyo);
+		gestionEconomicaForm.setIdPeriodo(idPeriodo);
+		
+		BusinessManager bm = getBusinessManager();
+		GestionEnvioInformacionEconomicaCatalunyaService gestionEconomicaCatalunyaService = (GestionEnvioInformacionEconomicaCatalunyaService) bm.getService(GestionEnvioInformacionEconomicaCatalunyaService.class);
+		
+		String listadoColegios = gestionEconomicaCatalunyaService.getListadoColegiosPendientesCertificar(idPeriodo,anyo);
+		
+		JSONObject json = new JSONObject();
+		if(listadoColegios!=null && !listadoColegios.equals("")) {
+			
+			listadoColegios = StringHelper.getMensajeIdioma(gestionEconomicaForm.getUsrBean().getLanguageInstitucion(),"error.intercambio.cicac")+"\n"+listadoColegios;
+		}
+		json.put("listadoColegios", listadoColegios);
+		
+		response.setContentType("text/x-json;charset=UTF-8");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Content-Type", "application/json");
+	    response.setHeader("X-JSON", json.toString());
+		response.getWriter().write(json.toString()); 	
+
+
+	}
 	private String getAjaxBusqueda (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
 		gestionEconomicaForm.setUsrBean(this.getUserBean(request));
@@ -338,6 +380,7 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 
 
 	}
+	
 	private String guardar (ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		GestionEconomicaCatalunyaForm gestionEconomicaForm = (GestionEconomicaCatalunyaForm) formulario;
 		gestionEconomicaForm.setUsrBean(this.getUserBean(request));
@@ -384,6 +427,16 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 //			log.info("getPathFile"+gestionEconomicaForm.getPathFile());
 			GestionEconomicaCatalunyaVo justificacionVo = gestionEconomicaForm.getForm2Vo(gestionEconomicaForm);
 			if(usrBean.getLocation().equalsIgnoreCase(""+AppConstants.IDINSTITUCION_CONSEJO_CATALAN)) {
+				
+				
+				String listadoColegios = gestionEconomicaCatalunyaService.getListadoColegiosPendientesCertificar(gestionEconomicaForm.getIdPeriodo(),gestionEconomicaForm.getAnio());
+				
+				if(listadoColegios!=null && !listadoColegios.equals("")) {
+					
+					listadoColegios = StringHelper.getMensajeIdioma(usrBean.getLanguageInstitucion(),"error.intercambio.cicac")+"\n"+listadoColegios;
+					return errorRefresco(listadoColegios, new ClsExceptions(listadoColegios), request);
+					
+				}
 				
 				justificacionVo.setDescripcion(TIPOINTERCAMBIO.CertificacionCICAC.getDescripcio());
 				justificacionVo.setIdTipoIntercambio(TIPOINTERCAMBIO.CertificacionCICAC.getId());

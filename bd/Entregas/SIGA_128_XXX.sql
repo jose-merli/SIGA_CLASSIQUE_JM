@@ -1217,3 +1217,21 @@ VALUES ('ENV','DEFAULT_EMAIL_FROM','comunicaciones.siga@redabogacia.org', sysdat
 --https://redabogacia.atlassian.net/browse/SIGA-605
 delete from GEN_PARAMETROS where PARAMETRO = 'DEFAULT_EMAIL_FROM' and IDINSTITUCION <> 0;
 update GEN_PARAMETROS set valor = '-' where PARAMETRO = 'DEFAULT_EMAIL_FROM' and IDINSTITUCION = 0;
+
+
+CREATE OR REPLACE VIEW V_SIGA_CAT_ANEXOCICAC AS
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('error.intercambio.cicac', 'Antes de continuar, debe finalizar los intercambios de los siguientes colegios:', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('error.intercambio.cicac', 'Antes de continuar, debe finalizar los intercambios de los siguientes colegios:#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('error.intercambio.cicac', 'Antes de continuar, debe finalizar los intercambios de los siguientes colegios:#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('error.intercambio.cicac', 'Antes de continuar, debe finalizar los intercambios de los siguientes colegios:#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('success.intercambio.cicac', 'Todos los intercambios de todos los colegios han finalizado satisfactoriamente', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('success.intercambio.cicac', 'Todos los intercambios de todos los colegios han finalizado satisfactoriamente#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('success.intercambio.cicac', 'Todos los intercambios de todos los colegios han finalizado satisfactoriamente#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('success.intercambio.cicac', 'Todos los intercambios de todos los colegios han finalizado satisfactoriamente#GL', 0, '4', sysdate, 0, '19');
+
+alter table FCS_JE_INTERCAMBIOS add FECHACREACION date;
+UPDATE FCS_JE_INTERCAMBIOS SET FECHACREACION = FECHAMODIFICACION;
+alter table FCS_JE_INTERCAMBIOS modify FECHACREACION not null;
+

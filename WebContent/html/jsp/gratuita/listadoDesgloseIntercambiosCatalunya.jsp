@@ -96,6 +96,8 @@
 	}
 	function enviaRespuestaCICAC_ICA(fila) {
 		//alertStop("Envia el respuesta al ICA ");
+		if(document.getElementById('idInstitucionIntercambio').value==3001)
+			return;
 		sub();
 		document.forms['FormularioGestion'].modo.value = "enviaRespuestaCICAC_ICA";
 		document.forms['FormularioGestion'].idInstitucion.value = document.getElementById('idInstitucionIntercambio').value;
@@ -287,6 +289,8 @@
 	<c:set var="displaynone" value="display:none" />
 	<c:set var="estiloText" value="boxConsulta" />
 	<c:set var="estiloSelect" value="boxComboConsulta" />
+	<c:set var="idColegio" value="${intercambio.idInstitucion}" />
+	
 	<input type="hidden" id="mensajeSuccess" value="${mensajeSuccess}"/>
 	<input type="file" id ='fileUpdate' style="display:none"/>
 	<bean:define id="path" name="org.apache.struts.action.mapping.instance" property="path" scope="request"/>
@@ -456,11 +460,17 @@
 					<input type="button" alt="<siga:Idioma key='intercambios.boton.enviar.comision'/>"  id="idButton" onclick="return enviaIntercambiosGEN();" class="button" name="idButton" value="<siga:Idioma key='intercambios.boton.enviar.comision'/>">
 				</td>
 			</c:when>
-			<c:when test="${GestionEconomicaCatalunyaForm.idInstitucion=='3001' && (GestionEconomicaCatalunyaForm.idEstado=='87' || GestionEconomicaCatalunyaForm.idEstado=='90' )  }">
+			<c:when test="${GestionEconomicaCatalunyaForm.idInstitucion=='3001' && idColegio!='3001' && (GestionEconomicaCatalunyaForm.idEstado=='87' || GestionEconomicaCatalunyaForm.idEstado=='90' )  }">
 				<td class="tdBotones">
 					<input type="button" alt="<siga:Idioma key='intercambios.boton.enviar.ica'/>"  id="idButton" onclick="return enviaRespuestaCICAC_ICA();" class="button" name="idButton" value="<siga:Idioma key='intercambios.boton.enviar.ica'/>">
 				</td>
 			</c:when>
+			<c:when test="${GestionEconomicaCatalunyaForm.idInstitucion=='3001' && GestionEconomicaCatalunyaForm.idEstado=='50'   }">
+				<td class="tdBotones">
+					<input type="button" alt="<siga:Idioma key='intercambios.boton.enviar.comision'/>"  id="idButton" onclick="return enviaIntercambiosGEN();" class="button" name="idButton" value="<siga:Idioma key='intercambios.boton.enviar.comision'/>">
+				</td>
+			</c:when>
+			
 		</c:choose>
 		<c:if test="${GestionEconomicaCatalunyaForm.idInstitucion!='3001'}">
 			<td class="tdBotones">

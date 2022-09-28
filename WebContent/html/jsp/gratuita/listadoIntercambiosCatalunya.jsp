@@ -24,6 +24,7 @@
 <input type="hidden" id="mensajeSuccess" name="mensajeSuccess" class="inputNotSelect" value="${mensajeSuccess}"/>
 <siga:Table name="listadoInicial" border="1"
 	columnNames="censo.busquedaClientesAvanzada.literal.colegio,
+	gratuita.mantActuacion.literal.fecha,
 	gratuita.mantActuacion.literal.descripcion,
 	gratuita.mantActuacion.literal.anio,
 	gratuita.calendarioGuardias.literal.periodo,
@@ -52,6 +53,7 @@
 						value="${intercambio.idIntercambio}" class="inputNotSelect"/>
 						<c:out	value="${intercambio.abreviaturaInstitucion}"/>
 					</td>
+					<td><c:out	value="${intercambio.fechaCreacion}"/></td>
 					<td><c:out	value="${intercambio.descripcion}"/></td>
 					<td align='center'><c:out value="${intercambio.anio}"/></td>
 					<td align='left'><c:out	value="${intercambio.nombrePeriodo}"/></td>

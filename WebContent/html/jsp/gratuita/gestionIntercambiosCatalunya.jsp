@@ -96,25 +96,42 @@
 		jQuery("#idPeriodoNew").val("");
 		jQuery("#anioNew").val("");
 		if(document.forms['FormularioGestion'].cantidadAsunto)
-			openDialog('dialogoInsercion',650,400);
+			openDialog('dialogoInsercion',680,380,'isConsell');
 		else
 			openDialog('dialogoInsercion',600,240);
 	}
 	
-	function openDialog(dialogo,valWidth,valHeight){
-		jQuery("#"+dialogo).dialog(
-				{
-				      height: valHeight,
-				      width: valWidth,
-				      modal: true,
-				      resizable: false,
-				      buttons: {
-				    	  "Guardar": { id: 'Guardar', text: '<siga:Idioma key="general.boton.guardar"/>', click: function(){ accionInsercion(dialogo); }},
-				          "Cerrar": { id: 'Cerrar', text: '<siga:Idioma key="general.boton.close"/>', click: function(){closeDialog(dialogo);}}
-				      }
-				}
-			);
-			
+	function openDialog(dialogo,valWidth,valHeight,isConsell){
+		if(isConsell){
+			jQuery("#"+dialogo).dialog(
+					{
+					      height: valHeight,
+					      width: valWidth,
+					      modal: true,
+					      resizable: false,
+					      buttons: {
+					    	  
+					    	  "Validar": { id: 'Validar', text: '<siga:Idioma key="general.boton.validar"/>', click: function(){ accionValidarInsercion(dialogo); }},
+					    	 "Guardar": { id: 'Guardar', text: '<siga:Idioma key="general.boton.guardar"/>', click: function(){ accionInsercion(dialogo); }},
+					         "Cerrar": { id: 'Cerrar', text: '<siga:Idioma key="general.boton.close"/>', click: function(){closeDialog(dialogo);}}
+					      }
+					}
+				);
+		}else{
+			jQuery("#"+dialogo).dialog(
+					{
+					      height: valHeight,
+					      width: valWidth,
+					      modal: true,
+					      resizable: false,
+					      buttons: {
+					    	  
+					    	 "Guardar": { id: 'Guardar', text: '<siga:Idioma key="general.boton.guardar"/>', click: function(){ accionInsercion(dialogo); }},
+					         "Cerrar": { id: 'Cerrar', text: '<siga:Idioma key="general.boton.close"/>', click: function(){closeDialog(dialogo);}}
+					      }
+					}
+				);
+		}
 		jQuery(".ui-widget-overlay").css("opacity","0");
 	}
 	
@@ -189,15 +206,65 @@
 		
 		document.forms['FormularioGestion'].submit();
 	}
-
+	function validarInsercion(dialogo){
+		error = '';
+		if(document.forms['FormularioGestion'].anio.value==''){
+			error += "<siga:Idioma key='errors.required' arg0='gratuita.mantActuacion.literal.anio'/>"+ '\n';
+			
+		}
+		if(!isNumero(document.forms['FormularioGestion'].anio.value)){
+			
+			error += "<siga:Idioma key='errors.short' arg0='gratuita.mantActuacion.literal.anio'/>"+ '\n';
+			document.forms['FormularioGestion'].anio.value ='';
+			
+		}
+		if(document.forms['FormularioGestion'].idPeriodo.value==''){
+			error += "<siga:Idioma key='errors.required' arg0='gratuita.calendarioGuardias.literal.periodo'/>"+ '\n';
+			
+		}
+		return error;
+		
+	}
+	
+	function accionValidarInsercion(dialogo){
+		var error = validarInsercion(); 
+		if (error!=''){
+			alert(error);
+			fin();
+			return false;
+		}
+		
+		anio = document.forms['FormularioGestion'].anio.value;
+		idPeriodo = document.forms['FormularioGestion'].idPeriodo.value;
+		var accion = document.GestionEconomicaCatalunyaForm.action;
+		
+		jQuery.ajax({
+            type: "POST",
+            url: accion+"?modo=getAjaxValidaCertificacion",
+            data: "anio="+anio+"&idPeriodo="+idPeriodo,
+			dataType: "json",
+			success: function(json){
+				if(json.listadoColegios!=''){
+					alert(json.listadoColegios);
+				}else{
+					alert("<siga:Idioma key='success.intercambio.cicac'/>");
+					
+				}
+				fin();
+			},
+            error: function(e){
+            	fin();
+                alert('Error: ' + e);
+            }
+        });
+		
+	}
+	
 	function accionInsercion(dialogo){
-		
-		alert("<siga:Idioma key='messages.enProceso'/>");
-		
-		
+	
 		error = '';
 		if(dialogo=='dialogoInsercion'){
-			
+			error = validarInsercion();
 			
 			if(document.forms['FormularioGestion'].theFile.value==''){
 				error += "<siga:Idioma key='errors.required' arg0='facturacionjg.literal.fichero'/>"+ '\n';
@@ -279,17 +346,19 @@
 			}
 			if(document.forms['FormularioGestion'].acumuladoTrimetreActual){
 				if(document.forms['FormularioGestion'].acumuladoTrimetreActual.value=='' ){
-					error += "<siga:Idioma key='errors.required' arg0='Import acumulat del trimestre anterior'/>"+ '\n';
+					error += "<siga:Idioma key='errors.required' arg0='Import acumulat del trimestre actual'/>"+ '\n';
 				}else if(errorValidarPrecio(document.forms['FormularioGestion'].acumuladoTrimetreActual)){
-					error += "<siga:Idioma key='errors.double' arg0='Import acumulat del trimestre anterior'/>"+ '\n';
+					error += "<siga:Idioma key='errors.double' arg0='Import acumulat del trimestre actual'/>"+ '\n';
 				}
 				
 			}
 			if(document.forms['FormularioGestion'].acumuladoTrimetreAnterior){
 				if(document.forms['FormularioGestion'].acumuladoTrimetreAnterior.value==''){
-					error += "<siga:Idioma key='errors.required' arg0='Import acumulat del trimestre actual'/>"+ '\n';
+					error += "<siga:Idioma key='errors.required' arg0='Import acumulat del trimestre anterior'/>"+ '\n';
+					
 				}else if( errorValidarPrecio(document.forms['FormularioGestion'].acumuladoTrimetreAnterior)){
-					error += "<siga:Idioma key='errors.double' arg0='Import acumulat del trimestre actual'/>"+ '\n';
+					error += "<siga:Idioma key='errors.double' arg0='Import acumulat del trimestre anterior'/>"+ '\n';
+					
 				}
 				
 			}
@@ -330,9 +399,11 @@
 			alert(error);
 			fin();
 			return false;
+		}else{
+			alert("<siga:Idioma key='messages.enProceso'/>");
+			closeDialog(dialogo);
+		    document.forms['FormularioGestion'].submit();
 		}
-		closeDialog(dialogo);
-	    document.forms['FormularioGestion'].submit();
 	}
 
 	function tieneError (valorFormateado) {
@@ -410,7 +481,16 @@
 		return tieneError(valorFormateado);
 	}		
 	
-			
+	function addConsejo() {
+		comboColegio = document.getElementById('idColegio');
+		optionComboColegio = comboColegio.options;
+		option = document.createElement("option");
+		option.text = "CICAC";
+		option.value = "3001";
+		comboColegio.appendChild(option);
+	}
+	
+
 		</script>
 	</head>
 
@@ -586,14 +666,13 @@
 			
 </html:form>
 </div>
-
+<script type="text/javascript">
+	addConsejo();
+</script>	
 		
 		<!-- FIN: BOTONES BUSQUEDA -->
 <iframe name="submitArea"  src="<html:rewrite page='/html/jsp/general/blank.jsp'/>" 	style="display: none" />
-<script type="text/javascript">
-
-</script>
-		
+	
 		
 </body>
 
