@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
+import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -87,6 +88,7 @@ import com.siga.beans.PysProductosSolicitadosBean;
 import com.siga.beans.PysServiciosSolicitadosBean;
 import com.siga.certificados.Certificado;
 import com.siga.certificados.form.SIGASolicitudesCertificadosForm;
+import com.siga.expedientes.form.ExpPartesForm;
 import com.siga.facturacion.Facturacion;
 import com.siga.facturacion.action.AltaAbonosAction;
 import com.siga.general.CenVisibilidad;
@@ -97,7 +99,7 @@ import com.siga.general.SIGAException;
 import es.satec.businessManager.BusinessManager;
 
 public class SIGASolicitudesCertificadosAction extends MasterAction {
-
+	private static final Logger log = Logger.getLogger(SIGASolicitudesCertificadosAction.class);
 	public static Hashtable<String, Integer> contadores = new Hashtable<String, Integer>();
 
 	public ActionForward executeInternal(ActionMapping mapping, ActionForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
@@ -186,7 +188,15 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 				} else if (accion.equalsIgnoreCase("getAjaxSeleccionSerieFacturacionFacturacionMasiva")) {
 					getAjaxSeleccionSerieFacturacionFacturacionMasiva(request, response);
 					return null;
-				} else {
+				} else if (accion!=null &&  accion.equalsIgnoreCase("busquedaCenso")) {
+
+					return mapping.findForward(busquedaCenso(mapping, miForm, request, response)); 				
+
+				}else if (accion!=null &&  accion.equalsIgnoreCase("volverBusquedaCenso")) {
+
+					return mapping.findForward(volverBusquedaCenso(mapping, miForm, request, response)); 				
+
+				}else {
 					return super.executeInternal(mapping, formulario, request, response);
 				}
 			}
@@ -212,6 +222,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			String concepto = "";
 			UsrBean userBean = this.getUserBean(request);
 			String idInstitucion = userBean.getLocation();
+			form.setIdInstitucionOrigenSolicitante(idInstitucion);
 			
 			if (request.getParameter("idSolicitud") != null) {
 				idSolicitudCompra = (String) request.getParameter("idSolicitud");
@@ -2586,7 +2597,7 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 			SIGAServicesHelper.saltoLinea(sb);
 			sb.append("Causa: " + e.getCause());
 
-			serviceHelperService.enviarCorreo(from, bccArray, asunto, sb.toString(), null, GEN_PROPERTIES.mail_smtp_host, GEN_PROPERTIES.mail_smtp_port, GEN_PROPERTIES.mail_smtp_user,
+			serviceHelperService.enviarCorreo(from, bccArray, asunto, sb.toString(), new ArrayList<File>(),GEN_PROPERTIES.mail_smtp_sesion, GEN_PROPERTIES.mail_smtp_host, GEN_PROPERTIES.mail_smtp_port, GEN_PROPERTIES.mail_smtp_user,
 					GEN_PROPERTIES.mail_smtp_pwd);
 
 		} catch (Exception ex) {
@@ -3580,7 +3591,15 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 		try {
 			UsrBean userBean = (UsrBean) request.getSession().getAttribute("USRBEAN");
 			String idInstitucion = null;
-			MasterForm miForm = (MasterForm) formulario;
+			SIGASolicitudesCertificadosForm miForm = (SIGASolicitudesCertificadosForm) formulario;
+			miForm.setNombre("");
+			miForm.setNidSolicitante("");
+			miForm.setIdInstitucionOrigenSolicitante("");
+			miForm.setFechaSolicitud("");
+			miForm.setMetodoSolicitud("");
+			miForm.setIdInstitucionColegiacion("");
+			
+			
 			String accion = miForm.getModo();
 			request.setAttribute("modo", accion);
 			request.setAttribute("modificarSolicitud", "1");
@@ -3638,6 +3657,44 @@ public class SIGASolicitudesCertificadosAction extends MasterAction {
 		response.setHeader("Content-Type", "application/json");
 		response.setHeader("X-JSON", json.toString());
 		response.getWriter().write(json.toString());
+	}
+protected String busquedaCenso(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		
+		return "busquedaCenso";
+		
+	}
+	protected String volverBusquedaCenso(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		try {
+			UsrBean userBean = (UsrBean) request.getSession().getAttribute("USRBEAN");
+			String idInstitucion = null;
+			SIGASolicitudesCertificadosForm miForm = (SIGASolicitudesCertificadosForm) formulario;
+			String accion = request.getParameter("accion");
+//			String accion = miForm.getModo();
+			request.setAttribute("modo", accion);
+			request.setAttribute("modificarSolicitud", "1");
+			idInstitucion = userBean.getLocation();
+			// Sólo debe de mostrarse el check de la mutualidad en los casos que
+			// no sea un colegio
+			if (idInstitucion != null && idInstitucion.equals("2000")) {
+				request.setAttribute("pintarCheckMutualidad", true);
+			} else {
+				request.setAttribute("pintarCheckMutualidad", false);
+			}
+			request.setAttribute("esCompatibleConCertificadosExistentes", true);
+			request.setAttribute("facturable", false);
+			request.setAttribute("idEstadoSolicitud", ""+ CerEstadoSoliCertifiAdm.C_ESTADO_SOL_PEND);
+			request.setAttribute("SolicitudesCertificadosForm", miForm);
+			
+			
+			
+			return "nuevo";
+			
+		} catch(Exception e){
+			log.error(e.toString());
+			throwExcp("messages.general.error",new String[] {"modulo.expediente"},e,null); 
+		}
+		return null;
+		
 	}
 
 }
