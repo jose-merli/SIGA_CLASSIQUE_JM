@@ -7,7 +7,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -33,7 +32,6 @@ import org.redabogacia.pcajg.aragon.just.TipoEconomicoType;
 import org.redabogacia.pcajg.aragon.just.TipoGuardiaType;
 import org.redabogacia.pcajg.aragon.just.TipoJustificacionType;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
-import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 
 
 
@@ -196,38 +194,42 @@ public class AragonEnviaJustificacionActuaciones {
 			
 			
 		}
-		List<String> erroresValidacion = SIGAServicesHelper.validate(justificacionActuacionesDocument, true);
-		
-		if(erroresValidacion == null || erroresValidacion.size() == 0) {
-			for (String error : erroresValidacion) {
-				log.info(error);	
-			}
-			
-		}
+//		List<String> erroresValidacion = SIGAServicesHelper.validate(justificacionActuacionesDocument, true);
+//		
+//		if(erroresValidacion == null || erroresValidacion.size() == 0) {
+//			for (String error : erroresValidacion) {
+//				log.info(error);	
+//			}
+//			
+//		}
 //		log.info(justificacionActuacionesDocument.xmlText());	
-		return createFileXML(justificacionActuacionesDocument ,"c://txt",nombreSalida+".xml");
+		return createFileXML(justificacionActuacionesDocument ,nombreSalida+".xml");
 		
 		
 	}
-	private File createFileXML(XmlObject xmlObject, String fileDirPath, String fileName ) throws BusinessException {
+	private File createFileXML(XmlObject xmlObject, String fileName ) throws BusinessException {
 		XmlOptions xmlOptions = new XmlOptions();
 		xmlOptions.setSavePrettyPrintIndent(4);
 		xmlOptions.setSavePrettyPrint();
-
-		File file = new File(fileDirPath);
-		boolean isCreado =  file.mkdirs();
-		log.debug("isCrado Dir"+isCreado);
-		file = new File(file, fileName);
-
-		log.debug("Guardando fichero "+fileName+" en  " + fileDirPath );
-
+//		File file =  new File();
+		File file;
 		try {
-			xmlObject.save(file, xmlOptions);
-			log.debug("El fichero se ha guardado correctamente");
-		} catch (IOException e) {
-			log.error(e);
-			throw new BusinessException("Error al guardar el fichero "+fileName+" en "+fileDirPath);
-		}
+			File tempFile = File.createTempFile("Aragon",fileName);
+			log.debug("Guardando fichero temporal de "+fileName);
+			xmlObject.save(tempFile, xmlOptions);
+			file = new File(fileName);
+			log.debug("Renombrando fichero");
+			tempFile.renameTo(file);
+			if(!tempFile.delete())tempFile.deleteOnExit();
+		} catch (IOException e1) {
+			log.error("Error al crear el fichero temporal",e1);
+			throw new BusinessException("Error al crear el fichero temporal de justificaciones de Aragon");
+		}  
+//		file = new File(file, fileName);
+//
+
+
+		
 		return file;
 
 	}
