@@ -96,6 +96,7 @@ public class SIGATemporalAccessAction extends Action
 			certificado.setPfiNombre((String)request.getHeader("CAS-nickname"));
 			
 		}else if(!desarrollo){
+			System.out.println("Acceso denegado: !desarrollo en temporal ");
 			return mapping.findForward("accesodenegado");
 		}
 
@@ -113,6 +114,7 @@ public class SIGATemporalAccessAction extends Action
 						
 			request.setAttribute("mensaje",mensaje);
 			// para pruebas desde local, comentar este return
+			System.out.println("Acceso denegado: !desarrollo en temporal con mensaje ");
 			return mapping.findForward("accesodenegado");
 		}
 		///////////////////////////////////////////////////

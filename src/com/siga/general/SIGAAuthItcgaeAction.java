@@ -93,6 +93,7 @@ public class SIGAAuthItcgaeAction extends Action
 			certificado.setPfiNombre((String)request.getHeader("CAS-nickname"));
 			
 		}else if(!desarrollo){
+			System.out.println("Acceso denegado:  !desarrollo) ");
 			return mapping.findForward("accesodenegado");
 		}
 
@@ -110,6 +111,7 @@ public class SIGAAuthItcgaeAction extends Action
 				
 			ClsLogging.writeFileLog("ERROR >> el usuario no está dado de alta en la institucion ",1);	
 			request.setAttribute("mensaje",mensaje);
+			System.out.println("ERROR >> el usuario no está dado de alta en la institucion");
 			return mapping.findForward("accesodenegado");
 		}
 		///////////////////////////////////////////////////

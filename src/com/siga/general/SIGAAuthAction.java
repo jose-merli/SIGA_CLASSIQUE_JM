@@ -36,6 +36,7 @@ public class SIGAAuthAction extends Action
 			bean = cont.rellenaContexto(request, getServlet());
 		} catch (SIGAException e)
 		{
+			System.out.println("Acceso denegado: Error al autenticar con CAS: ");
 			ClsLogging.writeFileLogError("Acceso denegado: Error al autenticar con CAS: "+e.getLiteral("1"), e, 3);
 			request.setAttribute("mensaje",e.getLiteral());
 			return mapping.findForward("accesodenegado");
@@ -45,6 +46,7 @@ public class SIGAAuthAction extends Action
 		if (bean==null)
 		{
 			ClsLogging.writeFileLog("Acceso denegado: UsrBean nulo", 3);
+			System.out.println("Acceso denegado:  UsrBean nulo 999");
 			return mapping.findForward("accesodenegado");
 		}
 
