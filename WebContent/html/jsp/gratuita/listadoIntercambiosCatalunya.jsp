@@ -29,7 +29,7 @@
 	gratuita.mantActuacion.literal.anio,
 	gratuita.calendarioGuardias.literal.periodo,
 	gratuita.mantAsistencias.literal.estado,"
-	columnSizes="10,20,10,10,20,12">
+	columnSizes="10,10,20,6,10,30,">
 					
 	<c:choose>
 		<c:when test="${empty listadoRegistros}">
