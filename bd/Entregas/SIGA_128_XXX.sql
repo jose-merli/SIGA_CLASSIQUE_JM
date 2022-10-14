@@ -1206,7 +1206,7 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 INSERT INTO GEN_RECURSOS (IDRECURSO,DESCRIPCION,ERROR,FECHAMODIFICACION,USUMODIFICACION,IDPROPIEDAD,IDLENGUAJE) 
 VALUES ('env.parametro.defaultemailfrom','Cuenta de correo electrónico desde donde se envían las comunicaciones y envíos manuales de SIGA classique. IMPORTANTE: Si se cambia, no llegarán los correos a los destinatarios. Antes de cambiarla en el colegio, es necesario comunicarlo a Soporte para dar de alta la dirección en el servidor de correo.',0,sysdate,0,'19',1);
 INSERT INTO GEN_RECURSOS (IDRECURSO,DESCRIPCION,ERROR,FECHAMODIFICACION,USUMODIFICACION,IDPROPIEDAD,IDLENGUAJE) 
-VALUES ('env.parametro.defaultemailfrom','Cuenta de correo electrónico desde donde se envían las comunicaciones y envíos manuales de SIGA classique. IMPORTANTE: Si se cambia, no llegarán los correos a los destinatarios. Antes de cambiarla en el colegio, es necesario comunicarlo a Soporte para dar de alta la dirección en el servidor de correo.#CA',0,sysdate,0,'19',2);
+VALUES ('env.parametro.defaultemavlfrom','Cuenta de correo electrónico desde donde se envían las comunicaciones y envíos manuales de SIGA classique. IMPORTANTE: Si se cambia, no llegarán los correos a los destinatarios. Antes de cambiarla en el colegio, es necesario comunicarlo a Soporte para dar de alta la dirección en el servidor de correo.#CA',0,sysdate,0,'19',2);
 INSERT INTO GEN_RECURSOS (IDRECURSO,DESCRIPCION,ERROR,FECHAMODIFICACION,USUMODIFICACION,IDPROPIEDAD,IDLENGUAJE) 
 VALUES ('env.parametro.defaultemailfrom','Cuenta de correo electrónico desde donde se envían las comunicaciones y envíos manuales de SIGA classique. IMPORTANTE: Si se cambia, no llegarán los correos a los destinatarios. Antes de cambiarla en el colegio, es necesario comunicarlo a Soporte para dar de alta la dirección en el servidor de correo.#EU',0,sysdate,0,'19',3);
 INSERT INTO GEN_RECURSOS (IDRECURSO,DESCRIPCION,ERROR,FECHAMODIFICACION,USUMODIFICACION,IDPROPIEDAD,IDLENGUAJE) 
@@ -1217,7 +1217,6 @@ VALUES ('ENV','DEFAULT_EMAIL_FROM','comunicaciones.siga@redabogacia.org', sysdat
 --https://redabogacia.atlassian.net/browse/SIGA-605
 delete from GEN_PARAMETROS where PARAMETRO = 'DEFAULT_EMAIL_FROM' and IDINSTITUCION <> 0;
 update GEN_PARAMETROS set valor = '-' where PARAMETRO = 'DEFAULT_EMAIL_FROM' and IDINSTITUCION = 0;
-
 
 CREATE OR REPLACE VIEW V_SIGA_CAT_ANEXOCICAC AS
 
@@ -1234,4 +1233,19 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
 alter table FCS_JE_INTERCAMBIOS add FECHACREACION date;
 UPDATE FCS_JE_INTERCAMBIOS SET FECHACREACION = FECHAMODIFICACION;
 alter table FCS_JE_INTERCAMBIOS modify FECHACREACION not null;
+
+--
+
+--cambiamos la modal de busqueda
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.literal.busquedapor', 'Búsqueda por', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.literal.busquedapor', 'Búsqueda por#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.literal.busquedapor', 'Recerca per', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.literal.busquedapor', 'Búsqueda por#EU', 0, '3', sysdate, 0, '19');
+ 
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.busqueda.personas.titulo', 'Búsqueda general de personas', 0, '1', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.busqueda.personas.titulo', 'Búsqueda general de personas#GL', 0, '4', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.busqueda.personas.titulo', 'Recerca general de persones''', 0, '2', sysdate, 0, '19');
+ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('general.busqueda.personas.titulo', 'Búsqueda general de personas#EU', 0, '3', sysdate, 0, '19');
+ 
+ insert into GEN_PROPERTIES (FICHERO, PARAMETRO, VALOR) values ('SIGA', 'mail.smtp.actualizacioncenso.sesion', 'CorreoSIGA_SIB');
 
