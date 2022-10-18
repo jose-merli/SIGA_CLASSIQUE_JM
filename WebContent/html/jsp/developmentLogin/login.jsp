@@ -56,8 +56,8 @@
 	if(codExternoBuilder.length()>0){
 		codExternoBuilder.deleteCharAt(codExternoBuilder.length()-1);
 	}else{
-		//Para otraos entornos desomentar esto. local descomentar
-		isAdminGenFromCgae = "S";
+		//Para otraos entornos comentar esto. local descomentar
+		//isAdminGenFromCgae = "S";
 	}
 	String parametro[] = new String[1];
 	parametro[0] = codExternoBuilder.toString();
