@@ -27,22 +27,24 @@
 	String isAdminGenFromCgae = "N";
 	List<String> codExternoInstituciones = new ArrayList<String>();
 	Enumeration<String> casRoles = request.getHeaders("CAS-roles");
-	while (casRoles.hasMoreElements()) { 
-		String lineaRoles = (String) casRoles.nextElement();
-		String[] roles = lineaRoles.split("::");
-		for (int i = 0; i < roles.length; i++) {
-			String duplaRol = roles[i];
-			String[] dupla = duplaRol.split(" ");
-			String codExternoInstitucion = dupla[0];
-			String rol = dupla[1];
-			if((codExternoInstitucion.equals("AC0000") || codExternoInstitucion.equals("AC9999")) && rol.equalsIgnoreCase("SIGA-Admin")){
-				isAdminGenFromCgae = "S";
+	if(casRoles!=null){
+		while (casRoles.hasMoreElements()) { 
+			String lineaRoles = (String) casRoles.nextElement();
+			String[] roles = lineaRoles.split("::");
+			for (int i = 0; i < roles.length; i++) {
+				String duplaRol = roles[i];
+				String[] dupla = duplaRol.split(" ");
+				String codExternoInstitucion = dupla[0];
+				String rol = dupla[1];
+				if((codExternoInstitucion.equals("AC0000") || codExternoInstitucion.equals("AC9999")) && rol.equalsIgnoreCase("SIGA-Admin")){
+					isAdminGenFromCgae = "S";
+				}
+				if(!codExternoInstituciones.contains(codExternoInstitucion))
+					codExternoInstituciones.add(codExternoInstitucion);
+				
 			}
-			if(!codExternoInstituciones.contains(codExternoInstitucion))
-				codExternoInstituciones.add(codExternoInstitucion);
 			
 		}
-		
 	}
 	StringBuilder codExternoBuilder = new StringBuilder();
 	for (String codExternoInstitucion : codExternoInstituciones) {
@@ -50,10 +52,16 @@
 		codExternoBuilder.append(",");
 		
 	}
-	codExternoBuilder.deleteCharAt(codExternoBuilder.length()-1);
+	
+	if(codExternoBuilder.length()>0){
+		codExternoBuilder.deleteCharAt(codExternoBuilder.length()-1);
+	}else{
+		//Para otraos entornos desomentar esto. local descomentar
+		//isAdminGenFromCgae = "S";
+	}
 	String parametro[] = new String[1];
 	parametro[0] = codExternoBuilder.toString();
-		ArrayList idADM = new ArrayList();
+	ArrayList idADM = new ArrayList();
    	idADM.add(0,"ADG");
 %>
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -131,6 +139,7 @@
 	</head>
 	
 	<body vlink=black alink=black>
+		<c:set var="isAdminGenFromCgae" value="<%=isAdminGenFromCgae%>" />
 		<form name="frmLogin" method="POST" action="<%=app%>/developmentLogin.do" target="_top">
 		<br>
 		
