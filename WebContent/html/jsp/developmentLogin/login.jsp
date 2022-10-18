@@ -13,34 +13,35 @@
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
 <%@ taglib uri="c.tld" prefix="c"%>
 
-
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
 <%@ page import="com.atos.utils.Row"%>
 <%@ page import="com.atos.utils.ClsLogging" %>
 <%@ page import="com.siga.Utilidades.UtilidadesString" %>
+
 <%@ page import="java.util.*"%>
 
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-	
-	String[] duplaRoles = request.getAttribute("CAS-roles");
-	
-	boolean isAdminGenFromCGae = false;
-	List<String> codExternoInstituciones = new ArrayList<String>(); 
-	for (int i = 0; i < duplaRoles.length; i++) {
-		String duplaRol = duplaRoles[i];
-		String[] dupla = duplaRol.split(" ");
-		String codExternoInstitucion = dupla[0];
-		
-		String rol = dupla[1];
-		if((codExternoInstitucion.equals("AC0000") || codExternoInstitucion.equals("AC9999")) && rol.equalsIgnoreCase("SIGA-Admin")){
-			isAdminGenFromCGae = true;
-//			break;
+	String isAdminGenFromCgae = "N";
+	List<String> codExternoInstituciones = new ArrayList<String>();
+	Enumeration<String> casRoles = request.getHeaders("CAS-roles");
+	while (casRoles.hasMoreElements()) { 
+		String lineaRoles = (String) casRoles.nextElement();
+		String[] roles = lineaRoles.split("::");
+		for (int i = 0; i < roles.length; i++) {
+			String duplaRol = roles[i];
+			String[] dupla = duplaRol.split(" ");
+			String codExternoInstitucion = dupla[0];
+			String rol = dupla[1];
+			if((codExternoInstitucion.equals("AC0000") || codExternoInstitucion.equals("AC9999")) && rol.equalsIgnoreCase("SIGA-Admin")){
+				isAdminGenFromCgae = "S";
+			}
+			if(!codExternoInstituciones.contains(codExternoInstitucion))
+				codExternoInstituciones.add(codExternoInstitucion);
+			
 		}
-		if(!codExternoInstituciones.contains(codExternoInstitucion))
-			codExternoInstituciones.add(codExternoInstitucion);
 		
 	}
 	StringBuilder codExternoBuilder = new StringBuilder();
@@ -52,7 +53,7 @@
 	codExternoBuilder.deleteCharAt(codExternoBuilder.length()-1);
 	String parametro[] = new String[1];
 	parametro[0] = codExternoBuilder.toString();
-   	ArrayList idADM = new ArrayList();
+		ArrayList idADM = new ArrayList();
    	idADM.add(0,"ADG");
 %>
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -70,48 +71,15 @@
 			}
 		}
 
-		function entradaDirectaCaceres()
+		function entradaDirecta()
 		{
-			frmLogin.location.value="2014";
+			frmLogin.location.value="2045";
 			frmLogin.profile.value="ADG";
 			frmLogin.user.value="";
 			frmLogin.letrado.value="N";
 			var urlGet=document.frmLogin.action+"?location="+frmLogin.location.value+"&profile="+frmLogin.profile.value+"&user="+frmLogin.user.value+"&letrado="+frmLogin.letrado.value+"&tmpLoginInstitucion="+frmLogin.tmpLoginInstitucion.value+"&posMenu="+frmLogin.posMenu.value;
 			frmLogin.submit();
 		}
-		function entradaDirectaJaen()
-		{
-			frmLogin.location.value="2035";
-			frmLogin.profile.value="ADG";
-			frmLogin.user.value="";
-			frmLogin.letrado.value="N";
-			var urlGet=document.frmLogin.action+"?location="+frmLogin.location.value+"&profile="+frmLogin.profile.value+"&user="+frmLogin.user.value+"&letrado="+frmLogin.letrado.value+"&tmpLoginInstitucion="+frmLogin.tmpLoginInstitucion.value+"&posMenu="+frmLogin.posMenu.value;
-			frmLogin.submit();
-		}
-		
-		function entradaDirectaReus()
-		{
-			frmLogin.location.value="2057";
-			frmLogin.profile.value="ADG";
-			frmLogin.user.value="";
-			frmLogin.letrado.value="N";
-			var urlGet=document.frmLogin.action+"?location="+frmLogin.location.value+"&profile="+frmLogin.profile.value+"&user="+frmLogin.user.value+"&letrado="+frmLogin.letrado.value+"&tmpLoginInstitucion="+frmLogin.tmpLoginInstitucion.value+"&posMenu="+frmLogin.posMenu.value;
-			frmLogin.submit();
-		}
-		function entradaDirecta(idinstitucion,profile)
-		{
-			frmLogin.location.value=idinstitucion;
-			frmLogin.profile.value="ADG";
-			if(profile)
-				frmLogin.profile.value=profile;
-			
-			frmLogin.user.value="";
-			frmLogin.letrado.value="N";
-			var urlGet=document.frmLogin.action+"?location="+frmLogin.location.value+"&profile="+frmLogin.profile.value+"&user="+frmLogin.user.value+"&letrado="+frmLogin.letrado.value+"&tmpLoginInstitucion="+frmLogin.tmpLoginInstitucion.value+"&posMenu="+frmLogin.posMenu.value;
-			frmLogin.submit();
-		}
-		
-		
  
 		function entradaDirectaGen()
 		{
@@ -173,14 +141,13 @@
 				<td class="labelText">Institución</td>
 				<td>
 				<c:choose>
-					<c:when test="${isAdminGenFromCGae == true}">
+					<c:when test="${isAdminGenFromCgae=='S'}">
 						<siga:ComboBD nombre="tmpLoginInstitucion" tipo="tmpLoginInstitucion" clase="boxCombo" accion="Hijo:tmpLoginPerfil"  estilo="width:300px" />	
 					</c:when>
 					<c:otherwise>
 						<siga:ComboBD nombre="tmpLoginInstitucionExterna" tipo="tmpLoginInstitucionExterna" parametro="<%=parametro%>" clase="boxCombo" accion="Hijo:tmpLoginPerfil"  estilo="width:300px" />
 					</c:otherwise>
 				</c:choose>
-				
 				
 				</td>
 				<td valign="middle" align="center" ><input type="button" class="button" value="Entrar" onClick="entrar()" title="Entrar con los datos de los combos"></td>
@@ -200,24 +167,6 @@
 					<siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfil" clase="box" ancho="300" filasMostrar="20" elementoSel="<%=idADM%>" seleccionMultiple="true" hijo="t" obligatorioSinTextoSeleccionar="true"/>
 				</td>		
 			</tr>
-			
-			<tr>
-				<td colspan="3" valign="middle" align="center" >
-					<input type="button" class="button" value="Colegio Cáceres" onClick="entradaDirectaCaceres()" title="Entrar a Caceres como ADMINistrador NO colegiado">
-					&nbsp;
-					<input type="button" class="button" value="Colegio Jaen" onClick="entradaDirectaJaen()" title="Entrar a Jaen como ADMINistrador NO colegiado">
-					&nbsp;
-					<input type="button" class="button" value="Colegio Zaragoza" onClick="entradaDirecta('2083','ADG')" title="Entrar a Colegio Zaragoza">
-					&nbsp;
-					<input type="button" class="button" value="Colegio Reus" onClick="entradaDirectaReus()" title="Entrar a Reus como ADMINistrador NO colegiado">
-					&nbsp;
-					<input type="button" class="button" value="Consejo Calalunya" onClick="entradaDirecta('3001')" title="Entrar a Consejo Catalunya como ADMINistrador NO colegiado">
-					
-					&nbsp;
-					<input type="button" class="button" value="GENERAL" onClick="entradaDirectaGen()"  title="Entrar a GENERAL como ADMINistrador NO colegiado">
-				</td>
-			</tr>
-			
 			
 		</table>
 		
