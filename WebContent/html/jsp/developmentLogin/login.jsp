@@ -57,7 +57,7 @@
 		codExternoBuilder.deleteCharAt(codExternoBuilder.length()-1);
 	}else{
 		//Para otraos entornos desomentar esto. local descomentar
-		//isAdminGenFromCgae = "S";
+		isAdminGenFromCgae = "S";
 	}
 	String parametro[] = new String[1];
 	parametro[0] = codExternoBuilder.toString();
@@ -154,7 +154,7 @@
 						<siga:ComboBD nombre="tmpLoginInstitucion" tipo="tmpLoginInstitucion" clase="boxCombo" accion="Hijo:tmpLoginPerfil"  estilo="width:300px" />	
 					</c:when>
 					<c:otherwise>
-						<siga:ComboBD nombre="tmpLoginInstitucionExterna" tipo="tmpLoginInstitucionExterna" parametro="<%=parametro%>" clase="boxCombo" accion="Hijo:tmpLoginPerfil"  estilo="width:300px" />
+						<siga:ComboBD nombre="tmpLoginInstitucion" tipo="tmpLoginInstitucionExterna" parametro="<%=parametro%>" clase="boxCombo" accion="Hijo:tmpLoginPerfil"  estilo="width:300px" />
 					</c:otherwise>
 				</c:choose>
 				
