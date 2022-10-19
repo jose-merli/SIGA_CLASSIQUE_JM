@@ -46,7 +46,7 @@ public class SIGAInfoDirectorioAuthAction extends Action {
 		}
 		if (!accesoAdmin) {
 			ClsLogging.writeFileLog("Acceso denegado: UsrBean nulo", 3);
-			System.out.println("Acceso denegado: UsrBean nulo 23");
+			ClsLogging.writeFileLog("Acceso denegado:!UsrBean nulo 2");
 			return mapping.findForward("accesodenegado");
 		}
 		

@@ -99,6 +99,7 @@ public class SIGADispatcher extends SIGAActionBase {
 	    String access=usrbean.getAccessForProcessNumber(proceso);
 	    if (!access.equals(SIGAPTConstants.ACCESS_READ) && 
 	    	!access.equals(SIGAPTConstants.ACCESS_FULL)) {
+	    	ClsLogging.writeFileLog("Acceso denegado:!ACCESS_READ 2 ");
 	    	return mapping.findForward("accesodenegado");
 	    }
 	    transaction=chkTransaction(proceso,request);

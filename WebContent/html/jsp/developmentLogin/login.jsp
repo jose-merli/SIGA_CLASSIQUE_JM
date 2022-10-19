@@ -26,21 +26,35 @@
 	HttpSession ses=request.getSession();
 	String isAdminGenFromCgae = "N";
 	List<String> codExternoInstituciones = new ArrayList<String>();
+	List<String> rolesStrings = new ArrayList<String>();
 	Enumeration<String> casRoles = request.getHeaders("CAS-roles");
+	
 	if(casRoles!=null){
 		while (casRoles.hasMoreElements()) { 
 			String lineaRoles = (String) casRoles.nextElement();
 			String[] roles = lineaRoles.split("::");
 			for (int i = 0; i < roles.length; i++) {
-				String duplaRol = roles[i];
-				String[] dupla = duplaRol.split(" ");
-				String codExternoInstitucion = dupla[0];
-				String rol = dupla[1];
-				if((codExternoInstitucion.equals("AC0000") || codExternoInstitucion.equals("AC9999")) && rol.equalsIgnoreCase("SIGA-Admin")){
+				String codExternoRol = roles[i];
+				String[] duplaCodExternoRol = codExternoRol.split(" ");
+				String codExternoInstitucion = duplaCodExternoRol[0];
+				String rolCodigo = codExternoRol.substring(codExternoInstitucion.length()+1);
+				if((codExternoInstitucion.equals("AC0000") || codExternoInstitucion.equals("AC9999")) && codExternoRol.contains("SIGA-Admin")){
 					isAdminGenFromCgae = "S";
 				}
 				if(!codExternoInstituciones.contains(codExternoInstitucion))
 					codExternoInstituciones.add(codExternoInstitucion);
+				String[] duplaRol = rolCodigo.split(" ");
+				String rol = "";
+				if(duplaRol.length>1) {
+					String codRol = duplaRol[0];
+					rol = rolCodigo.substring(codRol.length()).trim();
+				}else if(duplaRol.length==1){
+					rol = duplaRol[0].trim();
+					
+				}
+				if(!rolesStrings.contains(rol))
+					rolesStrings.add(rol);
+				
 				
 			}
 			
@@ -50,15 +64,29 @@
 	for (String codExternoInstitucion : codExternoInstituciones) {
 		codExternoBuilder.append(codExternoInstitucion);
 		codExternoBuilder.append(",");
-		
 	}
-	
 	if(codExternoBuilder.length()>0){
 		codExternoBuilder.deleteCharAt(codExternoBuilder.length()-1);
-	}else{
+	}else {
 		//Para otraos entornos comentar esto. local descomentar
 		//isAdminGenFromCgae = "S";
 	}
+	StringBuilder codExternoRolBuilder = new StringBuilder();
+	for (String rol : rolesStrings) {
+		codExternoRolBuilder.append("'");
+		codExternoRolBuilder.append(rol);
+		codExternoRolBuilder.append("'");
+		codExternoRolBuilder.append(",");
+		
+	}
+	if(codExternoRolBuilder.length()>0)
+		codExternoRolBuilder.deleteCharAt(codExternoRolBuilder.length()-1);
+	
+	
+	String parametroRol[] = new String[1];
+	//parametroRol[0] = codExternoRolBuilder.toString();
+	parametroRol[0] = codExternoRolBuilder.toString();
+	
 	String parametro[] = new String[1];
 	parametro[0] = codExternoBuilder.toString();
 	ArrayList idADM = new ArrayList();
@@ -173,7 +201,16 @@
 			<tr>
 				<td class="labelText">Perfil</td>
 				<td colspan="2">
-					<siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfil" clase="box" ancho="300" filasMostrar="20" elementoSel="<%=idADM%>" seleccionMultiple="true" hijo="t" obligatorioSinTextoSeleccionar="true"/>
+				<c:choose>
+					<c:when test="${isAdminGenFromCgae=='S'}">
+						<siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfil" clase="box" ancho="300" filasMostrar="20" elementoSel="<%=idADM%>" seleccionMultiple="true" hijo="t" obligatorioSinTextoSeleccionar="true"/>	
+					</c:when>
+					<c:otherwise>
+						<siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfilExterno" clase="box" ancho="300" filasMostrar="20" parametro="<%=parametroRol%>" seleccionMultiple="true" hijo="t" obligatorioSinTextoSeleccionar="true"/>
+					</c:otherwise>
+				</c:choose>
+					
+					
 				</td>		
 			</tr>
 			
