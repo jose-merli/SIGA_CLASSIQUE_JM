@@ -11,7 +11,6 @@
 <%@ taglib uri = "struts-html.tld" prefix="html"%>
 <%@ taglib uri = "struts-tiles.tld" prefix="tiles" %>
 <%@ taglib uri="libreria_SIGA.tld" prefix="siga"%>
-<%@ taglib uri="c.tld" prefix="c"%>
 
 <%@ page import="com.siga.administracion.SIGAConstants"%>
 <%@ page import="com.atos.utils.UsrBean"%>
@@ -24,72 +23,8 @@
 <%
 	String app=request.getContextPath();
 	HttpSession ses=request.getSession();
-	String isAdminGenFromCgae = "N";
-	List<String> codExternoInstituciones = new ArrayList<String>();
-	List<String> rolesStrings = new ArrayList<String>();
-	Enumeration<String> casRoles = request.getHeaders("CAS-roles");
 	
-	if(casRoles!=null){
-		while (casRoles.hasMoreElements()) { 
-			String lineaRoles = (String) casRoles.nextElement();
-			String[] roles = lineaRoles.split("::");
-			for (int i = 0; i < roles.length; i++) {
-				String codExternoRol = roles[i];
-				String[] duplaCodExternoRol = codExternoRol.split(" ");
-				String codExternoInstitucion = duplaCodExternoRol[0];
-				String rolCodigo = codExternoRol.substring(codExternoInstitucion.length()+1);
-				if((codExternoInstitucion.equals("AC0000") || codExternoInstitucion.equals("AC9999")) && codExternoRol.contains("SIGA-Admin")){
-					isAdminGenFromCgae = "S";
-				}
-				if(!codExternoInstituciones.contains(codExternoInstitucion))
-					codExternoInstituciones.add(codExternoInstitucion);
-				String[] duplaRol = rolCodigo.split(" ");
-				String rol = "";
-				if(duplaRol.length>1) {
-					String codRol = duplaRol[0];
-					rol = rolCodigo.substring(codRol.length()).trim();
-				}else if(duplaRol.length==1){
-					rol = duplaRol[0].trim();
-					
-				}
-				if(!rolesStrings.contains(rol))
-					rolesStrings.add(rol);
-				
-				
-			}
-			
-		}
-	}
-	StringBuilder codExternoBuilder = new StringBuilder();
-	for (String codExternoInstitucion : codExternoInstituciones) {
-		codExternoBuilder.append(codExternoInstitucion);
-		codExternoBuilder.append(",");
-	}
-	if(codExternoBuilder.length()>0){
-		codExternoBuilder.deleteCharAt(codExternoBuilder.length()-1);
-	}else {
-		//Para otraos entornos comentar esto. local descomentar
-		//isAdminGenFromCgae = "S";
-	}
-	StringBuilder codExternoRolBuilder = new StringBuilder();
-	for (String rol : rolesStrings) {
-		codExternoRolBuilder.append("'");
-		codExternoRolBuilder.append(rol);
-		codExternoRolBuilder.append("'");
-		codExternoRolBuilder.append(",");
-		
-	}
-	if(codExternoRolBuilder.length()>0)
-		codExternoRolBuilder.deleteCharAt(codExternoRolBuilder.length()-1);
-	
-	
-	String parametroRol[] = new String[1];
-	//parametroRol[0] = codExternoRolBuilder.toString();
-	parametroRol[0] = codExternoRolBuilder.toString();
-	
-	String parametro[] = new String[1];
-	parametro[0] = codExternoBuilder.toString();
-	ArrayList idADM = new ArrayList();
+   	ArrayList idADM = new ArrayList();
    	idADM.add(0,"ADG");
 %>
 		<link id="default" rel="stylesheet" type="text/css" href="<html:rewrite page='${sessionScope.SKIN}'/>"/>
@@ -167,7 +102,6 @@
 	</head>
 	
 	<body vlink=black alink=black>
-		<c:set var="isAdminGenFromCgae" value="<%=isAdminGenFromCgae%>" />
 		<form name="frmLogin" method="POST" action="<%=app%>/developmentLogin.do" target="_top">
 		<br>
 		
@@ -176,17 +110,7 @@
 		<table align="center">
 			<tr>
 				<td class="labelText">Institución</td>
-				<td>
-				<c:choose>
-					<c:when test="${isAdminGenFromCgae=='S'}">
-						<siga:ComboBD nombre="tmpLoginInstitucion" tipo="tmpLoginInstitucion" clase="boxCombo" accion="Hijo:tmpLoginPerfil"  estilo="width:300px" />	
-					</c:when>
-					<c:otherwise>
-						<siga:ComboBD nombre="tmpLoginInstitucion" tipo="tmpLoginInstitucionExterna" parametro="<%=parametro%>" clase="boxCombo" accion="Hijo:tmpLoginPerfil"  estilo="width:300px" />
-					</c:otherwise>
-				</c:choose>
-				
-				</td>
+				<td><siga:ComboBD nombre="tmpLoginInstitucion" tipo="tmpLoginInstitucion" clase="boxCombo" accion="Hijo:tmpLoginPerfil"  estilo="width:300px" /></td>
 				<td valign="middle" align="center" ><input type="button" class="button" value="Entrar" onClick="entrar()" title="Entrar con los datos de los combos"></td>
 			</tr>
 			<tr>
@@ -201,16 +125,7 @@
 			<tr>
 				<td class="labelText">Perfil</td>
 				<td colspan="2">
-				<c:choose>
-					<c:when test="${isAdminGenFromCgae=='S'}">
-						<siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfil" clase="box" ancho="300" filasMostrar="20" elementoSel="<%=idADM%>" seleccionMultiple="true" hijo="t" obligatorioSinTextoSeleccionar="true"/>	
-					</c:when>
-					<c:otherwise>
-						<siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfilExterno" clase="box" ancho="300" filasMostrar="20" parametro="<%=parametroRol%>" seleccionMultiple="true" hijo="t" obligatorioSinTextoSeleccionar="true"/>
-					</c:otherwise>
-				</c:choose>
-					
-					
+					<siga:ComboBD nombre="tmpLoginPerfil" tipo="tmpLoginPerfil" clase="box" ancho="300" filasMostrar="20" elementoSel="<%=idADM%>" seleccionMultiple="true" hijo="t" obligatorioSinTextoSeleccionar="true"/>
 				</td>		
 			</tr>
 			

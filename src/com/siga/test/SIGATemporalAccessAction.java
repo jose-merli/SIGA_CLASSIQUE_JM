@@ -67,13 +67,9 @@ public class SIGATemporalAccessAction extends Action
 	        					 HttpServletRequest request, 
 	        					 HttpServletResponse response) throws ClsExceptions, SIGAException
 	{
-		final String ENTORNO_PREPRODUCCION ="PREPRODUCCION";
 		final String ENTORNO_DESARROLLO ="DESARROLLO";
-		final String ENTORNO_INTEGRACION="INTEGRACION";
-		
 		ReadProperties rproperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		String entorno = rproperties.returnProperty("administracion.login.entorno");
-		boolean desarrollo = entorno.equalsIgnoreCase(ENTORNO_PREPRODUCCION)||entorno.equalsIgnoreCase(ENTORNO_DESARROLLO)||entorno.equalsIgnoreCase(ENTORNO_INTEGRACION);
+		boolean desarrollo = rproperties.returnProperty("administracion.login.entorno").equalsIgnoreCase(ENTORNO_DESARROLLO);
 		
 		String result="";
 //		String user=request.getParameter("user");
@@ -93,14 +89,13 @@ public class SIGATemporalAccessAction extends Action
 			accesoAdmin=roles.contains("SIGA-Admin");
 		}
 		
- 		if(accesoAdmin&&!desarrollo){
+		if(accesoAdmin&&!desarrollo){
 			certificado = new UsuariosTO();
 			// Si tiene el rol de SIGA-Admin esta autorizado a entrar por combos
 			certificado.setUsu_nif((String)request.getHeader("CAS-username"));
 			certificado.setPfiNombre((String)request.getHeader("CAS-nickname"));
 			
 		}else if(!desarrollo){
-			System.out.println("Acceso denegado: !desarrollo en temporal ");
 			return mapping.findForward("accesodenegado");
 		}
 
@@ -118,7 +113,6 @@ public class SIGATemporalAccessAction extends Action
 						
 			request.setAttribute("mensaje",mensaje);
 			// para pruebas desde local, comentar este return
-			System.out.println("Acceso denegado:!checkCertificadoEnInstitucion_Y_FijaUsuarioEnUsrBean");
 			return mapping.findForward("accesodenegado");
 		}
 		///////////////////////////////////////////////////
@@ -554,19 +548,3 @@ public class SIGATemporalAccessAction extends Action
 		}		
 	}
 }
-/*
-String[] duplaRoles = request.getAttribute("CAS-roles");
-
-boolean isAdminGenFromCGae = false;
-for (int i = 0; i < duplaRoles.length; i++) {
-	String duplaRol = duplaRoles[i];
-	String[] dupla = duplaRol.split(" ");
-	String codExternoInstitucion = dupla[0];
-	String rol = dupla[1];
-	if((codExternoInstitucion.equals("AC0000") || codExternoInstitucion.equals("AC9999")) && rol.equalsIgnoreCase("SIGA-Admin")){
-		isAdminGenFromCGae = true;
-		break;
-	}
-	
-	
-}*/
