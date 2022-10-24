@@ -64,9 +64,14 @@ public class SIGAAuthItcgaeAction extends Action
 			 HttpServletRequest request, 
 			 HttpServletResponse response) throws ClsExceptions, SIGAException
 {
+		final String ENTORNO_PREPRODUCCION ="PREPRODUCCION";
 		final String ENTORNO_DESARROLLO ="DESARROLLO";
+		final String ENTORNO_INTEGRACION="INTEGRACION";
+		
 		ReadProperties rproperties= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		boolean desarrollo = rproperties.returnProperty("administracion.login.entorno").equalsIgnoreCase(ENTORNO_DESARROLLO);
+		String entorno = rproperties.returnProperty("administracion.login.entorno");
+		boolean desarrollo = entorno.equalsIgnoreCase(ENTORNO_PREPRODUCCION)||entorno.equalsIgnoreCase(ENTORNO_DESARROLLO)||entorno.equalsIgnoreCase(ENTORNO_INTEGRACION);
+
 
 		String result="";
 //		String user=request.getParameter("user");
@@ -80,23 +85,26 @@ public class SIGAAuthItcgaeAction extends Action
 		
 		UsrBean usrbean = UsrBean.UsrBeanAutomatico(location);
 		UsuariosTO certificado = (UsuariosTO) request.getAttribute("USUARIOTO");
-		boolean accesoAdmin=true;
+//		boolean accesoAdmin=true;
+//		if(!desarrollo){
+//			String roles=(String)request.getHeader("CAS-roles");
+//			accesoAdmin=roles.contains("SIGA-Admin");
+//		}
+//		
+//		if(accesoAdmin&&!desarrollo){
+//			certificado = new UsuariosTO();
+//			// Si tiene el rol de SIGA-Admin esta autorizado a entrar al area itcgae
+//			certificado.setUsu_nif((String)request.getHeader("CAS-username"));
+//			certificado.setPfiNombre((String)request.getHeader("CAS-nickname"));
+//			
+//		}else if(!desarrollo){
+//			ClsLogging.writeFileLog("Acceso denegado:!desarrollo");
+//			return mapping.findForward("accesodenegado");
+//		}
 		if(!desarrollo){
-			String roles=(String)request.getHeader("CAS-roles");
-			accesoAdmin=roles.contains("SIGA-Admin");
-		}
-		
-		if(accesoAdmin&&!desarrollo){
-			certificado = new UsuariosTO();
-			// Si tiene el rol de SIGA-Admin esta autorizado a entrar al area itcgae
-			certificado.setUsu_nif((String)request.getHeader("CAS-username"));
-			certificado.setPfiNombre((String)request.getHeader("CAS-nickname"));
-			
-		}else if(!desarrollo){
 			ClsLogging.writeFileLog("Acceso denegado:!desarrollo");
 			return mapping.findForward("accesodenegado");
 		}
-
 		///////////////////////////////////////////////////
 		// Verficamos si el usuario es dado de alta en la insticion seleccionada en los combos
 		// Tambien se establece el idUsuario en el UsrBean
