@@ -1,5 +1,6 @@
 package com.siga.general;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
@@ -75,16 +76,53 @@ public class SIGAAuthItcgaeAction extends Action
 
 		String result="";
 //		String user=request.getParameter("user");
-		String profile="AGE";
-		String location="3500";
-		String menuPosition=request.getParameter("posMenu");
-		String sAccess=request.getParameter("access");
-		String profileArray[]=new String[1];
-		profileArray[0]=profile;
+//		String profile="ADG";
+//		String location="3500";
+//		String menuPosition=request.getParameter("posMenu");
+//		String sAccess=request.getParameter("access");
+		UsuariosTO certificado = (UsuariosTO) request.getAttribute("USUARIOTO");
+		certificado.setUsu_nif((String)request.getHeader("CAS-username"));
+		certificado.setPfiNombre((String)request.getHeader("CAS-nickname"));
+		String nif = certificado.getUsu_nif();
+		String idInstitucion = "";
+		
+		Enumeration<String> casRoles = request.getHeaders("CAS-roles");
+		if(casRoles!=null){
+			while (casRoles.hasMoreElements()) { 
+				String lineaRoles = (String) casRoles.nextElement();
+				String[] roles = lineaRoles.split("::");
+				for (int i = 0; i < roles.length; i++) {
+					String duplaRol = roles[i];
+					String[] dupla = duplaRol.split(" ");
+					idInstitucion = dupla[0];
+					break;
+					
+				}
+				
+			}
+		}
+		
+		
+		
+		UsrBean usrbean = UsrBean.UsrBeanAutomatico(idInstitucion);
+		Vector vUsuario= getPerfiles(idInstitucion, nif, usrbean);
+		String profileArray[]=new String[vUsuario.size()];
+		String profile="";
+		if (vUsuario!=null && vUsuario.size()>0)
+		{
+			for (int i = 0; i < vUsuario.size(); i++) {
+				profileArray[i]=(String) ((Hashtable)vUsuario.get(i)).get("IDPERFIL");
+				profile = profileArray[i];
+				break;
+				
+			}
+			
+		}
+		
+		
 		String letrado="N";
 		
-		UsrBean usrbean = UsrBean.UsrBeanAutomatico(location);
-		UsuariosTO certificado = (UsuariosTO) request.getAttribute("USUARIOTO");
+		
 //		boolean accesoAdmin=true;
 //		if(!desarrollo){
 //			String roles=(String)request.getHeader("CAS-roles");
@@ -125,8 +163,8 @@ public class SIGAAuthItcgaeAction extends Action
 		///////////////////////////////////////////////////
 
 //		 obtengo datos para el userbean
-		usrbean.setIdPersona(obtenerIdPersona(location, usrbean));
-		Vector v = obtenerUsuario(location, usrbean);
+		usrbean.setIdPersona(obtenerIdPersona(idInstitucion, usrbean));
+		Vector v = obtenerUsuario(idInstitucion, usrbean);
 		AdmUsuariosBean usu = (AdmUsuariosBean) v.get(0);
 		CenPersonaBean per = null; 
 		CenClienteBean cli = null; 
@@ -152,7 +190,7 @@ public class SIGAAuthItcgaeAction extends Action
 		BusinessManager bm = BusinessManager.getInstance();
 		CenInstitucionService cenInstitucionService = (CenInstitucionService)bm.getService(CenInstitucionService.class);
 		CenInstitucion cenInstitucion = new CenInstitucion();
-		cenInstitucion.setIdinstitucion(Short.valueOf(location));
+		cenInstitucion.setIdinstitucion(Short.valueOf(idInstitucion));
 		CenInstitucion comision =  cenInstitucionService.getComision(cenInstitucion);
 		usrbean.setIdInstitucionComision(comision.getIdinstitucion());
 		if(usrbean.isComision()){
@@ -164,12 +202,12 @@ public class SIGAAuthItcgaeAction extends Action
 				}
 				usrbean.setInstitucionesComision(institucionesComision);
 			}else{
-				usrbean.setInstitucionesComision(new Short[]{Short.parseShort(location)});
+				usrbean.setInstitucionesComision(new Short[]{Short.parseShort(idInstitucion)});
 			}
 			usrbean.setLocation(""+comision.getIdinstitucion());
 		}else{
 			
-			usrbean.setLocation(location);
+			usrbean.setLocation(idInstitucion);
 		}
 		
 		usrbean.setLetrado(letrado.equals("S")?true:false);
@@ -177,7 +215,7 @@ public class SIGAAuthItcgaeAction extends Action
 		//		 obtengo el idioma de la institucion
 		String idLenguajeInstitucion = "1";
 		Hashtable ht2 = new Hashtable();
-		ht2.put(CenInstitucionBean.C_IDINSTITUCION,location);
+		ht2.put(CenInstitucionBean.C_IDINSTITUCION,idInstitucion);
 		CenInstitucionAdm ins = new CenInstitucionAdm(usrbean);
 		Vector v4 = ins.selectByPK(ht2);
 		Integer idConsejo = ClsConstants.INSTITUCION_CGAE; 
@@ -202,7 +240,7 @@ public class SIGAAuthItcgaeAction extends Action
 		
 		CenInstitucionLenguajesAdm admLen = new CenInstitucionLenguajesAdm (usrbean);
 		Hashtable h = new Hashtable();
-		UtilidadesHash.set(h, CenInstitucionLenguajesBean.C_IDINSTITUCION, location);
+		UtilidadesHash.set(h, CenInstitucionLenguajesBean.C_IDINSTITUCION, idInstitucion);
 		UtilidadesHash.set(h, CenInstitucionLenguajesBean.C_IDLENGUAJE, idLenguaje);
 		Vector vLen = admLen.selectByPK(h);
 		if (vLen == null || vLen.size() != 1) {
@@ -246,7 +284,7 @@ public class SIGAAuthItcgaeAction extends Action
 			} 
 		}
 		
-		initStyles(location, ses);
+		initStyles(idInstitucion, ses);
 
 		//		 RGG 13/01/2007 cambio para obtener IP
 		String IPServidor = UtilidadesString.obtenerIPServidor(request); 
@@ -414,7 +452,37 @@ public class SIGAAuthItcgaeAction extends Action
 		}
 		return idPersona;
 	}
-
+	private Vector getPerfiles (String sIdInstitucion, String  nif,UsrBean usr) {
+		StringBuilder s = new StringBuilder("");
+		s.append(" SELECT * ");
+		s.append(" FROM ADM_USUARIOS_EFECTIVOS_PERFIL P, ADM_USUARIOS U ");
+		s.append(" WHERE U.IDINSTITUCION = P.IDINSTITUCION ");
+		s.append(" AND U.IDUSUARIO = P.IDUSUARIO ");
+		s.append(" AND U.NIF = '");
+		s.append(nif);
+		s.append("' ");
+		s.append(" AND U.IDINSTITUCION = ");
+		s.append(sIdInstitucion);
+		Vector salida = new Vector();
+		
+		try
+		{
+			
+		
+			AdmUsuariosAdm admUsuario = new AdmUsuariosAdm(usr);
+			Vector vPErfiles = admUsuario.selectGenerico(s.toString());
+			return vPErfiles;
+			
+		}
+		catch(Exception e) {
+		    ClsLogging.writeFileLog("***** NO SE HA PODIDO OBTENER EL IDPERSONA. USRBEAN CONTIENE IDPERSONA=-1 *****",1);
+		}
+		return salida;
+		
+	}
+	
+	
+	
 	private Vector obtenerUsuario(String sIdInstitucion, UsrBean usr)
 	{
 		long idPersona=-1;
