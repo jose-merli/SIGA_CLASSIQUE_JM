@@ -87,6 +87,7 @@ public class SIGAAuthItcgaeAction extends Action
 		String idInstitucion = "";
 		
 		Enumeration<String> casRoles = request.getHeaders("CAS-roles");
+		String perfil = "";
 		if(casRoles!=null){
 			while (casRoles.hasMoreElements()) { 
 				String lineaRoles = (String) casRoles.nextElement();
@@ -95,6 +96,7 @@ public class SIGAAuthItcgaeAction extends Action
 					String duplaRol = roles[i];
 					String[] dupla = duplaRol.split(" ");
 					idInstitucion = dupla[0];
+					perfil = dupla[1];
 					break;
 					
 				}
@@ -105,7 +107,7 @@ public class SIGAAuthItcgaeAction extends Action
 		
 		
 		UsrBean usrbean = UsrBean.UsrBeanAutomatico(idInstitucion);
-		Vector vUsuario= getPerfiles(idInstitucion, nif, usrbean);
+		Vector vUsuario= getPerfiles(idInstitucion, perfil, usrbean);
 		String profileArray[]=new String[vUsuario.size()];
 		String profile="";
 		if (vUsuario!=null && vUsuario.size()>0)
@@ -452,17 +454,21 @@ public class SIGAAuthItcgaeAction extends Action
 		}
 		return idPersona;
 	}
-	private Vector getPerfiles (String sIdInstitucion, String  nif,UsrBean usr) {
+	private Vector getPerfiles (String codExternoInstitucion, String perfiles,UsrBean usr) {
 		StringBuilder s = new StringBuilder("");
-		s.append(" SELECT * ");
-		s.append(" FROM ADM_USUARIOS_EFECTIVOS_PERFIL P, ADM_USUARIOS U ");
-		s.append(" WHERE U.IDINSTITUCION = P.IDINSTITUCION ");
-		s.append(" AND U.IDUSUARIO = P.IDUSUARIO ");
-		s.append(" AND U.NIF = '");
-		s.append(nif);
+		s.append(" SELECT P.IDPERFIL,P.IDINSTITUCION ");
+		s.append(" FROM ADM_PERFIL P, CEN_INSTITUCION I ");
+		s.append(" WHERE P.IDINSTITUCION = I.IDINSTITUCION ");
+		s.append(" AND I.CODIGOEXT = ' ");
+		s.append(codExternoInstitucion);
 		s.append("' ");
-		s.append(" AND U.IDINSTITUCION = ");
-		s.append(sIdInstitucion);
+		s.append(" AND P.DESCRIPCION  in (' ");
+		s.append(perfiles);
+		s.append("   ') ");
+		 
+		
+		
+		
 		Vector salida = new Vector();
 		
 		try
