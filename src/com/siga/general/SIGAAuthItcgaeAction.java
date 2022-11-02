@@ -80,14 +80,22 @@ public class SIGAAuthItcgaeAction extends Action
 //		String location="3500";
 //		String menuPosition=request.getParameter("posMenu");
 //		String sAccess=request.getParameter("access");
-		UsuariosTO certificado = (UsuariosTO) request.getAttribute("USUARIOTO");
+		UsuariosTO certificado = new UsuariosTO();
 		certificado.setUsu_nif((String)request.getHeader("CAS-username"));
 		certificado.setPfiNombre((String)request.getHeader("CAS-nickname"));
 		String nif = certificado.getUsu_nif();
 		String idInstitucion = "";
 		
 		Enumeration<String> casRoles = request.getHeaders("CAS-roles");
-		String perfil = "";
+		String perfil = (String)request.getHeader("CAS-userType");
+		String[] perfiles = perfil.split("::");
+		StringBuilder perfilesBuilder = new StringBuilder(); 
+		for (int i = 0; i < perfiles.length; i++) {
+			if(!perfiles[i].equalsIgnoreCase(""))
+				perfilesBuilder.append(perfiles[i].trim());
+				perfilesBuilder.append(",");
+		}
+		perfilesBuilder.deleteCharAt(perfilesBuilder.length()-1);
 		if(casRoles!=null){
 			while (casRoles.hasMoreElements()) { 
 				String lineaRoles = (String) casRoles.nextElement();
@@ -95,8 +103,8 @@ public class SIGAAuthItcgaeAction extends Action
 				for (int i = 0; i < roles.length; i++) {
 					String duplaRol = roles[i];
 					String[] dupla = duplaRol.split(" ");
-					idInstitucion = dupla[0];
-					perfil = dupla[1];
+					idInstitucion = dupla[0].trim();
+					
 					break;
 					
 				}
@@ -107,7 +115,7 @@ public class SIGAAuthItcgaeAction extends Action
 		
 		
 		UsrBean usrbean = UsrBean.UsrBeanAutomatico(idInstitucion);
-		Vector vUsuario= getPerfiles(idInstitucion, perfil, usrbean);
+		Vector vUsuario= getPerfiles(idInstitucion, perfilesBuilder.toString(), usrbean);
 		String profileArray[]=new String[vUsuario.size()];
 		String profile="";
 		if (vUsuario!=null && vUsuario.size()>0)
