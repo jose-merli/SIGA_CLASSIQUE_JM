@@ -477,22 +477,16 @@ public class SIGAAuthItcgaeAction extends Action
 		s.append(" SELECT P.IDPERFIL,P.IDINSTITUCION ");
 		s.append(" FROM ADM_PERFIL P, CEN_INSTITUCION I ");
 		s.append(" WHERE P.IDINSTITUCION = I.IDINSTITUCION ");
-		s.append(" AND I.CODIGOEXT = ' ");
+		s.append(" AND I.CODIGOEXT = '");
 		s.append(codExternoInstitucion);
 		s.append("' ");
-		s.append(" AND P.DESCRIPCION  in (' ");
+		s.append(" AND P.DESCRIPCION  in ('");
 		s.append(perfiles);
-		s.append("   ') ");
-		 
-		
-		
+		s.append("') ");
 		
 		Vector salida = new Vector();
-		
 		try
 		{
-			
-		
 			AdmUsuariosAdm admUsuario = new AdmUsuariosAdm(usr);
 			Vector vPErfiles = admUsuario.selectGenerico(s.toString());
 			return vPErfiles;
