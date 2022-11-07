@@ -18,6 +18,7 @@ import org.apache.struts.action.ActionMapping;
 import org.redabogacia.sigaservices.app.AppConstants.MODULO;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.CenInstitucion;
+import org.redabogacia.sigaservices.app.autogen.model.CenInstitucionExample;
 import org.redabogacia.sigaservices.app.autogen.model.GenParametros;
 import org.redabogacia.sigaservices.app.services.cen.CenInstitucionService;
 import org.redabogacia.sigaservices.app.services.gen.GenParametrosService;
@@ -84,7 +85,7 @@ public class SIGAAuthItcgaeAction extends Action
 		certificado.setUsu_nif((String)request.getHeader("CAS-username"));
 		certificado.setPfiNombre((String)request.getHeader("CAS-nickname"));
 		String nif = certificado.getUsu_nif();
-		String idInstitucion = "";
+		String codExternoInstitucion = "";
 		
 		Enumeration<String> casRoles = request.getHeaders("CAS-roles");
 		String perfil = (String)request.getHeader("CAS-userType");
@@ -103,7 +104,7 @@ public class SIGAAuthItcgaeAction extends Action
 				for (int i = 0; i < roles.length; i++) {
 					String duplaRol = roles[i];
 					String[] dupla = duplaRol.split(" ");
-					idInstitucion = dupla[0].trim();
+					codExternoInstitucion = dupla[0].trim();
 					
 					break;
 					
@@ -111,16 +112,27 @@ public class SIGAAuthItcgaeAction extends Action
 				
 			}
 		}
-		
-		
-		
+		BusinessManager bm = BusinessManager.getInstance();
+		CenInstitucionService cenInstitucionService = (CenInstitucionService)bm.getService(CenInstitucionService.class);
+		CenInstitucionExample cenInstitucionExample = new CenInstitucionExample();
+		cenInstitucionExample.createCriteria().andCodigoextEqualTo(codExternoInstitucion);
+		List<CenInstitucion> instituciones =  cenInstitucionService.getList(cenInstitucionExample);
+		if(instituciones==null || instituciones.size()==0) {
+			ClsLogging.writeFileLog("Acceso denegado:!El codigo externo de la insntitucion no esta bien definido");
+			return mapping.findForward("accesodenegado");
+		}
+			
+			
+		String idInstitucion = instituciones.get(0).getIdinstitucion().toString();
 		UsrBean usrbean = UsrBean.UsrBeanAutomatico(idInstitucion);
-		Vector vUsuario= getPerfiles(idInstitucion, perfilesBuilder.toString(), usrbean);
+				
+		Vector vUsuario= getPerfiles(codExternoInstitucion, perfilesBuilder.toString(), usrbean);
 		String profileArray[]=new String[vUsuario.size()];
 		String profile="";
 		if (vUsuario!=null && vUsuario.size()>0)
 		{
 			for (int i = 0; i < vUsuario.size(); i++) {
+				idInstitucion = (String) ((Hashtable)vUsuario.get(i)).get("IDINSTITUCION");
 				profileArray[i]=(String) ((Hashtable)vUsuario.get(i)).get("IDPERFIL");
 				profile = profileArray[i];
 				break;
@@ -128,8 +140,7 @@ public class SIGAAuthItcgaeAction extends Action
 			}
 			
 		}
-		
-		
+		usrbean = UsrBean.UsrBeanAutomatico(idInstitucion);
 		String letrado="N";
 		
 		
@@ -197,14 +208,13 @@ public class SIGAAuthItcgaeAction extends Action
 		}
 
 		//Comprobamos si es comision multiple
-		BusinessManager bm = BusinessManager.getInstance();
-		CenInstitucionService cenInstitucionService = (CenInstitucionService)bm.getService(CenInstitucionService.class);
+		
 		CenInstitucion cenInstitucion = new CenInstitucion();
 		cenInstitucion.setIdinstitucion(Short.valueOf(idInstitucion));
 		CenInstitucion comision =  cenInstitucionService.getComision(cenInstitucion);
 		usrbean.setIdInstitucionComision(comision.getIdinstitucion());
 		if(usrbean.isComision()){
-			List<CenInstitucion> instituciones =  cenInstitucionService.getInstitucionesComision(comision);
+			instituciones =  cenInstitucionService.getInstitucionesComision(comision);
 			if( instituciones!=null && instituciones.size()>0 ){
 				Short[] institucionesComision  = new Short[instituciones.size()];
 				for (int i = 0; i < instituciones.size(); i++) {
