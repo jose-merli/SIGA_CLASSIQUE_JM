@@ -93,10 +93,18 @@ public class SIGAAuthItcgaeAction extends Action
 		StringBuilder perfilesBuilder = new StringBuilder(); 
 		for (int i = 0; i < perfiles.length; i++) {
 			if(!perfiles[i].equalsIgnoreCase(""))
+				perfilesBuilder.append("'");
 				perfilesBuilder.append(perfiles[i].trim());
+				perfilesBuilder.append("'");
 				perfilesBuilder.append(",");
 		}
+		//QUITAMOS LA ULTIMA ,
 		perfilesBuilder.deleteCharAt(perfilesBuilder.length()-1);
+		//QUITAMOS LA PRIOMERA '
+		perfilesBuilder.deleteCharAt(0);
+		perfilesBuilder.deleteCharAt(perfilesBuilder.length()-1);
+		//QUITAMOS LA ULTIMA '
+		
 		if(casRoles!=null){
 			while (casRoles.hasMoreElements()) { 
 				String lineaRoles = (String) casRoles.nextElement();
@@ -123,7 +131,7 @@ public class SIGAAuthItcgaeAction extends Action
 		}
 			
 			
-		String idInstitucion = instituciones.get(0).getIdinstitucion().toString();
+		String idInstitucion = instituciones.get(0).getIdinstitucion().toString();//if(idInstitucion.equals("2000")) {			perfilesBuilder = new StringBuilder();			perfilesBuilder.append("Administrador General");		}
 		UsrBean usrbean = UsrBean.UsrBeanAutomatico(idInstitucion);
 				
 		Vector vUsuario= getPerfiles(codExternoInstitucion, perfilesBuilder.toString(), usrbean);
