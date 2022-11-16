@@ -130,12 +130,12 @@ public class SIGAAuthItcgaeAction extends Action
 			return mapping.findForward("accesodenegado");
 		}
 			
-			
+		ClsLogging.writeFileLog("1");	
 		String idInstitucion = instituciones.get(0).getIdinstitucion().toString();//if(idInstitucion.equals("2000")) {			perfilesBuilder = new StringBuilder();			perfilesBuilder.append("Administrador General");		}
 		UsrBean usrbean = UsrBean.UsrBeanAutomatico(idInstitucion);
-				
+		ClsLogging.writeFileLog("2");				
 		Vector vUsuario= getPerfiles(codExternoInstitucion, perfilesBuilder.toString(), usrbean);
-		String profileArray[]=new String[vUsuario.size()];
+		String profileArray[]=new String[1];
 		String profile="";
 		if (vUsuario!=null && vUsuario.size()>0)
 		{
@@ -148,6 +148,7 @@ public class SIGAAuthItcgaeAction extends Action
 			}
 			
 		}
+		ClsLogging.writeFileLog("3");
 		usrbean = UsrBean.UsrBeanAutomatico(idInstitucion);
 		String letrado="N";
 		
@@ -175,6 +176,7 @@ public class SIGAAuthItcgaeAction extends Action
 		///////////////////////////////////////////////////
 		// Verficamos si el usuario es dado de alta en la insticion seleccionada en los combos
 		// Tambien se establece el idUsuario en el UsrBean
+		ClsLogging.writeFileLog("4");
 		try {
 			this.checkCertificadoEnInstitucion_Y_FijaUsuarioEnUsrBean(usrbean, certificado);
 		}
@@ -190,10 +192,11 @@ public class SIGAAuthItcgaeAction extends Action
 			return mapping.findForward("accesodenegado");
 		}
 		///////////////////////////////////////////////////
-
+		ClsLogging.writeFileLog("5");
 //		 obtengo datos para el userbean
 		usrbean.setIdPersona(obtenerIdPersona(idInstitucion, usrbean));
 		Vector v = obtenerUsuario(idInstitucion, usrbean);
+		ClsLogging.writeFileLog("6");
 		AdmUsuariosBean usu = (AdmUsuariosBean) v.get(0);
 		CenPersonaBean per = null; 
 		CenClienteBean cli = null; 
@@ -208,7 +211,7 @@ public class SIGAAuthItcgaeAction extends Action
 		//		 rgg cambio de codigos
 		usrbean.setIdRol("2");		
 		usrbean.setProfile(profileArray);
-		
+		ClsLogging.writeFileLog("7");
 		// insertando registro de acceso en la tabla de estadisticas
 		EstUserRegistryAdm userRegistryAdm = new EstUserRegistryAdm(usrbean);
 		if(!userRegistryAdm.insertarRegistroUser(profile)){
@@ -216,7 +219,7 @@ public class SIGAAuthItcgaeAction extends Action
 		}
 
 		//Comprobamos si es comision multiple
-		
+		ClsLogging.writeFileLog("8");
 		CenInstitucion cenInstitucion = new CenInstitucion();
 		cenInstitucion.setIdinstitucion(Short.valueOf(idInstitucion));
 		CenInstitucion comision =  cenInstitucionService.getComision(cenInstitucion);
@@ -239,7 +242,7 @@ public class SIGAAuthItcgaeAction extends Action
 		}
 		
 		usrbean.setLetrado(letrado.equals("S")?true:false);
-
+		ClsLogging.writeFileLog("9");
 		//		 obtengo el idioma de la institucion
 		String idLenguajeInstitucion = "1";
 		Hashtable ht2 = new Hashtable();
@@ -264,7 +267,7 @@ public class SIGAAuthItcgaeAction extends Action
 			idLenguaje = idLenguajeInstitucion;
 			sInsti = "(Obtenido de Institucion)";
 		}
-
+		ClsLogging.writeFileLog("10");
 		
 		CenInstitucionLenguajesAdm admLen = new CenInstitucionLenguajesAdm (usrbean);
 		Hashtable h = new Hashtable();
@@ -286,7 +289,7 @@ public class SIGAAuthItcgaeAction extends Action
 				idLenguajeExt = l.getCodigoExt();
 			}
 		}
-
+		ClsLogging.writeFileLog("11");
 		usrbean.setLanguage(idLenguaje);
 		usrbean.setLanguageExt(idLenguajeExt);
 		usrbean.setLanguageInstitucion(idLenguajeInstitucion);
@@ -298,7 +301,7 @@ public class SIGAAuthItcgaeAction extends Action
 
 		usrbean.setUserDescription("USUARIO DE PRUEBAS");
 		ses.setAttribute("USRBEAN", usrbean);
-		
+		ClsLogging.writeFileLog("12");
 		if(ses.getAttribute(PARAMETRO.LONGITUD_CODEJG.toString())==null){
 			GenParametrosService genParametrosService = (GenParametrosService) bm.getService(GenParametrosService.class);
 			GenParametros genParametros = new GenParametros();
@@ -311,7 +314,7 @@ public class SIGAAuthItcgaeAction extends Action
 				ClsLogging.writeFileLog("Tamaño EJGs:"+genParametros.getValor(),1);
 			} 
 		}
-		
+		ClsLogging.writeFileLog("13");
 		initStyles(idInstitucion, ses);
 
 		//		 RGG 13/01/2007 cambio para obtener IP
