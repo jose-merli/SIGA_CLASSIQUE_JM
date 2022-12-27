@@ -12,7 +12,7 @@ CREATE OR REPLACE Package Pkg_Siga_Retenciones_Sjcs Is
 End;
  
 /
-create or replace package body PKG_SIGA_RETENCIONES_SJCS is
+CREATE OR REPLACE package body PKG_SIGA_RETENCIONES_SJCS is
 
   -- Public variable declarations
   V_DATOSERROR VARCHAR2(4000);
@@ -108,7 +108,7 @@ create or replace package body PKG_SIGA_RETENCIONES_SJCS is
   --
   -- Proceso principal de aplicacion de retenciones
   --
-  Procedure Proc_Aplicar_Retenc_Judic_Mes(p_Importe_Netobase In Number, p_Fechames In Date) Is
+  Procedure Proc_Aplicar_Retenc_Judic_Mes(p_Importe_Netobase In Number, p_Fechames In Date, p_Retenido In Out Number) Is
   
     v_Importe_Netorestante       Number; --El neto base que se va reduciendo segun se aplican retenciones
     v_Importe_Aintentarretener   Number; --Contiene el calculo de lo que se intenta retener. Luego se mira si esto se pasa de lo posible
@@ -128,7 +128,13 @@ create or replace package body PKG_SIGA_RETENCIONES_SJCS is
     -- Calculos previos para retenciones LEC
     Begin
       v_Datoserror := 'Obteniendo SMI del mes';
-      Select To_Number(Valor) Into v_Importesmi From Fcs_Smi Where Anio = To_Char(p_Fechames, 'yyyy');
+      --Select To_Number(Valor) Into v_Importesmi From Fcs_Smi Where Anio = To_Char(p_Fechames, 'yyyy');
+      begin
+        Select To_Number(Valor)*14/12 Into v_Importesmi From Fcs_Smi Where Anio = To_Char(p_Fechames, 'yyyy');
+      exception
+      when no_data_found then
+        Select To_Number(Valor)*14/12 Into v_Importesmi from fcs_smi where IDSMI = (select max(smi2.idsmi) from fcs_smi smi2);
+      end;
     
       v_Datoserror := 'Obteniendo total retenido de los pagos anteriores';
       Select Nvl(Abs(Sum(c.Importeretenido)), 0)
@@ -213,6 +219,8 @@ create or replace package body PKG_SIGA_RETENCIONES_SJCS is
                                   v_Importe_Base_Usado,
                                   To_Char(p_Fechames, 'mm'),
                                   To_Char(p_Fechames, 'yyyy'));
+      
+      p_Retenido := p_Retenido + v_Importe_Retencion_Aplicada;
     
       v_Datoserror               := 'Acumulando retenido para otra retencion posterior';
       v_Importeanterior_Retenido := v_Importeanterior_Retenido + v_Importe_Retencion_Aplicada;
@@ -237,6 +245,7 @@ create or replace package body PKG_SIGA_RETENCIONES_SJCS is
     v_Importenetorestante Number := 0;
     v_Importeultimomes    Number := 0;
     v_Importemes          Number := 0;
+    v_retenido            Number := 0;
   
     -- Variables para recorrer los meses del pago
     v_Nmeses          Number;
@@ -273,7 +282,7 @@ create or replace package body PKG_SIGA_RETENCIONES_SJCS is
       Else
         v_Importenetorestante := v_Importemes;
       End If;
-      Proc_Aplicar_Retenc_Judic_Mes(v_Importenetorestante, v_Fechames);
+      Proc_Aplicar_Retenc_Judic_Mes(v_Importenetorestante, v_Fechames, v_retenido);
       
       v_Datoserror := 'Avanzando en el bucle de meses del periodo de retencion';
       v_Fechames   := Add_Months(v_Fechames, 1);
@@ -281,7 +290,7 @@ create or replace package body PKG_SIGA_RETENCIONES_SJCS is
     End Loop;
   
     p_Codretorno := 0;
-    p_Datoserror := 'Fin correcto';
+    p_Datoserror := 'Fin correcto. Retenido: ' || v_retenido;
   
   Exception
     When Others Then

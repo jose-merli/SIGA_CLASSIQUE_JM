@@ -1249,3 +1249,6 @@ insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFI
  
  insert into GEN_PROPERTIES (FICHERO, PARAMETRO, VALOR) values ('SIGA', 'mail.smtp.actualizacioncenso.sesion', 'CorreoSIGA_SIB');
 
+--SIGA-581
+ Pkg_Siga_Retenciones_Sjcs
+ 
