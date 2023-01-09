@@ -1374,7 +1374,7 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 					linea += rellenoPosiciones(" ",158,166); //158-166: nif conyuge
 					linea += "0"; //167: discapacidad
 					linea += "0"; //168: contrato o relacion
-					linea += " "; //169: MOVILIDAD GEOGRÁFICA - ACEPTACION EN 2014
+					linea += "0"; //169: TITULAR UNIDAD DE CONVIVENCIA
 					linea += "0"; //170: movilidad geografica
 					linea += rellenoPosiciones("0",171,183); //171-183: reducciones aplicables
 					linea += rellenoPosiciones("0",184,196); //184-196: gastos deducibles
@@ -1394,7 +1394,8 @@ public class FcsFacturacionJGAdm extends MasterBeanAdministrador {
 					linea += " "; //282: Signo de las percepciones en especie derivadas de incapacidad laboral
 					linea += rellenoPosiciones("0",283,321); //283-321: importe de las percepciones en especie derivadas de incapacidad laboral
 					
-					linea += rellenoPosiciones(" ",322,500); //322-500: blancos 
+					linea += "0"; //322: COMPLEMENTO AYUDA PARA LA INFANCIA
+					linea += rellenoPosiciones(" ",323,500); //323-500: blancos 
 					
 					// cambio a formato DOS
 					linea += "\r\n";
