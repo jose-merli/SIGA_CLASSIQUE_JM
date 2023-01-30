@@ -302,9 +302,15 @@ public class EdicionColegiadoAction extends MasterAction {
 			}
 			
 			short idinstitucion = ecomCenColegiadoService.getIdinstitucion(ecomCenColegiado);
-			//CENSO-298@DTT.JAMARTIN@14/06/2022@INICIO
-			ecomCenColegiadoService.lanzarProcesoAltaModificacionColegiado(idinstitucion, ecomCenColegiado, numDocumentoOriginal);
-			//CENSO-298@DTT.JAMARTIN@14/06/2022@FIN
+			//CENSO-331@DTT.JAMARTIN@26/01/2023@INICIO
+//			//CENSO-298@DTT.JAMARTIN@14/06/2022@INICIO
+//			ecomCenColegiadoService.lanzarProcesoAltaModificacionColegiado(idinstitucion, ecomCenColegiado, numDocumentoOriginal);
+//			//CENSO-298@DTT.JAMARTIN@14/06/2022@FIN
+			
+			boolean tieneAdhesiones = ecomCenColegiadoService.tieneAdhesiones(ecomCenColegiado);
+			ecomCenColegiadoService.lanzarProcesoAltaModificacionColegiado(idinstitucion, ecomCenColegiado, tieneAdhesiones, numDocumentoOriginal);
+			//CENSO-331@DTT.JAMARTIN@26/01/2023@FIN
+			
 			if (edicionColegiadoForm.isIncidenciaPoblacionNoEncontradaRevisada()) {
 				ecomCenColegiadoService.lanzaAltaModificacionPorNuevaPoblacion(idinstitucion, ecomCenColegiado, ecomCenDireccion);
 			}
