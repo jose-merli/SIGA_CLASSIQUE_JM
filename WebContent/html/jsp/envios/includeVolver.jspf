@@ -161,7 +161,6 @@
 						}
 					}
 				}else if(origenInicial.value=='/JGR_IntercambiosJG'){
-					alertStop(document.DefinirEJGForm.jsonVolver );
 					if(document.DefinirEJGForm.jsonVolver && document.DefinirEJGForm.jsonVolver.value!=''){
 						
 						jSonVolverValue = document.DefinirEJGForm.jsonVolver.value;
