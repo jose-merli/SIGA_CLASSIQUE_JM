@@ -147,7 +147,9 @@ public class UtilidadesFicheros {
 		path.append(directorio);
 		path.append(ClsConstants.FILE_SEP);
 		path.append(docResolucion);
-		path.append(extension);
+		if(docResolucion.indexOf(".")<0) {
+			path.append(extension);
+		}
 		ClsLogging.writeFileLog("Fichero:"+path,10);
 		
 		file = new File(path.toString());
