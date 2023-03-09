@@ -678,6 +678,7 @@ public class DefinirDocumentacionEJGAction extends MasterAction {
 			documentacionEjgVo.setAnio( Short.valueOf(miForm.getAnio ()));
 			documentacionEjgVo.setNumero( Long.valueOf(miForm.getNumero ()));
 			documentacionEjgVo.setIdinstitucion( Short.valueOf( miForm.getIdInstitucion()));
+			documentacionEjgVo.setDocumentacion(miForm.getDocumentacion());
 			
 			documentacionEjgVo.setIddocumentacion(Integer.valueOf(miForm.getIdDocumentacion()));
 			if(miForm.getIdInstitucion().equalsIgnoreCase("2055")) {
