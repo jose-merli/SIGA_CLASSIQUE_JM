@@ -3775,89 +3775,127 @@ public class EnvioInformesGenericos extends MasterReport {
 	 * @throws ClsExceptions
 	 */
 	private File getInformeGenericoWord(AdmInformeBean beanInforme, Hashtable htDatosInforme, String idiomaExt, String identificador, UsrBean usr) throws SIGAException, ClsExceptions {
-		Date inicio = new Date();
-		ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: INICIO InformesGenericos.getInformeGenerico", 10);
-
 		File ficheroSalida = null;
-		// --- acceso a paths y nombres
-		ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
-		// ReadProperties rp = new ReadProperties("SIGA.properties");
-		String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava") + rp.returnProperty("informes.directorioPlantillaInformesJava");
-		String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava") + rp.returnProperty("informes.directorioPlantillaInformesJava");
-		// //////////////////////////////////////////////
-		// MODELO DE TIPO WORD: LLAMADA A ASPOSE.WORDS
-		String carpetaInstitucion = "";
-		if (beanInforme.getIdInstitucion() == null || beanInforme.getIdInstitucion().compareTo(Integer.valueOf(0)) == 0) {
-			carpetaInstitucion = "2000";
-		} else {
-			carpetaInstitucion = "" + beanInforme.getIdInstitucion();
-		}
-
-		String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP + carpetaInstitucion + ClsConstants.FILE_SEP + beanInforme.getDirectorio() + ClsConstants.FILE_SEP;
-		String nombrePlantilla = beanInforme.getNombreFisico() + "_" + idiomaExt + ".doc";
-		String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP + carpetaInstitucion + ClsConstants.FILE_SEP + beanInforme.getDirectorio();
-
-		FileHelper.mkdirs(rutaAlm);
-
-		MasterWords masterWord;
-		Document documento;
 		try {
-			masterWord = new MasterWords(rutaPl + nombrePlantilla);
-			documento = masterWord.nuevoDocumento();
-		} catch (Exception fe) {
-			String recurso = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "messages.informes.noPlantillas");
-			throw new SIGAException(recurso + " La plantilla es: " + nombrePlantilla);
-		}
-
-		Iterator iteDatos = htDatosInforme.keySet().iterator();
-		while (iteDatos.hasNext()) {
-			String clave = (String) iteDatos.next();
-			if (!clave.equals("row")) {
-				// Estos son regiones
-				Vector vDatosRegion = (Vector) htDatosInforme.get(clave);
-				documento = masterWord.sustituyeRegionDocumento(documento, clave, vDatosRegion);
-				iteDatos.remove();
-
-			}
-
-		}
-		iteDatos = htDatosInforme.keySet().iterator();
-
-		while (iteDatos.hasNext()) {
-			String clave = (String) iteDatos.next();
-			// if (clave.equals("row")) {
-			Object oDatosInforme = (Object) htDatosInforme.get(clave);
-			// Esto son cabecera
-			if (oDatosInforme instanceof Vector) {
-				Vector vDatosInforme = (Vector) oDatosInforme;
-				if (oDatosInforme != null) {
-					for (int i = 0; i < vDatosInforme.size(); i++) {
-						Hashtable htRowDatosInforme = (Hashtable) vDatosInforme.get(i);
-						documento = masterWord.sustituyeDocumento(documento, htRowDatosInforme);
-
-					}
-				}
-			} else if (oDatosInforme instanceof Hashtable) {
-				Hashtable htRowDatosInforme = (Hashtable) oDatosInforme;
-				documento = masterWord.sustituyeDocumento(documento, htRowDatosInforme);
-
-			}
-			// }
-		}
-		String nombreArchivo = beanInforme.getNombreSalida() + "_" + identificador;
-		if(beanInforme.getIdTipoInforme()!=null && beanInforme.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesCAJG)){
-			nombreArchivo = identificador+"_"+beanInforme.getNombreSalida() ;
-		}
 			
-		if (beanInforme.getTipoformato() != null && beanInforme.getTipoformato().equals("P"))
-			nombreArchivo = nombreArchivo + ".pdf";
-		else
-			nombreArchivo = nombreArchivo + ".doc";
 		
-		ficheroSalida = masterWord.grabaDocumento(documento, rutaAlm, nombreArchivo);
-		Date fin = new Date();
-		ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: FIN InformesGenericos.getInformeGenerico", 10);
-		ClsLogging.writeFileLog(fin.getTime() - inicio.getTime() + " MILISEGUNDOS ,==> SIGA: TIEMPO TOTAL", 10);
+			Date inicio = new Date();
+			
+			ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: INICIO InformesGenericos.getInformeGenerico", 10);
+	
+			
+			// --- acceso a paths y nombres
+			ReadProperties rp = new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+			// ReadProperties rp = new ReadProperties("SIGA.properties");
+			String rutaPlantilla = rp.returnProperty("informes.directorioFisicoPlantillaInformesJava") + rp.returnProperty("informes.directorioPlantillaInformesJava");
+			String rutaAlmacen = rp.returnProperty("informes.directorioFisicoSalidaInformesJava") + rp.returnProperty("informes.directorioPlantillaInformesJava");
+			// //////////////////////////////////////////////
+			// MODELO DE TIPO WORD: LLAMADA A ASPOSE.WORDS
+			String carpetaInstitucion = "";
+			if (beanInforme.getIdInstitucion() == null || beanInforme.getIdInstitucion().compareTo(Integer.valueOf(0)) == 0) {
+				carpetaInstitucion = "2000";
+			} else {
+				carpetaInstitucion = "" + beanInforme.getIdInstitucion();
+			}
+	
+			String rutaPl = rutaPlantilla + ClsConstants.FILE_SEP + carpetaInstitucion + ClsConstants.FILE_SEP + beanInforme.getDirectorio() + ClsConstants.FILE_SEP;
+			String nombrePlantilla = beanInforme.getNombreFisico() + "_" + idiomaExt + ".doc";
+			String rutaAlm = rutaAlmacen + ClsConstants.FILE_SEP + carpetaInstitucion + ClsConstants.FILE_SEP + beanInforme.getDirectorio();
+			ClsLogging.writeFileLog("Creamos directorio en "+rutaAlm);
+			FileHelper.mkdirs(rutaAlm);
+	
+			MasterWords masterWord;
+			Document documento;
+			try {
+				ClsLogging.writeFileLog("Inicializamos nombrePlantilla "+nombrePlantilla);
+				masterWord = new MasterWords(rutaPl + nombrePlantilla);
+				documento = masterWord.nuevoDocumento();
+				ClsLogging.writeFileLog("Finalizamos nuevoDocumento ");
+			} catch (Exception fe) {
+				String recurso = UtilidadesString.getMensajeIdioma(usr.getLanguage(), "messages.informes.noPlantillas");
+				throw new SIGAException(recurso + " La plantilla es: " + nombrePlantilla);
+			}
+	
+			Iterator iteDatos = htDatosInforme.keySet().iterator();
+			ClsLogging.writeFileLog("Iniciamos sustituyeRegionDocumento ");
+			while (iteDatos.hasNext()) {
+				String clave = (String) iteDatos.next();
+				if (!clave.equals("row")) {
+					// Estos son regiones
+					Vector vDatosRegion = (Vector) htDatosInforme.get(clave);
+					
+					
+					documento = masterWord.sustituyeRegionDocumento(documento, clave, vDatosRegion);
+					
+					iteDatos.remove();
+	
+				}
+	
+			}
+			ClsLogging.writeFileLog("Finalizamos sustituyeRegionDocumento ");
+			iteDatos = htDatosInforme.keySet().iterator();
+			ClsLogging.writeFileLog("Iniciamos sustituyeRegionDocumento 1");
+			boolean primeravez= true;
+			while (iteDatos.hasNext()) {
+				String clave = (String) iteDatos.next();
+				// if (clave.equals("row")) {
+				Object oDatosInforme = (Object) htDatosInforme.get(clave);
+				// Esto son cabecera
+				if (oDatosInforme instanceof Vector) {
+					Vector vDatosInforme = (Vector) oDatosInforme;
+					if (oDatosInforme != null) {
+						for (int i = 0; i < vDatosInforme.size(); i++) {
+							Hashtable htRowDatosInforme = (Hashtable) vDatosInforme.get(i);
+							
+							documento = masterWord.sustituyeDocumento(documento, htRowDatosInforme);
+							
+	
+						}
+					}
+				} else if (oDatosInforme instanceof Hashtable) {
+					Hashtable htRowDatosInforme = (Hashtable) oDatosInforme;
+					if(primeravez) {
+						ClsLogging.writeFileLog("Iniciamos sustituyeRegionDocumento 2");
+					}
+					documento = masterWord.sustituyeDocumento(documento, htRowDatosInforme);
+					if(primeravez) {
+						primeravez = false;
+						ClsLogging.writeFileLog("Iniciamos sustituyeRegionDocumento 2");
+					}
+	
+				}
+				// }
+			}
+			ClsLogging.writeFileLog("Finalizamos sustituyeRegionDocumento 1");
+			String nombreArchivo = beanInforme.getNombreSalida() + "_" + identificador;
+			if(beanInforme.getIdTipoInforme()!=null && beanInforme.getIdTipoInforme().equals(EnvioInformesGenericos.comunicacionesCAJG)){
+				nombreArchivo = identificador+"_"+beanInforme.getNombreSalida() ;
+			}
+				
+			if (beanInforme.getTipoformato() != null && beanInforme.getTipoformato().equals("P"))
+				nombreArchivo = nombreArchivo + ".pdf";
+			else
+				nombreArchivo = nombreArchivo + ".doc";
+			ClsLogging.writeFileLog("Iniciamos grabaDocumento ");
+			ficheroSalida = masterWord.grabaDocumento(documento, rutaAlm, nombreArchivo);
+			ClsLogging.writeFileLog("Fin grabaDocumento ");
+			Date fin = new Date();
+			ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() + ",==> SIGA: FIN InformesGenericos.getInformeGenerico", 10);
+			ClsLogging.writeFileLog(fin.getTime() - inicio.getTime() + " MILISEGUNDOS ,==> SIGA: TIEMPO TOTAL", 10);
+			} catch (SIGAException e) {
+				ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() +"SIGAException here..."+ e.toString(), 10); 
+				throw e;
+			} catch (ClsExceptions e) {
+				ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() +"ClsExceptions here..."+ e.toString(), 10);
+				throw e;
+			} catch (Exception e) {
+				ClsLogging.writeFileLog("INI ERRORRRRRRRRRR");
+				e.printStackTrace();
+				ClsLogging.writeFileLog("FIN ERRORRRRRRRRRR");
+				ClsLogging.writeFileLog(Calendar.getInstance().getTimeInMillis() +"Exception here..."+ e.toString(), 10);
+				
+			//	throw e;
+			}
 		return ficheroSalida;
 	}
 
