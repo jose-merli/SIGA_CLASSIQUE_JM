@@ -398,7 +398,7 @@ public  class EntradaEnviosServiceImpl extends MyBatisBusinessServiceTemplate im
 			resolucionimpugnacion.setFechamodificacion(new Date());
 			resolucionimpugnacion.setUsumodificacion(new Integer (usrBean.getUserName()));
 
-			ecomCola.setIdoperacion(OPERACION.EJIS_PROCESAR_RESOLUCION_IMPUGNACION.getId());
+//			ecomCola.setIdoperacion(OPERACION.EJIS_PROCESAR_RESOLUCION_IMPUGNACION.getId());
 			if (ecomColaService.insert(ecomCola) != 1) {
 				throw new BusinessException("No se ha podido insertar en la cola de comunicaciones.");
 			}
