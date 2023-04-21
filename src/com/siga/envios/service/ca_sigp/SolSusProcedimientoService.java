@@ -2,8 +2,6 @@ package com.siga.envios.service.ca_sigp;
 
 import org.redabogacia.sigaservices.app.autogen.model.EcomSolsusprocedimientoWithBLOBs;
 
-import com.siga.envios.service.IntercambiosService;
-
 import es.satec.businessManager.BusinessException;
 
 
