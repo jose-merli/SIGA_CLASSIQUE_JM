@@ -132,7 +132,11 @@
 					} else if (cajgConfig == 4) {//PAMPLONA
 						buttons+=",val,ws";//envio WebService
 					} else if (cajgConfig == 6) {
-						if(versionAsignaVereda!=null && versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion())){
+						if(versionAsignaVereda!=null && 
+								(
+										versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion())||versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_1.getVersion())
+								))
+						{
 							buttons+=",val,ws";//generar XML
 						}else
 							buttons+=",val,gxml";//generar XML			
@@ -173,7 +177,8 @@
 					} else if (cajgConfig == 3 && tipoPCAJGGeneral != 1) {
 						buttons+=",d";//descargar
 					} else if (cajgConfig == 6) {
-						if(versionAsignaVereda==null || !versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion()))
+						if(versionAsignaVereda==null || 
+								(!versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion())&&!versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_1.getVersion())))
 							buttons+=",d";//descargar
 					}else if (cajgConfig == 9) {//ELIMINAR CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
 						if (tipoPCAJGGeneral == 0) {
@@ -216,7 +221,8 @@
 					} else if (cajgConfig == 3 && tipoPCAJGGeneral != 1) {
 						buttons+=",d";//descargar
 					} else if (cajgConfig == 6) {
-						if(versionAsignaVereda==null || !versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion()))
+						if(versionAsignaVereda==null || 
+								(!versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion())&&!versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_1.getVersion())))
 							buttons+=",d";//descargar
 					}else if (cajgConfig == 9) {//ELIMINAR CUANDO LA INTEGRACION DE ANDALUCIA SEA COMPLETA
 						if (tipoPCAJGGeneral == 0) {

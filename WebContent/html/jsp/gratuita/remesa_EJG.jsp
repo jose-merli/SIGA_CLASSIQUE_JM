@@ -95,7 +95,7 @@
 	if (idEstado == 2) {//enviada
 		if (CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == cajgConfig) {
 			ASIGNA_VERSION versionAsignaVereda = AsignaVeredaHelper.getAsignaVersion(Short.valueOf(usr.getLocation()));
-			subirFicheroRespuesta = versionAsignaVereda==null || !versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.VERSION_2.getVersion());
+			subirFicheroRespuesta = versionAsignaVereda==null || versionAsignaVereda.getVersion()==null || versionAsignaVereda.getVersion().equals(ASIGNA_VERSION.SIN_VERSION.getVersion());
 		}
 	}
 	
