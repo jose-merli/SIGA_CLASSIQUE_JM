@@ -40,6 +40,7 @@ import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.AppConstants.GEN_RECURSOS;
 import org.redabogacia.sigaservices.app.AppConstants.MODULO;
+import org.redabogacia.sigaservices.app.AppConstants.OPERACION;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.autogen.model.CajgEjgremesa;
 import org.redabogacia.sigaservices.app.autogen.model.CajgEjgremesaExample;
@@ -2100,10 +2101,22 @@ public class DefinirRemesasCAJGAction extends MasterAction {
 				RESPUESTA_ENVIO_REMESA respuesta = null;
 				if (simular) {
 					respuesta = pcajgInsertaColaService.validaExpedientesXunta(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));	
+							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()),OPERACION.XUNTA_VALIDA_CARGA_EXPEDIENTES,OPERACION.XUNTA_CARGA_EXPEDIENTES);	
 				} else {
 					respuesta = pcajgInsertaColaService.cargaExpedientesXunta(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
-							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()));
+							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()),OPERACION.XUNTA_CARGA_EXPEDIENTES);
+				}
+				
+				mensaje = getMensajeRespuesta(respuesta, request, simular);		
+			}else if (CajgConfiguracion.TIPO_CAJG_XML_SANTIAGO == tipoCAJG && versionAsignaVereda!=null && ASIGNA_VERSION.VERSION_1.equals(versionAsignaVereda)) {
+				PCAJGInsertaColaService pcajgInsertaColaService = (PCAJGInsertaColaService) getBusinessManager().getService(PCAJGInsertaColaService.class);
+				RESPUESTA_ENVIO_REMESA respuesta = null;
+				if (simular) {
+					respuesta = pcajgInsertaColaService.validaExpedientesXunta(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()),OPERACION.XUNTA_VALIDA_PRESENTACION,OPERACION.XUNTA_ENVIA_PRESENTACION);	
+				} else {
+					respuesta = pcajgInsertaColaService.cargaExpedientesXunta(Short.valueOf(idInstitucion.toString()), Long.valueOf(idRemesa)
+							, UtilidadesString.getMensajeIdioma(getUserBean(request), GEN_RECURSOS.scs_mensaje_validando.getValor()),OPERACION.XUNTA_ENVIA_PRESENTACION);
 				}
 				
 				mensaje = getMensajeRespuesta(respuesta, request, simular);		
