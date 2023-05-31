@@ -284,6 +284,8 @@ public class BajasTemporalesForm extends MasterForm {
 		if(fechaDesde!=null && !fechaDesde.equals("")){
 			if(validado == null || validado.equals("")){
 				estadoBajaTxt = "Pendiente";
+			}else if(validado.equals("2")){//nuevo estado en SIGA novo
+				estadoBajaTxt = "Pendiente";
 			}else if(validado.equals("1")){
 				estadoBajaTxt = "Aceptado";
 			}else if(validado.equals("0")){
