@@ -96,7 +96,7 @@
 		jQuery("#idPeriodoNew").val("");
 		jQuery("#anioNew").val("");
 		if(document.forms['FormularioGestion'].cantidadAsunto)
-			openDialog('dialogoInsercion',680,380,'isConsell');
+			openDialog('dialogoInsercion',680,450,'isConsell');
 		else
 			openDialog('dialogoInsercion',600,240);
 	}
@@ -298,6 +298,15 @@
 					error += "<siga:Idioma key='errors.required' arg0='Assumptes. Quantitat'/>"+ '\n';
 				}else if(!numerico(document.forms['FormularioGestion'].cantidadAsunto.value)){
 					error += "<siga:Idioma key='errors.integer' arg0='Assumptes. Quantitat'/>"+ '\n';
+				}
+				
+			}
+			
+			if(document.forms['FormularioGestion'].cantidadAsuntoTotal){
+				if(document.forms['FormularioGestion'].cantidadAsuntoTotal.value==''){
+					error += "<siga:Idioma key='errors.required' arg0='Assumptes. Quantitat total'/>"+ '\n';
+				}else if(!numerico(document.forms['FormularioGestion'].cantidadAsuntoTotal.value)){
+					error += "<siga:Idioma key='errors.integer' arg0='Assumptes. Quantitat total'/>"+ '\n';
 				}
 				
 			}
@@ -625,13 +634,16 @@
 			<div class="labelText">
 	   			<label for="cantidadAsunto"  style="width:120px;color: black">Assumptes. Quantitat</label>
 	   				<html:text property="cantidadAsunto" size="13" maxlength="6" />
+	   			<label for="cantidadAsuntoTotal"  style="width:120px;color: black">Assumptes. Quantitat total</label>
+	   				<html:text property="cantidadAsuntoTotal" size="13" maxlength="6" />
+			</div>
+			<div class="labelText">
 	   			<label for="importeAsunto"  style="width:120px;color: black">Assumptes. Import total</label>
 					<html:text property="importeAsunto" size="13" maxlength="13" />
 			</div>
 			<div class="labelText">
 	   			<label for="importeDevoluciones"  style="width:120px;  color: black">Devolucions. Import total</label>
 	   			<html:text property="importeDevoluciones" size="13" maxlength="13" />
-	   		
 				<label for="valorInteres"  style="width:120px;color: black">Interessos. Valor</label>
 				<html:text  				property="valorInteres" size="13" maxlength="13" />
 			</div>

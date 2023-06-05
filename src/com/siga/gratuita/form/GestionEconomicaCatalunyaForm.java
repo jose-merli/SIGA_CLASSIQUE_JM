@@ -62,6 +62,7 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 	String pathFile;
 	String idColegio;
 	String cantidadAsunto;
+	String cantidadAsuntoTotal;
 	String	importeAsunto;
 	String	importeDevoluciones;
 	String	valorInteres;
@@ -736,6 +737,9 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 			gestionEconomicaCatalunyaVo.setImporteDevoluciones(new BigDecimal(objectForm.getImporteDevoluciones()));
 		if(objectForm.getCantidadAsunto()!=null && !objectForm.getCantidadAsunto().equals(""))
 			gestionEconomicaCatalunyaVo.setCantidadAsunto(Integer.parseInt(objectForm.getCantidadAsunto()));
+		if(objectForm.getCantidadAsuntoTotal()!=null && !objectForm.getCantidadAsuntoTotal().equals(""))
+			gestionEconomicaCatalunyaVo.setCantidadAsuntoTotal(Integer.parseInt(objectForm.getCantidadAsuntoTotal()));
+		
 		if(objectForm.getImporteAsunto()!=null && !objectForm.getImporteAsunto().equals(""))
 			gestionEconomicaCatalunyaVo.setImporteAsunto(new BigDecimal(objectForm.getImporteAsunto()));
 		if(objectForm.getAcumuladoTrimetreActual()!=null && !objectForm.getAcumuladoTrimetreActual().equals(""))
@@ -952,6 +956,14 @@ public class GestionEconomicaCatalunyaForm extends MasterForm {
 
 	public void setFechaCreacion(String fechaCreacion) {
 		this.fechaCreacion = fechaCreacion;
+	}
+
+	public String getCantidadAsuntoTotal() {
+		return cantidadAsuntoTotal;
+	}
+
+	public void setCantidadAsuntoTotal(String cantidadAsuntoTotal) {
+		this.cantidadAsuntoTotal = cantidadAsuntoTotal;
 	}
 
 }

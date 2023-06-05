@@ -429,15 +429,15 @@ public class GestionEconomicaCatalunyaAction extends MasterAction {
 			if(usrBean.getLocation().equalsIgnoreCase(""+AppConstants.IDINSTITUCION_CONSEJO_CATALAN)) {
 				
 				
-				String listadoColegios = gestionEconomicaCatalunyaService.getListadoColegiosPendientesCertificar(gestionEconomicaForm.getIdPeriodo(),gestionEconomicaForm.getAnio());
-				
-				if(listadoColegios!=null && !listadoColegios.equals("")) {
-					
-					listadoColegios = StringHelper.getMensajeIdioma(usrBean.getLanguageInstitucion(),"error.intercambio.cicac")+"\n"+listadoColegios;
-					return errorRefresco(listadoColegios, new ClsExceptions(listadoColegios), request);
-					
-				}
-				
+//				String listadoColegios = gestionEconomicaCatalunyaService.getListadoColegiosPendientesCertificar(gestionEconomicaForm.getIdPeriodo(),gestionEconomicaForm.getAnio());
+//				
+//				if(listadoColegios!=null && !listadoColegios.equals("")) {
+//					
+//					listadoColegios = StringHelper.getMensajeIdioma(usrBean.getLanguageInstitucion(),"error.intercambio.cicac")+"\n"+listadoColegios;
+//					return errorRefresco(listadoColegios, new ClsExceptions(listadoColegios), request);
+//					
+//				}
+//				
 				justificacionVo.setDescripcion(TIPOINTERCAMBIO.CertificacionCICAC.getDescripcio());
 				justificacionVo.setIdTipoIntercambio(TIPOINTERCAMBIO.CertificacionCICAC.getId());
 //				justificacionVo.setIdTipoCertificacion(GestionEnvioInformacionEconomicaCatalunyaService.ti);
