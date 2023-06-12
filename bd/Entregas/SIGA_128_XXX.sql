@@ -1266,7 +1266,7 @@ UPDATE SCS_PERSONAJG SET IDPAISDIR1 = 191 ;
 
   
 insert into gen_recursos  (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.info.direccionExtranjera', 'Escriba la dirección postal completa, incluido el pais', 0, 1, sysdate, 0, 19);
-insert into gen_recursos  (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.info.direccionExtranjera', 'Escriba la dirección postal completa, incluido el pais#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursos  (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.info.direccionExtranjera', 'Escriviu l''adreça postal completa, inclòs el país#CA', 0, 2, sysdate, 0, 19);
 insert into gen_recursoS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.info.direccionExtranjera', 'Escriba la dirección postal completa, incluido el pais#EU', 0, 3, sysdate, 0, 19);
 insert into gen_recursoS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.info.direccionExtranjera', 'Escriba la dirección postal completa, incluido el pais#GL', 0, 4, sysdate, 0, 19);
 
