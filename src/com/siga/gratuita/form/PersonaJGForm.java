@@ -769,6 +769,8 @@ public class PersonaJGForm extends MasterForm {
 		this.nombreAnterior = nom;
 	}
 	/**nos creamos las variables para sacar el idTipoPersona y el idTipoidentificacion.**/
+	String idPaisDireccion;
+	String direccionExtranjera;
 	String idTipo;
 	String idTipoPersona;
 	
@@ -842,6 +844,24 @@ public class PersonaJGForm extends MasterForm {
 
 	public void setCircunstanciasExcepcionales(boolean circunstanciasExcepcionales) {
 		this.circunstanciasExcepcionales = circunstanciasExcepcionales;
+	}
+
+	
+	
+	public String getIdPaisDireccion() {
+		return UtilidadesHash.getString(this.datos,"idPaisDireccion");
+	}
+
+	public void setIdPaisDireccion(String idPaisDireccion) {
+		UtilidadesHash.set(this.datos,"idPaisDireccion",idPaisDireccion);
+	}
+
+	public String getDireccionExtranjera() {
+		return UtilidadesHash.getString(this.datos,"direccionExtranjera");
+	}
+
+	public void setDireccionExtranjera(String direccionExtranjera) {
+		UtilidadesHash.set(this.datos,"direccionExtranjera",direccionExtranjera);
 	}
 	
 	

@@ -51,7 +51,9 @@
 	
 	<!-- Incluido jquery en siga.js -->
 	
-	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script><script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>	
+	<script type="text/javascript" src="<html:rewrite page='/html/js/SIGA.js?v=${sessionScope.VERSIONJS}'/>"></script>
+	<script src="<html:rewrite page='/html/js/calendarJs.jsp'/>"></script>
+		
 	<script language="JavaScript">
 
 	var bNuevo = "0";
@@ -96,18 +98,28 @@
 		aux[29]="<%=myBean.getPuertaDir()%>";
 		aux[30]="<%=myBean.getIdTipoVia()%>";
 		
+		aux[31]="<%=myBean.getIdPaisDireccion()%>";
+		
+		
+		
 		<%String nom = (String) request.getAttribute("nombreRepresentante");
 				if (nom == null)
 					nom = "";%>
 		aux[16]="<%=nom%>";
 		// aqui guardo el nuevo
 		aux[17]=bNuevo;
+		
+		 
+		pep = "<%=myBean.getDireccionExtranjera()%>";
+		aux[32]=encodeURI(pep);
+		
 
 <%}%>
 
 <%if (NombreObjetoDestino != null && !NombreObjetoDestino.equals("")) {%>
 	window.parent.traspasoDatos(aux, bNuevo, "<%=NombreObjetoDestino%>");
 <%} else {%>
+	
 	window.parent.traspasoDatos(aux,bNuevo);
 <%}%>
 	

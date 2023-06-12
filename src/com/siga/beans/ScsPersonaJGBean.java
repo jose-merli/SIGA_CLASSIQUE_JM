@@ -65,6 +65,7 @@ public class ScsPersonaJGBean extends MasterBean{
 	private String autorizaAvisoTelematico;
 	private String notificacionTelematica;
 	
+	
 
 	
 	/* Nombre de Tabla*/
@@ -118,6 +119,10 @@ public class ScsPersonaJGBean extends MasterBean{
 	static public final String  C_ASISTIDOAUTORIZAEEJG	=			"ASISTIDOAUTORIZAEEJG";
 	static public final String  C_AUTORIZAAVISOTELEMATICO	=			"AUTORIZAAVISOTELEMATICO";
 	static public final String  C_NOTIFICACIONTELEMATICA	=			"NOTIFICACIONTELEMATICA";
+	static public final String  C_IDPAISDIRECCION	=			"IDPAISDIR1";
+	static public final String  C_DIRECCIONEXTRANJERA	=			"DIRECCIONEXTRANJERA";
+	String idPaisDireccion;
+	String direccionExtranjera;
 	
 	
 	/*Metodos SET*/
@@ -614,6 +619,18 @@ public class ScsPersonaJGBean extends MasterBean{
 	}
 	public void setNotificacionTelematica(String notificacionTelematica) {
 		this.notificacionTelematica = notificacionTelematica;
+	}
+	public String getIdPaisDireccion() {
+		return idPaisDireccion;
+	}
+	public void setIdPaisDireccion(String idPaisDireccion) {
+		this.idPaisDireccion = idPaisDireccion;
+	}
+	public String getDireccionExtranjera() {
+		return direccionExtranjera;
+	}
+	public void setDireccionExtranjera(String direccionExtranjera) {
+		this.direccionExtranjera = direccionExtranjera;
 	}
 	
 

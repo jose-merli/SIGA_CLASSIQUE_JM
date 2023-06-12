@@ -158,6 +158,9 @@
 			<html:hidden property="notificacionTelematica"/>
 			<html:hidden property="asistidoSolicitaJG"/>
 			<html:hidden property="asistidoAutorizaEEJG"/>
+			<html:hidden property = "idPaisDireccion"/>
+ 			<html:hidden property = "direccionExtranjera"/>
+			
 			<input type="hidden" name="actionModal" value="">
 		</html:form>
 

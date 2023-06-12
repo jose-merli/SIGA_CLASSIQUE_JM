@@ -206,7 +206,8 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 							ScsPersonaJGBean.C_PISODIR,				ScsPersonaJGBean.C_PUERTADIR,
 							ScsPersonaJGBean.C_ESCALERADIR,			ScsPersonaJGBean.C_IDTIPOVIA,
 							ScsPersonaJGBean.C_ASISTIDOSOLICITAJG,			ScsPersonaJGBean.C_ASISTIDOAUTORIZAEEJG,
-							ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO,ScsPersonaJGBean.C_NOTIFICACIONTELEMATICA
+							ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO,ScsPersonaJGBean.C_NOTIFICACIONTELEMATICA,
+							ScsPersonaJGBean.C_IDPAISDIRECCION,ScsPersonaJGBean.C_DIRECCIONEXTRANJERA
 							
 						};
 
@@ -269,6 +270,10 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			bean.setAsistidoAutorizaEEJG(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_ASISTIDOAUTORIZAEEJG));
 			bean.setAutorizaAvisoTelematico(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO));
 			bean.setNotificacionTelematica(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_NOTIFICACIONTELEMATICA));
+			bean.setIdPaisDireccion(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_IDPAISDIRECCION));
+			bean.setDireccionExtranjera(UtilidadesHash.getString(hash,ScsPersonaJGBean.C_DIRECCIONEXTRANJERA));
+			
+			
 			
 		}
 		catch(Exception e){
@@ -327,8 +332,8 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_ASISTIDOAUTORIZAEEJG,miBean.getAsistidoAutorizaEEJG());
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_AUTORIZAAVISOTELEMATICO,miBean.getAutorizaAvisoTelematico());
 			UtilidadesHash.set(hash,ScsPersonaJGBean.C_NOTIFICACIONTELEMATICA,miBean.getNotificacionTelematica());
-			
-		
+			UtilidadesHash.set(hash,ScsPersonaJGBean.C_IDPAISDIRECCION,miBean.getIdPaisDireccion());
+			UtilidadesHash.set(hash,ScsPersonaJGBean.C_DIRECCIONEXTRANJERA,miBean.getDireccionExtranjera());
 		}
 		catch (Exception e){
 			hash = null;
@@ -365,26 +370,30 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 		   Vector datos=new Vector();
 	       try {
 	            RowsContainer rc = new RowsContainer(); 
-	            	            
-	            String sql ="SELECT " +
-			    			"(" + ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_NIF + " || ' ' || " +
-			    			ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_NOMBRE + " || ' ' || " +
-			    			ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_APELLIDO1 + " || ' ' || " +
-			    			ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_APELLIDO2 + ") AS DATOS_INTERESADO," +
-			    			"(" + ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_DIRECCION + " || ' ' || " +
-			    			ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_CODIGOPOSTAL + " || ' ' || " +
-			    			CenPoblacionesBean.T_NOMBRETABLA + "." + CenPoblacionesBean.C_NOMBRE + ") AS DIRECCION_INTERESADO" +
-							" FROM " + ScsPersonaJGBean.T_NOMBRETABLA +
-							" LEFT JOIN " + CenPoblacionesBean.T_NOMBRETABLA +
-								" ON " + ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_IDPROVINCIA + "=" + CenPoblacionesBean.T_NOMBRETABLA + "." + CenPoblacionesBean.C_IDPROVINCIA +
-										 " AND " +
-										 ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_IDPOBLACION + "=" + CenPoblacionesBean.T_NOMBRETABLA + "." + CenPoblacionesBean.C_IDPOBLACION +
-							" WHERE " +			 
-							ScsPersonaJGBean.T_NOMBRETABLA +"."+ ScsPersonaJGBean.C_IDINSTITUCION + "=" + institucion +
-							" AND " +
-							ScsPersonaJGBean.T_NOMBRETABLA +"."+ ScsPersonaJGBean.C_IDPERSONA + "=" + persona;
+	            StringBuilder sql = new StringBuilder();
+	            sql.append("SELECT ");
+	            sql.append("(" + ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_NIF + " || ' ' || ");
+	            sql.append(			    			ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_NOMBRE + " || ' ' || " );
+	            sql.append(ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_APELLIDO1 + " || ' ' || " );
+	            sql.append(			    			ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_APELLIDO2 + ") AS DATOS_INTERESADO," );
 	            
-	            if (rc.find(sql)) {
+	            sql.append(" (CASE SCS_PERSONAJG.IDPAISDIR1 WHEN '191' THEN "); 
+	            sql.append("(" + ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_DIRECCION + " || ' ' || " );
+	            sql.append(ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_CODIGOPOSTAL + " || ' ' || " );
+	            sql.append(CenPoblacionesBean.T_NOMBRETABLA + "." + CenPoblacionesBean.C_NOMBRE + ") ");
+	            sql.append(" ELSE SCS_PERSONAJG.DIRECCIONEXTRANJERA    END) ");
+	            sql.append(" AS DIRECCION_INTERESADO" );
+	            sql.append(" FROM " + ScsPersonaJGBean.T_NOMBRETABLA );
+	            sql.append(" LEFT JOIN " + CenPoblacionesBean.T_NOMBRETABLA );
+	            sql.append(" ON " + ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_IDPROVINCIA + "=" + CenPoblacionesBean.T_NOMBRETABLA + "." + CenPoblacionesBean.C_IDPROVINCIA );
+	            sql.append(" AND " );
+	            sql.append(ScsPersonaJGBean.T_NOMBRETABLA + "." + ScsPersonaJGBean.C_IDPOBLACION + "=" + CenPoblacionesBean.T_NOMBRETABLA + "." + CenPoblacionesBean.C_IDPOBLACION );
+	            sql.append(	" WHERE " );			
+	            sql.append(	ScsPersonaJGBean.T_NOMBRETABLA +"."+ ScsPersonaJGBean.C_IDINSTITUCION + "=" + institucion );
+	            sql.append(	" AND " );
+	            sql.append(	ScsPersonaJGBean.T_NOMBRETABLA +"."+ ScsPersonaJGBean.C_IDPERSONA + "=" + persona);
+	            
+	            if (rc.find(sql.toString())) {
 	               for (int i = 0; i < rc.size(); i++){
 	                  Row fila = (Row) rc.get(i);
 	                  Hashtable resultado=fila.getRow();	                  
@@ -647,9 +656,11 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
 		int contador = 0;				
 		StringBuffer sql = new StringBuffer();
 		sql.append(" SELECT PER.NOMBRE, PER.APELLIDO1,  PER.APELLIDO2, ");
+		sql.append(" (CASE PER.IDPAISDIR1 WHEN '191' THEN  ");
 		
-		sql.append("((SELECT (UPPER(SUBSTR(F_SIGA_GETRECURSO(TV.DESCRIPCION,"+this.usrbean.getLanguage()+"), 1, 1))) || (LOWER(SUBSTR(F_SIGA_GETRECURSO(TV.DESCRIPCION,"+this.usrbean.getLanguage()+"), 2))) FROM CEN_TIPOVIA TV WHERE TV.IDTIPOVIA = PER.IDTIPOVIA AND TV.IDINSTITUCION = PER.IDINSTITUCION) || ' ' || PER.DIRECCION || ' ' || PER.NUMERODIR || ' ' || PER.ESCALERADIR || ' ' || PER.PISODIR || ' ' || PER.PUERTADIR) AS DIRECCION,");
-		
+		sql.append("((SELECT (UPPER(SUBSTR(F_SIGA_GETRECURSO(TV.DESCRIPCION,"+this.usrbean.getLanguage()+"), 1, 1))) || (LOWER(SUBSTR(F_SIGA_GETRECURSO(TV.DESCRIPCION,"+this.usrbean.getLanguage()+"), 2))) FROM CEN_TIPOVIA TV WHERE TV.IDTIPOVIA = PER.IDTIPOVIA AND TV.IDINSTITUCION = PER.IDINSTITUCION) || ' ' || PER.DIRECCION || ' ' || PER.NUMERODIR || ' ' || PER.ESCALERADIR || ' ' || PER.PISODIR || ' ' || PER.PUERTADIR) ");
+		sql.append("  ELSE PER.DIRECCIONEXTRANJERA    END) ");
+		sql.append("  AS DIRECCION, ");
 		
 		
 //		sql.append(" PER.DIRECCION, ");
@@ -1048,12 +1059,23 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
   		sqlBuffer.append("NVL2(PER.ESCALERADIR, ' ' || PER.ESCALERADIR, '') DOMI_ESCALERA_PJG, ");
   		sqlBuffer.append("NVL2(PER.PISODIR, ' ' || PER.PISODIR, '') DOMI_PISO_PJG, ");
   		sqlBuffer.append("NVL2(PER.PUERTADIR, ' ' || PER.PUERTADIR, '') DOMI_PUERTA_PJG, ");
+  		
+  		sqlBuffer.append(" (CASE PER.IDPAISDIR1 WHEN '191' THEN  ");
+  		sqlBuffer.append("((SELECT (UPPER(SUBSTR(F_SIGA_GETRECURSO(TV.DESCRIPCION,"+this.usrbean.getLanguage()+"), 1, 1))) || (LOWER(SUBSTR(F_SIGA_GETRECURSO(TV.DESCRIPCION,"+this.usrbean.getLanguage()+"), 2))) FROM CEN_TIPOVIA TV WHERE TV.IDTIPOVIA = PER.IDTIPOVIA AND TV.IDINSTITUCION = PER.IDINSTITUCION) || ' ' || PER.DIRECCION || ' ' || PER.NUMERODIR || ' ' || PER.ESCALERADIR || ' ' || PER.PISODIR || ' ' || PER.PUERTADIR) ");
+		
+  		
   		sqlBuffer.append("NVL2(VIA.IDTIPOVIA, F_SIGA_GETRECURSO(VIA.DESCRIPCION, "+ this.usrbean.getLanguage()+"), '') || ");
+  		
+  		
   		sqlBuffer.append("NVL2(PER.DIRECCION, ' ' || PER.DIRECCION, '') || ");
   		sqlBuffer.append("NVL2(PER.NUMERODIR, ' ' || PER.NUMERODIR, '') || ");
   		sqlBuffer.append("NVL2(PER.ESCALERADIR, ' ' || PER.ESCALERADIR, '') || ");
   		sqlBuffer.append("NVL2(PER.PISODIR, ' ' || PER.PISODIR, '') || ");
-  		sqlBuffer.append("NVL2(PER.PUERTADIR, ' ' || PER.PUERTADIR, '') AS DOMICILIO_PJG, ");
+  		sqlBuffer.append("NVL2(PER.PUERTADIR, ' ' || PER.PUERTADIR, '') ");
+  		sqlBuffer.append("  ELSE PER.DIRECCIONEXTRANJERA    END) ");
+  		sqlBuffer.append("  AS DOMICILIO_PJG, ");
+  		
+  		
   		sqlBuffer.append("NVL(PER.CODIGOPOSTAL, '') AS CP_PJG, ");
   		sqlBuffer.append("NVL(POBL.IDPOBLACIONMUNICIPIO, '') AS IDMUNICIPIO_PJG, ");
   		sqlBuffer.append("NVL(PROV.IDPROVINCIA, '') AS IDPROVINCIA_PJG, ");

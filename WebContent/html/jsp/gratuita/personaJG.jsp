@@ -618,6 +618,9 @@
 				document.forms[0].edad.value = resultado[24];
 				
 				//DATOS DE DOMICILIO
+				document.forms[0].idPaisDireccion.value=resultado[31];
+				document.forms[0].direccionExtranjera.value=decodeURI(resultado[32]);
+				cambioPaisDireccion(document.forms[0].idPaisDireccion);
 				document.forms[0].numeroDir.value=resultado[26];
 				document.forms[0].escaleraDir.value=resultado[27];
 				document.forms[0].pisoDir.value=resultado[28];
@@ -681,7 +684,6 @@
 
 				//Poblacion:				
 				var poblacionSeleccionada = resultado[10];
-				//alert("="+poblacionSeleccionada);
 				
 				//A los 1000 milisegundos (tiempo para recargar el combo provincias) se selecciona la poblacion:
 				setTimeout(function(){recargarComboHijo(poblacionSeleccionada);},3000,"Javascript");
@@ -700,6 +702,8 @@
 				}
  			}
 			 comprobarTipoIdent();
+			 
+			 
 		 }	
 
 		// Comprueba el tipo de persona que se elegi en el combo FISICA O JURIDICA 
@@ -709,7 +713,6 @@
 			<%if (!accion.equalsIgnoreCase("ver")) {%>	
 			if(document.PersonaJGForm.idTipoPersona.value == 'F')
 			{
-				//alert("document.PersonaJGForm.tipos.value FISICA: "+document.PersonaJGForm.tipos.value);
 				document.getElementById("apelli2").style.display="block";
 				document.getElementById("perJuridica").style.display="none";
 				document.getElementById("perJuridica1").style.display="none";
@@ -718,7 +721,6 @@
 			}
 			else
 			{
-				//alert("document.PersonaJGForm.tipos.value JURIDICA: "+document.PersonaJGForm.tipos.value);
 				document.getElementById("perFisica").style.display="none";
 				document.getElementById("perFisica1").style.display="none"; 
 				document.getElementById("apelli2").style.display="none";				
@@ -731,8 +733,8 @@
 				
 		function comprobarIdentificador ()
 		{
-			alert("ver identificación");
-			alert("document.PersonaJGForm.tipoId.value"+document.PersonaJGForm.tipoId.value);
+			// alert("ver identificación");
+			// alert("document.PersonaJGForm.tipoId.value"+document.PersonaJGForm.tipoId.value);
 			//document.solicitudCompraForm.tipoId.value=='P'
 		}
 		
@@ -1150,7 +1152,7 @@
 		</table>
 	
 		<!-- capa principal -->
-		<div style="height:600px;" id="camposRegistro" class="posicionModalGrande" align="center" style="overflow-y:auto;overflow-x:hidden; position: relative;">
+		<div style="height:700px;" id="camposRegistro" class="posicionModalGrande" align="center" style="overflow-y:auto;overflow-x:hidden; position: relative;">
 <%
 	}
 %>
@@ -1222,6 +1224,8 @@
 
 	<html:hidden name="PersonaJGForm" styleId = "idPersonaJG" property = "idPersonaJG" />
  	<html:hidden name="PersonaJGForm" styleId = "idInstitucionJG" property = "idInstitucionJG"/>
+ 	 
+ 	
  	
 	<tr>				
 		<td  align="center" valign="top"> 
@@ -1446,80 +1450,73 @@
 					</tr>
 					<tr>
 						<td colspan="8">
-						<table>
-						<tr>
-						
-<%
-						String avisoTelematico = miform.getAutorizaAvisoTelematico();
-						if (avisoTelematico == null)
-							avisoTelematico = new String("");
-%>
-						
-						<td class="labelText">
-							<siga:Idioma key="gratuita.personaJG.literal.autorizaavisotel"/>
-						</td>
-						<td>
-								<html:select styleClass="boxCombo" name="PersonaJGForm" value="<%=avisoTelematico%>" property="autorizaAvisoTelematico">
-									<html:option value=""></html:option>
-									<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
-									<html:option value="0"><siga:Idioma key="general.no"/></html:option>
-								</html:select>
-						</td>
-<%
-			
-						String solicitajg = miform.getAsistidoSolicitaJG();
-						if (solicitajg == null)
-							solicitajg = new String("");
-%>
-						
-						<td class="labelText">
-							<siga:Idioma key="gratuita.personaJG.literal.solicitajg"/>
-						</td>
-						<td>
-								<html:select styleClass="boxCombo" name="PersonaJGForm" value="<%=solicitajg%>" property="asistidoSolicitaJG">
-									<html:option value=""></html:option>
-									<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
-									<html:option value="0"><siga:Idioma key="general.no"/></html:option>
-								</html:select>
-						</td>
-<%
-								String autorizaeejg = miform.getAsistidoAutorizaEEJG();
-								if (autorizaeejg == null)
-									autorizaeejg = new String("");
-%>
-						<td class="labelText">
-							<siga:Idioma key="gratuita.personaJG.literal.autorizaeejg"/>
-						</td>
-						<td>
-								<html:select styleClass="boxCombo" name="PersonaJGForm" value="<%=autorizaeejg%>" property="asistidoAutorizaEEJG">
-									<html:option value=""></html:option>
-									<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
-									<html:option value="0"><siga:Idioma key="general.no"/></html:option>
-								</html:select>
-						</td>
-						
-						<%
-						String notificacionTelematica = miform.getNotificacionTelematica();
-						if (notificacionTelematica == null)
-							notificacionTelematica = new String("");
-%>
-						
-						<td class="labelText">
-							<siga:Idioma key="gratuita.personaJG.literal.notificacionTelematica"/>
-						</td>
-						<td>
-								<html:select styleClass="boxCombo" name="PersonaJGForm" value="<%=notificacionTelematica%>" property="notificacionTelematica">
-									<html:option value=""></html:option>
-									<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
-									<html:option value="0"><siga:Idioma key="general.no"/></html:option>
-								</html:select>
-						</td>
-						
-						
-						
-						
-						
-						</tr>
+							<table>
+							<tr>
+		<%
+								String avisoTelematico = miform.getAutorizaAvisoTelematico();
+								if (avisoTelematico == null)
+									avisoTelematico = new String("");
+		%>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.personaJG.literal.autorizaavisotel"/>
+								</td>
+								<td>
+										<html:select styleClass="boxCombo" name="PersonaJGForm" value="<%=avisoTelematico%>" property="autorizaAvisoTelematico">
+											<html:option value=""></html:option>
+											<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
+											<html:option value="0"><siga:Idioma key="general.no"/></html:option>
+										</html:select>
+								</td>
+		<%
+					
+								String solicitajg = miform.getAsistidoSolicitaJG();
+								if (solicitajg == null)
+									solicitajg = new String("");
+		%>
+								
+								<td class="labelText">
+									<siga:Idioma key="gratuita.personaJG.literal.solicitajg"/>
+								</td>
+								<td>
+										<html:select styleClass="boxCombo" name="PersonaJGForm" value="<%=solicitajg%>" property="asistidoSolicitaJG">
+											<html:option value=""></html:option>
+											<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
+											<html:option value="0"><siga:Idioma key="general.no"/></html:option>
+										</html:select>
+								</td>
+		<%
+										String autorizaeejg = miform.getAsistidoAutorizaEEJG();
+										if (autorizaeejg == null)
+											autorizaeejg = new String("");
+		%>
+								<td class="labelText">
+									<siga:Idioma key="gratuita.personaJG.literal.autorizaeejg"/>
+								</td>
+								<td>
+										<html:select styleClass="boxCombo" name="PersonaJGForm" value="<%=autorizaeejg%>" property="asistidoAutorizaEEJG">
+											<html:option value=""></html:option>
+											<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
+											<html:option value="0"><siga:Idioma key="general.no"/></html:option>
+										</html:select>
+								</td>
+								
+								<%
+								String notificacionTelematica = miform.getNotificacionTelematica();
+								if (notificacionTelematica == null)
+									notificacionTelematica = new String("");
+		%>
+								
+								<td class="labelText">
+									<siga:Idioma key="gratuita.personaJG.literal.notificacionTelematica"/>
+								</td>
+								<td>
+										<html:select styleClass="boxCombo" name="PersonaJGForm" value="<%=notificacionTelematica%>" property="notificacionTelematica">
+											<html:option value=""></html:option>
+											<html:option value="1"><siga:Idioma key="general.yes"/></html:option>
+											<html:option value="0"><siga:Idioma key="general.no"/></html:option>
+										</html:select>
+								</td>
+							</tr>
 						</table>
 						</td>
 					</tr>
@@ -1529,209 +1526,254 @@
 			<siga:ConjCampos leyenda="gratuita.personaJG.literal.direccion" desplegable="true">
 				<table width="100%" cellpadding="2" cellspacing="0" border="0">
 					<tr>
-						<td class="labelText" width="107px">
-							<siga:Idioma key="gratuita.personaJG.literal.tipovia"/>
-						</td>			
-
-			
-						<td>	
+						<td class="labelText" width="107px"><siga:Idioma key="censo.datosDireccion.literal.pais"/>	
+						</td>
+						<td>
 						<%
-					ArrayList selTipoVia = new ArrayList();
-						if (miform.getTipoVia() != null)
-							selTipoVia.add(miform.getTipoVia());
-						String paramTipoVia[] = { idInstitucion };
-				%>	
-				<siga:ComboBD nombre = "tipoVia" tipo="comboTipoVia" clase="<%=classCombo%>" elementoSel="<%=selTipoVia%>" parametro="<%=paramTipoVia%>" readonly="<%=sreadonly%>" estilo="width:120" />
-			</td>
+							ArrayList seleccionPais = new ArrayList();
+								if (miform.getIdPaisDireccion() != null) {
+									seleccionPais.add(miform.getIdPaisDireccion());
+								}
+						%>
+							<siga:ComboBD pestana="<%=bPestana%>" elementoSel="<%=seleccionPais%>" nombre = "idPaisDireccion" accion="return cambioPaisDireccion(this);"  tipo="pais" ancho="200" clase="<%=classCombo %>" readonly="<%=sreadonly%>"/>
+						</td>
+						
+						<td width="65%"> &nbsp; </td>
+					
+					</tr>
+					<tr>
+						<td colspan = "3">
+							<div id="divDireccionEspana" style="display: none;">
+								<table width="100%" cellpadding="2" cellspacing="0" border="0">
+									<tr>
+										<td class="labelText" width="107px">
+											<siga:Idioma key="gratuita.personaJG.literal.tipovia"/>
+										</td>			
 			
-						<td class="labelText" width="82px">
-							<siga:Idioma key="gratuita.personaJG.literal.direccion"/>
+						
+										<td>	
+									<%
+									ArrayList selTipoVia = new ArrayList();
+									if (miform.getTipoVia() != null)
+										selTipoVia.add(miform.getTipoVia());
+									String paramTipoVia[] = { idInstitucion };
+									%>	
+											<siga:ComboBD nombre = "tipoVia" tipo="comboTipoVia" clase="<%=classCombo%>" elementoSel="<%=selTipoVia%>" parametro="<%=paramTipoVia%>" readonly="<%=sreadonly%>" estilo="width:120" />
+										</td>
+						
+										<td class="labelText" width="82px">
+											<siga:Idioma key="gratuita.personaJG.literal.direccion"/>
+											
+				<% 
+											if(opcionDireccion) { 
+				%>				
+												<div id="desaparece">
+													<%=asterisco%> 
+												</div>
+												
+				<% 
+											} else if (obligatorioDireccion) { 
+				%>
+												<%=asterisco%> 				
+				<% 
+											} 
+				%>							
+										</td>						
+										<td width="200px">		
+											<html:text name="PersonaJGForm" property="direccion" maxlength="100" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:190px" />
+										</td>
+										
+										<td class="labelText" width="25px">
+											<siga:Idioma key="gratuita.personaJG.literal.numdir"/>
+										</td>						
+										<td width="35px">		
+											<html:text name="PersonaJGForm" property="numeroDir" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:30px" maxlength="5" />
+										</td>
+										
+										<td class="labelText" width="30px">
+											<siga:Idioma key="gratuita.personaJG.literal.escdir"/>
+										</td>						
+										<td width="45px">		
+											<html:text name="PersonaJGForm" property="escaleraDir"  styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:40px" maxlength="10" />
+										</td>
+										
+										<td class="labelText" width="30px">
+											<siga:Idioma key="gratuita.personaJG.literal.pisodir"/>
+										</td>
+										<td width="35px">		
+											<html:text name="PersonaJGForm" property="pisoDir" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:30px" maxlength="5" />
+										</td>
+										
+										<td class="labelText" width="45px">
+											<siga:Idioma key="gratuita.personaJG.literal.puertadir"/>
+										</td>
+										<td width="35px">		
+											<html:text name="PersonaJGForm" property="puertaDir" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:30px" maxlength="5" />
+										</td>																							
+									</tr>				
+				
+									<tr >	
+										<td class="labelText">
+											<siga:Idioma key="gratuita.personaJG.literal.cp"/>	
+				<% 
+											if(opcionDireccion) {	
+				%>
+												<div id="desapareceCp">
+													<%=asterisco%> 
+												</div>
 							
-<% 
-							if(opcionDireccion) { 
-%>				
-								<div id="desaparece">
-									<%=asterisco%> 
-								</div>
-								
-<% 
-							} else if (obligatorioDireccion) { 
-%>
-								<%=asterisco%> 				
-<% 
-							} 
-%>							
-						</td>						
-						<td width="200px">		
-							<html:text name="PersonaJGForm" property="direccion" maxlength="100" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:190px" />
-						</td>
-						
-						<td class="labelText" width="25px">
-							<siga:Idioma key="gratuita.personaJG.literal.numdir"/>
-						</td>						
-						<td width="35px">		
-							<html:text name="PersonaJGForm" property="numeroDir" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:30px" maxlength="5" />
-						</td>
-						
-						<td class="labelText" width="30px">
-							<siga:Idioma key="gratuita.personaJG.literal.escdir"/>
-						</td>						
-						<td width="45px">		
-							<html:text name="PersonaJGForm" property="escaleraDir"  styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:40px" maxlength="10" />
-						</td>
-						
-						<td class="labelText" width="30px">
-							<siga:Idioma key="gratuita.personaJG.literal.pisodir"/>
-						</td>
-						<td width="35px">		
-							<html:text name="PersonaJGForm" property="pisoDir" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:30px" maxlength="5" />
-						</td>
-						
-						<td class="labelText" width="45px">
-							<siga:Idioma key="gratuita.personaJG.literal.puertadir"/>
-						</td>
-						<td width="35px">		
-							<html:text name="PersonaJGForm" property="puertaDir" styleClass="<%=estiloBox%>" readonly="<%=readonly%>" style="width:30px" maxlength="5" />
-						</td>																							
-					</tr>				
-
-					<tr>	
-						<td class="labelText">
-							<siga:Idioma key="gratuita.personaJG.literal.cp"/>	
-<% 
-							if(opcionDireccion) {	
-%>
-								<div id="desapareceCp">
-									<%=asterisco%> 
-								</div>
-			
-<% 
-							} else if (obligatorioCodigoPostal) {	
-%>
-								<%=asterisco%> 
-<% 
-							} 
-%>												
-						</td>
-						<td>
-							<html:text name="PersonaJGForm" property="cp" size="5" maxlength="5" styleClass="<%=estiloBox%>" readonly="<%=readonly%>"  onchange="createProvince()" />
-						</td>
-
-						<td class="labelText">
-							<siga:Idioma key="gratuita.personaJG.literal.provincia"/>	
-<% 
-							if(opcionDireccion) {
-%>
-								<div id="desaparecePr">
-									<%=asterisco%> 
-								</div>
-<%
-							} else if (obligatorioPoblacion) {
-%>
-								<%=asterisco%> 
-<%
-							}
-%>		
-						</td>
-						<td>
-			<%
-				ArrayList selProvincia = new ArrayList();
-						if (miform.getProvincia() != null)
-							selProvincia.add(miform.getProvincia());
-			%>
-<%
-	//LMS 13/09/2006
-			//Hack para cargar combos anidados dentro de 3 niveles de pestañas (Asistencias en Ficha Colegial).
-			String sHack = "";
-			if (esFichaColegial && bPestana.equals("true")) {
-				//sHack = "top.frames[0].document.frames[0].document.frames[0].document.frames[0].document.getElementById('poblacionFrame').src";
-
-				sHack += "var destino_provincia0=(document.getElementById('poblacionFrame')).src;";
-				sHack += "var tam_provincia0 = destino_provincia0.indexOf('&id=');";
-				sHack += "if(tam_provincia0==-1)";
-				sHack += "{";
-				sHack += "	tam_provincia0=destino_provincia0.length;";
-				sHack += "}";
-				sHack += "destino_provincia0=destino_provincia0.substring(0,tam_provincia0)+'&id='+provincia.value;";
-				sHack += "(document.getElementById('poblacionFrame')).src=destino_provincia0;";
-
-			} else {
-				sHack = "Hijo:poblacion";
-			}
-%>
-			
-		  
-			<siga:ComboBD pestana="<%=bPestana%>" nombre = "provincia" tipo="provincia" elementoSel="<%=selProvincia %>" clase="<%=classCombo %>" obligatorio="false" accion="<%=sHack%>" readonly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false"/>
-		 
-		</td>
-						
-						<td colspan="8">
-							<table width="100%" cellpadding="0" cellspacing="0" border="0">			
-								<tr>						
-									<td class="labelText">
-	 									<siga:Idioma key="gratuita.personaJG.literal.poblacion"/>	
-<% 
-										if(opcionDireccion) {
-%>
-											<div id="desaparecePo">
+				<% 
+											} else if (obligatorioCodigoPostal) {	
+				%>
 												<%=asterisco%> 
-											</div>	
-<%
-										} else if (obligatorioPoblacion) {
-%>
-											<%=asterisco%> 
-<%		
- 										}
-%>	
-									</td>
-									<td colspan="8">
-			<%
-				ArrayList selPoblacion = new ArrayList();
-						if (miform.getPoblacion() != null)
-							selPoblacion.add(miform.getPoblacion());
-
-						if (accion.equalsIgnoreCase("ver")) {
-							String poblacion = (String) request
-									.getAttribute("poblacion");
-			%>
-		   		<html:text property="poblacion" value="<%=poblacion%>" maxlength="100" styleClass="boxConsulta" readonly="true" ></html:text>
-		   <%
-		   	} else {
-		   %>
-				<siga:ComboBD pestana="<%=bPestana%>" nombre="poblacion" tipo="poblacion" elementoSel="<%=selPoblacion%>" clase="<%=classCombo%>" obligatorio="true" hijo="t" readonly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false" />
-		   <%
-		   	}
-		   %>
-		</td>
-								</tr>
-							</table>
+				<% 
+											} 
+				%>												
+										</td>
+										<td>
+											<html:text name="PersonaJGForm" property="cp" size="5" maxlength="5" styleClass="<%=estiloBox%>" readonly="<%=readonly%>"  onchange="createProvince()" />
+										</td>
+				
+										<td class="labelText">
+											<siga:Idioma key="gratuita.personaJG.literal.provincia"/>	
+				<% 
+											if(opcionDireccion) {
+				%>
+												<div id="desaparecePr">
+													<%=asterisco%> 
+												</div>
+				<%
+											} else if (obligatorioPoblacion) {
+				%>
+												<%=asterisco%> 
+				<%
+											}
+				%>		
+										</td>
+										<td>
+							<%
+								ArrayList selProvincia = new ArrayList();
+										if (miform.getProvincia() != null)
+											selProvincia.add(miform.getProvincia());
+							%>
+				<%
+					//LMS 13/09/2006
+							//Hack para cargar combos anidados dentro de 3 niveles de pestañas (Asistencias en Ficha Colegial).
+							String sHack = "";
+							if (esFichaColegial && bPestana.equals("true")) {
+								//sHack = "top.frames[0].document.frames[0].document.frames[0].document.frames[0].document.getElementById('poblacionFrame').src";
+				
+								sHack += "var destino_provincia0=(document.getElementById('poblacionFrame')).src;";
+								sHack += "var tam_provincia0 = destino_provincia0.indexOf('&id=');";
+								sHack += "if(tam_provincia0==-1)";
+								sHack += "{";
+								sHack += "	tam_provincia0=destino_provincia0.length;";
+								sHack += "}";
+								sHack += "destino_provincia0=destino_provincia0.substring(0,tam_provincia0)+'&id='+provincia.value;";
+								sHack += "(document.getElementById('poblacionFrame')).src=destino_provincia0;";
+				
+							} else {
+								sHack = "Hijo:poblacion";
+							}
+				%>
+											<siga:ComboBD pestana="<%=bPestana%>" nombre = "provincia" tipo="provincia" elementoSel="<%=selProvincia %>" clase="<%=classCombo %>" obligatorio="false" accion="<%=sHack%>" readonly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false"/>
+										</td>
+										<td colspan="8">
+											<table width="100%" cellpadding="0" cellspacing="0" border="0">			
+												<tr>						
+													<td class="labelText">
+					 									<siga:Idioma key="gratuita.personaJG.literal.poblacion"/>	
+				<% 
+														if(opcionDireccion) {
+				%>
+															<div id="desaparecePo">
+																<%=asterisco%> 
+															</div>	
+				<%
+														} else if (obligatorioPoblacion) {
+				%>
+															<%=asterisco%> 
+				<%		
+				 										}
+				%>	
+													</td>
+													<td colspan="8">
+							<%
+								ArrayList selPoblacion = new ArrayList();
+										if (miform.getPoblacion() != null)
+											selPoblacion.add(miform.getPoblacion());
+				
+										if (accion.equalsIgnoreCase("ver")) {
+											String poblacion = (String) request
+													.getAttribute("poblacion");
+							%>
+						   		<html:text property="poblacion" value="<%=poblacion%>" maxlength="100" styleClass="boxConsulta" readonly="true" ></html:text>
+						   <%
+						   	} else {
+						   %>
+								<siga:ComboBD pestana="<%=bPestana%>" nombre="poblacion" tipo="poblacion" elementoSel="<%=selPoblacion%>" clase="<%=classCombo%>" obligatorio="true" hijo="t" readonly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false" />
+						   <%
+						   	}
+						   %>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="labelText" colspan="6" >
+											<html:hidden name="PersonaJGForm" property = "existeDomicilio" value="S" />
+				
+				<%
+					     					if(pcajgActivo == 4) {
+					 							if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) 
+														|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
+					 								if (!accion.equalsIgnoreCase("ver")) {
+				%>
+					 									<siga:Idioma key="gratuita.busquedaSOJ.literal.solicitaObligaDir"/>
+														<input type="checkbox" id="existeDom" onclick="desabilitarDomicilio(this);">
+				<%
+						  							} else {
+				%>
+					 									<siga:Idioma key="gratuita.busquedaSOJ.literal.solicitaObligaDir"/>
+					  									<input type="checkbox" id="existeDom" onclick="desabilitarDomicilio(this);" disabled="disabled">		  
+				<%
+						  							}
+					     						}
+					     					}
+				%>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td colspan= "3">
+							<div id="divDireccionExtranjera" style="display:none;">
+								<table width="100%" cellpadding="2" cellspacing="0" border="0">
+									<tr>
+										<td class="labelText" width="107px">
+									       <siga:Idioma key="gratuita.personaJG.literal.direccion"/>
+									       
+				   			         	</td>
+				   			         	
+						            	 <td>
+							                <html:textarea name="PersonaJGForm" property="direccionExtranjera" 
+							                	onKeyDown="cuenta(this,255)" onChange="cuenta(this,255)"
+							                	style="overflow-y:auto; overflow-x:hidden; width:350px; height:50px; resize:none;" 
+							                	styleClass="box"></html:textarea>  
+						            	 </td>
+						            	 <td align="left"><img  id="imagenInfo" src="/SIGA/html/imagenes/info.gif"	style="cursor: hand;"	title="<siga:Idioma key='gratuita.personaJG.info.direccionExtranjera'/>" border="0" /></td>
+						            	 <td width="59%">&nbsp;</td>
+						            	 
+					            	 </tr>
+				            	 </table>
+							</div>
 						</td>
 					</tr>
 					
-					<tr>
-						<td class="labelText" colspan="6" >
-							<html:hidden name="PersonaJGForm" property = "existeDomicilio" value="S" />
-
-<%
-	     					if(pcajgActivo == 4) {
-	 							if (conceptoE.equals(PersonaJGAction.EJG_CONTRARIOS) || conceptoE.equals(PersonaJGAction.DESIGNACION_CONTRARIOS) 
-										|| conceptoE.equals(PersonaJGAction.EJG_UNIDADFAMILIAR)) {
-	 								if (!accion.equalsIgnoreCase("ver")) {
-%>
-	 									<siga:Idioma key="gratuita.busquedaSOJ.literal.solicitaObligaDir"/>
-										<input type="checkbox" id="existeDom" onclick="desabilitarDomicilio(this);">
-<%
-		  							} else {
-%>
-	 									<siga:Idioma key="gratuita.busquedaSOJ.literal.solicitaObligaDir"/>
-	  									<input type="checkbox" id="existeDom" onclick="desabilitarDomicilio(this);" disabled="disabled">		  
-<%
-		  							}
-	     						}
-	     					}
-%>
-						</td>
-					</tr>
 				</table>
 			</siga:ConjCampos>
 		
@@ -2193,7 +2235,7 @@
 					}	
 				</script>
 				
-				<siga:ConjCampos leyenda="gratuita.personaJG.literal.representantes" desplegable="true">
+				<siga:ConjCampos leyenda="gratuita.personaJG.literal.representantes" desplegable="true" oculto="true"  >
 					<table width="100%" cellpadding="2" cellspacing="0" border="0">
 						<tr>
 							<td class="labelText">
@@ -2373,7 +2415,7 @@
    					}
 %>
 
-					<siga:ConjCampos leyenda="gratuita.personaJG.literal.representantes" desplegable="true">
+					<siga:ConjCampos leyenda="gratuita.personaJG.literal.representantes" desplegable="true" oculto="true">
 						<table width="100%" cellpadding="2" cellspacing="0" border="0">
 							<tr>
 								<td class="labelText">
@@ -3056,6 +3098,10 @@ function validaNombreApellidos() {
 							return false;
 						}
 					}
+						
+				
+				
+				
 				
 					if(document.forms[0].tipoId.value == "<%=ClsConstants.TIPO_IDENTIFICACION_NIF%>" 
 						&& document.forms[0].nacionalidad.value !="191"){
@@ -3207,13 +3253,18 @@ function validaNombreApellidos() {
 							document.forms[0].NIdentificacion.value=="")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nIdentificacion'/>"+ '\n';
 					}
-
-					if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
-						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
-					if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
-						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-					if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
-						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+					paisSeleccionado = document.forms[0].idPaisDireccion;
+					if(paisSeleccionado.value ==''|| paisSeleccionado.value =='191' ){
+						if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
+						if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
+						if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+					}else{
+						if (<%=obligatorioDireccion%> && document.forms[0].direccionExtranjera.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
+					}
 					if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
 						error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';						
 					if (<%=obligatorioEstadoCivil%> && document.forms[0].estadoCivil.value=="")
@@ -3504,12 +3555,18 @@ function validaNombreApellidos() {
 			}else {
 	 			document.PersonaJGForm.existeDomicilio.value = "S";
 			}
-			if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
-				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
-			if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
-				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-			if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
-				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+			paisSeleccionado = document.forms[0].idPaisDireccion;
+			if(paisSeleccionado.value ==''|| paisSeleccionado.value =='191' ){
+				if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
+				if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
+				if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+			}else{
+				if (<%=obligatorioDireccion%> && document.forms[0].direccionEntranjera.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
+			}
 			if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';					
 			
@@ -3616,14 +3673,19 @@ function validaNombreApellidos() {
 			}else {
 	 			document.PersonaJGForm.existeDomicilio.value = "S";
 			}				
+			paisSeleccionado = document.forms[0].idPaisDireccion;
+			if(paisSeleccionado.value ==''|| paisSeleccionado.value =='191' ){
 			
-			if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
-				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
-			if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
-				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-			if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
-				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
-				
+				if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
+				if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
+				if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+			}else{
+				if (<%=obligatorioDireccion%> && document.forms[0].direccionExtranjera.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
+			}
 			if (!validaTelefonos()){
                 fin();
                 return false;
@@ -3889,12 +3951,20 @@ function validaNombreApellidos() {
 			    error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.regimenConyugal'/>"+ '\n';
 			if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
 				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';	
-			if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
-				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
-			if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
-				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-			if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
-				error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+			
+			paisSeleccionado = document.forms[0].idPaisDireccion;
+			if(paisSeleccionado.value ==''|| paisSeleccionado.value =='191' ){	
+				if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
+				if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
+				if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+			}else{
+				if (<%=obligatorioDireccion%> && document.forms[0].direccionExtranjera.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';	
+			
+			}
 			    
 			if(error != ""){
 				alert(error);
@@ -3999,12 +4069,20 @@ function accionGuardarCerrar()	{
 	if (document.getElementById('calidad2')){				 
 		document.forms[0].idTipoenCalidad.value	=	document.getElementById("calidad2").value;
 	}
-	if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1)
-		error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
-	if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value=="")
-		error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-	if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value=="")
-		error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+	paisSeleccionado = document.forms[0].idPaisDireccion;
+	if(paisSeleccionado.value ==''|| paisSeleccionado.value =='191' ){
+		if (<%=obligatorioDireccion%> && (document.forms[0].direccion.value.length<1 ))
+			error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
+		if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value=="")
+			error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
+		if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value=="")
+			error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';	
+	}else{
+		if (<%=obligatorioDireccion%> && (document.forms[0].direccionExtranjera.value.length<1 ))
+			error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
+	}
+	
+	
 				
 	if (<%=obligatorioEstadoCivil%> && document.forms[0].estadoCivil.value=="")
 		error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.estadoCivil'/>"+ '\n';
@@ -4013,7 +4091,11 @@ function accionGuardarCerrar()	{
 	if(<%=pcajgActivo == 4%>){
 		if (<%=obligatorioSexo%> && document.forms[0].sexo.value=="0")
 			error += "<siga:Idioma key='errors.required' arg0='Sexo'/>"+ '\n';								
-	}	
+	}
+	
+	
+	
+	
 	
 	if(error!=""){
 	  alert(error);
@@ -4190,7 +4272,18 @@ function comprobarmovil(valor){
 		       }			
 }
 
-
+function cambioPaisDireccion(paisSeleccionado) 
+{
+	if(paisSeleccionado.value ==''||paisSeleccionado.value =='191' ){//mostrar direccion española
+		jQuery("#divDireccionEspana").show();
+		jQuery("#divDireccionExtranjera").hide();
+	}else{//mostrar direccion extranjera
+		jQuery("#divDireccionExtranjera").show();
+		jQuery("#divDireccionEspana").hide();
+		
+	}
+}
+cambioPaisDireccion(document.forms[0].idPaisDireccion);
 
 //Asociada al boton Restablecer -->
 function accionRestablecer() 
