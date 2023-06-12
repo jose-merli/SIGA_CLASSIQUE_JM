@@ -1261,3 +1261,12 @@ ALTER TABLE USCGAE_DESA.JE_CERTIFICACION_CICAC MODIFY ASUNTOS_CANTIDAD_TOTAL NUM
 update JE_CERTIFICACION_CICAC set ASUNTOS_CANTIDAD_TOTAL = ASUNTOS_CANTIDAD;
 ALTER TABLE USCGAE_DESA.JE_CERTIFICACION_CICAC MODIFY ASUNTOS_CANTIDAD_TOTAL NUMBER(5,0) NOT NULL;
 
+ALTER TABLE USCGAE_DESA.SCS_PERSONAJG ADD DIRECCIONEXTRANJERA VARCHAR2(255) NULL;
+UPDATE SCS_PERSONAJG SET IDPAISDIR1 = 191 ;
+
+  
+insert into gen_recursos  (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.info.direccionExtranjera', 'Escriba la dirección postal completa, incluido el pais', 0, 1, sysdate, 0, 19);
+insert into gen_recursos  (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.info.direccionExtranjera', 'Escriba la dirección postal completa, incluido el pais#CA', 0, 2, sysdate, 0, 19);
+insert into gen_recursoS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.info.direccionExtranjera', 'Escriba la dirección postal completa, incluido el pais#EU', 0, 3, sysdate, 0, 19);
+insert into gen_recursoS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.info.direccionExtranjera', 'Escriba la dirección postal completa, incluido el pais#GL', 0, 4, sysdate, 0, 19);
+
