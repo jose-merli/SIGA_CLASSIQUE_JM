@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.atos.utils.ClsExceptions;
@@ -55,7 +56,10 @@ public class PoblacionesAction extends MasterAction{
 				getAjaxPoblacionesDeProvincia (request, response);
 			} else if("getAjaxNombreDePoblacion".equalsIgnoreCase(modo)){
 				getAjaxNombreDePoblacion(request, response);
+			}else if("getAjaxPoblacionesByNombre".equalsIgnoreCase(modo)){
+				getAjaxPoblacionesByNombre(request, response);
 			}
+			
 		} catch (SIGAException es) {
 			throw es;
 		} catch (Exception e) {
@@ -468,4 +472,44 @@ public class PoblacionesAction extends MasterAction{
 		json.put("nombrePoblacion", nombreDePoblacion);
 		respuestaJson(json, response);
 	}
+	
+	protected void getAjaxPoblacionesByNombre (HttpServletRequest request, HttpServletResponse response){
+		try {
+			String valorProvincia = request.getParameter("idProvincia");
+			String valorPoblacion = request.getParameter("poblacion");
+			StringBuilder sql  = new StringBuilder();
+			sql.append("SELECT NOMBRE,IDPOBLACION From CEN_POBLACIONES WHERE IDPROVINCIA = ");
+			sql.append(valorProvincia);
+			if(valorPoblacion!=null && !valorPoblacion.equalsIgnoreCase("")) {
+				sql.append(" AND UPPER(NOMBRE) LIKE '%");
+				sql.append(valorPoblacion.toUpperCase());
+				sql.append("%'"); 
+			}
+			sql.append(" ORDER BY NOMBRE");
+		
+			RowsContainer rc = new RowsContainer(); 			
+			JSONArray jsonArray = new JSONArray();
+			JSONObject jsonObject = null;
+			if (rc.find(sql.toString())) {
+				for (int i = 0; i < rc.size(); i++){
+					Row fila = (Row) rc.get(i);
+					Hashtable<String, Object> htFila=fila.getRow();
+					jsonObject = new JSONObject();
+					jsonObject.put("idPoblacion",htFila.get("IDPOBLACION"));
+					jsonObject.put("nombre",htFila.get("NOMBRE"));
+					jsonArray.put(jsonObject);
+				}
+	        }
+			 response.setHeader("Cache-Control", "no-cache");
+			 response.setHeader("Content-Type", "application/json;charset=utf-8"); 
+		     response.setHeader("X-JSON", jsonArray.toString());
+			 response.getWriter().write(jsonArray.toString());
+		
+		} catch (Exception e) {
+			ClsLogging.writeFileLogError("ERROR al obtener poblaciones" + e.toString(), e, 1);
+			//throw new BusinessException("Error al obtener las poblaciones");
+		}
+	}
+		
+		
 }

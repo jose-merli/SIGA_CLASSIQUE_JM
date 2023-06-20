@@ -110,9 +110,10 @@
 		aux[17]=bNuevo;
 		
 		 
-		pep = "<%=myBean.getDireccionExtranjera()%>";
-		aux[32]=encodeURI(pep);
-		
+		direccionExtranjera = "<%=myBean.getDireccionExtranjera()%>";
+		aux[32]=encodeURI(direccionExtranjera);
+		aux[33]="<%=myBean.getPoblacion()!=null?(myBean.getPoblacion().getNombre()!=null?myBean.getPoblacion().getNombre():""):""%>";
+			
 
 <%}%>
 

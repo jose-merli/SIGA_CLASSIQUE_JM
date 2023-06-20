@@ -872,7 +872,19 @@ public class PersonaJGAction extends MasterAction {
 									miform.setTipoVia(personaBean.getIdTipoVia());
 									miform.setCp(personaBean.getCodigoPostal());
 									miform.setProvincia(personaBean.getIdProvincia());
-									miform.setPoblacion(personaBean.getIdPoblacion());
+									if(personaBean.getIdPoblacion()!=null) {
+										CenPoblacionesAdm cenPoblacionesAdm = new CenPoblacionesAdm(this.getUserBean(request));
+										String nombrePoblacion =  cenPoblacionesAdm.getDescripcion(personaBean.getIdPoblacion());
+//										CenPoblacionesBean poblacionesBean = new CenPoblacionesBean();
+//										poblacionesBean.setIdPoblacion(personaBean.getIdPoblacion());
+//										poblacionesBean.setNombre(nombrePoblacion);
+										//bean.setPoblacion(poblacionesBean);
+										miform.setPoblacion(personaBean.getIdPoblacion());
+										request.setAttribute("poblacion", nombrePoblacion);
+												
+									}
+									
+									
 									miform.setNacionalidad(personaBean.getIdPais());
 									miform.setExisteDomicilio(personaBean.getExisteDomicilio());	
 								}else {
@@ -1155,6 +1167,16 @@ public class PersonaJGAction extends MasterAction {
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDTIPOVIA,perBean.getIdTipoVia());		
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPROVINCIA,perBean.getIdProvincia());
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPOBLACION,perBean.getIdPoblacion());
+					if(perBean.getIdPoblacion()!=null) {
+						CenPoblacionesAdm cenPoblacionesAdm = new CenPoblacionesAdm(this.getUserBean(request));
+						String nombrePoblacion =  cenPoblacionesAdm.getDescripcion(perBean.getIdPoblacion());
+						CenPoblacionesBean poblacionesBean = new CenPoblacionesBean();
+						poblacionesBean.setIdPoblacion(perBean.getIdPoblacion());
+						poblacionesBean.setNombre(nombrePoblacion);
+						perBean.setPoblacion(poblacionesBean);
+								
+					}
+					
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_DIRECCION,perBean.getDireccion());
 					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CODIGOPOSTAL,perBean.getCodigoPostal());
 				}else {

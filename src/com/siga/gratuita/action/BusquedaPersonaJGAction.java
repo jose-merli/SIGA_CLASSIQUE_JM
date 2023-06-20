@@ -6,10 +6,8 @@
 */
 package com.siga.gratuita.action;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,14 +21,14 @@ import com.atos.utils.ClsExceptions;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.PaginadorBind;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.beans.CenPoblacionesAdm;
+import com.siga.beans.CenPoblacionesBean;
 import com.siga.beans.ScsPersonaJGAdm;
 import com.siga.beans.ScsPersonaJGBean;
-import com.siga.beans.ScsTelefonosPersonaJGAdm;
-import com.siga.beans.ScsTelefonosPersonaJGBean;
-import com.siga.gratuita.form.BusquedaPersonaJGForm;
 import com.siga.general.MasterAction;
 import com.siga.general.MasterForm;
 import com.siga.general.SIGAException;
+import com.siga.gratuita.form.BusquedaPersonaJGForm;
 
 /**
 * Clase action del caso de uso BUSCAR PERSONA JG
@@ -256,14 +254,13 @@ public class BusquedaPersonaJGAction extends MasterAction {
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_NOMBRE,bean.getNombre());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_APELLIDO1,bean.getApellido1());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_APELLIDO2,bean.getApellido2());
-				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_DIRECCION,bean.getDireccion());
+
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CODIGOPOSTAL,bean.getCodigoPostal());						
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_FECHANACIMIENTO,bean.getFechaNacimiento());			
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPROFESION,bean.getIdProfesion());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDMINUSVALIA,bean.getIdMinusvalia());				
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPAIS,bean.getIdPais());
-				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPROVINCIA,bean.getIdProvincia());
-				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPOBLACION,bean.getIdPoblacion());
+
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ESTADOCIVIL,bean.getIdEstadoCivil());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_REGIMENCONYUGAL,bean.getRegimenConyugal());			 
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_TIPOPERSONAJG,bean.getTipo());
@@ -276,11 +273,39 @@ public class BusquedaPersonaJGAction extends MasterAction {
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_FAX,bean.getFax());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CORREOELECTRONICO,bean.getCorreoElectronico().trim());
 				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDTIPODIR,bean.getIdTipoDir());
-				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_NUMERODIR,bean.getNumeroDir());
-				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ESCALERADIR,bean.getEscaleraDir());
-				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_PISODIR,bean.getPisoDir());
-				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_PUERTADIR,bean.getPuertaDir());
-				UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDTIPOVIA,bean.getIdTipoVia());				
+								
+				
+				if(bean.getIdPaisDireccion()!=null && (bean.getIdPaisDireccion().equalsIgnoreCase("")|| bean.getIdPaisDireccion().equalsIgnoreCase("191" ))) {
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPAISDIRECCION,191);
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_NUMERODIR,bean.getNumeroDir());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_ESCALERADIR,bean.getEscaleraDir());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_PISODIR,bean.getPisoDir());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_PUERTADIR,bean.getPuertaDir());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDTIPOVIA,bean.getIdTipoVia());		
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPROVINCIA,bean.getIdProvincia());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPOBLACION,bean.getIdPoblacion());
+					if(bean.getIdPoblacion()!=null) {
+						CenPoblacionesAdm cenPoblacionesAdm = new CenPoblacionesAdm(this.getUserBean(request));
+						String nombrePoblacion =  cenPoblacionesAdm.getDescripcion(bean.getIdPoblacion());
+						CenPoblacionesBean poblacionesBean = new CenPoblacionesBean();
+						poblacionesBean.setIdPoblacion(bean.getIdPoblacion());
+						poblacionesBean.setNombre(nombrePoblacion);
+						bean.setPoblacion(poblacionesBean);
+								
+					}
+					
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_DIRECCION,bean.getDireccion());
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_CODIGOPOSTAL,bean.getCodigoPostal());
+				}else {
+					String direccionExtranjera  = bean.getDireccionExtranjera();
+					direccionExtranjera = direccionExtranjera.replaceAll("\n", " ");
+					direccionExtranjera = direccionExtranjera.replaceAll("\r", " ");
+					bean.setDireccionExtranjera(direccionExtranjera);
+					UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_DIRECCIONEXTRANJERA,direccionExtranjera);
+						UtilidadesHash.setForCompare(hash,ScsPersonaJGBean.C_IDPAISDIRECCION,bean.getIdPaisDireccion());
+				}	
+				
+				
 				
 				//dataBackup.put(ScsPersonaJGBean.T_NOMBRETABLA,hash);
 				if (miFormulario.getConceptoE().equals(PersonaJGAction.PERSONAJG)) {

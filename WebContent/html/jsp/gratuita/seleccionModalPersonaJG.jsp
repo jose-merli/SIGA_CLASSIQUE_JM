@@ -85,6 +85,8 @@
 		aux[29]="<%=myBean.getPuertaDir()%>";
 		aux[30]="<%=myBean.getIdTipoVia()%>";
 		
+		aux[31]="<%=myBean.getIdPaisDireccion()%>";
+		
 		<% 		
 		String nom = (String) request.getAttribute("nombreRepresentante");
 		if (nom==null) nom="";
@@ -92,6 +94,11 @@
 		aux[16]="<%=nom %>";
 		// aqui guardo el nuevo
 		aux[17]=bNuevo;
+		
+		direccionExtranjera = "<%=myBean.getDireccionExtranjera()%>";
+		aux[32]=encodeURI(direccionExtranjera);
+		aux[33]="<%=myBean.getPoblacion()!=null?(myBean.getPoblacion().getNombre()!=null?myBean.getPoblacion().getNombre():""):""%>";
+		
 
 <%
 	}

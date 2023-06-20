@@ -255,11 +255,30 @@
 	<script type="text/javascript" src="<html:rewrite page='/html/js/overlibmws/overlibmws.js'/>"></script>
 	<script type="text/javascript" src="<html:rewrite page='/html/js/ajaxtags.js'/>"></script>
   	
+  	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<style>
+  .ui-autocomplete-loading {
+    background: white url("html/imagenes/ui-anim_basic_16x16.gif") right center no-repeat;
+  }
+ 
+  .ui-autocomplete {
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+</style>
+  	
+  	
 	<script type="text/javascript">
 		jQuery.noConflict();
 		String.prototype.trim = function() {
 			return this.replace(/^\s+|\s+$/g,"");
 		}
+		
+		
+		
 		
 		function validarCampoPoblacion()	{				
 			if(document.forms[0].poblacion.value == "") {
@@ -271,16 +290,9 @@
 		}
 		
 		function recargar(){
+ 
 <%
-			if (!accion.equalsIgnoreCase("ver")) {
-%>
-				var tmp1 = document.getElementsByName("provincia");
-				var tmp2 = tmp1[0];
-				if (tmp2) {
-					tmp2.onchange();
-				} 
-<%
-			}
+			
 
 			if (conceptoE.equals(PersonaJGAction.DESIGNACION_REPRESENTANTE)) {
 %>			
@@ -386,7 +398,9 @@
 				jQuery("#sociedadesCliente").attr("disabled","disabled");
 	
 				jQuery("#provincia").attr("disabled","disabled");
-				jQuery("#poblacion").attr("disabled","disabled");
+				jQuery("#txtpoblacion").attr("disabled","disabled");
+
+				
 				jQuery("#tipoVia").val("");
 				jQuery("#tipoVia").attr("disabled","disabled");
 				
@@ -403,7 +417,7 @@
 				document.getElementById("desapareceCp").style.display="inline";
 				document.getElementById("desaparecePo").style.display="inline";
 				jQuery("#provincia").removeAttr("disabled");
-				jQuery("#poblacion").removeAttr("disabled");
+				jQuery("#txtpoblacion").removeAttr("disabled");
 				jQuery("#tipoVia").removeAttr("disabled");
 	 			document.forms[0].existeDom.checked = false;
 	 			document.PersonaJGForm.direccion.disabled = "";	
@@ -684,10 +698,12 @@
 
 				//Poblacion:				
 				var poblacionSeleccionada = resultado[10];
+				var nombrePoblacion = resultado[33];
 				
 				//A los 1000 milisegundos (tiempo para recargar el combo provincias) se selecciona la poblacion:
-				setTimeout(function(){recargarComboHijo(poblacionSeleccionada);},3000,"Javascript");
-				//document.getElementById("poblacion").value = poblacionSeleccionada;
+				//setTimeout(function(){recargarComboHijo(poblacionSeleccionada);},3000,"Javascript");
+				document.getElementById("poblacion").value = poblacionSeleccionada;
+				document.getElementById("txtpoblacion").value = nombrePoblacion;
 
 				if (resultado!=null && resultado[1]!="") {
 					var p1 = document.getElementById("resultado");					
@@ -968,6 +984,7 @@
 			
 	
              function sigueRecarga(resultado){
+            	 alert("Recargando justiciable");
 			 
 
                for(var x=0;x<document.forms[0].provincia.length;x++)
@@ -1012,41 +1029,11 @@
  			  idprovActual = jQuery("#provincia").val(); 
  			  if(idprovActual!=idProvincia){
 	 			  jQuery("#provincia").val(idProvincia);  				  
-	 			  rellenarCampos();
+	 			 limpiarPoblacion();
  			  }
 
   	}
-		function rellenarCampos(){
-			jQuery("#provincia").change();
-	} 
-			
-		function recargarComboHijo(poblacionSeleccionada) {	
-			var ok = false;
-			var timeout = undefined;
-			var intentos = window.setInterval(function(){
-				var poblacionFrame = jQuery("#poblacionFrame");
-				if (poblacionFrame.contents().find("select").length > 0){
-					var poblacionSelect = jQuery("#poblacionFrame").contents().find("select");
-					if (poblacionSelect.find("option[value='"+poblacionSeleccionada+"']").length > 0){
-						poblacionSelect.val(poblacionSeleccionada);
-						document.getElementById("poblacion").value = poblacionSeleccionada;	
-						ok = true;
-					}
-				}				
-				if (ok){
-					window.clearTimeout(timeout);
-					window.clearInterval(intentos);
-				}
-			}, 1000);
-			timeout = window.setTimeout(function(){window.clearInterval(intentos);alert("Población no encontrada, por favor, inténtelo de nuevo o seleccione una población");}, 15000);
-		}
-
-		function postAccionBusquedaNIF(){
-			var poblacionSeleccionada = document.getElementById("poblacion").value;
-			document.getElementById("provincia").onchange();
-			setTimeout(function(){recargarComboHijo(poblacionSeleccionada);},3000,"Javascript");
-			//document.getElementById("poblacion").value = poblacionSeleccionada;	
-		}
+		
 
 		function preAccionExisteNIF(){
 			if(document.PersonaJGForm.NIdentificacion.value == null || document.PersonaJGForm.NIdentificacion.value == ''){
@@ -1066,48 +1053,18 @@
 				//No existe
 			}
 		}
-		
-		function preAccionBusquedaNIF(){
-			document.PersonaJGForm.tipoId.value = "";
-			document.PersonaJGForm.nombre.value = ""; 
-			document.PersonaJGForm.apellido1.value = "";
-			document.PersonaJGForm.apellido2.value = "";
-
-			document.PersonaJGForm.direccion.value = "";
-			document.PersonaJGForm.cp.value = "";
-			document.PersonaJGForm.provincia.value = "";
-			document.PersonaJGForm.poblacion.value = "";
-			document.PersonaJGForm.existeDomicilio.value = "";
-
-			document.PersonaJGForm.nacionalidad.value = "";
-			document.PersonaJGForm.fechaNac.value = "";
-			document.PersonaJGForm.edad.value = "";
-		
-			document.PersonaJGForm.estadoCivil.value = "";
-			document.PersonaJGForm.regimenConyugal.value = "";
-
-			if(document.PersonaJGForm.tipoGrupoLaboral){
-				document.PersonaJGForm.tipoGrupoLaboral.value = "";
-			}
+		function limpiarPoblacion(){
+			document.getElementById("poblacion").value = '';
+			document.getElementById("txtpoblacion").value = '';
 			
-			if(document.PersonaJGForm.profesion){
-				document.PersonaJGForm.profesion.value = "";
-			}
-
-			if(document.PersonaJGForm.calidad2){
-				document.PersonaJGForm.calidad2.value = "";
-			}
-
-			if(document.PersonaJGForm.enCalidadDe){
-				document.PersonaJGForm.enCalidadDe.value = "";
-			}
-
-			document.PersonaJGForm.sexo.value = "";
-			document.PersonaJGForm.minusvalia.value = "";
-			
-			document.PersonaJGForm.fax.value = "";
-			document.PersonaJGForm.correoElectronico.value = "";
 		}
+		function cambiaProvincia(){
+			limpiarPoblacion();
+			
+		}
+		
+		
+		
                
 		</script>
 </head>
@@ -1656,27 +1613,8 @@
 										if (miform.getProvincia() != null)
 											selProvincia.add(miform.getProvincia());
 							%>
-				<%
-					//LMS 13/09/2006
-							//Hack para cargar combos anidados dentro de 3 niveles de pestañas (Asistencias en Ficha Colegial).
-							String sHack = "";
-							if (esFichaColegial && bPestana.equals("true")) {
-								//sHack = "top.frames[0].document.frames[0].document.frames[0].document.frames[0].document.getElementById('poblacionFrame').src";
 				
-								sHack += "var destino_provincia0=(document.getElementById('poblacionFrame')).src;";
-								sHack += "var tam_provincia0 = destino_provincia0.indexOf('&id=');";
-								sHack += "if(tam_provincia0==-1)";
-								sHack += "{";
-								sHack += "	tam_provincia0=destino_provincia0.length;";
-								sHack += "}";
-								sHack += "destino_provincia0=destino_provincia0.substring(0,tam_provincia0)+'&id='+provincia.value;";
-								sHack += "(document.getElementById('poblacionFrame')).src=destino_provincia0;";
-				
-							} else {
-								sHack = "Hijo:poblacion";
-							}
-				%>
-											<siga:ComboBD pestana="<%=bPestana%>" nombre = "provincia" tipo="provincia" elementoSel="<%=selProvincia %>" clase="<%=classCombo %>" obligatorio="false" accion="<%=sHack%>" readonly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false"/>
+											<siga:ComboBD pestana="<%=bPestana%>" nombre = "provincia" tipo="provincia" elementoSel="<%=selProvincia %>" clase="<%=classCombo %>" obligatorio="false" accion="return cambiaProvincia();" readonly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false"/>
 										</td>
 										<td colspan="8">
 											<table width="100%" cellpadding="0" cellspacing="0" border="0">			
@@ -1702,16 +1640,18 @@
 								ArrayList selPoblacion = new ArrayList();
 										if (miform.getPoblacion() != null)
 											selPoblacion.add(miform.getPoblacion());
-				
-										if (accion.equalsIgnoreCase("ver")) {
-											String poblacion = (String) request
-													.getAttribute("poblacion");
+										String poblacion = (String) request.getAttribute("poblacion");
+								if (accion.equalsIgnoreCase("ver")) {
+											
 							%>
 						   		<html:text property="poblacion" value="<%=poblacion%>" maxlength="100" styleClass="boxConsulta" readonly="true" ></html:text>
 						   <%
 						   	} else {
 						   %>
-								<siga:ComboBD pestana="<%=bPestana%>" nombre="poblacion" tipo="poblacion" elementoSel="<%=selPoblacion%>" clase="<%=classCombo%>" obligatorio="true" hijo="t" readonly="<%=sreadonly%>" obligatorioSinTextoSeleccionar="false" />
+						   	<input type="text" id="txtpoblacion" value="<%=poblacion%>" class="box" />
+						   
+						   <html:hidden property="poblacion"  styleId="poblacion" value="<%=miform.getPoblacion()%>" />
+								
 						   <%
 						   	}
 						   %>
@@ -2828,13 +2768,7 @@
 		parameters="idTipoPersona={idTipoPersona}" postFunction="comprobarTipoPersona"
 		/>
 		
-	<ajax:updateFieldFromSelect
-		baseUrl="/SIGA${path}.do?modo=getAjaxBusquedaNIF"
-		source="forzarAjax" target="NIdentificacion,idInstitucionJG,idPersonaJG,nombre,apellido1,apellido2,direccion,cp,fechaNac,minusvalia,provincia,poblacion,estadoCivil,regimenConyugal,idTipoPersona,identificadores,representante,nacionalidad,sexo,edad,fax,correoElectronico,idioma,profesion,existeDomicilio,enCalidadDe,hijos"
-		parameters="NIdentificacion={NIdentificacion}, conceptoE={conceptoE}"
-		postFunction="postAccionBusquedaNIF"
-		preFunction="preAccionBusquedaNIF"
-	/>
+	
 	
 	<ajax:updateFieldFromSelect
 		baseUrl="/SIGA${path}.do?modo=getAjaxExisteNIF"
@@ -2951,7 +2885,9 @@ function validaNombreApellidos() {
 		function accionGuardar(){	
 
  			document.PersonaJGForm.existeDomicilio.value = "S";
- 		
+ 			if(document.getElementById("txtpoblacion").value=="")
+ 				document.forms[0].poblacion.value="";
+ 			//alertStop("poblacion"+document.forms[0].poblacion.value);
  			
 			if (!validaTelefonos()){
                  fin();
@@ -3072,8 +3008,10 @@ function validaNombreApellidos() {
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
 						if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value=="")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-						if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value=="")
-							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+							if (<%=obligatorioPoblacion%> && (document.forms[0].poblacion.value==""||document.getElementById("txtpoblacion").value==""))
+								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+							else if (document.getElementById("txtpoblacion").value!="" && document.forms[0].poblacion.value=="")
+								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
 						if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';						
 						if (<%=obligatorioIngreso%> && document.forms[0].importeIngresosAnuales.value =="")
@@ -3099,6 +3037,7 @@ function validaNombreApellidos() {
 						}
 					}
 						
+				
 				
 				
 				
@@ -3259,8 +3198,14 @@ function validaNombreApellidos() {
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
 						if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-						if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+						if (<%=obligatorioPoblacion%> && (document.forms[0].poblacion.value=="" || document.getElementById("txtpoblacion").value=="") && document.PersonaJGForm.existeDomicilio.value!= "N")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+						else if (document.getElementById("txtpoblacion").value!="" && document.forms[0].poblacion.value=="")
+							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+							
+						
+							
+							
 					}else{
 						if (<%=obligatorioDireccion%> && document.forms[0].direccionExtranjera.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
@@ -3561,8 +3506,12 @@ function validaNombreApellidos() {
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
 				if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-				if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+				if (<%=obligatorioPoblacion%> && (document.forms[0].poblacion.value=="" || document.getElementById("txtpoblacion").value=="") && document.PersonaJGForm.existeDomicilio.value!= "N")
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+				else if (document.getElementById("txtpoblacion").value!="" && document.forms[0].poblacion.value=="")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+					
+					
 			}else{
 				if (<%=obligatorioDireccion%> && document.forms[0].direccionEntranjera.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
@@ -3680,7 +3629,9 @@ function validaNombreApellidos() {
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
 				if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-				if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+				if (<%=obligatorioPoblacion%> && (document.forms[0].poblacion.value=="" || document.getElementById("txtpoblacion").value=="") && document.PersonaJGForm.existeDomicilio.value!= "N")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+				else if (document.getElementById("txtpoblacion").value!="" && document.forms[0].poblacion.value=="")
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
 			}else{
 				if (<%=obligatorioDireccion%> && document.forms[0].direccionExtranjera.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
@@ -3958,7 +3909,9 @@ function validaNombreApellidos() {
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
 				if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-				if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value==""  && document.PersonaJGForm.existeDomicilio.value!= "N")
+				if (<%=obligatorioPoblacion%> && (document.forms[0].poblacion.value=="" || document.getElementById("txtpoblacion").value=="") && document.PersonaJGForm.existeDomicilio.value!= "N")
+					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+				else if (document.getElementById("txtpoblacion").value!="" && document.forms[0].poblacion.value=="")
 					error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
 			}else{
 				if (<%=obligatorioDireccion%> && document.forms[0].direccionExtranjera.value.length<1  && document.PersonaJGForm.existeDomicilio.value!= "N")
@@ -4075,8 +4028,10 @@ function accionGuardarCerrar()	{
 			error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
 		if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value=="")
 			error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
-		if (<%=obligatorioPoblacion%> && document.forms[0].poblacion.value=="")
-			error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';	
+		if (<%=obligatorioPoblacion%> && (document.forms[0].poblacion.value=="" || document.getElementById("txtpoblacion").value=="") )
+			error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+		else if (document.getElementById("txtpoblacion").value!="" && document.forms[0].poblacion.value=="")
+			error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
 	}else{
 		if (<%=obligatorioDireccion%> && (document.forms[0].direccionExtranjera.value.length<1 ))
 			error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
@@ -4294,6 +4249,33 @@ function accionRestablecer()
 	
 	
 }
+jQuery("#txtpoblacion").autocomplete({
+	
+	source: function( request, response ) {
+		jQuery.ajax({
+            dataType: "json",
+            type : 'POST',
+            
+            url: "/SIGA/CEN_Poblaciones.do?modo=getAjaxPoblacionesByNombre",
+	           	data: "poblacion="+document.getElementById("txtpoblacion").value+"&idProvincia="+document.getElementById("provincia").value,
+            success: function(data) {
+            	response(jQuery.map(data, function (item) {
+                    return {
+                        label: item.nombre,
+                        value: item.nombre,
+                        id: item.idPoblacion
+                    }
+                }))
+                
+            }
+        });
+    }
+	,
+	select: function(event, ui) {
+		document.getElementById("poblacion").value = ui.item.id; 
+	}
+    ,minLength: 3
+});
 		
 		
 		
