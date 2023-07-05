@@ -712,7 +712,12 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 	 */
 	private int addExpedienteTipoGenerico(TipoGenerico tipoGenerico, Hashtable htEJGs, String tipoIntercambio) throws Exception {		
 		
-		Expediente expediente = tipoGenerico.addNewExpediente();		
+		Expediente expediente = tipoGenerico.addNewExpediente();
+		
+		if(htEJGs.get(DE_DL_LM_RETORNOCORREGIDO)!=null) {
+			short numVecesEnviadosConError = Short.parseShort((String)htEJGs.get(DE_DL_LM_RETORNOCORREGIDO));
+			expediente.addNewDatosLibresExpediente().addNewLibreMarcasExpediente().setRetornoCorregido(numVecesEnviadosConError>0?(short)1:(short)0);
+		}
 		
 		datosExpediente(expediente, htEJGs);
 		profesionalesDesignados(expediente, htEJGs);	
@@ -1643,7 +1648,10 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 					CajgRemesaEstadosAdm cajgRemesaEstadosAdm = new CajgRemesaEstadosAdm(usr);
 					CajgEJGRemesaAdm cajgEJGRemesaAdm = new CajgEJGRemesaAdm(usr);						
 					// Marcar como generada
-					cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_GENERADA);				
+					cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_GENERADA);
+					tx.commit();
+					tx.begin();
+					
 					//MARCAMOS COMO ENVIADA
 					if (cajgRemesaEstadosAdm.nuevoEstadoRemesa(usr, getIdInstitucion(), getIdRemesa(), ClsConstants.ESTADO_REMESA_ENVIADA )) {
 						//cuando se envía el intercambio se envía * 10
