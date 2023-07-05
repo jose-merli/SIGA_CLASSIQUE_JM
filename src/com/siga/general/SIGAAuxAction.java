@@ -75,40 +75,40 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 		
 		try {
 			// RGG 03-03-2005 cambio para controlar la sesion
-			ClsLogging.writeFileLog("SIGAAuxAction.execute() - INICIO", 3);
+//			ClsLogging.writeFileLog("SIGAAuxAction.execute() - INICIO", 3);
 			try {
-				ClsLogging.writeFileLog("SIGAAuxAction.execute() - testSession", 3);
+//				ClsLogging.writeFileLog("SIGAAuxAction.execute() - testSession", 3);
 				testSession(request,response,this.getServlet());
 			} catch (ClsExceptions e) {
 				ClsLogging.writeFileLogError("ERROR en respuesta de testSession(): " + e.getMessage(), e, 3);
-				ClsLogging.writeFileLog("USRBEAN nulo", request, 5);
+//				ClsLogging.writeFileLog("USRBEAN nulo", request, 5);
 				return mapping.findForward("inicioGlobal");
 			}
 			
-			ClsLogging.writeFileLog("SIGAAuxAction.execute() - testAccess()", 3);
+//			ClsLogging.writeFileLog("SIGAAuxAction.execute() - testAccess()", 3);
 			String access=testAccess(request);
 			if (!access.equals(SIGAConstants.ACCESS_READ) && !access.equals(SIGAConstants.ACCESS_FULL)) {
-				ClsLogging.writeFileLog("SIGAAuxAction.execute() - Entra if testAccess()", 3);
-				ClsLogging.writeFileLog("Acceso denegado", request, 3);
+//				ClsLogging.writeFileLog("SIGAAuxAction.execute() - Entra if testAccess()", 3);
+//				ClsLogging.writeFileLog("Acceso denegado", request, 3);
 				ClsLogging.writeFileLog("Acceso denegado:!ACCESS_READ");
 				return mapping.findForward("accesodenegado");
 			}
 			
-			ClsLogging.writeFileLog("SIGAAuxAction.execute() - Obtiene la sesion", 3);
+//			ClsLogging.writeFileLog("SIGAAuxAction.execute() - Obtiene la sesion", 3);
 			HttpSession ses = request.getSession();
 			
 			if (ses.isNew()){
-				ClsLogging.writeFileLog("SIGAAuxAction.execute() - La sesion es nueva", 3);
-				ClsLogging.writeFileLogError("Sesión nueva", request, 3);
+//				ClsLogging.writeFileLog("SIGAAuxAction.execute() - La sesion es nueva", 3);
+//				ClsLogging.writeFileLogError("Sesión nueva", request, 3);
 				return mapping.findForward("inicioGlobal");
 			}
 			
-			ClsLogging.writeFileLog("SIGAAuxAction.execute() - Obtiene el USRBEAN", 3);
+//			ClsLogging.writeFileLog("SIGAAuxAction.execute() - Obtiene el USRBEAN", 3);
 			usrbean=(UsrBean)ses.getAttribute("USRBEAN");
 			
 			if (usrbean==null){
 				ClsLogging.writeFileLog("SIGAAuxAction.execute() - El USRBEAN es nulo", 3);
-				ClsLogging.writeFileLog("USRBEAN nulo",request,5);
+//				ClsLogging.writeFileLog("USRBEAN nulo",request,5);
 				return mapping.findForward("inicioGlobal");
 			}
 			// RGG 03-03-2005 FIN CAMBIO 
@@ -126,7 +126,7 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 		}
 		
 		try {
-			ClsLogging.writeFileLog("SIGAAuxAction.execute() - Comienza parte de formulario", 3);
+//			ClsLogging.writeFileLog("SIGAAuxAction.execute() - Comienza parte de formulario", 3);
 			AuxForm miForm = (AuxForm) formulario;
 			if (miForm != null) {
 				aux = miForm.getAccion() + "/" + miForm.getModo();
@@ -148,7 +148,7 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 					throw new SIGAException("messages.general.error",e);
 				}
 			}
-			ClsLogging.writeFileLog("SIGAAuxAction.execute() - Return llamando a executeInternal()", 3);
+//			ClsLogging.writeFileLog("SIGAAuxAction.execute() - Return llamando a executeInternal()", 3);
 			return executeInternal(mapping,formulario,request,response);
 
 		} catch (SIGAException se) {
@@ -170,12 +170,12 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 				String fecha = sdfLong.format(dat);
 				ClsLogging.writeFileLog(fecha + ",==> SIGA: Control de tiempo de transacciones (>3 seg.)," +request.getRequestURL() + "?" + aux +  "," + usrbean.getLocation() + "," + usrbean.getUserName() +","+new Long((fin.getTime()-ini.getTime())).toString(),10);
 			}
-			ClsLogging.writeFileLog("SIGAAuxAction.execute() - FIN", 3);
+//			ClsLogging.writeFileLog("SIGAAuxAction.execute() - FIN", 3);
 		}
 	}
 
 	private boolean isBaseForm(ActionForm formulario) {
-		ClsLogging.writeFileLog("SIGAAuxAction.isBaseForm() - INICIO", 3);
+//		ClsLogging.writeFileLog("SIGAAuxAction.isBaseForm() - INICIO", 3);
 		if (formulario == null)
 			return false;
 		
@@ -185,7 +185,7 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 				return true;
 			superClass = superClass.getSuperclass();
 		}
-		ClsLogging.writeFileLog("SIGAAuxAction.isBaseForm() - FIN", 3);
+//		ClsLogging.writeFileLog("SIGAAuxAction.isBaseForm() - FIN", 3);
 		return false;
 	}
 
@@ -251,18 +251,18 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 	private void informacionSesion (HttpServletRequest request){
 		int loglevel = 10;
 		try {
-			ClsLogging.writeFileLog("SIGAAuxAction.informacionSesion() - INICIO", 3);
+//			ClsLogging.writeFileLog("SIGAAuxAction.informacionSesion() - INICIO", 3);
 			ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
 			//			ReadProperties rp=new ReadProperties("SIGA.properties");
 			try{
 				// Obtenemos el loglevel de properties
-				ClsLogging.writeFileLog("SIGAAuxAction.informacionSesion() - Obtiene el loglevel de properties", 3);
+//				ClsLogging.writeFileLog("SIGAAuxAction.informacionSesion() - Obtiene el loglevel de properties", 3);
 				loglevel = Integer.parseInt(rp.returnProperty("LOG.level").trim());
 			} catch (Exception nfe){ }
 
 			// Si el loglevel es 11 entonces muestra el valor de la session
 			if (loglevel>=11) {
-				ClsLogging.writeFileLog("SIGAAuxAction.informacionSesion() - El loglevel es mayor o igual a 11", 3);
+//				ClsLogging.writeFileLog("SIGAAuxAction.informacionSesion() - El loglevel es mayor o igual a 11", 3);
 				HttpSession ses = request.getSession();
 				Enumeration enum1 = ses.getAttributeNames();
 				ClsLogging.writeFileLog("-----------------------------------", 3);
@@ -319,7 +319,7 @@ public abstract class SIGAAuxAction extends SIGAActionBase{
 				}
 				ClsLogging.writeFileLog("-----------------------------------", 3);
 			}
-			ClsLogging.writeFileLog("SIGAAuxAction.informacionSesion() - FIN", 3);
+//			ClsLogging.writeFileLog("SIGAAuxAction.informacionSesion() - FIN", 3);
 		} catch (Exception e) {
 			ClsLogging.writeFileLogError("ERROR - SIGAAuxAction.informacionSesion(): " + e.getMessage(), e, 3);
 		}
