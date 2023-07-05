@@ -538,6 +538,11 @@ public class ActuacionesDesignasAction extends MasterAction {
 		   Hashtable actuacionAntigua =(Hashtable)(designaAdm.getDesignaActuaciones(hashDatosDesigna, request)).get(0);
 		   
 		   	GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
+		   	
+		   	String filtroJuzgadoModuloEspecial = adm.getValor(idInstitucion,"SCS",ClsConstants.GEN_PARAM_FILTRAR_JUZGADO_MODULO_ESPECIAL, "0");
+			request.setAttribute("filtroJuzgadoModuloEspecial", filtroJuzgadoModuloEspecial);
+		   	
+		   	
 			String filtrarModulos = adm.getValor(idInstitucion,"SCS",ClsConstants.GEN_PARAM_FILTRAR_MODULOS_PORFECHA, "");
 			request.setAttribute("filtrarModulos", filtrarModulos);
 		    

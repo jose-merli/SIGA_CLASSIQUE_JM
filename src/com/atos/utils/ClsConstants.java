@@ -743,7 +743,9 @@ MDB Microsoft Access Database
 	public static String ID_SR_SRA="15";
 	
 	// Filtrar modulos por parámetro
-	public static final String GEN_PARAM_FILTRAR_MODULOS_PORFECHA="FILTRAR_MODULOS_PORFECHA";	
+	public static final String GEN_PARAM_FILTRAR_JUZGADO_MODULO_ESPECIAL="FILTRAR_JUZGADO_MODULO_ESPECIAL";
+	public static final String GEN_PARAM_FILTRAR_MODULOS_PORFECHA="FILTRAR_MODULOS_PORFECHA";
+	
 	public static String FILTRAR_MODULOS_FECHAACTUAL = "0";
 	public static String FILTRAR_MODULOS_FECHADESIGNACION = "1";
 	public static String FILTRAR_MODULOS_FECHAACTUACION = "2";

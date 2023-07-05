@@ -346,6 +346,9 @@ public class MaestroDesignasAction extends MasterAction {
 			String filtrarModulos = admParametros.getValor(idInstitucion,"SCS",ClsConstants.GEN_PARAM_FILTRAR_MODULOS_PORFECHA, "");
 			request.setAttribute("filtrarModulos", filtrarModulos);
 			
+			String filtroJuzgadoModuloEspecial = admParametros.getValor(idInstitucion,"SCS",ClsConstants.GEN_PARAM_FILTRAR_JUZGADO_MODULO_ESPECIAL, "0");
+			request.setAttribute("filtroJuzgadoModuloEspecial", filtroJuzgadoModuloEspecial);
+			
 			
 			// Consulto la designa:					
 			Vector vDesignas = admDesigna.select(resultado);
@@ -1000,10 +1003,11 @@ public class MaestroDesignasAction extends MasterAction {
 						}
 						// JBD 16/2/2009 INC-5739-SIGA
 						// Obtenemos el idPretension
-						int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
+//						int valorPcajgActivo=CajgConfiguracion.getTipoCAJG(new Integer(usr.getLocation()));
 						String pretensionSel=(String)datosEntrada.get("IDPRETENSION");
-						
-						if(valorPcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA || usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ){
+						GenParametrosAdm admParametros = new GenParametrosAdm(usr);		
+						String filtroJuzgadoModuloEspecial = admParametros.getValor(usr.getLocation(),"SCS",ClsConstants.GEN_PARAM_FILTRAR_JUZGADO_MODULO_ESPECIAL, "0");
+						if(filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1")){
 							if(pretensionSel!=null && !pretensionSel.equals("")){
 								HashMap<String, String> hmPretensionSel = new ObjectMapper().readValue(pretensionSel, HashMap.class);
 								String idPretension = hmPretensionSel.get("idpretension");

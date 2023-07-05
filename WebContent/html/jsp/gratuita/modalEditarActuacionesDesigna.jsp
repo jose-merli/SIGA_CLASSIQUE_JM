@@ -36,7 +36,7 @@
 	HttpSession ses = request.getSession(true);
 	UsrBean usr = (UsrBean) ses.getAttribute("USRBEAN");
 	String profile[] = usr.getProfile();
-
+	String filtroJuzgadoModuloEspecial =  request.getAttribute("filtroJuzgadoModuloEspecial")!=null?(String)request.getAttribute("filtroJuzgadoModuloEspecial"):"0";
 	boolean esLetrado = usr.isLetrado();
 	boolean justificacionValidada;
 
@@ -322,7 +322,7 @@
 	String idProcedimientoParamsJSON= "";
 	String comboAcreditacionParentQueryIds ="";
 	String idAcreditacionParamsJSON = "";
-	if((isColegioAlcala ||usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ)  && (modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){
+	if(filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1")  && (modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){
 		if(filtrarModulos.equals(ClsConstants.FILTRAR_MODULOS_FECHAACTUAL)) {
 			fechaVigor = GstDate.getHoyJsp();			
 		} else {
@@ -794,7 +794,7 @@
 	 							%>							
 									<siga:ComboBD nombre="juzgado" ancho="500" tipo="<%=comboJuzgados%>" estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=datoJuzg%>"  elementoSel="<%=juzgadoSel%>" accion="Hijo:procedimiento"/>
 							<%
-							} else if((isColegioAlcala||usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ) && (modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){ %>
+							} else if(filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1") && (modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){ %>
 								
 								<siga:Select id="juzgado" queryId="getJuzgadosJurisdiccionAlcala" queryParamId="idjuzgado,idturno,idpretension,idprocedimiento" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500" childrenIds="pretension" readonly='<%=readOnlyCombo %>'/>
 							
@@ -850,7 +850,7 @@
 												<siga:Idioma key="gratuita.altaGuardia.literal.motivoCambio"/>
 											</font>
 											<siga:ComboBD  ancho="300" nombre="idMotivoCambio" tipo="cmbActuacionDesignaMotivoCambio"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramMotivoCambio%>" elementoSel="<%=motCambioSel%>" />
-										<%} else if(usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ && (modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){%>
+										<%} else if(filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1") && (modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){%>
 											<siga:Select id="pretension" queryId="getPretensionesAlcala" parentQueryParamIds="<%=comboPretensionesParentQueryIds %>" params="<%=idPretensionParamsJSON%>" queryParamId="idpretension" selectedIds="<%=pretensionSel %>" childrenIds="procedimiento" width="380" readOnly='readOnlyCombo%>"' />
 										<%} else {%>
 											<siga:ComboBD  ancho="300" nombre="pretension" tipo="comboPretensiones"  estilo="true" clase="<%=estiloCombo%>" filasMostrar="1" seleccionMultiple="false" obligatorio="false"  readonly="<%=readOnlyCombo%>" parametro="<%=paramPretension%>" elementoSel="<%=pretensionSel%>" />
@@ -867,7 +867,7 @@
 							<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo"/>&nbsp;(*)			
 						</td>						
 						<td colspan="4">											
-							<% if(isColegioAlcala || usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ){
+							<% if(filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1")){
 								if((modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){%>
 									<siga:Select id="procedimiento" queryId="getProcedimientosEnVigenciaAlcala" parentQueryParamIds="<%=comboModulosParentQueryIds%>" params="<%=idProcedimientoParamsJSON%>" queryParamId="idprocedimiento" selectedIds="<%=procedimientoSel%>" childrenIds="acreditacion" disabled="<%=readOnlyCombo%>" width="750"/>
 								<%} else if(modoJustificacion != null && !modoJustificacion.equals("editarJustificacionFicha")){%>
@@ -896,7 +896,7 @@
 							<siga:Idioma key="gratuita.procedimientos.literal.acreditacion"/>&nbsp;(*)
 						</td>			
 						<td  colspan="4">
-						<% if((isColegioAlcala ||usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ) && (modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){%>
+						<% if(filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1") && (modoAnterior==null || !modoAnterior.equalsIgnoreCase("VER")) && (modoJustificacion == null || !modoJustificacion.equals("editarJustificacionFicha"))){%>
 								<siga:Select id="acreditacion" queryId="getAcreditaciones" parentQueryParamIds="<%=comboAcreditacionParentQueryIds%>" params="<%=idAcreditacionParamsJSON%>" selectedIds="<%=acreditacionSel%>" disabled="<%=readOnlyCombo%>" width="750"/>
 	
 							<%

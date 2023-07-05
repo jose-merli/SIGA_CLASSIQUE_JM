@@ -33,6 +33,7 @@
 	UsrBean usr = (UsrBean) request.getSession().getAttribute("USRBEAN");
 	Hashtable resultado = (Hashtable) ses.getAttribute("resultado");
 	ses.removeAttribute("resultado");
+	String filtroJuzgadoModuloEspecial =  request.getAttribute("filtroJuzgadoModuloEspecial")!=null?(String)request.getAttribute("filtroJuzgadoModuloEspecial"):"0";
 	
 	String algunaActuacionFacturada = (String) request.getAttribute("isAlgunaActuacionFacturada");
 	String modo = (String) ses.getAttribute("Modo");
@@ -322,7 +323,7 @@
 	String idPretensionParamsJSON = "";
 	String comboPretensiones = "getPretensiones";
 	String comboPretensionesParentQueryIds = null;
-	if(pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA || usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ){
+	if(filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1")){
 		comboModulos =   "getProcedimientosEnVigenciaAlcala";
 		comboPretensiones = "getPretensionesAlcala";
 		idPretension = "-2";
@@ -387,7 +388,7 @@
 String accionJuzgado = "0";
 if (ejisActivo>0 || pcajgActivo == 4){		 														
 	accionJuzgado = "1";
-} else if(pcajgActivo == CajgConfiguracion.TIPO_CAJG_TXT_ALCALA|| usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ){														
+} else if(filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1")){														
 	accionJuzgado = "2";									
 
 } 
@@ -1055,10 +1056,10 @@ if (ejisActivo>0 || pcajgActivo == 4){
 																
 																<% } %>
 																	<td colspan="2" nowrap="nowrap">
-																		<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado,idturno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true"  searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500"   readonly="<%=modoVerReadOnly%>"/>
+																		<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado,idturno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true"  searchkey="CODIGOEXT2"  onLoadCallback="return alert('ope');"  searchBoxMaxLength="10" searchBoxWidth="8" width="500"   readonly="<%=modoVerReadOnly%>"/>
 																	</td> 
 															</tr>
-													<% } else if(pcajgActivo == CajgConfiguracion.TIPO_CAJG_TXT_ALCALA|| usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ){ %>														
+													<% } else if(filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1")){ %>														
 															<tr>
 																<% if (!modo.equalsIgnoreCase("ver")) { %>
 																	<td class="labelText">
@@ -1070,7 +1071,7 @@ if (ejisActivo>0 || pcajgActivo == 4){
 																<% } %> 
 																
 																<td rowspan="2" nowrap="nowrap">
-																	<siga:Select id="juzgado" queryId="getJuzgadosJurisdiccionAlcala" queryParamId="idjuzgado,idturno,idpretension,idprocedimiento" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500"  readonly="<%=modoVerReadOnly%>"/>
+																	<siga:Select id="juzgado" queryId="getJuzgadosJurisdiccionAlcala" queryParamId="idjuzgado,idturno,idpretension,idprocedimiento" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" onLoadCallback="return alert('ope');"  searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500"  readonly="<%=modoVerReadOnly%>"/>
 																</td> 
 															</tr>									
 													
@@ -1086,7 +1087,7 @@ if (ejisActivo>0 || pcajgActivo == 4){
 																<% } %> 
 																
 																<td rowspan="2" nowrap="nowrap">
-																	<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado,idturno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500"  readonly="<%=modoVerReadOnly%>"/>
+																	<siga:Select id="juzgado" queryId="<%=comboJuzgados%>" queryParamId="idjuzgado,idturno" params="<%=paramsJuzgadoJSON%>" selectedIds="<%=juzgadoSel%>" showSearchBox="true" onLoadCallback="return alert('ope');" searchkey="CODIGOEXT2" searchBoxMaxLength="10" searchBoxWidth="8" width="500"  readonly="<%=modoVerReadOnly%>"/>
 																</td> 
 															</tr>									
 													<% } %>		
@@ -1138,7 +1139,7 @@ if (ejisActivo>0 || pcajgActivo == 4){
 							
 							<td colspan="7">
 								<%-- Procedimiento --%> 
-								<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA|| usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ) { %>
+								<% if (filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1")) { %>
 								 	<html:select styleId="idPretension"
 										styleClass="<%=estiloCombo%>" style="width:380px;"
 										
@@ -1215,7 +1216,7 @@ if (ejisActivo>0 || pcajgActivo == 4){
 								
 							
 								
-								<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA|| usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ) { %>
+								<% if (filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1")) { %>
 								 	<siga:Idioma key="gratuita.actuacionesDesigna.literal.modulo" />
 									<%if (obligatorioModulo){ %>
 										<%= asterisco %>
@@ -1231,7 +1232,7 @@ if (ejisActivo>0 || pcajgActivo == 4){
 							</td>				
 					
 							<td  colspan="7">
-							<% if (pcajgActivo==CajgConfiguracion.TIPO_CAJG_TXT_ALCALA|| usr.getIdConsejo()==AppConstants.IDINSTITUCION_CONSEJO_ANDALUZ) { %>
+							<% if (filtroJuzgadoModuloEspecial!=null && filtroJuzgadoModuloEspecial.equals("1")) { %>
 									<html:select styleId="idProcedimiento"
 										 styleClass="<%=estiloCombo%>" style="width:750px;"
 										property="idProcedimiento"></html:select>
@@ -1454,6 +1455,9 @@ function onchangePretension(idJuzgado,accionJuzgado,comboModulos,idModulo,comboP
 	}
 	
 }
+var txtCodJuzgado = document.getElementById('CODIGOEXT2');
+
+
 
 function onchangeJuzgado(idJuzgado,accionJuzgado,comboModulos,idModulo,comboPretensiones,idPretension){
 	
