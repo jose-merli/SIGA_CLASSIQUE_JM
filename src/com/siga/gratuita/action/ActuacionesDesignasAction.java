@@ -738,7 +738,8 @@ public class ActuacionesDesignasAction extends MasterAction {
 			GenParametrosAdm adm = new GenParametrosAdm (this.getUserBean(request));
 			String filtrarModulos = adm.getValor((String)designaActual.get("IDINSTITUCION"),"SCS",ClsConstants.GEN_PARAM_FILTRAR_MODULOS_PORFECHA, "");
 			String ejisActivo = adm.getValor((String)designaActual.get("IDINSTITUCION"), "ECOM", "EJIS_ACTIVO", "0");
-			
+			String filtroJuzgadoModuloEspecial = adm.getValor(usr.getLocation(),"SCS",ClsConstants.GEN_PARAM_FILTRAR_JUZGADO_MODULO_ESPECIAL, "0");
+			request.setAttribute("filtroJuzgadoModuloEspecial", filtroJuzgadoModuloEspecial);
 			request.setAttribute("EJIS_ACTIVO", ejisActivo);
 			request.setAttribute("filtrarModulos", filtrarModulos);
 			request.setAttribute("PCAJG_ACTIVO", new Integer(valorPcajgActivo));
@@ -749,6 +750,8 @@ public class ActuacionesDesignasAction extends MasterAction {
 			if(designaActual.get(ScsDesignaBean.C_FACTCONVENIO)!=null)
 				factConvenio = (String)designaActual.get(ScsDesignaBean.C_FACTCONVENIO);
 			miform.setConvenio(factConvenio);
+			
+			
 			
 		} catch(Exception e){
 			throw new SIGAException("messages.general.error",e,new String[] {"modulo.gratuita"});
