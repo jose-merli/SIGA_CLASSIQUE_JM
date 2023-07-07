@@ -169,7 +169,7 @@ public class CenPoblacionesAdm extends MasterBeanAdministrador {
 		try {
 			RowsContainer rc = new RowsContainer(); 
 												
-            if (rc.findBind(sql.toString(),htCodigos)) {
+            if (rc.findNLSBind(sql.toString(),htCodigos)) {
             	alPoblaciones = new ArrayList<CenPoblacionesBean>();
             	CenPoblacionesBean poblacionesBean = null;
             	
