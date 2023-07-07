@@ -1270,3 +1270,15 @@ insert into gen_recursos  (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIF
 insert into gen_recursoS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.info.direccionExtranjera', 'Escriba la dirección postal completa, incluido el pais#EU', 0, 3, sysdate, 0, 19);
 insert into gen_recursoS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('gratuita.personaJG.info.direccionExtranjera', 'Escriba la dirección postal completa, incluido el pais#GL', 0, 4, sysdate, 0, 19);
 
+insert into gen_parametros(MODULO, PARAMETRO,VALOR, Fechamodificacion,USUMODIFICACION, IDINSTITUCION)  values('SCS','FILTRAR_JUZGADO_MODULO_ESPECIAL','0',sysdate,'0','0');
+insert into gen_parametros(MODULO, PARAMETRO,VALOR, Fechamodificacion,USUMODIFICACION, IDINSTITUCION)  values('SCS','FILTRAR_JUZGADO_MODULO_ESPECIAL','1',sysdate,'0','2003');
+insert into gen_parametros(MODULO, PARAMETRO,VALOR, Fechamodificacion,USUMODIFICACION, IDINSTITUCION)  values('SCS','FILTRAR_JUZGADO_MODULO_ESPECIAL','1',sysdate,'0','2006');
+insert into gen_parametros(MODULO, PARAMETRO,VALOR, Fechamodificacion,USUMODIFICACION, IDINSTITUCION)  values('SCS','FILTRAR_JUZGADO_MODULO_ESPECIAL','1',sysdate,'0','2035');
+insert into gen_parametros(MODULO, PARAMETRO,VALOR, Fechamodificacion,USUMODIFICACION, IDINSTITUCION)  values('SCS','FILTRAR_JUZGADO_MODULO_ESPECIAL','1',sysdate,'0','2036');
+insert into gen_parametros(MODULO, PARAMETRO,VALOR, Fechamodificacion,USUMODIFICACION, IDINSTITUCION)  values('SCS','FILTRAR_JUZGADO_MODULO_ESPECIAL','1',sysdate,'0','2021');
+insert into gen_parametros(MODULO, PARAMETRO,VALOR, Fechamodificacion,USUMODIFICACION, IDINSTITUCION)  values('SCS','FILTRAR_JUZGADO_MODULO_ESPECIAL','1',sysdate,'0','2008');
+insert into gen_parametros(MODULO, PARAMETRO,VALOR, Fechamodificacion,USUMODIFICACION, IDINSTITUCION)  values('SCS','FILTRAR_JUZGADO_MODULO_ESPECIAL','1',sysdate,'0','2043');
+
+
+
+
