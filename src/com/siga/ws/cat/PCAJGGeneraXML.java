@@ -714,10 +714,10 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 		
 		Expediente expediente = tipoGenerico.addNewExpediente();
 		
-		if(htEJGs.get(DE_DL_LM_RETORNOCORREGIDO)!=null) {
-			short numVecesEnviadosConError = Short.parseShort((String)htEJGs.get(DE_DL_LM_RETORNOCORREGIDO));
-			expediente.addNewDatosLibresExpediente().addNewLibreMarcasExpediente().setRetornoCorregido(numVecesEnviadosConError>0?(short)1:(short)0);
-		}
+//		if(htEJGs.get(DE_DL_LM_RETORNOCORREGIDO)!=null) {
+//			short numVecesEnviadosConError = Short.parseShort((String)htEJGs.get(DE_DL_LM_RETORNOCORREGIDO));
+//			expediente.addNewDatosLibresExpediente().addNewLibreMarcasExpediente().setRetornoCorregido(numVecesEnviadosConError>0?(short)1:(short)0);
+//		}
 		
 		datosExpediente(expediente, htEJGs);
 		profesionalesDesignados(expediente, htEJGs);	
