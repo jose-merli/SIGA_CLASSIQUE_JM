@@ -3,6 +3,7 @@ package com.siga.censo.action;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +21,7 @@ import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
 import com.siga.Utilidades.UtilidadesString;
+import com.siga.beans.CenPoblacionesAdm;
 import com.siga.beans.CenPoblacionesBean;
 import com.siga.beans.CenProvinciaAdm;
 import com.siga.beans.CenProvinciaBean;
@@ -475,31 +477,26 @@ public class PoblacionesAction extends MasterAction{
 	
 	protected void getAjaxPoblacionesByNombre (HttpServletRequest request, HttpServletResponse response){
 		try {
+			
 			String valorProvincia = request.getParameter("idProvincia");
 			String valorPoblacion = request.getParameter("poblacion");
-			StringBuilder sql  = new StringBuilder();
-			sql.append("SELECT NOMBRE,IDPOBLACION From CEN_POBLACIONES WHERE IDPROVINCIA = ");
-			sql.append(valorProvincia);
-			if(valorPoblacion!=null && !valorPoblacion.equalsIgnoreCase("")) {
-				sql.append(" AND UPPER(NOMBRE) LIKE '%");
-				sql.append(valorPoblacion.toUpperCase());
-				sql.append("%'"); 
-			}
-			sql.append(" ORDER BY NOMBRE");
-		
-			RowsContainer rc = new RowsContainer(); 			
+			CenPoblacionesAdm cenPoblacionesAdm = new CenPoblacionesAdm(getUserBean(request));
+			List<CenPoblacionesBean> poblaciones =  cenPoblacionesAdm.getPoblacionesByNombre(valorProvincia, valorPoblacion);
+			
+			
+			
+			
+			
 			JSONArray jsonArray = new JSONArray();
 			JSONObject jsonObject = null;
-			if (rc.find(sql.toString())) {
-				for (int i = 0; i < rc.size(); i++){
-					Row fila = (Row) rc.get(i);
-					Hashtable<String, Object> htFila=fila.getRow();
-					jsonObject = new JSONObject();
-					jsonObject.put("idPoblacion",htFila.get("IDPOBLACION"));
-					jsonObject.put("nombre",htFila.get("NOMBRE"));
-					jsonArray.put(jsonObject);
-				}
-	        }
+			
+			for (int i = 0; i < poblaciones.size(); i++){
+				CenPoblacionesBean fila = (CenPoblacionesBean) poblaciones.get(i);
+				jsonObject = new JSONObject();
+				jsonObject.put("idPoblacion",fila.getIdPoblacion());
+				jsonObject.put("nombre",fila.getNombre());
+				jsonArray.put(jsonObject);
+			}
 			 response.setHeader("Cache-Control", "no-cache");
 			 response.setHeader("Content-Type", "application/json;charset=utf-8"); 
 		     response.setHeader("X-JSON", jsonArray.toString());

@@ -11,6 +11,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
@@ -170,6 +173,47 @@ public class CenPoblacionesAdm extends MasterBeanAdministrador {
 			RowsContainer rc = new RowsContainer(); 
 												
             if (rc.findNLSBind(sql.toString(),htCodigos)) {
+            	alPoblaciones = new ArrayList<CenPoblacionesBean>();
+            	CenPoblacionesBean poblacionesBean = null;
+            	
+    			for (int i = 0; i < rc.size(); i++){
+            		Row fila = (Row) rc.get(i);
+            		Hashtable<String, Object> htFila=fila.getRow();
+            		
+            		
+            		poblacionesBean = new CenPoblacionesBean();
+            		poblacionesBean.setIdPoblacion(UtilidadesHash.getString(htFila,CenPoblacionesBean.C_IDPOBLACION));
+            		poblacionesBean.setNombre(UtilidadesHash.getString(htFila,CenPoblacionesBean.C_NOMBRE));
+            		alPoblaciones.add(poblacionesBean);
+            	}
+            } 
+       } catch (Exception e) {
+       		throw new ClsExceptions (e, "Error al ejecutar consulta getPoblaciones.");
+       }
+       return alPoblaciones;
+		
+	}	
+	
+	
+	
+	public List<CenPoblacionesBean> getPoblacionesByNombre(String idProvincia,String nombrePoblacion)throws ClsExceptions{
+
+		
+		StringBuilder sql  = new StringBuilder();
+		sql.append("SELECT NOMBRE,IDPOBLACION From CEN_POBLACIONES WHERE 1=1  ");
+		if(idProvincia!=null && !idProvincia.equals("")) {
+			sql.append(" AND IDPROVINCIA =");
+			sql.append(idProvincia);
+		}
+		
+		sql.append(" AND UPPER(NOMBRE) LIKE '%");
+		sql.append(nombrePoblacion.toUpperCase());
+		sql.append("%' ORDER BY NOMBRE");
+		List<CenPoblacionesBean> alPoblaciones = null;
+		try {
+			RowsContainer rc = new RowsContainer(); 
+												
+            if (rc.findNLS(sql.toString())) {
             	alPoblaciones = new ArrayList<CenPoblacionesBean>();
             	CenPoblacionesBean poblacionesBean = null;
             	
