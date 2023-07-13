@@ -44,6 +44,7 @@ import com.siga.general.ParejaNombreID;
 	 	
 		String numeroColegiado;
 	 	String poblacion;
+	 	String nombrePoblacion;
 	 	String poblacionExt;
 	 	String otraProvincia;
 	 	String provincia;
@@ -357,6 +358,12 @@ import com.siga.general.ParejaNombreID;
 		 	  tratamiento="";
 		 	  verFichaLetrado="";
 		 	  chkBusqueda="";
+		}
+		public String getNombrePoblacion() {
+			return nombrePoblacion;
+		}
+		public void setNombrePoblacion(String nombrePoblacion) {
+			this.nombrePoblacion = nombrePoblacion;
 		}
 	 	
 

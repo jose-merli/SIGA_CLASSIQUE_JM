@@ -141,7 +141,9 @@
 						document.busquedaCensoModalForm.pais.value = oculto.value;
 					}else if(j=='18'){
 						document.busquedaCensoModalForm.idTipoIdentificacion.value = oculto.value;
-					}   
+					}else if(j=='19'){
+						document.busquedaCensoModalForm.nombrePoblacion.value = oculto.value;
+					}     
 							
 					j++;
 				}
@@ -185,6 +187,8 @@
 		    <html:hidden property="fax1" value=""/>
 		    <html:hidden property="pais" value=""/>
 		    <html:hidden property="idTipoIdentificacion" value=""/>
+		    <html:hidden property="nombrePoblacion" value=""/>
+		    
 			
 		</html:form>
 		<%
@@ -277,10 +281,13 @@
 					String mail = UtilidadesString.mostrarDatoJSP(registro.get("MAIL"));
 					String pais = UtilidadesString.mostrarDatoJSP(registro.get("PAIS"));
 					
-					String poblacion = ""; 
+					String poblacion = "";
+					String descPoblacion = "";
 					if(pais.equalsIgnoreCase(ClsConstants.ID_PAIS_ESPANA) || ((String)registro.get("PAIS")).equals("")){
 						poblacion = UtilidadesString.mostrarDatoJSP(registro.get("IDPOBLACION"));
+						descPoblacion = UtilidadesString.mostrarDatoJSP(registro.get("POBLACION"));
 					}else{
+						descPoblacion = UtilidadesString.mostrarDatoJSP(registro.get("POBLACION"));
 						poblacion = UtilidadesString.mostrarDatoJSP(registro.get("POBLACION"));
 					}
 					String dir = UtilidadesString.mostrarDatoJSP(registro.get("DIR_PROFESIONAL"));
@@ -330,6 +337,7 @@
 								<input type="hidden" name="oculto<%=cont%>_16" value="<%=fax1%>">		
 								<input type="hidden" name="oculto<%=cont%>_17" value="<%=pais%>">
 								<input type="hidden" name="oculto<%=cont%>_18" value="<%=idTipoIdentificacion%>">								
+								<input type="hidden" name="oculto<%=cont%>_19" value="<%=descPoblacion%>">
 								<%=descripcion%>
 							</td>
 							<td>

@@ -4255,9 +4255,8 @@ jQuery("#txtpoblacion").autocomplete({
 		jQuery.ajax({
             dataType: "json",
             type : 'POST',
-            
             url: "/SIGA/CEN_Poblaciones.do?modo=getAjaxPoblacionesByNombre",
-	           	data: "poblacion="+document.getElementById("txtpoblacion").value+"&idProvincia="+document.getElementById("provincia").value,
+	        data: "poblacion="+document.getElementById("txtpoblacion").value+"&idProvincia="+document.getElementById("provincia").value,
             success: function(data) {
             	response(jQuery.map(data, function (item) {
                     return {
@@ -4267,7 +4266,11 @@ jQuery("#txtpoblacion").autocomplete({
                     }
                 }))
                 
-            }
+            },error: function(e){
+            	jQuery("#txtpoblacion").val('error bd');
+            	jQuery("#txtpoblacion").removeClass("ui-autocomplete-loading");
+			}
+		
         });
     }
 	,

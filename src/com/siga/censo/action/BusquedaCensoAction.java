@@ -929,6 +929,7 @@ public class BusquedaCensoAction extends MasterAction {
 			String apellido1 = miform.getApellido1().replace("\u00a0"," ").trim();
 			String apellido2 = miform.getApellido2().replace("\u00a0"," ").trim();
 			String poblacion = miform.getPoblacion().replace("\u00a0"," ").trim();
+			String nombrePoblacion = miform.getNombrePoblacion().replace("\u00a0"," ").trim();
 			String provincia = miform.getProvincia().replace("\u00a0"," ").trim();
 			String direcion = miform.getDireccion().replace("\u00a0"," ").trim();
 			String codPostal = miform.getCodPostal().replace("\u00a0"," ").trim();
@@ -983,6 +984,7 @@ public class BusquedaCensoAction extends MasterAction {
 			datosCliente.put("idTipoIden",idTipoIden);
 			datosCliente.put("idEstadoCivil",idEstadoCivil);
 			datosCliente.put("idioma",idioma);
+			datosCliente.put("nombrePoblacion",nombrePoblacion);
 			
 			request.setAttribute("datosCensoModal", datosCliente);
 			request.setAttribute("resultado", datosCliente);		
@@ -1199,6 +1201,7 @@ public class BusquedaCensoAction extends MasterAction {
 				miForm.setTelefono((String)direccion.get("TELEFONO"));
 				miForm.setTelefono2("");
 				miForm.setPoblacion((String)direccion.get("IDPOBLACION"));
+				miForm.setNombrePoblacion((String)direccion.get("POBLACION"));
 				miForm.setOtraProvincia((String)direccion.get("OTRAPROVINCIA"));
 				miForm.setProvincia((String)direccion.get("IDPROVINCIA"));
 				miForm.setPais((String)direccion.get("IDPAIS"));
@@ -1225,6 +1228,7 @@ public class BusquedaCensoAction extends MasterAction {
 				miForm.setPreferente ("");
 				miForm.setTipoDireccion("");
 				miForm.setPoblacionExt("");
+				miForm.setNombrePoblacion("");
 			}
 			
 		}else{
@@ -1239,6 +1243,7 @@ public class BusquedaCensoAction extends MasterAction {
 			miForm.setTelefono((String)direccion.get("TELEFONO1"));
 			miForm.setTelefono2((String)direccion.get("TELEFONO2"));
 			miForm.setPoblacion((String)direccion.get("IDPOBLACION"));
+			miForm.setNombrePoblacion((String)direccion.get("POBLACION"));
 			miForm.setOtraProvincia((String)direccion.get("OTRAPROVINCIA"));
 			miForm.setProvincia((String)direccion.get("IDPROVINCIA"));
 			miForm.setPais((String)direccion.get("IDPAIS"));
@@ -1269,6 +1274,7 @@ public class BusquedaCensoAction extends MasterAction {
 		listaParametros.add(miForm.getPoblacionExt());
 		listaParametros.add(miForm.getIdDireccion());
 		listaParametros.add(miForm.getOtraProvincia());
+		listaParametros.add(miForm.getNombrePoblacion());
 
 		respuestaAjax(new AjaxXmlBuilder(), listaParametros,response);
 	}	

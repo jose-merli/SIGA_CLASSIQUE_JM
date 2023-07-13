@@ -13,6 +13,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.ClsLogging;
@@ -483,28 +484,28 @@ public class PoblacionesAction extends MasterAction{
 			CenPoblacionesAdm cenPoblacionesAdm = new CenPoblacionesAdm(getUserBean(request));
 			List<CenPoblacionesBean> poblaciones =  cenPoblacionesAdm.getPoblacionesByNombre(valorProvincia, valorPoblacion);
 			
-			
-			
-			
-			
 			JSONArray jsonArray = new JSONArray();
 			JSONObject jsonObject = null;
-			
-			for (int i = 0; i < poblaciones.size(); i++){
-				CenPoblacionesBean fila = (CenPoblacionesBean) poblaciones.get(i);
-				jsonObject = new JSONObject();
-				jsonObject.put("idPoblacion",fila.getIdPoblacion());
-				jsonObject.put("nombre",fila.getNombre());
-				jsonArray.put(jsonObject);
+			if(poblaciones!=null && poblaciones.size()>0) {
+				for (int i = 0; i < poblaciones.size(); i++){
+					CenPoblacionesBean fila = (CenPoblacionesBean) poblaciones.get(i);
+					jsonObject = new JSONObject();
+					jsonObject.put("idPoblacion",fila.getIdPoblacion());
+					jsonObject.put("nombre",fila.getNombre());
+					jsonArray.put(jsonObject);
+				}
 			}
 			 response.setHeader("Cache-Control", "no-cache");
 			 response.setHeader("Content-Type", "application/json;charset=utf-8"); 
 		     response.setHeader("X-JSON", jsonArray.toString());
 			 response.getWriter().write(jsonArray.toString());
 		
-		} catch (Exception e) {
+//		} catch (BusinessException e) {
+//			ClsLogging.writeFileLog("Salida al obtener poblaciones: " + e.getMessage());
+//			throw new BusinessException(e.getMessage());
+		}catch (Exception e) {
 			ClsLogging.writeFileLogError("ERROR al obtener poblaciones" + e.toString(), e, 1);
-			//throw new BusinessException("Error al obtener las poblaciones");
+			throw new BusinessException("Error al obtener las poblaciones");
 		}
 	}
 		
