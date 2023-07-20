@@ -1060,21 +1060,17 @@ public class ScsPersonaJGAdm extends MasterBeanAdministrador {
   		sqlBuffer.append("NVL2(PER.PISODIR, ' ' || PER.PISODIR, '') DOMI_PISO_PJG, ");
   		sqlBuffer.append("NVL2(PER.PUERTADIR, ' ' || PER.PUERTADIR, '') DOMI_PUERTA_PJG, ");
   		
-  		sqlBuffer.append(" (CASE PER.IDPAISDIR1 WHEN '191' THEN  ");
-  		sqlBuffer.append("((SELECT (UPPER(SUBSTR(F_SIGA_GETRECURSO(TV.DESCRIPCION,"+this.usrbean.getLanguage()+"), 1, 1))) || (LOWER(SUBSTR(F_SIGA_GETRECURSO(TV.DESCRIPCION,"+this.usrbean.getLanguage()+"), 2))) FROM CEN_TIPOVIA TV WHERE TV.IDTIPOVIA = PER.IDTIPOVIA AND TV.IDINSTITUCION = PER.IDINSTITUCION) || ' ' || PER.DIRECCION || ' ' || PER.NUMERODIR || ' ' || PER.ESCALERADIR || ' ' || PER.PISODIR || ' ' || PER.PUERTADIR) ");
-		
-  		
-  		sqlBuffer.append("NVL2(VIA.IDTIPOVIA, F_SIGA_GETRECURSO(VIA.DESCRIPCION, "+ this.usrbean.getLanguage()+"), '') || ");
-  		
-  		
+  		sqlBuffer.append("(CASE PER.IDPAISDIR1 WHEN '191' THEN (");
+  				
+  		sqlBuffer.append(" NVL2(VIA.IDTIPOVIA, F_SIGA_GETRECURSO(VIA.DESCRIPCION, "+ this.usrbean.getLanguage()+"), '') || ");
   		sqlBuffer.append("NVL2(PER.DIRECCION, ' ' || PER.DIRECCION, '') || ");
   		sqlBuffer.append("NVL2(PER.NUMERODIR, ' ' || PER.NUMERODIR, '') || ");
   		sqlBuffer.append("NVL2(PER.ESCALERADIR, ' ' || PER.ESCALERADIR, '') || ");
   		sqlBuffer.append("NVL2(PER.PISODIR, ' ' || PER.PISODIR, '') || ");
-  		sqlBuffer.append("NVL2(PER.PUERTADIR, ' ' || PER.PUERTADIR, '') ");
-  		sqlBuffer.append("  ELSE PER.DIRECCIONEXTRANJERA    END) ");
-  		sqlBuffer.append("  AS DOMICILIO_PJG, ");
-  		
+  		sqlBuffer.append("NVL2(PER.PUERTADIR, ' ' || PER.PUERTADIR, '')");
+  				
+  		sqlBuffer.append(") ELSE PER.DIRECCIONEXTRANJERA    END)"); 
+  		sqlBuffer.append("AS DOMICILIO_PJG, ");
   		
   		sqlBuffer.append("NVL(PER.CODIGOPOSTAL, '') AS CP_PJG, ");
   		sqlBuffer.append("NVL(POBL.IDPOBLACIONMUNICIPIO, '') AS IDMUNICIPIO_PJG, ");
