@@ -2178,7 +2178,7 @@
 					}	
 				</script>
 				
-				<siga:ConjCampos leyenda="gratuita.personaJG.literal.representantes" desplegable="true" oculto="true"  >
+				<siga:ConjCampos leyenda="gratuita.personaJG.literal.representantes" desplegable="true" oculto="false"  >
 					<table width="100%" cellpadding="2" cellspacing="0" border="0">
 						<tr>
 							<td class="labelText">
