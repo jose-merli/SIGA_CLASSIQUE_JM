@@ -1641,6 +1641,9 @@
 										if (miform.getPoblacion() != null)
 											selPoblacion.add(miform.getPoblacion());
 										String poblacion = (String) request.getAttribute("poblacion");
+										if(poblacion==null || poblacion.equalsIgnoreCase("null"))
+											poblacion = "";
+											
 								if (accion.equalsIgnoreCase("ver")) {
 											
 							%>

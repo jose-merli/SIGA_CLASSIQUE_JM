@@ -627,10 +627,7 @@ public class PersonaJGAction extends MasterAction {
 				}
 			}
 
-			boolean altaJG=false;
-	     	if (idInstitucionJG==null || idInstitucionJG.trim().equals("") || idPersonaJG==null || idPersonaJG.trim().equals("")) {
-	     		altaJG=true;
-	     	}
+		
 			
 
 	     	// carga del form
@@ -882,6 +879,8 @@ public class PersonaJGAction extends MasterAction {
 										miform.setPoblacion(personaBean.getIdPoblacion());
 										request.setAttribute("poblacion", nombrePoblacion);
 												
+									}else {
+										request.setAttribute("poblacion", "");
 									}
 									
 									
@@ -965,6 +964,7 @@ public class PersonaJGAction extends MasterAction {
 			boolean altaJG=false;
 	     	if (idInstitucionJG==null || idInstitucionJG.trim().equals("") || idPersonaJG==null || idPersonaJG.trim().equals("")) {
 	     		altaJG=true;
+	     		request.setAttribute("poblacion", "");
 	     	}
 
 			// carga del form
