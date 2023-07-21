@@ -100,6 +100,7 @@ public class DefinirTelefonosJGAction extends MasterAction {
 	 * @see com.siga.general.MasterAction#abrir(org.apache.struts.action.ActionMapping, com.siga.general.MasterForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected String abrir(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		
 		DefinirTelefonosJGForm miForm = (DefinirTelefonosJGForm)formulario;
 		ScsTelefonosPersonaJGAdm admTelefonosJG = new ScsTelefonosPersonaJGAdm(this.getUserBean(request));
 		
@@ -120,6 +121,7 @@ public class DefinirTelefonosJGAction extends MasterAction {
 		ScsTelefonosPersonaJGAdm admTelefonosJG1 = new ScsTelefonosPersonaJGAdm(this.getUserBean(request));
 		
 		try {
+			Thread.sleep(300);
 			if (idPersona!=null && !idPersona.equals("") ){
 				//Se recupara una lista de los telefonos de la personajg									
 						
