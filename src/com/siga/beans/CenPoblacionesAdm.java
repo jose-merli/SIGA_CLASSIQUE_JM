@@ -13,12 +13,14 @@ import java.util.Vector;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.redabogacia.sigaservices.app.helper.StringHelper;
 
 import com.atos.utils.ClsExceptions;
 import com.atos.utils.Row;
 import com.atos.utils.RowsContainer;
 import com.atos.utils.UsrBean;
 import com.siga.Utilidades.UtilidadesHash;
+import com.siga.Utilidades.UtilidadesString;
 import com.siga.general.SIGAException;
 
 /**
@@ -205,8 +207,12 @@ public class CenPoblacionesAdm extends MasterBeanAdministrador {
 			sql.append(" AND IDPROVINCIA =");
 			sql.append(idProvincia);
 		}
+		if(nombrePoblacion!=null && nombrePoblacion.indexOf("'")>-1) {
+			nombrePoblacion=UtilidadesString.replaceAllIgnoreCase(nombrePoblacion,"'","''");
+		}
 		
 		sql.append(" AND UPPER(NOMBRE) LIKE '%");
+		
 		sql.append(nombrePoblacion.toUpperCase());
 		sql.append("%' ORDER BY NOMBRE");
 		List<CenPoblacionesBean> alPoblaciones = null;
