@@ -178,14 +178,16 @@
 	  	columnNames="gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaInicio,
 	  		gratuita.modalCambiar_PestanaCalendarioGuardias.literal.fechaFin,
 	  		gratuita.modalCambiar_PestanaCalendarioGuardias.literal.numero,
-	  		gratuita.modalCambiar_PestanaCalendarioGuardias.literal.nombre,"
-	  	columnSizes="20,20,22,28,10">
+	  		gratuita.modalCambiar_PestanaCalendarioGuardias.literal.nombre,
+	  		gratuita.guardiasTurno.literal.porGrupos.orden,"
+	  	columnSizes="15,15,15,20,15,10">
 		
 <% 
 		if ((obj!= null) && (obj.size()>0)) { 
 			int recordNumber=1;
 			String fechaInicioConfirmador="", fechaFinConfirmador="", numeroColegiadoConfirmador="", nombreConfirmador="";
 			String idCalendarioGuardiasConfirmador="", idTurnoConfirmador="", idGuardiaConfirmador="", idPersonaConfirmador="";
+			String posicion = "";
 			while ((recordNumber) <= obj.size()) {	 	
 				Hashtable hash = (Hashtable)obj.get(recordNumber-1);
 
@@ -213,6 +215,7 @@
 				idTurnoConfirmador = UtilidadesHash.getString(hash,ScsCabeceraGuardiasBean.C_IDTURNO);
 				idGuardiaConfirmador = UtilidadesHash.getString(hash,ScsCabeceraGuardiasBean.C_IDGUARDIA);
 				idPersonaConfirmador = UtilidadesHash.getString(hash,ScsCabeceraGuardiasBean.C_IDPERSONA);
+				posicion = UtilidadesHash.getString(hash,ScsCabeceraGuardiasBean.C_POSICION);
 				
 				/*Funcion que comprueba las acciones que puede hacer en una guardia (Sustituir, Anular, Borrar, Permutar)
 				- RETORNA SUSTITUIR(1) || ANULAR(1) || BORRAR(1) || PERMUTAR(1) || ASISTENCIA(1)
@@ -243,7 +246,8 @@
 						</td>
 						<td align="center"><%=GstDate.getFormatedDateShort(usr.getLanguage(),fechaFinConfirmador)%></td>
 						<td align="center"><%=numeroColegiadoConfirmador%></td>
-						<td align="center"><%=nombreConfirmador%></td>								
+						<td align="left">&nbsp;<%=nombreConfirmador%></td>								
+						<td align="center"><%=posicion%></td>
 						<td align="center">
 							<input type="radio" name="guardiaConfirmador" id="guardiaConfirmador" value="<%=String.valueOf(recordNumber)%>" onclick="seleccionarFila('<%=String.valueOf(recordNumber)%>')" />
 						</td>

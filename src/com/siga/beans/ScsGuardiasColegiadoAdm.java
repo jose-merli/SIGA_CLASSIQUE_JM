@@ -711,7 +711,9 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		// Borramos el registro de la tabla SCS_CABECERAGUARDIAS para el letrado saliente
 		//-----------------------------------------------------------------------------------------------------
 		
+		 
 		ScsCabeceraGuardiasBean cabeceraGuarSal = (ScsCabeceraGuardiasBean)(cabeceraGuarSaliente.elementAt(0));
+		int posicion = cabeceraGuarSal.getPosicion();
 		if(!cabeceraGuardiasAdm.delete(cabeceraGuarSal))
 			throw new ClsExceptions(cabeceraGuardiasAdm.getError());
 		
@@ -733,6 +735,7 @@ public class ScsGuardiasColegiadoAdm extends MasterBeanAdministrador
 		}
 		cabeceraGuarSal.setFechaAlta("SYSDATE");
 		cabeceraGuarSal.setUsuAlta(usuModificacion);
+		cabeceraGuarSal.setPosicion(posicion);
 		
 		//Antes de insertar el registro se comprueba si el letrado ya tiene una guardia en ese turno y periodo
 		if(cabeceraGuardiasAdm.validaGuardiaLetradoPeriodo(cabeceraGuarSal.getIdInstitucion(), cabeceraGuarSal.getIdTurno(), cabeceraGuarSal.getIdGuardia(), cabeceraGuarSal.getIdPersona(), fechaInicio, fechaFin))

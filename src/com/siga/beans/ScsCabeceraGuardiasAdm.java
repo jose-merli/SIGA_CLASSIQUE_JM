@@ -227,6 +227,7 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 			consulta += ", guard." + ScsCabeceraGuardiasBean.C_IDGUARDIA;
 			consulta += ", guard." + ScsCabeceraGuardiasBean.C_IDPERSONA;
 			consulta += ", guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO + ") AS FUNCIONPERMUTAS";
+			consulta += ", guard."+ScsCabeceraGuardiasBean.C_POSICION+"";
 			
 			consulta += " FROM "+ScsCabeceraGuardiasBean.T_NOMBRETABLA+" guard,";
 			consulta += CenPersonaBean.T_NOMBRETABLA+" perso";
@@ -245,7 +246,7 @@ public class ScsCabeceraGuardiasAdm extends MasterBeanAdministrador {
 		    consulta += " AND TRUNC(guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+") > TRUNC(sysdate)";
 		    
 			//ORDEN
-			consulta += " ORDER BY guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO;
+			consulta += " ORDER BY guard."+ScsCabeceraGuardiasBean.C_FECHA_INICIO+",guard."+ScsCabeceraGuardiasBean.C_POSICION;
 		}
 		catch (Exception e){
 			throw new ClsExceptions(e,"Excepcion en ScsCabeceraGuardiasAdm.buscarOtrosColegiados(). Consulta SQL:"+consulta);

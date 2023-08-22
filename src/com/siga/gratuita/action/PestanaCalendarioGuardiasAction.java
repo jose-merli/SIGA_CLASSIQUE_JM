@@ -359,7 +359,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			//-----------------------------------------------------------------
 			//Inicio de la transaccion
 			//-----------------------------------------------------------------		
-			tx=usr.getTransaction();
+			tx=usr.getTransactionPesada();
 			tx.begin();				
 			
 			//Calculamos el nuevo identificador numero de la tabla scs_permutaguardias:
@@ -512,11 +512,14 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 
 				//Borramos el registro de cabecera de guardias correspondiente al solicitante
 				ScsCabeceraGuardiasBean cabecerasGuarSol = (ScsCabeceraGuardiasBean)(cabeceraGuarSolicitante.elementAt(0));
+				int posicionConfirmador = cabecerasGuarSol.getPosicion();
+				
 				if (!admCabeceraGuardias.delete(cabecerasGuarSol))
 					throw new ClsExceptions(admCabeceraGuardias.getError());
 				
 				//Borramos el registro de cabecera de guardias correspondiente al confirmador
 				ScsCabeceraGuardiasBean cabecerasGuarConf = (ScsCabeceraGuardiasBean)(cabeceraGuarConfirmador.elementAt(0));
+				int posicionSolicitante = cabecerasGuarConf.getPosicion();
 				if (!admCabeceraGuardias.delete(cabecerasGuarConf))
 					throw new ClsExceptions(admCabeceraGuardias.getError());	
 				
@@ -539,6 +542,9 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 				cabecerasGuarConf.setFechaAlta("SYSDATE");
 				cabecerasGuarSol.setUsuAlta(new Integer(usr.getUserName()));
 				cabecerasGuarConf.setUsuAlta(new Integer(usr.getUserName()));
+				cabecerasGuarSol.setPosicion(posicionConfirmador);
+				cabecerasGuarConf.setPosicion(posicionSolicitante);
+				
 				
 				if(!admCabeceraGuardias.insert((cabecerasGuarSol)))
 					throw new ClsExceptions(admCabeceraGuardias.getError());
