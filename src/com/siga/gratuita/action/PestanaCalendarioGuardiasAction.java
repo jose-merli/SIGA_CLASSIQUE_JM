@@ -359,7 +359,7 @@ public class PestanaCalendarioGuardiasAction extends MasterAction {
 			//-----------------------------------------------------------------
 			//Inicio de la transaccion
 			//-----------------------------------------------------------------		
-			tx=usr.getTransactionPesada();
+			tx=usr.getTransaction();
 			tx.begin();				
 			
 			//Calculamos el nuevo identificador numero de la tabla scs_permutaguardias:
