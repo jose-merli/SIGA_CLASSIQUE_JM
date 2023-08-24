@@ -248,6 +248,14 @@
 						} else {
 							elems[0]=new FilaExtElement("enviardenuevo","enviardenuevo",SIGAConstants.ACCESS_READ);
 						}
+						if(idEstado.equals("0")){
+							elems[0] = null;
+							elems[1] = null;
+							elems[2] = null;
+							botones ="";
+							
+						}
+						
 %>
 	  			<siga:FilaConIconos fila='<%=""+(i+1)%>' botones="<%=botones%>"elementos="<%=elems%>" clase="listaNonEdit">
 											

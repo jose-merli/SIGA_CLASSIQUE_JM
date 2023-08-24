@@ -30,7 +30,8 @@ import com.siga.Utilidades.UtilidadesString;
 								AdmTipoInformeBean.C_CLASE,
 								AdmTipoInformeBean.C_DIRECTORIO,
 								AdmTipoInformeBean.C_FECHAMODIFICACION,
-								AdmTipoInformeBean.C_USUMODIFICACION
+								AdmTipoInformeBean.C_USUMODIFICACION,
+								AdmTipoInformeBean.C_PROGRAMACION
 								};
 			return campos;
 		}
@@ -57,6 +58,8 @@ import com.siga.Utilidades.UtilidadesString;
 				bean.setDirectorio(UtilidadesHash.getString(hash, AdmTipoInformeBean.C_DIRECTORIO));
 				bean.setUsuMod(UtilidadesHash.getInteger(hash, AdmTipoInformeBean.C_USUMODIFICACION));
 				bean.setFechaMod(UtilidadesHash.getString(hash, AdmTipoInformeBean.C_FECHAMODIFICACION));
+				bean.setProgramacion(UtilidadesHash.getString(hash, AdmTipoInformeBean.C_PROGRAMACION));
+				
 			}
 			catch (Exception e) { 
 				bean = null;	
@@ -78,6 +81,7 @@ import com.siga.Utilidades.UtilidadesString;
 				UtilidadesHash.set(htData, AdmTipoInformeBean.C_DIRECTORIO, 	b.getDirectorio());
 				UtilidadesHash.set(htData, AdmTipoInformeBean.C_USUMODIFICACION, 	b.getUsuMod());
 				UtilidadesHash.set(htData, AdmTipoInformeBean.C_FECHAMODIFICACION, 	b.getFechaMod());
+				UtilidadesHash.set(htData, AdmTipoInformeBean.C_PROGRAMACION, 	b.getProgramacion());
 			}
 			catch (Exception e) {
 				htData = null;
@@ -210,6 +214,31 @@ import com.siga.Utilidades.UtilidadesString;
 			
 			
 		} 
+		public List<AdmTipoInformeBean> getTiposDeInformeProgramados()throws ClsExceptions{
+			
+			StringBuffer sql = new StringBuffer();
+			sql.append("SELECT * FROM ADM_TIPOINFORME WHERE REGEXP_LIKE (PROGRAMACION, '^([01]?[0-9]|2[0-3]):[0-5][0-9]$')");			
+			List<AdmTipoInformeBean> tipoInformeList = null;
+			try {
+				RowsContainer rc = new RowsContainer(); 
+	            if (rc.find(sql.toString())) {
+	            	tipoInformeList = new ArrayList<AdmTipoInformeBean>();
+	            	AdmTipoInformeBean tipoInformeBean = null;
+	            	for (int i = 0; i < rc.size(); i++){
+	            		Row fila = (Row) rc.get(i);
+	            		Hashtable<String, Object> htFila=fila.getRow();
+	            		tipoInformeBean = (AdmTipoInformeBean) this.hashTableToBean(htFila);
+	            		tipoInformeList.add(tipoInformeBean);
+	            	}
+	            } 
+	       } catch (Exception e) {
+	       		throw new ClsExceptions (e, "Error al ejecutar consulta.");
+	       }
+	       return tipoInformeList;
+			
+			
+		} 
+		
 		
 		
 		

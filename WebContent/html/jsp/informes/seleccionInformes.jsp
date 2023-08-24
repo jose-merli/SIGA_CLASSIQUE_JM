@@ -131,9 +131,15 @@
 	
 <body >
 	<bean:define id="asunto" name="asunto"	scope="request" />
+	<bean:define id="horaComunicacionesEditable" name="HORA_COMUNICACIONES_EDITABLE"	scope="request" />
 	<bean:define id="fecha" name="fecha"	scope="request" />
 	<bean:define id="informeForms" name="informeForms"	type="java.util.Collection" scope="request" />
-	
+	<c:set var="disabledBoxConsulta" value="" />
+	<c:set var="styleBoxHora" value="box" />
+	<c:if test="${horaComunicacionesEditable=='0'}">
+		<c:set var="styleBoxHora" value="boxConsulta" />
+		<c:set var="disabledBoxConsulta" value="true" />		
+	</c:if>
 	<html:form action="/INF_InformesGenericos.do" method="POST" target="submitArea">
 		<html:hidden property="modo" />
 		<html:hidden property="idInstitucion" />
@@ -187,7 +193,7 @@
 						<siga:Fecha nombreCampo="fechaProgramada" valorInicial="${fecha}" posicionX="30"  posicionY="30"></siga:Fecha>
 					</td>
 					<td class="labelText">
-						<html:text name="DefinirEnviosForm" property="horas" size="2" maxlength="2" styleClass="box"  value="${horas}" style="text-align:center"/>&nbsp;:&nbsp;<html:text name="DefinirEnviosForm" property="minutos"  size="2" maxlength="2" styleClass="box" value="${minutos}" style="text-align:center"/>
+						<html:text name="DefinirEnviosForm" property="horas" size="2" maxlength="2" styleClass="${styleBoxHora}"  readonly="${disabledBoxConsulta}" value="${horas}"  style="text-align:center"/>&nbsp;:&nbsp;<html:text name="DefinirEnviosForm" property="minutos"  size="2" maxlength="2" styleClass="${styleBoxHora}" readonly="${disabledBoxConsulta}" value="${minutos}" style="text-align:center"/>
 					</td>
 					<td>&nbsp;</td>
 					

@@ -1761,6 +1761,9 @@ public class InformesGenericosAction extends MasterAction {
 
 			AdmInformeAdm adm = new AdmInformeAdm(this.getUserBean(request));
 			AdmTipoInformeAdm admT = new AdmTipoInformeAdm(this.getUserBean(request));
+			Hashtable hash = new Hashtable();
+			hash.put(AdmTipoInformeBean.C_IDTIPOINFORME, idTipoInforme);
+			AdmTipoInformeBean tipoInformeBean = (AdmTipoInformeBean) (admT.selectByPK(hash)).get(0);
 			// mostramos la ventana con la pregunta
 			Vector informeBeans=adm.obtenerInformesTipo(miForm.getIdInstitucion(),idTipoInforme,miForm.getAsolicitantes(), miForm.getDestinatarios());
 			if(informeBeans==null||informeBeans.size()==0)
@@ -1978,18 +1981,43 @@ public class InformesGenericosAction extends MasterAction {
 			request.setAttribute("asunto", asunto);
 			//Vamos a ver si, aunque el informe generico tenga configurado el envio, el usuario tiene permiso para ello.
 			//Fecha Programada:
+//			obtenemos el parametro de base 
+			
+			
+			
+			int milisegundosRelay = 900000;
 			SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_JAVA);
 			sdf.applyPattern(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 			Calendar cal = Calendar.getInstance();   
 			String fecha;
+			
+			
 			Date date = new Date();
-			date.setTime(date.getTime() + 900000);
+			date.setTime(date.getTime() + milisegundosRelay);
 			cal.setTime(date);
 			fecha = sdf.format(date.getTime()).toString();
-			
 			request.setAttribute("fecha", fecha);
-			request.setAttribute("horas", cal.get(cal.HOUR_OF_DAY));
-			request.setAttribute("minutos", cal.get(cal.MINUTE));
+			if(tipoInformeBean.getProgramacion()!=null && tipoInformeBean.getProgramacion().indexOf(":")>0 && miForm.getDatosInforme()!=null && miForm.getDatosInforme().split("%%%").length>1) {
+				String hora = tipoInformeBean.getProgramacion();
+				request.setAttribute("horas", hora.split(":")[0]);
+				request.setAttribute("minutos", hora.split(":")[1]);
+				
+			}else if(tipoInformeBean.getProgramacion()!=null && tipoInformeBean.getProgramacion().indexOf(":")<0) {
+				try {
+					milisegundosRelay = Integer.valueOf(tipoInformeBean.getProgramacion())*60000;	
+				} catch (Exception e) {
+					milisegundosRelay = 900000;
+				}
+				date.setTime(date.getTime() + milisegundosRelay);
+				cal.setTime(date);
+				request.setAttribute("horas", cal.get(cal.HOUR_OF_DAY));
+				request.setAttribute("minutos", cal.get(cal.MINUTE));
+			}else {
+				request.setAttribute("horas", cal.get(cal.HOUR_OF_DAY));
+				request.setAttribute("minutos", cal.get(cal.MINUTE));
+			}
+			GenParametrosAdm param = new GenParametrosAdm(usr);
+			request.setAttribute("HORA_COMUNICACIONES_EDITABLE",param.getValor(miForm.getIdInstitucion(), "ENV", "HORA_COMUNICACIONES_EDITABLE", "1"));
 			
 			return mapping.findForward("seleccionInformes");
 

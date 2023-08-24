@@ -19,13 +19,19 @@ public class AdmTipoInformeBean extends MasterBean {
 	 * 
 	 */
 	private static final long serialVersionUID = -3790424031805214022L;
+	public String getProgramacion() {
+		return programacion;
+	}
+	public void setProgramacion(String programacion) {
+		this.programacion = programacion;
+	}
 	static public final String CLASETIPOINFORME_PERSONALIZABLE = "P";
 	static public final String CLASETIPOINFORME_CONSULTAS = "C";
 	static public final String CLASETIPOINFORME_GENERICO = "G";
 	static public final String CLASETIPOINFORME_ORDINARIO = "O";
 	static public final String TIPOINFORME_CONSULTAS = "CON";
 	/* Variables */	
-	private String 	idTipoInforme, descripcion, idTipoInformePadre, idTipoFormato,clase,directorio;
+	private String 	idTipoInforme, descripcion, idTipoInformePadre, idTipoFormato,clase,directorio,programacion;
 	
 	
 	/* Nombre tabla */
@@ -38,6 +44,7 @@ public class AdmTipoInformeBean extends MasterBean {
 	static public final String C_TIPOFORMATO = "TIPOFORMATO";
 	static public final String C_CLASE = "CLASE";
 	static public final String C_DIRECTORIO = "DIRECTORIO";
+	static public final String C_PROGRAMACION = "PROGRAMACION";
 
 
 	

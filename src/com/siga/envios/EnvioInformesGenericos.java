@@ -7758,7 +7758,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		}
 	}
 
-	public void procesarAutomaticamenteGeneracionEnvios() throws Exception {
+	public void procesarAutomaticamenteGeneracionEnvios(List<AdmTipoInformeBean> tiposInformeExcluir) throws Exception {
 		if (isAlguienEjecutando()) {
 			ClsLogging.writeFileLogWithoutSession("YA SE ESTA EJECUTANDO LA GENERACION DE ENVIOS EN BACKGROUND. CUANDO TERMINE SE INICIARA OTRA VEZ EL PROCESO.", 3);
 			// ClsLogging.writeFileLogError("gratuita.eejg.message.isAlguienEjecutando",new
@@ -7769,7 +7769,7 @@ public class EnvioInformesGenericos extends MasterReport {
 		}
 
 		try {
-			procesoAutomaticoGeneracionEnvios();
+			procesoAutomaticoGeneracionEnvios(tiposInformeExcluir);
 
 		} catch (Exception e) {
 			throw e;
@@ -7777,13 +7777,13 @@ public class EnvioInformesGenericos extends MasterReport {
 			setNadieEjecutando();
 			if (isAlgunaEjecucionDenegada()) {
 				setNingunaEjecucionDenegada();
-				procesarAutomaticamenteGeneracionEnvios();
+				procesarAutomaticamenteGeneracionEnvios(tiposInformeExcluir);
 
 			}
 		}
 	}
 
-	private void procesoAutomaticoGeneracionEnvios() throws ClsExceptions {
+	private void procesoAutomaticoGeneracionEnvios(List<AdmTipoInformeBean> tiposInformeExcluir) throws ClsExceptions {
 		EnvProgramIRPFAdm admProgramiRPF = new EnvProgramIRPFAdm(new UsrBean());
 
 		// Este
@@ -7841,7 +7841,8 @@ public class EnvioInformesGenericos extends MasterReport {
 		// Sacamos los datos de los datos programados
 		// pendientes(ClsConstants.DB_FALSE) de
 		// todas las instituciones(null)
-		Vector vInfGenericosProgramados = admProgramInfGenericos.getInformesGenericosProgramados(ClsConstants.DB_FALSE, null);
+		
+		Vector vInfGenericosProgramados = admProgramInfGenericos.getInformesGenericosProgramados(ClsConstants.DB_FALSE, tiposInformeExcluir);
 
 		// EnvioInformesGenericos envioInformeGenerico = new EnvioInformesGenericos(this.longitudNumEjg!=null?longitudNumEjg:"5");
 		if (vInfGenericosProgramados != null && vInfGenericosProgramados.size() > 0) {
@@ -7853,7 +7854,11 @@ public class EnvioInformesGenericos extends MasterReport {
 
 				try {
 					programInfGenericoBean = (EnvProgramInformesBean) vInfGenericosProgramados.get(i);
+					programInfGenericoBean.setOriginalHash(admProgramInfGenericos.beanToHashTable(programInfGenericoBean));
+					programInfGenericoBean.setEstado(""+EnvProgramInformesAdm.ESTADO_PENDIENTE_AUTOMATICO);
 
+					admProgramInfGenericos.updateDirect(programInfGenericoBean);
+					
 					Integer idTipoEnvio = programInfGenericoBean.getEnvioProgramado().getIdTipoEnvios();
 					UsrBean usr = UsrBean.UsrBeanAutomatico(programInfGenericoBean.getIdInstitucion().toString());
 					usr.setComision(programInfGenericoBean.getEnvioProgramado().getComisionAJG() != null 

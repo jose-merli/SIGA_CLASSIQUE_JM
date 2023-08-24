@@ -304,13 +304,12 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 
 		String fecha,fechaIsNull;
 		if (tipoFecha.equalsIgnoreCase(FECHA_CREACION)){
-		    fecha = EN_FECHACREACION;
+		    fecha = "FECHA";
 		    fechaIsNull = "";
 		} else {
-		    fecha = EN_FECHAPROGRAMADA;
+		    fecha = "FECHAPROGRAMADA";
 		    fechaIsNull = " AND FECHAPROGRAMADA is not null";
 		}
-
 		//Tabla env_estadoenvio
 		String ES_NOMBRE = "ES." + EnvEstadoEnvioBean.C_NOMBRE;
 		String ES_IDESTADO = "ES." + EnvEstadoEnvioBean.C_IDESTADO;
@@ -331,52 +330,128 @@ public class EnvEnviosAdm extends MasterBeanAdministrador {
 		try {
 			rc = new RowsContainer();
 
-			String sql = "SELECT ";
+			StringBuilder sql = new StringBuilder();
+			sql.append(" SELECT * FROM ( ");
+			
+			sql.append(" ( ");
+			sql.append("SELECT ");
+			sql.append(EN_IDENVIO); 
+			sql.append(", ");
+			sql.append(EN_DESCRIPCION );
+			sql.append( ", ");
+			sql.append(EN_FECHACREACION );
+			sql.append( ", ");
+			sql.append(EN_FECHAPROGRAMADA );
+			sql.append( ", ");
+			sql.append(ES_NOMBRE ); 
+			sql.append( " AS ESTADO, ");
+			sql.append(TI_IDTIPOENVIOS ); 
+			sql.append( ", ");
+			sql.append(EN_IDESTADO ); 
+			sql.append( ", ");
+			sql.append(TI_NOMBRE ); 
+			sql.append( " AS TIPOENVIO, ");
+			sql.append(" EN.FECHABAJA,COMISIONAJG,IDINSTITUCION ");
+			
 
-		    sql += EN_IDENVIO + ", ";
-		    sql += EN_DESCRIPCION + ", ";
-		    sql += EN_FECHACREACION + ", ";
-		    sql += EN_FECHAPROGRAMADA + ", ";
-		    sql += ES_NOMBRE + " AS ESTADO, ";
-		    sql += TI_IDTIPOENVIOS + ", ";
-		    sql += EN_IDESTADO + ", ";
-		    sql += TI_NOMBRE + " AS TIPOENVIO, ";
-		    sql += " EN.FECHABAJA ";
+			sql.append(" FROM ");
+			sql.append(T_ENV_ENVIOS ); 
+			sql.append( ", " );
+			sql.append(T_ENV_ESTADOENVIO ); 
+			sql.append( ", " );
+			sql.append(T_ENV_TIPOENVIOS);
 
-			sql += " FROM ";
-		    sql += T_ENV_ENVIOS + ", " +
-		    	   T_ENV_ESTADOENVIO + ", " +
-		    	   T_ENV_TIPOENVIOS;
-
-		    sql += " WHERE ";
-		    sql += EN_IDINSTITUCION + " = " + idInstitucion.toString();
-		    sql += (nombre!=null && !nombre.equals("")) ? " AND "+ComodinBusquedas.prepararSentenciaCompleta(nombre.trim(),EN_DESCRIPCION ) : "";
-			if (dFechaDesde!=null || dFechaHasta!=null)
-			    sql += " AND " + GstDate.dateBetweenDesdeAndHasta(fecha,dFechaDesde,dFechaHasta);
-			sql += " AND " + EN_IDESTADO + " = " + ES_IDESTADO;
-			sql += (idEstado!=null && !idEstado.equals("")) ? " AND " + ES_IDESTADO +" = "+ idEstado : "";
-			sql += " AND " + EN_IDTIPOENVIOS + " = " + TI_IDTIPOENVIOS;
-			sql += (idTipoEnvios!=null && !idTipoEnvios.equals("")) ? " AND " + EN_IDTIPOENVIOS +" = "+ idTipoEnvios : "";
-			sql += (idEnvio!=null && !idEnvio.equals("")) ? " AND " + EN_IDENVIO +" = "+ idEnvio : "";
-
-			sql += fechaIsNull;
+		    sql.append(" WHERE ");
+			sql.append( EN_IDESTADO );
+			sql.append( " = " );
+			sql.append( ES_IDESTADO);
+			sql.append(" AND " );
+			sql.append( EN_IDTIPOENVIOS + " = " ); 
+			sql.append( TI_IDTIPOENVIOS);
+			sql.append(" )  ");
+				
+			
+			
+			
+			if(!conArchivados && !isComision && (idEnvio==null || idEnvio.equals(""))) {
+				sql.append(" UNION ");
+				
+				sql.append(" ( ");
+				sql.append("SELECT NULL IDENVIO,");
+				sql.append(" EP.NOMBRE||' '|| f_siga_getnombre_colegiado(ED.IDINSTITUCION,ED.IDPERSONA,'0')  DESCRIPCION,");
+				sql.append(" EPI.FECHAMODIFICACION  FECHA,");
+				sql.append(" EP.FECHAPROGRAMADA	FECHAPROGRAMADA,");
+				sql.append(" (SELECT F_SIGA_GETRECURSO(NOMBRE, 1) ESTADO FROM ENV_ESTADOENVIO WHERE IDESTADO=0) ESTADO,");
+				sql.append(" TI.IDTIPOENVIOS,0 IDESTADO,");
+				sql.append(" (SELECT F_SIGA_GETRECURSO(TI.NOMBRE ,1) AS VALOR FROM DUAL) TIPOENVIO,");
+				sql.append(" NULL FECHABAJA,null COMISIONAJG,EPI.IDINSTITUCION");
+				sql.append(" FROM ENV_PROGRAMINFORMES EPI ,");
+				sql.append(" ENV_ENVIOPROGRAMADO EP,");
+				sql.append(" ENV_DESTPROGRAMINFORMES ED,");
+				sql.append(" ENV_TIPOENVIOS TI,");
+				sql.append(" ENV_ESTADOENVIO ES");
+				sql.append(" WHERE");
+				sql.append(" EPI.IDINSTITUCION = EP.IDINSTITUCION");
+				sql.append(" AND EPI.IDENVIO = EP.IDENVIO");
+				sql.append(" AND EPI.IDINSTITUCION = ED.IDINSTITUCION");
+				sql.append(" AND EPI.IDENVIO = ED.IDENVIO");
+				sql.append(" AND EP.IDTIPOENVIOS = TI.IDTIPOENVIOS");
+				sql.append(" AND EP.IDTIPOENVIOS = TI.IDTIPOENVIOS");
+				sql.append(" AND EPI.ESTADO = 0");
+				sql.append(" AND EPI.IDTIPOINFORME IN (");
+				sql.append(" SELECT IDTIPOINFORME FROM ADM_TIPOINFORME at2 WHERE REGEXP_LIKE (PROGRAMACION, '^([01]?[0-9]|2[0-3]):[0-5][0-9]$')");
+				sql.append(" )");
+//				sql.append(" AND EP.FECHAPROGRAMADA >	SYSDATE ");
+				sql.append(" ) ");
+				
+			}
+			sql.append(" )  ");
+			sql.append(" WHERE " ); 
+		    sql.append( " IDINSTITUCION = " );
+			sql.append( idInstitucion.toString());
+			
+			if(nombre!=null && !nombre.equals(""))
+				sql.append(" AND "+ComodinBusquedas.prepararSentenciaCompleta(nombre.trim(),"DESCRIPCION" ));
+			
+			if (dFechaDesde!=null || dFechaHasta!=null) {
+			    sql.append(" AND " ); 
+				sql.append( GstDate.dateBetweenDesdeAndHasta(fecha,dFechaDesde,dFechaHasta));
+			}
+			
+			if(idEstado!=null && !idEstado.equals("")){
+					sql.append(" AND IDESTADO = " );
+					sql.append(idEstado);
+			}
+			if(idTipoEnvios!=null && !idTipoEnvios.equals("")){
+				sql.append(" AND IDTIPOENVIOS = " );
+				sql.append(idTipoEnvios);
+			}
+			if(idEnvio!=null && !idEnvio.equals("")){
+				sql.append(" AND IDENVIO =" );
+				sql.append(idEnvio);
+			}
+			sql.append(fechaIsNull);
 			if(isComision){
-				sql += " AND COMISIONAJG = "+ClsConstants.DB_TRUE;	
+				sql.append(" AND COMISIONAJG = "+ClsConstants.DB_TRUE);	
 			}else{
-				sql += " AND (COMISIONAJG IS NULL OR COMISIONAJG = "+ClsConstants.DB_FALSE+" ) ";	
+				sql.append(" AND (COMISIONAJG IS NULL OR COMISIONAJG = "+ClsConstants.DB_FALSE+" ) ");	
 			}
 			
 			if(!conArchivados){
-				sql += " AND FECHABAJA IS NULL ";	
-			}		
+				sql.append(" AND FECHABAJA IS NULL ");	
+			}	
 			
-			// RGG CAMBIO DE ORDEN sql += " ORDER BY " + EN_DESCRIPCION;
-			sql += " ORDER BY "+EN_FECHACREACION+" DESC";
+			
+			
+			
+			
+			// RGG CAMBIO DE ORDEN sql.append(" ORDER BY " + EN_DESCRIPCION;
+			sql.append(" ORDER BY FECHA DESC");
 
 			ClsLogging.writeFileLog("EnvEnviosAdm -> QUERY: "+sql,10);
 
 			
-			 Paginador paginador = new Paginador(sql);				
+			 Paginador paginador = new Paginador(sql.toString());				
 				int totalRegistros = paginador.getNumeroTotalRegistros();
 				
 				if (totalRegistros==0){					

@@ -37,6 +37,7 @@ import org.redabogacia.sigaservices.app.AppConstants.TipoIntercambioEnum;
 import org.redabogacia.sigaservices.app.autogen.model.CerEnvios;
 import org.redabogacia.sigaservices.app.autogen.model.EnvEnvios;
 import org.redabogacia.sigaservices.app.helper.ExcelHelper;
+import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.cer.CerSolicitudCertificadosEnviosService;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -894,10 +895,15 @@ public class DefinirEnviosAction extends MasterAction {
 		boolean isEnvioBatch = false;
 		
 		try {
-			String fechaProg = form.getFechaProgramada();
-			if (fechaProg != null && fechaProg.length() == 10)
-				fechaProg += " " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
-
+//			String fechaProg = form.getFechaProgramada();
+//			if (fechaProg != null && fechaProg.length() == 10)
+//				fechaProg += " " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds();
+			Date fechaProgr = SIGAServicesHelper.getFecha(form.getFechaProgramada()+form.getHoras()+form.getMinutos(),"dd/MM/yyyyHHmm");
+			if(fechaProgr.compareTo(new Date())<0) {
+				throw new SIGAException("messages.general.error.fechaPosteriorActual");
+			} 
+			
+			
 				tx.begin();
 				EnvioInformesGenericos envioInformesGenericos = new EnvioInformesGenericos();
 				if (form.getIdTipoInforme().equalsIgnoreCase(EnvioInformesGenericos.comunicacionesDesigna)){

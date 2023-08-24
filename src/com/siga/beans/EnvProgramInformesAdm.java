@@ -7,6 +7,7 @@ package com.siga.beans;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import com.atos.utils.ClsExceptions;
@@ -151,6 +152,8 @@ public class EnvProgramInformesAdm extends MasterBeanAdministrador {
     public Integer getNewIdProgramInformes(UsrBean usrBean) throws ClsExceptions{
     	return getNewIdProgramInformes(usrBean.getLocation());
     }
+    
+    
     /**
      * 
      * @param estado 1 ó 0. Sera uno cuando se quieran los pagos ya enviados.0 con los pagos pendienmtes de enviar
@@ -159,11 +162,13 @@ public class EnvProgramInformesAdm extends MasterBeanAdministrador {
      * @throws ClsExceptions
      */
 
-    public Vector getInformesGenericosProgramados(String estado, String idInstitucion)
+    public Vector getInformesGenericosProgramados(String estado,List<AdmTipoInformeBean> tiposInformeExcluir)
 			throws ClsExceptions {
-
-		
+    	StringBuffer sqlGlobal = new StringBuffer();
+    	StringBuffer sqlExcluidos = new StringBuffer();
+    	StringBuffer sqlUnionExcluidos = new StringBuffer();
 		StringBuffer sql = new StringBuffer();
+		
 		sql.append(" SELECT EPI.IDPROGRAM,EPI.IDENVIO,EPI.IDINSTITUCION, ");
 		sql.append(" EPI.IDIOMA,EPI.ESTADO,EPI.PLANTILLAS, ");
 		sql.append(" EPI.IDTIPOINFORME,EPI.CLAVES, ");
@@ -180,24 +185,84 @@ public class EnvProgramInformesAdm extends MasterBeanAdministrador {
 		Hashtable htCodigos = new Hashtable();
 		int keyContador = 0;
 		
+		
+		
+//		if(tiposInformeIncluir!=null && tiposInformeIncluir.size()>0) {
+//			sql.append(" AND EPI.IDTIPOINFORME  in (");
+//			for (String tipoInformeIncluir : tiposInformeIncluir) {
+//				keyContador++;
+//				htCodigos.put(new Integer(keyContador), tipoInformeIncluir);
+//				sql.append(":");
+//				sql.append(keyContador);
+//				sql.append(",");
+//			}
+//			sql.deleteCharAt(sql.length()-1);
+//			sql.append(" ) ");
+//			
+//		}
+		
+		sqlGlobal.append(sql);
 		keyContador++;
 		htCodigos.put(new Integer(keyContador), estado);
-		sql.append(" AND EPI.ESTADO = :");
-		sql.append(keyContador);
-		if(idInstitucion!=null){
-			keyContador++;
-			htCodigos.put(new Integer(keyContador), idInstitucion);
-			sql.append(" AND EPI.IDINSTITUCION = :");
-			sql.append(keyContador);
-		}
+		sqlGlobal.append(" AND EPI.ESTADO = :");
+		sqlGlobal.append(keyContador);
 		
+		
+		if(tiposInformeExcluir!=null && tiposInformeExcluir.size()>0) {
+			
+			sqlUnionExcluidos.append(sql);
+			
+			
+			sqlExcluidos.append(" AND EPI.IDTIPOINFORME  not in (");
+			
+			for (AdmTipoInformeBean tipoInformeExcluir : tiposInformeExcluir) {
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), tipoInformeExcluir.getIdTipoInforme());
+				sqlExcluidos.append(":");
+				sqlExcluidos.append(keyContador);
+				sqlExcluidos.append(",");
+				
+				
+			}
+			sqlExcluidos.deleteCharAt(sqlExcluidos.length()-1);
+			sqlExcluidos.append(" ) ");
+			
+			sqlUnionExcluidos.append(" AND EPI.IDTIPOINFORME  in (");
+			for (AdmTipoInformeBean tipoInformeExcluir : tiposInformeExcluir) {
+				
+				keyContador++;
+				htCodigos.put(new Integer(keyContador), tipoInformeExcluir.getIdTipoInforme());
+				sqlUnionExcluidos.append(":");
+				sqlUnionExcluidos.append(keyContador);
+				sqlUnionExcluidos.append(",");
+				
+			}
+			
+			sqlUnionExcluidos.deleteCharAt(sqlUnionExcluidos.length()-1);
+			sqlUnionExcluidos.append(" ) ");
+			
+			
+			keyContador++;
+			htCodigos.put(new Integer(keyContador), estado);
+			sqlUnionExcluidos.append(" AND EPI.ESTADO = :");
+			sqlUnionExcluidos.append(keyContador);
+			
+			sqlUnionExcluidos.append(" AND EP.FECHAPROGRAMADA < SYSDATE");
+			
+			sqlGlobal.append(sqlExcluidos);
+			
+			sqlGlobal.append(" UNION ");
+//			sqlGlobal.append(sql);
+			sqlGlobal.append(sqlUnionExcluidos);
+			
+		}
 		
 		// Acceso a BBDD
 		RowsContainer rc = null;
 		Vector datos = new Vector();
 		try {
 			rc = new RowsContainer();
-			if (rc.queryBind(sql.toString(),htCodigos)) {
+			if (rc.queryBind(sqlGlobal.toString(),htCodigos)) {
 				EnvProgramInformesBean programPagos = null;
 				EnvEnvioProgramadoBean envioProgramado = null;
 				for (int i = 0; i < rc.size(); i++) {

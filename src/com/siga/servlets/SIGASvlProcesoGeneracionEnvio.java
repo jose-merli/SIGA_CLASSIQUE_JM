@@ -1,15 +1,17 @@
 package com.siga.servlets;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
-
 import com.atos.utils.ClsLogging;
+import com.atos.utils.UsrBean;
+import com.siga.beans.AdmTipoInformeAdm;
+import com.siga.beans.AdmTipoInformeBean;
 import com.siga.envios.EnvioInformesGenericos;
 
 
@@ -40,7 +42,10 @@ public class SIGASvlProcesoGeneracionEnvio extends HttpServlet {
    			out.println("INICIO PROCESO AUTOMATICO DE GENERACION DE ENVIOS EN BACKGROUND");
 			
    			EnvioInformesGenericos envios = new EnvioInformesGenericos();
-   			envios.procesarAutomaticamenteGeneracionEnvios();
+   			AdmTipoInformeAdm admTipoInformeAdm = new AdmTipoInformeAdm(new UsrBean());
+   			List<AdmTipoInformeBean> tipoInformrProgramados = admTipoInformeAdm.getTiposDeInformeProgramados();
+   			
+   			envios.procesarAutomaticamenteGeneracionEnvios(tipoInformrProgramados);
    			
    	        response.setContentType("text/html");
    	        out.println("FIN PROCESO AUTOMATICO DE GENERACION ENVIOS EN BACKGROUND");
