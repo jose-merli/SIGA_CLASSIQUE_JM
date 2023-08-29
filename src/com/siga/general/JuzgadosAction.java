@@ -88,13 +88,20 @@ public class JuzgadosAction extends MasterAction{
 		String codigoExt2 ="";
 		JSONObject json = new JSONObject();	
 		
-		String where = " WHERE UPPER(IDJUZGADO||','||IDINSTITUCION)=UPPER('"+idCombo+"') ";
-		Vector resultadoJuzgado = juzgadoAdm.select(where);
+		//19,2035,13,06/07/2023,06/07/2023
+		String[] valoresCombo = idCombo.split(",");
 		
-		if (resultadoJuzgado!=null && resultadoJuzgado.size()>0) {
-			ScsJuzgadoBean juzgadoBean = (ScsJuzgadoBean) resultadoJuzgado.get(0);
-			codigoExt2 = juzgadoBean.getCodigoExt2();
-		}						
+		if(valoresCombo.length>2) {
+			String idJuzgado = valoresCombo[0];
+			String idInstitucion = valoresCombo[1];
+			String where = " WHERE IDJUZGADO="+idJuzgado+" AND IDINSTITUCION = "+idInstitucion;
+			Vector resultadoJuzgado = juzgadoAdm.select(where);
+			
+			if (resultadoJuzgado!=null && resultadoJuzgado.size()>0) {
+				ScsJuzgadoBean juzgadoBean = (ScsJuzgadoBean) resultadoJuzgado.get(0);
+				codigoExt2 = juzgadoBean.getCodigoExt2();
+			}						
+		}
 		json.put("codigoExt2", codigoExt2);
 		
 		response.setContentType("text/x-json;charset=UTF-8");
