@@ -1,8 +1,11 @@
 package com.siga.beans;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.ESTADOS_EJG;
 import org.redabogacia.sigaservices.app.exceptions.BusinessException;
@@ -36,7 +39,7 @@ import es.satec.businessManager.BusinessManager;
  * 
  */ 
 public class ScsEJGAdm extends MasterBeanAdministrador {
-	
+	private static final Logger log = Logger.getLogger(ScsEJGAdm.class);
 	public static enum TipoVentana {
 		BUSQUEDA_EJG,
 		BUSQUEDA_PREPARACION_CAJG,
@@ -1365,10 +1368,15 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	    	    PaginadorBind paginador=null;
 	       try {
 	            Hashtable htConsultaBind  = getBindBusquedaMantenimientoEJG(miHash,  miForm, TipoVentana.BUSQUEDA_EJG, idInstitucion,longitudNumEjg);
-	            String consulta = (String) htConsultaBind.get(keyBindConsulta);
-	            Hashtable codigos = (Hashtable) htConsultaBind.get(keyBindCodigos);
-						
-	            paginador = new PaginadorBind(consulta, codigos);	
+	            if(htConsultaBind!=null) {
+		            String consulta = (String) htConsultaBind.get(keyBindConsulta);
+		            Hashtable codigos = (Hashtable) htConsultaBind.get(keyBindCodigos);
+							
+		            paginador = new PaginadorBind(consulta, codigos);
+	            }else {
+	            	return null;
+	            	
+	            }
 	            
 	             
 	       } catch (Exception e) {
@@ -1407,6 +1415,234 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	
 		return vDatos;
 	}
+	public String addQueryWhereExpedientesByJusticiable(Hashtable miHash,Hashtable codigos, boolean isBusquedaExactaSolicitante,
+			Short idInstitucion) {
+		StringBuilder consulta = new StringBuilder();	
+		consulta.append("SELECT ");
+		consulta.append("UNIDAD.IDINSTITUCION, ");
+		consulta.append("UNIDAD.ANIO, ");
+		consulta.append("UNIDAD.IDTIPOEJG, ");
+		consulta.append("UNIDAD.NUMERO ");
+		consulta.append("FROM ");
+		consulta.append("SCS_UNIDADFAMILIAREJG UNIDAD, ");
+		consulta.append("SCS_PERSONAJG PJG ");
+		consulta.append("WHERE ");
+		consulta.append("UNIDAD.IDINSTITUCION = PJG.IDINSTITUCION ");
+		consulta.append("AND UNIDAD.IDPERSONA = PJG.IDPERSONA ");
+		consulta.append("AND UNIDAD.SOLICITANTE = '1' ");
+		consulta.append("AND PJG.IDINSTITUCION = ");
+		consulta.append(idInstitucion);
+		int contador =0;
+		
+		
+		if ((miHash.containsKey("ANIO")) && (!miHash.get("ANIO").toString().equals(""))) {
+			contador++;
+			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"ANIO"));
+			consulta.append(" AND UNIDAD.ANIO = :");
+			consulta.append(contador);
+			
+		}
+		if ((miHash.containsKey("IDTIPOEJG")) && (!miHash.get("IDTIPOEJG").toString().equals(""))) {
+			contador++;
+			codigos.put(new Integer(contador), UtilidadesHash.getString(miHash, "IDTIPOEJG"));
+			consulta.append(" AND UNIDAD.IDTIPOEJG = :");
+			consulta.append(contador);
+		}
+		
+		if ((miHash.containsKey("NIF")) && (!miHash.get("NIF").toString().equals(""))) {
+			contador++;
+
+			if (isBusquedaExactaSolicitante) {
+				codigos.put(new Integer(contador), ((String) miHash.get("NIF")).trim());
+				consulta.append(" AND LTRIM(UPPER(PJG.NIF), '0') = LTRIM(UPPER(:");
+				consulta.append(contador);
+				consulta.append("), '0')");
+			} else {
+				codigos.put(new Integer(contador), ((String) miHash.get("NIF")).trim() + "%");
+				consulta.append(" AND LTRIM(UPPER(PJG.NIF), '0') LIKE LTRIM(UPPER(:");
+				consulta.append(contador);
+				consulta.append("), '0')");
+			}
+		}
+
+		if ((miHash.containsKey("NOMBRE")) && (!miHash.get("NOMBRE").toString().equals(""))) {
+			contador++;
+			if (isBusquedaExactaSolicitante) {
+				codigos.put(new Integer(contador), ((String) miHash.get("NOMBRE")).trim());
+				consulta.append(" AND UPPER(PJG.NOMBRE) = UPPER(:");
+				consulta.append(contador);
+				consulta.append(")");
+			} else {
+				consulta.append(" AND ");
+				consulta.append(ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(
+						((String) miHash.get("NOMBRE")).trim(), "UPPER(PJG.NOMBRE)", contador, codigos));
+			}
+		}
+
+		if ((miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals(""))) {
+			contador++;
+			if (isBusquedaExactaSolicitante) {
+				codigos.put(new Integer(contador), ((String) miHash.get("APELLIDO1")).trim());
+				consulta.append(" AND UPPER(PJG.APELLIDO1) = UPPER(:");
+				consulta.append(contador);
+				consulta.append(")");
+			} else {
+				consulta.append(" AND ");
+				consulta.append(ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(
+						((String) miHash.get("APELLIDO1")).trim(), "UPPER(PJG.APELLIDO1)", contador, codigos));
+			}
+		}
+
+		if ((miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals(""))) {
+			contador++;
+			if (isBusquedaExactaSolicitante) {
+				codigos.put(new Integer(contador), ((String) miHash.get("APELLIDO2")).trim());
+				consulta.append(" AND UPPER(PJG.APELLIDO2) = UPPER(:");
+				consulta.append(contador);
+				consulta.append(")");
+			} else {
+				consulta.append(" AND ");
+				consulta.append(ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(
+						((String) miHash.get("APELLIDO1")).trim(), "UPPER(PJG.APELLIDO1)", contador, codigos));
+			}
+		}
+		return consulta.toString();
+		
+	}
+	
+	public String getQueryExpedientesByJusticiable(Hashtable miHash,Hashtable codigos, boolean isBusquedaExactaSolicitante,
+			Short idInstitucion) {
+		StringBuilder consulta = new StringBuilder();
+		int contador =0;
+		if (((miHash.containsKey("NIF")) && (!miHash.get("NIF").toString().equals("")))
+				|| ((miHash.containsKey("NOMBRE")) && (!miHash.get("NOMBRE").toString().equals("")))
+				|| ((miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals("")))
+				|| ((miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals("")))) {
+			
+			consulta.append("SELECT 1 ");
+			
+			consulta.append("FROM  ");
+			consulta.append("SCS_UNIDADFAMILIAREJG UNIDAD, SCS_PERSONAJG PJG ");
+			consulta.append("WHERE ");
+			consulta.append("UNIDAD.IDINSTITUCION = PJG.IDINSTITUCION AND UNIDAD.IDPERSONA = PJG.IDPERSONA ");
+			consulta.append("AND UNIDAD.SOLICITANTE = '1' ");
+			consulta.append("AND PJG.IDINSTITUCION = ");
+			consulta.append(idInstitucion);
+			
+			if ((miHash.containsKey("ANIO")) && (!miHash.get("ANIO").toString().equals(""))) {
+				contador++;
+				codigos.put(new Integer(contador),UtilidadesHash.getString(miHash,"ANIO"));
+				consulta.append(" AND UNIDAD.ANIO = :");
+				consulta.append(contador);
+				
+			}
+			if ((miHash.containsKey("IDTIPOEJG")) && (!miHash.get("IDTIPOEJG").toString().equals(""))) {
+				contador++;
+				codigos.put(new Integer(contador), UtilidadesHash.getString(miHash, "IDTIPOEJG"));
+				consulta.append(" AND UNIDAD.IDTIPOEJG = :");
+				consulta.append(contador);
+			}
+			
+
+			if ((miHash.containsKey("NIF")) && (!miHash.get("NIF").toString().equals(""))) {
+				contador++;
+
+				if (isBusquedaExactaSolicitante) {
+					codigos.put(new Integer(contador), ((String) miHash.get("NIF")).trim());
+					consulta.append(" AND LTRIM(UPPER(PJG.NIF), '0') = LTRIM(UPPER(:");
+					consulta.append(contador);
+					consulta.append("), '0')");
+				} else {
+					codigos.put(new Integer(contador), ((String) miHash.get("NIF")).trim() + "%");
+					consulta.append(" AND LTRIM(UPPER(PJG.NIF), '0') LIKE LTRIM(UPPER(:");
+					consulta.append(contador);
+					consulta.append("), '0')");
+				}
+			}
+
+			if ((miHash.containsKey("NOMBRE")) && (!miHash.get("NOMBRE").toString().equals(""))) {
+				contador++;
+				if (isBusquedaExactaSolicitante) {
+					codigos.put(new Integer(contador), ((String) miHash.get("NOMBRE")).trim());
+					consulta.append(" AND UPPER(PJG.NOMBRE) = UPPER(:");
+					consulta.append(contador);
+					consulta.append(")");
+				} else {
+					consulta.append(" AND ");
+					consulta.append(ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(
+							((String) miHash.get("NOMBRE")).trim(), "UPPER(PJG.NOMBRE)", contador, codigos));
+				}
+			}
+
+			if ((miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals(""))) {
+				contador++;
+				if (isBusquedaExactaSolicitante) {
+					codigos.put(new Integer(contador), ((String) miHash.get("APELLIDO1")).trim());
+					consulta.append(" AND UPPER(PJG.APELLIDO1) = UPPER(:");
+					consulta.append(contador);
+					consulta.append(")");
+				} else {
+					consulta.append(" AND ");
+					consulta.append(ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(
+							((String) miHash.get("APELLIDO1")).trim(), "UPPER(PJG.APELLIDO1)", contador, codigos));
+				}
+			}
+
+			if ((miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals(""))) {
+				contador++;
+				if (isBusquedaExactaSolicitante) {
+					codigos.put(new Integer(contador), ((String) miHash.get("APELLIDO2")).trim());
+					consulta.append(" AND UPPER(PJG.APELLIDO2) = UPPER(:");
+					consulta.append(contador);
+					consulta.append(")");
+				} else {
+					consulta.append(" AND ");
+					consulta.append(ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(
+							((String) miHash.get("APELLIDO1")).trim(), "UPPER(PJG.APELLIDO1)", contador, codigos));
+				}
+			}
+
+		}
+		return consulta.toString();
+	}
+	
+	public boolean existenExpedientesByJusticiable(Hashtable miHash, boolean isBusquedaExactaSolicitante,
+			Short idInstitucion) throws BusinessException {
+		boolean existeFiltroJusticiable = false;
+		Hashtable codigos = new Hashtable();
+		String consulta = getQueryExpedientesByJusticiable(miHash, codigos, isBusquedaExactaSolicitante, idInstitucion);
+		
+		if (((miHash.containsKey("NIF")) && (!miHash.get("NIF").toString().equals("")))
+				|| ((miHash.containsKey("NOMBRE")) && (!miHash.get("NOMBRE").toString().equals("")))
+				|| ((miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals("")))
+				|| ((miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals("")))) {
+			existeFiltroJusticiable = true;
+		}
+		boolean existeExpedientesByJusticiable = false;
+//		 List<ScsEJGBean> scsEJGBeans = new ArrayList<ScsEJGBean>();
+		 try {
+			 if(existeFiltroJusticiable) {
+				 Vector datos = this.selectGenericoBind(consulta.toString(), codigos);
+				 existeExpedientesByJusticiable =  datos.size()>0;
+//				 for (int i = 0; i < datos.size(); i++) {
+//					 Hashtable registro = (Hashtable) datos.get(i);
+//					 ScsEJGBean scsEJGBean = new ScsEJGBean();
+//					 scsEJGBean.setIdInstitucion(UtilidadesHash.getInteger(registro,ScsEJGBean.C_IDINSTITUCION));
+//					 scsEJGBean.setAnio(UtilidadesHash.getInteger(registro,ScsEJGBean.C_ANIO));
+//					 scsEJGBean.setNumero(UtilidadesHash.getInteger(registro,ScsEJGBean.C_NUMERO));
+//					 scsEJGBean.setIdTipoEJG(UtilidadesHash.getInteger(registro,ScsEJGBean.C_IDTIPOEJG));
+//					 scsEJGBeans.add(scsEJGBean);
+//					
+//				}
+			}
+			return existeExpedientesByJusticiable;
+			 
+		} catch (Exception e) {
+			log.error("Error no controlado al obtener los EJGS de un justiciable",e);
+			throw new BusinessException("Error no controlado al obtener los EJGS de un justiciable");
+		}
+
+	}
 	
 	public Hashtable getBindBusquedaMantenimientoEJG(Hashtable miHash, DefinirEJGForm miForm, TipoVentana tipoVentana, String idInstitucion,String longitudNumEjg) throws ClsExceptions,SIGAException{
 		
@@ -1417,9 +1653,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 		Hashtable hashReturn = new Hashtable(); 
 
 		Hashtable codigos = new Hashtable();
-		int contador=0;
+		
 		boolean isBusquedaExactaSolicitante = miForm.getValorBusquedaExactaSolicitante()!=null && miForm.getValorBusquedaExactaSolicitante().equals(ClsConstants.DB_TRUE);
 		miHash.put("chkBusquedaExactaSolicitante",isBusquedaExactaSolicitante);
+		
+		
+		
 		boolean esComision=(miHash.containsKey("ESCOMISION") && UtilidadesString.stringToBoolean(miHash.get("ESCOMISION").toString()));
 		boolean buscarPorRemesa=false;
 		boolean isAñadirJoinEstados = TipoVentana.BUSQUEDA_PREPARACION_CAJG.equals(tipoVentana) ||TipoVentana.BUSQUEDA_ANIADIR_REMESA.equals(tipoVentana)
@@ -1481,7 +1720,38 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			
 		// 	Comenzamos a cruzar tablas
 		consulta += " WHERE EJG." + ScsEJGBean.C_IDTIPOEJG + " = TIPOEJG." + ScsTipoEJGBean.C_IDTIPOEJG +" ";
-				   
+		
+		//Filtamos solamente por los expedientes que tienen esos justiciables 
+		int contador = 0;
+		boolean existeFiltroJusticiable = false;
+		if (((miHash.containsKey("NIF")) && (!miHash.get("NIF").toString().equals("")))
+				|| ((miHash.containsKey("NOMBRE")) && (!miHash.get("NOMBRE").toString().equals("")))
+				|| ((miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals("")))
+				|| ((miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals("")))) {
+			existeFiltroJusticiable = true;
+		}
+		if(existeFiltroJusticiable) {
+			boolean existeExpedienteByJusticiable =  existenExpedientesByJusticiable(miHash, isBusquedaExactaSolicitante, Short.parseShort(idInstitucion));
+			
+			if(existeExpedienteByJusticiable) {
+				
+				String filtroJusticiable = addQueryWhereExpedientesByJusticiable(miHash, codigos, isBusquedaExactaSolicitante, Short.parseShort(idInstitucion));
+				
+				
+				consulta += " AND (EJG.IDINSTITUCION,			EJG.ANIO,			EJG.IDTIPOEJG,			EJG.NUMERO) IN (";
+				consulta += filtroJusticiable;
+				consulta +=")";
+				contador = codigos.size(); 
+				
+				
+			}else {
+				//como no hay datos que devolver no seguimos
+				return null;
+				
+			}
+		}
+		
+		
 		if (miForm.getIdRenuncia()!=null && !miForm.getIdRenuncia().trim().equalsIgnoreCase("")) {
 			contador++;
 			codigos.put(new Integer(contador),miForm.getIdRenuncia());
@@ -1932,77 +2202,12 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			codigos.put(new Integer(contador),UtilidadesHash.getString(miHash, "IDTIPOEJGCOLEGIO"));
 			consulta += " AND EJG.IDTIPOEJGCOLEGIO = :" + contador;
 		}
-				
+//			FIXME REVSION DE QUERYS PESADAS	
 		
 		// jbd // Consulta para el interesado
 		// Hasta ahora se estaba haciendo una consulta independiente para cada campo del nombre
 		// Lo optimo es meter todo en la misma consulta
-		if (((miHash.containsKey("NIF")) && (!miHash.get("NIF").toString().equals("")))||
-			((miHash.containsKey("NOMBRE")) && (!miHash.get("NOMBRE").toString().equals("")))||
-			((miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals("")))||
-			((miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals("")))){
-			
-			consulta += " AND (SELECT COUNT(1) " + 
-					" FROM SCS_UNIDADFAMILIAREJG UNIDAD, " +
-						" SCS_EJG EJG2, " +
-						" SCS_PERSONAJG PJG " + 
-					" WHERE UNIDAD.IDINSTITUCION = PJG.IDINSTITUCION " +
-						" AND UNIDAD.IDPERSONA = PJG.IDPERSONA " +
-						" AND EJG2.IDINSTITUCION = UNIDAD.IDINSTITUCION(+) " +
-						" AND EJG2.ANIO = UNIDAD.ANIO(+) " +
-						" AND EJG2.NUMERO = UNIDAD.NUMERO(+) " +
-						" AND EJG2.IDTIPOEJG = UNIDAD.IDTIPOEJG(+) " +
-						" AND UNIDAD.SOLICITANTE(+) = '1' " +
-						" AND EJG2.IDINSTITUCION = EJG.IDINSTITUCION " +
-						" AND EJG2.ANIO = EJG.ANIO " + 
-						" AND EJG2.NUMERO = EJG.NUMERO " + 
-						" AND EJG2.IDTIPOEJG = EJG.IDTIPOEJG ";
-			
-			if ((miHash.containsKey("NIF")) && (!miHash.get("NIF").toString().equals(""))){
-				contador++;
-				
-				if(isBusquedaExactaSolicitante){
-					codigos.put(new Integer(contador), ((String)miHash.get("NIF")).trim());
-					consulta += " AND LTRIM(UPPER(PJG.NIF), '0') = LTRIM(UPPER(:"+contador+"), '0') ";
-				}
-				else{
-					codigos.put(new Integer(contador), ((String)miHash.get("NIF")).trim() + "%");
-					consulta += " AND LTRIM(UPPER(PJG.NIF), '0') LIKE LTRIM(UPPER(:"+contador+"), '0') ";
-				}
-			}
-			
-			if ((miHash.containsKey("NOMBRE")) && (!miHash.get("NOMBRE").toString().equals(""))){
-				contador++;
-				if(isBusquedaExactaSolicitante){
-					codigos.put(new Integer(contador), ((String)miHash.get("NOMBRE")).trim());
-					consulta += " AND UPPER(PJG.NOMBRE) = UPPER(:"+contador+") "; 
-				}
-				else
-					consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(((String)miHash.get("NOMBRE")).trim(), "UPPER(PJG.NOMBRE)", contador, codigos);
-			}
-			
-			if ((miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals(""))){
-				contador++; 
-				if(isBusquedaExactaSolicitante){
-					codigos.put(new Integer(contador), ((String)miHash.get("APELLIDO1")).trim());
-					consulta += " AND UPPER(PJG.apellido1) = UPPER(:"+contador+") "; 
-				}
-				else
-					consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(((String)miHash.get("APELLIDO1")).trim(), "UPPER(PJG.apellido1)", contador, codigos);
-			}
-			
-			if ((miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals(""))){
-				contador++;
-				if(isBusquedaExactaSolicitante){
-					codigos.put(new Integer(contador), ((String)miHash.get("APELLIDO2")).trim());
-					consulta += " AND UPPER(PJG.apellido2) = UPPER(:"+contador+") "; 
-				}
-				else
-					consulta += " AND " + ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(((String)miHash.get("APELLIDO2")).trim(), "UPPER(PJG.apellido2)", contador, codigos);
-			}
-			
-			consulta += ") >0 ";
-		}
+		
 
 		if ((miHash.containsKey("JUZGADO")) && (!miHash.get("JUZGADO").toString().equals(""))) {
 			/*String a[]=((String)miHash.get("JUZGADO")).split(",");
