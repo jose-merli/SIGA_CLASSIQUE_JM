@@ -621,7 +621,7 @@ public class MantenimientoJuzgadoAction extends MasterAction {
 		//19,2035,13,06/07/2023,06/07/2023
 		String[] valoresCombo = idCombo.split(",");
 		
-		if(valoresCombo.length>2) {
+		if(valoresCombo.length>=2) {
 			String idJuzgado = valoresCombo[0];
 			String idInstitucion = valoresCombo[1];
 			String where = " WHERE IDJUZGADO="+idJuzgado+" AND IDINSTITUCION = "+idInstitucion;
