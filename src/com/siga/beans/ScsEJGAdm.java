@@ -1503,7 +1503,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 			} else {
 				consulta.append(" AND ");
 				consulta.append(ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(
-						((String) miHash.get("APELLIDO1")).trim(), "UPPER(PJG.APELLIDO1)", contador, codigos));
+						((String) miHash.get("APELLIDO2")).trim(), "UPPER(PJG.APELLIDO2)", contador, codigos));
 			}
 		}
 		return consulta.toString();
