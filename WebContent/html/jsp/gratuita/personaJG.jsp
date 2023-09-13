@@ -2886,7 +2886,6 @@ function validaNombreApellidos() {
 		
 		//Asociada al boton Guardar -->
 		function accionGuardar(){	
-
  			document.PersonaJGForm.existeDomicilio.value = "S";
  			if(document.getElementById("txtpoblacion").value=="")
  				document.forms[0].poblacion.value="";
@@ -3007,14 +3006,25 @@ function validaNombreApellidos() {
 								document.forms[0].NIdentificacion.value=="")
 								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nIdentificacion'/>"+ '\n';
 						}
-						if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1)
-							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
-						if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value=="")
-							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
+						
+						
+						paisSeleccionado = document.forms[0].idPaisDireccion;
+						if(paisSeleccionado.value ==''|| paisSeleccionado.value =='191' ){
+						
+							if (<%=obligatorioDireccion%> && document.forms[0].direccion.value.length<1)
+								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
+							if (<%=obligatorioCodigoPostal%> && document.forms[0].cp.value=="")
+								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.cp'/>"+ '\n';
 							if (<%=obligatorioPoblacion%> && (document.forms[0].poblacion.value==""||document.getElementById("txtpoblacion").value==""))
 								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
 							else if (document.getElementById("txtpoblacion").value!="" && document.forms[0].poblacion.value=="")
 								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.poblacion'/>"+ '\n';
+						}else{
+							if (<%=obligatorioDireccion%> && document.forms[0].direccionExtranjera.value.length<1  )
+								error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.direccion'/>"+ '\n';
+						}
+								
+								
 						if (<%=obligatorioNacionalidad%> && document.forms[0].nacionalidad.value =="")
 							error += "<siga:Idioma key='errors.required' arg0='gratuita.personaJG.literal.nacionalidad'/>"+ '\n';						
 						if (<%=obligatorioIngreso%> && document.forms[0].importeIngresosAnuales.value =="")
