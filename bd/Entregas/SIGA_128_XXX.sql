@@ -1308,4 +1308,15 @@ values ('ENV', 'HORA_COMUNICACIONES_EDITABLE', '1', SYSDATE, 1, 0, 'env.parametr
 
 CREATE INDEX ECOM_INTERCAMBIO_IDECOMCOLA_IDX ON USCGAE_DESA.ECOM_INTERCAMBIO (IDECOMCOLA);
 
+ALTER TABLE FAC_FACTURACIONPROGRAMADA ADD FECHAPREVISTAPDFYENVIO DATE NULL;
+UPDATE FAC_FACTURACIONPROGRAMADA SET FECHAPREVISTAPDFYENVIO = FECHACONFIRMACION WHERE IDESTADOENVIO= 15;
+
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('fac.parametro.horapdfyenvio', 'Parámetro que dice la hora a la que generar los pdf y envios de la facturacion', 0, '1', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('fac.parametro.horapdfyenvio', 'Parámetro que dice la hora a la que generar los pdf y envios de la facturacion#CA', 0, '2', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('fac.parametro.horapdfyenvio', 'Parámetro que dice la hora a la que generar los pdf y envios de la facturacion#EU', 0, '3', sysdate, 0, '19');
+insert into GEN_RECURSOS (IDRECURSO, DESCRIPCION, ERROR, IDLENGUAJE, FECHAMODIFICACION, USUMODIFICACION, IDPROPIEDAD) values ('fac.parametro.horapdfyenvio', 'Parámetro que dice la hora a la que generar los pdf y envios de la facturacion#GL', 0, '4', sysdate, 0, '19');
+
+insert into GEN_PARAMETROS (MODULO, PARAMETRO, VALOR, FECHAMODIFICACION, USUMODIFICACION, IDINSTITUCION, IDRECURSO, FECHA_BAJA)
+values ('FAC', 'HORA_PDF_Y_ENVIO', '16:00', SYSDATE, 1, 0, 'fac.parametro.horapdfyenvio', null);
+
 

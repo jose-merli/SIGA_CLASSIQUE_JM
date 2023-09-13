@@ -23,6 +23,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.json.JSONObject;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -106,7 +107,15 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				mapDestino = consultarFacturas(mapping, miForm, request, response);
 			} else if (accion.equalsIgnoreCase("editarFechas")){
 				mapDestino = editarFechas(mapping, miForm, request, response);
-			} else if (accion.equalsIgnoreCase("actualizarDatosSerieFacturacion")){
+			}
+			else if (accion.equalsIgnoreCase("editarFechasPdfYenvio")){
+				mapDestino = editarFechasPdfYenvio(mapping, miForm, request, response);
+			}else if (accion.equalsIgnoreCase("modificarGeneracionPdfYEnvio")){
+				mapDestino = modificarGeneracionPdfYEnvio(mapping, miForm, request, response);
+			}
+			
+			
+			else if (accion.equalsIgnoreCase("actualizarDatosSerieFacturacion")){
 				mapDestino = actualizarDatosSerieFacturacion(mapping, miForm, request, response);
 			}else if (accion.equalsIgnoreCase("buscarInit")){
 				borrarPaginador(request, paginador);
@@ -908,10 +917,39 @@ public class ConfirmarFacturacionAction extends MasterAction{
 			ses.setAttribute("ModoAction","editar");
 			request.setAttribute("accionInit","FAC_ConfirmarFacturacion");		
 			
+			/** CR - Obtener informacion de factura en estado confirmada para mostrarselo en la ventan de consulta **/
+			
+			FacHistoricoFacturaAdm admHistFac = new FacHistoricoFacturaAdm(user); // CGP - R1709_0035
+			Vector datosInformeFac = null;
+			Vector datosInformeFacOriginal=null; // CGP - R1709_0035
+			if(hash.get("IDESTADOCONFIRMACION") != null && ((String)hash.get("IDESTADOCONFIRMACION")).equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA.toString())){			
+				String sql = "	SELECT f_siga_getrecurso(FP.DESCRIPCION, 1)	AS FORMA_PAGO,   	"+
+							 "      F_SIGA_CALCULAFORMATO(SUM(fac.imptotal - fac.imptotalanticipado)) AS IMPORTE, "+
+							 "      F_SIGA_CALCULAFORMATO(SUM(fac.imptotalanticipado)) AS ANTICIPADO, "+
+							 "      COUNT(*) AS NUM_FACTURAS									"+
+							 " 	FROM PYS_FORMAPAGO FP, FAC_FACTURA FAC, FAC_FACTURACIONPROGRAMADA PROG	"+
+							 " 	WHERE FP.IDFORMAPAGO = FAC.IDFORMAPAGO						"+
+							 "  	AND FAC.IDINSTITUCION = PROG.IDINSTITUCION				"+
+							 " 		AND FAC.IDSERIEFACTURACION = PROG.IDSERIEFACTURACION	"+
+							 "		AND FAC.IDPROGRAMACION = PROG.IDPROGRAMACION			"+
+							 "		AND PROG.IDSERIEFACTURACION = " + idSerieFacturacion     +
+							 "		AND PROG.IDPROGRAMACION = 	  " + idProgramacion		 +
+							 " 		AND PROG.IDINSTITUCION =      " + idInstitucion			 +
+							 " GROUP BY FP.DESCRIPCION	";
+				datosInformeFac = admFacturacionProgramada.selectGenerico(sql);
+				datosInformeFacOriginal = admHistFac.obtenerInformacionHistorico(new Long(idSerieFacturacion), new Long(idProgramacion),new Integer( idInstitucion)); // CGP - R1709_0035
+				
+			}
+			request.setAttribute("datosInformeFac",datosInformeFac);
+			request.setAttribute("datosInformeFacOriginal",datosInformeFacOriginal); // CGP - R1709_0035
+			
 			// obtengo el parametro general 'SEPA_TIPO_FICHEROS'
 			GenParametrosAdm admParametros = new GenParametrosAdm(user);
 			String tiposFicherosAdeudo = admParametros.getValor(user.getLocation(), "FAC", "SEPA_TIPO_FICHEROS", "0"); // Por defecto solo n1914
 			request.setAttribute("tiposFicherosAdeudo", tiposFicherosAdeudo);
+			
+			
+
 			
 		}  catch (Exception e) { 
 			throwExcp("messages.general.error",new String[] {"modulo.facturacion"},e,null); 
@@ -919,6 +957,15 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		
 		return result;
 	}
+	protected String editarFechasPdfYenvio(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		String result = editarFechas(mapping, formulario, request, response);
+		HttpSession ses = request.getSession();
+		ses.setAttribute("ModoAction","editarFechasPdfYenvio");
+		
+		
+		return result;
+	}
+	
 	
 	/** 
 	 *  Funcion que atiende la accion insertar
@@ -1112,6 +1159,17 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				bean.setFechaPrevistaConfirmacion("");		
 			}
 			
+			if (form.getFechaPrevistaPdfYEnvio()!=null && !form.getFechaPrevistaPdfYEnvio().equals("")) {
+				aux = form.getFechaPrevistaPdfYEnvio().substring(0,form.getFechaPrevistaPdfYEnvio().length()-9) + " " + ((form.getHoraPrevistaPdfYEnvio().trim().equals(""))?"00":form.getHoraPrevistaPdfYEnvio())+":"+((form.getMinutosPrevistaPdfYEnvio().trim().equals(""))?"00":form.getMinutosPrevistaPdfYEnvio())+":00";
+				bean.setFechaPrevistaPdfYEnvio(aux);			
+			}else{
+				bean.setFechaPrevistaPdfYEnvio("");		
+			}
+			
+			
+			
+			
+			
 			if (form.getFechaCargo()!=null && !form.getFechaCargo().equals("")) {							
 				bean.setFechaCargo(form.getFechaCargo());
 			}else{
@@ -1142,6 +1200,106 @@ public class ConfirmarFacturacionAction extends MasterAction{
 		return bean;
 	}	
 
+	
+	
+	protected String modificarGeneracionPdfYEnvio(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		ConfirmarFacturacionForm form = (ConfirmarFacturacionForm)formulario;
+		String salida="";
+		
+		try
+		{	
+						
+			FacFacturacionProgramadaAdm adm = new FacFacturacionProgramadaAdm(this.getUserBean(request));
+			FacFacturacionProgramadaBean bean = getDatos(form, request);
+			Enumeration en = ((Vector)request.getSession().getAttribute("DATABACKUP")).elements();
+			Hashtable<String,Object> hash = (Hashtable<String,Object>)en.nextElement();
+			
+			
+			String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION,FacFacturacionProgramadaBean.C_IDPROGRAMACION,FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
+    		String [] camposFactura = {FacFacturacionProgramadaBean.C_GENERAPDF,FacFacturacionProgramadaBean.C_ENVIO,FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL,FacFacturacionProgramadaBean.C_FECHAPREVISTAPDFYENVIO,FacFacturacionProgramadaBean.C_IDESTADOENVIO,FacFacturacionProgramadaBean.C_IDESTADOPDF};
+			
+			
+			
+			
+			// Recogemos la hashOriginal							
+			bean.setOriginalHash(hash);
+			bean.setIdProgramacion(UtilidadesHash.getLong(hash, FacFacturacionProgramadaBean.C_IDPROGRAMACION));
+			bean.setIdSerieFacturacion(UtilidadesHash.getLong(hash, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION));
+			bean.setIdInstitucion(UtilidadesHash.getInteger(hash, FacFacturacionProgramadaBean.C_IDINSTITUCION));
+
+			bean.setGenerarPDF((form.getGenerarPDF()!=null)?"1":"0");			
+			bean.setEnvio((form.getEnviarFacturas()!=null)?"1":"0");
+			
+			//si hay que realizar el envio es obligatorio la plantilla
+			if (bean.getEnvio().equals(AppConstants.DB_TRUE)) {
+				bean.setIdEstadoEnvio(FacEstadoConfirmFactBean.ENVIO_PROGRAMADA);
+				String idTipoPlantillaMail = null;
+				if(form.getIdTipoPlantillaMail()!=null && !form.getIdTipoPlantillaMail().equals("")){
+					idTipoPlantillaMail = form.getIdTipoPlantillaMail().split(",")[0];
+					bean.setIdTipoPlantillaMail(Integer.parseInt(idTipoPlantillaMail));
+					bean.setIdTipoEnvios(1);
+				}				
+				bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_PROGRAMADA);
+				bean.setGenerarPDF(AppConstants.DB_TRUE);
+			}else {
+				bean.setIdEstadoEnvio(FacEstadoConfirmFactBean.ENVIO_NOAPLICA);
+				bean.setIdTipoPlantillaMail(null);
+				bean.setIdTipoEnvios(null);
+				
+			}			
+			//si es obligatorio la generacion del pdf, es obligatoria la fecha
+			if(bean.getGenerarPDF().equalsIgnoreCase(AppConstants.DB_TRUE)) {
+			
+				if (form.getFechaPrevistaPdfYEnvio()!=null && !form.getFechaPrevistaPdfYEnvio().equals("")) {
+					SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_MEDIUM_SPANISH);
+	    			StringBuilder fecha = new StringBuilder();
+	    			fecha.append(form.getFechaPrevistaPdfYEnvio());
+	    			fecha.append(" ");
+	    			fecha.append(form.getHoraPrevistaPdfYEnvio());
+	    			fecha.append(":");
+	    			fecha.append(form.getMinutosPrevistaPdfYEnvio());
+	//    			fecha.append(":0");
+	    			Date fechaPrevistaPdfYEnvioDate = sdf.parse(fecha.toString());
+	    			sdf.applyPattern(ClsConstants.DATE_FORMAT_JAVA);
+	    			String fechaPrevistaPdfYEnvio = sdf.format(fechaPrevistaPdfYEnvioDate);
+					bean.setFechaPrevistaPdfYEnvio(fechaPrevistaPdfYEnvio);
+					bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_PROGRAMADA);
+			
+				}else {
+					bean.setFechaPrevistaPdfYEnvio(null);
+					bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_PENDIENTE);
+				}
+			}else {
+				bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_NOAPLICA);
+				bean.setFechaPrevistaPdfYEnvio(null);
+			}
+				
+			
+//				bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_PENDIENTE);
+//				bean.setIdEstadoEnvio(FacEstadoConfirmFactBean.ENVIO_PENDIENTE);
+//				bean.setFechaPrevistaPdfYEnvio("");		
+//			
+
+			// Modificamos el registro.
+			if(!adm.updateDirect(bean, claves, camposFactura)){
+				throw new SIGAException (adm.getError());
+			}			
+			salida = exitoRefresco("messages.updated.success",request);
+			
+		} catch (SIGAException e) {
+			String sms = e.getLiteral();
+			if (sms == null || sms.equals("")) {
+				sms = "messages.general.error";
+			}
+			throwExcp(sms, new String[] {"modulo.facturacion"}, e,null);					
+			
+		} catch (Exception e) {
+			throwExcp("messages.general.error",new String[] {"modulo.facturacion"}, e,null);
+		}
+		return salida;		
+	}
+	
+	
 	/** 
 	 *  Funcion que atiende la accion modificarr. Permiote modificar los datos del registro seleccionado 
 	 * @param  mapping - Mapeo de los struts
@@ -1151,6 +1309,8 @@ public class ConfirmarFacturacionAction extends MasterAction{
 	 * @return  String  Destino del action  
 	 * @exception  SIGAException  En cualquier caso de error
 	 */
+	
+	
 	protected String modificar(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
 		UserTransaction tx = null;	
 		ConfirmarFacturacionForm form = (ConfirmarFacturacionForm)formulario;
@@ -1198,6 +1358,8 @@ public class ConfirmarFacturacionAction extends MasterAction{
 				SimpleDateFormat sdf = new SimpleDateFormat(ClsConstants.DATE_FORMAT_SHORT_SPANISH);
 				fechaPrevistaConfirmacion = sdf.format(dFechaPrevistaConfirmacion); // Fecha con formato dd/MM/yyyy	
 			}	
+			
+			
 			
 			String idInstitucion = this.getIDInstitucion(request).toString();
 			String fechaEntrega = form.getFechaPresentacion();

@@ -49,7 +49,7 @@
 	String fRealConfirmacion;
 	String fPrevistaConfirmacion;
 	String sEstadoConfirmacion;
-	String sEstadoPDF;
+	String sEstadoPDF = null;
 	String sEstadoEnvios;
 	String sCheckArchivado;
 	String fCargo=null;
@@ -288,7 +288,28 @@
 		   document.confirmarFacturacionForm.submit();
 		   document.confirmarFacturacionForm.target=auxTarget;
 		 }
-		 		
+		function editarFechasPdfYEnvio(fila) {
+			var datos = document.getElementById('tablaDatosDinamicosD');
+			datos.value = "";
+			var flag = true;
+			var j = 1;
+			while (flag) {
+			  	var aux = 'oculto' + fila + '_' + j;
+			  	var oculto = document.getElementById(aux);
+			  	if (oculto == null)  {
+				  	flag = false;
+				} else {
+					datos.value = datos.value + oculto.value + ',';
+				}
+			  	j++;
+			}
+			datos.value = datos.value + "%";
+			
+			document.confirmarFacturacionForm.modo.value = "editarFechasPdfYenvio";
+			document.confirmarFacturacionForm.submit();
+		}
+		
+		
 		function editarFacturacion(fila) {
 			var datos = document.getElementById('tablaDatosDinamicosD');
 			datos.value = "";
@@ -424,10 +445,13 @@
 								fRealGeneracion = UtilidadesString.mostrarDatoJSP(com.atos.utils.GstDate.getFormatedDateShort("", (String)htData.get(FacFacturacionProgramadaBean.C_FECHAREALGENERACION)));
 								fCargo =  UtilidadesString.mostrarDatoJSP((String)htData.get("FECHACARGO"));
 								if(htEstados!=null){
+									sEstadoPDF = (String)htData.get("IDESTADOPDF");
 									sEstadoConfirmacion =  UtilidadesString.mostrarDatoJSP(htEstados.get((String)htData.get("IDESTADOCONFIRMACION")));
 								}else{
 									sEstadoConfirmacion =  UtilidadesString.mostrarDatoJSP(admEstados.getDescripcion((String)htData.get("IDESTADOCONFIRMACION"), "C", usr.getLanguage()));
 								}
+								
+								
 								
 								sCheckArchivado = (String)htData.get("ARCHIVARFACT");
 								String idProgramacion = (String)htData.get("IDPROGRAMACION");
@@ -448,7 +472,7 @@
 									nombreFichero=(String)htData.get("NOMBREFICHERO");
 								}
 		
-								FilaExtElement[] elems = new FilaExtElement[7];
+								FilaExtElement[] elems = new FilaExtElement[8];
 								
 								//TODOS LOS ESTADOS
 								elems[0] = new FilaExtElement("consultar", "consultarfactura", SIGAConstants.ACCESS_READ);
@@ -479,7 +503,12 @@
 								
 								// ESTADO CONFIRMADA
 								if (idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_FINALIZADA)) {
-									elems[1] = new FilaExtElement("archivar", "archivar", SIGAConstants.ACCESS_READ);
+									if (sEstadoPDF!=null && sEstadoPDF.equals(""+FacEstadoConfirmFactBean.PDF_PROGRAMADA)){
+										elems[1] = new FilaExtElement("editar", "editarFechasPdfYEnvio", SIGAConstants.ACCESS_READ);	
+									} else{
+										elems[1] = new FilaExtElement("archivar", "archivar", SIGAConstants.ACCESS_READ);
+									}
+									
 									elems[2] = new FilaExtElement("download", "download", SIGAConstants.ACCESS_READ);
 									if((sCheckArchivado== null || !sCheckArchivado.equals("1")) && (htData.get("IDESTADOPDF")!= null && !((String)htData.get("IDESTADOPDF")).equals(String.valueOf(FacEstadoConfirmFactBean.PDF_FINALIZADAERRORES.intValue())) )){
 										elems[3] = new FilaExtElement("enviar", "enviar", SIGAConstants.ACCESS_READ);
@@ -511,7 +540,13 @@
 										}else if(((String)htData.get("IDESTADOPDF")).equals(String.valueOf(FacEstadoConfirmFactBean.PDF_PROCESANDO.intValue()))){
 											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nGenerando PDF");
 										}else if(((String)htData.get("IDESTADOPDF")).equals(String.valueOf(FacEstadoConfirmFactBean.PDF_PROGRAMADA.intValue()))){
-											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nGenerando PDF");
+											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nPDF programado");
+										}else if(((String)htData.get("IDESTADOPDF")).equals(String.valueOf(FacEstadoConfirmFactBean.PDF_NOAPLICA.intValue()))){
+											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nNo genera PDF");
+											elems[1] = new FilaExtElement("editar", "editarFechasPdfYEnvio", SIGAConstants.ACCESS_READ);
+										}else if(((String)htData.get("IDESTADOPDF")).equals(String.valueOf(FacEstadoConfirmFactBean.PDF_PENDIENTE.intValue()))){
+											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nPDF pendiente");
+											elems[1] = new FilaExtElement("editar", "editarFechasPdfYEnvio", SIGAConstants.ACCESS_READ);
 										}
 									}
 									
@@ -527,6 +562,10 @@
 											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nEnvío programado");
 										}else if(((String)htData.get("IDESTADOENVIO")).equals(String.valueOf(FacEstadoConfirmFactBean.ENVIO_PENDIENTE.intValue()))){
 											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nEnvío pendiente");
+										}else if(((String)htData.get("IDESTADOENVIO")).equals(String.valueOf(FacEstadoConfirmFactBean.ENVIO_NOAPLICA.intValue()))){
+											sEstadoConfirmacion +=  UtilidadesString.mostrarDatoJSP("\nNo se envía");
+											elems[7] = new FilaExtElement("archivar", "archivar", SIGAConstants.ACCESS_READ);
+											elems[1] = new FilaExtElement("editar", "editarFechasPdfYEnvio", SIGAConstants.ACCESS_READ);
 										}
 									}
 								}

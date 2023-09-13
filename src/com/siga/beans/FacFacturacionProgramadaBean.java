@@ -24,7 +24,7 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 					fechaRealGeneracion, fechaConfirmacion, fechaProgramacion, 
 					generarPDF, traspasoFacturas, envio,archivarFact,fechaPrevistaConfirmacion,fechaPrevistaGeneracion,
 					fechaCargo, confIngresos, confDeudor, ctaIngresos, ctaClientes, visible, descripcion, realizarEnvio, 
-					traspasoPlantilla, traspasoCodAuditoriaDef;
+					traspasoPlantilla, traspasoCodAuditoriaDef,fechaPrevistaPdfYEnvio;
 	
 	private String fechaPresentacion, fechaRecibosPrimeros, fechaRecibosRecurrentes, fechaRecibosCOR1, fechaRecibosB2B;
 
@@ -75,6 +75,7 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	static public final String C_NOMBREFICHERO				= "NOMBREFICHERO";
 	static public final String C_LOGERROR					= "LOGERROR";
 	static public final String C_LOGTRASPASO				= "LOGTRASPASO";
+	static public final String C_FECHAPREVISTAPDFYENVIO				= "FECHAPREVISTAPDFYENVIO";
 	
 
 	// Metodos SET
@@ -109,7 +110,7 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	public void setCtaClientes (String id)				{ this.ctaClientes = id; }
 	public void setVisible (String id)				{ this.visible = id; }
 	public void setDescripcion(String descripcion) 	{ this.descripcion = descripcion; }
-
+	public void setFechaPrevistaPdfYEnvio (String f)	{ this.fechaPrevistaPdfYEnvio = f; }
 
 	// Metodos GET
 	public Integer getIdInstitucion 			()	{ return this.idInstitucion; }
@@ -144,7 +145,7 @@ public class FacFacturacionProgramadaBean extends MasterBean {
 	public String    getVisible				()	{ return this.visible; }
 	public String getDescripcion			() 	{ return descripcion;	}
 
-	
+	public String  getFechaPrevistaPdfYEnvio	()	{ return this.fechaPrevistaPdfYEnvio; }
 	public String getFechaCargo() {
 		return fechaCargo;
 	}

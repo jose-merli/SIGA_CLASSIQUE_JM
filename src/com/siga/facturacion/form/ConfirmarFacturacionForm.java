@@ -32,7 +32,29 @@ public class ConfirmarFacturacionForm extends MasterForm{
 	private String fechaRecibosCOR1;
 	private String fechaRecibosB2B;
 	private String idTipoProducto, idProducto;
+	private String fechaPrevistaPdfYEnvio;
+	private String horaPrevistaPdfYEnvio;
+	private String minutosPrevistaPdfYEnvio;
+	public String getHoraPrevistaPdfYEnvio() {
+		return horaPrevistaPdfYEnvio;
+	}
+	public void setHoraPrevistaPdfYEnvio(String horaPrevistaPdfYEnvio) {
+		this.horaPrevistaPdfYEnvio = horaPrevistaPdfYEnvio;
+	}
+	public String getMinutosPrevistaPdfYEnvio() {
+		return minutosPrevistaPdfYEnvio;
+	}
+	public void setMinutosPrevistaPdfYEnvio(String minutosPrevistaPdfYEnvio) {
+		this.minutosPrevistaPdfYEnvio = minutosPrevistaPdfYEnvio;
+	}
 	
+	
+	public String getFechaPrevistaPdfYEnvio() {
+		return fechaPrevistaPdfYEnvio;
+	}
+	public void setFechaPrevistaPdfYEnvio(String fechaPrevistaPdfYEnvio) {
+		this.fechaPrevistaPdfYEnvio = fechaPrevistaPdfYEnvio;
+	}
 	/**
 	 * @return the fechaDesdeConfirmacion
 	 */

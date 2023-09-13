@@ -49,6 +49,10 @@
 	String sHorasGeneracion 	= "";
 	String sMinutosConfirmacion 	= "";
 	String sMinutosGeneracion 	= "";
+	String sFPrevistaGeneracionPdfYEnvio 	= "";	
+	String sHorasGeneracionPdfYEnvio 	= "";
+	String sMinutosGeneracionPdfYEnvio 	= "";
+	
 	String sFCargoFicheroBanco 	= "";
 	String sHorasCargoFicheroBanco 	= "";
 	String sMinutosCargoFicheroBanco 	= "";
@@ -57,6 +61,7 @@
 	String generarPDF 	= "";
 	String idProgramacionSF 	= "";
 	String idEstadoConfirmacion="";
+	String idEstadoPdf="";
 	boolean bEditableConfirmacion = true;
 	boolean bEditableGeneracion = true;
 	boolean bEditable = true;
@@ -98,6 +103,7 @@
 		sFRealGeneracion = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAREALGENERACION);
 		idEstadoConfirmacion = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION);
 		estadoConfirmacionSel.add(idEstadoConfirmacion);
+		idEstadoPdf = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION);
 
 		sFPrevistaGeneracion = com.atos.utils.GstDate.getFormatedDateShort("", UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION));
 		String aux = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION);
@@ -110,6 +116,15 @@
 			sHorasConfirmacion = aux.substring(11,13);
 			sMinutosConfirmacion = aux.substring(14,16);		
 		}
+		
+		sFPrevistaGeneracionPdfYEnvio = com.atos.utils.GstDate.getFormatedDateShort("", UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAPREVISTAPDFYENVIO));		
+		aux = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAPREVISTAPDFYENVIO);
+		if (!aux.equals("")) {
+			sHorasGeneracionPdfYEnvio = aux.substring(11,13);
+			sMinutosGeneracionPdfYEnvio = aux.substring(14,16);		
+		}
+		
+	
 		
 		sFCargoFicheroBanco =com.atos.utils.GstDate.getFormatedDateShort("", UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHACARGO));
 		auxFcargo = UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHACARGO);
@@ -225,222 +240,266 @@
 
 
 		function refrescarLocal() {	
-			document.confirmarFacturacionForm.modo.value="editarFechas";
+			if(document.confirmarFacturacionForm.modo.value=='modificarGeneracionPdfYEnvio')
+				document.confirmarFacturacionForm.modo.value="editarFechasPdfYenvio";
+			else
+				document.confirmarFacturacionForm.modo.value="editarFechas";
 			document.confirmarFacturacionForm.target = "mainWorkArea";
 			document.confirmarFacturacionForm.submit();
 		}
 		
 		// Asociada al boton GuardarCerrar
 		function accionGuardar() {	
-
-			var fechaConf = trim(document.confirmarFacturacionForm.fechaPrevistaConfirmacion.value);
-			var fechaGen = trim(document.confirmarFacturacionForm.fechaPrevistaGeneracion.value);
-			f=document.confirmarFacturacionForm;			
-				
-			sub();
-			
-			if (trim(fechaGen)!="") {
-				//Para la validacion no tengo en cuenta si empieza por 0 y tiene 2 digitos (tanto hora como minuto)
-				var horas = trim(document.confirmarFacturacionForm.horasGeneracion.value);
-				var minutos = trim(document.confirmarFacturacionForm.minutosGeneracion.value);
-
-				if (horas.length==1) {
-					document.confirmarFacturacionForm.horasGeneracion.value = "0" + horas;
-				}
-				if (minutos.length==1) {
-					document.confirmarFacturacionForm.minutosGeneracion.value = "0" + minutos;
-				}
-				if (horas!="" && (horas>23 || horas<0)) {
+			if(<%=modoAction.equalsIgnoreCase("editarFechasPdfYenvio")%>){
+				f=document.confirmarFacturacionForm;
+				if(f.generarPDF.checked){
+				//if(f.generarPDF && f.generarPDF.value && f.generarPDF.value=='on'){
 					
-					alert('<siga:Idioma key="messages.programarFacturacionForm.mensajeHoras"/>');
-					fin();
-					return false;
-				}
-				if (minutos!="" && (minutos>59 || minutos<0)) {
-					alert('<siga:Idioma key="messages.programarFacturacionForm.mensajeMinutos"/>');
-					fin();
-					return false;
-				}
-				
-				<% if (bEditable) { %>
-					 
-					fechaActual = getFechaActualDDMMYYYY();
-					// LA FECHA COBRO ES OBLIGATORIA SI ESTA MARCADO EL CHECK DE COBRO
-					if(compararFecha(trim(fechaGen),fechaActual) == 2){
-						alert("La Fecha Prevista de Generacíon no puede ser anterior al día actual");
-						fin();
-					 	return false;
-					 }						
-				
-				<% } %>
-			}	
-			
-			if (trim(fechaConf)!="") {
-				horas = trim(document.confirmarFacturacionForm.horasConfirmacion.value);
-				minutos = trim(document.confirmarFacturacionForm.minutosConfirmacion.value);
-				if (horas.length==1) {
-					document.confirmarFacturacionForm.horasConfirmacion.value = "0" + horas;
-				}
-				if (minutos.length==1) {
-					document.confirmarFacturacionForm.minutosConfirmacion.value = "0" + minutos;
-				}
-				if (horas!="" && (horas>23 || horas<0)) {
-					alert('<siga:Idioma key="messages.programarFacturacionForm.mensajeHoras"/>');
-					fin();
-					return false;
-				}
-				if (minutos!="" && (minutos>59 || minutos<0)) {
-					alert('<siga:Idioma key="messages.programarFacturacionForm.mensajeMinutos"/>');
-					fin();
-					return false;
-				}
-			}
-		
-			var valor = "";				
-				
-			if (trim(fechaGen)!="") {
-				valor = trim(f.horasGeneracion.value);
-	            if (!IsNum(valor)) {
-	            	alert ("<siga:Idioma key='facturacion.seriesFacturacion.literal.horasGeneracion'/>");
-	            	fin();
-	            	return false;
-				}
-				valor = trim(f.minutosGeneracion.value);
-	            if (!IsNum(valor)) {
-	            	alert ("<siga:Idioma key='facturacion.seriesFacturacion.literal.minutosGeneracion'/>");
-	            	fin();
-	            	return false;
-				}
-			}
-			
-			if (trim(fechaConf)!="") {
-			
-				valor = trim(f.horasConfirmacion.value);
-	            if (!IsNum(valor)) {
-	            	alert ("<siga:Idioma key='facturacion.seriesFacturacion.literal.horasConfirmacion'/>");
-	            	fin();
-	            	return false;
-				}
-				valor = trim(f.minutosConfirmacion.value);
-	            if (!IsNum(valor)) {
-	            	alert ("<siga:Idioma key='facturacion.seriesFacturacion.literal.minutosConfirmacion'/>");
-	            	fin();
-	            	return false;
-				}
-			}
-
-			if (!validateConfirmarFacturacionForm(document.confirmarFacturacionForm)){	
-				fin();
-				return false;
-			}
-			
-			if((f.fechaInicialProducto.value!= '' && f.fechaFinalProducto.value!= '') || (f.fechaInicialServicio.value!= '' && f.fechaFinalServicio.value!= '')){ 
-				// Comprobamos las fechas
-				if (compararFechaRuano (f.fechaInicialProducto, f.fechaFinalProducto) == -1 || compararFechaRuano (f.fechaInicialProducto, f.fechaFinalProducto) == 1) {
-					alert ("<siga:Idioma key='messages.fechas.rangoFechas'/>");
-					fin();
-					return false;
-				}
-				
-				if (compararFechaRuano (f.fechaInicialServicio, f.fechaFinalServicio) == -1 || compararFechaRuano (f.fechaInicialServicio, f.fechaFinalServicio) == 1) {
-					alert ("<siga:Idioma key='messages.fechas.rangoFechas'/>");
-					fin();
-					return false;
-				}
-				
-			}else{	
-				alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="facturacion.seriesFacturacion.literal.fechasProducto"/> o <siga:Idioma key="facturacion.seriesFacturacion.literal.fechasServicio"/>');
-            	fin();
-            	return false;
-			}
-			
-			var iguales = compararFecha (f.fechaPrevistaGeneracion, f.fechaPrevistaConfirmacion);
-			if (iguales==1) {
-				// no valen las fechas
-				alert ("<siga:Idioma key='messages.fechas.rangoFechasPrevistas'/>");
-				fin();
-				return false;
-			} else {
-				if (iguales==0) {
-					// son iguales, comparamos las horas
-					var horasConf = trim(document.confirmarFacturacionForm.horasConfirmacion.value);
-					var minutosConf = trim(document.confirmarFacturacionForm.minutosConfirmacion.value);
-					var horasGen = trim(document.confirmarFacturacionForm.horasGeneracion.value);
-					var minutosGen = trim(document.confirmarFacturacionForm.minutosGeneracion.value);
+					var fechaPdfYenvio = f.fechaPrevistaPdfYEnvio.value;
+					var horas = document.confirmarFacturacionForm.horaPrevistaPdfYEnvio.value;
+					var minutos = document.confirmarFacturacionForm.minutosPrevistaPdfYEnvio.value;
+					if (horas.length==1) {
+						f.horaPrevistaPdfYEnvio.value = "0" + horas;
+					}
+					if (minutos.length==1) {
+						f.horasGeneracion.value = "0" + minutos;
+					}
 					
-					if (horasConf<horasGen) {
-						alert ("<siga:Idioma key='messages.fechas.rangoHorasPrevistas'/>");
+					if (fechaPdfYenvio=='') {
+						alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="facturacion.seriesFacturacion.literal.fechaPrevistaGeneracion"/>');
 						fin();
 						return false;
-					} else if (horasConf==horasGen) {
-						if (minutosConf<minutosGen) {
+					}
+					if (horas!="" && (horas>23 || horas<0)) {
+						
+						alert('<siga:Idioma key="messages.programarFacturacionForm.mensajeHoras"/>');
+						fin();
+						return false;
+					}
+					if (minutos!="" && (minutos>59 || minutos<0)) {
+						alert('<siga:Idioma key="messages.programarFacturacionForm.mensajeMinutos"/>');
+						fin();
+						return false;
+					}
+				}
+				if(f.enviarFacturas.checked){
+					if(f.idTipoPlantillaMail.value == ""){
+						alert('<siga:Idioma key="Facturacion.mensajes.obligatorio.plantillaMail"/>');
+						fin();
+						return false;
+					}
+				}
+				
+				f.modo.value = "modificarGeneracionPdfYEnvio";
+			}else{
+				var fechaConf = trim(document.confirmarFacturacionForm.fechaPrevistaConfirmacion.value);
+				var fechaGen = trim(document.confirmarFacturacionForm.fechaPrevistaGeneracion.value);
+				f=document.confirmarFacturacionForm;			
+					
+				sub();
+				
+				if (trim(fechaGen)!="") {
+					//Para la validacion no tengo en cuenta si empieza por 0 y tiene 2 digitos (tanto hora como minuto)
+					var horas = trim(document.confirmarFacturacionForm.horasGeneracion.value);
+					var minutos = trim(document.confirmarFacturacionForm.minutosGeneracion.value);
+	
+					if (horas.length==1) {
+						document.confirmarFacturacionForm.horasGeneracion.value = "0" + horas;
+					}
+					if (minutos.length==1) {
+						document.confirmarFacturacionForm.minutosGeneracion.value = "0" + minutos;
+					}
+					if (horas!="" && (horas>23 || horas<0)) {
+						
+						alert('<siga:Idioma key="messages.programarFacturacionForm.mensajeHoras"/>');
+						fin();
+						return false;
+					}
+					if (minutos!="" && (minutos>59 || minutos<0)) {
+						alert('<siga:Idioma key="messages.programarFacturacionForm.mensajeMinutos"/>');
+						fin();
+						return false;
+					}
+					
+					<% if (bEditable) { %>
+						 
+						fechaActual = getFechaActualDDMMYYYY();
+						// LA FECHA COBRO ES OBLIGATORIA SI ESTA MARCADO EL CHECK DE COBRO
+						if(compararFecha(trim(fechaGen),fechaActual) == 2){
+							alert("La Fecha Prevista de Generacíon no puede ser anterior al día actual");
+							fin();
+						 	return false;
+						 }						
+					
+					<% } %>
+				}	
+				
+				if (trim(fechaConf)!="") {
+					horas = trim(document.confirmarFacturacionForm.horasConfirmacion.value);
+					minutos = trim(document.confirmarFacturacionForm.minutosConfirmacion.value);
+					if (horas.length==1) {
+						document.confirmarFacturacionForm.horasConfirmacion.value = "0" + horas;
+					}
+					if (minutos.length==1) {
+						document.confirmarFacturacionForm.minutosConfirmacion.value = "0" + minutos;
+					}
+					if (horas!="" && (horas>23 || horas<0)) {
+						alert('<siga:Idioma key="messages.programarFacturacionForm.mensajeHoras"/>');
+						fin();
+						return false;
+					}
+					if (minutos!="" && (minutos>59 || minutos<0)) {
+						alert('<siga:Idioma key="messages.programarFacturacionForm.mensajeMinutos"/>');
+						fin();
+						return false;
+					}
+				}
+			
+				var valor = "";				
+					
+				if (trim(fechaGen)!="") {
+					valor = trim(f.horasGeneracion.value);
+		            if (!IsNum(valor)) {
+		            	alert ("<siga:Idioma key='facturacion.seriesFacturacion.literal.horasGeneracion'/>");
+		            	fin();
+		            	return false;
+					}
+					valor = trim(f.minutosGeneracion.value);
+		            if (!IsNum(valor)) {
+		            	alert ("<siga:Idioma key='facturacion.seriesFacturacion.literal.minutosGeneracion'/>");
+		            	fin();
+		            	return false;
+					}
+				}
+				
+				if (trim(fechaConf)!="") {
+				
+					valor = trim(f.horasConfirmacion.value);
+		            if (!IsNum(valor)) {
+		            	alert ("<siga:Idioma key='facturacion.seriesFacturacion.literal.horasConfirmacion'/>");
+		            	fin();
+		            	return false;
+					}
+					valor = trim(f.minutosConfirmacion.value);
+		            if (!IsNum(valor)) {
+		            	alert ("<siga:Idioma key='facturacion.seriesFacturacion.literal.minutosConfirmacion'/>");
+		            	fin();
+		            	return false;
+					}
+				}
+	
+				if (!validateConfirmarFacturacionForm(document.confirmarFacturacionForm)){	
+					fin();
+					return false;
+				}
+				
+				if((f.fechaInicialProducto.value!= '' && f.fechaFinalProducto.value!= '') || (f.fechaInicialServicio.value!= '' && f.fechaFinalServicio.value!= '')){ 
+					// Comprobamos las fechas
+					if (compararFechaRuano (f.fechaInicialProducto, f.fechaFinalProducto) == -1 || compararFechaRuano (f.fechaInicialProducto, f.fechaFinalProducto) == 1) {
+						alert ("<siga:Idioma key='messages.fechas.rangoFechas'/>");
+						fin();
+						return false;
+					}
+					
+					if (compararFechaRuano (f.fechaInicialServicio, f.fechaFinalServicio) == -1 || compararFechaRuano (f.fechaInicialServicio, f.fechaFinalServicio) == 1) {
+						alert ("<siga:Idioma key='messages.fechas.rangoFechas'/>");
+						fin();
+						return false;
+					}
+					
+				}else{	
+					alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="facturacion.seriesFacturacion.literal.fechasProducto"/> o <siga:Idioma key="facturacion.seriesFacturacion.literal.fechasServicio"/>');
+	            	fin();
+	            	return false;
+				}
+				
+				var iguales = compararFecha (f.fechaPrevistaGeneracion, f.fechaPrevistaConfirmacion);
+				if (iguales==1) {
+					// no valen las fechas
+					alert ("<siga:Idioma key='messages.fechas.rangoFechasPrevistas'/>");
+					fin();
+					return false;
+				} else {
+					if (iguales==0) {
+						// son iguales, comparamos las horas
+						var horasConf = trim(document.confirmarFacturacionForm.horasConfirmacion.value);
+						var minutosConf = trim(document.confirmarFacturacionForm.minutosConfirmacion.value);
+						var horasGen = trim(document.confirmarFacturacionForm.horasGeneracion.value);
+						var minutosGen = trim(document.confirmarFacturacionForm.minutosGeneracion.value);
+						
+						if (horasConf<horasGen) {
 							alert ("<siga:Idioma key='messages.fechas.rangoHorasPrevistas'/>");
 							fin();
 							return false;
+						} else if (horasConf==horasGen) {
+							if (minutosConf<minutosGen) {
+								alert ("<siga:Idioma key='messages.fechas.rangoHorasPrevistas'/>");
+								fin();
+								return false;
+							}
 						}
 					}
+				}			
+	
+				if(document.confirmarFacturacionForm.enviarFacturas.checked){
+					if(document.confirmarFacturacionForm.idTipoPlantillaMail.value == ""){
+						alert('<siga:Idioma key="Facturacion.mensajes.obligatorio.plantillaMail"/>');
+						fin();
+						return false;
+					}
 				}
-			}			
-
-			if(document.confirmarFacturacionForm.enviarFacturas.checked){
-				if(document.confirmarFacturacionForm.idTipoPlantillaMail.value == ""){
-					alert('<siga:Idioma key="Facturacion.mensajes.obligatorio.plantillaMail"/>');
+				
+				// JPT: Si se ha introducido 'F. Prevista Confirm.', se deben introducir las fechas de SEPA
+				if (jQuery('#fechaPrevistaConfirmacion').val()!="" && jQuery('#fechaPresentacion').val()=="") {
+					alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="facturacion.fechasficherobancario.fechapresentacion"/>');
 					fin();
 					return false;
 				}
-			}
-			
-			// JPT: Si se ha introducido 'F. Prevista Confirm.', se deben introducir las fechas de SEPA
-			if (jQuery('#fechaPrevistaConfirmacion').val()!="" && jQuery('#fechaPresentacion').val()=="") {
-				alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="facturacion.fechasficherobancario.fechapresentacion"/>');
-				fin();
-				return false;
-			}
-			
-			// JPT: Si se han introducido las fechas de SEPA, se deben introducir 'F. Prevista Confirm.' 
-			if (jQuery('#fechaPresentacion').val()!="" && jQuery('#fechaPrevistaConfirmacion').val()=="") {
-				alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="facturacion.seriesFacturacion.literal.fechaPrevistaConfirmacion"/>');
-				fin();
-				return false;
-			}			
-						
-			// JPT - Validacion de las fehas nuevas SEPA. Para nuevas previsiones no es obligatorio introducir las fechas
-			if (!validarFechasSEPA()) {
-				fin();
-				return false;
-			}
-			
-			if(<%=nuevo%>){				
-				if (trim(fechaConf)!="") {
-					var type = '<siga:Idioma key="facturacion.mantenimientoFacturacion.mensaje.alertaConfirmacion"/>';
-					if(confirm(type)){
-						f.modo.value = "insertar";
-					}
+				
+				// JPT: Si se han introducido las fechas de SEPA, se deben introducir 'F. Prevista Confirm.' 
+				if (jQuery('#fechaPresentacion').val()!="" && jQuery('#fechaPrevistaConfirmacion').val()=="") {
+					alert ('<siga:Idioma key="messages.campos.required"/> <siga:Idioma key="facturacion.seriesFacturacion.literal.fechaPrevistaConfirmacion"/>');
 					fin();
-					
-				}else{
-					f.modo.value = "insertar";
+					return false;
+				}			
+							
+				// JPT - Validacion de las fehas nuevas SEPA. Para nuevas previsiones no es obligatorio introducir las fechas
+				if (!validarFechasSEPA()) {
+					fin();
+					return false;
 				}
 				
-			} else{
-				
-				if(<%=desplegar%>){				
+				if(<%=nuevo%>){				
 					if (trim(fechaConf)!="") {
 						var type = '<siga:Idioma key="facturacion.mantenimientoFacturacion.mensaje.alertaConfirmacion"/>';
 						if(confirm(type)){
-							f.modo.value = "modificar";
+							f.modo.value = "insertar";
 						}
 						fin();
-					} else {
-						f.modo.value = "modificar";
+						
+					}else{
+						f.modo.value = "insertar";
 					}
-
+					
 				} else{
-					f.modo.value = "modificar";
-				}				
+					
+					if(<%=desplegar%>){				
+						if (trim(fechaConf)!="") {
+							var type = '<siga:Idioma key="facturacion.mantenimientoFacturacion.mensaje.alertaConfirmacion"/>';
+							if(confirm(type)){
+								f.modo.value = "modificar";
+							}
+							fin();
+						} else {
+							f.modo.value = "modificar";
+						}
+	
+					} else{
+						f.modo.value = "modificar";
+					}				
+				}
 			}
-			
-			document.all.confirmarFacturacionForm.submit();					
+			document.all.confirmarFacturacionForm.submit();		
 		}			
 	
 		function actualiza() {
@@ -721,9 +780,19 @@
 		<siga:ConjCampos leyenda="facturacion.seriesFacturacion.literal.configuracionCheck" oculto="<%=desplegar%>" desplegable="<%=desplegar%>">
 			<table class="tablaCampos" align="center" border="0" cellspacing="0" cellpadding="0">
 				<tr>
+					<td width="20%" ></td>
+					<td width="10%" ></td>
+					<td width="15%"></td>
+					<td width="15%"></td>
+					<td width="40%"></td>
+				</tr>
+			
+				<tr>
 					<td class="labelText" style="text-align:left">
 						<siga:Idioma key="facturacion.datosGenerales.literal.generaPDF"/>&nbsp;
-						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision")) { %>
+					</td>
+					<td>
+						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision") || modoAction.equals("editarFechasPdfYenvio")) { %>
 							<% if ((enviarFacturas != null) && (enviarFacturas.equals("1"))) { %>
 								<input type="checkbox" id="generarPDF" name="generarPDF" checked disabled>
 							<% } else if ((generarPDF != null) && (generarPDF.equals("1"))) { %>
@@ -743,11 +812,47 @@
 						<%}%>
 					</td>
 					
+						<% if (modoAction.equals("editarFechasPdfYenvio") ) { %>
+						<td class="labelText" >
+							<siga:Idioma key="facturacion.seriesFacturacion.literal.fechaPrevistaGeneracion"/>
+						</td>
+						<td >
+							<siga:Fecha nombreCampo="fechaPrevistaPdfYEnvio" valorInicial="<%=sFPrevistaGeneracionPdfYEnvio%>" />
+						</td>
+						<td class="labelText" >
+							<siga:Idioma key="facturacion.seriesFacturacion.literal.hora"/>&nbsp;&nbsp;&nbsp;
+							<html:text name="confirmarFacturacionForm" styleId="horaPrevistaPdfYEnvio" property="horaPrevistaPdfYEnvio"  value="<%=sHorasGeneracionPdfYEnvio%>" size="1" maxlength="2" styleClass="box" readonly="false" />					
+							:
+							<html:text name="confirmarFacturacionForm" styleId="minutosPrevistaPdfYEnvio" property="minutosPrevistaPdfYEnvio"   value="<%=sMinutosGeneracionPdfYEnvio%>" size="1" maxlength="2" styleClass="box" readonly="false" />
+						</td>	
+						
+						<% } else if(sFPrevistaGeneracionPdfYEnvio!=null && !sFPrevistaGeneracionPdfYEnvio.equalsIgnoreCase("")){ %>
+							<td class="labelText" >
+							<siga:Idioma key="facturacion.seriesFacturacion.literal.fechaPrevistaGeneracion"/>
+						</td>
+						<td >
+						
+							<siga:Fecha nombreCampo="fechaPrevistaPdfYEnvio" valorInicial="<%=sFPrevistaGeneracionPdfYEnvio%>" disabled="true" readOnly="true" />
+						</td>
+						<td class="labelText" >
+							<siga:Idioma key="facturacion.seriesFacturacion.literal.hora"/>&nbsp;&nbsp;&nbsp;
+							<html:text name="confirmarFacturacionForm" styleId="horaPrevistaPdfYEnvio" property="horaPrevistaPdfYEnvio"  value="<%=sHorasGeneracionPdfYEnvio%>" size="1" 
+							maxlength="2" styleClass="boxConsulta" readonly="true"/>
+							&nbsp;:&nbsp;
+							<html:text name="confirmarFacturacionForm" styleId="minutosPrevistaPdfYEnvio" property="minutosPrevistaPdfYEnvio"   value="<%=sMinutosGeneracionPdfYEnvio%>" size="1" maxlength="2" styleClass="boxConsulta" readonly="true" />
+							</td>
+						
+						<% } %>
+					</td>
+					
+					
 				</tr>
 				<tr>					
 					<td class="labelText" style="text-align:left">
 						<siga:Idioma key="facturacion.datosGenerales.literal.envioFacturas"/>&nbsp;
-						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision")) { %>
+					</td>
+					<td>
+						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision")|| modoAction.equals("editarFechasPdfYenvio")) { %>
 							<%  if ((enviarFacturas != null) && (enviarFacturas.equals("1"))) { %>
 									<input type="checkbox" id="enviarFacturas" name="enviarFacturas" onclick="actualiza();" checked>
 							<% } else { %>
@@ -763,14 +868,14 @@
 						<% } %>
 					</td>
 					
-					<td id="titulo" class="labelText" rowspan="2">
+					<td id="titulo" class="labelText" >
 						<siga:Idioma key="envios.plantillas.literal.plantilla"/> 
 					</td>
-					<td rowspan="2">
-						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision")) { %>
-							<siga:ComboBD nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="300" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>"/>
+					<td colspan="2">
+						<% if (modoAction.equals("editar") || modoAction.equals("nuevaPrevision")|| modoAction.equals("editarFechasPdfYenvio")) { %>
+							<siga:ComboBD nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxCombo" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="400" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>"/>
 						<% } else{ %>
-							<siga:ComboBD nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxComboConsulta" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="300" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>" readonly="true"/>
+							<siga:ComboBD nombre = "idTipoPlantillaMail" tipo="cmbPlantillaEnvios3" clase="boxComboConsulta" elementoSel="<%=plantillaEnviosSeleccionada%>" ancho="400" obligatorio="false" pestana="true" parametro="<%=parametrosCmbPlantillaEnvios%>" readonly="true"/>
 						<% } %>
 					</td>						
 				</tr>
@@ -864,7 +969,7 @@
 		<% } %>
 	
 		<!-- ******* BOTONES DE ACCIONES EN REGISTRO ****** -->
-		<% if (modoAction.equals("editar") ||  modoAction.equals("nuevaPrevision")) { %>
+		<% if (modoAction.equals("editar") ||  modoAction.equals("nuevaPrevision")||modoAction.equals("editarFechasPdfYenvio")) { %>
 			<% if( idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.GENERADA.toString()) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA.toString()) || idEstadoConfirmacion.equals(FacEstadoConfirmFactBean.ERROR_CONFIRMACION.toString())){ %>
 				<siga:ConjBotonesAccion botones="V,RF,G" clase="botonesDetalle"/>
 			<% } else { %>

@@ -212,7 +212,8 @@
 			document.confirmarFacturacionForm.target="mainWorkArea";
 			document.confirmarFacturacionForm.modo.value = "nuevo";
 			document.confirmarFacturacionForm.submit();
-		}		
+		}	
+		
 
 		function accionEstado() {
 			if(jQuery("#estadoConfirmacion").val() == 18 || jQuery("#estadoConfirmacion").val() == 19|| jQuery("#estadoConfirmacion").val() == 20){

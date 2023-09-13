@@ -75,7 +75,9 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 				FacFacturacionProgramadaBean.C_FECHARECIBOSB2B,
 				FacFacturacionProgramadaBean.C_LOGERROR,
 				FacFacturacionProgramadaBean.C_LOGTRASPASO,
-				FacFacturacionProgramadaBean.C_NOMBREFICHERO};
+				FacFacturacionProgramadaBean.C_NOMBREFICHERO,
+				FacFacturacionProgramadaBean.C_FECHAPREVISTAPDFYENVIO		
+		};
 		return campos;
 	}
 
@@ -135,6 +137,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			bean.setLogerror				(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_LOGERROR));
 			bean.setLogTraspaso				(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_LOGTRASPASO));
 			bean.setNombrefichero			(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_NOMBREFICHERO));		
+			bean.setFechaPrevistaPdfYEnvio(UtilidadesHash.getString(hash, FacFacturacionProgramadaBean.C_FECHAPREVISTAPDFYENVIO));
 
 		}
 		catch (Exception e) { 
@@ -200,7 +203,8 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_FECHARECIBOSB2B, b.getFechaRecibosB2B());
 			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_LOGERROR, b.getLogerror());
 			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_LOGTRASPASO, b.getLogTraspaso());
-			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_NOMBREFICHERO, b.getNombrefichero());	
+			UtilidadesHash.setForCompare(htData, FacFacturacionProgramadaBean.C_NOMBREFICHERO, b.getNombrefichero());
+			UtilidadesHash.set(htData, FacFacturacionProgramadaBean.C_FECHAPREVISTAPDFYENVIO, b.getFechaPrevistaPdfYEnvio());
 		}
 		catch (Exception e) {
 			htData = null;
@@ -309,7 +313,7 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 	 * @return
 	 * @throws ClsExceptions
 	 */
-	public Vector selectDatosFacturacionBean(String sWhereBind, Hashtable codigos, String[] orden) throws ClsExceptions {
+	public Vector<FacFacturacionProgramadaBean> selectDatosFacturacionBean(String sWhereBind, Hashtable codigos, String[] orden) throws ClsExceptions {
 		Vector vResultado = null;		
 		try{			
 			String sql = UtilidadesBDAdm.sqlSelect(this.getTablasFacturacion(), this.getCamposFacturacion()) +
@@ -439,20 +443,6 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 						bean.setIdEstadoConfirmacion(idTratamientoActual);
 					}					
 				}
-				// PDF
-				if (bean.getFechaPrevistaConfirmacion()!=null && !bean.getFechaPrevistaConfirmacion().trim().equals("")) {
-					if (bean.getGenerarPDF()!=null && bean.getGenerarPDF().equals("1")) {
-						bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_PROGRAMADA);
-					} else {
-						bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_NOAPLICA);
-					}
-				} else { 
-					if (bean.getGenerarPDF()!=null && bean.getGenerarPDF().equals("1")) {
-						bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_PENDIENTE);
-					} else {
-						bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_NOAPLICA);
-					}
-				}
 				// TRASPASO FACTURAS
 				if (bean.getFechaPrevistaConfirmacion()!=null && !bean.getFechaPrevistaConfirmacion().trim().equals("")) {
 					if (bean!=null && bean.getTraspasoFacturas()!=null && bean.getTraspasoFacturas().equals("1")) {
@@ -467,8 +457,24 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 						bean.setIdEstadoTraspaso(FacEstadoConfirmFactBean.TRASPASO_NOAPLICA);
 					}
 				}
+				
+				// PDF
+				if (bean.getFechaPrevistaPdfYEnvio()!=null && !bean.getFechaPrevistaPdfYEnvio().trim().equals("")) {
+					if (bean.getGenerarPDF()!=null && bean.getGenerarPDF().equals("1")) {
+						bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_PROGRAMADA);
+					} else {
+						bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_NOAPLICA);
+					}
+				} else { 
+					if (bean.getGenerarPDF()!=null && bean.getGenerarPDF().equals("1")) {
+						bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_PENDIENTE);
+					} else {
+						bean.setIdEstadoPDF(FacEstadoConfirmFactBean.PDF_NOAPLICA);
+					}
+				}
+				
 				// Envio
-				if (bean.getFechaPrevistaConfirmacion()!=null && !bean.getFechaPrevistaConfirmacion().trim().equals("")) {
+				if (bean.getFechaPrevistaPdfYEnvio()!=null && !bean.getFechaPrevistaPdfYEnvio().trim().equals("")) {
 					if (bean.getEnvio()!=null && bean.getEnvio().equals("1")) {
 						bean.setIdEstadoEnvio(FacEstadoConfirmFactBean.ENVIO_PROGRAMADA);
 					} else {
@@ -648,7 +654,8 @@ public class FacFacturacionProgramadaAdm extends MasterBeanAdministrador {
 		select.append(",");
 		select.append(FacFacturacionProgramadaBean.C_FECHAREALGENERACION);
 		select.append(",");
-
+		select.append(FacFacturacionProgramadaBean.C_FECHAPREVISTAPDFYENVIO);
+		select.append(",");
 		select.append("IDESTADOCONFIRMACION, IDESTADOPDF, IDESTADOENVIO, IDESTADOTRASPASO ");
 
 		select.append(",ARCHIVARFACT,IDPROGRAMACION");

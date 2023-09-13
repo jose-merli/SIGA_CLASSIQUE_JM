@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -61,6 +62,7 @@ import com.siga.beans.CenClienteBean;
 import com.siga.beans.CenCuentasBancariasAdm;
 import com.siga.beans.CenCuentasBancariasBean;
 import com.siga.beans.CenDireccionesAdm;
+import com.siga.beans.CenInstitucionBean;
 import com.siga.beans.CenPersonaAdm;
 import com.siga.beans.EnvDestinatariosBean;
 import com.siga.beans.EnvEnviosBean;
@@ -119,6 +121,194 @@ public class Facturacion {
         this.usrbean = usr;
     }    	
 	
+    private Vector<CenInstitucionBean>  getInstitucionesConFacturasPendientes(UsrBean userBean, String tiempoMaximoEjecucionBloqueada,int estado ) {	    		
+		Vector<CenInstitucionBean> cenInstitucionBeans = null;
+		try {				
+			Hashtable<Integer,Object> codigos = new Hashtable<Integer,Object>();
+			
+			
+			String sWhere = null;
+			String[] orden = new String[1]; 
+			
+			
+			switch (estado) {
+				//FacEstadoConfirmFactBean.GENERADA
+				case 2:
+					sWhere=" WHERE " + FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " IS NULL " +
+							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION + " IS NOT NULL " +
+							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION + " <= SYSDATE " +
+   							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." +FacFacturacionProgramadaBean.C_IDINSTITUCION+" = FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDINSTITUCION +
+   							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." +FacFacturacionProgramadaBean.C_IDSERIEFACTURACION+" =  FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +							
+							" AND (" + FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " = " + FacEstadoConfirmFactBean.GENERACION_PROGRAMADA +
+								   " OR (" + FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " = " + FacEstadoConfirmFactBean.EJECUTANDO_GENERACION +
+								           " AND SYSDATE - " +tiempoMaximoEjecucionBloqueada+ " > " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." +FacFacturacionProgramadaBean.C_FECHAMODIFICACION +" )) ";
+			
+					orden[0] = FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION;
+				break;
+				//FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA
+				case 1:
+					sWhere=" WHERE "+
+							//+ FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = :1 " +
+							"  " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM + " IS NOT NULL " +
+							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM + " <= SYSDATE " +
+							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " IS NOT NULL " +
+							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_VISIBLE + " = 'S' " +
+							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " IN (" + FacEstadoConfirmFactBean.GENERADA + ", " + FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA + ") " +
+   							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION +
+   							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +							
+   							" AND NOT EXISTS (SELECT 1 " + 
+						         " FROM " + FacFacturacionProgramadaBean.T_NOMBRETABLA + " PREVIA " + 
+						         " WHERE PREVIA." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION  +
+						           " AND PREVIA." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA +
+						           " AND PREVIA." + FacFacturacionProgramadaBean.C_VISIBLE + " = 'S' " + 
+						           " AND PREVIA." + FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " <> " + FacEstadoConfirmFactBean.CONFIRM_FINALIZADA + ") ";
+					orden[0] = FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM;
+					
+				break;
+				
+				//FacEstadoConfirmFactBean.PDF_PROGRAMADA
+				case 6:
+					sWhere=" WHERE " +
+   							"  " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." +FacFacturacionProgramadaBean.C_IDINSTITUCION+" = FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDINSTITUCION +
+   							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." +FacFacturacionProgramadaBean.C_IDSERIEFACTURACION+" =  FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +							
+							" AND " + FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " IS NOT NULL " + // Solo las que estan generadas
+   							" AND " + FacFacturacionProgramadaBean.C_FECHACONFIRMACION + " IS NOT NULL " + // Para fechas previstas de confirmacion adecuadas 
+							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTAPDFYENVIO + " <= SYSDATE " +
+							" AND " + FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " = " + FacEstadoConfirmFactBean.CONFIRM_FINALIZADA + // Para los estados de confirmacion adecuados 
+							" AND (" + FacFacturacionProgramadaBean.C_IDESTADOPDF + " = " + FacEstadoConfirmFactBean.PDF_PROGRAMADA +
+								   " OR (" + FacFacturacionProgramadaBean.C_IDESTADOPDF + " = " + FacEstadoConfirmFactBean.PDF_PROCESANDO +
+								           " AND SYSDATE - " +tiempoMaximoEjecucionBloqueada+ " > " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." +FacFacturacionProgramadaBean.C_FECHAMODIFICACION +" )) ";			
+			
+					orden[0] = FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION;
+					
+				break;
+				//FacEstadoConfirmFactBean.TRASPASO_PROGRAMADA
+
+				case 23:
+					sWhere = " WHERE " +
+							" " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDINSTITUCION +
+							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " =  FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +							
+						" AND " + FacFacturacionProgramadaBean.C_FECHACONFIRMACION + " IS NOT NULL " + // Solo las que estan confirmadas 
+						" AND " + FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " = " + FacEstadoConfirmFactBean.CONFIRM_FINALIZADA + // Para los estados de confirmacion adecuados 
+						
+						" AND " + FacFacturacionProgramadaBean.C_IDESTADOTRASPASO + " = " + FacEstadoConfirmFactBean.TRASPASO_PROCESANDO +
+						
+						" AND (not exists (select 1 from " + FacFacturaBean.T_NOMBRETABLA +
+								" where " + FacFacturaBean.T_NOMBRETABLA + ".idinstitucion = " + FacFacturacionProgramadaBean.T_NOMBRETABLA + ".idinstitucion " +
+										"and " + FacFacturaBean.T_NOMBRETABLA + ".idseriefacturacion = " + FacFacturacionProgramadaBean.T_NOMBRETABLA + ".idseriefacturacion " +
+										"and " + FacFacturaBean.T_NOMBRETABLA + ".idprogramacion = " + FacFacturacionProgramadaBean.T_NOMBRETABLA + ".idprogramacion " +
+										"and " + FacFacturaBean.T_NOMBRETABLA + ".traspasada is null)" + 
+						
+						" OR SYSDATE - " + tiempoMaximoEjecucionBloqueada + " > " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_FECHAMODIFICACION +" ) ";
+		
+					orden[0] = FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION;
+					//FacEstadoConfirmFactBean.ENVIO_PROGRAMADA
+				case 12:
+					
+					sWhere=" WHERE " +
+   							" " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." +FacFacturacionProgramadaBean.C_IDINSTITUCION+" = FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDINSTITUCION +
+   							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." +FacFacturacionProgramadaBean.C_IDSERIEFACTURACION+" =  FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +							
+							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM + " IS NOT NULL " + // Para fechas previstas de confirmacion adecuadas 
+							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTAPDFYENVIO + " <= SYSDATE " +
+							" AND " + FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " IS NOT NULL " + // Solo las que estan generadas 
+							" AND " + FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " = " + FacEstadoConfirmFactBean.CONFIRM_FINALIZADA + // Para los estados de confirmacion adecuados 
+							" AND " + FacFacturacionProgramadaBean.C_IDESTADOPDF + " = " + FacEstadoConfirmFactBean.PDF_FINALIZADA + // Para los estados de confirmacion adecuados
+							
+							" AND (" + FacFacturacionProgramadaBean.C_IDESTADOENVIO + " = " + FacEstadoConfirmFactBean.ENVIO_PROGRAMADA +
+								   " OR (" + FacFacturacionProgramadaBean.C_IDESTADOENVIO + " = " + FacEstadoConfirmFactBean.ENVIO_PROCESANDO +
+								           " AND SYSDATE - " +tiempoMaximoEjecucionBloqueada+ " > " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." +FacFacturacionProgramadaBean.C_FECHAMODIFICACION +" )) ";			
+			
+					
+					
+					orden[0] = FacFacturacionProgramadaBean.C_FECHAPREVISTAGENERACION;
+					
+				break;
+				
+
+			default:
+				break;
+			}
+		    cenInstitucionBeans = getInstitucionesConFacturas(userBean, sWhere, orden);
+		    
+		} catch (Exception e) { 
+			ClsLogging.writeFileLogError("### Error general al obtener instituciones con Facturas)", e, 3);
+		}
+		return cenInstitucionBeans;
+	}
+    
+    public Vector<CenInstitucionBean>  getInstitucionesConFacturasPendientes(UsrBean userBean, boolean incluirPdfs) {	    		
+    	ReadProperties rp= new ReadProperties(SIGAReferences.RESOURCE_FILES.SIGA);
+		// Obtencion de la propiedad que contiene el tiempo de espera que se les da a las facturaciones en ejcucion no generadas por alguna anomalía
+    	String maxMinutosEnEjecucion = rp.returnProperty("facturacion.programacionAutomatica.maxMinutosEnEjecucion");
+    	
+	    Long tiempoEsperaBloqueosProperty = Long.valueOf(maxMinutosEnEjecucion!=null?maxMinutosEnEjecucion:"2");
+		String tiempoMaximoEjecucionBloqueada = String.valueOf(tiempoEsperaBloqueosProperty/(24.0*60.0));
+    	
+    	Vector<CenInstitucionBean> institucionesFacturacionPte = new Vector<CenInstitucionBean>();
+    	
+    	ClsLogging.writeFileLog("### Obteniendo instituciones con facturaciones pendientes de generar" ,7);
+    	Vector<CenInstitucionBean> institucionesGeneracionPte = getInstitucionesConFacturasPendientes(userBean,tiempoMaximoEjecucionBloqueada, FacEstadoConfirmFactBean.GENERADA);
+    	if(institucionesGeneracionPte!=null && institucionesGeneracionPte.size()>0) {
+    		institucionesFacturacionPte.addAll(institucionesGeneracionPte);
+    		ClsLogging.writeFileLog("####### "+institucionesGeneracionPte.size()+" instituciones con facturas pendientes de generar" ,7);
+    	}
+    	ClsLogging.writeFileLog("### Obteniendo instituciones con facturaciones programadas pendientes" ,7);
+    	Vector<CenInstitucionBean> institucionesProgramacionPte = getInstitucionesConFacturasPendientes(userBean,tiempoMaximoEjecucionBloqueada, FacEstadoConfirmFactBean.CONFIRM_PROGRAMADA);
+    	
+    	if(institucionesProgramacionPte!=null && institucionesProgramacionPte.size()>0) {
+    		institucionesFacturacionPte.addAll(institucionesProgramacionPte);
+    		ClsLogging.writeFileLog("####### "+institucionesProgramacionPte.size()+" instituciones con facturas programadas pendientes" ,7);
+    	}
+    	if(incluirPdfs) {
+    		ClsLogging.writeFileLog("### Obteniendo instituciones con facturas pendientes de crear" ,7);
+	    	Vector<CenInstitucionBean> institucionesPdfFacturaGeneracionPte = getInstitucionesConFacturasPendientes(userBean,tiempoMaximoEjecucionBloqueada, FacEstadoConfirmFactBean.PDF_PROGRAMADA);
+	    	if(institucionesPdfFacturaGeneracionPte!=null && institucionesPdfFacturaGeneracionPte.size()>0) {
+	    		institucionesFacturacionPte.addAll(institucionesPdfFacturaGeneracionPte);
+	    		ClsLogging.writeFileLog("####### "+institucionesPdfFacturaGeneracionPte.size()+" instituciones con facturas pendientes de crear" ,7);
+	    	}
+	    	ClsLogging.writeFileLog("### Obteniendo instituciones con facturas pendientes de enviar" ,7);
+	    	Vector<CenInstitucionBean> institucionesEnvioFacturaPte = getInstitucionesConFacturasPendientes(userBean,tiempoMaximoEjecucionBloqueada, FacEstadoConfirmFactBean.ENVIO_PROGRAMADA);
+	    	if(institucionesEnvioFacturaPte!=null && institucionesEnvioFacturaPte.size()>0) {
+	    		institucionesFacturacionPte.addAll(institucionesEnvioFacturaPte);
+	    		ClsLogging.writeFileLog("####### "+institucionesEnvioFacturaPte.size()+" instituciones con facturas pendientes de enviar" ,7);
+	    	}
+	    	ClsLogging.writeFileLog("### Obteniendo instituciones con facturas pendientes de validar el traspaso" ,7);
+	    	Vector<CenInstitucionBean> institucionesTraspasoFacturaPte = getInstitucionesConFacturasPendientes(userBean,tiempoMaximoEjecucionBloqueada, FacEstadoConfirmFactBean.TRASPASO_PROGRAMADA);
+	    	if(institucionesTraspasoFacturaPte!=null && institucionesTraspasoFacturaPte.size()>0) {
+	    		institucionesFacturacionPte.addAll(institucionesTraspasoFacturaPte);
+	    		ClsLogging.writeFileLog("####### "+institucionesTraspasoFacturaPte.size()+" instituciones con facturas pendientes de validar el traspaso" ,7);
+	    	}
+	    	
+    	}
+		
+		return institucionesFacturacionPte;
+	}
+    
+    
+    private Vector<CenInstitucionBean>  getInstitucionesConFacturas(UsrBean userBean,String sWhere, String[]orden) {	    		
+		boolean alMenosUnafacturacionProgramadaEncontrada = false;
+		Vector<CenInstitucionBean> cenInstitucionBeans = null;
+		try {				
+			Hashtable<Integer,Object> codigos = new Hashtable<Integer,Object>();
+			FacFacturacionProgramadaAdm admFacturacionProgramada = new FacFacturacionProgramadaAdm(userBean);
+			Vector<FacFacturacionProgramadaBean> vDatos = admFacturacionProgramada.selectDatosFacturacionBean(sWhere,codigos, orden);
+			CenInstitucionBean cenInstitucionBean = null;
+		    if(vDatos != null && vDatos.size()>0){
+		    	cenInstitucionBeans = new Vector<CenInstitucionBean>();
+		    	for (FacFacturacionProgramadaBean facturacionProgramadaBean : vDatos) {
+		    		cenInstitucionBean = new  CenInstitucionBean();
+		    		cenInstitucionBean.setIdInstitucion(facturacionProgramadaBean.getIdInstitucion());
+		    		cenInstitucionBeans.add(cenInstitucionBean);
+				}
+		    }		
+		    
+		} catch (Exception e) { 
+			ClsLogging.writeFileLogError("### Error general al obtener instituciones con Facturas)", e, 3);
+		}
+		return cenInstitucionBeans;
+	}
+    
+    
 	/**
 	 * Método para el procesado automático de facturacion (SIGASvlProcesoFacturacion)
 	 * 
@@ -229,7 +419,8 @@ public class Facturacion {
    							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +							
    							" AND NOT EXISTS (SELECT 1 " + 
 						         " FROM " + FacFacturacionProgramadaBean.T_NOMBRETABLA + " PREVIA " + 
-						         " WHERE PREVIA." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + idInstitucion + 
+						         " WHERE PREVIA." + FacFacturacionProgramadaBean.C_IDINSTITUCION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDINSTITUCION  +
+						           " AND PREVIA." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA + 
 						           " AND PREVIA." + FacFacturacionProgramadaBean.C_IDSERIEFACTURACION + " = " + FacSerieFacturacionBean.T_NOMBRETABLA + "." + FacSerieFacturacionBean.C_IDSERIEFACTURACIONPREVIA +
 						           " AND PREVIA." + FacFacturacionProgramadaBean.C_VISIBLE + " = 'S' " + 
 						           " AND PREVIA." + FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " <> " + FacEstadoConfirmFactBean.CONFIRM_FINALIZADA + ") ";
@@ -371,7 +562,7 @@ public class Facturacion {
    							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." +FacFacturacionProgramadaBean.C_IDINSTITUCION+" = FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDINSTITUCION +
    							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." +FacFacturacionProgramadaBean.C_IDSERIEFACTURACION+" =  FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +							
 							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM + " IS NOT NULL " + // Para fechas previstas de confirmacion adecuadas 
-							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM + " <= SYSDATE " +
+							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTAPDFYENVIO + " <= SYSDATE " +
 							" AND " + FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " IS NOT NULL " + // Solo las que estan generadas 
 							" AND " + FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " = " + FacEstadoConfirmFactBean.CONFIRM_FINALIZADA + // Para los estados de confirmacion adecuados 
 							" AND (" + FacFacturacionProgramadaBean.C_IDESTADOPDF + " = " + FacEstadoConfirmFactBean.PDF_PROGRAMADA +
@@ -403,7 +594,7 @@ public class Facturacion {
 		    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
 
 		    		UserTransaction tx = (UserTransaction) this.usrbean.getTransactionPesada();
-		    		this.generarPdfEnvioProgramacionFactura(factBean, request, log, factBean.getIdSerieFacturacion(), factBean.getIdProgramacion(), claves, hashNew, true, tx);
+		    		this.generarPdfEnvioProgramacionFactura(factBean, request, log, factBean.getIdSerieFacturacion(), factBean.getIdProgramacion(), claves, hashNew, false, tx);
 				
 				} catch (ClsExceptions e) {
 					ClsLogging.writeFileLogError("@@@ Error controlado al confirmar facturas (Proceso automático):"+e.getMsg(),e,3);
@@ -448,7 +639,7 @@ public class Facturacion {
    							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." +FacFacturacionProgramadaBean.C_IDINSTITUCION+" = FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDINSTITUCION +
    							" AND " + FacFacturacionProgramadaBean.T_NOMBRETABLA + "." +FacFacturacionProgramadaBean.C_IDSERIEFACTURACION+" =  FAC_SERIEFACTURACION." + FacSerieFacturacionBean.C_IDSERIEFACTURACION +							
 							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM + " IS NOT NULL " + // Para fechas previstas de confirmacion adecuadas 
-							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTACONFIRM + " <= SYSDATE " +
+							" AND " + FacFacturacionProgramadaBean.C_FECHAPREVISTAPDFYENVIO + " <= SYSDATE " +
 							" AND " + FacFacturacionProgramadaBean.C_FECHAREALGENERACION + " IS NOT NULL " + // Solo las que estan generadas 
 							" AND " + FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION + " = " + FacEstadoConfirmFactBean.CONFIRM_FINALIZADA + // Para los estados de confirmacion adecuados 
 							" AND " + FacFacturacionProgramadaBean.C_IDESTADOPDF + " = " + FacEstadoConfirmFactBean.PDF_FINALIZADA + // Para los estados de confirmacion adecuados
@@ -715,7 +906,7 @@ public class Facturacion {
     		if (pathFichero2.indexOf("\\") > -1) sBarra2 = "\\";        		
     		String nombreFichero = "";
 
-    		ClsLogging.writeFileLog("CONFIRMAR FACTURACION RAPIDA: "+beanP.getIdInstitucion()+" " +beanP.getIdSerieFacturacion()+" " +beanP.getIdProgramacion(),10);
+    		ClsLogging.writeFileLog("CONFIRMAR FACTURACION : "+beanP.getIdInstitucion()+" " +beanP.getIdSerieFacturacion()+" " +beanP.getIdProgramacion(),10);
 
     		// fichero de log
     		nombreFichero = "LOG_FAC_CONFIRMACION_" + beanP.getIdSerieFacturacion() + "_" + beanP.getIdProgramacion() + ".log.xls"; 
@@ -740,7 +931,7 @@ public class Facturacion {
     		}
 
     		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION,FacFacturacionProgramadaBean.C_IDPROGRAMACION,FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
-    		String [] camposFactura = {FacFacturacionProgramadaBean.C_FECHACONFIRMACION, FacFacturacionProgramadaBean.C_ARCHIVARFACT,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION,FacFacturacionProgramadaBean.C_LOGERROR, FacFacturacionProgramadaBean.C_NOMBREFICHERO};
+    		String [] camposFactura = {FacFacturacionProgramadaBean.C_FECHACONFIRMACION, FacFacturacionProgramadaBean.C_ARCHIVARFACT,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION,FacFacturacionProgramadaBean.C_LOGERROR, FacFacturacionProgramadaBean.C_NOMBREFICHERO,FacFacturacionProgramadaBean.C_FECHAPREVISTAPDFYENVIO,FacFacturacionProgramadaBean.C_IDESTADOPDF,FacFacturacionProgramadaBean.C_IDESTADOENVIO,FacFacturacionProgramadaBean.C_GENERAPDF,FacFacturacionProgramadaBean.C_ENVIO,FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL};
 
     		if(!soloGenerarFactura){
 	    		try {
@@ -878,8 +1069,63 @@ public class Facturacion {
 	    			}
 	    			
 	    			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
-	    			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_LOGERROR,"");	    			
-	    			facadm.updateDirect(hashNew, claves, camposFactura);	    			
+	    			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_LOGERROR,"");	   
+	    			//si hay que generar el pdf lo hacemos
+	    			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_GENERAPDF,beanP.getGenerarPDF());
+	    			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_ENVIO,beanP.getEnvio());
+	    			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL,beanP.getIdTipoPlantillaMail());
+	    			if(!esFacturacionRapida && beanP.getGenerarPDF()!=null && beanP.getGenerarPDF().equalsIgnoreCase(AppConstants.DB_TRUE)) {
+	    				GenParametrosAdm param = new GenParametrosAdm(usrbean);
+		    			//Metemos 15 minuto de realy por defecto
+		    			String horapdfyenvio = param.getValor(""+beanP.getIdInstitucion(), "FAC", "HORA_PDF_Y_ENVIO", "15");
+		    			SimpleDateFormat sdf = new SimpleDateFormat();
+		    			
+		    			String fechaPrevistaPdfYEnvio = null;
+		    			if(horapdfyenvio!=null && horapdfyenvio.indexOf(":")>0) {
+			    			sdf.applyPattern("yyyy/MM/dd");
+			    			StringBuilder fecha = new StringBuilder();
+			    			fecha.append(sdf.format(new Date()));
+			    			fecha.append(" ");
+			    			fecha.append(horapdfyenvio);
+			    			fecha.append(":00");
+			    			sdf.applyPattern(ClsConstants.DATE_FORMAT_JAVA);
+			    			fechaPrevistaPdfYEnvio = fecha.toString();
+	//	    				date = sdf.parse(fecha.toString());
+		    			}else if(horapdfyenvio!=null && horapdfyenvio.indexOf(":")<0) {
+		    				Date date = new Date();
+		    				int milisegundosRelay = 0;
+		    				try {
+		    					milisegundosRelay = Integer.valueOf(horapdfyenvio)*60000;	
+		    				} catch (Exception e) {
+		    					milisegundosRelay = 900000;
+		    				}
+		    				date.setTime(date.getTime() + milisegundosRelay);
+		    				sdf.applyPattern(ClsConstants.DATE_FORMAT_JAVA);
+		    				fechaPrevistaPdfYEnvio = sdf.format(date);
+		    			}else {
+		    				Date date = new Date();
+		    				int milisegundosRelay = 900000;
+		    				date.setTime(date.getTime() + milisegundosRelay);
+		    				sdf.applyPattern(ClsConstants.DATE_FORMAT_JAVA);
+		    				fechaPrevistaPdfYEnvio = sdf.format(date);
+		    				
+		    			}
+		    			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_FECHAPREVISTAPDFYENVIO,fechaPrevistaPdfYEnvio);
+		    			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_IDESTADOPDF,FacEstadoConfirmFactBean.PDF_PROGRAMADA);
+		    			if(beanP.getEnvio()!=null && beanP.getEnvio().equalsIgnoreCase(AppConstants.DB_TRUE)){
+		    				UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_IDESTADOENVIO,FacEstadoConfirmFactBean.ENVIO_PROGRAMADA);
+		    				UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL,beanP.getIdTipoPlantillaMail());
+		    			}else {
+		    				UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_IDESTADOENVIO,FacEstadoConfirmFactBean.ENVIO_NOAPLICA);
+		    			}
+		    			
+		    			facadm.updateDirect(hashNew, claves, camposFactura);	
+	    			}else {
+//	    				UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_FECHAPREVISTAPDFYENVIO,null);
+//		    			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_IDESTADOPDF,FacEstadoConfirmFactBean.PDF_NOAPLICA);
+//		    			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_IDESTADOENVIO,FacEstadoConfirmFactBean.ENVIO_NOAPLICA);
+	    				
+	    			}
 	    			
 	    			if (tx!=null)
 	    				tx.commit();
@@ -936,14 +1182,15 @@ public class Facturacion {
     			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA); //Si entramos por aqui es que ya hemos confirmado previamente
     		}// FIN IF EJECUTAR CONFIRMACION
 
-    		ClsLogging.writeFileLog("ENTRA A GENERAR Y ENVIAR",10);
+//    		ClsLogging.writeFileLog("ENTRA A GENERAR Y ENVIAR",10);
     		
     		
-    		boolean isGenerarPdf = beanP.getGenerarPDF() != null && beanP.getGenerarPDF().trim().equals("1") && !esFacturacionRapida;
-    		boolean isGenerarEnvio = beanP.getEnvio() != null && beanP.getEnvio().trim().equals("1") && (beanP.getRealizarEnvio()==null || beanP.getRealizarEnvio().toString().equalsIgnoreCase("1"));
-    		if(isGenerarPdf){
-    			msjAviso = this.generarPdfEnvioProgramacionFactura(beanP,req,log,idSerieFacturacion, idProgramacion, claves, hashNew, isGenerarEnvio, tx);
-    		}
+//    		boolean isGenerarPdf = beanP.getGenerarPDF() != null && beanP.getGenerarPDF().trim().equals("1") && !esFacturacionRapida;
+//    			
+//    		if(isGenerarPdf){
+//    			boolean isGenerarEnvio = beanP.getEnvio() != null && beanP.getEnvio().trim().equals("1") && (beanP.getRealizarEnvio()==null || beanP.getRealizarEnvio().toString().equalsIgnoreCase("1"));
+//    			msjAviso = this.generarPdfEnvioProgramacionFactura(beanP,req,log,idSerieFacturacion, idProgramacion, claves, hashNew, isGenerarEnvio, tx);
+//    		}
 			
     	} catch (Exception e) {
 			try { // Tratamiento rollback

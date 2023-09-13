@@ -158,7 +158,7 @@
 
 	jQuery(document).ready(function () {		
 <%
-		if(modoAction!=null && modoAction.trim().equals("ver")) { 
+		if(modoAction!=null && (modoAction.trim().equals("ver") || modoAction.trim().equals("editarFechasPdfYenvio"))) { 
 %>
 			deshabilitar();
 <%
