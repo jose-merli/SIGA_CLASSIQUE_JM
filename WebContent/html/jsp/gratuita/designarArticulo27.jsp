@@ -1194,13 +1194,12 @@
 					var idProvincia	= Primary.substring(0,2);
 					//Comprobamos que exista los dos primeros dígitos del c.p con algún elemento de la lista de provincia
 					if (jQuery("#provincia").val() != idProvincia){
-						if (jQuery("#provincia").find("option[value='"+idProvincia+"']").exists()){
-							jQuery("#provincia").val(idProvincia);
-							jQuery("#provinciaText").val( jQuery("#provincia option:selected").text());
-							//jQuery("#poblacion").val(jQuery("#poblacion option:first").val());
+						jQuery("#provincia").val(idProvincia);
+						jQuery("#provinciaText").val( jQuery("#provincia option:selected").text());
+						if (jQuery("#provinciaText").val()!=''){
+							
 							document.getElementById("txtpoblacion").value = "";
 							document.getElementById("poblacion").value = "";
-							
 							document.getElementById("provincia").onchange();
 							
 							jQuery("#otraProvinciaCheck").removeAttr('checked');
