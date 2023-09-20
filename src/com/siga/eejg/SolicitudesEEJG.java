@@ -8,6 +8,7 @@ import org.apache.axis.EngineConfiguration;
 import org.apache.axis.configuration.FileProvider;
 import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.EEJG_ESTADO;
+import org.redabogacia.sigaservices.app.services.scs.ScsEEJGPeticionesService;
 import org.redabogacia.www.pjgpra.wspjgpra.ConsultaInformacionAAPP.ConsultaInformacionAAPP;
 import org.redabogacia.www.pjgpra.wspjgpra.ConsultaInformacionAAPP.DatosConsultaInformacionAAPP;
 import org.redabogacia.www.pjgpra.wspjgpra.ConsultaInformacionAAPP.InformacionInf;
@@ -41,6 +42,8 @@ import com.siga.pfd.ws.ResultSolicitudDocumentoTO;
 import com.siga.pfd.ws.ServiciosPFDServiceServiceSoapBindingStub;
 import com.siga.pfd.ws.ServiciosPFDService_ServiceLocator;
 import com.siga.pfd.ws.SolicitudDocumentoTO;
+
+import es.satec.businessManager.BusinessManager;
 
 public class SolicitudesEEJG {
 	private String urlWS;
@@ -102,7 +105,16 @@ public class SolicitudesEEJG {
 					if ((respuesta.getTipoError() != null && !respuesta.getTipoError().trim().equals("")) || (respuesta.getDescripcionError() != null && !respuesta.getDescripcionError().trim().equals(""))) {
 						String error = respuesta.getTipoError() + ": " + respuesta.getDescripcionError();
 						scsEejgPeticionesBean.setMsgError(error);
-						throw new ClsExceptions("IdPetición: " + scsEejgPeticionesBean.getIdPeticion() + ". Se ha obtenido el siguiente mensaje de error como respuesta del webservice para el colegio " + idZona + " y DNI/NIE solicitado \"" + scsEejgPeticionesBean.getNif() + "\" y DNI/NIE del tramitador \""  + dNI_NIE_Tramitador + "\": " + error);
+						
+						
+						String msjError = "IdPetición: " + scsEejgPeticionesBean.getIdPeticion() + ". Se ha obtenido el siguiente mensaje de error como respuesta del webservice para el colegio " + idZona + " y DNI/NIE solicitado \"" + scsEejgPeticionesBean.getNif() + "\" y DNI/NIE del tramitador \""  + dNI_NIE_Tramitador + "\": " + error;
+						try {
+							ScsEEJGPeticionesService service = (ScsEEJGPeticionesService) BusinessManager.getInstance().getService(ScsEEJGPeticionesService.class);
+							service.enviarEmailErrorTramitadorEEJG(msjError);	
+						} catch (Exception e) {
+							ClsLogging.writeFileLog("Error al enviar el mensaje al tramitador. Continuamos "+msjError, 10);
+						}
+						throw new ClsExceptions(msjError);
 					} else {
 						idPeticionInfoAAPP = respuestaSolicitudPeticionInfoAAPP.getInformacion().getRespuestaPeticionInfoAAPP().getIdPeticionInfoAAPP();
 					}
