@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.AppConstants.PARAMETRO;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
@@ -2001,7 +2002,8 @@ public class InformesGenericosAction extends MasterAction {
 				String hora = tipoInformeBean.getProgramacion();
 				request.setAttribute("horas", hora.split(":")[0]);
 				request.setAttribute("minutos", hora.split(":")[1]);
-				
+				GenParametrosAdm param = new GenParametrosAdm(usr);
+				request.setAttribute("HORA_COMUNICACIONES_EDITABLE",param.getValor(miForm.getIdInstitucion(), "ENV", "HORA_COMUNICACIONES_EDITABLE",AppConstants.DB_TRUE));	
 			}else if(tipoInformeBean.getProgramacion()!=null && tipoInformeBean.getProgramacion().indexOf(":")<0) {
 				try {
 					milisegundosRelay = Integer.valueOf(tipoInformeBean.getProgramacion())*60000;	
@@ -2012,12 +2014,13 @@ public class InformesGenericosAction extends MasterAction {
 				cal.setTime(date);
 				request.setAttribute("horas", cal.get(cal.HOUR_OF_DAY));
 				request.setAttribute("minutos", cal.get(cal.MINUTE));
+				request.setAttribute("HORA_COMUNICACIONES_EDITABLE",AppConstants.DB_TRUE);
 			}else {
 				request.setAttribute("horas", cal.get(cal.HOUR_OF_DAY));
 				request.setAttribute("minutos", cal.get(cal.MINUTE));
+				request.setAttribute("HORA_COMUNICACIONES_EDITABLE",AppConstants.DB_TRUE);
 			}
-			GenParametrosAdm param = new GenParametrosAdm(usr);
-			request.setAttribute("HORA_COMUNICACIONES_EDITABLE",param.getValor(miForm.getIdInstitucion(), "ENV", "HORA_COMUNICACIONES_EDITABLE", "1"));
+			
 			
 			return mapping.findForward("seleccionInformes");
 
