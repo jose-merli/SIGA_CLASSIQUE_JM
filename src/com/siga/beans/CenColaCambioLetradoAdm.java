@@ -8,6 +8,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 import javax.transaction.UserTransaction;
 
+import org.redabogacia.sigaservices.app.AppConstants;
 import org.redabogacia.sigaservices.app.util.ReadProperties;
 import org.redabogacia.sigaservices.app.util.SIGAReferences;
 
@@ -231,6 +232,94 @@ public class CenColaCambioLetradoAdm extends MasterBeanAdministrador
 				} finally {
 					vCola = this.selectFirst();
 				}
+			}
+			
+			log.write("Actualizardatosletrado: antes de terminar, ejecutamos un parche para revisar direcciones de Traspaso que no se han copiado");
+			StringBuilder sqlOOJJ = new StringBuilder();
+			sqlOOJJ.append("Insert Into Cen_Colacambioletrado");
+			sqlOOJJ.append("  (Idpersona, Idinstitucion, Idcambio, Fechacambio, Idtipocambio, Iddireccion, Fechamodificacion, Usumodificacion)");
+			sqlOOJJ.append("  (Select Col.Idpersona, Col.Idinstitucion, nvl((Select max(col2.Idcambio) From Cen_Colacambioletrado col2), 0)+rownum, Sysdate, 30, Dir.Iddireccion, Sysdate, -7");
+			sqlOOJJ.append("     From Cen_Colegiado Col, Cen_Direcciones Dir, Cen_Direccion_Tipodireccion Tip");
+			sqlOOJJ.append("    Where Col.Situacionejercicio = '1'");
+			sqlOOJJ.append("      And Dir.Idinstitucion = Tip.Idinstitucion");
+			sqlOOJJ.append("      And Dir.Idpersona = Tip.Idpersona");
+			sqlOOJJ.append("      And Dir.Iddireccion = Tip.Iddireccion");
+			sqlOOJJ.append("      And Tip.Idtipodireccion = ");
+			sqlOOJJ.append(AppConstants.TIPO_TRASPASO_ORGANOS_JUDICIALES);
+			sqlOOJJ.append("      And Dir.Idinstitucion = Col.Idinstitucion");
+			sqlOOJJ.append("      And Dir.Idpersona = Col.Idpersona");
+			sqlOOJJ.append("      And Dir.Fechabaja Is Null");
+			sqlOOJJ.append("      /* que no exista direccion copiada en el Consejo */");
+			sqlOOJJ.append("      And Not Exists (Select 1");
+			sqlOOJJ.append("             From Cen_Direcciones Dircon, Cen_Direccion_Tipodireccion Tipcon");
+			sqlOOJJ.append("            Where Dircon.Idinstitucion = Tipcon.Idinstitucion");
+			sqlOOJJ.append("              And Dircon.Idpersona = Tipcon.Idpersona");
+			sqlOOJJ.append("              And Dircon.Iddireccion = Tipcon.Iddireccion");
+			sqlOOJJ.append("              And Tipcon.Idtipodireccion = ");
+			sqlOOJJ.append(AppConstants.TIPO_TRASPASO_ORGANOS_JUDICIALES);
+			sqlOOJJ.append("              And Dircon.Idinstitucion = ");
+			sqlOOJJ.append(AppConstants.IDINSTITUCION_2000);
+			sqlOOJJ.append("              And Dircon.Idpersona = Col.Idpersona");
+			sqlOOJJ.append("              And Dircon.Fechabaja Is Null");
+			sqlOOJJ.append("              /* si ya se ha copiado la direccion al Consejo, en este sera posterior a la del colegio */");
+			sqlOOJJ.append("              And dircon.Fechamodificacion >= dir.Fechamodificacion)");
+			sqlOOJJ.append("      And Exists (Select 1");
+			sqlOOJJ.append("             From Cen_Datoscolegialesestado Est2");
+			sqlOOJJ.append("            Where Est2.Idinstitucion = Col.Idinstitucion");
+			sqlOOJJ.append("              And Est2.Idpersona = Col.Idpersona");
+			sqlOOJJ.append("              And Trunc(Est2.Fechaestado) <= Sysdate)");
+			sqlOOJJ.append("      And Not Exists (Select 1");
+			sqlOOJJ.append("             From Cen_Colacambioletrado Col2");
+			sqlOOJJ.append("            Where Col.Idinstitucion = Col2.Idinstitucion");
+			sqlOOJJ.append("              And Col.Idpersona = Col2.Idpersona))");
+			this.insertSQL(sqlOOJJ.toString());
+			
+			log.write("Actualizardatosletrado: antes de terminar, ejecutamos un parche para revisar direcciones de CorreoWeb que no se han copiado");
+			StringBuilder sqlCens = new StringBuilder();
+			sqlCens.append("Insert Into Cen_Colacambioletrado");
+			sqlCens.append("  (Idpersona, Idinstitucion, Idcambio, Fechacambio, Idtipocambio, Iddireccion, Fechamodificacion, Usumodificacion)");
+			sqlCens.append("  (Select Col.Idpersona, Col.Idinstitucion, nvl((Select max(col2.Idcambio) From Cen_Colacambioletrado col2), 0)+rownum, Sysdate, 30, Dir.Iddireccion, Sysdate, -7");
+			sqlCens.append("     From Cen_Colegiado Col, Cen_Direcciones Dir, Cen_Direccion_Tipodireccion Tip");
+			sqlCens.append("    Where Col.Situacionejercicio = '1'");
+			sqlCens.append("      And Dir.Idinstitucion = Tip.Idinstitucion");
+			sqlCens.append("      And Dir.Idpersona = Tip.Idpersona");
+			sqlCens.append("      And Dir.Iddireccion = Tip.Iddireccion");
+			sqlCens.append("      And Tip.Idtipodireccion = ");
+			sqlCens.append(AppConstants.TIPO_DIRECCION_CENSOWEB);
+			sqlCens.append("      And Dir.Idinstitucion = Col.Idinstitucion");
+			sqlCens.append("      And Dir.Idpersona = Col.Idpersona");
+			sqlCens.append("      And Dir.Fechabaja Is Null");
+			sqlCens.append("      /* que no exista direccion copiada en el Consejo */");
+			sqlCens.append("      And Not Exists (Select 1");
+			sqlCens.append("             From Cen_Direcciones Dircon, Cen_Direccion_Tipodireccion Tipcon");
+			sqlCens.append("            Where Dircon.Idinstitucion = Tipcon.Idinstitucion");
+			sqlCens.append("              And Dircon.Idpersona = Tipcon.Idpersona");
+			sqlCens.append("              And Dircon.Iddireccion = Tipcon.Iddireccion");
+			sqlCens.append("              And Tipcon.Idtipodireccion = ");
+			sqlCens.append(AppConstants.TIPO_DIRECCION_CENSOWEB);
+			sqlCens.append("              And Dircon.Idinstitucion = ");
+			sqlCens.append(AppConstants.IDINSTITUCION_2000);
+			sqlCens.append("              And Dircon.Idpersona = Col.Idpersona");
+			sqlCens.append("              And Dircon.Fechabaja Is Null");
+			sqlCens.append("              /* si ya se ha copiado la direccion al Consejo, en este sera posterior a la del colegio */");
+			sqlCens.append("              And dircon.Fechamodificacion >= dir.Fechamodificacion)");
+			sqlCens.append("      And Exists (Select 1");
+			sqlCens.append("             From Cen_Datoscolegialesestado Est2");
+			sqlCens.append("            Where Est2.Idinstitucion = Col.Idinstitucion");
+			sqlCens.append("              And Est2.Idpersona = Col.Idpersona");
+			sqlCens.append("              And Trunc(Est2.Fechaestado) <= Sysdate)");
+			sqlCens.append("      And Not Exists (Select 1");
+			sqlCens.append("             From Cen_Colacambioletrado Col2");
+			sqlCens.append("            Where Col.Idinstitucion = Col2.Idinstitucion");
+			sqlCens.append("              And Col.Idpersona = Col2.Idpersona))");
+
+			try {
+				tx.begin();
+				this.insertSQL(sqlOOJJ.toString());
+				this.insertSQL(sqlCens.toString());
+			} catch (Exception e) {
+				log.write("ERROR - CenColaCambioLetradoAdm.chequearCola() > arreglo de direcciones perdidas: " + e.getMessage());
+				tx.rollback();
 			}
 		} catch (Exception e) {
 			Date dat = Calendar.getInstance().getTime();
