@@ -317,6 +317,7 @@ public class CenColaCambioLetradoAdm extends MasterBeanAdministrador
 				tx.begin();
 				this.insertSQL(sqlOOJJ.toString());
 				this.insertSQL(sqlCens.toString());
+				tx.commit();
 			} catch (Exception e) {
 				log.write("ERROR - CenColaCambioLetradoAdm.chequearCola() > arreglo de direcciones perdidas: " + e.getMessage());
 				tx.rollback();
