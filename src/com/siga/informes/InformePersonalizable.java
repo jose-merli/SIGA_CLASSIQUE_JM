@@ -315,7 +315,7 @@ public class InformePersonalizable extends MasterReport
 						
 						Hashtable primerRegistro = (Hashtable) datos.get(0); 
 						List<String> columnasExcel = null;
-						if(primerRegistro.get("TIPOJUSTIFICACION").equals("PG")) {
+						if(primerRegistro.get("TIPOJUSTIFICACION").equals("PG")||primerRegistro.get("TIPOJUSTIFICACION").equals("DE")) {
 							columnasExcel = Arrays.asList(AragonEnviaJustificacionActuaciones.camposExcelGuardias) ;
 						}else if(primerRegistro.get("TIPOJUSTIFICACION").equals("JA")) {
 							Arrays.asList(AragonEnviaJustificacionActuaciones.camposExcelOficio) ;
