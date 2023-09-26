@@ -96,7 +96,7 @@ public class AragonEnviaJustificacionActuaciones {
 			}
 			
 		    
-			if(justificacionActuaciones.getTipoJustificacion().toString().equals("PG")||justificacionActuaciones.getTipoJustificacion().toString().equals("DE")) {
+			if(justificacionActuaciones.getTipoJustificacion()==null||justificacionActuaciones.getTipoJustificacion().toString().equals("PG")) {
 				
 								
 				GuardiaType guardia = tipoEconomico.addNewGuardia();
