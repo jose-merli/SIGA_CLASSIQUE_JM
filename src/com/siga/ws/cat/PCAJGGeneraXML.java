@@ -67,6 +67,8 @@ import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionInte
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosExpediente;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosExpediente.MarcasExpediente;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosFamiliares;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosLibresExpediente;
+import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosLibresExpediente.LibreMarcasExpediente;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosRepresentante;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosSolicitante;
 import com.siga.ws.pcajg.cat.xsd.IntercambioDocument.Intercambio.InformacionIntercambio.TipoGenerico.Expediente.DatosSolicitante.DatosEconomicosPersona;
@@ -714,10 +716,50 @@ private File creaFicheroIndex(String dirFicheros, String dirPlantilla, com.siga.
 		
 		Expediente expediente = tipoGenerico.addNewExpediente();
 		
-//		if(htEJGs.get(DE_DL_LM_RETORNOCORREGIDO)!=null) {
-//			short numVecesEnviadosConError = Short.parseShort((String)htEJGs.get(DE_DL_LM_RETORNOCORREGIDO));
-//			expediente.addNewDatosLibresExpediente().addNewLibreMarcasExpediente().setRetornoCorregido(numVecesEnviadosConError>0?(short)1:(short)0);
-//		}
+		if(htEJGs.get("DE_DL_LM_RETORNOCORREGIDO")!=null) {
+
+			DatosLibresExpediente datosLibresExpediente =  expediente.addNewDatosLibresExpediente();
+			LibreMarcasExpediente datosLibresExpediente2 = datosLibresExpediente.addNewLibreMarcasExpediente();
+			short numVecesEnviadosConError = Short.parseShort((String)htEJGs.get("DE_DL_LM_RETORNOCORREGIDO"));
+			datosLibresExpediente2.setRetornoCorregido(numVecesEnviadosConError>0?(short)1:(short)0);
+			
+			short DE_DL_LM_VIDO = Short.parseShort((String)htEJGs.get("DE_DL_LM_VIDO"));
+			datosLibresExpediente2.setVIDO(DE_DL_LM_VIDO);
+			
+			short DE_DL_LM_MENOR = Short.parseShort((String)htEJGs.get("DE_DL_LM_MENOR"));
+			datosLibresExpediente2.setMenor(DE_DL_LM_MENOR);
+			
+			short DE_DL_LM_INCAPACIDAD = Short.parseShort((String)htEJGs.get("DE_DL_LM_INCAPACIDAD"));
+			datosLibresExpediente2.setIncapacidad(DE_DL_LM_INCAPACIDAD);
+			
+			short DE_DL_LM_DISCAPACIDAD = Short.parseShort((String)htEJGs.get("DE_DL_LM_DISCAPACIDAD"));
+			datosLibresExpediente2.setDiscapacidad(DE_DL_LM_DISCAPACIDAD);
+			
+			short DE_DL_LM_MEDIACIONFAMILIAR = Short.parseShort((String)htEJGs.get("DE_DL_LM_MEDIACIONFAMILIAR"));
+			datosLibresExpediente2.setMediacionFamiliar(DE_DL_LM_MEDIACIONFAMILIAR);
+			
+			short  DE_DL_LM_FAMILIANUMEROSA= Short.parseShort((String)htEJGs.get("DE_DL_LM_FAMILIANUMEROSA"));
+			datosLibresExpediente2.setFamiliaNumerosa(DE_DL_LM_FAMILIANUMEROSA);
+			
+			short DE_DL_LM_VICTIMATERRORISMO = Short.parseShort((String)htEJGs.get("DE_DL_LM_VICTIMATERRORISMO"));
+			datosLibresExpediente2.setVictimaTerrorismo(DE_DL_LM_VICTIMATERRORISMO);
+			
+			short DE_DL_LM_LITIGIOTRANSFRONTERIZO = Short.parseShort((String)htEJGs.get("DE_DL_LM_LITIGIOTRANSFRONTERIZO"));
+			datosLibresExpediente2.setLitigioTransfronterizo(DE_DL_LM_LITIGIOTRANSFRONTERIZO);
+			
+			short DE_DL_LM_DESIGNADERIVADA = Short.parseShort((String)htEJGs.get("DE_DL_LM_DESIGNADERIVADA"));
+			datosLibresExpediente2.setDesignaDerivada(DE_DL_LM_DESIGNADERIVADA);
+			
+			short DE_DL_LM_DESIGNACIONESORGANOJUDICIAL = Short.parseShort((String)htEJGs.get("DE_DL_LM_DESIGNACIONESORGANOJUDICIAL"));
+			datosLibresExpediente2.setDesignacionesOrganoJudicial(DE_DL_LM_DESIGNACIONESORGANOJUDICIAL);
+			
+			short DE_DL_LM_CIRCUSTANCIASEXCEPCIONALES = Short.parseShort((String)htEJGs.get("DE_DL_LM_CIRCUSTANCIASEXCEPCIONALES"));
+			datosLibresExpediente2.setCircustanciasExcepcionales(DE_DL_LM_CIRCUSTANCIASEXCEPCIONALES);
+			
+			short DE_DL_LM_VM = Short.parseShort((String)htEJGs.get("DE_DL_LM_VM"));
+			datosLibresExpediente2.setRetornoCorregido(DE_DL_LM_VM);
+
+		}
 		
 		datosExpediente(expediente, htEJGs);
 		profesionalesDesignados(expediente, htEJGs);	
