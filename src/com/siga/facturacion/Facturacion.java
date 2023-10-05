@@ -923,7 +923,7 @@ public class Facturacion {
     		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDINSTITUCION, beanP.getIdInstitucion());
     		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDPROGRAMACION, idProgramacion);
     		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDSERIEFACTURACION,idSerieFacturacion );
-    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "sysdate");
+//    		UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "sysdate");
     		if (archivarFacturacion) {
     			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_ARCHIVARFACT, "1");
     		} else {
@@ -931,7 +931,17 @@ public class Facturacion {
     		}
 
     		String [] claves = {FacFacturacionProgramadaBean.C_IDINSTITUCION,FacFacturacionProgramadaBean.C_IDPROGRAMACION,FacFacturacionProgramadaBean.C_IDSERIEFACTURACION};
-    		String [] camposFactura = {FacFacturacionProgramadaBean.C_FECHACONFIRMACION, FacFacturacionProgramadaBean.C_ARCHIVARFACT,FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION,FacFacturacionProgramadaBean.C_LOGERROR, FacFacturacionProgramadaBean.C_NOMBREFICHERO,FacFacturacionProgramadaBean.C_FECHAPREVISTAPDFYENVIO,FacFacturacionProgramadaBean.C_IDESTADOPDF,FacFacturacionProgramadaBean.C_IDESTADOENVIO,FacFacturacionProgramadaBean.C_GENERAPDF,FacFacturacionProgramadaBean.C_ENVIO,FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL};
+    		String [] camposFactura = {FacFacturacionProgramadaBean.C_FECHACONFIRMACION, 
+    				FacFacturacionProgramadaBean.C_ARCHIVARFACT,
+    				FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION,
+    				FacFacturacionProgramadaBean.C_LOGERROR,
+    				FacFacturacionProgramadaBean.C_NOMBREFICHERO
+    				,FacFacturacionProgramadaBean.C_FECHAPREVISTAPDFYENVIO,
+    				FacFacturacionProgramadaBean.C_IDESTADOPDF,
+    				FacFacturacionProgramadaBean.C_IDESTADOENVIO,
+    				FacFacturacionProgramadaBean.C_GENERAPDF,
+    				FacFacturacionProgramadaBean.C_ENVIO,
+    				FacFacturacionProgramadaBean.C_IDTIPOPLANTILLAMAIL};
 
     		if(!soloGenerarFactura){
 	    		try {
@@ -1069,6 +1079,8 @@ public class Facturacion {
 	    			}
 	    			
 	    			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_IDESTADOCONFIRMACION, FacEstadoConfirmFactBean.CONFIRM_FINALIZADA);
+	    			UtilidadesHash.set(hashNew, FacFacturacionProgramadaBean.C_FECHACONFIRMACION, "sysdate");
+	    			
 	    			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_LOGERROR,"");	   
 	    			//si hay que generar el pdf lo hacemos
 	    			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_GENERAPDF,beanP.getGenerarPDF());
@@ -1118,15 +1130,14 @@ public class Facturacion {
 		    			}else {
 		    				UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_IDESTADOENVIO,FacEstadoConfirmFactBean.ENVIO_NOAPLICA);
 		    			}
-		    			
-		    			facadm.updateDirect(hashNew, claves, camposFactura);	
+		    				
 	    			}else {
-//	    				UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_FECHAPREVISTAPDFYENVIO,null);
-//		    			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_IDESTADOPDF,FacEstadoConfirmFactBean.PDF_NOAPLICA);
-//		    			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_IDESTADOENVIO,FacEstadoConfirmFactBean.ENVIO_NOAPLICA);
+	    				UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_FECHAPREVISTAPDFYENVIO,"");
+		    			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_IDESTADOPDF,FacEstadoConfirmFactBean.PDF_NOAPLICA);
+		    			UtilidadesHash.set(hashNew,FacFacturacionProgramadaBean.C_IDESTADOENVIO,FacEstadoConfirmFactBean.ENVIO_NOAPLICA);
 	    				
 	    			}
-	    			
+	    			facadm.updateDirect(hashNew, claves, camposFactura);
 	    			if (tx!=null)
 	    				tx.commit();
 	    			//////////// FIN TRANSACCION ////////////////
