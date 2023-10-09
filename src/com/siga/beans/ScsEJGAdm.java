@@ -1598,7 +1598,7 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 				} else {
 					consulta.append(" AND ");
 					consulta.append(ComodinBusquedas.prepararSentenciaCompletaTranslateUpperBind(
-							((String) miHash.get("APELLIDO1")).trim(), "UPPER(PJG.APELLIDO1)", contador, codigos));
+							((String) miHash.get("APELLIDO2")).trim(), "UPPER(PJG.APELLIDO2)", contador, codigos));
 				}
 			}
 
@@ -1608,39 +1608,18 @@ public class ScsEJGAdm extends MasterBeanAdministrador {
 	
 	public boolean existenExpedientesByJusticiable(Hashtable miHash, boolean isBusquedaExactaSolicitante,
 			Short idInstitucion) throws BusinessException {
-		boolean existeFiltroJusticiable = false;
 		Hashtable codigos = new Hashtable();
 		String consulta = getQueryExpedientesByJusticiable(miHash, codigos, isBusquedaExactaSolicitante, idInstitucion);
-		
-		if (((miHash.containsKey("NIF")) && (!miHash.get("NIF").toString().equals("")))
-				|| ((miHash.containsKey("NOMBRE")) && (!miHash.get("NOMBRE").toString().equals("")))
-				|| ((miHash.containsKey("APELLIDO1")) && (!miHash.get("APELLIDO1").toString().equals("")))
-				|| ((miHash.containsKey("APELLIDO2")) && (!miHash.get("APELLIDO2").toString().equals("")))) {
-			existeFiltroJusticiable = true;
-		}
 		boolean existeExpedientesByJusticiable = false;
-//		 List<ScsEJGBean> scsEJGBeans = new ArrayList<ScsEJGBean>();
 		 try {
-			 if(existeFiltroJusticiable) {
-				 Vector datos = this.selectGenericoBind(consulta.toString(), codigos);
-				 existeExpedientesByJusticiable =  datos.size()>0;
-//				 for (int i = 0; i < datos.size(); i++) {
-//					 Hashtable registro = (Hashtable) datos.get(i);
-//					 ScsEJGBean scsEJGBean = new ScsEJGBean();
-//					 scsEJGBean.setIdInstitucion(UtilidadesHash.getInteger(registro,ScsEJGBean.C_IDINSTITUCION));
-//					 scsEJGBean.setAnio(UtilidadesHash.getInteger(registro,ScsEJGBean.C_ANIO));
-//					 scsEJGBean.setNumero(UtilidadesHash.getInteger(registro,ScsEJGBean.C_NUMERO));
-//					 scsEJGBean.setIdTipoEJG(UtilidadesHash.getInteger(registro,ScsEJGBean.C_IDTIPOEJG));
-//					 scsEJGBeans.add(scsEJGBean);
-//					
-//				}
-			}
-			return existeExpedientesByJusticiable;
+			 Vector datos = this.selectGenericoBind(consulta.toString(), codigos);
+			 existeExpedientesByJusticiable =  datos.size()>0;
 			 
 		} catch (Exception e) {
 			log.error("Error no controlado al obtener los EJGS de un justiciable",e);
 			throw new BusinessException("Error no controlado al obtener los EJGS de un justiciable");
 		}
+			return existeExpedientesByJusticiable;
 
 	}
 	
