@@ -849,8 +849,10 @@ public class Facturacion {
 
 			}
 		} catch (FileNotFoundException e) {
+			ClsLogging.writeFileLogError("FileNotFoundExceptione.Error al crear fichero zip",e,10);
 			throw new ClsExceptions(e,"Error al crear fichero zip");
 		} catch (IOException e) {
+			ClsLogging.writeFileLogError("ClsExceptions.Error al crear fichero zip",e,10);
 			throw new ClsExceptions(e,"Error al crear fichero zip");
 		}
 		finally {
