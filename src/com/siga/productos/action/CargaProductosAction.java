@@ -8,6 +8,7 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -15,6 +16,7 @@ import org.redabogacia.sigaservices.app.exceptions.BusinessException;
 import org.redabogacia.sigaservices.app.helper.SIGAServicesHelper;
 import org.redabogacia.sigaservices.app.services.gen.FicherosService;
 import org.redabogacia.sigaservices.app.services.pys.CargaMasivaProductos;
+import org.redabogacia.sigaservices.app.services.pys.impl.CargaMasivaProductosImpl;
 import org.redabogacia.sigaservices.app.vo.cen.CargaMasivaDatosVo;
 import org.redabogacia.sigaservices.app.vo.pys.CargaMasivaDatosProductosVo;
 
@@ -30,7 +32,9 @@ import com.siga.general.SIGAException;
 import com.siga.productos.form.CargaProductosForm;
 
 public class CargaProductosAction extends MasterAction {
-
+	
+	private static Logger log = Logger.getLogger(CargaMasivaProductosImpl.class);
+	
 	/**
 	 * Redefinicion de la funcion executeInternal para controlar las nuevas acciones confirmar y denegar
 	 */
@@ -212,6 +216,7 @@ public class CargaProductosAction extends MasterAction {
 	}
 
 	private String processExcelFile(ActionMapping mapping, MasterForm formulario, HttpServletRequest request, HttpServletResponse response) throws SIGAException {
+		log.info("CargaProductosAction.processExcelFile() - INICIO");
 		CargaProductosForm miForm = (CargaProductosForm) formulario;
 		CargaMasivaProductos cargaMasiva = (CargaMasivaProductos) getBusinessManager().getService(CargaMasivaProductos.class);
 		UsrBean usrBean = this.getUserBean(request);
@@ -226,11 +231,13 @@ public class CargaProductosAction extends MasterAction {
 			cargaMasiva.processExcelFile(cargaMasivaDatosProdVo);
 
 		} catch (BusinessException e) {
+			log.error("CargaProductosAction.processExcelFile() - ERROR: "+ e.getMessage());
 			throwExcp(e.getMessage(), e, null);
 		} catch (Exception e) {
+			log.error("CargaProductosAction.processExcelFile() - ERROR: "+ e.getMessage());
 			throwExcp("messages.general.error", new String[] { "modulo.gratuita" }, e, null);
 		}
-
+		log.info("CargaProductosAction.processExcelFile() - FIN");
 		return exitoRefresco("messages.inserted.success", request);
 	}
 
